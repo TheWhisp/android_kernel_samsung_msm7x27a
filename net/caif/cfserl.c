@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -29,6 +33,7 @@ struct cfserl {
 static int cfserl_receive(struct cflayer *layr, struct cfpkt *pkt);
 static int cfserl_transmit(struct cflayer *layr, struct cfpkt *pkt);
 static void cfserl_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
+<<<<<<< HEAD
 				int phyid);
 
 <<<<<<< HEAD
@@ -46,6 +51,10 @@ struct cflayer *cfserl_create(int type, int instance, bool use_stx)
 	this->layer.ctrlcmd = cfserl_ctrlcmd;
 	this->layer.type = type;
 =======
+=======
+			   int phyid);
+
+>>>>>>> refs/remotes/origin/master
 struct cflayer *cfserl_create(int instance, bool use_stx)
 {
 	struct cfserl *this = kzalloc(sizeof(struct cfserl), GFP_ATOMIC);
@@ -55,7 +64,10 @@ struct cflayer *cfserl_create(int instance, bool use_stx)
 	this->layer.receive = cfserl_receive;
 	this->layer.transmit = cfserl_transmit;
 	this->layer.ctrlcmd = cfserl_ctrlcmd;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	this->usestx = use_stx;
 	spin_lock_init(&this->sync);
 	snprintf(this->layer.name, CAIF_LAYER_NAME_SZ, "ser1");
@@ -198,7 +210,11 @@ static int cfserl_transmit(struct cflayer *layer, struct cfpkt *newpkt)
 }
 
 static void cfserl_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
+<<<<<<< HEAD
 				int phyid)
+=======
+			   int phyid)
+>>>>>>> refs/remotes/origin/master
 {
 	layr->up->ctrlcmd(layr->up, ctrl, phyid);
 }

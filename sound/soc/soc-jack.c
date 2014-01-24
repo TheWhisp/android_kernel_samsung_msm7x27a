@@ -18,14 +18,22 @@
 #include <linux/workqueue.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <trace/events/asoc.h>
 
 /**
  * snd_soc_jack_new - Create a new jack
+<<<<<<< HEAD
  * @card:  ASoC card
+=======
+ * @codec: ASoC codec
+>>>>>>> refs/remotes/origin/master
  * @id:    an identifying string for this jack
  * @type:  a bitmask of enum snd_jack_type values that can be detected by
  *         this jack
@@ -39,6 +47,10 @@
 int snd_soc_jack_new(struct snd_soc_codec *codec, const char *id, int type,
 		     struct snd_soc_jack *jack)
 {
+<<<<<<< HEAD
+=======
+	mutex_init(&jack->mutex);
+>>>>>>> refs/remotes/origin/master
 	jack->codec = codec;
 	INIT_LIST_HEAD(&jack->pins);
 	INIT_LIST_HEAD(&jack->jack_zones);
@@ -67,8 +79,13 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
 	struct snd_soc_codec *codec;
 	struct snd_soc_dapm_context *dapm;
 	struct snd_soc_jack_pin *pin;
+<<<<<<< HEAD
 	int enable;
 	int oldstatus;
+=======
+	unsigned int sync = 0;
+	int enable;
+>>>>>>> refs/remotes/origin/master
 
 	trace_snd_soc_jack_report(jack, mask, status);
 
@@ -78,18 +95,25 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
 	codec = jack->codec;
 	dapm =  &codec->dapm;
 
+<<<<<<< HEAD
 	mutex_lock(&codec->mutex);
 
 	oldstatus = jack->status;
+=======
+	mutex_lock(&jack->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	jack->status &= ~mask;
 	jack->status |= status & mask;
 
+<<<<<<< HEAD
 	/* The DAPM sync is expensive enough to be worth skipping.
 	 * However, empty mask means pin synchronization is desired. */
 	if (mask && (jack->status == oldstatus))
 		goto out;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	trace_snd_soc_jack_notify(jack, status);
 
 	list_for_each_entry(pin, &jack->pins, list) {
@@ -102,6 +126,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
 			snd_soc_dapm_enable_pin(dapm, pin->pin);
 		else
 			snd_soc_dapm_disable_pin(dapm, pin->pin);
+<<<<<<< HEAD
 	}
 
 	/* Report before the DAPM sync to help users updating micbias status */
@@ -113,10 +138,27 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
 
 out:
 	mutex_unlock(&codec->mutex);
+=======
+
+		/* we need to sync for this case only */
+		sync = 1;
+	}
+
+	/* Report before the DAPM sync to help users updating micbias status */
+	blocking_notifier_call_chain(&jack->notifier, jack->status, jack);
+
+	if (sync)
+		snd_soc_dapm_sync(dapm);
+
+	snd_jack_report(jack->jack, jack->status);
+
+	mutex_unlock(&jack->mutex);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(snd_soc_jack_report);
 
 /**
+<<<<<<< HEAD
  * snd_soc_jack_report_no_dapm - Report the current status for a jack
  *				 without DAPM sync
  * @jack:   the jack
@@ -134,6 +176,8 @@ void snd_soc_jack_report_no_dapm(struct snd_soc_jack *jack, int status,
 EXPORT_SYMBOL_GPL(snd_soc_jack_report_no_dapm);
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * snd_soc_jack_add_zones - Associate voltage zones with jack
  *
  * @jack:  ASoC jack
@@ -158,12 +202,22 @@ EXPORT_SYMBOL_GPL(snd_soc_jack_add_zones);
 
 /**
  * snd_soc_jack_get_type - Based on the mic bias value, this function returns
+<<<<<<< HEAD
  * the type of jack from the zones delcared in the jack type
  *
  * @micbias_voltage:  mic bias voltage at adc channel when jack is plugged in
  *
  * Based on the mic bias value passed, this function helps identify
  * the type of jack from the already delcared jack zones
+=======
+ * the type of jack from the zones declared in the jack type
+ *
+ * @jack:  ASoC jack
+ * @micbias_voltage:  mic bias voltage at adc channel when jack is plugged in
+ *
+ * Based on the mic bias value passed, this function helps identify
+ * the type of jack from the already declared jack zones
+>>>>>>> refs/remotes/origin/master
  */
 int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage)
 {
@@ -196,12 +250,22 @@ int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
 
 	for (i = 0; i < count; i++) {
 		if (!pins[i].pin) {
+<<<<<<< HEAD
 			printk(KERN_ERR "No name for pin %d\n", i);
 			return -EINVAL;
 		}
 		if (!pins[i].mask) {
 			printk(KERN_ERR "No mask for pin %d (%s)\n", i,
 			       pins[i].pin);
+=======
+			dev_err(jack->codec->dev, "ASoC: No name for pin %d\n",
+				i);
+			return -EINVAL;
+		}
+		if (!pins[i].mask) {
+			dev_err(jack->codec->dev, "ASoC: No mask for pin %d"
+				" (%s)\n", i, pins[i].pin);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 
@@ -210,10 +274,13 @@ int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	snd_soc_dapm_new_widgets(&jack->codec->card->dapm);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Update to reflect the last reported status; canned jack
 	 * implementations are likely to set their state before the
 	 * card has an opportunity to associate pins.
@@ -292,7 +359,11 @@ static irqreturn_t gpio_handler(int irq, void *data)
 	if (device_may_wakeup(dev))
 		pm_wakeup_event(dev, gpio->debounce_time + 50);
 
+<<<<<<< HEAD
 	schedule_delayed_work(&gpio->work,
+=======
+	queue_delayed_work(system_power_efficient_wq, &gpio->work,
+>>>>>>> refs/remotes/origin/master
 			      msecs_to_jiffies(gpio->debounce_time));
 
 	return IRQ_HANDLED;
@@ -324,13 +395,21 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
 
 	for (i = 0; i < count; i++) {
 		if (!gpio_is_valid(gpios[i].gpio)) {
+<<<<<<< HEAD
 			printk(KERN_ERR "Invalid gpio %d\n",
+=======
+			dev_err(jack->codec->dev, "ASoC: Invalid gpio %d\n",
+>>>>>>> refs/remotes/origin/master
 				gpios[i].gpio);
 			ret = -EINVAL;
 			goto undo;
 		}
 		if (!gpios[i].name) {
+<<<<<<< HEAD
 			printk(KERN_ERR "No name for gpio %d\n",
+=======
+			dev_err(jack->codec->dev, "ASoC: No name for gpio %d\n",
+>>>>>>> refs/remotes/origin/master
 				gpios[i].gpio);
 			ret = -EINVAL;
 			goto undo;
@@ -359,11 +438,16 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
 		if (gpios[i].wake) {
 			ret = irq_set_irq_wake(gpio_to_irq(gpios[i].gpio), 1);
 			if (ret != 0)
+<<<<<<< HEAD
 				printk(KERN_ERR
+=======
+				dev_err(jack->codec->dev, "ASoC: "
+>>>>>>> refs/remotes/origin/master
 				  "Failed to mark GPIO %d as wake source: %d\n",
 					gpios[i].gpio, ret);
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_GPIO_SYSFS
 		/* Expose GPIO value over sysfs for diagnostic purposes */
@@ -373,6 +457,10 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
 		/* Expose GPIO value over sysfs for diagnostic purposes */
 		gpio_export(gpios[i].gpio, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Expose GPIO value over sysfs for diagnostic purposes */
+		gpio_export(gpios[i].gpio, false);
+>>>>>>> refs/remotes/origin/master
 
 		/* Update initial jack status */
 		snd_soc_jack_gpio_detect(&gpios[i]);
@@ -405,12 +493,16 @@ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
 
 	for (i = 0; i < count; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_GPIO_SYSFS
 		gpio_unexport(gpios[i].gpio);
 #endif
 =======
 		gpio_unexport(gpios[i].gpio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gpio_unexport(gpios[i].gpio);
+>>>>>>> refs/remotes/origin/master
 		free_irq(gpio_to_irq(gpios[i].gpio), &gpios[i]);
 		cancel_delayed_work_sync(&gpios[i].work);
 		gpio_free(gpios[i].gpio);

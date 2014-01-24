@@ -1,6 +1,7 @@
 #ifndef __LINUX_MROUTE_H
 #define __LINUX_MROUTE_H
 
+<<<<<<< HEAD
 #include <linux/sockios.h>
 #include <linux/types.h>
 #ifdef __KERNEL__
@@ -133,11 +134,21 @@ struct igmpmsg {
 #ifdef __KERNEL__
 #include <linux/pim.h>
 #include <net/sock.h>
+=======
+#include <linux/in.h>
+#include <linux/pim.h>
+#include <net/sock.h>
+#include <uapi/linux/mroute.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IP_MROUTE
 static inline int ip_mroute_opt(int opt)
 {
+<<<<<<< HEAD
 	return (opt >= MRT_BASE) && (opt <= MRT_BASE + 10);
+=======
+	return (opt >= MRT_BASE) && (opt <= MRT_MAX);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static inline int ip_mroute_opt(int opt)
@@ -228,6 +239,7 @@ struct mfc_cache {
 #define MFC_HASH(a,b)	((((__force u32)(__be32)a)^(((__force u32)(__be32)b)>>2))&(MFC_LINES-1))
 #endif		
 
+<<<<<<< HEAD
 #endif
 
 
@@ -242,10 +254,15 @@ struct mfc_cache {
 #define IGMPMSG_WHOLEPKT	3		/* For PIM Register processing */
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 struct rtmsg;
 extern int ipmr_get_route(struct net *net, struct sk_buff *skb,
 			  __be32 saddr, __be32 daddr,
 			  struct rtmsg *rtm, int nowait);
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

@@ -19,10 +19,14 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/interrupt.h>
@@ -32,20 +36,28 @@
 #include <linux/cache.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cpu.h>
 #include <linux/notifier.h>
 #include <linux/topology.h>
 
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -56,18 +68,26 @@
 #include <asm/cputhreads.h>
 #include <asm/cputable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mpic.h>
 #include <asm/vdso_datapage.h>
 #ifdef CONFIG_PPC64
 #include <asm/paca.h>
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/debug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/vdso.h>
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 #include <asm/udbg.h>
@@ -76,6 +96,7 @@
 #define DBG(fmt...)
 #endif
 
+<<<<<<< HEAD
 
 /* Store all idle threads, this can be reused instead of creating
 * a new thread. Also avoids complicated thread destroy functionality
@@ -100,6 +121,11 @@ static DEFINE_PER_CPU(int, cpu_state) = { 0 };
 static struct task_struct *idle_thread_array[NR_CPUS] __cpuinitdata ;
 #define get_idle_for_cpu(x)      (idle_thread_array[(x)])
 #define set_idle_for_cpu(x, p)   (idle_thread_array[(x)] = (p))
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+/* State of each CPU during hotplug phases */
+static DEFINE_PER_CPU(int, cpu_state) = { 0 };
+>>>>>>> refs/remotes/origin/master
 #endif
 
 struct thread_info *secondary_ti;
@@ -120,8 +146,35 @@ int smt_enabled_at_boot = 1;
 
 static void (*crash_ipi_function_ptr)(struct pt_regs *) = NULL;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC64
 int __devinit smp_generic_kick_cpu(int nr)
+=======
+/*
+ * Returns 1 if the specified cpu should be brought up during boot.
+ * Used to inhibit booting threads if they've been disabled or
+ * limited on the command line
+ */
+int smp_generic_cpu_bootable(unsigned int nr)
+{
+	/* Special case - we inhibit secondary thread startup
+	 * during boot if the user requests it.
+	 */
+	if (system_state == SYSTEM_BOOTING && cpu_has_feature(CPU_FTR_SMT)) {
+		if (!smt_enabled_at_boot && cpu_thread_in_core(nr) != 0)
+			return 0;
+		if (smt_enabled_at_boot
+		    && cpu_thread_in_core(nr) >= smt_enabled_at_boot)
+			return 0;
+	}
+
+	return 1;
+}
+
+
+#ifdef CONFIG_PPC64
+int smp_generic_kick_cpu(int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	BUG_ON(nr < 0 || nr >= NR_CPUS);
 
@@ -131,6 +184,7 @@ int __devinit smp_generic_kick_cpu(int nr)
 	 * the processor will continue on to secondary_start
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	paca[nr].cpu_start = 1;
 	smp_mb();
 
@@ -138,6 +192,8 @@ int __devinit smp_generic_kick_cpu(int nr)
 }
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!paca[nr].cpu_start) {
 		paca[nr].cpu_start = 1;
 		smp_mb();
@@ -149,7 +205,11 @@ int __devinit smp_generic_kick_cpu(int nr)
 	 * Ok it's not there, so it might be soft-unplugged, let's
 	 * try to bring it back
 	 */
+<<<<<<< HEAD
 	per_cpu(cpu_state, nr) = CPU_UP_PREPARE;
+=======
+	generic_set_cpu_up(nr);
+>>>>>>> refs/remotes/origin/master
 	smp_wmb();
 	smp_send_reschedule(nr);
 #endif /* CONFIG_HOTPLUG_CPU */
@@ -157,7 +217,10 @@ int __devinit smp_generic_kick_cpu(int nr)
 	return 0;
 }
 #endif /* CONFIG_PPC64 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static irqreturn_t call_function_action(int irq, void *data)
 {
@@ -219,12 +282,18 @@ int smp_request_message_ipi(int virq, int msg)
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(virq, smp_ipi_action[msg], IRQF_DISABLED|IRQF_PERCPU,
 =======
 	err = request_irq(virq, smp_ipi_action[msg],
 			  IRQF_PERCPU | IRQF_NO_THREAD,
 >>>>>>> refs/remotes/origin/cm-10.0
 			  smp_ipi_name[msg], 0);
+=======
+	err = request_irq(virq, smp_ipi_action[msg],
+			  IRQF_PERCPU | IRQF_NO_THREAD | IRQF_NO_SUSPEND,
+			  smp_ipi_name[msg], NULL);
+>>>>>>> refs/remotes/origin/master
 	WARN(err < 0, "unable to request_irq %d for %s (rc %d)\n",
 		virq, smp_ipi_name[msg], err);
 
@@ -251,6 +320,7 @@ void smp_muxed_ipi_message_pass(int cpu, int msg)
 	char *message = (char *)&info->messages;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	message[msg] = 1;
 	mb();
 	smp_ops->cause_ipi(cpu, info->data);
@@ -265,6 +335,8 @@ void smp_muxed_ipi_resend(void)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Order previous accesses before accesses in the IPI handler.
 	 */
@@ -277,7 +349,16 @@ void smp_muxed_ipi_resend(void)
 	smp_ops->cause_ipi(cpu, info->data);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef __BIG_ENDIAN__
+#define IPI_MESSAGE(A) (1 << (24 - 8 * (A)))
+#else
+#define IPI_MESSAGE(A) (1 << (8 * (A)))
+#endif
+
+>>>>>>> refs/remotes/origin/master
 irqreturn_t smp_ipi_demux(void)
 {
 	struct cpu_messages *info = &__get_cpu_var(ipi_message);
@@ -286,6 +367,7 @@ irqreturn_t smp_ipi_demux(void)
 	mb();	/* order any irq clear */
 
 	do {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		all = xchg_local(&info->messages, 0);
 =======
@@ -304,12 +386,24 @@ irqreturn_t smp_ipi_demux(void)
 #else
 #error Unsupported ENDIAN
 #endif
+=======
+		all = xchg(&info->messages, 0);
+		if (all & IPI_MESSAGE(PPC_MSG_CALL_FUNCTION))
+			generic_smp_call_function_interrupt();
+		if (all & IPI_MESSAGE(PPC_MSG_RESCHEDULE))
+			scheduler_ipi();
+		if (all & IPI_MESSAGE(PPC_MSG_CALL_FUNC_SINGLE))
+			generic_smp_call_function_single_interrupt();
+		if (all & IPI_MESSAGE(PPC_MSG_DEBUGGER_BREAK))
+			debug_ipi_action(0, NULL);
+>>>>>>> refs/remotes/origin/master
 	} while (info->messages);
 
 	return IRQ_HANDLED;
 }
 #endif /* CONFIG_PPC_SMP_MUXED_IPI */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void smp_send_reschedule(int cpu)
 {
@@ -321,6 +415,8 @@ void arch_send_call_function_single_ipi(int cpu)
 {
 	smp_ops->message_pass(cpu, PPC_MSG_CALL_FUNC_SINGLE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void do_message_pass(int cpu, int msg)
 {
 	if (smp_ops->message_pass)
@@ -341,7 +437,10 @@ EXPORT_SYMBOL_GPL(smp_send_reschedule);
 void arch_send_call_function_single_ipi(int cpu)
 {
 	do_message_pass(cpu, PPC_MSG_CALL_FUNC_SINGLE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void arch_send_call_function_ipi_mask(const struct cpumask *mask)
@@ -350,10 +449,14 @@ void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 
 	for_each_cpu(cpu, mask)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		smp_ops->message_pass(cpu, PPC_MSG_CALL_FUNCTION);
 =======
 		do_message_pass(cpu, PPC_MSG_CALL_FUNCTION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		do_message_pass(cpu, PPC_MSG_CALL_FUNCTION);
+>>>>>>> refs/remotes/origin/master
 }
 
 #if defined(CONFIG_DEBUGGER) || defined(CONFIG_KEXEC)
@@ -368,10 +471,14 @@ void smp_send_debugger_break(void)
 	for_each_online_cpu(cpu)
 		if (cpu != me)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			smp_ops->message_pass(cpu, PPC_MSG_DEBUGGER_BREAK);
 =======
 			do_message_pass(cpu, PPC_MSG_DEBUGGER_BREAK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			do_message_pass(cpu, PPC_MSG_DEBUGGER_BREAK);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -403,16 +510,25 @@ void smp_send_stop(void)
 
 struct thread_info *current_set[NR_CPUS];
 
+<<<<<<< HEAD
 static void __devinit smp_store_cpu_info(int id)
 {
 	per_cpu(cpu_pvr, id) = mfspr(SPRN_PVR);
 <<<<<<< HEAD
 =======
+=======
+static void smp_store_cpu_info(int id)
+{
+	per_cpu(cpu_pvr, id) = mfspr(SPRN_PVR);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_FSL_BOOK3E
 	per_cpu(next_tlbcam_idx, id)
 		= (mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) - 1;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_prepare_cpus(unsigned int max_cpus)
@@ -450,7 +566,11 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 		max_cpus = 1;
 }
 
+<<<<<<< HEAD
 void __devinit smp_prepare_boot_cpu(void)
+=======
+void smp_prepare_boot_cpu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	BUG_ON(smp_processor_id() != boot_cpuid);
 #ifdef CONFIG_PPC64
@@ -461,10 +581,13 @@ void __devinit smp_prepare_boot_cpu(void)
 
 #ifdef CONFIG_HOTPLUG_CPU
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* State of each CPU during hotplug phases */
 static DEFINE_PER_CPU(int, cpu_state) = { 0 };
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int generic_cpu_disable(void)
 {
@@ -513,12 +636,26 @@ void generic_set_cpu_dead(unsigned int cpu)
 	per_cpu(cpu_state, cpu) = CPU_DEAD;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+/*
+ * The cpu_state should be set to CPU_UP_PREPARE in kick_cpu(), otherwise
+ * the cpu_state is always CPU_DEAD after calling generic_set_cpu_dead(),
+ * which makes the delay in generic_cpu_die() not happen.
+ */
+void generic_set_cpu_up(unsigned int cpu)
+{
+	per_cpu(cpu_state, cpu) = CPU_UP_PREPARE;
+}
+>>>>>>> refs/remotes/origin/master
 
 int generic_check_cpu_restart(unsigned int cpu)
 {
 	return per_cpu(cpu_state, cpu) == CPU_UP_PREPARE;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
@@ -579,16 +716,86 @@ int __cpuinit __cpu_up(unsigned int cpu)
 {
 	int rc, c;
 
+=======
+
+static atomic_t secondary_inhibit_count;
+
+/*
+ * Don't allow secondary CPU threads to come online
+ */
+void inhibit_secondary_onlining(void)
+{
+	/*
+	 * This makes secondary_inhibit_count stable during cpu
+	 * online/offline operations.
+	 */
+	get_online_cpus();
+
+	atomic_inc(&secondary_inhibit_count);
+	put_online_cpus();
+}
+EXPORT_SYMBOL_GPL(inhibit_secondary_onlining);
+
+/*
+ * Allow secondary CPU threads to come online again
+ */
+void uninhibit_secondary_onlining(void)
+{
+	get_online_cpus();
+	atomic_dec(&secondary_inhibit_count);
+	put_online_cpus();
+}
+EXPORT_SYMBOL_GPL(uninhibit_secondary_onlining);
+
+static int secondaries_inhibited(void)
+{
+	return atomic_read(&secondary_inhibit_count);
+}
+
+#else /* HOTPLUG_CPU */
+
+#define secondaries_inhibited()		0
+
+#endif
+
+static void cpu_idle_thread_init(unsigned int cpu, struct task_struct *idle)
+{
+	struct thread_info *ti = task_thread_info(idle);
+
+#ifdef CONFIG_PPC64
+	paca[cpu].__current = idle;
+	paca[cpu].kstack = (unsigned long)ti + THREAD_SIZE - STACK_FRAME_OVERHEAD;
+#endif
+	ti->cpu = cpu;
+	secondary_ti = current_set[cpu] = ti;
+}
+
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+	int rc, c;
+
+	/*
+	 * Don't allow secondary threads to come online if inhibited
+	 */
+	if (threads_per_core > 1 && secondaries_inhibited() &&
+	    cpu % threads_per_core != 0)
+		return -EBUSY;
+
+>>>>>>> refs/remotes/origin/master
 	if (smp_ops == NULL ||
 	    (smp_ops->cpu_bootable && !smp_ops->cpu_bootable(cpu)))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* Make sure we have an idle thread */
 	rc = create_idle(cpu);
 	if (rc)
 		return rc;
 
 	secondary_ti = current_set[cpu];
+=======
+	cpu_idle_thread_init(cpu, tidle);
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure callin-map entry is 0 (can be leftover a CPU
 	 * hotplug
@@ -650,7 +857,11 @@ int __cpuinit __cpu_up(unsigned int cpu)
 int cpu_to_core_id(int cpu)
 {
 	struct device_node *np;
+<<<<<<< HEAD
 	const int *reg;
+=======
+	const __be32 *reg;
+>>>>>>> refs/remotes/origin/master
 	int id = -1;
 
 	np = of_get_cpu_node(cpu, NULL);
@@ -661,7 +872,11 @@ int cpu_to_core_id(int cpu)
 	if (!reg)
 		goto out;
 
+<<<<<<< HEAD
 	id = *reg;
+=======
+	id = be32_to_cpup(reg);
+>>>>>>> refs/remotes/origin/master
 out:
 	of_node_put(np);
 	return id;
@@ -680,6 +895,36 @@ int cpu_first_thread_of_core(int core)
 }
 EXPORT_SYMBOL_GPL(cpu_first_thread_of_core);
 
+<<<<<<< HEAD
+=======
+static void traverse_siblings_chip_id(int cpu, bool add, int chipid)
+{
+	const struct cpumask *mask;
+	struct device_node *np;
+	int i, plen;
+	const __be32 *prop;
+
+	mask = add ? cpu_online_mask : cpu_present_mask;
+	for_each_cpu(i, mask) {
+		np = of_get_cpu_node(i, NULL);
+		if (!np)
+			continue;
+		prop = of_get_property(np, "ibm,chip-id", &plen);
+		if (prop && plen == sizeof(int) &&
+		    of_read_number(prop, 1) == chipid) {
+			if (add) {
+				cpumask_set_cpu(cpu, cpu_core_mask(i));
+				cpumask_set_cpu(i, cpu_core_mask(cpu));
+			} else {
+				cpumask_clear_cpu(cpu, cpu_core_mask(i));
+				cpumask_clear_cpu(i, cpu_core_mask(cpu));
+			}
+		}
+		of_node_put(np);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Must be called when no change can occur to cpu_present_mask,
  * i.e. during cpu online or offline.
  */
@@ -702,11 +947,59 @@ static struct device_node *cpu_to_l2cache(int cpu)
 	return cache;
 }
 
+<<<<<<< HEAD
 /* Activate a secondary processor. */
 void __devinit start_secondary(void *unused)
 {
 	unsigned int cpu = smp_processor_id();
 	struct device_node *l2_cache;
+=======
+static void traverse_core_siblings(int cpu, bool add)
+{
+	struct device_node *l2_cache, *np;
+	const struct cpumask *mask;
+	int i, chip, plen;
+	const __be32 *prop;
+
+	/* First see if we have ibm,chip-id properties in cpu nodes */
+	np = of_get_cpu_node(cpu, NULL);
+	if (np) {
+		chip = -1;
+		prop = of_get_property(np, "ibm,chip-id", &plen);
+		if (prop && plen == sizeof(int))
+			chip = of_read_number(prop, 1);
+		of_node_put(np);
+		if (chip >= 0) {
+			traverse_siblings_chip_id(cpu, add, chip);
+			return;
+		}
+	}
+
+	l2_cache = cpu_to_l2cache(cpu);
+	mask = add ? cpu_online_mask : cpu_present_mask;
+	for_each_cpu(i, mask) {
+		np = cpu_to_l2cache(i);
+		if (!np)
+			continue;
+		if (np == l2_cache) {
+			if (add) {
+				cpumask_set_cpu(cpu, cpu_core_mask(i));
+				cpumask_set_cpu(i, cpu_core_mask(cpu));
+			} else {
+				cpumask_clear_cpu(cpu, cpu_core_mask(i));
+				cpumask_clear_cpu(i, cpu_core_mask(cpu));
+			}
+		}
+		of_node_put(np);
+	}
+	of_node_put(l2_cache);
+}
+
+/* Activate a secondary processor. */
+void start_secondary(void *unused)
+{
+	unsigned int cpu = smp_processor_id();
+>>>>>>> refs/remotes/origin/master
 	int i, base;
 
 	atomic_inc(&init_mm.mm_count);
@@ -727,6 +1020,7 @@ void __devinit start_secondary(void *unused)
 #ifdef CONFIG_PPC64
 	if (system_state == SYSTEM_RUNNING)
 		vdso_data->processorCount++;
+<<<<<<< HEAD
 #endif
 	ipi_call_lock();
 	notify_cpu_starting(cpu);
@@ -735,6 +1029,15 @@ void __devinit start_secondary(void *unused)
 	base = cpu_first_thread_sibling(cpu);
 	for (i = 0; i < threads_per_core; i++) {
 		if (cpu_is_offline(base + i))
+=======
+
+	vdso_getcpu_init();
+#endif
+	/* Update sibling maps */
+	base = cpu_first_thread_sibling(cpu);
+	for (i = 0; i < threads_per_core; i++) {
+		if (cpu_is_offline(base + i) && (cpu != base + i))
+>>>>>>> refs/remotes/origin/master
 			continue;
 		cpumask_set_cpu(cpu, cpu_sibling_mask(base + i));
 		cpumask_set_cpu(base + i, cpu_sibling_mask(cpu));
@@ -746,6 +1049,7 @@ void __devinit start_secondary(void *unused)
 		cpumask_set_cpu(cpu, cpu_core_mask(base + i));
 		cpumask_set_cpu(base + i, cpu_core_mask(cpu));
 	}
+<<<<<<< HEAD
 	l2_cache = cpu_to_l2cache(cpu);
 	for_each_online_cpu(i) {
 		struct device_node *np = cpu_to_l2cache(i);
@@ -763,6 +1067,17 @@ void __devinit start_secondary(void *unused)
 	local_irq_enable();
 
 	cpu_idle();
+=======
+	traverse_core_siblings(cpu, true);
+
+	smp_wmb();
+	notify_cpu_starting(cpu);
+	set_cpu_online(cpu, true);
+
+	local_irq_enable();
+
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 
 	BUG();
 }
@@ -810,7 +1125,10 @@ int arch_sd_sibling_asym_packing(void)
 #ifdef CONFIG_HOTPLUG_CPU
 int __cpu_disable(void)
 {
+<<<<<<< HEAD
 	struct device_node *l2_cache;
+=======
+>>>>>>> refs/remotes/origin/master
 	int cpu = smp_processor_id();
 	int base, i;
 	int err;
@@ -830,6 +1148,7 @@ int __cpu_disable(void)
 		cpumask_clear_cpu(cpu, cpu_core_mask(base + i));
 		cpumask_clear_cpu(base + i, cpu_core_mask(cpu));
 	}
+<<<<<<< HEAD
 
 	l2_cache = cpu_to_l2cache(cpu);
 	for_each_present_cpu(i) {
@@ -844,6 +1163,9 @@ int __cpu_disable(void)
 	}
 	of_node_put(l2_cache);
 
+=======
+	traverse_core_siblings(cpu, false);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -854,6 +1176,7 @@ void __cpu_die(unsigned int cpu)
 		smp_ops->cpu_die(cpu);
 }
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(powerpc_cpu_hotplug_driver_mutex);
 
 void cpu_hotplug_driver_lock()
@@ -866,6 +1189,8 @@ void cpu_hotplug_driver_unlock()
 	mutex_unlock(&powerpc_cpu_hotplug_driver_mutex);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void cpu_die(void)
 {
 	if (ppc_md.cpu_die)

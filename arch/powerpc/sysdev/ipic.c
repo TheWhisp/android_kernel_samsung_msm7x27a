@@ -673,20 +673,28 @@ static struct irq_chip ipic_edge_irq_chip = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ipic_host_match(struct irq_host *h, struct device_node *node)
 =======
 static int ipic_host_match(struct irq_domain *h, struct device_node *node)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ipic_host_match(struct irq_domain *h, struct device_node *node)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Exact match, unless ipic node is NULL */
 	return h->of_node == NULL || h->of_node == node;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ipic_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int ipic_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ipic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			 irq_hw_number_t hw)
 {
 	struct ipic *ipic = h->host_data;
@@ -700,6 +708,7 @@ static int ipic_host_map(struct irq_domain *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ipic_host_xlate(struct irq_host *h, struct device_node *ct,
 			   const u32 *intspec, unsigned int intsize,
@@ -722,11 +731,16 @@ static struct irq_host_ops ipic_host_ops = {
 	.map	= ipic_host_map,
 	.xlate	= ipic_host_xlate,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct irq_domain_ops ipic_host_ops = {
 	.match	= ipic_host_match,
 	.map	= ipic_host_map,
 	.xlate	= irq_domain_xlate_onetwocell,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ipic * __init ipic_init(struct device_node *node, unsigned int flags)
@@ -744,6 +758,7 @@ struct ipic * __init ipic_init(struct device_node *node, unsigned int flags)
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipic->irqhost = irq_alloc_host(node, IRQ_HOST_MAP_LINEAR,
 				       NR_IPIC_INTS,
 				       &ipic_host_ops, 0);
@@ -751,11 +766,16 @@ struct ipic * __init ipic_init(struct device_node *node, unsigned int flags)
 	ipic->irqhost = irq_domain_add_linear(node, NR_IPIC_INTS,
 					      &ipic_host_ops, ipic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ipic->irqhost = irq_domain_add_linear(node, NR_IPIC_INTS,
+					      &ipic_host_ops, ipic);
+>>>>>>> refs/remotes/origin/master
 	if (ipic->irqhost == NULL) {
 		kfree(ipic);
 		return NULL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ipic->regs = ioremap(res.start, res.end - res.start + 1);
 
@@ -763,6 +783,9 @@ struct ipic * __init ipic_init(struct device_node *node, unsigned int flags)
 =======
 	ipic->regs = ioremap(res.start, resource_size(&res));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ipic->regs = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/master
 
 	/* init hw */
 	ipic_write(ipic->regs, IPIC_SICNR, 0x0);

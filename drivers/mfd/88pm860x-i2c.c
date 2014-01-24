@@ -10,6 +10,7 @@
  */
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
@@ -63,6 +64,11 @@ int pm860x_reg_read(struct i2c_client *i2c, int reg)
 #include <linux/regmap.h>
 #include <linux/mfd/88pm860x.h>
 #include <linux/slab.h>
+=======
+#include <linux/i2c.h>
+#include <linux/regmap.h>
+#include <linux/mfd/88pm860x.h>
+>>>>>>> refs/remotes/origin/master
 
 int pm860x_reg_read(struct i2c_client *i2c, int reg)
 {
@@ -73,7 +79,10 @@ int pm860x_reg_read(struct i2c_client *i2c, int reg)
 	int ret;
 
 	ret = regmap_read(map, reg, &data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 	else
@@ -86,6 +95,7 @@ int pm860x_reg_write(struct i2c_client *i2c, int reg,
 {
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&chip->io_lock);
@@ -93,12 +103,17 @@ int pm860x_reg_write(struct i2c_client *i2c, int reg,
 	mutex_unlock(&chip->io_lock);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct regmap *map = (i2c == chip->client) ? chip->regmap
 				: chip->regmap_companion;
 	int ret;
 
 	ret = regmap_write(map, reg, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_reg_write);
@@ -108,6 +123,7 @@ int pm860x_bulk_read(struct i2c_client *i2c, int reg,
 {
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&chip->io_lock);
@@ -115,12 +131,17 @@ int pm860x_bulk_read(struct i2c_client *i2c, int reg,
 	mutex_unlock(&chip->io_lock);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct regmap *map = (i2c == chip->client) ? chip->regmap
 				: chip->regmap_companion;
 	int ret;
 
 	ret = regmap_raw_read(map, reg, buf, count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_bulk_read);
@@ -130,6 +151,7 @@ int pm860x_bulk_write(struct i2c_client *i2c, int reg,
 {
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	mutex_lock(&chip->io_lock);
@@ -137,12 +159,17 @@ int pm860x_bulk_write(struct i2c_client *i2c, int reg,
 	mutex_unlock(&chip->io_lock);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct regmap *map = (i2c == chip->client) ? chip->regmap
 				: chip->regmap_companion;
 	int ret;
 
 	ret = regmap_raw_write(map, reg, buf, count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_bulk_write);
@@ -151,6 +178,7 @@ int pm860x_set_bits(struct i2c_client *i2c, int reg,
 		    unsigned char mask, unsigned char data)
 {
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned char value;
 	int ret;
@@ -165,29 +193,52 @@ int pm860x_set_bits(struct i2c_client *i2c, int reg,
 out:
 	mutex_unlock(&chip->io_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct regmap *map = (i2c == chip->client) ? chip->regmap
 				: chip->regmap_companion;
 	int ret;
 
 	ret = regmap_update_bits(map, reg, mask, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_set_bits);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int pm860x_page_reg_read(struct i2c_client *i2c, int reg)
 {
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int read_device(struct i2c_client *i2c, int reg,
 		       int bytes, void *dest)
 {
 	unsigned char msgbuf0[I2C_SMBUS_BLOCK_MAX + 3];
 	unsigned char msgbuf1[I2C_SMBUS_BLOCK_MAX + 2];
 	struct i2c_adapter *adap = i2c->adapter;
+<<<<<<< HEAD
 	struct i2c_msg msg[2] = {{i2c->addr, 0, 1, msgbuf0},
 				 {i2c->addr, I2C_M_RD, 0, msgbuf1},
+=======
+	struct i2c_msg msg[2] = {
+					{
+						.addr = i2c->addr,
+						.flags = 0,
+						.len = 1,
+						.buf = msgbuf0
+					},
+					{	.addr = i2c->addr,
+						.flags = I2C_M_RD,
+						.len = 0,
+						.buf = msgbuf1
+					},
+>>>>>>> refs/remotes/origin/master
 				};
 	int num = 1, ret = 0;
 
@@ -229,11 +280,15 @@ static int write_device(struct i2c_client *i2c, int reg,
 
 int pm860x_page_reg_read(struct i2c_client *i2c, int reg)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char zero = 0;
 	unsigned char data;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&chip->io_lock);
 	pm860x_write_device(i2c, 0xFA, 0, &zero);
@@ -246,6 +301,8 @@ int pm860x_page_reg_read(struct i2c_client *i2c, int reg)
 	pm860x_write_device(i2c, 0xFC, 0, &zero);
 	mutex_unlock(&chip->io_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	i2c_lock_adapter(i2c->adapter);
 	read_device(i2c, 0xFA, 0, &zero);
 	read_device(i2c, 0xFB, 0, &zero);
@@ -256,7 +313,10 @@ int pm860x_page_reg_read(struct i2c_client *i2c, int reg)
 	read_device(i2c, 0xFE, 0, &zero);
 	read_device(i2c, 0xFC, 0, &zero);
 	i2c_unlock_adapter(i2c->adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_page_reg_read);
@@ -264,6 +324,7 @@ EXPORT_SYMBOL(pm860x_page_reg_read);
 int pm860x_page_reg_write(struct i2c_client *i2c, int reg,
 			  unsigned char data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 	unsigned char zero;
@@ -278,6 +339,8 @@ int pm860x_page_reg_write(struct i2c_client *i2c, int reg,
 	pm860x_write_device(i2c, 0xFC, 0, &zero);
 	mutex_unlock(&chip->io_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char zero;
 	int ret;
 
@@ -289,7 +352,10 @@ int pm860x_page_reg_write(struct i2c_client *i2c, int reg,
 	read_device(i2c, 0xFE, 0, &zero);
 	read_device(i2c, 0xFC, 0, &zero);
 	i2c_unlock_adapter(i2c->adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_page_reg_write);
@@ -297,6 +363,7 @@ EXPORT_SYMBOL(pm860x_page_reg_write);
 int pm860x_page_bulk_read(struct i2c_client *i2c, int reg,
 			  int count, unsigned char *buf)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 	unsigned char zero = 0;
@@ -311,6 +378,8 @@ int pm860x_page_bulk_read(struct i2c_client *i2c, int reg,
 	pm860x_write_device(i2c, 0xFC, 0, &zero);
 	mutex_unlock(&chip->io_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char zero = 0;
 	int ret;
 
@@ -322,7 +391,10 @@ int pm860x_page_bulk_read(struct i2c_client *i2c, int reg,
 	read_device(i2c, 0xFE, 0, &zero);
 	read_device(i2c, 0xFC, 0, &zero);
 	i2c_unlock_adapter(i2c->adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_page_bulk_read);
@@ -330,6 +402,7 @@ EXPORT_SYMBOL(pm860x_page_bulk_read);
 int pm860x_page_bulk_write(struct i2c_client *i2c, int reg,
 			   int count, unsigned char *buf)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 	unsigned char zero = 0;
@@ -344,6 +417,8 @@ int pm860x_page_bulk_write(struct i2c_client *i2c, int reg,
 	pm860x_write_device(i2c, 0xFC, 0, &zero);
 	mutex_unlock(&chip->io_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char zero = 0;
 	int ret;
 
@@ -356,7 +431,10 @@ int pm860x_page_bulk_write(struct i2c_client *i2c, int reg,
 	read_device(i2c, 0xFC, 0, &zero);
 	i2c_unlock_adapter(i2c->adapter);
 	i2c_unlock_adapter(i2c->adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(pm860x_page_bulk_write);
@@ -365,13 +443,17 @@ int pm860x_page_set_bits(struct i2c_client *i2c, int reg,
 			 unsigned char mask, unsigned char data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pm860x_chip *chip = i2c_get_clientdata(i2c);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char zero;
 	unsigned char value;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&chip->io_lock);
 	pm860x_write_device(i2c, 0xFA, 0, &zero);
@@ -379,16 +461,22 @@ int pm860x_page_set_bits(struct i2c_client *i2c, int reg,
 	pm860x_write_device(i2c, 0xFF, 0, &zero);
 	ret = pm860x_read_device(i2c, reg, 1, &value);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	i2c_lock_adapter(i2c->adapter);
 	read_device(i2c, 0xFA, 0, &zero);
 	read_device(i2c, 0xFB, 0, &zero);
 	read_device(i2c, 0xFF, 0, &zero);
 	ret = read_device(i2c, reg, 1, &value);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 	value &= ~mask;
 	value |= data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = pm860x_write_device(i2c, reg, 1, &value);
 out:
@@ -396,11 +484,14 @@ out:
 	pm860x_write_device(i2c, 0xFC, 0, &zero);
 	mutex_unlock(&chip->io_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = write_device(i2c, reg, 1, &value);
 out:
 	read_device(i2c, 0xFE, 0, &zero);
 	read_device(i2c, 0xFC, 0, &zero);
 	i2c_unlock_adapter(i2c->adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
 }
@@ -588,3 +679,8 @@ module_exit(pm860x_i2c_exit);
 MODULE_DESCRIPTION("I2C Driver for Marvell 88PM860x");
 MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");
 MODULE_LICENSE("GPL");
+=======
+	return ret;
+}
+EXPORT_SYMBOL(pm860x_page_set_bits);
+>>>>>>> refs/remotes/origin/master

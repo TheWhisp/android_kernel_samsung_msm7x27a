@@ -25,9 +25,13 @@
 #include <sound/emux_synth.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "emux_voice.h"
 
 MODULE_AUTHOR("Takashi Iwai");

@@ -14,18 +14,28 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 #include <linux/types.h>
 #include <linux/gpio.h>
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+#include <linux/gpio.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/soc.h>
 #include <sound/jack.h>
 
+<<<<<<< HEAD
 #include <plat/regs-iis.h>
 #include <mach/h1940-latch.h>
+=======
+#include "regs-iis.h"
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 
 #include "s3c24xx-i2s.h"
@@ -151,9 +161,15 @@ static int h1940_spk_power(struct snd_soc_dapm_widget *w,
 				struct snd_kcontrol *kcontrol, int event)
 {
 	if (SND_SOC_DAPM_EVENT_ON(event))
+<<<<<<< HEAD
 		gpio_set_value(H1940_LATCH_AUDIO_POWER, 1);
 	else
 		gpio_set_value(H1940_LATCH_AUDIO_POWER, 0);
+=======
+		gpio_set_value(S3C_GPIO_END + 9, 1);
+	else
+		gpio_set_value(S3C_GPIO_END + 9, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -188,6 +204,7 @@ static int h1940_uda1380_init(struct snd_soc_pcm_runtime *rtd)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add h1940 specific widgets */
 	err = snd_soc_dapm_new_controls(dapm, uda1380_dapm_widgets,
 				  ARRAY_SIZE(uda1380_dapm_widgets));
@@ -202,15 +219,20 @@ static int h1940_uda1380_init(struct snd_soc_pcm_runtime *rtd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
 	snd_soc_dapm_enable_pin(dapm, "Speaker");
 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
 		&hp_jack);
 
@@ -231,7 +253,11 @@ static struct snd_soc_dai_link h1940_uda1380_dai[] = {
 		.cpu_dai_name	= "s3c24xx-iis",
 		.codec_dai_name	= "uda1380-hifi",
 		.init		= h1940_uda1380_init,
+<<<<<<< HEAD
 		.platform_name	= "samsung-audio",
+=======
+		.platform_name	= "s3c24xx-iis",
+>>>>>>> refs/remotes/origin/master
 		.codec_name	= "uda1380-codec.0-001a",
 		.ops		= &h1940_ops,
 	},
@@ -240,9 +266,12 @@ static struct snd_soc_dai_link h1940_uda1380_dai[] = {
 static struct snd_soc_card h1940_asoc = {
 	.name = "h1940",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link = h1940_uda1380_dai,
 	.num_links = ARRAY_SIZE(h1940_uda1380_dai),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE,
 	.dai_link = h1940_uda1380_dai,
 	.num_links = ARRAY_SIZE(h1940_uda1380_dai),
@@ -251,7 +280,10 @@ static struct snd_soc_card h1940_asoc = {
 	.num_dapm_widgets = ARRAY_SIZE(uda1380_dapm_widgets),
 	.dapm_routes = audio_map,
 	.num_dapm_routes = ARRAY_SIZE(audio_map),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init h1940_init(void)
@@ -262,11 +294,19 @@ static int __init h1940_init(void)
 		return -ENODEV;
 
 	/* configure some gpios */
+<<<<<<< HEAD
 	ret = gpio_request(H1940_LATCH_AUDIO_POWER, "speaker-power");
 	if (ret)
 		goto err_out;
 
 	ret = gpio_direction_output(H1940_LATCH_AUDIO_POWER, 0);
+=======
+	ret = gpio_request(S3C_GPIO_END + 9, "speaker-power");
+	if (ret)
+		goto err_out;
+
+	ret = gpio_direction_output(S3C_GPIO_END + 9, 0);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_gpio;
 
@@ -287,7 +327,11 @@ static int __init h1940_init(void)
 err_plat:
 	platform_device_put(s3c24xx_snd_device);
 err_gpio:
+<<<<<<< HEAD
 	gpio_free(H1940_LATCH_AUDIO_POWER);
+=======
+	gpio_free(S3C_GPIO_END + 9);
+>>>>>>> refs/remotes/origin/master
 
 err_out:
 	return ret;
@@ -298,7 +342,11 @@ static void __exit h1940_exit(void)
 	platform_device_unregister(s3c24xx_snd_device);
 	snd_soc_jack_free_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
 		hp_jack_gpios);
+<<<<<<< HEAD
 	gpio_free(H1940_LATCH_AUDIO_POWER);
+=======
+	gpio_free(S3C_GPIO_END + 9);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(h1940_init);

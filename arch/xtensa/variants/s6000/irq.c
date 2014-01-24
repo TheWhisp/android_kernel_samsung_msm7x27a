@@ -2,8 +2,13 @@
  * s6000 irq crossbar
  *
  * Copyright (c) 2009 emlix GmbH
+<<<<<<< HEAD
  * Authors:	Johannes Weiner <jw@emlix.com>
  *		Oskar Schirmer <os@emlix.com>
+=======
+ * Authors:	Johannes Weiner <hannes@cmpxchg.org>
+ *		Oskar Schirmer <oskar@scara.com>
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/io.h>
 #include <asm/irq.h>

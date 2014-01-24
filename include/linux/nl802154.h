@@ -68,6 +68,10 @@ enum {
 	IEEE802154_ATTR_CHANNEL_PAGE_LIST,
 
 	IEEE802154_ATTR_PHY_NAME,
+<<<<<<< HEAD
+=======
+	IEEE802154_ATTR_DEV_TYPE,
+>>>>>>> refs/remotes/origin/master
 
 	__IEEE802154_ATTR_MAX,
 };
@@ -126,4 +130,16 @@ enum {
 
 #define IEEE802154_CMD_MAX (__IEEE802154_CMD_MAX - 1)
 
+<<<<<<< HEAD
+=======
+enum {
+	__IEEE802154_DEV_INVALID = -1,
+
+	IEEE802154_DEV_WPAN,
+	IEEE802154_DEV_MONITOR,
+
+	__IEEE802154_DEV_MAX,
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif

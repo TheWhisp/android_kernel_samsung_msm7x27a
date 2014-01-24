@@ -13,6 +13,10 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 #include <linux/power_supply.h>
+<<<<<<< HEAD
+=======
+#include <linux/olpc-ec.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <acpi/acpi_bus.h>
 #include <acpi/acpi_drivers.h>
@@ -39,6 +43,7 @@ static bool				lid_wake_on_close;
  */
 static int set_lid_wake_behavior(bool wake_on_close)
 {
+<<<<<<< HEAD
 	struct acpi_object_list arg_list;
 	union acpi_object arg;
 	acpi_status status;
@@ -49,6 +54,11 @@ static int set_lid_wake_behavior(bool wake_on_close)
 	arg.integer.value	= wake_on_close;
 
 	status = acpi_evaluate_object(NULL, "\\_SB.PCI0.LID.LIDW", &arg_list, NULL);
+=======
+	acpi_status status;
+
+	status = acpi_execute_simple_method(NULL, "\\_SB.PCI0.LID.LIDW", wake_on_close);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		pr_warning(PFX "failed to set lid behavior\n");
 		return 1;
@@ -194,7 +204,11 @@ err_sysfs:
 	return r;
 }
 
+<<<<<<< HEAD
 static int xo15_sci_remove(struct acpi_device *device, int type)
+=======
+static int xo15_sci_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_disable_gpe(NULL, xo15_sci_gpe);
 	acpi_remove_gpe_handler(NULL, xo15_sci_gpe, xo15_sci_gpe_handler);
@@ -203,7 +217,11 @@ static int xo15_sci_remove(struct acpi_device *device, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int xo15_sci_resume(struct acpi_device *device)
+=======
+static int xo15_sci_resume(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Enable all EC events */
 	olpc_ec_mask_write(EC_SCI_SRC_ALL);
@@ -215,6 +233,11 @@ static int xo15_sci_resume(struct acpi_device *device)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static SIMPLE_DEV_PM_OPS(xo15_sci_pm, NULL, xo15_sci_resume);
+
+>>>>>>> refs/remotes/origin/master
 static const struct acpi_device_id xo15_sci_device_ids[] = {
 	{"XO15EC", 0},
 	{"", 0},
@@ -227,8 +250,13 @@ static struct acpi_driver xo15_sci_drv = {
 	.ops = {
 		.add = xo15_sci_add,
 		.remove = xo15_sci_remove,
+<<<<<<< HEAD
 		.resume = xo15_sci_resume,
 	},
+=======
+	},
+	.drv.pm = &xo15_sci_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init xo15_sci_init(void)

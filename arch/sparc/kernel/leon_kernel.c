@@ -5,15 +5,23 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/mutex.h>
 #include <linux/of.h>
 #include <linux/of_platform.h>
 #include <linux/interrupt.h>
 #include <linux/of_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/clocksource.h>
+#include <linux/clockchips.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/oplib.h>
 #include <asm/timer.h>
@@ -25,6 +33,10 @@
 #include <asm/smp.h>
 #include <asm/setup.h>
 
+<<<<<<< HEAD
+=======
+#include "kernel.h"
+>>>>>>> refs/remotes/origin/master
 #include "prom.h"
 #include "irq.h"
 
@@ -39,7 +51,10 @@ static DEFINE_SPINLOCK(leon_irq_lock);
 
 unsigned long leon3_gptimer_irq; /* interrupt controller irq number */
 unsigned long leon3_gptimer_idx; /* Timer Index (0..6) within Timer Core */
+<<<<<<< HEAD
 int leon3_ticker_irq; /* Timer ticker IRQ */
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned int sparc_leon_eirq;
 #define LEON_IMASK(cpu) (&leon3_irqctrl_regs->mask[cpu])
 #define LEON_IACK (&leon3_irqctrl_regs->iclear)
@@ -57,11 +72,21 @@ static inline unsigned int leon_eirq_get(int cpu)
 static void leon_handle_ext_irq(unsigned int irq, struct irq_desc *desc)
 {
 	unsigned int eirq;
+<<<<<<< HEAD
 	int cpu = sparc_leon3_cpuid();
 
 	eirq = leon_eirq_get(cpu);
 	if ((eirq & 0x10) && irq_map[eirq]->irq) /* bit4 tells if IRQ happened */
 		generic_handle_irq(irq_map[eirq]->irq);
+=======
+	struct irq_bucket *p;
+	int cpu = sparc_leon3_cpuid();
+
+	eirq = leon_eirq_get(cpu);
+	p = irq_map[eirq];
+	if ((eirq & 0x10) && p && p->irq) /* bit4 tells if IRQ happened */
+		generic_handle_irq(p->irq);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The extended IRQ controller has been found, this function registers it */
@@ -88,7 +113,11 @@ void leon_eirq_setup(unsigned int eirq)
 	sparc_leon_eirq = eirq;
 }
 
+<<<<<<< HEAD
 static inline unsigned long get_irqmask(unsigned int irq)
+=======
+unsigned long leon_get_irqmask(unsigned int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long mask;
 
@@ -109,18 +138,24 @@ static int irq_choose_cpu(const struct cpumask *affinity)
 	cpumask_t mask;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpus_and(mask, cpu_online_map, *affinity);
 	if (cpus_equal(mask, cpu_online_map) || cpus_empty(mask))
 		return boot_cpu_id;
 	else
 		return first_cpu(mask);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cpumask_and(&mask, cpu_online_mask, affinity);
 	if (cpumask_equal(&mask, cpu_online_mask) || cpumask_empty(&mask))
 		return boot_cpu_id;
 	else
 		return cpumask_first(&mask);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #else
 #define irq_choose_cpu(affinity) boot_cpu_id
@@ -220,9 +255,16 @@ unsigned int leon_build_device_irq(unsigned int real_irq,
 {
 	unsigned int irq;
 	unsigned long mask;
+<<<<<<< HEAD
 
 	irq = 0;
 	mask = get_irqmask(real_irq);
+=======
+	struct irq_desc *desc;
+
+	irq = 0;
+	mask = leon_get_irqmask(real_irq);
+>>>>>>> refs/remotes/origin/master
 	if (mask == 0)
 		goto out;
 
@@ -233,9 +275,18 @@ unsigned int leon_build_device_irq(unsigned int real_irq,
 	if (do_ack)
 		mask |= LEON_DO_ACK_HW;
 
+<<<<<<< HEAD
 	irq_set_chip_and_handler_name(irq, &leon_irq,
 				      flow_handler, name);
 	irq_set_chip_data(irq, (void *)mask);
+=======
+	desc = irq_to_desc(irq);
+	if (!desc || !desc->handle_irq || desc->handle_irq == handle_bad_irq) {
+		irq_set_chip_and_handler_name(irq, &leon_irq,
+					      flow_handler, name);
+		irq_set_chip_data(irq, (void *)mask);
+	}
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return irq;
@@ -262,7 +313,45 @@ void leon_update_virq_handling(unsigned int virq,
 	irq_set_chip_data(virq, (void *)mask);
 }
 
+<<<<<<< HEAD
 void __init leon_init_timers(irq_handler_t counter_fn)
+=======
+static u32 leon_cycles_offset(void)
+{
+	u32 rld, val, off;
+	rld = LEON3_BYPASS_LOAD_PA(&leon3_gptimer_regs->e[leon3_gptimer_idx].rld);
+	val = LEON3_BYPASS_LOAD_PA(&leon3_gptimer_regs->e[leon3_gptimer_idx].val);
+	off = rld - val;
+	return rld - val;
+}
+
+#ifdef CONFIG_SMP
+
+/* smp clockevent irq */
+irqreturn_t leon_percpu_timer_ce_interrupt(int irq, void *unused)
+{
+	struct clock_event_device *ce;
+	int cpu = smp_processor_id();
+
+	leon_clear_profile_irq(cpu);
+
+	if (cpu == boot_cpu_id)
+		timer_interrupt(irq, NULL);
+
+	ce = &per_cpu(sparc32_clockevent, cpu);
+
+	irq_enter();
+	if (ce->event_handler)
+		ce->event_handler(ce);
+	irq_exit();
+
+	return IRQ_HANDLED;
+}
+
+#endif /* CONFIG_SMP */
+
+void __init leon_init_timers(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq, eirq;
 	struct device_node *rootnp, *np, *nnp;
@@ -271,6 +360,18 @@ void __init leon_init_timers(irq_handler_t counter_fn)
 	int icsel;
 	int ampopts;
 	int err;
+<<<<<<< HEAD
+=======
+	u32 config;
+
+	sparc_config.get_cycles_offset = leon_cycles_offset;
+	sparc_config.cs_period = 1000000 / HZ;
+	sparc_config.features |= FEAT_L10_CLOCKSOURCE;
+
+#ifndef CONFIG_SMP
+	sparc_config.features |= FEAT_L10_CLOCKEVENT;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	leondebug_irq_disable = 0;
 	leon_debug_irqout = 0;
@@ -341,6 +442,7 @@ void __init leon_init_timers(irq_handler_t counter_fn)
 	LEON3_BYPASS_STORE_PA(
 			&leon3_gptimer_regs->e[leon3_gptimer_idx].ctrl, 0);
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	leon3_ticker_irq = leon3_gptimer_irq + 1 + leon3_gptimer_idx;
 
@@ -358,6 +460,8 @@ void __init leon_init_timers(irq_handler_t counter_fn)
 				0);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The IRQ controller may (if implemented) consist of multiple
 	 * IRQ controllers, each mapped on a 4Kb boundary.
@@ -380,6 +484,7 @@ void __init leon_init_timers(irq_handler_t counter_fn)
 	if (eirq != 0)
 		leon_eirq_setup(eirq);
 
+<<<<<<< HEAD
 	irq = _leon_build_device_irq(NULL, leon3_gptimer_irq+leon3_gptimer_idx);
 	err = request_irq(irq, counter_fn, IRQF_TIMER, "timer", NULL);
 	if (err) {
@@ -387,6 +492,8 @@ void __init leon_init_timers(irq_handler_t counter_fn)
 		prom_halt();
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 	{
 		unsigned long flags;
@@ -398,11 +505,16 @@ void __init leon_init_timers(irq_handler_t counter_fn)
 		 */
 		local_irq_save(flags);
 		patchme_maybe_smp_msg[0] = 0x01000000; /* NOP out the branch */
+<<<<<<< HEAD
 		local_flush_cache_all();
+=======
+		local_ops->cache_all();
+>>>>>>> refs/remotes/origin/master
 		local_irq_restore(flags);
 	}
 #endif
 
+<<<<<<< HEAD
 	LEON3_BYPASS_STORE_PA(&leon3_gptimer_regs->e[leon3_gptimer_idx].ctrl,
 			      LEON3_GPTIMER_EN |
 			      LEON3_GPTIMER_RL |
@@ -422,11 +534,37 @@ void __init leon_init_timers(irq_handler_t counter_fn)
 	}
 
 	LEON3_BYPASS_STORE_PA(&leon3_gptimer_regs->e[leon3_gptimer_idx+1].ctrl,
+=======
+	config = LEON3_BYPASS_LOAD_PA(&leon3_gptimer_regs->config);
+	if (config & (1 << LEON3_GPTIMER_SEPIRQ))
+		leon3_gptimer_irq += leon3_gptimer_idx;
+	else if ((config & LEON3_GPTIMER_TIMERS) > 1)
+		pr_warn("GPTIMER uses shared irqs, using other timers of the same core will fail.\n");
+
+#ifdef CONFIG_SMP
+	/* Install per-cpu IRQ handler for broadcasted ticker */
+	irq = leon_build_device_irq(leon3_gptimer_irq, handle_percpu_irq,
+				    "per-cpu", 0);
+	err = request_irq(irq, leon_percpu_timer_ce_interrupt,
+			  IRQF_PERCPU | IRQF_TIMER, "timer", NULL);
+#else
+	irq = _leon_build_device_irq(NULL, leon3_gptimer_irq);
+	err = request_irq(irq, timer_interrupt, IRQF_TIMER, "timer", NULL);
+#endif
+	if (err) {
+		pr_err("Unable to attach timer IRQ%d\n", irq);
+		prom_halt();
+	}
+	LEON3_BYPASS_STORE_PA(&leon3_gptimer_regs->e[leon3_gptimer_idx].ctrl,
+>>>>>>> refs/remotes/origin/master
 			      LEON3_GPTIMER_EN |
 			      LEON3_GPTIMER_RL |
 			      LEON3_GPTIMER_LD |
 			      LEON3_GPTIMER_IRQEN);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 bad:
 	printk(KERN_ERR "No Timer/irqctrl found\n");
@@ -434,6 +572,7 @@ bad:
 	return;
 }
 
+<<<<<<< HEAD
 void leon_clear_clock_irq(void)
 {
 }
@@ -441,6 +580,14 @@ void leon_clear_clock_irq(void)
 void leon_load_profile_irq(int cpu, unsigned int limit)
 {
 	BUG();
+=======
+static void leon_clear_clock_irq(void)
+{
+}
+
+static void leon_load_profile_irq(int cpu, unsigned int limit)
+{
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init leon_trans_init(struct device_node *dp)
@@ -457,6 +604,7 @@ void __init leon_trans_init(struct device_node *dp)
 	}
 }
 
+<<<<<<< HEAD
 void __initdata (*prom_amba_init)(struct device_node *dp, struct device_node ***nextp) = 0;
 
 void __init leon_node_init(struct device_node *dp, struct device_node ***nextp)
@@ -488,6 +636,9 @@ static void leon_set_udt(int cpu)
 {
 }
 
+=======
+#ifdef CONFIG_SMP
+>>>>>>> refs/remotes/origin/master
 void leon_clear_profile_irq(int cpu)
 {
 }
@@ -495,7 +646,11 @@ void leon_clear_profile_irq(int cpu)
 void leon_enable_irq_cpu(unsigned int irq_nr, unsigned int cpu)
 {
 	unsigned long mask, flags, *addr;
+<<<<<<< HEAD
 	mask = get_irqmask(irq_nr);
+=======
+	mask = leon_get_irqmask(irq_nr);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&leon_irq_lock, flags);
 	addr = (unsigned long *)LEON_IMASK(cpu);
 	LEON3_BYPASS_STORE_PA(addr, (LEON3_BYPASS_LOAD_PA(addr) | mask));
@@ -506,6 +661,7 @@ void leon_enable_irq_cpu(unsigned int irq_nr, unsigned int cpu)
 
 void __init leon_init_IRQ(void)
 {
+<<<<<<< HEAD
 	sparc_irq_config.init_timers      = leon_init_timers;
 	sparc_irq_config.build_device_irq = _leon_build_device_irq;
 
@@ -525,4 +681,11 @@ void __init leon_init_IRQ(void)
 void __init leon_init(void)
 {
 	of_pdt_build_more = &leon_node_init;
+=======
+	sparc_config.init_timers      = leon_init_timers;
+	sparc_config.build_device_irq = _leon_build_device_irq;
+	sparc_config.clock_rate       = 1000000;
+	sparc_config.clear_clock_irq  = leon_clear_clock_irq;
+	sparc_config.load_profile_irq = leon_load_profile_irq;
+>>>>>>> refs/remotes/origin/master
 }

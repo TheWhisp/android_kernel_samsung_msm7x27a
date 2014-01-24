@@ -1,10 +1,13 @@
 /*
  * arch/arm/mach-omap1/include/mach/io.h
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 
 #include <plat/io.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * IO definitions for TI OMAP processors and boards
  *
@@ -48,4 +51,7 @@
 #define __io(a)		__typesafe_io(a)
 
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

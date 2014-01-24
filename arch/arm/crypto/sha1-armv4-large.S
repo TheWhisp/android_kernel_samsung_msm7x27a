@@ -51,6 +51,7 @@
 @ Profiler-assisted and platform-specific optimization resulted in 10%
 @ improvement on Cortex A8 core and 12.2 cycles per byte.
 
+<<<<<<< HEAD
 .text
 
 .global	sha1_block_data_order
@@ -58,6 +59,14 @@
 
 .align	2
 sha1_block_data_order:
+=======
+#include <linux/linkage.h>
+
+.text
+
+.align	2
+ENTRY(sha1_block_data_order)
+>>>>>>> refs/remotes/origin/master
 	stmdb	sp!,{r4-r12,lr}
 	add	r2,r1,r2,lsl#6	@ r2 to point at the end of r1
 	ldmia	r0,{r3,r4,r5,r6,r7}
@@ -194,8 +203,14 @@ sha1_block_data_order:
 	eor	r10,r10,r7,ror#2		@ F_00_19(B,C,D)
 	str	r9,[r14,#-4]!
 	add	r3,r3,r10			@ E+=F_00_19(B,C,D)
+<<<<<<< HEAD
 	teq	r14,sp
 	bne	.L_00_15		@ [((11+4)*5+2)*3]
+=======
+	cmp	r14,sp
+	bne	.L_00_15		@ [((11+4)*5+2)*3]
+	sub	sp,sp,#25*4
+>>>>>>> refs/remotes/origin/master
 #if __ARM_ARCH__<7
 	ldrb	r10,[r1,#2]
 	ldrb	r9,[r1,#3]
@@ -291,7 +306,10 @@ sha1_block_data_order:
 	add	r3,r3,r10			@ E+=F_00_19(B,C,D)
 
 	ldr	r8,.LK_20_39		@ [+15+16*4]
+<<<<<<< HEAD
 	sub	sp,sp,#25*4
+=======
+>>>>>>> refs/remotes/origin/master
 	cmn	sp,#0			@ [+3], clear carry to denote 20_39
 .L_20_39_or_60_79:
 	ldr	r9,[r14,#15*4]
@@ -374,7 +392,13 @@ sha1_block_data_order:
 						@ F_xx_xx
 	add	r3,r3,r9			@ E+=X[i]
 	add	r3,r3,r10			@ E+=F_20_39(B,C,D)
+<<<<<<< HEAD
 	teq	r14,sp			@ preserve carry
+=======
+ ARM(	teq	r14,sp		)	@ preserve carry
+ THUMB(	mov	r11,sp		)
+ THUMB(	teq	r14,r11		)	@ preserve carry
+>>>>>>> refs/remotes/origin/master
 	bne	.L_20_39_or_60_79	@ [+((12+3)*5+2)*4]
 	bcs	.L_done			@ [+((12+3)*5+2)*4], spare 300 bytes
 
@@ -466,7 +490,11 @@ sha1_block_data_order:
 	add	r3,r3,r9			@ E+=X[i]
 	add	r3,r3,r10			@ E+=F_40_59(B,C,D)
 	add	r3,r3,r11,ror#2
+<<<<<<< HEAD
 	teq	r14,sp
+=======
+	cmp	r14,sp
+>>>>>>> refs/remotes/origin/master
 	bne	.L_40_59		@ [+((12+5)*5+2)*4]
 
 	ldr	r8,.LK_60_79
@@ -485,6 +513,7 @@ sha1_block_data_order:
 	teq	r1,r2
 	bne	.Lloop			@ [+18], total 1307
 
+<<<<<<< HEAD
 #if __ARM_ARCH__>=5
 	ldmia	sp!,{r4-r12,pc}
 #else
@@ -493,11 +522,18 @@ sha1_block_data_order:
 	moveq	pc,lr			@ be binary compatible with V4, yet
 	.word	0xe12fff1e			@ interoperable with Thumb ISA:-)
 #endif
+=======
+	ldmia	sp!,{r4-r12,pc}
+>>>>>>> refs/remotes/origin/master
 .align	2
 .LK_00_19:	.word	0x5a827999
 .LK_20_39:	.word	0x6ed9eba1
 .LK_40_59:	.word	0x8f1bbcdc
 .LK_60_79:	.word	0xca62c1d6
+<<<<<<< HEAD
 .size	sha1_block_data_order,.-sha1_block_data_order
+=======
+ENDPROC(sha1_block_data_order)
+>>>>>>> refs/remotes/origin/master
 .asciz	"SHA1 block transform for ARMv4, CRYPTOGAMS by <appro@openssl.org>"
 .align	2

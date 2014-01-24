@@ -57,10 +57,14 @@
 
 #define TFP410_CTL_3		0x0A
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TFP410_CTL_3_DK_MASK 	(0x7<<5)
 =======
 #define TFP410_CTL_3_DK_MASK	(0x7<<5)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TFP410_CTL_3_DK_MASK	(0x7<<5)
+>>>>>>> refs/remotes/origin/master
 #define TFP410_CTL_3_DK		(1<<5)
 #define TFP410_CTL_3_DKEN	(1<<4)
 #define TFP410_CTL_3_CTL_MASK	(0x7<<1)
@@ -230,6 +234,7 @@ static void tfp410_mode_set(struct intel_dvo_device *dvo,
 			    struct drm_display_mode *adjusted_mode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     /* As long as the basics are set up, since we don't have clock dependencies
      * in the mode setup, we can just leave the registers alone and everything
      * will work fine.
@@ -237,24 +242,37 @@ static void tfp410_mode_set(struct intel_dvo_device *dvo,
     /* don't do much */
     return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* As long as the basics are set up, since we don't have clock dependencies
 	* in the mode setup, we can just leave the registers alone and everything
 	* will work fine.
 	*/
 	/* don't do much */
 	return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 /* set the tfp410 power state */
 static void tfp410_dpms(struct intel_dvo_device *dvo, int mode)
+=======
+}
+
+/* set the tfp410 power state */
+static void tfp410_dpms(struct intel_dvo_device *dvo, bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	uint8_t ctl1;
 
 	if (!tfp410_readb(dvo, TFP410_CTL_1, &ctl1))
 		return;
 
+<<<<<<< HEAD
 	if (mode == DRM_MODE_DPMS_ON)
+=======
+	if (enable)
+>>>>>>> refs/remotes/origin/master
 		ctl1 |= TFP410_CTL_1_PD;
 	else
 		ctl1 &= ~TFP410_CTL_1_PD;
@@ -262,6 +280,22 @@ static void tfp410_dpms(struct intel_dvo_device *dvo, int mode)
 	tfp410_writeb(dvo, TFP410_CTL_1, ctl1);
 }
 
+<<<<<<< HEAD
+=======
+static bool tfp410_get_hw_state(struct intel_dvo_device *dvo)
+{
+	uint8_t ctl1;
+
+	if (!tfp410_readb(dvo, TFP410_CTL_1, &ctl1))
+		return false;
+
+	if (ctl1 & TFP410_CTL_1_PD)
+		return true;
+	else
+		return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void tfp410_dump_regs(struct intel_dvo_device *dvo)
 {
 	uint8_t val, val2;
@@ -312,6 +346,10 @@ struct intel_dvo_dev_ops tfp410_ops = {
 	.mode_valid = tfp410_mode_valid,
 	.mode_set = tfp410_mode_set,
 	.dpms = tfp410_dpms,
+<<<<<<< HEAD
+=======
+	.get_hw_state = tfp410_get_hw_state,
+>>>>>>> refs/remotes/origin/master
 	.dump_regs = tfp410_dump_regs,
 	.destroy = tfp410_destroy,
 };

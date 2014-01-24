@@ -3,10 +3,17 @@
  * Linux device driver for RTL8180 / RTL8185
  *
  * Copyright 2007 Michael Wu <flamingice@sourmilk.net>
+<<<<<<< HEAD
  * Copyright 2007 Andrea Merello <andreamrl@tiscali.it>
  *
  * Based on the r8180 driver, which is:
  * Copyright 2004-2005 Andrea Merello <andreamrl@tiscali.it>, et al.
+=======
+ * Copyright 2007 Andrea Merello <andrea.merello@gmail.com>
+ *
+ * Based on the r8180 driver, which is:
+ * Copyright 2004-2005 Andrea Merello <andrea.merello@gmail.com>, et al.
+>>>>>>> refs/remotes/origin/master
  *
  * Thanks to Realtek for their support!
  *
@@ -17,18 +24,26 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/etherdevice.h>
 #include <linux/eeprom_93cx6.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/mac80211.h>
 
 #include "rtl8180.h"
@@ -38,7 +53,11 @@
 #include "grf5101.h"
 
 MODULE_AUTHOR("Michael Wu <flamingice@sourmilk.net>");
+<<<<<<< HEAD
 MODULE_AUTHOR("Andrea Merello <andreamrl@tiscali.it>");
+=======
+MODULE_AUTHOR("Andrea Merello <andrea.merello@gmail.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("RTL8180 / RTL8185 PCI wireless driver");
 MODULE_LICENSE("GPL");
 
@@ -53,6 +72,11 @@ static DEFINE_PCI_DEVICE_TABLE(rtl8180_table) = {
 	{ PCI_DEVICE(0x1799, 0x6001) },
 	{ PCI_DEVICE(0x1799, 0x6020) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_DLINK, 0x3300) },
+<<<<<<< HEAD
+=======
+	{ PCI_DEVICE(0x1186, 0x3301) },
+	{ PCI_DEVICE(0x1432, 0x7106) },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -151,10 +175,17 @@ static void rtl8180_handle_rx(struct ieee80211_hw *dev)
 				signal = priv->rf->calc_rssi(agc, sq);
 			}
 			rx_status.signal = signal;
+<<<<<<< HEAD
 			rx_status.freq = dev->conf.channel->center_freq;
 			rx_status.band = dev->conf.channel->band;
 			rx_status.mactime = le64_to_cpu(entry->tsft);
 			rx_status.flag |= RX_FLAG_MACTIME_MPDU;
+=======
+			rx_status.freq = dev->conf.chandef.chan->center_freq;
+			rx_status.band = dev->conf.chandef.chan->band;
+			rx_status.mactime = le64_to_cpu(entry->tsft);
+			rx_status.flag |= RX_FLAG_MACTIME_START;
+>>>>>>> refs/remotes/origin/master
 			if (flags & RTL818X_RX_DESC_FLAG_CRC32_ERR)
 				rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
 
@@ -248,7 +279,13 @@ static irqreturn_t rtl8180_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static void rtl8180_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
+=======
+static void rtl8180_tx(struct ieee80211_hw *dev,
+		       struct ieee80211_tx_control *control,
+		       struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
@@ -677,11 +714,16 @@ static void rtl8180_stop(struct ieee80211_hw *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u64 rtl8180_get_tsf(struct ieee80211_hw *dev)
 =======
 static u64 rtl8180_get_tsf(struct ieee80211_hw *dev,
 			   struct ieee80211_vif *vif)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 rtl8180_get_tsf(struct ieee80211_hw *dev,
+			   struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtl8180_priv *priv = dev->priv;
 
@@ -714,15 +756,23 @@ static void rtl8180_beacon_work(struct work_struct *work)
 	 */
 	mgmt = (struct ieee80211_mgmt *)skb->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mgmt->u.beacon.timestamp = cpu_to_le64(rtl8180_get_tsf(dev));
 =======
 	mgmt->u.beacon.timestamp = cpu_to_le64(rtl8180_get_tsf(dev, vif));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mgmt->u.beacon.timestamp = cpu_to_le64(rtl8180_get_tsf(dev, vif));
+>>>>>>> refs/remotes/origin/master
 
 	/* TODO: use actual beacon queue */
 	skb_set_queue_mapping(skb, 0);
 
+<<<<<<< HEAD
 	rtl8180_tx(dev, skb);
+=======
+	rtl8180_tx(dev, NULL, skb);
+>>>>>>> refs/remotes/origin/master
 
 resched:
 	/*
@@ -911,7 +961,11 @@ static void rtl8180_eeprom_register_write(struct eeprom_93cx6 *eeprom)
 	udelay(10);
 }
 
+<<<<<<< HEAD
 static int __devinit rtl8180_probe(struct pci_dev *pdev,
+=======
+static int rtl8180_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				   const struct pci_device_id *id)
 {
 	struct ieee80211_hw *dev;
@@ -1090,7 +1144,11 @@ static int __devinit rtl8180_probe(struct pci_dev *pdev,
 	if (!is_valid_ether_addr(mac_addr)) {
 		printk(KERN_WARNING "%s (rtl8180): Invalid hwaddr! Using"
 		       " randomly generated MAC addr\n", pci_name(pdev));
+<<<<<<< HEAD
 		random_ether_addr(mac_addr);
+=======
+		eth_random_addr(mac_addr);
+>>>>>>> refs/remotes/origin/master
 	}
 	SET_IEEE80211_PERM_ADDR(dev, mac_addr);
 
@@ -1132,7 +1190,10 @@ static int __devinit rtl8180_probe(struct pci_dev *pdev,
 	iounmap(priv->map);
 
  err_free_dev:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	ieee80211_free_hw(dev);
 
  err_free_reg:
@@ -1141,7 +1202,11 @@ static int __devinit rtl8180_probe(struct pci_dev *pdev,
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit rtl8180_remove(struct pci_dev *pdev)
+=======
+static void rtl8180_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hw *dev = pci_get_drvdata(pdev);
 	struct rtl8180_priv *priv;
@@ -1180,13 +1245,18 @@ static struct pci_driver rtl8180_driver = {
 	.name		= KBUILD_MODNAME,
 	.id_table	= rtl8180_table,
 	.probe		= rtl8180_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rtl8180_remove),
+=======
+	.remove		= rtl8180_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= rtl8180_suspend,
 	.resume		= rtl8180_resume,
 #endif /* CONFIG_PM */
 };
 
+<<<<<<< HEAD
 static int __init rtl8180_init(void)
 {
 	return pci_register_driver(&rtl8180_driver);
@@ -1199,3 +1269,6 @@ static void __exit rtl8180_exit(void)
 
 module_init(rtl8180_init);
 module_exit(rtl8180_exit);
+=======
+module_pci_driver(rtl8180_driver);
+>>>>>>> refs/remotes/origin/master

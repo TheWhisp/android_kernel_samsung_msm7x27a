@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <netinet/in.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "umcast.h"
 #include "net_user.h"
@@ -26,6 +27,11 @@
 #include "net_user.h"
 #include "um_malloc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "umcast.h"
+#include <net_user.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct sockaddr_in *new_addr(char *addr, unsigned short port)
 {

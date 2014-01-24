@@ -14,16 +14,24 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include "pci-sh4.h"
 
 #define PCIMCR_MRSET_OFF	0xBFFFFFFF
 #define PCIMCR_RFSH_OFF		0xFFFFFFFB
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int pcibios_map_platform_irq(struct pci_dev *pdev, u8 slot, u8 pin)
 =======
 int pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * slot0: pin1-4 = irq5,6,7,8
@@ -31,7 +39,11 @@ int pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
 	 * slot2: pin1-4 = irq7,8,5,6
 	 * slot3: pin1-4 = irq8,5,6,7
 	 */
+<<<<<<< HEAD
 	int irq = ((slot + pin - 1) & 0x3) + 5;
+=======
+	int irq = ((slot + pin - 1) & 0x3) + evt2irq(0x2a0);
+>>>>>>> refs/remotes/origin/master
 
 	if ((slot | (pin - 1)) > 0x3) {
 		printk(KERN_WARNING "PCI: Bad IRQ mapping request for slot %d pin %c\n",

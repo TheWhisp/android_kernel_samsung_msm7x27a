@@ -21,10 +21,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/skbuff.h>
@@ -37,9 +42,13 @@
 #include "vlanproc.h"
 #include <linux/if_vlan.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/netpoll.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/netpoll.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Rebuild the Ethernet MAC header. This is called after an ARP
@@ -65,10 +74,14 @@ static int vlan_dev_rebuild_header(struct sk_buff *skb)
 #endif
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_debug("%s: unable to resolve type %X addresses.\n",
 =======
 		pr_debug("%s: unable to resolve type %X addresses\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("%s: unable to resolve type %X addresses\n",
+>>>>>>> refs/remotes/origin/master
 			 dev->name, ntohs(veth->h_vlan_encapsulated_proto));
 
 		memcpy(veth->h_source, dev->dev_addr, ETH_ALEN);
@@ -78,6 +91,7 @@ static int vlan_dev_rebuild_header(struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline u16
 vlan_dev_get_egress_qos_mask(struct net_device *dev, struct sk_buff *skb)
 {
@@ -101,6 +115,8 @@ vlan_dev_get_egress_qos_mask(struct net_device *dev, struct sk_buff *skb)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Create the VLAN header for an arbitrary protocol layer
  *
@@ -115,11 +131,16 @@ static int vlan_dev_hard_header(struct sk_buff *skb, struct net_device *dev,
 				const void *daddr, const void *saddr,
 				unsigned int len)
 {
+<<<<<<< HEAD
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	struct vlan_hdr *vhdr;
 	unsigned int vhdrlen = 0;
 	u16 vlan_tci = 0;
 	int rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(vlan_dev_info(dev)->flags & VLAN_FLAG_REORDER_HDR)) {
 		vhdr = (struct vlan_hdr *) skb_push(skb, VLAN_HLEN);
@@ -132,6 +153,13 @@ static int vlan_dev_hard_header(struct sk_buff *skb, struct net_device *dev,
 		vlan_tci = vlan_dev_priv(dev)->vlan_id;
 >>>>>>> refs/remotes/origin/cm-10.0
 		vlan_tci |= vlan_dev_get_egress_qos_mask(dev, skb);
+=======
+	if (!(vlan->flags & VLAN_FLAG_REORDER_HDR)) {
+		vhdr = (struct vlan_hdr *) skb_push(skb, VLAN_HLEN);
+
+		vlan_tci = vlan->vlan_id;
+		vlan_tci |= vlan_dev_get_egress_qos_mask(dev, skb->priority);
+>>>>>>> refs/remotes/origin/master
 		vhdr->h_vlan_TCI = htons(vlan_tci);
 
 		/*
@@ -143,8 +171,13 @@ static int vlan_dev_hard_header(struct sk_buff *skb, struct net_device *dev,
 		else
 			vhdr->h_vlan_encapsulated_proto = htons(len);
 
+<<<<<<< HEAD
 		skb->protocol = htons(ETH_P_8021Q);
 		type = ETH_P_8021Q;
+=======
+		skb->protocol = vlan->vlan_proto;
+		type = ntohs(vlan->vlan_proto);
+>>>>>>> refs/remotes/origin/master
 		vhdrlen = VLAN_HLEN;
 	}
 
@@ -154,19 +187,41 @@ static int vlan_dev_hard_header(struct sk_buff *skb, struct net_device *dev,
 
 	/* Now make the underlying real hard header */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev = vlan_dev_info(dev)->real_dev;
 =======
 	dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev = vlan->real_dev;
+>>>>>>> refs/remotes/origin/master
 	rc = dev_hard_header(skb, dev, type, daddr, saddr, len + vhdrlen);
 	if (rc > 0)
 		rc += vhdrlen;
 	return rc;
 }
 
+<<<<<<< HEAD
 static netdev_tx_t vlan_dev_hard_start_xmit(struct sk_buff *skb,
 					    struct net_device *dev)
 {
+=======
+static inline netdev_tx_t vlan_netpoll_send_skb(struct vlan_dev_priv *vlan, struct sk_buff *skb)
+{
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	if (vlan->netpoll)
+		netpoll_send_skb(vlan->netpoll, skb);
+#else
+	BUG();
+#endif
+	return NETDEV_TX_OK;
+}
+
+static netdev_tx_t vlan_dev_hard_start_xmit(struct sk_buff *skb,
+					    struct net_device *dev)
+{
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	struct vlan_ethhdr *veth = (struct vlan_ethhdr *)(skb->data);
 	unsigned int len;
 	int ret;
@@ -176,6 +231,7 @@ static netdev_tx_t vlan_dev_hard_start_xmit(struct sk_buff *skb,
 	 * NOTE: THIS ASSUMES DIX ETHERNET, SPECIFICALLY NOT SUPPORTING
 	 * OTHER THINGS LIKE FDDI/TokenRing/802.3 SNAPs...
 	 */
+<<<<<<< HEAD
 	if (veth->h_vlan_proto != htons(ETH_P_8021Q) ||
 <<<<<<< HEAD
 	    vlan_dev_info(dev)->flags & VLAN_FLAG_REORDER_HDR) {
@@ -199,26 +255,49 @@ static netdev_tx_t vlan_dev_hard_start_xmit(struct sk_buff *skb,
 	if (netpoll_tx_running(dev))
 		return skb->dev->netdev_ops->ndo_start_xmit(skb, skb->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (veth->h_vlan_proto != vlan->vlan_proto ||
+	    vlan->flags & VLAN_FLAG_REORDER_HDR) {
+		u16 vlan_tci;
+		vlan_tci = vlan->vlan_id;
+		vlan_tci |= vlan_dev_get_egress_qos_mask(dev, skb->priority);
+		skb = __vlan_hwaccel_put_tag(skb, vlan->vlan_proto, vlan_tci);
+	}
+
+	skb->dev = vlan->real_dev;
+	len = skb->len;
+	if (unlikely(netpoll_tx_running(dev)))
+		return vlan_netpoll_send_skb(vlan, skb);
+
+>>>>>>> refs/remotes/origin/master
 	ret = dev_queue_xmit(skb);
 
 	if (likely(ret == NET_XMIT_SUCCESS || ret == NET_XMIT_CN)) {
 		struct vlan_pcpu_stats *stats;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		stats = this_cpu_ptr(vlan_dev_info(dev)->vlan_pcpu_stats);
 =======
 		stats = this_cpu_ptr(vlan_dev_priv(dev)->vlan_pcpu_stats);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		stats = this_cpu_ptr(vlan->vlan_pcpu_stats);
+>>>>>>> refs/remotes/origin/master
 		u64_stats_update_begin(&stats->syncp);
 		stats->tx_packets++;
 		stats->tx_bytes += len;
 		u64_stats_update_end(&stats->syncp);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		this_cpu_inc(vlan_dev_info(dev)->vlan_pcpu_stats->tx_dropped);
 =======
 		this_cpu_inc(vlan_dev_priv(dev)->vlan_pcpu_stats->tx_dropped);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		this_cpu_inc(vlan->vlan_pcpu_stats->tx_dropped);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -230,10 +309,14 @@ static int vlan_dev_change_mtu(struct net_device *dev, int new_mtu)
 	 * maybe an IFF_VLAN_CAPABLE flag for devices?
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vlan_dev_info(dev)->real_dev->mtu < new_mtu)
 =======
 	if (vlan_dev_priv(dev)->real_dev->mtu < new_mtu)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (vlan_dev_priv(dev)->real_dev->mtu < new_mtu)
+>>>>>>> refs/remotes/origin/master
 		return -ERANGE;
 
 	dev->mtu = new_mtu;
@@ -245,10 +328,14 @@ void vlan_dev_set_ingress_priority(const struct net_device *dev,
 				   u32 skb_prio, u16 vlan_prio)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
 =======
 	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (vlan->ingress_priority_map[vlan_prio & 0x7] && !skb_prio)
 		vlan->nr_ingress_mappings--;
@@ -262,10 +349,14 @@ int vlan_dev_set_egress_priority(const struct net_device *dev,
 				 u32 skb_prio, u16 vlan_prio)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
 =======
 	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	struct vlan_priority_tci_mapping *mp = NULL;
 	struct vlan_priority_tci_mapping *np;
 	u32 vlan_qos = (vlan_prio << VLAN_PRIO_SHIFT) & VLAN_PRIO_MASK;
@@ -308,6 +399,7 @@ int vlan_dev_set_egress_priority(const struct net_device *dev,
 int vlan_dev_change_flags(const struct net_device *dev, u32 flags, u32 mask)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
 =======
 	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
@@ -316,6 +408,13 @@ int vlan_dev_change_flags(const struct net_device *dev, u32 flags, u32 mask)
 
 	if (mask & ~(VLAN_FLAG_REORDER_HDR | VLAN_FLAG_GVRP |
 		     VLAN_FLAG_LOOSE_BINDING))
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+	u32 old_flags = vlan->flags;
+
+	if (mask & ~(VLAN_FLAG_REORDER_HDR | VLAN_FLAG_GVRP |
+		     VLAN_FLAG_LOOSE_BINDING | VLAN_FLAG_MVRP))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	vlan->flags = (old_flags & ~mask) | (flags & mask);
@@ -326,25 +425,43 @@ int vlan_dev_change_flags(const struct net_device *dev, u32 flags, u32 mask)
 		else
 			vlan_gvrp_request_leave(dev);
 	}
+<<<<<<< HEAD
+=======
+
+	if (netif_running(dev) && (vlan->flags ^ old_flags) & VLAN_FLAG_MVRP) {
+		if (vlan->flags & VLAN_FLAG_MVRP)
+			vlan_mvrp_request_join(dev);
+		else
+			vlan_mvrp_request_leave(dev);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 void vlan_dev_get_realdev_name(const struct net_device *dev, char *result)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	strncpy(result, vlan_dev_info(dev)->real_dev->name, 23);
 =======
 	strncpy(result, vlan_dev_priv(dev)->real_dev->name, 23);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strncpy(result, vlan_dev_priv(dev)->real_dev->name, 23);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vlan_dev_open(struct net_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
 =======
 	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	struct net_device *real_dev = vlan->real_dev;
 	int err;
 
@@ -352,7 +469,11 @@ static int vlan_dev_open(struct net_device *dev)
 	    !(vlan->flags & VLAN_FLAG_LOOSE_BINDING))
 		return -ENETDOWN;
 
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, real_dev->dev_addr)) {
+=======
+	if (!ether_addr_equal(dev->dev_addr, real_dev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		err = dev_uc_add(real_dev, dev->dev_addr);
 		if (err < 0)
 			goto out;
@@ -374,6 +495,12 @@ static int vlan_dev_open(struct net_device *dev)
 	if (vlan->flags & VLAN_FLAG_GVRP)
 		vlan_gvrp_request_join(dev);
 
+<<<<<<< HEAD
+=======
+	if (vlan->flags & VLAN_FLAG_MVRP)
+		vlan_mvrp_request_join(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (netif_carrier_ok(real_dev))
 		netif_carrier_on(dev);
 	return 0;
@@ -382,7 +509,11 @@ clear_allmulti:
 	if (dev->flags & IFF_ALLMULTI)
 		dev_set_allmulti(real_dev, -1);
 del_unicast:
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, real_dev->dev_addr))
+=======
+	if (!ether_addr_equal(dev->dev_addr, real_dev->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		dev_uc_del(real_dev, dev->dev_addr);
 out:
 	netif_carrier_off(dev);
@@ -392,10 +523,14 @@ out:
 static int vlan_dev_stop(struct net_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
 =======
 	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	struct net_device *real_dev = vlan->real_dev;
 
 	dev_mc_unsync(real_dev, dev);
@@ -405,7 +540,11 @@ static int vlan_dev_stop(struct net_device *dev)
 	if (dev->flags & IFF_PROMISC)
 		dev_set_promiscuity(real_dev, -1);
 
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, real_dev->dev_addr))
+=======
+	if (!ether_addr_equal(dev->dev_addr, real_dev->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		dev_uc_del(real_dev, dev->dev_addr);
 
 	netif_carrier_off(dev);
@@ -415,10 +554,14 @@ static int vlan_dev_stop(struct net_device *dev)
 static int vlan_dev_set_mac_address(struct net_device *dev, void *p)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	struct sockaddr *addr = p;
 	int err;
 
@@ -428,13 +571,21 @@ static int vlan_dev_set_mac_address(struct net_device *dev, void *p)
 	if (!(dev->flags & IFF_UP))
 		goto out;
 
+<<<<<<< HEAD
 	if (compare_ether_addr(addr->sa_data, real_dev->dev_addr)) {
+=======
+	if (!ether_addr_equal(addr->sa_data, real_dev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		err = dev_uc_add(real_dev, addr->sa_data);
 		if (err < 0)
 			return err;
 	}
 
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, real_dev->dev_addr))
+=======
+	if (!ether_addr_equal(dev->dev_addr, real_dev->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		dev_uc_del(real_dev, dev->dev_addr);
 
 out:
@@ -445,10 +596,14 @@ out:
 static int vlan_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	struct ifreq ifrr;
 	int err = -EOPNOTSUPP;
@@ -474,10 +629,14 @@ static int vlan_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 static int vlan_dev_neigh_setup(struct net_device *dev, struct neigh_parms *pa)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	int err = 0;
 
@@ -487,6 +646,7 @@ static int vlan_dev_neigh_setup(struct net_device *dev, struct neigh_parms *pa)
 	return err;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_FCOE) || defined(CONFIG_FCOE_MODULE)
 static int vlan_dev_fcoe_ddp_setup(struct net_device *dev, u16 xid,
 				   struct scatterlist *sgl, unsigned int sgc)
@@ -496,6 +656,13 @@ static int vlan_dev_fcoe_ddp_setup(struct net_device *dev, u16 xid,
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_FCOE)
+static int vlan_dev_fcoe_ddp_setup(struct net_device *dev, u16 xid,
+				   struct scatterlist *sgl, unsigned int sgc)
+{
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	int rc = 0;
 
@@ -508,10 +675,14 @@ static int vlan_dev_fcoe_ddp_setup(struct net_device *dev, u16 xid,
 static int vlan_dev_fcoe_ddp_done(struct net_device *dev, u16 xid)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	int len = 0;
 
@@ -524,10 +695,14 @@ static int vlan_dev_fcoe_ddp_done(struct net_device *dev, u16 xid)
 static int vlan_dev_fcoe_enable(struct net_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	int rc = -EINVAL;
 
@@ -539,10 +714,14 @@ static int vlan_dev_fcoe_enable(struct net_device *dev)
 static int vlan_dev_fcoe_disable(struct net_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	int rc = -EINVAL;
 
@@ -554,10 +733,14 @@ static int vlan_dev_fcoe_disable(struct net_device *dev)
 static int vlan_dev_fcoe_get_wwn(struct net_device *dev, u64 *wwn, int type)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	int rc = -EINVAL;
 
@@ -570,10 +753,14 @@ static int vlan_dev_fcoe_ddp_target(struct net_device *dev, u16 xid,
 				    struct scatterlist *sgl, unsigned int sgc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+>>>>>>> refs/remotes/origin/master
 	const struct net_device_ops *ops = real_dev->netdev_ops;
 	int rc = 0;
 
@@ -587,6 +774,7 @@ static int vlan_dev_fcoe_ddp_target(struct net_device *dev, u16 xid,
 static void vlan_dev_change_rx_flags(struct net_device *dev, int change)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 
 	if (change & IFF_ALLMULTI)
@@ -594,6 +782,8 @@ static void vlan_dev_change_rx_flags(struct net_device *dev, int change)
 	if (change & IFF_PROMISC)
 		dev_set_promiscuity(real_dev, dev->flags & IFF_PROMISC ? 1 : -1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 
 	if (dev->flags & IFF_UP) {
@@ -602,11 +792,15 @@ static void vlan_dev_change_rx_flags(struct net_device *dev, int change)
 		if (change & IFF_PROMISC)
 			dev_set_promiscuity(real_dev, dev->flags & IFF_PROMISC ? 1 : -1);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vlan_dev_set_rx_mode(struct net_device *vlan_dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_mc_sync(vlan_dev_info(vlan_dev)->real_dev, vlan_dev);
 	dev_uc_sync(vlan_dev_info(vlan_dev)->real_dev, vlan_dev);
@@ -614,6 +808,10 @@ static void vlan_dev_set_rx_mode(struct net_device *vlan_dev)
 	dev_mc_sync(vlan_dev_priv(vlan_dev)->real_dev, vlan_dev);
 	dev_uc_sync(vlan_dev_priv(vlan_dev)->real_dev, vlan_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_mc_sync(vlan_dev_priv(vlan_dev)->real_dev, vlan_dev);
+	dev_uc_sync(vlan_dev_priv(vlan_dev)->real_dev, vlan_dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -647,16 +845,45 @@ static const struct header_ops vlan_header_ops = {
 	.parse	 = eth_header_parse,
 };
 
+<<<<<<< HEAD
+=======
+static int vlan_passthru_hard_header(struct sk_buff *skb, struct net_device *dev,
+				     unsigned short type,
+				     const void *daddr, const void *saddr,
+				     unsigned int len)
+{
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+	struct net_device *real_dev = vlan->real_dev;
+
+	return dev_hard_header(skb, real_dev, type, daddr, saddr, len);
+}
+
+static const struct header_ops vlan_passthru_header_ops = {
+	.create	 = vlan_passthru_hard_header,
+	.rebuild = dev_rebuild_header,
+	.parse	 = eth_header_parse,
+};
+
+static struct device_type vlan_type = {
+	.name	= "vlan",
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct net_device_ops vlan_netdev_ops;
 
 static int vlan_dev_init(struct net_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct net_device *real_dev = vlan_dev_info(dev)->real_dev;
 =======
 	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
 	int subclass = 0;
+=======
+	struct net_device *real_dev = vlan_dev_priv(dev)->real_dev;
+	int subclass = 0, i;
+>>>>>>> refs/remotes/origin/master
 
 	netif_carrier_off(dev);
 
@@ -680,17 +907,30 @@ static int vlan_dev_init(struct net_device *dev)
 	dev->dev_id = real_dev->dev_id;
 
 	if (is_zero_ether_addr(dev->dev_addr))
+<<<<<<< HEAD
 		memcpy(dev->dev_addr, real_dev->dev_addr, dev->addr_len);
 	if (is_zero_ether_addr(dev->broadcast))
 		memcpy(dev->broadcast, real_dev->broadcast, dev->addr_len);
 
 #if defined(CONFIG_FCOE) || defined(CONFIG_FCOE_MODULE)
+=======
+		eth_hw_addr_inherit(dev, real_dev);
+	if (is_zero_ether_addr(dev->broadcast))
+		memcpy(dev->broadcast, real_dev->broadcast, dev->addr_len);
+
+#if IS_ENABLED(CONFIG_FCOE)
+>>>>>>> refs/remotes/origin/master
 	dev->fcoe_ddp_xid = real_dev->fcoe_ddp_xid;
 #endif
 
 	dev->needed_headroom = real_dev->needed_headroom;
+<<<<<<< HEAD
 	if (real_dev->features & NETIF_F_HW_VLAN_TX) {
 		dev->header_ops      = real_dev->header_ops;
+=======
+	if (real_dev->features & NETIF_F_HW_VLAN_CTAG_TX) {
+		dev->header_ops      = &vlan_passthru_header_ops;
+>>>>>>> refs/remotes/origin/master
 		dev->hard_header_len = real_dev->hard_header_len;
 	} else {
 		dev->header_ops      = &vlan_header_ops;
@@ -699,11 +939,17 @@ static int vlan_dev_init(struct net_device *dev)
 
 	dev->netdev_ops = &vlan_netdev_ops;
 
+<<<<<<< HEAD
+=======
+	SET_NETDEV_DEVTYPE(dev, &vlan_type);
+
+>>>>>>> refs/remotes/origin/master
 	if (is_vlan_dev(real_dev))
 		subclass = 1;
 
 	vlan_dev_set_lockdep_class(dev, subclass);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vlan_dev_info(dev)->vlan_pcpu_stats = alloc_percpu(struct vlan_pcpu_stats);
 	if (!vlan_dev_info(dev)->vlan_pcpu_stats)
@@ -713,6 +959,19 @@ static int vlan_dev_init(struct net_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 
+=======
+	vlan_dev_priv(dev)->vlan_pcpu_stats = alloc_percpu(struct vlan_pcpu_stats);
+	if (!vlan_dev_priv(dev)->vlan_pcpu_stats)
+		return -ENOMEM;
+
+	for_each_possible_cpu(i) {
+		struct vlan_pcpu_stats *vlan_stat;
+		vlan_stat = per_cpu_ptr(vlan_dev_priv(dev)->vlan_pcpu_stats, i);
+		u64_stats_init(&vlan_stat->syncp);
+	}
+
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -720,10 +979,14 @@ static void vlan_dev_uninit(struct net_device *dev)
 {
 	struct vlan_priority_tci_mapping *pm;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vlan_dev_info *vlan = vlan_dev_info(dev);
 =======
 	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	free_percpu(vlan->vlan_pcpu_stats);
@@ -736,6 +999,7 @@ static void vlan_dev_uninit(struct net_device *dev)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u32 vlan_dev_fix_features(struct net_device *dev, u32 features)
 {
@@ -751,6 +1015,8 @@ static u32 vlan_dev_fix_features(struct net_device *dev, u32 features)
 	if (dev_ethtool_get_rx_csum(real_dev))
 		features |= NETIF_F_RXCSUM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static netdev_features_t vlan_dev_fix_features(struct net_device *dev,
 	netdev_features_t features)
 {
@@ -762,7 +1028,10 @@ static netdev_features_t vlan_dev_fix_features(struct net_device *dev,
 	features &= real_dev->features;
 
 	features |= old_features & NETIF_F_SOFT_FEATURES;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	features |= NETIF_F_LLTX;
 
 	return features;
@@ -772,6 +1041,7 @@ static int vlan_ethtool_get_settings(struct net_device *dev,
 				     struct ethtool_cmd *cmd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const struct vlan_dev_info *vlan = vlan_dev_info(dev);
 	return dev_ethtool_get_settings(vlan->real_dev, cmd);
 =======
@@ -779,24 +1049,39 @@ static int vlan_ethtool_get_settings(struct net_device *dev,
 
 	return __ethtool_get_settings(vlan->real_dev, cmd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+
+	return __ethtool_get_settings(vlan->real_dev, cmd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vlan_ethtool_get_drvinfo(struct net_device *dev,
 				     struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, vlan_fullname);
 	strcpy(info->version, vlan_version);
 	strcpy(info->fw_version, "N/A");
+=======
+	strlcpy(info->driver, vlan_fullname, sizeof(info->driver));
+	strlcpy(info->version, vlan_version, sizeof(info->version));
+	strlcpy(info->fw_version, "N/A", sizeof(info->fw_version));
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct rtnl_link_stats64 *vlan_dev_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats)
 {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vlan_dev_info(dev)->vlan_pcpu_stats) {
 =======
 	if (vlan_dev_priv(dev)->vlan_pcpu_stats) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (vlan_dev_priv(dev)->vlan_pcpu_stats) {
+>>>>>>> refs/remotes/origin/master
 		struct vlan_pcpu_stats *p;
 		u32 rx_errors = 0, tx_dropped = 0;
 		int i;
@@ -806,10 +1091,14 @@ static struct rtnl_link_stats64 *vlan_dev_get_stats64(struct net_device *dev, st
 			unsigned int start;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			p = per_cpu_ptr(vlan_dev_info(dev)->vlan_pcpu_stats, i);
 =======
 			p = per_cpu_ptr(vlan_dev_priv(dev)->vlan_pcpu_stats, i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			p = per_cpu_ptr(vlan_dev_priv(dev)->vlan_pcpu_stats, i);
+>>>>>>> refs/remotes/origin/master
 			do {
 				start = u64_stats_fetch_begin_bh(&p->syncp);
 				rxpackets	= p->rx_packets;
@@ -835,13 +1124,17 @@ static struct rtnl_link_stats64 *vlan_dev_get_stats64(struct net_device *dev, st
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NET_POLL_CONTROLLER
 static void vlan_dev_poll_controller(struct net_device *dev)
 {
 	return;
 }
 
+<<<<<<< HEAD
 static int vlan_dev_netpoll_setup(struct net_device *dev, struct netpoll_info *npinfo)
 {
 	struct vlan_dev_priv *info = vlan_dev_priv(dev);
@@ -850,20 +1143,39 @@ static int vlan_dev_netpoll_setup(struct net_device *dev, struct netpoll_info *n
 	int err = 0;
 
 	netpoll = kzalloc(sizeof(*netpoll), GFP_KERNEL);
+=======
+static int vlan_dev_netpoll_setup(struct net_device *dev, struct netpoll_info *npinfo,
+				  gfp_t gfp)
+{
+	struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
+	struct net_device *real_dev = vlan->real_dev;
+	struct netpoll *netpoll;
+	int err = 0;
+
+	netpoll = kzalloc(sizeof(*netpoll), gfp);
+>>>>>>> refs/remotes/origin/master
 	err = -ENOMEM;
 	if (!netpoll)
 		goto out;
 
+<<<<<<< HEAD
 	netpoll->dev = real_dev;
 	strlcpy(netpoll->dev_name, real_dev->name, IFNAMSIZ);
 
 	err = __netpoll_setup(netpoll);
+=======
+	err = __netpoll_setup(netpoll, real_dev, gfp);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		kfree(netpoll);
 		goto out;
 	}
 
+<<<<<<< HEAD
 	info->netpoll = netpoll;
+=======
+	vlan->netpoll = netpoll;
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return err;
@@ -871,12 +1183,18 @@ out:
 
 static void vlan_dev_netpoll_cleanup(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct vlan_dev_priv *info = vlan_dev_priv(dev);
 	struct netpoll *netpoll = info->netpoll;
+=======
+	struct vlan_dev_priv *vlan= vlan_dev_priv(dev);
+	struct netpoll *netpoll = vlan->netpoll;
+>>>>>>> refs/remotes/origin/master
 
 	if (!netpoll)
 		return;
 
+<<<<<<< HEAD
 	info->netpoll = NULL;
 
         /* Wait for transmitting packets to finish before freeing. */
@@ -888,6 +1206,14 @@ static void vlan_dev_netpoll_cleanup(struct net_device *dev)
 #endif /* CONFIG_NET_POLL_CONTROLLER */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vlan->netpoll = NULL;
+
+	__netpoll_free_async(netpoll);
+}
+#endif /* CONFIG_NET_POLL_CONTROLLER */
+
+>>>>>>> refs/remotes/origin/master
 static const struct ethtool_ops vlan_ethtool_ops = {
 	.get_settings	        = vlan_ethtool_get_settings,
 	.get_drvinfo	        = vlan_ethtool_get_drvinfo,
@@ -905,14 +1231,21 @@ static const struct net_device_ops vlan_netdev_ops = {
 	.ndo_set_mac_address	= vlan_dev_set_mac_address,
 	.ndo_set_rx_mode	= vlan_dev_set_rx_mode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= vlan_dev_set_rx_mode,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_rx_flags	= vlan_dev_change_rx_flags,
 	.ndo_do_ioctl		= vlan_dev_ioctl,
 	.ndo_neigh_setup	= vlan_dev_neigh_setup,
 	.ndo_get_stats64	= vlan_dev_get_stats64,
+<<<<<<< HEAD
 #if defined(CONFIG_FCOE) || defined(CONFIG_FCOE_MODULE)
+=======
+#if IS_ENABLED(CONFIG_FCOE)
+>>>>>>> refs/remotes/origin/master
 	.ndo_fcoe_ddp_setup	= vlan_dev_fcoe_ddp_setup,
 	.ndo_fcoe_ddp_done	= vlan_dev_fcoe_ddp_done,
 	.ndo_fcoe_enable	= vlan_dev_fcoe_enable,
@@ -921,13 +1254,19 @@ static const struct net_device_ops vlan_netdev_ops = {
 	.ndo_fcoe_ddp_target	= vlan_dev_fcoe_ddp_target,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NET_POLL_CONTROLLER
 	.ndo_poll_controller	= vlan_dev_poll_controller,
 	.ndo_netpoll_setup	= vlan_dev_netpoll_setup,
 	.ndo_netpoll_cleanup	= vlan_dev_netpoll_cleanup,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_fix_features	= vlan_dev_fix_features,
 };
 

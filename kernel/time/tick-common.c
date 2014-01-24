@@ -18,6 +18,10 @@
 #include <linux/percpu.h>
 #include <linux/profile.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq_regs.h>
 
@@ -32,8 +36,27 @@ DEFINE_PER_CPU(struct tick_device, tick_cpu_device);
  */
 ktime_t tick_next_period;
 ktime_t tick_period;
+<<<<<<< HEAD
 int tick_do_timer_cpu __read_mostly = TICK_DO_TIMER_BOOT;
 static DEFINE_RAW_SPINLOCK(tick_device_lock);
+=======
+
+/*
+ * tick_do_timer_cpu is a timer core internal variable which holds the CPU NR
+ * which is responsible for calling do_timer(), i.e. the timekeeping stuff. This
+ * variable has two functions:
+ *
+ * 1) Prevent a thundering herd issue of a gazillion of CPUs trying to grab the
+ *    timekeeping lock all at once. Only the CPU which is assigned to do the
+ *    update is handling it.
+ *
+ * 2) Hand off the duty in the NOHZ idle case by setting the value to
+ *    TICK_DO_TIMER_NONE, i.e. a non existing CPU. So the next cpu which looks
+ *    at it will take over and keep the time keeping alive.  The handover
+ *    procedure also covers cpu hotplug.
+ */
+int tick_do_timer_cpu __read_mostly = TICK_DO_TIMER_BOOT;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Debugging: see timer_list.c
@@ -63,13 +86,22 @@ int tick_is_oneshot_available(void)
 static void tick_periodic(int cpu)
 {
 	if (tick_do_timer_cpu == cpu) {
+<<<<<<< HEAD
 		write_seqlock(&xtime_lock);
+=======
+		write_seqlock(&jiffies_lock);
+>>>>>>> refs/remotes/origin/master
 
 		/* Keep track of the next tick event */
 		tick_next_period = ktime_add(tick_next_period, tick_period);
 
 		do_timer(1);
+<<<<<<< HEAD
 		write_sequnlock(&xtime_lock);
+=======
+		write_sequnlock(&jiffies_lock);
+		update_wall_time();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	update_process_times(user_mode(get_irq_regs()));
@@ -95,10 +127,14 @@ void tick_handle_periodic(struct clock_event_device *dev)
 	next = ktime_add(dev->next_event, tick_period);
 	for (;;) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!clockevents_program_event(dev, next, ktime_get()))
 =======
 		if (!clockevents_program_event(dev, next, false))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!clockevents_program_event(dev, next, false))
+>>>>>>> refs/remotes/origin/master
 			return;
 		/*
 		 * Have to be careful here. If we're in oneshot mode,
@@ -134,18 +170,28 @@ void tick_setup_periodic(struct clock_event_device *dev, int broadcast)
 		ktime_t next;
 
 		do {
+<<<<<<< HEAD
 			seq = read_seqbegin(&xtime_lock);
 			next = tick_next_period;
 		} while (read_seqretry(&xtime_lock, seq));
+=======
+			seq = read_seqbegin(&jiffies_lock);
+			next = tick_next_period;
+		} while (read_seqretry(&jiffies_lock, seq));
+>>>>>>> refs/remotes/origin/master
 
 		clockevents_set_mode(dev, CLOCK_EVT_MODE_ONESHOT);
 
 		for (;;) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!clockevents_program_event(dev, next, ktime_get()))
 =======
 			if (!clockevents_program_event(dev, next, false))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!clockevents_program_event(dev, next, false))
+>>>>>>> refs/remotes/origin/master
 				return;
 			next = ktime_add(next, tick_period);
 		}
@@ -171,7 +217,14 @@ static void tick_setup_device(struct tick_device *td,
 		 * this cpu:
 		 */
 		if (tick_do_timer_cpu == TICK_DO_TIMER_BOOT) {
+<<<<<<< HEAD
 			tick_do_timer_cpu = cpu;
+=======
+			if (!tick_nohz_full_cpu(cpu))
+				tick_do_timer_cpu = cpu;
+			else
+				tick_do_timer_cpu = TICK_DO_TIMER_NONE;
+>>>>>>> refs/remotes/origin/master
 			tick_next_period = ktime_get();
 			tick_period = ktime_set(0, NSEC_PER_SEC / HZ);
 		}
@@ -199,7 +252,12 @@ static void tick_setup_device(struct tick_device *td,
 	 * When global broadcasting is active, check if the current
 	 * device is registered as a placeholder for broadcast mode.
 	 * This allows us to handle this x86 misfeature in a generic
+<<<<<<< HEAD
 	 * way.
+=======
+	 * way. This function also returns !=0 when we keep the
+	 * current active broadcast state for this CPU.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (tick_device_uses_broadcast(newdev, cpu))
 		return;
@@ -210,6 +268,7 @@ static void tick_setup_device(struct tick_device *td,
 		tick_setup_oneshot(newdev, handler, next_event);
 }
 
+<<<<<<< HEAD
 /*
  * Check, if the new registered device should be used.
  */
@@ -221,6 +280,77 @@ static int tick_check_new_device(struct clock_event_device *newdev)
 	unsigned long flags;
 
 	raw_spin_lock_irqsave(&tick_device_lock, flags);
+=======
+void tick_install_replacement(struct clock_event_device *newdev)
+{
+	struct tick_device *td = &__get_cpu_var(tick_cpu_device);
+	int cpu = smp_processor_id();
+
+	clockevents_exchange_device(td->evtdev, newdev);
+	tick_setup_device(td, newdev, cpu, cpumask_of(cpu));
+	if (newdev->features & CLOCK_EVT_FEAT_ONESHOT)
+		tick_oneshot_notify();
+}
+
+static bool tick_check_percpu(struct clock_event_device *curdev,
+			      struct clock_event_device *newdev, int cpu)
+{
+	if (!cpumask_test_cpu(cpu, newdev->cpumask))
+		return false;
+	if (cpumask_equal(newdev->cpumask, cpumask_of(cpu)))
+		return true;
+	/* Check if irq affinity can be set */
+	if (newdev->irq >= 0 && !irq_can_set_affinity(newdev->irq))
+		return false;
+	/* Prefer an existing cpu local device */
+	if (curdev && cpumask_equal(curdev->cpumask, cpumask_of(cpu)))
+		return false;
+	return true;
+}
+
+static bool tick_check_preferred(struct clock_event_device *curdev,
+				 struct clock_event_device *newdev)
+{
+	/* Prefer oneshot capable device */
+	if (!(newdev->features & CLOCK_EVT_FEAT_ONESHOT)) {
+		if (curdev && (curdev->features & CLOCK_EVT_FEAT_ONESHOT))
+			return false;
+		if (tick_oneshot_mode_active())
+			return false;
+	}
+
+	/*
+	 * Use the higher rated one, but prefer a CPU local device with a lower
+	 * rating than a non-CPU local device
+	 */
+	return !curdev ||
+		newdev->rating > curdev->rating ||
+	       !cpumask_equal(curdev->cpumask, newdev->cpumask);
+}
+
+/*
+ * Check whether the new device is a better fit than curdev. curdev
+ * can be NULL !
+ */
+bool tick_check_replacement(struct clock_event_device *curdev,
+			    struct clock_event_device *newdev)
+{
+	if (tick_check_percpu(curdev, newdev, smp_processor_id()))
+		return false;
+
+	return tick_check_preferred(curdev, newdev);
+}
+
+/*
+ * Check, if the new registered device should be used. Called with
+ * clockevents_lock held and interrupts disabled.
+ */
+void tick_check_new_device(struct clock_event_device *newdev)
+{
+	struct clock_event_device *curdev;
+	struct tick_device *td;
+	int cpu;
+>>>>>>> refs/remotes/origin/master
 
 	cpu = smp_processor_id();
 	if (!cpumask_test_cpu(cpu, newdev->cpumask))
@@ -230,6 +360,7 @@ static int tick_check_new_device(struct clock_event_device *newdev)
 	curdev = td->evtdev;
 
 	/* cpu local device ? */
+<<<<<<< HEAD
 	if (!cpumask_equal(newdev->cpumask, cpumask_of(cpu))) {
 
 		/*
@@ -264,6 +395,17 @@ static int tick_check_new_device(struct clock_event_device *newdev)
 		if (curdev->rating >= newdev->rating)
 			goto out_bc;
 	}
+=======
+	if (!tick_check_percpu(curdev, newdev, cpu))
+		goto out_bc;
+
+	/* Preference decision */
+	if (!tick_check_preferred(curdev, newdev))
+		goto out_bc;
+
+	if (!try_module_get(newdev->owner))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Replace the eventually existing device by the new
@@ -278,20 +420,28 @@ static int tick_check_new_device(struct clock_event_device *newdev)
 	tick_setup_device(td, newdev, cpu, cpumask_of(cpu));
 	if (newdev->features & CLOCK_EVT_FEAT_ONESHOT)
 		tick_oneshot_notify();
+<<<<<<< HEAD
 
 	raw_spin_unlock_irqrestore(&tick_device_lock, flags);
 	return NOTIFY_STOP;
+=======
+	return;
+>>>>>>> refs/remotes/origin/master
 
 out_bc:
 	/*
 	 * Can the new device be used as a broadcast device ?
 	 */
+<<<<<<< HEAD
 	if (tick_check_broadcast_device(newdev))
 		ret = NOTIFY_STOP;
 
 	raw_spin_unlock_irqrestore(&tick_device_lock, flags);
 
 	return ret;
+=======
+	tick_install_broadcast_device(newdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -299,7 +449,11 @@ out_bc:
  *
  * Called with interrupts disabled.
  */
+<<<<<<< HEAD
 static void tick_handover_do_timer(int *cpup)
+=======
+void tick_handover_do_timer(int *cpup)
+>>>>>>> refs/remotes/origin/master
 {
 	if (*cpup == tick_do_timer_cpu) {
 		int cpu = cpumask_first(cpu_online_mask);
@@ -316,6 +470,7 @@ static void tick_handover_do_timer(int *cpup)
  * access the hardware device itself.
  * We just set the mode and remove it from the lists.
  */
+<<<<<<< HEAD
 static void tick_shutdown(unsigned int *cpup)
 {
 	struct tick_device *td = &per_cpu(tick_cpu_device, *cpup);
@@ -323,6 +478,13 @@ static void tick_shutdown(unsigned int *cpup)
 	unsigned long flags;
 
 	raw_spin_lock_irqsave(&tick_device_lock, flags);
+=======
+void tick_shutdown(unsigned int *cpup)
+{
+	struct tick_device *td = &per_cpu(tick_cpu_device, *cpup);
+	struct clock_event_device *dev = td->evtdev;
+
+>>>>>>> refs/remotes/origin/master
 	td->mode = TICKDEV_MODE_PERIODIC;
 	if (dev) {
 		/*
@@ -334,6 +496,7 @@ static void tick_shutdown(unsigned int *cpup)
 		dev->event_handler = clockevents_handle_noop;
 		td->evtdev = NULL;
 	}
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&tick_device_lock, flags);
 }
 
@@ -354,6 +517,22 @@ static void tick_resume(void)
 	int broadcast = tick_resume_broadcast();
 
 	raw_spin_lock_irqsave(&tick_device_lock, flags);
+=======
+}
+
+void tick_suspend(void)
+{
+	struct tick_device *td = &__get_cpu_var(tick_cpu_device);
+
+	clockevents_shutdown(td->evtdev);
+}
+
+void tick_resume(void)
+{
+	struct tick_device *td = &__get_cpu_var(tick_cpu_device);
+	int broadcast = tick_resume_broadcast();
+
+>>>>>>> refs/remotes/origin/master
 	clockevents_set_mode(td->evtdev, CLOCK_EVT_MODE_RESUME);
 
 	if (!broadcast) {
@@ -362,6 +541,7 @@ static void tick_resume(void)
 		else
 			tick_resume_oneshot();
 	}
+<<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&tick_device_lock, flags);
 }
 
@@ -425,4 +605,14 @@ static struct notifier_block tick_notifier = {
 void __init tick_init(void)
 {
 	clockevents_register_notifier(&tick_notifier);
+=======
+}
+
+/**
+ * tick_init - initialize the tick control
+ */
+void __init tick_init(void)
+{
+	tick_broadcast_init();
+>>>>>>> refs/remotes/origin/master
 }

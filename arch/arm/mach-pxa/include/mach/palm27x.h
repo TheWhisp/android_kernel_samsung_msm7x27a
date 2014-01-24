@@ -35,10 +35,14 @@ extern void __init palm27x_lcd_init(int power,
 					struct pxafb_mode_info *mode);
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void palm27x_lcd_init(int power, struct pxafb_mode_info *mode) {}
 =======
 #define palm27x_lcd_init(power, mode)	do {} while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define palm27x_lcd_init(power, mode)	do {} while (0)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #if	defined(CONFIG_USB_PXA27X) || \

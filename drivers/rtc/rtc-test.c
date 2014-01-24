@@ -99,8 +99,15 @@ static DEVICE_ATTR(irq, S_IRUGO | S_IWUSR, test_irq_show, test_irq_store);
 static int test_probe(struct platform_device *plat_dev)
 {
 	int err;
+<<<<<<< HEAD
 	struct rtc_device *rtc = rtc_device_register("test", &plat_dev->dev,
 						&test_rtc_ops, THIS_MODULE);
+=======
+	struct rtc_device *rtc;
+
+	rtc = devm_rtc_device_register(&plat_dev->dev, "test",
+				&test_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rtc)) {
 		err = PTR_ERR(rtc);
 		return err;
@@ -115,6 +122,7 @@ static int test_probe(struct platform_device *plat_dev)
 	return 0;
 
 err:
+<<<<<<< HEAD
 	rtc_device_unregister(rtc);
 	return err;
 }
@@ -124,6 +132,13 @@ static int __devexit test_remove(struct platform_device *plat_dev)
 	struct rtc_device *rtc = platform_get_drvdata(plat_dev);
 
 	rtc_device_unregister(rtc);
+=======
+	return err;
+}
+
+static int test_remove(struct platform_device *plat_dev)
+{
+>>>>>>> refs/remotes/origin/master
 	device_remove_file(&plat_dev->dev, &dev_attr_irq);
 
 	return 0;
@@ -131,7 +146,11 @@ static int __devexit test_remove(struct platform_device *plat_dev)
 
 static struct platform_driver test_driver = {
 	.probe	= test_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(test_remove),
+=======
+	.remove = test_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "rtc-test",
 		.owner = THIS_MODULE,
@@ -152,6 +171,7 @@ static int __init test_init(void)
 
 	if ((test1 = platform_device_alloc("rtc-test", 1)) == NULL) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto exit_free_test0;
 	}
 
@@ -170,6 +190,26 @@ exit_free_test1:
 	platform_device_put(test1);
 
 exit_free_test0:
+=======
+		goto exit_put_test0;
+	}
+
+	if ((err = platform_device_add(test0)))
+		goto exit_put_test1;
+
+	if ((err = platform_device_add(test1)))
+		goto exit_del_test0;
+
+	return 0;
+
+exit_del_test0:
+	platform_device_del(test0);
+
+exit_put_test1:
+	platform_device_put(test1);
+
+exit_put_test0:
+>>>>>>> refs/remotes/origin/master
 	platform_device_put(test0);
 
 exit_driver_unregister:

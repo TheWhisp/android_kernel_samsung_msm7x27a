@@ -9,6 +9,7 @@
 #include <asm/processor.h>
 #include <asm/apicdef.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/fixmap.h>
 #include <asm/mpspec.h>
@@ -19,6 +20,13 @@
 #include <asm/mpspec.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/msr.h>
+=======
+#include <linux/atomic.h>
+#include <asm/fixmap.h>
+#include <asm/mpspec.h>
+#include <asm/msr.h>
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ARCH_APICTIMER_STOPS_ON_C3	1
 
@@ -56,9 +64,13 @@ extern int local_apic_timer_c2_ok;
 
 extern int disable_apic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern unsigned int lapic_timer_frequency;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned int lapic_timer_frequency;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMP
 extern void __inquire_remote_apic(int apicid);
@@ -148,6 +160,14 @@ static inline void native_apic_msr_write(u32 reg, u32 v)
 	wrmsr(APIC_BASE_MSR + (reg >> 4), v, 0);
 }
 
+<<<<<<< HEAD
+=======
+static inline void native_apic_msr_eoi_write(u32 reg, u32 v)
+{
+	wrmsr(APIC_BASE_MSR + (APIC_EOI >> 4), APIC_EOI_ACK, 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline u32 native_apic_msr_read(u32 reg)
 {
 	u64 msr;
@@ -186,9 +206,13 @@ static inline u64 native_x2apic_icr_read(void)
 
 extern int x2apic_phys;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int x2apic_preenabled;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int x2apic_preenabled;
+>>>>>>> refs/remotes/origin/master
 extern void check_x2apic(void);
 extern void enable_x2apic(void);
 extern void x2apic_icr_write(u32 low, u32 id);
@@ -212,11 +236,17 @@ static inline void x2apic_force_phys(void)
 }
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline void disable_x2apic(void)
 {
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void disable_x2apic(void)
+{
+}
+>>>>>>> refs/remotes/origin/master
 static inline void check_x2apic(void)
 {
 }
@@ -232,9 +262,13 @@ static inline void x2apic_force_phys(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define	nox2apic	0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	nox2apic	0
+>>>>>>> refs/remotes/origin/master
 #define	x2apic_preenabled 0
 #define	x2apic_supported()	0
 #endif
@@ -307,9 +341,13 @@ struct apic {
 	int (*probe)(void);
 	int (*acpi_madt_oem_check)(char *oem_id, char *oem_table_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*apic_id_valid)(int apicid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*apic_id_valid)(int apicid);
+>>>>>>> refs/remotes/origin/master
 	int (*apic_id_registered)(void);
 
 	u32 irq_delivery_mode;
@@ -323,7 +361,12 @@ struct apic {
 	unsigned long (*check_apicid_used)(physid_mask_t *map, int apicid);
 	unsigned long (*check_apicid_present)(int apicid);
 
+<<<<<<< HEAD
 	void (*vector_allocation_domain)(int cpu, struct cpumask *retmask);
+=======
+	void (*vector_allocation_domain)(int cpu, struct cpumask *retmask,
+					 const struct cpumask *mask);
+>>>>>>> refs/remotes/origin/master
 	void (*init_apic_ldr)(void);
 
 	void (*ioapic_phys_id_map)(physid_mask_t *phys_map, physid_mask_t *retmap);
@@ -348,9 +391,15 @@ struct apic {
 	unsigned long (*set_apic_id)(unsigned int id);
 	unsigned long apic_id_mask;
 
+<<<<<<< HEAD
 	unsigned int (*cpu_mask_to_apicid)(const struct cpumask *cpumask);
 	unsigned int (*cpu_mask_to_apicid_and)(const struct cpumask *cpumask,
 					       const struct cpumask *andmask);
+=======
+	int (*cpu_mask_to_apicid_and)(const struct cpumask *cpumask,
+				      const struct cpumask *andmask,
+				      unsigned int *apicid);
+>>>>>>> refs/remotes/origin/master
 
 	/* ipi */
 	void (*send_IPI_mask)(const struct cpumask *mask, int vector);
@@ -373,6 +422,17 @@ struct apic {
 	/* apic ops */
 	u32 (*read)(u32 reg);
 	void (*write)(u32 reg, u32 v);
+<<<<<<< HEAD
+=======
+	/*
+	 * ->eoi_write() has the same signature as ->write().
+	 *
+	 * Drivers can support both ->eoi_write() and ->write() by passing the same
+	 * callback value. Kernel can override ->eoi_write() and fall back
+	 * on write for EOI.
+	 */
+	void (*eoi_write)(u32 reg, u32 v);
+>>>>>>> refs/remotes/origin/master
 	u64 (*icr_read)(void);
 	void (*icr_write)(u32 low, u32 high);
 	void (*wait_icr_idle)(void);
@@ -417,7 +477,11 @@ extern struct apic *apic;
  * to enforce the order with in them.
  */
 #define apic_driver(sym)					\
+<<<<<<< HEAD
 	static struct apic *__apicdrivers_##sym __used		\
+=======
+	static const struct apic *__apicdrivers_##sym __used		\
+>>>>>>> refs/remotes/origin/master
 	__aligned(sizeof(struct apic *))			\
 	__section(.apicdrivers) = { &sym }
 
@@ -438,9 +502,13 @@ extern int wakeup_secondary_cpu_via_nmi(int apicid, unsigned long start_eip);
 
 #ifdef CONFIG_X86_LOCAL_APIC
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 static inline u32 apic_read(u32 reg)
 {
 	return apic->read(reg);
@@ -451,6 +519,14 @@ static inline void apic_write(u32 reg, u32 val)
 	apic->write(reg, val);
 }
 
+<<<<<<< HEAD
+=======
+static inline void apic_eoi(void)
+{
+	apic->eoi_write(APIC_EOI, APIC_EOI_ACK);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline u64 apic_icr_read(void)
 {
 	return apic->icr_read();
@@ -471,14 +547,27 @@ static inline u32 safe_apic_wait_icr_idle(void)
 	return apic->safe_wait_icr_idle();
 }
 
+<<<<<<< HEAD
+=======
+extern void __init apic_set_eoi_write(void (*eoi_write)(u32 reg, u32 v));
+
+>>>>>>> refs/remotes/origin/master
 #else /* CONFIG_X86_LOCAL_APIC */
 
 static inline u32 apic_read(u32 reg) { return 0; }
 static inline void apic_write(u32 reg, u32 val) { }
+<<<<<<< HEAD
+=======
+static inline void apic_eoi(void) { }
+>>>>>>> refs/remotes/origin/master
 static inline u64 apic_icr_read(void) { return 0; }
 static inline void apic_icr_write(u32 low, u32 high) { }
 static inline void apic_wait_icr_idle(void) { }
 static inline u32 safe_apic_wait_icr_idle(void) { return 0; }
+<<<<<<< HEAD
+=======
+static inline void apic_set_eoi_write(void (*eoi_write)(u32 reg, u32 v)) {}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_X86_LOCAL_APIC */
 
@@ -488,9 +577,13 @@ static inline void ack_APIC_irq(void)
 	 * ack_APIC_irq() actually gets compiled as a single instruction
 	 * ... yummie.
 	 */
+<<<<<<< HEAD
 
 	/* Docs say use 0 for future compatibility */
 	apic_write(APIC_EOI, 0);
+=======
+	apic_eoi();
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned default_get_apic_id(unsigned long x)
@@ -545,7 +638,16 @@ static inline const struct cpumask *default_target_cpus(void)
 #endif
 }
 
+<<<<<<< HEAD
 DECLARE_EARLY_PER_CPU(u16, x86_bios_cpu_apicid);
+=======
+static inline const struct cpumask *online_target_cpus(void)
+{
+	return cpu_online_mask;
+}
+
+DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_bios_cpu_apicid);
+>>>>>>> refs/remotes/origin/master
 
 
 static inline unsigned int read_apic_id(void)
@@ -558,13 +660,19 @@ static inline unsigned int read_apic_id(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int default_apic_id_valid(int apicid)
 {
 	return (apicid < 255);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void default_setup_apic_routing(void);
 
 extern struct apic apic_noop;
@@ -597,6 +705,7 @@ static inline int default_phys_pkg_id(int cpuid_apic, int index_msb)
 
 #endif
 
+<<<<<<< HEAD
 static inline unsigned int
 default_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
@@ -612,6 +721,52 @@ default_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 	unsigned long mask3 = cpumask_bits(cpu_online_mask)[0];
 
 	return (unsigned int)(mask1 & mask2 & mask3);
+=======
+static inline int
+flat_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
+			    const struct cpumask *andmask,
+			    unsigned int *apicid)
+{
+	unsigned long cpu_mask = cpumask_bits(cpumask)[0] &
+				 cpumask_bits(andmask)[0] &
+				 cpumask_bits(cpu_online_mask)[0] &
+				 APIC_ALL_CPUS;
+
+	if (likely(cpu_mask)) {
+		*apicid = (unsigned int)cpu_mask;
+		return 0;
+	} else {
+		return -EINVAL;
+	}
+}
+
+extern int
+default_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
+			       const struct cpumask *andmask,
+			       unsigned int *apicid);
+
+static inline void
+flat_vector_allocation_domain(int cpu, struct cpumask *retmask,
+			      const struct cpumask *mask)
+{
+	/* Careful. Some cpus do not strictly honor the set of cpus
+	 * specified in the interrupt destination when using lowest
+	 * priority interrupt delivery mode.
+	 *
+	 * In particular there was a hyperthreading cpu observed to
+	 * deliver interrupts to the wrong hyperthread when only one
+	 * hyperthread was specified in the interrupt desitination.
+	 */
+	cpumask_clear(retmask);
+	cpumask_bits(retmask)[0] = APIC_ALL_CPUS;
+}
+
+static inline void
+default_vector_allocation_domain(int cpu, struct cpumask *retmask,
+				 const struct cpumask *mask)
+{
+	cpumask_copy(retmask, cpumask_of(cpu));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned long default_check_apicid_used(physid_mask_t *map, int apicid)
@@ -660,5 +815,36 @@ extern int default_check_phys_apicid_present(int phys_apicid);
 #endif
 
 #endif /* CONFIG_X86_LOCAL_APIC */
+<<<<<<< HEAD
+=======
+extern void irq_enter(void);
+extern void irq_exit(void);
+
+static inline void entering_irq(void)
+{
+	irq_enter();
+	exit_idle();
+}
+
+static inline void entering_ack_irq(void)
+{
+	ack_APIC_irq();
+	entering_irq();
+}
+
+static inline void exiting_irq(void)
+{
+	irq_exit();
+}
+
+static inline void exiting_ack_irq(void)
+{
+	irq_exit();
+	/* Ack only at the end to avoid potential reentry */
+	ack_APIC_irq();
+}
+
+extern void ioapic_zap_locks(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_X86_APIC_H */

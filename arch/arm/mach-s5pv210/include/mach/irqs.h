@@ -57,10 +57,14 @@
 #define IRQ_IRDA		S5P_IRQ_VIC1(18)
 #define IRQ_IIC2		S5P_IRQ_VIC1(19)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IRQ_IIC3		S5P_IRQ_VIC1(20)
 =======
 #define IRQ_IIC_HDMIPHY		S5P_IRQ_VIC1(20)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IRQ_IIC_HDMIPHY		S5P_IRQ_VIC1(20)
+>>>>>>> refs/remotes/origin/master
 #define IRQ_HSIRX		S5P_IRQ_VIC1(21)
 #define IRQ_HSITX		S5P_IRQ_VIC1(22)
 #define IRQ_UHOST		S5P_IRQ_VIC1(23)
@@ -91,10 +95,14 @@
 #define IRQ_IIC1		S5P_IRQ_VIC2(13)
 #define IRQ_MFC			S5P_IRQ_VIC2(14)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IRQ_TVENC		S5P_IRQ_VIC2(15)
 =======
 #define IRQ_SDO			S5P_IRQ_VIC2(15)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IRQ_SDO			S5P_IRQ_VIC2(15)
+>>>>>>> refs/remotes/origin/master
 #define IRQ_I2S0		S5P_IRQ_VIC2(16)
 #define IRQ_I2S1		S5P_IRQ_VIC2(17)
 #define IRQ_I2S2		S5P_IRQ_VIC2(18)
@@ -127,10 +135,13 @@
 #define IRQ_VIC_END		S5P_IRQ_VIC3(31)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IRQ_TIMER_BASE		(11)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define S5P_EINT_BASE1		(S5P_IRQ_VIC0(0))
 #define S5P_EINT_BASE2		(IRQ_VIC_END + 1)
 

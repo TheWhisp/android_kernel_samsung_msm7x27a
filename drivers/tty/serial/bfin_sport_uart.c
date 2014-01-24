@@ -149,7 +149,11 @@ static int sport_uart_setup(struct sport_uart_port *up, int size, int baud_rate)
 static irqreturn_t sport_uart_rx_irq(int irq, void *dev_id)
 {
 	struct sport_uart_port *up = dev_id;
+<<<<<<< HEAD
 	struct tty_struct *tty = up->port.state->port.tty;
+=======
+	struct tty_port *port = &up->port.state->port;
+>>>>>>> refs/remotes/origin/master
 	unsigned int ch;
 
 	spin_lock(&up->port.lock);
@@ -159,12 +163,23 @@ static irqreturn_t sport_uart_rx_irq(int irq, void *dev_id)
 		up->port.icount.rx++;
 
 		if (!uart_handle_sysrq_char(&up->port, ch))
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, TTY_NORMAL);
 	}
 	tty_flip_buffer_push(tty);
 
 	spin_unlock(&up->port.lock);
 
+=======
+			tty_insert_flip_char(port, ch, TTY_NORMAL);
+	}
+
+	spin_unlock(&up->port.lock);
+
+	/* XXX this won't deadlock with lowlat? */
+	tty_flip_buffer_push(port);
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -182,7 +197,10 @@ static irqreturn_t sport_uart_tx_irq(int irq, void *dev_id)
 static irqreturn_t sport_uart_err_irq(int irq, void *dev_id)
 {
 	struct sport_uart_port *up = dev_id;
+<<<<<<< HEAD
 	struct tty_struct *tty = up->port.state->port.tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int stat = SPORT_GET_STAT(up);
 
 	spin_lock(&up->port.lock);
@@ -190,7 +208,11 @@ static irqreturn_t sport_uart_err_irq(int irq, void *dev_id)
 	/* Overflow in RX FIFO */
 	if (stat & ROVF) {
 		up->port.icount.overrun++;
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+		tty_insert_flip_char(&up->port.state->port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 		SPORT_PUT_STAT(up, ROVF); /* Clear ROVF bit */
 	}
 	/* These should not happen */
@@ -205,6 +227,11 @@ static irqreturn_t sport_uart_err_irq(int irq, void *dev_id)
 	SSYNC();
 
 	spin_unlock(&up->port.lock);
+<<<<<<< HEAD
+=======
+	/* XXX we don't push the overrun bit to TTY? */
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -295,18 +322,25 @@ static int sport_startup(struct uart_port *port)
 			sport_mctrl_cts_int,
 			IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING |
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, "BFIN_SPORT_UART_CTS", up)) {
 =======
 			0, "BFIN_SPORT_UART_CTS", up)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, "BFIN_SPORT_UART_CTS", up)) {
+>>>>>>> refs/remotes/origin/master
 			up->cts_pin = -1;
 			dev_info(port->dev, "Unable to attach BlackFin UART over SPORT CTS interrupt. So, disable it.\n");
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (up->rts_pin >= 0)
 		gpio_direction_output(up->rts_pin, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (up->rts_pin >= 0) {
 		if (gpio_request(up->rts_pin, DRV_NAME)) {
 			dev_info(port->dev, "fail to request RTS PIN at GPIO_%d\n", up->rts_pin);
@@ -314,7 +348,10 @@ static int sport_startup(struct uart_port *port)
 		} else
 			gpio_direction_output(up->rts_pin, 0);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	return 0;
@@ -460,10 +497,15 @@ static void sport_shutdown(struct uart_port *port)
 	if (up->cts_pin >= 0)
 		free_irq(gpio_to_irq(up->cts_pin), up);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (up->rts_pin >= 0)
 		gpio_free(up->rts_pin);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (up->rts_pin >= 0)
+		gpio_free(up->rts_pin);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -752,7 +794,11 @@ static struct dev_pm_ops bfin_sport_uart_dev_pm_ops = {
 };
 #endif
 
+<<<<<<< HEAD
 static int __devinit sport_uart_probe(struct platform_device *pdev)
+=======
+static int sport_uart_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	struct sport_uart_port *sport;
@@ -775,8 +821,13 @@ static int __devinit sport_uart_probe(struct platform_device *pdev)
 			return -ENOMEM;
 		}
 
+<<<<<<< HEAD
 		ret = peripheral_request_list(
 			(unsigned short *)pdev->dev.platform_data, DRV_NAME);
+=======
+		ret = peripheral_request_list(dev_get_platdata(&pdev->dev),
+						DRV_NAME);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			dev_err(&pdev->dev,
 				"Fail to request SPORT peripherals\n");
@@ -823,14 +874,20 @@ static int __devinit sport_uart_probe(struct platform_device *pdev)
 		if (res == NULL)
 			sport->cts_pin = -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		else
 			sport->cts_pin = res->start;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		else {
 			sport->cts_pin = res->start;
 			sport->port.flags |= ASYNC_CTS_FLOW;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		res = platform_get_resource(pdev, IORESOURCE_IO, 1);
 		if (res == NULL)
@@ -838,11 +895,14 @@ static int __devinit sport_uart_probe(struct platform_device *pdev)
 		else
 			sport->rts_pin = res->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		if (sport->rts_pin >= 0)
 			gpio_request(sport->rts_pin, DRV_NAME);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 
@@ -863,8 +923,12 @@ static int __devinit sport_uart_probe(struct platform_device *pdev)
 out_error_unmap:
 		iounmap(sport->port.membase);
 out_error_free_peripherals:
+<<<<<<< HEAD
 		peripheral_free_list(
 			(unsigned short *)pdev->dev.platform_data);
+=======
+		peripheral_free_list(dev_get_platdata(&pdev->dev));
+>>>>>>> refs/remotes/origin/master
 out_error_free_mem:
 		kfree(sport);
 		bfin_sport_uart_ports[pdev->id] = NULL;
@@ -873,7 +937,11 @@ out_error_free_mem:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit sport_uart_remove(struct platform_device *pdev)
+=======
+static int sport_uart_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sport_uart_port *sport = platform_get_drvdata(pdev);
 
@@ -882,6 +950,7 @@ static int __devexit sport_uart_remove(struct platform_device *pdev)
 
 	if (sport) {
 		uart_remove_one_port(&sport_uart_reg, &sport->port);
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SERIAL_BFIN_CTSRTS
 		if (sport->rts_pin >= 0)
@@ -892,6 +961,10 @@ static int __devexit sport_uart_remove(struct platform_device *pdev)
 		iounmap(sport->port.membase);
 		peripheral_free_list(
 			(unsigned short *)pdev->dev.platform_data);
+=======
+		iounmap(sport->port.membase);
+		peripheral_free_list(dev_get_platdata(&pdev->dev));
+>>>>>>> refs/remotes/origin/master
 		kfree(sport);
 		bfin_sport_uart_ports[pdev->id] = NULL;
 	}
@@ -901,7 +974,11 @@ static int __devexit sport_uart_remove(struct platform_device *pdev)
 
 static struct platform_driver sport_uart_driver = {
 	.probe		= sport_uart_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sport_uart_remove),
+=======
+	.remove		= sport_uart_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRV_NAME,
 #ifdef CONFIG_PM
@@ -911,7 +988,11 @@ static struct platform_driver sport_uart_driver = {
 };
 
 #ifdef CONFIG_SERIAL_BFIN_SPORT_CONSOLE
+<<<<<<< HEAD
 static __initdata struct early_platform_driver early_sport_uart_driver = {
+=======
+static struct early_platform_driver early_sport_uart_driver __initdata = {
+>>>>>>> refs/remotes/origin/master
 	.class_str = CLASS_BFIN_SPORT_CONSOLE,
 	.pdrv = &sport_uart_driver,
 	.requested_id = EARLY_PLATFORM_ID_UNSET,

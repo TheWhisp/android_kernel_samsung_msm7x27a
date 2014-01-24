@@ -128,7 +128,11 @@ struct ib_cq *ehca_create_cq(struct ib_device *device, int cqe, int comp_vector,
 	void *vpage;
 	u32 counter;
 	u64 rpage, cqx_fec, h_ret;
+<<<<<<< HEAD
 	int ipz_rc, ret, i;
+=======
+	int ipz_rc, i;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (cqe >= 0xFFFFFFFF - 64 - additional_cqe)
@@ -163,6 +167,7 @@ struct ib_cq *ehca_create_cq(struct ib_device *device, int cqe, int comp_vector,
 	adapter_handle = shca->ipz_hca_handle;
 	param.eq_handle = shca->eq.ipz_eq_handle;
 
+<<<<<<< HEAD
 	do {
 		if (!idr_pre_get(&ehca_cq_idr, GFP_KERNEL)) {
 			cq = ERR_PTR(-ENOMEM);
@@ -177,18 +182,30 @@ struct ib_cq *ehca_create_cq(struct ib_device *device, int cqe, int comp_vector,
 	} while (ret == -EAGAIN);
 
 	if (ret) {
+=======
+	idr_preload(GFP_KERNEL);
+	write_lock_irqsave(&ehca_cq_idr_lock, flags);
+	my_cq->token = idr_alloc(&ehca_cq_idr, my_cq, 0, 0x2000000, GFP_NOWAIT);
+	write_unlock_irqrestore(&ehca_cq_idr_lock, flags);
+	idr_preload_end();
+
+	if (my_cq->token < 0) {
+>>>>>>> refs/remotes/origin/master
 		cq = ERR_PTR(-ENOMEM);
 		ehca_err(device, "Can't allocate new idr entry. device=%p",
 			 device);
 		goto create_cq_exit1;
 	}
 
+<<<<<<< HEAD
 	if (my_cq->token > 0x1FFFFFF) {
 		cq = ERR_PTR(-ENOMEM);
 		ehca_err(device, "Invalid number of cq. device=%p", device);
 		goto create_cq_exit2;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * CQs maximum depth is 4GB-64, but we need additional 20 as buffer
 	 * for receiving errors CQEs.
@@ -220,7 +237,11 @@ struct ib_cq *ehca_create_cq(struct ib_device *device, int cqe, int comp_vector,
 			cq = ERR_PTR(-EAGAIN);
 			goto create_cq_exit4;
 		}
+<<<<<<< HEAD
 		rpage = virt_to_abs(vpage);
+=======
+		rpage = __pa(vpage);
+>>>>>>> refs/remotes/origin/master
 
 		h_ret = hipz_h_register_rpage_cq(adapter_handle,
 						 my_cq->ipz_cq_handle,

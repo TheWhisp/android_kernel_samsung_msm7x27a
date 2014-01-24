@@ -22,7 +22,10 @@
 #include <linux/slab.h>
 #include <linux/of.h>
 #include <linux/of_pdt.h>
+<<<<<<< HEAD
 #include <asm/prom.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct of_pdt_ops *of_pdt_prom_ops __initdata;
 
@@ -230,13 +233,19 @@ static struct device_node * __init of_pdt_build_tree(struct device_node *parent,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void * __init kernel_tree_alloc(u64 size, u64 align)
 {
 	return prom_early_alloc(size);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init of_pdt_build_devicetree(phandle root_node, struct of_pdt_ops *ops)
 {
 	struct device_node **nextp;
@@ -244,6 +253,7 @@ void __init of_pdt_build_devicetree(phandle root_node, struct of_pdt_ops *ops)
 	BUG_ON(!ops);
 	of_pdt_prom_ops = ops;
 
+<<<<<<< HEAD
 	allnodes = of_pdt_create_node(root_node, NULL);
 #if defined(CONFIG_SPARC)
 	allnodes->path_component_name = "";
@@ -259,4 +269,18 @@ void __init of_pdt_build_devicetree(phandle root_node, struct of_pdt_ops *ops)
 	/* Get pointer to "/chosen" and "/aliasas" nodes for use everywhere */
 	of_alias_scan(kernel_tree_alloc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	of_allnodes = of_pdt_create_node(root_node, NULL);
+#if defined(CONFIG_SPARC)
+	of_allnodes->path_component_name = "";
+#endif
+	of_allnodes->full_name = "/";
+
+	nextp = &of_allnodes->allnext;
+	of_allnodes->child = of_pdt_build_tree(of_allnodes,
+			of_pdt_prom_ops->getchild(of_allnodes->phandle), &nextp);
+
+	/* Get pointer to "/chosen" and "/aliases" nodes for use everywhere */
+	of_alias_scan(kernel_tree_alloc);
+>>>>>>> refs/remotes/origin/master
 }

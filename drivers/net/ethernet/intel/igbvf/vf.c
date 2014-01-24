@@ -154,7 +154,11 @@ static s32 e1000_reset_hw_vf(struct e1000_hw *hw)
 		ret_val = mbx->ops.read_posted(hw, msgbuf, 3);
 		if (!ret_val) {
 			if (msgbuf[0] == (E1000_VF_RESET | E1000_VT_MSGTYPE_ACK))
+<<<<<<< HEAD
 				memcpy(hw->mac.perm_addr, addr, 6);
+=======
+				memcpy(hw->mac.perm_addr, addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 			else
 				ret_val = -E1000_ERR_MAC_INIT;
 		}
@@ -283,7 +287,12 @@ static s32 e1000_set_vfta_vf(struct e1000_hw *hw, u16 vid, bool set)
 	return err;
 }
 
+<<<<<<< HEAD
 /** e1000_rlpml_set_vf - Set the maximum receive packet length
+=======
+/**
+ *  e1000_rlpml_set_vf - Set the maximum receive packet length
+>>>>>>> refs/remotes/origin/master
  *  @hw: pointer to the HW structure
  *  @max_size: value to assign to max frame size
  **/
@@ -302,7 +311,11 @@ void e1000_rlpml_set_vf(struct e1000_hw *hw, u16 max_size)
  *  e1000_rar_set_vf - set device MAC address
  *  @hw: pointer to the HW structure
  *  @addr: pointer to the receive address
+<<<<<<< HEAD
  *  @index receive address array register
+=======
+ *  @index: receive address array register
+>>>>>>> refs/remotes/origin/master
  **/
 static void e1000_rar_set_vf(struct e1000_hw *hw, u8 * addr, u32 index)
 {
@@ -313,7 +326,11 @@ static void e1000_rar_set_vf(struct e1000_hw *hw, u8 * addr, u32 index)
 
 	memset(msgbuf, 0, 12);
 	msgbuf[0] = E1000_VF_SET_MAC_ADDR;
+<<<<<<< HEAD
 	memcpy(msg_addr, addr, 6);
+=======
+	memcpy(msg_addr, addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	ret_val = mbx->ops.write_posted(hw, msgbuf, 3);
 
 	if (!ret_val)

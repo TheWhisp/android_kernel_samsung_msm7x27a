@@ -24,6 +24,11 @@ static int e500_generic_events[] = {
 	[PERF_COUNT_HW_CACHE_MISSES] = 41, /* Data L1 cache reloads */
 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = 12,
 	[PERF_COUNT_HW_BRANCH_MISSES] = 15,
+<<<<<<< HEAD
+=======
+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND] = 18,
+	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND] = 19,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define C(x)	PERF_COUNT_HW_CACHE_##x

@@ -12,12 +12,25 @@
 #include <linux/err.h>
 #include <linux/io.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <mach/map.h>
 #include <mach/regs-sys.h>
+=======
+
+#include <mach/map.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <plat/cpu.h>
 #include <plat/regs-usb-hsotg-phy.h>
 #include <plat/usb-phy.h>
 
+<<<<<<< HEAD
+=======
+#define S5PV210_USB_PHY_CON	(S3C_VA_SYS + 0xE80C)
+#define S5PV210_USB_PHY0_EN	(1 << 0)
+#define S5PV210_USB_PHY1_EN	(1 << 1)
+
+>>>>>>> refs/remotes/origin/master
 static int s5pv210_usb_otgphy_init(struct platform_device *pdev)
 {
 	struct clk *xusbxti;
@@ -75,7 +88,11 @@ static int s5pv210_usb_otgphy_exit(struct platform_device *pdev)
 
 int s5p_usb_phy_init(struct platform_device *pdev, int type)
 {
+<<<<<<< HEAD
 	if (type == S5P_USB_PHY_DEVICE)
+=======
+	if (type == USB_PHY_TYPE_DEVICE)
+>>>>>>> refs/remotes/origin/master
 		return s5pv210_usb_otgphy_init(pdev);
 
 	return -EINVAL;
@@ -83,7 +100,11 @@ int s5p_usb_phy_init(struct platform_device *pdev, int type)
 
 int s5p_usb_phy_exit(struct platform_device *pdev, int type)
 {
+<<<<<<< HEAD
 	if (type == S5P_USB_PHY_DEVICE)
+=======
+	if (type == USB_PHY_TYPE_DEVICE)
+>>>>>>> refs/remotes/origin/master
 		return s5pv210_usb_otgphy_exit(pdev);
 
 	return -EINVAL;

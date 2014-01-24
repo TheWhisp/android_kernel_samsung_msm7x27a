@@ -78,7 +78,11 @@ static struct platform_device net5501_leds_dev = {
 	.dev.platform_data = &net5501_leds_data,
 };
 
+<<<<<<< HEAD
 static struct __initdata platform_device *net5501_devs[] = {
+=======
+static struct platform_device *net5501_devs[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	&net5501_buttons_dev,
 	&net5501_leds_dev,
 };

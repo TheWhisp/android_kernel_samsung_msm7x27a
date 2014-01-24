@@ -1,6 +1,7 @@
 #ifndef _LINUX_STAT_H
 #define _LINUX_STAT_H
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 
 #include <asm/stat.h>
@@ -47,6 +48,12 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+
+#include <asm/stat.h>
+#include <uapi/linux/stat.h>
+
+>>>>>>> refs/remotes/origin/master
 #define S_IRWXUGO	(S_IRWXU|S_IRWXG|S_IRWXO)
 #define S_IALLUGO	(S_ISUID|S_ISGID|S_ISVTX|S_IRWXUGO)
 #define S_IRUGO		(S_IRUSR|S_IRGRP|S_IROTH)
@@ -58,14 +65,23 @@
 
 #include <linux/types.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/uidgid.h>
+>>>>>>> refs/remotes/origin/master
 
 struct kstat {
 	u64		ino;
 	dev_t		dev;
 	umode_t		mode;
 	unsigned int	nlink;
+<<<<<<< HEAD
 	uid_t		uid;
 	gid_t		gid;
+=======
+	kuid_t		uid;
+	kgid_t		gid;
+>>>>>>> refs/remotes/origin/master
 	dev_t		rdev;
 	loff_t		size;
 	struct timespec  atime;
@@ -76,5 +92,8 @@ struct kstat {
 };
 
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

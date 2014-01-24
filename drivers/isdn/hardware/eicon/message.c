@@ -1,6 +1,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -22,6 +23,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -42,7 +45,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -88,17 +94,23 @@ static dword diva_xdi_extended_features = 0;
   CAPI can request to process all return codes self only if:
   protocol code supports this && xdi supports this
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 #define DIVA_CAPI_SUPPORTS_NO_CANCEL(__a__)   (((__a__)->manufacturer_features&MANUFACTURER_FEATURE_XONOFF_FLOW_CONTROL)&&    ((__a__)->manufacturer_features & MANUFACTURER_FEATURE_OK_FC_LABEL) &&     (diva_xdi_extended_features   & DIVA_CAPI_XDI_PROVIDES_NO_CANCEL))
 =======
 */
 #define DIVA_CAPI_SUPPORTS_NO_CANCEL(__a__)   (((__a__)->manufacturer_features & MANUFACTURER_FEATURE_XONOFF_FLOW_CONTROL) && ((__a__)->manufacturer_features & MANUFACTURER_FEATURE_OK_FC_LABEL) && (diva_xdi_extended_features & DIVA_CAPI_XDI_PROVIDES_NO_CANCEL))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+#define DIVA_CAPI_SUPPORTS_NO_CANCEL(__a__)   (((__a__)->manufacturer_features & MANUFACTURER_FEATURE_XONOFF_FLOW_CONTROL) && ((__a__)->manufacturer_features & MANUFACTURER_FEATURE_OK_FC_LABEL) && (diva_xdi_extended_features & DIVA_CAPI_XDI_PROVIDES_NO_CANCEL))
+>>>>>>> refs/remotes/origin/master
 
 /*------------------------------------------------------------------*/
 /* local function prototypes                                        */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void group_optimization(DIVA_CAPI_ADAPTER   * a, PLCI   * plci);
 static void set_group_ind_mask (PLCI   *plci);
@@ -112,6 +124,8 @@ static word api_parse(byte   *, word, byte *, API_PARSE *);
 static void api_save_msg(API_PARSE   *in, byte *format, API_SAVE   *out);
 static void api_load_msg(API_SAVE   *in, API_PARSE   *out);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void group_optimization(DIVA_CAPI_ADAPTER *a, PLCI *plci);
 static void set_group_ind_mask(PLCI *plci);
 static void clear_group_ind_mask_bit(PLCI *plci, word b);
@@ -123,11 +137,15 @@ word api_put(APPL *, CAPI_MSG *);
 static word api_parse(byte *, word, byte *, API_PARSE *);
 static void api_save_msg(API_PARSE *in, byte *format, API_SAVE *out);
 static void api_load_msg(API_SAVE *in, API_PARSE *out);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 word api_remove_start(void);
 void api_remove_complete(void);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void plci_remove(PLCI   *);
 static void diva_get_extended_adapter_features (DIVA_CAPI_ADAPTER  * a);
@@ -263,6 +281,8 @@ static void rtp_connect_b3_res_command (dword Id, PLCI   *plci, byte Rc);
 static int  diva_get_dma_descriptor  (PLCI   *plci, dword   *dma_magic);
 static void diva_free_dma_descriptor (PLCI   *plci, int nr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void plci_remove(PLCI *);
 static void diva_get_extended_adapter_features(DIVA_CAPI_ADAPTER *a);
 static void diva_ask_for_xdi_sdram_bar(DIVA_CAPI_ADAPTER *, IDI_SYNC_REQ *);
@@ -396,12 +416,16 @@ static void rtp_connect_b3_res_command(dword Id, PLCI *plci, byte Rc);
 
 static int diva_get_dma_descriptor(PLCI *plci, dword *dma_magic);
 static void diva_free_dma_descriptor(PLCI *plci, int nr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*------------------------------------------------------------------*/
 /* external function prototypes                                     */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern byte MapController (byte);
 extern byte UnMapController (byte);
@@ -416,6 +440,8 @@ void   * ReceiveBufferGet(APPL   * appl, int Num);
 
 int fax_head_line_time (char *buffer);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern byte MapController(byte);
 extern byte UnMapController(byte);
 #define MapId(Id)(((Id) & 0xffffff00L) | MapController((byte)(Id)))
@@ -428,7 +454,10 @@ void TransmitBufferFree(APPL *appl, void *p);
 void *ReceiveBufferGet(APPL *appl, int Num);
 
 int fax_head_line_time(char *buffer);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*------------------------------------------------------------------*/
@@ -437,12 +466,17 @@ int fax_head_line_time(char *buffer);
 extern byte max_adapter;
 extern byte max_appl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern DIVA_CAPI_ADAPTER   * adapter;
 extern APPL   * application;
 =======
 extern DIVA_CAPI_ADAPTER *adapter;
 extern APPL *application;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern DIVA_CAPI_ADAPTER *adapter;
+extern APPL *application;
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -455,6 +489,7 @@ static PLCI dummy_plci;
 
 
 static struct _ftable {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word command;
   byte * format;
@@ -553,6 +588,8 @@ static byte * cip_hlc[29] = {
   "\x03\x91\xe0\x01",           /* 27 */
   "\x03\x91\xe0\x02"            /* 28 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word command;
 	byte *format;
 	byte (*function)(dword, word, DIVA_CAPI_ADAPTER *, PLCI *, APPL *, API_PARSE *);
@@ -649,7 +686,10 @@ static byte *cip_hlc[29] = {
 	"\x02\x91\x81",               /* 26 */
 	"\x03\x91\xe0\x01",           /* 27 */
 	"\x03\x91\xe0\x02"            /* 28 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*------------------------------------------------------------------*/
@@ -665,10 +705,14 @@ static byte v120_default_header[] =
 {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   0x83                          /*  Ext, BR , res, res, C2 , C1 , B  , F   */
 =======
 	0x83                          /*  Ext, BR , res, res, C2 , C1 , B  , F   */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	0x83                          /*  Ext, BR , res, res, C2 , C1 , B  , F   */
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -676,10 +720,14 @@ static byte v120_break_header[] =
 {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   0xc3 | V120_HEADER_BREAK_BIT  /*  Ext, BR , res, res, C2 , C1 , B  , F   */
 =======
 	0xc3 | V120_HEADER_BREAK_BIT  /*  Ext, BR , res, res, C2 , C1 , B  , F   */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	0xc3 | V120_HEADER_BREAK_BIT  /*  Ext, BR , res, res, C2 , C1 , B  , F   */
+>>>>>>> refs/remotes/origin/master
 
 };
 
@@ -688,6 +736,7 @@ static byte v120_break_header[] =
 /* API_PUT function                                                 */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 word api_put(APPL   * appl, CAPI_MSG   * msg)
 {
@@ -890,6 +939,8 @@ word api_put(APPL   * appl, CAPI_MSG   * msg)
   if(plci && !plci->req_in) plci->command = 0;
   return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 word api_put(APPL *appl, CAPI_MSG *msg)
 {
 	word i, j, k, l, n;
@@ -1090,7 +1141,10 @@ word api_put(APPL *appl, CAPI_MSG *msg)
 	if (c == 2 && plci) plci->req_in = plci->req_in_start = plci->req_out = 0;
 	if (plci && !plci->req_in) plci->command = 0;
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1100,6 +1154,7 @@ word api_put(APPL *appl, CAPI_MSG *msg)
 
 static word api_parse(byte *msg, word length, byte *format, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
   word p;
@@ -1137,6 +1192,8 @@ static word api_parse(byte *msg, word length, byte *format, API_PARSE *parms)
   if(parms) parms[i].info = NULL;
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	word p;
 
@@ -1172,11 +1229,15 @@ static word api_parse(byte *msg, word length, byte *format, API_PARSE *parms)
 	}
 	if (parms) parms[i].info = NULL;
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void api_save_msg(API_PARSE *in, byte *format, API_SAVE *out)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i, j, n = 0;
   byte   *p;
@@ -1207,6 +1268,8 @@ static void api_save_msg(API_PARSE *in, byte *format, API_SAVE *out)
   out->parms[i].info = NULL;
   out->parms[i].length = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i, j, n = 0;
 	byte *p;
 
@@ -1235,11 +1298,15 @@ static void api_save_msg(API_PARSE *in, byte *format, API_SAVE *out)
 	}
 	out->parms[i].info = NULL;
 	out->parms[i].length = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void api_load_msg(API_SAVE *in, API_PARSE *out)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
 
@@ -1250,6 +1317,8 @@ static void api_load_msg(API_SAVE *in, API_PARSE *out)
     out[i].length = in->parms[i].length;
   } while (in->parms[i++].info);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 
 	i = 0;
@@ -1258,7 +1327,10 @@ static void api_load_msg(API_SAVE *in, API_PARSE *out)
 		out[i].info = in->parms[i].info;
 		out[i].length = in->parms[i].length;
 	} while (in->parms[i++].info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1268,6 +1340,7 @@ static void api_load_msg(API_SAVE *in, API_PARSE *out)
 
 word api_remove_start(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
   word j;
@@ -1295,6 +1368,8 @@ word api_remove_start(void)
   api_remove_complete();
   return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	word j;
 
@@ -1320,7 +1395,10 @@ word api_remove_start(void)
 	}
 	api_remove_complete();
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1328,6 +1406,7 @@ word api_remove_start(void)
 /* internal command queue                                           */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void init_internal_command_queue (PLCI   *plci)
 {
@@ -1384,6 +1463,8 @@ static void next_internal_command (dword Id, PLCI   *plci)
     plci->internal_command_queue[0] = NULL;
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void init_internal_command_queue(PLCI *plci)
 {
 	word i;
@@ -1438,7 +1519,10 @@ static void next_internal_command(dword Id, PLCI *plci)
 			return;
 		plci->internal_command_queue[0] = NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1448,6 +1532,7 @@ static void next_internal_command(dword Id, PLCI *plci)
 
 static dword ncci_mapping_bug = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static word get_ncci (PLCI   *plci, byte ch, word force_ncci)
 {
@@ -1682,6 +1767,8 @@ static void ncci_remove (PLCI   *plci, word ncci, byte preserve_ncci)
       plci->ncci_ring_list = 0;
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static word get_ncci(PLCI *plci, byte ch, word force_ncci)
 {
 	DIVA_CAPI_ADAPTER *a;
@@ -1914,7 +2001,10 @@ static void ncci_remove(PLCI *plci, word ncci, byte preserve_ncci)
 		if (!preserve_ncci)
 			plci->ncci_ring_list = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1922,6 +2012,7 @@ static void ncci_remove(PLCI *plci, word ncci, byte preserve_ncci)
 /* PLCI remove function                                             */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void plci_free_msg_in_queue (PLCI   *plci)
 {
@@ -1994,6 +2085,8 @@ static void plci_remove(PLCI   * plci)
   if ((plci->State == INC_CON_PENDING) || (plci->State == INC_CON_ALERT))
     plci->State = OUTG_DIS_PENDING;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void plci_free_msg_in_queue(PLCI *plci)
 {
 	word i;
@@ -2064,13 +2157,17 @@ static void plci_remove(PLCI *plci)
 	plci->appl = NULL;
 	if ((plci->State == INC_CON_PENDING) || (plci->State == INC_CON_ALERT))
 		plci->State = OUTG_DIS_PENDING;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 /* Application Group function helpers                               */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void set_group_ind_mask (PLCI   *plci)
 {
@@ -2089,6 +2186,8 @@ static byte test_group_ind_mask_bit (PLCI   *plci, word b)
 {
   return ((plci->group_optimization_mask_table[b >> 5] & (1L << (b & 0x1f))) != 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_group_ind_mask(PLCI *plci)
 {
 	word i;
@@ -2105,13 +2204,17 @@ static void clear_group_ind_mask_bit(PLCI *plci, word b)
 static byte test_group_ind_mask_bit(PLCI *plci, word b)
 {
 	return ((plci->group_optimization_mask_table[b >> 5] & (1L << (b & 0x1f))) != 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 /* c_ind_mask operations for arbitrary MAX_APPL                     */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void clear_c_ind_mask (PLCI   *plci)
 {
@@ -2180,6 +2283,8 @@ static char hex_digit_table[0x10] =
     dbug(1,dprintf ("c_ind_mask =%s", (char   *) p));
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void clear_c_ind_mask(PLCI *plci)
 {
 	word i;
@@ -2246,7 +2351,10 @@ static void dump_c_ind_mask(PLCI *plci)
 		}
 		dbug(1, dprintf("c_ind_mask =%s", (char *) p));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2264,6 +2372,7 @@ static void dump_c_ind_mask(PLCI *plci)
 static byte connect_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word ch;
   word i;
@@ -2477,6 +2586,8 @@ static byte connect_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
         "w",Info);
   return 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word ch;
 	word i;
 	word Info;
@@ -2688,12 +2799,16 @@ static byte connect_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	      Number,
 	      "w", Info);
 	return 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte connect_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i, Info;
   word Reject;
@@ -2848,6 +2963,8 @@ static byte connect_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i, Info;
 	word Reject;
 	static byte cau_t[] = {0, 0, 0x90, 0x91, 0xac, 0x9d, 0x86, 0xd8, 0x9b};
@@ -3000,12 +3117,16 @@ static byte connect_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte connect_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			  PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dbug(1,dprintf("connect_a_res"));
   return false;
@@ -3013,11 +3134,16 @@ static byte connect_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	dbug(1, dprintf("connect_a_res"));
 	return false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbug(1, dprintf("connect_a_res"));
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte disconnect_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			   PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info;
   word i;
@@ -3071,6 +3197,8 @@ static byte disconnect_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   sendf(appl, _DISCONNECT_R|CONFIRM, Id, Number, "w",Info);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info;
 	word i;
 
@@ -3122,12 +3250,16 @@ static byte disconnect_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	if (!appl)  return false;
 	sendf(appl, _DISCONNECT_R | CONFIRM, Id, Number, "w", Info);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte disconnect_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			   PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dbug(1,dprintf("disconnect_res"));
   if(plci)
@@ -3153,6 +3285,8 @@ static byte disconnect_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dbug(1, dprintf("disconnect_res"));
 	if (plci)
 	{
@@ -3176,12 +3310,16 @@ static byte disconnect_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte listen_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		       PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info;
   byte i;
@@ -3229,6 +3367,8 @@ static byte listen_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   if (a) listen_check(a);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info;
 	byte i;
 
@@ -3274,12 +3414,16 @@ static byte listen_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 
 	if (a) listen_check(a);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte info_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		     PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
   API_PARSE * ai;
@@ -3387,6 +3531,8 @@ static byte info_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	API_PARSE *ai;
 	PLCI *rc_plci = NULL;
@@ -3492,12 +3638,16 @@ static byte info_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		      "w", Info);
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte info_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		     PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dbug(1,dprintf("info_res"));
   return false;
@@ -3505,11 +3655,16 @@ static byte info_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	dbug(1, dprintf("info_res"));
 	return false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbug(1, dprintf("info_res"));
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte alert_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		      PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info;
   byte ret;
@@ -3538,6 +3693,8 @@ static byte alert_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
         "w",Info);
   return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info;
 	byte ret;
 
@@ -3564,12 +3721,16 @@ static byte alert_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	      Number,
 	      "w", Info);
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte facility_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			 PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info = 0;
   word i    = 0;
@@ -4318,6 +4479,8 @@ static byte facility_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
         "wws",Info,selector,SSparms);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info = 0;
 	word i    = 0;
 
@@ -5064,12 +5227,16 @@ static byte facility_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	      Number,
 	      "wws", Info, selector, SSparms);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte facility_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			 PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dbug(1,dprintf("facility_res"));
   return false;
@@ -5077,11 +5244,16 @@ static byte facility_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	dbug(1, dprintf("facility_res"));
 	return false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbug(1, dprintf("facility_res"));
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte connect_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			   PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info = 0;
   byte req;
@@ -5314,6 +5486,8 @@ static byte connect_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
         "w",Info);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info = 0;
 	byte req;
 	byte len;
@@ -5544,12 +5718,16 @@ static byte connect_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	      Number,
 	      "w", Info);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte connect_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			   PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word ncci;
   API_PARSE * ncpi;
@@ -5663,6 +5841,8 @@ static byte connect_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word ncci;
 	API_PARSE *ncpi;
 	byte req;
@@ -5774,12 +5954,16 @@ static byte connect_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte connect_b3_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			     PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word ncci;
 
@@ -5798,6 +5982,8 @@ static byte connect_b3_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word ncci;
 
 	ncci = (word)(Id >> 16);
@@ -5814,12 +6000,16 @@ static byte connect_b3_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte disconnect_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			      PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info;
   word ncci;
@@ -5874,6 +6064,8 @@ static byte disconnect_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
         "w",Info);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info;
 	word ncci;
 	API_PARSE *ncpi;
@@ -5926,12 +6118,16 @@ static byte disconnect_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	      Number,
 	      "w", Info);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte disconnect_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			      PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word ncci;
   word i;
@@ -5986,6 +6182,8 @@ static byte disconnect_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word ncci;
 	word i;
 
@@ -6038,12 +6236,16 @@ static byte disconnect_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte data_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   NCCI   *ncci_ptr;
   DATA_B3_DESC   *data;
@@ -6119,6 +6321,8 @@ static byte data_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	NCCI *ncci_ptr;
 	DATA_B3_DESC *data;
 	word Info;
@@ -6192,12 +6396,16 @@ static byte data_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		      "ww", GET_WORD(parms[2].info), Info);
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte data_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word n;
   word ncci;
@@ -6229,6 +6437,8 @@ static byte data_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word n;
 	word ncci;
 	word NCCIcode;
@@ -6258,12 +6468,16 @@ static byte data_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte reset_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			 PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info;
   word ncci;
@@ -6303,6 +6517,8 @@ static byte reset_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
         "w",Info);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info;
 	word ncci;
 
@@ -6340,12 +6556,16 @@ static byte reset_b3_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	      Number,
 	      "w", Info);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte reset_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			 PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word ncci;
 
@@ -6368,6 +6588,8 @@ static byte reset_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word ncci;
 
 	dbug(1, dprintf("reset_b3_res"));
@@ -6388,12 +6610,16 @@ static byte reset_b3_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte connect_b3_t90_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 				 PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word ncci;
   API_PARSE * ncpi;
@@ -6425,6 +6651,8 @@ static byte connect_b3_t90_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word ncci;
 	API_PARSE *ncpi;
 	byte req;
@@ -6454,13 +6682,17 @@ static byte connect_b3_t90_a_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static byte select_b_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			 PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word Info=0;
   word i;
@@ -6578,6 +6810,8 @@ static byte select_b_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   sendf(appl, _SELECT_B_REQ|CONFIRM, Id, Number, "w", Info);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word Info = 0;
 	word i;
 	byte tel;
@@ -6693,12 +6927,16 @@ static byte select_b_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	}
 	sendf(appl, _SELECT_B_REQ | CONFIRM, Id, Number, "w", Info);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static byte manufacturer_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			     PLCI *plci, APPL *appl, API_PARSE *parms)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word command;
   word i;
@@ -7024,6 +7262,8 @@ static byte manufacturer_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
         "dww",_DI_MANU_ID,command,Info);
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word command;
 	word i;
 	word ncci;
@@ -7347,13 +7587,17 @@ static byte manufacturer_req(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 	      Number,
 	      "dww", _DI_MANU_ID, command, Info);
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static byte manufacturer_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 			     PLCI *plci, APPL *appl, API_PARSE *msg)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word indication;
 
@@ -7423,6 +7667,8 @@ static byte manufacturer_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word indication;
 
 	API_PARSE m_parms[3];
@@ -7490,13 +7736,17 @@ static byte manufacturer_res(dword Id, word Number, DIVA_CAPI_ADAPTER *a,
 
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 /* IDI callback function                                            */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void   callback(ENTITY   * e)
 {
@@ -7753,6 +8003,8 @@ capi_callback_suffix:
   send_data(plci);
   send_req(plci);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void callback(ENTITY *e)
 {
 	DIVA_CAPI_ADAPTER *a;
@@ -8007,13 +8259,17 @@ capi_callback_suffix:
 	}
 	send_data(plci);
 	send_req(plci);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static void control_rc(PLCI *plci, byte req, byte rc, byte ch, byte global_req,
 		       byte nl_rc)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dword Id;
   dword rId;
@@ -8678,6 +8934,8 @@ static void control_rc(PLCI *plci, byte req, byte rc, byte ch, byte global_req,
     plci_remove_check(plci);
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword Id;
 	dword rId;
 	word Number;
@@ -9340,11 +9598,15 @@ static void control_rc(PLCI *plci, byte req, byte rc, byte ch, byte global_req,
 		}
 		plci_remove_check(plci);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void data_rc(PLCI *plci, byte ch)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dword Id;
   DIVA_CAPI_ADAPTER   * a;
@@ -9379,6 +9641,8 @@ static void data_rc(PLCI *plci, byte ch)
     }
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword Id;
 	DIVA_CAPI_ADAPTER *a;
 	NCCI *ncci_ptr;
@@ -9411,11 +9675,15 @@ static void data_rc(PLCI *plci, byte ch)
 			}
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void data_ack(PLCI *plci, byte ch)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dword Id;
   DIVA_CAPI_ADAPTER   * a;
@@ -9440,6 +9708,8 @@ static void data_ack(PLCI *plci, byte ch)
     (ncci_ptr->data_ack_pending)--;
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword Id;
 	DIVA_CAPI_ADAPTER *a;
 	NCCI *ncci_ptr;
@@ -9462,11 +9732,15 @@ static void data_ack(PLCI *plci, byte ch)
 			ncci_ptr->data_ack_out = 0;
 		(ncci_ptr->data_ack_pending)--;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sig_ind(PLCI *plci)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dword x_Id;
   dword Id;
@@ -10830,6 +11104,8 @@ static void SendSetupInfo(APPL   * appl, PLCI   * plci, dword Id, byte   * * par
     }
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword x_Id;
 	dword Id;
 	dword rId;
@@ -12191,12 +12467,16 @@ static void SendSetupInfo(APPL *appl, PLCI *plci, dword Id, byte **parms, byte I
 			}
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static void SendInfo(PLCI *plci, dword Id, byte **parms, byte iesent)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
   word j;
@@ -12370,6 +12650,8 @@ static void SendInfo(PLCI *plci, dword Id, byte **parms, byte iesent)
     }
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	word j;
 	word k;
@@ -12541,13 +12823,17 @@ static void SendInfo(PLCI *plci, dword Id, byte **parms, byte iesent)
 			sendf(plci->appl, _INFO_I, Id, 0, "wS", Info_Number, Info_Element);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static byte SendMultiIE(PLCI *plci, dword Id, byte **parms, byte ie_type,
 			dword info_mask, byte setupParse)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
   word j;
@@ -12665,6 +12951,8 @@ static void SendSSExtInd(APPL   * appl, PLCI   * plci, dword Id, byte   * * parm
    }
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	word j;
 	byte *ie;
@@ -12780,11 +13068,15 @@ static void SendSSExtInd(APPL *appl, PLCI *plci, dword Id, byte **parms)
 				      &parms[i][3]);
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void nl_ind(PLCI *plci)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   byte ch;
   word ncci;
@@ -13565,6 +13857,8 @@ static void nl_ind(PLCI *plci)
 /*------------------------------------------------------------------*/
 /* find a free PLCI                                                 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte ch;
 	word ncci;
 	dword Id;
@@ -14343,11 +14637,15 @@ static void nl_ind(PLCI *plci)
 
 /*------------------------------------------------------------------*/
 /* find a free PLCI */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*------------------------------------------------------------------*/
 
 static word get_plci(DIVA_CAPI_ADAPTER *a)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i,j;
   PLCI   * plci;
@@ -14420,6 +14718,8 @@ static word get_plci(DIVA_CAPI_ADAPTER *a)
   dbug(1,dprintf("get_plci(%x)",plci->Id));
   return i+1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i, j;
 	PLCI *plci;
 
@@ -14490,13 +14790,17 @@ static word get_plci(DIVA_CAPI_ADAPTER *a)
 	init_b1_config(plci);
 	dbug(1, dprintf("get_plci(%x)", plci->Id));
 	return i + 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 /* put a parameter in the parameter buffer                          */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void add_p(PLCI   * plci, byte code, byte   * p)
 {
@@ -14506,6 +14810,8 @@ static void add_p(PLCI   * plci, byte code, byte   * p)
   if(p) p_length = p[0];
   add_ie(plci, code, p, p_length);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void add_p(PLCI *plci, byte code, byte *p)
 {
 	word p_length;
@@ -14513,12 +14819,16 @@ static void add_p(PLCI *plci, byte code, byte *p)
 	p_length = 0;
 	if (p) p_length = p[0];
 	add_ie(plci, code, p, p_length);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 /* put a structure in the parameter buffer                          */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void add_s(PLCI   * plci, byte code, API_PARSE * p)
 {
@@ -14528,11 +14838,17 @@ static void add_s(PLCI *plci, byte code, API_PARSE *p)
 {
 	if (p) add_ie(plci, code, p->info, (word)p->length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void add_s(PLCI *plci, byte code, API_PARSE *p)
+{
+	if (p) add_ie(plci, code, p->info, (word)p->length);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 /* put multiple structures in the parameter buffer                  */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void add_ss(PLCI   * plci, byte code, API_PARSE * p)
 {
@@ -14546,6 +14862,8 @@ static void add_ss(PLCI   * plci, byte code, API_PARSE * p)
     }
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void add_ss(PLCI *plci, byte code, API_PARSE *p)
 {
 	byte i;
@@ -14557,12 +14875,16 @@ static void add_ss(PLCI *plci, byte code, API_PARSE *p)
 			add_ie(plci, p->info[i - 1], (byte *)&(p->info[i]), (word)p->info[i]);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 /* return the channel number sent by the application in a esc_chi   */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 static byte getChannel(API_PARSE * p)
 {
@@ -14577,6 +14899,8 @@ static byte getChannel(API_PARSE * p)
   }
   return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static byte getChannel(API_PARSE *p)
 {
 	byte i;
@@ -14589,7 +14913,10 @@ static byte getChannel(API_PARSE *p)
 		}
 	}
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -14597,6 +14924,7 @@ static byte getChannel(API_PARSE *p)
 /* put an information element in the parameter buffer               */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void add_ie(PLCI   * plci, byte code, byte   * p, word p_length)
 {
@@ -14619,6 +14947,8 @@ static void add_ie(PLCI   * plci, byte code, byte   * p, word p_length)
 
   plci->RBuffer[plci->req_in++] = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void add_ie(PLCI *plci, byte code, byte *p, word p_length)
 {
 	word i;
@@ -14639,7 +14969,10 @@ static void add_ie(PLCI *plci, byte code, byte *p, word p_length)
 	}
 
 	plci->RBuffer[plci->req_in++] = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -14648,6 +14981,7 @@ static void add_ie(PLCI *plci, byte code, byte *p, word p_length)
 
 static void add_d(PLCI *plci, word length, byte *p)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
 
@@ -14659,6 +14993,8 @@ static void add_d(PLCI *plci, word length, byte *p)
   }
   for(i=0;i<length;i++) plci->RBuffer[plci->req_in++] = p[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 
 	if (plci->req_in == plci->req_in_start) {
@@ -14668,7 +15004,10 @@ static void add_d(PLCI *plci, word length, byte *p)
 		plci->req_in--;
 	}
 	for (i = 0; i < length; i++) plci->RBuffer[plci->req_in++] = p[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -14678,6 +15017,7 @@ static void add_d(PLCI *plci, word length, byte *p)
 
 static void add_ai(PLCI *plci, API_PARSE *ai)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
     API_PARSE ai_parms[5];
@@ -14693,6 +15033,8 @@ static void add_ai(PLCI *plci, API_PARSE *ai)
   add_s (plci,UUI,&ai_parms[2]);
   add_ss(plci,FTY,&ai_parms[3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	API_PARSE ai_parms[5];
 
@@ -14706,7 +15048,10 @@ static void add_ai(PLCI *plci, API_PARSE *ai)
 	add_s(plci, KEY, &ai_parms[1]);
 	add_s(plci, UUI, &ai_parms[2]);
 	add_ss(plci, FTY, &ai_parms[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -14716,6 +15061,7 @@ static void add_ai(PLCI *plci, API_PARSE *ai)
 static word add_b1(PLCI *plci, API_PARSE *bp, word b_channel_info,
 		   word b1_facilities)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     API_PARSE bp_parms[8];
     API_PARSE mdm_cfg[9];
@@ -15174,6 +15520,8 @@ static word add_b1(PLCI *plci, API_PARSE *bp, word b_channel_info,
   add_p(plci, CAI, cai);
   return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	API_PARSE bp_parms[8];
 	API_PARSE mdm_cfg[9];
 	API_PARSE global_config[2];
@@ -15630,7 +15978,10 @@ static word add_b1(PLCI *plci, API_PARSE *bp, word b_channel_info,
 
 	add_p(plci, CAI, cai);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -15639,6 +15990,7 @@ static word add_b1(PLCI *plci, API_PARSE *bp, word b_channel_info,
 
 static word add_b23(PLCI *plci, API_PARSE *bp)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i, fax_control_bits;
   byte pos, len;
@@ -16259,6 +16611,8 @@ static word add_b23(PLCI *plci, API_PARSE *bp)
   add_p(plci, NLC, nlc);
   return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i, fax_control_bits;
 	byte pos, len;
 	byte SAPI = 0x40;  /* default SAPI 16 for x.31 */
@@ -16877,7 +17231,10 @@ static word add_b23(PLCI *plci, API_PARSE *bp)
 	}
 	add_p(plci, NLC, nlc);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*----------------------------------------------------------------*/
@@ -16895,6 +17252,7 @@ static word add_b23(PLCI *plci, API_PARSE *bp)
 /*      B3 Configuration for modem:                               */
 /*          empty                                                 */
 /*----------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 static word add_modem_b23 (PLCI  * plci, API_PARSE* bp_parms)
 {
@@ -17027,6 +17385,8 @@ static word add_modem_b23 (PLCI  * plci, API_PARSE* bp_parms)
   add_p(plci, DLC, dlc);
   return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static word add_modem_b23(PLCI *plci, API_PARSE *bp_parms)
 {
 	static byte lli[12] = {1,1};
@@ -17157,7 +17517,10 @@ static word add_modem_b23(PLCI *plci, API_PARSE *bp_parms)
 /* HexDump ("DLC", sizeof(dlc), &dlc[0]); */
 	add_p(plci, DLC, dlc);
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -17167,6 +17530,7 @@ static word add_modem_b23(PLCI *plci, API_PARSE *bp_parms)
 
 static void sig_req(PLCI *plci, byte req, byte Id)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   if(!plci) return;
   if(plci->adapter->adapter_disabled) return;
@@ -17183,6 +17547,8 @@ static void sig_req(PLCI *plci, byte req, byte Id)
   plci->RBuffer[plci->req_in++] = 0;    /* channel */
   plci->req_in_start = plci->req_in;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!plci) return;
 	if (plci->adapter->adapter_disabled) return;
 	dbug(1, dprintf("sig_req(%x)", req));
@@ -17197,7 +17563,10 @@ static void sig_req(PLCI *plci, byte req, byte Id)
 	plci->RBuffer[plci->req_in++] = req;  /* request */
 	plci->RBuffer[plci->req_in++] = 0;    /* channel */
 	plci->req_in_start = plci->req_in;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -17206,6 +17575,7 @@ static void sig_req(PLCI *plci, byte req, byte Id)
 
 static void nl_req_ncci(PLCI *plci, byte req, byte ncci)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   if(!plci) return;
   if(plci->adapter->adapter_disabled) return;
@@ -17226,6 +17596,8 @@ static void nl_req_ncci(PLCI *plci, byte req, byte ncci)
   plci->RBuffer[plci->req_in++] = plci->adapter->ncci_ch[ncci];   /* channel */
   plci->req_in_start = plci->req_in;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!plci) return;
 	if (plci->adapter->adapter_disabled) return;
 	dbug(1, dprintf("nl_req %02x %02x %02x", plci->Id, req, ncci));
@@ -17244,11 +17616,15 @@ static void nl_req_ncci(PLCI *plci, byte req, byte ncci)
 	plci->RBuffer[plci->req_in++] = req;  /* request */
 	plci->RBuffer[plci->req_in++] = plci->adapter->ncci_ch[ncci];   /* channel */
 	plci->req_in_start = plci->req_in;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void send_req(PLCI *plci)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   ENTITY   * e;
   word l;
@@ -17303,6 +17679,8 @@ static void send_req(PLCI *plci)
   plci->adapter->request(e);
   dbug(1,dprintf("send_ok"));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ENTITY *e;
 	word l;
 /*  word i; */
@@ -17355,11 +17733,15 @@ static void send_req(PLCI *plci)
 	e->X = plci->XData;
 	plci->adapter->request(e);
 	dbug(1, dprintf("send_ok"));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void send_data(PLCI *plci)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   DIVA_CAPI_ADAPTER   * a;
   DATA_B3_DESC   * data;
@@ -17437,6 +17819,8 @@ static void send_data(PLCI *plci)
     plci->ncci_ring_list = ncci;
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DIVA_CAPI_ADAPTER *a;
 	DATA_B3_DESC *data;
 	NCCI   *ncci_ptr;
@@ -17512,11 +17896,15 @@ static void send_data(PLCI *plci)
 		} while (!plci->nl_req && (ncci != plci->ncci_ring_list));
 		plci->ncci_ring_list = ncci;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void listen_check(DIVA_CAPI_ADAPTER *a)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i,j;
   PLCI   * plci;
@@ -17554,6 +17942,8 @@ static void listen_check(DIVA_CAPI_ADAPTER *a)
     }
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i, j;
 	PLCI *plci;
 	byte activnotifiedcalls = 0;
@@ -17589,7 +17979,10 @@ static void listen_check(DIVA_CAPI_ADAPTER *a)
 			}
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -17598,6 +17991,7 @@ static void listen_check(DIVA_CAPI_ADAPTER *a)
 
 static void IndParse(PLCI *plci, word *parms_id, byte **parms, byte multiIEsize)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word ploc;            /* points to current location within packet */
   byte w;
@@ -17677,6 +18071,8 @@ static void IndParse(PLCI *plci, word *parms_id, byte **parms, byte multiIEsize)
   }
   return ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word ploc;            /* points to current location within packet */
 	byte w;
 	byte wlen;
@@ -17754,7 +18150,10 @@ static void IndParse(PLCI *plci, word *parms_id, byte **parms, byte multiIEsize)
 		ploc += (wlen + 1);
 	}
 	return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -17764,22 +18163,29 @@ static void IndParse(PLCI *plci, word *parms_id, byte **parms, byte multiIEsize)
 static byte ie_compare(byte *ie1, byte *ie2)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   word i;
   if(!ie1 || ! ie2) return false;
   if(!ie1[0]) return false;
   for(i=0;i<(word)(ie1[0]+1);i++) if(ie1[i]!=ie2[i]) return false;
   return true;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	if (!ie1 || !ie2) return false;
 	if (!ie1[0]) return false;
 	for (i = 0; i < (word)(ie1[0] + 1); i++) if (ie1[i] != ie2[i]) return false;
 	return true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static word find_cip(DIVA_CAPI_ADAPTER *a, byte *bc, byte *hlc)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i;
   word j;
@@ -17842,6 +18248,8 @@ static byte AddInfo(byte   **add_i,
   len += 4;                          /* calculate length of all */
   return(len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i;
 	word j;
 
@@ -17902,7 +18310,10 @@ static byte AddInfo(byte **add_i,
 	len = add_i[0][0] + add_i[1][0] + add_i[2][0] + add_i[3][0];
 	len += 4;                          /* calculate length of all */
 	return (len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -17911,6 +18322,7 @@ static byte AddInfo(byte **add_i,
 
 static void SetVoiceChannel(PLCI *plci, byte *chi, DIVA_CAPI_ADAPTER *a)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   byte voice_chi[] = "\x02\x18\x01";
   byte channel;
@@ -17927,6 +18339,8 @@ static void SetVoiceChannel(PLCI *plci, byte *chi, DIVA_CAPI_ADAPTER *a)
     adv_voice_write_coefs (a->AdvSignalPLCI, ADV_VOICE_WRITE_ACTIVATION);
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte voice_chi[] = "\x02\x18\x01";
 	byte channel;
 
@@ -17941,11 +18355,15 @@ static void SetVoiceChannel(PLCI *plci, byte *chi, DIVA_CAPI_ADAPTER *a)
 	{
 		adv_voice_write_coefs(a->AdvSignalPLCI, ADV_VOICE_WRITE_ACTIVATION);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void VoiceChannelOff(PLCI *plci)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dbug(1,dprintf("ExtDevOFF"));
   add_p(plci,FTY,"\x02\x01\x08");             /* B Off */
@@ -17956,6 +18374,8 @@ static void VoiceChannelOff(PLCI *plci)
     adv_voice_clear_config (plci->adapter->AdvSignalPLCI);
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dbug(1, dprintf("ExtDevOFF"));
 	add_p(plci, FTY, "\x02\x01\x08");             /* B Off */
 	sig_req(plci, TEL_CTRL, 0);
@@ -17964,13 +18384,17 @@ static void VoiceChannelOff(PLCI *plci)
 	{
 		adv_voice_clear_config(plci->adapter->AdvSignalPLCI);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static word AdvCodecSupport(DIVA_CAPI_ADAPTER *a, PLCI *plci, APPL *appl,
 			    byte hook_listen)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word j;
   PLCI   *splci;
@@ -18064,6 +18488,8 @@ static word AdvCodecSupport(DIVA_CAPI_ADAPTER *a, PLCI *plci, APPL *appl,
 
   return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word j;
 	PLCI *splci;
 
@@ -18155,13 +18581,17 @@ static word AdvCodecSupport(DIVA_CAPI_ADAPTER *a, PLCI *plci, APPL *appl,
 	else return 0x300B;               /* Facility not supported */
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static void CodecIdCheck(DIVA_CAPI_ADAPTER *a, PLCI *plci)
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   dbug(1,dprintf("CodecIdCheck"));
 
@@ -18249,6 +18679,9 @@ static void diva_get_extended_adapter_features (DIVA_CAPI_ADAPTER  * a) {
   diva_ask_for_xdi_sdram_bar (a, preq);
 =======
 	dbug(1, dprintf("CodecIdCheck"));
+=======
+	dbug(1, dprintf("CodecIdCheck"));
+>>>>>>> refs/remotes/origin/master
 
 	if (a->AdvSignalPLCI == plci)
 	{
@@ -18332,7 +18765,10 @@ static void diva_get_extended_adapter_features(DIVA_CAPI_ADAPTER *a) {
 	}
 
 	diva_ask_for_xdi_sdram_bar(a, preq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
@@ -18340,6 +18776,7 @@ static void diva_get_extended_adapter_features(DIVA_CAPI_ADAPTER *a) {
 /*------------------------------------------------------------------*/
 /* called from OS specific part after init time to get the Law              */
 /* a-law (Euro) and u-law (us,japan) use different BCs in the Setup message */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void AutomaticLaw(DIVA_CAPI_ADAPTER   *a)
 {
@@ -18363,6 +18800,8 @@ void AutomaticLaw(DIVA_CAPI_ADAPTER   *a)
     send_req(splci);
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void AutomaticLaw(DIVA_CAPI_ADAPTER *a)
 {
 	word j;
@@ -18384,12 +18823,16 @@ void AutomaticLaw(DIVA_CAPI_ADAPTER *a)
 		sig_req(splci, ASSIGN, DSIG_ID);
 		send_req(splci);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* called from OS specific part if an application sends an Capi20Release */
 word CapiRelease(word Id)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i, j, appls_found;
   PLCI   *plci;
@@ -18536,6 +18979,8 @@ static word plci_remove_check(PLCI   *plci)
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i, j, appls_found;
 	PLCI *plci;
 	APPL   *this;
@@ -18680,12 +19125,16 @@ static word plci_remove_check(PLCI *plci)
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static byte plci_nl_busy (PLCI   *plci)
 {
@@ -18695,6 +19144,8 @@ static byte plci_nl_busy (PLCI   *plci)
      && plci->adapter->ncci_ch[plci->ncci_ring_list]
      && (plci->adapter->ch_flow_control[plci->adapter->ncci_ch[plci->ncci_ring_list]] & N_OK_FC_PENDING)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static byte plci_nl_busy(PLCI *plci)
 {
 	/* only applicable for non-multiplexed protocols */
@@ -18702,7 +19153,10 @@ static byte plci_nl_busy(PLCI *plci)
 		|| (plci->ncci_ring_list
 		    && plci->adapter->ncci_ch[plci->ncci_ring_list]
 		    && (plci->adapter->ch_flow_control[plci->adapter->ncci_ch[plci->ncci_ring_list]] & N_OK_FC_PENDING)));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -18713,6 +19167,7 @@ static byte plci_nl_busy(PLCI *plci)
 
 static struct
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   byte send_mask;
   byte listen_mask;
@@ -18794,6 +19249,8 @@ static struct
   { 0x02, 0x02, 0xfe, DTMF_MF_DIGIT_TONE_CODE_S1 },
   { 0x02, 0x02, 0xff, DTMF_MF_DIGIT_TONE_CODE_ST },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte send_mask;
 	byte listen_mask;
 	byte character;
@@ -18873,13 +19330,17 @@ static struct
 	{ 0x02, 0x02, 0xfd, DTMF_MF_DIGIT_TONE_CODE_KP },
 	{ 0x02, 0x02, 0xfe, DTMF_MF_DIGIT_TONE_CODE_S1 },
 	{ 0x02, 0x02, 0xff, DTMF_MF_DIGIT_TONE_CODE_ST },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 };
 
 #define DTMF_DIGIT_MAP_ENTRIES ARRAY_SIZE(dtmf_digit_map)
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void dtmf_enable_receiver (PLCI   *plci, byte enable_mask)
 {
@@ -19472,6 +19933,8 @@ static void dtmf_indication (dword Id, PLCI   *plci, byte   *msg, word length)
     sendf (plci->appl, _FACILITY_I, Id & 0xffffL, 0, "wS", SELECTOR_DTMF, msg);
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void dtmf_enable_receiver(PLCI *plci, byte enable_mask)
 {
 	word min_digit_duration, min_gap_duration;
@@ -20062,7 +20525,10 @@ static void dtmf_indication(dword Id, PLCI *plci, byte *msg, word length)
 		msg[0] = (byte) n;
 		sendf(plci->appl, _FACILITY_I, Id & 0xffffL, 0, "wS", SELECTOR_DTMF, msg);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -20070,6 +20536,7 @@ static void dtmf_indication(dword Id, PLCI *plci, byte *msg, word length)
 /* DTMF parameters                                                  */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void dtmf_parameter_write (PLCI   *plci)
 {
@@ -20107,6 +20574,8 @@ static void dtmf_parameter_prepare_switch (dword Id, PLCI   *plci)
   dbug (1, dprintf ("[%06lx] %s,%d: dtmf_parameter_prepare_switch",
     UnMapId (Id), (char   *)(FILE_), __LINE__));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void dtmf_parameter_write(PLCI *plci)
 {
 	word i;
@@ -20142,6 +20611,7 @@ static void dtmf_parameter_prepare_switch(dword Id, PLCI *plci)
 
 	dbug(1, dprintf("[%06lx] %s,%d: dtmf_parameter_prepare_switch",
 			UnMapId(Id), (char *)(FILE_), __LINE__));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 }
@@ -20194,6 +20664,12 @@ static word dtmf_parameter_restore_config (dword Id, PLCI   *plci, byte Rc)
   }
   return (Info);
 =======
+=======
+
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static word dtmf_parameter_save_config(dword Id, PLCI *plci, byte Rc)
 {
 
@@ -20239,7 +20715,10 @@ static word dtmf_parameter_restore_config(dword Id, PLCI *plci, byte Rc)
 		}
 	}
 	return (Info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -20262,6 +20741,7 @@ word li_total_channels;
 /* if channels is provided we accept more than one channel.         */
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static byte chi_to_channel (byte   *chi, dword *pchannelmap)
 {
@@ -23414,6 +23894,105 @@ static byte chi_to_channel(byte *chi, dword *pchannelmap)
 		}
 	}
 }
+=======
+static byte chi_to_channel(byte *chi, dword *pchannelmap)
+{
+	int p;
+	int i;
+	dword map;
+	byte excl;
+	byte ofs;
+	byte ch;
+
+	if (pchannelmap) *pchannelmap = 0;
+	if (!chi[0]) return 0xff;
+	excl = 0;
+
+	if (chi[1] & 0x20) {
+		if (chi[0] == 1 && chi[1] == 0xac) return 0xfd; /* exclusive d-channel */
+		for (i = 1; i < chi[0] && !(chi[i] & 0x80); i++);
+		if (i == chi[0] || !(chi[i] & 0x80)) return 0xfe;
+		if ((chi[1] | 0xc8) != 0xe9) return 0xfe;
+		if (chi[1] & 0x08) excl = 0x40;
+
+		/* int. id present */
+		if (chi[1] & 0x40) {
+			p = i + 1;
+			for (i = p; i < chi[0] && !(chi[i] & 0x80); i++);
+			if (i == chi[0] || !(chi[i] & 0x80)) return 0xfe;
+		}
+
+		/* coding standard, Number/Map, Channel Type */
+		p = i + 1;
+		for (i = p; i < chi[0] && !(chi[i] & 0x80); i++);
+		if (i == chi[0] || !(chi[i] & 0x80)) return 0xfe;
+		if ((chi[p] | 0xd0) != 0xd3) return 0xfe;
+
+		/* Number/Map */
+		if (chi[p] & 0x10) {
+
+			/* map */
+			if ((chi[0] - p) == 4) ofs = 0;
+			else if ((chi[0] - p) == 3) ofs = 1;
+			else return 0xfe;
+			ch = 0;
+			map = 0;
+			for (i = 0; i < 4 && p < chi[0]; i++) {
+				p++;
+				ch += 8;
+				map <<= 8;
+				if (chi[p]) {
+					for (ch = 0; !(chi[p] & (1 << ch)); ch++);
+					map |= chi[p];
+				}
+			}
+			ch += ofs;
+			map <<= ofs;
+		}
+		else {
+
+			/* number */
+			p = i + 1;
+			ch = chi[p] & 0x3f;
+			if (pchannelmap) {
+				if ((byte)(chi[0] - p) > 30) return 0xfe;
+				map = 0;
+				for (i = p; i <= chi[0]; i++) {
+					if ((chi[i] & 0x7f) > 31) return 0xfe;
+					map |= (1L << (chi[i] & 0x7f));
+				}
+			}
+			else {
+				if (p != chi[0]) return 0xfe;
+				if (ch > 31) return 0xfe;
+				map = (1L << ch);
+			}
+			if (chi[p] & 0x40) return 0xfe;
+		}
+		if (pchannelmap) *pchannelmap = map;
+		else if (map != ((dword)(1L << ch))) return 0xfe;
+		return (byte)(excl | ch);
+	}
+	else {  /* not PRI */
+		for (i = 1; i < chi[0] && !(chi[i] & 0x80); i++);
+		if (i != chi[0] || !(chi[i] & 0x80)) return 0xfe;
+		if (chi[1] & 0x08) excl = 0x40;
+
+		switch (chi[1] | 0x98) {
+		case 0x98: return 0;
+		case 0x99:
+			if (pchannelmap) *pchannelmap = 2;
+			return excl | 1;
+		case 0x9a:
+			if (pchannelmap) *pchannelmap = 4;
+			return excl | 2;
+		case 0x9b: return 0xff;
+		case 0x9c: return 0xfd; /* d-ch */
+		default: return 0xfe;
+		}
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 
 static void mixer_set_bchannel_id_esc(PLCI *plci, byte bchannel_id)
@@ -25458,6 +26037,7 @@ static byte mixer_request(dword Id, word Number, DIVA_CAPI_ADAPTER *a, PLCI *plc
 	}
 	sendf(appl, _FACILITY_R | CONFIRM, Id & 0xffffL, Number,
 	      "wwS", Info, SELECTOR_LINE_INTERCONNECT, result);
+<<<<<<< HEAD
 	return (false);
 }
 
@@ -26371,10 +26951,644 @@ static word adv_voice_restore_config(dword Id, PLCI *plci, byte Rc)
 	}
 	return (Info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (false);
+}
+
+
+static void mixer_indication_coefs_set(dword Id, PLCI *plci)
+{
+	dword d;
+	byte result[12];
+
+	dbug(1, dprintf("[%06lx] %s,%d: mixer_indication_coefs_set",
+			UnMapId(Id), (char *)(FILE_), __LINE__));
+
+	if (plci->li_plci_b_read_pos != plci->li_plci_b_req_pos)
+	{
+		do
+		{
+			d = plci->li_plci_b_queue[plci->li_plci_b_read_pos];
+			if (!(d & LI_PLCI_B_SKIP_FLAG))
+			{
+				if (plci->appl->appl_flags & APPL_FLAG_OLD_LI_SPEC)
+				{
+					if (d & LI_PLCI_B_DISC_FLAG)
+					{
+						result[0] = 5;
+						PUT_WORD(&result[1], LI_IND_DISCONNECT);
+						result[3] = 2;
+						PUT_WORD(&result[4], _LI_USER_INITIATED);
+					}
+					else
+					{
+						result[0] = 7;
+						PUT_WORD(&result[1], LI_IND_CONNECT_ACTIVE);
+						result[3] = 4;
+						PUT_DWORD(&result[4], d & ~LI_PLCI_B_FLAG_MASK);
+					}
+				}
+				else
+				{
+					if (d & LI_PLCI_B_DISC_FLAG)
+					{
+						result[0] = 9;
+						PUT_WORD(&result[1], LI_IND_DISCONNECT);
+						result[3] = 6;
+						PUT_DWORD(&result[4], d & ~LI_PLCI_B_FLAG_MASK);
+						PUT_WORD(&result[8], _LI_USER_INITIATED);
+					}
+					else
+					{
+						result[0] = 7;
+						PUT_WORD(&result[1], LI_IND_CONNECT_ACTIVE);
+						result[3] = 4;
+						PUT_DWORD(&result[4], d & ~LI_PLCI_B_FLAG_MASK);
+					}
+				}
+				sendf(plci->appl, _FACILITY_I, Id & 0xffffL, 0,
+				      "ws", SELECTOR_LINE_INTERCONNECT, result);
+			}
+			plci->li_plci_b_read_pos = (plci->li_plci_b_read_pos == LI_PLCI_B_QUEUE_ENTRIES - 1) ?
+				0 : plci->li_plci_b_read_pos + 1;
+		} while (!(d & LI_PLCI_B_LAST_FLAG) && (plci->li_plci_b_read_pos != plci->li_plci_b_req_pos));
+	}
+}
+
+
+static void mixer_indication_xconnect_from(dword Id, PLCI *plci, byte *msg, word length)
+{
+	word i, j, ch;
+	struct xconnect_transfer_address_s s,   *p;
+	DIVA_CAPI_ADAPTER *a;
+
+	dbug(1, dprintf("[%06lx] %s,%d: mixer_indication_xconnect_from %d",
+			UnMapId(Id), (char *)(FILE_), __LINE__, (int)length));
+
+	a = plci->adapter;
+	i = 1;
+	for (i = 1; i < length; i += 16)
+	{
+		s.card_address.low = msg[i] | (msg[i + 1] << 8) | (((dword)(msg[i + 2])) << 16) | (((dword)(msg[i + 3])) << 24);
+		s.card_address.high = msg[i + 4] | (msg[i + 5] << 8) | (((dword)(msg[i + 6])) << 16) | (((dword)(msg[i + 7])) << 24);
+		s.offset = msg[i + 8] | (msg[i + 9] << 8) | (((dword)(msg[i + 10])) << 16) | (((dword)(msg[i + 11])) << 24);
+		ch = msg[i + 12] | (msg[i + 13] << 8);
+		j = ch & XCONNECT_CHANNEL_NUMBER_MASK;
+		if (!a->li_pri && (plci->li_bchannel_id == 2))
+			j = 1 - j;
+		j += a->li_base;
+		if (ch & XCONNECT_CHANNEL_PORT_PC)
+			p = &(li_config_table[j].send_pc);
+		else
+			p = &(li_config_table[j].send_b);
+		p->card_address.low = s.card_address.low;
+		p->card_address.high = s.card_address.high;
+		p->offset = s.offset;
+		li_config_table[j].channel |= LI_CHANNEL_ADDRESSES_SET;
+	}
+	if (plci->internal_command_queue[0]
+	    && ((plci->adjust_b_state == ADJUST_B_RESTORE_MIXER_2)
+		|| (plci->adjust_b_state == ADJUST_B_RESTORE_MIXER_3)
+		|| (plci->adjust_b_state == ADJUST_B_RESTORE_MIXER_4)))
+	{
+		(*(plci->internal_command_queue[0]))(Id, plci, 0);
+		if (!plci->internal_command)
+			next_internal_command(Id, plci);
+	}
+	mixer_notify_update(plci, true);
+}
+
+
+static void mixer_indication_xconnect_to(dword Id, PLCI *plci, byte *msg, word length)
+{
+
+	dbug(1, dprintf("[%06lx] %s,%d: mixer_indication_xconnect_to %d",
+			UnMapId(Id), (char *)(FILE_), __LINE__, (int) length));
+
+}
+
+
+static byte mixer_notify_source_removed(PLCI *plci, dword plci_b_id)
+{
+	word plci_b_write_pos;
+
+	plci_b_write_pos = plci->li_plci_b_write_pos;
+	if (((plci->li_plci_b_read_pos > plci_b_write_pos) ? plci->li_plci_b_read_pos :
+	     LI_PLCI_B_QUEUE_ENTRIES + plci->li_plci_b_read_pos) - plci_b_write_pos - 1 < 1)
+	{
+		dbug(1, dprintf("[%06lx] %s,%d: LI request overrun",
+				(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+				(char *)(FILE_), __LINE__));
+		return (false);
+	}
+	plci->li_plci_b_queue[plci_b_write_pos] = plci_b_id | LI_PLCI_B_DISC_FLAG;
+	plci_b_write_pos = (plci_b_write_pos == LI_PLCI_B_QUEUE_ENTRIES - 1) ? 0 : plci_b_write_pos + 1;
+	plci->li_plci_b_write_pos = plci_b_write_pos;
+	return (true);
+}
+
+
+static void mixer_remove(PLCI *plci)
+{
+	DIVA_CAPI_ADAPTER *a;
+	PLCI *notify_plci;
+	dword plci_b_id;
+	word i, j;
+
+	dbug(1, dprintf("[%06lx] %s,%d: mixer_remove",
+			(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+			(char *)(FILE_), __LINE__));
+
+	a = plci->adapter;
+	plci_b_id = (plci->Id << 8) | UnMapController(plci->adapter->Id);
+	if (a->profile.Global_Options & GL_LINE_INTERCONNECT_SUPPORTED)
+	{
+		if ((plci->li_bchannel_id != 0)
+		    && (li_config_table[a->li_base + (plci->li_bchannel_id - 1)].plci == plci))
+		{
+			i = a->li_base + (plci->li_bchannel_id - 1);
+			if ((li_config_table[i].curchnl | li_config_table[i].channel) & LI_CHANNEL_INVOLVED)
+			{
+				for (j = 0; j < li_total_channels; j++)
+				{
+					if ((li_config_table[i].flag_table[j] & LI_FLAG_INTERCONNECT)
+					    || (li_config_table[j].flag_table[i] & LI_FLAG_INTERCONNECT))
+					{
+						notify_plci = li_config_table[j].plci;
+						if ((notify_plci != NULL)
+						    && (notify_plci != plci)
+						    && (notify_plci->appl != NULL)
+						    && !(notify_plci->appl->appl_flags & APPL_FLAG_OLD_LI_SPEC)
+						    && (notify_plci->State)
+						    && notify_plci->NL.Id && !notify_plci->nl_remove_id)
+						{
+							mixer_notify_source_removed(notify_plci, plci_b_id);
+						}
+					}
+				}
+				mixer_clear_config(plci);
+				mixer_calculate_coefs(a);
+				mixer_notify_update(plci, true);
+			}
+			li_config_table[i].plci = NULL;
+			plci->li_bchannel_id = 0;
+		}
+	}
+}
+
+
+/*------------------------------------------------------------------*/
+/* Echo canceller facilities                                        */
+/*------------------------------------------------------------------*/
+
+
+static void ec_write_parameters(PLCI *plci)
+{
+	word w;
+	byte parameter_buffer[6];
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_write_parameters",
+			(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+			(char *)(FILE_), __LINE__));
+
+	parameter_buffer[0] = 5;
+	parameter_buffer[1] = DSP_CTRL_SET_LEC_PARAMETERS;
+	PUT_WORD(&parameter_buffer[2], plci->ec_idi_options);
+	plci->ec_idi_options &= ~LEC_RESET_COEFFICIENTS;
+	w = (plci->ec_tail_length == 0) ? 128 : plci->ec_tail_length;
+	PUT_WORD(&parameter_buffer[4], w);
+	add_p(plci, FTY, parameter_buffer);
+	sig_req(plci, TEL_CTRL, 0);
+	send_req(plci);
+}
+
+
+static void ec_clear_config(PLCI *plci)
+{
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_clear_config",
+			(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+			(char *)(FILE_), __LINE__));
+
+	plci->ec_idi_options = LEC_ENABLE_ECHO_CANCELLER |
+		LEC_MANUAL_DISABLE | LEC_ENABLE_NONLINEAR_PROCESSING;
+	plci->ec_tail_length = 0;
+}
+
+
+static void ec_prepare_switch(dword Id, PLCI *plci)
+{
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_prepare_switch",
+			UnMapId(Id), (char *)(FILE_), __LINE__));
+
+}
+
+
+static word ec_save_config(dword Id, PLCI *plci, byte Rc)
+{
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_save_config %02x %d",
+			UnMapId(Id), (char *)(FILE_), __LINE__, Rc, plci->adjust_b_state));
+
+	return (GOOD);
+}
+
+
+static word ec_restore_config(dword Id, PLCI *plci, byte Rc)
+{
+	word Info;
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_restore_config %02x %d",
+			UnMapId(Id), (char *)(FILE_), __LINE__, Rc, plci->adjust_b_state));
+
+	Info = GOOD;
+	if (plci->B1_facilities & B1_FACILITY_EC)
+	{
+		switch (plci->adjust_b_state)
+		{
+		case ADJUST_B_RESTORE_EC_1:
+			plci->internal_command = plci->adjust_b_command;
+			if (plci->sig_req)
+			{
+				plci->adjust_b_state = ADJUST_B_RESTORE_EC_1;
+				break;
+			}
+			ec_write_parameters(plci);
+			plci->adjust_b_state = ADJUST_B_RESTORE_EC_2;
+			break;
+		case ADJUST_B_RESTORE_EC_2:
+			if ((Rc != OK) && (Rc != OK_FC))
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Restore EC failed %02x",
+						UnMapId(Id), (char *)(FILE_), __LINE__, Rc));
+				Info = _WRONG_STATE;
+				break;
+			}
+			break;
+		}
+	}
+	return (Info);
+}
+
+
+static void ec_command(dword Id, PLCI *plci, byte Rc)
+{
+	word internal_command, Info;
+	byte result[8];
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_command %02x %04x %04x %04x %d",
+			UnMapId(Id), (char *)(FILE_), __LINE__, Rc, plci->internal_command,
+			plci->ec_cmd, plci->ec_idi_options, plci->ec_tail_length));
+
+	Info = GOOD;
+	if (plci->appl->appl_flags & APPL_FLAG_PRIV_EC_SPEC)
+	{
+		result[0] = 2;
+		PUT_WORD(&result[1], EC_SUCCESS);
+	}
+	else
+	{
+		result[0] = 5;
+		PUT_WORD(&result[1], plci->ec_cmd);
+		result[3] = 2;
+		PUT_WORD(&result[4], GOOD);
+	}
+	internal_command = plci->internal_command;
+	plci->internal_command = 0;
+	switch (plci->ec_cmd)
+	{
+	case EC_ENABLE_OPERATION:
+	case EC_FREEZE_COEFFICIENTS:
+	case EC_RESUME_COEFFICIENT_UPDATE:
+	case EC_RESET_COEFFICIENTS:
+		switch (internal_command)
+		{
+		default:
+			adjust_b1_resource(Id, plci, NULL, (word)(plci->B1_facilities |
+								  B1_FACILITY_EC), EC_COMMAND_1);
+		case EC_COMMAND_1:
+			if (adjust_b_process(Id, plci, Rc) != GOOD)
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Load EC failed",
+						UnMapId(Id), (char *)(FILE_), __LINE__));
+				Info = _FACILITY_NOT_SUPPORTED;
+				break;
+			}
+			if (plci->internal_command)
+				return;
+		case EC_COMMAND_2:
+			if (plci->sig_req)
+			{
+				plci->internal_command = EC_COMMAND_2;
+				return;
+			}
+			plci->internal_command = EC_COMMAND_3;
+			ec_write_parameters(plci);
+			return;
+		case EC_COMMAND_3:
+			if ((Rc != OK) && (Rc != OK_FC))
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Enable EC failed %02x",
+						UnMapId(Id), (char *)(FILE_), __LINE__, Rc));
+				Info = _FACILITY_NOT_SUPPORTED;
+				break;
+			}
+			break;
+		}
+		break;
+
+	case EC_DISABLE_OPERATION:
+		switch (internal_command)
+		{
+		default:
+		case EC_COMMAND_1:
+			if (plci->B1_facilities & B1_FACILITY_EC)
+			{
+				if (plci->sig_req)
+				{
+					plci->internal_command = EC_COMMAND_1;
+					return;
+				}
+				plci->internal_command = EC_COMMAND_2;
+				ec_write_parameters(plci);
+				return;
+			}
+			Rc = OK;
+		case EC_COMMAND_2:
+			if ((Rc != OK) && (Rc != OK_FC))
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Disable EC failed %02x",
+						UnMapId(Id), (char *)(FILE_), __LINE__, Rc));
+				Info = _FACILITY_NOT_SUPPORTED;
+				break;
+			}
+			adjust_b1_resource(Id, plci, NULL, (word)(plci->B1_facilities &
+								  ~B1_FACILITY_EC), EC_COMMAND_3);
+		case EC_COMMAND_3:
+			if (adjust_b_process(Id, plci, Rc) != GOOD)
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Unload EC failed",
+						UnMapId(Id), (char *)(FILE_), __LINE__));
+				Info = _FACILITY_NOT_SUPPORTED;
+				break;
+			}
+			if (plci->internal_command)
+				return;
+			break;
+		}
+		break;
+	}
+	sendf(plci->appl, _FACILITY_R | CONFIRM, Id & 0xffffL, plci->number,
+	      "wws", Info, (plci->appl->appl_flags & APPL_FLAG_PRIV_EC_SPEC) ?
+	      PRIV_SELECTOR_ECHO_CANCELLER : SELECTOR_ECHO_CANCELLER, result);
+}
+
+
+static byte ec_request(dword Id, word Number, DIVA_CAPI_ADAPTER *a, PLCI *plci, APPL   *appl, API_PARSE *msg)
+{
+	word Info;
+	word opt;
+	API_PARSE ec_parms[3];
+	byte result[16];
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_request",
+			UnMapId(Id), (char *)(FILE_), __LINE__));
+
+	Info = GOOD;
+	result[0] = 0;
+	if (!(a->man_profile.private_options & (1L << PRIVATE_ECHO_CANCELLER)))
+	{
+		dbug(1, dprintf("[%06lx] %s,%d: Facility not supported",
+				UnMapId(Id), (char *)(FILE_), __LINE__));
+		Info = _FACILITY_NOT_SUPPORTED;
+	}
+	else
+	{
+		if (appl->appl_flags & APPL_FLAG_PRIV_EC_SPEC)
+		{
+			if (api_parse(&msg[1].info[1], msg[1].length, "w", ec_parms))
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Wrong message format",
+						UnMapId(Id), (char *)(FILE_), __LINE__));
+				Info = _WRONG_MESSAGE_FORMAT;
+			}
+			else
+			{
+				if (plci == NULL)
+				{
+					dbug(1, dprintf("[%06lx] %s,%d: Wrong PLCI",
+							UnMapId(Id), (char *)(FILE_), __LINE__));
+					Info = _WRONG_IDENTIFIER;
+				}
+				else if (!plci->State || !plci->NL.Id || plci->nl_remove_id)
+				{
+					dbug(1, dprintf("[%06lx] %s,%d: Wrong state",
+							UnMapId(Id), (char *)(FILE_), __LINE__));
+					Info = _WRONG_STATE;
+				}
+				else
+				{
+					plci->command = 0;
+					plci->ec_cmd = GET_WORD(ec_parms[0].info);
+					plci->ec_idi_options &= ~(LEC_MANUAL_DISABLE | LEC_RESET_COEFFICIENTS);
+					result[0] = 2;
+					PUT_WORD(&result[1], EC_SUCCESS);
+					if (msg[1].length >= 4)
+					{
+						opt = GET_WORD(&ec_parms[0].info[2]);
+						plci->ec_idi_options &= ~(LEC_ENABLE_NONLINEAR_PROCESSING |
+									  LEC_ENABLE_2100HZ_DETECTOR | LEC_REQUIRE_2100HZ_REVERSALS);
+						if (!(opt & EC_DISABLE_NON_LINEAR_PROCESSING))
+							plci->ec_idi_options |= LEC_ENABLE_NONLINEAR_PROCESSING;
+						if (opt & EC_DETECT_DISABLE_TONE)
+							plci->ec_idi_options |= LEC_ENABLE_2100HZ_DETECTOR;
+						if (!(opt & EC_DO_NOT_REQUIRE_REVERSALS))
+							plci->ec_idi_options |= LEC_REQUIRE_2100HZ_REVERSALS;
+						if (msg[1].length >= 6)
+						{
+							plci->ec_tail_length = GET_WORD(&ec_parms[0].info[4]);
+						}
+					}
+					switch (plci->ec_cmd)
+					{
+					case EC_ENABLE_OPERATION:
+						plci->ec_idi_options &= ~LEC_FREEZE_COEFFICIENTS;
+						start_internal_command(Id, plci, ec_command);
+						return (false);
+
+					case EC_DISABLE_OPERATION:
+						plci->ec_idi_options = LEC_ENABLE_ECHO_CANCELLER |
+							LEC_MANUAL_DISABLE | LEC_ENABLE_NONLINEAR_PROCESSING |
+							LEC_RESET_COEFFICIENTS;
+						start_internal_command(Id, plci, ec_command);
+						return (false);
+
+					case EC_FREEZE_COEFFICIENTS:
+						plci->ec_idi_options |= LEC_FREEZE_COEFFICIENTS;
+						start_internal_command(Id, plci, ec_command);
+						return (false);
+
+					case EC_RESUME_COEFFICIENT_UPDATE:
+						plci->ec_idi_options &= ~LEC_FREEZE_COEFFICIENTS;
+						start_internal_command(Id, plci, ec_command);
+						return (false);
+
+					case EC_RESET_COEFFICIENTS:
+						plci->ec_idi_options |= LEC_RESET_COEFFICIENTS;
+						start_internal_command(Id, plci, ec_command);
+						return (false);
+
+					default:
+						dbug(1, dprintf("[%06lx] %s,%d: EC unknown request %04x",
+								UnMapId(Id), (char *)(FILE_), __LINE__, plci->ec_cmd));
+						PUT_WORD(&result[1], EC_UNSUPPORTED_OPERATION);
+					}
+				}
+			}
+		}
+		else
+		{
+			if (api_parse(&msg[1].info[1], msg[1].length, "ws", ec_parms))
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Wrong message format",
+						UnMapId(Id), (char *)(FILE_), __LINE__));
+				Info = _WRONG_MESSAGE_FORMAT;
+			}
+			else
+			{
+				if (GET_WORD(ec_parms[0].info) == EC_GET_SUPPORTED_SERVICES)
+				{
+					result[0] = 11;
+					PUT_WORD(&result[1], EC_GET_SUPPORTED_SERVICES);
+					result[3] = 8;
+					PUT_WORD(&result[4], GOOD);
+					PUT_WORD(&result[6], 0x0007);
+					PUT_WORD(&result[8], LEC_MAX_SUPPORTED_TAIL_LENGTH);
+					PUT_WORD(&result[10], 0);
+				}
+				else if (plci == NULL)
+				{
+					dbug(1, dprintf("[%06lx] %s,%d: Wrong PLCI",
+							UnMapId(Id), (char *)(FILE_), __LINE__));
+					Info = _WRONG_IDENTIFIER;
+				}
+				else if (!plci->State || !plci->NL.Id || plci->nl_remove_id)
+				{
+					dbug(1, dprintf("[%06lx] %s,%d: Wrong state",
+							UnMapId(Id), (char *)(FILE_), __LINE__));
+					Info = _WRONG_STATE;
+				}
+				else
+				{
+					plci->command = 0;
+					plci->ec_cmd = GET_WORD(ec_parms[0].info);
+					plci->ec_idi_options &= ~(LEC_MANUAL_DISABLE | LEC_RESET_COEFFICIENTS);
+					result[0] = 5;
+					PUT_WORD(&result[1], plci->ec_cmd);
+					result[3] = 2;
+					PUT_WORD(&result[4], GOOD);
+					plci->ec_idi_options &= ~(LEC_ENABLE_NONLINEAR_PROCESSING |
+								  LEC_ENABLE_2100HZ_DETECTOR | LEC_REQUIRE_2100HZ_REVERSALS);
+					plci->ec_tail_length = 0;
+					if (ec_parms[1].length >= 2)
+					{
+						opt = GET_WORD(&ec_parms[1].info[1]);
+						if (opt & EC_ENABLE_NON_LINEAR_PROCESSING)
+							plci->ec_idi_options |= LEC_ENABLE_NONLINEAR_PROCESSING;
+						if (opt & EC_DETECT_DISABLE_TONE)
+							plci->ec_idi_options |= LEC_ENABLE_2100HZ_DETECTOR;
+						if (!(opt & EC_DO_NOT_REQUIRE_REVERSALS))
+							plci->ec_idi_options |= LEC_REQUIRE_2100HZ_REVERSALS;
+						if (ec_parms[1].length >= 4)
+						{
+							plci->ec_tail_length = GET_WORD(&ec_parms[1].info[3]);
+						}
+					}
+					switch (plci->ec_cmd)
+					{
+					case EC_ENABLE_OPERATION:
+						plci->ec_idi_options &= ~LEC_FREEZE_COEFFICIENTS;
+						start_internal_command(Id, plci, ec_command);
+						return (false);
+
+					case EC_DISABLE_OPERATION:
+						plci->ec_idi_options = LEC_ENABLE_ECHO_CANCELLER |
+							LEC_MANUAL_DISABLE | LEC_ENABLE_NONLINEAR_PROCESSING |
+							LEC_RESET_COEFFICIENTS;
+						start_internal_command(Id, plci, ec_command);
+						return (false);
+
+					default:
+						dbug(1, dprintf("[%06lx] %s,%d: EC unknown request %04x",
+								UnMapId(Id), (char *)(FILE_), __LINE__, plci->ec_cmd));
+						PUT_WORD(&result[4], _FACILITY_SPECIFIC_FUNCTION_NOT_SUPP);
+					}
+				}
+			}
+		}
+	}
+	sendf(appl, _FACILITY_R | CONFIRM, Id & 0xffffL, Number,
+	      "wws", Info, (appl->appl_flags & APPL_FLAG_PRIV_EC_SPEC) ?
+	      PRIV_SELECTOR_ECHO_CANCELLER : SELECTOR_ECHO_CANCELLER, result);
+	return (false);
+}
+
+
+static void ec_indication(dword Id, PLCI *plci, byte *msg, word length)
+{
+	byte result[8];
+
+	dbug(1, dprintf("[%06lx] %s,%d: ec_indication",
+			UnMapId(Id), (char *)(FILE_), __LINE__));
+
+	if (!(plci->ec_idi_options & LEC_MANUAL_DISABLE))
+	{
+		if (plci->appl->appl_flags & APPL_FLAG_PRIV_EC_SPEC)
+		{
+			result[0] = 2;
+			PUT_WORD(&result[1], 0);
+			switch (msg[1])
+			{
+			case LEC_DISABLE_TYPE_CONTIGNUOUS_2100HZ:
+				PUT_WORD(&result[1], EC_BYPASS_DUE_TO_CONTINUOUS_2100HZ);
+				break;
+			case LEC_DISABLE_TYPE_REVERSED_2100HZ:
+				PUT_WORD(&result[1], EC_BYPASS_DUE_TO_REVERSED_2100HZ);
+				break;
+			case LEC_DISABLE_RELEASED:
+				PUT_WORD(&result[1], EC_BYPASS_RELEASED);
+				break;
+			}
+		}
+		else
+		{
+			result[0] = 5;
+			PUT_WORD(&result[1], EC_BYPASS_INDICATION);
+			result[3] = 2;
+			PUT_WORD(&result[4], 0);
+			switch (msg[1])
+			{
+			case LEC_DISABLE_TYPE_CONTIGNUOUS_2100HZ:
+				PUT_WORD(&result[4], EC_BYPASS_DUE_TO_CONTINUOUS_2100HZ);
+				break;
+			case LEC_DISABLE_TYPE_REVERSED_2100HZ:
+				PUT_WORD(&result[4], EC_BYPASS_DUE_TO_REVERSED_2100HZ);
+				break;
+			case LEC_DISABLE_RELEASED:
+				PUT_WORD(&result[4], EC_BYPASS_RELEASED);
+				break;
+			}
+		}
+		sendf(plci->appl, _FACILITY_I, Id & 0xffffL, 0, "ws", (plci->appl->appl_flags & APPL_FLAG_PRIV_EC_SPEC) ?
+		      PRIV_SELECTOR_ECHO_CANCELLER : SELECTOR_ECHO_CANCELLER, result);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 
 
+<<<<<<< HEAD
 
 /*------------------------------------------------------------------*/
 /* B1 resource switching                                            */
@@ -27592,6 +28806,296 @@ static void clear_b1_config (PLCI   *plci)
   plci->B1_resource = 0;
   plci->B1_facilities = 0;
 =======
+=======
+/*------------------------------------------------------------------*/
+/* Advanced voice                                                   */
+/*------------------------------------------------------------------*/
+
+static void adv_voice_write_coefs(PLCI *plci, word write_command)
+{
+	DIVA_CAPI_ADAPTER *a;
+	word i;
+	byte *p;
+
+	word w, n, j, k;
+	byte ch_map[MIXER_CHANNELS_BRI];
+
+	byte coef_buffer[ADV_VOICE_COEF_BUFFER_SIZE + 2];
+
+	dbug(1, dprintf("[%06lx] %s,%d: adv_voice_write_coefs %d",
+			(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+			(char *)(FILE_), __LINE__, write_command));
+
+	a = plci->adapter;
+	p = coef_buffer + 1;
+	*(p++) = DSP_CTRL_OLD_SET_MIXER_COEFFICIENTS;
+	i = 0;
+	while (i + sizeof(word) <= a->adv_voice_coef_length)
+	{
+		PUT_WORD(p, GET_WORD(a->adv_voice_coef_buffer + i));
+		p += 2;
+		i += 2;
+	}
+	while (i < ADV_VOICE_OLD_COEF_COUNT * sizeof(word))
+	{
+		PUT_WORD(p, 0x8000);
+		p += 2;
+		i += 2;
+	}
+
+	if (!a->li_pri && (plci->li_bchannel_id == 0))
+	{
+		if ((li_config_table[a->li_base].plci == NULL) && (li_config_table[a->li_base + 1].plci != NULL))
+		{
+			plci->li_bchannel_id = 1;
+			li_config_table[a->li_base].plci = plci;
+			dbug(1, dprintf("[%06lx] %s,%d: adv_voice_set_bchannel_id %d",
+					(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+					(char *)(FILE_), __LINE__, plci->li_bchannel_id));
+		}
+		else if ((li_config_table[a->li_base].plci != NULL) && (li_config_table[a->li_base + 1].plci == NULL))
+		{
+			plci->li_bchannel_id = 2;
+			li_config_table[a->li_base + 1].plci = plci;
+			dbug(1, dprintf("[%06lx] %s,%d: adv_voice_set_bchannel_id %d",
+					(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+					(char *)(FILE_), __LINE__, plci->li_bchannel_id));
+		}
+	}
+	if (!a->li_pri && (plci->li_bchannel_id != 0)
+	    && (li_config_table[a->li_base + (plci->li_bchannel_id - 1)].plci == plci))
+	{
+		i = a->li_base + (plci->li_bchannel_id - 1);
+		switch (write_command)
+		{
+		case ADV_VOICE_WRITE_ACTIVATION:
+			j = a->li_base + MIXER_IC_CHANNEL_BASE + (plci->li_bchannel_id - 1);
+			k = a->li_base + MIXER_IC_CHANNEL_BASE + (2 - plci->li_bchannel_id);
+			if (!(plci->B1_facilities & B1_FACILITY_MIXER))
+			{
+				li_config_table[j].flag_table[i] |= LI_FLAG_CONFERENCE | LI_FLAG_MIX;
+				li_config_table[i].flag_table[j] |= LI_FLAG_CONFERENCE | LI_FLAG_MONITOR;
+			}
+			if (a->manufacturer_features & MANUFACTURER_FEATURE_SLAVE_CODEC)
+			{
+				li_config_table[k].flag_table[i] |= LI_FLAG_CONFERENCE | LI_FLAG_MIX;
+				li_config_table[i].flag_table[k] |= LI_FLAG_CONFERENCE | LI_FLAG_MONITOR;
+				li_config_table[k].flag_table[j] |= LI_FLAG_CONFERENCE;
+				li_config_table[j].flag_table[k] |= LI_FLAG_CONFERENCE;
+			}
+			mixer_calculate_coefs(a);
+			li_config_table[i].curchnl = li_config_table[i].channel;
+			li_config_table[j].curchnl = li_config_table[j].channel;
+			if (a->manufacturer_features & MANUFACTURER_FEATURE_SLAVE_CODEC)
+				li_config_table[k].curchnl = li_config_table[k].channel;
+			break;
+
+		case ADV_VOICE_WRITE_DEACTIVATION:
+			for (j = 0; j < li_total_channels; j++)
+			{
+				li_config_table[i].flag_table[j] = 0;
+				li_config_table[j].flag_table[i] = 0;
+			}
+			k = a->li_base + MIXER_IC_CHANNEL_BASE + (plci->li_bchannel_id - 1);
+			for (j = 0; j < li_total_channels; j++)
+			{
+				li_config_table[k].flag_table[j] = 0;
+				li_config_table[j].flag_table[k] = 0;
+			}
+			if (a->manufacturer_features & MANUFACTURER_FEATURE_SLAVE_CODEC)
+			{
+				k = a->li_base + MIXER_IC_CHANNEL_BASE + (2 - plci->li_bchannel_id);
+				for (j = 0; j < li_total_channels; j++)
+				{
+					li_config_table[k].flag_table[j] = 0;
+					li_config_table[j].flag_table[k] = 0;
+				}
+			}
+			mixer_calculate_coefs(a);
+			break;
+		}
+		if (plci->B1_facilities & B1_FACILITY_MIXER)
+		{
+			w = 0;
+			if (ADV_VOICE_NEW_COEF_BASE + sizeof(word) <= a->adv_voice_coef_length)
+				w = GET_WORD(a->adv_voice_coef_buffer + ADV_VOICE_NEW_COEF_BASE);
+			if (li_config_table[i].channel & LI_CHANNEL_TX_DATA)
+				w |= MIXER_FEATURE_ENABLE_TX_DATA;
+			if (li_config_table[i].channel & LI_CHANNEL_RX_DATA)
+				w |= MIXER_FEATURE_ENABLE_RX_DATA;
+			*(p++) = (byte) w;
+			*(p++) = (byte)(w >> 8);
+			for (j = 0; j < sizeof(ch_map); j += 2)
+			{
+				ch_map[j] = (byte)(j + (plci->li_bchannel_id - 1));
+				ch_map[j + 1] = (byte)(j + (2 - plci->li_bchannel_id));
+			}
+			for (n = 0; n < ARRAY_SIZE(mixer_write_prog_bri); n++)
+			{
+				i = a->li_base + ch_map[mixer_write_prog_bri[n].to_ch];
+				j = a->li_base + ch_map[mixer_write_prog_bri[n].from_ch];
+				if (li_config_table[i].channel & li_config_table[j].channel & LI_CHANNEL_INVOLVED)
+				{
+					*(p++) = ((li_config_table[i].coef_table[j] & mixer_write_prog_bri[n].mask) ? 0x80 : 0x01);
+					w = ((li_config_table[i].coef_table[j] & 0xf) ^ (li_config_table[i].coef_table[j] >> 4));
+					li_config_table[i].coef_table[j] ^= (w & mixer_write_prog_bri[n].mask) << 4;
+				}
+				else
+				{
+					*(p++) = (ADV_VOICE_NEW_COEF_BASE + sizeof(word) + n < a->adv_voice_coef_length) ?
+						a->adv_voice_coef_buffer[ADV_VOICE_NEW_COEF_BASE + sizeof(word) + n] : 0x00;
+				}
+			}
+		}
+		else
+		{
+			for (i = ADV_VOICE_NEW_COEF_BASE; i < a->adv_voice_coef_length; i++)
+				*(p++) = a->adv_voice_coef_buffer[i];
+		}
+	}
+	else
+
+	{
+		for (i = ADV_VOICE_NEW_COEF_BASE; i < a->adv_voice_coef_length; i++)
+			*(p++) = a->adv_voice_coef_buffer[i];
+	}
+	coef_buffer[0] = (p - coef_buffer) - 1;
+	add_p(plci, FTY, coef_buffer);
+	sig_req(plci, TEL_CTRL, 0);
+	send_req(plci);
+}
+
+
+static void adv_voice_clear_config(PLCI *plci)
+{
+	DIVA_CAPI_ADAPTER *a;
+
+	word i, j;
+
+
+	dbug(1, dprintf("[%06lx] %s,%d: adv_voice_clear_config",
+			(dword)((plci->Id << 8) | UnMapController(plci->adapter->Id)),
+			(char *)(FILE_), __LINE__));
+
+	a = plci->adapter;
+	if ((plci->tel == ADV_VOICE) && (plci == a->AdvSignalPLCI))
+	{
+		a->adv_voice_coef_length = 0;
+
+		if (!a->li_pri && (plci->li_bchannel_id != 0)
+		    && (li_config_table[a->li_base + (plci->li_bchannel_id - 1)].plci == plci))
+		{
+			i = a->li_base + (plci->li_bchannel_id - 1);
+			li_config_table[i].curchnl = 0;
+			li_config_table[i].channel = 0;
+			li_config_table[i].chflags = 0;
+			for (j = 0; j < li_total_channels; j++)
+			{
+				li_config_table[i].flag_table[j] = 0;
+				li_config_table[j].flag_table[i] = 0;
+				li_config_table[i].coef_table[j] = 0;
+				li_config_table[j].coef_table[i] = 0;
+			}
+			li_config_table[i].coef_table[i] |= LI_COEF_CH_PC_SET | LI_COEF_PC_CH_SET;
+			i = a->li_base + MIXER_IC_CHANNEL_BASE + (plci->li_bchannel_id - 1);
+			li_config_table[i].curchnl = 0;
+			li_config_table[i].channel = 0;
+			li_config_table[i].chflags = 0;
+			for (j = 0; j < li_total_channels; j++)
+			{
+				li_config_table[i].flag_table[j] = 0;
+				li_config_table[j].flag_table[i] = 0;
+				li_config_table[i].coef_table[j] = 0;
+				li_config_table[j].coef_table[i] = 0;
+			}
+			if (a->manufacturer_features & MANUFACTURER_FEATURE_SLAVE_CODEC)
+			{
+				i = a->li_base + MIXER_IC_CHANNEL_BASE + (2 - plci->li_bchannel_id);
+				li_config_table[i].curchnl = 0;
+				li_config_table[i].channel = 0;
+				li_config_table[i].chflags = 0;
+				for (j = 0; j < li_total_channels; j++)
+				{
+					li_config_table[i].flag_table[j] = 0;
+					li_config_table[j].flag_table[i] = 0;
+					li_config_table[i].coef_table[j] = 0;
+					li_config_table[j].coef_table[i] = 0;
+				}
+			}
+		}
+
+	}
+}
+
+
+static void adv_voice_prepare_switch(dword Id, PLCI *plci)
+{
+
+	dbug(1, dprintf("[%06lx] %s,%d: adv_voice_prepare_switch",
+			UnMapId(Id), (char *)(FILE_), __LINE__));
+
+}
+
+
+static word adv_voice_save_config(dword Id, PLCI *plci, byte Rc)
+{
+
+	dbug(1, dprintf("[%06lx] %s,%d: adv_voice_save_config %02x %d",
+			UnMapId(Id), (char *)(FILE_), __LINE__, Rc, plci->adjust_b_state));
+
+	return (GOOD);
+}
+
+
+static word adv_voice_restore_config(dword Id, PLCI *plci, byte Rc)
+{
+	DIVA_CAPI_ADAPTER *a;
+	word Info;
+
+	dbug(1, dprintf("[%06lx] %s,%d: adv_voice_restore_config %02x %d",
+			UnMapId(Id), (char *)(FILE_), __LINE__, Rc, plci->adjust_b_state));
+
+	Info = GOOD;
+	a = plci->adapter;
+	if ((plci->B1_facilities & B1_FACILITY_VOICE)
+	    && (plci->tel == ADV_VOICE) && (plci == a->AdvSignalPLCI))
+	{
+		switch (plci->adjust_b_state)
+		{
+		case ADJUST_B_RESTORE_VOICE_1:
+			plci->internal_command = plci->adjust_b_command;
+			if (plci->sig_req)
+			{
+				plci->adjust_b_state = ADJUST_B_RESTORE_VOICE_1;
+				break;
+			}
+			adv_voice_write_coefs(plci, ADV_VOICE_WRITE_UPDATE);
+			plci->adjust_b_state = ADJUST_B_RESTORE_VOICE_2;
+			break;
+		case ADJUST_B_RESTORE_VOICE_2:
+			if ((Rc != OK) && (Rc != OK_FC))
+			{
+				dbug(1, dprintf("[%06lx] %s,%d: Restore voice config failed %02x",
+						UnMapId(Id), (char *)(FILE_), __LINE__, Rc));
+				Info = _WRONG_STATE;
+				break;
+			}
+			break;
+		}
+	}
+	return (Info);
+}
+
+
+
+
+/*------------------------------------------------------------------*/
+/* B1 resource switching                                            */
+/*------------------------------------------------------------------*/
+
+static byte b1_facilities_table[] =
+{
+>>>>>>> refs/remotes/origin/master
 	0x00,  /* 0  No bchannel resources      */
 	0x00,  /* 1  Codec (automatic law)      */
 	0x00,  /* 2  Codec (A-law)              */
@@ -28800,11 +30304,15 @@ static void clear_b1_config(PLCI *plci)
 
 	plci->B1_resource = 0;
 	plci->B1_facilities = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /* -----------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
                 XON protocol local helpers
    ----------------------------------------------------------------- */
@@ -28867,6 +30375,8 @@ static void channel_xmit_extended_xon (PLCI   * plci) {
     channel_xmit_xon (plci);
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    XON protocol local helpers
    ----------------------------------------------------------------- */
 static void channel_flow_control_remove(PLCI *plci) {
@@ -28927,11 +30437,15 @@ static void channel_xmit_extended_xon(PLCI *plci) {
 	if (one_requested) {
 		channel_xmit_xon(plci);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   Try to xmit next X_ON
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 static int find_channel_with_pending_x_on (DIVA_CAPI_ADAPTER   * a, PLCI   * plci) {
@@ -29017,6 +30531,8 @@ static int channel_can_xon (PLCI   * plci, byte ch) {
   }
   return (1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static int find_channel_with_pending_x_on(DIVA_CAPI_ADAPTER *a, PLCI *plci) {
 	int max_ch = ARRAY_SIZE(a->ch_flow_control);
@@ -29100,12 +30616,16 @@ static int channel_can_xon(PLCI *plci, byte ch) {
 		return (0);
 	}
 	return (1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static word CPN_filter_ok(byte   *cpn,DIVA_CAPI_ADAPTER   * a,word offset)
 {
@@ -29115,6 +30635,11 @@ static word CPN_filter_ok(byte *cpn, DIVA_CAPI_ADAPTER *a, word offset)
 {
 	return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static word CPN_filter_ok(byte *cpn, DIVA_CAPI_ADAPTER *a, word offset)
+{
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -29127,6 +30652,7 @@ static word CPN_filter_ok(byte *cpn, DIVA_CAPI_ADAPTER *a, word offset)
 /* function must be enabled by setting "a->group_optimization_enabled" from the   */
 /* OS specific part (per adapter).                                                */
 /**********************************************************************************/
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void group_optimization(DIVA_CAPI_ADAPTER   * a, PLCI   * plci)
 {
@@ -29239,6 +30765,8 @@ static void group_optimization(DIVA_CAPI_ADAPTER   * a, PLCI   * plci)
     }
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void group_optimization(DIVA_CAPI_ADAPTER *a, PLCI *plci)
 {
 	word i, j, k, busy, group_found;
@@ -29349,7 +30877,10 @@ static void group_optimization(DIVA_CAPI_ADAPTER *a, PLCI *plci)
 			clear_group_ind_mask_bit(plci, i);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -29358,6 +30889,7 @@ static void group_optimization(DIVA_CAPI_ADAPTER *a, PLCI *plci)
 /* OS notifies the driver about a application Capi_Register */
 word CapiRegister(word id)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word i,j,appls_found;
 
@@ -29403,6 +30935,8 @@ word CapiRegister(word id)
   }
   return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word i, j, appls_found;
 
 	PLCI *plci;
@@ -29446,13 +30980,17 @@ word CapiRegister(word id)
 		}
 	}
 	return false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/
 
 /* Functions for virtual Switching e.g. Transfer by join, Conference */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void VSwitchReqInd(PLCI   *plci, dword Id, byte   **parms)
 {
@@ -29538,6 +31076,8 @@ static void VSwitchReqInd(PLCI   *plci, dword Id, byte   **parms)
   parms[i][0]=0; /* kill it */
  }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void VSwitchReqInd(PLCI *plci, dword Id, byte **parms)
 {
 	word i;
@@ -29621,12 +31161,16 @@ static void VSwitchReqInd(PLCI *plci, dword Id, byte **parms)
 		}
 		parms[i][0] = 0; /* kill it */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int diva_get_dma_descriptor (PLCI   *plci, dword   *dma_magic) {
   ENTITY e;
@@ -29687,6 +31231,8 @@ static void diva_free_dma_descriptor (PLCI   *plci, int nr) {
     dbug(1,dprintf("dma_free failed (%d)", nr));
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int diva_get_dma_descriptor(PLCI *plci, dword   *dma_magic) {
 	ENTITY e;
 	IDI_SYNC_REQ *pReq = (IDI_SYNC_REQ *)&e;
@@ -29745,7 +31291,10 @@ static void diva_free_dma_descriptor(PLCI *plci, int nr) {
 	} else {
 		dbug(1, dprintf("dma_free failed (%d)", nr));
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*------------------------------------------------------------------*/

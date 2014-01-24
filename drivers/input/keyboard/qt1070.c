@@ -91,7 +91,11 @@ static int qt1070_write(struct i2c_client *client, u8 reg, u8 data)
 	return ret;
 }
 
+<<<<<<< HEAD
 static bool __devinit qt1070_identify(struct i2c_client *client)
+=======
+static bool qt1070_identify(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	int id, ver;
 
@@ -140,7 +144,11 @@ static irqreturn_t qt1070_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit qt1070_probe(struct i2c_client *client,
+=======
+static int qt1070_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				const struct i2c_device_id *id)
 {
 	struct qt1070_data *data;
@@ -201,7 +209,12 @@ static int __devinit qt1070_probe(struct i2c_client *client,
 	msleep(QT1070_RESET_TIME);
 
 	err = request_threaded_irq(client->irq, NULL, qt1070_interrupt,
+<<<<<<< HEAD
 		IRQF_TRIGGER_NONE, client->dev.driver->name, data);
+=======
+				   IRQF_TRIGGER_NONE | IRQF_ONESHOT,
+				   client->dev.driver->name, data);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		dev_err(&client->dev, "fail to request irq\n");
 		goto err_free_mem;
@@ -229,7 +242,11 @@ err_free_mem:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit qt1070_remove(struct i2c_client *client)
+=======
+static int qt1070_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct qt1070_data *data = i2c_get_clientdata(client);
 
@@ -240,6 +257,7 @@ static int __devexit qt1070_remove(struct i2c_client *client)
 	kfree(data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	i2c_set_clientdata(client, NULL);
 
 =======
@@ -247,6 +265,37 @@ static int __devexit qt1070_remove(struct i2c_client *client)
 	return 0;
 }
 
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int qt1070_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+	struct qt1070_data *data = i2c_get_clientdata(client);
+
+	if (device_may_wakeup(dev))
+		enable_irq_wake(data->irq);
+
+	return 0;
+}
+
+static int qt1070_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+	struct qt1070_data *data = i2c_get_clientdata(client);
+
+	if (device_may_wakeup(dev))
+		disable_irq_wake(data->irq);
+
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(qt1070_pm_ops, qt1070_suspend, qt1070_resume);
+
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id qt1070_id[] = {
 	{ "qt1070", 0 },
 	{ },
@@ -257,6 +306,7 @@ static struct i2c_driver qt1070_driver = {
 	.driver	= {
 		.name	= "qt1070",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.id_table	= qt1070_id,
 	.probe		= qt1070_probe,
@@ -278,6 +328,16 @@ module_exit(qt1070_exit);
 =======
 module_i2c_driver(qt1070_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &qt1070_pm_ops,
+	},
+	.id_table	= qt1070_id,
+	.probe		= qt1070_probe,
+	.remove		= qt1070_remove,
+};
+
+module_i2c_driver(qt1070_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Bo Shen <voice.shen@atmel.com>");
 MODULE_DESCRIPTION("Driver for AT42QT1070 QTouch sensor");

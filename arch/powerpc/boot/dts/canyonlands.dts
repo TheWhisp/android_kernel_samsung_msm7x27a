@@ -144,13 +144,19 @@
 		};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		HWRNG: hwrng@110000 {
 			compatible = "amcc,ppc460ex-rng", "ppc4xx-rng";
 			reg = <4 0x00110000 0x50>;
 		};
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		MAL0: mcmal {
 			compatible = "ibm,mcmal-460ex", "ibm,mcmal2";
 			dcr-reg = <0x180 0x062>;

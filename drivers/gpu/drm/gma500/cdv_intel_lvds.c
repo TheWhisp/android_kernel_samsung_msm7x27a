@@ -270,7 +270,11 @@ static int cdv_intel_lvds_mode_valid(struct drm_connector *connector,
 }
 
 static bool cdv_intel_lvds_mode_fixup(struct drm_encoder *encoder,
+<<<<<<< HEAD
 				  struct drm_display_mode *mode,
+=======
+				  const struct drm_display_mode *mode,
+>>>>>>> refs/remotes/origin/master
 				  struct drm_display_mode *adjusted_mode)
 {
 	struct drm_device *dev = encoder->dev;
@@ -356,6 +360,10 @@ static void cdv_intel_lvds_mode_set(struct drm_encoder *encoder,
 {
 	struct drm_device *dev = encoder->dev;
 	struct drm_psb_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
+=======
+	struct gma_crtc *gma_crtc = to_gma_crtc(encoder->crtc);
+>>>>>>> refs/remotes/origin/master
 	u32 pfit_control;
 
 	/*
@@ -377,6 +385,11 @@ static void cdv_intel_lvds_mode_set(struct drm_encoder *encoder,
 	else
 		pfit_control = 0;
 
+<<<<<<< HEAD
+=======
+	pfit_control |= gma_crtc->pipe << PFIT_PIPE_SHIFT;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev_priv->lvds_dither)
 		pfit_control |= PANEL_8TO6_DITHER_ENABLE;
 
@@ -403,12 +416,20 @@ static int cdv_intel_lvds_get_modes(struct drm_connector *connector)
 {
 	struct drm_device *dev = connector->dev;
 	struct drm_psb_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 	struct psb_intel_mode_device *mode_dev = &dev_priv->mode_dev;
 	int ret;
 
 	ret = psb_intel_ddc_get_modes(connector, &psb_intel_encoder->i2c_bus->adapter);
+=======
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+	struct psb_intel_mode_device *mode_dev = &dev_priv->mode_dev;
+	int ret;
+
+	ret = psb_intel_ddc_get_modes(connector, &gma_encoder->i2c_bus->adapter);
+>>>>>>> refs/remotes/origin/master
 
 	if (ret)
 		return ret;
@@ -440,11 +461,18 @@ static int cdv_intel_lvds_get_modes(struct drm_connector *connector)
  */
 static void cdv_intel_lvds_destroy(struct drm_connector *connector)
 {
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 
 	if (psb_intel_encoder->i2c_bus)
 		psb_intel_i2c_destroy(psb_intel_encoder->i2c_bus);
+=======
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+
+	if (gma_encoder->i2c_bus)
+		psb_intel_i2c_destroy(gma_encoder->i2c_bus);
+>>>>>>> refs/remotes/origin/master
 	drm_sysfs_connector_remove(connector);
 	drm_connector_cleanup(connector);
 	kfree(connector);
@@ -457,8 +485,12 @@ static int cdv_intel_lvds_set_property(struct drm_connector *connector,
 	struct drm_encoder *encoder = connector->encoder;
 
 	if (!strcmp(property->name, "scaling mode") && encoder) {
+<<<<<<< HEAD
 		struct psb_intel_crtc *crtc =
 					to_psb_intel_crtc(encoder->crtc);
+=======
+		struct gma_crtc *crtc = to_gma_crtc(encoder->crtc);
+>>>>>>> refs/remotes/origin/master
 		uint64_t curValue;
 
 		if (!crtc)
@@ -475,7 +507,11 @@ static int cdv_intel_lvds_set_property(struct drm_connector *connector,
 			return -1;
 		}
 
+<<<<<<< HEAD
 		if (drm_connector_property_get_value(connector,
+=======
+		if (drm_object_property_get_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 						     property,
 						     &curValue))
 			return -1;
@@ -483,7 +519,11 @@ static int cdv_intel_lvds_set_property(struct drm_connector *connector,
 		if (curValue == value)
 			return 0;
 
+<<<<<<< HEAD
 		if (drm_connector_property_set_value(connector,
+=======
+		if (drm_object_property_set_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 							property,
 							value))
 			return -1;
@@ -498,6 +538,7 @@ static int cdv_intel_lvds_set_property(struct drm_connector *connector,
 				return -1;
 		}
 	} else if (!strcmp(property->name, "backlight") && encoder) {
+<<<<<<< HEAD
 		if (drm_connector_property_set_value(connector,
 							property,
 							value))
@@ -512,6 +553,14 @@ static int cdv_intel_lvds_set_property(struct drm_connector *connector,
 			backlight_update_status(bd);
 #endif
 		}
+=======
+		if (drm_object_property_set_value(&connector->base,
+							property,
+							value))
+			return -1;
+		else
+                        gma_backlight_set(encoder->dev, value);
+>>>>>>> refs/remotes/origin/master
 	} else if (!strcmp(property->name, "DPMS") && encoder) {
 		struct drm_encoder_helper_funcs *helpers =
 					encoder->helper_private;
@@ -533,7 +582,11 @@ static const struct drm_connector_helper_funcs
 				cdv_intel_lvds_connector_helper_funcs = {
 	.get_modes = cdv_intel_lvds_get_modes,
 	.mode_valid = cdv_intel_lvds_mode_valid,
+<<<<<<< HEAD
 	.best_encoder = psb_intel_best_encoder,
+=======
+	.best_encoder = gma_best_encoder,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct drm_connector_funcs cdv_intel_lvds_connector_funcs = {
@@ -552,10 +605,67 @@ static void cdv_intel_lvds_enc_destroy(struct drm_encoder *encoder)
 	drm_encoder_cleanup(encoder);
 }
 
+<<<<<<< HEAD
 const struct drm_encoder_funcs cdv_intel_lvds_enc_funcs = {
 	.destroy = cdv_intel_lvds_enc_destroy,
 };
 
+=======
+static const struct drm_encoder_funcs cdv_intel_lvds_enc_funcs = {
+	.destroy = cdv_intel_lvds_enc_destroy,
+};
+
+/*
+ * Enumerate the child dev array parsed from VBT to check whether
+ * the LVDS is present.
+ * If it is present, return 1.
+ * If it is not present, return false.
+ * If no child dev is parsed from VBT, it assumes that the LVDS is present.
+ */
+static bool lvds_is_present_in_vbt(struct drm_device *dev,
+				   u8 *i2c_pin)
+{
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	int i;
+
+	if (!dev_priv->child_dev_num)
+		return true;
+
+	for (i = 0; i < dev_priv->child_dev_num; i++) {
+		struct child_device_config *child = dev_priv->child_dev + i;
+
+		/* If the device type is not LFP, continue.
+		 * We have to check both the new identifiers as well as the
+		 * old for compatibility with some BIOSes.
+		 */
+		if (child->device_type != DEVICE_TYPE_INT_LFP &&
+		    child->device_type != DEVICE_TYPE_LFP)
+			continue;
+
+		if (child->i2c_pin)
+		    *i2c_pin = child->i2c_pin;
+
+		/* However, we cannot trust the BIOS writers to populate
+		 * the VBT correctly.  Since LVDS requires additional
+		 * information from AIM blocks, a non-zero addin offset is
+		 * a good indicator that the LVDS is actually present.
+		 */
+		if (child->addin_offset)
+			return true;
+
+		/* But even then some BIOS writers perform some black magic
+		 * and instantiate the device without reference to any
+		 * additional data.  Trust that if the VBT was written into
+		 * the OpRegion then they have validated the LVDS's existence.
+		 */
+		if (dev_priv->opregion.vbt)
+			return true;
+	}
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * cdv_intel_lvds_init - setup LVDS connectors on this device
  * @dev: drm device
@@ -566,8 +676,13 @@ const struct drm_encoder_funcs cdv_intel_lvds_enc_funcs = {
 void cdv_intel_lvds_init(struct drm_device *dev,
 		     struct psb_intel_mode_device *mode_dev)
 {
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder;
 	struct psb_intel_connector *psb_intel_connector;
+=======
+	struct gma_encoder *gma_encoder;
+	struct gma_connector *gma_connector;
+>>>>>>> refs/remotes/origin/master
 	struct cdv_intel_lvds_priv *lvds_priv;
 	struct drm_connector *connector;
 	struct drm_encoder *encoder;
@@ -576,6 +691,7 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 	struct drm_psb_private *dev_priv = dev->dev_private;
 	u32 lvds;
 	int pipe;
+<<<<<<< HEAD
 
 	psb_intel_encoder = kzalloc(sizeof(struct psb_intel_encoder),
 				    GFP_KERNEL);
@@ -585,16 +701,41 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 	psb_intel_connector = kzalloc(sizeof(struct psb_intel_connector),
 				      GFP_KERNEL);
 	if (!psb_intel_connector)
+=======
+	u8 pin;
+
+	pin = GMBUS_PORT_PANEL;
+	if (!lvds_is_present_in_vbt(dev, &pin)) {
+		DRM_DEBUG_KMS("LVDS is not present in VBT\n");
+		return;
+	}
+
+	gma_encoder = kzalloc(sizeof(struct gma_encoder),
+				    GFP_KERNEL);
+	if (!gma_encoder)
+		return;
+
+	gma_connector = kzalloc(sizeof(struct gma_connector),
+				      GFP_KERNEL);
+	if (!gma_connector)
+>>>>>>> refs/remotes/origin/master
 		goto failed_connector;
 
 	lvds_priv = kzalloc(sizeof(struct cdv_intel_lvds_priv), GFP_KERNEL);
 	if (!lvds_priv)
 		goto failed_lvds_priv;
 
+<<<<<<< HEAD
 	psb_intel_encoder->dev_priv = lvds_priv;
 
 	connector = &psb_intel_connector->base;
 	encoder = &psb_intel_encoder->base;
+=======
+	gma_encoder->dev_priv = lvds_priv;
+
+	connector = &gma_connector->base;
+	encoder = &gma_encoder->base;
+>>>>>>> refs/remotes/origin/master
 
 
 	drm_connector_init(dev, connector,
@@ -606,9 +747,14 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 			 DRM_MODE_ENCODER_LVDS);
 
 
+<<<<<<< HEAD
 	psb_intel_connector_attach_encoder(psb_intel_connector,
 					   psb_intel_encoder);
 	psb_intel_encoder->type = INTEL_OUTPUT_LVDS;
+=======
+	gma_connector_attach_encoder(gma_connector, gma_encoder);
+	gma_encoder->type = INTEL_OUTPUT_LVDS;
+>>>>>>> refs/remotes/origin/master
 
 	drm_encoder_helper_add(encoder, &cdv_intel_lvds_helper_funcs);
 	drm_connector_helper_add(connector,
@@ -618,10 +764,17 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 	connector->doublescan_allowed = false;
 
 	/*Attach connector properties*/
+<<<<<<< HEAD
 	drm_connector_attach_property(connector,
 				      dev->mode_config.scaling_mode_property,
 				      DRM_MODE_SCALE_FULLSCREEN);
 	drm_connector_attach_property(connector,
+=======
+	drm_object_attach_property(&connector->base,
+				      dev->mode_config.scaling_mode_property,
+				      DRM_MODE_SCALE_FULLSCREEN);
+	drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 				      dev_priv->backlight_property,
 				      BRIGHTNESS_MAX_LEVEL);
 
@@ -629,16 +782,28 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 	 * Set up I2C bus
 	 * FIXME: distroy i2c_bus when exit
 	 */
+<<<<<<< HEAD
 	psb_intel_encoder->i2c_bus = psb_intel_i2c_create(dev,
 							 GPIOB,
 							 "LVDSBLC_B");
 	if (!psb_intel_encoder->i2c_bus) {
+=======
+	gma_encoder->i2c_bus = psb_intel_i2c_create(dev,
+							 GPIOB,
+							 "LVDSBLC_B");
+	if (!gma_encoder->i2c_bus) {
+>>>>>>> refs/remotes/origin/master
 		dev_printk(KERN_ERR,
 			&dev->pdev->dev, "I2C bus registration failed.\n");
 		goto failed_blc_i2c;
 	}
+<<<<<<< HEAD
 	psb_intel_encoder->i2c_bus->slave_addr = 0x2C;
 	dev_priv->lvds_i2c_bus = psb_intel_encoder->i2c_bus;
+=======
+	gma_encoder->i2c_bus->slave_addr = 0x2C;
+	dev_priv->lvds_i2c_bus = gma_encoder->i2c_bus;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * LVDS discovery:
@@ -651,10 +816,17 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 	 */
 
 	/* Set up the DDC bus. */
+<<<<<<< HEAD
 	psb_intel_encoder->ddc_bus = psb_intel_i2c_create(dev,
 							 GPIOC,
 							 "LVDSDDC_C");
 	if (!psb_intel_encoder->ddc_bus) {
+=======
+	gma_encoder->ddc_bus = psb_intel_i2c_create(dev,
+							 GPIOC,
+							 "LVDSDDC_C");
+	if (!gma_encoder->ddc_bus) {
+>>>>>>> refs/remotes/origin/master
 		dev_printk(KERN_ERR, &dev->pdev->dev,
 			   "DDC bus registration " "failed.\n");
 		goto failed_ddc;
@@ -665,7 +837,11 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 	 * preferred mode is the right one.
 	 */
 	psb_intel_ddc_get_modes(connector,
+<<<<<<< HEAD
 				&psb_intel_encoder->ddc_bus->adapter);
+=======
+				&gma_encoder->ddc_bus->adapter);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(scan, &connector->probed_modes, head) {
 		if (scan->type & DRM_MODE_TYPE_PREFERRED) {
 			mode_dev->panel_fixed_mode =
@@ -710,25 +886,56 @@ void cdv_intel_lvds_init(struct drm_device *dev,
 		goto failed_find;
 	}
 
+<<<<<<< HEAD
+=======
+	/* setup PWM */
+	{
+		u32 pwm;
+
+		pwm = REG_READ(BLC_PWM_CTL2);
+		if (pipe == 1)
+			pwm |= PWM_PIPE_B;
+		else
+			pwm &= ~PWM_PIPE_B;
+		pwm |= PWM_ENABLE;
+		REG_WRITE(BLC_PWM_CTL2, pwm);
+	}
+
+>>>>>>> refs/remotes/origin/master
 out:
 	drm_sysfs_connector_add(connector);
 	return;
 
 failed_find:
 	printk(KERN_ERR "Failed find\n");
+<<<<<<< HEAD
 	if (psb_intel_encoder->ddc_bus)
 		psb_intel_i2c_destroy(psb_intel_encoder->ddc_bus);
 failed_ddc:
 	printk(KERN_ERR "Failed DDC\n");
 	if (psb_intel_encoder->i2c_bus)
 		psb_intel_i2c_destroy(psb_intel_encoder->i2c_bus);
+=======
+	if (gma_encoder->ddc_bus)
+		psb_intel_i2c_destroy(gma_encoder->ddc_bus);
+failed_ddc:
+	printk(KERN_ERR "Failed DDC\n");
+	if (gma_encoder->i2c_bus)
+		psb_intel_i2c_destroy(gma_encoder->i2c_bus);
+>>>>>>> refs/remotes/origin/master
 failed_blc_i2c:
 	printk(KERN_ERR "Failed BLC\n");
 	drm_encoder_cleanup(encoder);
 	drm_connector_cleanup(connector);
 	kfree(lvds_priv);
 failed_lvds_priv:
+<<<<<<< HEAD
 	kfree(psb_intel_connector);
 failed_connector:
 	kfree(psb_intel_encoder);
+=======
+	kfree(gma_connector);
+failed_connector:
+	kfree(gma_encoder);
+>>>>>>> refs/remotes/origin/master
 }

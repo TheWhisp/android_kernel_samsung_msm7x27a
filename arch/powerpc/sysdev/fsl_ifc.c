@@ -63,7 +63,11 @@ int fsl_ifc_find(phys_addr_t addr_base)
 		return -ENODEV;
 
 	for (i = 0; i < ARRAY_SIZE(fsl_ifc_ctrl_dev->regs->cspr_cs); i++) {
+<<<<<<< HEAD
 		__be32 cspr = in_be32(&fsl_ifc_ctrl_dev->regs->cspr_cs[i].cspr);
+=======
+		u32 cspr = in_be32(&fsl_ifc_ctrl_dev->regs->cspr_cs[i].cspr);
+>>>>>>> refs/remotes/origin/master
 		if (cspr & CSPR_V && (cspr & CSPR_BA) ==
 				convert_ifc_address(addr_base))
 			return i;
@@ -73,7 +77,11 @@ int fsl_ifc_find(phys_addr_t addr_base)
 }
 EXPORT_SYMBOL(fsl_ifc_find);
 
+<<<<<<< HEAD
 static int __devinit fsl_ifc_ctrl_init(struct fsl_ifc_ctrl *ctrl)
+=======
+static int fsl_ifc_ctrl_init(struct fsl_ifc_ctrl *ctrl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fsl_ifc_regs __iomem *ifc = ctrl->regs;
 
@@ -211,7 +219,11 @@ static irqreturn_t fsl_ifc_ctrl_irq(int irqno, void *data)
  * resources for the NAND banks themselves are allocated
  * in the chip probe function.
 */
+<<<<<<< HEAD
 static int __devinit fsl_ifc_ctrl_probe(struct platform_device *dev)
+=======
+static int fsl_ifc_ctrl_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
@@ -244,12 +256,15 @@ static int __devinit fsl_ifc_ctrl_probe(struct platform_device *dev)
 	/* get the nand machine irq */
 	fsl_ifc_ctrl_dev->nand_irq =
 			irq_of_parse_and_map(dev->dev.of_node, 1);
+<<<<<<< HEAD
 	if (fsl_ifc_ctrl_dev->nand_irq == NO_IRQ) {
 		dev_err(&dev->dev, "failed to get irq resource "
 						"for NAND Machine\n");
 		ret = -ENODEV;
 		goto err;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fsl_ifc_ctrl_dev->dev = &dev->dev;
 
@@ -267,12 +282,23 @@ static int __devinit fsl_ifc_ctrl_probe(struct platform_device *dev)
 		goto err_irq;
 	}
 
+<<<<<<< HEAD
 	ret = request_irq(fsl_ifc_ctrl_dev->nand_irq, fsl_ifc_nand_irq, 0,
 			  "fsl-ifc-nand", fsl_ifc_ctrl_dev);
 	if (ret != 0) {
 		dev_err(&dev->dev, "failed to install irq (%d)\n",
 			fsl_ifc_ctrl_dev->nand_irq);
 		goto err_nandirq;
+=======
+	if (fsl_ifc_ctrl_dev->nand_irq) {
+		ret = request_irq(fsl_ifc_ctrl_dev->nand_irq, fsl_ifc_nand_irq,
+				0, "fsl-ifc-nand", fsl_ifc_ctrl_dev);
+		if (ret != 0) {
+			dev_err(&dev->dev, "failed to install irq (%d)\n",
+				fsl_ifc_ctrl_dev->nand_irq);
+			goto err_nandirq;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;

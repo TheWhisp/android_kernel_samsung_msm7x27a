@@ -4,16 +4,22 @@
  *
  * Copyright (C) 1996 Universidade de Lisboa
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * the GNU General Public License, incorporated herein by reference.
  *
  * Not compatible with the AVM Gmbh. CAPI 2.0
@@ -59,6 +65,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int capi_conn_req(const char * calledPN, struct sk_buff **skb, int proto)
 {
         ushort len;
@@ -81,6 +88,8 @@ int capi_conn_req(const char * calledPN, struct sk_buff **skb, int proto)
 
         len = 18 + strlen(calledPN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int capi_conn_req(const char *calledPN, struct sk_buff **skb, int proto)
 {
 	ushort len;
@@ -102,12 +111,16 @@ int capi_conn_req(const char *calledPN, struct sk_buff **skb, int proto)
 	 */
 
 	len = 18 + strlen(calledPN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (proto == ISDN_PROTO_L2_TRANS)
 		len++;
 
 	if ((*skb = dev_alloc_skb(len)) == NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
     
 	        printk(KERN_WARNING "capi_conn_req: alloc_skb failed\n");
@@ -117,6 +130,8 @@ int capi_conn_req(const char *calledPN, struct sk_buff **skb, int proto)
         /* InfoElmMask */
         *((ushort*) skb_put(*skb, 2)) = AppInfoMask; 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		printk(KERN_WARNING "capi_conn_req: alloc_skb failed\n");
 		return -1;
@@ -124,7 +139,10 @@ int capi_conn_req(const char *calledPN, struct sk_buff **skb, int proto)
 
 	/* InfoElmMask */
 	*((ushort *)skb_put(*skb, 2)) = AppInfoMask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (proto == ISDN_PROTO_L2_TRANS)
 	{
@@ -142,6 +160,7 @@ int capi_conn_req(const char *calledPN, struct sk_buff **skb, int proto)
 		*(skb_put(*skb, 1)) = 0x90;     /* BC0.Octect4		*/
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         /* Bearer Capability - Optional*/
         *(skb_put(*skb, 1)) = 0;        /* BC1.Length = 0                    */
@@ -179,6 +198,8 @@ int capi_conn_resp(struct pcbit_chan* chan, struct sk_buff **skb)
 	if ((*skb = dev_alloc_skb(5)) == NULL) {
     
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Bearer Capability - Optional*/
 	*(skb_put(*skb, 1)) = 0;        /* BC1.Length = 0                    */
 
@@ -214,11 +235,15 @@ int capi_conn_resp(struct pcbit_chan *chan, struct sk_buff **skb)
 
 	if ((*skb = dev_alloc_skb(5)) == NULL) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_conn_resp: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2) ) = chan->callref;  
         *(skb_put(*skb, 1)) = 0x01;  /* ACCEPT_CALL */
@@ -237,6 +262,8 @@ int capi_conn_active_req(struct pcbit_chan* chan, struct sk_buff **skb)
 	if ((*skb = dev_alloc_skb(8)) == NULL) {
     
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*((ushort *)skb_put(*skb, 2)) = chan->callref;
 	*(skb_put(*skb, 1)) = 0x01;  /* ACCEPT_CALL */
 	*(skb_put(*skb, 1)) = 0;
@@ -253,11 +280,15 @@ int capi_conn_active_req(struct pcbit_chan *chan, struct sk_buff **skb)
 
 	if ((*skb = dev_alloc_skb(8)) == NULL) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_conn_active_req: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2) ) = chan->callref;  
 
@@ -272,6 +303,8 @@ int capi_conn_active_req(struct pcbit_chan *chan, struct sk_buff **skb)
         *(skb_put(*skb, 1)) = 0;       /*  HLC.Length = 0;         */
         *(skb_put(*skb, 1)) = 0;       /*  UTUS.Length = 0;        */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*((ushort *)skb_put(*skb, 2)) = chan->callref;
 
 #ifdef DEBUG
@@ -284,11 +317,15 @@ int capi_conn_active_req(struct pcbit_chan *chan, struct sk_buff **skb)
 	*(skb_put(*skb, 1)) = 0;       /*  LLC.Length = 0;         */
 	*(skb_put(*skb, 1)) = 0;       /*  HLC.Length = 0;         */
 	*(skb_put(*skb, 1)) = 0;       /*  UTUS.Length = 0;        */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 8;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int capi_conn_active_resp(struct pcbit_chan* chan, struct sk_buff **skb)
 {
@@ -299,6 +336,8 @@ int capi_conn_active_resp(struct pcbit_chan* chan, struct sk_buff **skb)
 	if ((*skb = dev_alloc_skb(2)) == NULL) {
     
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int capi_conn_active_resp(struct pcbit_chan *chan, struct sk_buff **skb)
 {
 	/*
@@ -307,11 +346,15 @@ int capi_conn_active_resp(struct pcbit_chan *chan, struct sk_buff **skb)
 
 	if ((*skb = dev_alloc_skb(2)) == NULL) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_conn_active_resp: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2) ) = chan->callref;  
 
@@ -330,6 +373,8 @@ int capi_select_proto_req(struct pcbit_chan *chan, struct sk_buff **skb,
 	if ((*skb = dev_alloc_skb(18)) == NULL) {
     
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*((ushort *)skb_put(*skb, 2)) = chan->callref;
 
 	return 2;
@@ -346,11 +391,15 @@ int capi_select_proto_req(struct pcbit_chan *chan, struct sk_buff **skb,
 
 	if ((*skb = dev_alloc_skb(18)) == NULL) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_select_proto_req: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2) ) = chan->callref;  
 
@@ -366,6 +415,8 @@ int capi_select_proto_req(struct pcbit_chan *chan, struct sk_buff **skb,
 	case ISDN_PROTO_L2_TRANS:
 		/* 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*((ushort *)skb_put(*skb, 2)) = chan->callref;
 
 	/* Layer2 protocol */
@@ -379,11 +430,15 @@ int capi_select_proto_req(struct pcbit_chan *chan, struct sk_buff **skb,
 		break;
 	case ISDN_PROTO_L2_TRANS:
 		/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 *	Voice (a-law)
 		 */
 		*(skb_put(*skb, 1)) = 0x06;
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
         default:
 #ifdef DEBUG 
@@ -418,6 +473,8 @@ int capi_select_proto_req(struct pcbit_chan *chan, struct sk_buff **skb,
 
         return 18;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 #ifdef DEBUG
 		printk(KERN_DEBUG "Transparent\n");
@@ -450,7 +507,10 @@ int capi_select_proto_req(struct pcbit_chan *chan, struct sk_buff **skb,
 	memset(skb_put(*skb, 8), 0, 8);
 
 	return 18;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -459,14 +519,19 @@ int capi_activate_transp_req(struct pcbit_chan *chan, struct sk_buff **skb)
 
 	if ((*skb = dev_alloc_skb(7)) == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_activate_transp_req: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2) ) = chan->callref;  
 
@@ -498,6 +563,8 @@ int capi_tdata_req(struct pcbit_chan* chan, struct sk_buff *skb)
 
 	if(skb_headroom(skb) < 10)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*((ushort *)skb_put(*skb, 2)) = chan->callref;
 
 
@@ -527,16 +594,23 @@ int capi_tdata_req(struct pcbit_chan *chan, struct sk_buff *skb)
 	data_len = skb->len;
 
 	if (skb_headroom(skb) < 10)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		printk(KERN_CRIT "No headspace (%u) on headroom %p for capi header\n", skb_headroom(skb), skb);
 	}
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{	
 =======
 	{
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{
+>>>>>>> refs/remotes/origin/master
 		skb_push(skb, 10);
 	}
 
@@ -553,22 +627,29 @@ int capi_tdata_req(struct pcbit_chan *chan, struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int capi_tdata_resp(struct pcbit_chan *chan, struct sk_buff ** skb)
 		    
 {
 	if ((*skb = dev_alloc_skb(4)) == NULL) {
     
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int capi_tdata_resp(struct pcbit_chan *chan, struct sk_buff **skb)
 
 {
 	if ((*skb = dev_alloc_skb(4)) == NULL) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_tdata_resp: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2) ) = chan->callref;  
 
@@ -577,13 +658,18 @@ int capi_tdata_resp(struct pcbit_chan *chan, struct sk_buff **skb)
 
         return (*skb)->len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*((ushort *)skb_put(*skb, 2)) = chan->callref;
 
 	*(skb_put(*skb, 1)) = chan->layer2link;
 	*(skb_put(*skb, 1)) = chan->r_refnum;
 
 	return (*skb)->len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int capi_disc_req(ushort callref, struct sk_buff **skb, u_char cause)
@@ -591,14 +677,19 @@ int capi_disc_req(ushort callref, struct sk_buff **skb, u_char cause)
 
 	if ((*skb = dev_alloc_skb(6)) == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_disc_req: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2) ) = callref;  
 
@@ -614,6 +705,8 @@ int capi_disc_req(ushort callref, struct sk_buff **skb, u_char cause)
 
         return 6;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*((ushort *)skb_put(*skb, 2)) = callref;
 
 	*(skb_put(*skb, 1)) = 2;                  /* Cause.Length = 2; */
@@ -627,21 +720,29 @@ int capi_disc_req(ushort callref, struct sk_buff **skb, u_char cause)
 	*(skb_put(*skb, 1)) = 0;                   /* UTUS.Length = 0;  */
 
 	return 6;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int capi_disc_resp(struct pcbit_chan *chan, struct sk_buff **skb)
 {
 	if ((*skb = dev_alloc_skb(2)) == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "capi_disc_resp: alloc_skb failed\n");
 		return -1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         *((ushort*) skb_put(*skb, 2)) = chan->callref;  
 
@@ -651,6 +752,11 @@ int capi_disc_resp(struct pcbit_chan *chan, struct sk_buff **skb)
 
 	return 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*((ushort *)skb_put(*skb, 2)) = chan->callref;
+
+	return 2;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -659,6 +765,7 @@ int capi_disc_resp(struct pcbit_chan *chan, struct sk_buff **skb)
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int capi_decode_conn_ind(struct pcbit_chan * chan, 
                          struct sk_buff *skb,
@@ -703,6 +810,8 @@ int capi_decode_conn_ind(struct pcbit_chan * chan,
 		int count = 1;
 		
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int capi_decode_conn_ind(struct pcbit_chan *chan,
 			 struct sk_buff *skb,
 			 struct callb_data *info)
@@ -745,23 +854,32 @@ int capi_decode_conn_ind(struct pcbit_chan *chan,
 	if (len > 0) {
 		int count = 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef DEBUG
 		printk(KERN_DEBUG "CPN: Octect 3 %02x\n", skb->data[1]);
 #endif
 		if ((skb->data[1] & 0x80) == 0)
 			count = 2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		if (!(info->data.setup.CallingPN = kmalloc(len - count + 1, GFP_ATOMIC)))
 			return -1;
        
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!(info->data.setup.CallingPN = kmalloc(len - count + 1, GFP_ATOMIC)))
 			return -1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		skb_copy_from_linear_data_offset(skb, count + 1,
 						 info->data.setup.CallingPN,
 						 len - count);
@@ -775,6 +893,7 @@ int capi_decode_conn_ind(struct pcbit_chan *chan,
 
 	skb_pull(skb, len + 1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         /* Calling Party Subaddress */
         skb_pull(skb, skb->data[0] + 1);
@@ -793,6 +912,8 @@ int capi_decode_conn_ind(struct pcbit_chan *chan,
 			return -1;
         
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Calling Party Subaddress */
 	skb_pull(skb, skb->data[0] + 1);
 
@@ -809,7 +930,10 @@ int capi_decode_conn_ind(struct pcbit_chan *chan,
 		if (!(info->data.setup.CalledPN = kmalloc(len - count + 1, GFP_ATOMIC)))
 			return -1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		skb_copy_from_linear_data_offset(skb, count + 1,
 						 info->data.setup.CalledPN,
 						 len - count);
@@ -823,6 +947,7 @@ int capi_decode_conn_ind(struct pcbit_chan *chan,
 
 	skb_pull(skb, len + 1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         /* Called Party Subaddress */
         skb_pull(skb, skb->data[0] + 1);
@@ -838,6 +963,8 @@ int capi_decode_conn_ind(struct pcbit_chan *chan,
 
         return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Called Party Subaddress */
 	skb_pull(skb, skb->data[0] + 1);
 
@@ -851,13 +978,17 @@ int capi_decode_conn_ind(struct pcbit_chan *chan,
 	skb_pull(skb, skb->data[0] + 1);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *  returns errcode
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int capi_decode_conn_conf(struct pcbit_chan * chan, struct sk_buff *skb,
 			  int *complete) 
@@ -908,6 +1039,8 @@ int capi_decode_conn_actv_ind(struct pcbit_chan * chan, struct sk_buff *skb)
         /* Connected Party Number */
         len=*(skb->data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int capi_decode_conn_conf(struct pcbit_chan *chan, struct sk_buff *skb,
 			  int *complete)
 {
@@ -956,7 +1089,10 @@ int capi_decode_conn_actv_ind(struct pcbit_chan *chan, struct sk_buff *skb)
 
 	/* Connected Party Number */
 	len = *(skb->data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 	if (len > 1 && len < 31) {
@@ -968,6 +1104,7 @@ int capi_decode_conn_actv_ind(struct pcbit_chan *chan, struct sk_buff *skb)
 		printk(KERN_DEBUG "actv_ind CPN len = %d\n", len);
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         skb_pull(skb, len + 1);
 
@@ -995,6 +1132,8 @@ int capi_decode_conn_actv_conf(struct pcbit_chan * chan, struct sk_buff *skb)
         */
         return errcode;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	skb_pull(skb, len + 1);
 
 	/* Connected Subaddress */
@@ -1020,12 +1159,16 @@ int capi_decode_conn_actv_conf(struct pcbit_chan *chan, struct sk_buff *skb)
 	   skb_pull(skb, skb->data[0] + 1);
 	*/
 	return errcode;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 int capi_decode_sel_proto_conf(struct pcbit_chan *chan, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         ushort errcode;
         
@@ -1037,6 +1180,8 @@ int capi_decode_sel_proto_conf(struct pcbit_chan *chan, struct sk_buff *skb)
 
         return errcode;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ushort errcode;
 
 	chan->layer2link = *(skb->data);
@@ -1046,11 +1191,15 @@ int capi_decode_sel_proto_conf(struct pcbit_chan *chan, struct sk_buff *skb)
 	skb_pull(skb, 2);
 
 	return errcode;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int capi_decode_actv_trans_conf(struct pcbit_chan *chan, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         ushort errcode;
 
@@ -1064,6 +1213,8 @@ int capi_decode_actv_trans_conf(struct pcbit_chan *chan, struct sk_buff *skb)
 
         return errcode;        
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ushort errcode;
 
 	if (chan->layer2link != *(skb->data))
@@ -1075,11 +1226,15 @@ int capi_decode_actv_trans_conf(struct pcbit_chan *chan, struct sk_buff *skb)
 	skb_pull(skb, 2);
 
 	return errcode;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int capi_decode_disc_ind(struct pcbit_chan *chan, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         ushort len;
 #ifdef DEBUG
@@ -1101,6 +1256,8 @@ int capi_decode_disc_ind(struct pcbit_chan *chan, struct sk_buff *skb)
 
         return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ushort len;
 #ifdef DEBUG
 	int i;
@@ -1120,12 +1277,16 @@ int capi_decode_disc_ind(struct pcbit_chan *chan, struct sk_buff *skb)
 	skb_pull(skb, len);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef DEBUG
 int capi_decode_debug_188(u_char *hdr, ushort hdrlen)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         char str[64];
         int len;
@@ -1149,6 +1310,8 @@ int capi_decode_debug_188(u_char *hdr, ushort hdrlen)
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char str[64];
 	int len;
 
@@ -1165,4 +1328,7 @@ int capi_decode_debug_188(u_char *hdr, ushort hdrlen)
 	return 0;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

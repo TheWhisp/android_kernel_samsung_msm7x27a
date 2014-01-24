@@ -38,9 +38,12 @@
 #include <linux/timer.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/init.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/interrupt.h>
 
@@ -92,9 +95,12 @@ static int service_tx_status_request(
 		result[0] = musb->is_self_powered << USB_DEVICE_SELF_POWERED;
 		result[0] |= musb->may_wakeup << USB_DEVICE_REMOTE_WAKEUP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_OTG
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (musb->g.is_otg) {
 			result[0] |= musb->g.b_hnp_enable
 				<< USB_DEVICE_B_HNP_ENABLE;
@@ -104,9 +110,12 @@ static int service_tx_status_request(
 				<< USB_DEVICE_A_HNP_SUPPORT;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case USB_RECIP_INTERFACE:
@@ -402,9 +411,12 @@ __acquires(musb->lock)
 						musb->test_mode = true;
 					break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_OTG
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				case USB_DEVICE_B_HNP_ENABLE:
 					if (!musb->g.is_otg)
 						goto stall;
@@ -422,9 +434,12 @@ __acquires(musb->lock)
 					musb->g.a_alt_hnp_support = 1;
 					break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				case USB_DEVICE_DEBUG_MODE:
 					handled = 0;
 					break;
@@ -525,8 +540,15 @@ static void ep0_rxstate(struct musb *musb)
 			req->status = -EOVERFLOW;
 			count = len;
 		}
+<<<<<<< HEAD
 		musb_read_fifo(&musb->endpoints[0], count, buf);
 		req->actual += count;
+=======
+		if (count > 0) {
+			musb_read_fifo(&musb->endpoints[0], count, buf);
+			req->actual += count;
+		}
+>>>>>>> refs/remotes/origin/master
 		csr = MUSB_CSR0_P_SVDRXPKTRDY;
 		if (count < 64 || req->actual == req->length) {
 			musb->ep0_state = MUSB_EP0_STAGE_STATUSIN;
@@ -693,6 +715,7 @@ irqreturn_t musb_g_ep0_irq(struct musb *musb)
 	csr = musb_readw(regs, MUSB_CSR0);
 	len = musb_readb(regs, MUSB_COUNT0);
 
+<<<<<<< HEAD
 	dev_dbg(musb->controller, "csr %04x, count %d, myaddr %d, ep0stage %s\n",
 			csr, len,
 			musb_readb(mbase, MUSB_FADDR),
@@ -700,6 +723,11 @@ irqreturn_t musb_g_ep0_irq(struct musb *musb)
 
 <<<<<<< HEAD
 =======
+=======
+	dev_dbg(musb->controller, "csr %04x, count %d, ep0stage %s\n",
+			csr, len, decode_ep0stage(musb->ep0_state));
+
+>>>>>>> refs/remotes/origin/master
 	if (csr & MUSB_CSR0_P_DATAEND) {
 		/*
 		 * If DATAEND is set we should not call the callback,
@@ -708,7 +736,10 @@ irqreturn_t musb_g_ep0_irq(struct musb *musb)
 		return IRQ_HANDLED;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* I sent a stall.. need to acknowledge it now.. */
 	if (csr & MUSB_CSR0_P_SENTSTALL) {
 		musb_writew(regs, MUSB_CSR0,

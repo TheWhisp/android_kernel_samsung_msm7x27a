@@ -1,7 +1,11 @@
 /* cfg80211 Interface for prism2_usb module */
 
 
+<<<<<<< HEAD
 /* Prism2 channell/frequency/bitrate declarations */
+=======
+/* Prism2 channel/frequency/bitrate declarations */
+>>>>>>> refs/remotes/origin/master
 static const struct ieee80211_channel prism2_channels[] = {
 	{ .center_freq = 2412 },
 	{ .center_freq = 2417 },
@@ -73,7 +77,12 @@ static int prism2_result2err(int prism2_result)
 static int prism2_domibset_uint32(wlandevice_t *wlandev, u32 did, u32 data)
 {
 	struct p80211msg_dot11req_mibset msg;
+<<<<<<< HEAD
 	p80211item_uint32_t *mibitem = (p80211item_uint32_t *) &msg.mibattribute.data;
+=======
+	p80211item_uint32_t *mibitem =
+			(p80211item_uint32_t *) &msg.mibattribute.data;
+>>>>>>> refs/remotes/origin/master
 
 	msg.msgcode = DIDmsg_dot11req_mibset;
 	mibitem->did = did;
@@ -86,7 +95,12 @@ static int prism2_domibset_pstr32(wlandevice_t *wlandev,
 				  u32 did, u8 len, u8 *data)
 {
 	struct p80211msg_dot11req_mibset msg;
+<<<<<<< HEAD
 	p80211item_pstr32_t *mibitem = (p80211item_pstr32_t *) &msg.mibattribute.data;
+=======
+	p80211item_pstr32_t *mibitem =
+			(p80211item_pstr32_t *) &msg.mibattribute.data;
+>>>>>>> refs/remotes/origin/master
 
 	msg.msgcode = DIDmsg_dot11req_mibset;
 	mibitem->did = did;
@@ -98,10 +112,17 @@ static int prism2_domibset_pstr32(wlandevice_t *wlandev,
 
 
 /* The interface functions, called by the cfg80211 layer */
+<<<<<<< HEAD
 int prism2_change_virtual_intf(struct wiphy *wiphy,
 			       struct net_device *dev,
 			       enum nl80211_iftype type, u32 *flags,
 			       struct vif_params *params)
+=======
+static int prism2_change_virtual_intf(struct wiphy *wiphy,
+				      struct net_device *dev,
+				      enum nl80211_iftype type, u32 *flags,
+				      struct vif_params *params)
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 	u32 data;
@@ -122,12 +143,22 @@ int prism2_change_virtual_intf(struct wiphy *wiphy,
 		data = 1;
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "Operation mode: %d not support\n", type);
+=======
+		netdev_warn(dev, "Operation mode: %d not support\n", type);
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 	}
 
 	/* Set Operation mode to the PORT TYPE RID */
+<<<<<<< HEAD
 	result = prism2_domibset_uint32(wlandev, DIDmib_p2_p2Static_p2CnfPortType, data);
+=======
+	result = prism2_domibset_uint32(wlandev,
+					DIDmib_p2_p2Static_p2CnfPortType,
+					data);
+>>>>>>> refs/remotes/origin/master
 
 	if (result)
 		err = -EFAULT;
@@ -138,9 +169,15 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 int prism2_add_key(struct wiphy *wiphy, struct net_device *dev,
 		   u8 key_index, bool pairwise, const u8 *mac_addr,
 		   struct key_params *params)
+=======
+static int prism2_add_key(struct wiphy *wiphy, struct net_device *dev,
+			  u8 key_index, bool pairwise, const u8 *mac_addr,
+			  struct key_params *params)
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 	u32 did;
@@ -180,7 +217,12 @@ int prism2_add_key(struct wiphy *wiphy, struct net_device *dev,
 			goto exit;
 		}
 
+<<<<<<< HEAD
 		result = prism2_domibset_pstr32(wlandev, did, params->key_len, params->key);
+=======
+		result = prism2_domibset_pstr32(wlandev, did,
+						params->key_len, params->key);
+>>>>>>> refs/remotes/origin/master
 		if (result)
 			goto exit;
 		break;
@@ -197,9 +239,16 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 int prism2_get_key(struct wiphy *wiphy, struct net_device *dev,
 		   u8 key_index, bool pairwise, const u8 *mac_addr, void *cookie,
 		   void (*callback)(void *cookie, struct key_params*))
+=======
+static int prism2_get_key(struct wiphy *wiphy, struct net_device *dev,
+			  u8 key_index, bool pairwise,
+			  const u8 *mac_addr, void *cookie,
+			  void (*callback)(void *cookie, struct key_params*))
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 	struct key_params params;
@@ -226,8 +275,13 @@ int prism2_get_key(struct wiphy *wiphy, struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 int prism2_del_key(struct wiphy *wiphy, struct net_device *dev,
 		   u8 key_index, bool pairwise, const u8 *mac_addr)
+=======
+static int prism2_del_key(struct wiphy *wiphy, struct net_device *dev,
+			  u8 key_index, bool pairwise, const u8 *mac_addr)
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 	u32 did;
@@ -272,8 +326,13 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 int prism2_set_default_key(struct wiphy *wiphy, struct net_device *dev,
 			   u8 key_index, bool unicast, bool multicast)
+=======
+static int prism2_set_default_key(struct wiphy *wiphy, struct net_device *dev,
+				  u8 key_index, bool unicast, bool multicast)
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 
@@ -291,8 +350,13 @@ int prism2_set_default_key(struct wiphy *wiphy, struct net_device *dev,
 }
 
 
+<<<<<<< HEAD
 int prism2_get_station(struct wiphy *wiphy, struct net_device *dev,
 		       u8 *mac, struct station_info *sinfo)
+=======
+static int prism2_get_station(struct wiphy *wiphy, struct net_device *dev,
+			      u8 *mac, struct station_info *sinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 	struct p80211msg_lnxreq_commsquality quality;
@@ -325,6 +389,7 @@ int prism2_get_station(struct wiphy *wiphy, struct net_device *dev,
 	return result;
 }
 
+<<<<<<< HEAD
 int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 		struct cfg80211_scan_request *request)
 {
@@ -332,6 +397,17 @@ int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 	wlandevice_t *wlandev = dev->ml_priv;
 	struct p80211msg_dot11req_scan msg1;
 	struct p80211msg_dot11req_scan_results msg2;
+=======
+static int prism2_scan(struct wiphy *wiphy,
+		       struct cfg80211_scan_request *request)
+{
+	struct net_device *dev;
+	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
+	wlandevice_t *wlandev;
+	struct p80211msg_dot11req_scan msg1;
+	struct p80211msg_dot11req_scan_results msg2;
+	struct cfg80211_bss *bss;
+>>>>>>> refs/remotes/origin/master
 	int result;
 	int err = 0;
 	int numbss = 0;
@@ -342,11 +418,21 @@ int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 	if (!request)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	dev = request->wdev->netdev;
+	wlandev = dev->ml_priv;
+
+>>>>>>> refs/remotes/origin/master
 	if (priv->scan_request && priv->scan_request != request)
 		return -EBUSY;
 
 	if (wlandev->macmode == WLAN_MACMODE_ESS_AP) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Can't scan in AP mode\n");
+=======
+		netdev_err(dev, "Can't scan in AP mode\n");
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 	}
 
@@ -357,16 +443,25 @@ int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 	msg1.bsstype.data = P80211ENUM_bsstype_any;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(&(msg1.bssid.data), 0xFF, sizeof(p80211item_pstr6_t));
 =======
 	memset(&msg1.bssid.data.data, 0xFF, sizeof(msg1.bssid.data.data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&msg1.bssid.data.data, 0xFF, sizeof(msg1.bssid.data.data));
+>>>>>>> refs/remotes/origin/master
 	msg1.bssid.data.len = 6;
 
 	if (request->n_ssids > 0) {
 		msg1.scantype.data = P80211ENUM_scantype_active;
 		msg1.ssid.data.len = request->ssids->ssid_len;
+<<<<<<< HEAD
 		memcpy(msg1.ssid.data.data, request->ssids->ssid, request->ssids->ssid_len);
+=======
+		memcpy(msg1.ssid.data.data,
+			request->ssids->ssid, request->ssids->ssid_len);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		msg1.scantype.data = 0;
 	}
@@ -376,7 +471,12 @@ int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 		(i < request->n_channels) && i < ARRAY_SIZE(prism2_channels);
 		i++)
 		msg1.channellist.data.data[i] =
+<<<<<<< HEAD
 			ieee80211_frequency_to_channel(request->channels[i]->center_freq);
+=======
+			ieee80211_frequency_to_channel(
+				request->channels[i]->center_freq);
+>>>>>>> refs/remotes/origin/master
 	msg1.channellist.data.len = request->n_channels;
 
 	msg1.maxchanneltime.data = 250;
@@ -405,8 +505,14 @@ int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 		ie_buf[1] = msg2.ssid.data.len;
 		ie_len = ie_buf[1] + 2;
 		memcpy(&ie_buf[2], &(msg2.ssid.data.data), msg2.ssid.data.len);
+<<<<<<< HEAD
 		cfg80211_inform_bss(wiphy,
 			ieee80211_get_channel(wiphy, ieee80211_dsss_chan_to_freq(msg2.dschannel.data)),
+=======
+		bss = cfg80211_inform_bss(wiphy,
+			ieee80211_get_channel(wiphy,
+			      ieee80211_dsss_chan_to_freq(msg2.dschannel.data)),
+>>>>>>> refs/remotes/origin/master
 			(const u8 *) &(msg2.bssid.data.data),
 			msg2.timestamp.data, msg2.capinfo.data,
 			msg2.beaconperiod.data,
@@ -415,6 +521,16 @@ int prism2_scan(struct wiphy *wiphy, struct net_device *dev,
 			(msg2.signal.data - 65536) * 100, /* Conversion to signed type */
 			GFP_KERNEL
 		);
+<<<<<<< HEAD
+=======
+
+		if (!bss) {
+			err = -ENOMEM;
+			goto exit;
+		}
+
+		cfg80211_put_bss(wiphy, bss);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (result)
@@ -426,7 +542,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 int prism2_set_wiphy_params(struct wiphy *wiphy, u32 changed)
+=======
+static int prism2_set_wiphy_params(struct wiphy *wiphy, u32 changed)
+>>>>>>> refs/remotes/origin/master
 {
 	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
 	wlandevice_t *wlandev = priv->wlandev;
@@ -468,8 +588,13 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 int prism2_connect(struct wiphy *wiphy, struct net_device *dev,
 		   struct cfg80211_connect_params *sme)
+=======
+static int prism2_connect(struct wiphy *wiphy, struct net_device *dev,
+			  struct cfg80211_connect_params *sme)
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 	struct ieee80211_channel *channel = sme->channel;
@@ -492,7 +617,11 @@ int prism2_connect(struct wiphy *wiphy, struct net_device *dev,
 			goto exit;
 	}
 
+<<<<<<< HEAD
 	/* Set the authorisation */
+=======
+	/* Set the authorization */
+>>>>>>> refs/remotes/origin/master
 	if ((sme->auth_type == NL80211_AUTHTYPE_OPEN_SYSTEM) ||
 		((sme->auth_type == NL80211_AUTHTYPE_AUTOMATIC) && !is_wep))
 			msg_join.authtype.data = P80211ENUM_authalg_opensystem;
@@ -500,7 +629,11 @@ int prism2_connect(struct wiphy *wiphy, struct net_device *dev,
 		((sme->auth_type == NL80211_AUTHTYPE_AUTOMATIC) && is_wep))
 			msg_join.authtype.data = P80211ENUM_authalg_sharedkey;
 	else
+<<<<<<< HEAD
 		printk(KERN_WARNING
+=======
+		netdev_warn(dev,
+>>>>>>> refs/remotes/origin/master
 			"Unhandled authorisation type for connect (%d)\n",
 			sme->auth_type);
 
@@ -536,7 +669,13 @@ int prism2_connect(struct wiphy *wiphy, struct net_device *dev,
 				goto exit;
 			}
 
+<<<<<<< HEAD
 			result = prism2_domibset_pstr32(wlandev, did, sme->key_len, (u8 *) sme->key);
+=======
+			result = prism2_domibset_pstr32(wlandev,
+							did, sme->key_len,
+							(u8 *)sme->key);
+>>>>>>> refs/remotes/origin/master
 			if (result)
 				goto exit;
 
@@ -590,8 +729,13 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 int prism2_disconnect(struct wiphy *wiphy, struct net_device *dev,
 		      u16 reason_code)
+=======
+static int prism2_disconnect(struct wiphy *wiphy, struct net_device *dev,
+			     u16 reason_code)
+>>>>>>> refs/remotes/origin/master
 {
 	wlandevice_t *wlandev = dev->ml_priv;
 	struct p80211msg_lnxreq_autojoin msg_join;
@@ -614,20 +758,34 @@ int prism2_disconnect(struct wiphy *wiphy, struct net_device *dev,
 }
 
 
+<<<<<<< HEAD
 int prism2_join_ibss(struct wiphy *wiphy, struct net_device *dev,
 		     struct cfg80211_ibss_params *params)
+=======
+static int prism2_join_ibss(struct wiphy *wiphy, struct net_device *dev,
+			    struct cfg80211_ibss_params *params)
+>>>>>>> refs/remotes/origin/master
 {
 	return -EOPNOTSUPP;
 }
 
+<<<<<<< HEAD
 int prism2_leave_ibss(struct wiphy *wiphy, struct net_device *dev)
+=======
+static int prism2_leave_ibss(struct wiphy *wiphy, struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return -EOPNOTSUPP;
 }
 
 
+<<<<<<< HEAD
 int prism2_set_tx_power(struct wiphy *wiphy, enum nl80211_tx_power_setting type,
 			int mbm)
+=======
+static int prism2_set_tx_power(struct wiphy *wiphy, struct wireless_dev *wdev,
+			       enum nl80211_tx_power_setting type, int mbm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
 	wlandevice_t *wlandev = priv->wlandev;
@@ -653,15 +811,28 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 int prism2_get_tx_power(struct wiphy *wiphy, int *dbm)
+=======
+static int prism2_get_tx_power(struct wiphy *wiphy, struct wireless_dev *wdev,
+			       int *dbm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct prism2_wiphy_private *priv = wiphy_priv(wiphy);
 	wlandevice_t *wlandev = priv->wlandev;
 	struct p80211msg_dot11req_mibget msg;
+<<<<<<< HEAD
 	p80211item_uint32_t *mibitem = (p80211item_uint32_t *) &msg.mibattribute.data;
 	int result;
 	int err = 0;
 
+=======
+	p80211item_uint32_t *mibitem;
+	int result;
+	int err = 0;
+
+	mibitem = (p80211item_uint32_t *) &msg.mibattribute.data;
+>>>>>>> refs/remotes/origin/master
 	msg.msgcode = DIDmsg_dot11req_mibget;
 	mibitem->did =
 	    DIDmib_dot11phy_dot11PhyTxPowerTable_dot11CurrentTxPowerLevel;
@@ -685,7 +856,12 @@ exit:
 /* Interface callback functions, passing data back up to the cfg80211 layer */
 void prism2_connect_result(wlandevice_t *wlandev, u8 failed)
 {
+<<<<<<< HEAD
 	u16 status = failed ? WLAN_STATUS_UNSPECIFIED_FAILURE : WLAN_STATUS_SUCCESS;
+=======
+	u16 status = failed ?
+		     WLAN_STATUS_UNSPECIFIED_FAILURE : WLAN_STATUS_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 
 	cfg80211_connect_result(wlandev->netdev, wlandev->bssid,
 				NULL, 0, NULL, 0, status, GFP_KERNEL);
@@ -728,7 +904,12 @@ struct wiphy *wlan_create_wiphy(struct device *dev, wlandevice_t *wlandev)
 {
 	struct wiphy *wiphy;
 	struct prism2_wiphy_private *priv;
+<<<<<<< HEAD
 	wiphy = wiphy_new(&prism2_usb_cfg_ops, sizeof(struct prism2_wiphy_private));
+=======
+
+	wiphy = wiphy_new(&prism2_usb_cfg_ops, sizeof(*priv));
+>>>>>>> refs/remotes/origin/master
 	if (!wiphy)
 		return NULL;
 

@@ -94,10 +94,14 @@ static inline unsigned int u32_hash_fold(__be32 key,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int u32_classify(struct sk_buff *skb, struct tcf_proto *tp, struct tcf_result *res)
 =======
 static int u32_classify(struct sk_buff *skb, const struct tcf_proto *tp, struct tcf_result *res)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int u32_classify(struct sk_buff *skb, const struct tcf_proto *tp, struct tcf_result *res)
+>>>>>>> refs/remotes/origin/master
 {
 	struct {
 		struct tc_u_knode *knode;
@@ -238,8 +242,12 @@ out:
 	return -1;
 
 deadloop:
+<<<<<<< HEAD
 	if (net_ratelimit())
 		pr_warning("cls_u32: dead loop\n");
+=======
+	net_warn_ratelimited("cls_u32: dead loop\n");
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 
@@ -493,15 +501,24 @@ static const struct nla_policy u32_policy[TCA_U32_MAX + 1] = {
 	[TCA_U32_MARK]		= { .len = sizeof(struct tc_u32_mark) },
 };
 
+<<<<<<< HEAD
 static int u32_set_parms(struct tcf_proto *tp, unsigned long base,
 			 struct tc_u_hnode *ht,
+=======
+static int u32_set_parms(struct net *net, struct tcf_proto *tp,
+			 unsigned long base, struct tc_u_hnode *ht,
+>>>>>>> refs/remotes/origin/master
 			 struct tc_u_knode *n, struct nlattr **tb,
 			 struct nlattr *est)
 {
 	int err;
 	struct tcf_exts e;
 
+<<<<<<< HEAD
 	err = tcf_exts_validate(tp, tb, est, &e, &u32_ext_map);
+=======
+	err = tcf_exts_validate(net, tp, tb, est, &e, &u32_ext_map);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -549,7 +566,12 @@ errout:
 	return err;
 }
 
+<<<<<<< HEAD
 static int u32_change(struct tcf_proto *tp, unsigned long base, u32 handle,
+=======
+static int u32_change(struct net *net, struct sk_buff *in_skb,
+		      struct tcf_proto *tp, unsigned long base, u32 handle,
+>>>>>>> refs/remotes/origin/master
 		      struct nlattr **tca,
 		      unsigned long *arg)
 {
@@ -574,7 +596,12 @@ static int u32_change(struct tcf_proto *tp, unsigned long base, u32 handle,
 		if (TC_U32_KEY(n->handle) == 0)
 			return -EINVAL;
 
+<<<<<<< HEAD
 		return u32_set_parms(tp, base, n->ht_up, n, tb, tca[TCA_RATE]);
+=======
+		return u32_set_parms(net, tp, base, n->ht_up, n, tb,
+				     tca[TCA_RATE]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (tb[TCA_U32_DIVISOR]) {
@@ -660,7 +687,11 @@ static int u32_change(struct tcf_proto *tp, unsigned long base, u32 handle,
 	}
 #endif
 
+<<<<<<< HEAD
 	err = u32_set_parms(tp, base, ht, n, tb, tca[TCA_RATE]);
+=======
+	err = u32_set_parms(net, tp, base, ht, n, tb, tca[TCA_RATE]);
+>>>>>>> refs/remotes/origin/master
 	if (err == 0) {
 		struct tc_u_knode **ins;
 		for (ins = &ht->ht[TC_U32_HASH(handle)]; *ins; ins = &(*ins)->next)
@@ -737,6 +768,7 @@ static int u32_dump(struct tcf_proto *tp, unsigned long fh,
 		struct tc_u_hnode *ht = (struct tc_u_hnode *)fh;
 		u32 divisor = ht->divisor + 1;
 
+<<<<<<< HEAD
 		NLA_PUT_U32(skb, TCA_U32_DIVISOR, divisor);
 	} else {
 		NLA_PUT(skb, TCA_U32_SEL,
@@ -754,12 +786,38 @@ static int u32_dump(struct tcf_proto *tp, unsigned long fh,
 #ifdef CONFIG_CLS_U32_MARK
 		if (n->mark.val || n->mark.mask)
 			NLA_PUT(skb, TCA_U32_MARK, sizeof(n->mark), &n->mark);
+=======
+		if (nla_put_u32(skb, TCA_U32_DIVISOR, divisor))
+			goto nla_put_failure;
+	} else {
+		if (nla_put(skb, TCA_U32_SEL,
+			    sizeof(n->sel) + n->sel.nkeys*sizeof(struct tc_u32_key),
+			    &n->sel))
+			goto nla_put_failure;
+		if (n->ht_up) {
+			u32 htid = n->handle & 0xFFFFF000;
+			if (nla_put_u32(skb, TCA_U32_HASH, htid))
+				goto nla_put_failure;
+		}
+		if (n->res.classid &&
+		    nla_put_u32(skb, TCA_U32_CLASSID, n->res.classid))
+			goto nla_put_failure;
+		if (n->ht_down &&
+		    nla_put_u32(skb, TCA_U32_LINK, n->ht_down->handle))
+			goto nla_put_failure;
+
+#ifdef CONFIG_CLS_U32_MARK
+		if ((n->mark.val || n->mark.mask) &&
+		    nla_put(skb, TCA_U32_MARK, sizeof(n->mark), &n->mark))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 		if (tcf_exts_dump(skb, &n->exts, &u32_ext_map) < 0)
 			goto nla_put_failure;
 
 #ifdef CONFIG_NET_CLS_IND
+<<<<<<< HEAD
 		if (strlen(n->indev))
 			NLA_PUT_STRING(skb, TCA_U32_INDEV, n->indev);
 #endif
@@ -767,6 +825,17 @@ static int u32_dump(struct tcf_proto *tp, unsigned long fh,
 		NLA_PUT(skb, TCA_U32_PCNT,
 		sizeof(struct tc_u32_pcnt) + n->sel.nkeys*sizeof(u64),
 			n->pf);
+=======
+		if (strlen(n->indev) &&
+		    nla_put_string(skb, TCA_U32_INDEV, n->indev))
+			goto nla_put_failure;
+#endif
+#ifdef CONFIG_CLS_U32_PERF
+		if (nla_put(skb, TCA_U32_PCNT,
+			    sizeof(struct tc_u32_pcnt) + n->sel.nkeys*sizeof(u64),
+			    n->pf))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 

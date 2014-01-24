@@ -9,6 +9,7 @@
  *  This code is stongly inspired on the iptables code which is
  *  Copyright (C) 1999 Paul `Rusty' Russell & Michael J. Neuling
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_BRIDGE_EFF_H
 #define __LINUX_BRIDGE_EFF_H
@@ -194,6 +195,13 @@ struct ebt_entry {
 #define EBT_SO_GET_MAX          (EBT_SO_GET_INIT_ENTRIES+1)
 
 #ifdef __KERNEL__
+=======
+#ifndef __LINUX_BRIDGE_EFF_H
+#define __LINUX_BRIDGE_EFF_H
+
+#include <uapi/linux/netfilter_bridge/ebtables.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* return values for match() functions */
 #define EBT_MATCH 0
@@ -286,12 +294,17 @@ struct ebt_table {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EBT_ALIGN(s) (((s) + (__alignof__(struct ebt_replace)-1)) & \
 		     ~(__alignof__(struct ebt_replace)-1))
 =======
 #define EBT_ALIGN(s) (((s) + (__alignof__(struct _xt_align)-1)) & \
 		     ~(__alignof__(struct _xt_align)-1))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EBT_ALIGN(s) (((s) + (__alignof__(struct _xt_align)-1)) & \
+		     ~(__alignof__(struct _xt_align)-1))
+>>>>>>> refs/remotes/origin/master
 extern struct ebt_table *ebt_register_table(struct net *net,
 					    const struct ebt_table *table);
 extern void ebt_unregister_table(struct net *net, struct ebt_table *table);
@@ -309,6 +322,7 @@ extern unsigned int ebt_do_table(unsigned int hook, struct sk_buff *skb,
 /* True if the target is not a standard target */
 #define INVALID_TARGET (info->target < -NUM_STANDARD_TARGETS || info->target >= 0)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /* blatently stolen from ip_tables.h
@@ -382,4 +396,6 @@ extern unsigned int ebt_do_table(unsigned int hook, struct sk_buff *skb,
 	__ret;                                              \
 })
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

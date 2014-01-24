@@ -118,8 +118,13 @@ ENTRY(mn10300_serial_vdma_tx_handler)
 	movbu	d2,(e3)			# ACK the interrupt
 	movhu	(e3),d2			# flush
 
+<<<<<<< HEAD
 	btst	0x01,(__tx_break,a3)	# handle transmit break request
 	bne	mnsc_vdma_tx_break
+=======
+	btst	0xFF,(__tx_flags,a3)	# handle transmit flags
+	bne	mnsc_vdma_tx_flags
+>>>>>>> refs/remotes/origin/master
 
 	movbu	(SCxSTR,e2),d2		# don't try and transmit a char if the
 					# buffer is not empty
@@ -171,10 +176,20 @@ mnsc_vdma_tx_empty:
 	bset	MNSCx_TX_EMPTY,(__intr_flags,a3)
 	bra	mnsc_vdma_tx_done
 
+<<<<<<< HEAD
 mnsc_vdma_tx_break:
 	movhu	(SCxCTR,e2),d2		# turn on break mode
 	or	SC01CTR_BKE,d2
 	movhu	d2,(SCxCTR,e2)
+=======
+mnsc_vdma_tx_flags:
+	btst	MNSCx_TX_STOP,(__tx_flags,a3)
+	bne	mnsc_vdma_tx_stop
+	movhu	(SCxCTR,e2),d2		# turn on break mode
+	or	SC01CTR_BKE,d2
+	movhu	d2,(SCxCTR,e2)
+mnsc_vdma_tx_stop:
+>>>>>>> refs/remotes/origin/master
 	mov	+(NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL)|GxICR_DETECT),d2
 	movhu	d2,(e3)			# disable transmit interrupts on this
 					# channel

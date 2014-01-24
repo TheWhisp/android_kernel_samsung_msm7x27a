@@ -21,6 +21,11 @@
 
 #include <linux/list.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SSP Serial Port Registers
@@ -155,13 +160,32 @@
 #define SSACD_ACDS(x)		((x) << 0)	/* Audio clock divider select */
 #define SSACD_SCDX8		(1 << 7)	/* SYSCLK division ratio select */
 
+<<<<<<< HEAD
+=======
+/* LPSS SSP */
+#define SSITF			0x44		/* TX FIFO trigger level */
+#define SSITF_TxLoThresh(x)	(((x) - 1) << 8)
+#define SSITF_TxHiThresh(x)	((x) - 1)
+
+#define SSIRF			0x48		/* RX FIFO trigger level */
+#define SSIRF_RxThresh(x)	((x) - 1)
+
+>>>>>>> refs/remotes/origin/master
 enum pxa_ssp_type {
 	SSP_UNDEFINED = 0,
 	PXA25x_SSP,  /* pxa 210, 250, 255, 26x */
 	PXA25x_NSSP, /* pxa 255, 26x (including ASSP) */
 	PXA27x_SSP,
+<<<<<<< HEAD
 	PXA168_SSP,
 	CE4100_SSP,
+=======
+	PXA3xx_SSP,
+	PXA168_SSP,
+	PXA910_SSP,
+	CE4100_SSP,
+	LPSS_SSP,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ssp_device {
@@ -179,6 +203,11 @@ struct ssp_device {
 	int		irq;
 	int		drcmr_rx;
 	int		drcmr_tx;
+<<<<<<< HEAD
+=======
+
+	struct device_node	*of_node;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -204,6 +233,27 @@ static inline u32 pxa_ssp_read_reg(struct ssp_device *dev, u32 reg)
 	return __raw_readl(dev->mmio_base + reg);
 }
 
+<<<<<<< HEAD
 struct ssp_device *pxa_ssp_request(int port, const char *label);
 void pxa_ssp_free(struct ssp_device *);
+=======
+#ifdef CONFIG_ARCH_PXA
+struct ssp_device *pxa_ssp_request(int port, const char *label);
+void pxa_ssp_free(struct ssp_device *);
+struct ssp_device *pxa_ssp_request_of(const struct device_node *of_node,
+				      const char *label);
+#else
+static inline struct ssp_device *pxa_ssp_request(int port, const char *label)
+{
+	return NULL;
+}
+static inline struct ssp_device *pxa_ssp_request_of(const struct device_node *n,
+						    const char *name)
+{
+	return NULL;
+}
+static inline void pxa_ssp_free(struct ssp_device *ssp) {}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif

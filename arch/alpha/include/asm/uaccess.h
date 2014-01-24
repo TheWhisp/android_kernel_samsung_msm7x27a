@@ -433,6 +433,7 @@ clear_user(void __user *to, long len)
 #undef __module_address
 #undef __module_call
 
+<<<<<<< HEAD
 /* Returns: -EFAULT if exception before terminator, N if the entire
    buffer filled, else strlen.  */
 
@@ -463,6 +464,14 @@ extern inline long strnlen_user(const char __user *str, long n)
 {
 	return access_ok(VERIFY_READ,str,0) ? __strnlen_user(str, n) : 0;
 }
+=======
+#define user_addr_max() \
+        (segment_eq(get_fs(), USER_DS) ? TASK_SIZE : ~0UL)
+
+extern long strncpy_from_user(char *dest, const char __user *src, long count);
+extern __must_check long strlen_user(const char __user *str);
+extern __must_check long strnlen_user(const char __user *str, long n);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * About the exception table:

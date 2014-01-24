@@ -9,7 +9,11 @@
  * 2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
 #include <libio.h>
+=======
+#include <stddef.h>
+>>>>>>> refs/remotes/origin/master
 #include <dwarf-regs.h>
 
 #define SPARC_MAX_REGS	96

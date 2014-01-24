@@ -492,6 +492,7 @@ static int fb_try_mode(struct fb_var_screeninfo *var, struct fb_info *info,
 		       const struct fb_videomode *mode, unsigned int bpp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     int err = 0;
 
     DPRINTK("Trying mode %s %dx%d-%d@%d\n", mode->name ? mode->name : "noname",
@@ -542,6 +543,8 @@ static int fb_try_mode(struct fb_var_screeninfo *var, struct fb_info *info,
  *	with <xres>, <yres>, <bpp> and <refresh> decimal numbers and
  *	<name> a string.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	DPRINTK("Trying mode %s %dx%d-%d@%d\n",
@@ -592,7 +595,10 @@ static int fb_try_mode(struct fb_var_screeninfo *var, struct fb_info *info,
  *
  *     with <xres>, <yres>, <bpp> and <refresh> decimal numbers and
  *     <name> a string.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *      If 'M' is present after yres (and before refresh/bpp if present),
  *      the function will compute the timings using VESA(tm) Coordinated
@@ -605,6 +611,7 @@ static int fb_try_mode(struct fb_var_screeninfo *var, struct fb_info *info,
  *      1024x768MR-8@60m - Reduced blank with margins at 60Hz.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	NOTE: The passed struct @var is _not_ cleared!  This allows you
  *	to supply values for e.g. the grayscale and accel_flags fields.
  *
@@ -612,13 +619,18 @@ static int fb_try_mode(struct fb_var_screeninfo *var, struct fb_info *info,
  *	2 if using specified @mode_option with an ignored refresh rate,
  *	3 if default mode is used, 4 if fall back to any valid mode.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *     NOTE: The passed struct @var is _not_ cleared!  This allows you
  *     to supply values for e.g. the grayscale and accel_flags fields.
  *
  *     Returns zero for failure, 1 if using specified @mode_option,
  *     2 if using specified @mode_option with an ignored refresh rate,
  *     3 if default mode is used, 4 if fall back to any valid mode.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -628,6 +640,7 @@ int fb_find_mode(struct fb_var_screeninfo *var,
 		 const struct fb_videomode *default_mode,
 		 unsigned int default_bpp)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     int i;
 
@@ -771,6 +784,8 @@ done:
 				return 1;
 			} else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/* Set up defaults */
@@ -918,13 +933,17 @@ done:
 				if (refresh_specified && db[i].refresh == refresh)
 					return 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if (abs(db[i].refresh - refresh) < diff) {
 					diff = abs(db[i].refresh - refresh);
 					best = i;
 				}
 			}
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 	if (best != -1) {
@@ -972,6 +991,8 @@ done:
     DPRINTK("No valid mode found\n");
     return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (best != -1) {
 			fb_try_mode(var, info, &db[best], bpp);
 			return (refresh_specified) ? 2 : 1;
@@ -1016,7 +1037,10 @@ done:
 
 	DPRINTK("No valid mode found\n");
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**

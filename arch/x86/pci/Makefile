@@ -11,6 +11,7 @@ obj-$(CONFIG_X86_INTEL_CE)      += ce4100.o
 obj-$(CONFIG_ACPI)		+= acpi.o
 obj-y				+= legacy.o irq.o
 
+<<<<<<< HEAD
 obj-$(CONFIG_X86_VISWS)		+= visws.o
 
 obj-$(CONFIG_X86_NUMAQ)		+= numaq_32.o
@@ -20,6 +21,16 @@ obj-$(CONFIG_X86_MRST)		+= mrst.o
 =======
 obj-$(CONFIG_X86_INTEL_MID)	+= mrst.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_STA2X11)           += sta2x11-fixup.o
+
+obj-$(CONFIG_X86_VISWS)		+= visws.o
+
+obj-$(CONFIG_X86_NUMAQ)		+= numaq_32.o
+obj-$(CONFIG_X86_NUMACHIP)	+= numachip.o
+
+obj-$(CONFIG_X86_INTEL_MID)	+= intel_mid_pci.o
+>>>>>>> refs/remotes/origin/master
 
 obj-y				+= common.o early.o
 obj-y				+= bus_numa.o

@@ -15,15 +15,21 @@
 #include <linux/radix-tree.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "internals.h"
 
 static struct intc_map_entry intc_irq_xlate[NR_IRQS];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include "internals.h"
 
 static struct intc_map_entry intc_irq_xlate[INTC_NR_IRQS];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct intc_virq_list {
 	unsigned int irq;
@@ -225,12 +231,21 @@ restart:
 		if (radix_tree_deref_retry(entry))
 			goto restart;
 
+<<<<<<< HEAD
 		irq = create_irq();
+=======
+		irq = irq_alloc_desc(numa_node_id());
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(irq < 0)) {
 			pr_err("no more free IRQs, bailing..\n");
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		activate_irq(irq);
+
+>>>>>>> refs/remotes/origin/master
 		pr_info("Setting up a chained VIRQ from %d -> %d\n",
 			irq, entry->pirq);
 

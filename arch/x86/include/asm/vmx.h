@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef VMX_H
 #define VMX_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * vmx.h: VMX Architecture related definitions
  * Copyright (c) 2004, Intel Corporation.
@@ -24,8 +27,17 @@
  *    Yaniv Kamay <yaniv@qumranet.com>
  *
  */
+<<<<<<< HEAD
 
 #include <linux/types.h>
+=======
+#ifndef VMX_H
+#define VMX_H
+
+
+#include <linux/types.h>
+#include <uapi/asm/vmx.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Definitions of Primary Processor-Based VM-Execution Controls.
@@ -56,15 +68,34 @@
 #define SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES 0x00000001
 #define SECONDARY_EXEC_ENABLE_EPT               0x00000002
 #define SECONDARY_EXEC_RDTSCP			0x00000008
+<<<<<<< HEAD
 #define SECONDARY_EXEC_ENABLE_VPID              0x00000020
 #define SECONDARY_EXEC_WBINVD_EXITING		0x00000040
 #define SECONDARY_EXEC_UNRESTRICTED_GUEST	0x00000080
 #define SECONDARY_EXEC_PAUSE_LOOP_EXITING	0x00000400
+=======
+#define SECONDARY_EXEC_VIRTUALIZE_X2APIC_MODE   0x00000010
+#define SECONDARY_EXEC_ENABLE_VPID              0x00000020
+#define SECONDARY_EXEC_WBINVD_EXITING		0x00000040
+#define SECONDARY_EXEC_UNRESTRICTED_GUEST	0x00000080
+#define SECONDARY_EXEC_APIC_REGISTER_VIRT       0x00000100
+#define SECONDARY_EXEC_VIRTUAL_INTR_DELIVERY    0x00000200
+#define SECONDARY_EXEC_PAUSE_LOOP_EXITING	0x00000400
+#define SECONDARY_EXEC_ENABLE_INVPCID		0x00001000
+#define SECONDARY_EXEC_SHADOW_VMCS              0x00004000
+>>>>>>> refs/remotes/origin/master
 
 
 #define PIN_BASED_EXT_INTR_MASK                 0x00000001
 #define PIN_BASED_NMI_EXITING                   0x00000008
 #define PIN_BASED_VIRTUAL_NMIS                  0x00000020
+<<<<<<< HEAD
+=======
+#define PIN_BASED_VMX_PREEMPTION_TIMER          0x00000040
+#define PIN_BASED_POSTED_INTR                   0x00000080
+
+#define PIN_BASED_ALWAYSON_WITHOUT_TRUE_MSR	0x00000016
+>>>>>>> refs/remotes/origin/master
 
 #define VM_EXIT_SAVE_DEBUG_CONTROLS             0x00000002
 #define VM_EXIT_HOST_ADDR_SPACE_SIZE            0x00000200
@@ -76,6 +107,11 @@
 #define VM_EXIT_LOAD_IA32_EFER                  0x00200000
 #define VM_EXIT_SAVE_VMX_PREEMPTION_TIMER       0x00400000
 
+<<<<<<< HEAD
+=======
+#define VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR	0x00036dff
+
+>>>>>>> refs/remotes/origin/master
 #define VM_ENTRY_LOAD_DEBUG_CONTROLS            0x00000002
 #define VM_ENTRY_IA32E_MODE                     0x00000200
 #define VM_ENTRY_SMM                            0x00000400
@@ -84,9 +120,21 @@
 #define VM_ENTRY_LOAD_IA32_PAT			0x00004000
 #define VM_ENTRY_LOAD_IA32_EFER                 0x00008000
 
+<<<<<<< HEAD
 /* VMCS Encodings */
 enum vmcs_field {
 	VIRTUAL_PROCESSOR_ID            = 0x00000000,
+=======
+#define VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR	0x000011ff
+
+#define VMX_MISC_PREEMPTION_TIMER_RATE_MASK	0x0000001f
+#define VMX_MISC_SAVE_EFER_LMA			0x00000020
+
+/* VMCS Encodings */
+enum vmcs_field {
+	VIRTUAL_PROCESSOR_ID            = 0x00000000,
+	POSTED_INTR_NV                  = 0x00000002,
+>>>>>>> refs/remotes/origin/master
 	GUEST_ES_SELECTOR               = 0x00000800,
 	GUEST_CS_SELECTOR               = 0x00000802,
 	GUEST_SS_SELECTOR               = 0x00000804,
@@ -95,6 +143,10 @@ enum vmcs_field {
 	GUEST_GS_SELECTOR               = 0x0000080a,
 	GUEST_LDTR_SELECTOR             = 0x0000080c,
 	GUEST_TR_SELECTOR               = 0x0000080e,
+<<<<<<< HEAD
+=======
+	GUEST_INTR_STATUS               = 0x00000810,
+>>>>>>> refs/remotes/origin/master
 	HOST_ES_SELECTOR                = 0x00000c00,
 	HOST_CS_SELECTOR                = 0x00000c02,
 	HOST_SS_SELECTOR                = 0x00000c04,
@@ -120,8 +172,25 @@ enum vmcs_field {
 	VIRTUAL_APIC_PAGE_ADDR_HIGH     = 0x00002013,
 	APIC_ACCESS_ADDR		= 0x00002014,
 	APIC_ACCESS_ADDR_HIGH		= 0x00002015,
+<<<<<<< HEAD
 	EPT_POINTER                     = 0x0000201a,
 	EPT_POINTER_HIGH                = 0x0000201b,
+=======
+	POSTED_INTR_DESC_ADDR           = 0x00002016,
+	POSTED_INTR_DESC_ADDR_HIGH      = 0x00002017,
+	EPT_POINTER                     = 0x0000201a,
+	EPT_POINTER_HIGH                = 0x0000201b,
+	EOI_EXIT_BITMAP0                = 0x0000201c,
+	EOI_EXIT_BITMAP0_HIGH           = 0x0000201d,
+	EOI_EXIT_BITMAP1                = 0x0000201e,
+	EOI_EXIT_BITMAP1_HIGH           = 0x0000201f,
+	EOI_EXIT_BITMAP2                = 0x00002020,
+	EOI_EXIT_BITMAP2_HIGH           = 0x00002021,
+	EOI_EXIT_BITMAP3                = 0x00002022,
+	EOI_EXIT_BITMAP3_HIGH           = 0x00002023,
+	VMREAD_BITMAP                   = 0x00002026,
+	VMWRITE_BITMAP                  = 0x00002028,
+>>>>>>> refs/remotes/origin/master
 	GUEST_PHYSICAL_ADDRESS          = 0x00002400,
 	GUEST_PHYSICAL_ADDRESS_HIGH     = 0x00002401,
 	VMCS_LINK_POINTER               = 0x00002800,
@@ -133,10 +202,15 @@ enum vmcs_field {
 	GUEST_IA32_EFER			= 0x00002806,
 	GUEST_IA32_EFER_HIGH		= 0x00002807,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	GUEST_IA32_PERF_GLOBAL_CTRL	= 0x00002808,
 	GUEST_IA32_PERF_GLOBAL_CTRL_HIGH= 0x00002809,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	GUEST_IA32_PERF_GLOBAL_CTRL	= 0x00002808,
+	GUEST_IA32_PERF_GLOBAL_CTRL_HIGH= 0x00002809,
+>>>>>>> refs/remotes/origin/master
 	GUEST_PDPTR0                    = 0x0000280a,
 	GUEST_PDPTR0_HIGH               = 0x0000280b,
 	GUEST_PDPTR1                    = 0x0000280c,
@@ -150,10 +224,15 @@ enum vmcs_field {
 	HOST_IA32_EFER			= 0x00002c02,
 	HOST_IA32_EFER_HIGH		= 0x00002c03,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	HOST_IA32_PERF_GLOBAL_CTRL	= 0x00002c04,
 	HOST_IA32_PERF_GLOBAL_CTRL_HIGH	= 0x00002c05,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HOST_IA32_PERF_GLOBAL_CTRL	= 0x00002c04,
+	HOST_IA32_PERF_GLOBAL_CTRL_HIGH	= 0x00002c05,
+>>>>>>> refs/remotes/origin/master
 	PIN_BASED_VM_EXEC_CONTROL       = 0x00004000,
 	CPU_BASED_VM_EXEC_CONTROL       = 0x00004002,
 	EXCEPTION_BITMAP                = 0x00004004,
@@ -201,6 +280,10 @@ enum vmcs_field {
 	GUEST_INTERRUPTIBILITY_INFO     = 0x00004824,
 	GUEST_ACTIVITY_STATE            = 0X00004826,
 	GUEST_SYSENTER_CS               = 0x0000482A,
+<<<<<<< HEAD
+=======
+	VMX_PREEMPTION_TIMER_VALUE      = 0x0000482E,
+>>>>>>> refs/remotes/origin/master
 	HOST_IA32_SYSENTER_CS           = 0x00004c00,
 	CR0_GUEST_HOST_MASK             = 0x00006000,
 	CR4_GUEST_HOST_MASK             = 0x00006002,
@@ -246,6 +329,7 @@ enum vmcs_field {
 	HOST_RIP                        = 0x00006c16,
 };
 
+<<<<<<< HEAD
 #define VMX_EXIT_REASONS_FAILED_VMENTRY         0x80000000
 
 #define EXIT_REASON_EXCEPTION_NMI       0
@@ -288,6 +372,8 @@ enum vmcs_field {
 #define EXIT_REASON_WBINVD		54
 #define EXIT_REASON_XSETBV		55
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Interruption-information format
  */
@@ -357,7 +443,10 @@ enum vmcs_field {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Exit Qualifications for APIC-Access
  */
@@ -370,7 +459,10 @@ enum vmcs_field {
 #define TYPE_PHYSICAL_APIC_EVENT        (10 << 12)
 #define TYPE_PHYSICAL_APIC_INST         (15 << 12)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* segment AR */
 #define SEGMENT_AR_L_MASK (1 << 13)
 
@@ -395,9 +487,15 @@ enum vmcs_field {
 
 #define AR_RESERVD_MASK 0xfffe0f00
 
+<<<<<<< HEAD
 #define TSS_PRIVATE_MEMSLOT			(KVM_MEMORY_SLOTS + 0)
 #define APIC_ACCESS_PAGE_PRIVATE_MEMSLOT	(KVM_MEMORY_SLOTS + 1)
 #define IDENTITY_PAGETABLE_PRIVATE_MEMSLOT	(KVM_MEMORY_SLOTS + 2)
+=======
+#define TSS_PRIVATE_MEMSLOT			(KVM_USER_MEM_SLOTS + 0)
+#define APIC_ACCESS_PAGE_PRIVATE_MEMSLOT	(KVM_USER_MEM_SLOTS + 1)
+#define IDENTITY_PAGETABLE_PRIVATE_MEMSLOT	(KVM_USER_MEM_SLOTS + 2)
+>>>>>>> refs/remotes/origin/master
 
 #define VMX_NR_VPIDS				(1 << 16)
 #define VMX_VPID_EXTENT_SINGLE_CONTEXT		1
@@ -406,6 +504,10 @@ enum vmcs_field {
 #define VMX_EPT_EXTENT_INDIVIDUAL_ADDR		0
 #define VMX_EPT_EXTENT_CONTEXT			1
 #define VMX_EPT_EXTENT_GLOBAL			2
+<<<<<<< HEAD
+=======
+#define VMX_EPT_EXTENT_SHIFT			24
+>>>>>>> refs/remotes/origin/master
 
 #define VMX_EPT_EXECUTE_ONLY_BIT		(1ull)
 #define VMX_EPT_PAGE_WALK_4_BIT			(1ull << 6)
@@ -413,7 +515,12 @@ enum vmcs_field {
 #define VMX_EPTP_WB_BIT				(1ull << 14)
 #define VMX_EPT_2MB_PAGE_BIT			(1ull << 16)
 #define VMX_EPT_1GB_PAGE_BIT			(1ull << 17)
+<<<<<<< HEAD
 #define VMX_EPT_EXTENT_INDIVIDUAL_BIT		(1ull << 24)
+=======
+#define VMX_EPT_INVEPT_BIT			(1ull << 20)
+#define VMX_EPT_AD_BIT				    (1ull << 21)
+>>>>>>> refs/remotes/origin/master
 #define VMX_EPT_EXTENT_CONTEXT_BIT		(1ull << 25)
 #define VMX_EPT_EXTENT_GLOBAL_BIT		(1ull << 26)
 
@@ -424,11 +531,20 @@ enum vmcs_field {
 #define VMX_EPT_MAX_GAW				0x4
 #define VMX_EPT_MT_EPTE_SHIFT			3
 #define VMX_EPT_GAW_EPTP_SHIFT			3
+<<<<<<< HEAD
+=======
+#define VMX_EPT_AD_ENABLE_BIT			(1ull << 6)
+>>>>>>> refs/remotes/origin/master
 #define VMX_EPT_DEFAULT_MT			0x6ull
 #define VMX_EPT_READABLE_MASK			0x1ull
 #define VMX_EPT_WRITABLE_MASK			0x2ull
 #define VMX_EPT_EXECUTABLE_MASK			0x4ull
 #define VMX_EPT_IPAT_BIT    			(1ull << 6)
+<<<<<<< HEAD
+=======
+#define VMX_EPT_ACCESS_BIT				(1ull << 8)
+#define VMX_EPT_DIRTY_BIT				(1ull << 9)
+>>>>>>> refs/remotes/origin/master
 
 #define VMX_EPT_IDENTITY_PAGETABLE_ADDR		0xfffbc000ul
 
@@ -452,7 +568,10 @@ struct vmx_msr_entry {
 } __aligned(16);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Exit Qualifications for entry failure during or after loading guest state
  */
@@ -492,5 +611,8 @@ enum vm_instruction_error_number {
 	VMXERR_INVALID_OPERAND_TO_INVEPT_INVVPID = 28,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -29,8 +29,12 @@ parameter to your boot command line:
   scx200_acb.base=0x810,0x820
 If the scx200_acb driver is built as a module, add the following line to
 <<<<<<< HEAD
+<<<<<<< HEAD
 the file /etc/modprobe.conf instead:
 =======
 a configuration file in /etc/modprobe.d/ instead:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+a configuration file in /etc/modprobe.d/ instead:
+>>>>>>> refs/remotes/origin/master
   options scx200_acb base=0x810,0x820

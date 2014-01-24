@@ -16,10 +16,14 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cmpxchg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ATOMIC_INIT(i)  { (i) }
 
@@ -83,6 +87,7 @@ static inline int atomic_add_return(int i, atomic_t *v)
  * atomic_sub_unless - sub unless the number is a given value
  * @v: pointer of type atomic_t
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
@@ -94,6 +99,8 @@ static inline int atomic_sub_unless(atomic_t *v, int a, int u)
 {
 	int tmp, result = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @a: the amount to subtract from v...
  * @u: ...unless v is equal to u.
  *
@@ -103,11 +110,15 @@ static inline int atomic_sub_unless(atomic_t *v, int a, int u)
 static inline void atomic_sub_unless(atomic_t *v, int a, int u)
 {
 	int tmp;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	asm volatile(
 		"/* atomic_sub_unless */\n"
 		"1:	ssrf	5\n"
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"	ld.w	%0, %3\n"
 		"	cp.w	%0, %5\n"
@@ -127,6 +138,8 @@ static inline void atomic_sub_unless(atomic_t *v, int a, int u)
 /*
  * atomic_add_unless - add unless the number is a given value
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		"	ld.w	%0, %2\n"
 		"	cp.w	%0, %4\n"
 		"	breq	1f\n"
@@ -141,11 +154,15 @@ static inline void atomic_sub_unless(atomic_t *v, int a, int u)
 
 /*
  * __atomic_add_unless - add unless the number is a given value
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * If the atomic value v is not equal to u, this function adds a to v,
  * and returns non zero. If v is equal to u then it returns zero. This
@@ -177,6 +194,8 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
 
 	return result;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Atomically adds @a to @v, so long as it was not @u.
  * Returns the old value of @v.
 */
@@ -203,7 +222,10 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 	}
 
 	return old;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -251,9 +273,12 @@ static inline int atomic_sub_if_positive(int i, atomic_t *v)
 #define atomic_add_negative(i, v) (atomic_add_return(i, v) < 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define atomic_inc_not_zero(v)	atomic_add_unless(v, 1, 0)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define atomic_dec_if_positive(v) atomic_sub_if_positive(1, v)
 
 #define smp_mb__before_atomic_dec()	barrier()
@@ -262,8 +287,11 @@ static inline int atomic_sub_if_positive(int i, atomic_t *v)
 #define smp_mb__after_atomic_inc()	barrier()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /*  __ASM_AVR32_ATOMIC_H */

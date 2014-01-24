@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _ASM_M32R_PTRACE_H
 #define _ASM_M32R_PTRACE_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * linux/include/asm-m32r/ptrace.h
  *
@@ -11,6 +14,7 @@
  * M32R version:
  *   Copyright (C) 2001-2002, 2004  Hirokazu Takata <takata at linux-m32r.org>
  */
+<<<<<<< HEAD
 
 /* 0 - 13 are integer registers (general purpose registers).  */
 #define PT_R4		0
@@ -119,6 +123,14 @@ struct pt_regs {
 #ifdef __KERNEL__
 
 #include <asm/m32r.h>		/* M32R_PSW_BSM, M32R_PSW_BPM */
+=======
+#ifndef _ASM_M32R_PTRACE_H
+#define _ASM_M32R_PTRACE_H
+
+
+#include <asm/m32r.h>		/* M32R_PSW_BSM, M32R_PSW_BPM */
+#include <uapi/asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 #define arch_has_single_step() (1)
 
@@ -137,17 +149,27 @@ extern void init_debug_traps(struct task_struct *);
 
 #define instruction_pointer(regs) ((regs)->bpc)
 #define profile_pc(regs) instruction_pointer(regs)
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define user_stack_pointer(regs) ((regs)->spu)
+
+>>>>>>> refs/remotes/origin/master
 extern void withdraw_debug_trap(struct pt_regs *regs);
 
 #define task_pt_regs(task) \
         ((struct pt_regs *)(task_stack_page(task) + THREAD_SIZE) - 1)
+<<<<<<< HEAD
 
 #endif /* __KERNEL */
+=======
+#define current_pt_regs() ((struct pt_regs *) \
+	((unsigned long)current_thread_info() + THREAD_SIZE) - 1)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_M32R_PTRACE_H */

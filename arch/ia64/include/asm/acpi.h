@@ -33,9 +33,12 @@
 #include <linux/init.h>
 #include <linux/numa.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/numa.h>
 
 #define COMPILER_DEPENDENT_INT64	long
@@ -56,10 +59,13 @@
 
 /* Asm macros */
 
+<<<<<<< HEAD
 #define ACPI_ASM_MACROS
 #define BREAKPOINT3
 #define ACPI_DISABLE_IRQS() local_irq_disable()
 #define ACPI_ENABLE_IRQS()  local_irq_enable()
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_FLUSH_CPU_CACHE()
 
 static inline int
@@ -119,8 +125,11 @@ static inline const char *acpi_get_sysname (void)
 	return "uv";
 # elif defined (CONFIG_IA64_DIG)
 	return "dig";
+<<<<<<< HEAD
 # elif defined (CONFIG_IA64_XEN_GUEST)
 	return "xen";
+=======
+>>>>>>> refs/remotes/origin/master
 # elif defined(CONFIG_IA64_DIG_VTD)
 	return "dig_vtd";
 # else
@@ -157,7 +166,11 @@ extern int additional_cpus;
 #else
 #define MAX_PXM_DOMAINS (256)
 #endif
+<<<<<<< HEAD
 extern int __devinitdata pxm_to_nid_map[MAX_PXM_DOMAINS];
+=======
+extern int pxm_to_nid_map[MAX_PXM_DOMAINS];
+>>>>>>> refs/remotes/origin/master
 extern int __initdata nid_to_pxm_map[MAX_NUMNODES];
 #endif
 

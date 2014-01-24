@@ -53,6 +53,7 @@
  * System configuration note: Selfballooning should not be enabled on
  * systems without a sufficiently large swap device configured; for best
  * results, it is recommended that total swap be increased by the size
+<<<<<<< HEAD
  * of the guest memory.  Also, while technically not required to be
  * configured, it is highly recommended that frontswap also be configured
  * and enabled when selfballooning is running.  So, selfballooning
@@ -62,11 +63,24 @@
  * can be disabled with the "noselfballooning" kernel boot option.  Finally,
  * when frontswap is configured, frontswap-selfshrinking can be disabled
  * with the "noselfshrink" kernel boot option.
+=======
+ * of the guest memory. Note, that selfballooning should be disabled by default
+ * if frontswap is not configured.  Similarly selfballooning should be enabled
+ * by default if frontswap is configured and can be disabled with the
+ * "tmem.selfballooning=0" kernel boot option.  Finally, when frontswap is
+ * configured, frontswap-selfshrinking can be disabled  with the
+ * "tmem.selfshrink=0" kernel boot option.
+>>>>>>> refs/remotes/origin/master
  *
  * Selfballooning is disallowed in domain0 and force-disabled.
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/bootmem.h>
 #include <linux/swap.h>
@@ -105,6 +119,15 @@ static unsigned int selfballoon_interval __read_mostly = 5;
  */
 static unsigned int selfballoon_min_usable_mb;
 
+<<<<<<< HEAD
+=======
+/*
+ * Amount of RAM in MB to add to the target number of pages.
+ * Can be used to reserve some more room for caches and the like.
+ */
+static unsigned int selfballoon_reserved_mb;
+
+>>>>>>> refs/remotes/origin/master
 static void selfballoon_process(struct work_struct *work);
 static DECLARE_DELAYED_WORK(selfballoon_worker, selfballoon_process);
 
@@ -114,9 +137,12 @@ static DECLARE_DELAYED_WORK(selfballoon_worker, selfballoon_process);
 /* Enable/disable with sysfs. */
 static bool frontswap_selfshrinking __read_mostly;
 
+<<<<<<< HEAD
 /* Enable/disable with kernel boot option. */
 static bool use_frontswap_selfshrink __initdata = true;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The default values for the following parameters were deemed reasonable
  * by experimentation, may be workload-dependent, and can all be
@@ -170,6 +196,7 @@ static void frontswap_selfshrink(void)
 	frontswap_shrink(tgt_frontswap_pages);
 }
 
+<<<<<<< HEAD
 static int __init xen_nofrontswap_selfshrink_setup(char *s)
 {
 	use_frontswap_selfshrink = false;
@@ -199,6 +226,8 @@ static int __init xen_selfballooning_setup(char *s)
 }
 
 __setup("selfballooning", xen_selfballooning_setup);
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_FRONTSWAP */
 
 #define MB2PAGES(mb)	((mb) << (20 - PAGE_SHIFT))
@@ -216,8 +245,14 @@ static void selfballoon_process(struct work_struct *work)
 	if (xen_selfballooning_enabled) {
 		cur_pages = totalram_pages;
 		tgt_pages = cur_pages; /* default is no change */
+<<<<<<< HEAD
 		goal_pages = percpu_counter_read_positive(&vm_committed_as) +
 				totalreserve_pages;
+=======
+		goal_pages = vm_memory_committed() +
+				totalreserve_pages +
+				MB2PAGES(selfballoon_reserved_mb);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FRONTSWAP
 		/* allow space for frontswap pages to be repatriated */
 		if (frontswap_selfshrinking && frontswap_enabled)
@@ -291,8 +326,15 @@ static ssize_t store_selfballooning(struct device *dev,
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
 
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &tmp);
 	if (err || ((tmp != 0) && (tmp != 1)))
+=======
+	err = kstrtoul(buf, 10, &tmp);
+	if (err)
+		return err;
+	if ((tmp != 0) && (tmp != 1))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	xen_selfballooning_enabled = !!tmp;
@@ -318,8 +360,15 @@ static ssize_t store_selfballoon_interval(struct device *dev,
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 	if (err || val == 0)
+=======
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	selfballoon_interval = val;
 	return count;
@@ -340,8 +389,15 @@ static ssize_t store_selfballoon_downhys(struct device *dev,
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 	if (err || val == 0)
+=======
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	selfballoon_downhysteresis = val;
 	return count;
@@ -363,8 +419,15 @@ static ssize_t store_selfballoon_uphys(struct device *dev,
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 	if (err || val == 0)
+=======
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	selfballoon_uphysteresis = val;
 	return count;
@@ -386,8 +449,15 @@ static ssize_t store_selfballoon_min_usable_mb(struct device *dev,
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 	if (err || val == 0)
+=======
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	selfballoon_min_usable_mb = val;
 	return count;
@@ -397,6 +467,35 @@ static DEVICE_ATTR(selfballoon_min_usable_mb, S_IRUGO | S_IWUSR,
 		   show_selfballoon_min_usable_mb,
 		   store_selfballoon_min_usable_mb);
 
+<<<<<<< HEAD
+=======
+SELFBALLOON_SHOW(selfballoon_reserved_mb, "%d\n",
+				selfballoon_reserved_mb);
+
+static ssize_t store_selfballoon_reserved_mb(struct device *dev,
+					     struct device_attribute *attr,
+					     const char *buf,
+					     size_t count)
+{
+	unsigned long val;
+	int err;
+
+	if (!capable(CAP_SYS_ADMIN))
+		return -EPERM;
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val == 0)
+		return -EINVAL;
+	selfballoon_reserved_mb = val;
+	return count;
+}
+
+static DEVICE_ATTR(selfballoon_reserved_mb, S_IRUGO | S_IWUSR,
+		   show_selfballoon_reserved_mb,
+		   store_selfballoon_reserved_mb);
+
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_FRONTSWAP
 SELFBALLOON_SHOW(frontswap_selfshrinking, "%d\n", frontswap_selfshrinking);
@@ -412,8 +511,15 @@ static ssize_t store_frontswap_selfshrinking(struct device *dev,
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &tmp);
 	if (err || ((tmp != 0) && (tmp != 1)))
+=======
+	err = kstrtoul(buf, 10, &tmp);
+	if (err)
+		return err;
+	if ((tmp != 0) && (tmp != 1))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	frontswap_selfshrinking = !!tmp;
 	if (!was_enabled && !xen_selfballooning_enabled &&
@@ -439,8 +545,15 @@ static ssize_t store_frontswap_inertia(struct device *dev,
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 	if (err || val == 0)
+=======
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	frontswap_inertia = val;
 	frontswap_inertia_counter = val;
@@ -462,8 +575,15 @@ static ssize_t store_frontswap_hysteresis(struct device *dev,
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EPERM;
+<<<<<<< HEAD
 	err = strict_strtoul(buf, 10, &val);
 	if (err || val == 0)
+=======
+	err = kstrtoul(buf, 10, &val);
+	if (err)
+		return err;
+	if (val == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	frontswap_hysteresis = val;
 	return count;
@@ -480,6 +600,10 @@ static struct attribute *selfballoon_attrs[] = {
 	&dev_attr_selfballoon_downhysteresis.attr,
 	&dev_attr_selfballoon_uphysteresis.attr,
 	&dev_attr_selfballoon_min_usable_mb.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_selfballoon_reserved_mb.attr,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FRONTSWAP
 	&dev_attr_frontswap_selfshrinking.attr,
 	&dev_attr_frontswap_hysteresis.attr,
@@ -505,7 +629,11 @@ int register_xen_selfballooning(struct device *dev)
 }
 EXPORT_SYMBOL(register_xen_selfballooning);
 
+<<<<<<< HEAD
 static int __init xen_selfballoon_init(void)
+=======
+int xen_selfballoon_init(bool use_selfballooning, bool use_frontswap_selfshrink)
+>>>>>>> refs/remotes/origin/master
 {
 	bool enable = false;
 
@@ -513,22 +641,34 @@ static int __init xen_selfballoon_init(void)
 		return -ENODEV;
 
 	if (xen_initial_domain()) {
+<<<<<<< HEAD
 		pr_info("xen/balloon: Xen selfballooning driver "
 				"disabled for domain0.\n");
+=======
+		pr_info("Xen selfballooning driver disabled for domain0\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	xen_selfballooning_enabled = tmem_enabled && use_selfballooning;
 	if (xen_selfballooning_enabled) {
+<<<<<<< HEAD
 		pr_info("xen/balloon: Initializing Xen "
 					"selfballooning driver.\n");
+=======
+		pr_info("Initializing Xen selfballooning driver\n");
+>>>>>>> refs/remotes/origin/master
 		enable = true;
 	}
 #ifdef CONFIG_FRONTSWAP
 	frontswap_selfshrinking = tmem_enabled && use_frontswap_selfshrink;
 	if (frontswap_selfshrinking) {
+<<<<<<< HEAD
 		pr_info("xen/balloon: Initializing frontswap "
 					"selfshrinking driver.\n");
+=======
+		pr_info("Initializing frontswap selfshrinking driver\n");
+>>>>>>> refs/remotes/origin/master
 		enable = true;
 	}
 #endif
@@ -539,7 +679,11 @@ static int __init xen_selfballoon_init(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 subsys_initcall(xen_selfballoon_init);
 
 MODULE_LICENSE("GPL");
+=======
+EXPORT_SYMBOL(xen_selfballoon_init);
+>>>>>>> refs/remotes/origin/master

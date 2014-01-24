@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 /*
@@ -1421,10 +1424,13 @@ struct ni_board_struct {
 	enum caldac_enum caldac[3];
 };
 
+<<<<<<< HEAD
 #define n_ni_boards  (sizeof(ni_boards)/sizeof(struct ni_board_struct))
 
 #define boardtype (*(struct ni_board_struct *)dev->board_ptr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_N_AO_CHAN 8
 #define NUM_GPCT 2
 
@@ -1500,7 +1506,11 @@ struct ni_board_struct {
 	unsigned short pwm_up_count;	\
 	unsigned short pwm_down_count;	\
 	\
+<<<<<<< HEAD
 	short ai_fifo_buffer[0x2000];				\
+=======
+	unsigned short ai_fifo_buffer[0x2000];			\
+>>>>>>> refs/remotes/origin/master
 	uint8_t eeprom_buffer[M_SERIES_EEPROM_SIZE]; \
 	uint32_t serial_number; \
 	\

@@ -87,9 +87,13 @@ static const struct bfa_ioc_hwif nw_hwif_ct2 = {
 	.ioc_sync_complete   = bfa_ioc_ct_sync_complete,
 };
 
+<<<<<<< HEAD
 /**
  * Called from bfa_ioc_attach() to map asic specific calls.
  */
+=======
+/* Called from bfa_ioc_attach() to map asic specific calls. */
+>>>>>>> refs/remotes/origin/master
 void
 bfa_nw_ioc_set_ct_hwif(struct bfa_ioc *ioc)
 {
@@ -102,9 +106,13 @@ bfa_nw_ioc_set_ct2_hwif(struct bfa_ioc *ioc)
 	ioc->ioc_hwif = &nw_hwif_ct2;
 }
 
+<<<<<<< HEAD
 /**
  * Return true if firmware of current driver matches the running firmware.
  */
+=======
+/* Return true if firmware of current driver matches the running firmware. */
+>>>>>>> refs/remotes/origin/master
 static bool
 bfa_ioc_ct_firmware_lock(struct bfa_ioc *ioc)
 {
@@ -182,9 +190,13 @@ bfa_ioc_ct_firmware_unlock(struct bfa_ioc *ioc)
 	bfa_nw_ioc_sem_release(ioc->ioc_regs.ioc_usage_sem_reg);
 }
 
+<<<<<<< HEAD
 /**
  * Notify other functions on HB failure.
  */
+=======
+/* Notify other functions on HB failure. */
+>>>>>>> refs/remotes/origin/master
 static void
 bfa_ioc_ct_notify_fail(struct bfa_ioc *ioc)
 {
@@ -195,6 +207,7 @@ bfa_ioc_ct_notify_fail(struct bfa_ioc *ioc)
 	readl(ioc->ioc_regs.alt_ll_halt);
 }
 
+<<<<<<< HEAD
 /**
  * Host to LPU mailbox message addresses
  */
@@ -202,6 +215,13 @@ static const struct {
 	u32 	hfn_mbox;
 	u32 	lpu_mbox;
 	u32 	hfn_pgn;
+=======
+/* Host to LPU mailbox message addresses */
+static const struct {
+	u32	hfn_mbox;
+	u32	lpu_mbox;
+	u32	hfn_pgn;
+>>>>>>> refs/remotes/origin/master
 } ct_fnreg[] = {
 	{ HOSTFN0_LPU_MBOX0_0, LPU_HOSTFN0_MBOX0_0, HOST_PAGE_NUM_FN0 },
 	{ HOSTFN1_LPU_MBOX0_8, LPU_HOSTFN1_MBOX0_8, HOST_PAGE_NUM_FN1 },
@@ -209,9 +229,13 @@ static const struct {
 	{ HOSTFN3_LPU_MBOX0_8, LPU_HOSTFN3_MBOX0_8, HOST_PAGE_NUM_FN3 }
 };
 
+<<<<<<< HEAD
 /**
  * Host <-> LPU mailbox command/status registers - port 0
  */
+=======
+/* Host <-> LPU mailbox command/status registers - port 0 */
+>>>>>>> refs/remotes/origin/master
 static const struct {
 	u32	hfn;
 	u32	lpu;
@@ -222,9 +246,13 @@ static const struct {
 	{ HOSTFN3_LPU0_CMD_STAT, LPU0_HOSTFN3_CMD_STAT }
 };
 
+<<<<<<< HEAD
 /**
  * Host <-> LPU mailbox command/status registers - port 1
  */
+=======
+/* Host <-> LPU mailbox command/status registers - port 1 */
+>>>>>>> refs/remotes/origin/master
 static const struct {
 	u32	hfn;
 	u32	lpu;
@@ -368,9 +396,13 @@ bfa_ioc_ct2_reg_init(struct bfa_ioc *ioc)
 	ioc->ioc_regs.err_set = rb + ERR_SET_REG;
 }
 
+<<<<<<< HEAD
 /**
  * Initialize IOC to port mapping.
  */
+=======
+/* Initialize IOC to port mapping. */
+>>>>>>> refs/remotes/origin/master
 
 #define FNC_PERS_FN_SHIFT(__fn)	((__fn) * 8)
 static void
@@ -398,9 +430,13 @@ bfa_ioc_ct2_map_port(struct bfa_ioc *ioc)
 	ioc->port_id = ((r32 & __FC_LL_PORT_MAP__MK) >> __FC_LL_PORT_MAP__SH);
 }
 
+<<<<<<< HEAD
 /**
  * Set interrupt mode for a function: INTX or MSIX
  */
+=======
+/* Set interrupt mode for a function: INTX or MSIX */
+>>>>>>> refs/remotes/origin/master
 static void
 bfa_ioc_ct_isr_mode_set(struct bfa_ioc *ioc, bool msix)
 {
@@ -443,9 +479,13 @@ bfa_ioc_ct2_lpu_read_stat(struct bfa_ioc *ioc)
 	return false;
 }
 
+<<<<<<< HEAD
 /**
  * MSI-X resource allocation for 1860 with no asic block
  */
+=======
+/* MSI-X resource allocation for 1860 with no asic block */
+>>>>>>> refs/remotes/origin/master
 #define HOSTFN_MSIX_DEFAULT		64
 #define HOSTFN_MSIX_VT_INDEX_MBOX_ERR	0x30138
 #define HOSTFN_MSIX_VT_OFST_NUMVT	0x3013c
@@ -473,9 +513,13 @@ bfa_nw_ioc_ct2_poweron(struct bfa_ioc *ioc)
 			rb + HOSTFN_MSIX_VT_INDEX_MBOX_ERR);
 }
 
+<<<<<<< HEAD
 /**
  * Cleanup hw semaphore and usecnt registers
  */
+=======
+/* Cleanup hw semaphore and usecnt registers */
+>>>>>>> refs/remotes/origin/master
 static void
 bfa_ioc_ct_ownership_reset(struct bfa_ioc *ioc)
 {
@@ -492,9 +536,13 @@ bfa_ioc_ct_ownership_reset(struct bfa_ioc *ioc)
 	bfa_nw_ioc_hw_sem_release(ioc);
 }
 
+<<<<<<< HEAD
 /**
  * Synchronized IOC failure processing routines
  */
+=======
+/* Synchronized IOC failure processing routines */
+>>>>>>> refs/remotes/origin/master
 static bool
 bfa_ioc_ct_sync_start(struct bfa_ioc *ioc)
 {
@@ -518,9 +566,13 @@ bfa_ioc_ct_sync_start(struct bfa_ioc *ioc)
 
 	return bfa_ioc_ct_sync_complete(ioc);
 }
+<<<<<<< HEAD
 /**
  * Synchronized IOC failure processing routines
  */
+=======
+/* Synchronized IOC failure processing routines */
+>>>>>>> refs/remotes/origin/master
 static void
 bfa_ioc_ct_sync_join(struct bfa_ioc *ioc)
 {
@@ -803,10 +855,45 @@ bfa_ioc_ct2_mac_reset(void __iomem *rb)
 }
 
 #define CT2_NFC_MAX_DELAY       1000
+<<<<<<< HEAD
+=======
+#define CT2_NFC_VER_VALID       0x143
+#define BFA_IOC_PLL_POLL        1000000
+
+static bool
+bfa_ioc_ct2_nfc_halted(void __iomem *rb)
+{
+	volatile u32 r32;
+
+	r32 = readl(rb + CT2_NFC_CSR_SET_REG);
+	if (r32 & __NFC_CONTROLLER_HALTED)
+		return true;
+
+	return false;
+}
+
+static void
+bfa_ioc_ct2_nfc_resume(void __iomem *rb)
+{
+	volatile u32 r32;
+	int i;
+
+	writel(__HALT_NFC_CONTROLLER, rb + CT2_NFC_CSR_CLR_REG);
+	for (i = 0; i < CT2_NFC_MAX_DELAY; i++) {
+		r32 = readl(rb + CT2_NFC_CSR_SET_REG);
+		if (!(r32 & __NFC_CONTROLLER_HALTED))
+			return;
+		udelay(1000);
+	}
+	BUG_ON(1);
+}
+
+>>>>>>> refs/remotes/origin/master
 static enum bfa_status
 bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode asic_mode)
 {
 	volatile u32 wgn, r32;
+<<<<<<< HEAD
 	int i;
 
 	/*
@@ -814,6 +901,39 @@ bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode asic_mode)
 	 */
 	wgn = readl(rb + CT2_WGN_STATUS);
 	if (!(wgn & __GLBL_PF_VF_CFG_RDY)) {
+=======
+	u32 nfc_ver, i;
+
+	wgn = readl(rb + CT2_WGN_STATUS);
+
+	nfc_ver = readl(rb + CT2_RSC_GPR15_REG);
+
+	if ((wgn == (__A2T_AHB_LOAD | __WGN_READY)) &&
+		(nfc_ver >= CT2_NFC_VER_VALID)) {
+		if (bfa_ioc_ct2_nfc_halted(rb))
+			bfa_ioc_ct2_nfc_resume(rb);
+		writel(__RESET_AND_START_SCLK_LCLK_PLLS,
+				rb + CT2_CSI_FW_CTL_SET_REG);
+
+		for (i = 0; i < BFA_IOC_PLL_POLL; i++) {
+			r32 = readl(rb + CT2_APP_PLL_LCLK_CTL_REG);
+			if (r32 & __RESET_AND_START_SCLK_LCLK_PLLS)
+				break;
+		}
+		BUG_ON(!(r32 & __RESET_AND_START_SCLK_LCLK_PLLS));
+
+		for (i = 0; i < BFA_IOC_PLL_POLL; i++) {
+			r32 = readl(rb + CT2_APP_PLL_LCLK_CTL_REG);
+			if (!(r32 & __RESET_AND_START_SCLK_LCLK_PLLS))
+				break;
+		}
+		BUG_ON(r32 & __RESET_AND_START_SCLK_LCLK_PLLS);
+		udelay(1000);
+
+		r32 = readl(rb + CT2_CSI_FW_CTL_REG);
+		BUG_ON(r32 & __RESET_AND_START_SCLK_LCLK_PLLS);
+	} else {
+>>>>>>> refs/remotes/origin/master
 		writel(__HALT_NFC_CONTROLLER, (rb + CT2_NFC_CSR_SET_REG));
 		for (i = 0; i < CT2_NFC_MAX_DELAY; i++) {
 			r32 = readl(rb + CT2_NFC_CSR_SET_REG);
@@ -821,12 +941,36 @@ bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode asic_mode)
 				break;
 			udelay(1000);
 		}
+<<<<<<< HEAD
+=======
+
+		bfa_ioc_ct2_mac_reset(rb);
+		bfa_ioc_ct2_sclk_init(rb);
+		bfa_ioc_ct2_lclk_init(rb);
+
+		/* release soft reset on s_clk & l_clk */
+		r32 = readl((rb + CT2_APP_PLL_SCLK_CTL_REG));
+		writel(r32 & ~__APP_PLL_SCLK_LOGIC_SOFT_RESET,
+				rb + CT2_APP_PLL_SCLK_CTL_REG);
+		r32 = readl((rb + CT2_APP_PLL_LCLK_CTL_REG));
+		writel(r32 & ~__APP_PLL_LCLK_LOGIC_SOFT_RESET,
+				rb + CT2_APP_PLL_LCLK_CTL_REG);
+	}
+
+	/* Announce flash device presence, if flash was corrupted. */
+	if (wgn == (__WGN_READY | __GLBL_PF_VF_CFG_RDY)) {
+		r32 = readl((rb + PSS_GPIO_OUT_REG));
+		writel(r32 & ~1, rb + PSS_GPIO_OUT_REG);
+		r32 = readl((rb + PSS_GPIO_OE_REG));
+		writel(r32 | 1, rb + PSS_GPIO_OE_REG);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
 	 * Mask the interrupts and clear any
 	 * pending interrupts left by BIOS/EFI
 	 */
+<<<<<<< HEAD
 
 	writel(1, (rb + CT2_LPU0_HOSTFN_MBOX0_MSK));
 	writel(1, (rb + CT2_LPU1_HOSTFN_MBOX0_MSK));
@@ -868,6 +1012,24 @@ bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode asic_mode)
 		writel((r32 & ~1), (rb + PSS_GPIO_OUT_REG));
 		r32 = readl((rb + PSS_GPIO_OE_REG));
 		writel((r32 | 1), (rb + PSS_GPIO_OE_REG));
+=======
+	writel(1, (rb + CT2_LPU0_HOSTFN_MBOX0_MSK));
+	writel(1, (rb + CT2_LPU1_HOSTFN_MBOX0_MSK));
+
+	/* For first time initialization, no need to clear interrupts */
+	r32 = readl(rb + HOST_SEM5_REG);
+	if (r32 & 0x1) {
+		r32 = readl((rb + CT2_LPU0_HOSTFN_CMD_STAT));
+		if (r32 == 1) {
+			writel(1, (rb + CT2_LPU0_HOSTFN_CMD_STAT));
+			readl((rb + CT2_LPU0_HOSTFN_CMD_STAT));
+		}
+		r32 = readl((rb + CT2_LPU1_HOSTFN_CMD_STAT));
+		if (r32 == 1) {
+			writel(1, (rb + CT2_LPU1_HOSTFN_CMD_STAT));
+			readl((rb + CT2_LPU1_HOSTFN_CMD_STAT));
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bfa_ioc_ct2_mem_init(rb);

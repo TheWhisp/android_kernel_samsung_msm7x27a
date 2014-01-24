@@ -13,9 +13,12 @@
 #include <linux/linkage.h>
 #include <asm/assembler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define CPSR2SPSR(rt) \
 		mrs	rt, cpsr; \

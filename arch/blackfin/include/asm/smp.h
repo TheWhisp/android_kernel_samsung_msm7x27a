@@ -18,6 +18,11 @@
 #define raw_smp_processor_id()  blackfin_core_id()
 
 extern void bfin_relocate_coreb_l1_mem(void);
+<<<<<<< HEAD
+=======
+extern void arch_send_call_function_single_ipi(int cpu);
+extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_SMP) && defined(CONFIG_ICACHE_FLUSH_L1)
 asmlinkage void blackfin_icache_flush_range_l1(unsigned long *ptr);
@@ -38,10 +43,14 @@ extern unsigned long dcache_invld_count[NR_CPUS];
 
 void smp_icache_flush_range_others(unsigned long start,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   unsigned long end);
 =======
 					unsigned long end);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					unsigned long end);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HOTPLUG_CPU
 void coreb_die(void);
 void cpu_die(void);
@@ -51,9 +60,15 @@ int __cpu_die(unsigned int cpu);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void smp_timer_broadcast(const struct cpumask *mask);
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void smp_timer_broadcast(const struct cpumask *mask);
+
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !__ASM_BLACKFIN_SMP_H */

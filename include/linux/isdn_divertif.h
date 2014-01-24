@@ -9,6 +9,7 @@
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -32,6 +33,14 @@
 #ifdef __KERNEL__
 #include <linux/isdnif.h>
 #include <linux/types.h>
+=======
+#ifndef _LINUX_ISDN_DIVERTIF_H
+#define _LINUX_ISDN_DIVERTIF_H
+
+#include <linux/isdnif.h>
+#include <linux/types.h>
+#include <uapi/linux/isdn_divertif.h>
+>>>>>>> refs/remotes/origin/master
 
 /***************************************************************/
 /* structure exchanging data between isdn hl and divert module */
@@ -49,9 +58,13 @@ typedef struct
 /* function register */
 /*********************/
 extern int DIVERT_REG_NAME(isdn_divert_if *);
+<<<<<<< HEAD
 #endif
 <<<<<<< HEAD
 =======
 
 #endif /* _LINUX_ISDN_DIVERTIF_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* _LINUX_ISDN_DIVERTIF_H */
+>>>>>>> refs/remotes/origin/master

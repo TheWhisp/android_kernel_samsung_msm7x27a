@@ -1,7 +1,11 @@
 /*
  * MPC8360E-RDK board file.
  *
+<<<<<<< HEAD
  * Copyright (c) 2006  Freescale Semicondutor, Inc.
+=======
+ * Copyright (c) 2006  Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2007-2008  MontaVista Software, Inc.
  *
  * Author: Anton Vorontsov <avorontsov@ru.mvista.com>
@@ -28,6 +32,7 @@
 #include "mpc83xx.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata mpc836x_rdk_ids[] = {
 	{ .compatible = "simple-bus", },
 	{},
@@ -53,6 +58,8 @@ static void __init mpc836x_rdk_setup_arch(void)
 		mpc83xx_add_bridge(np);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 machine_device_initcall(mpc836x_rdk, mpc83xx_declare_of_platform_devices);
 
 static void __init mpc836x_rdk_setup_arch(void)
@@ -61,12 +68,16 @@ static void __init mpc836x_rdk_setup_arch(void)
 		ppc_md.progress("mpc836x_rdk_setup_arch()", 0);
 
 	mpc83xx_setup_pci();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_QUICC_ENGINE
 	qe_reset();
 #endif
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init mpc836x_rdk_init_IRQ(void)
 {
@@ -96,6 +107,8 @@ static void __init mpc836x_rdk_init_IRQ(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called very early, MMU is off, device-tree isn't unflattened.
  */
@@ -111,10 +124,14 @@ define_machine(mpc836x_rdk) {
 	.probe		= mpc836x_rdk_probe,
 	.setup_arch	= mpc836x_rdk_setup_arch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_IRQ	= mpc836x_rdk_init_IRQ,
 =======
 	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
+>>>>>>> refs/remotes/origin/master
 	.get_irq	= ipic_get_irq,
 	.restart	= mpc83xx_restart,
 	.time_init	= mpc83xx_time_init,

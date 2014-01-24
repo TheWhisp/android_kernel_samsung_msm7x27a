@@ -39,9 +39,13 @@
 #include <linux/usb/wusb.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "wusbhc.h"
 
 /* Initialize the MMCIEs handling mechanism */
@@ -198,6 +202,10 @@ int wusbhc_start(struct wusbhc *wusbhc)
 	struct device *dev = wusbhc->dev;
 
 	WARN_ON(wusbhc->wuie_host_info != NULL);
+<<<<<<< HEAD
+=======
+	BUG_ON(wusbhc->uwb_rc == NULL);
+>>>>>>> refs/remotes/origin/master
 
 	result = wusbhc_rsv_establish(wusbhc);
 	if (result < 0) {
@@ -208,18 +216,33 @@ int wusbhc_start(struct wusbhc *wusbhc)
 
 	result = wusbhc_devconnect_start(wusbhc);
 	if (result < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "error enabling device connections: %d\n", result);
+=======
+		dev_err(dev, "error enabling device connections: %d\n",
+			result);
+>>>>>>> refs/remotes/origin/master
 		goto error_devconnect_start;
 	}
 
 	result = wusbhc_sec_start(wusbhc);
 	if (result < 0) {
+<<<<<<< HEAD
 		dev_err(dev, "error starting security in the HC: %d\n", result);
 		goto error_sec_start;
 	}
 	/* FIXME: the choice of the DNTS parameters is somewhat
 	 * arbitrary */
 	result = wusbhc->set_num_dnts(wusbhc, 0, 15);
+=======
+		dev_err(dev, "error starting security in the HC: %d\n",
+			result);
+		goto error_sec_start;
+	}
+
+	result = wusbhc->set_num_dnts(wusbhc, wusbhc->dnts_interval,
+		wusbhc->dnts_num_slots);
+>>>>>>> refs/remotes/origin/master
 	if (result < 0) {
 		dev_err(dev, "Cannot set DNTS parameters: %d\n", result);
 		goto error_set_num_dnts;
@@ -279,12 +302,45 @@ int wusbhc_chid_set(struct wusbhc *wusbhc, const struct wusb_ckhdid *chid)
 		}
 		wusbhc->chid = *chid;
 	}
+<<<<<<< HEAD
+=======
+
+	/* register with UWB if we haven't already since we are about to start
+	    the radio. */
+	if ((chid) && (wusbhc->uwb_rc == NULL)) {
+		wusbhc->uwb_rc = uwb_rc_get_by_grandpa(wusbhc->dev->parent);
+		if (wusbhc->uwb_rc == NULL) {
+			result = -ENODEV;
+			dev_err(wusbhc->dev,
+				"Cannot get associated UWB Host Controller\n");
+			goto error_rc_get;
+		}
+
+		result = wusbhc_pal_register(wusbhc);
+		if (result < 0) {
+			dev_err(wusbhc->dev, "Cannot register as a UWB PAL\n");
+			goto error_pal_register;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&wusbhc->mutex);
 
 	if (chid)
 		result = uwb_radio_start(&wusbhc->pal);
 	else
 		uwb_radio_stop(&wusbhc->pal);
+<<<<<<< HEAD
+=======
+
+	return result;
+
+error_pal_register:
+	uwb_rc_put(wusbhc->uwb_rc);
+	wusbhc->uwb_rc = NULL;
+error_rc_get:
+	mutex_unlock(&wusbhc->mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 EXPORT_SYMBOL_GPL(wusbhc_chid_set);

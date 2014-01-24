@@ -1,6 +1,7 @@
 #ifndef _ASM_SIGNAL_H
 #define _ASM_SIGNAL_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #ifndef __KERNEL__
@@ -40,5 +41,8 @@ struct sigaction {
 #define sa_sigaction	_u._sa_sigaction
 
 #endif /* __KERNEL__ */
+=======
+#include <uapi/asm/signal.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_SIGNAL_H */

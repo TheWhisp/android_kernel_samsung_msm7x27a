@@ -33,6 +33,13 @@ built with CONFIG_USB_SUSPEND enabled (which depends on
 CONFIG_PM_RUNTIME).  System PM support is present only if the kernel
 was built with CONFIG_SUSPEND or CONFIG_HIBERNATION enabled.
 
+<<<<<<< HEAD
+=======
+(Starting with the 3.10 kernel release, dynamic PM support for USB is
+present whenever the kernel was built with CONFIG_PM_RUNTIME enabled.
+The CONFIG_USB_SUSPEND option has been eliminated.)
+
+>>>>>>> refs/remotes/origin/master
 
 	What is Remote Wakeup?
 	----------------------
@@ -180,11 +187,16 @@ do:
 	modprobe usbcore autosuspend=5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Equivalently, you could add to /etc/modprobe.conf a line saying:
 =======
 Equivalently, you could add to a configuration file in /etc/modprobe.d
 a line saying:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Equivalently, you could add to a configuration file in /etc/modprobe.d
+a line saying:
+>>>>>>> refs/remotes/origin/master
 
 	options usbcore autosuspend=5
 
@@ -210,10 +222,15 @@ initialized to 5.  (The idle-delay values for already existing devices
 will not be affected.)
 
 Setting the initial default idle-delay to -1 will prevent any
+<<<<<<< HEAD
 autosuspend of any USB device.  This is a simple alternative to
 disabling CONFIG_USB_SUSPEND and rebuilding the kernel, and it has the
 added benefit of allowing you to enable autosuspend for selected
 devices.
+=======
+autosuspend of any USB device.  This has the benefit of allowing you
+then to enable autosuspend for selected devices.
+>>>>>>> refs/remotes/origin/master
 
 
 	Warnings
@@ -351,10 +368,14 @@ Drivers need not be concerned about balancing changes to the usage
 counter; the USB core will undo any remaining "get"s when a driver
 is unbound from its interface.  As a corollary, drivers must not call
 <<<<<<< HEAD
+<<<<<<< HEAD
 any of the usb_autopm_* functions after their diconnect() routine has
 =======
 any of the usb_autopm_* functions after their disconnect() routine has
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+any of the usb_autopm_* functions after their disconnect() routine has
+>>>>>>> refs/remotes/origin/master
 returned.
 
 Drivers using the async routines are responsible for their own
@@ -449,16 +470,22 @@ device.
 
 External suspend calls should never be allowed to fail in this way,
 <<<<<<< HEAD
+<<<<<<< HEAD
 only autosuspend calls.  The driver can tell them apart by checking
 the PM_EVENT_AUTO bit in the message.event argument to the suspend
 method; this bit will be set for internal PM events (autosuspend) and
 clear for external PM events.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 only autosuspend calls.  The driver can tell them apart by applying
 the PMSG_IS_AUTO() macro to the message argument to the suspend
 method; it will return True for internal PM events (autosuspend) and
 False for external PM events.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 	Mutual exclusion
@@ -504,7 +531,10 @@ resume as soon as the system suspend is complete.  Or the remote
 wakeup may fail and get lost.  Which outcome occurs depends on timing
 and on the hardware and firmware design.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 	xHCI hardware link PM
@@ -531,4 +561,7 @@ relevant attribute files is usb2_hardware_lpm.
 		driver will enable hardware LPM	for the device. You
 		can write y/Y/1 or n/N/0 to the file to	enable/disable
 		USB2 hardware LPM manually. This is for	test purpose mainly.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

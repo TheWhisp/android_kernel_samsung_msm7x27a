@@ -18,6 +18,7 @@
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -31,12 +32,24 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/cputype.h>
 #include <mach/edma.h>
+=======
+#include <linux/spi/spi.h>
+#include <linux/platform_data/edma.h>
+#include <linux/platform_data/gpio-davinci.h>
+#include <linux/platform_data/keyscan-davinci.h>
+#include <linux/platform_data/spi-davinci.h>
+
+#include <asm/mach/map.h>
+
+#include <mach/cputype.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/psc.h>
 #include <mach/mux.h>
 #include <mach/irqs.h>
 #include <mach/time.h>
 #include <mach/serial.h>
 #include <mach/common.h>
+<<<<<<< HEAD
 #include <mach/asp.h>
 #include <mach/keyscan.h>
 #include <mach/spi.h>
@@ -64,6 +77,22 @@
 #define DAVINCI_DMA_VC_TX		2
 #define DAVINCI_DMA_VC_RX		3
 
+=======
+
+#include "davinci.h"
+#include "clock.h"
+#include "mux.h"
+#include "asp.h"
+
+#define DM365_REF_FREQ		24000000	/* 24 MHz on the DM365 EVM */
+#define DM365_RTC_BASE			0x01c69000
+#define DM365_KEYSCAN_BASE		0x01c69400
+#define DM365_OSD_BASE			0x01c71c00
+#define DM365_VENC_BASE			0x01c71e00
+#define DAVINCI_DM365_VC_BASE		0x01d0c000
+#define DAVINCI_DMA_VC_TX		2
+#define DAVINCI_DMA_VC_RX		3
+>>>>>>> refs/remotes/origin/master
 #define DM365_EMAC_BASE			0x01d07000
 #define DM365_EMAC_MDIO_BASE		(DM365_EMAC_BASE + 0x4000)
 #define DM365_EMAC_CNTRL_OFFSET		0x0000
@@ -71,7 +100,10 @@
 #define DM365_EMAC_CNTRL_RAM_OFFSET	0x1000
 #define DM365_EMAC_CNTRL_RAM_SIZE	0x2000
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pll_data pll1_data = {
 	.num		= 1,
 	.phys_base	= DAVINCI_PLL1_BASE,
@@ -273,6 +305,15 @@ static struct clk vpss_master_clk = {
 	.flags		= CLK_PSC,
 };
 
+<<<<<<< HEAD
+=======
+static struct clk vpss_slave_clk = {
+	.name		= "vpss_slave",
+	.parent		= &pll1_sysclk5,
+	.lpsc		= DAVINCI_LPSC_VPSSSLV,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct clk arm_clk = {
 	.name		= "arm_clk",
 	.parent		= &pll2_sysclk2,
@@ -465,6 +506,7 @@ static struct clk_lookup dm365_clks[] = {
 	CLK(NULL, "pll2_sysclk8", &pll2_sysclk8),
 	CLK(NULL, "pll2_sysclk9", &pll2_sysclk9),
 	CLK(NULL, "vpss_dac", &vpss_dac_clk),
+<<<<<<< HEAD
 	CLK(NULL, "vpss_master", &vpss_master_clk),
 	CLK(NULL, "arm", &arm_clk),
 	CLK(NULL, "uart0", &uart0_clk),
@@ -472,6 +514,16 @@ static struct clk_lookup dm365_clks[] = {
 	CLK("i2c_davinci.1", NULL, &i2c_clk),
 	CLK("davinci_mmc.0", NULL, &mmcsd0_clk),
 	CLK("davinci_mmc.1", NULL, &mmcsd1_clk),
+=======
+	CLK("vpss", "master", &vpss_master_clk),
+	CLK("vpss", "slave", &vpss_slave_clk),
+	CLK(NULL, "arm", &arm_clk),
+	CLK("serial8250.0", NULL, &uart0_clk),
+	CLK("serial8250.1", NULL, &uart1_clk),
+	CLK("i2c_davinci.1", NULL, &i2c_clk),
+	CLK("da830-mmc.0", NULL, &mmcsd0_clk),
+	CLK("da830-mmc.1", NULL, &mmcsd1_clk),
+>>>>>>> refs/remotes/origin/master
 	CLK("spi_davinci.0", NULL, &spi0_clk),
 	CLK("spi_davinci.1", NULL, &spi1_clk),
 	CLK("spi_davinci.2", NULL, &spi2_clk),
@@ -489,6 +541,10 @@ static struct clk_lookup dm365_clks[] = {
 	CLK(NULL, "timer3", &timer3_clk),
 	CLK(NULL, "usb", &usb_clk),
 	CLK("davinci_emac.1", NULL, &emac_clk),
+<<<<<<< HEAD
+=======
+	CLK("davinci_mdio.0", "fck", &emac_clk),
+>>>>>>> refs/remotes/origin/master
 	CLK("davinci_voicecodec", NULL, &voicecodec_clk),
 	CLK("davinci-mcbsp", NULL, &asp0_clk),
 	CLK(NULL, "rto", &rto_clk),
@@ -692,7 +748,11 @@ static struct platform_device dm365_spi0_device = {
 };
 
 void __init dm365_init_spi0(unsigned chipselect_mask,
+<<<<<<< HEAD
 		struct spi_board_info *info, unsigned len)
+=======
+		const struct spi_board_info *info, unsigned len)
+>>>>>>> refs/remotes/origin/master
 {
 	davinci_cfg_reg(DM365_SPI0_SCLK);
 	davinci_cfg_reg(DM365_SPI0_SDI);
@@ -709,6 +769,35 @@ void __init dm365_init_spi0(unsigned chipselect_mask,
 	platform_device_register(&dm365_spi0_device);
 }
 
+<<<<<<< HEAD
+=======
+static struct resource dm365_gpio_resources[] = {
+	{	/* registers */
+		.start	= DAVINCI_GPIO_BASE,
+		.end	= DAVINCI_GPIO_BASE + SZ_4K - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	{	/* interrupt */
+		.start	= IRQ_DM365_GPIO0,
+		.end	= IRQ_DM365_GPIO7,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct davinci_gpio_platform_data dm365_gpio_platform_data = {
+	.ngpio		= 104,
+	.intc_irq_num	= DAVINCI_N_AINTC_IRQ,
+	.gpio_unbanked	= 8,
+};
+
+int __init dm365_gpio_register(void)
+{
+	return davinci_gpio_register(dm365_gpio_resources,
+				     ARRAY_SIZE(dm365_gpio_resources),
+				     &dm365_gpio_platform_data);
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct emac_platform_data dm365_emac_pdata = {
 	.ctrl_reg_offset	= DM365_EMAC_CNTRL_OFFSET,
 	.ctrl_mod_reg_offset	= DM365_EMAC_CNTRL_MOD_OFFSET,
@@ -838,7 +927,11 @@ static u8 dm365_default_priorities[DAVINCI_N_AINTC_IRQ] = {
 };
 
 /* Four Transfer Controllers on DM365 */
+<<<<<<< HEAD
 static const s8
+=======
+static s8
+>>>>>>> refs/remotes/origin/master
 dm365_queue_tc_mapping[][2] = {
 	/* {event queue no, TC no} */
 	{0, 0},
@@ -848,7 +941,11 @@ dm365_queue_tc_mapping[][2] = {
 	{-1, -1},
 };
 
+<<<<<<< HEAD
 static const s8
+=======
+static s8
+>>>>>>> refs/remotes/origin/master
 dm365_queue_priority_mapping[][2] = {
 	/* {event queue no, Priority} */
 	{0, 7},
@@ -927,6 +1024,10 @@ static struct platform_device dm365_edma_device = {
 
 static struct resource dm365_asp_resources[] = {
 	{
+<<<<<<< HEAD
+=======
+		.name	= "mpu",
+>>>>>>> refs/remotes/origin/master
 		.start	= DAVINCI_DM365_ASP0_BASE,
 		.end	= DAVINCI_DM365_ASP0_BASE + SZ_8K - 1,
 		.flags	= IORESOURCE_MEM,
@@ -1001,12 +1102,15 @@ static struct map_desc dm365_io_desc[] = {
 		.length		= IO_SIZE,
 		.type		= MT_DEVICE
 	},
+<<<<<<< HEAD
 	{
 		.virtual	= SRAM_VIRT,
 		.pfn		= __phys_to_pfn(0x00010000),
 		.length		= SZ_32K,
 		.type		= MT_MEMORY_NONCACHED,
 	},
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource dm365_ks_resources[] = {
@@ -1059,7 +1163,11 @@ static struct davinci_timer_info dm365_timer_info = {
 
 #define DM365_UART1_BASE	(IO_PHYS + 0x106000)
 
+<<<<<<< HEAD
 static struct plat_serial8250_port dm365_serial_platform_data[] = {
+=======
+static struct plat_serial8250_port dm365_serial0_platform_data[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.mapbase	= DAVINCI_UART0_BASE,
 		.irq		= IRQ_UARTINT0,
@@ -1069,6 +1177,14 @@ static struct plat_serial8250_port dm365_serial_platform_data[] = {
 		.regshift	= 2,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.flags	= 0,
+	}
+};
+static struct plat_serial8250_port dm365_serial1_platform_data[] = {
+	{
+>>>>>>> refs/remotes/origin/master
 		.mapbase	= DM365_UART1_BASE,
 		.irq		= IRQ_UARTINT1,
 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
@@ -1077,6 +1193,7 @@ static struct plat_serial8250_port dm365_serial_platform_data[] = {
 		.regshift	= 2,
 	},
 	{
+<<<<<<< HEAD
 		.flags		= 0
 	},
 };
@@ -1087,6 +1204,29 @@ static struct platform_device dm365_serial_device = {
 	.dev			= {
 		.platform_data	= dm365_serial_platform_data,
 	},
+=======
+		.flags	= 0,
+	}
+};
+
+struct platform_device dm365_serial_device[] = {
+	{
+		.name			= "serial8250",
+		.id			= PLAT8250_DEV_PLATFORM,
+		.dev			= {
+			.platform_data	= dm365_serial0_platform_data,
+		}
+	},
+	{
+		.name			= "serial8250",
+		.id			= PLAT8250_DEV_PLATFORM1,
+		.dev			= {
+			.platform_data	= dm365_serial1_platform_data,
+		}
+	},
+	{
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct davinci_soc_info davinci_soc_info_dm365 = {
@@ -1106,6 +1246,7 @@ static struct davinci_soc_info davinci_soc_info_dm365 = {
 	.intc_irq_prios		= dm365_default_priorities,
 	.intc_irq_num		= DAVINCI_N_AINTC_IRQ,
 	.timer_info		= &dm365_timer_info,
+<<<<<<< HEAD
 	.gpio_type		= GPIO_TYPE_DAVINCI,
 	.gpio_base		= DAVINCI_GPIO_BASE,
 	.gpio_num		= 104,
@@ -1119,6 +1260,11 @@ static struct davinci_soc_info davinci_soc_info_dm365 = {
 	.reset_device		= &davinci_wdt_device,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.emac_pdata		= &dm365_emac_pdata,
+	.sram_dma		= 0x00010000,
+	.sram_len		= SZ_32K,
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init dm365_init_asp(struct snd_platform_data *pdata)
@@ -1159,9 +1305,13 @@ void __init dm365_init(void)
 {
 	davinci_common_init(&davinci_soc_info_dm365);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	davinci_map_sysmod();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	davinci_map_sysmod();
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct resource dm365_vpss_resources[] = {
@@ -1255,6 +1405,176 @@ static struct platform_device dm365_isif_dev = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+static struct resource dm365_osd_resources[] = {
+	{
+		.start = DM365_OSD_BASE,
+		.end   = DM365_OSD_BASE + 0xff,
+		.flags = IORESOURCE_MEM,
+	},
+};
+
+static u64 dm365_video_dma_mask = DMA_BIT_MASK(32);
+
+static struct platform_device dm365_osd_dev = {
+	.name		= DM365_VPBE_OSD_SUBDEV_NAME,
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(dm365_osd_resources),
+	.resource	= dm365_osd_resources,
+	.dev		= {
+		.dma_mask		= &dm365_video_dma_mask,
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
+};
+
+static struct resource dm365_venc_resources[] = {
+	{
+		.start = IRQ_VENCINT,
+		.end   = IRQ_VENCINT,
+		.flags = IORESOURCE_IRQ,
+	},
+	/* venc registers io space */
+	{
+		.start = DM365_VENC_BASE,
+		.end   = DM365_VENC_BASE + 0x177,
+		.flags = IORESOURCE_MEM,
+	},
+	/* vdaccfg registers io space */
+	{
+		.start = DAVINCI_SYSTEM_MODULE_BASE + SYSMOD_VDAC_CONFIG,
+		.end   = DAVINCI_SYSTEM_MODULE_BASE + SYSMOD_VDAC_CONFIG + 3,
+		.flags = IORESOURCE_MEM,
+	},
+};
+
+static struct resource dm365_v4l2_disp_resources[] = {
+	{
+		.start = IRQ_VENCINT,
+		.end   = IRQ_VENCINT,
+		.flags = IORESOURCE_IRQ,
+	},
+	/* venc registers io space */
+	{
+		.start = DM365_VENC_BASE,
+		.end   = DM365_VENC_BASE + 0x177,
+		.flags = IORESOURCE_MEM,
+	},
+};
+
+static int dm365_vpbe_setup_pinmux(enum v4l2_mbus_pixelcode if_type,
+			    int field)
+{
+	switch (if_type) {
+	case V4L2_MBUS_FMT_SGRBG8_1X8:
+		davinci_cfg_reg(DM365_VOUT_FIELD_G81);
+		davinci_cfg_reg(DM365_VOUT_COUTL_EN);
+		davinci_cfg_reg(DM365_VOUT_COUTH_EN);
+		break;
+	case V4L2_MBUS_FMT_YUYV10_1X20:
+		if (field)
+			davinci_cfg_reg(DM365_VOUT_FIELD);
+		else
+			davinci_cfg_reg(DM365_VOUT_FIELD_G81);
+		davinci_cfg_reg(DM365_VOUT_COUTL_EN);
+		davinci_cfg_reg(DM365_VOUT_COUTH_EN);
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static int dm365_venc_setup_clock(enum vpbe_enc_timings_type type,
+				  unsigned int pclock)
+{
+	void __iomem *vpss_clkctl_reg;
+	u32 val;
+
+	vpss_clkctl_reg = DAVINCI_SYSMOD_VIRT(SYSMOD_VPSS_CLKCTL);
+
+	switch (type) {
+	case VPBE_ENC_STD:
+		val = VPSS_VENCCLKEN_ENABLE | VPSS_DACCLKEN_ENABLE;
+		break;
+	case VPBE_ENC_DV_TIMINGS:
+		if (pclock <= 27000000) {
+			val = VPSS_VENCCLKEN_ENABLE | VPSS_DACCLKEN_ENABLE;
+		} else {
+			/* set sysclk4 to output 74.25 MHz from pll1 */
+			val = VPSS_PLLC2SYSCLK5_ENABLE | VPSS_DACCLKEN_ENABLE |
+			      VPSS_VENCCLKEN_ENABLE;
+		}
+		break;
+	default:
+		return -EINVAL;
+	}
+	writel(val, vpss_clkctl_reg);
+
+	return 0;
+}
+
+static struct platform_device dm365_vpbe_display = {
+	.name		= "vpbe-v4l2",
+	.id		= -1,
+	.num_resources  = ARRAY_SIZE(dm365_v4l2_disp_resources),
+	.resource	= dm365_v4l2_disp_resources,
+	.dev		= {
+		.dma_mask		= &dm365_video_dma_mask,
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
+};
+
+static struct venc_platform_data dm365_venc_pdata = {
+	.setup_pinmux	= dm365_vpbe_setup_pinmux,
+	.setup_clock	= dm365_venc_setup_clock,
+};
+
+static struct platform_device dm365_venc_dev = {
+	.name		= DM365_VPBE_VENC_SUBDEV_NAME,
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(dm365_venc_resources),
+	.resource	= dm365_venc_resources,
+	.dev		= {
+		.dma_mask		= &dm365_video_dma_mask,
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+		.platform_data		= (void *)&dm365_venc_pdata,
+	},
+};
+
+static struct platform_device dm365_vpbe_dev = {
+	.name		= "vpbe_controller",
+	.id		= -1,
+	.dev		= {
+		.dma_mask		= &dm365_video_dma_mask,
+		.coherent_dma_mask	= DMA_BIT_MASK(32),
+	},
+};
+
+int __init dm365_init_video(struct vpfe_config *vpfe_cfg,
+				struct vpbe_config *vpbe_cfg)
+{
+	if (vpfe_cfg || vpbe_cfg)
+		platform_device_register(&dm365_vpss_device);
+
+	if (vpfe_cfg) {
+		vpfe_capture_dev.dev.platform_data = vpfe_cfg;
+		platform_device_register(&dm365_isif_dev);
+		platform_device_register(&vpfe_capture_dev);
+	}
+	if (vpbe_cfg) {
+		dm365_vpbe_dev.dev.platform_data = vpbe_cfg;
+		platform_device_register(&dm365_osd_dev);
+		platform_device_register(&dm365_venc_dev);
+		platform_device_register(&dm365_vpbe_dev);
+		platform_device_register(&dm365_vpbe_display);
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init dm365_init_devices(void)
 {
 	if (!cpu_is_davinci_dm365())
@@ -1265,6 +1585,7 @@ static int __init dm365_init_devices(void)
 
 	platform_device_register(&dm365_mdio_device);
 	platform_device_register(&dm365_emac_device);
+<<<<<<< HEAD
 	clk_add_alias(NULL, dev_name(&dm365_mdio_device.dev),
 		      NULL, &dm365_emac_device.dev);
 
@@ -1281,3 +1602,9 @@ void dm365_set_vpfe_config(struct vpfe_config *cfg)
 {
        vpfe_capture_dev.dev.platform_data = cfg;
 }
+=======
+
+	return 0;
+}
+postcore_initcall(dm365_init_devices);
+>>>>>>> refs/remotes/origin/master

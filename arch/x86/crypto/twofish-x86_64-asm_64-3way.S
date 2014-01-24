@@ -20,6 +20,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/master
 .file "twofish-x86_64-asm-3way.S"
 .text
 
@@ -214,11 +219,15 @@
 	rorq $32,			RAB2; \
 	outunpack3(mov, RIO, 2, RAB, 2);
 
+<<<<<<< HEAD
 .align 8
 .global __twofish_enc_blk_3way
 .type   __twofish_enc_blk_3way,@function;
 
 __twofish_enc_blk_3way:
+=======
+ENTRY(__twofish_enc_blk_3way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -250,7 +259,11 @@ __twofish_enc_blk_3way:
 	popq %rbp; /* bool xor */
 
 	testb %bpl, %bpl;
+<<<<<<< HEAD
 	jnz __enc_xor3;
+=======
+	jnz .L__enc_xor3;
+>>>>>>> refs/remotes/origin/master
 
 	outunpack_enc3(mov);
 
@@ -262,7 +275,11 @@ __twofish_enc_blk_3way:
 	popq %r15;
 	ret;
 
+<<<<<<< HEAD
 __enc_xor3:
+=======
+.L__enc_xor3:
+>>>>>>> refs/remotes/origin/master
 	outunpack_enc3(xor);
 
 	popq %rbx;
@@ -272,11 +289,17 @@ __enc_xor3:
 	popq %r14;
 	popq %r15;
 	ret;
+<<<<<<< HEAD
 
 .global twofish_dec_blk_3way
 .type   twofish_dec_blk_3way,@function;
 
 twofish_dec_blk_3way:
+=======
+ENDPROC(__twofish_enc_blk_3way)
+
+ENTRY(twofish_dec_blk_3way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	%rdi: ctx, CTX
 	 *	%rsi: dst
@@ -313,4 +336,8 @@ twofish_dec_blk_3way:
 	popq %r14;
 	popq %r15;
 	ret;
+<<<<<<< HEAD
 
+=======
+ENDPROC(twofish_dec_blk_3way)
+>>>>>>> refs/remotes/origin/master

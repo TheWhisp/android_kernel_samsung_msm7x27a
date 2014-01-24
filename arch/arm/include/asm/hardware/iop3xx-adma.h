@@ -393,6 +393,7 @@ static inline int iop_chan_zero_sum_slot_count(size_t len, int src_cnt,
 	return slot_cnt;
 }
 
+<<<<<<< HEAD
 static inline int iop_desc_is_pq(struct iop_adma_desc_slot *desc)
 {
 	return 0;
@@ -423,6 +424,8 @@ static inline u32 iop_desc_get_qdest_addr(struct iop_adma_desc_slot *desc,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 iop_desc_get_byte_count(struct iop_adma_desc_slot *desc,
 					struct iop_adma_chan *chan)
 {

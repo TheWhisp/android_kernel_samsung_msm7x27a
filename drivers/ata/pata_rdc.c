@@ -87,10 +87,15 @@ static int rdc_pata_prereset(struct ata_link *link, unsigned long deadline)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static DEFINE_SPINLOCK(rdc_lock);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(rdc_lock);
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	rdc_set_piomode - Initialize host controller PATA PIO timings
  *	@ap: Port whose timings we are configuring
@@ -107,9 +112,13 @@ static void rdc_set_piomode(struct ata_port *ap, struct ata_device *adev)
 	unsigned int pio	= adev->pio_mode - XFER_PIO_0;
 	struct pci_dev *dev	= to_pci_dev(ap->host->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	unsigned int is_slave	= (adev->devno != 0);
 	unsigned int master_port= ap->port_no ? 0x42 : 0x40;
 	unsigned int slave_port	= 0x44;
@@ -134,10 +143,15 @@ static void rdc_set_piomode(struct ata_port *ap, struct ata_device *adev)
 		control |= 4;	/* PPE enable */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_irqsave(&rdc_lock, flags);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&rdc_lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	/* PIO configuration clears DTE unconditionally.  It will be
 	 * programmed in set_dmamode which is guaranteed to be called
 	 * after set_piomode if any DMA mode is available.
@@ -176,10 +190,15 @@ static void rdc_set_piomode(struct ata_port *ap, struct ata_device *adev)
 	udma_enable &= ~(1 << (2 * ap->port_no + adev->devno));
 	pci_write_config_byte(dev, 0x48, udma_enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	spin_unlock_irqrestore(&rdc_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	spin_unlock_irqrestore(&rdc_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -197,9 +216,13 @@ static void rdc_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 {
 	struct pci_dev *dev	= to_pci_dev(ap->host->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	u8 master_port		= ap->port_no ? 0x42 : 0x40;
 	u16 master_data;
 	u8 speed		= adev->dma_mode;
@@ -214,10 +237,15 @@ static void rdc_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 			    { 2, 3 }, };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_irqsave(&rdc_lock, flags);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&rdc_lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	pci_read_config_word(dev, master_port, &master_data);
 	pci_read_config_byte(dev, 0x48, &udma_enable);
 
@@ -300,10 +328,15 @@ static void rdc_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 	}
 	pci_write_config_byte(dev, 0x48, udma_enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	spin_unlock_irqrestore(&rdc_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	spin_unlock_irqrestore(&rdc_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct ata_port_operations rdc_pata_ops = {
@@ -342,6 +375,7 @@ static struct scsi_host_template rdc_sht = {
  *	Zero on success, or -ERRNO value.
  */
 
+<<<<<<< HEAD
 static int __devinit rdc_init_one(struct pci_dev *pdev,
 				   const struct pci_device_id *ent)
 {
@@ -353,10 +387,18 @@ static int __devinit rdc_init_one(struct pci_dev *pdev,
 	struct ata_port_info port_info[2];
 	const struct ata_port_info *ppi[] = { &port_info[0], &port_info[1] };
 	unsigned long port_flags;
+=======
+static int rdc_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+{
+	struct device *dev = &pdev->dev;
+	struct ata_port_info port_info[2];
+	const struct ata_port_info *ppi[] = { &port_info[0], &port_info[1] };
+>>>>>>> refs/remotes/origin/master
 	struct ata_host *host;
 	struct rdc_host_priv *hpriv;
 	int rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev,
@@ -364,12 +406,18 @@ static int __devinit rdc_init_one(struct pci_dev *pdev,
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	port_info[0] = rdc_port_info;
 	port_info[1] = rdc_port_info;
 
+<<<<<<< HEAD
 	port_flags = port_info[0].flags;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* enable device and prepare host */
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -399,7 +447,11 @@ static int __devinit rdc_init_one(struct pci_dev *pdev,
 
 static void rdc_remove_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct rdc_host_priv *hpriv = host->private_data;
 
 	pci_write_config_dword(pdev, 0x54, hpriv->saved_iocfg);
@@ -419,11 +471,15 @@ static struct pci_driver rdc_pci_driver = {
 	.probe			= rdc_init_one,
 	.remove			= rdc_remove_one,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend		= ata_pci_device_suspend,
 	.resume			= ata_pci_device_resume,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -440,6 +496,12 @@ static void __exit rdc_exit(void)
 
 module_init(rdc_init);
 module_exit(rdc_exit);
+=======
+};
+
+
+module_pci_driver(rdc_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox (based on ata_piix)");
 MODULE_DESCRIPTION("SCSI low-level driver for RDC PATA controllers");

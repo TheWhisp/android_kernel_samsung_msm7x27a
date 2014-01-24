@@ -23,6 +23,10 @@
 #include <linux/list.h>
 #include <linux/err.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
+=======
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
@@ -50,6 +54,11 @@ static DEFINE_MUTEX(udc_lock);
 
 /* ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
+=======
+#ifdef	CONFIG_HAS_DMA
+
+>>>>>>> refs/remotes/origin/master
 int usb_gadget_map_request(struct usb_gadget *gadget,
 		struct usb_request *req, int is_in)
 {
@@ -99,6 +108,7 @@ void usb_gadget_unmap_request(struct usb_gadget *gadget,
 }
 EXPORT_SYMBOL_GPL(usb_gadget_unmap_request);
 
+<<<<<<< HEAD
 /* ------------------------------------------------------------------------- */
 
 /**
@@ -122,6 +132,28 @@ static inline int usb_gadget_start(struct usb_gadget *gadget,
 {
 	return gadget->ops->start(driver, bind);
 }
+=======
+#endif	/* CONFIG_HAS_DMA */
+
+/* ------------------------------------------------------------------------- */
+
+static void usb_gadget_state_work(struct work_struct *work)
+{
+	struct usb_gadget	*gadget = work_to_gadget(work);
+
+	sysfs_notify(&gadget->dev.kobj, NULL, "state");
+}
+
+void usb_gadget_set_state(struct usb_gadget *gadget,
+		enum usb_device_state state)
+{
+	gadget->state = state;
+	schedule_work(&gadget->work);
+}
+EXPORT_SYMBOL_GPL(usb_gadget_set_state);
+
+/* ------------------------------------------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_gadget_udc_start - tells usb device controller to start up
@@ -144,6 +176,7 @@ static inline int usb_gadget_udc_start(struct usb_gadget *gadget,
 }
 
 /**
+<<<<<<< HEAD
  * usb_gadget_stop - tells usb device controller we don't need it anymore
  * @gadget: The device we want to stop activity
  * @driver: The driver to unbind from @gadget
@@ -162,6 +195,8 @@ static inline void usb_gadget_stop(struct usb_gadget *gadget,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * usb_gadget_udc_stop - tells usb device controller we don't need it anymore
  * @gadget: The device we want to stop activity
  * @driver: The driver to unbind from @gadget
@@ -196,6 +231,7 @@ static void usb_udc_release(struct device *dev)
 }
 
 static const struct attribute_group *usb_udc_attr_groups[];
+<<<<<<< HEAD
 /**
  * usb_add_gadget_udc - adds a new gadget to the udc class driver list
  * @parent: the parent device to this udc. Usually the controller
@@ -205,6 +241,25 @@ static const struct attribute_group *usb_udc_attr_groups[];
  * Returns zero on success, negative errno otherwise.
  */
 int usb_add_gadget_udc(struct device *parent, struct usb_gadget *gadget)
+=======
+
+static void usb_udc_nop_release(struct device *dev)
+{
+	dev_vdbg(dev, "%s\n", __func__);
+}
+
+/**
+ * usb_add_gadget_udc_release - adds a new gadget to the udc class driver list
+ * @parent: the parent device to this udc. Usually the controller driver's
+ * device.
+ * @gadget: the gadget to be added to the list.
+ * @release: a gadget release function.
+ *
+ * Returns zero on success, negative errno otherwise.
+ */
+int usb_add_gadget_udc_release(struct device *parent, struct usb_gadget *gadget,
+		void (*release)(struct device *dev))
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_udc		*udc;
 	int			ret = -ENOMEM;
@@ -213,6 +268,28 @@ int usb_add_gadget_udc(struct device *parent, struct usb_gadget *gadget)
 	if (!udc)
 		goto err1;
 
+<<<<<<< HEAD
+=======
+	dev_set_name(&gadget->dev, "gadget");
+	INIT_WORK(&gadget->work, usb_gadget_state_work);
+	gadget->dev.parent = parent;
+
+#ifdef	CONFIG_HAS_DMA
+	dma_set_coherent_mask(&gadget->dev, parent->coherent_dma_mask);
+	gadget->dev.dma_parms = parent->dma_parms;
+	gadget->dev.dma_mask = parent->dma_mask;
+#endif
+
+	if (release)
+		gadget->dev.release = release;
+	else
+		gadget->dev.release = usb_udc_nop_release;
+
+	ret = device_register(&gadget->dev);
+	if (ret)
+		goto err2;
+
+>>>>>>> refs/remotes/origin/master
 	device_initialize(&udc->dev);
 	udc->dev.release = usb_udc_release;
 	udc->dev.class = udc_class;
@@ -220,7 +297,11 @@ int usb_add_gadget_udc(struct device *parent, struct usb_gadget *gadget)
 	udc->dev.parent = parent;
 	ret = dev_set_name(&udc->dev, "%s", kobject_name(&parent->kobj));
 	if (ret)
+<<<<<<< HEAD
 		goto err2;
+=======
+		goto err3;
+>>>>>>> refs/remotes/origin/master
 
 	udc->gadget = gadget;
 
@@ -229,11 +310,18 @@ int usb_add_gadget_udc(struct device *parent, struct usb_gadget *gadget)
 
 	ret = device_add(&udc->dev);
 	if (ret)
+<<<<<<< HEAD
 		goto err3;
+=======
+		goto err4;
+
+	usb_gadget_set_state(gadget, USB_STATE_NOTATTACHED);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&udc_lock);
 
 	return 0;
+<<<<<<< HEAD
 err3:
 	list_del(&udc->list);
 	mutex_unlock(&udc_lock);
@@ -253,6 +341,38 @@ static int udc_is_newstyle(struct usb_udc *udc)
 	return 0;
 }
 
+=======
+
+err4:
+	list_del(&udc->list);
+	mutex_unlock(&udc_lock);
+
+err3:
+	put_device(&udc->dev);
+
+err2:
+	put_device(&gadget->dev);
+	kfree(udc);
+
+err1:
+	return ret;
+}
+EXPORT_SYMBOL_GPL(usb_add_gadget_udc_release);
+
+/**
+ * usb_add_gadget_udc - adds a new gadget to the udc class driver list
+ * @parent: the parent device to this udc. Usually the controller
+ * driver's device.
+ * @gadget: the gadget to be added to the list
+ *
+ * Returns zero on success, negative errno otherwise.
+ */
+int usb_add_gadget_udc(struct device *parent, struct usb_gadget *gadget)
+{
+	return usb_add_gadget_udc_release(parent, gadget, NULL);
+}
+EXPORT_SYMBOL_GPL(usb_add_gadget_udc);
+>>>>>>> refs/remotes/origin/master
 
 static void usb_gadget_remove_driver(struct usb_udc *udc)
 {
@@ -261,6 +381,7 @@ static void usb_gadget_remove_driver(struct usb_udc *udc)
 
 	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
 
+<<<<<<< HEAD
 	if (udc_is_newstyle(udc)) {
 		udc->driver->disconnect(udc->gadget);
 		usb_gadget_disconnect(udc->gadget);
@@ -272,6 +393,16 @@ static void usb_gadget_remove_driver(struct usb_udc *udc)
 
 	udc->driver = NULL;
 	udc->dev.driver = NULL;
+=======
+	usb_gadget_disconnect(udc->gadget);
+	udc->driver->disconnect(udc->gadget);
+	udc->driver->unbind(udc->gadget);
+	usb_gadget_udc_stop(udc->gadget, NULL);
+
+	udc->driver = NULL;
+	udc->dev.driver = NULL;
+	udc->gadget->dev.driver = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -305,12 +436,19 @@ found:
 		usb_gadget_remove_driver(udc);
 
 	kobject_uevent(&udc->dev.kobj, KOBJ_REMOVE);
+<<<<<<< HEAD
 	device_unregister(&udc->dev);
+=======
+	flush_work(&gadget->work);
+	device_unregister(&udc->dev);
+	device_unregister(&gadget->dev);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(usb_del_gadget_udc);
 
 /* ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *))
 {
@@ -333,11 +471,18 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 	return -ENODEV;
 
 found:
+=======
+static int udc_bind_to_driver(struct usb_udc *udc, struct usb_gadget_driver *driver)
+{
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(&udc->dev, "registering UDC driver [%s]\n",
 			driver->function);
 
 	udc->driver = driver;
 	udc->dev.driver = &driver->driver;
+<<<<<<< HEAD
 
 	if (udc_is_newstyle(udc)) {
 		ret = bind(udc->gadget);
@@ -366,6 +511,78 @@ err1:
 			udc->driver->function, ret);
 	udc->driver = NULL;
 	udc->dev.driver = NULL;
+=======
+	udc->gadget->dev.driver = &driver->driver;
+
+	ret = driver->bind(udc->gadget, driver);
+	if (ret)
+		goto err1;
+	ret = usb_gadget_udc_start(udc->gadget, driver);
+	if (ret) {
+		driver->unbind(udc->gadget);
+		goto err1;
+	}
+	usb_gadget_connect(udc->gadget);
+
+	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
+	return 0;
+err1:
+	if (ret != -EISNAM)
+		dev_err(&udc->dev, "failed to start %s: %d\n",
+			udc->driver->function, ret);
+	udc->driver = NULL;
+	udc->dev.driver = NULL;
+	udc->gadget->dev.driver = NULL;
+	return ret;
+}
+
+int udc_attach_driver(const char *name, struct usb_gadget_driver *driver)
+{
+	struct usb_udc *udc = NULL;
+	int ret = -ENODEV;
+
+	mutex_lock(&udc_lock);
+	list_for_each_entry(udc, &udc_list, list) {
+		ret = strcmp(name, dev_name(&udc->dev));
+		if (!ret)
+			break;
+	}
+	if (ret) {
+		ret = -ENODEV;
+		goto out;
+	}
+	if (udc->driver) {
+		ret = -EBUSY;
+		goto out;
+	}
+	ret = udc_bind_to_driver(udc, driver);
+out:
+	mutex_unlock(&udc_lock);
+	return ret;
+}
+EXPORT_SYMBOL_GPL(udc_attach_driver);
+
+int usb_gadget_probe_driver(struct usb_gadget_driver *driver)
+{
+	struct usb_udc		*udc = NULL;
+	int			ret;
+
+	if (!driver || !driver->bind || !driver->setup)
+		return -EINVAL;
+
+	mutex_lock(&udc_lock);
+	list_for_each_entry(udc, &udc_list, list) {
+		/* For now we take the first one */
+		if (!udc->driver)
+			goto found;
+	}
+
+	pr_debug("couldn't find an available UDC\n");
+	mutex_unlock(&udc_lock);
+	return -ENODEV;
+found:
+	ret = udc_bind_to_driver(udc, driver);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&udc_lock);
 	return ret;
 }
@@ -412,6 +629,7 @@ static ssize_t usb_udc_softconn_store(struct device *dev,
 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
 
 	if (sysfs_streq(buf, "connect")) {
+<<<<<<< HEAD
 		if (udc_is_newstyle(udc))
 			usb_gadget_udc_start(udc->gadget, udc->driver);
 		usb_gadget_connect(udc->gadget);
@@ -419,6 +637,13 @@ static ssize_t usb_udc_softconn_store(struct device *dev,
 		usb_gadget_disconnect(udc->gadget);
 		if (udc_is_newstyle(udc))
 			usb_gadget_udc_stop(udc->gadget, udc->driver);
+=======
+		usb_gadget_udc_start(udc->gadget, udc->driver);
+		usb_gadget_connect(udc->gadget);
+	} else if (sysfs_streq(buf, "disconnect")) {
+		usb_gadget_disconnect(udc->gadget);
+		usb_gadget_udc_stop(udc->gadget, udc->driver);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_err(dev, "unsupported command '%s'\n", buf);
 		return -EINVAL;
@@ -428,19 +653,39 @@ static ssize_t usb_udc_softconn_store(struct device *dev,
 }
 static DEVICE_ATTR(soft_connect, S_IWUSR, NULL, usb_udc_softconn_store);
 
+<<<<<<< HEAD
 #define USB_UDC_SPEED_ATTR(name, param)					\
 ssize_t usb_udc_##param##_show(struct device *dev,			\
+=======
+static ssize_t state_show(struct device *dev, struct device_attribute *attr,
+			  char *buf)
+{
+	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
+	struct usb_gadget	*gadget = udc->gadget;
+
+	return sprintf(buf, "%s\n", usb_state_string(gadget->state));
+}
+static DEVICE_ATTR_RO(state);
+
+#define USB_UDC_SPEED_ATTR(name, param)					\
+ssize_t name##_show(struct device *dev,					\
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)		\
 {									\
 	struct usb_udc *udc = container_of(dev, struct usb_udc, dev);	\
 	return snprintf(buf, PAGE_SIZE, "%s\n",				\
 			usb_speed_string(udc->gadget->param));		\
 }									\
+<<<<<<< HEAD
 static DEVICE_ATTR(name, S_IRUSR, usb_udc_##param##_show, NULL)
+=======
+static DEVICE_ATTR_RO(name)
+>>>>>>> refs/remotes/origin/master
 
 static USB_UDC_SPEED_ATTR(current_speed, speed);
 static USB_UDC_SPEED_ATTR(maximum_speed, max_speed);
 
+<<<<<<< HEAD
 /* TODO: Scheduled for removal in 3.8. */
 static ssize_t usb_udc_is_dualspeed_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -453,6 +698,10 @@ static DEVICE_ATTR(is_dualspeed, S_IRUSR, usb_udc_is_dualspeed_show, NULL);
 
 #define USB_UDC_ATTR(name)					\
 ssize_t usb_udc_##name##_show(struct device *dev,		\
+=======
+#define USB_UDC_ATTR(name)					\
+ssize_t name##_show(struct device *dev,				\
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)	\
 {								\
 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev); \
@@ -460,7 +709,11 @@ ssize_t usb_udc_##name##_show(struct device *dev,		\
 								\
 	return snprintf(buf, PAGE_SIZE, "%d\n", gadget->name);	\
 }								\
+<<<<<<< HEAD
 static DEVICE_ATTR(name, S_IRUGO, usb_udc_##name##_show, NULL)
+=======
+static DEVICE_ATTR_RO(name)
+>>>>>>> refs/remotes/origin/master
 
 static USB_UDC_ATTR(is_otg);
 static USB_UDC_ATTR(is_a_peripheral);
@@ -471,10 +724,17 @@ static USB_UDC_ATTR(a_alt_hnp_support);
 static struct attribute *usb_udc_attrs[] = {
 	&dev_attr_srp.attr,
 	&dev_attr_soft_connect.attr,
+<<<<<<< HEAD
 	&dev_attr_current_speed.attr,
 	&dev_attr_maximum_speed.attr,
 
 	&dev_attr_is_dualspeed.attr,
+=======
+	&dev_attr_state.attr,
+	&dev_attr_current_speed.attr,
+	&dev_attr_maximum_speed.attr,
+
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_is_otg.attr,
 	&dev_attr_is_a_peripheral.attr,
 	&dev_attr_b_hnp_enable.attr,

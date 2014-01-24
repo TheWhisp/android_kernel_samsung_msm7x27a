@@ -3,10 +3,14 @@
 **
 **  Copyright (C) Sistina Software, Inc.  1997-2003  All rights reserved.
 <<<<<<< HEAD
+<<<<<<< HEAD
 **  Copyright (C) 2004-2008 Red Hat, Inc.  All rights reserved.
 =======
 **  Copyright (C) 2004-2011 Red Hat, Inc.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+**  Copyright (C) 2004-2011 Red Hat, Inc.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
 **
 **  This copyrighted material is made available to anyone wishing to use,
 **  modify, copy, or redistribute it subject to the terms and conditions
@@ -14,6 +18,7 @@
 **
 *******************************************************************************
 ******************************************************************************/
+<<<<<<< HEAD
 
 #ifndef __DLM_DOT_H__
 #define __DLM_DOT_H__
@@ -89,6 +94,14 @@ struct dlm_lksb {
 int dlm_new_lockspace(const char *name, int namelen,
 		      dlm_lockspace_t **lockspace, uint32_t flags, int lvblen);
 =======
+=======
+#ifndef __DLM_DOT_H__
+#define __DLM_DOT_H__
+
+#include <uapi/linux/dlm.h>
+
+
+>>>>>>> refs/remotes/origin/master
 struct dlm_slot {
 	int nodeid; /* 1 to MAX_INT */
 	int slot;   /* 1 to MAX_INT */
@@ -159,7 +172,10 @@ int dlm_new_lockspace(const char *name, const char *cluster,
 		      uint32_t flags, int lvblen,
 		      const struct dlm_lockspace_ops *ops, void *ops_arg,
 		      int *ops_result, dlm_lockspace_t **lockspace);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * dlm_release_lockspace
@@ -172,7 +188,11 @@ int dlm_release_lockspace(dlm_lockspace_t *lockspace, int force);
 /*
  * dlm_lock
  *
+<<<<<<< HEAD
  * Make an asyncronous request to acquire or convert a lock on a named
+=======
+ * Make an asynchronous request to acquire or convert a lock on a named
+>>>>>>> refs/remotes/origin/master
  * resource.
  *
  * lockspace: context for the request
@@ -243,7 +263,11 @@ int dlm_unlock(dlm_lockspace_t *lockspace,
 	       struct dlm_lksb *lksb,
 	       void *astarg);
 
+<<<<<<< HEAD
 #endif				/* __KERNEL__ */
 
 #endif				/* __DLM_DOT_H__ */
 
+=======
+#endif				/* __DLM_DOT_H__ */
+>>>>>>> refs/remotes/origin/master

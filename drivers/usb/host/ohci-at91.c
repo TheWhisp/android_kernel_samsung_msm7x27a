@@ -13,16 +13,30 @@
  */
 
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 <<<<<<< HEAD
 =======
 #include <linux/of_platform.h>
 #include <linux/of_gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+#include <linux/of_platform.h>
+#include <linux/of_gpio.h>
+#include <linux/platform_device.h>
+#include <linux/platform_data/atmel.h>
+#include <linux/io.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/usb.h>
+#include <linux/usb/hcd.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <asm/gpio.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
 #include <mach/cpu.h>
 
@@ -32,14 +46,37 @@
 
 <<<<<<< HEAD
 =======
+=======
+#include <mach/cpu.h>
+
+
+#include "ohci.h"
+
+>>>>>>> refs/remotes/origin/master
 #define valid_port(index)	((index) >= 0 && (index) < AT91_MAX_USBH_PORTS)
 #define at91_for_each_port(index)	\
 		for ((index) = 0; (index) < AT91_MAX_USBH_PORTS; (index)++)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* interface and function clocks; sometimes also an AHB clock */
 static struct clk *iclk, *fclk, *hclk;
 static int clocked;
+=======
+/* interface, function and usb clocks; sometimes also an AHB clock */
+static struct clk *iclk, *fclk, *uclk, *hclk;
+/* interface and function clocks; sometimes also an AHB clock */
+
+#define DRIVER_DESC "OHCI Atmel driver"
+
+static const char hcd_name[] = "ohci-atmel";
+
+static struct hc_driver __read_mostly ohci_at91_hc_driver;
+static int clocked;
+static int (*orig_ohci_hub_control)(struct usb_hcd  *hcd, u16 typeReq,
+			u16 wValue, u16 wIndex, char *buf, u16 wLength);
+static int (*orig_ohci_hub_status_data)(struct usb_hcd *hcd, char *buf);
+>>>>>>> refs/remotes/origin/master
 
 extern int usb_disabled(void);
 
@@ -48,6 +85,7 @@ extern int usb_disabled(void);
 static void at91_start_clock(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_at91sam9261() || cpu_is_at91sam9g10())
 		clk_enable(hclk);
 =======
@@ -55,11 +93,21 @@ static void at91_start_clock(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 	clk_enable(iclk);
 	clk_enable(fclk);
+=======
+	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
+		clk_set_rate(uclk, 48000000);
+		clk_prepare_enable(uclk);
+	}
+	clk_prepare_enable(hclk);
+	clk_prepare_enable(iclk);
+	clk_prepare_enable(fclk);
+>>>>>>> refs/remotes/origin/master
 	clocked = 1;
 }
 
 static void at91_stop_clock(void)
 {
+<<<<<<< HEAD
 	clk_disable(fclk);
 	clk_disable(iclk);
 <<<<<<< HEAD
@@ -68,6 +116,13 @@ static void at91_stop_clock(void)
 =======
 	clk_disable(hclk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(fclk);
+	clk_disable_unprepare(iclk);
+	clk_disable_unprepare(hclk);
+	if (IS_ENABLED(CONFIG_COMMON_CLK))
+		clk_disable_unprepare(uclk);
+>>>>>>> refs/remotes/origin/master
 	clocked = 0;
 }
 
@@ -111,10 +166,14 @@ static void at91_stop_hc(struct platform_device *pdev)
 /*-------------------------------------------------------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void usb_hcd_at91_remove (struct usb_hcd *, struct platform_device *);
 =======
 static void __devexit usb_hcd_at91_remove (struct usb_hcd *, struct platform_device *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void usb_hcd_at91_remove (struct usb_hcd *, struct platform_device *);
+>>>>>>> refs/remotes/origin/master
 
 /* configure so an HC device and id are always provided */
 /* always called with process context; sleeping is OK */
@@ -128,6 +187,7 @@ static void __devexit usb_hcd_at91_remove (struct usb_hcd *, struct platform_dev
  * then invokes the start() method for the HCD associated with it
  * through the hotplug entry's driver_data.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int usb_hcd_at91_probe(const struct hc_driver *driver,
 =======
@@ -199,10 +259,85 @@ static int __devinit usb_hcd_at91_probe(const struct hc_driver *driver,
 	retval = usb_add_hcd(hcd, pdev->resource[1].start, IRQF_SHARED);
 	if (retval == 0)
 		return retval;
+=======
+static int usb_hcd_at91_probe(const struct hc_driver *driver,
+			struct platform_device *pdev)
+{
+	struct at91_usbh_data *board;
+	struct ohci_hcd *ohci;
+	int retval;
+	struct usb_hcd *hcd = NULL;
+	struct device *dev = &pdev->dev;
+	struct resource *res;
+	int irq;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res) {
+		dev_dbg(dev, "hcd probe: missing memory resource\n");
+		return -ENXIO;
+	}
+
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0) {
+		dev_dbg(dev, "hcd probe: missing irq resource\n");
+		return irq;
+	}
+
+	hcd = usb_create_hcd(driver, dev, "at91");
+	if (!hcd)
+		return -ENOMEM;
+	hcd->rsrc_start = res->start;
+	hcd->rsrc_len = resource_size(res);
+
+	hcd->regs = devm_ioremap_resource(dev, res);
+	if (IS_ERR(hcd->regs)) {
+		retval = PTR_ERR(hcd->regs);
+		goto err;
+	}
+
+	iclk = devm_clk_get(dev, "ohci_clk");
+	if (IS_ERR(iclk)) {
+		dev_err(dev, "failed to get ohci_clk\n");
+		retval = PTR_ERR(iclk);
+		goto err;
+	}
+	fclk = devm_clk_get(dev, "uhpck");
+	if (IS_ERR(fclk)) {
+		dev_err(dev, "failed to get uhpck\n");
+		retval = PTR_ERR(fclk);
+		goto err;
+	}
+	hclk = devm_clk_get(dev, "hclk");
+	if (IS_ERR(hclk)) {
+		dev_err(dev, "failed to get hclk\n");
+		retval = PTR_ERR(hclk);
+		goto err;
+	}
+	if (IS_ENABLED(CONFIG_COMMON_CLK)) {
+		uclk = devm_clk_get(dev, "usb_clk");
+		if (IS_ERR(uclk)) {
+			dev_err(dev, "failed to get uclk\n");
+			retval = PTR_ERR(uclk);
+			goto err;
+		}
+	}
+
+	board = hcd->self.controller->platform_data;
+	ohci = hcd_to_ohci(hcd);
+	ohci->num_ports = board->ports;
+	at91_start_hc(pdev);
+
+	retval = usb_add_hcd(hcd, irq, IRQF_SHARED);
+	if (retval == 0) {
+		device_wakeup_enable(hcd->self.controller);
+		return retval;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Error handling */
 	at91_stop_hc(pdev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cpu_is_at91sam9261() || cpu_is_at91sam9g10())
 		clk_put(hclk);
@@ -224,6 +359,9 @@ static int __devinit usb_hcd_at91_probe(const struct hc_driver *driver,
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 
  err1:
+=======
+ err:
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 	return retval;
 }
@@ -242,14 +380,19 @@ static int __devinit usb_hcd_at91_probe(const struct hc_driver *driver,
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void usb_hcd_at91_remove(struct usb_hcd *hcd,
 =======
 static void __devexit usb_hcd_at91_remove(struct usb_hcd *hcd,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void usb_hcd_at91_remove(struct usb_hcd *hcd,
+>>>>>>> refs/remotes/origin/master
 				struct platform_device *pdev)
 {
 	usb_remove_hcd(hcd);
 	at91_stop_hc(pdev);
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	usb_put_hcd(hcd);
@@ -291,6 +434,12 @@ ohci_at91_start (struct usb_hcd *hcd)
 
 <<<<<<< HEAD
 =======
+=======
+	usb_put_hcd(hcd);
+}
+
+/*-------------------------------------------------------------------------*/
+>>>>>>> refs/remotes/origin/master
 static void ohci_at91_usb_set_power(struct at91_usbh_data *pdata, int port, int enable)
 {
 	if (!valid_port(port))
@@ -321,7 +470,11 @@ static int ohci_at91_usb_get_power(struct at91_usbh_data *pdata, int port)
 static int ohci_at91_hub_status_data(struct usb_hcd *hcd, char *buf)
 {
 	struct at91_usbh_data *pdata = hcd->self.controller->platform_data;
+<<<<<<< HEAD
 	int length = ohci_hub_status_data(hcd, buf);
+=======
+	int length = orig_ohci_hub_status_data(hcd, buf);
+>>>>>>> refs/remotes/origin/master
 	int port;
 
 	at91_for_each_port(port) {
@@ -341,7 +494,11 @@ static int ohci_at91_hub_status_data(struct usb_hcd *hcd, char *buf)
 static int ohci_at91_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 				 u16 wIndex, char *buf, u16 wLength)
 {
+<<<<<<< HEAD
 	struct at91_usbh_data *pdata = hcd->self.controller->platform_data;
+=======
+	struct at91_usbh_data *pdata = dev_get_platdata(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 	struct usb_hub_descriptor *desc;
 	int ret = -EINVAL;
 	u32 *data = (u32 *)buf;
@@ -399,7 +556,12 @@ static int ohci_at91_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		break;
 	}
 
+<<<<<<< HEAD
 	ret = ohci_hub_control(hcd, typeReq, wValue, wIndex + 1, buf, wLength);
+=======
+	ret = orig_ohci_hub_control(hcd, typeReq, wValue, wIndex + 1,
+				buf, wLength);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out;
 
@@ -451,6 +613,7 @@ static int ohci_at91_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /*-------------------------------------------------------------------------*/
 
@@ -525,6 +688,14 @@ static irqreturn_t ohci_hcd_at91_overcurrent_irq(int irq, void *data)
 {
 	struct platform_device *pdev = data;
 	struct at91_usbh_data *pdata = pdev->dev.platform_data;
+=======
+/*-------------------------------------------------------------------------*/
+
+static irqreturn_t ohci_hcd_at91_overcurrent_irq(int irq, void *data)
+{
+	struct platform_device *pdev = data;
+	struct at91_usbh_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	int val, gpio, port;
 
 	/* From the GPIO notifying the over-current situation, find
@@ -567,12 +738,19 @@ static const struct of_device_id at91_ohci_dt_ids[] = {
 
 MODULE_DEVICE_TABLE(of, at91_ohci_dt_ids);
 
+<<<<<<< HEAD
 static u64 at91_ohci_dma_mask = DMA_BIT_MASK(32);
 
 static int __devinit ohci_at91_of_init(struct platform_device *pdev)
 {
 	struct device_node *np = pdev->dev.of_node;
 	int i, gpio;
+=======
+static int ohci_at91_of_init(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+	int i, gpio, ret;
+>>>>>>> refs/remotes/origin/master
 	enum of_gpio_flags flags;
 	struct at91_usbh_data	*pdata;
 	u32 ports;
@@ -584,8 +762,14 @@ static int __devinit ohci_at91_of_init(struct platform_device *pdev)
 	 * Since shared usb code relies on it, set it here for now.
 	 * Once we have dma capability bindings this can go away.
 	 */
+<<<<<<< HEAD
 	if (!pdev->dev.dma_mask)
 		pdev->dev.dma_mask = &at91_ohci_dma_mask;
+=======
+	ret = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
 	if (!pdata)
@@ -611,7 +795,11 @@ static int __devinit ohci_at91_of_init(struct platform_device *pdev)
 	return 0;
 }
 #else
+<<<<<<< HEAD
 static int __devinit ohci_at91_of_init(struct platform_device *pdev)
+=======
+static int ohci_at91_of_init(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -619,7 +807,11 @@ static int __devinit ohci_at91_of_init(struct platform_device *pdev)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit ohci_hcd_at91_drv_probe(struct platform_device *pdev)
+=======
+static int ohci_hcd_at91_drv_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct at91_usbh_data	*pdata;
 	int			i;
@@ -630,7 +822,11 @@ static int __devinit ohci_hcd_at91_drv_probe(struct platform_device *pdev)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata) {
 		at91_for_each_port(i) {
@@ -697,7 +893,10 @@ static int __devinit ohci_hcd_at91_drv_probe(struct platform_device *pdev)
 				dev_err(&pdev->dev,
 					"can't get gpio IRQ for overcurrent\n");
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -705,6 +904,7 @@ static int __devinit ohci_hcd_at91_drv_probe(struct platform_device *pdev)
 	return usb_hcd_at91_probe(&ohci_at91_hc_driver, pdev);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ohci_hcd_at91_drv_remove(struct platform_device *pdev)
 =======
@@ -723,6 +923,14 @@ static int __devexit ohci_hcd_at91_drv_remove(struct platform_device *pdev)
 			gpio_free(pdata->vbus_pin[i]);
 		}
 =======
+=======
+static int ohci_hcd_at91_drv_remove(struct platform_device *pdev)
+{
+	struct at91_usbh_data	*pdata = dev_get_platdata(&pdev->dev);
+	int			i;
+
+	if (pdata) {
+>>>>>>> refs/remotes/origin/master
 		at91_for_each_port(i) {
 			if (!gpio_is_valid(pdata->vbus_pin[i]))
 				continue;
@@ -736,7 +944,10 @@ static int __devexit ohci_hcd_at91_drv_remove(struct platform_device *pdev)
 			free_irq(gpio_to_irq(pdata->overcurrent_pin[i]), pdev);
 			gpio_free(pdata->overcurrent_pin[i]);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	device_init_wakeup(&pdev->dev, 0);
@@ -751,10 +962,24 @@ ohci_hcd_at91_drv_suspend(struct platform_device *pdev, pm_message_t mesg)
 {
 	struct usb_hcd	*hcd = platform_get_drvdata(pdev);
 	struct ohci_hcd	*ohci = hcd_to_ohci(hcd);
+<<<<<<< HEAD
 
 	if (device_may_wakeup(&pdev->dev))
 		enable_irq_wake(hcd->irq);
 
+=======
+	bool		do_wakeup = device_may_wakeup(&pdev->dev);
+	int		ret;
+
+	if (do_wakeup)
+		enable_irq_wake(hcd->irq);
+
+	ret = ohci_suspend(hcd, do_wakeup);
+	if (ret) {
+		disable_irq_wake(hcd->irq);
+		return ret;
+	}
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The integrated transceivers seem unable to notice disconnect,
 	 * reconnect, or wakeup without the 48 MHz clock active.  so for
@@ -763,13 +988,25 @@ ohci_hcd_at91_drv_suspend(struct platform_device *pdev, pm_message_t mesg)
 	 * REVISIT: some boards will be able to turn VBUS off...
 	 */
 	if (at91_suspend_entering_slow_clock()) {
+<<<<<<< HEAD
 		ohci_usb_reset (ohci);
+=======
+		ohci->hc_control = ohci_readl(ohci, &ohci->regs->control);
+		ohci->hc_control &= OHCI_CTRL_RWC;
+		ohci_writel(ohci, ohci->hc_control, &ohci->regs->control);
+		ohci->rh_state = OHCI_RH_HALTED;
+
+>>>>>>> refs/remotes/origin/master
 		/* flush the writes */
 		(void) ohci_readl (ohci, &ohci->regs->control);
 		at91_stop_clock();
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ohci_hcd_at91_drv_resume(struct platform_device *pdev)
@@ -782,7 +1019,11 @@ static int ohci_hcd_at91_drv_resume(struct platform_device *pdev)
 	if (!clocked)
 		at91_start_clock();
 
+<<<<<<< HEAD
 	ohci_finish_controller_resume(hcd);
+=======
+	ohci_resume(hcd, false);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else
@@ -790,6 +1031,7 @@ static int ohci_hcd_at91_drv_resume(struct platform_device *pdev)
 #define ohci_hcd_at91_drv_resume  NULL
 #endif
 
+<<<<<<< HEAD
 MODULE_ALIAS("platform:at91_ohci");
 
 static struct platform_driver ohci_hcd_at91_driver = {
@@ -799,6 +1041,11 @@ static struct platform_driver ohci_hcd_at91_driver = {
 =======
 	.remove		= __devexit_p(ohci_hcd_at91_drv_remove),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver ohci_hcd_at91_driver = {
+	.probe		= ohci_hcd_at91_drv_probe,
+	.remove		= ohci_hcd_at91_drv_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= usb_hcd_platform_shutdown,
 	.suspend	= ohci_hcd_at91_drv_suspend,
 	.resume		= ohci_hcd_at91_drv_resume,
@@ -806,8 +1053,51 @@ static struct platform_driver ohci_hcd_at91_driver = {
 		.name	= "at91_ohci",
 		.owner	= THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.of_match_table	= of_match_ptr(at91_ohci_dt_ids),
 >>>>>>> refs/remotes/origin/cm-10.0
 	},
 };
+=======
+		.of_match_table	= of_match_ptr(at91_ohci_dt_ids),
+	},
+};
+
+static int __init ohci_at91_init(void)
+{
+	if (usb_disabled())
+		return -ENODEV;
+
+	pr_info("%s: " DRIVER_DESC "\n", hcd_name);
+	ohci_init_driver(&ohci_at91_hc_driver, NULL);
+
+	/*
+	 * The Atmel HW has some unusual quirks, which require Atmel-specific
+	 * workarounds. We override certain hc_driver functions here to
+	 * achieve that. We explicitly do not enhance ohci_driver_overrides to
+	 * allow this more easily, since this is an unusual case, and we don't
+	 * want to encourage others to override these functions by making it
+	 * too easy.
+	 */
+
+	orig_ohci_hub_control = ohci_at91_hc_driver.hub_control;
+	orig_ohci_hub_status_data = ohci_at91_hc_driver.hub_status_data;
+
+	ohci_at91_hc_driver.hub_status_data	= ohci_at91_hub_status_data;
+	ohci_at91_hc_driver.hub_control		= ohci_at91_hub_control;
+
+	return platform_driver_register(&ohci_hcd_at91_driver);
+}
+module_init(ohci_at91_init);
+
+static void __exit ohci_at91_cleanup(void)
+{
+	platform_driver_unregister(&ohci_hcd_at91_driver);
+}
+module_exit(ohci_at91_cleanup);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:at91_ohci");
+>>>>>>> refs/remotes/origin/master

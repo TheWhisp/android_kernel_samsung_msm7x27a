@@ -19,6 +19,11 @@
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
 
+<<<<<<< HEAD
+=======
+#define JZ_NAND_NUM_BANKS 4
+
+>>>>>>> refs/remotes/origin/master
 struct jz_nand_platform_data {
 	int			num_partitions;
 	struct mtd_partition	*partitions;
@@ -27,6 +32,11 @@ struct jz_nand_platform_data {
 
 	unsigned int busy_gpio;
 
+<<<<<<< HEAD
+=======
+	unsigned char banks[JZ_NAND_NUM_BANKS];
+
+>>>>>>> refs/remotes/origin/master
 	void (*ident_callback)(struct platform_device *, struct nand_chip *,
 				struct mtd_partition **, int *num_partitions);
 };

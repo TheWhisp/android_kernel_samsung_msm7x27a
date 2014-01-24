@@ -142,6 +142,15 @@ int fixup_exception(struct pt_regs *regs)
 {
 	const struct exception_table_entry *fix;
 
+<<<<<<< HEAD
+=======
+	/* If we only stored 32bit addresses in the exception table we can drop
+	 * out if we faulted on a 64bit address. */
+	if ((sizeof(regs->iaoq[0]) > sizeof(fix->insn))
+		&& (regs->iaoq[0] >> 32))
+			return 0;
+
+>>>>>>> refs/remotes/origin/master
 	fix = search_exception_tables(regs->iaoq[0]);
 	if (fix) {
 		struct exception_data *d;
@@ -171,6 +180,7 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
 			      unsigned long address)
 {
 	struct vm_area_struct *vma, *prev_vma;
+<<<<<<< HEAD
 	struct task_struct *tsk = current;
 	struct mm_struct *mm = tsk->mm;
 	unsigned long acc_type;
@@ -179,6 +189,30 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
 	if (in_atomic() || !mm)
 		goto no_context;
 
+=======
+	struct task_struct *tsk;
+	struct mm_struct *mm;
+	unsigned long acc_type;
+	int fault;
+	unsigned int flags;
+
+	if (in_atomic())
+		goto no_context;
+
+	tsk = current;
+	mm = tsk->mm;
+	if (!mm)
+		goto no_context;
+
+	flags = FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
+	if (user_mode(regs))
+		flags |= FAULT_FLAG_USER;
+
+	acc_type = parisc_acctyp(code, regs->iir);
+	if (acc_type & VM_WRITE)
+		flags |= FAULT_FLAG_WRITE;
+retry:
+>>>>>>> refs/remotes/origin/master
 	down_read(&mm->mmap_sem);
 	vma = find_vma_prev(mm, address, &prev_vma);
 	if (!vma || address < vma->vm_start)
@@ -190,8 +224,11 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
 
 good_area:
 
+<<<<<<< HEAD
 	acc_type = parisc_acctyp(code,regs->iir);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((vma->vm_flags & acc_type) != acc_type)
 		goto bad_area;
 
@@ -201,7 +238,15 @@ good_area:
 	 * fault.
 	 */
 
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, (acc_type & VM_WRITE) ? FAULT_FLAG_WRITE : 0);
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+
+	if ((fault & VM_FAULT_RETRY) && fatal_signal_pending(current))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		/*
 		 * We hit a shared mapping outside of the file, or some
@@ -214,10 +259,30 @@ good_area:
 			goto bad_area;
 		BUG();
 	}
+<<<<<<< HEAD
 	if (fault & VM_FAULT_MAJOR)
 		current->maj_flt++;
 	else
 		current->min_flt++;
+=======
+	if (flags & FAULT_FLAG_ALLOW_RETRY) {
+		if (fault & VM_FAULT_MAJOR)
+			current->maj_flt++;
+		else
+			current->min_flt++;
+		if (fault & VM_FAULT_RETRY) {
+			flags &= ~FAULT_FLAG_ALLOW_RETRY;
+
+			/*
+			 * No need to up_read(&mm->mmap_sem) as we would
+			 * have already released it in __lock_page_or_retry
+			 * in mm/filemap.c.
+			 */
+
+			goto retry;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	up_read(&mm->mmap_sem);
 	return;
 
@@ -245,12 +310,49 @@ bad_area:
 		}
 		show_regs(regs);
 #endif
+<<<<<<< HEAD
 		/* FIXME: actually we need to get the signo and code correct */
 		si.si_signo = SIGSEGV;
 		si.si_errno = 0;
 		si.si_code = SEGV_MAPERR;
 		si.si_addr = (void __user *) address;
 		force_sig_info(SIGSEGV, &si, current);
+=======
+		switch (code) {
+		case 15:	/* Data TLB miss fault/Data page fault */
+			/* send SIGSEGV when outside of vma */
+			if (!vma ||
+			    address < vma->vm_start || address > vma->vm_end) {
+				si.si_signo = SIGSEGV;
+				si.si_code = SEGV_MAPERR;
+				break;
+			}
+
+			/* send SIGSEGV for wrong permissions */
+			if ((vma->vm_flags & acc_type) != acc_type) {
+				si.si_signo = SIGSEGV;
+				si.si_code = SEGV_ACCERR;
+				break;
+			}
+
+			/* probably address is outside of mapped file */
+			/* fall through */
+		case 17:	/* NA data TLB miss / page fault */
+		case 18:	/* Unaligned access - PCXS only */
+			si.si_signo = SIGBUS;
+			si.si_code = (code == 18) ? BUS_ADRALN : BUS_ADRERR;
+			break;
+		case 16:	/* Non-access instruction TLB miss fault */
+		case 26:	/* PCXL: Data memory access rights trap */
+		default:
+			si.si_signo = SIGSEGV;
+			si.si_code = (code == 26) ? SEGV_ACCERR : SEGV_MAPERR;
+			break;
+		}
+		si.si_errno = 0;
+		si.si_addr = (void __user *) address;
+		force_sig_info(si.si_signo, &si, current);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 

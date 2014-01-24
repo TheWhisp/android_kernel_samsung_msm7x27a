@@ -2,10 +2,14 @@
 # IIO meter drivers configuration
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 comment "Active energy metering IC"
 =======
 menu "Active energy metering IC"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+menu "Active energy metering IC"
+>>>>>>> refs/remotes/origin/master
 
 config ADE7753
 	tristate "Analog Devices ADE7753/6 Single-Phase Multifunction Metering IC Driver"
@@ -25,12 +29,17 @@ config ADE7758
 	tristate "Analog Devices ADE7758 Poly Phase Multifunction Energy Metering IC Driver"
 	depends on SPI
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select IIO_TRIGGER if IIO_RING_BUFFER
 	select IIO_SW_RING if IIO_RING_BUFFER
 =======
 	select IIO_TRIGGER if IIO_BUFFER
 	select IIO_SW_RING if IIO_BUFFER
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select IIO_TRIGGER if IIO_BUFFER
+	select IIO_KFIFO_BUF if IIO_BUFFER
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say yes here to build support for Analog Devices ADE7758 Polyphase
 	  Multifunction Energy Metering IC with Per Phase Information Driver.
@@ -69,7 +78,12 @@ config ADE7854_SPI
 	  To compile this driver as a module, choose M here: the
 	  module will be called ade7854-spi.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 endmenu
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+endmenu
+>>>>>>> refs/remotes/origin/master

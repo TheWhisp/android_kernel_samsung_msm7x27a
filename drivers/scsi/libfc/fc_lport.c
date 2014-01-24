@@ -89,10 +89,15 @@
 
 #include <linux/timer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/delay.h>
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/delay.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <asm/unaligned.h>
 
@@ -120,10 +125,15 @@ static void fc_lport_enter_scr(struct fc_lport *);
 static void fc_lport_enter_ready(struct fc_lport *);
 static void fc_lport_enter_logo(struct fc_lport *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void fc_lport_enter_fdmi(struct fc_lport *lport);
 static void fc_lport_enter_ms(struct fc_lport *, enum fc_lport_state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fc_lport_enter_fdmi(struct fc_lport *lport);
+static void fc_lport_enter_ms(struct fc_lport *, enum fc_lport_state);
+>>>>>>> refs/remotes/origin/master
 
 static const char *fc_lport_state_names[] = {
 	[LPORT_ST_DISABLED] = "disabled",
@@ -135,13 +145,19 @@ static const char *fc_lport_state_names[] = {
 	[LPORT_ST_RFT_ID] =   "RFT_ID",
 	[LPORT_ST_RFF_ID] =   "RFF_ID",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	[LPORT_ST_FDMI] =     "FDMI",
 	[LPORT_ST_RHBA] =     "RHBA",
 	[LPORT_ST_RPA] =      "RPA",
 	[LPORT_ST_DHBA] =     "DHBA",
 	[LPORT_ST_DPRT] =     "DPRT",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	[LPORT_ST_SCR] =      "SCR",
 	[LPORT_ST_READY] =    "Ready",
 	[LPORT_ST_LOGO] =     "LOGO",
@@ -200,20 +216,30 @@ static void fc_lport_rport_callback(struct fc_lport *lport,
 			lport->dns_rdata = rdata;
 			fc_lport_enter_ns(lport, LPORT_ST_RNN_ID);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		} else if (lport->state == LPORT_ST_FDMI) {
 			lport->ms_rdata = rdata;
 			fc_lport_enter_ms(lport, LPORT_ST_DHBA);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (lport->state == LPORT_ST_FDMI) {
+			lport->ms_rdata = rdata;
+			fc_lport_enter_ms(lport, LPORT_ST_DHBA);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			FC_LPORT_DBG(lport, "Received an READY event "
 				     "on port (%6.6x) for the directory "
 				     "server, but the lport is not "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				     "in the DNS state, it's in the "
 =======
 				     "in the DNS or FDMI state, it's in the "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     "in the DNS or FDMI state, it's in the "
+>>>>>>> refs/remotes/origin/master
 				     "%d state", rdata->ids.port_id,
 				     lport->state);
 			lport->tt.rport_logoff(rdata);
@@ -223,13 +249,19 @@ static void fc_lport_rport_callback(struct fc_lport *lport,
 	case RPORT_EV_FAILED:
 	case RPORT_EV_STOP:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		lport->dns_rdata = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rdata->ids.port_id == FC_FID_DIR_SERV)
 			lport->dns_rdata = NULL;
 		else if (rdata->ids.port_id == FC_FID_MGMT_SERV)
 			lport->ms_rdata = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case RPORT_EV_NONE:
 		break;
@@ -319,13 +351,18 @@ EXPORT_SYMBOL(fc_get_host_speed);
  */
 struct fc_host_statistics *fc_get_host_stats(struct Scsi_Host *shost)
 {
+<<<<<<< HEAD
 	struct fc_host_statistics *fcoe_stats;
+=======
+	struct fc_host_statistics *fc_stats;
+>>>>>>> refs/remotes/origin/master
 	struct fc_lport *lport = shost_priv(shost);
 	struct timespec v0, v1;
 	unsigned int cpu;
 	u64 fcp_in_bytes = 0;
 	u64 fcp_out_bytes = 0;
 
+<<<<<<< HEAD
 	fcoe_stats = &lport->host_stats;
 	memset(fcoe_stats, 0, sizeof(struct fc_host_statistics));
 
@@ -360,6 +397,49 @@ struct fc_host_statistics *fc_get_host_stats(struct Scsi_Host *shost)
 	fcoe_stats->prim_seq_protocol_err_count = -1;
 	fcoe_stats->dumped_frames = -1;
 	return fcoe_stats;
+=======
+	fc_stats = &lport->host_stats;
+	memset(fc_stats, 0, sizeof(struct fc_host_statistics));
+
+	jiffies_to_timespec(jiffies, &v0);
+	jiffies_to_timespec(lport->boot_time, &v1);
+	fc_stats->seconds_since_last_reset = (v0.tv_sec - v1.tv_sec);
+
+	for_each_possible_cpu(cpu) {
+		struct fc_stats *stats;
+
+		stats = per_cpu_ptr(lport->stats, cpu);
+
+		fc_stats->tx_frames += stats->TxFrames;
+		fc_stats->tx_words += stats->TxWords;
+		fc_stats->rx_frames += stats->RxFrames;
+		fc_stats->rx_words += stats->RxWords;
+		fc_stats->error_frames += stats->ErrorFrames;
+		fc_stats->invalid_crc_count += stats->InvalidCRCCount;
+		fc_stats->fcp_input_requests += stats->InputRequests;
+		fc_stats->fcp_output_requests += stats->OutputRequests;
+		fc_stats->fcp_control_requests += stats->ControlRequests;
+		fcp_in_bytes += stats->InputBytes;
+		fcp_out_bytes += stats->OutputBytes;
+		fc_stats->fcp_packet_alloc_failures += stats->FcpPktAllocFails;
+		fc_stats->fcp_packet_aborts += stats->FcpPktAborts;
+		fc_stats->fcp_frame_alloc_failures += stats->FcpFrameAllocFails;
+		fc_stats->link_failure_count += stats->LinkFailureCount;
+	}
+	fc_stats->fcp_input_megabytes = div_u64(fcp_in_bytes, 1000000);
+	fc_stats->fcp_output_megabytes = div_u64(fcp_out_bytes, 1000000);
+	fc_stats->lip_count = -1;
+	fc_stats->nos_count = -1;
+	fc_stats->loss_of_sync_count = -1;
+	fc_stats->loss_of_signal_count = -1;
+	fc_stats->prim_seq_protocol_err_count = -1;
+	fc_stats->dumped_frames = -1;
+
+	/* update exches stats */
+	fc_exch_update_stats(lport);
+
+	return fc_stats;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(fc_get_host_stats);
 
@@ -529,7 +609,11 @@ static void fc_lport_recv_rnid_req(struct fc_lport *lport,
  * @lport: The local port receiving the LOGO
  * @fp:	   The LOGO request frame
  *
+<<<<<<< HEAD
  * Locking Note: The lport lock is exected to be held before calling
+=======
+ * Locking Note: The lport lock is expected to be held before calling
+>>>>>>> refs/remotes/origin/master
  * this function.
  */
 static void fc_lport_recv_logo_req(struct fc_lport *lport, struct fc_frame *fp)
@@ -668,6 +752,10 @@ int fc_lport_destroy(struct fc_lport *lport)
 	lport->tt.fcp_abort_io(lport);
 	lport->tt.disc_stop_final(lport);
 	lport->tt.exch_mgr_reset(lport, 0, 0);
+<<<<<<< HEAD
+=======
+	cancel_delayed_work_sync(&lport->retry_work);
+>>>>>>> refs/remotes/origin/master
 	fc_fc4_del_lport(lport);
 	return 0;
 }
@@ -711,11 +799,16 @@ EXPORT_SYMBOL(fc_set_mfs);
  * @event: The discovery event
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void fc_lport_disc_callback(struct fc_lport *lport, enum fc_disc_event event)
 =======
 static void fc_lport_disc_callback(struct fc_lport *lport,
 				   enum fc_disc_event event)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fc_lport_disc_callback(struct fc_lport *lport,
+				   enum fc_disc_event event)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (event) {
 	case DISC_EV_SUCCESS:
@@ -996,7 +1089,12 @@ drop:
 	rcu_read_unlock();
 	FC_LPORT_DBG(lport, "dropping unexpected frame type %x\n", fh->fh_type);
 	fc_frame_free(fp);
+<<<<<<< HEAD
 	lport->tt.exch_done(sp);
+=======
+	if (sp)
+		lport->tt.exch_done(sp);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1066,10 +1164,15 @@ static void fc_lport_enter_reset(struct fc_lport *lport)
 	}
 	fc_lport_state_enter(lport, LPORT_ST_RESET);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fc_host_post_event(lport->host, fc_get_event_number(),
 			   FCH_EVT_LIPRESET, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fc_host_post_event(lport->host, fc_get_event_number(),
+			   FCH_EVT_LIPRESET, 0);
+>>>>>>> refs/remotes/origin/master
 	fc_vports_linkchange(lport);
 	fc_lport_reset_locked(lport);
 	if (lport->link_up)
@@ -1106,7 +1209,11 @@ static void fc_lport_error(struct fc_lport *lport, struct fc_frame *fp)
 {
 	unsigned long delay = 0;
 	FC_LPORT_DBG(lport, "Error %ld in state %s, retries %d\n",
+<<<<<<< HEAD
 		     PTR_ERR(fp), fc_lport_state(lport),
+=======
+		     IS_ERR(fp) ? -PTR_ERR(fp) : 0, fc_lport_state(lport),
+>>>>>>> refs/remotes/origin/master
 		     lport->retry_count);
 
 	if (PTR_ERR(fp) == -FC_EX_CLOSED)
@@ -1189,13 +1296,19 @@ static void fc_lport_ns_resp(struct fc_seq *sp, struct fc_frame *fp,
 			break;
 		case LPORT_ST_RFF_ID:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			fc_lport_enter_scr(lport);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (lport->fdmi_enabled)
 				fc_lport_enter_fdmi(lport);
 			else
 				fc_lport_enter_scr(lport);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			/* should have already been caught by state checks */
@@ -1211,7 +1324,10 @@ err:
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * fc_lport_ms_resp() - Handle response to a management server
  *			exchange
  * @sp:	    current sequence in exchange
@@ -1291,7 +1407,10 @@ err:
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * fc_lport_scr_resp() - Handle response to State Change Register (SCR) request
  * @sp:	    current sequence in SCR exchange
  * @fp:	    response frame
@@ -1469,7 +1588,10 @@ err:
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * fc_lport_enter_ms() - management server commands
  * @lport: Fibre Channel local port to register
  *
@@ -1587,7 +1709,10 @@ err:
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * fc_lport_timeout() - Handler for the retry_work timer
  * @work: The work struct of the local port
  */
@@ -1601,6 +1726,7 @@ static void fc_lport_timeout(struct work_struct *work)
 
 	switch (lport->state) {
 	case LPORT_ST_DISABLED:
+<<<<<<< HEAD
 		WARN_ON(1);
 		break;
 	case LPORT_ST_READY:
@@ -1608,6 +1734,10 @@ static void fc_lport_timeout(struct work_struct *work)
 		WARN_ON(1);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case LPORT_ST_READY:
+>>>>>>> refs/remotes/origin/master
 		break;
 	case LPORT_ST_RESET:
 		break;
@@ -1625,7 +1755,10 @@ static void fc_lport_timeout(struct work_struct *work)
 		fc_lport_enter_ns(lport, lport->state);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case LPORT_ST_FDMI:
 		fc_lport_enter_fdmi(lport);
 		break;
@@ -1633,9 +1766,15 @@ static void fc_lport_timeout(struct work_struct *work)
 	case LPORT_ST_RPA:
 	case LPORT_ST_DHBA:
 	case LPORT_ST_DPRT:
+<<<<<<< HEAD
 		fc_lport_enter_ms(lport, lport->state);
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		FC_LPORT_DBG(lport, "Skipping lport state %s to SCR\n",
+			     fc_lport_state(lport));
+		/* fall thru */
+>>>>>>> refs/remotes/origin/master
 	case LPORT_ST_SCR:
 		fc_lport_enter_scr(lport);
 		break;
@@ -1741,9 +1880,13 @@ void fc_lport_flogi_resp(struct fc_seq *sp, struct fc_frame *fp,
 {
 	struct fc_lport *lport = lp_arg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct fc_frame_header *fh;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fc_frame_header *fh;
+>>>>>>> refs/remotes/origin/master
 	struct fc_els_flogi *flp;
 	u32 did;
 	u16 csp_flags;
@@ -1771,6 +1914,7 @@ void fc_lport_flogi_resp(struct fc_seq *sp, struct fc_frame *fp,
 		goto err;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	did = fc_frame_did(fp);
 	if (fc_frame_payload_op(fp) == ELS_LS_ACC && did) {
@@ -1816,6 +1960,8 @@ void fc_lport_flogi_resp(struct fc_seq *sp, struct fc_frame *fp,
 		FC_LPORT_DBG(lport, "FLOGI RJT or bad response\n");
 		fc_lport_error(lport, fp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	fh = fc_frame_header_get(fp);
 	did = fc_frame_did(fp);
 	if (fh->fh_r_ctl != FC_RCTL_ELS_REP || did == 0 ||
@@ -1876,7 +2022,10 @@ void fc_lport_flogi_resp(struct fc_seq *sp, struct fc_frame *fp,
 			get_unaligned_be64(&flp->fl_wwnn);
 		fc_lport_set_port_id(lport, did, fp);
 		fc_lport_enter_dns(lport);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
@@ -1894,10 +2043,14 @@ EXPORT_SYMBOL(fc_lport_flogi_resp);
  * this routine.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void fc_lport_enter_flogi(struct fc_lport *lport)
 =======
 static void fc_lport_enter_flogi(struct fc_lport *lport)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fc_lport_enter_flogi(struct fc_lport *lport)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fc_frame *fp;
 
@@ -2027,10 +2180,14 @@ static void fc_lport_bsg_resp(struct fc_seq *sp, struct fc_frame *fp,
 	job->reply->reply_payload_rcv_len +=
 		fc_copy_buffer_to_sglist(buf, len, info->sg, &info->nents,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					 &info->offset, KM_BIO_SRC_IRQ, NULL);
 =======
 					 &info->offset, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 &info->offset, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (fr_eof(fp) == FC_EOF_T &&
 	    (ntoh24(fh->fh_f_ctl) & (FC_FC_LAST_SEQ | FC_FC_END_SEQ)) ==

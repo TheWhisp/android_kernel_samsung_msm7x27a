@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +58,11 @@
 #include "acnamesp.h"
 
 #ifdef ACPI_ASL_COMPILER
+<<<<<<< HEAD
 #include <acpi/acdisasm.h>
+=======
+#include "acdisasm.h"
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define _COMPONENT          ACPI_DISPATCHER
@@ -78,6 +86,10 @@ acpi_ds_init_callbacks(struct acpi_walk_state *walk_state, u32 pass_number)
 
 	switch (pass_number) {
 	case 1:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		walk_state->parse_flags = ACPI_PARSE_LOAD_PASS1 |
 		    ACPI_PARSE_DELETE_TREE;
 		walk_state->descending_callback = acpi_ds_load1_begin_op;
@@ -85,6 +97,10 @@ acpi_ds_init_callbacks(struct acpi_walk_state *walk_state, u32 pass_number)
 		break;
 
 	case 2:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		walk_state->parse_flags = ACPI_PARSE_LOAD_PASS1 |
 		    ACPI_PARSE_DELETE_TREE;
 		walk_state->descending_callback = acpi_ds_load2_begin_op;
@@ -92,6 +108,10 @@ acpi_ds_init_callbacks(struct acpi_walk_state *walk_state, u32 pass_number)
 		break;
 
 	case 3:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 #ifndef ACPI_NO_METHOD_EXECUTION
 		walk_state->parse_flags |= ACPI_PARSE_EXECUTE |
 		    ACPI_PARSE_DELETE_TREE;
@@ -101,6 +121,10 @@ acpi_ds_init_callbacks(struct acpi_walk_state *walk_state, u32 pass_number)
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return (AE_BAD_PARAMETER);
 	}
 
@@ -165,7 +189,10 @@ acpi_ds_load1_begin_op(struct acpi_walk_state * walk_state,
 
 	switch (walk_state->opcode) {
 	case AML_SCOPE_OP:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The target name of the Scope() operator must exist at this point so
 		 * that we can actually open the scope to enter new names underneath it.
@@ -182,7 +209,12 @@ acpi_ds_load1_begin_op(struct acpi_walk_state * walk_state,
 			 * Target of Scope() not found. Generate an External for it, and
 			 * insert the name into the namespace.
 			 */
+<<<<<<< HEAD
 			acpi_dm_add_to_external_list(path, ACPI_TYPE_DEVICE, 0);
+=======
+			acpi_dm_add_to_external_list(op, path, ACPI_TYPE_DEVICE,
+						     0);
+>>>>>>> refs/remotes/origin/master
 			status =
 			    acpi_ns_lookup(walk_state->scope_info, path,
 					   object_type, ACPI_IMODE_LOAD_PASS1,
@@ -213,7 +245,10 @@ acpi_ds_load1_begin_op(struct acpi_walk_state * walk_state,
 		case ACPI_TYPE_INTEGER:
 		case ACPI_TYPE_STRING:
 		case ACPI_TYPE_BUFFER:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * These types we will allow, but we will change the type.
 			 * This enables some existing code of the form:
@@ -234,6 +269,22 @@ acpi_ds_load1_begin_op(struct acpi_walk_state * walk_state,
 			walk_state->scope_info->common.value = ACPI_TYPE_ANY;
 			break;
 
+<<<<<<< HEAD
+=======
+		case ACPI_TYPE_METHOD:
+			/*
+			 * Allow scope change to root during execution of module-level
+			 * code. Root is typed METHOD during this time.
+			 */
+			if ((node == acpi_gbl_root_node) &&
+			    (walk_state->
+			     parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+				break;
+			}
+
+			/*lint -fallthrough */
+
+>>>>>>> refs/remotes/origin/master
 		default:
 
 			/* All other types are an error */

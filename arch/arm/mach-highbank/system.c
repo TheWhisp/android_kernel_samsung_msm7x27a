@@ -14,12 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/smp_scu.h>
 #include <asm/proc-fns.h>
+=======
+#include <asm/proc-fns.h>
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "core.h"
 #include "sysregs.h"
 
+<<<<<<< HEAD
 void highbank_restart(char mode, const char *cmd)
 {
 	if (mode == 'h')
@@ -29,5 +35,16 @@ void highbank_restart(char mode, const char *cmd)
 
 	scu_power_mode(scu_base_addr, SCU_PM_POWEROFF);
 	cpu_do_idle();
+=======
+void highbank_restart(enum reboot_mode mode, const char *cmd)
+{
+	if (mode == REBOOT_HARD)
+		highbank_set_pwr_hard_reset();
+	else
+		highbank_set_pwr_soft_reset();
+
+	while (1)
+		cpu_do_idle();
+>>>>>>> refs/remotes/origin/master
 }
 

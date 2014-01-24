@@ -7,10 +7,17 @@
  *
  */
 
+<<<<<<< HEAD
 #include "linux/init.h"
 #include <linux/netdevice.h>
 #include "net_kern.h"
 #include "net_user.h"
+=======
+#include <linux/init.h>
+#include <linux/netdevice.h>
+#include <net_kern.h>
+#include <net_user.h>
+>>>>>>> refs/remotes/origin/master
 #include "vde.h"
 
 static void vde_init(struct net_device *dev, void *data)

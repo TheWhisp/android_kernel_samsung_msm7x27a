@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 /**
  * arch/s390/oprofile/op_counter.h
  *
  *   Copyright (C) 2011 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+/*
+ *   Copyright IBM Corp. 2011
+>>>>>>> refs/remotes/origin/master
  *   Author(s): Andreas Krebbel (krebbel@linux.vnet.ibm.com)
  *
  * @remark Copyright 2011 OProfile authors

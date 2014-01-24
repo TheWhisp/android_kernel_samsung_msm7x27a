@@ -22,7 +22,11 @@
 #define EM86_INTERP	"/usr/bin/em86"
 #define EM86_I_NAME	"em86"
 
+<<<<<<< HEAD
 static int load_em86(struct linux_binprm *bprm,struct pt_regs *regs)
+=======
+static int load_em86(struct linux_binprm *bprm)
+>>>>>>> refs/remotes/origin/master
 {
 	char *interp, *i_name, *i_arg;
 	struct file * file;
@@ -38,7 +42,11 @@ static int load_em86(struct linux_binprm *bprm,struct pt_regs *regs)
 	/* First of all, some simple consistency checks */
 	if ((elf_ex.e_type != ET_EXEC && elf_ex.e_type != ET_DYN) ||
 		(!((elf_ex.e_machine == EM_386) || (elf_ex.e_machine == EM_486))) ||
+<<<<<<< HEAD
 		(!bprm->file->f_op || !bprm->file->f_op->mmap)) {
+=======
+		!bprm->file->f_op->mmap) {
+>>>>>>> refs/remotes/origin/master
 			return -ENOEXEC;
 	}
 
@@ -89,7 +97,11 @@ static int load_em86(struct linux_binprm *bprm,struct pt_regs *regs)
 	if (retval < 0)
 		return retval;
 
+<<<<<<< HEAD
 	return search_binary_handler(bprm, regs);
+=======
+	return search_binary_handler(bprm);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct linux_binfmt em86_format = {
@@ -100,11 +112,16 @@ static struct linux_binfmt em86_format = {
 static int __init init_em86_binfmt(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return register_binfmt(&em86_format);
 =======
 	register_binfmt(&em86_format);
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_binfmt(&em86_format);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit exit_em86_binfmt(void)

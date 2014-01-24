@@ -11,15 +11,22 @@
  * 	flags are stored in host byte order (of course).
  * 	Port numbers are stored in HOST byte order.
  */
+<<<<<<< HEAD
 
 #ifndef _IPTABLES_H
 #define _IPTABLES_H
 
 #ifdef __KERNEL__
+=======
+#ifndef _IPTABLES_H
+#define _IPTABLES_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/in.h>
 #include <linux/ip.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #endif
 #include <linux/types.h>
 #include <linux/compiler.h>
@@ -256,6 +263,12 @@ ipt_get_target(struct ipt_entry *e)
 #ifdef __KERNEL__
 
 #include <linux/init.h>
+=======
+
+#include <linux/init.h>
+#include <uapi/linux/netfilter_ipv4/ip_tables.h>
+
+>>>>>>> refs/remotes/origin/master
 extern void ipt_init(void) __init;
 
 extern struct xt_table *ipt_register_table(struct net *net,
@@ -310,12 +323,17 @@ struct compat_ipt_entry {
 	struct ipt_ip ip;
 	compat_uint_t nfcache;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	u_int16_t next_offset;
 =======
 	__u16 target_offset;
 	__u16 next_offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/master
 	compat_uint_t comefrom;
 	struct compat_xt_counters counters;
 	unsigned char elems[0];
@@ -329,5 +347,8 @@ compat_ipt_get_target(struct compat_ipt_entry *e)
 }
 
 #endif /* CONFIG_COMPAT */
+<<<<<<< HEAD
 #endif /*__KERNEL__*/
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _IPTABLES_H */

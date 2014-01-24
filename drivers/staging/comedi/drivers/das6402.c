@@ -22,11 +22,14 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: das6402
@@ -38,11 +41,18 @@ Devices: [Keithley Metrabyte] DAS6402 (das6402)
 This driver has suffered bitrot.
 */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
 
+=======
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 #define DAS6402_SIZE 16
 
 #define N_WORDS (3000*64)
@@ -99,6 +109,7 @@ This driver has suffered bitrot.
 #define	C2 0x80
 #define	RWLH 0x30
 
+<<<<<<< HEAD
 static int das6402_attach(struct comedi_device *dev,
 			  struct comedi_devconfig *it);
 static int das6402_detach(struct comedi_device *dev);
@@ -122,15 +133,30 @@ static void __exit driver_das6402_cleanup_module(void)
 module_init(driver_das6402_init_module);
 module_exit(driver_das6402_cleanup_module);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct das6402_private {
 	int ai_bytes_to_read;
 
 	int das6402_ignoreirq;
 };
+<<<<<<< HEAD
 #define devpriv ((struct das6402_private *)dev->private)
 
 static void das6402_ai_fifo_dregs(struct comedi_device *dev,
 				  struct comedi_subdevice *s);
+=======
+
+static void das6402_ai_fifo_dregs(struct comedi_device *dev,
+				  struct comedi_subdevice *s)
+{
+	while (1) {
+		if (!(inb(dev->iobase + 8) & 0x01))
+			return;
+		comedi_buf_put(s->async, inw(dev->iobase));
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 static void das6402_setcounter(struct comedi_device *dev)
 {
@@ -168,6 +194,7 @@ static void das6402_setcounter(struct comedi_device *dev)
 static irqreturn_t intr_handler(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s = dev->subdevices;
 
 	if (!dev->attached || devpriv->das6402_ignoreirq) {
@@ -183,16 +210,28 @@ static irqreturn_t intr_handler(int irq, void *d)
 	       devpriv->das6402_irqcount);
 	printk("das6402: iobase+2=%i\n", inw_p(dev->iobase + 2));
 #endif
+=======
+	struct das6402_private *devpriv = dev->private;
+	struct comedi_subdevice *s = &dev->subdevices[0];
+
+	if (!dev->attached || devpriv->das6402_ignoreirq) {
+		dev_warn(dev->class_dev, "BUG: spurious interrupt\n");
+		return IRQ_HANDLED;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	das6402_ai_fifo_dregs(dev, s);
 
 	if (s->async->buf_write_count >= devpriv->ai_bytes_to_read) {
 		outw_p(SCANL, dev->iobase + 2);	/* clears the fifo */
 		outb(0x07, dev->iobase + 8);	/* clears all flip-flops */
+<<<<<<< HEAD
 #ifdef DEBUG
 		printk("das6402: Got %i samples\n\n",
 		       devpriv->das6402_wordsread - diff);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		s->async->events |= COMEDI_CB_EOA;
 		comedi_event(dev, s);
 	}
@@ -213,6 +252,7 @@ static void das6402_ai_fifo_read(struct comedi_device *dev, short *data, int n)
 }
 #endif
 
+<<<<<<< HEAD
 static void das6402_ai_fifo_dregs(struct comedi_device *dev,
 				  struct comedi_subdevice *s)
 {
@@ -226,6 +266,13 @@ static void das6402_ai_fifo_dregs(struct comedi_device *dev,
 static int das6402_ai_cancel(struct comedi_device *dev,
 			     struct comedi_subdevice *s)
 {
+=======
+static int das6402_ai_cancel(struct comedi_device *dev,
+			     struct comedi_subdevice *s)
+{
+	struct das6402_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *  This function should reset the board from whatever condition it
 	 *  is in (i.e., acquiring data), to a non-active state.
@@ -233,12 +280,16 @@ static int das6402_ai_cancel(struct comedi_device *dev,
 
 	devpriv->das6402_ignoreirq = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef DEBUG
 	printk("das6402: Stopping acquisition\n");
 #endif
 =======
 	dev_dbg(dev->hw_dev, "Stopping acquisition\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(dev->class_dev, "Stopping acquisition\n");
+>>>>>>> refs/remotes/origin/master
 	devpriv->das6402_ignoreirq = 1;
 	outb_p(0x02, dev->iobase + 10);	/* disable external trigging */
 	outw_p(SCANL, dev->iobase + 2);	/* resets the card fifo */
@@ -251,6 +302,7 @@ static int das6402_ai_cancel(struct comedi_device *dev,
 
 #ifdef unused
 static int das6402_ai_mode2(struct comedi_device *dev,
+<<<<<<< HEAD
 			    struct comedi_subdevice *s, comedi_trig * it)
 {
 	devpriv->das6402_ignoreirq = 1;
@@ -262,6 +314,14 @@ static int das6402_ai_mode2(struct comedi_device *dev,
 =======
 	dev_dbg(dev->hw_dev, "Starting acquisition\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    struct comedi_subdevice *s, comedi_trig *it)
+{
+	struct das6402_private *devpriv = dev->private;
+
+	devpriv->das6402_ignoreirq = 1;
+	dev_dbg(dev->class_dev, "Starting acquisition\n");
+>>>>>>> refs/remotes/origin/master
 	outb_p(0x03, dev->iobase + 10);	/* enable external trigging */
 	outw_p(SCANL, dev->iobase + 2);	/* resets the card fifo */
 	outb_p(IRQ | CONVSRC | BURSTEN | INTE, dev->iobase + 9);
@@ -279,6 +339,10 @@ static int das6402_ai_mode2(struct comedi_device *dev,
 
 static int board_init(struct comedi_device *dev)
 {
+<<<<<<< HEAD
+=======
+	struct das6402_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	BYTE b;
 
 	devpriv->das6402_ignoreirq = 1;
@@ -317,6 +381,7 @@ static int board_init(struct comedi_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int das6402_detach(struct comedi_device *dev)
 {
 	if (dev->irq)
@@ -368,11 +433,28 @@ static int das6402_attach(struct comedi_device *dev,
 
 =======
 	dev_dbg(dev->hw_dev, "( irq = %u )\n", irq);
+=======
+static int das6402_attach(struct comedi_device *dev,
+			  struct comedi_devconfig *it)
+{
+	struct das6402_private *devpriv;
+	unsigned int irq;
+	int ret;
+	struct comedi_subdevice *s;
+
+	ret = comedi_request_region(dev, it->options[0], DAS6402_SIZE);
+	if (ret)
+		return ret;
+
+	irq = it->options[0];
+	dev_dbg(dev->class_dev, "( irq = %u )\n", irq);
+>>>>>>> refs/remotes/origin/master
 	ret = request_irq(irq, intr_handler, 0, "das6402", dev);
 	if (ret < 0)
 		return ret;
 
 	dev->irq = irq;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	ret = alloc_private(dev, sizeof(struct das6402_private));
 	if (ret < 0)
@@ -384,6 +466,19 @@ static int das6402_attach(struct comedi_device *dev,
 
 	/* ai subdevice */
 	s = dev->subdevices + 0;
+=======
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	/* ai subdevice */
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	s->type = COMEDI_SUBD_AI;
 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
 	s->n_chan = 8;
@@ -398,6 +493,17 @@ static int das6402_attach(struct comedi_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static struct comedi_driver das6402_driver = {
+	.driver_name	= "das6402",
+	.module		= THIS_MODULE,
+	.attach		= das6402_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(das6402_driver)
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

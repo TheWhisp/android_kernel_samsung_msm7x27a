@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  PowerPC version
  *    Copyright (C) 1995-1996 Gary Thomas (gdt@linuxppc.org)
  *
@@ -791,6 +792,8 @@ empty_zero_page:
 swapper_pg_dir:
 	.space	PGD_TABLE_SIZE
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2003-2006, Cluster File Systems, Inc, info@clusterfs.com
  * Written by Alex Tomas <alex@clusterfs.com>
  *
@@ -833,6 +836,11 @@ swapper_pg_dir:
 #include <asm/uaccess.h>
 #include <linux/fiemap.h>
 #include "ext4_jbd2.h"
+<<<<<<< HEAD
+=======
+#include "ext4_extents.h"
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/master
 
 #include <trace/events/ext4.h>
 
@@ -847,6 +855,49 @@ swapper_pg_dir:
 #define EXT4_EXT_DATA_VALID1	0x8  /* first half contains valid data */
 #define EXT4_EXT_DATA_VALID2	0x10 /* second half contains valid data */
 
+<<<<<<< HEAD
+=======
+static __le32 ext4_extent_block_csum(struct inode *inode,
+				     struct ext4_extent_header *eh)
+{
+	struct ext4_inode_info *ei = EXT4_I(inode);
+	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+	__u32 csum;
+
+	csum = ext4_chksum(sbi, ei->i_csum_seed, (__u8 *)eh,
+			   EXT4_EXTENT_TAIL_OFFSET(eh));
+	return cpu_to_le32(csum);
+}
+
+static int ext4_extent_block_csum_verify(struct inode *inode,
+					 struct ext4_extent_header *eh)
+{
+	struct ext4_extent_tail *et;
+
+	if (!EXT4_HAS_RO_COMPAT_FEATURE(inode->i_sb,
+		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
+		return 1;
+
+	et = find_ext4_extent_tail(eh);
+	if (et->et_checksum != ext4_extent_block_csum(inode, eh))
+		return 0;
+	return 1;
+}
+
+static void ext4_extent_block_csum_set(struct inode *inode,
+				       struct ext4_extent_header *eh)
+{
+	struct ext4_extent_tail *et;
+
+	if (!EXT4_HAS_RO_COMPAT_FEATURE(inode->i_sb,
+		EXT4_FEATURE_RO_COMPAT_METADATA_CSUM))
+		return;
+
+	et = find_ext4_extent_tail(eh);
+	et->et_checksum = ext4_extent_block_csum(inode, eh);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int ext4_split_extent(handle_t *handle,
 				struct inode *inode,
 				struct ext4_ext_path *path,
@@ -861,6 +912,12 @@ static int ext4_split_extent_at(handle_t *handle,
 			     int split_flag,
 			     int flags);
 
+<<<<<<< HEAD
+=======
+static int ext4_find_delayed_extent(struct inode *inode,
+				    struct extent_status *newes);
+
+>>>>>>> refs/remotes/origin/master
 static int ext4_ext_truncate_extend_restart(handle_t *handle,
 					    struct inode *inode,
 					    int needed)
@@ -904,6 +961,7 @@ static int ext4_ext_get_access(handle_t *handle, struct inode *inode,
  *  - ENOMEM
  *  - EIO
  */
+<<<<<<< HEAD
 #define ext4_ext_dirty(handle, inode, path) \
 		__ext4_ext_dirty(__func__, __LINE__, (handle), (inode), (path))
 static int __ext4_ext_dirty(const char *where, unsigned int line,
@@ -912,6 +970,14 @@ static int __ext4_ext_dirty(const char *where, unsigned int line,
 {
 	int err;
 	if (path->p_bh) {
+=======
+int __ext4_ext_dirty(const char *where, unsigned int line, handle_t *handle,
+		     struct inode *inode, struct ext4_ext_path *path)
+{
+	int err;
+	if (path->p_bh) {
+		ext4_extent_block_csum_set(inode, ext_block_hdr(path->p_bh));
+>>>>>>> refs/remotes/origin/master
 		/* path points to block */
 		err = __ext4_handle_dirty_metadata(where, line, handle,
 						   inode, path->p_bh);
@@ -1109,8 +1175,15 @@ static int ext4_valid_extent(struct inode *inode, struct ext4_extent *ext)
 {
 	ext4_fsblk_t block = ext4_ext_pblock(ext);
 	int len = ext4_ext_get_actual_len(ext);
+<<<<<<< HEAD
 
 	if (len == 0)
+=======
+	ext4_lblk_t lblock = le32_to_cpu(ext->ee_block);
+	ext4_lblk_t last = lblock + len - 1;
+
+	if (lblock > last)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	return ext4_data_block_valid(EXT4_SB(inode->i_sb), block, len);
 }
@@ -1136,11 +1209,34 @@ static int ext4_valid_extent_entries(struct inode *inode,
 	if (depth == 0) {
 		/* leaf entries */
 		struct ext4_extent *ext = EXT_FIRST_EXTENT(eh);
+<<<<<<< HEAD
 		while (entries) {
 			if (!ext4_valid_extent(inode, ext))
 				return 0;
 			ext++;
 			entries--;
+=======
+		struct ext4_super_block *es = EXT4_SB(inode->i_sb)->s_es;
+		ext4_fsblk_t pblock = 0;
+		ext4_lblk_t lblock = 0;
+		ext4_lblk_t prev = 0;
+		int len = 0;
+		while (entries) {
+			if (!ext4_valid_extent(inode, ext))
+				return 0;
+
+			/* Check for overlapping extents */
+			lblock = le32_to_cpu(ext->ee_block);
+			len = ext4_ext_get_actual_len(ext);
+			if ((lblock <= prev) && prev) {
+				pblock = ext4_ext_pblock(ext);
+				es->s_last_error_block = cpu_to_le64(pblock);
+				return 0;
+			}
+			ext++;
+			entries--;
+			prev = lblock + len - 1;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		struct ext4_extent_idx *ext_idx = EXT_FIRST_INDEX(eh);
@@ -1156,7 +1252,11 @@ static int ext4_valid_extent_entries(struct inode *inode,
 
 static int __ext4_ext_check(const char *function, unsigned int line,
 			    struct inode *inode, struct ext4_extent_header *eh,
+<<<<<<< HEAD
 			    int depth)
+=======
+			    int depth, ext4_fsblk_t pblk)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *error_msg;
 	int max = 0;
@@ -1186,10 +1286,20 @@ static int __ext4_ext_check(const char *function, unsigned int line,
 		error_msg = "invalid extent entries";
 		goto corrupted;
 	}
+<<<<<<< HEAD
+=======
+	/* Verify checksum on non-root extent tree nodes */
+	if (ext_depth(inode) != depth &&
+	    !ext4_extent_block_csum_verify(inode, eh)) {
+		error_msg = "extent tree corrupted";
+		goto corrupted;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 corrupted:
 	ext4_error_inode(inode, function, line, 0,
+<<<<<<< HEAD
 			"bad header/extent: %s - magic %x, "
 			"entries %u, max %u(%u), depth %u(%u)",
 			error_msg, le16_to_cpu(eh->eh_magic),
@@ -1205,6 +1315,150 @@ corrupted:
 int ext4_ext_check_inode(struct inode *inode)
 {
 	return ext4_ext_check(inode, ext_inode_hdr(inode), ext_depth(inode));
+=======
+			 "pblk %llu bad header/extent: %s - magic %x, "
+			 "entries %u, max %u(%u), depth %u(%u)",
+			 (unsigned long long) pblk, error_msg,
+			 le16_to_cpu(eh->eh_magic),
+			 le16_to_cpu(eh->eh_entries), le16_to_cpu(eh->eh_max),
+			 max, le16_to_cpu(eh->eh_depth), depth);
+	return -EIO;
+}
+
+#define ext4_ext_check(inode, eh, depth, pblk)			\
+	__ext4_ext_check(__func__, __LINE__, (inode), (eh), (depth), (pblk))
+
+int ext4_ext_check_inode(struct inode *inode)
+{
+	return ext4_ext_check(inode, ext_inode_hdr(inode), ext_depth(inode), 0);
+}
+
+static struct buffer_head *
+__read_extent_tree_block(const char *function, unsigned int line,
+			 struct inode *inode, ext4_fsblk_t pblk, int depth,
+			 int flags)
+{
+	struct buffer_head		*bh;
+	int				err;
+
+	bh = sb_getblk(inode->i_sb, pblk);
+	if (unlikely(!bh))
+		return ERR_PTR(-ENOMEM);
+
+	if (!bh_uptodate_or_lock(bh)) {
+		trace_ext4_ext_load_extent(inode, pblk, _RET_IP_);
+		err = bh_submit_read(bh);
+		if (err < 0)
+			goto errout;
+	}
+	if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
+		return bh;
+	err = __ext4_ext_check(function, line, inode,
+			       ext_block_hdr(bh), depth, pblk);
+	if (err)
+		goto errout;
+	set_buffer_verified(bh);
+	/*
+	 * If this is a leaf block, cache all of its entries
+	 */
+	if (!(flags & EXT4_EX_NOCACHE) && depth == 0) {
+		struct ext4_extent_header *eh = ext_block_hdr(bh);
+		struct ext4_extent *ex = EXT_FIRST_EXTENT(eh);
+		ext4_lblk_t prev = 0;
+		int i;
+
+		for (i = le16_to_cpu(eh->eh_entries); i > 0; i--, ex++) {
+			unsigned int status = EXTENT_STATUS_WRITTEN;
+			ext4_lblk_t lblk = le32_to_cpu(ex->ee_block);
+			int len = ext4_ext_get_actual_len(ex);
+
+			if (prev && (prev != lblk))
+				ext4_es_cache_extent(inode, prev,
+						     lblk - prev, ~0,
+						     EXTENT_STATUS_HOLE);
+
+			if (ext4_ext_is_uninitialized(ex))
+				status = EXTENT_STATUS_UNWRITTEN;
+			ext4_es_cache_extent(inode, lblk, len,
+					     ext4_ext_pblock(ex), status);
+			prev = lblk + len;
+		}
+	}
+	return bh;
+errout:
+	put_bh(bh);
+	return ERR_PTR(err);
+
+}
+
+#define read_extent_tree_block(inode, pblk, depth, flags)		\
+	__read_extent_tree_block(__func__, __LINE__, (inode), (pblk),   \
+				 (depth), (flags))
+
+/*
+ * This function is called to cache a file's extent information in the
+ * extent status tree
+ */
+int ext4_ext_precache(struct inode *inode)
+{
+	struct ext4_inode_info *ei = EXT4_I(inode);
+	struct ext4_ext_path *path = NULL;
+	struct buffer_head *bh;
+	int i = 0, depth, ret = 0;
+
+	if (!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+		return 0;	/* not an extent-mapped inode */
+
+	down_read(&ei->i_data_sem);
+	depth = ext_depth(inode);
+
+	path = kzalloc(sizeof(struct ext4_ext_path) * (depth + 1),
+		       GFP_NOFS);
+	if (path == NULL) {
+		up_read(&ei->i_data_sem);
+		return -ENOMEM;
+	}
+
+	/* Don't cache anything if there are no external extent blocks */
+	if (depth == 0)
+		goto out;
+	path[0].p_hdr = ext_inode_hdr(inode);
+	ret = ext4_ext_check(inode, path[0].p_hdr, depth, 0);
+	if (ret)
+		goto out;
+	path[0].p_idx = EXT_FIRST_INDEX(path[0].p_hdr);
+	while (i >= 0) {
+		/*
+		 * If this is a leaf block or we've reached the end of
+		 * the index block, go up
+		 */
+		if ((i == depth) ||
+		    path[i].p_idx > EXT_LAST_INDEX(path[i].p_hdr)) {
+			brelse(path[i].p_bh);
+			path[i].p_bh = NULL;
+			i--;
+			continue;
+		}
+		bh = read_extent_tree_block(inode,
+					    ext4_idx_pblock(path[i].p_idx++),
+					    depth - i - 1,
+					    EXT4_EX_FORCE_CACHE);
+		if (IS_ERR(bh)) {
+			ret = PTR_ERR(bh);
+			break;
+		}
+		i++;
+		path[i].p_bh = bh;
+		path[i].p_hdr = ext_block_hdr(bh);
+		path[i].p_idx = EXT_FIRST_INDEX(path[i].p_hdr);
+	}
+	ext4_set_inode_state(inode, EXT4_STATE_EXT_PRECACHED);
+out:
+	up_read(&ei->i_data_sem);
+	ext4_ext_drop_refs(path);
+	kfree(path);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef EXT_DEBUG
@@ -1331,7 +1585,11 @@ ext4_ext_binsearch_idx(struct inode *inode,
 	}
 
 	path->p_idx = l - 1;
+<<<<<<< HEAD
 	ext_debug("  -> %d->%lld ", le32_to_cpu(path->p_idx->ei_block),
+=======
+	ext_debug("  -> %u->%lld ", le32_to_cpu(path->p_idx->ei_block),
+>>>>>>> refs/remotes/origin/master
 		  ext4_idx_pblock(path->p_idx));
 
 #ifdef CHECK_BINSEARCH
@@ -1434,17 +1692,28 @@ int ext4_ext_tree_init(handle_t *handle, struct inode *inode)
 	eh->eh_magic = EXT4_EXT_MAGIC;
 	eh->eh_max = cpu_to_le16(ext4_ext_space_root(inode, 0));
 	ext4_mark_inode_dirty(handle, inode);
+<<<<<<< HEAD
 	ext4_ext_invalidate_cache(inode);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 struct ext4_ext_path *
 ext4_ext_find_extent(struct inode *inode, ext4_lblk_t block,
+<<<<<<< HEAD
 					struct ext4_ext_path *path)
+=======
+		     struct ext4_ext_path *path, int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ext4_extent_header *eh;
 	struct buffer_head *bh;
 	short int depth, i, ppos = 0, alloc = 0;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	eh = ext_inode_hdr(inode);
 	depth = ext_depth(inode);
@@ -1463,8 +1732,11 @@ ext4_ext_find_extent(struct inode *inode, ext4_lblk_t block,
 	i = depth;
 	/* walk through the tree */
 	while (i) {
+<<<<<<< HEAD
 		int need_to_validate = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		ext_debug("depth %d: num %d, max %d\n",
 			  ppos, le16_to_cpu(eh->eh_entries), le16_to_cpu(eh->eh_max));
 
@@ -1473,6 +1745,7 @@ ext4_ext_find_extent(struct inode *inode, ext4_lblk_t block,
 		path[ppos].p_depth = i;
 		path[ppos].p_ext = NULL;
 
+<<<<<<< HEAD
 		bh = sb_getblk(inode->i_sb, path[ppos].p_block);
 		if (unlikely(!bh))
 			goto err;
@@ -1486,20 +1759,36 @@ ext4_ext_find_extent(struct inode *inode, ext4_lblk_t block,
 			/* validate the extent entries */
 			need_to_validate = 1;
 		}
+=======
+		bh = read_extent_tree_block(inode, path[ppos].p_block, --i,
+					    flags);
+		if (IS_ERR(bh)) {
+			ret = PTR_ERR(bh);
+			goto err;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		eh = ext_block_hdr(bh);
 		ppos++;
 		if (unlikely(ppos > depth)) {
 			put_bh(bh);
 			EXT4_ERROR_INODE(inode,
 					 "ppos %d > depth %d", ppos, depth);
+<<<<<<< HEAD
+=======
+			ret = -EIO;
+>>>>>>> refs/remotes/origin/master
 			goto err;
 		}
 		path[ppos].p_bh = bh;
 		path[ppos].p_hdr = eh;
+<<<<<<< HEAD
 		i--;
 
 		if (need_to_validate && ext4_ext_check(inode, eh, i))
 			goto err;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	path[ppos].p_depth = i;
@@ -1520,7 +1809,11 @@ err:
 	ext4_ext_drop_refs(path);
 	if (alloc)
 		kfree(path);
+<<<<<<< HEAD
 	return ERR_PTR(-EIO);
+=======
+	return ERR_PTR(ret);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1674,8 +1967,13 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
 		goto cleanup;
 	}
 	bh = sb_getblk(inode->i_sb, newblock);
+<<<<<<< HEAD
 	if (!bh) {
 		err = -EIO;
+=======
+	if (unlikely(!bh)) {
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto cleanup;
 	}
 	lock_buffer(bh);
@@ -1709,6 +2007,10 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
 		le16_add_cpu(&neh->eh_entries, m);
 	}
 
+<<<<<<< HEAD
+=======
+	ext4_extent_block_csum_set(inode, neh);
+>>>>>>> refs/remotes/origin/master
 	set_buffer_uptodate(bh);
 	unlock_buffer(bh);
 
@@ -1746,8 +2048,13 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
 		oldblock = newblock;
 		newblock = ablocks[--a];
 		bh = sb_getblk(inode->i_sb, newblock);
+<<<<<<< HEAD
 		if (!bh) {
 			err = -EIO;
+=======
+		if (unlikely(!bh)) {
+			err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			goto cleanup;
 		}
 		lock_buffer(bh);
@@ -1787,6 +2094,10 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
 				sizeof(struct ext4_extent_idx) * m);
 			le16_add_cpu(&neh->eh_entries, m);
 		}
+<<<<<<< HEAD
+=======
+		ext4_extent_block_csum_set(inode, neh);
+>>>>>>> refs/remotes/origin/master
 		set_buffer_uptodate(bh);
 		unlock_buffer(bh);
 
@@ -1858,11 +2169,16 @@ static int ext4_ext_grow_indepth(handle_t *handle, struct inode *inode,
 		return err;
 
 	bh = sb_getblk(inode->i_sb, newblock);
+<<<<<<< HEAD
 	if (!bh) {
 		err = -EIO;
 		ext4_std_error(inode->i_sb, err);
 		return err;
 	}
+=======
+	if (unlikely(!bh))
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	lock_buffer(bh);
 
 	err = ext4_journal_get_create_access(handle, bh);
@@ -1884,6 +2200,10 @@ static int ext4_ext_grow_indepth(handle_t *handle, struct inode *inode,
 	else
 		neh->eh_max = cpu_to_le16(ext4_ext_space_block(inode, 0));
 	neh->eh_magic = EXT4_EXT_MAGIC;
+<<<<<<< HEAD
+=======
+	ext4_extent_block_csum_set(inode, neh);
+>>>>>>> refs/remotes/origin/master
 	set_buffer_uptodate(bh);
 	unlock_buffer(bh);
 
@@ -1906,7 +2226,11 @@ static int ext4_ext_grow_indepth(handle_t *handle, struct inode *inode,
 		  le32_to_cpu(EXT_FIRST_INDEX(neh)->ei_block),
 		  ext4_idx_pblock(EXT_FIRST_INDEX(neh)));
 
+<<<<<<< HEAD
 	neh->eh_depth = cpu_to_le16(le16_to_cpu(neh->eh_depth) + 1);
+=======
+	le16_add_cpu(&neh->eh_depth, 1);
+>>>>>>> refs/remotes/origin/master
 	ext4_mark_inode_dirty(handle, inode);
 out:
 	brelse(bh);
@@ -1920,7 +2244,12 @@ out:
  * if no free index is found, then it requests in-depth growing.
  */
 static int ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+<<<<<<< HEAD
 				    unsigned int flags,
+=======
+				    unsigned int mb_flags,
+				    unsigned int gb_flags,
+>>>>>>> refs/remotes/origin/master
 				    struct ext4_ext_path *path,
 				    struct ext4_extent *newext)
 {
@@ -1942,7 +2271,11 @@ repeat:
 	if (EXT_HAS_FREE_INDEX(curp)) {
 		/* if we found index with free entry, then use that
 		 * entry: create all needed subtree and add new leaf */
+<<<<<<< HEAD
 		err = ext4_ext_split(handle, inode, flags, path, newext, i);
+=======
+		err = ext4_ext_split(handle, inode, mb_flags, path, newext, i);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 
@@ -1950,12 +2283,20 @@ repeat:
 		ext4_ext_drop_refs(path);
 		path = ext4_ext_find_extent(inode,
 				    (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+<<<<<<< HEAD
 				    path);
+=======
+				    path, gb_flags);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(path))
 			err = PTR_ERR(path);
 	} else {
 		/* tree is full, time to grow in depth */
+<<<<<<< HEAD
 		err = ext4_ext_grow_indepth(handle, inode, flags, newext);
+=======
+		err = ext4_ext_grow_indepth(handle, inode, mb_flags, newext);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 
@@ -1963,7 +2304,11 @@ repeat:
 		ext4_ext_drop_refs(path);
 		path = ext4_ext_find_extent(inode,
 				   (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+<<<<<<< HEAD
 				    path);
+=======
+				    path, gb_flags);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(path)) {
 			err = PTR_ERR(path);
 			goto out;
@@ -2134,6 +2479,7 @@ got_index:
 	ix++;
 	block = ext4_idx_pblock(ix);
 	while (++depth < path->p_depth) {
+<<<<<<< HEAD
 		bh = sb_bread(inode->i_sb, block);
 		if (bh == NULL)
 			return -EIO;
@@ -2143,11 +2489,20 @@ got_index:
 			put_bh(bh);
 			return -EIO;
 		}
+=======
+		/* subtract from p_depth to get proper eh_depth */
+		bh = read_extent_tree_block(inode, block,
+					    path->p_depth - depth, 0);
+		if (IS_ERR(bh))
+			return PTR_ERR(bh);
+		eh = ext_block_hdr(bh);
+>>>>>>> refs/remotes/origin/master
 		ix = EXT_FIRST_INDEX(eh);
 		block = ext4_idx_pblock(ix);
 		put_bh(bh);
 	}
 
+<<<<<<< HEAD
 	bh = sb_bread(inode->i_sb, block);
 	if (bh == NULL)
 		return -EIO;
@@ -2156,6 +2511,12 @@ got_index:
 		put_bh(bh);
 		return -EIO;
 	}
+=======
+	bh = read_extent_tree_block(inode, block, path->p_depth - depth, 0);
+	if (IS_ERR(bh))
+		return PTR_ERR(bh);
+	eh = ext_block_hdr(bh);
+>>>>>>> refs/remotes/origin/master
 	ex = EXT_FIRST_EXTENT(eh);
 found_extent:
 	*logical = le32_to_cpu(ex->ee_block);
@@ -2299,6 +2660,7 @@ int
 ext4_can_extents_be_merged(struct inode *inode, struct ext4_extent *ex1,
 				struct ext4_extent *ex2)
 {
+<<<<<<< HEAD
 	unsigned short ext1_ee_len, ext2_ee_len, max_len;
 
 	/*
@@ -2313,6 +2675,19 @@ ext4_can_extents_be_merged(struct inode *inode, struct ext4_extent *ex1,
 	else
 		max_len = EXT_INIT_MAX_LEN;
 
+=======
+	unsigned short ext1_ee_len, ext2_ee_len;
+
+	/*
+	 * Make sure that both extents are initialized. We don't merge
+	 * uninitialized extents so that we can be sure that end_io code has
+	 * the extent that was written properly split out and conversion to
+	 * initialized is trivial.
+	 */
+	if (ext4_ext_is_uninitialized(ex1) || ext4_ext_is_uninitialized(ex2))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	ext1_ee_len = ext4_ext_get_actual_len(ex1);
 	ext2_ee_len = ext4_ext_get_actual_len(ex2);
 
@@ -2325,7 +2700,11 @@ ext4_can_extents_be_merged(struct inode *inode, struct ext4_extent *ex1,
 	 * as an RO_COMPAT feature, refuse to merge to extents if
 	 * this can result in the top bit of ee_len being set.
 	 */
+<<<<<<< HEAD
 	if (ext1_ee_len + ext2_ee_len > max_len)
+=======
+	if (ext1_ee_len + ext2_ee_len > EXT_INIT_MAX_LEN)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 #ifdef AGGRESSIVE_TEST
 	if (ext1_ee_len >= 4)
@@ -2351,7 +2730,10 @@ static int ext4_ext_try_to_merge_right(struct inode *inode,
 	struct ext4_extent_header *eh;
 	unsigned int depth, len;
 	int merge_done = 0;
+<<<<<<< HEAD
 	int uninitialized = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	depth = ext_depth(inode);
 	BUG_ON(path[depth].p_hdr == NULL);
@@ -2361,12 +2743,17 @@ static int ext4_ext_try_to_merge_right(struct inode *inode,
 		if (!ext4_can_extents_be_merged(inode, ex, ex + 1))
 			break;
 		/* merge with next extent! */
+<<<<<<< HEAD
 		if (ext4_ext_is_uninitialized(ex))
 			uninitialized = 1;
 		ex->ee_len = cpu_to_le16(ext4_ext_get_actual_len(ex)
 				+ ext4_ext_get_actual_len(ex + 1));
 		if (uninitialized)
 			ext4_ext_mark_uninitialized(ex);
+=======
+		ex->ee_len = cpu_to_le16(ext4_ext_get_actual_len(ex)
+				+ ext4_ext_get_actual_len(ex + 1));
+>>>>>>> refs/remotes/origin/master
 
 		if (ex + 1 < EXT_LAST_EXTENT(eh)) {
 			len = (EXT_LAST_EXTENT(eh) - ex - 1)
@@ -2384,6 +2771,7 @@ static int ext4_ext_try_to_merge_right(struct inode *inode,
 }
 
 /*
+<<<<<<< HEAD
  * This function tries to merge the @ex extent to neighbours in the tree.
  * return 1 if merge left else 0.
  */
@@ -2396,6 +2784,65 @@ static int ext4_ext_try_to_merge(struct inode *inode,
 	int ret = 0;
 
 	depth = ext_depth(inode);
+=======
+ * This function does a very simple check to see if we can collapse
+ * an extent tree with a single extent tree leaf block into the inode.
+ */
+static void ext4_ext_try_to_merge_up(handle_t *handle,
+				     struct inode *inode,
+				     struct ext4_ext_path *path)
+{
+	size_t s;
+	unsigned max_root = ext4_ext_space_root(inode, 0);
+	ext4_fsblk_t blk;
+
+	if ((path[0].p_depth != 1) ||
+	    (le16_to_cpu(path[0].p_hdr->eh_entries) != 1) ||
+	    (le16_to_cpu(path[1].p_hdr->eh_entries) > max_root))
+		return;
+
+	/*
+	 * We need to modify the block allocation bitmap and the block
+	 * group descriptor to release the extent tree block.  If we
+	 * can't get the journal credits, give up.
+	 */
+	if (ext4_journal_extend(handle, 2))
+		return;
+
+	/*
+	 * Copy the extent data up to the inode
+	 */
+	blk = ext4_idx_pblock(path[0].p_idx);
+	s = le16_to_cpu(path[1].p_hdr->eh_entries) *
+		sizeof(struct ext4_extent_idx);
+	s += sizeof(struct ext4_extent_header);
+
+	memcpy(path[0].p_hdr, path[1].p_hdr, s);
+	path[0].p_depth = 0;
+	path[0].p_ext = EXT_FIRST_EXTENT(path[0].p_hdr) +
+		(path[1].p_ext - EXT_FIRST_EXTENT(path[1].p_hdr));
+	path[0].p_hdr->eh_max = cpu_to_le16(max_root);
+
+	brelse(path[1].p_bh);
+	ext4_free_blocks(handle, inode, NULL, blk, 1,
+			 EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET |
+			 EXT4_FREE_BLOCKS_RESERVE);
+}
+
+/*
+ * This function tries to merge the @ex extent to neighbours in the tree.
+ * return 1 if merge left else 0.
+ */
+static void ext4_ext_try_to_merge(handle_t *handle,
+				  struct inode *inode,
+				  struct ext4_ext_path *path,
+				  struct ext4_extent *ex) {
+	struct ext4_extent_header *eh;
+	unsigned int depth;
+	int merge_done = 0;
+
+	depth = ext_depth(inode);
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(path[depth].p_hdr == NULL);
 	eh = path[depth].p_hdr;
 
@@ -2403,9 +2850,15 @@ static int ext4_ext_try_to_merge(struct inode *inode,
 		merge_done = ext4_ext_try_to_merge_right(inode, path, ex - 1);
 
 	if (!merge_done)
+<<<<<<< HEAD
 		ret = ext4_ext_try_to_merge_right(inode, path, ex);
 
 	return ret;
+=======
+		(void) ext4_ext_try_to_merge_right(inode, path, ex);
+
+	ext4_ext_try_to_merge_up(handle, inode, path);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2430,8 +2883,12 @@ static unsigned int ext4_ext_check_overlap(struct ext4_sb_info *sbi,
 	depth = ext_depth(inode);
 	if (!path[depth].p_ext)
 		goto out;
+<<<<<<< HEAD
 	b2 = le32_to_cpu(path[depth].p_ext->ee_block);
 	b2 &= ~(sbi->s_cluster_ratio - 1);
+=======
+	b2 = EXT4_LBLK_CMASK(sbi, le32_to_cpu(path[depth].p_ext->ee_block));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * get the next allocated block if the extent in the path
@@ -2441,7 +2898,11 @@ static unsigned int ext4_ext_check_overlap(struct ext4_sb_info *sbi,
 		b2 = ext4_ext_next_allocated_block(path);
 		if (b2 == EXT_MAX_BLOCKS)
 			goto out;
+<<<<<<< HEAD
 		b2 &= ~(sbi->s_cluster_ratio - 1);
+=======
+		b2 = EXT4_LBLK_CMASK(sbi, b2);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* check for wrap through zero on extent logical start block*/
@@ -2468,7 +2929,11 @@ out:
  */
 int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
 				struct ext4_ext_path *path,
+<<<<<<< HEAD
 				struct ext4_extent *newext, int flag)
+=======
+				struct ext4_extent *newext, int gb_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ext4_extent_header *eh;
 	struct ext4_extent *ex, *fex;
@@ -2476,8 +2941,12 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
 	struct ext4_ext_path *npath = NULL;
 	int depth, len, err;
 	ext4_lblk_t next;
+<<<<<<< HEAD
 	unsigned uninitialized = 0;
 	int flags = 0;
+=======
+	int mb_flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(ext4_ext_get_actual_len(newext) == 0)) {
 		EXT4_ERROR_INODE(inode, "ext4_ext_get_actual_len(newext) == 0");
@@ -2485,12 +2954,17 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
 	}
 	depth = ext_depth(inode);
 	ex = path[depth].p_ext;
+<<<<<<< HEAD
+=======
+	eh = path[depth].p_hdr;
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(path[depth].p_hdr == NULL)) {
 		EXT4_ERROR_INODE(inode, "path[%d].p_hdr == NULL", depth);
 		return -EIO;
 	}
 
 	/* try to insert block into found extent and return */
+<<<<<<< HEAD
 	if (ex && !(flag & EXT4_GET_BLOCKS_PRE_IO)
 		&& ext4_can_extents_be_merged(inode, ex, newext)) {
 		ext_debug("append [%d]%d block to %u:[%d]%d (from %llu)\n",
@@ -2518,6 +2992,76 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
 		eh = path[depth].p_hdr;
 		nearex = ex;
 		goto merge;
+=======
+	if (ex && !(gb_flags & EXT4_GET_BLOCKS_PRE_IO)) {
+
+		/*
+		 * Try to see whether we should rather test the extent on
+		 * right from ex, or from the left of ex. This is because
+		 * ext4_ext_find_extent() can return either extent on the
+		 * left, or on the right from the searched position. This
+		 * will make merging more effective.
+		 */
+		if (ex < EXT_LAST_EXTENT(eh) &&
+		    (le32_to_cpu(ex->ee_block) +
+		    ext4_ext_get_actual_len(ex) <
+		    le32_to_cpu(newext->ee_block))) {
+			ex += 1;
+			goto prepend;
+		} else if ((ex > EXT_FIRST_EXTENT(eh)) &&
+			   (le32_to_cpu(newext->ee_block) +
+			   ext4_ext_get_actual_len(newext) <
+			   le32_to_cpu(ex->ee_block)))
+			ex -= 1;
+
+		/* Try to append newex to the ex */
+		if (ext4_can_extents_be_merged(inode, ex, newext)) {
+			ext_debug("append [%d]%d block to %u:[%d]%d"
+				  "(from %llu)\n",
+				  ext4_ext_is_uninitialized(newext),
+				  ext4_ext_get_actual_len(newext),
+				  le32_to_cpu(ex->ee_block),
+				  ext4_ext_is_uninitialized(ex),
+				  ext4_ext_get_actual_len(ex),
+				  ext4_ext_pblock(ex));
+			err = ext4_ext_get_access(handle, inode,
+						  path + depth);
+			if (err)
+				return err;
+
+			ex->ee_len = cpu_to_le16(ext4_ext_get_actual_len(ex)
+					+ ext4_ext_get_actual_len(newext));
+			eh = path[depth].p_hdr;
+			nearex = ex;
+			goto merge;
+		}
+
+prepend:
+		/* Try to prepend newex to the ex */
+		if (ext4_can_extents_be_merged(inode, newext, ex)) {
+			ext_debug("prepend %u[%d]%d block to %u:[%d]%d"
+				  "(from %llu)\n",
+				  le32_to_cpu(newext->ee_block),
+				  ext4_ext_is_uninitialized(newext),
+				  ext4_ext_get_actual_len(newext),
+				  le32_to_cpu(ex->ee_block),
+				  ext4_ext_is_uninitialized(ex),
+				  ext4_ext_get_actual_len(ex),
+				  ext4_ext_pblock(ex));
+			err = ext4_ext_get_access(handle, inode,
+						  path + depth);
+			if (err)
+				return err;
+
+			ex->ee_block = newext->ee_block;
+			ext4_ext_store_pblock(ex, ext4_ext_pblock(newext));
+			ex->ee_len = cpu_to_le16(ext4_ext_get_actual_len(ex)
+					+ ext4_ext_get_actual_len(newext));
+			eh = path[depth].p_hdr;
+			nearex = ex;
+			goto merge;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	depth = ext_depth(inode);
@@ -2533,7 +3077,11 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
 	if (next != EXT_MAX_BLOCKS) {
 		ext_debug("next leaf block - %u\n", next);
 		BUG_ON(npath != NULL);
+<<<<<<< HEAD
 		npath = ext4_ext_find_extent(inode, next, NULL);
+=======
+		npath = ext4_ext_find_extent(inode, next, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(npath))
 			return PTR_ERR(npath);
 		BUG_ON(npath->p_depth != path->p_depth);
@@ -2552,9 +3100,16 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
 	 * There is no free space in the found leaf.
 	 * We're gonna add a new leaf in the tree.
 	 */
+<<<<<<< HEAD
 	if (flag & EXT4_GET_BLOCKS_PUNCH_OUT_EXT)
 		flags = EXT4_MB_USE_ROOT_BLOCKS;
 	err = ext4_ext_create_new_leaf(handle, inode, flags, path, newext);
+=======
+	if (gb_flags & EXT4_GET_BLOCKS_METADATA_NOFAIL)
+		mb_flags = EXT4_MB_USE_RESERVED;
+	err = ext4_ext_create_new_leaf(handle, inode, mb_flags, gb_flags,
+				       path, newext);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto cleanup;
 	depth = ext_depth(inode);
@@ -2619,24 +3174,36 @@ has_space:
 	nearex->ee_len = newext->ee_len;
 
 merge:
+<<<<<<< HEAD
 	/* try to merge extents to the right */
 	if (!(flag & EXT4_GET_BLOCKS_PRE_IO))
 		ext4_ext_try_to_merge(inode, path, nearex);
 
 	/* try to merge extents to the left */
+=======
+	/* try to merge extents */
+	if (!(gb_flags & EXT4_GET_BLOCKS_PRE_IO))
+		ext4_ext_try_to_merge(handle, inode, path, nearex);
+
+>>>>>>> refs/remotes/origin/master
 
 	/* time to correct all indexes above */
 	err = ext4_ext_correct_indexes(handle, inode, path);
 	if (err)
 		goto cleanup;
 
+<<<<<<< HEAD
 	err = ext4_ext_dirty(handle, inode, path + depth);
+=======
+	err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+>>>>>>> refs/remotes/origin/master
 
 cleanup:
 	if (npath) {
 		ext4_ext_drop_refs(npath);
 		kfree(npath);
 	}
+<<<<<<< HEAD
 	ext4_ext_invalidate_cache(inode);
 	return err;
 }
@@ -2654,14 +3221,44 @@ static int ext4_ext_walk_space(struct inode *inode, ext4_lblk_t block,
 
 	BUG_ON(func == NULL);
 	BUG_ON(inode == NULL);
+=======
+	return err;
+}
+
+static int ext4_fill_fiemap_extents(struct inode *inode,
+				    ext4_lblk_t block, ext4_lblk_t num,
+				    struct fiemap_extent_info *fieinfo)
+{
+	struct ext4_ext_path *path = NULL;
+	struct ext4_extent *ex;
+	struct extent_status es;
+	ext4_lblk_t next, next_del, start = 0, end = 0;
+	ext4_lblk_t last = block + num;
+	int exists, depth = 0, err = 0;
+	unsigned int flags = 0;
+	unsigned char blksize_bits = inode->i_sb->s_blocksize_bits;
+>>>>>>> refs/remotes/origin/master
 
 	while (block < last && block != EXT_MAX_BLOCKS) {
 		num = last - block;
 		/* find extent for this block */
 		down_read(&EXT4_I(inode)->i_data_sem);
+<<<<<<< HEAD
 		path = ext4_ext_find_extent(inode, block, path);
 		up_read(&EXT4_I(inode)->i_data_sem);
 		if (IS_ERR(path)) {
+=======
+
+		if (path && ext_depth(inode) != depth) {
+			/* depth was changed. we have to realloc path */
+			kfree(path);
+			path = NULL;
+		}
+
+		path = ext4_ext_find_extent(inode, block, path, 0);
+		if (IS_ERR(path)) {
+			up_read(&EXT4_I(inode)->i_data_sem);
+>>>>>>> refs/remotes/origin/master
 			err = PTR_ERR(path);
 			path = NULL;
 			break;
@@ -2669,13 +3266,23 @@ static int ext4_ext_walk_space(struct inode *inode, ext4_lblk_t block,
 
 		depth = ext_depth(inode);
 		if (unlikely(path[depth].p_hdr == NULL)) {
+<<<<<<< HEAD
+=======
+			up_read(&EXT4_I(inode)->i_data_sem);
+>>>>>>> refs/remotes/origin/master
 			EXT4_ERROR_INODE(inode, "path[%d].p_hdr == NULL", depth);
 			err = -EIO;
 			break;
 		}
 		ex = path[depth].p_ext;
 		next = ext4_ext_next_allocated_block(path);
+<<<<<<< HEAD
 
+=======
+		ext4_ext_drop_refs(path);
+
+		flags = 0;
+>>>>>>> refs/remotes/origin/master
 		exists = 0;
 		if (!ex) {
 			/* there is no extent yet, so try to allocate
@@ -2712,6 +3319,7 @@ static int ext4_ext_walk_space(struct inode *inode, ext4_lblk_t block,
 		BUG_ON(end <= start);
 
 		if (!exists) {
+<<<<<<< HEAD
 			cbex.ec_block = start;
 			cbex.ec_len = end - start;
 			cbex.ec_start = 0;
@@ -2746,6 +3354,77 @@ static int ext4_ext_walk_space(struct inode *inode, ext4_lblk_t block,
 		}
 
 		block = cbex.ec_block + cbex.ec_len;
+=======
+			es.es_lblk = start;
+			es.es_len = end - start;
+			es.es_pblk = 0;
+		} else {
+			es.es_lblk = le32_to_cpu(ex->ee_block);
+			es.es_len = ext4_ext_get_actual_len(ex);
+			es.es_pblk = ext4_ext_pblock(ex);
+			if (ext4_ext_is_uninitialized(ex))
+				flags |= FIEMAP_EXTENT_UNWRITTEN;
+		}
+
+		/*
+		 * Find delayed extent and update es accordingly. We call
+		 * it even in !exists case to find out whether es is the
+		 * last existing extent or not.
+		 */
+		next_del = ext4_find_delayed_extent(inode, &es);
+		if (!exists && next_del) {
+			exists = 1;
+			flags |= (FIEMAP_EXTENT_DELALLOC |
+				  FIEMAP_EXTENT_UNKNOWN);
+		}
+		up_read(&EXT4_I(inode)->i_data_sem);
+
+		if (unlikely(es.es_len == 0)) {
+			EXT4_ERROR_INODE(inode, "es.es_len == 0");
+			err = -EIO;
+			break;
+		}
+
+		/*
+		 * This is possible iff next == next_del == EXT_MAX_BLOCKS.
+		 * we need to check next == EXT_MAX_BLOCKS because it is
+		 * possible that an extent is with unwritten and delayed
+		 * status due to when an extent is delayed allocated and
+		 * is allocated by fallocate status tree will track both of
+		 * them in a extent.
+		 *
+		 * So we could return a unwritten and delayed extent, and
+		 * its block is equal to 'next'.
+		 */
+		if (next == next_del && next == EXT_MAX_BLOCKS) {
+			flags |= FIEMAP_EXTENT_LAST;
+			if (unlikely(next_del != EXT_MAX_BLOCKS ||
+				     next != EXT_MAX_BLOCKS)) {
+				EXT4_ERROR_INODE(inode,
+						 "next extent == %u, next "
+						 "delalloc extent = %u",
+						 next, next_del);
+				err = -EIO;
+				break;
+			}
+		}
+
+		if (exists) {
+			err = fiemap_fill_next_extent(fieinfo,
+				(__u64)es.es_lblk << blksize_bits,
+				(__u64)es.es_pblk << blksize_bits,
+				(__u64)es.es_len << blksize_bits,
+				flags);
+			if (err < 0)
+				break;
+			if (err == 1) {
+				err = 0;
+				break;
+			}
+		}
+
+		block = es.es_lblk + es.es_len;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (path) {
@@ -2756,6 +3435,7 @@ static int ext4_ext_walk_space(struct inode *inode, ext4_lblk_t block,
 	return err;
 }
 
+<<<<<<< HEAD
 static void
 ext4_ext_put_in_cache(struct inode *inode, ext4_lblk_t block,
 			__u32 len, ext4_fsblk_t start)
@@ -2771,6 +3451,8 @@ ext4_ext_put_in_cache(struct inode *inode, ext4_lblk_t block,
 	spin_unlock(&EXT4_I(inode)->i_block_reservation_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ext4_ext_put_gap_in_cache:
  * calculate boundaries of the gap that the requested block fits into
@@ -2781,15 +3463,27 @@ ext4_ext_put_gap_in_cache(struct inode *inode, struct ext4_ext_path *path,
 				ext4_lblk_t block)
 {
 	int depth = ext_depth(inode);
+<<<<<<< HEAD
 	unsigned long len;
 	ext4_lblk_t lblock;
+=======
+	unsigned long len = 0;
+	ext4_lblk_t lblock = 0;
+>>>>>>> refs/remotes/origin/master
 	struct ext4_extent *ex;
 
 	ex = path[depth].p_ext;
 	if (ex == NULL) {
+<<<<<<< HEAD
 		/* there is no extent yet, so gap is [0;-] */
 		lblock = 0;
 		len = EXT_MAX_BLOCKS;
+=======
+		/*
+		 * there is no extent yet, so gap is [0;-] and we
+		 * don't cache it
+		 */
+>>>>>>> refs/remotes/origin/master
 		ext_debug("cache gap(whole file):");
 	} else if (block < le32_to_cpu(ex->ee_block)) {
 		lblock = block;
@@ -2798,6 +3492,12 @@ ext4_ext_put_gap_in_cache(struct inode *inode, struct ext4_ext_path *path,
 				block,
 				le32_to_cpu(ex->ee_block),
 				 ext4_ext_get_actual_len(ex));
+<<<<<<< HEAD
+=======
+		if (!ext4_find_delalloc_range(inode, lblock, lblock + len - 1))
+			ext4_es_insert_extent(inode, lblock, len, ~0,
+					      EXTENT_STATUS_HOLE);
+>>>>>>> refs/remotes/origin/master
 	} else if (block >= le32_to_cpu(ex->ee_block)
 			+ ext4_ext_get_actual_len(ex)) {
 		ext4_lblk_t next;
@@ -2811,12 +3511,20 @@ ext4_ext_put_gap_in_cache(struct inode *inode, struct ext4_ext_path *path,
 				block);
 		BUG_ON(next == lblock);
 		len = next - lblock;
+<<<<<<< HEAD
 	} else {
 		lblock = len = 0;
+=======
+		if (!ext4_find_delalloc_range(inode, lblock, lblock + len - 1))
+			ext4_es_insert_extent(inode, lblock, len, ~0,
+					      EXTENT_STATUS_HOLE);
+	} else {
+>>>>>>> refs/remotes/origin/master
 		BUG();
 	}
 
 	ext_debug(" -> %u:%lu\n", lblock, len);
+<<<<<<< HEAD
 	ext4_ext_put_in_cache(inode, lblock, len, 0);
 }
 
@@ -2897,6 +3605,10 @@ ext4_ext_in_cache(struct inode *inode, ext4_lblk_t block,
 }
 
 
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * ext4_ext_rm_idx:
  * removes index from the index block.
@@ -2986,6 +3698,7 @@ int ext4_ext_calc_credits_for_single_extent(struct inode *inode, int nrblocks,
 }
 
 /*
+<<<<<<< HEAD
  * How many index/leaf blocks need to change/allocate to modify nrblocks?
  *
  * if nrblocks are fit in a single extent (chunk flag is 1), then
@@ -3002,6 +3715,28 @@ int ext4_ext_index_trans_blocks(struct inode *inode, int nrblocks, int chunk)
 	int depth = ext_depth(inode);
 
 	if (chunk)
+=======
+ * How many index/leaf blocks need to change/allocate to add @extents extents?
+ *
+ * If we add a single extent, then in the worse case, each tree level
+ * index/leaf need to be changed in case of the tree split.
+ *
+ * If more extents are inserted, they could cause the whole tree split more
+ * than once, but this is really rare.
+ */
+int ext4_ext_index_trans_blocks(struct inode *inode, int extents)
+{
+	int index;
+	int depth;
+
+	/* If we are converting the inline data, only one is needed here. */
+	if (ext4_has_inline_data(inode))
+		return 1;
+
+	depth = ext_depth(inode);
+
+	if (extents <= 1)
+>>>>>>> refs/remotes/origin/master
 		index = depth * 2;
 	else
 		index = depth * 3;
@@ -3009,18 +3744,38 @@ int ext4_ext_index_trans_blocks(struct inode *inode, int nrblocks, int chunk)
 	return index;
 }
 
+<<<<<<< HEAD
 static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
 			      struct ext4_extent *ex,
 			      ext4_fsblk_t *partial_cluster,
+=======
+static inline int get_default_free_blocks_flags(struct inode *inode)
+{
+	if (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode))
+		return EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET;
+	else if (ext4_should_journal_data(inode))
+		return EXT4_FREE_BLOCKS_FORGET;
+	return 0;
+}
+
+static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
+			      struct ext4_extent *ex,
+			      long long *partial_cluster,
+>>>>>>> refs/remotes/origin/master
 			      ext4_lblk_t from, ext4_lblk_t to)
 {
 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
 	unsigned short ee_len =  ext4_ext_get_actual_len(ex);
 	ext4_fsblk_t pblk;
+<<<<<<< HEAD
 	int flags = EXT4_FREE_BLOCKS_FORGET;
 
 	if (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode))
 		flags |= EXT4_FREE_BLOCKS_METADATA;
+=======
+	int flags = get_default_free_blocks_flags(inode);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * For bigalloc file systems, we never free a partial cluster
 	 * at the beginning of the extent.  Instead, we make a note
@@ -3037,7 +3792,12 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
 	 * partial cluster here.
 	 */
 	pblk = ext4_ext_pblock(ex) + ee_len - 1;
+<<<<<<< HEAD
 	if (*partial_cluster && (EXT4_B2C(sbi, pblk) != *partial_cluster)) {
+=======
+	if ((*partial_cluster > 0) &&
+	    (EXT4_B2C(sbi, pblk) != *partial_cluster)) {
+>>>>>>> refs/remotes/origin/master
 		ext4_free_blocks(handle, inode, NULL,
 				 EXT4_C2B(sbi, *partial_cluster),
 				 sbi->s_cluster_ratio, flags);
@@ -3063,14 +3823,33 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
 	    && to == le32_to_cpu(ex->ee_block) + ee_len - 1) {
 		/* tail removal */
 		ext4_lblk_t num;
+<<<<<<< HEAD
 
 		num = le32_to_cpu(ex->ee_block) + ee_len - from;
 		pblk = ext4_ext_pblock(ex) + ee_len - num;
 		ext_debug("free last %u blocks starting %llu\n", num, pblk);
+=======
+		unsigned int unaligned;
+
+		num = le32_to_cpu(ex->ee_block) + ee_len - from;
+		pblk = ext4_ext_pblock(ex) + ee_len - num;
+		/*
+		 * Usually we want to free partial cluster at the end of the
+		 * extent, except for the situation when the cluster is still
+		 * used by any other extent (partial_cluster is negative).
+		 */
+		if (*partial_cluster < 0 &&
+		    -(*partial_cluster) == EXT4_B2C(sbi, pblk + num - 1))
+			flags |= EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER;
+
+		ext_debug("free last %u blocks starting %llu partial %lld\n",
+			  num, pblk, *partial_cluster);
+>>>>>>> refs/remotes/origin/master
 		ext4_free_blocks(handle, inode, NULL, pblk, num, flags);
 		/*
 		 * If the block range to be freed didn't start at the
 		 * beginning of a cluster, and we removed the entire
+<<<<<<< HEAD
 		 * extent, save the partial cluster here, since we
 		 * might need to delete if we determine that the
 		 * truncate operation has removed all of the blocks in
@@ -3098,6 +3877,29 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
 				"%u-%u from %u:%u\n",
 				from, to, le32_to_cpu(ex->ee_block), ee_len);
 	}
+=======
+		 * extent and the cluster is not used by any other extent,
+		 * save the partial cluster here, since we might need to
+		 * delete if we determine that the truncate operation has
+		 * removed all of the blocks in the cluster.
+		 *
+		 * On the other hand, if we did not manage to free the whole
+		 * extent, we have to mark the cluster as used (store negative
+		 * cluster number in partial_cluster).
+		 */
+		unaligned = EXT4_PBLK_COFF(sbi, pblk);
+		if (unaligned && (ee_len == num) &&
+		    (*partial_cluster != -((long long)EXT4_B2C(sbi, pblk))))
+			*partial_cluster = EXT4_B2C(sbi, pblk);
+		else if (unaligned)
+			*partial_cluster = -((long long)EXT4_B2C(sbi, pblk));
+		else if (*partial_cluster > 0)
+			*partial_cluster = 0;
+	} else
+		ext4_error(sbi->s_sb, "strange request: removal(2) "
+			   "%u-%u from %u:%u\n",
+			   from, to, le32_to_cpu(ex->ee_block), ee_len);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3110,12 +3912,23 @@ static int ext4_remove_blocks(handle_t *handle, struct inode *inode,
  * @handle: The journal handle
  * @inode:  The files inode
  * @path:   The path to the leaf
+<<<<<<< HEAD
+=======
+ * @partial_cluster: The cluster which we'll have to free if all extents
+ *                   has been released from it. It gets negative in case
+ *                   that the cluster is still used.
+>>>>>>> refs/remotes/origin/master
  * @start:  The first block to remove
  * @end:   The last block to remove
  */
 static int
 ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+<<<<<<< HEAD
 		 struct ext4_ext_path *path, ext4_fsblk_t *partial_cluster,
+=======
+		 struct ext4_ext_path *path,
+		 long long *partial_cluster,
+>>>>>>> refs/remotes/origin/master
 		 ext4_lblk_t start, ext4_lblk_t end)
 {
 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
@@ -3128,6 +3941,10 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
 	unsigned short ex_ee_len;
 	unsigned uninitialized = 0;
 	struct ext4_extent *ex;
+<<<<<<< HEAD
+=======
+	ext4_fsblk_t pblk;
+>>>>>>> refs/remotes/origin/master
 
 	/* the header must be checked already in ext4_ext_remove_space() */
 	ext_debug("truncate since %u in leaf to %u\n", start, end);
@@ -3139,7 +3956,13 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
 		return -EIO;
 	}
 	/* find where to start removing */
+<<<<<<< HEAD
 	ex = EXT_LAST_EXTENT(eh);
+=======
+	ex = path[depth].p_ext;
+	if (!ex)
+		ex = EXT_LAST_EXTENT(eh);
+>>>>>>> refs/remotes/origin/master
 
 	ex_ee_block = le32_to_cpu(ex->ee_block);
 	ex_ee_len = ext4_ext_get_actual_len(ex);
@@ -3166,6 +3989,19 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
 
 		/* If this extent is beyond the end of the hole, skip it */
 		if (end < ex_ee_block) {
+<<<<<<< HEAD
+=======
+			/*
+			 * We're going to skip this extent and move to another,
+			 * so if this extent is not cluster aligned we have
+			 * to mark the current cluster as used to avoid
+			 * accidentally freeing it later on
+			 */
+			pblk = ext4_ext_pblock(ex);
+			if (EXT4_PBLK_COFF(sbi, pblk))
+				*partial_cluster =
+					-((long long)EXT4_B2C(sbi, pblk));
+>>>>>>> refs/remotes/origin/master
 			ex--;
 			ex_ee_block = le32_to_cpu(ex->ee_block);
 			ex_ee_len = ext4_ext_get_actual_len(ex);
@@ -3241,7 +4077,11 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
 					sizeof(struct ext4_extent));
 			}
 			le16_add_cpu(&eh->eh_entries, -1);
+<<<<<<< HEAD
 		} else
+=======
+		} else if (*partial_cluster > 0)
+>>>>>>> refs/remotes/origin/master
 			*partial_cluster = 0;
 
 		err = ext4_ext_dirty(handle, inode, path + depth);
@@ -3259,6 +4099,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
 		err = ext4_ext_correct_indexes(handle, inode, path);
 
 	/*
+<<<<<<< HEAD
 	 * If there is still a entry in the leaf node, check to see if
 	 * it references the partial cluster.  This is the only place
 	 * where it could; if it doesn't, we can free the cluster.
@@ -3270,6 +4111,15 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
 
 		if (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode))
 			flags |= EXT4_FREE_BLOCKS_METADATA;
+=======
+	 * Free the partial cluster only if the current extent does not
+	 * reference it. Otherwise we might free used cluster.
+	 */
+	if (*partial_cluster > 0 &&
+	    (EXT4_B2C(sbi, ext4_ext_pblock(ex) + ex_ee_len - 1) !=
+	     *partial_cluster)) {
+		int flags = get_default_free_blocks_flags(inode);
+>>>>>>> refs/remotes/origin/master
 
 		ext4_free_blocks(handle, inode, NULL,
 				 EXT4_C2B(sbi, *partial_cluster),
@@ -3307,27 +4157,46 @@ ext4_ext_more_to_rm(struct ext4_ext_path *path)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
 				 ext4_lblk_t end)
+=======
+int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+			  ext4_lblk_t end)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = inode->i_sb;
 	int depth = ext_depth(inode);
 	struct ext4_ext_path *path = NULL;
+<<<<<<< HEAD
 	ext4_fsblk_t partial_cluster = 0;
 	handle_t *handle;
 	int i = 0, err;
+=======
+	long long partial_cluster = 0;
+	handle_t *handle;
+	int i = 0, err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ext_debug("truncate since %u to %u\n", start, end);
 
 	/* probably first extent we're gonna free will be last in block */
+<<<<<<< HEAD
 	handle = ext4_journal_start(inode, depth + 1);
+=======
+	handle = ext4_journal_start(inode, EXT4_HT_TRUNCATE, depth + 1);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(handle))
 		return PTR_ERR(handle);
 
 again:
+<<<<<<< HEAD
 	ext4_ext_invalidate_cache(inode);
 
 	trace_ext4_ext_remove_space(inode, start, depth);
+=======
+	trace_ext4_ext_remove_space(inode, start, end, depth);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check if we are removing extents inside the extent tree. If that
@@ -3341,18 +4210,35 @@ again:
 		ext4_lblk_t ee_block;
 
 		/* find extent for this block */
+<<<<<<< HEAD
 		path = ext4_ext_find_extent(inode, end, NULL);
+=======
+		path = ext4_ext_find_extent(inode, end, NULL, EXT4_EX_NOCACHE);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(path)) {
 			ext4_journal_stop(handle);
 			return PTR_ERR(path);
 		}
 		depth = ext_depth(inode);
+<<<<<<< HEAD
 		ex = path[depth].p_ext;
 		if (!ex) {
 			ext4_ext_drop_refs(path);
 			kfree(path);
 			path = NULL;
 			goto cont;
+=======
+		/* Leaf not may not exist only if inode has no blocks at all */
+		ex = path[depth].p_ext;
+		if (!ex) {
+			if (depth) {
+				EXT4_ERROR_INODE(inode,
+						 "path[%d].p_hdr == NULL",
+						 depth);
+				err = -EIO;
+			}
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		ee_block = le32_to_cpu(ex->ee_block);
@@ -3373,19 +4259,34 @@ again:
 
 			/*
 			 * Split the extent in two so that 'end' is the last
+<<<<<<< HEAD
 			 * block in the first new extent
 			 */
 			err = ext4_split_extent_at(handle, inode, path,
 						end + 1, split_flag,
 						EXT4_GET_BLOCKS_PRE_IO |
 						EXT4_GET_BLOCKS_PUNCH_OUT_EXT);
+=======
+			 * block in the first new extent. Also we should not
+			 * fail removing space due to ENOSPC so try to use
+			 * reserved block if that happens.
+			 */
+			err = ext4_split_extent_at(handle, inode, path,
+					end + 1, split_flag,
+					EXT4_EX_NOCACHE |
+					EXT4_GET_BLOCKS_PRE_IO |
+					EXT4_GET_BLOCKS_METADATA_NOFAIL);
+>>>>>>> refs/remotes/origin/master
 
 			if (err < 0)
 				goto out;
 		}
 	}
+<<<<<<< HEAD
 cont:
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We start scanning from right side, freeing all the blocks
 	 * after i_size and walking into the tree depth-wise.
@@ -3407,7 +4308,11 @@ cont:
 		path[0].p_hdr = ext_inode_hdr(inode);
 		i = 0;
 
+<<<<<<< HEAD
 		if (ext4_ext_check(inode, path[0].p_hdr, depth)) {
+=======
+		if (ext4_ext_check(inode, path[0].p_hdr, depth, 0)) {
+>>>>>>> refs/remotes/origin/master
 			err = -EIO;
 			goto out;
 		}
@@ -3454,21 +4359,38 @@ cont:
 			ext_debug("move to level %d (block %llu)\n",
 				  i + 1, ext4_idx_pblock(path[i].p_idx));
 			memset(path + i + 1, 0, sizeof(*path));
+<<<<<<< HEAD
 			bh = sb_bread(sb, ext4_idx_pblock(path[i].p_idx));
 			if (!bh) {
 				/* should we reset i_size? */
 				err = -EIO;
 				break;
 			}
+=======
+			bh = read_extent_tree_block(inode,
+				ext4_idx_pblock(path[i].p_idx), depth - i - 1,
+				EXT4_EX_NOCACHE);
+			if (IS_ERR(bh)) {
+				/* should we reset i_size? */
+				err = PTR_ERR(bh);
+				break;
+			}
+			/* Yield here to deal with large extent trees.
+			 * Should be a no-op if we did IO above. */
+			cond_resched();
+>>>>>>> refs/remotes/origin/master
 			if (WARN_ON(i + 1 > depth)) {
 				err = -EIO;
 				break;
 			}
+<<<<<<< HEAD
 			if (ext4_ext_check(inode, ext_block_hdr(bh),
 							depth - i - 1)) {
 				err = -EIO;
 				break;
 			}
+=======
+>>>>>>> refs/remotes/origin/master
 			path[i + 1].p_bh = bh;
 
 			/* save actual number of indexes since this
@@ -3491,17 +4413,27 @@ cont:
 		}
 	}
 
+<<<<<<< HEAD
 	trace_ext4_ext_remove_space_done(inode, start, depth, partial_cluster,
 			path->p_hdr->eh_entries);
+=======
+	trace_ext4_ext_remove_space_done(inode, start, end, depth,
+			partial_cluster, path->p_hdr->eh_entries);
+>>>>>>> refs/remotes/origin/master
 
 	/* If we still have something in the partial cluster and we have removed
 	 * even the first extent, then we should free the blocks in the partial
 	 * cluster as well. */
+<<<<<<< HEAD
 	if (partial_cluster && path->p_hdr->eh_entries == 0) {
 		int flags = EXT4_FREE_BLOCKS_FORGET;
 
 		if (S_ISDIR(inode->i_mode) || S_ISLNK(inode->i_mode))
 			flags |= EXT4_FREE_BLOCKS_METADATA;
+=======
+	if (partial_cluster > 0 && path->p_hdr->eh_entries == 0) {
+		int flags = get_default_free_blocks_flags(inode);
+>>>>>>> refs/remotes/origin/master
 
 		ext4_free_blocks(handle, inode, NULL,
 				 EXT4_C2B(EXT4_SB(sb), partial_cluster),
@@ -3586,6 +4518,26 @@ void ext4_ext_release(struct super_block *sb)
 #endif
 }
 
+<<<<<<< HEAD
+=======
+static int ext4_zeroout_es(struct inode *inode, struct ext4_extent *ex)
+{
+	ext4_lblk_t  ee_block;
+	ext4_fsblk_t ee_pblock;
+	unsigned int ee_len;
+
+	ee_block  = le32_to_cpu(ex->ee_block);
+	ee_len    = ext4_ext_get_actual_len(ex);
+	ee_pblock = ext4_ext_pblock(ex);
+
+	if (ee_len == 0)
+		return 0;
+
+	return ext4_es_insert_extent(inode, ee_block, ee_len, ee_pblock,
+				     EXTENT_STATUS_WRITTEN);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* FIXME!! we need to try to merge to left or right after zero-out  */
 static int ext4_ext_zeroout(struct inode *inode, struct ext4_extent *ex)
 {
@@ -3633,7 +4585,11 @@ static int ext4_split_extent_at(handle_t *handle,
 {
 	ext4_fsblk_t newblock;
 	ext4_lblk_t ee_block;
+<<<<<<< HEAD
 	struct ext4_extent *ex, newex, orig_ex;
+=======
+	struct ext4_extent *ex, newex, orig_ex, zero_ex;
+>>>>>>> refs/remotes/origin/master
 	struct ext4_extent *ex2 = NULL;
 	unsigned int ee_len, depth;
 	int err = 0;
@@ -3653,6 +4609,13 @@ static int ext4_split_extent_at(handle_t *handle,
 	newblock = split - ee_block + ext4_ext_pblock(ex);
 
 	BUG_ON(split < ee_block || split >= (ee_block + ee_len));
+<<<<<<< HEAD
+=======
+	BUG_ON(!ext4_ext_is_uninitialized(ex) &&
+	       split_flag & (EXT4_EXT_MAY_ZEROOUT |
+			     EXT4_EXT_MARK_UNINIT1 |
+			     EXT4_EXT_MARK_UNINIT2));
+>>>>>>> refs/remotes/origin/master
 
 	err = ext4_ext_get_access(handle, inode, path + depth);
 	if (err)
@@ -3670,9 +4633,15 @@ static int ext4_split_extent_at(handle_t *handle,
 			ext4_ext_mark_initialized(ex);
 
 		if (!(flags & EXT4_GET_BLOCKS_PRE_IO))
+<<<<<<< HEAD
 			ext4_ext_try_to_merge(inode, path, ex);
 
 		err = ext4_ext_dirty(handle, inode, path + depth);
+=======
+			ext4_ext_try_to_merge(handle, inode, path, ex);
+
+		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -3700,19 +4669,56 @@ static int ext4_split_extent_at(handle_t *handle,
 	err = ext4_ext_insert_extent(handle, inode, path, &newex, flags);
 	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
+<<<<<<< HEAD
 			if (split_flag & EXT4_EXT_DATA_VALID1)
 				err = ext4_ext_zeroout(inode, ex2);
 			else
 				err = ext4_ext_zeroout(inode, ex);
 		} else
 			err = ext4_ext_zeroout(inode, &orig_ex);
+=======
+			if (split_flag & EXT4_EXT_DATA_VALID1) {
+				err = ext4_ext_zeroout(inode, ex2);
+				zero_ex.ee_block = ex2->ee_block;
+				zero_ex.ee_len = cpu_to_le16(
+						ext4_ext_get_actual_len(ex2));
+				ext4_ext_store_pblock(&zero_ex,
+						      ext4_ext_pblock(ex2));
+			} else {
+				err = ext4_ext_zeroout(inode, ex);
+				zero_ex.ee_block = ex->ee_block;
+				zero_ex.ee_len = cpu_to_le16(
+						ext4_ext_get_actual_len(ex));
+				ext4_ext_store_pblock(&zero_ex,
+						      ext4_ext_pblock(ex));
+			}
+		} else {
+			err = ext4_ext_zeroout(inode, &orig_ex);
+			zero_ex.ee_block = orig_ex.ee_block;
+			zero_ex.ee_len = cpu_to_le16(
+						ext4_ext_get_actual_len(&orig_ex));
+			ext4_ext_store_pblock(&zero_ex,
+					      ext4_ext_pblock(&orig_ex));
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (err)
 			goto fix_extent_len;
 		/* update the extent length and mark as initialized */
 		ex->ee_len = cpu_to_le16(ee_len);
+<<<<<<< HEAD
 		ext4_ext_try_to_merge(inode, path, ex);
 		err = ext4_ext_dirty(handle, inode, path + depth);
+=======
+		ext4_ext_try_to_merge(handle, inode, path, ex);
+		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+		if (err)
+			goto fix_extent_len;
+
+		/* update extent status tree */
+		err = ext4_zeroout_es(inode, &zero_ex);
+
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	} else if (err)
 		goto fix_extent_len;
@@ -3731,7 +4737,11 @@ fix_extent_len:
  * ext4_split_extents() splits an extent and mark extent which is covered
  * by @map as split_flags indicates
  *
+<<<<<<< HEAD
  * It may result in splitting the extent into multiple extents (upto three)
+=======
+ * It may result in splitting the extent into multiple extents (up to three)
+>>>>>>> refs/remotes/origin/master
  * There are three possibilities:
  *   a> There is no split required
  *   b> Splits in two extents: Split is happening at either end of the extent
@@ -3774,6 +4784,7 @@ static int ext4_split_extent(handle_t *handle,
 	} else {
 		allocated = ee_len - (map->m_lblk - ee_block);
 	}
+<<<<<<< HEAD
 
 	ext4_ext_drop_refs(path);
 	path = ext4_ext_find_extent(inode, map->m_lblk, path);
@@ -3787,6 +4798,28 @@ static int ext4_split_extent(handle_t *handle,
 			split_flag1 |= EXT4_EXT_MARK_UNINIT1;
 		if (split_flag & EXT4_EXT_MARK_UNINIT2)
 			split_flag1 |= EXT4_EXT_MARK_UNINIT2;
+=======
+	/*
+	 * Update path is required because previous ext4_split_extent_at() may
+	 * result in split of original leaf or extent zeroout.
+	 */
+	ext4_ext_drop_refs(path);
+	path = ext4_ext_find_extent(inode, map->m_lblk, path, 0);
+	if (IS_ERR(path))
+		return PTR_ERR(path);
+	depth = ext_depth(inode);
+	ex = path[depth].p_ext;
+	uninitialized = ext4_ext_is_uninitialized(ex);
+	split_flag1 = 0;
+
+	if (map->m_lblk >= ee_block) {
+		split_flag1 = split_flag & EXT4_EXT_DATA_VALID2;
+		if (uninitialized) {
+			split_flag1 |= EXT4_EXT_MARK_UNINIT1;
+			split_flag1 |= split_flag & (EXT4_EXT_MAY_ZEROOUT |
+						     EXT4_EXT_MARK_UNINIT2);
+		}
+>>>>>>> refs/remotes/origin/master
 		err = ext4_split_extent_at(handle, inode, path,
 				map->m_lblk, split_flag1, flags);
 		if (err)
@@ -3798,7 +4831,10 @@ out:
 	return err ? err : allocated;
 }
 
+<<<<<<< HEAD
 #define EXT4_EXT_ZERO_LEN 7
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This function is called by ext4_ext_map_blocks() if someone tries to write
  * to an uninitialized extent. It may result in splitting the uninitialized
@@ -3822,6 +4858,7 @@ out:
 static int ext4_ext_convert_to_initialized(handle_t *handle,
 					   struct inode *inode,
 					   struct ext4_map_blocks *map,
+<<<<<<< HEAD
 					   struct ext4_ext_path *path)
 {
 	struct ext4_extent_header *eh;
@@ -3831,24 +4868,51 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 	ext4_lblk_t ee_block, eof_block;
 	unsigned int ee_len, depth;
 	int allocated;
+=======
+					   struct ext4_ext_path *path,
+					   int flags)
+{
+	struct ext4_sb_info *sbi;
+	struct ext4_extent_header *eh;
+	struct ext4_map_blocks split_map;
+	struct ext4_extent zero_ex;
+	struct ext4_extent *ex, *abut_ex;
+	ext4_lblk_t ee_block, eof_block;
+	unsigned int ee_len, depth, map_len = map->m_len;
+	int allocated = 0, max_zeroout = 0;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	int split_flag = 0;
 
 	ext_debug("ext4_ext_convert_to_initialized: inode %lu, logical"
 		"block %llu, max_blocks %u\n", inode->i_ino,
+<<<<<<< HEAD
 		(unsigned long long)map->m_lblk, map->m_len);
 
 	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
 		inode->i_sb->s_blocksize_bits;
 	if (eof_block < map->m_lblk + map->m_len)
 		eof_block = map->m_lblk + map->m_len;
+=======
+		(unsigned long long)map->m_lblk, map_len);
+
+	sbi = EXT4_SB(inode->i_sb);
+	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
+		inode->i_sb->s_blocksize_bits;
+	if (eof_block < map->m_lblk + map_len)
+		eof_block = map->m_lblk + map_len;
+>>>>>>> refs/remotes/origin/master
 
 	depth = ext_depth(inode);
 	eh = path[depth].p_hdr;
 	ex = path[depth].p_ext;
 	ee_block = le32_to_cpu(ex->ee_block);
 	ee_len = ext4_ext_get_actual_len(ex);
+<<<<<<< HEAD
 	allocated = ee_len - (map->m_lblk - ee_block);
+=======
+	zero_ex.ee_len = 0;
+>>>>>>> refs/remotes/origin/master
 
 	trace_ext4_ext_convert_to_initialized_enter(inode, map, ex);
 
@@ -3858,6 +4922,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 
 	/*
 	 * Attempt to transfer newly initialized blocks from the currently
+<<<<<<< HEAD
 	 * uninitialized extent to its left neighbor. This is much cheaper
 	 * than an insertion followed by a merge as those involve costly
 	 * memmove() calls. This is the common case in steady state for
@@ -3902,11 +4967,54 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 			((prev_lblk + prev_len) == ee_block) &&		/*C2*/
 			((prev_pblk + prev_len) == ee_pblk) &&		/*C3*/
 			(prev_len < (EXT_INIT_MAX_LEN - write_len))) {	/*C4*/
+=======
+	 * uninitialized extent to its neighbor. This is much cheaper
+	 * than an insertion followed by a merge as those involve costly
+	 * memmove() calls. Transferring to the left is the common case in
+	 * steady state for workloads doing fallocate(FALLOC_FL_KEEP_SIZE)
+	 * followed by append writes.
+	 *
+	 * Limitations of the current logic:
+	 *  - L1: we do not deal with writes covering the whole extent.
+	 *    This would require removing the extent if the transfer
+	 *    is possible.
+	 *  - L2: we only attempt to merge with an extent stored in the
+	 *    same extent tree node.
+	 */
+	if ((map->m_lblk == ee_block) &&
+		/* See if we can merge left */
+		(map_len < ee_len) &&		/*L1*/
+		(ex > EXT_FIRST_EXTENT(eh))) {	/*L2*/
+		ext4_lblk_t prev_lblk;
+		ext4_fsblk_t prev_pblk, ee_pblk;
+		unsigned int prev_len;
+
+		abut_ex = ex - 1;
+		prev_lblk = le32_to_cpu(abut_ex->ee_block);
+		prev_len = ext4_ext_get_actual_len(abut_ex);
+		prev_pblk = ext4_ext_pblock(abut_ex);
+		ee_pblk = ext4_ext_pblock(ex);
+
+		/*
+		 * A transfer of blocks from 'ex' to 'abut_ex' is allowed
+		 * upon those conditions:
+		 * - C1: abut_ex is initialized,
+		 * - C2: abut_ex is logically abutting ex,
+		 * - C3: abut_ex is physically abutting ex,
+		 * - C4: abut_ex can receive the additional blocks without
+		 *   overflowing the (initialized) length limit.
+		 */
+		if ((!ext4_ext_is_uninitialized(abut_ex)) &&		/*C1*/
+			((prev_lblk + prev_len) == ee_block) &&		/*C2*/
+			((prev_pblk + prev_len) == ee_pblk) &&		/*C3*/
+			(prev_len < (EXT_INIT_MAX_LEN - map_len))) {	/*C4*/
+>>>>>>> refs/remotes/origin/master
 			err = ext4_ext_get_access(handle, inode, path + depth);
 			if (err)
 				goto out;
 
 			trace_ext4_ext_convert_to_initialized_fastpath(inode,
+<<<<<<< HEAD
 				map, ex, prev_ex);
 
 			/* Shift the start of ex by 'write_len' blocks */
@@ -3929,6 +5037,78 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 			goto out;
 		}
 	}
+=======
+				map, ex, abut_ex);
+
+			/* Shift the start of ex by 'map_len' blocks */
+			ex->ee_block = cpu_to_le32(ee_block + map_len);
+			ext4_ext_store_pblock(ex, ee_pblk + map_len);
+			ex->ee_len = cpu_to_le16(ee_len - map_len);
+			ext4_ext_mark_uninitialized(ex); /* Restore the flag */
+
+			/* Extend abut_ex by 'map_len' blocks */
+			abut_ex->ee_len = cpu_to_le16(prev_len + map_len);
+
+			/* Result: number of initialized blocks past m_lblk */
+			allocated = map_len;
+		}
+	} else if (((map->m_lblk + map_len) == (ee_block + ee_len)) &&
+		   (map_len < ee_len) &&	/*L1*/
+		   ex < EXT_LAST_EXTENT(eh)) {	/*L2*/
+		/* See if we can merge right */
+		ext4_lblk_t next_lblk;
+		ext4_fsblk_t next_pblk, ee_pblk;
+		unsigned int next_len;
+
+		abut_ex = ex + 1;
+		next_lblk = le32_to_cpu(abut_ex->ee_block);
+		next_len = ext4_ext_get_actual_len(abut_ex);
+		next_pblk = ext4_ext_pblock(abut_ex);
+		ee_pblk = ext4_ext_pblock(ex);
+
+		/*
+		 * A transfer of blocks from 'ex' to 'abut_ex' is allowed
+		 * upon those conditions:
+		 * - C1: abut_ex is initialized,
+		 * - C2: abut_ex is logically abutting ex,
+		 * - C3: abut_ex is physically abutting ex,
+		 * - C4: abut_ex can receive the additional blocks without
+		 *   overflowing the (initialized) length limit.
+		 */
+		if ((!ext4_ext_is_uninitialized(abut_ex)) &&		/*C1*/
+		    ((map->m_lblk + map_len) == next_lblk) &&		/*C2*/
+		    ((ee_pblk + ee_len) == next_pblk) &&		/*C3*/
+		    (next_len < (EXT_INIT_MAX_LEN - map_len))) {	/*C4*/
+			err = ext4_ext_get_access(handle, inode, path + depth);
+			if (err)
+				goto out;
+
+			trace_ext4_ext_convert_to_initialized_fastpath(inode,
+				map, ex, abut_ex);
+
+			/* Shift the start of abut_ex by 'map_len' blocks */
+			abut_ex->ee_block = cpu_to_le32(next_lblk - map_len);
+			ext4_ext_store_pblock(abut_ex, next_pblk - map_len);
+			ex->ee_len = cpu_to_le16(ee_len - map_len);
+			ext4_ext_mark_uninitialized(ex); /* Restore the flag */
+
+			/* Extend abut_ex by 'map_len' blocks */
+			abut_ex->ee_len = cpu_to_le16(next_len + map_len);
+
+			/* Result: number of initialized blocks past m_lblk */
+			allocated = map_len;
+		}
+	}
+	if (allocated) {
+		/* Mark the block containing both extents as dirty */
+		ext4_ext_dirty(handle, inode, path + depth);
+
+		/* Update path to point to the right extent */
+		path[depth].p_ext = abut_ex;
+		goto out;
+	} else
+		allocated = ee_len - (map->m_lblk - ee_block);
+>>>>>>> refs/remotes/origin/master
 
 	WARN_ON(map->m_lblk < ee_block);
 	/*
@@ -3937,19 +5117,39 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 	 */
 	split_flag |= ee_block + ee_len <= eof_block ? EXT4_EXT_MAY_ZEROOUT : 0;
 
+<<<<<<< HEAD
 	/* If extent has less than 2*EXT4_EXT_ZERO_LEN zerout directly */
 	if (ee_len <= 2*EXT4_EXT_ZERO_LEN &&
 	    (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
 		err = ext4_ext_zeroout(inode, ex);
 		if (err)
 			goto out;
+=======
+	if (EXT4_EXT_MAY_ZEROOUT & split_flag)
+		max_zeroout = sbi->s_extent_max_zeroout_kb >>
+			(inode->i_sb->s_blocksize_bits - 10);
+
+	/* If extent is less than s_max_zeroout_kb, zeroout directly */
+	if (max_zeroout && (ee_len <= max_zeroout)) {
+		err = ext4_ext_zeroout(inode, ex);
+		if (err)
+			goto out;
+		zero_ex.ee_block = ex->ee_block;
+		zero_ex.ee_len = cpu_to_le16(ext4_ext_get_actual_len(ex));
+		ext4_ext_store_pblock(&zero_ex, ext4_ext_pblock(ex));
+>>>>>>> refs/remotes/origin/master
 
 		err = ext4_ext_get_access(handle, inode, path + depth);
 		if (err)
 			goto out;
 		ext4_ext_mark_initialized(ex);
+<<<<<<< HEAD
 		ext4_ext_try_to_merge(inode, path, ex);
 		err = ext4_ext_dirty(handle, inode, path + depth);
+=======
+		ext4_ext_try_to_merge(handle, inode, path, ex);
+		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -3963,9 +5163,14 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 	split_map.m_lblk = map->m_lblk;
 	split_map.m_len = map->m_len;
 
+<<<<<<< HEAD
 	if (allocated > map->m_len) {
 		if (allocated <= EXT4_EXT_ZERO_LEN &&
 		    (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+=======
+	if (max_zeroout && (allocated > map->m_len)) {
+		if (allocated <= max_zeroout) {
+>>>>>>> refs/remotes/origin/master
 			/* case 3 */
 			zero_ex.ee_block =
 					 cpu_to_le32(map->m_lblk);
@@ -3977,9 +5182,13 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 				goto out;
 			split_map.m_lblk = map->m_lblk;
 			split_map.m_len = allocated;
+<<<<<<< HEAD
 		} else if ((map->m_lblk - ee_block + map->m_len <
 			   EXT4_EXT_ZERO_LEN) &&
 			   (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+=======
+		} else if (map->m_lblk - ee_block + map->m_len < max_zeroout) {
+>>>>>>> refs/remotes/origin/master
 			/* case 2 */
 			if (map->m_lblk != ee_block) {
 				zero_ex.ee_block = ex->ee_block;
@@ -3999,11 +5208,21 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
 	}
 
 	allocated = ext4_split_extent(handle, inode, path,
+<<<<<<< HEAD
 				       &split_map, split_flag, 0);
+=======
+				      &split_map, split_flag, flags);
+>>>>>>> refs/remotes/origin/master
 	if (allocated < 0)
 		err = allocated;
 
 out:
+<<<<<<< HEAD
+=======
+	/* If we have gotten a failure, don't zero out status tree */
+	if (!err)
+		err = ext4_zeroout_es(inode, &zero_ex);
+>>>>>>> refs/remotes/origin/master
 	return err ? err : allocated;
 }
 
@@ -4013,7 +5232,11 @@ out:
  * to an uninitialized extent.
  *
  * Writing to an uninitialized extent may result in splitting the uninitialized
+<<<<<<< HEAD
  * extent into multiple /initialized uninitialized extents (up to three)
+=======
+ * extent into multiple initialized/uninitialized extents (up to three)
+>>>>>>> refs/remotes/origin/master
  * There are three possibilities:
  *   a> There is no split required: Entire extent should be uninitialized
  *   b> Splits in two extents: Write is happening at either end of the extent
@@ -4086,14 +5309,34 @@ static int ext4_convert_unwritten_extents_endio(handle_t *handle,
 		"block %llu, max_blocks %u\n", inode->i_ino,
 		  (unsigned long long)ee_block, ee_len);
 
+<<<<<<< HEAD
 	/* If extent is larger than requested then split is required */
 	if (ee_block != map->m_lblk || ee_len > map->m_len) {
+=======
+	/* If extent is larger than requested it is a clear sign that we still
+	 * have some extent state machine issues left. So extent_split is still
+	 * required.
+	 * TODO: Once all related issues will be fixed this situation should be
+	 * illegal.
+	 */
+	if (ee_block != map->m_lblk || ee_len > map->m_len) {
+#ifdef EXT4_DEBUG
+		ext4_warning("Inode (%ld) finished: extent logical block %llu,"
+			     " len %u; IO logical block %llu, len %u\n",
+			     inode->i_ino, (unsigned long long)ee_block, ee_len,
+			     (unsigned long long)map->m_lblk, map->m_len);
+#endif
+>>>>>>> refs/remotes/origin/master
 		err = ext4_split_unwritten_extents(handle, inode, map, path,
 						   EXT4_GET_BLOCKS_CONVERT);
 		if (err < 0)
 			goto out;
 		ext4_ext_drop_refs(path);
+<<<<<<< HEAD
 		path = ext4_ext_find_extent(inode, map->m_lblk, path);
+=======
+		path = ext4_ext_find_extent(inode, map->m_lblk, path, 0);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(path)) {
 			err = PTR_ERR(path);
 			goto out;
@@ -4111,10 +5354,17 @@ static int ext4_convert_unwritten_extents_endio(handle_t *handle,
 	/* note: ext4_ext_correct_indexes() isn't needed here because
 	 * borders are not changed
 	 */
+<<<<<<< HEAD
 	ext4_ext_try_to_merge(inode, path, ex);
 
 	/* Mark modified extent as dirty */
 	err = ext4_ext_dirty(handle, inode, path + depth);
+=======
+	ext4_ext_try_to_merge(handle, inode, path, ex);
+
+	/* Mark modified extent as dirty */
+	err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+>>>>>>> refs/remotes/origin/master
 out:
 	ext4_ext_show_leaf(inode, path);
 	return err;
@@ -4184,6 +5434,7 @@ out:
 /**
  * ext4_find_delalloc_range: find delayed allocated block in the given range.
  *
+<<<<<<< HEAD
  * Goes through the buffer heads in the range [lblk_start, lblk_end] and returns
  * whether there are any buffers marked for delayed allocation. It returns '1'
  * on the first delalloc'ed buffer head found. If no buffer head in the given
@@ -4293,6 +5544,36 @@ int ext4_find_delalloc_cluster(struct inode *inode, ext4_lblk_t lblk,
 
 	return ext4_find_delalloc_range(inode, lblk_start, lblk_end,
 					search_hint_reverse);
+=======
+ * Return 1 if there is a delalloc block in the range, otherwise 0.
+ */
+int ext4_find_delalloc_range(struct inode *inode,
+			     ext4_lblk_t lblk_start,
+			     ext4_lblk_t lblk_end)
+{
+	struct extent_status es;
+
+	ext4_es_find_delayed_extent_range(inode, lblk_start, lblk_end, &es);
+	if (es.es_len == 0)
+		return 0; /* there is no delay extent in this tree */
+	else if (es.es_lblk <= lblk_start &&
+		 lblk_start < es.es_lblk + es.es_len)
+		return 1;
+	else if (lblk_start <= es.es_lblk && es.es_lblk <= lblk_end)
+		return 1;
+	else
+		return 0;
+}
+
+int ext4_find_delalloc_cluster(struct inode *inode, ext4_lblk_t lblk)
+{
+	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+	ext4_lblk_t lblk_start, lblk_end;
+	lblk_start = EXT4_LBLK_CMASK(sbi, lblk);
+	lblk_end = lblk_start + sbi->s_cluster_ratio - 1;
+
+	return ext4_find_delalloc_range(inode, lblk_start, lblk_end);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -4348,22 +5629,39 @@ get_reserved_cluster_alloc(struct inode *inode, ext4_lblk_t lblk_start,
 	trace_ext4_get_reserved_cluster_alloc(inode, lblk_start, num_blks);
 
 	/* Check towards left side */
+<<<<<<< HEAD
 	c_offset = lblk_start & (sbi->s_cluster_ratio - 1);
 	if (c_offset) {
 		lblk_from = lblk_start & (~(sbi->s_cluster_ratio - 1));
 		lblk_to = lblk_from + c_offset - 1;
 
 		if (ext4_find_delalloc_range(inode, lblk_from, lblk_to, 0))
+=======
+	c_offset = EXT4_LBLK_COFF(sbi, lblk_start);
+	if (c_offset) {
+		lblk_from = EXT4_LBLK_CMASK(sbi, lblk_start);
+		lblk_to = lblk_from + c_offset - 1;
+
+		if (ext4_find_delalloc_range(inode, lblk_from, lblk_to))
+>>>>>>> refs/remotes/origin/master
 			allocated_clusters--;
 	}
 
 	/* Now check towards right. */
+<<<<<<< HEAD
 	c_offset = (lblk_start + num_blks) & (sbi->s_cluster_ratio - 1);
+=======
+	c_offset = EXT4_LBLK_COFF(sbi, lblk_start + num_blks);
+>>>>>>> refs/remotes/origin/master
 	if (allocated_clusters && c_offset) {
 		lblk_from = lblk_start + num_blks;
 		lblk_to = lblk_from + (sbi->s_cluster_ratio - c_offset) - 1;
 
+<<<<<<< HEAD
 		if (ext4_find_delalloc_range(inode, lblk_from, lblk_to, 0))
+=======
+		if (ext4_find_delalloc_range(inode, lblk_from, lblk_to))
+>>>>>>> refs/remotes/origin/master
 			allocated_clusters--;
 	}
 
@@ -4378,7 +5676,11 @@ ext4_ext_handle_uninitialized_extents(handle_t *handle, struct inode *inode,
 {
 	int ret = 0;
 	int err = 0;
+<<<<<<< HEAD
 	ext4_io_end_t *io = EXT4_I(inode)->cur_aio_dio;
+=======
+	ext4_io_end_t *io = ext4_inode_aio(inode);
+>>>>>>> refs/remotes/origin/master
 
 	ext_debug("ext4_ext_handle_uninitialized_extents: inode %lu, logical "
 		  "block %llu, max_blocks %u, flags %x, allocated %u\n",
@@ -4386,13 +5688,29 @@ ext4_ext_handle_uninitialized_extents(handle_t *handle, struct inode *inode,
 		  flags, allocated);
 	ext4_ext_show_leaf(inode, path);
 
+<<<<<<< HEAD
 	trace_ext4_ext_handle_uninitialized_extents(inode, map, allocated,
 						    newblock);
+=======
+	/*
+	 * When writing into uninitialized space, we should not fail to
+	 * allocate metadata blocks for the new extent block if needed.
+	 */
+	flags |= EXT4_GET_BLOCKS_METADATA_NOFAIL;
+
+	trace_ext4_ext_handle_uninitialized_extents(inode, map, flags,
+						    allocated, newblock);
+>>>>>>> refs/remotes/origin/master
 
 	/* get_block() before submit the IO, split the extent */
 	if ((flags & EXT4_GET_BLOCKS_PRE_IO)) {
 		ret = ext4_split_unwritten_extents(handle, inode, map,
 						   path, flags);
+<<<<<<< HEAD
+=======
+		if (ret <= 0)
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Flag the inode(non aio case) or end_io struct (aio case)
 		 * that this IO needs to conversion to written when IO is
@@ -4402,6 +5720,10 @@ ext4_ext_handle_uninitialized_extents(handle_t *handle, struct inode *inode,
 			ext4_set_io_unwritten_flag(inode, io);
 		else
 			ext4_set_inode_state(inode, EXT4_STATE_DIO_UNWRITTEN);
+<<<<<<< HEAD
+=======
+		map->m_flags |= EXT4_MAP_UNWRITTEN;
+>>>>>>> refs/remotes/origin/master
 		if (ext4_should_dioread_nolock(inode))
 			map->m_flags |= EXT4_MAP_UNINIT;
 		goto out;
@@ -4416,6 +5738,13 @@ ext4_ext_handle_uninitialized_extents(handle_t *handle, struct inode *inode,
 						 path, map->m_len);
 		} else
 			err = ret;
+<<<<<<< HEAD
+=======
+		map->m_flags |= EXT4_MAP_MAPPED;
+		if (allocated > map->m_len)
+			allocated = map->m_len;
+		map->m_len = allocated;
+>>>>>>> refs/remotes/origin/master
 		goto out2;
 	}
 	/* buffered IO case */
@@ -4423,8 +5752,15 @@ ext4_ext_handle_uninitialized_extents(handle_t *handle, struct inode *inode,
 	 * repeat fallocate creation request
 	 * we already have an unwritten extent
 	 */
+<<<<<<< HEAD
 	if (flags & EXT4_GET_BLOCKS_UNINIT_EXT)
 		goto map_out;
+=======
+	if (flags & EXT4_GET_BLOCKS_UNINIT_EXT) {
+		map->m_flags |= EXT4_MAP_UNWRITTEN;
+		goto map_out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* buffered READ or buffered write_begin() lookup */
 	if ((flags & EXT4_GET_BLOCKS_CREATE) == 0) {
@@ -4440,7 +5776,11 @@ ext4_ext_handle_uninitialized_extents(handle_t *handle, struct inode *inode,
 	}
 
 	/* buffered write, writepage time, convert*/
+<<<<<<< HEAD
 	ret = ext4_ext_convert_to_initialized(handle, inode, map, path);
+=======
+	ret = ext4_ext_convert_to_initialized(handle, inode, map, path, flags);
+>>>>>>> refs/remotes/origin/master
 	if (ret >= 0)
 		ext4_update_inode_fsync_trans(handle, inode, 1);
 out:
@@ -4551,7 +5891,11 @@ static int get_implied_cluster_alloc(struct super_block *sb,
 				     struct ext4_ext_path *path)
 {
 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+<<<<<<< HEAD
 	ext4_lblk_t c_offset = map->m_lblk & (sbi->s_cluster_ratio-1);
+=======
+	ext4_lblk_t c_offset = EXT4_LBLK_COFF(sbi, map->m_lblk);
+>>>>>>> refs/remotes/origin/master
 	ext4_lblk_t ex_cluster_start, ex_cluster_end;
 	ext4_lblk_t rr_cluster_start;
 	ext4_lblk_t ee_block = le32_to_cpu(ex->ee_block);
@@ -4569,8 +5913,12 @@ static int get_implied_cluster_alloc(struct super_block *sb,
 	    (rr_cluster_start == ex_cluster_start)) {
 		if (rr_cluster_start == ex_cluster_end)
 			ee_start += ee_len - 1;
+<<<<<<< HEAD
 		map->m_pblk = (ee_start & ~(sbi->s_cluster_ratio - 1)) +
 			c_offset;
+=======
+		map->m_pblk = EXT4_PBLK_CMASK(sbi, ee_start) + c_offset;
+>>>>>>> refs/remotes/origin/master
 		map->m_len = min(map->m_len,
 				 (unsigned) sbi->s_cluster_ratio - c_offset);
 		/*
@@ -4633,17 +5981,28 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
 	struct ext4_extent newex, *ex, *ex2;
 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
 	ext4_fsblk_t newblock = 0;
+<<<<<<< HEAD
 	int free_on_err = 0, err = 0, depth, ret;
 	unsigned int allocated = 0, offset = 0;
 	unsigned int allocated_clusters = 0;
 	struct ext4_allocation_request ar;
 	ext4_io_end_t *io = EXT4_I(inode)->cur_aio_dio;
 	ext4_lblk_t cluster_offset;
+=======
+	int free_on_err = 0, err = 0, depth;
+	unsigned int allocated = 0, offset = 0;
+	unsigned int allocated_clusters = 0;
+	struct ext4_allocation_request ar;
+	ext4_io_end_t *io = ext4_inode_aio(inode);
+	ext4_lblk_t cluster_offset;
+	int set_unwritten = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ext_debug("blocks %u/%u requested for inode %lu\n",
 		  map->m_lblk, map->m_len, inode->i_ino);
 	trace_ext4_ext_map_blocks_enter(inode, map->m_lblk, map->m_len, flags);
 
+<<<<<<< HEAD
 	/* check in cache */
 	if (ext4_ext_in_cache(inode, map->m_lblk, &newex)) {
 		if (!newex.ee_start_lo && !newex.ee_start_hi) {
@@ -4675,6 +6034,10 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
 
 	/* find extent for this block */
 	path = ext4_ext_find_extent(inode, map->m_lblk, NULL);
+=======
+	/* find extent for this block */
+	path = ext4_ext_find_extent(inode, map->m_lblk, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(path)) {
 		err = PTR_ERR(path);
 		path = NULL;
@@ -4719,6 +6082,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
 			ext_debug("%u fit into %u:%d -> %llu\n", map->m_lblk,
 				  ee_block, ee_len, newblock);
 
+<<<<<<< HEAD
 			/*
 			 * Do not put uninitialized extent
 			 * in the cache
@@ -4732,11 +6096,24 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
 				handle, inode, map, path, flags,
 				allocated, newblock);
 			return ret;
+=======
+			if (!ext4_ext_is_uninitialized(ex))
+				goto out;
+
+			allocated = ext4_ext_handle_uninitialized_extents(
+				handle, inode, map, path, flags,
+				allocated, newblock);
+			goto out3;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if ((sbi->s_cluster_ratio > 1) &&
+<<<<<<< HEAD
 	    ext4_find_delalloc_cluster(inode, map->m_lblk, 0))
+=======
+	    ext4_find_delalloc_cluster(inode, map->m_lblk))
+>>>>>>> refs/remotes/origin/master
 		map->m_flags |= EXT4_MAP_FROM_CLUSTER;
 
 	/*
@@ -4748,7 +6125,12 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
 		 * put just found gap into cache to speed up
 		 * subsequent requests
 		 */
+<<<<<<< HEAD
 		ext4_ext_put_gap_in_cache(inode, path, map->m_lblk);
+=======
+		if ((flags & EXT4_GET_BLOCKS_NO_PUT_HOLE) == 0)
+			ext4_ext_put_gap_in_cache(inode, path, map->m_lblk);
+>>>>>>> refs/remotes/origin/master
 		goto out2;
 	}
 
@@ -4757,7 +6139,11 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
 	 */
 	map->m_flags &= ~EXT4_MAP_FROM_CLUSTER;
 	newex.ee_block = cpu_to_le32(map->m_lblk);
+<<<<<<< HEAD
 	cluster_offset = map->m_lblk & (sbi->s_cluster_ratio-1);
+=======
+	cluster_offset = EXT4_LBLK_COFF(sbi, map->m_lblk);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If we are doing bigalloc, check to see if the extent returned
@@ -4825,7 +6211,11 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
 	 * needed so that future calls to get_implied_cluster_alloc()
 	 * work correctly.
 	 */
+<<<<<<< HEAD
 	offset = map->m_lblk & (sbi->s_cluster_ratio - 1);
+=======
+	offset = EXT4_LBLK_COFF(sbi, map->m_lblk);
+>>>>>>> refs/remotes/origin/master
 	ar.len = EXT4_NUM_B2C(sbi, offset+allocated);
 	ar.goal -= offset;
 	ar.logical -= offset;
@@ -4854,6 +6244,10 @@ got_allocated_blocks:
 	/* Mark uninitialized */
 	if (flags & EXT4_GET_BLOCKS_UNINIT_EXT){
 		ext4_ext_mark_uninitialized(&newex);
+<<<<<<< HEAD
+=======
+		map->m_flags |= EXT4_MAP_UNWRITTEN;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * io_end structure was created for every IO write to an
 		 * uninitialized extent. To avoid unnecessary conversion,
@@ -4861,6 +6255,7 @@ got_allocated_blocks:
 		 * For non asycn direct IO case, flag the inode state
 		 * that we need to perform conversion when IO is done.
 		 */
+<<<<<<< HEAD
 		if ((flags & EXT4_GET_BLOCKS_PRE_IO)) {
 			if (io)
 				ext4_set_io_unwritten_flag(inode, io);
@@ -4868,6 +6263,10 @@ got_allocated_blocks:
 				ext4_set_inode_state(inode,
 						     EXT4_STATE_DIO_UNWRITTEN);
 		}
+=======
+		if ((flags & EXT4_GET_BLOCKS_PRE_IO))
+			set_unwritten = 1;
+>>>>>>> refs/remotes/origin/master
 		if (ext4_should_dioread_nolock(inode))
 			map->m_flags |= EXT4_MAP_UNINIT;
 	}
@@ -4879,6 +6278,18 @@ got_allocated_blocks:
 	if (!err)
 		err = ext4_ext_insert_extent(handle, inode, path,
 					     &newex, flags);
+<<<<<<< HEAD
+=======
+
+	if (!err && set_unwritten) {
+		if (io)
+			ext4_set_io_unwritten_flag(inode, io);
+		else
+			ext4_set_inode_state(inode,
+					     EXT4_STATE_DIO_UNWRITTEN);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (err && free_on_err) {
 		int fb_flags = flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE ?
 			EXT4_FREE_BLOCKS_NO_QUOT_UPDATE : 0;
@@ -4886,8 +6297,13 @@ got_allocated_blocks:
 		/* not a good idea to call discard here directly,
 		 * but otherwise we'd need to call it every free() */
 		ext4_discard_preallocations(inode);
+<<<<<<< HEAD
 		ext4_free_blocks(handle, inode, NULL, ext4_ext_pblock(&newex),
 				 ext4_ext_get_actual_len(&newex), fb_flags);
+=======
+		ext4_free_blocks(handle, inode, NULL, newblock,
+				 EXT4_C2B(sbi, allocated_clusters), fb_flags);
+>>>>>>> refs/remotes/origin/master
 		goto out2;
 	}
 
@@ -4923,9 +6339,12 @@ got_allocated_blocks:
 			}
 		} else {
 			BUG_ON(allocated_clusters < reserved_clusters);
+<<<<<<< HEAD
 			/* We will claim quota for all newly allocated blocks.*/
 			ext4_da_update_reserve_space(inode, allocated_clusters,
 							1);
+=======
+>>>>>>> refs/remotes/origin/master
 			if (reserved_clusters < allocated_clusters) {
 				struct ext4_inode_info *ei = EXT4_I(inode);
 				int reservation = allocated_clusters -
@@ -4976,6 +6395,18 @@ got_allocated_blocks:
 				ei->i_reserved_data_blocks += reservation;
 				spin_unlock(&ei->i_block_reservation_lock);
 			}
+<<<<<<< HEAD
+=======
+			/*
+			 * We will claim quota for all newly allocated blocks.
+			 * We're updating the reserved space *after* the
+			 * correction above so we do not accidentally free
+			 * all the metadata reservation because we might
+			 * actually need it later on.
+			 */
+			ext4_da_update_reserve_space(inode, allocated_clusters,
+							1);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -4983,10 +6414,16 @@ got_allocated_blocks:
 	 * Cache the extent and update transaction to commit on fdatasync only
 	 * when it is _not_ an uninitialized extent.
 	 */
+<<<<<<< HEAD
 	if ((flags & EXT4_GET_BLOCKS_UNINIT_EXT) == 0) {
 		ext4_ext_put_in_cache(inode, map->m_lblk, allocated, newblock);
 		ext4_update_inode_fsync_trans(handle, inode, 1);
 	} else
+=======
+	if ((flags & EXT4_GET_BLOCKS_UNINIT_EXT) == 0)
+		ext4_update_inode_fsync_trans(handle, inode, 1);
+	else
+>>>>>>> refs/remotes/origin/master
 		ext4_update_inode_fsync_trans(handle, inode, 0);
 out:
 	if (allocated > map->m_len)
@@ -5001,6 +6438,7 @@ out2:
 		kfree(path);
 	}
 
+<<<<<<< HEAD
 	trace_ext4_ext_map_blocks_exit(inode, map->m_lblk,
 		newblock, map->m_len, err ? err : allocated);
 
@@ -5050,6 +6488,22 @@ void ext4_ext_truncate(struct inode *inode)
 	ext4_discard_preallocations(inode);
 
 	/*
+=======
+out3:
+	trace_ext4_ext_map_blocks_exit(inode, flags, map,
+				       err ? err : allocated);
+	ext4_es_lru_add(inode);
+	return err ? err : allocated;
+}
+
+void ext4_ext_truncate(handle_t *handle, struct inode *inode)
+{
+	struct super_block *sb = inode->i_sb;
+	ext4_lblk_t last_block;
+	int err = 0;
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * TODO: optimization is possible here.
 	 * Probably we need not scan at all,
 	 * because page truncation is enough.
@@ -5061,6 +6515,7 @@ void ext4_ext_truncate(struct inode *inode)
 
 	last_block = (inode->i_size + sb->s_blocksize - 1)
 			>> EXT4_BLOCK_SIZE_BITS(sb);
+<<<<<<< HEAD
 	err = ext4_ext_remove_space(inode, last_block, EXT_MAX_BLOCKS - 1);
 
 	/* In a multi-transaction truncate, we only make the final
@@ -5085,6 +6540,22 @@ out_stop:
 	inode->i_mtime = inode->i_ctime = ext4_current_time(inode);
 	ext4_mark_inode_dirty(handle, inode);
 	ext4_journal_stop(handle);
+=======
+retry:
+	err = ext4_es_remove_extent(inode, last_block,
+				    EXT_MAX_BLOCKS - last_block);
+	if (err == -ENOMEM) {
+		cond_resched();
+		congestion_wait(BLK_RW_ASYNC, HZ/50);
+		goto retry;
+	}
+	if (err) {
+		ext4_std_error(inode->i_sb, err);
+		return;
+	}
+	err = ext4_ext_remove_space(inode, last_block, EXT_MAX_BLOCKS - 1);
+	ext4_std_error(inode->i_sb, err);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ext4_falloc_update_inode(struct inode *inode,
@@ -5126,7 +6597,11 @@ static void ext4_falloc_update_inode(struct inode *inode,
  */
 long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	handle_t *handle;
 	loff_t new_size;
 	unsigned int max_blocks;
@@ -5137,6 +6612,20 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
 	struct ext4_map_blocks map;
 	unsigned int credits, blkbits = inode->i_blkbits;
 
+<<<<<<< HEAD
+=======
+	/* Return error if mode is not supported */
+	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE))
+		return -EOPNOTSUPP;
+
+	if (mode & FALLOC_FL_PUNCH_HOLE)
+		return ext4_punch_hole(inode, offset, len);
+
+	ret = ext4_convert_inline_data(inode);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * currently supporting (pre)allocate mode for extent-based
 	 * files _only_
@@ -5144,6 +6633,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
 	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	/* Return error if mode is not supported */
 	if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE))
 		return -EOPNOTSUPP;
@@ -5151,6 +6641,8 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
 	if (mode & FALLOC_FL_PUNCH_HOLE)
 		return ext4_punch_hole(file, offset, len);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	trace_ext4_fallocate_enter(inode, offset, len, mode);
 	map.m_lblk = offset >> blkbits;
 	/*
@@ -5180,11 +6672,20 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
 	 */
 	if (len <= EXT_UNINIT_MAX_LEN << blkbits)
 		flags |= EXT4_GET_BLOCKS_NO_NORMALIZE;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 retry:
 	while (ret >= 0 && ret < max_blocks) {
 		map.m_lblk = map.m_lblk + ret;
 		map.m_len = max_blocks = max_blocks - ret;
+<<<<<<< HEAD
 		handle = ext4_journal_start(inode, credits);
+=======
+		handle = ext4_journal_start(inode, EXT4_HT_MAP_BLOCKS,
+					    credits);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(handle)) {
 			ret = PTR_ERR(handle);
 			break;
@@ -5192,11 +6693,19 @@ retry:
 		ret = ext4_map_blocks(handle, inode, &map, flags);
 		if (ret <= 0) {
 #ifdef EXT4FS_DEBUG
+<<<<<<< HEAD
 			WARN_ON(ret <= 0);
 			printk(KERN_ERR "%s: ext4_ext_map_blocks "
 				    "returned error inode#%lu, block=%u, "
 				    "max_blocks=%u", __func__,
 				    inode->i_ino, map.m_lblk, max_blocks);
+=======
+			ext4_warning(inode->i_sb,
+				     "inode #%lu: block %u: len %u: "
+				     "ext4_ext_map_blocks returned %d",
+				     inode->i_ino, map.m_lblk,
+				     map.m_len, ret);
+>>>>>>> refs/remotes/origin/master
 #endif
 			ext4_mark_inode_dirty(handle, inode);
 			ret2 = ext4_journal_stop(handle);
@@ -5211,6 +6720,11 @@ retry:
 		ext4_falloc_update_inode(inode, mode, new_size,
 					 (map.m_flags & EXT4_MAP_NEW));
 		ext4_mark_inode_dirty(handle, inode);
+<<<<<<< HEAD
+=======
+		if ((file->f_flags & O_SYNC) && ret >= max_blocks)
+			ext4_handle_sync(handle);
+>>>>>>> refs/remotes/origin/master
 		ret2 = ext4_journal_stop(handle);
 		if (ret2)
 			break;
@@ -5236,10 +6750,16 @@ retry:
  * function, to convert the fallocated extents after IO is completed.
  * Returns 0 on success.
  */
+<<<<<<< HEAD
 int ext4_convert_unwritten_extents(struct inode *inode, loff_t offset,
 				    ssize_t len)
 {
 	handle_t *handle;
+=======
+int ext4_convert_unwritten_extents(handle_t *handle, struct inode *inode,
+				   loff_t offset, ssize_t len)
+{
+>>>>>>> refs/remotes/origin/master
 	unsigned int max_blocks;
 	int ret = 0;
 	int ret2 = 0;
@@ -5254,6 +6774,7 @@ int ext4_convert_unwritten_extents(struct inode *inode, loff_t offset,
 	max_blocks = ((EXT4_BLOCK_ALIGN(len + offset, blkbits) >> blkbits) -
 		      map.m_lblk);
 	/*
+<<<<<<< HEAD
 	 * credits to insert 1 extent into extent tree
 	 */
 	credits = ext4_chunk_trans_blocks(inode, max_blocks);
@@ -5280,10 +6801,56 @@ int ext4_convert_unwritten_extents(struct inode *inode, loff_t offset,
 		if (ret <= 0 || ret2 )
 			break;
 	}
+=======
+	 * This is somewhat ugly but the idea is clear: When transaction is
+	 * reserved, everything goes into it. Otherwise we rather start several
+	 * smaller transactions for conversion of each extent separately.
+	 */
+	if (handle) {
+		handle = ext4_journal_start_reserved(handle,
+						     EXT4_HT_EXT_CONVERT);
+		if (IS_ERR(handle))
+			return PTR_ERR(handle);
+		credits = 0;
+	} else {
+		/*
+		 * credits to insert 1 extent into extent tree
+		 */
+		credits = ext4_chunk_trans_blocks(inode, max_blocks);
+	}
+	while (ret >= 0 && ret < max_blocks) {
+		map.m_lblk += ret;
+		map.m_len = (max_blocks -= ret);
+		if (credits) {
+			handle = ext4_journal_start(inode, EXT4_HT_MAP_BLOCKS,
+						    credits);
+			if (IS_ERR(handle)) {
+				ret = PTR_ERR(handle);
+				break;
+			}
+		}
+		ret = ext4_map_blocks(handle, inode, &map,
+				      EXT4_GET_BLOCKS_IO_CONVERT_EXT);
+		if (ret <= 0)
+			ext4_warning(inode->i_sb,
+				     "inode #%lu: block %u: len %u: "
+				     "ext4_ext_map_blocks returned %d",
+				     inode->i_ino, map.m_lblk,
+				     map.m_len, ret);
+		ext4_mark_inode_dirty(handle, inode);
+		if (credits)
+			ret2 = ext4_journal_stop(handle);
+		if (ret <= 0 || ret2)
+			break;
+	}
+	if (!credits)
+		ret2 = ext4_journal_stop(handle);
+>>>>>>> refs/remotes/origin/master
 	return ret > 0 ? ret2 : ret;
 }
 
 /*
+<<<<<<< HEAD
  * Callback function called for each extent to gather FIEMAP information.
  */
 static int ext4_ext_fiemap_cb(struct inode *inode, ext4_lblk_t next,
@@ -5484,6 +7051,52 @@ found_delayed_extent:
 	if (ret == 1)
 		return EXT_BREAK;
 	return EXT_CONTINUE;
+=======
+ * If newes is not existing extent (newes->ec_pblk equals zero) find
+ * delayed extent at start of newes and update newes accordingly and
+ * return start of the next delayed extent.
+ *
+ * If newes is existing extent (newes->ec_pblk is not equal zero)
+ * return start of next delayed extent or EXT_MAX_BLOCKS if no delayed
+ * extent found. Leave newes unmodified.
+ */
+static int ext4_find_delayed_extent(struct inode *inode,
+				    struct extent_status *newes)
+{
+	struct extent_status es;
+	ext4_lblk_t block, next_del;
+
+	if (newes->es_pblk == 0) {
+		ext4_es_find_delayed_extent_range(inode, newes->es_lblk,
+				newes->es_lblk + newes->es_len - 1, &es);
+
+		/*
+		 * No extent in extent-tree contains block @newes->es_pblk,
+		 * then the block may stay in 1)a hole or 2)delayed-extent.
+		 */
+		if (es.es_len == 0)
+			/* A hole found. */
+			return 0;
+
+		if (es.es_lblk > newes->es_lblk) {
+			/* A hole found. */
+			newes->es_len = min(es.es_lblk - newes->es_lblk,
+					    newes->es_len);
+			return 0;
+		}
+
+		newes->es_len = es.es_lblk + es.es_len - newes->es_lblk;
+	}
+
+	block = newes->es_lblk + newes->es_len;
+	ext4_es_find_delayed_extent_range(inode, block, EXT_MAX_BLOCKS, &es);
+	if (es.es_len == 0)
+		next_del = EXT_MAX_BLOCKS;
+	else
+		next_del = es.es_lblk;
+
+	return next_del;
+>>>>>>> refs/remotes/origin/master
 }
 /* fiemap flags we can handle specified here */
 #define EXT4_FIEMAP_FLAGS	(FIEMAP_FLAG_SYNC|FIEMAP_FLAG_XATTR)
@@ -5523,6 +7136,7 @@ static int ext4_xattr_fiemap(struct inode *inode,
 	return (error < 0 ? error : 0);
 }
 
+<<<<<<< HEAD
 /*
  * ext4_ext_punch_hole
  *
@@ -5692,6 +7306,29 @@ int ext4_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
 	ext4_lblk_t start_blk;
 	int error = 0;
 
+=======
+int ext4_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+		__u64 start, __u64 len)
+{
+	ext4_lblk_t start_blk;
+	int error = 0;
+
+	if (ext4_has_inline_data(inode)) {
+		int has_inline = 1;
+
+		error = ext4_inline_data_fiemap(inode, fieinfo, &has_inline);
+
+		if (has_inline)
+			return error;
+	}
+
+	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
+		error = ext4_ext_precache(inode);
+		if (error)
+			return error;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* fallback to generic here if not in extents fmt */
 	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)))
 		return generic_block_fiemap(inode, fieinfo, start, len,
@@ -5713,6 +7350,7 @@ int ext4_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
 		len_blks = ((ext4_lblk_t) last_blk) - start_blk + 1;
 
 		/*
+<<<<<<< HEAD
 		 * Walk the extent tree gathering extent information.
 		 * ext4_ext_fiemap_cb will push extents back to user.
 		 */
@@ -5723,3 +7361,14 @@ int ext4_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
 	return error;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * Walk the extent tree gathering extent information
+		 * and pushing extents back to the user.
+		 */
+		error = ext4_fill_fiemap_extents(inode, start_blk,
+						 len_blks, fieinfo);
+	}
+	ext4_es_lru_add(inode);
+	return error;
+}
+>>>>>>> refs/remotes/origin/master

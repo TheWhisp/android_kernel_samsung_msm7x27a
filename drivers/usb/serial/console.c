@@ -11,8 +11,14 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/init.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/tty.h>
 #include <linux/console.h>
@@ -20,8 +26,11 @@
 #include <linux/usb.h>
 #include <linux/usb/serial.h>
 
+<<<<<<< HEAD
 static int debug;
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct usbcons_info {
 	int			magic;
 	int			break_flag;
@@ -68,8 +77,11 @@ static int usb_console_setup(struct console *co, char *options)
 	struct tty_struct *tty = NULL;
 	struct ktermios dummy;
 
+<<<<<<< HEAD
 	dbg("%s", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (options) {
 		baud = simple_strtoul(options, NULL, 10);
 		s = options;
@@ -110,18 +122,31 @@ static int usb_console_setup(struct console *co, char *options)
 	 * no need to check the index here: if the index is wrong, console
 	 * code won't call us
 	 */
+<<<<<<< HEAD
 	serial = usb_serial_get_by_index(co->index);
 	if (serial == NULL) {
 		/* no device is connected yet, sorry :( */
 		err("No USB device connected to ttyUSB%i", co->index);
 		return -ENODEV;
 	}
+=======
+	port = usb_serial_port_get_by_minor(co->index);
+	if (port == NULL) {
+		/* no device is connected yet, sorry :( */
+		pr_err("No USB device connected to ttyUSB%i\n", co->index);
+		return -ENODEV;
+	}
+	serial = port->serial;
+>>>>>>> refs/remotes/origin/master
 
 	retval = usb_autopm_get_interface(serial->interface);
 	if (retval)
 		goto error_get_interface;
 
+<<<<<<< HEAD
 	port = serial->port[co->index - serial->minor];
+=======
+>>>>>>> refs/remotes/origin/master
 	tty_port_tty_set(&port->port, NULL);
 
 	info->port = port;
@@ -137,7 +162,10 @@ static int usb_console_setup(struct console *co, char *options)
 			tty = kzalloc(sizeof(*tty), GFP_KERNEL);
 			if (!tty) {
 				retval = -ENOMEM;
+<<<<<<< HEAD
 				err("no more memory");
+=======
+>>>>>>> refs/remotes/origin/master
 				goto reset_open_count;
 			}
 			kref_init(&tty->kref);
@@ -146,13 +174,17 @@ static int usb_console_setup(struct console *co, char *options)
 			tty->index = co->index;
 			if (tty_init_termios(tty)) {
 				retval = -ENOMEM;
+<<<<<<< HEAD
 				err("no more memory");
+=======
+>>>>>>> refs/remotes/origin/master
 				goto free_tty;
 			}
 		}
 
 		/* only call the device specific open if this
 		 * is the first time the port is opened */
+<<<<<<< HEAD
 		if (serial->type->open)
 			retval = serial->type->open(NULL, port);
 		else
@@ -160,12 +192,22 @@ static int usb_console_setup(struct console *co, char *options)
 
 		if (retval) {
 			err("could not open USB console port");
+=======
+		retval = serial->type->open(NULL, port);
+		if (retval) {
+			dev_err(&port->dev, "could not open USB console port\n");
+>>>>>>> refs/remotes/origin/master
 			goto fail;
 		}
 
 		if (serial->type->set_termios) {
+<<<<<<< HEAD
 			tty->termios->c_cflag = cflag;
 			tty_termios_encode_baud_rate(tty->termios, baud, baud);
+=======
+			tty->termios.c_cflag = cflag;
+			tty_termios_encode_baud_rate(&tty->termios, baud, baud);
+>>>>>>> refs/remotes/origin/master
 			memset(&dummy, 0, sizeof(struct ktermios));
 			serial->type->set_termios(tty, port, &dummy);
 
@@ -212,10 +254,17 @@ static void usb_console_write(struct console *co,
 	if (count == 0)
 		return;
 
+<<<<<<< HEAD
 	dbg("%s - port %d, %d byte(s)", __func__, port->number, count);
 
 	if (!port->port.console) {
 		dbg("%s - port not opened", __func__);
+=======
+	dev_dbg(&port->dev, "%s - %d byte(s)\n", __func__, count);
+
+	if (!port->port.console) {
+		dev_dbg(&port->dev, "%s - port not opened\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -232,6 +281,7 @@ static void usb_console_write(struct console *co,
 		}
 		/* pass on to the driver specific version of this function if
 		   it is available */
+<<<<<<< HEAD
 		if (serial->type->write)
 			retval = serial->type->write(NULL, port, buf, i);
 		else
@@ -247,6 +297,16 @@ static void usb_console_write(struct console *co,
 				retval = usb_serial_generic_write(NULL,
 								port, &cr, 1);
 			dbg("%s - return value : %d", __func__, retval);
+=======
+		retval = serial->type->write(NULL, port, buf, i);
+		dev_dbg(&port->dev, "%s - write: %d\n", __func__, retval);
+		if (lf) {
+			/* append CR after LF */
+			unsigned char cr = 13;
+			retval = serial->type->write(NULL, port, &cr, 1);
+			dev_dbg(&port->dev, "%s - write cr: %d\n",
+							__func__, retval);
+>>>>>>> refs/remotes/origin/master
 		}
 		buf += i;
 		count -= i;
@@ -283,10 +343,15 @@ void usb_serial_console_disconnect(struct usb_serial *serial)
 	}
 }
 
+<<<<<<< HEAD
 void usb_serial_console_init(int serial_debug, int minor)
 {
 	debug = serial_debug;
 
+=======
+void usb_serial_console_init(int minor)
+{
+>>>>>>> refs/remotes/origin/master
 	if (minor == 0) {
 		/*
 		 * Call register_console() if this is the first device plugged
@@ -301,7 +366,11 @@ void usb_serial_console_init(int serial_debug, int minor)
 		 * register_console). console_write() is called immediately
 		 * from register_console iff CON_PRINTBUFFER is set in flags.
 		 */
+<<<<<<< HEAD
 		dbg("registering the USB serial console.");
+=======
+		pr_debug("registering the USB serial console.\n");
+>>>>>>> refs/remotes/origin/master
 		register_console(&usbcons);
 	}
 }

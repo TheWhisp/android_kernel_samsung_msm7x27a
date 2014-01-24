@@ -17,9 +17,13 @@
 #include <linux/module.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/amigahw.h>
 
@@ -27,6 +31,7 @@ unsigned long amiga_chip_size;
 EXPORT_SYMBOL(amiga_chip_size);
 
 static struct resource chipram_res = {
+<<<<<<< HEAD
 <<<<<<< HEAD
     .name = "Chip RAM", .start = CHIP_PHYSADDR
 };
@@ -36,10 +41,16 @@ static unsigned long chipavail;
 };
 static atomic_t chipavail;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name = "Chip RAM", .start = CHIP_PHYSADDR
+};
+static atomic_t chipavail;
+>>>>>>> refs/remotes/origin/master
 
 
 void __init amiga_chip_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     if (!AMIGAHW_PRESENT(CHIP_RAM))
 	return;
@@ -49,6 +60,8 @@ void __init amiga_chip_init(void)
 
     chipavail = amiga_chip_size;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!AMIGAHW_PRESENT(CHIP_RAM))
 		return;
 
@@ -56,12 +69,16 @@ void __init amiga_chip_init(void)
 	request_resource(&iomem_resource, &chipram_res);
 
 	atomic_set(&chipavail, amiga_chip_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 void *amiga_chip_alloc(unsigned long size, const char *name)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     struct resource *res;
 
@@ -86,6 +103,8 @@ void *amiga_chip_alloc(unsigned long size, const char *name)
 #endif
     return (void *)ZTWO_VADDR(res->start);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 	void *p;
 
@@ -101,11 +120,15 @@ void *amiga_chip_alloc(unsigned long size, const char *name)
 	}
 
 	return p;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(amiga_chip_alloc);
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     /*
      *  Warning:
@@ -137,6 +160,8 @@ void * __init amiga_chip_alloc_res(unsigned long size, struct resource *res)
 #endif
     return (void *)ZTWO_VADDR(res->start);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *  Warning:
 	 *  amiga_chip_alloc_res is meant only for drivers that need to
@@ -162,12 +187,17 @@ void *amiga_chip_alloc_res(unsigned long size, struct resource *res)
 
 	atomic_sub(size, &chipavail);
 	pr_debug("amiga_chip_alloc_res: returning %pR\n", res);
+<<<<<<< HEAD
 	return (void *)ZTWO_VADDR(res->start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ZTWO_VADDR(res->start);
+>>>>>>> refs/remotes/origin/master
 }
 
 void amiga_chip_free(void *ptr)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned long start = ZTWO_PADDR(ptr);
     struct resource **p, *res;
@@ -187,6 +217,8 @@ void amiga_chip_free(void *ptr)
     }
     printk("amiga_chip_free: trying to free nonexistent region at %p\n", ptr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long start = ZTWO_PADDR(ptr);
 	struct resource *res;
 	unsigned long size;
@@ -203,7 +235,10 @@ void amiga_chip_free(void *ptr)
 	atomic_add(size, &chipavail);
 	release_resource(res);
 	kfree(res);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(amiga_chip_free);
 
@@ -211,16 +246,22 @@ EXPORT_SYMBOL(amiga_chip_free);
 unsigned long amiga_chip_avail(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef DEBUG
 	printk("amiga_chip_avail : %ld bytes\n", chipavail);
 #endif
 	return chipavail;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long n = atomic_read(&chipavail);
 
 	pr_debug("amiga_chip_avail : %lu bytes\n", n);
 	return n;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(amiga_chip_avail);
 

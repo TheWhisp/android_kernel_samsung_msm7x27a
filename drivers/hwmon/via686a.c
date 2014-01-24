@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     via686a.c - Part of lm_sensors, Linux kernel modules
 		for hardware monitoring
 
@@ -31,6 +32,8 @@
     Warning - only supports a single device.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * via686a.c - Part of lm_sensors, Linux kernel modules
  *	       for hardware monitoring
  *
@@ -62,7 +65,10 @@
  * Reports all as a 686A.
  * Warning - only supports a single device.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -82,14 +88,20 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* If force_addr is set to anything different from 0, we forcibly enable
    the device at the given address. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * If force_addr is set to anything different from 0, we forcibly enable
  * the device at the given address.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned short force_addr;
 module_param(force_addr, ushort, 0);
 MODULE_PARM_DESC(force_addr,
@@ -99,6 +111,7 @@ static struct platform_device *pdev;
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
    The Via 686a southbridge has a LM78-like chip integrated on the same IC.
    This driver is a customized copy of lm78.c
 */
@@ -107,6 +120,11 @@ static struct platform_device *pdev;
  * This driver is a customized copy of lm78.c
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * The Via 686a southbridge has a LM78-like chip integrated on the same IC.
+ * This driver is a customized copy of lm78.c
+ */
+>>>>>>> refs/remotes/origin/master
 
 /* Many VIA686A constants specified below */
 
@@ -139,6 +157,7 @@ static const u8 VIA686A_REG_TEMP_HYST[]	= { 0x3a, 0x3e, 0x1e };
 #define VIA686A_REG_FANDIV	0x47
 #define VIA686A_REG_CONFIG	0x40
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The following register sets temp interrupt mode (bits 1-0 for temp1,
  3-2 for temp2, 5-4 for temp3).  Modes are:
     00 interrupt stays as long as value is out-of-range
@@ -146,6 +165,8 @@ static const u8 VIA686A_REG_TEMP_HYST[]	= { 0x3a, 0x3e, 0x1e };
     10 comparator mode- like 00, but ignores hysteresis
     11 same as 00 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The following register sets temp interrupt mode (bits 1-0 for temp1,
  * 3-2 for temp2, 5-4 for temp3).  Modes are:
@@ -154,12 +175,16 @@ static const u8 VIA686A_REG_TEMP_HYST[]	= { 0x3a, 0x3e, 0x1e };
  * 10 comparator mode- like 00, but ignores hysteresis
  * 11 same as 00
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define VIA686A_REG_TEMP_MODE		0x4b
 /* We'll just assume that you want to set all 3 simultaneously: */
 #define VIA686A_TEMP_MODE_MASK		0x3F
 #define VIA686A_TEMP_MODE_CONTINUOUS	0x00
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Conversions. Limit checking is only done on the TO_REG
    variants.
@@ -185,6 +210,8 @@ static inline u8 IN_TO_REG(long val, int inNum)
 	   by an additional 10000 (100000 for +12V): 1000 for val and 10 (100)
 	   for the constants. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Conversions. Limit checking is only done on the TO_REG
  * variants.
@@ -203,7 +230,11 @@ static inline u8 IN_TO_REG(long val, int inNum)
  * (These conversions were contributed by Jonathan Teh Soon Yew
  * <j.teh@iname.com>)
  */
+<<<<<<< HEAD
 static inline u8 IN_TO_REG(long val, int inNum)
+=======
+static inline u8 IN_TO_REG(long val, int in_num)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * To avoid floating point, we multiply constants by 10 (100 for +12V).
@@ -212,6 +243,7 @@ static inline u8 IN_TO_REG(long val, int inNum)
 	 * by an additional 10000 (100000 for +12V): 1000 for val and 10 (100)
 	 * for the constants.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (inNum <= 1)
 		return (u8)
@@ -234,17 +266,40 @@ static inline long IN_FROM_REG(u8 val, int inNum)
 	   We also multiply them by 1000 because we want 0.001V/bit for the
 	   output value. Rounding is done. */
 =======
+=======
+	if (in_num <= 1)
+		return (u8) clamp_val((val * 21024 - 1205000) / 250000, 0, 255);
+	else if (in_num == 2)
+		return (u8) clamp_val((val * 15737 - 1205000) / 250000, 0, 255);
+	else if (in_num == 3)
+		return (u8) clamp_val((val * 10108 - 1205000) / 250000, 0, 255);
+	else
+		return (u8) clamp_val((val * 41714 - 12050000) / 2500000, 0,
+				      255);
+}
+
+static inline long IN_FROM_REG(u8 val, int in_num)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * To avoid floating point, we multiply constants by 10 (100 for +12V).
 	 * We also multiply them by 1000 because we want 0.001V/bit for the
 	 * output value. Rounding is done.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (inNum <= 1)
 		return (long) ((250000 * val + 1330000 + 21024 / 2) / 21024);
 	else if (inNum == 2)
 		return (long) ((250000 * val + 1330000 + 15737 / 2) / 15737);
 	else if (inNum == 3)
+=======
+	if (in_num <= 1)
+		return (long) ((250000 * val + 1330000 + 21024 / 2) / 21024);
+	else if (in_num == 2)
+		return (long) ((250000 * val + 1330000 + 15737 / 2) / 15737);
+	else if (in_num == 3)
+>>>>>>> refs/remotes/origin/master
 		return (long) ((250000 * val + 1330000 + 10108 / 2) / 10108);
 	else
 		return (long) ((2500000 * val + 13300000 + 41714 / 2) / 41714);
@@ -252,20 +307,27 @@ static inline long IN_FROM_REG(u8 val, int inNum)
 
 /********* FAN RPM CONVERSIONS ********/
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Higher register values = slower fans (the fan's strobe gates a counter).
  But this chip saturates back at 0, not at 255 like all the other chips.
  So, 0 means 0 RPM */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Higher register values = slower fans (the fan's strobe gates a counter).
  * But this chip saturates back at 0, not at 255 like all the other chips.
  * So, 0 means 0 RPM
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u8 FAN_TO_REG(long rpm, int div)
 {
 	if (rpm == 0)
 		return 0;
+<<<<<<< HEAD
 	rpm = SENSORS_LIMIT(rpm, 1, 1000000);
 	return SENSORS_LIMIT((1350000 + rpm * div / 2) / (rpm * div), 1, 255);
 }
@@ -308,6 +370,12 @@ static inline u8 FAN_TO_REG(long rpm, int div)
 static const s16 tempLUT[] =
 { -709, -688, -667, -646, -627, -607, -589, -570, -553, -536, -519,
 =======
+=======
+	rpm = clamp_val(rpm, 1, 1000000);
+	return clamp_val((1350000 + rpm * div / 2) / (rpm * div), 1, 255);
+}
+
+>>>>>>> refs/remotes/origin/master
 #define FAN_FROM_REG(val, div) ((val) == 0 ? 0 : (val) == 255 ? 0 : 1350000 / \
 				((val) * (div)))
 
@@ -342,12 +410,20 @@ static const s16 tempLUT[] =
  * VIA register values 0-255.  I *10 before rounding, so we get tenth-degree
  * precision.  (I could have done all 1024 values for our 10-bit readings,
  * but the function is very linear in the useful range (0-80 deg C), so
+<<<<<<< HEAD
  * we'll just use linear interpolation for 10-bit readings.)  So, tempLUT
  * is the temp at via register values 0-255:
  */
 static const s16 tempLUT[] = {
 	-709, -688, -667, -646, -627, -607, -589, -570, -553, -536, -519,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * we'll just use linear interpolation for 10-bit readings.)  So, temp_lut
+ * is the temp at via register values 0-255:
+ */
+static const s16 temp_lut[] = {
+	-709, -688, -667, -646, -627, -607, -589, -570, -553, -536, -519,
+>>>>>>> refs/remotes/origin/master
 	-503, -487, -471, -456, -442, -428, -414, -400, -387, -375,
 	-362, -350, -339, -327, -316, -305, -295, -285, -275, -265,
 	-255, -246, -237, -229, -220, -212, -204, -196, -188, -180,
@@ -371,6 +447,7 @@ static const s16 tempLUT[] = {
 	1276, 1301, 1326, 1352, 1378, 1406, 1434, 1462
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* the original LUT values from Alex van Kaam <darkside@chello.nl>
    (for via register values 12-240):
@@ -396,6 +473,8 @@ static const s16 tempLUT[] = {
 static const u8 viaLUT[] =
 { 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18, 19, 20, 20, 21, 22, 23,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * the original LUT values from Alex van Kaam <darkside@chello.nl>
  * (for via register values 12-240):
@@ -419,9 +498,14 @@ static const u8 viaLUT[] =
  * - 2.525453e-04*val^3 + 1.424593e-02*val^2 + 2.148941e+00*val +7.275808e+01)
  * Note that n=161:
  */
+<<<<<<< HEAD
 static const u8 viaLUT[] = {
 	12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18, 19, 20, 20, 21, 22, 23,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u8 via_lut[] = {
+	12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18, 19, 20, 20, 21, 22, 23,
+>>>>>>> refs/remotes/origin/master
 	23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 35, 36, 37, 39, 40,
 	41, 43, 45, 46, 48, 49, 51, 53, 55, 57, 59, 60, 62, 64, 66,
 	69, 71, 73, 75, 77, 79, 82, 84, 86, 88, 91, 93, 95, 98, 100,
@@ -437,28 +521,42 @@ static const u8 viaLUT[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Converting temps to (8-bit) hyst and over registers
    No interpolation here.
    The +50 is because the temps start at -50 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Converting temps to (8-bit) hyst and over registers
  * No interpolation here.
  * The +50 is because the temps start at -50
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static inline u8 TEMP_TO_REG(long val)
 {
 	return viaLUT[val <= -50000 ? 0 : val >= 110000 ? 160 :
+=======
+static inline u8 TEMP_TO_REG(long val)
+{
+	return via_lut[val <= -50000 ? 0 : val >= 110000 ? 160 :
+>>>>>>> refs/remotes/origin/master
 		      (val < 0 ? val - 500 : val + 500) / 1000 + 50];
 }
 
 /* for 8-bit temperature hyst and over registers */
+<<<<<<< HEAD
 #define TEMP_FROM_REG(val)	((long)tempLUT[val] * 100)
+=======
+#define TEMP_FROM_REG(val)	((long)temp_lut[val] * 100)
+>>>>>>> refs/remotes/origin/master
 
 /* for 10-bit temperature readings */
 static inline long TEMP_FROM_REG10(u16 val)
 {
+<<<<<<< HEAD
 	u16 eightBits = val >> 2;
 	u16 twoBits = val & 3;
 
@@ -478,13 +576,31 @@ static inline long TEMP_FROM_REG10(u16 val)
 /* For each registered chip, we need to keep some data in memory.
    The structure is dynamically allocated. */
 =======
+=======
+	u16 eight_bits = val >> 2;
+	u16 two_bits = val & 3;
+
+	/* no interpolation for these */
+	if (two_bits == 0 || eight_bits == 255)
+		return TEMP_FROM_REG(eight_bits);
+
+	/* do some linear interpolation */
+	return (temp_lut[eight_bits] * (4 - two_bits) +
+		temp_lut[eight_bits + 1] * two_bits) * 25;
+}
+
+#define DIV_FROM_REG(val) (1 << (val))
+>>>>>>> refs/remotes/origin/master
 #define DIV_TO_REG(val) ((val) == 8 ? 3 : (val) == 4 ? 2 : (val) == 1 ? 0 : 1)
 
 /*
  * For each registered chip, we need to keep some data in memory.
  * The structure is dynamically allocated.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct via686a_data {
 	unsigned short addr;
 	const char *name;
@@ -508,7 +624,11 @@ struct via686a_data {
 static struct pci_dev *s_bridge;	/* pointer to the (only) via686a */
 
 static int via686a_probe(struct platform_device *pdev);
+<<<<<<< HEAD
 static int __devexit via686a_remove(struct platform_device *pdev);
+=======
+static int via686a_remove(struct platform_device *pdev);
+>>>>>>> refs/remotes/origin/master
 
 static inline int via686a_read_value(struct via686a_data *data, u8 reg)
 {
@@ -557,15 +677,21 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_min[nr] = IN_TO_REG(val, nr);
@@ -580,15 +706,21 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_max[nr] = IN_TO_REG(val, nr);
@@ -639,15 +771,21 @@ static ssize_t set_temp_over(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_over[nr] = TEMP_TO_REG(val);
@@ -662,15 +800,21 @@ static ssize_t set_temp_hyst(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_hyst[nr] = TEMP_TO_REG(val);
@@ -699,10 +843,14 @@ static ssize_t show_fan(struct device *dev, struct device_attribute *da,
 	int nr = attr->index;
 	return sprintf(buf, "%d\n", FAN_FROM_REG(data->fan[nr],
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DIV_FROM_REG(data->fan_div[nr])) );
 =======
 				DIV_FROM_REG(data->fan_div[nr])));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				DIV_FROM_REG(data->fan_div[nr])));
+>>>>>>> refs/remotes/origin/master
 }
 static ssize_t show_fan_min(struct device *dev, struct device_attribute *da,
 		char *buf) {
@@ -711,11 +859,16 @@ static ssize_t show_fan_min(struct device *dev, struct device_attribute *da,
 	int nr = attr->index;
 	return sprintf(buf, "%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		FAN_FROM_REG(data->fan_min[nr], DIV_FROM_REG(data->fan_div[nr])) );
 =======
 		FAN_FROM_REG(data->fan_min[nr],
 			     DIV_FROM_REG(data->fan_div[nr])));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		FAN_FROM_REG(data->fan_min[nr],
+			     DIV_FROM_REG(data->fan_div[nr])));
+>>>>>>> refs/remotes/origin/master
 }
 static ssize_t show_fan_div(struct device *dev, struct device_attribute *da,
 		char *buf) {
@@ -723,10 +876,14 @@ static ssize_t show_fan_div(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", DIV_FROM_REG(data->fan_div[nr]) );
 =======
 	return sprintf(buf, "%d\n", DIV_FROM_REG(data->fan_div[nr]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%d\n", DIV_FROM_REG(data->fan_div[nr]));
+>>>>>>> refs/remotes/origin/master
 }
 static ssize_t set_fan_min(struct device *dev, struct device_attribute *da,
 		const char *buf, size_t count) {
@@ -734,15 +891,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[nr] = FAN_TO_REG(val, DIV_FROM_REG(data->fan_div[nr]));
@@ -756,9 +919,12 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *da,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val = simple_strtol(buf, NULL, 10);
 	int old;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int old;
 	unsigned long val;
 	int err;
@@ -766,7 +932,10 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *da,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	old = via686a_read_value(data, VIA686A_REG_FANDIV);
@@ -790,11 +959,14 @@ show_fan_offset(2);
 
 /* Alarms */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_alarms(struct device *dev, struct device_attribute *attr, char *buf) {
 	struct via686a_data *data = via686a_update_device(dev);
 	return sprintf(buf, "%u\n", data->alarms);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_alarms(struct device *dev, struct device_attribute *attr,
 			   char *buf)
 {
@@ -802,7 +974,10 @@ static ssize_t show_alarms(struct device *dev, struct device_attribute *attr,
 	return sprintf(buf, "%u\n", data->alarms);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(alarms, S_IRUGO, show_alarms, NULL);
 
 static ssize_t show_alarm(struct device *dev, struct device_attribute *attr,
@@ -890,12 +1065,20 @@ static struct platform_driver via686a_driver = {
 		.name	= "via686a",
 	},
 	.probe		= via686a_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(via686a_remove),
+=======
+	.remove		= via686a_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /* This is called when the module is loaded */
+<<<<<<< HEAD
 static int __devinit via686a_probe(struct platform_device *pdev)
+=======
+static int via686a_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct via686a_data *data;
 	struct resource *res;
@@ -903,13 +1086,19 @@ static int __devinit via686a_probe(struct platform_device *pdev)
 
 	/* Reserve the ISA region */
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+<<<<<<< HEAD
 	if (!request_region(res->start, VIA686A_EXTENT,
 			    via686a_driver.driver.name)) {
+=======
+	if (!devm_request_region(&pdev->dev, res->start, VIA686A_EXTENT,
+				 via686a_driver.driver.name)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "Region 0x%lx-0x%lx already in use!\n",
 			(unsigned long)res->start, (unsigned long)res->end);
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct via686a_data), GFP_KERNEL))) {
 =======
@@ -919,6 +1108,12 @@ static int __devinit via686a_probe(struct platform_device *pdev)
 		err = -ENOMEM;
 		goto exit_release;
 	}
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct via686a_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, data);
 	data->addr = res->start;
@@ -930,12 +1125,18 @@ static int __devinit via686a_probe(struct platform_device *pdev)
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&pdev->dev.kobj, &via686a_group)))
 =======
 	err = sysfs_create_group(&pdev->dev.kobj, &via686a_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto exit_free;
+=======
+	err = sysfs_create_group(&pdev->dev.kobj, &via686a_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&pdev->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -947,6 +1148,7 @@ static int __devinit via686a_probe(struct platform_device *pdev)
 
 exit_remove_files:
 	sysfs_remove_group(&pdev->dev.kobj, &via686a_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit_release:
@@ -955,16 +1157,25 @@ exit_release:
 }
 
 static int __devexit via686a_remove(struct platform_device *pdev)
+=======
+	return err;
+}
+
+static int via686a_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct via686a_data *data = platform_get_drvdata(pdev);
 
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&pdev->dev.kobj, &via686a_group);
 
+<<<<<<< HEAD
 	release_region(data->addr, VIA686A_EXTENT);
 	platform_set_drvdata(pdev, NULL);
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -975,7 +1186,11 @@ static void via686a_update_fan_div(struct via686a_data *data)
 	data->fan_div[1] = reg >> 6;
 }
 
+<<<<<<< HEAD
 static void __devinit via686a_init_device(struct via686a_data *data)
+=======
+static void via686a_init_device(struct via686a_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 reg;
 
@@ -1028,17 +1243,23 @@ static struct via686a_data *via686a_update_device(struct device *dev)
 					       VIA686A_REG_TEMP_HYST[i]);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* add in lower 2 bits
 		   temp1 uses bits 7-6 of VIA686A_REG_TEMP_LOW1
 		   temp2 uses bits 5-4 of VIA686A_REG_TEMP_LOW23
 		   temp3 uses bits 7-6 of VIA686A_REG_TEMP_LOW23
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * add in lower 2 bits
 		 * temp1 uses bits 7-6 of VIA686A_REG_TEMP_LOW1
 		 * temp2 uses bits 5-4 of VIA686A_REG_TEMP_LOW23
 		 * temp3 uses bits 7-6 of VIA686A_REG_TEMP_LOW23
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 */
 		data->temp[0] |= (via686a_read_value(data,
 						     VIA686A_REG_TEMP_LOW1)
@@ -1065,6 +1286,7 @@ static struct via686a_data *via686a_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id via686a_pci_ids[] = {
 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C686_4) },
 	{ 0, }
@@ -1079,6 +1301,15 @@ static DEFINE_PCI_DEVICE_TABLE(via686a_pci_ids) = {
 MODULE_DEVICE_TABLE(pci, via686a_pci_ids);
 
 static int __devinit via686a_device_add(unsigned short address)
+=======
+static const struct pci_device_id via686a_pci_ids[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C686_4) },
+	{ }
+};
+MODULE_DEVICE_TABLE(pci, via686a_pci_ids);
+
+static int via686a_device_add(unsigned short address)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource res = {
 		.start	= address,
@@ -1119,7 +1350,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit via686a_pci_probe(struct pci_dev *dev,
+=======
+static int via686a_pci_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 				       const struct pci_device_id *id)
 {
 	u16 address, val;
@@ -1137,8 +1372,13 @@ static int __devinit via686a_pci_probe(struct pci_dev *dev,
 
 	address = val & ~(VIA686A_EXTENT - 1);
 	if (address == 0) {
+<<<<<<< HEAD
 		dev_err(&dev->dev, "base address not set - upgrade BIOS "
 			"or use force_addr=0xaddr\n");
+=======
+		dev_err(&dev->dev,
+			"base address not set - upgrade BIOS or use force_addr=0xaddr\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -1147,8 +1387,14 @@ static int __devinit via686a_pci_probe(struct pci_dev *dev,
 		return -ENODEV;
 	if (!(val & 0x0001)) {
 		if (!force_addr) {
+<<<<<<< HEAD
 			dev_warn(&dev->dev, "Sensors disabled, enable "
 				 "with force_addr=0x%x\n", address);
+=======
+			dev_warn(&dev->dev,
+				 "Sensors disabled, enable with force_addr=0x%x\n",
+				 address);
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 		}
 
@@ -1167,11 +1413,16 @@ static int __devinit via686a_pci_probe(struct pci_dev *dev,
 		goto exit_unregister;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Always return failure here.  This is to allow other drivers to bind
 =======
 	/*
 	 * Always return failure here.  This is to allow other drivers to bind
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Always return failure here.  This is to allow other drivers to bind
+>>>>>>> refs/remotes/origin/master
 	 * to this pci device.  We don't really want to have control over the
 	 * pci device, we only wanted to read as few register values from it.
 	 */

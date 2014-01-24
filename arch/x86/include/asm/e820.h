@@ -1,5 +1,6 @@
 #ifndef _ASM_X86_E820_H
 #define _ASM_X86_E820_H
+<<<<<<< HEAD
 #define E820MAP	0x2d0		/* our map */
 #define E820MAX	128		/* number of entries in E820MAP */
 
@@ -27,12 +28,16 @@
  *	#if defined(__KERNEL__) && defined(CONFIG_EFI)
  */
 #ifdef __KERNEL__
+=======
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_EFI
 #include <linux/numa.h>
 #define E820_X_MAX (E820MAX + 3 * MAX_NUMNODES)
 #else	/* ! CONFIG_EFI */
 #define E820_X_MAX E820MAX
 #endif
+<<<<<<< HEAD
 #else	/* ! __KERNEL__ */
 #define E820_X_MAX E820MAX
 #endif
@@ -76,6 +81,10 @@ struct e820map {
 #define BIOS_ROM_END		0xffffffff
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/e820.h>
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 /* see comment in arch/x86/kernel/e820.c */
 extern struct e820map e820;
 extern struct e820map e820_saved;
@@ -96,7 +105,11 @@ extern void e820_setup_gap(void);
 extern int e820_search_gap(unsigned long *gapstart, unsigned long *gapsize,
 			unsigned long start_addr, unsigned long long end_addr);
 struct setup_data;
+<<<<<<< HEAD
 extern void parse_e820_ext(struct setup_data *data);
+=======
+extern void parse_e820_ext(u64 phys_addr, u32 data_len);
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_X86_64) || \
 	(defined(CONFIG_X86_32) && defined(CONFIG_HIBERNATION))
@@ -118,10 +131,14 @@ static inline void early_memtest(unsigned long start, unsigned long end)
 extern unsigned long e820_end_of_ram_pfn(void);
 extern unsigned long e820_end_of_low_ram_pfn(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern u64 early_reserve_e820(u64 startt, u64 sizet, u64 align);
 =======
 extern u64 early_reserve_e820(u64 sizet, u64 align);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern u64 early_reserve_e820(u64 sizet, u64 align);
+>>>>>>> refs/remotes/origin/master
 
 void memblock_x86_fill(void);
 void memblock_find_dma_reserve(void);
@@ -141,6 +158,7 @@ static inline bool is_ISA_range(u64 s, u64 e)
 	return s >= ISA_START_ADDRESS && e <= ISA_END_ADDRESS;
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 #endif /* __ASSEMBLY__ */
 
@@ -150,4 +168,10 @@ static inline bool is_ISA_range(u64 s, u64 e)
 #define HIGH_MEMORY	(1024*1024)
 #endif /* __KERNEL__ */
 
+=======
+#endif /* __ASSEMBLY__ */
+#include <linux/ioport.h>
+
+#define HIGH_MEMORY	(1024*1024)
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_E820_H */

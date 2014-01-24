@@ -14,6 +14,7 @@
 #include <sys/wait.h>
 #include "etap.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "net_user.h"
@@ -24,6 +25,11 @@
 #include "net_user.h"
 #include "um_malloc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <os.h>
+#include <net_user.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_PACKET ETH_MAX_PACKET
 

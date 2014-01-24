@@ -51,10 +51,14 @@ struct eth_addr {
 };
 static struct eth_addr __initdata hw_addr[1];
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct eth_platform_data __initdata eth_data[1] = {
 =======
 static struct macb_platform_data __initdata eth_data[1] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data __initdata eth_data[1] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.phy_mask	= ~(1U << 1),
 	},
@@ -129,7 +133,11 @@ static struct fb_monspecs __initdata favr32_default_monspecs = {
 	.dclkmax		= 28000000,
 };
 
+<<<<<<< HEAD
 struct atmel_lcdfb_info __initdata favr32_lcdc_data = {
+=======
+struct atmel_lcdfb_pdata __initdata favr32_lcdc_data = {
+>>>>>>> refs/remotes/origin/master
 	.default_bpp		= 16,
 	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
 	.default_lcdcon2	= (ATMEL_LCDC_DISTYPE_TFT
@@ -302,8 +310,15 @@ static int __init set_abdac_rate(struct platform_device *pdev)
 	 */
 	retval = clk_round_rate(pll1,
 			CONFIG_BOARD_FAVR32_ABDAC_RATE * 256 * 16);
+<<<<<<< HEAD
 	if (retval < 0)
 		goto out_abdac;
+=======
+	if (retval <= 0) {
+		retval = -EINVAL;
+		goto out_abdac;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	retval = clk_set_rate(pll1, retval);
 	if (retval != 0)

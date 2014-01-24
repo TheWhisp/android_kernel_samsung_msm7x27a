@@ -5,6 +5,7 @@
 #ifndef __UM_SYSDEP_CHECKSUM_H
 #define __UM_SYSDEP_CHECKSUM_H
 
+<<<<<<< HEAD
 #include "linux/in6.h"
 #include "linux/string.h"
 
@@ -144,6 +145,8 @@ static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr,
  * in icmp.c
  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline __sum16 ip_compute_csum(const void *buff, int len)
 {
     return csum_fold (csum_partial(buff, len, 0));
@@ -198,4 +201,7 @@ static __inline__ __wsum csum_and_copy_to_user(const void *src,
 }
 
 #endif
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

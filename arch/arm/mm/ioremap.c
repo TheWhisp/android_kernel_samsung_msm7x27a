@@ -25,16 +25,23 @@
 #include <linux/mm.h>
 #include <linux/vmalloc.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 #include <asm/cp15.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sizes.h>
+
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cputype.h>
 #include <asm/cacheflush.h>
 #include <asm/mmu_context.h>
 #include <asm/pgalloc.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
 #include <asm/sizes.h>
 <<<<<<< HEAD
 =======
@@ -73,15 +80,101 @@ EXPORT_SYMBOL(ioremap_pages);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 void __check_kvm_seq(struct mm_struct *mm)
+=======
+#include <asm/system_info.h>
+
+#include <asm/mach/map.h>
+#include <asm/mach/pci.h>
+#include "mm.h"
+
+
+LIST_HEAD(static_vmlist);
+
+static struct static_vm *find_static_vm_paddr(phys_addr_t paddr,
+			size_t size, unsigned int mtype)
+{
+	struct static_vm *svm;
+	struct vm_struct *vm;
+
+	list_for_each_entry(svm, &static_vmlist, list) {
+		vm = &svm->vm;
+		if (!(vm->flags & VM_ARM_STATIC_MAPPING))
+			continue;
+		if ((vm->flags & VM_ARM_MTYPE_MASK) != VM_ARM_MTYPE(mtype))
+			continue;
+
+		if (vm->phys_addr > paddr ||
+			paddr + size - 1 > vm->phys_addr + vm->size - 1)
+			continue;
+
+		return svm;
+	}
+
+	return NULL;
+}
+
+struct static_vm *find_static_vm_vaddr(void *vaddr)
+{
+	struct static_vm *svm;
+	struct vm_struct *vm;
+
+	list_for_each_entry(svm, &static_vmlist, list) {
+		vm = &svm->vm;
+
+		/* static_vmlist is ascending order */
+		if (vm->addr > vaddr)
+			break;
+
+		if (vm->addr <= vaddr && vm->addr + vm->size > vaddr)
+			return svm;
+	}
+
+	return NULL;
+}
+
+void __init add_static_vm_early(struct static_vm *svm)
+{
+	struct static_vm *curr_svm;
+	struct vm_struct *vm;
+	void *vaddr;
+
+	vm = &svm->vm;
+	vm_area_add_early(vm);
+	vaddr = vm->addr;
+
+	list_for_each_entry(curr_svm, &static_vmlist, list) {
+		vm = &curr_svm->vm;
+
+		if (vm->addr > vaddr)
+			break;
+	}
+	list_add_tail(&svm->list, &curr_svm->list);
+}
+
+int ioremap_page(unsigned long virt, unsigned long phys,
+		 const struct mem_type *mtype)
+{
+	return ioremap_page_range(virt, virt + PAGE_SIZE, phys,
+				  __pgprot(mtype->prot_pte));
+}
+EXPORT_SYMBOL(ioremap_page);
+
+void __check_vmalloc_seq(struct mm_struct *mm)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int seq;
 
 	do {
+<<<<<<< HEAD
 		seq = init_mm.context.kvm_seq;
+=======
+		seq = init_mm.context.vmalloc_seq;
+>>>>>>> refs/remotes/origin/master
 		memcpy(pgd_offset(mm, VMALLOC_START),
 		       pgd_offset_k(VMALLOC_START),
 		       sizeof(pgd_t) * (pgd_index(VMALLOC_END) -
 					pgd_index(VMALLOC_START)));
+<<<<<<< HEAD
 		mm->context.kvm_seq = seq;
 	} while (seq != init_mm.context.kvm_seq);
 }
@@ -91,6 +184,13 @@ void __check_kvm_seq(struct mm_struct *mm)
 =======
 #if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mm->context.vmalloc_seq = seq;
+	} while (seq != init_mm.context.vmalloc_seq);
+}
+
+#if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
+>>>>>>> refs/remotes/origin/master
 /*
  * Section support is unsafe on SMP - If you iounmap and ioremap a region,
  * the other CPUs will not see this change until their next context switch.
@@ -106,6 +206,7 @@ static void unmap_area_sections(unsigned long virt, unsigned long size)
 	unsigned long addr = virt, end = virt + (size & ~(SZ_1M - 1));
 	pgd_t *pgd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	flush_cache_vunmap(addr, end);
 	pgd = pgd_offset_k(addr);
@@ -114,6 +215,8 @@ static void unmap_area_sections(unsigned long virt, unsigned long size)
 
 		pmd = *pmdp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pud_t *pud;
 	pmd_t *pmdp;
 
@@ -124,17 +227,28 @@ static void unmap_area_sections(unsigned long virt, unsigned long size)
 	do {
 		pmd_t pmd = *pmdp;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (!pmd_none(pmd)) {
 			/*
 			 * Clear the PMD from the page table, and
 			 * increment the kvm sequence so others
+=======
+		if (!pmd_none(pmd)) {
+			/*
+			 * Clear the PMD from the page table, and
+			 * increment the vmalloc sequence so others
+>>>>>>> refs/remotes/origin/master
 			 * notice this change.
 			 *
 			 * Note: this is still racy on SMP machines.
 			 */
 			pmd_clear(pmdp);
+<<<<<<< HEAD
 			init_mm.context.kvm_seq++;
+=======
+			init_mm.context.vmalloc_seq++;
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * Free the page table, if there was one.
@@ -144,20 +258,30 @@ static void unmap_area_sections(unsigned long virt, unsigned long size)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr += PGDIR_SIZE;
 		pgd++;
 =======
 		addr += PMD_SIZE;
 		pmdp += 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		addr += PMD_SIZE;
+		pmdp += 2;
+>>>>>>> refs/remotes/origin/master
 	} while (addr < end);
 
 	/*
 	 * Ensure that the active_mm is up to date - we want to
 	 * catch any use-after-iounmap cases.
 	 */
+<<<<<<< HEAD
 	if (current->active_mm->context.kvm_seq != init_mm.context.kvm_seq)
 		__check_kvm_seq(current->active_mm);
+=======
+	if (current->active_mm->context.vmalloc_seq != init_mm.context.vmalloc_seq)
+		__check_vmalloc_seq(current->active_mm);
+>>>>>>> refs/remotes/origin/master
 
 	flush_tlb_kernel_range(virt, end);
 }
@@ -169,10 +293,15 @@ remap_area_sections(unsigned long virt, unsigned long pfn,
 	unsigned long addr = virt, end = virt + size;
 	pgd_t *pgd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pud_t *pud;
 	pmd_t *pmd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pud_t *pud;
+	pmd_t *pmd;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Remove and free any PTE-based mapping, and
@@ -182,6 +311,7 @@ remap_area_sections(unsigned long virt, unsigned long pfn,
 
 	pgd = pgd_offset_k(addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	do {
 		pmd_t *pmd = pmd_offset(pgd, addr);
 
@@ -190,6 +320,11 @@ remap_area_sections(unsigned long virt, unsigned long pfn,
 	pmd = pmd_offset(pud, addr);
 	do {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pud = pud_offset(pgd, addr);
+	pmd = pmd_offset(pud, addr);
+	do {
+>>>>>>> refs/remotes/origin/master
 		pmd[0] = __pmd(__pfn_to_phys(pfn) | type->prot_sect);
 		pfn += SZ_1M >> PAGE_SHIFT;
 		pmd[1] = __pmd(__pfn_to_phys(pfn) | type->prot_sect);
@@ -197,12 +332,17 @@ remap_area_sections(unsigned long virt, unsigned long pfn,
 		flush_pmd_entry(pmd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr += PGDIR_SIZE;
 		pgd++;
 =======
 		addr += PMD_SIZE;
 		pmd += 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		addr += PMD_SIZE;
+		pmd += 2;
+>>>>>>> refs/remotes/origin/master
 	} while (addr < end);
 
 	return 0;
@@ -215,10 +355,15 @@ remap_area_supersections(unsigned long virt, unsigned long pfn,
 	unsigned long addr = virt, end = virt + size;
 	pgd_t *pgd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pud_t *pud;
 	pmd_t *pmd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pud_t *pud;
+	pmd_t *pmd;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Remove and free any PTE-based mapping, and
@@ -228,10 +373,15 @@ remap_area_supersections(unsigned long virt, unsigned long pfn,
 
 	pgd = pgd_offset_k(virt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pud = pud_offset(pgd, addr);
 	pmd = pmd_offset(pud, addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pud = pud_offset(pgd, addr);
+	pmd = pmd_offset(pud, addr);
+>>>>>>> refs/remotes/origin/master
 	do {
 		unsigned long super_pmd_val, i;
 
@@ -241,14 +391,18 @@ remap_area_supersections(unsigned long virt, unsigned long pfn,
 
 		for (i = 0; i < 8; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pmd_t *pmd = pmd_offset(pgd, addr);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pmd[0] = __pmd(super_pmd_val);
 			pmd[1] = __pmd(super_pmd_val);
 			flush_pmd_entry(pmd);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			addr += PGDIR_SIZE;
 			pgd++;
@@ -256,6 +410,10 @@ remap_area_supersections(unsigned long virt, unsigned long pfn,
 			addr += PMD_SIZE;
 			pmd += 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			addr += PMD_SIZE;
+			pmd += 2;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		pfn += SUPERSECTION_SIZE >> PAGE_SHIFT;
@@ -271,6 +429,7 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 	const struct mem_type *type;
 	int err;
 	unsigned long addr;
+<<<<<<< HEAD
  	struct vm_struct * area;
 
 <<<<<<< HEAD
@@ -296,6 +455,18 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vm_struct *area;
+	phys_addr_t paddr = __pfn_to_phys(pfn);
+
+#ifndef CONFIG_ARM_LPAE
+	/*
+	 * High mappings must be supersection aligned
+	 */
+	if (pfn >= 0x100000 && (paddr & ~SUPERSECTION_MASK))
+		return NULL;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	type = get_mem_type(mtype);
 	if (!type)
@@ -306,6 +477,7 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 	 */
 	size = PAGE_ALIGN(offset + size);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/*
@@ -329,6 +501,21 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 		return (void __iomem *) (offset + addr);
 	}
 	read_unlock(&vmlist_lock);
+=======
+	/*
+	 * Try to reuse one of the static mapping whenever possible.
+	 */
+	if (size && !(sizeof(phys_addr_t) == 4 && pfn >= 0x100000)) {
+		struct static_vm *svm;
+
+		svm = find_static_vm_paddr(paddr, size, mtype);
+		if (svm) {
+			addr = (unsigned long)svm->vm.addr;
+			addr += paddr - svm->vm.phys_addr;
+			return (void __iomem *) (offset + addr);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Don't allow RAM to be mapped - this causes problems with ARMv6+
@@ -336,11 +523,15 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 	if (WARN_ON(pfn_valid(pfn)))
 		return NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	area = get_vm_area_caller(size, VM_IOREMAP, caller);
  	if (!area)
  		return NULL;
  	addr = (unsigned long)area->addr;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #ifndef CONFIG_SMP
@@ -354,11 +545,27 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 		area->flags |= VM_ARM_SECTION_MAPPING;
 		err = remap_area_supersections(addr, pfn, size, type);
 	} else if (!((__pfn_to_phys(pfn) | size | addr) & ~PMD_MASK)) {
+=======
+	area->phys_addr = paddr;
+
+#if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
+	if (DOMAIN_IO == 0 &&
+	    (((cpu_architecture() >= CPU_ARCH_ARMv6) && (get_cr() & CR_XP)) ||
+	       cpu_is_xsc3()) && pfn >= 0x100000 &&
+	       !((paddr | size | addr) & ~SUPERSECTION_MASK)) {
+		area->flags |= VM_ARM_SECTION_MAPPING;
+		err = remap_area_supersections(addr, pfn, size, type);
+	} else if (!((paddr | size | addr) & ~PMD_MASK)) {
+>>>>>>> refs/remotes/origin/master
 		area->flags |= VM_ARM_SECTION_MAPPING;
 		err = remap_area_sections(addr, pfn, size, type);
 	} else
 #endif
+<<<<<<< HEAD
 		err = ioremap_page_range(addr, addr + size, __pfn_to_phys(pfn),
+=======
+		err = ioremap_page_range(addr, addr + size, paddr,
+>>>>>>> refs/remotes/origin/master
 					 __pgprot(type->prot_pte));
 
 	if (err) {
@@ -370,10 +577,17 @@ void __iomem * __arm_ioremap_pfn_caller(unsigned long pfn,
 	return (void __iomem *) (offset + addr);
 }
 
+<<<<<<< HEAD
 void __iomem *__arm_ioremap_caller(unsigned long phys_addr, size_t size,
 	unsigned int mtype, void *caller)
 {
 	unsigned long last_addr;
+=======
+void __iomem *__arm_ioremap_caller(phys_addr_t phys_addr, size_t size,
+	unsigned int mtype, void *caller)
+{
+	phys_addr_t last_addr;
+>>>>>>> refs/remotes/origin/master
  	unsigned long offset = phys_addr & ~PAGE_MASK;
  	unsigned long pfn = __phys_to_pfn(phys_addr);
 
@@ -407,6 +621,7 @@ __arm_ioremap_pfn(unsigned long pfn, unsigned long offset, size_t size,
 EXPORT_SYMBOL(__arm_ioremap_pfn);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __iomem *
 __arm_ioremap(unsigned long phys_addr, size_t size, unsigned int mtype)
 {
@@ -416,11 +631,18 @@ __arm_ioremap(unsigned long phys_addr, size_t size, unsigned int mtype)
 EXPORT_SYMBOL(__arm_ioremap);
 =======
 void __iomem * (*arch_ioremap_caller)(unsigned long, size_t,
+=======
+void __iomem * (*arch_ioremap_caller)(phys_addr_t, size_t,
+>>>>>>> refs/remotes/origin/master
 				      unsigned int, void *) =
 	__arm_ioremap_caller;
 
 void __iomem *
+<<<<<<< HEAD
 __arm_ioremap(unsigned long phys_addr, size_t size, unsigned int mtype)
+=======
+__arm_ioremap(phys_addr_t phys_addr, size_t size, unsigned int mtype)
+>>>>>>> refs/remotes/origin/master
 {
 	return arch_ioremap_caller(phys_addr, size, mtype,
 		__builtin_return_address(0));
@@ -435,7 +657,11 @@ EXPORT_SYMBOL(__arm_ioremap);
  * CONFIG_GENERIC_ALLOCATOR for allocating external memory.
  */
 void __iomem *
+<<<<<<< HEAD
 __arm_ioremap_exec(unsigned long phys_addr, size_t size, bool cached)
+=======
+__arm_ioremap_exec(phys_addr_t phys_addr, size_t size, bool cached)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int mtype;
 
@@ -447,11 +673,15 @@ __arm_ioremap_exec(unsigned long phys_addr, size_t size, bool cached)
 	return __arm_ioremap_caller(phys_addr, size, mtype,
 			__builtin_return_address(0));
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void __iounmap(volatile void __iomem *io_addr)
 {
 	void *addr = (void *)(PAGE_MASK & (unsigned long)io_addr);
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifndef CONFIG_SMP
 	struct vm_struct **p, *tmp;
@@ -495,11 +725,27 @@ EXPORT_SYMBOL(__iounmap);
 			return;
 		}
 #if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
+=======
+	struct static_vm *svm;
+
+	/* If this is a static mapping, we must leave it alone */
+	svm = find_static_vm_vaddr(addr);
+	if (svm)
+		return;
+
+#if !defined(CONFIG_SMP) && !defined(CONFIG_ARM_LPAE)
+	{
+		struct vm_struct *vm;
+
+		vm = find_vm_area(addr);
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If this is a section based mapping we need to handle it
 		 * specially as the VM subsystem does not know how to handle
 		 * such a beast.
 		 */
+<<<<<<< HEAD
 		if ((vm->addr == addr) &&
 		    (vm->flags & VM_ARM_SECTION_MAPPING)) {
 			unmap_area_sections((unsigned long)vm->addr, vm->size);
@@ -508,6 +754,12 @@ EXPORT_SYMBOL(__iounmap);
 #endif
 	}
 	read_unlock(&vmlist_lock);
+=======
+		if (vm && (vm->flags & VM_ARM_SECTION_MAPPING))
+			unmap_area_sections((unsigned long)vm->addr, vm->size);
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	vunmap(addr);
 }
@@ -519,4 +771,20 @@ void __arm_iounmap(volatile void __iomem *io_addr)
 	arch_iounmap(io_addr);
 }
 EXPORT_SYMBOL(__arm_iounmap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_PCI
+int pci_ioremap_io(unsigned int offset, phys_addr_t phys_addr)
+{
+	BUG_ON(offset + SZ_64K > IO_SPACE_LIMIT);
+
+	return ioremap_page_range(PCI_IO_VIRT_BASE + offset,
+				  PCI_IO_VIRT_BASE + offset + SZ_64K,
+				  phys_addr,
+				  __pgprot(get_mem_type(MT_DEVICE)->prot_pte));
+}
+EXPORT_SYMBOL_GPL(pci_ioremap_io);
+#endif
+>>>>>>> refs/remotes/origin/master

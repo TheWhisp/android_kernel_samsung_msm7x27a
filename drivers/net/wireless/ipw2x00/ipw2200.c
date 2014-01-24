@@ -33,12 +33,18 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "ipw2200.h"
 =======
 #include <net/cfg80211-wext.h>
 #include "ipw2200.h"
 #include "ipw.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/cfg80211-wext.h>
+#include "ipw2200.h"
+#include "ipw.h"
+>>>>>>> refs/remotes/origin/master
 
 
 #ifndef KBUILD_EXTMOD
@@ -137,7 +143,10 @@ static struct ieee80211_rate ipw2200_rates[] = {
 #define ipw2200_num_bg_rates	12
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Ugly macro to convert literal channel numbers into their mhz equivalents
  * There are certianly some conditions that will break this (like feeding it '30')
  * but they shouldn't arise since nothing talks on channel 30. */
@@ -146,7 +155,10 @@ static struct ieee80211_rate ipw2200_rates[] = {
 	(((x) == 14) ? 2484 : ((x) * 5) + 2407) : \
 	((x) + 1000) * 5)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IPW2200_QOS
 static int qos_enable = 0;
 static int qos_burst_enable = 0;
@@ -2705,7 +2717,25 @@ static u16 eeprom_read_u16(struct ipw_priv *priv, u8 addr)
 /* data's copy of the eeprom data                                 */
 static void eeprom_parse_mac(struct ipw_priv *priv, u8 * mac)
 {
+<<<<<<< HEAD
 	memcpy(mac, &priv->eeprom[EEPROM_MAC_ADDRESS], 6);
+=======
+	memcpy(mac, &priv->eeprom[EEPROM_MAC_ADDRESS], ETH_ALEN);
+}
+
+static void ipw_read_eeprom(struct ipw_priv *priv)
+{
+	int i;
+	__le16 *eeprom = (__le16 *) priv->eeprom;
+
+	IPW_DEBUG_TRACE(">>\n");
+
+	/* read entire contents of eeprom into private buffer */
+	for (i = 0; i < 128; i++)
+		eeprom[i] = cpu_to_le16(eeprom_read_u16(priv, (u8) i));
+
+	IPW_DEBUG_TRACE("<<\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2719,6 +2749,7 @@ static void eeprom_parse_mac(struct ipw_priv *priv, u8 * mac)
 static void ipw_eeprom_init_sram(struct ipw_priv *priv)
 {
 	int i;
+<<<<<<< HEAD
 	__le16 *eeprom = (__le16 *) priv->eeprom;
 
 	IPW_DEBUG_TRACE(">>\n");
@@ -2727,6 +2758,11 @@ static void ipw_eeprom_init_sram(struct ipw_priv *priv)
 	for (i = 0; i < 128; i++)
 		eeprom[i] = cpu_to_le16(eeprom_read_u16(priv, (u8) i));
 
+=======
+
+	IPW_DEBUG_TRACE(">>\n");
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	   If the data looks correct, then copy it to our private
 	   copy.  Otherwise let the firmware know to perform the operation
@@ -3546,6 +3582,10 @@ static int ipw_load(struct ipw_priv *priv)
 		ipw_rx_queue_reset(priv, priv->rxq);
 	if (!priv->rxq) {
 		IPW_ERROR("Unable to initialize Rx queue\n");
+<<<<<<< HEAD
+=======
+		rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -3650,8 +3690,15 @@ static int ipw_load(struct ipw_priv *priv)
 	/* ack fw init done interrupt */
 	ipw_write32(priv, IPW_INTA_RW, IPW_INTA_BIT_FW_INITIALIZATION_DONE);
 
+<<<<<<< HEAD
 	/* read eeprom data and initialize the eeprom region of sram */
 	priv->eeprom_delay = 1;
+=======
+	/* read eeprom data */
+	priv->eeprom_delay = 1;
+	ipw_read_eeprom(priv);
+	/* initialize the eeprom region of sram */
+>>>>>>> refs/remotes/origin/master
 	ipw_eeprom_init_sram(priv);
 
 	/* enable interrupts */
@@ -3676,8 +3723,12 @@ static int ipw_load(struct ipw_priv *priv)
 		priv->rxq = NULL;
 	}
 	ipw_tx_queue_free(priv);
+<<<<<<< HEAD
 	if (raw)
 		release_firmware(raw);
+=======
+	release_firmware(raw);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	fw_loaded = 0;
 	raw = NULL;
@@ -4477,6 +4528,7 @@ static void handle_scan_event(struct ipw_priv *priv)
 {
 	/* Only userspace-requested scan completion events go out immediately */
 	if (!priv->user_requested_scan) {
+<<<<<<< HEAD
 		if (!delayed_work_pending(&priv->scan_event))
 			schedule_delayed_work(&priv->scan_event,
 					      round_jiffies_relative(msecs_to_jiffies(4000)));
@@ -4489,6 +4541,13 @@ static void handle_scan_event(struct ipw_priv *priv)
 		wrqu.data.length = 0;
 		wrqu.data.flags = 0;
 		wireless_send_event(priv->net_dev, SIOCGIWSCAN, &wrqu, NULL);
+=======
+		schedule_delayed_work(&priv->scan_event,
+				      round_jiffies_relative(msecs_to_jiffies(4000)));
+	} else {
+		priv->user_requested_scan = 0;
+		mod_delayed_work(system_wq, &priv->scan_event, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -6809,7 +6868,10 @@ static int ipw_wx_get_auth(struct net_device *dev,
 	struct libipw_device *ieee = priv->ieee;
 	struct lib80211_crypt_data *crypt;
 	struct iw_param *param = &wrqu->param;
+<<<<<<< HEAD
 	int ret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (param->flags & IW_AUTH_INDEX) {
 	case IW_AUTH_WPA_VERSION:
@@ -6819,8 +6881,12 @@ static int ipw_wx_get_auth(struct net_device *dev,
 		/*
 		 * wpa_supplicant will control these internally
 		 */
+<<<<<<< HEAD
 		ret = -EOPNOTSUPP;
 		break;
+=======
+		return -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 
 	case IW_AUTH_TKIP_COUNTERMEASURES:
 		crypt = priv->ieee->crypt_info.crypt[priv->ieee->crypt_info.tx_keyidx];
@@ -7043,7 +7109,11 @@ static int ipw_qos_activate(struct ipw_priv *priv,
 			    cpu_to_le16(burst_duration);
 	} else if (priv->ieee->iw_mode == IW_MODE_ADHOC) {
 		if (type == IEEE_B) {
+<<<<<<< HEAD
 			IPW_DEBUG_QOS("QoS activate IBSS nework mode %d\n",
+=======
+			IPW_DEBUG_QOS("QoS activate IBSS network mode %d\n",
+>>>>>>> refs/remotes/origin/master
 				      type);
 			if (priv->qos_data.qos_enable == 0)
 				active_one = &def_parameters_CCK;
@@ -7077,9 +7147,13 @@ static int ipw_qos_activate(struct ipw_priv *priv,
 	}
 
 	IPW_DEBUG_QOS("QoS sending IPW_CMD_QOS_PARAMETERS\n");
+<<<<<<< HEAD
 	err = ipw_send_qos_params_command(priv,
 					  (struct libipw_qos_parameters *)
 					  &(qos_parameters[0]));
+=======
+	err = ipw_send_qos_params_command(priv, &qos_parameters[0]);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		IPW_DEBUG_QOS("QoS IPW_CMD_QOS_PARAMETERS failed\n");
 
@@ -7868,10 +7942,14 @@ static void ipw_handle_data_packet_monitor(struct ipw_priv *priv,
 	struct ipw_rt_hdr *ipw_rt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	short len = le16_to_cpu(pkt->u.frame.length);
 =======
 	unsigned short len = le16_to_cpu(pkt->u.frame.length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short len = le16_to_cpu(pkt->u.frame.length);
+>>>>>>> refs/remotes/origin/master
 
 	/* We received data from the HW, so stop the watchdog */
 	dev->trans_start = jiffies;
@@ -8047,10 +8125,14 @@ static void ipw_handle_promiscuous_rx(struct ipw_priv *priv,
 	s8 noise = (s8) le16_to_cpu(frame->noise);
 	u8 rate = frame->rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	short len = le16_to_cpu(pkt->u.frame.length);
 =======
 	unsigned short len = le16_to_cpu(pkt->u.frame.length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short len = le16_to_cpu(pkt->u.frame.length);
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 	int hdr_only = 0;
 	u16 filter = priv->prom_priv->filter;
@@ -8272,7 +8354,11 @@ static  int is_duplicate_packet(struct ipw_priv *priv,
 			u8 *mac = header->addr2;
 			int index = mac[5] % IPW_IBSS_MAC_HASH_SIZE;
 
+<<<<<<< HEAD
 			__list_for_each(p, &priv->ibss_mac_hash[index]) {
+=======
+			list_for_each(p, &priv->ibss_mac_hash[index]) {
+>>>>>>> refs/remotes/origin/master
 				entry =
 				    list_entry(p, struct ipw_ibss_seq, list);
 				if (!memcmp(entry->mac, mac, ETH_ALEN))
@@ -9044,6 +9130,7 @@ static int ipw_wx_set_wap(struct net_device *dev,
 {
 	struct ipw_priv *priv = libipw_priv(dev);
 
+<<<<<<< HEAD
 	static const unsigned char any[] = {
 		0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 	};
@@ -9056,6 +9143,13 @@ static int ipw_wx_set_wap(struct net_device *dev,
 	mutex_lock(&priv->mutex);
 	if (!memcmp(any, wrqu->ap_addr.sa_data, ETH_ALEN) ||
 	    !memcmp(off, wrqu->ap_addr.sa_data, ETH_ALEN)) {
+=======
+	if (wrqu->ap_addr.sa_family != ARPHRD_ETHER)
+		return -EINVAL;
+	mutex_lock(&priv->mutex);
+	if (is_broadcast_ether_addr(wrqu->ap_addr.sa_data) ||
+	    is_zero_ether_addr(wrqu->ap_addr.sa_data)) {
+>>>>>>> refs/remotes/origin/master
 		/* we disable mandatory BSSID association */
 		IPW_DEBUG_WX("Setting AP BSSID to ANY\n");
 		priv->config &= ~CFG_STATIC_BSSID;
@@ -10487,10 +10581,14 @@ static void ipw_handle_promiscuous_tx(struct ipw_priv *priv,
 			len = src->len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dst = alloc_skb(len + sizeof(*rt_hdr), GFP_ATOMIC);
 =======
 		dst = alloc_skb(len + sizeof(*rt_hdr) + sizeof(u16)*2, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dst = alloc_skb(len + sizeof(*rt_hdr) + sizeof(u16)*2, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (!dst)
 			continue;
 
@@ -10580,12 +10678,17 @@ static void ipw_ethtool_get_drvinfo(struct net_device *dev,
 	u32 len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 =======
 	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
 	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 
 	len = sizeof(vers);
 	ipw_get_ordinal(p, IPW_ORD_STAT_FW_VERSION, vers, &len);
@@ -10595,11 +10698,16 @@ static void ipw_ethtool_get_drvinfo(struct net_device *dev,
 	snprintf(info->fw_version, sizeof(info->fw_version), "%s (%s)",
 		 vers, date);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	strcpy(info->bus_info, pci_name(p->pci_dev));
 =======
 	strlcpy(info->bus_info, pci_name(p->pci_dev),
 		sizeof(info->bus_info));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strlcpy(info->bus_info, pci_name(p->pci_dev),
+		sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 	info->eedump_len = IPW_EEPROM_IMAGE_SIZE;
 }
 
@@ -10801,7 +10909,11 @@ static void ipw_bg_link_down(struct work_struct *work)
 	mutex_unlock(&priv->mutex);
 }
 
+<<<<<<< HEAD
 static int __devinit ipw_setup_deferred_work(struct ipw_priv *priv)
+=======
+static int ipw_setup_deferred_work(struct ipw_priv *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
@@ -11296,10 +11408,38 @@ static const struct libipw_geo ipw_geos[] = {
 	 }
 };
 
+<<<<<<< HEAD
 #define MAX_HW_RESTARTS 5
 static int ipw_up(struct ipw_priv *priv)
 {
 	int rc, i, j;
+=======
+static void ipw_set_geo(struct ipw_priv *priv)
+{
+	int j;
+
+	for (j = 0; j < ARRAY_SIZE(ipw_geos); j++) {
+		if (!memcmp(&priv->eeprom[EEPROM_COUNTRY_CODE],
+			    ipw_geos[j].name, 3))
+			break;
+	}
+
+	if (j == ARRAY_SIZE(ipw_geos)) {
+		IPW_WARNING("SKU [%c%c%c] not recognized.\n",
+			    priv->eeprom[EEPROM_COUNTRY_CODE + 0],
+			    priv->eeprom[EEPROM_COUNTRY_CODE + 1],
+			    priv->eeprom[EEPROM_COUNTRY_CODE + 2]);
+		j = 0;
+	}
+
+	libipw_set_geo(priv->ieee, &ipw_geos[j]);
+}
+
+#define MAX_HW_RESTARTS 5
+static int ipw_up(struct ipw_priv *priv)
+{
+	int rc, i;
+>>>>>>> refs/remotes/origin/master
 
 	/* Age scan list entries found before suspend */
 	if (priv->suspend_time) {
@@ -11335,6 +11475,7 @@ static int ipw_up(struct ipw_priv *priv)
 		if (!(priv->config & CFG_CUSTOM_MAC))
 			eeprom_parse_mac(priv, priv->mac_addr);
 		memcpy(priv->net_dev->dev_addr, priv->mac_addr, ETH_ALEN);
+<<<<<<< HEAD
 		memcpy(priv->net_dev->perm_addr, priv->mac_addr, ETH_ALEN);
 
 		for (j = 0; j < ARRAY_SIZE(ipw_geos); j++) {
@@ -11353,6 +11494,10 @@ static int ipw_up(struct ipw_priv *priv)
 			IPW_WARNING("Could not set geography.");
 			return 0;
 		}
+=======
+
+		ipw_set_geo(priv);
+>>>>>>> refs/remotes/origin/master
 
 		if (priv->status & STATUS_RF_KILL_SW) {
 			IPW_WARNING("Radio disabled by module parameter.\n");
@@ -11472,6 +11617,7 @@ static void ipw_bg_down(struct work_struct *work)
 	mutex_unlock(&priv->mutex);
 }
 
+<<<<<<< HEAD
 /* Called by register_netdev() */
 static int ipw_net_init(struct net_device *dev)
 {
@@ -11491,10 +11637,15 @@ static int ipw_net_init(struct net_device *dev)
 static int ipw_wdev_init(struct net_device *dev)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ipw_wdev_init(struct net_device *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	int i, rc = 0;
 	struct ipw_priv *priv = libipw_priv(dev);
 	const struct libipw_geo *geo = libipw_get_geo(priv->ieee);
 	struct wireless_dev *wdev = &priv->ieee->wdev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&priv->mutex);
 
@@ -11504,6 +11655,8 @@ static int ipw_wdev_init(struct net_device *dev)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(wdev->wiphy->perm_addr, priv->mac_addr, ETH_ALEN);
 
@@ -11560,6 +11713,7 @@ static int ipw_wdev_init(struct net_device *dev)
 			goto out;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* translate geo->bg to a_band.channels */
 		for (i = 0; i < geo->a_channels; i++) {
 			a_band->channels[i].band = IEEE80211_BAND_2GHZ;
@@ -11568,6 +11722,11 @@ static int ipw_wdev_init(struct net_device *dev)
 		for (i = 0; i < geo->a_channels; i++) {
 			a_band->channels[i].band = IEEE80211_BAND_5GHZ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* translate geo->a to a_band.channels */
+		for (i = 0; i < geo->a_channels; i++) {
+			a_band->channels[i].band = IEEE80211_BAND_5GHZ;
+>>>>>>> refs/remotes/origin/master
 			a_band->channels[i].center_freq = geo->a[i].freq;
 			a_band->channels[i].hw_value = geo->a[i].channel;
 			a_band->channels[i].max_power = geo->a[i].max_power;
@@ -11592,6 +11751,7 @@ static int ipw_wdev_init(struct net_device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_wiphy_dev(wdev->wiphy, &priv->pci_dev->dev);
 
 	/* With that information in place, we can now register the wiphy... */
@@ -11603,6 +11763,8 @@ static int ipw_wdev_init(struct net_device *dev)
 out:
 	mutex_unlock(&priv->mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wdev->wiphy->cipher_suites = ipw_cipher_suites;
 	wdev->wiphy->n_cipher_suites = ARRAY_SIZE(ipw_cipher_suites);
 
@@ -11612,7 +11774,10 @@ out:
 	if (wiphy_register(wdev->wiphy))
 		rc = -EIO;
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -11785,6 +11950,7 @@ static void ipw_prom_free(struct ipw_priv *priv)
 #endif
 
 static const struct net_device_ops ipw_netdev_ops = {
+<<<<<<< HEAD
 	.ndo_init		= ipw_net_init,
 	.ndo_open		= ipw_net_open,
 	.ndo_stop		= ipw_net_stop,
@@ -11793,13 +11959,22 @@ static const struct net_device_ops ipw_netdev_ops = {
 =======
 	.ndo_set_rx_mode	= ipw_net_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_open		= ipw_net_open,
+	.ndo_stop		= ipw_net_stop,
+	.ndo_set_rx_mode	= ipw_net_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= ipw_net_set_mac_address,
 	.ndo_start_xmit		= libipw_xmit,
 	.ndo_change_mtu		= libipw_change_mtu,
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit ipw_pci_probe(struct pci_dev *pdev,
+=======
+static int ipw_pci_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				   const struct pci_device_id *ent)
 {
 	int err = 0;
@@ -11904,10 +12079,13 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 	net_dev->wireless_data = &priv->wireless_data;
 	net_dev->wireless_handlers = &ipw_wx_handler_def;
 	net_dev->ethtool_ops = &ipw_ethtool_ops;
+<<<<<<< HEAD
 	net_dev->irq = pdev->irq;
 	net_dev->base_addr = (unsigned long)priv->hw_base;
 	net_dev->mem_start = pci_resource_start(pdev, 0);
 	net_dev->mem_end = net_dev->mem_start + pci_resource_len(pdev, 0) - 1;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = sysfs_create_group(&pdev->dev.kobj, &ipw_attribute_group);
 	if (err) {
@@ -11916,6 +12094,7 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 		goto out_release_irq;
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&priv->mutex);
 	err = register_netdev(net_dev);
 	if (err) {
@@ -11932,12 +12111,35 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ipw_up(priv)) {
+		mutex_unlock(&priv->mutex);
+		err = -EIO;
+		goto out_remove_sysfs;
+	}
+
+	mutex_unlock(&priv->mutex);
+
+	err = ipw_wdev_init(net_dev);
+	if (err) {
+		IPW_ERROR("failed to register wireless device\n");
+		goto out_remove_sysfs;
+	}
+
+	err = register_netdev(net_dev);
+	if (err) {
+		IPW_ERROR("failed to register network device\n");
+		goto out_unregister_wiphy;
+	}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IPW2200_PROMISCUOUS
 	if (rtap_iface) {
 	        err = ipw_prom_alloc(priv);
 		if (err) {
 			IPW_ERROR("Failed to register promiscuous network "
 				  "device (error %d).\n", err);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			unregister_netdev(priv->net_dev);
 			goto out_remove_sysfs;
@@ -11947,6 +12149,10 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 			kfree(priv->ieee->bg_band.channels);
 			goto out_unregister_netdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unregister_netdev(priv->net_dev);
+			goto out_unregister_wiphy;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
@@ -11959,10 +12165,17 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       out_unregister_netdev:
 	unregister_netdev(priv->net_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+      out_unregister_wiphy:
+	wiphy_unregister(priv->ieee->wdev.wiphy);
+	kfree(priv->ieee->a_band.channels);
+	kfree(priv->ieee->bg_band.channels);
+>>>>>>> refs/remotes/origin/master
       out_remove_sysfs:
 	sysfs_remove_group(&pdev->dev.kobj, &ipw_attribute_group);
       out_release_irq:
@@ -11973,14 +12186,21 @@ static int __devinit ipw_pci_probe(struct pci_dev *pdev,
 	pci_release_regions(pdev);
       out_pci_disable_device:
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
       out_free_libipw:
 	free_libipw(priv->net_dev, 0);
       out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit ipw_pci_remove(struct pci_dev *pdev)
+=======
+static void ipw_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipw_priv *priv = pci_get_drvdata(pdev);
 	struct list_head *p, *q;
@@ -12054,7 +12274,10 @@ static void __devexit ipw_pci_remove(struct pci_dev *pdev)
 	iounmap(priv->hw_base);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	/* wiphy_unregister needs to be here, before free_libipw */
 	wiphy_unregister(priv->ieee->wdev.wiphy);
 	kfree(priv->ieee->a_band.channels);
@@ -12142,7 +12365,11 @@ static struct pci_driver ipw_driver = {
 	.name = DRV_NAME,
 	.id_table = card_ids,
 	.probe = ipw_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ipw_pci_remove),
+=======
+	.remove = ipw_pci_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend = ipw_pci_suspend,
 	.resume = ipw_pci_resume,

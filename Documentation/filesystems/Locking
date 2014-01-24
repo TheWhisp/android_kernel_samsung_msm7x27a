@@ -9,11 +9,18 @@ be able to use diff(1).
 
 --------------------------- dentry_operations --------------------------
 prototypes:
+<<<<<<< HEAD
 	int (*d_revalidate)(struct dentry *, struct nameidata *);
 	int (*d_hash)(const struct dentry *, const struct inode *,
 			struct qstr *);
 	int (*d_compare)(const struct dentry *, const struct inode *,
 			const struct dentry *, const struct inode *,
+=======
+	int (*d_revalidate)(struct dentry *, unsigned int);
+	int (*d_weak_revalidate)(struct dentry *, unsigned int);
+	int (*d_hash)(const struct dentry *, struct qstr *);
+	int (*d_compare)(const struct dentry *, const struct dentry *,
+>>>>>>> refs/remotes/origin/master
 			unsigned int, const char *, const struct qstr *);
 	int (*d_delete)(struct dentry *);
 	void (*d_release)(struct dentry *);
@@ -25,14 +32,22 @@ prototypes:
 locking rules:
 		rename_lock	->d_lock	may block	rcu-walk
 d_revalidate:	no		no		yes (ref-walk)	maybe
+<<<<<<< HEAD
+=======
+d_weak_revalidate:no		no		yes	 	no
+>>>>>>> refs/remotes/origin/master
 d_hash		no		no		no		maybe
 d_compare:	yes		no		no		maybe
 d_delete:	no		yes		no		no
 d_release:	no		no		yes		no
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 d_prune:        no              yes             no              no
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+d_prune:        no              yes             no              no
+>>>>>>> refs/remotes/origin/master
 d_iput:		no		no		yes		no
 d_dname:	no		no		no		no
 d_automount:	no		no		yes		no
@@ -40,6 +55,7 @@ d_manage:	no		no		yes (ref-walk)	maybe
 
 --------------------------- inode_operations --------------------------- 
 prototypes:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int (*create) (struct inode *,struct dentry *,int, struct nameidata *);
 =======
@@ -59,6 +75,16 @@ ata *);
 	int (*rmdir) (struct inode *,struct dentry *);
 	int (*mknod) (struct inode *,struct dentry *,umode_t,dev_t);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*create) (struct inode *,struct dentry *,umode_t, bool);
+	struct dentry * (*lookup) (struct inode *,struct dentry *, unsigned int);
+	int (*link) (struct dentry *,struct inode *,struct dentry *);
+	int (*unlink) (struct inode *,struct dentry *);
+	int (*symlink) (struct inode *,struct dentry *,const char *);
+	int (*mkdir) (struct inode *,struct dentry *,umode_t);
+	int (*rmdir) (struct inode *,struct dentry *);
+	int (*mknod) (struct inode *,struct dentry *,umode_t,dev_t);
+>>>>>>> refs/remotes/origin/master
 	int (*rename) (struct inode *, struct dentry *,
 			struct inode *, struct dentry *);
 	int (*readlink) (struct dentry *, char __user *,int);
@@ -67,18 +93,31 @@ ata *);
 	void (*truncate) (struct inode *);
 	int (*permission) (struct inode *, int, unsigned int);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*check_acl)(struct inode *, int, unsigned int);
 =======
 	int (*get_acl)(struct inode *, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*get_acl)(struct inode *, int);
+>>>>>>> refs/remotes/origin/master
 	int (*setattr) (struct dentry *, struct iattr *);
 	int (*getattr) (struct vfsmount *, struct dentry *, struct kstat *);
 	int (*setxattr) (struct dentry *, const char *,const void *,size_t,int);
 	ssize_t (*getxattr) (struct dentry *, const char *, void *, size_t);
 	ssize_t (*listxattr) (struct dentry *, char *, size_t);
 	int (*removexattr) (struct dentry *, const char *);
+<<<<<<< HEAD
 	void (*truncate_range)(struct inode *, loff_t, loff_t);
 	int (*fiemap)(struct inode *, struct fiemap_extent_info *, u64 start, u64 len);
+=======
+	int (*fiemap)(struct inode *, struct fiemap_extent_info *, u64 start, u64 len);
+	void (*update_time)(struct inode *, struct timespec *, int);
+	int (*atomic_open)(struct inode *, struct dentry *,
+				struct file *, unsigned open_flag,
+				umode_t create_mode, int *opened);
+	int (*tmpfile) (struct inode *, struct dentry *, umode_t);
+>>>>>>> refs/remotes/origin/master
 
 locking rules:
 	all may block
@@ -95,6 +134,7 @@ rename:		yes (all)	(see below)
 readlink:	no
 follow_link:	no
 put_link:	no
+<<<<<<< HEAD
 truncate:	yes		(see below)
 setattr:	yes
 permission:	no (may not block if called in rcu-walk mode)
@@ -103,11 +143,17 @@ check_acl:	no
 =======
 get_acl:	no
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+setattr:	yes
+permission:	no (may not block if called in rcu-walk mode)
+get_acl:	no
+>>>>>>> refs/remotes/origin/master
 getattr:	no
 setxattr:	yes
 getxattr:	no
 listxattr:	no
 removexattr:	yes
+<<<<<<< HEAD
 truncate_range:	yes
 fiemap:		no
 	Additionally, ->rmdir(), ->unlink() and ->rename() have ->i_mutex on
@@ -118,6 +164,16 @@ method. It's called by vmtruncate() - deprecated library function used by
 ->setattr(). Locking information above applies to that call (i.e. is
 inherited from ->setattr() - vmtruncate() is used when ATTR_SIZE had been
 passed).
+=======
+fiemap:		no
+update_time:	no
+atomic_open:	yes
+tmpfile:	no
+
+	Additionally, ->rmdir(), ->unlink() and ->rename() have ->i_mutex on
+victim.
+	cross-directory ->rename() has (per-superblock) ->s_vfs_rename_sem.
+>>>>>>> refs/remotes/origin/master
 
 See Documentation/filesystems/directory-locking for more detailed discussion
 of the locking scheme for directory operations.
@@ -131,7 +187,10 @@ prototypes:
 	int (*drop_inode) (struct inode *);
 	void (*evict_inode) (struct inode *);
 	void (*put_super) (struct super_block *);
+<<<<<<< HEAD
 	void (*write_super) (struct super_block *);
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*sync_fs)(struct super_block *sb, int wait);
 	int (*freeze_fs) (struct super_block *);
 	int (*unfreeze_fs) (struct super_block *);
@@ -139,10 +198,14 @@ prototypes:
 	int (*remount_fs) (struct super_block *, int *, char *);
 	void (*umount_begin) (struct super_block *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*show_options)(struct seq_file *, struct vfsmount *);
 =======
 	int (*show_options)(struct seq_file *, struct dentry *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*show_options)(struct seq_file *, struct dentry *);
+>>>>>>> refs/remotes/origin/master
 	ssize_t (*quota_read)(struct super_block *, int, char *, size_t, loff_t);
 	ssize_t (*quota_write)(struct super_block *, int, const char *, size_t, loff_t);
 	int (*bdev_try_to_free_page)(struct super_block*, struct page*, gfp_t);
@@ -157,10 +220,16 @@ write_inode:
 drop_inode:				!!!inode->i_lock!!!
 evict_inode:
 put_super:		write
+<<<<<<< HEAD
 write_super:		read
 sync_fs:		read
 freeze_fs:		read
 unfreeze_fs:		read
+=======
+sync_fs:		read
+freeze_fs:		write
+unfreeze_fs:		write
+>>>>>>> refs/remotes/origin/master
 statfs:			maybe(read)	(see below)
 remount_fs:		write
 umount_begin:		no
@@ -216,7 +285,11 @@ prototypes:
 				loff_t pos, unsigned len, unsigned copied,
 				struct page *page, void *fsdata);
 	sector_t (*bmap)(struct address_space *, sector_t);
+<<<<<<< HEAD
 	int (*invalidatepage) (struct page *, unsigned long);
+=======
+	void (*invalidatepage) (struct page *, unsigned int, unsigned int);
+>>>>>>> refs/remotes/origin/master
 	int (*releasepage) (struct page *, int);
 	void (*freepage)(struct page *);
 	int (*direct_IO)(int, struct kiocb *, const struct iovec *iov,
@@ -227,6 +300,11 @@ prototypes:
 	int (*launder_page)(struct page *);
 	int (*is_partially_uptodate)(struct page *, read_descriptor_t *, unsigned long);
 	int (*error_remove_page)(struct address_space *, struct page *);
+<<<<<<< HEAD
+=======
+	int (*swap_activate)(struct file *);
+	int (*swap_deactivate)(struct file *);
+>>>>>>> refs/remotes/origin/master
 
 locking rules:
 	All except set_page_dirty and freepage may block
@@ -250,6 +328,11 @@ migratepage:		yes (both)
 launder_page:		yes
 is_partially_uptodate:	yes
 error_remove_page:	yes
+<<<<<<< HEAD
+=======
+swap_activate:		no
+swap_deactivate:	no
+>>>>>>> refs/remotes/origin/master
 
 	->write_begin(), ->write_end(), ->sync_page() and ->readpage()
 may be called from the request handler (/dev/loop).
@@ -333,8 +416,13 @@ filesystems and by the swapper. The latter will eventually go away.  Please,
 keep it that way and don't breed new callers.
 
 	->invalidatepage() is called when the filesystem must attempt to drop
+<<<<<<< HEAD
 some or all of the buffers from the page when it is being truncated.  It
 returns zero on success.  If ->invalidatepage is zero, the kernel uses
+=======
+some or all of the buffers from the page when it is being truncated. It
+returns zero on success. If ->invalidatepage is zero, the kernel uses
+>>>>>>> refs/remotes/origin/master
 block_invalidatepage() instead.
 
 	->releasepage() is called when the kernel is about to try to drop the
@@ -351,6 +439,18 @@ cleaned, or an error value if not. Note that in order to prevent the page
 getting mapped back in and redirtied, it needs to be kept locked
 across the entire operation.
 
+<<<<<<< HEAD
+=======
+	->swap_activate will be called with a non-zero argument on
+files backing (non block device backed) swapfiles. A return value
+of zero indicates success, in which case this file can be used for
+backing swapspace. The swapspace operations will be proxied to the
+address space operations.
+
+	->swap_deactivate() will be called in the sys_swapoff()
+path after ->swap_activate() returned success.
+
+>>>>>>> refs/remotes/origin/master
 ----------------------- file_lock_operations ------------------------------
 prototypes:
 	void (*fl_copy_lock)(struct file_lock *, struct file_lock *);
@@ -358,12 +458,17 @@ prototypes:
 
 
 locking rules:
+<<<<<<< HEAD
 			file_lock_lock	may block
+=======
+			inode->i_lock	may block
+>>>>>>> refs/remotes/origin/master
 fl_copy_lock:		yes		no
 fl_release_private:	maybe		no
 
 ----------------------- lock_manager_operations ---------------------------
 prototypes:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int (*fl_compare_owner)(struct file_lock *, struct file_lock *);
 	void (*fl_notify)(struct file_lock *);  /* unblock callback */
@@ -385,10 +490,17 @@ fl_change		yes		no
 	void (*lm_notify)(struct file_lock *);  /* unblock callback */
 	int (*lm_grant)(struct file_lock *, struct file_lock *, int);
 	void (*lm_release_private)(struct file_lock *);
+=======
+	int (*lm_compare_owner)(struct file_lock *, struct file_lock *);
+	unsigned long (*lm_owner_key)(struct file_lock *);
+	void (*lm_notify)(struct file_lock *);  /* unblock callback */
+	int (*lm_grant)(struct file_lock *, struct file_lock *, int);
+>>>>>>> refs/remotes/origin/master
 	void (*lm_break)(struct file_lock *); /* break_lease callback */
 	int (*lm_change)(struct file_lock **, int);
 
 locking rules:
+<<<<<<< HEAD
 			file_lock_lock	may block
 lm_compare_owner:	yes		no
 lm_notify:		yes		no
@@ -397,6 +509,26 @@ lm_release_private:	maybe		no
 lm_break:		yes		no
 lm_change		yes		no
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+			inode->i_lock	blocked_lock_lock	may block
+lm_compare_owner:	yes[1]		maybe			no
+lm_owner_key		yes[1]		yes			no
+lm_notify:		yes		yes			no
+lm_grant:		no		no			no
+lm_break:		yes		no			no
+lm_change		yes		no			no
+
+[1]:	->lm_compare_owner and ->lm_owner_key are generally called with
+*an* inode->i_lock held. It may not be the i_lock of the inode
+associated with either file_lock argument! This is the case with deadlock
+detection, since the code has to chase down the owners of locks that may
+be entirely unrelated to the one on which the lock is being acquired.
+For deadlock detection however, the blocked_lock_lock is also held. The
+fact that these locks are held ensures that the file_locks do not
+disappear out from under you while doing the comparison or generating an
+owner key.
+>>>>>>> refs/remotes/origin/master
 
 --------------------------- buffer_head -----------------------------------
 prototypes:
@@ -448,7 +580,11 @@ prototypes:
 	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
 	ssize_t (*aio_read) (struct kiocb *, const struct iovec *, unsigned long, loff_t);
 	ssize_t (*aio_write) (struct kiocb *, const struct iovec *, unsigned long, loff_t);
+<<<<<<< HEAD
 	int (*readdir) (struct file *, void *, filldir_t);
+=======
+	int (*iterate) (struct file *, struct dir_context *);
+>>>>>>> refs/remotes/origin/master
 	unsigned int (*poll) (struct file *, struct poll_table_struct *);
 	long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
 	long (*compat_ioctl) (struct file *, unsigned int, unsigned long);
@@ -457,10 +593,14 @@ prototypes:
 	int (*flush) (struct file *);
 	int (*release) (struct inode *, struct file *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*fsync) (struct file *, int datasync);
 =======
 	int (*fsync) (struct file *, loff_t start, loff_t end, int datasync);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*fsync) (struct file *, loff_t start, loff_t end, int datasync);
+>>>>>>> refs/remotes/origin/master
 	int (*aio_fsync) (struct kiocb *, int datasync);
 	int (*fasync) (int, struct file *, int);
 	int (*lock) (struct file *, int, struct file_lock *);
@@ -487,12 +627,16 @@ prototypes:
 locking rules:
 	All may block except for ->setlease.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	No VFS locks held on entry except for ->fsync and ->setlease.
 
 ->fsync() has i_mutex on inode.
 =======
 	No VFS locks held on entry except for ->setlease.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	No VFS locks held on entry except for ->setlease.
+>>>>>>> refs/remotes/origin/master
 
 ->setlease has the file_list_lock held and must not sleep.
 

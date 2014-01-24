@@ -51,6 +51,7 @@ _start:
 	/* 'reset' window registers */
 
 	movi	a4, 1
+<<<<<<< HEAD
 	wsr	a4, PS
 	rsync
 
@@ -62,6 +63,19 @@ _start:
 
 	movi	a4, 0x00040000
 	wsr	a4, PS
+=======
+	wsr	a4, ps
+	rsync
+
+	rsr	a5, windowbase
+	ssl	a5
+	sll	a4, a4
+	wsr	a4, windowstart
+	rsync
+
+	movi	a4, 0x00040000
+	wsr	a4, ps
+>>>>>>> refs/remotes/origin/master
 	rsync
 
 	/* copy the loader to its address
@@ -226,6 +240,7 @@ _reloc:
 
 	isync
 
+<<<<<<< HEAD
 	movi	a5, __start
 	movi	a3, boot_initrd_start
 	movi	a4, boot_initrd_end
@@ -237,6 +252,9 @@ _reloc:
 	# a2  Boot parameter list
 	# a3  initrd_start (virtual load address)
 	# a4  initrd_end   (virtual load address)
+=======
+	# a2  Boot parameter list
+>>>>>>> refs/remotes/origin/master
 
 	movi	a0, _image_start
 	jx	a0

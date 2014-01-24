@@ -28,11 +28,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 
 #include <linux/types.h>
 #include <linux/init.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * TODO:
  *
@@ -48,22 +51,32 @@
 #include <linux/slab.h>
 #include <linux/console.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/hvconsole.h>
 #include <asm/vio.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/firmware.h>
 =======
 #include <asm/hvsi.h>
 #include <asm/udbg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hvsi.h>
+#include <asm/udbg.h>
+#include <asm/machdep.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "hvc_console.h"
 
 static const char hvc_driver_name[] = "hvc_console";
 
+<<<<<<< HEAD
 static struct vio_device_id hvc_driver_table[] __devinitdata = {
 	{"serial", "hvterm1"},
 <<<<<<< HEAD
@@ -72,10 +85,18 @@ static struct vio_device_id hvc_driver_table[] __devinitdata = {
 	{"serial", "hvterm-protocol"},
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct vio_device_id hvc_driver_table[] = {
+	{"serial", "hvterm1"},
+#ifndef HVC_OLD_HVSI
+	{"serial", "hvterm-protocol"},
+#endif
+>>>>>>> refs/remotes/origin/master
 	{ "", "" }
 };
 MODULE_DEVICE_TABLE(vio, hvc_driver_table);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int filtered_get_chars(uint32_t vtermno, char *buf, int count)
 {
@@ -111,6 +132,8 @@ static const struct hv_ops hvc_get_put_ops = {
 	.get_chars = filtered_get_chars,
 	.put_chars = hvc_put_chars,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef enum hv_protocol {
 	HV_PROTOCOL_RAW,
 	HV_PROTOCOL_HVSI
@@ -183,18 +206,24 @@ static int hvterm_raw_put_chars(uint32_t vtermno, const char *buf, int count)
 static const struct hv_ops hvterm_raw_ops = {
 	.get_chars = hvterm_raw_get_chars,
 	.put_chars = hvterm_raw_put_chars,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.notifier_add = notifier_add_irq,
 	.notifier_del = notifier_del_irq,
 	.notifier_hangup = notifier_hangup_irq,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit hvc_vio_probe(struct vio_dev *vdev,
 				const struct vio_device_id *id)
 {
 	struct hvc_struct *hp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int hvterm_hvsi_get_chars(uint32_t vtermno, char *buf, int count)
 {
 	struct hvterm_priv *pv = hvterm_privs[vtermno];
@@ -286,7 +315,74 @@ static const struct hv_ops hvterm_hvsi_ops = {
 	.tiocmset = hvterm_hvsi_tiocmset,
 };
 
+<<<<<<< HEAD
 static int __devinit hvc_vio_probe(struct vio_dev *vdev,
+=======
+static void udbg_hvc_putc(char c)
+{
+	int count = -1;
+
+	if (!hvterm_privs[0])
+		return;
+
+	if (c == '\n')
+		udbg_hvc_putc('\r');
+
+	do {
+		switch(hvterm_privs[0]->proto) {
+		case HV_PROTOCOL_RAW:
+			count = hvterm_raw_put_chars(0, &c, 1);
+			break;
+		case HV_PROTOCOL_HVSI:
+			count = hvterm_hvsi_put_chars(0, &c, 1);
+			break;
+		}
+	} while(count == 0);
+}
+
+static int udbg_hvc_getc_poll(void)
+{
+	int rc = 0;
+	char c;
+
+	if (!hvterm_privs[0])
+		return -1;
+
+	switch(hvterm_privs[0]->proto) {
+	case HV_PROTOCOL_RAW:
+		rc = hvterm_raw_get_chars(0, &c, 1);
+		break;
+	case HV_PROTOCOL_HVSI:
+		rc = hvterm_hvsi_get_chars(0, &c, 1);
+		break;
+	}
+	if (!rc)
+		return -1;
+	return c;
+}
+
+static int udbg_hvc_getc(void)
+{
+	int ch;
+
+	if (!hvterm_privs[0])
+		return -1;
+
+	for (;;) {
+		ch = udbg_hvc_getc_poll();
+		if (ch == -1) {
+			/* This shouldn't be needed...but... */
+			volatile unsigned long delay;
+			for (delay=0; delay < 2000000; delay++)
+				;
+		} else {
+			return ch;
+		}
+	}
+}
+
+static int hvc_vio_probe(struct vio_dev *vdev,
+>>>>>>> refs/remotes/origin/master
 				   const struct vio_device_id *id)
 {
 	const struct hv_ops *ops;
@@ -294,16 +390,22 @@ static int __devinit hvc_vio_probe(struct vio_dev *vdev,
 	struct hvterm_priv *pv;
 	hv_protocol_t proto;
 	int i, termno = -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* probed with invalid parameters. */
 	if (!vdev || !id)
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hp = hvc_alloc(vdev->unit_address, vdev->irq, &hvc_get_put_ops,
 			MAX_VIO_PUT_CHARS);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (of_device_is_compatible(vdev->dev.of_node, "hvterm1")) {
 		proto = HV_PROTOCOL_RAW;
 		ops = &hvterm_raw_ops;
@@ -311,7 +413,11 @@ static int __devinit hvc_vio_probe(struct vio_dev *vdev,
 		proto = HV_PROTOCOL_HVSI;
 		ops = &hvterm_hvsi_ops;
 	} else {
+<<<<<<< HEAD
 		pr_err("hvc_vio: Unkown protocol for %s\n", vdev->dev.of_node->full_name);
+=======
+		pr_err("hvc_vio: Unknown protocol for %s\n", vdev->dev.of_node->full_name);
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 	}
 
@@ -346,11 +452,15 @@ static int __devinit hvc_vio_probe(struct vio_dev *vdev,
 	}
 
 	hp = hvc_alloc(termno, vdev->irq, ops, MAX_VIO_PUT_CHARS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(hp))
 		return PTR_ERR(hp);
 	dev_set_drvdata(&vdev->dev, hp);
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -361,6 +471,21 @@ static int __devexit hvc_vio_remove(struct vio_dev *vdev)
 
 	return hvc_remove(hp);
 =======
+=======
+	/* register udbg if it's not there already for console 0 */
+	if (hp->index == 0 && !udbg_putc) {
+		udbg_putc = udbg_hvc_putc;
+		udbg_getc = udbg_hvc_getc;
+		udbg_getc_poll = udbg_hvc_getc_poll;
+	}
+
+	return 0;
+}
+
+static int hvc_vio_remove(struct vio_dev *vdev)
+{
+	struct hvc_struct *hp = dev_get_drvdata(&vdev->dev);
+>>>>>>> refs/remotes/origin/master
 	int rc, termno;
 
 	termno = hp->vtermno;
@@ -371,12 +496,16 @@ static int __devexit hvc_vio_remove(struct vio_dev *vdev)
 		hvterm_privs[termno] = NULL;
 	}
 	return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct vio_driver hvc_vio_driver = {
 	.id_table	= hvc_driver_table,
 	.probe		= hvc_vio_probe,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.remove		= __devexit_p(hvc_vio_remove),
 	.driver		= {
@@ -387,6 +516,10 @@ static struct vio_driver hvc_vio_driver = {
 	.remove		= hvc_vio_remove,
 	.name		= hvc_driver_name,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= hvc_vio_remove,
+	.name		= hvc_driver_name,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init hvc_vio_init(void)
@@ -394,11 +527,14 @@ static int __init hvc_vio_init(void)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (firmware_has_feature(FW_FEATURE_ISERIES))
 		return -EIO;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Register as a vio device to receive callbacks */
 	rc = vio_register_driver(&hvc_vio_driver);
 
@@ -412,6 +548,7 @@ static void __exit hvc_vio_exit(void)
 }
 module_exit(hvc_vio_exit);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* the device tree order defines our numbering */
 static int hvc_find_vtys(void)
@@ -502,6 +639,12 @@ void __init hvc_vio_init_early(void)
 {
 	struct device_node *stdout_node;
 	const u32 *termno;
+=======
+void __init hvc_vio_init_early(void)
+{
+	struct device_node *stdout_node;
+	const __be32 *termno;
+>>>>>>> refs/remotes/origin/master
 	const char *name;
 	const struct hv_ops *ops;
 
@@ -526,7 +669,11 @@ void __init hvc_vio_init_early(void)
 	termno = of_get_property(stdout_node, "reg", NULL);
 	if (termno == NULL)
 		goto out;
+<<<<<<< HEAD
 	hvterm_priv0.termno = *termno;
+=======
+	hvterm_priv0.termno = of_read_number(termno, 1);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&hvterm_priv0.buf_lock);
 	hvterm_privs[0] = &hvterm_priv0;
 
@@ -554,7 +701,13 @@ void __init hvc_vio_init_early(void)
 	if (hvterm_priv0.proto == HV_PROTOCOL_HVSI)
 		goto out;
 #endif
+<<<<<<< HEAD
 	add_preferred_console("hvc", 0, NULL);
+=======
+	/* Check whether the user has requested a different console. */
+	if (!strstr(cmd_line, "console="))
+		add_preferred_console("hvc", 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	hvc_instantiate(0, 0, ops);
 out:
 	of_node_put(stdout_node);
@@ -591,4 +744,7 @@ void __init udbg_init_debug_lpar_hvsi(void)
 	hvsilib_establish(&hvterm_priv0.hvsi);
 }
 #endif /* CONFIG_PPC_EARLY_DEBUG_LPAR_HVSI */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

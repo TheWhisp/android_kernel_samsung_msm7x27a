@@ -10,11 +10,21 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+<<<<<<< HEAD
+=======
+#include <stdbool.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vhost.h>
 #include <linux/virtio.h>
 #include <linux/virtio_ring.h>
 #include "../../drivers/vhost/test.h"
 
+<<<<<<< HEAD
+=======
+/* Unused */
+void *__kmalloc_fake, *__kfree_ignore_start, *__kfree_ignore_end;
+
+>>>>>>> refs/remotes/origin/master
 struct vq_info {
 	int kick;
 	int call;
@@ -37,13 +47,21 @@ struct vdev_info {
 	struct vhost_memory *mem;
 };
 
+<<<<<<< HEAD
 void vq_notify(struct virtqueue *vq)
+=======
+bool vq_notify(struct virtqueue *vq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vq_info *info = vq->priv;
 	unsigned long long v = 1;
 	int r;
 	r = write(info->kick, &v, sizeof v);
 	assert(r == sizeof v);
+<<<<<<< HEAD
+=======
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 void vq_callback(struct virtqueue *vq)
@@ -93,11 +111,17 @@ static void vq_info_add(struct vdev_info *dev, int num)
 	memset(info->ring, 0, vring_size(num, 4096));
 	vring_init(&info->vring, num, info->ring, 4096);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	info->vq = vring_new_virtqueue(info->vring.num, 4096, &dev->vdev, info->ring,
 =======
 	info->vq = vring_new_virtqueue(info->vring.num, 4096, &dev->vdev,
 				       true, info->ring,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->vq = vring_new_virtqueue(info->idx,
+				       info->vring.num, 4096, &dev->vdev,
+				       true, info->ring,
+>>>>>>> refs/remotes/origin/master
 				       vq_notify, vq_callback, "test");
 	assert(info->vq);
 	info->vq->priv = info;
@@ -148,7 +172,12 @@ static void wait_for_interrupt(struct vdev_info *dev)
 		}
 }
 
+<<<<<<< HEAD
 static void run_test(struct vdev_info *dev, struct vq_info *vq, int bufs)
+=======
+static void run_test(struct vdev_info *dev, struct vq_info *vq,
+		     bool delayed, int bufs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct scatterlist sl;
 	long started = 0, completed = 0;
@@ -164,6 +193,7 @@ static void run_test(struct vdev_info *dev, struct vq_info *vq, int bufs)
 		do {
 			if (started < bufs) {
 				sg_init_one(&sl, dev->buf, dev->buf_size);
+<<<<<<< HEAD
 				r = virtqueue_add_buf(vq->vq, &sl, 1, 0,
 <<<<<<< HEAD
 						      dev->buf + started);
@@ -174,6 +204,15 @@ static void run_test(struct vdev_info *dev, struct vq_info *vq, int bufs)
 				if (likely(r >= 0)) {
 					++started;
 					virtqueue_kick(vq->vq);
+=======
+				r = virtqueue_add_outbuf(vq->vq, &sl, 1,
+							 dev->buf + started,
+							 GFP_ATOMIC);
+				if (likely(r == 0)) {
+					++started;
+					if (unlikely(!virtqueue_kick(vq->vq))
+						r = -1;
+>>>>>>> refs/remotes/origin/master
 				}
 			} else
 				r = -1;
@@ -184,15 +223,28 @@ static void run_test(struct vdev_info *dev, struct vq_info *vq, int bufs)
 				r = 0;
 			}
 
+<<<<<<< HEAD
 		} while (r >= 0);
+=======
+		} while (r == 0);
+>>>>>>> refs/remotes/origin/master
 		if (completed == completed_before)
 			++spurious;
 		assert(completed <= bufs);
 		assert(started <= bufs);
 		if (completed == bufs)
 			break;
+<<<<<<< HEAD
 		if (virtqueue_enable_cb(vq->vq)) {
 			wait_for_interrupt(dev);
+=======
+		if (delayed) {
+			if (virtqueue_enable_cb_delayed(vq->vq))
+				wait_for_interrupt(dev);
+		} else {
+			if (virtqueue_enable_cb(vq->vq))
+				wait_for_interrupt(dev);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	test = 0;
@@ -224,14 +276,33 @@ const struct option longopts[] = {
 		.val = 'i',
 	},
 	{
+<<<<<<< HEAD
 	}
 };
 
 static void help()
+=======
+		.name = "delayed-interrupt",
+		.val = 'D',
+	},
+	{
+		.name = "no-delayed-interrupt",
+		.val = 'd',
+	},
+	{
+	}
+};
+
+static void help(void)
+>>>>>>> refs/remotes/origin/master
 {
 	fprintf(stderr, "Usage: virtio_test [--help]"
 		" [--no-indirect]"
 		" [--no-event-idx]"
+<<<<<<< HEAD
+=======
+		" [--delayed-interrupt]"
+>>>>>>> refs/remotes/origin/master
 		"\n");
 }
 
@@ -241,6 +312,10 @@ int main(int argc, char **argv)
 	unsigned long long features = (1ULL << VIRTIO_RING_F_INDIRECT_DESC) |
 		(1ULL << VIRTIO_RING_F_EVENT_IDX);
 	int o;
+<<<<<<< HEAD
+=======
+	bool delayed = false;
+>>>>>>> refs/remotes/origin/master
 
 	for (;;) {
 		o = getopt_long(argc, argv, optstring, longopts, NULL);
@@ -259,6 +334,12 @@ int main(int argc, char **argv)
 		case 'i':
 			features &= ~(1ULL << VIRTIO_RING_F_INDIRECT_DESC);
 			break;
+<<<<<<< HEAD
+=======
+		case 'D':
+			delayed = true;
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			assert(0);
 			break;
@@ -268,6 +349,10 @@ int main(int argc, char **argv)
 done:
 	vdev_info_init(&dev, features);
 	vq_info_add(&dev, 256);
+<<<<<<< HEAD
 	run_test(&dev, &dev.vqs[0], 0x100000);
+=======
+	run_test(&dev, &dev.vqs[0], delayed, 0x100000);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

@@ -29,9 +29,14 @@
  */
 
 #include "via_3d_reg.h"
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "via_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/via_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "via_verifier.h"
 #include "via_drv.h"
 

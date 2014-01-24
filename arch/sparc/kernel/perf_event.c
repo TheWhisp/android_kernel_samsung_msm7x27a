@@ -23,6 +23,7 @@
 #include <asm/cpudata.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/nmi.h>
 #include <asm/pcr.h>
@@ -33,10 +34,17 @@
 #include <asm/perfctr.h>
 #include <asm/cacheflush.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/nmi.h>
+#include <asm/pcr.h>
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "kernel.h"
 #include "kstack.h"
 
+<<<<<<< HEAD
 /* Sparc64 chips have two performance counters, 32-bits each, with
  * overflow interrupts generated on transition from 0xffffffff to 0.
  * The counters are accessed in one go using a 64-bit register.
@@ -52,15 +60,51 @@
  * while keeping the other one stopped.  Therefore it is possible to
  * get overflow interrupts for counters not currently "in use" and
  * that condition must be checked in the overflow interrupt handler.
+=======
+/* Two classes of sparc64 chips currently exist.  All of which have
+ * 32-bit counters which can generate overflow interrupts on the
+ * transition from 0xffffffff to 0.
+ *
+ * All chips upto and including SPARC-T3 have two performance
+ * counters.  The two 32-bit counters are accessed in one go using a
+ * single 64-bit register.
+ *
+ * On these older chips both counters are controlled using a single
+ * control register.  The only way to stop all sampling is to clear
+ * all of the context (user, supervisor, hypervisor) sampling enable
+ * bits.  But these bits apply to both counters, thus the two counters
+ * can't be enabled/disabled individually.
+ *
+ * Furthermore, the control register on these older chips have two
+ * event fields, one for each of the two counters.  It's thus nearly
+ * impossible to have one counter going while keeping the other one
+ * stopped.  Therefore it is possible to get overflow interrupts for
+ * counters not currently "in use" and that condition must be checked
+ * in the overflow interrupt handler.
+>>>>>>> refs/remotes/origin/master
  *
  * So we use a hack, in that we program inactive counters with the
  * "sw_count0" and "sw_count1" events.  These count how many times
  * the instruction "sethi %hi(0xfc000), %g0" is executed.  It's an
  * unusual way to encode a NOP and therefore will not trigger in
  * normal code.
+<<<<<<< HEAD
  */
 
 #define MAX_HWEVENTS			2
+=======
+ *
+ * Starting with SPARC-T4 we have one control register per counter.
+ * And the counters are stored in individual registers.  The registers
+ * for the counters are 64-bit but only a 32-bit counter is
+ * implemented.  The event selections on SPARC-T4 lack any
+ * restrictions, therefore we can elide all of the complicated
+ * conflict resolution code we have for SPARC-T3 and earlier chips.
+ */
+
+#define MAX_HWEVENTS			4
+#define MAX_PCRS			4
+>>>>>>> refs/remotes/origin/master
 #define MAX_PERIOD			((1UL << 32) - 1)
 
 #define PIC_UPPER_INDEX			0
@@ -96,8 +140,13 @@ struct cpu_hw_events {
 	 */
 	int			current_idx[MAX_HWEVENTS];
 
+<<<<<<< HEAD
 	/* Software copy of %pcr register on this cpu.  */
 	u64			pcr;
+=======
+	/* Software copy of %pcr register(s) on this cpu.  */
+	u64			pcr[MAX_HWEVENTS];
+>>>>>>> refs/remotes/origin/master
 
 	/* Enabled/disable state.  */
 	int			enabled;
@@ -109,6 +158,11 @@ DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events) = { .enabled = 1, };
 /* An event map describes the characteristics of a performance
  * counter event.  In particular it gives the encoding as well as
  * a mask telling which counters the event can be measured on.
+<<<<<<< HEAD
+=======
+ *
+ * The mask is unused on SPARC-T4 and later.
+>>>>>>> refs/remotes/origin/master
  */
 struct perf_event_map {
 	u16	encoding;
@@ -148,15 +202,64 @@ struct sparc_pmu {
 	const struct perf_event_map	*(*event_map)(int);
 	const cache_map_t		*cache_map;
 	int				max_events;
+<<<<<<< HEAD
 	int				upper_shift;
 	int				lower_shift;
 	int				event_mask;
+=======
+	u32				(*read_pmc)(int);
+	void				(*write_pmc)(int, u64);
+	int				upper_shift;
+	int				lower_shift;
+	int				event_mask;
+	int				user_bit;
+	int				priv_bit;
+>>>>>>> refs/remotes/origin/master
 	int				hv_bit;
 	int				irq_bit;
 	int				upper_nop;
 	int				lower_nop;
+<<<<<<< HEAD
 };
 
+=======
+	unsigned int			flags;
+#define SPARC_PMU_ALL_EXCLUDES_SAME	0x00000001
+#define SPARC_PMU_HAS_CONFLICTS		0x00000002
+	int				max_hw_events;
+	int				num_pcrs;
+	int				num_pic_regs;
+};
+
+static u32 sparc_default_read_pmc(int idx)
+{
+	u64 val;
+
+	val = pcr_ops->read_pic(0);
+	if (idx == PIC_UPPER_INDEX)
+		val >>= 32;
+
+	return val & 0xffffffff;
+}
+
+static void sparc_default_write_pmc(int idx, u64 val)
+{
+	u64 shift, mask, pic;
+
+	shift = 0;
+	if (idx == PIC_UPPER_INDEX)
+		shift = 32;
+
+	mask = ((u64) 0xffffffff) << shift;
+	val <<= shift;
+
+	pic = pcr_ops->read_pic(0);
+	pic &= ~mask;
+	pic |= val;
+	pcr_ops->write_pic(0, pic);
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct perf_event_map ultra3_perfmon_event_map[] = {
 	[PERF_COUNT_HW_CPU_CYCLES] = { 0x0000, PIC_UPPER | PIC_LOWER },
 	[PERF_COUNT_HW_INSTRUCTIONS] = { 0x0001, PIC_UPPER | PIC_LOWER },
@@ -255,7 +358,10 @@ static const cache_map_t ultra3_cache_map = {
 	},
 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 [C(NODE)] = {
 	[C(OP_READ)] = {
 		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
@@ -270,18 +376,38 @@ static const cache_map_t ultra3_cache_map = {
 		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
 	},
 },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct sparc_pmu ultra3_pmu = {
 	.event_map	= ultra3_event_map,
 	.cache_map	= &ultra3_cache_map,
 	.max_events	= ARRAY_SIZE(ultra3_perfmon_event_map),
+<<<<<<< HEAD
 	.upper_shift	= 11,
 	.lower_shift	= 4,
 	.event_mask	= 0x3f,
 	.upper_nop	= 0x1c,
 	.lower_nop	= 0x14,
+=======
+	.read_pmc	= sparc_default_read_pmc,
+	.write_pmc	= sparc_default_write_pmc,
+	.upper_shift	= 11,
+	.lower_shift	= 4,
+	.event_mask	= 0x3f,
+	.user_bit	= PCR_UTRACE,
+	.priv_bit	= PCR_STRACE,
+	.upper_nop	= 0x1c,
+	.lower_nop	= 0x14,
+	.flags		= (SPARC_PMU_ALL_EXCLUDES_SAME |
+			   SPARC_PMU_HAS_CONFLICTS),
+	.max_hw_events	= 2,
+	.num_pcrs	= 1,
+	.num_pic_regs	= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Niagara1 is very limited.  The upper PIC is hard-locked to count
@@ -387,7 +513,10 @@ static const cache_map_t niagara1_cache_map = {
 	},
 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 [C(NODE)] = {
 	[C(OP_READ)] = {
 		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
@@ -402,18 +531,38 @@ static const cache_map_t niagara1_cache_map = {
 		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
 	},
 },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct sparc_pmu niagara1_pmu = {
 	.event_map	= niagara1_event_map,
 	.cache_map	= &niagara1_cache_map,
 	.max_events	= ARRAY_SIZE(niagara1_perfmon_event_map),
+<<<<<<< HEAD
 	.upper_shift	= 0,
 	.lower_shift	= 4,
 	.event_mask	= 0x7,
 	.upper_nop	= 0x0,
 	.lower_nop	= 0x0,
+=======
+	.read_pmc	= sparc_default_read_pmc,
+	.write_pmc	= sparc_default_write_pmc,
+	.upper_shift	= 0,
+	.lower_shift	= 4,
+	.event_mask	= 0x7,
+	.user_bit	= PCR_UTRACE,
+	.priv_bit	= PCR_STRACE,
+	.upper_nop	= 0x0,
+	.lower_nop	= 0x0,
+	.flags		= (SPARC_PMU_ALL_EXCLUDES_SAME |
+			   SPARC_PMU_HAS_CONFLICTS),
+	.max_hw_events	= 2,
+	.num_pcrs	= 1,
+	.num_pic_regs	= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct perf_event_map niagara2_perfmon_event_map[] = {
@@ -516,7 +665,10 @@ static const cache_map_t niagara2_cache_map = {
 	},
 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 [C(NODE)] = {
 	[C(OP_READ)] = {
 		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
@@ -531,13 +683,17 @@ static const cache_map_t niagara2_cache_map = {
 		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
 	},
 },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct sparc_pmu niagara2_pmu = {
 	.event_map	= niagara2_event_map,
 	.cache_map	= &niagara2_cache_map,
 	.max_events	= ARRAY_SIZE(niagara2_perfmon_event_map),
+<<<<<<< HEAD
 	.upper_shift	= 19,
 	.lower_shift	= 6,
 	.event_mask	= 0xfff,
@@ -545,6 +701,205 @@ static const struct sparc_pmu niagara2_pmu = {
 	.irq_bit	= 0x30,
 	.upper_nop	= 0x220,
 	.lower_nop	= 0x220,
+=======
+	.read_pmc	= sparc_default_read_pmc,
+	.write_pmc	= sparc_default_write_pmc,
+	.upper_shift	= 19,
+	.lower_shift	= 6,
+	.event_mask	= 0xfff,
+	.user_bit	= PCR_UTRACE,
+	.priv_bit	= PCR_STRACE,
+	.hv_bit		= PCR_N2_HTRACE,
+	.irq_bit	= 0x30,
+	.upper_nop	= 0x220,
+	.lower_nop	= 0x220,
+	.flags		= (SPARC_PMU_ALL_EXCLUDES_SAME |
+			   SPARC_PMU_HAS_CONFLICTS),
+	.max_hw_events	= 2,
+	.num_pcrs	= 1,
+	.num_pic_regs	= 1,
+};
+
+static const struct perf_event_map niagara4_perfmon_event_map[] = {
+	[PERF_COUNT_HW_CPU_CYCLES] = { (26 << 6) },
+	[PERF_COUNT_HW_INSTRUCTIONS] = { (3 << 6) | 0x3f },
+	[PERF_COUNT_HW_CACHE_REFERENCES] = { (3 << 6) | 0x04 },
+	[PERF_COUNT_HW_CACHE_MISSES] = { (16 << 6) | 0x07 },
+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = { (4 << 6) | 0x01 },
+	[PERF_COUNT_HW_BRANCH_MISSES] = { (25 << 6) | 0x0f },
+};
+
+static const struct perf_event_map *niagara4_event_map(int event_id)
+{
+	return &niagara4_perfmon_event_map[event_id];
+}
+
+static const cache_map_t niagara4_cache_map = {
+[C(L1D)] = {
+	[C(OP_READ)] = {
+		[C(RESULT_ACCESS)] = { (3 << 6) | 0x04 },
+		[C(RESULT_MISS)] = { (16 << 6) | 0x07 },
+	},
+	[C(OP_WRITE)] = {
+		[C(RESULT_ACCESS)] = { (3 << 6) | 0x08 },
+		[C(RESULT_MISS)] = { (16 << 6) | 0x07 },
+	},
+	[C(OP_PREFETCH)] = {
+		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
+		[C(RESULT_MISS)] = { CACHE_OP_UNSUPPORTED },
+	},
+},
+[C(L1I)] = {
+	[C(OP_READ)] = {
+		[C(RESULT_ACCESS)] = { (3 << 6) | 0x3f },
+		[C(RESULT_MISS)] = { (11 << 6) | 0x03 },
+	},
+	[ C(OP_WRITE) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_NONSENSE },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_NONSENSE },
+	},
+	[ C(OP_PREFETCH) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+},
+[C(LL)] = {
+	[C(OP_READ)] = {
+		[C(RESULT_ACCESS)] = { (3 << 6) | 0x04 },
+		[C(RESULT_MISS)] = { CACHE_OP_UNSUPPORTED },
+	},
+	[C(OP_WRITE)] = {
+		[C(RESULT_ACCESS)] = { (3 << 6) | 0x08 },
+		[C(RESULT_MISS)] = { CACHE_OP_UNSUPPORTED },
+	},
+	[C(OP_PREFETCH)] = {
+		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
+		[C(RESULT_MISS)] = { CACHE_OP_UNSUPPORTED },
+	},
+},
+[C(DTLB)] = {
+	[C(OP_READ)] = {
+		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
+		[C(RESULT_MISS)] = { (17 << 6) | 0x3f },
+	},
+	[ C(OP_WRITE) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+	[ C(OP_PREFETCH) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+},
+[C(ITLB)] = {
+	[C(OP_READ)] = {
+		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
+		[C(RESULT_MISS)] = { (6 << 6) | 0x3f },
+	},
+	[ C(OP_WRITE) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+	[ C(OP_PREFETCH) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+},
+[C(BPU)] = {
+	[C(OP_READ)] = {
+		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
+		[C(RESULT_MISS)] = { CACHE_OP_UNSUPPORTED },
+	},
+	[ C(OP_WRITE) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+	[ C(OP_PREFETCH) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+},
+[C(NODE)] = {
+	[C(OP_READ)] = {
+		[C(RESULT_ACCESS)] = { CACHE_OP_UNSUPPORTED },
+		[C(RESULT_MISS)  ] = { CACHE_OP_UNSUPPORTED },
+	},
+	[ C(OP_WRITE) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+	[ C(OP_PREFETCH) ] = {
+		[ C(RESULT_ACCESS) ] = { CACHE_OP_UNSUPPORTED },
+		[ C(RESULT_MISS)   ] = { CACHE_OP_UNSUPPORTED },
+	},
+},
+};
+
+static u32 sparc_vt_read_pmc(int idx)
+{
+	u64 val = pcr_ops->read_pic(idx);
+
+	return val & 0xffffffff;
+}
+
+static void sparc_vt_write_pmc(int idx, u64 val)
+{
+	u64 pcr;
+
+	/* There seems to be an internal latch on the overflow event
+	 * on SPARC-T4 that prevents it from triggering unless you
+	 * update the PIC exactly as we do here.  The requirement
+	 * seems to be that you have to turn off event counting in the
+	 * PCR around the PIC update.
+	 *
+	 * For example, after the following sequence:
+	 *
+	 * 1) set PIC to -1
+	 * 2) enable event counting and overflow reporting in PCR
+	 * 3) overflow triggers, softint 15 handler invoked
+	 * 4) clear OV bit in PCR
+	 * 5) write PIC to -1
+	 *
+	 * a subsequent overflow event will not trigger.  This
+	 * sequence works on SPARC-T3 and previous chips.
+	 */
+	pcr = pcr_ops->read_pcr(idx);
+	pcr_ops->write_pcr(idx, PCR_N4_PICNPT);
+
+	pcr_ops->write_pic(idx, val & 0xffffffff);
+
+	pcr_ops->write_pcr(idx, pcr);
+}
+
+static const struct sparc_pmu niagara4_pmu = {
+	.event_map	= niagara4_event_map,
+	.cache_map	= &niagara4_cache_map,
+	.max_events	= ARRAY_SIZE(niagara4_perfmon_event_map),
+	.read_pmc	= sparc_vt_read_pmc,
+	.write_pmc	= sparc_vt_write_pmc,
+	.upper_shift	= 5,
+	.lower_shift	= 5,
+	.event_mask	= 0x7ff,
+	.user_bit	= PCR_N4_UTRACE,
+	.priv_bit	= PCR_N4_STRACE,
+
+	/* We explicitly don't support hypervisor tracing.  The T4
+	 * generates the overflow event for precise events via a trap
+	 * which will not be generated (ie. it's completely lost) if
+	 * we happen to be in the hypervisor when the event triggers.
+	 * Essentially, the overflow event reporting is completely
+	 * unusable when you have hypervisor mode tracing enabled.
+	 */
+	.hv_bit		= 0,
+
+	.irq_bit	= PCR_N4_TOE,
+	.upper_nop	= 0,
+	.lower_nop	= 0,
+	.flags		= 0,
+	.max_hw_events	= 4,
+	.num_pcrs	= 4,
+	.num_pic_regs	= 4,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct sparc_pmu *sparc_pmu __read_mostly;
@@ -573,6 +928,7 @@ static u64 nop_for_index(int idx)
 static inline void sparc_pmu_enable_event(struct cpu_hw_events *cpuc, struct hw_perf_event *hwc, int idx)
 {
 	u64 enc, val, mask = mask_for_index(idx);
+<<<<<<< HEAD
 
 	enc = perf_event_get_enc(cpuc->events[idx]);
 
@@ -582,12 +938,28 @@ static inline void sparc_pmu_enable_event(struct cpu_hw_events *cpuc, struct hw_
 	cpuc->pcr = val;
 
 	pcr_ops->write(cpuc->pcr);
+=======
+	int pcr_index = 0;
+
+	if (sparc_pmu->num_pcrs > 1)
+		pcr_index = idx;
+
+	enc = perf_event_get_enc(cpuc->events[idx]);
+
+	val = cpuc->pcr[pcr_index];
+	val &= ~mask;
+	val |= event_encoding(enc, idx);
+	cpuc->pcr[pcr_index] = val;
+
+	pcr_ops->write_pcr(pcr_index, cpuc->pcr[pcr_index]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void sparc_pmu_disable_event(struct cpu_hw_events *cpuc, struct hw_perf_event *hwc, int idx)
 {
 	u64 mask = mask_for_index(idx);
 	u64 nop = nop_for_index(idx);
+<<<<<<< HEAD
 	u64 val;
 
 	val = cpuc->pcr;
@@ -624,6 +996,20 @@ static void write_pmc(int idx, u64 val)
 	pic &= ~mask;
 	pic |= val;
 	write_pic(pic);
+=======
+	int pcr_index = 0;
+	u64 val;
+
+	if (sparc_pmu->num_pcrs > 1)
+		pcr_index = idx;
+
+	val = cpuc->pcr[pcr_index];
+	val &= ~mask;
+	val |= nop;
+	cpuc->pcr[pcr_index] = val;
+
+	pcr_ops->write_pcr(pcr_index, cpuc->pcr[pcr_index]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u64 sparc_perf_event_update(struct perf_event *event,
@@ -635,7 +1021,11 @@ static u64 sparc_perf_event_update(struct perf_event *event,
 
 again:
 	prev_raw_count = local64_read(&hwc->prev_count);
+<<<<<<< HEAD
 	new_raw_count = read_pmc(idx);
+=======
+	new_raw_count = sparc_pmu->read_pmc(idx);
+>>>>>>> refs/remotes/origin/master
 
 	if (local64_cmpxchg(&hwc->prev_count, prev_raw_count,
 			     new_raw_count) != prev_raw_count)
@@ -675,13 +1065,18 @@ static int sparc_perf_event_set_period(struct perf_event *event,
 
 	local64_set(&hwc->prev_count, (u64)-left);
 
+<<<<<<< HEAD
 	write_pmc(idx, (u64)(-left) & 0xffffffff);
+=======
+	sparc_pmu->write_pmc(idx, (u64)(-left) & 0xffffffff);
+>>>>>>> refs/remotes/origin/master
 
 	perf_event_update_userpage(event);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 /* If performance event entries have been added, move existing
  * events around (if necessary) and then assign new entries to
  * counters.
@@ -694,6 +1089,12 @@ static u64 maybe_change_configuration(struct cpu_hw_events *cpuc, u64 pcr)
 		goto out;
 
 	/* Read in the counters which are moving.  */
+=======
+static void read_in_all_counters(struct cpu_hw_events *cpuc)
+{
+	int i;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < cpuc->n_events; i++) {
 		struct perf_event *cp = cpuc->event[i];
 
@@ -704,6 +1105,23 @@ static u64 maybe_change_configuration(struct cpu_hw_events *cpuc, u64 pcr)
 			cpuc->current_idx[i] = PIC_NO_INDEX;
 		}
 	}
+<<<<<<< HEAD
+=======
+}
+
+/* On this PMU all PICs are programmed using a single PCR.  Calculate
+ * the combined control register value.
+ *
+ * For such chips we require that all of the events have the same
+ * configuration, so just fetch the settings from the first entry.
+ */
+static void calculate_single_pcr(struct cpu_hw_events *cpuc)
+{
+	int i;
+
+	if (!cpuc->n_added)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* Assign to counters all unassigned events.  */
 	for (i = 0; i < cpuc->n_events; i++) {
@@ -719,6 +1137,7 @@ static u64 maybe_change_configuration(struct cpu_hw_events *cpuc, u64 pcr)
 		cpuc->current_idx[i] = idx;
 
 		enc = perf_event_get_enc(cpuc->events[i]);
+<<<<<<< HEAD
 		pcr &= ~mask_for_index(idx);
 		if (hwc->state & PERF_HES_STOPPED)
 			pcr |= nop_for_index(idx);
@@ -727,12 +1146,77 @@ static u64 maybe_change_configuration(struct cpu_hw_events *cpuc, u64 pcr)
 	}
 out:
 	return pcr;
+=======
+		cpuc->pcr[0] &= ~mask_for_index(idx);
+		if (hwc->state & PERF_HES_STOPPED)
+			cpuc->pcr[0] |= nop_for_index(idx);
+		else
+			cpuc->pcr[0] |= event_encoding(enc, idx);
+	}
+out:
+	cpuc->pcr[0] |= cpuc->event[0]->hw.config_base;
+}
+
+/* On this PMU each PIC has it's own PCR control register.  */
+static void calculate_multiple_pcrs(struct cpu_hw_events *cpuc)
+{
+	int i;
+
+	if (!cpuc->n_added)
+		goto out;
+
+	for (i = 0; i < cpuc->n_events; i++) {
+		struct perf_event *cp = cpuc->event[i];
+		struct hw_perf_event *hwc = &cp->hw;
+		int idx = hwc->idx;
+		u64 enc;
+
+		if (cpuc->current_idx[i] != PIC_NO_INDEX)
+			continue;
+
+		sparc_perf_event_set_period(cp, hwc, idx);
+		cpuc->current_idx[i] = idx;
+
+		enc = perf_event_get_enc(cpuc->events[i]);
+		cpuc->pcr[idx] &= ~mask_for_index(idx);
+		if (hwc->state & PERF_HES_STOPPED)
+			cpuc->pcr[idx] |= nop_for_index(idx);
+		else
+			cpuc->pcr[idx] |= event_encoding(enc, idx);
+	}
+out:
+	for (i = 0; i < cpuc->n_events; i++) {
+		struct perf_event *cp = cpuc->event[i];
+		int idx = cp->hw.idx;
+
+		cpuc->pcr[idx] |= cp->hw.config_base;
+	}
+}
+
+/* If performance event entries have been added, move existing events
+ * around (if necessary) and then assign new entries to counters.
+ */
+static void update_pcrs_for_enable(struct cpu_hw_events *cpuc)
+{
+	if (cpuc->n_added)
+		read_in_all_counters(cpuc);
+
+	if (sparc_pmu->num_pcrs == 1) {
+		calculate_single_pcr(cpuc);
+	} else {
+		calculate_multiple_pcrs(cpuc);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sparc_pmu_enable(struct pmu *pmu)
 {
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
+<<<<<<< HEAD
 	u64 pcr;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	if (cpuc->enabled)
 		return;
@@ -740,6 +1224,7 @@ static void sparc_pmu_enable(struct pmu *pmu)
 	cpuc->enabled = 1;
 	barrier();
 
+<<<<<<< HEAD
 	pcr = cpuc->pcr;
 	if (!cpuc->n_events) {
 		pcr = 0;
@@ -754,12 +1239,23 @@ static void sparc_pmu_enable(struct pmu *pmu)
 	}
 
 	pcr_ops->write(cpuc->pcr);
+=======
+	if (cpuc->n_events)
+		update_pcrs_for_enable(cpuc);
+
+	for (i = 0; i < sparc_pmu->num_pcrs; i++)
+		pcr_ops->write_pcr(i, cpuc->pcr[i]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sparc_pmu_disable(struct pmu *pmu)
 {
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
+<<<<<<< HEAD
 	u64 val;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	if (!cpuc->enabled)
 		return;
@@ -767,12 +1263,23 @@ static void sparc_pmu_disable(struct pmu *pmu)
 	cpuc->enabled = 0;
 	cpuc->n_added = 0;
 
+<<<<<<< HEAD
 	val = cpuc->pcr;
 	val &= ~(PCR_UTRACE | PCR_STRACE |
 		 sparc_pmu->hv_bit | sparc_pmu->irq_bit);
 	cpuc->pcr = val;
 
 	pcr_ops->write(cpuc->pcr);
+=======
+	for (i = 0; i < sparc_pmu->num_pcrs; i++) {
+		u64 val = cpuc->pcr[i];
+
+		val &= ~(sparc_pmu->user_bit | sparc_pmu->priv_bit |
+			 sparc_pmu->hv_bit | sparc_pmu->irq_bit);
+		cpuc->pcr[i] = val;
+		pcr_ops->write_pcr(i, cpuc->pcr[i]);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int active_event_index(struct cpu_hw_events *cpuc,
@@ -871,9 +1378,17 @@ static DEFINE_MUTEX(pmc_grab_mutex);
 static void perf_stop_nmi_watchdog(void *unused)
 {
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
+<<<<<<< HEAD
 
 	stop_nmi_watchdog(NULL);
 	cpuc->pcr = pcr_ops->read();
+=======
+	int i;
+
+	stop_nmi_watchdog(NULL);
+	for (i = 0; i < sparc_pmu->num_pcrs; i++)
+		cpuc->pcr[i] = pcr_ops->read_pcr(i);
+>>>>>>> refs/remotes/origin/master
 }
 
 void perf_event_grab_pmc(void)
@@ -959,9 +1474,23 @@ static int sparc_check_constraints(struct perf_event **evts,
 	if (!n_ev)
 		return 0;
 
+<<<<<<< HEAD
 	if (n_ev > MAX_HWEVENTS)
 		return -1;
 
+=======
+	if (n_ev > sparc_pmu->max_hw_events)
+		return -1;
+
+	if (!(sparc_pmu->flags & SPARC_PMU_HAS_CONFLICTS)) {
+		int i;
+
+		for (i = 0; i < n_ev; i++)
+			evts[i]->hw.idx = i;
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	msk0 = perf_event_get_msk(events[0]);
 	if (n_ev == 1) {
 		if (msk0 & PIC_LOWER)
@@ -1017,6 +1546,12 @@ static int check_excludes(struct perf_event **evts, int n_prev, int n_new)
 	struct perf_event *event;
 	int i, n, first;
 
+<<<<<<< HEAD
+=======
+	if (!(sparc_pmu->flags & SPARC_PMU_ALL_EXCLUDES_SAME))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	n = n_prev + n_new;
 	if (n <= 1)
 		return 0;
@@ -1076,7 +1611,11 @@ static int sparc_pmu_add(struct perf_event *event, int ef_flags)
 	perf_pmu_disable(event->pmu);
 
 	n0 = cpuc->n_events;
+<<<<<<< HEAD
 	if (n0 >= MAX_HWEVENTS)
+=======
+	if (n0 >= sparc_pmu->max_hw_events)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	cpuc->event[n0] = event;
@@ -1125,12 +1664,18 @@ static int sparc_pmu_event_init(struct perf_event *event)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* does not support taken branch sampling */
 	if (has_branch_stack(event))
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (attr->type) {
 	case PERF_TYPE_HARDWARE:
 		if (attr->config >= sparc_pmu->max_events)
@@ -1166,16 +1711,26 @@ static int sparc_pmu_event_init(struct perf_event *event)
 	/* We save the enable bits in the config_base.  */
 	hwc->config_base = sparc_pmu->irq_bit;
 	if (!attr->exclude_user)
+<<<<<<< HEAD
 		hwc->config_base |= PCR_UTRACE;
 	if (!attr->exclude_kernel)
 		hwc->config_base |= PCR_STRACE;
+=======
+		hwc->config_base |= sparc_pmu->user_bit;
+	if (!attr->exclude_kernel)
+		hwc->config_base |= sparc_pmu->priv_bit;
+>>>>>>> refs/remotes/origin/master
 	if (!attr->exclude_hv)
 		hwc->config_base |= sparc_pmu->hv_bit;
 
 	n = 0;
 	if (event->group_leader != event) {
 		n = collect_events(event->group_leader,
+<<<<<<< HEAD
 				   MAX_HWEVENTS - 1,
+=======
+				   sparc_pmu->max_hw_events - 1,
+>>>>>>> refs/remotes/origin/master
 				   evts, events, current_idx_dmy);
 		if (n < 0)
 			return -EINVAL;
@@ -1274,8 +1829,12 @@ static struct pmu pmu = {
 void perf_event_print_debug(void)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	u64 pcr, pic;
 	int cpu;
+=======
+	int cpu, i;
+>>>>>>> refs/remotes/origin/master
 
 	if (!sparc_pmu)
 		return;
@@ -1284,12 +1843,22 @@ void perf_event_print_debug(void)
 
 	cpu = smp_processor_id();
 
+<<<<<<< HEAD
 	pcr = pcr_ops->read();
 	read_pic(pic);
 
 	pr_info("\n");
 	pr_info("CPU#%d: PCR[%016llx] PIC[%016llx]\n",
 		cpu, pcr, pic);
+=======
+	pr_info("\n");
+	for (i = 0; i < sparc_pmu->num_pcrs; i++)
+		pr_info("CPU#%d: PCR%d[%016llx]\n",
+			cpu, i, pcr_ops->read_pcr(i));
+	for (i = 0; i < sparc_pmu->num_pic_regs; i++)
+		pr_info("CPU#%d: PIC%d[%016llx]\n",
+			cpu, i, pcr_ops->read_pic(i));
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_restore(flags);
 }
@@ -1316,8 +1885,11 @@ static int __kprobes perf_event_nmi_handler(struct notifier_block *self,
 
 	regs = args->regs;
 
+<<<<<<< HEAD
 	perf_sample_data_init(&data, 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cpuc = &__get_cpu_var(cpu_hw_events);
 
 	/* If the PMU has the TOE IRQ enable bits, we need to do a
@@ -1327,8 +1899,14 @@ static int __kprobes perf_event_nmi_handler(struct notifier_block *self,
 	 * Do this before we peek at the counters to determine
 	 * overflow so we don't lose any events.
 	 */
+<<<<<<< HEAD
 	if (sparc_pmu->irq_bit)
 		pcr_ops->write(cpuc->pcr);
+=======
+	if (sparc_pmu->irq_bit &&
+	    sparc_pmu->num_pcrs == 1)
+		pcr_ops->write_pcr(0, cpuc->pcr[0]);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < cpuc->n_events; i++) {
 		struct perf_event *event = cpuc->event[i];
@@ -1336,11 +1914,19 @@ static int __kprobes perf_event_nmi_handler(struct notifier_block *self,
 		struct hw_perf_event *hwc;
 		u64 val;
 
+<<<<<<< HEAD
+=======
+		if (sparc_pmu->irq_bit &&
+		    sparc_pmu->num_pcrs > 1)
+			pcr_ops->write_pcr(idx, cpuc->pcr[idx]);
+
+>>>>>>> refs/remotes/origin/master
 		hwc = &event->hw;
 		val = sparc_perf_event_update(event, hwc, idx);
 		if (val & (1ULL << 31))
 			continue;
 
+<<<<<<< HEAD
 		data.period = event->hw.last_period;
 		if (!sparc_perf_event_set_period(event, hwc, idx))
 			continue;
@@ -1350,6 +1936,13 @@ static int __kprobes perf_event_nmi_handler(struct notifier_block *self,
 =======
 		if (perf_event_overflow(event, &data, regs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		perf_sample_data_init(&data, 0, hwc->last_period);
+		if (!sparc_perf_event_set_period(event, hwc, idx))
+			continue;
+
+		if (perf_event_overflow(event, &data, regs))
+>>>>>>> refs/remotes/origin/master
 			sparc_pmu_stop(event, 0);
 	}
 
@@ -1378,6 +1971,13 @@ static bool __init supported_pmu(void)
 		sparc_pmu = &niagara2_pmu;
 		return true;
 	}
+<<<<<<< HEAD
+=======
+	if (!strcmp(sparc_pmu_type, "niagara4")) {
+		sparc_pmu = &niagara4_pmu;
+		return true;
+	}
+>>>>>>> refs/remotes/origin/master
 	return false;
 }
 
@@ -1474,6 +2074,7 @@ static void perf_callchain_user_32(struct perf_callchain_entry *entry,
 
 	ufp = regs->u_regs[UREG_I6] & 0xffffffffUL;
 	do {
+<<<<<<< HEAD
 		struct sparc_stackf32 *usf, sf;
 		unsigned long pc;
 
@@ -1483,6 +2084,27 @@ static void perf_callchain_user_32(struct perf_callchain_entry *entry,
 
 		pc = sf.callers_pc;
 		ufp = (unsigned long)sf.fp;
+=======
+		unsigned long pc;
+
+		if (thread32_stack_is_64bit(ufp)) {
+			struct sparc_stackf *usf, sf;
+
+			ufp += STACK_BIAS;
+			usf = (struct sparc_stackf *) ufp;
+			if (__copy_from_user_inatomic(&sf, usf, sizeof(sf)))
+				break;
+			pc = sf.callers_pc & 0xffffffff;
+			ufp = ((unsigned long) sf.fp) & 0xffffffff;
+		} else {
+			struct sparc_stackf32 *usf, sf;
+			usf = (struct sparc_stackf32 *) ufp;
+			if (__copy_from_user_inatomic(&sf, usf, sizeof(sf)))
+				break;
+			pc = sf.callers_pc;
+			ufp = (unsigned long)sf.fp;
+		}
+>>>>>>> refs/remotes/origin/master
 		perf_callchain_store(entry, pc);
 	} while (entry->nr < PERF_MAX_STACK_DEPTH);
 }

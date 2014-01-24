@@ -13,6 +13,7 @@
 
 #include <mach/addr-map.h>
 
+<<<<<<< HEAD
 #define APMU_VIRT_BASE	(AXI_VIRT_BASE + 0x82800)
 #define APMU_REG(x)	(APMU_VIRT_BASE + (x))
 
@@ -34,6 +35,8 @@
 #define APMU_ETH	APMU_REG(0x0fc)
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define APMU_FNCLK_EN	(1 << 4)
 #define APMU_AXICLK_EN	(1 << 3)
 #define APMU_FNRST_DIS	(1 << 1)

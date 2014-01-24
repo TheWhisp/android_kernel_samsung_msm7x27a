@@ -1,7 +1,10 @@
 #ifndef __NET_WIRELESS_REG_H
 #define __NET_WIRELESS_REG_H
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright 2008-2011	Luis R. Rodriguez <mcgrof@qca.qualcomm.com>
  *
@@ -17,6 +20,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 extern const struct ieee80211_regdomain *cfg80211_regdomain;
@@ -32,6 +36,20 @@ int regulatory_hint_user(const char *alpha2);
 
 int reg_device_uevent(struct device *dev, struct kobj_uevent_env *env);
 void reg_device_remove(struct wiphy *wiphy);
+=======
+
+extern const struct ieee80211_regdomain __rcu *cfg80211_regdomain;
+
+bool is_world_regdom(const char *alpha2);
+bool reg_supported_dfs_region(u8 dfs_region);
+
+int regulatory_hint_user(const char *alpha2,
+			 enum nl80211_user_reg_hint_type user_reg_hint_type);
+
+int reg_device_uevent(struct device *dev, struct kobj_uevent_env *env);
+void wiphy_regulatory_register(struct wiphy *wiphy);
+void wiphy_regulatory_deregister(struct wiphy *wiphy);
+>>>>>>> refs/remotes/origin/master
 
 int __init regulatory_init(void);
 void regulatory_exit(void);
@@ -39,10 +57,15 @@ void regulatory_exit(void);
 int set_regdom(const struct ieee80211_regdomain *rd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void regulatory_update(struct wiphy *wiphy, enum nl80211_reg_initiator setby);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool reg_last_request_cell_base(void);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * regulatory_hint_found_beacon - hints a beacon was found on a channel
  * @wiphy: the wireless device where the beacon was found on
@@ -62,11 +85,19 @@ void regulatory_update(struct wiphy *wiphy, enum nl80211_reg_initiator setby);
  * set the wiphy->disable_beacon_hints to true.
  */
 int regulatory_hint_found_beacon(struct wiphy *wiphy,
+<<<<<<< HEAD
 					struct ieee80211_channel *beacon_chan,
 					gfp_t gfp);
 
 /**
  * regulatory_hint_11d - hints a country IE as a regulatory domain
+=======
+				 struct ieee80211_channel *beacon_chan,
+				 gfp_t gfp);
+
+/**
+ * regulatory_hint_country_ie - hints a country IE as a regulatory domain
+>>>>>>> refs/remotes/origin/master
  * @wiphy: the wireless device giving the hint (used only for reporting
  *	conflicts)
  * @band: the band on which the country IE was received on. This determines
@@ -86,9 +117,15 @@ int regulatory_hint_found_beacon(struct wiphy *wiphy,
  * not observed. For this reason if a triplet is seen with channel
  * information for a band the BSS is not present in it will be ignored.
  */
+<<<<<<< HEAD
 void regulatory_hint_11d(struct wiphy *wiphy,
 			 enum ieee80211_band band,
 			 u8 *country_ie,
+=======
+void regulatory_hint_country_ie(struct wiphy *wiphy,
+			 enum ieee80211_band band,
+			 const u8 *country_ie,
+>>>>>>> refs/remotes/origin/master
 			 u8 country_ie_len);
 
 /**

@@ -5,6 +5,10 @@
 menuconfig NET
 	bool "Networking support"
 	select NLATTR
+<<<<<<< HEAD
+=======
+	select GENERIC_NET_UTILS
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Unless you really know what you are doing, you should say Y here.
 	  The reason is that some programs need kernel networking support even
@@ -52,6 +56,11 @@ source "net/iucv/Kconfig"
 
 config INET
 	bool "TCP/IP networking"
+<<<<<<< HEAD
+=======
+	select CRYPTO
+	select CRYPTO_AES
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  These are the protocols used on the Internet and on most local
 	  Ethernets. It is highly recommended to say Y here (this will enlarge
@@ -79,6 +88,7 @@ source "net/netlabel/Kconfig"
 
 endif # if INET
 
+<<<<<<< HEAD
 config ANDROID_PARANOID_NETWORK
 	bool "Only allow certain groups to create sockets"
 	default y
@@ -93,6 +103,8 @@ config NET_ACTIVITY_STATS
 	 modem activity on 2G, 3G, 4G wireless networks. Counts number of
 	 transmissions and groups them in specified time buckets.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config NETWORK_SECMARK
 	bool "Security Marking"
 	help
@@ -102,7 +114,10 @@ config NETWORK_SECMARK
 
 config NETWORK_PHY_TIMESTAMPING
 	bool "Timestamping in PHY devices"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  This allows timestamping of network packets by PHYs with
 	  hardware timestamping capabilities. This option adds some
@@ -221,14 +236,21 @@ source "net/ipx/Kconfig"
 source "drivers/net/appletalk/Kconfig"
 source "net/x25/Kconfig"
 source "net/lapb/Kconfig"
+<<<<<<< HEAD
 source "net/econet/Kconfig"
 source "net/wanrouter/Kconfig"
 source "net/phonet/Kconfig"
 source "net/ieee802154/Kconfig"
+=======
+source "net/phonet/Kconfig"
+source "net/ieee802154/Kconfig"
+source "net/mac802154/Kconfig"
+>>>>>>> refs/remotes/origin/master
 source "net/sched/Kconfig"
 source "net/dcb/Kconfig"
 source "net/dns_resolver/Kconfig"
 source "net/batman-adv/Kconfig"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 source "net/openvswitch/Kconfig"
@@ -237,21 +259,42 @@ source "net/openvswitch/Kconfig"
 config RPS
 	boolean "RPS"
 	depends on SMP && SYSFS && USE_GENERIC_SMP_HELPERS
+=======
+source "net/openvswitch/Kconfig"
+source "net/vmw_vsock/Kconfig"
+source "net/netlink/Kconfig"
+source "net/mpls/Kconfig"
+source "net/hsr/Kconfig"
+
+config RPS
+	boolean
+	depends on SMP && SYSFS
+>>>>>>> refs/remotes/origin/master
 	default y
 
 config RFS_ACCEL
 	boolean
+<<<<<<< HEAD
 	depends on RPS && GENERIC_HARDIRQS
+=======
+	depends on RPS
+>>>>>>> refs/remotes/origin/master
 	select CPU_RMAP
 	default y
 
 config XPS
 	boolean
+<<<<<<< HEAD
 	depends on SMP && SYSFS && USE_GENERIC_SMP_HELPERS
 	default y
 
 <<<<<<< HEAD
 =======
+=======
+	depends on SMP
+	default y
+
+>>>>>>> refs/remotes/origin/master
 config NETPRIO_CGROUP
 	tristate "Network priority cgroup"
 	depends on CGROUPS
@@ -259,16 +302,26 @@ config NETPRIO_CGROUP
 	  Cgroup subsystem for use in assigning processes to network priorities on
 	  a per-interface basis
 
+<<<<<<< HEAD
+=======
+config NET_RX_BUSY_POLL
+	boolean
+	default y
+
+>>>>>>> refs/remotes/origin/master
 config BQL
 	boolean
 	depends on SYSFS
 	select DQL
 	default y
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config HAVE_BPF_JIT
 	bool
 
+=======
+>>>>>>> refs/remotes/origin/master
 config BPF_JIT
 	bool "enable BPF Just In Time compiler"
 	depends on HAVE_BPF_JIT
@@ -280,11 +333,30 @@ config BPF_JIT
 	  packet sniffing (libpcap/tcpdump). Note : Admin should enable
 	  this feature changing /proc/sys/net/core/bpf_jit_enable
 
+<<<<<<< HEAD
+=======
+config NET_FLOW_LIMIT
+	boolean
+	depends on RPS
+	default y
+	---help---
+	  The network stack has to drop packets when a receive processing CPU's
+	  backlog reaches netdev_max_backlog. If a few out of many active flows
+	  generate the vast majority of load, drop their traffic earlier to
+	  maintain capacity for the other flows. This feature provides servers
+	  with many clients some protection against DoS by a single (spoofed)
+	  flow that greatly exceeds average workload.
+
+>>>>>>> refs/remotes/origin/master
 menu "Network testing"
 
 config NET_PKTGEN
 	tristate "Packet Generator (USE WITH CAUTION)"
+<<<<<<< HEAD
 	depends on PROC_FS
+=======
+	depends on INET && PROC_FS
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This module will inject preconfigured packets, at a configurable
 	  rate, out of a given interface.  It is used for network interface
@@ -299,7 +371,11 @@ config NET_PKTGEN
 
 config NET_TCPPROBE
 	tristate "TCP connection probing"
+<<<<<<< HEAD
 	depends on INET && EXPERIMENTAL && PROC_FS && KPROBES
+=======
+	depends on INET && PROC_FS && KPROBES
+>>>>>>> refs/remotes/origin/master
 	---help---
 	This module allows for capturing the changes to TCP connection
 	state in response to incoming packets. It is used for debugging
@@ -315,8 +391,13 @@ config NET_TCPPROBE
 	module will be called tcp_probe.
 
 config NET_DROP_MONITOR
+<<<<<<< HEAD
 	boolean "Network packet drop alerting service"
 	depends on INET && EXPERIMENTAL && TRACEPOINTS
+=======
+	tristate "Network packet drop alerting service"
+	depends on INET && TRACEPOINTS
+>>>>>>> refs/remotes/origin/master
 	---help---
 	This feature provides an alerting service to userspace in the
 	event that packets are discarded in the network stack.  Alerts
@@ -357,9 +438,20 @@ source "net/9p/Kconfig"
 source "net/caif/Kconfig"
 source "net/ceph/Kconfig"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 source "net/nfc/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
 
 
 endif   # if NET
+=======
+source "net/nfc/Kconfig"
+
+
+endif   # if NET
+
+# Used by archs to tell that they support BPF_JIT
+config HAVE_BPF_JIT
+	bool
+>>>>>>> refs/remotes/origin/master

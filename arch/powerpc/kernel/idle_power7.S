@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  This file contains the power_save function for 970-family CPUs.
 =======
  *  This file contains the power_save function for Power7 CPUs.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  This file contains the power_save function for Power7 CPUs.
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -20,9 +24,14 @@
 #include <asm/asm-offsets.h>
 #include <asm/ppc-opcode.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/hw_irq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hw_irq.h>
+#include <asm/kvm_book3s_asm.h>
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG
 
@@ -34,7 +43,13 @@ _GLOBAL(power7_idle)
 	lwz	r4,ADDROFF(powersave_nap)(r3)
 	cmpwi	0,r4,0
 	beqlr
+<<<<<<< HEAD
 
+=======
+	/* fall through */
+
+_GLOBAL(power7_nap)
+>>>>>>> refs/remotes/origin/master
 	/* NAP is a state loss, we create a regs frame on the
 	 * stack, fill it up with the state we care about and
 	 * stick a pointer to it in PACAR1. We really only
@@ -60,10 +75,13 @@ _GLOBAL(power7_idle)
 	rotldi	r9,r9,16
 	mtmsrd	r9,1			/* hard-disable interrupts */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	li	r0,0
 	stb	r0,PACASOFTIRQEN(r13)	/* we'll hard-enable shortly */
 	stb	r0,PACAHARDIRQEN(r13)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Check if something happened while soft-disabled */
 	lbz	r0,PACAIRQHAPPENED(r13)
@@ -84,7 +102,10 @@ _GLOBAL(power7_idle)
 	/* We haven't lost state ... yet */
 	li	r0,0
 	stb	r0,PACA_NAPSTATELOST(r13)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Continue saving state */
 	SAVE_GPR(2, r1)
@@ -94,6 +115,15 @@ _GLOBAL(power7_idle)
 	std	r9,_MSR(r1)
 	std	r1,PACAR1(r13)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+	/* Tell KVM we're napping */
+	li	r4,KVM_HWTHREAD_IN_NAP
+	stb	r4,HSTATE_HWTHREAD_STATE(r13)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/* Magic NAP mode enter sequence */
 	std	r0,0(r1)
 	ptesync
@@ -105,9 +135,12 @@ _GLOBAL(power7_idle)
 
 _GLOBAL(power7_wakeup_loss)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	GET_PACA(r13)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ld	r1,PACAR1(r13)
 	REST_NVGPRS(r1)
 	REST_GPR(2, r1)
@@ -122,12 +155,18 @@ _GLOBAL(power7_wakeup_loss)
 
 _GLOBAL(power7_wakeup_noloss)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	GET_PACA(r13)
 =======
 	lbz	r0,PACA_NAPSTATELOST(r13)
 	cmpwi	r0,0
 	bne	.power7_wakeup_loss
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lbz	r0,PACA_NAPSTATELOST(r13)
+	cmpwi	r0,0
+	bne	.power7_wakeup_loss
+>>>>>>> refs/remotes/origin/master
 	ld	r1,PACAR1(r13)
 	ld	r4,_MSR(r1)
 	ld	r5,_NIP(r1)

@@ -13,7 +13,12 @@
 #include "util/quote.h"
 #include "util/run-command.h"
 #include "util/parse-events.h"
+<<<<<<< HEAD
 #include "util/debugfs.h"
+=======
+#include <api/fs/debugfs.h>
+#include <pthread.h>
+>>>>>>> refs/remotes/origin/master
 
 const char perf_usage_string[] =
 	"perf [--version] [--help] COMMAND [ARGS]";
@@ -23,6 +28,47 @@ const char perf_more_info_string[] =
 
 int use_browser = -1;
 static int use_pager = -1;
+<<<<<<< HEAD
+=======
+const char *input_name;
+
+struct cmd_struct {
+	const char *cmd;
+	int (*fn)(int, const char **, const char *);
+	int option;
+};
+
+static struct cmd_struct commands[] = {
+	{ "buildid-cache", cmd_buildid_cache, 0 },
+	{ "buildid-list", cmd_buildid_list, 0 },
+	{ "diff",	cmd_diff,	0 },
+	{ "evlist",	cmd_evlist,	0 },
+	{ "help",	cmd_help,	0 },
+	{ "list",	cmd_list,	0 },
+	{ "record",	cmd_record,	0 },
+	{ "report",	cmd_report,	0 },
+	{ "bench",	cmd_bench,	0 },
+	{ "stat",	cmd_stat,	0 },
+	{ "timechart",	cmd_timechart,	0 },
+	{ "top",	cmd_top,	0 },
+	{ "annotate",	cmd_annotate,	0 },
+	{ "version",	cmd_version,	0 },
+	{ "script",	cmd_script,	0 },
+	{ "sched",	cmd_sched,	0 },
+#ifdef HAVE_LIBELF_SUPPORT
+	{ "probe",	cmd_probe,	0 },
+#endif
+	{ "kmem",	cmd_kmem,	0 },
+	{ "lock",	cmd_lock,	0 },
+	{ "kvm",	cmd_kvm,	0 },
+	{ "test",	cmd_test,	0 },
+#ifdef HAVE_LIBAUDIT_SUPPORT
+	{ "trace",	cmd_trace,	0 },
+#endif
+	{ "inject",	cmd_inject,	0 },
+	{ "mem",	cmd_mem,	0 },
+};
+>>>>>>> refs/remotes/origin/master
 
 struct pager_config {
 	const char *cmd;
@@ -30,10 +76,13 @@ struct pager_config {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char debugfs_mntpt[MAXPATHLEN];
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int pager_command_config(const char *var, const char *value, void *data)
 {
 	struct pager_config *c = data;
@@ -52,21 +101,42 @@ int check_pager_config(const char *cmd)
 	return c.val;
 }
 
+<<<<<<< HEAD
 static int tui_command_config(const char *var, const char *value, void *data)
+=======
+static int browser_command_config(const char *var, const char *value, void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pager_config *c = data;
 	if (!prefixcmp(var, "tui.") && !strcmp(var + 4, c->cmd))
 		c->val = perf_config_bool(var, value);
+<<<<<<< HEAD
 	return 0;
 }
 
 /* returns 0 for "no tui", 1 for "use tui", and -1 for "not specified" */
 static int check_tui_config(const char *cmd)
+=======
+	if (!prefixcmp(var, "gtk.") && !strcmp(var + 4, c->cmd))
+		c->val = perf_config_bool(var, value) ? 2 : 0;
+	return 0;
+}
+
+/*
+ * returns 0 for "no tui", 1 for "use tui", 2 for "use gtk",
+ * and -1 for "not specified"
+ */
+static int check_browser_config(const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pager_config c;
 	c.cmd = cmd;
 	c.val = -1;
+<<<<<<< HEAD
 	perf_config(tui_command_config, &c);
+=======
+	perf_config(browser_command_config, &c);
+>>>>>>> refs/remotes/origin/master
 	return c.val;
 }
 
@@ -85,6 +155,7 @@ static void commit_pager_choice(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void set_debugfs_path(void)
 {
 	char *path;
@@ -96,6 +167,8 @@ static void set_debugfs_path(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int handle_options(const char ***argv, int *argc, int *envchanged)
 {
 	int handled = 0;
@@ -168,16 +241,21 @@ static int handle_options(const char ***argv, int *argc, int *envchanged)
 				usage(perf_usage_string);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			strncpy(debugfs_mntpt, (*argv)[1], MAXPATHLEN);
 			debugfs_mntpt[MAXPATHLEN - 1] = '\0';
 =======
 			debugfs_set_path((*argv)[1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			perf_debugfs_set_path((*argv)[1]);
+>>>>>>> refs/remotes/origin/master
 			if (envchanged)
 				*envchanged = 1;
 			(*argv)++;
 			(*argc)--;
 		} else if (!prefixcmp(cmd, CMD_DEBUGFS_DIR)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			strncpy(debugfs_mntpt, cmd + strlen(CMD_DEBUGFS_DIR), MAXPATHLEN);
 			debugfs_mntpt[MAXPATHLEN - 1] = '\0';
@@ -187,6 +265,20 @@ static int handle_options(const char ***argv, int *argc, int *envchanged)
 >>>>>>> refs/remotes/origin/cm-10.0
 			if (envchanged)
 				*envchanged = 1;
+=======
+			perf_debugfs_set_path(cmd + strlen(CMD_DEBUGFS_DIR));
+			fprintf(stderr, "dir: %s\n", debugfs_mountpoint);
+			if (envchanged)
+				*envchanged = 1;
+		} else if (!strcmp(cmd, "--list-cmds")) {
+			unsigned int i;
+
+			for (i = 0; i < ARRAY_SIZE(commands); i++) {
+				struct cmd_struct *p = commands+i;
+				printf("%s ", p->cmd);
+			}
+			exit(0);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			fprintf(stderr, "Unknown option: %s\n", cmd);
 			usage(perf_usage_string);
@@ -272,12 +364,15 @@ const char perf_version_string[] = PERF_VERSION;
  */
 #define NEED_WORK_TREE	(1<<2)
 
+<<<<<<< HEAD
 struct cmd_struct {
 	const char *cmd;
 	int (*fn)(int, const char **, const char *);
 	int option;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int run_builtin(struct cmd_struct *p, int argc, const char **argv)
 {
 	int status;
@@ -289,7 +384,11 @@ static int run_builtin(struct cmd_struct *p, int argc, const char **argv)
 		prefix = NULL; /* setup_perf_directory(); */
 
 	if (use_browser == -1)
+<<<<<<< HEAD
 		use_browser = check_tui_config(p->cmd);
+=======
+		use_browser = check_browser_config(p->cmd);
+>>>>>>> refs/remotes/origin/master
 
 	if (use_pager == -1 && p->option & RUN_SETUP)
 		use_pager = check_pager_config(p->cmd);
@@ -297,9 +396,12 @@ static int run_builtin(struct cmd_struct *p, int argc, const char **argv)
 		use_pager = 1;
 	commit_pager_choice();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_debugfs_path();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	status = p->fn(argc, argv, prefix);
 	exit_browser(status);
@@ -314,6 +416,7 @@ static int run_builtin(struct cmd_struct *p, int argc, const char **argv)
 	if (S_ISFIFO(st.st_mode) || S_ISSOCK(st.st_mode))
 		return 0;
 
+<<<<<<< HEAD
 	/* Check for ENOSPC and EIO errors.. */
 	if (fflush(stdout))
 		die("write failure on standard output: %s", strerror(errno));
@@ -322,11 +425,31 @@ static int run_builtin(struct cmd_struct *p, int argc, const char **argv)
 	if (fclose(stdout))
 		die("close failed on standard output: %s", strerror(errno));
 	return 0;
+=======
+	status = 1;
+	/* Check for ENOSPC and EIO errors.. */
+	if (fflush(stdout)) {
+		fprintf(stderr, "write failure on standard output: %s", strerror(errno));
+		goto out;
+	}
+	if (ferror(stdout)) {
+		fprintf(stderr, "unknown write failure on standard output");
+		goto out;
+	}
+	if (fclose(stdout)) {
+		fprintf(stderr, "close failed on standard output: %s", strerror(errno));
+		goto out;
+	}
+	status = 0;
+out:
+	return status;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void handle_internal_command(int argc, const char **argv)
 {
 	const char *cmd = argv[0];
+<<<<<<< HEAD
 	static struct cmd_struct commands[] = {
 		{ "buildid-cache", cmd_buildid_cache, 0 },
 		{ "buildid-list", cmd_buildid_list, 0 },
@@ -352,6 +475,8 @@ static void handle_internal_command(int argc, const char **argv)
 		{ "test",	cmd_test,	0 },
 		{ "inject",	cmd_inject,	0 },
 	};
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	static const char ext[] = STRIP_EXTENSION;
 
@@ -436,6 +561,7 @@ static int run_argv(int *argcp, const char ***argv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* mini /proc/mounts parser: searching for "^blah /mount/point debugfs" */
 static void get_debugfs_mntpt(void)
 {
@@ -446,6 +572,8 @@ static void get_debugfs_mntpt(void)
 	else
 		debugfs_mntpt[0] = '\0';
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void pthread__block_sigwinch(void)
 {
 	sigset_t set;
@@ -462,22 +590,35 @@ void pthread__unblock_sigwinch(void)
 	sigemptyset(&set);
 	sigaddset(&set, SIGWINCH);
 	pthread_sigmask(SIG_UNBLOCK, &set, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int main(int argc, const char **argv)
 {
 	const char *cmd;
 
+<<<<<<< HEAD
+=======
+	/* The page_size is placed in util object. */
+	page_size = sysconf(_SC_PAGE_SIZE);
+
+>>>>>>> refs/remotes/origin/master
 	cmd = perf_extract_argv0_path(argv[0]);
 	if (!cmd)
 		cmd = "perf-help";
 	/* get debugfs mount point from /proc/mounts */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	get_debugfs_mntpt();
 =======
 	debugfs_mount(NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perf_debugfs_mount(NULL);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * "perf-xxxx" is the same as "perf xxxx", but we obviously:
 	 *
@@ -492,18 +633,35 @@ int main(int argc, const char **argv)
 		cmd += 5;
 		argv[0] = cmd;
 		handle_internal_command(argc, argv);
+<<<<<<< HEAD
 		die("cannot handle %s internally", cmd);
 	}
 
+=======
+		fprintf(stderr, "cannot handle %s internally", cmd);
+		goto out;
+	}
+#ifdef HAVE_LIBAUDIT_SUPPORT
+	if (!prefixcmp(cmd, "trace")) {
+		set_buildid_dir();
+		setup_path();
+		argv[0] = "trace";
+		return cmd_trace(argc, argv, NULL);
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	/* Look for flags.. */
 	argv++;
 	argc--;
 	handle_options(&argv, &argc, NULL);
 	commit_pager_choice();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_debugfs_path();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	set_buildid_dir();
 
 	if (argc > 0) {
@@ -514,10 +672,19 @@ int main(int argc, const char **argv)
 		printf("\n usage: %s\n\n", perf_usage_string);
 		list_common_cmds_help();
 		printf("\n %s\n\n", perf_more_info_string);
+<<<<<<< HEAD
 		exit(1);
 	}
 	cmd = argv[0];
 
+=======
+		goto out;
+	}
+	cmd = argv[0];
+
+	test_attr__init();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We use PATH to find perf commands, but we prepend some higher
 	 * precedence paths: the "--exec-path" option, the PERF_EXEC_PATH
@@ -526,13 +693,17 @@ int main(int argc, const char **argv)
 	 */
 	setup_path();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Block SIGWINCH notifications so that the thread that wants it can
 	 * unblock and get syscalls like select interrupted instead of waiting
 	 * forever while the signal goes to some other non interested thread.
 	 */
 	pthread__block_sigwinch();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	while (1) {
@@ -540,6 +711,13 @@ int main(int argc, const char **argv)
 		static int was_alias;
 
 		was_alias = run_argv(&argc, &argv);
+=======
+
+	while (1) {
+		static int done_help;
+		int was_alias = run_argv(&argc, &argv);
+
+>>>>>>> refs/remotes/origin/master
 		if (errno != ENOENT)
 			break;
 
@@ -547,7 +725,11 @@ int main(int argc, const char **argv)
 			fprintf(stderr, "Expansion of alias '%s' failed; "
 				"'%s' is not a perf-command\n",
 				cmd, argv[0]);
+<<<<<<< HEAD
 			exit(1);
+=======
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!done_help) {
 			cmd = argv[0] = help_unknown_cmd(cmd);
@@ -558,6 +740,10 @@ int main(int argc, const char **argv)
 
 	fprintf(stderr, "Failed to run command '%s': %s\n",
 		cmd, strerror(errno));
+<<<<<<< HEAD
 
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }

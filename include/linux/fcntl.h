@@ -1,6 +1,7 @@
 #ifndef _LINUX_FCNTL_H
 #define _LINUX_FCNTL_H
 
+<<<<<<< HEAD
 #include <asm/fcntl.h>
 
 #define F_SETLEASE	(F_LINUX_SPECIFIC_BASE + 0)
@@ -49,6 +50,10 @@
 #define AT_EMPTY_PATH		0x1000	/* Allow empty relative pathname */
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/fcntl.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifndef force_o_largefile
 #define force_o_largefile() (BITS_PER_LONG != 32)
@@ -74,6 +79,9 @@
 #define IS_SETLK(cmd)	(IS_SETLK32(cmd)  || IS_SETLK64(cmd))
 #define IS_SETLKW(cmd)	(IS_SETLKW32(cmd) || IS_SETLKW64(cmd))
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

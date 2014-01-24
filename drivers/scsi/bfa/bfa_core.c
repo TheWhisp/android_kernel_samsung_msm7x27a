@@ -18,10 +18,14 @@
 #include "bfad_drv.h"
 #include "bfa_modules.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "bfi_ctreg.h"
 =======
 #include "bfi_reg.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "bfi_reg.h"
+>>>>>>> refs/remotes/origin/master
 
 BFA_TRC_FILE(HAL, CORE);
 
@@ -30,9 +34,13 @@ BFA_TRC_FILE(HAL, CORE);
  */
 static struct bfa_module_s *hal_mods[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&hal_mod_fcdiag,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&hal_mod_fcdiag,
+>>>>>>> refs/remotes/origin/master
 	&hal_mod_sgpg,
 	&hal_mod_fcport,
 	&hal_mod_fcxp,
@@ -40,11 +48,16 @@ static struct bfa_module_s *hal_mods[] = {
 	&hal_mod_uf,
 	&hal_mod_rport,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&hal_mod_fcpim,
 =======
 	&hal_mod_fcp,
 	&hal_mod_dconf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&hal_mod_fcp,
+	&hal_mod_dconf,
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
@@ -55,10 +68,14 @@ static bfa_isr_func_t  bfa_isrs[BFI_MC_MAX] = {
 	bfa_isr_unhandled,	/* NONE */
 	bfa_isr_unhandled,	/* BFI_MC_IOC */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa_isr_unhandled,	/* BFI_MC_DIAG */
 =======
 	bfa_fcdiag_intr,	/* BFI_MC_DIAG */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_fcdiag_intr,	/* BFI_MC_DIAG */
+>>>>>>> refs/remotes/origin/master
 	bfa_isr_unhandled,	/* BFI_MC_FLASH */
 	bfa_isr_unhandled,	/* BFI_MC_CEE */
 	bfa_fcport_isr,		/* BFI_MC_FCPORT */
@@ -69,10 +86,14 @@ static bfa_isr_func_t  bfa_isrs[BFI_MC_MAX] = {
 	bfa_lps_isr,		/* BFI_MC_LPS */
 	bfa_rport_isr,		/* BFI_MC_RPORT */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa_itnim_isr,		/* BFI_MC_ITNIM */
 =======
 	bfa_itn_isr,		/* BFI_MC_ITN */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_itn_isr,		/* BFI_MC_ITN */
+>>>>>>> refs/remotes/origin/master
 	bfa_isr_unhandled,	/* BFI_MC_IOIM_READ */
 	bfa_isr_unhandled,	/* BFI_MC_IOIM_WRITE */
 	bfa_isr_unhandled,	/* BFI_MC_IOIM_IO */
@@ -111,6 +132,7 @@ static bfa_ioc_mbox_mcfunc_t  bfa_mbox_isrs[BFI_MC_MAX] = {
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 bfa_com_port_attach(struct bfa_s *bfa, struct bfa_meminfo_s *mi)
 {
 	struct bfa_port_s	*port = &bfa->modules.port;
@@ -129,6 +151,8 @@ bfa_com_port_attach(struct bfa_s *bfa, struct bfa_meminfo_s *mi)
 	bfa_meminfo_dma_virt(mi) = dm_kva + dm_len;
 	bfa_meminfo_dma_phys(mi) = dm_pa + dm_len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_com_port_attach(struct bfa_s *bfa)
 {
 	struct bfa_port_s	*port = &bfa->modules.port;
@@ -201,7 +225,20 @@ bfa_com_phy_attach(struct bfa_s *bfa, bfa_boolean_t mincfg)
 
 	bfa_phy_attach(phy, &bfa->ioc, bfa, bfa->trcmod, mincfg);
 	bfa_phy_memclaim(phy, phy_dma->kva_curp, phy_dma->dma_curp, mincfg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static void
+bfa_com_fru_attach(struct bfa_s *bfa, bfa_boolean_t mincfg)
+{
+	struct bfa_fru_s	*fru = BFA_FRU(bfa);
+	struct bfa_mem_dma_s	*fru_dma = BFA_MEM_FRU_DMA(bfa);
+
+	bfa_fru_attach(fru, &bfa->ioc, bfa, bfa->trcmod, mincfg);
+	bfa_fru_memclaim(fru, fru_dma->kva_curp, fru_dma->dma_curp, mincfg);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -219,9 +256,13 @@ enum {
 	BFA_IOCFC_ACT_STOP	= 2,
 	BFA_IOCFC_ACT_DISABLE	= 3,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BFA_IOCFC_ACT_ENABLE	= 4,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BFA_IOCFC_ACT_ENABLE	= 4,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define DEF_CFG_NUM_FABRICS		1
@@ -243,9 +284,12 @@ enum {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * forward declaration for IOC FC functions
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * IOCFC state machine definitions/declarations
  */
 bfa_fsm_state_decl(bfa_iocfc, stopped, struct bfa_iocfc_s, enum iocfc_event);
@@ -274,14 +318,20 @@ bfa_fsm_state_decl(bfa_iocfc, init_failed,
 static void bfa_iocfc_start_submod(struct bfa_s *bfa);
 static void bfa_iocfc_disable_submod(struct bfa_s *bfa);
 static void bfa_iocfc_send_cfg(void *bfa_arg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void bfa_iocfc_enable_cbfn(void *bfa_arg, enum bfa_status status);
 static void bfa_iocfc_disable_cbfn(void *bfa_arg);
 static void bfa_iocfc_hbfail_cbfn(void *bfa_arg);
 static void bfa_iocfc_reset_cbfn(void *bfa_arg);
 static struct bfa_ioc_cbfn_s bfa_iocfc_cbfn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void bfa_iocfc_init_cb(void *bfa_arg, bfa_boolean_t complete);
 static void bfa_iocfc_stop_cb(void *bfa_arg, bfa_boolean_t compl);
 static void bfa_iocfc_enable_cb(void *bfa_arg, bfa_boolean_t compl);
@@ -323,6 +373,18 @@ bfa_iocfc_sm_initing(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 	case IOCFC_E_IOC_ENABLED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_dconf_read);
 		break;
+<<<<<<< HEAD
+=======
+
+	case IOCFC_E_DISABLE:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_disabling);
+		break;
+
+	case IOCFC_E_STOP:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_stopping);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case IOCFC_E_IOC_FAILED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_init_failed);
 		break;
@@ -347,6 +409,18 @@ bfa_iocfc_sm_dconf_read(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 	case IOCFC_E_DCONF_DONE:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_init_cfg_wait);
 		break;
+<<<<<<< HEAD
+=======
+
+	case IOCFC_E_DISABLE:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_disabling);
+		break;
+
+	case IOCFC_E_STOP:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_stopping);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case IOCFC_E_IOC_FAILED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_init_failed);
 		break;
@@ -371,6 +445,18 @@ bfa_iocfc_sm_init_cfg_wait(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 	case IOCFC_E_CFG_DONE:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_init_cfg_done);
 		break;
+<<<<<<< HEAD
+=======
+
+	case IOCFC_E_DISABLE:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_disabling);
+		break;
+
+	case IOCFC_E_STOP:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_stopping);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case IOCFC_E_IOC_FAILED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_init_failed);
 		break;
@@ -482,6 +568,15 @@ bfa_iocfc_sm_stopping(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 		bfa_cb_queue(iocfc->bfa, &iocfc->bfa->iocfc.stop_hcb_qe,
 			     bfa_iocfc_stop_cb, iocfc->bfa);
 		break;
+<<<<<<< HEAD
+=======
+
+	case IOCFC_E_IOC_ENABLED:
+	case IOCFC_E_DCONF_DONE:
+	case IOCFC_E_CFG_DONE:
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		bfa_sm_fault(iocfc->bfa, event);
 		break;
@@ -503,6 +598,18 @@ bfa_iocfc_sm_enabling(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 	case IOCFC_E_IOC_ENABLED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_cfg_wait);
 		break;
+<<<<<<< HEAD
+=======
+
+	case IOCFC_E_DISABLE:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_disabling);
+		break;
+
+	case IOCFC_E_STOP:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_dconf_write);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case IOCFC_E_IOC_FAILED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_failed);
 
@@ -542,6 +649,16 @@ bfa_iocfc_sm_cfg_wait(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 			     bfa_iocfc_enable_cb, iocfc->bfa);
 		iocfc->bfa->iocfc.cb_reqd = BFA_FALSE;
 		break;
+<<<<<<< HEAD
+=======
+	case IOCFC_E_DISABLE:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_disabling);
+		break;
+
+	case IOCFC_E_STOP:
+		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_dconf_write);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case IOCFC_E_IOC_FAILED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_failed);
 		if (iocfc->bfa->iocfc.cb_reqd == BFA_FALSE)
@@ -573,6 +690,13 @@ bfa_iocfc_sm_disabling(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 	case IOCFC_E_IOC_DISABLED:
 		bfa_fsm_set_state(iocfc, bfa_iocfc_sm_disabled);
 		break;
+<<<<<<< HEAD
+=======
+	case IOCFC_E_IOC_ENABLED:
+	case IOCFC_E_DCONF_DONE:
+	case IOCFC_E_CFG_DONE:
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		bfa_sm_fault(iocfc->bfa, event);
 		break;
@@ -674,7 +798,10 @@ bfa_iocfc_sm_init_failed(struct bfa_iocfc_s *iocfc, enum iocfc_event event)
 		break;
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * BFA Interrupt handling functions
@@ -700,11 +827,14 @@ bfa_reqq_resume(struct bfa_s *bfa, int qid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void
 bfa_msix_all(struct bfa_s *bfa, int vec)
 {
 	bfa_intx(bfa);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_boolean_t
 bfa_isr_rspq(struct bfa_s *bfa, int qid)
 {
@@ -792,7 +922,10 @@ bfa_msix_all(struct bfa_s *bfa, int vec)
 		return;
 
 	bfa_msix_lpu_err(bfa, intr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 bfa_boolean_t
@@ -800,6 +933,7 @@ bfa_intx(struct bfa_s *bfa)
 {
 	u32 intr, qintr;
 	int queue;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	intr = readl(bfa->iocfc.bfa_regs.intr_status);
@@ -820,6 +954,8 @@ bfa_intx(struct bfa_s *bfa)
 	if (!intr)
 		return BFA_TRUE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa_boolean_t rspq_comp = BFA_FALSE;
 
 	intr = readl(bfa->iocfc.bfa_regs.intr_status);
@@ -839,12 +975,16 @@ bfa_intx(struct bfa_s *bfa)
 
 	if (!intr)
 		return (qintr | rspq_comp) ? BFA_TRUE : BFA_FALSE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * CPE completion queue interrupt
 	 */
 	qintr = intr & __HFN_INT_CPE_MASK;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writel(qintr, bfa->iocfc.bfa_regs.intr_status);
 
@@ -856,12 +996,22 @@ bfa_intx(struct bfa_s *bfa)
 		for (queue = 0; queue < BFI_IOC_MAX_CQS; queue++)
 			bfa_isr_reqq(bfa, queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (qintr && bfa->queue_process) {
+		for (queue = 0; queue < BFI_IOC_MAX_CQS; queue++)
+			bfa_isr_reqq(bfa, queue);
+>>>>>>> refs/remotes/origin/master
 	}
 	intr &= ~qintr;
 	if (!intr)
 		return BFA_TRUE;
 
+<<<<<<< HEAD
 	bfa_msix_lpu_err(bfa, intr);
+=======
+	if (bfa->intr_enabled)
+		bfa_msix_lpu_err(bfa, intr);
+>>>>>>> refs/remotes/origin/master
 
 	return BFA_TRUE;
 }
@@ -869,6 +1019,7 @@ bfa_intx(struct bfa_s *bfa)
 void
 bfa_isr_enable(struct bfa_s *bfa)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 intr_unmask;
 =======
@@ -901,33 +1052,63 @@ bfa_isr_enable(struct bfa_s *bfa)
 	writel(~intr_unmask, bfa->iocfc.bfa_regs.intr_mask);
 	bfa->iocfc.intr_mask = ~intr_unmask;
 =======
+=======
+	u32 umsk;
+	int port_id = bfa_ioc_portid(&bfa->ioc);
+
+	bfa_trc(bfa, bfa_ioc_pcifn(&bfa->ioc));
+	bfa_trc(bfa, port_id);
+
+>>>>>>> refs/remotes/origin/master
 	bfa_msix_ctrl_install(bfa);
 
 	if (bfa_asic_id_ct2(bfa->ioc.pcidev.device_id)) {
 		umsk = __HFN_INT_ERR_MASK_CT2;
+<<<<<<< HEAD
 		umsk |= pci_func == 0 ?
 			__HFN_INT_FN0_MASK_CT2 : __HFN_INT_FN1_MASK_CT2;
 	} else {
 		umsk = __HFN_INT_ERR_MASK;
 		umsk |= pci_func == 0 ? __HFN_INT_FN0_MASK : __HFN_INT_FN1_MASK;
+=======
+		umsk |= port_id == 0 ?
+			__HFN_INT_FN0_MASK_CT2 : __HFN_INT_FN1_MASK_CT2;
+	} else {
+		umsk = __HFN_INT_ERR_MASK;
+		umsk |= port_id == 0 ? __HFN_INT_FN0_MASK : __HFN_INT_FN1_MASK;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	writel(umsk, bfa->iocfc.bfa_regs.intr_status);
 	writel(~umsk, bfa->iocfc.bfa_regs.intr_mask);
 	bfa->iocfc.intr_mask = ~umsk;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	bfa_isr_mode_set(bfa, bfa->msix.nvecs != 0);
+=======
+	bfa_isr_mode_set(bfa, bfa->msix.nvecs != 0);
+
+	/*
+	 * Set the flag indicating successful enabling of interrupts
+	 */
+	bfa->intr_enabled = BFA_TRUE;
+>>>>>>> refs/remotes/origin/master
 }
 
 void
 bfa_isr_disable(struct bfa_s *bfa)
 {
+<<<<<<< HEAD
+=======
+	bfa->intr_enabled = BFA_FALSE;
+>>>>>>> refs/remotes/origin/master
 	bfa_isr_mode_set(bfa, BFA_FALSE);
 	writel(-1L, bfa->iocfc.bfa_regs.intr_mask);
 	bfa_msix_uninstall(bfa);
 }
 
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 bfa_msix_reqq(struct bfa_s *bfa, int qid)
 {
@@ -948,6 +1129,11 @@ bfa_msix_reqq(struct bfa_s *bfa, int vec)
 {
 	bfa_isr_reqq(bfa, vec - bfa->iocfc.hwif.cpe_vec_q0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bfa_msix_reqq(struct bfa_s *bfa, int vec)
+{
+	bfa_isr_reqq(bfa, vec - bfa->iocfc.hwif.cpe_vec_q0);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -961,6 +1147,7 @@ bfa_isr_unhandled(struct bfa_s *bfa, struct bfi_msg_s *m)
 }
 
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 bfa_msix_rspq(struct bfa_s *bfa, int qid)
 {
@@ -1001,12 +1188,18 @@ bfa_msix_rspq(struct bfa_s *bfa, int vec)
 {
 	bfa_isr_rspq(bfa, vec - bfa->iocfc.hwif.rme_vec_q0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bfa_msix_rspq(struct bfa_s *bfa, int vec)
+{
+	bfa_isr_rspq(bfa, vec - bfa->iocfc.hwif.rme_vec_q0);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
 bfa_msix_lpu_err(struct bfa_s *bfa, int vec)
 {
 	u32 intr, curr_value;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	intr = readl(bfa->iocfc.bfa_regs.intr_status);
@@ -1020,6 +1213,8 @@ bfa_msix_lpu_err(struct bfa_s *bfa, int vec)
 	if (intr) {
 		if (intr & __HFN_INT_LL_HALT) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa_boolean_t lpu_isr, halt_isr, pss_isr;
 
 	intr = readl(bfa->iocfc.bfa_regs.intr_status);
@@ -1043,7 +1238,10 @@ bfa_msix_lpu_err(struct bfa_s *bfa, int vec)
 
 	if (intr) {
 		if (halt_isr) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * If LL_HALT bit is set then FW Init Halt LL Port
 			 * Register needs to be cleared as well so Interrupt
@@ -1055,10 +1253,14 @@ bfa_msix_lpu_err(struct bfa_s *bfa, int vec)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (intr & __HFN_INT_ERR_PSS) {
 =======
 		if (pss_isr) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pss_isr) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * ERR_PSS bit needs to be cleared as well in case
 			 * interrups are shared so driver's interrupt handler is
@@ -1067,9 +1269,12 @@ bfa_msix_lpu_err(struct bfa_s *bfa, int vec)
 			curr_value = readl(
 					bfa->ioc.ioc_regs.pss_err_status_reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			curr_value &= __PSS_ERR_STATUS_SET;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			writel(curr_value,
 				bfa->ioc.ioc_regs.pss_err_status_reg);
 		}
@@ -1087,6 +1292,7 @@ bfa_msix_lpu_err(struct bfa_s *bfa, int vec)
  *  BFA IOC private functions
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void
 bfa_iocfc_cqs_sz(struct bfa_iocfc_cfg_s *cfg, u32 *dm_len)
@@ -1125,6 +1331,8 @@ bfa_iocfc_fw_cfg_sz(struct bfa_iocfc_cfg_s *cfg, u32 *dm_len)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Use the Mailbox interface to send BFI_IOCFC_H2I_CFG_REQ
  */
@@ -1147,17 +1355,26 @@ bfa_iocfc_send_cfg(void *bfa_arg)
 	 * initialize IOC configuration info
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cfg_info->endian_sig = BFI_IOC_ENDIAN_SIG;
 	cfg_info->num_cqs = cfg->fwcfg.num_cqs;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cfg_info->single_msix_vec = 0;
 	if (bfa->msix.nvecs == 1)
 		cfg_info->single_msix_vec = 1;
 	cfg_info->endian_sig = BFI_IOC_ENDIAN_SIG;
 	cfg_info->num_cqs = cfg->fwcfg.num_cqs;
+<<<<<<< HEAD
 	cfg_info->num_ioim_reqs = cpu_to_be16(cfg->fwcfg.num_ioim_reqs);
 	cfg_info->num_fwtio_reqs = cpu_to_be16(cfg->fwcfg.num_fwtio_reqs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cfg_info->num_ioim_reqs = cpu_to_be16(bfa_fcpim_get_throttle_cfg(bfa,
+					       cfg->fwcfg.num_ioim_reqs));
+	cfg_info->num_fwtio_reqs = cpu_to_be16(cfg->fwcfg.num_fwtio_reqs);
+>>>>>>> refs/remotes/origin/master
 
 	bfa_dma_be_addr_set(cfg_info->cfgrsp_addr, iocfc->cfgrsp_dma.pa);
 	/*
@@ -1184,6 +1401,7 @@ bfa_iocfc_send_cfg(void *bfa_arg)
 	 * and not ioc disable/enable path.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!iocfc->cfgdone)
 		cfg_info->intr_attr.coalesce = BFA_TRUE;
 
@@ -1194,15 +1412,24 @@ bfa_iocfc_send_cfg(void *bfa_arg)
 		cfg_info->intr_attr.coalesce = BFA_TRUE;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfa_fsm_cmp_state(iocfc, bfa_iocfc_sm_init_cfg_wait))
+		cfg_info->intr_attr.coalesce = BFA_TRUE;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * dma map IOC configuration itself
 	 */
 	bfi_h2i_set(cfg_req.mh, BFI_MC_IOCFC, BFI_IOCFC_H2I_CFG_REQ,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    bfa_lpuid(bfa));
 =======
 		    bfa_fn_lpu(bfa));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    bfa_fn_lpu(bfa));
+>>>>>>> refs/remotes/origin/master
 	bfa_dma_be_addr_set(cfg_req.ioc_cfg_dma_addr, iocfc->cfg_info.pa);
 
 	bfa_ioc_mbox_send(&bfa->ioc, &cfg_req,
@@ -1218,34 +1445,47 @@ bfa_iocfc_init_mem(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 	bfa->bfad = bfad;
 	iocfc->bfa = bfa;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iocfc->action = BFA_IOCFC_ACT_NONE;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iocfc->cfg = *cfg;
 
 	/*
 	 * Initialize chip specific handlers.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfa_asic_id_ct(bfa_ioc_devid(&bfa->ioc))) {
 =======
 	if (bfa_asic_id_ctc(bfa_ioc_devid(&bfa->ioc))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfa_asic_id_ctc(bfa_ioc_devid(&bfa->ioc))) {
+>>>>>>> refs/remotes/origin/master
 		iocfc->hwif.hw_reginit = bfa_hwct_reginit;
 		iocfc->hwif.hw_reqq_ack = bfa_hwct_reqq_ack;
 		iocfc->hwif.hw_rspq_ack = bfa_hwct_rspq_ack;
 		iocfc->hwif.hw_msix_init = bfa_hwct_msix_init;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		iocfc->hwif.hw_msix_install = bfa_hwct_msix_install;
 =======
 		iocfc->hwif.hw_msix_ctrl_install = bfa_hwct_msix_ctrl_install;
 		iocfc->hwif.hw_msix_queue_install = bfa_hwct_msix_queue_install;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iocfc->hwif.hw_msix_ctrl_install = bfa_hwct_msix_ctrl_install;
+		iocfc->hwif.hw_msix_queue_install = bfa_hwct_msix_queue_install;
+>>>>>>> refs/remotes/origin/master
 		iocfc->hwif.hw_msix_uninstall = bfa_hwct_msix_uninstall;
 		iocfc->hwif.hw_isr_mode_set = bfa_hwct_isr_mode_set;
 		iocfc->hwif.hw_msix_getvecs = bfa_hwct_msix_getvecs;
 		iocfc->hwif.hw_msix_get_rme_range = bfa_hwct_msix_get_rme_range;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else {
 		iocfc->hwif.hw_reginit = bfa_hwcb_reginit;
@@ -1254,6 +1494,8 @@ bfa_iocfc_init_mem(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 		iocfc->hwif.hw_msix_init = bfa_hwcb_msix_init;
 		iocfc->hwif.hw_msix_install = bfa_hwcb_msix_install;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iocfc->hwif.rme_vec_q0 = BFI_MSIX_RME_QMIN_CT;
 		iocfc->hwif.cpe_vec_q0 = BFI_MSIX_CPE_QMIN_CT;
 	} else {
@@ -1263,13 +1505,19 @@ bfa_iocfc_init_mem(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 		iocfc->hwif.hw_msix_init = bfa_hwcb_msix_init;
 		iocfc->hwif.hw_msix_ctrl_install = bfa_hwcb_msix_ctrl_install;
 		iocfc->hwif.hw_msix_queue_install = bfa_hwcb_msix_queue_install;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		iocfc->hwif.hw_msix_uninstall = bfa_hwcb_msix_uninstall;
 		iocfc->hwif.hw_isr_mode_set = bfa_hwcb_isr_mode_set;
 		iocfc->hwif.hw_msix_getvecs = bfa_hwcb_msix_getvecs;
 		iocfc->hwif.hw_msix_get_rme_range = bfa_hwcb_msix_get_rme_range;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iocfc->hwif.rme_vec_q0 = BFI_MSIX_RME_QMIN_CB +
 			bfa_ioc_pcifn(&bfa->ioc) * BFI_IOC_MAX_CQS;
 		iocfc->hwif.cpe_vec_q0 = BFI_MSIX_CPE_QMIN_CB +
@@ -1280,7 +1528,10 @@ bfa_iocfc_init_mem(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 		iocfc->hwif.hw_reginit = bfa_hwct2_reginit;
 		iocfc->hwif.hw_isr_mode_set = NULL;
 		iocfc->hwif.hw_rspq_ack = bfa_hwct2_rspq_ack;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	iocfc->hwif.hw_reginit(bfa);
@@ -1288,6 +1539,7 @@ bfa_iocfc_init_mem(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 }
 
 static void
+<<<<<<< HEAD
 <<<<<<< HEAD
 bfa_iocfc_mem_claim(struct bfa_s *bfa, struct bfa_iocfc_cfg_s *cfg,
 		    struct bfa_meminfo_s *meminfo)
@@ -1332,11 +1584,17 @@ bfa_iocfc_mem_claim(struct bfa_s *bfa, struct bfa_iocfc_cfg_s *cfg,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_iocfc_mem_claim(struct bfa_s *bfa, struct bfa_iocfc_cfg_s *cfg)
 {
 	u8	*dm_kva = NULL;
 	u64	dm_pa = 0;
+<<<<<<< HEAD
 	int	i, per_reqq_sz, per_rspq_sz, dbgsz;
+=======
+	int	i, per_reqq_sz, per_rspq_sz;
+>>>>>>> refs/remotes/origin/master
 	struct bfa_iocfc_s  *iocfc = &bfa->iocfc;
 	struct bfa_mem_dma_s *ioc_dma = BFA_MEM_IOC_DMA(bfa);
 	struct bfa_mem_dma_s *iocfc_dma = BFA_MEM_IOCFC_DMA(bfa);
@@ -1368,7 +1626,10 @@ bfa_iocfc_mem_claim(struct bfa_s *bfa, struct bfa_iocfc_cfg_s *cfg)
 	dm_kva = bfa_mem_dma_virt(iocfc_dma);
 	dm_pa  = bfa_mem_dma_phys(iocfc_dma);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < cfg->fwcfg.num_cqs; i++) {
 		iocfc->req_cq_shadow_ci[i].kva = dm_kva;
 		iocfc->req_cq_shadow_ci[i].pa = dm_pa;
@@ -1382,18 +1643,23 @@ bfa_iocfc_mem_claim(struct bfa_s *bfa, struct bfa_iocfc_cfg_s *cfg)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Claim DMA-able memory for the config info page
 	 */
 =======
 	/* Claim IOCFC dma memory - for the config info page */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Claim IOCFC dma memory - for the config info page */
+>>>>>>> refs/remotes/origin/master
 	bfa->iocfc.cfg_info.kva = dm_kva;
 	bfa->iocfc.cfg_info.pa = dm_pa;
 	bfa->iocfc.cfginfo = (struct bfi_iocfc_cfg_s *) dm_kva;
 	dm_kva += BFA_ROUNDUP(sizeof(struct bfi_iocfc_cfg_s), BFA_CACHELINE_SZ);
 	dm_pa += BFA_ROUNDUP(sizeof(struct bfi_iocfc_cfg_s), BFA_CACHELINE_SZ);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Claim DMA-able memory for the config response
@@ -1417,6 +1683,8 @@ bfa_iocfc_mem_claim(struct bfa_s *bfa, struct bfa_iocfc_cfg_s *cfg)
 		bfa_ioc_debug_memclaim(&bfa->ioc, bfa_meminfo_kva(meminfo));
 		bfa_meminfo_kva(meminfo) += dbgsz;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Claim IOCFC dma memory - for the config response */
 	bfa->iocfc.cfgrsp_dma.kva = dm_kva;
 	bfa->iocfc.cfgrsp_dma.pa = dm_pa;
@@ -1427,12 +1695,17 @@ bfa_iocfc_mem_claim(struct bfa_s *bfa, struct bfa_iocfc_cfg_s *cfg)
 			BFA_CACHELINE_SZ);
 
 	/* Claim IOCFC kva memory */
+<<<<<<< HEAD
 	dbgsz = (bfa_auto_recover) ? BFA_DBG_FWTRC_LEN : 0;
 	if (dbgsz > 0) {
 		bfa_ioc_debug_memclaim(&bfa->ioc, bfa_mem_kva_curp(iocfc));
 		bfa_mem_kva_curp(iocfc) += dbgsz;
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	bfa_ioc_debug_memclaim(&bfa->ioc, bfa_mem_kva_curp(iocfc));
+	bfa_mem_kva_curp(iocfc) += BFA_DBG_FWTRC_LEN;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1444,11 +1717,14 @@ bfa_iocfc_start_submod(struct bfa_s *bfa)
 	int		i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa->rme_process = BFA_TRUE;
 
 	for (i = 0; hal_mods[i]; i++)
 		hal_mods[i]->start(bfa);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa->queue_process = BFA_TRUE;
 	for (i = 0; i < BFI_IOC_MAX_CQS; i++)
 		bfa_isr_rspq_ack(bfa, i, bfa_rspq_ci(bfa, i));
@@ -1457,7 +1733,10 @@ bfa_iocfc_start_submod(struct bfa_s *bfa)
 		hal_mods[i]->start(bfa);
 
 	bfa->iocfc.submod_enabled = BFA_TRUE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1469,9 +1748,12 @@ bfa_iocfc_disable_submod(struct bfa_s *bfa)
 	int		i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; hal_mods[i]; i++)
 		hal_mods[i]->iocdisable(bfa);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bfa->iocfc.submod_enabled == BFA_FALSE)
 		return;
 
@@ -1479,7 +1761,10 @@ bfa_iocfc_disable_submod(struct bfa_s *bfa)
 		hal_mods[i]->iocdisable(bfa);
 
 	bfa->iocfc.submod_enabled = BFA_FALSE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -1487,6 +1772,7 @@ bfa_iocfc_init_cb(void *bfa_arg, bfa_boolean_t complete)
 {
 	struct bfa_s	*bfa = bfa_arg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (complete) {
 		if (bfa->iocfc.cfgdone)
@@ -1501,6 +1787,10 @@ bfa_iocfc_init_cb(void *bfa_arg, bfa_boolean_t complete)
 	if (complete)
 		bfa_cb_init(bfa->bfad, bfa->iocfc.op_status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (complete)
+		bfa_cb_init(bfa->bfad, bfa->iocfc.op_status);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -1512,9 +1802,12 @@ bfa_iocfc_stop_cb(void *bfa_arg, bfa_boolean_t compl)
 	if (compl)
 		complete(&bfad->comp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else
 		bfa->iocfc.action = BFA_IOCFC_ACT_NONE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -1525,7 +1818,10 @@ bfa_iocfc_enable_cb(void *bfa_arg, bfa_boolean_t compl)
 
 	if (compl)
 		complete(&bfad->enable_comp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -1539,7 +1835,10 @@ bfa_iocfc_disable_cb(void *bfa_arg, bfa_boolean_t compl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * configure queue registers from firmware response
  */
@@ -1564,6 +1863,7 @@ bfa_iocfc_qreg(struct bfa_s *bfa, struct bfi_iocfc_qreg_s *qreg)
 static void
 bfa_iocfc_res_recfg(struct bfa_s *bfa, struct bfa_iocfc_fwcfg_s *fwcfg)
 {
+<<<<<<< HEAD
 	bfa_fcxp_res_recfg(bfa, fwcfg->num_fcxp_reqs);
 	bfa_uf_res_recfg(bfa, fwcfg->num_uf_bufs);
 	bfa_rport_res_recfg(bfa, fwcfg->num_rports);
@@ -1572,6 +1872,19 @@ bfa_iocfc_res_recfg(struct bfa_s *bfa, struct bfa_iocfc_fwcfg_s *fwcfg)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfa_iocfc_s	*iocfc   = &bfa->iocfc;
+	struct bfi_iocfc_cfg_s	*cfg_info = iocfc->cfginfo;
+
+	bfa_fcxp_res_recfg(bfa, fwcfg->num_fcxp_reqs);
+	bfa_uf_res_recfg(bfa, fwcfg->num_uf_bufs);
+	bfa_rport_res_recfg(bfa, fwcfg->num_rports);
+	bfa_fcp_res_recfg(bfa, cpu_to_be16(cfg_info->num_ioim_reqs),
+			  fwcfg->num_ioim_reqs);
+	bfa_tskim_res_recfg(bfa, fwcfg->num_tskim_reqs);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Update BFA configuration from firmware configuration.
  */
@@ -1585,14 +1898,19 @@ bfa_iocfc_cfgrsp(struct bfa_s *bfa)
 	fwcfg->num_cqs	      = fwcfg->num_cqs;
 	fwcfg->num_ioim_reqs  = be16_to_cpu(fwcfg->num_ioim_reqs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fwcfg->num_fwtio_reqs = be16_to_cpu(fwcfg->num_fwtio_reqs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fwcfg->num_fwtio_reqs = be16_to_cpu(fwcfg->num_fwtio_reqs);
+>>>>>>> refs/remotes/origin/master
 	fwcfg->num_tskim_reqs = be16_to_cpu(fwcfg->num_tskim_reqs);
 	fwcfg->num_fcxp_reqs  = be16_to_cpu(fwcfg->num_fcxp_reqs);
 	fwcfg->num_uf_bufs    = be16_to_cpu(fwcfg->num_uf_bufs);
 	fwcfg->num_rports     = be16_to_cpu(fwcfg->num_rports);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	iocfc->cfgdone = BFA_TRUE;
 
@@ -1607,6 +1925,8 @@ bfa_iocfc_cfgrsp(struct bfa_s *bfa)
 		bfa_iocfc_start_submod(bfa);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * configure queue register offsets as learnt from firmware
 	 */
@@ -1629,7 +1949,10 @@ bfa_iocfc_cfgrsp(struct bfa_s *bfa)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void
 bfa_iocfc_reset_queues(struct bfa_s *bfa)
 {
@@ -1645,7 +1968,10 @@ bfa_iocfc_reset_queues(struct bfa_s *bfa)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	Process FAA pwwn msg from fw.
  */
 static void
@@ -1735,7 +2061,10 @@ bfa_faa_query_reply(struct bfa_iocfc_s *iocfc,
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * IOC enable request is complete
  */
 static void
@@ -1743,6 +2072,7 @@ bfa_iocfc_enable_cbfn(void *bfa_arg, enum bfa_status status)
 {
 	struct bfa_s	*bfa = bfa_arg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (status != BFA_STATUS_OK) {
 		bfa_isr_disable(bfa);
@@ -1754,11 +2084,16 @@ bfa_iocfc_enable_cbfn(void *bfa_arg, enum bfa_status status)
 
 	bfa_iocfc_send_cfg(bfa);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (status == BFA_STATUS_OK)
 		bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_IOC_ENABLED);
 	else
 		bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_IOC_FAILED);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1769,6 +2104,7 @@ bfa_iocfc_disable_cbfn(void *bfa_arg)
 {
 	struct bfa_s	*bfa = bfa_arg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bfa_isr_disable(bfa);
 	bfa_iocfc_disable_submod(bfa);
@@ -1784,6 +2120,10 @@ bfa_iocfc_disable_cbfn(void *bfa_arg)
 =======
 	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_IOC_DISABLED);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa->queue_process = BFA_FALSE;
+	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_IOC_DISABLED);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1794,6 +2134,7 @@ bfa_iocfc_hbfail_cbfn(void *bfa_arg)
 {
 	struct bfa_s	*bfa = bfa_arg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bfa->rme_process = BFA_FALSE;
 
@@ -1807,6 +2148,10 @@ bfa_iocfc_hbfail_cbfn(void *bfa_arg)
 	bfa->queue_process = BFA_FALSE;
 	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_IOC_FAILED);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa->queue_process = BFA_FALSE;
+	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_IOC_FAILED);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1822,13 +2167,17 @@ bfa_iocfc_reset_cbfn(void *bfa_arg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Query IOC memory requirement information.
  */
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 bfa_iocfc_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len,
 		  u32 *dm_len)
@@ -1840,6 +2189,8 @@ bfa_iocfc_meminfo(struct bfa_iocfc_cfg_s *cfg, u32 *km_len,
 	bfa_iocfc_cqs_sz(cfg, dm_len);
 	*km_len += (bfa_auto_recover) ? BFA_DBG_FWTRC_LEN : 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_iocfc_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo,
 		  struct bfa_s *bfa)
 {
@@ -1879,9 +2230,13 @@ bfa_iocfc_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo,
 	bfa_mem_dma_setup(meminfo, iocfc_dma, dm_len);
 
 	/* kva memory setup for IOCFC */
+<<<<<<< HEAD
 	bfa_mem_kva_setup(meminfo, iocfc_kva,
 			((bfa_auto_recover) ? BFA_DBG_FWTRC_LEN : 0));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_mem_kva_setup(meminfo, iocfc_kva, BFA_DBG_FWTRC_LEN);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1890,10 +2245,14 @@ bfa_iocfc_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo,
 void
 bfa_iocfc_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 struct bfa_meminfo_s *meminfo, struct bfa_pcidev_s *pcidev)
 =======
 		 struct bfa_pcidev_s *pcidev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 struct bfa_pcidev_s *pcidev)
+>>>>>>> refs/remotes/origin/master
 {
 	int		i;
 	struct bfa_ioc_s *ioc = &bfa->ioc;
@@ -1907,6 +2266,7 @@ bfa_iocfc_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 	bfa_ioc_attach(&bfa->ioc, bfa, &bfa_iocfc_cbfn, &bfa->timer_mod);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Set FC mode for BFA_PCI_DEVICE_ID_CT_FC.
 	 */
@@ -1919,26 +2279,37 @@ bfa_iocfc_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 	bfa_iocfc_init_mem(bfa, bfad, cfg, pcidev);
 	bfa_iocfc_mem_claim(bfa, cfg, meminfo);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa_ioc_pci_init(&bfa->ioc, pcidev, BFI_PCIFN_CLASS_FC);
 	bfa_ioc_mbox_register(&bfa->ioc, bfa_mbox_isrs);
 
 	bfa_iocfc_init_mem(bfa, bfad, cfg, pcidev);
 	bfa_iocfc_mem_claim(bfa, cfg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&bfa->timer_mod.timer_q);
 
 	INIT_LIST_HEAD(&bfa->comp_q);
 	for (i = 0; i < BFI_IOC_MAX_CQS; i++)
 		INIT_LIST_HEAD(&bfa->reqq_waitq[i]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bfa->iocfc.cb_reqd = BFA_FALSE;
 	bfa->iocfc.op_status = BFA_STATUS_OK;
 	bfa->iocfc.submod_enabled = BFA_FALSE;
 
 	bfa_fsm_set_state(&bfa->iocfc, bfa_iocfc_sm_stopped);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1948,11 +2319,15 @@ void
 bfa_iocfc_init(struct bfa_s *bfa)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa->iocfc.action = BFA_IOCFC_ACT_INIT;
 	bfa_ioc_enable(&bfa->ioc);
 =======
 	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_INIT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_INIT);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1963,11 +2338,15 @@ void
 bfa_iocfc_start(struct bfa_s *bfa)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (bfa->iocfc.cfgdone)
 		bfa_iocfc_start_submod(bfa);
 =======
 	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_START);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_START);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1978,6 +2357,7 @@ void
 bfa_iocfc_stop(struct bfa_s *bfa)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa->iocfc.action = BFA_IOCFC_ACT_STOP;
 
 	bfa->rme_process = BFA_FALSE;
@@ -1986,6 +2366,9 @@ bfa_iocfc_stop(struct bfa_s *bfa)
 	bfa->queue_process = BFA_FALSE;
 	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_STOP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_STOP);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -2001,16 +2384,22 @@ bfa_iocfc_isr(void *bfaarg, struct bfi_mbmsg_s *m)
 	switch (msg->mh.msg_id) {
 	case BFI_IOCFC_I2H_CFG_REPLY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iocfc->cfg_reply = &msg->cfg_reply;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bfa_iocfc_cfgrsp(bfa);
 		break;
 	case BFI_IOCFC_I2H_UPDATEQ_RSP:
 		iocfc->updateq_cbfn(iocfc->updateq_cbarg, BFA_STATUS_OK);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case BFI_IOCFC_I2H_ADDR_MSG:
 		bfa_iocfc_process_faa_addr(bfa,
 				(struct bfi_faa_addr_msg_s *)msg);
@@ -2018,7 +2407,10 @@ bfa_iocfc_isr(void *bfaarg, struct bfi_mbmsg_s *m)
 	case BFI_IOCFC_I2H_FAA_QUERY_RSP:
 		bfa_faa_query_reply(iocfc, (bfi_faa_query_rsp_t *)msg);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		WARN_ON(1);
 	}
@@ -2061,10 +2453,14 @@ bfa_iocfc_israttr_set(struct bfa_s *bfa, struct bfa_iocfc_intr_attr_s *attr)
 
 	bfi_h2i_set(m->mh, BFI_MC_IOCFC, BFI_IOCFC_H2I_SET_INTR_REQ,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    bfa_lpuid(bfa));
 =======
 		    bfa_fn_lpu(bfa));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    bfa_fn_lpu(bfa));
+>>>>>>> refs/remotes/origin/master
 	m->coalesce = iocfc->cfginfo->intr_attr.coalesce;
 	m->delay    = iocfc->cfginfo->intr_attr.delay;
 	m->latency  = iocfc->cfginfo->intr_attr.latency;
@@ -2073,28 +2469,40 @@ bfa_iocfc_israttr_set(struct bfa_s *bfa, struct bfa_iocfc_intr_attr_s *attr)
 	bfa_trc(bfa, attr->latency);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa_reqq_produce(bfa, BFA_REQQ_IOC);
 =======
 	bfa_reqq_produce(bfa, BFA_REQQ_IOC, m->mh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_reqq_produce(bfa, BFA_REQQ_IOC, m->mh);
+>>>>>>> refs/remotes/origin/master
 	return BFA_STATUS_OK;
 }
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 bfa_iocfc_set_snsbase(struct bfa_s *bfa, u64 snsbase_pa)
 =======
 bfa_iocfc_set_snsbase(struct bfa_s *bfa, int seg_no, u64 snsbase_pa)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bfa_iocfc_set_snsbase(struct bfa_s *bfa, int seg_no, u64 snsbase_pa)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bfa_iocfc_s	*iocfc = &bfa->iocfc;
 
 	iocfc->cfginfo->sense_buf_len = (BFI_IOIM_SNSLEN - 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa_dma_be_addr_set(iocfc->cfginfo->ioim_snsbase, snsbase_pa);
 =======
 	bfa_dma_be_addr_set(iocfc->cfginfo->ioim_snsbase[seg_no], snsbase_pa);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_dma_be_addr_set(iocfc->cfginfo->ioim_snsbase[seg_no], snsbase_pa);
+>>>>>>> refs/remotes/origin/master
 }
 /*
  * Enable IOC after it is disabled.
@@ -2105,11 +2513,16 @@ bfa_iocfc_enable(struct bfa_s *bfa)
 	bfa_plog_str(bfa->plog, BFA_PL_MID_HAL, BFA_PL_EID_MISC, 0,
 		     "IOC Enable");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfa_ioc_enable(&bfa->ioc);
 =======
 	bfa->iocfc.cb_reqd = BFA_TRUE;
 	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_ENABLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa->iocfc.cb_reqd = BFA_TRUE;
+	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_ENABLE);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -2117,6 +2530,7 @@ bfa_iocfc_disable(struct bfa_s *bfa)
 {
 	bfa_plog_str(bfa->plog, BFA_PL_MID_HAL, BFA_PL_EID_MISC, 0,
 		     "IOC Disable");
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bfa->iocfc.action = BFA_IOCFC_ACT_DISABLE;
 
@@ -2132,6 +2546,9 @@ bfa_iocfc_is_operational(struct bfa_s *bfa)
 =======
 
 	bfa->queue_process = BFA_FALSE;
+=======
+
+>>>>>>> refs/remotes/origin/master
 	bfa_fsm_send_event(&bfa->iocfc, IOCFC_E_DISABLE);
 }
 
@@ -2140,7 +2557,10 @@ bfa_iocfc_is_operational(struct bfa_s *bfa)
 {
 	return bfa_ioc_is_operational(&bfa->ioc) &&
 		bfa_fsm_cmp_state(&bfa->iocfc, bfa_iocfc_sm_operational);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2202,22 +2622,31 @@ bfa_iocfc_get_pbc_vports(struct bfa_s *bfa, struct bfi_pbc_vport_s *pbc_vport)
  *			structure as input parameter to bfa_attach() call.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @param[in] bfa -	pointer to the bfa structure, used while fetching the
  *			dma, kva memory information of the bfa sub-modules.
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @param[in] bfa -	pointer to the bfa structure, used while fetching the
+ *			dma, kva memory information of the bfa sub-modules.
+ *
+>>>>>>> refs/remotes/origin/master
  * @return void
  *
  * Special Considerations: @note
  */
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 bfa_cfg_get_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo)
 {
 	int		i;
 	u32	km_len = 0, dm_len = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_cfg_get_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo,
 		struct bfa_s *bfa)
 {
@@ -2229,11 +2658,16 @@ bfa_cfg_get_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo,
 	struct bfa_mem_dma_s *flash_dma = BFA_MEM_FLASH_DMA(bfa);
 	struct bfa_mem_dma_s *diag_dma = BFA_MEM_DIAG_DMA(bfa);
 	struct bfa_mem_dma_s *phy_dma = BFA_MEM_PHY_DMA(bfa);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfa_mem_dma_s *fru_dma = BFA_MEM_FRU_DMA(bfa);
+>>>>>>> refs/remotes/origin/master
 
 	WARN_ON((cfg == NULL) || (meminfo == NULL));
 
 	memset((void *)meminfo, 0, sizeof(struct bfa_meminfo_s));
+<<<<<<< HEAD
 <<<<<<< HEAD
 	meminfo->meminfo[BFA_MEM_TYPE_KVA - 1].mem_type =
 		BFA_MEM_TYPE_KVA;
@@ -2250,6 +2684,8 @@ bfa_cfg_get_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo,
 	meminfo->meminfo[BFA_MEM_TYPE_KVA - 1].mem_len = km_len;
 	meminfo->meminfo[BFA_MEM_TYPE_DMA - 1].mem_len = dm_len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the DMA & KVA meminfo queues */
 	INIT_LIST_HEAD(&meminfo->dma_info.qe);
@@ -2270,7 +2706,12 @@ bfa_cfg_get_meminfo(struct bfa_iocfc_cfg_s *cfg, struct bfa_meminfo_s *meminfo,
 	bfa_mem_dma_setup(meminfo, diag_dma, bfa_diag_meminfo());
 	bfa_mem_dma_setup(meminfo, phy_dma,
 			  bfa_phy_meminfo(cfg->drvcfg.min_cfg));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_mem_dma_setup(meminfo, fru_dma,
+			  bfa_fru_meminfo(cfg->drvcfg.min_cfg));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2304,19 +2745,26 @@ bfa_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 	       struct bfa_meminfo_s *meminfo, struct bfa_pcidev_s *pcidev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			i;
 	struct bfa_mem_elem_s	*melem;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int	i;
 	struct bfa_mem_dma_s *dma_info, *dma_elem;
 	struct bfa_mem_kva_s *kva_info, *kva_elem;
 	struct list_head *dm_qe, *km_qe;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bfa->fcs = BFA_FALSE;
 
 	WARN_ON((cfg == NULL) || (meminfo == NULL));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * initialize all memory pointers for iterative allocation
@@ -2334,6 +2782,8 @@ bfa_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 
 	bfa_com_port_attach(bfa, meminfo);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize memory pointers for iterative allocation */
 	dma_info = &meminfo->dma_info;
 	dma_info->kva_curp = dma_info->kva;
@@ -2365,7 +2815,11 @@ bfa_attach(struct bfa_s *bfa, void *bfad, struct bfa_iocfc_cfg_s *cfg,
 	bfa_com_flash_attach(bfa, cfg->drvcfg.min_cfg);
 	bfa_com_diag_attach(bfa);
 	bfa_com_phy_attach(bfa, cfg->drvcfg.min_cfg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfa_com_fru_attach(bfa, cfg->drvcfg.min_cfg);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2405,11 +2859,14 @@ bfa_comp_process(struct bfa_s *bfa, struct list_head *comp_q)
 	struct list_head		*qen;
 	struct bfa_cb_qe_s	*hcb_qe;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	list_for_each_safe(qe, qen, comp_q) {
 		hcb_qe = (struct bfa_cb_qe_s *) qe;
 		hcb_qe->cbfn(hcb_qe->cbarg, BFA_TRUE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa_cb_cbfn_status_t	cbfn;
 
 	list_for_each_safe(qe, qen, comp_q) {
@@ -2421,7 +2878,10 @@ bfa_comp_process(struct bfa_s *bfa, struct list_head *comp_q)
 			cbfn(hcb_qe->cbarg, hcb_qe->fw_status);
 		} else
 			hcb_qe->cbfn(hcb_qe->cbarg, BFA_TRUE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2435,17 +2895,24 @@ bfa_comp_free(struct bfa_s *bfa, struct list_head *comp_q)
 		bfa_q_deq(comp_q, &qe);
 		hcb_qe = (struct bfa_cb_qe_s *) qe;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		WARN_ON(hcb_qe->pre_rmv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WARN_ON(hcb_qe->pre_rmv);
+>>>>>>> refs/remotes/origin/master
 		hcb_qe->cbfn(hcb_qe->cbarg, BFA_FALSE);
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Return the list of PCI vendor/device id lists supported by this
  * BFA instance.
@@ -2489,9 +2956,13 @@ bfa_cfg_get_default(struct bfa_iocfc_cfg_s *cfg)
 	cfg->fwcfg.num_uf_bufs = DEF_CFG_NUM_UF_BUFS;
 	cfg->fwcfg.num_cqs = DEF_CFG_NUM_CQS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cfg->fwcfg.num_fwtio_reqs = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cfg->fwcfg.num_fwtio_reqs = 0;
+>>>>>>> refs/remotes/origin/master
 
 	cfg->drvcfg.num_reqq_elems = DEF_CFG_NUM_REQQ_ELEMS;
 	cfg->drvcfg.num_rspq_elems = DEF_CFG_NUM_RSPQ_ELEMS;
@@ -2514,9 +2985,13 @@ bfa_cfg_get_min(struct bfa_iocfc_cfg_s *cfg)
 	cfg->fwcfg.num_uf_bufs     = BFA_UF_MIN;
 	cfg->fwcfg.num_rports      = BFA_RPORT_MIN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cfg->fwcfg.num_fwtio_reqs = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cfg->fwcfg.num_fwtio_reqs = 0;
+>>>>>>> refs/remotes/origin/master
 
 	cfg->drvcfg.num_sgpgs      = BFA_SGPG_MIN;
 	cfg->drvcfg.num_reqq_elems = BFA_REQQ_NELEMS_MIN;

@@ -740,7 +740,11 @@ static int smc91c92_resume(struct pcmcia_device *link)
 	     (smc->cardid == PRODID_PSION_NET100))) {
 		i = osi_load_firmware(link);
 		if (i) {
+<<<<<<< HEAD
 			pr_err("smc91c92_cs: Failed to load firmware\n");
+=======
+			netdev_err(dev, "Failed to load firmware\n");
+>>>>>>> refs/remotes/origin/master
 			return i;
 		}
 	}
@@ -793,7 +797,11 @@ static int check_sig(struct pcmcia_device *link)
     }
 
     if (width) {
+<<<<<<< HEAD
 	    pr_info("using 8-bit IO window\n");
+=======
+	    netdev_info(dev, "using 8-bit IO window\n");
+>>>>>>> refs/remotes/origin/master
 
 	    smc91c92_suspend(link);
 	    pcmcia_fixup_iowidth(link);
@@ -1036,7 +1044,11 @@ static void smc_dump(struct net_device *dev)
     save = inw(ioaddr + BANK_SELECT);
     for (w = 0; w < 4; w++) {
 	SMC_SELECT_BANK(w);
+<<<<<<< HEAD
 	netdev_printk(KERN_DEBUG, dev, "bank %d: ", w);
+=======
+	netdev_dbg(dev, "bank %d: ", w);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 14; i += 2)
 	    pr_cont(" %04x", inw(ioaddr + i));
 	pr_cont("\n");
@@ -1213,8 +1225,12 @@ static netdev_tx_t smc_start_xmit(struct sk_buff *skb,
     if (smc->saved_skb) {
 	/* THIS SHOULD NEVER HAPPEN. */
 	dev->stats.tx_aborted_errors++;
+<<<<<<< HEAD
 	netdev_printk(KERN_DEBUG, dev,
 		      "Internal error -- sent packet while busy\n");
+=======
+	netdev_dbg(dev, "Internal error -- sent packet while busy\n");
+>>>>>>> refs/remotes/origin/master
 	return NETDEV_TX_BUSY;
     }
     smc->saved_skb = skb;
@@ -1254,7 +1270,11 @@ static netdev_tx_t smc_start_xmit(struct sk_buff *skb,
     }
 
     /* Otherwise defer until the Tx-space-allocated interrupt. */
+<<<<<<< HEAD
     pr_debug("%s: memory allocation deferred.\n", dev->name);
+=======
+    netdev_dbg(dev, "memory allocation deferred.\n");
+>>>>>>> refs/remotes/origin/master
     outw((IM_ALLOC_INT << 8) | (ir & 0xff00), ioaddr + INTERRUPT);
     spin_unlock_irqrestore(&smc->lock, flags);
 
@@ -1317,8 +1337,13 @@ static void smc_eph_irq(struct net_device *dev)
 
     SMC_SELECT_BANK(0);
     ephs = inw(ioaddr + EPH);
+<<<<<<< HEAD
     pr_debug("%s: Ethernet protocol handler interrupt, status"
 	  " %4.4x.\n", dev->name, ephs);
+=======
+    netdev_dbg(dev, "Ethernet protocol handler interrupt, status %4.4x.\n",
+	       ephs);
+>>>>>>> refs/remotes/origin/master
     /* Could be a counter roll-over warning: update stats. */
     card_stats = inw(ioaddr + COUNTER);
     /* single collisions */
@@ -1357,8 +1382,13 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 
     ioaddr = dev->base_addr;
 
+<<<<<<< HEAD
     pr_debug("%s: SMC91c92 interrupt %d at %#x.\n", dev->name,
 	  irq, ioaddr);
+=======
+    netdev_dbg(dev, "SMC91c92 interrupt %d at %#x.\n",
+	       irq, ioaddr);
+>>>>>>> refs/remotes/origin/master
 
     spin_lock(&smc->lock);
     smc->watchdog = 0;
@@ -1366,8 +1396,13 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
     if ((saved_bank & 0xff00) != 0x3300) {
 	/* The device does not exist -- the card could be off-line, or
 	   maybe it has been ejected. */
+<<<<<<< HEAD
 	pr_debug("%s: SMC91c92 interrupt %d for non-existent"
 	      "/ejected device.\n", dev->name, irq);
+=======
+	netdev_dbg(dev, "SMC91c92 interrupt %d for non-existent/ejected device.\n",
+		   irq);
+>>>>>>> refs/remotes/origin/master
 	handled = 0;
 	goto irq_done;
     }
@@ -1380,8 +1415,13 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 
     do { /* read the status flag, and mask it */
 	status = inw(ioaddr + INTERRUPT) & 0xff;
+<<<<<<< HEAD
 	pr_debug("%s: Status is %#2.2x (mask %#2.2x).\n", dev->name,
 	      status, mask);
+=======
+	netdev_dbg(dev, "Status is %#2.2x (mask %#2.2x).\n",
+		   status, mask);
+>>>>>>> refs/remotes/origin/master
 	if ((status & mask) == 0) {
 	    if (bogus_cnt == INTR_WORK)
 		handled = 0;
@@ -1425,15 +1465,24 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 	    smc_eph_irq(dev);
     } while (--bogus_cnt);
 
+<<<<<<< HEAD
     pr_debug("  Restoring saved registers mask %2.2x bank %4.4x"
 	  " pointer %4.4x.\n", mask, saved_bank, saved_pointer);
+=======
+    netdev_dbg(dev, "  Restoring saved registers mask %2.2x bank %4.4x pointer %4.4x.\n",
+	       mask, saved_bank, saved_pointer);
+>>>>>>> refs/remotes/origin/master
 
     /* restore state register */
     outw((mask<<8), ioaddr + INTERRUPT);
     outw(saved_pointer, ioaddr + POINTER);
     SMC_SELECT_BANK(saved_bank);
 
+<<<<<<< HEAD
     pr_debug("%s: Exiting interrupt IRQ%d.\n", dev->name, irq);
+=======
+    netdev_dbg(dev, "Exiting interrupt IRQ%d.\n", irq);
+>>>>>>> refs/remotes/origin/master
 
 irq_done:
 
@@ -1491,10 +1540,17 @@ static void smc_rx(struct net_device *dev)
     rx_status = inw(ioaddr + DATA_1);
     packet_length = inw(ioaddr + DATA_1) & 0x07ff;
 
+<<<<<<< HEAD
     pr_debug("%s: Receive status %4.4x length %d.\n",
 	  dev->name, rx_status, packet_length);
 
     if (!(rx_status & RS_ERRORS)) {		
+=======
+    netdev_dbg(dev, "Receive status %4.4x length %d.\n",
+	       rx_status, packet_length);
+
+    if (!(rx_status & RS_ERRORS)) {
+>>>>>>> refs/remotes/origin/master
 	/* do stuff to make a new packet */
 	struct sk_buff *skb;
 	
@@ -1502,7 +1558,11 @@ static void smc_rx(struct net_device *dev)
 	skb = netdev_alloc_skb(dev, packet_length+2);
 	
 	if (skb == NULL) {
+<<<<<<< HEAD
 	    pr_debug("%s: Low memory, packet dropped.\n", dev->name);
+=======
+	    netdev_dbg(dev, "Low memory, packet dropped.\n");
+>>>>>>> refs/remotes/origin/master
 	    dev->stats.rx_dropped++;
 	    outw(MC_RELEASE, ioaddr + MMU_CMD);
 	    return;
@@ -1643,7 +1703,11 @@ static void smc_reset(struct net_device *dev)
     struct smc_private *smc = netdev_priv(dev);
     int i;
 
+<<<<<<< HEAD
     pr_debug("%s: smc91c92 reset called.\n", dev->name);
+=======
+    netdev_dbg(dev, "smc91c92 reset called.\n");
+>>>>>>> refs/remotes/origin/master
 
     /* The first interaction must be a write to bring the chip out
        of sleep mode. */
@@ -2054,6 +2118,7 @@ static struct pcmcia_driver smc91c92_cs_driver = {
 	.suspend	= smc91c92_suspend,
 	.resume		= smc91c92_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_smc91c92_cs(void)
 {
@@ -2067,3 +2132,6 @@ static void __exit exit_smc91c92_cs(void)
 
 module_init(init_smc91c92_cs);
 module_exit(exit_smc91c92_cs);
+=======
+module_pcmcia_driver(smc91c92_cs_driver);
+>>>>>>> refs/remotes/origin/master

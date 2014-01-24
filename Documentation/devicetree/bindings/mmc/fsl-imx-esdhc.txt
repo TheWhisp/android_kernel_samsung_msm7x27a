@@ -3,6 +3,7 @@
 The Enhanced Secure Digital Host Controller on Freescale i.MX family
 provides an interface for MMC, SD, and SDIO types of memory cards.
 
+<<<<<<< HEAD
 Required properties:
 - compatible : Should be "fsl,<chip>-esdhc"
 - reg : Should contain eSDHC registers location and length
@@ -14,6 +15,22 @@ Optional properties:
 - fsl,wp-internal : Indicate to use controller internal write protection
 - cd-gpios : Specify GPIOs for card detection
 - wp-gpios : Specify GPIOs for write protection
+=======
+This file documents differences between the core properties described
+by mmc.txt and the properties used by the sdhci-esdhc-imx driver.
+
+Required properties:
+- compatible : Should be "fsl,<chip>-esdhc"
+
+Optional properties:
+- fsl,cd-controller : Indicate to use controller internal card detection
+- fsl,wp-controller : Indicate to use controller internal write protection
+- fsl,delay-line : Specify the number of delay cells for override mode.
+  This is used to set the clock delay for DLL(Delay Line) on override mode
+  to select a proper data sampling window in case the clock quality is not good
+  due to signal path is too long on the board. Please refer to eSDHC/uSDHC
+  chapter, DLL (Delay Line) section in RM for details.
+>>>>>>> refs/remotes/origin/master
 
 Examples:
 
@@ -21,14 +38,24 @@ esdhc@70004000 {
 	compatible = "fsl,imx51-esdhc";
 	reg = <0x70004000 0x4000>;
 	interrupts = <1>;
+<<<<<<< HEAD
 	fsl,cd-internal;
 	fsl,wp-internal;
+=======
+	fsl,cd-controller;
+	fsl,wp-controller;
+>>>>>>> refs/remotes/origin/master
 };
 
 esdhc@70008000 {
 	compatible = "fsl,imx51-esdhc";
 	reg = <0x70008000 0x4000>;
 	interrupts = <2>;
+<<<<<<< HEAD
 	cd-gpios = <&gpio0 6 0>; /* GPIO1_6 */
 	wp-gpios = <&gpio0 5 0>; /* GPIO1_5 */
+=======
+	cd-gpios = <&gpio1 6 0>; /* GPIO1_6 */
+	wp-gpios = <&gpio1 5 0>; /* GPIO1_5 */
+>>>>>>> refs/remotes/origin/master
 };

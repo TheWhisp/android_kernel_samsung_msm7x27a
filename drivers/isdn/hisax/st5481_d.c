@@ -5,10 +5,14 @@
  * Copyright    2001 by Frode Isaksen      <fisaksen@bewan.com>
  *              2001 by Kai Germaschewski  <kai.germaschewski@gmx.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -37,6 +41,7 @@ static char *strL1State[] =
 static char *strL1Event[] =
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"EV_IND_DP",  
 	"EV_IND_1",   
 	"EV_IND_2",   
@@ -54,6 +59,8 @@ static char *strL1Event[] =
 	"EV_IND_AIL",
 	"EV_IND_DI",  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	"EV_IND_DP",
 	"EV_IND_1",
 	"EV_IND_2",
@@ -70,7 +77,10 @@ static char *strL1Event[] =
 	"EV_IND_AI10",
 	"EV_IND_AIL",
 	"EV_IND_DI",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	"EV_PH_ACTIVATE_REQ",
 	"EV_PH_DEACTIVATE_REQ",
 	"EV_TIMER3",
@@ -91,10 +101,14 @@ l1_go_f3(struct FsmInst *fi, int event, void *arg)
 	if (fi->state == ST_L1_F7)
 		ph_disconnect(adapter);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	FsmChangeState(fi, ST_L1_F3);
 	D_L1L2(adapter, PH_DEACTIVATE | INDICATION, NULL);
 }
@@ -195,6 +209,7 @@ static struct FsmNode L1FnList[] __initdata =
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __attribute__((format(printf, 2, 3)))
 void l1m_debug(struct FsmInst *fi, char *fmt, ...)
 {
@@ -202,13 +217,18 @@ void l1m_debug(struct FsmInst *fi, char *fmt, ...)
 	char buf[256];
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static __printf(2, 3)
 	void l1m_debug(struct FsmInst *fi, char *fmt, ...)
 {
 	va_list args;
 	char buf[256];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	va_start(args, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, args);
 	DBG(8, "%s", buf);
@@ -227,6 +247,7 @@ static __printf(2, 3)
 
   L1 FRAME    D_OUT_STATE           USB                  D CHANNEL
   --------    -----------           ---                  ---------
+<<<<<<< HEAD
 <<<<<<< HEAD
  
               FIXME
@@ -247,6 +268,8 @@ static __printf(2, 3)
 
               
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
   FIXME
 
@@ -265,13 +288,17 @@ static __printf(2, 3)
   IDLE                  <> Reset pipe
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
   Transmit long frame (>= 16 bytes of encoded data):
 
   L1 FRAME    D_OUT_STATE           USB                  D CHANNEL
   --------    -----------           ---                  ---------
 
+<<<<<<< HEAD
 <<<<<<< HEAD
  -> [xx...xx] IDLE
               WAIT_FOR_STOP         <> OUT_D_COUNTER=0
@@ -298,6 +325,8 @@ static __printf(2, 3)
 
 */          
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   -> [xx...xx] IDLE
   WAIT_FOR_STOP         <> OUT_D_COUNTER=0
   WAIT_FOR_RESET        <> Reset pipe
@@ -322,7 +351,10 @@ static __printf(2, 3)
   STOP
 
 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct Fsm dout_fsm;
 
@@ -339,10 +371,14 @@ static char *strDoutState[] =
 
 	"ST_DOUT_WAIT_FOR_UNDERRUN",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "ST_DOUT_WAIT_FOR_NOT_BUSY",
 =======
 	"ST_DOUT_WAIT_FOR_NOT_BUSY",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"ST_DOUT_WAIT_FOR_NOT_BUSY",
+>>>>>>> refs/remotes/origin/master
 	"ST_DOUT_WAIT_FOR_STOP",
 	"ST_DOUT_WAIT_FOR_RESET",
 };
@@ -359,6 +395,7 @@ static char *strDoutEvent[] =
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __attribute__((format(printf, 2, 3)))
 void dout_debug(struct FsmInst *fi, char *fmt, ...)
 {
@@ -366,13 +403,18 @@ void dout_debug(struct FsmInst *fi, char *fmt, ...)
 	char buf[256];
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static __printf(2, 3)
 	void dout_debug(struct FsmInst *fi, char *fmt, ...)
 {
 	va_list args;
 	char buf[256];
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	va_start(args, fmt);
 	vsnprintf(buf, sizeof(buf), fmt, args);
 	DBG(0x2, "%s", buf);
@@ -411,19 +453,27 @@ static void usb_d_out(struct st5481_adapter *adapter, int buf_nr)
 
 	buf_size = NUM_ISO_PACKETS_D * SIZE_ISO_PACKETS_D_OUT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (skb) {
 		len = isdnhdlc_encode(&d_out->hdlc_state,
 				      skb->data, skb->len, &bytes_sent,
 				      urb->transfer_buffer, buf_size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skb_pull(skb,bytes_sent);
 =======
 		skb_pull(skb, bytes_sent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		skb_pull(skb, bytes_sent);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		// Send flags or idle
 		len = isdnhdlc_encode(&d_out->hdlc_state,
@@ -431,10 +481,14 @@ static void usb_d_out(struct st5481_adapter *adapter, int buf_nr)
 				      urb->transfer_buffer, buf_size);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (len < buf_size) {
 		FsmChangeState(&d_out->fsm, ST_DOUT_WAIT_FOR_UNDERRUN);
 	}
@@ -464,6 +518,7 @@ static void usb_d_out(struct st5481_adapter *adapter, int buf_nr)
 	// Need to transmit the next buffer 2ms after the DEN_EVENT
 	urb->transfer_flags = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	urb->start_frame = usb_get_current_frame_number(adapter->usb_dev)+2;
 
 	DBG_ISO_PACKET(0x20,urb);
@@ -472,16 +527,25 @@ static void usb_d_out(struct st5481_adapter *adapter, int buf_nr)
 
 	DBG_ISO_PACKET(0x20, urb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	urb->start_frame = usb_get_current_frame_number(adapter->usb_dev) + 2;
+
+	DBG_ISO_PACKET(0x20, urb);
+>>>>>>> refs/remotes/origin/master
 
 	if (usb_submit_urb(urb, GFP_KERNEL) < 0) {
 		// There is another URB queued up
 		urb->transfer_flags = URB_ISO_ASAP;
 		SUBMIT_URB(urb, GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}	
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void fifo_reseted(void *context)
@@ -497,10 +561,14 @@ static void usb_d_out_complete(struct urb *urb)
 	struct st5481_d_out *d_out = &adapter->d_out;
 	long buf_nr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG(2, "");
 
 	buf_nr = get_buf_nr(d_out->urb, urb);
@@ -508,6 +576,7 @@ static void usb_d_out_complete(struct urb *urb)
 
 	if (unlikely(urb->status < 0)) {
 		switch (urb->status) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case -ENOENT:
 			case -ESHUTDOWN:
@@ -521,6 +590,8 @@ static void usb_d_out_complete(struct urb *urb)
 				}
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case -ENOENT:
 		case -ESHUTDOWN:
 		case -ECONNRESET:
@@ -532,7 +603,10 @@ static void usb_d_out_complete(struct urb *urb)
 				st5481_usb_pipe_reset(adapter, EP_D_OUT | USB_DIR_OUT, fifo_reseted, adapter);
 			}
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return; // Give up
 	}
@@ -555,10 +629,14 @@ static void dout_start_xmit(struct FsmInst *fsm, int event, void *arg)
 	skb = d_out->tx_skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(2,"len=%d",skb->len);
 =======
 	DBG(2, "len=%d", skb->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(2, "len=%d", skb->len);
+>>>>>>> refs/remotes/origin/master
 
 	isdnhdlc_out_init(&d_out->hdlc_state, HDLC_DCHANNEL | HDLC_BITREVERSE);
 
@@ -575,10 +653,14 @@ static void dout_start_xmit(struct FsmInst *fsm, int event, void *arg)
 	skb_pull(skb, bytes_sent);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(len < 16)
 =======
 	if (len < 16)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (len < 16)
+>>>>>>> refs/remotes/origin/master
 		FsmChangeState(&d_out->fsm, ST_DOUT_SHORT_INIT);
 	else
 		FsmChangeState(&d_out->fsm, ST_DOUT_LONG_INIT);
@@ -601,10 +683,14 @@ static void dout_start_xmit(struct FsmInst *fsm, int event, void *arg)
 	urb->transfer_flags = URB_ISO_ASAP;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG_ISO_PACKET(0x20,urb);
 =======
 	DBG_ISO_PACKET(0x20, urb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG_ISO_PACKET(0x20, urb);
+>>>>>>> refs/remotes/origin/master
 	SUBMIT_URB(urb, GFP_KERNEL);
 }
 
@@ -630,10 +716,14 @@ static void dout_long_enable_fifo(struct FsmInst *fsm, int event, void *arg)
 	struct st5481_adapter *adapter = fsm->userdata;
 	struct st5481_d_out *d_out = &adapter->d_out;
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	st5481_usb_device_ctrl_msg(adapter, OUT_D_COUNTER, 16, NULL, NULL);
 	FsmChangeState(&d_out->fsm, ST_DOUT_LONG_WAIT_DEN);
 }
@@ -773,12 +863,17 @@ static void ph_connect(struct st5481_adapter *adapter)
 	struct st5481_in *d_in = &adapter->d_in;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(8,"");
 		
 =======
 	DBG(8, "");
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(8, "");
+
+>>>>>>> refs/remotes/origin/master
 	FsmChangeState(&d_out->fsm, ST_DOUT_NONE);
 
 	//	st5481_usb_device_ctrl_msg(adapter, FFMSK_D, OUT_UNDERRUN, NULL, NULL);
@@ -803,10 +898,14 @@ static void ph_connect(struct st5481_adapter *adapter)
 static void ph_disconnect(struct st5481_adapter *adapter)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(8,"");
 =======
 	DBG(8, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(8, "");
+>>>>>>> refs/remotes/origin/master
 
 	st5481_in_mode(&adapter->d_in, L1_MODE_NULL);
 
@@ -824,10 +923,14 @@ static int st5481_setup_d_out(struct st5481_adapter *adapter)
 	struct st5481_d_out *d_out = &adapter->d_out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(2,"");
 =======
 	DBG(2, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(2, "");
+>>>>>>> refs/remotes/origin/master
 
 	intf = usb_ifnum_to_if(dev, 0);
 	if (intf)
@@ -839,16 +942,22 @@ static int st5481_setup_d_out(struct st5481_adapter *adapter)
 	endpoint = &altsetting->endpoint[EP_D_OUT-1];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(2,"endpoint address=%02x,packet size=%d",
 	    endpoint->desc.bEndpointAddress, le16_to_cpu(endpoint->desc.wMaxPacketSize));
 
 	return st5481_setup_isocpipes(d_out->urb, dev, 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DBG(2, "endpoint address=%02x,packet size=%d",
 	    endpoint->desc.bEndpointAddress, le16_to_cpu(endpoint->desc.wMaxPacketSize));
 
 	return st5481_setup_isocpipes(d_out->urb, dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				      usb_sndisocpipe(dev, endpoint->desc.bEndpointAddress),
 				      NUM_ISO_PACKETS_D, SIZE_ISO_PACKETS_D_OUT,
 				      NUM_ISO_PACKETS_D * SIZE_ISO_PACKETS_D_OUT,
@@ -860,10 +969,14 @@ static void st5481_release_d_out(struct st5481_adapter *adapter)
 	struct st5481_d_out *d_out = &adapter->d_out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(2,"");
 =======
 	DBG(2, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(2, "");
+>>>>>>> refs/remotes/origin/master
 
 	st5481_release_isocpipes(d_out->urb);
 }
@@ -873,10 +986,14 @@ int st5481_setup_d(struct st5481_adapter *adapter)
 	int retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(2,"");
 =======
 	DBG(2, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(2, "");
+>>>>>>> refs/remotes/origin/master
 
 	retval = st5481_setup_d_out(adapter);
 	if (retval)
@@ -908,6 +1025,7 @@ int st5481_setup_d(struct st5481_adapter *adapter)
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  err_d_out:
 	st5481_release_d_out(adapter);
  err:
@@ -916,16 +1034,25 @@ err_d_out:
 	st5481_release_d_out(adapter);
 err:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_d_out:
+	st5481_release_d_out(adapter);
+err:
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
 void st5481_release_d(struct st5481_adapter *adapter)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBG(2,"");
 =======
 	DBG(2, "");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBG(2, "");
+>>>>>>> refs/remotes/origin/master
 
 	st5481_release_in(&adapter->d_in);
 	st5481_release_d_out(adapter);
@@ -958,6 +1085,7 @@ int __init st5481_d_init(void)
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  err_l1:
 	FsmFree(&l1fsm);
  err:
@@ -966,6 +1094,11 @@ err_l1:
 	FsmFree(&l1fsm);
 err:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_l1:
+	FsmFree(&l1fsm);
+err:
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 

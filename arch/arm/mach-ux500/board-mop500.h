@@ -8,6 +8,7 @@
 #define __BOARD_MOP500_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* HREFv60-specific GPIO assignments, this board has no GPIO expander */
 #define HREFV60_TOUCH_RST_GPIO		143
 #define HREFV60_PROX_SENSE_GPIO		217
@@ -27,6 +28,13 @@
 #define GPIO_PROX_SENSOR		MOP500_EGPIO(7)
 #define GPIO_BU21013_CS			MOP500_EGPIO(13)
 =======
+=======
+/* For NOMADIK_NR_GPIO */
+#include "irqs.h"
+#include <linux/platform_data/asoc-ux500-msp.h>
+#include <linux/amba/mmci.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Snowball specific GPIO assignments, this board has no GPIO expander */
 #define SNOWBALL_ACCEL_INT1_GPIO	163
 #define SNOWBALL_ACCEL_INT2_GPIO	164
@@ -73,11 +81,15 @@
 #define GPIO_BU21013_CS			MOP500_EGPIO(13)
 #define MOP500_DISP2_RST_GPIO		MOP500_EGPIO(14)
 #define MOP500_DISP1_RST_GPIO		MOP500_EGPIO(15)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define GPIO_SDMMC_EN			MOP500_EGPIO(17)
 #define GPIO_SDMMC_1V8_3V_SEL		MOP500_EGPIO(18)
 #define MOP500_EGPIO_END		MOP500_EGPIO(24)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* GPIOs on the AB8500 mixed-signals circuit */
 #define MOP500_AB8500_GPIO(x)		(MOP500_EGPIO_END + (x))
@@ -90,6 +102,8 @@ void __init mop500_u8500uib_init(void);
 void __init mop500_stuib_init(void);
 void __init mop500_pins_init(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * GPIOs on the AB8500 mixed-signals circuit
  * Notice that we subtract 1 from the number passed into the macro, this is
@@ -106,6 +120,7 @@ void __init mop500_pins_init(void);
 #define SNOWBALL_PME_ETH_GPIO		MOP500_AB8500_PIN_GPIO(24)	/* SYSCLKREQ7/GPIO24 */
 #define SNOWBALL_EN_3V3_ETH_GPIO	MOP500_AB8500_PIN_GPIO(26)	/* GPIO26 */
 
+<<<<<<< HEAD
 struct i2c_board_info;
 
 extern void mop500_sdi_init(struct device *parent);
@@ -121,5 +136,21 @@ void __init snowball_pins_init(void);
 
 void mop500_uib_i2c_add(int busnum, struct i2c_board_info *info,
 		unsigned n);
+=======
+struct device;
+extern struct mmci_platform_data mop500_sdi0_data;
+extern struct mmci_platform_data mop500_sdi1_data;
+extern struct mmci_platform_data mop500_sdi2_data;
+extern struct mmci_platform_data mop500_sdi4_data;
+extern struct msp_i2s_platform_data msp0_platform_data;
+extern struct msp_i2s_platform_data msp1_platform_data;
+extern struct msp_i2s_platform_data msp2_platform_data;
+extern struct msp_i2s_platform_data msp3_platform_data;
+extern struct pl022_ssp_controller ssp0_plat;
+
+void __init mop500_pinmaps_init(void);
+void __init snowball_pinmaps_init(void);
+void __init hrefv60_pinmaps_init(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif

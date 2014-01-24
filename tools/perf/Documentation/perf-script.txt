@@ -107,10 +107,14 @@ OPTIONS
 -i::
 --input=::
 <<<<<<< HEAD
+<<<<<<< HEAD
         Input file name.
 =======
         Input file name. (default: perf.data unless stdin is a fifo)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        Input file name. (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/master
 
 -d::
 --debug-mode::
@@ -119,6 +123,7 @@ OPTIONS
 -f::
 --fields::
         Comma separated list of fields to print. Options are:
+<<<<<<< HEAD
 <<<<<<< HEAD
         comm, tid, pid, time, cpu, event, trace, sym. Field
         list can be prepended with the type, trace, sw or hw,
@@ -130,6 +135,12 @@ OPTIONS
         to indicate to which event type the field list applies.
         e.g., -f sw:comm,tid,time,ip,sym  and -f trace:time,cpu,trace
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        comm, tid, pid, time, cpu, event, trace, ip, sym, dso, addr, symoff, srcline.
+        Field list can be prepended with the type, trace, sw or hw,
+        to indicate to which event type the field list applies.
+        e.g., -f sw:comm,tid,time,ip,sym  and -f trace:time,cpu,trace
+>>>>>>> refs/remotes/origin/master
 
 		perf script -f <fields>
 
@@ -144,16 +155,22 @@ OPTIONS
 	reset a prior request. e.g.:
     
 <<<<<<< HEAD
+<<<<<<< HEAD
 		-f trace: -f comm,tid,time,sym
     
 	The first -f suppresses trace events (field list is ""), but then the
 	second invocation sets the fields to comm,tid,time,sym. In this case a
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		-f trace: -f comm,tid,time,ip,sym
     
 	The first -f suppresses trace events (field list is ""), but then the
 	second invocation sets the fields to comm,tid,time,ip,sym. In this case a
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	warning is given to the user:
     
 		"Overriding previous field request for all events."
@@ -161,10 +178,14 @@ OPTIONS
 	Alternativey, consider the order:
     
 <<<<<<< HEAD
+<<<<<<< HEAD
 		-f comm,tid,time,sym -f trace:
 =======
 		-f comm,tid,time,ip,sym -f trace:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		-f comm,tid,time,ip,sym -f trace:
+>>>>>>> refs/remotes/origin/master
     
 	The first -f sets the fields for all events and the second -f
 	suppresses trace events. The user is given a warning message about
@@ -205,7 +226,10 @@ OPTIONS
         When printing symbols do not display call chain.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 -C::
 --cpu:: Only report samples for the list of CPUs provided. Multiple CPUs can
 	be provided as a comma-separated list with no space: 0,1. Ranges of
@@ -227,7 +251,22 @@ OPTIONS
 --show-kernel-path::
 	Try to resolve the path of [kernel.kallsyms]
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+--show-task-events
+	Display task related events (e.g. FORK, COMM, EXIT).
+
+--show-mmap-events
+	Display mmap related events (e.g. MMAP, MMAP2).
+
+--header
+	Show perf.data header.
+
+--header-only
+	Show only perf.data header.
+
+>>>>>>> refs/remotes/origin/master
 SEE ALSO
 --------
 linkperf:perf-record[1], linkperf:perf-script-perl[1],

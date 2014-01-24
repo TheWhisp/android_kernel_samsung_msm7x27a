@@ -190,7 +190,12 @@ static void __fat_cache_inval_inode(struct inode *inode)
 	struct fat_cache *cache;
 
 	while (!list_empty(&i->cache_lru)) {
+<<<<<<< HEAD
 		cache = list_entry(i->cache_lru.next, struct fat_cache, cache_list);
+=======
+		cache = list_entry(i->cache_lru.next,
+				   struct fat_cache, cache_list);
+>>>>>>> refs/remotes/origin/master
 		list_del_init(&cache->cache_list);
 		i->nr_caches--;
 		fat_cache_free(cache);
@@ -261,9 +266,16 @@ int fat_get_cluster(struct inode *inode, int cluster, int *fclus, int *dclus)
 		if (nr < 0)
 			goto out;
 		else if (nr == FAT_ENT_FREE) {
+<<<<<<< HEAD
 			fat_fs_error_ratelimit(sb, "%s: invalid cluster chain"
 					       " (i_pos %lld)", __func__,
 					       MSDOS_I(inode)->i_pos);
+=======
+			fat_fs_error_ratelimit(sb,
+				       "%s: invalid cluster chain (i_pos %lld)",
+				       __func__,
+				       MSDOS_I(inode)->i_pos);
+>>>>>>> refs/remotes/origin/master
 			nr = -EIO;
 			goto out;
 		} else if (nr == FAT_ENT_EOF) {

@@ -7,10 +7,15 @@
 #include <linux/types.h>
 #include <linux/serial.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/platform_data/macb.h>
 #include <linux/platform_data/atmel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/macb.h>
+#include <linux/platform_data/atmel.h>
+>>>>>>> refs/remotes/origin/master
 
 #define GPIO_PIN_NONE	(-1)
 
@@ -29,7 +34,10 @@ static inline void __deprecated at32_add_system_devices(void)
 
 }
 
+<<<<<<< HEAD
 #define ATMEL_MAX_UART	4
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct platform_device *atmel_default_console_device;
 
 /* Flags for selecting USART extra pins */
@@ -37,6 +45,7 @@ extern struct platform_device *atmel_default_console_device;
 #define	ATMEL_USART_CTS		0x02
 #define	ATMEL_USART_CLK		0x04
 
+<<<<<<< HEAD
 struct atmel_uart_data {
 	int		num;		/* port num */
 	short		use_dma_tx;	/* use transmit DMA? */
@@ -58,15 +67,28 @@ at32_add_device_eth(unsigned int id, struct eth_platform_data *data);
 struct platform_device *
 at32_add_device_eth(unsigned int id, struct macb_platform_data *data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void at32_map_usart(unsigned int hw_id, unsigned int line, int flags);
+struct platform_device *at32_add_device_usart(unsigned int id);
+
+struct platform_device *
+at32_add_device_eth(unsigned int id, struct macb_platform_data *data);
+>>>>>>> refs/remotes/origin/master
 
 struct spi_board_info;
 struct platform_device *
 at32_add_device_spi(unsigned int id, struct spi_board_info *b, unsigned int n);
 void at32_spi_setup_slaves(unsigned int bus_num, struct spi_board_info *b, unsigned int n);
 
+<<<<<<< HEAD
 struct atmel_lcdfb_info;
 struct platform_device *
 at32_add_device_lcdc(unsigned int id, struct atmel_lcdfb_info *data,
+=======
+struct atmel_lcdfb_pdata;
+struct platform_device *
+at32_add_device_lcdc(unsigned int id, struct atmel_lcdfb_pdata *data,
+>>>>>>> refs/remotes/origin/master
 		     unsigned long fbmem_start, unsigned long fbmem_len,
 		     u64 pin_mask);
 
@@ -130,6 +152,7 @@ at32_add_device_cf(unsigned int id, unsigned int extint,
 		struct cf_platform_data *data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* NAND / SmartMedia */
 struct atmel_nand_data {
 	int	enable_pin;	/* chip enable */
@@ -143,6 +166,8 @@ struct atmel_nand_data {
 };
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct platform_device *
 at32_add_device_nand(unsigned int id, struct atmel_nand_data *data);
 

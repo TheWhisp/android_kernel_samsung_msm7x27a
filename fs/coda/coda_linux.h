@@ -40,11 +40,16 @@ extern const struct file_operations coda_ioctl_operations;
 int coda_open(struct inode *i, struct file *f);
 int coda_release(struct inode *i, struct file *f);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int coda_permission(struct inode *inode, int mask, unsigned int flags);
 =======
 int coda_permission(struct inode *inode, int mask);
 >>>>>>> refs/remotes/origin/cm-10.0
 int coda_revalidate_inode(struct dentry *);
+=======
+int coda_permission(struct inode *inode, int mask);
+int coda_revalidate_inode(struct inode *);
+>>>>>>> refs/remotes/origin/master
 int coda_getattr(struct vfsmount *, struct dentry *, struct kstat *);
 int coda_setattr(struct dentry *, struct iattr *);
 
@@ -64,6 +69,7 @@ void coda_sysctl_clean(void);
 #define CODA_ALLOC(ptr, cast, size) do { \
     if (size < PAGE_SIZE) \
 <<<<<<< HEAD
+<<<<<<< HEAD
         ptr = kmalloc((unsigned long) size, GFP_KERNEL); \
     else \
         ptr = (cast)vmalloc((unsigned long) size); \
@@ -71,12 +77,17 @@ void coda_sysctl_clean(void);
         printk("kernel malloc returns 0 at %s:%d\n", __FILE__, __LINE__); \
     else memset( ptr, 0, size ); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
         ptr = kzalloc((unsigned long) size, GFP_KERNEL); \
     else \
         ptr = (cast)vzalloc((unsigned long) size); \
     if (!ptr) \
         printk("kernel malloc returns 0 at %s:%d\n", __FILE__, __LINE__); \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 

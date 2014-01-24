@@ -21,6 +21,7 @@
 #define __ASM_KVM_BOOK3S_32_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct kvmppc_book3s_shadow_vcpu *to_svcpu(struct kvm_vcpu *vcpu)
 =======
 static inline struct kvmppc_book3s_shadow_vcpu *svcpu_get(struct kvm_vcpu *vcpu)
@@ -31,11 +32,21 @@ static inline struct kvmppc_book3s_shadow_vcpu *svcpu_get(struct kvm_vcpu *vcpu)
 
 <<<<<<< HEAD
 =======
+=======
+static inline struct kvmppc_book3s_shadow_vcpu *svcpu_get(struct kvm_vcpu *vcpu)
+{
+	return vcpu->arch.shadow_vcpu;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void svcpu_put(struct kvmppc_book3s_shadow_vcpu *svcpu)
 {
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PTE_SIZE	12
 #define VSID_ALL	0
 #define SR_INVALID	0x00000001	/* VSID 1 should always be unused */
@@ -49,5 +60,9 @@ static inline void svcpu_put(struct kvmppc_book3s_shadow_vcpu *svcpu)
 #define SID_SHIFT	28
 #define ESID_MASK	0xf0000000
 #define VSID_MASK	0x00fffffff0000000ULL
+<<<<<<< HEAD
+=======
+#define VPN_SHIFT	12
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_KVM_BOOK3S_32_H__ */

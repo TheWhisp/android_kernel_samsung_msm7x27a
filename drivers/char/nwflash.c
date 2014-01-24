@@ -30,12 +30,16 @@
 
 #include <asm/hardware/dec21285.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <asm/leds.h>
 #include <asm/mach-types.h>
 <<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/mach-types.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 /*****************************************************************************/
@@ -55,10 +59,14 @@ static int write_block(unsigned long p, const char __user *buf, int count);
 #define KFLASH_ID4	0xB0D4		//Intel flash 4Meg
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int flashdebug;		//if set - we will display progress msgs
 =======
 static bool flashdebug;		//if set - we will display progress msgs
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool flashdebug;		//if set - we will display progress msgs
+>>>>>>> refs/remotes/origin/master
 
 static int gbWriteEnable;
 static int gbWriteBase64Enable;
@@ -187,9 +195,12 @@ static ssize_t flash_write(struct file *file, const char __user *buf,
 
 	written = 0;
 
+<<<<<<< HEAD
 	leds_event(led_claim);
 	leds_event(led_green_on);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	nBlock = (int) p >> 16;	//block # of 64K bytes
 
 	/*
@@ -266,11 +277,14 @@ static ssize_t flash_write(struct file *file, const char __user *buf,
 			printk(KERN_DEBUG "flash_write: written 0x%X bytes OK.\n", written);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * restore reg on exit
 	 */
 	leds_event(led_release);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&nwflash_mutex);
 
 	return written;
@@ -342,11 +356,14 @@ static int erase_block(int nBlock)
 	int temp, temp1;
 
 	/*
+<<<<<<< HEAD
 	 * orange LED == erase
 	 */
 	leds_event(led_amber_on);
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * reset footbridge to the correct offset 0 (...0..3)
 	 */
 	*CSR_ROMWRITEREG = 0;
@@ -454,12 +471,15 @@ static int write_block(unsigned long p, const char __user *buf, int count)
 	unsigned long timeout;
 	unsigned long timeout1;
 
+<<<<<<< HEAD
 	/*
 	 * red LED == write
 	 */
 	leds_event(led_amber_off);
 	leds_event(led_red_on);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pWritePtr = (unsigned char *) ((unsigned int) (FLASH_BASE + p));
 
 	/*
@@ -566,6 +586,7 @@ static int write_block(unsigned long p, const char __user *buf, int count)
 					       pWritePtr - FLASH_BASE);
 
 				/*
+<<<<<<< HEAD
 				 * no LED == waiting
 				 */
 				leds_event(led_amber_off);
@@ -577,6 +598,11 @@ static int write_block(unsigned long p, const char __user *buf, int count)
 				 * red LED == write
 				 */
 				leds_event(led_red_on);
+=======
+				 * wait couple ms
+				 */
+				msleep(10);
+>>>>>>> refs/remotes/origin/master
 
 				goto WriteRetry;
 			} else {
@@ -591,12 +617,15 @@ static int write_block(unsigned long p, const char __user *buf, int count)
 		}
 	}
 
+<<<<<<< HEAD
 	/*
 	 * green LED == read/verify
 	 */
 	leds_event(led_amber_off);
 	leds_event(led_green_on);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	msleep(10);
 
 	pWritePtr = (unsigned char *) ((unsigned int) (FLASH_BASE + p));
@@ -625,9 +654,15 @@ static void kick_open(void)
 	 * we want to write a bit pattern XXX1 to Xilinx to enable
 	 * the write gate, which will be open for about the next 2ms.
 	 */
+<<<<<<< HEAD
 	spin_lock_irqsave(&nw_gpio_lock, flags);
 	nw_cpld_modify(CPLD_FLASH_WR_ENABLE, CPLD_FLASH_WR_ENABLE);
 	spin_unlock_irqrestore(&nw_gpio_lock, flags);
+=======
+	raw_spin_lock_irqsave(&nw_gpio_lock, flags);
+	nw_cpld_modify(CPLD_FLASH_WR_ENABLE, CPLD_FLASH_WR_ENABLE);
+	raw_spin_unlock_irqrestore(&nw_gpio_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * let the ISA bus to catch on...

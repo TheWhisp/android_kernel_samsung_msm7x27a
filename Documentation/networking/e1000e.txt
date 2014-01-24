@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 Linux* Driver for Intel(R) Network Connection
 =============================================
 
 Intel Gigabit Linux driver.
 Copyright(c) 1999 - 2010 Intel Corporation.
+=======
+Linux* Driver for Intel(R) Ethernet Network Connection
+======================================================
+
+Intel Gigabit Linux driver.
+Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
 Contents
 ========
@@ -259,13 +267,24 @@ Additional Configurations
   - The maximum MTU setting for Jumbo Frames is 9216.  This value coincides
     with the maximum Jumbo Frames size of 9234 bytes.
 
+<<<<<<< HEAD
   - Using Jumbo Frames at 10 or 100 Mbps is not supported and may result in
+=======
+  - Using Jumbo frames at 10 or 100 Mbps is not supported and may result in
+>>>>>>> refs/remotes/origin/master
     poor performance or loss of link.
 
   - Some adapters limit Jumbo Frames sized packets to a maximum of
     4096 bytes and some adapters do not support Jumbo Frames.
 
+<<<<<<< HEAD
   Ethtool
+=======
+  - Jumbo Frames cannot be configured on an 82579-based Network device, if
+    MACSec is enabled on the system.
+
+  ethtool
+>>>>>>> refs/remotes/origin/master
   -------
   The driver utilizes the ethtool interface for driver configuration and
   diagnostics, as well as displaying statistical information.  We
@@ -273,6 +292,12 @@ Additional Configurations
 
   http://ftp.kernel.org/pub/software/network/ethtool/
 
+<<<<<<< HEAD
+=======
+  NOTE: When validating enable/disable tests on some parts (82578, for example)
+  you need to add a few seconds between tests when working with ethtool.
+
+>>>>>>> refs/remotes/origin/master
   Speed and Duplex
   ----------------
   Speed and Duplex are configured through the ethtool* utility. For

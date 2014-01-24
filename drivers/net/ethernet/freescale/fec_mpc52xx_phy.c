@@ -123,12 +123,19 @@ static int mpc52xx_fec_mdio_probe(struct platform_device *of)
 
 static int mpc52xx_fec_mdio_remove(struct platform_device *of)
 {
+<<<<<<< HEAD
 	struct device *dev = &of->dev;
 	struct mii_bus *bus = dev_get_drvdata(dev);
 	struct mpc52xx_fec_mdio_priv *priv = bus->priv;
 
 	mdiobus_unregister(bus);
 	dev_set_drvdata(dev, NULL);
+=======
+	struct mii_bus *bus = platform_get_drvdata(of);
+	struct mpc52xx_fec_mdio_priv *priv = bus->priv;
+
+	mdiobus_unregister(bus);
+>>>>>>> refs/remotes/origin/master
 	iounmap(priv->regs);
 	kfree(priv);
 	mdiobus_free(bus);

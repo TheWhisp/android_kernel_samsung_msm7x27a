@@ -2,10 +2,14 @@
 *******************************************************************************
 **
 <<<<<<< HEAD
+<<<<<<< HEAD
 **  Copyright (C) 2005-2009 Red Hat, Inc.  All rights reserved.
 =======
 **  Copyright (C) 2005-2011 Red Hat, Inc.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+**  Copyright (C) 2005-2011 Red Hat, Inc.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
 **
 **  This copyrighted material is made available to anyone wishing to use,
 **  modify, copy, or redistribute it subject to the terms and conditions
@@ -24,7 +28,10 @@
 #include "lowcomms.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int dlm_slots_version(struct dlm_header *h)
 {
 	if ((h->h_version & 0x0000FFFF) < DLM_HEADER_SLOTS)
@@ -299,7 +306,10 @@ int dlm_slots_assign(struct dlm_ls *ls, int *num_slots, int *slots_size,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void add_ordered_member(struct dlm_ls *ls, struct dlm_member *new)
 {
 	struct dlm_member *memb = NULL;
@@ -325,21 +335,28 @@ static void add_ordered_member(struct dlm_ls *ls, struct dlm_member *new)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dlm_add_member(struct dlm_ls *ls, int nodeid)
 {
 	struct dlm_member *memb;
 	int w, error;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dlm_add_member(struct dlm_ls *ls, struct dlm_config_node *node)
 {
 	struct dlm_member *memb;
 	int error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	memb = kzalloc(sizeof(struct dlm_member), GFP_NOFS);
 	if (!memb)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	w = dlm_node_weight(ls->ls_name, nodeid);
 	if (w < 0) {
@@ -351,11 +368,15 @@ static int dlm_add_member(struct dlm_ls *ls, struct dlm_config_node *node)
 =======
 	error = dlm_lowcomms_connect_node(node->nodeid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = dlm_lowcomms_connect_node(node->nodeid);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0) {
 		kfree(memb);
 		return error;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memb->nodeid = nodeid;
 	memb->weight = w;
@@ -364,11 +385,17 @@ static int dlm_add_member(struct dlm_ls *ls, struct dlm_config_node *node)
 	memb->weight = node->weight;
 	memb->comm_seq = node->comm_seq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memb->nodeid = node->nodeid;
+	memb->weight = node->weight;
+	memb->comm_seq = node->comm_seq;
+>>>>>>> refs/remotes/origin/master
 	add_ordered_member(ls, memb);
 	ls->ls_num_nodes++;
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void dlm_remove_member(struct dlm_ls *ls, struct dlm_member *memb)
 {
@@ -385,6 +412,8 @@ int dlm_is_member(struct dlm_ls *ls, int nodeid)
 			return 1;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dlm_member *find_memb(struct list_head *head, int nodeid)
 {
 	struct dlm_member *memb;
@@ -400,12 +429,16 @@ int dlm_is_member(struct dlm_ls *ls, int nodeid)
 {
 	if (find_memb(&ls->ls_nodes, nodeid))
 		return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int dlm_is_removed(struct dlm_ls *ls, int nodeid)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct dlm_member *memb;
 
@@ -417,6 +450,10 @@ int dlm_is_removed(struct dlm_ls *ls, int nodeid)
 	if (find_memb(&ls->ls_nodes_gone, nodeid))
 		return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (find_memb(&ls->ls_nodes_gone, nodeid))
+		return 1;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -498,10 +535,14 @@ static int ping_members(struct dlm_ls *ls)
 		if (error)
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		error = dlm_rcom_status(ls, memb->nodeid);
 =======
 		error = dlm_rcom_status(ls, memb->nodeid, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = dlm_rcom_status(ls, memb->nodeid, 0);
+>>>>>>> refs/remotes/origin/master
 		if (error)
 			break;
 	}
@@ -512,11 +553,14 @@ static int ping_members(struct dlm_ls *ls)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 {
 	struct dlm_member *memb, *safe;
 	int i, error, found, pos = 0, neg = 0, low = -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void dlm_lsop_recover_prep(struct dlm_ls *ls)
 {
 	if (!ls->ls_ops || !ls->ls_ops->recover_prep)
@@ -599,7 +643,10 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 	struct dlm_member *memb, *safe;
 	struct dlm_config_node *node;
 	int i, error, neg = 0, low = -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* previously removed members that we've not finished removing need to
 	   count as a negative change so the "neg" recovery steps will happen */
@@ -612,6 +659,7 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 	/* move departed members from ls_nodes to ls_nodes_gone */
 
 	list_for_each_entry_safe(memb, safe, &ls->ls_nodes, list) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		found = 0;
 		for (i = 0; i < rv->node_count; i++) {
@@ -644,6 +692,8 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 		list_add_tail(&memb->list, &ls->ls_nodes_gone);
 		neg++;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		node = find_config_node(rv, memb->nodeid);
 		if (node && !node->new)
 			continue;
@@ -660,11 +710,15 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 		list_move(&memb->list, &ls->ls_nodes_gone);
 		ls->ls_num_nodes--;
 		dlm_lsop_recover_slot(ls, memb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* add new members to ls_nodes */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < rv->node_count; i++) {
 		if (dlm_is_member(ls, rv->nodeids[i]))
@@ -673,13 +727,18 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 		pos++;
 		log_debug(ls, "add member %d", rv->nodeids[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < rv->nodes_count; i++) {
 		node = &rv->nodes[i];
 		if (dlm_is_member(ls, node->nodeid))
 			continue;
 		dlm_add_member(ls, node);
 		log_debug(ls, "add member %d", node->nodeid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	list_for_each_entry(memb, &ls->ls_nodes, list) {
@@ -690,9 +749,12 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 
 	make_member_array(ls);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dlm_set_recover_status(ls, DLM_RS_NODES);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*neg_out = neg;
 
 	error = ping_members(ls);
@@ -702,6 +764,7 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 		ls->ls_members_result = error;
 		complete(&ls->ls_members_done);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (error)
 		goto out;
@@ -713,6 +776,10 @@ int dlm_recover_members(struct dlm_ls *ls, struct dlm_recover *rv, int *neg_out)
 
 	log_debug(ls, "dlm_recover_members %d nodes", ls->ls_num_nodes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	log_debug(ls, "dlm_recover_members %d nodes", ls->ls_num_nodes);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -737,13 +804,21 @@ int dlm_ls_stop(struct dlm_ls *ls)
 	down_write(&ls->ls_recv_active);
 
 	/*
+<<<<<<< HEAD
 	 * Abort any recovery that's in progress (see RECOVERY_STOP,
+=======
+	 * Abort any recovery that's in progress (see RECOVER_STOP,
+>>>>>>> refs/remotes/origin/master
 	 * dlm_recovery_stopped()) and tell any other threads running in the
 	 * dlm to quit any processing (see RUNNING, dlm_locking_stopped()).
 	 */
 
 	spin_lock(&ls->ls_recover_lock);
+<<<<<<< HEAD
 	set_bit(LSFL_RECOVERY_STOP, &ls->ls_flags);
+=======
+	set_bit(LSFL_RECOVER_STOP, &ls->ls_flags);
+>>>>>>> refs/remotes/origin/master
 	new = test_and_clear_bit(LSFL_RUNNING, &ls->ls_flags);
 	ls->ls_recover_seq++;
 	spin_unlock(&ls->ls_recover_lock);
@@ -763,19 +838,35 @@ int dlm_ls_stop(struct dlm_ls *ls)
 	 *    when recovery is complete.
 	 */
 
+<<<<<<< HEAD
 	if (new)
 		down_write(&ls->ls_in_recovery);
 
 	/*
 	 * The recoverd suspend/resume makes sure that dlm_recoverd (if
 	 * running) has noticed RECOVERY_STOP above and quit processing the
+=======
+	if (new) {
+		set_bit(LSFL_RECOVER_DOWN, &ls->ls_flags);
+		wake_up_process(ls->ls_recoverd_task);
+		wait_event(ls->ls_recover_lock_wait,
+			   test_bit(LSFL_RECOVER_LOCK, &ls->ls_flags));
+	}
+
+	/*
+	 * The recoverd suspend/resume makes sure that dlm_recoverd (if
+	 * running) has noticed RECOVER_STOP above and quit processing the
+>>>>>>> refs/remotes/origin/master
 	 * previous recovery.
 	 */
 
 	dlm_recoverd_suspend(ls);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ls->ls_recover_status = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&ls->ls_recover_lock);
 	kfree(ls->ls_slots);
@@ -785,16 +876,24 @@ int dlm_ls_stop(struct dlm_ls *ls)
 	ls->ls_recover_status = 0;
 	spin_unlock(&ls->ls_recover_lock);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dlm_recoverd_resume(ls);
 
 	if (!ls->ls_recover_begin)
 		ls->ls_recover_begin = jiffies;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	dlm_lsop_recover_prep(ls);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	dlm_lsop_recover_prep(ls);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -802,23 +901,32 @@ int dlm_ls_start(struct dlm_ls *ls)
 {
 	struct dlm_recover *rv = NULL, *rv_old;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int *ids = NULL, *new = NULL;
 	int error, ids_count = 0, new_count = 0;
 =======
 	struct dlm_config_node *nodes;
 	int error, count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dlm_config_node *nodes;
+	int error, count;
+>>>>>>> refs/remotes/origin/master
 
 	rv = kzalloc(sizeof(struct dlm_recover), GFP_NOFS);
 	if (!rv)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = dlm_nodeid_list(ls->ls_name, &ids, &ids_count,
 				&new, &new_count);
 =======
 	error = dlm_config_nodes(ls->ls_name, &nodes, &count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = dlm_config_nodes(ls->ls_name, &nodes, &count);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0)
 		goto fail;
 
@@ -834,6 +942,7 @@ int dlm_ls_start(struct dlm_ls *ls)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rv->nodeids = ids;
 	rv->node_count = ids_count;
 	rv->new = new;
@@ -842,6 +951,10 @@ int dlm_ls_start(struct dlm_ls *ls)
 	rv->nodes = nodes;
 	rv->nodes_count = count;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rv->nodes = nodes;
+	rv->nodes_count = count;
+>>>>>>> refs/remotes/origin/master
 	rv->seq = ++ls->ls_recover_seq;
 	rv_old = ls->ls_recover_args;
 	ls->ls_recover_args = rv;
@@ -849,6 +962,7 @@ int dlm_ls_start(struct dlm_ls *ls)
 
 	if (rv_old) {
 		log_error(ls, "unused recovery %llx %d",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			  (unsigned long long)rv_old->seq, rv_old->node_count);
 		kfree(rv_old->nodeids);
@@ -861,16 +975,29 @@ int dlm_ls_start(struct dlm_ls *ls)
 	}
 
 	dlm_recoverd_kick(ls);
+=======
+			  (unsigned long long)rv_old->seq, rv_old->nodes_count);
+		kfree(rv_old->nodes);
+		kfree(rv_old);
+	}
+
+	set_bit(LSFL_RECOVER_WORK, &ls->ls_flags);
+	wake_up_process(ls->ls_recoverd_task);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  fail:
 	kfree(rv);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kfree(ids);
 	kfree(new);
 =======
 	kfree(nodes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(nodes);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 

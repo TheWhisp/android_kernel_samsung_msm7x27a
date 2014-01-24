@@ -19,9 +19,15 @@
 #include <linux/rtc.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/of.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION "0.4.3"
 
@@ -67,6 +73,10 @@ struct pcf8563 {
 	 * 1970...2069.
 	 */
 	int c_polarity;	/* 0: MO_C=1 means 19xx, otherwise MO_C=1 means 20xx */
+<<<<<<< HEAD
+=======
+	int voltage_low; /* incicates if a low_voltage was detected */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -79,8 +89,22 @@ static int pcf8563_get_datetime(struct i2c_client *client, struct rtc_time *tm)
 	unsigned char buf[13] = { PCF8563_REG_ST1 };
 
 	struct i2c_msg msgs[] = {
+<<<<<<< HEAD
 		{ client->addr, 0, 1, buf },	/* setup read ptr */
 		{ client->addr, I2C_M_RD, 13, buf },	/* read status + date */
+=======
+		{/* setup read ptr */
+			.addr = client->addr,
+			.len = 1,
+			.buf = buf
+		},
+		{/* read status + date */
+			.addr = client->addr,
+			.flags = I2C_M_RD,
+			.len = 13,
+			.buf = buf
+		},
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* read registers */
@@ -89,9 +113,17 @@ static int pcf8563_get_datetime(struct i2c_client *client, struct rtc_time *tm)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	if (buf[PCF8563_REG_SC] & PCF8563_SC_LV)
 		dev_info(&client->dev,
 			"low voltage detected, date/time is not reliable.\n");
+=======
+	if (buf[PCF8563_REG_SC] & PCF8563_SC_LV) {
+		pcf8563->voltage_low = 1;
+		dev_info(&client->dev,
+			"low voltage detected, date/time is not reliable.\n");
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&client->dev,
 		"%s: raw data is st1=%02x, st2=%02x, sec=%02x, min=%02x, hr=%02x, "
@@ -171,11 +203,56 @@ static int pcf8563_set_datetime(struct i2c_client *client, struct rtc_time *tm)
 				__func__, err, data[0], data[1]);
 			return -EIO;
 		}
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_RTC_INTF_DEV
+static int pcf8563_rtc_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
+{
+	struct pcf8563 *pcf8563 = i2c_get_clientdata(to_i2c_client(dev));
+	struct rtc_time tm;
+
+	switch (cmd) {
+	case RTC_VL_READ:
+		if (pcf8563->voltage_low)
+			dev_info(dev, "low voltage detected, date/time is not reliable.\n");
+
+		if (copy_to_user((void __user *)arg, &pcf8563->voltage_low,
+					sizeof(int)))
+			return -EFAULT;
+		return 0;
+	case RTC_VL_CLR:
+		/*
+		 * Clear the VL bit in the seconds register in case
+		 * the time has not been set already (which would
+		 * have cleared it). This does not really matter
+		 * because of the cached voltage_low value but do it
+		 * anyway for consistency.
+		 */
+		if (pcf8563_get_datetime(to_i2c_client(dev), &tm))
+			pcf8563_set_datetime(to_i2c_client(dev), &tm);
+
+		/* Clear the cached value. */
+		pcf8563->voltage_low = 0;
+
+		return 0;
+	default:
+		return -ENOIOCTLCMD;
+	}
+}
+#else
+#define pcf8563_rtc_ioctl NULL
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int pcf8563_rtc_read_time(struct device *dev, struct rtc_time *tm)
 {
 	return pcf8563_get_datetime(to_i2c_client(dev), tm);
@@ -187,6 +264,10 @@ static int pcf8563_rtc_set_time(struct device *dev, struct rtc_time *tm)
 }
 
 static const struct rtc_class_ops pcf8563_rtc_ops = {
+<<<<<<< HEAD
+=======
+	.ioctl		= pcf8563_rtc_ioctl,
+>>>>>>> refs/remotes/origin/master
 	.read_time	= pcf8563_rtc_read_time,
 	.set_time	= pcf8563_rtc_set_time,
 };
@@ -196,14 +277,22 @@ static int pcf8563_probe(struct i2c_client *client,
 {
 	struct pcf8563 *pcf8563;
 
+<<<<<<< HEAD
 	int err = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(&client->dev, "%s\n", __func__);
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pcf8563 = kzalloc(sizeof(struct pcf8563), GFP_KERNEL);
+=======
+	pcf8563 = devm_kzalloc(&client->dev, sizeof(struct pcf8563),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!pcf8563)
 		return -ENOMEM;
 
@@ -211,6 +300,7 @@ static int pcf8563_probe(struct i2c_client *client,
 
 	i2c_set_clientdata(client, pcf8563);
 
+<<<<<<< HEAD
 	pcf8563->rtc = rtc_device_register(pcf8563_driver.driver.name,
 				&client->dev, &pcf8563_rtc_ops, THIS_MODULE);
 
@@ -237,6 +327,13 @@ static int pcf8563_remove(struct i2c_client *client)
 	kfree(pcf8563);
 
 	return 0;
+=======
+	pcf8563->rtc = devm_rtc_device_register(&client->dev,
+				pcf8563_driver.driver.name,
+				&pcf8563_rtc_ops, THIS_MODULE);
+
+	return PTR_ERR_OR_ZERO(pcf8563->rtc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_device_id pcf8563_id[] = {
@@ -246,6 +343,7 @@ static const struct i2c_device_id pcf8563_id[] = {
 };
 MODULE_DEVICE_TABLE(i2c, pcf8563_id);
 
+<<<<<<< HEAD
 static struct i2c_driver pcf8563_driver = {
 	.driver		= {
 		.name	= "rtc-pcf8563",
@@ -268,14 +366,38 @@ static void __exit pcf8563_exit(void)
 =======
 module_i2c_driver(pcf8563_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id pcf8563_of_match[] = {
+	{ .compatible = "nxp,pcf8563" },
+	{}
+};
+MODULE_DEVICE_TABLE(of, pcf8563_of_match);
+#endif
+
+static struct i2c_driver pcf8563_driver = {
+	.driver		= {
+		.name	= "rtc-pcf8563",
+		.owner	= THIS_MODULE,
+		.of_match_table = of_match_ptr(pcf8563_of_match),
+	},
+	.probe		= pcf8563_probe,
+	.id_table	= pcf8563_id,
+};
+
+module_i2c_driver(pcf8563_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
 MODULE_DESCRIPTION("Philips PCF8563/Epson RTC8564 RTC driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(pcf8563_init);
 module_exit(pcf8563_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

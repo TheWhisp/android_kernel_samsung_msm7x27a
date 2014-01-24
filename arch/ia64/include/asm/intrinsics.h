@@ -1,12 +1,16 @@
+<<<<<<< HEAD
 #ifndef _ASM_IA64_INTRINSICS_H
 #define _ASM_IA64_INTRINSICS_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Compiler-dependent intrinsics.
  *
  * Copyright (C) 2002-2003 Hewlett-Packard Co
  *	David Mosberger-Tang <davidm@hpl.hp.com>
  */
+<<<<<<< HEAD
 
 #ifndef __ASSEMBLY__
 
@@ -225,6 +229,15 @@ extern long ia64_cmpxchg_called_with_bad_pointer (void);
 #define IA64_INTRINSIC_MACRO(name)	ia64_native_ ## name
 
 #if defined(__KERNEL__)
+=======
+#ifndef _ASM_IA64_INTRINSICS_H
+#define _ASM_IA64_INTRINSICS_H
+
+#include <asm/paravirt_privop.h>
+#include <uapi/asm/intrinsics.h>
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_PARAVIRT)
 # undef IA64_INTRINSIC_API
 # undef IA64_INTRINSIC_MACRO
@@ -235,6 +248,7 @@ extern long ia64_cmpxchg_called_with_bad_pointer (void);
 # endif
 #define IA64_INTRINSIC_MACRO(name)	paravirt_ ## name
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
@@ -268,4 +282,7 @@ extern long ia64_cmpxchg_called_with_bad_pointer (void);
 
 #endif /* !__ASSEMBLY__ */
 
+=======
+#endif /* !__ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IA64_INTRINSICS_H */

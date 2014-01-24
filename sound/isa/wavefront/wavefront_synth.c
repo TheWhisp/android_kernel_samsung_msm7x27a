@@ -30,9 +30,13 @@
 #include <linux/moduleparam.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/snd_wavefront.h>
 #include <sound/initval.h>
@@ -541,7 +545,11 @@ munge_int32 (unsigned int src,
 	                            /* Note: we leave the upper bits in place */ 
 
 		dst++;
+<<<<<<< HEAD
  	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	return dst;
 };
 
@@ -1199,7 +1207,11 @@ wavefront_send_multisample (snd_wavefront_t *dev, wavefront_patch_info *header)
 	int num_samples;
 	unsigned char *msample_hdr;
 
+<<<<<<< HEAD
 	msample_hdr = kmalloc(sizeof(WF_MSAMPLE_BYTES), GFP_KERNEL);
+=======
+	msample_hdr = kmalloc(WF_MSAMPLE_BYTES, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (! msample_hdr)
 		return -ENOMEM;
 
@@ -1742,7 +1754,11 @@ snd_wavefront_internal_interrupt (snd_wavefront_card_t *card)
 7 Unused
 */
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_wavefront_interrupt_bits (int irq)
 
 {
@@ -1770,7 +1786,11 @@ snd_wavefront_interrupt_bits (int irq)
 	return bits;
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 wavefront_should_cause_interrupt (snd_wavefront_t *dev, 
 				  int val, int port, unsigned long timeout)
 
@@ -1789,7 +1809,11 @@ wavefront_should_cause_interrupt (snd_wavefront_t *dev,
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 wavefront_reset_to_cleanliness (snd_wavefront_t *dev)
 
 {
@@ -1940,7 +1964,11 @@ wavefront_reset_to_cleanliness (snd_wavefront_t *dev)
 	return (1);
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 wavefront_download_firmware (snd_wavefront_t *dev, char *path)
 
 {
@@ -2013,7 +2041,11 @@ wavefront_download_firmware (snd_wavefront_t *dev, char *path)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 wavefront_do_reset (snd_wavefront_t *dev)
 
 {
@@ -2102,7 +2134,11 @@ wavefront_do_reset (snd_wavefront_t *dev)
 	return 1;
 }
 
+<<<<<<< HEAD
 int __devinit
+=======
+int
+>>>>>>> refs/remotes/origin/master
 snd_wavefront_start (snd_wavefront_t *dev)
 
 {
@@ -2144,7 +2180,11 @@ snd_wavefront_start (snd_wavefront_t *dev)
 	return (0);
 }
 
+<<<<<<< HEAD
 int __devinit
+=======
+int
+>>>>>>> refs/remotes/origin/master
 snd_wavefront_detect (snd_wavefront_card_t *card)
 
 {

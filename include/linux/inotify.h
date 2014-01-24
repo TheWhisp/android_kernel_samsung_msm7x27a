@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2005 John McCutchan
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_INOTIFY_H
 #define _LINUX_INOTIFY_H
@@ -72,6 +73,14 @@ struct inotify_event {
 
 #ifdef __KERNEL__
 #include <linux/sysctl.h>
+=======
+#ifndef _LINUX_INOTIFY_H
+#define _LINUX_INOTIFY_H
+
+#include <linux/sysctl.h>
+#include <uapi/linux/inotify.h>
+
+>>>>>>> refs/remotes/origin/master
 extern struct ctl_table inotify_table[]; /* for sysctl */
 
 #define ALL_INOTIFY_BITS (IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE_WRITE | \
@@ -82,6 +91,9 @@ extern struct ctl_table inotify_table[]; /* for sysctl */
 			  IN_DONT_FOLLOW | IN_EXCL_UNLINK | IN_MASK_ADD | \
 			  IN_ISDIR | IN_ONESHOT)
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_INOTIFY_H */

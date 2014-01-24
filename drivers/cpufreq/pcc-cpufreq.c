@@ -111,8 +111,12 @@ static struct pcc_cpu __percpu *pcc_cpu_info;
 
 static int pcc_cpufreq_verify(struct cpufreq_policy *policy)
 {
+<<<<<<< HEAD
 	cpufreq_verify_within_limits(policy, policy->cpuinfo.min_freq,
 				     policy->cpuinfo.max_freq);
+=======
+	cpufreq_verify_within_cpu_limits(policy);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -215,8 +219,12 @@ static int pcc_cpufreq_target(struct cpufreq_policy *policy,
 		(pcch_virt_addr + pcc_cpu_data->input_offset));
 
 	freqs.new = target_freq;
+<<<<<<< HEAD
 	freqs.cpu = cpu;
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
+=======
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_PRECHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	input_buffer = 0x1 | (((target_freq * 100)
 			       / (ioread32(&pcch_hdr->nominal) * 1000)) << 8);
@@ -237,13 +245,22 @@ static int pcc_cpufreq_target(struct cpufreq_policy *policy,
 	}
 	iowrite16(0, &pcch_hdr->status);
 
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
+=======
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_POSTCHANGE);
+>>>>>>> refs/remotes/origin/master
 	pr_debug("target: was SUCCESSFUL for cpu %d\n", cpu);
 	spin_unlock(&pcc_lock);
 
 	return 0;
 
 cmd_incomplete:
+<<<<<<< HEAD
+=======
+	freqs.new = freqs.old;
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_POSTCHANGE);
+>>>>>>> refs/remotes/origin/master
 	iowrite16(0, &pcch_hdr->status);
 	spin_unlock(&pcc_lock);
 	return -EINVAL;
@@ -395,15 +412,23 @@ static int __init pcc_cpufreq_probe(void)
 	struct pcc_memory_resource *mem_resource;
 	struct pcc_register_resource *reg_resource;
 	union acpi_object *out_obj, *member;
+<<<<<<< HEAD
 	acpi_handle handle, osc_handle, pcch_handle;
+=======
+	acpi_handle handle, osc_handle;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	status = acpi_get_handle(NULL, "\\_SB", &handle);
 	if (ACPI_FAILURE(status))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	status = acpi_get_handle(handle, "PCCH", &pcch_handle);
 	if (ACPI_FAILURE(status))
+=======
+	if (!acpi_has_method(handle, "PCCH"))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	status = acpi_get_handle(handle, "_OSC", &osc_handle);
@@ -454,6 +479,10 @@ static int __init pcc_cpufreq_probe(void)
 					mem_resource->address_length);
 	if (pcch_virt_addr == NULL) {
 		pr_debug("probe: could not map shared mem region\n");
+<<<<<<< HEAD
+=======
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto out_free;
 	}
 	pcch_hdr = pcch_virt_addr;
@@ -558,6 +587,7 @@ static int pcc_cpufreq_cpu_init(struct cpufreq_policy *policy)
 		ioread32(&pcch_hdr->nominal) * 1000;
 	policy->min = policy->cpuinfo.min_freq =
 		ioread32(&pcch_hdr->minimum_frequency) * 1000;
+<<<<<<< HEAD
 	policy->cur = pcc_get_freq(cpu);
 
 	if (!policy->cur) {
@@ -565,6 +595,8 @@ static int pcc_cpufreq_cpu_init(struct cpufreq_policy *policy)
 		result = -EINVAL;
 		goto out;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("init: policy->max is %d, policy->min is %d\n",
 		policy->max, policy->min);
@@ -585,7 +617,10 @@ static struct cpufreq_driver pcc_cpufreq_driver = {
 	.init = pcc_cpufreq_cpu_init,
 	.exit = pcc_cpufreq_cpu_exit,
 	.name = "pcc-cpufreq",
+<<<<<<< HEAD
 	.owner = THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init pcc_cpufreq_init(void)

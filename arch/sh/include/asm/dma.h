@@ -15,6 +15,7 @@
 #include <linux/wait.h>
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
@@ -30,6 +31,11 @@
 #  define MAX_DMA_CHANNELS	0
 #endif
 
+=======
+#include <linux/device.h>
+#include <asm-generic/dma.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Read and write modes can mean drastically different things depending on the
  * channel configuration. Consult your DMAC documentation and module
@@ -96,10 +102,14 @@ struct dma_channel {
 	wait_queue_head_t wait_queue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device dev;
 =======
 	struct device dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device dev;
+>>>>>>> refs/remotes/origin/master
 	void *priv_data;
 };
 

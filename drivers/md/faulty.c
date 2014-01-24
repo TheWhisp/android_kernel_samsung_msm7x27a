@@ -64,9 +64,13 @@
 #define MaxFault	50
 #include <linux/blkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/raid/md_u.h>
 #include <linux/slab.h>
 #include "md.h"
@@ -86,26 +90,36 @@ static void faulty_fail(struct bio *bio, int error)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct faulty_conf {
 =======
 struct faulty_conf {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct faulty_conf {
+>>>>>>> refs/remotes/origin/master
 	int period[Modes];
 	atomic_t counters[Modes];
 	sector_t faults[MaxFault];
 	int	modes[MaxFault];
 	int nfaults;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdk_rdev_t *rdev;
 } conf_t;
 
 static int check_mode(conf_t *conf, int mode)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct md_rdev *rdev;
 };
 
 static int check_mode(struct faulty_conf *conf, int mode)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (conf->period[mode] == 0 &&
 	    atomic_read(&conf->counters[mode]) <= 0)
@@ -121,10 +135,14 @@ static int check_mode(struct faulty_conf *conf, int mode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int check_sector(conf_t *conf, sector_t start, sector_t end, int dir)
 =======
 static int check_sector(struct faulty_conf *conf, sector_t start, sector_t end, int dir)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int check_sector(struct faulty_conf *conf, sector_t start, sector_t end, int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	/* If we find a ReadFixable sector, we fix it ... */
 	int i;
@@ -149,10 +167,14 @@ static int check_sector(struct faulty_conf *conf, sector_t start, sector_t end, 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void add_sector(conf_t *conf, sector_t start, int mode)
 =======
 static void add_sector(struct faulty_conf *conf, sector_t start, int mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void add_sector(struct faulty_conf *conf, sector_t start, int mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int n = conf->nfaults;
@@ -193,6 +215,7 @@ static void add_sector(struct faulty_conf *conf, sector_t start, int mode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int make_request(mddev_t *mddev, struct bio *bio)
 {
 	conf_t *conf = mddev->private;
@@ -201,6 +224,11 @@ static void make_request(struct mddev *mddev, struct bio *bio)
 {
 	struct faulty_conf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void make_request(struct mddev *mddev, struct bio *bio)
+{
+	struct faulty_conf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 	int failit = 0;
 
 	if (bio_data_dir(bio) == WRITE) {
@@ -211,6 +239,7 @@ static void make_request(struct mddev *mddev, struct bio *bio)
 			 */
 			bio_endio(bio, -EIO);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return 0;
 =======
 			return;
@@ -219,6 +248,12 @@ static void make_request(struct mddev *mddev, struct bio *bio)
 
 		if (check_sector(conf, bio->bi_sector, bio->bi_sector+(bio->bi_size>>9),
 				 WRITE))
+=======
+			return;
+		}
+
+		if (check_sector(conf, bio->bi_sector, bio_end_sector(bio), WRITE))
+>>>>>>> refs/remotes/origin/master
 			failit = 1;
 		if (check_mode(conf, WritePersistent)) {
 			add_sector(conf, bio->bi_sector, WritePersistent);
@@ -228,8 +263,12 @@ static void make_request(struct mddev *mddev, struct bio *bio)
 			failit = 1;
 	} else {
 		/* read request */
+<<<<<<< HEAD
 		if (check_sector(conf, bio->bi_sector, bio->bi_sector + (bio->bi_size>>9),
 				 READ))
+=======
+		if (check_sector(conf, bio->bi_sector, bio_end_sector(bio), READ))
+>>>>>>> refs/remotes/origin/master
 			failit = 1;
 		if (check_mode(conf, ReadTransient))
 			failit = 1;
@@ -244,6 +283,7 @@ static void make_request(struct mddev *mddev, struct bio *bio)
 	}
 	if (failit) {
 		struct bio *b = bio_clone_mddev(bio, GFP_NOIO, mddev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		b->bi_bdev = conf->rdev->bdev;
 		b->bi_private = bio;
@@ -260,6 +300,8 @@ static void status(struct seq_file *seq, mddev_t *mddev)
 {
 	conf_t *conf = mddev->private;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		b->bi_bdev = conf->rdev->bdev;
 		b->bi_private = bio;
@@ -274,7 +316,10 @@ static void status(struct seq_file *seq, mddev_t *mddev)
 static void status(struct seq_file *seq, struct mddev *mddev)
 {
 	struct faulty_conf *conf = mddev->private;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int n;
 
 	if ((n=atomic_read(&conf->counters[WriteTransient])) != 0)
@@ -306,18 +351,24 @@ static void status(struct seq_file *seq, struct mddev *mddev)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int reshape(mddev_t *mddev)
 {
 	int mode = mddev->new_layout & ModeMask;
 	int count = mddev->new_layout >> ModeShift;
 	conf_t *conf = mddev->private;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int reshape(struct mddev *mddev)
 {
 	int mode = mddev->new_layout & ModeMask;
 	int count = mddev->new_layout >> ModeShift;
 	struct faulty_conf *conf = mddev->private;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mddev->new_layout < 0)
 		return 0;
@@ -343,10 +394,14 @@ static int reshape(struct mddev *mddev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static sector_t faulty_size(mddev_t *mddev, sector_t sectors, int raid_disks)
 =======
 static sector_t faulty_size(struct mddev *mddev, sector_t sectors, int raid_disks)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static sector_t faulty_size(struct mddev *mddev, sector_t sectors, int raid_disks)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN_ONCE(raid_disks,
 		  "%s does not support generic reshape\n", __func__);
@@ -358,18 +413,24 @@ static sector_t faulty_size(struct mddev *mddev, sector_t sectors, int raid_disk
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int run(mddev_t *mddev)
 {
 	mdk_rdev_t *rdev;
 	int i;
 	conf_t *conf;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int run(struct mddev *mddev)
 {
 	struct md_rdev *rdev;
 	int i;
 	struct faulty_conf *conf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (md_check_no_bitmap(mddev))
 		return -EINVAL;
@@ -385,11 +446,19 @@ static int run(struct mddev *mddev)
 	conf->nfaults = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry(rdev, &mddev->disks, same_set)
 =======
 	rdev_for_each(rdev, mddev)
 >>>>>>> refs/remotes/origin/cm-10.0
 		conf->rdev = rdev;
+=======
+	rdev_for_each(rdev, mddev) {
+		conf->rdev = rdev;
+		disk_stack_limits(mddev->gendisk, rdev->bdev,
+				  rdev->data_offset << 9);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	md_set_array_sectors(mddev, faulty_size(mddev, 0, 0));
 	mddev->private = conf;
@@ -400,6 +469,7 @@ static int run(struct mddev *mddev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int stop(mddev_t *mddev)
 {
 	conf_t *conf = mddev->private;
@@ -408,6 +478,11 @@ static int stop(struct mddev *mddev)
 {
 	struct faulty_conf *conf = mddev->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int stop(struct mddev *mddev)
+{
+	struct faulty_conf *conf = mddev->private;
+>>>>>>> refs/remotes/origin/master
 
 	kfree(conf);
 	mddev->private = NULL;
@@ -415,10 +490,14 @@ static int stop(struct mddev *mddev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct mdk_personality faulty_personality =
 =======
 static struct md_personality faulty_personality =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct md_personality faulty_personality =
+>>>>>>> refs/remotes/origin/master
 {
 	.name		= "faulty",
 	.level		= LEVEL_FAULTY,

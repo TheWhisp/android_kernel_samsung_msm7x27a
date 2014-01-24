@@ -216,6 +216,7 @@ static struct serio_driver touchit213_drv = {
 	.disconnect	= touchit213_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -232,3 +233,6 @@ static void __exit touchit213_exit(void)
 
 module_init(touchit213_init);
 module_exit(touchit213_exit);
+=======
+module_serio_driver(touchit213_drv);
+>>>>>>> refs/remotes/origin/master

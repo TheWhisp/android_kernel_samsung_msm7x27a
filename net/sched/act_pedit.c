@@ -38,8 +38,14 @@ static const struct nla_policy pedit_policy[TCA_PEDIT_MAX + 1] = {
 	[TCA_PEDIT_PARMS]	= { .len = sizeof(struct tc_pedit) },
 };
 
+<<<<<<< HEAD
 static int tcf_pedit_init(struct nlattr *nla, struct nlattr *est,
 			  struct tc_action *a, int ovr, int bind)
+=======
+static int tcf_pedit_init(struct net *net, struct nlattr *nla,
+			  struct nlattr *est, struct tc_action *a,
+			  int ovr, int bind)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nlattr *tb[TCA_PEDIT_MAX + 1];
 	struct tc_pedit *parm;
@@ -74,16 +80,32 @@ static int tcf_pedit_init(struct nlattr *nla, struct nlattr *est,
 		p = to_pedit(pc);
 		keys = kmalloc(ksize, GFP_KERNEL);
 		if (keys == NULL) {
+<<<<<<< HEAD
 			kfree(pc);
+=======
+			if (est)
+				gen_kill_estimator(&pc->tcfc_bstats,
+						   &pc->tcfc_rate_est);
+			kfree_rcu(pc, tcfc_rcu);
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 		ret = ACT_P_CREATED;
 	} else {
 		p = to_pedit(pc);
+<<<<<<< HEAD
 		if (!ovr) {
 			tcf_hash_release(pc, bind, &pedit_hash_info);
 			return -EEXIST;
 		}
+=======
+		tcf_hash_release(pc, bind, &pedit_hash_info);
+		if (bind)
+			return 0;
+		if (!ovr)
+			return -EEXIST;
+
+>>>>>>> refs/remotes/origin/master
 		if (p->tcfp_nkeys && p->tcfp_nkeys != parm->nkeys) {
 			keys = kmalloc(ksize, GFP_KERNEL);
 			if (keys == NULL)
@@ -121,18 +143,26 @@ static int tcf_pedit_cleanup(struct tc_action *a, int bind)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tcf_pedit(struct sk_buff *skb, struct tc_action *a,
 =======
 static int tcf_pedit(struct sk_buff *skb, const struct tc_action *a,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tcf_pedit(struct sk_buff *skb, const struct tc_action *a,
+>>>>>>> refs/remotes/origin/master
 		     struct tcf_result *res)
 {
 	struct tcf_pedit *p = a->priv;
 	int i, munged = 0;
 	unsigned int off;
 
+<<<<<<< HEAD
 	if (skb_cloned(skb) &&
 	    pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
+=======
+	if (skb_unclone(skb, GFP_ATOMIC))
+>>>>>>> refs/remotes/origin/master
 		return p->tcf_action;
 
 	off = skb_network_offset(skb);
@@ -219,11 +249,21 @@ static int tcf_pedit_dump(struct sk_buff *skb, struct tc_action *a,
 	opt->refcnt = p->tcf_refcnt - ref;
 	opt->bindcnt = p->tcf_bindcnt - bind;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_PEDIT_PARMS, s, opt);
 	t.install = jiffies_to_clock_t(jiffies - p->tcf_tm.install);
 	t.lastuse = jiffies_to_clock_t(jiffies - p->tcf_tm.lastuse);
 	t.expires = jiffies_to_clock_t(p->tcf_tm.expires);
 	NLA_PUT(skb, TCA_PEDIT_TM, sizeof(t), &t);
+=======
+	if (nla_put(skb, TCA_PEDIT_PARMS, s, opt))
+		goto nla_put_failure;
+	t.install = jiffies_to_clock_t(jiffies - p->tcf_tm.install);
+	t.lastuse = jiffies_to_clock_t(jiffies - p->tcf_tm.lastuse);
+	t.expires = jiffies_to_clock_t(p->tcf_tm.expires);
+	if (nla_put(skb, TCA_PEDIT_TM, sizeof(t), &t))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	kfree(opt);
 	return skb->len;
 
@@ -242,9 +282,13 @@ static struct tc_action_ops act_pedit_ops = {
 	.act		=	tcf_pedit,
 	.dump		=	tcf_pedit_dump,
 	.cleanup	=	tcf_pedit_cleanup,
+<<<<<<< HEAD
 	.lookup		=	tcf_hash_search,
 	.init		=	tcf_pedit_init,
 	.walk		=	tcf_generic_walker
+=======
+	.init		=	tcf_pedit_init,
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_AUTHOR("Jamal Hadi Salim(2002-4)");

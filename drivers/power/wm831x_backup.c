@@ -23,9 +23,13 @@ struct wm831x_backup {
 	struct wm831x *wm831x;
 	struct power_supply backup;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char name[20];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char name[20];
+>>>>>>> refs/remotes/origin/master
 };
 
 static int wm831x_backup_read_voltage(struct wm831x *wm831x,
@@ -164,6 +168,7 @@ static enum power_supply_property wm831x_backup_props[] = {
  *		Initialisation
  *********************************************************************/
 
+<<<<<<< HEAD
 static __devinit int wm831x_backup_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
@@ -171,11 +176,22 @@ static __devinit int wm831x_backup_probe(struct platform_device *pdev)
 =======
 	struct wm831x_pdata *wm831x_pdata = wm831x->dev->platform_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm831x_backup_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_pdata *wm831x_pdata = wm831x->dev->platform_data;
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_backup *devdata;
 	struct power_supply *backup;
 	int ret;
 
+<<<<<<< HEAD
 	devdata = kzalloc(sizeof(struct wm831x_backup), GFP_KERNEL);
+=======
+	devdata = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_backup),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (devdata == NULL)
 		return -ENOMEM;
 
@@ -191,8 +207,11 @@ static __devinit int wm831x_backup_probe(struct platform_device *pdev)
 	wm831x_config_backup(wm831x);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	backup->name = "wm831x-backup";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (wm831x_pdata && wm831x_pdata->wm831x_num)
 		snprintf(devdata->name, sizeof(devdata->name),
 			 "wm831x-backup.%d", wm831x_pdata->wm831x_num);
@@ -201,12 +220,16 @@ static __devinit int wm831x_backup_probe(struct platform_device *pdev)
 			 "wm831x-backup");
 
 	backup->name = devdata->name;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	backup->type = POWER_SUPPLY_TYPE_BATTERY;
 	backup->properties = wm831x_backup_props;
 	backup->num_properties = ARRAY_SIZE(wm831x_backup_props);
 	backup->get_property = wm831x_backup_get_prop;
 	ret = power_supply_register(&pdev->dev, backup);
+<<<<<<< HEAD
 	if (ret)
 		goto err_kmalloc;
 
@@ -218,27 +241,42 @@ err_kmalloc:
 }
 
 static __devexit int wm831x_backup_remove(struct platform_device *pdev)
+=======
+
+	return ret;
+}
+
+static int wm831x_backup_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm831x_backup *devdata = platform_get_drvdata(pdev);
 
 	power_supply_unregister(&devdata->backup);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(devdata->backup.name);
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(devdata);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver wm831x_backup_driver = {
 	.probe = wm831x_backup_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(wm831x_backup_remove),
+=======
+	.remove = wm831x_backup_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "wm831x-backup",
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init wm831x_backup_init(void)
 {
@@ -254,6 +292,9 @@ module_exit(wm831x_backup_exit);
 =======
 module_platform_driver(wm831x_backup_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wm831x_backup_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Backup battery charger driver for WM831x PMICs");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

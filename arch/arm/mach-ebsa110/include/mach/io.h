@@ -14,10 +14,13 @@
 #define __ASM_ARM_ARCH_IO_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IO_SPACE_LIMIT 0xffff
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 u8 __inb8(unsigned int port);
 void __outb8(u8  val, unsigned int port);
 
@@ -68,6 +71,7 @@ void __writel(u32 val, void __iomem *addr);
 #define writel(v,b)		__writel(v,b)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __iomem *__arch_ioremap(unsigned long cookie, size_t size,
 					   unsigned int flags)
 {
@@ -79,6 +83,8 @@ static inline void __iomem *__arch_ioremap(unsigned long cookie, size_t size,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void insb(unsigned int port, void *buf, int sz);
 extern void insw(unsigned int port, void *buf, int sz);
 extern void insl(unsigned int port, void *buf, int sz);

@@ -22,9 +22,12 @@
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -36,11 +39,17 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "smp.h"
 
 #include "mpc85xx.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "smp.h"
+
+#include "mpc85xx.h"
+>>>>>>> refs/remotes/origin/master
 
 /* A few bit definitions needed for fixups on some boards */
 #define MPC85xx_L2CTL_L2E		0x80000000 /* L2 enable */
@@ -49,6 +58,7 @@
 
 void __init xes_mpc85xx_pic_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
@@ -78,6 +88,11 @@ void __init xes_mpc85xx_pic_init(void)
 			0, 256, " OpenPIC  ");
 	BUG_ON(mpic == NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
+			0, 256, " OpenPIC  ");
+	BUG_ON(mpic == NULL);
+>>>>>>> refs/remotes/origin/master
 	mpic_init(mpic);
 }
 
@@ -139,15 +154,20 @@ static void xes_mpc85xx_fixups(void)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		l2_base = ioremap(r[0].start, r[0].end - r[0].start + 1);
 =======
 		l2_base = ioremap(r[0].start, resource_size(&r[0]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		l2_base = ioremap(r[0].start, resource_size(&r[0]));
+>>>>>>> refs/remotes/origin/master
 
 		xes_mpc85xx_configure_l2(l2_base);
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 static int primary_phb_addr;
 #endif
@@ -166,6 +186,13 @@ static void __init xes_mpc85xx_setup_arch(void)
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
+=======
+/*
+ * Setup the architecture
+ */
+static void __init xes_mpc85xx_setup_arch(void)
+{
+>>>>>>> refs/remotes/origin/master
 	struct device_node *root;
 	const char *model = "Unknown";
 
@@ -180,6 +207,7 @@ static void __init xes_mpc85xx_setup_arch(void)
 
 	xes_mpc85xx_fixups();
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	for_each_node_by_type(np, "pci") {
 		if (of_device_is_compatible(np, "fsl,mpc8540-pci") ||
@@ -223,6 +251,16 @@ machine_device_initcall(xes_mpc8572, mpc85xx_common_publish_devices);
 machine_device_initcall(xes_mpc8548, mpc85xx_common_publish_devices);
 machine_device_initcall(xes_mpc8540, mpc85xx_common_publish_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpc85xx_smp_init();
+
+	fsl_pci_assign_primary();
+}
+
+machine_arch_initcall(xes_mpc8572, mpc85xx_common_publish_devices);
+machine_arch_initcall(xes_mpc8548, mpc85xx_common_publish_devices);
+machine_arch_initcall(xes_mpc8540, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, device-tree isn't unflattened
@@ -231,6 +269,7 @@ static int __init xes_mpc8572_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
 
+<<<<<<< HEAD
 	if (of_flat_dt_is_compatible(root, "xes,MPC8572")) {
 #ifdef CONFIG_PCI
 		primary_phb_addr = 0x8000;
@@ -239,12 +278,16 @@ static int __init xes_mpc8572_probe(void)
 	} else {
 		return 0;
 	}
+=======
+	return of_flat_dt_is_compatible(root, "xes,MPC8572");
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init xes_mpc8548_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
 
+<<<<<<< HEAD
 	if (of_flat_dt_is_compatible(root, "xes,MPC8548")) {
 #ifdef CONFIG_PCI
 		primary_phb_addr = 0xb000;
@@ -253,12 +296,16 @@ static int __init xes_mpc8548_probe(void)
 	} else {
 		return 0;
 	}
+=======
+	return of_flat_dt_is_compatible(root, "xes,MPC8548");
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init xes_mpc8540_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
 
+<<<<<<< HEAD
 	if (of_flat_dt_is_compatible(root, "xes,MPC8540")) {
 #ifdef CONFIG_PCI
 		primary_phb_addr = 0xb000;
@@ -267,6 +314,9 @@ static int __init xes_mpc8540_probe(void)
 	} else {
 		return 0;
 	}
+=======
+	return of_flat_dt_is_compatible(root, "xes,MPC8540");
+>>>>>>> refs/remotes/origin/master
 }
 
 define_machine(xes_mpc8572) {

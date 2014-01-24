@@ -25,7 +25,11 @@ struct gfb_info {
 	u32			pseudo_palette[16];
 };
 
+<<<<<<< HEAD
 static int __devinit gfb_get_props(struct gfb_info *gp)
+=======
+static int gfb_get_props(struct gfb_info *gp)
+>>>>>>> refs/remotes/origin/master
 {
 	gp->width = of_getintprop_default(gp->of_node, "width", 0);
 	gp->height = of_getintprop_default(gp->of_node, "height", 0);
@@ -66,7 +70,11 @@ static struct fb_ops gfb_ops = {
 	.fb_imageblit		= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int __devinit gfb_set_fbinfo(struct gfb_info *gp)
+=======
+static int gfb_set_fbinfo(struct gfb_info *gp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = gp->info;
 	struct fb_var_screeninfo *var = &info->var;
@@ -111,7 +119,11 @@ static int __devinit gfb_set_fbinfo(struct gfb_info *gp)
         return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit gfb_probe(struct platform_device *op)
+=======
+static int gfb_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct fb_info *info;
@@ -141,8 +153,15 @@ static int __devinit gfb_probe(struct platform_device *op)
 
 	gp->fb_base = of_ioremap(&op->resource[6], 0,
 				 gp->fb_size, "gfb fb");
+<<<<<<< HEAD
 	if (!gp->fb_base)
 		goto err_release_fb;
+=======
+	if (!gp->fb_base) {
+		err = -ENOMEM;
+		goto err_release_fb;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	err = gfb_set_fbinfo(gp);
 	if (err)
@@ -171,7 +190,11 @@ err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit gfb_remove(struct platform_device *op)
+=======
+static int gfb_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&op->dev);
 	struct gfb_info *gp = info->par;
@@ -184,8 +207,11 @@ static int __devexit gfb_remove(struct platform_device *op)
 
         framebuffer_release(info);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -199,7 +225,11 @@ MODULE_DEVICE_TABLE(of, ffb_match);
 
 static struct platform_driver gfb_driver = {
 	.probe		= gfb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(gfb_remove),
+=======
+	.remove		= gfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name		= "gfb",
 		.owner		= THIS_MODULE,

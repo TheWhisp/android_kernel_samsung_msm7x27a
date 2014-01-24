@@ -565,7 +565,11 @@ static void write_wbuf(struct super_block *sb, struct logfs_area *area,
 	index = ofs >> PAGE_SHIFT;
 	page_ofs = ofs & (PAGE_SIZE - 1);
 
+<<<<<<< HEAD
 	page = find_lock_page(mapping, index);
+=======
+	page = find_or_create_page(mapping, index, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(!page);
 	memcpy(wbuf, page_address(page) + page_ofs, super->s_writesize);
 	unlock_page(page);
@@ -613,9 +617,12 @@ static size_t __logfs_write_je(struct super_block *sb, void *buf, u16 type,
 		return logfs_write_header(super, header, 0, type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(len > sb->s_blocksize);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	compr_len = logfs_compress(buf, data, len, sb->s_blocksize);
 	if (compr_len < 0 || type == JE_ANCHOR) {
 		memcpy(data, buf, len);

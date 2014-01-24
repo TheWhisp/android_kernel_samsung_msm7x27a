@@ -3,10 +3,14 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -39,7 +43,11 @@ static int chancount;
 /* experimental REJECT after ALERTING for CALLBACK to beat the 4s delay */
 #define ALERT_REJECT 0
 
+<<<<<<< HEAD
 /* Value to delay the sending of the first B-channel paket after CONNECT
+=======
+/* Value to delay the sending of the first B-channel packet after CONNECT
+>>>>>>> refs/remotes/origin/master
  * here is no value given by ITU, but experience shows that 300 ms will
  * work on many networks, if you or your other side is behind local exchanges
  * a greater value may be recommented. If the delay is to short the first paket
@@ -70,12 +78,17 @@ hisax_findcard(int driverid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __attribute__((format(printf, 3, 4))) void
 link_debug(struct Channel *chanp, int direction, char *fmt, ...)
 =======
 static __printf(3, 4) void
 	link_debug(struct Channel *chanp, int direction, char *fmt, ...)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __printf(3, 4) void
+	link_debug(struct Channel *chanp, int direction, char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	va_list args;
 	char tmp[16];
@@ -101,6 +114,7 @@ enum {
 	ST_WAIT_DRELEASE,	/* 10 DISCONNECT sent, awaiting RELEASE */
 	ST_WAIT_D_REL_CNF,	/* 11 RELEASE sent, awaiting RELEASE confirm */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ST_IN_PROCEED_SEND,	/* 12 incoming call, proceeding send */ 
 };
   
@@ -109,6 +123,11 @@ enum {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ST_IN_PROCEED_SEND,	/* 12 incoming call, proceeding send */
+};
+
+>>>>>>> refs/remotes/origin/master
 
 #define STATE_COUNT (ST_IN_PROCEED_SEND + 1)
 
@@ -135,10 +154,14 @@ enum {
 	EV_ACCEPTB,		/*  2 */
 	EV_DISCONNECT_IND,	/*  3 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EV_RELEASE, 		/*  4 */
 =======
 	EV_RELEASE,		/*  4 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EV_RELEASE,		/*  4 */
+>>>>>>> refs/remotes/origin/master
 	EV_LEASED,		/*  5 */
 	EV_LEASED_REL,		/*  6 */
 	EV_SETUP_IND,		/*  7 */
@@ -156,12 +179,17 @@ enum {
 	EV_CONNECT_ERR,		/* 19 */
 	EV_PROCEED,		/* 20 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EV_ALERT,		/* 21 */ 
 	EV_REDIR,		/* 22 */ 
 =======
 	EV_ALERT,		/* 21 */
 	EV_REDIR,		/* 22 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EV_ALERT,		/* 21 */
+	EV_REDIR,		/* 22 */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define EVENT_COUNT (EV_REDIR + 1)
@@ -257,12 +285,17 @@ lli_leased_in(struct FsmInst *fi, int event, void *arg)
 	ic.parm.setup.plan = 0;
 	ic.parm.setup.screen = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sprintf(ic.parm.setup.eazmsn,"%d", chanp->chan + 1);
 	sprintf(ic.parm.setup.phone,"LEASED%d", chanp->cs->myid);
 =======
 	sprintf(ic.parm.setup.eazmsn, "%d", chanp->chan + 1);
 	sprintf(ic.parm.setup.phone, "LEASED%d", chanp->cs->myid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sprintf(ic.parm.setup.eazmsn, "%d", chanp->chan + 1);
+	sprintf(ic.parm.setup.phone, "LEASED%d", chanp->cs->myid);
+>>>>>>> refs/remotes/origin/master
 	ret = chanp->cs->iif.statcallb(&ic);
 	if (chanp->debug & 1)
 		link_debug(chanp, 1, "statcallb ret=%d", ret);
@@ -386,6 +419,7 @@ lli_deliver_call(struct FsmInst *fi, int event, void *arg)
 
 		switch (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case 1:	/* OK, someone likes this call */
 				FsmDelTimer(&chanp->drel_timer, 61);
 				FsmChangeState(fi, ST_IN_ALERT_SENT);
@@ -414,6 +448,8 @@ lli_deliver_call(struct FsmInst *fi, int event, void *arg)
 				FsmChangeState(fi, ST_NULL);
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 1:	/* OK, someone likes this call */
 			FsmDelTimer(&chanp->drel_timer, 61);
 			FsmChangeState(fi, ST_IN_ALERT_SENT);
@@ -441,7 +477,10 @@ lli_deliver_call(struct FsmInst *fi, int event, void *arg)
 			chanp->cs->cardmsg(chanp->cs, MDL_INFO_REL, (void *) (long)chanp->chan);
 			FsmChangeState(fi, ST_NULL);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		chanp->d_st->lli.l4l3(chanp->d_st, CC_IGNORE | REQUEST, chanp->proc);
@@ -547,10 +586,14 @@ lli_disconnect_req(struct FsmInst *fi, int event, void *arg)
 			chanp->proc->para.cause = 0x10;	/* Normal Call Clearing */
 		chanp->d_st->lli.l4l3(chanp->d_st, CC_DISCONNECT | REQUEST,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			chanp->proc);
 =======
 				      chanp->proc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      chanp->proc);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -567,10 +610,14 @@ lli_disconnect_reject(struct FsmInst *fi, int event, void *arg)
 			chanp->proc->para.cause = 0x15;	/* Call Rejected */
 		chanp->d_st->lli.l4l3(chanp->d_st, CC_DISCONNECT | REQUEST,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			chanp->proc);
 =======
 				      chanp->proc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      chanp->proc);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -647,10 +694,14 @@ lli_bhup_disc(struct FsmInst *fi, int event, void *arg)
 {
 	struct Channel *chanp = fi->userdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (chanp->debug & 1)
 		link_debug(chanp, 0, "STAT_BHUP");
 	HL_LL(chanp, ISDN_STAT_BHUP);
@@ -711,10 +762,14 @@ lli_abort(struct FsmInst *fi, int event, void *arg)
 	lli_bhup_dhup(fi, event, arg);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 static void
 lli_release_req(struct FsmInst *fi, int event, void *arg)
 {
@@ -726,10 +781,14 @@ lli_release_req(struct FsmInst *fi, int event, void *arg)
 		FsmChangeState(fi, ST_WAIT_D_REL_CNF);
 		chanp->d_st->lli.l4l3(chanp->d_st, CC_RELEASE | REQUEST,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			chanp->proc);
 =======
 				      chanp->proc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      chanp->proc);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -747,10 +806,14 @@ lli_bhup_release_req(struct FsmInst *fi, int event, void *arg)
 {
 	struct Channel *chanp = fi->userdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (chanp->debug & 1)
 		link_debug(chanp, 0, "STAT_BHUP");
 	HL_LL(chanp, ISDN_STAT_BHUP);
@@ -782,10 +845,14 @@ lli_dchan_not_ready(struct FsmInst *fi, int event, void *arg)
 	if (chanp->debug & 1)
 		link_debug(chanp, 0, "STAT_DHUP");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	HL_LL(chanp, ISDN_STAT_DHUP); 
 =======
 	HL_LL(chanp, ISDN_STAT_DHUP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HL_LL(chanp, ISDN_STAT_DHUP);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -797,10 +864,14 @@ lli_no_setup_rsp(struct FsmInst *fi, int event, void *arg)
 		link_debug(chanp, 0, "STAT_DHUP");
 	HL_LL(chanp, ISDN_STAT_DHUP);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lli_close(fi); 
 =======
 	lli_close(fi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lli_close(fi);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -860,6 +931,7 @@ lli_failure_a(struct FsmInst *fi, int event, void *arg)
 static struct FsmNode fnlist[] __initdata =
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         {ST_NULL,               EV_DIAL,                lli_prep_dialout},
         {ST_NULL,               EV_RESUME,              lli_resume},
         {ST_NULL,               EV_SETUP_IND,           lli_deliver_call},
@@ -883,6 +955,8 @@ static struct FsmNode fnlist[] __initdata =
         {ST_IN_ALERT_SENT,      EV_DISCONNECT_IND,      lli_release_req},
         {ST_IN_ALERT_SENT,      EV_RELEASE,             lli_dhup_close},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ST_NULL,               EV_DIAL,                lli_prep_dialout},
 	{ST_NULL,               EV_RESUME,              lli_resume},
 	{ST_NULL,               EV_SETUP_IND,           lli_deliver_call},
@@ -905,13 +979,17 @@ static struct FsmNode fnlist[] __initdata =
 	{ST_IN_ALERT_SENT,      EV_HANGUP,              lli_disconnect_reject},
 	{ST_IN_ALERT_SENT,      EV_DISCONNECT_IND,      lli_release_req},
 	{ST_IN_ALERT_SENT,      EV_RELEASE,             lli_dhup_close},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ST_IN_ALERT_SENT,	EV_REDIR,		lli_send_redir},
 	{ST_IN_PROCEED_SEND,	EV_REDIR,		lli_send_redir},
 	{ST_IN_PROCEED_SEND,	EV_ALERT,		lli_send_alert},
 	{ST_IN_PROCEED_SEND,	EV_ACCEPTD,		lli_send_dconnect},
 	{ST_IN_PROCEED_SEND,	EV_HANGUP,		lli_disconnect_reject},
 	{ST_IN_PROCEED_SEND,	EV_DISCONNECT_IND,	lli_dhup_close},
+<<<<<<< HEAD
 <<<<<<< HEAD
         {ST_IN_ALERT_SENT,      EV_RELEASE,             lli_dhup_close},
         {ST_IN_WAIT_CONN_ACK,   EV_SETUP_CMPL_IND,      lli_init_bchan_in},
@@ -949,6 +1027,8 @@ static struct FsmNode fnlist[] __initdata =
         {ST_WAIT_D_REL_CNF,     EV_RELEASE,             lli_dhup_close},
         {ST_WAIT_D_REL_CNF,     EV_DIAL,                lli_dchan_not_ready},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ST_IN_ALERT_SENT,      EV_RELEASE,             lli_dhup_close},
 	{ST_IN_WAIT_CONN_ACK,   EV_SETUP_CMPL_IND,      lli_init_bchan_in},
 	{ST_IN_WAIT_CONN_ACK,   EV_HANGUP,              lli_disconnect_req},
@@ -984,7 +1064,10 @@ static struct FsmNode fnlist[] __initdata =
 	/* ETS 300-104 16.1 */
 	{ST_WAIT_D_REL_CNF,     EV_RELEASE,             lli_dhup_close},
 	{ST_WAIT_D_REL_CNF,     EV_DIAL,                lli_dchan_not_ready},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 /* *INDENT-ON* */
 
@@ -1010,6 +1093,7 @@ release_b_st(struct Channel *chanp)
 	struct PStack *st = chanp->b_st;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(test_and_clear_bit(FLG_START_B, &chanp->Flags)) {
 		chanp->bcs->BC_Close(chanp->bcs);
 		switch (chanp->l2_active_protocol) {
@@ -1026,6 +1110,8 @@ release_b_st(struct Channel *chanp)
 		}
 	} 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (test_and_clear_bit(FLG_START_B, &chanp->Flags)) {
 		chanp->bcs->BC_Close(chanp->bcs);
 		switch (chanp->l2_active_protocol) {
@@ -1041,7 +1127,10 @@ release_b_st(struct Channel *chanp)
 			break;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct Channel
@@ -1053,6 +1142,7 @@ static struct Channel
 
 	if (test_bit(FLG_TWO_DCHAN, &cs->HW_Flags))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i=1;
 	else
 		i=0;
@@ -1061,6 +1151,11 @@ static struct Channel
 	else
 		i = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		i = 1;
+	else
+		i = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!bch) {
 		i = 2; /* virtual channel */
@@ -1091,16 +1186,22 @@ static struct Channel
 static void stat_redir_result(struct IsdnCardState *cs, int chan, ulong result)
 {	isdn_ctrl ic;
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 	ic.driver = cs->myid;
 	ic.command = ISDN_STAT_REDIR;
 	ic.arg = chan; 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ic.driver = cs->myid;
 	ic.command = ISDN_STAT_REDIR;
 	ic.arg = chan;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ic.parm.num[0] = result;
 	cs->iif.statcallb(&ic);
 } /* stat_redir_result */
@@ -1113,10 +1214,14 @@ dchan_l3l4(struct PStack *st, int pr, void *arg)
 	struct Channel *chanp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!pc)
 =======
 	if (!pc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!pc)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (pr == (CC_SETUP | INDICATION)) {
@@ -1134,6 +1239,7 @@ dchan_l3l4(struct PStack *st, int pr, void *arg)
 		return;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (CC_MORE_INFO | INDICATION):
 			FsmEvent(&chanp->fi, EV_SETUP_IND, NULL);
@@ -1193,6 +1299,8 @@ dchan_l3l4(struct PStack *st, int pr, void *arg)
 					chanp->chan, pr);
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (CC_MORE_INFO | INDICATION):
 		FsmEvent(&chanp->fi, EV_SETUP_IND, NULL);
 		break;
@@ -1250,7 +1358,10 @@ dchan_l3l4(struct PStack *st, int pr, void *arg)
 					"%d L3->L4 unknown primitiv %#x",
 					chanp->chan, pr);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1318,12 +1429,17 @@ init_d_st(struct Channel *chanp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __attribute__((format(printf, 2, 3))) void
 callc_debug(struct FsmInst *fi, char *fmt, ...)
 =======
 static __printf(2, 3) void
 	callc_debug(struct FsmInst *fi, char *fmt, ...)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __printf(2, 3) void
+	callc_debug(struct FsmInst *fi, char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	va_list args;
 	struct Channel *chanp = fi->userdata;
@@ -1384,12 +1500,17 @@ CallcNewChan(struct IsdnCardState *csta) {
 	printk(KERN_INFO "HiSax: 2 channels added\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAX_WAITING_CALLS; i++) { 
 		err = init_chan(i+2,csta);
 =======
 	for (i = 0; i < MAX_WAITING_CALLS; i++) {
 		err = init_chan(i + 2, csta);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < MAX_WAITING_CALLS; i++) {
+		err = init_chan(i + 2, csta);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 	}
@@ -1398,10 +1519,14 @@ CallcNewChan(struct IsdnCardState *csta) {
 		printk(KERN_INFO "LAYER2 WATCHING ESTABLISH\n");
 		csta->channel->d_st->lli.l4l3(csta->channel->d_st,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DL_ESTABLISH | REQUEST, NULL);
 =======
 					      DL_ESTABLISH | REQUEST, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      DL_ESTABLISH | REQUEST, NULL);
+>>>>>>> refs/remotes/origin/master
 	}
 	return (0);
 }
@@ -1451,6 +1576,7 @@ lldata_handler(struct PStack *st, int pr, void *arg)
 
 	switch (pr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (DL_DATA  | INDICATION):
 			if (chanp->data_open) {
 				if (chanp->debug & 0x800)
@@ -1474,6 +1600,8 @@ lldata_handler(struct PStack *st, int pr, void *arg)
 				pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (DL_DATA  | INDICATION):
 		if (chanp->data_open) {
 			if (chanp->debug & 0x800)
@@ -1496,7 +1624,10 @@ lldata_handler(struct PStack *st, int pr, void *arg)
 		printk(KERN_WARNING "lldata_handler unknown primitive %#x\n",
 		       pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1507,6 +1638,7 @@ lltrans_handler(struct PStack *st, int pr, void *arg)
 	struct sk_buff *skb = arg;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | INDICATION):
 			if (chanp->data_open) {
@@ -1531,6 +1663,8 @@ lltrans_handler(struct PStack *st, int pr, void *arg)
 				pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | INDICATION):
 		if (chanp->data_open) {
 			if (chanp->debug & 0x800)
@@ -1553,7 +1687,10 @@ lltrans_handler(struct PStack *st, int pr, void *arg)
 		printk(KERN_WARNING "lltrans_handler unknown primitive %#x\n",
 		       pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1586,6 +1723,7 @@ init_b_st(struct Channel *chanp, int incoming)
 		st->l1.bc = chanp->proc->para.bchannel - 1;
 	switch (chanp->l2_active_protocol) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (ISDN_PROTO_L2_X75I):
 		case (ISDN_PROTO_L2_HDLC):
 			st->l1.mode = L1_MODE_HDLC;
@@ -1603,6 +1741,8 @@ init_b_st(struct Channel *chanp, int incoming)
 			st->l1.mode = L1_MODE_FAX;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (ISDN_PROTO_L2_X75I):
 	case (ISDN_PROTO_L2_HDLC):
 		st->l1.mode = L1_MODE_HDLC;
@@ -1619,7 +1759,10 @@ init_b_st(struct Channel *chanp, int incoming)
 	case (ISDN_PROTO_L2_FAX):
 		st->l1.mode = L1_MODE_FAX;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	chanp->bcs->conmsg = NULL;
 	if (chanp->bcs->BC_SetStack(st, chanp->bcs))
@@ -1635,6 +1778,7 @@ init_b_st(struct Channel *chanp, int incoming)
 	st->l2.T203 = 5000;	/* 5000 milliseconds */
 	st->l3.debug = 0;
 	switch (chanp->l2_active_protocol) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (ISDN_PROTO_L2_X75I):
 			sprintf(tmp, "Ch%d X.75", chanp->chan);
@@ -1660,6 +1804,8 @@ init_b_st(struct Channel *chanp, int incoming)
 			setstack_l3bc(st, chanp);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (ISDN_PROTO_L2_X75I):
 		sprintf(tmp, "Ch%d X.75", chanp->chan);
 		setstack_isdnl2(st, tmp);
@@ -1683,7 +1829,10 @@ init_b_st(struct Channel *chanp, int incoming)
 		setstack_transl2(st);
 		setstack_l3bc(st, chanp);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	test_and_set_bit(FLG_START_B, &chanp->Flags);
 	return (0);
@@ -1696,6 +1845,7 @@ leased_l4l3(struct PStack *st, int pr, void *arg)
 	struct sk_buff *skb = arg;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (DL_DATA | REQUEST):
 			link_debug(chanp, 0, "leased line d-channel DATA");
@@ -1711,6 +1861,8 @@ leased_l4l3(struct PStack *st, int pr, void *arg)
 				pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (DL_DATA | REQUEST):
 		link_debug(chanp, 0, "leased line d-channel DATA");
 		dev_kfree_skb(skb);
@@ -1724,7 +1876,10 @@ leased_l4l3(struct PStack *st, int pr, void *arg)
 		printk(KERN_WARNING "transd_l4l3 unknown primitive %#x\n",
 		       pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1733,6 +1888,7 @@ leased_l1l2(struct PStack *st, int pr, void *arg)
 {
 	struct Channel *chanp = (struct Channel *) st->lli.userdata;
 	struct sk_buff *skb = arg;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i,event = EV_LEASED_REL;
 
@@ -1761,6 +1917,8 @@ leased_l1l2(struct PStack *st, int pr, void *arg)
 				"transd_l1l2 unknown primitive %#x\n", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, event = EV_LEASED_REL;
 
 	switch (pr) {
@@ -1787,7 +1945,10 @@ leased_l1l2(struct PStack *st, int pr, void *arg)
 		printk(KERN_WARNING
 		       "transd_l1l2 unknown primitive %#x\n", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1798,10 +1959,14 @@ distr_debug(struct IsdnCardState *csta, int debugflags)
 	struct Channel *chanp = csta->channel;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < (2 + MAX_WAITING_CALLS) ; i++) {
 =======
 	for (i = 0; i < (2 + MAX_WAITING_CALLS); i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < (2 + MAX_WAITING_CALLS); i++) {
+>>>>>>> refs/remotes/origin/master
 		chanp[i].debug = debugflags;
 		chanp[i].fi.debug = debugflags & 2;
 		chanp[i].d_st->l2.l2m.debug = debugflags & 8;
@@ -1829,6 +1994,7 @@ capi_debug(struct Channel *chanp, capi_msg *cm)
 	char *t = tmpbuf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	t += QuickHex(t, (u_char *)cm, (cm->Length>50)? 50: cm->Length);
 	t--;
 	*t= 0;
@@ -1837,6 +2003,11 @@ capi_debug(struct Channel *chanp, capi_msg *cm)
 	t--;
 	*t = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	t += QuickHex(t, (u_char *)cm, (cm->Length > 50) ? 50 : cm->Length);
+	t--;
+	*t = 0;
+>>>>>>> refs/remotes/origin/master
 	HiSax_putstatus(chanp->cs, "Ch", "%d CAPIMSG %s", chanp->chan, tmpbuf);
 }
 
@@ -1844,6 +2015,7 @@ static void
 lli_got_fac_req(struct Channel *chanp, capi_msg *cm) {
 	if ((cm->para[0] != 3) || (cm->para[1] != 0))
 		return;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cm->para[2]<3)
 		return;
@@ -1864,6 +2036,8 @@ lli_got_fac_req(struct Channel *chanp, capi_msg *cm) {
 			}
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cm->para[2] < 3)
 		return;
 	if (cm->para[4] != 0)
@@ -1882,7 +2056,10 @@ lli_got_fac_req(struct Channel *chanp, capi_msg *cm) {
 			FsmAddTimer(&chanp->dial_timer, 80, EV_RESUME, cm, 73);
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1890,10 +2067,14 @@ static void
 lli_got_manufacturer(struct Channel *chanp, struct IsdnCardState *cs, capi_msg *cm) {
 	if ((cs->typ == ISDN_CTYPE_ELSA) || (cs->typ == ISDN_CTYPE_ELSA_PNP) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(cs->typ == ISDN_CTYPE_ELSA_PCI)) {
 =======
 	    (cs->typ == ISDN_CTYPE_ELSA_PCI)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (cs->typ == ISDN_CTYPE_ELSA_PCI)) {
+>>>>>>> refs/remotes/origin/master
 		if (cs->hw.elsa.MFlag) {
 			cs->cardmsg(cs, CARD_AUX_IND, cm->para);
 		}
@@ -1905,10 +2086,14 @@ lli_got_manufacturer(struct Channel *chanp, struct IsdnCardState *cs, capi_msg *
 /* Limit the available number of channels for the current card */
 /***************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int 
 =======
 static int
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 set_channel_limit(struct IsdnCardState *cs, int chanmax)
 {
 	isdn_ctrl ic;
@@ -1916,10 +2101,14 @@ set_channel_limit(struct IsdnCardState *cs, int chanmax)
 
 	if ((chanmax < 0) || (chanmax > 2))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(-EINVAL);
 =======
 		return (-EINVAL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (-EINVAL);
+>>>>>>> refs/remotes/origin/master
 	cs->chanlimit = 0;
 	for (ii = 0; ii < 2; ii++) {
 		ic.driver = cs->myid;
@@ -1929,6 +2118,7 @@ set_channel_limit(struct IsdnCardState *cs, int chanmax)
 			ic.parm.num[0] = 0; /* disabled */
 		else
 			ic.parm.num[0] = 1; /* enabled */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		i = cs->iif.statcallb(&ic); 
 		if (i) return(-EINVAL);
@@ -1941,6 +2131,8 @@ set_channel_limit(struct IsdnCardState *cs, int chanmax)
 int
 HiSax_command(isdn_ctrl * ic)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		i = cs->iif.statcallb(&ic);
 		if (i) return (-EINVAL);
 		if (ii < chanmax)
@@ -1951,7 +2143,10 @@ HiSax_command(isdn_ctrl * ic)
 
 int
 HiSax_command(isdn_ctrl *ic)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *csta = hisax_findcard(ic->driver);
 	struct PStack *st;
@@ -1961,6 +2156,7 @@ HiSax_command(isdn_ctrl *ic)
 
 	if (!csta) {
 		printk(KERN_ERR
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"HiSax: if_command %d called with invalid driverId %d!\n",
 			ic->command, ic->driver);
@@ -2193,6 +2389,8 @@ HiSax_command(isdn_ctrl *ic)
 				return(csta->auxcmd(csta, ic));
 			return(-EINVAL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       "HiSax: if_command %d called with invalid driverId %d!\n",
 		       ic->command, ic->driver);
 		return -ENODEV;
@@ -2423,7 +2621,10 @@ HiSax_command(isdn_ctrl *ic)
 		if (csta->auxcmd)
 			return (csta->auxcmd(csta, ic));
 		return (-EINVAL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return (0);
 }
@@ -2440,10 +2641,14 @@ HiSax_writebuf_skb(int id, int chan, int ack, struct sk_buff *skb)
 	if (!csta) {
 		printk(KERN_ERR
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"HiSax: if_sendbuf called with invalid driverId!\n");
 =======
 		       "HiSax: if_sendbuf called with invalid driverId!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "HiSax: if_sendbuf called with invalid driverId!\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 	chanp = csta->channel + chan;
@@ -2456,10 +2661,14 @@ HiSax_writebuf_skb(int id, int chan, int ack, struct sk_buff *skb)
 		link_debug(chanp, 1, "writebuf: packet too large (%d bytes)", len);
 		printk(KERN_WARNING "HiSax_writebuf: packet too large (%d bytes) !\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			len);
 =======
 		       len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       len);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	if (len) {
@@ -2472,10 +2681,14 @@ HiSax_writebuf_skb(int id, int chan, int ack, struct sk_buff *skb)
 			return 0;
 		} else if (chanp->debug & 0x800)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			link_debug(chanp, 1, "writebuf %d/%d/%d", len, chanp->bcs->tx_cnt,MAX_DATA_MEM);
 =======
 			link_debug(chanp, 1, "writebuf %d/%d/%d", len, chanp->bcs->tx_cnt, MAX_DATA_MEM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			link_debug(chanp, 1, "writebuf %d/%d/%d", len, chanp->bcs->tx_cnt, MAX_DATA_MEM);
+>>>>>>> refs/remotes/origin/master
 		nskb = skb_clone(skb, GFP_ATOMIC);
 		if (nskb) {
 			nskb->truesize = nskb->len;

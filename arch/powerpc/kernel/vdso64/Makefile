@@ -1,6 +1,10 @@
 # List of files in the vdso, has to be asm only for now
 
+<<<<<<< HEAD
 obj-vdso64 = sigtramp.o gettimeofday.o datapage.o cacheflush.o note.o
+=======
+obj-vdso64 = sigtramp.o gettimeofday.o datapage.o cacheflush.o note.o getcpu.o
+>>>>>>> refs/remotes/origin/master
 
 # Build rules
 

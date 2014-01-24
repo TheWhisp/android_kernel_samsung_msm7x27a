@@ -22,11 +22,17 @@
 #include <linux/proc_fs.h>
 #include <linux/sysctl.h>
 #include <linux/hardirq.h>
+<<<<<<< HEAD
 #include <linux/mman.h>
 <<<<<<< HEAD
 =======
 #include <asm/unaligned.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hugetlb.h>
+#include <linux/mman.h>
+#include <asm/unaligned.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/processor.h>
 #include <asm/sections.h>
@@ -115,7 +121,10 @@ arch_initcall(proc_tile_init);
  * Support /proc/sys/tile directory
  */
 
+<<<<<<< HEAD
 #ifndef __tilegx__  /* FIXME: GX: no support for unaligned access yet */
+=======
+>>>>>>> refs/remotes/origin/master
 static ctl_table unaligned_subtable[] = {
 	{
 		.procname	= "enabled",
@@ -150,9 +159,12 @@ static ctl_table unaligned_table[] = {
 	{}
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct ctl_path tile_path[] = {
 	{ .procname = "tile" },
@@ -162,17 +174,24 @@ static struct ctl_path tile_path[] = {
 static int __init proc_sys_tile_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef __tilegx__  /* FIXME: GX: no support for unaligned access yet */
 	register_sysctl_paths(tile_path, unaligned_table);
 #endif
 =======
 	register_sysctl_paths(tile_path, unaligned_table);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_sysctl_paths(tile_path, unaligned_table);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 arch_initcall(proc_sys_tile_init);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

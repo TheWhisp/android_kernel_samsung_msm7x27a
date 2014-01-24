@@ -20,8 +20,15 @@
 #include <linux/timer.h>
 #include <linux/interrupt.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 
 #include "ucode_loader.h"
+=======
+#include <linux/leds.h>
+
+#include "ucode_loader.h"
+#include "led.h"
+>>>>>>> refs/remotes/origin/master
 /*
  * Starting index for 5G rates in the
  * legacy rate table.
@@ -68,6 +75,11 @@ struct brcms_info {
 	spinlock_t lock;	/* per-device perimeter lock */
 	spinlock_t isr_lock;	/* per-device ISR synchronization lock */
 
+<<<<<<< HEAD
+=======
+	/* tx flush */
+	wait_queue_head_t tx_flush_wq;
+>>>>>>> refs/remotes/origin/master
 
 	/* timer related fields */
 	atomic_t callbacks;	/* # outstanding callback functions */
@@ -79,6 +91,7 @@ struct brcms_info {
 	struct wiphy *wiphy;
 	struct brcms_ucode ucode;
 	bool mute_tx;
+<<<<<<< HEAD
 };
 
 /* misc callbacks */
@@ -104,5 +117,33 @@ extern void brcms_msleep(struct brcms_info *wl, uint ms);
 extern void brcms_dpc(unsigned long data);
 extern void brcms_timer(struct brcms_timer *t);
 extern void brcms_fatal_error(struct brcms_info *wl);
+=======
+	struct brcms_led radio_led;
+	struct led_classdev led_dev;
+};
+
+/* misc callbacks */
+void brcms_init(struct brcms_info *wl);
+uint brcms_reset(struct brcms_info *wl);
+void brcms_intrson(struct brcms_info *wl);
+u32 brcms_intrsoff(struct brcms_info *wl);
+void brcms_intrsrestore(struct brcms_info *wl, u32 macintmask);
+int brcms_up(struct brcms_info *wl);
+void brcms_down(struct brcms_info *wl);
+void brcms_txflowcontrol(struct brcms_info *wl, struct brcms_if *wlif,
+			 bool state, int prio);
+bool brcms_rfkill_set_hw_state(struct brcms_info *wl);
+
+/* timer functions */
+struct brcms_timer *brcms_init_timer(struct brcms_info *wl,
+				     void (*fn) (void *arg), void *arg,
+				     const char *name);
+void brcms_free_timer(struct brcms_timer *timer);
+void brcms_add_timer(struct brcms_timer *timer, uint ms, int periodic);
+bool brcms_del_timer(struct brcms_timer *timer);
+void brcms_dpc(unsigned long data);
+void brcms_timer(struct brcms_timer *t);
+void brcms_fatal_error(struct brcms_info *wl);
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* _BRCM_MAC80211_IF_H_ */

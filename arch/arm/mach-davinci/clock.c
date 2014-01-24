@@ -32,6 +32,7 @@ static DEFINE_MUTEX(clocks_mutex);
 static DEFINE_SPINLOCK(clockfw_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned psc_domain(struct clk *clk)
 {
 	return (clk->flags & PSC_DSP)
@@ -41,10 +42,13 @@ static unsigned psc_domain(struct clk *clk)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __clk_enable(struct clk *clk)
 {
 	if (clk->parent)
 		__clk_enable(clk->parent);
+<<<<<<< HEAD
 	if (clk->usecount++ == 0 && (clk->flags & CLK_PSC))
 <<<<<<< HEAD
 		davinci_psc_config(psc_domain(clk), clk->gpsc, clk->lpsc,
@@ -53,12 +57,22 @@ static void __clk_enable(struct clk *clk)
 		davinci_psc_config(clk->domain, clk->gpsc, clk->lpsc,
 				true, clk->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (clk->usecount++ == 0) {
+		if (clk->flags & CLK_PSC)
+			davinci_psc_config(clk->domain, clk->gpsc, clk->lpsc,
+					   true, clk->flags);
+		else if (clk->clk_enable)
+			clk->clk_enable(clk);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __clk_disable(struct clk *clk)
 {
 	if (WARN_ON(clk->usecount == 0))
 		return;
+<<<<<<< HEAD
 	if (--clk->usecount == 0 && !(clk->flags & CLK_PLL) &&
 	    (clk->flags & CLK_PSC))
 <<<<<<< HEAD
@@ -69,10 +83,56 @@ static void __clk_disable(struct clk *clk)
 		davinci_psc_config(clk->domain, clk->gpsc, clk->lpsc,
 				false, clk->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (--clk->usecount == 0) {
+		if (!(clk->flags & CLK_PLL) && (clk->flags & CLK_PSC))
+			davinci_psc_config(clk->domain, clk->gpsc, clk->lpsc,
+					   false, clk->flags);
+		else if (clk->clk_disable)
+			clk->clk_disable(clk);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (clk->parent)
 		__clk_disable(clk->parent);
 }
 
+<<<<<<< HEAD
+=======
+int davinci_clk_reset(struct clk *clk, bool reset)
+{
+	unsigned long flags;
+
+	if (clk == NULL || IS_ERR(clk))
+		return -EINVAL;
+
+	spin_lock_irqsave(&clockfw_lock, flags);
+	if (clk->flags & CLK_PSC)
+		davinci_psc_reset(clk->gpsc, clk->lpsc, reset);
+	spin_unlock_irqrestore(&clockfw_lock, flags);
+
+	return 0;
+}
+EXPORT_SYMBOL(davinci_clk_reset);
+
+int davinci_clk_reset_assert(struct clk *clk)
+{
+	if (clk == NULL || IS_ERR(clk) || !clk->reset)
+		return -EINVAL;
+
+	return clk->reset(clk, true);
+}
+EXPORT_SYMBOL(davinci_clk_reset_assert);
+
+int davinci_clk_reset_deassert(struct clk *clk)
+{
+	if (clk == NULL || IS_ERR(clk) || !clk->reset)
+		return -EINVAL;
+
+	return clk->reset(clk, false);
+}
+EXPORT_SYMBOL(davinci_clk_reset_deassert);
+
+>>>>>>> refs/remotes/origin/master
 int clk_enable(struct clk *clk)
 {
 	unsigned long flags;
@@ -234,7 +294,11 @@ EXPORT_SYMBOL(clk_unregister);
 /*
  * Disable any unused clocks left on by the bootloader
  */
+<<<<<<< HEAD
 static int __init clk_disable_unused(void)
+=======
+int __init davinci_clk_disable_unused(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct clk *ck;
 
@@ -252,6 +316,7 @@ static int __init clk_disable_unused(void)
 		pr_debug("Clocks: disable unused %s\n", ck->name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		davinci_psc_config(psc_domain(ck), ck->gpsc, ck->lpsc,
 				(ck->flags & PSC_SWRSTDISABLE) ?
 				PSC_STATE_SWRSTDISABLE : PSC_STATE_DISABLE);
@@ -259,12 +324,19 @@ static int __init clk_disable_unused(void)
 		davinci_psc_config(ck->domain, ck->gpsc, ck->lpsc,
 				false, ck->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		davinci_psc_config(ck->domain, ck->gpsc, ck->lpsc,
+				false, ck->flags);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irq(&clockfw_lock);
 
 	return 0;
 }
+<<<<<<< HEAD
 late_initcall(clk_disable_unused);
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static unsigned long clk_sysclk_recalc(struct clk *clk)
@@ -387,14 +459,20 @@ static unsigned long clk_leafclk_recalc(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int davinci_simple_set_rate(struct clk *clk, unsigned long rate)
 {
 	clk->rate = rate;
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned long clk_pllclk_recalc(struct clk *clk)
 {
 	u32 ctrl, mult = 1, prediv = 1, postdiv = 1;
@@ -534,7 +612,10 @@ int davinci_set_pllrate(struct pll_data *pll, unsigned int prediv,
 EXPORT_SYMBOL(davinci_set_pllrate);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * davinci_set_refclk_rate() - Set the reference clock rate
  * @rate:	The new rate.
@@ -567,9 +648,14 @@ int davinci_set_refclk_rate(unsigned long rate)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 int __init davinci_clk_init(struct clk_lookup *clocks)
   {
+=======
+int __init davinci_clk_init(struct clk_lookup *clocks)
+{
+>>>>>>> refs/remotes/origin/master
 	struct clk_lookup *c;
 	struct clk *clk;
 	size_t num_clocks = 0;
@@ -610,6 +696,12 @@ int __init davinci_clk_init(struct clk_lookup *clocks)
 		if (clk->lpsc)
 			clk->flags |= CLK_PSC;
 
+<<<<<<< HEAD
+=======
+		if (clk->flags & PSC_LRST)
+			clk->reset = davinci_clk_reset;
+
+>>>>>>> refs/remotes/origin/master
 		clk_register(clk);
 		num_clocks++;
 

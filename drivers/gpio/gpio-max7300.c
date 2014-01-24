@@ -31,7 +31,11 @@ static int max7300_i2c_read(struct device *dev, unsigned int reg)
 	return i2c_smbus_read_byte_data(client, reg);
 }
 
+<<<<<<< HEAD
 static int __devinit max7300_probe(struct i2c_client *client,
+=======
+static int max7300_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 			 const struct i2c_device_id *id)
 {
 	struct max7301 *ts;
@@ -41,7 +45,11 @@ static int __devinit max7300_probe(struct i2c_client *client,
 			I2C_FUNC_SMBUS_BYTE_DATA))
 		return -EIO;
 
+<<<<<<< HEAD
 	ts = kzalloc(sizeof(struct max7301), GFP_KERNEL);
+=======
+	ts = devm_kzalloc(&client->dev, sizeof(struct max7301), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ts)
 		return -ENOMEM;
 
@@ -50,12 +58,19 @@ static int __devinit max7300_probe(struct i2c_client *client,
 	ts->dev = &client->dev;
 
 	ret = __max730x_probe(ts);
+<<<<<<< HEAD
 	if (ret)
 		kfree(ts);
 	return ret;
 }
 
 static int __devexit max7300_remove(struct i2c_client *client)
+=======
+	return ret;
+}
+
+static int max7300_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	return __max730x_remove(&client->dev);
 }
@@ -72,7 +87,11 @@ static struct i2c_driver max7300_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = max7300_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(max7300_remove),
+=======
+	.remove = max7300_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = max7300_id,
 };
 

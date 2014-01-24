@@ -112,6 +112,7 @@ to UBI and mount volume "rootfs":
 ubi.mtd=0 root=ubi0:rootfs rootfstype=ubifs
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 Module Parameters for Debugging
 ===============================
@@ -142,6 +143,8 @@ For example, set debug_chks to 3 to enable general and TNC checks.
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 References
 ==========
 

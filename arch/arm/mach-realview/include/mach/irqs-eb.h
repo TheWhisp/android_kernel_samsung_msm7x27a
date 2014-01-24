@@ -97,6 +97,7 @@
 #define IRQ_EB11MP_L220_DECODE	(IRQ_EB_GIC_START + 31)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IRQ_EB11MP_UART2	-1
 #define IRQ_EB11MP_UART3	-1
 #define IRQ_EB11MP_CLCD		-1
@@ -108,6 +109,8 @@
 #define IRQ_EB11MP_SCI		-1
 #define IRQ_EB11MP_SSP		-1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The 11MPcore tile leaves the following unconnected.
  */
@@ -121,14 +124,21 @@
 #define IRQ_EB11MP_GPIO2	0
 #define IRQ_EB11MP_SCI		0
 #define IRQ_EB11MP_SSP		0
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NR_GIC_EB11MP		2
 
 /*
  * Only define NR_IRQS if less than NR_IRQS_EB
  */
+<<<<<<< HEAD
 #define NR_IRQS_EB		(IRQ_EB_GIC_START + 96)
+=======
+#define NR_IRQS_EB		(IRQ_EB_GIC_START + 128)
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_MACH_REALVIEW_EB) \
 	&& (!defined(NR_IRQS) || (NR_IRQS < NR_IRQS_EB))

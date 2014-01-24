@@ -42,11 +42,15 @@ static int __init eraseconfig_init(void)
 
 	/* Setup "EraseConfig" switch on external IRQ 0 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(irq, eraseconfig_interrupt, IRQF_DISABLED,
 				"Erase Config", NULL))
 =======
 	if (request_irq(irq, eraseconfig_interrupt, 0, "Erase Config", NULL))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(irq, eraseconfig_interrupt, 0, "Erase Config", NULL))
+>>>>>>> refs/remotes/origin/master
 		printk("SnapGear: failed to register IRQ%d for Reset witch\n",
 				irq);
 	else
@@ -76,6 +80,9 @@ static void __init init_snapgear_IRQ(void)
  */
 static struct sh_machine_vector mv_snapgear __initmv = {
 	.mv_name		= "SnapGear SecureEdge5410",
+<<<<<<< HEAD
 	.mv_nr_irqs		= 72,
+=======
+>>>>>>> refs/remotes/origin/master
 	.mv_init_irq		= init_snapgear_IRQ,
 };

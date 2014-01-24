@@ -628,7 +628,11 @@ static int tgr128_final(struct shash_desc *desc, u8 * out)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct shash_alg tgr192 = {
+=======
+static struct shash_alg tgr_algs[3] = { {
+>>>>>>> refs/remotes/origin/master
 	.digestsize	=	TGR192_DIGEST_SIZE,
 	.init		=	tgr192_init,
 	.update		=	tgr192_update,
@@ -640,9 +644,13 @@ static struct shash_alg tgr192 = {
 		.cra_blocksize	=	TGR192_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static struct shash_alg tgr160 = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.digestsize	=	TGR160_DIGEST_SIZE,
 	.init		=	tgr192_init,
 	.update		=	tgr192_update,
@@ -654,9 +662,13 @@ static struct shash_alg tgr160 = {
 		.cra_blocksize	=	TGR192_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static struct shash_alg tgr128 = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.digestsize	=	TGR128_DIGEST_SIZE,
 	.init		=	tgr192_init,
 	.update		=	tgr192_update,
@@ -668,6 +680,7 @@ static struct shash_alg tgr128 = {
 		.cra_blocksize	=	TGR192_BLOCK_SIZE,
 		.cra_module	=	THIS_MODULE,
 	}
+<<<<<<< HEAD
 };
 
 static int __init tgr192_mod_init(void)
@@ -693,13 +706,24 @@ static int __init tgr192_mod_init(void)
 	}
       out:
 	return ret;
+=======
+} };
+
+static int __init tgr192_mod_init(void)
+{
+	return crypto_register_shashes(tgr_algs, ARRAY_SIZE(tgr_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit tgr192_mod_fini(void)
 {
+<<<<<<< HEAD
 	crypto_unregister_shash(&tgr192);
 	crypto_unregister_shash(&tgr160);
 	crypto_unregister_shash(&tgr128);
+=======
+	crypto_unregister_shashes(tgr_algs, ARRAY_SIZE(tgr_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 MODULE_ALIAS("tgr160");

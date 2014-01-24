@@ -245,7 +245,10 @@ struct ems_tx_urb_context {
 
 struct ems_usb {
 	struct can_priv can; /* must be the first member */
+<<<<<<< HEAD
 	int open_time;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct sk_buff *echo_skb[MAX_TX_URBS];
 
@@ -289,11 +292,15 @@ static void ems_usb_read_interrupt_callback(struct urb *urb)
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_info(netdev->dev.parent, "Rx interrupt aborted %d\n",
 			 urb->status);
 =======
 		netdev_info(netdev, "Rx interrupt aborted %d\n", urb->status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(netdev, "Rx interrupt aborted %d\n", urb->status);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -303,11 +310,15 @@ static void ems_usb_read_interrupt_callback(struct urb *urb)
 		netif_device_detach(netdev);
 	else if (err)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent,
 			"failed resubmitting intr urb: %d\n", err);
 =======
 		netdev_err(netdev, "failed resubmitting intr urb: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(netdev, "failed resubmitting intr urb: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ems_usb_rx_can_msg(struct ems_usb *dev, struct ems_cpc_msg *msg)
@@ -440,11 +451,15 @@ static void ems_usb_read_bulk_callback(struct urb *urb)
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_info(netdev->dev.parent, "Rx URB aborted (%d)\n",
 			 urb->status);
 =======
 		netdev_info(netdev, "Rx URB aborted (%d)\n", urb->status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(netdev, "Rx URB aborted (%d)\n", urb->status);
+>>>>>>> refs/remotes/origin/master
 		goto resubmit_urb;
 	}
 
@@ -490,10 +505,14 @@ static void ems_usb_read_bulk_callback(struct urb *urb)
 
 			if (start > urb->transfer_buffer_length) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev_err(netdev->dev.parent, "format error\n");
 =======
 				netdev_err(netdev, "format error\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_err(netdev, "format error\n");
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 		}
@@ -510,12 +529,17 @@ resubmit_urb:
 		netif_device_detach(netdev);
 	else if (retval)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent,
 			"failed resubmitting read bulk urb: %d\n", retval);
 =======
 		netdev_err(netdev,
 			   "failed resubmitting read bulk urb: %d\n", retval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(netdev,
+			   "failed resubmitting read bulk urb: %d\n", retval);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -543,11 +567,15 @@ static void ems_usb_write_bulk_callback(struct urb *urb)
 
 	if (urb->status)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_info(netdev->dev.parent, "Tx URB aborted (%d)\n",
 			 urb->status);
 =======
 		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
+>>>>>>> refs/remotes/origin/master
 
 	netdev->trans_start = jiffies;
 
@@ -631,6 +659,7 @@ static int ems_usb_start(struct ems_usb *dev)
 		urb = usb_alloc_urb(0, GFP_KERNEL);
 		if (!urb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(netdev->dev.parent,
 				"No memory left for URBs\n");
 			return -ENOMEM;
@@ -639,22 +668,33 @@ static int ems_usb_start(struct ems_usb *dev)
 			err = -ENOMEM;
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(netdev, "No memory left for URBs\n");
+			err = -ENOMEM;
+			break;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
 					 &urb->transfer_dma);
 		if (!buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_err(netdev->dev.parent,
 				"No memory left for USB buffer\n");
 			usb_free_urb(urb);
 			return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			netdev_err(netdev, "No memory left for USB buffer\n");
 			usb_free_urb(urb);
 			err = -ENOMEM;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
@@ -666,6 +706,7 @@ static int ems_usb_start(struct ems_usb *dev)
 		err = usb_submit_urb(urb, GFP_KERNEL);
 		if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (err == -ENODEV)
 				netif_device_detach(dev->netdev);
 
@@ -674,6 +715,12 @@ static int ems_usb_start(struct ems_usb *dev)
 			usb_unanchor_urb(urb);
 			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
 					  urb->transfer_dma);
+=======
+			usb_unanchor_urb(urb);
+			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
+					  urb->transfer_dma);
+			usb_free_urb(urb);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -684,20 +731,28 @@ static int ems_usb_start(struct ems_usb *dev)
 	/* Did we submit any URBs */
 	if (i == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(netdev->dev.parent, "couldn't setup read URBs\n");
 =======
 		netdev_warn(netdev, "couldn't setup read URBs\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(netdev, "couldn't setup read URBs\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
 	/* Warn if we've couldn't transmit all the URBs */
 	if (i < MAX_RX_URBS)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(netdev->dev.parent, "rx performance may be slow\n");
 =======
 		netdev_warn(netdev, "rx performance may be slow\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(netdev, "rx performance may be slow\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup and start interrupt URB */
 	usb_fill_int_urb(dev->intr_urb, dev->udev,
@@ -709,6 +764,7 @@ static int ems_usb_start(struct ems_usb *dev)
 	err = usb_submit_urb(dev->intr_urb, GFP_KERNEL);
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err == -ENODEV)
 			netif_device_detach(dev->netdev);
 
@@ -717,6 +773,9 @@ static int ems_usb_start(struct ems_usb *dev)
 =======
 		netdev_warn(netdev, "intr URB submit failed: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(netdev, "intr URB submit failed: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 
 		return err;
 	}
@@ -746,6 +805,7 @@ static int ems_usb_start(struct ems_usb *dev)
 
 failed:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (err == -ENODEV)
 		netif_device_detach(dev->netdev);
 
@@ -753,6 +813,9 @@ failed:
 =======
 	netdev_warn(netdev, "couldn't submit control: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_warn(netdev, "couldn't submit control: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -793,18 +856,25 @@ static int ems_usb_open(struct net_device *netdev)
 			netif_device_detach(dev->netdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(netdev->dev.parent, "couldn't start device: %d\n",
 			 err);
 =======
 		netdev_warn(netdev, "couldn't start device: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(netdev, "couldn't start device: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 
 		close_candev(netdev);
 
 		return err;
 	}
 
+<<<<<<< HEAD
 	dev->open_time = jiffies;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	netif_start_queue(netdev);
 
@@ -831,20 +901,28 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
 	urb = usb_alloc_urb(0, GFP_ATOMIC);
 	if (!urb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent, "No memory left for URBs\n");
 =======
 		netdev_err(netdev, "No memory left for URBs\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(netdev, "No memory left for URBs\n");
+>>>>>>> refs/remotes/origin/master
 		goto nomem;
 	}
 
 	buf = usb_alloc_coherent(dev->udev, size, GFP_ATOMIC, &urb->transfer_dma);
 	if (!buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent, "No memory left for USB buffer\n");
 =======
 		netdev_err(netdev, "No memory left for USB buffer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(netdev, "No memory left for USB buffer\n");
+>>>>>>> refs/remotes/origin/master
 		usb_free_urb(urb);
 		goto nomem;
 	}
@@ -884,6 +962,7 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
 	 * allowed (MAX_TX_URBS).
 	 */
 	if (!context) {
+<<<<<<< HEAD
 		usb_unanchor_urb(urb);
 		usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
 
@@ -892,6 +971,12 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
 =======
 		netdev_warn(netdev, "couldn't find free context\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
+		usb_free_urb(urb);
+
+		netdev_warn(netdev, "couldn't find free context\n");
+>>>>>>> refs/remotes/origin/master
 
 		return NETDEV_TX_BUSY;
 	}
@@ -923,10 +1008,14 @@ static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *ne
 			netif_device_detach(netdev);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_warn(netdev->dev.parent, "failed tx_urb %d\n", err);
 =======
 			netdev_warn(netdev, "failed tx_urb %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_warn(netdev, "failed tx_urb %d\n", err);
+>>>>>>> refs/remotes/origin/master
 
 			stats->tx_dropped++;
 		}
@@ -967,6 +1056,7 @@ static int ems_usb_close(struct net_device *netdev)
 	/* Set CAN controller to reset mode */
 	if (ems_usb_write_mode(dev, SJA1000_MOD_RM))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_warn(netdev->dev.parent, "couldn't stop device");
 =======
 		netdev_warn(netdev, "couldn't stop device");
@@ -976,6 +1066,12 @@ static int ems_usb_close(struct net_device *netdev)
 
 	dev->open_time = 0;
 
+=======
+		netdev_warn(netdev, "couldn't stop device");
+
+	close_candev(netdev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -985,7 +1081,11 @@ static const struct net_device_ops ems_usb_netdev_ops = {
 	.ndo_start_xmit = ems_usb_start_xmit,
 };
 
+<<<<<<< HEAD
 static struct can_bittiming_const ems_usb_bittiming_const = {
+=======
+static const struct can_bittiming_const ems_usb_bittiming_const = {
+>>>>>>> refs/remotes/origin/master
 	.name = "ems_usb",
 	.tseg1_min = 1,
 	.tseg1_max = 16,
@@ -1001,6 +1101,7 @@ static int ems_usb_set_mode(struct net_device *netdev, enum can_mode mode)
 {
 	struct ems_usb *dev = netdev_priv(netdev);
 
+<<<<<<< HEAD
 	if (!dev->open_time)
 		return -EINVAL;
 
@@ -1012,6 +1113,12 @@ static int ems_usb_set_mode(struct net_device *netdev, enum can_mode mode)
 =======
 			netdev_warn(netdev, "couldn't start device");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (mode) {
+	case CAN_MODE_START:
+		if (ems_usb_write_mode(dev, SJA1000_MOD_NORMAL))
+			netdev_warn(netdev, "couldn't start device");
+>>>>>>> refs/remotes/origin/master
 
 		if (netif_queue_stopped(netdev))
 			netif_wake_queue(netdev);
@@ -1037,11 +1144,15 @@ static int ems_usb_set_bittiming(struct net_device *netdev)
 		btr1 |= 0x80;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(netdev->dev.parent, "setting BTR0=0x%02x BTR1=0x%02x\n",
 		 btr0, btr1);
 =======
 	netdev_info(netdev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_info(netdev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
+>>>>>>> refs/remotes/origin/master
 
 	dev->active_params.msg.can_params.cc_params.sja1000.btr0 = btr0;
 	dev->active_params.msg.can_params.cc_params.sja1000.btr1 = btr1;
@@ -1126,6 +1237,7 @@ static int ems_usb_probe(struct usb_interface *intf,
 	}
 
 	dev->intr_in_buffer = kzalloc(INTR_IN_BUFFER_SIZE, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!dev->intr_in_buffer) {
 		dev_err(&intf->dev, "Couldn't alloc Intr buffer\n");
 		goto cleanup_intr_urb;
@@ -1137,6 +1249,15 @@ static int ems_usb_probe(struct usb_interface *intf,
 		dev_err(&intf->dev, "Couldn't alloc Tx buffer\n");
 		goto cleanup_intr_in_buffer;
 	}
+=======
+	if (!dev->intr_in_buffer)
+		goto cleanup_intr_urb;
+
+	dev->tx_msg_buffer = kzalloc(CPC_HEADER_SIZE +
+				     sizeof(struct ems_cpc_msg), GFP_KERNEL);
+	if (!dev->tx_msg_buffer)
+		goto cleanup_intr_in_buffer;
+>>>>>>> refs/remotes/origin/master
 
 	usb_set_intfdata(intf, dev);
 
@@ -1147,22 +1268,30 @@ static int ems_usb_probe(struct usb_interface *intf,
 	err = ems_usb_command_msg(dev, &dev->active_params);
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent,
 			"couldn't initialize controller: %d\n", err);
 =======
 		netdev_err(netdev, "couldn't initialize controller: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(netdev, "couldn't initialize controller: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto cleanup_tx_msg_buffer;
 	}
 
 	err = register_candev(netdev);
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(netdev->dev.parent,
 			"couldn't register CAN device: %d\n", err);
 =======
 		netdev_err(netdev, "couldn't register CAN device: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(netdev, "couldn't register CAN device: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto cleanup_tx_msg_buffer;
 	}
 
@@ -1213,6 +1342,7 @@ static struct usb_driver ems_usb_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ems_usb_init(void)
 {
 	int err;
@@ -1241,3 +1371,6 @@ module_exit(ems_usb_exit);
 =======
 module_usb_driver(ems_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(ems_usb_driver);
+>>>>>>> refs/remotes/origin/master

@@ -237,6 +237,7 @@ static void ti_ssp_spi_work(struct work_struct *work)
 	spin_unlock(&hw->lock);
 }
 
+<<<<<<< HEAD
 static int ti_ssp_spi_setup(struct spi_device *spi)
 {
 	if (spi->bits_per_word > 32)
@@ -245,6 +246,8 @@ static int ti_ssp_spi_setup(struct spi_device *spi)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ti_ssp_spi_transfer(struct spi_device *spi, struct spi_message *m)
 {
 	struct ti_ssp_spi	*hw;
@@ -269,12 +272,15 @@ static int ti_ssp_spi_transfer(struct spi_device *spi, struct spi_message *m)
 			dev_err(&spi->dev, "invalid xfer, full duplex\n");
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 
 		if (t->bits_per_word > 32) {
 			dev_err(&spi->dev, "invalid xfer width %d\n",
 				t->bits_per_word);
 			return -EINVAL;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock(&hw->lock);
@@ -289,7 +295,11 @@ error_unlock:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devinit ti_ssp_spi_probe(struct platform_device *pdev)
+=======
+static int ti_ssp_spi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ti_ssp_spi_data *pdata;
 	struct ti_ssp_spi *hw;
@@ -297,7 +307,11 @@ static int __devinit ti_ssp_spi_probe(struct platform_device *pdev)
 	struct device *dev = &pdev->dev;
 	int error = 0;
 
+<<<<<<< HEAD
 	pdata = dev->platform_data;
+=======
+	pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(dev, "platform data not found\n");
 		return -EINVAL;
@@ -337,8 +351,13 @@ static int __devinit ti_ssp_spi_probe(struct platform_device *pdev)
 	master->bus_num		= pdev->id;
 	master->num_chipselect	= pdata->num_cs;
 	master->mode_bits	= MODE_BITS;
+<<<<<<< HEAD
 	master->flags		= SPI_MASTER_HALF_DUPLEX;
 	master->setup		= ti_ssp_spi_setup;
+=======
+	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(1, 32);
+	master->flags		= SPI_MASTER_HALF_DUPLEX;
+>>>>>>> refs/remotes/origin/master
 	master->transfer	= ti_ssp_spi_transfer;
 
 	error = spi_register_master(master);
@@ -357,7 +376,11 @@ error_wq:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit ti_ssp_spi_remove(struct platform_device *pdev)
+=======
+static int ti_ssp_spi_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ti_ssp_spi *hw = platform_get_drvdata(pdev);
 	int error;
@@ -378,7 +401,11 @@ static int __devexit ti_ssp_spi_remove(struct platform_device *pdev)
 
 static struct platform_driver ti_ssp_spi_driver = {
 	.probe		= ti_ssp_spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ti_ssp_spi_remove),
+=======
+	.remove		= ti_ssp_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "ti-ssp-spi",
 		.owner	= THIS_MODULE,

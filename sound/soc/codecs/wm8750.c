@@ -19,6 +19,7 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
@@ -27,6 +28,12 @@
 #include <linux/slab.h>
 #include <linux/of_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+#include <linux/spi/spi.h>
+#include <linux/slab.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -40,6 +47,7 @@
  * We can't read the WM8750 register space when we
  * are using 2 wire for device control, so we cache them instead.
  */
+<<<<<<< HEAD
 static const u16 wm8750_reg[] = {
 	0x0097, 0x0097, 0x0079, 0x0079,  /*  0 */
 	0x0000, 0x0008, 0x0000, 0x000a,  /*  4 */
@@ -52,12 +60,61 @@ static const u16 wm8750_reg[] = {
 	0x0000, 0x0000, 0x0050, 0x0050,  /* 32 */
 	0x0050, 0x0050, 0x0050, 0x0050,  /* 36 */
 	0x0079, 0x0079, 0x0079,          /* 40 */
+=======
+static const struct reg_default wm8750_reg_defaults[] = {
+	{  0, 0x0097 },
+	{  1, 0x0097 },
+	{  2, 0x0079 },
+	{  3, 0x0079 },
+	{  4, 0x0000 },
+	{  5, 0x0008 },
+	{  6, 0x0000 },
+	{  7, 0x000a },
+	{  8, 0x0000 },
+	{  9, 0x0000 },
+	{ 10, 0x00ff },
+	{ 11, 0x00ff },
+	{ 12, 0x000f },
+	{ 13, 0x000f },
+	{ 14, 0x0000 },
+	{ 15, 0x0000 },
+	{ 16, 0x0000 },
+	{ 17, 0x007b },
+	{ 18, 0x0000 },
+	{ 19, 0x0032 },
+	{ 20, 0x0000 },
+	{ 21, 0x00c3 },
+	{ 22, 0x00c3 },
+	{ 23, 0x00c0 },
+	{ 24, 0x0000 },
+	{ 25, 0x0000 },
+	{ 26, 0x0000 },
+	{ 27, 0x0000 },
+	{ 28, 0x0000 },
+	{ 29, 0x0000 },
+	{ 30, 0x0000 },
+	{ 31, 0x0000 },
+	{ 32, 0x0000 },
+	{ 33, 0x0000 },
+	{ 34, 0x0050 },
+	{ 35, 0x0050 },
+	{ 36, 0x0050 },
+	{ 37, 0x0050 },
+	{ 38, 0x0050 },
+	{ 39, 0x0050 },
+	{ 40, 0x0079 },
+	{ 41, 0x0079 },
+	{ 42, 0x0079 },
+>>>>>>> refs/remotes/origin/master
 };
 
 /* codec private data */
 struct wm8750_priv {
 	unsigned int sysclk;
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define wm8750_reset(c)	snd_soc_write(c, WM8750_RESET, 0)
@@ -308,10 +365,14 @@ static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
 =======
 static const struct snd_soc_dapm_route wm8750_dapm_routes[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8750_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	/* left mixer */
 	{"Left Mixer", "Playback Switch", "Left DAC"},
 	{"Left Mixer", "Left Bypass Switch", "Left Line Mux"},
@@ -406,6 +467,7 @@ static const struct snd_soc_dapm_route wm8750_dapm_routes[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8750_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -419,6 +481,8 @@ static int wm8750_add_widgets(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct _coeff_div {
 	u32 mclk;
 	u32 rate;
@@ -571,8 +635,12 @@ static int wm8750_pcm_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8750_priv *wm8750 = snd_soc_codec_get_drvdata(codec);
 	u16 iface = snd_soc_read(codec, WM8750_IFACE) & 0x1f3;
 	u16 srate = snd_soc_read(codec, WM8750_SRATE) & 0x1c0;
@@ -629,10 +697,15 @@ static int wm8750_set_bias_level(struct snd_soc_codec *codec,
 	case SND_SOC_BIAS_STANDBY:
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			snd_soc_cache_sync(codec);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			snd_soc_cache_sync(codec);
+
+>>>>>>> refs/remotes/origin/master
 			/* Set VMID to 5k */
 			snd_soc_write(codec, WM8750_PWR1, pwr_reg | 0x01c1);
 
@@ -659,10 +732,14 @@ static int wm8750_set_bias_level(struct snd_soc_codec *codec,
 	SNDRV_PCM_FMTBIT_S24_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8750_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm8750_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8750_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8750_pcm_hw_params,
 	.digital_mute	= wm8750_mute,
 	.set_fmt	= wm8750_set_dai_fmt,
@@ -687,10 +764,14 @@ static struct snd_soc_dai_driver wm8750_dai = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8750_suspend(struct snd_soc_codec *codec, pm_message_t state)
 =======
 static int wm8750_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8750_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8750_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -698,6 +779,7 @@ static int wm8750_suspend(struct snd_soc_codec *codec)
 
 static int wm8750_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 	u8 data[2];
@@ -717,11 +799,15 @@ static int wm8750_resume(struct snd_soc_codec *codec)
 =======
 	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int wm8750_probe(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct wm8750_priv *wm8750 = snd_soc_codec_get_drvdata(codec);
 <<<<<<< HEAD
 	int reg, ret;
@@ -730,6 +816,11 @@ static int wm8750_probe(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8750->control_type);
+=======
+	int ret;
+
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		printk(KERN_ERR "wm8750: failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -745,6 +836,7 @@ static int wm8750_probe(struct snd_soc_codec *codec)
 	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 	/* set the update bits */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	reg = snd_soc_read(codec, WM8750_LDAC);
 	snd_soc_write(codec, WM8750_LDAC, reg | 0x0100);
@@ -767,6 +859,8 @@ static int wm8750_probe(struct snd_soc_codec *codec)
 				ARRAY_SIZE(wm8750_snd_controls));
 	wm8750_add_widgets(codec);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_update_bits(codec, WM8750_LDAC, 0x0100, 0x0100);
 	snd_soc_update_bits(codec, WM8750_RDAC, 0x0100, 0x0100);
 	snd_soc_update_bits(codec, WM8750_LOUT1V, 0x0100, 0x0100);
@@ -776,7 +870,10 @@ static int wm8750_probe(struct snd_soc_codec *codec)
 	snd_soc_update_bits(codec, WM8750_LINVOL, 0x0100, 0x0100);
 	snd_soc_update_bits(codec, WM8750_RINVOL, 0x0100, 0x0100);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -792,12 +889,15 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8750 = {
 	.suspend =	wm8750_suspend,
 	.resume =	wm8750_resume,
 	.set_bias_level = wm8750_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8750_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8750_reg,
 <<<<<<< HEAD
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.controls = wm8750_snd_controls,
 	.num_controls = ARRAY_SIZE(wm8750_snd_controls),
@@ -813,6 +913,7 @@ static const struct of_device_id wm8750_of_match[] = {
 	{ }
 };
 MODULE_DEVICE_TABLE(of, wm8750_of_match);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_SPI_MASTER)
@@ -831,10 +932,40 @@ static int __devinit wm8750_spi_probe(struct spi_device *spi)
 		return -ENOMEM;
 
 	wm8750->control_type = SND_SOC_SPI;
+=======
+
+static const struct regmap_config wm8750_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+	.max_register = WM8750_MOUTV,
+
+	.reg_defaults = wm8750_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8750_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+};
+
+#if defined(CONFIG_SPI_MASTER)
+static int wm8750_spi_probe(struct spi_device *spi)
+{
+	struct wm8750_priv *wm8750;
+	struct regmap *regmap;
+	int ret;
+
+	wm8750 = devm_kzalloc(&spi->dev, sizeof(struct wm8750_priv),
+			      GFP_KERNEL);
+	if (wm8750 == NULL)
+		return -ENOMEM;
+
+	regmap = devm_regmap_init_spi(spi, &wm8750_regmap);
+	if (IS_ERR(regmap))
+		return PTR_ERR(regmap);
+
+>>>>>>> refs/remotes/origin/master
 	spi_set_drvdata(spi, wm8750);
 
 	ret = snd_soc_register_codec(&spi->dev,
 			&soc_codec_dev_wm8750, &wm8750_dai, 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ret < 0)
 		kfree(wm8750);
@@ -857,6 +988,14 @@ static struct spi_driver wm8750_spi_driver = {
 		.owner	= THIS_MODULE,
 	},
 =======
+=======
+	return ret;
+}
+
+static int wm8750_spi_remove(struct spi_device *spi)
+{
+	snd_soc_unregister_codec(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -874,6 +1013,7 @@ static struct spi_driver wm8750_spi_driver = {
 		.of_match_table = wm8750_of_match,
 	},
 	.id_table	= wm8750_spi_ids,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	.probe		= wm8750_spi_probe,
 	.remove		= __devexit_p(wm8750_spi_remove),
@@ -893,10 +1033,28 @@ static __devinit int wm8750_i2c_probe(struct i2c_client *i2c,
 	wm8750 = devm_kzalloc(&i2c->dev, sizeof(struct wm8750_priv),
 			      GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.probe		= wm8750_spi_probe,
+	.remove		= wm8750_spi_remove,
+};
+#endif /* CONFIG_SPI_MASTER */
+
+#if IS_ENABLED(CONFIG_I2C)
+static int wm8750_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct wm8750_priv *wm8750;
+	struct regmap *regmap;
+	int ret;
+
+	wm8750 = devm_kzalloc(&i2c->dev, sizeof(struct wm8750_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8750 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, wm8750);
+<<<<<<< HEAD
 	wm8750->control_type = SND_SOC_I2C;
 
 	ret =  snd_soc_register_codec(&i2c->dev,
@@ -916,6 +1074,21 @@ static __devexit int wm8750_i2c_remove(struct i2c_client *client)
 	kfree(i2c_get_clientdata(client));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	regmap = devm_regmap_init_i2c(i2c, &wm8750_regmap);
+	if (IS_ERR(regmap))
+		return PTR_ERR(regmap);
+
+	ret =  snd_soc_register_codec(&i2c->dev,
+			&soc_codec_dev_wm8750, &wm8750_dai, 1);
+	return ret;
+}
+
+static int wm8750_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -929,6 +1102,7 @@ MODULE_DEVICE_TABLE(i2c, wm8750_i2c_id);
 static struct i2c_driver wm8750_i2c_driver = {
 	.driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8750-codec",
 		.owner = THIS_MODULE,
 =======
@@ -939,6 +1113,14 @@ static struct i2c_driver wm8750_i2c_driver = {
 	},
 	.probe =    wm8750_i2c_probe,
 	.remove =   __devexit_p(wm8750_i2c_remove),
+=======
+		.name = "wm8750",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8750_of_match,
+	},
+	.probe =    wm8750_i2c_probe,
+	.remove =   wm8750_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm8750_i2c_id,
 };
 #endif
@@ -946,7 +1128,11 @@ static struct i2c_driver wm8750_i2c_driver = {
 static int __init wm8750_modinit(void)
 {
 	int ret = 0;
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8750_i2c_driver);
 	if (ret != 0) {
 		printk(KERN_ERR "Failed to register wm8750 I2C driver: %d\n",
@@ -966,7 +1152,11 @@ module_init(wm8750_modinit);
 
 static void __exit wm8750_exit(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8750_i2c_driver);
 #endif
 #if defined(CONFIG_SPI_MASTER)

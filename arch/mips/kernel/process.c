@@ -7,12 +7,18 @@
  * Copyright (C) 2005, 2006 by Ralf Baechle (ralf@linux-mips.org)
  * Copyright (C) 1999, 2000 Silicon Graphics, Inc.
  * Copyright (C) 2004 Thiemo Seufer
+<<<<<<< HEAD
  */
 #include <linux/errno.h>
 <<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2013  Imagination Technologies Ltd.
+ */
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/tick.h>
 #include <linux/kernel.h>
@@ -20,9 +26,13 @@
 #include <linux/stddef.h>
 #include <linux/unistd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ptrace.h>
 #include <linux/mman.h>
 #include <linux/personality.h>
@@ -40,9 +50,12 @@
 #include <asm/fpu.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mipsregs.h>
 #include <asm/processor.h>
 #include <asm/uaccess.h>
@@ -52,6 +65,7 @@
 #include <asm/inst.h>
 #include <asm/stacktrace.h>
 
+<<<<<<< HEAD
 /*
  * The idle thread. There's no useful work to be done, so just try to conserve
  * power and have a low exit latency (ie sit in a loop waiting for somebody to
@@ -109,6 +123,19 @@ void __noreturn cpu_idle(void)
 }
 
 asmlinkage void ret_from_fork(void);
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+void arch_cpu_idle_dead(void)
+{
+	/* What the heck is this check doing ? */
+	if (!cpu_isset(smp_processor_id(), cpu_callin_map))
+		play_dead();
+}
+#endif
+
+asmlinkage void ret_from_fork(void);
+asmlinkage void ret_from_kernel_thread(void);
+>>>>>>> refs/remotes/origin/master
 
 void start_thread(struct pt_regs * regs, unsigned long pc, unsigned long sp)
 {
@@ -128,9 +155,12 @@ void start_thread(struct pt_regs * regs, unsigned long pc, unsigned long sp)
 	regs->cp0_epc = pc;
 	regs->regs[29] = sp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current_thread_info()->addr_limit = USER_DS;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void exit_thread(void)
@@ -142,10 +172,17 @@ void flush_thread(void)
 }
 
 int copy_thread(unsigned long clone_flags, unsigned long usp,
+<<<<<<< HEAD
 	unsigned long unused, struct task_struct *p, struct pt_regs *regs)
 {
 	struct thread_info *ti = task_thread_info(p);
 	struct pt_regs *childregs;
+=======
+	unsigned long arg, struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	struct pt_regs *childregs, *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	unsigned long childksp;
 	p->set_child_tid = p->clear_child_tid = NULL;
 
@@ -165,6 +202,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	childregs = (struct pt_regs *) childksp - 1;
 	/*  Put the stack after the struct pt_regs.  */
 	childksp = (unsigned long) childregs;
+<<<<<<< HEAD
 	*childregs = *regs;
 	childregs->regs[7] = 0;	/* Clear error flag */
 
@@ -178,6 +216,33 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 		childregs->regs[29] = usp;
 		ti->addr_limit = USER_DS;
 	}
+=======
+	p->thread.cp0_status = read_c0_status() & ~(ST0_CU2|ST0_CU1);
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		unsigned long status = p->thread.cp0_status;
+		memset(childregs, 0, sizeof(struct pt_regs));
+		ti->addr_limit = KERNEL_DS;
+		p->thread.reg16 = usp; /* fn */
+		p->thread.reg17 = arg;
+		p->thread.reg29 = childksp;
+		p->thread.reg31 = (unsigned long) ret_from_kernel_thread;
+#if defined(CONFIG_CPU_R3000) || defined(CONFIG_CPU_TX39XX)
+		status = (status & ~(ST0_KUP | ST0_IEP | ST0_IEC)) |
+			 ((status & (ST0_KUC | ST0_IEC)) << 2);
+#else
+		status |= ST0_EXL;
+#endif
+		childregs->cp0_status = status;
+		return 0;
+	}
+	*childregs = *regs;
+	childregs->regs[7] = 0; /* Clear error flag */
+	childregs->regs[2] = 0; /* Child gets zero as return value */
+	if (usp)
+		childregs->regs[29] = usp;
+	ti->addr_limit = USER_DS;
+
+>>>>>>> refs/remotes/origin/master
 	p->thread.reg29 = (unsigned long) childregs;
 	p->thread.reg31 = (unsigned long) ret_from_fork;
 
@@ -185,7 +250,10 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	 * New tasks lose permission to use the fpu. This accelerates context
 	 * switching for most programs since they don't use the fpu.
 	 */
+<<<<<<< HEAD
 	p->thread.cp0_status = read_c0_status() & ~(ST0_CU2|ST0_CU1);
+=======
+>>>>>>> refs/remotes/origin/master
 	childregs->cp0_status &= ~(ST0_CU2|ST0_CU1);
 
 #ifdef CONFIG_MIPS_MT_SMTC
@@ -250,6 +318,7 @@ int dump_task_fpu(struct task_struct *t, elf_fpregset_t *fpr)
 	return 1;
 }
 
+<<<<<<< HEAD
 /*
  * Create a kernel thread
  */
@@ -282,6 +351,14 @@ long kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 /*
  *
  */
+=======
+#ifdef CONFIG_CC_STACKPROTECTOR
+#include <linux/stackprotector.h>
+unsigned long __stack_chk_guard __read_mostly;
+EXPORT_SYMBOL(__stack_chk_guard);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 struct mips_frame_info {
 	void		*func;
 	unsigned long	func_size;
@@ -289,36 +366,147 @@ struct mips_frame_info {
 	int		pc_offset;
 };
 
+<<<<<<< HEAD
 static inline int is_ra_save_ins(union mips_instruction *ip)
 {
+=======
+#define J_TARGET(pc,target)	\
+		(((unsigned long)(pc) & 0xf0000000) | ((target) << 2))
+
+static inline int is_ra_save_ins(union mips_instruction *ip)
+{
+#ifdef CONFIG_CPU_MICROMIPS
+	union mips_instruction mmi;
+
+	/*
+	 * swsp ra,offset
+	 * swm16 reglist,offset(sp)
+	 * swm32 reglist,offset(sp)
+	 * sw32 ra,offset(sp)
+	 * jradiussp - NOT SUPPORTED
+	 *
+	 * microMIPS is way more fun...
+	 */
+	if (mm_insn_16bit(ip->halfword[0])) {
+		mmi.word = (ip->halfword[0] << 16);
+		return ((mmi.mm16_r5_format.opcode == mm_swsp16_op &&
+			 mmi.mm16_r5_format.rt == 31) ||
+			(mmi.mm16_m_format.opcode == mm_pool16c_op &&
+			 mmi.mm16_m_format.func == mm_swm16_op));
+	}
+	else {
+		mmi.halfword[0] = ip->halfword[1];
+		mmi.halfword[1] = ip->halfword[0];
+		return ((mmi.mm_m_format.opcode == mm_pool32b_op &&
+			 mmi.mm_m_format.rd > 9 &&
+			 mmi.mm_m_format.base == 29 &&
+			 mmi.mm_m_format.func == mm_swm32_func) ||
+			(mmi.i_format.opcode == mm_sw32_op &&
+			 mmi.i_format.rs == 29 &&
+			 mmi.i_format.rt == 31));
+	}
+#else
+>>>>>>> refs/remotes/origin/master
 	/* sw / sd $ra, offset($sp) */
 	return (ip->i_format.opcode == sw_op || ip->i_format.opcode == sd_op) &&
 		ip->i_format.rs == 29 &&
 		ip->i_format.rt == 31;
+<<<<<<< HEAD
 }
 
 static inline int is_jal_jalr_jr_ins(union mips_instruction *ip)
 {
+=======
+#endif
+}
+
+static inline int is_jump_ins(union mips_instruction *ip)
+{
+#ifdef CONFIG_CPU_MICROMIPS
+	/*
+	 * jr16,jrc,jalr16,jalr16
+	 * jal
+	 * jalr/jr,jalr.hb/jr.hb,jalrs,jalrs.hb
+	 * jraddiusp - NOT SUPPORTED
+	 *
+	 * microMIPS is kind of more fun...
+	 */
+	union mips_instruction mmi;
+
+	mmi.word = (ip->halfword[0] << 16);
+
+	if ((mmi.mm16_r5_format.opcode == mm_pool16c_op &&
+	    (mmi.mm16_r5_format.rt & mm_jr16_op) == mm_jr16_op) ||
+	    ip->j_format.opcode == mm_jal32_op)
+		return 1;
+	if (ip->r_format.opcode != mm_pool32a_op ||
+			ip->r_format.func != mm_pool32axf_op)
+		return 0;
+	return (((ip->u_format.uimmediate >> 6) & mm_jalr_op) == mm_jalr_op);
+#else
+	if (ip->j_format.opcode == j_op)
+		return 1;
+>>>>>>> refs/remotes/origin/master
 	if (ip->j_format.opcode == jal_op)
 		return 1;
 	if (ip->r_format.opcode != spec_op)
 		return 0;
 	return ip->r_format.func == jalr_op || ip->r_format.func == jr_op;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int is_sp_move_ins(union mips_instruction *ip)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_CPU_MICROMIPS
+	/*
+	 * addiusp -imm
+	 * addius5 sp,-imm
+	 * addiu32 sp,sp,-imm
+	 * jradiussp - NOT SUPPORTED
+	 *
+	 * microMIPS is not more fun...
+	 */
+	if (mm_insn_16bit(ip->halfword[0])) {
+		union mips_instruction mmi;
+
+		mmi.word = (ip->halfword[0] << 16);
+		return ((mmi.mm16_r3_format.opcode == mm_pool16d_op &&
+			 mmi.mm16_r3_format.simmediate && mm_addiusp_func) ||
+			(mmi.mm16_r5_format.opcode == mm_pool16d_op &&
+			 mmi.mm16_r5_format.rt == 29));
+	}
+	return (ip->mm_i_format.opcode == mm_addiu32_op &&
+		 ip->mm_i_format.rt == 29 && ip->mm_i_format.rs == 29);
+#else
+>>>>>>> refs/remotes/origin/master
 	/* addiu/daddiu sp,sp,-imm */
 	if (ip->i_format.rs != 29 || ip->i_format.rt != 29)
 		return 0;
 	if (ip->i_format.opcode == addiu_op || ip->i_format.opcode == daddiu_op)
 		return 1;
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int get_frame_info(struct mips_frame_info *info)
 {
+<<<<<<< HEAD
 	union mips_instruction *ip = info->func;
+=======
+#ifdef CONFIG_CPU_MICROMIPS
+	union mips_instruction *ip = (void *) (((char *) info->func) - 1);
+#else
+	union mips_instruction *ip = info->func;
+#endif
+>>>>>>> refs/remotes/origin/master
 	unsigned max_insns = info->func_size / sizeof(union mips_instruction);
 	unsigned i;
 
@@ -334,11 +522,38 @@ static int get_frame_info(struct mips_frame_info *info)
 
 	for (i = 0; i < max_insns; i++, ip++) {
 
+<<<<<<< HEAD
 		if (is_jal_jalr_jr_ins(ip))
 			break;
 		if (!info->frame_size) {
 			if (is_sp_move_ins(ip))
 				info->frame_size = - ip->i_format.simmediate;
+=======
+		if (is_jump_ins(ip))
+			break;
+		if (!info->frame_size) {
+			if (is_sp_move_ins(ip))
+			{
+#ifdef CONFIG_CPU_MICROMIPS
+				if (mm_insn_16bit(ip->halfword[0]))
+				{
+					unsigned short tmp;
+
+					if (ip->halfword[0] & mm_addiusp_func)
+					{
+						tmp = (((ip->halfword[0] >> 1) & 0x1ff) << 2);
+						info->frame_size = -(signed short)(tmp | ((tmp & 0x100) ? 0xfe00 : 0));
+					} else {
+						tmp = (ip->halfword[0] >> 1);
+						info->frame_size = -(signed short)(tmp & 0xf);
+					}
+					ip = (void *) &ip->halfword[1];
+					ip--;
+				} else
+#endif
+				info->frame_size = - ip->i_format.simmediate;
+			}
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		if (info->pc_offset == -1 && is_ra_save_ins(ip)) {
@@ -358,15 +573,52 @@ err:
 
 static struct mips_frame_info schedule_mfi __read_mostly;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KALLSYMS
+static unsigned long get___schedule_addr(void)
+{
+	return kallsyms_lookup_name("__schedule");
+}
+#else
+static unsigned long get___schedule_addr(void)
+{
+	union mips_instruction *ip = (void *)schedule;
+	int max_insns = 8;
+	int i;
+
+	for (i = 0; i < max_insns; i++, ip++) {
+		if (ip->j_format.opcode == j_op)
+			return J_TARGET(ip, ip->j_format.target);
+	}
+	return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int __init frame_info_init(void)
 {
 	unsigned long size = 0;
 #ifdef CONFIG_KALLSYMS
 	unsigned long ofs;
+<<<<<<< HEAD
 
 	kallsyms_lookup_size_offset((unsigned long)schedule, &size, &ofs);
 #endif
 	schedule_mfi.func = schedule;
+=======
+#endif
+	unsigned long addr;
+
+	addr = get___schedule_addr();
+	if (!addr)
+		addr = (unsigned long)schedule;
+
+#ifdef CONFIG_KALLSYMS
+	kallsyms_lookup_size_offset(addr, &size, &ofs);
+#endif
+	schedule_mfi.func = (void *)addr;
+>>>>>>> refs/remotes/origin/master
 	schedule_mfi.func_size = size;
 
 	get_frame_info(&schedule_mfi);
@@ -401,19 +653,25 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
 
 #ifdef CONFIG_KALLSYMS
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* used by show_backtrace() */
 unsigned long unwind_stack(struct task_struct *task, unsigned long *sp,
 			   unsigned long pc, unsigned long *ra)
 {
 	unsigned long stack_page;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* generic stack unwinding function */
 unsigned long notrace unwind_stack_by_address(unsigned long stack_page,
 					      unsigned long *sp,
 					      unsigned long pc,
 					      unsigned long *ra)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mips_frame_info info;
 	unsigned long size, ofs;
 	int leaf;
@@ -421,9 +679,12 @@ unsigned long notrace unwind_stack_by_address(unsigned long stack_page,
 	extern void ret_from_exception(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stack_page = (unsigned long)task_stack_page(task);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!stack_page)
 		return 0;
 
@@ -483,7 +744,10 @@ unsigned long notrace unwind_stack_by_address(unsigned long stack_page,
 	return __kernel_text_address(pc) ? pc : 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(unwind_stack_by_address);
 
 /* used by show_backtrace() */
@@ -493,7 +757,10 @@ unsigned long unwind_stack(struct task_struct *task, unsigned long *sp,
 	unsigned long stack_page = (unsigned long)task_stack_page(task);
 	return unwind_stack_by_address(stack_page, sp, pc, ra);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*

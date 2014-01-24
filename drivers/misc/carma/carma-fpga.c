@@ -88,6 +88,11 @@
  * interrupt source to the GPIO pin. Tada, we hid the interrupt. :)
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/dma-mapping.h>
 #include <linux/miscdevice.h>
@@ -561,11 +566,17 @@ static void data_enable_interrupts(struct fpga_device *priv)
 	/* flush the writes */
 	fpga_read_reg(priv, 0, MMAP_REG_STATUS);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	fpga_read_reg(priv, 1, MMAP_REG_STATUS);
 	fpga_read_reg(priv, 2, MMAP_REG_STATUS);
 	fpga_read_reg(priv, 3, MMAP_REG_STATUS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fpga_read_reg(priv, 1, MMAP_REG_STATUS);
+	fpga_read_reg(priv, 2, MMAP_REG_STATUS);
+	fpga_read_reg(priv, 3, MMAP_REG_STATUS);
+>>>>>>> refs/remotes/origin/master
 
 	/* switch back to the external interrupt source */
 	iowrite32be(0x3F, priv->regs + SYS_IRQ_SOURCE_CTL);
@@ -598,16 +609,22 @@ static void data_dma_cb(void *data)
 	priv->inflight = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* clear the FPGA status and re-enable interrupts */
 	data_enable_interrupts(priv);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If data dumping is still enabled, then clear the FPGA
 	 * status registers and re-enable FPGA interrupts
 	 */
 	if (priv->enabled)
 		data_enable_interrupts(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&priv->lock, flags);
 
@@ -639,6 +656,10 @@ static int data_submit_dma(struct fpga_device *priv, struct data_buf *buf)
 	struct dma_async_tx_descriptor *tx;
 	dma_cookie_t cookie;
 	dma_addr_t dst, src;
+<<<<<<< HEAD
+=======
+	unsigned long dma_flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	dst_sg = buf->vb.sglist;
 	dst_nents = buf->vb.sglen;
@@ -674,7 +695,11 @@ static int data_submit_dma(struct fpga_device *priv, struct data_buf *buf)
 	src = SYS_FPGA_BLOCK;
 	tx = chan->device->device_prep_dma_memcpy(chan, dst, src,
 						  REG_BLOCK_SIZE,
+<<<<<<< HEAD
 						  DMA_PREP_INTERRUPT);
+=======
+						  dma_flags);
+>>>>>>> refs/remotes/origin/master
 	if (!tx) {
 		dev_err(priv->dev, "unable to prep SYS-FPGA DMA\n");
 		return -ENOMEM;
@@ -724,7 +749,10 @@ static irqreturn_t data_irq(int irq, void *dev_id)
 	spin_lock(&priv->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This is an error case that should never happen.
 	 *
@@ -734,7 +762,10 @@ static irqreturn_t data_irq(int irq, void *dev_id)
 	 */
 	BUG_ON(priv->inflight != NULL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* hide the interrupt by switching the IRQ driver to GPIO */
 	data_disable_interrupts(priv);
 
@@ -760,7 +791,11 @@ static irqreturn_t data_irq(int irq, void *dev_id)
 	submitted = true;
 
 	/* Start the DMA Engine */
+<<<<<<< HEAD
 	dma_async_memcpy_issue_pending(priv->chan);
+=======
+	dma_async_issue_pending(priv->chan);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	/* If no DMA was submitted, re-enable interrupts */
@@ -790,21 +825,31 @@ out:
 static int data_device_enable(struct fpga_device *priv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool enabled;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool enabled;
+>>>>>>> refs/remotes/origin/master
 	u32 val;
 	int ret;
 
 	/* multiple enables are safe: they do nothing */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (priv->enabled)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 	enabled = priv->enabled;
 	spin_unlock_irq(&priv->lock);
 	if (enabled)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/* check that the FPGAs are programmed */
@@ -836,11 +881,17 @@ static int data_device_enable(struct fpga_device *priv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* prevent the FPGAs from generating interrupts */
 	data_disable_interrupts(priv);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* prevent the FPGAs from generating interrupts */
+	data_disable_interrupts(priv);
+
+>>>>>>> refs/remotes/origin/master
 	/* hookup the irq handler */
 	ret = request_irq(priv->irq, data_irq, IRQF_SHARED, drv_name, priv);
 	if (ret) {
@@ -849,12 +900,15 @@ static int data_device_enable(struct fpga_device *priv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* switch to the external FPGA IRQ line */
 	data_enable_interrupts(priv);
 
 	/* success, we're enabled */
 	priv->enabled = true;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* allow the DMA callback to re-enable FPGA interrupts */
 	spin_lock_irq(&priv->lock);
 	priv->enabled = true;
@@ -862,7 +916,10 @@ static int data_device_enable(struct fpga_device *priv)
 
 	/* allow the FPGAs to generate interrupts */
 	data_enable_interrupts(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_error:
@@ -889,6 +946,7 @@ out_error:
 static int data_device_disable(struct fpga_device *priv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	/* allow multiple disable */
@@ -912,6 +970,8 @@ static int data_device_disable(struct fpga_device *priv)
 		return ret;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&priv->lock);
 
 	/* allow multiple disable */
@@ -942,11 +1002,15 @@ static int data_device_disable(struct fpga_device *priv)
 	/* unhook the irq handler */
 	free_irq(priv->irq, priv);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* free the correlation table */
 	sg_free_table(&priv->corl_table);
 	priv->corl_nents = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * We are taking the spinlock not to protect priv->enabled, but instead
@@ -959,6 +1023,8 @@ static int data_device_disable(struct fpga_device *priv)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* free all buffers: the free and used lists are not being changed */
 	data_free_buffers(priv);
 	return 0;
@@ -987,6 +1053,7 @@ static int data_debug_show(struct seq_file *f, void *offset)
 {
 	struct fpga_device *priv = f->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 
 	/*
@@ -998,6 +1065,8 @@ static int data_debug_show(struct seq_file *f, void *offset)
 		return ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&priv->lock);
 
@@ -1011,9 +1080,12 @@ static int data_debug_show(struct seq_file *f, void *offset)
 
 	spin_unlock_irq(&priv->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&priv->mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1067,8 +1139,11 @@ static ssize_t data_en_show(struct device *dev, struct device_attribute *attr,
 {
 	struct fpga_device *priv = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snprintf(buf, PAGE_SIZE, "%u\n", priv->enabled);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	spin_lock_irq(&priv->lock);
@@ -1076,7 +1151,10 @@ static ssize_t data_en_show(struct device *dev, struct device_attribute *attr,
 	spin_unlock_irq(&priv->lock);
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t data_en_set(struct device *dev, struct device_attribute *attr,
@@ -1086,6 +1164,7 @@ static ssize_t data_en_set(struct device *dev, struct device_attribute *attr,
 	unsigned long enable;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 0, &enable);
 	if (ret) {
 		dev_err(priv->dev, "unable to parse enable input\n");
@@ -1096,6 +1175,15 @@ static ssize_t data_en_set(struct device *dev, struct device_attribute *attr,
 =======
 	/* protect against concurrent enable/disable */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = kstrtoul(buf, 0, &enable);
+	if (ret) {
+		dev_err(priv->dev, "unable to parse enable input\n");
+		return ret;
+	}
+
+	/* protect against concurrent enable/disable */
+>>>>>>> refs/remotes/origin/master
 	ret = mutex_lock_interruptible(&priv->mutex);
 	if (ret)
 		return ret;
@@ -1190,9 +1278,13 @@ static ssize_t data_read(struct file *filp, char __user *ubuf, size_t count,
 	struct fpga_device *priv = reader->priv;
 	struct list_head *used = &priv->used;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool drop_buffer = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool drop_buffer = false;
+>>>>>>> refs/remotes/origin/master
 	struct data_buf *dbuf;
 	size_t avail;
 	void *data;
@@ -1281,18 +1373,24 @@ have_buffer:
 	 * device has been reconfigured underneath us. In either case, we
 	 * should just throw away the buffer.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 */
 	if (!priv->enabled || dbuf->size != priv->bufsize) {
 		videobuf_dma_unmap(priv->dev, &dbuf->vb);
 		data_free_buffer(dbuf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * Lockdep complains if this is done under the spinlock, so we
 	 * handle it during the unlock path.
 	 */
 	if (!priv->enabled || dbuf->size != priv->bufsize) {
 		drop_buffer = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 	}
 
@@ -1302,14 +1400,20 @@ have_buffer:
 out_unlock:
 	spin_unlock_irq(&priv->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (drop_buffer) {
 		videobuf_dma_unmap(priv->dev, &dbuf->vb);
 		data_free_buffer(dbuf);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -1345,8 +1449,11 @@ static int data_mmap(struct file *filp, struct vm_area_struct *vma)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* IO memory (stop cacheing) */
 	vma->vm_flags |= VM_IO | VM_RESERVED;
+=======
+>>>>>>> refs/remotes/origin/master
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 
 	return io_remap_pfn_range(vma, vma->vm_start, addr, vsize,
@@ -1382,11 +1489,15 @@ static bool dma_filter(struct dma_chan *chan, void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int data_of_probe(struct platform_device *op,
 			 const struct of_device_id *match)
 =======
 static int data_of_probe(struct platform_device *op)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int data_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *of_node = op->dev.of_node;
 	struct device *this_device;
@@ -1403,7 +1514,11 @@ static int data_of_probe(struct platform_device *op)
 		goto out_return;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, priv);
+=======
+	platform_set_drvdata(op, priv);
+>>>>>>> refs/remotes/origin/master
 	priv->dev = &op->dev;
 	kref_init(&priv->ref);
 	mutex_init(&priv->mutex);
@@ -1507,7 +1622,11 @@ out_return:
 
 static int data_of_remove(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct fpga_device *priv = dev_get_drvdata(&op->dev);
+=======
+	struct fpga_device *priv = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	struct device *this_device = priv->miscdev.this_device;
 
 	/* remove all sysfs files, now the device cannot be re-enabled */
@@ -1538,10 +1657,14 @@ static struct of_device_id data_of_match[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_platform_driver data_of_driver = {
 =======
 static struct platform_driver data_of_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver data_of_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= data_of_probe,
 	.remove		= data_of_remove,
 	.driver		= {
@@ -1551,6 +1674,7 @@ static struct platform_driver data_of_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Module Init / Exit
@@ -1568,13 +1692,19 @@ static void __exit data_exit(void)
 =======
 module_platform_driver(data_of_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(data_of_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ira W. Snyder <iws@ovro.caltech.edu>");
 MODULE_DESCRIPTION("CARMA DATA-FPGA Access Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(data_init);
 module_exit(data_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

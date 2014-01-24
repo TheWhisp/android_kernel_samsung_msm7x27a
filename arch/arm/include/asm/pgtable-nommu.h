@@ -80,11 +80,14 @@ extern unsigned int kobjsize(const void *objp);
  */
 #define pgtable_cache_init()	do { } while (0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define io_remap_page_range	remap_page_range
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #define io_remap_pfn_range	remap_pfn_range
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * All 32bit addresses are effectively valid for vmalloc...

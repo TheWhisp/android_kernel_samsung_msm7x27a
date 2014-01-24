@@ -362,7 +362,11 @@ static u8 sis_ata133_udma_filter(ide_drive_t *drive)
 	return (regdw & 0x08) ? ATA_UDMA6 : ATA_UDMA5;
 }
 
+<<<<<<< HEAD
 static int __devinit sis_find_family(struct pci_dev *dev)
+=======
+static int sis_find_family(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *host;
 	int i = 0;
@@ -563,7 +567,11 @@ static const struct ide_port_ops sis_ata133_port_ops = {
 	.cable_detect		= sis_cable_detect,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info sis5513_chipset __devinitdata = {
+=======
+static const struct ide_port_info sis5513_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= DRV_NAME,
 	.init_chipset	= init_chipset_sis5513,
 	.enablebits	= { {0x4a, 0x02, 0x02}, {0x4a, 0x04, 0x04} },
@@ -572,7 +580,11 @@ static const struct ide_port_info sis5513_chipset __devinitdata = {
 	.mwdma_mask	= ATA_MWDMA2,
 };
 
+<<<<<<< HEAD
 static int __devinit sis5513_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int sis5513_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ide_port_info d = sis5513_chipset;
 	u8 udma_rates[] = { 0x00, 0x00, 0x07, 0x1f, 0x3f, 0x3f, 0x7f, 0x7f };
@@ -595,7 +607,11 @@ static int __devinit sis5513_init_one(struct pci_dev *dev, const struct pci_devi
 	return ide_pci_init_one(dev, &d, NULL);
 }
 
+<<<<<<< HEAD
 static void __devexit sis5513_remove(struct pci_dev *dev)
+=======
+static void sis5513_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	ide_pci_remove(dev);
 	pci_disable_device(dev);
@@ -613,7 +629,11 @@ static struct pci_driver sis5513_pci_driver = {
 	.name		= "SIS_IDE",
 	.id_table	= sis5513_pci_tbl,
 	.probe		= sis5513_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sis5513_remove),
+=======
+	.remove		= sis5513_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= ide_pci_suspend,
 	.resume		= ide_pci_resume,
 };

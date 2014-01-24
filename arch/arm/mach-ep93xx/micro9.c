@@ -19,16 +19,22 @@
 #include <mach/hardware.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
 =======
 #include <asm/hardware/vic.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
 #include "soc.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*************************************************************************
  * Micro9 NOR Flash
@@ -86,6 +92,7 @@ static void __init micro9_init_machine(void)
 MACHINE_START(MICRO9, "Contec Micro9-High")
 	/* Maintainer: Hubert Feurstein <hubert.feurstein@contec.at> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -100,6 +107,15 @@ MACHINE_START(MICRO9, "Contec Micro9-High")
 	.init_machine	= micro9_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= micro9_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -107,6 +123,7 @@ MACHINE_END
 MACHINE_START(MICRO9M, "Contec Micro9-Mid")
 	/* Maintainer: Hubert Feurstein <hubert.feurstein@contec.at> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_ASYNC + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -121,12 +138,22 @@ MACHINE_START(MICRO9M, "Contec Micro9-Mid")
 	.init_machine	= micro9_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= micro9_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_MICRO9L
 MACHINE_START(MICRO9L, "Contec Micro9-Lite")
 	/* Maintainer: Hubert Feurstein <hubert.feurstein@contec.at> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
 	.map_io		= ep93xx_map_io,
@@ -142,12 +169,22 @@ MACHINE_START(MICRO9L, "Contec Micro9-Lite")
 	.init_machine	= micro9_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= micro9_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_MICRO9S
 MACHINE_START(MICRO9S, "Contec Micro9-Slim")
 	/* Maintainer: Hubert Feurstein <hubert.feurstein@contec.at> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_ASYNC + 0x100,
 	.map_io		= ep93xx_map_io,
@@ -163,5 +200,14 @@ MACHINE_START(MICRO9S, "Contec Micro9-Slim")
 	.init_machine	= micro9_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= micro9_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

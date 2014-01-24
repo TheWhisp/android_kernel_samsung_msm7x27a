@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,13 +28,17 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __OSDEP_SERVICE_H_
 #define __OSDEP_SERVICE_H_
 
 #define _SUCCESS	1
 #define _FAIL		0
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include "basic_types.h"
 #include <linux/version.h>
@@ -40,16 +47,22 @@
 #include <linux/semaphore.h>
 =======
 #include <linux/version.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 
 #include <linux/interrupt.h>
 #include <linux/semaphore.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sem.h>
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <net/iw_handler.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/proc_fs.h>	/* Necessary because we use the proc fs */
 #include <linux/compiler.h>
@@ -81,6 +94,11 @@
 
 #include "basic_types.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/proc_fs.h>      /* Necessary because we use the proc fs */
+
+#include "basic_types.h"
+>>>>>>> refs/remotes/origin/master
 
 struct	__queue	{
 	struct	list_head	queue;
@@ -92,9 +110,12 @@ struct	__queue	{
 #define thread_exit() complete_and_exit(NULL, 0)
 #define _workitem struct work_struct
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSECS(t)        (HZ * ((t) / 1000) + (HZ * ((t) % 1000)) / 1000)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _init_queue(pqueue)				\
 	do {						\
@@ -102,6 +123,7 @@ struct	__queue	{
 		spin_lock_init(&((pqueue)->lock));	\
 	} while (0)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void *_netdev_priv(struct net_device *dev)
 {
@@ -115,6 +137,8 @@ static inline void os_free_netdev(struct net_device *dev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct list_head *get_next(struct list_head *list)
 {
 	return list->next;
@@ -128,6 +152,7 @@ static inline struct list_head *get_list_head(struct  __queue *queue)
 #define LIST_CONTAINOR(ptr, type, member) \
 	((type *)((char *)(ptr)-(SIZE_T)(&((type *)0)->member)))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void _enter_hwio_critical(struct semaphore *prwlock,
 					unsigned long *pirqL)
@@ -143,6 +168,8 @@ static inline void _exit_hwio_critical(struct semaphore *prwlock,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void list_delete(struct list_head *plist)
 {
 	list_del_init(plist);
@@ -178,8 +205,11 @@ static inline void _set_workitem(_workitem *pwork)
 	schedule_work(pwork);
 }
 
+<<<<<<< HEAD
 #include "rtl871x_byteorder.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef BIT
 	#define BIT(x)	(1 << (x))
 #endif
@@ -212,6 +242,7 @@ static inline u32 _down_sema(struct semaphore *sema)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void _rtl_rwlock_init(struct semaphore *prwlock)
 {
 	sema_init(prwlock, 1);
@@ -219,6 +250,8 @@ static inline void _rtl_rwlock_init(struct semaphore *prwlock)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void _init_listhead(struct list_head *list)
 {
 	INIT_LIST_HEAD(list);
@@ -262,9 +295,12 @@ static inline unsigned char _cancel_timer_ex(struct timer_list *ptimer)
 static inline void thread_enter(void *context)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	daemonize("%s", "RTKTHREAD");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	allow_signal(SIGTERM);
 }
 
@@ -295,9 +331,12 @@ static inline u32 _RND512(u32 sz)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define STRUCT_PACKED __attribute__ ((packed))
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 

@@ -25,9 +25,12 @@
 #include <asm/processor.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 
 #include <asm/dec/ecc.h>

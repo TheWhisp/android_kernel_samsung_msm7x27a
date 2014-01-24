@@ -132,7 +132,11 @@
   *
   * At this point, the OF driver seems to have a limitation on transfer
   * sizes of 0xd bytes on reads and 0x5 bytes on writes. I do not know
+<<<<<<< HEAD
   * wether this is just an OF limit due to some temporary buffer size
+=======
+  * whether this is just an OF limit due to some temporary buffer size
+>>>>>>> refs/remotes/origin/master
   * or if this is an SMU imposed limit. This driver has the same limitation
   * for now as I use a 0x10 bytes temporary buffer as well
   *
@@ -236,7 +240,11 @@
  *   3 (optional): enable nmi? [0x00 or 0x01]
  *
  * Returns:
+<<<<<<< HEAD
  *   If parameter 2 is 0x00 and parameter 3 is not specified, returns wether
+=======
+ *   If parameter 2 is 0x00 and parameter 3 is not specified, returns whether
+>>>>>>> refs/remotes/origin/master
  *   NMI is enabled. Otherwise unknown.
  */
 #define   SMU_CMD_MISC_df_NMI_OPTION		0x04
@@ -548,10 +556,14 @@ struct smu_sdbp_header {
  * (0x12)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SMU_U16_MIX(x)	le16_to_cpu(x);
 =======
 #define SMU_U16_MIX(x)	le16_to_cpu(x)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SMU_U16_MIX(x)	le16_to_cpu(x)
+>>>>>>> refs/remotes/origin/master
 #define SMU_U32_MIX(x)  ((((x) & 0xff00ff00u) >> 8)|(((x) & 0x00ff00ffu) << 8))
 
 

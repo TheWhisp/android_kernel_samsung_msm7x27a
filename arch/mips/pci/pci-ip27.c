@@ -10,9 +10,13 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/smp.h>
 #include <asm/sn/arch.h>
@@ -33,7 +37,11 @@
 
 /*
  * XXX: No kmalloc available when we do our crosstalk scan,
+<<<<<<< HEAD
  * 	we should try to move it later in the boot process.
+=======
+ *	we should try to move it later in the boot process.
+>>>>>>> refs/remotes/origin/master
  */
 static struct bridge_controller bridges[MAX_PCI_BUSSES];
 
@@ -45,7 +53,11 @@ int irq_to_slot[MAX_PCI_BUSSES * MAX_DEVICES_PER_PCIBUS];
 
 extern struct pci_ops bridge_pci_ops;
 
+<<<<<<< HEAD
 int __cpuinit bridge_probe(nasid_t nasid, int widget_id, int masterwid)
+=======
+int bridge_probe(nasid_t nasid, int widget_id, int masterwid)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long offset = NODE_OFFSET(nasid);
 	struct bridge_controller *bc;
@@ -54,10 +66,14 @@ int __cpuinit bridge_probe(nasid_t nasid, int widget_id, int masterwid)
 	int slot;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_probe_only = 1;
 =======
 	pci_set_flags(PCI_PROBE_ONLY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_set_flags(PCI_PROBE_ONLY);
+>>>>>>> refs/remotes/origin/master
 
 	printk("a bridge\n");
 
@@ -110,7 +126,11 @@ int __cpuinit bridge_probe(nasid_t nasid, int widget_id, int masterwid)
 	 * swap pio's to pci mem and io space (big windows)
 	 */
 	bridge->b_wid_control |= BRIDGE_CTRL_IO_SWAP |
+<<<<<<< HEAD
 	                         BRIDGE_CTRL_MEM_SWAP;
+=======
+				 BRIDGE_CTRL_MEM_SWAP;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PAGE_SIZE_4KB
 	bridge->b_wid_control &= ~BRIDGE_CTRL_PAGE_SIZE;
 #else /* 16kB or larger */
@@ -130,7 +150,11 @@ int __cpuinit bridge_probe(nasid_t nasid, int widget_id, int masterwid)
 		bridge->b_device[slot].reg |= BRIDGE_DEV_SWAP_DIR;
 		bc->pci_int[slot] = -1;
 	}
+<<<<<<< HEAD
 	bridge->b_wid_tflush;     /* wait until Bridge PIO complete */
+=======
+	bridge->b_wid_tflush;	  /* wait until Bridge PIO complete */
+>>>>>>> refs/remotes/origin/master
 
 	bc->base = bridge;
 
@@ -150,7 +174,11 @@ int __cpuinit bridge_probe(nasid_t nasid, int widget_id, int masterwid)
  * A given PCI device, in general, should be able to intr any of the cpus
  * on any one of the hubs connected to its xbow.
  */
+<<<<<<< HEAD
 int __devinit pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+=======
+int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -191,7 +219,11 @@ int pcibios_plat_dev_init(struct pci_dev *dev)
 }
 
 /*
+<<<<<<< HEAD
  * Device might live on a subordinate PCI bus.  XXX Walk up the chain of buses
+=======
+ * Device might live on a subordinate PCI bus.	XXX Walk up the chain of buses
+>>>>>>> refs/remotes/origin/master
  * to find the slot number in sense of the bridge device register.
  * XXX This also means multiple devices might rely on conflicting bridge
  * settings.
@@ -219,11 +251,19 @@ static inline void pci_enable_swapping(struct pci_dev *dev)
 	bridge->b_widget.w_tflush;	/* Flush */
 }
 
+<<<<<<< HEAD
 static void __init pci_fixup_ioc3(struct pci_dev *d)
+=======
+static void pci_fixup_ioc3(struct pci_dev *d)
+>>>>>>> refs/remotes/origin/master
 {
 	pci_disable_swapping(d);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NUMA
+>>>>>>> refs/remotes/origin/master
 int pcibus_to_node(struct pci_bus *bus)
 {
 	struct bridge_controller *bc = BRIDGE_CONTROLLER(bus);
@@ -231,6 +271,10 @@ int pcibus_to_node(struct pci_bus *bus)
 	return bc->nasid;
 }
 EXPORT_SYMBOL(pcibus_to_node);
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_NUMA */
+>>>>>>> refs/remotes/origin/master
 
 DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_SGI, PCI_DEVICE_ID_SGI_IOC3,
 	pci_fixup_ioc3);

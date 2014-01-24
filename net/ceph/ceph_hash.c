@@ -20,7 +20,11 @@
 		c = c - a;  c = c - b;  c = c ^ (b >> 15);	\
 	} while (0)
 
+<<<<<<< HEAD
 unsigned ceph_str_hash_rjenkins(const char *str, unsigned length)
+=======
+unsigned int ceph_str_hash_rjenkins(const char *str, unsigned int length)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned char *k = (const unsigned char *)str;
 	__u32 a, b, c;  /* the internal state */
@@ -81,7 +85,11 @@ unsigned ceph_str_hash_rjenkins(const char *str, unsigned length)
 /*
  * linux dcache hash
  */
+<<<<<<< HEAD
 unsigned ceph_str_hash_linux(const char *str, unsigned length)
+=======
+unsigned int ceph_str_hash_linux(const char *str, unsigned int length)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long hash = 0;
 	unsigned char c;
@@ -94,7 +102,11 @@ unsigned ceph_str_hash_linux(const char *str, unsigned length)
 }
 
 
+<<<<<<< HEAD
 unsigned ceph_str_hash(int type, const char *s, unsigned len)
+=======
+unsigned int ceph_str_hash(int type, const char *s, unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (type) {
 	case CEPH_STR_HASH_LINUX:

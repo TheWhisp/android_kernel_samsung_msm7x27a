@@ -1,9 +1,12 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Merged from files
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright © 2005 Agere Systems Inc.
  * All rights reserved.
  *   http://www.agere.com
@@ -51,6 +54,7 @@
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* et131x_eeprom.c */
 int et131x_init_eeprom(struct et131x_adapter *etdev);
@@ -155,6 +159,8 @@ void et131x_handle_send_interrupt(struct et131x_adapter *adapter);
 void et131x_free_busy_send_packets(struct et131x_adapter *adapter);
 int et131x_send_packets(struct sk_buff *skb, struct net_device *netdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_NAME "et131x"
 #define DRIVER_VERSION "v2.0"
 
@@ -254,6 +260,11 @@ int et131x_send_packets(struct sk_buff *skb, struct net_device *netdev);
  *31:	selfclr_disable
  */
 
+<<<<<<< HEAD
+=======
+#define ET_RESET_ALL	0x007F;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * SLV Timer reg at address 0x002C (low 24 bits)
  */
@@ -426,6 +437,17 @@ struct txdma_regs {			/* Location: */
  * 18-31: unused
  */
 
+<<<<<<< HEAD
+=======
+#define ET_RXDMA_CSR_HALT		0x0001
+#define ET_RXDMA_CSR_FBR0_SIZE_LO	0x0100
+#define ET_RXDMA_CSR_FBR0_SIZE_HI	0x0200
+#define ET_RXDMA_CSR_FBR0_ENABLE	0x0400
+#define ET_RXDMA_CSR_FBR1_SIZE_LO	0x0800
+#define ET_RXDMA_CSR_FBR1_SIZE_HI	0x1000
+#define ET_RXDMA_CSR_FBR1_ENABLE	0x2000
+#define ET_RXDMA_CSR_HALT_STATUS	0x00020000
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for dma writeback lo reg in rxdma address map
@@ -493,6 +515,11 @@ struct txdma_regs {			/* Location: */
  * 11-0: psr ndes
  */
 
+<<<<<<< HEAD
+=======
+#define ET_RXDMA_PSR_NUM_DES_MASK	0xFFF;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for packet status ring available offset reg in rxdma address map
  * located at address 0x202C
@@ -668,6 +695,12 @@ struct rxdma_regs {					/* Location: */
  * 0: txmac_en
  */
 
+<<<<<<< HEAD
+=======
+#define ET_TX_CTRL_FC_DISABLE	0x0008
+#define ET_TX_CTRL_TXMAC_ENABLE	0x0001
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for shadow pointer reg in txmac address map
  * located at address 0x3004
@@ -783,6 +816,12 @@ struct txmac_regs {			/* Location: */
  * 0: rxmac_en
  */
 
+<<<<<<< HEAD
+=======
+#define ET_RX_CTRL_WOL_DISABLE	0x0008
+#define ET_RX_CTRL_RXMAC_ENABLE	0x0001
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for Wake On Lan Control and CRC 0 reg in rxmac address map
  * located at address 0x4004
@@ -824,9 +863,15 @@ struct txmac_regs {			/* Location: */
  * 7-0: sa6
  */
 
+<<<<<<< HEAD
 #define ET_WOL_LO_SA3_SHIFT 24
 #define ET_WOL_LO_SA4_SHIFT 16
 #define ET_WOL_LO_SA5_SHIFT 8
+=======
+#define ET_RX_WOL_LO_SA3_SHIFT 24
+#define ET_RX_WOL_LO_SA4_SHIFT 16
+#define ET_RX_WOL_LO_SA5_SHIFT 8
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for Wake On Lan Source Address Hi reg in rxmac address map
@@ -837,7 +882,11 @@ struct txmac_regs {			/* Location: */
  * 7-0: sa2
  */
 
+<<<<<<< HEAD
 #define ET_WOL_HI_SA1_SHIFT 8
+=======
+#define ET_RX_WOL_HI_SA1_SHIFT 8
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for Wake On Lan mask reg in rxmac address map
@@ -855,9 +904,15 @@ struct txmac_regs {			/* Location: */
  * 7-0: addr1_6
  */
 
+<<<<<<< HEAD
 #define ET_UNI_PF_ADDR1_3_SHIFT 24
 #define ET_UNI_PF_ADDR1_4_SHIFT 16
 #define ET_UNI_PF_ADDR1_5_SHIFT 8
+=======
+#define ET_RX_UNI_PF_ADDR1_3_SHIFT 24
+#define ET_RX_UNI_PF_ADDR1_4_SHIFT 16
+#define ET_RX_UNI_PF_ADDR1_5_SHIFT 8
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for Unicast Paket Filter Address 2 reg in rxmac address map
@@ -869,9 +924,15 @@ struct txmac_regs {			/* Location: */
  * 7-0: addr2_6
  */
 
+<<<<<<< HEAD
 #define ET_UNI_PF_ADDR2_3_SHIFT 24
 #define ET_UNI_PF_ADDR2_4_SHIFT 16
 #define ET_UNI_PF_ADDR2_5_SHIFT 8
+=======
+#define ET_RX_UNI_PF_ADDR2_3_SHIFT 24
+#define ET_RX_UNI_PF_ADDR2_4_SHIFT 16
+#define ET_RX_UNI_PF_ADDR2_5_SHIFT 8
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for Unicast Paket Filter Address 1 & 2 reg in rxmac address map
@@ -883,10 +944,16 @@ struct txmac_regs {			/* Location: */
  * 7-0: addr1_2
  */
 
+<<<<<<< HEAD
 #define ET_UNI_PF_ADDR2_1_SHIFT 24
 #define ET_UNI_PF_ADDR2_2_SHIFT 16
 #define ET_UNI_PF_ADDR1_1_SHIFT 8
 
+=======
+#define ET_RX_UNI_PF_ADDR2_1_SHIFT 24
+#define ET_RX_UNI_PF_ADDR2_2_SHIFT 16
+#define ET_RX_UNI_PF_ADDR1_1_SHIFT 8
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for Multicast Hash reg in rxmac address map
@@ -907,6 +974,15 @@ struct txmac_regs {			/* Location: */
  * 0: filter_broad_en
  */
 
+<<<<<<< HEAD
+=======
+#define ET_RX_PFCTRL_MIN_PKT_SZ_SHIFT		16;
+#define ET_RX_PFCTRL_FRAG_FILTER_ENABLE		0x0008;
+#define ET_RX_PFCTRL_UNICST_FILTER_ENABLE	0x0004;
+#define ET_RX_PFCTRL_MLTCST_FILTER_ENABLE	0x0002;
+#define ET_RX_PFCTRL_BRDCST_FILTER_ENABLE	0x0001;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for Memory Controller Interface Control Max Segment reg in rxmac
  * address map.  Located at address 0x4088
@@ -917,6 +993,13 @@ struct txmac_regs {			/* Location: */
  * 0: seg_en
  */
 
+<<<<<<< HEAD
+=======
+#define ET_RX_MCIF_CTRL_MAX_SEG_SIZE_SHIFT	2;
+#define ET_RX_MCIF_CTRL_MAX_SEG_FC_ENABLE	0x0002;
+#define ET_RX_MCIF_CTRL_MAX_SEG_ENABLE		0x0001;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for Memory Controller Interface Water Mark reg in rxmac address
  * map.  Located at address 0x408C
@@ -1016,7 +1099,10 @@ struct rxmac_regs {					/* Location: */
 
 /* END OF RXMAC REGISTER ADDRESS MAP */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* START OF MAC REGISTER ADDRESS MAP */
 
 /*
@@ -1041,12 +1127,27 @@ struct rxmac_regs {					/* Location: */
  * 0: tx enable
  */
 
+<<<<<<< HEAD
 #define CFG1_LOOPBACK	0x00000100
 #define CFG1_RX_FLOW	0x00000020
 #define CFG1_TX_FLOW	0x00000010
 #define CFG1_RX_ENABLE	0x00000004
 #define CFG1_TX_ENABLE	0x00000001
 #define CFG1_WAIT	0x0000000A	/* RX & TX syncd */
+=======
+#define ET_MAC_CFG1_SOFT_RESET		0x80000000
+#define ET_MAC_CFG1_SIM_RESET		0x40000000
+#define ET_MAC_CFG1_RESET_RXMC		0x00080000
+#define ET_MAC_CFG1_RESET_TXMC		0x00040000
+#define ET_MAC_CFG1_RESET_RXFUNC	0x00020000
+#define ET_MAC_CFG1_RESET_TXFUNC	0x00010000
+#define ET_MAC_CFG1_LOOPBACK		0x00000100
+#define ET_MAC_CFG1_RX_FLOW		0x00000020
+#define ET_MAC_CFG1_TX_FLOW		0x00000010
+#define ET_MAC_CFG1_RX_ENABLE		0x00000004
+#define ET_MAC_CFG1_TX_ENABLE		0x00000001
+#define ET_MAC_CFG1_WAIT		0x0000000A	/* RX & TX syncd */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for configuration #2 reg in mac address map.
@@ -1064,6 +1165,18 @@ struct rxmac_regs {					/* Location: */
  * 0: full duplex
  */
 
+<<<<<<< HEAD
+=======
+#define ET_MAC_CFG2_PREAMBLE_SHIFT	12;
+#define ET_MAC_CFG2_IFMODE_MASK		0x0300;
+#define ET_MAC_CFG2_IFMODE_1000		0x0200;
+#define ET_MAC_CFG2_IFMODE_100		0x0100;
+#define ET_MAC_CFG2_IFMODE_HUGE_FRAME	0x0020;
+#define ET_MAC_CFG2_IFMODE_LEN_CHECK	0x0010;
+#define ET_MAC_CFG2_IFMODE_PAD_CRC	0x0004;
+#define ET_MAC_CFG2_IFMODE_CRC_ENABLE	0x0002;
+#define ET_MAC_CFG2_IFMODE_FULL_DPLX	0x0001;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for Interpacket gap reg in mac address map.
@@ -1118,6 +1231,11 @@ struct rxmac_regs {					/* Location: */
  * 2-0: mgmt clock reset
  */
 
+<<<<<<< HEAD
+=======
+#define ET_MAC_MIIMGMT_CLK_RST	0x0007
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for MII Management Command reg in mac address map.
  * located at address 0x5024
@@ -1134,7 +1252,11 @@ struct rxmac_regs {					/* Location: */
  * 4-0: register
  */
 
+<<<<<<< HEAD
 #define MII_ADDR(phy, reg)	((phy) << 8 | (reg))
+=======
+#define ET_MAC_MII_ADDR(phy, reg)	((phy) << 8 | (reg))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for MII Management Control reg in mac address map.
@@ -1150,6 +1272,11 @@ struct rxmac_regs {					/* Location: */
  * 15-0: phy control
  */
 
+<<<<<<< HEAD
+=======
+#define ET_MAC_MIIMGMT_STAT_PHYCRTL_MASK 0xFFFF;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for MII Management Indicators reg in mac address map.
  * located at address 0x5034
@@ -1159,8 +1286,13 @@ struct rxmac_regs {					/* Location: */
  * 0: busy
  */
 
+<<<<<<< HEAD
 #define MGMT_BUSY	0x00000001	/* busy */
 #define MGMT_WAIT	0x00000005	/* busy | not valid */
+=======
+#define ET_MAC_MGMT_BUSY	0x00000001	/* busy */
+#define ET_MAC_MGMT_WAIT	0x00000005	/* busy | not valid */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * structure for Interface Control reg in mac address map.
@@ -1185,6 +1317,12 @@ struct rxmac_regs {					/* Location: */
  * 0: enable jabber protection
  */
 
+<<<<<<< HEAD
+=======
+#define ET_MAC_IFCTRL_GHDMODE	(1 << 26)
+#define ET_MAC_IFCTRL_PHYMODE	(1 << 24)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * structure for Interface Status reg in mac address map.
  * located at address 0x503C
@@ -1647,10 +1785,13 @@ struct address_map {
  *	0:	int_en
  */
 
+<<<<<<< HEAD
 #define ET_PHY_INT_MASK_AUTONEGSTAT	0x0100
 #define ET_PHY_INT_MASK_LINKSTAT	0x0004
 #define ET_PHY_INT_MASK_ENABLE		0x0001
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MI Register 25: Interrupt Status Reg(0x19)
  *	15-10:	reserved
  *	9:	mdio_sync_lost
@@ -1733,6 +1874,7 @@ struct address_map {
 #define LED_100TX_SHIFT			4
 
 /* MI Register 29 - 31: Reserved Reg(0x1D - 0x1E) */
+<<<<<<< HEAD
 
 /* Defines for PHY access routines */
 
@@ -1774,3 +1916,5 @@ struct address_map {
 	(TRUEPHY_ADV_DUPLEX_FULL | TRUEPHY_ADV_DUPLEX_HALF)
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master

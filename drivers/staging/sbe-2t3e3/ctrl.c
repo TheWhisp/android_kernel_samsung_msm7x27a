@@ -31,7 +31,11 @@ void t3e3_set_frame_type(struct channel *sc, u32 mode)
 	sc->p.frame_type = mode;
 }
 
+<<<<<<< HEAD
 void t3e3_set_loopback(struct channel *sc, u32 mode)
+=======
+static void t3e3_set_loopback(struct channel *sc, u32 mode)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 tx, rx;
 
@@ -95,7 +99,11 @@ void t3e3_set_loopback(struct channel *sc, u32 mode)
 }
 
 
+<<<<<<< HEAD
 void t3e3_reg_read(struct channel *sc, u32 *reg, u32 *val)
+=======
+static void t3e3_reg_read(struct channel *sc, u32 *reg, u32 *val)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i;
 
@@ -132,7 +140,11 @@ void t3e3_reg_read(struct channel *sc, u32 *reg, u32 *val)
 	}
 }
 
+<<<<<<< HEAD
 void t3e3_reg_write(struct channel *sc, u32 *reg)
+=======
+static void t3e3_reg_write(struct channel *sc, u32 *reg)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i;
 
@@ -164,12 +176,20 @@ void t3e3_reg_write(struct channel *sc, u32 *reg)
 	}
 }
 
+<<<<<<< HEAD
 void t3e3_port_get(struct channel *sc, t3e3_param_t *param)
+=======
+static void t3e3_port_get(struct channel *sc, t3e3_param_t *param)
+>>>>>>> refs/remotes/origin/master
 {
 	memcpy(param, &(sc->p), sizeof(t3e3_param_t));
 }
 
+<<<<<<< HEAD
 void t3e3_port_set(struct channel *sc, t3e3_param_t *param)
+=======
+static void t3e3_port_set(struct channel *sc, t3e3_param_t *param)
+>>>>>>> refs/remotes/origin/master
 {
 	if (param->frame_mode != 0xff)
 		cpld_set_frame_mode(sc, param->frame_mode);
@@ -216,7 +236,11 @@ void t3e3_port_set(struct channel *sc, t3e3_param_t *param)
 		cpld_set_scrambler(sc, param->scrambler);
 }
 
+<<<<<<< HEAD
 void t3e3_port_get_stats(struct channel *sc,
+=======
+static void t3e3_port_get_stats(struct channel *sc,
+>>>>>>> refs/remotes/origin/master
 			 t3e3_stats_t *stats)
 {
 	u32 result;
@@ -230,11 +254,17 @@ void t3e3_port_get_stats(struct channel *sc,
 		result = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_E3_RX_CONFIGURATION_STATUS_2);
 		sc->s.LOF = result & SBE_2T3E3_FRAMER_VAL_E3_RX_LOF ? 1 : 0;
 		sc->s.OOF = result & SBE_2T3E3_FRAMER_VAL_E3_RX_OOF ? 1 : 0;
+<<<<<<< HEAD
 #if 0
 		sc->s.LOS = result & SBE_2T3E3_FRAMER_VAL_E3_RX_LOS ? 1 : 0;
 #else
 		cpld_LOS_update(sc);
 #endif
+=======
+
+		cpld_LOS_update(sc);
+
+>>>>>>> refs/remotes/origin/master
 		sc->s.AIS = result & SBE_2T3E3_FRAMER_VAL_E3_RX_AIS ? 1 : 0;
 		sc->s.FERF = result & SBE_2T3E3_FRAMER_VAL_E3_RX_FERF ? 1 : 0;
 		break;
@@ -243,11 +273,17 @@ void t3e3_port_get_stats(struct channel *sc,
 	case SBE_2T3E3_FRAME_TYPE_T3_M13:
 		result = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_T3_RX_CONFIGURATION_STATUS);
 		sc->s.AIS = result & SBE_2T3E3_FRAMER_VAL_T3_RX_AIS ? 1 : 0;
+<<<<<<< HEAD
 #if 0
 		sc->s.LOS = result & SBE_2T3E3_FRAMER_VAL_T3_RX_LOS ? 1 : 0;
 #else
 		cpld_LOS_update(sc);
 #endif
+=======
+
+		cpld_LOS_update(sc);
+
+>>>>>>> refs/remotes/origin/master
 		sc->s.IDLE = result & SBE_2T3E3_FRAMER_VAL_T3_RX_IDLE ? 1 : 0;
 		sc->s.OOF = result & SBE_2T3E3_FRAMER_VAL_T3_RX_OOF ? 1 : 0;
 
@@ -286,7 +322,11 @@ void t3e3_port_get_stats(struct channel *sc,
 	memcpy(stats, &(sc->s), sizeof(t3e3_stats_t));
 }
 
+<<<<<<< HEAD
 void t3e3_port_del_stats(struct channel *sc)
+=======
+static void t3e3_port_del_stats(struct channel *sc)
+>>>>>>> refs/remotes/origin/master
 {
 	memset(&(sc->s), 0, sizeof(t3e3_stats_t));
 }
@@ -322,10 +362,13 @@ void t3e3_if_config(struct channel *sc, u32 cmd, char *set,
 		*rlen = sizeof(ret->u.data);
 		break;
 	case SBE_2T3E3_PORT_WRITE_REGS:
+<<<<<<< HEAD
 #if 0
 		printk(KERN_DEBUG "SBE_2T3E3_PORT_WRITE_REGS, 0x%x, 0x%x, 0x%x\n",
 		       ((int*)data)[0], ((int*)data)[1], ((int*)data)[2]);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		t3e3_reg_write(sc, data);
 		*rlen = 0;
 		break;
@@ -336,9 +379,12 @@ void t3e3_if_config(struct channel *sc, u32 cmd, char *set,
 		*rlen = 0;
 		break;
 	}
+<<<<<<< HEAD
 
 	/* turn on interrupt */
 	/* cpld_start_intr(sc); */
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void t3e3_sc_init(struct channel *sc)

@@ -12,10 +12,14 @@
 #include <linux/slab.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 
 extern int atm_init_aal5(struct atm_vcc *vcc); /* "raw" AAL5 transport */
@@ -161,7 +165,10 @@ static int atmtcp_v_ioctl(struct atm_dev *dev,unsigned int cmd,void __user *arg)
 {
 	struct atm_cirange ci;
 	struct atm_vcc *vcc;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sock *s;
 	int i;
 
@@ -175,7 +182,11 @@ static int atmtcp_v_ioctl(struct atm_dev *dev,unsigned int cmd,void __user *arg)
 	for(i = 0; i < VCC_HTABLE_SIZE; ++i) {
 		struct hlist_head *head = &vcc_hash[i];
 
+<<<<<<< HEAD
 		sk_for_each(s, node, head) {
+=======
+		sk_for_each(s, head) {
+>>>>>>> refs/remotes/origin/master
 			vcc = atm_sk(s);
 			if (vcc->dev != dev)
 				continue;
@@ -268,12 +279,19 @@ static struct atm_vcc *find_vcc(struct atm_dev *dev, short vpi, int vci)
 {
         struct hlist_head *head;
         struct atm_vcc *vcc;
+<<<<<<< HEAD
         struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
         struct sock *s;
 
         head = &vcc_hash[vci & (VCC_HTABLE_SIZE -1)];
 
+<<<<<<< HEAD
         sk_for_each(s, node, head) {
+=======
+	sk_for_each(s, head) {
+>>>>>>> refs/remotes/origin/master
                 vcc = atm_sk(s);
                 if (vcc->dev == dev &&
                     vcc->vci == vci && vcc->vpi == vpi &&

@@ -15,10 +15,14 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if_ether.h>
 #include <linux/irq.h>
 #include <linux/serial.h>
@@ -32,9 +36,12 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define FSG_SDA_PIN		12
 #define FSG_SCL_PIN		13
@@ -279,6 +286,7 @@ MACHINE_START(FSG, "Freecom FSG-3")
 	/* Maintainer: www.nslu2-linux.org */
 	.map_io		= ixp4xx_map_io,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= ixp4xx_init_irq,
 	.timer		= &ixp4xx_timer,
 	.boot_params	= 0x0100,
@@ -287,12 +295,20 @@ MACHINE_START(FSG, "Freecom FSG-3")
 	.init_early	= ixp4xx_init_early,
 	.init_irq	= ixp4xx_init_irq,
 	.timer		= &ixp4xx_timer,
+=======
+	.init_early	= ixp4xx_init_early,
+	.init_irq	= ixp4xx_init_irq,
+	.init_time	= ixp4xx_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.init_machine	= fsg_init,
 #if defined(CONFIG_PCI)
 	.dma_zone_size	= SZ_64M,
 #endif
 	.restart	= ixp4xx_restart,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 

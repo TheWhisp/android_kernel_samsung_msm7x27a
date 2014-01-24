@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -20,7 +24,10 @@
  */
 struct pm8xxx_rtc_platform_data {
 	bool rtc_write_enable;
+<<<<<<< HEAD
 	bool rtc_alarm_powerup;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* __RTC_PM8XXX_H__ */

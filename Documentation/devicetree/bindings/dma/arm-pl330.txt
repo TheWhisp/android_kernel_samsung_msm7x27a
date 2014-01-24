@@ -9,12 +9,23 @@ Required properties:
     region.
   - interrupts: interrupt number to the cpu.
 
+<<<<<<< HEAD
+=======
+Optional properties:
+  - dma-coherent      : Present if dma operations are coherent
+  - #dma-cells: must be <1>. used to represent the number of integer
+    cells in the dmas property of client device.
+  - dma-channels: contains the total number of DMA channels supported by the DMAC
+  - dma-requests: contains the total number of DMA requests supported by the DMAC
+
+>>>>>>> refs/remotes/origin/master
 Example:
 
 	pdma0: pdma@12680000 {
 		compatible = "arm,pl330", "arm,primecell";
 		reg = <0x12680000 0x1000>;
 		interrupts = <99>;
+<<<<<<< HEAD
 	};
 
 Client drivers (device nodes requiring dma transfers from dev-to-mem or
@@ -28,3 +39,25 @@ as shown below.
       of the form <name>-dma-channel.
 
   Example:  tx-dma-channel = <&pdma0 12>;
+=======
+		#dma-cells = <1>;
+		#dma-channels = <8>;
+		#dma-requests = <32>;
+	};
+
+Client drivers (device nodes requiring dma transfers from dev-to-mem or
+mem-to-dev) should specify the DMA channel numbers and dma channel names
+as shown below.
+
+  [property name]  = <[phandle of the dma controller] [dma request id]>;
+  [property name]  = <[dma channel name]>
+
+      where 'dma request id' is the dma request number which is connected
+      to the client controller. The 'property name' 'dmas' and 'dma-names'
+      as required by the generic dma device tree binding helpers. The dma
+      names correspond 1:1 with the dma request ids in the dmas property.
+
+  Example:  dmas = <&pdma0 12
+		    &pdma1 11>;
+	    dma-names = "tx", "rx";
+>>>>>>> refs/remotes/origin/master

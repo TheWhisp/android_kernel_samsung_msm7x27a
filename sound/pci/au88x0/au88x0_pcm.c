@@ -123,7 +123,10 @@ static struct snd_pcm_hw_constraint_list hw_constraints_au8830_channels = {
 };
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void vortex_notify_pcm_vol_change(struct snd_card *card,
 			struct snd_kcontrol *kctl, int activate)
@@ -136,7 +139,10 @@ static void vortex_notify_pcm_vol_change(struct snd_card *card,
 				SNDRV_CTL_EVENT_MASK_INFO, &(kctl->id));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* open callback */
 static int snd_vortex_pcm_open(struct snd_pcm_substream *substream)
 {
@@ -184,9 +190,13 @@ static int snd_vortex_pcm_open(struct snd_pcm_substream *substream)
 #ifdef CHIP_AU8830
 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			VORTEX_IS_QUAD(vortex) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			VORTEX_IS_QUAD(vortex) &&
+>>>>>>> refs/remotes/origin/master
 			VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
 			runtime->hw.channels_max = 4;
 			snd_pcm_hw_constraint_list(runtime, 0,
@@ -249,21 +259,31 @@ snd_vortex_pcm_hw_params(struct snd_pcm_substream *substream,
 			vortex_adb_allocroute(chip, stream->dma,
 					      stream->nr_ch, stream->dir,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					      stream->type);
 =======
 					      stream->type,
 					      substream->number);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      stream->type,
+					      substream->number);
+>>>>>>> refs/remotes/origin/master
 		/* Alloc routes. */
 		dma =
 		    vortex_adb_allocroute(chip, -1,
 					  params_channels(hw_params),
+<<<<<<< HEAD
 <<<<<<< HEAD
 					  substream->stream, type);
 =======
 					  substream->stream, type,
 					  substream->number);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  substream->stream, type,
+					  substream->number);
+>>>>>>> refs/remotes/origin/master
 		if (dma < 0) {
 			spin_unlock_irq(&chip->lock);
 			return dma;
@@ -275,13 +295,19 @@ snd_vortex_pcm_hw_params(struct snd_pcm_substream *substream,
 					 params_period_bytes(hw_params),
 					 params_periods(hw_params));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
 			chip->pcm_vol[substream->number].active = 1;
 			vortex_notify_pcm_vol_change(chip->card,
 				chip->pcm_vol[substream->number].kctl, 1);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 #ifndef CHIP_AU8810
 	else {
@@ -312,11 +338,14 @@ static int snd_vortex_pcm_hw_free(struct snd_pcm_substream *substream)
 	// Delete audio routes.
 	if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_WT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (stream != NULL)
 			vortex_adb_allocroute(chip, stream->dma,
 					      stream->nr_ch, stream->dir,
 					      stream->type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (stream != NULL) {
 			if (VORTEX_PCM_TYPE(substream->pcm) == VORTEX_PCM_ADB) {
 				chip->pcm_vol[substream->number].active = 0;
@@ -329,7 +358,10 @@ static int snd_vortex_pcm_hw_free(struct snd_pcm_substream *substream)
 					      stream->type,
 					      substream->number);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 #ifndef CHIP_AU8810
 	else {
@@ -360,12 +392,17 @@ static int snd_vortex_pcm_prepare(struct snd_pcm_substream *substream)
 	spin_lock_irq(&chip->lock);
 	if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_WT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vortex_adbdma_setmode(chip, dma, 1, dir, fmt, 0 /*? */ ,
 				      0);
 =======
 		vortex_adbdma_setmode(chip, dma, 1, dir, fmt,
 				runtime->channels == 1 ? 0 : 1, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vortex_adbdma_setmode(chip, dma, 1, dir, fmt,
+				runtime->channels == 1 ? 0 : 1, 0);
+>>>>>>> refs/remotes/origin/master
 		vortex_adbdma_setstartbuffer(chip, dma, 0);
 		if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_SPDIF)
 			vortex_adb_setsrc(chip, dma, runtime->rate, dir);
@@ -411,11 +448,15 @@ static int snd_vortex_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 		stream->fifo_enabled = 0;
 		if (VORTEX_PCM_TYPE(substream->pcm) != VORTEX_PCM_WT)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			vortex_adbdma_pausefifo(chip, dma);
 		//vortex_adbdma_stopfifo(chip, dma);
 =======
 			vortex_adbdma_stopfifo(chip, dma);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			vortex_adbdma_stopfifo(chip, dma);
+>>>>>>> refs/remotes/origin/master
 #ifndef CHIP_AU8810
 		else {
 			printk(KERN_INFO "vortex: wt stop %d\n", dma);
@@ -550,7 +591,11 @@ static int snd_vortex_spdif_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
 }
 
 /* spdif controls */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vortex_mixer_spdif[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vortex_mixer_spdif[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
 		.name =		SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
@@ -568,7 +613,10 @@ static struct snd_kcontrol_new snd_vortex_mixer_spdif[] __devinitdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* subdevice PCM Volume control */
 
 static int snd_vortex_pcm_vol_info(struct snd_kcontrol *kcontrol,
@@ -621,7 +669,11 @@ static int snd_vortex_pcm_vol_put(struct snd_kcontrol *kcontrol,
 				case 4:
 					mixin = p->mixin[i];
 					break;
+<<<<<<< HEAD
 				};
+=======
+				}
+>>>>>>> refs/remotes/origin/master
 				vol = p->vol[i];
 				vortex_mix_setinputvolumebyte(vortex,
 					vortex->mixplayb[i], mixin, vol);
@@ -634,7 +686,11 @@ static int snd_vortex_pcm_vol_put(struct snd_kcontrol *kcontrol,
 
 static const DECLARE_TLV_DB_MINMAX(vortex_pcm_vol_db_scale, -9600, 2400);
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vortex_pcm_vol __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vortex_pcm_vol = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
 	.name = "PCM Playback Volume",
 	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
@@ -646,9 +702,14 @@ static struct snd_kcontrol_new snd_vortex_pcm_vol __devinitdata = {
 	.tlv = { .p = vortex_pcm_vol_db_scale },
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* create a pcm device */
 static int __devinit snd_vortex_new_pcm(vortex_t *chip, int idx, int nr)
+=======
+/* create a pcm device */
+static int snd_vortex_new_pcm(vortex_t *chip, int idx, int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	struct snd_kcontrol *kctl;
@@ -687,6 +748,32 @@ static int __devinit snd_vortex_new_pcm(vortex_t *chip, int idx, int nr)
 					      snd_dma_pci_data(chip->pci_dev),
 					      0x10000, 0x10000);
 
+<<<<<<< HEAD
+=======
+	switch (VORTEX_PCM_TYPE(pcm)) {
+	case VORTEX_PCM_ADB:
+		err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+					     snd_pcm_std_chmaps,
+					     VORTEX_IS_QUAD(chip) ? 4 : 2,
+					     0, NULL);
+		if (err < 0)
+			return err;
+		err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_CAPTURE,
+					     snd_pcm_std_chmaps, 2, 0, NULL);
+		if (err < 0)
+			return err;
+		break;
+#ifdef CHIP_AU8830
+	case VORTEX_PCM_A3D:
+		err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK,
+					     snd_pcm_std_chmaps, 1, 0, NULL);
+		if (err < 0)
+			return err;
+		break;
+#endif
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (VORTEX_PCM_TYPE(pcm) == VORTEX_PCM_SPDIF) {
 		for (i = 0; i < ARRAY_SIZE(snd_vortex_mixer_spdif); i++) {
 			kctl = snd_ctl_new1(&snd_vortex_mixer_spdif[i], chip);
@@ -697,7 +784,10 @@ static int __devinit snd_vortex_new_pcm(vortex_t *chip, int idx, int nr)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (VORTEX_PCM_TYPE(pcm) == VORTEX_PCM_ADB) {
 		for (i = 0; i < NR_PCM; i++) {
 			chip->pcm_vol[i].active = 0;
@@ -713,6 +803,9 @@ static int __devinit snd_vortex_new_pcm(vortex_t *chip, int idx, int nr)
 				return err;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

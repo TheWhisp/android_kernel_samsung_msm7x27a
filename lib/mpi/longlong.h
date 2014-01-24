@@ -19,6 +19,11 @@
  * the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
  * MA 02111-1307, USA. */
 
+<<<<<<< HEAD
+=======
+#include <asm-generic/bitops/count_zeros.h>
+
+>>>>>>> refs/remotes/origin/master
 /* You have to define the following before including this file:
  *
  * UWtype -- An unsigned type, default type for operations (typically a "word")
@@ -146,6 +151,7 @@ do { \
 	: "1" ((USItype)(n1)), \
 		"r" ((USItype)(n0)), \
 		"r" ((USItype)(d)))
+<<<<<<< HEAD
 
 #define count_leading_zeros(count, x) \
 	__asm__ ("clz %0,%1" \
@@ -164,6 +170,17 @@ do { \
 			"rI" (__m1)); \
 		(pl) = __m0 * __m1; \
 	} while (0)
+=======
+#endif /* __a29k__ */
+
+#if defined(__alpha) && W_TYPE_SIZE == 64
+#define umul_ppmm(ph, pl, m0, m1)			\
+do {							\
+	UDItype __m0 = (m0), __m1 = (m1);		\
+	(ph) = __builtin_alpha_umulh(__m0, __m1);	\
+	(pl) = __m0 * __m1;                             \
+} while (0)
+>>>>>>> refs/remotes/origin/master
 #define UMUL_TIME 46
 #ifndef LONGLONG_STANDALONE
 #define udiv_qrnnd(q, r, n1, n0, d) \
@@ -171,7 +188,11 @@ do { UDItype __r; \
 	(q) = __udiv_qrnnd(&__r, (n1), (n0), (d)); \
 	(r) = __r; \
 } while (0)
+<<<<<<< HEAD
 extern UDItype __udiv_qrnnd();
+=======
+extern UDItype __udiv_qrnnd(UDItype *, UDItype, UDItype, UDItype);
+>>>>>>> refs/remotes/origin/master
 #define UDIV_TIME 220
 #endif /* LONGLONG_STANDALONE */
 #endif /* __alpha */
@@ -298,11 +319,14 @@ extern UDItype __udiv_qrnnd();
 	: "1" ((USItype)(nh)), \
 		"0" ((USItype)(nl)), \
 		"g" ((USItype)(d)))
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 	__asm__ ("bsch/1 %1,%0" \
 	: "=g" (count) \
 	: "g" ((USItype)(x)), \
 	     "0" ((USItype)0))
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /***************************************
@@ -327,7 +351,12 @@ extern UDItype __udiv_qrnnd();
 	     "rM" ((USItype)(bh)), \
 	     "rM" ((USItype)(al)), \
 	     "rM" ((USItype)(bl)))
+<<<<<<< HEAD
 #if defined(_PA_RISC1_1)
+=======
+#if 0 && defined(_PA_RISC1_1)
+/* xmpyu uses floating point register which is not allowed in Linux kernel. */
+>>>>>>> refs/remotes/origin/master
 #define umul_ppmm(wh, wl, u, v) \
 do { \
 	union {UDItype __ll; \
@@ -346,7 +375,11 @@ do { \
 #define UMUL_TIME 40
 #define UDIV_TIME 80
 #endif
+<<<<<<< HEAD
 #ifndef LONGLONG_STANDALONE
+=======
+#if 0 /* #ifndef LONGLONG_STANDALONE */
+>>>>>>> refs/remotes/origin/master
 #define udiv_qrnnd(q, r, n1, n0, d) \
 do { USItype __r; \
 	(q) = __udiv_qrnnd(&__r, (n1), (n0), (d)); \
@@ -354,6 +387,7 @@ do { USItype __r; \
 } while (0)
 extern USItype __udiv_qrnnd();
 #endif /* LONGLONG_STANDALONE */
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 do { \
 	USItype __tmp; \
@@ -375,6 +409,8 @@ do { \
 	"sub		%0,%1,%0       ; Subtract it.              " \
 	: "=r" (count), "=r" (__tmp) : "1" (x)); \
 } while (0)
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* hppa */
 
 /***************************************
@@ -457,6 +493,7 @@ do { \
 	: "0" ((USItype)(n0)), \
 	     "1" ((USItype)(n1)), \
 	     "rm" ((USItype)(d)))
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 do { \
 	USItype __cbtmp; \
@@ -466,6 +503,8 @@ do { \
 } while (0)
 #define count_trailing_zeros(count, x) \
 	__asm__ ("bsfl %1,%0" : "=r" (count) : "rm" ((USItype)(x)))
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef UMUL_TIME
 #define UMUL_TIME 40
 #endif
@@ -536,6 +575,7 @@ do { \
 	     "dI" ((USItype)(d))); \
 	(r) = __rq.__i.__l; (q) = __rq.__i.__h; \
 } while (0)
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 do { \
 	USItype __cbtmp; \
@@ -545,6 +585,8 @@ do { \
 	(count) = __cbtmp ^ 31; \
 } while (0)
 #define COUNT_LEADING_ZEROS_0 (-32)	/* sic */
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(__i960mx)		/* what is the proper symbol to test??? */
 #define rshift_rhlc(r, h, l, c) \
 do { \
@@ -603,11 +645,14 @@ do { \
 	: "0" ((USItype)(n0)), \
 	     "1" ((USItype)(n1)), \
 	     "dmi" ((USItype)(d)))
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 	__asm__ ("bfffo %1{%b2:%b2},%0" \
 	: "=d" ((USItype)(count)) \
 	: "od" ((USItype)(x)), "n" (0))
 #define COUNT_LEADING_ZEROS_0 32
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* not mc68020 */
 #define umul_ppmm(xh, xl, a, b) \
 do { USItype __umul_tmp1, __umul_tmp2; \
@@ -664,6 +709,7 @@ do { USItype __umul_tmp1, __umul_tmp2; \
 	     "rJ" ((USItype)(bh)), \
 	     "rJ" ((USItype)(al)), \
 	     "rJ" ((USItype)(bl)))
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 do { \
 	USItype __cbtmp; \
@@ -673,6 +719,8 @@ do { \
 	(count) = __cbtmp ^ 31; \
 } while (0)
 #define COUNT_LEADING_ZEROS_0 63	/* sic */
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(__m88110__)
 #define umul_ppmm(wh, wl, u, v) \
 do { \
@@ -794,12 +842,15 @@ do {									\
 	: "0" (__xx.__ll), \
 	     "g" ((USItype)(d))); \
 	(r) = __xx.__i.__l; (q) = __xx.__i.__h; })
+<<<<<<< HEAD
 #define count_trailing_zeros(count, x) \
 do { \
 	__asm__("ffsd      %2,%0" \
 	: "=r"((USItype) (count)) \
 	: "0"((USItype) 0), "r"((USItype) (x))); \
 	} while (0)
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ns32000__ */
 
 /***************************************
@@ -870,11 +921,14 @@ do { \
 		"rI" ((USItype)(al)), \
 		"r" ((USItype)(bl))); \
 } while (0)
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 	__asm__ ("{cntlz|cntlzw} %0,%1" \
 	: "=r" ((USItype)(count)) \
 	: "r" ((USItype)(x)))
 #define COUNT_LEADING_ZEROS_0 32
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(_ARCH_PPC)
 #define umul_ppmm(ph, pl, m0, m1) \
 do { \
@@ -1016,6 +1070,7 @@ do { \
 } while (0)
 #define UMUL_TIME 20
 #define UDIV_TIME 200
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 do { \
 	if ((x) >= 0x10000) \
@@ -1029,6 +1084,8 @@ do { \
 		(count) += 16; \
 	} \
 } while (0)
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* RT/ROMP */
 
 /***************************************
@@ -1157,6 +1214,7 @@ do { \
 	"rI" ((USItype)(d)) \
 	: "%g1" __AND_CLOBBER_CC)
 #define UDIV_TIME 37
+<<<<<<< HEAD
 #define count_leading_zeros(count, x) \
 	__asm__ ("scan %1,0,%0" \
 	: "=r" ((USItype)(x)) \
@@ -1164,6 +1222,8 @@ do { \
 /* Early sparclites return 63 for an argument of 0, but they warn that future
 	implementations might change this.  Therefore, leave COUNT_LEADING_ZEROS_0
 	undefined.  */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __sparclite__ */
 #endif /* __sparc_v8__ */
 	/* Default to sparc v7 versions of umul_ppmm and udiv_qrnnd.  */
@@ -1469,6 +1529,7 @@ do { \
 #define udiv_qrnnd __udiv_qrnnd_c
 #endif
 
+<<<<<<< HEAD
 #undef count_leading_zeros
 #if !defined(count_leading_zeros)
 	extern
@@ -1510,6 +1571,8 @@ do { \
 } while (0)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef UDIV_NEEDS_NORMALIZATION
 #define UDIV_NEEDS_NORMALIZATION 0
 #endif

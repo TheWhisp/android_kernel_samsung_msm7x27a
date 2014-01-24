@@ -14,6 +14,10 @@
 
 #include <linux/init.h>
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/idr.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/input/mt.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -32,7 +36,13 @@ MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
 MODULE_DESCRIPTION("Input core");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 #define INPUT_DEVICES	256
+=======
+#define INPUT_MAX_CHAR_DEVICES		1024
+#define INPUT_FIRST_DYNAMIC_DEV		256
+static DEFINE_IDA(input_ida);
+>>>>>>> refs/remotes/origin/master
 
 static LIST_HEAD(input_dev_list);
 static LIST_HEAD(input_handler_list);
@@ -45,7 +55,11 @@ static LIST_HEAD(input_handler_list);
  */
 static DEFINE_MUTEX(input_mutex);
 
+<<<<<<< HEAD
 static struct input_handler *input_table[8];
+=======
+static const struct input_value input_value_sync = { EV_SYN, SYN_REPORT, 1 };
+>>>>>>> refs/remotes/origin/master
 
 static inline int is_event_supported(unsigned int code,
 				     unsigned long *bm, unsigned int max)
@@ -69,20 +83,85 @@ static int input_defuzz_abs_event(int value, int old_val, int fuzz)
 	return value;
 }
 
+<<<<<<< HEAD
+=======
+static void input_start_autorepeat(struct input_dev *dev, int code)
+{
+	if (test_bit(EV_REP, dev->evbit) &&
+	    dev->rep[REP_PERIOD] && dev->rep[REP_DELAY] &&
+	    dev->timer.data) {
+		dev->repeat_key = code;
+		mod_timer(&dev->timer,
+			  jiffies + msecs_to_jiffies(dev->rep[REP_DELAY]));
+	}
+}
+
+static void input_stop_autorepeat(struct input_dev *dev)
+{
+	del_timer(&dev->timer);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Pass event first through all filters and then, if event has not been
  * filtered out, through all open handles. This function is called with
  * dev->event_lock held and interrupts disabled.
  */
+<<<<<<< HEAD
 static void input_pass_event(struct input_dev *dev,
 			     unsigned int type, unsigned int code, int value)
 {
 	struct input_handler *handler;
 	struct input_handle *handle;
+=======
+static unsigned int input_to_handler(struct input_handle *handle,
+			struct input_value *vals, unsigned int count)
+{
+	struct input_handler *handler = handle->handler;
+	struct input_value *end = vals;
+	struct input_value *v;
+
+	for (v = vals; v != vals + count; v++) {
+		if (handler->filter &&
+		    handler->filter(handle, v->type, v->code, v->value))
+			continue;
+		if (end != v)
+			*end = *v;
+		end++;
+	}
+
+	count = end - vals;
+	if (!count)
+		return 0;
+
+	if (handler->events)
+		handler->events(handle, vals, count);
+	else if (handler->event)
+		for (v = vals; v != end; v++)
+			handler->event(handle, v->type, v->code, v->value);
+
+	return count;
+}
+
+/*
+ * Pass values first through all filters and then, if event has not been
+ * filtered out, through all open handles. This function is called with
+ * dev->event_lock held and interrupts disabled.
+ */
+static void input_pass_values(struct input_dev *dev,
+			      struct input_value *vals, unsigned int count)
+{
+	struct input_handle *handle;
+	struct input_value *v;
+
+	if (!count)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 
 	handle = rcu_dereference(dev->grab);
+<<<<<<< HEAD
 	if (handle)
 		handle->handler->event(handle, type, code, value);
 	else {
@@ -105,6 +184,37 @@ static void input_pass_event(struct input_dev *dev,
 	}
 
 	rcu_read_unlock();
+=======
+	if (handle) {
+		count = input_to_handler(handle, vals, count);
+	} else {
+		list_for_each_entry_rcu(handle, &dev->h_list, d_node)
+			if (handle->open)
+				count = input_to_handler(handle, vals, count);
+	}
+
+	rcu_read_unlock();
+
+	add_input_randomness(vals->type, vals->code, vals->value);
+
+	/* trigger auto repeat for key events */
+	for (v = vals; v != vals + count; v++) {
+		if (v->type == EV_KEY && v->value != 2) {
+			if (v->value)
+				input_start_autorepeat(dev, v->code);
+			else
+				input_stop_autorepeat(dev);
+		}
+	}
+}
+
+static void input_pass_event(struct input_dev *dev,
+			     unsigned int type, unsigned int code, int value)
+{
+	struct input_value vals[] = { { type, code, value } };
+
+	input_pass_values(dev, vals, ARRAY_SIZE(vals));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -121,6 +231,7 @@ static void input_repeat_key(unsigned long data)
 
 	if (test_bit(dev->repeat_key, dev->key) &&
 	    is_event_supported(dev->repeat_key, dev->keybit, KEY_MAX)) {
+<<<<<<< HEAD
 
 		input_pass_event(dev, EV_KEY, dev->repeat_key, 2);
 
@@ -133,6 +244,14 @@ static void input_repeat_key(unsigned long data)
 			 */
 			input_pass_event(dev, EV_SYN, SYN_REPORT, 1);
 		}
+=======
+		struct input_value vals[] =  {
+			{ EV_KEY, dev->repeat_key, 2 },
+			input_value_sync
+		};
+
+		input_pass_values(dev, vals, ARRAY_SIZE(vals));
+>>>>>>> refs/remotes/origin/master
 
 		if (dev->rep[REP_PERIOD])
 			mod_timer(&dev->timer, jiffies +
@@ -142,6 +261,7 @@ static void input_repeat_key(unsigned long data)
 	spin_unlock_irqrestore(&dev->event_lock, flags);
 }
 
+<<<<<<< HEAD
 static void input_start_autorepeat(struct input_dev *dev, int code)
 {
 	if (test_bit(EV_REP, dev->evbit) &&
@@ -161,11 +281,22 @@ static void input_stop_autorepeat(struct input_dev *dev)
 #define INPUT_IGNORE_EVENT	0
 #define INPUT_PASS_TO_HANDLERS	1
 #define INPUT_PASS_TO_DEVICE	2
+=======
+#define INPUT_IGNORE_EVENT	0
+#define INPUT_PASS_TO_HANDLERS	1
+#define INPUT_PASS_TO_DEVICE	2
+#define INPUT_SLOT		4
+#define INPUT_FLUSH		8
+>>>>>>> refs/remotes/origin/master
 #define INPUT_PASS_TO_ALL	(INPUT_PASS_TO_HANDLERS | INPUT_PASS_TO_DEVICE)
 
 static int input_handle_abs_event(struct input_dev *dev,
 				  unsigned int code, int *pval)
 {
+<<<<<<< HEAD
+=======
+	struct input_mt *mt = dev->mt;
+>>>>>>> refs/remotes/origin/master
 	bool is_mt_event;
 	int *pold;
 
@@ -174,12 +305,18 @@ static int input_handle_abs_event(struct input_dev *dev,
 		 * "Stage" the event; we'll flush it later, when we
 		 * get actual touch data.
 		 */
+<<<<<<< HEAD
 		if (*pval >= 0 && *pval < dev->mtsize)
 			dev->slot = *pval;
+=======
+		if (mt && *pval >= 0 && *pval < mt->num_slots)
+			mt->slot = *pval;
+>>>>>>> refs/remotes/origin/master
 
 		return INPUT_IGNORE_EVENT;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	is_mt_event = code >= ABS_MT_FIRST && code <= ABS_MT_LAST;
 =======
@@ -191,6 +328,14 @@ static int input_handle_abs_event(struct input_dev *dev,
 	} else if (dev->mt) {
 		struct input_mt_slot *mtslot = &dev->mt[dev->slot];
 		pold = &mtslot->abs[code - ABS_MT_FIRST];
+=======
+	is_mt_event = input_is_mt_value(code);
+
+	if (!is_mt_event) {
+		pold = &dev->absinfo[code].value;
+	} else if (mt) {
+		pold = &mt->slots[mt->slot].abs[code - ABS_MT_FIRST];
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/*
 		 * Bypass filtering for multi-touch events when
@@ -209,16 +354,27 @@ static int input_handle_abs_event(struct input_dev *dev,
 	}
 
 	/* Flush pending "slot" event */
+<<<<<<< HEAD
 	if (is_mt_event && dev->slot != input_abs_get_val(dev, ABS_MT_SLOT)) {
 		input_abs_set_val(dev, ABS_MT_SLOT, dev->slot);
 		input_pass_event(dev, EV_ABS, ABS_MT_SLOT, dev->slot);
+=======
+	if (is_mt_event && mt && mt->slot != input_abs_get_val(dev, ABS_MT_SLOT)) {
+		input_abs_set_val(dev, ABS_MT_SLOT, mt->slot);
+		return INPUT_PASS_TO_HANDLERS | INPUT_SLOT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return INPUT_PASS_TO_HANDLERS;
 }
 
+<<<<<<< HEAD
 static void input_handle_event(struct input_dev *dev,
 			       unsigned int type, unsigned int code, int value)
+=======
+static int input_get_disposition(struct input_dev *dev,
+			  unsigned int type, unsigned int code, int value)
+>>>>>>> refs/remotes/origin/master
 {
 	int disposition = INPUT_IGNORE_EVENT;
 
@@ -231,6 +387,7 @@ static void input_handle_event(struct input_dev *dev,
 			break;
 
 		case SYN_REPORT:
+<<<<<<< HEAD
 			if (!dev->sync) {
 				dev->sync = true;
 				disposition = INPUT_PASS_TO_HANDLERS;
@@ -238,12 +395,18 @@ static void input_handle_event(struct input_dev *dev,
 			break;
 		case SYN_MT_REPORT:
 			dev->sync = false;
+=======
+			disposition = INPUT_PASS_TO_HANDLERS | INPUT_FLUSH;
+			break;
+		case SYN_MT_REPORT:
+>>>>>>> refs/remotes/origin/master
 			disposition = INPUT_PASS_TO_HANDLERS;
 			break;
 		}
 		break;
 
 	case EV_KEY:
+<<<<<<< HEAD
 		if (is_event_supported(code, dev->keybit, KEY_MAX) &&
 		    !!test_bit(code, dev->key) != value) {
 
@@ -256,12 +419,31 @@ static void input_handle_event(struct input_dev *dev,
 			}
 
 			disposition = INPUT_PASS_TO_HANDLERS;
+=======
+		if (is_event_supported(code, dev->keybit, KEY_MAX)) {
+
+			/* auto-repeat bypasses state updates */
+			if (value == 2) {
+				disposition = INPUT_PASS_TO_HANDLERS;
+				break;
+			}
+
+			if (!!test_bit(code, dev->key) != !!value) {
+
+				__change_bit(code, dev->key);
+				disposition = INPUT_PASS_TO_HANDLERS;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case EV_SW:
 		if (is_event_supported(code, dev->swbit, SW_MAX) &&
+<<<<<<< HEAD
 		    !!test_bit(code, dev->sw) != value) {
+=======
+		    !!test_bit(code, dev->sw) != !!value) {
+>>>>>>> refs/remotes/origin/master
 
 			__change_bit(code, dev->sw);
 			disposition = INPUT_PASS_TO_HANDLERS;
@@ -288,7 +470,11 @@ static void input_handle_event(struct input_dev *dev,
 
 	case EV_LED:
 		if (is_event_supported(code, dev->ledbit, LED_MAX) &&
+<<<<<<< HEAD
 		    !!test_bit(code, dev->led) != value) {
+=======
+		    !!test_bit(code, dev->led) != !!value) {
+>>>>>>> refs/remotes/origin/master
 
 			__change_bit(code, dev->led);
 			disposition = INPUT_PASS_TO_ALL;
@@ -321,14 +507,58 @@ static void input_handle_event(struct input_dev *dev,
 		break;
 	}
 
+<<<<<<< HEAD
 	if (disposition != INPUT_IGNORE_EVENT && type != EV_SYN)
 		dev->sync = false;
+=======
+	return disposition;
+}
+
+static void input_handle_event(struct input_dev *dev,
+			       unsigned int type, unsigned int code, int value)
+{
+	int disposition;
+
+	disposition = input_get_disposition(dev, type, code, value);
+>>>>>>> refs/remotes/origin/master
 
 	if ((disposition & INPUT_PASS_TO_DEVICE) && dev->event)
 		dev->event(dev, type, code, value);
 
+<<<<<<< HEAD
 	if (disposition & INPUT_PASS_TO_HANDLERS)
 		input_pass_event(dev, type, code, value);
+=======
+	if (!dev->vals)
+		return;
+
+	if (disposition & INPUT_PASS_TO_HANDLERS) {
+		struct input_value *v;
+
+		if (disposition & INPUT_SLOT) {
+			v = &dev->vals[dev->num_vals++];
+			v->type = EV_ABS;
+			v->code = ABS_MT_SLOT;
+			v->value = dev->mt->slot;
+		}
+
+		v = &dev->vals[dev->num_vals++];
+		v->type = type;
+		v->code = code;
+		v->value = value;
+	}
+
+	if (disposition & INPUT_FLUSH) {
+		if (dev->num_vals >= 2)
+			input_pass_values(dev, dev->vals, dev->num_vals);
+		dev->num_vals = 0;
+	} else if (dev->num_vals >= dev->max_vals - 2) {
+		dev->vals[dev->num_vals++] = input_value_sync;
+		input_pass_values(dev, dev->vals, dev->num_vals);
+		dev->num_vals = 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -356,7 +586,10 @@ void input_event(struct input_dev *dev,
 	if (is_event_supported(type, dev->evbit, EV_MAX)) {
 
 		spin_lock_irqsave(&dev->event_lock, flags);
+<<<<<<< HEAD
 		add_input_randomness(type, code, value);
+=======
+>>>>>>> refs/remotes/origin/master
 		input_handle_event(dev, type, code, value);
 		spin_unlock_irqrestore(&dev->event_lock, flags);
 	}
@@ -465,8 +698,16 @@ EXPORT_SYMBOL(input_grab_device);
 static void __input_release_device(struct input_handle *handle)
 {
 	struct input_dev *dev = handle->dev;
+<<<<<<< HEAD
 
 	if (dev->grab == handle) {
+=======
+	struct input_handle *grabber;
+
+	grabber = rcu_dereference_protected(dev->grab,
+					    lockdep_is_held(&dev->mutex));
+	if (grabber == handle) {
+>>>>>>> refs/remotes/origin/master
 		rcu_assign_pointer(dev->grab, NULL);
 		/* Make sure input_pass_event() notices that grab is gone */
 		synchronize_rcu();
@@ -835,10 +1076,19 @@ int input_set_keycode(struct input_dev *dev,
 	if (test_bit(EV_KEY, dev->evbit) &&
 	    !is_event_supported(old_keycode, dev->keybit, KEY_MAX) &&
 	    __test_and_clear_bit(old_keycode, dev->key)) {
+<<<<<<< HEAD
 
 		input_pass_event(dev, EV_KEY, old_keycode, 0);
 		if (dev->sync)
 			input_pass_event(dev, EV_SYN, SYN_REPORT, 1);
+=======
+		struct input_value vals[] =  {
+			{ EV_KEY, old_keycode, 0 },
+			input_value_sync
+		};
+
+		input_pass_values(dev, vals, ARRAY_SIZE(vals));
+>>>>>>> refs/remotes/origin/master
 	}
 
  out:
@@ -848,6 +1098,7 @@ int input_set_keycode(struct input_dev *dev,
 }
 EXPORT_SYMBOL(input_set_keycode);
 
+<<<<<<< HEAD
 #define MATCH_BIT(bit, max) \
 		for (i = 0; i < BITS_TO_LONGS(max); i++) \
 			if ((id->bit[i] & dev->bit[i]) != id->bit[i]) \
@@ -855,11 +1106,16 @@ EXPORT_SYMBOL(input_set_keycode);
 		if (i != BITS_TO_LONGS(max)) \
 			continue;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct input_device_id *input_match_device(struct input_handler *handler,
 							struct input_dev *dev)
 {
 	const struct input_device_id *id;
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (id = handler->id_table; id->flags || id->driver_info; id++) {
 
@@ -879,6 +1135,7 @@ static const struct input_device_id *input_match_device(struct input_handler *ha
 			if (id->version != dev->id.version)
 				continue;
 
+<<<<<<< HEAD
 		MATCH_BIT(evbit,  EV_MAX);
 		MATCH_BIT(keybit, KEY_MAX);
 		MATCH_BIT(relbit, REL_MAX);
@@ -888,6 +1145,34 @@ static const struct input_device_id *input_match_device(struct input_handler *ha
 		MATCH_BIT(sndbit, SND_MAX);
 		MATCH_BIT(ffbit,  FF_MAX);
 		MATCH_BIT(swbit,  SW_MAX);
+=======
+		if (!bitmap_subset(id->evbit, dev->evbit, EV_MAX))
+			continue;
+
+		if (!bitmap_subset(id->keybit, dev->keybit, KEY_MAX))
+			continue;
+
+		if (!bitmap_subset(id->relbit, dev->relbit, REL_MAX))
+			continue;
+
+		if (!bitmap_subset(id->absbit, dev->absbit, ABS_MAX))
+			continue;
+
+		if (!bitmap_subset(id->mscbit, dev->mscbit, MSC_MAX))
+			continue;
+
+		if (!bitmap_subset(id->ledbit, dev->ledbit, LED_MAX))
+			continue;
+
+		if (!bitmap_subset(id->sndbit, dev->sndbit, SND_MAX))
+			continue;
+
+		if (!bitmap_subset(id->ffbit, dev->ffbit, FF_MAX))
+			continue;
+
+		if (!bitmap_subset(id->swbit, dev->swbit, SW_MAX))
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		if (!handler->match || handler->match(handler, dev))
 			return id;
@@ -1139,7 +1424,11 @@ static int input_handlers_seq_show(struct seq_file *seq, void *v)
 	seq_printf(seq, "N: Number=%u Name=%s", state->pos, handler->name);
 	if (handler->filter)
 		seq_puts(seq, " (filter)");
+<<<<<<< HEAD
 	if (handler->fops)
+=======
+	if (handler->legacy_minors)
+>>>>>>> refs/remotes/origin/master
 		seq_printf(seq, " Minor=%d", handler->minor);
 	seq_putc(seq, '\n');
 
@@ -1420,6 +1709,10 @@ static void input_dev_release(struct device *device)
 	input_ff_destroy(dev);
 	input_mt_destroy_slots(dev);
 	kfree(dev->absinfo);
+<<<<<<< HEAD
+=======
+	kfree(dev->vals);
+>>>>>>> refs/remotes/origin/master
 	kfree(dev);
 
 	module_put(THIS_MODULE);
@@ -1629,10 +1922,14 @@ static struct device_type input_dev_type = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *input_devnode(struct device *dev, mode_t *mode)
 =======
 static char *input_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *input_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "input/%s", dev_name(dev));
 }
@@ -1646,7 +1943,11 @@ EXPORT_SYMBOL_GPL(input_class);
 /**
  * input_allocate_device - allocate memory for new input device
  *
+<<<<<<< HEAD
  * Returns prepared struct input_dev or NULL.
+=======
+ * Returns prepared struct input_dev or %NULL.
+>>>>>>> refs/remotes/origin/master
  *
  * NOTE: Use input_free_device() to free devices that have not been
  * registered; input_unregister_device() should be used for already
@@ -1654,6 +1955,10 @@ EXPORT_SYMBOL_GPL(input_class);
  */
 struct input_dev *input_allocate_device(void)
 {
+<<<<<<< HEAD
+=======
+	static atomic_t input_no = ATOMIC_INIT(0);
+>>>>>>> refs/remotes/origin/master
 	struct input_dev *dev;
 
 	dev = kzalloc(sizeof(struct input_dev), GFP_KERNEL);
@@ -1663,9 +1968,19 @@ struct input_dev *input_allocate_device(void)
 		device_initialize(&dev->dev);
 		mutex_init(&dev->mutex);
 		spin_lock_init(&dev->event_lock);
+<<<<<<< HEAD
 		INIT_LIST_HEAD(&dev->h_list);
 		INIT_LIST_HEAD(&dev->node);
 
+=======
+		init_timer(&dev->timer);
+		INIT_LIST_HEAD(&dev->h_list);
+		INIT_LIST_HEAD(&dev->node);
+
+		dev_set_name(&dev->dev, "input%ld",
+			     (unsigned long) atomic_inc_return(&input_no) - 1);
+
+>>>>>>> refs/remotes/origin/master
 		__module_get(THIS_MODULE);
 	}
 
@@ -1673,6 +1988,74 @@ struct input_dev *input_allocate_device(void)
 }
 EXPORT_SYMBOL(input_allocate_device);
 
+<<<<<<< HEAD
+=======
+struct input_devres {
+	struct input_dev *input;
+};
+
+static int devm_input_device_match(struct device *dev, void *res, void *data)
+{
+	struct input_devres *devres = res;
+
+	return devres->input == data;
+}
+
+static void devm_input_device_release(struct device *dev, void *res)
+{
+	struct input_devres *devres = res;
+	struct input_dev *input = devres->input;
+
+	dev_dbg(dev, "%s: dropping reference to %s\n",
+		__func__, dev_name(&input->dev));
+	input_put_device(input);
+}
+
+/**
+ * devm_input_allocate_device - allocate managed input device
+ * @dev: device owning the input device being created
+ *
+ * Returns prepared struct input_dev or %NULL.
+ *
+ * Managed input devices do not need to be explicitly unregistered or
+ * freed as it will be done automatically when owner device unbinds from
+ * its driver (or binding fails). Once managed input device is allocated,
+ * it is ready to be set up and registered in the same fashion as regular
+ * input device. There are no special devm_input_device_[un]register()
+ * variants, regular ones work with both managed and unmanaged devices,
+ * should you need them. In most cases however, managed input device need
+ * not be explicitly unregistered or freed.
+ *
+ * NOTE: the owner device is set up as parent of input device and users
+ * should not override it.
+ */
+struct input_dev *devm_input_allocate_device(struct device *dev)
+{
+	struct input_dev *input;
+	struct input_devres *devres;
+
+	devres = devres_alloc(devm_input_device_release,
+			      sizeof(struct input_devres), GFP_KERNEL);
+	if (!devres)
+		return NULL;
+
+	input = input_allocate_device();
+	if (!input) {
+		devres_free(devres);
+		return NULL;
+	}
+
+	input->dev.parent = dev;
+	input->devres_managed = true;
+
+	devres->input = input;
+	devres_add(dev, devres);
+
+	return input;
+}
+EXPORT_SYMBOL(devm_input_allocate_device);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * input_free_device - free memory occupied by input_dev structure
  * @dev: input device to free
@@ -1689,8 +2072,19 @@ EXPORT_SYMBOL(input_allocate_device);
  */
 void input_free_device(struct input_dev *dev)
 {
+<<<<<<< HEAD
 	if (dev)
 		input_put_device(dev);
+=======
+	if (dev) {
+		if (dev->devres_managed)
+			WARN_ON(devres_destroy(dev->dev.parent,
+						devm_input_device_release,
+						devm_input_device_match,
+						dev));
+		input_put_device(dev);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(input_free_device);
 
@@ -1716,12 +2110,18 @@ void input_set_capability(struct input_dev *dev, unsigned int type, unsigned int
 
 	case EV_ABS:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		input_alloc_absinfo(dev);
 		if (!dev->absinfo)
 			return;
 
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__set_bit(code, dev->absbit);
 		break;
 
@@ -1766,8 +2166,13 @@ static unsigned int input_estimate_events_per_packet(struct input_dev *dev)
 	int i;
 	unsigned int events;
 
+<<<<<<< HEAD
 	if (dev->mtsize) {
 		mt_slots = dev->mtsize;
+=======
+	if (dev->mt) {
+		mt_slots = dev->mt->num_slots;
+>>>>>>> refs/remotes/origin/master
 	} else if (test_bit(ABS_MT_TRACKING_ID, dev->absbit)) {
 		mt_slots = dev->absinfo[ABS_MT_TRACKING_ID].maximum -
 			   dev->absinfo[ABS_MT_TRACKING_ID].minimum + 1,
@@ -1793,6 +2198,12 @@ static unsigned int input_estimate_events_per_packet(struct input_dev *dev)
 		if (test_bit(i, dev->relbit))
 			events++;
 
+<<<<<<< HEAD
+=======
+	/* Make room for KEY and MSC events */
+	events += 7;
+
+>>>>>>> refs/remotes/origin/master
 	return events;
 }
 
@@ -1815,96 +2226,9 @@ static void input_cleanse_bitmasks(struct input_dev *dev)
 	INPUT_CLEANSE_BITMASK(dev, SW, sw);
 }
 
-/**
- * input_register_device - register device with input core
- * @dev: device to be registered
- *
- * This function registers device with input core. The device must be
- * allocated with input_allocate_device() and all it's capabilities
- * set up before registering.
- * If function fails the device must be freed with input_free_device().
- * Once device has been successfully registered it can be unregistered
- * with input_unregister_device(); input_free_device() should not be
- * called in this case.
- */
-int input_register_device(struct input_dev *dev)
-{
-	static atomic_t input_no = ATOMIC_INIT(0);
-	struct input_handler *handler;
-	const char *path;
-	int error;
-
-	/* Every input device generates EV_SYN/SYN_REPORT events. */
-	__set_bit(EV_SYN, dev->evbit);
-
-	/* KEY_RESERVED is not supposed to be transmitted to userspace. */
-	__clear_bit(KEY_RESERVED, dev->keybit);
-
-	/* Make sure that bitmasks not mentioned in dev->evbit are clean. */
-	input_cleanse_bitmasks(dev);
-
-	if (!dev->hint_events_per_packet)
-		dev->hint_events_per_packet =
-				input_estimate_events_per_packet(dev);
-
-	/*
-	 * If delay and period are pre-set by the driver, then autorepeating
-	 * is handled by the driver itself and we don't do it in input.c.
-	 */
-	init_timer(&dev->timer);
-	if (!dev->rep[REP_DELAY] && !dev->rep[REP_PERIOD]) {
-		dev->timer.data = (long) dev;
-		dev->timer.function = input_repeat_key;
-		dev->rep[REP_DELAY] = 250;
-		dev->rep[REP_PERIOD] = 33;
-	}
-
-	if (!dev->getkeycode)
-		dev->getkeycode = input_default_getkeycode;
-
-	if (!dev->setkeycode)
-		dev->setkeycode = input_default_setkeycode;
-
-	dev_set_name(&dev->dev, "input%ld",
-		     (unsigned long) atomic_inc_return(&input_no) - 1);
-
-	error = device_add(&dev->dev);
-	if (error)
-		return error;
-
-	path = kobject_get_path(&dev->dev.kobj, GFP_KERNEL);
-	pr_info("%s as %s\n",
-		dev->name ? dev->name : "Unspecified device",
-		path ? path : "N/A");
-	kfree(path);
-
-	error = mutex_lock_interruptible(&input_mutex);
-	if (error) {
-		device_del(&dev->dev);
-		return error;
-	}
-
-	list_add_tail(&dev->node, &input_dev_list);
-
-	list_for_each_entry(handler, &input_handler_list, node)
-		input_attach_handler(dev, handler);
-
-	input_wakeup_procfs_readers();
-
-	mutex_unlock(&input_mutex);
-
-	return 0;
-}
-EXPORT_SYMBOL(input_register_device);
-
-/**
- * input_unregister_device - unregister previously registered device
- * @dev: device to be unregistered
- *
- * This function unregisters an input device. Once device is unregistered
- * the caller should not try to access it as it may get freed at any moment.
- */
-void input_unregister_device(struct input_dev *dev)
+<<<<<<< HEAD
+=======
+static void __input_unregister_device(struct input_dev *dev)
 {
 	struct input_handle *handle, *next;
 
@@ -1923,7 +2247,223 @@ void input_unregister_device(struct input_dev *dev)
 
 	mutex_unlock(&input_mutex);
 
+	device_del(&dev->dev);
+}
+
+static void devm_input_device_unregister(struct device *dev, void *res)
+{
+	struct input_devres *devres = res;
+	struct input_dev *input = devres->input;
+
+	dev_dbg(dev, "%s: unregistering device %s\n",
+		__func__, dev_name(&input->dev));
+	__input_unregister_device(input);
+}
+
+>>>>>>> refs/remotes/origin/master
+/**
+ * input_register_device - register device with input core
+ * @dev: device to be registered
+ *
+ * This function registers device with input core. The device must be
+ * allocated with input_allocate_device() and all it's capabilities
+ * set up before registering.
+ * If function fails the device must be freed with input_free_device().
+ * Once device has been successfully registered it can be unregistered
+ * with input_unregister_device(); input_free_device() should not be
+ * called in this case.
+<<<<<<< HEAD
+ */
+int input_register_device(struct input_dev *dev)
+{
+	static atomic_t input_no = ATOMIC_INIT(0);
+	struct input_handler *handler;
+	const char *path;
+	int error;
+
+=======
+ *
+ * Note that this function is also used to register managed input devices
+ * (ones allocated with devm_input_allocate_device()). Such managed input
+ * devices need not be explicitly unregistered or freed, their tear down
+ * is controlled by the devres infrastructure. It is also worth noting
+ * that tear down of managed input devices is internally a 2-step process:
+ * registered managed input device is first unregistered, but stays in
+ * memory and can still handle input_event() calls (although events will
+ * not be delivered anywhere). The freeing of managed input device will
+ * happen later, when devres stack is unwound to the point where device
+ * allocation was made.
+ */
+int input_register_device(struct input_dev *dev)
+{
+	struct input_devres *devres = NULL;
+	struct input_handler *handler;
+	unsigned int packet_size;
+	const char *path;
+	int error;
+
+	if (dev->devres_managed) {
+		devres = devres_alloc(devm_input_device_unregister,
+				      sizeof(struct input_devres), GFP_KERNEL);
+		if (!devres)
+			return -ENOMEM;
+
+		devres->input = dev;
+	}
+
+>>>>>>> refs/remotes/origin/master
+	/* Every input device generates EV_SYN/SYN_REPORT events. */
+	__set_bit(EV_SYN, dev->evbit);
+
+	/* KEY_RESERVED is not supposed to be transmitted to userspace. */
+	__clear_bit(KEY_RESERVED, dev->keybit);
+
+	/* Make sure that bitmasks not mentioned in dev->evbit are clean. */
+	input_cleanse_bitmasks(dev);
+
+<<<<<<< HEAD
+	if (!dev->hint_events_per_packet)
+		dev->hint_events_per_packet =
+				input_estimate_events_per_packet(dev);
+=======
+	packet_size = input_estimate_events_per_packet(dev);
+	if (dev->hint_events_per_packet < packet_size)
+		dev->hint_events_per_packet = packet_size;
+
+	dev->max_vals = dev->hint_events_per_packet + 2;
+	dev->vals = kcalloc(dev->max_vals, sizeof(*dev->vals), GFP_KERNEL);
+	if (!dev->vals) {
+		error = -ENOMEM;
+		goto err_devres_free;
+	}
+>>>>>>> refs/remotes/origin/master
+
+	/*
+	 * If delay and period are pre-set by the driver, then autorepeating
+	 * is handled by the driver itself and we don't do it in input.c.
+	 */
+<<<<<<< HEAD
+	init_timer(&dev->timer);
+=======
+>>>>>>> refs/remotes/origin/master
+	if (!dev->rep[REP_DELAY] && !dev->rep[REP_PERIOD]) {
+		dev->timer.data = (long) dev;
+		dev->timer.function = input_repeat_key;
+		dev->rep[REP_DELAY] = 250;
+		dev->rep[REP_PERIOD] = 33;
+	}
+
+	if (!dev->getkeycode)
+		dev->getkeycode = input_default_getkeycode;
+
+	if (!dev->setkeycode)
+		dev->setkeycode = input_default_setkeycode;
+
+<<<<<<< HEAD
+	dev_set_name(&dev->dev, "input%ld",
+		     (unsigned long) atomic_inc_return(&input_no) - 1);
+
+	error = device_add(&dev->dev);
+	if (error)
+		return error;
+=======
+	error = device_add(&dev->dev);
+	if (error)
+		goto err_free_vals;
+>>>>>>> refs/remotes/origin/master
+
+	path = kobject_get_path(&dev->dev.kobj, GFP_KERNEL);
+	pr_info("%s as %s\n",
+		dev->name ? dev->name : "Unspecified device",
+		path ? path : "N/A");
+	kfree(path);
+
+	error = mutex_lock_interruptible(&input_mutex);
+<<<<<<< HEAD
+	if (error) {
+		device_del(&dev->dev);
+		return error;
+	}
+=======
+	if (error)
+		goto err_device_del;
+>>>>>>> refs/remotes/origin/master
+
+	list_add_tail(&dev->node, &input_dev_list);
+
+	list_for_each_entry(handler, &input_handler_list, node)
+		input_attach_handler(dev, handler);
+
+	input_wakeup_procfs_readers();
+
+	mutex_unlock(&input_mutex);
+
+<<<<<<< HEAD
+	return 0;
+=======
+	if (dev->devres_managed) {
+		dev_dbg(dev->dev.parent, "%s: registering %s with devres.\n",
+			__func__, dev_name(&dev->dev));
+		devres_add(dev->dev.parent, devres);
+	}
+	return 0;
+
+err_device_del:
+	device_del(&dev->dev);
+err_free_vals:
+	kfree(dev->vals);
+	dev->vals = NULL;
+err_devres_free:
+	devres_free(devres);
+	return error;
+>>>>>>> refs/remotes/origin/master
+}
+EXPORT_SYMBOL(input_register_device);
+
+/**
+ * input_unregister_device - unregister previously registered device
+ * @dev: device to be unregistered
+ *
+ * This function unregisters an input device. Once device is unregistered
+ * the caller should not try to access it as it may get freed at any moment.
+ */
+void input_unregister_device(struct input_dev *dev)
+{
+<<<<<<< HEAD
+	struct input_handle *handle, *next;
+
+	input_disconnect_device(dev);
+
+	mutex_lock(&input_mutex);
+
+	list_for_each_entry_safe(handle, next, &dev->h_list, d_node)
+		handle->handler->disconnect(handle);
+	WARN_ON(!list_empty(&dev->h_list));
+
+	del_timer_sync(&dev->timer);
+	list_del_init(&dev->node);
+
+	input_wakeup_procfs_readers();
+
+	mutex_unlock(&input_mutex);
+
 	device_unregister(&dev->dev);
+=======
+	if (dev->devres_managed) {
+		WARN_ON(devres_destroy(dev->dev.parent,
+					devm_input_device_unregister,
+					devm_input_device_match,
+					dev));
+		__input_unregister_device(dev);
+		/*
+		 * We do not do input_put_device() here because it will be done
+		 * when 2nd devres fires up.
+		 */
+	} else {
+		__input_unregister_device(dev);
+		input_put_device(dev);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(input_unregister_device);
 
@@ -1938,6 +2478,7 @@ EXPORT_SYMBOL(input_unregister_device);
 int input_register_handler(struct input_handler *handler)
 {
 	struct input_dev *dev;
+<<<<<<< HEAD
 	int retval;
 
 	retval = mutex_lock_interruptible(&input_mutex);
@@ -1954,6 +2495,16 @@ int input_register_handler(struct input_handler *handler)
 		input_table[handler->minor >> 5] = handler;
 	}
 
+=======
+	int error;
+
+	error = mutex_lock_interruptible(&input_mutex);
+	if (error)
+		return error;
+
+	INIT_LIST_HEAD(&handler->h_list);
+
+>>>>>>> refs/remotes/origin/master
 	list_add_tail(&handler->node, &input_handler_list);
 
 	list_for_each_entry(dev, &input_dev_list, node)
@@ -1961,9 +2512,14 @@ int input_register_handler(struct input_handler *handler)
 
 	input_wakeup_procfs_readers();
 
+<<<<<<< HEAD
  out:
 	mutex_unlock(&input_mutex);
 	return retval;
+=======
+	mutex_unlock(&input_mutex);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(input_register_handler);
 
@@ -1986,9 +2542,12 @@ void input_unregister_handler(struct input_handler *handler)
 
 	list_del_init(&handler->node);
 
+<<<<<<< HEAD
 	if (handler->fops != NULL)
 		input_table[handler->minor >> 5] = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	input_wakeup_procfs_readers();
 
 	mutex_unlock(&input_mutex);
@@ -2105,6 +2664,7 @@ void input_unregister_handle(struct input_handle *handle)
 }
 EXPORT_SYMBOL(input_unregister_handle);
 
+<<<<<<< HEAD
 static int input_open_file(struct inode *inode, struct file *file)
 {
 	struct input_handler *handler;
@@ -2150,6 +2710,54 @@ static const struct file_operations input_fops = {
 	.open = input_open_file,
 	.llseek = noop_llseek,
 };
+=======
+/**
+ * input_get_new_minor - allocates a new input minor number
+ * @legacy_base: beginning or the legacy range to be searched
+ * @legacy_num: size of legacy range
+ * @allow_dynamic: whether we can also take ID from the dynamic range
+ *
+ * This function allocates a new device minor for from input major namespace.
+ * Caller can request legacy minor by specifying @legacy_base and @legacy_num
+ * parameters and whether ID can be allocated from dynamic range if there are
+ * no free IDs in legacy range.
+ */
+int input_get_new_minor(int legacy_base, unsigned int legacy_num,
+			bool allow_dynamic)
+{
+	/*
+	 * This function should be called from input handler's ->connect()
+	 * methods, which are serialized with input_mutex, so no additional
+	 * locking is needed here.
+	 */
+	if (legacy_base >= 0) {
+		int minor = ida_simple_get(&input_ida,
+					   legacy_base,
+					   legacy_base + legacy_num,
+					   GFP_KERNEL);
+		if (minor >= 0 || !allow_dynamic)
+			return minor;
+	}
+
+	return ida_simple_get(&input_ida,
+			      INPUT_FIRST_DYNAMIC_DEV, INPUT_MAX_CHAR_DEVICES,
+			      GFP_KERNEL);
+}
+EXPORT_SYMBOL(input_get_new_minor);
+
+/**
+ * input_free_minor - release previously allocated minor
+ * @minor: minor to be released
+ *
+ * This function releases previously allocated input minor so that it can be
+ * reused later.
+ */
+void input_free_minor(unsigned int minor)
+{
+	ida_simple_remove(&input_ida, minor);
+}
+EXPORT_SYMBOL(input_free_minor);
+>>>>>>> refs/remotes/origin/master
 
 static int __init input_init(void)
 {
@@ -2165,7 +2773,12 @@ static int __init input_init(void)
 	if (err)
 		goto fail1;
 
+<<<<<<< HEAD
 	err = register_chrdev(INPUT_MAJOR, "input", &input_fops);
+=======
+	err = register_chrdev_region(MKDEV(INPUT_MAJOR, 0),
+				     INPUT_MAX_CHAR_DEVICES, "input");
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		pr_err("unable to register char major %d", INPUT_MAJOR);
 		goto fail2;
@@ -2181,7 +2794,12 @@ static int __init input_init(void)
 static void __exit input_exit(void)
 {
 	input_proc_exit();
+<<<<<<< HEAD
 	unregister_chrdev(INPUT_MAJOR, "input");
+=======
+	unregister_chrdev_region(MKDEV(INPUT_MAJOR, 0),
+				 INPUT_MAX_CHAR_DEVICES);
+>>>>>>> refs/remotes/origin/master
 	class_unregister(&input_class);
 }
 

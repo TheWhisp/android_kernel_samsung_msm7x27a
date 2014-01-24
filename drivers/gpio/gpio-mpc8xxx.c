@@ -14,6 +14,10 @@
 #include <linux/io.h>
 #include <linux/of.h>
 #include <linux/of_gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/slab.h>
 #include <linux/irq.h>
@@ -38,7 +42,11 @@ struct mpc8xxx_gpio_chip {
 	 */
 	u32 data;
 	struct irq_domain *irq;
+<<<<<<< HEAD
 	void *of_dev_id_data;
+=======
+	const void *of_dev_id_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline u32 mpc8xxx_gpio2mask(unsigned int gpio)
@@ -69,10 +77,21 @@ static int mpc8572_gpio_get(struct gpio_chip *gc, unsigned int gpio)
 	u32 val;
 	struct of_mm_gpio_chip *mm = to_of_mm_gpio_chip(gc);
 	struct mpc8xxx_gpio_chip *mpc8xxx_gc = to_mpc8xxx_gpio_chip(mm);
+<<<<<<< HEAD
 
 	val = in_be32(mm->regs + GPIO_DAT) & ~in_be32(mm->regs + GPIO_DIR);
 
 	return (val | mpc8xxx_gc->data) & mpc8xxx_gpio2mask(gpio);
+=======
+	u32 out_mask, out_shadow;
+
+	out_mask = in_be32(mm->regs + GPIO_DIR);
+
+	val = in_be32(mm->regs + GPIO_DAT) & ~out_mask;
+	out_shadow = mpc8xxx_gc->data & out_mask;
+
+	return (val | out_shadow) & mpc8xxx_gpio2mask(gpio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mpc8xxx_gpio_get(struct gpio_chip *gc, unsigned int gpio)
@@ -163,7 +182,12 @@ static void mpc8xxx_gpio_irq_cascade(unsigned int irq, struct irq_desc *desc)
 	if (mask)
 		generic_handle_irq(irq_linear_revmap(mpc8xxx_gc->irq,
 						     32 - ffs(mask)));
+<<<<<<< HEAD
 	chip->irq_eoi(&desc->irq_data);
+=======
+	if (chip->irq_eoi)
+		chip->irq_eoi(&desc->irq_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mpc8xxx_irq_unmask(struct irq_data *d)
@@ -281,17 +305,27 @@ static struct irq_chip mpc8xxx_irq_chip = {
 	.irq_set_type	= mpc8xxx_irq_set_type,
 };
 
+<<<<<<< HEAD
 static int mpc8xxx_gpio_irq_map(struct irq_domain *h, unsigned int virq,
 				irq_hw_number_t hw)
+=======
+static int mpc8xxx_gpio_irq_map(struct irq_domain *h, unsigned int irq,
+				irq_hw_number_t hwirq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mpc8xxx_gpio_chip *mpc8xxx_gc = h->host_data;
 
 	if (mpc8xxx_gc->of_dev_id_data)
 		mpc8xxx_irq_chip.irq_set_type = mpc8xxx_gc->of_dev_id_data;
 
+<<<<<<< HEAD
 	irq_set_chip_data(virq, h->host_data);
 	irq_set_chip_and_handler(virq, &mpc8xxx_irq_chip, handle_level_irq);
 	irq_set_irq_type(virq, IRQ_TYPE_NONE);
+=======
+	irq_set_chip_data(irq, h->host_data);
+	irq_set_chip_and_handler(irq, &mpc8xxx_irq_chip, handle_level_irq);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

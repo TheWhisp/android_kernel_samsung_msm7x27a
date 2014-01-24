@@ -1,7 +1,11 @@
 /*
  * Ptrace support for Hexagon
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -32,6 +36,24 @@
 
 #include <asm/user.h>
 
+<<<<<<< HEAD
+=======
+#if arch_has_single_step()
+/*  Both called from ptrace_resume  */
+void user_enable_single_step(struct task_struct *child)
+{
+	pt_set_singlestep(task_pt_regs(child));
+	set_tsk_thread_flag(child, TIF_SINGLESTEP);
+}
+
+void user_disable_single_step(struct task_struct *child)
+{
+	pt_clr_singlestep(task_pt_regs(child));
+	clear_tsk_thread_flag(child, TIF_SINGLESTEP);
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int genregs_get(struct task_struct *target,
 		   const struct user_regset *regset,
 		   unsigned int pos, unsigned int count,
@@ -76,6 +98,13 @@ static int genregs_get(struct task_struct *target,
 	dummy = pt_cause(regs);
 	ONEXT(&dummy, cause);
 	ONEXT(&pt_badva(regs), badva);
+<<<<<<< HEAD
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION >=4
+	ONEXT(&regs->cs0, cs0);
+	ONEXT(&regs->cs1, cs1);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* Pad the rest with zeros, if needed */
 	if (!ret)
@@ -123,6 +152,14 @@ static int genregs_set(struct task_struct *target,
 	INEXT(&bucket, cause);
 	INEXT(&bucket, badva);
 
+<<<<<<< HEAD
+=======
+#if CONFIG_HEXAGON_ARCH_VERSION >=4
+	INEXT(&regs->cs0, cs0);
+	INEXT(&regs->cs1, cs1);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/* Ignore the rest, if needed */
 	if (!ret)
 		ret = user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,

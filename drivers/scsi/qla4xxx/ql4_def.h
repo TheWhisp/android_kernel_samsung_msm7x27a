@@ -1,6 +1,10 @@
 /*
  * QLogic iSCSI HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2010 QLogic Corporation
+=======
+ * Copyright (c)  2003-2013 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qla4xxx for copyright and licensing details.
  */
@@ -26,9 +30,13 @@
 #include <linux/mutex.h>
 #include <linux/aer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bsg-lib.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bsg-lib.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/tcp.h>
 #include <scsi/scsi.h>
@@ -38,10 +46,13 @@
 #include <scsi/scsi_transport.h>
 #include <scsi/scsi_transport_iscsi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "ql4_dbg.h"
 #include "ql4_nx.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi_bsg_iscsi.h>
 #include <scsi/scsi_netlink.h>
 #include <scsi/libiscsi.h>
@@ -50,7 +61,11 @@
 #include "ql4_nx.h"
 #include "ql4_fw.h"
 #include "ql4_nvram.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ql4_83xx.h"
+>>>>>>> refs/remotes/origin/master
 
 #ifndef PCI_DEVICE_ID_QLOGIC_ISP4010
 #define PCI_DEVICE_ID_QLOGIC_ISP4010	0x4010
@@ -68,6 +83,17 @@
 #define PCI_DEVICE_ID_QLOGIC_ISP8022	0x8022
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef PCI_DEVICE_ID_QLOGIC_ISP8324
+#define PCI_DEVICE_ID_QLOGIC_ISP8324	0x8032
+#endif
+
+#ifndef PCI_DEVICE_ID_QLOGIC_ISP8042
+#define PCI_DEVICE_ID_QLOGIC_ISP8042	0x8042
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define ISP4XXX_PCI_FN_1	0x1
 #define ISP4XXX_PCI_FN_2	0x3
 
@@ -125,10 +151,14 @@
 #define MAX_TARGETS		MAX_DEV_DB_ENTRIES
 #define MAX_LUNS		0xffff
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_AEN_ENTRIES		256 /* should be > EXT_DEF_MAX_AEN_QUEUE */
 =======
 #define MAX_AEN_ENTRIES		MAX_DEV_DB_ENTRIES
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_AEN_ENTRIES		MAX_DEV_DB_ENTRIES
+>>>>>>> refs/remotes/origin/master
 #define MAX_DDB_ENTRIES		MAX_DEV_DB_ENTRIES
 #define MAX_PDU_ENTRIES		32
 #define INVALID_ENTRY		0xFFFF
@@ -144,6 +174,10 @@
 #define RESPONSE_QUEUE_DEPTH		64
 #define QUEUE_SIZE			64
 #define DMA_BUFFER_SIZE			512
+<<<<<<< HEAD
+=======
+#define IOCB_HIWAT_CUSHION		4
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Misc
@@ -161,15 +195,38 @@
 #define ISCSI_NAME_SIZE			0xE0	/* ISCSI Name size */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define QL4_SESS_RECOVERY_TMO		30	/* iSCSI session */
 =======
 #define QL4_SESS_RECOVERY_TMO		120	/* iSCSI session */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define QL4_SESS_RECOVERY_TMO		120	/* iSCSI session */
+>>>>>>> refs/remotes/origin/master
 						/* recovery timeout */
 
 #define LSDW(x) ((u32)((u64)(x)))
 #define MSDW(x) ((u32)((((u64)(x)) >> 16) >> 16))
 
+<<<<<<< HEAD
+=======
+#define DEV_DB_NON_PERSISTENT	0
+#define DEV_DB_PERSISTENT	1
+
+#define COPY_ISID(dst_isid, src_isid) {			\
+	int i, j;					\
+	for (i = 0, j = ISID_SIZE - 1; i < ISID_SIZE;)	\
+		dst_isid[i++] = src_isid[j--];		\
+}
+
+#define SET_BITVAL(o, n, v) {	\
+	if (o)			\
+		n |= v;		\
+	else			\
+		n &= ~v;	\
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Retry & Timeout Values
  */
@@ -190,6 +247,7 @@
 #define ISNS_DEREG_TOV			5
 #define HBA_ONLINE_TOV			30
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define MAX_RESET_HA_RETRIES		2
 =======
@@ -200,6 +258,16 @@
 #define MAX_RESET_HA_RETRIES		2
 #define FW_ALIVE_WAIT_TOV		3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DISABLE_ACB_TOV			30
+#define IP_CONFIG_TOV			30
+#define LOGIN_TOV			12
+#define BOOT_LOGIN_RESP_TOV		60
+
+#define MAX_RESET_HA_RETRIES		2
+#define FW_ALIVE_WAIT_TOV		3
+#define IDC_EXTEND_TOV			8
+>>>>>>> refs/remotes/origin/master
 
 #define CMD_SP(Cmnd)			((Cmnd)->SCp.ptr)
 
@@ -244,7 +312,10 @@ struct srb {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Mailbox request block structure */
 struct mrb {
 	struct scsi_qla_host *ha;
@@ -254,7 +325,10 @@ struct mrb {
 	uint32_t pid;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Asynchronous Event Queue structure
  */
@@ -272,13 +346,17 @@ struct ql4_aen_log {
  */
 struct ddb_entry {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head list;	/* ddb list */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct scsi_qla_host *ha;
 	struct iscsi_cls_session *sess;
 	struct iscsi_cls_conn *conn;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	atomic_t state;		/* DDB State */
 
@@ -322,6 +400,8 @@ struct ddb_entry {
 	struct in6_addr remote_ipv6_addr;
 	struct in6_addr link_local_ipv6_addr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint16_t fw_ddb_index;	/* DDB firmware index */
 	uint32_t fw_ddb_device_state; /* F/W Device State  -- see ql4_fw.h */
 	uint16_t ddb_type;
@@ -350,7 +430,13 @@ struct ddb_entry {
 struct qla_ddb_index {
 	struct list_head list;
 	uint16_t fw_ddb_idx;
+<<<<<<< HEAD
 	struct dev_db_entry fw_ddb;
+=======
+	uint16_t flash_ddb_idx;
+	struct dev_db_entry fw_ddb;
+	uint8_t flash_isid[6];
+>>>>>>> refs/remotes/origin/master
 };
 
 #define DDB_IPADDR_LEN 64
@@ -364,7 +450,10 @@ struct ql4_tuple_ddb {
 #define DDB_OPT_IPV6 0x0e0e
 #define DDB_OPT_IPV4 0x0f0f
 	uint8_t isid[6];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -381,6 +470,7 @@ struct ql4_tuple_ddb {
  * DDB flags.
  */
 #define DF_RELOGIN		0	/* Relogin to device */
+<<<<<<< HEAD
 #define DF_ISNS_DISCOVERED	2	/* Device was discovered via iSNS */
 #define DF_FO_MASKED		3
 
@@ -389,6 +479,13 @@ struct ql4_tuple_ddb {
 #include "ql4_fw.h"
 #include "ql4_nvram.h"
 =======
+=======
+#define DF_BOOT_TGT		1	/* Boot target entry */
+#define DF_ISNS_DISCOVERED	2	/* Device was discovered via iSNS */
+#define DF_FO_MASKED		3
+#define DF_DISABLE_RELOGIN		4	/* Disable relogin to device */
+
+>>>>>>> refs/remotes/origin/master
 enum qla4_work_type {
 	QLA4_EVENT_AEN,
 	QLA4_EVENT_PING_STATUS,
@@ -411,7 +508,10 @@ struct qla4_work_evt {
 		} ping;
 	} u;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct ql82xx_hw_data {
 	/* Offsets for flash/nvram access (set to ~0 if not used). */
@@ -430,13 +530,21 @@ struct ql82xx_hw_data {
 	uint32_t flt_region_bootload;
 	uint32_t flt_region_fw;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t reserved;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	uint32_t flt_iscsi_param;
 	uint32_t flt_region_chap;
 	uint32_t flt_chap_size;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t flt_region_ddb;
+	uint32_t flt_ddb_size;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct qla4_8xxx_legacy_intr_set {
@@ -470,8 +578,15 @@ struct isp_operations {
 	void (*disable_intrs) (struct scsi_qla_host *);
 	void (*enable_intrs) (struct scsi_qla_host *);
 	int (*start_firmware) (struct scsi_qla_host *);
+<<<<<<< HEAD
 	irqreturn_t (*intr_handler) (int , void *);
 	void (*interrupt_service_routine) (struct scsi_qla_host *, uint32_t);
+=======
+	int (*restart_firmware) (struct scsi_qla_host *);
+	irqreturn_t (*intr_handler) (int , void *);
+	void (*interrupt_service_routine) (struct scsi_qla_host *, uint32_t);
+	int (*need_reset) (struct scsi_qla_host *);
+>>>>>>> refs/remotes/origin/master
 	int (*reset_chip) (struct scsi_qla_host *);
 	int (*reset_firmware) (struct scsi_qla_host *);
 	void (*queue_iocb) (struct scsi_qla_host *);
@@ -479,10 +594,34 @@ struct isp_operations {
 	uint16_t (*rd_shdw_req_q_out) (struct scsi_qla_host *);
 	uint16_t (*rd_shdw_rsp_q_in) (struct scsi_qla_host *);
 	int (*get_sys_info) (struct scsi_qla_host *);
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
 =======
+=======
+	uint32_t (*rd_reg_direct) (struct scsi_qla_host *, ulong);
+	void (*wr_reg_direct) (struct scsi_qla_host *, ulong, uint32_t);
+	int (*rd_reg_indirect) (struct scsi_qla_host *, uint32_t, uint32_t *);
+	int (*wr_reg_indirect) (struct scsi_qla_host *, uint32_t, uint32_t);
+	int (*idc_lock) (struct scsi_qla_host *);
+	void (*idc_unlock) (struct scsi_qla_host *);
+	void (*rom_lock_recovery) (struct scsi_qla_host *);
+	void (*queue_mailbox_command) (struct scsi_qla_host *, uint32_t *, int);
+	void (*process_mailbox_interrupt) (struct scsi_qla_host *, int);
+};
+
+struct ql4_mdump_size_table {
+	uint32_t size;
+	uint32_t size_cmask_02;
+	uint32_t size_cmask_04;
+	uint32_t size_cmask_08;
+	uint32_t size_cmask_10;
+	uint32_t size_cmask_FF;
+	uint32_t version;
+};
+
+>>>>>>> refs/remotes/origin/master
 /*qla4xxx ipaddress configuration details */
 struct ipaddress_config {
 	uint16_t ipv4_options;
@@ -545,7 +684,10 @@ struct ql4_boot_tgt_info {
 	struct ql4_boot_session_info boot_sec_sess;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Linux Host Adapter structure
  */
@@ -557,9 +699,17 @@ struct scsi_qla_host {
 #define AF_INIT_DONE			1 /* 0x00000002 */
 #define AF_MBOX_COMMAND			2 /* 0x00000004 */
 #define AF_MBOX_COMMAND_DONE		3 /* 0x00000008 */
+<<<<<<< HEAD
 #define AF_INTERRUPTS_ON		6 /* 0x00000040 */
 #define AF_GET_CRASH_RECORD		7 /* 0x00000080 */
 #define AF_LINK_UP			8 /* 0x00000100 */
+=======
+#define AF_ST_DISCOVERY_IN_PROGRESS	4 /* 0x00000010 */
+#define AF_INTERRUPTS_ON		6 /* 0x00000040 */
+#define AF_GET_CRASH_RECORD		7 /* 0x00000080 */
+#define AF_LINK_UP			8 /* 0x00000100 */
+#define AF_LOOPBACK			9 /* 0x00000200 */
+>>>>>>> refs/remotes/origin/master
 #define AF_IRQ_ATTACHED			10 /* 0x00000400 */
 #define AF_DISABLE_ACB_COMPLETE		11 /* 0x00000800 */
 #define AF_HA_REMOVAL			12 /* 0x00001000 */
@@ -571,10 +721,21 @@ struct scsi_qla_host {
 #define AF_EEH_BUSY			20 /* 0x00100000 */
 #define AF_PCI_CHANNEL_IO_PERM_FAILURE	21 /* 0x00200000 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #define AF_BUILD_DDB_LIST		22 /* 0x00400000 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AF_BUILD_DDB_LIST		22 /* 0x00400000 */
+#define AF_82XX_FW_DUMPED		24 /* 0x01000000 */
+#define AF_8XXX_RST_OWNER		25 /* 0x02000000 */
+#define AF_82XX_DUMP_READING		26 /* 0x04000000 */
+#define AF_83XX_NO_FW_DUMP		27 /* 0x08000000 */
+#define AF_83XX_IOCB_INTR_ON		28 /* 0x10000000 */
+#define AF_83XX_MBOX_INTR_ON		29 /* 0x20000000 */
+
+>>>>>>> refs/remotes/origin/master
 	unsigned long dpc_flags;
 
 #define DPC_RESET_HA			1 /* 0x00000002 */
@@ -589,12 +750,21 @@ struct scsi_qla_host {
 #define DPC_RESET_ACTIVE		20 /* 0x00040000 */
 #define DPC_HA_UNRECOVERABLE		21 /* 0x00080000 ISP-82xx only*/
 #define DPC_HA_NEED_QUIESCENT		22 /* 0x00100000 ISP-82xx only*/
+<<<<<<< HEAD
 
+=======
+#define DPC_POST_IDC_ACK		23 /* 0x00200000 */
+#define DPC_RESTORE_ACB			24 /* 0x01000000 */
+>>>>>>> refs/remotes/origin/master
 
 	struct Scsi_Host *host; /* pointer to host data */
 	uint32_t tot_ddbs;
 
 	uint16_t iocb_cnt;
+<<<<<<< HEAD
+=======
+	uint16_t iocb_hiwat;
+>>>>>>> refs/remotes/origin/master
 
 	/* SRB cache. */
 #define SRB_MIN_REQ	128
@@ -645,12 +815,15 @@ struct scsi_qla_host {
 	/* init_cb_t *init_cb; */
 	uint16_t firmware_options;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t tcp_options;
 	uint8_t ip_address[IP_ADDR_LEN];
 	uint8_t subnet_mask[IP_ADDR_LEN];
 	uint8_t gateway[IP_ADDR_LEN];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uint8_t alias[32];
 	uint8_t name_string[256];
 	uint8_t heartbeat_interval;
@@ -659,10 +832,14 @@ struct scsi_qla_host {
 	uint8_t my_mac[MAC_ADDR_LEN];
 	uint8_t serial_number[16];
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	uint16_t port_num;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint16_t port_num;
+>>>>>>> refs/remotes/origin/master
 	/* --- From GetFwState --- */
 	uint32_t firmware_state;
 	uint32_t addl_fw_state;
@@ -725,6 +902,7 @@ struct scsi_qla_host {
 	volatile uint32_t mbox_status[MBOX_REG_COUNT];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* local device database list (contains internal ddb entries) */
 	struct list_head ddb_list;
 
@@ -732,11 +910,15 @@ struct scsi_qla_host {
 =======
 	/* FW ddb index map */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* FW ddb index map */
+>>>>>>> refs/remotes/origin/master
 	struct ddb_entry *fw_ddb_index_map[MAX_DDB_ENTRIES];
 
 	/* Saved srb for status continuation entry processing */
 	struct srb *status_srb;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* IPv6 support info from InitFW */
 	uint8_t acb_version;
@@ -760,6 +942,12 @@ struct scsi_qla_host {
 
 	/* qla82xx specific fields */
 	struct device_reg_82xx  __iomem *qla4_8xxx_reg; /* Base I/O address */
+=======
+	uint8_t acb_version;
+
+	/* qla82xx specific fields */
+	struct device_reg_82xx  __iomem *qla4_82xx_reg; /* Base I/O address */
+>>>>>>> refs/remotes/origin/master
 	unsigned long nx_pcibase;	/* Base I/O address */
 	uint8_t *nx_db_rd_ptr;		/* Doorbell read pointer */
 	unsigned long nx_db_wr_ptr;	/* Door bell write pointer */
@@ -789,16 +977,28 @@ struct scsi_qla_host {
 
 	uint32_t nx_dev_init_timeout;
 	uint32_t nx_reset_timeout;
+<<<<<<< HEAD
 
 	struct completion mbx_intr_comp;
 
 <<<<<<< HEAD
 =======
+=======
+	void *fw_dump;
+	uint32_t fw_dump_size;
+	uint32_t fw_dump_capture_mask;
+	void *fw_dump_tmplt_hdr;
+	uint32_t fw_dump_tmplt_size;
+
+	struct completion mbx_intr_comp;
+
+>>>>>>> refs/remotes/origin/master
 	struct ipaddress_config ip_config;
 	struct iscsi_iface *iface_ipv4;
 	struct iscsi_iface *iface_ipv6_0;
 	struct iscsi_iface *iface_ipv6_1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* --- From About Firmware --- */
 	uint16_t iscsi_major;
@@ -809,6 +1009,12 @@ struct scsi_qla_host {
 	uint16_t bootload_build;
 <<<<<<< HEAD
 =======
+=======
+	/* --- From About Firmware --- */
+	struct about_fw_info fw_info;
+	uint32_t fw_uptime_secs;  /* seconds elapsed since fw bootup */
+	uint32_t fw_uptime_msecs; /* milliseconds beyond elapsed seconds */
+>>>>>>> refs/remotes/origin/master
 	uint16_t def_timeout; /* Default login timeout */
 
 	uint32_t flash_state;
@@ -845,6 +1051,18 @@ struct scsi_qla_host {
 #define MAX_MRB		128
 	struct mrb *active_mrb_array[MAX_MRB];
 	uint32_t mrb_index;
+<<<<<<< HEAD
+=======
+
+	uint32_t *reg_tbl;
+	struct qla4_83xx_reset_template reset_tmplt;
+	struct device_reg_83xx  __iomem *qla4_83xx_reg; /* Base I/O address
+							   for ISP8324 and
+							   and ISP8042 */
+	uint32_t pf_bit;
+	struct qla4_83xx_idc_information idc_info;
+	struct addr_ctrl_blk *saved_acb;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ql4_task_data {
@@ -864,31 +1082,47 @@ struct ql4_task_data {
 
 struct qla_endpoint {
 	struct Scsi_Host *host;
+<<<<<<< HEAD
 	struct sockaddr dst_addr;
+=======
+	struct sockaddr_storage dst_addr;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct qla_conn {
 	struct qla_endpoint *qla_ep;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline int is_ipv4_enabled(struct scsi_qla_host *ha)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ((ha->ipv4_options & IPOPT_IPv4_PROTOCOL_ENABLE) != 0);
 =======
 	return ((ha->ip_config.ipv4_options & IPOPT_IPV4_PROTOCOL_ENABLE) != 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ((ha->ip_config.ipv4_options & IPOPT_IPV4_PROTOCOL_ENABLE) != 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int is_ipv6_enabled(struct scsi_qla_host *ha)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ((ha->ipv6_options & IPV6_OPT_IPV6_PROTOCOL_ENABLE) != 0);
 =======
 	return ((ha->ip_config.ipv6_options &
 		IPV6_OPT_IPV6_PROTOCOL_ENABLE) != 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ((ha->ip_config.ipv6_options &
+		IPV6_OPT_IPV6_PROTOCOL_ENABLE) != 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int is_qla4010(struct scsi_qla_host *ha)
@@ -907,18 +1141,25 @@ static inline int is_qla4032(struct scsi_qla_host *ha)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int is_qla40XX(struct scsi_qla_host *ha)
 {
 	return is_qla4032(ha) || is_qla4022(ha) || is_qla4010(ha);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int is_qla8022(struct scsi_qla_host *ha)
 {
 	return ha->pdev->device == PCI_DEVICE_ID_QLOGIC_ISP8022;
 }
 
+<<<<<<< HEAD
 /* Note: Currently AER/EEH is now supported only for 8022 cards
  * This function needs to be updated when AER/EEH is enabled
  * for other cards.
@@ -926,21 +1167,51 @@ static inline int is_qla8022(struct scsi_qla_host *ha)
 static inline int is_aer_supported(struct scsi_qla_host *ha)
 {
 	return ha->pdev->device == PCI_DEVICE_ID_QLOGIC_ISP8022;
+=======
+static inline int is_qla8032(struct scsi_qla_host *ha)
+{
+	return ha->pdev->device == PCI_DEVICE_ID_QLOGIC_ISP8324;
+}
+
+static inline int is_qla8042(struct scsi_qla_host *ha)
+{
+	return ha->pdev->device == PCI_DEVICE_ID_QLOGIC_ISP8042;
+}
+
+static inline int is_qla80XX(struct scsi_qla_host *ha)
+{
+	return is_qla8022(ha) || is_qla8032(ha) || is_qla8042(ha);
+}
+
+static inline int is_aer_supported(struct scsi_qla_host *ha)
+{
+	return ((ha->pdev->device == PCI_DEVICE_ID_QLOGIC_ISP8022) ||
+		(ha->pdev->device == PCI_DEVICE_ID_QLOGIC_ISP8324));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int adapter_up(struct scsi_qla_host *ha)
 {
 	return (test_bit(AF_ONLINE, &ha->flags) != 0) &&
+<<<<<<< HEAD
 		(test_bit(AF_LINK_UP, &ha->flags) != 0);
+=======
+	       (test_bit(AF_LINK_UP, &ha->flags) != 0) &&
+	       (!test_bit(AF_LOOPBACK, &ha->flags));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct scsi_qla_host* to_qla_host(struct Scsi_Host *shost)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (struct scsi_qla_host *)shost->hostdata;
 =======
 	return (struct scsi_qla_host *)iscsi_host_priv(shost);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (struct scsi_qla_host *)iscsi_host_priv(shost);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void __iomem* isp_semaphore(struct scsi_qla_host *ha)
@@ -1061,10 +1332,13 @@ static inline void ql4xxx_unlock_drvr(struct scsi_qla_host *a)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*---------------------------------------------------------------------------*/
 
 /* Defines for qla4xxx_initialize_adapter() and qla4xxx_recover_adapter() */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int ql4xxx_reset_active(struct scsi_qla_host *ha)
 {
 	return test_bit(DPC_RESET_ACTIVE, &ha->dpc_flags) ||
@@ -1075,6 +1349,23 @@ static inline int ql4xxx_reset_active(struct scsi_qla_host *ha)
 	       test_bit(DPC_HA_UNRECOVERABLE, &ha->dpc_flags);
 
 }
+<<<<<<< HEAD
+=======
+
+static inline int qla4_8xxx_rd_direct(struct scsi_qla_host *ha,
+				      const uint32_t crb_reg)
+{
+	return ha->isp_ops->rd_reg_direct(ha, ha->reg_tbl[crb_reg]);
+}
+
+static inline void qla4_8xxx_wr_direct(struct scsi_qla_host *ha,
+				       const uint32_t crb_reg,
+				       const uint32_t value)
+{
+	ha->isp_ops->wr_reg_direct(ha, ha->reg_tbl[crb_reg], value);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*---------------------------------------------------------------------------*/
 
 /* Defines for qla4xxx_initialize_adapter() and qla4xxx_recover_adapter() */
@@ -1082,7 +1373,10 @@ static inline int ql4xxx_reset_active(struct scsi_qla_host *ha)
 #define INIT_ADAPTER    0
 #define RESET_ADAPTER   1
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PRESERVE_DDB_LIST	0
 #define REBUILD_DDB_LIST	1
 
@@ -1090,4 +1384,10 @@ static inline int ql4xxx_reset_active(struct scsi_qla_host *ha)
 #define PROCESS_ALL_AENS	 0
 #define FLUSH_DDB_CHANGED_AENS	 1
 
+<<<<<<< HEAD
+=======
+/* Defines for udev events */
+#define QL4_UEVENT_CODE_FW_DUMP		0
+
+>>>>>>> refs/remotes/origin/master
 #endif	/*_QLA4XXX_H */

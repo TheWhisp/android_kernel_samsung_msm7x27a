@@ -48,8 +48,13 @@
 
 extern struct bus_type ibmebus_bus_type;
 
+<<<<<<< HEAD
 int ibmebus_register_driver(struct of_platform_driver *drv);
 void ibmebus_unregister_driver(struct of_platform_driver *drv);
+=======
+int ibmebus_register_driver(struct platform_driver *drv);
+void ibmebus_unregister_driver(struct platform_driver *drv);
+>>>>>>> refs/remotes/origin/master
 
 int ibmebus_request_irq(u32 ist, irq_handler_t handler,
 			unsigned long irq_flags, const char *devname,

@@ -37,6 +37,7 @@
 
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #if !defined(CONFIG_ARM) && !defined(CONFIG_SUPERH) \
 	&& !defined(CONFIG_AVR32) && !defined(CONFIG_PPC32) \
 <<<<<<< HEAD
@@ -61,6 +62,8 @@ static inline void writesb(const void __iomem *addr, const void *buf, int len)
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_BLACKFIN
 
 /* NOTE:  these offsets are all in bytes */
@@ -80,10 +83,14 @@ static inline void musb_writel(void __iomem *addr, unsigned offset, u32 data)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_TUSB6010
 =======
 #if defined(CONFIG_USB_MUSB_TUSB6010) || defined (CONFIG_USB_MUSB_TUSB6010_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_USB_MUSB_TUSB6010) || defined (CONFIG_USB_MUSB_TUSB6010_MODULE)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * TUSB6010 doesn't allow 8-bit access; 16-bit access is the minimum.

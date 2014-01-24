@@ -57,8 +57,11 @@ PROPERTIES
           that any initialization related to interrupt sources shall
           be limited to sources explicitly referenced in the device tree.
 <<<<<<< HEAD
+<<<<<<< HEAD
        
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
   - big-endian
       Usage: optional
@@ -80,7 +83,10 @@ PROPERTIES
           in the global feature registers.  If specified, this field will
           override the value read from MPIC_GREG_FEATURE_LAST_SRC.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 INTERRUPT SPECIFIER DEFINITION
 
   Interrupt specifiers consists of 4 cells encoded as

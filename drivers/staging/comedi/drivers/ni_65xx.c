@@ -17,11 +17,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: ni_65xx
@@ -48,6 +51,7 @@ except maybe the 6514.
 
  */
 
+<<<<<<< HEAD
 #define _GNU_SOURCE
 #define DEBUG 1
 #define DEBUG_FLAGS
@@ -55,6 +59,15 @@ except maybe the 6514.
 #include <linux/slab.h>
 #include "../comedidev.h"
 
+=======
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/interrupt.h>
+
+#include "../comedidev.h"
+
+#include "comedi_fc.h"
+>>>>>>> refs/remotes/origin/master
 #include "mite.h"
 
 #define NI6514_DIO_SIZE 4096
@@ -109,6 +122,7 @@ static inline unsigned Filter_Enable(unsigned port)
 #define OverflowIntEnable		0x02
 #define EdgeIntEnable			0x01
 
+<<<<<<< HEAD
 static int ni_65xx_attach(struct comedi_device *dev,
 			  struct comedi_devconfig *it);
 static int ni_65xx_detach(struct comedi_device *dev);
@@ -122,6 +136,34 @@ static struct comedi_driver driver_ni_65xx = {
 struct ni_65xx_board {
 
 	int dev_id;
+=======
+enum ni_65xx_boardid {
+	BOARD_PCI6509,
+	BOARD_PXI6509,
+	BOARD_PCI6510,
+	BOARD_PCI6511,
+	BOARD_PXI6511,
+	BOARD_PCI6512,
+	BOARD_PXI6512,
+	BOARD_PCI6513,
+	BOARD_PXI6513,
+	BOARD_PCI6514,
+	BOARD_PXI6514,
+	BOARD_PCI6515,
+	BOARD_PXI6515,
+	BOARD_PCI6516,
+	BOARD_PCI6517,
+	BOARD_PCI6518,
+	BOARD_PCI6519,
+	BOARD_PCI6520,
+	BOARD_PCI6521,
+	BOARD_PXI6521,
+	BOARD_PCI6528,
+	BOARD_PXI6528,
+};
+
+struct ni_65xx_board {
+>>>>>>> refs/remotes/origin/master
 	const char *name;
 	unsigned num_dio_ports;
 	unsigned num_di_ports;
@@ -130,6 +172,7 @@ struct ni_65xx_board {
 };
 
 static const struct ni_65xx_board ni_65xx_boards[] = {
+<<<<<<< HEAD
 	{
 	 .dev_id = 0x7085,
 	 .name = "pci-6509",
@@ -254,6 +297,119 @@ static inline const struct ni_65xx_board *board(struct comedi_device *dev)
 	return dev->board_ptr;
 }
 
+=======
+	[BOARD_PCI6509] = {
+		.name		= "pci-6509",
+		.num_dio_ports	= 12,
+	},
+	[BOARD_PXI6509] = {
+		.name		= "pxi-6509",
+		.num_dio_ports	= 12,
+	},
+	[BOARD_PCI6510] = {
+		.name		= "pci-6510",
+		.num_di_ports	= 4,
+	},
+	[BOARD_PCI6511] = {
+		.name		= "pci-6511",
+		.num_di_ports	= 8,
+	},
+	[BOARD_PXI6511] = {
+		.name		= "pxi-6511",
+		.num_di_ports	= 8,
+	},
+	[BOARD_PCI6512] = {
+		.name		= "pci-6512",
+		.num_do_ports	= 8,
+	},
+	[BOARD_PXI6512] = {
+		.name		= "pxi-6512",
+		.num_do_ports	= 8,
+	},
+	[BOARD_PCI6513] = {
+		.name		= "pci-6513",
+		.num_do_ports	= 8,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PXI6513] = {
+		.name		= "pxi-6513",
+		.num_do_ports	= 8,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PCI6514] = {
+		.name		= "pci-6514",
+		.num_di_ports	= 4,
+		.num_do_ports	= 4,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PXI6514] = {
+		.name		= "pxi-6514",
+		.num_di_ports	= 4,
+		.num_do_ports	= 4,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PCI6515] = {
+		.name		= "pci-6515",
+		.num_di_ports	= 4,
+		.num_do_ports	= 4,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PXI6515] = {
+		.name		= "pxi-6515",
+		.num_di_ports	= 4,
+		.num_do_ports	= 4,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PCI6516] = {
+		.name		= "pci-6516",
+		.num_do_ports	= 4,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PCI6517] = {
+		.name		= "pci-6517",
+		.num_do_ports	= 4,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PCI6518] = {
+		.name		= "pci-6518",
+		.num_di_ports	= 2,
+		.num_do_ports	= 2,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PCI6519] = {
+		.name		= "pci-6519",
+		.num_di_ports	= 2,
+		.num_do_ports	= 2,
+		.invert_outputs	= 1,
+	},
+	[BOARD_PCI6520] = {
+		.name		= "pci-6520",
+		.num_di_ports	= 1,
+		.num_do_ports	= 1,
+	},
+	[BOARD_PCI6521] = {
+		.name		= "pci-6521",
+		.num_di_ports	= 1,
+		.num_do_ports	= 1,
+	},
+	[BOARD_PXI6521] = {
+		.name		= "pxi-6521",
+		.num_di_ports	= 1,
+		.num_do_ports	= 1,
+	},
+	[BOARD_PCI6528] = {
+		.name		= "pci-6528",
+		.num_di_ports	= 3,
+		.num_do_ports	= 3,
+	},
+	[BOARD_PXI6528] = {
+		.name		= "pxi-6528",
+		.num_di_ports	= 3,
+		.num_do_ports	= 3,
+	},
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned ni_65xx_port_by_channel(unsigned channel)
 {
 	return channel / ni_65xx_channels_per_port;
@@ -265,6 +421,7 @@ static inline unsigned ni_65xx_total_num_ports(const struct ni_65xx_board
 	return board->num_dio_ports + board->num_di_ports + board->num_do_ports;
 }
 
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(ni_65xx_pci_table) = {
 	{PCI_DEVICE(PCI_VENDOR_ID_NI, 0x1710)},
 	{PCI_DEVICE(PCI_VENDOR_ID_NI, 0x7085)},
@@ -293,6 +450,8 @@ static DEFINE_PCI_DEVICE_TABLE(ni_65xx_pci_table) = {
 
 MODULE_DEVICE_TABLE(pci, ni_65xx_pci_table);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct ni_65xx_private {
 	struct mite_struct *mite;
 	unsigned int filter_interval;
@@ -301,11 +460,14 @@ struct ni_65xx_private {
 	unsigned short dio_direction[NI_65XX_MAX_NUM_PORTS];
 };
 
+<<<<<<< HEAD
 static inline struct ni_65xx_private *private(struct comedi_device *dev)
 {
 	return dev->private;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct ni_65xx_subdevice_private {
 	unsigned base_port;
 };
@@ -316,6 +478,7 @@ static inline struct ni_65xx_subdevice_private *sprivate(struct comedi_subdevice
 	return subdev->private;
 }
 
+<<<<<<< HEAD
 static struct ni_65xx_subdevice_private *ni_65xx_alloc_subdevice_private(void)
 {
 	struct ni_65xx_subdevice_private *subdev_private =
@@ -327,10 +490,16 @@ static struct ni_65xx_subdevice_private *ni_65xx_alloc_subdevice_private(void)
 
 static int ni_65xx_find_device(struct comedi_device *dev, int bus, int slot);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ni_65xx_config_filter(struct comedi_device *dev,
 				 struct comedi_subdevice *s,
 				 struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct ni_65xx_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	const unsigned chan = CR_CHAN(insn->chanspec);
 	const unsigned port =
 	    sprivate(s)->base_port + ni_65xx_port_by_channel(chan);
@@ -347,6 +516,7 @@ static int ni_65xx_config_filter(struct comedi_device *dev,
 			interval = max_filter_interval;
 		data[1] = interval * filter_resolution_ns;
 
+<<<<<<< HEAD
 		if (interval != private(dev)->filter_interval) {
 			writeb(interval,
 			       private(dev)->mite->daq_io_addr +
@@ -363,6 +533,24 @@ static int ni_65xx_config_filter(struct comedi_device *dev,
 
 	writeb(private(dev)->filter_enable[port],
 	       private(dev)->mite->daq_io_addr + Filter_Enable(port));
+=======
+		if (interval != devpriv->filter_interval) {
+			writeb(interval,
+			       devpriv->mite->daq_io_addr +
+			       Filter_Interval);
+			devpriv->filter_interval = interval;
+		}
+
+		devpriv->filter_enable[port] |=
+		    1 << (chan % ni_65xx_channels_per_port);
+	} else {
+		devpriv->filter_enable[port] &=
+		    ~(1 << (chan % ni_65xx_channels_per_port));
+	}
+
+	writeb(devpriv->filter_enable[port],
+	       devpriv->mite->daq_io_addr + Filter_Enable(port));
+>>>>>>> refs/remotes/origin/master
 
 	return 2;
 }
@@ -371,6 +559,10 @@ static int ni_65xx_dio_insn_config(struct comedi_device *dev,
 				   struct comedi_subdevice *s,
 				   struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct ni_65xx_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned port;
 
 	if (insn->n < 1)
@@ -384,21 +576,35 @@ static int ni_65xx_dio_insn_config(struct comedi_device *dev,
 	case INSN_CONFIG_DIO_OUTPUT:
 		if (s->type != COMEDI_SUBD_DIO)
 			return -EINVAL;
+<<<<<<< HEAD
 		private(dev)->dio_direction[port] = COMEDI_OUTPUT;
 		writeb(0, private(dev)->mite->daq_io_addr + Port_Select(port));
+=======
+		devpriv->dio_direction[port] = COMEDI_OUTPUT;
+		writeb(0, devpriv->mite->daq_io_addr + Port_Select(port));
+>>>>>>> refs/remotes/origin/master
 		return 1;
 		break;
 	case INSN_CONFIG_DIO_INPUT:
 		if (s->type != COMEDI_SUBD_DIO)
 			return -EINVAL;
+<<<<<<< HEAD
 		private(dev)->dio_direction[port] = COMEDI_INPUT;
 		writeb(1, private(dev)->mite->daq_io_addr + Port_Select(port));
+=======
+		devpriv->dio_direction[port] = COMEDI_INPUT;
+		writeb(1, devpriv->mite->daq_io_addr + Port_Select(port));
+>>>>>>> refs/remotes/origin/master
 		return 1;
 		break;
 	case INSN_CONFIG_DIO_QUERY:
 		if (s->type != COMEDI_SUBD_DIO)
 			return -EINVAL;
+<<<<<<< HEAD
 		data[1] = private(dev)->dio_direction[port];
+=======
+		data[1] = devpriv->dio_direction[port];
+>>>>>>> refs/remotes/origin/master
 		return insn->n;
 		break;
 	default:
@@ -411,13 +617,21 @@ static int ni_65xx_dio_insn_bits(struct comedi_device *dev,
 				 struct comedi_subdevice *s,
 				 struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	const struct ni_65xx_board *board = comedi_board(dev);
+	struct ni_65xx_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int base_bitfield_channel;
 	unsigned read_bits = 0;
 	int last_port_offset = ni_65xx_port_by_channel(s->n_chan - 1);
 	int port_offset;
 
+<<<<<<< HEAD
 	if (insn->n != 2)
 		return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/master
 	base_bitfield_channel = CR_CHAN(insn->chanspec);
 	for (port_offset = ni_65xx_port_by_channel(base_bitfield_channel);
 	     port_offset <= last_port_offset; port_offset++) {
@@ -441,6 +655,7 @@ static int ni_65xx_dio_insn_bits(struct comedi_device *dev,
 		port_data &= 0xff;
 		if (port_mask) {
 			unsigned bits;
+<<<<<<< HEAD
 			private(dev)->output_bits[port] &= ~port_mask;
 			private(dev)->output_bits[port] |=
 			    port_data & port_mask;
@@ -456,6 +671,21 @@ static int ni_65xx_dio_insn_bits(struct comedi_device *dev,
 		    readb(private(dev)->mite->daq_io_addr + Port_Data(port));
 /* printk("read 0x%x from port %i\n", port_read_bits, port); */
 		if (s->type == COMEDI_SUBD_DO && board(dev)->invert_outputs) {
+=======
+			devpriv->output_bits[port] &= ~port_mask;
+			devpriv->output_bits[port] |=
+			    port_data & port_mask;
+			bits = devpriv->output_bits[port];
+			if (board->invert_outputs)
+				bits = ~bits;
+			writeb(bits,
+			       devpriv->mite->daq_io_addr +
+			       Port_Data(port));
+		}
+		port_read_bits =
+		    readb(devpriv->mite->daq_io_addr + Port_Data(port));
+		if (s->type == COMEDI_SUBD_DO && board->invert_outputs) {
+>>>>>>> refs/remotes/origin/master
 			/* Outputs inverted, so invert value read back from
 			 * DO subdevice.  (Does not apply to boards with DIO
 			 * subdevice.) */
@@ -475,17 +705,29 @@ static int ni_65xx_dio_insn_bits(struct comedi_device *dev,
 static irqreturn_t ni_65xx_interrupt(int irq, void *d)
 {
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s = dev->subdevices + 2;
 	unsigned int status;
 
 	status = readb(private(dev)->mite->daq_io_addr + Change_Status);
+=======
+	struct ni_65xx_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->read_subdev;
+	unsigned int status;
+
+	status = readb(devpriv->mite->daq_io_addr + Change_Status);
+>>>>>>> refs/remotes/origin/master
 	if ((status & MasterInterruptStatus) == 0)
 		return IRQ_NONE;
 	if ((status & EdgeStatus) == 0)
 		return IRQ_NONE;
 
 	writeb(ClrEdge | ClrOverflow,
+<<<<<<< HEAD
 	       private(dev)->mite->daq_io_addr + Clear_Register);
+=======
+	       devpriv->mite->daq_io_addr + Clear_Register);
+>>>>>>> refs/remotes/origin/master
 
 	comedi_buf_put(s->async, 0);
 	s->async->events |= COMEDI_CB_EOS;
@@ -498,6 +740,7 @@ static int ni_65xx_intr_cmdtest(struct comedi_device *dev,
 				struct comedi_cmd *cmd)
 {
 	int err = 0;
+<<<<<<< HEAD
 	int tmp;
 
 	/* step 1: make sure trigger sources are trivially valid */
@@ -526,16 +769,32 @@ static int ni_65xx_intr_cmdtest(struct comedi_device *dev,
 	cmd->stop_src &= TRIG_COUNT;
 	if (!cmd->stop_src || tmp != cmd->stop_src)
 		err++;
+=======
+
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src, TRIG_OTHER);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_FOLLOW);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 1;
 
+<<<<<<< HEAD
 	/* step 2: make sure trigger sources are unique and mutually
 	compatible */
+=======
+	/* Step 2a : make sure trigger sources are unique */
+	/* Step 2b : and mutually compatible */
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 2;
 
+<<<<<<< HEAD
 	/* step 3: make sure arguments are trivially compatible */
 
 	if (cmd->start_arg != 0) {
@@ -559,6 +818,15 @@ static int ni_65xx_intr_cmdtest(struct comedi_device *dev,
 		cmd->stop_arg = 0;
 		err++;
 	}
+=======
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->scan_begin_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->convert_arg, 0);
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, 1);
+	err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 3;
@@ -574,6 +842,7 @@ static int ni_65xx_intr_cmdtest(struct comedi_device *dev,
 static int ni_65xx_intr_cmd(struct comedi_device *dev,
 			    struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
 	/* struct comedi_cmd *cmd = &s->async->cmd; */
 
 	writeb(ClrEdge | ClrOverflow,
@@ -581,6 +850,16 @@ static int ni_65xx_intr_cmd(struct comedi_device *dev,
 	writeb(FallingEdgeIntEnable | RisingEdgeIntEnable |
 	       MasterInterruptEnable | EdgeIntEnable,
 	       private(dev)->mite->daq_io_addr + Master_Interrupt_Control);
+=======
+	struct ni_65xx_private *devpriv = dev->private;
+	/* struct comedi_cmd *cmd = &s->async->cmd; */
+
+	writeb(ClrEdge | ClrOverflow,
+	       devpriv->mite->daq_io_addr + Clear_Register);
+	writeb(FallingEdgeIntEnable | RisingEdgeIntEnable |
+	       MasterInterruptEnable | EdgeIntEnable,
+	       devpriv->mite->daq_io_addr + Master_Interrupt_Control);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -588,8 +867,14 @@ static int ni_65xx_intr_cmd(struct comedi_device *dev,
 static int ni_65xx_intr_cancel(struct comedi_device *dev,
 			       struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
 	writeb(0x00,
 	       private(dev)->mite->daq_io_addr + Master_Interrupt_Control);
+=======
+	struct ni_65xx_private *devpriv = dev->private;
+
+	writeb(0x00, devpriv->mite->daq_io_addr + Master_Interrupt_Control);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -598,11 +883,16 @@ static int ni_65xx_intr_insn_bits(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	if (insn->n < 1)
 		return -EINVAL;
 
 	data[1] = 0;
 	return 2;
+=======
+	data[1] = 0;
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ni_65xx_intr_insn_config(struct comedi_device *dev,
@@ -610,12 +900,18 @@ static int ni_65xx_intr_insn_config(struct comedi_device *dev,
 				    struct comedi_insn *insn,
 				    unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct ni_65xx_private *devpriv = dev->private;
+
+>>>>>>> refs/remotes/origin/master
 	if (insn->n < 1)
 		return -EINVAL;
 	if (data[0] != INSN_CONFIG_CHANGE_NOTIFY)
 		return -EINVAL;
 
 	writeb(data[1],
+<<<<<<< HEAD
 	       private(dev)->mite->daq_io_addr +
 	       Rising_Edge_Detection_Enable(0));
 	writeb(data[1] >> 8,
@@ -639,18 +935,54 @@ static int ni_65xx_intr_insn_config(struct comedi_device *dev,
 	       Falling_Edge_Detection_Enable(0x20));
 	writeb(data[2] >> 24,
 	       private(dev)->mite->daq_io_addr +
+=======
+	       devpriv->mite->daq_io_addr +
+	       Rising_Edge_Detection_Enable(0));
+	writeb(data[1] >> 8,
+	       devpriv->mite->daq_io_addr +
+	       Rising_Edge_Detection_Enable(0x10));
+	writeb(data[1] >> 16,
+	       devpriv->mite->daq_io_addr +
+	       Rising_Edge_Detection_Enable(0x20));
+	writeb(data[1] >> 24,
+	       devpriv->mite->daq_io_addr +
+	       Rising_Edge_Detection_Enable(0x30));
+
+	writeb(data[2],
+	       devpriv->mite->daq_io_addr +
+	       Falling_Edge_Detection_Enable(0));
+	writeb(data[2] >> 8,
+	       devpriv->mite->daq_io_addr +
+	       Falling_Edge_Detection_Enable(0x10));
+	writeb(data[2] >> 16,
+	       devpriv->mite->daq_io_addr +
+	       Falling_Edge_Detection_Enable(0x20));
+	writeb(data[2] >> 24,
+	       devpriv->mite->daq_io_addr +
+>>>>>>> refs/remotes/origin/master
 	       Falling_Edge_Detection_Enable(0x30));
 
 	return 2;
 }
 
+<<<<<<< HEAD
 static int ni_65xx_attach(struct comedi_device *dev,
 			  struct comedi_devconfig *it)
 {
+=======
+static int ni_65xx_auto_attach(struct comedi_device *dev,
+			       unsigned long context)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	const struct ni_65xx_board *board = NULL;
+	struct ni_65xx_private *devpriv;
+	struct ni_65xx_subdevice_private *spriv;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_subdevice *s;
 	unsigned i;
 	int ret;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "comedi%d: ni_65xx:", dev->minor);
 
 	ret = alloc_private(dev, sizeof(struct ni_65xx_private));
@@ -684,18 +1016,67 @@ static int ni_65xx_attach(struct comedi_device *dev,
 		s->subdev_flags = SDF_READABLE;
 		s->n_chan =
 		    board(dev)->num_di_ports * ni_65xx_channels_per_port;
+=======
+	if (context < ARRAY_SIZE(ni_65xx_boards))
+		board = &ni_65xx_boards[context];
+	if (!board)
+		return -ENODEV;
+	dev->board_ptr = board;
+	dev->board_name = board->name;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	devpriv->mite = mite_alloc(pcidev);
+	if (!devpriv->mite)
+		return -ENOMEM;
+
+	ret = mite_setup(devpriv->mite);
+	if (ret < 0) {
+		dev_warn(dev->class_dev, "error setting up mite\n");
+		return ret;
+	}
+
+	dev->irq = mite_irq(devpriv->mite);
+	dev_info(dev->class_dev, "board: %s, ID=0x%02x", dev->board_name,
+	       readb(devpriv->mite->daq_io_addr + ID_Register));
+
+	ret = comedi_alloc_subdevices(dev, 4);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	if (board->num_di_ports) {
+		s->type = COMEDI_SUBD_DI;
+		s->subdev_flags = SDF_READABLE;
+		s->n_chan =
+		    board->num_di_ports * ni_65xx_channels_per_port;
+>>>>>>> refs/remotes/origin/master
 		s->range_table = &range_digital;
 		s->maxdata = 1;
 		s->insn_config = ni_65xx_dio_insn_config;
 		s->insn_bits = ni_65xx_dio_insn_bits;
+<<<<<<< HEAD
 		s->private = ni_65xx_alloc_subdevice_private();
 		if (s->private == NULL)
 			return -ENOMEM;
 		sprivate(s)->base_port = 0;
+=======
+		spriv = comedi_alloc_spriv(s, sizeof(*spriv));
+		if (!spriv)
+			return -ENOMEM;
+		spriv->base_port = 0;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 1;
 	if (board(dev)->num_do_ports) {
 		s->type = COMEDI_SUBD_DO;
@@ -709,20 +1090,45 @@ static int ni_65xx_attach(struct comedi_device *dev,
 		if (s->private == NULL)
 			return -ENOMEM;
 		sprivate(s)->base_port = board(dev)->num_di_ports;
+=======
+	s = &dev->subdevices[1];
+	if (board->num_do_ports) {
+		s->type = COMEDI_SUBD_DO;
+		s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
+		s->n_chan =
+		    board->num_do_ports * ni_65xx_channels_per_port;
+		s->range_table = &range_digital;
+		s->maxdata = 1;
+		s->insn_bits = ni_65xx_dio_insn_bits;
+		spriv = comedi_alloc_spriv(s, sizeof(*spriv));
+		if (!spriv)
+			return -ENOMEM;
+		spriv->base_port = board->num_di_ports;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 2;
 	if (board(dev)->num_dio_ports) {
 		s->type = COMEDI_SUBD_DIO;
 		s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
 		s->n_chan =
 		    board(dev)->num_dio_ports * ni_65xx_channels_per_port;
+=======
+	s = &dev->subdevices[2];
+	if (board->num_dio_ports) {
+		s->type = COMEDI_SUBD_DIO;
+		s->subdev_flags = SDF_READABLE | SDF_WRITABLE;
+		s->n_chan =
+		    board->num_dio_ports * ni_65xx_channels_per_port;
+>>>>>>> refs/remotes/origin/master
 		s->range_table = &range_digital;
 		s->maxdata = 1;
 		s->insn_config = ni_65xx_dio_insn_config;
 		s->insn_bits = ni_65xx_dio_insn_bits;
+<<<<<<< HEAD
 		s->private = ni_65xx_alloc_subdevice_private();
 		if (s->private == NULL)
 			return -ENOMEM;
@@ -731,13 +1137,27 @@ static int ni_65xx_attach(struct comedi_device *dev,
 			/*  configure all ports for input */
 			writeb(0x1,
 			       private(dev)->mite->daq_io_addr +
+=======
+		spriv = comedi_alloc_spriv(s, sizeof(*spriv));
+		if (!spriv)
+			return -ENOMEM;
+		spriv->base_port = 0;
+		for (i = 0; i < board->num_dio_ports; ++i) {
+			/*  configure all ports for input */
+			writeb(0x1,
+			       devpriv->mite->daq_io_addr +
+>>>>>>> refs/remotes/origin/master
 			       Port_Select(i));
 		}
 	} else {
 		s->type = COMEDI_SUBD_UNUSED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 3;
+=======
+	s = &dev->subdevices[3];
+>>>>>>> refs/remotes/origin/master
 	dev->read_subdev = s;
 	s->type = COMEDI_SUBD_DI;
 	s->subdev_flags = SDF_READABLE | SDF_CMD_READ;
@@ -750,6 +1170,7 @@ static int ni_65xx_attach(struct comedi_device *dev,
 	s->insn_bits = ni_65xx_intr_insn_bits;
 	s->insn_config = ni_65xx_intr_insn_config;
 
+<<<<<<< HEAD
 	for (i = 0; i < ni_65xx_total_num_ports(board(dev)); ++i) {
 		writeb(0x00,
 		       private(dev)->mite->daq_io_addr + Filter_Enable(i));
@@ -767,11 +1188,31 @@ static int ni_65xx_attach(struct comedi_device *dev,
 
 	/* Set filter interval to 0  (32bit reg) */
 	writeb(0x00000000, private(dev)->mite->daq_io_addr + Filter_Interval);
+=======
+	for (i = 0; i < ni_65xx_total_num_ports(board); ++i) {
+		writeb(0x00,
+		       devpriv->mite->daq_io_addr + Filter_Enable(i));
+		if (board->invert_outputs)
+			writeb(0x01,
+			       devpriv->mite->daq_io_addr + Port_Data(i));
+		else
+			writeb(0x00,
+			       devpriv->mite->daq_io_addr + Port_Data(i));
+	}
+	writeb(ClrEdge | ClrOverflow,
+	       devpriv->mite->daq_io_addr + Clear_Register);
+	writeb(0x00,
+	       devpriv->mite->daq_io_addr + Master_Interrupt_Control);
+
+	/* Set filter interval to 0  (32bit reg) */
+	writeb(0x00000000, devpriv->mite->daq_io_addr + Filter_Interval);
+>>>>>>> refs/remotes/origin/master
 
 	ret = request_irq(dev->irq, ni_65xx_interrupt, IRQF_SHARED,
 			  "ni_65xx", dev);
 	if (ret < 0) {
 		dev->irq = 0;
+<<<<<<< HEAD
 		printk(KERN_WARNING " irq not available");
 	}
 
@@ -867,6 +1308,81 @@ static void __exit driver_ni_65xx_cleanup_module(void)
 
 module_init(driver_ni_65xx_init_module);
 module_exit(driver_ni_65xx_cleanup_module);
+=======
+		dev_warn(dev->class_dev, "irq not available\n");
+	}
+
+	return 0;
+}
+
+static void ni_65xx_detach(struct comedi_device *dev)
+{
+	struct ni_65xx_private *devpriv = dev->private;
+
+	if (devpriv && devpriv->mite && devpriv->mite->daq_io_addr) {
+		writeb(0x00,
+		       devpriv->mite->daq_io_addr +
+		       Master_Interrupt_Control);
+	}
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+	if (devpriv) {
+		if (devpriv->mite) {
+			mite_unsetup(devpriv->mite);
+			mite_free(devpriv->mite);
+		}
+	}
+	comedi_pci_disable(dev);
+}
+
+static struct comedi_driver ni_65xx_driver = {
+	.driver_name = "ni_65xx",
+	.module = THIS_MODULE,
+	.auto_attach = ni_65xx_auto_attach,
+	.detach = ni_65xx_detach,
+};
+
+static int ni_65xx_pci_probe(struct pci_dev *dev,
+			     const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &ni_65xx_driver, id->driver_data);
+}
+
+static const struct pci_device_id ni_65xx_pci_table[] = {
+	{ PCI_VDEVICE(NI, 0x1710), BOARD_PXI6509 },
+	{ PCI_VDEVICE(NI, 0x7085), BOARD_PCI6509 },
+	{ PCI_VDEVICE(NI, 0x7086), BOARD_PXI6528 },
+	{ PCI_VDEVICE(NI, 0x7087), BOARD_PCI6515 },
+	{ PCI_VDEVICE(NI, 0x7088), BOARD_PCI6514 },
+	{ PCI_VDEVICE(NI, 0x70a9), BOARD_PCI6528 },
+	{ PCI_VDEVICE(NI, 0x70c3), BOARD_PCI6511 },
+	{ PCI_VDEVICE(NI, 0x70c8), BOARD_PCI6513 },
+	{ PCI_VDEVICE(NI, 0x70c9), BOARD_PXI6515 },
+	{ PCI_VDEVICE(NI, 0x70cc), BOARD_PCI6512 },
+	{ PCI_VDEVICE(NI, 0x70cd), BOARD_PXI6514 },
+	{ PCI_VDEVICE(NI, 0x70d1), BOARD_PXI6513 },
+	{ PCI_VDEVICE(NI, 0x70d2), BOARD_PXI6512 },
+	{ PCI_VDEVICE(NI, 0x70d3), BOARD_PXI6511 },
+	{ PCI_VDEVICE(NI, 0x7124), BOARD_PCI6510 },
+	{ PCI_VDEVICE(NI, 0x7125), BOARD_PCI6516 },
+	{ PCI_VDEVICE(NI, 0x7126), BOARD_PCI6517 },
+	{ PCI_VDEVICE(NI, 0x7127), BOARD_PCI6518 },
+	{ PCI_VDEVICE(NI, 0x7128), BOARD_PCI6519 },
+	{ PCI_VDEVICE(NI, 0x718b), BOARD_PCI6521 },
+	{ PCI_VDEVICE(NI, 0x718c), BOARD_PXI6521 },
+	{ PCI_VDEVICE(NI, 0x71c5), BOARD_PCI6520 },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, ni_65xx_pci_table);
+
+static struct pci_driver ni_65xx_pci_driver = {
+	.name		= "ni_65xx",
+	.id_table	= ni_65xx_pci_table,
+	.probe		= ni_65xx_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(ni_65xx_driver, ni_65xx_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

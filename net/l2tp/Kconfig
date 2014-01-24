@@ -4,6 +4,10 @@
 
 menuconfig L2TP
 	tristate "Layer Two Tunneling Protocol (L2TP)"
+<<<<<<< HEAD
+=======
+	depends on (IPV6 || IPV6=n)
+>>>>>>> refs/remotes/origin/master
 	depends on INET
 	---help---
 	  Layer Two Tunneling Protocol
@@ -45,8 +49,13 @@ config L2TP_DEBUGFS
 	  will be called l2tp_debugfs.
 
 config L2TP_V3
+<<<<<<< HEAD
 	bool "L2TPv3 support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && L2TP
+=======
+	bool "L2TPv3 support"
+	depends on L2TP
+>>>>>>> refs/remotes/origin/master
 	help
 	  Layer Two Tunneling Protocol Version 3
 

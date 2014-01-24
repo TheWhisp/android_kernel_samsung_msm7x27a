@@ -34,6 +34,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "base.h"
 
 
@@ -63,6 +64,8 @@ static inline void ath5k_rfkill_set_intr(struct ath5k_softc *sc, bool enable)
 	curval = ath5k_hw_get_gpio(ah, sc->rf_kill.gpio);
 	ath5k_hw_set_gpio_intr(ah, sc->rf_kill.gpio, enable ?
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "ath5k.h"
 
 
@@ -90,11 +93,15 @@ static inline void ath5k_rfkill_set_intr(struct ath5k_hw *ah, bool enable)
 	ath5k_hw_set_gpio_input(ah, ah->rf_kill.gpio);
 	curval = ath5k_hw_get_gpio(ah, ah->rf_kill.gpio);
 	ath5k_hw_set_gpio_intr(ah, ah->rf_kill.gpio, enable ?
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					!!curval : !curval);
 }
 
 static bool
+<<<<<<< HEAD
 <<<<<<< HEAD
 ath5k_is_rfkill_set(struct ath5k_softc *sc)
 {
@@ -103,18 +110,24 @@ ath5k_is_rfkill_set(struct ath5k_softc *sc)
 	return ath5k_hw_get_gpio(sc->ah, sc->rf_kill.gpio) ==
 							sc->rf_kill.polarity;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ath5k_is_rfkill_set(struct ath5k_hw *ah)
 {
 	/* configuring GPIO for input for some reason disables rfkill */
 	/*ath5k_hw_set_gpio_input(ah, ah->rf_kill.gpio);*/
 	return ath5k_hw_get_gpio(ah, ah->rf_kill.gpio) ==
 							ah->rf_kill.polarity;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 ath5k_tasklet_rfkill_toggle(unsigned long data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ath5k_softc *sc = (void *)data;
 	bool blocked;
@@ -122,18 +135,24 @@ ath5k_tasklet_rfkill_toggle(unsigned long data)
 	blocked = ath5k_is_rfkill_set(sc);
 	wiphy_rfkill_set_hw_state(sc->hw->wiphy, blocked);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ath5k_hw *ah = (void *)data;
 	bool blocked;
 
 	blocked = ath5k_is_rfkill_set(ah);
 	wiphy_rfkill_set_hw_state(ah->hw->wiphy, blocked);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 void
 ath5k_rfkill_hw_start(struct ath5k_hw *ah)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ath5k_softc *sc = ah->ah_sc;
 
@@ -150,6 +169,8 @@ ath5k_rfkill_hw_start(struct ath5k_hw *ah)
 	if (AR5K_EEPROM_HDR_RFKILL(ah->ah_capabilities.cap_eeprom.ee_header))
 		ath5k_rfkill_set_intr(sc, true);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* read rfkill GPIO configuration from EEPROM header */
 	ah->rf_kill.gpio = ah->ah_capabilities.cap_eeprom.ee_rfkill_pin;
 	ah->rf_kill.polarity = ah->ah_capabilities.cap_eeprom.ee_rfkill_pol;
@@ -162,13 +183,17 @@ ath5k_rfkill_hw_start(struct ath5k_hw *ah)
 	/* enable interrupt for rfkill switch */
 	if (AR5K_EEPROM_HDR_RFKILL(ah->ah_capabilities.cap_eeprom.ee_header))
 		ath5k_rfkill_set_intr(ah, true);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 void
 ath5k_rfkill_hw_stop(struct ath5k_hw *ah)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ath5k_softc *sc = ah->ah_sc;
 
@@ -181,6 +206,8 @@ ath5k_rfkill_hw_stop(struct ath5k_hw *ah)
 	/* enable RFKILL when stopping HW so Wifi LED is turned off */
 	ath5k_rfkill_enable(sc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* disable interrupt for rfkill switch */
 	if (AR5K_EEPROM_HDR_RFKILL(ah->ah_capabilities.cap_eeprom.ee_header))
 		ath5k_rfkill_set_intr(ah, false);
@@ -189,6 +216,9 @@ ath5k_rfkill_hw_stop(struct ath5k_hw *ah)
 
 	/* enable RFKILL when stopping HW so Wifi LED is turned off */
 	ath5k_rfkill_enable(ah);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 

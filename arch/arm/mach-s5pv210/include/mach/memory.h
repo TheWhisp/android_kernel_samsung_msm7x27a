@@ -15,9 +15,12 @@
 
 #define PLAT_PHYS_OFFSET		UL(0x20000000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CONSISTENT_DMA_SIZE	(SZ_8M + SZ_4M + SZ_2M)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Sparsemem support

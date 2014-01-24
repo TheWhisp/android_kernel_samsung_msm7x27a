@@ -110,7 +110,11 @@ bad_lkey:
 	while (j) {
 		struct qib_sge *sge = --j ? &ss->sg_list[j - 1] : &ss->sge;
 
+<<<<<<< HEAD
 		atomic_dec(&sge->mr->refcount);
+=======
+		qib_put_mr(sge->mr);
+>>>>>>> refs/remotes/origin/master
 	}
 	ss->num_sge = 0;
 	memset(&wc, 0, sizeof(wc));
@@ -261,21 +265,31 @@ static int gid_ok(union ib_gid *gid, __be64 gid_prefix, __be64 id)
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This should be called with the QP s_lock held.
 =======
  * This should be called with the QP r_lock held.
  *
  * The s_lock will be acquired around the qib_migrate_qp() call.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This should be called with the QP r_lock held.
+ *
+ * The s_lock will be acquired around the qib_migrate_qp() call.
+>>>>>>> refs/remotes/origin/master
  */
 int qib_ruc_check_hdr(struct qib_ibport *ibp, struct qib_ib_header *hdr,
 		      int has_grh, struct qib_qp *qp, u32 bth0)
 {
 	__be64 guid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	if (qp->s_mig_state == IB_MIG_ARMED && (bth0 & IB_BTH_MIG_REQ)) {
 		if (!has_grh) {
@@ -306,12 +320,18 @@ int qib_ruc_check_hdr(struct qib_ibport *ibp, struct qib_ib_header *hdr,
 		    ppd_from_ibp(ibp)->port != qp->alt_ah_attr.port_num)
 			goto err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qib_migrate_qp(qp);
 =======
 		spin_lock_irqsave(&qp->s_lock, flags);
 		qib_migrate_qp(qp);
 		spin_unlock_irqrestore(&qp->s_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_lock_irqsave(&qp->s_lock, flags);
+		qib_migrate_qp(qp);
+		spin_unlock_irqrestore(&qp->s_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (!has_grh) {
 			if (qp->remote_ah_attr.ah_flags & IB_AH_GRH)
@@ -512,7 +532,11 @@ again:
 			(u64) atomic64_add_return(sdata, maddr) - sdata :
 			(u64) cmpxchg((u64 *) qp->r_sge.sge.vaddr,
 				      sdata, wqe->wr.wr.atomic.swap);
+<<<<<<< HEAD
 		atomic_dec(&qp->r_sge.sge.mr->refcount);
+=======
+		qib_put_mr(qp->r_sge.sge.mr);
+>>>>>>> refs/remotes/origin/master
 		qp->r_sge.num_sge = 0;
 		goto send_comp;
 
@@ -536,7 +560,11 @@ again:
 		sge->sge_length -= len;
 		if (sge->sge_length == 0) {
 			if (!release)
+<<<<<<< HEAD
 				atomic_dec(&sge->mr->refcount);
+=======
+				qib_put_mr(sge->mr);
+>>>>>>> refs/remotes/origin/master
 			if (--sqp->s_sge.num_sge)
 				*sge = *sqp->s_sge.sg_list++;
 		} else if (sge->length == 0 && sge->mr->lkey) {
@@ -553,11 +581,15 @@ again:
 		sqp->s_len -= len;
 	}
 	if (release)
+<<<<<<< HEAD
 		while (qp->r_sge.num_sge) {
 			atomic_dec(&qp->r_sge.sge.mr->refcount);
 			if (--qp->r_sge.num_sge)
 				qp->r_sge.sge = *qp->r_sge.sg_list++;
 		}
+=======
+		qib_put_ss(&qp->r_sge);
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_and_clear_bit(QIB_R_WRID_VALID, &qp->r_aflags))
 		goto send_comp;
@@ -699,17 +731,28 @@ void qib_make_ruc_header(struct qib_qp *qp, struct qib_other_headers *ohdr,
 	nwords = (qp->s_cur_size + extra_bytes) >> 2;
 	lrh0 = QIB_LRH_BTH;
 	if (unlikely(qp->remote_ah_attr.ah_flags & IB_AH_GRH)) {
+<<<<<<< HEAD
 		qp->s_hdrwords += qib_make_grh(ibp, &qp->s_hdr.u.l.grh,
+=======
+		qp->s_hdrwords += qib_make_grh(ibp, &qp->s_hdr->u.l.grh,
+>>>>>>> refs/remotes/origin/master
 					       &qp->remote_ah_attr.grh,
 					       qp->s_hdrwords, nwords);
 		lrh0 = QIB_LRH_GRH;
 	}
 	lrh0 |= ibp->sl_to_vl[qp->remote_ah_attr.sl] << 12 |
 		qp->remote_ah_attr.sl << 4;
+<<<<<<< HEAD
 	qp->s_hdr.lrh[0] = cpu_to_be16(lrh0);
 	qp->s_hdr.lrh[1] = cpu_to_be16(qp->remote_ah_attr.dlid);
 	qp->s_hdr.lrh[2] = cpu_to_be16(qp->s_hdrwords + nwords + SIZE_OF_CRC);
 	qp->s_hdr.lrh[3] = cpu_to_be16(ppd_from_ibp(ibp)->lid |
+=======
+	qp->s_hdr->lrh[0] = cpu_to_be16(lrh0);
+	qp->s_hdr->lrh[1] = cpu_to_be16(qp->remote_ah_attr.dlid);
+	qp->s_hdr->lrh[2] = cpu_to_be16(qp->s_hdrwords + nwords + SIZE_OF_CRC);
+	qp->s_hdr->lrh[3] = cpu_to_be16(ppd_from_ibp(ibp)->lid |
+>>>>>>> refs/remotes/origin/master
 				       qp->remote_ah_attr.src_path_bits);
 	bth0 |= qib_get_pkey(ibp, qp->s_pkey_index);
 	bth0 |= extra_bytes << 20;
@@ -769,7 +812,11 @@ void qib_do_send(struct work_struct *work)
 			 * If the packet cannot be sent now, return and
 			 * the send tasklet will be woken up later.
 			 */
+<<<<<<< HEAD
 			if (qib_verbs_send(qp, &qp->s_hdr, qp->s_hdrwords,
+=======
+			if (qib_verbs_send(qp, qp->s_hdr, qp->s_hdrwords,
+>>>>>>> refs/remotes/origin/master
 					   qp->s_cur_sge, qp->s_cur_size))
 				break;
 			/* Record that s_hdr is empty. */
@@ -793,7 +840,11 @@ void qib_send_complete(struct qib_qp *qp, struct qib_swqe *wqe,
 	for (i = 0; i < wqe->wr.num_sge; i++) {
 		struct qib_sge *sge = &wqe->sg_list[i];
 
+<<<<<<< HEAD
 		atomic_dec(&sge->mr->refcount);
+=======
+		qib_put_mr(sge->mr);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (qp->ibqp.qp_type == IB_QPT_UD ||
 	    qp->ibqp.qp_type == IB_QPT_SMI ||

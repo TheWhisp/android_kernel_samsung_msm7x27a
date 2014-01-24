@@ -3,9 +3,13 @@
  *
  * Copyright (c) 2006 Rick Koch <n1gp@hotmail.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2011 John Sung <penmount.touch@gmail.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2011 John Sung <penmount.touch@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Based on ELO driver (drivers/input/touchscreen/elo.c)
  * Copyright (c) 2004 Vojtech Pavlik
@@ -23,6 +27,7 @@
 #include <linux/slab.h>
 #include <linux/input.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/serio.h>
 #include <linux/init.h>
 
@@ -30,6 +35,8 @@
 
 MODULE_AUTHOR("Rick Koch <n1gp@hotmail.com>");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/input/mt.h>
 #include <linux/serio.h>
 #include <linux/init.h>
@@ -38,7 +45,10 @@ MODULE_AUTHOR("Rick Koch <n1gp@hotmail.com>");
 
 MODULE_AUTHOR("Rick Koch <n1gp@hotmail.com>");
 MODULE_AUTHOR("John Sung <penmount.touch@gmail.com>");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 
@@ -47,8 +57,11 @@ MODULE_LICENSE("GPL");
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	PM_MAX_LENGTH	5
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	PM_MAX_LENGTH	6
 #define	PM_MAX_MTSLOT	16
 #define	PM_3000_MTSLOT	2
@@ -62,7 +75,10 @@ struct mt_slot {
 	unsigned short x, y;
 	bool active; /* is the touch valid? */
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Per-touchscreen data.
@@ -74,6 +90,7 @@ struct pm {
 	int idx;
 	unsigned char data[PM_MAX_LENGTH];
 	char phys[32];
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -95,6 +112,8 @@ static irqreturn_t pm_interrupt(struct serio *serio,
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char packetsize;
 	unsigned char maxcontacts;
 	struct mt_slot slots[PM_MAX_MTSLOT];
@@ -208,7 +227,10 @@ static irqreturn_t pm_interrupt(struct serio *serio,
 	pm->data[pm->idx] = data;
 
 	pm->parse_packet(pm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -222,6 +244,7 @@ static void pm_disconnect(struct serio *serio)
 	struct pm *pm = serio_get_drvdata(serio);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	input_get_device(pm->dev);
 	input_unregister_device(pm->dev);
 	serio_close(serio);
@@ -229,22 +252,31 @@ static void pm_disconnect(struct serio *serio)
 	input_put_device(pm->dev);
 	kfree(pm);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	serio_close(serio);
 
 	input_unregister_device(pm->dev);
 	kfree(pm);
 
 	serio_set_drvdata(serio, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * pm_connect() is the routine that is called when someone adds a
 <<<<<<< HEAD
+<<<<<<< HEAD
  * new serio device that supports Gunze protocol and registers it as
 =======
  * new serio device that supports PenMount protocol and registers it as
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * new serio device that supports PenMount protocol and registers it as
+>>>>>>> refs/remotes/origin/master
  * an input device.
  */
 
@@ -253,9 +285,13 @@ static int pm_connect(struct serio *serio, struct serio_driver *drv)
 	struct pm *pm;
 	struct input_dev *input_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int max_x, max_y;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int max_x, max_y;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	pm = kzalloc(sizeof(struct pm), GFP_KERNEL);
@@ -269,6 +305,7 @@ static int pm_connect(struct serio *serio, struct serio_driver *drv)
 	pm->dev = input_dev;
 	snprintf(pm->phys, sizeof(pm->phys), "%s/input0", serio->phys);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	input_dev->name = "Penmount Serial TouchScreen";
 =======
@@ -276,6 +313,11 @@ static int pm_connect(struct serio *serio, struct serio_driver *drv)
 
 	input_dev->name = "PenMount Serial TouchScreen";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm->maxcontacts = 1;
+
+	input_dev->name = "PenMount Serial TouchScreen";
+>>>>>>> refs/remotes/origin/master
 	input_dev->phys = pm->phys;
 	input_dev->id.bustype = BUS_RS232;
 	input_dev->id.vendor = SERIO_PENMOUNT;
@@ -284,11 +326,14 @@ static int pm_connect(struct serio *serio, struct serio_driver *drv)
 	input_dev->dev.parent = &serio->dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
         input_dev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
         input_set_abs_params(pm->dev, ABS_X, 0, 0x3ff, 0, 0);
         input_set_abs_params(pm->dev, ABS_Y, 0, 0x3ff, 0, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
 	input_dev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
 
@@ -329,13 +374,20 @@ static int pm_connect(struct serio *serio, struct serio_driver *drv)
 	input_set_abs_params(pm->dev, ABS_Y, 0, max_y, 0, 0);
 
 	if (pm->maxcontacts > 1) {
+<<<<<<< HEAD
 		input_mt_init_slots(pm->dev, pm->maxcontacts);
+=======
+		input_mt_init_slots(pm->dev, pm->maxcontacts, 0);
+>>>>>>> refs/remotes/origin/master
 		input_set_abs_params(pm->dev,
 				     ABS_MT_POSITION_X, 0, max_x, 0, 0);
 		input_set_abs_params(pm->dev,
 				     ABS_MT_POSITION_Y, 0, max_y, 0, 0);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	serio_set_drvdata(serio, pm);
 
@@ -375,10 +427,14 @@ MODULE_DEVICE_TABLE(serio, pm_serio_ids);
 static struct serio_driver pm_drv = {
 	.driver		= {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name	= "penmountlpc",
 =======
 		.name	= "serio-penmount",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= "serio-penmount",
+>>>>>>> refs/remotes/origin/master
 	},
 	.description	= DRIVER_DESC,
 	.id_table	= pm_serio_ids,
@@ -387,6 +443,7 @@ static struct serio_driver pm_drv = {
 	.disconnect	= pm_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -403,3 +460,6 @@ static void __exit pm_exit(void)
 
 module_init(pm_init);
 module_exit(pm_exit);
+=======
+module_serio_driver(pm_drv);
+>>>>>>> refs/remotes/origin/master

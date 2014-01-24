@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/net/qeth_core_main.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *    Copyright IBM Corp. 2007, 2009
  *    Author(s): Utz Bacher <utz.bacher@de.ibm.com>,
  *		 Frank Pavlic <fpavlic@de.ibm.com>,
@@ -22,17 +25,25 @@
 #include <linux/kthread.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/iucv/af_iucv.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/iucv/af_iucv.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/ebcdic.h>
 #include <asm/io.h>
 #include <asm/sysinfo.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/compat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/compat.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "qeth_core.h"
 
@@ -53,17 +64,25 @@ EXPORT_SYMBOL_GPL(qeth_core_card_list);
 struct kmem_cache *qeth_core_header_cache;
 EXPORT_SYMBOL_GPL(qeth_core_header_cache);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct kmem_cache *qeth_qdio_outbuf_cache;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct kmem_cache *qeth_qdio_outbuf_cache;
+>>>>>>> refs/remotes/origin/master
 
 static struct device *qeth_core_root_dev;
 static unsigned int known_devices[][6] = QETH_MODELLIST_ARRAY;
 static struct lock_class_key qdio_out_skb_queue_key;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct mutex qeth_mod_mutex;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct mutex qeth_mod_mutex;
+>>>>>>> refs/remotes/origin/master
 
 static void qeth_send_control_data_cb(struct qeth_channel *,
 			struct qeth_cmd_buffer *);
@@ -73,8 +92,11 @@ static void qeth_setup_ccw(struct qeth_channel *, unsigned char *, __u32);
 static void qeth_free_buffer_pool(struct qeth_card *);
 static int qeth_qdio_establish(struct qeth_card *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void qeth_free_qdio_buffers(struct qeth_card *);
 static void qeth_notify_skbs(struct qeth_qdio_out_q *queue,
 		struct qeth_qdio_out_buffer *buf,
@@ -84,13 +106,38 @@ static void qeth_clear_output_buffer(struct qeth_qdio_out_q *queue,
 		struct qeth_qdio_out_buffer *buf,
 		enum qeth_qdio_buffer_states newbufstate);
 static int qeth_init_qdio_out_buf(struct qeth_qdio_out_q *, int);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static struct workqueue_struct *qeth_wq;
+
+static void qeth_close_dev_handler(struct work_struct *work)
+{
+	struct qeth_card *card;
+
+	card = container_of(work, struct qeth_card, close_dev_work);
+	QETH_CARD_TEXT(card, 2, "cldevhdl");
+	rtnl_lock();
+	dev_close(card->dev);
+	rtnl_unlock();
+	ccwgroup_set_offline(card->gdev);
+}
+
+void qeth_close_dev(struct qeth_card *card)
+{
+	QETH_CARD_TEXT(card, 2, "cldevsubm");
+	queue_work(qeth_wq, &card->close_dev_work);
+}
+EXPORT_SYMBOL_GPL(qeth_close_dev);
+>>>>>>> refs/remotes/origin/master
 
 static inline const char *qeth_get_cardname(struct qeth_card *card)
 {
 	if (card->info.guestlan) {
 		switch (card->info.type) {
 		case QETH_CARD_TYPE_OSD:
+<<<<<<< HEAD
 			return " Guest LAN QDIO";
 		case QETH_CARD_TYPE_IQD:
 			return " Guest LAN Hiper";
@@ -98,6 +145,15 @@ static inline const char *qeth_get_cardname(struct qeth_card *card)
 			return " Guest LAN QDIO - OSM";
 		case QETH_CARD_TYPE_OSX:
 			return " Guest LAN QDIO - OSX";
+=======
+			return " Virtual NIC QDIO";
+		case QETH_CARD_TYPE_IQD:
+			return " Virtual NIC Hiper";
+		case QETH_CARD_TYPE_OSM:
+			return " Virtual NIC QDIO - OSM";
+		case QETH_CARD_TYPE_OSX:
+			return " Virtual NIC QDIO - OSX";
+>>>>>>> refs/remotes/origin/master
 		default:
 			return " unknown";
 		}
@@ -126,6 +182,7 @@ const char *qeth_get_cardname_short(struct qeth_card *card)
 	if (card->info.guestlan) {
 		switch (card->info.type) {
 		case QETH_CARD_TYPE_OSD:
+<<<<<<< HEAD
 			return "GuestLAN QDIO";
 		case QETH_CARD_TYPE_IQD:
 			return "GuestLAN Hiper";
@@ -133,6 +190,15 @@ const char *qeth_get_cardname_short(struct qeth_card *card)
 			return "GuestLAN OSM";
 		case QETH_CARD_TYPE_OSX:
 			return "GuestLAN OSX";
+=======
+			return "Virt.NIC QDIO";
+		case QETH_CARD_TYPE_IQD:
+			return "Virt.NIC Hiper";
+		case QETH_CARD_TYPE_OSM:
+			return "Virt.NIC OSM";
+		case QETH_CARD_TYPE_OSX:
+			return "Virt.NIC OSX";
+>>>>>>> refs/remotes/origin/master
 		default:
 			return "unknown";
 		}
@@ -174,6 +240,26 @@ const char *qeth_get_cardname_short(struct qeth_card *card)
 	return "n/a";
 }
 
+<<<<<<< HEAD
+=======
+void qeth_set_recovery_task(struct qeth_card *card)
+{
+	card->recovery_task = current;
+}
+EXPORT_SYMBOL_GPL(qeth_set_recovery_task);
+
+void qeth_clear_recovery_task(struct qeth_card *card)
+{
+	card->recovery_task = NULL;
+}
+EXPORT_SYMBOL_GPL(qeth_clear_recovery_task);
+
+static bool qeth_is_recovery_task(const struct qeth_card *card)
+{
+	return card->recovery_task == current;
+}
+
+>>>>>>> refs/remotes/origin/master
 void qeth_set_allowed_threads(struct qeth_card *card, unsigned long threads,
 			 int clear_start_mask)
 {
@@ -202,6 +288,11 @@ EXPORT_SYMBOL_GPL(qeth_threads_running);
 
 int qeth_wait_for_threads(struct qeth_card *card, unsigned long threads)
 {
+<<<<<<< HEAD
+=======
+	if (qeth_is_recovery_task(card))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	return wait_event_interruptible(card->wait_q,
 			qeth_threads_running(card, threads) == 0);
 }
@@ -228,10 +319,14 @@ static int qeth_alloc_buffer_pool(struct qeth_card *card)
 	QETH_CARD_TEXT(card, 5, "alocpool");
 	for (i = 0; i < card->qdio.init_pool.buf_count; ++i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pool_entry = kmalloc(sizeof(*pool_entry), GFP_KERNEL);
 =======
 		pool_entry = kzalloc(sizeof(*pool_entry), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pool_entry = kzalloc(sizeof(*pool_entry), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!pool_entry) {
 			qeth_free_buffer_pool(card);
 			return -ENOMEM;
@@ -272,7 +367,10 @@ int qeth_realloc_buffer_pool(struct qeth_card *card, int bufcnt)
 EXPORT_SYMBOL_GPL(qeth_realloc_buffer_pool);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int qeth_cq_init(struct qeth_card *card)
 {
 	int rc;
@@ -319,7 +417,11 @@ static inline int qeth_alloc_cq(struct qeth_card *card)
 
 		card->qdio.no_in_queues = 2;
 
+<<<<<<< HEAD
 		card->qdio.out_bufstates = (struct qdio_outbuf_state *)
+=======
+		card->qdio.out_bufstates =
+>>>>>>> refs/remotes/origin/master
 			kzalloc(card->qdio.no_out_queues *
 				QDIO_MAX_BUFFERS_PER_Q *
 				sizeof(struct qdio_outbuf_state), GFP_KERNEL);
@@ -407,7 +509,11 @@ static inline void qeth_cleanup_handled_pending(struct qeth_qdio_out_q *q,
 				qeth_release_skbs(c);
 
 				c = f->next_pending;
+<<<<<<< HEAD
 				BUG_ON(head->next_pending != f);
+=======
+				WARN_ON_ONCE(head->next_pending != f);
+>>>>>>> refs/remotes/origin/master
 				head->next_pending = c;
 				kmem_cache_free(qeth_qdio_outbuf_cache, f);
 			} else {
@@ -439,13 +545,21 @@ static inline void qeth_qdio_handle_aob(struct qeth_card *card,
 	buffer = (struct qeth_qdio_out_buffer *) aob->user1;
 	QETH_CARD_TEXT_(card, 5, "%lx", aob->user1);
 
+<<<<<<< HEAD
 	BUG_ON(buffer == NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (atomic_cmpxchg(&buffer->state, QETH_QDIO_BUF_PRIMED,
 			   QETH_QDIO_BUF_IN_CQ) == QETH_QDIO_BUF_PRIMED) {
 		notification = TX_NOTIFY_OK;
 	} else {
+<<<<<<< HEAD
 		BUG_ON(atomic_read(&buffer->state) != QETH_QDIO_BUF_PENDING);
+=======
+		WARN_ON_ONCE(atomic_read(&buffer->state) !=
+							QETH_QDIO_BUF_PENDING);
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&buffer->state, QETH_QDIO_BUF_IN_CQ);
 		notification = TX_NOTIFY_DELAYED_OK;
 	}
@@ -473,7 +587,10 @@ static inline int qeth_is_cq(struct qeth_card *card, unsigned int queue)
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int qeth_issue_next_read(struct qeth_card *card)
 {
 	int rc;
@@ -514,7 +631,11 @@ static struct qeth_reply *qeth_alloc_reply(struct qeth_card *card)
 		atomic_set(&reply->refcnt, 1);
 		atomic_set(&reply->received, 0);
 		reply->card = card;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	return reply;
 }
 
@@ -568,11 +689,30 @@ static struct qeth_ipa_cmd *qeth_check_ipa_data(struct qeth_card *card,
 		} else {
 			switch (cmd->hdr.command) {
 			case IPA_CMD_STOPLAN:
+<<<<<<< HEAD
 				dev_warn(&card->gdev->dev,
+=======
+				if (cmd->hdr.return_code ==
+						IPA_RC_VEPA_TO_VEB_TRANSITION) {
+					dev_err(&card->gdev->dev,
+					   "Interface %s is down because the "
+					   "adjacent port is no longer in "
+					   "reflective relay mode\n",
+					   QETH_CARD_IFNAME(card));
+					qeth_close_dev(card);
+				} else {
+					dev_warn(&card->gdev->dev,
+>>>>>>> refs/remotes/origin/master
 					   "The link for interface %s on CHPID"
 					   " 0x%X failed\n",
 					   QETH_CARD_IFNAME(card),
 					   card->info.chpid);
+<<<<<<< HEAD
+=======
+					qeth_issue_ipa_msg(cmd,
+						cmd->hdr.return_code, card);
+				}
+>>>>>>> refs/remotes/origin/master
 				card->lan_online = 0;
 				if (card->dev && netif_carrier_ok(card->dev))
 					netif_carrier_off(card->dev);
@@ -703,9 +843,13 @@ void qeth_release_buffer(struct qeth_channel *channel,
 	iob->rc = 0;
 	spin_unlock_irqrestore(&channel->iob_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	wake_up(&channel->wait_q);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wake_up(&channel->wait_q);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(qeth_release_buffer);
 
@@ -829,10 +973,14 @@ static int qeth_setup_channel(struct qeth_channel *channel)
 	for (cnt = 0; cnt < QETH_CMD_BUFFER_NO; cnt++) {
 		channel->iob[cnt].data =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kmalloc(QETH_BUFSIZE, GFP_DMA|GFP_KERNEL);
 =======
 			kzalloc(QETH_BUFSIZE, GFP_DMA|GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kzalloc(QETH_BUFSIZE, GFP_DMA|GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (channel->iob[cnt].data == NULL)
 			break;
 		channel->iob[cnt].state = BUF_STATE_FREE;
@@ -1127,6 +1275,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void qeth_clear_output_buffer(struct qeth_qdio_out_q *queue,
 		struct qeth_qdio_out_buffer *buf)
 {
@@ -1140,6 +1289,8 @@ static void qeth_clear_output_buffer(struct qeth_qdio_out_q *queue,
 	skb = skb_dequeue(&buf->skb_list);
 	while (skb) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void qeth_notify_skbs(struct qeth_qdio_out_q *q,
 		struct qeth_qdio_out_buffer *buf,
 		enum iucv_tx_notify notification)
@@ -1177,7 +1328,11 @@ static void qeth_release_skbs(struct qeth_qdio_out_buffer *buf)
 		notify_general_error = 1;
 
 	/* release may never happen from within CQ tasklet scope */
+<<<<<<< HEAD
 	BUG_ON(atomic_read(&buf->state) == QETH_QDIO_BUF_IN_CQ);
+=======
+	WARN_ON_ONCE(atomic_read(&buf->state) == QETH_QDIO_BUF_IN_CQ);
+>>>>>>> refs/remotes/origin/master
 
 	skb = skb_dequeue(&buf->skb_list);
 	while (skb) {
@@ -1189,13 +1344,19 @@ static void qeth_release_skbs(struct qeth_qdio_out_buffer *buf)
 				iucv->sk_txnotify(skb, TX_NOTIFY_GENERALERROR);
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		atomic_dec(&skb->users);
 		dev_kfree_skb_any(skb);
 		skb = skb_dequeue(&buf->skb_list);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void qeth_clear_output_buffer(struct qeth_qdio_out_q *queue,
@@ -1211,7 +1372,10 @@ static void qeth_clear_output_buffer(struct qeth_qdio_out_q *queue,
 	if (newbufstate == QETH_QDIO_BUF_EMPTY) {
 		qeth_release_skbs(buf);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < QETH_MAX_BUFFER_ELEMENTS(queue->card); ++i) {
 		if (buf->buffer->element[i].addr && buf->is_header[i])
 			kmem_cache_free(qeth_core_header_cache,
@@ -1226,8 +1390,11 @@ static void qeth_clear_output_buffer(struct qeth_qdio_out_q *queue,
 	buf->buffer->element[15].sflags = 0;
 	buf->next_element_to_fill = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_set(&buf->state, QETH_QDIO_BUF_EMPTY);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&buf->state, newbufstate);
 }
 
@@ -1245,11 +1412,15 @@ static void qeth_clear_outq_buffers(struct qeth_qdio_out_q *q, int free)
 			q->bufs[j] = NULL;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void qeth_clear_qdio_buffers(struct qeth_card *card)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i, j;
 
@@ -1262,6 +1433,8 @@ void qeth_clear_qdio_buffers(struct qeth_card *card)
 						&card->qdio.out_qs[i]->bufs[j]);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	QETH_CARD_TEXT(card, 2, "clearqdbf");
@@ -1271,7 +1444,10 @@ void qeth_clear_qdio_buffers(struct qeth_card *card)
 			qeth_clear_outq_buffers(card->qdio.out_qs[i], 0);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(qeth_clear_qdio_buffers);
 
@@ -1296,6 +1472,7 @@ static void qeth_free_qdio_buffers(struct qeth_card *card)
 		QETH_QDIO_UNINITIALIZED)
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	qeth_free_cq(card);
@@ -1303,6 +1480,15 @@ static void qeth_free_qdio_buffers(struct qeth_card *card)
 	for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j)
 		dev_kfree_skb_any(card->qdio.in_q->bufs[j].rx_skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	qeth_free_cq(card);
+	cancel_delayed_work_sync(&card->buffer_reclaim_work);
+	for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j) {
+		if (card->qdio.in_q->bufs[j].rx_skb)
+			dev_kfree_skb_any(card->qdio.in_q->bufs[j].rx_skb);
+	}
+>>>>>>> refs/remotes/origin/master
 	kfree(card->qdio.in_q);
 	card->qdio.in_q = NULL;
 	/* inbound buffer pool */
@@ -1311,12 +1497,16 @@ static void qeth_free_qdio_buffers(struct qeth_card *card)
 	if (card->qdio.out_qs) {
 		for (i = 0; i < card->qdio.no_out_queues; ++i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j)
 				qeth_clear_output_buffer(card->qdio.out_qs[i],
 						&card->qdio.out_qs[i]->bufs[j]);
 =======
 			qeth_clear_outq_buffers(card->qdio.out_qs[i], 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			qeth_clear_outq_buffers(card->qdio.out_qs[i], 1);
+>>>>>>> refs/remotes/origin/master
 			kfree(card->qdio.out_qs[i]);
 		}
 		kfree(card->qdio.out_qs);
@@ -1333,7 +1523,34 @@ static void qeth_clean_channel(struct qeth_channel *channel)
 		kfree(channel->iob[cnt].data);
 }
 
+<<<<<<< HEAD
 static void qeth_get_channel_path_desc(struct qeth_card *card)
+=======
+static void qeth_set_single_write_queues(struct qeth_card *card)
+{
+	if ((atomic_read(&card->qdio.state) != QETH_QDIO_UNINITIALIZED) &&
+	    (card->qdio.no_out_queues == 4))
+		qeth_free_qdio_buffers(card);
+
+	card->qdio.no_out_queues = 1;
+	if (card->qdio.default_out_queue != 0)
+		dev_info(&card->gdev->dev, "Priority Queueing not supported\n");
+
+	card->qdio.default_out_queue = 0;
+}
+
+static void qeth_set_multiple_write_queues(struct qeth_card *card)
+{
+	if ((atomic_read(&card->qdio.state) != QETH_QDIO_UNINITIALIZED) &&
+	    (card->qdio.no_out_queues == 1)) {
+		qeth_free_qdio_buffers(card);
+		card->qdio.default_out_queue = 2;
+	}
+	card->qdio.no_out_queues = 4;
+}
+
+static void qeth_update_from_chp_desc(struct qeth_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ccw_device *ccwdev;
 	struct channelPath_dsc {
@@ -1350,6 +1567,7 @@ static void qeth_get_channel_path_desc(struct qeth_card *card)
 	QETH_DBF_TEXT(SETUP, 2, "chp_desc");
 
 	ccwdev = card->data.ccwdev;
+<<<<<<< HEAD
 	chp_dsc = (struct channelPath_dsc *)ccw_device_get_chp_desc(ccwdev, 0);
 	if (chp_dsc != NULL) {
 <<<<<<< HEAD
@@ -1406,6 +1624,25 @@ static void qeth_get_channel_path_desc(struct qeth_card *card)
 	QETH_DBF_TEXT_(SETUP, 2, "nr:%x", card->qdio.no_out_queues);
 	QETH_DBF_TEXT_(SETUP, 2, "lvl:%02x", card->info.func_level);
 	return;
+=======
+	chp_dsc = ccw_device_get_chp_desc(ccwdev, 0);
+	if (!chp_dsc)
+		goto out;
+
+	card->info.func_level = 0x4100 + chp_dsc->desc;
+	if (card->info.type == QETH_CARD_TYPE_IQD)
+		goto out;
+
+	/* CHPP field bit 6 == 1 -> single queue */
+	if ((chp_dsc->chpp & 0x02) == 0x02)
+		qeth_set_single_write_queues(card);
+	else
+		qeth_set_multiple_write_queues(card);
+out:
+	kfree(chp_dsc);
+	QETH_DBF_TEXT_(SETUP, 2, "nr:%x", card->qdio.no_out_queues);
+	QETH_DBF_TEXT_(SETUP, 2, "lvl:%02x", card->info.func_level);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void qeth_init_qdio_info(struct qeth_card *card)
@@ -1427,17 +1664,24 @@ static void qeth_set_intial_options(struct qeth_card *card)
 {
 	card->options.route4.type = NO_ROUTER;
 	card->options.route6.type = NO_ROUTER;
+<<<<<<< HEAD
 	card->options.broadcast_mode = QETH_TR_BROADCAST_ALLRINGS;
 	card->options.macaddr_mode = QETH_TR_MACADDR_NONCANONICAL;
+=======
+>>>>>>> refs/remotes/origin/master
 	card->options.fake_broadcast = 0;
 	card->options.add_hhlen = DEFAULT_ADD_HHLEN;
 	card->options.performance_stats = 0;
 	card->options.rx_sg_cb = QETH_RX_SG_CB;
 	card->options.isolation = ISOLATION_MODE_NONE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	card->options.cq = QETH_CQ_DISABLED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->options.cq = QETH_CQ_DISABLED;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int qeth_do_start_thread(struct qeth_card *card, unsigned long thread)
@@ -1458,9 +1702,13 @@ static int qeth_do_start_thread(struct qeth_card *card, unsigned long thread)
 static void qeth_start_kernel_thread(struct work_struct *work)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct task_struct *ts;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct task_struct *ts;
+>>>>>>> refs/remotes/origin/master
 	struct qeth_card *card = container_of(work, struct qeth_card,
 					kernel_thread_starter);
 	QETH_CARD_TEXT(card , 2, "strthrd");
@@ -1469,12 +1717,17 @@ static void qeth_start_kernel_thread(struct work_struct *work)
 	    card->write.state != CH_STATE_UP)
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (qeth_do_start_thread(card, QETH_RECOVER_THREAD))
 		kthread_run(card->discipline.recover, (void *) card,
 				"qeth_recover");
 =======
 	if (qeth_do_start_thread(card, QETH_RECOVER_THREAD)) {
 		ts = kthread_run(card->discipline.recover, (void *)card,
+=======
+	if (qeth_do_start_thread(card, QETH_RECOVER_THREAD)) {
+		ts = kthread_run(card->discipline->recover, (void *)card,
+>>>>>>> refs/remotes/origin/master
 				"qeth_recover");
 		if (IS_ERR(ts)) {
 			qeth_clear_thread_start_bit(card, QETH_RECOVER_THREAD);
@@ -1482,7 +1735,10 @@ static void qeth_start_kernel_thread(struct work_struct *work)
 				QETH_RECOVER_THREAD);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int qeth_setup_card(struct qeth_card *card)
@@ -1501,9 +1757,12 @@ static int qeth_setup_card(struct qeth_card *card)
 	spin_lock_init(&card->vlanlock);
 	spin_lock_init(&card->mclock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	card->vlangrp = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&card->lock);
 	spin_lock_init(&card->ip_lock);
 	spin_lock_init(&card->thread_mask_lock);
@@ -1527,9 +1786,14 @@ static int qeth_setup_card(struct qeth_card *card)
 	/* init QDIO stuff */
 	qeth_init_qdio_info(card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_DELAYED_WORK(&card->buffer_reclaim_work, qeth_buffer_reclaim_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_DELAYED_WORK(&card->buffer_reclaim_work, qeth_buffer_reclaim_work);
+	INIT_WORK(&card->close_dev_work, qeth_close_dev_handler);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1552,10 +1816,14 @@ static struct qeth_card *qeth_alloc_card(void)
 		goto out;
 	QETH_DBF_HEX(SETUP, 2, &card, sizeof(void *));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	card->ip_tbd_list = kmalloc(sizeof(struct list_head), GFP_KERNEL);
 =======
 	card->ip_tbd_list = kzalloc(sizeof(struct list_head), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->ip_tbd_list = kzalloc(sizeof(struct list_head), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!card->ip_tbd_list) {
 		QETH_DBF_TEXT(SETUP, 0, "iptbdnom");
 		goto out_card;
@@ -1596,12 +1864,19 @@ static int qeth_determine_card_type(struct qeth_card *card)
 			card->qdio.no_out_queues =
 				known_devices[i][QETH_QUEUE_NO_IND];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			card->qdio.no_in_queues = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
 			card->info.is_multicast_different =
 				known_devices[i][QETH_MULTICAST_IND];
 			qeth_get_channel_path_desc(card);
+=======
+			card->qdio.no_in_queues = 1;
+			card->info.is_multicast_different =
+				known_devices[i][QETH_MULTICAST_IND];
+			qeth_update_from_chp_desc(card);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 		i++;
@@ -1797,6 +2072,7 @@ static void qeth_configure_blkt_default(struct qeth_card *card, char *prcd)
 	QETH_DBF_TEXT(SETUP, 2, "cfgblkt");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (prcd[74] == 0xF0 && prcd[75] == 0xF0 && prcd[76] == 0xF5) {
 =======
 	if (prcd[74] == 0xF0 && prcd[75] == 0xF0 &&
@@ -1809,6 +2085,17 @@ static void qeth_configure_blkt_default(struct qeth_card *card, char *prcd)
 		card->info.blkt.time_total = 0;
 		card->info.blkt.inter_packet = 0;
 		card->info.blkt.inter_packet_jumbo = 0;
+=======
+	if (prcd[74] == 0xF0 && prcd[75] == 0xF0 &&
+	    prcd[76] >= 0xF1 && prcd[76] <= 0xF4) {
+		card->info.blkt.time_total = 0;
+		card->info.blkt.inter_packet = 0;
+		card->info.blkt.inter_packet_jumbo = 0;
+	} else {
+		card->info.blkt.time_total = 250;
+		card->info.blkt.inter_packet = 5;
+		card->info.blkt.inter_packet_jumbo = 15;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2161,7 +2448,11 @@ int qeth_send_control_data(struct qeth_card *card, int len,
 			if (time_after(jiffies, timeout))
 				goto time_err;
 			cpu_relax();
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (reply->rc == -EIO)
@@ -2270,11 +2561,19 @@ static inline int qeth_get_initial_mtu_for_card(struct qeth_card *card)
 		case QETH_LINK_TYPE_LANE_TR:
 			return 2000;
 		default:
+<<<<<<< HEAD
 			return 1492;
 		}
 	case QETH_CARD_TYPE_OSM:
 	case QETH_CARD_TYPE_OSX:
 		return 1492;
+=======
+			return card->options.layer2 ? 1500 : 1492;
+		}
+	case QETH_CARD_TYPE_OSM:
+	case QETH_CARD_TYPE_OSX:
+		return card->options.layer2 ? 1500 : 1492;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return 1500;
 	}
@@ -2347,9 +2646,16 @@ static int qeth_ulp_enable_cb(struct qeth_card *card, struct qeth_reply *reply,
 		card->info.max_mtu = mtu;
 		card->qdio.in_buf_size = mtu + 2 * PAGE_SIZE;
 	} else {
+<<<<<<< HEAD
 		card->info.initial_mtu = qeth_get_initial_mtu_for_card(card);
 		card->info.max_mtu = *(__u16 *)QETH_ULP_ENABLE_RESP_MAX_MTU(
 			iob->data);
+=======
+		card->info.max_mtu = *(__u16 *)QETH_ULP_ENABLE_RESP_MAX_MTU(
+			iob->data);
+		card->info.initial_mtu = min(card->info.max_mtu,
+					qeth_get_initial_mtu_for_card(card));
+>>>>>>> refs/remotes/origin/master
 		card->qdio.in_buf_size = QETH_IN_BUF_SIZE_DEFAULT;
 	}
 
@@ -2404,7 +2710,10 @@ static int qeth_ulp_setup_cb(struct qeth_card *card, struct qeth_reply *reply,
 		unsigned long data)
 {
 	struct qeth_cmd_buffer *iob;
+<<<<<<< HEAD
 	int rc = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	QETH_DBF_TEXT(SETUP, 2, "ulpstpcb");
 
@@ -2420,7 +2729,11 @@ static int qeth_ulp_setup_cb(struct qeth_card *card, struct qeth_reply *reply,
 		iob->rc = -EMLINK;
 	}
 	QETH_DBF_TEXT_(SETUP, 2, "  rc%d", iob->rc);
+<<<<<<< HEAD
 	return rc;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int qeth_ulp_setup(struct qeth_card *card)
@@ -2452,7 +2765,10 @@ static int qeth_ulp_setup(struct qeth_card *card)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int qeth_init_qdio_out_buf(struct qeth_qdio_out_q *q, int bidx)
 {
 	int rc;
@@ -2484,7 +2800,10 @@ out:
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int qeth_alloc_qdio_buffers(struct qeth_card *card)
 {
 	int i, j;
@@ -2496,18 +2815,24 @@ static int qeth_alloc_qdio_buffers(struct qeth_card *card)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	card->qdio.in_q = kmalloc(sizeof(struct qeth_qdio_q),
 				  GFP_KERNEL);
 =======
 	card->qdio.in_q = kzalloc(sizeof(struct qeth_qdio_q),
 				   GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->qdio.in_q = kzalloc(sizeof(struct qeth_qdio_q),
+				   GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!card->qdio.in_q)
 		goto out_nomem;
 	QETH_DBF_TEXT(SETUP, 2, "inq");
 	QETH_DBF_HEX(SETUP, 2, &card->qdio.in_q, sizeof(void *));
 	memset(card->qdio.in_q, 0, sizeof(struct qeth_qdio_q));
 	/* give inbound qeth_qdio_buffers their qdio_buffers */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < QDIO_MAX_BUFFERS_PER_Q; ++i)
 		card->qdio.in_q->bufs[i].buffer =
@@ -2519,6 +2844,8 @@ static int qeth_alloc_qdio_buffers(struct qeth_card *card)
 	card->qdio.out_qs =
 		kmalloc(card->qdio.no_out_queues *
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < QDIO_MAX_BUFFERS_PER_Q; ++i) {
 		card->qdio.in_q->bufs[i].buffer =
 			&card->qdio.in_q->qdio_bufs[i];
@@ -2531,21 +2858,29 @@ static int qeth_alloc_qdio_buffers(struct qeth_card *card)
 	/* outbound */
 	card->qdio.out_qs =
 		kzalloc(card->qdio.no_out_queues *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			sizeof(struct qeth_qdio_out_q *), GFP_KERNEL);
 	if (!card->qdio.out_qs)
 		goto out_freepool;
 	for (i = 0; i < card->qdio.no_out_queues; ++i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		card->qdio.out_qs[i] = kmalloc(sizeof(struct qeth_qdio_out_q),
 =======
 		card->qdio.out_qs[i] = kzalloc(sizeof(struct qeth_qdio_out_q),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		card->qdio.out_qs[i] = kzalloc(sizeof(struct qeth_qdio_out_q),
+>>>>>>> refs/remotes/origin/master
 					       GFP_KERNEL);
 		if (!card->qdio.out_qs[i])
 			goto out_freeoutq;
 		QETH_DBF_TEXT_(SETUP, 2, "outq %i", i);
 		QETH_DBF_HEX(SETUP, 2, &card->qdio.out_qs[i], sizeof(void *));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		memset(card->qdio.out_qs[i], 0, sizeof(struct qeth_qdio_out_q));
 		card->qdio.out_qs[i]->queue_no = i;
@@ -2571,6 +2906,12 @@ out_freeoutq:
 		/* give outbound qeth_qdio_buffers their qdio_buffers */
 		for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j) {
 			BUG_ON(card->qdio.out_qs[i]->bufs[j] != NULL);
+=======
+		card->qdio.out_qs[i]->queue_no = i;
+		/* give outbound qeth_qdio_buffers their qdio_buffers */
+		for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j) {
+			WARN_ON(card->qdio.out_qs[i]->bufs[j] != NULL);
+>>>>>>> refs/remotes/origin/master
 			if (qeth_init_qdio_out_buf(card->qdio.out_qs[i], j))
 				goto out_freeoutqbufs;
 		}
@@ -2594,7 +2935,10 @@ out_freeoutq:
 		kfree(card->qdio.out_qs[--i]);
 		qeth_clear_outq_buffers(card->qdio.out_qs[i], 1);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(card->qdio.out_qs);
 	card->qdio.out_qs = NULL;
 out_freepool:
@@ -2866,14 +3210,20 @@ static int qeth_init_input_buffer(struct qeth_card *card,
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((card->options.cq == QETH_CQ_ENABLED) && (!buf->rx_skb)) {
 		buf->rx_skb = dev_alloc_skb(QETH_RX_PULL_LEN + ETH_HLEN);
 		if (!buf->rx_skb)
 			return 1;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pool_entry = qeth_find_free_buffer_pool_entry(card);
 	if (!pool_entry)
 		return 1;
@@ -2921,7 +3271,10 @@ int qeth_init_qdio_queues(struct qeth_card *card)
 		return rc;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* completion */
 	rc = qeth_cq_init(card);
@@ -2929,7 +3282,10 @@ int qeth_init_qdio_queues(struct qeth_card *card)
 		return rc;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* outbound queue */
 	for (i = 0; i < card->qdio.no_out_queues; ++i) {
 		memset(card->qdio.out_qs[i]->qdio_bufs, 0,
@@ -2937,11 +3293,16 @@ int qeth_init_qdio_queues(struct qeth_card *card)
 		for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j) {
 			qeth_clear_output_buffer(card->qdio.out_qs[i],
 <<<<<<< HEAD
+<<<<<<< HEAD
 					&card->qdio.out_qs[i]->bufs[j]);
 =======
 					card->qdio.out_qs[i]->bufs[j],
 					QETH_QDIO_BUF_EMPTY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					card->qdio.out_qs[i]->bufs[j],
+					QETH_QDIO_BUF_EMPTY);
+>>>>>>> refs/remotes/origin/master
 		}
 		card->qdio.out_qs[i]->card = card;
 		card->qdio.out_qs[i]->next_buf_to_fill = 0;
@@ -3050,7 +3411,11 @@ int qeth_send_startlan(struct qeth_card *card)
 }
 EXPORT_SYMBOL_GPL(qeth_send_startlan);
 
+<<<<<<< HEAD
 int qeth_default_setadapterparms_cb(struct qeth_card *card,
+=======
+static int qeth_default_setadapterparms_cb(struct qeth_card *card,
+>>>>>>> refs/remotes/origin/master
 		struct qeth_reply *reply, unsigned long data)
 {
 	struct qeth_ipa_cmd *cmd;
@@ -3063,7 +3428,10 @@ int qeth_default_setadapterparms_cb(struct qeth_card *card,
 			cmd->data.setadapterparms.hdr.return_code;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(qeth_default_setadapterparms_cb);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int qeth_query_setadapterparms_cb(struct qeth_card *card,
 		struct qeth_reply *reply, unsigned long data)
@@ -3083,7 +3451,11 @@ static int qeth_query_setadapterparms_cb(struct qeth_card *card,
 	return qeth_default_setadapterparms_cb(card, reply, (unsigned long)cmd);
 }
 
+<<<<<<< HEAD
 struct qeth_cmd_buffer *qeth_get_adapter_cmd(struct qeth_card *card,
+=======
+static struct qeth_cmd_buffer *qeth_get_adapter_cmd(struct qeth_card *card,
+>>>>>>> refs/remotes/origin/master
 		__u32 command, __u32 cmdlen)
 {
 	struct qeth_cmd_buffer *iob;
@@ -3099,7 +3471,10 @@ struct qeth_cmd_buffer *qeth_get_adapter_cmd(struct qeth_card *card,
 
 	return iob;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(qeth_get_adapter_cmd);
+=======
+>>>>>>> refs/remotes/origin/master
 
 int qeth_query_setadapterparms(struct qeth_card *card)
 {
@@ -3122,6 +3497,7 @@ static int qeth_query_ipassists_cb(struct qeth_card *card,
 	QETH_DBF_TEXT(SETUP, 2, "qipasscb");
 
 	cmd = (struct qeth_ipa_cmd *) data;
+<<<<<<< HEAD
 	if (cmd->hdr.prot_version == QETH_PROT_IPV4) {
 		card->options.ipa4.supported_funcs = cmd->hdr.ipa_supported;
 		card->options.ipa4.enabled_funcs = cmd->hdr.ipa_enabled;
@@ -3137,6 +3513,35 @@ static int qeth_query_ipassists_cb(struct qeth_card *card,
 	QETH_DBF_TEXT_(SETUP, 2, "%08x", (__u32)cmd->hdr.ipa_supported);
 	QETH_DBF_TEXT_(SETUP, 2, "%08x", (__u32)cmd->hdr.ipa_enabled);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	switch (cmd->hdr.return_code) {
+	case IPA_RC_NOTSUPP:
+	case IPA_RC_L2_UNSUPPORTED_CMD:
+		QETH_DBF_TEXT(SETUP, 2, "ipaunsup");
+		card->options.ipa4.supported_funcs |= IPA_SETADAPTERPARMS;
+		card->options.ipa6.supported_funcs |= IPA_SETADAPTERPARMS;
+		return -0;
+	default:
+		if (cmd->hdr.return_code) {
+			QETH_DBF_MESSAGE(1, "%s IPA_CMD_QIPASSIST: Unhandled "
+						"rc=%d\n",
+						dev_name(&card->gdev->dev),
+						cmd->hdr.return_code);
+			return 0;
+		}
+	}
+
+	if (cmd->hdr.prot_version == QETH_PROT_IPV4) {
+		card->options.ipa4.supported_funcs = cmd->hdr.ipa_supported;
+		card->options.ipa4.enabled_funcs = cmd->hdr.ipa_enabled;
+	} else if (cmd->hdr.prot_version == QETH_PROT_IPV6) {
+		card->options.ipa6.supported_funcs = cmd->hdr.ipa_supported;
+		card->options.ipa6.enabled_funcs = cmd->hdr.ipa_enabled;
+	} else
+		QETH_DBF_MESSAGE(1, "%s IPA_CMD_QIPASSIST: Flawed LIC detected"
+					"\n", dev_name(&card->gdev->dev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3186,7 +3591,11 @@ static void qeth_get_trap_id(struct qeth_card *card, struct qeth_trap_id *tid)
 	struct sysinfo_2_2_2 *info222 = (struct sysinfo_2_2_2 *)info;
 	struct sysinfo_3_2_2 *info322 = (struct sysinfo_3_2_2 *)info;
 	struct ccw_dev_id ccwid;
+<<<<<<< HEAD
 	int level, rc;
+=======
+	int level;
+>>>>>>> refs/remotes/origin/master
 
 	tid->chpid = card->info.chpid;
 	ccw_device_get_id(CARD_RDEV(card), &ccwid);
@@ -3194,6 +3603,7 @@ static void qeth_get_trap_id(struct qeth_card *card, struct qeth_trap_id *tid)
 	tid->devno = ccwid.devno;
 	if (!info)
 		return;
+<<<<<<< HEAD
 
 	rc = stsi(NULL, 0, 0, 0);
 	if (rc == -ENOSYS)
@@ -3205,6 +3615,12 @@ static void qeth_get_trap_id(struct qeth_card *card, struct qeth_trap_id *tid)
 		tid->lparnr = info222->lpar_number;
 
 	if ((level >= 3) && (stsi(info322, 3, 2, 2) != -ENOSYS)) {
+=======
+	level = stsi(NULL, 0, 0, 0);
+	if ((level >= 2) && (stsi(info222, 2, 2, 2) == 0))
+		tid->lparnr = info222->lpar_number;
+	if ((level >= 3) && (stsi(info322, 3, 2, 2) == 0)) {
+>>>>>>> refs/remotes/origin/master
 		EBCASC(info322->vm[0].name, sizeof(info322->vm[0].name));
 		memcpy(tid->vmname, info322->vm[0].name, sizeof(tid->vmname));
 	}
@@ -3276,10 +3692,13 @@ int qeth_check_qdio_errors(struct qeth_card *card, struct qdio_buffer *buf,
 EXPORT_SYMBOL_GPL(qeth_check_qdio_errors);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void qeth_queue_input_buffer(struct qeth_card *card, int index)
 {
 	struct qeth_qdio_q *queue = card->qdio.in_q;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void qeth_buffer_reclaim_work(struct work_struct *work)
 {
 	struct qeth_card *card = container_of(work, struct qeth_card,
@@ -3293,7 +3712,10 @@ void qeth_queue_input_buffer(struct qeth_card *card, int index)
 {
 	struct qeth_qdio_q *queue = card->qdio.in_q;
 	struct list_head *lh;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int count;
 	int i;
 	int rc;
@@ -3326,7 +3748,10 @@ void qeth_queue_input_buffer(struct qeth_card *card, int index)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!count) {
 			i = 0;
 			list_for_each(lh, &card->qdio.in_buf_pool.entry_list)
@@ -3341,7 +3766,10 @@ void qeth_queue_input_buffer(struct qeth_card *card, int index)
 			return;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * according to old code it should be avoided to requeue all
 		 * 128 buffers in order to benefit from PCI avoidance.
@@ -3362,10 +3790,13 @@ void qeth_queue_input_buffer(struct qeth_card *card, int index)
 				card->perf_stats.inbound_do_qdio_start_time;
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_warn(&card->gdev->dev,
 				"QDIO reported an error, rc=%i\n", rc);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			QETH_CARD_TEXT(card, 2, "qinberr");
 		}
 		queue->next_buf_to_init = (queue->next_buf_to_init + count) %
@@ -3440,19 +3871,27 @@ static int qeth_switch_to_nonpacking_if_needed(struct qeth_qdio_out_q *queue)
 			queue->do_pack = 0;
 			/* flush packing buffers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buffer = &queue->bufs[queue->next_buf_to_fill];
 =======
 			buffer = queue->bufs[queue->next_buf_to_fill];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			buffer = queue->bufs[queue->next_buf_to_fill];
+>>>>>>> refs/remotes/origin/master
 			if ((atomic_read(&buffer->state) ==
 						QETH_QDIO_BUF_EMPTY) &&
 			    (buffer->next_element_to_fill > 0)) {
 				atomic_set(&buffer->state,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						QETH_QDIO_BUF_PRIMED);
 =======
 					   QETH_QDIO_BUF_PRIMED);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   QETH_QDIO_BUF_PRIMED);
+>>>>>>> refs/remotes/origin/master
 				flush_count++;
 				queue->next_buf_to_fill =
 					(queue->next_buf_to_fill + 1) %
@@ -3464,9 +3903,13 @@ static int qeth_switch_to_nonpacking_if_needed(struct qeth_qdio_out_q *queue)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Called to flush a packing buffer if no more pci flags are on the queue.
  * Checks if there is a packing buffer and prepares it to be flushed.
@@ -3477,10 +3920,14 @@ static int qeth_flush_buffers_on_no_pci(struct qeth_qdio_out_q *queue)
 	struct qeth_qdio_out_buffer *buffer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buffer = &queue->bufs[queue->next_buf_to_fill];
 =======
 	buffer = queue->bufs[queue->next_buf_to_fill];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buffer = queue->bufs[queue->next_buf_to_fill];
+>>>>>>> refs/remotes/origin/master
 	if ((atomic_read(&buffer->state) == QETH_QDIO_BUF_EMPTY) &&
 	   (buffer->next_element_to_fill > 0)) {
 		/* it's a packing buffer */
@@ -3502,11 +3949,14 @@ static void qeth_flush_buffers(struct qeth_qdio_out_q *queue, int index,
 
 	for (i = index; i < index + count; ++i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = &queue->bufs[i % QDIO_MAX_BUFFERS_PER_Q];
 		buf->buffer->element[buf->next_element_to_fill - 1].eflags |=
 				SBAL_EFLAGS_LAST_ENTRY;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int bidx = i % QDIO_MAX_BUFFERS_PER_Q;
 		buf = queue->bufs[bidx];
 		buf->buffer->element[buf->next_element_to_fill - 1].eflags |=
@@ -3515,7 +3965,10 @@ static void qeth_flush_buffers(struct qeth_qdio_out_q *queue, int index,
 		if (queue->bufstates)
 			queue->bufstates[bidx].user = buf;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (queue->card->info.type == QETH_CARD_TYPE_IQD)
 			continue;
 
@@ -3564,6 +4017,7 @@ static void qeth_flush_buffers(struct qeth_qdio_out_q *queue, int index,
 	if (rc) {
 		queue->card->stats.tx_errors += count;
 		/* ignore temporary SIGA errors without busy condition */
+<<<<<<< HEAD
 		if (rc == QDIO_ERROR_SIGA_TARGET)
 			return;
 		QETH_CARD_TEXT(queue->card, 2, "flushbuf");
@@ -3573,6 +4027,14 @@ static void qeth_flush_buffers(struct qeth_qdio_out_q *queue, int index,
 		QETH_CARD_TEXT_(queue->card, 2, " idx%d", index);
 		QETH_CARD_TEXT_(queue->card, 2, " c%d", count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (rc == -ENOBUFS)
+			return;
+		QETH_CARD_TEXT(queue->card, 2, "flushbuf");
+		QETH_CARD_TEXT_(queue->card, 2, " q%d", queue->queue_no);
+		QETH_CARD_TEXT_(queue->card, 2, " idx%d", index);
+		QETH_CARD_TEXT_(queue->card, 2, " c%d", count);
+>>>>>>> refs/remotes/origin/master
 		QETH_CARD_TEXT_(queue->card, 2, " err%d", rc);
 
 		/* this must not happen under normal circumstances. if it
@@ -3635,9 +4097,12 @@ void qeth_qdio_start_poll(struct ccw_device *ccwdev, int queue,
 EXPORT_SYMBOL_GPL(qeth_qdio_start_poll);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void qeth_qdio_input_handler(struct ccw_device *ccwdev, unsigned int qdio_err,
 		unsigned int queue, int first_element, int count,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int qeth_configure_cq(struct qeth_card *card, enum qeth_cq cq)
 {
 	int rc;
@@ -3739,15 +4204,21 @@ out:
 
 void qeth_qdio_input_handler(struct ccw_device *ccwdev, unsigned int qdio_err,
 		unsigned int queue, int first_elem, int count,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned long card_ptr)
 {
 	struct qeth_card *card = (struct qeth_card *)card_ptr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (qdio_err)
 		qeth_schedule_recovery(card);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	QETH_CARD_TEXT_(card, 2, "qihq%d", queue);
 	QETH_CARD_TEXT_(card, 2, "qiec%d", qdio_err);
 
@@ -3757,7 +4228,10 @@ void qeth_qdio_input_handler(struct ccw_device *ccwdev, unsigned int qdio_err,
 		qeth_schedule_recovery(card);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(qeth_qdio_input_handler);
 
@@ -3771,7 +4245,11 @@ void qeth_qdio_output_handler(struct ccw_device *ccwdev,
 	int i;
 
 	QETH_CARD_TEXT(card, 6, "qdouhdl");
+<<<<<<< HEAD
 	if (qdio_error & QDIO_ERROR_ACTIVATE_CHECK_CONDITION) {
+=======
+	if (qdio_error & QDIO_ERROR_FATAL) {
+>>>>>>> refs/remotes/origin/master
 		QETH_CARD_TEXT(card, 2, "achkcond");
 		netif_stop_queue(card->dev);
 		qeth_schedule_recovery(card);
@@ -3784,10 +4262,13 @@ void qeth_qdio_output_handler(struct ccw_device *ccwdev,
 	}
 	for (i = first_element; i < (first_element + count); ++i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buffer = &queue->bufs[i % QDIO_MAX_BUFFERS_PER_Q];
 		qeth_handle_send_error(card, buffer, qdio_error);
 		qeth_clear_output_buffer(queue, buffer);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int bidx = i % QDIO_MAX_BUFFERS_PER_Q;
 		buffer = queue->bufs[bidx];
 		qeth_handle_send_error(card, buffer, qdio_error);
@@ -3795,7 +4276,11 @@ void qeth_qdio_output_handler(struct ccw_device *ccwdev,
 		if (queue->bufstates &&
 		    (queue->bufstates[bidx].flags &
 		     QDIO_OUTBUF_STATE_FLAG_PENDING) != 0) {
+<<<<<<< HEAD
 			BUG_ON(card->options.cq != QETH_CQ_ENABLED);
+=======
+			WARN_ON_ONCE(card->options.cq != QETH_CQ_ENABLED);
+>>>>>>> refs/remotes/origin/master
 
 			if (atomic_cmpxchg(&buffer->state,
 					   QETH_QDIO_BUF_PRIMED,
@@ -3809,7 +4294,10 @@ void qeth_qdio_output_handler(struct ccw_device *ccwdev,
 			QETH_CARD_TEXT(queue->card, 5, "aob");
 			QETH_CARD_TEXT_(queue->card, 5, "%lx",
 					virt_to_phys(buffer->aob));
+<<<<<<< HEAD
 			BUG_ON(bidx < 0 || bidx >= QDIO_MAX_BUFFERS_PER_Q);
+=======
+>>>>>>> refs/remotes/origin/master
 			if (qeth_init_qdio_out_buf(queue, bidx)) {
 				QETH_CARD_TEXT(card, 2, "outofbuf");
 				qeth_schedule_recovery(card);
@@ -3827,7 +4315,10 @@ void qeth_qdio_output_handler(struct ccw_device *ccwdev,
 						QETH_QDIO_BUF_EMPTY);
 		}
 		qeth_cleanup_handled_pending(queue, bidx, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	atomic_sub(count, &queue->used_buffers);
 	/* check if we need to do something on this outbound queue */
@@ -3880,14 +4371,42 @@ int qeth_get_priority_queue(struct qeth_card *card, struct sk_buff *skb,
 }
 EXPORT_SYMBOL_GPL(qeth_get_priority_queue);
 
+<<<<<<< HEAD
 int qeth_get_elements_no(struct qeth_card *card, void *hdr,
+=======
+int qeth_get_elements_for_frags(struct sk_buff *skb)
+{
+	int cnt, length, e, elements = 0;
+	struct skb_frag_struct *frag;
+	char *data;
+
+	for (cnt = 0; cnt < skb_shinfo(skb)->nr_frags; cnt++) {
+		frag = &skb_shinfo(skb)->frags[cnt];
+		data = (char *)page_to_phys(skb_frag_page(frag)) +
+			frag->page_offset;
+		length = frag->size;
+		e = PFN_UP((unsigned long)data + length - 1) -
+			PFN_DOWN((unsigned long)data);
+		elements += e;
+	}
+	return elements;
+}
+EXPORT_SYMBOL_GPL(qeth_get_elements_for_frags);
+
+int qeth_get_elements_no(struct qeth_card *card,
+>>>>>>> refs/remotes/origin/master
 		     struct sk_buff *skb, int elems)
 {
 	int dlen = skb->len - skb->data_len;
 	int elements_needed = PFN_UP((unsigned long)skb->data + dlen - 1) -
 		PFN_DOWN((unsigned long)skb->data);
 
+<<<<<<< HEAD
 	elements_needed += skb_shinfo(skb)->nr_frags;
+=======
+	elements_needed += qeth_get_elements_for_frags(skb);
+
+>>>>>>> refs/remotes/origin/master
 	if ((elements_needed + elems) > QETH_MAX_BUFFER_ELEMENTS(card)) {
 		QETH_DBF_MESSAGE(2, "Invalid size of IP packet "
 			"(Number=%d / Length=%d). Discarded.\n",
@@ -3898,7 +4417,11 @@ int qeth_get_elements_no(struct qeth_card *card, void *hdr,
 }
 EXPORT_SYMBOL_GPL(qeth_get_elements_no);
 
+<<<<<<< HEAD
 int qeth_hdr_chk_and_bounce(struct sk_buff *skb, int len)
+=======
+int qeth_hdr_chk_and_bounce(struct sk_buff *skb, struct qeth_hdr **hdr, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int hroom, inpage, rest;
 
@@ -3911,6 +4434,11 @@ int qeth_hdr_chk_and_bounce(struct sk_buff *skb, int len)
 			return 1;
 		memmove(skb->data - rest, skb->data, skb->len - skb->data_len);
 		skb->data -= rest;
+<<<<<<< HEAD
+=======
+		skb->tail -= rest;
+		*hdr = (struct qeth_hdr *)skb->data;
+>>>>>>> refs/remotes/origin/master
 		QETH_DBF_MESSAGE(2, "skb bounce len: %d rest: %d\n", len, rest);
 	}
 	return 0;
@@ -3973,6 +4501,7 @@ static inline void __qeth_fill_buffer(struct sk_buff *skb,
 	for (cnt = 0; cnt < skb_shinfo(skb)->nr_frags; cnt++) {
 		frag = &skb_shinfo(skb)->frags[cnt];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buffer->element[element].addr = (char *)page_to_phys(frag->page)
 =======
 		buffer->element[element].addr = (char *)
@@ -3982,6 +4511,25 @@ static inline void __qeth_fill_buffer(struct sk_buff *skb,
 		buffer->element[element].length = frag->size;
 		buffer->element[element].eflags = SBAL_EFLAGS_MIDDLE_FRAG;
 		element++;
+=======
+		data = (char *)page_to_phys(skb_frag_page(frag)) +
+			frag->page_offset;
+		length = frag->size;
+		while (length > 0) {
+			length_here = PAGE_SIZE -
+				((unsigned long) data % PAGE_SIZE);
+			if (length < length_here)
+				length_here = length;
+
+			buffer->element[element].addr = data;
+			buffer->element[element].length = length_here;
+			buffer->element[element].eflags =
+				SBAL_EFLAGS_MIDDLE_FRAG;
+			length -= length_here;
+			data += length_here;
+			element++;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (buffer->element[element - 1].eflags)
@@ -4065,10 +4613,14 @@ int qeth_do_send_packet_fast(struct qeth_card *card,
 	/* ... now we've got the queue */
 	index = queue->next_buf_to_fill;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buffer = &queue->bufs[queue->next_buf_to_fill];
 =======
 	buffer = queue->bufs[queue->next_buf_to_fill];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buffer = queue->bufs[queue->next_buf_to_fill];
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * check if buffer is empty to make sure that we do not 'overtake'
 	 * ourselves and try to fill a buffer that is already primed
@@ -4103,10 +4655,14 @@ int qeth_do_send_packet(struct qeth_card *card, struct qeth_qdio_out_q *queue,
 			      QETH_OUT_Q_LOCKED) != QETH_OUT_Q_UNLOCKED);
 	start_index = queue->next_buf_to_fill;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buffer = &queue->bufs[queue->next_buf_to_fill];
 =======
 	buffer = queue->bufs[queue->next_buf_to_fill];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buffer = queue->bufs[queue->next_buf_to_fill];
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * check if buffer is empty to make sure that we do not 'overtake'
 	 * ourselves and try to fill a buffer that is already primed
@@ -4129,10 +4685,14 @@ int qeth_do_send_packet(struct qeth_card *card, struct qeth_qdio_out_q *queue,
 				(queue->next_buf_to_fill + 1) %
 				QDIO_MAX_BUFFERS_PER_Q;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buffer = &queue->bufs[queue->next_buf_to_fill];
 =======
 			buffer = queue->bufs[queue->next_buf_to_fill];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			buffer = queue->bufs[queue->next_buf_to_fill];
+>>>>>>> refs/remotes/origin/master
 			/* we did a step forward, so check buffer state
 			 * again */
 			if (atomic_read(&buffer->state) !=
@@ -4308,6 +4868,10 @@ static int qeth_setadpparms_set_access_ctrl_cb(struct qeth_card *card,
 {
 	struct qeth_ipa_cmd *cmd;
 	struct qeth_set_access_ctrl *access_ctrl_req;
+<<<<<<< HEAD
+=======
+	int fallback = *(int *)reply->param;
+>>>>>>> refs/remotes/origin/master
 
 	QETH_CARD_TEXT(card, 4, "setaccb");
 
@@ -4317,12 +4881,23 @@ static int qeth_setadpparms_set_access_ctrl_cb(struct qeth_card *card,
 	QETH_DBF_TEXT_(SETUP, 2, "%s", card->gdev->dev.kobj.name);
 	QETH_DBF_TEXT_(SETUP, 2, "rc=%d",
 		cmd->data.setadapterparms.hdr.return_code);
+<<<<<<< HEAD
 	switch (cmd->data.setadapterparms.hdr.return_code) {
 	case SET_ACCESS_CTRL_RC_SUCCESS:
 	case SET_ACCESS_CTRL_RC_ALREADY_NOT_ISOLATED:
 	case SET_ACCESS_CTRL_RC_ALREADY_ISOLATED:
 	{
 		card->options.isolation = access_ctrl_req->subcmd_code;
+=======
+	if (cmd->data.setadapterparms.hdr.return_code !=
+						SET_ACCESS_CTRL_RC_SUCCESS)
+		QETH_DBF_MESSAGE(3, "ERR:SET_ACCESS_CTRL(%s,%d)==%d\n",
+				card->gdev->dev.kobj.name,
+				access_ctrl_req->subcmd_code,
+				cmd->data.setadapterparms.hdr.return_code);
+	switch (cmd->data.setadapterparms.hdr.return_code) {
+	case SET_ACCESS_CTRL_RC_SUCCESS:
+>>>>>>> refs/remotes/origin/master
 		if (card->options.isolation == ISOLATION_MODE_NONE) {
 			dev_info(&card->gdev->dev,
 			    "QDIO data connection isolation is deactivated\n");
@@ -4330,6 +4905,7 @@ static int qeth_setadpparms_set_access_ctrl_cb(struct qeth_card *card,
 			dev_info(&card->gdev->dev,
 			    "QDIO data connection isolation is activated\n");
 		}
+<<<<<<< HEAD
 		QETH_DBF_MESSAGE(3, "OK:SET_ACCESS_CTRL(%s, %d)==%d\n",
 			card->gdev->dev.kobj.name,
 			access_ctrl_req->subcmd_code,
@@ -4390,12 +4966,70 @@ static int qeth_setadpparms_set_access_ctrl_cb(struct qeth_card *card,
 		break;
 	}
 	}
+=======
+		break;
+	case SET_ACCESS_CTRL_RC_ALREADY_NOT_ISOLATED:
+		QETH_DBF_MESSAGE(2, "%s QDIO data connection isolation already "
+				"deactivated\n", dev_name(&card->gdev->dev));
+		if (fallback)
+			card->options.isolation = card->options.prev_isolation;
+		break;
+	case SET_ACCESS_CTRL_RC_ALREADY_ISOLATED:
+		QETH_DBF_MESSAGE(2, "%s QDIO data connection isolation already"
+				" activated\n", dev_name(&card->gdev->dev));
+		if (fallback)
+			card->options.isolation = card->options.prev_isolation;
+		break;
+	case SET_ACCESS_CTRL_RC_NOT_SUPPORTED:
+		dev_err(&card->gdev->dev, "Adapter does not "
+			"support QDIO data connection isolation\n");
+		break;
+	case SET_ACCESS_CTRL_RC_NONE_SHARED_ADAPTER:
+		dev_err(&card->gdev->dev,
+			"Adapter is dedicated. "
+			"QDIO data connection isolation not supported\n");
+		if (fallback)
+			card->options.isolation = card->options.prev_isolation;
+		break;
+	case SET_ACCESS_CTRL_RC_ACTIVE_CHECKSUM_OFF:
+		dev_err(&card->gdev->dev,
+			"TSO does not permit QDIO data connection isolation\n");
+		if (fallback)
+			card->options.isolation = card->options.prev_isolation;
+		break;
+	case SET_ACCESS_CTRL_RC_REFLREL_UNSUPPORTED:
+		dev_err(&card->gdev->dev, "The adjacent switch port does not "
+			"support reflective relay mode\n");
+		if (fallback)
+			card->options.isolation = card->options.prev_isolation;
+		break;
+	case SET_ACCESS_CTRL_RC_REFLREL_FAILED:
+		dev_err(&card->gdev->dev, "The reflective relay mode cannot be "
+					"enabled at the adjacent switch port");
+		if (fallback)
+			card->options.isolation = card->options.prev_isolation;
+		break;
+	case SET_ACCESS_CTRL_RC_REFLREL_DEACT_FAILED:
+		dev_warn(&card->gdev->dev, "Turning off reflective relay mode "
+					"at the adjacent switch failed\n");
+		break;
+	default:
+		/* this should never happen */
+		if (fallback)
+			card->options.isolation = card->options.prev_isolation;
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 	qeth_default_setadapterparms_cb(card, reply, (unsigned long) cmd);
 	return 0;
 }
 
 static int qeth_setadpparms_set_access_ctrl(struct qeth_card *card,
+<<<<<<< HEAD
 		enum qeth_ipa_isolation_modes isolation)
+=======
+		enum qeth_ipa_isolation_modes isolation, int fallback)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	struct qeth_cmd_buffer *iob;
@@ -4415,12 +5049,20 @@ static int qeth_setadpparms_set_access_ctrl(struct qeth_card *card,
 	access_ctrl_req->subcmd_code = isolation;
 
 	rc = qeth_send_ipa_cmd(card, iob, qeth_setadpparms_set_access_ctrl_cb,
+<<<<<<< HEAD
 			       NULL);
+=======
+			       &fallback);
+>>>>>>> refs/remotes/origin/master
 	QETH_DBF_TEXT_(SETUP, 2, "rc=%d", rc);
 	return rc;
 }
 
+<<<<<<< HEAD
 int qeth_set_access_ctrl_online(struct qeth_card *card)
+=======
+int qeth_set_access_ctrl_online(struct qeth_card *card, int fallback)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 
@@ -4430,12 +5072,20 @@ int qeth_set_access_ctrl_online(struct qeth_card *card)
 	     card->info.type == QETH_CARD_TYPE_OSX) &&
 	     qeth_adp_supported(card, IPA_SETADP_SET_ACCESS_CONTROL)) {
 		rc = qeth_setadpparms_set_access_ctrl(card,
+<<<<<<< HEAD
 			card->options.isolation);
+=======
+			card->options.isolation, fallback);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			QETH_DBF_MESSAGE(3,
 				"IPA(SET_ACCESS_CTRL,%s,%d) sent failed\n",
 				card->gdev->dev.kobj.name,
 				rc);
+<<<<<<< HEAD
+=======
+			rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (card->options.isolation != ISOLATION_MODE_NONE) {
 		card->options.isolation = ISOLATION_MODE_NONE;
@@ -4584,10 +5234,14 @@ static int qeth_snmp_command_cb(struct qeth_card *card,
 	if ((qinfo->udata_len - qinfo->udata_offset) < data_len) {
 		QETH_CARD_TEXT_(card, 4, "scer3%i", -ENOMEM);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd->hdr.return_code = -ENOMEM;
 =======
 		cmd->hdr.return_code = IPA_RC_ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cmd->hdr.return_code = IPA_RC_ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	QETH_CARD_TEXT_(card, 4, "snore%i",
@@ -4621,7 +5275,11 @@ int qeth_snmp_command(struct qeth_card *card, char __user *udata)
 	struct qeth_cmd_buffer *iob;
 	struct qeth_ipa_cmd *cmd;
 	struct qeth_snmp_ureq *ureq;
+<<<<<<< HEAD
 	int req_len;
+=======
+	unsigned int req_len;
+>>>>>>> refs/remotes/origin/master
 	struct qeth_arp_query_info qinfo = {0, };
 	int rc = 0;
 
@@ -4637,6 +5295,13 @@ int qeth_snmp_command(struct qeth_card *card, char __user *udata)
 	/* skip 4 bytes (data_len struct member) to get req_len */
 	if (copy_from_user(&req_len, udata + sizeof(int), sizeof(int)))
 		return -EFAULT;
+<<<<<<< HEAD
+=======
+	if (req_len > (QETH_BUFSIZE - IPA_PDU_HEADER_SIZE -
+		       sizeof(struct qeth_ipacmd_hdr) -
+		       sizeof(struct qeth_ipacmd_setadpparms_hdr)))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	ureq = memdup_user(udata, req_len + sizeof(struct qeth_snmp_ureq_hdr));
 	if (IS_ERR(ureq)) {
 		QETH_CARD_TEXT(card, 2, "snmpnome");
@@ -4671,7 +5336,10 @@ int qeth_snmp_command(struct qeth_card *card, char __user *udata)
 EXPORT_SYMBOL_GPL(qeth_snmp_command);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int qeth_setadpparms_query_oat_cb(struct qeth_card *card,
 		struct qeth_reply *reply, unsigned long data)
 {
@@ -4770,7 +5438,10 @@ out:
 }
 EXPORT_SYMBOL_GPL(qeth_query_oat_command);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int qeth_get_qdio_q_format(struct qeth_card *card)
 {
 	switch (card->info.type) {
@@ -4809,11 +5480,16 @@ static void qeth_determine_capabilities(struct qeth_card *card)
 	}
 	qeth_configure_unitaddr(card, prcd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	qeth_configure_blkt_default(card, prcd);
 =======
 	if (ddev_offline)
 		qeth_configure_blkt_default(card, prcd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ddev_offline)
+		qeth_configure_blkt_default(card, prcd);
+>>>>>>> refs/remotes/origin/master
 	kfree(prcd);
 
 	rc = qdio_get_ssqd_desc(ddev, &card->ssqd);
@@ -4821,7 +5497,10 @@ static void qeth_determine_capabilities(struct qeth_card *card)
 		QETH_DBF_TEXT_(SETUP, 2, "6err%d", rc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	QETH_DBF_TEXT_(SETUP, 2, "qfmt%d", card->ssqd.qfmt);
 	QETH_DBF_TEXT_(SETUP, 2, "%d", card->ssqd.qdioac1);
 	QETH_DBF_TEXT_(SETUP, 2, "%d", card->ssqd.qdioac3);
@@ -4836,7 +5515,10 @@ static void qeth_determine_capabilities(struct qeth_card *card)
 	}
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_offline:
 	if (ddev_offline == 1)
 		ccw_device_set_offline(ddev);
@@ -4845,7 +5527,10 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void qeth_qdio_establish_cq(struct qeth_card *card,
 	struct qdio_buffer **in_sbal_ptrs,
 	void (**queue_start_poll) (struct ccw_device *, int, unsigned long)) {
@@ -4864,16 +5549,23 @@ static inline void qeth_qdio_establish_cq(struct qeth_card *card,
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int qeth_qdio_establish(struct qeth_card *card)
 {
 	struct qdio_initialize init_data;
 	char *qib_param_field;
 	struct qdio_buffer **in_sbal_ptrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void (**queue_start_poll) (struct ccw_device *, int, unsigned long);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (**queue_start_poll) (struct ccw_device *, int, unsigned long);
+>>>>>>> refs/remotes/origin/master
 	struct qdio_buffer **out_sbal_ptrs;
 	int i, j, k;
 	int rc = 0;
@@ -4883,18 +5575,25 @@ static int qeth_qdio_establish(struct qeth_card *card)
 	qib_param_field = kzalloc(QDIO_MAX_BUFFERS_PER_Q * sizeof(char),
 			      GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!qib_param_field)
 		return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!qib_param_field) {
 		rc =  -ENOMEM;
 		goto out_free_nothing;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	qeth_create_qib_param_field(card, qib_param_field);
 	qeth_create_qib_param_field_blkt(card, qib_param_field);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	in_sbal_ptrs = kmalloc(QDIO_MAX_BUFFERS_PER_Q * sizeof(void *),
 			       GFP_KERNEL);
@@ -4914,6 +5613,8 @@ static int qeth_qdio_establish(struct qeth_card *card)
 		kfree(qib_param_field);
 		return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	in_sbal_ptrs = kzalloc(card->qdio.no_in_queues *
 			       QDIO_MAX_BUFFERS_PER_Q * sizeof(void *),
 			       GFP_KERNEL);
@@ -4933,7 +5634,11 @@ static int qeth_qdio_establish(struct qeth_card *card)
 		goto out_free_in_sbals;
 	}
 	for (i = 0; i < card->qdio.no_in_queues; ++i)
+<<<<<<< HEAD
 		queue_start_poll[i] = card->discipline.start_poll;
+=======
+		queue_start_poll[i] = card->discipline->start_poll;
+>>>>>>> refs/remotes/origin/master
 
 	qeth_qdio_establish_cq(card, in_sbal_ptrs, queue_start_poll);
 
@@ -4943,16 +5648,23 @@ static int qeth_qdio_establish(struct qeth_card *card)
 	if (!out_sbal_ptrs) {
 		rc = -ENOMEM;
 		goto out_free_queue_start_poll;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	for (i = 0, k = 0; i < card->qdio.no_out_queues; ++i)
 		for (j = 0; j < QDIO_MAX_BUFFERS_PER_Q; ++j, ++k) {
 			out_sbal_ptrs[k] = (struct qdio_buffer *)virt_to_phys(
 <<<<<<< HEAD
+<<<<<<< HEAD
 				card->qdio.out_qs[i]->bufs[j].buffer);
 =======
 				card->qdio.out_qs[i]->bufs[j]->buffer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				card->qdio.out_qs[i]->bufs[j]->buffer);
+>>>>>>> refs/remotes/origin/master
 		}
 
 	memset(&init_data, 0, sizeof(struct qdio_initialize));
@@ -4960,6 +5672,7 @@ static int qeth_qdio_establish(struct qeth_card *card)
 	init_data.q_format               = qeth_get_qdio_q_format(card);
 	init_data.qib_param_field_format = 0;
 	init_data.qib_param_field        = qib_param_field;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	init_data.no_input_qs            = 1;
 	init_data.no_output_qs           = card->qdio.no_out_queues;
@@ -4974,14 +5687,25 @@ static int qeth_qdio_establish(struct qeth_card *card)
 	init_data.no_output_qs           = card->qdio.no_out_queues;
 	init_data.input_handler          = card->discipline.input_handler;
 	init_data.output_handler         = card->discipline.output_handler;
+=======
+	init_data.no_input_qs            = card->qdio.no_in_queues;
+	init_data.no_output_qs           = card->qdio.no_out_queues;
+	init_data.input_handler 	 = card->discipline->input_handler;
+	init_data.output_handler	 = card->discipline->output_handler;
+>>>>>>> refs/remotes/origin/master
 	init_data.queue_start_poll_array = queue_start_poll;
 	init_data.int_parm               = (unsigned long) card;
 	init_data.input_sbal_addr_array  = (void **) in_sbal_ptrs;
 	init_data.output_sbal_addr_array = (void **) out_sbal_ptrs;
 	init_data.output_sbal_state_array = card->qdio.out_bufstates;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	init_data.scan_threshold =
 		(card->info.type == QETH_CARD_TYPE_IQD) ? 8 : 32;
+=======
+	init_data.scan_threshold =
+		(card->info.type == QETH_CARD_TYPE_IQD) ? 1 : 32;
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_cmpxchg(&card->qdio.state, QETH_QDIO_ALLOCATED,
 		QETH_QDIO_ESTABLISHED) == QETH_QDIO_ALLOCATED) {
@@ -4997,11 +5721,14 @@ static int qeth_qdio_establish(struct qeth_card *card)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 out:
 	kfree(out_sbal_ptrs);
 	kfree(in_sbal_ptrs);
 	kfree(qib_param_field);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (card->options.cq) {
 	case QETH_CQ_ENABLED:
@@ -5022,7 +5749,10 @@ out_free_in_sbals:
 out_free_qib_param:
 	kfree(qib_param_field);
 out_free_nothing:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -5041,6 +5771,22 @@ static void qeth_core_free_card(struct qeth_card *card)
 	kfree(card);
 }
 
+<<<<<<< HEAD
+=======
+void qeth_trace_features(struct qeth_card *card)
+{
+	QETH_CARD_TEXT(card, 2, "features");
+	QETH_CARD_TEXT_(card, 2, "%x", card->options.ipa4.supported_funcs);
+	QETH_CARD_TEXT_(card, 2, "%x", card->options.ipa4.enabled_funcs);
+	QETH_CARD_TEXT_(card, 2, "%x", card->options.ipa6.supported_funcs);
+	QETH_CARD_TEXT_(card, 2, "%x", card->options.ipa6.enabled_funcs);
+	QETH_CARD_TEXT_(card, 2, "%x", card->options.adp.supported_funcs);
+	QETH_CARD_TEXT_(card, 2, "%x", card->options.adp.enabled_funcs);
+	QETH_CARD_TEXT_(card, 2, "%x", card->info.diagass_support);
+}
+EXPORT_SYMBOL_GPL(qeth_trace_features);
+
+>>>>>>> refs/remotes/origin/master
 static struct ccw_device_id qeth_ids[] = {
 	{CCW_DEVICE_DEVTYPE(0x1731, 0x01, 0x1732, 0x01),
 					.driver_info = QETH_CARD_TYPE_OSD},
@@ -5066,6 +5812,7 @@ static struct ccw_driver qeth_ccw_driver = {
 	.remove = ccwgroup_remove_ccwdev,
 };
 
+<<<<<<< HEAD
 static int qeth_core_driver_group(const char *buf, struct device *root_dev,
 				unsigned long driver_id)
 {
@@ -5076,13 +5823,24 @@ static int qeth_core_driver_group(const char *buf, struct device *root_dev,
 int qeth_core_hardsetup_card(struct qeth_card *card)
 {
 	int retries = 0;
+=======
+int qeth_core_hardsetup_card(struct qeth_card *card)
+{
+	int retries = 3;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	QETH_DBF_TEXT(SETUP, 2, "hrdsetup");
 	atomic_set(&card->force_alloc_skb, 0);
+<<<<<<< HEAD
 	qeth_get_channel_path_desc(card);
 retry:
 	if (retries)
+=======
+	qeth_update_from_chp_desc(card);
+retry:
+	if (retries < 3)
+>>>>>>> refs/remotes/origin/master
 		QETH_DBF_MESSAGE(2, "%s Retrying to do IDX activates.\n",
 			dev_name(&card->gdev->dev));
 	ccw_device_set_offline(CARD_DDEV(card));
@@ -5104,7 +5862,11 @@ retriable:
 		return rc;
 	} else if (rc) {
 		QETH_DBF_TEXT_(SETUP, 2, "1err%d", rc);
+<<<<<<< HEAD
 		if (++retries > 3)
+=======
+		if (--retries < 0)
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		else
 			goto retry;
@@ -5160,15 +5922,21 @@ out:
 EXPORT_SYMBOL_GPL(qeth_core_hardsetup_card);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int qeth_create_skb_frag(struct qdio_buffer_element *element,
 =======
 static inline int qeth_create_skb_frag(struct qeth_qdio_buffer *qethbuffer,
 		struct qdio_buffer_element *element,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int qeth_create_skb_frag(struct qeth_qdio_buffer *qethbuffer,
+		struct qdio_buffer_element *element,
+>>>>>>> refs/remotes/origin/master
 		struct sk_buff **pskb, int offset, int *pfrag, int data_len)
 {
 	struct page *page = virt_to_page(element->addr);
 	if (*pskb == NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* the upper protocol layers assume that there is data in the
 		 * skb itself. Copy a small amount (64 bytes) to make them
@@ -5179,6 +5947,8 @@ static inline int qeth_create_skb_frag(struct qeth_qdio_buffer *qethbuffer,
 		skb_reserve(*pskb, ETH_HLEN);
 		if (data_len <= 64) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (qethbuffer->rx_skb) {
 			/* only if qeth_card.options.cq == QETH_CQ_ENABLED */
 			*pskb = qethbuffer->rx_skb;
@@ -5191,11 +5961,15 @@ static inline int qeth_create_skb_frag(struct qeth_qdio_buffer *qethbuffer,
 
 		skb_reserve(*pskb, ETH_HLEN);
 		if (data_len <= QETH_RX_PULL_LEN) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			memcpy(skb_put(*pskb, data_len), element->addr + offset,
 				data_len);
 		} else {
 			get_page(page);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			memcpy(skb_put(*pskb, 64), element->addr + offset, 64);
 			skb_fill_page_desc(*pskb, *pfrag, page, offset + 64,
@@ -5204,6 +5978,8 @@ static inline int qeth_create_skb_frag(struct qeth_qdio_buffer *qethbuffer,
 			(*pskb)->len      += data_len - 64;
 			(*pskb)->truesize += data_len - 64;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			memcpy(skb_put(*pskb, QETH_RX_PULL_LEN),
 			       element->addr + offset, QETH_RX_PULL_LEN);
 			skb_fill_page_desc(*pskb, *pfrag, page,
@@ -5212,7 +5988,10 @@ static inline int qeth_create_skb_frag(struct qeth_qdio_buffer *qethbuffer,
 			(*pskb)->data_len += data_len - QETH_RX_PULL_LEN;
 			(*pskb)->len      += data_len - QETH_RX_PULL_LEN;
 			(*pskb)->truesize += data_len - QETH_RX_PULL_LEN;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			(*pfrag)++;
 		}
 	} else {
@@ -5224,27 +6003,40 @@ static inline int qeth_create_skb_frag(struct qeth_qdio_buffer *qethbuffer,
 		(*pfrag)++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 struct sk_buff *qeth_core_get_next_skb(struct qeth_card *card,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct qdio_buffer *buffer,
 =======
 		struct qeth_qdio_buffer *qethbuffer,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct qeth_qdio_buffer *qethbuffer,
+>>>>>>> refs/remotes/origin/master
 		struct qdio_buffer_element **__element, int *__offset,
 		struct qeth_hdr **hdr)
 {
 	struct qdio_buffer_element *element = *__element;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct qdio_buffer *buffer = qethbuffer->buffer;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct qdio_buffer *buffer = qethbuffer->buffer;
+>>>>>>> refs/remotes/origin/master
 	int offset = *__offset;
 	struct sk_buff *skb = NULL;
 	int skb_len = 0;
@@ -5272,11 +6064,15 @@ struct sk_buff *qeth_core_get_next_skb(struct qeth_card *card,
 		break;
 	case QETH_HEADER_TYPE_LAYER3:
 		skb_len = (*hdr)->hdr.l3.length;
+<<<<<<< HEAD
 		if ((card->info.link_type == QETH_LINK_TYPE_LANE_TR) ||
 		    (card->info.link_type == QETH_LINK_TYPE_HSTR))
 			headroom = TR_HLEN;
 		else
 			headroom = ETH_HLEN;
+=======
+		headroom = ETH_HLEN;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case QETH_HEADER_TYPE_OSN:
 		skb_len = (*hdr)->hdr.osn.pdu_length;
@@ -5290,15 +6086,21 @@ struct sk_buff *qeth_core_get_next_skb(struct qeth_card *card,
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((skb_len >= card->options.rx_sg_cb) &&
 	    (!(card->info.type == QETH_CARD_TYPE_OSN)) &&
 	    (!atomic_read(&card->force_alloc_skb))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (((skb_len >= card->options.rx_sg_cb) &&
 	     (!(card->info.type == QETH_CARD_TYPE_OSN)) &&
 	     (!atomic_read(&card->force_alloc_skb))) ||
 	    (card->options.cq == QETH_CQ_ENABLED)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		use_rx_sg = 1;
 	} else {
 		skb = dev_alloc_skb(skb_len + headroom);
@@ -5314,12 +6116,17 @@ struct sk_buff *qeth_core_get_next_skb(struct qeth_card *card,
 		if (data_len) {
 			if (use_rx_sg) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (qeth_create_skb_frag(element, &skb, offset,
 				    &frag, data_len))
 =======
 				if (qeth_create_skb_frag(qethbuffer, element,
 				    &skb, offset, &frag, data_len))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (qeth_create_skb_frag(qethbuffer, element,
+				    &skb, offset, &frag, data_len))
+>>>>>>> refs/remotes/origin/master
 					goto no_mem;
 			} else {
 				memcpy(skb_put(skb, data_len), data_ptr,
@@ -5372,7 +6179,11 @@ void qeth_dbf_longtext(debug_info_t *id, int level, char *fmt, ...)
 	char dbf_txt_buf[32];
 	va_list args;
 
+<<<<<<< HEAD
 	if (level > id->level)
+=======
+	if (!debug_level_enabled(id, level))
+>>>>>>> refs/remotes/origin/master
 		return;
 	va_start(args, fmt);
 	vsnprintf(dbf_txt_buf, sizeof(dbf_txt_buf), fmt, args);
@@ -5416,6 +6227,7 @@ int qeth_core_load_discipline(struct qeth_card *card,
 {
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_lock(&qeth_mod_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -5432,24 +6244,126 @@ int qeth_core_load_discipline(struct qeth_card *card,
 		break;
 	}
 	if (!card->discipline.ccwgdriver) {
+=======
+	mutex_lock(&qeth_mod_mutex);
+	switch (discipline) {
+	case QETH_DISCIPLINE_LAYER3:
+		card->discipline = try_then_request_module(
+			symbol_get(qeth_l3_discipline), "qeth_l3");
+		break;
+	case QETH_DISCIPLINE_LAYER2:
+		card->discipline = try_then_request_module(
+			symbol_get(qeth_l2_discipline), "qeth_l2");
+		break;
+	}
+	if (!card->discipline) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&card->gdev->dev, "There is no kernel module to "
 			"support discipline %d\n", discipline);
 		rc = -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&qeth_mod_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&qeth_mod_mutex);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 void qeth_core_free_discipline(struct qeth_card *card)
 {
 	if (card->options.layer2)
+<<<<<<< HEAD
 		symbol_put(qeth_l2_ccwgroup_driver);
 	else
 		symbol_put(qeth_l3_ccwgroup_driver);
 	card->discipline.ccwgdriver = NULL;
+=======
+		symbol_put(qeth_l2_discipline);
+	else
+		symbol_put(qeth_l3_discipline);
+	card->discipline = NULL;
+}
+
+static const struct device_type qeth_generic_devtype = {
+	.name = "qeth_generic",
+	.groups = qeth_generic_attr_groups,
+};
+static const struct device_type qeth_osn_devtype = {
+	.name = "qeth_osn",
+	.groups = qeth_osn_attr_groups,
+};
+
+#define DBF_NAME_LEN	20
+
+struct qeth_dbf_entry {
+	char dbf_name[DBF_NAME_LEN];
+	debug_info_t *dbf_info;
+	struct list_head dbf_list;
+};
+
+static LIST_HEAD(qeth_dbf_list);
+static DEFINE_MUTEX(qeth_dbf_list_mutex);
+
+static debug_info_t *qeth_get_dbf_entry(char *name)
+{
+	struct qeth_dbf_entry *entry;
+	debug_info_t *rc = NULL;
+
+	mutex_lock(&qeth_dbf_list_mutex);
+	list_for_each_entry(entry, &qeth_dbf_list, dbf_list) {
+		if (strcmp(entry->dbf_name, name) == 0) {
+			rc = entry->dbf_info;
+			break;
+		}
+	}
+	mutex_unlock(&qeth_dbf_list_mutex);
+	return rc;
+}
+
+static int qeth_add_dbf_entry(struct qeth_card *card, char *name)
+{
+	struct qeth_dbf_entry *new_entry;
+
+	card->debug = debug_register(name, 2, 1, 8);
+	if (!card->debug) {
+		QETH_DBF_TEXT_(SETUP, 2, "%s", "qcdbf");
+		goto err;
+	}
+	if (debug_register_view(card->debug, &debug_hex_ascii_view))
+		goto err_dbg;
+	new_entry = kzalloc(sizeof(struct qeth_dbf_entry), GFP_KERNEL);
+	if (!new_entry)
+		goto err_dbg;
+	strncpy(new_entry->dbf_name, name, DBF_NAME_LEN);
+	new_entry->dbf_info = card->debug;
+	mutex_lock(&qeth_dbf_list_mutex);
+	list_add(&new_entry->dbf_list, &qeth_dbf_list);
+	mutex_unlock(&qeth_dbf_list_mutex);
+
+	return 0;
+
+err_dbg:
+	debug_unregister(card->debug);
+err:
+	return -ENOMEM;
+}
+
+static void qeth_clear_dbf_list(void)
+{
+	struct qeth_dbf_entry *entry, *tmp;
+
+	mutex_lock(&qeth_dbf_list_mutex);
+	list_for_each_entry_safe(entry, tmp, &qeth_dbf_list, dbf_list) {
+		list_del(&entry->dbf_list);
+		debug_unregister(entry->dbf_info);
+		kfree(entry);
+	}
+	mutex_unlock(&qeth_dbf_list_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int qeth_core_probe_device(struct ccwgroup_device *gdev)
@@ -5458,7 +6372,11 @@ static int qeth_core_probe_device(struct ccwgroup_device *gdev)
 	struct device *dev;
 	int rc;
 	unsigned long flags;
+<<<<<<< HEAD
 	char dbf_name[20];
+=======
+	char dbf_name[DBF_NAME_LEN];
+>>>>>>> refs/remotes/origin/master
 
 	QETH_DBF_TEXT(SETUP, 2, "probedev");
 
@@ -5477,6 +6395,7 @@ static int qeth_core_probe_device(struct ccwgroup_device *gdev)
 
 	snprintf(dbf_name, sizeof(dbf_name), "qeth_card_%s",
 		dev_name(&gdev->dev));
+<<<<<<< HEAD
 	card->debug = debug_register(dbf_name, 2, 1, 8);
 	if (!card->debug) {
 		QETH_DBF_TEXT_(SETUP, 2, "%s", "qcdbf");
@@ -5484,6 +6403,14 @@ static int qeth_core_probe_device(struct ccwgroup_device *gdev)
 		goto err_card;
 	}
 	debug_register_view(card->debug, &debug_hex_ascii_view);
+=======
+	card->debug = qeth_get_dbf_entry(dbf_name);
+	if (!card->debug) {
+		rc = qeth_add_dbf_entry(card, dbf_name);
+		if (rc)
+			goto err_card;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	card->read.ccwdev  = gdev->cdev[0];
 	card->write.ccwdev = gdev->cdev[1];
@@ -5497,11 +6424,16 @@ static int qeth_core_probe_device(struct ccwgroup_device *gdev)
 	rc = qeth_determine_card_type(card);
 	if (rc) {
 		QETH_DBF_TEXT_(SETUP, 2, "3err%d", rc);
+<<<<<<< HEAD
 		goto err_dbf;
+=======
+		goto err_card;
+>>>>>>> refs/remotes/origin/master
 	}
 	rc = qeth_setup_card(card);
 	if (rc) {
 		QETH_DBF_TEXT_(SETUP, 2, "2err%d", rc);
+<<<<<<< HEAD
 		goto err_dbf;
 	}
 
@@ -5511,13 +6443,28 @@ static int qeth_core_probe_device(struct ccwgroup_device *gdev)
 		rc = qeth_core_create_device_attributes(dev);
 	if (rc)
 		goto err_dbf;
+=======
+		goto err_card;
+	}
+
+	if (card->info.type == QETH_CARD_TYPE_OSN)
+		gdev->dev.type = &qeth_osn_devtype;
+	else
+		gdev->dev.type = &qeth_generic_devtype;
+
+>>>>>>> refs/remotes/origin/master
 	switch (card->info.type) {
 	case QETH_CARD_TYPE_OSN:
 	case QETH_CARD_TYPE_OSM:
 		rc = qeth_core_load_discipline(card, QETH_DISCIPLINE_LAYER2);
 		if (rc)
+<<<<<<< HEAD
 			goto err_attr;
 		rc = card->discipline.ccwgdriver->probe(card->gdev);
+=======
+			goto err_card;
+		rc = card->discipline->setup(card->gdev);
+>>>>>>> refs/remotes/origin/master
 		if (rc)
 			goto err_disc;
 	case QETH_CARD_TYPE_OSD:
@@ -5535,6 +6482,7 @@ static int qeth_core_probe_device(struct ccwgroup_device *gdev)
 
 err_disc:
 	qeth_core_free_discipline(card);
+<<<<<<< HEAD
 err_attr:
 	if (card->info.type == QETH_CARD_TYPE_OSN)
 		qeth_core_remove_osn_attributes(dev);
@@ -5542,6 +6490,8 @@ err_attr:
 		qeth_core_remove_device_attributes(dev);
 err_dbf:
 	debug_unregister(card->debug);
+=======
+>>>>>>> refs/remotes/origin/master
 err_card:
 	qeth_core_free_card(card);
 err_dev:
@@ -5556,6 +6506,7 @@ static void qeth_core_remove_device(struct ccwgroup_device *gdev)
 
 	QETH_DBF_TEXT(SETUP, 2, "removedv");
 
+<<<<<<< HEAD
 	if (card->info.type == QETH_CARD_TYPE_OSN) {
 		qeth_core_remove_osn_attributes(&gdev->dev);
 	} else {
@@ -5568,6 +6519,13 @@ static void qeth_core_remove_device(struct ccwgroup_device *gdev)
 	}
 
 	debug_unregister(card->debug);
+=======
+	if (card->discipline) {
+		card->discipline->remove(gdev);
+		qeth_core_free_discipline(card);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	write_lock_irqsave(&qeth_core_card_list.rwlock, flags);
 	list_del(&card->list);
 	write_unlock_irqrestore(&qeth_core_card_list.rwlock, flags);
@@ -5583,7 +6541,11 @@ static int qeth_core_set_online(struct ccwgroup_device *gdev)
 	int rc = 0;
 	int def_discipline;
 
+<<<<<<< HEAD
 	if (!card->discipline.ccwgdriver) {
+=======
+	if (!card->discipline) {
+>>>>>>> refs/remotes/origin/master
 		if (card->info.type == QETH_CARD_TYPE_IQD)
 			def_discipline = QETH_DISCIPLINE_LAYER3;
 		else
@@ -5591,11 +6553,19 @@ static int qeth_core_set_online(struct ccwgroup_device *gdev)
 		rc = qeth_core_load_discipline(card, def_discipline);
 		if (rc)
 			goto err;
+<<<<<<< HEAD
 		rc = card->discipline.ccwgdriver->probe(card->gdev);
 		if (rc)
 			goto err;
 	}
 	rc = card->discipline.ccwgdriver->set_online(gdev);
+=======
+		rc = card->discipline->setup(card->gdev);
+		if (rc)
+			goto err;
+	}
+	rc = card->discipline->set_online(gdev);
+>>>>>>> refs/remotes/origin/master
 err:
 	return rc;
 }
@@ -5603,58 +6573,92 @@ err:
 static int qeth_core_set_offline(struct ccwgroup_device *gdev)
 {
 	struct qeth_card *card = dev_get_drvdata(&gdev->dev);
+<<<<<<< HEAD
 	return card->discipline.ccwgdriver->set_offline(gdev);
+=======
+	return card->discipline->set_offline(gdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void qeth_core_shutdown(struct ccwgroup_device *gdev)
 {
 	struct qeth_card *card = dev_get_drvdata(&gdev->dev);
+<<<<<<< HEAD
 	if (card->discipline.ccwgdriver &&
 	    card->discipline.ccwgdriver->shutdown)
 		card->discipline.ccwgdriver->shutdown(gdev);
+=======
+	if (card->discipline && card->discipline->shutdown)
+		card->discipline->shutdown(gdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int qeth_core_prepare(struct ccwgroup_device *gdev)
 {
 	struct qeth_card *card = dev_get_drvdata(&gdev->dev);
+<<<<<<< HEAD
 	if (card->discipline.ccwgdriver &&
 	    card->discipline.ccwgdriver->prepare)
 		return card->discipline.ccwgdriver->prepare(gdev);
+=======
+	if (card->discipline && card->discipline->prepare)
+		return card->discipline->prepare(gdev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void qeth_core_complete(struct ccwgroup_device *gdev)
 {
 	struct qeth_card *card = dev_get_drvdata(&gdev->dev);
+<<<<<<< HEAD
 	if (card->discipline.ccwgdriver &&
 	    card->discipline.ccwgdriver->complete)
 		card->discipline.ccwgdriver->complete(gdev);
+=======
+	if (card->discipline && card->discipline->complete)
+		card->discipline->complete(gdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int qeth_core_freeze(struct ccwgroup_device *gdev)
 {
 	struct qeth_card *card = dev_get_drvdata(&gdev->dev);
+<<<<<<< HEAD
 	if (card->discipline.ccwgdriver &&
 	    card->discipline.ccwgdriver->freeze)
 		return card->discipline.ccwgdriver->freeze(gdev);
+=======
+	if (card->discipline && card->discipline->freeze)
+		return card->discipline->freeze(gdev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int qeth_core_thaw(struct ccwgroup_device *gdev)
 {
 	struct qeth_card *card = dev_get_drvdata(&gdev->dev);
+<<<<<<< HEAD
 	if (card->discipline.ccwgdriver &&
 	    card->discipline.ccwgdriver->thaw)
 		return card->discipline.ccwgdriver->thaw(gdev);
+=======
+	if (card->discipline && card->discipline->thaw)
+		return card->discipline->thaw(gdev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int qeth_core_restore(struct ccwgroup_device *gdev)
 {
 	struct qeth_card *card = dev_get_drvdata(&gdev->dev);
+<<<<<<< HEAD
 	if (card->discipline.ccwgdriver &&
 	    card->discipline.ccwgdriver->restore)
 		return card->discipline.ccwgdriver->restore(gdev);
+=======
+	if (card->discipline && card->discipline->restore)
+		return card->discipline->restore(gdev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -5663,8 +6667,12 @@ static struct ccwgroup_driver qeth_core_ccwgroup_driver = {
 		.owner = THIS_MODULE,
 		.name = "qeth",
 	},
+<<<<<<< HEAD
 	.driver_id = 0xD8C5E3C8,
 	.probe = qeth_core_probe_device,
+=======
+	.setup = qeth_core_probe_device,
+>>>>>>> refs/remotes/origin/master
 	.remove = qeth_core_remove_device,
 	.set_online = qeth_core_set_online,
 	.set_offline = qeth_core_set_offline,
@@ -5676,6 +6684,7 @@ static struct ccwgroup_driver qeth_core_ccwgroup_driver = {
 	.restore = qeth_core_restore,
 };
 
+<<<<<<< HEAD
 static ssize_t
 qeth_core_driver_group_store(struct device_driver *ddrv, const char *buf,
 			   size_t count)
@@ -5691,6 +6700,32 @@ qeth_core_driver_group_store(struct device_driver *ddrv, const char *buf,
 
 static DRIVER_ATTR(group, 0200, NULL, qeth_core_driver_group_store);
 
+=======
+static ssize_t qeth_core_driver_group_store(struct device_driver *ddrv,
+					    const char *buf, size_t count)
+{
+	int err;
+
+	err = ccwgroup_create_dev(qeth_core_root_dev,
+				  &qeth_core_ccwgroup_driver, 3, buf);
+
+	return err ? err : count;
+}
+static DRIVER_ATTR(group, 0200, NULL, qeth_core_driver_group_store);
+
+static struct attribute *qeth_drv_attrs[] = {
+	&driver_attr_group.attr,
+	NULL,
+};
+static struct attribute_group qeth_drv_attr_group = {
+	.attrs = qeth_drv_attrs,
+};
+static const struct attribute_group *qeth_drv_attr_groups[] = {
+	&qeth_drv_attr_group,
+	NULL,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct {
 	const char str[ETH_GSTRING_LEN];
 } qeth_ethtool_stats_keys[] = {
@@ -5730,10 +6765,15 @@ static struct {
 	{"tx csum"},
 	{"tx lin"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"cq handler count"},
 	{"cq handler time"}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"cq handler count"},
+	{"cq handler time"}
+>>>>>>> refs/remotes/origin/master
 };
 
 int qeth_core_get_sset_count(struct net_device *dev, int stringset)
@@ -5793,10 +6833,15 @@ void qeth_core_get_ethtool_stats(struct net_device *dev,
 	data[33] = card->perf_stats.tx_csum;
 	data[34] = card->perf_stats.tx_lin;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	data[35] = card->perf_stats.cq_cnt;
 	data[36] = card->perf_stats.cq_time;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data[35] = card->perf_stats.cq_cnt;
+	data[36] = card->perf_stats.cq_time;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(qeth_core_get_ethtool_stats);
 
@@ -5818,6 +6863,7 @@ void qeth_core_get_drvinfo(struct net_device *dev,
 		struct ethtool_drvinfo *info)
 {
 	struct qeth_card *card = dev->ml_priv;
+<<<<<<< HEAD
 	if (card->options.layer2)
 		strcpy(info->driver, "qeth_l2");
 	else
@@ -5829,6 +6875,16 @@ void qeth_core_get_drvinfo(struct net_device *dev,
 			CARD_RDEV_ID(card),
 			CARD_WDEV_ID(card),
 			CARD_DDEV_ID(card));
+=======
+
+	strlcpy(info->driver, card->options.layer2 ? "qeth_l2" : "qeth_l3",
+		sizeof(info->driver));
+	strlcpy(info->version, "1.0", sizeof(info->version));
+	strlcpy(info->fw_version, card->info.mcl_level,
+		sizeof(info->fw_version));
+	snprintf(info->bus_info, sizeof(info->bus_info), "%s/%s/%s",
+		 CARD_RDEV_ID(card), CARD_WDEV_ID(card), CARD_DDEV_ID(card));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(qeth_core_get_drvinfo);
 
@@ -5928,15 +6984,24 @@ static int __init qeth_core_init(void)
 
 	pr_info("loading core functions\n");
 	INIT_LIST_HEAD(&qeth_core_card_list.list);
+<<<<<<< HEAD
 	rwlock_init(&qeth_core_card_list.rwlock);
 <<<<<<< HEAD
 =======
 	mutex_init(&qeth_mod_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&qeth_dbf_list);
+	rwlock_init(&qeth_core_card_list.rwlock);
+	mutex_init(&qeth_mod_mutex);
+
+	qeth_wq = create_singlethread_workqueue("qeth_wq");
+>>>>>>> refs/remotes/origin/master
 
 	rc = qeth_register_dbf_views();
 	if (rc)
 		goto out_err;
+<<<<<<< HEAD
 	rc = ccw_driver_register(&qeth_ccw_driver);
 	if (rc)
 		goto ccw_err;
@@ -5952,22 +7017,32 @@ static int __init qeth_core_init(void)
 	if (rc)
 		goto register_err;
 
+=======
+	qeth_core_root_dev = root_device_register("qeth");
+	rc = PTR_RET(qeth_core_root_dev);
+	if (rc)
+		goto register_err;
+>>>>>>> refs/remotes/origin/master
 	qeth_core_header_cache = kmem_cache_create("qeth_hdr",
 			sizeof(struct qeth_hdr) + ETH_HLEN, 64, 0, NULL);
 	if (!qeth_core_header_cache) {
 		rc = -ENOMEM;
 		goto slab_err;
 	}
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	qeth_qdio_outbuf_cache = kmem_cache_create("qeth_buf",
 			sizeof(struct qeth_qdio_out_buffer), 0, 0, NULL);
 	if (!qeth_qdio_outbuf_cache) {
 		rc = -ENOMEM;
 		goto cqslab_err;
 	}
+<<<<<<< HEAD
 
 	return 0;
 cqslab_err:
@@ -5984,6 +7059,27 @@ ccwgroup_err:
 	ccw_driver_unregister(&qeth_ccw_driver);
 ccw_err:
 	QETH_DBF_MESSAGE(2, "Initialization failed with code %d\n", rc);
+=======
+	rc = ccw_driver_register(&qeth_ccw_driver);
+	if (rc)
+		goto ccw_err;
+	qeth_core_ccwgroup_driver.driver.groups = qeth_drv_attr_groups;
+	rc = ccwgroup_driver_register(&qeth_core_ccwgroup_driver);
+	if (rc)
+		goto ccwgroup_err;
+
+	return 0;
+
+ccwgroup_err:
+	ccw_driver_unregister(&qeth_ccw_driver);
+ccw_err:
+	kmem_cache_destroy(qeth_qdio_outbuf_cache);
+cqslab_err:
+	kmem_cache_destroy(qeth_core_header_cache);
+slab_err:
+	root_device_unregister(qeth_core_root_dev);
+register_err:
+>>>>>>> refs/remotes/origin/master
 	qeth_unregister_dbf_views();
 out_err:
 	pr_err("Initializing the qeth device driver failed\n");
@@ -5992,6 +7088,7 @@ out_err:
 
 static void __exit qeth_core_exit(void)
 {
+<<<<<<< HEAD
 	root_device_unregister(qeth_core_root_dev);
 	driver_remove_file(&qeth_core_ccwgroup_driver.driver,
 			   &driver_attr_group);
@@ -6002,6 +7099,15 @@ static void __exit qeth_core_exit(void)
 	kmem_cache_destroy(qeth_qdio_outbuf_cache);
 >>>>>>> refs/remotes/origin/cm-10.0
 	kmem_cache_destroy(qeth_core_header_cache);
+=======
+	qeth_clear_dbf_list();
+	destroy_workqueue(qeth_wq);
+	ccwgroup_driver_unregister(&qeth_core_ccwgroup_driver);
+	ccw_driver_unregister(&qeth_ccw_driver);
+	kmem_cache_destroy(qeth_qdio_outbuf_cache);
+	kmem_cache_destroy(qeth_core_header_cache);
+	root_device_unregister(qeth_core_root_dev);
+>>>>>>> refs/remotes/origin/master
 	qeth_unregister_dbf_views();
 	pr_info("core functions removed\n");
 }

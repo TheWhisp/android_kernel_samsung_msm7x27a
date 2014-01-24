@@ -276,7 +276,11 @@ mainline get there via -mm.
 The current -mm patch is available in the "mmotm" (-mm of the moment)
 directory at:
 
+<<<<<<< HEAD
 	http://userweb.kernel.org/~akpm/mmotm/
+=======
+	http://www.ozlabs.org/~akpm/mmotm/
+>>>>>>> refs/remotes/origin/master
 
 Use of the MMOTM tree is likely to be a frustrating experience, though;
 there is a definite chance that it will not even compile.
@@ -287,7 +291,11 @@ the mainline is expected to look like after the next merge window closes.
 Linux-next trees are announced on the linux-kernel and linux-next mailing
 lists when they are assembled; they can be downloaded from:
 
+<<<<<<< HEAD
 	http://www.kernel.org/pub/linux/kernel/people/sfr/linux-next/
+=======
+	http://www.kernel.org/pub/linux/kernel/next/
+>>>>>>> refs/remotes/origin/master
 
 Some information about linux-next has been gathered at:
 

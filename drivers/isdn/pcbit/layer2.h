@@ -3,16 +3,22 @@
  *
  * Copyright (C) 1996 Universidade de Lisboa
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * the GNU General Public License, incorporated herein by reference.
  */
 
@@ -20,10 +26,14 @@
  * 19991203 - Fernando Carvalho - takion@superbofh.org
  * Hacked to compile with egcs and run with current version of isdn modules
 <<<<<<< HEAD
+<<<<<<< HEAD
 */
 =======
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef LAYER2_H
 #define LAYER2_H
@@ -49,12 +59,17 @@
 /* TAM - XX - C - S  - NUM */
 #define PREHDR_LEN 8
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* TT  - M  - I - TH - TD  */      
 #define FRAME_HDR_LEN  8   
 =======
 /* TT  - M  - I - TH - TD  */
 #define FRAME_HDR_LEN  8
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* TT  - M  - I - TH - TD  */
+#define FRAME_HDR_LEN  8
+>>>>>>> refs/remotes/origin/master
 
 #define MSG_CONN_REQ		0x08000100
 #define MSG_CONN_CONF		0x00000101
@@ -101,6 +116,7 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
    
    long  4 3 2 1
    Intel 1 2 3 4
@@ -117,6 +133,8 @@
 #define GET_MSG_PROC(msg) 	((msg) >> 16 & 0xFF)
 #define GET_MSG_CPU(msg) 	((msg) >> 24)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
   long  4 3 2 1
   Intel 1 2 3 4
@@ -132,7 +150,10 @@
 #define GET_MSG_CMD(msg)	((msg) >> 8 & 0xFF)
 #define GET_MSG_PROC(msg)	((msg) >> 16 & 0xFF)
 #define GET_MSG_CPU(msg)	((msg) >> 24)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #else
 #error "Non-Intel CPU"
@@ -143,6 +164,7 @@
 #define SCHED_READ    0x01
 #define SCHED_WRITE   0x02
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SET_RUN_TIMEOUT 2*HZ /* 2 seconds */
      
@@ -171,6 +193,8 @@ static __inline__ void log_state(struct pcbit_dev *dev) {
 	       (ulong) (dev->readptr - (dev->sh_mem + BANK2)));
         printk(KERN_DEBUG "{rcv_seq=%01x, send_seq=%01x, unack_seq=%01x}\n", 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SET_RUN_TIMEOUT 2 * HZ /* 2 seconds */
 
 struct frame_buf {
@@ -197,11 +221,15 @@ static __inline__ void log_state(struct pcbit_dev *dev) {
 	printk(KERN_DEBUG "readptr  = %ld\n",
 	       (ulong) (dev->readptr - (dev->sh_mem + BANK2)));
 	printk(KERN_DEBUG "{rcv_seq=%01x, send_seq=%01x, unack_seq=%01x}\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	       dev->rcv_seq, dev->send_seq, dev->unack_seq);
 }
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static __inline__ struct pcbit_dev * chan2dev(struct pcbit_chan * chan) 
 {
@@ -228,6 +256,8 @@ static __inline__ struct pcbit_dev * finddev(int id)
 	return dev;
   return NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static __inline__ struct pcbit_dev *chan2dev(struct pcbit_chan *chan)
 {
 	struct pcbit_dev *dev;
@@ -252,7 +282,10 @@ static __inline__ struct pcbit_dev *finddev(int id)
 			if (dev->id == id)
 				return dev;
 	return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -263,6 +296,7 @@ static __inline__ struct pcbit_dev *finddev(int id)
 static __inline__ void pcbit_writeb(struct pcbit_dev *dev, unsigned char dt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   writeb(dt, dev->writeptr++);
   if (dev->writeptr == dev->sh_mem + BANKLEN)
     dev->writeptr = dev->sh_mem;
@@ -271,10 +305,16 @@ static __inline__ void pcbit_writeb(struct pcbit_dev *dev, unsigned char dt)
 	if (dev->writeptr == dev->sh_mem + BANKLEN)
 		dev->writeptr = dev->sh_mem;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writeb(dt, dev->writeptr++);
+	if (dev->writeptr == dev->sh_mem + BANKLEN)
+		dev->writeptr = dev->sh_mem;
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ void pcbit_writew(struct pcbit_dev *dev, unsigned short dt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   int dist;
 
@@ -318,6 +358,8 @@ static __inline__ void memcpy_topcbit(struct pcbit_dev * dev, u_char * data,
 	dev->writeptr = dev->sh_mem;
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int dist;
 
 	dist = BANKLEN - (dev->writeptr - dev->sh_mem);
@@ -359,11 +401,15 @@ static __inline__ void memcpy_topcbit(struct pcbit_dev *dev, u_char *data,
 		if (diff == 0)
 			dev->writeptr = dev->sh_mem;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ unsigned char pcbit_readb(struct pcbit_dev *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   unsigned char val;
 
@@ -373,6 +419,8 @@ static __inline__ unsigned char pcbit_readb(struct pcbit_dev *dev)
 
   return val;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char val;
 
 	val = readb(dev->readptr++);
@@ -380,11 +428,15 @@ static __inline__ unsigned char pcbit_readb(struct pcbit_dev *dev)
 		dev->readptr = dev->sh_mem + BANK2;
 
 	return val;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static __inline__ unsigned short pcbit_readw(struct pcbit_dev *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   int dist;
   unsigned short val;
@@ -427,6 +479,8 @@ static __inline__ void memcpy_frompcbit(struct pcbit_dev * dev, u_char * data, i
 	dev->readptr = dev->sh_mem + BANK2;
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int dist;
 	unsigned short val;
 
@@ -467,11 +521,15 @@ static __inline__ void memcpy_frompcbit(struct pcbit_dev *dev, u_char *data, int
 		if (diff == 0)
 			dev->readptr = dev->sh_mem + BANK2;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -482,3 +540,5 @@ static __inline__ void memcpy_frompcbit(struct pcbit_dev *dev, u_char *data, int
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

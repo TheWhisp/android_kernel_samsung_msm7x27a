@@ -42,6 +42,7 @@
 #include <pwd.h>
 #include <grp.h>
 
+<<<<<<< HEAD
 #include <linux/virtio_config.h>
 #include <linux/virtio_net.h>
 #include <linux/virtio_blk.h>
@@ -50,6 +51,12 @@
 #include <linux/virtio_ring.h>
 #include <asm/bootparam.h>
 #include "../../include/linux/lguest_launcher.h"
+=======
+#ifndef VIRTIO_F_ANY_LAYOUT
+#define VIRTIO_F_ANY_LAYOUT		27
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*L:110
  * We can ignore the 43 include files we need for this program, but I do want
  * to draw attention to the use of kernel-style types.
@@ -65,6 +72,18 @@ typedef uint16_t u16;
 typedef uint8_t u8;
 /*:*/
 
+<<<<<<< HEAD
+=======
+#include <linux/virtio_config.h>
+#include <linux/virtio_net.h>
+#include <linux/virtio_blk.h>
+#include <linux/virtio_console.h>
+#include <linux/virtio_rng.h>
+#include <linux/virtio_ring.h>
+#include <asm/bootparam.h>
+#include "../../include/linux/lguest_launcher.h"
+
+>>>>>>> refs/remotes/origin/master
 #define BRIDGE_PFX "bridge:"
 #ifndef SIOCBRADDIF
 #define SIOCBRADDIF	0x89a2		/* add interface to bridge      */
@@ -177,6 +196,7 @@ static struct termios orig_term;
  * in precise order.
  */
 #define wmb() __asm__ __volatile__("" : : : "memory")
+<<<<<<< HEAD
 #define mb() __asm__ __volatile__("" : : : "memory")
 
 /*
@@ -201,6 +221,10 @@ static void *_convert(struct iovec *iov, size_t size, size_t align,
 		errx(1, "Bad alignment %p for %s", iov->iov_base, name);
 	return iov->iov_base;
 }
+=======
+#define rmb() __asm__ __volatile__("lock; addl $0,0(%%esp)" : : : "memory")
+#define mb() __asm__ __volatile__("lock; addl $0,0(%%esp)" : : : "memory")
+>>>>>>> refs/remotes/origin/master
 
 /* Wrapper for the last available index.  Makes it easier to change. */
 #define lg_last_avail(vq)	((vq)->last_avail_idx)
@@ -228,7 +252,12 @@ static bool iov_empty(const struct iovec iov[], unsigned int num_iov)
 }
 
 /* Take len bytes from the front of this iovec. */
+<<<<<<< HEAD
 static void iov_consume(struct iovec iov[], unsigned num_iov, unsigned len)
+=======
+static void iov_consume(struct iovec iov[], unsigned num_iov,
+			void *dest, unsigned len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
@@ -236,11 +265,23 @@ static void iov_consume(struct iovec iov[], unsigned num_iov, unsigned len)
 		unsigned int used;
 
 		used = iov[i].iov_len < len ? iov[i].iov_len : len;
+<<<<<<< HEAD
+=======
+		if (dest) {
+			memcpy(dest, iov[i].iov_base, used);
+			dest += used;
+		}
+>>>>>>> refs/remotes/origin/master
 		iov[i].iov_base += used;
 		iov[i].iov_len -= used;
 		len -= used;
 	}
+<<<<<<< HEAD
 	assert(len == 0);
+=======
+	if (len != 0)
+		errx(1, "iovec too short!");
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The device virtqueue descriptors are followed by feature bitmasks. */
@@ -693,6 +734,15 @@ static unsigned wait_for_vq_desc(struct virtqueue *vq,
 		errx(1, "Guest moved used index from %u to %u",
 		     last_avail, vq->vring.avail->idx);
 
+<<<<<<< HEAD
+=======
+	/* 
+	 * Make sure we read the descriptor number *after* we read the ring
+	 * update; don't let the cpu or compiler change the order.
+	 */
+	rmb();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Grab the next descriptor number they're advertising, and increment
 	 * the index we've seen.
@@ -712,6 +762,15 @@ static unsigned wait_for_vq_desc(struct virtqueue *vq,
 	i = head;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * We have to read the descriptor after we read the descriptor number,
+	 * but there's a data dependency there so the CPU shouldn't reorder
+	 * that: no rmb() required.
+	 */
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * If this is an indirect entry, then this buffer contains a descriptor
 	 * table which we handle as if it's any normal descriptor chain.
 	 */
@@ -864,7 +923,11 @@ static void console_output(struct virtqueue *vq)
 			warn("Write to stdout gave %i (%d)", len, errno);
 			break;
 		}
+<<<<<<< HEAD
 		iov_consume(iov, out, len);
+=======
+		iov_consume(iov, out, NULL, len);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1547,6 +1610,11 @@ static void setup_tun_net(char *arg)
 	add_feature(dev, VIRTIO_NET_F_HOST_ECN);
 	/* We handle indirect ring entries */
 	add_feature(dev, VIRTIO_RING_F_INDIRECT_DESC);
+<<<<<<< HEAD
+=======
+	/* We're compliant with the damn spec. */
+	add_feature(dev, VIRTIO_F_ANY_LAYOUT);
+>>>>>>> refs/remotes/origin/master
 	set_config(dev, sizeof(conf), &conf);
 
 	/* We don't need the socket any more; setup is done. */
@@ -1591,9 +1659,15 @@ static void blk_request(struct virtqueue *vq)
 {
 	struct vblk_info *vblk = vq->dev->priv;
 	unsigned int head, out_num, in_num, wlen;
+<<<<<<< HEAD
 	int ret;
 	u8 *in;
 	struct virtio_blk_outhdr *out;
+=======
+	int ret, i;
+	u8 *in;
+	struct virtio_blk_outhdr out;
+>>>>>>> refs/remotes/origin/master
 	struct iovec iov[vq->vring.num];
 	off64_t off;
 
@@ -1603,6 +1677,7 @@ static void blk_request(struct virtqueue *vq)
 	 */
 	head = wait_for_vq_desc(vq, iov, &out_num, &in_num);
 
+<<<<<<< HEAD
 	/*
 	 * Every block request should contain at least one output buffer
 	 * (detailing the location on disk and the type of request) and one
@@ -1614,21 +1689,50 @@ static void blk_request(struct virtqueue *vq)
 
 	out = convert(&iov[0], struct virtio_blk_outhdr);
 	in = convert(&iov[out_num+in_num-1], u8);
+=======
+	/* Copy the output header from the front of the iov (adjusts iov) */
+	iov_consume(iov, out_num, &out, sizeof(out));
+
+	/* Find and trim end of iov input array, for our status byte. */
+	in = NULL;
+	for (i = out_num + in_num - 1; i >= out_num; i--) {
+		if (iov[i].iov_len > 0) {
+			in = iov[i].iov_base + iov[i].iov_len - 1;
+			iov[i].iov_len--;
+			break;
+		}
+	}
+	if (!in)
+		errx(1, "Bad virtblk cmd with no room for status");
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * For historical reasons, block operations are expressed in 512 byte
 	 * "sectors".
 	 */
+<<<<<<< HEAD
 	off = out->sector * 512;
+=======
+	off = out.sector * 512;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * In general the virtio block driver is allowed to try SCSI commands.
 	 * It'd be nice if we supported eject, for example, but we don't.
 	 */
+<<<<<<< HEAD
 	if (out->type & VIRTIO_BLK_T_SCSI_CMD) {
 		fprintf(stderr, "Scsi commands unsupported\n");
 		*in = VIRTIO_BLK_S_UNSUPP;
 		wlen = sizeof(*in);
 	} else if (out->type & VIRTIO_BLK_T_OUT) {
+=======
+	if (out.type & VIRTIO_BLK_T_SCSI_CMD) {
+		fprintf(stderr, "Scsi commands unsupported\n");
+		*in = VIRTIO_BLK_S_UNSUPP;
+		wlen = sizeof(*in);
+	} else if (out.type & VIRTIO_BLK_T_OUT) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Write
 		 *
@@ -1636,10 +1740,17 @@ static void blk_request(struct virtqueue *vq)
 		 * if they try to write past end.
 		 */
 		if (lseek64(vblk->fd, off, SEEK_SET) != off)
+<<<<<<< HEAD
 			err(1, "Bad seek to sector %llu", out->sector);
 
 		ret = writev(vblk->fd, iov+1, out_num-1);
 		verbose("WRITE to sector %llu: %i\n", out->sector, ret);
+=======
+			err(1, "Bad seek to sector %llu", out.sector);
+
+		ret = writev(vblk->fd, iov, out_num);
+		verbose("WRITE to sector %llu: %i\n", out.sector, ret);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Grr... Now we know how long the descriptor they sent was, we
@@ -1655,7 +1766,11 @@ static void blk_request(struct virtqueue *vq)
 
 		wlen = sizeof(*in);
 		*in = (ret >= 0 ? VIRTIO_BLK_S_OK : VIRTIO_BLK_S_IOERR);
+<<<<<<< HEAD
 	} else if (out->type & VIRTIO_BLK_T_FLUSH) {
+=======
+	} else if (out.type & VIRTIO_BLK_T_FLUSH) {
+>>>>>>> refs/remotes/origin/master
 		/* Flush */
 		ret = fdatasync(vblk->fd);
 		verbose("FLUSH fdatasync: %i\n", ret);
@@ -1669,10 +1784,16 @@ static void blk_request(struct virtqueue *vq)
 		 * if they try to read past end.
 		 */
 		if (lseek64(vblk->fd, off, SEEK_SET) != off)
+<<<<<<< HEAD
 			err(1, "Bad seek to sector %llu", out->sector);
 
 		ret = readv(vblk->fd, iov+1, in_num-1);
 		verbose("READ from sector %llu: %i\n", out->sector, ret);
+=======
+			err(1, "Bad seek to sector %llu", out.sector);
+
+		ret = readv(vblk->fd, iov + out_num, in_num);
+>>>>>>> refs/remotes/origin/master
 		if (ret >= 0) {
 			wlen = sizeof(*in) + ret;
 			*in = VIRTIO_BLK_S_OK;
@@ -1758,7 +1879,11 @@ static void rng_input(struct virtqueue *vq)
 		len = readv(rng_info->rfd, iov, in_num);
 		if (len <= 0)
 			err(1, "Read from /dev/random gave %i", len);
+<<<<<<< HEAD
 		iov_consume(iov, in_num, len);
+=======
+		iov_consume(iov, in_num, NULL, len);
+>>>>>>> refs/remotes/origin/master
 		totlen += len;
 	}
 

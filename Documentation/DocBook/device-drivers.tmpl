@@ -51,18 +51,28 @@
      <sect1><title>Delaying, scheduling, and timer routines</title>
 !Iinclude/linux/sched.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 !Ekernel/sched.c
 =======
 !Ekernel/sched/core.c
 !Ikernel/sched/cpupri.c
 !Ikernel/sched/fair.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+!Ekernel/sched/core.c
+!Ikernel/sched/cpupri.c
+!Ikernel/sched/fair.c
+>>>>>>> refs/remotes/origin/master
 !Iinclude/linux/completion.h
 !Ekernel/timer.c
      </sect1>
      <sect1><title>Wait queues and Wake events</title>
 !Iinclude/linux/wait.h
+<<<<<<< HEAD
 !Ekernel/wait.c
+=======
+!Ekernel/sched/wait.c
+>>>>>>> refs/remotes/origin/master
      </sect1>
      <sect1><title>High-resolution timers</title>
 !Iinclude/linux/ktime.h
@@ -88,10 +98,20 @@ X!Iinclude/linux/kobject.h
 
      <sect1><title>Kernel utility functions</title>
 !Iinclude/linux/kernel.h
+<<<<<<< HEAD
 !Ekernel/printk.c
 !Ekernel/panic.c
 !Ekernel/sys.c
 !Ekernel/rcupdate.c
+=======
+!Ekernel/printk/printk.c
+!Ekernel/panic.c
+!Ekernel/sys.c
+!Ekernel/rcu/srcu.c
+!Ekernel/rcu/tree.c
+!Ekernel/rcu/tree_plugin.h
+!Ekernel/rcu/update.c
+>>>>>>> refs/remotes/origin/master
      </sect1>
 
      <sect1><title>Device Resource Management</title>
@@ -107,17 +127,23 @@ X!Iinclude/linux/kobject.h
      </sect1>
      <sect1><title>Device Drivers Base</title>
 <<<<<<< HEAD
+<<<<<<< HEAD
 !Edrivers/base/driver.c
 !Edrivers/base/core.c
 !Edrivers/base/class.c
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 !Idrivers/base/init.c
 !Edrivers/base/driver.c
 !Edrivers/base/core.c
 !Edrivers/base/syscore.c
 !Edrivers/base/class.c
 !Idrivers/base/node.c
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 !Edrivers/base/firmware_class.c
 !Edrivers/base/transport_class.c
 <!-- Cannot be included, because
@@ -127,10 +153,14 @@ X!Iinclude/linux/kobject.h
 X!Edrivers/base/attribute_container.c
 -->
 <<<<<<< HEAD
+<<<<<<< HEAD
 !Edrivers/base/sys.c
 =======
 !Edrivers/base/dd.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+!Edrivers/base/dd.c
+>>>>>>> refs/remotes/origin/master
 <!--
 X!Edrivers/base/interface.c
 -->
@@ -139,6 +169,7 @@ X!Edrivers/base/interface.c
 !Edrivers/base/bus.c
      </sect1>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
      <sect1><title>Device Drivers DMA Management</title>
 !Edrivers/base/dma-buf.c
@@ -146,6 +177,15 @@ X!Edrivers/base/interface.c
 !Edrivers/base/dma-mapping.c
      </sect1>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+     <sect1><title>Device Drivers DMA Management</title>
+!Edrivers/base/dma-buf.c
+!Edrivers/base/reservation.c
+!Iinclude/linux/reservation.h
+!Edrivers/base/dma-coherent.c
+!Edrivers/base/dma-mapping.c
+     </sect1>
+>>>>>>> refs/remotes/origin/master
      <sect1><title>Device Drivers Power Management</title>
 !Edrivers/base/power/main.c
      </sect1>
@@ -244,6 +284,7 @@ X!Isound/sound_firmware.c
   <chapter id="uart16x50">
      <title>16x50 UART Driver</title>
 <<<<<<< HEAD
+<<<<<<< HEAD
 !Iinclude/linux/serial_core.h
 !Edrivers/tty/serial/serial_core.c
 !Edrivers/tty/serial/8250.c
@@ -251,6 +292,10 @@ X!Isound/sound_firmware.c
 !Edrivers/tty/serial/serial_core.c
 !Edrivers/tty/serial/8250/8250.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+!Edrivers/tty/serial/serial_core.c
+!Edrivers/tty/serial/8250/8250_core.c
+>>>>>>> refs/remotes/origin/master
   </chapter>
 
   <chapter id="fbdev">
@@ -320,10 +365,17 @@ KAO -->
      </sect1>
      <sect1><title>Frame Buffer Fonts</title>
         <para>
+<<<<<<< HEAD
            Refer to the file drivers/video/console/fonts.c for more information.
         </para>
 <!-- FIXME: Removed for now since no structured comments in source
 X!Idrivers/video/console/fonts.c
+=======
+           Refer to the file lib/fonts/fonts.c for more information.
+        </para>
+<!-- FIXME: Removed for now since no structured comments in source
+X!Ilib/fonts/fonts.c
+>>>>>>> refs/remotes/origin/master
 -->
      </sect1>
   </chapter>
@@ -470,7 +522,10 @@ X!Idrivers/video/console/fonts.c
   </chapter>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   <chapter id="hsi">
      <title>High Speed Synchronous Serial Interface (HSI)</title>
 
@@ -488,5 +543,8 @@ X!Idrivers/video/console/fonts.c
 !Edrivers/hsi/hsi.c
   </chapter>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 </book>

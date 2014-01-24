@@ -1,6 +1,7 @@
 #ifndef __LINUX_KVM_PARA_H
 #define __LINUX_KVM_PARA_H
 
+<<<<<<< HEAD
 /*
  * This header file provides a method for making a hypercall to the host
  * Architectures should define:
@@ -26,6 +27,10 @@
 #include <asm/kvm_para.h>
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/kvm_para.h>
+
+>>>>>>> refs/remotes/origin/master
 
 static inline int kvm_para_has_feature(unsigned int feature)
 {
@@ -33,9 +38,13 @@ static inline int kvm_para_has_feature(unsigned int feature)
 		return 1;
 	return 0;
 }
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 #endif /* __LINUX_KVM_PARA_H */
 <<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* __LINUX_KVM_PARA_H */
+>>>>>>> refs/remotes/origin/master

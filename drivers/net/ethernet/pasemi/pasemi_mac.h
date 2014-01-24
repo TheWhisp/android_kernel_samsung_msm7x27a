@@ -83,7 +83,11 @@ struct pasemi_mac {
 #define MAC_TYPE_GMAC	1
 #define MAC_TYPE_XAUI	2
 
+<<<<<<< HEAD
 	u8		mac_addr[6];
+=======
+	u8		mac_addr[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 
 	struct net_lro_mgr	lro_mgr;
 	struct net_lro_desc	lro_desc[MAX_LRO_DESCRIPTORS];

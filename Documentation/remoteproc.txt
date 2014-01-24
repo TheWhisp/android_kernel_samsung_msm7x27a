@@ -36,8 +36,12 @@ cost.
       Note: to use this function you should already have a valid rproc
       handle. There are several ways to achieve that cleanly (devres, pdata,
       the way remoteproc_rpmsg.c does this, or, if this becomes prevalent, we
+<<<<<<< HEAD
       might also consider using dev_archdata for this). See also
       rproc_get_by_name() below.
+=======
+      might also consider using dev_archdata for this).
+>>>>>>> refs/remotes/origin/master
 
   void rproc_shutdown(struct rproc *rproc)
     - Power off a remote processor (previously booted with rproc_boot()).
@@ -51,6 +55,7 @@ cost.
         which means that the @rproc handle stays valid even after
         rproc_shutdown() returns, and users can still use it with a subsequent
         rproc_boot(), if needed.
+<<<<<<< HEAD
       - don't call rproc_shutdown() to unroll rproc_get_by_name(), exactly
         because rproc_shutdown() _does not_ decrement the refcount of @rproc.
         To decrement the refcount of @rproc, use rproc_put() (but _only_ if
@@ -75,6 +80,8 @@ cost.
       handle should be considered invalid.
       This function should be called _iff_ the @rproc handle was grabbed by
       calling rproc_get_by_name().
+=======
+>>>>>>> refs/remotes/origin/master
 
 3. Typical usage
 
@@ -115,11 +122,16 @@ int dummy_rproc_example(struct rproc *my_rproc)
       This function should be used by rproc implementations during
       initialization of the remote processor.
       After creating an rproc handle using this function, and when ready,
+<<<<<<< HEAD
       implementations should then call rproc_register() to complete
+=======
+      implementations should then call rproc_add() to complete
+>>>>>>> refs/remotes/origin/master
       the registration of the remote processor.
       On success, the new rproc is returned, and on failure, NULL.
 
       Note: _never_ directly deallocate @rproc, even if it was not registered
+<<<<<<< HEAD
       yet. Instead, if you just need to unroll rproc_alloc(), use rproc_free().
 
   void rproc_free(struct rproc *rproc)
@@ -130,6 +142,18 @@ int dummy_rproc_example(struct rproc *my_rproc)
       rproc_register()), then use rproc_unregister() instead.
 
   int rproc_register(struct rproc *rproc)
+=======
+      yet. Instead, when you need to unroll rproc_alloc(), use rproc_put().
+
+  void rproc_put(struct rproc *rproc)
+    - Free an rproc handle that was allocated by rproc_alloc.
+      This function essentially unrolls rproc_alloc(), by decrementing the
+      rproc's refcount. It doesn't directly free rproc; that would happen
+      only if there are no other references to rproc and its refcount now
+      dropped to zero.
+
+  int rproc_add(struct rproc *rproc)
+>>>>>>> refs/remotes/origin/master
     - Register @rproc with the remoteproc framework, after it has been
       allocated with rproc_alloc().
       This is called by the platform-specific rproc implementation, whenever
@@ -142,6 +166,7 @@ int dummy_rproc_example(struct rproc *my_rproc)
       of registering this remote processor, additional virtio drivers might get
       probed.
 
+<<<<<<< HEAD
   int rproc_unregister(struct rproc *rproc)
     - Unregister a remote processor, and decrement its refcount.
       If its refcount drops to zero, then @rproc will be freed. If not,
@@ -159,6 +184,27 @@ int dummy_rproc_example(struct rproc *my_rproc)
 
       Returns 0 on success and -EINVAL if @rproc isn't valid.
 
+=======
+  int rproc_del(struct rproc *rproc)
+    - Unroll rproc_add().
+      This function should be called when the platform specific rproc
+      implementation decides to remove the rproc device. it should
+      _only_ be called if a previous invocation of rproc_add()
+      has completed successfully.
+
+      After rproc_del() returns, @rproc is still valid, and its
+      last refcount should be decremented by calling rproc_put().
+
+      Returns 0 on success and -EINVAL if @rproc isn't valid.
+
+  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type)
+    - Report a crash in a remoteproc
+      This function must be called every time a crash is detected by the
+      platform specific rproc implementation. This should not be called from a
+      non-remoteproc driver. This function can be called from atomic/interrupt
+      context.
+
+>>>>>>> refs/remotes/origin/master
 5. Implementation callbacks
 
 These callbacks should be provided by platform-specific remoteproc

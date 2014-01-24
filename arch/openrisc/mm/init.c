@@ -43,6 +43,10 @@
 #include <asm/kmap_types.h>
 #include <asm/fixmap.h>
 #include <asm/tlbflush.h>
+<<<<<<< HEAD
+=======
+#include <asm/sections.h>
+>>>>>>> refs/remotes/origin/master
 
 int mem_init_done;
 
@@ -167,15 +171,37 @@ void __init paging_init(void)
 		unsigned long *dtlb_vector = __va(0x900);
 		unsigned long *itlb_vector = __va(0xa00);
 
+<<<<<<< HEAD
+=======
+		printk(KERN_INFO "itlb_miss_handler %p\n", &itlb_miss_handler);
+		*itlb_vector = ((unsigned long)&itlb_miss_handler -
+				(unsigned long)itlb_vector) >> 2;
+
+		/* Soft ordering constraint to ensure that dtlb_vector is
+		 * the last thing updated
+		 */
+		barrier();
+
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO "dtlb_miss_handler %p\n", &dtlb_miss_handler);
 		*dtlb_vector = ((unsigned long)&dtlb_miss_handler -
 				(unsigned long)dtlb_vector) >> 2;
 
+<<<<<<< HEAD
 		printk(KERN_INFO "itlb_miss_handler %p\n", &itlb_miss_handler);
 		*itlb_vector = ((unsigned long)&itlb_miss_handler -
 				(unsigned long)itlb_vector) >> 2;
 	}
 
+=======
+	}
+
+	/* Soft ordering constraint to ensure that cache invalidation and
+	 * TLB flush really happen _after_ code has been modified.
+	 */
+	barrier();
+
+>>>>>>> refs/remotes/origin/master
 	/* Invalidate instruction caches after code modification */
 	mtspr(SPR_ICBIR, 0x900);
 	mtspr(SPR_ICBIR, 0xa00);
@@ -190,6 +216,7 @@ void __init paging_init(void)
 
 /* References to section boundaries */
 
+<<<<<<< HEAD
 extern char _stext, _etext, _edata, __bss_start, _end;
 extern char __init_begin, __init_end;
 
@@ -225,11 +252,19 @@ void __init mem_init(void)
 
 	set_max_mapnr_init();
 
+=======
+void __init mem_init(void)
+{
+	BUG_ON(!mem_map);
+
+	max_mapnr = max_low_pfn;
+>>>>>>> refs/remotes/origin/master
 	high_memory = (void *)__va(max_low_pfn * PAGE_SIZE);
 
 	/* clear the zero-page */
 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
 
+<<<<<<< HEAD
 	reservedpages = free_pages_init();
 
 	codesize = (unsigned long)&_etext - (unsigned long)&_stext;
@@ -243,6 +278,12 @@ void __init mem_init(void)
 	       reservedpages << (PAGE_SHIFT - 10), datasize >> 10,
 	       initsize >> 10, (unsigned long)(0 << (PAGE_SHIFT - 10))
 	    );
+=======
+	/* this will put all low memory onto the freelists */
+	free_all_bootmem();
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	printk("mem_init_done ...........................................\n");
 	mem_init_done = 1;
@@ -252,6 +293,7 @@ void __init mem_init(void)
 #ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "Freeing initrd memory: %ldk freed\n",
 	       (end - start) >> 10);
 
@@ -261,11 +303,15 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 		free_page(start);
 		totalram_pages++;
 	}
+=======
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 void free_initmem(void)
 {
+<<<<<<< HEAD
 	unsigned long addr;
 
 	addr = (unsigned long)(&__init_begin);
@@ -278,4 +324,7 @@ void free_initmem(void)
 	printk(KERN_INFO "Freeing unused kernel memory: %luk freed\n",
 	       ((unsigned long)&__init_end -
 		(unsigned long)&__init_begin) >> 10);
+=======
+	free_initmem_default(-1);
+>>>>>>> refs/remotes/origin/master
 }

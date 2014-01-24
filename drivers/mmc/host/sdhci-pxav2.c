@@ -28,6 +28,12 @@
 #include <linux/mmc/host.h>
 #include <linux/platform_data/pxa_sdhci.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "sdhci.h"
 #include "sdhci-pltfm.h"
 
@@ -108,6 +114,7 @@ static int pxav2_mmc_set_width(struct sdhci_host *host, int width)
 	return 0;
 }
 
+<<<<<<< HEAD
 static u32 pxav2_get_max_clock(struct sdhci_host *host)
 {
 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
@@ -122,12 +129,68 @@ static struct sdhci_ops pxav2_sdhci_ops = {
 };
 
 static int __devinit sdhci_pxav2_probe(struct platform_device *pdev)
+=======
+static const struct sdhci_ops pxav2_sdhci_ops = {
+	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
+	.platform_reset_exit = pxav2_set_private_registers,
+	.platform_bus_width = pxav2_mmc_set_width,
+};
+
+#ifdef CONFIG_OF
+static const struct of_device_id sdhci_pxav2_of_match[] = {
+	{
+		.compatible = "mrvl,pxav2-mmc",
+	},
+	{},
+};
+MODULE_DEVICE_TABLE(of, sdhci_pxav2_of_match);
+
+static struct sdhci_pxa_platdata *pxav2_get_mmc_pdata(struct device *dev)
+{
+	struct sdhci_pxa_platdata *pdata;
+	struct device_node *np = dev->of_node;
+	u32 bus_width;
+	u32 clk_delay_cycles;
+
+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return NULL;
+
+	if (of_find_property(np, "non-removable", NULL))
+		pdata->flags |= PXA_FLAG_CARD_PERMANENT;
+
+	of_property_read_u32(np, "bus-width", &bus_width);
+	if (bus_width == 8)
+		pdata->flags |= PXA_FLAG_SD_8_BIT_CAPABLE_SLOT;
+
+	of_property_read_u32(np, "mrvl,clk-delay-cycles", &clk_delay_cycles);
+	if (clk_delay_cycles > 0) {
+		pdata->clk_delay_sel = 1;
+		pdata->clk_delay_cycles = clk_delay_cycles;
+	}
+
+	return pdata;
+}
+#else
+static inline struct sdhci_pxa_platdata *pxav2_get_mmc_pdata(struct device *dev)
+{
+	return NULL;
+}
+#endif
+
+static int sdhci_pxav2_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sdhci_pltfm_host *pltfm_host;
 	struct sdhci_pxa_platdata *pdata = pdev->dev.platform_data;
 	struct device *dev = &pdev->dev;
 	struct sdhci_host *host = NULL;
 	struct sdhci_pxa *pxa = NULL;
+<<<<<<< HEAD
+=======
+	const struct of_device_id *match;
+
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct clk *clk;
 
@@ -135,7 +198,11 @@ static int __devinit sdhci_pxav2_probe(struct platform_device *pdev)
 	if (!pxa)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	host = sdhci_pltfm_init(pdev, NULL);
+=======
+	host = sdhci_pltfm_init(pdev, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(host)) {
 		kfree(pxa);
 		return PTR_ERR(host);
@@ -150,12 +217,23 @@ static int __devinit sdhci_pxav2_probe(struct platform_device *pdev)
 		goto err_clk_get;
 	}
 	pltfm_host->clk = clk;
+<<<<<<< HEAD
 	clk_enable(clk);
+=======
+	clk_prepare_enable(clk);
+>>>>>>> refs/remotes/origin/master
 
 	host->quirks = SDHCI_QUIRK_BROKEN_ADMA
 		| SDHCI_QUIRK_BROKEN_TIMEOUT_VAL
 		| SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN;
 
+<<<<<<< HEAD
+=======
+	match = of_match_device(of_match_ptr(sdhci_pxav2_of_match), &pdev->dev);
+	if (match) {
+		pdata = pxav2_get_mmc_pdata(dev);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (pdata) {
 		if (pdata->flags & PXA_FLAG_CARD_PERMANENT) {
 			/* on-chip device */
@@ -188,7 +266,11 @@ static int __devinit sdhci_pxav2_probe(struct platform_device *pdev)
 	return 0;
 
 err_add_host:
+<<<<<<< HEAD
 	clk_disable(clk);
+=======
+	clk_disable_unprepare(clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(clk);
 err_clk_get:
 	sdhci_pltfm_free(pdev);
@@ -196,7 +278,11 @@ err_clk_get:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
+=======
+static int sdhci_pxav2_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sdhci_host *host = platform_get_drvdata(pdev);
 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
@@ -204,13 +290,20 @@ static int __devexit sdhci_pxav2_remove(struct platform_device *pdev)
 
 	sdhci_remove_host(host, 1);
 
+<<<<<<< HEAD
 	clk_disable(pltfm_host->clk);
+=======
+	clk_disable_unprepare(pltfm_host->clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(pltfm_host->clk);
 	sdhci_pltfm_free(pdev);
 	kfree(pxa);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -218,10 +311,20 @@ static struct platform_driver sdhci_pxav2_driver = {
 	.driver		= {
 		.name	= "sdhci-pxav2",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 		.pm	= SDHCI_PLTFM_PMOPS,
 	},
 	.probe		= sdhci_pxav2_probe,
 	.remove		= __devexit_p(sdhci_pxav2_remove),
+=======
+#ifdef CONFIG_OF
+		.of_match_table = sdhci_pxav2_of_match,
+#endif
+		.pm	= SDHCI_PLTFM_PMOPS,
+	},
+	.probe		= sdhci_pxav2_probe,
+	.remove		= sdhci_pxav2_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(sdhci_pxav2_driver);

@@ -1,6 +1,10 @@
 /* cnic.c: Broadcom CNIC core network driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2006-2012 Broadcom Corporation
+=======
+ * Copyright (c) 2006-2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +44,15 @@
 #include <net/ip6_checksum.h>
 #include <scsi/iscsi_if.h>
 
+<<<<<<< HEAD
 #include "cnic_if.h"
 #include "bnx2.h"
+=======
+#define BCM_CNIC	1
+#include "cnic_if.h"
+#include "bnx2.h"
+#include "bnx2x/bnx2x.h"
+>>>>>>> refs/remotes/origin/master
 #include "bnx2x/bnx2x_reg.h"
 #include "bnx2x/bnx2x_fw_defs.h"
 #include "bnx2x/bnx2x_hsi.h"
@@ -51,10 +62,17 @@
 #include "cnic.h"
 #include "cnic_defs.h"
 
+<<<<<<< HEAD
 #define DRV_MODULE_NAME		"cnic"
 
 static char version[] __devinitdata =
 	"Broadcom NetXtreme II CNIC Driver " DRV_MODULE_NAME " v" CNIC_MODULE_VERSION " (" CNIC_MODULE_RELDATE ")\n";
+=======
+#define CNIC_MODULE_NAME	"cnic"
+
+static char version[] =
+	"Broadcom NetXtreme II CNIC Driver " CNIC_MODULE_NAME " v" CNIC_MODULE_VERSION " (" CNIC_MODULE_RELDATE ")\n";
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Chan <mchan@broadcom.com> and John(Zongxi) "
 	      "Chen (zongxi@broadcom.com");
@@ -256,11 +274,24 @@ static void cnic_ulp_ctl(struct cnic_dev *dev, int ulp_type, bool reg)
 	struct cnic_local *cp = dev->cnic_priv;
 	struct cnic_eth_dev *ethdev = cp->ethdev;
 	struct drv_ctl_info info;
+<<<<<<< HEAD
 
 	if (reg)
 		info.cmd = DRV_CTL_ULP_REGISTER_CMD;
 	else
 		info.cmd = DRV_CTL_ULP_UNREGISTER_CMD;
+=======
+	struct fcoe_capabilities *fcoe_cap =
+		&info.data.register_data.fcoe_features;
+
+	if (reg) {
+		info.cmd = DRV_CTL_ULP_REGISTER_CMD;
+		if (ulp_type == CNIC_ULP_FCOE && dev->fcoe_cap)
+			memcpy(fcoe_cap, dev->fcoe_cap, sizeof(*fcoe_cap));
+	} else {
+		info.cmd = DRV_CTL_ULP_UNREGISTER_CMD;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	info.data.ulp_type = ulp_type;
 	ethdev->drv_ctl(dev->netdev, &info);
@@ -286,6 +317,12 @@ static int cnic_get_l5_cid(struct cnic_local *cp, u32 cid, u32 *l5_cid)
 {
 	u32 i;
 
+<<<<<<< HEAD
+=======
+	if (!cp->ctx_tbl)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < cp->max_cid_space; i++) {
 		if (cp->ctx_tbl[i].cid == cid) {
 			*l5_cid = i;
@@ -383,7 +420,11 @@ static int cnic_iscsi_nl_msg_recv(struct cnic_dev *dev, u32 msg_type,
 
 			csk->vlan_id = path_resp->vlan_id;
 
+<<<<<<< HEAD
 			memcpy(csk->ha, path_resp->mac_addr, 6);
+=======
+			memcpy(csk->ha, path_resp->mac_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 			if (test_bit(SK_F_IPV6, &csk->flags))
 				memcpy(&csk->src_ip[0], &path_resp->src.v6_addr,
 				       sizeof(struct in6_addr));
@@ -534,7 +575,12 @@ int cnic_unregister_driver(int ulp_type)
 	}
 
 	if (atomic_read(&ulp_ops->ref_count) != 0)
+<<<<<<< HEAD
 		netdev_warn(dev->netdev, "Failed waiting for ref count to go to zero\n");
+=======
+		pr_warn("%s: Failed waiting for ref count to go to zero\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_unlock:
@@ -611,6 +657,11 @@ static int cnic_unregister_device(struct cnic_dev *dev, int ulp_type)
 
 	if (ulp_type == CNIC_ULP_ISCSI)
 		cnic_send_nlmsg(cp, ISCSI_KEVENT_IF_DOWN, NULL);
+<<<<<<< HEAD
+=======
+	else if (ulp_type == CNIC_ULP_FCOE)
+		dev->fcoe_cap = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	synchronize_rcu();
 
@@ -713,7 +764,11 @@ static void cnic_free_dma(struct cnic_dev *dev, struct cnic_dma *dma)
 
 	for (i = 0; i < dma->num_pages; i++) {
 		if (dma->pg_arr[i]) {
+<<<<<<< HEAD
 			dma_free_coherent(&dev->pcidev->dev, BCM_PAGE_SIZE,
+=======
+			dma_free_coherent(&dev->pcidev->dev, BNX2_PAGE_SIZE,
+>>>>>>> refs/remotes/origin/master
 					  dma->pg_arr[i], dma->pg_map_arr[i]);
 			dma->pg_arr[i] = NULL;
 		}
@@ -772,7 +827,11 @@ static int cnic_alloc_dma(struct cnic_dev *dev, struct cnic_dma *dma,
 
 	for (i = 0; i < pages; i++) {
 		dma->pg_arr[i] = dma_alloc_coherent(&dev->pcidev->dev,
+<<<<<<< HEAD
 						    BCM_PAGE_SIZE,
+=======
+						    BNX2_PAGE_SIZE,
+>>>>>>> refs/remotes/origin/master
 						    &dma->pg_map_arr[i],
 						    GFP_ATOMIC);
 		if (dma->pg_arr[i] == NULL)
@@ -781,8 +840,13 @@ static int cnic_alloc_dma(struct cnic_dev *dev, struct cnic_dma *dma,
 	if (!use_pg_tbl)
 		return 0;
 
+<<<<<<< HEAD
 	dma->pgtbl_size = ((pages * 8) + BCM_PAGE_SIZE - 1) &
 			  ~(BCM_PAGE_SIZE - 1);
+=======
+	dma->pgtbl_size = ((pages * 8) + BNX2_PAGE_SIZE - 1) &
+			  ~(BNX2_PAGE_SIZE - 1);
+>>>>>>> refs/remotes/origin/master
 	dma->pgtbl = dma_alloc_coherent(&dev->pcidev->dev, dma->pgtbl_size,
 					&dma->pgtbl_map, GFP_ATOMIC);
 	if (dma->pgtbl == NULL)
@@ -812,10 +876,15 @@ static void cnic_free_context(struct cnic_dev *dev)
 	}
 }
 
+<<<<<<< HEAD
 static void __cnic_free_uio(struct cnic_uio_dev *udev)
 {
 	uio_unregister_device(&udev->cnic_uinfo);
 
+=======
+static void __cnic_free_uio_rings(struct cnic_uio_dev *udev)
+{
+>>>>>>> refs/remotes/origin/master
 	if (udev->l2_buf) {
 		dma_free_coherent(&udev->pdev->dev, udev->l2_buf_size,
 				  udev->l2_buf, udev->l2_buf_map);
@@ -828,6 +897,17 @@ static void __cnic_free_uio(struct cnic_uio_dev *udev)
 		udev->l2_ring = NULL;
 	}
 
+<<<<<<< HEAD
+=======
+}
+
+static void __cnic_free_uio(struct cnic_uio_dev *udev)
+{
+	uio_unregister_device(&udev->cnic_uinfo);
+
+	__cnic_free_uio_rings(udev);
+
+>>>>>>> refs/remotes/origin/master
 	pci_dev_put(udev->pdev);
 	kfree(udev);
 }
@@ -851,6 +931,11 @@ static void cnic_free_resc(struct cnic_dev *dev)
 	if (udev) {
 		udev->dev = NULL;
 		cp->udev = NULL;
+<<<<<<< HEAD
+=======
+		if (udev->uio_dev == -1)
+			__cnic_free_uio_rings(udev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cnic_free_context(dev);
@@ -876,11 +961,19 @@ static int cnic_alloc_context(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(cp) == CHIP_NUM_5709) {
 		int i, k, arr_size;
 
 		cp->ctx_blk_size = BCM_PAGE_SIZE;
 		cp->cids_per_blk = BCM_PAGE_SIZE / 128;
+=======
+	if (BNX2_CHIP(cp) == BNX2_CHIP_5709) {
+		int i, k, arr_size;
+
+		cp->ctx_blk_size = BNX2_PAGE_SIZE;
+		cp->cids_per_blk = BNX2_PAGE_SIZE / 128;
+>>>>>>> refs/remotes/origin/master
 		arr_size = BNX2_MAX_CID / cp->cids_per_blk *
 			   sizeof(struct cnic_ctx);
 		cp->ctx_arr = kzalloc(arr_size, GFP_KERNEL);
@@ -912,7 +1005,11 @@ static int cnic_alloc_context(struct cnic_dev *dev)
 		for (i = 0; i < cp->ctx_blks; i++) {
 			cp->ctx_arr[i].ctx =
 				dma_alloc_coherent(&dev->pcidev->dev,
+<<<<<<< HEAD
 						   BCM_PAGE_SIZE,
+=======
+						   BNX2_PAGE_SIZE,
+>>>>>>> refs/remotes/origin/master
 						   &cp->ctx_arr[i].mapping,
 						   GFP_KERNEL);
 			if (cp->ctx_arr[i].ctx == NULL)
@@ -985,6 +1082,37 @@ static int cnic_alloc_kcq(struct cnic_dev *dev, struct kcq_info *info,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int __cnic_alloc_uio_rings(struct cnic_uio_dev *udev, int pages)
+{
+	struct cnic_local *cp = udev->dev->cnic_priv;
+
+	if (udev->l2_ring)
+		return 0;
+
+	udev->l2_ring_size = pages * BNX2_PAGE_SIZE;
+	udev->l2_ring = dma_alloc_coherent(&udev->pdev->dev, udev->l2_ring_size,
+					   &udev->l2_ring_map,
+					   GFP_KERNEL | __GFP_COMP);
+	if (!udev->l2_ring)
+		return -ENOMEM;
+
+	udev->l2_buf_size = (cp->l2_rx_ring_size + 1) * cp->l2_single_buf_size;
+	udev->l2_buf_size = PAGE_ALIGN(udev->l2_buf_size);
+	udev->l2_buf = dma_alloc_coherent(&udev->pdev->dev, udev->l2_buf_size,
+					  &udev->l2_buf_map,
+					  GFP_KERNEL | __GFP_COMP);
+	if (!udev->l2_buf) {
+		__cnic_free_uio_rings(udev);
+		return -ENOMEM;
+	}
+
+	return 0;
+
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
 {
 	struct cnic_local *cp = dev->cnic_priv;
@@ -994,6 +1122,14 @@ static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
 	list_for_each_entry(udev, &cnic_udev_list, list) {
 		if (udev->pdev == dev->pcidev) {
 			udev->dev = dev;
+<<<<<<< HEAD
+=======
+			if (__cnic_alloc_uio_rings(udev, pages)) {
+				udev->dev = NULL;
+				read_unlock(&cnic_dev_lock);
+				return -ENOMEM;
+			}
+>>>>>>> refs/remotes/origin/master
 			cp->udev = udev;
 			read_unlock(&cnic_dev_lock);
 			return 0;
@@ -1009,6 +1145,7 @@ static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
 
 	udev->dev = dev;
 	udev->pdev = dev->pcidev;
+<<<<<<< HEAD
 	udev->l2_ring_size = pages * BCM_PAGE_SIZE;
 	udev->l2_ring = dma_alloc_coherent(&udev->pdev->dev, udev->l2_ring_size,
 					   &udev->l2_ring_map,
@@ -1023,6 +1160,11 @@ static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
 					  GFP_KERNEL | __GFP_COMP);
 	if (!udev->l2_buf)
 		goto err_dma;
+=======
+
+	if (__cnic_alloc_uio_rings(udev, pages))
+		goto err_udev;
+>>>>>>> refs/remotes/origin/master
 
 	write_lock(&cnic_dev_lock);
 	list_add(&udev->list, &cnic_udev_list);
@@ -1033,9 +1175,13 @@ static int cnic_alloc_uio_rings(struct cnic_dev *dev, int pages)
 	cp->udev = udev;
 
 	return 0;
+<<<<<<< HEAD
  err_dma:
 	dma_free_coherent(&udev->pdev->dev, udev->l2_ring_size,
 			  udev->l2_ring, udev->l2_ring_map);
+=======
+
+>>>>>>> refs/remotes/origin/master
  err_udev:
 	kfree(udev);
 	return -ENOMEM;
@@ -1053,12 +1199,22 @@ static int cnic_init_uio(struct cnic_dev *dev)
 
 	uinfo = &udev->cnic_uinfo;
 
+<<<<<<< HEAD
 	uinfo->mem[0].addr = dev->netdev->base_addr;
 	uinfo->mem[0].internal_addr = dev->regview;
 	uinfo->mem[0].size = dev->netdev->mem_end - dev->netdev->mem_start;
 	uinfo->mem[0].memtype = UIO_MEM_PHYS;
 
 	if (test_bit(CNIC_F_BNX2_CLASS, &dev->flags)) {
+=======
+	uinfo->mem[0].addr = pci_resource_start(dev->pcidev, 0);
+	uinfo->mem[0].internal_addr = dev->regview;
+	uinfo->mem[0].memtype = UIO_MEM_PHYS;
+
+	if (test_bit(CNIC_F_BNX2_CLASS, &dev->flags)) {
+		uinfo->mem[0].size = MB_GET_CID_ADDR(TX_TSS_CID +
+						     TX_MAX_TSS_RINGS + 1);
+>>>>>>> refs/remotes/origin/master
 		uinfo->mem[1].addr = (unsigned long) cp->status_blk.gen &
 					PAGE_MASK;
 		if (cp->ethdev->drv_state & CNIC_DRV_STATE_USING_MSIX)
@@ -1068,6 +1224,11 @@ static int cnic_init_uio(struct cnic_dev *dev)
 
 		uinfo->name = "bnx2_cnic";
 	} else if (test_bit(CNIC_F_BNX2X_CLASS, &dev->flags)) {
+<<<<<<< HEAD
+=======
+		uinfo->mem[0].size = pci_resource_len(dev->pcidev, 0);
+
+>>>>>>> refs/remotes/origin/master
 		uinfo->mem[1].addr = (unsigned long) cp->bnx2x_def_status_blk &
 			PAGE_MASK;
 		uinfo->mem[1].size = sizeof(*cp->bnx2x_def_status_blk);
@@ -1140,6 +1301,10 @@ error:
 static int cnic_alloc_bnx2x_context(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	int ctx_blk_size = cp->ethdev->ctx_blk_size;
 	int total_mem, blks, i;
 
@@ -1157,7 +1322,11 @@ static int cnic_alloc_bnx2x_context(struct cnic_dev *dev)
 
 	cp->ctx_blks = blks;
 	cp->ctx_blk_size = ctx_blk_size;
+<<<<<<< HEAD
 	if (!BNX2X_CHIP_IS_57710(cp->chip_id))
+=======
+	if (!CHIP_IS_E1(bp))
+>>>>>>> refs/remotes/origin/master
 		cp->ctx_align = 0;
 	else
 		cp->ctx_align = ctx_blk_size;
@@ -1187,18 +1356,29 @@ static int cnic_alloc_bnx2x_context(struct cnic_dev *dev)
 static int cnic_alloc_bnx2x_resc(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct cnic_eth_dev *ethdev = cp->ethdev;
 	u32 start_cid = ethdev->starting_cid;
 	int i, j, n, ret, pages;
 	struct cnic_dma *kwq_16_dma = &cp->kwq_16_data_info;
 
+<<<<<<< HEAD
 	cp->iro_arr = ethdev->iro_arr;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cp->max_cid_space = MAX_ISCSI_TBL_SZ;
 	cp->iscsi_start_cid = start_cid;
 	cp->fcoe_start_cid = start_cid + MAX_ISCSI_TBL_SZ;
 
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id)) {
+=======
+	if (BNX2X_CHIP_IS_E2_PLUS(bp)) {
+>>>>>>> refs/remotes/origin/master
 		cp->max_cid_space += dev->max_fcoe_conn;
 		cp->fcoe_init_cid = ethdev->fcoe_init_cid;
 		if (!cp->fcoe_init_cid)
@@ -1246,7 +1426,11 @@ static int cnic_alloc_bnx2x_resc(struct cnic_dev *dev)
 	if (ret)
 		goto error;
 
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id)) {
+=======
+	if (CNIC_SUPPORTS_FCOE(bp)) {
+>>>>>>> refs/remotes/origin/master
 		ret = cnic_alloc_kcq(dev, &cp->kcq2, true);
 		if (ret)
 			goto error;
@@ -1261,6 +1445,12 @@ static int cnic_alloc_bnx2x_resc(struct cnic_dev *dev)
 	if (ret)
 		goto error;
 
+<<<<<<< HEAD
+=======
+	if (cp->ethdev->drv_state & CNIC_DRV_STATE_NO_ISCSI)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	cp->bnx2x_def_status_blk = cp->ethdev->irq_arr[1].status_blk;
 
 	cp->l2_rx_ring_size = 15;
@@ -1337,6 +1527,10 @@ static int cnic_submit_kwqe_16(struct cnic_dev *dev, u32 cmd, u32 cid,
 				u32 type, union l5cm_specific_data *l5_data)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct l5cm_spe kwqe;
 	struct kwqe_16 *kwq[1];
 	u16 type_16;
@@ -1344,10 +1538,17 @@ static int cnic_submit_kwqe_16(struct cnic_dev *dev, u32 cmd, u32 cid,
 
 	kwqe.hdr.conn_and_cmd_data =
 		cpu_to_le32(((cmd << SPE_HDR_CMD_ID_SHIFT) |
+<<<<<<< HEAD
 			     BNX2X_HW_CID(cp, cid)));
 
 	type_16 = (type << SPE_HDR_CONN_TYPE_SHIFT) & SPE_HDR_CONN_TYPE;
 	type_16 |= (cp->pfid << SPE_HDR_FUNCTION_ID_SHIFT) &
+=======
+			     BNX2X_HW_CID(bp, cid)));
+
+	type_16 = (type << SPE_HDR_CONN_TYPE_SHIFT) & SPE_HDR_CONN_TYPE;
+	type_16 |= (bp->pfid << SPE_HDR_FUNCTION_ID_SHIFT) &
+>>>>>>> refs/remotes/origin/master
 		   SPE_HDR_FUNCTION_ID;
 
 	kwqe.hdr.type = cpu_to_le16(type_16);
@@ -1382,12 +1583,43 @@ static void cnic_reply_bnx2x_kcqes(struct cnic_dev *dev, int ulp_type,
 	rcu_read_unlock();
 }
 
+<<<<<<< HEAD
 static int cnic_bnx2x_iscsi_init1(struct cnic_dev *dev, struct kwqe *kwqe)
 {
 	struct cnic_local *cp = dev->cnic_priv;
 	struct iscsi_kwqe_init1 *req1 = (struct iscsi_kwqe_init1 *) kwqe;
 	int hq_bds, pages;
 	u32 pfid = cp->pfid;
+=======
+static void cnic_bnx2x_set_tcp_options(struct cnic_dev *dev, int time_stamps,
+				       int en_tcp_dack)
+{
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	u8 xstorm_flags = XSTORM_L5CM_TCP_FLAGS_WND_SCL_EN;
+	u16 tstorm_flags = 0;
+
+	if (time_stamps) {
+		xstorm_flags |= XSTORM_L5CM_TCP_FLAGS_TS_ENABLED;
+		tstorm_flags |= TSTORM_L5CM_TCP_FLAGS_TS_ENABLED;
+	}
+	if (en_tcp_dack)
+		tstorm_flags |= TSTORM_L5CM_TCP_FLAGS_DELAYED_ACK_EN;
+
+	CNIC_WR8(dev, BAR_XSTRORM_INTMEM +
+		 XSTORM_ISCSI_TCP_VARS_FLAGS_OFFSET(bp->pfid), xstorm_flags);
+
+	CNIC_WR16(dev, BAR_TSTRORM_INTMEM +
+		  TSTORM_ISCSI_TCP_VARS_FLAGS_OFFSET(bp->pfid), tstorm_flags);
+}
+
+static int cnic_bnx2x_iscsi_init1(struct cnic_dev *dev, struct kwqe *kwqe)
+{
+	struct cnic_local *cp = dev->cnic_priv;
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	struct iscsi_kwqe_init1 *req1 = (struct iscsi_kwqe_init1 *) kwqe;
+	int hq_bds, pages;
+	u32 pfid = bp->pfid;
+>>>>>>> refs/remotes/origin/master
 
 	cp->num_iscsi_tasks = req1->num_tasks_per_conn;
 	cp->num_ccells = req1->num_ccells_per_conn;
@@ -1460,14 +1692,26 @@ static int cnic_bnx2x_iscsi_init1(struct cnic_dev *dev, struct kwqe *kwqe)
 	CNIC_WR16(dev, BAR_CSTRORM_INTMEM + CSTORM_ISCSI_HQ_SIZE_OFFSET(pfid),
 		  hq_bds);
 
+<<<<<<< HEAD
+=======
+	cnic_bnx2x_set_tcp_options(dev,
+			req1->flags & ISCSI_KWQE_INIT1_TIME_STAMPS_ENABLE,
+			req1->flags & ISCSI_KWQE_INIT1_DELAYED_ACK_ENABLE);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int cnic_bnx2x_iscsi_init2(struct cnic_dev *dev, struct kwqe *kwqe)
 {
 	struct iscsi_kwqe_init2 *req2 = (struct iscsi_kwqe_init2 *) kwqe;
+<<<<<<< HEAD
 	struct cnic_local *cp = dev->cnic_priv;
 	u32 pfid = cp->pfid;
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	u32 pfid = bp->pfid;
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_kcqe kcqe;
 	struct kcqe *cqes[1];
 
@@ -1606,6 +1850,10 @@ static int cnic_setup_bnx2x_ctx(struct cnic_dev *dev, struct kwqe *wqes[],
 				u32 num)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_kwqe_conn_offload1 *req1 =
 			(struct iscsi_kwqe_conn_offload1 *) wqes[0];
 	struct iscsi_kwqe_conn_offload2 *req2 =
@@ -1614,11 +1862,19 @@ static int cnic_setup_bnx2x_ctx(struct cnic_dev *dev, struct kwqe *wqes[],
 	struct cnic_context *ctx = &cp->ctx_tbl[req1->iscsi_conn_id];
 	struct cnic_iscsi *iscsi = ctx->proto.iscsi;
 	u32 cid = ctx->cid;
+<<<<<<< HEAD
 	u32 hw_cid = BNX2X_HW_CID(cp, cid);
 	struct iscsi_context *ictx;
 	struct regpair context_addr;
 	int i, j, n = 2, n_max;
 	u8 port = CNIC_PORT(cp);
+=======
+	u32 hw_cid = BNX2X_HW_CID(bp, cid);
+	struct iscsi_context *ictx;
+	struct regpair context_addr;
+	int i, j, n = 2, n_max;
+	u8 port = BP_PORT(bp);
+>>>>>>> refs/remotes/origin/master
 
 	ctx->ctx_flags = 0;
 	if (!req2->num_additional_wqes)
@@ -1672,8 +1928,13 @@ static int cnic_setup_bnx2x_ctx(struct cnic_dev *dev, struct kwqe *wqes[],
 		XSTORM_ISCSI_CONTEXT_FLAGS_B_INITIAL_R2T;
 	ictx->xstorm_st_context.common.ethernet.reserved_vlan_type =
 		ETH_P_8021Q;
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id) &&
 		cp->port_mode == CHIP_2_PORT_MODE) {
+=======
+	if (BNX2X_CHIP_IS_E2_PLUS(bp) &&
+	    bp->common.chip_port_mode == CHIP_2_PORT_MODE) {
+>>>>>>> refs/remotes/origin/master
 
 		port = 0;
 	}
@@ -1794,6 +2055,10 @@ static int cnic_bnx2x_iscsi_ofld1(struct cnic_dev *dev, struct kwqe *wqes[],
 	struct iscsi_kwqe_conn_offload1 *req1;
 	struct iscsi_kwqe_conn_offload2 *req2;
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct cnic_context *ctx;
 	struct iscsi_kcqe kcqe;
 	struct kcqe *cqes[1];
@@ -1847,7 +2112,11 @@ static int cnic_bnx2x_iscsi_ofld1(struct cnic_dev *dev, struct kwqe *wqes[],
 	}
 
 	kcqe.completion_status = ISCSI_KCQE_COMPLETION_STATUS_SUCCESS;
+<<<<<<< HEAD
 	kcqe.iscsi_conn_context_id = BNX2X_HW_CID(cp, cp->ctx_tbl[l5_cid].cid);
+=======
+	kcqe.iscsi_conn_context_id = BNX2X_HW_CID(bp, cp->ctx_tbl[l5_cid].cid);
+>>>>>>> refs/remotes/origin/master
 
 done:
 	cqes[0] = (struct kcqe *) &kcqe;
@@ -1883,6 +2152,10 @@ static int cnic_bnx2x_iscsi_update(struct cnic_dev *dev, struct kwqe *kwqe)
 static int cnic_bnx2x_destroy_ramrod(struct cnic_dev *dev, u32 l5_cid)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct cnic_context *ctx = &cp->ctx_tbl[l5_cid];
 	union l5cm_specific_data l5_data;
 	int ret;
@@ -1891,7 +2164,11 @@ static int cnic_bnx2x_destroy_ramrod(struct cnic_dev *dev, u32 l5_cid)
 	init_waitqueue_head(&ctx->waitq);
 	ctx->wait_cond = 0;
 	memset(&l5_data, 0, sizeof(l5_data));
+<<<<<<< HEAD
 	hw_cid = BNX2X_HW_CID(cp, ctx->cid);
+=======
+	hw_cid = BNX2X_HW_CID(bp, ctx->cid);
+>>>>>>> refs/remotes/origin/master
 
 	ret = cnic_submit_kwqe_16(dev, RAMROD_CMD_ID_COMMON_CFC_DEL,
 				  hw_cid, NONE_CONNECTION_TYPE, &l5_data);
@@ -1988,9 +2265,12 @@ static void cnic_init_storm_conn_bufs(struct cnic_dev *dev,
 	xstorm_buf->pseudo_header_checksum =
 		swab16(~csum_ipv6_magic(&src_ip, &dst_ip, 0, IPPROTO_TCP, 0));
 
+<<<<<<< HEAD
 	if (!(kwqe1->tcp_flags & L4_KWQ_CONNECT_REQ1_NO_DELAY_ACK))
 		tstorm_buf->params |=
 			L5CM_TSTORM_CONN_BUFFER_DELAYED_ACK_ENABLE;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (kwqe3->ka_timeout) {
 		tstorm_buf->ka_enable = 1;
 		tstorm_buf->ka_timeout = kwqe3->ka_timeout;
@@ -2002,8 +2282,13 @@ static void cnic_init_storm_conn_bufs(struct cnic_dev *dev,
 
 static void cnic_init_bnx2x_mac(struct cnic_dev *dev)
 {
+<<<<<<< HEAD
 	struct cnic_local *cp = dev->cnic_priv;
 	u32 pfid = cp->pfid;
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	u32 pfid = bp->pfid;
+>>>>>>> refs/remotes/origin/master
 	u8 *mac = dev->mac_addr;
 
 	CNIC_WR8(dev, BAR_XSTRORM_INTMEM +
@@ -2036,6 +2321,7 @@ static void cnic_init_bnx2x_mac(struct cnic_dev *dev)
 		 mac[0]);
 }
 
+<<<<<<< HEAD
 static void cnic_bnx2x_set_tcp_timestamp(struct cnic_dev *dev, int tcp_ts)
 {
 	struct cnic_local *cp = dev->cnic_priv;
@@ -2054,10 +2340,16 @@ static void cnic_bnx2x_set_tcp_timestamp(struct cnic_dev *dev, int tcp_ts)
 		  TSTORM_ISCSI_TCP_VARS_FLAGS_OFFSET(cp->pfid), tstorm_flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int cnic_bnx2x_connect(struct cnic_dev *dev, struct kwqe *wqes[],
 			      u32 num, int *work)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct l4_kwq_connect_req1 *kwqe1 =
 		(struct l4_kwq_connect_req1 *) wqes[0];
 	struct l4_kwq_connect_req3 *kwqe3;
@@ -2126,10 +2418,14 @@ static int cnic_bnx2x_connect(struct cnic_dev *dev, struct kwqe *wqes[],
 	cnic_init_storm_conn_bufs(dev, kwqe1, kwqe3, conn_buf);
 
 	CNIC_WR16(dev, BAR_XSTRORM_INTMEM +
+<<<<<<< HEAD
 		  XSTORM_ISCSI_LOCAL_VLAN_OFFSET(cp->pfid), csk->vlan_id);
 
 	cnic_bnx2x_set_tcp_timestamp(dev,
 		kwqe1->tcp_flags & L4_KWQ_CONNECT_REQ1_TIME_STAMP);
+=======
+		  XSTORM_ISCSI_LOCAL_VLAN_OFFSET(bp->pfid), csk->vlan_id);
+>>>>>>> refs/remotes/origin/master
 
 	ret = cnic_submit_kwqe_16(dev, L5CM_RAMROD_CMD_ID_TCP_CONNECT,
 			kwqe1->cid, ISCSI_CONNECTION_TYPE, &l5_data);
@@ -2198,11 +2494,19 @@ static int cnic_bnx2x_fcoe_stat(struct cnic_dev *dev, struct kwqe *kwqe)
 	struct fcoe_stat_ramrod_params *fcoe_stat;
 	union l5cm_specific_data l5_data;
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u32 cid;
 
 	req = (struct fcoe_kwqe_stat *) kwqe;
+<<<<<<< HEAD
 	cid = BNX2X_HW_CID(cp, cp->fcoe_init_cid);
+=======
+	cid = BNX2X_HW_CID(bp, cp->fcoe_init_cid);
+>>>>>>> refs/remotes/origin/master
 
 	fcoe_stat = cnic_get_kwqe_16_data(cp, BNX2X_FCOE_L5_CID_BASE, &l5_data);
 	if (!fcoe_stat)
@@ -2221,6 +2525,10 @@ static int cnic_bnx2x_fcoe_init1(struct cnic_dev *dev, struct kwqe *wqes[],
 {
 	int ret;
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	u32 cid;
 	struct fcoe_init_ramrod_params *fcoe_init;
 	struct fcoe_kwqe_init1 *req1;
@@ -2265,7 +2573,11 @@ static int cnic_bnx2x_fcoe_init1(struct cnic_dev *dev, struct kwqe *wqes[],
 	fcoe_init->sb_id = HC_INDEX_FCOE_EQ_CONS;
 	cp->kcq2.sw_prod_idx = 0;
 
+<<<<<<< HEAD
 	cid = BNX2X_HW_CID(cp, cp->fcoe_init_cid);
+=======
+	cid = BNX2X_HW_CID(bp, cp->fcoe_init_cid);
+>>>>>>> refs/remotes/origin/master
 	ret = cnic_submit_kwqe_16(dev, FCOE_RAMROD_CMD_ID_INIT_FUNC, cid,
 				  FCOE_CONNECTION_TYPE, &l5_data);
 	*work = 3;
@@ -2278,6 +2590,10 @@ static int cnic_bnx2x_fcoe_ofld1(struct cnic_dev *dev, struct kwqe *wqes[],
 	int ret = 0;
 	u32 cid = -1, l5_cid;
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct fcoe_kwqe_conn_offload1 *req1;
 	struct fcoe_kwqe_conn_offload2 *req2;
 	struct fcoe_kwqe_conn_offload3 *req3;
@@ -2320,7 +2636,11 @@ static int cnic_bnx2x_fcoe_ofld1(struct cnic_dev *dev, struct kwqe *wqes[],
 
 	fctx = cnic_get_bnx2x_ctx(dev, cid, 1, &ctx_addr);
 	if (fctx) {
+<<<<<<< HEAD
 		u32 hw_cid = BNX2X_HW_CID(cp, cid);
+=======
+		u32 hw_cid = BNX2X_HW_CID(bp, cid);
+>>>>>>> refs/remotes/origin/master
 		u32 val;
 
 		val = CDU_RSRVD_VALUE_TYPE_A(hw_cid, CDU_REGION_NUMBER_XCM_AG,
@@ -2344,7 +2664,11 @@ static int cnic_bnx2x_fcoe_ofld1(struct cnic_dev *dev, struct kwqe *wqes[],
 	memcpy(&fcoe_offload->offload_kwqe3, req3, sizeof(*req3));
 	memcpy(&fcoe_offload->offload_kwqe4, req4, sizeof(*req4));
 
+<<<<<<< HEAD
 	cid = BNX2X_HW_CID(cp, cid);
+=======
+	cid = BNX2X_HW_CID(bp, cid);
+>>>>>>> refs/remotes/origin/master
 	ret = cnic_submit_kwqe_16(dev, FCOE_RAMROD_CMD_ID_OFFLOAD_CONN, cid,
 				  FCOE_CONNECTION_TYPE, &l5_data);
 	if (!ret)
@@ -2502,13 +2826,21 @@ static int cnic_bnx2x_fcoe_fw_destroy(struct cnic_dev *dev, struct kwqe *kwqe)
 	struct fcoe_kwqe_destroy *req;
 	union l5cm_specific_data l5_data;
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u32 cid;
 
 	cnic_bnx2x_delete_wait(dev, MAX_ISCSI_TBL_SZ);
 
 	req = (struct fcoe_kwqe_destroy *) kwqe;
+<<<<<<< HEAD
 	cid = BNX2X_HW_CID(cp, cp->fcoe_init_cid);
+=======
+	cid = BNX2X_HW_CID(bp, cp->fcoe_init_cid);
+>>>>>>> refs/remotes/origin/master
 
 	memset(&l5_data, 0, sizeof(l5_data));
 	ret = cnic_submit_kwqe_16(dev, FCOE_RAMROD_CMD_ID_DESTROY_FUNC, cid,
@@ -2585,7 +2917,11 @@ static void cnic_bnx2x_kwqe_err(struct cnic_dev *dev, struct kwqe *kwqe)
 		return;
 	}
 
+<<<<<<< HEAD
 	cqes[0] = (struct kcqe *) &kcqe;
+=======
+	cqes[0] = &kcqe;
+>>>>>>> refs/remotes/origin/master
 	cnic_reply_bnx2x_kcqes(dev, ulp_type, cqes, 1);
 }
 
@@ -2665,7 +3001,11 @@ static int cnic_submit_bnx2x_iscsi_kwqes(struct cnic_dev *dev,
 static int cnic_submit_bnx2x_fcoe_kwqes(struct cnic_dev *dev,
 					struct kwqe *wqes[], u32 num_wqes)
 {
+<<<<<<< HEAD
 	struct cnic_local *cp = dev->cnic_priv;
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	int i, work, ret;
 	u32 opcode;
 	struct kwqe *kwqe;
@@ -2673,7 +3013,11 @@ static int cnic_submit_bnx2x_fcoe_kwqes(struct cnic_dev *dev,
 	if (!test_bit(CNIC_F_CNIC_UP, &dev->flags))
 		return -EAGAIN;		/* bnx2 is down */
 
+<<<<<<< HEAD
 	if (!BNX2X_CHIP_IS_E2_PLUS(cp->chip_id))
+=======
+	if (!BNX2X_CHIP_IS_E2_PLUS(bp))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	for (i = 0; i < num_wqes; ) {
@@ -2853,7 +3197,11 @@ static int cnic_l2_completion(struct cnic_local *cp)
 	u16 hw_cons, sw_cons;
 	struct cnic_uio_dev *udev = cp->udev;
 	union eth_rx_cqe *cqe, *cqe_ring = (union eth_rx_cqe *)
+<<<<<<< HEAD
 					(udev->l2_ring + (2 * BCM_PAGE_SIZE));
+=======
+					(udev->l2_ring + (2 * BNX2_PAGE_SIZE));
+>>>>>>> refs/remotes/origin/master
 	u32 cmd;
 	int comp = 0;
 
@@ -2989,8 +3337,13 @@ static irqreturn_t cnic_irq(int irq, void *dev_instance)
 static inline void cnic_ack_bnx2x_int(struct cnic_dev *dev, u8 id, u8 storm,
 				      u16 index, u8 op, u8 update)
 {
+<<<<<<< HEAD
 	struct cnic_local *cp = dev->cnic_priv;
 	u32 hc_addr = (HC_REG_COMMAND_REG + CNIC_PORT(cp) * 32 +
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	u32 hc_addr = (HC_REG_COMMAND_REG + BP_PORT(bp) * 32 +
+>>>>>>> refs/remotes/origin/master
 		       COMMAND_REG_INT_ACK);
 	struct igu_ack_register igu_ack;
 
@@ -3036,6 +3389,25 @@ static void cnic_ack_bnx2x_e2_msix(struct cnic_dev *dev)
 			IGU_INT_DISABLE, 0);
 }
 
+<<<<<<< HEAD
+=======
+static void cnic_arm_bnx2x_msix(struct cnic_dev *dev, u32 idx)
+{
+	struct cnic_local *cp = dev->cnic_priv;
+
+	cnic_ack_bnx2x_int(dev, cp->bnx2x_igu_sb_id, CSTORM_ID, idx,
+			   IGU_INT_ENABLE, 1);
+}
+
+static void cnic_arm_bnx2x_e2_msix(struct cnic_dev *dev, u32 idx)
+{
+	struct cnic_local *cp = dev->cnic_priv;
+
+	cnic_ack_igu_sb(dev, cp->bnx2x_igu_sb_id, IGU_SEG_ACCESS_DEF, idx,
+			IGU_INT_ENABLE, 1);
+}
+
+>>>>>>> refs/remotes/origin/master
 static u32 cnic_service_bnx2x_kcq(struct cnic_dev *dev, struct kcq_info *info)
 {
 	u32 last_status = *info->status_idx_ptr;
@@ -3061,6 +3433,10 @@ static void cnic_service_bnx2x_bh(unsigned long data)
 {
 	struct cnic_dev *dev = (struct cnic_dev *) data;
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	u32 status_idx, new_status_idx;
 
 	if (unlikely(!test_bit(CNIC_F_CNIC_UP, &dev->flags)))
@@ -3072,9 +3448,14 @@ static void cnic_service_bnx2x_bh(unsigned long data)
 		CNIC_WR16(dev, cp->kcq1.io_addr,
 			  cp->kcq1.sw_prod_idx + MAX_KCQ_IDX);
 
+<<<<<<< HEAD
 		if (!BNX2X_CHIP_IS_E2_PLUS(cp->chip_id)) {
 			cnic_ack_bnx2x_int(dev, cp->bnx2x_igu_sb_id, USTORM_ID,
 					   status_idx, IGU_INT_ENABLE, 1);
+=======
+		if (!CNIC_SUPPORTS_FCOE(bp)) {
+			cp->arm_int(dev, status_idx);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -3213,6 +3594,12 @@ static int cnic_ctl(void *data, struct cnic_ctl_info *info)
 		u32 l5_cid;
 		struct cnic_local *cp = dev->cnic_priv;
 
+<<<<<<< HEAD
+=======
+		if (!test_bit(CNIC_F_CNIC_UP, &dev->flags))
+			break;
+
+>>>>>>> refs/remotes/origin/master
 		if (cnic_get_l5_cid(cp, cid, &l5_cid) == 0) {
 			struct cnic_context *ctx = &cp->ctx_tbl[l5_cid];
 
@@ -3535,6 +3922,10 @@ static int cnic_cm_create(struct cnic_dev *dev, int ulp_type, u32 cid,
 	csk1->rcv_buf = DEF_RCV_BUF;
 	csk1->snd_buf = DEF_SND_BUF;
 	csk1->seed = DEF_SEED;
+<<<<<<< HEAD
+=======
+	csk1->tcp_flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	*csk = csk1;
 	return 0;
@@ -3790,12 +4181,26 @@ static int cnic_cm_abort(struct cnic_sock *csk)
 		return cnic_cm_abort_req(csk);
 
 	/* Getting here means that we haven't started connect, or
+<<<<<<< HEAD
 	 * connect was not successful.
 	 */
 
 	cp->close_conn(csk, opcode);
 	if (csk->state != opcode)
 		return -EALREADY;
+=======
+	 * connect was not successful, or it has been reset by the target.
+	 */
+
+	cp->close_conn(csk, opcode);
+	if (csk->state != opcode) {
+		/* Wait for remote reset sequence to complete */
+		while (test_bit(SK_F_PG_OFFLD_COMPLETE, &csk->flags))
+			msleep(1);
+
+		return -EALREADY;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -3809,6 +4214,13 @@ static int cnic_cm_close(struct cnic_sock *csk)
 		csk->state = L4_KCQE_OPCODE_VALUE_CLOSE_COMP;
 		return cnic_cm_close_req(csk);
 	} else {
+<<<<<<< HEAD
+=======
+		/* Wait for remote reset sequence to complete */
+		while (test_bit(SK_F_PG_OFFLD_COMPLETE, &csk->flags))
+			msleep(1);
+
+>>>>>>> refs/remotes/origin/master
 		return -EALREADY;
 	}
 	return 0;
@@ -3943,6 +4355,21 @@ static void cnic_cm_process_kcqe(struct cnic_dev *dev, struct kcqe *kcqe)
 		cnic_cm_upcall(cp, csk, opcode);
 		break;
 
+<<<<<<< HEAD
+=======
+	case L5CM_RAMROD_CMD_ID_CLOSE: {
+		struct iscsi_kcqe *l5kcqe = (struct iscsi_kcqe *) kcqe;
+
+		if (l4kcqe->status != 0 || l5kcqe->completion_status != 0) {
+			netdev_warn(dev->netdev, "RAMROD CLOSE compl with status 0x%x completion status 0x%x\n",
+				    l4kcqe->status, l5kcqe->completion_status);
+			opcode = L4_KCQE_OPCODE_VALUE_CLOSE_COMP;
+			/* Fall through */
+		} else {
+			break;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	case L4_KCQE_OPCODE_VALUE_RESET_RECEIVED:
 	case L4_KCQE_OPCODE_VALUE_CLOSE_COMP:
 	case L4_KCQE_OPCODE_VALUE_RESET_COMP:
@@ -3999,7 +4426,11 @@ static int cnic_cm_alloc_mem(struct cnic_dev *dev)
 	if (!cp->csk_tbl)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	port_id = random32();
+=======
+	port_id = prandom_u32();
+>>>>>>> refs/remotes/origin/master
 	port_id %= CNIC_LOCAL_PORT_RANGE;
 	if (cnic_init_id_tbl(&cp->csk_port_tbl, CNIC_LOCAL_PORT_RANGE,
 			     CNIC_LOCAL_PORT_MIN, port_id)) {
@@ -4059,7 +4490,11 @@ static int cnic_cm_init_bnx2_hw(struct cnic_dev *dev)
 {
 	u32 seed;
 
+<<<<<<< HEAD
 	seed = random32();
+=======
+	seed = prandom_u32();
+>>>>>>> refs/remotes/origin/master
 	cnic_ctx_wr(dev, 45, 0, seed);
 	return 0;
 }
@@ -4127,12 +4562,21 @@ static void cnic_cm_stop_bnx2x_hw(struct cnic_dev *dev)
 
 static int cnic_cm_init_bnx2x_hw(struct cnic_dev *dev)
 {
+<<<<<<< HEAD
 	struct cnic_local *cp = dev->cnic_priv;
 	u32 pfid = cp->pfid;
 	u32 port = CNIC_PORT(cp);
 
 	cnic_init_bnx2x_mac(dev);
 	cnic_bnx2x_set_tcp_timestamp(dev, 1);
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	u32 pfid = bp->pfid;
+	u32 port = BP_PORT(bp);
+
+	cnic_init_bnx2x_mac(dev);
+	cnic_bnx2x_set_tcp_options(dev, 0, 1);
+>>>>>>> refs/remotes/origin/master
 
 	CNIC_WR16(dev, BAR_XSTRORM_INTMEM +
 		  XSTORM_ISCSI_LOCAL_VLAN_OFFSET(pfid), 0);
@@ -4246,8 +4690,11 @@ static int cnic_cm_shutdown(struct cnic_dev *dev)
 	struct cnic_local *cp = dev->cnic_priv;
 	int i;
 
+<<<<<<< HEAD
 	cp->stop_cm(dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!cp->csk_tbl)
 		return 0;
 
@@ -4279,7 +4726,11 @@ static int cnic_setup_5709_context(struct cnic_dev *dev, int valid)
 	int ret = 0, i;
 	u32 valid_bit = valid ? BNX2_CTX_HOST_PAGE_TBL_DATA0_VALID : 0;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(cp) != CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(cp) != BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	for (i = 0; i < cp->ctx_blks; i++) {
@@ -4287,7 +4738,11 @@ static int cnic_setup_5709_context(struct cnic_dev *dev, int valid)
 		u32 idx = cp->ctx_arr[i].cid / cp->cids_per_blk;
 		u32 val;
 
+<<<<<<< HEAD
 		memset(cp->ctx_arr[i].ctx, 0, BCM_PAGE_SIZE);
+=======
+		memset(cp->ctx_arr[i].ctx, 0, BNX2_PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 		CNIC_WR(dev, BNX2_CTX_HOST_PAGE_TBL_DATA0,
 			(cp->ctx_arr[i].mapping & 0xffffffff) | valid_bit);
@@ -4429,7 +4884,11 @@ static void cnic_init_bnx2_tx_ring(struct cnic_dev *dev)
 	u32 cid_addr, tx_cid, sb_id;
 	u32 val, offset0, offset1, offset2, offset3;
 	int i;
+<<<<<<< HEAD
 	struct tx_bd *txbd;
+=======
+	struct bnx2_tx_bd *txbd;
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t buf_map, ring_map = udev->l2_ring_map;
 	struct status_block *s_blk = cp->status_blk.gen;
 
@@ -4447,7 +4906,11 @@ static void cnic_init_bnx2_tx_ring(struct cnic_dev *dev)
 	cp->tx_cons = *cp->tx_cons_ptr;
 
 	cid_addr = GET_CID_ADDR(tx_cid);
+<<<<<<< HEAD
 	if (CHIP_NUM(cp) == CHIP_NUM_5709) {
+=======
+	if (BNX2_CHIP(cp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		u32 cid_addr2 = GET_CID_ADDR(tx_cid + 4) + 0x40;
 
 		for (i = 0; i < PHY_CTX_SIZE; i += 4)
@@ -4475,7 +4938,11 @@ static void cnic_init_bnx2_tx_ring(struct cnic_dev *dev)
 	txbd = udev->l2_ring;
 
 	buf_map = udev->l2_buf_map;
+<<<<<<< HEAD
 	for (i = 0; i < MAX_TX_DESC_CNT; i++, txbd++) {
+=======
+	for (i = 0; i < BNX2_MAX_TX_DESC_CNT; i++, txbd++) {
+>>>>>>> refs/remotes/origin/master
 		txbd->tx_bd_haddr_hi = (u64) buf_map >> 32;
 		txbd->tx_bd_haddr_lo = (u64) buf_map & 0xffffffff;
 	}
@@ -4495,7 +4962,11 @@ static void cnic_init_bnx2_rx_ring(struct cnic_dev *dev)
 	struct cnic_uio_dev *udev = cp->udev;
 	u32 cid_addr, sb_id, val, coal_reg, coal_val;
 	int i;
+<<<<<<< HEAD
 	struct rx_bd *rxbd;
+=======
+	struct bnx2_rx_bd *rxbd;
+>>>>>>> refs/remotes/origin/master
 	struct status_block *s_blk = cp->status_blk.gen;
 	dma_addr_t ring_map = udev->l2_ring_map;
 
@@ -4531,8 +5002,13 @@ static void cnic_init_bnx2_rx_ring(struct cnic_dev *dev)
 		val = BNX2_L2CTX_L2_STATUSB_NUM(sb_id);
 	cnic_ctx_wr(dev, cid_addr, BNX2_L2CTX_HOST_BDIDX, val);
 
+<<<<<<< HEAD
 	rxbd = udev->l2_ring + BCM_PAGE_SIZE;
 	for (i = 0; i < MAX_RX_DESC_CNT; i++, rxbd++) {
+=======
+	rxbd = udev->l2_ring + BNX2_PAGE_SIZE;
+	for (i = 0; i < BNX2_MAX_RX_DESC_CNT; i++, rxbd++) {
+>>>>>>> refs/remotes/origin/master
 		dma_addr_t buf_map;
 		int n = (i % cp->l2_rx_ring_size) + 1;
 
@@ -4542,11 +5018,19 @@ static void cnic_init_bnx2_rx_ring(struct cnic_dev *dev)
 		rxbd->rx_bd_haddr_hi = (u64) buf_map >> 32;
 		rxbd->rx_bd_haddr_lo = (u64) buf_map & 0xffffffff;
 	}
+<<<<<<< HEAD
 	val = (u64) (ring_map + BCM_PAGE_SIZE) >> 32;
 	cnic_ctx_wr(dev, cid_addr, BNX2_L2CTX_NX_BDHADDR_HI, val);
 	rxbd->rx_bd_haddr_hi = val;
 
 	val = (u64) (ring_map + BCM_PAGE_SIZE) & 0xffffffff;
+=======
+	val = (u64) (ring_map + BNX2_PAGE_SIZE) >> 32;
+	cnic_ctx_wr(dev, cid_addr, BNX2_L2CTX_NX_BDHADDR_HI, val);
+	rxbd->rx_bd_haddr_hi = val;
+
+	val = (u64) (ring_map + BNX2_PAGE_SIZE) & 0xffffffff;
+>>>>>>> refs/remotes/origin/master
 	cnic_ctx_wr(dev, cid_addr, BNX2_L2CTX_NX_BDHADDR_LO, val);
 	rxbd->rx_bd_haddr_lo = val;
 
@@ -4592,7 +5076,11 @@ static void cnic_set_bnx2_mac(struct cnic_dev *dev)
 	CNIC_WR(dev, BNX2_EMAC_MAC_MATCH5, val);
 
 	val = 4 | BNX2_RPM_SORT_USER2_BC_EN;
+<<<<<<< HEAD
 	if (CHIP_NUM(cp) != CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(cp) != BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		val |= BNX2_RPM_SORT_USER2_PROM_VLAN;
 
 	CNIC_WR(dev, BNX2_RPM_SORT_USER2, 0x0);
@@ -4612,10 +5100,17 @@ static int cnic_start_bnx2_hw(struct cnic_dev *dev)
 
 	val = CNIC_RD(dev, BNX2_MQ_CONFIG);
 	val &= ~BNX2_MQ_CONFIG_KNL_BYP_BLK_SIZE;
+<<<<<<< HEAD
 	if (BCM_PAGE_BITS > 12)
 		val |= (12 - 8)  << 4;
 	else
 		val |= (BCM_PAGE_BITS - 8)  << 4;
+=======
+	if (BNX2_PAGE_BITS > 12)
+		val |= (12 - 8)  << 4;
+	else
+		val |= (BNX2_PAGE_BITS - 8)  << 4;
+>>>>>>> refs/remotes/origin/master
 
 	CNIC_WR(dev, BNX2_MQ_CONFIG, val);
 
@@ -4638,13 +5133,18 @@ static int cnic_start_bnx2_hw(struct cnic_dev *dev)
 	cp->kwq_con_idx = 0;
 	set_bit(CNIC_LCL_FL_KWQ_INIT, &cp->cnic_local_flags);
 
+<<<<<<< HEAD
 	if (CHIP_NUM(cp) == CHIP_NUM_5706 || CHIP_NUM(cp) == CHIP_NUM_5708)
+=======
+	if (BNX2_CHIP(cp) == BNX2_CHIP_5706 || BNX2_CHIP(cp) == BNX2_CHIP_5708)
+>>>>>>> refs/remotes/origin/master
 		cp->kwq_con_idx_ptr = &sblk->status_rx_quick_consumer_index15;
 	else
 		cp->kwq_con_idx_ptr = &sblk->status_cmd_consumer_index;
 
 	/* Initialize the kernel work queue context. */
 	val = KRNLQ_TYPE_TYPE_KRNLQ | KRNLQ_SIZE_TYPE_SIZE |
+<<<<<<< HEAD
 	      (BCM_PAGE_BITS - 8) | KRNLQ_FLAGS_QE_SELF_SEQ;
 	cnic_ctx_wr(dev, kwq_cid_addr, L5_KRNLQ_TYPE, val);
 
@@ -4652,6 +5152,15 @@ static int cnic_start_bnx2_hw(struct cnic_dev *dev)
 	cnic_ctx_wr(dev, kwq_cid_addr, L5_KRNLQ_QE_SELF_SEQ_MAX, val);
 
 	val = ((BCM_PAGE_SIZE / sizeof(struct kwqe)) << 16) | KWQ_PAGE_CNT;
+=======
+	      (BNX2_PAGE_BITS - 8) | KRNLQ_FLAGS_QE_SELF_SEQ;
+	cnic_ctx_wr(dev, kwq_cid_addr, L5_KRNLQ_TYPE, val);
+
+	val = (BNX2_PAGE_SIZE / sizeof(struct kwqe) - 1) << 16;
+	cnic_ctx_wr(dev, kwq_cid_addr, L5_KRNLQ_QE_SELF_SEQ_MAX, val);
+
+	val = ((BNX2_PAGE_SIZE / sizeof(struct kwqe)) << 16) | KWQ_PAGE_CNT;
+>>>>>>> refs/remotes/origin/master
 	cnic_ctx_wr(dev, kwq_cid_addr, L5_KRNLQ_PGTBL_NPAGES, val);
 
 	val = (u32) ((u64) cp->kwq_info.pgtbl_map >> 32);
@@ -4665,6 +5174,7 @@ static int cnic_start_bnx2_hw(struct cnic_dev *dev)
 
 	cp->kcq1.sw_prod_idx = 0;
 	cp->kcq1.hw_prod_idx_ptr =
+<<<<<<< HEAD
 		(u16 *) &sblk->status_completion_producer_index;
 
 	cp->kcq1.status_idx_ptr = (u16 *) &sblk->status_idx;
@@ -4678,6 +5188,21 @@ static int cnic_start_bnx2_hw(struct cnic_dev *dev)
 	cnic_ctx_wr(dev, kcq_cid_addr, L5_KRNLQ_QE_SELF_SEQ_MAX, val);
 
 	val = ((BCM_PAGE_SIZE / sizeof(struct kcqe)) << 16) | KCQ_PAGE_CNT;
+=======
+		&sblk->status_completion_producer_index;
+
+	cp->kcq1.status_idx_ptr = &sblk->status_idx;
+
+	/* Initialize the kernel complete queue context. */
+	val = KRNLQ_TYPE_TYPE_KRNLQ | KRNLQ_SIZE_TYPE_SIZE |
+	      (BNX2_PAGE_BITS - 8) | KRNLQ_FLAGS_QE_SELF_SEQ;
+	cnic_ctx_wr(dev, kcq_cid_addr, L5_KRNLQ_TYPE, val);
+
+	val = (BNX2_PAGE_SIZE / sizeof(struct kcqe) - 1) << 16;
+	cnic_ctx_wr(dev, kcq_cid_addr, L5_KRNLQ_QE_SELF_SEQ_MAX, val);
+
+	val = ((BNX2_PAGE_SIZE / sizeof(struct kcqe)) << 16) | KCQ_PAGE_CNT;
+>>>>>>> refs/remotes/origin/master
 	cnic_ctx_wr(dev, kcq_cid_addr, L5_KRNLQ_PGTBL_NPAGES, val);
 
 	val = (u32) ((u64) cp->kcq1.dma.pgtbl_map >> 32);
@@ -4693,9 +5218,15 @@ static int cnic_start_bnx2_hw(struct cnic_dev *dev)
 		u32 sb = BNX2_L2CTX_L5_STATUSB_NUM(sb_id);
 
 		cp->kcq1.hw_prod_idx_ptr =
+<<<<<<< HEAD
 			(u16 *) &msblk->status_completion_producer_index;
 		cp->kcq1.status_idx_ptr = (u16 *) &msblk->status_idx;
 		cp->kwq_con_idx_ptr = (u16 *) &msblk->status_cmd_consumer_index;
+=======
+			&msblk->status_completion_producer_index;
+		cp->kcq1.status_idx_ptr = &msblk->status_idx;
+		cp->kwq_con_idx_ptr = &msblk->status_cmd_consumer_index;
+>>>>>>> refs/remotes/origin/master
 		cp->int_num = sb_id << BNX2_PCICFG_INT_ACK_CMD_INT_NUM_SHIFT;
 		cnic_ctx_wr(dev, kwq_cid_addr, L5_KRNLQ_HOST_QIDX, sb);
 		cnic_ctx_wr(dev, kcq_cid_addr, L5_KRNLQ_HOST_QIDX, sb);
@@ -4731,6 +5262,11 @@ static int cnic_start_bnx2_hw(struct cnic_dev *dev)
 		return err;
 	}
 
+<<<<<<< HEAD
+=======
+	ethdev->drv_state |= CNIC_DRV_STATE_HANDLES_IRQ;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -4773,6 +5309,10 @@ static inline void cnic_storm_memset_hc_disable(struct cnic_dev *dev,
 						u16 sb_id, u8 sb_index,
 						u8 disable)
 {
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 
 	u32 addr = BAR_CSTRORM_INTMEM +
 			CSTORM_STATUS_BLOCK_DATA_OFFSET(sb_id) +
@@ -4790,6 +5330,10 @@ static inline void cnic_storm_memset_hc_disable(struct cnic_dev *dev,
 static void cnic_enable_bnx2x_int(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	u8 sb_id = cp->status_blk_num;
 
 	CNIC_WR8(dev, BAR_CSTRORM_INTMEM +
@@ -4808,6 +5352,10 @@ static void cnic_init_bnx2x_tx_ring(struct cnic_dev *dev,
 				    struct client_init_ramrod_data *data)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct cnic_uio_dev *udev = cp->udev;
 	union eth_tx_bd_types *txbd = (union eth_tx_bd_types *) udev->l2_ring;
 	dma_addr_t buf_map, ring_map = udev->l2_ring_map;
@@ -4816,11 +5364,22 @@ static void cnic_init_bnx2x_tx_ring(struct cnic_dev *dev,
 	u32 cli = cp->ethdev->iscsi_l2_client_id;
 	u32 val;
 
+<<<<<<< HEAD
 	memset(txbd, 0, BCM_PAGE_SIZE);
 
 	buf_map = udev->l2_buf_map;
 	for (i = 0; i < MAX_TX_DESC_CNT; i += 3, txbd += 3) {
 		struct eth_tx_start_bd *start_bd = &txbd->start_bd;
+=======
+	memset(txbd, 0, BNX2_PAGE_SIZE);
+
+	buf_map = udev->l2_buf_map;
+	for (i = 0; i < BNX2_MAX_TX_DESC_CNT; i += 3, txbd += 3) {
+		struct eth_tx_start_bd *start_bd = &txbd->start_bd;
+		struct eth_tx_parse_bd_e1x *pbd_e1x =
+			&((txbd + 1)->parse_bd_e1x);
+		struct eth_tx_parse_bd_e2 *pbd_e2 = &((txbd + 1)->parse_bd_e2);
+>>>>>>> refs/remotes/origin/master
 		struct eth_tx_bd *reg_bd = &((txbd + 2)->reg_bd);
 
 		start_bd->addr_hi = cpu_to_le32((u64) buf_map >> 32);
@@ -4830,10 +5389,22 @@ static void cnic_init_bnx2x_tx_ring(struct cnic_dev *dev,
 		start_bd->nbytes = cpu_to_le16(0x10);
 		start_bd->nbd = cpu_to_le16(3);
 		start_bd->bd_flags.as_bitfield = ETH_TX_BD_FLAGS_START_BD;
+<<<<<<< HEAD
 		start_bd->general_data = (UNICAST_ADDRESS <<
 			ETH_TX_START_BD_ETH_ADDR_TYPE_SHIFT);
 		start_bd->general_data |= (1 << ETH_TX_START_BD_HDR_NBDS_SHIFT);
 
+=======
+		start_bd->general_data &= ~ETH_TX_START_BD_PARSE_NBDS;
+		start_bd->general_data |= (1 << ETH_TX_START_BD_HDR_NBDS_SHIFT);
+
+		if (BNX2X_CHIP_IS_E2_PLUS(bp))
+			pbd_e2->parsing_data = (UNICAST_ADDRESS <<
+				ETH_TX_PARSE_BD_E2_ETH_ADDR_TYPE_SHIFT);
+		else
+			pbd_e1x->global_data = (UNICAST_ADDRESS <<
+				ETH_TX_PARSE_BD_E1X_ETH_ADDR_TYPE_SHIFT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	val = (u64) ring_map >> 32;
@@ -4865,6 +5436,7 @@ static void cnic_init_bnx2x_rx_ring(struct cnic_dev *dev,
 				    struct client_init_ramrod_data *data)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
 	struct cnic_uio_dev *udev = cp->udev;
 	struct eth_rx_bd *rxbd = (struct eth_rx_bd *) (udev->l2_ring +
 				BCM_PAGE_SIZE);
@@ -4874,6 +5446,18 @@ static void cnic_init_bnx2x_rx_ring(struct cnic_dev *dev,
 	int i;
 	u32 cli = cp->ethdev->iscsi_l2_client_id;
 	int cl_qzone_id = BNX2X_CL_QZONE_ID(cp, cli);
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	struct cnic_uio_dev *udev = cp->udev;
+	struct eth_rx_bd *rxbd = (struct eth_rx_bd *) (udev->l2_ring +
+				BNX2_PAGE_SIZE);
+	struct eth_rx_cqe_next_page *rxcqe = (struct eth_rx_cqe_next_page *)
+				(udev->l2_ring + (2 * BNX2_PAGE_SIZE));
+	struct host_sp_status_block *sb = cp->bnx2x_def_status_blk;
+	int i;
+	u32 cli = cp->ethdev->iscsi_l2_client_id;
+	int cl_qzone_id = BNX2X_CL_QZONE_ID(bp, cli);
+>>>>>>> refs/remotes/origin/master
 	u32 val;
 	dma_addr_t ring_map = udev->l2_ring_map;
 
@@ -4882,7 +5466,11 @@ static void cnic_init_bnx2x_rx_ring(struct cnic_dev *dev,
 	data->general.activate_flg = 1;
 	data->general.sp_client_id = cli;
 	data->general.mtu = cpu_to_le16(cp->l2_single_buf_size - 14);
+<<<<<<< HEAD
 	data->general.func_id = cp->pfid;
+=======
+	data->general.func_id = bp->pfid;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < BNX2X_MAX_RX_DESC_CNT; i++, rxbd++) {
 		dma_addr_t buf_map;
@@ -4893,20 +5481,36 @@ static void cnic_init_bnx2x_rx_ring(struct cnic_dev *dev,
 		rxbd->addr_lo = cpu_to_le32(buf_map & 0xffffffff);
 	}
 
+<<<<<<< HEAD
 	val = (u64) (ring_map + BCM_PAGE_SIZE) >> 32;
 	rxbd->addr_hi = cpu_to_le32(val);
 	data->rx.bd_page_base.hi = cpu_to_le32(val);
 
 	val = (u64) (ring_map + BCM_PAGE_SIZE) & 0xffffffff;
+=======
+	val = (u64) (ring_map + BNX2_PAGE_SIZE) >> 32;
+	rxbd->addr_hi = cpu_to_le32(val);
+	data->rx.bd_page_base.hi = cpu_to_le32(val);
+
+	val = (u64) (ring_map + BNX2_PAGE_SIZE) & 0xffffffff;
+>>>>>>> refs/remotes/origin/master
 	rxbd->addr_lo = cpu_to_le32(val);
 	data->rx.bd_page_base.lo = cpu_to_le32(val);
 
 	rxcqe += BNX2X_MAX_RCQ_DESC_CNT;
+<<<<<<< HEAD
 	val = (u64) (ring_map + (2 * BCM_PAGE_SIZE)) >> 32;
 	rxcqe->addr_hi = cpu_to_le32(val);
 	data->rx.cqe_page_base.hi = cpu_to_le32(val);
 
 	val = (u64) (ring_map + (2 * BCM_PAGE_SIZE)) & 0xffffffff;
+=======
+	val = (u64) (ring_map + (2 * BNX2_PAGE_SIZE)) >> 32;
+	rxcqe->addr_hi = cpu_to_le32(val);
+	data->rx.cqe_page_base.hi = cpu_to_le32(val);
+
+	val = (u64) (ring_map + (2 * BNX2_PAGE_SIZE)) & 0xffffffff;
+>>>>>>> refs/remotes/origin/master
 	rxcqe->addr_lo = cpu_to_le32(val);
 	data->rx.cqe_page_base.lo = cpu_to_le32(val);
 
@@ -4931,13 +5535,22 @@ static void cnic_init_bnx2x_rx_ring(struct cnic_dev *dev,
 static void cnic_init_bnx2x_kcq(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
 	u32 pfid = cp->pfid;
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	u32 pfid = bp->pfid;
+>>>>>>> refs/remotes/origin/master
 
 	cp->kcq1.io_addr = BAR_CSTRORM_INTMEM +
 			   CSTORM_ISCSI_EQ_PROD_OFFSET(pfid, 0);
 	cp->kcq1.sw_prod_idx = 0;
 
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id)) {
+=======
+	if (BNX2X_CHIP_IS_E2_PLUS(bp)) {
+>>>>>>> refs/remotes/origin/master
 		struct host_hc_status_block_e2 *sb = cp->status_blk.gen;
 
 		cp->kcq1.hw_prod_idx_ptr =
@@ -4953,7 +5566,11 @@ static void cnic_init_bnx2x_kcq(struct cnic_dev *dev)
 			&sb->sb.running_index[SM_RX_ID];
 	}
 
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id)) {
+=======
+	if (BNX2X_CHIP_IS_E2_PLUS(bp)) {
+>>>>>>> refs/remotes/origin/master
 		struct host_hc_status_block_e2 *sb = cp->status_blk.gen;
 
 		cp->kcq2.io_addr = BAR_USTRORM_INTMEM +
@@ -4969,6 +5586,7 @@ static void cnic_init_bnx2x_kcq(struct cnic_dev *dev)
 static int cnic_start_bnx2x_hw(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
 	struct cnic_eth_dev *ethdev = cp->ethdev;
 	int func = CNIC_FUNC(cp), ret;
 	u32 pfid;
@@ -4995,6 +5613,18 @@ static int cnic_start_bnx2x_hw(struct cnic_dev *dev)
 		cp->pfid = func;
 	}
 	pfid = cp->pfid;
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	struct cnic_eth_dev *ethdev = cp->ethdev;
+	int func, ret;
+	u32 pfid;
+
+	dev->stats_addr = ethdev->addr_drv_info_to_mcp;
+	cp->func = bp->pf_num;
+
+	func = CNIC_FUNC(cp);
+	pfid = bp->pfid;
+>>>>>>> refs/remotes/origin/master
 
 	ret = cnic_init_id_tbl(&cp->cid_tbl, MAX_ISCSI_TBL_SZ,
 			       cp->iscsi_start_cid, 0);
@@ -5002,7 +5632,11 @@ static int cnic_start_bnx2x_hw(struct cnic_dev *dev)
 	if (ret)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id)) {
+=======
+	if (BNX2X_CHIP_IS_E2_PLUS(bp)) {
+>>>>>>> refs/remotes/origin/master
 		ret = cnic_init_id_tbl(&cp->fcoe_cid_tbl, dev->max_fcoe_conn,
 					cp->fcoe_start_cid, 0);
 
@@ -5054,12 +5688,20 @@ static int cnic_start_bnx2x_hw(struct cnic_dev *dev)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
+=======
+	ethdev->drv_state |= CNIC_DRV_STATE_HANDLES_IRQ;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void cnic_init_rings(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+>>>>>>> refs/remotes/origin/master
 	struct cnic_uio_dev *udev = cp->udev;
 
 	if (test_bit(CNIC_LCL_FL_RINGS_INITED, &cp->cnic_local_flags))
@@ -5082,12 +5724,21 @@ static void cnic_init_rings(struct cnic_dev *dev)
 		rx_prods.cqe_prod = BNX2X_MAX_RCQ_DESC_CNT;
 		barrier();
 
+<<<<<<< HEAD
 		cl_qzone_id = BNX2X_CL_QZONE_ID(cp, cli);
 
 		off = BAR_USTRORM_INTMEM +
 			(BNX2X_CHIP_IS_E2_PLUS(cp->chip_id) ?
 			 USTORM_RX_PRODS_E2_OFFSET(cl_qzone_id) :
 			 USTORM_RX_PRODS_E1X_OFFSET(CNIC_PORT(cp), cli));
+=======
+		cl_qzone_id = BNX2X_CL_QZONE_ID(bp, cli);
+
+		off = BAR_USTRORM_INTMEM +
+			(BNX2X_CHIP_IS_E2_PLUS(bp) ?
+			 USTORM_RX_PRODS_E2_OFFSET(cl_qzone_id) :
+			 USTORM_RX_PRODS_E1X_OFFSET(BP_PORT(bp), cli));
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < sizeof(struct ustorm_eth_rx_producers) / 4; i++)
 			CNIC_WR(dev, off + i * 4, ((u32 *) &rx_prods)[i]);
@@ -5120,7 +5771,12 @@ static void cnic_init_rings(struct cnic_dev *dev)
 				"iSCSI CLIENT_SETUP did not complete\n");
 		cnic_spq_completion(dev, DRV_CTL_RET_L2_SPQ_CREDIT_CMD, 1);
 		cnic_ring_ctl(dev, cid, cli, 1);
+<<<<<<< HEAD
 		*cid_ptr = cid;
+=======
+		*cid_ptr = cid >> 4;
+		*(cid_ptr + 1) = cid * bp->db_size;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -5165,8 +5821,13 @@ static void cnic_shutdown_rings(struct cnic_dev *dev)
 		msleep(10);
 	}
 	clear_bit(CNIC_LCL_FL_RINGS_INITED, &cp->cnic_local_flags);
+<<<<<<< HEAD
 	rx_ring = udev->l2_ring + BCM_PAGE_SIZE;
 	memset(rx_ring, 0, BCM_PAGE_SIZE);
+=======
+	rx_ring = udev->l2_ring + BNX2_PAGE_SIZE;
+	memset(rx_ring, 0, BNX2_PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int cnic_register_netdev(struct cnic_dev *dev)
@@ -5185,6 +5846,16 @@ static int cnic_register_netdev(struct cnic_dev *dev)
 	if (err)
 		netdev_err(dev->netdev, "register_cnic failed\n");
 
+<<<<<<< HEAD
+=======
+	/* Read iSCSI config again.  On some bnx2x device, iSCSI config
+	 * can change after firmware is downloaded.
+	 */
+	dev->max_iscsi_conn = ethdev->max_iscsi_conn;
+	if (ethdev->drv_state & CNIC_DRV_STATE_NO_ISCSI)
+		dev->max_iscsi_conn = 0;
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -5260,11 +5931,39 @@ static void cnic_stop_bnx2_hw(struct cnic_dev *dev)
 static void cnic_stop_bnx2x_hw(struct cnic_dev *dev)
 {
 	struct cnic_local *cp = dev->cnic_priv;
+<<<<<<< HEAD
 
 	cnic_free_irq(dev);
 	*cp->kcq1.hw_prod_idx_ptr = 0;
 	CNIC_WR(dev, BAR_CSTRORM_INTMEM +
 		CSTORM_ISCSI_EQ_CONS_OFFSET(cp->pfid, 0), 0);
+=======
+	struct bnx2x *bp = netdev_priv(dev->netdev);
+	u32 hc_index = HC_INDEX_ISCSI_EQ_CONS;
+	u32 sb_id = cp->status_blk_num;
+	u32 idx_off, syn_off;
+
+	cnic_free_irq(dev);
+
+	if (BNX2X_CHIP_IS_E2_PLUS(bp)) {
+		idx_off = offsetof(struct hc_status_block_e2, index_values) +
+			  (hc_index * sizeof(u16));
+
+		syn_off = CSTORM_HC_SYNC_LINE_INDEX_E2_OFFSET(hc_index, sb_id);
+	} else {
+		idx_off = offsetof(struct hc_status_block_e1x, index_values) +
+			  (hc_index * sizeof(u16));
+
+		syn_off = CSTORM_HC_SYNC_LINE_INDEX_E1X_OFFSET(hc_index, sb_id);
+	}
+	CNIC_WR16(dev, BAR_CSTRORM_INTMEM + syn_off, 0);
+	CNIC_WR16(dev, BAR_CSTRORM_INTMEM + CSTORM_STATUS_BLOCK_OFFSET(sb_id) +
+		  idx_off, 0);
+
+	*cp->kcq1.hw_prod_idx_ptr = 0;
+	CNIC_WR(dev, BAR_CSTRORM_INTMEM +
+		CSTORM_ISCSI_EQ_CONS_OFFSET(bp->pfid, 0), 0);
+>>>>>>> refs/remotes/origin/master
 	CNIC_WR16(dev, cp->kcq1.io_addr, 0);
 	cnic_free_resc(dev);
 }
@@ -5278,11 +5977,20 @@ static void cnic_stop_hw(struct cnic_dev *dev)
 		/* Need to wait for the ring shutdown event to complete
 		 * before clearing the CNIC_UP flag.
 		 */
+<<<<<<< HEAD
 		while (cp->udev->uio_dev != -1 && i < 15) {
+=======
+		while (cp->udev && cp->udev->uio_dev != -1 && i < 15) {
+>>>>>>> refs/remotes/origin/master
 			msleep(100);
 			i++;
 		}
 		cnic_shutdown_rings(dev);
+<<<<<<< HEAD
+=======
+		cp->stop_cm(dev);
+		cp->ethdev->drv_state &= ~CNIC_DRV_STATE_HANDLES_IRQ;
+>>>>>>> refs/remotes/origin/master
 		clear_bit(CNIC_F_CNIC_UP, &dev->flags);
 		RCU_INIT_POINTER(cp->ulp_ops[CNIC_ULP_L4], NULL);
 		synchronize_rcu();
@@ -5317,11 +6025,17 @@ static struct cnic_dev *cnic_alloc_dev(struct net_device *dev,
 
 	alloc_size = sizeof(struct cnic_dev) + sizeof(struct cnic_local);
 
+<<<<<<< HEAD
 	cdev = kzalloc(alloc_size , GFP_KERNEL);
 	if (cdev == NULL) {
 		netdev_err(dev, "allocate dev struct failure\n");
 		return NULL;
 	}
+=======
+	cdev = kzalloc(alloc_size, GFP_KERNEL);
+	if (cdev == NULL)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	cdev->netdev = dev;
 	cdev->cnic_priv = (char *)cdev + sizeof(struct cnic_dev);
@@ -5346,6 +6060,7 @@ static struct cnic_dev *init_bnx2_cnic(struct net_device *dev)
 	struct pci_dev *pdev;
 	struct cnic_dev *cdev;
 	struct cnic_local *cp;
+<<<<<<< HEAD
 	struct cnic_eth_dev *ethdev = NULL;
 	struct cnic_eth_dev *(*probe)(struct net_device *) = NULL;
 
@@ -5354,6 +6069,14 @@ static struct cnic_dev *init_bnx2_cnic(struct net_device *dev)
 		ethdev = (*probe)(dev);
 		symbol_put(bnx2_cnic_probe);
 	}
+=======
+	struct bnx2 *bp = netdev_priv(dev);
+	struct cnic_eth_dev *ethdev = NULL;
+
+	if (bp->cnic_probe)
+		ethdev = (bp->cnic_probe)(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (!ethdev)
 		return NULL;
 
@@ -5408,6 +6131,7 @@ static struct cnic_dev *init_bnx2x_cnic(struct net_device *dev)
 	struct pci_dev *pdev;
 	struct cnic_dev *cdev;
 	struct cnic_local *cp;
+<<<<<<< HEAD
 	struct cnic_eth_dev *ethdev = NULL;
 	struct cnic_eth_dev *(*probe)(struct net_device *) = NULL;
 
@@ -5416,6 +6140,14 @@ static struct cnic_dev *init_bnx2x_cnic(struct net_device *dev)
 		ethdev = (*probe)(dev);
 		symbol_put(bnx2x_cnic_probe);
 	}
+=======
+	struct bnx2x *bp = netdev_priv(dev);
+	struct cnic_eth_dev *ethdev = NULL;
+
+	if (bp->cnic_probe)
+		ethdev = bp->cnic_probe(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (!ethdev)
 		return NULL;
 
@@ -5442,14 +6174,25 @@ static struct cnic_dev *init_bnx2x_cnic(struct net_device *dev)
 
 	if (!(ethdev->drv_state & CNIC_DRV_STATE_NO_ISCSI))
 		cdev->max_iscsi_conn = ethdev->max_iscsi_conn;
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id) &&
 	    !(ethdev->drv_state & CNIC_DRV_STATE_NO_FCOE))
 		cdev->max_fcoe_conn = ethdev->max_fcoe_conn;
+=======
+	if (CNIC_SUPPORTS_FCOE(bp)) {
+		cdev->max_fcoe_conn = ethdev->max_fcoe_conn;
+		cdev->max_fcoe_exchanges = ethdev->max_fcoe_exchanges;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (cdev->max_fcoe_conn > BNX2X_FCOE_NUM_CONNECTIONS)
 		cdev->max_fcoe_conn = BNX2X_FCOE_NUM_CONNECTIONS;
 
+<<<<<<< HEAD
 	memcpy(cdev->mac_addr, ethdev->iscsi_mac, 6);
+=======
+	memcpy(cdev->mac_addr, ethdev->iscsi_mac, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	cp->cnic_ops = &cnic_bnx2x_ops;
 	cp->start_hw = cnic_start_bnx2x_hw;
@@ -5461,10 +6204,20 @@ static struct cnic_dev *init_bnx2x_cnic(struct net_device *dev)
 	cp->stop_cm = cnic_cm_stop_bnx2x_hw;
 	cp->enable_int = cnic_enable_bnx2x_int;
 	cp->disable_int_sync = cnic_disable_bnx2x_int_sync;
+<<<<<<< HEAD
 	if (BNX2X_CHIP_IS_E2_PLUS(cp->chip_id))
 		cp->ack_int = cnic_ack_bnx2x_e2_msix;
 	else
 		cp->ack_int = cnic_ack_bnx2x_msix;
+=======
+	if (BNX2X_CHIP_IS_E2_PLUS(bp)) {
+		cp->ack_int = cnic_ack_bnx2x_e2_msix;
+		cp->arm_int = cnic_arm_bnx2x_e2_msix;
+	} else {
+		cp->ack_int = cnic_ack_bnx2x_msix;
+		cp->arm_int = cnic_arm_bnx2x_msix;
+	}
+>>>>>>> refs/remotes/origin/master
 	cp->close_conn = cnic_close_bnx2x_conn;
 	return cdev;
 }
@@ -5512,6 +6265,7 @@ static void cnic_rcv_netevent(struct cnic_local *cp, unsigned long event,
 	rcu_read_unlock();
 }
 
+<<<<<<< HEAD
 /**
  * netdev event handler
  */
@@ -5519,12 +6273,23 @@ static int cnic_netdev_event(struct notifier_block *this, unsigned long event,
 							 void *ptr)
 {
 	struct net_device *netdev = ptr;
+=======
+/* netdev event handler */
+static int cnic_netdev_event(struct notifier_block *this, unsigned long event,
+							 void *ptr)
+{
+	struct net_device *netdev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct cnic_dev *dev;
 	int new_dev = 0;
 
 	dev = cnic_from_netdev(netdev);
 
+<<<<<<< HEAD
 	if (!dev && (event == NETDEV_REGISTER || netif_running(netdev))) {
+=======
+	if (!dev && event == NETDEV_REGISTER) {
+>>>>>>> refs/remotes/origin/master
 		/* Check for the hot-plug device */
 		dev = is_cnic_dev(netdev);
 		if (dev) {
@@ -5540,7 +6305,11 @@ static int cnic_netdev_event(struct notifier_block *this, unsigned long event,
 		else if (event == NETDEV_UNREGISTER)
 			cnic_ulp_exit(dev);
 
+<<<<<<< HEAD
 		if (event == NETDEV_UP || (new_dev && netif_running(netdev))) {
+=======
+		if (event == NETDEV_UP) {
+>>>>>>> refs/remotes/origin/master
 			if (cnic_register_netdev(dev) != 0) {
 				cnic_put(dev);
 				goto done;
@@ -5589,6 +6358,7 @@ static struct notifier_block cnic_netdev_notifier = {
 
 static void cnic_release(void)
 {
+<<<<<<< HEAD
 	struct cnic_dev *dev;
 	struct cnic_uio_dev *udev;
 
@@ -5604,6 +6374,10 @@ static void cnic_release(void)
 		list_del_init(&dev->list);
 		cnic_free_dev(dev);
 	}
+=======
+	struct cnic_uio_dev *udev;
+
+>>>>>>> refs/remotes/origin/master
 	while (!list_empty(&cnic_udev_list)) {
 		udev = list_entry(cnic_udev_list.next, struct cnic_uio_dev,
 				  list);

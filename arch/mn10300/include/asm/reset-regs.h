@@ -18,12 +18,15 @@
 #ifdef __KERNEL__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MN10300_WD_TIMER
 #define ARCH_HAS_NMI_WATCHDOG		/* See include/linux/nmi.h */
 #endif
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * watchdog timer registers
  */

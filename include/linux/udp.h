@@ -17,6 +17,7 @@
 #ifndef _LINUX_UDP_H
 #define _LINUX_UDP_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 struct udphdr {
@@ -39,12 +40,26 @@ struct udphdr {
 #include <net/inet_sock.h>
 #include <linux/skbuff.h>
 #include <net/netns/hash.h>
+=======
+#include <net/inet_sock.h>
+#include <linux/skbuff.h>
+#include <net/netns/hash.h>
+#include <uapi/linux/udp.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct udphdr *udp_hdr(const struct sk_buff *skb)
 {
 	return (struct udphdr *)skb_transport_header(skb);
 }
 
+<<<<<<< HEAD
+=======
+static inline struct udphdr *inner_udp_hdr(const struct sk_buff *skb)
+{
+	return (struct udphdr *)skb_inner_transport_header(skb);
+}
+
+>>>>>>> refs/remotes/origin/master
 #define UDP_HTABLE_SIZE_MIN		(CONFIG_BASE_SMALL ? 128 : 256)
 
 static inline int udp_hashfn(struct net *net, unsigned num, unsigned mask)
@@ -81,6 +96,10 @@ struct udp_sock {
 	 * For encapsulation sockets.
 	 */
 	int (*encap_rcv)(struct sock *sk, struct sk_buff *skb);
+<<<<<<< HEAD
+=======
+	void (*encap_destroy)(struct sock *sk);
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct udp_sock *udp_sk(const struct sock *sk)
@@ -96,6 +115,9 @@ static inline struct udp_sock *udp_sk(const struct sock *sk)
 
 #define IS_UDPLITE(__sk) (udp_sk(__sk)->pcflag)
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_UDP_H */

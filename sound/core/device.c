@@ -22,9 +22,13 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <sound/core.h>
 
@@ -42,7 +46,11 @@
  * The data pointer plays a role as the identifier, too, so the
  * pointer address must be unique and unchanged.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_device_new(struct snd_card *card, snd_device_type_t type,
 		   void *device_data, struct snd_device_ops *ops)
@@ -76,7 +84,11 @@ EXPORT_SYMBOL(snd_device_new);
  * callbacks, dev_disconnect and dev_free, corresponding to the state.
  * Then release the device.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure or if the
+=======
+ * Return: Zero if successful, or a negative error code on failure or if the
+>>>>>>> refs/remotes/origin/master
  * device not found.
  */
 int snd_device_free(struct snd_card *card, void *device_data)
@@ -119,7 +131,11 @@ EXPORT_SYMBOL(snd_device_free);
  *
  * Usually called from snd_card_disconnect().
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure or if the
+=======
+ * Return: Zero if successful, or a negative error code on failure or if the
+>>>>>>> refs/remotes/origin/master
  * device not found.
  */
 int snd_device_disconnect(struct snd_card *card, void *device_data)
@@ -154,7 +170,11 @@ int snd_device_disconnect(struct snd_card *card, void *device_data)
  * but it can be called later if any new devices are created after
  * invocation of snd_card_register().
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure or if the
+=======
+ * Return: Zero if successful, or a negative error code on failure or if the
+>>>>>>> refs/remotes/origin/master
  * device not found.
  */
 int snd_device_register(struct snd_card *card, void *device_data)

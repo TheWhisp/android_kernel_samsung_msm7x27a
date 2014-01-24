@@ -114,11 +114,16 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #define pr_fmt(fmt) "IPv4: " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "IPv4: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
@@ -145,6 +150,10 @@
 #include <net/icmp.h>
 #include <net/raw.h>
 #include <net/checksum.h>
+<<<<<<< HEAD
+=======
+#include <net/inet_ecn.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netfilter_ipv4.h>
 #include <net/xfrm.h>
 #include <linux/mroute.h>
@@ -154,10 +163,14 @@
  *	Process Router Attention IP option (RFC 2113)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ip_call_ra_chain(struct sk_buff *skb)
 =======
 bool ip_call_ra_chain(struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool ip_call_ra_chain(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ip_ra_chain *ra;
 	u8 protocol = ip_hdr(skb)->protocol;
@@ -175,6 +188,7 @@ bool ip_call_ra_chain(struct sk_buff *skb)
 		     sk->sk_bound_dev_if == dev->ifindex) &&
 		    net_eq(sock_net(sk), dev_net(dev))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (ip_hdr(skb)->frag_off & htons(IP_MF | IP_OFFSET)) {
 				if (ip_defrag(skb, IP_DEFRAG_CALL_RA_CHAIN))
 					return 1;
@@ -183,6 +197,11 @@ bool ip_call_ra_chain(struct sk_buff *skb)
 				if (ip_defrag(skb, IP_DEFRAG_CALL_RA_CHAIN))
 					return true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ip_is_fragment(ip_hdr(skb))) {
+				if (ip_defrag(skb, IP_DEFRAG_CALL_RA_CHAIN))
+					return true;
+>>>>>>> refs/remotes/origin/master
 			}
 			if (last) {
 				struct sk_buff *skb2 = skb_clone(skb, GFP_ATOMIC);
@@ -196,6 +215,7 @@ bool ip_call_ra_chain(struct sk_buff *skb)
 	if (last) {
 		raw_rcv(last, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 1;
 	}
 	return 0;
@@ -204,26 +224,41 @@ bool ip_call_ra_chain(struct sk_buff *skb)
 	}
 	return false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return true;
+	}
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ip_local_deliver_finish(struct sk_buff *skb)
 {
 	struct net *net = dev_net(skb->dev);
 
+<<<<<<< HEAD
 	__skb_pull(skb, ip_hdrlen(skb));
 
 	/* Point into the IP datagram, just past the header. */
 	skb_reset_transport_header(skb);
+=======
+	__skb_pull(skb, skb_network_header_len(skb));
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	{
 		int protocol = ip_hdr(skb)->protocol;
+<<<<<<< HEAD
 		int hash, raw;
 		const struct net_protocol *ipprot;
+=======
+		const struct net_protocol *ipprot;
+		int raw;
+>>>>>>> refs/remotes/origin/master
 
 	resubmit:
 		raw = raw_local_deliver(skb, protocol);
 
+<<<<<<< HEAD
 		hash = protocol & (MAX_INET_PROTOS - 1);
 		ipprot = rcu_dereference(inet_protos[hash]);
 		if (ipprot != NULL) {
@@ -237,6 +272,12 @@ static int ip_local_deliver_finish(struct sk_buff *skb)
 				goto out;
 			}
 
+=======
+		ipprot = rcu_dereference(inet_protos[protocol]);
+		if (ipprot != NULL) {
+			int ret;
+
+>>>>>>> refs/remotes/origin/master
 			if (!ipprot->no_policy) {
 				if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb)) {
 					kfree_skb(skb);
@@ -257,9 +298,17 @@ static int ip_local_deliver_finish(struct sk_buff *skb)
 					icmp_send(skb, ICMP_DEST_UNREACH,
 						  ICMP_PROT_UNREACH, 0);
 				}
+<<<<<<< HEAD
 			} else
 				IP_INC_STATS_BH(net, IPSTATS_MIB_INDELIVERS);
 			kfree_skb(skb);
+=======
+				kfree_skb(skb);
+			} else {
+				IP_INC_STATS_BH(net, IPSTATS_MIB_INDELIVERS);
+				consume_skb(skb);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
  out:
@@ -278,10 +327,14 @@ int ip_local_deliver(struct sk_buff *skb)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ip_hdr(skb)->frag_off & htons(IP_MF | IP_OFFSET)) {
 =======
 	if (ip_is_fragment(ip_hdr(skb))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ip_is_fragment(ip_hdr(skb))) {
+>>>>>>> refs/remotes/origin/master
 		if (ip_defrag(skb, IP_DEFRAG_LOCAL_DELIVER))
 			return 0;
 	}
@@ -291,10 +344,14 @@ int ip_local_deliver(struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int ip_rcv_options(struct sk_buff *skb)
 =======
 static inline bool ip_rcv_options(struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline bool ip_rcv_options(struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ip_options *opt;
 	const struct iphdr *iph;
@@ -326,6 +383,7 @@ static inline bool ip_rcv_options(struct sk_buff *skb)
 
 		if (in_dev) {
 			if (!IN_DEV_SOURCE_ROUTE(in_dev)) {
+<<<<<<< HEAD
 				if (IN_DEV_LOG_MARTIANS(in_dev) &&
 				    net_ratelimit())
 <<<<<<< HEAD
@@ -335,6 +393,12 @@ static inline bool ip_rcv_options(struct sk_buff *skb)
 					pr_info("source route option %pI4 -> %pI4\n",
 						&iph->saddr, &iph->daddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (IN_DEV_LOG_MARTIANS(in_dev))
+					net_info_ratelimited("source route option %pI4 -> %pI4\n",
+							     &iph->saddr,
+							     &iph->daddr);
+>>>>>>> refs/remotes/origin/master
 				goto drop;
 			}
 		}
@@ -343,6 +407,7 @@ static inline bool ip_rcv_options(struct sk_buff *skb)
 			goto drop;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return 0;
 drop:
@@ -354,15 +419,41 @@ drop:
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+	return false;
+drop:
+	return true;
+}
+
+int sysctl_ip_early_demux __read_mostly = 1;
+EXPORT_SYMBOL(sysctl_ip_early_demux);
+
+>>>>>>> refs/remotes/origin/master
 static int ip_rcv_finish(struct sk_buff *skb)
 {
 	const struct iphdr *iph = ip_hdr(skb);
 	struct rtable *rt;
 
+<<<<<<< HEAD
+=======
+	if (sysctl_ip_early_demux && !skb_dst(skb)) {
+		const struct net_protocol *ipprot;
+		int protocol = iph->protocol;
+
+		ipprot = rcu_dereference(inet_protos[protocol]);
+		if (ipprot && ipprot->early_demux) {
+			ipprot->early_demux(skb);
+			/* must reload iph, skb->head might have changed */
+			iph = ip_hdr(skb);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	Initialise the virtual path cache for the packet. It describes
 	 *	how the packet travels inside Linux networking.
 	 */
+<<<<<<< HEAD
 	if (skb_dst(skb) == NULL) {
 		int err = ip_route_input_noref(skb, iph->daddr, iph->saddr,
 					       iph->tos, skb->dev);
@@ -374,6 +465,13 @@ static int ip_rcv_finish(struct sk_buff *skb)
 				IP_INC_STATS_BH(dev_net(skb->dev),
 						IPSTATS_MIB_INNOROUTES);
 			else if (err == -EXDEV)
+=======
+	if (!skb_dst(skb)) {
+		int err = ip_route_input_noref(skb, iph->daddr, iph->saddr,
+					       iph->tos, skb->dev);
+		if (unlikely(err)) {
+			if (err == -EXDEV)
+>>>>>>> refs/remotes/origin/master
 				NET_INC_STATS_BH(dev_net(skb->dev),
 						 LINUX_MIB_IPRPFILTER);
 			goto drop;
@@ -450,13 +548,27 @@ int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, 
 	if (iph->ihl < 5 || iph->version != 4)
 		goto inhdr_error;
 
+<<<<<<< HEAD
+=======
+	BUILD_BUG_ON(IPSTATS_MIB_ECT1PKTS != IPSTATS_MIB_NOECTPKTS + INET_ECN_ECT_1);
+	BUILD_BUG_ON(IPSTATS_MIB_ECT0PKTS != IPSTATS_MIB_NOECTPKTS + INET_ECN_ECT_0);
+	BUILD_BUG_ON(IPSTATS_MIB_CEPKTS != IPSTATS_MIB_NOECTPKTS + INET_ECN_CE);
+	IP_ADD_STATS_BH(dev_net(dev),
+			IPSTATS_MIB_NOECTPKTS + (iph->tos & INET_ECN_MASK),
+			max_t(unsigned short, 1, skb_shinfo(skb)->gso_segs));
+
+>>>>>>> refs/remotes/origin/master
 	if (!pskb_may_pull(skb, iph->ihl*4))
 		goto inhdr_error;
 
 	iph = ip_hdr(skb);
 
 	if (unlikely(ip_fast_csum((u8 *)iph, iph->ihl)))
+<<<<<<< HEAD
 		goto inhdr_error;
+=======
+		goto csum_error;
+>>>>>>> refs/remotes/origin/master
 
 	len = ntohs(iph->tot_len);
 	if (skb->len < len) {
@@ -474,6 +586,11 @@ int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, 
 		goto drop;
 	}
 
+<<<<<<< HEAD
+=======
+	skb->transport_header = skb->network_header + iph->ihl*4;
+
+>>>>>>> refs/remotes/origin/master
 	/* Remove any debris in the socket control block */
 	memset(IPCB(skb), 0, sizeof(struct inet_skb_parm));
 
@@ -483,6 +600,11 @@ int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, 
 	return NF_HOOK(NFPROTO_IPV4, NF_INET_PRE_ROUTING, skb, dev, NULL,
 		       ip_rcv_finish);
 
+<<<<<<< HEAD
+=======
+csum_error:
+	IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_CSUMERRORS);
+>>>>>>> refs/remotes/origin/master
 inhdr_error:
 	IP_INC_STATS_BH(dev_net(dev), IPSTATS_MIB_INHDRERRORS);
 drop:

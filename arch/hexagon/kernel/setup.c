@@ -1,7 +1,11 @@
 /*
  * Arch related setup for Hexagon
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -32,16 +36,23 @@
 #include <asm/hexagon_vm.h>
 #include <asm/vm_mmu.h>
 #include <asm/time.h>
+<<<<<<< HEAD
 #ifdef CONFIG_OF
 #include <asm/prom.h>
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 char cmd_line[COMMAND_LINE_SIZE];
 static char default_command_line[COMMAND_LINE_SIZE] __initdata = CONFIG_CMDLINE;
 
 int on_simulator;
 
+<<<<<<< HEAD
 void __cpuinit calibrate_delay(void)
+=======
+void calibrate_delay(void)
+>>>>>>> refs/remotes/origin/master
 {
 	loops_per_jiffy = thread_freq_mhz * 1000000 / HZ;
 }
@@ -68,6 +79,11 @@ void __init setup_arch(char **cmdline_p)
 	 */
 	__vmsetvec(_K_VM_event_vector);
 
+<<<<<<< HEAD
+=======
+	printk(KERN_INFO "PHYS_OFFSET=0x%08x\n", PHYS_OFFSET);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Simulator has a few differences from the hardware.
 	 * For now, check uninitialized-but-mapped memory
@@ -128,6 +144,14 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 {
 	int cpu = (unsigned long) v - 1;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SMP
+	if (!cpu_online(cpu))
+		return 0;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "processor\t: %d\n", cpu);
 	seq_printf(m, "model name\t: Hexagon Virtual Machine\n");
 	seq_printf(m, "BogoMips\t: %lu.%02lu\n",

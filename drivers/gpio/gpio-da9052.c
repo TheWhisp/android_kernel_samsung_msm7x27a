@@ -185,10 +185,21 @@ static int da9052_gpio_to_irq(struct gpio_chip *gc, u32 offset)
 	struct da9052_gpio *gpio = to_da9052_gpio(gc);
 	struct da9052 *da9052 = gpio->da9052;
 
+<<<<<<< HEAD
 	return da9052->irq_base + DA9052_IRQ_GPI0 + offset;
 }
 
 static struct gpio_chip reference_gp __devinitdata = {
+=======
+	int irq;
+
+	irq = regmap_irq_get_virq(da9052->irq_data, DA9052_IRQ_GPI0 + offset);
+
+	return irq;
+}
+
+static struct gpio_chip reference_gp = {
+>>>>>>> refs/remotes/origin/master
 	.label = "da9052-gpio",
 	.owner = THIS_MODULE,
 	.get = da9052_gpio_get,
@@ -196,23 +207,39 @@ static struct gpio_chip reference_gp __devinitdata = {
 	.direction_input = da9052_gpio_direction_input,
 	.direction_output = da9052_gpio_direction_output,
 	.to_irq = da9052_gpio_to_irq,
+<<<<<<< HEAD
 	.can_sleep = 1,
+=======
+	.can_sleep = true,
+>>>>>>> refs/remotes/origin/master
 	.ngpio = 16,
 	.base = -1,
 };
 
+<<<<<<< HEAD
 static int __devinit da9052_gpio_probe(struct platform_device *pdev)
+=======
+static int da9052_gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct da9052_gpio *gpio;
 	struct da9052_pdata *pdata;
 	int ret;
 
+<<<<<<< HEAD
 	gpio = kzalloc(sizeof(*gpio), GFP_KERNEL);
+=======
+	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (gpio == NULL)
 		return -ENOMEM;
 
 	gpio->da9052 = dev_get_drvdata(pdev->dev.parent);
+<<<<<<< HEAD
 	pdata = gpio->da9052->dev->platform_data;
+=======
+	pdata = dev_get_platdata(gpio->da9052->dev);
+>>>>>>> refs/remotes/origin/master
 
 	gpio->gp = reference_gp;
 	if (pdata && pdata->gpio_base)
@@ -221,12 +248,17 @@ static int __devinit da9052_gpio_probe(struct platform_device *pdev)
 	ret = gpiochip_add(&gpio->gp);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
+<<<<<<< HEAD
 		goto err_mem;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, gpio);
 
 	return 0;
+<<<<<<< HEAD
 
 err_mem:
 	kfree(gpio);
@@ -243,11 +275,24 @@ static int __devexit da9052_gpio_remove(struct platform_device *pdev)
 		kfree(gpio);
 
 	return ret;
+=======
+}
+
+static int da9052_gpio_remove(struct platform_device *pdev)
+{
+	struct da9052_gpio *gpio = platform_get_drvdata(pdev);
+
+	return gpiochip_remove(&gpio->gp);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver da9052_gpio_driver = {
 	.probe = da9052_gpio_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(da9052_gpio_remove),
+=======
+	.remove = da9052_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= "da9052-gpio",
 		.owner	= THIS_MODULE,

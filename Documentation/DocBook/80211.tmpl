@@ -107,8 +107,13 @@
 !Finclude/net/cfg80211.h key_params
 !Finclude/net/cfg80211.h survey_info_flags
 !Finclude/net/cfg80211.h survey_info
+<<<<<<< HEAD
 !Finclude/net/cfg80211.h beacon_parameters
 !Finclude/net/cfg80211.h plink_actions
+=======
+!Finclude/net/cfg80211.h cfg80211_beacon_data
+!Finclude/net/cfg80211.h cfg80211_ap_settings
+>>>>>>> refs/remotes/origin/master
 !Finclude/net/cfg80211.h station_parameters
 !Finclude/net/cfg80211.h station_info_flags
 !Finclude/net/cfg80211.h rate_info_flags
@@ -127,6 +132,7 @@
 !Finclude/net/cfg80211.h cfg80211_ibss_params
 !Finclude/net/cfg80211.h cfg80211_connect_params
 !Finclude/net/cfg80211.h cfg80211_pmksa
+<<<<<<< HEAD
 !Finclude/net/cfg80211.h cfg80211_send_rx_auth
 !Finclude/net/cfg80211.h cfg80211_send_auth_timeout
 <<<<<<< HEAD
@@ -139,6 +145,13 @@
 !Finclude/net/cfg80211.h __cfg80211_send_deauth
 !Finclude/net/cfg80211.h cfg80211_send_disassoc
 !Finclude/net/cfg80211.h __cfg80211_send_disassoc
+=======
+!Finclude/net/cfg80211.h cfg80211_rx_mlme_mgmt
+!Finclude/net/cfg80211.h cfg80211_auth_timeout
+!Finclude/net/cfg80211.h cfg80211_rx_assoc_resp
+!Finclude/net/cfg80211.h cfg80211_assoc_timeout
+!Finclude/net/cfg80211.h cfg80211_tx_mlme_mgmt
+>>>>>>> refs/remotes/origin/master
 !Finclude/net/cfg80211.h cfg80211_ibss_joined
 !Finclude/net/cfg80211.h cfg80211_connect_result
 !Finclude/net/cfg80211.h cfg80211_roamed
@@ -159,8 +172,13 @@
 !Finclude/net/cfg80211.h cfg80211_scan_request
 !Finclude/net/cfg80211.h cfg80211_scan_done
 !Finclude/net/cfg80211.h cfg80211_bss
+<<<<<<< HEAD
 !Finclude/net/cfg80211.h cfg80211_inform_bss_frame
 !Finclude/net/cfg80211.h cfg80211_inform_bss
+=======
+!Finclude/net/cfg80211.h cfg80211_inform_bss_width_frame
+!Finclude/net/cfg80211.h cfg80211_inform_bss_width
+>>>>>>> refs/remotes/origin/master
 !Finclude/net/cfg80211.h cfg80211_unlink_bss
 !Finclude/net/cfg80211.h cfg80211_find_ie
 !Finclude/net/cfg80211.h ieee80211_bss_get_ie
@@ -332,6 +350,10 @@
           <title>functions/definitions</title>
 !Finclude/net/mac80211.h ieee80211_rx_status
 !Finclude/net/mac80211.h mac80211_rx_flags
+<<<<<<< HEAD
+=======
+!Finclude/net/mac80211.h mac80211_tx_info_flags
+>>>>>>> refs/remotes/origin/master
 !Finclude/net/mac80211.h mac80211_tx_control_flags
 !Finclude/net/mac80211.h mac80211_rate_control_flags
 !Finclude/net/mac80211.h ieee80211_tx_rate
@@ -406,6 +428,7 @@
 !Finclude/net/mac80211.h ieee80211_key_conf
 !Finclude/net/mac80211.h ieee80211_key_flags
 <<<<<<< HEAD
+<<<<<<< HEAD
 !Finclude/net/mac80211.h ieee80211_tkip_key_type
 !Finclude/net/mac80211.h ieee80211_get_tkip_key
 =======
@@ -414,6 +437,11 @@
 !Finclude/net/mac80211.h ieee80211_get_tkip_p2k
 >>>>>>> refs/remotes/origin/cm-10.0
 !Finclude/net/mac80211.h ieee80211_key_removed
+=======
+!Finclude/net/mac80211.h ieee80211_get_tkip_p1k
+!Finclude/net/mac80211.h ieee80211_get_tkip_p1k_iv
+!Finclude/net/mac80211.h ieee80211_get_tkip_p2k
+>>>>>>> refs/remotes/origin/master
       </chapter>
 
       <chapter id="powersave">
@@ -442,22 +470,32 @@
           in the hw crypto chapter.
         </para>
 <<<<<<< HEAD
+<<<<<<< HEAD
 !Finclude/net/mac80211.h ieee80211_get_buffered_bc
 !Finclude/net/mac80211.h ieee80211_beacon_get
 =======
+=======
+>>>>>>> refs/remotes/origin/master
       <section id="ps-client">
         <title>support for powersaving clients</title>
 !Pinclude/net/mac80211.h AP support for powersaving clients
       </section>
 !Finclude/net/mac80211.h ieee80211_get_buffered_bc
 !Finclude/net/mac80211.h ieee80211_beacon_get
+<<<<<<< HEAD
 !Finclude/net/mac80211.h ieee80211_sta_eosp_irqsafe
+=======
+!Finclude/net/mac80211.h ieee80211_sta_eosp
+>>>>>>> refs/remotes/origin/master
 !Finclude/net/mac80211.h ieee80211_frame_release_type
 !Finclude/net/mac80211.h ieee80211_sta_ps_transition
 !Finclude/net/mac80211.h ieee80211_sta_ps_transition_ni
 !Finclude/net/mac80211.h ieee80211_sta_set_buffered
 !Finclude/net/mac80211.h ieee80211_sta_block_awake
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       </chapter>
 
       <chapter id="multi-iface">
@@ -484,9 +522,12 @@
 !Finclude/net/mac80211.h ieee80211_find_sta
 !Finclude/net/mac80211.h ieee80211_find_sta_by_ifaddr
 <<<<<<< HEAD
+<<<<<<< HEAD
 !Finclude/net/mac80211.h ieee80211_sta_block_awake
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       </chapter>
 
       <chapter id="hardware-scan-offload">
@@ -534,7 +575,11 @@
 !Finclude/net/mac80211.h ieee80211_start_tx_ba_cb_irqsafe
 !Finclude/net/mac80211.h ieee80211_stop_tx_ba_session
 !Finclude/net/mac80211.h ieee80211_stop_tx_ba_cb_irqsafe
+<<<<<<< HEAD
 !Finclude/net/mac80211.h rate_control_changed
+=======
+!Finclude/net/mac80211.h ieee80211_rate_control_changed
+>>>>>>> refs/remotes/origin/master
 !Finclude/net/mac80211.h ieee80211_tx_rate_control
 !Finclude/net/mac80211.h rate_control_send_low
       </chapter>

@@ -16,10 +16,15 @@
 #include <linux/device.h>
 #include <linux/hid.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 
 #include "hid-ids.h"
 #include "usbhid/usbhid.h"
+=======
+
+#include "hid-ids.h"
+>>>>>>> refs/remotes/origin/master
 
 static const struct hid_device_id speedlink_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_X_TENSIONS, USB_DEVICE_ID_SPEEDLINK_VAD_CEZANNE)},
@@ -78,6 +83,7 @@ static struct hid_driver speedlink_driver = {
 	.input_mapping = speedlink_input_mapping,
 	.event = speedlink_event,
 };
+<<<<<<< HEAD
 
 static int __init speedlink_init(void)
 {
@@ -91,4 +97,8 @@ static void __exit speedlink_exit(void)
 
 module_init(speedlink_init);
 module_exit(speedlink_exit);
+=======
+module_hid_driver(speedlink_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

@@ -3,16 +3,22 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <net/pkt_sched.h>
 #include <net/inet_ecn.h>
 #include <net/dsfield.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bug.h>
 #include <net/pkt_sched.h>
 #include <net/inet_ecn.h>
 #include <net/dsfield.h>
 #include <linux/reciprocal_div.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*	Random Early Detection (RED) algorithm.
 	=======================================
@@ -96,7 +102,10 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Adaptative RED : An Algorithm for Increasing the Robustness of RED's AQM
  * (Sally FLoyd, Ramakrishna Gummadi, and Scott Shenker) August 2001
@@ -120,7 +129,10 @@
 #define MAX_P_MAX (50 * RED_ONE_PERCENT)
 #define MAX_P_ALPHA(val) min(MAX_P_MIN, val / 4)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define RED_STAB_SIZE	256
 #define RED_STAB_MASK	(RED_STAB_SIZE - 1)
 
@@ -136,11 +148,14 @@ struct red_stats {
 struct red_parms {
 	/* Parameters */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32		qth_min;	/* Min avg length threshold: A scaled */
 	u32		qth_max;	/* Max avg length threshold: A scaled */
 	u32		Scell_max;
 	u32		Rmask;		/* Cached random mask, see red_rmask */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32		qth_min;	/* Min avg length threshold: Wlog scaled */
 	u32		qth_max;	/* Max avg length threshold: Wlog scaled */
 	u32		Scell_max;
@@ -149,11 +164,15 @@ struct red_parms {
 	u32		qth_delta;	/* max_th - min_th */
 	u32		target_min;	/* min_th + 0.4*(max_th - min_th) */
 	u32		target_max;	/* min_th + 0.6*(max_th - min_th) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8		Scell_log;
 	u8		Wlog;		/* log(W)		*/
 	u8		Plog;		/* random number bits	*/
 	u8		Stab[RED_STAB_SIZE];
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -161,11 +180,17 @@ struct red_parms {
 
 struct red_vars {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+struct red_vars {
+>>>>>>> refs/remotes/origin/master
 	/* Variables */
 	int		qcount;		/* Number of packets since last random
 					   number generation */
 	u32		qR;		/* Cached random number */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long	qavg;		/* Average queue length: A scaled */
 	psched_time_t	qidlestart;	/* Start of current idle period */
@@ -180,6 +205,8 @@ static inline void red_set_parms(struct red_parms *p,
 				 u32 qth_min, u32 qth_max, u8 Wlog, u8 Plog,
 				 u8 Scell_log, u8 *stab)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long	qavg;		/* Average queue length: Wlog scaled */
 	ktime_t		qidlestart;	/* Start of current idle period */
 };
@@ -190,17 +217,23 @@ static inline u32 red_maxp(u8 Plog)
 }
 
 static inline void red_set_vars(struct red_vars *v)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	/* Reset average queue length, the value is strictly bound
 	 * to the parameters below, reseting hurts a bit but leaving
 	 * it might result in an unreasonable qavg for a while. --TGR
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->qavg		= 0;
 
 	p->qcount	= -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	v->qavg		= 0;
 
 	v->qcount	= -1;
@@ -213,11 +246,15 @@ static inline void red_set_parms(struct red_parms *p,
 	int delta = qth_max - qth_min;
 	u32 max_p_delta;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	p->qth_min	= qth_min << Wlog;
 	p->qth_max	= qth_max << Wlog;
 	p->Wlog		= Wlog;
 	p->Plog		= Plog;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	p->Rmask	= red_rmask(Plog);
 	p->Scell_log	= Scell_log;
@@ -258,6 +295,8 @@ static inline unsigned long red_calc_qavg_from_idle_time(struct red_parms *p)
 	us_idle = psched_tdiff_bounded(now, p->qidlestart, p->Scell_max);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (delta < 0)
 		delta = 1;
 	p->qth_delta	= delta;
@@ -314,7 +353,10 @@ static inline unsigned long red_calc_qavg_from_idle_time(const struct red_parms 
 	long us_idle = min_t(s64, delta, p->Scell_max);
 	int  shift;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The problem: ideally, average length queue recalcultion should
 	 * be done over constant clock intervals. This is too expensive, so
@@ -328,10 +370,14 @@ static inline unsigned long red_calc_qavg_from_idle_time(const struct red_parms 
 	 * dummy packets as a burst after idle time, i.e.
 	 *
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * 	p->qavg *= (1-W)^m
 =======
 	 * 	v->qavg *= (1-W)^m
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * 	v->qavg *= (1-W)^m
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * This is an apparently overcomplicated solution (f.e. we have to
 	 * precompute a table to make this calculation in reasonable time)
@@ -343,10 +389,14 @@ static inline unsigned long red_calc_qavg_from_idle_time(const struct red_parms 
 
 	if (shift)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return p->qavg >> shift;
 =======
 		return v->qavg >> shift;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return v->qavg >> shift;
+>>>>>>> refs/remotes/origin/master
 	else {
 		/* Approximate initial part of exponent with linear function:
 		 *
@@ -355,6 +405,7 @@ static inline unsigned long red_calc_qavg_from_idle_time(const struct red_parms 
 		 * Seems, it is the best solution to
 		 * problem of too coarse exponent tabulation.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		us_idle = (p->qavg * (u64)us_idle) >> p->Scell_log;
 
@@ -371,6 +422,8 @@ static inline unsigned long red_calc_qavg_no_idle_time(struct red_parms *p,
 	/*
 	 * NOTE: p->qavg is fixed point number with point at Wlog.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		us_idle = (v->qavg * (u64)us_idle) >> p->Scell_log;
 
 		if (us_idle < (v->qavg >> 1))
@@ -386,7 +439,10 @@ static inline unsigned long red_calc_qavg_no_idle_time(const struct red_parms *p
 {
 	/*
 	 * NOTE: v->qavg is fixed point number with point at Wlog.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * The formula below is equvalent to floating point
 	 * version:
 	 *
@@ -394,6 +450,7 @@ static inline unsigned long red_calc_qavg_no_idle_time(const struct red_parms *p
 	 *
 	 * --ANK (980924)
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return p->qavg + (backlog - (p->qavg >> p->Wlog));
 }
@@ -418,6 +475,8 @@ static inline int red_mark_probability(struct red_parms *p, unsigned long qavg)
 
 	   OK. qR is random number in the interval 0..Rmask
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return v->qavg + (backlog - (v->qavg >> p->Wlog));
 }
 
@@ -445,18 +504,25 @@ static inline int red_mark_probability(const struct red_parms *p,
 
 	   OK. qR is random number in the interval
 		(0..1/max_P)*(qth_max-qth_min)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	   i.e. 0..(2^Plog). If we used floating point
 	   arithmetics, it would be: (2^Plog)*rnd_num,
 	   where rnd_num is less 1.
 
 	   Taking into account, that qavg have fixed
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   point at Wlog, and Plog is related to max_P by
 	   max_P = (qth_max-qth_min)/2^Plog; two lines
 =======
 	   point at Wlog, two lines
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	   point at Wlog, two lines
+>>>>>>> refs/remotes/origin/master
 	   below have the following floating point equivalent:
 
 	   max_P*(qavg - qth_min)/(qth_max-qth_min) < rnd/qcount
@@ -464,10 +530,14 @@ static inline int red_mark_probability(const struct red_parms *p,
 	   Any questions? --ANK (980924)
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return !(((qavg - p->qth_min) >> p->Wlog) * p->qcount < p->qR);
 =======
 	return !(((qavg - p->qth_min) >> p->Wlog) * v->qcount < v->qR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return !(((qavg - p->qth_min) >> p->Wlog) * v->qcount < v->qR);
+>>>>>>> refs/remotes/origin/master
 }
 
 enum {
@@ -477,10 +547,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int red_cmp_thresh(struct red_parms *p, unsigned long qavg)
 =======
 static inline int red_cmp_thresh(const struct red_parms *p, unsigned long qavg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int red_cmp_thresh(const struct red_parms *p, unsigned long qavg)
+>>>>>>> refs/remotes/origin/master
 {
 	if (qavg < p->qth_min)
 		return RED_BELOW_MIN_THRESH;
@@ -496,6 +570,7 @@ enum {
 	RED_HARD_MARK,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int red_action(struct red_parms *p, unsigned long qavg)
 {
@@ -514,6 +589,8 @@ static inline int red_action(struct red_parms *p, unsigned long qavg)
 			} else
 				p->qR = red_random(p);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int red_action(const struct red_parms *p,
 			     struct red_vars *v,
 			     unsigned long qavg)
@@ -532,16 +609,23 @@ static inline int red_action(const struct red_parms *p,
 				}
 			} else
 				v->qR = red_random(p);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			return RED_DONT_MARK;
 
 		case RED_ABOVE_MAX_TRESH:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			p->qcount = -1;
 =======
 			v->qcount = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			v->qcount = -1;
+>>>>>>> refs/remotes/origin/master
 			return RED_HARD_MARK;
 	}
 
@@ -550,7 +634,10 @@ static inline int red_action(const struct red_parms *p,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void red_adaptative_algo(struct red_parms *p, struct red_vars *v)
 {
 	unsigned long qavg;
@@ -572,5 +659,8 @@ static inline void red_adaptative_algo(struct red_parms *p, struct red_vars *v)
 	max_p_delta = max(max_p_delta, 1U);
 	p->max_P_reciprocal = reciprocal_value(max_p_delta);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

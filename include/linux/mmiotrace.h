@@ -50,11 +50,15 @@ extern void mmiotrace_iounmap(volatile void __iomem *addr);
 
 /* For anyone to insert markers. Remember trailing newline. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int mmiotrace_printk(const char *fmt, ...)
 				__attribute__ ((format (printf, 1, 2)));
 =======
 extern __printf(1, 2) int mmiotrace_printk(const char *fmt, ...);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern __printf(1, 2) int mmiotrace_printk(const char *fmt, ...);
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_MMIOTRACE: */
 static inline int is_kmmio_active(void)
 {
@@ -76,6 +80,7 @@ static inline void mmiotrace_iounmap(volatile void __iomem *addr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int mmiotrace_printk(const char *fmt, ...)
 				__attribute__ ((format (printf, 1, 0)));
 
@@ -83,6 +88,9 @@ static inline int mmiotrace_printk(const char *fmt, ...)
 =======
 static inline __printf(1, 2) int mmiotrace_printk(const char *fmt, ...)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline __printf(1, 2) int mmiotrace_printk(const char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }

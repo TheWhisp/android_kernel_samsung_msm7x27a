@@ -41,8 +41,14 @@
 #include <asm/irq.h>
 #include <linux/io.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 #include <linux/of_i2c.h>
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "i2c-ibm_iic.h"
 
@@ -52,18 +58,24 @@ MODULE_DESCRIPTION("IBM IIC driver v" DRIVER_VERSION);
 MODULE_LICENSE("GPL");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int iic_force_poll;
 module_param(iic_force_poll, bool, 0);
 MODULE_PARM_DESC(iic_force_poll, "Force polling mode");
 
 static int iic_force_fast;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool iic_force_poll;
 module_param(iic_force_poll, bool, 0);
 MODULE_PARM_DESC(iic_force_poll, "Force polling mode");
 
 static bool iic_force_fast;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(iic_force_fast, bool, 0);
 MODULE_PARM_DESC(iic_force_fast, "Force fast mode (400 kHz)");
 
@@ -668,7 +680,11 @@ static inline u8 iic_clckdiv(unsigned int opb)
 	return (u8)((opb + 9) / 10 - 1);
 }
 
+<<<<<<< HEAD
 static int __devinit iic_request_irq(struct platform_device *ofdev,
+=======
+static int iic_request_irq(struct platform_device *ofdev,
+>>>>>>> refs/remotes/origin/master
 				     struct ibm_iic_private *dev)
 {
 	struct device_node *np = ofdev->dev.of_node;
@@ -699,7 +715,11 @@ static int __devinit iic_request_irq(struct platform_device *ofdev,
 /*
  * Register single IIC interface
  */
+<<<<<<< HEAD
 static int __devinit iic_probe(struct platform_device *ofdev)
+=======
+static int iic_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = ofdev->dev.of_node;
 	struct ibm_iic_private *dev;
@@ -713,7 +733,11 @@ static int __devinit iic_probe(struct platform_device *ofdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, dev);
+=======
+	platform_set_drvdata(ofdev, dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev->vaddr = of_iomap(np, 0);
 	if (dev->vaddr == NULL) {
@@ -767,9 +791,12 @@ static int __devinit iic_probe(struct platform_device *ofdev)
 	dev_info(&ofdev->dev, "using %s mode\n",
 		 dev->fast_mode ? "fast (400 kHz)" : "standard (100 kHz)");
 
+<<<<<<< HEAD
 	/* Now register all the child nodes */
 	of_i2c_register_devices(adap);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 error_cleanup:
@@ -781,7 +808,10 @@ error_cleanup:
 	if (dev->vaddr)
 		iounmap(dev->vaddr);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(dev);
 	return ret;
 }
@@ -789,11 +819,17 @@ error_cleanup:
 /*
  * Cleanup initialized IIC interface
  */
+<<<<<<< HEAD
 static int __devexit iic_remove(struct platform_device *ofdev)
 {
 	struct ibm_iic_private *dev = dev_get_drvdata(&ofdev->dev);
 
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+static int iic_remove(struct platform_device *ofdev)
+{
+	struct ibm_iic_private *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_del_adapter(&dev->adap);
 
@@ -820,6 +856,7 @@ static struct platform_driver ibm_iic_driver = {
 		.of_match_table = ibm_iic_match,
 	},
 	.probe	= iic_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(iic_remove),
 };
 
@@ -839,3 +876,9 @@ module_exit(iic_exit);
 =======
 module_platform_driver(ibm_iic_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= iic_remove,
+};
+
+module_platform_driver(ibm_iic_driver);
+>>>>>>> refs/remotes/origin/master

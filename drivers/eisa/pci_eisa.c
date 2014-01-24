@@ -20,15 +20,19 @@
 static struct eisa_root_device pci_eisa_root;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pci_eisa_init(struct pci_dev *pdev,
 				const struct pci_device_id *ent)
 {
 	int rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init pci_eisa_init(struct pci_dev *pdev)
 {
 	int rc, i;
 	struct resource *res, *bus_res = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((rc = pci_enable_device (pdev))) {
@@ -42,6 +46,14 @@ static int __init pci_eisa_init(struct pci_dev *pdev)
 	pci_eisa_root.res	       = pdev->bus->resource[0];
 	pci_eisa_root.bus_base_addr    = pdev->bus->resource[0]->start;
 =======
+=======
+
+	if ((rc = pci_enable_device (pdev))) {
+		dev_err(&pdev->dev, "Could not enable device\n");
+		return rc;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The Intel 82375 PCI-EISA bridge is a subtractive-decode PCI
 	 * device, so the resources available on EISA are the same as those
@@ -66,19 +78,27 @@ static int __init pci_eisa_init(struct pci_dev *pdev)
 	pci_eisa_root.dev              = &pdev->dev;
 	pci_eisa_root.res	       = bus_res;
 	pci_eisa_root.bus_base_addr    = bus_res->start;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_eisa_root.slots	       = EISA_MAX_SLOTS;
 	pci_eisa_root.dma_mask         = pdev->dma_mask;
 	dev_set_drvdata(pci_eisa_root.dev, &pci_eisa_root);
 
 	if (eisa_root_register (&pci_eisa_root)) {
+<<<<<<< HEAD
 		printk (KERN_ERR "pci_eisa : Could not register EISA root\n");
+=======
+		dev_err(&pdev->dev, "Could not register EISA root\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct pci_device_id pci_eisa_pci_tbl[] = {
 	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
@@ -100,6 +120,8 @@ static int __init pci_eisa_init_module (void)
 device_initcall(pci_eisa_init_module);
 MODULE_DEVICE_TABLE(pci, pci_eisa_pci_tbl);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * We have to call pci_eisa_init_early() before pnpacpi_init()/isapnp_init().
  *   Otherwise pnp resource will get enabled early and could prevent eisa
@@ -123,4 +145,7 @@ static int __init pci_eisa_init_early(void)
 	return 0;
 }
 subsys_initcall_sync(pci_eisa_init_early);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

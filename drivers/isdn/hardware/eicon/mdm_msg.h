@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __EICON_MDM_MSG_H__
@@ -53,6 +59,7 @@
 #define DSP_UDATA_INDICATION_CTS_OFF  0x03
 #define DSP_UDATA_INDICATION_CTS_ON  0x04
 /* =====================================================================
+<<<<<<< HEAD
 <<<<<<< HEAD
 DCD_OFF Message:
   <word> time of DCD off (sampled from counter at 8kHz)
@@ -67,6 +74,8 @@ DCD_ON Message:
   Size of this message == 19 bytes, but we will receive only 11
   ===================================================================== */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    DCD_OFF Message:
    <word> time of DCD off (sampled from counter at 8kHz)
    DCD_ON Message:
@@ -79,7 +88,10 @@ DCD_ON Message:
    <dword> connected speed rx (bit/s)
    Size of this message == 19 bytes, but we will receive only 11
    ===================================================================== */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DSP_CONNECTED_NORM_UNSPECIFIED      0
 #define DSP_CONNECTED_NORM_V21              1
 #define DSP_CONNECTED_NORM_V23              2
@@ -168,6 +180,7 @@ DCD_ON Message:
 #define DSP_UDATA_INDICATION_DISCONNECT         5
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 returns:
   <byte> cause
 */
@@ -177,6 +190,8 @@ returns:
 /*
 Fields in assign DLC information element for modem protocol V.42/MNP:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   returns:
   <byte> cause
 */
@@ -185,7 +200,10 @@ Fields in assign DLC information element for modem protocol V.42/MNP:
    ========================================================== */
 /*
   Fields in assign DLC information element for modem protocol V.42/MNP:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   <byte> length of information element
   <word> information field length
   <byte> address A       (not used, default 3)
@@ -222,16 +240,22 @@ Fields in assign DLC information element for modem protocol V.42/MNP:
 #define DLC_MODEMPROT_APPL_PASS_INDICATIONS  0x02
 /* ==========================================================
 <<<<<<< HEAD
+<<<<<<< HEAD
     CAI parameters used for the modem L1 configuration
    ========================================================== */
 /*
 Fields in assign CAI information element:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    CAI parameters used for the modem L1 configuration
    ========================================================== */
 /*
   Fields in assign CAI information element:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   <byte> length of information element
   <byte> info field and B-channel hardware
   <byte> rate adaptation bit rate
@@ -368,10 +392,14 @@ Fields in assign CAI information element:
 #define DSP_CAI_MODEM_SPEAKER_VOLUME_MASK  0x0c
 /* ==========================================================
 <<<<<<< HEAD
+<<<<<<< HEAD
     DCD/CTS State
 =======
    DCD/CTS State
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   DCD/CTS State
+>>>>>>> refs/remotes/origin/master
    ========================================================== */
 #define MDM_WANT_CONNECT_B3_ACTIVE_I  0x01
 #define MDM_NCPI_VALID                0x02
@@ -379,10 +407,14 @@ Fields in assign CAI information element:
 #define MDM_NCPI_DCD_ON_RECEIVED      0x08
 /* ==========================================================
 <<<<<<< HEAD
+<<<<<<< HEAD
     CAPI NCPI Constants
 =======
    CAPI NCPI Constants
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   CAPI NCPI Constants
+>>>>>>> refs/remotes/origin/master
    ========================================================== */
 #define MDM_NCPI_ECM_V42              0x0001
 #define MDM_NCPI_ECM_MNP              0x0002
@@ -390,10 +422,14 @@ Fields in assign CAI information element:
 #define MDM_NCPI_COMPRESSED           0x0010
 /* ==========================================================
 <<<<<<< HEAD
+<<<<<<< HEAD
     CAPI B2 Config Constants
 =======
    CAPI B2 Config Constants
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   CAPI B2 Config Constants
+>>>>>>> refs/remotes/origin/master
    ========================================================== */
 #define MDM_B2_DISABLE_V42bis         0x0001
 #define MDM_B2_DISABLE_MNP            0x0002
@@ -402,10 +438,14 @@ Fields in assign CAI information element:
 #define MDM_B2_DISABLE_COMP           0x0010
 /* ==========================================================
 <<<<<<< HEAD
+<<<<<<< HEAD
     CAPI B1 Config Constants
 =======
    CAPI B1 Config Constants
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   CAPI B1 Config Constants
+>>>>>>> refs/remotes/origin/master
    ========================================================== */
 #define MDM_CAPI_DISABLE_RETRAIN      0x0001
 #define MDM_CAPI_DISABLE_RING_TONE    0x0002

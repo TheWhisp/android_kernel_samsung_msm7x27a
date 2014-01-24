@@ -22,8 +22,11 @@
 extern const struct seq_operations cpuinfo_op;
 
 # define cpu_relax()		barrier()
+<<<<<<< HEAD
 # define cpu_sleep()		do {} while (0)
 # define prepare_to_copy(tsk)	do {} while (0)
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define task_pt_regs(tsk) \
 		(((struct pt_regs *)(THREAD_SIZE + task_stack_page(tsk))) - 1)
@@ -32,10 +35,16 @@ extern const struct seq_operations cpuinfo_op;
 void start_thread(struct pt_regs *regs, unsigned long pc, unsigned long usp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void ret_from_fork(void);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void ret_from_fork(void);
+extern void ret_from_kernel_thread(void);
+
+>>>>>>> refs/remotes/origin/master
 # endif /* __ASSEMBLY__ */
 
 # ifndef CONFIG_MMU
@@ -82,11 +91,14 @@ extern unsigned long thread_saved_pc(struct task_struct *t);
 
 extern unsigned long get_wchan(struct task_struct *p);
 
+<<<<<<< HEAD
 /*
  * create a kernel thread without removing it from tasklists
  */
 extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 # define KSTK_EIP(tsk)	(0)
 # define KSTK_ESP(tsk)	(0)
 
@@ -131,19 +143,25 @@ struct thread_struct {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Do necessary setup to start up a newly executed thread.  */
 void start_thread(struct pt_regs *regs,
 		unsigned long pc, unsigned long usp);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Free all resources held by a thread. */
 extern inline void release_thread(struct task_struct *dead_task)
 {
 }
 
+<<<<<<< HEAD
 extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Free current thread data structures etc.  */
 static inline void exit_thread(void)
 {
@@ -178,16 +196,22 @@ unsigned long get_wchan(struct task_struct *p);
 #  define STACK_TOP_MAX	STACK_TOP
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void disable_hlt(void);
 void enable_hlt(void);
 void default_idle(void);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEBUG_FS
 extern struct dentry *of_debugfs_root;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #  endif /* __ASSEMBLY__ */
 # endif /* CONFIG_MMU */
 #endif /* _ASM_MICROBLAZE_PROCESSOR_H */

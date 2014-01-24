@@ -37,6 +37,12 @@
 #define EFI_PMBR_OSTYPE_EFI 0xEF
 #define EFI_PMBR_OSTYPE_EFI_GPT 0xEE
 
+<<<<<<< HEAD
+=======
+#define GPT_MBR_PROTECTIVE  1
+#define GPT_MBR_HYBRID      2
+
+>>>>>>> refs/remotes/origin/master
 #define GPT_HEADER_SIGNATURE 0x5452415020494645ULL
 #define GPT_HEADER_REVISION_V1 0x00010000
 #define GPT_PRIMARY_PARTITION_TABLE_LBA 1
@@ -101,11 +107,32 @@ typedef struct _gpt_entry {
 	efi_char16_t partition_name[72 / sizeof (efi_char16_t)];
 } __attribute__ ((packed)) gpt_entry;
 
+<<<<<<< HEAD
+=======
+typedef struct _gpt_mbr_record {
+	u8	boot_indicator; /* unused by EFI, set to 0x80 for bootable */
+	u8	start_head;     /* unused by EFI, pt start in CHS */
+	u8	start_sector;   /* unused by EFI, pt start in CHS */
+	u8	start_track;
+	u8	os_type;        /* EFI and legacy non-EFI OS types */
+	u8	end_head;       /* unused by EFI, pt end in CHS */
+	u8	end_sector;     /* unused by EFI, pt end in CHS */
+	u8	end_track;      /* unused by EFI, pt end in CHS */
+	__le32	starting_lba;   /* used by EFI - start addr of the on disk pt */
+	__le32	size_in_lba;    /* used by EFI - size of pt in LBA */
+} __packed gpt_mbr_record;
+
+
+>>>>>>> refs/remotes/origin/master
 typedef struct _legacy_mbr {
 	u8 boot_code[440];
 	__le32 unique_mbr_signature;
 	__le16 unknown;
+<<<<<<< HEAD
 	struct partition partition_record[4];
+=======
+	gpt_mbr_record partition_record[4];
+>>>>>>> refs/remotes/origin/master
 	__le16 signature;
 } __attribute__ ((packed)) legacy_mbr;
 
@@ -113,6 +140,7 @@ typedef struct _legacy_mbr {
 extern int efi_partition(struct parsed_partitions *state);
 
 #endif
+<<<<<<< HEAD
 
 /*
  * Overrides for Emacs so that we follow Linus's tabbing style.
@@ -132,3 +160,5 @@ extern int efi_partition(struct parsed_partitions *state);
  * tab-width: 8
  * End:
  */
+=======
+>>>>>>> refs/remotes/origin/master

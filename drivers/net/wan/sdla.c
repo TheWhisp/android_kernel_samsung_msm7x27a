@@ -33,10 +33,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/types.h>
@@ -58,9 +63,12 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <asm/uaccess.h>
@@ -359,6 +367,7 @@ static void sdla_errors(struct net_device *dev, int cmd, int dlci, int ret, int 
 			state = data;
 			if (*state & SDLA_MODEM_DCD_LOW)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: Modem DCD unexpectedly low!\n", dev->name);
 			if (*state & SDLA_MODEM_CTS_LOW)
 				printk(KERN_INFO "%s: Modem CTS unexpectedly low!\n", dev->name);
@@ -367,33 +376,50 @@ static void sdla_errors(struct net_device *dev, int cmd, int dlci, int ret, int 
 			if (*state & SDLA_MODEM_CTS_LOW)
 				netdev_info(dev, "Modem CTS unexpectedly low!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_info(dev, "Modem DCD unexpectedly low!\n");
+			if (*state & SDLA_MODEM_CTS_LOW)
+				netdev_info(dev, "Modem CTS unexpectedly low!\n");
+>>>>>>> refs/remotes/origin/master
 			/* I should probably do something about this! */
 			break;
 
 		case SDLA_RET_CHANNEL_OFF:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Channel became inoperative!\n", dev->name);
 =======
 			netdev_info(dev, "Channel became inoperative!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Channel became inoperative!\n");
+>>>>>>> refs/remotes/origin/master
 			/* same here */
 			break;
 
 		case SDLA_RET_CHANNEL_ON:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Channel became operative!\n", dev->name);
 =======
 			netdev_info(dev, "Channel became operative!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Channel became operative!\n");
+>>>>>>> refs/remotes/origin/master
 			/* same here */
 			break;
 
 		case SDLA_RET_DLCI_STATUS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Status change reported by Access Node.\n", dev->name);
 =======
 			netdev_info(dev, "Status change reported by Access Node\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Status change reported by Access Node\n");
+>>>>>>> refs/remotes/origin/master
 			len /= sizeof(struct _dlci_stat);
 			for(pstatus = data, i=0;i < len;i++,pstatus++)
 			{
@@ -409,16 +435,22 @@ static void sdla_errors(struct net_device *dev, int cmd, int dlci, int ret, int 
 					state = line;
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: DLCI %i: %s.\n", dev->name, pstatus->dlci, state);
 =======
 				netdev_info(dev, "DLCI %i: %s\n",
 					    pstatus->dlci, state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_info(dev, "DLCI %i: %s\n",
+					    pstatus->dlci, state);
+>>>>>>> refs/remotes/origin/master
 				/* same here */
 			}
 			break;
 
 		case SDLA_RET_DLCI_UNKNOWN:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_INFO "%s: Received unknown DLCIs:", dev->name);
 			len /= sizeof(short);
@@ -438,6 +470,8 @@ static void sdla_errors(struct net_device *dev, int cmd, int dlci, int ret, int 
 		case SDLA_RET_BUF_TOO_BIG:
 			printk(KERN_INFO "%s: Buffer size over specified max of %i\n", dev->name, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			netdev_info(dev, "Received unknown DLCIs:");
 			len /= sizeof(short);
 			for(pdlci = data,i=0;i < len;i++,pdlci++)
@@ -457,7 +491,10 @@ static void sdla_errors(struct net_device *dev, int cmd, int dlci, int ret, int 
 		case SDLA_RET_BUF_TOO_BIG:
 			netdev_info(dev, "Buffer size over specified max of %i\n",
 				    len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case SDLA_RET_CHANNEL_INACTIVE:
@@ -469,11 +506,16 @@ static void sdla_errors(struct net_device *dev, int cmd, int dlci, int ret, int 
 
 		default: 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG "%s: Cmd 0x%2.2X generated return code 0x%2.2X\n", dev->name, cmd, ret);
 =======
 			netdev_dbg(dev, "Cmd 0x%02X generated return code 0x%02X\n",
 				   cmd, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_dbg(dev, "Cmd 0x%02X generated return code 0x%02X\n",
+				   cmd, ret);
+>>>>>>> refs/remotes/origin/master
 			/* Further processing could be done here */
 			break;
 	}
@@ -737,21 +779,31 @@ static netdev_tx_t sdla_transmit(struct sk_buff *skb,
 			if (skb->dev->type != ARPHRD_DLCI)
 			{
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_WARNING "%s: Non DLCI device, type %i, tried to send on FRAD module.\n", dev->name, skb->dev->type);
 =======
 				netdev_warn(dev, "Non DLCI device, type %i, tried to send on FRAD module\n",
 					    skb->dev->type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_warn(dev, "Non DLCI device, type %i, tried to send on FRAD module\n",
+					    skb->dev->type);
+>>>>>>> refs/remotes/origin/master
 				accept = 0;
 			}
 			break;
 		default:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_WARNING "%s: unknown firmware type 0x%4.4X\n", dev->name, dev->type);
 =======
 			netdev_warn(dev, "unknown firmware type 0x%04X\n",
 				    dev->type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_warn(dev, "unknown firmware type 0x%04X\n",
+				    dev->type);
+>>>>>>> refs/remotes/origin/master
 			accept = 0;
 			break;
 	}
@@ -876,11 +928,16 @@ static void sdla_receive(struct net_device *dev)
 		if (i == CONFIG_DLCI_MAX)
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_NOTICE "%s: Received packet from invalid DLCI %i, ignoring.", dev->name, dlci);
 =======
 			netdev_notice(dev, "Received packet from invalid DLCI %i, ignoring\n",
 				      dlci);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_notice(dev, "Received packet from invalid DLCI %i, ignoring\n",
+				      dlci);
+>>>>>>> refs/remotes/origin/master
 			dev->stats.rx_errors++;
 			success = 0;
 		}
@@ -893,10 +950,14 @@ static void sdla_receive(struct net_device *dev)
 		if (skb == NULL) 
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_NOTICE "%s: Memory squeeze, dropping packet.\n", dev->name);
 =======
 			netdev_notice(dev, "Memory squeeze, dropping packet\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_notice(dev, "Memory squeeze, dropping packet\n");
+>>>>>>> refs/remotes/origin/master
 			dev->stats.rx_dropped++;
 			success = 0;
 		}
@@ -958,11 +1019,15 @@ static irqreturn_t sdla_isr(int dummy, void *dev_id)
 	if (!flp->initialized)
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: irq %d for uninitialized device.\n",
 		       dev->name, dev->irq);
 =======
 		netdev_warn(dev, "irq %d for uninitialized device\n", dev->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(dev, "irq %d for uninitialized device\n", dev->irq);
+>>>>>>> refs/remotes/origin/master
 		return IRQ_NONE;
 	}
 
@@ -983,10 +1048,14 @@ static irqreturn_t sdla_isr(int dummy, void *dev_id)
 		case SDLA_INTR_COMPLETE:
 		case SDLA_INTR_TIMER:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: invalid irq flag 0x%02X.\n", dev->name, byte);
 =======
 			netdev_warn(dev, "invalid irq flag 0x%02X\n", byte);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_warn(dev, "invalid irq flag 0x%02X\n", byte);
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 
@@ -1433,10 +1502,14 @@ static int sdla_set_config(struct net_device *dev, struct ifmap *map)
 
 	if (!request_region(map->base_addr, SDLA_IO_EXTENTS, dev->name)){
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "SDLA: io-port 0x%04lx in use\n", dev->base_addr);
 =======
 		pr_warn("io-port 0x%04lx in use\n", dev->base_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("io-port 0x%04lx in use\n", dev->base_addr);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	base = map->base_addr;
@@ -1502,10 +1575,14 @@ static int sdla_set_config(struct net_device *dev, struct ifmap *map)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "%s: Unknown card type\n", dev->name);
 =======
 	netdev_notice(dev, "Unknown card type\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_notice(dev, "Unknown card type\n");
+>>>>>>> refs/remotes/origin/master
 	err = -ENODEV;
 	goto fail;
 

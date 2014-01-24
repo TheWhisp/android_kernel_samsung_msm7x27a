@@ -30,9 +30,16 @@
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/completion.h>
+<<<<<<< HEAD
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/of.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * LPC32XX registers definitions
@@ -73,7 +80,11 @@ static int lpc32xx_read_raw(struct iio_dev *indio_dev,
 {
 	struct lpc32xx_adc_info *info = iio_priv(indio_dev);
 
+<<<<<<< HEAD
 	if (mask == 0) {
+=======
+	if (mask == IIO_CHAN_INFO_RAW) {
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&indio_dev->mlock);
 		clk_enable(info->clk);
 		/* Measurement setup */
@@ -98,6 +109,7 @@ static const struct iio_info lpc32xx_adc_iio_info = {
 	.driver_module = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 #define LPC32XX_ADC_CHANNEL(_index) {		\
 	.type = IIO_VOLTAGE,			\
 	.indexed = 1,				\
@@ -107,6 +119,18 @@ static const struct iio_info lpc32xx_adc_iio_info = {
 }
 
 static struct iio_chan_spec lpc32xx_adc_iio_channels[] = {
+=======
+#define LPC32XX_ADC_CHANNEL(_index) {			\
+	.type = IIO_VOLTAGE,				\
+	.indexed = 1,					\
+	.channel = _index,				\
+	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),	\
+	.address = AD_IN * _index,			\
+	.scan_index = _index,				\
+}
+
+static const struct iio_chan_spec lpc32xx_adc_iio_channels[] = {
+>>>>>>> refs/remotes/origin/master
 	LPC32XX_ADC_CHANNEL(0),
 	LPC32XX_ADC_CHANNEL(1),
 	LPC32XX_ADC_CHANNEL(2),
@@ -124,7 +148,11 @@ static irqreturn_t lpc32xx_adc_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit lpc32xx_adc_probe(struct platform_device *pdev)
+=======
+static int lpc32xx_adc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lpc32xx_adc_info *info = NULL;
 	struct resource *res;
@@ -135,6 +163,7 @@ static int __devinit lpc32xx_adc_probe(struct platform_device *pdev)
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
 		dev_err(&pdev->dev, "failed to get platform I/O memory\n");
+<<<<<<< HEAD
 		retval = -EBUSY;
 		goto errout1;
 	}
@@ -172,6 +201,41 @@ static int __devinit lpc32xx_adc_probe(struct platform_device *pdev)
 	if (retval < 0) {
 		dev_err(&pdev->dev, "failed requesting interrupt\n");
 		goto errout4;
+=======
+		return -EBUSY;
+	}
+
+	iodev = devm_iio_device_alloc(&pdev->dev, sizeof(*info));
+	if (!iodev)
+		return -ENOMEM;
+
+	info = iio_priv(iodev);
+
+	info->adc_base = devm_ioremap(&pdev->dev, res->start,
+						resource_size(res));
+	if (!info->adc_base) {
+		dev_err(&pdev->dev, "failed mapping memory\n");
+		return -EBUSY;
+	}
+
+	info->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(info->clk)) {
+		dev_err(&pdev->dev, "failed getting clock\n");
+		return PTR_ERR(info->clk);
+	}
+
+	irq = platform_get_irq(pdev, 0);
+	if (irq <= 0) {
+		dev_err(&pdev->dev, "failed getting interrupt resource\n");
+		return -EINVAL;
+	}
+
+	retval = devm_request_irq(&pdev->dev, irq, lpc32xx_adc_isr, 0,
+								MOD_NAME, info);
+	if (retval < 0) {
+		dev_err(&pdev->dev, "failed requesting interrupt\n");
+		return retval;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, iodev);
@@ -185,13 +249,20 @@ static int __devinit lpc32xx_adc_probe(struct platform_device *pdev)
 	iodev->channels = lpc32xx_adc_iio_channels;
 	iodev->num_channels = ARRAY_SIZE(lpc32xx_adc_iio_channels);
 
+<<<<<<< HEAD
 	retval = iio_device_register(iodev);
 	if (retval)
 		goto errout5;
+=======
+	retval = devm_iio_device_register(&pdev->dev, iodev);
+	if (retval)
+		return retval;
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&pdev->dev, "LPC32XX ADC driver loaded, IRQ %d\n", irq);
 
 	return 0;
+<<<<<<< HEAD
 
 errout5:
 	free_irq(irq, iodev);
@@ -227,6 +298,24 @@ static struct platform_driver lpc32xx_adc_driver = {
 	.driver		= {
 		.name	= MOD_NAME,
 		.owner	= THIS_MODULE,
+=======
+}
+
+#ifdef CONFIG_OF
+static const struct of_device_id lpc32xx_adc_match[] = {
+	{ .compatible = "nxp,lpc3220-adc" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, lpc32xx_adc_match);
+#endif
+
+static struct platform_driver lpc32xx_adc_driver = {
+	.probe		= lpc32xx_adc_probe,
+	.driver		= {
+		.name	= MOD_NAME,
+		.owner	= THIS_MODULE,
+		.of_match_table = of_match_ptr(lpc32xx_adc_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

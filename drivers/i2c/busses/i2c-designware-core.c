@@ -26,7 +26,10 @@
  *
  */
 #include <linux/export.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/err.h>
 #include <linux/i2c.h>
@@ -34,6 +37,10 @@
 #include <linux/io.h>
 #include <linux/pm_runtime.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "i2c-designware-core.h"
 
 /*
@@ -66,8 +73,17 @@
 #define DW_IC_STATUS		0x70
 #define DW_IC_TXFLR		0x74
 #define DW_IC_RXFLR		0x78
+<<<<<<< HEAD
 #define DW_IC_TX_ABRT_SOURCE	0x80
 #define DW_IC_COMP_PARAM_1	0xf4
+=======
+#define DW_IC_SDA_HOLD		0x7c
+#define DW_IC_TX_ABRT_SOURCE	0x80
+#define DW_IC_ENABLE_STATUS	0x9c
+#define DW_IC_COMP_PARAM_1	0xf4
+#define DW_IC_COMP_VERSION	0xf8
+#define DW_IC_SDA_HOLD_MIN_VERS	0x3131312A
+>>>>>>> refs/remotes/origin/master
 #define DW_IC_COMP_TYPE		0xfc
 #define DW_IC_COMP_TYPE_VALUE	0x44570140
 
@@ -93,6 +109,11 @@
 
 #define DW_IC_ERR_TX_ABRT	0x1
 
+<<<<<<< HEAD
+=======
+#define DW_IC_TAR_10BITADDR_MASTER BIT(12)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * status codes
  */
@@ -165,9 +186,21 @@ static char *abort_sources[] = {
 
 u32 dw_readl(struct dw_i2c_dev *dev, int offset)
 {
+<<<<<<< HEAD
 	u32 value = readl(dev->base + offset);
 
 	if (dev->swab)
+=======
+	u32 value;
+
+	if (dev->accessor_flags & ACCESS_16BIT)
+		value = readw(dev->base + offset) |
+			(readw(dev->base + offset + 2) << 16);
+	else
+		value = readl(dev->base + offset);
+
+	if (dev->accessor_flags & ACCESS_SWAP)
+>>>>>>> refs/remotes/origin/master
 		return swab32(value);
 	else
 		return value;
@@ -175,10 +208,22 @@ u32 dw_readl(struct dw_i2c_dev *dev, int offset)
 
 void dw_writel(struct dw_i2c_dev *dev, u32 b, int offset)
 {
+<<<<<<< HEAD
 	if (dev->swab)
 		b = swab32(b);
 
 	writel(b, dev->base + offset);
+=======
+	if (dev->accessor_flags & ACCESS_SWAP)
+		b = swab32(b);
+
+	if (dev->accessor_flags & ACCESS_16BIT) {
+		writew((u16)b, dev->base + offset);
+		writew((u16)(b >> 16), dev->base + offset + 2);
+	} else {
+		writel(b, dev->base + offset);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32
@@ -236,6 +281,30 @@ static u32 i2c_dw_scl_lcnt(u32 ic_clk, u32 tLOW, u32 tf, int offset)
 	return ((ic_clk * (tLOW + tf) + 5000) / 10000) - 1 + offset;
 }
 
+<<<<<<< HEAD
+=======
+static void __i2c_dw_enable(struct dw_i2c_dev *dev, bool enable)
+{
+	int timeout = 100;
+
+	do {
+		dw_writel(dev, enable, DW_IC_ENABLE);
+		if ((dw_readl(dev, DW_IC_ENABLE_STATUS) & 1) == enable)
+			return;
+
+		/*
+		 * Wait 10 times the signaling period of the highest I2C
+		 * transfer supported by the driver (for 400KHz this is
+		 * 25us) as described in the DesignWare I2C databook.
+		 */
+		usleep_range(25, 250);
+	} while (timeout--);
+
+	dev_warn(dev->dev, "timeout in %sabling adapter\n",
+		 enable ? "en" : "dis");
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * i2c_dw_init() - initialize the designware i2c master hardware
  * @dev: device private data
@@ -252,6 +321,7 @@ int i2c_dw_init(struct dw_i2c_dev *dev)
 
 	input_clock_khz = dev->get_clk_rate_khz(dev);
 
+<<<<<<< HEAD
 	/* Configure register endianess access */
 	reg = dw_readl(dev, DW_IC_COMP_TYPE);
 	if (reg == ___constant_swab32(DW_IC_COMP_TYPE_VALUE)) {
@@ -260,13 +330,27 @@ int i2c_dw_init(struct dw_i2c_dev *dev)
 	}
 
 	if (reg != DW_IC_COMP_TYPE_VALUE) {
+=======
+	reg = dw_readl(dev, DW_IC_COMP_TYPE);
+	if (reg == ___constant_swab32(DW_IC_COMP_TYPE_VALUE)) {
+		/* Configure register endianess access */
+		dev->accessor_flags |= ACCESS_SWAP;
+	} else if (reg == (DW_IC_COMP_TYPE_VALUE & 0x0000ffff)) {
+		/* Configure register access mode 16bit */
+		dev->accessor_flags |= ACCESS_16BIT;
+	} else if (reg != DW_IC_COMP_TYPE_VALUE) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev->dev, "Unknown Synopsys component type: "
 			"0x%08x\n", reg);
 		return -ENODEV;
 	}
 
 	/* Disable the adapter */
+<<<<<<< HEAD
 	dw_writel(dev, 0, DW_IC_ENABLE);
+=======
+	__i2c_dw_enable(dev, false);
+>>>>>>> refs/remotes/origin/master
 
 	/* set standard and fast speed deviders for high/low periods */
 
@@ -280,6 +364,15 @@ int i2c_dw_init(struct dw_i2c_dev *dev)
 				47,	/* tLOW = 4.7 us */
 				3,	/* tf = 0.3 us */
 				0);	/* No offset */
+<<<<<<< HEAD
+=======
+
+	/* Allow platforms to specify the ideal HCNT and LCNT values */
+	if (dev->ss_hcnt && dev->ss_lcnt) {
+		hcnt = dev->ss_hcnt;
+		lcnt = dev->ss_lcnt;
+	}
+>>>>>>> refs/remotes/origin/master
 	dw_writel(dev, hcnt, DW_IC_SS_SCL_HCNT);
 	dw_writel(dev, lcnt, DW_IC_SS_SCL_LCNT);
 	dev_dbg(dev->dev, "Standard-mode HCNT:LCNT = %d:%d\n", hcnt, lcnt);
@@ -294,10 +387,31 @@ int i2c_dw_init(struct dw_i2c_dev *dev)
 				13,	/* tLOW = 1.3 us */
 				3,	/* tf = 0.3 us */
 				0);	/* No offset */
+<<<<<<< HEAD
+=======
+
+	if (dev->fs_hcnt && dev->fs_lcnt) {
+		hcnt = dev->fs_hcnt;
+		lcnt = dev->fs_lcnt;
+	}
+>>>>>>> refs/remotes/origin/master
 	dw_writel(dev, hcnt, DW_IC_FS_SCL_HCNT);
 	dw_writel(dev, lcnt, DW_IC_FS_SCL_LCNT);
 	dev_dbg(dev->dev, "Fast-mode HCNT:LCNT = %d:%d\n", hcnt, lcnt);
 
+<<<<<<< HEAD
+=======
+	/* Configure SDA Hold Time if required */
+	if (dev->sda_hold_time) {
+		reg = dw_readl(dev, DW_IC_COMP_VERSION);
+		if (reg >= DW_IC_SDA_HOLD_MIN_VERS)
+			dw_writel(dev, dev->sda_hold_time, DW_IC_SDA_HOLD);
+		else
+			dev_warn(dev->dev,
+				"Hardware too old to adjust SDA hold time.");
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Configure Tx/Rx FIFO threshold levels */
 	dw_writel(dev, dev->tx_fifo_depth - 1, DW_IC_TX_TL);
 	dw_writel(dev, 0, DW_IC_RX_TL);
@@ -321,7 +435,11 @@ static int i2c_dw_wait_bus_not_busy(struct dw_i2c_dev *dev)
 			return -ETIMEDOUT;
 		}
 		timeout--;
+<<<<<<< HEAD
 		mdelay(1);
+=======
+		usleep_range(1000, 1100);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -330,6 +448,7 @@ static int i2c_dw_wait_bus_not_busy(struct dw_i2c_dev *dev)
 static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
 {
 	struct i2c_msg *msgs = dev->msgs;
+<<<<<<< HEAD
 	u32 ic_con;
 
 	/* Disable the adapter */
@@ -348,6 +467,38 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
 
 	/* Enable the adapter */
 	dw_writel(dev, 1, DW_IC_ENABLE);
+=======
+	u32 ic_con, ic_tar = 0;
+
+	/* Disable the adapter */
+	__i2c_dw_enable(dev, false);
+
+	/* if the slave address is ten bit address, enable 10BITADDR */
+	ic_con = dw_readl(dev, DW_IC_CON);
+	if (msgs[dev->msg_write_idx].flags & I2C_M_TEN) {
+		ic_con |= DW_IC_CON_10BITADDR_MASTER;
+		/*
+		 * If I2C_DYNAMIC_TAR_UPDATE is set, the 10-bit addressing
+		 * mode has to be enabled via bit 12 of IC_TAR register.
+		 * We set it always as I2C_DYNAMIC_TAR_UPDATE can't be
+		 * detected from registers.
+		 */
+		ic_tar = DW_IC_TAR_10BITADDR_MASTER;
+	} else {
+		ic_con &= ~DW_IC_CON_10BITADDR_MASTER;
+	}
+
+	dw_writel(dev, ic_con, DW_IC_CON);
+
+	/*
+	 * Set the slave (target) address and enable 10-bit addressing mode
+	 * if applicable.
+	 */
+	dw_writel(dev, msgs[dev->msg_write_idx].addr | ic_tar, DW_IC_TAR);
+
+	/* Enable the adapter */
+	__i2c_dw_enable(dev, true);
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear and enable interrupts */
 	i2c_dw_clear_int(dev);
@@ -360,7 +511,11 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
  * messages into the tx buffer.  Even if the size of i2c_msg data is
  * longer than the size of the tx buffer, it handles everything.
  */
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
 {
 	struct i2c_msg *msgs = dev->msgs;
@@ -369,6 +524,10 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
 	u32 addr = msgs[dev->msg_write_idx].addr;
 	u32 buf_len = dev->tx_buf_len;
 	u8 *buf = dev->tx_buf;
+<<<<<<< HEAD
+=======
+	bool need_restart = false;
+>>>>>>> refs/remotes/origin/master
 
 	intr_mask = DW_IC_INTR_DEFAULT_MASK;
 
@@ -396,17 +555,59 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
 			/* new i2c_msg */
 			buf = msgs[dev->msg_write_idx].buf;
 			buf_len = msgs[dev->msg_write_idx].len;
+<<<<<<< HEAD
+=======
+
+			/* If both IC_EMPTYFIFO_HOLD_MASTER_EN and
+			 * IC_RESTART_EN are set, we must manually
+			 * set restart bit between messages.
+			 */
+			if ((dev->master_cfg & DW_IC_CON_RESTART_EN) &&
+					(dev->msg_write_idx > 0))
+				need_restart = true;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		tx_limit = dev->tx_fifo_depth - dw_readl(dev, DW_IC_TXFLR);
 		rx_limit = dev->rx_fifo_depth - dw_readl(dev, DW_IC_RXFLR);
 
 		while (buf_len > 0 && tx_limit > 0 && rx_limit > 0) {
+<<<<<<< HEAD
 			if (msgs[dev->msg_write_idx].flags & I2C_M_RD) {
 				dw_writel(dev, 0x100, DW_IC_DATA_CMD);
 				rx_limit--;
 			} else
 				dw_writel(dev, *buf++, DW_IC_DATA_CMD);
+=======
+			u32 cmd = 0;
+
+			/*
+			 * If IC_EMPTYFIFO_HOLD_MASTER_EN is set we must
+			 * manually set the stop bit. However, it cannot be
+			 * detected from the registers so we set it always
+			 * when writing/reading the last byte.
+			 */
+			if (dev->msg_write_idx == dev->msgs_num - 1 &&
+			    buf_len == 1)
+				cmd |= BIT(9);
+
+			if (need_restart) {
+				cmd |= BIT(10);
+				need_restart = false;
+			}
+
+			if (msgs[dev->msg_write_idx].flags & I2C_M_RD) {
+
+				/* avoid rx buffer overrun */
+				if (rx_limit - dev->rx_outstanding <= 0)
+					break;
+
+				dw_writel(dev, cmd | 0x100, DW_IC_DATA_CMD);
+				rx_limit--;
+				dev->rx_outstanding++;
+			} else
+				dw_writel(dev, cmd | *buf++, DW_IC_DATA_CMD);
+>>>>>>> refs/remotes/origin/master
 			tx_limit--; buf_len--;
 		}
 
@@ -457,8 +658,15 @@ i2c_dw_read(struct dw_i2c_dev *dev)
 
 		rx_valid = dw_readl(dev, DW_IC_RXFLR);
 
+<<<<<<< HEAD
 		for (; len > 0 && rx_valid > 0; len--, rx_valid--)
 			*buf++ = dw_readl(dev, DW_IC_DATA_CMD);
+=======
+		for (; len > 0 && rx_valid > 0; len--, rx_valid--) {
+			*buf++ = dw_readl(dev, DW_IC_DATA_CMD);
+			dev->rx_outstanding--;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (len > 0) {
 			dev->status |= STATUS_READ_IN_PROGRESS;
@@ -507,7 +715,11 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 	mutex_lock(&dev->lock);
 	pm_runtime_get_sync(dev->dev);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(dev->cmd_complete);
+=======
+	reinit_completion(&dev->cmd_complete);
+>>>>>>> refs/remotes/origin/master
 	dev->msgs = msgs;
 	dev->msgs_num = num;
 	dev->cmd_err = 0;
@@ -516,6 +728,10 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 	dev->msg_err = 0;
 	dev->status = STATUS_IDLE;
 	dev->abort_source = 0;
+<<<<<<< HEAD
+=======
+	dev->rx_outstanding = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ret = i2c_dw_wait_bus_not_busy(dev);
 	if (ret < 0)
@@ -525,6 +741,7 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 	i2c_dw_xfer_init(dev);
 
 	/* wait for tx to complete */
+<<<<<<< HEAD
 	ret = wait_for_completion_interruptible_timeout(&dev->cmd_complete, HZ);
 	if (ret == 0) {
 		dev_err(dev->dev, "controller timed out\n");
@@ -533,6 +750,25 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 		goto done;
 	} else if (ret < 0)
 		goto done;
+=======
+	ret = wait_for_completion_timeout(&dev->cmd_complete, HZ);
+	if (ret == 0) {
+		dev_err(dev->dev, "controller timed out\n");
+		/* i2c_dw_init implicitly disables the adapter */
+		i2c_dw_init(dev);
+		ret = -ETIMEDOUT;
+		goto done;
+	}
+
+	/*
+	 * We must disable the adapter before unlocking the &dev->lock mutex
+	 * below. Otherwise the hardware might continue generating interrupts
+	 * which in turn causes a race condition with the following transfer.
+	 * Needs some more investigation if the additional interrupts are
+	 * a hardware bug or this driver doesn't handle them correctly yet.
+	 */
+	__i2c_dw_enable(dev, false);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->msg_err) {
 		ret = dev->msg_err;
@@ -541,8 +777,11 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 
 	/* no error */
 	if (likely(!dev->cmd_err)) {
+<<<<<<< HEAD
 		/* Disable the adapter */
 		dw_writel(dev, 0, DW_IC_ENABLE);
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = num;
 		goto done;
 	}
@@ -555,7 +794,12 @@ i2c_dw_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
 	ret = -EIO;
 
 done:
+<<<<<<< HEAD
 	pm_runtime_put(dev->dev);
+=======
+	pm_runtime_mark_last_busy(dev->dev);
+	pm_runtime_put_autosuspend(dev->dev);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&dev->lock);
 
 	return ret;
@@ -677,7 +921,11 @@ EXPORT_SYMBOL_GPL(i2c_dw_isr);
 void i2c_dw_enable(struct dw_i2c_dev *dev)
 {
        /* Enable the adapter */
+<<<<<<< HEAD
 	dw_writel(dev, 1, DW_IC_ENABLE);
+=======
+	__i2c_dw_enable(dev, true);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(i2c_dw_enable);
 
@@ -690,7 +938,11 @@ EXPORT_SYMBOL_GPL(i2c_dw_is_enabled);
 void i2c_dw_disable(struct dw_i2c_dev *dev)
 {
 	/* Disable controller */
+<<<<<<< HEAD
 	dw_writel(dev, 0, DW_IC_ENABLE);
+=======
+	__i2c_dw_enable(dev, false);
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable all interupts */
 	dw_writel(dev, 0, DW_IC_INTR_MASK);
@@ -715,3 +967,9 @@ u32 i2c_dw_read_comp_param(struct dw_i2c_dev *dev)
 	return dw_readl(dev, DW_IC_COMP_PARAM_1);
 }
 EXPORT_SYMBOL_GPL(i2c_dw_read_comp_param);
+<<<<<<< HEAD
+=======
+
+MODULE_DESCRIPTION("Synopsys DesignWare I2C bus adapter core");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

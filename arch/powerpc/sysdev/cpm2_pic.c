@@ -51,6 +51,7 @@
 static intctl_cpm2_t __iomem *cpm2_intctl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host *cpm2_pic_host;
 #define NR_MASK_WORDS   ((NR_IRQS + 31) / 32)
 static unsigned long ppc_cached_irq_mask[NR_MASK_WORDS];
@@ -58,6 +59,10 @@ static unsigned long ppc_cached_irq_mask[NR_MASK_WORDS];
 static struct irq_domain *cpm2_pic_host;
 static unsigned long ppc_cached_irq_mask[2]; /* 2 32-bit registers */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *cpm2_pic_host;
+static unsigned long ppc_cached_irq_mask[2]; /* 2 32-bit registers */
+>>>>>>> refs/remotes/origin/master
 
 static const u_char irq_to_siureg[] = {
 	1, 1, 1, 1, 1, 1, 1, 1,
@@ -220,10 +225,14 @@ unsigned int cpm2_get_irq(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int cpm2_pic_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int cpm2_pic_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cpm2_pic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			  irq_hw_number_t hw)
 {
 	pr_debug("cpm2_pic_host_map(%d, 0x%lx)\n", virq, hw);
@@ -233,6 +242,7 @@ static int cpm2_pic_host_map(struct irq_domain *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int cpm2_pic_host_xlate(struct irq_host *h, struct device_node *ct,
 			    const u32 *intspec, unsigned int intsize,
@@ -254,6 +264,11 @@ static const struct irq_domain_ops cpm2_pic_host_ops = {
 	.map = cpm2_pic_host_map,
 	.xlate = irq_domain_xlate_onetwocell,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct irq_domain_ops cpm2_pic_host_ops = {
+	.map = cpm2_pic_host_map,
+	.xlate = irq_domain_xlate_onetwocell,
+>>>>>>> refs/remotes/origin/master
 };
 
 void cpm2_pic_init(struct device_node *node)
@@ -291,11 +306,15 @@ void cpm2_pic_init(struct device_node *node)
 
 	/* create a legacy host */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpm2_pic_host = irq_alloc_host(node, IRQ_HOST_MAP_LINEAR,
 				       64, &cpm2_pic_host_ops, 64);
 =======
 	cpm2_pic_host = irq_domain_add_linear(node, 64, &cpm2_pic_host_ops, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpm2_pic_host = irq_domain_add_linear(node, 64, &cpm2_pic_host_ops, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (cpm2_pic_host == NULL) {
 		printk(KERN_ERR "CPM2 PIC: failed to allocate irq host!\n");
 		return;

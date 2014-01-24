@@ -6,29 +6,39 @@
  */
 #include <linux/clockchips.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/clocksource.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/io.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/i8253.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/timex.h>
 
 #include <asm/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/i8253.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/time.h>
 
 #include "common.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 DEFINE_RAW_SPINLOCK(i8253_lock);
 
@@ -76,6 +86,8 @@ static struct clock_event_device pit_ce = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t pit_timer_interrupt(int irq, void *dev_id)
 {
 	struct clock_event_device *ce = dev_id;
@@ -87,6 +99,7 @@ static struct irqaction pit_timer_irq = {
 	.name		= "pit",
 	.handler	= pit_timer_interrupt,
 	.flags		= IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.dev_id		= &pit_ce,
 =======
@@ -107,13 +120,24 @@ static void __init isa_timer_init(void)
 	setup_irq(pit_ce.irq, &pit_timer_irq);
 	clockevents_register_device(&pit_ce);
 =======
+=======
+	.dev_id		= &i8253_clockevent,
+};
+
+void __init isa_timer_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 	clocksource_i8253_init();
 
 	setup_irq(i8253_clockevent.irq, &pit_timer_irq);
 	clockevent_i8253_init(false);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 struct sys_timer isa_timer = {
 	.init		= isa_timer_init,
 };
+=======
+}
+>>>>>>> refs/remotes/origin/master

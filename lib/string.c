@@ -23,13 +23,19 @@
 #include <linux/string.h>
 #include <linux/ctype.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/export.h>
 #include <linux/bug.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __HAVE_ARCH_STRNICMP
 /**
@@ -368,9 +374,12 @@ char *strim(char *s)
 	char *end;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s = skip_spaces(s);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	size = strlen(s);
 	if (!size)
 		return s;
@@ -381,10 +390,14 @@ char *strim(char *s)
 	*(end + 1) = '\0';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return s;
 =======
 	return skip_spaces(s);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return skip_spaces(s);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(strim);
 
@@ -771,7 +784,10 @@ void *memchr(const void *s, int c, size_t n)
 EXPORT_SYMBOL(memchr);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void *check_bytes8(const u8 *start, u8 value, unsigned int bytes)
 {
@@ -838,4 +854,7 @@ void *memchr_inv(const void *start, int c, size_t bytes)
 	return check_bytes8(start, value, bytes % 8);
 }
 EXPORT_SYMBOL(memchr_inv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

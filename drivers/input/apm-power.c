@@ -33,7 +33,11 @@ static void system_power_event(unsigned int keycode)
 }
 
 static void apmpower_event(struct input_handle *handle, unsigned int type,
+<<<<<<< HEAD
 		        unsigned int code, int value)
+=======
+			   unsigned int code, int value)
+>>>>>>> refs/remotes/origin/master
 {
 	/* only react on key down events */
 	if (value != 1)

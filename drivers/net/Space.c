@@ -29,7 +29,10 @@
  */
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
 #include <linux/trdevice.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/init.h>
 #include <linux/netlink.h>
@@ -38,6 +41,7 @@
    ethernet adaptor have the name "eth[0123...]".
    */
 
+<<<<<<< HEAD
 extern struct net_device *ne2_probe(int unit);
 extern struct net_device *hp100_probe(int unit);
 extern struct net_device *ultra_probe(int unit);
@@ -67,6 +71,16 @@ extern struct net_device *ni52_probe(int unit);
 extern struct net_device *ni65_probe(int unit);
 extern struct net_device *sonic_probe(int unit);
 extern struct net_device *seeq8005_probe(int unit);
+=======
+extern struct net_device *hp100_probe(int unit);
+extern struct net_device *ultra_probe(int unit);
+extern struct net_device *wd_probe(int unit);
+extern struct net_device *ne_probe(int unit);
+extern struct net_device *fmv18x_probe(int unit);
+extern struct net_device *i82596_probe(int unit);
+extern struct net_device *ni65_probe(int unit);
+extern struct net_device *sonic_probe(int unit);
+>>>>>>> refs/remotes/origin/master
 extern struct net_device *smc_init(int unit);
 extern struct net_device *atarilance_probe(int unit);
 extern struct net_device *sun3lance_probe(int unit);
@@ -78,6 +92,7 @@ extern struct net_device *tc515_probe(int unit);
 extern struct net_device *lance_probe(int unit);
 extern struct net_device *mac8390_probe(int unit);
 extern struct net_device *mac89x0_probe(int unit);
+<<<<<<< HEAD
 extern struct net_device *mc32_probe(int unit);
 extern struct net_device *cops_probe(int unit);
 extern struct net_device *ltpc_probe(void);
@@ -85,6 +100,11 @@ extern struct net_device *ltpc_probe(void);
 /* Detachable devices ("pocket adaptors") */
 extern struct net_device *de620_probe(int unit);
 
+=======
+extern struct net_device *cops_probe(int unit);
+extern struct net_device *ltpc_probe(void);
+
+>>>>>>> refs/remotes/origin/master
 /* Fibre Channel adapters */
 extern int iph5526_probe(struct net_device *dev);
 
@@ -112,6 +132,7 @@ static int __init probe_list2(int unit, struct devprobe2 *p, int autoprobe)
 }
 
 /*
+<<<<<<< HEAD
  * This is a bit of an artificial separation as there are PCI drivers
  * that also probe for EISA cards (in the PCI group) and there are ISA
  * drivers that probe for EISA cards (in the ISA group).  These are the
@@ -150,6 +171,10 @@ static struct devprobe2 mca_probes[] __initdata = {
 /*
  * ISA probes that touch addresses < 0x400 (including those that also
  * look for EISA/PCI/MCA cards in addition to ISA cards).
+=======
+ * ISA probes that touch addresses < 0x400 (including those that also
+ * look for EISA/PCI cards in addition to ISA cards).
+>>>>>>> refs/remotes/origin/master
  */
 static struct devprobe2 isa_probes[] __initdata = {
 #if defined(CONFIG_HP100) && defined(CONFIG_ISA)	/* ISA, EISA */
@@ -164,6 +189,7 @@ static struct devprobe2 isa_probes[] __initdata = {
 #ifdef CONFIG_WD80x3
 	{wd_probe, 0},
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_EL2 		/* 3c503 */
 	{el2_probe, 0},
 #endif
@@ -178,6 +204,9 @@ static struct devprobe2 isa_probes[] __initdata = {
 #endif
 #if defined(CONFIG_NE2000) || \
     defined(CONFIG_NE_H8300)  /* ISA (use ne2k-pci for PCI cards) */
+=======
+#if defined(CONFIG_NE2000) /* ISA (use ne2k-pci for PCI cards) */
+>>>>>>> refs/remotes/origin/master
 	{ne_probe, 0},
 #endif
 #ifdef CONFIG_LANCE		/* ISA/VLB (use pcnet32 for PCI cards) */
@@ -186,6 +215,7 @@ static struct devprobe2 isa_probes[] __initdata = {
 #ifdef CONFIG_SMC9194
 	{smc_init, 0},
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_SEEQ8005
 	{seeq8005_probe, 0},
 #endif
@@ -194,10 +224,14 @@ static struct devprobe2 isa_probes[] __initdata = {
  	{cs89x0_probe, 0},
 #endif
 =======
+=======
+#ifdef CONFIG_CS89x0
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_CS89x0_PLATFORM
  	{cs89x0_probe, 0},
 #endif
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_AT1700
 	{at1700_probe, 0},
@@ -232,12 +266,18 @@ static struct devprobe2 isa_probes[] __initdata = {
 #ifdef CONFIG_NI52
 	{ni52_probe, 0},
 #endif
+=======
+#if defined(CONFIG_MVME16x_NET) || defined(CONFIG_BVME6000_NET)	/* Intel I82596 */
+	{i82596_probe, 0},
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NI65
 	{ni65_probe, 0},
 #endif
 	{NULL, 0},
 };
 
+<<<<<<< HEAD
 static struct devprobe2 parport_probes[] __initdata = {
 #ifdef CONFIG_DE620		/* D-Link DE-620 adapter */
 	{de620_probe, 0},
@@ -245,6 +285,8 @@ static struct devprobe2 parport_probes[] __initdata = {
 	{NULL, 0},
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct devprobe2 m68k_probes[] __initdata = {
 #ifdef CONFIG_ATARILANCE	/* Lance-based Atari ethernet boards */
 	{atarilance_probe, 0},
@@ -283,6 +325,7 @@ static void __init ethif_probe2(int unit)
 		return;
 
 	(void)(	probe_list2(unit, m68k_probes, base_addr == 0) &&
+<<<<<<< HEAD
 		probe_list2(unit, eisa_probes, base_addr == 0) &&
 		probe_list2(unit, mca_probes, base_addr == 0) &&
 		probe_list2(unit, isa_probes, base_addr == 0) &&
@@ -329,6 +372,11 @@ static void __init trif_probe2(int unit)
 #endif
 
 
+=======
+		probe_list2(unit, isa_probes, base_addr == 0));
+}
+
+>>>>>>> refs/remotes/origin/master
 /*  Statically configured drivers -- order matters here. */
 static int __init net_olddevs_init(void)
 {
@@ -338,11 +386,14 @@ static int __init net_olddevs_init(void)
 	for (num = 0; num < 8; ++num)
 		sbni_probe(num);
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_TR
 	for (num = 0; num < 8; ++num)
 		if (!trif_probe(num))
 			trif_probe2(num);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	for (num = 0; num < 8; ++num)
 		ethif_probe2(num);
 

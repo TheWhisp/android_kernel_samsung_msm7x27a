@@ -120,6 +120,7 @@ Mount Options
 	in the data payload.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   noasyncreaddir
 	Disable client's use its local cache to satisfy	readdir
 	requests.  (This does not change correctness; the client uses
@@ -127,6 +128,8 @@ Mount Options
 	valid.)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   dcache
         Use the dcache contents to perform negative lookups and
         readdir when the client has the entire directory contents in
@@ -141,7 +144,10 @@ Mount Options
 
   noasyncreaddir
 	Do not use the dcache as above for readdir.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 More Information
 ================

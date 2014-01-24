@@ -6,10 +6,14 @@
  * needed to reduce the lookup overhead.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
 =======
  * Author: Paul Moore <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This code is heavily based on the "netif" concept originally developed by
  * James Morris <jmorris@redhat.com>
@@ -73,6 +77,7 @@ static struct sel_netport_bkt sel_netport_hash[SEL_NETPORT_HASH_SIZE];
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * sel_netport_free - Frees a port entry
  * @p: the entry's RCU field
  *
@@ -91,6 +96,8 @@ static void sel_netport_free(struct rcu_head *p)
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * sel_netport_hashfn - Hashing function for the port table
  * @pnum: port number
  *
@@ -152,10 +159,14 @@ static void sel_netport_insert(struct sel_netport *port)
 			struct sel_netport, list);
 		list_del_rcu(&tail->list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		call_rcu(&tail->rcu, sel_netport_free);
 =======
 		kfree_rcu(tail, rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_rcu(tail, rcu);
+>>>>>>> refs/remotes/origin/master
 	} else
 		sel_netport_hash[idx].size++;
 }
@@ -255,18 +266,26 @@ static void sel_netport_flush(void)
 					 &sel_netport_hash[idx].list, list) {
 			list_del_rcu(&port->list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			call_rcu(&port->rcu, sel_netport_free);
 =======
 			kfree_rcu(port, rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kfree_rcu(port, rcu);
+>>>>>>> refs/remotes/origin/master
 		}
 		sel_netport_hash[idx].size = 0;
 	}
 	spin_unlock_bh(&sel_netport_lock);
 }
 
+<<<<<<< HEAD
 static int sel_netport_avc_callback(u32 event, u32 ssid, u32 tsid,
 				    u16 class, u32 perms, u32 *retained)
+=======
+static int sel_netport_avc_callback(u32 event)
+>>>>>>> refs/remotes/origin/master
 {
 	if (event == AVC_CALLBACK_RESET) {
 		sel_netport_flush();
@@ -288,8 +307,12 @@ static __init int sel_netport_init(void)
 		sel_netport_hash[iter].size = 0;
 	}
 
+<<<<<<< HEAD
 	ret = avc_add_callback(sel_netport_avc_callback, AVC_CALLBACK_RESET,
 			       SECSID_NULL, SECSID_NULL, SECCLASS_NULL, 0);
+=======
+	ret = avc_add_callback(sel_netport_avc_callback, AVC_CALLBACK_RESET);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0)
 		panic("avc_add_callback() failed, error %d\n", ret);
 

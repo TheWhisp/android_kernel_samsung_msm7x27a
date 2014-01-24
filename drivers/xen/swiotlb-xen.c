@@ -33,6 +33,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/bootmem.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
@@ -40,37 +41,82 @@
 #include <xen/page.h>
 #include <xen/xen-ops.h>
 =======
+=======
+#define pr_fmt(fmt) "xen:" KBUILD_MODNAME ": " fmt
+
+#include <linux/bootmem.h>
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <xen/swiotlb-xen.h>
 #include <xen/page.h>
 #include <xen/xen-ops.h>
 #include <xen/hvc-console.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <asm/dma-mapping.h>
+#include <asm/xen/page-coherent.h>
+
+#include <trace/events/swiotlb.h>
+>>>>>>> refs/remotes/origin/master
 /*
  * Used to do a quick range check in swiotlb_tbl_unmap_single and
  * swiotlb_tbl_sync_single_*, to see if the memory was in fact allocated by this
  * API.
  */
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_X86
+static unsigned long dma_alloc_coherent_mask(struct device *dev,
+					    gfp_t gfp)
+{
+	unsigned long dma_mask = 0;
+
+	dma_mask = dev->coherent_dma_mask;
+	if (!dma_mask)
+		dma_mask = (gfp & GFP_DMA) ? DMA_BIT_MASK(24) : DMA_BIT_MASK(32);
+
+	return dma_mask;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static char *xen_io_tlb_start, *xen_io_tlb_end;
 static unsigned long xen_io_tlb_nslabs;
 /*
  * Quick lookup value of the bus address of the IOTLB.
  */
 
+<<<<<<< HEAD
 u64 start_dma_addr;
 
 static dma_addr_t xen_phys_to_bus(phys_addr_t paddr)
+=======
+static u64 start_dma_addr;
+
+static inline dma_addr_t xen_phys_to_bus(phys_addr_t paddr)
+>>>>>>> refs/remotes/origin/master
 {
 	return phys_to_machine(XPADDR(paddr)).maddr;
 }
 
+<<<<<<< HEAD
 static phys_addr_t xen_bus_to_phys(dma_addr_t baddr)
+=======
+static inline phys_addr_t xen_bus_to_phys(dma_addr_t baddr)
+>>>>>>> refs/remotes/origin/master
 {
 	return machine_to_phys(XMADDR(baddr)).paddr;
 }
 
+<<<<<<< HEAD
 static dma_addr_t xen_virt_to_bus(void *address)
+=======
+static inline dma_addr_t xen_virt_to_bus(void *address)
+>>>>>>> refs/remotes/origin/master
 {
 	return xen_phys_to_bus(virt_to_phys(address));
 }
@@ -93,7 +139,11 @@ static int check_pages_physically_contiguous(unsigned long pfn,
 	return 1;
 }
 
+<<<<<<< HEAD
 static int range_straddles_page_boundary(phys_addr_t p, size_t size)
+=======
+static inline int range_straddles_page_boundary(phys_addr_t p, size_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long pfn = PFN_DOWN(p);
 	unsigned int offset = p & ~PAGE_MASK;
@@ -130,6 +180,11 @@ xen_swiotlb_fixup(void *buf, size_t size, unsigned long nslabs)
 {
 	int i, rc;
 	int dma_bits;
+<<<<<<< HEAD
+=======
+	dma_addr_t dma_handle;
+	phys_addr_t p = virt_to_phys(buf);
+>>>>>>> refs/remotes/origin/master
 
 	dma_bits = get_order(IO_TLB_SEGSIZE << IO_TLB_SHIFT) + PAGE_SHIFT;
 
@@ -139,9 +194,15 @@ xen_swiotlb_fixup(void *buf, size_t size, unsigned long nslabs)
 
 		do {
 			rc = xen_create_contiguous_region(
+<<<<<<< HEAD
 				(unsigned long)buf + (i << IO_TLB_SHIFT),
 				get_order(slabs << IO_TLB_SHIFT),
 				dma_bits);
+=======
+				p + (i << IO_TLB_SHIFT),
+				get_order(slabs << IO_TLB_SHIFT),
+				dma_bits, &dma_handle);
+>>>>>>> refs/remotes/origin/master
 		} while (rc && dma_bits++ < max_dma_bits);
 		if (rc)
 			return rc;
@@ -150,6 +211,7 @@ xen_swiotlb_fixup(void *buf, size_t size, unsigned long nslabs)
 	} while (i < nslabs);
 	return 0;
 }
+<<<<<<< HEAD
 
 void __init xen_swiotlb_init(int verbose)
 {
@@ -194,6 +256,76 @@ retry:
 		goto error;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned long xen_set_nslabs(unsigned long nr_tbl)
+{
+	if (!nr_tbl) {
+		xen_io_tlb_nslabs = (64 * 1024 * 1024 >> IO_TLB_SHIFT);
+		xen_io_tlb_nslabs = ALIGN(xen_io_tlb_nslabs, IO_TLB_SEGSIZE);
+	} else
+		xen_io_tlb_nslabs = nr_tbl;
+
+	return xen_io_tlb_nslabs << IO_TLB_SHIFT;
+}
+
+enum xen_swiotlb_err {
+	XEN_SWIOTLB_UNKNOWN = 0,
+	XEN_SWIOTLB_ENOMEM,
+	XEN_SWIOTLB_EFIXUP
+};
+
+static const char *xen_swiotlb_error(enum xen_swiotlb_err err)
+{
+	switch (err) {
+	case XEN_SWIOTLB_ENOMEM:
+		return "Cannot allocate Xen-SWIOTLB buffer\n";
+	case XEN_SWIOTLB_EFIXUP:
+		return "Failed to get contiguous memory for DMA from Xen!\n"\
+		    "You either: don't have the permissions, do not have"\
+		    " enough free memory under 4GB, or the hypervisor memory"\
+		    " is too fragmented!";
+	default:
+		break;
+	}
+	return "";
+}
+int __ref xen_swiotlb_init(int verbose, bool early)
+{
+	unsigned long bytes, order;
+	int rc = -ENOMEM;
+	enum xen_swiotlb_err m_ret = XEN_SWIOTLB_UNKNOWN;
+	unsigned int repeat = 3;
+
+	xen_io_tlb_nslabs = swiotlb_nr_tbl();
+retry:
+	bytes = xen_set_nslabs(xen_io_tlb_nslabs);
+	order = get_order(xen_io_tlb_nslabs << IO_TLB_SHIFT);
+	/*
+	 * Get IO TLB memory from any location.
+	 */
+	if (early)
+		xen_io_tlb_start = alloc_bootmem_pages(PAGE_ALIGN(bytes));
+	else {
+#define SLABS_PER_PAGE (1 << (PAGE_SHIFT - IO_TLB_SHIFT))
+#define IO_TLB_MIN_SLABS ((1<<20) >> IO_TLB_SHIFT)
+		while ((SLABS_PER_PAGE << order) > IO_TLB_MIN_SLABS) {
+			xen_io_tlb_start = (void *)__get_free_pages(__GFP_NOWARN, order);
+			if (xen_io_tlb_start)
+				break;
+			order--;
+		}
+		if (order != get_order(bytes)) {
+			pr_warn("Warning: only able to allocate %ld MB for software IO TLB\n",
+				(PAGE_SIZE << order) >> 20);
+			xen_io_tlb_nslabs = SLABS_PER_PAGE << order;
+			bytes = xen_io_tlb_nslabs << IO_TLB_SHIFT;
+		}
+	}
+	if (!xen_io_tlb_start) {
+		m_ret = XEN_SWIOTLB_ENOMEM;
+		goto error;
+	}
+>>>>>>> refs/remotes/origin/master
 	xen_io_tlb_end = xen_io_tlb_start + bytes;
 	/*
 	 * And replace that memory with pages under 4GB.
@@ -201,6 +333,7 @@ retry:
 	rc = xen_swiotlb_fixup(xen_io_tlb_start,
 			       bytes,
 			       xen_io_tlb_nslabs);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (rc)
 		goto error;
@@ -245,16 +378,61 @@ xen_swiotlb_alloc_coherent(struct device *hwdev, size_t size,
 			   dma_addr_t *dma_handle, gfp_t flags,
 			   struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rc) {
+		if (early)
+			free_bootmem(__pa(xen_io_tlb_start), PAGE_ALIGN(bytes));
+		else {
+			free_pages((unsigned long)xen_io_tlb_start, order);
+			xen_io_tlb_start = NULL;
+		}
+		m_ret = XEN_SWIOTLB_EFIXUP;
+		goto error;
+	}
+	start_dma_addr = xen_virt_to_bus(xen_io_tlb_start);
+	if (early) {
+		if (swiotlb_init_with_tbl(xen_io_tlb_start, xen_io_tlb_nslabs,
+			 verbose))
+			panic("Cannot allocate SWIOTLB buffer");
+		rc = 0;
+	} else
+		rc = swiotlb_late_init_with_tbl(xen_io_tlb_start, xen_io_tlb_nslabs);
+	return rc;
+error:
+	if (repeat--) {
+		xen_io_tlb_nslabs = max(1024UL, /* Min is 2MB */
+					(xen_io_tlb_nslabs >> 1));
+		pr_info("Lowering to %luMB\n",
+			(xen_io_tlb_nslabs << IO_TLB_SHIFT) >> 20);
+		goto retry;
+	}
+	pr_err("%s (rc:%d)\n", xen_swiotlb_error(m_ret), rc);
+	if (early)
+		panic("%s (rc:%d)", xen_swiotlb_error(m_ret), rc);
+	else
+		free_pages((unsigned long)xen_io_tlb_start, order);
+	return rc;
+}
+void *
+xen_swiotlb_alloc_coherent(struct device *hwdev, size_t size,
+			   dma_addr_t *dma_handle, gfp_t flags,
+			   struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret;
 	int order = get_order(size);
 	u64 dma_mask = DMA_BIT_MASK(32);
+<<<<<<< HEAD
 	unsigned long vstart;
 <<<<<<< HEAD
 =======
 	phys_addr_t phys;
 	dma_addr_t dev_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phys_addr_t phys;
+	dma_addr_t dev_addr;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	* Ignore region specifiers - the kernel's ideas of
@@ -267,6 +445,7 @@ xen_swiotlb_alloc_coherent(struct device *hwdev, size_t size,
 	if (dma_alloc_from_coherent(hwdev, size, dma_handle, &ret))
 		return ret;
 
+<<<<<<< HEAD
 	vstart = __get_free_pages(flags, order);
 	ret = (void *)vstart;
 
@@ -276,18 +455,36 @@ xen_swiotlb_alloc_coherent(struct device *hwdev, size_t size,
 
 	if (ret) {
 =======
+=======
+	/* On ARM this function returns an ioremap'ped virtual address for
+	 * which virt_to_phys doesn't return the corresponding physical
+	 * address. In fact on ARM virt_to_phys only works for kernel direct
+	 * mapped RAM memory. Also see comment below.
+	 */
+	ret = xen_alloc_coherent_pages(hwdev, size, dma_handle, flags, attrs);
+
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		return ret;
 
 	if (hwdev && hwdev->coherent_dma_mask)
 		dma_mask = dma_alloc_coherent_mask(hwdev, flags);
 
+<<<<<<< HEAD
 	phys = virt_to_phys(ret);
+=======
+	/* At this point dma_handle is the physical address, next we are
+	 * going to set it to the machine address.
+	 * Do not use virt_to_phys(ret) because on ARM it doesn't correspond
+	 * to *dma_handle. */
+	phys = *dma_handle;
+>>>>>>> refs/remotes/origin/master
 	dev_addr = xen_phys_to_bus(phys);
 	if (((dev_addr + size - 1 <= dma_mask)) &&
 	    !range_straddles_page_boundary(phys, size))
 		*dma_handle = dev_addr;
 	else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (xen_create_contiguous_region(vstart, order,
 						 fls64(dma_mask)) != 0) {
@@ -303,6 +500,15 @@ xen_swiotlb_alloc_coherent(struct device *hwdev, size_t size,
 	}
 	memset(ret, 0, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (xen_create_contiguous_region(phys, order,
+						 fls64(dma_mask), dma_handle) != 0) {
+			xen_free_coherent_pages(hwdev, size, ret, (dma_addr_t)phys, attrs);
+			return NULL;
+		}
+	}
+	memset(ret, 0, size);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_alloc_coherent);
@@ -310,20 +516,27 @@ EXPORT_SYMBOL_GPL(xen_swiotlb_alloc_coherent);
 void
 xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  dma_addr_t dev_addr)
 {
 	int order = get_order(size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			  dma_addr_t dev_addr, struct dma_attrs *attrs)
 {
 	int order = get_order(size);
 	phys_addr_t phys;
 	u64 dma_mask = DMA_BIT_MASK(32);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (dma_release_from_coherent(hwdev, order, vaddr))
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xen_destroy_contiguous_region((unsigned long)vaddr, order);
 =======
@@ -338,6 +551,20 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	free_pages((unsigned long)vaddr, order);
+=======
+	if (hwdev && hwdev->coherent_dma_mask)
+		dma_mask = hwdev->coherent_dma_mask;
+
+	/* do not use virt_to_phys because on ARM it doesn't return you the
+	 * physical address */
+	phys = xen_bus_to_phys(dev_addr);
+
+	if (((dev_addr + size - 1 > dma_mask)) ||
+	    range_straddles_page_boundary(phys, size))
+		xen_destroy_contiguous_region(phys, order);
+
+	xen_free_coherent_pages(hwdev, size, vaddr, (dma_addr_t)phys, attrs);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_free_coherent);
 
@@ -354,9 +581,14 @@ dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
 				enum dma_data_direction dir,
 				struct dma_attrs *attrs)
 {
+<<<<<<< HEAD
 	phys_addr_t phys = page_to_phys(page) + offset;
 	dma_addr_t dev_addr = xen_phys_to_bus(phys);
 	void *map;
+=======
+	phys_addr_t map, phys = page_to_phys(page) + offset;
+	dma_addr_t dev_addr = xen_phys_to_bus(phys);
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(dir == DMA_NONE);
 	/*
@@ -365,17 +597,39 @@ dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
 	 * buffering it.
 	 */
 	if (dma_capable(dev, dev_addr, size) &&
+<<<<<<< HEAD
 	    !range_straddles_page_boundary(phys, size) && !swiotlb_force)
 		return dev_addr;
+=======
+	    !range_straddles_page_boundary(phys, size) && !swiotlb_force) {
+		/* we are not interested in the dma_addr returned by
+		 * xen_dma_map_page, only in the potential cache flushes executed
+		 * by the function. */
+		xen_dma_map_page(dev, page, offset, size, dir, attrs);
+		return dev_addr;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Oh well, have to allocate and map a bounce buffer.
 	 */
+<<<<<<< HEAD
 	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys, size, dir);
 	if (!map)
 		return DMA_ERROR_CODE;
 
 	dev_addr = xen_virt_to_bus(map);
+=======
+	trace_swiotlb_bounced(dev, dev_addr, size, swiotlb_force);
+
+	map = swiotlb_tbl_map_single(dev, start_dma_addr, phys, size, dir);
+	if (map == SWIOTLB_MAP_ERROR)
+		return DMA_ERROR_CODE;
+
+	xen_dma_map_page(dev, pfn_to_page(map >> PAGE_SHIFT),
+					map & ~PAGE_MASK, size, dir, attrs);
+	dev_addr = xen_phys_to_bus(map);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Ensure that the address returned is DMA'ble
@@ -397,15 +651,28 @@ EXPORT_SYMBOL_GPL(xen_swiotlb_map_page);
  * whatever the device wrote there.
  */
 static void xen_unmap_single(struct device *hwdev, dma_addr_t dev_addr,
+<<<<<<< HEAD
 			     size_t size, enum dma_data_direction dir)
+=======
+			     size_t size, enum dma_data_direction dir,
+				 struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	phys_addr_t paddr = xen_bus_to_phys(dev_addr);
 
 	BUG_ON(dir == DMA_NONE);
 
+<<<<<<< HEAD
 	/* NOTE: We use dev_addr here, not paddr! */
 	if (is_xen_swiotlb_buffer(dev_addr)) {
 		swiotlb_tbl_unmap_single(hwdev, phys_to_virt(paddr), size, dir);
+=======
+	xen_dma_unmap_page(hwdev, paddr, size, dir, attrs);
+
+	/* NOTE: We use dev_addr here, not paddr! */
+	if (is_xen_swiotlb_buffer(dev_addr)) {
+		swiotlb_tbl_unmap_single(hwdev, paddr, size, dir);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -425,7 +692,11 @@ void xen_swiotlb_unmap_page(struct device *hwdev, dma_addr_t dev_addr,
 			    size_t size, enum dma_data_direction dir,
 			    struct dma_attrs *attrs)
 {
+<<<<<<< HEAD
 	xen_unmap_single(hwdev, dev_addr, size, dir);
+=======
+	xen_unmap_single(hwdev, dev_addr, size, dir, attrs);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_unmap_page);
 
@@ -448,12 +719,24 @@ xen_swiotlb_sync_single(struct device *hwdev, dma_addr_t dev_addr,
 
 	BUG_ON(dir == DMA_NONE);
 
+<<<<<<< HEAD
 	/* NOTE: We use dev_addr here, not paddr! */
 	if (is_xen_swiotlb_buffer(dev_addr)) {
 		swiotlb_tbl_sync_single(hwdev, phys_to_virt(paddr), size, dir,
 				       target);
 		return;
 	}
+=======
+	if (target == SYNC_FOR_CPU)
+		xen_dma_sync_single_for_cpu(hwdev, paddr, size, dir);
+
+	/* NOTE: We use dev_addr here, not paddr! */
+	if (is_xen_swiotlb_buffer(dev_addr))
+		swiotlb_tbl_sync_single(hwdev, paddr, size, dir, target);
+
+	if (target == SYNC_FOR_DEVICE)
+		xen_dma_sync_single_for_cpu(hwdev, paddr, size, dir);
+>>>>>>> refs/remotes/origin/master
 
 	if (dir != DMA_FROM_DEVICE)
 		return;
@@ -510,15 +793,26 @@ xen_swiotlb_map_sg_attrs(struct device *hwdev, struct scatterlist *sgl,
 		if (swiotlb_force ||
 		    !dma_capable(hwdev, dev_addr, sg->length) ||
 		    range_straddles_page_boundary(paddr, sg->length)) {
+<<<<<<< HEAD
 			void *map = swiotlb_tbl_map_single(hwdev,
 							   start_dma_addr,
 							   sg_phys(sg),
 							   sg->length, dir);
 			if (!map) {
+=======
+			phys_addr_t map = swiotlb_tbl_map_single(hwdev,
+								 start_dma_addr,
+								 sg_phys(sg),
+								 sg->length,
+								 dir);
+			if (map == SWIOTLB_MAP_ERROR) {
+				dev_warn(hwdev, "swiotlb buffer is full\n");
+>>>>>>> refs/remotes/origin/master
 				/* Don't panic here, we expect map_sg users
 				   to do proper error handling. */
 				xen_swiotlb_unmap_sg_attrs(hwdev, sgl, i, dir,
 							   attrs);
+<<<<<<< HEAD
 				sgl[0].dma_length = 0;
 				return DMA_ERROR_CODE;
 			}
@@ -526,11 +820,35 @@ xen_swiotlb_map_sg_attrs(struct device *hwdev, struct scatterlist *sgl,
 		} else
 			sg->dma_address = dev_addr;
 		sg->dma_length = sg->length;
+=======
+				sg_dma_len(sgl) = 0;
+				return 0;
+			}
+			xen_dma_map_page(hwdev, pfn_to_page(map >> PAGE_SHIFT),
+						map & ~PAGE_MASK,
+						sg->length,
+						dir,
+						attrs);
+			sg->dma_address = xen_phys_to_bus(map);
+		} else {
+			/* we are not interested in the dma_addr returned by
+			 * xen_dma_map_page, only in the potential cache flushes executed
+			 * by the function. */
+			xen_dma_map_page(hwdev, pfn_to_page(paddr >> PAGE_SHIFT),
+						paddr & ~PAGE_MASK,
+						sg->length,
+						dir,
+						attrs);
+			sg->dma_address = dev_addr;
+		}
+		sg_dma_len(sg) = sg->length;
+>>>>>>> refs/remotes/origin/master
 	}
 	return nelems;
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_map_sg_attrs);
 
+<<<<<<< HEAD
 int
 xen_swiotlb_map_sg(struct device *hwdev, struct scatterlist *sgl, int nelems,
 		   enum dma_data_direction dir)
@@ -539,6 +857,8 @@ xen_swiotlb_map_sg(struct device *hwdev, struct scatterlist *sgl, int nelems,
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_map_sg);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Unmap a set of streaming mode DMA translations.  Again, cpu read rules
  * concerning calls here are the same as for swiotlb_unmap_page() above.
@@ -554,11 +874,16 @@ xen_swiotlb_unmap_sg_attrs(struct device *hwdev, struct scatterlist *sgl,
 	BUG_ON(dir == DMA_NONE);
 
 	for_each_sg(sgl, sg, nelems, i)
+<<<<<<< HEAD
 		xen_unmap_single(hwdev, sg->dma_address, sg->dma_length, dir);
+=======
+		xen_unmap_single(hwdev, sg->dma_address, sg_dma_len(sg), dir, attrs);
+>>>>>>> refs/remotes/origin/master
 
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_unmap_sg_attrs);
 
+<<<<<<< HEAD
 void
 xen_swiotlb_unmap_sg(struct device *hwdev, struct scatterlist *sgl, int nelems,
 		     enum dma_data_direction dir)
@@ -567,6 +892,8 @@ xen_swiotlb_unmap_sg(struct device *hwdev, struct scatterlist *sgl, int nelems,
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_unmap_sg);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Make physical memory consistent for a set of streaming mode DMA translations
  * after a transfer.
@@ -584,7 +911,11 @@ xen_swiotlb_sync_sg(struct device *hwdev, struct scatterlist *sgl,
 
 	for_each_sg(sgl, sg, nelems, i)
 		xen_swiotlb_sync_single(hwdev, sg->dma_address,
+<<<<<<< HEAD
 					sg->dma_length, dir, target);
+=======
+					sg_dma_len(sg), dir, target);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -622,3 +953,18 @@ xen_swiotlb_dma_supported(struct device *hwdev, u64 mask)
 	return xen_virt_to_bus(xen_io_tlb_end - 1) <= mask;
 }
 EXPORT_SYMBOL_GPL(xen_swiotlb_dma_supported);
+<<<<<<< HEAD
+=======
+
+int
+xen_swiotlb_set_dma_mask(struct device *dev, u64 dma_mask)
+{
+	if (!dev->dma_mask || !xen_swiotlb_dma_supported(dev, dma_mask))
+		return -EIO;
+
+	*dev->dma_mask = dma_mask;
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(xen_swiotlb_set_dma_mask);
+>>>>>>> refs/remotes/origin/master

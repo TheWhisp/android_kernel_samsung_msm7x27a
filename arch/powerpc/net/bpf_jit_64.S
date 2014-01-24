@@ -43,8 +43,16 @@ sk_load_word_positive_offset:
 	cmpd	r_scratch1, r_addr
 	blt	bpf_slow_path_word
 	/* Nope, just hitting the header.  cr0 here is eq or gt! */
+<<<<<<< HEAD
 	lwzx	r_A, r_D, r_addr
 	/* When big endian we don't need to byteswap. */
+=======
+#ifdef __LITTLE_ENDIAN__
+	lwbrx	r_A, r_D, r_addr
+#else
+	lwzx	r_A, r_D, r_addr
+#endif
+>>>>>>> refs/remotes/origin/master
 	blr	/* Return success, cr0 != LT */
 
 	.globl	sk_load_half
@@ -56,7 +64,15 @@ sk_load_half_positive_offset:
 	subi	r_scratch1, r_HL, 2
 	cmpd	r_scratch1, r_addr
 	blt	bpf_slow_path_half
+<<<<<<< HEAD
 	lhzx	r_A, r_D, r_addr
+=======
+#ifdef __LITTLE_ENDIAN__
+	lhbrx	r_A, r_D, r_addr
+#else
+	lhzx	r_A, r_D, r_addr
+#endif
+>>>>>>> refs/remotes/origin/master
 	blr
 
 	.globl	sk_load_byte
@@ -105,6 +121,10 @@ sk_load_byte_msh_positive_offset:
 	mr	r4, r_addr;					\
 	li	r6, SIZE;					\
 	bl	skb_copy_bits;					\
+<<<<<<< HEAD
+=======
+	nop;							\
+>>>>>>> refs/remotes/origin/master
 	/* R3 = 0 on success */					\
 	addi	r1, r1, BPF_PPC_SLOWPATH_FRAME;			\
 	ld	r0, 16(r1);					\
@@ -156,6 +176,10 @@ bpf_slow_path_byte_msh:
 	mr	r4, r_addr;					\
 	li	r5, SIZE;					\
 	bl	bpf_internal_load_pointer_neg_helper;		\
+<<<<<<< HEAD
+=======
+	nop;							\
+>>>>>>> refs/remotes/origin/master
 	/* R3 != 0 on success */				\
 	addi	r1, r1, BPF_PPC_SLOWPATH_FRAME;			\
 	ld	r0, 16(r1);					\

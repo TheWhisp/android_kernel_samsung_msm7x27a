@@ -69,20 +69,28 @@ Kay Sievers <kay.sievers@vrfy.org>
 Kenneth W Chen <kenneth.w.chen@intel.com>
 Koushik <raghavendra.koushik@neterion.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>>>>>>> refs/remotes/origin/master
 Leonid I Ananiev <leonid.i.ananiev@intel.com>
 Linas Vepstas <linas@austin.ibm.com>
 Mark Brown <broonie@sirena.org.uk>
 Matthieu CASTET <castet.matthieu@free.fr>
 Mayuresh Janorkar <mayur@ti.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 Michael Buesch <mb@bu3sch.de>
 Michael Buesch <mbuesch@freenet.de>
 =======
 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
 Michel Dänzer <michel@tungstengraphics.com>
 Mitesh shah <mshah@teja.com>
 Morten Welinder <terra@gnome.org>
@@ -119,8 +127,16 @@ Uwe Kleine-König <ukleinek@informatik.uni-freiburg.de>
 Uwe Kleine-König <ukl@pengutronix.de>
 Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
 Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+<<<<<<< HEAD
 Takashi YOSHII <takashi.yoshii.zj@renesas.com>
 <<<<<<< HEAD
 =======
 Yusuke Goda <goda.yusuke@renesas.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Viresh Kumar <viresh.linux@gmail.com> <viresh.kumar@st.com>
+Takashi YOSHII <takashi.yoshii.zj@renesas.com>
+Yusuke Goda <goda.yusuke@renesas.com>
+Gustavo Padovan <gustavo@las.ic.unicamp.br>
+Gustavo Padovan <padovan@profusion.mobi>
+>>>>>>> refs/remotes/origin/master

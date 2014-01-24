@@ -2,7 +2,11 @@
 #include <linux/serial_core.h>
 #include <linux/io.h>
 #include <cpu/serial.h>
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+#include <cpu/gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 static void sh7720_sci_init_pins(struct uart_port *port, unsigned int cflag)
 {

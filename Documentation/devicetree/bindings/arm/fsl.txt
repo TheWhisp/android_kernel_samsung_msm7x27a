@@ -1,6 +1,25 @@
 Freescale i.MX Platforms Device Tree Bindings
 -----------------------------------------------
 
+<<<<<<< HEAD
+=======
+i.MX23 Evaluation Kit
+Required root node properties:
+    - compatible = "fsl,imx23-evk", "fsl,imx23";
+
+i.MX25 Product Development Kit
+Required root node properties:
+    - compatible = "fsl,imx25-pdk", "fsl,imx25";
+
+i.MX27 Product Development Kit
+Required root node properties:
+    - compatible = "fsl,imx27-pdk", "fsl,imx27";
+
+i.MX28 Evaluation Kit
+Required root node properties:
+    - compatible = "fsl,imx28-evk", "fsl,imx28";
+
+>>>>>>> refs/remotes/origin/master
 i.MX51 Babbage Board
 Required root node properties:
     - compatible = "fsl,imx51-babbage", "fsl,imx51";
@@ -29,6 +48,17 @@ i.MX6 Quad SABRE Lite Board
 Required root node properties:
     - compatible = "fsl,imx6q-sabrelite", "fsl,imx6q";
 
+<<<<<<< HEAD
+=======
+i.MX6 Quad SABRE Smart Device Board
+Required root node properties:
+    - compatible = "fsl,imx6q-sabresd", "fsl,imx6q";
+
+i.MX6 Quad SABRE Automotive Board
+Required root node properties:
+    - compatible = "fsl,imx6q-sabreauto", "fsl,imx6q";
+
+>>>>>>> refs/remotes/origin/master
 Generic i.MX boards
 -------------------
 

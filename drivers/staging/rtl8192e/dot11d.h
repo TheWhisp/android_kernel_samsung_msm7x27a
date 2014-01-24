@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef INC_DOT11D_H
 #define INC_DOT11D_H
 
@@ -42,6 +43,8 @@ typedef struct _RT_DOT11D_INFO {
 	DOT11D_STATE State;
 } RT_DOT11D_INFO, *PRT_DOT11D_INFO;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
  *
@@ -82,7 +85,11 @@ enum dot11d_state {
 /**
  * struct rt_dot11d_info * @CountryIeLen: value greater than 0 if @CountryIeBuf contains
  *		  valid country information element.
+<<<<<<< HEAD
  * @chanell_map: holds channel values
+=======
+ * @channel_map: holds channel values
+>>>>>>> refs/remotes/origin/master
  *		0 - invalid,
  *		1 - valid (active scan),
  *		2 - valid (passive scan)
@@ -103,13 +110,17 @@ struct rt_dot11d_info {
 
 	enum dot11d_state State;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void cpMacAddr(unsigned char *des, unsigned char *src)
 {
 	memcpy(des, src, 6);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define GET_DOT11D_INFO(__pIeeeDev) ((PRT_DOT11D_INFO) \
 			((__pIeeeDev)->pDot11dInfo))
@@ -157,6 +168,8 @@ int ToLegalChannel(struct ieee80211_device *dev, u8 channel);
 #endif /* ENABLE_DOT11D */
 #endif /* INC_DOT11D_H */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GET_DOT11D_INFO(__pIeeeDev)			\
 	 ((struct rt_dot11d_info *)((__pIeeeDev)->pDot11dInfo))
 
@@ -179,7 +192,14 @@ int ToLegalChannel(struct ieee80211_device *dev, u8 channel);
 #define CIE_WATCHDOG_TH 1
 #define GET_CIE_WATCHDOG(__pIeeeDev)				\
 	 (GET_DOT11D_INFO(__pIeeeDev)->CountryIeWatchdog)
+<<<<<<< HEAD
 #define RESET_CIE_WATCHDOG(__pIeeeDev) GET_CIE_WATCHDOG(__pIeeeDev) = 0
+=======
+static inline void RESET_CIE_WATCHDOG(struct rtllib_device *__pIeeeDev)
+{
+	GET_CIE_WATCHDOG(__pIeeeDev) = 0;
+}
+>>>>>>> refs/remotes/origin/master
 #define UPDATE_CIE_WATCHDOG(__pIeeeDev) (++GET_CIE_WATCHDOG(__pIeeeDev))
 
 #define IS_DOT11D_STATE_DONE(__pIeeeDev)			\
@@ -195,4 +215,7 @@ void DOT11D_ScanComplete(struct rtllib_device *dev);
 int ToLegalChannel(struct rtllib_device *dev, u8 channel);
 
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

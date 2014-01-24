@@ -1,7 +1,11 @@
 /*
  * wm8962.c  --  WM8962 ALSA SoC Audio driver
  *
+<<<<<<< HEAD
  * Copyright 2010 Wolfson Microelectronics plc
+=======
+ * Copyright 2010-2 Wolfson Microelectronics plc
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
  *
@@ -21,11 +25,16 @@
 #include <linux/i2c.h>
 #include <linux/input.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 #include <linux/pm_runtime.h>
 #include <linux/regmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_runtime.h>
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
 #include <linux/workqueue.h>
@@ -56,9 +65,14 @@ static const char *wm8962_supply_names[WM8962_NUM_SUPPLIES] = {
 /* codec private data */
 struct wm8962_priv {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct regmap *regmap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wm8962_pdata pdata;
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	struct snd_soc_codec *codec;
 
 	int sysclk;
@@ -73,17 +87,26 @@ struct wm8962_priv {
 	int fll_fout;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16 dsp2_ena;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 dsp2_ena;
+
+>>>>>>> refs/remotes/origin/master
 	struct delayed_work mic_work;
 	struct snd_soc_jack *jack;
 
 	struct regulator_bulk_data supplies[WM8962_NUM_SUPPLIES];
 	struct notifier_block disable_nb[WM8962_NUM_SUPPLIES];
 
+<<<<<<< HEAD
 #if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
+=======
+#if IS_ENABLED(CONFIG_INPUT)
+>>>>>>> refs/remotes/origin/master
 	struct input_dev *beep;
 	struct work_struct beep_work;
 	int beep_rate;
@@ -93,10 +116,15 @@ struct wm8962_priv {
 	struct gpio_chip gpio_chip;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	int irq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	int irq;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* We can't use the same notifier block for more than one supply and
@@ -111,10 +139,14 @@ static int wm8962_regulator_event_##n(struct notifier_block *nb, \
 						  disable_nb[n]); \
 	if (event & REGULATOR_EVENT_DISABLE) { \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wm8962->codec->cache_sync = 1; \
 =======
 		regcache_mark_dirty(wm8962->regmap);	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		regcache_mark_dirty(wm8962->regmap);	\
+>>>>>>> refs/remotes/origin/master
 	} \
 	return 0; \
 }
@@ -128,6 +160,7 @@ WM8962_REGULATOR_EVENT(5)
 WM8962_REGULATOR_EVENT(6)
 WM8962_REGULATOR_EVENT(7)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const u16 wm8962_reg[WM8962_MAX_REGISTER + 1] = {
 	[0] = 0x009F,     /* R0     - Left Input volume */
@@ -1989,6 +2022,8 @@ static int wm8962_reset(struct snd_soc_codec *codec)
 
 	return snd_soc_write(codec, WM8962_PLL_SOFTWARE_RESET, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct reg_default wm8962_reg[] = {
 	{ 0, 0x009F },   /* R0     - Left Input volume */
 	{ 1, 0x049F },   /* R1     - Right Input volume */
@@ -3328,17 +3363,24 @@ static int wm8962_reset(struct wm8962_priv *wm8962)
 		return ret;
 
 	return regmap_write(wm8962->regmap, WM8962_PLL_SOFTWARE_RESET, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const DECLARE_TLV_DB_SCALE(inpga_tlv, -2325, 75, 0);
 static const DECLARE_TLV_DB_SCALE(mixin_tlv, -1500, 300, 0);
 static const unsigned int mixinpga_tlv[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TLV_DB_RANGE_HEAD(7),
 =======
 	TLV_DB_RANGE_HEAD(5),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	TLV_DB_RANGE_HEAD(5),
+>>>>>>> refs/remotes/origin/master
 	0, 1, TLV_DB_SCALE_ITEM(0, 600, 0),
 	2, 2, TLV_DB_SCALE_ITEM(1300, 1300, 0),
 	3, 4, TLV_DB_SCALE_ITEM(1800, 200, 0),
@@ -3354,11 +3396,14 @@ static const DECLARE_TLV_DB_SCALE(out_tlv, -12100, 100, 1);
 static const DECLARE_TLV_DB_SCALE(hp_tlv, -700, 100, 0);
 static const unsigned int classd_tlv[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TLV_DB_RANGE_HEAD(7),
 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
 	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	TLV_DB_RANGE_HEAD(2),
 	0, 6, TLV_DB_SCALE_ITEM(0, 150, 0),
 	7, 7, TLV_DB_SCALE_ITEM(1200, 0, 0),
@@ -3367,7 +3412,12 @@ static const DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
 
 static int wm8962_dsp2_write_config(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	return 0;
+=======
+	return regcache_sync_region(codec->control_data,
+				    WM8962_HDBASS_AI_1, WM8962_MAX_REGISTER);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8962_dsp2_set_enable(struct snd_soc_codec *codec, u16 val)
@@ -3480,7 +3530,10 @@ out:
 
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* The VU bits for the headphones are in a different register to the mute
  * bits and only take effect on the PGA if it is actually powered.
@@ -3490,9 +3543,12 @@ static int wm8962_put_hp_sw(struct snd_kcontrol *kcontrol,
 {
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *reg_cache = codec->reg_cache;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* Apply the update (if any) */
@@ -3501,6 +3557,7 @@ static int wm8962_put_hp_sw(struct snd_kcontrol *kcontrol,
 		return 0;
 
 	/* If the left PGA is enabled hit that VU bit... */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (snd_soc_read(codec, WM8962_PWR_MGMT_2) & WM8962_HPOUTL_PGA_ENA)
 		return snd_soc_write(codec, WM8962_HPOUTL_VOLUME,
@@ -3513,6 +3570,8 @@ static int wm8962_put_hp_sw(struct snd_kcontrol *kcontrol,
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = snd_soc_read(codec, WM8962_PWR_MGMT_2);
 	if (ret & WM8962_HPOUTL_PGA_ENA) {
 		snd_soc_write(codec, WM8962_HPOUTL_VOLUME,
@@ -3526,7 +3585,10 @@ static int wm8962_put_hp_sw(struct snd_kcontrol *kcontrol,
 			      snd_soc_read(codec, WM8962_HPOUTR_VOLUME));
 
 	return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The VU bits for the speakers are in a different register to the mute
@@ -3567,7 +3629,10 @@ static const struct soc_enum cap_hpf_mode =
 	SOC_ENUM_SINGLE(WM8962_ADC_DAC_CONTROL_2, 10, 2, cap_hpf_mode_text);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const char *cap_lhpf_mode_text[] = {
 	"LPF", "HPF"
@@ -3576,7 +3641,10 @@ static const char *cap_lhpf_mode_text[] = {
 static const struct soc_enum cap_lhpf_mode =
 	SOC_ENUM_SINGLE(WM8962_LHPF1, 1, 2, cap_lhpf_mode_text);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct snd_kcontrol_new wm8962_snd_controls[] = {
 SOC_DOUBLE("Input Mixer Switch", WM8962_INPUT_MIXER_CONTROL_1, 3, 2, 1, 1),
 
@@ -3606,10 +3674,15 @@ SOC_SINGLE("Capture HPF Switch", WM8962_ADC_DAC_CONTROL_1, 0, 1, 1),
 SOC_ENUM("Capture HPF Mode", cap_hpf_mode),
 SOC_SINGLE("Capture HPF Cutoff", WM8962_ADC_DAC_CONTROL_2, 7, 7, 0),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 SOC_SINGLE("Capture LHPF Switch", WM8962_LHPF1, 0, 1, 0),
 SOC_ENUM("Capture LHPF Mode", cap_lhpf_mode),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SOC_SINGLE("Capture LHPF Switch", WM8962_LHPF1, 0, 1, 0),
+SOC_ENUM("Capture LHPF Mode", cap_lhpf_mode),
+>>>>>>> refs/remotes/origin/master
 
 SOC_DOUBLE_R_TLV("Sidetone Volume", WM8962_DAC_DSP_MIXING_1,
 		 WM8962_DAC_DSP_MIXING_2, 4, 12, 0, st_tlv),
@@ -3618,10 +3691,15 @@ SOC_DOUBLE_R_TLV("Digital Playback Volume", WM8962_LEFT_DAC_VOLUME,
 		 WM8962_RIGHT_DAC_VOLUME, 1, 127, 0, digital_tlv),
 SOC_SINGLE("DAC High Performance Switch", WM8962_ADC_DAC_CONTROL_2, 0, 1, 0),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 SOC_SINGLE("DAC L/R Swap Switch", WM8962_AUDIO_INTERFACE_0, 5, 1, 0),
 SOC_SINGLE("ADC L/R Swap Switch", WM8962_AUDIO_INTERFACE_0, 8, 1, 0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SOC_SINGLE("DAC L/R Swap Switch", WM8962_AUDIO_INTERFACE_0, 5, 1, 0),
+SOC_SINGLE("ADC L/R Swap Switch", WM8962_AUDIO_INTERFACE_0, 8, 1, 0),
+>>>>>>> refs/remotes/origin/master
 
 SOC_SINGLE("ADC High Performance Switch", WM8962_ADDITIONAL_CONTROL_1,
 	   5, 1, 0),
@@ -3661,7 +3739,10 @@ SOC_SINGLE_TLV("HPMIXR MIXINR Volume", WM8962_HEADPHONE_MIXER_4,
 SOC_SINGLE_TLV("Speaker Boost Volume", WM8962_CLASS_D_CONTROL_2, 0, 7, 0,
 	       classd_tlv),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 SOC_SINGLE("EQ Switch", WM8962_EQ1, WM8962_EQ_ENA_SHIFT, 1, 0),
 SOC_DOUBLE_R_TLV("EQ1 Volume", WM8962_EQ2, WM8962_EQ22,
@@ -3674,12 +3755,40 @@ SOC_DOUBLE_R_TLV("EQ4 Volume", WM8962_EQ3, WM8962_EQ23,
 		 WM8962_EQL_B4_GAIN_SHIFT, 31, 0, eq_tlv),
 SOC_DOUBLE_R_TLV("EQ5 Volume", WM8962_EQ3, WM8962_EQ23,
 		 WM8962_EQL_B5_GAIN_SHIFT, 31, 0, eq_tlv),
+<<<<<<< HEAD
 
 WM8962_DSP2_ENABLE("VSS Switch", WM8962_VSS_ENA_SHIFT),
 WM8962_DSP2_ENABLE("HPF1 Switch", WM8962_HPF1_ENA_SHIFT),
 WM8962_DSP2_ENABLE("HPF2 Switch", WM8962_HPF2_ENA_SHIFT),
 WM8962_DSP2_ENABLE("HD Bass Switch", WM8962_HDBASS_ENA_SHIFT),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_BYTES("EQL Coefficients", WM8962_EQ4, 18),
+SND_SOC_BYTES("EQR Coefficients", WM8962_EQ24, 18),
+
+
+SOC_SINGLE("3D Switch", WM8962_THREED1, 0, 1, 0),
+SND_SOC_BYTES_MASK("3D Coefficients", WM8962_THREED1, 4, WM8962_THREED_ENA),
+
+SOC_SINGLE("DF1 Switch", WM8962_DF1, 0, 1, 0),
+SND_SOC_BYTES_MASK("DF1 Coefficients", WM8962_DF1, 7, WM8962_DF1_ENA),
+
+SOC_SINGLE("DRC Switch", WM8962_DRC_1, 0, 1, 0),
+SND_SOC_BYTES_MASK("DRC Coefficients", WM8962_DRC_1, 5, WM8962_DRC_ENA),
+
+WM8962_DSP2_ENABLE("VSS Switch", WM8962_VSS_ENA_SHIFT),
+SND_SOC_BYTES("VSS Coefficients", WM8962_VSS_XHD2_1, 148),
+WM8962_DSP2_ENABLE("HPF1 Switch", WM8962_HPF1_ENA_SHIFT),
+WM8962_DSP2_ENABLE("HPF2 Switch", WM8962_HPF2_ENA_SHIFT),
+SND_SOC_BYTES("HPF Coefficients", WM8962_LHPF2, 1),
+WM8962_DSP2_ENABLE("HD Bass Switch", WM8962_HDBASS_ENA_SHIFT),
+SND_SOC_BYTES("HD Bass Coefficients", WM8962_HDBASS_AI_1, 30),
+
+SOC_DOUBLE("ALC Switch", WM8962_ALC1, WM8962_ALCL_ENA_SHIFT,
+		WM8962_ALCR_ENA_SHIFT, 1, 0),
+SND_SOC_BYTES_MASK("ALC Coefficients", WM8962_ALC1, 4,
+		WM8962_ALCL_ENA_MASK | WM8962_ALCR_ENA_MASK),
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct snd_kcontrol_new wm8962_spk_mono_controls[] = {
@@ -3742,6 +3851,7 @@ SOC_SINGLE_TLV("SPKOUTR Mixer DACR Volume", WM8962_SPEAKER_MIXER_5,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sysclk_event(struct snd_soc_dapm_widget *w,
 			struct snd_kcontrol *kcontrol, int event)
 {
@@ -3786,6 +3896,8 @@ static int sysclk_event(struct snd_soc_dapm_widget *w,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int cp_event(struct snd_soc_dapm_widget *w,
 		    struct snd_kcontrol *kcontrol, int event)
 {
@@ -3795,7 +3907,11 @@ static int cp_event(struct snd_soc_dapm_widget *w,
 		break;
 
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid event %d\n", event);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -3887,7 +4003,11 @@ static int hp_event(struct snd_soc_dapm_widget *w,
 		break;
 
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid event %d\n", event);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	
 	}
@@ -3916,7 +4036,11 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
 		reg = WM8962_SPKOUTL_VOLUME;
 		break;
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid shift %d\n", w->shift);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -3924,13 +4048,20 @@ static int out_pga_event(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_POST_PMU:
 		return snd_soc_write(codec, reg, snd_soc_read(codec, reg));
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid event %d\n", event);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dsp2_event(struct snd_soc_dapm_widget *w,
 		      struct snd_kcontrol *kcontrol, int event)
 {
@@ -3949,14 +4080,21 @@ static int dsp2_event(struct snd_soc_dapm_widget *w,
 		break;
 
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid event %d\n", event);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *st_text[] = { "None", "Left", "Right" };
 
 static const struct soc_enum str_enum =
@@ -4069,6 +4207,7 @@ SND_SOC_DAPM_INPUT("IN3R"),
 SND_SOC_DAPM_INPUT("IN4L"),
 SND_SOC_DAPM_INPUT("IN4R"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 SND_SOC_DAPM_INPUT("Beep"),
 SND_SOC_DAPM_INPUT("DMICDAT"),
 
@@ -4081,6 +4220,8 @@ SND_SOC_DAPM_SUPPLY("Charge Pump", WM8962_CHARGE_PUMP_1, 0, 0, cp_event,
 		    SND_SOC_DAPM_POST_PMU),
 SND_SOC_DAPM_SUPPLY("TOCLK", WM8962_ADDITIONAL_CONTROL_1, 0, 0, NULL, 0),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 SND_SOC_DAPM_SIGGEN("Beep"),
 SND_SOC_DAPM_INPUT("DMICDAT"),
 
@@ -4096,7 +4237,10 @@ SND_SOC_DAPM_SUPPLY_S("DSP2", 1, WM8962_DSP2_POWER_MANAGEMENT,
 		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
 SND_SOC_DAPM_SUPPLY("TEMP_HP", WM8962_ADDITIONAL_CONTROL_4, 2, 0, NULL, 0),
 SND_SOC_DAPM_SUPPLY("TEMP_SPK", WM8962_ADDITIONAL_CONTROL_4, 1, 0, NULL, 0),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_MIXER("INPGAL", WM8962_LEFT_INPUT_PGA_CONTROL, 4, 0,
 		   inpgal, ARRAY_SIZE(inpgal)),
@@ -4108,10 +4252,14 @@ SND_SOC_DAPM_MIXER("MIXINR", WM8962_PWR_MGMT_1, 4, 0,
 		   mixinr, ARRAY_SIZE(mixinr)),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 SND_SOC_DAPM_AIF_IN("DMIC", NULL, 0, WM8962_PWR_MGMT_1, 10, 0),
 =======
 SND_SOC_DAPM_AIF_IN("DMIC_ENA", NULL, 0, WM8962_PWR_MGMT_1, 10, 0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_DAPM_AIF_IN("DMIC_ENA", NULL, 0, WM8962_PWR_MGMT_1, 10, 0),
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_ADC("ADCL", "Capture", WM8962_PWR_MGMT_1, 3, 0),
 SND_SOC_DAPM_ADC("ADCR", "Capture", WM8962_PWR_MGMT_1, 2, 0),
@@ -4191,24 +4339,34 @@ static const struct snd_soc_dapm_route wm8962_intercon[] = {
 	{ "MICBIAS", NULL, "SYSCLK" },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ "DMIC", NULL, "DMICDAT" },
 =======
 	{ "DMIC_ENA", NULL, "DMICDAT" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "DMIC_ENA", NULL, "DMICDAT" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "ADCL", NULL, "SYSCLK" },
 	{ "ADCL", NULL, "TOCLK" },
 	{ "ADCL", NULL, "MIXINL" },
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{ "ADCL", NULL, "DMIC" },
 =======
 	{ "ADCL", NULL, "DMIC_ENA" },
 	{ "ADCL", NULL, "DSP2" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "ADCL", NULL, "DMIC_ENA" },
+	{ "ADCL", NULL, "DSP2" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "ADCR", NULL, "SYSCLK" },
 	{ "ADCR", NULL, "TOCLK" },
 	{ "ADCR", NULL, "MIXINR" },
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{ "ADCR", NULL, "DMIC" },
 
@@ -4218,6 +4376,8 @@ static const struct snd_soc_dapm_route wm8962_intercon[] = {
 	{ "STR", "Left", "ADCL" },
 	{ "STR", "Right", "ADCR" },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ "ADCR", NULL, "DMIC_ENA" },
 	{ "ADCR", NULL, "DSP2" },
 
@@ -4228,25 +4388,36 @@ static const struct snd_soc_dapm_route wm8962_intercon[] = {
 	{ "STR", "Left", "ADCL" },
 	{ "STR", "Right", "ADCR" },
 	{ "STR", NULL, "Class G" },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	{ "DACL", NULL, "SYSCLK" },
 	{ "DACL", NULL, "TOCLK" },
 	{ "DACL", NULL, "Beep" },
 	{ "DACL", NULL, "STL" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "DACL", NULL, "DSP2" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "DACL", NULL, "DSP2" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "DACR", NULL, "SYSCLK" },
 	{ "DACR", NULL, "TOCLK" },
 	{ "DACR", NULL, "Beep" },
 	{ "DACR", NULL, "STR" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "DACR", NULL, "DSP2" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "DACR", NULL, "DSP2" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "HPMIXL", "IN4L Switch", "IN4L" },
 	{ "HPMIXL", "IN4R Switch", "IN4R" },
@@ -4283,11 +4454,17 @@ static const struct snd_soc_dapm_route wm8962_intercon[] = {
 	{ "HPOUTL", NULL, "HPOUT" },
 	{ "HPOUTR", NULL, "HPOUT" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	{ "HPOUTL", NULL, "TEMP_HP" },
 	{ "HPOUTR", NULL, "TEMP_HP" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	{ "HPOUTL", NULL, "TEMP_HP" },
+	{ "HPOUTR", NULL, "TEMP_HP" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct snd_soc_dapm_route wm8962_spk_mono_intercon[] = {
@@ -4305,9 +4482,13 @@ static const struct snd_soc_dapm_route wm8962_spk_mono_intercon[] = {
 	{ "Speaker Output", NULL, "SYSCLK" },
 	{ "Speaker Output", NULL, "TOCLK" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "Speaker Output", NULL, "TEMP_SPK" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "Speaker Output", NULL, "TEMP_SPK" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "SPKOUT", NULL, "Speaker Output" },
 };
@@ -4337,17 +4518,25 @@ static const struct snd_soc_dapm_route wm8962_spk_stereo_intercon[] = {
 	{ "SPKOUTL Output", NULL, "SYSCLK" },
 	{ "SPKOUTL Output", NULL, "TOCLK" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "SPKOUTL Output", NULL, "TEMP_SPK" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "SPKOUTL Output", NULL, "TEMP_SPK" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "SPKOUTR Output", NULL, "SPKOUTR PGA" },
 	{ "SPKOUTR Output", NULL, "SYSCLK" },
 	{ "SPKOUTR Output", NULL, "TOCLK" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "SPKOUTR Output", NULL, "TEMP_SPK" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "SPKOUTR Output", NULL, "TEMP_SPK" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "SPKOUTL", NULL, "SPKOUTL Output" },
 	{ "SPKOUTR", NULL, "SPKOUTR Output" },
@@ -4355,6 +4544,7 @@ static const struct snd_soc_dapm_route wm8962_spk_stereo_intercon[] = {
 
 static int wm8962_add_widgets(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
@@ -4370,17 +4560,33 @@ static int wm8962_add_widgets(struct snd_soc_codec *codec)
 	snd_soc_add_codec_controls(codec, wm8962_snd_controls,
 			     ARRAY_SIZE(wm8962_snd_controls));
 	if (pdata && pdata->spk_mono)
+=======
+	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+	struct wm8962_pdata *pdata = &wm8962->pdata;
+	struct snd_soc_dapm_context *dapm = &codec->dapm;
+
+	snd_soc_add_codec_controls(codec, wm8962_snd_controls,
+			     ARRAY_SIZE(wm8962_snd_controls));
+	if (pdata->spk_mono)
+>>>>>>> refs/remotes/origin/master
 		snd_soc_add_codec_controls(codec, wm8962_spk_mono_controls,
 				     ARRAY_SIZE(wm8962_spk_mono_controls));
 	else
 		snd_soc_add_codec_controls(codec, wm8962_spk_stereo_controls,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     ARRAY_SIZE(wm8962_spk_stereo_controls));
 
 
 	snd_soc_dapm_new_controls(dapm, wm8962_dapm_widgets,
 				  ARRAY_SIZE(wm8962_dapm_widgets));
+<<<<<<< HEAD
 	if (pdata && pdata->spk_mono)
+=======
+	if (pdata->spk_mono)
+>>>>>>> refs/remotes/origin/master
 		snd_soc_dapm_new_controls(dapm, wm8962_dapm_spk_mono_widgets,
 					  ARRAY_SIZE(wm8962_dapm_spk_mono_widgets));
 	else
@@ -4389,7 +4595,11 @@ static int wm8962_add_widgets(struct snd_soc_codec *codec)
 
 	snd_soc_dapm_add_routes(dapm, wm8962_intercon,
 				ARRAY_SIZE(wm8962_intercon));
+<<<<<<< HEAD
 	if (pdata && pdata->spk_mono)
+=======
+	if (pdata->spk_mono)
+>>>>>>> refs/remotes/origin/master
 		snd_soc_dapm_add_routes(dapm, wm8962_spk_mono_intercon,
 					ARRAY_SIZE(wm8962_spk_mono_intercon));
 	else
@@ -4402,6 +4612,7 @@ static int wm8962_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void wm8962_sync_cache(struct snd_soc_codec *codec)
 {
@@ -4432,23 +4643,32 @@ static void wm8962_sync_cache(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* -1 for reserved values */
 static const int bclk_divs[] = {
 	1, -1, 2, 3, 4, -1, 6, 8, -1, 12, 16, 24, -1, 32, 32, 32
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const int sysclk_rates[] = {
 	64, 128, 192, 256, 384, 512, 768, 1024, 1408, 1536, 3072, 6144
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void wm8962_configure_bclk(struct snd_soc_codec *codec)
 {
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
 	int dspclk, i;
 	int clocking2 = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int aif2 = 0;
 
@@ -4458,6 +4678,8 @@ static void wm8962_configure_bclk(struct snd_soc_codec *codec)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int clocking4 = 0;
 	int aif2 = 0;
 
@@ -4489,8 +4711,25 @@ static void wm8962_configure_bclk(struct snd_soc_codec *codec)
 	snd_soc_update_bits(codec, WM8962_CLOCKING_4,
 			    WM8962_SYSCLK_RATE_MASK, clocking4);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	dspclk = snd_soc_read(codec, WM8962_CLOCKING1);
+=======
+	/* DSPCLK_DIV can be only generated correctly after enabling SYSCLK.
+	 * So we here provisionally enable it and then disable it afterward
+	 * if current bias_level hasn't reached SND_SOC_BIAS_ON.
+	 */
+	if (codec->dapm.bias_level != SND_SOC_BIAS_ON)
+		snd_soc_update_bits(codec, WM8962_CLOCKING2,
+				WM8962_SYSCLK_ENA_MASK, WM8962_SYSCLK_ENA);
+
+	dspclk = snd_soc_read(codec, WM8962_CLOCKING1);
+
+	if (codec->dapm.bias_level != SND_SOC_BIAS_ON)
+		snd_soc_update_bits(codec, WM8962_CLOCKING2,
+				WM8962_SYSCLK_ENA_MASK, 0);
+
+>>>>>>> refs/remotes/origin/master
 	if (dspclk < 0) {
 		dev_err(codec->dev, "Failed to read DSPCLK: %d\n", dspclk);
 		return;
@@ -4546,11 +4785,14 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
 	int ret;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (level == codec->dapm.bias_level)
 		return 0;
 
@@ -4562,6 +4804,7 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
 		/* VMID 2*50k */
 		snd_soc_update_bits(codec, WM8962_PWR_MGMT_1,
 				    WM8962_VMID_SEL_MASK, 0x80);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		break;
 
@@ -4600,12 +4843,17 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
 		}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		wm8962_configure_bclk(codec);
 		break;
 
 	case SND_SOC_BIAS_STANDBY:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* VMID 2*250k */
 		snd_soc_update_bits(codec, WM8962_PWR_MGMT_1,
 				    WM8962_VMID_SEL_MASK, 0x100);
@@ -4615,6 +4863,7 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
 		break;
 
 	case SND_SOC_BIAS_OFF:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		snd_soc_update_bits(codec, WM8962_PWR_MGMT_1,
 				    WM8962_VMID_SEL_MASK | WM8962_BIAS_ENA, 0);
@@ -4632,6 +4881,11 @@ static int wm8962_set_bias_level(struct snd_soc_codec *codec,
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	codec->dapm.bias_level = level;
 	return 0;
 }
@@ -4654,16 +4908,20 @@ static const struct {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const int sysclk_rates[] = {
 	64, 128, 192, 256, 384, 512, 768, 1024, 1408, 1536,
 };
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm8962_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
@@ -4680,6 +4938,10 @@ static int wm8962_hw_params(struct snd_pcm_substream *substream,
 	for (i = 0; i < ARRAY_SIZE(sr_vals); i++) {
 		if (sr_vals[i].rate == rate) {
 =======
+=======
+	struct snd_soc_codec *codec = dai->codec;
+	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int aif0 = 0;
 	int adctl3 = 0;
@@ -4692,12 +4954,16 @@ static int wm8962_hw_params(struct snd_pcm_substream *substream,
 
 	for (i = 0; i < ARRAY_SIZE(sr_vals); i++) {
 		if (sr_vals[i].rate == wm8962->lrclk) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			adctl3 |= sr_vals[i].reg;
 			break;
 		}
 	}
 	if (i == ARRAY_SIZE(sr_vals)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dev_err(codec->dev, "Unsupported rate %dHz\n", rate);
 		return -EINVAL;
@@ -4719,6 +4985,8 @@ static int wm8962_hw_params(struct snd_pcm_substream *substream,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_err(codec->dev, "Unsupported rate %dHz\n", wm8962->lrclk);
 		return -EINVAL;
 	}
@@ -4726,7 +4994,10 @@ static int wm8962_hw_params(struct snd_pcm_substream *substream,
 	if (wm8962->lrclk % 8000 == 0)
 		adctl3 |= WM8962_SAMPLE_RATE_INT_MODE;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S16_LE:
 		break;
@@ -4749,6 +5020,7 @@ static int wm8962_hw_params(struct snd_pcm_substream *substream,
 			    WM8962_SAMPLE_RATE_INT_MODE |
 			    WM8962_SAMPLE_RATE_MASK, adctl3);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_update_bits(codec, WM8962_CLOCKING_4,
 			    WM8962_SYSCLK_RATE_MASK, clocking4);
 
@@ -4758,6 +5030,14 @@ static int wm8962_hw_params(struct snd_pcm_substream *substream,
 	if (codec->dapm.bias_level == SND_SOC_BIAS_ON)
 		wm8962_configure_bclk(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	dev_dbg(codec->dev, "hw_params set BCLK %dHz LRCLK %dHz\n",
+		wm8962->bclk, wm8962->lrclk);
+
+	if (codec->dapm.bias_level == SND_SOC_BIAS_ON)
+		wm8962_configure_bclk(codec);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -4788,10 +5068,13 @@ static int wm8962_set_dai_sysclk(struct snd_soc_dai *dai, int clk_id,
 	wm8962->sysclk_rate = freq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	wm8962_configure_bclk(codec);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -4971,10 +5254,14 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
 	unsigned long timeout;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int fll1 = snd_soc_read(codec, WM8962_FLL_CONTROL_1) & WM8962_FLL_ENA;
 =======
 	int fll1 = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int fll1 = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Any change? */
 	if (source == wm8962->fll_src && Fref == wm8962->fll_fref &&
@@ -4991,10 +5278,15 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
 				    WM8962_FLL_ENA, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		pm_runtime_put(codec->dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_runtime_put(codec->dev);
+
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -5003,11 +5295,17 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Parameters good, disable so we can reprogram */
 	snd_soc_update_bits(codec, WM8962_FLL_CONTROL_1, WM8962_FLL_ENA, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Parameters good, disable so we can reprogram */
+	snd_soc_update_bits(codec, WM8962_FLL_CONTROL_1, WM8962_FLL_ENA, 0);
+
+>>>>>>> refs/remotes/origin/master
 	switch (fll_id) {
 	case WM8962_FLL_MCLK:
 	case WM8962_FLL_BCLK:
@@ -5045,6 +5343,7 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
 	snd_soc_write(codec, WM8962_FLL_CONTROL_8, fll_div.n);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_update_bits(codec, WM8962_FLL_CONTROL_1,
 			    WM8962_FLL_FRAC | WM8962_FLL_REFCLK_SRC_MASK |
 			    WM8962_FLL_ENA, fll1);
@@ -5056,6 +5355,8 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
 
 	wait_for_completion_timeout(&wm8962->fll_lock, timeout);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	try_wait_for_completion(&wm8962->fll_lock);
 
 	pm_runtime_get_sync(codec->dev);
@@ -5068,6 +5369,7 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
 
 	ret = 0;
 
+<<<<<<< HEAD
 	if (fll1 & WM8962_FLL_ENA) {
 		/* This should be a massive overestimate but go even
 		 * higher if we'll error out
@@ -5086,16 +5388,37 @@ static int wm8962_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
 		}
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* This should be a massive overestimate but go even
+	 * higher if we'll error out
+	 */
+	if (wm8962->irq)
+		timeout = msecs_to_jiffies(5);
+	else
+		timeout = msecs_to_jiffies(1);
+
+	timeout = wait_for_completion_timeout(&wm8962->fll_lock,
+					      timeout);
+
+	if (timeout == 0 && wm8962->irq) {
+		dev_err(codec->dev, "FLL lock timed out");
+		ret = -ETIMEDOUT;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	wm8962->fll_fref = Fref;
 	wm8962->fll_fout = Fout;
 	wm8962->fll_src = source;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8962_mute(struct snd_soc_dai *dai, int mute)
@@ -5118,10 +5441,14 @@ static int wm8962_mute(struct snd_soc_dai *dai, int mute)
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8962_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm8962_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8962_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params = wm8962_hw_params,
 	.set_sysclk = wm8962_set_dai_sysclk,
 	.set_fmt = wm8962_set_dai_fmt,
@@ -5133,10 +5460,14 @@ static struct snd_soc_dai_driver wm8962_dai = {
 	.playback = {
 		.stream_name = "Playback",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.channels_min = 2,
 =======
 		.channels_min = 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.channels_min = 1,
+>>>>>>> refs/remotes/origin/master
 		.channels_max = 2,
 		.rates = WM8962_RATES,
 		.formats = WM8962_FORMATS,
@@ -5144,10 +5475,14 @@ static struct snd_soc_dai_driver wm8962_dai = {
 	.capture = {
 		.stream_name = "Capture",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.channels_min = 2,
 =======
 		.channels_min = 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.channels_min = 1,
+>>>>>>> refs/remotes/origin/master
 		.channels_max = 2,
 		.rates = WM8962_RATES,
 		.formats = WM8962_FORMATS,
@@ -5189,6 +5524,7 @@ static void wm8962_mic_work(struct work_struct *work)
 static irqreturn_t wm8962_irq(int irq, void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = data;
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
 	int mask;
@@ -5202,6 +5538,8 @@ static irqreturn_t wm8962_irq(int irq, void *data)
 	if (active & WM8962_FLL_LOCK_EINT) {
 		dev_dbg(codec->dev, "FLL locked\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device *dev = data;
 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
 	unsigned int mask;
@@ -5234,11 +5572,15 @@ static irqreturn_t wm8962_irq(int irq, void *data)
 
 	if (active & WM8962_FLL_LOCK_EINT) {
 		dev_dbg(dev, "FLL locked\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		complete(&wm8962->fll_lock);
 	}
 
 	if (active & WM8962_FIFOS_ERR_EINT)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dev_err(codec->dev, "FIFO error\n");
 
@@ -5254,6 +5596,8 @@ static irqreturn_t wm8962_irq(int irq, void *data)
 
 		pm_wakeup_event(codec->dev, 300);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "FIFO error\n");
 
 	if (active & WM8962_TEMP_SHUT_EINT) {
@@ -5285,6 +5629,7 @@ static irqreturn_t wm8962_irq(int irq, void *data)
 #endif
 
 		pm_wakeup_event(dev, 300);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		schedule_delayed_work(&wm8962->mic_work,
@@ -5297,6 +5642,14 @@ static irqreturn_t wm8962_irq(int irq, void *data)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		queue_delayed_work(system_power_efficient_wq,
+				   &wm8962->mic_work,
+				   msecs_to_jiffies(250));
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -5337,6 +5690,7 @@ int wm8962_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack)
 			    SND_JACK_MICROPHONE | SND_JACK_BTN_0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 }
 EXPORT_SYMBOL_GPL(wm8962_mic_detect);
@@ -5359,17 +5713,23 @@ static int wm8962_resume(struct snd_soc_codec *codec)
 		if (reg_cache[i] != wm8962_reg[i])
 			snd_soc_write(codec, i, reg_cache[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (jack) {
 		snd_soc_dapm_force_enable_pin(&codec->dapm, "SYSCLK");
 		snd_soc_dapm_force_enable_pin(&codec->dapm, "MICBIAS");
 	} else {
 		snd_soc_dapm_disable_pin(&codec->dapm, "SYSCLK");
 		snd_soc_dapm_disable_pin(&codec->dapm, "MICBIAS");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else
 #define wm8962_resume NULL
@@ -5379,6 +5739,11 @@ EXPORT_SYMBOL_GPL(wm8962_mic_detect);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_INPUT) || defined(CONFIG_INPUT_MODULE)
+=======
+EXPORT_SYMBOL_GPL(wm8962_mic_detect);
+
+#if IS_ENABLED(CONFIG_INPUT)
+>>>>>>> refs/remotes/origin/master
 static int beep_rates[] = {
 	500, 1000, 2000, 4000,
 };
@@ -5452,7 +5817,11 @@ static ssize_t wm8962_beep_set(struct device *dev,
 	long int time;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtol(buf, 10, &time);
+=======
+	ret = kstrtol(buf, 10, &time);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0)
 		return ret;
 
@@ -5468,7 +5837,11 @@ static void wm8962_init_beep(struct snd_soc_codec *codec)
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
 	int ret;
 
+<<<<<<< HEAD
 	wm8962->beep = input_allocate_device();
+=======
+	wm8962->beep = devm_input_allocate_device(codec->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!wm8962->beep) {
 		dev_err(codec->dev, "Failed to allocate beep device\n");
 		return;
@@ -5489,7 +5862,10 @@ static void wm8962_init_beep(struct snd_soc_codec *codec)
 
 	ret = input_register_device(wm8962->beep);
 	if (ret != 0) {
+<<<<<<< HEAD
 		input_free_device(wm8962->beep);
+=======
+>>>>>>> refs/remotes/origin/master
 		wm8962->beep = NULL;
 		dev_err(codec->dev, "Failed to register beep device\n");
 	}
@@ -5506,7 +5882,10 @@ static void wm8962_free_beep(struct snd_soc_codec *codec)
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
 
 	device_remove_file(codec->dev, &dev_attr_beep);
+<<<<<<< HEAD
 	input_unregister_device(wm8962->beep);
+=======
+>>>>>>> refs/remotes/origin/master
 	cancel_work_sync(&wm8962->beep_work);
 	wm8962->beep = NULL;
 
@@ -5522,7 +5901,11 @@ static void wm8962_free_beep(struct snd_soc_codec *codec)
 }
 #endif
 
+<<<<<<< HEAD
 static void wm8962_set_gpio_mode(struct snd_soc_codec *codec, int gpio)
+=======
+static void wm8962_set_gpio_mode(struct wm8962_priv *wm8962, int gpio)
+>>>>>>> refs/remotes/origin/master
 {
 	int mask = 0;
 	int val = 0;
@@ -5543,8 +5926,13 @@ static void wm8962_set_gpio_mode(struct snd_soc_codec *codec, int gpio)
 	}
 
 	if (mask)
+<<<<<<< HEAD
 		snd_soc_update_bits(codec, WM8962_ANALOGUE_CLOCKING1,
 				    mask, val);
+=======
+		regmap_update_bits(wm8962->regmap, WM8962_ANALOGUE_CLOCKING1,
+				   mask, val);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_GPIOLIB
@@ -5556,7 +5944,10 @@ static inline struct wm8962_priv *gpio_to_wm8962(struct gpio_chip *chip)
 static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
 {
 	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = wm8962->codec;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* The WM8962 GPIOs aren't linearly numbered.  For simplicity
 	 * we export linear numbers and error out if the unsupported
@@ -5572,7 +5963,11 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	wm8962_set_gpio_mode(codec, offset + 1);
+=======
+	wm8962_set_gpio_mode(wm8962, offset + 1);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -5592,25 +5987,35 @@ static int wm8962_gpio_direction_out(struct gpio_chip *chip,
 	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
 	struct snd_soc_codec *codec = wm8962->codec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int val;
 =======
 	int ret, val;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, val;
+>>>>>>> refs/remotes/origin/master
 
 	/* Force function 1 (logic output) */
 	val = (1 << WM8962_GP2_FN_SHIFT) | (value << WM8962_GP2_LVL_SHIFT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
 				   WM8962_GP2_FN_MASK | WM8962_GP2_LVL, val);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
 				  WM8962_GP2_FN_MASK | WM8962_GP2_LVL, val);
 	if (ret < 0)
 		return ret;
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct gpio_chip wm8962_template_chip = {
@@ -5625,14 +6030,22 @@ static struct gpio_chip wm8962_template_chip = {
 static void wm8962_init_gpio(struct snd_soc_codec *codec)
 {
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
+=======
+	struct wm8962_pdata *pdata = &wm8962->pdata;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	wm8962->gpio_chip = wm8962_template_chip;
 	wm8962->gpio_chip.ngpio = WM8962_MAX_GPIO;
 	wm8962->gpio_chip.dev = codec->dev;
 
+<<<<<<< HEAD
 	if (pdata && pdata->gpio_base)
+=======
+	if (pdata->gpio_base)
+>>>>>>> refs/remotes/origin/master
 		wm8962->gpio_chip.base = pdata->gpio_base;
 	else
 		wm8962->gpio_chip.base = -1;
@@ -5665,6 +6078,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 {
 	int ret;
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
 <<<<<<< HEAD
 	struct i2c_client *i2c = container_of(codec->dev, struct i2c_client,
@@ -5698,13 +6112,22 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
 		goto err;
 =======
+=======
+	int i;
+	bool dmicclk, dmicdat;
+
+	wm8962->codec = codec;
+>>>>>>> refs/remotes/origin/master
 	codec->control_data = wm8962->regmap;
 
 	ret = snd_soc_codec_set_cache_io(codec, 16, 16, SND_SOC_REGMAP);
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	wm8962->disable_nb[0].notifier_call = wm8962_regulator_event_0;
@@ -5727,6 +6150,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8962->supplies),
 				    wm8962->supplies);
@@ -5854,6 +6278,8 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 			    0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wm8962_add_widgets(codec);
 
 	/* Save boards having to disable DMIC when not in use */
@@ -5882,6 +6308,7 @@ static int wm8962_probe(struct snd_soc_codec *codec)
 	wm8962_init_beep(codec);
 	wm8962_init_gpio(codec);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (i2c->irq) {
 =======
@@ -5936,11 +6363,15 @@ err:
 	return ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8962_remove(struct snd_soc_codec *codec)
 {
 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct i2c_client *i2c = container_of(codec->dev, struct i2c_client,
 					      dev);
@@ -5955,6 +6386,10 @@ static int wm8962_remove(struct snd_soc_codec *codec)
 		free_irq(wm8962->irq, codec);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	int i;
+
+>>>>>>> refs/remotes/origin/master
 	cancel_delayed_work_sync(&wm8962->mic_work);
 
 	wm8962_free_gpio(codec);
@@ -5963,9 +6398,12 @@ static int wm8962_remove(struct snd_soc_codec *codec)
 		regulator_unregister_notifier(wm8962->supplies[i].consumer,
 					      &wm8962->disable_nb[i]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regulator_bulk_free(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -5973,6 +6411,7 @@ static int wm8962_remove(struct snd_soc_codec *codec)
 static struct snd_soc_codec_driver soc_codec_dev_wm8962 = {
 	.probe =	wm8962_probe,
 	.remove =	wm8962_remove,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.resume =	wm8962_resume,
 	.set_bias_level = wm8962_set_bias_level,
@@ -5993,6 +6432,8 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 
 	wm8962 = kzalloc(sizeof(struct wm8962_priv), GFP_KERNEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_bias_level = wm8962_set_bias_level,
 	.set_pll = wm8962_set_fll,
 	.idle_bias_off = true,
@@ -6017,22 +6458,63 @@ static const struct regmap_config wm8962_regmap = {
 	.cache_type = REGCACHE_RBTREE,
 };
 
+<<<<<<< HEAD
 static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+static int wm8962_set_pdata_from_of(struct i2c_client *i2c,
+				    struct wm8962_pdata *pdata)
+{
+	const struct device_node *np = i2c->dev.of_node;
+	u32 val32;
+	int i;
+
+	if (of_property_read_bool(np, "spk-mono"))
+		pdata->spk_mono = true;
+
+	if (of_property_read_u32(np, "mic-cfg", &val32) >= 0)
+		pdata->mic_cfg = val32;
+
+	if (of_property_read_u32_array(np, "gpio-cfg", pdata->gpio_init,
+				       ARRAY_SIZE(pdata->gpio_init)) >= 0)
+		for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++) {
+			/*
+			 * The range of GPIO register value is [0x0, 0xffff]
+			 * While the default value of each register is 0x0
+			 * Any other value will be regarded as default value
+			 */
+			if (pdata->gpio_init[i] > 0xffff)
+				pdata->gpio_init[i] = 0x0;
+		}
+
+	return 0;
+}
+
+static int wm8962_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8962_pdata *pdata = dev_get_platdata(&i2c->dev);
 	struct wm8962_priv *wm8962;
 	unsigned int reg;
+<<<<<<< HEAD
 	int ret, i;
 
 	wm8962 = devm_kzalloc(&i2c->dev, sizeof(struct wm8962_priv),
 			      GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, i, irq_pol, trigger;
+
+	wm8962 = devm_kzalloc(&i2c->dev, sizeof(struct wm8962_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8962 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, wm8962);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = snd_soc_register_codec(&i2c->dev,
 				     &soc_codec_dev_wm8962, &wm8962_dai, 1);
@@ -6040,14 +6522,32 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 		kfree(wm8962);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_DELAYED_WORK(&wm8962->mic_work, wm8962_mic_work);
 	init_completion(&wm8962->fll_lock);
 	wm8962->irq = i2c->irq;
 
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
 		wm8962->supplies[i].supply = wm8962_supply_names[i];
 
 	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm8962->supplies),
+=======
+	/* If platform data was supplied, update the default data in priv */
+	if (pdata) {
+		memcpy(&wm8962->pdata, pdata, sizeof(struct wm8962_pdata));
+	} else if (i2c->dev.of_node) {
+		ret = wm8962_set_pdata_from_of(i2c, &wm8962->pdata);
+		if (ret != 0)
+			return ret;
+	}
+
+	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
+		wm8962->supplies[i].supply = wm8962_supply_names[i];
+
+	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm8962->supplies),
+>>>>>>> refs/remotes/origin/master
 				 wm8962->supplies);
 	if (ret != 0) {
 		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
@@ -6058,10 +6558,17 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 				    wm8962->supplies);
 	if (ret != 0) {
 		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
+<<<<<<< HEAD
 		goto err_get;
 	}
 
 	wm8962->regmap = regmap_init_i2c(i2c, &wm8962_regmap);
+=======
+		return ret;
+	}
+
+	wm8962->regmap = devm_regmap_init_i2c(i2c, &wm8962_regmap);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wm8962->regmap)) {
 		ret = PTR_ERR(wm8962->regmap);
 		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
@@ -6078,20 +6585,32 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 	ret = regmap_read(wm8962->regmap, WM8962_SOFTWARE_RESET, &reg);
 	if (ret < 0) {
 		dev_err(&i2c->dev, "Failed to read ID register\n");
+<<<<<<< HEAD
 		goto err_regmap;
+=======
+		goto err_enable;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (reg != 0x6243) {
 		dev_err(&i2c->dev,
 			"Device is not a WM8962, ID %x != 0x6243\n", reg);
 		ret = -EINVAL;
+<<<<<<< HEAD
 		goto err_regmap;
+=======
+		goto err_enable;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = regmap_read(wm8962->regmap, WM8962_RIGHT_INPUT_VOLUME, &reg);
 	if (ret < 0) {
 		dev_err(&i2c->dev, "Failed to read device revision: %d\n",
 			ret);
+<<<<<<< HEAD
 		goto err_regmap;
+=======
+		goto err_enable;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev_info(&i2c->dev, "customer id %x revision %c\n",
@@ -6104,10 +6623,88 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 	ret = wm8962_reset(wm8962);
 	if (ret < 0) {
 		dev_err(&i2c->dev, "Failed to issue reset\n");
+<<<<<<< HEAD
 		goto err_regmap;
 	}
 
 	if (pdata && pdata->in4_dc_measure) {
+=======
+		goto err_enable;
+	}
+
+	/* SYSCLK defaults to on; make sure it is off so we can safely
+	 * write to registers if the device is declocked.
+	 */
+	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
+			   WM8962_SYSCLK_ENA, 0);
+
+	/* Ensure we have soft control over all registers */
+	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
+			   WM8962_CLKREG_OVD, WM8962_CLKREG_OVD);
+
+	/* Ensure that the oscillator and PLLs are disabled */
+	regmap_update_bits(wm8962->regmap, WM8962_PLL2,
+			   WM8962_OSC_ENA | WM8962_PLL2_ENA | WM8962_PLL3_ENA,
+			   0);
+
+	/* Apply static configuration for GPIOs */
+	for (i = 0; i < ARRAY_SIZE(wm8962->pdata.gpio_init); i++)
+		if (wm8962->pdata.gpio_init[i]) {
+			wm8962_set_gpio_mode(wm8962, i + 1);
+			regmap_write(wm8962->regmap, 0x200 + i,
+				     wm8962->pdata.gpio_init[i] & 0xffff);
+		}
+
+
+	/* Put the speakers into mono mode? */
+	if (wm8962->pdata.spk_mono)
+		regmap_update_bits(wm8962->regmap, WM8962_CLASS_D_CONTROL_2,
+				   WM8962_SPK_MONO_MASK, WM8962_SPK_MONO);
+
+	/* Micbias setup, detection enable and detection
+	 * threasholds. */
+	if (wm8962->pdata.mic_cfg)
+		regmap_update_bits(wm8962->regmap, WM8962_ADDITIONAL_CONTROL_4,
+				   WM8962_MICDET_ENA |
+				   WM8962_MICDET_THR_MASK |
+				   WM8962_MICSHORT_THR_MASK |
+				   WM8962_MICBIAS_LVL,
+				   wm8962->pdata.mic_cfg);
+
+	/* Latch volume update bits */
+	regmap_update_bits(wm8962->regmap, WM8962_LEFT_INPUT_VOLUME,
+			   WM8962_IN_VU, WM8962_IN_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_RIGHT_INPUT_VOLUME,
+			   WM8962_IN_VU, WM8962_IN_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_LEFT_ADC_VOLUME,
+			   WM8962_ADC_VU, WM8962_ADC_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_RIGHT_ADC_VOLUME,
+			   WM8962_ADC_VU, WM8962_ADC_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_LEFT_DAC_VOLUME,
+			   WM8962_DAC_VU, WM8962_DAC_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_RIGHT_DAC_VOLUME,
+			   WM8962_DAC_VU, WM8962_DAC_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_SPKOUTL_VOLUME,
+			   WM8962_SPKOUT_VU, WM8962_SPKOUT_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_SPKOUTR_VOLUME,
+			   WM8962_SPKOUT_VU, WM8962_SPKOUT_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_HPOUTL_VOLUME,
+			   WM8962_HPOUT_VU, WM8962_HPOUT_VU);
+	regmap_update_bits(wm8962->regmap, WM8962_HPOUTR_VOLUME,
+			   WM8962_HPOUT_VU, WM8962_HPOUT_VU);
+
+	/* Stereo control for EQ */
+	regmap_update_bits(wm8962->regmap, WM8962_EQ1,
+			   WM8962_EQ_SHARED_COEFF, 0);
+
+	/* Don't debouce interrupts so we don't need SYSCLK */
+	regmap_update_bits(wm8962->regmap, WM8962_IRQ_DEBOUNCE,
+			   WM8962_FLL_LOCK_DB | WM8962_PLL3_LOCK_DB |
+			   WM8962_PLL2_LOCK_DB | WM8962_TEMP_SHUT_DB,
+			   0);
+
+	if (wm8962->pdata.in4_dc_measure) {
+>>>>>>> refs/remotes/origin/master
 		ret = regmap_register_patch(wm8962->regmap,
 					    wm8962_dc_measure,
 					    ARRAY_SIZE(wm8962_dc_measure));
@@ -6117,19 +6714,60 @@ static __devinit int wm8962_i2c_probe(struct i2c_client *i2c,
 				ret);
 	}
 
+<<<<<<< HEAD
+=======
+	if (wm8962->irq) {
+		if (wm8962->pdata.irq_active_low) {
+			trigger = IRQF_TRIGGER_LOW;
+			irq_pol = WM8962_IRQ_POL;
+		} else {
+			trigger = IRQF_TRIGGER_HIGH;
+			irq_pol = 0;
+		}
+
+		regmap_update_bits(wm8962->regmap, WM8962_INTERRUPT_CONTROL,
+				   WM8962_IRQ_POL, irq_pol);
+
+		ret = devm_request_threaded_irq(&i2c->dev, wm8962->irq, NULL,
+						wm8962_irq,
+						trigger | IRQF_ONESHOT,
+						"wm8962", &i2c->dev);
+		if (ret != 0) {
+			dev_err(&i2c->dev, "Failed to request IRQ %d: %d\n",
+				wm8962->irq, ret);
+			wm8962->irq = 0;
+			/* Non-fatal */
+		} else {
+			/* Enable some IRQs by default */
+			regmap_update_bits(wm8962->regmap,
+					   WM8962_INTERRUPT_STATUS_2_MASK,
+					   WM8962_FLL_LOCK_EINT |
+					   WM8962_TEMP_SHUT_EINT |
+					   WM8962_FIFOS_ERR_EINT, 0);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_enable(&i2c->dev);
 	pm_request_idle(&i2c->dev);
 
 	ret = snd_soc_register_codec(&i2c->dev,
 				     &soc_codec_dev_wm8962, &wm8962_dai, 1);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto err_regmap;
+=======
+		goto err_enable;
+
+	regcache_cache_only(wm8962->regmap, true);
+>>>>>>> refs/remotes/origin/master
 
 	/* The drivers should power up as needed */
 	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
 
 	return 0;
 
+<<<<<<< HEAD
 err_regmap:
 	regmap_exit(wm8962->regmap);
 err_enable:
@@ -6155,6 +6793,17 @@ static __devexit int wm8962_i2c_remove(struct i2c_client *client)
 	snd_soc_unregister_codec(&client->dev);
 	regmap_exit(wm8962->regmap);
 	regulator_bulk_free(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
+=======
+err_enable:
+	regulator_bulk_disable(ARRAY_SIZE(wm8962->supplies), wm8962->supplies);
+err:
+	return ret;
+}
+
+static int wm8962_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -6176,23 +6825,50 @@ static int wm8962_runtime_resume(struct device *dev)
 
 	wm8962_reset(wm8962);
 
+<<<<<<< HEAD
+=======
+	/* SYSCLK defaults to on; make sure it is off so we can safely
+	 * write to registers if the device is declocked.
+	 */
+	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
+			   WM8962_SYSCLK_ENA, 0);
+
+	/* Ensure we have soft control over all registers */
+	regmap_update_bits(wm8962->regmap, WM8962_CLOCKING2,
+			   WM8962_CLKREG_OVD, WM8962_CLKREG_OVD);
+
+	/* Ensure that the oscillator and PLLs are disabled */
+	regmap_update_bits(wm8962->regmap, WM8962_PLL2,
+			   WM8962_OSC_ENA | WM8962_PLL2_ENA | WM8962_PLL3_ENA,
+			   0);
+
+>>>>>>> refs/remotes/origin/master
 	regcache_sync(wm8962->regmap);
 
 	regmap_update_bits(wm8962->regmap, WM8962_ANTI_POP,
 			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA,
 			   WM8962_STARTUP_BIAS_ENA | WM8962_VMID_BUF_ENA);
 
+<<<<<<< HEAD
 	/* Bias enable at 2*50k for ramp */
 	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
 			   WM8962_VMID_SEL_MASK | WM8962_BIAS_ENA,
+=======
+	/* Bias enable at 2*5k (fast start-up) */
+	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
+			   WM8962_BIAS_ENA | WM8962_VMID_SEL_MASK,
+>>>>>>> refs/remotes/origin/master
 			   WM8962_BIAS_ENA | 0x180);
 
 	msleep(5);
 
+<<<<<<< HEAD
 	/* VMID back to 2x250k for standby */
 	regmap_update_bits(wm8962->regmap, WM8962_PWR_MGMT_1,
 			   WM8962_VMID_SEL_MASK, 0x100);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -6220,17 +6896,30 @@ static struct dev_pm_ops wm8962_pm = {
 	SET_RUNTIME_PM_OPS(wm8962_runtime_suspend, wm8962_runtime_resume, NULL)
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id wm8962_i2c_id[] = {
 	{ "wm8962", 0 },
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, wm8962_i2c_id);
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id wm8962_of_match[] = {
+	{ .compatible = "wlf,wm8962", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, wm8962_of_match);
+
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver wm8962_i2c_driver = {
 	.driver = {
 		.name = "wm8962",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.pm = &wm8962_pm,
@@ -6268,6 +6957,17 @@ module_exit(wm8962_exit);
 
 module_i2c_driver(wm8962_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = wm8962_of_match,
+		.pm = &wm8962_pm,
+	},
+	.probe =    wm8962_i2c_probe,
+	.remove =   wm8962_i2c_remove,
+	.id_table = wm8962_i2c_id,
+};
+
+module_i2c_driver(wm8962_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8962 driver");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

@@ -1,12 +1,18 @@
+<<<<<<< HEAD
 #ifndef _LINUX_JOYSTICK_H
 #define _LINUX_JOYSTICK_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  Copyright (C) 1996-2000 Vojtech Pavlik
  *
  *  Sponsored by SuSE
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +32,7 @@
  * e-mail - mail your message to <vojtech@suse.cz>, or by paper mail:
  * Vojtech Pavlik, Ucitelska 1576, Prague 8, 182 00 Czech Republic
  */
+<<<<<<< HEAD
 
 #include <linux/types.h>
 #include <linux/input.h>
@@ -133,6 +140,13 @@ struct JS_DATA_SAVE_TYPE_64 {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_JOYSTICK_H
+#define _LINUX_JOYSTICK_H
+
+#include <uapi/linux/joystick.h>
+
+>>>>>>> refs/remotes/origin/master
 #if BITS_PER_LONG == 64
 #define JS_DATA_SAVE_TYPE JS_DATA_SAVE_TYPE_64
 #elif BITS_PER_LONG == 32
@@ -140,6 +154,9 @@ struct JS_DATA_SAVE_TYPE_64 {
 #else
 #error Unexpected BITS_PER_LONG
 #endif
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_JOYSTICK_H */

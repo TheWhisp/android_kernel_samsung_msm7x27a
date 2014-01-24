@@ -10,12 +10,18 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/slab.h>
 =======
 #include <linux/hardirq.h>
 #include <linux/slab.h>
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hardirq.h>
+#include <linux/slab.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "libertas_tf.h"
 

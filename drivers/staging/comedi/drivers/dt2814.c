@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: dt2814
@@ -39,12 +42,23 @@ a power of 10, from 1 to 10^7, of which only 3 or 4 are useful.  In
 addition, the clock does not seem to be very accurate.
 */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
 #include <linux/delay.h>
 
+=======
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include "../comedidev.h"
+
+#include <linux/delay.h>
+
+#include "comedi_fc.h"
+
+>>>>>>> refs/remotes/origin/master
 #define DT2814_SIZE 2
 
 #define DT2814_CSR 0
@@ -60,6 +74,7 @@ addition, the clock does not seem to be very accurate.
 #define DT2814_ENB 0x10
 #define DT2814_CHANMASK 0x0f
 
+<<<<<<< HEAD
 static int dt2814_attach(struct comedi_device *dev,
 			 struct comedi_devconfig *it);
 static int dt2814_detach(struct comedi_device *dev);
@@ -85,14 +100,19 @@ module_exit(driver_dt2814_cleanup_module);
 
 static irqreturn_t dt2814_interrupt(int irq, void *dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct dt2814_private {
 
 	int ntrig;
 	int curadchan;
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct dt2814_private *)dev->private)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DT2814_TIMEOUT 10
 #define DT2814_MAX_SPEED 100000	/* Arbitrary 10 khz limit */
 
@@ -110,15 +130,23 @@ static int dt2814_ai_insn_read(struct comedi_device *dev,
 		outb(chan, dev->iobase + DT2814_CSR);
 		for (i = 0; i < DT2814_TIMEOUT; i++) {
 			status = inb(dev->iobase + DT2814_CSR);
+<<<<<<< HEAD
 			printk(KERN_INFO "dt2814: status: %02x\n", status);
+=======
+>>>>>>> refs/remotes/origin/master
 			udelay(10);
 			if (status & DT2814_FINISH)
 				break;
 		}
+<<<<<<< HEAD
 		if (i >= DT2814_TIMEOUT) {
 			printk(KERN_INFO "dt2814: status: %02x\n", status);
 			return -ETIMEDOUT;
 		}
+=======
+		if (i >= DT2814_TIMEOUT)
+			return -ETIMEDOUT;
+>>>>>>> refs/remotes/origin/master
 
 		hi = inb(dev->iobase + DT2814_DATA);
 		lo = inb(dev->iobase + DT2814_DATA);
@@ -154,6 +182,7 @@ static int dt2814_ai_cmdtest(struct comedi_device *dev,
 	int err = 0;
 	int tmp;
 
+<<<<<<< HEAD
 	/* step 1: make sure trigger sources are trivially valid */
 
 	tmp = cmd->start_src;
@@ -224,6 +253,42 @@ static int dt2814_ai_cmdtest(struct comedi_device *dev,
 			err++;
 		}
 	}
+=======
+	/* Step 1 : check if triggers are trivially valid */
+
+	err |= cfc_check_trigger_src(&cmd->start_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_begin_src, TRIG_TIMER);
+	err |= cfc_check_trigger_src(&cmd->convert_src, TRIG_NOW);
+	err |= cfc_check_trigger_src(&cmd->scan_end_src, TRIG_COUNT);
+	err |= cfc_check_trigger_src(&cmd->stop_src, TRIG_COUNT | TRIG_NONE);
+
+	if (err)
+		return 1;
+
+	/* Step 2a : make sure trigger sources are unique */
+
+	err |= cfc_check_trigger_is_unique(cmd->stop_src);
+
+	/* Step 2b : and mutually compatible */
+
+	if (err)
+		return 2;
+
+	/* Step 3: check if arguments are trivially valid */
+
+	err |= cfc_check_trigger_arg_is(&cmd->start_arg, 0);
+
+	err |= cfc_check_trigger_arg_max(&cmd->scan_begin_arg, 1000000000);
+	err |= cfc_check_trigger_arg_min(&cmd->scan_begin_arg,
+					 DT2814_MAX_SPEED);
+
+	err |= cfc_check_trigger_arg_is(&cmd->scan_end_arg, cmd->chanlist_len);
+
+	if (cmd->stop_src == TRIG_COUNT)
+		err |= cfc_check_trigger_arg_min(&cmd->stop_arg, 2);
+	else	/* TRIG_NONE */
+		err |= cfc_check_trigger_arg_is(&cmd->stop_arg, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return 3;
@@ -243,6 +308,10 @@ static int dt2814_ai_cmdtest(struct comedi_device *dev,
 
 static int dt2814_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 {
+<<<<<<< HEAD
+=======
+	struct dt2814_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	struct comedi_cmd *cmd = &s->async->cmd;
 	int chan;
 	int trigvar;
@@ -260,6 +329,7 @@ static int dt2814_ai_cmd(struct comedi_device *dev, struct comedi_subdevice *s)
 
 }
 
+<<<<<<< HEAD
 static int dt2814_attach(struct comedi_device *dev, struct comedi_devconfig *it)
 {
 	int i, irq;
@@ -360,11 +430,18 @@ static int dt2814_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t dt2814_interrupt(int irq, void *d)
 {
 	int lo, hi;
 	struct comedi_device *dev = d;
+<<<<<<< HEAD
 	struct comedi_subdevice *s;
+=======
+	struct dt2814_private *devpriv = dev->private;
+	struct comedi_subdevice *s = dev->read_subdev;
+>>>>>>> refs/remotes/origin/master
 	int data;
 
 	if (!dev->attached) {
@@ -372,8 +449,11 @@ static irqreturn_t dt2814_interrupt(int irq, void *d)
 		return IRQ_HANDLED;
 	}
 
+<<<<<<< HEAD
 	s = dev->subdevices + 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	hi = inb(dev->iobase + DT2814_DATA);
 	lo = inb(dev->iobase + DT2814_DATA);
 
@@ -399,6 +479,70 @@ static irqreturn_t dt2814_interrupt(int irq, void *d)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+static int dt2814_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	struct dt2814_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+	int i;
+
+	ret = comedi_request_region(dev, it->options[0], DT2814_SIZE);
+	if (ret)
+		return ret;
+
+	outb(0, dev->iobase + DT2814_CSR);
+	udelay(100);
+	if (inb(dev->iobase + DT2814_CSR) & DT2814_ERR) {
+		dev_err(dev->class_dev, "reset error (fatal)\n");
+		return -EIO;
+	}
+	i = inb(dev->iobase + DT2814_DATA);
+	i = inb(dev->iobase + DT2814_DATA);
+
+	if (it->options[1]) {
+		ret = request_irq(it->options[1], dt2814_interrupt, 0,
+				  dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = it->options[1];
+	}
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	s = &dev->subdevices[0];
+	s->type = COMEDI_SUBD_AI;
+	s->subdev_flags = SDF_READABLE | SDF_GROUND;
+	s->n_chan = 16;		/* XXX */
+	s->insn_read = dt2814_ai_insn_read;
+	s->maxdata = 0xfff;
+	s->range_table = &range_unknown;	/* XXX */
+	if (dev->irq) {
+		dev->read_subdev = s;
+		s->subdev_flags |= SDF_CMD_READ;
+		s->len_chanlist = 1;
+		s->do_cmd = dt2814_ai_cmd;
+		s->do_cmdtest = dt2814_ai_cmdtest;
+	}
+
+	return 0;
+}
+
+static struct comedi_driver dt2814_driver = {
+	.driver_name	= "dt2814",
+	.module		= THIS_MODULE,
+	.attach		= dt2814_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(dt2814_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

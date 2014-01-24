@@ -3,10 +3,17 @@
  *
  * Copyright (C) 2008--2011 Nokia Corporation
  *
+<<<<<<< HEAD
  * Contact: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
  *
  * Contributors:
  *	Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
+=======
+ * Contact: Sakari Ailus <sakari.ailus@iki.fi>
+ *
+ * Contributors:
+ *	Sakari Ailus <sakari.ailus@iki.fi>
+>>>>>>> refs/remotes/origin/master
  *	Tuukka Toivonen <tuukkat76@gmail.com>
  *
  * This program is free software; you can redistribute it and/or

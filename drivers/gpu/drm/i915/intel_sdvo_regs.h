@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2006-2007 Intel Corporation
 =======
  * Copyright © 2006-2007 Intel Corporation
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2006-2007 Intel Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -51,6 +55,7 @@
 
 struct intel_sdvo_caps {
 <<<<<<< HEAD
+<<<<<<< HEAD
     u8 vendor_id;
     u8 device_id;
     u8 device_rev_id;
@@ -65,6 +70,8 @@ struct intel_sdvo_caps {
     unsigned int pad:1;
     u16 output_flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vendor_id;
 	u8 device_id;
 	u8 device_rev_id;
@@ -78,7 +85,10 @@ struct intel_sdvo_caps {
 	unsigned int stall_support:1;
 	unsigned int pad:1;
 	u16 output_flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /* Note: SDVO detailed timing flags match EDID misc flags. */
@@ -88,6 +98,7 @@ struct intel_sdvo_caps {
 
 /** This matches the EDID DTD structure, more or less */
 struct intel_sdvo_dtd {
+<<<<<<< HEAD
 <<<<<<< HEAD
     struct {
 	u16 clock;		/**< pixel clock, in 10kHz units */
@@ -130,6 +141,8 @@ struct intel_sdvo_preferred_input_timing_args {
     u8	scaled:1;
     u8	pad:6;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct {
 		u16 clock;	/**< pixel clock, in 10kHz units */
 		u8 h_active;	/**< lower 8 bits (pixels) */
@@ -170,7 +183,10 @@ struct intel_sdvo_preferred_input_timing_args {
 	u8	interlace:1;
 	u8	scaled:1;
 	u8	pad:6;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /* I2C registers for SDVO */
@@ -223,6 +239,7 @@ struct intel_sdvo_preferred_input_timing_args {
 #define SDVO_CMD_GET_TRAINED_INPUTS			0x03
 struct intel_sdvo_get_trained_inputs_response {
 <<<<<<< HEAD
+<<<<<<< HEAD
     unsigned int input0_trained:1;
     unsigned int input1_trained:1;
     unsigned int pad:6;
@@ -231,6 +248,11 @@ struct intel_sdvo_get_trained_inputs_response {
 	unsigned int input1_trained:1;
 	unsigned int pad:6;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int input0_trained:1;
+	unsigned int input1_trained:1;
+	unsigned int pad:6;
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /** Returns a struct intel_sdvo_output_flags of active outputs. */
@@ -252,10 +274,14 @@ struct intel_sdvo_get_trained_inputs_response {
 #define SDVO_CMD_GET_IN_OUT_MAP				0x06
 struct intel_sdvo_in_out_map {
 <<<<<<< HEAD
+<<<<<<< HEAD
     u16 in0, in1;
 =======
 	u16 in0, in1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 in0, in1;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -289,16 +315,22 @@ struct intel_sdvo_in_out_map {
 #define SDVO_CMD_GET_INTERRUPT_EVENT_SOURCE		0x0f
 struct intel_sdvo_get_interrupt_event_source_response {
 <<<<<<< HEAD
+<<<<<<< HEAD
     u16 interrupt_status;
     unsigned int ambient_light_interrupt:1;
     unsigned int hdmi_audio_encrypt_change:1;
     unsigned int pad:6;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 interrupt_status;
 	unsigned int ambient_light_interrupt:1;
 	unsigned int hdmi_audio_encrypt_change:1;
 	unsigned int pad:6;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /**
@@ -311,12 +343,17 @@ struct intel_sdvo_get_interrupt_event_source_response {
 #define SDVO_CMD_SET_TARGET_INPUT			0x10
 struct intel_sdvo_set_target_input_args {
 <<<<<<< HEAD
+<<<<<<< HEAD
     unsigned int target_1:1;
     unsigned int pad:7;
 =======
 	unsigned int target_1:1;
 	unsigned int pad:7;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int target_1:1;
+	unsigned int pad:7;
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /**
@@ -405,6 +442,7 @@ struct intel_sdvo_set_target_input_args {
 /** 6 bytes of bit flags for TV formats shared by all TV format functions */
 struct intel_sdvo_tv_format {
 <<<<<<< HEAD
+<<<<<<< HEAD
     unsigned int ntsc_m:1;
     unsigned int ntsc_j:1;
     unsigned int ntsc_443:1;
@@ -457,6 +495,8 @@ struct intel_sdvo_tv_format {
     unsigned int hdtv_std_eia_7702a_480p_60:1;
     unsigned int pad:3;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int ntsc_m:1;
 	unsigned int ntsc_j:1;
 	unsigned int ntsc_443:1;
@@ -508,7 +548,10 @@ struct intel_sdvo_tv_format {
 	unsigned int hdtv_std_eia_7702a_480i_60:1;
 	unsigned int hdtv_std_eia_7702a_480p_60:1;
 	unsigned int pad:3;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 #define SDVO_CMD_GET_TV_FORMAT				0x28
@@ -518,6 +561,7 @@ struct intel_sdvo_tv_format {
 /** Returns the resolutiosn that can be used with the given TV format */
 #define SDVO_CMD_GET_SDTV_RESOLUTION_SUPPORT		0x83
 struct intel_sdvo_sdtv_resolution_request {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned int ntsc_m:1;
     unsigned int ntsc_j:1;
@@ -567,6 +611,8 @@ struct intel_sdvo_sdtv_resolution_reply {
     unsigned int res_1280x1024:1;
     unsigned int pad:5;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int ntsc_m:1;
 	unsigned int ntsc_j:1;
 	unsigned int ntsc_443:1;
@@ -614,7 +660,10 @@ struct intel_sdvo_sdtv_resolution_reply {
 	unsigned int res_1024x768:1;
 	unsigned int res_1280x1024:1;
 	unsigned int pad:5;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /* Get supported resolution with squire pixel aspect ratio that can be
@@ -622,6 +671,7 @@ struct intel_sdvo_sdtv_resolution_reply {
 #define SDVO_CMD_GET_SCALED_HDTV_RESOLUTION_SUPPORT		0x85
 
 struct intel_sdvo_hdtv_resolution_request {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned int hdtv_std_smpte_240m_1080i_59:1;
     unsigned int hdtv_std_smpte_240m_1080i_60:1;
@@ -708,6 +758,8 @@ struct intel_sdvo_hdtv_resolution_reply {
     unsigned int res_1280x768:1;
     unsigned int pad5:7;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int hdtv_std_smpte_240m_1080i_59:1;
 	unsigned int hdtv_std_smpte_240m_1080i_60:1;
 	unsigned int hdtv_std_smpte_260m_1080i_59:1;
@@ -792,7 +844,10 @@ struct intel_sdvo_hdtv_resolution_reply {
 
 	unsigned int res_1280x768:1;
 	unsigned int pad5:7;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /* Get supported power state returns info for encoder and monitor, rely on
@@ -821,6 +876,7 @@ struct intel_sdvo_hdtv_resolution_reply {
  */
 struct sdvo_panel_power_sequencing {
 <<<<<<< HEAD
+<<<<<<< HEAD
     u8 t0;
     u8 t1;
     u8 t2;
@@ -835,6 +891,8 @@ struct sdvo_panel_power_sequencing {
     unsigned int t4_high:2;
     unsigned int pad:6;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 t0;
 	u8 t1;
 	u8 t2;
@@ -848,11 +906,15 @@ struct sdvo_panel_power_sequencing {
 
 	unsigned int t4_high:2;
 	unsigned int pad:6;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 #define SDVO_CMD_GET_MAX_BACKLIGHT_LEVEL		0x30
 struct sdvo_max_backlight_reply {
+<<<<<<< HEAD
 <<<<<<< HEAD
     u8 max_value;
     u8 default_value;
@@ -860,6 +922,10 @@ struct sdvo_max_backlight_reply {
 	u8 max_value;
 	u8 default_value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 max_value;
+	u8 default_value;
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 #define SDVO_CMD_GET_BACKLIGHT_LEVEL			0x31
@@ -867,6 +933,7 @@ struct sdvo_max_backlight_reply {
 
 #define SDVO_CMD_GET_AMBIENT_LIGHT			0x33
 struct sdvo_get_ambient_light_reply {
+<<<<<<< HEAD
 <<<<<<< HEAD
     u16 trip_low;
     u16 trip_high;
@@ -879,6 +946,8 @@ struct sdvo_set_ambient_light_reply {
     unsigned int enable:1;
     unsigned int pad:7;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 trip_low;
 	u16 trip_high;
 	u16 value;
@@ -889,7 +958,10 @@ struct sdvo_set_ambient_light_reply {
 	u16 trip_high;
 	unsigned int enable:1;
 	unsigned int pad:7;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /* Set display power state */
@@ -901,6 +973,7 @@ struct sdvo_set_ambient_light_reply {
 
 #define SDVO_CMD_GET_SUPPORTED_ENHANCEMENTS		0x84
 struct intel_sdvo_enhancements_reply {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned int flicker_filter:1;
     unsigned int flicker_filter_adaptive:1;
@@ -920,6 +993,8 @@ struct intel_sdvo_enhancements_reply {
     unsigned int tv_chroma_filter:1;
     unsigned int tv_luma_filter:1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int flicker_filter:1;
 	unsigned int flicker_filter_adaptive:1;
 	unsigned int flicker_filter_2d:1;
@@ -937,7 +1012,10 @@ struct intel_sdvo_enhancements_reply {
 	unsigned int dither:1;
 	unsigned int tv_chroma_filter:1;
 	unsigned int tv_luma_filter:1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 /* Picture enhancement limits below are dependent on the current TV format,
@@ -959,12 +1037,17 @@ struct intel_sdvo_enhancements_reply {
 #define SDVO_CMD_GET_MAX_TV_LUMA_FILTER			0x77
 struct intel_sdvo_enhancement_limits_reply {
 <<<<<<< HEAD
+<<<<<<< HEAD
     u16 max_value;
     u16 default_value;
 =======
 	u16 max_value;
 	u16 default_value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 max_value;
+	u16 default_value;
+>>>>>>> refs/remotes/origin/master
 } __attribute__((packed));
 
 #define SDVO_CMD_GET_LVDS_PANEL_INFORMATION		0x7f
@@ -1006,12 +1089,17 @@ struct intel_sdvo_enhancement_limits_reply {
 #define SDVO_CMD_SET_TV_LUMA_FILTER			0x79
 struct intel_sdvo_enhancements_arg {
 <<<<<<< HEAD
+<<<<<<< HEAD
     u16 value;
 }__attribute__((packed));
 =======
 	u16 value;
 } __attribute__((packed));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 value;
+} __attribute__((packed));
+>>>>>>> refs/remotes/origin/master
 
 #define SDVO_CMD_GET_DOT_CRAWL				0x70
 #define SDVO_CMD_SET_DOT_CRAWL				0x71
@@ -1065,6 +1153,7 @@ struct intel_sdvo_enhancements_arg {
 #define SDVO_NEED_TO_STALL  (1 << 7)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct intel_sdvo_encode{
     u8 dvi_rev;
     u8 hdmi_rev;
@@ -1073,4 +1162,9 @@ struct intel_sdvo_encode {
 	u8 dvi_rev;
 	u8 hdmi_rev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct intel_sdvo_encode {
+	u8 dvi_rev;
+	u8 hdmi_rev;
+>>>>>>> refs/remotes/origin/master
 } __attribute__ ((packed));

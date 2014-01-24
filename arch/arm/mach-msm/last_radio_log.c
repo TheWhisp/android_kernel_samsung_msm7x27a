@@ -31,6 +31,7 @@ extern void *smem_item(unsigned id, unsigned *size);
 static ssize_t last_radio_log_read(struct file *file, char __user *buf,
 			size_t len, loff_t *offset)
 {
+<<<<<<< HEAD
 	loff_t pos = *offset;
 	ssize_t count;
 
@@ -45,6 +46,10 @@ static ssize_t last_radio_log_read(struct file *file, char __user *buf,
 
 	*offset += count;
 	return count;
+=======
+	return simple_read_from_buffer(buf, len, offset,
+				radio_log_base, radio_log_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct file_operations last_radio_log_fops = {
@@ -67,7 +72,12 @@ void msm_init_last_radio_log(struct module *owner)
 		return;
 	}
 
+<<<<<<< HEAD
 	entry = create_proc_entry("last_radio_log", S_IFREG | S_IRUGO, NULL);
+=======
+	entry = proc_create("last_radio_log", S_IRUGO, NULL,
+				&last_radio_log_fops);
+>>>>>>> refs/remotes/origin/master
 	if (!entry) {
 		pr_err("%s: could not create proc entry for radio log\n",
 				__func__);
@@ -77,7 +87,11 @@ void msm_init_last_radio_log(struct module *owner)
 	pr_err("%s: last radio log is %d bytes long\n", __func__,
 		radio_log_size);
 	last_radio_log_fops.owner = owner;
+<<<<<<< HEAD
 	entry->proc_fops = &last_radio_log_fops;
 	entry->size = radio_log_size;
+=======
+	proc_set_size(entry, radio_log_size);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(msm_init_last_radio_log);

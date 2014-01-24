@@ -153,16 +153,22 @@
 #include <linux/slab.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pci.h>
 #include <linux/rtnetlink.h>
 
 #include <asm/system.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 #include <linux/rtnetlink.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include <net/irda/wrapper.h>
@@ -204,10 +210,14 @@ static char *driver_name = DRIVER_NAME;
 static int max_baud = 4000000;
 #ifdef USE_PROBE
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_probe = 0;
 =======
 static bool do_probe = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool do_probe = false;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -1363,7 +1373,11 @@ toshoboe_net_open (struct net_device *dev)
     return 0;
 
   rc = request_irq (self->io.irq, toshoboe_interrupt,
+<<<<<<< HEAD
                     IRQF_SHARED | IRQF_DISABLED, dev->name, self);
+=======
+                    IRQF_SHARED, dev->name, self);
+>>>>>>> refs/remotes/origin/master
   if (rc)
   	return rc;
 
@@ -1499,7 +1513,11 @@ static void
 toshoboe_close (struct pci_dev *pci_dev)
 {
   int i;
+<<<<<<< HEAD
   struct toshoboe_cb *self = (struct toshoboe_cb*)pci_get_drvdata(pci_dev);
+=======
+  struct toshoboe_cb *self = pci_get_drvdata(pci_dev);
+>>>>>>> refs/remotes/origin/master
 
   IRDA_DEBUG (4, "%s()\n", __func__);
 
@@ -1570,7 +1588,11 @@ toshoboe_open (struct pci_dev *pci_dev, const struct pci_device_id *pdid)
   self->io.fir_base = self->base;
   self->io.fir_ext = OBOE_IO_EXTENT;
   self->io.irq = pci_dev->irq;
+<<<<<<< HEAD
   self->io.irqflags = IRQF_SHARED | IRQF_DISABLED;
+=======
+  self->io.irqflags = IRQF_SHARED;
+>>>>>>> refs/remotes/origin/master
 
   self->speed = self->io.speed = 9600;
   self->async = 0;
@@ -1619,9 +1641,12 @@ toshoboe_open (struct pci_dev *pci_dev, const struct pci_device_id *pdid)
   if (!self->ringbuf)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       printk (KERN_ERR DRIVER_NAME ": can't allocate DMA buffers\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       err = -ENOMEM;
       goto freeregion;
     }
@@ -1661,9 +1686,12 @@ toshoboe_open (struct pci_dev *pci_dev, const struct pci_device_id *pdid)
   if (!ok)
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       printk (KERN_ERR DRIVER_NAME ": can't allocate rx/tx buffers\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       err = -ENOMEM;
       goto freebufs;
     }
@@ -1715,7 +1743,11 @@ freeself:
 static int
 toshoboe_gotosleep (struct pci_dev *pci_dev, pm_message_t crap)
 {
+<<<<<<< HEAD
   struct toshoboe_cb *self = (struct toshoboe_cb*)pci_get_drvdata(pci_dev);
+=======
+  struct toshoboe_cb *self = pci_get_drvdata(pci_dev);
+>>>>>>> refs/remotes/origin/master
   unsigned long flags;
   int i = 10;
 
@@ -1729,7 +1761,11 @@ toshoboe_gotosleep (struct pci_dev *pci_dev, pm_message_t crap)
 
 /* Flush all packets */
   while ((i--) && (self->txpending))
+<<<<<<< HEAD
     udelay (10000);
+=======
+    msleep(10);
+>>>>>>> refs/remotes/origin/master
 
   spin_lock_irqsave(&self->spinlock, flags);
 
@@ -1744,7 +1780,11 @@ toshoboe_gotosleep (struct pci_dev *pci_dev, pm_message_t crap)
 static int
 toshoboe_wakeup (struct pci_dev *pci_dev)
 {
+<<<<<<< HEAD
   struct toshoboe_cb *self = (struct toshoboe_cb*)pci_get_drvdata(pci_dev);
+=======
+  struct toshoboe_cb *self = pci_get_drvdata(pci_dev);
+>>>>>>> refs/remotes/origin/master
   unsigned long flags;
 
   IRDA_DEBUG (4, "%s()\n", __func__);

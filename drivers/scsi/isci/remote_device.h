@@ -83,6 +83,7 @@ struct isci_remote_device {
 	#define IDEV_STOP_PENDING 1
 	#define IDEV_ALLOCATED 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 	#define IDEV_EH 3
 	#define IDEV_GONE 4
 	#define IDEV_IO_READY 5
@@ -92,27 +93,57 @@ struct isci_remote_device {
 	#define IDEV_IO_READY 4
 	#define IDEV_IO_NCQERROR 5
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	#define IDEV_GONE 3
+	#define IDEV_IO_READY 4
+	#define IDEV_IO_NCQERROR 5
+	#define IDEV_RNC_LLHANG_ENABLED 6
+	#define IDEV_ABORT_PATH_ACTIVE 7
+	#define IDEV_ABORT_PATH_RESUME_PENDING 8
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	struct kref kref;
 	struct isci_port *isci_port;
 	struct domain_device *domain_dev;
 	struct list_head node;
+<<<<<<< HEAD
 	struct list_head reqs_in_process;
 	struct sci_base_state_machine sm;
 	u32 device_port_width;
 	enum sas_linkrate connection_rate;
 	bool is_direct_attached;
+=======
+	struct sci_base_state_machine sm;
+	u32 device_port_width;
+	enum sas_linkrate connection_rate;
+>>>>>>> refs/remotes/origin/master
 	struct isci_port *owning_port;
 	struct sci_remote_node_context rnc;
 	/* XXX unify with device reference counting and delete */
 	u32 started_request_count;
 	struct isci_request *working_request;
 	u32 not_ready_reason;
+<<<<<<< HEAD
+=======
+	scics_sds_remote_node_context_callback abort_resume_cb;
+	void *abort_resume_cbparam;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define ISCI_REMOTE_DEVICE_START_TIMEOUT 5000
 
 /* device reference routines must be called under sci_lock */
+<<<<<<< HEAD
+=======
+static inline struct isci_remote_device *isci_get_device(
+	struct isci_remote_device *idev)
+{
+	if (idev)
+		kref_get(&idev->kref);
+	return idev;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline struct isci_remote_device *isci_lookup_device(struct domain_device *dev)
 {
 	struct isci_remote_device *idev = dev->lldd_dev;
@@ -139,6 +170,7 @@ void isci_remote_device_nuke_requests(struct isci_host *ihost,
 void isci_remote_device_gone(struct domain_device *domain_dev);
 int isci_remote_device_found(struct domain_device *domain_dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool isci_device_is_reset_pending(struct isci_host *ihost,
 				  struct isci_remote_device *idev);
 void isci_device_clear_reset_pending(struct isci_host *ihost,
@@ -146,6 +178,9 @@ void isci_device_clear_reset_pending(struct isci_host *ihost,
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /**
  * sci_remote_device_stop() - This method will stop both transmission and
  *    reception of link activity for the supplied remote device.  This method
@@ -193,6 +228,7 @@ enum sci_status sci_remote_device_reset_complete(
 /**
  * enum sci_remote_device_states - This enumeration depicts all the states
  *    for the common remote device state machine.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  *
@@ -302,6 +338,8 @@ enum sci_remote_device_states {
 	SCI_DEV_FINAL,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @SCI_DEV_INITIAL: Simply the initial state for the base remote device
  * state machine.
  *
@@ -397,7 +435,10 @@ enum sci_remote_device_states {
 enum sci_remote_device_states REMOTE_DEV_STATES;
 #undef C
 const char *dev_state_name(enum sci_remote_device_states state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline struct isci_remote_device *rnc_to_dev(struct sci_remote_node_context *rnc)
 {
@@ -410,7 +451,11 @@ static inline struct isci_remote_device *rnc_to_dev(struct sci_remote_node_conte
 
 static inline bool dev_is_expander(struct domain_device *dev)
 {
+<<<<<<< HEAD
 	return dev->dev_type == EDGE_DEV || dev->dev_type == FANOUT_DEV;
+=======
+	return dev->dev_type == SAS_EDGE_EXPANDER_DEVICE || dev->dev_type == SAS_FANOUT_EXPANDER_DEVICE;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void sci_remote_device_decrement_request_count(struct isci_remote_device *idev)
@@ -426,6 +471,11 @@ static inline void sci_remote_device_decrement_request_count(struct isci_remote_
 		idev->started_request_count--;
 }
 
+<<<<<<< HEAD
+=======
+void isci_dev_set_hang_detection_timeout(struct isci_remote_device *idev, u32 timeout);
+
+>>>>>>> refs/remotes/origin/master
 enum sci_status sci_remote_device_frame_handler(
 	struct isci_remote_device *idev,
 	u32 frame_index);
@@ -449,12 +499,60 @@ enum sci_status sci_remote_device_complete_io(
 	struct isci_remote_device *idev,
 	struct isci_request *ireq);
 
+<<<<<<< HEAD
 enum sci_status sci_remote_device_suspend(
 	struct isci_remote_device *idev,
 	u32 suspend_type);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void sci_remote_device_post_request(
 	struct isci_remote_device *idev,
 	u32 request);
 
+<<<<<<< HEAD
+=======
+enum sci_status sci_remote_device_terminate_requests(
+	struct isci_remote_device *idev);
+
+int isci_remote_device_is_safe_to_abort(
+	struct isci_remote_device *idev);
+
+enum sci_status
+sci_remote_device_abort_requests_pending_abort(
+	struct isci_remote_device *idev);
+
+enum sci_status isci_remote_device_suspend(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev);
+
+enum sci_status sci_remote_device_resume(
+	struct isci_remote_device *idev,
+	scics_sds_remote_node_context_callback cb_fn,
+	void *cb_p);
+
+enum sci_status isci_remote_device_resume_from_abort(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev);
+
+enum sci_status isci_remote_device_reset(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev);
+
+enum sci_status isci_remote_device_reset_complete(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev);
+
+enum sci_status isci_remote_device_suspend_terminate(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev,
+	struct isci_request *ireq);
+
+enum sci_status isci_remote_device_terminate_requests(
+	struct isci_host *ihost,
+	struct isci_remote_device *idev,
+	struct isci_request *ireq);
+enum sci_status sci_remote_device_suspend(struct isci_remote_device *idev,
+					  enum sci_remote_node_suspension_reasons reason);
+>>>>>>> refs/remotes/origin/master
 #endif /* !defined(_ISCI_REMOTE_DEVICE_H_) */

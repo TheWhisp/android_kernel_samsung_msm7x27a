@@ -169,10 +169,14 @@ ENTRY(fa_flush_kern_dcache_area)
  *	- end	 - virtual end address
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(fa_dma_inv_range)
 =======
 fa_dma_inv_range:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fa_dma_inv_range:
+>>>>>>> refs/remotes/origin/master
 	tst	r0, #CACHE_DLINESIZE - 1
 	bic	r0, r0, #CACHE_DLINESIZE - 1
 	mcrne	p15, 0, r0, c7, c14, 1		@ clean & invalidate D entry
@@ -196,10 +200,14 @@ fa_dma_inv_range:
  *	- end	 - virtual end address
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(fa_dma_clean_range)
 =======
 fa_dma_clean_range:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fa_dma_clean_range:
+>>>>>>> refs/remotes/origin/master
 	bic	r0, r0, #CACHE_DLINESIZE - 1
 1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
 	add	r0, r0, #CACHE_DLINESIZE
@@ -248,6 +256,7 @@ ENTRY(fa_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(fa_dma_unmap_area)
 
+<<<<<<< HEAD
 	__INITDATA
 
 <<<<<<< HEAD
@@ -270,3 +279,12 @@ ENTRY(fa_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions fa
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	fa_flush_kern_cache_louis
+	.equ	fa_flush_kern_cache_louis, fa_flush_kern_cache_all
+
+	__INITDATA
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions fa
+>>>>>>> refs/remotes/origin/master

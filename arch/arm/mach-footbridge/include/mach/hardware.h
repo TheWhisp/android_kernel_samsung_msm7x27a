@@ -101,6 +101,7 @@ extern void nw_cpld_modify(unsigned int mask, unsigned int set);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pcibios_assign_all_busses()	1
 
 #define PCIBIOS_MIN_IO		0x1000
@@ -108,4 +109,6 @@ extern void nw_cpld_modify(unsigned int mask, unsigned int set);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

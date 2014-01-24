@@ -23,7 +23,10 @@
  */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioctl.h>
 #include <linux/tty.h>
 #include <linux/slab.h>
@@ -38,6 +41,7 @@
 #include <linux/spinlock.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int debug;
 =======
 static bool debug;
@@ -47,6 +51,8 @@ static bool debug;
  */
 
 #define DRIVER_VERSION "v0.7"
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_AUTHOR "Bart Hartgers <bart.hartgers+ark3116@gmail.com>"
 #define DRIVER_DESC "USB ARK3116 serial/IrDA driver"
 #define DRIVER_DEV_DESC "ARK3116 RS232/IrDA"
@@ -72,8 +78,11 @@ static int is_irda(struct usb_serial *serial)
 }
 
 struct ark3116_private {
+<<<<<<< HEAD
 	wait_queue_head_t       delta_msr_wait;
 	struct async_icount	icount;
+=======
+>>>>>>> refs/remotes/origin/master
 	int			irda;	/* 1 for irda device */
 
 	/* protects hw register updates */
@@ -83,7 +92,11 @@ struct ark3116_private {
 	__u32			lcr;	/* line control register value */
 	__u32			hcr;	/* handshake control register (0x8)
 					 * value */
+<<<<<<< HEAD
 	__u32			mcr;	/* modem contol register value */
+=======
+	__u32			mcr;	/* modem control register value */
+>>>>>>> refs/remotes/origin/master
 
 	/* protects the status values below */
 	spinlock_t		status_lock;
@@ -130,9 +143,12 @@ static inline int calc_divisor(int bps)
 
 static int ark3116_attach(struct usb_serial *serial)
 {
+<<<<<<< HEAD
 	struct usb_serial_port *port = serial->port[0];
 	struct ark3116_private *priv;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* make sure we have our end-points */
 	if ((serial->num_bulk_in == 0) ||
 	    (serial->num_bulk_out == 0) ||
@@ -147,12 +163,27 @@ static int ark3116_attach(struct usb_serial *serial)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	priv = kzalloc(sizeof(struct ark3116_private),
 		       GFP_KERNEL);
 	if (!priv)
 		return -ENOMEM;
 
 	init_waitqueue_head(&priv->delta_msr_wait);
+=======
+	return 0;
+}
+
+static int ark3116_port_probe(struct usb_serial_port *port)
+{
+	struct usb_serial *serial = port->serial;
+	struct ark3116_private *priv;
+
+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&priv->hw_lock);
 	spin_lock_init(&priv->status_lock);
 
@@ -203,6 +234,7 @@ static int ark3116_attach(struct usb_serial *serial)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ark3116_release(struct usb_serial *serial)
 {
 	struct usb_serial_port *port = serial->port[0];
@@ -215,11 +247,26 @@ static void ark3116_release(struct usb_serial *serial)
 	mutex_destroy(&priv->hw_lock);
 
 	kfree(priv);
+=======
+static int ark3116_port_remove(struct usb_serial_port *port)
+{
+	struct ark3116_private *priv = usb_get_serial_port_data(port);
+
+	/* device is closed, so URBs and DMA should be down */
+	mutex_destroy(&priv->hw_lock);
+	kfree(priv);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ark3116_init_termios(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 	struct ktermios *termios = tty->termios;
+=======
+	struct ktermios *termios = &tty->termios;
+>>>>>>> refs/remotes/origin/master
 	*termios = tty_std_termios;
 	termios->c_cflag = B9600 | CS8
 				      | CREAD | HUPCL | CLOCAL;
@@ -233,7 +280,11 @@ static void ark3116_set_termios(struct tty_struct *tty,
 {
 	struct usb_serial *serial = port->serial;
 	struct ark3116_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct ktermios *termios = tty->termios;
+=======
+	struct ktermios *termios = &tty->termios;
+>>>>>>> refs/remotes/origin/master
 	unsigned int cflag = termios->c_cflag;
 	int bps = tty_get_baud_rate(tty);
 	int quot;
@@ -269,7 +320,11 @@ static void ark3116_set_termios(struct tty_struct *tty,
 	hcr = (cflag & CRTSCTS) ? 0x03 : 0x00;
 
 	/* calc baudrate */
+<<<<<<< HEAD
 	dbg("%s - setting bps to %d", __func__, bps);
+=======
+	dev_dbg(&port->dev, "%s - setting bps to %d\n", __func__, bps);
+>>>>>>> refs/remotes/origin/master
 	eval = 0;
 	switch (bps) {
 	case 0:
@@ -296,8 +351,13 @@ static void ark3116_set_termios(struct tty_struct *tty,
 	/* keep old LCR_SBC bit */
 	lcr |= (priv->lcr & UART_LCR_SBC);
 
+<<<<<<< HEAD
 	dbg("%s - setting hcr:0x%02x,lcr:0x%02x,quot:%d",
 	    __func__, hcr, lcr, quot);
+=======
+	dev_dbg(&port->dev, "%s - setting hcr:0x%02x,lcr:0x%02x,quot:%d\n",
+		__func__, hcr, lcr, quot);
+>>>>>>> refs/remotes/origin/master
 
 	/* handshake control */
 	if (priv->hcr != hcr) {
@@ -352,6 +412,7 @@ static void ark3116_close(struct usb_serial_port *port)
 {
 	struct usb_serial *serial = port->serial;
 
+<<<<<<< HEAD
 	if (serial->dev) {
 		/* disable DMA */
 		ark3116_write_reg(serial, UART_FCR, 0);
@@ -364,6 +425,17 @@ static void ark3116_close(struct usb_serial_port *port)
 			usb_kill_urb(port->interrupt_in_urb);
 	}
 
+=======
+	/* disable DMA */
+	ark3116_write_reg(serial, UART_FCR, 0);
+
+	/* deactivate interrupts */
+	ark3116_write_reg(serial, UART_IER, 0);
+
+	usb_serial_generic_close(port);
+	if (serial->num_interrupt_in)
+		usb_kill_urb(port->interrupt_in_urb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ark3116_open(struct tty_struct *tty, struct usb_serial_port *port)
@@ -379,8 +451,14 @@ static int ark3116_open(struct tty_struct *tty, struct usb_serial_port *port)
 
 	result = usb_serial_generic_open(tty, port);
 	if (result) {
+<<<<<<< HEAD
 		dbg("%s - usb_serial_generic_open failed: %d",
 		    __func__, result);
+=======
+		dev_dbg(&port->dev,
+			"%s - usb_serial_generic_open failed: %d\n",
+			__func__, result);
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 	}
 
@@ -415,6 +493,7 @@ err_out:
 	return result;
 }
 
+<<<<<<< HEAD
 static int ark3116_get_icount(struct tty_struct *tty,
 					struct serial_icounter_struct *icount)
 {
@@ -435,11 +514,16 @@ static int ark3116_get_icount(struct tty_struct *tty,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ark3116_ioctl(struct tty_struct *tty,
 			 unsigned int cmd, unsigned long arg)
 {
 	struct usb_serial_port *port = tty->driver_data;
+<<<<<<< HEAD
 	struct ark3116_private *priv = usb_get_serial_port_data(port);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct serial_struct serstruct;
 	void __user *user_arg = (void __user *)arg;
 
@@ -448,8 +532,13 @@ static int ark3116_ioctl(struct tty_struct *tty,
 		/* XXX: Some of these values are probably wrong. */
 		memset(&serstruct, 0, sizeof(serstruct));
 		serstruct.type = PORT_16654;
+<<<<<<< HEAD
 		serstruct.line = port->serial->minor;
 		serstruct.port = port->number;
+=======
+		serstruct.line = port->minor;
+		serstruct.port = port->port_number;
+>>>>>>> refs/remotes/origin/master
 		serstruct.custom_divisor = 0;
 		serstruct.baud_base = 460800;
 
@@ -461,6 +550,7 @@ static int ark3116_ioctl(struct tty_struct *tty,
 		if (copy_from_user(&serstruct, user_arg, sizeof(serstruct)))
 			return -EFAULT;
 		return 0;
+<<<<<<< HEAD
 	case TIOCMIWAIT:
 		for (;;) {
 			struct async_icount prev = priv->icount;
@@ -484,6 +574,8 @@ static int ark3116_ioctl(struct tty_struct *tty,
 				return 0;
 		}
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ENOIOCTLCMD;
@@ -581,6 +673,7 @@ static void ark3116_update_msr(struct usb_serial_port *port, __u8 msr)
 	if (msr & UART_MSR_ANY_DELTA) {
 		/* update input line counters */
 		if (msr & UART_MSR_DCTS)
+<<<<<<< HEAD
 			priv->icount.cts++;
 		if (msr & UART_MSR_DDSR)
 			priv->icount.dsr++;
@@ -589,6 +682,16 @@ static void ark3116_update_msr(struct usb_serial_port *port, __u8 msr)
 		if (msr & UART_MSR_TERI)
 			priv->icount.rng++;
 		wake_up_interruptible(&priv->delta_msr_wait);
+=======
+			port->icount.cts++;
+		if (msr & UART_MSR_DDSR)
+			port->icount.dsr++;
+		if (msr & UART_MSR_DDCD)
+			port->icount.dcd++;
+		if (msr & UART_MSR_TERI)
+			port->icount.rng++;
+		wake_up_interruptible(&port->port.delta_msr_wait);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -604,6 +707,7 @@ static void ark3116_update_lsr(struct usb_serial_port *port, __u8 lsr)
 
 	if (lsr&UART_LSR_BRK_ERROR_BITS) {
 		if (lsr & UART_LSR_BI)
+<<<<<<< HEAD
 			priv->icount.brk++;
 		if (lsr & UART_LSR_FE)
 			priv->icount.frame++;
@@ -611,6 +715,15 @@ static void ark3116_update_lsr(struct usb_serial_port *port, __u8 lsr)
 			priv->icount.parity++;
 		if (lsr & UART_LSR_OE)
 			priv->icount.overrun++;
+=======
+			port->icount.brk++;
+		if (lsr & UART_LSR_FE)
+			port->icount.frame++;
+		if (lsr & UART_LSR_PE)
+			port->icount.parity++;
+		if (lsr & UART_LSR_OE)
+			port->icount.overrun++;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -626,17 +739,27 @@ static void ark3116_read_int_callback(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 		    __func__, status);
 		return;
 	default:
 		dbg("%s - nonzero urb status received: %d",
 		    __func__, status);
+=======
+		dev_dbg(&port->dev, "%s - urb shutting down with status: %d\n",
+			__func__, status);
+		return;
+	default:
+		dev_dbg(&port->dev, "%s - nonzero urb status received: %d\n",
+			__func__, status);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 0: /* success */
 		/* discovered this by trail and error... */
 		if ((urb->actual_length == 4) && (data[0] == 0xe8)) {
 			const __u8 id = data[1]&UART_IIR_ID;
+<<<<<<< HEAD
 			dbg("%s: iir=%02x", __func__, data[1]);
 			if (id == UART_IIR_MSI) {
 				dbg("%s: msr=%02x", __func__, data[3]);
@@ -644,6 +767,17 @@ static void ark3116_read_int_callback(struct urb *urb)
 				break;
 			} else if (id == UART_IIR_RLSI) {
 				dbg("%s: lsr=%02x", __func__, data[2]);
+=======
+			dev_dbg(&port->dev, "%s: iir=%02x\n", __func__, data[1]);
+			if (id == UART_IIR_MSI) {
+				dev_dbg(&port->dev, "%s: msr=%02x\n",
+					__func__, data[3]);
+				ark3116_update_msr(port, data[3]);
+				break;
+			} else if (id == UART_IIR_RLSI) {
+				dev_dbg(&port->dev, "%s: lsr=%02x\n",
+					__func__, data[2]);
+>>>>>>> refs/remotes/origin/master
 				ark3116_update_lsr(port, data[2]);
 				break;
 			}
@@ -651,8 +785,12 @@ static void ark3116_read_int_callback(struct urb *urb)
 		/*
 		 * Not sure what this data meant...
 		 */
+<<<<<<< HEAD
 		usb_serial_debug_data(debug, &port->dev,
 				      __func__,
+=======
+		usb_serial_debug_data(&port->dev, __func__,
+>>>>>>> refs/remotes/origin/master
 				      urb->actual_length,
 				      urb->transfer_buffer);
 		break;
@@ -666,7 +804,11 @@ static void ark3116_read_int_callback(struct urb *urb)
 }
 
 
+<<<<<<< HEAD
 /* Data comes in via the bulk (data) URB, erors/interrupts via the int URB.
+=======
+/* Data comes in via the bulk (data) URB, errors/interrupts via the int URB.
+>>>>>>> refs/remotes/origin/master
  * This means that we cannot be sure which data byte has an associated error
  * condition, so we report an error for all data in the next bulk read.
  *
@@ -681,7 +823,10 @@ static void ark3116_process_read_urb(struct urb *urb)
 {
 	struct usb_serial_port *port = urb->context;
 	struct ark3116_private *priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char *data = urb->transfer_buffer;
 	char tty_flag = TTY_NORMAL;
 	unsigned long flags;
@@ -696,10 +841,13 @@ static void ark3116_process_read_urb(struct urb *urb)
 	if (!urb->actual_length)
 		return;
 
+<<<<<<< HEAD
 	tty = tty_port_tty_get(&port->port);
 	if (!tty)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lsr & UART_LSR_BRK_ERROR_BITS) {
 		if (lsr & UART_LSR_BI)
 			tty_flag = TTY_BREAK;
@@ -710,6 +858,7 @@ static void ark3116_process_read_urb(struct urb *urb)
 
 		/* overrun is special, not associated with a char */
 		if (lsr & UART_LSR_OE)
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 	}
 	tty_insert_flip_string_fixed_flag(tty, data, tty_flag,
@@ -729,6 +878,15 @@ static struct usb_driver ark3116_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+			tty_insert_flip_char(&port->port, 0, TTY_OVERRUN);
+	}
+	tty_insert_flip_string_fixed_flag(&port->port, data, tty_flag,
+							urb->actual_length);
+	tty_flip_buffer_push(&port->port);
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver ark3116_device = {
 	.driver = {
 		.owner =	THIS_MODULE,
@@ -736,18 +894,30 @@ static struct usb_serial_driver ark3116_device = {
 	},
 	.id_table =		id_table,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.usb_driver =		&ark3116_driver,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	.num_ports =		1,
 	.attach =		ark3116_attach,
 	.release =		ark3116_release,
+=======
+	.num_ports =		1,
+	.attach =		ark3116_attach,
+	.port_probe =		ark3116_port_probe,
+	.port_remove =		ark3116_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.set_termios =		ark3116_set_termios,
 	.init_termios =		ark3116_init_termios,
 	.ioctl =		ark3116_ioctl,
 	.tiocmget =		ark3116_tiocmget,
 	.tiocmset =		ark3116_tiocmset,
+<<<<<<< HEAD
 	.get_icount =		ark3116_get_icount,
+=======
+	.tiocmiwait =		usb_serial_generic_tiocmiwait,
+	.get_icount =		usb_serial_generic_get_icount,
+>>>>>>> refs/remotes/origin/master
 	.open =			ark3116_open,
 	.close =		ark3116_close,
 	.break_ctl = 		ark3116_break_ctl,
@@ -755,6 +925,7 @@ static struct usb_serial_driver ark3116_device = {
 	.process_read_urb =	ark3116_process_read_urb,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init ark3116_init(void)
 {
@@ -783,21 +954,31 @@ static void __exit ark3116_exit(void)
 module_init(ark3116_init);
 module_exit(ark3116_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver * const serial_drivers[] = {
 	&ark3116_device, NULL
 };
 
+<<<<<<< HEAD
 module_usb_serial_driver(ark3116_driver, serial_drivers);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 
+<<<<<<< HEAD
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Enable debug");
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The following describes what I learned from studying the old
  * ark3116.c driver, disassembling the windows driver, and some lucky

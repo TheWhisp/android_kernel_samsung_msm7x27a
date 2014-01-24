@@ -1,6 +1,10 @@
 /*
  * QLogic iSCSI HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2010 QLogic Corporation
+=======
+ * Copyright (c)  2003-2013 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qla4xxx for copyright and licensing details.
  */
@@ -13,9 +17,13 @@
 #define MIN_DISC_DEV_DB_ENTRY		MAX_PRST_DEV_DB_ENTRIES
 #define MAX_DEV_DB_ENTRIES		512
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MAX_DEV_DB_ENTRIES_40XX		256
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MAX_DEV_DB_ENTRIES_40XX		256
+>>>>>>> refs/remotes/origin/master
 
 /*************************************************************************
  *
@@ -68,6 +76,43 @@ struct device_reg_82xx {
 #define ISRX_82XX_RISC_INT	BIT_0 /* RISC interrupt. */
 };
 
+<<<<<<< HEAD
+=======
+/* ISP 83xx I/O Register Set structure */
+struct device_reg_83xx {
+	__le32 mailbox_in[16];	/* 0x0000 */
+	__le32 reserve1[496];	/* 0x0040 */
+	__le32 mailbox_out[16];	/* 0x0800 */
+	__le32 reserve2[496];
+	__le32 mbox_int;	/* 0x1000 */
+	__le32 reserve3[63];
+	__le32 req_q_out;	/* 0x1100 */
+	__le32 reserve4[63];
+
+	__le32 rsp_q_in;	/* 0x1200 */
+	__le32 reserve5[1919];
+
+	__le32 req_q_in;	/* 0x3000 */
+	__le32 reserve6[3];
+	__le32 iocb_int_mask;	/* 0x3010 */
+	__le32 reserve7[3];
+	__le32 rsp_q_out;	/* 0x3020 */
+	__le32 reserve8[3];
+	__le32 anonymousbuff;	/* 0x3030 */
+	__le32 mb_int_mask;	/* 0x3034 */
+
+	__le32 host_intr;	/* 0x3038 - Host Interrupt Register */
+	__le32 risc_intr;	/* 0x303C - RISC Interrupt Register */
+	__le32 reserve9[544];
+	__le32 leg_int_ptr;	/* 0x38C0 - Legacy Interrupt Pointer Register */
+	__le32 leg_int_trig;	/* 0x38C4 - Legacy Interrupt Trigger Control */
+	__le32 leg_int_mask;	/* 0x38C8 - Legacy Interrupt Mask Register */
+};
+
+#define INT_ENABLE_FW_MB	(1 << 2)
+#define INT_MASK_FW_MB		(1 << 2)
+
+>>>>>>> refs/remotes/origin/master
 /*  remote register set (access via PCI memory read/write) */
 struct isp_reg {
 #define MBOX_REG_COUNT 8
@@ -151,7 +196,10 @@ struct isp_reg {
 #define QL4022_FLASH_SEM_MASK	(QL4022_RESOURCE_MASK_BASE_CODE << (13+16))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* nvram address for 4032 */
 #define NVRAM_PORT0_BOOT_MODE		0x03b1
 #define NVRAM_PORT0_BOOT_PRI_TGT	0x03b2
@@ -159,7 +207,10 @@ struct isp_reg {
 #define NVRAM_PORT1_BOOT_MODE		0x07b1
 #define NVRAM_PORT1_BOOT_PRI_TGT	0x07b2
 #define NVRAM_PORT1_BOOT_SEC_TGT	0x07bb
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /* Page # defines for 4022 */
@@ -209,11 +260,17 @@ static inline uint32_t clr_rmask(uint32_t val)
 #define NVR_WRITE_ENABLE			0x00000010	/* 4022 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define QL4010_NVRAM_SIZE			0x200
 #define QL40X2_NVRAM_SIZE			0x800
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define QL4010_NVRAM_SIZE			0x200
+#define QL40X2_NVRAM_SIZE			0x800
+
+>>>>>>> refs/remotes/origin/master
 /*  ISP port_status definitions */
 
 /*  ISP Semaphore definitions */
@@ -262,10 +319,17 @@ union external_hw_config_reg {
 #define FA_RISC_CODE_ADDR_82		0x40000
 #define FA_GOLD_RISC_CODE_ADDR_82	0x80000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define FA_FLASH_ISCSI_CHAP		0x540000
 #define FA_FLASH_CHAP_SIZE		0xC0000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FA_FLASH_ISCSI_CHAP		0x540000
+#define FA_FLASH_CHAP_SIZE		0xC0000
+#define FA_FLASH_ISCSI_DDB		0x420000
+#define FA_FLASH_DDB_SIZE		0x080000
+>>>>>>> refs/remotes/origin/master
 
 /* Flash Description Table */
 struct qla_fdt_layout {
@@ -322,15 +386,22 @@ struct qla_flt_header {
 #define FLT_REG_BOOTLOAD_82	0x72
 #define FLT_REG_FW_82		0x74
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FLT_REG_GOLD_FW_82	0x75
 #define FLT_REG_BOOT_CODE_82	0x78
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define FLT_REG_FW_82_1		0x97
 #define FLT_REG_GOLD_FW_82	0x75
 #define FLT_REG_BOOT_CODE_82	0x78
 #define FLT_REG_ISCSI_PARAM	0x65
 #define FLT_REG_ISCSI_CHAP	0x63
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FLT_REG_ISCSI_DDB	0x6A
+>>>>>>> refs/remotes/origin/master
 
 struct qla_flt_region {
 	uint32_t code;
@@ -349,12 +420,18 @@ struct qla_flt_region {
 #define MBOX_CMD_ABOUT_FW			0x0009
 #define MBOX_CMD_PING				0x000B
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PING_IPV6_PROTOCOL_ENABLE		0x1
 #define PING_IPV6_LINKLOCAL_ADDR		0x4
 #define PING_IPV6_ADDR0				0x8
 #define PING_IPV6_ADDR1				0xC
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MBOX_CMD_ENABLE_INTRS			0x0010
 #define INTR_DISABLE				0
 #define INTR_ENABLE				1
@@ -372,16 +449,25 @@ struct qla_flt_region {
 #define MBOX_CMD_READ_FLASH			0x0026
 #define MBOX_CMD_CLEAR_DATABASE_ENTRY		0x0031
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MBOX_CMD_CONN_CLOSE_SESS_LOGOUT		0x0056
 #define LOGOUT_OPTION_CLOSE_SESSION		0x01
 #define LOGOUT_OPTION_RELOGIN			0x02
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MBOX_CMD_CONN_OPEN			0x0074
 #define MBOX_CMD_CONN_CLOSE_SESS_LOGOUT		0x0056
 #define LOGOUT_OPTION_CLOSE_SESSION		0x0002
 #define LOGOUT_OPTION_RELOGIN			0x0004
 #define LOGOUT_OPTION_FREE_DDB			0x0008
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MBOX_CMD_SET_PARAM			0x0059
+#define SET_DRVR_VERSION			0x200
+#define MAX_DRVR_VER_LEN			24
+>>>>>>> refs/remotes/origin/master
 #define MBOX_CMD_EXECUTE_IOCB_A64		0x005A
 #define MBOX_CMD_INITIALIZE_FIRMWARE		0x0060
 #define MBOX_CMD_GET_INIT_FW_CTRL_BLOCK		0x0061
@@ -391,9 +477,13 @@ struct qla_flt_region {
 #define DDB_DS_UNASSIGNED			0x00
 #define DDB_DS_NO_CONNECTION_ACTIVE		0x01
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DDB_DS_DISCOVERY			0x02
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DDB_DS_DISCOVERY			0x02
+>>>>>>> refs/remotes/origin/master
 #define DDB_DS_SESSION_ACTIVE			0x04
 #define DDB_DS_SESSION_FAILED			0x06
 #define DDB_DS_LOGIN_IN_PROCESS			0x07
@@ -401,10 +491,15 @@ struct qla_flt_region {
 #define MBOX_CMD_GET_INIT_FW_CTRL_BLOCK_DEFAULTS 0x006A
 #define MBOX_CMD_GET_SYS_INFO			0x0078
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MBOX_CMD_GET_NVRAM			0x0078	/* For 40xx */
 #define MBOX_CMD_SET_NVRAM			0x0079	/* For 40xx */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MBOX_CMD_GET_NVRAM			0x0078	/* For 40xx */
+#define MBOX_CMD_SET_NVRAM			0x0079	/* For 40xx */
+>>>>>>> refs/remotes/origin/master
 #define MBOX_CMD_RESTORE_FACTORY_DEFAULTS	0x0087
 #define MBOX_CMD_SET_ACB			0x0088
 #define MBOX_CMD_GET_ACB			0x0089
@@ -417,6 +512,14 @@ struct qla_flt_region {
 #define MBOX_CMD_GET_IP_ADDR_STATE		0x0091
 #define MBOX_CMD_SEND_IPV6_ROUTER_SOL		0x0092
 #define MBOX_CMD_GET_DB_ENTRY_CURRENT_IP_ADDR	0x0093
+<<<<<<< HEAD
+=======
+#define MBOX_CMD_MINIDUMP			0x0129
+
+/* Minidump subcommand */
+#define MINIDUMP_GET_SIZE_SUBCOMMAND		0x00
+#define MINIDUMP_GET_TMPLT_SUBCOMMAND		0x01
+>>>>>>> refs/remotes/origin/master
 
 /* Mailbox 1 */
 #define FW_STATE_READY				0x0000
@@ -433,8 +536,11 @@ struct qla_flt_region {
 #define FW_ADDSTATE_LINK_UP			0x0010
 #define FW_ADDSTATE_ISNS_SVC_ENABLED		0x0020
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MBOX_CMD_GET_DATABASE_ENTRY_DEFAULTS	0x006B
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define FW_ADDSTATE_LINK_SPEED_10MBPS		0x0100
 #define FW_ADDSTATE_LINK_SPEED_100MBPS		0x0200
 #define FW_ADDSTATE_LINK_SPEED_1GBPS		0x0400
@@ -443,11 +549,22 @@ struct qla_flt_region {
 #define MBOX_CMD_GET_DATABASE_ENTRY_DEFAULTS	0x006B
 #define IPV6_DEFAULT_DDB_ENTRY			0x0001
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MBOX_CMD_CONN_OPEN_SESS_LOGIN		0x0074
 #define MBOX_CMD_GET_CRASH_RECORD		0x0076	/* 4010 only */
 #define MBOX_CMD_GET_CONN_EVENT_LOG		0x0077
 
+<<<<<<< HEAD
+=======
+#define MBOX_CMD_IDC_ACK			0x0101
+#define MBOX_CMD_IDC_TIME_EXTEND		0x0102
+#define MBOX_CMD_PORT_RESET			0x0120
+#define MBOX_CMD_SET_PORT_CONFIG		0x0122
+
+>>>>>>> refs/remotes/origin/master
 /*  Mailbox status definitions */
 #define MBOX_COMPLETION_STATUS			4
 #define MBOX_STS_BUSY				0x0007
@@ -480,10 +597,23 @@ struct qla_flt_region {
 #define MBOX_ASTS_SUBNET_STATE_CHANGE		0x8027
 #define MBOX_ASTS_RESPONSE_QUEUE_FULL		0x8028
 #define MBOX_ASTS_IP_ADDR_STATE_CHANGED		0x8029
+<<<<<<< HEAD
+=======
+#define MBOX_ASTS_IPV6_DEFAULT_ROUTER_CHANGED	0x802A
+>>>>>>> refs/remotes/origin/master
 #define MBOX_ASTS_IPV6_PREFIX_EXPIRED		0x802B
 #define MBOX_ASTS_IPV6_ND_PREFIX_IGNORED	0x802C
 #define MBOX_ASTS_IPV6_LCL_PREFIX_IGNORED	0x802D
 #define MBOX_ASTS_ICMPV6_ERROR_MSG_RCVD		0x802E
+<<<<<<< HEAD
+=======
+#define MBOX_ASTS_INITIALIZATION_FAILED		0x8031
+#define MBOX_ASTS_SYSTEM_WARNING_EVENT		0x8036
+#define MBOX_ASTS_IDC_COMPLETE			0x8100
+#define MBOX_ASTS_IDC_REQUEST_NOTIFICATION	0x8101
+#define MBOX_ASTS_IDC_TIME_EXTEND_NOTIFICATION	0x8102
+#define MBOX_ASTS_DCBX_CONF_CHANGE		0x8110
+>>>>>>> refs/remotes/origin/master
 #define MBOX_ASTS_TXSCVR_INSERTED		0x8130
 #define MBOX_ASTS_TXSCVR_REMOVED		0x8131
 
@@ -493,6 +623,13 @@ struct qla_flt_region {
 #define MBOX_ASTS_IPSEC_SYSTEM_FATAL_ERROR	0x8022
 #define MBOX_ASTS_SUBNET_STATE_CHANGE		0x8027
 
+<<<<<<< HEAD
+=======
+/* ACB Configuration Defines */
+#define ACB_CONFIG_DISABLE		0x00
+#define ACB_CONFIG_SET			0x01
+
+>>>>>>> refs/remotes/origin/master
 /* ACB State Defines */
 #define ACB_STATE_UNCONFIGURED	0x00
 #define ACB_STATE_INVALID	0x01
@@ -503,7 +640,10 @@ struct qla_flt_region {
 #define ACB_STATE_DISABLING	0x06
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* FLASH offsets */
 #define FLASH_SEGMENT_IFCB	0x04000000
 
@@ -512,7 +652,18 @@ struct qla_flt_region {
 #define FLASH_OPT_COMMIT	2
 #define FLASH_OPT_RMW_COMMIT	3
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Loopback type */
+#define ENABLE_INTERNAL_LOOPBACK	0x04
+#define ENABLE_EXTERNAL_LOOPBACK	0x08
+
+/* generic defines to enable/disable params */
+#define QL4_PARAM_DISABLE	0
+#define QL4_PARAM_ENABLE	1
+
+>>>>>>> refs/remotes/origin/master
 /*************************************************************************/
 
 /* Host Adapter Initialization Control Block (from host) */
@@ -535,11 +686,16 @@ struct addr_ctrl_blk {
 	uint16_t eth_mtu_size;	/* 08-09 */
 	uint16_t add_fw_options;	/* 0A-0B */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SERIALIZE_TASK_MGMT		0x0400
 =======
 #define ADFWOPT_SERIALIZE_TASK_MGMT	0x0400
 #define ADFWOPT_AUTOCONN_DISABLE	0x0002
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ADFWOPT_SERIALIZE_TASK_MGMT	0x0400
+#define ADFWOPT_AUTOCONN_DISABLE	0x0002
+>>>>>>> refs/remotes/origin/master
 
 	uint8_t hb_interval;	/* 0C */
 	uint8_t inst_num; /* 0D */
@@ -558,14 +714,20 @@ struct addr_ctrl_blk {
 	uint16_t iscsi_opts;	/* 30-31 */
 	uint16_t ipv4_tcp_opts;	/* 32-33 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t ipv4_ip_opts;	/* 34-35 */
 #define  IPOPT_IPv4_PROTOCOL_ENABLE	0x8000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TCPOPT_DHCP_ENABLE		0x0200
 	uint16_t ipv4_ip_opts;	/* 34-35 */
 #define IPOPT_IPV4_PROTOCOL_ENABLE	0x8000
 #define IPOPT_VLAN_TAGGING_ENABLE	0x2000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	uint16_t iscsi_max_pdu_size;	/* 36-37 */
 	uint8_t ipv4_tos;	/* 38 */
@@ -618,9 +780,13 @@ struct addr_ctrl_blk {
 	uint16_t ipv6_opts;	/* 206-207 */
 #define IPV6_OPT_IPV6_PROTOCOL_ENABLE	0x8000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IPV6_OPT_VLAN_TAGGING_ENABLE	0x2000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IPV6_OPT_VLAN_TAGGING_ENABLE	0x2000
+>>>>>>> refs/remotes/origin/master
 
 	uint16_t ipv6_addtl_opts;	/* 208-209 */
 #define IPV6_ADDOPT_NEIGHBOR_DISCOVERY_ADDR_ENABLE	0x0002 /* Pri ACB
@@ -665,7 +831,10 @@ struct addr_ctrl_blk {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define IP_ADDR_COUNT	4 /* Total 4 IP address supported in one interface
 			   * One IPv4, one IPv6 link local and 2 IPv6
 			   */
@@ -673,16 +842,22 @@ struct addr_ctrl_blk {
 #define IP_STATE_MASK	0x0F000000
 #define IP_STATE_SHIFT	24
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct init_fw_ctrl_blk {
 	struct addr_ctrl_blk pri;
 /*	struct addr_ctrl_blk sec;*/
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*************************************************************************/
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PRIMARI_ACB		0
 #define SECONDARY_ACB		1
 
@@ -776,12 +951,16 @@ struct ql4_chap_table {
 	uint16_t cookie;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct dev_db_entry {
 	uint16_t options;	/* 00-01 */
 #define DDB_OPT_DISC_SESSION  0x10
 #define DDB_OPT_TARGET	      0x02 /* device is a target */
 #define DDB_OPT_IPV6_DEVICE	0x100
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define DDB_OPT_AUTO_SENDTGTS_DISABLE		0x40
@@ -789,10 +968,22 @@ struct dev_db_entry {
 #define DDB_OPT_IPV6_NULL_LINK_LOCAL		0x800 /* post connection */
 #define DDB_OPT_IPV6_FW_DEFINED_LINK_LOCAL	0x800 /* pre connection */
 
+=======
+#define DDB_OPT_AUTO_SENDTGTS_DISABLE		0x40
+#define DDB_OPT_IPV6_NULL_LINK_LOCAL		0x800 /* post connection */
+#define DDB_OPT_IPV6_FW_DEFINED_LINK_LOCAL	0x800 /* pre connection */
+
+#define OPT_IS_FW_ASSIGNED_IPV6		11
+#define OPT_IPV6_DEVICE			8
+#define OPT_AUTO_SENDTGTS_DISABLE	6
+#define OPT_DISC_SESSION		4
+#define OPT_ENTRY_STATE			3
+>>>>>>> refs/remotes/origin/master
 	uint16_t exec_throttle;	/* 02-03 */
 	uint16_t exec_count;	/* 04-05 */
 	uint16_t res0;	/* 06-07 */
 	uint16_t iscsi_options;	/* 08-09 */
+<<<<<<< HEAD
 	uint16_t tcp_options;	/* 0A-0B */
 	uint16_t ip_options;	/* 0C-0D */
 	uint16_t iscsi_max_rcv_data_seg_len;	/* 0E-0F */
@@ -800,6 +991,36 @@ struct dev_db_entry {
 =======
 #define BYTE_UNITS	512
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ISCSIOPT_HEADER_DIGEST_EN		13
+#define ISCSIOPT_DATA_DIGEST_EN			12
+#define ISCSIOPT_IMMEDIATE_DATA_EN		11
+#define ISCSIOPT_INITIAL_R2T_EN			10
+#define ISCSIOPT_DATA_SEQ_IN_ORDER		9
+#define ISCSIOPT_DATA_PDU_IN_ORDER		8
+#define ISCSIOPT_CHAP_AUTH_EN			7
+#define ISCSIOPT_SNACK_REQ_EN			6
+#define ISCSIOPT_DISCOVERY_LOGOUT_EN		5
+#define ISCSIOPT_BIDI_CHAP_EN			4
+#define ISCSIOPT_DISCOVERY_AUTH_OPTIONAL	3
+#define ISCSIOPT_ERL1				1
+#define ISCSIOPT_ERL0				0
+
+	uint16_t tcp_options;	/* 0A-0B */
+#define TCPOPT_TIMESTAMP_STAT	6
+#define TCPOPT_NAGLE_DISABLE	5
+#define TCPOPT_WSF_DISABLE	4
+#define TCPOPT_TIMER_SCALE3	3
+#define TCPOPT_TIMER_SCALE2	2
+#define TCPOPT_TIMER_SCALE1	1
+#define TCPOPT_TIMESTAMP_EN	0
+
+	uint16_t ip_options;	/* 0C-0D */
+#define IPOPT_FRAGMENT_DISABLE	4
+
+	uint16_t iscsi_max_rcv_data_seg_len;	/* 0E-0F */
+#define BYTE_UNITS	512
+>>>>>>> refs/remotes/origin/master
 	uint32_t res1;	/* 10-13 */
 	uint16_t iscsi_max_snd_data_seg_len;	/* 14-15 */
 	uint16_t iscsi_first_burst_len;	/* 16-17 */
@@ -826,6 +1047,7 @@ struct dev_db_entry {
 	uint8_t iscsi_name[0xE0];	/* C0-19F : xxzzy Make this a
 					 * pointer to a string so we
 <<<<<<< HEAD
+<<<<<<< HEAD
 					 * don't have to reserve soooo
 =======
 					 * don't have to reserve so
@@ -833,6 +1055,14 @@ struct dev_db_entry {
 					 * much RAM */
 	uint8_t link_local_ipv6_addr[0x10]; /* 1A0-1AF */
 	uint8_t res5[0x10];	/* 1B0-1BF */
+=======
+					 * don't have to reserve so
+					 * much RAM */
+	uint8_t link_local_ipv6_addr[0x10]; /* 1A0-1AF */
+	uint8_t res5[0x10];	/* 1B0-1BF */
+#define DDB_NO_LINK	0xFFFF
+#define DDB_ISNS	0xFFFD
+>>>>>>> refs/remotes/origin/master
 	uint16_t ddb_link;	/* 1C0-1C1 */
 	uint16_t chap_tbl_idx;	/* 1C2-1C3 */
 	uint16_t tgt_portal_grp; /* 1C4-1C5 */
@@ -841,13 +1071,19 @@ struct dev_db_entry {
 	uint32_t stat_sn;	/* 1C8-1CB */
 	uint32_t exp_stat_sn;	/* 1CC-1CF */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t res6[0x30];	/* 1D0-1FF */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint8_t res6[0x2b];	/* 1D0-1FB */
 #define DDB_VALID_COOKIE	0x9034
 	uint16_t cookie;	/* 1FC-1FD */
 	uint16_t len;		/* 1FE-1FF */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*************************************************************************/
@@ -860,7 +1096,10 @@ struct dev_db_entry {
 							    * for EOF
 							    * signature */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define FLASH_RAW_ACCESS_ADDR	0x8e000000
 
 #define BOOT_PARAM_OFFSET_PORT0 0x3b0
@@ -869,7 +1108,10 @@ struct dev_db_entry {
 #define FLASH_OFFSET_DB_INFO	0x05000000
 #define FLASH_OFFSET_DB_END	(FLASH_OFFSET_DB_INFO + 0x7fff)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct sys_info_phys_addr {
 	uint8_t address[6];	/* 00-05 */
@@ -941,7 +1183,11 @@ struct about_fw_info {
 	uint16_t bootload_minor;	/* 46 - 47 */
 	uint16_t bootload_patch;	/* 48 - 49 */
 	uint16_t bootload_build;	/* 4A - 4B */
+<<<<<<< HEAD
 	uint8_t reserved2[180];		/* 4C - FF */
+=======
+	uint8_t extended_timestamp[180];/* 4C - FF */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct crash_record {
@@ -1003,17 +1249,23 @@ struct qla4_header {
 #define ET_PASSTHRU0		 0x3A
 #define ET_PASSTHRU_STATUS	 0x3C
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	uint8_t entryStatus;
 	uint8_t systemDefined;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ET_MBOX_CMD		0x38
 #define ET_MBOX_STATUS		0x39
 
 	uint8_t entryStatus;
 	uint8_t systemDefined;
 #define SD_ISCSI_PDU	0x01
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uint8_t entryCount;
 
 	/* SyetemDefined definition */
@@ -1172,28 +1424,39 @@ struct passthru0 {
 	uint32_t handle;	/* 04-07 */
 	uint16_t target;	/* 08-09 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint16_t connectionID;	/* 0A-0B */
 #define ISNS_DEFAULT_SERVER_CONN_ID	((uint16_t)0x8000)
 
 	uint16_t controlFlags;	/* 0C-0D */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint16_t connection_id;	/* 0A-0B */
 #define ISNS_DEFAULT_SERVER_CONN_ID	((uint16_t)0x8000)
 
 	uint16_t control_flags;	/* 0C-0D */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PT_FLAG_ETHERNET_FRAME		0x8000
 #define PT_FLAG_ISNS_PDU		0x8000
 #define PT_FLAG_SEND_BUFFER		0x0200
 #define PT_FLAG_WAIT_4_RESPONSE		0x0100
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PT_FLAG_ISCSI_PDU		0x1000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PT_FLAG_ISCSI_PDU		0x1000
+>>>>>>> refs/remotes/origin/master
 
 	uint16_t timeout;	/* 0E-0F */
 #define PT_DEFAULT_TIMEOUT		30 /* seconds */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct data_seg_a64 outDataSeg64;	/* 10-1B */
 	uint32_t res1;		/* 1C-1F */
@@ -1203,6 +1466,11 @@ struct passthru0 {
 	uint32_t res1;		/* 1C-1F */
 	struct data_seg_a64 in_dsd;     /* 20-2B */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct data_seg_a64 out_dsd;    /* 10-1B */
+	uint32_t res1;		/* 1C-1F */
+	struct data_seg_a64 in_dsd;     /* 20-2B */
+>>>>>>> refs/remotes/origin/master
 	uint8_t res2[20];	/* 2C-3F */
 };
 
@@ -1227,7 +1495,10 @@ struct passthru_status {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct mbox_cmd_iocb {
 	struct qla4_header hdr;	/* 00-03 */
 	uint32_t handle;	/* 04-07 */
@@ -1242,7 +1513,10 @@ struct mbox_status_iocb {
 	uint32_t res1[6];	/* 26-3F */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ISP queue - response queue entry definition.
  */
@@ -1253,7 +1527,10 @@ struct response {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct ql_iscsi_stats {
 	uint8_t reserved1[656]; /* 0000-028F */
 	uint32_t tx_cmd_pdu; /* 0290-0293 */
@@ -1293,5 +1570,35 @@ struct ql_iscsi_stats {
 	uint8_t reserved2[264]; /* 0x0308 - 0x040F */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define QLA8XXX_DBG_STATE_ARRAY_LEN		16
+#define QLA8XXX_DBG_CAP_SIZE_ARRAY_LEN		8
+#define QLA8XXX_DBG_RSVD_ARRAY_LEN		8
+#define QLA83XX_DBG_OCM_WNDREG_ARRAY_LEN	16
+#define QLA83XX_SS_OCM_WNDREG_INDEX		3
+#define QLA83XX_SS_PCI_INDEX			0
+
+struct qla4_8xxx_minidump_template_hdr {
+	uint32_t entry_type;
+	uint32_t first_entry_offset;
+	uint32_t size_of_template;
+	uint32_t capture_debug_level;
+	uint32_t num_of_entries;
+	uint32_t version;
+	uint32_t driver_timestamp;
+	uint32_t checksum;
+
+	uint32_t driver_capture_mask;
+	uint32_t driver_info_word2;
+	uint32_t driver_info_word3;
+	uint32_t driver_info_word4;
+
+	uint32_t saved_state_array[QLA8XXX_DBG_STATE_ARRAY_LEN];
+	uint32_t capture_size_array[QLA8XXX_DBG_CAP_SIZE_ARRAY_LEN];
+	uint32_t ocm_window_reg[QLA83XX_DBG_OCM_WNDREG_ARRAY_LEN];
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /*  _QLA4X_FW_H */

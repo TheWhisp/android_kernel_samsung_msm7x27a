@@ -20,10 +20,14 @@
 #include <linux/delay.h>
 #include <linux/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/platform_device.h>
 #include <linux/of.h>
@@ -36,11 +40,15 @@
 #include <linux/fs_uart_pd.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/time.h>
@@ -50,9 +58,13 @@
 #include <mm/mmu_decl.h>
 #include <asm/cpm2.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/fsl_hcalls.h>	/* For the Freescale hypervisor */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/fsl_hcalls.h>	/* For the Freescale hypervisor */
+>>>>>>> refs/remotes/origin/master
 
 extern void init_fcc_ioports(struct fs_platform_info*);
 extern void init_fec_ioports(struct fs_platform_info*);
@@ -70,10 +82,17 @@ phys_addr_t get_immrbase(void)
 	if (soc) {
 		int size;
 		u32 naddr;
+<<<<<<< HEAD
 		const u32 *prop = of_get_property(soc, "#address-cells", &size);
 
 		if (prop && size == 4)
 			naddr = *prop;
+=======
+		const __be32 *prop = of_get_property(soc, "#address-cells", &size);
+
+		if (prop && size == 4)
+			naddr = be32_to_cpup(prop);
+>>>>>>> refs/remotes/origin/master
 		else
 			naddr = 2;
 
@@ -265,8 +284,13 @@ struct platform_diu_data_ops diu_ops;
 EXPORT_SYMBOL(diu_ops);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
+=======
+
+#ifdef CONFIG_EPAPR_PARAVIRT
+>>>>>>> refs/remotes/origin/master
 /*
  * Restart the current partition
  *
@@ -292,4 +316,8 @@ void fsl_hv_halt(void)
 	pr_info("hv exit\n");
 	fh_partition_stop(-1);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master

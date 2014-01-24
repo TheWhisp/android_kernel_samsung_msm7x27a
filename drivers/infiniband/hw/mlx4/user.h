@@ -40,7 +40,13 @@
  * Increment this value if any changes that break userspace ABI
  * compatibility are made.
  */
+<<<<<<< HEAD
 #define MLX4_IB_UVERBS_ABI_VERSION	3
+=======
+
+#define MLX4_IB_UVERBS_NO_DEV_CAPS_ABI_VERSION	3
+#define MLX4_IB_UVERBS_ABI_VERSION		4
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Make sure that all structs defined in this file remain laid out so
@@ -50,10 +56,25 @@
  * instead.
  */
 
+<<<<<<< HEAD
 struct mlx4_ib_alloc_ucontext_resp {
 	__u32	qp_tab_size;
 	__u16	bf_reg_size;
 	__u16	bf_regs_per_page;
+=======
+struct mlx4_ib_alloc_ucontext_resp_v3 {
+	__u32	qp_tab_size;
+	__u16	bf_reg_size;
+	__u16	bf_regs_per_page;
+};
+
+struct mlx4_ib_alloc_ucontext_resp {
+	__u32	dev_caps;
+	__u32	qp_tab_size;
+	__u16	bf_reg_size;
+	__u16	bf_regs_per_page;
+	__u32	cqe_size;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_ib_alloc_pd_resp {

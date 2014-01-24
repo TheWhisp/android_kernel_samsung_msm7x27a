@@ -1,8 +1,11 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Copyright (C) 2005-2007 Takahiro Hirofuchi
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2011 matt mooney <mfm@muteddisk.com>
  *               2005-2007 Takahiro Hirofuchi
  *
@@ -18,7 +21,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifdef HAVE_CONFIG_H
@@ -26,15 +32,22 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <unistd.h>
 #include <netdb.h>
 #include <strings.h>
 =======
+=======
+#define _GNU_SOURCE
+>>>>>>> refs/remotes/origin/master
 #include <errno.h>
 #include <unistd.h>
 #include <netdb.h>
 #include <string.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -46,6 +59,7 @@
 #include <tcpd.h>
 #endif
 
+<<<<<<< HEAD
 #define _GNU_SOURCE
 #include <getopt.h>
 <<<<<<< HEAD
@@ -116,6 +130,11 @@ static int send_reply_devlist(int sockfd)
 =======
 #include <glib.h>
 #include <signal.h>
+=======
+#include <getopt.h>
+#include <signal.h>
+#include <poll.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "usbip_host_driver.h"
 #include "usbip_common.h"
@@ -125,11 +144,18 @@ static int send_reply_devlist(int sockfd)
 #define PROGNAME "usbipd"
 #define MAXSOCKFD 20
 
+<<<<<<< HEAD
 GMainLoop *main_loop;
+=======
+#define MAIN_LOOP_TIMEOUT 10
+
+#define DEFAULT_PID_FILE "/var/run/" PROGNAME ".pid"
+>>>>>>> refs/remotes/origin/master
 
 static const char usbip_version_string[] = PACKAGE_STRING;
 
 static const char usbipd_help_string[] =
+<<<<<<< HEAD
 	"usage: usbipd [options]			\n"
 	"	-D, --daemon				\n"
 	"		Run as a daemon process.	\n"
@@ -142,6 +168,34 @@ static const char usbipd_help_string[] =
 	"						\n"
 	"	-v, --version				\n"
 	"		Show version.			\n";
+=======
+	"usage: usbipd [options]\n"
+	"\n"
+	"	-4, --ipv4\n"
+	"		Bind to IPv4. Default is both.\n"
+	"\n"
+	"	-6, --ipv6\n"
+	"		Bind to IPv6. Default is both.\n"
+	"\n"
+	"	-D, --daemon\n"
+	"		Run as a daemon process.\n"
+	"\n"
+	"	-d, --debug\n"
+	"		Print debugging information.\n"
+	"\n"
+	"	-PFILE, --pid FILE\n"
+	"		Write process id to FILE.\n"
+	"		If no FILE specified, use " DEFAULT_PID_FILE "\n"
+	"\n"
+	"	-tPORT, --tcp-port PORT\n"
+	"		Listen on TCP/IP port PORT.\n"
+	"\n"
+	"	-h, --help\n"
+	"		Print this help.\n"
+	"\n"
+	"	-v, --version\n"
+	"		Show version.\n";
+>>>>>>> refs/remotes/origin/master
 
 static void usbipd_help(void)
 {
@@ -268,7 +322,10 @@ static int send_reply_devlist(int connfd)
 			if (rc < 0) {
 				dbg("usbip_net_send failed: pdu_uinf");
 				return -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -276,6 +333,7 @@ static int send_reply_devlist(int connfd)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int recv_request_devlist(int sockfd)
@@ -295,6 +353,8 @@ static int recv_request_devlist(int sockfd)
 	if (ret < 0) {
 		err("send devlist reply");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int recv_request_devlist(int connfd)
 {
 	struct op_devlist_request req;
@@ -311,13 +371,17 @@ static int recv_request_devlist(int connfd)
 	rc = send_reply_devlist(connfd);
 	if (rc < 0) {
 		dbg("send_reply_devlist failed");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int recv_request_import(int sockfd)
@@ -495,6 +559,8 @@ static int listen_all_addrinfo(struct addrinfo *ai_head, int lsock[])
 			close(lsock[n]);
 			lsock[n] = -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int recv_pdu(int connfd)
 {
 	uint16_t code = OP_UNSPEC;
@@ -561,13 +627,21 @@ static int do_accept(int listenfd)
 
 	memset(&ss, 0, sizeof(ss));
 
+<<<<<<< HEAD
 	connfd = accept(listenfd, (struct sockaddr *) &ss, &len);
+=======
+	connfd = accept(listenfd, (struct sockaddr *)&ss, &len);
+>>>>>>> refs/remotes/origin/master
 	if (connfd < 0) {
 		err("failed to accept connection");
 		return -1;
 	}
 
+<<<<<<< HEAD
 	rc = getnameinfo((struct sockaddr *) &ss, len, host, sizeof(host),
+=======
+	rc = getnameinfo((struct sockaddr *)&ss, len, host, sizeof(host),
+>>>>>>> refs/remotes/origin/master
 			 port, sizeof(port), NI_NUMERICHOST | NI_NUMERICSERV);
 	if (rc)
 		err("getnameinfo: %s", gai_strerror(rc));
@@ -585,6 +659,7 @@ static int do_accept(int listenfd)
 	return connfd;
 }
 
+<<<<<<< HEAD
 gboolean process_request(GIOChannel *gio, GIOCondition condition,
 			 gpointer unused_data)
 {
@@ -612,16 +687,44 @@ gboolean process_request(GIOChannel *gio, GIOCondition condition,
 }
 
 static void log_addrinfo(struct addrinfo *ai)
+=======
+int process_request(int listenfd)
+{
+	pid_t childpid;
+	int connfd;
+
+	connfd = do_accept(listenfd);
+	if (connfd < 0)
+		return -1;
+	childpid = fork();
+	if (childpid == 0) {
+		close(listenfd);
+		recv_pdu(connfd);
+		exit(0);
+	}
+	close(connfd);
+	return 0;
+}
+
+static void addrinfo_to_text(struct addrinfo *ai, char buf[],
+			     const size_t buf_size)
+>>>>>>> refs/remotes/origin/master
 {
 	char hbuf[NI_MAXHOST];
 	char sbuf[NI_MAXSERV];
 	int rc;
 
+<<<<<<< HEAD
+=======
+	buf[0] = '\0';
+
+>>>>>>> refs/remotes/origin/master
 	rc = getnameinfo(ai->ai_addr, ai->ai_addrlen, hbuf, sizeof(hbuf),
 			 sbuf, sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV);
 	if (rc)
 		err("getnameinfo: %s", gai_strerror(rc));
 
+<<<<<<< HEAD
 	info("listening on %s:%s", hbuf, sbuf);
 }
 
@@ -746,6 +849,63 @@ static void signal_handler(int i)
 
 	dbg("listening on %d address%s", nsockfd, (nsockfd == 1) ? "" : "es");
 
+=======
+	snprintf(buf, buf_size, "%s:%s", hbuf, sbuf);
+}
+
+static int listen_all_addrinfo(struct addrinfo *ai_head, int sockfdlist[],
+			     int maxsockfd)
+{
+	struct addrinfo *ai;
+	int ret, nsockfd = 0;
+	const size_t ai_buf_size = NI_MAXHOST + NI_MAXSERV + 2;
+	char ai_buf[ai_buf_size];
+
+	for (ai = ai_head; ai && nsockfd < maxsockfd; ai = ai->ai_next) {
+		int sock;
+		addrinfo_to_text(ai, ai_buf, ai_buf_size);
+		dbg("opening %s", ai_buf);
+		sock = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+		if (sock < 0) {
+			err("socket: %s: %d (%s)",
+			    ai_buf, errno, strerror(errno));
+			continue;
+		}
+
+		usbip_net_set_reuseaddr(sock);
+		usbip_net_set_nodelay(sock);
+		/* We use seperate sockets for IPv4 and IPv6
+		 * (see do_standalone_mode()) */
+		usbip_net_set_v6only(sock);
+
+		if (sock >= FD_SETSIZE) {
+			err("FD_SETSIZE: %s: sock=%d, max=%d",
+			    ai_buf, sock, FD_SETSIZE);
+			close(sock);
+			continue;
+		}
+
+		ret = bind(sock, ai->ai_addr, ai->ai_addrlen);
+		if (ret < 0) {
+			err("bind: %s: %d (%s)",
+			    ai_buf, errno, strerror(errno));
+			close(sock);
+			continue;
+		}
+
+		ret = listen(sock, SOMAXCONN);
+		if (ret < 0) {
+			err("listen: %s: %d (%s)",
+			    ai_buf, errno, strerror(errno));
+			close(sock);
+			continue;
+		}
+
+		info("listening on %s", ai_buf);
+		sockfdlist[nsockfd++] = sock;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return nsockfd;
 }
 
@@ -759,9 +919,15 @@ static struct addrinfo *do_getaddrinfo(char *host, int ai_family)
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags    = AI_PASSIVE;
 
+<<<<<<< HEAD
 	rc = getaddrinfo(host, USBIP_PORT_STRING, &hints, &ai_head);
 	if (rc) {
 		err("failed to get a network address %s: %s", USBIP_PORT_STRING,
+=======
+	rc = getaddrinfo(host, usbip_port_string, &hints, &ai_head);
+	if (rc) {
+		err("failed to get a network address %s: %s", usbip_port_string,
+>>>>>>> refs/remotes/origin/master
 		    gai_strerror(rc));
 		return NULL;
 	}
@@ -771,11 +937,15 @@ static struct addrinfo *do_getaddrinfo(char *host, int ai_family)
 
 static void signal_handler(int i)
 {
+<<<<<<< HEAD
 	dbg("received signal: code %d", i);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (main_loop)
 		g_main_loop_quit(main_loop);
+=======
+	dbg("received '%s' signal", strsignal(i));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void set_signal(void)
@@ -783,14 +953,19 @@ static void set_signal(void)
 	struct sigaction act;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bzero(&act, sizeof(act));
 =======
 	memset(&act, 0, sizeof(act));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&act, 0, sizeof(act));
+>>>>>>> refs/remotes/origin/master
 	act.sa_handler = signal_handler;
 	sigemptyset(&act.sa_mask);
 	sigaction(SIGTERM, &act, NULL);
 	sigaction(SIGINT, &act, NULL);
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
@@ -924,6 +1099,46 @@ static int do_standalone_mode(gboolean daemonize)
 
 	if (usbip_names_init(USBIDS_FILE))
 		err("failed to open %s", USBIDS_FILE);
+=======
+	act.sa_handler = SIG_IGN;
+	sigaction(SIGCLD, &act, NULL);
+}
+
+static const char *pid_file;
+
+static void write_pid_file()
+{
+	if (pid_file) {
+		dbg("creating pid file %s", pid_file);
+		FILE *fp = fopen(pid_file, "w");
+		if (!fp) {
+			err("pid_file: %s: %d (%s)",
+			    pid_file, errno, strerror(errno));
+			return;
+		}
+		fprintf(fp, "%d\n", getpid());
+		fclose(fp);
+	}
+}
+
+static void remove_pid_file()
+{
+	if (pid_file) {
+		dbg("removing pid file %s", pid_file);
+		unlink(pid_file);
+	}
+}
+
+static int do_standalone_mode(int daemonize, int ipv4, int ipv6)
+{
+	struct addrinfo *ai_head;
+	int sockfdlist[MAXSOCKFD];
+	int nsockfd, family;
+	int i, terminate;
+	struct pollfd *fds;
+	struct timespec timeout;
+	sigset_t sigmask;
+>>>>>>> refs/remotes/origin/master
 
 	if (usbip_host_driver_open()) {
 		err("please load " USBIP_CORE_MOD_NAME ".ko and "
@@ -932,6 +1147,7 @@ static int do_standalone_mode(gboolean daemonize)
 	}
 
 	if (daemonize) {
+<<<<<<< HEAD
 		if (daemon(0,0) < 0) {
 			err("daemonizing failed: %s", strerror(errno));
 			return -1;
@@ -969,6 +1185,85 @@ static int do_standalone_mode(gboolean daemonize)
 	freeaddrinfo(ai_head);
 	usbip_host_driver_close();
 	usbip_names_free();
+=======
+		if (daemon(0, 0) < 0) {
+			err("daemonizing failed: %s", strerror(errno));
+			usbip_host_driver_close();
+			return -1;
+		}
+		umask(0);
+		usbip_use_syslog = 1;
+	}
+	set_signal();
+	write_pid_file();
+
+	info("starting " PROGNAME " (%s)", usbip_version_string);
+
+	/*
+	 * To suppress warnings on systems with bindv6only disabled
+	 * (default), we use seperate sockets for IPv6 and IPv4 and set
+	 * IPV6_V6ONLY on the IPv6 sockets.
+	 */
+	if (ipv4 && ipv6)
+		family = AF_UNSPEC;
+	else if (ipv4)
+		family = AF_INET;
+	else
+		family = AF_INET6;
+
+	ai_head = do_getaddrinfo(NULL, family);
+	if (!ai_head) {
+		usbip_host_driver_close();
+		return -1;
+	}
+	nsockfd = listen_all_addrinfo(ai_head, sockfdlist,
+		sizeof(sockfdlist) / sizeof(*sockfdlist));
+	freeaddrinfo(ai_head);
+	if (nsockfd <= 0) {
+		err("failed to open a listening socket");
+		usbip_host_driver_close();
+		return -1;
+	}
+
+	dbg("listening on %d address%s", nsockfd, (nsockfd == 1) ? "" : "es");
+
+	fds = calloc(nsockfd, sizeof(struct pollfd));
+	for (i = 0; i < nsockfd; i++) {
+		fds[i].fd = sockfdlist[i];
+		fds[i].events = POLLIN;
+	}
+	timeout.tv_sec = MAIN_LOOP_TIMEOUT;
+	timeout.tv_nsec = 0;
+
+	sigfillset(&sigmask);
+	sigdelset(&sigmask, SIGTERM);
+	sigdelset(&sigmask, SIGINT);
+
+	terminate = 0;
+	while (!terminate) {
+		int r;
+
+		r = ppoll(fds, nsockfd, &timeout, &sigmask);
+		if (r < 0) {
+			dbg("%s", strerror(errno));
+			terminate = 1;
+		} else if (r) {
+			for (i = 0; i < nsockfd; i++) {
+				if (fds[i].revents & POLLIN) {
+					dbg("read event on fd[%d]=%d",
+					    i, sockfdlist[i]);
+					process_request(sockfdlist[i]);
+				}
+			}
+		} else {
+			dbg("heartbeat timeout on ppoll()");
+		}
+	}
+
+	info("shutting down " PROGNAME);
+	free(fds);
+	usbip_host_driver_close();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -976,6 +1271,7 @@ static int do_standalone_mode(gboolean daemonize)
 int main(int argc, char *argv[])
 {
 	static const struct option longopts[] = {
+<<<<<<< HEAD
 		{ "daemon",  no_argument, NULL, 'D' },
 		{ "debug",   no_argument, NULL, 'd' },
 		{ "help",    no_argument, NULL, 'h' },
@@ -983,11 +1279,25 @@ int main(int argc, char *argv[])
 		{ NULL,	     0,           NULL,  0  }
 	};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{ "ipv4",     no_argument,       NULL, '4' },
+		{ "ipv6",     no_argument,       NULL, '6' },
+		{ "daemon",   no_argument,       NULL, 'D' },
+		{ "daemon",   no_argument,       NULL, 'D' },
+		{ "debug",    no_argument,       NULL, 'd' },
+		{ "pid",      optional_argument, NULL, 'P' },
+		{ "tcp-port", required_argument, NULL, 't' },
+		{ "help",     no_argument,       NULL, 'h' },
+		{ "version",  no_argument,       NULL, 'v' },
+		{ NULL,	      0,                 NULL,  0  }
+	};
+>>>>>>> refs/remotes/origin/master
 
 	enum {
 		cmd_standalone_mode = 1,
 		cmd_help,
 		cmd_version
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} cmd = cmd_standalone_mode;
 
@@ -997,11 +1307,20 @@ int main(int argc, char *argv[])
 	gboolean daemonize = FALSE;
 	int opt, rc = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} cmd;
+
+	int daemonize = 0;
+	int ipv4 = 0, ipv6 = 0;
+	int opt, rc = -1;
+	pid_file = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	usbip_use_stderr = 1;
 	usbip_use_syslog = 0;
 
 	if (geteuid() != 0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		g_warning("running non-root?");
 
@@ -1052,18 +1371,35 @@ int main(int argc, char *argv[])
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err("not running as root?");
 
 	cmd = cmd_standalone_mode;
 	for (;;) {
+<<<<<<< HEAD
 		opt = getopt_long(argc, argv, "Ddhv", longopts, NULL);
+=======
+		opt = getopt_long(argc, argv, "46DdP::t:hv", longopts, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		if (opt == -1)
 			break;
 
 		switch (opt) {
+<<<<<<< HEAD
 		case 'D':
 			daemonize = TRUE;
+=======
+		case '4':
+			ipv4 = 1;
+			break;
+		case '6':
+			ipv6 = 1;
+			break;
+		case 'D':
+			daemonize = 1;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 'd':
 			usbip_use_debug = 1;
@@ -1071,6 +1407,15 @@ int main(int argc, char *argv[])
 		case 'h':
 			cmd = cmd_help;
 			break;
+<<<<<<< HEAD
+=======
+		case 'P':
+			pid_file = optarg ? optarg : DEFAULT_PID_FILE;
+			break;
+		case 't':
+			usbip_setup_port_number(optarg);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case 'v':
 			cmd = cmd_version;
 			break;
@@ -1081,9 +1426,19 @@ int main(int argc, char *argv[])
 		}
 	}
 
+<<<<<<< HEAD
 	switch (cmd) {
 	case cmd_standalone_mode:
 		rc = do_standalone_mode(daemonize);
+=======
+	if (!ipv4 && !ipv6)
+		ipv4 = ipv6 = 1;
+
+	switch (cmd) {
+	case cmd_standalone_mode:
+		rc = do_standalone_mode(daemonize, ipv4, ipv6);
+		remove_pid_file();
+>>>>>>> refs/remotes/origin/master
 		break;
 	case cmd_version:
 		printf(PROGNAME " (%s)\n", usbip_version_string);
@@ -1100,5 +1455,8 @@ int main(int argc, char *argv[])
 
 err_out:
 	return (rc > -1 ? EXIT_SUCCESS : EXIT_FAILURE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

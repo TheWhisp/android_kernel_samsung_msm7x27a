@@ -65,6 +65,7 @@ extern void copy_page(void *to, void *from);
 extern u64 ppc64_pft_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Large pages size */
 #ifdef CONFIG_HUGETLB_PAGE
 extern unsigned int HPAGE_SHIFT;
@@ -78,6 +79,8 @@ extern unsigned int HPAGE_SHIFT;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 
 #ifdef CONFIG_PPC_MM_SLICES
@@ -92,11 +95,26 @@ extern unsigned int HPAGE_SHIFT;
 #define GET_LOW_SLICE_INDEX(addr)	((addr) >> SLICE_LOW_SHIFT)
 #define GET_HIGH_SLICE_INDEX(addr)	((addr) >> SLICE_HIGH_SHIFT)
 
+<<<<<<< HEAD
+=======
+/*
+ * 1 bit per slice and we have one slice per 1TB
+ * Right now we support only 64TB.
+ * IF we change this we will have to change the type
+ * of high_slices
+ */
+#define SLICE_MASK_SIZE 8
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 struct slice_mask {
 	u16 low_slices;
+<<<<<<< HEAD
 	u16 high_slices;
+=======
+	u64 high_slices;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mm_struct;
@@ -105,8 +123,12 @@ extern unsigned long slice_get_unmapped_area(unsigned long addr,
 					     unsigned long len,
 					     unsigned long flags,
 					     unsigned int psize,
+<<<<<<< HEAD
 					     int topdown,
 					     int use_cache);
+=======
+					     int topdown);
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned int get_slice_psize(struct mm_struct *mm,
 				    unsigned long addr);
@@ -145,12 +167,18 @@ do {						\
 #ifdef CONFIG_HUGETLB_PAGE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
 =======
 #ifdef CONFIG_PPC_MM_SLICES
 #define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PPC_MM_SLICES
+#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !CONFIG_HUGETLB_PAGE */
 

@@ -38,10 +38,13 @@ typedef u16 __nocast zd_addr_t;
 		dev_printk_f(KERN_DEBUG, dev, fmt, ## args); \
 } while (0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else
 #  define dev_dbg_f(dev, fmt, args...) do { (void)(dev); } while (0)
 #  define dev_dbg_f_limit(dev, fmt, args...) do { (void)(dev); } while (0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #  define dev_dbg_f_cond(dev, cond, fmt, args...) ({ \
 	bool __cond = !!(cond); \
 	if (unlikely(__cond)) \
@@ -51,7 +54,10 @@ typedef u16 __nocast zd_addr_t;
 #  define dev_dbg_f(dev, fmt, args...) do { (void)(dev); } while (0)
 #  define dev_dbg_f_limit(dev, fmt, args...) do { (void)(dev); } while (0)
 #  define dev_dbg_f_cond(dev, cond, fmt, args...) do { (void)(dev); } while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* DEBUG */
 
 #ifdef DEBUG

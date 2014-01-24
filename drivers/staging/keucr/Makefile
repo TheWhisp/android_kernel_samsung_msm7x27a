@@ -8,10 +8,13 @@ keucr-y :=			\
 		transport.o	\
 		init.o		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msscsi.o	\
 		ms.o		\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		smscsi.o	\
 		smilmain.o	\
 		smilsub.o	\

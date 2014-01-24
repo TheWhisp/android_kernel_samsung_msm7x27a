@@ -1073,7 +1073,11 @@ static int snd_emu10k1_ipcm_peek(struct snd_emu10k1 *emu,
 #define SND_EMU10K1_PLAYBACK_CHANNELS	8
 #define SND_EMU10K1_CAPTURE_CHANNELS	4
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 snd_emu10k1_init_mono_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
 			      const char *name, int gpr, int defval)
 {
@@ -1094,7 +1098,11 @@ snd_emu10k1_init_mono_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 snd_emu10k1_init_stereo_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
 				const char *name, int gpr, int defval)
 {
@@ -1116,7 +1124,11 @@ snd_emu10k1_init_stereo_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 snd_emu10k1_init_mono_onoff_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
 				    const char *name, int gpr, int defval)
 {
@@ -1129,7 +1141,11 @@ snd_emu10k1_init_mono_onoff_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
 	ctl->translation = EMU10K1_GPR_TRANSLATION_ONOFF;
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 snd_emu10k1_init_stereo_onoff_control(struct snd_emu10k1_fx8010_control_gpr *ctl,
 				      const char *name, int gpr, int defval)
 {
@@ -1168,7 +1184,11 @@ static int snd_emu10k1_audigy_dsp_convert_32_to_2x16(
  * initial DSP configuration for Audigy
  */
 
+<<<<<<< HEAD
 static int __devinit _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+=======
+static int _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, i, z, gpr, nctl;
 	int bit_shifter16;
@@ -1182,6 +1202,7 @@ static int __devinit _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
 	u32 *gpr_map;
 	mm_segment_t seg;
 
+<<<<<<< HEAD
 	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL ||
 	    (icode->gpr_map = (u_int32_t __user *)
 	     kcalloc(512 + 256 + 256 + 2 * 1024, sizeof(u_int32_t),
@@ -1191,6 +1212,22 @@ static int __devinit _snd_emu10k1_audigy_init_efx(struct snd_emu10k1 *emu)
 		err = -ENOMEM;
 		goto __err;
 	}
+=======
+	err = -ENOMEM;
+	icode = kzalloc(sizeof(*icode), GFP_KERNEL);
+	if (!icode)
+		return err;
+
+	icode->gpr_map = (u_int32_t __user *) kcalloc(512 + 256 + 256 + 2 * 1024,
+						      sizeof(u_int32_t), GFP_KERNEL);
+	if (!icode->gpr_map)
+		goto __err_gpr;
+	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+			   sizeof(*controls), GFP_KERNEL);
+	if (!controls)
+		goto __err_ctrls;
+
+>>>>>>> refs/remotes/origin/master
 	gpr_map = (u32 __force *)icode->gpr_map;
 
 	icode->tram_data_map = icode->gpr_map + 512;
@@ -1741,12 +1778,21 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
 	emu->support_tlv = 0; /* clear again */
 	snd_leave_user(seg);
 
+<<<<<<< HEAD
  __err:
 	kfree(controls);
 	if (icode != NULL) {
 		kfree((void __force *)icode->gpr_map);
 		kfree(icode);
 	}
+=======
+__err:
+	kfree(controls);
+__err_ctrls:
+	kfree((void __force *)icode->gpr_map);
+__err_gpr:
+	kfree(icode);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1757,14 +1803,22 @@ A_OP(icode, &ptr, iMAC0, A_GPR(var), A_GPR(var), A_GPR(vol), A_EXTIN(input))
 
 /* when volume = max, then copy only to avoid volume modification */
 /* with iMAC0 (negative values) */
+<<<<<<< HEAD
 static void __devinit _volume(struct snd_emu10k1_fx8010_code *icode, u32 *ptr, u32 dst, u32 src, u32 vol)
+=======
+static void _volume(struct snd_emu10k1_fx8010_code *icode, u32 *ptr, u32 dst, u32 src, u32 vol)
+>>>>>>> refs/remotes/origin/master
 {
 	OP(icode, ptr, iMAC0, dst, C_00000000, src, vol);
 	OP(icode, ptr, iANDXOR, C_00000000, vol, C_ffffffff, C_7fffffff);
 	OP(icode, ptr, iSKIP, GPR_COND, GPR_COND, CC_REG_NONZERO, C_00000001);
 	OP(icode, ptr, iACC3, dst, src, C_00000000, C_00000000);
 }
+<<<<<<< HEAD
 static void __devinit _volume_add(struct snd_emu10k1_fx8010_code *icode, u32 *ptr, u32 dst, u32 src, u32 vol)
+=======
+static void _volume_add(struct snd_emu10k1_fx8010_code *icode, u32 *ptr, u32 dst, u32 src, u32 vol)
+>>>>>>> refs/remotes/origin/master
 {
 	OP(icode, ptr, iANDXOR, C_00000000, vol, C_ffffffff, C_7fffffff);
 	OP(icode, ptr, iSKIP, GPR_COND, GPR_COND, CC_REG_NONZERO, C_00000002);
@@ -1772,7 +1826,11 @@ static void __devinit _volume_add(struct snd_emu10k1_fx8010_code *icode, u32 *pt
 	OP(icode, ptr, iSKIP, C_00000000, C_7fffffff, C_7fffffff, C_00000001);
 	OP(icode, ptr, iMAC0, dst, dst, src, vol);
 }
+<<<<<<< HEAD
 static void __devinit _volume_out(struct snd_emu10k1_fx8010_code *icode, u32 *ptr, u32 dst, u32 src, u32 vol)
+=======
+static void _volume_out(struct snd_emu10k1_fx8010_code *icode, u32 *ptr, u32 dst, u32 src, u32 vol)
+>>>>>>> refs/remotes/origin/master
 {
 	OP(icode, ptr, iANDXOR, C_00000000, vol, C_ffffffff, C_7fffffff);
 	OP(icode, ptr, iSKIP, GPR_COND, GPR_COND, CC_REG_NONZERO, C_00000002);
@@ -1803,7 +1861,11 @@ static void __devinit _volume_out(struct snd_emu10k1_fx8010_code *icode, u32 *pt
 		_SWITCH_NEG(icode, ptr, GPR(dst), GPR(src))
 
 
+<<<<<<< HEAD
 static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+=======
+static int _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, i, z, gpr, tmp, playback, capture;
 	u32 ptr;
@@ -1813,6 +1875,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
 	u32 *gpr_map;
 	mm_segment_t seg;
 
+<<<<<<< HEAD
 	if ((icode = kzalloc(sizeof(*icode), GFP_KERNEL)) == NULL)
 		return -ENOMEM;
 	if ((icode->gpr_map = (u_int32_t __user *)
@@ -1825,6 +1888,28 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
 		err = -ENOMEM;
 		goto __err;
 	}
+=======
+	err = -ENOMEM;
+	icode = kzalloc(sizeof(*icode), GFP_KERNEL);
+	if (!icode)
+		return err;
+
+	icode->gpr_map = (u_int32_t __user *) kcalloc(256 + 160 + 160 + 2 * 512,
+						      sizeof(u_int32_t), GFP_KERNEL);
+	if (!icode->gpr_map)
+		goto __err_gpr;
+
+	controls = kcalloc(SND_EMU10K1_GPR_CONTROLS,
+			   sizeof(struct snd_emu10k1_fx8010_control_gpr),
+			   GFP_KERNEL);
+	if (!controls)
+		goto __err_ctrls;
+
+	ipcm = kzalloc(sizeof(*ipcm), GFP_KERNEL);
+	if (!ipcm)
+		goto __err_ipcm;
+
+>>>>>>> refs/remotes/origin/master
 	gpr_map = (u32 __force *)icode->gpr_map;
 
 	icode->tram_data_map = icode->gpr_map + 256;
@@ -2363,6 +2448,7 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
 	snd_leave_user(seg);
 	if (err >= 0)
 		err = snd_emu10k1_ipcm_poke(emu, ipcm);
+<<<<<<< HEAD
       __err:
 	kfree(ipcm);
 	kfree(controls);
@@ -2374,6 +2460,20 @@ static int __devinit _snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
 }
 
 int __devinit snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+=======
+__err:
+	kfree(ipcm);
+__err_ipcm:
+	kfree(controls);
+__err_ctrls:
+	kfree((void __force *)icode->gpr_map);
+__err_gpr:
+	kfree(icode);
+	return err;
+}
+
+int snd_emu10k1_init_efx(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock_init(&emu->fx8010.irq_lock);
 	INIT_LIST_HEAD(&emu->fx8010.gpr_ctl);
@@ -2626,7 +2726,12 @@ static int snd_emu10k1_fx8010_release(struct snd_hwdep * hw, struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_fx8010_new(struct snd_emu10k1 *emu, int device, struct snd_hwdep ** rhwdep)
+=======
+int snd_emu10k1_fx8010_new(struct snd_emu10k1 *emu, int device,
+			   struct snd_hwdep **rhwdep)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_hwdep *hw;
 	int err;
@@ -2646,8 +2751,13 @@ int __devinit snd_emu10k1_fx8010_new(struct snd_emu10k1 *emu, int device, struct
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 int __devinit snd_emu10k1_efx_alloc_pm_buffer(struct snd_emu10k1 *emu)
+=======
+#ifdef CONFIG_PM_SLEEP
+int snd_emu10k1_efx_alloc_pm_buffer(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	int len;
 

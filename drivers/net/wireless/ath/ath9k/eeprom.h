@@ -79,8 +79,13 @@
 #define SUB_NUM_CTL_MODES_AT_5G_40 2
 #define SUB_NUM_CTL_MODES_AT_2G_40 3
 
+<<<<<<< HEAD
 #define INCREASE_MAXPOW_BY_TWO_CHAIN     6  /* 10*log10(2)*2 */
 #define INCREASE_MAXPOW_BY_THREE_CHAIN   10 /* 10*log10(3)*2 */
+=======
+#define POWER_CORRECTION_FOR_TWO_CHAIN		6  /* 10*log10(2)*2 */
+#define POWER_CORRECTION_FOR_THREE_CHAIN	10 /* 10*log10(3)*2 */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * For AR9285 and later chipsets, the following bits are not being programmed
@@ -96,6 +101,10 @@
 
 #define ATH9K_POW_SM(_r, _s)	(((_r) & 0x3f) << (_s))
 #define FREQ2FBIN(x, y)		((y) ? ((x) - 2300) : (((x) - 4800) / 5))
+<<<<<<< HEAD
+=======
+#define FBIN2FREQ(x, y)		((y) ? (2300 + x) : (4800 + 5 * x))
+>>>>>>> refs/remotes/origin/master
 #define ath9k_hw_use_flash(_ah)	(!(_ah->ah_flags & AH_USE_EEPROM))
 
 #define AR5416_VER_MASK (eep->baseEepHeader.version & AR5416_EEP_VER_MINOR_MASK)
@@ -105,6 +114,7 @@
 				 ah->eep_ops->get_eeprom(ah, EEP_OL_PWRCTRL))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_EEPROM_RFSILENT_GPIO_SEL     0x001c
 #define AR_EEPROM_RFSILENT_GPIO_SEL_S   2
 #define AR_EEPROM_RFSILENT_POLARITY     0x0002
@@ -112,15 +122,21 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define EEP_RFSILENT_ENABLED        0x0001
 #define EEP_RFSILENT_ENABLED_S      0
 #define EEP_RFSILENT_POLARITY       0x0002
 #define EEP_RFSILENT_POLARITY_S     1
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EEP_RFSILENT_GPIO_SEL       0x001c
 =======
 #define EEP_RFSILENT_GPIO_SEL       (AR_SREV_9462(ah) ? 0x00fc : 0x001c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EEP_RFSILENT_GPIO_SEL       ((AR_SREV_9462(ah) || AR_SREV_9565(ah)) ? 0x00fc : 0x001c)
+>>>>>>> refs/remotes/origin/master
 #define EEP_RFSILENT_GPIO_SEL_S     2
 
 #define AR5416_OPFLAGS_11A           0x01
@@ -233,9 +249,12 @@ enum eeprom_param {
 	EEP_MAC_LSW,
 	EEP_REG_0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EEP_REG_1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	EEP_OP_CAP,
 	EEP_OP_MODE,
 	EEP_RF_SILENT,
@@ -257,6 +276,7 @@ enum eeprom_param {
 	EEP_TEMPSENSE_SLOPE,
 	EEP_TEMPSENSE_SLOPE_PAL_ON,
 	EEP_PWR_TABLE_OFFSET,
+<<<<<<< HEAD
 	EEP_DRIVE_STRENGTH,
 	EEP_INTERNAL_REGULATOR,
 	EEP_SWREG,
@@ -271,6 +291,14 @@ enum eeprom_param {
 	EEP_ANTENNA_GAIN_5G,
 	EEP_QUICK_DROP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EEP_PAPRD,
+	EEP_MODAL_VER,
+	EEP_ANT_DIV_CTL1,
+	EEP_CHAIN_MASK_REDUCE,
+	EEP_ANTENNA_GAIN_2G,
+	EEP_ANTENNA_GAIN_5G,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum ar5416_rates {
@@ -667,10 +695,15 @@ struct eeprom_ops {
 	u32 (*get_eeprom)(struct ath_hw *hw, enum eeprom_param param);
 	bool (*fill_eeprom)(struct ath_hw *hw);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 (*dump_eeprom)(struct ath_hw *hw, bool dump_base_hdr, u8 *buf,
 			   u32 len, u32 size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 (*dump_eeprom)(struct ath_hw *hw, bool dump_base_hdr, u8 *buf,
+			   u32 len, u32 size);
+>>>>>>> refs/remotes/origin/master
 	int (*get_eeprom_ver)(struct ath_hw *hw);
 	int (*get_eeprom_rev)(struct ath_hw *hw);
 	void (*set_board_values)(struct ath_hw *hw, struct ath9k_channel *chan);
@@ -678,11 +711,15 @@ struct eeprom_ops {
 	void (*set_txpower)(struct ath_hw *hw, struct ath9k_channel *chan,
 			   u16 cfgCtl, u8 twiceAntennaReduction,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   u8 twiceMaxRegulatoryPower, u8 powerLimit,
 			   bool test);
 =======
 			   u8 powerLimit, bool test);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   u8 powerLimit, bool test);
+>>>>>>> refs/remotes/origin/master
 	u16 (*get_spur_channel)(struct ath_hw *ah, u16 i, bool is2GHz);
 };
 
@@ -694,7 +731,11 @@ int16_t ath9k_hw_interpolate(u16 target, u16 srcLeft, u16 srcRight,
 			     int16_t targetRight);
 bool ath9k_hw_get_lower_upper_index(u8 target, u8 *pList, u16 listSize,
 				    u16 *indexL, u16 *indexR);
+<<<<<<< HEAD
 bool ath9k_hw_nvram_read(struct ath_common *common, u32 off, u16 *data);
+=======
+bool ath9k_hw_nvram_read(struct ath_hw *ah, u32 off, u16 *data);
+>>>>>>> refs/remotes/origin/master
 void ath9k_hw_usb_gen_fill_eeprom(struct ath_hw *ah, u16 *eep_data,
 				  int eep_start_loc, int size);
 void ath9k_hw_fill_vpd_table(u8 pwrMin, u8 pwrMax, u8 *pPwrList,
@@ -714,6 +755,11 @@ void ath9k_hw_get_target_powers(struct ath_hw *ah,
 				u16 numRates, bool isHt40Target);
 u16 ath9k_hw_get_max_edge_power(u16 freq, struct cal_ctl_edges *pRdEdgesPower,
 				bool is2GHz, int num_band_edges);
+<<<<<<< HEAD
+=======
+u16 ath9k_hw_get_scaled_power(struct ath_hw *ah, u16 power_limit,
+			      u8 antenna_reduction);
+>>>>>>> refs/remotes/origin/master
 void ath9k_hw_update_regulatory_maxpower(struct ath_hw *ah);
 int ath9k_hw_eeprom_init(struct ath_hw *ah);
 
@@ -725,6 +771,17 @@ void ath9k_hw_get_gain_boundaries_pdadcs(struct ath_hw *ah,
 				u16 *pPdGainBoundaries, u8 *pPDADCValues,
 				u16 numXpdGains);
 
+<<<<<<< HEAD
+=======
+static inline u16 ath9k_hw_fbin2freq(u8 fbin, bool is2GHz)
+{
+	if (fbin == AR5416_BCHAN_UNUSED)
+		return fbin;
+
+	return (u16) ((is2GHz) ? (2300 + fbin) : (4800 + 5 * fbin));
+}
+
+>>>>>>> refs/remotes/origin/master
 #define ar5416_get_ntxchains(_txchainmask)			\
 	(((_txchainmask >> 2) & 1) +                            \
 	 ((_txchainmask >> 1) & 1) + (_txchainmask & 1))

@@ -107,9 +107,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/io.h>
 #include <linux/blkdev.h>
@@ -205,7 +208,12 @@ int __init t128_detect(struct scsi_host_template * tpnt){
     int sig, count;
 
     tpnt->proc_name = "t128";
+<<<<<<< HEAD
     tpnt->proc_info = &t128_proc_info;
+=======
+    tpnt->show_info = t128_show_info;
+    tpnt->write_info = t128_write_info;
+>>>>>>> refs/remotes/origin/master
 
     for (count = 0; current_override < NO_OVERRIDES; ++current_override) {
 	base = 0;

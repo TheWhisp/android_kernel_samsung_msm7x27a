@@ -79,12 +79,19 @@ static struct notifier_block crunch_notifier_block = {
 	.notifier_call	= crunch_do,
 };
 
+<<<<<<< HEAD
 static int __init crunch_init(void)
+=======
+int __init crunch_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	thread_register_notifier(&crunch_notifier_block);
 	elf_hwcap |= HWCAP_CRUNCH;
 
 	return 0;
 }
+<<<<<<< HEAD
 
 late_initcall(crunch_init);
+=======
+>>>>>>> refs/remotes/origin/master

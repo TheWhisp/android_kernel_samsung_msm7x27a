@@ -3,10 +3,14 @@
  *
  * Copyright (C) 2007, 2008 Magnus Damm
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009, 2010 Paul Mundt
 =======
  * Copyright (C) 2009 - 2012 Paul Mundt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2009 - 2012 Paul Mundt
+>>>>>>> refs/remotes/origin/master
  *
  * Based on intc2.c and ipr.c
  *
@@ -27,6 +31,7 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/sh_intc.h>
 #include <linux/sysdev.h>
@@ -36,24 +41,40 @@
 #include <linux/sh_intc.h>
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stat.h>
+#include <linux/interrupt.h>
+#include <linux/sh_intc.h>
+#include <linux/irqdomain.h>
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/syscore_ops.h>
 #include <linux/list.h>
 #include <linux/spinlock.h>
 #include <linux/radix-tree.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 #include <linux/sort.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/sort.h>
+>>>>>>> refs/remotes/origin/master
 #include "internals.h"
 
 LIST_HEAD(intc_list);
 DEFINE_RAW_SPINLOCK(intc_big_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int nr_intc_controllers;
 =======
 static unsigned int nr_intc_controllers;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int nr_intc_controllers;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Default priority level
@@ -61,10 +82,14 @@ static unsigned int nr_intc_controllers;
  */
 static unsigned int default_prio_level = 2;	/* 2 - 16 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int intc_prio_level[NR_IRQS];	/* for now */
 =======
 static unsigned int intc_prio_level[INTC_NR_IRQS];	/* for now */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int intc_prio_level[INTC_NR_IRQS];	/* for now */
+>>>>>>> refs/remotes/origin/master
 
 unsigned int intc_get_dfl_prio_level(void)
 {
@@ -290,11 +315,17 @@ int __init register_intc_controller(struct intc_desc *desc)
 			k += save_reg(d, k, hw->prio_regs[i].clr_reg, smp);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		sort(d->prio, hw->nr_prio_regs, sizeof(*d->prio),
 		     intc_handle_int_cmp, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		sort(d->prio, hw->nr_prio_regs, sizeof(*d->prio),
+		     intc_handle_int_cmp, NULL);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (hw->sense_regs) {
@@ -306,11 +337,17 @@ int __init register_intc_controller(struct intc_desc *desc)
 		for (i = 0; i < hw->nr_sense_regs; i++)
 			k += save_reg(d, k, hw->sense_regs[i].reg, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		sort(d->sense, hw->nr_sense_regs, sizeof(*d->sense),
 		     intc_handle_int_cmp, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		sort(d->sense, hw->nr_sense_regs, sizeof(*d->sense),
+		     intc_handle_int_cmp, NULL);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (hw->subgroups)
@@ -337,6 +374,11 @@ int __init register_intc_controller(struct intc_desc *desc)
 
 	BUG_ON(k > 256); /* _INTC_ADDR_E() and _INTC_ADDR_D() are 8 bits */
 
+<<<<<<< HEAD
+=======
+	intc_irq_domain_init(d, hw);
+
+>>>>>>> refs/remotes/origin/master
 	/* register the vectors one by one */
 	for (i = 0; i < hw->nr_vectors; i++) {
 		struct intc_vect *vect = hw->vectors + i;
@@ -346,10 +388,25 @@ int __init register_intc_controller(struct intc_desc *desc)
 		if (!vect->enum_id)
 			continue;
 
+<<<<<<< HEAD
 		res = irq_alloc_desc_at(irq, numa_node_id());
 		if (res != irq && res != -EEXIST) {
 			pr_err("can't get irq_desc for %d\n", irq);
 			continue;
+=======
+		res = irq_create_identity_mapping(d->domain, irq);
+		if (unlikely(res)) {
+			if (res == -EEXIST) {
+				res = irq_domain_associate(d->domain, irq, irq);
+				if (unlikely(res)) {
+					pr_err("domain association failure\n");
+					continue;
+				}
+			} else {
+				pr_err("can't identity map IRQ %d\n", irq);
+				continue;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 		intc_irq_xlate_set(irq, vect->enum_id, d);
@@ -367,10 +424,28 @@ int __init register_intc_controller(struct intc_desc *desc)
 			 * IRQ support, each vector still needs to have
 			 * its own backing irq_desc.
 			 */
+<<<<<<< HEAD
 			res = irq_alloc_desc_at(irq2, numa_node_id());
 			if (res != irq2 && res != -EEXIST) {
 				pr_err("can't get irq_desc for %d\n", irq2);
 				continue;
+=======
+			res = irq_create_identity_mapping(d->domain, irq2);
+			if (unlikely(res)) {
+				if (res == -EEXIST) {
+					res = irq_domain_associate(d->domain,
+								   irq2, irq2);
+					if (unlikely(res)) {
+						pr_err("domain association "
+						       "failure\n");
+						continue;
+					}
+				} else {
+					pr_err("can't identity map IRQ %d\n",
+					       irq);
+					continue;
+				}
+>>>>>>> refs/remotes/origin/master
 			}
 
 			vect2->enum_id = 0;
@@ -389,10 +464,15 @@ int __init register_intc_controller(struct intc_desc *desc)
 		intc_enable_disable_enum(desc, d, desc->force_enable, 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	d->skip_suspend = desc->skip_syscore_suspend;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	d->skip_suspend = desc->skip_syscore_suspend;
+
+>>>>>>> refs/remotes/origin/master
 	nr_intc_controllers++;
 
 	return 0;
@@ -426,11 +506,17 @@ static int intc_suspend(void)
 		int irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (d->skip_suspend)
 			continue;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (d->skip_suspend)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		/* enable wakeup irqs belonging to this intc controller */
 		for_each_active_irq(irq) {
 			struct irq_data *data;
@@ -455,11 +541,17 @@ static void intc_resume(void)
 		int irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (d->skip_suspend)
 			continue;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (d->skip_suspend)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		for_each_active_irq(irq) {
 			struct irq_data *data;
 			struct irq_chip *chip;
@@ -486,6 +578,7 @@ struct syscore_ops intc_syscore_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sysdev_class intc_sysdev_class = {
 	.name		= "intc",
 };
@@ -497,6 +590,8 @@ show_intc_name(struct sys_device *dev, struct sysdev_attribute *attr, char *buf)
 
 	d = container_of(dev, struct intc_desc_int, sysdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct bus_type intc_subsys = {
 	.name		= "intc",
 	.dev_name	= "intc",
@@ -508,11 +603,15 @@ show_intc_name(struct device *dev, struct device_attribute *attr, char *buf)
 	struct intc_desc_int *d;
 
 	d = container_of(dev, struct intc_desc_int, dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%s\n", d->chip.name);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static SYSDEV_ATTR(name, S_IRUGO, show_intc_name, NULL);
 
@@ -522,12 +621,18 @@ static DEVICE_ATTR(name, S_IRUGO, show_intc_name, NULL);
 
 static int __init register_intc_devs(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(name, S_IRUGO, show_intc_name, NULL);
+
+static int __init register_intc_devs(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct intc_desc_int *d;
 	int error;
 
 	register_syscore_ops(&intc_syscore_ops);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	error = sysdev_class_register(&intc_sysdev_class);
 	if (!error) {
@@ -539,6 +644,8 @@ static int __init register_intc_devs(void)
 				error = sysdev_create_file(&d->sysdev,
 							   &attr_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = subsys_system_register(&intc_subsys, NULL);
 	if (!error) {
 		list_for_each_entry(d, &intc_list, list) {
@@ -548,7 +655,10 @@ static int __init register_intc_devs(void)
 			if (error == 0)
 				error = device_create_file(&d->dev,
 							   &dev_attr_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (error)
 				break;
 		}
@@ -556,15 +666,21 @@ static int __init register_intc_devs(void)
 
 	if (error)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("sysdev registration error\n");
 
 	return error;
 }
 device_initcall(register_intc_sysdevs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("device registration error\n");
 
 	return error;
 }
 device_initcall(register_intc_devs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

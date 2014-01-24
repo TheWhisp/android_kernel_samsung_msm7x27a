@@ -12,9 +12,13 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fb.h>
 #include <linux/backlight.h>
 #include <linux/slab.h>
@@ -126,7 +130,11 @@ static const struct backlight_ops wm831x_backlight_ops = {
 static int wm831x_backlight_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+<<<<<<< HEAD
 	struct wm831x_pdata *wm831x_pdata;
+=======
+	struct wm831x_pdata *wm831x_pdata = dev_get_platdata(pdev->dev.parent);
+>>>>>>> refs/remotes/origin/master
 	struct wm831x_backlight_pdata *pdata;
 	struct wm831x_backlight_data *data;
 	struct backlight_device *bl;
@@ -134,12 +142,19 @@ static int wm831x_backlight_probe(struct platform_device *pdev)
 	int ret, i, max_isel, isink_reg, dcdc_cfg;
 
 	/* We need platform data */
+<<<<<<< HEAD
 	if (pdev->dev.parent->platform_data) {
 		wm831x_pdata = pdev->dev.parent->platform_data;
 		pdata = wm831x_pdata->backlight;
 	} else {
 		pdata = NULL;
 	}
+=======
+	if (wm831x_pdata)
+		pdata = wm831x_pdata->backlight;
+	else
+		pdata = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdata) {
 		dev_err(&pdev->dev, "No platform data supplied\n");
@@ -190,10 +205,14 @@ static int wm831x_backlight_probe(struct platform_device *pdev)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 =======
 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL)
 		return -ENOMEM;
 
@@ -201,6 +220,7 @@ static int wm831x_backlight_probe(struct platform_device *pdev)
 	data->current_brightness = 0;
 	data->isink_reg = isink_reg;
 
+<<<<<<< HEAD
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = max_isel;
 	bl = backlight_device_register("wm831x", &pdev->dev, data,
@@ -211,6 +231,15 @@ static int wm831x_backlight_probe(struct platform_device *pdev)
 		kfree(data);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&props, 0, sizeof(props));
+	props.type = BACKLIGHT_RAW;
+	props.max_brightness = max_isel;
+	bl = devm_backlight_device_register(&pdev->dev, "wm831x", &pdev->dev,
+					data, &wm831x_backlight_ops, &props);
+	if (IS_ERR(bl)) {
+		dev_err(&pdev->dev, "failed to register backlight\n");
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(bl);
 	}
 
@@ -222,14 +251,18 @@ static int wm831x_backlight_probe(struct platform_device *pdev)
 	wm831x_set_bits(wm831x, WM831X_DCDC_ENABLE, WM831X_DC4_ENA, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	backlight_update_status(bl);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int wm831x_backlight_remove(struct platform_device *pdev)
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
@@ -245,12 +278,15 @@ static int wm831x_backlight_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver wm831x_backlight_driver = {
 	.driver		= {
 		.name	= "wm831x-backlight",
 		.owner	= THIS_MODULE,
 	},
 	.probe		= wm831x_backlight_probe,
+<<<<<<< HEAD
 	.remove		= wm831x_backlight_remove,
 };
 
@@ -269,6 +305,11 @@ module_exit(wm831x_backlight_exit);
 =======
 module_platform_driver(wm831x_backlight_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_platform_driver(wm831x_backlight_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Backlight Driver for WM831x PMICs");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com");

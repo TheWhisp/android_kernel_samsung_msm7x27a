@@ -7,15 +7,24 @@
 #include <linux/highmem.h>
 #include <linux/mm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <asm/current.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
+<<<<<<< HEAD
 #include "kern_util.h"
 #include "os.h"
+=======
+#include <kern_util.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr)
 {
@@ -73,10 +82,14 @@ static int do_op_one_page(unsigned long addr, int len, int is_write,
 
 	page = pte_page(*pte);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addr = (unsigned long) kmap_atomic(page, KM_UML_USERCOPY) +
 =======
 	addr = (unsigned long) kmap_atomic(page) +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = (unsigned long) kmap_atomic(page) +
+>>>>>>> refs/remotes/origin/master
 		(addr & ~PAGE_MASK);
 
 	current->thread.fault_catcher = &buf;
@@ -90,10 +103,14 @@ static int do_op_one_page(unsigned long addr, int len, int is_write,
 	current->thread.fault_catcher = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic((void *)addr, KM_UML_USERCOPY);
 =======
 	kunmap_atomic((void *)addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic((void *)addr);
+>>>>>>> refs/remotes/origin/master
 
 	return n;
 }
@@ -162,9 +179,13 @@ int copy_from_user(void *to, const void __user *from, int n)
 	       n;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(copy_from_user);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(copy_from_user);
+>>>>>>> refs/remotes/origin/master
 
 static int copy_chunk_to_user(unsigned long to, int len, void *arg)
 {
@@ -187,9 +208,13 @@ int copy_to_user(void __user *to, const void *from, int n)
 	       n;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(copy_to_user);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(copy_to_user);
+>>>>>>> refs/remotes/origin/master
 
 static int strncpy_chunk_from_user(unsigned long from, int len, void *arg)
 {
@@ -225,9 +250,13 @@ int strncpy_from_user(char *dst, const char __user *src, int count)
 	return strnlen(dst, count);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(strncpy_from_user);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(strncpy_from_user);
+>>>>>>> refs/remotes/origin/master
 
 static int clear_chunk(unsigned long addr, int len, void *unused)
 {
@@ -251,9 +280,13 @@ int clear_user(void __user *mem, int len)
 	       buffer_op((unsigned long) mem, len, 1, clear_chunk, NULL) : len;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(clear_user);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(clear_user);
+>>>>>>> refs/remotes/origin/master
 
 static int strnlen_chunk(unsigned long str, int len, void *arg)
 {
@@ -277,9 +310,15 @@ int strnlen_user(const void __user *str, int len)
 	n = buffer_op((unsigned long) str, len, 0, strnlen_chunk, &count);
 	if (n == 0)
 		return count + 1;
+<<<<<<< HEAD
 	return -EFAULT;
 }
 <<<<<<< HEAD
 =======
 EXPORT_SYMBOL(strnlen_user);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+EXPORT_SYMBOL(strnlen_user);
+>>>>>>> refs/remotes/origin/master

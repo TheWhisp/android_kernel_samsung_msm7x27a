@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 #define DPRINTK(fmt, args...)				\
 	pr_debug("xenbus_probe (%s:%d) " fmt ".\n",	\
 		 __func__, __LINE__, ##args)
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#define DPRINTK(fmt, ...)				\
+	pr_debug("(%s:%d) " fmt "\n",			\
+		 __func__, __LINE__, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel.h>
 #include <linux/err.h>
@@ -14,9 +22,13 @@
 #include <linux/mutex.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -24,6 +36,10 @@
 #include <xen/xenbus.h>
 #include <xen/events.h>
 #include <xen/page.h>
+<<<<<<< HEAD
+=======
+#include <xen/xen.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <xen/platform_pci.h>
 
@@ -31,18 +47,31 @@
 #include "xenbus_probe.h"
 
 
+<<<<<<< HEAD
+=======
+static struct workqueue_struct *xenbus_frontend_wq;
+
+>>>>>>> refs/remotes/origin/master
 /* device/<type>/<id> => <type>-<id> */
 static int frontend_bus_id(char bus_id[XEN_BUS_ID_SIZE], const char *nodename)
 {
 	nodename = strchr(nodename, '/');
 	if (!nodename || strlen(nodename + 1) >= XEN_BUS_ID_SIZE) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "XENBUS: bad frontend %s\n", nodename);
+=======
+		pr_warn("bad frontend %s\n", nodename);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	strlcpy(bus_id, nodename + 1, XEN_BUS_ID_SIZE);
 	if (!strchr(bus_id, '/')) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "XENBUS: bus_id %s no slash\n", bus_id);
+=======
+		pr_warn("bus_id %s no slash\n", bus_id);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	*strchr(bus_id, '/') = '-';
@@ -57,14 +86,20 @@ static int xenbus_probe_frontend(struct xen_bus_type *bus, const char *type,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ignore console/0 */
 	if (!strncmp(type, "console", 7) && !strncmp(name, "0", 1)) {
 		DPRINTK("Ignoring buggy device entry console/0");
 		return 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	nodename = kasprintf(GFP_KERNEL, "%s/%s/%s", bus->root, type, name);
 	if (!nodename)
 		return -ENOMEM;
@@ -95,6 +130,7 @@ static void backend_changed(struct xenbus_watch *watch,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct device_attribute xenbus_frontend_dev_attrs[] = {
 	__ATTR_NULL
 };
@@ -104,6 +140,51 @@ static struct device_attribute xenbus_frontend_dev_attrs[] = {
 static const struct dev_pm_ops xenbus_pm_ops = {
 	.suspend	= xenbus_dev_suspend,
 	.resume		= xenbus_dev_resume,
+=======
+static void xenbus_frontend_delayed_resume(struct work_struct *w)
+{
+	struct xenbus_device *xdev = container_of(w, struct xenbus_device, work);
+
+	xenbus_dev_resume(&xdev->dev);
+}
+
+static int xenbus_frontend_dev_resume(struct device *dev)
+{
+	/*
+	 * If xenstored is running in this domain, we cannot access the backend
+	 * state at the moment, so we need to defer xenbus_dev_resume
+	 */
+	if (xen_store_domain_type == XS_LOCAL) {
+		struct xenbus_device *xdev = to_xenbus_device(dev);
+
+		if (!xenbus_frontend_wq) {
+			pr_err("%s: no workqueue to process delayed resume\n",
+			       xdev->nodename);
+			return -EFAULT;
+		}
+
+		queue_work(xenbus_frontend_wq, &xdev->work);
+
+		return 0;
+	}
+
+	return xenbus_dev_resume(dev);
+}
+
+static int xenbus_frontend_dev_probe(struct device *dev)
+{
+	if (xen_store_domain_type == XS_LOCAL) {
+		struct xenbus_device *xdev = to_xenbus_device(dev);
+		INIT_WORK(&xdev->work, xenbus_frontend_delayed_resume);
+	}
+
+	return xenbus_dev_probe(dev);
+}
+
+static const struct dev_pm_ops xenbus_pm_ops = {
+	.suspend	= xenbus_dev_suspend,
+	.resume		= xenbus_frontend_dev_resume,
+>>>>>>> refs/remotes/origin/master
 	.freeze		= xenbus_dev_suspend,
 	.thaw		= xenbus_dev_cancel,
 	.restore	= xenbus_dev_resume,
@@ -119,6 +200,7 @@ static struct xen_bus_type xenbus_frontend = {
 		.name		= "xen",
 		.match		= xenbus_match,
 		.uevent		= xenbus_uevent_frontend,
+<<<<<<< HEAD
 		.probe		= xenbus_dev_probe,
 		.remove		= xenbus_dev_remove,
 		.shutdown	= xenbus_dev_shutdown,
@@ -127,6 +209,12 @@ static struct xen_bus_type xenbus_frontend = {
 =======
 		.dev_attrs	= xenbus_dev_attrs,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.probe		= xenbus_frontend_dev_probe,
+		.remove		= xenbus_dev_remove,
+		.shutdown	= xenbus_dev_shutdown,
+		.dev_groups	= xenbus_dev_groups,
+>>>>>>> refs/remotes/origin/master
 
 		.pm		= &xenbus_pm_ops,
 	},
@@ -217,15 +305,24 @@ static int print_device_status(struct device *dev, void *data)
 
 	if (!dev->driver) {
 		/* Information only: is this too noisy? */
+<<<<<<< HEAD
 		printk(KERN_INFO "XENBUS: Device with no driver: %s\n",
 		       xendev->nodename);
+=======
+		pr_info("Device with no driver: %s\n", xendev->nodename);
+>>>>>>> refs/remotes/origin/master
 	} else if (xendev->state < XenbusStateConnected) {
 		enum xenbus_state rstate = XenbusStateUnknown;
 		if (xendev->otherend)
 			rstate = xenbus_read_driver_state(xendev->otherend);
+<<<<<<< HEAD
 		printk(KERN_WARNING "XENBUS: Timeout connecting "
 		       "to device: %s (local state %d, remote state %d)\n",
 		       xendev->nodename, xendev->state, rstate);
+=======
+		pr_warn("Timeout connecting to device: %s (local state %d, remote state %d)\n",
+			xendev->nodename, xendev->state, rstate);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -239,12 +336,22 @@ static bool wait_loop(unsigned long start, unsigned int max_delay,
 {
 	if (time_after(jiffies, start + (*seconds_waited+5)*HZ)) {
 		if (!*seconds_waited)
+<<<<<<< HEAD
 			printk(KERN_WARNING "XENBUS: Waiting for "
 			       "devices to initialise: ");
 		*seconds_waited += 5;
 		printk("%us...", max_delay - *seconds_waited);
 		if (*seconds_waited == max_delay)
 			return true;
+=======
+			pr_warn("Waiting for devices to initialise: ");
+		*seconds_waited += 5;
+		pr_cont("%us...", max_delay - *seconds_waited);
+		if (*seconds_waited == max_delay) {
+			pr_cont("\n");
+			return true;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	schedule_timeout_interruptible(HZ/10);
@@ -291,22 +398,30 @@ static void wait_for_devices(struct xenbus_driver *xendrv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __xenbus_register_frontend(struct xenbus_driver *drv,
 			       struct module *owner, const char *mod_name)
 =======
 int xenbus_register_frontend(struct xenbus_driver *drv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int xenbus_register_frontend(struct xenbus_driver *drv)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
 	drv->read_otherend_details = read_backend_details;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = xenbus_register_driver_common(drv, &xenbus_frontend,
 					    owner, mod_name);
 =======
 	ret = xenbus_register_driver_common(drv, &xenbus_frontend);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = xenbus_register_driver_common(drv, &xenbus_frontend);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -316,8 +431,11 @@ int xenbus_register_frontend(struct xenbus_driver *drv)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(__xenbus_register_frontend);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(xenbus_register_frontend);
 
 static DECLARE_WAIT_QUEUE_HEAD(backend_state_wq);
@@ -338,7 +456,11 @@ static void xenbus_reset_wait_for_backend(char *be, int expected)
 	timeout = wait_event_interruptible_timeout(backend_state_wq,
 			backend_state == expected, 5 * HZ);
 	if (timeout <= 0)
+<<<<<<< HEAD
 		printk(KERN_INFO "XENBUS: backend %s timed out.\n", be);
+=======
+		pr_info("backend %s timed out\n", be);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -361,7 +483,11 @@ static void xenbus_reset_frontend(char *fe, char *be, int be_state)
 	be_watch.callback = xenbus_reset_backend_state_changed;
 	backend_state = XenbusStateUnknown;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "XENBUS: triggering reconnect on %s\n", be);
+=======
+	pr_info("triggering reconnect on %s\n", be);
+>>>>>>> refs/remotes/origin/master
 	register_xenbus_watch(&be_watch);
 
 	/* fall through to forward backend to state XenbusStateInitialising */
@@ -380,7 +506,11 @@ static void xenbus_reset_frontend(char *fe, char *be, int be_state)
 	}
 
 	unregister_xenbus_watch(&be_watch);
+<<<<<<< HEAD
 	printk(KERN_INFO "XENBUS: reconnect done on %s\n", be);
+=======
+	pr_info("reconnect done on %s\n", be);
+>>>>>>> refs/remotes/origin/master
 	kfree(be_watch.node);
 }
 
@@ -437,18 +567,27 @@ static void xenbus_reset_state(void)
 	}
 	kfree(devclass);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int frontend_probe_and_watch(struct notifier_block *notifier,
 				   unsigned long event,
 				   void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* reset devices in Connected or Closed state */
 	if (xen_hvm_domain())
 		xenbus_reset_state();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* reset devices in Connected or Closed state */
+	if (xen_hvm_domain())
+		xenbus_reset_state();
+>>>>>>> refs/remotes/origin/master
 	/* Enumerate devices in xenstore and watch for changes. */
 	xenbus_probe_devices(&xenbus_frontend);
 	register_xenbus_watch(&fe_watch);
@@ -473,6 +612,15 @@ static int __init xenbus_probe_frontend_init(void)
 
 	register_xenstore_notifier(&xenstore_notifier);
 
+<<<<<<< HEAD
+=======
+	if (xen_store_domain_type == XS_LOCAL) {
+		xenbus_frontend_wq = create_workqueue("xenbus_frontend");
+		if (!xenbus_frontend_wq)
+			pr_warn("create xenbus frontend workqueue failed, S3 resume is likely to fail\n");
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 subsys_initcall(xenbus_probe_frontend_init);

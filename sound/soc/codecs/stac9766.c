@@ -28,8 +28,11 @@
 
 #include "stac9766.h"
 
+<<<<<<< HEAD
 #define STAC9766_VERSION "0.10"
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * STAC9766 register cache
  */
@@ -145,14 +148,22 @@ static int stac9766_ac97_write(struct snd_soc_codec *codec, unsigned int reg,
 
 	if (reg > AC97_STAC_PAGE0) {
 		stac9766_ac97_write(codec, AC97_INT_PAGING, 0);
+<<<<<<< HEAD
 		soc_ac97_ops.write(codec->ac97, reg, val);
+=======
+		soc_ac97_ops->write(codec->ac97, reg, val);
+>>>>>>> refs/remotes/origin/master
 		stac9766_ac97_write(codec, AC97_INT_PAGING, 1);
 		return 0;
 	}
 	if (reg / 2 >= ARRAY_SIZE(stac9766_reg))
 		return -EIO;
 
+<<<<<<< HEAD
 	soc_ac97_ops.write(codec->ac97, reg, val);
+=======
+	soc_ac97_ops->write(codec->ac97, reg, val);
+>>>>>>> refs/remotes/origin/master
 	cache[reg / 2] = val;
 	return 0;
 }
@@ -164,7 +175,11 @@ static unsigned int stac9766_ac97_read(struct snd_soc_codec *codec,
 
 	if (reg > AC97_STAC_PAGE0) {
 		stac9766_ac97_write(codec, AC97_INT_PAGING, 0);
+<<<<<<< HEAD
 		val = soc_ac97_ops.read(codec->ac97, reg - AC97_STAC_PAGE0);
+=======
+		val = soc_ac97_ops->read(codec->ac97, reg - AC97_STAC_PAGE0);
+>>>>>>> refs/remotes/origin/master
 		stac9766_ac97_write(codec, AC97_INT_PAGING, 1);
 		return val;
 	}
@@ -175,7 +190,11 @@ static unsigned int stac9766_ac97_read(struct snd_soc_codec *codec,
 		reg == AC97_INT_PAGING || reg == AC97_VENDOR_ID1 ||
 		reg == AC97_VENDOR_ID2) {
 
+<<<<<<< HEAD
 		val = soc_ac97_ops.read(codec->ac97, reg);
+=======
+		val = soc_ac97_ops->read(codec->ac97, reg);
+>>>>>>> refs/remotes/origin/master
 		return val;
 	}
 	return cache[reg / 2];
@@ -242,26 +261,41 @@ static int stac9766_set_bias_level(struct snd_soc_codec *codec,
 
 static int stac9766_reset(struct snd_soc_codec *codec, int try_warm)
 {
+<<<<<<< HEAD
 	if (try_warm && soc_ac97_ops.warm_reset) {
 		soc_ac97_ops.warm_reset(codec->ac97);
+=======
+	if (try_warm && soc_ac97_ops->warm_reset) {
+		soc_ac97_ops->warm_reset(codec->ac97);
+>>>>>>> refs/remotes/origin/master
 		if (stac9766_ac97_read(codec, 0) == stac9766_reg[0])
 			return 1;
 	}
 
+<<<<<<< HEAD
 	soc_ac97_ops.reset(codec->ac97);
 	if (soc_ac97_ops.warm_reset)
 		soc_ac97_ops.warm_reset(codec->ac97);
+=======
+	soc_ac97_ops->reset(codec->ac97);
+	if (soc_ac97_ops->warm_reset)
+		soc_ac97_ops->warm_reset(codec->ac97);
+>>>>>>> refs/remotes/origin/master
 	if (stac9766_ac97_read(codec, 0) != stac9766_reg[0])
 		return -EIO;
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int stac9766_codec_suspend(struct snd_soc_codec *codec,
 				  pm_message_t state)
 =======
 static int stac9766_codec_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int stac9766_codec_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	stac9766_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -279,7 +313,11 @@ reset:
 		return -EIO;
 	}
 	codec->ac97->bus->ops->warm_reset(codec->ac97);
+<<<<<<< HEAD
 	id = soc_ac97_ops.read(codec->ac97, AC97_VENDOR_ID2);
+=======
+	id = soc_ac97_ops->read(codec->ac97, AC97_VENDOR_ID2);
+>>>>>>> refs/remotes/origin/master
 	if (id != 0x4c13) {
 		stac9766_reset(codec, 0);
 		reset++;
@@ -291,18 +329,24 @@ reset:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops stac9766_dai_ops_analog = {
 	.prepare = ac97_analog_prepare,
 };
 
 static struct snd_soc_dai_ops stac9766_dai_ops_digital = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct snd_soc_dai_ops stac9766_dai_ops_analog = {
 	.prepare = ac97_analog_prepare,
 };
 
 static const struct snd_soc_dai_ops stac9766_dai_ops_digital = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.prepare = ac97_digital_prepare,
 };
 
@@ -351,9 +395,13 @@ static int stac9766_codec_probe(struct snd_soc_codec *codec)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "STAC9766 SoC Audio Codec %s\n", STAC9766_VERSION);
 
 	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
+=======
+	ret = snd_soc_new_ac97_codec(codec, soc_ac97_ops, 0);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto codec_err;
 
@@ -369,10 +417,14 @@ static int stac9766_codec_probe(struct snd_soc_codec *codec)
 	stac9766_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, stac9766_snd_ac97_controls,
 =======
 	snd_soc_add_codec_controls(codec, stac9766_snd_ac97_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_add_codec_controls(codec, stac9766_snd_ac97_controls,
+>>>>>>> refs/remotes/origin/master
 			     ARRAY_SIZE(stac9766_snd_ac97_controls));
 
 	return 0;
@@ -397,22 +449,34 @@ static struct snd_soc_codec_driver soc_codec_dev_stac9766 = {
 	.suspend = stac9766_codec_suspend,
 	.resume = stac9766_codec_resume,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = sizeof(stac9766_reg),
 =======
 	.reg_cache_size = ARRAY_SIZE(stac9766_reg),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.reg_cache_size = ARRAY_SIZE(stac9766_reg),
+>>>>>>> refs/remotes/origin/master
 	.reg_word_size = sizeof(u16),
 	.reg_cache_step = 2,
 	.reg_cache_default = stac9766_reg,
 };
 
+<<<<<<< HEAD
 static __devinit int stac9766_probe(struct platform_device *pdev)
+=======
+static int stac9766_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_codec(&pdev->dev,
 			&soc_codec_dev_stac9766, stac9766_dai, ARRAY_SIZE(stac9766_dai));
 }
 
+<<<<<<< HEAD
 static int __devexit stac9766_remove(struct platform_device *pdev)
+=======
+static int stac9766_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -425,6 +489,7 @@ static struct platform_driver stac9766_codec_driver = {
 	},
 
 	.probe = stac9766_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(stac9766_remove),
 };
 
@@ -443,6 +508,12 @@ module_exit(stac9766_exit);
 =======
 module_platform_driver(stac9766_codec_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = stac9766_remove,
+};
+
+module_platform_driver(stac9766_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC stac9766 driver");
 MODULE_AUTHOR("Jon Smirl <jonsmirl@gmail.com>");

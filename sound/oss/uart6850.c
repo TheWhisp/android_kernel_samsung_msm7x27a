@@ -146,7 +146,11 @@ static int uart6850_open(int dev, int mode,
 	{
 /*		  printk("Midi6850: Midi busy\n");*/
 		  return -EBUSY;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	uart6850_cmd(UART_RESET);
 	uart6850_input_loop();

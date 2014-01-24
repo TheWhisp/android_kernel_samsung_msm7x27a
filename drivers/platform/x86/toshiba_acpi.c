@@ -48,19 +48,27 @@
 #include <linux/seq_file.h>
 #include <linux/backlight.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/rfkill.h>
 #include <linux/input.h>
 #include <linux/input/sparse-keymap.h>
 #include <linux/leds.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/workqueue.h>
 #include <linux/i8042.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/workqueue.h>
+#include <linux/i8042.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 
@@ -71,6 +79,7 @@ MODULE_DESCRIPTION("Toshiba Laptop ACPI Extras Driver");
 MODULE_LICENSE("GPL");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Toshiba ACPI method paths */
 #define METHOD_LCD_BRIGHTNESS	"\\_SB_.PCI0.VGA_.LCD_._BCM"
 #define TOSH_INTERFACE_1	"\\_SB_.VALD"
@@ -78,6 +87,8 @@ MODULE_LICENSE("GPL");
 #define METHOD_VIDEO_OUT	"\\_SB_.VALX.DSSX"
 #define GHCI_METHOD		".GHCI"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TOSHIBA_WMI_EVENT_GUID "59142400-C6A3-40FA-BADB-8A2652834100"
 
 /* Scan code for Fn key on TOS1900 models */
@@ -85,7 +96,10 @@ MODULE_LICENSE("GPL");
 
 /* Toshiba ACPI method paths */
 #define METHOD_VIDEO_OUT	"\\_SB_.VALX.DSSX"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Toshiba HCI interface definitions
  *
@@ -111,6 +125,10 @@ MODULE_LICENSE("GPL");
 
 /* registers */
 #define HCI_FAN				0x0004
+<<<<<<< HEAD
+=======
+#define HCI_TR_BACKLIGHT		0x0005
+>>>>>>> refs/remotes/origin/master
 #define HCI_SYSTEM_EVENT		0x0016
 #define HCI_VIDEO_OUT			0x001c
 #define HCI_HOTKEY_EVENT		0x001e
@@ -119,10 +137,15 @@ MODULE_LICENSE("GPL");
 
 /* field definitions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HCI_HOTKEY_DISABLE		0x0b
 #define HCI_HOTKEY_ENABLE		0x09
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HCI_HOTKEY_DISABLE		0x0b
+#define HCI_HOTKEY_ENABLE		0x09
+>>>>>>> refs/remotes/origin/master
 #define HCI_LCD_BRIGHTNESS_BITS		3
 #define HCI_LCD_BRIGHTNESS_SHIFT	(16-HCI_LCD_BRIGHTNESS_BITS)
 #define HCI_LCD_BRIGHTNESS_LEVELS	(1 << HCI_LCD_BRIGHTNESS_BITS)
@@ -135,7 +158,10 @@ MODULE_LICENSE("GPL");
 #define HCI_WIRELESS_BT_POWER		0x80
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct toshiba_acpi_dev {
 	struct acpi_device *acpi_dev;
 	const char *method_hci;
@@ -155,13 +181,20 @@ struct toshiba_acpi_dev {
 	unsigned int system_event_supported:1;
 	unsigned int ntfy_supported:1;
 	unsigned int info_supported:1;
+<<<<<<< HEAD
+=======
+	unsigned int tr_backlight_supported:1;
+>>>>>>> refs/remotes/origin/master
 
 	struct mutex mutex;
 };
 
 static struct toshiba_acpi_dev *toshiba_acpi;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct acpi_device_id toshiba_device_ids[] = {
 	{"TOS6200", 0},
 	{"TOS6208", 0},
@@ -171,18 +204,25 @@ static const struct acpi_device_id toshiba_device_ids[] = {
 MODULE_DEVICE_TABLE(acpi, toshiba_device_ids);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct key_entry toshiba_acpi_keymap[] __initconst = {
 	{ KE_KEY, 0x101, { KEY_MUTE } },
 	{ KE_KEY, 0x102, { KEY_ZOOMOUT } },
 	{ KE_KEY, 0x103, { KEY_ZOOMIN } },
 =======
 static const struct key_entry toshiba_acpi_keymap[] __devinitconst = {
+=======
+static const struct key_entry toshiba_acpi_keymap[] = {
+>>>>>>> refs/remotes/origin/master
 	{ KE_KEY, 0x101, { KEY_MUTE } },
 	{ KE_KEY, 0x102, { KEY_ZOOMOUT } },
 	{ KE_KEY, 0x103, { KEY_ZOOMIN } },
 	{ KE_KEY, 0x12c, { KEY_KBDILLUMTOGGLE } },
 	{ KE_KEY, 0x139, { KEY_ZOOMRESET } },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ KE_KEY, 0x13b, { KEY_COFFEE } },
 	{ KE_KEY, 0x13c, { KEY_BATTERY } },
 	{ KE_KEY, 0x13d, { KEY_SLEEP } },
@@ -192,10 +232,14 @@ static const struct key_entry toshiba_acpi_keymap[] __devinitconst = {
 	{ KE_KEY, 0x141, { KEY_BRIGHTNESSUP } },
 	{ KE_KEY, 0x142, { KEY_WLAN } },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ KE_KEY, 0x143, { KEY_PROG1 } },
 =======
 	{ KE_KEY, 0x143, { KEY_TOUCHPAD_TOGGLE } },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ KE_KEY, 0x143, { KEY_TOUCHPAD_TOGGLE } },
+>>>>>>> refs/remotes/origin/master
 	{ KE_KEY, 0x17f, { KEY_FN } },
 	{ KE_KEY, 0xb05, { KEY_PROG2 } },
 	{ KE_KEY, 0xb06, { KEY_WWW } },
@@ -206,9 +250,13 @@ static const struct key_entry toshiba_acpi_keymap[] __devinitconst = {
 	{ KE_KEY, 0xb33, { KEY_PLAYPAUSE } },
 	{ KE_KEY, 0xb5a, { KEY_MEDIA } },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ KE_IGNORE, 0x1430, { KEY_RESERVED } },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ KE_IGNORE, 0x1430, { KEY_RESERVED } },
+>>>>>>> refs/remotes/origin/master
 	{ KE_END, 0 },
 };
 
@@ -223,6 +271,7 @@ static __inline__ void _set_bit(u32 * word, u32 mask, int value)
 /* acpi interface wrappers
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int is_valid_acpi_path(const char *methodName)
 {
@@ -273,16 +322,30 @@ static const char *method_hci /*= 0*/ ;
 	return (status == AE_OK) ? 0 : -EIO;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int write_acpi_int(const char *methodName, int val)
+{
+	acpi_status status;
+
+	status = acpi_execute_simple_method(NULL, (char *)methodName, val);
+	return (status == AE_OK) ? 0 : -EIO;
+}
+>>>>>>> refs/remotes/origin/master
 
 /* Perform a raw HCI call.  Here we don't care about input or output buffer
  * format.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static acpi_status hci_raw(const u32 in[HCI_WORDS], u32 out[HCI_WORDS])
 =======
 static acpi_status hci_raw(struct toshiba_acpi_dev *dev,
 			   const u32 in[HCI_WORDS], u32 out[HCI_WORDS])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static acpi_status hci_raw(struct toshiba_acpi_dev *dev,
+			   const u32 in[HCI_WORDS], u32 out[HCI_WORDS])
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_object_list params;
 	union acpi_object in_objs[HCI_WORDS];
@@ -302,11 +365,16 @@ static acpi_status hci_raw(struct toshiba_acpi_dev *dev,
 	results.pointer = out_objs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = acpi_evaluate_object(NULL, (char *)method_hci, &params,
 =======
 	status = acpi_evaluate_object(dev->acpi_dev->handle,
 				      (char *)dev->method_hci, &params,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = acpi_evaluate_object(dev->acpi_dev->handle,
+				      (char *)dev->method_hci, &params,
+>>>>>>> refs/remotes/origin/master
 				      &results);
 	if ((status == AE_OK) && (out_objs->package.count <= HCI_WORDS)) {
 		for (i = 0; i < out_objs->package.count; ++i) {
@@ -324,23 +392,30 @@ static acpi_status hci_raw(struct toshiba_acpi_dev *dev,
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static acpi_status hci_write1(u32 reg, u32 in1, u32 * result)
 {
 	u32 in[HCI_WORDS] = { HCI_SET, reg, in1, 0, 0, 0 };
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(in, out);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status hci_write1(struct toshiba_acpi_dev *dev, u32 reg,
 			      u32 in1, u32 *result)
 {
 	u32 in[HCI_WORDS] = { HCI_SET, reg, in1, 0, 0, 0 };
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(dev, in, out);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*result = (status == AE_OK) ? out[0] : HCI_FAILURE;
 	return status;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static acpi_status hci_read1(u32 reg, u32 * out1, u32 * result)
 {
@@ -348,18 +423,24 @@ static acpi_status hci_read1(u32 reg, u32 * out1, u32 * result)
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(in, out);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status hci_read1(struct toshiba_acpi_dev *dev, u32 reg,
 			     u32 *out1, u32 *result)
 {
 	u32 in[HCI_WORDS] = { HCI_GET, reg, 0, 0, 0, 0 };
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(dev, in, out);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*out1 = out[2];
 	*result = (status == AE_OK) ? out[0] : HCI_FAILURE;
 	return status;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static acpi_status hci_write2(u32 reg, u32 in1, u32 in2, u32 *result)
 {
@@ -367,17 +448,23 @@ static acpi_status hci_write2(u32 reg, u32 in1, u32 in2, u32 *result)
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(in, out);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status hci_write2(struct toshiba_acpi_dev *dev, u32 reg,
 			      u32 in1, u32 in2, u32 *result)
 {
 	u32 in[HCI_WORDS] = { HCI_SET, reg, in1, in2, 0, 0 };
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(dev, in, out);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*result = (status == AE_OK) ? out[0] : HCI_FAILURE;
 	return status;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static acpi_status hci_read2(u32 reg, u32 *out1, u32 *out2, u32 *result)
 {
@@ -385,19 +472,25 @@ static acpi_status hci_read2(u32 reg, u32 *out1, u32 *out2, u32 *result)
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(in, out);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status hci_read2(struct toshiba_acpi_dev *dev, u32 reg,
 			     u32 *out1, u32 *out2, u32 *result)
 {
 	u32 in[HCI_WORDS] = { HCI_GET, reg, *out1, *out2, 0, 0 };
 	u32 out[HCI_WORDS];
 	acpi_status status = hci_raw(dev, in, out);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*out1 = out[2];
 	*out2 = out[3];
 	*result = (status == AE_OK) ? out[0] : HCI_FAILURE;
 	return status;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct toshiba_acpi_dev {
 	struct platform_device *p_dev;
@@ -417,6 +510,10 @@ static int toshiba_illumination_available(void)
 /* Illumination support */
 static int toshiba_illumination_available(struct toshiba_acpi_dev *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Illumination support */
+static int toshiba_illumination_available(struct toshiba_acpi_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 in[HCI_WORDS] = { 0, 0, 0, 0, 0, 0 };
 	u32 out[HCI_WORDS];
@@ -424,20 +521,28 @@ static int toshiba_illumination_available(struct toshiba_acpi_dev *dev)
 
 	in[0] = 0xf100;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = hci_raw(in, out);
 =======
 	status = hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		pr_info("Illumination device not available\n");
 		return 0;
 	}
 	in[0] = 0xf400;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = hci_raw(in, out);
 =======
 	status = hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -445,10 +550,15 @@ static void toshiba_illumination_set(struct led_classdev *cdev,
 				     enum led_brightness brightness)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct toshiba_acpi_dev *dev = container_of(cdev,
 			struct toshiba_acpi_dev, led_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct toshiba_acpi_dev *dev = container_of(cdev,
+			struct toshiba_acpi_dev, led_dev);
+>>>>>>> refs/remotes/origin/master
 	u32 in[HCI_WORDS] = { 0, 0, 0, 0, 0, 0 };
 	u32 out[HCI_WORDS];
 	acpi_status status;
@@ -456,10 +566,14 @@ static void toshiba_illumination_set(struct led_classdev *cdev,
 	/* First request : initialize communication. */
 	in[0] = 0xf100;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = hci_raw(in, out);
 =======
 	status = hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		pr_info("Illumination device not available\n");
 		return;
@@ -471,10 +585,14 @@ static void toshiba_illumination_set(struct led_classdev *cdev,
 		in[1] = 0x14e;
 		in[2] = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = hci_raw(in, out);
 =======
 		status = hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_FAILURE(status)) {
 			pr_info("ACPI call for illumination failed\n");
 			return;
@@ -485,10 +603,14 @@ static void toshiba_illumination_set(struct led_classdev *cdev,
 		in[1] = 0x14e;
 		in[2] = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = hci_raw(in, out);
 =======
 		status = hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_FAILURE(status)) {
 			pr_info("ACPI call for illumination failed.\n");
 			return;
@@ -500,19 +622,28 @@ static void toshiba_illumination_set(struct led_classdev *cdev,
 	in[1] = 0;
 	in[2] = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_raw(in, out);
 =======
 	hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 }
 
 static enum led_brightness toshiba_illumination_get(struct led_classdev *cdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct toshiba_acpi_dev *dev = container_of(cdev,
 			struct toshiba_acpi_dev, led_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct toshiba_acpi_dev *dev = container_of(cdev,
+			struct toshiba_acpi_dev, led_dev);
+>>>>>>> refs/remotes/origin/master
 	u32 in[HCI_WORDS] = { 0, 0, 0, 0, 0, 0 };
 	u32 out[HCI_WORDS];
 	acpi_status status;
@@ -521,10 +652,14 @@ static enum led_brightness toshiba_illumination_get(struct led_classdev *cdev)
 	/* First request : initialize communication. */
 	in[0] = 0xf100;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = hci_raw(in, out);
 =======
 	status = hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		pr_info("Illumination device not available\n");
 		return LED_OFF;
@@ -534,10 +669,14 @@ static enum led_brightness toshiba_illumination_get(struct led_classdev *cdev)
 	in[0] = 0xf300;
 	in[1] = 0x14e;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = hci_raw(in, out);
 =======
 	status = hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		pr_info("ACPI call for illumination failed.\n");
 		return LED_OFF;
@@ -550,14 +689,19 @@ static enum led_brightness toshiba_illumination_get(struct led_classdev *cdev)
 	in[1] = 0;
 	in[2] = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_raw(in, out);
 =======
 	hci_raw(dev, in, out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hci_raw(dev, in, out);
+>>>>>>> refs/remotes/origin/master
 
 	return result;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct led_classdev toshiba_led = {
 	.name           = "toshiba::illumination",
@@ -578,6 +722,11 @@ static u32 hci_get_bt_present(bool *present)
 
 static u32 hci_get_bt_present(struct toshiba_acpi_dev *dev, bool *present)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Bluetooth rfkill handlers */
+
+static u32 hci_get_bt_present(struct toshiba_acpi_dev *dev, bool *present)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 hci_result;
 	u32 value, value2;
@@ -585,10 +734,14 @@ static u32 hci_get_bt_present(struct toshiba_acpi_dev *dev, bool *present)
 	value = 0;
 	value2 = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_read2(HCI_WIRELESS, &value, &value2, &hci_result);
 =======
 	hci_read2(dev, HCI_WIRELESS, &value, &value2, &hci_result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hci_read2(dev, HCI_WIRELESS, &value, &value2, &hci_result);
+>>>>>>> refs/remotes/origin/master
 	if (hci_result == HCI_SUCCESS)
 		*present = (value & HCI_WIRELESS_BT_PRESENT) ? true : false;
 
@@ -596,10 +749,14 @@ static u32 hci_get_bt_present(struct toshiba_acpi_dev *dev, bool *present)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 hci_get_radio_state(bool *radio_state)
 =======
 static u32 hci_get_radio_state(struct toshiba_acpi_dev *dev, bool *radio_state)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 hci_get_radio_state(struct toshiba_acpi_dev *dev, bool *radio_state)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 hci_result;
 	u32 value, value2;
@@ -607,10 +764,14 @@ static u32 hci_get_radio_state(struct toshiba_acpi_dev *dev, bool *radio_state)
 	value = 0;
 	value2 = 0x0001;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_read2(HCI_WIRELESS, &value, &value2, &hci_result);
 =======
 	hci_read2(dev, HCI_WIRELESS, &value, &value2, &hci_result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hci_read2(dev, HCI_WIRELESS, &value, &value2, &hci_result);
+>>>>>>> refs/remotes/origin/master
 
 	*radio_state = value & HCI_WIRELESS_KILL_SWITCH;
 	return hci_result;
@@ -628,12 +789,17 @@ static int bt_rfkill_set_block(void *data, bool blocked)
 
 	mutex_lock(&dev->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (hci_get_radio_state(&radio_state) != HCI_SUCCESS) {
 		err = -EBUSY;
 =======
 	if (hci_get_radio_state(dev, &radio_state) != HCI_SUCCESS) {
 		err = -EIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hci_get_radio_state(dev, &radio_state) != HCI_SUCCESS) {
+		err = -EIO;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -643,18 +809,24 @@ static int bt_rfkill_set_block(void *data, bool blocked)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_write2(HCI_WIRELESS, value, HCI_WIRELESS_BT_POWER, &result1);
 	hci_write2(HCI_WIRELESS, value, HCI_WIRELESS_BT_ATTACH, &result2);
 
 	if (result1 != HCI_SUCCESS || result2 != HCI_SUCCESS)
 		err = -EBUSY;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hci_write2(dev, HCI_WIRELESS, value, HCI_WIRELESS_BT_POWER, &result1);
 	hci_write2(dev, HCI_WIRELESS, value, HCI_WIRELESS_BT_ATTACH, &result2);
 
 	if (result1 != HCI_SUCCESS || result2 != HCI_SUCCESS)
 		err = -EIO;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		err = 0;
  out:
@@ -672,10 +844,14 @@ static void bt_rfkill_poll(struct rfkill *rfkill, void *data)
 	mutex_lock(&dev->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_result = hci_get_radio_state(&value);
 =======
 	hci_result = hci_get_radio_state(dev, &value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hci_result = hci_get_radio_state(dev, &value);
+>>>>>>> refs/remotes/origin/master
 	if (hci_result != HCI_SUCCESS) {
 		/* Can't do anything useful */
 		mutex_unlock(&dev->mutex);
@@ -695,6 +871,7 @@ static const struct rfkill_ops toshiba_rfk_ops = {
 	.poll = bt_rfkill_poll,
 };
 
+<<<<<<< HEAD
 static struct proc_dir_entry *toshiba_proc_dir /*= 0*/ ;
 <<<<<<< HEAD
 static struct backlight_device *toshiba_backlight_device;
@@ -736,10 +913,68 @@ static int lcd_proc_show(struct seq_file *m, void *v)
 =======
 	struct toshiba_acpi_dev *dev = m->private;
 	int value;
+=======
+static int get_tr_backlight_status(struct toshiba_acpi_dev *dev, bool *enabled)
+{
+	u32 hci_result;
+	u32 status;
+
+	hci_read1(dev, HCI_TR_BACKLIGHT, &status, &hci_result);
+	*enabled = !status;
+	return hci_result == HCI_SUCCESS ? 0 : -EIO;
+}
+
+static int set_tr_backlight_status(struct toshiba_acpi_dev *dev, bool enable)
+{
+	u32 hci_result;
+	u32 value = !enable;
+
+	hci_write1(dev, HCI_TR_BACKLIGHT, value, &hci_result);
+	return hci_result == HCI_SUCCESS ? 0 : -EIO;
+}
+
+static struct proc_dir_entry *toshiba_proc_dir /*= 0*/ ;
+
+static int __get_lcd_brightness(struct toshiba_acpi_dev *dev)
+{
+	u32 hci_result;
+	u32 value;
+	int brightness = 0;
+
+	if (dev->tr_backlight_supported) {
+		bool enabled;
+		int ret = get_tr_backlight_status(dev, &enabled);
+		if (ret)
+			return ret;
+		if (enabled)
+			return 0;
+		brightness++;
+	}
+
+	hci_read1(dev, HCI_LCD_BRIGHTNESS, &value, &hci_result);
+	if (hci_result == HCI_SUCCESS)
+		return brightness + (value >> HCI_LCD_BRIGHTNESS_SHIFT);
+
+	return -EIO;
+}
+
+static int get_lcd_brightness(struct backlight_device *bd)
+{
+	struct toshiba_acpi_dev *dev = bl_get_data(bd);
+	return __get_lcd_brightness(dev);
+}
+
+static int lcd_proc_show(struct seq_file *m, void *v)
+{
+	struct toshiba_acpi_dev *dev = m->private;
+	int value;
+	int levels;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev->backlight_dev)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	value = get_lcd(dev->backlight_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (value >= 0) {
@@ -753,16 +988,27 @@ static int lcd_proc_show(struct seq_file *m, void *v)
 
 	return 0;
 =======
+=======
+	levels = dev->backlight_dev->props.max_brightness + 1;
+	value = get_lcd_brightness(dev->backlight_dev);
+	if (value >= 0) {
+		seq_printf(m, "brightness:              %d\n", value);
+		seq_printf(m, "brightness_levels:       %d\n", levels);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	pr_err("Error reading LCD brightness\n");
 	return -EIO;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lcd_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return single_open(file, lcd_proc_show, NULL);
 }
@@ -788,29 +1034,63 @@ static int set_lcd(struct toshiba_acpi_dev *dev, int value)
 	hci_write1(dev, HCI_LCD_BRIGHTNESS, value, &hci_result);
 	return hci_result == HCI_SUCCESS ? 0 : -EIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return single_open(file, lcd_proc_show, PDE_DATA(inode));
+}
+
+static int set_lcd_brightness(struct toshiba_acpi_dev *dev, int value)
+{
+	u32 hci_result;
+
+	if (dev->tr_backlight_supported) {
+		bool enable = !value;
+		int ret = set_tr_backlight_status(dev, enable);
+		if (ret)
+			return ret;
+		if (value)
+			value--;
+	}
+
+	value = value << HCI_LCD_BRIGHTNESS_SHIFT;
+	hci_write1(dev, HCI_LCD_BRIGHTNESS, value, &hci_result);
+	return hci_result == HCI_SUCCESS ? 0 : -EIO;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int set_lcd_status(struct backlight_device *bd)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return set_lcd(bd->props.brightness);
 =======
 	struct toshiba_acpi_dev *dev = bl_get_data(bd);
 	return set_lcd(dev, bd->props.brightness);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct toshiba_acpi_dev *dev = bl_get_data(bd);
+	return set_lcd_brightness(dev, bd->props.brightness);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t lcd_proc_write(struct file *file, const char __user *buf,
 			      size_t count, loff_t *pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct toshiba_acpi_dev *dev = PDE(file->f_path.dentry->d_inode)->data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct toshiba_acpi_dev *dev = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char cmd[42];
 	size_t len;
 	int value;
 	int ret;
+<<<<<<< HEAD
+=======
+	int levels = dev->backlight_dev->props.max_brightness + 1;
+>>>>>>> refs/remotes/origin/master
 
 	len = min(count, sizeof(cmd) - 1);
 	if (copy_from_user(cmd, buf, len))
@@ -818,12 +1098,17 @@ static ssize_t lcd_proc_write(struct file *file, const char __user *buf,
 	cmd[len] = '\0';
 
 	if (sscanf(cmd, " brightness : %i", &value) == 1 &&
+<<<<<<< HEAD
 	    value >= 0 && value < HCI_LCD_BRIGHTNESS_LEVELS) {
 <<<<<<< HEAD
 		ret = set_lcd(value);
 =======
 		ret = set_lcd(dev, value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    value >= 0 && value < levels) {
+		ret = set_lcd_brightness(dev, value);
+>>>>>>> refs/remotes/origin/master
 		if (ret == 0)
 			ret = count;
 	} else {
@@ -842,6 +1127,7 @@ static const struct file_operations lcd_proc_fops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int video_proc_show(struct seq_file *m, void *v)
 {
 	u32 hci_result;
@@ -850,6 +1136,8 @@ static int video_proc_show(struct seq_file *m, void *v)
 	hci_read1(HCI_VIDEO_OUT, &value, &hci_result);
 	if (hci_result == HCI_SUCCESS) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int get_video_status(struct toshiba_acpi_dev *dev, u32 *status)
 {
 	u32 hci_result;
@@ -866,13 +1154,17 @@ static int video_proc_show(struct seq_file *m, void *v)
 
 	ret = get_video_status(dev, &value);
 	if (!ret) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		int is_lcd = (value & HCI_VIDEO_OUT_LCD) ? 1 : 0;
 		int is_crt = (value & HCI_VIDEO_OUT_CRT) ? 1 : 0;
 		int is_tv = (value & HCI_VIDEO_OUT_TV) ? 1 : 0;
 		seq_printf(m, "lcd_out:                 %d\n", is_lcd);
 		seq_printf(m, "crt_out:                 %d\n", is_crt);
 		seq_printf(m, "tv_out:                  %d\n", is_tv);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else {
 		pr_err("Error reading video out status\n");
@@ -884,20 +1176,30 @@ static int video_proc_show(struct seq_file *m, void *v)
 
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int video_proc_open(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return single_open(file, video_proc_show, NULL);
 =======
 	return single_open(file, video_proc_show, PDE(inode)->data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return single_open(file, video_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t video_proc_write(struct file *file, const char __user *buf,
 				size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	char *cmd, *buffer;
 =======
@@ -905,15 +1207,23 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
 	char *cmd, *buffer;
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct toshiba_acpi_dev *dev = PDE_DATA(file_inode(file));
+	char *cmd, *buffer;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	int value;
 	int remain = count;
 	int lcd_out = -1;
 	int crt_out = -1;
 	int tv_out = -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 hci_result;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 video_out;
 
 	cmd = kmalloc(count + 1, GFP_KERNEL);
@@ -949,12 +1259,17 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
 	kfree(cmd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hci_read1(HCI_VIDEO_OUT, &video_out, &hci_result);
 	if (hci_result == HCI_SUCCESS) {
 =======
 	ret = get_video_status(dev, &video_out);
 	if (!ret) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = get_video_status(dev, &video_out);
+	if (!ret) {
+>>>>>>> refs/remotes/origin/master
 		unsigned int new_video_out = video_out;
 		if (lcd_out != -1)
 			_set_bit(&new_video_out, HCI_VIDEO_OUT_LCD, lcd_out);
@@ -966,6 +1281,7 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
 		 * video setting if something changed. */
 		if (new_video_out != video_out)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			write_acpi_int(METHOD_VIDEO_OUT, new_video_out);
 	} else {
 		return -EFAULT;
@@ -973,11 +1289,16 @@ static ssize_t video_proc_write(struct file *file, const char __user *buf,
 
 	return count;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ret = write_acpi_int(METHOD_VIDEO_OUT, new_video_out);
 	}
 
 	return ret ? ret : count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations video_proc_fops = {
@@ -989,6 +1310,7 @@ static const struct file_operations video_proc_fops = {
 	.write		= video_proc_write,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int fan_proc_show(struct seq_file *m, void *v)
 {
@@ -1005,6 +1327,8 @@ static int fan_proc_show(struct seq_file *m, void *v)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int get_fan_status(struct toshiba_acpi_dev *dev, u32 *status)
 {
 	u32 hci_result;
@@ -1026,25 +1350,36 @@ static int fan_proc_show(struct seq_file *m, void *v)
 	}
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int fan_proc_open(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return single_open(file, fan_proc_show, NULL);
 =======
 	return single_open(file, fan_proc_show, PDE(inode)->data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return single_open(file, fan_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t fan_proc_write(struct file *file, const char __user *buf,
 			      size_t count, loff_t *pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct toshiba_acpi_dev *dev = PDE(file->f_path.dentry->d_inode)->data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct toshiba_acpi_dev *dev = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char cmd[42];
 	size_t len;
 	int value;
@@ -1058,18 +1393,24 @@ static ssize_t fan_proc_write(struct file *file, const char __user *buf,
 	if (sscanf(cmd, " force_on : %i", &value) == 1 &&
 	    value >= 0 && value <= 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		hci_write1(HCI_FAN, value, &hci_result);
 		if (hci_result != HCI_SUCCESS)
 			return -EFAULT;
 		else
 			force_fan = value;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		hci_write1(dev, HCI_FAN, value, &hci_result);
 		if (hci_result != HCI_SUCCESS)
 			return -EIO;
 		else
 			dev->force_fan = value;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -EINVAL;
 	}
@@ -1089,6 +1430,7 @@ static const struct file_operations fan_proc_fops = {
 static int keys_proc_show(struct seq_file *m, void *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 hci_result;
 	u32 value;
 
@@ -1098,6 +1440,8 @@ static int keys_proc_show(struct seq_file *m, void *v)
 			key_event_valid = 1;
 			last_key_event = value;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct toshiba_acpi_dev *dev = m->private;
 	u32 hci_result;
 	u32 value;
@@ -1107,13 +1451,17 @@ static int keys_proc_show(struct seq_file *m, void *v)
 		if (hci_result == HCI_SUCCESS) {
 			dev->key_event_valid = 1;
 			dev->last_key_event = value;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (hci_result == HCI_EMPTY) {
 			/* better luck next time */
 		} else if (hci_result == HCI_NOT_SUPPORTED) {
 			/* This is a workaround for an unresolved issue on
 			 * some machines where system events sporadically
 			 * become disabled. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			hci_write1(HCI_SYSTEM_EVENT, 1, &hci_result);
 			pr_notice("Re-enabled hotkeys\n");
@@ -1127,6 +1475,8 @@ static int keys_proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "hotkey:                  0x%04x\n", last_key_event);
 end:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			hci_write1(dev, HCI_SYSTEM_EVENT, 1, &hci_result);
 			pr_notice("Re-enabled hotkeys\n");
 		} else {
@@ -1137,26 +1487,37 @@ end:
 
 	seq_printf(m, "hotkey_ready:            %d\n", dev->key_event_valid);
 	seq_printf(m, "hotkey:                  0x%04x\n", dev->last_key_event);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int keys_proc_open(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return single_open(file, keys_proc_show, NULL);
 =======
 	return single_open(file, keys_proc_show, PDE(inode)->data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return single_open(file, keys_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t keys_proc_write(struct file *file, const char __user *buf,
 			       size_t count, loff_t *pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct toshiba_acpi_dev *dev = PDE(file->f_path.dentry->d_inode)->data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct toshiba_acpi_dev *dev = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	char cmd[42];
 	size_t len;
 	int value;
@@ -1168,10 +1529,14 @@ static ssize_t keys_proc_write(struct file *file, const char __user *buf,
 
 	if (sscanf(cmd, " hotkey_ready : %i", &value) == 1 && value == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		key_event_valid = 0;
 =======
 		dev->key_event_valid = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->key_event_valid = 0;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -EINVAL;
 	}
@@ -1197,7 +1562,11 @@ static int version_proc_show(struct seq_file *m, void *v)
 
 static int version_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, version_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, version_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations version_proc_fops = {
@@ -1213,6 +1582,7 @@ static const struct file_operations version_proc_fops = {
 
 #define PROC_TOSHIBA		"toshiba"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init create_toshiba_proc_entries(void)
 {
@@ -1232,6 +1602,9 @@ static void remove_toshiba_proc_entries(void)
 =======
 static void __devinit
 create_toshiba_proc_entries(struct toshiba_acpi_dev *dev)
+=======
+static void create_toshiba_proc_entries(struct toshiba_acpi_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (dev->backlight_dev)
 		proc_create_data("lcd", S_IRUGO | S_IWUSR, toshiba_proc_dir,
@@ -1259,11 +1632,15 @@ static void remove_toshiba_proc_entries(struct toshiba_acpi_dev *dev)
 		remove_proc_entry("fan", toshiba_proc_dir);
 	if (dev->hotkey_dev)
 		remove_proc_entry("keys", toshiba_proc_dir);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	remove_proc_entry("version", toshiba_proc_dir);
 }
 
 static const struct backlight_ops toshiba_backlight_data = {
+<<<<<<< HEAD
         .get_brightness = get_lcd,
         .update_status  = set_lcd_status,
 };
@@ -1313,6 +1690,13 @@ static int __init toshiba_acpi_setup_keyboard(char *device)
 	toshiba_acpi.hotkey_dev = input_allocate_device();
 	if (!toshiba_acpi.hotkey_dev) {
 =======
+=======
+	.options = BL_CORE_SUSPENDRESUME,
+	.get_brightness = get_lcd_brightness,
+	.update_status  = set_lcd_status,
+};
+
+>>>>>>> refs/remotes/origin/master
 static bool toshiba_acpi_i8042_filter(unsigned char data, unsigned char str,
 				      struct serio *port)
 {
@@ -1348,6 +1732,7 @@ static void toshiba_acpi_hotkey_work(struct work_struct *work)
  */
 static int toshiba_acpi_query_hotkey(struct toshiba_acpi_dev *dev)
 {
+<<<<<<< HEAD
 	struct acpi_buffer buf;
 	union acpi_object out_obj;
 	acpi_status status;
@@ -1358,11 +1743,23 @@ static int toshiba_acpi_query_hotkey(struct toshiba_acpi_dev *dev)
 	status = acpi_evaluate_object(dev->acpi_dev->handle, "INFO",
 				      NULL, &buf);
 	if (ACPI_FAILURE(status) || out_obj.type != ACPI_TYPE_INTEGER) {
+=======
+	unsigned long long value;
+	acpi_status status;
+
+	status = acpi_evaluate_integer(dev->acpi_dev->handle, "INFO",
+				      NULL, &value);
+	if (ACPI_FAILURE(status)) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("ACPI INFO method execution failed\n");
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	return out_obj.integer.value;
+=======
+	return value;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void toshiba_acpi_report_hotkey(struct toshiba_acpi_dev *dev,
@@ -1379,14 +1776,22 @@ static void toshiba_acpi_report_hotkey(struct toshiba_acpi_dev *dev,
 		pr_info("Unknown key %x\n", scancode);
 }
 
+<<<<<<< HEAD
 static int __devinit toshiba_acpi_setup_keyboard(struct toshiba_acpi_dev *dev)
 {
 	acpi_status status;
 	acpi_handle ec_handle, handle;
+=======
+static int toshiba_acpi_setup_keyboard(struct toshiba_acpi_dev *dev)
+{
+	acpi_status status;
+	acpi_handle ec_handle;
+>>>>>>> refs/remotes/origin/master
 	int error;
 	u32 hci_result;
 
 	dev->hotkey_dev = input_allocate_device();
+<<<<<<< HEAD
 	if (!dev->hotkey_dev) {
 >>>>>>> refs/remotes/origin/cm-10.0
 		pr_info("Unable to register input device\n");
@@ -1471,6 +1876,11 @@ static int __init toshiba_acpi_init(void)
 {
 	u32 hci_result;
 =======
+=======
+	if (!dev->hotkey_dev)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	dev->hotkey_dev->name = "Toshiba input device";
 	dev->hotkey_dev->phys = "toshiba_acpi/input0";
 	dev->hotkey_dev->id.bustype = BUS_HOST;
@@ -1488,10 +1898,14 @@ static int __init toshiba_acpi_init(void)
 	 */
 	status = AE_ERROR;
 	ec_handle = ec_get_handle();
+<<<<<<< HEAD
 	if (ec_handle)
 		status = acpi_get_handle(ec_handle, "NTFY", &handle);
 
 	if (ACPI_SUCCESS(status)) {
+=======
+	if (ec_handle && acpi_has_method(ec_handle, "NTFY")) {
+>>>>>>> refs/remotes/origin/master
 		INIT_WORK(&dev->hotkey_work, toshiba_acpi_hotkey_work);
 
 		error = i8042_install_filter(toshiba_acpi_i8042_filter);
@@ -1507,10 +1921,16 @@ static int __init toshiba_acpi_init(void)
 	 * Determine hotkey query interface. Prefer using the INFO
 	 * method when it is available.
 	 */
+<<<<<<< HEAD
 	status = acpi_get_handle(dev->acpi_dev->handle, "INFO", &handle);
 	if (ACPI_SUCCESS(status)) {
 		dev->info_supported = 1;
 	} else {
+=======
+	if (acpi_has_method(dev->acpi_dev->handle, "INFO"))
+		dev->info_supported = 1;
+	else {
+>>>>>>> refs/remotes/origin/master
 		hci_write1(dev, HCI_SYSTEM_EVENT, 1, &hci_result);
 		if (hci_result == HCI_SUCCESS)
 			dev->system_event_supported = 1;
@@ -1548,7 +1968,61 @@ static int __init toshiba_acpi_init(void)
 	return error;
 }
 
+<<<<<<< HEAD
 static int toshiba_acpi_remove(struct acpi_device *acpi_dev, int type)
+=======
+static int toshiba_acpi_setup_backlight(struct toshiba_acpi_dev *dev)
+{
+	struct backlight_properties props;
+	int brightness;
+	int ret;
+	bool enabled;
+
+	/*
+	 * Some machines don't support the backlight methods at all, and
+	 * others support it read-only. Either of these is pretty useless,
+	 * so only register the backlight device if the backlight method
+	 * supports both reads and writes.
+	 */
+	brightness = __get_lcd_brightness(dev);
+	if (brightness < 0)
+		return 0;
+	ret = set_lcd_brightness(dev, brightness);
+	if (ret) {
+		pr_debug("Backlight method is read-only, disabling backlight support\n");
+		return 0;
+	}
+
+	/* Determine whether or not BIOS supports transflective backlight */
+	ret = get_tr_backlight_status(dev, &enabled);
+	dev->tr_backlight_supported = !ret;
+
+	memset(&props, 0, sizeof(props));
+	props.type = BACKLIGHT_PLATFORM;
+	props.max_brightness = HCI_LCD_BRIGHTNESS_LEVELS - 1;
+
+	/* adding an extra level and having 0 change to transflective mode */
+	if (dev->tr_backlight_supported)
+		props.max_brightness++;
+
+	dev->backlight_dev = backlight_device_register("toshiba",
+						       &dev->acpi_dev->dev,
+						       dev,
+						       &toshiba_backlight_data,
+						       &props);
+	if (IS_ERR(dev->backlight_dev)) {
+		ret = PTR_ERR(dev->backlight_dev);
+		pr_err("Could not register toshiba backlight device\n");
+		dev->backlight_dev = NULL;
+		return ret;
+	}
+
+	dev->backlight_dev->props.brightness = brightness;
+	return 0;
+}
+
+static int toshiba_acpi_remove(struct acpi_device *acpi_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct toshiba_acpi_dev *dev = acpi_driver_data(acpi_dev);
 
@@ -1583,6 +2057,7 @@ static int toshiba_acpi_remove(struct acpi_device *acpi_dev, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const char * __devinit find_hci_method(acpi_handle handle)
 {
 	acpi_status status;
@@ -1594,16 +2069,29 @@ static const char * __devinit find_hci_method(acpi_handle handle)
 
 	status = acpi_get_handle(handle, "SPFC", &hci_handle);
 	if (ACPI_SUCCESS(status))
+=======
+static const char *find_hci_method(acpi_handle handle)
+{
+	if (acpi_has_method(handle, "GHCI"))
+		return "GHCI";
+
+	if (acpi_has_method(handle, "SPFC"))
+>>>>>>> refs/remotes/origin/master
 		return "SPFC";
 
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit toshiba_acpi_add(struct acpi_device *acpi_dev)
+=======
+static int toshiba_acpi_add(struct acpi_device *acpi_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct toshiba_acpi_dev *dev;
 	const char *hci_method;
 	u32 dummy;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	bool bt_present;
 	int ret = 0;
@@ -1700,6 +2188,11 @@ static int __devinit toshiba_acpi_add(struct acpi_device *acpi_dev)
 			toshiba_acpi.illumination_installed = 1;
 	}
 =======
+=======
+	bool bt_present;
+	int ret = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (toshiba_acpi)
 		return -EBUSY;
 
@@ -1724,6 +2217,7 @@ static int __devinit toshiba_acpi_add(struct acpi_device *acpi_dev)
 
 	mutex_init(&dev->mutex);
 
+<<<<<<< HEAD
 	props.type = BACKLIGHT_PLATFORM;
 	props.max_brightness = HCI_LCD_BRIGHTNESS_LEVELS - 1;
 	dev->backlight_dev = backlight_device_register("toshiba",
@@ -1739,6 +2233,11 @@ static int __devinit toshiba_acpi_add(struct acpi_device *acpi_dev)
 		goto error;
 	}
 	dev->backlight_dev->props.brightness = get_lcd(dev->backlight_dev);
+=======
+	ret = toshiba_acpi_setup_backlight(dev);
+	if (ret)
+		goto error;
+>>>>>>> refs/remotes/origin/master
 
 	/* Register rfkill switch for Bluetooth */
 	if (hci_get_bt_present(dev, &bt_present) == HCI_SUCCESS && bt_present) {
@@ -1785,7 +2284,11 @@ static int __devinit toshiba_acpi_add(struct acpi_device *acpi_dev)
 	return 0;
 
 error:
+<<<<<<< HEAD
 	toshiba_acpi_remove(acpi_dev, 0);
+=======
+	toshiba_acpi_remove(acpi_dev);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1830,10 +2333,17 @@ static void toshiba_acpi_notify(struct acpi_device *acpi_dev, u32 event)
 	}
 }
 
+<<<<<<< HEAD
 static int toshiba_acpi_suspend(struct acpi_device *acpi_dev,
 				pm_message_t state)
 {
 	struct toshiba_acpi_dev *dev = acpi_driver_data(acpi_dev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int toshiba_acpi_suspend(struct device *device)
+{
+	struct toshiba_acpi_dev *dev = acpi_driver_data(to_acpi_device(device));
+>>>>>>> refs/remotes/origin/master
 	u32 result;
 
 	if (dev->hotkey_dev)
@@ -1842,13 +2352,20 @@ static int toshiba_acpi_suspend(struct acpi_device *acpi_dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int toshiba_acpi_resume(struct acpi_device *acpi_dev)
 {
 	struct toshiba_acpi_dev *dev = acpi_driver_data(acpi_dev);
+=======
+static int toshiba_acpi_resume(struct device *device)
+{
+	struct toshiba_acpi_dev *dev = acpi_driver_data(to_acpi_device(device));
+>>>>>>> refs/remotes/origin/master
 	u32 result;
 
 	if (dev->hotkey_dev)
 		hci_write1(dev, HCI_HOTKEY_EVENT, HCI_HOTKEY_ENABLE, &result);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
@@ -1856,6 +2373,16 @@ static int toshiba_acpi_resume(struct acpi_device *acpi_dev)
 
 <<<<<<< HEAD
 =======
+=======
+
+	return 0;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(toshiba_acpi_pm,
+			 toshiba_acpi_suspend, toshiba_acpi_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct acpi_driver toshiba_acpi_driver = {
 	.name	= "Toshiba ACPI driver",
 	.owner	= THIS_MODULE,
@@ -1865,9 +2392,14 @@ static struct acpi_driver toshiba_acpi_driver = {
 		.add		= toshiba_acpi_add,
 		.remove		= toshiba_acpi_remove,
 		.notify		= toshiba_acpi_notify,
+<<<<<<< HEAD
 		.suspend	= toshiba_acpi_suspend,
 		.resume		= toshiba_acpi_resume,
 	},
+=======
+	},
+	.drv.pm	= &toshiba_acpi_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init toshiba_acpi_init(void)
@@ -1904,6 +2436,9 @@ static void __exit toshiba_acpi_exit(void)
 		remove_proc_entry(PROC_TOSHIBA, acpi_root_dir);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_init(toshiba_acpi_init);
 module_exit(toshiba_acpi_exit);

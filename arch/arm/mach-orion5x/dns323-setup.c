@@ -14,10 +14,14 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/delay.h>
@@ -35,6 +39,7 @@
 #include <linux/marvell_phy.h>
 #include <asm/mach-types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/pci.h>
@@ -44,6 +49,13 @@
 #include <asm/system_info.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/orion5x.h>
+=======
+#include <asm/mach/arch.h>
+#include <asm/mach/pci.h>
+#include <asm/system_info.h>
+#include <mach/orion5x.h>
+#include <plat/orion-gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include "common.h"
 #include "mpp.h"
 
@@ -81,10 +93,14 @@ enum {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init dns323_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init dns323_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init dns323_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -100,7 +116,10 @@ static int __init dns323_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 
 static struct hw_pci dns323_pci __initdata = {
 	.nr_controllers = 2,
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setup		= orion5x_pci_sys_setup,
 	.scan		= orion5x_pci_sys_scan_bus,
 	.map_irq	= dns323_pci_map_irq,
@@ -267,6 +286,7 @@ error_fail:
  * GPIO LEDs (simple - doesn't use hardware blinking support)
  */
 
+<<<<<<< HEAD
 #define ORION_BLINK_HALF_PERIOD 100 /* ms */
 
 static int dns323_gpio_blink_set(unsigned gpio, int state,
@@ -288,6 +308,8 @@ static int dns323_gpio_blink_set(unsigned gpio, int state,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio_led dns323ab_leds[] = {
 	{
 		.name = "power:blue",
@@ -326,13 +348,21 @@ static struct gpio_led dns323c_leds[] = {
 static struct gpio_led_platform_data dns323ab_led_data = {
 	.num_leds	= ARRAY_SIZE(dns323ab_leds),
 	.leds		= dns323ab_leds,
+<<<<<<< HEAD
 	.gpio_blink_set = dns323_gpio_blink_set,
+=======
+	.gpio_blink_set = orion_gpio_led_blink_set,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct gpio_led_platform_data dns323c_led_data = {
 	.num_leds	= ARRAY_SIZE(dns323c_leds),
 	.leds		= dns323c_leds,
+<<<<<<< HEAD
 	.gpio_blink_set = dns323_gpio_blink_set,
+=======
+	.gpio_blink_set = orion_gpio_led_blink_set,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device dns323_gpio_leds = {
@@ -646,7 +676,14 @@ static void __init dns323_init(void)
 	/* setup flash mapping
 	 * CS3 holds a 8 MB Spansion S29GL064M90TFIR4
 	 */
+<<<<<<< HEAD
 	orion5x_setup_dev_boot_win(DNS323_NOR_BOOT_BASE, DNS323_NOR_BOOT_SIZE);
+=======
+	mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_BOOT_TARGET,
+				    ORION_MBUS_DEVBUS_BOOT_ATTR,
+				    DNS323_NOR_BOOT_BASE,
+				    DNS323_NOR_BOOT_SIZE);
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&dns323_nor_flash);
 
 	/* Sort out LEDs, Buttons and i2c devices */
@@ -736,7 +773,11 @@ static void __init dns323_init(void)
 		 * Note: AFAIK, rev B1 needs the same treatement but I'll let
 		 * somebody else test it.
 		 */
+<<<<<<< HEAD
 		writel(0x5, ORION5X_SATA_VIRT_BASE | 0x2c);
+=======
+		writel(0x5, ORION5X_SATA_VIRT_BASE + 0x2c);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -745,18 +786,28 @@ static void __init dns323_init(void)
 MACHINE_START(DNS323, "D-Link DNS-323")
 	/* Maintainer: Herbert Valerio Riedel <hvr@gnu.org> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= dns323_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
 <<<<<<< HEAD
 =======
 	.restart	= orion5x_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

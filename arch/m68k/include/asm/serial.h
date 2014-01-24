@@ -26,9 +26,13 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_ISA
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ISA
+>>>>>>> refs/remotes/origin/master
 #define SERIAL_PORT_DFNS			\
 	/* UART CLK   PORT IRQ     FLAGS        */			\
 	{ 0, BASE_BAUD, 0x3F8, 4, STD_COM_FLAGS },	/* ttyS0 */	\
@@ -36,6 +40,10 @@
 	{ 0, BASE_BAUD, 0x3E8, 4, STD_COM_FLAGS },	/* ttyS2 */	\
 	{ 0, BASE_BAUD, 0x2E8, 3, STD_COM4_FLAGS },	/* ttyS3 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master

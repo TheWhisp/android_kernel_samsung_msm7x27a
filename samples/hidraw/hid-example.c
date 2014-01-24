@@ -17,10 +17,16 @@
 /*
  * Ugly hack to work around failing compilation on systems that don't
  * yet populate new version of hidraw.h to userspace.
+<<<<<<< HEAD
  *
  * If you need this, please have your distro update the kernel headers.
  */
 #ifndef HIDIOCSFEATURE
+=======
+ */
+#ifndef HIDIOCSFEATURE
+#warning Please have your distro update the userspace kernel headers
+>>>>>>> refs/remotes/origin/master
 #define HIDIOCSFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x06, len)
 #define HIDIOCGFEATURE(len)    _IOC(_IOC_WRITE|_IOC_READ, 'H', 0x07, len)
 #endif

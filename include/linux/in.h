@@ -18,6 +18,7 @@
 #ifndef _LINUX_IN_H
 #define _LINUX_IN_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/socket.h>
 
@@ -259,6 +260,11 @@ struct sockaddr_in {
 #ifdef __KERNEL__
 
 #include <linux/errno.h>
+=======
+
+#include <linux/errno.h>
+#include <uapi/linux/in.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline int proto_ports_offset(int proto)
 {
@@ -339,6 +345,9 @@ static inline bool ipv4_is_test_198(__be32 addr)
 {
 	return (addr & htonl(0xfffe0000)) == htonl(0xc6120000);
 }
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_IN_H */

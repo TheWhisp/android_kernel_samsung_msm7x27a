@@ -10,6 +10,10 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/net.h>
 #include <linux/slab.h>
 #include <linux/skbuff.h>
@@ -26,7 +30,11 @@ MODULE_AUTHOR("Red Hat, Inc.");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS_NETPROTO(PF_RXRPC);
 
+<<<<<<< HEAD
 unsigned rxrpc_debug; // = RXRPC_DEBUG_KPROTO;
+=======
+unsigned int rxrpc_debug; // = RXRPC_DEBUG_KPROTO;
+>>>>>>> refs/remotes/origin/master
 module_param_named(debug, rxrpc_debug, uint, S_IWUSR | S_IRUGO);
 MODULE_PARM_DESC(debug, "RxRPC debugging mask");
 
@@ -513,7 +521,11 @@ static int rxrpc_setsockopt(struct socket *sock, int level, int optname,
 			    char __user *optval, unsigned int optlen)
 {
 	struct rxrpc_sock *rx = rxrpc_sk(sock->sk);
+<<<<<<< HEAD
 	unsigned min_sec_level;
+=======
+	unsigned int min_sec_level;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	_enter(",%d,%d,,%d", level, optname, optlen);
@@ -555,13 +567,21 @@ static int rxrpc_setsockopt(struct socket *sock, int level, int optname,
 
 		case RXRPC_MIN_SECURITY_LEVEL:
 			ret = -EINVAL;
+<<<<<<< HEAD
 			if (optlen != sizeof(unsigned))
+=======
+			if (optlen != sizeof(unsigned int))
+>>>>>>> refs/remotes/origin/master
 				goto error;
 			ret = -EISCONN;
 			if (rx->sk.sk_state != RXRPC_UNCONNECTED)
 				goto error;
 			ret = get_user(min_sec_level,
+<<<<<<< HEAD
 				       (unsigned __user *) optval);
+=======
+				       (unsigned int __user *) optval);
+>>>>>>> refs/remotes/origin/master
 			if (ret < 0)
 				goto error;
 			ret = -EINVAL;
@@ -792,10 +812,16 @@ static const struct net_proto_family rxrpc_family_ops = {
  */
 static int __init af_rxrpc_init(void)
 {
+<<<<<<< HEAD
 	struct sk_buff *dummy_skb;
 	int ret = -1;
 
 	BUILD_BUG_ON(sizeof(struct rxrpc_skb_priv) > sizeof(dummy_skb->cb));
+=======
+	int ret = -1;
+
+	BUILD_BUG_ON(sizeof(struct rxrpc_skb_priv) > FIELD_SIZEOF(struct sk_buff, cb));
+>>>>>>> refs/remotes/origin/master
 
 	rxrpc_epoch = htonl(get_seconds());
 
@@ -839,8 +865,14 @@ static int __init af_rxrpc_init(void)
 	}
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 	proc_net_fops_create(&init_net, "rxrpc_calls", 0, &rxrpc_call_seq_fops);
 	proc_net_fops_create(&init_net, "rxrpc_conns", 0, &rxrpc_connection_seq_fops);
+=======
+	proc_create("rxrpc_calls", 0, init_net.proc_net, &rxrpc_call_seq_fops);
+	proc_create("rxrpc_conns", 0, init_net.proc_net,
+		    &rxrpc_connection_seq_fops);
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;
 
@@ -878,8 +910,13 @@ static void __exit af_rxrpc_exit(void)
 
 	_debug("flush scheduled work");
 	flush_workqueue(rxrpc_workqueue);
+<<<<<<< HEAD
 	proc_net_remove(&init_net, "rxrpc_conns");
 	proc_net_remove(&init_net, "rxrpc_calls");
+=======
+	remove_proc_entry("rxrpc_conns", init_net.proc_net);
+	remove_proc_entry("rxrpc_calls", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 	destroy_workqueue(rxrpc_workqueue);
 	kmem_cache_destroy(rxrpc_call_jar);
 	_leave("");

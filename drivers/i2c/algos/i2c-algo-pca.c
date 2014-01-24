@@ -16,11 +16,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *  MA 02110-1301 USA.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ *  MA 02110-1301 USA.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
@@ -50,6 +55,7 @@ static int i2c_debug;
 #define pca_set_con(adap, val) pca_outw(adap, I2C_PCA_CON, val)
 #define pca_get_con(adap) pca_inw(adap, I2C_PCA_CON)
 #define pca_wait(adap) adap->wait_for_completion(adap->data)
+<<<<<<< HEAD
 #define pca_reset(adap) adap->reset_chip(adap->data)
 
 static void pca9665_reset(void *pd)
@@ -58,6 +64,21 @@ static void pca9665_reset(void *pd)
 	pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IPRESET);
 	pca_outw(adap, I2C_PCA_IND, 0xA5);
 	pca_outw(adap, I2C_PCA_IND, 0x5A);
+=======
+
+static void pca_reset(struct i2c_algo_pca_data *adap)
+{
+	if (adap->chip == I2C_PCA_CHIP_9665) {
+		/* Ignore the reset function from the module,
+		 * we can use the parallel bus reset.
+		 */
+		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IPRESET);
+		pca_outw(adap, I2C_PCA_IND, 0xA5);
+		pca_outw(adap, I2C_PCA_IND, 0x5A);
+	} else {
+		adap->reset_chip(adap->data);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -202,10 +223,14 @@ static int pca_xfer(struct i2c_adapter *i2c_adap,
 			dev_dbg(&i2c_adap->dev, "bus is not idle. status is "
 				"%#04x\n", state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -EAGAIN;
 =======
 			return -EBUSY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -234,10 +259,14 @@ static int pca_xfer(struct i2c_adapter *i2c_adap,
 
 	curmsg = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = -EREMOTEIO;
 =======
 	ret = -EIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = -EIO;
+>>>>>>> refs/remotes/origin/master
 	while (curmsg < num) {
 		state = pca_status(adap);
 
@@ -273,9 +302,13 @@ static int pca_xfer(struct i2c_adapter *i2c_adap,
 			DEB2("NOT ACK received after SLA+W\n");
 			pca_stop(adap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			ret = -ENXIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = -ENXIO;
+>>>>>>> refs/remotes/origin/master
 			goto out;
 
 		case 0x40: /* SLA+R has been transmitted; ACK has been received */
@@ -301,9 +334,13 @@ static int pca_xfer(struct i2c_adapter *i2c_adap,
 			DEB2("NOT ACK received after SLA+R\n");
 			pca_stop(adap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			ret = -ENXIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ret = -ENXIO;
+>>>>>>> refs/remotes/origin/master
 			goto out;
 
 		case 0x30: /* Data byte in I2CDAT has been transmitted; NOT ACK has been received */
@@ -396,11 +433,20 @@ static unsigned int pca_probe_chip(struct i2c_adapter *adap)
 	pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_IADR);
 	if (pca_inw(pca_data, I2C_PCA_IND) == 0xAA) {
 		printk(KERN_INFO "%s: PCA9665 detected.\n", adap->name);
+<<<<<<< HEAD
 		return I2C_PCA_CHIP_9665;
 	} else {
 		printk(KERN_INFO "%s: PCA9564 detected.\n", adap->name);
 		return I2C_PCA_CHIP_9564;
 	}
+=======
+		pca_data->chip = I2C_PCA_CHIP_9665;
+	} else {
+		printk(KERN_INFO "%s: PCA9564 detected.\n", adap->name);
+		pca_data->chip = I2C_PCA_CHIP_9564;
+	}
+	return pca_data->chip;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pca_init(struct i2c_adapter *adap)
@@ -474,11 +520,14 @@ static int pca_init(struct i2c_adapter *adap)
 		 */
 		int raise_fall_time;
 
+<<<<<<< HEAD
 		/* Ignore the reset function from the module,
 		 * we can use the parallel bus reset
 		 */
 		pca_data->reset_chip = pca9665_reset;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pca_data->i2c_clock > 1265800) {
 			printk(KERN_WARNING "%s: I2C clock speed too high."
 				" Using 1265.8kHz.\n", adap->name);
@@ -494,17 +543,29 @@ static int pca_init(struct i2c_adapter *adap)
 		/* To avoid integer overflow, use clock/100 for calculations */
 		clock = pca_clock(pca_data) / 100;
 
+<<<<<<< HEAD
 		if (pca_data->i2c_clock > 10000) {
+=======
+		if (pca_data->i2c_clock > 1000000) {
+>>>>>>> refs/remotes/origin/master
 			mode = I2C_PCA_MODE_TURBO;
 			min_tlow = 14;
 			min_thi  = 5;
 			raise_fall_time = 22; /* Raise 11e-8s, Fall 11e-8s */
+<<<<<<< HEAD
 		} else if (pca_data->i2c_clock > 4000) {
+=======
+		} else if (pca_data->i2c_clock > 400000) {
+>>>>>>> refs/remotes/origin/master
 			mode = I2C_PCA_MODE_FASTP;
 			min_tlow = 17;
 			min_thi  = 9;
 			raise_fall_time = 22; /* Raise 11e-8s, Fall 11e-8s */
+<<<<<<< HEAD
 		} else if (pca_data->i2c_clock > 1000) {
+=======
+		} else if (pca_data->i2c_clock > 100000) {
+>>>>>>> refs/remotes/origin/master
 			mode = I2C_PCA_MODE_FAST;
 			min_tlow = 44;
 			min_thi  = 20;

@@ -365,7 +365,11 @@ static int netxen_niu_disable_xg_port(struct netxen_adapter *adapter)
 	if (NX_IS_REVISION_P3(adapter->ahw.revision_id))
 		return 0;
 
+<<<<<<< HEAD
 	if (port > NETXEN_NIU_MAX_XG_PORTS)
+=======
+	if (port >= NETXEN_NIU_MAX_XG_PORTS)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mac_cfg = 0;
@@ -392,7 +396,11 @@ static int netxen_p2_nic_set_promisc(struct netxen_adapter *adapter, u32 mode)
 	u32 port = adapter->physical_port;
 	u16 board_type = adapter->ahw.board_type;
 
+<<<<<<< HEAD
 	if (port > NETXEN_NIU_MAX_XG_PORTS)
+=======
+	if (port >= NETXEN_NIU_MAX_XG_PORTS)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mac_cfg = NXRD32(adapter, NETXEN_NIU_XGE_CONFIG_0 + (0x10000 * port));
@@ -536,10 +544,17 @@ static void netxen_p2_nic_set_multi(struct net_device *netdev)
 {
 	struct netxen_adapter *adapter = netdev_priv(netdev);
 	struct netdev_hw_addr *ha;
+<<<<<<< HEAD
 	u8 null_addr[6];
 	int i;
 
 	memset(null_addr, 0, 6);
+=======
+	u8 null_addr[ETH_ALEN];
+	int i;
+
+	memset(null_addr, 0, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	if (netdev->flags & IFF_PROMISC) {
 
@@ -648,7 +663,11 @@ nx_p3_sre_macaddr_change(struct netxen_adapter *adapter, u8 *addr, unsigned op)
 
 	mac_req = (nx_mac_req_t *)&req.words[0];
 	mac_req->op = op;
+<<<<<<< HEAD
 	memcpy(mac_req->mac_addr, addr, 6);
+=======
+	memcpy(mac_req->mac_addr, addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	return netxen_send_cmd_descs(adapter, (struct cmd_desc_type0 *)&req, 1);
 }
@@ -670,11 +689,17 @@ static int nx_p3_nic_add_mac(struct netxen_adapter *adapter,
 	}
 
 	cur = kzalloc(sizeof(nx_mac_list_t), GFP_ATOMIC);
+<<<<<<< HEAD
 	if (cur == NULL) {
 		printk(KERN_ERR "%s: failed to add mac address filter\n",
 				adapter->netdev->name);
 		return -ENOMEM;
 	}
+=======
+	if (cur == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	memcpy(cur->mac_addr, addr, ETH_ALEN);
 	list_add_tail(&cur->list, &adapter->mac_list);
 	return nx_p3_sre_macaddr_change(adapter,
@@ -2568,6 +2593,7 @@ netxen_dump_fw(struct netxen_adapter *adapter)
 					adapter->mdump.md_capture_size;
 	if (!adapter->mdump.md_capture_buff) {
 		adapter->mdump.md_capture_buff =
+<<<<<<< HEAD
 				vmalloc(adapter->mdump.md_dump_size);
 		if (!adapter->mdump.md_capture_buff) {
 			dev_info(&adapter->pdev->dev,
@@ -2578,6 +2604,12 @@ netxen_dump_fw(struct netxen_adapter *adapter)
 		}
 		memset(adapter->mdump.md_capture_buff, 0,
 				adapter->mdump.md_dump_size);
+=======
+				vzalloc(adapter->mdump.md_dump_size);
+		if (!adapter->mdump.md_capture_buff)
+			return;
+
+>>>>>>> refs/remotes/origin/master
 		if (netxen_collect_minidump(adapter)) {
 			adapter->mdump.has_valid_dump = 0;
 			adapter->mdump.md_dump_size = 0;

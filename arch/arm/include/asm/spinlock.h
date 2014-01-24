@@ -5,6 +5,7 @@
 #error SMP not supported on pre-ARMv6 CPUs
 #endif
 
+<<<<<<< HEAD
 #include <asm/processor.h>
 
 <<<<<<< HEAD
@@ -12,10 +13,15 @@ extern int msm_krait_need_wfe_fixup;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/prefetch.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * sev and wfe are ARMv6K extensions.  Uniprocessor ARMv6 may not have the K
  * extensions, so when running on UP, we have to patch these instructions away.
  */
+<<<<<<< HEAD
 #define ALT_SMP(smp, up)					\
 	"9998:	" smp "\n"					\
 	"	.pushsection \".alt.smp.init\", \"a\"\n"	\
@@ -34,6 +40,10 @@ extern int msm_krait_need_wfe_fixup;
 #define WFE()		ALT_SMP(		\
 	"wfe.w",				\
 =======
+=======
+#ifdef CONFIG_THUMB2_KERNEL
+/*
+>>>>>>> refs/remotes/origin/master
  * For Thumb-2, special care is needed to ensure that the conditional WFE
  * instruction really does assemble to exactly 4 bytes (as required by
  * the SMP_ON_UP fixup code).   By itself "wfene" might cause the
@@ -44,6 +54,7 @@ extern int msm_krait_need_wfe_fixup;
  * the assembler won't change IT instructions which are explicitly present
  * in the input.
  */
+<<<<<<< HEAD
 #define WFE(cond)	ALT_SMP(		\
 	"it " cond "\n\t"			\
 	"wfe" cond ".n",			\
@@ -86,12 +97,29 @@ extern int msm_krait_need_wfe_fixup;
 #define WFE(cond)	ALT_SMP("wfe" cond, "nop")
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+#define WFE(cond)	__ALT_SMP_ASM(		\
+	"it " cond "\n\t"			\
+	"wfe" cond ".n",			\
+						\
+	"nop.w"					\
+)
+#else
+#define WFE(cond)	__ALT_SMP_ASM("wfe" cond, "nop")
+#endif
+
+#define SEV		__ALT_SMP_ASM(WASM(sev), WASM(nop))
+>>>>>>> refs/remotes/origin/master
 
 static inline void dsb_sev(void)
 {
 #if __LINUX_ARM_ARCH__ >= 7
 	__asm__ __volatile__ (
+<<<<<<< HEAD
 		"dsb\n"
+=======
+		"dsb ishst\n"
+>>>>>>> refs/remotes/origin/master
 		SEV
 	);
 #else
@@ -103,6 +131,7 @@ static inline void dsb_sev(void)
 #endif
 }
 
+<<<<<<< HEAD
 #ifndef CONFIG_ARM_TICKET_LOCKS
 /*
  * ARMv6 Spin-locking.
@@ -117,6 +146,16 @@ static inline void dsb_sev(void)
  */
 
 #define arch_spin_is_locked(x)		((x)->lock != 0)
+=======
+/*
+ * ARMv6 ticket-based spin-locking.
+ *
+ * A memory barrier is required after we get a lock, and before we
+ * release it, because V6 CPUs are assumed to have weakly ordered
+ * memory.
+ */
+
+>>>>>>> refs/remotes/origin/master
 #define arch_spin_unlock_wait(lock) \
 	do { while (arch_spin_is_locked(lock)) cpu_relax(); } while (0)
 
@@ -124,6 +163,7 @@ static inline void dsb_sev(void)
 
 static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long tmp, fixup = msm_krait_need_wfe_fixup;
 
@@ -153,11 +193,34 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 >>>>>>> refs/remotes/origin/cm-10.0
 	: "cc");
 
+=======
+	unsigned long tmp;
+	u32 newval;
+	arch_spinlock_t lockval;
+
+	prefetchw(&lock->slock);
+	__asm__ __volatile__(
+"1:	ldrex	%0, [%3]\n"
+"	add	%1, %0, %4\n"
+"	strex	%2, %1, [%3]\n"
+"	teq	%2, #0\n"
+"	bne	1b"
+	: "=&r" (lockval), "=&r" (newval), "=&r" (tmp)
+	: "r" (&lock->slock), "I" (1 << TICKET_SHIFT)
+	: "cc");
+
+	while (lockval.tickets.next != lockval.tickets.owner) {
+		wfe();
+		lockval.tickets.owner = ACCESS_ONCE(lock->tickets.owner);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	smp_mb();
 }
 
 static inline int arch_spin_trylock(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	unsigned long tmp;
 
 	__asm__ __volatile__(
@@ -169,6 +232,25 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 	: "cc");
 
 	if (tmp == 0) {
+=======
+	unsigned long contended, res;
+	u32 slock;
+
+	prefetchw(&lock->slock);
+	do {
+		__asm__ __volatile__(
+		"	ldrex	%0, [%3]\n"
+		"	mov	%2, #0\n"
+		"	subs	%1, %0, %0, ror #16\n"
+		"	addeq	%0, %0, %4\n"
+		"	strexeq	%2, %0, [%3]"
+		: "=&r" (slock), "=&r" (contended), "=&r" (res)
+		: "r" (&lock->slock), "I" (1 << TICKET_SHIFT)
+		: "cc");
+	} while (res);
+
+	if (!contended) {
+>>>>>>> refs/remotes/origin/master
 		smp_mb();
 		return 1;
 	} else {
@@ -179,6 +261,7 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 static inline void arch_spin_unlock(arch_spinlock_t *lock)
 {
 	smp_mb();
+<<<<<<< HEAD
 
 	__asm__ __volatile__(
 "	str	%1, [%0]\n"
@@ -330,20 +413,40 @@ static inline void arch_spin_unlock_wait(arch_spinlock_t *lock)
 >>>>>>> refs/remotes/origin/cm-10.0
 	: [lockaddr]"r" (&lock->lock)
 	: "cc");
+=======
+	lock->tickets.owner++;
+	dsb_sev();
+}
+
+static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+{
+	return lock.tickets.owner == lock.tickets.next;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int arch_spin_is_locked(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	unsigned long tmp = ACCESS_ONCE(lock->lock);
 	return (((tmp >> TICKET_SHIFT) ^ tmp) & TICKET_MASK) != 0;
+=======
+	return !arch_spin_value_unlocked(ACCESS_ONCE(*lock));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int arch_spin_is_contended(arch_spinlock_t *lock)
 {
+<<<<<<< HEAD
 	unsigned long tmp = ACCESS_ONCE(lock->lock);
 	return ((tmp - (tmp >> TICKET_SHIFT)) & TICKET_MASK) > 1;
 }
 #endif
+=======
+	struct __raw_tickets tickets = ACCESS_ONCE(lock->tickets);
+	return (tickets.next - tickets.owner) > 1;
+}
+#define arch_spin_is_contended	arch_spin_is_contended
+>>>>>>> refs/remotes/origin/master
 
 /*
  * RWLOCKS
@@ -355,6 +458,7 @@ static inline int arch_spin_is_contended(arch_spinlock_t *lock)
 
 static inline void arch_write_lock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long tmp, fixup = msm_krait_need_wfe_fixup;
 
@@ -372,6 +476,11 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 =======
 	unsigned long tmp;
 
+=======
+	unsigned long tmp;
+
+	prefetchw(&rw->lock);
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__(
 "1:	ldrex	%0, [%1]\n"
 "	teq	%0, #0\n"
@@ -381,7 +490,10 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 "	bne	1b"
 	: "=&r" (tmp)
 	: "r" (&rw->lock), "r" (0x80000000)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	: "cc");
 
 	smp_mb();
@@ -389,6 +501,7 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 
 static inline int arch_write_trylock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	unsigned long tmp;
 
 	__asm__ __volatile__(
@@ -400,6 +513,23 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
 	: "cc");
 
 	if (tmp == 0) {
+=======
+	unsigned long contended, res;
+
+	prefetchw(&rw->lock);
+	do {
+		__asm__ __volatile__(
+		"	ldrex	%0, [%2]\n"
+		"	mov	%1, #0\n"
+		"	teq	%0, #0\n"
+		"	strexeq	%1, %3, [%2]"
+		: "=&r" (contended), "=&r" (res)
+		: "r" (&rw->lock), "r" (0x80000000)
+		: "cc");
+	} while (res);
+
+	if (!contended) {
+>>>>>>> refs/remotes/origin/master
 		smp_mb();
 		return 1;
 	} else {
@@ -421,7 +551,11 @@ static inline void arch_write_unlock(arch_rwlock_t *rw)
 }
 
 /* write_can_lock - would write_trylock() succeed? */
+<<<<<<< HEAD
 #define arch_write_can_lock(x)		((x)->lock == 0)
+=======
+#define arch_write_can_lock(x)		(ACCESS_ONCE((x)->lock) == 0)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Read locks are a bit more hairy:
@@ -437,6 +571,7 @@ static inline void arch_write_unlock(arch_rwlock_t *rw)
  */
 static inline void arch_read_lock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long tmp, tmp2, fixup = msm_krait_need_wfe_fixup;
 
@@ -454,6 +589,11 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 =======
 	unsigned long tmp, tmp2;
 
+=======
+	unsigned long tmp, tmp2;
+
+	prefetchw(&rw->lock);
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__(
 "1:	ldrex	%0, [%2]\n"
 "	adds	%0, %0, #1\n"
@@ -463,7 +603,10 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 "	bmi	1b"
 	: "=&r" (tmp), "=&r" (tmp2)
 	: "r" (&rw->lock)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	: "cc");
 
 	smp_mb();
@@ -475,6 +618,10 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 
 	smp_mb();
 
+<<<<<<< HEAD
+=======
+	prefetchw(&rw->lock);
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__(
 "1:	ldrex	%0, [%2]\n"
 "	sub	%0, %0, #1\n"
@@ -491,6 +638,7 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 
 static inline int arch_read_trylock(arch_rwlock_t *rw)
 {
+<<<<<<< HEAD
 	unsigned long tmp, tmp2 = 1;
 
 	__asm__ __volatile__(
@@ -507,6 +655,33 @@ static inline int arch_read_trylock(arch_rwlock_t *rw)
 
 /* read_can_lock - would read_trylock() succeed? */
 #define arch_read_can_lock(x)		((x)->lock < 0x80000000)
+=======
+	unsigned long contended, res;
+
+	prefetchw(&rw->lock);
+	do {
+		__asm__ __volatile__(
+		"	ldrex	%0, [%2]\n"
+		"	mov	%1, #0\n"
+		"	adds	%0, %0, #1\n"
+		"	strexpl	%1, %0, [%2]"
+		: "=&r" (contended), "=&r" (res)
+		: "r" (&rw->lock)
+		: "cc");
+	} while (res);
+
+	/* If the lock is negative, then it is already held for write. */
+	if (contended < 0x80000000) {
+		smp_mb();
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+/* read_can_lock - would read_trylock() succeed? */
+#define arch_read_can_lock(x)		(ACCESS_ONCE((x)->lock) < 0x80000000)
+>>>>>>> refs/remotes/origin/master
 
 #define arch_read_lock_flags(lock, flags) arch_read_lock(lock)
 #define arch_write_lock_flags(lock, flags) arch_write_lock(lock)

@@ -179,10 +179,14 @@ void whc_clean_up(struct whc *whc)
 		dma_pool_destroy(whc->qset_pool);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	len   = whc->umc->resource.end - whc->umc->resource.start + 1;
 =======
 	len   = resource_size(&whc->umc->resource);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	len   = resource_size(&whc->umc->resource);
+>>>>>>> refs/remotes/origin/master
 	if (whc->base)
 		iounmap(whc->base);
 	if (whc->base_phys)

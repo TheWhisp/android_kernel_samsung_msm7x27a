@@ -5,6 +5,7 @@
 #include <video/sh_mobile_meram.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum {
 	RGB8,   /* 24bpp, 8:8:8 */
 	RGB9,   /* 18bpp, 9:9 */
@@ -26,6 +27,8 @@ enum {
 	SYS18,  /* 18bpp */
 	SYS24,  /* 24bpp */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Register definitions */
 #define _LDDCKR			0x410
 #define LDDCKR_ICKSEL_BUS	(0 << 16)
@@ -143,7 +146,10 @@ enum {
 	SYS16C	= LDMT1R_IFM | LDMT1R_MIFTYP_SYS16C,	/* 18bpp, 2:16 */
 	SYS18	= LDMT1R_IFM | LDMT1R_MIFTYP_SYS18,	/* 18bpp */
 	SYS24	= LDMT1R_IFM | LDMT1R_MIFTYP_SYS24,	/* 24bpp */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum { LCDC_CHAN_DISABLED = 0,
@@ -171,6 +177,7 @@ struct sh_mobile_lcdc_sys_bus_ops {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct module;
 struct sh_mobile_lcdc_board_cfg {
 	struct module *owner;
@@ -189,6 +196,8 @@ struct sh_mobile_lcdc_lcd_size_cfg { /* width and height of panel in mm */
 	unsigned long width;
 	unsigned long height;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct sh_mobile_lcdc_panel_cfg {
 	unsigned long width;		/* Panel width in mm */
 	unsigned long height;		/* Panel height in mm */
@@ -198,7 +207,10 @@ struct sh_mobile_lcdc_panel_cfg {
 			       struct sh_mobile_lcdc_sys_bus_ops *sys_ops);
 	void (*display_on)(void);
 	void (*display_off)(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* backlight info */
@@ -206,14 +218,25 @@ struct sh_mobile_lcdc_bl_info {
 	const char *name;
 	int max_brightness;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*set_brightness)(int brightness);
 	int (*get_brightness)(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*set_brightness)(int brightness);
+};
+
+struct sh_mobile_lcdc_overlay_cfg {
+	int fourcc;
+	unsigned int max_xres;
+	unsigned int max_yres;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sh_mobile_lcdc_chan_cfg {
 	int chan;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int bpp;
 	int interface_type; /* selects RGBn or SYSn I/F, see above */
@@ -228,6 +251,8 @@ struct sh_mobile_lcdc_chan_cfg {
 	int nonstd;
 	struct sh_mobile_meram_cfg *meram_cfg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int fourcc;
 	int colorspace;
 	int interface_type; /* selects RGBn or SYSn I/F, see above */
@@ -241,12 +266,19 @@ struct sh_mobile_lcdc_chan_cfg {
 	const struct sh_mobile_meram_cfg *meram_cfg;
 
 	struct platform_device *tx_dev;	/* HDMI/DSI transmitter device */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sh_mobile_lcdc_info {
 	int clock_source;
 	struct sh_mobile_lcdc_chan_cfg ch[2];
+<<<<<<< HEAD
+=======
+	struct sh_mobile_lcdc_overlay_cfg overlays[4];
+>>>>>>> refs/remotes/origin/master
 	struct sh_mobile_meram_info *meram_dev;
 };
 

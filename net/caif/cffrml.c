@@ -2,7 +2,11 @@
  * CAIF Framing Layer.
  *
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -28,12 +32,17 @@ struct cffrml {
 static int cffrml_receive(struct cflayer *layr, struct cfpkt *pkt);
 static int cffrml_transmit(struct cflayer *layr, struct cfpkt *pkt);
 static void cffrml_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
+<<<<<<< HEAD
 				int phyid);
+=======
+			   int phyid);
+>>>>>>> refs/remotes/origin/master
 
 static u32 cffrml_rcv_error;
 static u32 cffrml_rcv_checsum_error;
 struct cflayer *cffrml_create(u16 phyid, bool use_fcs)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cffrml *this = kmalloc(sizeof(struct cffrml), GFP_ATOMIC);
 	if (!this) {
@@ -45,6 +54,11 @@ struct cflayer *cffrml_create(u16 phyid, bool use_fcs)
 	if (!this)
 		return NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cffrml *this = kzalloc(sizeof(struct cffrml), GFP_ATOMIC);
+	if (!this)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	this->pcpu_refcnt = alloc_percpu(int);
 	if (this->pcpu_refcnt == NULL) {
 		kfree(this);
@@ -54,9 +68,12 @@ struct cflayer *cffrml_create(u16 phyid, bool use_fcs)
 	caif_assert(offsetof(struct cffrml, layer) == 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(this, 0, sizeof(struct cflayer));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	this->layer.receive = cffrml_receive;
 	this->layer.transmit = cffrml_transmit;
 	this->layer.ctrlcmd = cffrml_ctrlcmd;
@@ -149,6 +166,7 @@ static int cffrml_receive(struct cflayer *layr, struct cfpkt *pkt)
 static int cffrml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int tmp;
 	u16 chks;
 	u16 len;
@@ -158,6 +176,8 @@ static int cffrml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 		tmp = cpu_to_le16(chks);
 		cfpkt_add_trail(pkt, &tmp, 2);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 chks;
 	u16 len;
 	__le16 data;
@@ -167,11 +187,15 @@ static int cffrml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 		chks = cfpkt_iterate(pkt, cffrml_checksum, 0xffff);
 		data = cpu_to_le16(chks);
 		cfpkt_add_trail(pkt, &data, 2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		cfpkt_pad_trail(pkt, 2);
 	}
 	len = cfpkt_getlen(pkt);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tmp = cpu_to_le16(len);
 	cfpkt_add_head(pkt, &tmp, 2);
@@ -179,6 +203,10 @@ static int cffrml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 	data = cpu_to_le16(len);
 	cfpkt_add_head(pkt, &data, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = cpu_to_le16(len);
+	cfpkt_add_head(pkt, &data, 2);
+>>>>>>> refs/remotes/origin/master
 	cfpkt_info(pkt)->hdr_len += 2;
 	if (cfpkt_erroneous(pkt)) {
 		pr_err("Packet is erroneous!\n");
@@ -195,7 +223,11 @@ static int cffrml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 }
 
 static void cffrml_ctrlcmd(struct cflayer *layr, enum caif_ctrlcmd ctrl,
+<<<<<<< HEAD
 					int phyid)
+=======
+			   int phyid)
+>>>>>>> refs/remotes/origin/master
 {
 	if (layr->up && layr->up->ctrlcmd)
 		layr->up->ctrlcmd(layr->up, ctrl, layr->id);
@@ -206,10 +238,14 @@ void cffrml_put(struct cflayer *layr)
 	struct cffrml *this = container_obj(layr);
 	if (layr != NULL && this->pcpu_refcnt != NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		irqsafe_cpu_dec(*this->pcpu_refcnt);
 =======
 		this_cpu_dec(*this->pcpu_refcnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		this_cpu_dec(*this->pcpu_refcnt);
+>>>>>>> refs/remotes/origin/master
 }
 
 void cffrml_hold(struct cflayer *layr)
@@ -217,10 +253,14 @@ void cffrml_hold(struct cflayer *layr)
 	struct cffrml *this = container_obj(layr);
 	if (layr != NULL && this->pcpu_refcnt != NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		irqsafe_cpu_inc(*this->pcpu_refcnt);
 =======
 		this_cpu_inc(*this->pcpu_refcnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		this_cpu_inc(*this->pcpu_refcnt);
+>>>>>>> refs/remotes/origin/master
 }
 
 int cffrml_refcnt_read(struct cflayer *layr)

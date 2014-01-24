@@ -24,9 +24,13 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/types.h>
 #include <asm/byteorder.h>

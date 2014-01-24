@@ -14,6 +14,7 @@
 
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 enum arm_pmu_type {
 	ARM_PMU_DEVICE_CPU	= 0,
@@ -40,10 +41,18 @@ enum arm_pmu_type {
  * passed the address of the low level handler, and can be used to implement
  * any platform specific handling before or after calling it.
 =======
+=======
+#include <linux/perf_event.h>
+
+/*
+ * struct arm_pmu_platdata - ARM PMU platform data
+ *
+>>>>>>> refs/remotes/origin/master
  * @handle_irq: an optional handler which will be called from the
  *	interrupt and passed the address of the low level handler,
  *	and can be used to implement any platform specific handling
  *	before or after calling it.
+<<<<<<< HEAD
  * @enable_irq: an optional handler which will be called after
  *	request_irq and be used to handle some platform specific
  *	irq enablement
@@ -51,10 +60,23 @@ enum arm_pmu_type {
  *	free_irq and be used to handle some platform specific
  *	irq disablement
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @runtime_resume: an optional handler which will be called by the
+ *	runtime PM framework following a call to pm_runtime_get().
+ *	Note that if pm_runtime_get() is called more than once in
+ *	succession this handler will only be called once.
+ * @runtime_suspend: an optional handler which will be called by the
+ *	runtime PM framework following a call to pm_runtime_put().
+ *	Note that if pm_runtime_get() is called more than once in
+ *	succession this handler will only be called following the
+ *	final call to pm_runtime_put() that actually disables the
+ *	hardware.
+>>>>>>> refs/remotes/origin/master
  */
 struct arm_pmu_platdata {
 	irqreturn_t (*handle_irq)(int irq, void *dev,
 				  irq_handler_t pmu_handler);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	void (*enable_irq)(int irq);
@@ -144,6 +166,12 @@ release_pmu(enum arm_pmu_type type)	{ }
 
 #endif /* CONFIG_CPU_HAS_PMU */
 
+=======
+	int (*runtime_resume)(struct device *dev);
+	int (*runtime_suspend)(struct device *dev);
+};
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HW_PERF_EVENTS
 
 /* The events for a given PMU register set. */
@@ -168,6 +196,7 @@ struct pmu_hw_events {
 
 struct arm_pmu {
 	struct pmu	pmu;
+<<<<<<< HEAD
 	enum arm_perf_pmu_ids id;
 	enum arm_pmu_type type;
 	cpumask_t	active_irqs;
@@ -186,6 +215,24 @@ struct arm_pmu {
 	void		(*start)(void);
 	void		(*stop)(void);
 	void		(*reset)(void *);
+=======
+	cpumask_t	active_irqs;
+	char		*name;
+	irqreturn_t	(*handle_irq)(int irq_num, void *dev);
+	void		(*enable)(struct perf_event *event);
+	void		(*disable)(struct perf_event *event);
+	int		(*get_event_idx)(struct pmu_hw_events *hw_events,
+					 struct perf_event *event);
+	int		(*set_event_filter)(struct hw_perf_event *evt,
+					    struct perf_event_attr *attr);
+	u32		(*read_counter)(struct perf_event *event);
+	void		(*write_counter)(struct perf_event *event, u32 val);
+	void		(*start)(struct arm_pmu *);
+	void		(*stop)(struct arm_pmu *);
+	void		(*reset)(void *);
+	int		(*request_irq)(struct arm_pmu *, irq_handler_t handler);
+	void		(*free_irq)(struct arm_pmu *);
+>>>>>>> refs/remotes/origin/master
 	int		(*map_event)(struct perf_event *event);
 	int		num_events;
 	atomic_t	active_events;
@@ -193,12 +240,16 @@ struct arm_pmu {
 	u64		max_period;
 	struct platform_device	*plat_device;
 	struct pmu_hw_events	*(*get_hw_events)(void);
+<<<<<<< HEAD
 	int	(*test_set_event_constraints)(struct perf_event *event);
 	int	(*clear_event_constraints)(struct perf_event *event);
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define to_arm_pmu(p) (container_of(p, struct arm_pmu, pmu))
 
+<<<<<<< HEAD
 int armpmu_register(struct arm_pmu *armpmu, char *name, int type);
 
 u64 armpmu_event_update(struct perf_event *event,
@@ -212,4 +263,23 @@ int armpmu_event_set_period(struct perf_event *event,
 #endif /* CONFIG_HW_PERF_EVENTS */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern const struct dev_pm_ops armpmu_dev_pm_ops;
+
+int armpmu_register(struct arm_pmu *armpmu, int type);
+
+u64 armpmu_event_update(struct perf_event *event);
+
+int armpmu_event_set_period(struct perf_event *event);
+
+int armpmu_map_event(struct perf_event *event,
+		     const unsigned (*event_map)[PERF_COUNT_HW_MAX],
+		     const unsigned (*cache_map)[PERF_COUNT_HW_CACHE_MAX]
+						[PERF_COUNT_HW_CACHE_OP_MAX]
+						[PERF_COUNT_HW_CACHE_RESULT_MAX],
+		     u32 raw_event_mask);
+
+#endif /* CONFIG_HW_PERF_EVENTS */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ARM_PMU_H__ */

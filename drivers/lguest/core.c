@@ -20,9 +20,15 @@
 #include <asm/asm-offsets.h>
 #include "lg.h"
 
+<<<<<<< HEAD
 
 static struct vm_struct *switcher_vma;
 static struct page **switcher_page;
+=======
+unsigned long switcher_addr;
+struct page **lg_switcher_pages;
+static struct vm_struct *switcher_vma;
+>>>>>>> refs/remotes/origin/master
 
 /* This One Big lock protects all inter-guest data structures. */
 DEFINE_MUTEX(lguest_lock);
@@ -52,13 +58,30 @@ static __init int map_switcher(void)
 	 * easy.
 	 */
 
+<<<<<<< HEAD
+=======
+	/* We assume Switcher text fits into a single page. */
+	if (end_switcher_text - start_switcher_text > PAGE_SIZE) {
+		printk(KERN_ERR "lguest: switcher text too large (%zu)\n",
+		       end_switcher_text - start_switcher_text);
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We allocate an array of struct page pointers.  map_vm_area() wants
 	 * this, rather than just an array of pages.
 	 */
+<<<<<<< HEAD
 	switcher_page = kmalloc(sizeof(switcher_page[0])*TOTAL_SWITCHER_PAGES,
 				GFP_KERNEL);
 	if (!switcher_page) {
+=======
+	lg_switcher_pages = kmalloc(sizeof(lg_switcher_pages[0])
+				    * TOTAL_SWITCHER_PAGES,
+				    GFP_KERNEL);
+	if (!lg_switcher_pages) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto out;
 	}
@@ -68,14 +91,20 @@ static __init int map_switcher(void)
 	 * so we make sure they're zeroed.
 	 */
 	for (i = 0; i < TOTAL_SWITCHER_PAGES; i++) {
+<<<<<<< HEAD
 		switcher_page[i] = alloc_page(GFP_KERNEL|__GFP_ZERO);
 		if (!switcher_page[i]) {
+=======
+		lg_switcher_pages[i] = alloc_page(GFP_KERNEL|__GFP_ZERO);
+		if (!lg_switcher_pages[i]) {
+>>>>>>> refs/remotes/origin/master
 			err = -ENOMEM;
 			goto free_some_pages;
 		}
 	}
 
 	/*
+<<<<<<< HEAD
 	 * First we check that the Switcher won't overlap the fixmap area at
 	 * the top of memory.  It's currently nowhere near, but it could have
 	 * very strange effects if it ever happened.
@@ -94,6 +123,23 @@ static __init int map_switcher(void)
 	 */
 	switcher_vma = __get_vm_area(TOTAL_SWITCHER_PAGES * PAGE_SIZE,
 				     VM_ALLOC, SWITCHER_ADDR, SWITCHER_ADDR
+=======
+	 * We place the Switcher underneath the fixmap area, which is the
+	 * highest virtual address we can get.  This is important, since we
+	 * tell the Guest it can't access this memory, so we want its ceiling
+	 * as high as possible.
+	 */
+	switcher_addr = FIXADDR_START - (TOTAL_SWITCHER_PAGES+1)*PAGE_SIZE;
+
+	/*
+	 * Now we reserve the "virtual memory area" we want.  We might
+	 * not get it in theory, but in practice it's worked so far.
+	 * The end address needs +1 because __get_vm_area allocates an
+	 * extra guard page, so we need space for that.
+	 */
+	switcher_vma = __get_vm_area(TOTAL_SWITCHER_PAGES * PAGE_SIZE,
+				     VM_ALLOC, switcher_addr, switcher_addr
+>>>>>>> refs/remotes/origin/master
 				     + (TOTAL_SWITCHER_PAGES+1) * PAGE_SIZE);
 	if (!switcher_vma) {
 		err = -ENOMEM;
@@ -103,12 +149,20 @@ static __init int map_switcher(void)
 
 	/*
 	 * This code actually sets up the pages we've allocated to appear at
+<<<<<<< HEAD
 	 * SWITCHER_ADDR.  map_vm_area() takes the vma we allocated above, the
+=======
+	 * switcher_addr.  map_vm_area() takes the vma we allocated above, the
+>>>>>>> refs/remotes/origin/master
 	 * kind of pages we're mapping (kernel pages), and a pointer to our
 	 * array of struct pages.  It increments that pointer, but we don't
 	 * care.
 	 */
+<<<<<<< HEAD
 	pagep = switcher_page;
+=======
+	pagep = lg_switcher_pages;
+>>>>>>> refs/remotes/origin/master
 	err = map_vm_area(switcher_vma, PAGE_KERNEL_EXEC, &pagep);
 	if (err) {
 		printk("lguest: map_vm_area failed: %i\n", err);
@@ -118,10 +172,14 @@ static __init int map_switcher(void)
 	/*
 	 * Now the Switcher is mapped at the right address, we can't fail!
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Copy in the compiled-in Switcher code (from <arch>_switcher.S).
 =======
 	 * Copy in the compiled-in Switcher code (from x86/switcher_32.S).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Copy in the compiled-in Switcher code (from x86/switcher_32.S).
+>>>>>>> refs/remotes/origin/master
 	 */
 	memcpy(switcher_vma->addr, start_switcher_text,
 	       end_switcher_text - start_switcher_text);
@@ -137,8 +195,13 @@ free_pages:
 	i = TOTAL_SWITCHER_PAGES;
 free_some_pages:
 	for (--i; i >= 0; i--)
+<<<<<<< HEAD
 		__free_pages(switcher_page[i], 0);
 	kfree(switcher_page);
+=======
+		__free_pages(lg_switcher_pages[i], 0);
+	kfree(lg_switcher_pages);
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -153,8 +216,13 @@ static void unmap_switcher(void)
 	vunmap(switcher_vma->addr);
 	/* Now we just need to free the pages we copied the switcher into */
 	for (i = 0; i < TOTAL_SWITCHER_PAGES; i++)
+<<<<<<< HEAD
 		__free_pages(switcher_page[i], 0);
 	kfree(switcher_page);
+=======
+		__free_pages(lg_switcher_pages[i], 0);
+	kfree(lg_switcher_pages);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*H:032
@@ -229,7 +297,11 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 			 * eventfd (ie. the appropriate virtqueue thread)?
 			 */
 			if (!send_notify_to_eventfd(cpu)) {
+<<<<<<< HEAD
 				/* OK, we tell the main Laucher. */
+=======
+				/* OK, we tell the main Launcher. */
+>>>>>>> refs/remotes/origin/master
 				if (put_user(cpu->pending_notify, user))
 					return -EFAULT;
 				return sizeof(cpu->pending_notify);
@@ -237,7 +309,10 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * All long-lived kernel loops need to check with this horrible
 		 * thing called the freezer.  If the Host is trying to suspend,
@@ -245,7 +320,10 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 		 */
 		try_to_freeze();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Check for signals */
 		if (signal_pending(current))
 			return -ERESTARTSYS;
@@ -261,6 +339,7 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * All long-lived kernel loops need to check with this horrible
 		 * thing called the freezer.  If the Host is trying to suspend,
 		 * it stops us.
@@ -270,6 +349,8 @@ int run_guest(struct lg_cpu *cpu, unsigned long __user *user)
 		/*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 * Just make absolutely sure the Guest is still alive.  One of
 		 * those hypercalls could have been fatal, for example.
 		 */
@@ -331,10 +412,14 @@ static int __init init(void)
 
 	/* Lguest can't run under Xen, VMI or itself.  It does Tricky Stuff. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (paravirt_enabled()) {
 =======
 	if (get_kernel_rpl() != 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (get_kernel_rpl() != 0) {
+>>>>>>> refs/remotes/origin/master
 		printk("lguest is afraid of being a guest\n");
 		return -EPERM;
 	}
@@ -344,6 +429,7 @@ static int __init init(void)
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	/* Now we set up the pagetable implementation for the Guests. */
 	err = init_pagetables(switcher_page, SHARED_SWITCHER_PAGES);
 	if (err)
@@ -353,6 +439,12 @@ static int __init init(void)
 	err = init_interrupts();
 	if (err)
 		goto free_pgtables;
+=======
+	/* We might need to reserve an interrupt vector. */
+	err = init_interrupts();
+	if (err)
+		goto unmap;
+>>>>>>> refs/remotes/origin/master
 
 	/* /dev/lguest needs to be registered. */
 	err = lguest_device_init();
@@ -367,8 +459,11 @@ static int __init init(void)
 
 free_interrupts:
 	free_interrupts();
+<<<<<<< HEAD
 free_pgtables:
 	free_pagetables();
+=======
+>>>>>>> refs/remotes/origin/master
 unmap:
 	unmap_switcher();
 out:
@@ -380,7 +475,10 @@ static void __exit fini(void)
 {
 	lguest_device_remove();
 	free_interrupts();
+<<<<<<< HEAD
 	free_pagetables();
+=======
+>>>>>>> refs/remotes/origin/master
 	unmap_switcher();
 
 	lguest_arch_host_fini();

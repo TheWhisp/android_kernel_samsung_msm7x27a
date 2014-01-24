@@ -22,9 +22,13 @@
 #include <linux/gfp.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioprio.h>
 #include <linux/blkdev.h>
 #include <linux/capability.h>
@@ -35,17 +39,26 @@
 int set_task_ioprio(struct task_struct *task, int ioprio)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err, i;
 =======
 	int err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 	struct io_context *ioc;
 	const struct cred *cred = current_cred(), *tcred;
 
 	rcu_read_lock();
 	tcred = __task_cred(task);
+<<<<<<< HEAD
 	if (tcred->uid != cred->euid &&
 	    tcred->uid != cred->uid && !capable(CAP_SYS_NICE)) {
+=======
+	if (!uid_eq(tcred->uid, cred->euid) &&
+	    !uid_eq(tcred->uid, cred->uid) && !capable(CAP_SYS_NICE)) {
+>>>>>>> refs/remotes/origin/master
 		rcu_read_unlock();
 		return -EPERM;
 	}
@@ -55,6 +68,7 @@ int set_task_ioprio(struct task_struct *task, int ioprio)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	task_lock(task);
 	do {
@@ -91,6 +105,14 @@ int set_task_ioprio(struct task_struct *task, int ioprio)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ioc = get_task_io_context(task, GFP_ATOMIC, NUMA_NO_NODE);
+	if (ioc) {
+		ioc->ioprio = ioprio;
+		put_io_context(ioc);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 EXPORT_SYMBOL_GPL(set_task_ioprio);
@@ -102,6 +124,10 @@ SYSCALL_DEFINE3(ioprio_set, int, which, int, who, int, ioprio)
 	struct task_struct *p, *g;
 	struct user_struct *user;
 	struct pid *pgrp;
+<<<<<<< HEAD
+=======
+	kuid_t uid;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	switch (class) {
@@ -147,16 +173,30 @@ SYSCALL_DEFINE3(ioprio_set, int, which, int, who, int, ioprio)
 			} while_each_pid_thread(pgrp, PIDTYPE_PGID, p);
 			break;
 		case IOPRIO_WHO_USER:
+<<<<<<< HEAD
 			if (!who)
 				user = current_user();
 			else
 				user = find_user(who);
+=======
+			uid = make_kuid(current_user_ns(), who);
+			if (!uid_valid(uid))
+				break;
+			if (!who)
+				user = current_user();
+			else
+				user = find_user(uid);
+>>>>>>> refs/remotes/origin/master
 
 			if (!user)
 				break;
 
 			do_each_thread(g, p) {
+<<<<<<< HEAD
 				if (__task_cred(p)->uid != who)
+=======
+				if (!uid_eq(task_uid(p), uid))
+>>>>>>> refs/remotes/origin/master
 					continue;
 				ret = set_task_ioprio(p, ioprio);
 				if (ret)
@@ -211,6 +251,10 @@ SYSCALL_DEFINE2(ioprio_get, int, which, int, who)
 	struct task_struct *g, *p;
 	struct user_struct *user;
 	struct pid *pgrp;
+<<<<<<< HEAD
+=======
+	kuid_t uid;
+>>>>>>> refs/remotes/origin/master
 	int ret = -ESRCH;
 	int tmpio;
 
@@ -240,16 +284,28 @@ SYSCALL_DEFINE2(ioprio_get, int, which, int, who)
 			} while_each_pid_thread(pgrp, PIDTYPE_PGID, p);
 			break;
 		case IOPRIO_WHO_USER:
+<<<<<<< HEAD
 			if (!who)
 				user = current_user();
 			else
 				user = find_user(who);
+=======
+			uid = make_kuid(current_user_ns(), who);
+			if (!who)
+				user = current_user();
+			else
+				user = find_user(uid);
+>>>>>>> refs/remotes/origin/master
 
 			if (!user)
 				break;
 
 			do_each_thread(g, p) {
+<<<<<<< HEAD
 				if (__task_cred(p)->uid != user->uid)
+=======
+				if (!uid_eq(task_uid(p), user->uid))
+>>>>>>> refs/remotes/origin/master
 					continue;
 				tmpio = get_task_ioprio(p);
 				if (tmpio < 0)

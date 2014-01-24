@@ -19,7 +19,11 @@ obj-$(CONFIG_SH_ADC)		+= adc.o
 obj-$(CONFIG_SH_CLK_CPG_LEGACY)	+= clock-cpg.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-y	+= irq/ init.o clock.o fpu.o hwblk.o proc.o
 =======
 obj-y	+= irq/ init.o clock.o fpu.o proc.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-y	+= irq/ init.o clock.o fpu.o pfc.o proc.o
+>>>>>>> refs/remotes/origin/master

@@ -16,16 +16,20 @@
 #include <linux/init.h>
 #include <asm/pci_x86.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "bus_numa.h"
 
 static void __devinit cnb20le_res(struct pci_dev *dev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pci-direct.h>
 
 #include "bus_numa.h"
 
 static void __init cnb20le_res(u8 bus, u8 slot, u8 func)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct pci_root_info *info;
@@ -59,6 +63,19 @@ static void __init cnb20le_res(u8 bus, u8 slot, u8 func)
 >>>>>>> refs/remotes/origin/cm-10.0
 	info->bus_min = fbus;
 	info->bus_max = lbus;
+=======
+{
+	struct pci_root_info *info;
+	struct pci_root_res *root_res;
+	struct resource res;
+	u16 word1, word2;
+	u8 fbus, lbus;
+
+	/* read the PCI bus numbers */
+	fbus = read_pci_config_byte(bus, slot, func, 0x44);
+	lbus = read_pci_config_byte(bus, slot, func, 0x45);
+	info = alloc_pci_root_info(fbus, lbus, 0, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Add the legacy IDE ports on bus 0
@@ -76,12 +93,17 @@ static void __init cnb20le_res(u8 bus, u8 slot, u8 func)
 
 	/* read the non-prefetchable memory window */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_word(dev, 0xc0, &word1);
 	pci_read_config_word(dev, 0xc2, &word2);
 =======
 	word1 = read_pci_config_16(bus, slot, func, 0xc0);
 	word2 = read_pci_config_16(bus, slot, func, 0xc2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	word1 = read_pci_config_16(bus, slot, func, 0xc0);
+	word2 = read_pci_config_16(bus, slot, func, 0xc2);
+>>>>>>> refs/remotes/origin/master
 	if (word1 != word2) {
 		res.start = (word1 << 16) | 0x0000;
 		res.end   = (word2 << 16) | 0xffff;
@@ -91,12 +113,17 @@ static void __init cnb20le_res(u8 bus, u8 slot, u8 func)
 
 	/* read the prefetchable memory window */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_word(dev, 0xc4, &word1);
 	pci_read_config_word(dev, 0xc6, &word2);
 =======
 	word1 = read_pci_config_16(bus, slot, func, 0xc4);
 	word2 = read_pci_config_16(bus, slot, func, 0xc6);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	word1 = read_pci_config_16(bus, slot, func, 0xc4);
+	word2 = read_pci_config_16(bus, slot, func, 0xc6);
+>>>>>>> refs/remotes/origin/master
 	if (word1 != word2) {
 		res.start = (word1 << 16) | 0x0000;
 		res.end   = (word2 << 16) | 0xffff;
@@ -106,12 +133,17 @@ static void __init cnb20le_res(u8 bus, u8 slot, u8 func)
 
 	/* read the IO port window */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_word(dev, 0xd0, &word1);
 	pci_read_config_word(dev, 0xd2, &word2);
 =======
 	word1 = read_pci_config_16(bus, slot, func, 0xd0);
 	word2 = read_pci_config_16(bus, slot, func, 0xd2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	word1 = read_pci_config_16(bus, slot, func, 0xd0);
+	word2 = read_pci_config_16(bus, slot, func, 0xd2);
+>>>>>>> refs/remotes/origin/master
 	if (word1 != word2) {
 		res.start = word1;
 		res.end   = word2;
@@ -123,6 +155,7 @@ static void __init cnb20le_res(u8 bus, u8 slot, u8 func)
 	res.start = fbus;
 	res.end   = lbus;
 	res.flags = IORESOURCE_BUS;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_info(&dev->dev, "CNB20LE PCI Host Bridge (domain %04x %pR)\n",
 			    pci_domain_nr(dev->bus), &res);
@@ -139,6 +172,12 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SERVERWORKS, PCI_DEVICE_ID_SERVERWORKS_LE,
 
 	for (i = 0; i < info->res_num; i++)
 		printk(KERN_INFO "host bridge window %pR\n", &info->res[i]);
+=======
+	printk(KERN_INFO "CNB20LE PCI Host Bridge (domain 0000 %pR)\n", &res);
+
+	list_for_each_entry(root_res, &info->resources, list)
+		printk(KERN_INFO "host bridge window %pR\n", &root_res->res);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init broadcom_postcore_init(void)
@@ -169,4 +208,7 @@ static int __init broadcom_postcore_init(void)
 }
 
 postcore_initcall(broadcom_postcore_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

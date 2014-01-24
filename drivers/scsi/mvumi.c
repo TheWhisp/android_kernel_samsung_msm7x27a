@@ -35,10 +35,18 @@
 #include <linux/io.h>
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
+<<<<<<< HEAD
+=======
+#include <scsi/scsi_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_transport.h>
 #include <scsi/scsi_eh.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <linux/kthread.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mvumi.h"
 
@@ -47,7 +55,12 @@ MODULE_AUTHOR("jyli@marvell.com");
 MODULE_DESCRIPTION("Marvell UMI Driver");
 
 static DEFINE_PCI_DEVICE_TABLE(mvumi_pci_table) = {
+<<<<<<< HEAD
 	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_2, PCI_DEVICE_ID_MARVELL_MV9143) },
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, PCI_DEVICE_ID_MARVELL_MV9143) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, PCI_DEVICE_ID_MARVELL_MV9580) },
+>>>>>>> refs/remotes/origin/master
 	{ 0 }
 };
 
@@ -118,17 +131,29 @@ static int mvumi_map_pci_addr(struct pci_dev *dev, void **addr_array)
 static struct mvumi_res *mvumi_alloc_mem_resource(struct mvumi_hba *mhba,
 				enum resource_type type, unsigned int size)
 {
+<<<<<<< HEAD
 	struct mvumi_res *res = kzalloc(sizeof(*res), GFP_KERNEL);
 
 	if (!res) {
 		dev_err(&mhba->pdev->dev,
 			"Failed to allocate memory for resouce manager.\n");
+=======
+	struct mvumi_res *res = kzalloc(sizeof(*res), GFP_ATOMIC);
+
+	if (!res) {
+		dev_err(&mhba->pdev->dev,
+			"Failed to allocate memory for resource manager.\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
 	switch (type) {
 	case RESOURCE_CACHED_MEMORY:
+<<<<<<< HEAD
 		res->virt_addr = kzalloc(size, GFP_KERNEL);
+=======
+		res->virt_addr = kzalloc(size, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (!res->virt_addr) {
 			dev_err(&mhba->pdev->dev,
 				"unable to allocate memory,size = %d.\n", size);
@@ -222,11 +247,19 @@ static int mvumi_make_sgl(struct mvumi_hba *mhba, struct scsi_cmnd *scmd,
 			m_sg->baseaddr_l = cpu_to_le32(lower_32_bits(busaddr));
 			m_sg->baseaddr_h = cpu_to_le32(upper_32_bits(busaddr));
 			m_sg->flags = 0;
+<<<<<<< HEAD
 			m_sg->size = cpu_to_le32(sg_dma_len(&sg[i]));
 			if ((i + 1) == *sg_count)
 				m_sg->flags |= SGD_EOT;
 
 			m_sg++;
+=======
+			sgd_setsz(mhba, m_sg, cpu_to_le32(sg_dma_len(&sg[i])));
+			if ((i + 1) == *sg_count)
+				m_sg->flags |= 1U << mhba->eot_flag;
+
+			sgd_inc(mhba, m_sg);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		scmd->SCp.dma_handle = scsi_bufflen(scmd) ?
@@ -237,8 +270,13 @@ static int mvumi_make_sgl(struct mvumi_hba *mhba, struct scsi_cmnd *scmd,
 		busaddr = scmd->SCp.dma_handle;
 		m_sg->baseaddr_l = cpu_to_le32(lower_32_bits(busaddr));
 		m_sg->baseaddr_h = cpu_to_le32(upper_32_bits(busaddr));
+<<<<<<< HEAD
 		m_sg->flags = SGD_EOT;
 		m_sg->size = cpu_to_le32(scsi_bufflen(scmd));
+=======
+		m_sg->flags = 1U << mhba->eot_flag;
+		sgd_setsz(mhba, m_sg, cpu_to_le32(scsi_bufflen(scmd)));
+>>>>>>> refs/remotes/origin/master
 		*sg_count = 1;
 	}
 
@@ -267,8 +305,13 @@ static int mvumi_internal_cmd_sgl(struct mvumi_hba *mhba, struct mvumi_cmd *cmd,
 
 	m_sg->baseaddr_l = cpu_to_le32(lower_32_bits(phy_addr));
 	m_sg->baseaddr_h = cpu_to_le32(upper_32_bits(phy_addr));
+<<<<<<< HEAD
 	m_sg->flags = SGD_EOT;
 	m_sg->size = cpu_to_le32(size);
+=======
+	m_sg->flags = 1U << mhba->eot_flag;
+	sgd_setsz(mhba, m_sg, cpu_to_le32(size));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -285,7 +328,12 @@ static struct mvumi_cmd *mvumi_create_internal_cmd(struct mvumi_hba *mhba,
 	}
 	INIT_LIST_HEAD(&cmd->queue_pointer);
 
+<<<<<<< HEAD
 	cmd->frame = kzalloc(mhba->ib_max_size, GFP_KERNEL);
+=======
+	cmd->frame = pci_alloc_consistent(mhba->pdev,
+				mhba->ib_max_size, &cmd->frame_phys);
+>>>>>>> refs/remotes/origin/master
 	if (!cmd->frame) {
 		dev_err(&mhba->pdev->dev, "failed to allocate memory for FW"
 			" frame,size = %d.\n", mhba->ib_max_size);
@@ -297,7 +345,12 @@ static struct mvumi_cmd *mvumi_create_internal_cmd(struct mvumi_hba *mhba,
 		if (mvumi_internal_cmd_sgl(mhba, cmd, buf_size)) {
 			dev_err(&mhba->pdev->dev, "failed to allocate memory"
 						" for internal frame\n");
+<<<<<<< HEAD
 			kfree(cmd->frame);
+=======
+			pci_free_consistent(mhba->pdev, mhba->ib_max_size,
+					cmd->frame, cmd->frame_phys);
+>>>>>>> refs/remotes/origin/master
 			kfree(cmd);
 			return NULL;
 		}
@@ -317,7 +370,11 @@ static void mvumi_delete_internal_cmd(struct mvumi_hba *mhba,
 	if (cmd && cmd->frame) {
 		if (cmd->frame->sg_counts) {
 			m_sg = (struct mvumi_sgl *) &cmd->frame->payload[0];
+<<<<<<< HEAD
 			size = m_sg->size;
+=======
+			sgd_getsz(mhba, m_sg, size);
+>>>>>>> refs/remotes/origin/master
 
 			phy_addr = (dma_addr_t) m_sg->baseaddr_l |
 				(dma_addr_t) ((m_sg->baseaddr_h << 16) << 16);
@@ -325,7 +382,12 @@ static void mvumi_delete_internal_cmd(struct mvumi_hba *mhba,
 			pci_free_consistent(mhba->pdev, size, cmd->data_buf,
 								phy_addr);
 		}
+<<<<<<< HEAD
 		kfree(cmd->frame);
+=======
+		pci_free_consistent(mhba->pdev, mhba->ib_max_size,
+				cmd->frame, cmd->frame_phys);
+>>>>>>> refs/remotes/origin/master
 		kfree(cmd);
 	}
 }
@@ -374,7 +436,12 @@ static void mvumi_free_cmds(struct mvumi_hba *mhba)
 		cmd = list_first_entry(&mhba->cmd_pool, struct mvumi_cmd,
 							queue_pointer);
 		list_del(&cmd->queue_pointer);
+<<<<<<< HEAD
 		kfree(cmd->frame);
+=======
+		if (!(mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC))
+			kfree(cmd->frame);
+>>>>>>> refs/remotes/origin/master
 		kfree(cmd);
 	}
 }
@@ -396,7 +463,16 @@ static int mvumi_alloc_cmds(struct mvumi_hba *mhba)
 
 		INIT_LIST_HEAD(&cmd->queue_pointer);
 		list_add_tail(&cmd->queue_pointer, &mhba->cmd_pool);
+<<<<<<< HEAD
 		cmd->frame = kzalloc(mhba->ib_max_size, GFP_KERNEL);
+=======
+		if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC) {
+			cmd->frame = mhba->ib_frame + i * mhba->ib_max_size;
+			cmd->frame_phys = mhba->ib_frame_phys
+						+ i * mhba->ib_max_size;
+		} else
+			cmd->frame = kzalloc(mhba->ib_max_size, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!cmd->frame)
 			goto err_exit;
 	}
@@ -409,12 +485,18 @@ err_exit:
 		cmd = list_first_entry(&mhba->cmd_pool, struct mvumi_cmd,
 						queue_pointer);
 		list_del(&cmd->queue_pointer);
+<<<<<<< HEAD
 		kfree(cmd->frame);
+=======
+		if (!(mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC))
+			kfree(cmd->frame);
+>>>>>>> refs/remotes/origin/master
 		kfree(cmd);
 	}
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static int mvumi_get_ib_list_entry(struct mvumi_hba *mhba, void **ib_entry)
 {
 	unsigned int ib_rp_reg, cur_ib_entry;
@@ -445,12 +527,71 @@ static int mvumi_get_ib_list_entry(struct mvumi_hba *mhba, void **ib_entry)
 	atomic_inc(&mhba->fw_outstanding);
 
 	return 0;
+=======
+static unsigned int mvumi_check_ib_list_9143(struct mvumi_hba *mhba)
+{
+	unsigned int ib_rp_reg;
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	ib_rp_reg = ioread32(mhba->regs->inb_read_pointer);
+
+	if (unlikely(((ib_rp_reg & regs->cl_slot_num_mask) ==
+			(mhba->ib_cur_slot & regs->cl_slot_num_mask)) &&
+			((ib_rp_reg & regs->cl_pointer_toggle)
+			 != (mhba->ib_cur_slot & regs->cl_pointer_toggle)))) {
+		dev_warn(&mhba->pdev->dev, "no free slot to use.\n");
+		return 0;
+	}
+	if (atomic_read(&mhba->fw_outstanding) >= mhba->max_io) {
+		dev_warn(&mhba->pdev->dev, "firmware io overflow.\n");
+		return 0;
+	} else {
+		return mhba->max_io - atomic_read(&mhba->fw_outstanding);
+	}
+}
+
+static unsigned int mvumi_check_ib_list_9580(struct mvumi_hba *mhba)
+{
+	unsigned int count;
+	if (atomic_read(&mhba->fw_outstanding) >= (mhba->max_io - 1))
+		return 0;
+	count = ioread32(mhba->ib_shadow);
+	if (count == 0xffff)
+		return 0;
+	return count;
+}
+
+static void mvumi_get_ib_list_entry(struct mvumi_hba *mhba, void **ib_entry)
+{
+	unsigned int cur_ib_entry;
+
+	cur_ib_entry = mhba->ib_cur_slot & mhba->regs->cl_slot_num_mask;
+	cur_ib_entry++;
+	if (cur_ib_entry >= mhba->list_num_io) {
+		cur_ib_entry -= mhba->list_num_io;
+		mhba->ib_cur_slot ^= mhba->regs->cl_pointer_toggle;
+	}
+	mhba->ib_cur_slot &= ~mhba->regs->cl_slot_num_mask;
+	mhba->ib_cur_slot |= (cur_ib_entry & mhba->regs->cl_slot_num_mask);
+	if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC) {
+		*ib_entry = mhba->ib_list + cur_ib_entry *
+				sizeof(struct mvumi_dyn_list_entry);
+	} else {
+		*ib_entry = mhba->ib_list + cur_ib_entry * mhba->ib_max_size;
+	}
+	atomic_inc(&mhba->fw_outstanding);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mvumi_send_ib_list_entry(struct mvumi_hba *mhba)
 {
+<<<<<<< HEAD
 	iowrite32(0xfff, mhba->ib_shadow);
 	iowrite32(mhba->ib_cur_slot, mhba->mmio + CLA_INB_WRITE_POINTER);
+=======
+	iowrite32(0xffff, mhba->ib_shadow);
+	iowrite32(mhba->ib_cur_slot, mhba->regs->inb_write_pointer);
+>>>>>>> refs/remotes/origin/master
 }
 
 static char mvumi_check_ob_frame(struct mvumi_hba *mhba,
@@ -480,6 +621,7 @@ static char mvumi_check_ob_frame(struct mvumi_hba *mhba,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void mvumi_receive_ob_list_entry(struct mvumi_hba *mhba)
 {
 	unsigned int ob_write_reg, ob_write_shadow_reg;
@@ -499,12 +641,65 @@ static void mvumi_receive_ob_list_entry(struct mvumi_hba *mhba)
 				(mhba->ob_cur_slot & CL_POINTER_TOGGLE)) {
 		assign_obf_end += mhba->list_num_io;
 	}
+=======
+static int mvumi_check_ob_list_9143(struct mvumi_hba *mhba,
+			unsigned int *cur_obf, unsigned int *assign_obf_end)
+{
+	unsigned int ob_write, ob_write_shadow;
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	do {
+		ob_write = ioread32(regs->outb_copy_pointer);
+		ob_write_shadow = ioread32(mhba->ob_shadow);
+	} while ((ob_write & regs->cl_slot_num_mask) != ob_write_shadow);
+
+	*cur_obf = mhba->ob_cur_slot & mhba->regs->cl_slot_num_mask;
+	*assign_obf_end = ob_write & mhba->regs->cl_slot_num_mask;
+
+	if ((ob_write & regs->cl_pointer_toggle) !=
+			(mhba->ob_cur_slot & regs->cl_pointer_toggle)) {
+		*assign_obf_end += mhba->list_num_io;
+	}
+	return 0;
+}
+
+static int mvumi_check_ob_list_9580(struct mvumi_hba *mhba,
+			unsigned int *cur_obf, unsigned int *assign_obf_end)
+{
+	unsigned int ob_write;
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	ob_write = ioread32(regs->outb_read_pointer);
+	ob_write = ioread32(regs->outb_copy_pointer);
+	*cur_obf = mhba->ob_cur_slot & mhba->regs->cl_slot_num_mask;
+	*assign_obf_end = ob_write & mhba->regs->cl_slot_num_mask;
+	if (*assign_obf_end < *cur_obf)
+		*assign_obf_end += mhba->list_num_io;
+	else if (*assign_obf_end == *cur_obf)
+		return -1;
+	return 0;
+}
+
+static void mvumi_receive_ob_list_entry(struct mvumi_hba *mhba)
+{
+	unsigned int cur_obf, assign_obf_end, i;
+	struct mvumi_ob_data *ob_data;
+	struct mvumi_rsp_frame *p_outb_frame;
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	if (mhba->instancet->check_ob_list(mhba, &cur_obf, &assign_obf_end))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = (assign_obf_end - cur_obf); i != 0; i--) {
 		cur_obf++;
 		if (cur_obf >= mhba->list_num_io) {
 			cur_obf -= mhba->list_num_io;
+<<<<<<< HEAD
 			mhba->ob_cur_slot ^= CL_POINTER_TOGGLE;
+=======
+			mhba->ob_cur_slot ^= regs->cl_pointer_toggle;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		p_outb_frame = mhba->ob_list + cur_obf * mhba->ob_max_size;
@@ -528,7 +723,11 @@ static void mvumi_receive_ob_list_entry(struct mvumi_hba *mhba)
 			ob_data = NULL;
 			if (cur_obf == 0) {
 				cur_obf = mhba->list_num_io - 1;
+<<<<<<< HEAD
 				mhba->ob_cur_slot ^= CL_POINTER_TOGGLE;
+=======
+				mhba->ob_cur_slot ^= regs->cl_pointer_toggle;
+>>>>>>> refs/remotes/origin/master
 			} else
 				cur_obf -= 1;
 			break;
@@ -539,6 +738,7 @@ static void mvumi_receive_ob_list_entry(struct mvumi_hba *mhba)
 
 		list_add_tail(&ob_data->list, &mhba->free_ob_list);
 	}
+<<<<<<< HEAD
 	mhba->ob_cur_slot &= ~CL_SLOT_NUM_MASK;
 	mhba->ob_cur_slot |= (cur_obf & CL_SLOT_NUM_MASK);
 	iowrite32(mhba->ob_cur_slot, mhba->mmio + CLA_OUTB_READ_POINTER);
@@ -551,6 +751,22 @@ static void mvumi_reset(void *regs)
 		return;
 
 	iowrite32(DRBL_SOFT_RESET, regs + CPU_PCIEA_TO_ARM_DRBL_REG);
+=======
+	mhba->ob_cur_slot &= ~regs->cl_slot_num_mask;
+	mhba->ob_cur_slot |= (cur_obf & regs->cl_slot_num_mask);
+	iowrite32(mhba->ob_cur_slot, regs->outb_read_pointer);
+}
+
+static void mvumi_reset(struct mvumi_hba *mhba)
+{
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	iowrite32(0, regs->enpointa_mask_reg);
+	if (ioread32(regs->arm_to_pciea_msg1) != HANDSHAKE_DONESTATE)
+		return;
+
+	iowrite32(DRBL_SOFT_RESET, regs->pciea_to_arm_drbl_reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned char mvumi_start(struct mvumi_hba *mhba);
@@ -558,7 +774,11 @@ static unsigned char mvumi_start(struct mvumi_hba *mhba);
 static int mvumi_wait_for_outstanding(struct mvumi_hba *mhba)
 {
 	mhba->fw_state = FW_STATE_ABORT;
+<<<<<<< HEAD
 	mvumi_reset(mhba->mmio);
+=======
+	mvumi_reset(mhba);
+>>>>>>> refs/remotes/origin/master
 
 	if (mvumi_start(mhba))
 		return FAILED;
@@ -566,6 +786,101 @@ static int mvumi_wait_for_outstanding(struct mvumi_hba *mhba)
 		return SUCCESS;
 }
 
+<<<<<<< HEAD
+=======
+static int mvumi_wait_for_fw(struct mvumi_hba *mhba)
+{
+	struct mvumi_hw_regs *regs = mhba->regs;
+	u32 tmp;
+	unsigned long before;
+	before = jiffies;
+
+	iowrite32(0, regs->enpointa_mask_reg);
+	tmp = ioread32(regs->arm_to_pciea_msg1);
+	while (tmp != HANDSHAKE_READYSTATE) {
+		iowrite32(DRBL_MU_RESET, regs->pciea_to_arm_drbl_reg);
+		if (time_after(jiffies, before + FW_MAX_DELAY * HZ)) {
+			dev_err(&mhba->pdev->dev,
+				"FW reset failed [0x%x].\n", tmp);
+			return FAILED;
+		}
+
+		msleep(500);
+		rmb();
+		tmp = ioread32(regs->arm_to_pciea_msg1);
+	}
+
+	return SUCCESS;
+}
+
+static void mvumi_backup_bar_addr(struct mvumi_hba *mhba)
+{
+	unsigned char i;
+
+	for (i = 0; i < MAX_BASE_ADDRESS; i++) {
+		pci_read_config_dword(mhba->pdev, 0x10 + i * 4,
+						&mhba->pci_base[i]);
+	}
+}
+
+static void mvumi_restore_bar_addr(struct mvumi_hba *mhba)
+{
+	unsigned char i;
+
+	for (i = 0; i < MAX_BASE_ADDRESS; i++) {
+		if (mhba->pci_base[i])
+			pci_write_config_dword(mhba->pdev, 0x10 + i * 4,
+						mhba->pci_base[i]);
+	}
+}
+
+static unsigned int mvumi_pci_set_master(struct pci_dev *pdev)
+{
+	unsigned int ret = 0;
+	pci_set_master(pdev);
+
+	if (IS_DMA64) {
+		if (pci_set_dma_mask(pdev, DMA_BIT_MASK(64)))
+			ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+	} else
+		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+
+	return ret;
+}
+
+static int mvumi_reset_host_9580(struct mvumi_hba *mhba)
+{
+	mhba->fw_state = FW_STATE_ABORT;
+
+	iowrite32(0, mhba->regs->reset_enable);
+	iowrite32(0xf, mhba->regs->reset_request);
+
+	iowrite32(0x10, mhba->regs->reset_enable);
+	iowrite32(0x10, mhba->regs->reset_request);
+	msleep(100);
+	pci_disable_device(mhba->pdev);
+
+	if (pci_enable_device(mhba->pdev)) {
+		dev_err(&mhba->pdev->dev, "enable device failed\n");
+		return FAILED;
+	}
+	if (mvumi_pci_set_master(mhba->pdev)) {
+		dev_err(&mhba->pdev->dev, "set master failed\n");
+		return FAILED;
+	}
+	mvumi_restore_bar_addr(mhba);
+	if (mvumi_wait_for_fw(mhba) == FAILED)
+		return FAILED;
+
+	return mvumi_wait_for_outstanding(mhba);
+}
+
+static int mvumi_reset_host_9143(struct mvumi_hba *mhba)
+{
+	return mvumi_wait_for_outstanding(mhba);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int mvumi_host_reset(struct scsi_cmnd *scmd)
 {
 	struct mvumi_hba *mhba;
@@ -575,7 +890,11 @@ static int mvumi_host_reset(struct scsi_cmnd *scmd)
 	scmd_printk(KERN_NOTICE, scmd, "RESET -%ld cmd=%x retries=%x\n",
 			scmd->serial_number, scmd->cmnd[0], scmd->retries);
 
+<<<<<<< HEAD
 	return mvumi_wait_for_outstanding(mhba);
+=======
+	return mhba->instancet->reset_host(mhba);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mvumi_issue_blocked_cmd(struct mvumi_hba *mhba,
@@ -628,7 +947,13 @@ static void mvumi_release_fw(struct mvumi_hba *mhba)
 	mvumi_free_cmds(mhba);
 	mvumi_release_mem_resource(mhba);
 	mvumi_unmap_pci_addr(mhba->pdev, mhba->base_addr);
+<<<<<<< HEAD
 	kfree(mhba->handshake_page);
+=======
+	pci_free_consistent(mhba->pdev, HSP_MAX_SIZE,
+		mhba->handshake_page, mhba->handshake_page_phys);
+	kfree(mhba->regs);
+>>>>>>> refs/remotes/origin/master
 	pci_release_regions(mhba->pdev);
 }
 
@@ -665,6 +990,10 @@ get_cmd:	cmd = mvumi_create_internal_cmd(mhba, 0);
 		frame->cdb_length = MAX_COMMAND_SIZE;
 		memset(frame->cdb, 0, MAX_COMMAND_SIZE);
 		frame->cdb[0] = SCSI_CMD_MARVELL_SPECIFIC;
+<<<<<<< HEAD
+=======
+		frame->cdb[1] = CDB_CORE_MODULE;
+>>>>>>> refs/remotes/origin/master
 		frame->cdb[2] = CDB_CORE_SHUTDOWN;
 
 		mvumi_issue_blocked_cmd(mhba, cmd);
@@ -695,7 +1024,11 @@ mvumi_calculate_checksum(struct mvumi_hs_header *p_header,
 	return ret;
 }
 
+<<<<<<< HEAD
 void mvumi_hs_build_page(struct mvumi_hba *mhba,
+=======
+static void mvumi_hs_build_page(struct mvumi_hba *mhba,
+>>>>>>> refs/remotes/origin/master
 				struct mvumi_hs_header *hs_header)
 {
 	struct mvumi_hs_page2 *hs_page2;
@@ -710,6 +1043,11 @@ void mvumi_hs_build_page(struct mvumi_hba *mhba,
 		hs_header->frame_length = sizeof(*hs_page2) - 4;
 		memset(hs_header->frame_content, 0, hs_header->frame_length);
 		hs_page2->host_type = 3; /* 3 mean linux*/
+<<<<<<< HEAD
+=======
+		if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC)
+			hs_page2->host_cap = 0x08;/* host dynamic source mode */
+>>>>>>> refs/remotes/origin/master
 		hs_page2->host_ver.ver_major = VER_MAJOR;
 		hs_page2->host_ver.ver_minor = VER_MINOR;
 		hs_page2->host_ver.ver_oem = VER_OEM;
@@ -745,8 +1083,23 @@ void mvumi_hs_build_page(struct mvumi_hba *mhba,
 		hs_page4->ob_baseaddr_h = upper_32_bits(mhba->ob_list_phys);
 		hs_page4->ib_entry_size = mhba->ib_max_size_setting;
 		hs_page4->ob_entry_size = mhba->ob_max_size_setting;
+<<<<<<< HEAD
 		hs_page4->ob_depth = mhba->list_num_io;
 		hs_page4->ib_depth = mhba->list_num_io;
+=======
+		if (mhba->hba_capability
+			& HS_CAPABILITY_NEW_PAGE_IO_DEPTH_DEF) {
+			hs_page4->ob_depth = find_first_bit((unsigned long *)
+							    &mhba->list_num_io,
+							    BITS_PER_LONG);
+			hs_page4->ib_depth = find_first_bit((unsigned long *)
+							    &mhba->list_num_io,
+							    BITS_PER_LONG);
+		} else {
+			hs_page4->ob_depth = (u8) mhba->list_num_io;
+			hs_page4->ib_depth = (u8) mhba->list_num_io;
+		}
+>>>>>>> refs/remotes/origin/master
 		hs_header->checksum = mvumi_calculate_checksum(hs_header,
 						hs_header->frame_length);
 		break;
@@ -774,8 +1127,16 @@ static int mvumi_init_data(struct mvumi_hba *mhba)
 		return 0;
 
 	tmp_size = mhba->ib_max_size * mhba->max_io;
+<<<<<<< HEAD
 	tmp_size += 128 + mhba->ob_max_size * mhba->max_io;
 	tmp_size += 8 + sizeof(u32) + 16;
+=======
+	if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC)
+		tmp_size += sizeof(struct mvumi_dyn_list_entry) * mhba->max_io;
+
+	tmp_size += 128 + mhba->ob_max_size * mhba->max_io;
+	tmp_size += 8 + sizeof(u32)*2 + 16;
+>>>>>>> refs/remotes/origin/master
 
 	res_mgnt = mvumi_alloc_mem_resource(mhba,
 					RESOURCE_UNCACHED_MEMORY, tmp_size);
@@ -793,14 +1154,27 @@ static int mvumi_init_data(struct mvumi_hba *mhba)
 	v += offset;
 	mhba->ib_list = v;
 	mhba->ib_list_phys = p;
+<<<<<<< HEAD
 	v += mhba->ib_max_size * mhba->max_io;
 	p += mhba->ib_max_size * mhba->max_io;
+=======
+	if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC) {
+		v += sizeof(struct mvumi_dyn_list_entry) * mhba->max_io;
+		p += sizeof(struct mvumi_dyn_list_entry) * mhba->max_io;
+		mhba->ib_frame = v;
+		mhba->ib_frame_phys = p;
+	}
+	v += mhba->ib_max_size * mhba->max_io;
+	p += mhba->ib_max_size * mhba->max_io;
+
+>>>>>>> refs/remotes/origin/master
 	/* ib shadow */
 	offset = round_up(p, 8) - p;
 	p += offset;
 	v += offset;
 	mhba->ib_shadow = v;
 	mhba->ib_shadow_phys = p;
+<<<<<<< HEAD
 	p += sizeof(u32);
 	v += sizeof(u32);
 	/* ob shadow */
@@ -811,6 +1185,28 @@ static int mvumi_init_data(struct mvumi_hba *mhba)
 	mhba->ob_shadow_phys = p;
 	p += 8;
 	v += 8;
+=======
+	p += sizeof(u32)*2;
+	v += sizeof(u32)*2;
+	/* ob shadow */
+	if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9580) {
+		offset = round_up(p, 8) - p;
+		p += offset;
+		v += offset;
+		mhba->ob_shadow = v;
+		mhba->ob_shadow_phys = p;
+		p += 8;
+		v += 8;
+	} else {
+		offset = round_up(p, 4) - p;
+		p += offset;
+		v += offset;
+		mhba->ob_shadow = v;
+		mhba->ob_shadow_phys = p;
+		p += 4;
+		v += 4;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* ob list */
 	offset = round_up(p, 128) - p;
@@ -902,6 +1298,15 @@ static int mvumi_hs_process_page(struct mvumi_hba *mhba,
 		dev_dbg(&mhba->pdev->dev, "FW version:%d\n",
 						hs_page1->fw_ver.ver_build);
 
+<<<<<<< HEAD
+=======
+		if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_COMPACT_SG)
+			mhba->eot_flag = 22;
+		else
+			mhba->eot_flag = 27;
+		if (mhba->hba_capability & HS_CAPABILITY_NEW_PAGE_IO_DEPTH_DEF)
+			mhba->list_num_io = 1 << hs_page1->cl_inout_list_depth;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		dev_err(&mhba->pdev->dev, "handshake: page code error\n");
@@ -923,12 +1328,20 @@ static int mvumi_handshake(struct mvumi_hba *mhba)
 {
 	unsigned int hs_state, tmp, hs_fun;
 	struct mvumi_hs_header *hs_header;
+<<<<<<< HEAD
 	void *regs = mhba->mmio;
+=======
+	struct mvumi_hw_regs *regs = mhba->regs;
+>>>>>>> refs/remotes/origin/master
 
 	if (mhba->fw_state == FW_STATE_STARTING)
 		hs_state = HS_S_START;
 	else {
+<<<<<<< HEAD
 		tmp = ioread32(regs + CPU_ARM_TO_PCIEA_MSG0);
+=======
+		tmp = ioread32(regs->arm_to_pciea_msg0);
+>>>>>>> refs/remotes/origin/master
 		hs_state = HS_GET_STATE(tmp);
 		dev_dbg(&mhba->pdev->dev, "handshake state[0x%x].\n", hs_state);
 		if (HS_GET_STATUS(tmp) != HS_STATUS_OK) {
@@ -943,13 +1356,20 @@ static int mvumi_handshake(struct mvumi_hba *mhba)
 		mhba->fw_state = FW_STATE_HANDSHAKING;
 		HS_SET_STATUS(hs_fun, HS_STATUS_OK);
 		HS_SET_STATE(hs_fun, HS_S_RESET);
+<<<<<<< HEAD
 		iowrite32(HANDSHAKE_SIGNATURE, regs + CPU_PCIEA_TO_ARM_MSG1);
 		iowrite32(hs_fun, regs + CPU_PCIEA_TO_ARM_MSG0);
 		iowrite32(DRBL_HANDSHAKE, regs + CPU_PCIEA_TO_ARM_DRBL_REG);
+=======
+		iowrite32(HANDSHAKE_SIGNATURE, regs->pciea_to_arm_msg1);
+		iowrite32(hs_fun, regs->pciea_to_arm_msg0);
+		iowrite32(DRBL_HANDSHAKE, regs->pciea_to_arm_drbl_reg);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case HS_S_RESET:
 		iowrite32(lower_32_bits(mhba->handshake_page_phys),
+<<<<<<< HEAD
 					regs + CPU_PCIEA_TO_ARM_MSG1);
 		iowrite32(upper_32_bits(mhba->handshake_page_phys),
 					regs + CPU_ARM_TO_PCIEA_MSG1);
@@ -958,6 +1378,15 @@ static int mvumi_handshake(struct mvumi_hba *mhba)
 		iowrite32(hs_fun, regs + CPU_PCIEA_TO_ARM_MSG0);
 		iowrite32(DRBL_HANDSHAKE, regs + CPU_PCIEA_TO_ARM_DRBL_REG);
 
+=======
+					regs->pciea_to_arm_msg1);
+		iowrite32(upper_32_bits(mhba->handshake_page_phys),
+					regs->arm_to_pciea_msg1);
+		HS_SET_STATUS(hs_fun, HS_STATUS_OK);
+		HS_SET_STATE(hs_fun, HS_S_PAGE_ADDR);
+		iowrite32(hs_fun, regs->pciea_to_arm_msg0);
+		iowrite32(DRBL_HANDSHAKE, regs->pciea_to_arm_drbl_reg);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case HS_S_PAGE_ADDR:
@@ -997,12 +1426,18 @@ static int mvumi_handshake(struct mvumi_hba *mhba)
 			HS_SET_STATE(hs_fun, HS_S_END);
 
 		HS_SET_STATUS(hs_fun, HS_STATUS_OK);
+<<<<<<< HEAD
 		iowrite32(hs_fun, regs + CPU_PCIEA_TO_ARM_MSG0);
 		iowrite32(DRBL_HANDSHAKE, regs + CPU_PCIEA_TO_ARM_DRBL_REG);
+=======
+		iowrite32(hs_fun, regs->pciea_to_arm_msg0);
+		iowrite32(DRBL_HANDSHAKE, regs->pciea_to_arm_drbl_reg);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case HS_S_END:
 		/* Set communication list ISR */
+<<<<<<< HEAD
 		tmp = ioread32(regs + CPU_ENPOINTA_MASK_REG);
 		tmp |= INT_MAP_COMAOUT | INT_MAP_COMAERR;
 		iowrite32(tmp, regs + CPU_ENPOINTA_MASK_REG);
@@ -1021,6 +1456,33 @@ static int mvumi_handshake(struct mvumi_hba *mhba)
 
 		mhba->ib_cur_slot = (mhba->list_num_io - 1) | CL_POINTER_TOGGLE;
 		mhba->ob_cur_slot = (mhba->list_num_io - 1) | CL_POINTER_TOGGLE;
+=======
+		tmp = ioread32(regs->enpointa_mask_reg);
+		tmp |= regs->int_comaout | regs->int_comaerr;
+		iowrite32(tmp, regs->enpointa_mask_reg);
+		iowrite32(mhba->list_num_io, mhba->ib_shadow);
+		/* Set InBound List Available count shadow */
+		iowrite32(lower_32_bits(mhba->ib_shadow_phys),
+					regs->inb_aval_count_basel);
+		iowrite32(upper_32_bits(mhba->ib_shadow_phys),
+					regs->inb_aval_count_baseh);
+
+		if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9143) {
+			/* Set OutBound List Available count shadow */
+			iowrite32((mhba->list_num_io-1) |
+							regs->cl_pointer_toggle,
+							mhba->ob_shadow);
+			iowrite32(lower_32_bits(mhba->ob_shadow_phys),
+							regs->outb_copy_basel);
+			iowrite32(upper_32_bits(mhba->ob_shadow_phys),
+							regs->outb_copy_baseh);
+		}
+
+		mhba->ib_cur_slot = (mhba->list_num_io - 1) |
+							regs->cl_pointer_toggle;
+		mhba->ob_cur_slot = (mhba->list_num_io - 1) |
+							regs->cl_pointer_toggle;
+>>>>>>> refs/remotes/origin/master
 		mhba->fw_state = FW_STATE_STARTED;
 
 		break;
@@ -1040,7 +1502,11 @@ static unsigned char mvumi_handshake_event(struct mvumi_hba *mhba)
 	before = jiffies;
 	mvumi_handshake(mhba);
 	do {
+<<<<<<< HEAD
 		isr_status = mhba->instancet->read_fw_status_reg(mhba->mmio);
+=======
+		isr_status = mhba->instancet->read_fw_status_reg(mhba);
+>>>>>>> refs/remotes/origin/master
 
 		if (mhba->fw_state == FW_STATE_STARTED)
 			return 0;
@@ -1062,16 +1528,27 @@ static unsigned char mvumi_handshake_event(struct mvumi_hba *mhba)
 
 static unsigned char mvumi_check_handshake(struct mvumi_hba *mhba)
 {
+<<<<<<< HEAD
 	void *regs = mhba->mmio;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int tmp;
 	unsigned long before;
 
 	before = jiffies;
+<<<<<<< HEAD
 	tmp = ioread32(regs + CPU_ARM_TO_PCIEA_MSG1);
 	while ((tmp != HANDSHAKE_READYSTATE) && (tmp != HANDSHAKE_DONESTATE)) {
 		if (tmp != HANDSHAKE_READYSTATE)
 			iowrite32(DRBL_MU_RESET,
 					regs + CPU_PCIEA_TO_ARM_DRBL_REG);
+=======
+	tmp = ioread32(mhba->regs->arm_to_pciea_msg1);
+	while ((tmp != HANDSHAKE_READYSTATE) && (tmp != HANDSHAKE_DONESTATE)) {
+		if (tmp != HANDSHAKE_READYSTATE)
+			iowrite32(DRBL_MU_RESET,
+					mhba->regs->pciea_to_arm_drbl_reg);
+>>>>>>> refs/remotes/origin/master
 		if (time_after(jiffies, before + FW_MAX_DELAY * HZ)) {
 			dev_err(&mhba->pdev->dev,
 				"invalid signature [0x%x].\n", tmp);
@@ -1079,7 +1556,11 @@ static unsigned char mvumi_check_handshake(struct mvumi_hba *mhba)
 		}
 		usleep_range(1000, 2000);
 		rmb();
+<<<<<<< HEAD
 		tmp = ioread32(regs + CPU_ARM_TO_PCIEA_MSG1);
+=======
+		tmp = ioread32(mhba->regs->arm_to_pciea_msg1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mhba->fw_state = FW_STATE_STARTING;
@@ -1100,6 +1581,7 @@ static unsigned char mvumi_check_handshake(struct mvumi_hba *mhba)
 
 static unsigned char mvumi_start(struct mvumi_hba *mhba)
 {
+<<<<<<< HEAD
 	void *regs = mhba->mmio;
 	unsigned int tmp;
 	/* clear Door bell */
@@ -1109,6 +1591,19 @@ static unsigned char mvumi_start(struct mvumi_hba *mhba)
 	iowrite32(0x3FFFFFFF, regs + CPU_ARM_TO_PCIEA_MASK_REG);
 	tmp = ioread32(regs + CPU_ENPOINTA_MASK_REG) | INT_MAP_DL_CPU2PCIEA;
 	iowrite32(tmp, regs + CPU_ENPOINTA_MASK_REG);
+=======
+	unsigned int tmp;
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	/* clear Door bell */
+	tmp = ioread32(regs->arm_to_pciea_drbl_reg);
+	iowrite32(tmp, regs->arm_to_pciea_drbl_reg);
+
+	iowrite32(regs->int_drbl_int_mask, regs->arm_to_pciea_mask_reg);
+	tmp = ioread32(regs->enpointa_mask_reg) | regs->int_dl_cpu2pciea;
+	iowrite32(tmp, regs->enpointa_mask_reg);
+	msleep(100);
+>>>>>>> refs/remotes/origin/master
 	if (mvumi_check_handshake(mhba))
 		return -1;
 
@@ -1166,6 +1661,10 @@ static void mvumi_complete_cmd(struct mvumi_hba *mhba, struct mvumi_cmd *cmd,
 	cmd->scmd->scsi_done(scmd);
 	mvumi_return_cmd(mhba, cmd);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 static void mvumi_complete_internal_cmd(struct mvumi_hba *mhba,
 						struct mvumi_cmd *cmd,
 					struct mvumi_rsp_frame *ob_frame)
@@ -1210,6 +1709,307 @@ static void mvumi_show_event(struct mvumi_hba *mhba,
 	}
 }
 
+<<<<<<< HEAD
+=======
+static int mvumi_handle_hotplug(struct mvumi_hba *mhba, u16 devid, int status)
+{
+	struct scsi_device *sdev;
+	int ret = -1;
+
+	if (status == DEVICE_OFFLINE) {
+		sdev = scsi_device_lookup(mhba->shost, 0, devid, 0);
+		if (sdev) {
+			dev_dbg(&mhba->pdev->dev, "remove disk %d-%d-%d.\n", 0,
+								sdev->id, 0);
+			scsi_remove_device(sdev);
+			scsi_device_put(sdev);
+			ret = 0;
+		} else
+			dev_err(&mhba->pdev->dev, " no disk[%d] to remove\n",
+									devid);
+	} else if (status == DEVICE_ONLINE) {
+		sdev = scsi_device_lookup(mhba->shost, 0, devid, 0);
+		if (!sdev) {
+			scsi_add_device(mhba->shost, 0, devid, 0);
+			dev_dbg(&mhba->pdev->dev, " add disk %d-%d-%d.\n", 0,
+								devid, 0);
+			ret = 0;
+		} else {
+			dev_err(&mhba->pdev->dev, " don't add disk %d-%d-%d.\n",
+								0, devid, 0);
+			scsi_device_put(sdev);
+		}
+	}
+	return ret;
+}
+
+static u64 mvumi_inquiry(struct mvumi_hba *mhba,
+	unsigned int id, struct mvumi_cmd *cmd)
+{
+	struct mvumi_msg_frame *frame;
+	u64 wwid = 0;
+	int cmd_alloc = 0;
+	int data_buf_len = 64;
+
+	if (!cmd) {
+		cmd = mvumi_create_internal_cmd(mhba, data_buf_len);
+		if (cmd)
+			cmd_alloc = 1;
+		else
+			return 0;
+	} else {
+		memset(cmd->data_buf, 0, data_buf_len);
+	}
+	cmd->scmd = NULL;
+	cmd->cmd_status = REQ_STATUS_PENDING;
+	atomic_set(&cmd->sync_cmd, 0);
+	frame = cmd->frame;
+	frame->device_id = (u16) id;
+	frame->cmd_flag = CMD_FLAG_DATA_IN;
+	frame->req_function = CL_FUN_SCSI_CMD;
+	frame->cdb_length = 6;
+	frame->data_transfer_length = MVUMI_INQUIRY_LENGTH;
+	memset(frame->cdb, 0, frame->cdb_length);
+	frame->cdb[0] = INQUIRY;
+	frame->cdb[4] = frame->data_transfer_length;
+
+	mvumi_issue_blocked_cmd(mhba, cmd);
+
+	if (cmd->cmd_status == SAM_STAT_GOOD) {
+		if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9143)
+			wwid = id + 1;
+		else
+			memcpy((void *)&wwid,
+			       (cmd->data_buf + MVUMI_INQUIRY_UUID_OFF),
+			       MVUMI_INQUIRY_UUID_LEN);
+		dev_dbg(&mhba->pdev->dev,
+			"inquiry device(0:%d:0) wwid(%llx)\n", id, wwid);
+	} else {
+		wwid = 0;
+	}
+	if (cmd_alloc)
+		mvumi_delete_internal_cmd(mhba, cmd);
+
+	return wwid;
+}
+
+static void mvumi_detach_devices(struct mvumi_hba *mhba)
+{
+	struct mvumi_device *mv_dev = NULL , *dev_next;
+	struct scsi_device *sdev = NULL;
+
+	mutex_lock(&mhba->device_lock);
+
+	/* detach Hard Disk */
+	list_for_each_entry_safe(mv_dev, dev_next,
+		&mhba->shost_dev_list, list) {
+		mvumi_handle_hotplug(mhba, mv_dev->id, DEVICE_OFFLINE);
+		list_del_init(&mv_dev->list);
+		dev_dbg(&mhba->pdev->dev, "release device(0:%d:0) wwid(%llx)\n",
+			mv_dev->id, mv_dev->wwid);
+		kfree(mv_dev);
+	}
+	list_for_each_entry_safe(mv_dev, dev_next, &mhba->mhba_dev_list, list) {
+		list_del_init(&mv_dev->list);
+		dev_dbg(&mhba->pdev->dev, "release device(0:%d:0) wwid(%llx)\n",
+			mv_dev->id, mv_dev->wwid);
+		kfree(mv_dev);
+	}
+
+	/* detach virtual device */
+	if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9580)
+		sdev = scsi_device_lookup(mhba->shost, 0,
+						mhba->max_target_id - 1, 0);
+
+	if (sdev) {
+		scsi_remove_device(sdev);
+		scsi_device_put(sdev);
+	}
+
+	mutex_unlock(&mhba->device_lock);
+}
+
+static void mvumi_rescan_devices(struct mvumi_hba *mhba, int id)
+{
+	struct scsi_device *sdev;
+
+	sdev = scsi_device_lookup(mhba->shost, 0, id, 0);
+	if (sdev) {
+		scsi_rescan_device(&sdev->sdev_gendev);
+		scsi_device_put(sdev);
+	}
+}
+
+static int mvumi_match_devices(struct mvumi_hba *mhba, int id, u64 wwid)
+{
+	struct mvumi_device *mv_dev = NULL;
+
+	list_for_each_entry(mv_dev, &mhba->shost_dev_list, list) {
+		if (mv_dev->wwid == wwid) {
+			if (mv_dev->id != id) {
+				dev_err(&mhba->pdev->dev,
+					"%s has same wwid[%llx] ,"
+					" but different id[%d %d]\n",
+					__func__, mv_dev->wwid, mv_dev->id, id);
+				return -1;
+			} else {
+				if (mhba->pdev->device ==
+						PCI_DEVICE_ID_MARVELL_MV9143)
+					mvumi_rescan_devices(mhba, id);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+static void mvumi_remove_devices(struct mvumi_hba *mhba, int id)
+{
+	struct mvumi_device *mv_dev = NULL, *dev_next;
+
+	list_for_each_entry_safe(mv_dev, dev_next,
+				&mhba->shost_dev_list, list) {
+		if (mv_dev->id == id) {
+			dev_dbg(&mhba->pdev->dev,
+				"detach device(0:%d:0) wwid(%llx) from HOST\n",
+				mv_dev->id, mv_dev->wwid);
+			mvumi_handle_hotplug(mhba, mv_dev->id, DEVICE_OFFLINE);
+			list_del_init(&mv_dev->list);
+			kfree(mv_dev);
+		}
+	}
+}
+
+static int mvumi_probe_devices(struct mvumi_hba *mhba)
+{
+	int id, maxid;
+	u64 wwid = 0;
+	struct mvumi_device *mv_dev = NULL;
+	struct mvumi_cmd *cmd = NULL;
+	int found = 0;
+
+	cmd = mvumi_create_internal_cmd(mhba, 64);
+	if (!cmd)
+		return -1;
+
+	if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9143)
+		maxid = mhba->max_target_id;
+	else
+		maxid = mhba->max_target_id - 1;
+
+	for (id = 0; id < maxid; id++) {
+		wwid = mvumi_inquiry(mhba, id, cmd);
+		if (!wwid) {
+			/* device no response, remove it */
+			mvumi_remove_devices(mhba, id);
+		} else {
+			/* device response, add it */
+			found = mvumi_match_devices(mhba, id, wwid);
+			if (!found) {
+				mvumi_remove_devices(mhba, id);
+				mv_dev = kzalloc(sizeof(struct mvumi_device),
+								GFP_KERNEL);
+				if (!mv_dev) {
+					dev_err(&mhba->pdev->dev,
+						"%s alloc mv_dev failed\n",
+						__func__);
+					continue;
+				}
+				mv_dev->id = id;
+				mv_dev->wwid = wwid;
+				mv_dev->sdev = NULL;
+				INIT_LIST_HEAD(&mv_dev->list);
+				list_add_tail(&mv_dev->list,
+					      &mhba->mhba_dev_list);
+				dev_dbg(&mhba->pdev->dev,
+					"probe a new device(0:%d:0)"
+					" wwid(%llx)\n", id, mv_dev->wwid);
+			} else if (found == -1)
+				return -1;
+			else
+				continue;
+		}
+	}
+
+	if (cmd)
+		mvumi_delete_internal_cmd(mhba, cmd);
+
+	return 0;
+}
+
+static int mvumi_rescan_bus(void *data)
+{
+	int ret = 0;
+	struct mvumi_hba *mhba = (struct mvumi_hba *) data;
+	struct mvumi_device *mv_dev = NULL , *dev_next;
+
+	while (!kthread_should_stop()) {
+
+		set_current_state(TASK_INTERRUPTIBLE);
+		if (!atomic_read(&mhba->pnp_count))
+			schedule();
+		msleep(1000);
+		atomic_set(&mhba->pnp_count, 0);
+		__set_current_state(TASK_RUNNING);
+
+		mutex_lock(&mhba->device_lock);
+		ret = mvumi_probe_devices(mhba);
+		if (!ret) {
+			list_for_each_entry_safe(mv_dev, dev_next,
+						 &mhba->mhba_dev_list, list) {
+				if (mvumi_handle_hotplug(mhba, mv_dev->id,
+							 DEVICE_ONLINE)) {
+					dev_err(&mhba->pdev->dev,
+						"%s add device(0:%d:0) failed"
+						"wwid(%llx) has exist\n",
+						__func__,
+						mv_dev->id, mv_dev->wwid);
+					list_del_init(&mv_dev->list);
+					kfree(mv_dev);
+				} else {
+					list_move_tail(&mv_dev->list,
+						       &mhba->shost_dev_list);
+				}
+			}
+		}
+		mutex_unlock(&mhba->device_lock);
+	}
+	return 0;
+}
+
+static void mvumi_proc_msg(struct mvumi_hba *mhba,
+					struct mvumi_hotplug_event *param)
+{
+	u16 size = param->size;
+	const unsigned long *ar_bitmap;
+	const unsigned long *re_bitmap;
+	int index;
+
+	if (mhba->fw_flag & MVUMI_FW_ATTACH) {
+		index = -1;
+		ar_bitmap = (const unsigned long *) param->bitmap;
+		re_bitmap = (const unsigned long *) &param->bitmap[size >> 3];
+
+		mutex_lock(&mhba->sas_discovery_mutex);
+		do {
+			index = find_next_zero_bit(ar_bitmap, size, index + 1);
+			if (index >= size)
+				break;
+			mvumi_handle_hotplug(mhba, index, DEVICE_ONLINE);
+		} while (1);
+
+		index = -1;
+		do {
+			index = find_next_zero_bit(re_bitmap, size, index + 1);
+			if (index >= size)
+				break;
+			mvumi_handle_hotplug(mhba, index, DEVICE_OFFLINE);
+		} while (1);
+		mutex_unlock(&mhba->sas_discovery_mutex);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static void mvumi_notification(struct mvumi_hba *mhba, u8 msg, void *buffer)
 {
 	if (msg == APICDB1_EVENT_GETEVENT) {
@@ -1227,6 +2027,11 @@ static void mvumi_notification(struct mvumi_hba *mhba, u8 msg, void *buffer)
 			param = &er->events[i];
 			mvumi_show_event(mhba, param);
 		}
+<<<<<<< HEAD
+=======
+	} else if (msg == APICDB1_HOST_GETEVENT) {
+		mvumi_proc_msg(mhba, buffer);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1271,6 +2076,7 @@ static void mvumi_scan_events(struct work_struct *work)
 	kfree(mu_ev);
 }
 
+<<<<<<< HEAD
 static void mvumi_launch_events(struct mvumi_hba *mhba, u8 msg)
 {
 	struct mvumi_events_wq *mu_ev;
@@ -1282,6 +2088,29 @@ static void mvumi_launch_events(struct mvumi_hba *mhba, u8 msg)
 		mu_ev->event = msg;
 		mu_ev->param = NULL;
 		schedule_work(&mu_ev->work_q);
+=======
+static void mvumi_launch_events(struct mvumi_hba *mhba, u32 isr_status)
+{
+	struct mvumi_events_wq *mu_ev;
+
+	while (isr_status & (DRBL_BUS_CHANGE | DRBL_EVENT_NOTIFY)) {
+		if (isr_status & DRBL_BUS_CHANGE) {
+			atomic_inc(&mhba->pnp_count);
+			wake_up_process(mhba->dm_thread);
+			isr_status &= ~(DRBL_BUS_CHANGE);
+			continue;
+		}
+
+		mu_ev = kzalloc(sizeof(*mu_ev), GFP_ATOMIC);
+		if (mu_ev) {
+			INIT_WORK(&mu_ev->work_q, mvumi_scan_events);
+			mu_ev->mhba = mhba;
+			mu_ev->event = APICDB1_EVENT_GETEVENT;
+			isr_status &= ~(DRBL_EVENT_NOTIFY);
+			mu_ev->param = NULL;
+			schedule_work(&mu_ev->work_q);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1322,16 +2151,29 @@ static irqreturn_t mvumi_isr_handler(int irq, void *devp)
 		return IRQ_NONE;
 	}
 
+<<<<<<< HEAD
 	if (mhba->global_isr & INT_MAP_DL_CPU2PCIEA) {
+=======
+	if (mhba->global_isr & mhba->regs->int_dl_cpu2pciea) {
+		if (mhba->isr_status & (DRBL_BUS_CHANGE | DRBL_EVENT_NOTIFY))
+			mvumi_launch_events(mhba, mhba->isr_status);
+>>>>>>> refs/remotes/origin/master
 		if (mhba->isr_status & DRBL_HANDSHAKE_ISR) {
 			dev_warn(&mhba->pdev->dev, "enter handshake again!\n");
 			mvumi_handshake(mhba);
 		}
+<<<<<<< HEAD
 		if (mhba->isr_status & DRBL_EVENT_NOTIFY)
 			mvumi_launch_events(mhba, APICDB1_EVENT_GETEVENT);
 	}
 
 	if (mhba->global_isr & INT_MAP_COMAOUT)
+=======
+
+	}
+
+	if (mhba->global_isr & mhba->regs->int_comaout)
+>>>>>>> refs/remotes/origin/master
 		mvumi_receive_ob_list_entry(mhba);
 
 	mhba->global_isr = 0;
@@ -1358,8 +2200,12 @@ static enum mvumi_qc_result mvumi_send_command(struct mvumi_hba *mhba,
 		dev_dbg(&mhba->pdev->dev, "no free tag.\n");
 		return MV_QUEUE_COMMAND_RESULT_NO_RESOURCE;
 	}
+<<<<<<< HEAD
 	if (mvumi_get_ib_list_entry(mhba, &ib_entry))
 		return MV_QUEUE_COMMAND_RESULT_NO_RESOURCE;
+=======
+	mvumi_get_ib_list_entry(mhba, &ib_entry);
+>>>>>>> refs/remotes/origin/master
 
 	cmd->frame->tag = tag_get_one(mhba, &mhba->tag_pool);
 	cmd->frame->request_id = mhba->io_seq++;
@@ -1367,21 +2213,49 @@ static enum mvumi_qc_result mvumi_send_command(struct mvumi_hba *mhba,
 	mhba->tag_cmd[cmd->frame->tag] = cmd;
 	frame_len = sizeof(*ib_frame) - 4 +
 				ib_frame->sg_counts * sizeof(struct mvumi_sgl);
+<<<<<<< HEAD
 	memcpy(ib_entry, ib_frame, frame_len);
+=======
+	if (mhba->hba_capability & HS_CAPABILITY_SUPPORT_DYN_SRC) {
+		struct mvumi_dyn_list_entry *dle;
+		dle = ib_entry;
+		dle->src_low_addr =
+			cpu_to_le32(lower_32_bits(cmd->frame_phys));
+		dle->src_high_addr =
+			cpu_to_le32(upper_32_bits(cmd->frame_phys));
+		dle->if_length = (frame_len >> 2) & 0xFFF;
+	} else {
+		memcpy(ib_entry, ib_frame, frame_len);
+	}
+>>>>>>> refs/remotes/origin/master
 	return MV_QUEUE_COMMAND_RESULT_SENT;
 }
 
 static void mvumi_fire_cmd(struct mvumi_hba *mhba, struct mvumi_cmd *cmd)
 {
 	unsigned short num_of_cl_sent = 0;
+<<<<<<< HEAD
+=======
+	unsigned int count;
+>>>>>>> refs/remotes/origin/master
 	enum mvumi_qc_result result;
 
 	if (cmd)
 		list_add_tail(&cmd->queue_pointer, &mhba->waiting_req_list);
+<<<<<<< HEAD
 
 	while (!list_empty(&mhba->waiting_req_list)) {
 		cmd = list_first_entry(&mhba->waiting_req_list,
 					 struct mvumi_cmd, queue_pointer);
+=======
+	count = mhba->instancet->check_ib_list(mhba);
+	if (list_empty(&mhba->waiting_req_list) || !count)
+		return;
+
+	do {
+		cmd = list_first_entry(&mhba->waiting_req_list,
+				       struct mvumi_cmd, queue_pointer);
+>>>>>>> refs/remotes/origin/master
 		list_del_init(&cmd->queue_pointer);
 		result = mvumi_send_command(mhba, cmd);
 		switch (result) {
@@ -1395,13 +2269,19 @@ static void mvumi_fire_cmd(struct mvumi_hba *mhba, struct mvumi_cmd *cmd)
 
 			return;
 		}
+<<<<<<< HEAD
 	}
+=======
+	} while (!list_empty(&mhba->waiting_req_list) && count--);
+
+>>>>>>> refs/remotes/origin/master
 	if (num_of_cl_sent > 0)
 		mvumi_send_ib_list_entry(mhba);
 }
 
 /**
  * mvumi_enable_intr -	Enables interrupts
+<<<<<<< HEAD
  * @regs:			FW register set
  */
 static void mvumi_enable_intr(void *regs)
@@ -1412,10 +2292,24 @@ static void mvumi_enable_intr(void *regs)
 	mask = ioread32(regs + CPU_ENPOINTA_MASK_REG);
 	mask |= INT_MAP_DL_CPU2PCIEA | INT_MAP_COMAOUT | INT_MAP_COMAERR;
 	iowrite32(mask, regs + CPU_ENPOINTA_MASK_REG);
+=======
+ * @mhba:		Adapter soft state
+ */
+static void mvumi_enable_intr(struct mvumi_hba *mhba)
+{
+	unsigned int mask;
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	iowrite32(regs->int_drbl_int_mask, regs->arm_to_pciea_mask_reg);
+	mask = ioread32(regs->enpointa_mask_reg);
+	mask |= regs->int_dl_cpu2pciea | regs->int_comaout | regs->int_comaerr;
+	iowrite32(mask, regs->enpointa_mask_reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * mvumi_disable_intr -Disables interrupt
+<<<<<<< HEAD
  * @regs:			FW register set
  */
 static void mvumi_disable_intr(void *regs)
@@ -1426,12 +2320,27 @@ static void mvumi_disable_intr(void *regs)
 	mask = ioread32(regs + CPU_ENPOINTA_MASK_REG);
 	mask &= ~(INT_MAP_DL_CPU2PCIEA | INT_MAP_COMAOUT | INT_MAP_COMAERR);
 	iowrite32(mask, regs + CPU_ENPOINTA_MASK_REG);
+=======
+ * @mhba:		Adapter soft state
+ */
+static void mvumi_disable_intr(struct mvumi_hba *mhba)
+{
+	unsigned int mask;
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	iowrite32(0, regs->arm_to_pciea_mask_reg);
+	mask = ioread32(regs->enpointa_mask_reg);
+	mask &= ~(regs->int_dl_cpu2pciea | regs->int_comaout |
+							regs->int_comaerr);
+	iowrite32(mask, regs->enpointa_mask_reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mvumi_clear_intr(void *extend)
 {
 	struct mvumi_hba *mhba = (struct mvumi_hba *) extend;
 	unsigned int status, isr_status = 0, tmp = 0;
+<<<<<<< HEAD
 	void *regs = mhba->mmio;
 
 	status = ioread32(regs + CPU_MAIN_INT_CAUSE_REG);
@@ -1454,6 +2363,38 @@ static int mvumi_clear_intr(void *extend)
 		isr_status = ioread32(regs + CPU_ARM_TO_PCIEA_DRBL_REG);
 		if (isr_status)
 			iowrite32(isr_status, regs + CPU_ARM_TO_PCIEA_DRBL_REG);
+=======
+	struct mvumi_hw_regs *regs = mhba->regs;
+
+	status = ioread32(regs->main_int_cause_reg);
+	if (!(status & regs->int_mu) || status == 0xFFFFFFFF)
+		return 1;
+	if (unlikely(status & regs->int_comaerr)) {
+		tmp = ioread32(regs->outb_isr_cause);
+		if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9580) {
+			if (tmp & regs->clic_out_err) {
+				iowrite32(tmp & regs->clic_out_err,
+							regs->outb_isr_cause);
+			}
+		} else {
+			if (tmp & (regs->clic_in_err | regs->clic_out_err))
+				iowrite32(tmp & (regs->clic_in_err |
+						regs->clic_out_err),
+						regs->outb_isr_cause);
+		}
+		status ^= mhba->regs->int_comaerr;
+		/* inbound or outbound parity error, command will timeout */
+	}
+	if (status & regs->int_comaout) {
+		tmp = ioread32(regs->outb_isr_cause);
+		if (tmp & regs->clic_irq)
+			iowrite32(tmp & regs->clic_irq, regs->outb_isr_cause);
+	}
+	if (status & regs->int_dl_cpu2pciea) {
+		isr_status = ioread32(regs->arm_to_pciea_drbl_reg);
+		if (isr_status)
+			iowrite32(isr_status, regs->arm_to_pciea_drbl_reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mhba->global_isr = status;
@@ -1464,6 +2405,7 @@ static int mvumi_clear_intr(void *extend)
 
 /**
  * mvumi_read_fw_status_reg - returns the current FW status value
+<<<<<<< HEAD
  * @regs:			FW register set
  */
 static unsigned int mvumi_read_fw_status_reg(void *regs)
@@ -1477,11 +2419,43 @@ static unsigned int mvumi_read_fw_status_reg(void *regs)
 }
 
 static struct mvumi_instance_template mvumi_instance_template = {
+=======
+ * @mhba:		Adapter soft state
+ */
+static unsigned int mvumi_read_fw_status_reg(struct mvumi_hba *mhba)
+{
+	unsigned int status;
+
+	status = ioread32(mhba->regs->arm_to_pciea_drbl_reg);
+	if (status)
+		iowrite32(status, mhba->regs->arm_to_pciea_drbl_reg);
+	return status;
+}
+
+static struct mvumi_instance_template mvumi_instance_9143 = {
+>>>>>>> refs/remotes/origin/master
 	.fire_cmd = mvumi_fire_cmd,
 	.enable_intr = mvumi_enable_intr,
 	.disable_intr = mvumi_disable_intr,
 	.clear_intr = mvumi_clear_intr,
 	.read_fw_status_reg = mvumi_read_fw_status_reg,
+<<<<<<< HEAD
+=======
+	.check_ib_list = mvumi_check_ib_list_9143,
+	.check_ob_list = mvumi_check_ob_list_9143,
+	.reset_host = mvumi_reset_host_9143,
+};
+
+static struct mvumi_instance_template mvumi_instance_9580 = {
+	.fire_cmd = mvumi_fire_cmd,
+	.enable_intr = mvumi_enable_intr,
+	.disable_intr = mvumi_disable_intr,
+	.clear_intr = mvumi_clear_intr,
+	.read_fw_status_reg = mvumi_read_fw_status_reg,
+	.check_ib_list = mvumi_check_ib_list_9580,
+	.check_ob_list = mvumi_check_ob_list_9580,
+	.reset_host = mvumi_reset_host_9580,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int mvumi_slave_configure(struct scsi_device *sdev)
@@ -1681,6 +2655,127 @@ static struct scsi_transport_template mvumi_transport_template = {
 	.eh_timed_out = mvumi_timed_out,
 };
 
+<<<<<<< HEAD
+=======
+static int mvumi_cfg_hw_reg(struct mvumi_hba *mhba)
+{
+	void *base = NULL;
+	struct mvumi_hw_regs *regs;
+
+	switch (mhba->pdev->device) {
+	case PCI_DEVICE_ID_MARVELL_MV9143:
+		mhba->mmio = mhba->base_addr[0];
+		base = mhba->mmio;
+		if (!mhba->regs) {
+			mhba->regs = kzalloc(sizeof(*regs), GFP_KERNEL);
+			if (mhba->regs == NULL)
+				return -ENOMEM;
+		}
+		regs = mhba->regs;
+
+		/* For Arm */
+		regs->ctrl_sts_reg          = base + 0x20104;
+		regs->rstoutn_mask_reg      = base + 0x20108;
+		regs->sys_soft_rst_reg      = base + 0x2010C;
+		regs->main_int_cause_reg    = base + 0x20200;
+		regs->enpointa_mask_reg     = base + 0x2020C;
+		regs->rstoutn_en_reg        = base + 0xF1400;
+		/* For Doorbell */
+		regs->pciea_to_arm_drbl_reg = base + 0x20400;
+		regs->arm_to_pciea_drbl_reg = base + 0x20408;
+		regs->arm_to_pciea_mask_reg = base + 0x2040C;
+		regs->pciea_to_arm_msg0     = base + 0x20430;
+		regs->pciea_to_arm_msg1     = base + 0x20434;
+		regs->arm_to_pciea_msg0     = base + 0x20438;
+		regs->arm_to_pciea_msg1     = base + 0x2043C;
+
+		/* For Message Unit */
+
+		regs->inb_aval_count_basel  = base + 0x508;
+		regs->inb_aval_count_baseh  = base + 0x50C;
+		regs->inb_write_pointer     = base + 0x518;
+		regs->inb_read_pointer      = base + 0x51C;
+		regs->outb_coal_cfg         = base + 0x568;
+		regs->outb_copy_basel       = base + 0x5B0;
+		regs->outb_copy_baseh       = base + 0x5B4;
+		regs->outb_copy_pointer     = base + 0x544;
+		regs->outb_read_pointer     = base + 0x548;
+		regs->outb_isr_cause        = base + 0x560;
+		regs->outb_coal_cfg         = base + 0x568;
+		/* Bit setting for HW */
+		regs->int_comaout           = 1 << 8;
+		regs->int_comaerr           = 1 << 6;
+		regs->int_dl_cpu2pciea      = 1 << 1;
+		regs->cl_pointer_toggle     = 1 << 12;
+		regs->clic_irq              = 1 << 1;
+		regs->clic_in_err           = 1 << 8;
+		regs->clic_out_err          = 1 << 12;
+		regs->cl_slot_num_mask      = 0xFFF;
+		regs->int_drbl_int_mask     = 0x3FFFFFFF;
+		regs->int_mu = regs->int_dl_cpu2pciea | regs->int_comaout |
+							regs->int_comaerr;
+		break;
+	case PCI_DEVICE_ID_MARVELL_MV9580:
+		mhba->mmio = mhba->base_addr[2];
+		base = mhba->mmio;
+		if (!mhba->regs) {
+			mhba->regs = kzalloc(sizeof(*regs), GFP_KERNEL);
+			if (mhba->regs == NULL)
+				return -ENOMEM;
+		}
+		regs = mhba->regs;
+		/* For Arm */
+		regs->ctrl_sts_reg          = base + 0x20104;
+		regs->rstoutn_mask_reg      = base + 0x1010C;
+		regs->sys_soft_rst_reg      = base + 0x10108;
+		regs->main_int_cause_reg    = base + 0x10200;
+		regs->enpointa_mask_reg     = base + 0x1020C;
+		regs->rstoutn_en_reg        = base + 0xF1400;
+
+		/* For Doorbell */
+		regs->pciea_to_arm_drbl_reg = base + 0x10460;
+		regs->arm_to_pciea_drbl_reg = base + 0x10480;
+		regs->arm_to_pciea_mask_reg = base + 0x10484;
+		regs->pciea_to_arm_msg0     = base + 0x10400;
+		regs->pciea_to_arm_msg1     = base + 0x10404;
+		regs->arm_to_pciea_msg0     = base + 0x10420;
+		regs->arm_to_pciea_msg1     = base + 0x10424;
+
+		/* For reset*/
+		regs->reset_request         = base + 0x10108;
+		regs->reset_enable          = base + 0x1010c;
+
+		/* For Message Unit */
+		regs->inb_aval_count_basel  = base + 0x4008;
+		regs->inb_aval_count_baseh  = base + 0x400C;
+		regs->inb_write_pointer     = base + 0x4018;
+		regs->inb_read_pointer      = base + 0x401C;
+		regs->outb_copy_basel       = base + 0x4058;
+		regs->outb_copy_baseh       = base + 0x405C;
+		regs->outb_copy_pointer     = base + 0x406C;
+		regs->outb_read_pointer     = base + 0x4070;
+		regs->outb_coal_cfg         = base + 0x4080;
+		regs->outb_isr_cause        = base + 0x4088;
+		/* Bit setting for HW */
+		regs->int_comaout           = 1 << 4;
+		regs->int_dl_cpu2pciea      = 1 << 12;
+		regs->int_comaerr           = 1 << 29;
+		regs->cl_pointer_toggle     = 1 << 14;
+		regs->cl_slot_num_mask      = 0x3FFF;
+		regs->clic_irq              = 1 << 0;
+		regs->clic_out_err          = 1 << 1;
+		regs->int_drbl_int_mask     = 0x3FFFFFFF;
+		regs->int_mu = regs->int_dl_cpu2pciea | regs->int_comaout;
+		break;
+	default:
+		return -1;
+		break;
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * mvumi_init_fw -	Initializes the FW
  * @mhba:		Adapter soft state
@@ -1699,15 +2794,29 @@ static int mvumi_init_fw(struct mvumi_hba *mhba)
 	if (ret)
 		goto fail_ioremap;
 
+<<<<<<< HEAD
 	mhba->mmio = mhba->base_addr[0];
 
 	switch (mhba->pdev->device) {
 	case PCI_DEVICE_ID_MARVELL_MV9143:
 		mhba->instancet = &mvumi_instance_template;
+=======
+	switch (mhba->pdev->device) {
+	case PCI_DEVICE_ID_MARVELL_MV9143:
+		mhba->instancet = &mvumi_instance_9143;
+>>>>>>> refs/remotes/origin/master
 		mhba->io_seq = 0;
 		mhba->max_sge = MVUMI_MAX_SG_ENTRY;
 		mhba->request_id_enabled = 1;
 		break;
+<<<<<<< HEAD
+=======
+	case PCI_DEVICE_ID_MARVELL_MV9580:
+		mhba->instancet = &mvumi_instance_9580;
+		mhba->io_seq = 0;
+		mhba->max_sge = MVUMI_MAX_SG_ENTRY;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		dev_err(&mhba->pdev->dev, "device 0x%x not supported!\n",
 							mhba->pdev->device);
@@ -1717,15 +2826,32 @@ static int mvumi_init_fw(struct mvumi_hba *mhba)
 	}
 	dev_dbg(&mhba->pdev->dev, "device id : %04X is found.\n",
 							mhba->pdev->device);
+<<<<<<< HEAD
 
 	mhba->handshake_page = kzalloc(HSP_MAX_SIZE, GFP_KERNEL);
+=======
+	ret = mvumi_cfg_hw_reg(mhba);
+	if (ret) {
+		dev_err(&mhba->pdev->dev,
+			"failed to allocate memory for reg\n");
+		ret = -ENOMEM;
+		goto fail_alloc_mem;
+	}
+	mhba->handshake_page = pci_alloc_consistent(mhba->pdev, HSP_MAX_SIZE,
+						&mhba->handshake_page_phys);
+>>>>>>> refs/remotes/origin/master
 	if (!mhba->handshake_page) {
 		dev_err(&mhba->pdev->dev,
 			"failed to allocate memory for handshake\n");
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto fail_alloc_mem;
 	}
 	mhba->handshake_page_phys = virt_to_phys(mhba->handshake_page);
+=======
+		goto fail_alloc_page;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (mvumi_start(mhba)) {
 		ret = -EINVAL;
@@ -1739,7 +2865,14 @@ static int mvumi_init_fw(struct mvumi_hba *mhba)
 
 fail_ready_state:
 	mvumi_release_mem_resource(mhba);
+<<<<<<< HEAD
 	kfree(mhba->handshake_page);
+=======
+	pci_free_consistent(mhba->pdev, HSP_MAX_SIZE,
+		mhba->handshake_page, mhba->handshake_page_phys);
+fail_alloc_page:
+	kfree(mhba->regs);
+>>>>>>> refs/remotes/origin/master
 fail_alloc_mem:
 	mvumi_unmap_pci_addr(mhba->pdev, mhba->base_addr);
 fail_ioremap:
@@ -1755,6 +2888,10 @@ fail_ioremap:
 static int mvumi_io_attach(struct mvumi_hba *mhba)
 {
 	struct Scsi_Host *host = mhba->shost;
+<<<<<<< HEAD
+=======
+	struct scsi_device *sdev = NULL;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	unsigned int max_sg = (mhba->ib_max_size + 4 -
 		sizeof(struct mvumi_msg_frame)) / sizeof(struct mvumi_sgl);
@@ -1764,7 +2901,11 @@ static int mvumi_io_attach(struct mvumi_hba *mhba)
 	host->can_queue = (mhba->max_io - 1) ? (mhba->max_io - 1) : 1;
 	host->sg_tablesize = mhba->max_sge > max_sg ? max_sg : mhba->max_sge;
 	host->max_sectors = mhba->max_transfer_size / 512;
+<<<<<<< HEAD
 	host->cmd_per_lun =  (mhba->max_io - 1) ? (mhba->max_io - 1) : 1;
+=======
+	host->cmd_per_lun = (mhba->max_io - 1) ? (mhba->max_io - 1) : 1;
+>>>>>>> refs/remotes/origin/master
 	host->max_id = mhba->max_target_id;
 	host->max_cmd_len = MAX_COMMAND_SIZE;
 	host->transportt = &mvumi_transport_template;
@@ -1775,9 +2916,49 @@ static int mvumi_io_attach(struct mvumi_hba *mhba)
 		return ret;
 	}
 	mhba->fw_flag |= MVUMI_FW_ATTACH;
+<<<<<<< HEAD
 	scsi_scan_host(host);
 
 	return 0;
+=======
+
+	mutex_lock(&mhba->sas_discovery_mutex);
+	if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9580)
+		ret = scsi_add_device(host, 0, mhba->max_target_id - 1, 0);
+	else
+		ret = 0;
+	if (ret) {
+		dev_err(&mhba->pdev->dev, "add virtual device failed\n");
+		mutex_unlock(&mhba->sas_discovery_mutex);
+		goto fail_add_device;
+	}
+
+	mhba->dm_thread = kthread_create(mvumi_rescan_bus,
+						mhba, "mvumi_scanthread");
+	if (IS_ERR(mhba->dm_thread)) {
+		dev_err(&mhba->pdev->dev,
+			"failed to create device scan thread\n");
+		mutex_unlock(&mhba->sas_discovery_mutex);
+		goto fail_create_thread;
+	}
+	atomic_set(&mhba->pnp_count, 1);
+	wake_up_process(mhba->dm_thread);
+
+	mutex_unlock(&mhba->sas_discovery_mutex);
+	return 0;
+
+fail_create_thread:
+	if (mhba->pdev->device == PCI_DEVICE_ID_MARVELL_MV9580)
+		sdev = scsi_device_lookup(mhba->shost, 0,
+						mhba->max_target_id - 1, 0);
+	if (sdev) {
+		scsi_remove_device(sdev);
+		scsi_device_put(sdev);
+	}
+fail_add_device:
+	scsi_remove_host(mhba->shost);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1785,8 +2966,12 @@ static int mvumi_io_attach(struct mvumi_hba *mhba)
  * @pdev:		PCI device structure
  * @id:			PCI ids of supported hotplugged adapter
  */
+<<<<<<< HEAD
 static int __devinit mvumi_probe_one(struct pci_dev *pdev,
 					const struct pci_device_id *id)
+=======
+static int mvumi_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	struct mvumi_hba *mhba;
@@ -1828,8 +3013,17 @@ static int __devinit mvumi_probe_one(struct pci_dev *pdev,
 	INIT_LIST_HEAD(&mhba->free_ob_list);
 	INIT_LIST_HEAD(&mhba->res_list);
 	INIT_LIST_HEAD(&mhba->waiting_req_list);
+<<<<<<< HEAD
 	atomic_set(&mhba->fw_outstanding, 0);
 	init_waitqueue_head(&mhba->int_cmd_wait_q);
+=======
+	mutex_init(&mhba->device_lock);
+	INIT_LIST_HEAD(&mhba->mhba_dev_list);
+	INIT_LIST_HEAD(&mhba->shost_dev_list);
+	atomic_set(&mhba->fw_outstanding, 0);
+	init_waitqueue_head(&mhba->int_cmd_wait_q);
+	mutex_init(&mhba->sas_discovery_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	mhba->pdev = pdev;
 	mhba->shost = host;
@@ -1845,19 +3039,33 @@ static int __devinit mvumi_probe_one(struct pci_dev *pdev,
 		dev_err(&pdev->dev, "failed to register IRQ\n");
 		goto fail_init_irq;
 	}
+<<<<<<< HEAD
 	mhba->instancet->enable_intr(mhba->mmio);
+=======
+
+	mhba->instancet->enable_intr(mhba);
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(pdev, mhba);
 
 	ret = mvumi_io_attach(mhba);
 	if (ret)
 		goto fail_io_attach;
+<<<<<<< HEAD
+=======
+
+	mvumi_backup_bar_addr(mhba);
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(&pdev->dev, "probe mvumi driver successfully.\n");
 
 	return 0;
 
 fail_io_attach:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
 	mhba->instancet->disable_intr(mhba->mmio);
+=======
+	mhba->instancet->disable_intr(mhba);
+>>>>>>> refs/remotes/origin/master
 	free_irq(mhba->pdev->irq, mhba);
 fail_init_irq:
 	mvumi_release_fw(mhba);
@@ -1877,15 +3085,31 @@ static void mvumi_detach_one(struct pci_dev *pdev)
 	struct mvumi_hba *mhba;
 
 	mhba = pci_get_drvdata(pdev);
+<<<<<<< HEAD
+=======
+	if (mhba->dm_thread) {
+		kthread_stop(mhba->dm_thread);
+		mhba->dm_thread = NULL;
+	}
+
+	mvumi_detach_devices(mhba);
+>>>>>>> refs/remotes/origin/master
 	host = mhba->shost;
 	scsi_remove_host(mhba->shost);
 	mvumi_flush_cache(mhba);
 
+<<<<<<< HEAD
 	mhba->instancet->disable_intr(mhba->mmio);
 	free_irq(mhba->pdev->irq, mhba);
 	mvumi_release_fw(mhba);
 	scsi_host_put(host);
 	pci_set_drvdata(pdev, NULL);
+=======
+	mhba->instancet->disable_intr(mhba);
+	free_irq(mhba->pdev->irq, mhba);
+	mvumi_release_fw(mhba);
+	scsi_host_put(host);
+>>>>>>> refs/remotes/origin/master
 	pci_disable_device(pdev);
 	dev_dbg(&pdev->dev, "driver is removed!\n");
 }
@@ -1909,7 +3133,11 @@ static int mvumi_suspend(struct pci_dev *pdev, pm_message_t state)
 	mvumi_flush_cache(mhba);
 
 	pci_set_drvdata(pdev, mhba);
+<<<<<<< HEAD
 	mhba->instancet->disable_intr(mhba->mmio);
+=======
+	mhba->instancet->disable_intr(mhba);
+>>>>>>> refs/remotes/origin/master
 	free_irq(mhba->pdev->irq, mhba);
 	mvumi_unmap_pci_addr(pdev, mhba->base_addr);
 	pci_release_regions(pdev);
@@ -1956,8 +3184,18 @@ static int mvumi_resume(struct pci_dev *pdev)
 	if (ret)
 		goto release_regions;
 
+<<<<<<< HEAD
 	mhba->mmio = mhba->base_addr[0];
 	mvumi_reset(mhba->mmio);
+=======
+	if (mvumi_cfg_hw_reg(mhba)) {
+		ret = -EINVAL;
+		goto unmap_pci_addr;
+	}
+
+	mhba->mmio = mhba->base_addr[0];
+	mvumi_reset(mhba);
+>>>>>>> refs/remotes/origin/master
 
 	if (mvumi_start(mhba)) {
 		ret = -EINVAL;
@@ -1970,7 +3208,11 @@ static int mvumi_resume(struct pci_dev *pdev)
 		dev_err(&pdev->dev, "failed to register IRQ\n");
 		goto unmap_pci_addr;
 	}
+<<<<<<< HEAD
 	mhba->instancet->enable_intr(mhba->mmio);
+=======
+	mhba->instancet->enable_intr(mhba);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1989,7 +3231,11 @@ static struct pci_driver mvumi_pci_driver = {
 	.name = MV_DRIVER_NAME,
 	.id_table = mvumi_pci_table,
 	.probe = mvumi_probe_one,
+<<<<<<< HEAD
 	.remove = __devexit_p(mvumi_detach_one),
+=======
+	.remove = mvumi_detach_one,
+>>>>>>> refs/remotes/origin/master
 	.shutdown = mvumi_shutdown,
 #ifdef CONFIG_PM
 	.suspend = mvumi_suspend,

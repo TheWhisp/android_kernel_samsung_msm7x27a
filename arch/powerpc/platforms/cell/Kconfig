@@ -18,16 +18,22 @@ config PPC_CELL_NATIVE
 	select MPIC
 	select PPC_IO_WORKAROUNDS
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select IBM_NEW_EMAC_EMAC4
 	select IBM_NEW_EMAC_RGMII
 	select IBM_NEW_EMAC_ZMII #test only
 	select IBM_NEW_EMAC_TAH  #test only
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	select IBM_EMAC_EMAC4
 	select IBM_EMAC_RGMII
 	select IBM_EMAC_ZMII #test only
 	select IBM_EMAC_TAH  #test only
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default n
 
 config PPC_IBM_CELL_BLADE
@@ -120,6 +126,7 @@ config CBE_THERM
 	default m
 	depends on CBE_RAS && SPU_BASE
 
+<<<<<<< HEAD
 config CBE_CPUFREQ
 	tristate "CBE frequency scaling"
 	depends on CBE_RAS && CPU_FREQ
@@ -148,6 +155,12 @@ config PPC_PMI
 	tristate
 	default y
 	depends on CBE_CPUFREQ_PMI || PPC_IBM_CELL_POWERBUTTON
+=======
+config PPC_PMI
+	tristate
+	default y
+	depends on CPU_FREQ_CBE_PMI || PPC_IBM_CELL_POWERBUTTON
+>>>>>>> refs/remotes/origin/master
 	help
 	  PMI (Platform Management Interrupt) is a way to
 	  communicate with the BMC (Baseboard Management Controller).

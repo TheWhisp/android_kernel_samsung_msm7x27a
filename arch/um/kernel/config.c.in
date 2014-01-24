@@ -5,7 +5,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+<<<<<<< HEAD
 #include "init.h"
+=======
+#include <init.h>
+>>>>>>> refs/remotes/origin/master
 
 static __initdata const char *config[] = {
 "CONFIG"

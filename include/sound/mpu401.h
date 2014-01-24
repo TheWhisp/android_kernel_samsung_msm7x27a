@@ -22,7 +22,11 @@
  *
  */
 
+<<<<<<< HEAD
 #include "rawmidi.h"
+=======
+#include <sound/rawmidi.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 
 #define MPU401_HW_MPU401		1	/* native MPU401 */
@@ -51,13 +55,19 @@
 #define MPU401_INFO_MMIO	(1 << 3)	/* MMIO access */
 #define MPU401_INFO_TX_IRQ	(1 << 4)	/* independent TX irq */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MPU401_INFO_NO_ACK	(1 << 6)	/* No ACK cmd needed */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MPU401_INFO_IRQ_HOOK	(1 << 5)	/* mpu401 irq handler is called
 						   from driver irq handler */
 #define MPU401_INFO_NO_ACK	(1 << 6)	/* No ACK cmd needed */
 #define MPU401_INFO_USE_TIMER	(1 << 15)	/* internal */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MPU401_MODE_BIT_INPUT		0
 #define MPU401_MODE_BIT_OUTPUT		1
@@ -81,11 +91,15 @@ struct snd_mpu401 {
 	unsigned long cport;		/* port + 1 (usually) */
 	struct resource *res;		/* port resource */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int irq;			/* IRQ number of MPU-401 chip (-1 = poll) */
 	int irq_flags;
 =======
 	int irq;			/* IRQ number of MPU-401 chip */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int irq;			/* IRQ number of MPU-401 chip */
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long mode;		/* MPU401_MODE_XXXX */
 	int timer_invoked;
@@ -143,9 +157,12 @@ int snd_mpu401_uart_new(struct snd_card *card,
 			unsigned int info_flags,
 			int irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			int irq_flags,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			struct snd_rawmidi ** rrawmidi);
 
 #endif /* __SOUND_MPU401_H */

@@ -28,7 +28,11 @@
 #define PRESSED 1
 #define RELEASED 0
 
+<<<<<<< HEAD
 DEFINE_PER_CPU(bool, reporting_keystroke);
+=======
+static DEFINE_PER_CPU(bool, reporting_keystroke);
+>>>>>>> refs/remotes/origin/master
 
 static struct input_dev *virt_keyboard;
 

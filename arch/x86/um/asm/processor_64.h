@@ -19,6 +19,11 @@ struct arch_thread {
 			   .fs			= 0, \
 			   .faultinfo		= { 0, 0, 0 } }
 
+<<<<<<< HEAD
+=======
+#define STACKSLOTS_PER_LINE 4
+
+>>>>>>> refs/remotes/origin/master
 static inline void arch_flush_thread(struct arch_thread *thread)
 {
 }
@@ -32,4 +37,10 @@ static inline void arch_copy_thread(struct arch_thread *from,
 #define current_text_addr() \
 	({ void *pc; __asm__("movq $1f,%0\n1:":"=g" (pc)); pc; })
 
+<<<<<<< HEAD
+=======
+#define current_sp() ({ void *sp; __asm__("movq %%rsp, %0" : "=r" (sp) : ); sp; })
+#define current_bp() ({ unsigned long bp; __asm__("movq %%rbp, %0" : "=r" (bp) : ); bp; })
+
+>>>>>>> refs/remotes/origin/master
 #endif

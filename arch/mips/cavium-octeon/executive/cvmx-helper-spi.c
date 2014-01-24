@@ -160,6 +160,7 @@ cvmx_helper_link_info_t __cvmx_helper_spi_link_get(int ipd_port)
 		result.s.link_up = inband.s.status;
 		result.s.full_duplex = inband.s.duplex;
 		switch (inband.s.speed) {
+<<<<<<< HEAD
 		case 0:	/* 10 Mbps */
 			result.s.speed = 10;
 			break;
@@ -170,6 +171,18 @@ cvmx_helper_link_info_t __cvmx_helper_spi_link_get(int ipd_port)
 			result.s.speed = 1000;
 			break;
 		case 3:	/* Illegal */
+=======
+		case 0: /* 10 Mbps */
+			result.s.speed = 10;
+			break;
+		case 1: /* 100 Mbps */
+			result.s.speed = 100;
+			break;
+		case 2: /* 1 Gbps */
+			result.s.speed = 1000;
+			break;
+		case 3: /* Illegal */
+>>>>>>> refs/remotes/origin/master
 			result.s.speed = 0;
 			result.s.link_up = 0;
 			break;

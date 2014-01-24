@@ -21,7 +21,10 @@
  *
  */      
 
+<<<<<<< HEAD
 #include <asm/io.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -36,6 +39,10 @@
 struct revo51_spec {
 	struct snd_i2c_device *dev;
 	struct snd_pt2258 *pt2258;
+<<<<<<< HEAD
+=======
+	struct ak4114 *ak4114;
+>>>>>>> refs/remotes/origin/master
 };
 
 static void revo_i2s_mclk_changed(struct snd_ice1712 *ice)
@@ -235,7 +242,11 @@ static const struct snd_akm4xxx_adc_channel revo51_adc[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_revo_front __devinitdata = {
+=======
+static struct snd_akm4xxx akm_revo_front = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4381,
 	.num_dacs = 2,
 	.ops = {
@@ -244,7 +255,11 @@ static struct snd_akm4xxx akm_revo_front __devinitdata = {
 	.dac_info = revo71_front,
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_revo_front_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_revo_front_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 1,
 	.cif = 0,
 	.data_mask = VT1724_REVO_CDOUT,
@@ -256,7 +271,11 @@ static struct snd_ak4xxx_private akm_revo_front_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_revo_surround __devinitdata = {
+=======
+static struct snd_akm4xxx akm_revo_surround = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4355,
 	.idx_offset = 1,
 	.num_dacs = 6,
@@ -266,7 +285,11 @@ static struct snd_akm4xxx akm_revo_surround __devinitdata = {
 	.dac_info = revo71_surround,
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_revo_surround_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_revo_surround_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 3,
 	.cif = 0,
 	.data_mask = VT1724_REVO_CDOUT,
@@ -278,7 +301,11 @@ static struct snd_ak4xxx_private akm_revo_surround_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_revo51 __devinitdata = {
+=======
+static struct snd_akm4xxx akm_revo51 = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4358,
 	.num_dacs = 8,
 	.ops = {
@@ -287,7 +314,11 @@ static struct snd_akm4xxx akm_revo51 __devinitdata = {
 	.dac_info = revo51_dac,
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_revo51_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_revo51_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0,
 	.data_mask = VT1724_REVO_CDOUT,
@@ -299,13 +330,21 @@ static struct snd_ak4xxx_private akm_revo51_priv __devinitdata = {
 	.mask_flags = 0,
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_revo51_adc __devinitdata = {
+=======
+static struct snd_akm4xxx akm_revo51_adc = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK5365,
 	.num_adcs = 2,
 	.adc_info = revo51_adc,
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_revo51_adc_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_revo51_adc_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0,
 	.data_mask = VT1724_REVO_CDOUT,
@@ -346,7 +385,11 @@ static const struct snd_akm4xxx_dac_channel ap192_dac[] = {
 	AK_DAC("PCM Playback Volume", 2)
 };
 
+<<<<<<< HEAD
 static struct snd_akm4xxx akm_ap192 __devinitdata = {
+=======
+static struct snd_akm4xxx akm_ap192 = {
+>>>>>>> refs/remotes/origin/master
 	.type = SND_AK4358,
 	.num_dacs = 2,
 	.ops = {
@@ -355,14 +398,24 @@ static struct snd_akm4xxx akm_ap192 __devinitdata = {
 	.dac_info = ap192_dac,
 };
 
+<<<<<<< HEAD
 static struct snd_ak4xxx_private akm_ap192_priv __devinitdata = {
+=======
+static struct snd_ak4xxx_private akm_ap192_priv = {
+>>>>>>> refs/remotes/origin/master
 	.caddr = 2,
 	.cif = 0,
 	.data_mask = VT1724_REVO_CDOUT,
 	.clk_mask = VT1724_REVO_CCLK,
+<<<<<<< HEAD
 	.cs_mask = VT1724_REVO_CS0 | VT1724_REVO_CS1,
 	.cs_addr = VT1724_REVO_CS1,
 	.cs_none = VT1724_REVO_CS0 | VT1724_REVO_CS1,
+=======
+	.cs_mask = VT1724_REVO_CS0 | VT1724_REVO_CS3,
+	.cs_addr = VT1724_REVO_CS3,
+	.cs_none = VT1724_REVO_CS0 | VT1724_REVO_CS3,
+>>>>>>> refs/remotes/origin/master
 	.add_flags = VT1724_REVO_CCLK, /* high at init */
 	.mask_flags = 0,
 };
@@ -373,7 +426,11 @@ static struct snd_ak4xxx_private akm_ap192_priv __devinitdata = {
  * CCLK (pin 34) -- GPIO1 pin 51 (shared with AK4358)
  * CSN  (pin 35) -- GPIO7 pin 59
  */
+<<<<<<< HEAD
 #define AK4114_ADDR	0x02
+=======
+#define AK4114_ADDR	0x00
+>>>>>>> refs/remotes/origin/master
 
 static void write_data(struct snd_ice1712 *ice, unsigned int gpio,
 		       unsigned int data, int idx)
@@ -427,7 +484,11 @@ static unsigned int ap192_4wire_start(struct snd_ice1712 *ice)
 	tmp = snd_ice1712_gpio_read(ice);
 	tmp |= VT1724_REVO_CCLK; /* high at init */
 	tmp |= VT1724_REVO_CS0;
+<<<<<<< HEAD
 	tmp &= ~VT1724_REVO_CS1;
+=======
+	tmp &= ~VT1724_REVO_CS3;
+>>>>>>> refs/remotes/origin/master
 	snd_ice1712_gpio_write(ice, tmp);
 	udelay(1);
 	return tmp;
@@ -435,7 +496,11 @@ static unsigned int ap192_4wire_start(struct snd_ice1712 *ice)
 
 static void ap192_4wire_finish(struct snd_ice1712 *ice, unsigned int tmp)
 {
+<<<<<<< HEAD
 	tmp |= VT1724_REVO_CS1;
+=======
+	tmp |= VT1724_REVO_CS3;
+>>>>>>> refs/remotes/origin/master
 	tmp |= VT1724_REVO_CS0;
 	snd_ice1712_gpio_write(ice, tmp);
 	udelay(1);
@@ -468,6 +533,7 @@ static unsigned char ap192_ak4114_read(void *private_data, unsigned char addr)
 	return data;
 }
 
+<<<<<<< HEAD
 static int __devinit ap192_ak4114_init(struct snd_ice1712 *ice)
 {
 	static const unsigned char ak4114_init_vals[] = {
@@ -475,28 +541,59 @@ static int __devinit ap192_ak4114_init(struct snd_ice1712 *ice)
 		AK4114_DIF_I24I2S,
 		AK4114_TX1E,
 		AK4114_EFH_1024 | AK4114_DIT | AK4114_IPS(1),
+=======
+static int ap192_ak4114_init(struct snd_ice1712 *ice)
+{
+	static const unsigned char ak4114_init_vals[] = {
+		AK4114_RST | AK4114_PWN | AK4114_OCKS0,
+		AK4114_DIF_I24I2S,
+		AK4114_TX1E,
+		AK4114_EFH_1024 | AK4114_DIT | AK4114_IPS(0),
+>>>>>>> refs/remotes/origin/master
 		0,
 		0
 	};
 	static const unsigned char ak4114_init_txcsb[] = {
 		0x41, 0x02, 0x2c, 0x00, 0x00
 	};
+<<<<<<< HEAD
 	struct ak4114 *ak;
 	int err;
 
+=======
+	int err;
+
+	struct revo51_spec *spec;
+	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+	if (!spec)
+		return -ENOMEM;
+	ice->spec = spec;
+
+>>>>>>> refs/remotes/origin/master
 	err = snd_ak4114_create(ice->card,
 				 ap192_ak4114_read,
 				 ap192_ak4114_write,
 				 ak4114_init_vals, ak4114_init_txcsb,
+<<<<<<< HEAD
 				 ice, &ak);
 	/* AK4114 in Revo cannot detect external rate correctly.
 	 * No reason to stop capture stream due to incorrect checks */
 	ak->check_flags = AK4114_CHECK_NO_RATE;
+=======
+				 ice, &spec->ak4114);
+	/* AK4114 in Revo cannot detect external rate correctly.
+	 * No reason to stop capture stream due to incorrect checks */
+	spec->ak4114->check_flags = AK4114_CHECK_NO_RATE;
+>>>>>>> refs/remotes/origin/master
 
 	return 0; /* error ignored; it's no fatal error */
 }
 
+<<<<<<< HEAD
 static int __devinit revo_init(struct snd_ice1712 *ice)
+=======
+static int revo_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_akm4xxx *ak;
 	int err;
@@ -563,6 +660,12 @@ static int __devinit revo_init(struct snd_ice1712 *ice)
 					       ice);
 		if (err < 0)
 			return err;
+<<<<<<< HEAD
+=======
+		err = ap192_ak4114_init(ice);
+		if (err < 0)
+			return err;
+>>>>>>> refs/remotes/origin/master
 		
 		/* unmute all codecs */
 		snd_ice1712_gpio_write_bits(ice, VT1724_REVO_MUTE,
@@ -574,9 +677,15 @@ static int __devinit revo_init(struct snd_ice1712 *ice)
 }
 
 
+<<<<<<< HEAD
 static int __devinit revo_add_controls(struct snd_ice1712 *ice)
 {
 	struct revo51_spec *spec;
+=======
+static int revo_add_controls(struct snd_ice1712 *ice)
+{
+	struct revo51_spec *spec = ice->spec;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	switch (ice->eeprom.subvendor) {
@@ -598,7 +707,13 @@ static int __devinit revo_add_controls(struct snd_ice1712 *ice)
 		err = snd_ice1712_akm4xxx_build_controls(ice);
 		if (err < 0)
 			return err;
+<<<<<<< HEAD
 		err = ap192_ak4114_init(ice);
+=======
+		/* only capture SPDIF over AK4114 */
+		err = snd_ak4114_build(spec->ak4114, NULL,
+		   ice->pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			return err;
 		break;
@@ -607,7 +722,11 @@ static int __devinit revo_add_controls(struct snd_ice1712 *ice)
 }
 
 /* entry point */
+<<<<<<< HEAD
 struct snd_ice1712_card_info snd_vt1724_revo_cards[] __devinitdata = {
+=======
+struct snd_ice1712_card_info snd_vt1724_revo_cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.subvendor = VT1724_SUBDEVICE_REVOLUTION71,
 		.name = "M Audio Revolution-7.1",

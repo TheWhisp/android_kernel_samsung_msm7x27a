@@ -18,6 +18,7 @@
 #include <linux/io.h>
 
 #include <asm/cacheflush.h>
+<<<<<<< HEAD
 #include <asm/hardware/gic.h>
 <<<<<<< HEAD
 =======
@@ -26,17 +27,29 @@
 #include <asm/smp_scu.h>
 #include <mach/hardware.h>
 #include <mach/setup.h>
+=======
+#include <asm/smp_plat.h>
+#include <asm/smp_scu.h>
+
+#include "setup.h"
+
+#include "db8500-regs.h"
+#include "id.h"
+>>>>>>> refs/remotes/origin/master
 
 /* This is called from headsmp.S to wakeup the secondary core */
 extern void u8500_secondary_startup(void);
 
 /*
+<<<<<<< HEAD
  * control for which core is the next to come out of the secondary
  * boot "holding pen"
  */
 volatile int pen_release = -1;
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Write pen_release in a way that is guaranteed to be visible to all
  * observers, irrespective of whether they're taking part in coherency
  * or not.  This is necessary for the hotplug code to work reliably.
@@ -51,9 +64,13 @@ static void write_pen_release(int val)
 
 static void __iomem *scu_base_addr(void)
 {
+<<<<<<< HEAD
 	if (cpu_is_u5500())
 		return __io_address(U5500_SCU_BASE);
 	else if (cpu_is_u8500())
+=======
+	if (cpu_is_u8500_family() || cpu_is_ux540_family())
+>>>>>>> refs/remotes/origin/master
 		return __io_address(U8500_SCU_BASE);
 	else
 		ux500_unknown_soc();
@@ -63,6 +80,7 @@ static void __iomem *scu_base_addr(void)
 
 static DEFINE_SPINLOCK(boot_lock);
 
+<<<<<<< HEAD
 void __cpuinit platform_secondary_init(unsigned int cpu)
 {
 	/*
@@ -73,6 +91,11 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 	gic_secondary_init(0);
 
 	/*
+=======
+static void ux500_secondary_init(unsigned int cpu)
+{
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * let the primary processor know we're out of the
 	 * pen, then head off into the C entry point
 	 */
@@ -85,7 +108,11 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 	spin_unlock(&boot_lock);
 }
 
+<<<<<<< HEAD
 int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
+=======
+static int ux500_boot_secondary(unsigned int cpu, struct task_struct *idle)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long timeout;
 
@@ -101,6 +128,7 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 	 * that it has been released by resetting pen_release.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_pen_release(cpu);
 
 	gic_raise_softirq(cpumask_of(cpu), 1);
@@ -109,6 +137,11 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 
 	smp_send_reschedule(cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	write_pen_release(cpu_logical_map(cpu));
+
+	arch_send_wakeup_ipi_mask(cpumask_of(cpu));
+>>>>>>> refs/remotes/origin/master
 
 	timeout = jiffies + (1 * HZ);
 	while (time_before(jiffies, timeout)) {
@@ -129,9 +162,13 @@ static void __init wakeup_secondary(void)
 {
 	void __iomem *backupram;
 
+<<<<<<< HEAD
 	if (cpu_is_u5500())
 		backupram = __io_address(U5500_BACKUPRAM0_BASE);
 	else if (cpu_is_u8500())
+=======
+	if (cpu_is_u8500_family() || cpu_is_ux540_family())
+>>>>>>> refs/remotes/origin/master
 		backupram = __io_address(U8500_BACKUPRAM0_BASE);
 	else
 		ux500_unknown_soc();
@@ -158,7 +195,11 @@ static void __init wakeup_secondary(void)
  * Initialise the CPU possible map early - this describes the CPUs
  * which may be present or become present in the system.
  */
+<<<<<<< HEAD
 void __init smp_init_cpus(void)
+=======
+static void __init ux500_smp_init_cpus(void)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *scu_base = scu_base_addr();
 	unsigned int i, ncores;
@@ -167,6 +208,7 @@ void __init smp_init_cpus(void)
 
 	/* sanity check */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ncores > NR_CPUS) {
 		printk(KERN_WARNING
 		       "U8500: no. of cores (%d) greater than configured "
@@ -174,15 +216,21 @@ void __init smp_init_cpus(void)
 		       ncores, NR_CPUS);
 		ncores = NR_CPUS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ncores > nr_cpu_ids) {
 		pr_warn("SMP: %u cores greater than maximum (%u), clipping\n",
 			ncores, nr_cpu_ids);
 		ncores = nr_cpu_ids;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < ncores; i++)
 		set_cpu_possible(i, true);
+<<<<<<< HEAD
 
 	set_smp_cross_call(gic_raise_softirq);
 }
@@ -200,7 +248,26 @@ void __init platform_smp_prepare_cpus(unsigned int max_cpus)
 		set_cpu_present(i, true);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static void __init ux500_smp_prepare_cpus(unsigned int max_cpus)
+{
+>>>>>>> refs/remotes/origin/master
 
 	scu_enable(scu_base_addr());
 	wakeup_secondary();
 }
+<<<<<<< HEAD
+=======
+
+struct smp_operations ux500_smp_ops __initdata = {
+	.smp_init_cpus		= ux500_smp_init_cpus,
+	.smp_prepare_cpus	= ux500_smp_prepare_cpus,
+	.smp_secondary_init	= ux500_secondary_init,
+	.smp_boot_secondary	= ux500_boot_secondary,
+#ifdef CONFIG_HOTPLUG_CPU
+	.cpu_die		= ux500_cpu_die,
+#endif
+};
+>>>>>>> refs/remotes/origin/master

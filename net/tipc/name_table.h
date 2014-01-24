@@ -3,10 +3,14 @@
  *
  * Copyright (c) 2000-2006, Ericsson AB
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004-2005, Wind River Systems
 =======
  * Copyright (c) 2004-2005, 2010-2011, Wind River Systems
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004-2005, 2010-2011, Wind River Systems
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,20 +48,30 @@
 #include "node_subscr.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct subscription;
 struct port_list;
 =======
 struct tipc_subscription;
 struct tipc_port_list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct tipc_subscription;
+struct tipc_port_list;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * TIPC name types reserved for internal TIPC use (both current and planned)
  */
+<<<<<<< HEAD
 
 #define TIPC_ZM_SRV 3		/* zone master service name type */
 
 
+=======
+#define TIPC_ZM_SRV 3		/* zone master service name type */
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct publication - info about a published (name or) name sequence
  * @type: name sequence type
@@ -71,6 +85,7 @@ struct tipc_port_list;
  * @local_list: adjacent entries in list of publications made by this node
  * @pport_list: adjacent entries in list of publications made by this port
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @node_list: next matching name seq publication with >= node scope
  * @cluster_list: next matching name seq publication with >= cluster scope
  * @zone_list: next matching name seq publication with >= zone scope
@@ -83,6 +98,14 @@ struct tipc_port_list;
  * Note that the node list, cluster list, and zone list are circular lists.
  */
 
+=======
+ * @node_list: adjacent matching name seq publications with >= node scope
+ * @cluster_list: adjacent matching name seq publications with >= cluster scope
+ * @zone_list: adjacent matching name seq publications with >= zone scope
+ *
+ * Note that the node list, cluster list, and zone list are circular lists.
+ */
+>>>>>>> refs/remotes/origin/master
 struct publication {
 	u32 type;
 	u32 lower;
@@ -95,6 +118,7 @@ struct publication {
 	struct list_head local_list;
 	struct list_head pport_list;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct publication *node_list_next;
 	struct publication *cluster_list_next;
 	struct publication *zone_list_next;
@@ -103,6 +127,11 @@ struct publication {
 	struct list_head cluster_list;
 	struct list_head zone_list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head node_list;
+	struct list_head cluster_list;
+	struct list_head zone_list;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -111,6 +140,7 @@ extern rwlock_t tipc_nametbl_lock;
 struct sk_buff *tipc_nametbl_get(const void *req_tlv_area, int req_tlv_space);
 u32 tipc_nametbl_translate(u32 type, u32 instance, u32 *node);
 int tipc_nametbl_mc_translate(u32 type, u32 lower, u32 upper, u32 limit,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 struct port_list *dports);
 int tipc_nametbl_publish_rsv(u32 ref, unsigned int scope,
@@ -132,6 +162,19 @@ void tipc_nametbl_unsubscribe(struct subscription *s);
 void tipc_nametbl_subscribe(struct tipc_subscription *s);
 void tipc_nametbl_unsubscribe(struct tipc_subscription *s);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      struct tipc_port_list *dports);
+struct publication *tipc_nametbl_publish(u32 type, u32 lower, u32 upper,
+					 u32 scope, u32 port_ref, u32 key);
+int tipc_nametbl_withdraw(u32 type, u32 lower, u32 ref, u32 key);
+struct publication *tipc_nametbl_insert_publ(u32 type, u32 lower, u32 upper,
+					     u32 scope, u32 node, u32 ref,
+					     u32 key);
+struct publication *tipc_nametbl_remove_publ(u32 type, u32 lower, u32 node,
+					     u32 ref, u32 key);
+void tipc_nametbl_subscribe(struct tipc_subscription *s);
+void tipc_nametbl_unsubscribe(struct tipc_subscription *s);
+>>>>>>> refs/remotes/origin/master
 int tipc_nametbl_init(void);
 void tipc_nametbl_stop(void);
 

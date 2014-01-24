@@ -96,9 +96,13 @@ ENTRY(cpu_arm1020e_proc_fin)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pushsection	.idmap.text, "ax"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm1020e_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -112,10 +116,15 @@ ENTRY(cpu_arm1020e_reset)
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(cpu_arm1020e_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm1020e_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_arm1020e_do_idle()
@@ -241,6 +250,10 @@ ENTRY(arm1020e_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, ip, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -360,6 +373,7 @@ ENTRY(arm1020e_dma_unmap_area)
 ENDPROC(arm1020e_dma_unmap_area)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm1020e_cache_fns)
 	.long	arm1020e_flush_icache_all
 	.long	arm1020e_flush_kern_cache_all
@@ -375,6 +389,13 @@ ENTRY(arm1020e_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions arm1020e
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm1020e_flush_kern_cache_louis
+	.equ	arm1020e_flush_kern_cache_louis, arm1020e_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm1020e
+>>>>>>> refs/remotes/origin/master
 
 	.align	5
 ENTRY(cpu_arm1020e_dcache_clean_area)
@@ -441,8 +462,11 @@ ENTRY(cpu_arm1020e_set_pte_ext)
 #endif /* CONFIG_MMU */
 	mov	pc, lr
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.type	__arm1020e_setup, #function
 __arm1020e_setup:
 	mov	r0, #0
@@ -472,6 +496,7 @@ arm1020e_crval:
 	crval	clear=0x00007f3f, mmuset=0x00003935, ucset=0x00001930
 
 	__INITDATA
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*
@@ -511,6 +536,8 @@ cpu_arm1020e_name:
 	.asciz	"ARM1020E"
 	.size	cpu_arm1020e_name, . - cpu_arm1020e_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions arm1020e, dabort=v4t_early_abort, pabort=legacy_pabort
 
@@ -519,7 +546,10 @@ cpu_arm1020e_name:
 	string	cpu_arch_name, "armv5te"
 	string	cpu_elf_name, "v5"
 	string	cpu_arm1020e_name, "ARM1020E"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 

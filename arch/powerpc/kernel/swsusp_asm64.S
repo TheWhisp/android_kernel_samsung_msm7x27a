@@ -46,10 +46,26 @@
 #define SL_r29		0xe8
 #define SL_r30		0xf0
 #define SL_r31		0xf8
+<<<<<<< HEAD
 #define SL_SIZE		SL_r31+8
 
 /* these macros rely on the save area being
  * pointed to by r11 */
+=======
+#define SL_SPRG1	0x100
+#define SL_TCR		0x108
+#define SL_SIZE		SL_TCR+8
+
+/* these macros rely on the save area being
+ * pointed to by r11 */
+
+#define SAVE_SPR(register)		\
+	mfspr	r0, SPRN_##register	;\
+	std	r0, SL_##register(r11)
+#define RESTORE_SPR(register)		\
+	ld	r0, SL_##register(r11)	;\
+	mtspr	SPRN_##register, r0
+>>>>>>> refs/remotes/origin/master
 #define SAVE_SPECIAL(special)		\
 	mf##special	r0		;\
 	std	r0, SL_##special(r11)
@@ -103,8 +119,22 @@ _GLOBAL(swsusp_arch_suspend)
 	SAVE_REGISTER(r30)
 	SAVE_REGISTER(r31)
 	SAVE_SPECIAL(MSR)
+<<<<<<< HEAD
 	SAVE_SPECIAL(SDR1)
 	SAVE_SPECIAL(XER)
+=======
+	SAVE_SPECIAL(XER)
+#ifdef CONFIG_PPC_BOOK3S_64
+BEGIN_FW_FTR_SECTION
+	SAVE_SPECIAL(SDR1)
+END_FW_FTR_SECTION_IFCLR(FW_FEATURE_LPAR)
+#else
+	SAVE_SPR(TCR)
+
+	/* Save SPRG1, SPRG1 be used save paca */
+	SAVE_SPR(SPRG1)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* we push the stack up 128 bytes but don't store the
 	 * stack pointer on the stack like a real stackframe */
@@ -151,6 +181,10 @@ copy_page_loop:
 	bne+	copyloop
 nothing_to_copy:
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_BOOK3S_64
+>>>>>>> refs/remotes/origin/master
 	/* flush caches */
 	lis	r3, 0x10
 	mtctr	r3
@@ -167,6 +201,10 @@ nothing_to_copy:
 	sync
 
 	tlbia
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	ld	r11,swsusp_save_area_ptr@toc(r2)
 
@@ -208,16 +246,52 @@ nothing_to_copy:
 	RESTORE_REGISTER(r29)
 	RESTORE_REGISTER(r30)
 	RESTORE_REGISTER(r31)
+<<<<<<< HEAD
 	/* can't use RESTORE_SPECIAL(MSR) */
 	ld	r0, SL_MSR(r11)
 	mtmsrd	r0, 0
 	RESTORE_SPECIAL(SDR1)
+=======
+
+#ifdef CONFIG_PPC_BOOK3S_64
+	/* can't use RESTORE_SPECIAL(MSR) */
+	ld	r0, SL_MSR(r11)
+	mtmsrd	r0, 0
+BEGIN_FW_FTR_SECTION
+	RESTORE_SPECIAL(SDR1)
+END_FW_FTR_SECTION_IFCLR(FW_FEATURE_LPAR)
+#else
+	/* Restore SPRG1, be used to save paca */
+	ld	r0, SL_SPRG1(r11)
+	mtsprg	1, r0
+
+	RESTORE_SPECIAL(MSR)
+
+	/* Restore TCR and clear any pending bits in TSR. */
+	RESTORE_SPR(TCR)
+	lis	r0, (TSR_ENW | TSR_WIS | TSR_DIS | TSR_FIS)@h
+	mtspr	SPRN_TSR, r0
+
+	/* Kick decrementer */
+	li	r0, 1
+	mtdec	r0
+
+	/* Invalidate all tlbs */
+	bl	_tlbil_all
+#endif
+>>>>>>> refs/remotes/origin/master
 	RESTORE_SPECIAL(XER)
 
 	sync
 
 	addi	r1,r1,-128
+<<<<<<< HEAD
 	bl	slb_flush_and_rebolt
+=======
+#ifdef CONFIG_PPC_BOOK3S_64
+	bl	slb_flush_and_rebolt
+#endif
+>>>>>>> refs/remotes/origin/master
 	bl	do_after_copyback
 	addi	r1,r1,128
 

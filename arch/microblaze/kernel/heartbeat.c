@@ -61,7 +61,11 @@ void setup_heartbeat(void)
 	if (gpio) {
 		base_addr = be32_to_cpup(of_get_property(gpio, "reg", NULL));
 		base_addr = (unsigned long) ioremap(base_addr, PAGE_SIZE);
+<<<<<<< HEAD
 		printk(KERN_NOTICE "Heartbeat GPIO at 0x%x\n", base_addr);
+=======
+		pr_notice("Heartbeat GPIO at 0x%x\n", base_addr);
+>>>>>>> refs/remotes/origin/master
 
 		/* GPIO is configured as output */
 		prop = (int *) of_get_property(gpio, "xlnx,is-bidir", NULL);

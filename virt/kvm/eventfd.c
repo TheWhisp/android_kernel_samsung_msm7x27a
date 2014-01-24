@@ -35,6 +35,10 @@
 
 #include "iodev.h"
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
+>>>>>>> refs/remotes/origin/master
 /*
  * --------------------------------------------------------------------
  * irqfd: Allows an fd to be used to inject an interrupt to the guest
@@ -43,6 +47,34 @@
  * --------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
+=======
+/*
+ * Resampling irqfds are a special variety of irqfds used to emulate
+ * level triggered interrupts.  The interrupt is asserted on eventfd
+ * trigger.  On acknowledgement through the irq ack notifier, the
+ * interrupt is de-asserted and userspace is notified through the
+ * resamplefd.  All resamplers on the same gsi are de-asserted
+ * together, so we don't need to track the state of each individual
+ * user.  We can also therefore share the same irq source ID.
+ */
+struct _irqfd_resampler {
+	struct kvm *kvm;
+	/*
+	 * List of resampling struct _irqfd objects sharing this gsi.
+	 * RCU list modified under kvm->irqfds.resampler_lock
+	 */
+	struct list_head list;
+	struct kvm_irq_ack_notifier notifier;
+	/*
+	 * Entry in list of kvm->irqfd.resampler_list.  Use for sharing
+	 * resamplers among irqfds on the same gsi.
+	 * Accessed and modified under kvm->irqfds.resampler_lock
+	 */
+	struct list_head link;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct _irqfd {
 	/* Used for MSI fast-path */
 	struct kvm *kvm;
@@ -52,6 +84,15 @@ struct _irqfd {
 	/* Used for level IRQ fast-path */
 	int gsi;
 	struct work_struct inject;
+<<<<<<< HEAD
+=======
+	/* The resampler used by this irqfd (resampler-only) */
+	struct _irqfd_resampler *resampler;
+	/* Eventfd notified on resample (resampler-only) */
+	struct eventfd_ctx *resamplefd;
+	/* Entry in list of irqfds for a resampler (resampler-only) */
+	struct list_head resampler_link;
+>>>>>>> refs/remotes/origin/master
 	/* Used for setup/shutdown */
 	struct eventfd_ctx *eventfd;
 	struct list_head list;
@@ -67,8 +108,65 @@ irqfd_inject(struct work_struct *work)
 	struct _irqfd *irqfd = container_of(work, struct _irqfd, inject);
 	struct kvm *kvm = irqfd->kvm;
 
+<<<<<<< HEAD
 	kvm_set_irq(kvm, KVM_USERSPACE_IRQ_SOURCE_ID, irqfd->gsi, 1);
 	kvm_set_irq(kvm, KVM_USERSPACE_IRQ_SOURCE_ID, irqfd->gsi, 0);
+=======
+	if (!irqfd->resampler) {
+		kvm_set_irq(kvm, KVM_USERSPACE_IRQ_SOURCE_ID, irqfd->gsi, 1,
+				false);
+		kvm_set_irq(kvm, KVM_USERSPACE_IRQ_SOURCE_ID, irqfd->gsi, 0,
+				false);
+	} else
+		kvm_set_irq(kvm, KVM_IRQFD_RESAMPLE_IRQ_SOURCE_ID,
+			    irqfd->gsi, 1, false);
+}
+
+/*
+ * Since resampler irqfds share an IRQ source ID, we de-assert once
+ * then notify all of the resampler irqfds using this GSI.  We can't
+ * do multiple de-asserts or we risk racing with incoming re-asserts.
+ */
+static void
+irqfd_resampler_ack(struct kvm_irq_ack_notifier *kian)
+{
+	struct _irqfd_resampler *resampler;
+	struct _irqfd *irqfd;
+
+	resampler = container_of(kian, struct _irqfd_resampler, notifier);
+
+	kvm_set_irq(resampler->kvm, KVM_IRQFD_RESAMPLE_IRQ_SOURCE_ID,
+		    resampler->notifier.gsi, 0, false);
+
+	rcu_read_lock();
+
+	list_for_each_entry_rcu(irqfd, &resampler->list, resampler_link)
+		eventfd_signal(irqfd->resamplefd, 1);
+
+	rcu_read_unlock();
+}
+
+static void
+irqfd_resampler_shutdown(struct _irqfd *irqfd)
+{
+	struct _irqfd_resampler *resampler = irqfd->resampler;
+	struct kvm *kvm = resampler->kvm;
+
+	mutex_lock(&kvm->irqfds.resampler_lock);
+
+	list_del_rcu(&irqfd->resampler_link);
+	synchronize_rcu();
+
+	if (list_empty(&resampler->list)) {
+		list_del(&resampler->link);
+		kvm_unregister_irq_ack_notifier(kvm, &resampler->notifier);
+		kvm_set_irq(kvm, KVM_IRQFD_RESAMPLE_IRQ_SOURCE_ID,
+			    resampler->notifier.gsi, 0, false);
+		kfree(resampler);
+	}
+
+	mutex_unlock(&kvm->irqfds.resampler_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -90,7 +188,16 @@ irqfd_shutdown(struct work_struct *work)
 	 * We know no new events will be scheduled at this point, so block
 	 * until all previously outstanding events have completed
 	 */
+<<<<<<< HEAD
 	flush_work_sync(&irqfd->inject);
+=======
+	flush_work(&irqfd->inject);
+
+	if (irqfd->resampler) {
+		irqfd_resampler_shutdown(irqfd);
+		eventfd_ctx_put(irqfd->resamplefd);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * It is now safe to release the object's resources
@@ -138,7 +245,12 @@ irqfd_wakeup(wait_queue_t *wait, unsigned mode, int sync, void *key)
 		irq = rcu_dereference(irqfd->irq_entry);
 		/* An event has been signaled, inject an interrupt */
 		if (irq)
+<<<<<<< HEAD
 			kvm_set_msi(irq, kvm, KVM_USERSPACE_IRQ_SOURCE_ID, 1);
+=======
+			kvm_set_msi(irq, kvm, KVM_USERSPACE_IRQ_SOURCE_ID, 1,
+					false);
+>>>>>>> refs/remotes/origin/master
 		else
 			schedule_work(&irqfd->inject);
 		rcu_read_unlock();
@@ -181,14 +293,21 @@ static void irqfd_update(struct kvm *kvm, struct _irqfd *irqfd,
 			 struct kvm_irq_routing_table *irq_rt)
 {
 	struct kvm_kernel_irq_routing_entry *e;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (irqfd->gsi >= irq_rt->nr_rt_entries) {
 		rcu_assign_pointer(irqfd->irq_entry, NULL);
 		return;
 	}
 
+<<<<<<< HEAD
 	hlist_for_each_entry(e, n, &irq_rt->map[irqfd->gsi], link) {
+=======
+	hlist_for_each_entry(e, &irq_rt->map[irqfd->gsi], link) {
+>>>>>>> refs/remotes/origin/master
 		/* Only fast-path MSI. */
 		if (e->type == KVM_IRQ_ROUTING_MSI)
 			rcu_assign_pointer(irqfd->irq_entry, e);
@@ -198,12 +317,21 @@ static void irqfd_update(struct kvm *kvm, struct _irqfd *irqfd,
 }
 
 static int
+<<<<<<< HEAD
 kvm_irqfd_assign(struct kvm *kvm, int fd, int gsi)
 {
 	struct kvm_irq_routing_table *irq_rt;
 	struct _irqfd *irqfd, *tmp;
 	struct file *file = NULL;
 	struct eventfd_ctx *eventfd = NULL;
+=======
+kvm_irqfd_assign(struct kvm *kvm, struct kvm_irqfd *args)
+{
+	struct kvm_irq_routing_table *irq_rt;
+	struct _irqfd *irqfd, *tmp;
+	struct fd f;
+	struct eventfd_ctx *eventfd = NULL, *resamplefd = NULL;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	unsigned int events;
 
@@ -212,11 +340,16 @@ kvm_irqfd_assign(struct kvm *kvm, int fd, int gsi)
 		return -ENOMEM;
 
 	irqfd->kvm = kvm;
+<<<<<<< HEAD
 	irqfd->gsi = gsi;
+=======
+	irqfd->gsi = args->gsi;
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&irqfd->list);
 	INIT_WORK(&irqfd->inject, irqfd_inject);
 	INIT_WORK(&irqfd->shutdown, irqfd_shutdown);
 
+<<<<<<< HEAD
 	file = eventfd_fget(fd);
 	if (IS_ERR(file)) {
 		ret = PTR_ERR(file);
@@ -224,6 +357,15 @@ kvm_irqfd_assign(struct kvm *kvm, int fd, int gsi)
 	}
 
 	eventfd = eventfd_ctx_fileget(file);
+=======
+	f = fdget(args->fd);
+	if (!f.file) {
+		ret = -EBADF;
+		goto out;
+	}
+
+	eventfd = eventfd_ctx_fileget(f.file);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(eventfd)) {
 		ret = PTR_ERR(eventfd);
 		goto fail;
@@ -231,6 +373,57 @@ kvm_irqfd_assign(struct kvm *kvm, int fd, int gsi)
 
 	irqfd->eventfd = eventfd;
 
+<<<<<<< HEAD
+=======
+	if (args->flags & KVM_IRQFD_FLAG_RESAMPLE) {
+		struct _irqfd_resampler *resampler;
+
+		resamplefd = eventfd_ctx_fdget(args->resamplefd);
+		if (IS_ERR(resamplefd)) {
+			ret = PTR_ERR(resamplefd);
+			goto fail;
+		}
+
+		irqfd->resamplefd = resamplefd;
+		INIT_LIST_HEAD(&irqfd->resampler_link);
+
+		mutex_lock(&kvm->irqfds.resampler_lock);
+
+		list_for_each_entry(resampler,
+				    &kvm->irqfds.resampler_list, link) {
+			if (resampler->notifier.gsi == irqfd->gsi) {
+				irqfd->resampler = resampler;
+				break;
+			}
+		}
+
+		if (!irqfd->resampler) {
+			resampler = kzalloc(sizeof(*resampler), GFP_KERNEL);
+			if (!resampler) {
+				ret = -ENOMEM;
+				mutex_unlock(&kvm->irqfds.resampler_lock);
+				goto fail;
+			}
+
+			resampler->kvm = kvm;
+			INIT_LIST_HEAD(&resampler->list);
+			resampler->notifier.gsi = irqfd->gsi;
+			resampler->notifier.irq_acked = irqfd_resampler_ack;
+			INIT_LIST_HEAD(&resampler->link);
+
+			list_add(&resampler->link, &kvm->irqfds.resampler_list);
+			kvm_register_irq_ack_notifier(kvm,
+						      &resampler->notifier);
+			irqfd->resampler = resampler;
+		}
+
+		list_add_rcu(&irqfd->resampler_link, &irqfd->resampler->list);
+		synchronize_rcu();
+
+		mutex_unlock(&kvm->irqfds.resampler_lock);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Install our own custom wake-up handling so we are notified via
 	 * a callback whenever someone signals the underlying eventfd
@@ -254,7 +447,11 @@ kvm_irqfd_assign(struct kvm *kvm, int fd, int gsi)
 					   lockdep_is_held(&kvm->irqfds.lock));
 	irqfd_update(kvm, irqfd, irq_rt);
 
+<<<<<<< HEAD
 	events = file->f_op->poll(file, &irqfd->pt);
+=======
+	events = f.file->f_op->poll(f.file, &irqfd->pt);
+>>>>>>> refs/remotes/origin/master
 
 	list_add_tail(&irqfd->list, &kvm->irqfds.items);
 
@@ -271,11 +468,16 @@ kvm_irqfd_assign(struct kvm *kvm, int fd, int gsi)
 	 * do not drop the file until the irqfd is fully initialized, otherwise
 	 * we might race against the POLLHUP
 	 */
+<<<<<<< HEAD
 	fput(file);
+=======
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 fail:
+<<<<<<< HEAD
 	if (eventfd && !IS_ERR(eventfd))
 		eventfd_ctx_put(eventfd);
 
@@ -285,32 +487,75 @@ fail:
 	kfree(irqfd);
 	return ret;
 }
+=======
+	if (irqfd->resampler)
+		irqfd_resampler_shutdown(irqfd);
+
+	if (resamplefd && !IS_ERR(resamplefd))
+		eventfd_ctx_put(resamplefd);
+
+	if (eventfd && !IS_ERR(eventfd))
+		eventfd_ctx_put(eventfd);
+
+	fdput(f);
+
+out:
+	kfree(irqfd);
+	return ret;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 void
 kvm_eventfd_init(struct kvm *kvm)
 {
+<<<<<<< HEAD
 	spin_lock_init(&kvm->irqfds.lock);
 	INIT_LIST_HEAD(&kvm->irqfds.items);
 	INIT_LIST_HEAD(&kvm->ioeventfds);
 }
 
+=======
+#ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
+	spin_lock_init(&kvm->irqfds.lock);
+	INIT_LIST_HEAD(&kvm->irqfds.items);
+	INIT_LIST_HEAD(&kvm->irqfds.resampler_list);
+	mutex_init(&kvm->irqfds.resampler_lock);
+#endif
+	INIT_LIST_HEAD(&kvm->ioeventfds);
+}
+
+#ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
+>>>>>>> refs/remotes/origin/master
 /*
  * shutdown any irqfd's that match fd+gsi
  */
 static int
+<<<<<<< HEAD
 kvm_irqfd_deassign(struct kvm *kvm, int fd, int gsi)
+=======
+kvm_irqfd_deassign(struct kvm *kvm, struct kvm_irqfd *args)
+>>>>>>> refs/remotes/origin/master
 {
 	struct _irqfd *irqfd, *tmp;
 	struct eventfd_ctx *eventfd;
 
+<<<<<<< HEAD
 	eventfd = eventfd_ctx_fdget(fd);
+=======
+	eventfd = eventfd_ctx_fdget(args->fd);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(eventfd))
 		return PTR_ERR(eventfd);
 
 	spin_lock_irq(&kvm->irqfds.lock);
 
 	list_for_each_entry_safe(irqfd, tmp, &kvm->irqfds.items, list) {
+<<<<<<< HEAD
 		if (irqfd->eventfd == eventfd && irqfd->gsi == gsi) {
+=======
+		if (irqfd->eventfd == eventfd && irqfd->gsi == args->gsi) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * This rcu_assign_pointer is needed for when
 			 * another thread calls kvm_irq_routing_update before
@@ -338,12 +583,24 @@ kvm_irqfd_deassign(struct kvm *kvm, int fd, int gsi)
 }
 
 int
+<<<<<<< HEAD
 kvm_irqfd(struct kvm *kvm, int fd, int gsi, int flags)
 {
 	if (flags & KVM_IRQFD_FLAG_DEASSIGN)
 		return kvm_irqfd_deassign(kvm, fd, gsi);
 
 	return kvm_irqfd_assign(kvm, fd, gsi);
+=======
+kvm_irqfd(struct kvm *kvm, struct kvm_irqfd *args)
+{
+	if (args->flags & ~(KVM_IRQFD_FLAG_DEASSIGN | KVM_IRQFD_FLAG_RESAMPLE))
+		return -EINVAL;
+
+	if (args->flags & KVM_IRQFD_FLAG_DEASSIGN)
+		return kvm_irqfd_deassign(kvm, args);
+
+	return kvm_irqfd_assign(kvm, args);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -394,7 +651,11 @@ void kvm_irq_routing_update(struct kvm *kvm,
  * aggregated from all vm* instances. We need our own isolated single-thread
  * queue to prevent deadlock against flushing the normal work-queue.
  */
+<<<<<<< HEAD
 static int __init irqfd_module_init(void)
+=======
+int kvm_irqfd_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	irqfd_cleanup_wq = create_singlethread_workqueue("kvm-irqfd-cleanup");
 	if (!irqfd_cleanup_wq)
@@ -403,6 +664,7 @@ static int __init irqfd_module_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __exit irqfd_module_exit(void)
 {
 	destroy_workqueue(irqfd_cleanup_wq);
@@ -410,6 +672,13 @@ static void __exit irqfd_module_exit(void)
 
 module_init(irqfd_module_init);
 module_exit(irqfd_module_exit);
+=======
+void kvm_irqfd_exit(void)
+{
+	destroy_workqueue(irqfd_cleanup_wq);
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * --------------------------------------------------------------------
@@ -427,6 +696,10 @@ struct _ioeventfd {
 	struct eventfd_ctx  *eventfd;
 	u64                  datamatch;
 	struct kvm_io_device dev;
+<<<<<<< HEAD
+=======
+	u8                   bus_idx;
+>>>>>>> refs/remotes/origin/master
 	bool                 wildcard;
 };
 
@@ -519,7 +792,12 @@ ioeventfd_check_collision(struct kvm *kvm, struct _ioeventfd *p)
 	struct _ioeventfd *_p;
 
 	list_for_each_entry(_p, &kvm->ioeventfds, list)
+<<<<<<< HEAD
 		if (_p->addr == p->addr && _p->length == p->length &&
+=======
+		if (_p->bus_idx == p->bus_idx &&
+		    _p->addr == p->addr && _p->length == p->length &&
+>>>>>>> refs/remotes/origin/master
 		    (_p->wildcard || p->wildcard ||
 		     _p->datamatch == p->datamatch))
 			return true;
@@ -527,15 +805,35 @@ ioeventfd_check_collision(struct kvm *kvm, struct _ioeventfd *p)
 	return false;
 }
 
+<<<<<<< HEAD
 static int
 kvm_assign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 {
 	int                       pio = args->flags & KVM_IOEVENTFD_FLAG_PIO;
 	enum kvm_bus              bus_idx = pio ? KVM_PIO_BUS : KVM_MMIO_BUS;
+=======
+static enum kvm_bus ioeventfd_bus_from_flags(__u32 flags)
+{
+	if (flags & KVM_IOEVENTFD_FLAG_PIO)
+		return KVM_PIO_BUS;
+	if (flags & KVM_IOEVENTFD_FLAG_VIRTIO_CCW_NOTIFY)
+		return KVM_VIRTIO_CCW_NOTIFY_BUS;
+	return KVM_MMIO_BUS;
+}
+
+static int
+kvm_assign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
+{
+	enum kvm_bus              bus_idx;
+>>>>>>> refs/remotes/origin/master
 	struct _ioeventfd        *p;
 	struct eventfd_ctx       *eventfd;
 	int                       ret;
 
+<<<<<<< HEAD
+=======
+	bus_idx = ioeventfd_bus_from_flags(args->flags);
+>>>>>>> refs/remotes/origin/master
 	/* must be natural-word sized */
 	switch (args->len) {
 	case 1:
@@ -567,6 +865,10 @@ kvm_assign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 
 	INIT_LIST_HEAD(&p->list);
 	p->addr    = args->addr;
+<<<<<<< HEAD
+=======
+	p->bus_idx = bus_idx;
+>>>>>>> refs/remotes/origin/master
 	p->length  = args->len;
 	p->eventfd = eventfd;
 
@@ -587,6 +889,7 @@ kvm_assign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 	kvm_iodevice_init(&p->dev, &ioeventfd_ops);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = kvm_io_bus_register_dev(kvm, bus_idx, &p->dev);
 =======
 	ret = kvm_io_bus_register_dev(kvm, bus_idx, p->addr, p->length,
@@ -595,6 +898,14 @@ kvm_assign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 	if (ret < 0)
 		goto unlock_fail;
 
+=======
+	ret = kvm_io_bus_register_dev(kvm, bus_idx, p->addr, p->length,
+				      &p->dev);
+	if (ret < 0)
+		goto unlock_fail;
+
+	kvm->buses[bus_idx]->ioeventfd_count++;
+>>>>>>> refs/remotes/origin/master
 	list_add_tail(&p->list, &kvm->ioeventfds);
 
 	mutex_unlock(&kvm->slots_lock);
@@ -614,12 +925,20 @@ fail:
 static int
 kvm_deassign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 {
+<<<<<<< HEAD
 	int                       pio = args->flags & KVM_IOEVENTFD_FLAG_PIO;
 	enum kvm_bus              bus_idx = pio ? KVM_PIO_BUS : KVM_MMIO_BUS;
+=======
+	enum kvm_bus              bus_idx;
+>>>>>>> refs/remotes/origin/master
 	struct _ioeventfd        *p, *tmp;
 	struct eventfd_ctx       *eventfd;
 	int                       ret = -ENOENT;
 
+<<<<<<< HEAD
+=======
+	bus_idx = ioeventfd_bus_from_flags(args->flags);
+>>>>>>> refs/remotes/origin/master
 	eventfd = eventfd_ctx_fdget(args->fd);
 	if (IS_ERR(eventfd))
 		return PTR_ERR(eventfd);
@@ -629,7 +948,12 @@ kvm_deassign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 	list_for_each_entry_safe(p, tmp, &kvm->ioeventfds, list) {
 		bool wildcard = !(args->flags & KVM_IOEVENTFD_FLAG_DATAMATCH);
 
+<<<<<<< HEAD
 		if (p->eventfd != eventfd  ||
+=======
+		if (p->bus_idx != bus_idx ||
+		    p->eventfd != eventfd  ||
+>>>>>>> refs/remotes/origin/master
 		    p->addr != args->addr  ||
 		    p->length != args->len ||
 		    p->wildcard != wildcard)
@@ -639,6 +963,10 @@ kvm_deassign_ioeventfd(struct kvm *kvm, struct kvm_ioeventfd *args)
 			continue;
 
 		kvm_io_bus_unregister_dev(kvm, bus_idx, &p->dev);
+<<<<<<< HEAD
+=======
+		kvm->buses[bus_idx]->ioeventfd_count--;
+>>>>>>> refs/remotes/origin/master
 		ioeventfd_release(p);
 		ret = 0;
 		break;

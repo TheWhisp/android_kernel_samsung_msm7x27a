@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -43,6 +47,7 @@ static void cfrfml_release(struct cflayer *layer)
 }
 
 struct cflayer *cfrfml_create(u8 channel_id, struct dev_info *dev_info,
+<<<<<<< HEAD
 					int mtu_size)
 {
 	int tmp;
@@ -55,11 +60,19 @@ struct cflayer *cfrfml_create(u8 channel_id, struct dev_info *dev_info,
 		return NULL;
 	}
 =======
+=======
+			      int mtu_size)
+{
+	int tmp;
+>>>>>>> refs/remotes/origin/master
 	struct cfrfml *this = kzalloc(sizeof(struct cfrfml), GFP_ATOMIC);
 
 	if (!this)
 		return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cfsrvl_init(&this->serv, channel_id, dev_info, false);
 	this->serv.release = cfrfml_release;
@@ -79,7 +92,11 @@ struct cflayer *cfrfml_create(u8 channel_id, struct dev_info *dev_info,
 }
 
 static struct cfpkt *rfm_append(struct cfrfml *rfml, char *seghead,
+<<<<<<< HEAD
 			struct cfpkt *pkt, int *err)
+=======
+				struct cfpkt *pkt, int *err)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfpkt *tmppkt;
 	*err = -EPROTO;
@@ -195,13 +212,19 @@ out:
 	}
 	spin_unlock(&rfml->sync);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(err == -EAGAIN))
 		/* It is not possible to recover after drop of a fragment */
 		err = -EIO;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -209,10 +232,14 @@ out:
 static int cfrfml_transmit_segment(struct cfrfml *rfml, struct cfpkt *pkt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	caif_assert(cfpkt_getlen(pkt) < rfml->fragment_size);
 =======
 	caif_assert(cfpkt_getlen(pkt) < rfml->fragment_size + RFM_HEAD_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	caif_assert(cfpkt_getlen(pkt) < rfml->fragment_size + RFM_HEAD_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	/* Add info for MUX-layer to route the packet out. */
 	cfpkt_info(pkt)->channel_id = rfml->serv.layer.id;
@@ -241,10 +268,14 @@ static int cfrfml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 
 	if (!cfsrvl_ready(&rfml->serv, &err))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return err;
 =======
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	err = -EPROTO;
 	if (cfpkt_getlen(pkt) <= RFM_HEAD_SIZE-1)
@@ -278,15 +309,21 @@ static int cfrfml_transmit(struct cflayer *layr, struct cfpkt *pkt)
 		err = cfrfml_transmit_segment(rfml, frontpkt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err != 0)
 			goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (err != 0) {
 			frontpkt = NULL;
 			goto out;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		frontpkt = rearpkt;
 		rearpkt = NULL;
 
@@ -321,6 +358,7 @@ out:
 			cfpkt_destroy(rearpkt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (frontpkt && frontpkt != pkt) {
 
 			cfpkt_destroy(frontpkt);
@@ -338,6 +376,10 @@ out:
 		if (frontpkt)
 			cfpkt_destroy(frontpkt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (frontpkt)
+			cfpkt_destroy(frontpkt);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return err;

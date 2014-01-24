@@ -1,7 +1,11 @@
 /*
  *  ahci.c - AHCI SATA support
  *
+<<<<<<< HEAD
  *  Maintained by:  Jeff Garzik <jgarzik@pobox.com>
+=======
+ *  Maintained by:  Tejun Heo <tj@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *    		    Please ALWAYS copy linux-ide@vger.kernel.org
  *		    on emails.
  *
@@ -53,12 +57,18 @@
 
 enum {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	AHCI_PCI_BAR		= 5,
 =======
 	AHCI_PCI_BAR_STA2X11	= 0,
 	AHCI_PCI_BAR_ENMOTUS	= 2,
 	AHCI_PCI_BAR_STANDARD	= 5,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	AHCI_PCI_BAR_STA2X11	= 0,
+	AHCI_PCI_BAR_ENMOTUS	= 2,
+	AHCI_PCI_BAR_STANDARD	= 5,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum board_ids {
@@ -86,12 +96,19 @@ enum board_ids {
 
 static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ahci_sb600_softreset(struct ata_link *link, unsigned int *class,
 			  unsigned long deadline);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 static int ahci_vt8251_hardreset(struct ata_link *link, unsigned int *class,
 				 unsigned long deadline);
+=======
+static int ahci_vt8251_hardreset(struct ata_link *link, unsigned int *class,
+				 unsigned long deadline);
+static void ahci_mcp89_apple_enable(struct pci_dev *pdev);
+static bool is_mcp89_apple(struct pci_dev *pdev);
+>>>>>>> refs/remotes/origin/master
 static int ahci_p5wdh_hardreset(struct ata_link *link, unsigned int *class,
 				unsigned long deadline);
 #ifdef CONFIG_PM
@@ -114,6 +131,7 @@ static struct ata_port_operations ahci_p5wdh_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct ata_port_operations ahci_sb600_ops = {
 	.inherits		= &ahci_ops,
 	.softreset		= ahci_sb600_softreset,
@@ -128,29 +146,46 @@ static const struct ata_port_info ahci_port_info[] = {
 	/* by features */
 	[board_ahci] =
 	{
+=======
+static const struct ata_port_info ahci_port_info[] = {
+	/* by features */
+	[board_ahci] = {
+>>>>>>> refs/remotes/origin/master
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
 		.port_ops	= &ahci_ops,
 	},
+<<<<<<< HEAD
 	[board_ahci_ign_iferr] =
 	{
+=======
+	[board_ahci_ign_iferr] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_IGN_IRQ_IF_ERR),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
 		.port_ops	= &ahci_ops,
 	},
+<<<<<<< HEAD
 	[board_ahci_nosntf] =
 	{
+=======
+	[board_ahci_nosntf] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_NO_SNTF),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
 		.port_ops	= &ahci_ops,
 	},
+<<<<<<< HEAD
 	[board_ahci_yes_fbs] =
 	{
+=======
+	[board_ahci_yes_fbs] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_YES_FBS),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
@@ -158,8 +193,12 @@ static const struct ata_port_info ahci_port_info[] = {
 		.port_ops	= &ahci_ops,
 	},
 	/* by chipsets */
+<<<<<<< HEAD
 	[board_ahci_mcp65] =
 	{
+=======
+	[board_ahci_mcp65] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_NO_FPDMA_AA | AHCI_HFLAG_NO_PMP |
 				 AHCI_HFLAG_YES_NCQ),
 		.flags		= AHCI_FLAG_COMMON | ATA_FLAG_NO_DIPM,
@@ -167,24 +206,36 @@ static const struct ata_port_info ahci_port_info[] = {
 		.udma_mask	= ATA_UDMA6,
 		.port_ops	= &ahci_ops,
 	},
+<<<<<<< HEAD
 	[board_ahci_mcp77] =
 	{
+=======
+	[board_ahci_mcp77] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_NO_FPDMA_AA | AHCI_HFLAG_NO_PMP),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
 		.port_ops	= &ahci_ops,
 	},
+<<<<<<< HEAD
 	[board_ahci_mcp89] =
 	{
+=======
+	[board_ahci_mcp89] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_NO_FPDMA_AA),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
 		.port_ops	= &ahci_ops,
 	},
+<<<<<<< HEAD
 	[board_ahci_mv] =
 	{
+=======
+	[board_ahci_mv] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_NO_NCQ | AHCI_HFLAG_NO_MSI |
 				 AHCI_HFLAG_MV_PATA | AHCI_HFLAG_NO_PMP),
 		.flags		= ATA_FLAG_SATA | ATA_FLAG_PIO_DMA,
@@ -192,14 +243,19 @@ static const struct ata_port_info ahci_port_info[] = {
 		.udma_mask	= ATA_UDMA6,
 		.port_ops	= &ahci_ops,
 	},
+<<<<<<< HEAD
 	[board_ahci_sb600] =
 	{
+=======
+	[board_ahci_sb600] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_IGN_SERR_INTERNAL |
 				 AHCI_HFLAG_NO_MSI | AHCI_HFLAG_SECT255 |
 				 AHCI_HFLAG_32BIT_ONLY),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.port_ops	= &ahci_sb600_ops,
 =======
@@ -208,10 +264,16 @@ static const struct ata_port_info ahci_port_info[] = {
 	},
 	[board_ahci_sb700] =	/* for SB700 and SB800 */
 	{
+=======
+		.port_ops	= &ahci_pmp_retry_srst_ops,
+	},
+	[board_ahci_sb700] = {	/* for SB700 and SB800 */
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_IGN_SERR_INTERNAL),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
 		.udma_mask	= ATA_UDMA6,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.port_ops	= &ahci_sb600_ops,
 =======
@@ -220,6 +282,11 @@ static const struct ata_port_info ahci_port_info[] = {
 	},
 	[board_ahci_vt8251] =
 	{
+=======
+		.port_ops	= &ahci_pmp_retry_srst_ops,
+	},
+	[board_ahci_vt8251] = {
+>>>>>>> refs/remotes/origin/master
 		AHCI_HFLAGS	(AHCI_HFLAG_NO_NCQ | AHCI_HFLAG_NO_PMP),
 		.flags		= AHCI_FLAG_COMMON,
 		.pio_mask	= ATA_PIO4,
@@ -289,12 +356,37 @@ static const struct pci_device_id ahci_pci_tbl[] = {
 	{ PCI_VDEVICE(INTEL, 0x1e07), board_ahci }, /* Panther Point RAID */
 	{ PCI_VDEVICE(INTEL, 0x1e0e), board_ahci }, /* Panther Point RAID */
 <<<<<<< HEAD
+<<<<<<< HEAD
         { PCI_VDEVICE(INTEL, 0x1f22), board_ahci }, /* Avoton AHCI */
         { PCI_VDEVICE(INTEL, 0x1f23), board_ahci }, /* Avoton AHCI */
         { PCI_VDEVICE(INTEL, 0x1f24), board_ahci }, /* Avoton RAID */
         { PCI_VDEVICE(INTEL, 0x1f25), board_ahci }, /* Avoton RAID */
         { PCI_VDEVICE(INTEL, 0x1f26), board_ahci }, /* Avoton RAID */
         { PCI_VDEVICE(INTEL, 0x1f27), board_ahci }, /* Avoton RAID */
+=======
+	{ PCI_VDEVICE(INTEL, 0x8c02), board_ahci }, /* Lynx Point AHCI */
+	{ PCI_VDEVICE(INTEL, 0x8c03), board_ahci }, /* Lynx Point AHCI */
+	{ PCI_VDEVICE(INTEL, 0x8c04), board_ahci }, /* Lynx Point RAID */
+	{ PCI_VDEVICE(INTEL, 0x8c05), board_ahci }, /* Lynx Point RAID */
+	{ PCI_VDEVICE(INTEL, 0x8c06), board_ahci }, /* Lynx Point RAID */
+	{ PCI_VDEVICE(INTEL, 0x8c07), board_ahci }, /* Lynx Point RAID */
+	{ PCI_VDEVICE(INTEL, 0x8c0e), board_ahci }, /* Lynx Point RAID */
+	{ PCI_VDEVICE(INTEL, 0x8c0f), board_ahci }, /* Lynx Point RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c02), board_ahci }, /* Lynx Point-LP AHCI */
+	{ PCI_VDEVICE(INTEL, 0x9c03), board_ahci }, /* Lynx Point-LP AHCI */
+	{ PCI_VDEVICE(INTEL, 0x9c04), board_ahci }, /* Lynx Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c05), board_ahci }, /* Lynx Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c06), board_ahci }, /* Lynx Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c07), board_ahci }, /* Lynx Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c0e), board_ahci }, /* Lynx Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c0f), board_ahci }, /* Lynx Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x1f22), board_ahci }, /* Avoton AHCI */
+	{ PCI_VDEVICE(INTEL, 0x1f23), board_ahci }, /* Avoton AHCI */
+	{ PCI_VDEVICE(INTEL, 0x1f24), board_ahci }, /* Avoton RAID */
+	{ PCI_VDEVICE(INTEL, 0x1f25), board_ahci }, /* Avoton RAID */
+	{ PCI_VDEVICE(INTEL, 0x1f26), board_ahci }, /* Avoton RAID */
+	{ PCI_VDEVICE(INTEL, 0x1f27), board_ahci }, /* Avoton RAID */
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VDEVICE(INTEL, 0x1f2e), board_ahci }, /* Avoton RAID */
 	{ PCI_VDEVICE(INTEL, 0x1f2f), board_ahci }, /* Avoton RAID */
 	{ PCI_VDEVICE(INTEL, 0x1f32), board_ahci }, /* Avoton AHCI */
@@ -305,6 +397,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
 	{ PCI_VDEVICE(INTEL, 0x1f37), board_ahci }, /* Avoton RAID */
 	{ PCI_VDEVICE(INTEL, 0x1f3e), board_ahci }, /* Avoton RAID */
 	{ PCI_VDEVICE(INTEL, 0x1f3f), board_ahci }, /* Avoton RAID */
+<<<<<<< HEAD
 =======
 	{ PCI_VDEVICE(INTEL, 0x8c02), board_ahci }, /* Lynx Point AHCI */
 	{ PCI_VDEVICE(INTEL, 0x8c03), board_ahci }, /* Lynx Point AHCI */
@@ -319,6 +412,30 @@ static const struct pci_device_id ahci_pci_tbl[] = {
 	/* JMicron 360/1/3/5/6, match class to avoid IDE function */
 	{ PCI_VENDOR_ID_JMICRON, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
 	  PCI_CLASS_STORAGE_SATA_AHCI, 0xffffff, board_ahci_ign_iferr },
+=======
+	{ PCI_VDEVICE(INTEL, 0x2823), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x2827), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x8d02), board_ahci }, /* Wellsburg AHCI */
+	{ PCI_VDEVICE(INTEL, 0x8d04), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x8d06), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x8d0e), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x8d62), board_ahci }, /* Wellsburg AHCI */
+	{ PCI_VDEVICE(INTEL, 0x8d64), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x8d66), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x8d6e), board_ahci }, /* Wellsburg RAID */
+	{ PCI_VDEVICE(INTEL, 0x23a3), board_ahci }, /* Coleto Creek AHCI */
+	{ PCI_VDEVICE(INTEL, 0x9c83), board_ahci }, /* Wildcat Point-LP AHCI */
+	{ PCI_VDEVICE(INTEL, 0x9c85), board_ahci }, /* Wildcat Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c87), board_ahci }, /* Wildcat Point-LP RAID */
+	{ PCI_VDEVICE(INTEL, 0x9c8f), board_ahci }, /* Wildcat Point-LP RAID */
+
+	/* JMicron 360/1/3/5/6, match class to avoid IDE function */
+	{ PCI_VENDOR_ID_JMICRON, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
+	  PCI_CLASS_STORAGE_SATA_AHCI, 0xffffff, board_ahci_ign_iferr },
+	/* JMicron 362B and 362C have an AHCI function with IDE class code */
+	{ PCI_VDEVICE(JMICRON, 0x2362), board_ahci_ign_iferr },
+	{ PCI_VDEVICE(JMICRON, 0x236f), board_ahci_ign_iferr },
+>>>>>>> refs/remotes/origin/master
 
 	/* ATI */
 	{ PCI_VDEVICE(ATI, 0x4380), board_ahci_sb600 }, /* ATI SB600 */
@@ -432,6 +549,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
 	{ PCI_VDEVICE(SI, 0x0186), board_ahci },		/* SiS 968 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* ST Microelectronics */
 	{ PCI_VDEVICE(STMICRO, 0xCC06), board_ahci },		/* ST ConneXt */
@@ -451,6 +569,32 @@ static const struct pci_device_id ahci_pci_tbl[] = {
 	{ PCI_DEVICE(0x1b4b, 0x9192),
 	  .driver_data = board_ahci_yes_fbs },			/* 88se9172 on some Gigabyte */
 	{ PCI_DEVICE(0x1b4b, 0x91a3),
+=======
+	/* ST Microelectronics */
+	{ PCI_VDEVICE(STMICRO, 0xCC06), board_ahci },		/* ST ConneXt */
+
+	/* Marvell */
+	{ PCI_VDEVICE(MARVELL, 0x6145), board_ahci_mv },	/* 6145 */
+	{ PCI_VDEVICE(MARVELL, 0x6121), board_ahci_mv },	/* 6121 */
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, 0x9123),
+	  .class = PCI_CLASS_STORAGE_SATA_AHCI,
+	  .class_mask = 0xffffff,
+	  .driver_data = board_ahci_yes_fbs },			/* 88se9128 */
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, 0x9125),
+	  .driver_data = board_ahci_yes_fbs },			/* 88se9125 */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_MARVELL_EXT, 0x9178,
+			 PCI_VENDOR_ID_MARVELL_EXT, 0x9170),
+	  .driver_data = board_ahci_yes_fbs },			/* 88se9170 */
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, 0x917a),
+	  .driver_data = board_ahci_yes_fbs },			/* 88se9172 */
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, 0x9172),
+	  .driver_data = board_ahci_yes_fbs },			/* 88se9172 */
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, 0x9192),
+	  .driver_data = board_ahci_yes_fbs },			/* 88se9172 on some Gigabyte */
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, 0x91a3),
+	  .driver_data = board_ahci_yes_fbs },
+	{ PCI_DEVICE(PCI_VENDOR_ID_MARVELL_EXT, 0x9230),
+>>>>>>> refs/remotes/origin/master
 	  .driver_data = board_ahci_yes_fbs },
 
 	/* Promise */
@@ -463,11 +607,17 @@ static const struct pci_device_id ahci_pci_tbl[] = {
 	{ PCI_VDEVICE(ASMEDIA, 0x0612), board_ahci },	/* ASM1062 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Enmotus */
 	{ PCI_DEVICE(0x1c44, 0x8000), board_ahci },
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Enmotus */
+	{ PCI_DEVICE(0x1c44, 0x8000), board_ahci },
+
+>>>>>>> refs/remotes/origin/master
 	/* Generic, PCI class code for AHCI */
 	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
 	  PCI_CLASS_STORAGE_SATA_AHCI, 0xffffff, board_ahci },
@@ -574,6 +724,7 @@ static void ahci_pci_init_controller(struct ata_host *host)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ahci_sb600_check_ready(struct ata_link *link)
 {
 	void __iomem *port_mmio = ahci_port_base(link->ap);
@@ -625,6 +776,8 @@ static int ahci_sb600_softreset(struct ata_link *link, unsigned int *class,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ahci_vt8251_hardreset(struct ata_link *link, unsigned int *class,
 				 unsigned long deadline)
 {
@@ -663,7 +816,11 @@ static int ahci_p5wdh_hardreset(struct ata_link *link, unsigned int *class,
 
 	/* clear D2H reception area to properly wait for D2H FIS */
 	ata_tf_init(link->device, &tf);
+<<<<<<< HEAD
 	tf.command = 0x80;
+=======
+	tf.command = ATA_BUSY;
+>>>>>>> refs/remotes/origin/master
 	ata_tf_to_fis(&tf, 0, 0, d2h_fis);
 
 	rc = sata_link_hardreset(link, sata_ehc_deb_timing(&link->eh_context),
@@ -696,7 +853,11 @@ static int ahci_p5wdh_hardreset(struct ata_link *link, unsigned int *class,
 #ifdef CONFIG_PM
 static int ahci_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct ahci_host_priv *hpriv = host->private_data;
 	void __iomem *mmio = hpriv->mmio;
 	u32 ctl;
@@ -704,12 +865,17 @@ static int ahci_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg)
 	if (mesg.event & PM_EVENT_SUSPEND &&
 	    hpriv->flags & AHCI_HFLAG_NO_SUSPEND) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "BIOS update required for suspend/resume\n");
 =======
 		dev_err(&pdev->dev,
 			"BIOS update required for suspend/resume\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev,
+			"BIOS update required for suspend/resume\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -729,13 +895,24 @@ static int ahci_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg)
 
 static int ahci_pci_device_resume(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
+=======
+	/* Apple BIOS helpfully mangles the registers on resume */
+	if (is_mcp89_apple(pdev))
+		ahci_mcp89_apple_enable(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	if (pdev->dev.power.power_state.event == PM_EVENT_SUSPEND) {
 		rc = ahci_pci_reset_controller(host);
 		if (rc)
@@ -755,7 +932,10 @@ static int ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If the device fixup already set the dma_mask to some non-standard
 	 * value, don't extend it here. This happens on STA2X11, for example.
@@ -763,7 +943,10 @@ static int ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
 	if (pdev->dma_mask && pdev->dma_mask < DMA_BIT_MASK(32))
 		return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (using_dac &&
 	    !pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) {
 		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
@@ -771,12 +954,17 @@ static int ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
 			rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 			if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &pdev->dev,
 					   "64-bit DMA enable failed\n");
 =======
 				dev_err(&pdev->dev,
 					"64-bit DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev_err(&pdev->dev,
+					"64-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 				return rc;
 			}
 		}
@@ -784,15 +972,20 @@ static int ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
 		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit DMA enable failed\n");
 =======
 			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit consistent DMA enable failed\n");
@@ -800,6 +993,10 @@ static int ahci_configure_dma_masks(struct pci_dev *pdev, int using_dac)
 			dev_err(&pdev->dev,
 				"32-bit consistent DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev,
+				"32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 	}
@@ -863,18 +1060,68 @@ static void ahci_p5wdh_workaround(struct ata_host *host)
 		struct ata_port *ap = host->ports[1];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_INFO, &pdev->dev, "enabling ASUS P5W DH "
 			   "Deluxe on-board SIMG4726 workaround\n");
 =======
 		dev_info(&pdev->dev,
 			 "enabling ASUS P5W DH Deluxe on-board SIMG4726 workaround\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_info(&pdev->dev,
+			 "enabling ASUS P5W DH Deluxe on-board SIMG4726 workaround\n");
+>>>>>>> refs/remotes/origin/master
 
 		ap->ops = &ahci_p5wdh_ops;
 		ap->link.flags |= ATA_LFLAG_NO_SRST | ATA_LFLAG_ASSUME_ATA;
 	}
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Macbook7,1 firmware forcibly disables MCP89 AHCI and changes PCI ID when
+ * booting in BIOS compatibility mode.  We restore the registers but not ID.
+ */
+static void ahci_mcp89_apple_enable(struct pci_dev *pdev)
+{
+	u32 val;
+
+	printk(KERN_INFO "ahci: enabling MCP89 AHCI mode\n");
+
+	pci_read_config_dword(pdev, 0xf8, &val);
+	val |= 1 << 0x1b;
+	/* the following changes the device ID, but appears not to affect function */
+	/* val = (val & ~0xf0000000) | 0x80000000; */
+	pci_write_config_dword(pdev, 0xf8, val);
+
+	pci_read_config_dword(pdev, 0x54c, &val);
+	val |= 1 << 0xc;
+	pci_write_config_dword(pdev, 0x54c, val);
+
+	pci_read_config_dword(pdev, 0x4a4, &val);
+	val &= 0xff;
+	val |= 0x01060100;
+	pci_write_config_dword(pdev, 0x4a4, val);
+
+	pci_read_config_dword(pdev, 0x54c, &val);
+	val &= ~(1 << 0xc);
+	pci_write_config_dword(pdev, 0x54c, val);
+
+	pci_read_config_dword(pdev, 0xf8, &val);
+	val &= ~(1 << 0x1b);
+	pci_write_config_dword(pdev, 0xf8, val);
+}
+
+static bool is_mcp89_apple(struct pci_dev *pdev)
+{
+	return pdev->vendor == PCI_VENDOR_ID_NVIDIA &&
+		pdev->device == PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA &&
+		pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE &&
+		pdev->subsystem_device == 0xcb89;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* only some SB600 ahci controllers can do 64bit DMA */
 static bool ahci_sb600_enable_64bit(struct pci_dev *pdev)
 {
@@ -920,6 +1167,25 @@ static bool ahci_sb600_enable_64bit(struct pci_dev *pdev)
 			},
 		},
 		/*
+<<<<<<< HEAD
+=======
+		 * All BIOS versions for the MSI K9AGM2 (MS-7327) support
+		 * 64bit DMA.
+		 *
+		 * This board also had the typo mentioned above in the
+		 * Manufacturer DMI field (fixed in BIOS version 1.5), so
+		 * match on DMI_BOARD_VENDOR of "MICRO-STAR INTER" again.
+		 */
+		{
+			.ident = "MSI K9AGM2",
+			.matches = {
+				DMI_MATCH(DMI_BOARD_VENDOR,
+					  "MICRO-STAR INTER"),
+				DMI_MATCH(DMI_BOARD_NAME, "MS-7327"),
+			},
+		},
+		/*
+>>>>>>> refs/remotes/origin/master
 		 * All BIOS versions for the Asus M3A support 64bit DMA.
 		 * (all release versions from 0301 to 1206 were tested)
 		 */
@@ -952,6 +1218,7 @@ static bool ahci_sb600_enable_64bit(struct pci_dev *pdev)
 		goto enable_64bit;
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_WARNING, &pdev->dev, "%s: BIOS too old, "
 			   "forcing 32bit DMA, update BIOS\n", match->ident);
 =======
@@ -959,16 +1226,25 @@ static bool ahci_sb600_enable_64bit(struct pci_dev *pdev)
 			 "%s: BIOS too old, forcing 32bit DMA, update BIOS\n",
 			 match->ident);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(&pdev->dev,
+			 "%s: BIOS too old, forcing 32bit DMA, update BIOS\n",
+			 match->ident);
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
 enable_64bit:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_printk(KERN_WARNING, &pdev->dev, "%s: enabling 64bit DMA\n",
 		   match->ident);
 =======
 	dev_warn(&pdev->dev, "%s: enabling 64bit DMA\n", match->ident);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_warn(&pdev->dev, "%s: enabling 64bit DMA\n", match->ident);
+>>>>>>> refs/remotes/origin/master
 	return true;
 }
 
@@ -1172,6 +1448,7 @@ static void ahci_gtf_filter_workaround(struct ata_host *host)
 
 	filter = (unsigned long)dmi->driver_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_printk(KERN_INFO, host->dev,
 		   "applying extra ACPI _GTF filter 0x%x for %s\n",
 		   filter, dmi->ident);
@@ -1179,6 +1456,10 @@ static void ahci_gtf_filter_workaround(struct ata_host *host)
 	dev_info(host->dev, "applying extra ACPI _GTF filter 0x%x for %s\n",
 		 filter, dmi->ident);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_info(host->dev, "applying extra ACPI _GTF filter 0x%x for %s\n",
+		 filter, dmi->ident);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < host->n_ports; i++) {
 		struct ata_port *ap = host->ports[i];
@@ -1195,34 +1476,137 @@ static inline void ahci_gtf_filter_workaround(struct ata_host *host)
 {}
 #endif
 
+<<<<<<< HEAD
 static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ahci_init_interrupts(struct pci_dev *pdev, struct ahci_host_priv *hpriv)
+{
+	int rc;
+	unsigned int maxvec;
+
+	if (!(hpriv->flags & AHCI_HFLAG_NO_MSI)) {
+		rc = pci_enable_msi_block_auto(pdev, &maxvec);
+		if (rc > 0) {
+			if ((rc == maxvec) || (rc == 1))
+				return rc;
+			/*
+			 * Assume that advantage of multipe MSIs is negated,
+			 * so fallback to single MSI mode to save resources
+			 */
+			pci_disable_msi(pdev);
+			if (!pci_enable_msi(pdev))
+				return 1;
+		}
+	}
+
+	pci_intx(pdev, 1);
+	return 0;
+}
+
+/**
+ *	ahci_host_activate - start AHCI host, request IRQs and register it
+ *	@host: target ATA host
+ *	@irq: base IRQ number to request
+ *	@n_msis: number of MSIs allocated for this host
+ *	@irq_handler: irq_handler used when requesting IRQs
+ *	@irq_flags: irq_flags used when requesting IRQs
+ *
+ *	Similar to ata_host_activate, but requests IRQs according to AHCI-1.1
+ *	when multiple MSIs were allocated. That is one MSI per port, starting
+ *	from @irq.
+ *
+ *	LOCKING:
+ *	Inherited from calling layer (may sleep).
+ *
+ *	RETURNS:
+ *	0 on success, -errno otherwise.
+ */
+int ahci_host_activate(struct ata_host *host, int irq, unsigned int n_msis)
+{
+	int i, rc;
+
+	/* Sharing Last Message among several ports is not supported */
+	if (n_msis < host->n_ports)
+		return -EINVAL;
+
+	rc = ata_host_start(host);
+	if (rc)
+		return rc;
+
+	for (i = 0; i < host->n_ports; i++) {
+		const char* desc;
+		struct ahci_port_priv *pp = host->ports[i]->private_data;
+
+		/* pp is NULL for dummy ports */
+		if (pp)
+			desc = pp->irq_desc;
+		else
+			desc = dev_driver_string(host->dev);
+
+		rc = devm_request_threaded_irq(host->dev,
+			irq + i, ahci_hw_interrupt, ahci_thread_fn, IRQF_SHARED,
+			desc, host->ports[i]);
+		if (rc)
+			goto out_free_irqs;
+	}
+
+	for (i = 0; i < host->n_ports; i++)
+		ata_port_desc(host->ports[i], "irq %d", irq + i);
+
+	rc = ata_host_register(host, &ahci_sht);
+	if (rc)
+		goto out_free_all_irqs;
+
+	return 0;
+
+out_free_all_irqs:
+	i = host->n_ports;
+out_free_irqs:
+	for (i--; i >= 0; i--)
+		devm_free_irq(host->dev, irq + i, host->ports[i]);
+
+	return rc;
+}
+
+static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+{
+>>>>>>> refs/remotes/origin/master
 	unsigned int board_id = ent->driver_data;
 	struct ata_port_info pi = ahci_port_info[board_id];
 	const struct ata_port_info *ppi[] = { &pi, NULL };
 	struct device *dev = &pdev->dev;
 	struct ahci_host_priv *hpriv;
 	struct ata_host *host;
+<<<<<<< HEAD
 	int n_ports, i, rc;
 <<<<<<< HEAD
 =======
 	int ahci_pci_bar = AHCI_PCI_BAR_STANDARD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int n_ports, n_msis, i, rc;
+	int ahci_pci_bar = AHCI_PCI_BAR_STANDARD;
+>>>>>>> refs/remotes/origin/master
 
 	VPRINTK("ENTER\n");
 
 	WARN_ON((int)ATA_MAX_QUEUE > AHCI_MAX_CMDS);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* The AHCI driver can only drive the SATA ports, the PATA driver
 	   can drive them all so if both drivers are selected make sure
@@ -1230,6 +1614,7 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (pdev->vendor == PCI_VENDOR_ID_MARVELL && !marvell_enable)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	/*
 	 * For some reason, MCP89 on MacBook 7,1 doesn't work with
 	 * ahci, use ata_generic instead.
@@ -1239,6 +1624,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	    pdev->subsystem_vendor == PCI_VENDOR_ID_APPLE &&
 	    pdev->subsystem_device == 0xcb89)
 		return -ENODEV;
+=======
+	/* Apple BIOS on MCP89 prevents us using AHCI */
+	if (is_mcp89_apple(pdev))
+		ahci_mcp89_apple_enable(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Promise's PDC42819 is a SAS/SATA controller that has an AHCI mode.
 	 * At the moment, we can only use the AHCI mode. Let the users know
@@ -1246,9 +1636,12 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	 */
 	if (pdev->vendor == PCI_VENDOR_ID_PROMISE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_INFO, &pdev->dev, "PDC42819 "
 			   "can only drive SATA devices with this driver\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_info(&pdev->dev,
 			 "PDC42819 can only drive SATA devices with this driver\n");
 
@@ -1257,13 +1650,17 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		ahci_pci_bar = AHCI_PCI_BAR_STA2X11;
 	else if (pdev->vendor == 0x1c44 && pdev->device == 0x8000)
 		ahci_pci_bar = AHCI_PCI_BAR_ENMOTUS;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* acquire resources */
 	rc = pcim_enable_device(pdev);
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 	/* AHCI controllers often implement SFF compatible interface.
 	 * Grab all PCI BARs just in case.
 	 */
@@ -1277,6 +1674,8 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (rc)
 		return rc;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdev->vendor == PCI_VENDOR_ID_INTEL &&
 	    (pdev->device == 0x2652 || pdev->device == 0x2653)) {
 		u8 map;
@@ -1288,16 +1687,33 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		pci_read_config_byte(pdev, ICH_MAP, &map);
 		if (map & 0x3) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_INFO, &pdev->dev, "controller is in "
 				   "combined mode, can't enable AHCI mode\n");
 =======
 			dev_info(&pdev->dev,
 				 "controller is in combined mode, can't enable AHCI mode\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_info(&pdev->dev,
+				 "controller is in combined mode, can't enable AHCI mode\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/* AHCI controllers often implement SFF compatible interface.
+	 * Grab all PCI BARs just in case.
+	 */
+	rc = pcim_iomap_regions_request_all(pdev, 1 << ahci_pci_bar, DRV_NAME);
+	if (rc == -EBUSY)
+		pcim_pin_device(pdev);
+	if (rc)
+		return rc;
+
+>>>>>>> refs/remotes/origin/master
 	hpriv = devm_kzalloc(dev, sizeof(*hpriv), GFP_KERNEL);
 	if (!hpriv)
 		return -ENOMEM;
@@ -1316,6 +1732,7 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (ahci_sb600_enable_64bit(pdev))
 		hpriv->flags &= ~AHCI_HFLAG_32BIT_ONLY;
 
+<<<<<<< HEAD
 	if ((hpriv->flags & AHCI_HFLAG_NO_MSI) || pci_enable_msi(pdev))
 		pci_intx(pdev, 1);
 
@@ -1324,6 +1741,13 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 =======
 	hpriv->mmio = pcim_iomap_table(pdev)[ahci_pci_bar];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hpriv->mmio = pcim_iomap_table(pdev)[ahci_pci_bar];
+
+	n_msis = ahci_init_interrupts(pdev, hpriv);
+	if (n_msis > 1)
+		hpriv->flags |= AHCI_HFLAG_MULTI_MSI;
+>>>>>>> refs/remotes/origin/master
 
 	/* save initial config */
 	ahci_pci_save_initial_config(pdev, hpriv);
@@ -1339,6 +1763,17 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		 */
 		if (!(hpriv->flags & AHCI_HFLAG_NO_FPDMA_AA))
 			pi.flags |= ATA_FLAG_FPDMA_AA;
+<<<<<<< HEAD
+=======
+
+		/*
+		 * All AHCI controllers should be forward-compatible
+		 * with the new auxiliary field. This code should be
+		 * conditionalized if any buggy AHCI controllers are
+		 * encountered.
+		 */
+		pi.flags |= ATA_FLAG_FPDMA_AUX;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (hpriv->cap & HOST_CAP_PMP)
@@ -1355,12 +1790,17 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (ahci_broken_suspend(pdev)) {
 		hpriv->flags |= AHCI_HFLAG_NO_SUSPEND;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_WARNING, &pdev->dev,
 			   "BIOS update required for suspend/resume\n");
 =======
 		dev_warn(&pdev->dev,
 			 "BIOS update required for suspend/resume\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(&pdev->dev,
+			 "BIOS update required for suspend/resume\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ahci_broken_online(pdev)) {
@@ -1384,7 +1824,11 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (!(hpriv->cap & HOST_CAP_SSS) || ahci_ignore_sss)
 		host->flags |= ATA_HOST_PARALLEL_SCAN;
 	else
+<<<<<<< HEAD
 		printk(KERN_INFO "ahci: SSS flag set, parallel bus scan disabled\n");
+=======
+		dev_info(&pdev->dev, "SSS flag set, parallel bus scan disabled\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (pi.flags & ATA_FLAG_EM)
 		ahci_reset_em(host);
@@ -1393,12 +1837,17 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		struct ata_port *ap = host->ports[i];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_pbar_desc(ap, AHCI_PCI_BAR, -1, "abar");
 		ata_port_pbar_desc(ap, AHCI_PCI_BAR,
 =======
 		ata_port_pbar_desc(ap, ahci_pci_bar, -1, "abar");
 		ata_port_pbar_desc(ap, ahci_pci_bar,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_pbar_desc(ap, ahci_pci_bar, -1, "abar");
+		ata_port_pbar_desc(ap, ahci_pci_bar,
+>>>>>>> refs/remotes/origin/master
 				   0x100 + ap->port_no * 0x80, "port");
 
 		/* set enclosure management message type */
@@ -1430,6 +1879,7 @@ static int ahci_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 	ahci_pci_print_info(host);
 
 	pci_set_master(pdev);
+<<<<<<< HEAD
 	return ata_host_activate(host, pdev->irq, ahci_interrupt, IRQF_SHARED,
 				 &ahci_sht);
 }
@@ -1444,12 +1894,26 @@ static void __exit ahci_exit(void)
 	pci_unregister_driver(&ahci_pci_driver);
 }
 
+=======
+
+	if (hpriv->flags & AHCI_HFLAG_MULTI_MSI)
+		return ahci_host_activate(host, pdev->irq, n_msis);
+
+	return ata_host_activate(host, pdev->irq, ahci_interrupt, IRQF_SHARED,
+				 &ahci_sht);
+}
+
+module_pci_driver(ahci_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jeff Garzik");
 MODULE_DESCRIPTION("AHCI SATA low-level driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, ahci_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(ahci_init);
 module_exit(ahci_exit);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -149,10 +149,14 @@ static int cs5535audio_build_dma_packets(struct cs5535audio *cs5535au,
 			&((struct cs5535audio_dma_desc *) dma->desc_buf.area)[i];
 		desc->addr = cpu_to_le32(addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		desc->size = cpu_to_le32(period_bytes);
 =======
 		desc->size = cpu_to_le16(period_bytes);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		desc->size = cpu_to_le16(period_bytes);
+>>>>>>> refs/remotes/origin/master
 		desc->ctlreserved = cpu_to_le16(PRD_EOP);
 		desc_addr += sizeof(struct cs5535audio_dma_desc);
 		addr += period_bytes;
@@ -426,7 +430,11 @@ static struct cs5535audio_dma_ops snd_cs5535audio_capture_dma_ops = {
         .read_dma_pntr = cs5535audio_capture_read_dma_pntr,
 };
 
+<<<<<<< HEAD
 int __devinit snd_cs5535audio_pcm(struct cs5535audio *cs5535au)
+=======
+int snd_cs5535audio_pcm(struct cs5535audio *cs5535au)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;

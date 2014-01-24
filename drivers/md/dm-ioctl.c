@@ -36,6 +36,17 @@ struct hash_cell {
 	struct dm_table *new_map;
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * A dummy definition to make RCU happy.
+ * struct dm_table should never be dereferenced in this file.
+ */
+struct dm_table {
+	int undefined__;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct vers_iter {
     size_t param_size;
     struct dm_target_versions *vers, *old_vers;
@@ -49,7 +60,11 @@ struct vers_iter {
 static struct list_head _name_buckets[NUM_BUCKETS];
 static struct list_head _uuid_buckets[NUM_BUCKETS];
 
+<<<<<<< HEAD
 static void dm_hash_remove_all(int keep_open_devices);
+=======
+static void dm_hash_remove_all(bool keep_open_devices, bool mark_deferred, bool only_deferred);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Guards access to both hash tables.
@@ -78,7 +93,11 @@ static int dm_hash_init(void)
 
 static void dm_hash_exit(void)
 {
+<<<<<<< HEAD
 	dm_hash_remove_all(0);
+=======
+	dm_hash_remove_all(false, false, false);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-----------------------------------------------------------------
@@ -129,7 +148,10 @@ static struct hash_cell *__get_uuid_cell(const char *str)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct hash_cell *__get_dev_cell(uint64_t dev)
 {
 	struct mapped_device *md;
@@ -148,7 +170,10 @@ static struct hash_cell *__get_dev_cell(uint64_t dev)
 	return hc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*-----------------------------------------------------------------
  * Inserting, removing and renaming a device.
  *---------------------------------------------------------------*/
@@ -245,9 +270,16 @@ static int dm_hash_insert(const char *name, const char *uuid, struct mapped_devi
 	return -EBUSY;
 }
 
+<<<<<<< HEAD
 static void __hash_remove(struct hash_cell *hc)
 {
 	struct dm_table *table;
+=======
+static struct dm_table *__hash_remove(struct hash_cell *hc)
+{
+	struct dm_table *table;
+	int srcu_idx;
+>>>>>>> refs/remotes/origin/master
 
 	/* remove from the dev hash */
 	list_del(&hc->uuid_list);
@@ -256,6 +288,7 @@ static void __hash_remove(struct hash_cell *hc)
 	dm_set_mdptr(hc->md, NULL);
 	mutex_unlock(&dm_hash_cells_mutex);
 
+<<<<<<< HEAD
 	table = dm_get_live_table(hc->md);
 	if (table) {
 		dm_table_event(table);
@@ -269,10 +302,31 @@ static void __hash_remove(struct hash_cell *hc)
 }
 
 static void dm_hash_remove_all(int keep_open_devices)
+=======
+	table = dm_get_live_table(hc->md, &srcu_idx);
+	if (table)
+		dm_table_event(table);
+	dm_put_live_table(hc->md, srcu_idx);
+
+	table = NULL;
+	if (hc->new_map)
+		table = hc->new_map;
+	dm_put(hc->md);
+	free_cell(hc);
+
+	return table;
+}
+
+static void dm_hash_remove_all(bool keep_open_devices, bool mark_deferred, bool only_deferred)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, dev_skipped;
 	struct hash_cell *hc;
 	struct mapped_device *md;
+<<<<<<< HEAD
+=======
+	struct dm_table *t;
+>>>>>>> refs/remotes/origin/master
 
 retry:
 	dev_skipped = 0;
@@ -284,16 +338,32 @@ retry:
 			md = hc->md;
 			dm_get(md);
 
+<<<<<<< HEAD
 			if (keep_open_devices && dm_lock_for_deletion(md)) {
+=======
+			if (keep_open_devices &&
+			    dm_lock_for_deletion(md, mark_deferred, only_deferred)) {
+>>>>>>> refs/remotes/origin/master
 				dm_put(md);
 				dev_skipped++;
 				continue;
 			}
 
+<<<<<<< HEAD
 			__hash_remove(hc);
 
 			up_write(&_hash_lock);
 
+=======
+			t = __hash_remove(hc);
+
+			up_write(&_hash_lock);
+
+			if (t) {
+				dm_sync_table(md);
+				dm_table_destroy(t);
+			}
+>>>>>>> refs/remotes/origin/master
 			dm_put(md);
 			if (likely(keep_open_devices))
 				dm_destroy(md);
@@ -359,6 +429,10 @@ static struct mapped_device *dm_hash_rename(struct dm_ioctl *param,
 	struct dm_table *table;
 	struct mapped_device *md;
 	unsigned change_uuid = (param->flags & DM_UUID_FLAG) ? 1 : 0;
+<<<<<<< HEAD
+=======
+	int srcu_idx;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * duplicate new.
@@ -421,11 +495,18 @@ static struct mapped_device *dm_hash_rename(struct dm_ioctl *param,
 	/*
 	 * Wake up any dm event waiters.
 	 */
+<<<<<<< HEAD
 	table = dm_get_live_table(hc->md);
 	if (table) {
 		dm_table_event(table);
 		dm_table_put(table);
 	}
+=======
+	table = dm_get_live_table(hc->md, &srcu_idx);
+	if (table)
+		dm_table_event(table);
+	dm_put_live_table(hc->md, srcu_idx);
+>>>>>>> refs/remotes/origin/master
 
 	if (!dm_kobject_uevent(hc->md, KOBJ_CHANGE, param->event_nr))
 		param->flags |= DM_UEVENT_GENERATED_FLAG;
@@ -437,6 +518,14 @@ static struct mapped_device *dm_hash_rename(struct dm_ioctl *param,
 	return md;
 }
 
+<<<<<<< HEAD
+=======
+void dm_deferred_remove(void)
+{
+	dm_hash_remove_all(true, false, true);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*-----------------------------------------------------------------
  * Implementation of the ioctl commands
  *---------------------------------------------------------------*/
@@ -448,7 +537,11 @@ typedef int (*ioctl_fn)(struct dm_ioctl *param, size_t param_size);
 
 static int remove_all(struct dm_ioctl *param, size_t param_size)
 {
+<<<<<<< HEAD
 	dm_hash_remove_all(1);
+=======
+	dm_hash_remove_all(true, !!(param->flags & DM_DEFERRED_REMOVE), false);
+>>>>>>> refs/remotes/origin/master
 	param->data_size = 0;
 	return 0;
 }
@@ -623,11 +716,21 @@ static int check_name(const char *name)
  * _hash_lock without first calling dm_table_put, because dm_table_destroy
  * waits for this dm_table_put and could be called under this lock.
  */
+<<<<<<< HEAD
 static struct dm_table *dm_get_inactive_table(struct mapped_device *md)
+=======
+static struct dm_table *dm_get_inactive_table(struct mapped_device *md, int *srcu_idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hash_cell *hc;
 	struct dm_table *table = NULL;
 
+<<<<<<< HEAD
+=======
+	/* increment rcu count, we don't care about the table pointer */
+	dm_get_live_table(md, srcu_idx);
+
+>>>>>>> refs/remotes/origin/master
 	down_read(&_hash_lock);
 	hc = dm_get_mdptr(md);
 	if (!hc || hc->md != md) {
@@ -636,8 +739,11 @@ static struct dm_table *dm_get_inactive_table(struct mapped_device *md)
 	}
 
 	table = hc->new_map;
+<<<<<<< HEAD
 	if (table)
 		dm_table_get(table);
+=======
+>>>>>>> refs/remotes/origin/master
 
 out:
 	up_read(&_hash_lock);
@@ -646,10 +752,18 @@ out:
 }
 
 static struct dm_table *dm_get_live_or_inactive_table(struct mapped_device *md,
+<<<<<<< HEAD
 						      struct dm_ioctl *param)
 {
 	return (param->flags & DM_QUERY_INACTIVE_TABLE_FLAG) ?
 		dm_get_inactive_table(md) : dm_get_live_table(md);
+=======
+						      struct dm_ioctl *param,
+						      int *srcu_idx)
+{
+	return (param->flags & DM_QUERY_INACTIVE_TABLE_FLAG) ?
+		dm_get_inactive_table(md, srcu_idx) : dm_get_live_table(md, srcu_idx);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -660,6 +774,10 @@ static void __dev_status(struct mapped_device *md, struct dm_ioctl *param)
 {
 	struct gendisk *disk = dm_disk(md);
 	struct dm_table *table;
+<<<<<<< HEAD
+=======
+	int srcu_idx;
+>>>>>>> refs/remotes/origin/master
 
 	param->flags &= ~(DM_SUSPEND_FLAG | DM_READONLY_FLAG |
 			  DM_ACTIVE_PRESENT_FLAG);
@@ -667,6 +785,12 @@ static void __dev_status(struct mapped_device *md, struct dm_ioctl *param)
 	if (dm_suspended_md(md))
 		param->flags |= DM_SUSPEND_FLAG;
 
+<<<<<<< HEAD
+=======
+	if (dm_test_deferred_remove_flag(md))
+		param->flags |= DM_DEFERRED_REMOVE;
+
+>>>>>>> refs/remotes/origin/master
 	param->dev = huge_encode_dev(disk_devt(disk));
 
 	/*
@@ -679,13 +803,18 @@ static void __dev_status(struct mapped_device *md, struct dm_ioctl *param)
 	param->event_nr = dm_get_event_nr(md);
 	param->target_count = 0;
 
+<<<<<<< HEAD
 	table = dm_get_live_table(md);
+=======
+	table = dm_get_live_table(md, &srcu_idx);
+>>>>>>> refs/remotes/origin/master
 	if (table) {
 		if (!(param->flags & DM_QUERY_INACTIVE_TABLE_FLAG)) {
 			if (get_disk_ro(disk))
 				param->flags |= DM_READONLY_FLAG;
 			param->target_count = dm_table_get_num_targets(table);
 		}
+<<<<<<< HEAD
 		dm_table_put(table);
 
 		param->flags |= DM_ACTIVE_PRESENT_FLAG;
@@ -693,12 +822,27 @@ static void __dev_status(struct mapped_device *md, struct dm_ioctl *param)
 
 	if (param->flags & DM_QUERY_INACTIVE_TABLE_FLAG) {
 		table = dm_get_inactive_table(md);
+=======
+
+		param->flags |= DM_ACTIVE_PRESENT_FLAG;
+	}
+	dm_put_live_table(md, srcu_idx);
+
+	if (param->flags & DM_QUERY_INACTIVE_TABLE_FLAG) {
+		int srcu_idx;
+		table = dm_get_inactive_table(md, &srcu_idx);
+>>>>>>> refs/remotes/origin/master
 		if (table) {
 			if (!(dm_table_get_mode(table) & FMODE_WRITE))
 				param->flags |= DM_READONLY_FLAG;
 			param->target_count = dm_table_get_num_targets(table);
+<<<<<<< HEAD
 			dm_table_put(table);
 		}
+=======
+		}
+		dm_put_live_table(md, srcu_idx);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -740,6 +884,7 @@ static int dev_create(struct dm_ioctl *param, size_t param_size)
 static struct hash_cell *__find_device_hash_cell(struct dm_ioctl *param)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mapped_device *md;
 	void *mdptr = NULL;
 
@@ -760,6 +905,8 @@ static struct hash_cell *__find_device_hash_cell(struct dm_ioctl *param)
 out:
 	return mdptr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hash_cell *hc = NULL;
 
 	if (*param->uuid) {
@@ -799,7 +946,10 @@ out:
 		param->flags &= ~DM_INACTIVE_PRESENT_FLAG;
 
 	return hc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct mapped_device *find_device(struct dm_ioctl *param)
@@ -809,6 +959,7 @@ static struct mapped_device *find_device(struct dm_ioctl *param)
 
 	down_read(&_hash_lock);
 	hc = __find_device_hash_cell(param);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (hc) {
 		md = hc->md;
@@ -832,6 +983,10 @@ static struct mapped_device *find_device(struct dm_ioctl *param)
 	if (hc)
 		md = hc->md;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hc)
+		md = hc->md;
+>>>>>>> refs/remotes/origin/master
 	up_read(&_hash_lock);
 
 	return md;
@@ -842,6 +997,10 @@ static int dev_remove(struct dm_ioctl *param, size_t param_size)
 	struct hash_cell *hc;
 	struct mapped_device *md;
 	int r;
+<<<<<<< HEAD
+=======
+	struct dm_table *t;
+>>>>>>> refs/remotes/origin/master
 
 	down_write(&_hash_lock);
 	hc = __find_device_hash_cell(param);
@@ -857,17 +1016,40 @@ static int dev_remove(struct dm_ioctl *param, size_t param_size)
 	/*
 	 * Ensure the device is not open and nothing further can open it.
 	 */
+<<<<<<< HEAD
 	r = dm_lock_for_deletion(md);
 	if (r) {
+=======
+	r = dm_lock_for_deletion(md, !!(param->flags & DM_DEFERRED_REMOVE), false);
+	if (r) {
+		if (r == -EBUSY && param->flags & DM_DEFERRED_REMOVE) {
+			up_write(&_hash_lock);
+			dm_put(md);
+			return 0;
+		}
+>>>>>>> refs/remotes/origin/master
 		DMDEBUG_LIMIT("unable to remove open device %s", hc->name);
 		up_write(&_hash_lock);
 		dm_put(md);
 		return r;
 	}
 
+<<<<<<< HEAD
 	__hash_remove(hc);
 	up_write(&_hash_lock);
 
+=======
+	t = __hash_remove(hc);
+	up_write(&_hash_lock);
+
+	if (t) {
+		dm_sync_table(md);
+		dm_table_destroy(t);
+	}
+
+	param->flags &= ~DM_DEFERRED_REMOVE;
+
+>>>>>>> refs/remotes/origin/master
 	if (!dm_kobject_uevent(md, KOBJ_REMOVE, param->event_nr))
 		param->flags |= DM_UEVENT_GENERATED_FLAG;
 
@@ -897,7 +1079,11 @@ static int dev_rename(struct dm_ioctl *param, size_t param_size)
 	unsigned change_uuid = (param->flags & DM_UUID_FLAG) ? 1 : 0;
 
 	if (new_data < param->data ||
+<<<<<<< HEAD
 	    invalid_str(new_data, (void *) param + param_size) ||
+=======
+	    invalid_str(new_data, (void *) param + param_size) || !*new_data ||
+>>>>>>> refs/remotes/origin/master
 	    strlen(new_data) > (change_uuid ? DM_UUID_LEN - 1 : DM_NAME_LEN - 1)) {
 		DMWARN("Invalid new mapped device name or uuid string supplied.");
 		return -EINVAL;
@@ -927,9 +1113,13 @@ static int dev_set_geometry(struct dm_ioctl *param, size_t param_size)
 	unsigned long indata[4];
 	char *geostr = (char *) param + param->data_start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char dummy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/master
 
 	md = find_device(param);
 	if (!md)
@@ -942,12 +1132,17 @@ static int dev_set_geometry(struct dm_ioctl *param, size_t param_size)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	x = sscanf(geostr, "%lu %lu %lu %lu", indata,
 		   indata + 1, indata + 2, indata + 3);
 =======
 	x = sscanf(geostr, "%lu %lu %lu %lu%c", indata,
 		   indata + 1, indata + 2, indata + 3, &dummy);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	x = sscanf(geostr, "%lu %lu %lu %lu%c", indata,
+		   indata + 1, indata + 2, indata + 3, &dummy);
+>>>>>>> refs/remotes/origin/master
 
 	if (x != 4) {
 		DMWARN("Unable to interpret geometry settings.");
@@ -1040,6 +1235,10 @@ static int do_resume(struct dm_ioctl *param)
 
 		old_map = dm_swap_table(md, new_map);
 		if (IS_ERR(old_map)) {
+<<<<<<< HEAD
+=======
+			dm_sync_table(md);
+>>>>>>> refs/remotes/origin/master
 			dm_table_destroy(new_map);
 			dm_put(md);
 			return PTR_ERR(old_map);
@@ -1057,6 +1256,13 @@ static int do_resume(struct dm_ioctl *param)
 			param->flags |= DM_UEVENT_GENERATED_FLAG;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Since dm_swap_table synchronizes RCU, nobody should be in
+	 * read-side critical section already.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (old_map)
 		dm_table_destroy(old_map);
 
@@ -1108,6 +1314,10 @@ static void retrieve_status(struct dm_table *table,
 	char *outbuf, *outptr;
 	status_type_t type;
 	size_t remaining, len, used = 0;
+<<<<<<< HEAD
+=======
+	unsigned status_flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	outptr = outbuf = get_result_buffer(param, param_size, &len);
 
@@ -1120,6 +1330,10 @@ static void retrieve_status(struct dm_table *table,
 	num_targets = dm_table_get_num_targets(table);
 	for (i = 0; i < num_targets; i++) {
 		struct dm_target *ti = dm_table_get_target(table, i);
+<<<<<<< HEAD
+=======
+		size_t l;
+>>>>>>> refs/remotes/origin/master
 
 		remaining = len - (outptr - outbuf);
 		if (remaining <= sizeof(struct dm_target_spec)) {
@@ -1144,6 +1358,7 @@ static void retrieve_status(struct dm_table *table,
 
 		/* Get the status/table string from the target driver */
 		if (ti->type->status) {
+<<<<<<< HEAD
 			if (ti->type->status(ti, type, outptr, remaining)) {
 				param->flags |= DM_BUFFER_FULL_FLAG;
 				break;
@@ -1152,6 +1367,21 @@ static void retrieve_status(struct dm_table *table,
 			outptr[0] = '\0';
 
 		outptr += strlen(outptr) + 1;
+=======
+			if (param->flags & DM_NOFLUSH_FLAG)
+				status_flags |= DM_STATUS_NOFLUSH_FLAG;
+			ti->type->status(ti, type, status_flags, outptr, remaining);
+		} else
+			outptr[0] = '\0';
+
+		l = strlen(outptr) + 1;
+		if (l == remaining) {
+			param->flags |= DM_BUFFER_FULL_FLAG;
+			break;
+		}
+
+		outptr += l;
+>>>>>>> refs/remotes/origin/master
 		used = param->data_start + (outptr - outbuf);
 
 		outptr = align_ptr(outptr);
@@ -1172,6 +1402,10 @@ static int dev_wait(struct dm_ioctl *param, size_t param_size)
 	int r = 0;
 	struct mapped_device *md;
 	struct dm_table *table;
+<<<<<<< HEAD
+=======
+	int srcu_idx;
+>>>>>>> refs/remotes/origin/master
 
 	md = find_device(param);
 	if (!md)
@@ -1192,11 +1426,18 @@ static int dev_wait(struct dm_ioctl *param, size_t param_size)
 	 */
 	__dev_status(md, param);
 
+<<<<<<< HEAD
 	table = dm_get_live_or_inactive_table(md, param);
 	if (table) {
 		retrieve_status(table, param, param_size);
 		dm_table_put(table);
 	}
+=======
+	table = dm_get_live_or_inactive_table(md, param, &srcu_idx);
+	if (table)
+		retrieve_status(table, param, param_size);
+	dm_put_live_table(md, srcu_idx);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	dm_put(md);
@@ -1268,12 +1509,18 @@ static int table_load(struct dm_ioctl *param, size_t param_size)
 {
 	int r;
 	struct hash_cell *hc;
+<<<<<<< HEAD
 	struct dm_table *t;
 	struct mapped_device *md;
 <<<<<<< HEAD
 =======
 	struct target_type *immutable_target_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dm_table *t, *old_map = NULL;
+	struct mapped_device *md;
+	struct target_type *immutable_target_type;
+>>>>>>> refs/remotes/origin/master
 
 	md = find_device(param);
 	if (!md)
@@ -1281,6 +1528,7 @@ static int table_load(struct dm_ioctl *param, size_t param_size)
 
 	r = dm_table_create(&t, get_mode(param), param->target_count, md);
 	if (r)
+<<<<<<< HEAD
 		goto out;
 
 	r = populate_table(t, param, param_size);
@@ -1291,11 +1539,22 @@ static int table_load(struct dm_ioctl *param, size_t param_size)
 
 <<<<<<< HEAD
 =======
+=======
+		goto err;
+
+	/* Protect md->type and md->queue against concurrent table loads. */
+	dm_lock_md_type(md);
+	r = populate_table(t, param, param_size);
+	if (r)
+		goto err_unlock_md_type;
+
+>>>>>>> refs/remotes/origin/master
 	immutable_target_type = dm_get_immutable_target_type(md);
 	if (immutable_target_type &&
 	    (immutable_target_type != dm_table_get_immutable_target_type(t))) {
 		DMWARN("can't replace immutable target type %s",
 		       immutable_target_type->name);
+<<<<<<< HEAD
 		dm_table_destroy(t);
 		r = -EINVAL;
 		goto out;
@@ -1304,24 +1563,39 @@ static int table_load(struct dm_ioctl *param, size_t param_size)
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Protect md->type and md->queue against concurrent table loads. */
 	dm_lock_md_type(md);
+=======
+		r = -EINVAL;
+		goto err_unlock_md_type;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (dm_get_md_type(md) == DM_TYPE_NONE)
 		/* Initial table load: acquire type of table. */
 		dm_set_md_type(md, dm_table_get_type(t));
 	else if (dm_get_md_type(md) != dm_table_get_type(t)) {
 		DMWARN("can't change device type after initial table load.");
+<<<<<<< HEAD
 		dm_table_destroy(t);
 		dm_unlock_md_type(md);
 		r = -EINVAL;
 		goto out;
+=======
+		r = -EINVAL;
+		goto err_unlock_md_type;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* setup md->queue to reflect md's type (may block) */
 	r = dm_setup_md_queue(md);
 	if (r) {
 		DMWARN("unable to set up device queue for new table.");
+<<<<<<< HEAD
 		dm_table_destroy(t);
 		dm_unlock_md_type(md);
 		goto out;
+=======
+		goto err_unlock_md_type;
+>>>>>>> refs/remotes/origin/master
 	}
 	dm_unlock_md_type(md);
 
@@ -1330,6 +1604,7 @@ static int table_load(struct dm_ioctl *param, size_t param_size)
 	hc = dm_get_mdptr(md);
 	if (!hc || hc->md != md) {
 		DMWARN("device has been removed from the dev hash table.");
+<<<<<<< HEAD
 		dm_table_destroy(t);
 		up_write(&_hash_lock);
 		r = -ENXIO;
@@ -1338,13 +1613,39 @@ static int table_load(struct dm_ioctl *param, size_t param_size)
 
 	if (hc->new_map)
 		dm_table_destroy(hc->new_map);
+=======
+		up_write(&_hash_lock);
+		r = -ENXIO;
+		goto err_destroy_table;
+	}
+
+	if (hc->new_map)
+		old_map = hc->new_map;
+>>>>>>> refs/remotes/origin/master
 	hc->new_map = t;
 	up_write(&_hash_lock);
 
 	param->flags |= DM_INACTIVE_PRESENT_FLAG;
 	__dev_status(md, param);
 
+<<<<<<< HEAD
 out:
+=======
+	if (old_map) {
+		dm_sync_table(md);
+		dm_table_destroy(old_map);
+	}
+
+	dm_put(md);
+
+	return 0;
+
+err_unlock_md_type:
+	dm_unlock_md_type(md);
+err_destroy_table:
+	dm_table_destroy(t);
+err:
+>>>>>>> refs/remotes/origin/master
 	dm_put(md);
 
 	return r;
@@ -1354,6 +1655,10 @@ static int table_clear(struct dm_ioctl *param, size_t param_size)
 {
 	struct hash_cell *hc;
 	struct mapped_device *md;
+<<<<<<< HEAD
+=======
+	struct dm_table *old_map = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	down_write(&_hash_lock);
 
@@ -1365,7 +1670,11 @@ static int table_clear(struct dm_ioctl *param, size_t param_size)
 	}
 
 	if (hc->new_map) {
+<<<<<<< HEAD
 		dm_table_destroy(hc->new_map);
+=======
+		old_map = hc->new_map;
+>>>>>>> refs/remotes/origin/master
 		hc->new_map = NULL;
 	}
 
@@ -1374,6 +1683,13 @@ static int table_clear(struct dm_ioctl *param, size_t param_size)
 	__dev_status(hc->md, param);
 	md = hc->md;
 	up_write(&_hash_lock);
+<<<<<<< HEAD
+=======
+	if (old_map) {
+		dm_sync_table(md);
+		dm_table_destroy(old_map);
+	}
+>>>>>>> refs/remotes/origin/master
 	dm_put(md);
 
 	return 0;
@@ -1423,6 +1739,10 @@ static int table_deps(struct dm_ioctl *param, size_t param_size)
 {
 	struct mapped_device *md;
 	struct dm_table *table;
+<<<<<<< HEAD
+=======
+	int srcu_idx;
+>>>>>>> refs/remotes/origin/master
 
 	md = find_device(param);
 	if (!md)
@@ -1430,11 +1750,18 @@ static int table_deps(struct dm_ioctl *param, size_t param_size)
 
 	__dev_status(md, param);
 
+<<<<<<< HEAD
 	table = dm_get_live_or_inactive_table(md, param);
 	if (table) {
 		retrieve_deps(table, param, param_size);
 		dm_table_put(table);
 	}
+=======
+	table = dm_get_live_or_inactive_table(md, param, &srcu_idx);
+	if (table)
+		retrieve_deps(table, param, param_size);
+	dm_put_live_table(md, srcu_idx);
+>>>>>>> refs/remotes/origin/master
 
 	dm_put(md);
 
@@ -1449,6 +1776,10 @@ static int table_status(struct dm_ioctl *param, size_t param_size)
 {
 	struct mapped_device *md;
 	struct dm_table *table;
+<<<<<<< HEAD
+=======
+	int srcu_idx;
+>>>>>>> refs/remotes/origin/master
 
 	md = find_device(param);
 	if (!md)
@@ -1456,11 +1787,18 @@ static int table_status(struct dm_ioctl *param, size_t param_size)
 
 	__dev_status(md, param);
 
+<<<<<<< HEAD
 	table = dm_get_live_or_inactive_table(md, param);
 	if (table) {
 		retrieve_status(table, param, param_size);
 		dm_table_put(table);
 	}
+=======
+	table = dm_get_live_or_inactive_table(md, param, &srcu_idx);
+	if (table)
+		retrieve_status(table, param, param_size);
+	dm_put_live_table(md, srcu_idx);
+>>>>>>> refs/remotes/origin/master
 
 	dm_put(md);
 
@@ -1468,6 +1806,39 @@ static int table_status(struct dm_ioctl *param, size_t param_size)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Process device-mapper dependent messages.  Messages prefixed with '@'
+ * are processed by the DM core.  All others are delivered to the target.
+ * Returns a number <= 1 if message was processed by device mapper.
+ * Returns 2 if message should be delivered to the target.
+ */
+static int message_for_md(struct mapped_device *md, unsigned argc, char **argv,
+			  char *result, unsigned maxlen)
+{
+	int r;
+
+	if (**argv != '@')
+		return 2; /* no '@' prefix, deliver to target */
+
+	if (!strcasecmp(argv[0], "@cancel_deferred_remove")) {
+		if (argc != 1) {
+			DMERR("Invalid arguments for @cancel_deferred_remove");
+			return -EINVAL;
+		}
+		return dm_cancel_deferred_remove(md);
+	}
+
+	r = dm_stats_message(md, argc, argv, result, maxlen);
+	if (r < 2)
+		return r;
+
+	DMERR("Unsupported message sent to DM core: %s", argv[0]);
+	return -EINVAL;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Pass a message to the target that's at the supplied device offset.
  */
 static int target_message(struct dm_ioctl *param, size_t param_size)
@@ -1478,6 +1849,12 @@ static int target_message(struct dm_ioctl *param, size_t param_size)
 	struct dm_table *table;
 	struct dm_target *ti;
 	struct dm_target_msg *tmsg = (void *) param + param->data_start;
+<<<<<<< HEAD
+=======
+	size_t maxlen;
+	char *result = get_result_buffer(param, param_size, &maxlen);
+	int srcu_idx;
+>>>>>>> refs/remotes/origin/master
 
 	md = find_device(param);
 	if (!md)
@@ -1497,17 +1874,31 @@ static int target_message(struct dm_ioctl *param, size_t param_size)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!argc) {
 		DMWARN("Empty message received.");
 		goto out_argv;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	table = dm_get_live_table(md);
 	if (!table)
 		goto out_argv;
 
+=======
+	r = message_for_md(md, argc, argv, result, maxlen);
+	if (r <= 1)
+		goto out_argv;
+
+	table = dm_get_live_table(md, &srcu_idx);
+	if (!table)
+		goto out_table;
+
+>>>>>>> refs/remotes/origin/master
 	if (dm_deleting_md(md)) {
 		r = -ENXIO;
 		goto out_table;
@@ -1525,19 +1916,50 @@ static int target_message(struct dm_ioctl *param, size_t param_size)
 	}
 
  out_table:
+<<<<<<< HEAD
 	dm_table_put(table);
  out_argv:
 	kfree(argv);
  out:
 	param->data_size = 0;
+=======
+	dm_put_live_table(md, srcu_idx);
+ out_argv:
+	kfree(argv);
+ out:
+	if (r >= 0)
+		__dev_status(md, param);
+
+	if (r == 1) {
+		param->flags |= DM_DATA_OUT_FLAG;
+		if (dm_message_test_buffer_overflow(result, maxlen))
+			param->flags |= DM_BUFFER_FULL_FLAG;
+		else
+			param->data_size = param->data_start + strlen(result) + 1;
+		r = 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dm_put(md);
 	return r;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * The ioctl parameter block consists of two parts, a dm_ioctl struct
+ * followed by a data buffer.  This flag is set if the second part,
+ * which has a variable size, is not used by the function processing
+ * the ioctl.
+ */
+#define IOCTL_FLAGS_NO_PARAMS	1
+
+>>>>>>> refs/remotes/origin/master
 /*-----------------------------------------------------------------
  * Implementation of open/close/ioctl on the special char
  * device.
  *---------------------------------------------------------------*/
+<<<<<<< HEAD
 static ioctl_fn lookup_ioctl(unsigned int cmd)
 {
 	static struct {
@@ -1567,6 +1989,42 @@ static ioctl_fn lookup_ioctl(unsigned int cmd)
 	};
 
 	return (cmd >= ARRAY_SIZE(_ioctls)) ? NULL : _ioctls[cmd].fn;
+=======
+static ioctl_fn lookup_ioctl(unsigned int cmd, int *ioctl_flags)
+{
+	static struct {
+		int cmd;
+		int flags;
+		ioctl_fn fn;
+	} _ioctls[] = {
+		{DM_VERSION_CMD, 0, NULL}, /* version is dealt with elsewhere */
+		{DM_REMOVE_ALL_CMD, IOCTL_FLAGS_NO_PARAMS, remove_all},
+		{DM_LIST_DEVICES_CMD, 0, list_devices},
+
+		{DM_DEV_CREATE_CMD, IOCTL_FLAGS_NO_PARAMS, dev_create},
+		{DM_DEV_REMOVE_CMD, IOCTL_FLAGS_NO_PARAMS, dev_remove},
+		{DM_DEV_RENAME_CMD, 0, dev_rename},
+		{DM_DEV_SUSPEND_CMD, IOCTL_FLAGS_NO_PARAMS, dev_suspend},
+		{DM_DEV_STATUS_CMD, IOCTL_FLAGS_NO_PARAMS, dev_status},
+		{DM_DEV_WAIT_CMD, 0, dev_wait},
+
+		{DM_TABLE_LOAD_CMD, 0, table_load},
+		{DM_TABLE_CLEAR_CMD, IOCTL_FLAGS_NO_PARAMS, table_clear},
+		{DM_TABLE_DEPS_CMD, 0, table_deps},
+		{DM_TABLE_STATUS_CMD, 0, table_status},
+
+		{DM_LIST_VERSIONS_CMD, 0, list_versions},
+
+		{DM_TARGET_MSG_CMD, 0, target_message},
+		{DM_DEV_SET_GEOMETRY_CMD, 0, dev_set_geometry}
+	};
+
+	if (unlikely(cmd >= ARRAY_SIZE(_ioctls)))
+		return NULL;
+
+	*ioctl_flags = _ioctls[cmd].flags;
+	return _ioctls[cmd].fn;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1603,6 +2061,7 @@ static int check_version(unsigned int cmd, struct dm_ioctl __user *user)
 	return r;
 }
 
+<<<<<<< HEAD
 static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl **param)
 {
 	struct dm_ioctl tmp, *dmi;
@@ -1619,10 +2078,74 @@ static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl **param)
 	dmi = vmalloc(tmp.data_size);
 	if (!dmi) {
 		if (secure_data && clear_user(user, tmp.data_size))
+=======
+#define DM_PARAMS_KMALLOC	0x0001	/* Params alloced with kmalloc */
+#define DM_PARAMS_VMALLOC	0x0002	/* Params alloced with vmalloc */
+#define DM_WIPE_BUFFER		0x0010	/* Wipe input buffer before returning from ioctl */
+
+static void free_params(struct dm_ioctl *param, size_t param_size, int param_flags)
+{
+	if (param_flags & DM_WIPE_BUFFER)
+		memset(param, 0, param_size);
+
+	if (param_flags & DM_PARAMS_KMALLOC)
+		kfree(param);
+	if (param_flags & DM_PARAMS_VMALLOC)
+		vfree(param);
+}
+
+static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl *param_kernel,
+		       int ioctl_flags,
+		       struct dm_ioctl **param, int *param_flags)
+{
+	struct dm_ioctl *dmi;
+	int secure_data;
+	const size_t minimum_data_size = sizeof(*param_kernel) - sizeof(param_kernel->data);
+
+	if (copy_from_user(param_kernel, user, minimum_data_size))
+		return -EFAULT;
+
+	if (param_kernel->data_size < minimum_data_size)
+		return -EINVAL;
+
+	secure_data = param_kernel->flags & DM_SECURE_DATA_FLAG;
+
+	*param_flags = secure_data ? DM_WIPE_BUFFER : 0;
+
+	if (ioctl_flags & IOCTL_FLAGS_NO_PARAMS) {
+		dmi = param_kernel;
+		dmi->data_size = minimum_data_size;
+		goto data_copied;
+	}
+
+	/*
+	 * Try to avoid low memory issues when a device is suspended.
+	 * Use kmalloc() rather than vmalloc() when we can.
+	 */
+	dmi = NULL;
+	if (param_kernel->data_size <= KMALLOC_MAX_SIZE) {
+		dmi = kmalloc(param_kernel->data_size, GFP_NOIO | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
+		if (dmi)
+			*param_flags |= DM_PARAMS_KMALLOC;
+	}
+
+	if (!dmi) {
+		unsigned noio_flag;
+		noio_flag = memalloc_noio_save();
+		dmi = __vmalloc(param_kernel->data_size, GFP_NOIO | __GFP_REPEAT | __GFP_HIGH | __GFP_HIGHMEM, PAGE_KERNEL);
+		memalloc_noio_restore(noio_flag);
+		if (dmi)
+			*param_flags |= DM_PARAMS_VMALLOC;
+	}
+
+	if (!dmi) {
+		if (secure_data && clear_user(user, param_kernel->data_size))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	if (copy_from_user(dmi, user, tmp.data_size))
 		goto bad;
 
@@ -1630,21 +2153,40 @@ static int copy_params(struct dm_ioctl __user *user, struct dm_ioctl **param)
 	 * Abort if something changed the ioctl data while it was being copied.
 	 */
 	if (dmi->data_size != tmp.data_size) {
+=======
+	if (copy_from_user(dmi, user, param_kernel->data_size))
+		goto bad;
+
+data_copied:
+	/*
+	 * Abort if something changed the ioctl data while it was being copied.
+	 */
+	if (dmi->data_size != param_kernel->data_size) {
+>>>>>>> refs/remotes/origin/master
 		DMERR("rejecting ioctl: data size modified while processing parameters");
 		goto bad;
 	}
 
 	/* Wipe the user buffer so we do not return it to userspace */
+<<<<<<< HEAD
 	if (secure_data && clear_user(user, tmp.data_size))
+=======
+	if (secure_data && clear_user(user, param_kernel->data_size))
+>>>>>>> refs/remotes/origin/master
 		goto bad;
 
 	*param = dmi;
 	return 0;
 
 bad:
+<<<<<<< HEAD
 	if (secure_data)
 		memset(dmi, 0, tmp.data_size);
 	vfree(dmi);
+=======
+	free_params(dmi, param_kernel->data_size, *param_flags);
+
+>>>>>>> refs/remotes/origin/master
 	return -EFAULT;
 }
 
@@ -1654,6 +2196,10 @@ static int validate_params(uint cmd, struct dm_ioctl *param)
 	param->flags &= ~DM_BUFFER_FULL_FLAG;
 	param->flags &= ~DM_UEVENT_GENERATED_FLAG;
 	param->flags &= ~DM_SECURE_DATA_FLAG;
+<<<<<<< HEAD
+=======
+	param->flags &= ~DM_DATA_OUT_FLAG;
+>>>>>>> refs/remotes/origin/master
 
 	/* Ignores parameters */
 	if (cmd == DM_REMOVE_ALL_CMD ||
@@ -1681,11 +2227,20 @@ static int validate_params(uint cmd, struct dm_ioctl *param)
 static int ctl_ioctl(uint command, struct dm_ioctl __user *user)
 {
 	int r = 0;
+<<<<<<< HEAD
 	int wipe_buffer;
+=======
+	int ioctl_flags;
+	int param_flags;
+>>>>>>> refs/remotes/origin/master
 	unsigned int cmd;
 	struct dm_ioctl *uninitialized_var(param);
 	ioctl_fn fn = NULL;
 	size_t input_param_size;
+<<<<<<< HEAD
+=======
+	struct dm_ioctl param_kernel;
+>>>>>>> refs/remotes/origin/master
 
 	/* only root can play with this */
 	if (!capable(CAP_SYS_ADMIN))
@@ -1710,13 +2265,18 @@ static int ctl_ioctl(uint command, struct dm_ioctl __user *user)
 	if (cmd == DM_VERSION_CMD)
 		return 0;
 
+<<<<<<< HEAD
 	fn = lookup_ioctl(cmd);
+=======
+	fn = lookup_ioctl(cmd, &ioctl_flags);
+>>>>>>> refs/remotes/origin/master
 	if (!fn) {
 		DMWARN("dm_ctl_ioctl: unknown command 0x%x", command);
 		return -ENOTTY;
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Trying to avoid low memory issues when a device is
 	 * suspended.
 	 */
@@ -1728,13 +2288,21 @@ static int ctl_ioctl(uint command, struct dm_ioctl __user *user)
 	r = copy_params(user, &param);
 
 	current->flags &= ~PF_MEMALLOC;
+=======
+	 * Copy the parameters into kernel space.
+	 */
+	r = copy_params(user, &param_kernel, ioctl_flags, &param, &param_flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (r)
 		return r;
 
 	input_param_size = param->data_size;
+<<<<<<< HEAD
 	wipe_buffer = param->flags & DM_SECURE_DATA_FLAG;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	r = validate_params(cmd, param);
 	if (r)
 		goto out;
@@ -1742,6 +2310,13 @@ static int ctl_ioctl(uint command, struct dm_ioctl __user *user)
 	param->data_size = sizeof(*param);
 	r = fn(param, input_param_size);
 
+<<<<<<< HEAD
+=======
+	if (unlikely(param->flags & DM_BUFFER_FULL_FLAG) &&
+	    unlikely(ioctl_flags & IOCTL_FLAGS_NO_PARAMS))
+		DMERR("ioctl %d tried to output some data but has IOCTL_FLAGS_NO_PARAMS set", cmd);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Copy the results back to userland.
 	 */
@@ -1749,10 +2324,14 @@ static int ctl_ioctl(uint command, struct dm_ioctl __user *user)
 		r = -EFAULT;
 
 out:
+<<<<<<< HEAD
 	if (wipe_buffer)
 		memset(param, 0, input_param_size);
 
 	vfree(param);
+=======
+	free_params(param, input_param_size, param_flags);
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 

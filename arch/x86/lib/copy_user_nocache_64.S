@@ -14,6 +14,11 @@
 #include <asm/current.h>
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
+<<<<<<< HEAD
+=======
+#include <asm/asm.h>
+#include <asm/smap.h>
+>>>>>>> refs/remotes/origin/master
 
 	.macro ALIGN_DESTINATION
 #ifdef FIX_ALIGNMENT
@@ -36,11 +41,16 @@
 	jmp copy_user_handle_tail
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"a"
 	.align 8
 	.quad 100b,103b
 	.quad 101b,103b
 	.previous
+=======
+	_ASM_EXTABLE(100b,103b)
+	_ASM_EXTABLE(101b,103b)
+>>>>>>> refs/remotes/origin/master
 #endif
 	.endm
 
@@ -50,6 +60,10 @@
  */
 ENTRY(__copy_user_nocache)
 	CFI_STARTPROC
+<<<<<<< HEAD
+=======
+	ASM_STAC
+>>>>>>> refs/remotes/origin/master
 	cmpl $8,%edx
 	jb 20f		/* less then 8 bytes, go to byte copy loop */
 	ALIGN_DESTINATION
@@ -97,6 +111,10 @@ ENTRY(__copy_user_nocache)
 	decl %ecx
 	jnz 21b
 23:	xorl %eax,%eax
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	sfence
 	ret
 
@@ -111,6 +129,7 @@ ENTRY(__copy_user_nocache)
 	jmp copy_user_handle_tail
 	.previous
 
+<<<<<<< HEAD
 	.section __ex_table,"a"
 	.quad 1b,30b
 	.quad 2b,30b
@@ -133,5 +152,27 @@ ENTRY(__copy_user_nocache)
 	.quad 21b,50b
 	.quad 22b,50b
 	.previous
+=======
+	_ASM_EXTABLE(1b,30b)
+	_ASM_EXTABLE(2b,30b)
+	_ASM_EXTABLE(3b,30b)
+	_ASM_EXTABLE(4b,30b)
+	_ASM_EXTABLE(5b,30b)
+	_ASM_EXTABLE(6b,30b)
+	_ASM_EXTABLE(7b,30b)
+	_ASM_EXTABLE(8b,30b)
+	_ASM_EXTABLE(9b,30b)
+	_ASM_EXTABLE(10b,30b)
+	_ASM_EXTABLE(11b,30b)
+	_ASM_EXTABLE(12b,30b)
+	_ASM_EXTABLE(13b,30b)
+	_ASM_EXTABLE(14b,30b)
+	_ASM_EXTABLE(15b,30b)
+	_ASM_EXTABLE(16b,30b)
+	_ASM_EXTABLE(18b,40b)
+	_ASM_EXTABLE(19b,40b)
+	_ASM_EXTABLE(21b,50b)
+	_ASM_EXTABLE(22b,50b)
+>>>>>>> refs/remotes/origin/master
 	CFI_ENDPROC
 ENDPROC(__copy_user_nocache)

@@ -1,6 +1,11 @@
 config CEPH_LIB
+<<<<<<< HEAD
         tristate "Ceph core library (EXPERIMENTAL)"
 	depends on INET && EXPERIMENTAL
+=======
+	tristate "Ceph core library"
+	depends on INET
+>>>>>>> refs/remotes/origin/master
 	select LIBCRC32C
 	select CRYPTO_AES
 	select CRYPTO
@@ -28,7 +33,10 @@ config CEPH_LIB_PRETTYDEBUG
 	  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config CEPH_LIB_USE_DNS_RESOLVER
 	bool "Use in-kernel support for DNS lookup"
 	depends on CEPH_LIB
@@ -43,4 +51,7 @@ config CEPH_LIB_USE_DNS_RESOLVER
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -35,9 +35,13 @@
 #include <linux/device.h>
 #include <linux/dmapool.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/ratelimit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 #include "ib.h"
@@ -212,11 +216,15 @@ static struct rds_message *rds_ib_send_unmap_op(struct rds_ib_connection *ic,
 		break;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			printk(KERN_NOTICE
 =======
 		printk_ratelimited(KERN_NOTICE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited(KERN_NOTICE
+>>>>>>> refs/remotes/origin/master
 			       "RDS/IB: %s: unexpected opcode 0x%x in WR!\n",
 			       __func__, send->s_wr.opcode);
 		break;
@@ -560,9 +568,14 @@ int rds_ib_xmit(struct rds_connection *conn, struct rds_message *rm,
 	    && rm->m_inc.i_hdr.h_flags & RDS_FLAG_CONG_BITMAP) {
 		rds_cong_map_updated(conn->c_fcong, ~(u64) 0);
 		scat = &rm->data.op_sg[sg];
+<<<<<<< HEAD
 		ret = sizeof(struct rds_header) + RDS_CONG_MAP_BYTES;
 		ret = min_t(int, ret, scat->length - conn->c_xmit_data_off);
 		return ret;
+=======
+		ret = max_t(int, RDS_CONG_MAP_BYTES, scat->length);
+		return sizeof(struct rds_header) + ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* FIXME we may overallocate here */

@@ -26,9 +26,12 @@
 #define V4L2_INT_DEVICE_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <media/v4l2-common.h>
 
 #define V4L2NAMESIZE 32
@@ -45,10 +48,15 @@ enum v4l2_int_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct module;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct module;
+
+>>>>>>> refs/remotes/origin/master
 struct v4l2_int_device;
 
 struct v4l2_int_master {
@@ -227,8 +235,11 @@ enum v4l2_int_ioctl_num {
 	vidioc_int_reset_num,
 	/* VIDIOC_INT_INIT */
 	vidioc_int_init_num,
+<<<<<<< HEAD
 	/* VIDIOC_DBG_G_CHIP_IDENT */
 	vidioc_int_g_chip_ident_num,
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *
@@ -310,6 +321,9 @@ V4L2_INT_WRAPPER_1(enum_frameintervals, struct v4l2_frmivalenum, *);
 
 V4L2_INT_WRAPPER_0(reset);
 V4L2_INT_WRAPPER_0(init);
+<<<<<<< HEAD
 V4L2_INT_WRAPPER_1(g_chip_ident, int, *);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

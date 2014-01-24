@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/tape_34xx.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    tape device discipline for 3480/3490 tapes.
  *
  *    Copyright IBM Corp. 2001, 2009
@@ -323,6 +326,7 @@ tape_34xx_unit_check(struct tape_device *device, struct tape_request *request,
 	inhibit_cu_recovery = (*device->modeset_byte & 0x80) ? 1 : 0;
 	sense = irb->ecw;
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 	if (request->op == TO_BLOCK) {
 		/*
@@ -337,6 +341,8 @@ tape_34xx_unit_check(struct tape_device *device, struct tape_request *request,
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (
 		sense[0] & SENSE_COMMAND_REJECT &&
 		sense[1] & SENSE_WRITE_PROTECT
@@ -1129,6 +1135,7 @@ tape_34xx_mtseek(struct tape_device *device, int mt_count)
 	return tape_do_io_free(device, request);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 /*
  * Tape block read for 34xx.
@@ -1246,6 +1253,8 @@ tape_34xx_check_locate(struct tape_device *device, struct tape_request *request)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * List of 3480/3490 magnetic tape commands.
  */
@@ -1295,11 +1304,14 @@ static struct tape_discipline tape_discipline_34xx = {
 	.irq = tape_34xx_irq,
 	.read_block = tape_std_read_block,
 	.write_block = tape_std_write_block,
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 	.bread = tape_34xx_bread,
 	.free_bread = tape_34xx_free_bread,
 	.check_locate = tape_34xx_check_locate,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	.ioctl_fn = tape_34xx_ioctl,
 	.mtop_array = tape_34xx_mtop
 };
@@ -1331,9 +1343,13 @@ static struct ccw_driver tape_34xx_driver = {
 	.set_offline = tape_generic_offline,
 	.freeze = tape_generic_pm_suspend,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.int_class = IOINT_TAP,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.int_class = IRQIO_TAP,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int

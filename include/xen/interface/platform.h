@@ -27,7 +27,11 @@
 #ifndef __XEN_PUBLIC_PLATFORM_H__
 #define __XEN_PUBLIC_PLATFORM_H__
 
+<<<<<<< HEAD
 #include "xen.h"
+=======
+#include <xen/interface/xen.h>
+>>>>>>> refs/remotes/origin/master
 
 #define XENPF_INTERFACE_VERSION 0x03000001
 
@@ -54,7 +58,11 @@ DEFINE_GUEST_HANDLE_STRUCT(xenpf_settime_t);
 #define XENPF_add_memtype         31
 struct xenpf_add_memtype {
 	/* IN variables. */
+<<<<<<< HEAD
 	unsigned long mfn;
+=======
+	xen_pfn_t mfn;
+>>>>>>> refs/remotes/origin/master
 	uint64_t nr_mfns;
 	uint32_t type;
 	/* OUT variables. */
@@ -84,7 +92,11 @@ struct xenpf_read_memtype {
 	/* IN variables. */
 	uint32_t reg;
 	/* OUT variables. */
+<<<<<<< HEAD
 	unsigned long mfn;
+=======
+	xen_pfn_t mfn;
+>>>>>>> refs/remotes/origin/master
 	uint64_t nr_mfns;
 	uint32_t type;
 };
@@ -112,6 +124,10 @@ DEFINE_GUEST_HANDLE_STRUCT(xenpf_platform_quirk_t);
 #define XEN_FW_DISK_INFO          1 /* from int 13 AH=08/41/48 */
 #define XEN_FW_DISK_MBR_SIGNATURE 2 /* from MBR offset 0x1b8 */
 #define XEN_FW_VBEDDC_INFO        3 /* from int 10 AX=4f15 */
+<<<<<<< HEAD
+=======
+#define XEN_FW_KBD_SHIFT_FLAGS    5 /* Int16, Fn02: Get keyboard shift flags. */
+>>>>>>> refs/remotes/origin/master
 struct xenpf_firmware_info {
 	/* IN variables. */
 	uint32_t type;
@@ -142,6 +158,11 @@ struct xenpf_firmware_info {
 			/* must refer to 128-byte buffer */
 			GUEST_HANDLE(uchar) edid;
 		} vbeddc_info; /* XEN_FW_VBEDDC_INFO */
+<<<<<<< HEAD
+=======
+
+		uint8_t kbd_shift_flags; /* XEN_FW_KBD_SHIFT_FLAGS */
+>>>>>>> refs/remotes/origin/master
 	} u;
 };
 DEFINE_GUEST_HANDLE_STRUCT(xenpf_firmware_info_t);
@@ -149,10 +170,18 @@ DEFINE_GUEST_HANDLE_STRUCT(xenpf_firmware_info_t);
 #define XENPF_enter_acpi_sleep    51
 struct xenpf_enter_acpi_sleep {
 	/* IN variables */
+<<<<<<< HEAD
 	uint16_t pm1a_cnt_val;      /* PM1a control value. */
 	uint16_t pm1b_cnt_val;      /* PM1b control value. */
 	uint32_t sleep_state;       /* Which state to enter (Sn). */
 	uint32_t flags;             /* Must be zero. */
+=======
+	uint16_t val_a;             /* PM1a control / sleep type A. */
+	uint16_t val_b;             /* PM1b control / sleep type B. */
+	uint32_t sleep_state;       /* Which state to enter (Sn). */
+#define XENPF_ACPI_SLEEP_EXTENDED 0x00000001
+	uint32_t flags;             /* XENPF_ACPI_SLEEP_*. */
+>>>>>>> refs/remotes/origin/master
 };
 DEFINE_GUEST_HANDLE_STRUCT(xenpf_enter_acpi_sleep_t);
 
@@ -314,6 +343,43 @@ struct xenpf_pcpuinfo {
 };
 DEFINE_GUEST_HANDLE_STRUCT(xenpf_pcpuinfo);
 
+<<<<<<< HEAD
+=======
+#define XENPF_cpu_online	56
+#define XENPF_cpu_offline	57
+struct xenpf_cpu_ol {
+	uint32_t cpuid;
+};
+DEFINE_GUEST_HANDLE_STRUCT(xenpf_cpu_ol);
+
+#define XENPF_cpu_hotadd	58
+struct xenpf_cpu_hotadd {
+	uint32_t apic_id;
+	uint32_t acpi_id;
+	uint32_t pxm;
+};
+
+#define XENPF_mem_hotadd	59
+struct xenpf_mem_hotadd {
+	uint64_t spfn;
+	uint64_t epfn;
+	uint32_t pxm;
+	uint32_t flags;
+};
+
+#define XENPF_core_parking     60
+struct xenpf_core_parking {
+	/* IN variables */
+#define XEN_CORE_PARKING_SET   1
+#define XEN_CORE_PARKING_GET   2
+	uint32_t type;
+	/* IN variables:  set cpu nums expected to be idled */
+	/* OUT variables: get cpu nums actually be idled */
+	uint32_t idle_nums;
+};
+DEFINE_GUEST_HANDLE_STRUCT(xenpf_core_parking);
+
+>>>>>>> refs/remotes/origin/master
 struct xen_platform_op {
 	uint32_t cmd;
 	uint32_t interface_version; /* XENPF_INTERFACE_VERSION */
@@ -330,6 +396,13 @@ struct xen_platform_op {
 		struct xenpf_getidletime       getidletime;
 		struct xenpf_set_processor_pminfo set_pminfo;
 		struct xenpf_pcpuinfo          pcpu_info;
+<<<<<<< HEAD
+=======
+		struct xenpf_cpu_ol            cpu_ol;
+		struct xenpf_cpu_hotadd        cpu_add;
+		struct xenpf_mem_hotadd        mem_add;
+		struct xenpf_core_parking      core_parking;
+>>>>>>> refs/remotes/origin/master
 		uint8_t                        pad[128];
 	} u;
 };

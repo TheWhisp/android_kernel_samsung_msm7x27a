@@ -10,6 +10,10 @@
 #include <linux/kernel.h>
 #include <linux/of.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "wsp.h"
 

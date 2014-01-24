@@ -31,7 +31,11 @@
 #define HUB_PIO_MAP_TO_MEM	0
 #define HUB_PIO_MAP_TO_IO	1
 
+<<<<<<< HEAD
 #define IIO_ITTE_INVALID_WIDGET	3	/* an invalid widget  */
+=======
+#define IIO_ITTE_INVALID_WIDGET 3	/* an invalid widget  */
+>>>>>>> refs/remotes/origin/master
 
 #define IIO_ITTE_PUT(nasid, bigwin, io_or_mem, widget, addr) \
 	REMOTE_HUB_S((nasid), IIO_ITTE(bigwin), \
@@ -52,7 +56,11 @@
  * value _x is expected to be a widget number in the range
  * 0, 8 - 0xF
  */
+<<<<<<< HEAD
 #define	IIO_IOPRB(_x)	(IIO_IOPRB_0 + ( ( (_x) < HUB_WIDGET_ID_MIN ? \
+=======
+#define IIO_IOPRB(_x)	(IIO_IOPRB_0 + ( ( (_x) < HUB_WIDGET_ID_MIN ? \
+>>>>>>> refs/remotes/origin/master
 			(_x) : \
 			(_x) - (HUB_WIDGET_ID_MIN-1)) << 3) )
 

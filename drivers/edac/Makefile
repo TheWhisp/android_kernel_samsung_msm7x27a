@@ -9,9 +9,12 @@
 obj-$(CONFIG_EDAC)			:= edac_stub.o
 obj-$(CONFIG_EDAC_MM_EDAC)		+= edac_core.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_EDAC_MCE)			+= edac_mce.o
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 edac_core-y	:= edac_mc.o edac_device.o edac_mc_sysfs.o edac_pci_sysfs.o
 edac_core-y	+= edac_module.o edac_device_sysfs.o
@@ -20,6 +23,10 @@ ifdef CONFIG_PCI
 edac_core-y	+= edac_pci.o edac_pci_sysfs.o
 endif
 
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_EDAC_GHES)			+= ghes_edac.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_EDAC_MCE_INJ)		+= mce_amd_inj.o
 
 edac_mce_amd-y				:= mce_amd.o
@@ -33,9 +40,13 @@ obj-$(CONFIG_EDAC_I5400)		+= i5400_edac.o
 obj-$(CONFIG_EDAC_I7300)		+= i7300_edac.o
 obj-$(CONFIG_EDAC_I7CORE)		+= i7core_edac.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_EDAC_SBRIDGE)		+= sb_edac.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_EDAC_SBRIDGE)		+= sb_edac.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_EDAC_E7XXX)		+= e7xxx_edac.o
 obj-$(CONFIG_EDAC_E752X)		+= e752x_edac.o
 obj-$(CONFIG_EDAC_I82443BXGX)		+= i82443bxgx_edac.o
@@ -62,3 +73,14 @@ obj-$(CONFIG_EDAC_AMD8111)		+= amd8111_edac.o
 obj-$(CONFIG_EDAC_AMD8131)		+= amd8131_edac.o
 
 obj-$(CONFIG_EDAC_TILE)			+= tile_edac.o
+<<<<<<< HEAD
+=======
+
+obj-$(CONFIG_EDAC_HIGHBANK_MC)	+= highbank_mc_edac.o
+obj-$(CONFIG_EDAC_HIGHBANK_L2)	+= highbank_l2_edac.o
+
+obj-$(CONFIG_EDAC_OCTEON_PC)		+= octeon_edac-pc.o
+obj-$(CONFIG_EDAC_OCTEON_L2C)		+= octeon_edac-l2c.o
+obj-$(CONFIG_EDAC_OCTEON_LMC)		+= octeon_edac-lmc.o
+obj-$(CONFIG_EDAC_OCTEON_PCI)		+= octeon_edac-pci.o
+>>>>>>> refs/remotes/origin/master

@@ -20,17 +20,27 @@
 #include <linux/spi/flash.h>
 #include <linux/spi/spi.h>
 
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
 #include <mach/iomux-mx51.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/setup.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 #include "devices-imx51.h"
 #include "cpu_op-mx51.h"
+=======
+#include "common.h"
+#include "devices-imx51.h"
+#include "hardware.h"
+#include "iomux-mx51.h"
+>>>>>>> refs/remotes/origin/master
 
 #define BABBAGE_USB_HUB_RESET	IMX_GPIO_NR(1, 7)
 #define BABBAGE_USBH1_STP	IMX_GPIO_NR(1, 27)
@@ -163,6 +173,15 @@ static iomux_v3_cfg_t mx51babbage_pads[] = {
 	MX51_PAD_CSPI1_SCLK__ECSPI1_SCLK,
 	MX51_PAD_CSPI1_SS0__GPIO4_24,
 	MX51_PAD_CSPI1_SS1__GPIO4_25,
+<<<<<<< HEAD
+=======
+
+	/* Audio */
+	MX51_PAD_AUD3_BB_TXD__AUD3_TXD,
+	MX51_PAD_AUD3_BB_RXD__AUD3_RXD,
+	MX51_PAD_AUD3_BB_CK__AUD3_TXC,
+	MX51_PAD_AUD3_BB_FS__AUD3_TXFS,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Serial ports */
@@ -301,11 +320,16 @@ static const struct mxc_usbh_platform_data usbh1_config __initconst = {
 	.portsc	= MXC_EHCI_MODE_ULPI,
 };
 
+<<<<<<< HEAD
 static int otg_mode_host;
+=======
+static bool otg_mode_host __initdata;
+>>>>>>> refs/remotes/origin/master
 
 static int __init babbage_otg_mode(char *options)
 {
 	if (!strcmp(options, "host"))
+<<<<<<< HEAD
 		otg_mode_host = 1;
 	else if (!strcmp(options, "device"))
 		otg_mode_host = 0;
@@ -313,6 +337,15 @@ static int __init babbage_otg_mode(char *options)
 		pr_info("otg_mode neither \"host\" nor \"device\". "
 			"Defaulting to device\n");
 	return 0;
+=======
+		otg_mode_host = true;
+	else if (!strcmp(options, "device"))
+		otg_mode_host = false;
+	else
+		pr_info("otg_mode neither \"host\" nor \"device\". "
+			"Defaulting to device\n");
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 __setup("otg_mode=", babbage_otg_mode);
 
@@ -366,9 +399,12 @@ static void __init mx51_babbage_init(void)
 
 	imx51_soc_init();
 
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_FREQ_IMX)
 	get_cpu_op = mx51_get_cpu_op;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	imx51_babbage_common_init();
 
 	imx51_add_imx_uart(0, &uart_pdata);
@@ -405,7 +441,11 @@ static void __init mx51_babbage_init(void)
 	spi_register_board_info(mx51_babbage_spi_board_info,
 		ARRAY_SIZE(mx51_babbage_spi_board_info));
 	imx51_add_ecspi(0, &mx51_babbage_spi_pdata);
+<<<<<<< HEAD
 	imx51_add_imx2_wdt(0, NULL);
+=======
+	imx51_add_imx2_wdt(0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init mx51_babbage_timer_init(void)
@@ -413,10 +453,13 @@ static void __init mx51_babbage_timer_init(void)
 	mx51_clocks_init(32768, 24000000, 22579200, 0);
 }
 
+<<<<<<< HEAD
 static struct sys_timer mx51_babbage_timer = {
 	.init = mx51_babbage_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_START(MX51_BABBAGE, "Freescale MX51 Babbage Board")
 	/* Maintainer: Amit Kucheria <amit.kucheria@canonical.com> */
 	.atag_offset = 0x100,
@@ -424,7 +467,13 @@ MACHINE_START(MX51_BABBAGE, "Freescale MX51 Babbage Board")
 	.init_early = imx51_init_early,
 	.init_irq = mx51_init_irq,
 	.handle_irq = imx51_handle_irq,
+<<<<<<< HEAD
 	.timer = &mx51_babbage_timer,
 	.init_machine = mx51_babbage_init,
+=======
+	.init_time	= mx51_babbage_timer_init,
+	.init_machine = mx51_babbage_init,
+	.init_late	= imx51_init_late,
+>>>>>>> refs/remotes/origin/master
 	.restart	= mxc_restart,
 MACHINE_END

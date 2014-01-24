@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -90,6 +94,7 @@
 #define TX_POWER_NEAR_FIELD_THRESH_LVL2		74
 #define TX_POWER_NEAR_FIELD_THRESH_LVL1		67
 
+<<<<<<< HEAD
 struct ps_t {
 	u8 pre_ccastate;
 	u8 cur_ccasate;
@@ -124,6 +129,8 @@ struct dig_t {
 	u8 cur_ccasate;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct swat_t {
 	u8 failure_cnt;
 	u8 try_flag;
@@ -188,7 +195,10 @@ enum dm_dig_connect_e {
 	DIG_CONNECT_MAX
 };
 
+<<<<<<< HEAD
 extern struct dig_t dm_digtable;
+=======
+>>>>>>> refs/remotes/origin/master
 void rtl92c_dm_init(struct ieee80211_hw *hw);
 void rtl92c_dm_watchdog(struct ieee80211_hw *hw);
 void rtl92c_dm_write_dig(struct ieee80211_hw *hw);

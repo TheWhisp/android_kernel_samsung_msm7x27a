@@ -13,9 +13,13 @@
 
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/sock.h>
 
 struct timewait_sock_ops {
@@ -25,7 +29,10 @@ struct timewait_sock_ops {
 	int		(*twsk_unique)(struct sock *sk,
 				       struct sock *sktw, void *twp);
 	void		(*twsk_destructor)(struct sock *sk);
+<<<<<<< HEAD
 	void		*(*twsk_getpeer)(struct sock *sk);
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline int twsk_unique(struct sock *sk, struct sock *sktw, void *twp)
@@ -44,6 +51,7 @@ static inline void twsk_destructor(struct sock *sk)
 		sk->sk_prot->twsk_prot->twsk_destructor(sk);
 }
 
+<<<<<<< HEAD
 static inline void *twsk_getpeer(struct sock *sk)
 {
 	if (sk->sk_prot->twsk_prot->twsk_getpeer)
@@ -51,4 +59,6 @@ static inline void *twsk_getpeer(struct sock *sk)
 	return NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _TIMEWAIT_SOCK_H */

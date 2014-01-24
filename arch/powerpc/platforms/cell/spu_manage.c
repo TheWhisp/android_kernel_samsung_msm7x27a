@@ -22,10 +22,14 @@
 #include <linux/interrupt.h>
 #include <linux/list.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ptrace.h>
 #include <linux/wait.h>
 #include <linux/mm.h>
@@ -181,21 +185,35 @@ out:
 
 static int __init spu_map_interrupts(struct spu *spu, struct device_node *np)
 {
+<<<<<<< HEAD
 	struct of_irq oirq;
+=======
+	struct of_phandle_args oirq;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	int i;
 
 	for (i=0; i < 3; i++) {
+<<<<<<< HEAD
 		ret = of_irq_map_one(np, i, &oirq);
+=======
+		ret = of_irq_parse_one(np, i, &oirq);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			pr_debug("spu_new: failed to get irq %d\n", i);
 			goto err;
 		}
 		ret = -EINVAL;
+<<<<<<< HEAD
 		pr_debug("  irq %d no 0x%x on %s\n", i, oirq.specifier[0],
 			 oirq.controller->full_name);
 		spu->irqs[i] = irq_create_of_mapping(oirq.controller,
 					oirq.specifier, oirq.size);
+=======
+		pr_debug("  irq %d no 0x%x on %s\n", i, oirq.args[0],
+			 oirq.np->full_name);
+		spu->irqs[i] = irq_create_of_mapping(&oirq);
+>>>>>>> refs/remotes/origin/master
 		if (spu->irqs[i] == NO_IRQ) {
 			pr_debug("spu_new: failed to map it !\n");
 			goto err;
@@ -204,7 +222,11 @@ static int __init spu_map_interrupts(struct spu *spu, struct device_node *np)
 	return 0;
 
 err:
+<<<<<<< HEAD
 	pr_debug("failed to map irq %x for spu %s\n", *oirq.specifier,
+=======
+	pr_debug("failed to map irq %x for spu %s\n", *oirq.args,
+>>>>>>> refs/remotes/origin/master
 		spu->name);
 	for (; i >= 0; i--) {
 		if (spu->irqs[i] != NO_IRQ)
@@ -227,10 +249,14 @@ static int spu_map_resource(struct spu *spu, int nr,
 	if (phys)
 		*phys = resource.start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	len = resource.end - resource.start + 1;
 =======
 	len = resource_size(&resource);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	len = resource_size(&resource);
+>>>>>>> refs/remotes/origin/master
 	*virt = ioremap(resource.start, len);
 	if (!*virt)
 		return -EINVAL;

@@ -49,14 +49,22 @@ void ocfs2_dentry_attach_gen(struct dentry *dentry)
 }
 
 
+<<<<<<< HEAD
 static int ocfs2_dentry_revalidate(struct dentry *dentry,
 				   struct nameidata *nd)
+=======
+static int ocfs2_dentry_revalidate(struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	int ret = 0;    /* if all else fails, just return false */
 	struct ocfs2_super *osb;
 
+<<<<<<< HEAD
 	if (nd && nd->flags & LOOKUP_RCU)
+=======
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	inode = dentry->d_inode;
@@ -71,9 +79,16 @@ static int ocfs2_dentry_revalidate(struct dentry *dentry,
 	 */
 	if (inode == NULL) {
 		unsigned long gen = (unsigned long) dentry->d_fsdata;
+<<<<<<< HEAD
 		unsigned long pgen =
 			OCFS2_I(dentry->d_parent->d_inode)->ip_dir_lock_gen;
 
+=======
+		unsigned long pgen;
+		spin_lock(&dentry->d_lock);
+		pgen = OCFS2_I(dentry->d_parent->d_inode)->ip_dir_lock_gen;
+		spin_unlock(&dentry->d_lock);
+>>>>>>> refs/remotes/origin/master
 		trace_ocfs2_dentry_revalidate_negative(dentry->d_name.len,
 						       dentry->d_name.name,
 						       pgen, gen);
@@ -170,6 +185,7 @@ struct dentry *ocfs2_find_local_alias(struct inode *inode,
 				      u64 parent_blkno,
 				      int skip_unhashed)
 {
+<<<<<<< HEAD
 	struct list_head *p;
 	struct dentry *dentry = NULL;
 
@@ -177,6 +193,12 @@ struct dentry *ocfs2_find_local_alias(struct inode *inode,
 	list_for_each(p, &inode->i_dentry) {
 		dentry = list_entry(p, struct dentry, d_alias);
 
+=======
+	struct dentry *dentry;
+
+	spin_lock(&inode->i_lock);
+	hlist_for_each_entry(dentry, &inode->i_dentry, d_alias) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&dentry->d_lock);
 		if (ocfs2_match_dentry(dentry, parent_blkno, skip_unhashed)) {
 			trace_ocfs2_find_local_alias(dentry->d_name.len,
@@ -184,6 +206,7 @@ struct dentry *ocfs2_find_local_alias(struct inode *inode,
 
 			dget_dlock(dentry);
 			spin_unlock(&dentry->d_lock);
+<<<<<<< HEAD
 			break;
 		}
 		spin_unlock(&dentry->d_lock);
@@ -194,6 +217,15 @@ struct dentry *ocfs2_find_local_alias(struct inode *inode,
 	spin_unlock(&inode->i_lock);
 
 	return dentry;
+=======
+			spin_unlock(&inode->i_lock);
+			return dentry;
+		}
+		spin_unlock(&dentry->d_lock);
+	}
+	spin_unlock(&inode->i_lock);
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 DEFINE_SPINLOCK(dentry_attach_lock);

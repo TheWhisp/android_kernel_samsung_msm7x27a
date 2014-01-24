@@ -490,7 +490,11 @@ static struct gpio_chip vr41xx_gpio_chip = {
 	.to_irq			= vr41xx_gpio_to_irq,
 };
 
+<<<<<<< HEAD
 static int __devinit giu_probe(struct platform_device *pdev)
+=======
+static int giu_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	unsigned int trigger, i, pin;
@@ -552,7 +556,11 @@ static int __devinit giu_probe(struct platform_device *pdev)
 	return cascade_irq(irq, giu_get_irq);
 }
 
+<<<<<<< HEAD
 static int __devexit giu_remove(struct platform_device *pdev)
+=======
+static int giu_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (giu_base) {
 		iounmap(giu_base);
@@ -564,7 +572,11 @@ static int __devexit giu_remove(struct platform_device *pdev)
 
 static struct platform_driver giu_device_driver = {
 	.probe		= giu_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(giu_remove),
+=======
+	.remove		= giu_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "GIU",
 		.owner	= THIS_MODULE,

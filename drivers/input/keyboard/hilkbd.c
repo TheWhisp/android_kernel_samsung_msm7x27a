@@ -200,7 +200,11 @@ static void hil_do(unsigned char cmd, unsigned char *data, unsigned int len)
 
 
 /* initialize HIL */
+<<<<<<< HEAD
 static int __devinit hil_keyb_init(void)
+=======
+static int hil_keyb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char c;
 	unsigned int i, kbid;
@@ -286,7 +290,11 @@ err1:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit hil_keyb_exit(void)
+=======
+static void hil_keyb_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (HIL_IRQ)
 		free_irq(HIL_IRQ, hil_dev.dev_id);
@@ -299,7 +307,11 @@ static void __devexit hil_keyb_exit(void)
 }
 
 #if defined(CONFIG_PARISC)
+<<<<<<< HEAD
 static int __devinit hil_probe_chip(struct parisc_device *dev)
+=======
+static int hil_probe_chip(struct parisc_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Only allow one HIL keyboard */
 	if (hil_dev.dev)
@@ -320,7 +332,11 @@ static int __devinit hil_probe_chip(struct parisc_device *dev)
 	return hil_keyb_init();
 }
 
+<<<<<<< HEAD
 static int __devexit hil_remove_chip(struct parisc_device *dev)
+=======
+static int hil_remove_chip(struct parisc_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	hil_keyb_exit();
 
@@ -341,7 +357,11 @@ static struct parisc_driver hil_driver = {
 	.name		= "hil",
 	.id_table	= hil_tbl,
 	.probe		= hil_probe_chip,
+<<<<<<< HEAD
 	.remove		= __devexit_p(hil_remove_chip),
+=======
+	.remove		= hil_remove_chip,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init hil_init(void)

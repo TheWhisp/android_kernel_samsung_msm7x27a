@@ -422,24 +422,39 @@ int ocfs2_block_check_validate(void *data, size_t blocksize,
 			       struct ocfs2_blockcheck_stats *stats)
 {
 	int rc = 0;
+<<<<<<< HEAD
 	struct ocfs2_block_check check;
+=======
+	u32 bc_crc32e;
+	u16 bc_ecc;
+>>>>>>> refs/remotes/origin/master
 	u32 crc, ecc;
 
 	ocfs2_blockcheck_inc_check(stats);
 
+<<<<<<< HEAD
 	check.bc_crc32e = le32_to_cpu(bc->bc_crc32e);
 	check.bc_ecc = le16_to_cpu(bc->bc_ecc);
+=======
+	bc_crc32e = le32_to_cpu(bc->bc_crc32e);
+	bc_ecc = le16_to_cpu(bc->bc_ecc);
+>>>>>>> refs/remotes/origin/master
 
 	memset(bc, 0, sizeof(struct ocfs2_block_check));
 
 	/* Fast path - if the crc32 validates, we're good to go */
 	crc = crc32_le(~0, data, blocksize);
+<<<<<<< HEAD
 	if (crc == check.bc_crc32e)
+=======
+	if (crc == bc_crc32e)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	ocfs2_blockcheck_inc_failure(stats);
 	mlog(ML_ERROR,
 	     "CRC32 failed: stored: 0x%x, computed 0x%x. Applying ECC.\n",
+<<<<<<< HEAD
 	     (unsigned int)check.bc_crc32e, (unsigned int)crc);
 
 	/* Ok, try ECC fixups */
@@ -449,18 +464,38 @@ int ocfs2_block_check_validate(void *data, size_t blocksize,
 	/* And check the crc32 again */
 	crc = crc32_le(~0, data, blocksize);
 	if (crc == check.bc_crc32e) {
+=======
+	     (unsigned int)bc_crc32e, (unsigned int)crc);
+
+	/* Ok, try ECC fixups */
+	ecc = ocfs2_hamming_encode_block(data, blocksize);
+	ocfs2_hamming_fix_block(data, blocksize, ecc ^ bc_ecc);
+
+	/* And check the crc32 again */
+	crc = crc32_le(~0, data, blocksize);
+	if (crc == bc_crc32e) {
+>>>>>>> refs/remotes/origin/master
 		ocfs2_blockcheck_inc_recover(stats);
 		goto out;
 	}
 
 	mlog(ML_ERROR, "Fixed CRC32 failed: stored: 0x%x, computed 0x%x\n",
+<<<<<<< HEAD
 	     (unsigned int)check.bc_crc32e, (unsigned int)crc);
+=======
+	     (unsigned int)bc_crc32e, (unsigned int)crc);
+>>>>>>> refs/remotes/origin/master
 
 	rc = -EIO;
 
 out:
+<<<<<<< HEAD
 	bc->bc_crc32e = cpu_to_le32(check.bc_crc32e);
 	bc->bc_ecc = cpu_to_le16(check.bc_ecc);
+=======
+	bc->bc_crc32e = cpu_to_le32(bc_crc32e);
+	bc->bc_ecc = cpu_to_le16(bc_ecc);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -528,7 +563,12 @@ int ocfs2_block_check_validate_bhs(struct buffer_head **bhs, int nr,
 				   struct ocfs2_blockcheck_stats *stats)
 {
 	int i, rc = 0;
+<<<<<<< HEAD
 	struct ocfs2_block_check check;
+=======
+	u32 bc_crc32e;
+	u16 bc_ecc;
+>>>>>>> refs/remotes/origin/master
 	u32 crc, ecc, fix;
 
 	BUG_ON(nr < 0);
@@ -538,21 +578,34 @@ int ocfs2_block_check_validate_bhs(struct buffer_head **bhs, int nr,
 
 	ocfs2_blockcheck_inc_check(stats);
 
+<<<<<<< HEAD
 	check.bc_crc32e = le32_to_cpu(bc->bc_crc32e);
 	check.bc_ecc = le16_to_cpu(bc->bc_ecc);
+=======
+	bc_crc32e = le32_to_cpu(bc->bc_crc32e);
+	bc_ecc = le16_to_cpu(bc->bc_ecc);
+>>>>>>> refs/remotes/origin/master
 
 	memset(bc, 0, sizeof(struct ocfs2_block_check));
 
 	/* Fast path - if the crc32 validates, we're good to go */
 	for (i = 0, crc = ~0; i < nr; i++)
 		crc = crc32_le(crc, bhs[i]->b_data, bhs[i]->b_size);
+<<<<<<< HEAD
 	if (crc == check.bc_crc32e)
+=======
+	if (crc == bc_crc32e)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	ocfs2_blockcheck_inc_failure(stats);
 	mlog(ML_ERROR,
 	     "CRC32 failed: stored: %u, computed %u.  Applying ECC.\n",
+<<<<<<< HEAD
 	     (unsigned int)check.bc_crc32e, (unsigned int)crc);
+=======
+	     (unsigned int)bc_crc32e, (unsigned int)crc);
+>>>>>>> refs/remotes/origin/master
 
 	/* Ok, try ECC fixups */
 	for (i = 0, ecc = 0; i < nr; i++) {
@@ -565,7 +618,11 @@ int ocfs2_block_check_validate_bhs(struct buffer_head **bhs, int nr,
 						bhs[i]->b_size * 8,
 						bhs[i]->b_size * 8 * i);
 	}
+<<<<<<< HEAD
 	fix = ecc ^ check.bc_ecc;
+=======
+	fix = ecc ^ bc_ecc;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < nr; i++) {
 		/*
 		 * Try the fix against each buffer.  It will only affect
@@ -578,19 +635,32 @@ int ocfs2_block_check_validate_bhs(struct buffer_head **bhs, int nr,
 	/* And check the crc32 again */
 	for (i = 0, crc = ~0; i < nr; i++)
 		crc = crc32_le(crc, bhs[i]->b_data, bhs[i]->b_size);
+<<<<<<< HEAD
 	if (crc == check.bc_crc32e) {
+=======
+	if (crc == bc_crc32e) {
+>>>>>>> refs/remotes/origin/master
 		ocfs2_blockcheck_inc_recover(stats);
 		goto out;
 	}
 
 	mlog(ML_ERROR, "Fixed CRC32 failed: stored: %u, computed %u\n",
+<<<<<<< HEAD
 	     (unsigned int)check.bc_crc32e, (unsigned int)crc);
+=======
+	     (unsigned int)bc_crc32e, (unsigned int)crc);
+>>>>>>> refs/remotes/origin/master
 
 	rc = -EIO;
 
 out:
+<<<<<<< HEAD
 	bc->bc_crc32e = cpu_to_le32(check.bc_crc32e);
 	bc->bc_ecc = cpu_to_le16(check.bc_ecc);
+=======
+	bc->bc_crc32e = cpu_to_le32(bc_crc32e);
+	bc->bc_ecc = cpu_to_le16(bc_ecc);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }

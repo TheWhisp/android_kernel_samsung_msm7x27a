@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * OMAP2/3 clockdomains
  *
  * Copyright (C) 2008-2009 Texas Instruments, Inc.
@@ -8,6 +9,11 @@
  *
  * Copyright (C) 2008-2011 Texas Instruments, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * OMAP2/3 clockdomain common data
+ *
+ * Copyright (C) 2008-2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2008-2010 Nokia Corporation
  *
  * Paul Walmsley, Jouni Högander
@@ -57,6 +63,7 @@
  * changed in software) are not included here yet, but should be.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* OMAP2/3-common wakeup dependencies */
 
@@ -427,6 +434,8 @@ static struct clkdm_dep gfx_sgx_sleepdeps[] = {
 #endif /* CONFIG_ARCH_OMAP3 */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Wakeup dependency source arrays */
 
 /* 2xxx-specific possible dependencies */
@@ -449,7 +458,10 @@ struct clkdm_dep dsp_24xx_wkdeps[] = {
 	{ NULL },
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * OMAP2/3-common clockdomains
@@ -461,6 +473,7 @@ struct clkdm_dep dsp_24xx_wkdeps[] = {
  */
 
 /* This is an implicit clockdomain - it is never defined as such in TRM */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct clockdomain wkup_clkdm = {
 	.name		= "wkup_clkdm",
@@ -899,10 +912,13 @@ void __init omap3xxx_clockdomains_init(void)
 	clkdm_init(clockdomains_omap2, clkdm_autodeps, &omap3_clkdm_operations);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct clockdomain wkup_common_clkdm = {
 	.name		= "wkup_clkdm",
 	.pwrdm		= { .name = "wkup_pwrdm" },
 	.dep_bit	= OMAP_EN_WKUP_SHIFT,
+<<<<<<< HEAD
 };
 
 struct clockdomain prm_common_clkdm = {
@@ -915,3 +931,7 @@ struct clockdomain cm_common_clkdm = {
 	.pwrdm		= { .name = "core_pwrdm" },
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= CLKDM_ACTIVE_WITH_MPU,
+};
+>>>>>>> refs/remotes/origin/master

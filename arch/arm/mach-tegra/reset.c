@@ -22,10 +22,17 @@
 #include <asm/cacheflush.h>
 #include <asm/hardware/cache-l2x0.h>
 
+<<<<<<< HEAD
 #include <mach/iomap.h>
 #include <mach/irammap.h>
 
 #include "reset.h"
+=======
+#include "iomap.h"
+#include "irammap.h"
+#include "reset.h"
+#include "sleep.h"
+>>>>>>> refs/remotes/origin/master
 #include "fuse.h"
 
 #define TEGRA_IRAM_RESET_BASE (TEGRA_IRAM_BASE + \
@@ -75,10 +82,24 @@ void __init tegra_cpu_reset_handler_init(void)
 
 #ifdef CONFIG_SMP
 	__tegra_cpu_reset_handler_data[TEGRA_RESET_MASK_PRESENT] =
+<<<<<<< HEAD
 		*((u32 *)cpu_present_mask);
+=======
+		*((u32 *)cpu_possible_mask);
+>>>>>>> refs/remotes/origin/master
 	__tegra_cpu_reset_handler_data[TEGRA_RESET_STARTUP_SECONDARY] =
 		virt_to_phys((void *)tegra_secondary_startup);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+	__tegra_cpu_reset_handler_data[TEGRA_RESET_STARTUP_LP1] =
+		TEGRA_IRAM_LPx_RESUME_AREA;
+	__tegra_cpu_reset_handler_data[TEGRA_RESET_STARTUP_LP2] =
+		virt_to_phys((void *)tegra_resume);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	tegra_cpu_reset_handler_enable();
 }

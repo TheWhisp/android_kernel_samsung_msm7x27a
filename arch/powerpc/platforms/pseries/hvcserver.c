@@ -23,6 +23,10 @@
 #include <linux/list.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/hvcall.h>
 #include <asm/hvcserver.h>
@@ -188,9 +192,15 @@ int hvcs_get_partner_info(uint32_t unit_address, struct list_head *head,
 			= (unsigned int)last_p_partition_ID;
 
 		/* copy the Null-term char too */
+<<<<<<< HEAD
 		strncpy(&next_partner_info->location_code[0],
 			(char *)&pi_buff[2],
 			strlen((char *)&pi_buff[2]) + 1);
+=======
+		strlcpy(&next_partner_info->location_code[0],
+			(char *)&pi_buff[2],
+			sizeof(next_partner_info->location_code));
+>>>>>>> refs/remotes/origin/master
 
 		list_add_tail(&(next_partner_info->node), head);
 		next_partner_info = NULL;

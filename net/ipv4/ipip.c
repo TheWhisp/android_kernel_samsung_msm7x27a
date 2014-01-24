@@ -111,12 +111,17 @@
 #include <net/sock.h>
 #include <net/ip.h>
 #include <net/icmp.h>
+<<<<<<< HEAD
 #include <net/ipip.h>
+=======
+#include <net/ip_tunnels.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/inet_ecn.h>
 #include <net/xfrm.h>
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 
+<<<<<<< HEAD
 #define HASH_SIZE  16
 #define HASH(addr) (((__force u32)addr^((__force u32)addr>>4))&0xF)
 
@@ -316,6 +321,16 @@ static void ipip_tunnel_uninit(struct net_device *dev)
 		ipip_tunnel_unlink(ipn, netdev_priv(dev));
 	dev_put(dev);
 }
+=======
+static bool log_ecn_error = true;
+module_param(log_ecn_error, bool, 0644);
+MODULE_PARM_DESC(log_ecn_error, "Log packets received with corrupted ECN");
+
+static int ipip_net_id __read_mostly;
+
+static int ipip_tunnel_init(struct net_device *dev);
+static struct rtnl_link_ops ipip_link_ops __read_mostly;
+>>>>>>> refs/remotes/origin/master
 
 static int ipip_err(struct sk_buff *skb, u32 info)
 {
@@ -324,6 +339,7 @@ static int ipip_err(struct sk_buff *skb, u32 info)
    8 bytes of packet payload. It means, that precise relaying of
    ICMP in the real Internet is absolutely infeasible.
  */
+<<<<<<< HEAD
 	const struct iphdr *iph = (const struct iphdr *)skb->data;
 	const int type = icmp_hdr(skb)->type;
 	const int code = icmp_hdr(skb)->code;
@@ -363,6 +379,37 @@ static int ipip_err(struct sk_buff *skb, u32 info)
 	rcu_read_lock();
 	t = ipip_tunnel_lookup(dev_net(skb->dev), iph->daddr, iph->saddr);
 	if (t == NULL || t->parms.iph.daddr == 0)
+=======
+	struct net *net = dev_net(skb->dev);
+	struct ip_tunnel_net *itn = net_generic(net, ipip_net_id);
+	const struct iphdr *iph = (const struct iphdr *)skb->data;
+	struct ip_tunnel *t;
+	int err;
+	const int type = icmp_hdr(skb)->type;
+	const int code = icmp_hdr(skb)->code;
+
+	err = -ENOENT;
+	t = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
+			     iph->daddr, iph->saddr, 0);
+	if (t == NULL)
+		goto out;
+
+	if (type == ICMP_DEST_UNREACH && code == ICMP_FRAG_NEEDED) {
+		ipv4_update_pmtu(skb, dev_net(skb->dev), info,
+				 t->dev->ifindex, 0, IPPROTO_IPIP, 0);
+		err = 0;
+		goto out;
+	}
+
+	if (type == ICMP_REDIRECT) {
+		ipv4_redirect(skb, dev_net(skb->dev), t->dev->ifindex, 0,
+			      IPPROTO_IPIP, 0);
+		err = 0;
+		goto out;
+	}
+
+	if (t->parms.iph.daddr == 0)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	err = 0;
@@ -374,6 +421,7 @@ static int ipip_err(struct sk_buff *skb, u32 info)
 	else
 		t->err_count = 1;
 	t->err_time = jiffies;
+<<<<<<< HEAD
 out:
 	rcu_read_unlock();
 	return err;
@@ -427,12 +475,48 @@ static int ipip_rcv(struct sk_buff *skb)
 	rcu_read_unlock();
 
 	return -1;
+=======
+
+out:
+	return err;
+}
+
+static const struct tnl_ptk_info tpi = {
+	/* no tunnel info required for ipip. */
+	.proto = htons(ETH_P_IP),
+};
+
+static int ipip_rcv(struct sk_buff *skb)
+{
+	struct net *net = dev_net(skb->dev);
+	struct ip_tunnel_net *itn = net_generic(net, ipip_net_id);
+	struct ip_tunnel *tunnel;
+	const struct iphdr *iph;
+
+	iph = ip_hdr(skb);
+	tunnel = ip_tunnel_lookup(itn, skb->dev->ifindex, TUNNEL_NO_KEY,
+			iph->saddr, iph->daddr, 0);
+	if (tunnel) {
+		if (!xfrm4_policy_check(NULL, XFRM_POLICY_IN, skb))
+			goto drop;
+		if (iptunnel_pull_header(skb, 0, tpi.proto))
+			goto drop;
+		return ip_tunnel_rcv(tunnel, skb, &tpi, log_ecn_error);
+	}
+
+	return -1;
+
+drop:
+	kfree_skb(skb);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *	This function assumes it is being called from dev_queue_xmit()
  *	and that skb is filled properly by that function.
  */
+<<<<<<< HEAD
 
 static netdev_tx_t ipip_tunnel_xmit(struct sk_buff *skb, struct net_device *dev)
 {
@@ -735,10 +819,61 @@ static int ipip_tunnel_change_mtu(struct net_device *dev, int new_mtu)
 	if (new_mtu < 68 || new_mtu > 0xFFF8 - sizeof(struct iphdr))
 		return -EINVAL;
 	dev->mtu = new_mtu;
+=======
+static netdev_tx_t ipip_tunnel_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	struct ip_tunnel *tunnel = netdev_priv(dev);
+	const struct iphdr  *tiph = &tunnel->parms.iph;
+
+	if (unlikely(skb->protocol != htons(ETH_P_IP)))
+		goto tx_error;
+
+	skb = iptunnel_handle_offloads(skb, false, SKB_GSO_IPIP);
+	if (IS_ERR(skb))
+		goto out;
+
+	ip_tunnel_xmit(skb, dev, tiph, tiph->protocol);
+	return NETDEV_TX_OK;
+
+tx_error:
+	dev_kfree_skb(skb);
+out:
+	dev->stats.tx_errors++;
+	return NETDEV_TX_OK;
+}
+
+static int
+ipip_tunnel_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
+{
+	int err = 0;
+	struct ip_tunnel_parm p;
+
+	if (copy_from_user(&p, ifr->ifr_ifru.ifru_data, sizeof(p)))
+		return -EFAULT;
+
+	if (cmd == SIOCADDTUNNEL || cmd == SIOCCHGTUNNEL) {
+		if (p.iph.version != 4 || p.iph.protocol != IPPROTO_IPIP ||
+		    p.iph.ihl != 5 || (p.iph.frag_off&htons(~IP_DF)))
+			return -EINVAL;
+	}
+
+	p.i_key = p.o_key = p.i_flags = p.o_flags = 0;
+	if (p.iph.ttl)
+		p.iph.frag_off |= htons(IP_DF);
+
+	err = ip_tunnel_ioctl(dev, &p, cmd);
+	if (err)
+		return err;
+
+	if (copy_to_user(ifr->ifr_ifru.ifru_data, &p, sizeof(p)))
+		return -EFAULT;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static const struct net_device_ops ipip_netdev_ops = {
+<<<<<<< HEAD
 	.ndo_uninit	= ipip_tunnel_uninit,
 	.ndo_start_xmit	= ipip_tunnel_xmit,
 	.ndo_do_ioctl	= ipip_tunnel_ioctl,
@@ -751,10 +886,26 @@ static void ipip_dev_free(struct net_device *dev)
 	free_percpu(dev->tstats);
 	free_netdev(dev);
 }
+=======
+	.ndo_init       = ipip_tunnel_init,
+	.ndo_uninit     = ip_tunnel_uninit,
+	.ndo_start_xmit	= ipip_tunnel_xmit,
+	.ndo_do_ioctl	= ipip_tunnel_ioctl,
+	.ndo_change_mtu = ip_tunnel_change_mtu,
+	.ndo_get_stats64 = ip_tunnel_get_stats64,
+};
+
+#define IPIP_FEATURES (NETIF_F_SG |		\
+		       NETIF_F_FRAGLIST |	\
+		       NETIF_F_HIGHDMA |	\
+		       NETIF_F_GSO_SOFTWARE |	\
+		       NETIF_F_HW_CSUM)
+>>>>>>> refs/remotes/origin/master
 
 static void ipip_tunnel_setup(struct net_device *dev)
 {
 	dev->netdev_ops		= &ipip_netdev_ops;
+<<<<<<< HEAD
 	dev->destructor		= ipip_dev_free;
 
 	dev->type		= ARPHRD_TUNNEL;
@@ -766,12 +917,26 @@ static void ipip_tunnel_setup(struct net_device *dev)
 	dev->features		|= NETIF_F_NETNS_LOCAL;
 	dev->features		|= NETIF_F_LLTX;
 	dev->priv_flags		&= ~IFF_XMIT_DST_RELEASE;
+=======
+
+	dev->type		= ARPHRD_TUNNEL;
+	dev->flags		= IFF_NOARP;
+	dev->iflink		= 0;
+	dev->addr_len		= 4;
+	dev->features		|= NETIF_F_LLTX;
+	dev->priv_flags		&= ~IFF_XMIT_DST_RELEASE;
+
+	dev->features		|= IPIP_FEATURES;
+	dev->hw_features	|= IPIP_FEATURES;
+	ip_tunnel_setup(dev, ipip_net_id);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ipip_tunnel_init(struct net_device *dev)
 {
 	struct ip_tunnel *tunnel = netdev_priv(dev);
 
+<<<<<<< HEAD
 	tunnel->dev = dev;
 
 	memcpy(dev->dev_addr, &tunnel->parms.iph.saddr, 4);
@@ -872,10 +1037,146 @@ err_reg_dev:
 err_alloc_dev:
 	/* nothing */
 	return err;
+=======
+	memcpy(dev->dev_addr, &tunnel->parms.iph.saddr, 4);
+	memcpy(dev->broadcast, &tunnel->parms.iph.daddr, 4);
+
+	tunnel->hlen = 0;
+	tunnel->parms.iph.protocol = IPPROTO_IPIP;
+	return ip_tunnel_init(dev);
+}
+
+static void ipip_netlink_parms(struct nlattr *data[],
+			       struct ip_tunnel_parm *parms)
+{
+	memset(parms, 0, sizeof(*parms));
+
+	parms->iph.version = 4;
+	parms->iph.protocol = IPPROTO_IPIP;
+	parms->iph.ihl = 5;
+
+	if (!data)
+		return;
+
+	if (data[IFLA_IPTUN_LINK])
+		parms->link = nla_get_u32(data[IFLA_IPTUN_LINK]);
+
+	if (data[IFLA_IPTUN_LOCAL])
+		parms->iph.saddr = nla_get_be32(data[IFLA_IPTUN_LOCAL]);
+
+	if (data[IFLA_IPTUN_REMOTE])
+		parms->iph.daddr = nla_get_be32(data[IFLA_IPTUN_REMOTE]);
+
+	if (data[IFLA_IPTUN_TTL]) {
+		parms->iph.ttl = nla_get_u8(data[IFLA_IPTUN_TTL]);
+		if (parms->iph.ttl)
+			parms->iph.frag_off = htons(IP_DF);
+	}
+
+	if (data[IFLA_IPTUN_TOS])
+		parms->iph.tos = nla_get_u8(data[IFLA_IPTUN_TOS]);
+
+	if (!data[IFLA_IPTUN_PMTUDISC] || nla_get_u8(data[IFLA_IPTUN_PMTUDISC]))
+		parms->iph.frag_off = htons(IP_DF);
+}
+
+static int ipip_newlink(struct net *src_net, struct net_device *dev,
+			struct nlattr *tb[], struct nlattr *data[])
+{
+	struct ip_tunnel_parm p;
+
+	ipip_netlink_parms(data, &p);
+	return ip_tunnel_newlink(dev, tb, &p);
+}
+
+static int ipip_changelink(struct net_device *dev, struct nlattr *tb[],
+			   struct nlattr *data[])
+{
+	struct ip_tunnel_parm p;
+
+	ipip_netlink_parms(data, &p);
+
+	if (((dev->flags & IFF_POINTOPOINT) && !p.iph.daddr) ||
+	    (!(dev->flags & IFF_POINTOPOINT) && p.iph.daddr))
+		return -EINVAL;
+
+	return ip_tunnel_changelink(dev, tb, &p);
+}
+
+static size_t ipip_get_size(const struct net_device *dev)
+{
+	return
+		/* IFLA_IPTUN_LINK */
+		nla_total_size(4) +
+		/* IFLA_IPTUN_LOCAL */
+		nla_total_size(4) +
+		/* IFLA_IPTUN_REMOTE */
+		nla_total_size(4) +
+		/* IFLA_IPTUN_TTL */
+		nla_total_size(1) +
+		/* IFLA_IPTUN_TOS */
+		nla_total_size(1) +
+		/* IFLA_IPTUN_PMTUDISC */
+		nla_total_size(1) +
+		0;
+}
+
+static int ipip_fill_info(struct sk_buff *skb, const struct net_device *dev)
+{
+	struct ip_tunnel *tunnel = netdev_priv(dev);
+	struct ip_tunnel_parm *parm = &tunnel->parms;
+
+	if (nla_put_u32(skb, IFLA_IPTUN_LINK, parm->link) ||
+	    nla_put_be32(skb, IFLA_IPTUN_LOCAL, parm->iph.saddr) ||
+	    nla_put_be32(skb, IFLA_IPTUN_REMOTE, parm->iph.daddr) ||
+	    nla_put_u8(skb, IFLA_IPTUN_TTL, parm->iph.ttl) ||
+	    nla_put_u8(skb, IFLA_IPTUN_TOS, parm->iph.tos) ||
+	    nla_put_u8(skb, IFLA_IPTUN_PMTUDISC,
+		       !!(parm->iph.frag_off & htons(IP_DF))))
+		goto nla_put_failure;
+	return 0;
+
+nla_put_failure:
+	return -EMSGSIZE;
+}
+
+static const struct nla_policy ipip_policy[IFLA_IPTUN_MAX + 1] = {
+	[IFLA_IPTUN_LINK]		= { .type = NLA_U32 },
+	[IFLA_IPTUN_LOCAL]		= { .type = NLA_U32 },
+	[IFLA_IPTUN_REMOTE]		= { .type = NLA_U32 },
+	[IFLA_IPTUN_TTL]		= { .type = NLA_U8 },
+	[IFLA_IPTUN_TOS]		= { .type = NLA_U8 },
+	[IFLA_IPTUN_PMTUDISC]		= { .type = NLA_U8 },
+};
+
+static struct rtnl_link_ops ipip_link_ops __read_mostly = {
+	.kind		= "ipip",
+	.maxtype	= IFLA_IPTUN_MAX,
+	.policy		= ipip_policy,
+	.priv_size	= sizeof(struct ip_tunnel),
+	.setup		= ipip_tunnel_setup,
+	.newlink	= ipip_newlink,
+	.changelink	= ipip_changelink,
+	.dellink	= ip_tunnel_dellink,
+	.get_size	= ipip_get_size,
+	.fill_info	= ipip_fill_info,
+};
+
+static struct xfrm_tunnel ipip_handler __read_mostly = {
+	.handler	=	ipip_rcv,
+	.err_handler	=	ipip_err,
+	.priority	=	1,
+};
+
+static int __net_init ipip_init_net(struct net *net)
+{
+	return ip_tunnel_init_net(net, ipip_net_id, &ipip_link_ops, "tunl0");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __net_exit ipip_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 	struct ipip_net *ipn = net_generic(net, ipip_net_id);
 	LIST_HEAD(list);
 
@@ -884,26 +1185,39 @@ static void __net_exit ipip_exit_net(struct net *net)
 	unregister_netdevice_queue(ipn->fb_tunnel_dev, &list);
 	unregister_netdevice_many(&list);
 	rtnl_unlock();
+=======
+	struct ip_tunnel_net *itn = net_generic(net, ipip_net_id);
+	ip_tunnel_delete_net(itn, &ipip_link_ops);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pernet_operations ipip_net_ops = {
 	.init = ipip_init_net,
 	.exit = ipip_exit_net,
 	.id   = &ipip_net_id,
+<<<<<<< HEAD
 	.size = sizeof(struct ipip_net),
+=======
+	.size = sizeof(struct ip_tunnel_net),
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ipip_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	printk(banner);
+=======
+	pr_info("ipip: IPv4 over IPv4 tunneling driver\n");
+>>>>>>> refs/remotes/origin/master
 
 	err = register_pernet_device(&ipip_net_ops);
 	if (err < 0)
 		return err;
 	err = xfrm4_tunnel_register(&ipip_handler, AF_INET);
 	if (err < 0) {
+<<<<<<< HEAD
 		unregister_pernet_device(&ipip_net_ops);
 <<<<<<< HEAD
 		printk(KERN_INFO "ipip init: can't register tunnel\n");
@@ -912,16 +1226,39 @@ static int __init ipip_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 	return err;
+=======
+		pr_info("%s: can't register tunnel\n", __func__);
+		goto xfrm_tunnel_failed;
+	}
+	err = rtnl_link_register(&ipip_link_ops);
+	if (err < 0)
+		goto rtnl_link_failed;
+
+out:
+	return err;
+
+rtnl_link_failed:
+	xfrm4_tunnel_deregister(&ipip_handler, AF_INET);
+xfrm_tunnel_failed:
+	unregister_pernet_device(&ipip_net_ops);
+	goto out;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit ipip_fini(void)
 {
+<<<<<<< HEAD
 	if (xfrm4_tunnel_deregister(&ipip_handler, AF_INET))
 <<<<<<< HEAD
 		printk(KERN_INFO "ipip close: can't deregister tunnel\n");
 =======
 		pr_info("%s: can't deregister tunnel\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rtnl_link_unregister(&ipip_link_ops);
+	if (xfrm4_tunnel_deregister(&ipip_handler, AF_INET))
+		pr_info("%s: can't deregister tunnel\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	unregister_pernet_device(&ipip_net_ops);
 }

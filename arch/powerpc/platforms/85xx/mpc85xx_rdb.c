@@ -2,10 +2,14 @@
  * MPC85xx RDB Board Setup
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009 Freescale Semiconductor Inc.
 =======
  * Copyright 2009,2012 Freescale Semiconductor Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009,2012 Freescale Semiconductor Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -23,9 +27,12 @@
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -34,10 +41,13 @@
 #include <asm/udbg.h>
 #include <asm/mpic.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/qe.h>
 #include <asm/qe_ic.h>
 #include <asm/fsl_guts.h>
@@ -47,7 +57,10 @@
 #include "smp.h"
 
 #include "mpc85xx.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG
 
@@ -61,6 +74,7 @@
 void __init mpc85xx_rdb_pic_init(void)
 {
 	struct mpic *mpic;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct resource r;
 	struct device_node *np;
@@ -88,6 +102,8 @@ void __init mpc85xx_rdb_pic_init(void)
 		  MPIC_PRIMARY | MPIC_WANTS_RESET |
 		  MPIC_BIG_ENDIAN | MPIC_BROKEN_FRR_NIRQS |
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long root = of_get_flat_dt_root();
 
 #ifdef CONFIG_QUICC_ENGINE
@@ -102,18 +118,24 @@ void __init mpc85xx_rdb_pic_init(void)
 	} else {
 		mpic = mpic_alloc(NULL, 0,
 		  MPIC_BIG_ENDIAN |
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		  MPIC_SINGLE_DEST_CPU,
 		  0, 256, " OpenPIC  ");
 	}
 
 	BUG_ON(mpic == NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	of_node_put(np);
 
 	mpic_init(mpic);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mpic_init(mpic);
 
 #ifdef CONFIG_QUICC_ENGINE
@@ -127,12 +149,16 @@ void __init mpc85xx_rdb_pic_init(void)
 		pr_err("%s: Could not find qe-ic node\n", __func__);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Setup the architecture
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SMP
 extern void __init mpc85xx_smp_init(void);
@@ -145,12 +171,18 @@ static void __init mpc85xx_rdb_setup_arch(void)
 {
 #if defined(CONFIG_PCI) || defined(CONFIG_QUICC_ENGINE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init mpc85xx_rdb_setup_arch(void)
+{
+#ifdef CONFIG_QUICC_ENGINE
+>>>>>>> refs/remotes/origin/master
 	struct device_node *np;
 #endif
 
 	if (ppc_md.progress)
 		ppc_md.progress("mpc85xx_rdb_setup_arch()", 0);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	for_each_node_by_type(np, "pci") {
 		if (of_device_is_compatible(np, "fsl,mpc8548-pcie"))
@@ -183,6 +215,11 @@ machine_device_initcall(p2020_rdb, mpc85xxrdb_publish_devices);
 machine_device_initcall(p1020_rdb, mpc85xxrdb_publish_devices);
 =======
 	mpc85xx_smp_init();
+=======
+	mpc85xx_smp_init();
+
+	fsl_pci_assign_primary();
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_QUICC_ENGINE
 	np = of_find_compatible_node(NULL, NULL, "fsl,qe");
@@ -242,6 +279,7 @@ qe_fail:
 	printk(KERN_INFO "MPC85xx RDB board from Freescale Semiconductor\n");
 }
 
+<<<<<<< HEAD
 machine_device_initcall(p2020_rdb, mpc85xx_common_publish_devices);
 machine_device_initcall(p2020_rdb_pc, mpc85xx_common_publish_devices);
 machine_device_initcall(p1020_mbg_pc, mpc85xx_common_publish_devices);
@@ -251,6 +289,18 @@ machine_device_initcall(p1020_utm_pc, mpc85xx_common_publish_devices);
 machine_device_initcall(p1021_rdb_pc, mpc85xx_common_publish_devices);
 machine_device_initcall(p1025_rdb, mpc85xx_common_publish_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_arch_initcall(p2020_rdb, mpc85xx_common_publish_devices);
+machine_arch_initcall(p2020_rdb_pc, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1020_mbg_pc, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1020_rdb, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1020_rdb_pc, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1020_rdb_pd, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1020_utm_pc, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1021_rdb_pc, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1025_rdb, mpc85xx_common_publish_devices);
+machine_arch_initcall(p1024_rdb, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, device-tree isn't unflattened
@@ -274,7 +324,10 @@ static int __init p1020_rdb_probe(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init p1020_rdb_pc_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
@@ -282,6 +335,16 @@ static int __init p1020_rdb_pc_probe(void)
 	return of_flat_dt_is_compatible(root, "fsl,P1020RDB-PC");
 }
 
+<<<<<<< HEAD
+=======
+static int __init p1020_rdb_pd_probe(void)
+{
+	unsigned long root = of_get_flat_dt_root();
+
+	return of_flat_dt_is_compatible(root, "fsl,P1020RDB-PD");
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init p1021_rdb_pc_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
@@ -321,7 +384,17 @@ static int __init p1020_utm_pc_probe(void)
 	return of_flat_dt_is_compatible(root, "fsl,P1020UTM-PC");
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init p1024_rdb_probe(void)
+{
+	unsigned long root = of_get_flat_dt_root();
+
+	return of_flat_dt_is_compatible(root, "fsl,P1024RDB");
+}
+
+>>>>>>> refs/remotes/origin/master
 define_machine(p2020_rdb) {
 	.name			= "P2020 RDB",
 	.probe			= p2020_rdb_probe,
@@ -350,7 +423,10 @@ define_machine(p1020_rdb) {
 	.progress		= udbg_progress,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 define_machine(p1021_rdb_pc) {
 	.name			= "P1021 RDB-PC",
@@ -435,4 +511,35 @@ define_machine(p1020_rdb_pc) {
 	.calibrate_decr		= generic_calibrate_decr,
 	.progress		= udbg_progress,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+define_machine(p1020_rdb_pd) {
+	.name			= "P1020RDB-PD",
+	.probe			= p1020_rdb_pd_probe,
+	.setup_arch		= mpc85xx_rdb_setup_arch,
+	.init_IRQ		= mpc85xx_rdb_pic_init,
+#ifdef CONFIG_PCI
+	.pcibios_fixup_bus	= fsl_pcibios_fixup_bus,
+#endif
+	.get_irq		= mpic_get_irq,
+	.restart		= fsl_rstcr_restart,
+	.calibrate_decr		= generic_calibrate_decr,
+	.progress		= udbg_progress,
+};
+
+define_machine(p1024_rdb) {
+	.name			= "P1024 RDB",
+	.probe			= p1024_rdb_probe,
+	.setup_arch		= mpc85xx_rdb_setup_arch,
+	.init_IRQ		= mpc85xx_rdb_pic_init,
+#ifdef CONFIG_PCI
+	.pcibios_fixup_bus	= fsl_pcibios_fixup_bus,
+#endif
+	.get_irq		= mpic_get_irq,
+	.restart		= fsl_rstcr_restart,
+	.calibrate_decr		= generic_calibrate_decr,
+	.progress		= udbg_progress,
+};
+>>>>>>> refs/remotes/origin/master

@@ -23,10 +23,14 @@
  * not agree with these terms and conditions, do not use the software.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2003 Agere Systems Inc.
 =======
  * Copyright © 2003 Agere Systems Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -48,10 +52,14 @@
  * Disclaimer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
 =======
  * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -81,6 +89,7 @@
 /*******************************************************************************
  *  function prototypes
  ******************************************************************************/
+<<<<<<< HEAD
 void parse_config( struct net_device *dev );
 
 int readline( int filedesc, char *buffer );
@@ -93,3 +102,17 @@ void ParseConfigLine( char *pszLine, char **ppszLVal, char **ppszRVal );
 
 
 #endif  // __WL_PROFILE_H__
+=======
+void parse_config(struct net_device *dev);
+
+int readline(int filedesc, char *buffer);
+
+void translate_option(char *buffer, struct wl_private *lp);
+
+int parse_mac_address(char *value, u_char *byte_array);
+
+void ParseConfigLine(char *pszLine, char **ppszLVal, char **ppszRVal);
+
+
+#endif  /* __WL_PROFILE_H__ */
+>>>>>>> refs/remotes/origin/master

@@ -20,6 +20,7 @@ static int handle; /* reset pin handle */
 static unsigned int reset_val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int of_reset_gpio_handle(void)
 {
 	int ret; /* variable which stored handle reset gpio pin */
@@ -65,21 +66,35 @@ void of_platform_reset_gpio_probe(void)
 	int ret;
 	handle = of_reset_gpio_handle();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void of_platform_reset_gpio_probe(void)
 {
 	int ret;
 	handle = of_get_named_gpio(of_find_node_by_path("/"),
 				   "hard-reset-gpios", 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (!gpio_is_valid(handle)) {
 		printk(KERN_INFO "Skipping unavailable RESET gpio %d (%s)\n",
 				handle, "reset");
+=======
+
+	if (!gpio_is_valid(handle)) {
+		pr_info("Skipping unavailable RESET gpio %d (%s)\n",
+				handle, "reset");
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = gpio_request(handle, "reset");
 	if (ret < 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "GPIO pin is already allocated\n");
+=======
+		pr_info("GPIO pin is already allocated\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -96,7 +111,11 @@ void of_platform_reset_gpio_probe(void)
 	/* Setup output direction */
 	gpio_set_value(handle, 0);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "RESET: Registered gpio device: %d, current val: %d\n",
+=======
+	pr_info("RESET: Registered gpio device: %d, current val: %d\n",
+>>>>>>> refs/remotes/origin/master
 							handle, reset_val);
 	return;
 err:
@@ -107,10 +126,24 @@ err:
 
 static void gpio_system_reset(void)
 {
+<<<<<<< HEAD
 	gpio_set_value(handle, 1 - reset_val);
 }
 #else
 #define gpio_system_reset() do {} while (0)
+=======
+	if (gpio_is_valid(handle))
+		gpio_set_value(handle, 1 - reset_val);
+	else
+		pr_notice("Reset GPIO unavailable - halting!\n");
+}
+#else
+static void gpio_system_reset(void)
+{
+	pr_notice("No reset GPIO present - halting!\n");
+}
+
+>>>>>>> refs/remotes/origin/master
 void of_platform_reset_gpio_probe(void)
 {
 	return;
@@ -119,30 +152,47 @@ void of_platform_reset_gpio_probe(void)
 
 void machine_restart(char *cmd)
 {
+<<<<<<< HEAD
 	printk(KERN_NOTICE "Machine restart...\n");
 	gpio_system_reset();
 	dump_stack();
+=======
+	pr_notice("Machine restart...\n");
+	gpio_system_reset();
+>>>>>>> refs/remotes/origin/master
 	while (1)
 		;
 }
 
 void machine_shutdown(void)
 {
+<<<<<<< HEAD
 	printk(KERN_NOTICE "Machine shutdown...\n");
+=======
+	pr_notice("Machine shutdown...\n");
+>>>>>>> refs/remotes/origin/master
 	while (1)
 		;
 }
 
 void machine_halt(void)
 {
+<<<<<<< HEAD
 	printk(KERN_NOTICE "Machine halt...\n");
+=======
+	pr_notice("Machine halt...\n");
+>>>>>>> refs/remotes/origin/master
 	while (1)
 		;
 }
 
 void machine_power_off(void)
 {
+<<<<<<< HEAD
 	printk(KERN_NOTICE "Machine power off...\n");
+=======
+	pr_notice("Machine power off...\n");
+>>>>>>> refs/remotes/origin/master
 	while (1)
 		;
 }

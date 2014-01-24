@@ -58,7 +58,11 @@ ENTRY(v4_flush_kern_cache_all)
 ENTRY(v4_flush_user_cache_range)
 #ifdef CONFIG_CPU_CP15
 	mov	ip, #0
+<<<<<<< HEAD
 	mcreq	p15, 0, ip, c7, c7, 0		@ flush ID cache
+=======
+	mcr	p15, 0, ip, c7, c7, 0		@ flush ID cache
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 #else
 	/* FALLTHROUGH */
@@ -88,6 +92,10 @@ ENTRY(v4_coherent_kern_range)
  *	- end	 - virtual end address
  */
 ENTRY(v4_coherent_user_range)
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -103,6 +111,7 @@ ENTRY(v4_flush_kern_dcache_area)
 	/* FALLTHROUGH */
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *	dma_inv_range(start, end)
  *
@@ -120,6 +129,8 @@ ENTRY(v4_dma_inv_range)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	dma_flush_range(start, end)
  *
  *	Clean and invalidate the specified virtual address range.
@@ -132,6 +143,7 @@ ENTRY(v4_dma_flush_range)
 	mov	r0, #0
 	mcr	p15, 0, r0, c7, c7, 0		@ flush ID cache
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* FALLTHROUGH */
 
@@ -146,6 +158,8 @@ ENTRY(v4_dma_flush_range)
 ENTRY(v4_dma_clean_range)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -157,10 +171,14 @@ ENTRY(v4_dma_clean_range)
 ENTRY(v4_dma_unmap_area)
 	teq	r2, #DMA_TO_DEVICE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bne	v4_dma_inv_range
 =======
 	bne	v4_dma_flush_range
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bne	v4_dma_flush_range
+>>>>>>> refs/remotes/origin/master
 	/* FALLTHROUGH */
 
 /*
@@ -174,6 +192,7 @@ ENTRY(v4_dma_map_area)
 ENDPROC(v4_dma_unmap_area)
 ENDPROC(v4_dma_map_area)
 
+<<<<<<< HEAD
 	__INITDATA
 
 <<<<<<< HEAD
@@ -196,3 +215,12 @@ ENTRY(v4_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions v4
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	v4_flush_kern_cache_louis
+	.equ	v4_flush_kern_cache_louis, v4_flush_kern_cache_all
+
+	__INITDATA
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions v4
+>>>>>>> refs/remotes/origin/master

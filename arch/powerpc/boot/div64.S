@@ -58,7 +58,10 @@ __div64_32:
 	mr	r3,r6		# return the remainder in r3
 	blr
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Extended precision shifts.
@@ -111,4 +114,7 @@ __lshrdi3:
 	srw	r3,r3,r5	# MSW = MSW >> count
 	or	r4,r4,r7	# LSW |= t2
 	blr
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

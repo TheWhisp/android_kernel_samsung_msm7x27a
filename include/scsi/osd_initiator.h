@@ -14,8 +14,13 @@
 #ifndef __OSD_INITIATOR_H__
 #define __OSD_INITIATOR_H__
 
+<<<<<<< HEAD
 #include "osd_protocol.h"
 #include "osd_types.h"
+=======
+#include <scsi/osd_protocol.h>
+#include <scsi/osd_types.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/blkdev.h>
 #include <scsi/scsi_device.h>
@@ -263,10 +268,14 @@ int osd_execute_request_async(struct osd_request *or,
  *
  * @or:           - osd_request to examine
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @osi           - Recievs a more detailed error report information (optional).
 =======
  * @osi           - Receives a more detailed error report information (optional).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @osi           - Receives a more detailed error report information (optional).
+>>>>>>> refs/remotes/origin/master
  * @silent        - Do not print to dmsg (Even if enabled)
  * @bad_obj_list  - Some commands act on multiple objects. Failed objects will
  *                  be received here (optional)

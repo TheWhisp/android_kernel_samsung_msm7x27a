@@ -9,10 +9,14 @@
  * (at your option) any later version.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -20,6 +24,7 @@
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/of.h>
@@ -50,12 +55,36 @@
 #include "mux.h"
 #include "control.h"
 #include "devices.h"
+=======
+#include <linux/of.h>
+#include <linux/pinctrl/machine.h>
+#include <linux/platform_data/omap4-keypad.h>
+#include <linux/platform_data/mailbox-omap.h>
+
+#include <asm/mach-types.h>
+#include <asm/mach/map.h>
+
+#include <linux/omap-dma.h>
+
+#include "iomap.h"
+#include "omap_hwmod.h"
+#include "omap_device.h"
+#include "omap4-keypad.h"
+
+#include "soc.h"
+#include "common.h"
+#include "mux.h"
+#include "control.h"
+#include "devices.h"
+#include "display.h"
+>>>>>>> refs/remotes/origin/master
 
 #define L3_MODULES_MAX_LEN 12
 #define L3_MODULES 3
 
 static int __init omap3_l3_init(void)
 {
+<<<<<<< HEAD
 	int l;
 	struct omap_hwmod *oh;
 <<<<<<< HEAD
@@ -63,6 +92,10 @@ static int __init omap3_l3_init(void)
 =======
 	struct platform_device *pdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct omap_hwmod *oh;
+	struct platform_device *pdev;
+>>>>>>> refs/remotes/origin/master
 	char oh_name[L3_MODULES_MAX_LEN];
 
 	/*
@@ -72,13 +105,18 @@ static int __init omap3_l3_init(void)
 	if (!(cpu_is_omap34xx()))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	l = snprintf(oh_name, L3_MODULES_MAX_LEN, "l3_main");
+=======
+	snprintf(oh_name, L3_MODULES_MAX_LEN, "l3_main");
+>>>>>>> refs/remotes/origin/master
 
 	oh = omap_hwmod_lookup(oh_name);
 
 	if (!oh)
 		pr_err("could not look up %s\n", oh_name);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	od = omap_device_build("omap_l3_smx", 0, oh, NULL, 0,
 							   NULL, 0, 0);
@@ -106,6 +144,20 @@ static int __init omap4_l3_init(void)
 	char oh_name[L3_MODULES_MAX_LEN];
 
 =======
+=======
+	pdev = omap_device_build("omap_l3_smx", 0, oh, NULL, 0);
+
+	WARN(IS_ERR(pdev), "could not build omap_device for %s\n", oh_name);
+
+	return PTR_RET(pdev);
+}
+omap_postcore_initcall(omap3_l3_init);
+
+static int __init omap4_l3_init(void)
+{
+	int i;
+	struct omap_hwmod *oh[3];
+>>>>>>> refs/remotes/origin/master
 	struct platform_device *pdev;
 	char oh_name[L3_MODULES_MAX_LEN];
 
@@ -113,22 +165,34 @@ static int __init omap4_l3_init(void)
 	if (of_have_populated_dt())
 		return -ENODEV;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * To avoid code running on other OMAPs in
 	 * multi-omap builds
 	 */
+<<<<<<< HEAD
 	if (!(cpu_is_omap44xx()))
 		return -ENODEV;
 
 	for (i = 0; i < L3_MODULES; i++) {
 		l = snprintf(oh_name, L3_MODULES_MAX_LEN, "l3_main_%d", i+1);
+=======
+	if (!cpu_is_omap44xx() && !soc_is_omap54xx())
+		return -ENODEV;
+
+	for (i = 0; i < L3_MODULES; i++) {
+		snprintf(oh_name, L3_MODULES_MAX_LEN, "l3_main_%d", i+1);
+>>>>>>> refs/remotes/origin/master
 
 		oh[i] = omap_hwmod_lookup(oh_name);
 		if (!(oh[i]))
 			pr_err("could not look up %s\n", oh_name);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	od = omap_device_build_ss("omap_l3_noc", 0, oh, 3, NULL,
 						     0, NULL, 0, 0);
@@ -146,6 +210,15 @@ static int __init omap4_l3_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 postcore_initcall(omap4_l3_init);
+=======
+	pdev = omap_device_build_ss("omap_l3_noc", 0, oh, 3, NULL, 0);
+
+	WARN(IS_ERR(pdev), "could not build omap_device for %s\n", oh_name);
+
+	return PTR_RET(pdev);
+}
+omap_postcore_initcall(omap4_l3_init);
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_VIDEO_OMAP2) || defined(CONFIG_VIDEO_OMAP2_MODULE)
 
@@ -156,7 +229,11 @@ static struct resource omap2cam_resources[] = {
 		.flags		= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start		= INT_24XX_CAM_IRQ,
+=======
+		.start		= 24 + OMAP_INTC_START,
+>>>>>>> refs/remotes/origin/master
 		.flags		= IORESOURCE_IRQ,
 	}
 };
@@ -170,12 +247,19 @@ static struct platform_device omap2cam_device = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_IOMMU_API)
 
 #include <plat/iommu.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_IOMMU_API)
+
+#include <linux/platform_data/iommu-omap.h>
+
+>>>>>>> refs/remotes/origin/master
 static struct resource omap3isp_resources[] = {
 	{
 		.start		= OMAP3430_ISP_BASE,
@@ -248,7 +332,21 @@ static struct resource omap3isp_resources[] = {
 		.flags		= IORESOURCE_MEM,
 	},
 	{
+<<<<<<< HEAD
 		.start		= INT_34XX_CAM_IRQ,
+=======
+		.start		= OMAP343X_CTRL_BASE + OMAP343X_CONTROL_CSIRXFE,
+		.end		= OMAP343X_CTRL_BASE + OMAP343X_CONTROL_CSIRXFE + 3,
+		.flags		= IORESOURCE_MEM,
+	},
+	{
+		.start		= OMAP343X_CTRL_BASE + OMAP3630_CONTROL_CAMERA_PHY_CTRL,
+		.end		= OMAP343X_CTRL_BASE + OMAP3630_CONTROL_CAMERA_PHY_CTRL + 3,
+		.flags		= IORESOURCE_MEM,
+	},
+	{
+		.start		= 24 + OMAP_INTC_START,
+>>>>>>> refs/remotes/origin/master
 		.flags		= IORESOURCE_IRQ,
 	}
 };
@@ -261,6 +359,7 @@ static struct platform_device omap3isp_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int omap3_init_camera(struct isp_platform_data *pdata)
 {
 	omap3isp_device.dev.platform_data = pdata;
@@ -270,6 +369,10 @@ int omap3_init_camera(struct isp_platform_data *pdata)
 =======
 static struct omap_iommu_arch_data omap3_isp_iommu = {
 	.name = "isp",
+=======
+static struct omap_iommu_arch_data omap3_isp_iommu = {
+	.name = "mmu_isp",
+>>>>>>> refs/remotes/origin/master
 };
 
 int omap3_init_camera(struct isp_platform_data *pdata)
@@ -289,7 +392,10 @@ int omap3_init_camera(struct isp_platform_data *pdata)
 
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void omap_init_camera(void)
 {
 #if defined(CONFIG_VIDEO_OMAP2) || defined(CONFIG_VIDEO_OMAP2_MODULE)
@@ -298,6 +404,7 @@ static inline void omap_init_camera(void)
 #endif
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct omap_device_pm_latency omap_keyboard_latency[] = {
 	{
@@ -312,11 +419,16 @@ int __init omap4_keyboard_init(struct omap4_keypad_platform_data
 {
 	struct omap_device *od;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int __init omap4_keyboard_init(struct omap4_keypad_platform_data
 			*sdp4430_keypad_data, struct omap_board_data *bdata)
 {
 	struct platform_device *pdev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct omap_hwmod *oh;
 	struct omap4_keypad_platform_data *keypad_data;
 	unsigned int id = -1;
@@ -332,6 +444,7 @@ int __init omap4_keyboard_init(struct omap4_keypad_platform_data
 	keypad_data = sdp4430_keypad_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	od = omap_device_build(name, id, oh, keypad_data,
 			sizeof(struct omap4_keypad_platform_data),
 			omap_keyboard_latency,
@@ -345,6 +458,10 @@ int __init omap4_keyboard_init(struct omap4_keypad_platform_data
 =======
 	pdev = omap_device_build(name, id, oh, keypad_data,
 			sizeof(struct omap4_keypad_platform_data), NULL, 0, 0);
+=======
+	pdev = omap_device_build(name, id, oh, keypad_data,
+				 sizeof(struct omap4_keypad_platform_data));
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(pdev)) {
 		WARN(1, "Can't build omap_device for %s:%s.\n",
@@ -352,11 +469,15 @@ int __init omap4_keyboard_init(struct omap4_keypad_platform_data
 		return PTR_ERR(pdev);
 	}
 	oh->mux = omap_hwmod_mux_init(bdata->pads, bdata->pads_cnt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_OMAP_MBOX_FWK) || defined(CONFIG_OMAP_MBOX_FWK_MODULE)
 <<<<<<< HEAD
 static struct omap_device_pm_latency mbox_latencies[] = {
@@ -372,17 +493,25 @@ static inline void omap_init_mbox(void)
 	struct omap_hwmod *oh;
 	struct omap_device *od;
 =======
+=======
+#if defined(CONFIG_OMAP2PLUS_MBOX) || defined(CONFIG_OMAP2PLUS_MBOX_MODULE)
+>>>>>>> refs/remotes/origin/master
 static inline void __init omap_init_mbox(void)
 {
 	struct omap_hwmod *oh;
 	struct platform_device *pdev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct omap_mbox_pdata *pdata;
+>>>>>>> refs/remotes/origin/master
 
 	oh = omap_hwmod_lookup("mailbox");
 	if (!oh) {
 		pr_err("%s: unable to find hwmod\n", __func__);
 		return;
 	}
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	od = omap_device_build("omap-mailbox", -1, oh, NULL, 0,
@@ -434,6 +563,24 @@ static inline void omap_init_abe(void)
 static inline void omap_init_abe(void) {}
 #endif
 
+=======
+	if (!oh->dev_attr) {
+		pr_err("%s: hwmod doesn't have valid attrs\n", __func__);
+		return;
+	}
+
+	pdata = (struct omap_mbox_pdata *)oh->dev_attr;
+	pdev = omap_device_build("omap-mailbox", -1, oh, pdata, sizeof(*pdata));
+	WARN(IS_ERR(pdev), "%s: could not build device, err %ld\n",
+						__func__, PTR_ERR(pdev));
+}
+#else
+static inline void omap_init_mbox(void) { }
+#endif /* CONFIG_OMAP2PLUS_MBOX */
+
+static inline void omap_init_sti(void) {}
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_SOC) || defined(CONFIG_SND_SOC_MODULE)
 
 static struct platform_device omap_pcm = {
@@ -441,6 +588,7 @@ static struct platform_device omap_pcm = {
 	.id	= -1,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * OMAP2420 has 2 McBSP ports
@@ -469,6 +617,10 @@ static void omap_init_audio(void)
 static void omap_init_audio(void)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void omap_init_audio(void)
+{
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&omap_pcm);
 }
 
@@ -476,6 +628,7 @@ static void omap_init_audio(void)
 static inline void omap_init_audio(void) {}
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #if defined(CONFIG_SND_OMAP_SOC_MCPDM) || \
@@ -503,10 +656,22 @@ static inline void omap_init_mcpdm(void) {}
 		defined(CONFIG_SND_OMAP_SOC_DMIC_MODULE)
 
 static void __init omap_init_dmic(void)
+=======
+#if defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI) || \
+		defined(CONFIG_SND_OMAP_SOC_OMAP_HDMI_MODULE)
+
+static struct platform_device omap_hdmi_audio = {
+	.name	= "omap-hdmi-audio",
+	.id	= -1,
+};
+
+static void __init omap_init_hdmi_audio(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap_hwmod *oh;
 	struct platform_device *pdev;
 
+<<<<<<< HEAD
 	oh = omap_hwmod_lookup("dmic");
 	if (!oh) {
 		printk(KERN_ERR "Could not look up mcpdm hw_mod\n");
@@ -542,6 +707,29 @@ static int __init omap_mcspi_init(struct omap_hwmod *oh, void *unused)
 {
 	struct platform_device *pdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	oh = omap_hwmod_lookup("dss_hdmi");
+	if (!oh)
+		return;
+
+	pdev = omap_device_build("omap-hdmi-audio-dai", -1, oh, NULL, 0);
+	WARN(IS_ERR(pdev),
+	     "Can't build omap_device for omap-hdmi-audio-dai.\n");
+
+	platform_device_register(&omap_hdmi_audio);
+}
+#else
+static inline void omap_init_hdmi_audio(void) {}
+#endif
+
+#if defined(CONFIG_SPI_OMAP24XX) || defined(CONFIG_SPI_OMAP24XX_MODULE)
+
+#include <linux/platform_data/spi-omap2-mcspi.h>
+
+static int __init omap_mcspi_init(struct omap_hwmod *oh, void *unused)
+{
+	struct platform_device *pdev;
+>>>>>>> refs/remotes/origin/master
 	char *name = "omap2_mcspi";
 	struct omap2_mcspi_platform_config *pdata;
 	static int spi_num;
@@ -565,13 +753,18 @@ static int __init omap_mcspi_init(struct omap_hwmod *oh, void *unused)
 	default:
 			pr_err("Invalid McSPI Revision value\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			kfree(pdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kfree(pdata);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 	}
 
 	spi_num++;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	od = omap_device_build(name, spi_num, oh, pdata,
 				sizeof(*pdata),	omap_mcspi_latency,
@@ -582,6 +775,10 @@ static int __init omap_mcspi_init(struct omap_hwmod *oh, void *unused)
 				sizeof(*pdata),	NULL, 0, 0);
 	WARN(IS_ERR(pdev), "Can't build omap_device for %s:%s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pdev = omap_device_build(name, spi_num, oh, pdata, sizeof(*pdata));
+	WARN(IS_ERR(pdev), "Can't build omap_device for %s:%s\n",
+>>>>>>> refs/remotes/origin/master
 				name, oh->name);
 	kfree(pdata);
 	return 0;
@@ -596,6 +793,7 @@ static void omap_init_mcspi(void)
 static inline void omap_init_mcspi(void) {}
 #endif
 
+<<<<<<< HEAD
 static struct resource omap2_pmu_resource = {
 	.start	= 3,
 	.end	= 3,
@@ -867,6 +1065,54 @@ static inline void omap_hdq_init(void) {}
 
 /*---------------------------------------------------------------------------*/
 
+=======
+/**
+ * omap_init_rng - bind the RNG hwmod to the RNG omap_device
+ *
+ * Bind the RNG hwmod to the RNG omap_device.  No return value.
+ */
+static void omap_init_rng(void)
+{
+	struct omap_hwmod *oh;
+	struct platform_device *pdev;
+
+	oh = omap_hwmod_lookup("rng");
+	if (!oh)
+		return;
+
+	pdev = omap_device_build("omap_rng", -1, oh, NULL, 0);
+	WARN(IS_ERR(pdev), "Can't build omap_device for omap_rng\n");
+}
+
+static void __init omap_init_sham(void)
+{
+	struct omap_hwmod *oh;
+	struct platform_device *pdev;
+
+	oh = omap_hwmod_lookup("sham");
+	if (!oh)
+		return;
+
+	pdev = omap_device_build("omap-sham", -1, oh, NULL, 0);
+	WARN(IS_ERR(pdev), "Can't build omap_device for omap-sham\n");
+}
+
+static void __init omap_init_aes(void)
+{
+	struct omap_hwmod *oh;
+	struct platform_device *pdev;
+
+	oh = omap_hwmod_lookup("aes");
+	if (!oh)
+		return;
+
+	pdev = omap_device_build("omap-aes", -1, oh, NULL, 0);
+	WARN(IS_ERR(pdev), "Can't build omap_device for omap-aes\n");
+}
+
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_VIDEO_OMAP2_VOUT) || \
 	defined(CONFIG_VIDEO_OMAP2_VOUT_MODULE)
 #if defined(CONFIG_FB_OMAP2) || defined(CONFIG_FB_OMAP2_MODULE)
@@ -883,6 +1129,7 @@ static struct platform_device omap_vout_device = {
 	.resource 	= &omap_vout_resource[0],
 	.id		= -1,
 };
+<<<<<<< HEAD
 static void omap_init_vout(void)
 {
 	if (platform_device_register(&omap_vout_device) < 0)
@@ -890,16 +1137,33 @@ static void omap_init_vout(void)
 }
 #else
 static inline void omap_init_vout(void) {}
+=======
+
+int __init omap_init_vout(void)
+{
+	return platform_device_register(&omap_vout_device);
+}
+#else
+int __init omap_init_vout(void) { return 0; }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*-------------------------------------------------------------------------*/
 
 static int __init omap2_init_devices(void)
 {
+<<<<<<< HEAD
+=======
+	/* Enable dummy states for those platforms without pinctrl support */
+	if (!of_have_populated_dt())
+		pinctrl_provide_dummies();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * please keep these calls, and their implementations above,
 	 * in alphabetical order so they're easier to sort through.
 	 */
+<<<<<<< HEAD
 	omap_init_abe();
 	omap_init_audio();
 <<<<<<< HEAD
@@ -968,3 +1232,21 @@ static int __init omap_init_wdt(void)
 }
 subsys_initcall(omap_init_wdt);
 #endif
+=======
+	omap_init_audio();
+	omap_init_camera();
+	omap_init_hdmi_audio();
+	omap_init_mbox();
+	/* If dtb is there, the devices will be created dynamically */
+	if (!of_have_populated_dt()) {
+		omap_init_mcspi();
+		omap_init_sham();
+		omap_init_aes();
+		omap_init_rng();
+	}
+	omap_init_sti();
+
+	return 0;
+}
+omap_arch_initcall(omap2_init_devices);
+>>>>>>> refs/remotes/origin/master

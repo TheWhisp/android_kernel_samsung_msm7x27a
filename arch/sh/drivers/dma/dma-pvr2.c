@@ -71,9 +71,12 @@ static struct irqaction pvr2_dma_irq = {
 	.name		= "pvr2 DMA handler",
 	.handler	= pvr2_dma_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct dma_ops pvr2_dma_ops = {

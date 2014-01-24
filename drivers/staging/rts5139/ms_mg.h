@@ -30,6 +30,7 @@
 #include "rts51x_chip.h"
 #include "ms.h"
 
+<<<<<<< HEAD
 int mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip);
 int mg_get_local_EKB(struct scsi_cmnd *srb, struct rts51x_chip *chip);
 int mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip);
@@ -37,5 +38,14 @@ int mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip);
 int mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip);
 int mg_get_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip);
 int mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+=======
+int rts51x_mg_set_leaf_id(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+int rts51x_mg_get_local_EKB(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+int rts51x_mg_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+int rts51x_mg_get_rsp_chg(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+int rts51x_mg_rsp(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+int rts51x_mg_get_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+int rts51x_mg_set_ICV(struct scsi_cmnd *srb, struct rts51x_chip *chip);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __RTS51X_MS_MG_H */

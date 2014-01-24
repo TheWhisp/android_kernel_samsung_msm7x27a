@@ -60,7 +60,11 @@ enum _LED_STATE_871x {
 			     * the # of times to blink is depend on time
 			     * for scanning. */
 	LED_NO_LINK_BLINK = 7, /* LED is blinking during no link state. */
+<<<<<<< HEAD
 	LED_BLINK_StartToBlink = 8,/* Customzied for Sercomm Printer
+=======
+	LED_BLINK_StartToBlink = 8,/* Customized for Sercomm Printer
+>>>>>>> refs/remotes/origin/master
 				    * Server case */
 	LED_BLINK_WPS = 9,	/* LED is blinkg during WPS communication */
 	LED_TXRX_BLINK = 10,
@@ -267,12 +271,17 @@ static void SwLedBlink(struct LED_871x *pLed)
 				   LED_BLINK_SLOWLY_INTERVAL);
 			break;
 		case LED_BLINK_WPS:
+<<<<<<< HEAD
 			if (pLed->BlinkingLedState == LED_ON)
 				_set_timer(&(pLed->BlinkTimer),
 					   LED_BLINK_LONG_INTERVAL);
 			else
 				_set_timer(&(pLed->BlinkTimer),
 					   LED_BLINK_LONG_INTERVAL);
+=======
+			_set_timer(&(pLed->BlinkTimer),
+					LED_BLINK_LONG_INTERVAL);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			_set_timer(&(pLed->BlinkTimer),
@@ -826,7 +835,11 @@ static void BlinkTimerCallback(unsigned long data)
 {
 	struct LED_871x  *pLed = (struct LED_871x *)data;
 
+<<<<<<< HEAD
 	/* This fixed the crash problem on Fedora 12 when trying to do thei
+=======
+	/* This fixed the crash problem on Fedora 12 when trying to do the
+>>>>>>> refs/remotes/origin/master
 	 * insmod;ifconfig up;rmmod commands. */
 	if ((pLed->padapter->bSurpriseRemoved == true) ||
 	    (pLed->padapter->bDriverStopped == true))
@@ -836,7 +849,11 @@ static void BlinkTimerCallback(unsigned long data)
 
 /*	Description:
  *		Callback function of LED BlinkWorkItem.
+<<<<<<< HEAD
  *		We dispatch acture LED blink action according to LedStrategy.
+=======
+ *		We dispatch actual LED blink action according to LedStrategy.
+>>>>>>> refs/remotes/origin/master
  */
 static void BlinkWorkItemCallback(struct work_struct *work)
 {
@@ -1787,10 +1804,14 @@ void LedControl871x(struct _adapter *padapter, enum LED_CTL_MODE LedAction)
 	struct led_priv	*ledpriv = &(padapter->ledpriv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ledpriv == NULL || ledpriv->bRegUseLed == false)
 =======
 	if (ledpriv->bRegUseLed == false)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ledpriv->bRegUseLed == false)
+>>>>>>> refs/remotes/origin/master
 		return;
 	switch (ledpriv->LedStrategy) {
 	case SW_LED_MODE0:

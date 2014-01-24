@@ -19,9 +19,12 @@
 #include <linux/sched.h>
 #include <linux/signal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/bootmem.h>
 #include <linux/spinlock.h>
@@ -51,16 +54,22 @@ struct uic {
 	int dcrbase;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;
 
 	/* The remapper for this UIC */
 	struct irq_host	*irqhost;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spinlock_t lock;
 
 	/* The remapper for this UIC */
 	struct irq_domain	*irqhost;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void uic_unmask_irq(struct irq_data *d)
@@ -72,10 +81,14 @@ static void uic_unmask_irq(struct irq_data *d)
 
 	sr = 1 << (31-src);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&uic->lock, flags);
 =======
 	raw_spin_lock_irqsave(&uic->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&uic->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	/* ack level-triggered interrupts here */
 	if (irqd_is_level_type(d))
 		mtdcr(uic->dcrbase + UIC_SR, sr);
@@ -83,10 +96,14 @@ static void uic_unmask_irq(struct irq_data *d)
 	er |= sr;
 	mtdcr(uic->dcrbase + UIC_ER, er);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&uic->lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&uic->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&uic->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void uic_mask_irq(struct irq_data *d)
@@ -97,18 +114,24 @@ static void uic_mask_irq(struct irq_data *d)
 	u32 er;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&uic->lock, flags);
 	er = mfdcr(uic->dcrbase + UIC_ER);
 	er &= ~(1 << (31 - src));
 	mtdcr(uic->dcrbase + UIC_ER, er);
 	spin_unlock_irqrestore(&uic->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spin_lock_irqsave(&uic->lock, flags);
 	er = mfdcr(uic->dcrbase + UIC_ER);
 	er &= ~(1 << (31 - src));
 	mtdcr(uic->dcrbase + UIC_ER, er);
 	raw_spin_unlock_irqrestore(&uic->lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void uic_ack_irq(struct irq_data *d)
@@ -118,6 +141,7 @@ static void uic_ack_irq(struct irq_data *d)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&uic->lock, flags);
 	mtdcr(uic->dcrbase + UIC_SR, 1 << (31-src));
 	spin_unlock_irqrestore(&uic->lock, flags);
@@ -126,6 +150,11 @@ static void uic_ack_irq(struct irq_data *d)
 	mtdcr(uic->dcrbase + UIC_SR, 1 << (31-src));
 	raw_spin_unlock_irqrestore(&uic->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&uic->lock, flags);
+	mtdcr(uic->dcrbase + UIC_SR, 1 << (31-src));
+	raw_spin_unlock_irqrestore(&uic->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void uic_mask_ack_irq(struct irq_data *d)
@@ -137,10 +166,14 @@ static void uic_mask_ack_irq(struct irq_data *d)
 
 	sr = 1 << (31-src);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&uic->lock, flags);
 =======
 	raw_spin_lock_irqsave(&uic->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&uic->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	er = mfdcr(uic->dcrbase + UIC_ER);
 	er &= ~sr;
 	mtdcr(uic->dcrbase + UIC_ER, er);
@@ -155,10 +188,14 @@ static void uic_mask_ack_irq(struct irq_data *d)
 	if (!irqd_is_level_type(d))
 		mtdcr(uic->dcrbase + UIC_SR, sr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&uic->lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&uic->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&uic->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int uic_set_irq_type(struct irq_data *d, unsigned int flow_type)
@@ -193,10 +230,14 @@ static int uic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 	mask = ~(1 << (31 - src));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&uic->lock, flags);
 =======
 	raw_spin_lock_irqsave(&uic->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&uic->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	tr = mfdcr(uic->dcrbase + UIC_TR);
 	pr = mfdcr(uic->dcrbase + UIC_PR);
 	tr = (tr & mask) | (trigger << (31-src));
@@ -206,10 +247,14 @@ static int uic_set_irq_type(struct irq_data *d, unsigned int flow_type)
 	mtdcr(uic->dcrbase + UIC_TR, tr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&uic->lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&uic->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&uic->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -224,10 +269,14 @@ static struct irq_chip uic_irq_chip = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int uic_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int uic_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int uic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			irq_hw_number_t hw)
 {
 	struct uic *uic = h->host_data;
@@ -243,6 +292,7 @@ static int uic_host_map(struct irq_domain *h, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int uic_host_xlate(struct irq_host *h, struct device_node *ct,
 			  const u32 *intspec, unsigned int intsize,
@@ -264,6 +314,11 @@ static struct irq_domain_ops uic_host_ops = {
 	.map	= uic_host_map,
 	.xlate	= irq_domain_xlate_twocell,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain_ops uic_host_ops = {
+	.map	= uic_host_map,
+	.xlate	= irq_domain_xlate_twocell,
+>>>>>>> refs/remotes/origin/master
 };
 
 void uic_irq_cascade(unsigned int virq, struct irq_desc *desc)
@@ -313,10 +368,14 @@ static struct uic * __init uic_init_one(struct device_node *node)
 		return NULL; /* FIXME: panic? */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&uic->lock);
 =======
 	raw_spin_lock_init(&uic->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_init(&uic->lock);
+>>>>>>> refs/remotes/origin/master
 	indexp = of_get_property(node, "cell-index", &len);
 	if (!indexp || (len != sizeof(u32))) {
 		printk(KERN_ERR "uic: Device node %s has missing or invalid "
@@ -334,6 +393,7 @@ static struct uic * __init uic_init_one(struct device_node *node)
 	uic->dcrbase = *dcrreg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uic->irqhost = irq_alloc_host(node, IRQ_HOST_MAP_LINEAR,
 				      NR_UIC_INTS, &uic_host_ops, -1);
 	if (! uic->irqhost)
@@ -342,12 +402,17 @@ static struct uic * __init uic_init_one(struct device_node *node)
 	uic->irqhost->host_data = uic;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uic->irqhost = irq_domain_add_linear(node, NR_UIC_INTS, &uic_host_ops,
 					     uic);
 	if (! uic->irqhost)
 		return NULL; /* FIXME: panic? */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Start with all interrupts disabled, level and non-critical */
 	mtdcr(uic->dcrbase + UIC_ER, 0);
 	mtdcr(uic->dcrbase + UIC_CR, 0);

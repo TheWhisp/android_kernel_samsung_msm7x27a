@@ -2,7 +2,11 @@
  * rbtx4927 specific prom routines
  *
  * Author: MontaVista Software, Inc.
+<<<<<<< HEAD
  *         source@mvista.com
+=======
+ *	   source@mvista.com
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2001-2002 MontaVista Software Inc.
  *

@@ -34,7 +34,11 @@
 
 #include "mscan.h"
 
+<<<<<<< HEAD
 static struct can_bittiming_const mscan_bittiming_const = {
+=======
+static const struct can_bittiming_const mscan_bittiming_const = {
+>>>>>>> refs/remotes/origin/master
 	.name = "mscan",
 	.tseg1_min = 4,
 	.tseg1_max = 16,
@@ -63,10 +67,14 @@ static int mscan_set_mode(struct net_device *dev, u8 mode)
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	int i;
 	u8 canctl1;
@@ -100,6 +108,7 @@ static int mscan_set_mode(struct net_device *dev, u8 mode)
 			 */
 			if (i >= MSCAN_SET_MODE_RETRIES)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev_dbg(dev->dev.parent,
 					"device failed to enter sleep mode. "
 					"We proceed anyhow.\n");
@@ -108,6 +117,11 @@ static int mscan_set_mode(struct net_device *dev, u8 mode)
 					   "device failed to enter sleep mode. "
 					   "We proceed anyhow.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_dbg(dev,
+					   "device failed to enter sleep mode. "
+					   "We proceed anyhow.\n");
+>>>>>>> refs/remotes/origin/master
 			else
 				priv->can.state = CAN_STATE_SLEEPING;
 		}
@@ -149,10 +163,14 @@ static int mscan_start(struct net_device *dev)
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	u8 canrflg;
 	int err;
 
@@ -193,10 +211,14 @@ static int mscan_restart(struct net_device *dev)
 
 	if (priv->type == MSCAN_TYPE_MPC5121) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 		struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 
 		priv->can.state = CAN_STATE_ERROR_ACTIVE;
 		WARN(!(in_8(&regs->canmisc) & MSCAN_BOHOLD),
@@ -218,10 +240,14 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	struct can_frame *frame = (struct can_frame *)skb->data;
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	int i, rtr, buf_id;
 	u32 can_id;
 
@@ -236,10 +262,14 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	case 0:
 		netif_stop_queue(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(dev->dev.parent, "Tx Ring full when queue awake!\n");
 =======
 		netdev_err(dev, "Tx Ring full when queue awake!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "Tx Ring full when queue awake!\n");
+>>>>>>> refs/remotes/origin/master
 		return NETDEV_TX_BUSY;
 	case 1:
 		/*
@@ -288,12 +318,15 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb, struct net_device *dev)
 		u16 *payload = (u16 *)frame->data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* It is safe to write into dsr[dlc+1] */
 		for (i = 0; i < (frame->can_dlc + 1) / 2; i++) {
 			out_be16(data, *payload++);
 			data += 2 + _MSCAN_RESERVED_DSR_SIZE;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < frame->can_dlc / 2; i++) {
 			out_be16(data, *payload++);
 			data += 2 + _MSCAN_RESERVED_DSR_SIZE;
@@ -301,7 +334,10 @@ static netdev_tx_t mscan_start_xmit(struct sk_buff *skb, struct net_device *dev)
 		/* write remaining byte if necessary */
 		if (frame->can_dlc & 1)
 			out_8(data, frame->data[frame->can_dlc - 1]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	out_8(&regs->tx.dlr, frame->can_dlc);
@@ -342,10 +378,14 @@ static void mscan_get_rx_frame(struct net_device *dev, struct can_frame *frame)
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	u32 can_id;
 	int i;
 
@@ -371,11 +411,14 @@ static void mscan_get_rx_frame(struct net_device *dev, struct can_frame *frame)
 		u16 *payload = (u16 *)frame->data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < (frame->can_dlc + 1) / 2; i++) {
 			*payload++ = in_be16(data);
 			data += 2 + _MSCAN_RESERVED_DSR_SIZE;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < frame->can_dlc / 2; i++) {
 			*payload++ = in_be16(data);
 			data += 2 + _MSCAN_RESERVED_DSR_SIZE;
@@ -383,7 +426,10 @@ static void mscan_get_rx_frame(struct net_device *dev, struct can_frame *frame)
 		/* read remaining byte if necessary */
 		if (frame->can_dlc & 1)
 			frame->data[frame->can_dlc - 1] = in_8(data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	out_8(&regs->canrflg, MSCAN_RXF);
@@ -394,18 +440,24 @@ static void mscan_get_err_frame(struct net_device *dev, struct can_frame *frame,
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 	struct net_device_stats *stats = &dev->stats;
 	enum can_state old_state;
 
 	dev_dbg(dev->dev.parent, "error interrupt (canrflg=%#x)\n", canrflg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mscan_regs __iomem *regs = priv->reg_base;
 	struct net_device_stats *stats = &dev->stats;
 	enum can_state old_state;
 
 	netdev_dbg(dev, "error interrupt (canrflg=%#x)\n", canrflg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	frame->can_id = CAN_ERR_FLAG;
 
 	if (canrflg & MSCAN_OVRIF) {
@@ -465,10 +517,14 @@ static int mscan_rx_poll(struct napi_struct *napi, int quota)
 	struct mscan_priv *priv = container_of(napi, struct mscan_priv, napi);
 	struct net_device *dev = napi->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	struct net_device_stats *stats = &dev->stats;
 	int npackets = 0;
 	int ret = 1;
@@ -485,10 +541,14 @@ static int mscan_rx_poll(struct napi_struct *napi, int quota)
 		if (!skb) {
 			if (printk_ratelimit())
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev_notice(dev->dev.parent, "packet dropped\n");
 =======
 				netdev_notice(dev, "packet dropped\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_notice(dev, "packet dropped\n");
+>>>>>>> refs/remotes/origin/master
 			stats->rx_dropped++;
 			out_8(&regs->canrflg, canrflg);
 			continue;
@@ -520,10 +580,14 @@ static irqreturn_t mscan_isr(int irq, void *dev_id)
 	struct net_device *dev = (struct net_device *)dev_id;
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	struct net_device_stats *stats = &dev->stats;
 	u8 cantier, cantflg, canrflg;
 	irqreturn_t ret = IRQ_NONE;
@@ -582,12 +646,17 @@ static irqreturn_t mscan_isr(int irq, void *dev_id)
 
 static int mscan_do_set_mode(struct net_device *dev, enum can_mode mode)
 {
+<<<<<<< HEAD
 	struct mscan_priv *priv = netdev_priv(dev);
 	int ret = 0;
 
 	if (!priv->open_time)
 		return -EINVAL;
 
+=======
+	int ret = 0;
+
+>>>>>>> refs/remotes/origin/master
 	switch (mode) {
 	case CAN_MODE_START:
 		ret = mscan_restart(dev);
@@ -608,10 +677,14 @@ static int mscan_do_set_bittiming(struct net_device *dev)
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	struct can_bittiming *bt = &priv->can.bittiming;
 	u8 btr0, btr1;
 
@@ -621,11 +694,15 @@ static int mscan_do_set_bittiming(struct net_device *dev)
 		BTR1_SET_SAM(priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(dev->dev.parent, "setting BTR0=0x%02x BTR1=0x%02x\n",
 		btr0, btr1);
 =======
 	netdev_info(dev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev_info(dev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
+>>>>>>> refs/remotes/origin/master
 
 	out_8(&regs->canbtr0, btr0);
 	out_8(&regs->canbtr1, btr1);
@@ -634,7 +711,10 @@ static int mscan_do_set_bittiming(struct net_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int mscan_get_berr_counter(const struct net_device *dev,
 				  struct can_berr_counter *bec)
 {
@@ -647,26 +727,49 @@ static int mscan_get_berr_counter(const struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int mscan_open(struct net_device *dev)
 {
 	int ret;
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+
+	if (priv->clk_ipg) {
+		ret = clk_prepare_enable(priv->clk_ipg);
+		if (ret)
+			goto exit_retcode;
+	}
+	if (priv->clk_can) {
+		ret = clk_prepare_enable(priv->clk_can);
+		if (ret)
+			goto exit_dis_ipg_clock;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* common open */
 	ret = open_candev(dev);
 	if (ret)
+<<<<<<< HEAD
 		return ret;
+=======
+		goto exit_dis_can_clock;
+>>>>>>> refs/remotes/origin/master
 
 	napi_enable(&priv->napi);
 
 	ret = request_irq(dev->irq, mscan_isr, 0, dev->name, dev);
 	if (ret < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dev_err(dev->dev.parent, "failed to attach interrupt\n");
 =======
@@ -680,11 +783,20 @@ static int mscan_open(struct net_device *dev)
 <<<<<<< HEAD
 	clrbits8(&regs->canctl1, MSCAN_LISTEN);
 =======
+=======
+		netdev_err(dev, "failed to attach interrupt\n");
+		goto exit_napi_disable;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
 		setbits8(&regs->canctl1, MSCAN_LISTEN);
 	else
 		clrbits8(&regs->canctl1, MSCAN_LISTEN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = mscan_start(dev);
 	if (ret)
@@ -695,11 +807,24 @@ static int mscan_open(struct net_device *dev)
 	return 0;
 
 exit_free_irq:
+<<<<<<< HEAD
 	priv->open_time = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(dev->irq, dev);
 exit_napi_disable:
 	napi_disable(&priv->napi);
 	close_candev(dev);
+<<<<<<< HEAD
+=======
+exit_dis_can_clock:
+	if (priv->clk_can)
+		clk_disable_unprepare(priv->clk_can);
+exit_dis_ipg_clock:
+	if (priv->clk_ipg)
+		clk_disable_unprepare(priv->clk_ipg);
+exit_retcode:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -707,10 +832,14 @@ static int mscan_close(struct net_device *dev)
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 
 	netif_stop_queue(dev);
 	napi_disable(&priv->napi);
@@ -720,7 +849,15 @@ static int mscan_close(struct net_device *dev)
 	mscan_set_mode(dev, MSCAN_INIT_MODE);
 	close_candev(dev);
 	free_irq(dev->irq, dev);
+<<<<<<< HEAD
 	priv->open_time = 0;
+=======
+
+	if (priv->clk_can)
+		clk_disable_unprepare(priv->clk_can);
+	if (priv->clk_ipg)
+		clk_disable_unprepare(priv->clk_ipg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -735,10 +872,14 @@ int register_mscandev(struct net_device *dev, int mscan_clksrc)
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	u8 ctl1;
 
 	ctl1 = in_8(&regs->canctl1);
@@ -748,14 +889,20 @@ int register_mscandev(struct net_device *dev, int mscan_clksrc)
 		ctl1 &= ~MSCAN_CLKSRC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (priv->type == MSCAN_TYPE_MPC5121)
 		ctl1 |= MSCAN_BORM; /* bus-off recovery upon request */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (priv->type == MSCAN_TYPE_MPC5121) {
 		priv->can.do_get_berr_counter = mscan_get_berr_counter;
 		ctl1 |= MSCAN_BORM; /* bus-off recovery upon request */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ctl1 |= MSCAN_CANE;
 	out_8(&regs->canctl1, ctl1);
@@ -783,10 +930,14 @@ void unregister_mscandev(struct net_device *dev)
 {
 	struct mscan_priv *priv = netdev_priv(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mscan_regs *regs = (struct mscan_regs *)priv->reg_base;
 =======
 	struct mscan_regs __iomem *regs = priv->reg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mscan_regs __iomem *regs = priv->reg_base;
+>>>>>>> refs/remotes/origin/master
 	mscan_set_mode(dev, MSCAN_INIT_MODE);
 	clrbits8(&regs->canctl1, MSCAN_CANE);
 	unregister_candev(dev);
@@ -813,11 +964,16 @@ struct net_device *alloc_mscandev(void)
 	priv->can.do_set_bittiming = mscan_do_set_bittiming;
 	priv->can.do_set_mode = mscan_do_set_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
 =======
 	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
 		CAN_CTRLMODE_LISTENONLY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+		CAN_CTRLMODE_LISTENONLY;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < TX_QUEUE_SIZE; i++) {
 		priv->tx_queue[i].id = i;

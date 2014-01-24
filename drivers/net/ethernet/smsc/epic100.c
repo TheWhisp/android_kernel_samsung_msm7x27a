@@ -90,10 +90,17 @@ static int rx_copybreak;
 #include <asm/byteorder.h>
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
 static char version[] __devinitdata =
 DRV_NAME ".c:v1.11 1/7/2001 Written by Donald Becker <becker@scyld.com>\n";
 static char version2[] __devinitdata =
 "  (unofficial 2.4.x kernel port, version " DRV_VERSION ", " DRV_RELDATE ")\n";
+=======
+static char version[] =
+DRV_NAME ".c:v1.11 1/7/2001 Written by Donald Becker <becker@scyld.com>";
+static char version2[] =
+"  (unofficial 2.4.x kernel port, version " DRV_VERSION ", " DRV_RELDATE ")";
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Donald Becker <becker@scyld.com>");
 MODULE_DESCRIPTION("SMC 83c170 EPIC series Ethernet driver");
@@ -146,6 +153,15 @@ enum chip_capability_flags { MII_PWRDWN=1, TYPE2_INTR=2, NO_MII=4 };
 #define EPIC_TOTAL_SIZE 0x100
 #define USE_IO_OPS 1
 
+<<<<<<< HEAD
+=======
+#ifdef USE_IO_OPS
+#define EPIC_BAR	0
+#else
+#define EPIC_BAR	1
+#endif
+
+>>>>>>> refs/remotes/origin/master
 typedef enum {
 	SMSC_83C170_0,
 	SMSC_83C170,
@@ -176,6 +192,7 @@ static DEFINE_PCI_DEVICE_TABLE(epic_pci_tbl) = {
 };
 MODULE_DEVICE_TABLE (pci, epic_pci_tbl);
 
+<<<<<<< HEAD
 
 #ifndef USE_IO_OPS
 #undef inb
@@ -191,6 +208,13 @@ MODULE_DEVICE_TABLE (pci, epic_pci_tbl);
 #define outw writew
 #define outl writel
 #endif
+=======
+#define ew16(reg, val)	iowrite16(val, ioaddr + (reg))
+#define ew32(reg, val)	iowrite32(val, ioaddr + (reg))
+#define er8(reg)	ioread8(ioaddr + (reg))
+#define er16(reg)	ioread16(ioaddr + (reg))
+#define er32(reg)	ioread32(ioaddr + (reg))
+>>>>>>> refs/remotes/origin/master
 
 /* Offsets to registers, using the (ugh) SMC names. */
 enum epic_registers {
@@ -275,6 +299,10 @@ struct epic_private {
 	u32 irq_mask;
 	unsigned int rx_buf_sz;				/* Based on MTU+slack. */
 
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr;
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pci_dev;			/* PCI bus location. */
 	int chip_id, chip_flags;
 
@@ -290,7 +318,11 @@ struct epic_private {
 };
 
 static int epic_open(struct net_device *dev);
+<<<<<<< HEAD
 static int read_eeprom(long ioaddr, int location);
+=======
+static int read_eeprom(struct epic_private *, int);
+>>>>>>> refs/remotes/origin/master
 static int mdio_read(struct net_device *dev, int phy_id, int location);
 static void mdio_write(struct net_device *dev, int phy_id, int loc, int val);
 static void epic_restart(struct net_device *dev);
@@ -321,11 +353,18 @@ static const struct net_device_ops epic_netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit epic_init_one (struct pci_dev *pdev,
 				    const struct pci_device_id *ent)
 {
 	static int card_idx = -1;
 	long ioaddr;
+=======
+static int epic_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+{
+	static int card_idx = -1;
+	void __iomem *ioaddr;
+>>>>>>> refs/remotes/origin/master
 	int chip_idx = (int) ent->driver_data;
 	int irq;
 	struct net_device *dev;
@@ -336,9 +375,13 @@ static int __devinit epic_init_one (struct pci_dev *pdev,
 
 /* when built into the kernel, we only print version if device is found */
 #ifndef MODULE
+<<<<<<< HEAD
 	static int printed_version;
 	if (!printed_version++)
 		printk(KERN_INFO "%s%s", version, version2);
+=======
+	pr_info_once("%s%s\n", version, version2);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	card_idx++;
@@ -368,19 +411,30 @@ static int __devinit epic_init_one (struct pci_dev *pdev,
 
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
+<<<<<<< HEAD
 #ifdef USE_IO_OPS
 	ioaddr = pci_resource_start (pdev, 0);
 #else
 	ioaddr = pci_resource_start (pdev, 1);
 	ioaddr = (long) pci_ioremap_bar(pdev, 1);
+=======
+	ioaddr = pci_iomap(pdev, EPIC_BAR, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!ioaddr) {
 		dev_err(&pdev->dev, "ioremap failed\n");
 		goto err_out_free_netdev;
 	}
+<<<<<<< HEAD
 #endif
 
 	pci_set_drvdata(pdev, dev);
 	ep = netdev_priv(dev);
+=======
+
+	pci_set_drvdata(pdev, dev);
+	ep = netdev_priv(dev);
+	ep->ioaddr = ioaddr;
+>>>>>>> refs/remotes/origin/master
 	ep->mii.dev = dev;
 	ep->mii.mdio_read = mdio_read;
 	ep->mii.mdio_write = mdio_write;
@@ -409,14 +463,18 @@ static int __devinit epic_init_one (struct pci_dev *pdev,
 			duplex = full_duplex[card_idx];
 	}
 
+<<<<<<< HEAD
 	dev->base_addr = ioaddr;
 	dev->irq = irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&ep->lock);
 	spin_lock_init(&ep->napi_lock);
 	ep->reschedule_in_poll = 0;
 
 	/* Bring the chip out of low-power mode. */
+<<<<<<< HEAD
 	outl(0x4200, ioaddr + GENCTL);
 	/* Magic?!  If we don't set this bit the MII interface won't work. */
 	/* This magic is documented in SMSC app note 7.15 */
@@ -437,6 +495,28 @@ static int __devinit epic_init_one (struct pci_dev *pdev,
 		dev_printk(KERN_DEBUG, &pdev->dev, "EEPROM contents:\n");
 		for (i = 0; i < 64; i++)
 			printk(" %4.4x%s", read_eeprom(ioaddr, i),
+=======
+	ew32(GENCTL, 0x4200);
+	/* Magic?!  If we don't set this bit the MII interface won't work. */
+	/* This magic is documented in SMSC app note 7.15 */
+	for (i = 16; i > 0; i--)
+		ew32(TEST1, 0x0008);
+
+	/* Turn on the MII transceiver. */
+	ew32(MIICfg, 0x12);
+	if (chip_idx == 1)
+		ew32(NVCTL, (er32(NVCTL) & ~0x003c) | 0x4800);
+	ew32(GENCTL, 0x0200);
+
+	/* Note: the '175 does not have a serial EEPROM. */
+	for (i = 0; i < 3; i++)
+		((__le16 *)dev->dev_addr)[i] = cpu_to_le16(er16(LAN0 + i*4));
+
+	if (debug > 2) {
+		dev_dbg(&pdev->dev, "EEPROM contents:\n");
+		for (i = 0; i < 64; i++)
+			pr_cont(" %4.4x%s", read_eeprom(ep, i),
+>>>>>>> refs/remotes/origin/master
 				   i % 16 == 15 ? "\n" : "");
 	}
 
@@ -481,8 +561,13 @@ static int __devinit epic_init_one (struct pci_dev *pdev,
 
 	/* Turn off the MII xcvr (175 only!), leave the chip in low-power mode. */
 	if (ep->chip_flags & MII_PWRDWN)
+<<<<<<< HEAD
 		outl(inl(ioaddr + NVCTL) & ~0x483C, ioaddr + NVCTL);
 	outl(0x0008, ioaddr + GENCTL);
+=======
+		ew32(NVCTL, er32(NVCTL) & ~0x483c);
+	ew32(GENCTL, 0x0008);
+>>>>>>> refs/remotes/origin/master
 
 	/* The lower four bits are the media type. */
 	if (duplex) {
@@ -501,9 +586,16 @@ static int __devinit epic_init_one (struct pci_dev *pdev,
 	if (ret < 0)
 		goto err_out_unmap_rx;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: %s at %#lx, IRQ %d, %pM\n",
 	       dev->name, pci_id_tbl[chip_idx].name, ioaddr, dev->irq,
 	       dev->dev_addr);
+=======
+	netdev_info(dev, "%s at %lx, IRQ %d, %pM\n",
+		    pci_id_tbl[chip_idx].name,
+		    (long)pci_resource_start(pdev, EPIC_BAR), pdev->irq,
+		    dev->dev_addr);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return ret;
@@ -513,10 +605,15 @@ err_out_unmap_rx:
 err_out_unmap_tx:
 	pci_free_consistent(pdev, TX_TOTAL_SIZE, ep->tx_ring, ep->tx_ring_dma);
 err_out_iounmap:
+<<<<<<< HEAD
 #ifndef USE_IO_OPS
 	iounmap(ioaddr);
 err_out_free_netdev:
 #endif
+=======
+	pci_iounmap(pdev, ioaddr);
+err_out_free_netdev:
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 err_out_free_res:
 	pci_release_regions(pdev);
@@ -540,7 +637,11 @@ err_out_disable:
    This serves to flush the operation to the PCI bus.
  */
 
+<<<<<<< HEAD
 #define eeprom_delay()	inl(ee_addr)
+=======
+#define eeprom_delay()	er32(EECTL)
+>>>>>>> refs/remotes/origin/master
 
 /* The EEPROM commands include the alway-set leading bit. */
 #define EE_WRITE_CMD	(5 << 6)
@@ -550,6 +651,7 @@ err_out_disable:
 
 static void epic_disable_int(struct net_device *dev, struct epic_private *ep)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 
 	outl(0x00000000, ioaddr + INTMASK);
@@ -559,21 +661,39 @@ static inline void __epic_pci_commit(long ioaddr)
 {
 #ifndef USE_IO_OPS
 	inl(ioaddr + INTMASK);
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+
+	ew32(INTMASK, 0x00000000);
+}
+
+static inline void __epic_pci_commit(void __iomem *ioaddr)
+{
+#ifndef USE_IO_OPS
+	er32(INTMASK);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 static inline void epic_napi_irq_off(struct net_device *dev,
 				     struct epic_private *ep)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 
 	outl(ep->irq_mask & ~EpicNapiEvent, ioaddr + INTMASK);
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+
+	ew32(INTMASK, ep->irq_mask & ~EpicNapiEvent);
+>>>>>>> refs/remotes/origin/master
 	__epic_pci_commit(ioaddr);
 }
 
 static inline void epic_napi_irq_on(struct net_device *dev,
 				    struct epic_private *ep)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 
 	/* No need to commit possible posted write */
@@ -590,10 +710,29 @@ static int __devinit read_eeprom(long ioaddr, int location)
 
 	outl(EE_ENB & ~EE_CS, ee_addr);
 	outl(EE_ENB, ee_addr);
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+
+	/* No need to commit possible posted write */
+	ew32(INTMASK, ep->irq_mask | EpicNapiEvent);
+}
+
+static int read_eeprom(struct epic_private *ep, int location)
+{
+	void __iomem *ioaddr = ep->ioaddr;
+	int i;
+	int retval = 0;
+	int read_cmd = location |
+		(er32(EECTL) & 0x40 ? EE_READ64_CMD : EE_READ256_CMD);
+
+	ew32(EECTL, EE_ENB & ~EE_CS);
+	ew32(EECTL, EE_ENB);
+>>>>>>> refs/remotes/origin/master
 
 	/* Shift the read command bits out. */
 	for (i = 12; i >= 0; i--) {
 		short dataval = (read_cmd & (1 << i)) ? EE_WRITE_1 : EE_WRITE_0;
+<<<<<<< HEAD
 		outl(EE_ENB | dataval, ee_addr);
 		eeprom_delay();
 		outl(EE_ENB | dataval | EE_SHIFT_CLK, ee_addr);
@@ -606,11 +745,29 @@ static int __devinit read_eeprom(long ioaddr, int location)
 		eeprom_delay();
 		retval = (retval << 1) | ((inl(ee_addr) & EE_DATA_READ) ? 1 : 0);
 		outl(EE_ENB, ee_addr);
+=======
+		ew32(EECTL, EE_ENB | dataval);
+		eeprom_delay();
+		ew32(EECTL, EE_ENB | dataval | EE_SHIFT_CLK);
+		eeprom_delay();
+	}
+	ew32(EECTL, EE_ENB);
+
+	for (i = 16; i > 0; i--) {
+		ew32(EECTL, EE_ENB | EE_SHIFT_CLK);
+		eeprom_delay();
+		retval = (retval << 1) | ((er32(EECTL) & EE_DATA_READ) ? 1 : 0);
+		ew32(EECTL, EE_ENB);
+>>>>>>> refs/remotes/origin/master
 		eeprom_delay();
 	}
 
 	/* Terminate the EEPROM access. */
+<<<<<<< HEAD
 	outl(EE_ENB & ~EE_CS, ee_addr);
+=======
+	ew32(EECTL, EE_ENB & ~EE_CS);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -618,6 +775,7 @@ static int __devinit read_eeprom(long ioaddr, int location)
 #define MII_WRITEOP		2
 static int mdio_read(struct net_device *dev, int phy_id, int location)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	int read_cmd = (phy_id << 9) | (location << 4) | MII_READOP;
 	int i;
@@ -634,6 +792,25 @@ static int mdio_read(struct net_device *dev, int phy_id, int location)
 				continue;
 			}
 			return inw(ioaddr + MIIData);
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+	int read_cmd = (phy_id << 9) | (location << 4) | MII_READOP;
+	int i;
+
+	ew32(MIICtrl, read_cmd);
+	/* Typical operation takes 25 loops. */
+	for (i = 400; i > 0; i--) {
+		barrier();
+		if ((er32(MIICtrl) & MII_READOP) == 0) {
+			/* Work around read failure bug. */
+			if (phy_id == 1 && location < 6 &&
+			    er16(MIIData) == 0xffff) {
+				ew32(MIICtrl, read_cmd);
+				continue;
+			}
+			return er16(MIIData);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return 0xffff;
@@ -641,6 +818,7 @@ static int mdio_read(struct net_device *dev, int phy_id, int location)
 
 static void mdio_write(struct net_device *dev, int phy_id, int loc, int value)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	int i;
 
@@ -649,6 +827,17 @@ static void mdio_write(struct net_device *dev, int phy_id, int loc, int value)
 	for (i = 10000; i > 0; i--) {
 		barrier();
 		if ((inl(ioaddr + MIICtrl) & MII_WRITEOP) == 0)
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+	int i;
+
+	ew16(MIIData, value);
+	ew32(MIICtrl, (phy_id << 9) | (loc << 4) | MII_WRITEOP);
+	for (i = 10000; i > 0; i--) {
+		barrier();
+		if ((er32(MIICtrl) & MII_WRITEOP) == 0)
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 }
@@ -657,6 +846,7 @@ static void mdio_write(struct net_device *dev, int phy_id, int loc, int value)
 static int epic_open(struct net_device *dev)
 {
 	struct epic_private *ep = netdev_priv(dev);
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	int i;
 	int retval;
@@ -668,14 +858,35 @@ static int epic_open(struct net_device *dev)
 	if ((retval = request_irq(dev->irq, epic_interrupt, IRQF_SHARED, dev->name, dev))) {
 		napi_disable(&ep->napi);
 		return retval;
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+	const int irq = ep->pci_dev->irq;
+	int rc, i;
+
+	/* Soft reset the chip. */
+	ew32(GENCTL, 0x4001);
+
+	napi_enable(&ep->napi);
+	rc = request_irq(irq, epic_interrupt, IRQF_SHARED, dev->name, dev);
+	if (rc) {
+		napi_disable(&ep->napi);
+		return rc;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	epic_init_ring(dev);
 
+<<<<<<< HEAD
 	outl(0x4000, ioaddr + GENCTL);
 	/* This magic is documented in SMSC app note 7.15 */
 	for (i = 16; i > 0; i--)
 		outl(0x0008, ioaddr + TEST1);
+=======
+	ew32(GENCTL, 0x4000);
+	/* This magic is documented in SMSC app note 7.15 */
+	for (i = 16; i > 0; i--)
+		ew32(TEST1, 0x0008);
+>>>>>>> refs/remotes/origin/master
 
 	/* Pull the chip out of low-power mode, enable interrupts, and set for
 	   PCI read multiple.  The MIIcfg setting and strange write order are
@@ -683,6 +894,7 @@ static int epic_open(struct net_device *dev)
 	   wiring on the Ositech CardBus card.
 	*/
 #if 0
+<<<<<<< HEAD
 	outl(dev->if_port == 1 ? 0x13 : 0x12, ioaddr + MIICfg);
 #endif
 	if (ep->chip_flags & MII_PWRDWN)
@@ -697,24 +909,52 @@ static int epic_open(struct net_device *dev)
 	outl(0x4412 | (RX_FIFO_THRESH<<8), ioaddr + GENCTL);
 	inl(ioaddr + GENCTL);
 	outl(0x0412 | (RX_FIFO_THRESH<<8), ioaddr + GENCTL);
+=======
+	ew32(MIICfg, dev->if_port == 1 ? 0x13 : 0x12);
+#endif
+	if (ep->chip_flags & MII_PWRDWN)
+		ew32(NVCTL, (er32(NVCTL) & ~0x003c) | 0x4800);
+
+	/* Tell the chip to byteswap descriptors on big-endian hosts */
+#ifdef __BIG_ENDIAN
+	ew32(GENCTL, 0x4432 | (RX_FIFO_THRESH << 8));
+	er32(GENCTL);
+	ew32(GENCTL, 0x0432 | (RX_FIFO_THRESH << 8));
+#else
+	ew32(GENCTL, 0x4412 | (RX_FIFO_THRESH << 8));
+	er32(GENCTL);
+	ew32(GENCTL, 0x0412 | (RX_FIFO_THRESH << 8));
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	udelay(20); /* Looks like EPII needs that if you want reliable RX init. FIXME: pci posting bug? */
 
 	for (i = 0; i < 3; i++)
+<<<<<<< HEAD
 		outl(le16_to_cpu(((__le16*)dev->dev_addr)[i]), ioaddr + LAN0 + i*4);
 
 	ep->tx_threshold = TX_FIFO_THRESH;
 	outl(ep->tx_threshold, ioaddr + TxThresh);
+=======
+		ew32(LAN0 + i*4, le16_to_cpu(((__le16*)dev->dev_addr)[i]));
+
+	ep->tx_threshold = TX_FIFO_THRESH;
+	ew32(TxThresh, ep->tx_threshold);
+>>>>>>> refs/remotes/origin/master
 
 	if (media2miictl[dev->if_port & 15]) {
 		if (ep->mii_phy_cnt)
 			mdio_write(dev, ep->phys[0], MII_BMCR, media2miictl[dev->if_port&15]);
 		if (dev->if_port == 1) {
 			if (debug > 1)
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: Using the 10base2 transceiver, MII "
 					   "status %4.4x.\n",
 					   dev->name, mdio_read(dev, ep->phys[0], MII_BMSR));
+=======
+				netdev_info(dev, "Using the 10base2 transceiver, MII status %4.4x.\n",
+					    mdio_read(dev, ep->phys[0], MII_BMSR));
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		int mii_lpa = mdio_read(dev, ep->phys[0], MII_LPA);
@@ -724,6 +964,7 @@ static int epic_open(struct net_device *dev)
 			else if (! (mii_lpa & LPA_LPACK))
 				mdio_write(dev, ep->phys[0], MII_BMCR, BMCR_ANENABLE|BMCR_ANRESTART);
 			if (debug > 1)
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: Setting %s-duplex based on MII xcvr %d"
 					   " register read of %4.4x.\n", dev->name,
 					   ep->mii.full_duplex ? "full" : "half",
@@ -738,10 +979,27 @@ static int epic_open(struct net_device *dev)
 	/* Start the chip's Rx process. */
 	set_rx_mode(dev);
 	outl(StartRx | RxQueued, ioaddr + COMMAND);
+=======
+				netdev_info(dev, "Setting %s-duplex based on MII xcvr %d register read of %4.4x.\n",
+					    ep->mii.full_duplex ? "full"
+								: "half",
+					    ep->phys[0], mii_lpa);
+		}
+	}
+
+	ew32(TxCtrl, ep->mii.full_duplex ? 0x7f : 0x79);
+	ew32(PRxCDAR, ep->rx_ring_dma);
+	ew32(PTxCDAR, ep->tx_ring_dma);
+
+	/* Start the chip's Rx process. */
+	set_rx_mode(dev);
+	ew32(COMMAND, StartRx | RxQueued);
+>>>>>>> refs/remotes/origin/master
 
 	netif_start_queue(dev);
 
 	/* Enable interrupts by setting the interrupt mask. */
+<<<<<<< HEAD
 	outl((ep->chip_flags & TYPE2_INTR ? PCIBusErr175 : PCIBusErr170)
 		 | CntFull | TxUnderrun
 		 | RxError | RxHeader | EpicNapiEvent, ioaddr + INTMASK);
@@ -751,6 +1009,17 @@ static int epic_open(struct net_device *dev)
 			   "%s-duplex.\n",
 			   dev->name, ioaddr, dev->irq, (int)inl(ioaddr + GENCTL),
 			   ep->mii.full_duplex ? "full" : "half");
+=======
+	ew32(INTMASK, RxError | RxHeader | EpicNapiEvent | CntFull |
+	     ((ep->chip_flags & TYPE2_INTR) ? PCIBusErr175 : PCIBusErr170) |
+	     TxUnderrun);
+
+	if (debug > 1) {
+		netdev_dbg(dev, "epic_open() ioaddr %p IRQ %d status %4.4x %s-duplex.\n",
+			   ioaddr, irq, er32(GENCTL),
+			   ep->mii.full_duplex ? "full" : "half");
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Set the timer to switch to check for link beat and perhaps switch
 	   to an alternate media type. */
@@ -760,18 +1029,29 @@ static int epic_open(struct net_device *dev)
 	ep->timer.function = epic_timer;				/* timer handler */
 	add_timer(&ep->timer);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Reset the chip to recover from a PCI transaction error.
    This may occur at interrupt time. */
 static void epic_pause(struct net_device *dev)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
+=======
+	struct net_device_stats *stats = &dev->stats;
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+>>>>>>> refs/remotes/origin/master
 
 	netif_stop_queue (dev);
 
 	/* Disable interrupts by clearing the interrupt mask. */
+<<<<<<< HEAD
 	outl(0x00000000, ioaddr + INTMASK);
 	/* Stop the chip's Tx and Rx DMA processes. */
 	outw(StopRx | StopTxDMA | StopRxDMA, ioaddr + COMMAND);
@@ -781,6 +1061,17 @@ static void epic_pause(struct net_device *dev)
 		dev->stats.rx_missed_errors += inb(ioaddr + MPCNT);
 		dev->stats.rx_frame_errors += inb(ioaddr + ALICNT);
 		dev->stats.rx_crc_errors += inb(ioaddr + CRCCNT);
+=======
+	ew32(INTMASK, 0x00000000);
+	/* Stop the chip's Tx and Rx DMA processes. */
+	ew16(COMMAND, StopRx | StopTxDMA | StopRxDMA);
+
+	/* Update the error counts. */
+	if (er16(COMMAND) != 0xffff) {
+		stats->rx_missed_errors	+= er8(MPCNT);
+		stats->rx_frame_errors	+= er8(ALICNT);
+		stats->rx_crc_errors	+= er8(CRCCNT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Remove the packets on the Rx queue. */
@@ -789,6 +1080,7 @@ static void epic_pause(struct net_device *dev)
 
 static void epic_restart(struct net_device *dev)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	struct epic_private *ep = netdev_priv(dev);
 	int i;
@@ -798,10 +1090,22 @@ static void epic_restart(struct net_device *dev)
 
 	printk(KERN_DEBUG "%s: Restarting the EPIC chip, Rx %d/%d Tx %d/%d.\n",
 		   dev->name, ep->cur_rx, ep->dirty_rx, ep->dirty_tx, ep->cur_tx);
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+	int i;
+
+	/* Soft reset the chip. */
+	ew32(GENCTL, 0x4001);
+
+	netdev_dbg(dev, "Restarting the EPIC chip, Rx %d/%d Tx %d/%d.\n",
+		   ep->cur_rx, ep->dirty_rx, ep->dirty_tx, ep->cur_tx);
+>>>>>>> refs/remotes/origin/master
 	udelay(1);
 
 	/* This magic is documented in SMSC app note 7.15 */
 	for (i = 16; i > 0; i--)
+<<<<<<< HEAD
 		outl(0x0008, ioaddr + TEST1);
 
 #ifdef __BIG_ENDIAN
@@ -837,12 +1141,51 @@ static void epic_restart(struct net_device *dev)
 		   " interrupt %4.4x.\n",
 		   dev->name, (int)inl(ioaddr + COMMAND), (int)inl(ioaddr + GENCTL),
 		   (int)inl(ioaddr + INTSTAT));
+=======
+		ew32(TEST1, 0x0008);
+
+#ifdef __BIG_ENDIAN
+	ew32(GENCTL, 0x0432 | (RX_FIFO_THRESH << 8));
+#else
+	ew32(GENCTL, 0x0412 | (RX_FIFO_THRESH << 8));
+#endif
+	ew32(MIICfg, dev->if_port == 1 ? 0x13 : 0x12);
+	if (ep->chip_flags & MII_PWRDWN)
+		ew32(NVCTL, (er32(NVCTL) & ~0x003c) | 0x4800);
+
+	for (i = 0; i < 3; i++)
+		ew32(LAN0 + i*4, le16_to_cpu(((__le16*)dev->dev_addr)[i]));
+
+	ep->tx_threshold = TX_FIFO_THRESH;
+	ew32(TxThresh, ep->tx_threshold);
+	ew32(TxCtrl, ep->mii.full_duplex ? 0x7f : 0x79);
+	ew32(PRxCDAR, ep->rx_ring_dma +
+	     (ep->cur_rx % RX_RING_SIZE) * sizeof(struct epic_rx_desc));
+	ew32(PTxCDAR, ep->tx_ring_dma +
+	     (ep->dirty_tx % TX_RING_SIZE) * sizeof(struct epic_tx_desc));
+
+	/* Start the chip's Rx process. */
+	set_rx_mode(dev);
+	ew32(COMMAND, StartRx | RxQueued);
+
+	/* Enable interrupts by setting the interrupt mask. */
+	ew32(INTMASK, RxError | RxHeader | EpicNapiEvent | CntFull |
+	     ((ep->chip_flags & TYPE2_INTR) ? PCIBusErr175 : PCIBusErr170) |
+	     TxUnderrun);
+
+	netdev_dbg(dev, "epic_restart() done, cmd status %4.4x, ctl %4.4x interrupt %4.4x.\n",
+		   er32(COMMAND), er32(GENCTL), er32(INTSTAT));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void check_media(struct net_device *dev)
 {
 	struct epic_private *ep = netdev_priv(dev);
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	int mii_lpa = ep->mii_phy_cnt ? mdio_read(dev, ep->phys[0], MII_LPA) : 0;
 	int negotiated = mii_lpa & ep->mii.advertising;
 	int duplex = (negotiated & 0x0100) || (negotiated & 0x01C0) == 0x0040;
@@ -853,10 +1196,17 @@ static void check_media(struct net_device *dev)
 		return;
 	if (ep->mii.full_duplex != duplex) {
 		ep->mii.full_duplex = duplex;
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Setting %s-duplex based on MII #%d link"
 			   " partner capability of %4.4x.\n", dev->name,
 			   ep->mii.full_duplex ? "full" : "half", ep->phys[0], mii_lpa);
 		outl(ep->mii.full_duplex ? 0x7F : 0x79, ioaddr + TxCtrl);
+=======
+		netdev_info(dev, "Setting %s-duplex based on MII #%d link partner capability of %4.4x.\n",
+			    ep->mii.full_duplex ? "full" : "half",
+			    ep->phys[0], mii_lpa);
+		ew32(TxCtrl, ep->mii.full_duplex ? 0x7F : 0x79);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -864,6 +1214,7 @@ static void epic_timer(unsigned long data)
 {
 	struct net_device *dev = (struct net_device *)data;
 	struct epic_private *ep = netdev_priv(dev);
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	int next_tick = 5*HZ;
 
@@ -874,6 +1225,16 @@ static void epic_timer(unsigned long data)
 			   "IntStatus %4.4x RxStatus %4.4x.\n",
 			   dev->name, (int)inl(ioaddr + INTMASK),
 			   (int)inl(ioaddr + INTSTAT), (int)inl(ioaddr + RxSTAT));
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+	int next_tick = 5*HZ;
+
+	if (debug > 3) {
+		netdev_dbg(dev, "Media monitor tick, Tx status %8.8x.\n",
+			   er32(TxSTAT));
+		netdev_dbg(dev, "Other registers are IntMask %4.4x IntStatus %4.4x RxStatus %4.4x.\n",
+			   er32(INTMASK), er32(INTSTAT), er32(RxSTAT));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	check_media(dev);
@@ -885,6 +1246,7 @@ static void epic_timer(unsigned long data)
 static void epic_tx_timeout(struct net_device *dev)
 {
 	struct epic_private *ep = netdev_priv(dev);
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 
 	if (debug > 0) {
@@ -902,6 +1264,24 @@ static void epic_tx_timeout(struct net_device *dev)
 	} else {
 		epic_restart(dev);
 		outl(TxQueued, dev->base_addr + COMMAND);
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+
+	if (debug > 0) {
+		netdev_warn(dev, "Transmit timeout using MII device, Tx status %4.4x.\n",
+			    er16(TxSTAT));
+		if (debug > 1) {
+			netdev_dbg(dev, "Tx indices: dirty_tx %d, cur_tx %d.\n",
+				   ep->dirty_tx, ep->cur_tx);
+		}
+	}
+	if (er16(TxSTAT) & 0x10) {		/* Tx FIFO underflow. */
+		dev->stats.tx_fifo_errors++;
+		ew32(COMMAND, RestartTx);
+	} else {
+		epic_restart(dev);
+		ew32(COMMAND, TxQueued);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->trans_start = jiffies; /* prevent tx timeout */
@@ -959,6 +1339,10 @@ static void epic_init_ring(struct net_device *dev)
 static netdev_tx_t epic_start_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct epic_private *ep = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	int entry, free_count;
 	u32 ctrl_word;
 	unsigned long flags;
@@ -999,6 +1383,7 @@ static netdev_tx_t epic_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	spin_unlock_irqrestore(&ep->lock, flags);
 	/* Trigger an immediate transmit demand. */
+<<<<<<< HEAD
 	outl(TxQueued, dev->base_addr + COMMAND);
 
 	if (debug > 4)
@@ -1006,6 +1391,13 @@ static netdev_tx_t epic_start_xmit(struct sk_buff *skb, struct net_device *dev)
 			   "flag %2.2x Tx status %8.8x.\n",
 			   dev->name, (int)skb->len, entry, ctrl_word,
 			   (int)inl(dev->base_addr + TxSTAT));
+=======
+	ew32(COMMAND, TxQueued);
+
+	if (debug > 4)
+		netdev_dbg(dev, "Queued Tx packet size %d to slot %d, flag %2.2x Tx status %8.8x.\n",
+			   skb->len, entry, ctrl_word, er32(TxSTAT));
+>>>>>>> refs/remotes/origin/master
 
 	return NETDEV_TX_OK;
 }
@@ -1018,8 +1410,13 @@ static void epic_tx_error(struct net_device *dev, struct epic_private *ep,
 #ifndef final_version
 	/* There was an major error, log it. */
 	if (debug > 1)
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: Transmit error, Tx status %8.8x.\n",
 		       dev->name, status);
+=======
+		netdev_dbg(dev, "Transmit error, Tx status %8.8x.\n",
+			   status);
+>>>>>>> refs/remotes/origin/master
 #endif
 	stats->tx_errors++;
 	if (status & 0x1050)
@@ -1066,9 +1463,14 @@ static void epic_tx(struct net_device *dev, struct epic_private *ep)
 
 #ifndef final_version
 	if (cur_tx - dirty_tx > TX_RING_SIZE) {
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "%s: Out-of-sync dirty pointer, %d vs. %d, full=%d.\n",
 		       dev->name, dirty_tx, cur_tx, ep->tx_full);
+=======
+		netdev_warn(dev, "Out-of-sync dirty pointer, %d vs. %d, full=%d.\n",
+			    dirty_tx, cur_tx, ep->tx_full);
+>>>>>>> refs/remotes/origin/master
 		dirty_tx += TX_RING_SIZE;
 	}
 #endif
@@ -1086,6 +1488,7 @@ static irqreturn_t epic_interrupt(int irq, void *dev_instance)
 {
 	struct net_device *dev = dev_instance;
 	struct epic_private *ep = netdev_priv(dev);
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	unsigned int handled = 0;
 	int status;
@@ -1098,6 +1501,19 @@ static irqreturn_t epic_interrupt(int irq, void *dev_instance)
 		printk(KERN_DEBUG "%s: Interrupt, status=%#8.8x new "
 				   "intstat=%#8.8x.\n", dev->name, status,
 				   (int)inl(ioaddr + INTSTAT));
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+	unsigned int handled = 0;
+	int status;
+
+	status = er32(INTSTAT);
+	/* Acknowledge all of the current interrupt sources ASAP. */
+	ew32(INTSTAT, status & EpicNormalEvent);
+
+	if (debug > 4) {
+		netdev_dbg(dev, "Interrupt, status=%#8.8x new intstat=%#8.8x.\n",
+			   status, er32(INTSTAT));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ((status & IntrSummary) == 0)
@@ -1118,10 +1534,16 @@ static irqreturn_t epic_interrupt(int irq, void *dev_instance)
 
 	/* Check uncommon events all at once. */
 	if (status & (CntFull | TxUnderrun | PCIBusErr170 | PCIBusErr175)) {
+<<<<<<< HEAD
+=======
+		struct net_device_stats *stats = &dev->stats;
+
+>>>>>>> refs/remotes/origin/master
 		if (status == EpicRemoved)
 			goto out;
 
 		/* Always update the error counts to avoid overhead later. */
+<<<<<<< HEAD
 		dev->stats.rx_missed_errors += inb(ioaddr + MPCNT);
 		dev->stats.rx_frame_errors += inb(ioaddr + ALICNT);
 		dev->stats.rx_crc_errors += inb(ioaddr + CRCCNT);
@@ -1135,17 +1557,41 @@ static irqreturn_t epic_interrupt(int irq, void *dev_instance)
 		if (status & PCIBusErr170) {
 			printk(KERN_ERR "%s: PCI Bus Error! status %4.4x.\n",
 					 dev->name, status);
+=======
+		stats->rx_missed_errors	+= er8(MPCNT);
+		stats->rx_frame_errors	+= er8(ALICNT);
+		stats->rx_crc_errors	+= er8(CRCCNT);
+
+		if (status & TxUnderrun) { /* Tx FIFO underflow. */
+			stats->tx_fifo_errors++;
+			ew32(TxThresh, ep->tx_threshold += 128);
+			/* Restart the transmit process. */
+			ew32(COMMAND, RestartTx);
+		}
+		if (status & PCIBusErr170) {
+			netdev_err(dev, "PCI Bus Error! status %4.4x.\n",
+				   status);
+>>>>>>> refs/remotes/origin/master
 			epic_pause(dev);
 			epic_restart(dev);
 		}
 		/* Clear all error sources. */
+<<<<<<< HEAD
 		outl(status & 0x7f18, ioaddr + INTSTAT);
+=======
+		ew32(INTSTAT, status & 0x7f18);
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
 	if (debug > 3) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: exit interrupt, intr_status=%#4.4x.\n",
 				   dev->name, status);
+=======
+		netdev_dbg(dev, "exit interrupt, intr_status=%#4.4x.\n",
+			   status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return IRQ_RETVAL(handled);
@@ -1159,7 +1605,11 @@ static int epic_rx(struct net_device *dev, int budget)
 	int work_done = 0;
 
 	if (debug > 4)
+<<<<<<< HEAD
 		printk(KERN_DEBUG " In epic_rx(), entry %d %8.8x.\n", entry,
+=======
+		netdev_dbg(dev, " In epic_rx(), entry %d %8.8x.\n", entry,
+>>>>>>> refs/remotes/origin/master
 			   ep->rx_ring[entry].rxstatus);
 
 	if (rx_work_limit > budget)
@@ -1170,16 +1620,29 @@ static int epic_rx(struct net_device *dev, int budget)
 		int status = ep->rx_ring[entry].rxstatus;
 
 		if (debug > 4)
+<<<<<<< HEAD
 			printk(KERN_DEBUG "  epic_rx() status was %8.8x.\n", status);
+=======
+			netdev_dbg(dev, "  epic_rx() status was %8.8x.\n",
+				   status);
+>>>>>>> refs/remotes/origin/master
 		if (--rx_work_limit < 0)
 			break;
 		if (status & 0x2006) {
 			if (debug > 2)
+<<<<<<< HEAD
 				printk(KERN_DEBUG "%s: epic_rx() error status was %8.8x.\n",
 					   dev->name, status);
 			if (status & 0x2000) {
 				printk(KERN_WARNING "%s: Oversized Ethernet frame spanned "
 					   "multiple buffers, status %4.4x!\n", dev->name, status);
+=======
+				netdev_dbg(dev, "epic_rx() error status was %8.8x.\n",
+					   status);
+			if (status & 0x2000) {
+				netdev_warn(dev, "Oversized Ethernet frame spanned multiple buffers, status %4.4x!\n",
+					    status);
+>>>>>>> refs/remotes/origin/master
 				dev->stats.rx_length_errors++;
 			} else if (status & 0x0006)
 				/* Rx Frame errors are counted in hardware. */
@@ -1191,9 +1654,14 @@ static int epic_rx(struct net_device *dev, int budget)
 			struct sk_buff *skb;
 
 			if (pkt_len > PKT_BUF_SZ - 4) {
+<<<<<<< HEAD
 				printk(KERN_ERR "%s: Oversized Ethernet frame, status %x "
 					   "%d bytes.\n",
 					   dev->name, status, pkt_len);
+=======
+				netdev_err(dev, "Oversized Ethernet frame, status %x %d bytes.\n",
+					   status, pkt_len);
+>>>>>>> refs/remotes/origin/master
 				pkt_len = 1514;
 			}
 			/* Check if the packet is long enough to accept without copying
@@ -1248,17 +1716,28 @@ static int epic_rx(struct net_device *dev, int budget)
 
 static void epic_rx_err(struct net_device *dev, struct epic_private *ep)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	int status;
 
 	status = inl(ioaddr + INTSTAT);
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+	int status;
+
+	status = er32(INTSTAT);
+>>>>>>> refs/remotes/origin/master
 
 	if (status == EpicRemoved)
 		return;
 	if (status & RxOverflow) 	/* Missed a Rx frame. */
 		dev->stats.rx_errors++;
 	if (status & (RxOverflow | RxFull))
+<<<<<<< HEAD
 		outw(RxQueued, ioaddr + COMMAND);
+=======
+		ew16(COMMAND, RxQueued);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int epic_poll(struct napi_struct *napi, int budget)
@@ -1266,7 +1745,11 @@ static int epic_poll(struct napi_struct *napi, int budget)
 	struct epic_private *ep = container_of(napi, struct epic_private, napi);
 	struct net_device *dev = ep->mii.dev;
 	int work_done = 0;
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
+=======
+	void __iomem *ioaddr = ep->ioaddr;
+>>>>>>> refs/remotes/origin/master
 
 rx_action:
 
@@ -1287,7 +1770,11 @@ rx_action:
 		more = ep->reschedule_in_poll;
 		if (!more) {
 			__napi_complete(napi);
+<<<<<<< HEAD
 			outl(EpicNapiEvent, ioaddr + INTSTAT);
+=======
+			ew32(INTSTAT, EpicNapiEvent);
+>>>>>>> refs/remotes/origin/master
 			epic_napi_irq_on(dev, ep);
 		} else
 			ep->reschedule_in_poll--;
@@ -1303,8 +1790,14 @@ rx_action:
 
 static int epic_close(struct net_device *dev)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	struct epic_private *ep = netdev_priv(dev);
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	struct pci_dev *pdev = ep->pci_dev;
+	void __iomem *ioaddr = ep->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 	int i;
 
@@ -1312,14 +1805,23 @@ static int epic_close(struct net_device *dev)
 	napi_disable(&ep->napi);
 
 	if (debug > 1)
+<<<<<<< HEAD
 		printk(KERN_DEBUG "%s: Shutting down ethercard, status was %2.2x.\n",
 			   dev->name, (int)inl(ioaddr + INTSTAT));
+=======
+		netdev_dbg(dev, "Shutting down ethercard, status was %2.2x.\n",
+			   er32(INTSTAT));
+>>>>>>> refs/remotes/origin/master
 
 	del_timer_sync(&ep->timer);
 
 	epic_disable_int(dev, ep);
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(pdev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	epic_pause(dev);
 
@@ -1330,8 +1832,13 @@ static int epic_close(struct net_device *dev)
 		ep->rx_ring[i].rxstatus = 0;		/* Not owned by Epic chip. */
 		ep->rx_ring[i].buflength = 0;
 		if (skb) {
+<<<<<<< HEAD
 			pci_unmap_single(ep->pci_dev, ep->rx_ring[i].bufaddr,
 				 	 ep->rx_buf_sz, PCI_DMA_FROMDEVICE);
+=======
+			pci_unmap_single(pdev, ep->rx_ring[i].bufaddr,
+					 ep->rx_buf_sz, PCI_DMA_FROMDEVICE);
+>>>>>>> refs/remotes/origin/master
 			dev_kfree_skb(skb);
 		}
 		ep->rx_ring[i].bufaddr = 0xBADF00D0; /* An invalid address. */
@@ -1341,19 +1848,29 @@ static int epic_close(struct net_device *dev)
 		ep->tx_skbuff[i] = NULL;
 		if (!skb)
 			continue;
+<<<<<<< HEAD
 		pci_unmap_single(ep->pci_dev, ep->tx_ring[i].bufaddr,
 				 skb->len, PCI_DMA_TODEVICE);
+=======
+		pci_unmap_single(pdev, ep->tx_ring[i].bufaddr, skb->len,
+				 PCI_DMA_TODEVICE);
+>>>>>>> refs/remotes/origin/master
 		dev_kfree_skb(skb);
 	}
 
 	/* Green! Leave the chip in low-power mode. */
+<<<<<<< HEAD
 	outl(0x0008, ioaddr + GENCTL);
+=======
+	ew32(GENCTL, 0x0008);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct net_device_stats *epic_get_stats(struct net_device *dev)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 
 	if (netif_running(dev)) {
@@ -1361,6 +1878,17 @@ static struct net_device_stats *epic_get_stats(struct net_device *dev)
 		dev->stats.rx_missed_errors += inb(ioaddr + MPCNT);
 		dev->stats.rx_frame_errors += inb(ioaddr + ALICNT);
 		dev->stats.rx_crc_errors += inb(ioaddr + CRCCNT);
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+
+	if (netif_running(dev)) {
+		struct net_device_stats *stats = &dev->stats;
+
+		stats->rx_missed_errors	+= er8(MPCNT);
+		stats->rx_frame_errors	+= er8(ALICNT);
+		stats->rx_crc_errors	+= er8(CRCCNT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return &dev->stats;
@@ -1373,13 +1901,22 @@ static struct net_device_stats *epic_get_stats(struct net_device *dev)
 
 static void set_rx_mode(struct net_device *dev)
 {
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
 	struct epic_private *ep = netdev_priv(dev);
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	unsigned char mc_filter[8];		 /* Multicast hash filter */
 	int i;
 
 	if (dev->flags & IFF_PROMISC) {			/* Set promiscuous. */
+<<<<<<< HEAD
 		outl(0x002C, ioaddr + RxCtrl);
+=======
+		ew32(RxCtrl, 0x002c);
+>>>>>>> refs/remotes/origin/master
 		/* Unconditionally log net taps. */
 		memset(mc_filter, 0xff, sizeof(mc_filter));
 	} else if ((!netdev_mc_empty(dev)) || (dev->flags & IFF_ALLMULTI)) {
@@ -1387,9 +1924,15 @@ static void set_rx_mode(struct net_device *dev)
 		   is never enabled. */
 		/* Too many to filter perfectly -- accept all multicasts. */
 		memset(mc_filter, 0xff, sizeof(mc_filter));
+<<<<<<< HEAD
 		outl(0x000C, ioaddr + RxCtrl);
 	} else if (netdev_mc_empty(dev)) {
 		outl(0x0004, ioaddr + RxCtrl);
+=======
+		ew32(RxCtrl, 0x000c);
+	} else if (netdev_mc_empty(dev)) {
+		ew32(RxCtrl, 0x0004);
+>>>>>>> refs/remotes/origin/master
 		return;
 	} else {					/* Never executed, for now. */
 		struct netdev_hw_addr *ha;
@@ -1404,7 +1947,11 @@ static void set_rx_mode(struct net_device *dev)
 	/* ToDo: perhaps we need to stop the Tx and Rx process here? */
 	if (memcmp(mc_filter, ep->mc_filter, sizeof(mc_filter))) {
 		for (i = 0; i < 4; i++)
+<<<<<<< HEAD
 			outw(((u16 *)mc_filter)[i], ioaddr + MC0 + i*4);
+=======
+			ew16(MC0 + i*4, ((u16 *)mc_filter)[i]);
+>>>>>>> refs/remotes/origin/master
 		memcpy(ep->mc_filter, mc_filter, sizeof(mc_filter));
 	}
 }
@@ -1466,22 +2013,42 @@ static void netdev_set_msglevel(struct net_device *dev, u32 value)
 
 static int ethtool_begin(struct net_device *dev)
 {
+<<<<<<< HEAD
 	unsigned long ioaddr = dev->base_addr;
 	/* power-up, if interface is down */
 	if (! netif_running(dev)) {
 		outl(0x0200, ioaddr + GENCTL);
 		outl((inl(ioaddr + NVCTL) & ~0x003C) | 0x4800, ioaddr + NVCTL);
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+
+	/* power-up, if interface is down */
+	if (!netif_running(dev)) {
+		ew32(GENCTL, 0x0200);
+		ew32(NVCTL, (er32(NVCTL) & ~0x003c) | 0x4800);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
 static void ethtool_complete(struct net_device *dev)
 {
+<<<<<<< HEAD
 	unsigned long ioaddr = dev->base_addr;
 	/* power-down, if interface is down */
 	if (! netif_running(dev)) {
 		outl(0x0008, ioaddr + GENCTL);
 		outl((inl(ioaddr + NVCTL) & ~0x483C) | 0x0000, ioaddr + NVCTL);
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+
+	/* power-down, if interface is down */
+	if (!netif_running(dev)) {
+		ew32(GENCTL, 0x0008);
+		ew32(NVCTL, (er32(NVCTL) & ~0x483c) | 0x0000);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1500,14 +2067,23 @@ static const struct ethtool_ops netdev_ethtool_ops = {
 static int netdev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 {
 	struct epic_private *np = netdev_priv(dev);
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
+=======
+	void __iomem *ioaddr = np->ioaddr;
+>>>>>>> refs/remotes/origin/master
 	struct mii_ioctl_data *data = if_mii(rq);
 	int rc;
 
 	/* power-up, if interface is down */
 	if (! netif_running(dev)) {
+<<<<<<< HEAD
 		outl(0x0200, ioaddr + GENCTL);
 		outl((inl(ioaddr + NVCTL) & ~0x003C) | 0x4800, ioaddr + NVCTL);
+=======
+		ew32(GENCTL, 0x0200);
+		ew32(NVCTL, (er32(NVCTL) & ~0x003c) | 0x4800);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* all non-ethtool ioctls (the SIOC[GS]MIIxxx ioctls) */
@@ -1517,14 +2093,23 @@ static int netdev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 
 	/* power-down, if interface is down */
 	if (! netif_running(dev)) {
+<<<<<<< HEAD
 		outl(0x0008, ioaddr + GENCTL);
 		outl((inl(ioaddr + NVCTL) & ~0x483C) | 0x0000, ioaddr + NVCTL);
+=======
+		ew32(GENCTL, 0x0008);
+		ew32(NVCTL, (er32(NVCTL) & ~0x483c) | 0x0000);
+>>>>>>> refs/remotes/origin/master
 	}
 	return rc;
 }
 
 
+<<<<<<< HEAD
 static void __devexit epic_remove_one (struct pci_dev *pdev)
+=======
+static void epic_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct epic_private *ep = netdev_priv(dev);
@@ -1532,6 +2117,7 @@ static void __devexit epic_remove_one (struct pci_dev *pdev)
 	pci_free_consistent(pdev, TX_TOTAL_SIZE, ep->tx_ring, ep->tx_ring_dma);
 	pci_free_consistent(pdev, RX_TOTAL_SIZE, ep->rx_ring, ep->rx_ring_dma);
 	unregister_netdev(dev);
+<<<<<<< HEAD
 #ifndef USE_IO_OPS
 	iounmap((void*) dev->base_addr);
 #endif
@@ -1539,6 +2125,12 @@ static void __devexit epic_remove_one (struct pci_dev *pdev)
 	free_netdev(dev);
 	pci_disable_device(pdev);
 	pci_set_drvdata(pdev, NULL);
+=======
+	pci_iounmap(pdev, ep->ioaddr);
+	pci_release_regions(pdev);
+	free_netdev(dev);
+	pci_disable_device(pdev);
+>>>>>>> refs/remotes/origin/master
 	/* pci_power_off(pdev, -1); */
 }
 
@@ -1548,13 +2140,22 @@ static void __devexit epic_remove_one (struct pci_dev *pdev)
 static int epic_suspend (struct pci_dev *pdev, pm_message_t state)
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
+<<<<<<< HEAD
 	long ioaddr = dev->base_addr;
+=======
+	struct epic_private *ep = netdev_priv(dev);
+	void __iomem *ioaddr = ep->ioaddr;
+>>>>>>> refs/remotes/origin/master
 
 	if (!netif_running(dev))
 		return 0;
 	epic_pause(dev);
 	/* Put the chip into low-power mode. */
+<<<<<<< HEAD
 	outl(0x0008, ioaddr + GENCTL);
+=======
+	ew32(GENCTL, 0x0008);
+>>>>>>> refs/remotes/origin/master
 	/* pci_power_off(pdev, -1); */
 	return 0;
 }
@@ -1578,7 +2179,11 @@ static struct pci_driver epic_driver = {
 	.name		= DRV_NAME,
 	.id_table	= epic_pci_tbl,
 	.probe		= epic_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(epic_remove_one),
+=======
+	.remove		= epic_remove_one,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= epic_suspend,
 	.resume		= epic_resume,
@@ -1590,8 +2195,12 @@ static int __init epic_init (void)
 {
 /* when a module, this is printed whether or not devices are found in probe */
 #ifdef MODULE
+<<<<<<< HEAD
 	printk (KERN_INFO "%s%s",
 		version, version2);
+=======
+	pr_info("%s%s\n", version, version2);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	return pci_register_driver(&epic_driver);

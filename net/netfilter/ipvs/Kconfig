@@ -28,12 +28,20 @@ if IP_VS
 config	IP_VS_IPV6
 	bool "IPv6 support for IPVS"
 	depends on IPV6 = y || IP_VS = IPV6
+<<<<<<< HEAD
 	---help---
 	  Add IPv6 support to IPVS. This is incomplete and might be dangerous.
 
 	  See http://www.mindbasket.com/ipvs for more information.
 
 	  Say N if unsure.
+=======
+	select IP6_NF_IPTABLES
+	---help---
+	  Add IPv6 support to IPVS.
+
+	  Say Y if unsure.
+>>>>>>> refs/remotes/origin/master
 
 config	IP_VS_DEBUG
 	bool "IP virtual server debugging"
@@ -123,9 +131,12 @@ config	IP_VS_RR
 config	IP_VS_WRR
 	tristate "weighted round-robin scheduling"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select GCD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  The weighted robin-robin scheduling algorithm directs network
 	  connections to different real servers based on server weights
@@ -236,7 +247,10 @@ config	IP_VS_NQ
 	  module, choose M here. If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 comment 'IPVS SH scheduler'
 
 config IP_VS_SH_TAB_BITS
@@ -252,12 +266,20 @@ config IP_VS_SH_TAB_BITS
 	  needs to be large enough to effectively fit all the destinations
 	  multiplied by their respective weights.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 comment 'IPVS application helper'
 
 config	IP_VS_FTP
   	tristate "FTP protocol helper"
+<<<<<<< HEAD
         depends on IP_VS_PROTO_TCP && NF_CONNTRACK && NF_NAT
+=======
+	depends on IP_VS_PROTO_TCP && NF_CONNTRACK && NF_NAT && \
+		NF_CONNTRACK_FTP
+>>>>>>> refs/remotes/origin/master
 	select IP_VS_NFCT
 	---help---
 	  FTP is a protocol that transfers IP address and/or port number in

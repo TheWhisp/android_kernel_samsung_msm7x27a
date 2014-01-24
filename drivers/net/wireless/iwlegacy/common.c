@@ -1122,7 +1122,11 @@ il_set_power(struct il_priv *il, struct il_powertable_cmd *cmd)
 			       sizeof(struct il_powertable_cmd), cmd);
 }
 
+<<<<<<< HEAD
 int
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 il_power_set_mode(struct il_priv *il, struct il_powertable_cmd *cmd, bool force)
 {
 	int ret;
@@ -1183,9 +1187,16 @@ EXPORT_SYMBOL(il_power_update_mode);
 void
 il_power_initialize(struct il_priv *il)
 {
+<<<<<<< HEAD
 	u16 lctl = il_pcie_link_ctl(il);
 
 	il->power_data.pci_pm = !(lctl & PCI_CFG_LINK_CTRL_VAL_L0S_EN);
+=======
+	u16 lctl;
+
+	pcie_capability_read_word(il->pci_dev, PCI_EXP_LNKCTL, &lctl);
+	il->power_data.pci_pm = !(lctl & PCI_EXP_LNKCTL_ASPM_L0S);
+>>>>>>> refs/remotes/origin/master
 
 	il->power_data.debug_sleep_level_override = -1;
 
@@ -1422,7 +1433,11 @@ il_setup_rx_scan_handlers(struct il_priv *il)
 }
 EXPORT_SYMBOL(il_setup_rx_scan_handlers);
 
+<<<<<<< HEAD
 inline u16
+=======
+u16
+>>>>>>> refs/remotes/origin/master
 il_get_active_dwell_time(struct il_priv *il, enum ieee80211_band band,
 			 u8 n_probes)
 {
@@ -1586,9 +1601,15 @@ il_fill_probe_req(struct il_priv *il, struct ieee80211_mgmt *frame,
 		return 0;
 
 	frame->frame_control = cpu_to_le16(IEEE80211_STYPE_PROBE_REQ);
+<<<<<<< HEAD
 	memcpy(frame->da, il_bcast_addr, ETH_ALEN);
 	memcpy(frame->sa, ta, ETH_ALEN);
 	memcpy(frame->bssid, il_bcast_addr, ETH_ALEN);
+=======
+	eth_broadcast_addr(frame->da);
+	memcpy(frame->sa, ta, ETH_ALEN);
+	eth_broadcast_addr(frame->bssid);
+>>>>>>> refs/remotes/origin/master
 	frame->seq_ctrl = 0;
 
 	len += 24;
@@ -1829,21 +1850,31 @@ il_set_ht_add_station(struct il_priv *il, u8 idx, struct ieee80211_sta *sta)
 {
 	struct ieee80211_sta_ht_cap *sta_ht_inf = &sta->ht_cap;
 	__le32 sta_flags;
+<<<<<<< HEAD
 	u8 mimo_ps_mode;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!sta || !sta_ht_inf->ht_supported)
 		goto done;
 
+<<<<<<< HEAD
 	mimo_ps_mode = (sta_ht_inf->cap & IEEE80211_HT_CAP_SM_PS) >> 2;
 	D_ASSOC("spatial multiplexing power save mode: %s\n",
 		(mimo_ps_mode == WLAN_HT_CAP_SM_PS_STATIC) ? "static" :
 		(mimo_ps_mode == WLAN_HT_CAP_SM_PS_DYNAMIC) ? "dynamic" :
+=======
+	D_ASSOC("spatial multiplexing power save mode: %s\n",
+		(sta->smps_mode == IEEE80211_SMPS_STATIC) ? "static" :
+		(sta->smps_mode == IEEE80211_SMPS_DYNAMIC) ? "dynamic" :
+>>>>>>> refs/remotes/origin/master
 		"disabled");
 
 	sta_flags = il->stations[idx].sta.station_flags;
 
 	sta_flags &= ~(STA_FLG_RTS_MIMO_PROT_MSK | STA_FLG_MIMO_DIS_MSK);
 
+<<<<<<< HEAD
 	switch (mimo_ps_mode) {
 	case WLAN_HT_CAP_SM_PS_STATIC:
 		sta_flags |= STA_FLG_MIMO_DIS_MSK;
@@ -1855,6 +1886,19 @@ il_set_ht_add_station(struct il_priv *il, u8 idx, struct ieee80211_sta *sta)
 		break;
 	default:
 		IL_WARN("Invalid MIMO PS mode %d\n", mimo_ps_mode);
+=======
+	switch (sta->smps_mode) {
+	case IEEE80211_SMPS_STATIC:
+		sta_flags |= STA_FLG_MIMO_DIS_MSK;
+		break;
+	case IEEE80211_SMPS_DYNAMIC:
+		sta_flags |= STA_FLG_RTS_MIMO_PROT_MSK;
+		break;
+	case IEEE80211_SMPS_OFF:
+		break;
+	default:
+		IL_WARN("Invalid MIMO PS mode %d\n", sta->smps_mode);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -1896,8 +1940,13 @@ il_prep_station(struct il_priv *il, const u8 *addr, bool is_ap,
 		sta_id = il->hw_params.bcast_id;
 	else
 		for (i = IL_STA_ID; i < il->hw_params.max_stations; i++) {
+<<<<<<< HEAD
 			if (!compare_ether_addr
 			    (il->stations[i].sta.sta.addr, addr)) {
+=======
+			if (ether_addr_equal(il->stations[i].sta.sta.addr,
+					     addr)) {
+>>>>>>> refs/remotes/origin/master
 				sta_id = i;
 				break;
 			}
@@ -1926,7 +1975,11 @@ il_prep_station(struct il_priv *il, const u8 *addr, bool is_ap,
 
 	if ((il->stations[sta_id].used & IL_STA_DRIVER_ACTIVE) &&
 	    (il->stations[sta_id].used & IL_STA_UCODE_ACTIVE) &&
+<<<<<<< HEAD
 	    !compare_ether_addr(il->stations[sta_id].sta.sta.addr, addr)) {
+=======
+	    ether_addr_equal(il->stations[sta_id].sta.sta.addr, addr)) {
+>>>>>>> refs/remotes/origin/master
 		D_ASSOC("STA %d (%pM) already added, not adding again.\n",
 			sta_id, addr);
 		return sta_id;
@@ -2567,6 +2620,7 @@ il_rx_queue_alloc(struct il_priv *il)
 	INIT_LIST_HEAD(&rxq->rx_used);
 
 	/* Alloc the circular buffer of Read Buffer Descriptors (RBDs) */
+<<<<<<< HEAD
 	rxq->bd =
 	    dma_alloc_coherent(dev, 4 * RX_QUEUE_SIZE, &rxq->bd_dma,
 			       GFP_KERNEL);
@@ -2576,6 +2630,15 @@ il_rx_queue_alloc(struct il_priv *il)
 	rxq->rb_stts =
 	    dma_alloc_coherent(dev, sizeof(struct il_rb_status),
 			       &rxq->rb_stts_dma, GFP_KERNEL);
+=======
+	rxq->bd = dma_alloc_coherent(dev, 4 * RX_QUEUE_SIZE, &rxq->bd_dma,
+				     GFP_KERNEL);
+	if (!rxq->bd)
+		goto err_bd;
+
+	rxq->rb_stts = dma_alloc_coherent(dev, sizeof(struct il_rb_status),
+					  &rxq->rb_stts_dma, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!rxq->rb_stts)
 		goto err_rb;
 
@@ -2942,10 +3005,16 @@ il_tx_queue_alloc(struct il_priv *il, struct il_tx_queue *txq, u32 id)
 	 * shared with device */
 	txq->tfds =
 	    dma_alloc_coherent(dev, tfd_sz, &txq->q.dma_addr, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!txq->tfds) {
 		IL_ERR("Fail to alloc TFDs\n");
 		goto error;
 	}
+=======
+	if (!txq->tfds)
+		goto error;
+
+>>>>>>> refs/remotes/origin/master
 	txq->q.id = id;
 
 	return 0;
@@ -3161,18 +3230,37 @@ il_enqueue_hcmd(struct il_priv *il, struct il_host_cmd *cmd)
 		     idx, il->cmd_queue);
 	}
 #endif
+<<<<<<< HEAD
+	txq->need_update = 1;
+
+	if (il->ops->txq_update_byte_cnt_tbl)
+		/* Set up entry in queue's byte count circular buffer */
+		il->ops->txq_update_byte_cnt_tbl(il, txq, 0);
+=======
+>>>>>>> refs/remotes/origin/master
+
+	phys_addr =
+	    pci_map_single(il->pci_dev, &out_cmd->hdr, fix_size,
+			   PCI_DMA_BIDIRECTIONAL);
+<<<<<<< HEAD
+	dma_unmap_addr_set(out_meta, mapping, phys_addr);
+	dma_unmap_len_set(out_meta, len, fix_size);
+
+=======
+	if (unlikely(pci_dma_mapping_error(il->pci_dev, phys_addr))) {
+		idx = -ENOMEM;
+		goto out;
+	}
+	dma_unmap_addr_set(out_meta, mapping, phys_addr);
+	dma_unmap_len_set(out_meta, len, fix_size);
+
 	txq->need_update = 1;
 
 	if (il->ops->txq_update_byte_cnt_tbl)
 		/* Set up entry in queue's byte count circular buffer */
 		il->ops->txq_update_byte_cnt_tbl(il, txq, 0);
 
-	phys_addr =
-	    pci_map_single(il->pci_dev, &out_cmd->hdr, fix_size,
-			   PCI_DMA_BIDIRECTIONAL);
-	dma_unmap_addr_set(out_meta, mapping, phys_addr);
-	dma_unmap_len_set(out_meta, len, fix_size);
-
+>>>>>>> refs/remotes/origin/master
 	il->ops->txq_attach_buf_to_tfd(il, txq, phys_addr, fix_size, 1,
 					    U32_PAD(cmd->len));
 
@@ -3180,6 +3268,10 @@ il_enqueue_hcmd(struct il_priv *il, struct il_host_cmd *cmd)
 	q->write_ptr = il_queue_inc_wrap(q->write_ptr, q->n_bd);
 	il_txq_update_write_ptr(il, txq);
 
+<<<<<<< HEAD
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&il->hcmd_lock, flags);
 	return idx;
 }
@@ -3744,10 +3836,17 @@ il_full_rxon_required(struct il_priv *il)
 
 	/* These items are only settable from the full RXON command */
 	CHK(!il_is_associated(il));
+<<<<<<< HEAD
 	CHK(compare_ether_addr(staging->bssid_addr, active->bssid_addr));
 	CHK(compare_ether_addr(staging->node_addr, active->node_addr));
 	CHK(compare_ether_addr
 	    (staging->wlap_bssid_addr, active->wlap_bssid_addr));
+=======
+	CHK(!ether_addr_equal(staging->bssid_addr, active->bssid_addr));
+	CHK(!ether_addr_equal(staging->node_addr, active->node_addr));
+	CHK(!ether_addr_equal(staging->wlap_bssid_addr,
+			      active->wlap_bssid_addr));
+>>>>>>> refs/remotes/origin/master
 	CHK_NEQ(staging->dev_type, active->dev_type);
 	CHK_NEQ(staging->channel, active->channel);
 	CHK_NEQ(staging->air_propagation, active->air_propagation);
@@ -4237,9 +4336,14 @@ il_apm_init(struct il_priv *il)
 	 *    power savings, even without L1.
 	 */
 	if (il->cfg->set_l0s) {
+<<<<<<< HEAD
 		lctl = il_pcie_link_ctl(il);
 		if ((lctl & PCI_CFG_LINK_CTRL_VAL_L1_EN) ==
 		    PCI_CFG_LINK_CTRL_VAL_L1_EN) {
+=======
+		pcie_capability_read_word(il->pci_dev, PCI_EXP_LNKCTL, &lctl);
+		if (lctl & PCI_EXP_LNKCTL_ASPM_L1) {
+>>>>>>> refs/remotes/origin/master
 			/* L1-ASPM enabled; disable(!) L0S  */
 			il_set_bit(il, CSR_GIO_REG,
 				   CSR_GIO_REG_VAL_L0S_ENABLED);
@@ -4701,6 +4805,44 @@ out:
 }
 EXPORT_SYMBOL(il_mac_change_interface);
 
+<<<<<<< HEAD
+=======
+void il_mac_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
+{
+	struct il_priv *il = hw->priv;
+	unsigned long timeout = jiffies + msecs_to_jiffies(500);
+	int i;
+
+	mutex_lock(&il->mutex);
+	D_MAC80211("enter\n");
+
+	if (il->txq == NULL)
+		goto out;
+
+	for (i = 0; i < il->hw_params.max_txq_num; i++) {
+		struct il_queue *q;
+
+		if (i == il->cmd_queue)
+			continue;
+
+		q = &il->txq[i].q;
+		if (q->read_ptr == q->write_ptr)
+			continue;
+
+		if (time_after(jiffies, timeout)) {
+			IL_ERR("Failed to flush queue %d\n", q->id);
+			break;
+		}
+
+		msleep(20);
+	}
+out:
+	D_MAC80211("leave\n");
+	mutex_unlock(&il->mutex);
+}
+EXPORT_SYMBOL(il_mac_flush);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * On every watchdog tick we check (latest) time stamp. If it does not
  * change during timeout period and queue is not empty we reset firmware.
@@ -4711,10 +4853,18 @@ il_check_stuck_queue(struct il_priv *il, int cnt)
 	struct il_tx_queue *txq = &il->txq[cnt];
 	struct il_queue *q = &txq->q;
 	unsigned long timeout;
+<<<<<<< HEAD
 	int ret;
 
 	if (q->read_ptr == q->write_ptr) {
 		txq->time_stamp = jiffies;
+=======
+	unsigned long now = jiffies;
+	int ret;
+
+	if (q->read_ptr == q->write_ptr) {
+		txq->time_stamp = now;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -4722,9 +4872,15 @@ il_check_stuck_queue(struct il_priv *il, int cnt)
 	    txq->time_stamp +
 	    msecs_to_jiffies(il->cfg->wd_timeout);
 
+<<<<<<< HEAD
 	if (time_after(jiffies, timeout)) {
 		IL_ERR("Queue %d stuck for %u ms.\n", q->id,
 		       il->cfg->wd_timeout);
+=======
+	if (time_after(now, timeout)) {
+		IL_ERR("Queue %d stuck for %u ms.\n", q->id,
+		       jiffies_to_msecs(now - txq->time_stamp));
+>>>>>>> refs/remotes/origin/master
 		ret = il_force_reset(il, false);
 		return (ret == -EAGAIN) ? 0 : 1;
 	}
@@ -4851,9 +5007,15 @@ il_add_beacon_time(struct il_priv *il, u32 base, u32 addon,
 }
 EXPORT_SYMBOL(il_add_beacon_time);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
 int
+=======
+#ifdef CONFIG_PM_SLEEP
+
+static int
+>>>>>>> refs/remotes/origin/master
 il_pci_suspend(struct device *device)
 {
 	struct pci_dev *pdev = to_pci_dev(device);
@@ -4870,9 +5032,14 @@ il_pci_suspend(struct device *device)
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(il_pci_suspend);
 
 int
+=======
+
+static int
+>>>>>>> refs/remotes/origin/master
 il_pci_resume(struct device *device)
 {
 	struct pci_dev *pdev = to_pci_dev(device);
@@ -4899,6 +5066,7 @@ il_pci_resume(struct device *device)
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(il_pci_resume);
 
 const struct dev_pm_ops il_pm_ops = {
@@ -4912,6 +5080,13 @@ const struct dev_pm_ops il_pm_ops = {
 EXPORT_SYMBOL(il_pm_ops);
 
 #endif /* CONFIG_PM */
+=======
+
+SIMPLE_DEV_PM_OPS(il_pm_ops, il_pci_suspend, il_pci_resume);
+EXPORT_SYMBOL(il_pm_ops);
+
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 static void
 il_update_qos(struct il_priv *il)
@@ -4944,7 +5119,11 @@ il_mac_config(struct ieee80211_hw *hw, u32 changed)
 	struct il_priv *il = hw->priv;
 	const struct il_channel_info *ch_info;
 	struct ieee80211_conf *conf = &hw->conf;
+<<<<<<< HEAD
 	struct ieee80211_channel *channel = conf->channel;
+=======
+	struct ieee80211_channel *channel = conf->chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	struct il_ht_config *ht_conf = &il->current_ht_config;
 	unsigned long flags = 0;
 	int ret = 0;
@@ -5280,6 +5459,20 @@ il_mac_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		D_MAC80211("BSSID %pM\n", bss_conf->bssid);
 
 		/*
+<<<<<<< HEAD
+=======
+		 * On passive channel we wait with blocked queues to see if
+		 * there is traffic on that channel. If no frame will be
+		 * received (what is very unlikely since scan detects AP on
+		 * that channel, but theoretically possible), mac80211 associate
+		 * procedure will time out and mac80211 will call us with NULL
+		 * bssid. We have to unblock queues on such condition.
+		 */
+		if (is_zero_ether_addr(bss_conf->bssid))
+			il_wake_queues_by_reason(il, IL_STOP_REASON_PASSIVE);
+
+		/*
+>>>>>>> refs/remotes/origin/master
 		 * If there is currently a HW scan going on in the background,
 		 * then we need to cancel it, otherwise sometimes we are not
 		 * able to authenticate (FIXME: why ?)
@@ -5352,7 +5545,11 @@ il_mac_bss_info_changed(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	if (changes & BSS_CHANGED_ASSOC) {
 		D_MAC80211("ASSOC %d\n", bss_conf->assoc);
 		if (bss_conf->assoc) {
+<<<<<<< HEAD
 			il->timestamp = bss_conf->last_tsf;
+=======
+			il->timestamp = bss_conf->sync_tsf;
+>>>>>>> refs/remotes/origin/master
 
 			if (!il_is_rfkill(il))
 				il->ops->post_associate(il);

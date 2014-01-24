@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel PRO/1000 Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -29,6 +33,7 @@
 #ifndef _E1000_HW_H_
 #define _E1000_HW_H_
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 struct e1000_hw;
@@ -347,6 +352,12 @@ enum e1e_registers {
 #define IFE_PMC_AUTO_MDIX	0x0080 /* 1=enable auto MDI/MDI-X, 0=disable */
 
 #define E1000_CABLE_LENGTH_UNDEFINED	0xFF
+=======
+#include "regs.h"
+#include "defines.h"
+
+struct e1000_hw;
+>>>>>>> refs/remotes/origin/master
 
 #define E1000_DEV_ID_82571EB_COPPER		0x105E
 #define E1000_DEV_ID_82571EB_FIBER		0x105F
@@ -366,13 +377,20 @@ enum e1e_registers {
 #define E1000_DEV_ID_82573L			0x109A
 #define E1000_DEV_ID_82574L			0x10D3
 #define E1000_DEV_ID_82574LA			0x10F6
+<<<<<<< HEAD
 #define E1000_DEV_ID_82583V                     0x150C
 
+=======
+#define E1000_DEV_ID_82583V			0x150C
+>>>>>>> refs/remotes/origin/master
 #define E1000_DEV_ID_80003ES2LAN_COPPER_DPT	0x1096
 #define E1000_DEV_ID_80003ES2LAN_SERDES_DPT	0x1098
 #define E1000_DEV_ID_80003ES2LAN_COPPER_SPT	0x10BA
 #define E1000_DEV_ID_80003ES2LAN_SERDES_SPT	0x10BB
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define E1000_DEV_ID_ICH8_82567V_3		0x1501
 #define E1000_DEV_ID_ICH8_IGP_M_AMT		0x1049
 #define E1000_DEV_ID_ICH8_IGP_AMT		0x104A
@@ -402,6 +420,7 @@ enum e1e_registers {
 #define E1000_DEV_ID_PCH_D_HV_DC		0x10F0
 #define E1000_DEV_ID_PCH2_LV_LM			0x1502
 #define E1000_DEV_ID_PCH2_LV_V			0x1503
+<<<<<<< HEAD
 
 #define E1000_REVISION_4 4
 
@@ -409,6 +428,23 @@ enum e1e_registers {
 
 #define E1000_ALT_MAC_ADDRESS_OFFSET_LAN0   0
 #define E1000_ALT_MAC_ADDRESS_OFFSET_LAN1   3
+=======
+#define E1000_DEV_ID_PCH_LPT_I217_LM		0x153A
+#define E1000_DEV_ID_PCH_LPT_I217_V		0x153B
+#define E1000_DEV_ID_PCH_LPTLP_I218_LM		0x155A
+#define E1000_DEV_ID_PCH_LPTLP_I218_V		0x1559
+#define E1000_DEV_ID_PCH_I218_LM2		0x15A0
+#define E1000_DEV_ID_PCH_I218_V2		0x15A1
+#define E1000_DEV_ID_PCH_I218_LM3		0x15A2	/* Wildcat Point PCH */
+#define E1000_DEV_ID_PCH_I218_V3		0x15A3	/* Wildcat Point PCH */
+
+#define E1000_REVISION_4	4
+
+#define E1000_FUNC_1		1
+
+#define E1000_ALT_MAC_ADDRESS_OFFSET_LAN0	0
+#define E1000_ALT_MAC_ADDRESS_OFFSET_LAN1	3
+>>>>>>> refs/remotes/origin/master
 
 enum e1000_mac_type {
 	e1000_82571,
@@ -422,6 +458,10 @@ enum e1000_mac_type {
 	e1000_ich10lan,
 	e1000_pchlan,
 	e1000_pch2lan,
+<<<<<<< HEAD
+=======
+	e1000_pch_lpt,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum e1000_media_type {
@@ -459,6 +499,10 @@ enum e1000_phy_type {
 	e1000_phy_82578,
 	e1000_phy_82577,
 	e1000_phy_82579,
+<<<<<<< HEAD
+=======
+	e1000_phy_i217,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum e1000_bus_width {
@@ -477,7 +521,11 @@ enum e1000_1000t_rx_status {
 	e1000_1000t_rx_status_undefined = 0xFF
 };
 
+<<<<<<< HEAD
 enum e1000_rev_polarity{
+=======
+enum e1000_rev_polarity {
+>>>>>>> refs/remotes/origin/master
 	e1000_rev_polarity_normal = 0,
 	e1000_rev_polarity_reversed,
 	e1000_rev_polarity_undefined = 0xFF
@@ -511,6 +559,7 @@ enum e1000_serdes_link_state {
 	e1000_serdes_link_forced_up
 };
 
+<<<<<<< HEAD
 /* Receive Descriptor */
 struct e1000_rx_desc {
 	__le64 buffer_addr; /* Address of the descriptor's data buffer */
@@ -521,6 +570,8 @@ struct e1000_rx_desc {
 	__le16 special;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Receive Descriptor - Extended */
 union e1000_rx_desc_extended {
 	struct {
@@ -547,6 +598,13 @@ union e1000_rx_desc_extended {
 };
 
 #define MAX_PS_BUFFERS 4
+<<<<<<< HEAD
+=======
+
+/* Number of packet split data buffers (not including the header buffer) */
+#define PS_PAGE_BUFFERS	(MAX_PS_BUFFERS - 1)
+
+>>>>>>> refs/remotes/origin/master
 /* Receive Descriptor - Packet Split */
 union e1000_rx_desc_packet_split {
 	struct {
@@ -571,7 +629,12 @@ union e1000_rx_desc_packet_split {
 		} middle;
 		struct {
 			__le16 header_status;
+<<<<<<< HEAD
 			__le16 length[3];	/* length of buffers 1-3 */
+=======
+			/* length of buffers 1-3 */
+			__le16 length[PS_PAGE_BUFFERS];
+>>>>>>> refs/remotes/origin/master
 		} upper;
 		__le64 reserved;
 	} wb; /* writeback */
@@ -643,7 +706,11 @@ struct e1000_data_desc {
 		struct {
 			u8 status;     /* Descriptor status */
 			u8 popts;      /* Packet Options */
+<<<<<<< HEAD
 			__le16 special;   /* */
+=======
+			__le16 special;
+>>>>>>> refs/remotes/origin/master
 		} fields;
 	} upper;
 };
@@ -722,6 +789,7 @@ struct e1000_phy_stats {
 
 struct e1000_host_mng_dhcp_cookie {
 	u32 signature;
+<<<<<<< HEAD
 	u8  status;
 	u8  reserved0;
 	u16 vlan_id;
@@ -729,6 +797,15 @@ struct e1000_host_mng_dhcp_cookie {
 	u16 reserved2;
 	u8  reserved3;
 	u8  checksum;
+=======
+	u8 status;
+	u8 reserved0;
+	u16 vlan_id;
+	u32 reserved1;
+	u16 reserved2;
+	u8 reserved3;
+	u8 checksum;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Host Interface "Rev 1" */
@@ -739,7 +816,11 @@ struct e1000_host_command_header {
 	u8 checksum;
 };
 
+<<<<<<< HEAD
 #define E1000_HI_MAX_DATA_LENGTH     252
+=======
+#define E1000_HI_MAX_DATA_LENGTH	252
+>>>>>>> refs/remotes/origin/master
 struct e1000_host_command_info {
 	struct e1000_host_command_header command_header;
 	u8 command_data[E1000_HI_MAX_DATA_LENGTH];
@@ -747,20 +828,38 @@ struct e1000_host_command_info {
 
 /* Host Interface "Rev 2" */
 struct e1000_host_mng_command_header {
+<<<<<<< HEAD
 	u8  command_id;
 	u8  checksum;
+=======
+	u8 command_id;
+	u8 checksum;
+>>>>>>> refs/remotes/origin/master
 	u16 reserved1;
 	u16 reserved2;
 	u16 command_length;
 };
 
+<<<<<<< HEAD
 #define E1000_HI_MAX_MNG_DATA_LENGTH 0x6F8
+=======
+#define E1000_HI_MAX_MNG_DATA_LENGTH	0x6F8
+>>>>>>> refs/remotes/origin/master
 struct e1000_host_mng_command_info {
 	struct e1000_host_mng_command_header command_header;
 	u8 command_data[E1000_HI_MAX_MNG_DATA_LENGTH];
 };
 
+<<<<<<< HEAD
 /* Function pointers and static data for the MAC. */
+=======
+#include "mac.h"
+#include "phy.h"
+#include "nvm.h"
+#include "manage.h"
+
+/* Function pointers for the MAC. */
+>>>>>>> refs/remotes/origin/master
 struct e1000_mac_operations {
 	s32  (*id_led_init)(struct e1000_hw *);
 	s32  (*blink_led)(struct e1000_hw *);
@@ -782,11 +881,19 @@ struct e1000_mac_operations {
 	s32  (*setup_led)(struct e1000_hw *);
 	void (*write_vfta)(struct e1000_hw *, u32, u32);
 	void (*config_collision_dist)(struct e1000_hw *);
+<<<<<<< HEAD
 	s32  (*read_mac_addr)(struct e1000_hw *);
 };
 
 /*
  * When to use various PHY register access functions:
+=======
+	void (*rar_set)(struct e1000_hw *, u8 *, u32);
+	s32  (*read_mac_addr)(struct e1000_hw *);
+};
+
+/* When to use various PHY register access functions:
+>>>>>>> refs/remotes/origin/master
  *
  *                 Func   Caller
  *   Function      Does   Does    When to use
@@ -860,11 +967,19 @@ struct e1000_mac_info {
 	u16 mta_reg_count;
 
 	/* Maximum size of the MTA register table in all supported adapters */
+<<<<<<< HEAD
 	#define MAX_MTA_REG 128
 	u32 mta_shadow[MAX_MTA_REG];
 	u16 rar_entry_count;
 
 	u8  forced_speed_duplex;
+=======
+#define MAX_MTA_REG 128
+	u32 mta_shadow[MAX_MTA_REG];
+	u16 rar_entry_count;
+
+	u8 forced_speed_duplex;
+>>>>>>> refs/remotes/origin/master
 
 	bool adaptive_ifs;
 	bool has_fwsm;
@@ -892,7 +1007,11 @@ struct e1000_phy_info {
 
 	u32 addr;
 	u32 id;
+<<<<<<< HEAD
 	u32 reset_delay_us; /* in usec */
+=======
+	u32 reset_delay_us;	/* in usec */
+>>>>>>> refs/remotes/origin/master
 	u32 revision;
 
 	enum e1000_media_type media_type;
@@ -951,11 +1070,19 @@ struct e1000_dev_spec_82571 {
 };
 
 struct e1000_dev_spec_80003es2lan {
+<<<<<<< HEAD
 	bool  mdic_wa_enable;
 };
 
 struct e1000_shadow_ram {
 	u16  value;
+=======
+	bool mdic_wa_enable;
+};
+
+struct e1000_shadow_ram {
+	u16 value;
+>>>>>>> refs/remotes/origin/master
 	bool modified;
 };
 
@@ -966,6 +1093,10 @@ struct e1000_dev_spec_ich8lan {
 	struct e1000_shadow_ram shadow_ram[E1000_ICH8_SHADOW_RAM_WORDS];
 	bool nvm_k1_enabled;
 	bool eee_disable;
+<<<<<<< HEAD
+=======
+	u16 eee_lp_ability;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct e1000_hw {
@@ -974,6 +1105,7 @@ struct e1000_hw {
 	void __iomem *hw_addr;
 	void __iomem *flash_address;
 
+<<<<<<< HEAD
 	struct e1000_mac_info  mac;
 	struct e1000_fc_info   fc;
 	struct e1000_phy_info  phy;
@@ -988,4 +1120,24 @@ struct e1000_hw {
 	} dev_spec;
 };
 
+=======
+	struct e1000_mac_info mac;
+	struct e1000_fc_info fc;
+	struct e1000_phy_info phy;
+	struct e1000_nvm_info nvm;
+	struct e1000_bus_info bus;
+	struct e1000_host_mng_dhcp_cookie mng_cookie;
+
+	union {
+		struct e1000_dev_spec_82571 e82571;
+		struct e1000_dev_spec_80003es2lan e80003es2lan;
+		struct e1000_dev_spec_ich8lan ich8lan;
+	} dev_spec;
+};
+
+#include "82571.h"
+#include "80003es2lan.h"
+#include "ich8lan.h"
+
+>>>>>>> refs/remotes/origin/master
 #endif

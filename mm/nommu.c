@@ -14,10 +14,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/mman.h>
 #include <linux/swap.h>
@@ -27,9 +31,12 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/tracehook.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/blkdev.h>
 #include <linux/backing-dev.h>
 #include <linux/mount.h>
@@ -37,6 +44,10 @@
 #include <linux/security.h>
 #include <linux/syscalls.h>
 #include <linux/audit.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched/sysctl.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/tlb.h>
@@ -63,19 +74,49 @@
 void *high_memory;
 struct page *mem_map;
 unsigned long max_mapnr;
+<<<<<<< HEAD
 unsigned long num_physpages;
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long highest_memmap_pfn;
 struct percpu_counter vm_committed_as;
 int sysctl_overcommit_memory = OVERCOMMIT_GUESS; /* heuristic overcommit */
 int sysctl_overcommit_ratio = 50; /* default is 50% */
+<<<<<<< HEAD
 int sysctl_max_map_count = DEFAULT_MAX_MAP_COUNT;
 int sysctl_nr_trim_pages = CONFIG_NOMMU_INITIAL_TRIM_EXCESS;
+=======
+unsigned long sysctl_overcommit_kbytes __read_mostly;
+int sysctl_max_map_count = DEFAULT_MAX_MAP_COUNT;
+int sysctl_nr_trim_pages = CONFIG_NOMMU_INITIAL_TRIM_EXCESS;
+unsigned long sysctl_user_reserve_kbytes __read_mostly = 1UL << 17; /* 128MB */
+unsigned long sysctl_admin_reserve_kbytes __read_mostly = 1UL << 13; /* 8MB */
+>>>>>>> refs/remotes/origin/master
 int heap_stack_gap = 0;
 
 atomic_long_t mmap_pages_allocated;
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(mem_map);
 EXPORT_SYMBOL(num_physpages);
+=======
+/*
+ * The global memory commitment made in the system can be a metric
+ * that can be used to drive ballooning decisions when Linux is hosted
+ * as a guest. On Hyper-V, the host implements a policy engine for dynamically
+ * balancing memory across competing virtual machines that are hosted.
+ * Several metrics drive this policy engine including the guest reported
+ * memory commitment.
+ */
+unsigned long vm_memory_committed(void)
+{
+	return percpu_counter_read_positive(&vm_committed_as);
+}
+
+EXPORT_SYMBOL_GPL(vm_memory_committed);
+
+EXPORT_SYMBOL(mem_map);
+>>>>>>> refs/remotes/origin/master
 
 /* list of mapped, potentially shareable regions */
 static struct kmem_cache *vm_region_jar;
@@ -132,10 +173,17 @@ unsigned int kobjsize(const void *objp)
 	return PAGE_SIZE << compound_order(page);
 }
 
+<<<<<<< HEAD
 int __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
 		     unsigned long start, int nr_pages, unsigned int foll_flags,
 		     struct page **pages, struct vm_area_struct **vmas,
 		     int *retry)
+=======
+long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
+		      unsigned long start, unsigned long nr_pages,
+		      unsigned int foll_flags, struct page **pages,
+		      struct vm_area_struct **vmas, int *nonblocking)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vm_area_struct *vma;
 	unsigned long vm_flags;
@@ -182,9 +230,16 @@ finish_or_fault:
  *   slab page or a secondary page from a compound page
  * - don't permit access to VMAs that don't support it, such as I/O mappings
  */
+<<<<<<< HEAD
 int get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
 	unsigned long start, int nr_pages, int write, int force,
 	struct page **pages, struct vm_area_struct **vmas)
+=======
+long get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
+		    unsigned long start, unsigned long nr_pages,
+		    int write, int force, struct page **pages,
+		    struct vm_area_struct **vmas)
+>>>>>>> refs/remotes/origin/master
 {
 	int flags = 0;
 
@@ -219,8 +274,12 @@ int follow_pfn(struct vm_area_struct *vma, unsigned long address,
 }
 EXPORT_SYMBOL(follow_pfn);
 
+<<<<<<< HEAD
 DEFINE_RWLOCK(vmlist_lock);
 struct vm_struct *vmlist;
+=======
+LIST_HEAD(vmap_area_list);
+>>>>>>> refs/remotes/origin/master
 
 void vfree(const void *addr)
 {
@@ -272,6 +331,13 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
 
 long vread(char *buf, char *addr, unsigned long count)
 {
+<<<<<<< HEAD
+=======
+	/* Don't allow overflow */
+	if ((unsigned long) buf + count < count)
+		count = -(unsigned long) buf;
+
+>>>>>>> refs/remotes/origin/master
 	memcpy(buf, addr, count);
 	return count;
 }
@@ -463,10 +529,14 @@ void  __attribute__((weak)) vmalloc_sync_all(void)
  *	processes.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct vm_struct *alloc_vm_area(size_t size)
 =======
 struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
+>>>>>>> refs/remotes/origin/master
 {
 	BUG();
 	return NULL;
@@ -710,7 +780,11 @@ static void add_vma_to_mm(struct mm_struct *mm, struct vm_area_struct *vma)
 
 		mutex_lock(&mapping->i_mmap_mutex);
 		flush_dcache_mmap_lock(mapping);
+<<<<<<< HEAD
 		vma_prio_tree_insert(vma, &mapping->i_mmap);
+=======
+		vma_interval_tree_insert(vma, &mapping->i_mmap);
+>>>>>>> refs/remotes/origin/master
 		flush_dcache_mmap_unlock(mapping);
 		mutex_unlock(&mapping->i_mmap_mutex);
 	}
@@ -776,7 +850,11 @@ static void delete_vma_from_mm(struct vm_area_struct *vma)
 
 		mutex_lock(&mapping->i_mmap_mutex);
 		flush_dcache_mmap_lock(mapping);
+<<<<<<< HEAD
 		vma_prio_tree_remove(vma, &mapping->i_mmap);
+=======
+		vma_interval_tree_remove(vma, &mapping->i_mmap);
+>>>>>>> refs/remotes/origin/master
 		flush_dcache_mmap_unlock(mapping);
 		mutex_unlock(&mapping->i_mmap_mutex);
 	}
@@ -801,11 +879,16 @@ static void delete_vma(struct mm_struct *mm, struct vm_area_struct *vma)
 	kenter("%p", vma);
 	if (vma->vm_ops && vma->vm_ops->close)
 		vma->vm_ops->close(vma);
+<<<<<<< HEAD
 	if (vma->vm_file) {
 		fput(vma->vm_file);
 		if (vma->vm_flags & VM_EXECUTABLE)
 			removed_exe_file_vma(mm);
 	}
+=======
+	if (vma->vm_file)
+		fput(vma->vm_file);
+>>>>>>> refs/remotes/origin/master
 	put_nommu_region(vma->vm_region);
 	kmem_cache_free(vm_area_cachep, vma);
 }
@@ -901,7 +984,10 @@ static int validate_mmap_request(struct file *file,
 				 unsigned long *_capabilities)
 {
 	unsigned long capabilities, rlen;
+<<<<<<< HEAD
 	unsigned long reqprot = prot;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* do the simple checks first */
@@ -933,7 +1019,11 @@ static int validate_mmap_request(struct file *file,
 		struct address_space *mapping;
 
 		/* files must support mmap */
+<<<<<<< HEAD
 		if (!file->f_op || !file->f_op->mmap)
+=======
+		if (!file->f_op->mmap)
+>>>>>>> refs/remotes/origin/master
 			return -ENODEV;
 
 		/* work out if what we've got could possibly be shared
@@ -942,7 +1032,11 @@ static int validate_mmap_request(struct file *file,
 		 */
 		mapping = file->f_mapping;
 		if (!mapping)
+<<<<<<< HEAD
 			mapping = file->f_path.dentry->d_inode->i_mapping;
+=======
+			mapping = file_inode(file)->i_mapping;
+>>>>>>> refs/remotes/origin/master
 
 		capabilities = 0;
 		if (mapping && mapping->backing_dev_info)
@@ -951,7 +1045,11 @@ static int validate_mmap_request(struct file *file,
 		if (!capabilities) {
 			/* no explicit capabilities set, so assume some
 			 * defaults */
+<<<<<<< HEAD
 			switch (file->f_path.dentry->d_inode->i_mode & S_IFMT) {
+=======
+			switch (file_inode(file)->i_mode & S_IFMT) {
+>>>>>>> refs/remotes/origin/master
 			case S_IFREG:
 			case S_IFBLK:
 				capabilities = BDI_CAP_MAP_COPY;
@@ -986,11 +1084,19 @@ static int validate_mmap_request(struct file *file,
 			    !(file->f_mode & FMODE_WRITE))
 				return -EACCES;
 
+<<<<<<< HEAD
 			if (IS_APPEND(file->f_path.dentry->d_inode) &&
 			    (file->f_mode & FMODE_WRITE))
 				return -EACCES;
 
 			if (locks_verify_locked(file->f_path.dentry->d_inode))
+=======
+			if (IS_APPEND(file_inode(file)) &&
+			    (file->f_mode & FMODE_WRITE))
+				return -EACCES;
+
+			if (locks_verify_locked(file_inode(file)))
+>>>>>>> refs/remotes/origin/master
 				return -EAGAIN;
 
 			if (!(capabilities & BDI_CAP_MAP_DIRECT))
@@ -1059,7 +1165,11 @@ static int validate_mmap_request(struct file *file,
 	}
 
 	/* allow the security API to have its say */
+<<<<<<< HEAD
 	ret = security_file_mmap(file, reqprot, prot, flags, addr, 0);
+=======
+	ret = security_mmap_addr(addr);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -1101,10 +1211,14 @@ static unsigned long determine_vm_flags(struct file *file,
 	 * with another untraced process
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((flags & MAP_PRIVATE) && tracehook_expect_breakpoints(current))
 =======
 	if ((flags & MAP_PRIVATE) && current->ptrace)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((flags & MAP_PRIVATE) && current->ptrace)
+>>>>>>> refs/remotes/origin/master
 		vm_flags &= ~VM_MAYSHARE;
 
 	return vm_flags;
@@ -1250,15 +1364,24 @@ enomem:
  * handle mapping creation for uClinux
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long do_mmap_pgoff(struct file *file,
 =======
 static unsigned long do_mmap_pgoff(struct file *file,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long do_mmap_pgoff(struct file *file,
+>>>>>>> refs/remotes/origin/master
 			    unsigned long addr,
 			    unsigned long len,
 			    unsigned long prot,
 			    unsigned long flags,
+<<<<<<< HEAD
 			    unsigned long pgoff)
+=======
+			    unsigned long pgoff,
+			    unsigned long *populate)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vm_area_struct *vma;
 	struct vm_region *region;
@@ -1268,6 +1391,11 @@ static unsigned long do_mmap_pgoff(struct file *file,
 
 	kenter(",%lx,%lx,%lx,%lx,%lx", addr, len, prot, flags, pgoff);
 
+<<<<<<< HEAD
+=======
+	*populate = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* decide whether we should attempt the mapping, and if so what sort of
 	 * mapping */
 	ret = validate_mmap_request(file, addr, len, prot, flags, pgoff,
@@ -1303,6 +1431,7 @@ static unsigned long do_mmap_pgoff(struct file *file,
 	vma->vm_pgoff = pgoff;
 
 	if (file) {
+<<<<<<< HEAD
 		region->vm_file = file;
 		get_file(file);
 		vma->vm_file = file;
@@ -1311,6 +1440,10 @@ static unsigned long do_mmap_pgoff(struct file *file,
 			added_exe_file_vma(current->mm);
 			vma->vm_mm = current->mm;
 		}
+=======
+		region->vm_file = get_file(file);
+		vma->vm_file = get_file(file);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	down_write(&nommu_region_sem);
@@ -1337,8 +1470,13 @@ static unsigned long do_mmap_pgoff(struct file *file,
 				continue;
 
 			/* search for overlapping mappings on the same file */
+<<<<<<< HEAD
 			if (pregion->vm_file->f_path.dentry->d_inode !=
 			    file->f_path.dentry->d_inode)
+=======
+			if (file_inode(pregion->vm_file) !=
+			    file_inode(file))
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			if (pregion->vm_pgoff >= pgend)
@@ -1463,8 +1601,11 @@ error:
 	kmem_cache_free(vm_region_jar, region);
 	if (vma->vm_file)
 		fput(vma->vm_file);
+<<<<<<< HEAD
 	if (vma->vm_flags & VM_EXECUTABLE)
 		removed_exe_file_vma(vma->vm_mm);
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(vm_area_cachep, vma);
 	kleave(" = %d", ret);
 	return ret;
@@ -1490,6 +1631,7 @@ error_getting_region:
 	show_free_areas(0);
 	return -ENOMEM;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL(do_mmap_pgoff);
 =======
@@ -1520,6 +1662,8 @@ unsigned long vm_mmap(struct file *file, unsigned long addr,
 }
 EXPORT_SYMBOL(vm_mmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 SYSCALL_DEFINE6(mmap_pgoff, unsigned long, addr, unsigned long, len,
 		unsigned long, prot, unsigned long, flags,
@@ -1537,9 +1681,13 @@ SYSCALL_DEFINE6(mmap_pgoff, unsigned long, addr, unsigned long, len,
 
 	flags &= ~(MAP_EXECUTABLE | MAP_DENYWRITE);
 
+<<<<<<< HEAD
 	down_write(&current->mm->mmap_sem);
 	retval = do_mmap_pgoff(file, addr, len, prot, flags, pgoff);
 	up_write(&current->mm->mmap_sem);
+=======
+	retval = vm_mmap_pgoff(file, addr, len, prot, flags, pgoff);
+>>>>>>> refs/remotes/origin/master
 
 	if (file)
 		fput(file);
@@ -1759,16 +1907,22 @@ erase_whole_vma:
 EXPORT_SYMBOL(do_munmap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 SYSCALL_DEFINE2(munmap, unsigned long, addr, size_t, len)
 {
 	int ret;
 	struct mm_struct *mm = current->mm;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int vm_munmap(unsigned long addr, size_t len)
 {
 	struct mm_struct *mm = current->mm;
 	int ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	down_write(&mm->mmap_sem);
 	ret = do_munmap(mm, addr, len);
@@ -1776,14 +1930,20 @@ int vm_munmap(unsigned long addr, size_t len)
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(vm_munmap);
 
 SYSCALL_DEFINE2(munmap, unsigned long, addr, size_t, len)
 {
 	return vm_munmap(addr, len);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * release all the mappings made in a process's VM space
@@ -1810,10 +1970,14 @@ void exit_mmap(struct mm_struct *mm)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long do_brk(unsigned long addr, unsigned long len)
 =======
 unsigned long vm_brk(unsigned long addr, unsigned long len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long vm_brk(unsigned long addr, unsigned long len)
+>>>>>>> refs/remotes/origin/master
 {
 	return -ENOMEM;
 }
@@ -1828,7 +1992,11 @@ unsigned long vm_brk(unsigned long addr, unsigned long len)
  *
  * MREMAP_FIXED is not supported under NOMMU conditions
  */
+<<<<<<< HEAD
 unsigned long do_mremap(unsigned long addr,
+=======
+static unsigned long do_mremap(unsigned long addr,
+>>>>>>> refs/remotes/origin/master
 			unsigned long old_len, unsigned long new_len,
 			unsigned long flags, unsigned long new_addr)
 {
@@ -1863,7 +2031,10 @@ unsigned long do_mremap(unsigned long addr,
 	vma->vm_end = vma->vm_start + new_len;
 	return vma->vm_start;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(do_mremap);
+=======
+>>>>>>> refs/remotes/origin/master
 
 SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
 		unsigned long, new_len, unsigned long, flags,
@@ -1877,9 +2048,17 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
 	return ret;
 }
 
+<<<<<<< HEAD
 struct page *follow_page(struct vm_area_struct *vma, unsigned long address,
 			unsigned int foll_flags)
 {
+=======
+struct page *follow_page_mask(struct vm_area_struct *vma,
+			      unsigned long address, unsigned int flags,
+			      unsigned int *page_mask)
+{
+	*page_mask = 0;
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -1889,7 +2068,11 @@ int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr,
 	if (addr != (pfn << PAGE_SHIFT))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	vma->vm_flags |= VM_IO | VM_RESERVED | VM_PFNMAP;
+=======
+	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(remap_pfn_range);
@@ -1925,10 +2108,13 @@ unsigned long arch_get_unmapped_area(struct file *file, unsigned long addr,
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 void arch_unmap_area(struct mm_struct *mm, unsigned long addr)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void unmap_mapping_range(struct address_space *mapping,
 			 loff_t const holebegin, loff_t const holelen,
 			 int even_cows)
@@ -1954,7 +2140,11 @@ EXPORT_SYMBOL(unmap_mapping_range);
  */
 int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 {
+<<<<<<< HEAD
 	unsigned long free, allowed;
+=======
+	unsigned long free, allowed, reserve;
+>>>>>>> refs/remotes/origin/master
 
 	vm_acct_memory(pages);
 
@@ -1966,10 +2156,13 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 
 	if (sysctl_overcommit_memory == OVERCOMMIT_GUESS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long n;
 
 		free = global_page_state(NR_FILE_PAGES);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		free = global_page_state(NR_FREE_PAGES);
 		free += global_page_state(NR_FILE_PAGES);
 
@@ -1981,8 +2174,12 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 		 */
 		free -= global_page_state(NR_SHMEM);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		free += nr_swap_pages;
+=======
+		free += get_nr_swap_pages();
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Any slabs which are created with the
@@ -1993,6 +2190,7 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 		free += global_page_state(NR_SLAB_RECLAIMABLE);
 
 		/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 * Leave the last 3% for root
 		 */
@@ -2016,12 +2214,15 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 		else
 			n -= totalreserve_pages;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * Leave reserved pages. The pages are not for anonymous pages.
 		 */
 		if (free <= totalreserve_pages)
 			goto error;
 		else
 			free -= totalreserve_pages;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
@@ -2034,6 +2235,14 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 =======
 			free -= free / 32;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		/*
+		 * Reserve some for root
+		 */
+		if (!cap_sys_admin)
+			free -= sysctl_admin_reserve_kbytes >> (PAGE_SHIFT - 10);
+>>>>>>> refs/remotes/origin/master
 
 		if (free > pages)
 			return 0;
@@ -2041,6 +2250,7 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	allowed = totalram_pages * sysctl_overcommit_ratio / 100;
 	/*
 	 * Leave the last 3% for root
@@ -2053,6 +2263,22 @@ int __vm_enough_memory(struct mm_struct *mm, long pages, int cap_sys_admin)
 	   leave 3% of the size of this process for other processes */
 	if (mm)
 		allowed -= mm->total_vm / 32;
+=======
+	allowed = vm_commit_limit();
+	/*
+	 * Reserve some 3% for root
+	 */
+	if (!cap_sys_admin)
+		allowed -= sysctl_admin_reserve_kbytes >> (PAGE_SHIFT - 10);
+
+	/*
+	 * Don't let a single process grow so big a user can't recover
+	 */
+	if (mm) {
+		reserve = sysctl_user_reserve_kbytes >> (PAGE_SHIFT - 10);
+		allowed -= min(mm->total_vm / 32, reserve);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (percpu_counter_read_positive(&vm_committed_as) < allowed)
 		return 0;
@@ -2075,6 +2301,17 @@ int filemap_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 }
 EXPORT_SYMBOL(filemap_fault);
 
+<<<<<<< HEAD
+=======
+int generic_file_remap_pages(struct vm_area_struct *vma, unsigned long addr,
+			     unsigned long size, pgoff_t pgoff)
+{
+	BUG();
+	return 0;
+}
+EXPORT_SYMBOL(generic_file_remap_pages);
+
+>>>>>>> refs/remotes/origin/master
 static int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
 		unsigned long addr, void *buf, int len, int write)
 {
@@ -2159,7 +2396,10 @@ int nommu_shrink_inode_mappings(struct inode *inode, size_t size,
 				size_t newsize)
 {
 	struct vm_area_struct *vma;
+<<<<<<< HEAD
 	struct prio_tree_iter iter;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct vm_region *region;
 	pgoff_t low, high;
 	size_t r_size, r_top;
@@ -2171,8 +2411,12 @@ int nommu_shrink_inode_mappings(struct inode *inode, size_t size,
 	mutex_lock(&inode->i_mapping->i_mmap_mutex);
 
 	/* search for VMAs that fall within the dead zone */
+<<<<<<< HEAD
 	vma_prio_tree_foreach(vma, &iter, &inode->i_mapping->i_mmap,
 			      low, high) {
+=======
+	vma_interval_tree_foreach(vma, &inode->i_mapping->i_mmap, low, high) {
+>>>>>>> refs/remotes/origin/master
 		/* found one - only interested if it's shared out of the page
 		 * cache */
 		if (vma->vm_flags & VM_SHARED) {
@@ -2188,8 +2432,13 @@ int nommu_shrink_inode_mappings(struct inode *inode, size_t size,
 	 * we don't check for any regions that start beyond the EOF as there
 	 * shouldn't be any
 	 */
+<<<<<<< HEAD
 	vma_prio_tree_foreach(vma, &iter, &inode->i_mapping->i_mmap,
 			      0, ULONG_MAX) {
+=======
+	vma_interval_tree_foreach(vma, &inode->i_mapping->i_mmap,
+				  0, ULONG_MAX) {
+>>>>>>> refs/remotes/origin/master
 		if (!(vma->vm_flags & VM_SHARED))
 			continue;
 
@@ -2208,3 +2457,48 @@ int nommu_shrink_inode_mappings(struct inode *inode, size_t size,
 	up_write(&nommu_region_sem);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * Initialise sysctl_user_reserve_kbytes.
+ *
+ * This is intended to prevent a user from starting a single memory hogging
+ * process, such that they cannot recover (kill the hog) in OVERCOMMIT_NEVER
+ * mode.
+ *
+ * The default value is min(3% of free memory, 128MB)
+ * 128MB is enough to recover with sshd/login, bash, and top/kill.
+ */
+static int __meminit init_user_reserve(void)
+{
+	unsigned long free_kbytes;
+
+	free_kbytes = global_page_state(NR_FREE_PAGES) << (PAGE_SHIFT - 10);
+
+	sysctl_user_reserve_kbytes = min(free_kbytes / 32, 1UL << 17);
+	return 0;
+}
+module_init(init_user_reserve)
+
+/*
+ * Initialise sysctl_admin_reserve_kbytes.
+ *
+ * The purpose of sysctl_admin_reserve_kbytes is to allow the sys admin
+ * to log in and kill a memory hogging process.
+ *
+ * Systems with more than 256MB will reserve 8MB, enough to recover
+ * with sshd, bash, and top in OVERCOMMIT_GUESS. Smaller systems will
+ * only reserve 3% of free pages by default.
+ */
+static int __meminit init_admin_reserve(void)
+{
+	unsigned long free_kbytes;
+
+	free_kbytes = global_page_state(NR_FREE_PAGES) << (PAGE_SHIFT - 10);
+
+	sysctl_admin_reserve_kbytes = min(free_kbytes / 32, 1UL << 13);
+	return 0;
+}
+module_init(init_admin_reserve)
+>>>>>>> refs/remotes/origin/master

@@ -268,7 +268,11 @@ static void kvmppc_44x_shadow_release(struct kvmppc_vcpu_44x *vcpu_44x,
 	trace_kvm_stlb_inval(stlb_index);
 }
 
+<<<<<<< HEAD
 void kvmppc_mmu_destroy(struct kvm_vcpu *vcpu)
+=======
+void kvmppc_mmu_destroy_44x(struct kvm_vcpu *vcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct kvmppc_vcpu_44x *vcpu_44x = to_44x(vcpu);
 	int i;
@@ -319,7 +323,10 @@ void kvmppc_mmu_map(struct kvm_vcpu *vcpu, u64 gvaddr, gpa_t gpaddr,
 	if (is_error_page(new_page)) {
 		printk(KERN_ERR "Couldn't get guest page for gfn %llx!\n",
 			(unsigned long long)gfn);
+<<<<<<< HEAD
 		kvm_release_page_clean(new_page);
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	hpaddr = page_to_phys(new_page);
@@ -388,14 +395,20 @@ static void kvmppc_44x_invalidate(struct kvm_vcpu *vcpu,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void kvmppc_mmu_priv_switch(struct kvm_vcpu *vcpu, int usermode)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void kvmppc_mmu_msr_notify(struct kvm_vcpu *vcpu, u32 old_msr)
 {
 	int usermode = vcpu->arch.shared->msr & MSR_PR;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	vcpu->arch.shadow_pid = !usermode;
 }
 
@@ -447,6 +460,10 @@ int kvmppc_44x_emul_tlbwe(struct kvm_vcpu *vcpu, u8 ra, u8 rs, u8 ws)
 	struct kvmppc_vcpu_44x *vcpu_44x = to_44x(vcpu);
 	struct kvmppc_44x_tlbe *tlbe;
 	unsigned int gtlb_index;
+<<<<<<< HEAD
+=======
+	int idx;
+>>>>>>> refs/remotes/origin/master
 
 	gtlb_index = kvmppc_get_gpr(vcpu, ra);
 	if (gtlb_index >= KVM44x_GUEST_TLB_SIZE) {
@@ -479,6 +496,11 @@ int kvmppc_44x_emul_tlbwe(struct kvm_vcpu *vcpu, u8 ra, u8 rs, u8 ws)
 		return EMULATE_FAIL;
 	}
 
+<<<<<<< HEAD
+=======
+	idx = srcu_read_lock(&vcpu->kvm->srcu);
+
+>>>>>>> refs/remotes/origin/master
 	if (tlbe_is_host_safe(vcpu, tlbe)) {
 		gva_t eaddr;
 		gpa_t gpaddr;
@@ -495,6 +517,11 @@ int kvmppc_44x_emul_tlbwe(struct kvm_vcpu *vcpu, u8 ra, u8 rs, u8 ws)
 		kvmppc_mmu_map(vcpu, eaddr, gpaddr, gtlb_index);
 	}
 
+<<<<<<< HEAD
+=======
+	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+
+>>>>>>> refs/remotes/origin/master
 	trace_kvm_gtlb_write(gtlb_index, tlbe->tid, tlbe->word0, tlbe->word1,
 			     tlbe->word2);
 

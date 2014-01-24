@@ -3,6 +3,7 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This file contains the system call numbers of the ia32 port,
  * this is for the kernel only.
  * Only add syscalls here where some part of the kernel needs to know
@@ -16,11 +17,16 @@
 #define __NR_ia32_sigreturn	119
 #define __NR_ia32_rt_sigreturn	173
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * This file contains the system call numbers of the ia32 compat ABI,
  * this is for the kernel only.
  */
 #define __SYSCALL_ia32_NR(x) (x)
 #include <asm/unistd_32_ia32.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_X86_IA32_UNISTD_H */

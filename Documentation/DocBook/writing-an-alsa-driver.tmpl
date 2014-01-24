@@ -405,10 +405,14 @@
   static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
   static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
   static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
   static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
   /* definition of the chip-specific record */
   struct mychip {
@@ -437,9 +441,15 @@
   /* chip-specific constructor
    * (see "Management of Cards and Components")
    */
+<<<<<<< HEAD
   static int __devinit snd_mychip_create(struct snd_card *card,
                                          struct pci_dev *pci,
                                          struct mychip **rchip)
+=======
+  static int snd_mychip_create(struct snd_card *card,
+                               struct pci_dev *pci,
+                               struct mychip **rchip)
+>>>>>>> refs/remotes/origin/master
   {
           struct mychip *chip;
           int err;
@@ -479,8 +489,13 @@
   }
 
   /* constructor -- see "Constructor" sub-section */
+<<<<<<< HEAD
   static int __devinit snd_mychip_probe(struct pci_dev *pci,
                                const struct pci_device_id *pci_id)
+=======
+  static int snd_mychip_probe(struct pci_dev *pci,
+                              const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
   {
           static int dev;
           struct snd_card *card;
@@ -530,7 +545,11 @@
   }
 
   /* destructor -- see the "Destructor" sub-section */
+<<<<<<< HEAD
   static void __devexit snd_mychip_remove(struct pci_dev *pci)
+=======
+  static void snd_mychip_remove(struct pci_dev *pci)
+>>>>>>> refs/remotes/origin/master
   {
           snd_card_free(pci_get_drvdata(pci));
           pci_set_drvdata(pci, NULL);
@@ -546,9 +565,14 @@
       <para>
         The real constructor of PCI drivers is the <function>probe</function> callback.
       The <function>probe</function> callback and other component-constructors which are called
+<<<<<<< HEAD
       from the <function>probe</function> callback should be defined with
       the <parameter>__devinit</parameter> prefix. You 
       cannot use the <parameter>__init</parameter> prefix for them,
+=======
+      from the <function>probe</function> callback cannot be used with
+      the <parameter>__init</parameter> prefix
+>>>>>>> refs/remotes/origin/master
       because any PCI device could be a hotplug device. 
       </para>
 
@@ -732,7 +756,11 @@
         <informalexample>
           <programlisting>
 <![CDATA[
+<<<<<<< HEAD
   static void __devexit snd_mychip_remove(struct pci_dev *pci)
+=======
+  static void snd_mychip_remove(struct pci_dev *pci)
+>>>>>>> refs/remotes/origin/master
   {
           snd_card_free(pci_get_drvdata(pci));
           pci_set_drvdata(pci, NULL);
@@ -876,9 +904,14 @@
       <para>
       This function itself doesn't allocate the data space. The data
       must be allocated manually beforehand, and its pointer is passed
+<<<<<<< HEAD
       as the argument. This pointer is used as the
       (<parameter>chip</parameter> identifier in the above example)
       for the instance. 
+=======
+      as the argument. This pointer (<parameter>chip</parameter> in the
+      above example) is used as the identifier for the instance.
+>>>>>>> refs/remotes/origin/master
       </para>
 
       <para>
@@ -1063,6 +1096,7 @@
       </para>
 
       <para>
+<<<<<<< HEAD
         As further notes, the destructors (both
       <function>snd_mychip_dev_free</function> and
       <function>snd_mychip_free</function>) cannot be defined with
@@ -1071,6 +1105,8 @@
       </para>
 
       <para>
+=======
+>>>>>>> refs/remotes/origin/master
       For a device which allows hotplugging, you can use
       <function>snd_card_free_when_closed</function>.  This one will
       postpone the destruction until all devices are closed.
@@ -1124,9 +1160,15 @@
   }
 
   /* chip-specific constructor */
+<<<<<<< HEAD
   static int __devinit snd_mychip_create(struct snd_card *card,
                                          struct pci_dev *pci,
                                          struct mychip **rchip)
+=======
+  static int snd_mychip_create(struct snd_card *card,
+                               struct pci_dev *pci,
+                               struct mychip **rchip)
+>>>>>>> refs/remotes/origin/master
   {
           struct mychip *chip;
           int err;
@@ -1169,10 +1211,14 @@
           chip->port = pci_resource_start(pci, 0);
           if (request_irq(pci->irq, snd_mychip_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
                           IRQF_SHARED, "My Chip", chip)) {
 =======
                           IRQF_SHARED, KBUILD_MODNAME, chip)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                          IRQF_SHARED, KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
                   printk(KERN_ERR "cannot grab irq %d\n", pci->irq);
                   snd_mychip_free(chip);
                   return -EBUSY;
@@ -1206,6 +1252,7 @@
   /* pci_driver definition */
   static struct pci_driver driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
           .name = "My Own Chip",
 =======
           .name = KBUILD_MODNAME,
@@ -1213,6 +1260,12 @@
           .id_table = snd_mychip_ids,
           .probe = snd_mychip_probe,
           .remove = __devexit_p(snd_mychip_remove),
+=======
+          .name = KBUILD_MODNAME,
+          .id_table = snd_mychip_ids,
+          .probe = snd_mychip_probe,
+          .remove = snd_mychip_remove,
+>>>>>>> refs/remotes/origin/master
   };
 
   /* module initialization */
@@ -1353,10 +1406,14 @@
 <![CDATA[
   if (request_irq(pci->irq, snd_mychip_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
                   IRQF_SHARED, "My Chip", chip)) {
 =======
                   IRQF_SHARED, KBUILD_MODNAME, chip)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                  IRQF_SHARED, KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
           printk(KERN_ERR "cannot grab irq %d\n", pci->irq);
           snd_mychip_free(chip);
           return -EBUSY;
@@ -1481,11 +1538,14 @@
       </para>
 
       <para>
+<<<<<<< HEAD
       Again, remember that you cannot
       use the <parameter>__devexit</parameter> prefix for this destructor. 
       </para>
 
       <para>
+=======
+>>>>>>> refs/remotes/origin/master
       We didn't implement the hardware disabling part in the above.
       If you need to do this, please note that the destructor may be
       called even before the initialization of the chip is completed.
@@ -1633,6 +1693,7 @@
 <![CDATA[
   static struct pci_driver driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
           .name = "My Own Chip",
 =======
           .name = KBUILD_MODNAME,
@@ -1640,6 +1701,12 @@
           .id_table = snd_mychip_ids,
           .probe = snd_mychip_probe,
           .remove = __devexit_p(snd_mychip_remove),
+=======
+          .name = KBUILD_MODNAME,
+          .id_table = snd_mychip_ids,
+          .probe = snd_mychip_probe,
+          .remove = snd_mychip_remove,
+>>>>>>> refs/remotes/origin/master
   };
 ]]>
           </programlisting>
@@ -1650,11 +1717,15 @@
         The <structfield>probe</structfield> and
       <structfield>remove</structfield> functions have already
       been defined in the previous sections.
+<<<<<<< HEAD
       The <structfield>remove</structfield> function should
       be defined with the 
       <function>__devexit_p()</function> macro, so that it's not
       defined for built-in (and non-hot-pluggable) case. The
       <structfield>name</structfield> 
+=======
+      The <structfield>name</structfield>
+>>>>>>> refs/remotes/origin/master
       field is the name string of this device. Note that you must not
       use a slash <quote>/</quote> in this string. 
       </para>
@@ -1685,9 +1756,13 @@
       <para>
         Note that these module entries are tagged with
       <parameter>__init</parameter> and 
+<<<<<<< HEAD
       <parameter>__exit</parameter> prefixes, not
       <parameter>__devinit</parameter> nor
       <parameter>__devexit</parameter>.
+=======
+      <parameter>__exit</parameter> prefixes.
+>>>>>>> refs/remotes/origin/master
       </para>
 
       <para>
@@ -1938,7 +2013,11 @@
    */
 
   /* create a pcm device */
+<<<<<<< HEAD
   static int __devinit snd_mychip_new_pcm(struct mychip *chip)
+=======
+  static int snd_mychip_new_pcm(struct mychip *chip)
+>>>>>>> refs/remotes/origin/master
   {
           struct snd_pcm *pcm;
           int err;
@@ -1977,7 +2056,11 @@
         <informalexample>
           <programlisting>
 <![CDATA[
+<<<<<<< HEAD
   static int __devinit snd_mychip_new_pcm(struct mychip *chip)
+=======
+  static int snd_mychip_new_pcm(struct mychip *chip)
+>>>>>>> refs/remotes/origin/master
   {
           struct snd_pcm *pcm;
           int err;
@@ -2144,7 +2227,11 @@
           ....
   }
 
+<<<<<<< HEAD
   static int __devinit snd_mychip_new_pcm(struct mychip *chip)
+=======
+  static int snd_mychip_new_pcm(struct mychip *chip)
+>>>>>>> refs/remotes/origin/master
   {
           struct snd_pcm *pcm;
           ....
@@ -2344,7 +2431,11 @@ struct _snd_pcm_runtime {
         <constant>SNDRV_PCM_INFO_XXX</constant>. Here, at least, you
         have to specify whether the mmap is supported and which
         interleaved format is supported.
+<<<<<<< HEAD
         When the is supported, add the
+=======
+        When the hardware supports mmap, add the
+>>>>>>> refs/remotes/origin/master
         <constant>SNDRV_PCM_INFO_MMAP</constant> flag here. When the
         hardware supports the interleaved or the non-interleaved
         formats, <constant>SNDRV_PCM_INFO_INTERLEAVED</constant> or
@@ -2938,7 +3029,11 @@ struct _snd_pcm_runtime {
 
         <para>
           When the pcm supports the pause operation (given in the info
+<<<<<<< HEAD
         field of the hardware table), the <constant>PAUSE_PUSE</constant>
+=======
+        field of the hardware table), the <constant>PAUSE_PUSH</constant>
+>>>>>>> refs/remotes/origin/master
         and <constant>PAUSE_RELEASE</constant> commands must be
         handled here, too. The former is the command to pause the pcm,
         and the latter to restart the pcm again. 
@@ -3125,7 +3220,11 @@ struct _snd_pcm_runtime {
       <section id="pcm-interface-interrupt-handler-timer">
         <title>High frequency timer interrupts</title>
         <para>
+<<<<<<< HEAD
 	This happense when the hardware doesn't generate interrupts
+=======
+	This happens when the hardware doesn't generate interrupts
+>>>>>>> refs/remotes/origin/master
         at the period boundary but issues timer interrupts at a fixed
         timer rate (e.g. es1968 or ymfpci drivers). 
         In this case, you need to check the current hardware
@@ -3291,6 +3390,7 @@ struct _snd_pcm_runtime {
 	  <title>Example of Hardware Constraints for Channels</title>
 	  <programlisting>
 <![CDATA[
+<<<<<<< HEAD
   static int hw_rule_format_by_channels(struct snd_pcm_hw_params *params,
                                         struct snd_pcm_hw_rule *rule)
   {
@@ -3303,6 +3403,21 @@ struct _snd_pcm_runtime {
           if (c->min < 2) {
                   fmt.bits[0] &= SNDRV_PCM_FMTBIT_S16_LE;
                   return snd_mask_refine(f, &fmt);
+=======
+  static int hw_rule_channels_by_format(struct snd_pcm_hw_params *params,
+                                        struct snd_pcm_hw_rule *rule)
+  {
+          struct snd_interval *c = hw_param_interval(params,
+                        SNDRV_PCM_HW_PARAM_CHANNELS);
+          struct snd_mask *f = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+          struct snd_interval ch;
+
+          snd_interval_any(&ch);
+          if (f->bits[0] == SNDRV_PCM_FMTBIT_S16_LE) {
+                  ch.min = ch.max = 1;
+                  ch.integer = 1;
+                  return snd_interval_refine(c, &ch);
+>>>>>>> refs/remotes/origin/master
           }
           return 0;
   }
@@ -3318,14 +3433,20 @@ struct _snd_pcm_runtime {
 	 <programlisting>
 <![CDATA[
   snd_pcm_hw_rule_add(substream->runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+<<<<<<< HEAD
                       hw_rule_channels_by_format, 0, SNDRV_PCM_HW_PARAM_FORMAT,
                       -1);
+=======
+                      hw_rule_channels_by_format, NULL,
+                      SNDRV_PCM_HW_PARAM_FORMAT, -1);
+>>>>>>> refs/remotes/origin/master
 ]]>
           </programlisting>
         </informalexample>
       </para>
 
       <para>
+<<<<<<< HEAD
         The rule function is called when an application sets the number of
         channels. But an application can set the format before the number of
         channels. Thus you also need to define the inverse rule:
@@ -3347,6 +3468,29 @@ struct _snd_pcm_runtime {
                   ch.min = ch.max = 1;
                   ch.integer = 1;
                   return snd_interval_refine(c, &ch);
+=======
+        The rule function is called when an application sets the PCM
+	format, and it refines the number of channels accordingly.
+        But an application may set the number of channels before
+	setting the format. Thus you also need to define the inverse rule:
+
+       <example>
+	 <title>Example of Hardware Constraints for Formats</title>
+	 <programlisting>
+<![CDATA[
+  static int hw_rule_format_by_channels(struct snd_pcm_hw_params *params,
+                                        struct snd_pcm_hw_rule *rule)
+  {
+          struct snd_interval *c = hw_param_interval(params,
+                SNDRV_PCM_HW_PARAM_CHANNELS);
+          struct snd_mask *f = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+          struct snd_mask fmt;
+
+          snd_mask_any(&fmt);    /* Init the struct */
+          if (c->min < 2) {
+                  fmt.bits[0] &= SNDRV_PCM_FMTBIT_S16_LE;
+                  return snd_mask_refine(f, &fmt);
+>>>>>>> refs/remotes/origin/master
           }
           return 0;
   }
@@ -3361,8 +3505,13 @@ struct _snd_pcm_runtime {
 	 <programlisting>
 <![CDATA[
   snd_pcm_hw_rule_add(substream->runtime, 0, SNDRV_PCM_HW_PARAM_FORMAT,
+<<<<<<< HEAD
                       hw_rule_format_by_channels, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
                       -1);
+=======
+                      hw_rule_format_by_channels, NULL,
+                      SNDRV_PCM_HW_PARAM_CHANNELS, -1);
+>>>>>>> refs/remotes/origin/master
 ]]>
           </programlisting>
         </informalexample>
@@ -3419,7 +3568,11 @@ struct _snd_pcm_runtime {
 	  <title>Definition of a Control</title>
           <programlisting>
 <![CDATA[
+<<<<<<< HEAD
   static struct snd_kcontrol_new my_control __devinitdata = {
+=======
+  static struct snd_kcontrol_new my_control = {
+>>>>>>> refs/remotes/origin/master
           .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
           .name = "PCM Playback Switch",
           .index = 0,
@@ -3435,6 +3588,7 @@ struct _snd_pcm_runtime {
       </para>
 
       <para>
+<<<<<<< HEAD
         Most likely the control is created via
       <function>snd_ctl_new1()</function>, and in such a case, you can
       add the <parameter>__devinitdata</parameter> prefix to the
@@ -3442,6 +3596,8 @@ struct _snd_pcm_runtime {
       </para>
 
       <para>
+=======
+>>>>>>> refs/remotes/origin/master
         The <structfield>iface</structfield> field specifies the control
       type, <constant>SNDRV_CTL_ELEM_IFACE_XXX</constant>, which
       is usually <constant>MIXER</constant>.
@@ -3867,10 +4023,15 @@ struct _snd_pcm_runtime {
 
       <para>
         <function>snd_ctl_new1()</function> allocates a new
+<<<<<<< HEAD
       <structname>snd_kcontrol</structname> instance (that's why the definition
       of <parameter>my_control</parameter> can be with
       the <parameter>__devinitdata</parameter> 
       prefix), and <function>snd_ctl_add</function> assigns the given
+=======
+      <structname>snd_kcontrol</structname> instance,
+      and <function>snd_ctl_add</function> assigns the given
+>>>>>>> refs/remotes/origin/master
       control component to the card. 
       </para>
     </section>
@@ -3916,7 +4077,11 @@ struct _snd_pcm_runtime {
 <![CDATA[
   static DECLARE_TLV_DB_SCALE(db_scale_my_control, -4050, 150, 0);
 
+<<<<<<< HEAD
   static struct snd_kcontrol_new my_control __devinitdata = {
+=======
+  static struct snd_kcontrol_new my_control = {
+>>>>>>> refs/remotes/origin/master
           ...
           .access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
                     SNDRV_CTL_ELEM_ACCESS_TLV_READ,
@@ -4309,10 +4474,14 @@ struct _snd_pcm_runtime {
   struct snd_rawmidi *rmidi;
   snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401, port, info_flags,
 <<<<<<< HEAD
+<<<<<<< HEAD
                       irq, irq_flags, &rmidi);
 =======
                       irq, &rmidi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                      irq, &rmidi);
+>>>>>>> refs/remotes/origin/master
 ]]>
           </programlisting>
         </informalexample>
@@ -4368,7 +4537,10 @@ struct _snd_pcm_runtime {
 	</para>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	<para>
 	If the MPU-401 interface shares its interrupt with the other logical
 	devices on the card, set <constant>MPU401_INFO_IRQ_HOOK</constant>
@@ -4376,7 +4548,10 @@ struct _snd_pcm_runtime {
 	below</citetitle></link>).
 	</para>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       <para>
         Usually, the port address corresponds to the command port and
         port + 1 corresponds to the data port. If not, you may change
@@ -4410,6 +4585,7 @@ struct _snd_pcm_runtime {
 
       <para>
 <<<<<<< HEAD
+<<<<<<< HEAD
         The 6th argument specifies the irq number for UART. If the irq
       is already allocated, pass 0 to the 7th argument
       (<parameter>irq_flags</parameter>). Otherwise, pass the flags
@@ -4419,13 +4595,18 @@ struct _snd_pcm_runtime {
       UART interrupts, pass -1 as the irq number. Then a timer
       interrupt will be invoked for polling. 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	The 6th argument specifies the ISA irq number that will be
 	allocated.  If no interrupt is to be allocated (because your
 	code is already allocating a shared interrupt, or because the
 	device does not use interrupts), pass -1 instead.
 	For a MPU-401 device without an interrupt, a polling timer
 	will be used instead.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       </para>
     </section>
 
@@ -4434,6 +4615,7 @@ struct _snd_pcm_runtime {
       <para>
         When the interrupt is allocated in
 <<<<<<< HEAD
+<<<<<<< HEAD
       <function>snd_mpu401_uart_new()</function>, the private
       interrupt handler is used, hence you don't have anything else to do
       than creating the mpu401 stuff. Otherwise, you have to call
@@ -4441,6 +4623,8 @@ struct _snd_pcm_runtime {
       a UART interrupt is invoked and checked in your own interrupt
       handler.  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
       <function>snd_mpu401_uart_new()</function>, an exclusive ISA
       interrupt handler is automatically used, hence you don't have
       anything else to do than creating the mpu401 stuff.  Otherwise, you
@@ -4448,7 +4632,10 @@ struct _snd_pcm_runtime {
       <function>snd_mpu401_uart_interrupt()</function> explicitly from your
       own interrupt handler when it has determined that a UART interrupt
       has occurred.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
       </para>
 
       <para>
@@ -5808,8 +5995,13 @@ struct _snd_pcm_runtime {
       <informalexample>
         <programlisting>
 <![CDATA[
+<<<<<<< HEAD
   static int __devinit snd_mychip_probe(struct pci_dev *pci,
                                const struct pci_device_id *pci_id)
+=======
+  static int snd_mychip_probe(struct pci_dev *pci,
+                              const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
   {
           ....
           struct snd_card *card;
@@ -5834,8 +6026,13 @@ struct _snd_pcm_runtime {
       <informalexample>
         <programlisting>
 <![CDATA[
+<<<<<<< HEAD
   static int __devinit snd_mychip_probe(struct pci_dev *pci,
                                const struct pci_device_id *pci_id)
+=======
+  static int snd_mychip_probe(struct pci_dev *pci,
+                              const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
   {
           ....
           struct snd_card *card;
@@ -5870,6 +6067,7 @@ struct _snd_pcm_runtime {
 <![CDATA[
   static struct pci_driver driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
           .name = "My Chip",
 =======
           .name = KBUILD_MODNAME,
@@ -5877,6 +6075,12 @@ struct _snd_pcm_runtime {
           .id_table = snd_my_ids,
           .probe = snd_my_probe,
           .remove = __devexit_p(snd_my_remove),
+=======
+          .name = KBUILD_MODNAME,
+          .id_table = snd_my_ids,
+          .probe = snd_my_probe,
+          .remove = snd_my_remove,
+>>>>>>> refs/remotes/origin/master
   #ifdef CONFIG_PM
           .suspend = snd_my_suspend,
           .resume = snd_my_resume,
@@ -6244,6 +6448,7 @@ struct _snd_pcm_runtime {
 
       <para>
         The macro takes an conditional expression to evaluate.
+<<<<<<< HEAD
 	When <constant>CONFIG_SND_DEBUG</constant>, is set, the
 	expression is actually evaluated. If it's non-zero, it shows
 	the warning message such as
@@ -6252,6 +6457,14 @@ struct _snd_pcm_runtime {
 	value.
 	When no <constant>CONFIG_SND_DEBUG</constant> is set, this
 	macro always returns zero.
+=======
+	When <constant>CONFIG_SND_DEBUG</constant>, is set, if the
+	expression is non-zero, it shows the warning message such as
+	<computeroutput>BUG? (xxx)</computeroutput>
+	normally followed by stack trace.
+
+	In both cases it returns the evaluated value.
+>>>>>>> refs/remotes/origin/master
       </para>
 
     </section>

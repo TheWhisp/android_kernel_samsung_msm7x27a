@@ -23,11 +23,19 @@
 #include <linux/mtd/partitions.h>
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 
 #include <asm/mach/flash.h>
 #include <plat/regs-onenand.h>
 
 #include <linux/io.h>
+=======
+#include <linux/io.h>
+
+#include <asm/mach/flash.h>
+
+#include "samsung.h"
+>>>>>>> refs/remotes/origin/master
 
 enum soc_type {
 	TYPE_S3C6400,
@@ -148,9 +156,12 @@ struct s3c_onenand {
 	unsigned long	phys_base;
 	struct completion	complete;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition *parts;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define CMD_MAP_00(dev, addr)		(dev->cmd_map(MAP_00, ((addr) << 1)))
@@ -161,10 +172,13 @@ struct s3c_onenand {
 static struct s3c_onenand *onenand;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL, };
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int s3c_read_reg(int offset)
 {
 	return readl(onenand->base + offset);
@@ -876,7 +890,11 @@ static int s3c_onenand_probe(struct platform_device *pdev)
 	struct resource *r;
 	int size, err;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	/* No need to check pdata. the platform data is optional */
 
 	size = sizeof(struct mtd_info) + sizeof(struct onenand_chip);
@@ -933,10 +951,14 @@ static int s3c_onenand_probe(struct platform_device *pdev)
 		if (!r) {
 			dev_err(&pdev->dev, "no buffer memory resource defined\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -ENOENT;
 =======
 			err = -ENOENT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = -ENOENT;
+>>>>>>> refs/remotes/origin/master
 			goto ahb_resource_failed;
 		}
 
@@ -978,10 +1000,14 @@ static int s3c_onenand_probe(struct platform_device *pdev)
 		if (!r) {
 			dev_err(&pdev->dev, "no dma memory resource defined\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -ENOENT;
 =======
 			err = -ENOENT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = -ENOENT;
+>>>>>>> refs/remotes/origin/master
 			goto dma_resource_failed;
 		}
 
@@ -1032,6 +1058,7 @@ static int s3c_onenand_probe(struct platform_device *pdev)
 		dev_info(&onenand->pdev->dev, "OneNAND Sync. Burst Read enabled\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = parse_mtd_partitions(mtd, part_probes, &onenand->parts, 0);
 	if (err > 0)
 		mtd_device_register(mtd, onenand->parts, err);
@@ -1044,6 +1071,11 @@ static int s3c_onenand_probe(struct platform_device *pdev)
 					pdata ? pdata->parts : NULL,
 					pdata ? pdata->nr_parts : 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mtd_device_parse_register(mtd, NULL, NULL,
+					pdata ? pdata->parts : NULL,
+					pdata ? pdata->nr_parts : 0);
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, mtd);
 
@@ -1080,7 +1112,11 @@ onenand_fail:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit s3c_onenand_remove(struct platform_device *pdev)
+=======
+static int s3c_onenand_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mtd_info *mtd = platform_get_drvdata(pdev);
 
@@ -1100,7 +1136,10 @@ static int __devexit s3c_onenand_remove(struct platform_device *pdev)
 	release_mem_region(onenand->base_res->start,
 			   resource_size(onenand->base_res));
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(onenand->oob_buf);
 	kfree(onenand->page_buf);
 	kfree(onenand);
@@ -1157,6 +1196,7 @@ static struct platform_driver s3c_onenand_driver = {
 	},
 	.id_table	= s3c_onenand_driver_ids,
 	.probe          = s3c_onenand_probe,
+<<<<<<< HEAD
 	.remove         = __devexit_p(s3c_onenand_remove),
 };
 
@@ -1176,6 +1216,12 @@ module_exit(s3c_onenand_exit);
 =======
 module_platform_driver(s3c_onenand_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove         = s3c_onenand_remove,
+};
+
+module_platform_driver(s3c_onenand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Kyungmin Park <kyungmin.park@samsung.com>");

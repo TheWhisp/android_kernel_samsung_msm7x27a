@@ -12,7 +12,10 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/blkdev.h>
 #include <linux/delay.h>
 #include <linux/device.h>
@@ -69,12 +72,17 @@ static int phison_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(phison_pci_tbl) = {
 <<<<<<< HEAD
 	{ PCI_VENDOR_ID_PHISON, PCI_DEVICE_ID_PS5000, PCI_ANY_ID, PCI_ANY_ID,
 =======
 	{ PCI_DEVICE(PCI_VENDOR_ID_PHISON, PCI_DEVICE_ID_PS5000),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id phison_pci_tbl[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_PHISON, PCI_DEVICE_ID_PS5000),
+>>>>>>> refs/remotes/origin/master
 	  PCI_CLASS_STORAGE_IDE << 8, 0xffff00, 0 },
 	{ 0, },
 };
@@ -91,6 +99,7 @@ static struct pci_driver phison_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init phison_ide_init(void)
 {
 	return pci_register_driver(&phison_pci_driver);
@@ -103,6 +112,9 @@ static void __exit phison_ide_exit(void)
 
 module_init(phison_ide_init);
 module_exit(phison_ide_exit);
+=======
+module_pci_driver(phison_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Evan Ko");
 MODULE_DESCRIPTION("PCIE driver module for PHISON PS5000 E-BOX");

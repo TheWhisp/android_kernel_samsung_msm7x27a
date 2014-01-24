@@ -18,6 +18,7 @@
 #include <linux/workqueue.h>
 #include <linux/random.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/user_namespace.h>
 #include "internal.h"
 
@@ -26,6 +27,11 @@ static struct kmem_cache	*key_jar;
 =======
 struct kmem_cache *key_jar;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "internal.h"
+
+struct kmem_cache *key_jar;
+>>>>>>> refs/remotes/origin/master
 struct rb_root		key_serial_tree; /* tree of keys indexed by serial */
 DEFINE_SPINLOCK(key_serial_lock);
 
@@ -40,6 +46,7 @@ unsigned int key_quota_maxbytes = 20000;	/* general key space quota */
 static LIST_HEAD(key_types_list);
 static DECLARE_RWSEM(key_types_sem);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void key_cleanup(struct work_struct *work);
 static DECLARE_WORK(key_cleanup_task, key_cleanup);
@@ -57,6 +64,11 @@ static struct key_type key_type_dead = {
 DEFINE_MUTEX(key_construction_mutex);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* We serialise key instantiation and link */
+DEFINE_MUTEX(key_construction_mutex);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef KEY_DEBUGGING
 void __key_check(const struct key *key)
 {
@@ -70,7 +82,11 @@ void __key_check(const struct key *key)
  * Get the key quota record for a user, allocating a new record if one doesn't
  * already exist.
  */
+<<<<<<< HEAD
 struct key_user *key_user_lookup(uid_t uid, struct user_namespace *user_ns)
+=======
+struct key_user *key_user_lookup(kuid_t uid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct key_user *candidate = NULL, *user;
 	struct rb_node *parent = NULL;
@@ -85,6 +101,7 @@ try_again:
 		parent = *p;
 		user = rb_entry(parent, struct key_user, node);
 
+<<<<<<< HEAD
 		if (uid < user->uid)
 			p = &(*p)->rb_left;
 		else if (uid > user->uid)
@@ -92,6 +109,11 @@ try_again:
 		else if (user_ns < user->user_ns)
 			p = &(*p)->rb_left;
 		else if (user_ns > user->user_ns)
+=======
+		if (uid_lt(uid, user->uid))
+			p = &(*p)->rb_left;
+		else if (uid_gt(uid, user->uid))
+>>>>>>> refs/remotes/origin/master
 			p = &(*p)->rb_right;
 		else
 			goto found;
@@ -120,7 +142,10 @@ try_again:
 	atomic_set(&candidate->nkeys, 0);
 	atomic_set(&candidate->nikeys, 0);
 	candidate->uid = uid;
+<<<<<<< HEAD
 	candidate->user_ns = get_user_ns(user_ns);
+=======
+>>>>>>> refs/remotes/origin/master
 	candidate->qnkeys = 0;
 	candidate->qnbytes = 0;
 	spin_lock_init(&candidate->lock);
@@ -149,7 +174,10 @@ void key_user_put(struct key_user *user)
 	if (atomic_dec_and_lock(&user->usage, &key_user_lock)) {
 		rb_erase(&user->node, &key_user_tree);
 		spin_unlock(&key_user_lock);
+<<<<<<< HEAD
 		put_user_ns(user->user_ns);
+=======
+>>>>>>> refs/remotes/origin/master
 
 		kfree(user);
 	}
@@ -247,7 +275,11 @@ serial_exists:
  * key_alloc() calls don't race with module unloading.
  */
 struct key *key_alloc(struct key_type *type, const char *desc,
+<<<<<<< HEAD
 		      uid_t uid, gid_t gid, const struct cred *cred,
+=======
+		      kuid_t uid, kgid_t gid, const struct cred *cred,
+>>>>>>> refs/remotes/origin/master
 		      key_perm_t perm, unsigned long flags)
 {
 	struct key_user *user = NULL;
@@ -267,20 +299,34 @@ struct key *key_alloc(struct key_type *type, const char *desc,
 		}
 	}
 
+<<<<<<< HEAD
 	desclen = strlen(desc) + 1;
 	quotalen = desclen + type->def_datalen;
 
 	/* get hold of the key tracking for this user */
 	user = key_user_lookup(uid, cred->user->user_ns);
+=======
+	desclen = strlen(desc);
+	quotalen = desclen + 1 + type->def_datalen;
+
+	/* get hold of the key tracking for this user */
+	user = key_user_lookup(uid);
+>>>>>>> refs/remotes/origin/master
 	if (!user)
 		goto no_memory_1;
 
 	/* check that the user's quota permits allocation of another key and
 	 * its description */
 	if (!(flags & KEY_ALLOC_NOT_IN_QUOTA)) {
+<<<<<<< HEAD
 		unsigned maxkeys = (uid == 0) ?
 			key_quota_root_maxkeys : key_quota_maxkeys;
 		unsigned maxbytes = (uid == 0) ?
+=======
+		unsigned maxkeys = uid_eq(uid, GLOBAL_ROOT_UID) ?
+			key_quota_root_maxkeys : key_quota_maxkeys;
+		unsigned maxbytes = uid_eq(uid, GLOBAL_ROOT_UID) ?
+>>>>>>> refs/remotes/origin/master
 			key_quota_root_maxbytes : key_quota_maxbytes;
 
 		spin_lock(&user->lock);
@@ -297,12 +343,21 @@ struct key *key_alloc(struct key_type *type, const char *desc,
 	}
 
 	/* allocate and initialise the key and its description */
+<<<<<<< HEAD
 	key = kmem_cache_alloc(key_jar, GFP_KERNEL);
+=======
+	key = kmem_cache_zalloc(key_jar, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!key)
 		goto no_memory_2;
 
 	if (desc) {
+<<<<<<< HEAD
 		key->description = kmemdup(desc, desclen, GFP_KERNEL);
+=======
+		key->index_key.desc_len = desclen;
+		key->index_key.description = kmemdup(desc, desclen + 1, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!key->description)
 			goto no_memory_3;
 	}
@@ -310,16 +365,22 @@ struct key *key_alloc(struct key_type *type, const char *desc,
 	atomic_set(&key->usage, 1);
 	init_rwsem(&key->sem);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	lockdep_set_class(&key->sem, &type->lock_class);
 >>>>>>> refs/remotes/origin/cm-10.0
 	key->type = type;
+=======
+	lockdep_set_class(&key->sem, &type->lock_class);
+	key->index_key.type = type;
+>>>>>>> refs/remotes/origin/master
 	key->user = user;
 	key->quotalen = quotalen;
 	key->datalen = type->def_datalen;
 	key->uid = uid;
 	key->gid = gid;
 	key->perm = perm;
+<<<<<<< HEAD
 	key->flags = 0;
 	key->expiry = 0;
 	key->payload.data = NULL;
@@ -329,6 +390,13 @@ struct key *key_alloc(struct key_type *type, const char *desc,
 		key->flags |= 1 << KEY_FLAG_IN_QUOTA;
 
 	memset(&key->type_data, 0, sizeof(key->type_data));
+=======
+
+	if (!(flags & KEY_ALLOC_NOT_IN_QUOTA))
+		key->flags |= 1 << KEY_FLAG_IN_QUOTA;
+	if (flags & KEY_ALLOC_TRUSTED)
+		key->flags |= 1 << KEY_FLAG_TRUSTED;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef KEY_DEBUGGING
 	key->magic = KEY_DEBUG_MAGIC;
@@ -401,7 +469,11 @@ int key_payload_reserve(struct key *key, size_t datalen)
 
 	/* contemplate the quota adjustment */
 	if (delta != 0 && test_bit(KEY_FLAG_IN_QUOTA, &key->flags)) {
+<<<<<<< HEAD
 		unsigned maxbytes = (key->user->uid == 0) ?
+=======
+		unsigned maxbytes = uid_eq(key->user->uid, GLOBAL_ROOT_UID) ?
+>>>>>>> refs/remotes/origin/master
 			key_quota_root_maxbytes : key_quota_maxbytes;
 
 		spin_lock(&key->user->lock);
@@ -433,11 +505,18 @@ EXPORT_SYMBOL(key_payload_reserve);
  * key_construction_mutex.
  */
 static int __key_instantiate_and_link(struct key *key,
+<<<<<<< HEAD
 				      const void *data,
 				      size_t datalen,
 				      struct key *keyring,
 				      struct key *authkey,
 				      unsigned long *_prealloc)
+=======
+				      struct key_preparsed_payload *prep,
+				      struct key *keyring,
+				      struct key *authkey,
+				      struct assoc_array_edit **_edit)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret, awaken;
 
@@ -452,7 +531,11 @@ static int __key_instantiate_and_link(struct key *key,
 	/* can't instantiate twice */
 	if (!test_bit(KEY_FLAG_INSTANTIATED, &key->flags)) {
 		/* instantiate the key */
+<<<<<<< HEAD
 		ret = key->type->instantiate(key, data, datalen);
+=======
+		ret = key->type->instantiate(key, prep);
+>>>>>>> refs/remotes/origin/master
 
 		if (ret == 0) {
 			/* mark the key as being instantiated */
@@ -464,7 +547,11 @@ static int __key_instantiate_and_link(struct key *key,
 
 			/* and link it into the destination keyring */
 			if (keyring)
+<<<<<<< HEAD
 				__key_link(keyring, key, _prealloc);
+=======
+				__key_link(key, _edit);
+>>>>>>> refs/remotes/origin/master
 
 			/* disable the authorisation key */
 			if (authkey)
@@ -503,6 +590,7 @@ int key_instantiate_and_link(struct key *key,
 			     struct key *keyring,
 			     struct key *authkey)
 {
+<<<<<<< HEAD
 	unsigned long prealloc;
 	int ret;
 
@@ -519,6 +607,37 @@ int key_instantiate_and_link(struct key *key,
 	if (keyring)
 		__key_link_end(keyring, key->type, prealloc);
 
+=======
+	struct key_preparsed_payload prep;
+	struct assoc_array_edit *edit;
+	int ret;
+
+	memset(&prep, 0, sizeof(prep));
+	prep.data = data;
+	prep.datalen = datalen;
+	prep.quotalen = key->type->def_datalen;
+	if (key->type->preparse) {
+		ret = key->type->preparse(&prep);
+		if (ret < 0)
+			goto error;
+	}
+
+	if (keyring) {
+		ret = __key_link_begin(keyring, &key->index_key, &edit);
+		if (ret < 0)
+			goto error_free_preparse;
+	}
+
+	ret = __key_instantiate_and_link(key, &prep, keyring, authkey, &edit);
+
+	if (keyring)
+		__key_link_end(keyring, &key->index_key, edit);
+
+error_free_preparse:
+	if (key->type->preparse)
+		key->type->free_preparse(&prep);
+error:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -551,7 +670,11 @@ int key_reject_and_link(struct key *key,
 			struct key *keyring,
 			struct key *authkey)
 {
+<<<<<<< HEAD
 	unsigned long prealloc;
+=======
+	struct assoc_array_edit *edit;
+>>>>>>> refs/remotes/origin/master
 	struct timespec now;
 	int ret, awaken, link_ret = 0;
 
@@ -562,8 +685,12 @@ int key_reject_and_link(struct key *key,
 	ret = -EBUSY;
 
 	if (keyring)
+<<<<<<< HEAD
 		link_ret = __key_link_begin(keyring, key->type,
 					    key->description, &prealloc);
+=======
+		link_ret = __key_link_begin(keyring, &key->index_key, &edit);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&key_construction_mutex);
 
@@ -571,9 +698,16 @@ int key_reject_and_link(struct key *key,
 	if (!test_bit(KEY_FLAG_INSTANTIATED, &key->flags)) {
 		/* mark the key as being negatively instantiated */
 		atomic_inc(&key->user->nikeys);
+<<<<<<< HEAD
 		set_bit(KEY_FLAG_NEGATIVE, &key->flags);
 		set_bit(KEY_FLAG_INSTANTIATED, &key->flags);
 		key->type_data.reject_error = -error;
+=======
+		key->type_data.reject_error = -error;
+		smp_wmb();
+		set_bit(KEY_FLAG_NEGATIVE, &key->flags);
+		set_bit(KEY_FLAG_INSTANTIATED, &key->flags);
+>>>>>>> refs/remotes/origin/master
 		now = current_kernel_time();
 		key->expiry = now.tv_sec + timeout;
 		key_schedule_gc(key->expiry + key_gc_delay);
@@ -585,7 +719,11 @@ int key_reject_and_link(struct key *key,
 
 		/* and link it into the destination keyring */
 		if (keyring && link_ret == 0)
+<<<<<<< HEAD
 			__key_link(keyring, key, &prealloc);
+=======
+			__key_link(key, &edit);
+>>>>>>> refs/remotes/origin/master
 
 		/* disable the authorisation key */
 		if (authkey)
@@ -595,7 +733,11 @@ int key_reject_and_link(struct key *key,
 	mutex_unlock(&key_construction_mutex);
 
 	if (keyring)
+<<<<<<< HEAD
 		__key_link_end(keyring, key->type, prealloc);
+=======
+		__key_link_end(keyring, &key->index_key, edit);
+>>>>>>> refs/remotes/origin/master
 
 	/* wake up anyone waiting for a key to be constructed */
 	if (awaken)
@@ -605,6 +747,7 @@ int key_reject_and_link(struct key *key,
 }
 EXPORT_SYMBOL(key_reject_and_link);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Garbage collect keys in process context so that we don't have to disable
@@ -673,6 +816,8 @@ found_dead_key:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * key_put - Discard a reference to a key.
  * @key: The key to discard a reference from.
@@ -688,10 +833,14 @@ void key_put(struct key *key)
 
 		if (atomic_dec_and_test(&key->usage))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			schedule_work(&key_cleanup_task);
 =======
 			queue_work(system_nrt_wq, &key_gc_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			schedule_work(&key_gc_work);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(key_put);
@@ -731,7 +880,11 @@ found:
 	/* this races with key_put(), but that doesn't matter since key_put()
 	 * doesn't actually change the key
 	 */
+<<<<<<< HEAD
 	atomic_inc(&key->usage);
+=======
+	__key_get(key);
+>>>>>>> refs/remotes/origin/master
 
 error:
 	spin_unlock(&key_serial_lock);
@@ -765,7 +918,10 @@ found_kernel_type:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void key_set_timeout(struct key *key, unsigned timeout)
 {
 	struct timespec now;
@@ -786,7 +942,10 @@ void key_set_timeout(struct key *key, unsigned timeout)
 }
 EXPORT_SYMBOL_GPL(key_set_timeout);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Unlock a key type locked by key_type_lookup().
  */
@@ -802,7 +961,11 @@ void key_type_put(struct key_type *ktype)
  * if we get an error.
  */
 static inline key_ref_t __key_update(key_ref_t key_ref,
+<<<<<<< HEAD
 				     const void *payload, size_t plen)
+=======
+				     struct key_preparsed_payload *prep)
+>>>>>>> refs/remotes/origin/master
 {
 	struct key *key = key_ref_to_ptr(key_ref);
 	int ret;
@@ -818,7 +981,11 @@ static inline key_ref_t __key_update(key_ref_t key_ref,
 
 	down_write(&key->sem);
 
+<<<<<<< HEAD
 	ret = key->type->update(key, payload, plen);
+=======
+	ret = key->type->update(key, prep);
+>>>>>>> refs/remotes/origin/master
 	if (ret == 0)
 		/* updating a negative key instantiates it */
 		clear_bit(KEY_FLAG_NEGATIVE, &key->flags);
@@ -869,24 +1036,44 @@ key_ref_t key_create_or_update(key_ref_t keyring_ref,
 			       key_perm_t perm,
 			       unsigned long flags)
 {
+<<<<<<< HEAD
 	unsigned long prealloc;
 	const struct cred *cred = current_cred();
 	struct key_type *ktype;
+=======
+	struct keyring_index_key index_key = {
+		.description	= description,
+	};
+	struct key_preparsed_payload prep;
+	struct assoc_array_edit *edit;
+	const struct cred *cred = current_cred();
+>>>>>>> refs/remotes/origin/master
 	struct key *keyring, *key = NULL;
 	key_ref_t key_ref;
 	int ret;
 
 	/* look up the key type to see if it's one of the registered kernel
 	 * types */
+<<<<<<< HEAD
 	ktype = key_type_lookup(type);
 	if (IS_ERR(ktype)) {
+=======
+	index_key.type = key_type_lookup(type);
+	if (IS_ERR(index_key.type)) {
+>>>>>>> refs/remotes/origin/master
 		key_ref = ERR_PTR(-ENODEV);
 		goto error;
 	}
 
 	key_ref = ERR_PTR(-EINVAL);
+<<<<<<< HEAD
 	if (!ktype->match || !ktype->instantiate)
 		goto error_2;
+=======
+	if (!index_key.type->match || !index_key.type->instantiate ||
+	    (!index_key.description && !index_key.type->preparse))
+		goto error_put_type;
+>>>>>>> refs/remotes/origin/master
 
 	keyring = key_ref_to_ptr(keyring_ref);
 
@@ -894,34 +1081,79 @@ key_ref_t key_create_or_update(key_ref_t keyring_ref,
 
 	key_ref = ERR_PTR(-ENOTDIR);
 	if (keyring->type != &key_type_keyring)
+<<<<<<< HEAD
 		goto error_2;
 
 	ret = __key_link_begin(keyring, ktype, description, &prealloc);
 	if (ret < 0)
 		goto error_2;
+=======
+		goto error_put_type;
+
+	memset(&prep, 0, sizeof(prep));
+	prep.data = payload;
+	prep.datalen = plen;
+	prep.quotalen = index_key.type->def_datalen;
+	prep.trusted = flags & KEY_ALLOC_TRUSTED;
+	if (index_key.type->preparse) {
+		ret = index_key.type->preparse(&prep);
+		if (ret < 0) {
+			key_ref = ERR_PTR(ret);
+			goto error_put_type;
+		}
+		if (!index_key.description)
+			index_key.description = prep.description;
+		key_ref = ERR_PTR(-EINVAL);
+		if (!index_key.description)
+			goto error_free_prep;
+	}
+	index_key.desc_len = strlen(index_key.description);
+
+	key_ref = ERR_PTR(-EPERM);
+	if (!prep.trusted && test_bit(KEY_FLAG_TRUSTED_ONLY, &keyring->flags))
+		goto error_free_prep;
+	flags |= prep.trusted ? KEY_ALLOC_TRUSTED : 0;
+
+	ret = __key_link_begin(keyring, &index_key, &edit);
+	if (ret < 0) {
+		key_ref = ERR_PTR(ret);
+		goto error_free_prep;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* if we're going to allocate a new key, we're going to have
 	 * to modify the keyring */
 	ret = key_permission(keyring_ref, KEY_WRITE);
 	if (ret < 0) {
 		key_ref = ERR_PTR(ret);
+<<<<<<< HEAD
 		goto error_3;
+=======
+		goto error_link_end;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* if it's possible to update this type of key, search for an existing
 	 * key of the same type and description in the destination keyring and
 	 * update that instead if possible
 	 */
+<<<<<<< HEAD
 	if (ktype->update) {
 		key_ref = __keyring_search_one(keyring_ref, ktype, description,
 					       0);
 		if (!IS_ERR(key_ref))
+=======
+	if (index_key.type->update) {
+		key_ref = find_key_to_update(keyring_ref, &index_key);
+		if (key_ref)
+>>>>>>> refs/remotes/origin/master
 			goto found_matching_key;
 	}
 
 	/* if the client doesn't provide, decide on the permissions we want */
 	if (perm == KEY_PERM_UNDEF) {
 		perm = KEY_POS_VIEW | KEY_POS_SEARCH | KEY_POS_LINK | KEY_POS_SETATTR;
+<<<<<<< HEAD
 		perm |= KEY_USR_VIEW | KEY_USR_SEARCH | KEY_USR_LINK | KEY_USR_SETATTR;
 
 		if (ktype->read)
@@ -946,26 +1178,70 @@ key_ref_t key_create_or_update(key_ref_t keyring_ref,
 		key_put(key);
 		key_ref = ERR_PTR(ret);
 		goto error_3;
+=======
+		perm |= KEY_USR_VIEW;
+
+		if (index_key.type->read)
+			perm |= KEY_POS_READ;
+
+		if (index_key.type == &key_type_keyring ||
+		    index_key.type->update)
+			perm |= KEY_POS_WRITE;
+	}
+
+	/* allocate a new key */
+	key = key_alloc(index_key.type, index_key.description,
+			cred->fsuid, cred->fsgid, cred, perm, flags);
+	if (IS_ERR(key)) {
+		key_ref = ERR_CAST(key);
+		goto error_link_end;
+	}
+
+	/* instantiate it and link it into the target keyring */
+	ret = __key_instantiate_and_link(key, &prep, keyring, NULL, &edit);
+	if (ret < 0) {
+		key_put(key);
+		key_ref = ERR_PTR(ret);
+		goto error_link_end;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	key_ref = make_key_ref(key, is_key_possessed(keyring_ref));
 
+<<<<<<< HEAD
  error_3:
 	__key_link_end(keyring, ktype, prealloc);
  error_2:
 	key_type_put(ktype);
  error:
+=======
+error_link_end:
+	__key_link_end(keyring, &index_key, edit);
+error_free_prep:
+	if (index_key.type->preparse)
+		index_key.type->free_preparse(&prep);
+error_put_type:
+	key_type_put(index_key.type);
+error:
+>>>>>>> refs/remotes/origin/master
 	return key_ref;
 
  found_matching_key:
 	/* we found a matching key, so we're going to try to update it
 	 * - we can drop the locks first as we have the key pinned
 	 */
+<<<<<<< HEAD
 	__key_link_end(keyring, ktype, prealloc);
 	key_type_put(ktype);
 
 	key_ref = __key_update(key_ref, payload, plen);
 	goto error;
+=======
+	__key_link_end(keyring, &index_key, edit);
+
+	key_ref = __key_update(key_ref, &prep);
+	goto error_free_prep;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(key_create_or_update);
 
@@ -984,6 +1260,10 @@ EXPORT_SYMBOL(key_create_or_update);
  */
 int key_update(key_ref_t key_ref, const void *payload, size_t plen)
 {
+<<<<<<< HEAD
+=======
+	struct key_preparsed_payload prep;
+>>>>>>> refs/remotes/origin/master
 	struct key *key = key_ref_to_ptr(key_ref);
 	int ret;
 
@@ -996,6 +1276,7 @@ int key_update(key_ref_t key_ref, const void *payload, size_t plen)
 
 	/* attempt to update it if supported */
 	ret = -EOPNOTSUPP;
+<<<<<<< HEAD
 	if (key->type->update) {
 		down_write(&key->sem);
 
@@ -1008,6 +1289,33 @@ int key_update(key_ref_t key_ref, const void *payload, size_t plen)
 	}
 
  error:
+=======
+	if (!key->type->update)
+		goto error;
+
+	memset(&prep, 0, sizeof(prep));
+	prep.data = payload;
+	prep.datalen = plen;
+	prep.quotalen = key->type->def_datalen;
+	if (key->type->preparse) {
+		ret = key->type->preparse(&prep);
+		if (ret < 0)
+			goto error;
+	}
+
+	down_write(&key->sem);
+
+	ret = key->type->update(key, &prep);
+	if (ret == 0)
+		/* updating a negative key instantiates it */
+		clear_bit(KEY_FLAG_NEGATIVE, &key->flags);
+
+	up_write(&key->sem);
+
+	if (key->type->preparse)
+		key->type->free_preparse(&prep);
+error:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(key_update);
@@ -1051,6 +1359,31 @@ void key_revoke(struct key *key)
 EXPORT_SYMBOL(key_revoke);
 
 /**
+<<<<<<< HEAD
+=======
+ * key_invalidate - Invalidate a key.
+ * @key: The key to be invalidated.
+ *
+ * Mark a key as being invalidated and have it cleaned up immediately.  The key
+ * is ignored by all searches and other operations from this point.
+ */
+void key_invalidate(struct key *key)
+{
+	kenter("%d", key_serial(key));
+
+	key_check(key);
+
+	if (!test_bit(KEY_FLAG_INVALIDATED, &key->flags)) {
+		down_write_nested(&key->sem, 1);
+		if (!test_and_set_bit(KEY_FLAG_INVALIDATED, &key->flags))
+			key_schedule_gc_links();
+		up_write(&key->sem);
+	}
+}
+EXPORT_SYMBOL(key_invalidate);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * register_key_type - Register a type of key.
  * @ktype: The new key type.
  *
@@ -1064,10 +1397,15 @@ int register_key_type(struct key_type *ktype)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	memset(&ktype->lock_class, 0, sizeof(ktype->lock_class));
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&ktype->lock_class, 0, sizeof(ktype->lock_class));
+
+>>>>>>> refs/remotes/origin/master
 	ret = -EEXIST;
 	down_write(&key_types_sem);
 
@@ -1079,6 +1417,11 @@ int register_key_type(struct key_type *ktype)
 
 	/* store the type */
 	list_add(&ktype->link, &key_types_list);
+<<<<<<< HEAD
+=======
+
+	pr_notice("Key type %s registered\n", ktype->name);
+>>>>>>> refs/remotes/origin/master
 	ret = 0;
 
 out:
@@ -1097,6 +1440,7 @@ EXPORT_SYMBOL(register_key_type);
  */
 void unregister_key_type(struct key_type *ktype)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct rb_node *_n;
 	struct key *key;
@@ -1142,12 +1486,19 @@ void unregister_key_type(struct key_type *ktype)
 
 	key_schedule_gc(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	down_write(&key_types_sem);
 	list_del_init(&ktype->link);
 	downgrade_write(&key_types_sem);
 	key_gc_keytype(ktype);
+<<<<<<< HEAD
 	up_read(&key_types_sem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_notice("Key type %s unregistered\n", ktype->name);
+	up_read(&key_types_sem);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(unregister_key_type);
 
@@ -1165,9 +1516,13 @@ void __init key_init(void)
 	list_add_tail(&key_type_dead.link, &key_types_list);
 	list_add_tail(&key_type_user.link, &key_types_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	list_add_tail(&key_type_logon.link, &key_types_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_add_tail(&key_type_logon.link, &key_types_list);
+>>>>>>> refs/remotes/origin/master
 
 	/* record the root user tracking */
 	rb_link_node(&root_key_user.node,

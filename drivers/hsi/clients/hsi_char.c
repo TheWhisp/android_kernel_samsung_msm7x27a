@@ -675,7 +675,11 @@ static const struct file_operations hsc_fops = {
 	.release	= hsc_release,
 };
 
+<<<<<<< HEAD
 static void __devinit hsc_channel_init(struct hsc_channel *channel)
+=======
+static void hsc_channel_init(struct hsc_channel *channel)
+>>>>>>> refs/remotes/origin/master
 {
 	init_waitqueue_head(&channel->rx_wait);
 	init_waitqueue_head(&channel->tx_wait);
@@ -685,7 +689,11 @@ static void __devinit hsc_channel_init(struct hsc_channel *channel)
 	INIT_LIST_HEAD(&channel->tx_msgs_queue);
 }
 
+<<<<<<< HEAD
 static int __devinit hsc_probe(struct device *dev)
+=======
+static int hsc_probe(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	const char devname[] = "hsi_char";
 	struct hsc_client_data *cl_data;
@@ -744,7 +752,11 @@ out1:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit hsc_remove(struct device *dev)
+=======
+static int hsc_remove(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hsi_client *cl = to_hsi_client(dev);
 	struct hsc_client_data *cl_data = hsi_client_drvdata(cl);
@@ -763,7 +775,11 @@ static struct hsi_client_driver hsc_driver = {
 		.name	= "hsi_char",
 		.owner	= THIS_MODULE,
 		.probe	= hsc_probe,
+<<<<<<< HEAD
 		.remove	= __devexit_p(hsc_remove),
+=======
+		.remove	= hsc_remove,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

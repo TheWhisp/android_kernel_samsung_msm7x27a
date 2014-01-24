@@ -28,6 +28,7 @@ static inline unsigned int icp_hv_get_xirr(unsigned char cppr)
 	unsigned long retbuf[PLPAR_HCALL_BUFSIZE];
 	long rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	rc = plpar_hcall(H_XIRR, retbuf, cppr);
 	if (rc != H_SUCCESS)
@@ -41,6 +42,8 @@ static inline void icp_hv_set_xirr(unsigned int value)
 	if (rc != H_SUCCESS)
 		panic("bad return code EOI - rc = %ld, value=%x\n", rc, value);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int ret = XICS_IRQ_SPURIOUS;
 
 	rc = plpar_hcall(H_XIRR, retbuf, cppr);
@@ -53,16 +56,22 @@ static inline void icp_hv_set_xirr(unsigned int value)
 	}
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void icp_hv_set_cppr(u8 value)
 {
 	long rc = plpar_hcall_norets(H_CPPR, value);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rc != H_SUCCESS)
 		panic("bad return code cppr - rc = %lx\n", rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rc != H_SUCCESS) {
 		pr_err("%s: bad return code cppr cppr=0x%x returned %ld\n",
 			__func__, value, rc);
@@ -79,17 +88,23 @@ static inline void icp_hv_set_xirr(unsigned int value)
 		WARN_ON_ONCE(1);
 		icp_hv_set_cppr(value >> 24);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void icp_hv_set_qirr(int n_cpu , u8 value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	long rc = plpar_hcall_norets(H_IPI, get_hard_smp_processor_id(n_cpu),
 				     value);
 	if (rc != H_SUCCESS)
 		panic("bad return code qirr - rc = %lx\n", rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int hw_cpu = get_hard_smp_processor_id(n_cpu);
 	long rc;
 
@@ -101,7 +116,10 @@ static inline void icp_hv_set_qirr(int n_cpu , u8 value)
 			"returned %ld\n", __func__, n_cpu, hw_cpu, value, rc);
 		WARN_ON_ONCE(1);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void icp_hv_eoi(struct irq_data *d)
@@ -142,7 +160,11 @@ static unsigned int icp_hv_get_irq(void)
 	if (vec == XICS_IRQ_SPURIOUS)
 		return NO_IRQ;
 
+<<<<<<< HEAD
 	irq = irq_radix_revmap_lookup(xics_host, vec);
+=======
+	irq = irq_find_mapping(xics_host, vec);
+>>>>>>> refs/remotes/origin/master
 	if (likely(irq != NO_IRQ)) {
 		xics_push_cppr(vec);
 		return irq;

@@ -32,7 +32,10 @@
 #include <linux/writeback.h>
 #include <linux/bit_spinlock.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include "compat.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "ctree.h"
 #include "disk-io.h"
 #include "transaction.h"
@@ -82,6 +85,7 @@ struct compressed_bio {
 	u32 sums;
 };
 
+<<<<<<< HEAD
 static inline int compressed_bio_size(struct btrfs_root *root,
 				      unsigned long disk_size)
 {
@@ -91,6 +95,17 @@ static inline int compressed_bio_size(struct btrfs_root *root,
 	u16 csum_size = btrfs_super_csum_size(root->fs_info->super_copy);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int btrfs_decompress_biovec(int type, struct page **pages_in,
+				   u64 disk_start, struct bio_vec *bvec,
+				   int vcnt, size_t srclen);
+
+static inline int compressed_bio_size(struct btrfs_root *root,
+				      unsigned long disk_size)
+{
+	u16 csum_size = btrfs_super_csum_size(root->fs_info->super_copy);
+
+>>>>>>> refs/remotes/origin/master
 	return sizeof(struct compressed_bio) +
 		((disk_size + root->sectorsize - 1) / root->sectorsize) *
 		csum_size;
@@ -110,7 +125,10 @@ static int check_compressed_csum(struct inode *inode,
 				 u64 disk_start)
 {
 	int ret;
+<<<<<<< HEAD
 	struct btrfs_root *root = BTRFS_I(inode)->root;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct page *page;
 	unsigned long i;
 	char *kaddr;
@@ -125,6 +143,7 @@ static int check_compressed_csum(struct inode *inode,
 		csum = ~(u32)0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(page, KM_USER0);
 		csum = btrfs_csum_data(root, kaddr, csum, PAGE_CACHE_SIZE);
 		btrfs_csum_final(csum, (char *)&csum);
@@ -135,14 +154,25 @@ static int check_compressed_csum(struct inode *inode,
 		btrfs_csum_final(csum, (char *)&csum);
 		kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(page);
+		csum = btrfs_csum_data(kaddr, csum, PAGE_CACHE_SIZE);
+		btrfs_csum_final(csum, (char *)&csum);
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 		if (csum != *cb_sum) {
 			printk(KERN_INFO "btrfs csum failed ino %llu "
 			       "extent %llu csum %u "
 			       "wanted %u mirror %d\n",
+<<<<<<< HEAD
 			       (unsigned long long)btrfs_ino(inode),
 			       (unsigned long long)disk_start,
 			       csum, *cb_sum, cb->mirror_num);
+=======
+			       btrfs_ino(inode), disk_start, csum, *cb_sum,
+			       cb->mirror_num);
+>>>>>>> refs/remotes/origin/master
 			ret = -EIO;
 			goto fail;
 		}
@@ -238,12 +268,17 @@ out:
  * pages for a compressed write
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static noinline int end_compressed_writeback(struct inode *inode, u64 start,
 					     unsigned long ram_size)
 =======
 static noinline void end_compressed_writeback(struct inode *inode, u64 start,
 					      unsigned long ram_size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static noinline void end_compressed_writeback(struct inode *inode, u64 start,
+					      unsigned long ram_size)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long index = start >> PAGE_CACHE_SHIFT;
 	unsigned long end_index = (start + ram_size - 1) >> PAGE_CACHE_SHIFT;
@@ -270,9 +305,12 @@ static noinline void end_compressed_writeback(struct inode *inode, u64 start,
 	}
 	/* the inode may be gone now */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -359,9 +397,13 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 	struct block_device *bdev;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int skip_sum = BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int skip_sum = BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM;
+>>>>>>> refs/remotes/origin/master
 
 	WARN_ON(start & ((u64)PAGE_CACHE_SIZE - 1));
 	cb = kmalloc(compressed_bio_size(root, compressed_len), GFP_NOFS);
@@ -381,7 +423,11 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 	bdev = BTRFS_I(inode)->root->fs_info->fs_devices->latest_bdev;
 
 	bio = compressed_bio_alloc(bdev, first_byte, GFP_NOFS);
+<<<<<<< HEAD
 	if(!bio) {
+=======
+	if (!bio) {
+>>>>>>> refs/remotes/origin/master
 		kfree(cb);
 		return -ENOMEM;
 	}
@@ -395,7 +441,11 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 		page = compressed_pages[pg_index];
 		page->mapping = inode->i_mapping;
 		if (bio->bi_size)
+<<<<<<< HEAD
 			ret = io_tree->ops->merge_bio_hook(page, 0,
+=======
+			ret = io_tree->ops->merge_bio_hook(WRITE, page, 0,
+>>>>>>> refs/remotes/origin/master
 							   PAGE_CACHE_SIZE,
 							   bio, 0);
 		else
@@ -415,6 +465,7 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 			atomic_inc(&cb->pending_bios);
 			ret = btrfs_bio_wq_end_io(root->fs_info, bio, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			BUG_ON(ret);
 
 			ret = btrfs_csum_one_bio(root, inode, bio, start, 1);
@@ -423,6 +474,8 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 			ret = btrfs_map_bio(root, WRITE, bio, 0, 1);
 			BUG_ON(ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			BUG_ON(ret); /* -ENOMEM */
 
 			if (!skip_sum) {
@@ -433,15 +486,22 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 
 			ret = btrfs_map_bio(root, WRITE, bio, 0, 1);
 			BUG_ON(ret); /* -ENOMEM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			bio_put(bio);
 
 			bio = compressed_bio_alloc(bdev, first_byte, GFP_NOFS);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			BUG_ON(!bio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			BUG_ON(!bio);
+>>>>>>> refs/remotes/origin/master
 			bio->bi_private = cb;
 			bio->bi_end_io = end_compressed_bio_write;
 			bio_add_page(bio, page, PAGE_CACHE_SIZE, 0);
@@ -458,6 +518,7 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 
 	ret = btrfs_bio_wq_end_io(root->fs_info, bio, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(ret);
 
 	ret = btrfs_csum_one_bio(root, inode, bio, start, 1);
@@ -466,6 +527,8 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 	ret = btrfs_map_bio(root, WRITE, bio, 0, 1);
 	BUG_ON(ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(ret); /* -ENOMEM */
 
 	if (!skip_sum) {
@@ -475,7 +538,10 @@ int btrfs_submit_compressed_write(struct inode *inode, u64 start,
 
 	ret = btrfs_map_bio(root, WRITE, bio, 0, 1);
 	BUG_ON(ret); /* -ENOMEM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bio_put(bio);
 	return 0;
@@ -544,10 +610,14 @@ static noinline int add_ra_bio_pages(struct inode *inode,
 		 */
 		set_page_extent_mapped(page);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		lock_extent(tree, last_offset, end, GFP_NOFS);
 =======
 		lock_extent(tree, last_offset, end);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		lock_extent(tree, last_offset, end);
+>>>>>>> refs/remotes/origin/master
 		read_lock(&em_tree->lock);
 		em = lookup_extent_mapping(em_tree, last_offset,
 					   PAGE_CACHE_SIZE);
@@ -558,10 +628,14 @@ static noinline int add_ra_bio_pages(struct inode *inode,
 		    (em->block_start >> 9) != cb->orig_bio->bi_sector) {
 			free_extent_map(em);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unlock_extent(tree, last_offset, end, GFP_NOFS);
 =======
 			unlock_extent(tree, last_offset, end);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unlock_extent(tree, last_offset, end);
+>>>>>>> refs/remotes/origin/master
 			unlock_page(page);
 			page_cache_release(page);
 			break;
@@ -576,16 +650,22 @@ static noinline int add_ra_bio_pages(struct inode *inode,
 				int zeros;
 				zeros = PAGE_CACHE_SIZE - zero_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				userpage = kmap_atomic(page, KM_USER0);
 				memset(userpage + zero_offset, 0, zeros);
 				flush_dcache_page(page);
 				kunmap_atomic(userpage, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				userpage = kmap_atomic(page);
 				memset(userpage + zero_offset, 0, zeros);
 				flush_dcache_page(page);
 				kunmap_atomic(userpage);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -597,10 +677,14 @@ static noinline int add_ra_bio_pages(struct inode *inode,
 			page_cache_release(page);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unlock_extent(tree, last_offset, end, GFP_NOFS);
 =======
 			unlock_extent(tree, last_offset, end);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unlock_extent(tree, last_offset, end);
+>>>>>>> refs/remotes/origin/master
 			unlock_page(page);
 			page_cache_release(page);
 			break;
@@ -642,6 +726,10 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 	u64 em_start;
 	struct extent_map *em;
 	int ret = -ENOMEM;
+<<<<<<< HEAD
+=======
+	int faili = 0;
+>>>>>>> refs/remotes/origin/master
 	u32 *sums;
 
 	tree = &BTRFS_I(inode)->io_tree;
@@ -654,10 +742,15 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 				   PAGE_CACHE_SIZE);
 	read_unlock(&em_tree->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!em)
 		return -EIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!em)
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 
 	compressed_len = em->block_len;
 	cb = kmalloc(compressed_bio_size(root, compressed_len), GFP_NOFS);
@@ -694,12 +787,29 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 	for (pg_index = 0; pg_index < nr_pages; pg_index++) {
 		cb->compressed_pages[pg_index] = alloc_page(GFP_NOFS |
 							      __GFP_HIGHMEM);
+<<<<<<< HEAD
 		if (!cb->compressed_pages[pg_index])
 			goto fail2;
 	}
 	cb->nr_pages = nr_pages;
 
 	add_ra_bio_pages(inode, em_start + em_len, cb);
+=======
+		if (!cb->compressed_pages[pg_index]) {
+			faili = pg_index - 1;
+			ret = -ENOMEM;
+			goto fail2;
+		}
+	}
+	faili = nr_pages - 1;
+	cb->nr_pages = nr_pages;
+
+	/* In the parent-locked case, we only locked the range we are
+	 * interested in.  In all other cases, we can opportunistically
+	 * cache decompressed data that goes beyond the requested range. */
+	if (!(bio_flags & EXTENT_BIO_PARENT_LOCKED))
+		add_ra_bio_pages(inode, em_start + em_len, cb);
+>>>>>>> refs/remotes/origin/master
 
 	/* include any pages we added in add_ra-bio_pages */
 	uncompressed_len = bio->bi_vcnt * PAGE_CACHE_SIZE;
@@ -718,7 +828,11 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 		page->index = em_start >> PAGE_CACHE_SHIFT;
 
 		if (comp_bio->bi_size)
+<<<<<<< HEAD
 			ret = tree->ops->merge_bio_hook(page, 0,
+=======
+			ret = tree->ops->merge_bio_hook(READ, page, 0,
+>>>>>>> refs/remotes/origin/master
 							PAGE_CACHE_SIZE,
 							comp_bio, 0);
 		else
@@ -731,10 +845,14 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 
 			ret = btrfs_bio_wq_end_io(root->fs_info, comp_bio, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			BUG_ON(ret);
 =======
 			BUG_ON(ret); /* -ENOMEM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			BUG_ON(ret); /* -ENOMEM */
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * inc the count before we submit the bio so
@@ -748,10 +866,14 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 				ret = btrfs_lookup_bio_sums(root, inode,
 							comp_bio, sums);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				BUG_ON(ret);
 =======
 				BUG_ON(ret); /* -ENOMEM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				BUG_ON(ret); /* -ENOMEM */
+>>>>>>> refs/remotes/origin/master
 			}
 			sums += (comp_bio->bi_size + root->sectorsize - 1) /
 				root->sectorsize;
@@ -759,19 +881,28 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 			ret = btrfs_map_bio(root, READ, comp_bio,
 					    mirror_num, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			BUG_ON(ret);
 =======
 			BUG_ON(ret); /* -ENOMEM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ret)
+				bio_endio(comp_bio, ret);
+>>>>>>> refs/remotes/origin/master
 
 			bio_put(comp_bio);
 
 			comp_bio = compressed_bio_alloc(bdev, cur_disk_byte,
 							GFP_NOFS);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			BUG_ON(!comp_bio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			BUG_ON(!comp_bio);
+>>>>>>> refs/remotes/origin/master
 			comp_bio->bi_private = cb;
 			comp_bio->bi_end_io = end_compressed_bio_read;
 
@@ -783,6 +914,7 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 
 	ret = btrfs_bio_wq_end_io(root->fs_info, comp_bio, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(ret);
 
 	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
@@ -793,6 +925,8 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 	ret = btrfs_map_bio(root, READ, comp_bio, mirror_num, 0);
 	BUG_ON(ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(ret); /* -ENOMEM */
 
 	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
@@ -801,15 +935,27 @@ int btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 	}
 
 	ret = btrfs_map_bio(root, READ, comp_bio, mirror_num, 0);
+<<<<<<< HEAD
 	BUG_ON(ret); /* -ENOMEM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret)
+		bio_endio(comp_bio, ret);
+>>>>>>> refs/remotes/origin/master
 
 	bio_put(comp_bio);
 	return 0;
 
 fail2:
+<<<<<<< HEAD
 	for (pg_index = 0; pg_index < nr_pages; pg_index++)
 		free_page((unsigned long)cb->compressed_pages[pg_index]);
+=======
+	while (faili >= 0) {
+		__free_page(cb->compressed_pages[faili]);
+		faili--;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	kfree(cb->compressed_pages);
 fail1:
@@ -825,16 +971,24 @@ static int comp_num_workspace[BTRFS_COMPRESS_TYPES];
 static atomic_t comp_alloc_workspace[BTRFS_COMPRESS_TYPES];
 static wait_queue_head_t comp_workspace_wait[BTRFS_COMPRESS_TYPES];
 
+<<<<<<< HEAD
 struct btrfs_compress_op *btrfs_compress_op[] = {
+=======
+static struct btrfs_compress_op *btrfs_compress_op[] = {
+>>>>>>> refs/remotes/origin/master
 	&btrfs_zlib_compress,
 	&btrfs_lzo_compress,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init btrfs_init_compress(void)
 =======
 void __init btrfs_init_compress(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init btrfs_init_compress(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -845,9 +999,12 @@ void __init btrfs_init_compress(void)
 		init_waitqueue_head(&comp_workspace_wait[i]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -921,6 +1078,10 @@ static void free_workspace(int type, struct list_head *workspace)
 	btrfs_compress_op[idx]->free_workspace(workspace);
 	atomic_dec(alloc_workspace);
 wake:
+<<<<<<< HEAD
+=======
+	smp_mb();
+>>>>>>> refs/remotes/origin/master
 	if (waitqueue_active(workspace_wait))
 		wake_up(workspace_wait);
 }
@@ -1003,8 +1164,14 @@ int btrfs_compress_pages(int type, struct address_space *mapping,
  * be contiguous.  They all correspond to the range of bytes covered by
  * the compressed extent.
  */
+<<<<<<< HEAD
 int btrfs_decompress_biovec(int type, struct page **pages_in, u64 disk_start,
 			    struct bio_vec *bvec, int vcnt, size_t srclen)
+=======
+static int btrfs_decompress_biovec(int type, struct page **pages_in,
+				   u64 disk_start, struct bio_vec *bvec,
+				   int vcnt, size_t srclen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *workspace;
 	int ret;
@@ -1097,6 +1264,7 @@ int btrfs_decompress_buf2page(char *buf, unsigned long buf_start,
 			    PAGE_CACHE_SIZE - buf_offset);
 		bytes = min(bytes, working_bytes);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(page_out, KM_USER0);
 		memcpy(kaddr + *pg_offset, buf + buf_offset, bytes);
 		kunmap_atomic(kaddr, KM_USER0);
@@ -1105,6 +1273,11 @@ int btrfs_decompress_buf2page(char *buf, unsigned long buf_start,
 		memcpy(kaddr + *pg_offset, buf + buf_offset, bytes);
 		kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(page_out);
+		memcpy(kaddr + *pg_offset, buf + buf_offset, bytes);
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 		flush_dcache_page(page_out);
 
 		*pg_offset += bytes;

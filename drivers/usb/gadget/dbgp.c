@@ -5,14 +5,18 @@
  *
  * Released under the GPLv2.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* verbose messages */
 #include <linux/kernel.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/module.h>
@@ -26,6 +30,13 @@
 #ifdef CONFIG_USB_G_DBGP_SERIAL
 #include "u_serial.c"
 #endif
+=======
+#include <linux/module.h>
+#include <linux/usb/ch9.h>
+#include <linux/usb/gadget.h>
+
+#include "u_serial.h"
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_VENDOR_ID	0x0525 /* NetChip */
 #define DRIVER_PRODUCT_ID	0xc0de /* undefined */
@@ -181,12 +192,18 @@ fail_1:
 static int __enable_ep(struct usb_ep *ep, struct usb_endpoint_descriptor *desc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err = usb_ep_enable(ep, desc);
 =======
 	int err;
 	ep->desc = desc;
 	err = usb_ep_enable(ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+	ep->desc = desc;
+	err = usb_ep_enable(ep);
+>>>>>>> refs/remotes/origin/master
 	ep->driver_data = dbgp.gadget;
 	return err;
 }
@@ -247,6 +264,13 @@ static void dbgp_unbind(struct usb_gadget *gadget)
 	gadget->ep0->driver_data = NULL;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_USB_G_DBGP_SERIAL
+static unsigned char tty_line;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int __init dbgp_configure_endpoints(struct usb_gadget *gadget)
 {
 	int stp;
@@ -282,6 +306,7 @@ static int __init dbgp_configure_endpoints(struct usb_gadget *gadget)
 	dbgp.serial->out = dbgp.o_ep;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbgp.serial->in_desc = &i_desc;
 	dbgp.serial->out_desc = &o_desc;
 =======
@@ -290,6 +315,12 @@ static int __init dbgp_configure_endpoints(struct usb_gadget *gadget)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (gserial_setup(gadget, 1) < 0) {
+=======
+	dbgp.serial->in->desc = &i_desc;
+	dbgp.serial->out->desc = &o_desc;
+
+	if (gserial_alloc_line(&tty_line)) {
+>>>>>>> refs/remotes/origin/master
 		stp = 3;
 		goto fail_3;
 	}
@@ -308,7 +339,12 @@ fail_1:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __init dbgp_bind(struct usb_gadget *gadget)
+=======
+static int __init dbgp_bind(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, stp;
 
@@ -331,9 +367,12 @@ static int __init dbgp_bind(struct usb_gadget *gadget)
 	dbgp.req->length = DBGP_REQ_EP0_LEN;
 	gadget->ep0->driver_data = gadget;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	device_desc.bMaxPacketSize0 = gadget->ep0->maxpacket;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_USB_G_DBGP_SERIAL
 	dbgp.serial = kzalloc(sizeof(struct gserial), GFP_KERNEL);
@@ -385,9 +424,13 @@ static int dbgp_setup(struct usb_gadget *gadget,
 			len = sizeof device_desc;
 			data = &device_desc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			device_desc.bMaxPacketSize0 = gadget->ep0->maxpacket;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			device_desc.bMaxPacketSize0 = gadget->ep0->maxpacket;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case USB_DT_DEBUG:
 			dev_dbg(&dbgp.gadget->dev, "setup: desc debug\n");
@@ -404,7 +447,11 @@ static int dbgp_setup(struct usb_gadget *gadget,
 #ifdef CONFIG_USB_G_DBGP_PRINTK
 		err = dbgp_enable_ep();
 #else
+<<<<<<< HEAD
 		err = gserial_connect(dbgp.serial, 0);
+=======
+		err = gserial_connect(dbgp.serial, tty_line);
+>>>>>>> refs/remotes/origin/master
 #endif
 		if (err < 0)
 			goto fail;
@@ -425,6 +472,7 @@ fail:
 	return err;
 }
 
+<<<<<<< HEAD
 static struct usb_gadget_driver dbgp_driver = {
 	.function = "dbgp",
 <<<<<<< HEAD
@@ -432,6 +480,12 @@ static struct usb_gadget_driver dbgp_driver = {
 =======
 	.max_speed = USB_SPEED_HIGH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __refdata struct usb_gadget_driver dbgp_driver = {
+	.function = "dbgp",
+	.max_speed = USB_SPEED_HIGH,
+	.bind = dbgp_bind,
+>>>>>>> refs/remotes/origin/master
 	.unbind = dbgp_unbind,
 	.setup = dbgp_setup,
 	.disconnect = dbgp_disconnect,
@@ -443,14 +497,22 @@ static struct usb_gadget_driver dbgp_driver = {
 
 static int __init dbgp_init(void)
 {
+<<<<<<< HEAD
 	return usb_gadget_probe_driver(&dbgp_driver, dbgp_bind);
+=======
+	return usb_gadget_probe_driver(&dbgp_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit dbgp_exit(void)
 {
 	usb_gadget_unregister_driver(&dbgp_driver);
 #ifdef CONFIG_USB_G_DBGP_SERIAL
+<<<<<<< HEAD
 	gserial_cleanup();
+=======
+	gserial_free_line(tty_line);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 

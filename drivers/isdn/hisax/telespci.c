@@ -7,10 +7,14 @@
  * Copyright    by Ton van Rosmalen
  *              by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -41,6 +45,7 @@ static const char *telespci_revision = "$Revision: 2.23.2.3 $";
 #define WRITE_DATA_HSCX	(ZORAN_PO_WR | ZORAN_PO_GID1 | ZORAN_PO_GREG1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ZORAN_WAIT_NOBUSY	do { \
 					portdata = readl(adr + 0x200); \
 				} while (portdata & ZORAN_PO_RQ_PEN)
@@ -49,6 +54,11 @@ static const char *telespci_revision = "$Revision: 2.23.2.3 $";
 		portdata = readl(adr + 0x200);	\
 	} while (portdata & ZORAN_PO_RQ_PEN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ZORAN_WAIT_NOBUSY	do {		\
+		portdata = readl(adr + 0x200);	\
+	} while (portdata & ZORAN_PO_RQ_PEN)
+>>>>>>> refs/remotes/origin/master
 
 static inline u_char
 readisac(void __iomem *adr, u_char off)
@@ -56,6 +66,7 @@ readisac(void __iomem *adr, u_char off)
 	register unsigned int portdata;
 
 	ZORAN_WAIT_NOBUSY;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
 	/* set address for ISAC */
@@ -67,6 +78,8 @@ readisac(void __iomem *adr, u_char off)
 	ZORAN_WAIT_NOBUSY;
 	return((u_char)(portdata & ZORAN_PO_DMASK));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* set address for ISAC */
 	writel(WRITE_ADDR_ISAC | off, adr + 0x200);
@@ -76,7 +89,10 @@ readisac(void __iomem *adr, u_char off)
 	writel(READ_DATA_ISAC, adr + 0x200);
 	ZORAN_WAIT_NOBUSY;
 	return ((u_char)(portdata & ZORAN_PO_DMASK));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -86,10 +102,14 @@ writeisac(void __iomem *adr, u_char off, u_char data)
 
 	ZORAN_WAIT_NOBUSY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* set address for ISAC */
 	writel(WRITE_ADDR_ISAC | off, adr + 0x200);
 	ZORAN_WAIT_NOBUSY;
@@ -107,6 +127,7 @@ readhscx(void __iomem *adr, int hscx, u_char off)
 	ZORAN_WAIT_NOBUSY;
 	/* set address for HSCX */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel(WRITE_ADDR_HSCX | ((hscx ? 0x40:0) + off), adr + 0x200);
 	ZORAN_WAIT_NOBUSY;
 	
@@ -115,6 +136,11 @@ readhscx(void __iomem *adr, int hscx, u_char off)
 	ZORAN_WAIT_NOBUSY;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(WRITE_ADDR_HSCX | ((hscx ? 0x40 : 0) + off), adr + 0x200);
+	ZORAN_WAIT_NOBUSY;
+
+>>>>>>> refs/remotes/origin/master
 	/* read data from HSCX */
 	writel(READ_DATA_HSCX, adr + 0x200);
 	ZORAN_WAIT_NOBUSY;
@@ -129,10 +155,14 @@ writehscx(void __iomem *adr, int hscx, u_char off, u_char data)
 	ZORAN_WAIT_NOBUSY;
 	/* set address for HSCX */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel(WRITE_ADDR_HSCX | ((hscx ? 0x40:0) + off), adr + 0x200);
 =======
 	writel(WRITE_ADDR_HSCX | ((hscx ? 0x40 : 0) + off), adr + 0x200);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(WRITE_ADDR_HSCX | ((hscx ? 0x40 : 0) + off), adr + 0x200);
+>>>>>>> refs/remotes/origin/master
 	ZORAN_WAIT_NOBUSY;
 
 	/* write data to HSCX */
@@ -142,10 +172,14 @@ writehscx(void __iomem *adr, int hscx, u_char off, u_char data)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 read_fifo_isac(void __iomem *adr, u_char * data, int size)
 =======
 read_fifo_isac(void __iomem *adr, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+read_fifo_isac(void __iomem *adr, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	register unsigned int portdata;
 	register int i;
@@ -164,10 +198,14 @@ read_fifo_isac(void __iomem *adr, u_char *data, int size)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 write_fifo_isac(void __iomem *adr, u_char * data, int size)
 =======
 write_fifo_isac(void __iomem *adr, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+write_fifo_isac(void __iomem *adr, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	register unsigned int portdata;
 	register int i;
@@ -185,10 +223,14 @@ write_fifo_isac(void __iomem *adr, u_char *data, int size)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 read_fifo_hscx(void __iomem *adr, int hscx, u_char * data, int size)
 =======
 read_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+read_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	register unsigned int portdata;
 	register int i;
@@ -198,10 +240,14 @@ read_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
 	for (i = 0; i < size; i++) {
 		/* set address for HSCX fifo */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		writel(WRITE_ADDR_HSCX |(hscx ? 0x5F:0x1F), adr + 0x200);
 =======
 		writel(WRITE_ADDR_HSCX | (hscx ? 0x5F : 0x1F), adr + 0x200);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel(WRITE_ADDR_HSCX | (hscx ? 0x5F : 0x1F), adr + 0x200);
+>>>>>>> refs/remotes/origin/master
 		ZORAN_WAIT_NOBUSY;
 		writel(READ_DATA_HSCX, adr + 0x200);
 		ZORAN_WAIT_NOBUSY;
@@ -211,10 +257,14 @@ read_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 write_fifo_hscx(void __iomem *adr, int hscx, u_char * data, int size)
 =======
 write_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+write_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int portdata;
 	register int i;
@@ -224,10 +274,14 @@ write_fifo_hscx(void __iomem *adr, int hscx, u_char *data, int size)
 	for (i = 0; i < size; i++) {
 		/* set address for HSCX fifo */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		writel(WRITE_ADDR_HSCX |(hscx ? 0x5F:0x1F), adr + 0x200);
 =======
 		writel(WRITE_ADDR_HSCX | (hscx ? 0x5F : 0x1F), adr + 0x200);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel(WRITE_ADDR_HSCX | (hscx ? 0x5F : 0x1F), adr + 0x200);
+>>>>>>> refs/remotes/origin/master
 		ZORAN_WAIT_NOBUSY;
 		writel(WRITE_DATA_HSCX | data[i], adr + 0x200);
 		ZORAN_WAIT_NOBUSY;
@@ -251,20 +305,28 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	read_fifo_isac(cs->hw.teles0.membase, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	write_fifo_isac(cs->hw.teles0.membase, data, size);
 }
@@ -336,6 +398,7 @@ TelesPCI_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 
 	switch (mt) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			return(0);
 		case CARD_RELEASE:
@@ -351,6 +414,8 @@ TelesPCI_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		return (0);
 	case CARD_RELEASE:
@@ -365,6 +430,7 @@ TelesPCI_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		return (0);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -372,19 +438,30 @@ static struct pci_dev *dev_tel __devinitdata = NULL;
 
 int __devinit
 setup_telespci(struct IsdnCard *card)
+=======
+}
+
+static struct pci_dev *dev_tel = NULL;
+
+int setup_telespci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	char tmp[64];
 
+<<<<<<< HEAD
 #ifdef __BIG_ENDIAN
 #error "not running on big endian machines now"
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	strcpy(tmp, telespci_revision);
 	printk(KERN_INFO "HiSax: Teles/PCI driver Rev. %s\n", HiSax_getrev(tmp));
 	if (cs->typ != ISDN_CTYPE_TELESPCI)
 		return (0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((dev_tel = hisax_find_pci_device (PCI_VENDOR_ID_ZORAN, PCI_DEVICE_ID_ZORAN_36120, dev_tel))) {
 		if (pci_enable_device(dev_tel))
@@ -403,6 +480,8 @@ setup_telespci(struct IsdnCard *card)
 		printk(KERN_WARNING "TelesPCI: No PCI card found\n");
 		return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((dev_tel = hisax_find_pci_device(PCI_VENDOR_ID_ZORAN, PCI_DEVICE_ID_ZORAN_36120, dev_tel))) {
 		if (pci_enable_device(dev_tel))
 			return (0);
@@ -419,7 +498,10 @@ setup_telespci(struct IsdnCard *card)
 	} else {
 		printk(KERN_WARNING "TelesPCI: No PCI card found\n");
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Initialize Zoran PCI controller */
@@ -451,10 +533,14 @@ setup_telespci(struct IsdnCard *card)
 	if (HscxVersion(cs, "TelesPCI:")) {
 		printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 "TelesPCI: wrong HSCX versions check IO/MEM addresses\n");
 =======
 		       "TelesPCI: wrong HSCX versions check IO/MEM addresses\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "TelesPCI: wrong HSCX versions check IO/MEM addresses\n");
+>>>>>>> refs/remotes/origin/master
 		release_io_telespci(cs);
 		return (0);
 	}

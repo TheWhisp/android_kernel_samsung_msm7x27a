@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 //   vim:tw=110:ts=4:
 /************************************************************************************************************
 *
@@ -94,6 +95,8 @@
 #include "hcfdef.h"				// HCF specific include file
 #include "mmd.h"				// MoreModularDriver common include file
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************************
  *
  * FILE   :  HCF.C
@@ -188,7 +191,10 @@
 #include "hcfdef.h"             // HCF specific include file
 #include "mmd.h"                // MoreModularDriver common include file
 #include <linux/bug.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 
 #if ! defined offsetof
@@ -199,6 +205,7 @@
 /***********************************************************************************************************/
 /***************************************  PROTOTYPES  ******************************************************/
 /***********************************************************************************************************/
+<<<<<<< HEAD
 <<<<<<< HEAD
 HCF_STATIC int			cmd_exe( IFBP ifbp, hcf_16 cmd_code, hcf_16 par_0 );
 HCF_STATIC int			init( IFBP ifbp );
@@ -228,6 +235,8 @@ HCF_STATIC void			put_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_l
 HCF_STATIC void			put_frag_finalize( IFBP ifbp );
 HCF_STATIC int			setup_bap( IFBP ifbp, hcf_16 fid, int offset, int type );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC int          cmd_exe( IFBP ifbp, hcf_16 cmd_code, hcf_16 par_0 );
 HCF_STATIC int          init( IFBP ifbp );
 HCF_STATIC int          put_info( IFBP ifbp, LTVP ltvp );
@@ -253,11 +262,15 @@ HCF_STATIC void         put_frame_lst( IFBP ifbp, DESC_STRCT *descp, int tx_rx_f
 HCF_STATIC void         put_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_len ) );
 HCF_STATIC void         put_frag_finalize( IFBP ifbp );
 HCF_STATIC int          setup_bap( IFBP ifbp, hcf_16 fid, int offset, int type );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if (HCF_ASSERT) & HCF_ASSERT_PRINTF
 static int fw_printf(IFBP ifbp, CFG_FW_PRINTF_STRCT FAR *ltvp);
 #endif // HCF_ASSERT_PRINTF
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 HCF_STATIC int			download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp );
 #if (HCF_ENCAP) & HCF_ENC
@@ -272,6 +285,8 @@ extern FILE *log_file;
 static hcf_16 in_port_word( hcf_io port ) {
 hcf_16 i = (hcf_16)_inpw( port );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC int          download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp );
 HCF_STATIC hcf_8        hcf_encap( wci_bufp type );
 HCF_STATIC hcf_8        null_addr[4] = { 0, 0, 0, 0 };
@@ -282,7 +297,10 @@ extern FILE *log_file;
 
 static hcf_16 in_port_word( hcf_io port ) {
 	hcf_16 i = (hcf_16)_inpw( port );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ( log_file ) {
 		fprintf( log_file, "\nR %2.2x %4.4x", (port)&0xFF, i);
 	}
@@ -290,10 +308,14 @@ static hcf_16 in_port_word( hcf_io port ) {
 } // in_port_word
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OUT_PORT_WORD(port, value)	out_port_word( (hcf_io)(port), (hcf_16)(value) )
 =======
 #define OUT_PORT_WORD(port, value)  out_port_word( (hcf_io)(port), (hcf_16)(value) )
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define OUT_PORT_WORD(port, value)  out_port_word( (hcf_io)(port), (hcf_16)(value) )
+>>>>>>> refs/remotes/origin/master
 
 static void out_port_word( hcf_io port, hcf_16 value ) {
 	_outpw( port, value );
@@ -303,19 +325,27 @@ static void out_port_word( hcf_io port, hcf_16 value ) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void IN_PORT_STRING_32( hcf_io prt, hcf_32 FAR * dst, int n)	{
 =======
 void IN_PORT_STRING_32( hcf_io prt, hcf_32 FAR * dst, int n)    {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void IN_PORT_STRING_32( hcf_io prt, hcf_32 FAR * dst, int n)    {
+>>>>>>> refs/remotes/origin/master
 	int i = 0;
 	hcf_16 FAR * p;
 	if ( log_file ) {
 		fprintf( log_file, "\nread string_32 length %04x (%04d) at port %02.2x to addr %lp",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF, dst);
 =======
 			 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF, dst);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF, dst);
+>>>>>>> refs/remotes/origin/master
 	}
 	while ( n-- ) {
 		p = (hcf_16 FAR *)dst;
@@ -329,6 +359,7 @@ void IN_PORT_STRING_32( hcf_io prt, hcf_32 FAR * dst, int n)    {
 } // IN_PORT_STRING_32
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void IN_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * dst, int n) {	//also handles byte alignment problems
 	hcf_16 FAR * p = (hcf_16 FAR *)dst;							//this needs more elaborate code in non-x86 platforms
 	int i = 0;
@@ -336,13 +367,18 @@ void IN_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * dst, int n) {	//also handles b
 		fprintf( log_file, "\nread string_16 length %04x (%04d) at port %02.2x to addr %lp",
 				 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF, dst );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void IN_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * dst, int n) { //also handles byte alignment problems
 	hcf_16 FAR * p = (hcf_16 FAR *)dst;                         //this needs more elaborate code in non-x86 platforms
 	int i = 0;
 	if ( log_file ) {
 		fprintf( log_file, "\nread string_16 length %04x (%04d) at port %02.2x to addr %lp",
 			 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF, dst );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	while ( n-- ) {
 		*p =(hcf_16)_inpw( prt);
@@ -358,19 +394,27 @@ void IN_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * dst, int n) { //also handles b
 } // IN_PORT_STRING_8_16
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void OUT_PORT_STRING_32( hcf_io prt, hcf_32 FAR * src, int n)	{
 =======
 void OUT_PORT_STRING_32( hcf_io prt, hcf_32 FAR * src, int n)   {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void OUT_PORT_STRING_32( hcf_io prt, hcf_32 FAR * src, int n)   {
+>>>>>>> refs/remotes/origin/master
 	int i = 0;
 	hcf_16 FAR * p;
 	if ( log_file ) {
 		fprintf( log_file, "\nwrite string_32 length %04x (%04d) at port %02.2x",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF);
 =======
 			 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 (hcf_16)n, (hcf_16)n, (hcf_16)(prt)&0xFF);
+>>>>>>> refs/remotes/origin/master
 	}
 	while ( n-- ) {
 		p = (hcf_16 FAR *)src;
@@ -384,12 +428,17 @@ void OUT_PORT_STRING_32( hcf_io prt, hcf_32 FAR * src, int n)   {
 } // OUT_PORT_STRING_32
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void OUT_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * src, int n)	{	//also handles byte alignment problems
 	hcf_16 FAR * p = (hcf_16 FAR *)src;								//this needs more elaborate code in non-x86 platforms
 =======
 void OUT_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * src, int n)  {   //also handles byte alignment problems
 	hcf_16 FAR * p = (hcf_16 FAR *)src;                             //this needs more elaborate code in non-x86 platforms
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void OUT_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * src, int n)  {   //also handles byte alignment problems
+	hcf_16 FAR * p = (hcf_16 FAR *)src;                             //this needs more elaborate code in non-x86 platforms
+>>>>>>> refs/remotes/origin/master
 	int i = 0;
 	if ( log_file ) {
 		fprintf( log_file, "\nwrite string_16 length %04x (%04d) at port %04x", n, n, (hcf_16)prt);
@@ -411,6 +460,7 @@ void OUT_PORT_STRING_8_16( hcf_io prt, hcf_8 FAR * src, int n)  {   //also handl
 
 /************************************************************************************************************
 <<<<<<< HEAD
+<<<<<<< HEAD
 ******************************* D A T A    D E F I N I T I O N S ********************************************
 ************************************************************************************************************/
 
@@ -427,6 +477,8 @@ HCF_STATIC  hcf_8 BASED snap_header[] = { 0xAA, 0xAA, 0x03, 0x00, 0x00,	//5 byte
 #if (HCF_TYPE) & HCF_TYPE_WPA
 HCF_STATIC hcf_8 BASED mic_pad[8] = { 0x5A, 0, 0, 0, 0, 0, 0, 0 };		//MIC padding of message
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  ******************************* D A T A    D E F I N I T I O N S ********************************************
  ************************************************************************************************************/
 
@@ -440,11 +492,15 @@ HCF_STATIC  hcf_8 BASED snap_header[] = { 0xAA, 0xAA, 0x03, 0x00, 0x00, //5 byte
 
 #if (HCF_TYPE) & HCF_TYPE_WPA
 HCF_STATIC hcf_8 BASED mic_pad[8] = { 0x5A, 0, 0, 0, 0, 0, 0, 0 };      //MIC padding of message
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_TYPE_WPA
 
 #if defined MSF_COMPONENT_ID
 CFG_IDENTITY_STRCT BASED cfg_drv_identity = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sizeof(cfg_drv_identity)/sizeof(hcf_16) - 1,	//length of RID
 	CFG_DRV_IDENTITY,			// (0x0826)
@@ -452,6 +508,10 @@ CFG_IDENTITY_STRCT BASED cfg_drv_identity = {
 	sizeof(cfg_drv_identity)/sizeof(hcf_16) - 1,    //length of RID
 	CFG_DRV_IDENTITY,           // (0x0826)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sizeof(cfg_drv_identity)/sizeof(hcf_16) - 1,    //length of RID
+	CFG_DRV_IDENTITY,           // (0x0826)
+>>>>>>> refs/remotes/origin/master
 	MSF_COMPONENT_ID,
 	MSF_COMPONENT_VAR,
 	MSF_COMPONENT_MAJOR_VER,
@@ -459,6 +519,7 @@ CFG_IDENTITY_STRCT BASED cfg_drv_identity = {
 } ;
 
 CFG_RANGES_STRCT BASED cfg_drv_sup_range = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sizeof(cfg_drv_sup_range)/sizeof(hcf_16) - 1,	//length of RID
 	CFG_DRV_SUP_RANGE,			// (0x0827)
@@ -469,6 +530,8 @@ CFG_RANGES_STRCT BASED cfg_drv_sup_range = {
 		DUI_COMPAT_BOT,
 		DUI_COMPAT_TOP
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sizeof(cfg_drv_sup_range)/sizeof(hcf_16) - 1,   //length of RID
 	CFG_DRV_SUP_RANGE,          // (0x0827)
 
@@ -477,11 +540,15 @@ CFG_RANGES_STRCT BASED cfg_drv_sup_range = {
 	{{  DUI_COMPAT_VAR,
 	    DUI_COMPAT_BOT,
 	    DUI_COMPAT_TOP
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}}
 } ;
 
 struct CFG_RANGE3_STRCT BASED cfg_drv_act_ranges_pri = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sizeof(cfg_drv_act_ranges_pri)/sizeof(hcf_16) - 1,	//length of RID
 	CFG_DRV_ACT_RANGES_PRI,		// (0x0828)
@@ -489,10 +556,15 @@ struct CFG_RANGE3_STRCT BASED cfg_drv_act_ranges_pri = {
 	sizeof(cfg_drv_act_ranges_pri)/sizeof(hcf_16) - 1,  //length of RID
 	CFG_DRV_ACT_RANGES_PRI,     // (0x0828)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sizeof(cfg_drv_act_ranges_pri)/sizeof(hcf_16) - 1,  //length of RID
+	CFG_DRV_ACT_RANGES_PRI,     // (0x0828)
+>>>>>>> refs/remotes/origin/master
 
 	COMP_ROLE_ACT,
 	COMP_ID_PRI,
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 { 0, 0, 0 }, 							// HCF_PRI_VAR_1 not supported by HCF 7
 	 { 0, 0, 0 }, 							// HCF_PRI_VAR_2 not supported by HCF 7
@@ -501,18 +573,24 @@ struct CFG_RANGE3_STRCT BASED cfg_drv_act_ranges_pri = {
 		CFG_DRV_ACT_RANGES_PRI_3_TOP			//		 - Top Compatibility
 	 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		{ 0, 0, 0 },                           // HCF_PRI_VAR_1 not supported by HCF 7
 		{ 0, 0, 0 },                           // HCF_PRI_VAR_2 not supported by HCF 7
 		{  3,                                  //var_rec[2] - Variant number
 		   CFG_DRV_ACT_RANGES_PRI_3_BOTTOM,        //       - Bottom Compatibility
 		   CFG_DRV_ACT_RANGES_PRI_3_TOP            //       - Top Compatibility
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 } ;
 
 
 struct CFG_RANGE4_STRCT BASED cfg_drv_act_ranges_sta = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sizeof(cfg_drv_act_ranges_sta)/sizeof(hcf_16) - 1,	//length of RID
 	CFG_DRV_ACT_RANGES_STA,		// (0x0829)
@@ -520,11 +598,16 @@ struct CFG_RANGE4_STRCT BASED cfg_drv_act_ranges_sta = {
 	sizeof(cfg_drv_act_ranges_sta)/sizeof(hcf_16) - 1,  //length of RID
 	CFG_DRV_ACT_RANGES_STA,     // (0x0829)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sizeof(cfg_drv_act_ranges_sta)/sizeof(hcf_16) - 1,  //length of RID
+	CFG_DRV_ACT_RANGES_STA,     // (0x0829)
+>>>>>>> refs/remotes/origin/master
 
 	COMP_ROLE_ACT,
 	COMP_ID_STA,
 	{
 #if defined HCF_STA_VAR_1
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 {	1,									//var_rec[1] - Variant number
 		CFG_DRV_ACT_RANGES_STA_1_BOTTOM,		//		 - Bottom Compatibility
@@ -559,6 +642,8 @@ struct CFG_RANGE4_STRCT BASED cfg_drv_act_ranges_sta = {
 #else
 	 { 0, 0, 0 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		{  1,                                  //var_rec[1] - Variant number
 		   CFG_DRV_ACT_RANGES_STA_1_BOTTOM,        //       - Bottom Compatibility
 		   CFG_DRV_ACT_RANGES_STA_1_TOP            //       - Top Compatibility
@@ -591,13 +676,17 @@ struct CFG_RANGE4_STRCT BASED cfg_drv_act_ranges_sta = {
 		}
 #else
 		{ 0, 0, 0 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_STA_VAR_4
 	}
 } ;
 
 
 struct CFG_RANGE6_STRCT BASED cfg_drv_act_ranges_hsi = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sizeof(cfg_drv_act_ranges_hsi)/sizeof(hcf_16) - 1,	//length of RID
 	CFG_DRV_ACT_RANGES_HSI,		// (0x082A)
@@ -631,6 +720,8 @@ struct CFG_RANGE6_STRCT BASED cfg_drv_act_ranges_hsi = {
 #else
 	 { 0, 0, 0 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sizeof(cfg_drv_act_ranges_hsi)/sizeof(hcf_16) - 1,  //length of RID
 	CFG_DRV_ACT_RANGES_HSI,     // (0x082A)
 	COMP_ROLE_ACT,
@@ -662,7 +753,10 @@ struct CFG_RANGE6_STRCT BASED cfg_drv_act_ranges_hsi = {
 		}
 #else
 		{ 0, 0, 0 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_HSI_VAR_5
 	}
 } ;
@@ -670,16 +764,22 @@ struct CFG_RANGE6_STRCT BASED cfg_drv_act_ranges_hsi = {
 
 CFG_RANGE4_STRCT BASED cfg_drv_act_ranges_apf = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sizeof(cfg_drv_act_ranges_apf)/sizeof(hcf_16) - 1,	//length of RID
 	CFG_DRV_ACT_RANGES_APF,		// (0x082B)
 =======
 	sizeof(cfg_drv_act_ranges_apf)/sizeof(hcf_16) - 1,  //length of RID
 	CFG_DRV_ACT_RANGES_APF,     // (0x082B)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sizeof(cfg_drv_act_ranges_apf)/sizeof(hcf_16) - 1,  //length of RID
+	CFG_DRV_ACT_RANGES_APF,     // (0x082B)
+>>>>>>> refs/remotes/origin/master
 
 	COMP_ROLE_ACT,
 	COMP_ID_APF,
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined HCF_APF_VAR_1				//(Fake) Hermes-I
 	 {	1,									//var_rec[1] - Variant number
@@ -713,6 +813,8 @@ CFG_RANGE4_STRCT BASED cfg_drv_act_ranges_apf = {
 #else
 	 { 0, 0, 0 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined HCF_APF_VAR_1               //(Fake) Hermes-I
 		{  1,                                  //var_rec[1] - Variant number
 		   CFG_DRV_ACT_RANGES_APF_1_BOTTOM,        //           - Bottom Compatibility
@@ -744,13 +846,17 @@ CFG_RANGE4_STRCT BASED cfg_drv_act_ranges_apf = {
 		}
 #else
 		{ 0, 0, 0 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_APF_VAR_4
 	}
 } ;
 #define HCF_VERSION  TEXT( "HCF$Revision: 1.10 $" )
 
 static struct /*CFG_HCF_OPT_STRCT*/ {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	hcf_16	len;					//length of cfg_hcf_opt struct
 	hcf_16	typ;					//type 0x082C
@@ -779,6 +885,8 @@ static struct /*CFG_HCF_OPT_STRCT*/ {
 	sizeof(cfg_hcf_opt)/sizeof(hcf_16) -1,
 	CFG_HCF_OPT,				// (0x082C)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hcf_16  len;                    //length of cfg_hcf_opt struct
 	hcf_16  typ;                    //type 0x082C
 	hcf_16   v0;                        //offset HCF_VERSION
@@ -805,7 +913,10 @@ static struct /*CFG_HCF_OPT_STRCT*/ {
 } BASED cfg_hcf_opt = {
 	sizeof(cfg_hcf_opt)/sizeof(hcf_16) -1,
 	CFG_HCF_OPT,                // (0x082C)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	( sizeof(cfg_hcf_opt) - sizeof(HCF_VERSION) - 4 )/sizeof(hcf_16),
 #if defined MSF_COMPONENT_ID
 	MSF_COMPONENT_ID,
@@ -816,10 +927,14 @@ static struct /*CFG_HCF_OPT_STRCT*/ {
 	HCF_ASSERT,
 	HCF_BIG_ENDIAN,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	0,									// /* HCF_DLV | HCF_DLNV*/,
 =======
 	0,                                  // /* HCF_DLV | HCF_DLNV*/,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	0,                                  // /* HCF_DLV | HCF_DLNV*/,
+>>>>>>> refs/remotes/origin/master
 	HCF_DMA,
 	HCF_ENCAP,
 	HCF_EXT,
@@ -842,6 +957,7 @@ static struct /*CFG_HCF_OPT_STRCT*/ {
 }; // cfg_hcf_opt
 #endif // MSF_COMPONENT_ID
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined HCF_TALLIES_EXTRA
 	replaced by HCF_EXT_TALLIES_FW ;
@@ -1056,6 +1172,8 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC LTV_STRCT BASED cfg_null = { 1, CFG_NULL, {0} };
 
 HCF_STATIC hcf_16* BASED xxxx[ ] = {
@@ -1092,7 +1210,11 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
  *    - HCF_ACT_INT_FORCE_ON enable interrupt generation by WaveLAN NIC
  *    - HCF_ACT_INT_OFF      disable interrupt generation by WaveLAN NIC
  *    - HCF_ACT_INT_ON       compensate 1 HCF_ACT_INT_OFF, enable interrupt generation if balance reached
+<<<<<<< HEAD
  *    - HCF_ACT_PRS_SCAN     Hermes Probe Respons Scan (F102) command
+=======
+ *    - HCF_ACT_PRS_SCAN     Hermes Probe Response Scan (F102) command
+>>>>>>> refs/remotes/origin/master
  *    - HCF_ACT_RX_ACK       acknowledge non-DMA receiver to Hermes
  *    - HCF_ACT_SCAN         Hermes Inquire Scan (F101) command (non-WARP only)
  *    - HCF_ACT_SLEEP        DDS Sleep request
@@ -1155,7 +1277,11 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
  * The F/W is wokenup by the HCF when the NIC Interrupts mode are disabled, i.e. at the first HCF_ACT_INT_OFF
  * after going into sleep.
  *
+<<<<<<< HEAD
  * The following Miscellanuous actions are defined:
+=======
+ * The following Miscellaneous actions are defined:
+>>>>>>> refs/remotes/origin/master
  *
  * o HCF_ACT_RX_ACK: Receiver Acknowledgement (non-DMA, non-USB mode only)
  * Acking the receiver, frees the NIC memory used to hold the Rx frame and allows the F/W to
@@ -1163,7 +1289,11 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
  * If the MSF does not need access (any longer) to the current frame, e.g. because it is rejected based on the
  * look ahead or copied to another buffer, the receiver may be acked. Acking earlier is assumed to have the
  * potential of improving the performance.
+<<<<<<< HEAD
  * If the MSF does not explitly ack te receiver, the acking is done implicitly if:
+=======
+ * If the MSF does not explicitly ack the receiver, the acking is done implicitly if:
+>>>>>>> refs/remotes/origin/master
  * - the received frame fits in the look ahead buffer, by the hcf_service_nic call that reported the Rx frame
  * - if not in the above step, by hcf_rcv_msg (assuming hcf_rcv_msg is called)
  * - if neither of the above implicit acks nor an explicit ack by the MSF, by the first hcf_service_nic after
@@ -1175,9 +1305,15 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
  * The Inquire Tallies command requests the F/W to provide its current set of tallies.
  * See also hcf_get_info with CFG_TALLIES as parameter.
  *
+<<<<<<< HEAD
  * o HCF_ACT_PRS_SCAN: Inquire Probe Respons Scan command
  * This command is only operational if the F/W is enabled.
  * The Probe Respons Scan command starts a scan sequence.
+=======
+ * o HCF_ACT_PRS_SCAN: Inquire Probe Response Scan command
+ * This command is only operational if the F/W is enabled.
+ * The Probe Response Scan command starts a scan sequence.
+>>>>>>> refs/remotes/origin/master
  * The HCF puts the result of this action in an MSF defined buffer (see CFG_RID_LOG_STRCT).
  *
  * o HCF_ACT_SCAN: Inquire Scan command
@@ -1190,7 +1326,11 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
  * - NIC interrupts are not disabled while required by parameter action.
  * - an invalid code is specified in parameter action.
  * - HCF_ACT_INT_ON commands outnumber the HCF_ACT_INT_OFF commands.
+<<<<<<< HEAD
  * - reentrancy, may be  caused by calling hcf_functions without adequate protection against NIC interrupts or
+=======
+ * - reentrancy, may be caused by calling hcf_functions without adequate protection against NIC interrupts or
+>>>>>>> refs/remotes/origin/master
  *   multi-threading
  *
  * - Since the HCF does not maintain status information relative to the F/W enabled state, it is not asserted
@@ -1209,7 +1349,11 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
  *   change in HREG_EV_STAT matching a bit in HREG_INT_EN, i.e. not if invoked as result of another device
  *   generating an interrupt on the shared interrupt line.
  *   Note 1: it has been observed that under certain adverse conditions on certain platforms the writing of
+<<<<<<< HEAD
  *   HREG_INT_EN can apparently fail, therefor it is paramount that HREG_INT_EN is written again with 0 for
+=======
+ *   HREG_INT_EN can apparently fail, therefore it is paramount that HREG_INT_EN is written again with 0 for
+>>>>>>> refs/remotes/origin/master
  *   each and every call to HCF_ACT_INT_OFF.
  *   Note 2: it has been observed that under certain H/W & S/W architectures this logic is called when there is
  *   no NIC at all. To cater for this, the value of HREG_INT_EN is validated. If the unused bit 0x0100 is set,
@@ -1249,7 +1393,10 @@ HCF_STATIC hcf_16* BASED xxxx[ ] = {
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if ( (HCF_TYPE) & HCF_TYPE_HII5 ) == 0
 #if CFG_SCAN != CFG_TALLIES - HCF_ACT_TALLIES + HCF_ACT_SCAN
 err: "maintenance" apparently inviolated the underlying assumption about the numerical values of these macros
@@ -1261,6 +1408,7 @@ err: "maintenance" apparently inviolated the underlying assumption about the num
 int
 hcf_action( IFBP ifbp, hcf_16 action )
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 int	rc = HCF_SUCCESS;
 
@@ -1278,6 +1426,8 @@ int	rc = HCF_SUCCESS;
 	HCFASSERT( ifbp->IFB_IntOffCnt <= 16 || ifbp->IFB_IntOffCnt >= 0xFFFE,
 			   MERGE_2( action, ifbp->IFB_IntOffCnt ) )	//nesting more than 16 deep seems unreasonable
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = HCF_SUCCESS;
 
 	HCFASSERT( ifbp->IFB_Magic == HCF_MAGIC, ifbp->IFB_Magic );
@@ -1293,11 +1443,15 @@ int	rc = HCF_SUCCESS;
 		   action == HCF_ACT_INT_OFF || action == HCF_ACT_INT_FORCE_ON,  action );
 	HCFASSERT( ifbp->IFB_IntOffCnt <= 16 || ifbp->IFB_IntOffCnt >= 0xFFFE,
 		   MERGE_2( action, ifbp->IFB_IntOffCnt ) ); //nesting more than 16 deep seems unreasonable
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_INT_ON
 
 	switch (action) {
 #if HCF_INT_ON
+<<<<<<< HEAD
 <<<<<<< HEAD
 hcf_16	i;
 	  case HCF_ACT_INT_OFF:						// Disable Interrupt generation
@@ -1318,6 +1472,8 @@ hcf_16	i;
 /*2*/	ifbp->IFB_IntOffCnt++;
 //!     rc = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		hcf_16  i;
 	case HCF_ACT_INT_OFF:                     // Disable Interrupt generation
 #if HCF_SLEEP
@@ -1328,7 +1484,11 @@ hcf_16	i;
 			// 800 us latency before FW switches to high power
 			MSF_WAIT(800);                              // MSF-defined function to wait n microseconds.
 //OOR			if ( ifbp->IFB_DSLinkStat & CFG_LINK_STAT_DS_OOR ) { // OutOfRange
+<<<<<<< HEAD
 //				printk( "<5>ACT_INT_OFF: Deepsleep phase terminated, enable and go to AwaitConnection\n" );     //;?remove me 1 day
+=======
+//				printk(KERN_NOTICE "ACT_INT_OFF: Deepsleep phase terminated, enable and go to AwaitConnection\n" );     //;?remove me 1 day
+>>>>>>> refs/remotes/origin/master
 //				hcf_cntl( ifbp, HCF_CNTL_ENABLE );
 //			}
 //			ifbp->IFB_DSLinkStat &= ~( CFG_LINK_STAT_DS_IR | CFG_LINK_STAT_DS_OOR); //clear IR/OOR state
@@ -1336,7 +1496,10 @@ hcf_16	i;
 #endif // HCF_SLEEP
 	/*2*/   ifbp->IFB_IntOffCnt++;
 //!		rc = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		i = IPW( HREG_INT_EN );
 		OPW( HREG_INT_EN, 0 );
 		if ( i & 0x1000 ) {
@@ -1348,6 +1511,7 @@ hcf_16	i;
 		}
 		break;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  case HCF_ACT_INT_FORCE_ON:				// Enforce Enable Interrupt generation
 		ifbp->IFB_IntOffCnt = 0;
@@ -1366,6 +1530,8 @@ hcf_16	i;
 				if ( ifbp->IFB_RscInd == 0 ) {
 					i |= HREG_EV_ALLOC;												//mask when no TxFID available
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case HCF_ACT_INT_FORCE_ON:                // Enforce Enable Interrupt generation
 		ifbp->IFB_IntOffCnt = 0;
 		//Fall through in HCF_ACT_INT_ON
@@ -1382,7 +1548,10 @@ hcf_16	i;
 				i = HREG_EV_INFO | HREG_EV_RX | HREG_EV_TX_EXT;                     //mask when DMA not active
 				if ( ifbp->IFB_RscInd == 0 ) {
 					i |= HREG_EV_ALLOC;                                         //mask when no TxFID available
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 #if HCF_SLEEP
@@ -1390,27 +1559,37 @@ hcf_16	i;
 				// firmware indicates it would like to go into sleep modus
 				// only acknowledge this request if no other events that can cause an interrupt are pending
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ifbp->IFB_IntOffCnt--;			//becomes 0xFFFE
             	OPW( HREG_INT_EN, i | HREG_EV_TICK );
 =======
 				ifbp->IFB_IntOffCnt--;          //becomes 0xFFFE
 				OPW( HREG_INT_EN, i | HREG_EV_TICK );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ifbp->IFB_IntOffCnt--;          //becomes 0xFFFE
+				OPW( HREG_INT_EN, i | HREG_EV_TICK );
+>>>>>>> refs/remotes/origin/master
 				OPW( HREG_EV_ACK, HREG_EV_SLEEP_REQ | HREG_EV_TICK | HREG_EV_ACK_REG_READY );
 			} else
 #endif // HCF_SLEEP
 			{
 <<<<<<< HEAD
+<<<<<<< HEAD
             	OPW( HREG_INT_EN, i | HREG_EV_SLEEP_REQ );
 =======
 				OPW( HREG_INT_EN, i | HREG_EV_SLEEP_REQ );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				OPW( HREG_INT_EN, i | HREG_EV_SLEEP_REQ );
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		break;
 #endif // HCF_INT_ON
 
 #if (HCF_SLEEP) & HCF_DDS
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  case HCF_ACT_SLEEP:						// DDS Sleep request
 		hcf_cntl( ifbp, HCF_CNTL_DISABLE );
@@ -1439,6 +1618,8 @@ hcf_16	i;
 	  case HCF_ACT_RX_ACK:						//Receiver ACK
 /*6*/	if ( ifbp->IFB_RxFID ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case HCF_ACT_SLEEP:                       // DDS Sleep request
 		hcf_cntl( ifbp, HCF_CNTL_DISABLE );
 		cmd_exe( ifbp, HCMD_SLEEP, 0 );
@@ -1458,12 +1639,16 @@ hcf_16	i;
 
 	case HCF_ACT_RX_ACK:                      //Receiver ACK
 	/*6*/   if ( ifbp->IFB_RxFID ) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			DAWA_ACK( HREG_EV_RX );
 		}
 		ifbp->IFB_RxFID = ifbp->IFB_RxLen = 0;
 		break;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*8*/ case	HCF_ACT_PRS_SCAN:					// Hermes PRS Scan (F102)
 		OPW( HREG_PARAM_1, 0x3FFF );
@@ -1621,6 +1806,8 @@ int	rc = HCF_ERR_INCOMP_FW;
 #if (HCF_SLEEP) & HCF_DDS
 		ifbp->IFB_TickCnt = 0;				//start 2 second period (with 1 tick uncertanty)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   /*8*/ case  HCF_ACT_PRS_SCAN:                   // Hermes PRS Scan (F102)
 		OPW( HREG_PARAM_1, 0x3FFF );
 		//Fall through in HCF_ACT_TALLIES
@@ -1740,7 +1927,11 @@ int	rc = HCF_ERR_INCOMP_FW;
  * - A command other than Continue, Enable, Disable, Connect or Disconnect is given.
  * - An invalid combination of the subfields is given or a bit outside the subfields is given.
  * - any return code besides HCF_SUCCESS.
+<<<<<<< HEAD
  * - reentrancy, may be  caused by calling a hcf_function without adequate protection against NIC interrupts or
+=======
+ * - reentrancy, may be caused by calling a hcf_function without adequate protection against NIC interrupts or
+>>>>>>> refs/remotes/origin/master
  *   multi-threading
  *
  *.DIAGRAM
@@ -1775,7 +1966,10 @@ hcf_cntl( IFBP ifbp, hcf_16 cmd )
 	/*6*/   rc = cmd_exe( ifbp, cmd, 0 );
 #if (HCF_SLEEP) & HCF_DDS
 		ifbp->IFB_TickCnt = 0;              //start 2 second period (with 1 tick uncertanty)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_DDS
 	}
 #if HCF_DMA
@@ -1787,10 +1981,14 @@ hcf_cntl( IFBP ifbp, hcf_16 cmd )
 		DESC_STRCT *p;
 		if ( cmd == HCF_CNTL_DISABLE || cmd == HCF_CNTL_ENABLE ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			OUT_PORT_DWORD( (io_port + HREG_DMA_CTRL), DMA_CTRLSTAT_RESET);						/*8*/
 =======
 			OUT_PORT_DWORD( (io_port + HREG_DMA_CTRL), DMA_CTRLSTAT_RESET);                     /*8*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			OUT_PORT_DWORD( (io_port + HREG_DMA_CTRL), DMA_CTRLSTAT_RESET);                     /*8*/
+>>>>>>> refs/remotes/origin/master
 			ifbp->IFB_CntlOpt &= ~DMA_ENABLED;
 		}
 		if ( cmd == HCF_CNTL_ENABLE ) {
@@ -1800,6 +1998,7 @@ hcf_cntl( IFBP ifbp, hcf_16 cmd )
 			 */
 			ifbp->IFB_CntlOpt |= DMA_ENABLED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			HCFASSERT( NT_ASSERT, NEVER_TESTED )
 			// make the entire rx descriptor chain DMA-owned, so the DMA engine can (re-)use it.
 			p = ifbp->IFB_FirstDesc[DMA_RX];
@@ -1807,13 +2006,18 @@ hcf_cntl( IFBP ifbp, hcf_16 cmd )
 				if ( 1 ) 	{ //begin alternative
 					HCFASSERT( NT_ASSERT, NEVER_TESTED )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			HCFASSERT( NT_ASSERT, NEVER_TESTED );
 			// make the entire rx descriptor chain DMA-owned, so the DMA engine can (re-)use it.
 			p = ifbp->IFB_FirstDesc[DMA_RX];
 			if (p != NULL) {   //;? Think this over again in the light of the new chaining strategy
 				if ( 1 )    { //begin alternative
 					HCFASSERT( NT_ASSERT, NEVER_TESTED );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					put_frame_lst( ifbp, ifbp->IFB_FirstDesc[DMA_RX], DMA_RX );
 					if ( ifbp->IFB_FirstDesc[DMA_RX] ) {
 						put_frame_lst( ifbp, ifbp->IFB_FirstDesc[DMA_RX]->next_desc_addr, DMA_RX );
@@ -1833,17 +2037,23 @@ hcf_cntl( IFBP ifbp, hcf_16 cmd )
 	}
 #endif // HCF_DMA
 <<<<<<< HEAD
+<<<<<<< HEAD
 	HCFASSERT( rc == HCF_SUCCESS, rc )
 	HCFLOGEXIT( HCF_TRACE_CNTL )
 =======
 	HCFASSERT( rc == HCF_SUCCESS, rc );
 	HCFLOGEXIT( HCF_TRACE_CNTL );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HCFASSERT( rc == HCF_SUCCESS, rc );
+	HCFLOGEXIT( HCF_TRACE_CNTL );
+>>>>>>> refs/remotes/origin/master
 	return rc;
 } // hcf_cntl
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.MODULE		int hcf_connect( IFBP ifbp, hcf_io io_base )
@@ -1980,6 +2190,8 @@ hcf_32		prot_cnt;
 hcf_8		*q;
 LTV_STRCT	x;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.MODULE        int hcf_connect( IFBP ifbp, hcf_io io_base )
  *.PURPOSE       Grants access right for the HCF to the IFB.
@@ -2023,7 +2235,11 @@ LTV_STRCT	x;
  * hcf_connect passes the MSF-defined location of the IFB to the HCF and grants or revokes access right for the
  * HCF to the IFB. Revoking is done by specifying HCF_DISCONNECT rather than an I/O address for the parameter
  * io_base.  Every call of hcf_connect in "connect" mode, must eventually be followed by a call of hcf_connect
+<<<<<<< HEAD
  * in "disconnect" mode. Clalling hcf_connect in "connect"/"disconnect" mode can not be nested.
+=======
+ * in "disconnect" mode. Calling hcf_connect in "connect"/"disconnect" mode can not be nested.
+>>>>>>> refs/remotes/origin/master
  * The IFB address must be used as a handle with all subsequent HCF-function calls and the HCF uses the IFB
  * address as a handle when it performs a call(back) of an MSF-function (i.e. msf_assert).
  *
@@ -2051,7 +2267,11 @@ LTV_STRCT	x;
  *   specification for S/W reset
  *   Note 2: it turns out that on some H/W constellations, the clock to access the EEProm is not lowered
  *   to an appropriate frequency by HREG_IO_SRESET. By giving an HCMD_INI first, this problem is worked around.
+<<<<<<< HEAD
  *2b: Experimentally it is determined over a wide range of F/W versions that waiting for the for Cmd bit in
+=======
+ *2b: Experimentally it is determined over a wide range of F/W versions that are waiting for the for Cmd bit in
+>>>>>>> refs/remotes/origin/master
  *   Ev register gives a workable strategy. The available documentation does not give much clues.
  *4: clear and initialize the IFB
  *   The HCF house keeping info is designed such that zero is the appropriate initial value for as much as
@@ -2114,7 +2334,10 @@ hcf_connect( IFBP ifbp, hcf_io io_base )
 	hcf_32      prot_cnt;
 	hcf_8       *q;
 	LTV_STRCT   x;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if HCF_ASSERT
 	hcf_16 xa = ifbp->IFB_FWIdentity.typ;
 	/* is assumed to cause an assert later on if hcf_connect is called without intervening hcf_disconnect.
@@ -2125,21 +2348,28 @@ hcf_connect( IFBP ifbp, hcf_io io_base )
 #endif // HCF_ASSERT
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ( io_base == HCF_DISCONNECT ) {					//disconnect
 		io_addr = ifbp->IFB_IOBase;
 		OPW( HREG_INT_EN, 0 );		//;?workaround against dying F/W on subsequent hcf_connect calls
 	} else {											//connect								/* 0 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ( io_base == HCF_DISCONNECT ) {                  //disconnect
 		io_addr = ifbp->IFB_IOBase;
 		OPW( HREG_INT_EN, 0 );      //;?workaround against dying F/W on subsequent hcf_connect calls
 	} else {                                            //connect                               /* 0 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		io_addr = io_base;
 	}
 
 #if 0 //;? if a subsequent hcf_connect is preceded by an hcf_disconnect the wakeup is not needed !!
 #if HCF_SLEEP
+<<<<<<< HEAD
 <<<<<<< HEAD
     OUT_PORT_WORD( .....+HREG_IO, HREG_IO_WAKEUP_ASYNC ); 	    //OPW not yet useable
 	MSF_WAIT(800);								// MSF-defined function to wait n microseconds.
@@ -2147,11 +2377,16 @@ hcf_connect( IFBP ifbp, hcf_io io_base )
 	OUT_PORT_WORD( .....+HREG_IO, HREG_IO_WAKEUP_ASYNC );       //OPW not yet useable
 	MSF_WAIT(800);                              // MSF-defined function to wait n microseconds.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	OUT_PORT_WORD( .....+HREG_IO, HREG_IO_WAKEUP_ASYNC );       //OPW not yet useable
+	MSF_WAIT(800);                              // MSF-defined function to wait n microseconds.
+>>>>>>> refs/remotes/origin/master
 	note that MSF_WAIT uses not yet defined!!!! IFB_IOBase and IFB_TickIni (via PROT_CNT_INI)
 	so be careful if this code is restored
 #endif // HCF_SLEEP
 #endif // 0
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if ( (HCF_TYPE) & HCF_TYPE_PRELOADED ) == 0	//switch clock back for SEEPROM access  !!!
 	OUT_PORT_WORD( io_addr + HREG_CMD, HCMD_INI );  	    //OPW not yet useable
@@ -2174,6 +2409,8 @@ hcf_connect( IFBP ifbp, hcf_io io_base )
 	ifbp->IFB_IORange	= HREG_IO_RANGE;
 	ifbp->IFB_CntlOpt	= USE_16BIT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if ( (HCF_TYPE) & HCF_TYPE_PRELOADED ) == 0    //switch clock back for SEEPROM access  !!!
 	OUT_PORT_WORD( io_addr + HREG_CMD, HCMD_INI );          //OPW not yet useable
 	prot_cnt = INI_TICK_INI;
@@ -2194,23 +2431,32 @@ hcf_connect( IFBP ifbp, hcf_io io_base )
 	ifbp->IFB_IOBase    = io_addr;              //set IO_Base asap, so asserts via HREG_SW_2 don't harm
 	ifbp->IFB_IORange   = HREG_IO_RANGE;
 	ifbp->IFB_CntlOpt   = USE_16BIT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if HCF_ASSERT
 	assert_ifbp = ifbp;
 	ifbp->IFB_AssertLvl = 1;
 #if (HCF_ASSERT) & HCF_ASSERT_LNK_MSF_RTN
 	if ( io_base != HCF_DISCONNECT ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ifbp->IFB_AssertRtn = (MSF_ASSERT_RTNP)msf_assert;											/* 6 */
 	}
 #endif // HCF_ASSERT_LNK_MSF_RTN
 #if (HCF_ASSERT) & HCF_ASSERT_MB				//build the structure to pass the assert info to hcf_put_info
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ifbp->IFB_AssertRtn = (MSF_ASSERT_RTNP)msf_assert;                                          /* 6 */
 	}
 #endif // HCF_ASSERT_LNK_MSF_RTN
 #if (HCF_ASSERT) & HCF_ASSERT_MB                //build the structure to pass the assert info to hcf_put_info
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ifbp->IFB_AssertStrct.len = sizeof(ifbp->IFB_AssertStrct)/sizeof(hcf_16) - 1;
 	ifbp->IFB_AssertStrct.typ = CFG_MB_INFO;
 	ifbp->IFB_AssertStrct.base_typ = CFG_MB_ASSERT;
@@ -2220,6 +2466,7 @@ hcf_connect( IFBP ifbp, hcf_io io_base )
 	ifbp->IFB_AssertStrct.frag_buf[0].frag_addr = &ifbp->IFB_AssertLine;
 #endif // HCF_ASSERT_MB
 #endif // HCF_ASSERT
+<<<<<<< HEAD
 <<<<<<< HEAD
 	IF_PROT_TIME( prot_cnt = ifbp->IFB_TickIni = INI_TICK_INI; )
 #if ( (HCF_TYPE) & HCF_TYPE_PRELOADED ) == 0
@@ -2250,6 +2497,8 @@ hcf_connect( IFBP ifbp, hcf_io io_base )
 if ( io_base != HCF_DISCONNECT ) {
 		rc = init( ifbp );																			/*14*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	IF_PROT_TIME( prot_cnt = ifbp->IFB_TickIni = INI_TICK_INI );
 #if ( (HCF_TYPE) & HCF_TYPE_PRELOADED ) == 0
 	//!! No asserts before Reset-bit in HREG_IO is cleared
@@ -2278,7 +2527,10 @@ if ( io_base != HCF_DISCONNECT ) {
 #endif // HCF_TYPE_PRELOADED
 	if ( io_base != HCF_DISCONNECT ) {
 		rc = init( ifbp );                                                                          /*14*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if ( rc == HCF_SUCCESS ) {
 			x.len = 2;
 			x.typ = CFG_NIC_BUS_TYPE;
@@ -2288,16 +2540,22 @@ if ( io_base != HCF_DISCONNECT ) {
 			if ( x.len == 0 || x.val[0] == 0x0002 || x.val[0] == 0x0003 ) {
 #if (HCF_IO) & HCF_IO_32BITS
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ifbp->IFB_CntlOpt &= ~USE_16BIT;			//reset USE_16BIT
 #endif // HCF_IO_32BITS
 #if HCF_DMA
 				ifbp->IFB_CntlOpt |= USE_DMA;				//SET DMA
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				ifbp->IFB_CntlOpt &= ~USE_16BIT;            //reset USE_16BIT
 #endif // HCF_IO_32BITS
 #if HCF_DMA
 				ifbp->IFB_CntlOpt |= USE_DMA;               //SET DMA
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 				ifbp->IFB_IORange = 0x40 /*i.s.o. HREG_IO_RANGE*/;
 #endif // HCF_DMA
@@ -2306,15 +2564,20 @@ if ( io_base != HCF_DISCONNECT ) {
 	} else HCFASSERT(  ( ifbp->IFB_Magic ^= HCF_MAGIC ) == 0, ifbp->IFB_Magic ) /*NOP*/;
 	/* of above HCFASSERT only the side effect is needed, NOP in case HCFASSERT is dummy */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ifbp->IFB_IOBase = io_base;																		/* 0*/
 =======
 	ifbp->IFB_IOBase = io_base;                                                                     /* 0*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ifbp->IFB_IOBase = io_base;                                                                     /* 0*/
+>>>>>>> refs/remotes/origin/master
 	return rc;
 } // hcf_connect
 
 #if HCF_DMA
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 * Function get_frame_lst
 *  - resolve the "last host-owned descriptor" problems when a descriptor list is reclaimed by the MSF.
@@ -2347,6 +2610,8 @@ if ( io_base != HCF_DISCONNECT ) {
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Function get_frame_lst
  *  - resolve the "last host-owned descriptor" problems when a descriptor list is reclaimed by the MSF.
  *
@@ -2377,11 +2642,15 @@ if ( io_base != HCF_DISCONNECT ) {
  * tx_rx_flag      : specifies 'transmit' or 'receive' descriptor.
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC DESC_STRCT*
 get_frame_lst( IFBP ifbp, int tx_rx_flag )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 DESC_STRCT *head = ifbp->IFB_FirstDesc[tx_rx_flag];
 DESC_STRCT *copy, *p, *prev;
@@ -2394,6 +2663,8 @@ DESC_STRCT *copy, *p, *prev;
 		while ( ( p->BUF_SIZE & DESC_EOP ) == 0 && p->next_desc_addr ) {
 			if ( ( ifbp->IFB_CntlOpt & DMA_ENABLED ) == 0 ) {	//clear control bits when disabled
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DESC_STRCT *head = ifbp->IFB_FirstDesc[tx_rx_flag];
 	DESC_STRCT *copy, *p, *prev;
 
@@ -2404,12 +2675,16 @@ DESC_STRCT *copy, *p, *prev;
 		p = prev = head;
 		while ( ( p->BUF_SIZE & DESC_EOP ) == 0 && p->next_desc_addr ) {
 			if ( ( ifbp->IFB_CntlOpt & DMA_ENABLED ) == 0 ) {   //clear control bits when disabled
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				p->BUF_CNT &= DESC_CNT_MASK;
 			}
 			prev = p;
 			p = p->next_desc_addr;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 								//.  if DMA enabled
 		if ( ifbp->IFB_CntlOpt & DMA_ENABLED ) {
@@ -2418,17 +2693,23 @@ DESC_STRCT *copy, *p, *prev;
 			if ( p->BUF_CNT & DESC_DMA_OWNED || head->next_desc_addr == NULL ) {
 								//.  .  .  refuse to return FrameList to caller
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		                                //.  if DMA enabled
 		if ( ifbp->IFB_CntlOpt & DMA_ENABLED ) {
 			                        //.  .  if last descriptor of FrameList is DMA owned
 			                        //.  .  or if FrameList is single (DELWA) Descriptor
 			if ( p->BUF_CNT & DESC_DMA_OWNED || head->next_desc_addr == NULL ) {
 				                //.  .  .  refuse to return FrameList to caller
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				head = NULL;
 			}
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 								//if returnable FrameList found
 	if ( head ) {
@@ -2462,6 +2743,8 @@ DESC_STRCT *copy, *p, *prev;
 		}
 								//.  strip DESC_SOP from first descriptor
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	                                        //if returnable FrameList found
 	if ( head ) {
 		                                //.  if FrameList is single (DELWA) Descriptor (implies DMA disabled)
@@ -2493,21 +2776,29 @@ DESC_STRCT *copy, *p, *prev;
 			ifbp->IFB_FirstDesc[tx_rx_flag] = p;
 		}
 		                                //.  strip DESC_SOP from first descriptor
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		head->BUF_SIZE &= DESC_CNT_MASK;
 		//head->BUF_CNT &= DESC_CNT_MASK;  get rid of DESC_DMA_OWNED
 		head->next_desc_phys_addr = 0xDEAD0000; //! just to be nice, not really needed
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 								//return the just detached FrameList (if any)
 =======
 	                                        //return the just detached FrameList (if any)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	                                        //return the just detached FrameList (if any)
+>>>>>>> refs/remotes/origin/master
 	return head;
 } // get_frame_lst
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 * Function put_frame_lst
 *
@@ -2580,6 +2871,8 @@ put_frame_lst( IFBP ifbp, DESC_STRCT *descp, int tx_rx_flag )
 				HCFASSERT( ifbp->IFB_LastDesc[tx_rx_flag]->next_desc_addr == NULL,
 						   (hcf_32)ifbp->IFB_LastDesc[tx_rx_flag]->next_desc_addr)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Function put_frame_lst
  *
  * This function
@@ -2650,17 +2943,24 @@ put_frame_lst( IFBP ifbp, DESC_STRCT *descp, int tx_rx_flag )
 				HCFASSERT( ifbp->IFB_LastDesc[tx_rx_flag], (hcf_32)descp );
 				HCFASSERT( ifbp->IFB_LastDesc[tx_rx_flag]->next_desc_addr == NULL,
 					   (hcf_32)ifbp->IFB_LastDesc[tx_rx_flag]->next_desc_addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 //				p->buf_cntl.cntl_stat |= DESC_DMA_OWNED;
 				ifbp->IFB_LastDesc[tx_rx_flag]->next_desc_addr = descp;
 				ifbp->IFB_LastDesc[tx_rx_flag]->next_desc_phys_addr = descp->desc_phys_addr;
 				port = HREG_RXDMA_PTR32;
 				if ( tx_rx_flag ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					p->BUF_SIZE |= DESC_EOP;	// p points at the last descriptor in the caller-supplied descriptor chain
 =======
 					p->BUF_SIZE |= DESC_EOP;    // p points at the last descriptor in the caller-supplied descriptor chain
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					p->BUF_SIZE |= DESC_EOP;    // p points at the last descriptor in the caller-supplied descriptor chain
+>>>>>>> refs/remotes/origin/master
 					descp->BUF_SIZE |= DESC_SOP;
 					port = HREG_TXDMA_PTR32;
 				}
@@ -2674,6 +2974,7 @@ put_frame_lst( IFBP ifbp, DESC_STRCT *descp, int tx_rx_flag )
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.MODULE		DESC_STRCT* hcf_dma_rx_get( IFBP ifbp )
@@ -2722,6 +3023,8 @@ put_frame_lst( IFBP ifbp, DESC_STRCT *descp, int tx_rx_flag )
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.MODULE        DESC_STRCT* hcf_dma_rx_get( IFBP ifbp )
  *.PURPOSE       decapsulate a message and provides that message to the MSF.
@@ -2768,11 +3071,15 @@ put_frame_lst( IFBP ifbp, DESC_STRCT *descp, int tx_rx_flag )
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 DESC_STRCT*
 hcf_dma_rx_get (IFBP ifbp)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 DESC_STRCT *descp;	// pointer to start of FrameList
 
@@ -2789,6 +3096,8 @@ int i;
 DESC_STRCT *p = descp->next_desc_addr;	//pointer to 2nd descriptor of frame
 		HCFASSERT(p, 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DESC_STRCT *descp;  // pointer to start of FrameList
 
 	descp = get_frame_lst( ifbp, DMA_RX );
@@ -2799,11 +3108,15 @@ DESC_STRCT *p = descp->next_desc_addr;	//pointer to 2nd descriptor of frame
 		int i;
 		DESC_STRCT *p = descp->next_desc_addr;  //pointer to 2nd descriptor of frame
 		HCFASSERT(p, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		// The 2nd descriptor contains (maybe) a SNAP header plus part or whole of the payload.
 		//determine decapsulation sub-flag in RxFS
 		i = *(wci_recordp)&descp->buf_addr[HFS_STAT] & ( HFS_STAT_MSG_TYPE | HFS_STAT_ERR );
 		if ( i == HFS_STAT_TUNNEL ||
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 ( i == HFS_STAT_1042 && hcf_encap( (wci_bufp)&p->buf_addr[HCF_DASA_SIZE] ) != ENC_TUNNEL )) {
 			// The 2nd descriptor contains a SNAP header plus part or whole of the payload.
@@ -2811,12 +3124,17 @@ DESC_STRCT *p = descp->next_desc_addr;	//pointer to 2nd descriptor of frame
 			// perform decapsulation
 			HCFASSERT(p->BUF_SIZE >=8, p->BUF_SIZE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		     ( i == HFS_STAT_1042 && hcf_encap( (wci_bufp)&p->buf_addr[HCF_DASA_SIZE] ) != ENC_TUNNEL )) {
 			// The 2nd descriptor contains a SNAP header plus part or whole of the payload.
 			HCFASSERT( p->BUF_CNT == (p->buf_addr[5] + (p->buf_addr[4]<<8) + 2*6 + 2 - 8), p->BUF_CNT );
 			// perform decapsulation
 			HCFASSERT(p->BUF_SIZE >=8, p->BUF_SIZE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			// move SA[2:5] in the second buffer to replace part of the SNAP header
 			for ( i=3; i >= 0; i--) p->buf_addr[i+8] = p->buf_addr[i];
 			// copy DA[0:5], SA[0:1] from first buffer to second buffer
@@ -2828,15 +3146,20 @@ DESC_STRCT *p = descp->next_desc_addr;	//pointer to 2nd descriptor of frame
 #endif // HCF_ENC
 	if ( descp == NULL ) ifbp->IFB_DmaPackets &= (hcf_16)~HREG_EV_RDMAD;  //;?could be integrated into get_frame_lst
 <<<<<<< HEAD
+<<<<<<< HEAD
 	HCFLOGEXIT( HCF_TRACE_DMA_RX_GET )
 =======
 	HCFLOGEXIT( HCF_TRACE_DMA_RX_GET );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HCFLOGEXIT( HCF_TRACE_DMA_RX_GET );
+>>>>>>> refs/remotes/origin/master
 	return descp;
 } // hcf_dma_rx_get
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.MODULE		void hcf_dma_rx_put( IFBP ifbp, DESC_STRCT *descp )
@@ -2883,6 +3206,8 @@ DESC_STRCT *p = descp->next_desc_addr;	//pointer to 2nd descriptor of frame
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.MODULE        void hcf_dma_rx_put( IFBP ifbp, DESC_STRCT *descp )
  *.PURPOSE       supply buffers for receive purposes.
@@ -2927,11 +3252,15 @@ DESC_STRCT *p = descp->next_desc_addr;	//pointer to 2nd descriptor of frame
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void
 hcf_dma_rx_put( IFBP ifbp, DESC_STRCT *descp )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	HCFLOGENTRY( HCF_TRACE_DMA_RX_PUT, 0xDA01 )
 	HCFASSERT( ifbp->IFB_Magic == HCF_MAGIC, ifbp->IFB_Magic )
@@ -2941,10 +3270,16 @@ hcf_dma_rx_put( IFBP ifbp, DESC_STRCT *descp )
 	HCFASSERT( ifbp->IFB_Magic == HCF_MAGIC, ifbp->IFB_Magic );
 	HCFASSERT_INT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HCFLOGENTRY( HCF_TRACE_DMA_RX_PUT, 0xDA01 );
+	HCFASSERT( ifbp->IFB_Magic == HCF_MAGIC, ifbp->IFB_Magic );
+	HCFASSERT_INT;
+>>>>>>> refs/remotes/origin/master
 
 	put_frame_lst( ifbp, descp, DMA_RX );
 #if HCF_ASSERT && (HCF_ENCAP) == HCF_ENC
 	if ( descp->buf_addr ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		HCFASSERT( descp->BUF_SIZE == HCF_DMA_RX_BUF1_SIZE, descp->BUF_SIZE )
 		HCFASSERT( descp->next_desc_addr, 0 ) // first descriptor should be followed by another descriptor
@@ -2954,6 +3289,8 @@ hcf_dma_rx_put( IFBP ifbp, DESC_STRCT *descp )
 #endif // HCFASSERT / HCF_ENC
 	HCFLOGEXIT( HCF_TRACE_DMA_RX_PUT )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		HCFASSERT( descp->BUF_SIZE == HCF_DMA_RX_BUF1_SIZE, descp->BUF_SIZE );
 		HCFASSERT( descp->next_desc_addr, 0 ); // first descriptor should be followed by another descriptor
 		// The second DB is for SNAP and payload purposes. It should be a minimum of 12 bytes in size.
@@ -2961,11 +3298,15 @@ hcf_dma_rx_put( IFBP ifbp, DESC_STRCT *descp )
 	}
 #endif // HCFASSERT / HCF_ENC
 	HCFLOGEXIT( HCF_TRACE_DMA_RX_PUT );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } // hcf_dma_rx_put
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.MODULE		DESC_STRCT* hcf_dma_tx_get( IFBP ifbp )
@@ -3015,6 +3356,8 @@ DESC_STRCT *descp;	// pointer to start of FrameList
 	}
 	HCFLOGEXIT( HCF_TRACE_DMA_TX_GET )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.MODULE        DESC_STRCT* hcf_dma_tx_get( IFBP ifbp )
  *.PURPOSE       DMA mode: reclaims and decapsulates packets in the tx descriptor chain if:
@@ -3060,12 +3403,16 @@ hcf_dma_tx_get( IFBP ifbp )
 		ifbp->IFB_DmaPackets &= (hcf_16)~HREG_EV_TDMAD;
 	}
 	HCFLOGEXIT( HCF_TRACE_DMA_TX_GET );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return descp;
 } // hcf_dma_tx_get
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.MODULE		void hcf_dma_tx_put( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
@@ -3253,6 +3600,8 @@ int			i;
 	put_frame_lst( ifbp, descp, DMA_TX );
 	HCFLOGEXIT( HCF_TRACE_DMA_TX_PUT )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.MODULE        void hcf_dma_tx_put( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
  *.PURPOSE       puts a packet in the Tx DMA queue in host ram and kicks off the TxDma engine.
@@ -3409,11 +3758,15 @@ hcf_dma_tx_put( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 	}
 	put_frame_lst( ifbp, descp, DMA_TX );
 	HCFLOGEXIT( HCF_TRACE_DMA_TX_PUT );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } // hcf_dma_tx_put
 
 #endif // HCF_DMA
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (HCF_DL_ONLY) == 0
 /************************************************************************************************************
@@ -3469,6 +3822,8 @@ hcf_16	t = (hcf_16)(*type<<8) + *(type+1);																/* 2 */
 		if ( t == 0x8137 || t == 0x80F3 ) {
 			rc = ENC_TUNNEL;																			/* 6 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************************
  *
  *.MODULE        hcf_8 hcf_encap( wci_bufp type )
@@ -3517,13 +3872,17 @@ hcf_encap( wci_bufp type )
 	if ( t > 1500 ) {                                                                                   /* 4 */
 		if ( t == 0x8137 || t == 0x80F3 ) {
 			rc = ENC_TUNNEL;                                                                            /* 6 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			rc = ENC_1042;
 		}
 	}
 	return rc;
 } // hcf_encap
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif // HCF_ENCAP
 #endif // HCF_DL_ONLY
@@ -3634,6 +3993,8 @@ hcf_encap( wci_bufp type )
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /************************************************************************************************************
@@ -3740,11 +4101,15 @@ hcf_encap( wci_bufp type )
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int
 hcf_get_info( IFBP ifbp, LTVP ltvp )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int			rc = HCF_SUCCESS;
 hcf_16		len = ltvp->len;
@@ -3768,6 +4133,8 @@ int			i;
 #if HCF_TALLIES
 	if ( type == CFG_TALLIES ) {													/*3*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int         rc = HCF_SUCCESS;
 	hcf_16      len = ltvp->len;
 	hcf_16      type = ltvp->typ;
@@ -3789,16 +4156,23 @@ int			i;
 
 #if HCF_TALLIES
 	if ( type == CFG_TALLIES ) {                                                    /*3*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		(void)hcf_action( ifbp, HCF_ACT_TALLIES );
 		q = (hcf_16*)&ifbp->IFB_TallyLen;
 	}
 #endif // HCF_TALLIES
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (HCF_EXT) & HCF_EXT_MB
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if ( type == CFG_MB_INFO ) {
 		if ( ifbp->IFB_MBInfoLen ) {
 			if ( ifbp->IFB_MBp[ifbp->IFB_MBRp] == 0xFFFF ) {
@@ -3806,16 +4180,21 @@ int			i;
 			}
 			q = &ifbp->IFB_MBp[ifbp->IFB_MBRp];
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ifbp->IFB_MBRp += *q + 1;	//update read pointer
 =======
 			ifbp->IFB_MBRp += *q + 1;   //update read pointer
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ifbp->IFB_MBRp += *q + 1;   //update read pointer
+>>>>>>> refs/remotes/origin/master
 			if ( ifbp->IFB_MBp[ifbp->IFB_MBRp] == 0xFFFF ) {
 				ifbp->IFB_MBRp = 0;
 			}
 			ifbp->IFB_MBInfoLen = ifbp->IFB_MBp[ifbp->IFB_MBRp];
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif // HCF_EXT_MB
 	if ( q != NULL ) {						//a special or CFG_TALLIES or CFG_MB_INFO
@@ -3825,6 +4204,11 @@ int			i;
 	if ( q != NULL ) {                      //a special or CFG_TALLIES or CFG_MB_INFO
 		i = min( len, *q ) + 1;             //total size of destination (including T-field)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if ( q != NULL ) {                      //a special or CFG_TALLIES or CFG_MB_INFO
+		i = min( len, *q ) + 1;             //total size of destination (including T-field)
+>>>>>>> refs/remotes/origin/master
 		while ( i-- ) {
 			*p++ = *q;
 #if (HCF_TALLIES) & HCF_TALLIES_RESET
@@ -3835,16 +4219,22 @@ int			i;
 			q++;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {								// not a special nor CFG_TALLIES nor CFG_MB_INFO
 		if ( type == CFG_CNTL_OPT ) {										//read back effective options
 =======
 	} else {                                // not a special nor CFG_TALLIES nor CFG_MB_INFO
 		if ( type == CFG_CNTL_OPT ) {                                       //read back effective options
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {                                // not a special nor CFG_TALLIES nor CFG_MB_INFO
+		if ( type == CFG_CNTL_OPT ) {                                       //read back effective options
+>>>>>>> refs/remotes/origin/master
 			ltvp->len = 2;
 			ltvp->val[0] = ifbp->IFB_CntlOpt;
 #if (HCF_EXT) & HCF_EXT_NIC_ACCESS
 		} else if ( type == CFG_PROD_DATA ) {  //only needed for some test tool on top of H-II NDIS driver
+<<<<<<< HEAD
 <<<<<<< HEAD
 hcf_io		io_port;
 wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macros with embedded assembly
@@ -3856,6 +4246,8 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
 			if (i > 0 ) {
 				pt = (wci_bufp)p;	//just to help ease writing macros with embedded assembly
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			hcf_io      io_port;
 			wci_bufp    pt;                 //pointer with the "right" type, just to help ease writing macros with embedded assembly
 			OPW( HREG_AUX_PAGE, (hcf_16)(PLUG_DATA_OFFSET >> 7) );
@@ -3865,27 +4257,37 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
 			i = len - 1;
 			if (i > 0 ) {
 				pt = (wci_bufp)p;   //just to help ease writing macros with embedded assembly
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				IN_PORT_STRING_8_16( io_port, pt, i ); //space used by T: -1
 			}
 		} else if ( type == CFG_CMD_HCF ) {
 #define P ((CFG_CMD_HCF_STRCT FAR *)ltvp)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			HCFASSERT( P->cmd == CFG_CMD_HCF_REG_ACCESS, P->cmd )		//only Hermes register access supported
 			if ( P->cmd == CFG_CMD_HCF_REG_ACCESS ) {
 				HCFASSERT( P->mode < ifbp->IFB_IOBase, P->mode )		//Check Register space
 				ltvp->len = min( len, 4 );								//RESTORE ltv length
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			HCFASSERT( P->cmd == CFG_CMD_HCF_REG_ACCESS, P->cmd );       //only Hermes register access supported
 			if ( P->cmd == CFG_CMD_HCF_REG_ACCESS ) {
 				HCFASSERT( P->mode < ifbp->IFB_IOBase, P->mode );        //Check Register space
 				ltvp->len = min( len, 4 );                              //RESTORE ltv length
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				P->add_info = IPW( P->mode );
 			}
 #undef P
 #endif // HCF_EXT_NIC_ACCESS
 #if (HCF_ASSERT) & HCF_ASSERT_PRINTF
+<<<<<<< HEAD
 <<<<<<< HEAD
         } else if (type == CFG_FW_PRINTF) {
            rc = fw_printf(ifbp, (CFG_FW_PRINTF_STRCT*)ltvp);
@@ -3893,11 +4295,16 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
 		} else if (type == CFG_FW_PRINTF) {
 			rc = fw_printf(ifbp, (CFG_FW_PRINTF_STRCT*)ltvp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (type == CFG_FW_PRINTF) {
+			rc = fw_printf(ifbp, (CFG_FW_PRINTF_STRCT*)ltvp);
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_ASSERT_PRINTF
 		} else if ( type >= CFG_RID_FW_MIN ) {
 //;? by using HCMD_BUSY option when calling cmd_exe, using a get_frag with length 0 just to set up the
 //;? BAP and calling cmd_cmpl, you could merge the 2 Busy waits. Whether this really helps (and what
 //;? would be the optimal sequence in cmd_exe and get_frag) would have to be MEASURED
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*17*/		if ( ( rc = cmd_exe( ifbp, HCMD_ACCESS, type ) ) == HCF_SUCCESS &&
 				 ( rc = setup_bap( ifbp, type, 0, IO_IN ) ) == HCF_SUCCESS ) {
@@ -3909,6 +4316,8 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
 			}
 /*12*/	} else HCFASSERT( DO_ASSERT, type ) /*NOP*/; //NOP in case HCFASSERT is dummy
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*17*/  if ( ( rc = cmd_exe( ifbp, HCMD_ACCESS, type ) ) == HCF_SUCCESS &&
 				 ( rc = setup_bap( ifbp, type, 0, IO_IN ) ) == HCF_SUCCESS ) {
 				get_frag( ifbp, (wci_bufp)&ltvp->len, 2*len+2 BE_PAR(2) );
@@ -3918,7 +4327,10 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
 				}
 			}
 	/*12*/  } else HCFASSERT( DO_ASSERT, type ) /*NOP*/; //NOP in case HCFASSERT is dummy
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if ( len < ltvp->len ) {
 		ltvp->len = len;
@@ -3928,17 +4340,23 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
 	}
 	HCFASSERT( rc == HCF_SUCCESS || ( rc == HCF_ERR_LEN && ifbp->IFB_AssertTrace & 1<<HCF_TRACE_PUT_INFO ),
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   MERGE_2( type, rc ) )																/*20*/
 	HCFLOGEXIT( HCF_TRACE_GET_INFO )
 =======
 		   MERGE_2( type, rc ) );                                                                /*20*/
 	HCFLOGEXIT( HCF_TRACE_GET_INFO );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   MERGE_2( type, rc ) );                                                                /*20*/
+	HCFLOGEXIT( HCF_TRACE_GET_INFO );
+>>>>>>> refs/remotes/origin/master
 	return rc;
 } // hcf_get_info
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.MODULE		int hcf_put_info( IFBP ifbp, LTVP ltvp )
@@ -4009,6 +4427,8 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.MODULE        int hcf_put_info( IFBP ifbp, LTVP ltvp )
  *.PURPOSE       Transfers operation and configuration information to the Card and to the HCF.
@@ -4077,11 +4497,15 @@ wci_bufp	pt;					//pointer with the "right" type, just to help ease writing macr
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int
 hcf_put_info( IFBP ifbp, LTVP ltvp )
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 int rc = HCF_SUCCESS;
 
@@ -4122,6 +4546,8 @@ int rc = HCF_SUCCESS;
 #undef P
  }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = HCF_SUCCESS;
 
 	HCFLOGENTRY( HCF_TRACE_PUT_INFO, ltvp->typ );
@@ -4161,13 +4587,17 @@ int rc = HCF_SUCCESS;
 			) { ifbp->IFB_MICTxCntl = 0; }      //disable MIC-engine
 #undef P
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_TYPE_WPA
 
 	if ( ltvp->typ == CFG_PROG ) {
 		rc = download( ifbp, (CFG_PROG_STRCT FAR *)ltvp );
 	} else switch (ltvp->typ) {
 #if (HCF_ASSERT) & HCF_ASSERT_RT_MSF_RTN
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  case CFG_REG_ASSERT_RTNP:											//Register MSF Routines
 #define P ((CFG_REG_ASSERT_RTNP_STRCT FAR *)ltvp)
@@ -4244,6 +4674,8 @@ int rc = HCF_SUCCESS;
 	//DO NOT !!! HCFASSERT( rc == HCF_SUCCESS, rc )												/* 20 */
 	HCFLOGEXIT( HCF_TRACE_PUT_INFO )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case CFG_REG_ASSERT_RTNP:                                         //Register MSF Routines
 #define P ((CFG_REG_ASSERT_RTNP_STRCT FAR *)ltvp)
 			ifbp->IFB_AssertRtn = P->rtnp;
@@ -4317,11 +4749,15 @@ int rc = HCF_SUCCESS;
 		}
 	//DO NOT !!! HCFASSERT( rc == HCF_SUCCESS, rc )                                             /* 20 */
 	HCFLOGEXIT( HCF_TRACE_PUT_INFO );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 } // hcf_put_info
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (HCF_DL_ONLY) == 0
 /************************************************************************************************************
@@ -4465,6 +4901,8 @@ hcf_16		j;
 			lal -= i;						//adjust length still available in LookAhead
 			j -= i;							//adjust length still available in current fragment
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************************
  *
  *.MODULE        int hcf_rcv_msg( IFBP ifbp, DESC_STRCT *descp, unsigned int offset )
@@ -4605,22 +5043,30 @@ hcf_rcv_msg( IFBP ifbp, DESC_STRCT *descp, unsigned int offset )
 			i = min( lal, j );              //minimum of "what's available" in LookAhead and fragment size
 			lal -= i;                       //adjust length still available in LookAhead
 			j -= i;                         //adjust length still available in current fragment
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/*;? while loop could be improved by moving words but that is complicated on platforms with
 			 * alignment requirements*/
 			while ( i-- ) *cp++ = *lap++;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ( j ) {	//if LookAhead Buffer exhausted but still space in fragment, copy directly from NIC RAM
 =======
 		if ( j ) {  //if LookAhead Buffer exhausted but still space in fragment, copy directly from NIC RAM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ( j ) {  //if LookAhead Buffer exhausted but still space in fragment, copy directly from NIC RAM
+>>>>>>> refs/remotes/origin/master
 			get_frag( ifbp, cp, j BE_PAR(0) );
 			CALC_RX_MIC( cp, j );
 		}
 	} while ( ( descp = descp->next_desc_addr ) != NULL );
 #if (HCF_TYPE) & HCF_TYPE_WPA
 	if ( ifbp->IFB_RxFID ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		rc = check_mic( ifbp );				//prevents MIC error report if hcf_service_nic already consumed all
 	}
@@ -4842,6 +5288,8 @@ hcf_16		fid = 0;
 									 * USB flow awkward
 									 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = check_mic( ifbp );             //prevents MIC error report if hcf_service_nic already consumed all
 	}
 #endif // HCF_TYPE_WPA
@@ -5037,11 +5485,15 @@ hcf_send_msg( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 	 * but moving it inside the "if fid" logic makes the merging with the
 	 * USB flow awkward
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if (HCF_TYPE) & HCF_TYPE_WPA
 	tx_cntl |= ifbp->IFB_MICTxCntl;
 #endif // HCF_TYPE_WPA
 	fid = ifbp->IFB_TxFID;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (fid == 0 && ( fid = get_fid( ifbp ) ) != 0 ) 		/* 4 */
 			/* skip the next compound statement if:
@@ -5051,6 +5503,8 @@ hcf_send_msg( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 	{		// to match the closing curly bracket of above "if" in case of HCF_TYPE_USB
 											//calculate total length ;? superfluous unless CCX or Encapsulation
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (fid == 0 && ( fid = get_fid( ifbp ) ) != 0 )        /* 4 */
 		/* skip the next compound statement if:
 		   - pre-put message or
@@ -5058,11 +5512,15 @@ hcf_send_msg( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 		*/
 	{       // to match the closing curly bracket of above "if" in case of HCF_TYPE_USB
 		                                //calculate total length ;? superfluous unless CCX or Encapsulation
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		len = 0;
 		p = descp;
 		do len += p->BUF_CNT; while ( ( p = p->next_desc_addr ) != NULL );
 		p = descp;
+<<<<<<< HEAD
 <<<<<<< HEAD
 //;?	HCFASSERT( len <= HCF_MAX_MSG, len )
 /*7*/	(void)setup_bap( ifbp, fid, HFS_TX_CNTL, IO_OUT );
@@ -5073,6 +5531,8 @@ hcf_send_msg( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 			ifbp->IFB_TxFID = fid;
 			fid = 0;								//!!fid no longer available, be careful when modifying code
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 //;?		HCFASSERT( len <= HCF_MAX_MSG, len );
 	/*7*/   (void)setup_bap( ifbp, fid, HFS_TX_CNTL, IO_OUT );
 #if (HCF_TYPE) & HCF_TYPE_TX_DELAY
@@ -5081,11 +5541,15 @@ hcf_send_msg( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 			tx_cntl &= ~HFS_TX_CNTL_TX_DELAY;       //!!HFS_TX_CNTL_TX_DELAY no longer available
 			ifbp->IFB_TxFID = fid;
 			fid = 0;                                //!!fid no longer available, be careful when modifying code
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 #endif // HCF_TYPE_TX_DELAY
 		OPW( HREG_DATA_1, tx_cntl ) ;
 		OPW( HREG_DATA_1, 0 );
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if ! ( (HCF_TYPE) & HCF_TYPE_CCX )
 		HCFASSERT( p->BUF_CNT >= 14, p->BUF_CNT )
@@ -5156,6 +5620,8 @@ hcf_send_msg( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 // 180 degree error in logic ;? #if ALLOC_15
 /*20*/	if ( ifbp->IFB_RscInd == 0 ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		HCFASSERT( p->BUF_CNT >= 14, p->BUF_CNT );
 		                                /* assume DestAddr/SrcAddr/Len/Type ALWAYS contained in 1st fragment
@@ -5206,11 +5672,15 @@ hcf_send_msg( IFBP ifbp, DESC_STRCT *descp, hcf_16 tx_cntl )
 		 */
 // 180 degree error in logic ;? #if ALLOC_15
 	/*20*/  if ( ifbp->IFB_RscInd == 0 ) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ifbp->IFB_RscInd = get_fid( ifbp );
 		}
 // #endif // ALLOC_15
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 //	HCFASSERT( level::ifbp->IFB_RscInd, ifbp->IFB_RscInd )
 	HCFLOGEXIT( HCF_TRACE_SEND_MSG )
@@ -5257,6 +5727,8 @@ or
 *
 * IFB_RxLen	reflects the number of received bytes in 802.3 view (Including DestAddr, SrcAddr and Length,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 //	HCFASSERT( level::ifbp->IFB_RscInd, ifbp->IFB_RscInd );
 	HCFLOGEXIT( HCF_TRACE_SEND_MSG );
 	return rc;
@@ -5299,7 +5771,10 @@ or
 * When IFB_MBInfoLen is non-zero, at least one MBIB is available.
 *
 * IFB_RxLen reflects the number of received bytes in 802.3 view (Including DestAddr, SrcAddr and Length,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 * excluding MIC-padding, MIC and sum check) of active Rx Frame Structure. If no Rx Data s available, IFB_RxLen
 * equals 0x0000.
 * Repeated execution causes the Service NIC Function to provide information about subsequently received
@@ -5348,6 +5823,7 @@ or
 *
 * hcf_service_nic services the following Hermes events:
 <<<<<<< HEAD
+<<<<<<< HEAD
 * - HREG_EV_INFO		Asynchronous Information Frame
 * - HREG_EV_INFO_DROP	WMAC did not have sufficient RAM to build Unsolicited Information Frame
 * - HREG_EV_TX_EXC		(if applicable, i.e. selected via HCF_EXT_INT_TX_EX bit of HCF_EXT)
@@ -5358,6 +5834,8 @@ or
 * - HREG_EV_RX			the detection of the availability of received messages
 * 						including WaveLAN Management Protocol (WMP) message processing
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 * - HREG_EV_INFO        Asynchronous Information Frame
 * - HREG_EV_INFO_DROP   WMAC did not have sufficient RAM to build Unsolicited Information Frame
 * - HREG_EV_TX_EXC      (if applicable, i.e. selected via HCF_EXT_INT_TX_EX bit of HCF_EXT)
@@ -5367,11 +5845,15 @@ or
 *                       completion of hcf_send_msg/notify
 * - HREG_EV_RX          the detection of the availability of received messages
 *                       including WaveLAN Management Protocol (WMP) message processing
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 * ** in DMA mode
 * - HREG_EV_RDMAD
 * - HREG_EV_TDMAD
 *!! hcf_service_nic does not service the following Hermes events:
+<<<<<<< HEAD
 <<<<<<< HEAD
 *!! 	HREG_EV_TX 			(the "OK" Tx Event) is no longer supported by the WCI, if it occurs it is unclear
 *!! 						what the cause is, so no meaningful strategy is available. Not acking the bit is
@@ -5404,6 +5886,8 @@ or
 *	interrupt will cause hcf_service_nic to be called, which will cause the ack-ing of the "last" Rx-event
 *	to the Hermes, causing the Hermes to discard the associated NIC RAM buffer.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 *!!     HREG_EV_TX          (the "OK" Tx Event) is no longer supported by the WCI, if it occurs it is unclear
 *!!                         what the cause is, so no meaningful strategy is available. Not acking the bit is
 *!!                         probably the best help that can be given to the debugger.
@@ -5434,12 +5918,16 @@ or
 *   MSF is processing a Rx-frame, hence the Rx-event bit in the Hermes register must be active). This
 *   interrupt will cause hcf_service_nic to be called, which will cause the ack-ing of the "last" Rx-event
 *   to the Hermes, causing the Hermes to discard the associated NIC RAM buffer.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 * Assert fails if
 * - ifbp is zero or other recognizable out-of-range value.
 * - hcf_service_nic is called without a prior call to hcf_connect.
 * - interrupts are enabled.
 * - reentrancy, may be  caused by calling hcf_functions without adequate protection
+<<<<<<< HEAD
 <<<<<<< HEAD
 *	against NIC interrupts or multi-threading.
 *
@@ -5530,6 +6018,8 @@ or
 *	This acknowledgement can not be done via hcf_action( HCF_ACT_RX_ACK ) because this also clears
 *	IFB_RxLEN thus corrupting the I/F to the MSF.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 *   against NIC interrupts or multi-threading.
 *
 *
@@ -5582,8 +6072,13 @@ or
 *   The Assert validates the HCF assumption about Hermes implementation upon which the range of
 *   Pseudo-RIDs is based.
 *   Then the control fields up to the start of the 802.3 frame are read from the NIC into the lookahead buffer.
+<<<<<<< HEAD
 *   The status field is converted to native Endianess.
 *   The length is, after implicit Endianess conversion if needed, and adjustment for the 14 bytes of the
+=======
+*   The status field is converted to native Endianness.
+*   The length is, after implicit Endianness conversion if needed, and adjustment for the 14 bytes of the
+>>>>>>> refs/remotes/origin/master
 *   802.3 MAC header, stored in IFB_RxLen.
 *   In MAC Monitor mode, 802.11 control frames with a TOTAL length of 14 are received, so without this
 *   length adjustment, IFB_RxLen could not be used to distinguish these frames from "no frame".
@@ -5605,7 +6100,11 @@ or
 *     - the Hermes reported Tunnel encapsulation or
 *     - the Hermes reported 1042 Encapsulation and hcf_encap reports that the HCF would not have used
 *       1042 as the encapsulation mechanism
+<<<<<<< HEAD
 *   Note that the first field of the RxFS in bufp has Native Endianess due to the conversion done by the
+=======
+*   Note that the first field of the RxFS in bufp has Native Endianness due to the conversion done by the
+>>>>>>> refs/remotes/origin/master
 *   BE_PAR in get_frag.
 *36: The Type field is the only word kept (after moving) of the just read 8 bytes, it is moved to the
 *   L-field.  The original L-field and 6 byte SNAP header are discarded, so IFB_RxLen and buf_addr must
@@ -5618,22 +6117,31 @@ or
 *   to optimize the flow ( a better chance to get new Rx data in the next pass through hcf_service_nic ).
 *   This acknowledgement can not be done via hcf_action( HCF_ACT_RX_ACK ) because this also clears
 *   IFB_RxLEN thus corrupting the I/F to the MSF.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 *;?: In case of DMA (compiled in and activated):
 
 
 *54: Limiting the number of places where the F/W is acked (e.g. the merging of the Rx-ACK with the other
+<<<<<<< HEAD
 <<<<<<< HEAD
 *	ACKs), is supposed to diminish the potential of race conditions in the F/W.
 *	Note 1: The CMD event is acknowledged in cmd_cmpl
 *	Note 2: HREG_EV_ACK_REG_READY is 0x0000 for H-I (and hopefully H-II.5)
 *	Note 3: The ALLOC event is acknowledged in get_fid (except for the initialization flow)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 *   ACKs), is supposed to diminish the potential of race conditions in the F/W.
 *   Note 1: The CMD event is acknowledged in cmd_cmpl
 *   Note 2: HREG_EV_ACK_REG_READY is 0x0000 for H-I (and hopefully H-II.5)
 *   Note 3: The ALLOC event is acknowledged in get_fid (except for the initialization flow)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 *
 *.NOTICE
 * The Non-DMA HREG_EV_RX is handled different compared with the other F/W events.
@@ -5647,6 +6155,7 @@ or
 *.NOTICE
 * The minimum size for Len must supply space for:
 <<<<<<< HEAD
+<<<<<<< HEAD
 * -	an F/W dependent number of bytes of Control Info field including the 802.11 Header field
 * -	Destination Address
 * -	Source Address
@@ -5658,6 +6167,8 @@ or
 * must be decapsulated.
 *.ENDDOC				END DOCUMENTATION
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 * - an F/W dependent number of bytes of Control Info field including the 802.11 Header field
 * - Destination Address
 * - Source Address
@@ -5668,13 +6179,17 @@ or
 * This way the minimum amount of information is available needed by the HCF to determine whether the frame
 * must be decapsulated.
 *.ENDDOC                END DOCUMENTATION
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 *
 ************************************************************************************************************/
 int
 hcf_service_nic( IFBP ifbp, wci_bufp bufp, unsigned int len )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int			rc = HCF_SUCCESS;
 hcf_16		stat;
@@ -5690,6 +6205,8 @@ hcf_16 		i;
 	(void)hcf_action( ifbp, HCF_ACT_RX_ACK );														/* 2*/
 	if ( ifbp->IFB_CardStat == 0 && ( stat = IPW( HREG_EV_STAT ) ) != 0xFFFF ) {					/* 4*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int         rc = HCF_SUCCESS;
 	hcf_16      stat;
 	wci_bufp    buf_addr;
@@ -5703,11 +6220,15 @@ hcf_16 		i;
 	ifbp->IFB_DSLinkStat &= ~CFG_LINK_STAT_CHANGE;                                                  /* 1*/
 	(void)hcf_action( ifbp, HCF_ACT_RX_ACK );                                                       /* 2*/
 	if ( ifbp->IFB_CardStat == 0 && ( stat = IPW( HREG_EV_STAT ) ) != 0xFFFF ) {                    /* 4*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*		IF_NOT_DMA( HCFASSERT( !( stat & ~HREG_EV_BASIC_MASK, stat ) )
  *		IF_NOT_USE_DMA( HCFASSERT( !( stat & ~HREG_EV_BASIC_MASK, stat ) )
  *		IF_USE_DMA( HCFASSERT( !( stat & ~( HREG_EV_BASIC_MASK ^ ( HREG_EV_...DMA.... ), stat ) )
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 																									/* 8*/
 		if ( ifbp->IFB_RscInd == 0 && stat & HREG_EV_ALLOC ) { //Note: IFB_RscInd is ALWAYS 1 for DMA
@@ -5715,12 +6236,17 @@ hcf_16 		i;
 		}
 		IF_TALLY( if ( stat & HREG_EV_INFO_DROP ) ifbp->IFB_HCF_Tallies.NoBufInfo++; )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		                                                                                        /* 8*/
 		if ( ifbp->IFB_RscInd == 0 && stat & HREG_EV_ALLOC ) { //Note: IFB_RscInd is ALWAYS 1 for DMA
 			ifbp->IFB_RscInd = 1;
 		}
 		IF_TALLY( if ( stat & HREG_EV_INFO_DROP ) { ifbp->IFB_HCF_Tallies.NoBufInfo++; } );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if (HCF_EXT) & HCF_EXT_INT_TICK
 		if ( stat & HREG_EV_TICK ) {
 			ifbp->IFB_TickCnt++;
@@ -5728,10 +6254,14 @@ hcf_16 		i;
 #if 0 // (HCF_SLEEP) & HCF_DDS
 		if ( ifbp->IFB_TickCnt == 3 && ( ifbp->IFB_DSLinkStat & CFG_LINK_STAT_CONNECTED ) == 0 ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 CFG_DDS_TICK_TIME_STRCT ltv;
 =======
 			CFG_DDS_TICK_TIME_STRCT ltv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			CFG_DDS_TICK_TIME_STRCT ltv;
+>>>>>>> refs/remotes/origin/master
 			// 2 second period (with 1 tick uncertanty) in not-connected mode -->go into DS_OOR
 			hcf_action( ifbp, HCF_ACT_SLEEP );
 			ifbp->IFB_DSLinkStat |= CFG_LINK_STAT_DS_OOR; //set OutOfRange
@@ -5739,12 +6269,17 @@ CFG_DDS_TICK_TIME_STRCT ltv;
 			ltv.typ = CFG_DDS_TICK_TIME;
 			ltv.tick_time = ( ( ifbp->IFB_DSLinkStat & CFG_LINK_STAT_TIMER ) + 0x10 ) *64; //78 is more right
 			hcf_put_info( ifbp, (LTVP)&ltv );
+<<<<<<< HEAD
 			printk( "<5>Preparing for sleep, link_status: %04X, timer : %d\n",
 <<<<<<< HEAD
 					ifbp->IFB_DSLinkStat, ltv.tick_time );//;?remove me 1 day
 =======
 				ifbp->IFB_DSLinkStat, ltv.tick_time );//;?remove me 1 day
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_NOTICE "Preparing for sleep, link_status: %04X, timer : %d\n",
+				ifbp->IFB_DSLinkStat, ltv.tick_time );//;?remove me 1 day
+>>>>>>> refs/remotes/origin/master
 			ifbp->IFB_TickCnt++; //;?just to make sure we do not keep on printing above message
 			if ( ltv.tick_time < 300 * 125 ) ifbp->IFB_DSLinkStat += 0x0010;
 
@@ -5757,10 +6292,14 @@ CFG_DDS_TICK_TIME_STRCT ltv;
 #if (HCF_EXT) & HCF_EXT_INT_TX_EX
 		if ( stat & HREG_EV_TX_EXT && ( i = IPW( HREG_TX_COMPL_FID ) ) != 0 /*DAWA*/ ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DAWA_ZERO_FID( HREG_TX_COMPL_FID )
 =======
 			DAWA_ZERO_FID( HREG_TX_COMPL_FID );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DAWA_ZERO_FID( HREG_TX_COMPL_FID );
+>>>>>>> refs/remotes/origin/master
 			(void)setup_bap( ifbp, i, 0, IO_IN );
 			get_frag( ifbp, &ifbp->IFB_TxFsStat, HFS_SWSUP BE_PAR(1) );
 		}
@@ -5769,6 +6308,7 @@ CFG_DDS_TICK_TIME_STRCT ltv;
 #if HCF_DMA
 		if ( !( ifbp->IFB_CntlOpt & USE_DMA ) ) //!! be aware of the logical indentations
 #endif // HCF_DMA
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*16*/	  if ( stat & HREG_EV_RX && ( ifbp->IFB_RxFID = IPW( HREG_RX_FID ) ) != 0 ) { //if 0 then DAWA_ACK
 			HCFASSERT( bufp, len )
@@ -5802,6 +6342,8 @@ CFG_DDS_TICK_TIME_STRCT ltv;
 						bufp[HFS_LEN+1] = bufp[HFS_TYPE+1];
 												//.  discard Snap by overwriting with data
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*16*/  if ( stat & HREG_EV_RX && ( ifbp->IFB_RxFID = IPW( HREG_RX_FID ) ) != 0 ) { //if 0 then DAWA_ACK
 				HCFASSERT( bufp, len );
 				HCFASSERT( len >= HFS_DAT + 2, len );
@@ -5828,12 +6370,16 @@ CFG_DDS_TICK_TIME_STRCT ltv;
 				/*36*/  bufp[HFS_LEN  ] = bufp[HFS_TYPE  ];
 						bufp[HFS_LEN+1] = bufp[HFS_TYPE+1];
 							                //.  discard Snap by overwriting with data
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						ifbp->IFB_RxLen -= (HFS_TYPE - HFS_LEN);
 						buf_addr -= ( HFS_TYPE - HFS_LEN ); // this happens to bring us at a DW boundary of 36
 					}
 #endif // HCF_ENC
 				}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			}
 /*40*/		ifbp->IFB_lal = min( (hcf_16)(len - HFS_ADDR_DEST), ifbp->IFB_RxLen );
@@ -5896,6 +6442,8 @@ CFG_DDS_TICK_TIME_STRCT ltv;
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*40*/  ifbp->IFB_lal = min( (hcf_16)(len - HFS_ADDR_DEST), ifbp->IFB_RxLen );
 				i = ifbp->IFB_lal - ( buf_addr - ( bufp + HFS_ADDR_DEST ) );
 				get_frag( ifbp, buf_addr, i BE_PAR(0) );
@@ -5954,7 +6502,10 @@ CFG_DDS_TICK_TIME_STRCT ltv;
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if (HCF_TYPE) & HCF_TYPE_WPA
 
@@ -5962,12 +6513,17 @@ CFG_DDS_TICK_TIME_STRCT ltv;
 #define ROR32( A, n ) ROL32( (A), 32-(n) )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L	*p
 #define R	*(p+1)
 =======
 #define L   *p
 #define R   *(p+1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L   *p
+#define R   *(p+1)
+>>>>>>> refs/remotes/origin/master
 
 void
 calc_mic( hcf_32* p, hcf_32 m )
@@ -5993,6 +6549,7 @@ calc_mic( hcf_32* p, hcf_32 m )
 
 #if (HCF_TYPE) & HCF_TYPE_WPA
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		void calc_mic_rx_frag( IFBP ifbp, wci_bufp p, int len )
@@ -6027,6 +6584,8 @@ int i;
 
 	if ( len == -1 ) {								//initialize MIC housekeeping
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     void calc_mic_rx_frag( IFBP ifbp, wci_bufp p, int len )
  *.PURPOSE       calculate MIC on a single fragment.
@@ -6059,7 +6618,10 @@ calc_mic_rx_frag( IFBP ifbp, wci_bufp p, int len )
 	int i;
 
 	if ( len == -1 ) {                              //initialize MIC housekeeping
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		i = *(wci_recordp)&p[HFS_STAT];
 		/* i = CNV_SHORTP_TO_LITTLE(&p[HFS_STAT]); should not be neede to prevent alignment poroblems
 		 * since len == -1 if and only if p is lookahaead buffer which MUST be word aligned
@@ -6068,6 +6630,7 @@ calc_mic_rx_frag( IFBP ifbp, wci_bufp p, int len )
 
 		if ( ( i & HFS_STAT_MIC ) == 0 ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ifbp->IFB_MICRxCarry = 0xFFFF;			//suppress MIC calculation
 		} else {
 			ifbp->IFB_MICRxCarry = 0;
@@ -6075,13 +6638,18 @@ calc_mic_rx_frag( IFBP ifbp, wci_bufp p, int len )
 //*	correspond with the offset of the key in IFB_MICKey
 			i = ( i & HFS_STAT_MIC_KEY_ID ) >> 10;	/* coincidentally no shift needed for i itself */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ifbp->IFB_MICRxCarry = 0xFFFF;          //suppress MIC calculation
 		} else {
 			ifbp->IFB_MICRxCarry = 0;
 //* Note that "coincidentally" the bit positions used in HFS_STAT
 //* correspond with the offset of the key in IFB_MICKey
 			i = ( i & HFS_STAT_MIC_KEY_ID ) >> 10;  /* coincidentally no shift needed for i itself */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ifbp->IFB_MICRx[0] = CNV_LONG_TO_LITTLE(ifbp->IFB_MICRxKey[i  ]);
 			ifbp->IFB_MICRx[1] = CNV_LONG_TO_LITTLE(ifbp->IFB_MICRxKey[i+1]);
 		}
@@ -6096,18 +6664,24 @@ calc_mic_rx_frag( IFBP ifbp, wci_bufp p, int len )
 				len -= 4;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else while ( ifbp->IFB_MICRxCarry < 4 && len ) {		//note for hcf_16 applies: 0xFFFF > 4
 			x.x8[ifbp->IFB_MICRxCarry++] = *p++;
 			len--;
 		}
 		while ( ifbp->IFB_MICRxCarry == 4 ) {	//contrived so we have only 1 call to calc_mic so we could bring it in-line
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else while ( ifbp->IFB_MICRxCarry < 4 && len ) {      //note for hcf_16 applies: 0xFFFF > 4
 				x.x8[ifbp->IFB_MICRxCarry++] = *p++;
 				len--;
 			}
 		while ( ifbp->IFB_MICRxCarry == 4 ) {   //contrived so we have only 1 call to calc_mic so we could bring it in-line
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			calc_mic( ifbp->IFB_MICRx, x.x32 );
 			x.x32 = CNV_LONGP_TO_LITTLE(p);
 			p += 4;
@@ -6123,6 +6697,7 @@ calc_mic_rx_frag( IFBP ifbp, wci_bufp p, int len )
 
 #if (HCF_TYPE) & HCF_TYPE_WPA
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		void calc_mic_tx_frag( IFBP ifbp, wci_bufp p, int len )
@@ -6211,6 +6786,8 @@ static union { hcf_32 x32; hcf_16 x16[2]; hcf_8 x8[4]; } x;	//* area to accumula
 			}
 														//.  .  adjust remaining buffer length
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     void calc_mic_tx_frag( IFBP ifbp, wci_bufp p, int len )
  *.PURPOSE       calculate MIC on a single fragment.
@@ -6297,7 +6874,10 @@ calc_mic_tx_frag( IFBP ifbp, wci_bufp p, int len )
 				ifbp->IFB_MICTxCarry = (hcf_16)len;
 			}
 			                        //.  .  adjust remaining buffer length
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			len -= 4;
 		}
 	}
@@ -6307,6 +6887,7 @@ calc_mic_tx_frag( IFBP ifbp, wci_bufp p, int len )
 
 #if HCF_PROT_TIME
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		void calibrate( IFBP ifbp )
@@ -6397,6 +6978,8 @@ hcf_32	prot_cnt;
 			}
 		ifbp->IFB_TickIni <<= HCF_PROT_TIME_SHFT;												/*8*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     void calibrate( IFBP ifbp )
  *.PURPOSE       calibrates the S/W protection counter against the Hermes Timer tick.
@@ -6485,13 +7068,17 @@ calibrate( IFBP ifbp )
 			}
 		}
 		ifbp->IFB_TickIni <<= HCF_PROT_TIME_SHFT;                                               /*8*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	HCFTRACE( ifbp, HCF_TRACE_CALIBRATE | HCF_TRACE_EXIT );
 } // calibrate
 #endif // HCF_PROT_TIME
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (HCF_DL_ONLY) == 0
 #if (HCF_TYPE) & HCF_TYPE_WPA
@@ -6590,6 +7177,8 @@ hcf_32 x32[2];				//* area to save rcvd 8 bytes MIC
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if (HCF_TYPE) & HCF_TYPE_WPA
 /************************************************************************************************************
  *
@@ -6684,11 +7273,15 @@ check_mic( IFBP ifbp )
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC int
 cmd_cmpl( IFBP ifbp )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 PROT_CNT_INI
 int		rc = HCF_SUCCESS;
@@ -6704,6 +7297,8 @@ hcf_16	stat;
 		rc = HCF_ERR_TIME_OUT;
 		HCFASSERT( DO_ASSERT, ifbp->IFB_Cmd )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	PROT_CNT_INI;
 	int     rc = HCF_SUCCESS;
 	hcf_16  stat;
@@ -6717,11 +7312,15 @@ hcf_16	stat;
 		IF_TALLY( ifbp->IFB_HCF_Tallies.MiscErr++ );
 		rc = HCF_ERR_TIME_OUT;
 		HCFASSERT( DO_ASSERT, ifbp->IFB_Cmd );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else
 #endif // HCF_PROT_TIME
 	{
 		DAWA_ACK( HREG_EV_CMD );
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*4*/	if ( stat != (ifbp->IFB_Cmd & HCMD_CMD_CODE) ) {
 /*8*/		if ( ( (stat ^ ifbp->IFB_Cmd ) & HCMD_CMD_CODE) != 0 ) {
@@ -6800,6 +7399,8 @@ int rc;
 	OPW( HREG_SW_0, HCF_MAGIC );
 	if ( IPW( HREG_SW_0 ) == HCF_MAGIC ) {														/* 1 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*4*/   if ( stat != (ifbp->IFB_Cmd & HCMD_CMD_CODE) ) {
 		/*8*/   if ( ( (stat ^ ifbp->IFB_Cmd ) & HCMD_CMD_CODE) != 0 ) {
 				rc = ifbp->IFB_DefunctStat = HCF_ERR_DEFUNCT_CMD_SEQ;
@@ -6876,22 +7477,30 @@ cmd_exe( IFBP ifbp, hcf_16 cmd_code, hcf_16 par_0 ) //if HCMD_BUSY of cmd_code s
 	HCFASSERT( (cmd_code & HCMD_CMD_CODE) != HCMD_TX || cmd_code & HCMD_BUSY, cmd_code ); //Tx must have Busy bit set
 	OPW( HREG_SW_0, HCF_MAGIC );
 	if ( IPW( HREG_SW_0 ) == HCF_MAGIC ) {                                                      /* 1 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = ifbp->IFB_DefunctStat;
 	}
 	else rc = HCF_ERR_NO_NIC;
 	if ( rc == HCF_SUCCESS ) {
 		//;?is this a hot idea, better MEASURE performance impact
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*2*/	if ( ifbp->IFB_Cmd & HCMD_BUSY ) {
 =======
 	/*2*/   if ( ifbp->IFB_Cmd & HCMD_BUSY ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*2*/   if ( ifbp->IFB_Cmd & HCMD_BUSY ) {
+>>>>>>> refs/remotes/origin/master
 			rc = cmd_cmpl( ifbp );
 		}
 		OPW( HREG_PARAM_0, par_0 );
 		OPW( HREG_CMD, cmd_code &~HCMD_BUSY );
 		ifbp->IFB_Cmd = cmd_code;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ( (cmd_code & HCMD_BUSY) == 0 ) {	//;?is this a hot idea, better MEASURE performance impact
 			rc = cmd_cmpl( ifbp );
@@ -6900,18 +7509,24 @@ cmd_exe( IFBP ifbp, hcf_16 cmd_code, hcf_16 par_0 ) //if HCMD_BUSY of cmd_code s
 	HCFASSERT( rc == HCF_SUCCESS, MERGE_2( rc, cmd_code ) )
 	HCFLOGEXIT( HCF_TRACE_CMD_EXE )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if ( (cmd_code & HCMD_BUSY) == 0 ) {    //;?is this a hot idea, better MEASURE performance impact
 			rc = cmd_cmpl( ifbp );
 		}
 	}
 	HCFASSERT( rc == HCF_SUCCESS, MERGE_2( rc, cmd_code ) );
 	HCFLOGEXIT( HCF_TRACE_CMD_EXE );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 } // cmd_exe
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		int download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp )
@@ -6980,6 +7595,8 @@ hcf_io				io_port = ifbp->IFB_IOBase + HREG_AUX_DATA;
 			OPW( HREG_AUX_OFFSET, IPW( HREG_RESP_0) );
 													//.  .  set up L-field of LTV according Resp2
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     int download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp )
  *.PURPOSE       downloads F/W image into NIC and initiates execution of the downloaded F/W.
@@ -7046,7 +7663,10 @@ download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp )                     //Hermes-II 
 			OPW( HREG_AUX_PAGE,   IPW( HREG_RESP_1) );
 			OPW( HREG_AUX_OFFSET, IPW( HREG_RESP_0) );
 			                        //.  .  set up L-field of LTV according Resp2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			i = ( IPW( HREG_RESP_2 ) + 1 ) / 2;  // i contains max buffer size in words, a probably not very useful piece of information ;?
 /*Nico's code based on i is the "real amount of data available"
 			if ( ltvp->len - 4 < i ) rc = HCF_ERR_LEN;
@@ -7059,6 +7679,7 @@ download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp )                     //Hermes-II 
 				ltvp->len = i + 4;
 			}
 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 													//.  .  copy data from NIC via AUX port to LTV
 			cp = (wci_bufp)ltvp->host_addr;						/*IN_PORT_STRING_8_16 macro may modify its parameters*/
@@ -7086,6 +7707,8 @@ download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp )                     //Hermes-II 
 	HCFASSERT( rc == HCF_SUCCESS, rc )
 	HCFLOGEXIT( HCF_TRACE_DL )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			                        //.  .  copy data from NIC via AUX port to LTV
 			cp = (wci_bufp)ltvp->host_addr;                     /*IN_PORT_STRING_8_16 macro may modify its parameters*/
 			i = ltvp->len - 4;
@@ -7111,13 +7734,17 @@ download( IFBP ifbp, CFG_PROG_STRCT FAR *ltvp )                     //Hermes-II 
 #endif // HCF_TYPE_PRELOADED
 	HCFASSERT( rc == HCF_SUCCESS, rc );
 	HCFLOGEXIT( HCF_TRACE_DL );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 } // download
 
 
 #if (HCF_ASSERT) & HCF_ASSERT_PRINTF
 /**************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 * Certain Hermes-II firmware versions can generate
 * debug information. This debug information is
@@ -7154,6 +7781,8 @@ fw_printf(IFBP ifbp, CFG_FW_PRINTF_STRCT FAR *ltvp)
     }
     return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Certain Hermes-II firmware versions can generate
  * debug information. This debug information is
  * contained in a buffer in nic-RAM, and can be read
@@ -7188,6 +7817,7 @@ fw_printf(IFBP ifbp, CFG_FW_PRINTF_STRCT FAR *ltvp)
 		}
 	}
 	return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 #endif // HCF_ASSERT_PRINTF
@@ -7226,6 +7856,12 @@ fw_printf(IFBP ifbp, CFG_FW_PRINTF_STRCT FAR *ltvp)
 *
 ************************************************************************************************************/
 =======
+=======
+};
+#endif // HCF_ASSERT_PRINTF
+
+
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************************
  *
  *.SUBMODULE     hcf_16 get_fid( IFBP ifbp )
@@ -7256,11 +7892,15 @@ fw_printf(IFBP ifbp, CFG_FW_PRINTF_STRCT FAR *ltvp)
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC hcf_16
 get_fid( IFBP ifbp )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 hcf_16 fid = 0;
 #if ( (HCF_TYPE) & HCF_TYPE_HII5 ) == 0
@@ -7279,6 +7919,8 @@ PROT_CNT_INI
 #endif // HCF_TYPE_HII5
 		DAWA_ACK( HREG_EV_ALLOC );			//!!note that HREG_EV_ALLOC is written only once
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hcf_16 fid = 0;
 #if ( (HCF_TYPE) & HCF_TYPE_HII5 ) == 0
 	PROT_CNT_INI;
@@ -7295,7 +7937,10 @@ PROT_CNT_INI
 		HCFASSERT( prot_cnt, IPW( HREG_EV_STAT ) );
 #endif // HCF_TYPE_HII5
 		DAWA_ACK( HREG_EV_ALLOC );          //!!note that HREG_EV_ALLOC is written only once
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 // 180 degree error in logic ;? #if ALLOC_15
 		if ( ifbp->IFB_RscInd == 1 ) {
 			ifbp->IFB_RscInd = 0;
@@ -7309,6 +7954,7 @@ PROT_CNT_INI
 	}
 	return fid;
 } // get_fid
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif // HCF_DL_ONLY
 
@@ -7372,6 +8018,8 @@ int			j;
 		i--;
 													//.  clear carry flag
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /************************************************************************************************************
@@ -7390,7 +8038,11 @@ int			j;
  *.DESCRIPTION
  * process the single byte (if applicable) read by the previous get_frag and copy len (or len-1) bytes from
  * NIC to bufp.
+<<<<<<< HEAD
  * On a Big Endian platform, the parameter word_len controls the number of leading bytes whose endianess is
+=======
+ * On a Big Endian platform, the parameter word_len controls the number of leading bytes whose endianness is
+>>>>>>> refs/remotes/origin/master
  * converted (i.e. byte swapped)
  *
  *
@@ -7432,11 +8084,15 @@ get_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_len ) )
 		*p++ = (hcf_8)(ifbp->IFB_CarryIn>>8);
 		i--;
 		                                //.  clear carry flag
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ifbp->IFB_CarryIn = 0;
 	}
 #if (HCF_IO) & HCF_IO_32BITS
 	//skip zero-length I/O, single byte I/O and I/O not worthwhile (i.e. less than 6 bytes)for DW logic
+<<<<<<< HEAD
 <<<<<<< HEAD
 													//if buffer length >= 6 and 32 bits I/O support
 	if ( !(ifbp->IFB_CntlOpt & USE_16BIT) && i >= 6 ) {
@@ -7455,6 +8111,8 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 			IN_PORT_STRING_32( io_port, p4, j );
 													//.  .  adjust buffer length and pointer accordingly
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	                                        //if buffer length >= 6 and 32 bits I/O support
 	if ( !(ifbp->IFB_CntlOpt & USE_16BIT) && i >= 6 ) {
 		hcf_32 FAR  *p4; //prevent side effects from macro
@@ -7471,12 +8129,16 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 			j = i/4;
 			IN_PORT_STRING_32( io_port, p4, j );
 			                                    //.  .  adjust buffer length and pointer accordingly
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			p += i & ~0x0003;
 			i &= 0x0003;
 		}
 	}
 #endif // HCF_IO_32BITS
+<<<<<<< HEAD
 <<<<<<< HEAD
 													//if no 32-bit support OR byte aligned OR 1-3 bytes left
 	if ( i ) {
@@ -7491,6 +8153,8 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 			bufp[len-1] = (hcf_8)ifbp->IFB_CarryIn;
 													//.  .  save MSB in carry, set carry flag
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	                                        //if no 32-bit support OR byte aligned OR 1-3 bytes left
 	if ( i ) {
 		                                //.  read as many word as possible in "alignment safe" way
@@ -7503,11 +8167,15 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 			                        //.  .  store LSB in last char of buffer
 			bufp[len-1] = (hcf_8)ifbp->IFB_CarryIn;
 			                        //.  .  save MSB in carry, set carry flag
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ifbp->IFB_CarryIn |= 0x1;
 		}
 	}
 #if HCF_BIG_ENDIAN
+<<<<<<< HEAD
 <<<<<<< HEAD
 	HCFASSERT( word_len == 0 || word_len == 2 || word_len == 4, word_len )
 	HCFASSERT( word_len == 0 || ((hcf_32)bufp & 1 ) == 0, (hcf_32)bufp )
@@ -7522,6 +8190,8 @@ hcf_8 c;
 		if ( word_len > 1 ) {						//.  .  if there is to convert more than 1 word ( i.e 2 )
 			c = bufp[3];							//.  .  .  convert the 2nd hcf_16
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	HCFASSERT( word_len == 0 || word_len == 2 || word_len == 4, word_len );
 	HCFASSERT( word_len == 0 || ((hcf_32)bufp & 1 ) == 0, (hcf_32)bufp );
 	HCFASSERT( word_len <= len, MERGE2( word_len, len ) );
@@ -7534,7 +8204,10 @@ hcf_8 c;
 		bufp[0] = c;
 		if ( word_len > 1 ) {                       //.  .  if there is to convert more than 1 word ( i.e 2 )
 			c = bufp[3];                            //.  .  .  convert the 2nd hcf_16
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			bufp[3] = bufp[2];
 			bufp[2] = c;
 		}
@@ -7543,6 +8216,7 @@ hcf_8 c;
 } // get_frag
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		int init( IFBP ifbp )
@@ -7632,6 +8306,8 @@ hcf_8 c;
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     int init( IFBP ifbp )
  *.PURPOSE       Handles common initialization aspects (H-I init, calibration, config.mngmt, allocation).
@@ -7678,7 +8354,11 @@ hcf_8 c;
  *    appropriate means on H-I: always
  *    and on H-II if F/W supplier reflects a primary (i.e. only after an Hermes Reset or Init
  *    command).
+<<<<<<< HEAD
  *    QUESTION ;? !!!!!! should, For each of the above RIDs the Endianess is converted to native Endianess.
+=======
+ *    QUESTION ;? !!!!!! should, For each of the above RIDs the Endianness is converted to native Endianness.
+>>>>>>> refs/remotes/origin/master
  *    Only the return code of the first hcf_get_info is used. All hcf_get_info calls are made, regardless of
  *    the success or failure of the 1st hcf_get_info. The assumptions are:
  *     - if any call fails, they all fail, so remembering the result of the 1st call is adequate
@@ -7719,11 +8399,15 @@ hcf_8 c;
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC int
 init( IFBP ifbp )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int	rc = HCF_SUCCESS;
 
@@ -7737,6 +8421,8 @@ int	rc = HCF_SUCCESS;
 	ifbp->IFB_FWIdentity.typ = CFG_TICK_TIME;
 	ifbp->IFB_FWIdentity.comp_id = (1000*1000)/1024 + 1;	//roughly 1 second
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = HCF_SUCCESS;
 
 	HCFLOGENTRY( HCF_TRACE_INIT, 0 );
@@ -7748,7 +8434,10 @@ int	rc = HCF_SUCCESS;
 	ifbp->IFB_FWIdentity.len = 2;                           //misuse the IFB space for a put
 	ifbp->IFB_FWIdentity.typ = CFG_TICK_TIME;
 	ifbp->IFB_FWIdentity.comp_id = (1000*1000)/1024 + 1;    //roughly 1 second
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hcf_put_info( ifbp, (LTVP)&ifbp->IFB_FWIdentity.len );
 #endif // OOR
 	ifbp->IFB_FWIdentity.len = sizeof(CFG_FW_IDENTITY_STRCT)/sizeof(hcf_16) - 1;
@@ -7762,12 +8451,17 @@ int	rc = HCF_SUCCESS;
 	ifbp->IFB_FWIdentity.version_minor = CNV_LITTLE_TO_SHORT( ifbp->IFB_FWIdentity.version_minor );
 #endif // HCF_BIG_ENDIAN
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined MSF_COMPONENT_ID																		/*14*/
 	if ( rc == HCF_SUCCESS ) {																		/*16*/
 =======
 #if defined MSF_COMPONENT_ID                                                                        /*14*/
 	if ( rc == HCF_SUCCESS ) {                                                                      /*16*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined MSF_COMPONENT_ID                                                                        /*14*/
+	if ( rc == HCF_SUCCESS ) {                                                                      /*16*/
+>>>>>>> refs/remotes/origin/master
 		ifbp->IFB_HSISup.len = sizeof(CFG_SUP_RANGE_STRCT)/sizeof(hcf_16) - 1;
 		ifbp->IFB_HSISup.typ = CFG_NIC_HSI_SUP_RANGE;
 		rc = hcf_get_info( ifbp, (LTVP)&ifbp->IFB_HSISup.len );
@@ -7795,18 +8489,24 @@ int	rc = HCF_SUCCESS;
 #endif // HCF_BIG_ENDIAN
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ( ifbp->IFB_FWSup.id == COMP_ID_PRI ) {												/* 20*/
 int i = sizeof( CFG_FW_IDENTITY_STRCT) + sizeof(CFG_SUP_RANGE_STRCT );
 =======
 		if ( ifbp->IFB_FWSup.id == COMP_ID_PRI ) {                                              /* 20*/
 			int i = sizeof( CFG_FW_IDENTITY_STRCT) + sizeof(CFG_SUP_RANGE_STRCT );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ( ifbp->IFB_FWSup.id == COMP_ID_PRI ) {                                              /* 20*/
+			int i = sizeof( CFG_FW_IDENTITY_STRCT) + sizeof(CFG_SUP_RANGE_STRCT );
+>>>>>>> refs/remotes/origin/master
 			while ( i-- ) ((hcf_8*)(&ifbp->IFB_PRIIdentity))[i] = ((hcf_8*)(&ifbp->IFB_FWIdentity))[i];
 			ifbp->IFB_PRIIdentity.typ = CFG_PRI_IDENTITY;
 			ifbp->IFB_PRISup.typ = CFG_PRI_SUP_RANGE;
 			xxxx[xxxx_PRI_IDENTITY_OFFSET] = &ifbp->IFB_PRIIdentity.len;
 			xxxx[xxxx_PRI_IDENTITY_OFFSET+1] = &ifbp->IFB_PRISup.len;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ( !mmd_check_comp( (void*)&cfg_drv_act_ranges_hsi, &ifbp->IFB_HSISup)				 /* 22*/
 #if ( (HCF_TYPE) & HCF_TYPE_PRELOADED ) == 0
@@ -7821,6 +8521,8 @@ int i = sizeof( CFG_FW_IDENTITY_STRCT) + sizeof(CFG_SUP_RANGE_STRCT );
 			 ( ifbp->IFB_FWSup.id == COMP_ID_APF && !mmd_check_comp( (void*)&cfg_drv_act_ranges_apf, &ifbp->IFB_FWSup) )
 		   ) {																					/* 24 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if ( !mmd_check_comp( (void*)&cfg_drv_act_ranges_hsi, &ifbp->IFB_HSISup)                 /* 22*/
 #if ( (HCF_TYPE) & HCF_TYPE_PRELOADED ) == 0
 //;? the PRI compatibility check is only relevant for DHF
@@ -7833,12 +8535,16 @@ int i = sizeof( CFG_FW_IDENTITY_STRCT) + sizeof(CFG_SUP_RANGE_STRCT );
 		if ( ( ifbp->IFB_FWSup.id == COMP_ID_STA && !mmd_check_comp( (void*)&cfg_drv_act_ranges_sta, &ifbp->IFB_FWSup) ) ||
 		     ( ifbp->IFB_FWSup.id == COMP_ID_APF && !mmd_check_comp( (void*)&cfg_drv_act_ranges_apf, &ifbp->IFB_FWSup) )
 			) {                                                                                  /* 24 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ifbp->IFB_CardStat |= CARD_STAT_INCOMP_FW;
 			rc = HCF_ERR_INCOMP_FW;
 		}
 	}
 #endif // MSF_COMPONENT_ID
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (HCF_DL_ONLY) == 0																			/* 28 */
 	if ( rc == HCF_SUCCESS && ifbp->IFB_FWIdentity.comp_id >= COMP_ID_FW_STA ) {
@@ -7855,6 +8561,8 @@ PROT_CNT_INI
 			HCF_WAIT_WHILE( (IPW( HREG_EV_STAT ) & HREG_EV_ALLOC) == 0 );
 			IF_PROT_TIME( HCFASSERT(prot_cnt, IPW( HREG_EV_STAT ) ) /*NOP*/;)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ( rc == HCF_SUCCESS && ifbp->IFB_FWIdentity.comp_id >= COMP_ID_FW_STA ) {
 		PROT_CNT_INI;
@@ -7869,12 +8577,16 @@ PROT_CNT_INI
 		if ( rc == HCF_SUCCESS ) {
 			HCF_WAIT_WHILE( (IPW( HREG_EV_STAT ) & HREG_EV_ALLOC) == 0 );
 			IF_PROT_TIME( HCFASSERT(prot_cnt, IPW( HREG_EV_STAT )) );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if HCF_DMA
 			if ( ! ( ifbp->IFB_CntlOpt & USE_DMA ) )
 #endif // HCF_DMA
 			{
 				ifbp->IFB_RscInd = get_fid( ifbp );
+<<<<<<< HEAD
 <<<<<<< HEAD
 				HCFASSERT( ifbp->IFB_RscInd, 0 )
 				cmd_exe( ifbp, HCMD_ALLOC, 0 );
@@ -7884,10 +8596,16 @@ PROT_CNT_INI
 				cmd_exe( ifbp, HCMD_ALLOC, 0 );
 				IF_PROT_TIME( if ( prot_cnt == 0 ) rc = HCF_ERR_TIME_OUT );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				HCFASSERT( ifbp->IFB_RscInd, 0 );
+				cmd_exe( ifbp, HCMD_ALLOC, 0 );
+				IF_PROT_TIME( if ( prot_cnt == 0 ) rc = HCF_ERR_TIME_OUT );
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 //#endif // ALLOC_15
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif // HCF_DL_ONLY
 	HCFASSERT( rc == HCF_SUCCESS, rc )
@@ -7952,6 +8670,8 @@ hcf_32	*p;
 			p = (hcf_32*)&ifbp->IFB_NIC_Tallies;
 			while ( info[0]-- >1 ) *p++ += IPW( HREG_DATA_1 );	//request may return zero length
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	HCFASSERT( rc == HCF_SUCCESS, rc );
 	HCFLOGEXIT( HCF_TRACE_INIT );
@@ -8013,11 +8733,15 @@ isr_info( IFBP ifbp )
 			}
 			p = (hcf_32*)&ifbp->IFB_NIC_Tallies;
 			while ( info[0]-- >1 ) *p++ += IPW( HREG_DATA_1 );  //request may return zero length
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		else
 #endif // HCF_TALLIES_NIC
 		{
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*4*/		if ( info[1] == CFG_LINK_STAT ) {
 				ifbp->IFB_LinkStat = IPW( HREG_DATA_1 );
@@ -8030,6 +8754,8 @@ isr_info( IFBP ifbp )
 						ridp->bufp[0] = min((hcf_16)(ridp->len - 1), info[0] ); 	//save L
 						ridp->bufp[1] = info[1];						//save T
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*4*/   if ( info[1] == CFG_LINK_STAT ) {
 				ifbp->IFB_LinkStat = IPW( HREG_DATA_1 );
 			}
@@ -8040,7 +8766,10 @@ isr_info( IFBP ifbp )
 						HCFASSERT( ridp->len >= 2, ridp->typ );
 						ridp->bufp[0] = min((hcf_16)(ridp->len - 1), info[0] );     //save L
 						ridp->bufp[1] = info[1];                        //save T
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						get_frag( ifbp, (wci_bufp)&ridp->bufp[2], (ridp->bufp[0] - 1)*2 BE_PAR(0) );
 					}
 					break;
@@ -8054,13 +8783,17 @@ isr_info( IFBP ifbp )
 	return;
 } // isr_info
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif // HCF_DL_ONLY
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 //
 //
 // #endif // HCF_TALLIES_NIC
+<<<<<<< HEAD
 <<<<<<< HEAD
 // /*4*/	if ( info[1] == CFG_LINK_STAT ) {
 // 			ifbp->IFB_DSLinkStat = IPW( HREG_DATA_1 ) | CFG_LINK_STAT_CHANGE;	//corrupts BAP !! ;?
@@ -8098,6 +8831,16 @@ isr_info( IFBP ifbp )
 //          if ( ( ifbp->IFB_DSLinkStat & CFG_LINK_STAT_CONNECTED ) == 0 ) {    //even values are disconnected etc.
 //              ifbp->IFB_TickCnt = 0;              //start 2 second period (with 1 tick uncertanty)
 //              printk( "<5>isr_info: AwaitConnection phase started, IFB_TickCnt = 0\n" );      //;?remove me 1 day
+=======
+// /*4*/    if ( info[1] == CFG_LINK_STAT ) {
+//          ifbp->IFB_DSLinkStat = IPW( HREG_DATA_1 ) | CFG_LINK_STAT_CHANGE;   //corrupts BAP !! ;?
+//          ifbp->IFB_LinkStat = ifbp->IFB_DSLinkStat & CFG_LINK_STAT_FW; //;? to be obsoleted
+//          printk(KERN_ERR "linkstatus: %04x\n", ifbp->IFB_DSLinkStat );        //;?remove me 1 day
+// #if (HCF_SLEEP) & HCF_DDS
+//          if ( ( ifbp->IFB_DSLinkStat & CFG_LINK_STAT_CONNECTED ) == 0 ) {    //even values are disconnected etc.
+//              ifbp->IFB_TickCnt = 0;              //start 2 second period (with 1 tick uncertanty)
+//              printk(KERN_NOTICE "isr_info: AwaitConnection phase started, IFB_TickCnt = 0\n" );      //;?remove me 1 day
+>>>>>>> refs/remotes/origin/master
 //          }
 // #endif // HCF_DDS
 //      }
@@ -8117,11 +8860,15 @@ isr_info( IFBP ifbp )
 // #endif // HCF_EXT_INFO_LOG
 //  }
 //  HCFTRACE( ifbp, HCF_TRACE_ISR_INFO | HCF_TRACE_EXIT );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 //
 //
 //
 //
+<<<<<<< HEAD
 <<<<<<< HEAD
 //	return;
 //} // isr_info
@@ -8161,6 +8908,8 @@ isr_info( IFBP ifbp )
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 //  return;
 //} // isr_info
 
@@ -8197,16 +8946,23 @@ isr_info( IFBP ifbp )
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if HCF_ASSERT
 void
 mdd_assert( IFBP ifbp, unsigned int line_number, hcf_32 q )
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 hcf_16	run_time_flag = ifbp->IFB_AssertLvl;
 =======
 	hcf_16  run_time_flag = ifbp->IFB_AssertLvl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hcf_16  run_time_flag = ifbp->IFB_AssertLvl;
+>>>>>>> refs/remotes/origin/master
 
 	if ( run_time_flag /* > ;?????? */ ) { //prevent recursive behavior, later to be extended to level filtering
 		ifbp->IFB_AssertQualifier = q;
@@ -8224,24 +8980,31 @@ hcf_16	run_time_flag = ifbp->IFB_AssertLvl;
 #endif // HCF_ASSERT_SW_SUP
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (HCF_EXT) & HCF_EXT_MB && (HCF_ASSERT) & HCF_ASSERT_MB
 		ifbp->IFB_AssertLvl = 0;									// prevent recursive behavior
 		hcf_put_info( ifbp, (LTVP)&ifbp->IFB_AssertStrct );
 		ifbp->IFB_AssertLvl = run_time_flag;						// restore appropriate filter level
 #endif // HCF_EXT_MB / HCF_ASSERT_MB
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if (HCF_ASSERT) & HCF_ASSERT_MB
 		ifbp->IFB_AssertLvl = 0;                                    // prevent recursive behavior
 		hcf_put_info( ifbp, (LTVP)&ifbp->IFB_AssertStrct );
 		ifbp->IFB_AssertLvl = run_time_flag;                        // restore appropriate filter level
 #endif // HCF_ASSERT_MB
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 } // mdd_assert
 #endif // HCF_ASSERT
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		void put_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_len ) )
@@ -8294,6 +9057,8 @@ hcf_16		j;
 			OUT_PORT_WORD( io_port, j );
 														//.  .  update pointer and counter accordingly
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     void put_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_len ) )
  *.PURPOSE       writes with 16/32 bit I/O via BAP1 port from Host memory to NIC RAM.
@@ -8344,7 +9109,10 @@ put_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_len ) )
 			j = bufp[1] | bufp[0]<<8;   /*bufp is already incremented by 2*/
 			OUT_PORT_WORD( io_port, j );
 			                        //.  .  update pointer and counter accordingly
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			len -= 2;
 			bufp += 2;
 		}
@@ -8352,10 +9120,14 @@ put_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_len ) )
 #endif // HCF_BIG_ENDIAN
 	i = len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ( i && ifbp->IFB_CarryOut ) {					//skip zero-length
 =======
 	if ( i && ifbp->IFB_CarryOut ) {                    //skip zero-length
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ( i && ifbp->IFB_CarryOut ) {                    //skip zero-length
+>>>>>>> refs/remotes/origin/master
 		j = ((*bufp)<<8) + ( ifbp->IFB_CarryOut & 0xFF );
 		OUT_PORT_WORD( io_port, j );
 		bufp++; i--;
@@ -8363,6 +9135,7 @@ put_frag( IFBP ifbp, wci_bufp bufp, int len BE_PAR( int word_len ) )
 	}
 #if (HCF_IO) & HCF_IO_32BITS
 	//skip zero-length I/O, single byte I/O and I/O not worthwhile (i.e. less than 6 bytes)for DW logic
+<<<<<<< HEAD
 <<<<<<< HEAD
 													//if buffer length >= 6 and 32 bits I/O support
 	if ( !(ifbp->IFB_CntlOpt & USE_16BIT) && i >= 6 ) {
@@ -8381,6 +9154,8 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 			OUT_PORT_STRING_32( io_port, p4, j );
 													//.  .  adjust buffer length and pointer accordingly
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	                                                        //if buffer length >= 6 and 32 bits I/O support
 	if ( !(ifbp->IFB_CntlOpt & USE_16BIT) && i >= 6 ) {
 		hcf_32 FAR  *p4; //prevent side effects from macro
@@ -8397,12 +9172,16 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 			j = (hcf_16)i/4;
 			OUT_PORT_STRING_32( io_port, p4, j );
 			                                        //.  .  adjust buffer length and pointer accordingly
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			bufp += i & ~0x0003;
 			i &= 0x0003;
 		}
 	}
 #endif // HCF_IO_32BITS
+<<<<<<< HEAD
 <<<<<<< HEAD
 													//if no 32-bit support OR byte aligned OR 1 word left
 	if ( i ) {
@@ -8413,6 +9192,8 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 		}
 													//.  write as many word as possible in "alignment safe" way
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	                                        //if no 32-bit support OR byte aligned OR 1 word left
 	if ( i ) {
 		                                //.  if odd number of bytes left
@@ -8421,7 +9202,10 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 			ifbp->IFB_CarryOut = (hcf_16)bufp[i-1] | 0x0100;    //note that i and bufp are always simultaneously modified, &bufp[i-1] is invariant
 		}
 		                                //.  write as many word as possible in "alignment safe" way
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		j = (hcf_16)i/2;
 		OUT_PORT_STRING_8_16( io_port, bufp, j );
 	}
@@ -8429,6 +9213,7 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		void put_frag_finalize( IFBP ifbp )
@@ -8459,6 +9244,8 @@ hcf_32 FAR	*p4; //prevent side effects from macro
 *
 ************************************************************************************************************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     void put_frag_finalize( IFBP ifbp )
  *.PURPOSE       cleanup after put_frag for trailing odd byte and MIC transfer to NIC.
@@ -8487,11 +9274,15 @@ hcf_32 FAR	*p4; //prevent side effects from macro
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 HCF_STATIC void
 put_frag_finalize( IFBP ifbp )
 {
 #if (HCF_TYPE) & HCF_TYPE_WPA
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ( ifbp->IFB_MICTxCarry != 0xFFFF) {		//if MIC calculation active
 		CALC_TX_MIC( mic_pad, 8);				//.  feed (up to 8 bytes of) virtual padding to MIC engine
@@ -8501,6 +9292,8 @@ put_frag_finalize( IFBP ifbp )
 #endif // HCF_TYPE_WPA
 	put_frag( ifbp, null_addr, 1 BE_PAR(0) );	//write (possibly) trailing data or MIC byte
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ( ifbp->IFB_MICTxCarry != 0xFFFF) {      //if MIC calculation active
 		CALC_TX_MIC( mic_pad, 8);               //.  feed (up to 8 bytes of) virtual padding to MIC engine
 		                                        //.  write (possibly) trailing byte + (most of) MIC
@@ -8508,11 +9301,15 @@ put_frag_finalize( IFBP ifbp )
 	}
 #endif // HCF_TYPE_WPA
 	put_frag( ifbp, null_addr, 1 BE_PAR(0) );   //write (possibly) trailing data or MIC byte
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } // put_frag_finalize
 
 
 /************************************************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 *
 *.SUBMODULE		int put_info( IFBP ifbp, LTVP ltvp )
@@ -8578,6 +9375,8 @@ int rc = HCF_SUCCESS;
 		}
  }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *.SUBMODULE     int put_info( IFBP ifbp, LTVP ltvp )
  *.PURPOSE       support routine to handle the "basic" task of hcf_put_info to pass RIDs to the NIC.
@@ -8641,16 +9440,23 @@ put_info( IFBP ifbp, LTVP ltvp  )
 				HCFASSERT( DO_ASSERT, ltvp->typ );
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_ASSERT
 
 		rc = setup_bap( ifbp, ltvp->typ, 0, IO_OUT );
 		put_frag( ifbp, (wci_bufp)ltvp, 2*ltvp->len + 2 BE_PAR(2) );
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*28*/	if ( rc == HCF_SUCCESS ) {
 =======
 	/*28*/  if ( rc == HCF_SUCCESS ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*28*/  if ( rc == HCF_SUCCESS ) {
+>>>>>>> refs/remotes/origin/master
 			rc = cmd_exe( ifbp, HCMD_ACCESS + HCMD_ACCESS_WRITE, ltvp->typ );
 		}
 	}
@@ -8658,6 +9464,7 @@ put_info( IFBP ifbp, LTVP ltvp  )
 } // put_info
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if (HCF_DL_ONLY) == 0
 /************************************************************************************************************
@@ -8716,6 +9523,8 @@ put_info( IFBP ifbp, LTVP ltvp  )
 ************************************************************************************************************/
 #if (HCF_EXT) & HCF_EXT_MB
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************************
  *
  *.SUBMODULE     int put_info_mb( IFBP ifbp, CFG_MB_INFO_STRCT FAR * ltvp )
@@ -8770,12 +9579,16 @@ put_info( IFBP ifbp, LTVP ltvp  )
  *.ENDDOC                END DOCUMENTATION
  *
  ************************************************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 HCF_STATIC int
 put_info_mb( IFBP ifbp, CFG_MB_INFO_STRCT FAR * ltvp )
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int			rc = HCF_SUCCESS;
 hcf_16		i;						//work counter
@@ -8790,6 +9603,8 @@ hcf_16		tlen;					//free length/working length/offset in WMP frame
 
 	len = 1;																							/* 1 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int         rc = HCF_SUCCESS;
 	hcf_16      i;                      //work counter
 	hcf_16      *dp;                    //destination pointer (in MailBox)
@@ -8802,11 +9617,15 @@ hcf_16		tlen;					//free length/working length/offset in WMP frame
 	HCFASSERT( ifbp->IFB_MBSize, 0 );
 
 	len = 1;                                                                                            /* 1 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for ( i = 0; i < ltvp->frag_cnt; i++ ) {
 		len += ltvp->frag_buf[i].frag_len;
 	}
 	if ( ifbp->IFB_MBRp > ifbp->IFB_MBWp ) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		tlen = ifbp->IFB_MBRp - ifbp->IFB_MBWp;															/* 2a*/
 	} else {
@@ -8820,6 +9639,8 @@ hcf_16		tlen;					//free length/working length/offset in WMP frame
 			ifbp->IFB_MBWp = 0;										//reset WritePointer to begin of MailBox
 			tlen = ifbp->IFB_MBRp;									//get new available space size
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		tlen = ifbp->IFB_MBRp - ifbp->IFB_MBWp;                                                         /* 2a*/
 	} else {
 		if ( ifbp->IFB_MBRp == ifbp->IFB_MBWp ) {
@@ -8831,13 +9652,17 @@ hcf_16		tlen;					//free length/working length/offset in WMP frame
 			ifbp->IFB_MBp[ifbp->IFB_MBWp] = 0xFFFF;                 //flag dummy LTV to fill the trailing space
 			ifbp->IFB_MBWp = 0;                                     //reset WritePointer to begin of MailBox
 			tlen = ifbp->IFB_MBRp;                                  //get new available space size
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	dp = &ifbp->IFB_MBp[ifbp->IFB_MBWp];
 	if ( len == 0 ) {
 		tlen = 0; //;? what is this good for
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ( len + 2 >= tlen ){																				/* 6 */
 		//Do Not ASSERT, this is a normal condition
@@ -8849,6 +9674,8 @@ hcf_16		tlen;					//free length/working length/offset in WMP frame
 		ifbp->IFB_MBWp += len + 1;						//update WritePointer of MailBox
 		for ( i = 0; i < ltvp->frag_cnt; i++ ) {				// process each of the fragments
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ( len + 2 >= tlen ){                                                                             /* 6 */
 		//Do Not ASSERT, this is a normal condition
 		IF_TALLY( ifbp->IFB_HCF_Tallies.NoBufMB++ );
@@ -8858,11 +9685,15 @@ hcf_16		tlen;					//free length/working length/offset in WMP frame
 		*dp++ = ltvp->base_typ;                         //write Type to MB_Info block
 		ifbp->IFB_MBWp += len + 1;                      //update WritePointer of MailBox
 		for ( i = 0; i < ltvp->frag_cnt; i++ ) {                // process each of the fragments
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			sp = ltvp->frag_buf[i].frag_addr;
 			len = ltvp->frag_buf[i].frag_len;
 			while ( len-- ) *dp++ = *sp++;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ifbp->IFB_MBp[ifbp->IFB_MBWp] = 0;				//to assure get_info for CFG_MB_INFO stops
 		ifbp->IFB_MBInfoLen = ifbp->IFB_MBp[ifbp->IFB_MBRp];											/* 8 */
@@ -8870,10 +9701,15 @@ hcf_16		tlen;					//free length/working length/offset in WMP frame
 		ifbp->IFB_MBp[ifbp->IFB_MBWp] = 0;              //to assure get_info for CFG_MB_INFO stops
 		ifbp->IFB_MBInfoLen = ifbp->IFB_MBp[ifbp->IFB_MBRp];                                            /* 8 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ifbp->IFB_MBp[ifbp->IFB_MBWp] = 0;              //to assure get_info for CFG_MB_INFO stops
+		ifbp->IFB_MBInfoLen = ifbp->IFB_MBp[ifbp->IFB_MBRp];                                            /* 8 */
+>>>>>>> refs/remotes/origin/master
 	}
 	return rc;
 } // put_info_mb
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif // HCF_EXT_MB
 #endif // HCF_DL_ONLY
@@ -8962,6 +9798,8 @@ int	rc;
 	if (rc == HCF_SUCCESS) {										/*2*/
 		OPW( HREG_SELECT_1, fid );																/*4*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /************************************************************************************************************
  *
@@ -9045,13 +9883,17 @@ setup_bap( IFBP ifbp, hcf_16 fid, int offset, int type )
 	rc = ifbp->IFB_DefunctStat;
 	if (rc == HCF_SUCCESS) {                                        /*2*/
 		OPW( HREG_SELECT_1, fid );                                                              /*4*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		OPW( HREG_OFFSET_1, offset );
 		if ( type == IO_IN ) {
 			ifbp->IFB_CarryIn = 0;
 		}
 		else ifbp->IFB_CarryOut = 0;
 		HCF_WAIT_WHILE( IPW( HREG_OFFSET_1) & HCMD_BUSY );
+<<<<<<< HEAD
 <<<<<<< HEAD
 		HCFASSERT( !( IPW( HREG_OFFSET_1) & HREG_OFFSET_ERR ), MERGE_2( fid, offset ) )			/*8*/
 		if ( prot_cnt == 0 ) {
@@ -9061,6 +9903,11 @@ setup_bap( IFBP ifbp, hcf_16 fid, int offset, int type )
 		if ( prot_cnt == 0 ) {
 			HCFASSERT( DO_ASSERT, MERGE_2( fid, offset ) );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		HCFASSERT( !( IPW( HREG_OFFSET_1) & HREG_OFFSET_ERR ), MERGE_2( fid, offset ) );         /*8*/
+		if ( prot_cnt == 0 ) {
+			HCFASSERT( DO_ASSERT, MERGE_2( fid, offset ) );
+>>>>>>> refs/remotes/origin/master
 			rc = ifbp->IFB_DefunctStat = HCF_ERR_DEFUNCT_TIME_OUT;
 			ifbp->IFB_CardStat |= CARD_STAT_DEFUNCT;
 		}

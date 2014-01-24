@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Common support
 <<<<<<< HEAD
 obj-y := clock.o devices.o gpio.o icoll.o iomux.o system.o timer.o
@@ -28,3 +29,7 @@ obj-$(CONFIG_MODULE_TX28) += module-tx28.o
 obj-$(CONFIG_MACH_TX28)    += mach-tx28.o
 
 obj-y += devices/
+=======
+obj-$(CONFIG_PM) += pm.o
+obj-$(CONFIG_ARCH_MXS) += mach-mxs.o
+>>>>>>> refs/remotes/origin/master

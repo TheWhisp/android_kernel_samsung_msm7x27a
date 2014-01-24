@@ -20,6 +20,7 @@
 #include <linux/kernel.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * struct omap_vc_common_data - per-VC register/bitfield data
  * @cmd_on_mask: ON bitmask in PRM_VC_CMD_VAL* register
@@ -27,13 +28,18 @@
  * @smps_sa_reg: Offset of PRM_VC_SMPS_SA reg from PRM start
  * @smps_volra_reg: Offset of PRM_VC_SMPS_VOL_RA reg from PRM start
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct voltagedomain;
 
 /**
  * struct omap_vc_common - per-VC register/bitfield data
  * @cmd_on_mask: ON bitmask in PRM_VC_CMD_VAL* register
  * @valid: VALID bitmask in PRM_VC_BYPASS_VAL register
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @bypass_val_reg: Offset of PRM_VC_BYPASS_VAL reg from PRM start
  * @data_shift: DATA field shift in PRM_VC_BYPASS_VAL register
  * @slaveaddr_shift: SLAVEADDR field shift in PRM_VC_BYPASS_VAL register
@@ -43,15 +49,22 @@ struct voltagedomain;
  * @cmd_ret_shift: RET field shift in PRM_VC_CMD_VAL_* register
  * @cmd_off_shift: OFF field shift in PRM_VC_CMD_VAL_* register
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @i2c_cfg_reg: I2C configuration register offset
  * @i2c_cfg_hsen_mask: high-speed mode bit field mask in I2C config register
  * @i2c_mcode_mask: MCODE field mask for I2C config register
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @i2c_cfg_reg: I2C configuration register offset
+ * @i2c_cfg_hsen_mask: high-speed mode bit field mask in I2C config register
+ * @i2c_mcode_mask: MCODE field mask for I2C config register
+>>>>>>> refs/remotes/origin/master
  *
  * XXX One of cmd_on_mask and cmd_on_shift are not needed
  * XXX VALID should probably be a shift, not a mask
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct omap_vc_common_data {
 	u32 cmd_on_mask;
@@ -63,6 +76,11 @@ struct omap_vc_common {
 	u32 cmd_on_mask;
 	u32 valid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct omap_vc_common {
+	u32 cmd_on_mask;
+	u32 valid;
+>>>>>>> refs/remotes/origin/master
 	u8 bypass_val_reg;
 	u8 data_shift;
 	u8 slaveaddr_shift;
@@ -71,6 +89,7 @@ struct omap_vc_common {
 	u8 cmd_onlp_shift;
 	u8 cmd_ret_shift;
 	u8 cmd_off_shift;
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -101,6 +120,8 @@ extern struct omap_vc_instance_data omap4_vc_mpu_data;
 extern struct omap_vc_instance_data omap4_vc_iva_data;
 extern struct omap_vc_instance_data omap4_vc_core_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 i2c_cfg_reg;
 	u8 i2c_cfg_hsen_mask;
 	u8 i2c_mcode_mask;
@@ -136,7 +157,10 @@ struct omap_vc_channel {
 	u16 i2c_slave_addr;
 	u16 volt_reg_addr;
 	u16 cmd_reg_addr;
+<<<<<<< HEAD
 	u16 setup_time;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 cfg_channel;
 	bool i2c_high_speed;
 
@@ -161,6 +185,16 @@ extern struct omap_vc_channel omap4_vc_mpu;
 extern struct omap_vc_channel omap4_vc_iva;
 extern struct omap_vc_channel omap4_vc_core;
 
+<<<<<<< HEAD
+=======
+extern struct omap_vc_param omap3_mpu_vc_data;
+extern struct omap_vc_param omap3_core_vc_data;
+
+extern struct omap_vc_param omap4_mpu_vc_data;
+extern struct omap_vc_param omap4_iva_vc_data;
+extern struct omap_vc_param omap4_core_vc_data;
+
+>>>>>>> refs/remotes/origin/master
 void omap_vc_init_channel(struct voltagedomain *voltdm);
 int omap_vc_pre_scale(struct voltagedomain *voltdm,
 		      unsigned long target_volt,
@@ -170,7 +204,10 @@ void omap_vc_post_scale(struct voltagedomain *voltdm,
 			u8 target_vsel, u8 current_vsel);
 int omap_vc_bypass_scale(struct voltagedomain *voltdm,
 			 unsigned long target_volt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

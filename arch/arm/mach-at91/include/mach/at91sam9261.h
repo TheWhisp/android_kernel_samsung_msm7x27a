@@ -61,6 +61,7 @@
 #define AT91SAM9261_BASE_SPI0		0xfffc8000
 #define AT91SAM9261_BASE_SPI1		0xfffcc000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_BASE_SYS			0xffffea00
 
 
@@ -83,6 +84,8 @@
 #define AT91_WDT	(0xfffffd40 - AT91_BASE_SYS)
 #define AT91_GPBR	(0xfffffd50 - AT91_BASE_SYS)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -101,11 +104,14 @@
 #define AT91SAM9261_BASE_PIT	0xfffffd30
 #define AT91SAM9261_BASE_WDT	0xfffffd40
 #define AT91SAM9261_BASE_GPBR	0xfffffd50
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define AT91_USART0	AT91SAM9261_BASE_US0
 #define AT91_USART1	AT91SAM9261_BASE_US1
 #define AT91_USART2	AT91SAM9261_BASE_US2
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*

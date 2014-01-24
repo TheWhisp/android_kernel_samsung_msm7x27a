@@ -14,6 +14,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 
@@ -49,7 +54,11 @@ struct sk_buff *ath_rxbuf_alloc(struct ath_common *common,
 		if (off != 0)
 			skb_reserve(skb, common->cachelsz - off);
 	} else {
+<<<<<<< HEAD
 		printk(KERN_ERR "skbuff alloc of size %u failed\n", len);
+=======
+		pr_err("skbuff alloc of size %u failed\n", len);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -58,6 +67,7 @@ struct sk_buff *ath_rxbuf_alloc(struct ath_common *common,
 EXPORT_SYMBOL(ath_rxbuf_alloc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if 0 // by bbelief
 void ath_printk(const char *level, const char *fmt, ...)
@@ -65,10 +75,17 @@ void ath_printk(const char *level, const char *fmt, ...)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 	struct va_format vaf;
 #endif
+=======
+void ath_printk(const char *level, const struct ath_common* common,
+		const char *fmt, ...)
+{
+	struct va_format vaf;
+>>>>>>> refs/remotes/origin/master
 	va_list args;
 
 	va_start(args, fmt);
 
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36))
 	vaf.fmt = fmt;
 	vaf.va = &args;
@@ -106,4 +123,17 @@ int ath_printk(const char *level, struct ath_common *common,
 
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	if (common && common->hw && common->hw->wiphy)
+		printk("%sath: %s: %pV",
+		       level, wiphy_name(common->hw->wiphy), &vaf);
+	else
+		printk("%sath: %pV", level, &vaf);
+
+	va_end(args);
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(ath_printk);

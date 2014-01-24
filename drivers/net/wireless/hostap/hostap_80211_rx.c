@@ -1,9 +1,13 @@
 #include <linux/etherdevice.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/lib80211.h>
 #include <linux/if_arp.h>
 
@@ -418,7 +422,11 @@ static void hostap_rx_sta_beacon(local_info_t *local, struct sk_buff *skb,
 			ssid = pos + 2;
 			ssid_len = pos[1];
 			break;
+<<<<<<< HEAD
 		case WLAN_EID_GENERIC:
+=======
+		case WLAN_EID_VENDOR_SPECIFIC:
+>>>>>>> refs/remotes/origin/master
 			if (pos[1] >= 4 &&
 			    pos[2] == 0x00 && pos[3] == 0x50 &&
 			    pos[4] == 0xf2 && pos[5] == 1) {

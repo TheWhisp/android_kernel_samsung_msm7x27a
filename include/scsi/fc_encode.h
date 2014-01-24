@@ -21,9 +21,13 @@
 #define _FC_ENCODE_H_
 #include <asm/unaligned.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/utsname.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/utsname.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * F_CTL values for simple requests and responses.
@@ -48,12 +52,18 @@ struct fc_ct_req {
 		struct fc_ns_rsnn snn;
 		struct fc_ns_rspn spn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct fc_fdmi_rhba rhba;
 		struct fc_fdmi_rpa  rpa;
 		struct fc_fdmi_dprt dprt;
 		struct fc_fdmi_dhba dhba;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} payload;
 };
 
@@ -109,12 +119,18 @@ static inline void fc_adisc_fill(struct fc_lport *lport, struct fc_frame *fp)
  */
 static inline struct fc_ct_req *fc_ct_hdr_fill(const struct fc_frame *fp,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					       unsigned int op, size_t req_size)
 =======
 					       unsigned int op, size_t req_size,
 					       enum fc_ct_fs_type fs_type,
 					       u8 subtype)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       unsigned int op, size_t req_size,
+					       enum fc_ct_fs_type fs_type,
+					       u8 subtype)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fc_ct_req *ct;
 	size_t ct_plen;
@@ -124,22 +140,31 @@ static inline struct fc_ct_req *fc_ct_hdr_fill(const struct fc_frame *fp,
 	memset(ct, 0, ct_plen);
 	ct->hdr.ct_rev = FC_CT_REV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ct->hdr.ct_fs_type = FC_FST_DIR;
 	ct->hdr.ct_fs_subtype = FC_NS_SUBTYPE;
 =======
 	ct->hdr.ct_fs_type = fs_type;
 	ct->hdr.ct_fs_subtype = subtype;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ct->hdr.ct_fs_type = fs_type;
+	ct->hdr.ct_fs_subtype = subtype;
+>>>>>>> refs/remotes/origin/master
 	ct->hdr.ct_cmd = htons((u16) op);
 	return ct;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * fc_ct_fill() - Fill in a name service request frame
 =======
  * fc_ct_ns_fill() - Fill in a name service request frame
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * fc_ct_ns_fill() - Fill in a name service request frame
+>>>>>>> refs/remotes/origin/master
  * @lport: local port.
  * @fc_id: FC_ID of non-destination rport for GPN_ID and similar inquiries.
  * @fp: frame to contain payload.
@@ -148,10 +173,14 @@ static inline struct fc_ct_req *fc_ct_hdr_fill(const struct fc_frame *fp,
  * @fh_type: pointer to FC-4 type.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int fc_ct_fill(struct fc_lport *lport,
 =======
 static inline int fc_ct_ns_fill(struct fc_lport *lport,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int fc_ct_ns_fill(struct fc_lport *lport,
+>>>>>>> refs/remotes/origin/master
 		      u32 fc_id, struct fc_frame *fp,
 		      unsigned int op, enum fc_rctl *r_ctl,
 		      enum fc_fh_type *fh_type)
@@ -162,15 +191,21 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
 	switch (op) {
 	case FC_NS_GPN_FT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_gid_ft));
 =======
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_gid_ft),
 				    FC_FST_DIR, FC_NS_SUBTYPE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_gid_ft),
+				    FC_FST_DIR, FC_NS_SUBTYPE);
+>>>>>>> refs/remotes/origin/master
 		ct->payload.gid.fn_fc4_type = FC_TYPE_FCP;
 		break;
 
 	case FC_NS_GPN_ID:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_fid));
 =======
@@ -178,27 +213,42 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
 				    FC_FST_DIR, FC_NS_SUBTYPE);
 		ct->payload.gid.fn_fc4_type = FC_TYPE_FCP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_fid),
+				    FC_FST_DIR, FC_NS_SUBTYPE);
+		ct->payload.gid.fn_fc4_type = FC_TYPE_FCP;
+>>>>>>> refs/remotes/origin/master
 		hton24(ct->payload.fid.fp_fid, fc_id);
 		break;
 
 	case FC_NS_RFT_ID:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rft));
 =======
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rft),
 				    FC_FST_DIR, FC_NS_SUBTYPE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rft),
+				    FC_FST_DIR, FC_NS_SUBTYPE);
+>>>>>>> refs/remotes/origin/master
 		hton24(ct->payload.rft.fid.fp_fid, lport->port_id);
 		ct->payload.rft.fts = lport->fcts;
 		break;
 
 	case FC_NS_RFF_ID:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rff_id));
 =======
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rff_id),
 				    FC_FST_DIR, FC_NS_SUBTYPE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rff_id),
+				    FC_FST_DIR, FC_NS_SUBTYPE);
+>>>>>>> refs/remotes/origin/master
 		hton24(ct->payload.rff.fr_fid.fp_fid, lport->port_id);
 		ct->payload.rff.fr_type = FC_TYPE_FCP;
 		if (lport->service_params & FCP_SPPF_INIT_FCN)
@@ -209,11 +259,16 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
 
 	case FC_NS_RNN_ID:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rn_id));
 =======
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rn_id),
 				    FC_FST_DIR, FC_NS_SUBTYPE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rn_id),
+				    FC_FST_DIR, FC_NS_SUBTYPE);
+>>>>>>> refs/remotes/origin/master
 		hton24(ct->payload.rn.fr_fid.fp_fid, lport->port_id);
 		put_unaligned_be64(lport->wwnn, &ct->payload.rn.fr_wwn);
 		break;
@@ -221,11 +276,16 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
 	case FC_NS_RSPN_ID:
 		len = strnlen(fc_host_symbolic_name(lport->host), 255);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rspn) + len);
 =======
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rspn) + len,
 				    FC_FST_DIR, FC_NS_SUBTYPE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rspn) + len,
+				    FC_FST_DIR, FC_NS_SUBTYPE);
+>>>>>>> refs/remotes/origin/master
 		hton24(ct->payload.spn.fr_fid.fp_fid, lport->port_id);
 		strncpy(ct->payload.spn.fr_name,
 			fc_host_symbolic_name(lport->host), len);
@@ -235,11 +295,16 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
 	case FC_NS_RSNN_NN:
 		len = strnlen(fc_host_symbolic_name(lport->host), 255);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rsnn) + len);
 =======
 		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rsnn) + len,
 				    FC_FST_DIR, FC_NS_SUBTYPE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ct = fc_ct_hdr_fill(fp, op, sizeof(struct fc_ns_rsnn) + len,
+				    FC_FST_DIR, FC_NS_SUBTYPE);
+>>>>>>> refs/remotes/origin/master
 		put_unaligned_be64(lport->wwnn, &ct->payload.snn.fr_wwn);
 		strncpy(ct->payload.snn.fr_name,
 			fc_host_symbolic_name(lport->host), len);
@@ -256,7 +321,10 @@ static inline int fc_ct_ns_fill(struct fc_lport *lport,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * fc_ct_ms_fill() - Fill in a mgmt service request frame
  * @lport: local port.
  * @fc_id: FC_ID of non-destination rport for GPN_ID and similar inquiries.
@@ -581,7 +649,10 @@ static inline int fc_ct_fill(struct fc_lport *lport,
 	return rc;
 }
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * fc_plogi_fill - Fill in plogi request frame
  */
 static inline void fc_plogi_fill(struct fc_lport *lport, struct fc_frame *fp,

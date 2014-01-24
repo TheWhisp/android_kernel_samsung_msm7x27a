@@ -13,11 +13,16 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
 <<<<<<< HEAD
+<<<<<<< HEAD
  * the Free Software Foundation; only version 2 of the License.
 =======
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,7 +48,10 @@
 
 #include <asm/dma.h>
 
+<<<<<<< HEAD
 #include "bf5xx-ac97-pcm.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "bf5xx-ac97.h"
 #include "bf5xx-sport.h"
 
@@ -112,7 +120,10 @@ static const struct snd_pcm_hardware bf5xx_pcm_hardware = {
 #endif
 				   SNDRV_PCM_INFO_BLOCK_TRANSFER,
 
+<<<<<<< HEAD
 	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
+=======
+>>>>>>> refs/remotes/origin/master
 	.period_bytes_min	= 32,
 	.period_bytes_max	= 0x10000,
 	.periods_min		= 1,
@@ -420,6 +431,7 @@ static void bf5xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
 	}
 }
 
+<<<<<<< HEAD
 static u64 bf5xx_pcm_dmamask = DMA_BIT_MASK(32);
 
 <<<<<<< HEAD
@@ -446,6 +458,20 @@ static int bf5xx_pcm_ac97_new(struct snd_soc_pcm_runtime *rtd)
 =======
 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int bf5xx_pcm_ac97_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+	struct snd_pcm *pcm = rtd->pcm;
+	int ret;
+
+	pr_debug("%s enter\n", __func__);
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+
+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = bf5xx_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
@@ -453,10 +479,14 @@ static int bf5xx_pcm_ac97_new(struct snd_soc_pcm_runtime *rtd)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dai->driver->capture.channels_min) {
 =======
 	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+>>>>>>> refs/remotes/origin/master
 		ret = bf5xx_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -472,12 +502,20 @@ static struct snd_soc_platform_driver bf5xx_ac97_soc_platform = {
 	.pcm_free	= bf5xx_pcm_free_dma_buffers,
 };
 
+<<<<<<< HEAD
 static int __devinit bf5xx_soc_platform_probe(struct platform_device *pdev)
+=======
+static int bf5xx_soc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev, &bf5xx_ac97_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit bf5xx_soc_platform_remove(struct platform_device *pdev)
+=======
+static int bf5xx_soc_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
@@ -490,6 +528,7 @@ static struct platform_driver bf5xx_pcm_driver = {
 	},
 
 	.probe = bf5xx_soc_platform_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(bf5xx_soc_platform_remove),
 };
 
@@ -510,9 +549,17 @@ MODULE_AUTHOR("Cliff Cai");
 MODULE_DESCRIPTION("ADI Blackfin AC97 PCM DMA module");
 MODULE_LICENSE("GPL v2");
 =======
+=======
+	.remove = bf5xx_soc_platform_remove,
+};
+
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(bf5xx_pcm_driver);
 
 MODULE_AUTHOR("Cliff Cai");
 MODULE_DESCRIPTION("ADI Blackfin AC97 PCM DMA module");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

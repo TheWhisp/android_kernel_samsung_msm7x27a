@@ -18,10 +18,13 @@ extern char _ssbss[], _esbss[];
 extern unsigned long __ivt_start[], __ivt_end[];
 extern char _etext[], _stext[];
 
+<<<<<<< HEAD
 #  ifdef CONFIG_MTD_UCLINUX
 extern char *_ebss;
 #  endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern u32 _fdt_start[], _fdt_end[];
 
 # endif /* !__ASSEMBLY__ */

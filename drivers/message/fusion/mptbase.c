@@ -64,10 +64,15 @@
 #include <asm/mtrr.h>
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kthread.h>
 #include <scsi/scsi_host.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kthread.h>
+#include <scsi/scsi_host.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mptbase.h"
 #include "lsi/mpi_log_fc.h"
@@ -119,11 +124,16 @@ MODULE_PARM_DESC(mpt_fwfault_debug,
 		 "Enable detection of Firmware fault and halt Firmware on fault - (default=0)");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char	MptCallbacksName[MPT_MAX_PROTOCOL_DRIVERS][50];
 =======
 static char	MptCallbacksName[MPT_MAX_PROTOCOL_DRIVERS]
 				[MPT_MAX_CALLBACKNAME_LEN+1];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char	MptCallbacksName[MPT_MAX_PROTOCOL_DRIVERS]
+				[MPT_MAX_CALLBACKNAME_LEN+1];
+>>>>>>> refs/remotes/origin/master
 
 #ifdef MFCNT
 static int mfcounter = 0;
@@ -334,7 +344,10 @@ mpt_is_discovery_complete(MPT_ADAPTER *ioc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  *  mpt_remove_dead_ioc_func - kthread context to remove dead ioc
@@ -361,7 +374,10 @@ static int mpt_remove_dead_ioc_func(void *arg)
 
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	mpt_fault_reset_work - work performed on workq after ioc fault
  *	@work: input argument, used to derive ioc
@@ -376,18 +392,26 @@ mpt_fault_reset_work(struct work_struct *work)
 	int		 rc;
 	unsigned long	 flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MPT_SCSI_HOST	*hd;
 	struct task_struct *p;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MPT_SCSI_HOST	*hd;
+	struct task_struct *p;
+>>>>>>> refs/remotes/origin/master
 
 	if (ioc->ioc_reset_in_progress || !ioc->active)
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ioc_raw_state = mpt_GetIocState(ioc, 0);
 	if ((ioc_raw_state & MPI_IOC_STATE_MASK) == MPI_IOC_STATE_FAULT) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ioc_raw_state = mpt_GetIocState(ioc, 0);
 	if ((ioc_raw_state & MPI_IOC_STATE_MASK) == MPI_IOC_STATE_MASK) {
@@ -421,7 +445,10 @@ mpt_fault_reset_work(struct work_struct *work)
 
 	if ((ioc_raw_state & MPI_IOC_STATE_MASK)
 			== MPI_IOC_STATE_FAULT) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(MYIOC_s_WARN_FMT "IOC is in FAULT state (%04xh)!!!\n",
 		       ioc->name, ioc_raw_state & MPI_DOORBELL_DATA_MASK);
 		printk(MYIOC_s_WARN_FMT "Issuing HardReset from %s!!\n",
@@ -737,12 +764,17 @@ mpt_register(MPT_CALLBACK cbfunc, MPT_DRIVER_CLASS dclass, char *func_name)
 			MptEvHandlers[cb_idx] = NULL;
 			last_drv_idx = cb_idx;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			memcpy(MptCallbacksName[cb_idx], func_name,
 			    strlen(func_name) > 50 ? 50 : strlen(func_name));
 =======
 			strlcpy(MptCallbacksName[cb_idx], func_name,
 				MPT_MAX_CALLBACKNAME_LEN+1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			strlcpy(MptCallbacksName[cb_idx], func_name,
+				MPT_MAX_CALLBACKNAME_LEN+1);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1676,7 +1708,10 @@ mpt_mapresources(MPT_ADAPTER *ioc)
 	unsigned long	 port;
 	u32		 msize;
 	u32		 psize;
+<<<<<<< HEAD
 	u8		 revision;
+=======
+>>>>>>> refs/remotes/origin/master
 	int		 r = -ENODEV;
 	struct pci_dev *pdev;
 
@@ -1690,11 +1725,17 @@ mpt_mapresources(MPT_ADAPTER *ioc)
 	if (pci_request_selected_regions(pdev, ioc->bars, "mpt")) {
 		printk(MYIOC_s_ERR_FMT "pci_request_selected_regions() with "
 		    "MEM failed\n", ioc->name);
+<<<<<<< HEAD
 		return r;
 	}
 
 	pci_read_config_byte(pdev, PCI_CLASS_REVISION, &revision);
 
+=======
+		goto out_pci_disable_device;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (sizeof(dma_addr_t) > 4) {
 		const uint64_t required_mask = dma_get_required_mask
 		    (&pdev->dev);
@@ -1716,8 +1757,12 @@ mpt_mapresources(MPT_ADAPTER *ioc)
 		} else {
 			printk(MYIOC_s_WARN_FMT "no suitable DMA mask for %s\n",
 			    ioc->name, pci_name(pdev));
+<<<<<<< HEAD
 			pci_release_selected_regions(pdev, ioc->bars);
 			return r;
+=======
+			goto out_pci_release_region;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		if (!pci_set_dma_mask(pdev, DMA_BIT_MASK(32))
@@ -1730,8 +1775,12 @@ mpt_mapresources(MPT_ADAPTER *ioc)
 		} else {
 			printk(MYIOC_s_WARN_FMT "no suitable DMA mask for %s\n",
 			    ioc->name, pci_name(pdev));
+<<<<<<< HEAD
 			pci_release_selected_regions(pdev, ioc->bars);
 			return r;
+=======
+			goto out_pci_release_region;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1761,8 +1810,13 @@ mpt_mapresources(MPT_ADAPTER *ioc)
 	if (mem == NULL) {
 		printk(MYIOC_s_ERR_FMT ": ERROR - Unable to map adapter"
 			" memory!\n", ioc->name);
+<<<<<<< HEAD
 		pci_release_selected_regions(pdev, ioc->bars);
 		return -EINVAL;
+=======
+		r = -EINVAL;
+		goto out_pci_release_region;
+>>>>>>> refs/remotes/origin/master
 	}
 	ioc->memmap = mem;
 	dinitprintk(ioc, printk(MYIOC_s_INFO_FMT "mem = %p, mem_phys = %llx\n",
@@ -1776,6 +1830,15 @@ mpt_mapresources(MPT_ADAPTER *ioc)
 	ioc->pio_chip = (SYSIF_REGS __iomem *)port;
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+out_pci_release_region:
+	pci_release_selected_regions(pdev, ioc->bars);
+out_pci_disable_device:
+	pci_disable_device(pdev);
+	return r;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*/
@@ -1802,7 +1865,10 @@ mpt_attach(struct pci_dev *pdev, const struct pci_device_id *id)
 	MPT_ADAPTER	*ioc;
 	u8		 cb_idx;
 	int		 r = -ENODEV;
+<<<<<<< HEAD
 	u8		 revision;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8		 pcixcmd;
 	static int	 mpt_ids = 0;
 #ifdef CONFIG_PROC_FS
@@ -1910,8 +1976,13 @@ mpt_attach(struct pci_dev *pdev, const struct pci_device_id *id)
 	dinitprintk(ioc, printk(MYIOC_s_INFO_FMT "facts @ %p, pfacts[0] @ %p\n",
 	    ioc->name, &ioc->facts, &ioc->pfacts[0]));
 
+<<<<<<< HEAD
 	pci_read_config_byte(pdev, PCI_CLASS_REVISION, &revision);
 	mpt_get_product_name(pdev->vendor, pdev->device, revision, ioc->prod_name);
+=======
+	mpt_get_product_name(pdev->vendor, pdev->device, pdev->revision,
+			     ioc->prod_name);
+>>>>>>> refs/remotes/origin/master
 
 	switch (pdev->device)
 	{
@@ -1926,7 +1997,11 @@ mpt_attach(struct pci_dev *pdev, const struct pci_device_id *id)
 		break;
 
 	case MPI_MANUFACTPAGE_DEVICEID_FC929X:
+<<<<<<< HEAD
 		if (revision < XL_929) {
+=======
+		if (pdev->revision < XL_929) {
+>>>>>>> refs/remotes/origin/master
 			/* 929X Chip Fix. Set Split transactions level
 		 	* for PCIX. Set MOST bits to zero.
 		 	*/
@@ -1957,7 +2032,11 @@ mpt_attach(struct pci_dev *pdev, const struct pci_device_id *id)
 		/* 1030 Chip Fix. Disable Split transactions
 		 * for PCIX. Set MOST bits to zero if Rev < C0( = 8).
 		 */
+<<<<<<< HEAD
 		if (revision < C0_1030) {
+=======
+		if (pdev->revision < C0_1030) {
+>>>>>>> refs/remotes/origin/master
 			pci_read_config_byte(pdev, 0x6a, &pcixcmd);
 			pcixcmd &= 0x8F;
 			pci_write_config_byte(pdev, 0x6a, pcixcmd);
@@ -6499,9 +6578,12 @@ mpt_config(MPT_ADAPTER *ioc, CONFIGPARMS *pCfg)
 		if (ioc->mptbase_cmds.status & MPT_MGMT_STATUS_DID_IOCRESET)
 			goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!timeleft)
 			issue_hard_reset = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!timeleft) {
 			spin_lock_irqsave(&ioc->taskmgmt_lock, flags);
 			if (ioc->ioc_reset_in_progress) {
@@ -6510,12 +6592,19 @@ mpt_config(MPT_ADAPTER *ioc, CONFIGPARMS *pCfg)
 				printk(MYIOC_s_INFO_FMT "%s: host reset in"
 					" progress mpt_config timed out.!!\n",
 					__func__, ioc->name);
+<<<<<<< HEAD
+=======
+				mutex_unlock(&ioc->mptbase_cmds.mutex);
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 			}
 			spin_unlock_irqrestore(&ioc->taskmgmt_lock, flags);
 			issue_hard_reset = 1;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -6683,7 +6772,11 @@ static int mpt_summary_proc_show(struct seq_file *m, void *v)
 
 static int mpt_summary_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, mpt_summary_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, mpt_summary_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations mpt_summary_proc_fops = {
@@ -6832,7 +6925,11 @@ static int mpt_iocinfo_proc_show(struct seq_file *m, void *v)
 
 static int mpt_iocinfo_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, mpt_iocinfo_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, mpt_iocinfo_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations mpt_iocinfo_proc_fops = {
@@ -7230,8 +7327,11 @@ mpt_HardResetHandler(MPT_ADAPTER *ioc, int sleepFlag)
 	if (ioc->ioc_reset_in_progress) {
 		spin_unlock_irqrestore(&ioc->taskmgmt_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ioc->wait_on_reset_completion = 1;
 		do {
 			ssleep(1);
@@ -7244,7 +7344,10 @@ mpt_HardResetHandler(MPT_ADAPTER *ioc, int sleepFlag)
 		rc = 0;
 		time_count = jiffies;
 		goto exit;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	ioc->ioc_reset_in_progress = 1;
 	if (ioc->alt_ioc)
@@ -7282,9 +7385,13 @@ mpt_HardResetHandler(MPT_ADAPTER *ioc, int sleepFlag)
 	ioc->taskmgmt_quiesce_io = 0;
 	ioc->taskmgmt_in_progress = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ioc->reset_status = rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ioc->reset_status = rc;
+>>>>>>> refs/remotes/origin/master
 	if (ioc->alt_ioc) {
 		ioc->alt_ioc->ioc_reset_in_progress = 0;
 		ioc->alt_ioc->taskmgmt_quiesce_io = 0;
@@ -7301,10 +7408,14 @@ mpt_HardResetHandler(MPT_ADAPTER *ioc, int sleepFlag)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 exit:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	dtmprintk(ioc,
 	    printk(MYIOC_s_DEBUG_FMT
 		"HardResetHandler: completed (%d seconds): %s\n", ioc->name,

@@ -5,7 +5,10 @@
  *  Copyright (c) 2000-2005 Vojtech Pavlik <vojtech@suse.cz>
  *  Copyright (c) 2005 Michael Haboustak <mike-@cinci.rr.com> for Concept2, Inc
  *  Copyright (c) 2006-2007 Jiri Kosina
+<<<<<<< HEAD
  *  Copyright (c) 2007 Paul Walmsley
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright (c) 2008 Jiri Slaby <jirislaby@gmail.com>
  */
 
@@ -22,7 +25,10 @@
 #include <linux/hid.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "hid-ids.h"
 
@@ -48,6 +54,15 @@ module_param(iso_layout, uint, 0644);
 MODULE_PARM_DESC(iso_layout, "Enable/Disable hardcoded ISO-layout of the keyboard. "
 		"(0 = disabled, [1] = enabled)");
 
+<<<<<<< HEAD
+=======
+static unsigned int swap_opt_cmd;
+module_param(swap_opt_cmd, uint, 0644);
+MODULE_PARM_DESC(swap_opt_cmd, "Swap the Option (\"Alt\") and Command (\"Flag\") keys. "
+		"(For people who want to keep Windows PC keyboard muscle memory. "
+		"[0] = as-is, Mac layout. 1 = swapped, Windows layout.)");
+
+>>>>>>> refs/remotes/origin/master
 struct apple_sc {
 	unsigned long quirks;
 	unsigned int fn_on;
@@ -152,6 +167,17 @@ static const struct apple_key_translation apple_iso_keyboard[] = {
 	{ }
 };
 
+<<<<<<< HEAD
+=======
+static const struct apple_key_translation swapped_option_cmd_keys[] = {
+	{ KEY_LEFTALT,	KEY_LEFTMETA },
+	{ KEY_LEFTMETA,	KEY_LEFTALT },
+	{ KEY_RIGHTALT,	KEY_RIGHTMETA },
+	{ KEY_RIGHTMETA,KEY_RIGHTALT },
+	{ }
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct apple_key_translation *apple_find_translation(
 		const struct apple_key_translation *table, u16 from)
 {
@@ -234,7 +260,11 @@ static int hidinput_apple_event(struct hid_device *hid, struct input_dev *input,
 		}
 	}
 
+<<<<<<< HEAD
         if (iso_layout) {
+=======
+	if (iso_layout) {
+>>>>>>> refs/remotes/origin/master
 		if (asc->quirks & APPLE_ISO_KEYBOARD) {
 			trans = apple_find_translation(apple_iso_keyboard, usage->code);
 			if (trans) {
@@ -244,6 +274,17 @@ static int hidinput_apple_event(struct hid_device *hid, struct input_dev *input,
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (swap_opt_cmd) {
+		trans = apple_find_translation(swapped_option_cmd_keys, usage->code);
+		if (trans) {
+			input_event(input, usage->type, trans->to, value);
+			return 1;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -351,7 +392,11 @@ static int apple_probe(struct hid_device *hdev,
 	unsigned int connect_mask = HID_CONNECT_DEFAULT;
 	int ret;
 
+<<<<<<< HEAD
 	asc = kzalloc(sizeof(*asc), GFP_KERNEL);
+=======
+	asc = devm_kzalloc(&hdev->dev, sizeof(*asc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (asc == NULL) {
 		hid_err(hdev, "can't alloc apple descriptor\n");
 		return -ENOMEM;
@@ -364,7 +409,11 @@ static int apple_probe(struct hid_device *hdev,
 	ret = hid_parse(hdev);
 	if (ret) {
 		hid_err(hdev, "parse failed\n");
+<<<<<<< HEAD
 		goto err_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (quirks & APPLE_HIDDEV)
@@ -375,6 +424,7 @@ static int apple_probe(struct hid_device *hdev,
 	ret = hid_hw_start(hdev, connect_mask);
 	if (ret) {
 		hid_err(hdev, "hw start failed\n");
+<<<<<<< HEAD
 		goto err_free;
 	}
 
@@ -395,6 +445,15 @@ static const struct hid_device_id apple_devices[] = {
 		.driver_data = APPLE_HIDDEV | APPLE_IGNORE_HIDINPUT },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_IRCONTROL4),
 		.driver_data = APPLE_HIDDEV | APPLE_IGNORE_HIDINPUT },
+=======
+		return ret;
+	}
+
+	return 0;
+}
+
+static const struct hid_device_id apple_devices[] = {
+>>>>>>> refs/remotes/origin/master
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_MIGHTYMOUSE),
 		.driver_data = APPLE_MIGHTYMOUSE | APPLE_INVERT_HWHEEL },
 
@@ -440,7 +499,12 @@ static const struct hid_device_id apple_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_GEYSER4_HF_ANSI),
 		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_GEYSER4_HF_ISO),
+<<<<<<< HEAD
 		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN },
+=======
+		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN |
+			APPLE_ISO_KEYBOARD },
+>>>>>>> refs/remotes/origin/master
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_GEYSER4_HF_JIS),
 		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN |
 			APPLE_RDESC_JIS },
@@ -458,6 +522,12 @@ static const struct hid_device_id apple_devices[] = {
 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_WIRELESS_2011_ISO),
 		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN |
 			APPLE_ISO_KEYBOARD },
+<<<<<<< HEAD
+=======
+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE,
+				USB_DEVICE_ID_APPLE_ALU_WIRELESS_2011_ANSI),
+		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN },
+>>>>>>> refs/remotes/origin/master
 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_WIRELESS_JIS),
 		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING_ANSI),
@@ -515,14 +585,32 @@ static const struct hid_device_id apple_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING5A_JIS),
 		.driver_data = APPLE_HAS_FN | APPLE_RDESC_JIS },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING7_ANSI),
 		.driver_data = APPLE_HAS_FN },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING7_ISO),
 		.driver_data = APPLE_HAS_FN | APPLE_ISO_KEYBOARD },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING7_JIS),
 		.driver_data = APPLE_HAS_FN | APPLE_RDESC_JIS },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING7A_ANSI),
+		.driver_data = APPLE_HAS_FN },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING7A_ISO),
+		.driver_data = APPLE_HAS_FN | APPLE_ISO_KEYBOARD },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING7A_JIS),
+		.driver_data = APPLE_HAS_FN | APPLE_RDESC_JIS },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING8_ANSI),
+		.driver_data = APPLE_HAS_FN },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING8_ISO),
+		.driver_data = APPLE_HAS_FN | APPLE_ISO_KEYBOARD },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_WELLSPRING8_JIS),
+		.driver_data = APPLE_HAS_FN | APPLE_RDESC_JIS },
+>>>>>>> refs/remotes/origin/master
 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_WIRELESS_2009_ANSI),
 		.driver_data = APPLE_NUMLOCK_EMULATION | APPLE_HAS_FN },
 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE, USB_DEVICE_ID_APPLE_ALU_WIRELESS_2009_ISO),
@@ -544,11 +632,15 @@ static struct hid_driver apple_driver = {
 	.id_table = apple_devices,
 	.report_fixup = apple_report_fixup,
 	.probe = apple_probe,
+<<<<<<< HEAD
 	.remove = apple_remove,
+=======
+>>>>>>> refs/remotes/origin/master
 	.event = apple_event,
 	.input_mapping = apple_input_mapping,
 	.input_mapped = apple_input_mapped,
 };
+<<<<<<< HEAD
 
 static int __init apple_init(void)
 {
@@ -568,4 +660,8 @@ static void __exit apple_exit(void)
 
 module_init(apple_init);
 module_exit(apple_exit);
+=======
+module_hid_driver(apple_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

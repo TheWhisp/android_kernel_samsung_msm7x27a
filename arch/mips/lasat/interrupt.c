@@ -106,9 +106,13 @@ static struct irqaction cascade = {
 	.handler	= no_action,
 	.name		= "cascade",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.flags		= IRQF_NO_THREAD,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init arch_init_irq(void)

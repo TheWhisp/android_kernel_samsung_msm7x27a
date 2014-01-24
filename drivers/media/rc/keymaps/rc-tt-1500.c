@@ -12,9 +12,13 @@
 
 #include <media/rc-map.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /* for the Technotrend 1500 bundled remotes (grey and black): */
 
@@ -64,7 +68,11 @@ static struct rc_map_list tt_1500_map = {
 	.map = {
 		.scan    = tt_1500,
 		.size    = ARRAY_SIZE(tt_1500),
+<<<<<<< HEAD
 		.rc_type = RC_TYPE_UNKNOWN,	/* Legacy IR type */
+=======
+		.rc_type = RC_TYPE_RC5,
+>>>>>>> refs/remotes/origin/master
 		.name    = RC_MAP_TT_1500,
 	}
 };

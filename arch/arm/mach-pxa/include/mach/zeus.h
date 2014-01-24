@@ -69,10 +69,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ZEUS_CPLD		(0xf0000000)
 =======
 #define ZEUS_CPLD		IOMEM(0xf0000000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ZEUS_CPLD		IOMEM(0xf0000000)
+>>>>>>> refs/remotes/origin/master
 #define ZEUS_CPLD_VERSION	(ZEUS_CPLD + 0x0000)
 #define ZEUS_CPLD_ISA_IRQ	(ZEUS_CPLD + 0x1000)
 #define ZEUS_CPLD_CONTROL	(ZEUS_CPLD + 0x2000)
@@ -81,10 +85,14 @@
 #define ZEUS_CPLD_CONTROL_CF_RST        0x01
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ZEUS_PC104IO		(0xf1000000)
 =======
 #define ZEUS_PC104IO		IOMEM(0xf1000000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ZEUS_PC104IO		IOMEM(0xf1000000)
+>>>>>>> refs/remotes/origin/master
 
 #define ZEUS_SRAM_SIZE		(256 * 1024)
 

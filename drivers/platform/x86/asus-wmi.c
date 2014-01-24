@@ -45,6 +45,7 @@
 #include <linux/seq_file.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/thermal.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -54,6 +55,16 @@
 #include "asus-wmi.h"
 
 MODULE_AUTHOR("Corentin Chary <corentincj@iksaif.net>, "
+=======
+#include <linux/thermal.h>
+#include <acpi/acpi_bus.h>
+#include <acpi/acpi_drivers.h>
+#include <acpi/video.h>
+
+#include "asus-wmi.h"
+
+MODULE_AUTHOR("Corentin Chary <corentin.chary@gmail.com>, "
+>>>>>>> refs/remotes/origin/master
 	      "Yong Wang <yong.y.wang@intel.com>");
 MODULE_DESCRIPTION("Asus Generic WMI Driver");
 MODULE_LICENSE("GPL");
@@ -71,10 +82,15 @@ MODULE_LICENSE("GPL");
 #define NOTIFY_BRNDOWN_MIN		0x20
 #define NOTIFY_BRNDOWN_MAX		0x2e
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define NOTIFY_KBD_BRTUP		0xc4
 #define NOTIFY_KBD_BRTDWN		0xc5
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NOTIFY_KBD_BRTUP		0xc4
+#define NOTIFY_KBD_BRTDWN		0xc5
+>>>>>>> refs/remotes/origin/master
 
 /* WMI Methods */
 #define ASUS_WMI_METHODID_SPEC	        0x43455053 /* BIOS SPECification */
@@ -103,10 +119,16 @@ MODULE_LICENSE("GPL");
 #define ASUS_WMI_DEVID_HW_SWITCH	0x00010001
 #define ASUS_WMI_DEVID_WIRELESS_LED	0x00010002
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ASUS_WMI_DEVID_CWAP		0x00010003
 >>>>>>> refs/remotes/origin/cm-10.0
 #define ASUS_WMI_DEVID_WLAN		0x00010011
+=======
+#define ASUS_WMI_DEVID_CWAP		0x00010003
+#define ASUS_WMI_DEVID_WLAN		0x00010011
+#define ASUS_WMI_DEVID_WLAN_LED		0x00010012
+>>>>>>> refs/remotes/origin/master
 #define ASUS_WMI_DEVID_BLUETOOTH	0x00010013
 #define ASUS_WMI_DEVID_GPS		0x00010015
 #define ASUS_WMI_DEVID_WIMAX		0x00010017
@@ -116,14 +138,20 @@ MODULE_LICENSE("GPL");
 /* Leds */
 /* 0x000200XX and 0x000400XX */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ASUS_WMI_DEVID_LED1		0x00020011
 #define ASUS_WMI_DEVID_LED2		0x00020012
 #define ASUS_WMI_DEVID_LED3		0x00020013
 #define ASUS_WMI_DEVID_LED4		0x00020014
 #define ASUS_WMI_DEVID_LED5		0x00020015
 #define ASUS_WMI_DEVID_LED6		0x00020016
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Backlight and Brightness */
 #define ASUS_WMI_DEVID_BACKLIGHT	0x00050011
@@ -148,6 +176,12 @@ MODULE_LICENSE("GPL");
 /* Power */
 #define ASUS_WMI_DEVID_PROCESSOR_STATE	0x00120012
 
+<<<<<<< HEAD
+=======
+/* Deep S3 / Resume on LID open */
+#define ASUS_WMI_DEVID_LID_RESUME	0x00120031
+
+>>>>>>> refs/remotes/origin/master
 /* DSTS masks */
 #define ASUS_WMI_DSTS_STATUS_BIT	0x00000001
 #define ASUS_WMI_DSTS_UNKNOWN_BIT	0x00000002
@@ -194,28 +228,44 @@ struct asus_wmi {
 	struct device *hwmon_device;
 	struct platform_device *platform_device;
 
+<<<<<<< HEAD
 	struct led_classdev tpd_led;
 	int tpd_led_wk;
 <<<<<<< HEAD
 	struct workqueue_struct *led_workqueue;
 	struct work_struct tpd_led_work;
 =======
+=======
+	struct led_classdev wlan_led;
+	int wlan_led_wk;
+	struct led_classdev tpd_led;
+	int tpd_led_wk;
+>>>>>>> refs/remotes/origin/master
 	struct led_classdev kbd_led;
 	int kbd_led_wk;
 	struct workqueue_struct *led_workqueue;
 	struct work_struct tpd_led_work;
 	struct work_struct kbd_led_work;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct work_struct wlan_led_work;
+>>>>>>> refs/remotes/origin/master
 
 	struct asus_rfkill wlan;
 	struct asus_rfkill bluetooth;
 	struct asus_rfkill wimax;
 	struct asus_rfkill wwan3g;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct asus_rfkill gps;
 	struct asus_rfkill uwb;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct asus_rfkill gps;
+	struct asus_rfkill uwb;
+>>>>>>> refs/remotes/origin/master
 
 	struct hotplug_slot *hotplug_slot;
 	struct mutex hotplug_lock;
@@ -241,9 +291,13 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
 	asus->inputdev->id.bustype = BUS_HOST;
 	asus->inputdev->dev.parent = &asus->platform_device->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	set_bit(EV_REP, asus->inputdev->evbit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_bit(EV_REP, asus->inputdev->evbit);
+>>>>>>> refs/remotes/origin/master
 
 	err = sparse_keymap_setup(asus->inputdev, asus->driver->keymap, NULL);
 	if (err)
@@ -399,6 +453,7 @@ static enum led_brightness tpd_led_get(struct led_classdev *led_cdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int asus_wmi_led_init(struct asus_wmi *asus)
 {
 	int rv;
@@ -424,6 +479,8 @@ static int asus_wmi_led_init(struct asus_wmi *asus)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void kbd_led_update(struct work_struct *work)
 {
 	int ctrl_param = 0;
@@ -498,11 +555,66 @@ static enum led_brightness kbd_led_get(struct led_classdev *led_cdev)
 		return retval;
 
 	return value;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static int wlan_led_unknown_state(struct asus_wmi *asus)
+{
+	u32 result;
+
+	asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_WIRELESS_LED, &result);
+
+	return result & ASUS_WMI_DSTS_UNKNOWN_BIT;
+}
+
+static int wlan_led_presence(struct asus_wmi *asus)
+{
+	u32 result;
+
+	asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_WIRELESS_LED, &result);
+
+	return result & ASUS_WMI_DSTS_PRESENCE_BIT;
+}
+
+static void wlan_led_update(struct work_struct *work)
+{
+	int ctrl_param;
+	struct asus_wmi *asus;
+
+	asus = container_of(work, struct asus_wmi, wlan_led_work);
+
+	ctrl_param = asus->wlan_led_wk;
+	asus_wmi_set_devstate(ASUS_WMI_DEVID_WIRELESS_LED, ctrl_param, NULL);
+}
+
+static void wlan_led_set(struct led_classdev *led_cdev,
+			 enum led_brightness value)
+{
+	struct asus_wmi *asus;
+
+	asus = container_of(led_cdev, struct asus_wmi, wlan_led);
+
+	asus->wlan_led_wk = !!value;
+	queue_work(asus->led_workqueue, &asus->wlan_led_work);
+}
+
+static enum led_brightness wlan_led_get(struct led_classdev *led_cdev)
+{
+	struct asus_wmi *asus;
+	u32 result;
+
+	asus = container_of(led_cdev, struct asus_wmi, wlan_led);
+	asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_WIRELESS_LED, &result);
+
+	return result & ASUS_WMI_DSTS_BRIGHTNESS_MASK;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void asus_wmi_led_exit(struct asus_wmi *asus)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (asus->tpd_led.dev)
 =======
@@ -511,12 +623,23 @@ static void asus_wmi_led_exit(struct asus_wmi *asus)
 	if (!IS_ERR_OR_NULL(asus->tpd_led.dev))
 >>>>>>> refs/remotes/origin/cm-10.0
 		led_classdev_unregister(&asus->tpd_led);
+=======
+	if (!IS_ERR_OR_NULL(asus->kbd_led.dev))
+		led_classdev_unregister(&asus->kbd_led);
+	if (!IS_ERR_OR_NULL(asus->tpd_led.dev))
+		led_classdev_unregister(&asus->tpd_led);
+	if (!IS_ERR_OR_NULL(asus->wlan_led.dev))
+		led_classdev_unregister(&asus->wlan_led);
+>>>>>>> refs/remotes/origin/master
 	if (asus->led_workqueue)
 		destroy_workqueue(asus->led_workqueue);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int asus_wmi_led_init(struct asus_wmi *asus)
 {
 	int rv = 0;
@@ -549,6 +672,26 @@ static int asus_wmi_led_init(struct asus_wmi *asus)
 
 		rv = led_classdev_register(&asus->platform_device->dev,
 					   &asus->kbd_led);
+<<<<<<< HEAD
+=======
+		if (rv)
+			goto error;
+	}
+
+	if (wlan_led_presence(asus) && (asus->driver->quirks->wapf == 4)) {
+		INIT_WORK(&asus->wlan_led_work, wlan_led_update);
+
+		asus->wlan_led.name = "asus::wlan";
+		asus->wlan_led.brightness_set = wlan_led_set;
+		if (!wlan_led_unknown_state(asus))
+			asus->wlan_led.brightness_get = wlan_led_get;
+		asus->wlan_led.flags = LED_CORE_SUSPENDRESUME;
+		asus->wlan_led.max_brightness = 1;
+		asus->wlan_led.default_trigger = "asus-wlan";
+
+		rv = led_classdev_register(&asus->platform_device->dev,
+					   &asus->wlan_led);
+>>>>>>> refs/remotes/origin/master
 	}
 
 error:
@@ -559,7 +702,10 @@ error:
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PCI hotplug (for wlan rfkill)
  */
@@ -629,10 +775,14 @@ static void asus_rfkill_hotplug(struct asus_wmi *asus)
 			dev = pci_get_slot(bus, 0);
 			if (dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				pci_remove_bus_device(dev);
 =======
 				pci_stop_and_remove_bus_device(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pci_stop_and_remove_bus_device(dev);
+>>>>>>> refs/remotes/origin/master
 				pci_dev_put(dev);
 			}
 		}
@@ -786,8 +936,26 @@ static int asus_rfkill_set(void *data, bool blocked)
 {
 	struct asus_rfkill *priv = data;
 	u32 ctrl_param = !blocked;
+<<<<<<< HEAD
 
 	return asus_wmi_set_devstate(priv->dev_id, ctrl_param, NULL);
+=======
+	u32 dev_id = priv->dev_id;
+
+	/*
+	 * If the user bit is set, BIOS can't set and record the wlan status,
+	 * it will report the value read from id ASUS_WMI_DEVID_WLAN_LED
+	 * while we query the wlan status through WMI(ASUS_WMI_DEVID_WLAN).
+	 * So, we have to record wlan status in id ASUS_WMI_DEVID_WLAN_LED
+	 * while setting the wlan status through WMI.
+	 * This is also the behavior that windows app will do.
+	 */
+	if ((dev_id == ASUS_WMI_DEVID_WLAN) &&
+	     priv->asus->driver->wlan_ctrl_by_user)
+		dev_id = ASUS_WMI_DEVID_WLAN_LED;
+
+	return asus_wmi_set_devstate(dev_id, ctrl_param, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void asus_rfkill_query(struct rfkill *rfkill, void *data)
@@ -846,11 +1014,16 @@ static int asus_new_rfkill(struct asus_wmi *asus,
 	arfkill->asus = asus;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev_id == ASUS_WMI_DEVID_WLAN && asus->driver->hotplug_wireless)
 =======
 	if (dev_id == ASUS_WMI_DEVID_WLAN &&
 	    asus->driver->quirks->hotplug_wireless)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev_id == ASUS_WMI_DEVID_WLAN &&
+	    asus->driver->quirks->hotplug_wireless)
+>>>>>>> refs/remotes/origin/master
 		*rfkill = rfkill_alloc(name, &asus->platform_device->dev, type,
 				       &asus_rfkill_wlan_ops, arfkill);
 	else
@@ -860,6 +1033,13 @@ static int asus_new_rfkill(struct asus_wmi *asus,
 	if (!*rfkill)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if ((dev_id == ASUS_WMI_DEVID_WLAN) &&
+			(asus->driver->quirks->wapf == 4))
+		rfkill_set_led_trigger_name(*rfkill, "asus-wlan");
+
+>>>>>>> refs/remotes/origin/master
 	rfkill_init_sw_state(*rfkill, !result);
 	result = rfkill_register(*rfkill);
 	if (result) {
@@ -906,7 +1086,10 @@ static void asus_wmi_rfkill_exit(struct asus_wmi *asus)
 		asus->wwan3g.rfkill = NULL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (asus->gps.rfkill) {
 		rfkill_unregister(asus->gps.rfkill);
 		rfkill_destroy(asus->gps.rfkill);
@@ -917,7 +1100,10 @@ static void asus_wmi_rfkill_exit(struct asus_wmi *asus)
 		rfkill_destroy(asus->uwb.rfkill);
 		asus->uwb.rfkill = NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int asus_wmi_rfkill_init(struct asus_wmi *asus)
@@ -953,8 +1139,11 @@ static int asus_wmi_rfkill_init(struct asus_wmi *asus)
 		goto exit;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!asus->driver->hotplug_wireless)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	result = asus_new_rfkill(asus, &asus->gps, "asus-gps",
 				 RFKILL_TYPE_GPS, ASUS_WMI_DEVID_GPS);
 
@@ -968,7 +1157,10 @@ static int asus_wmi_rfkill_init(struct asus_wmi *asus)
 		goto exit;
 
 	if (!asus->driver->quirks->hotplug_wireless)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 
 	result = asus_setup_pci_hotplug(asus);
@@ -1023,7 +1215,11 @@ static ssize_t asus_hwmon_pwm1(struct device *dev,
 	else if (value == 3)
 		value = 255;
 	else if (value != 0) {
+<<<<<<< HEAD
 		pr_err("Unknown fan speed %#x", value);
+=======
+		pr_err("Unknown fan speed %#x\n", value);
+>>>>>>> refs/remotes/origin/master
 		value = -1;
 	}
 
@@ -1031,8 +1227,11 @@ static ssize_t asus_hwmon_pwm1(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(pwm1, S_IRUGO, asus_hwmon_pwm1, NULL, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t asus_hwmon_temp1(struct device *dev,
 				struct device_attribute *attr,
 				char *buf)
@@ -1053,7 +1252,10 @@ static ssize_t asus_hwmon_temp1(struct device *dev,
 
 static SENSOR_DEVICE_ATTR(pwm1, S_IRUGO, asus_hwmon_pwm1, NULL, 0);
 static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, asus_hwmon_temp1, NULL, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t
 show_name(struct device *dev, struct device_attribute *attr, char *buf)
@@ -1065,13 +1267,18 @@ static SENSOR_DEVICE_ATTR(name, S_IRUGO, show_name, NULL, 0);
 static struct attribute *hwmon_attributes[] = {
 	&sensor_dev_attr_pwm1.dev_attr.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&sensor_dev_attr_temp1_input.dev_attr.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&sensor_dev_attr_temp1_input.dev_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_name.dev_attr.attr,
 	NULL
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static mode_t asus_hwmon_sysfs_is_visible(struct kobject *kobj,
 				    struct attribute *attr, int idx)
@@ -1079,6 +1286,10 @@ static mode_t asus_hwmon_sysfs_is_visible(struct kobject *kobj,
 static umode_t asus_hwmon_sysfs_is_visible(struct kobject *kobj,
 					  struct attribute *attr, int idx)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t asus_hwmon_sysfs_is_visible(struct kobject *kobj,
+					  struct attribute *attr, int idx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
 	struct platform_device *pdev = to_platform_device(dev->parent);
@@ -1090,20 +1301,29 @@ static umode_t asus_hwmon_sysfs_is_visible(struct kobject *kobj,
 	if (attr == &sensor_dev_attr_pwm1.dev_attr.attr)
 		dev_id = ASUS_WMI_DEVID_FAN_CTRL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (attr == &sensor_dev_attr_temp1_input.dev_attr.attr)
 		dev_id = ASUS_WMI_DEVID_THERMAL_CTRL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (attr == &sensor_dev_attr_temp1_input.dev_attr.attr)
+		dev_id = ASUS_WMI_DEVID_THERMAL_CTRL;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev_id != -1) {
 		int err = asus_wmi_get_devstate(asus, dev_id, &value);
 
 		if (err < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return err;
 =======
 			return 0; /* can't return negative here */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return 0; /* can't return negative here */
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (dev_id == ASUS_WMI_DEVID_FAN_CTRL) {
@@ -1119,12 +1339,18 @@ static umode_t asus_hwmon_sysfs_is_visible(struct kobject *kobj,
 		    || (!asus->sfun && !(value & ASUS_WMI_DSTS_PRESENCE_BIT)))
 			ok = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (dev_id == ASUS_WMI_DEVID_THERMAL_CTRL) {
 		/* If value is zero, something is clearly wrong */
 		if (value == 0)
 			ok = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ok ? attr->mode : 0;
@@ -1171,15 +1397,21 @@ static int asus_wmi_hwmon_init(struct asus_wmi *asus)
 static int read_backlight_power(struct asus_wmi *asus)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_BACKLIGHT);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	if (asus->driver->quirks->store_backlight_power)
 		ret = !asus->driver->panel_power;
 	else
 		ret = asus_wmi_get_devstate_simple(asus,
 						   ASUS_WMI_DEVID_BACKLIGHT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ret < 0)
 		return ret;
@@ -1221,6 +1453,7 @@ static int read_brightness(struct backlight_device *bd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int update_bl_status(struct backlight_device *bd)
 {
 	struct asus_wmi *asus = bl_get_data(bd);
@@ -1235,6 +1468,8 @@ static int update_bl_status(struct backlight_device *bd)
 	if (err < 0)
 		return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 get_scalar_command(struct backlight_device *bd)
 {
 	struct asus_wmi *asus = bl_get_data(bd);
@@ -1257,7 +1492,10 @@ static int update_bl_status(struct backlight_device *bd)
 	struct asus_wmi *asus = bl_get_data(bd);
 	u32 ctrl_param;
 	int power, err = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	power = read_backlight_power(asus);
 	if (power != -ENODEV && bd->props.power != power) {
@@ -1265,8 +1503,11 @@ static int update_bl_status(struct backlight_device *bd)
 		err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BACKLIGHT,
 					    ctrl_param, NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (asus->driver->quirks->store_backlight_power)
 			asus->driver->panel_power = bd->props.power;
 
@@ -1284,7 +1525,10 @@ static int update_bl_status(struct backlight_device *bd)
 	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_BRIGHTNESS,
 				    ctrl_param, NULL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1346,20 +1590,31 @@ static int asus_wmi_backlight_init(struct asus_wmi *asus)
 	asus->backlight_device = bd;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (asus->driver->quirks->store_backlight_power)
 		asus->driver->panel_power = power;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (asus->driver->quirks->store_backlight_power)
+		asus->driver->panel_power = power;
+
+>>>>>>> refs/remotes/origin/master
 	bd->props.brightness = read_brightness(bd);
 	bd->props.power = power;
 	backlight_update_status(bd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	asus->driver->brightness = bd->props.brightness;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	asus->driver->brightness = bd->props.brightness;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1371,6 +1626,21 @@ static void asus_wmi_backlight_exit(struct asus_wmi *asus)
 	asus->backlight_device = NULL;
 }
 
+<<<<<<< HEAD
+=======
+static int is_display_toggle(int code)
+{
+	/* display toggle keys */
+	if ((code >= 0x61 && code <= 0x67) ||
+	    (code >= 0x8c && code <= 0x93) ||
+	    (code >= 0xa0 && code <= 0xa7) ||
+	    (code >= 0xd0 && code <= 0xd5))
+		return 1;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void asus_wmi_notify(u32 value, void *context)
 {
 	struct asus_wmi *asus = context;
@@ -1380,10 +1650,15 @@ static void asus_wmi_notify(u32 value, void *context)
 	int code;
 	int orig_code;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int key_value = 1;
 	bool autorelease = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int key_value = 1;
+	bool autorelease = 1;
+>>>>>>> refs/remotes/origin/master
 
 	status = wmi_get_event_data(value, &response);
 	if (status != AE_OK) {
@@ -1400,7 +1675,10 @@ static void asus_wmi_notify(u32 value, void *context)
 	orig_code = code;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (asus->driver->key_filter) {
 		asus->driver->key_filter(asus->driver, &code, &key_value,
 					 &autorelease);
@@ -1408,6 +1686,7 @@ static void asus_wmi_notify(u32 value, void *context)
 			goto exit;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (code >= NOTIFY_BRNUP_MIN && code <= NOTIFY_BRNUP_MAX)
 		code = NOTIFY_BRNUP_MIN;
@@ -1424,6 +1703,27 @@ static void asus_wmi_notify(u32 value, void *context)
 	} else if (!sparse_keymap_report_event(asus->inputdev, code,
 					       key_value, autorelease))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (code >= NOTIFY_BRNUP_MIN && code <= NOTIFY_BRNUP_MAX)
+		code = ASUS_WMI_BRN_UP;
+	else if (code >= NOTIFY_BRNDOWN_MIN &&
+		 code <= NOTIFY_BRNDOWN_MAX)
+		code = ASUS_WMI_BRN_DOWN;
+
+	if (code == ASUS_WMI_BRN_DOWN || code == ASUS_WMI_BRN_UP) {
+		if (!acpi_video_backlight_support()) {
+			asus_wmi_backlight_notify(asus, orig_code);
+			goto exit;
+		}
+	}
+
+	if (is_display_toggle(code) &&
+	    asus->driver->quirks->no_display_toggle)
+		goto exit;
+
+	if (!sparse_keymap_report_event(asus->inputdev, code,
+					key_value, autorelease))
+>>>>>>> refs/remotes/origin/master
 		pr_info("Unknown key %x pressed\n", code);
 
 exit:
@@ -1499,6 +1799,10 @@ static ssize_t show_sys_wmi(struct asus_wmi *asus, int devid, char *buf)
 ASUS_WMI_CREATE_DEVICE_ATTR(touchpad, 0644, ASUS_WMI_DEVID_TOUCHPAD);
 ASUS_WMI_CREATE_DEVICE_ATTR(camera, 0644, ASUS_WMI_DEVID_CAMERA);
 ASUS_WMI_CREATE_DEVICE_ATTR(cardr, 0644, ASUS_WMI_DEVID_CARDREADER);
+<<<<<<< HEAD
+=======
+ASUS_WMI_CREATE_DEVICE_ATTR(lid_resume, 0644, ASUS_WMI_DEVID_LID_RESUME);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t store_cpufv(struct device *dev, struct device_attribute *attr,
 			   const char *buf, size_t count)
@@ -1524,6 +1828,7 @@ static struct attribute *platform_attributes[] = {
 	&dev_attr_camera.attr,
 	&dev_attr_cardr.attr,
 	&dev_attr_touchpad.attr,
+<<<<<<< HEAD
 	NULL
 };
 
@@ -1532,6 +1837,13 @@ static mode_t asus_sysfs_is_visible(struct kobject *kobj,
 =======
 static umode_t asus_sysfs_is_visible(struct kobject *kobj,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_lid_resume.attr,
+	NULL
+};
+
+static umode_t asus_sysfs_is_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
 				    struct attribute *attr, int idx)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
@@ -1546,6 +1858,11 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
 		devid = ASUS_WMI_DEVID_CARDREADER;
 	else if (attr == &dev_attr_touchpad.attr)
 		devid = ASUS_WMI_DEVID_TOUCHPAD;
+<<<<<<< HEAD
+=======
+	else if (attr == &dev_attr_lid_resume.attr)
+		devid = ASUS_WMI_DEVID_LID_RESUME;
+>>>>>>> refs/remotes/origin/master
 
 	if (devid != -1)
 		ok = !(asus_wmi_get_devstate_simple(asus, devid) < 0);
@@ -1577,6 +1894,7 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 
 	/* INIT enable hotkeys on some models */
 	if (!asus_wmi_evaluate_method(ASUS_WMI_METHODID_INIT, 0, 0, &rv))
+<<<<<<< HEAD
 		pr_info("Initialization: %#x", rv);
 
 	/* We don't know yet what to do with this version... */
@@ -1586,6 +1904,13 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 =======
 		pr_info("BIOS WMI version: %d.%d", rv >> 16, rv & 0xFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Initialization: %#x\n", rv);
+
+	/* We don't know yet what to do with this version... */
+	if (!asus_wmi_evaluate_method(ASUS_WMI_METHODID_SPEC, 0, 0x9, &rv)) {
+		pr_info("BIOS WMI version: %d.%d\n", rv >> 16, rv & 0xFF);
+>>>>>>> refs/remotes/origin/master
 		asus->spec = rv;
 	}
 
@@ -1596,7 +1921,11 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 	 * The significance of others is yet to be found.
 	 */
 	if (!asus_wmi_evaluate_method(ASUS_WMI_METHODID_SFUN, 0, 0, &rv)) {
+<<<<<<< HEAD
 		pr_info("SFUN value: %#x", rv);
+=======
+		pr_info("SFUN value: %#x\n", rv);
+>>>>>>> refs/remotes/origin/master
 		asus->sfun = rv;
 	}
 
@@ -1610,6 +1939,7 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 	if (!asus_wmi_evaluate_method(ASUS_WMI_METHODID_DSTS, 0, 0, NULL))
 		asus->dsts_id = ASUS_WMI_METHODID_DSTS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (!asus_wmi_evaluate_method(ASUS_WMI_METHODID_DSTS2, 0, 0, NULL))
 		asus->dsts_id = ASUS_WMI_METHODID_DSTS2;
 
@@ -1618,6 +1948,8 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 		return -ENODEV;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		asus->dsts_id = ASUS_WMI_METHODID_DSTS2;
 
@@ -1626,7 +1958,10 @@ static int asus_wmi_platform_init(struct asus_wmi *asus)
 	if (asus->driver->quirks->wapf >= 0)
 		asus_wmi_set_devstate(ASUS_WMI_DEVID_CWAP,
 				      asus->driver->quirks->wapf, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return asus_wmi_sysfs_init(asus->platform_device);
 }
@@ -1746,7 +2081,11 @@ static int asus_wmi_debugfs_init(struct asus_wmi *asus)
 
 	asus->debug.root = debugfs_create_dir(asus->driver->name, NULL);
 	if (!asus->debug.root) {
+<<<<<<< HEAD
 		pr_err("failed to create debugfs directory");
+=======
+		pr_err("failed to create debugfs directory\n");
+>>>>>>> refs/remotes/origin/master
 		goto error_debugfs;
 	}
 
@@ -1795,6 +2134,10 @@ static int asus_wmi_add(struct platform_device *pdev)
 	struct asus_wmi *asus;
 	acpi_status status;
 	int err;
+<<<<<<< HEAD
+=======
+	u32 result;
+>>>>>>> refs/remotes/origin/master
 
 	asus = kzalloc(sizeof(struct asus_wmi), GFP_KERNEL);
 	if (!asus)
@@ -1806,12 +2149,17 @@ static int asus_wmi_add(struct platform_device *pdev)
 	platform_set_drvdata(asus->platform_device, asus);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (wdrv->quirks)
 		wdrv->quirks(asus->driver);
 =======
 	if (wdrv->detect_quirks)
 		wdrv->detect_quirks(asus->driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (wdrv->detect_quirks)
+		wdrv->detect_quirks(asus->driver);
+>>>>>>> refs/remotes/origin/master
 
 	err = asus_wmi_platform_init(asus);
 	if (err)
@@ -1833,7 +2181,15 @@ static int asus_wmi_add(struct platform_device *pdev)
 	if (err)
 		goto fail_rfkill;
 
+<<<<<<< HEAD
 	if (!acpi_video_backlight_support()) {
+=======
+	if (asus->driver->quirks->wmi_backlight_power)
+		acpi_video_dmi_promote_vendor();
+	if (!acpi_video_backlight_support()) {
+		pr_info("Disabling ACPI video driver\n");
+		acpi_video_unregister();
+>>>>>>> refs/remotes/origin/master
 		err = asus_wmi_backlight_init(asus);
 		if (err && err != -ENODEV)
 			goto fail_backlight;
@@ -1852,6 +2208,13 @@ static int asus_wmi_add(struct platform_device *pdev)
 	if (err)
 		goto fail_debugfs;
 
+<<<<<<< HEAD
+=======
+	asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_WLAN, &result);
+	if (result & (ASUS_WMI_DSTS_PRESENCE_BIT | ASUS_WMI_DSTS_USER_BIT))
+		asus->driver->wlan_ctrl_by_user = 1;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 fail_debugfs:
@@ -1936,7 +2299,10 @@ static int asus_hotk_restore(struct device *device)
 		rfkill_set_sw_state(asus->wwan3g.rfkill, bl);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (asus->gps.rfkill) {
 		bl = !asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_GPS);
 		rfkill_set_sw_state(asus->gps.rfkill, bl);
@@ -1945,7 +2311,10 @@ static int asus_hotk_restore(struct device *device)
 		bl = !asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_UWB);
 		rfkill_set_sw_state(asus->uwb.rfkill, bl);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1983,10 +2352,14 @@ static int asus_wmi_probe(struct platform_device *pdev)
 static bool used;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int asus_wmi_register_driver(struct asus_wmi_driver *driver)
 =======
 int __init_or_module asus_wmi_register_driver(struct asus_wmi_driver *driver)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init_or_module asus_wmi_register_driver(struct asus_wmi_driver *driver)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_driver *platform_driver;
 	struct platform_device *platform_device;
@@ -2022,17 +2395,29 @@ EXPORT_SYMBOL_GPL(asus_wmi_unregister_driver);
 static int __init asus_wmi_init(void)
 {
 	if (!wmi_has_guid(ASUS_WMI_MGMT_GUID)) {
+<<<<<<< HEAD
 		pr_info("Asus Management GUID not found");
 		return -ENODEV;
 	}
 
 	pr_info("ASUS WMI generic driver loaded");
+=======
+		pr_info("Asus Management GUID not found\n");
+		return -ENODEV;
+	}
+
+	pr_info("ASUS WMI generic driver loaded\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void __exit asus_wmi_exit(void)
 {
+<<<<<<< HEAD
 	pr_info("ASUS WMI generic driver unloaded");
+=======
+	pr_info("ASUS WMI generic driver unloaded\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(asus_wmi_init);

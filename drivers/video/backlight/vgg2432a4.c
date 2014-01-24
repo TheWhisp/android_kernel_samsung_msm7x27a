@@ -26,7 +26,11 @@
 
 /* Device initialisation sequences */
 
+<<<<<<< HEAD
 static struct ili9320_reg vgg_init1[] = {
+=======
+static const struct ili9320_reg vgg_init1[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.address = ILI9320_POWER1,
 		.value	 = ILI9320_POWER1_AP(0) | ILI9320_POWER1_BT(0),
@@ -43,7 +47,11 @@ static struct ili9320_reg vgg_init1[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct ili9320_reg vgg_init2[] = {
+=======
+static const struct ili9320_reg vgg_init2[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.address = ILI9320_POWER1,
 		.value   = (ILI9320_POWER1_AP(3) | ILI9320_POWER1_APE |
@@ -54,7 +62,11 @@ static struct ili9320_reg vgg_init2[] = {
 	}
 };
 
+<<<<<<< HEAD
 static struct ili9320_reg vgg_gamma[] = {
+=======
+static const struct ili9320_reg vgg_gamma[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.address = ILI9320_GAMMA1,
 		.value	 = 0x0000,
@@ -89,7 +101,11 @@ static struct ili9320_reg vgg_gamma[] = {
 
 };
 
+<<<<<<< HEAD
 static struct ili9320_reg vgg_init0[] = {
+=======
+static const struct ili9320_reg vgg_init0[] = {
+>>>>>>> refs/remotes/origin/master
 	[0]	= {
 		/* set direction and scan mode gate */
 		.address = ILI9320_DRIVER,
@@ -205,6 +221,7 @@ static int vgg2432a4_lcd_init(struct ili9320 *lcd,
 	return ret;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int vgg2432a4_suspend(struct spi_device *spi, pm_message_t state)
 {
@@ -218,6 +235,17 @@ static int vgg2432a4_resume(struct spi_device *spi)
 #else
 #define vgg2432a4_suspend	NULL
 #define vgg2432a4_resume 	NULL
+=======
+#ifdef CONFIG_PM_SLEEP
+static int vgg2432a4_suspend(struct device *dev)
+{
+	return ili9320_suspend(dev_get_drvdata(dev));
+}
+static int vgg2432a4_resume(struct device *dev)
+{
+	return ili9320_resume(dev_get_drvdata(dev));
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct ili9320_client vgg2432a4_client = {
@@ -227,7 +255,11 @@ static struct ili9320_client vgg2432a4_client = {
 
 /* Device probe */
 
+<<<<<<< HEAD
 static int __devinit vgg2432a4_probe(struct spi_device *spi)
+=======
+static int vgg2432a4_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -240,20 +272,35 @@ static int __devinit vgg2432a4_probe(struct spi_device *spi)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit vgg2432a4_remove(struct spi_device *spi)
 {
 	return ili9320_remove(dev_get_drvdata(&spi->dev));
+=======
+static int vgg2432a4_remove(struct spi_device *spi)
+{
+	return ili9320_remove(spi_get_drvdata(spi));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vgg2432a4_shutdown(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	ili9320_shutdown(dev_get_drvdata(&spi->dev));
 }
 
+=======
+	ili9320_shutdown(spi_get_drvdata(spi));
+}
+
+static SIMPLE_DEV_PM_OPS(vgg2432a4_pm_ops, vgg2432a4_suspend, vgg2432a4_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct spi_driver vgg2432a4_driver = {
 	.driver = {
 		.name		= "VGG2432A4",
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= vgg2432a4_probe,
 	.remove		= __devexit_p(vgg2432a4_remove),
@@ -280,6 +327,16 @@ module_exit(vgg2432a4_exit);
 =======
 module_spi_driver(vgg2432a4_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm		= &vgg2432a4_pm_ops,
+	},
+	.probe		= vgg2432a4_probe,
+	.remove		= vgg2432a4_remove,
+	.shutdown	= vgg2432a4_shutdown,
+};
+
+module_spi_driver(vgg2432a4_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ben Dooks <ben-linux@fluff.org>");
 MODULE_DESCRIPTION("VGG2432A4 LCD Driver");

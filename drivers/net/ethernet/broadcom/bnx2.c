@@ -1,6 +1,10 @@
 /* bnx2.c: Broadcom NX2 network driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2004-2011 Broadcom Corporation
+=======
+ * Copyright (c) 2004-2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +18,10 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/stringify.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/timer.h>
 #include <linux/errno.h>
@@ -57,8 +65,13 @@
 #include "bnx2_fw.h"
 
 #define DRV_MODULE_NAME		"bnx2"
+<<<<<<< HEAD
 #define DRV_MODULE_VERSION	"2.2.1"
 #define DRV_MODULE_RELDATE	"Dec 18, 2011"
+=======
+#define DRV_MODULE_VERSION	"2.2.4"
+#define DRV_MODULE_RELDATE	"Aug 05, 2013"
+>>>>>>> refs/remotes/origin/master
 #define FW_MIPS_FILE_06		"bnx2/bnx2-mips-06-6.2.3.fw"
 #define FW_RV2P_FILE_06		"bnx2/bnx2-rv2p-06-6.0.15.fw"
 #define FW_MIPS_FILE_09		"bnx2/bnx2-mips-09-6.2.1b.fw"
@@ -70,7 +83,11 @@
 /* Time in jiffies before concluding the transmitter is hung. */
 #define TX_TIMEOUT  (5*HZ)
 
+<<<<<<< HEAD
 static char version[] __devinitdata =
+=======
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 	"Broadcom NetXtreme II Gigabit Ethernet Driver " DRV_MODULE_NAME " v" DRV_MODULE_VERSION " (" DRV_MODULE_RELDATE ")\n";
 
 MODULE_AUTHOR("Michael Chan <mchan@broadcom.com>");
@@ -105,7 +122,11 @@ typedef enum {
 /* indexed by board_t, above */
 static struct {
 	char *name;
+<<<<<<< HEAD
 } board_info[] __devinitdata = {
+=======
+} board_info[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "Broadcom NetXtreme II BCM5706 1000Base-T" },
 	{ "HP NC370T Multifunction Gigabit Server Adapter" },
 	{ "HP NC370i Multifunction Gigabit Server Adapter" },
@@ -259,10 +280,17 @@ static inline u32 bnx2_tx_avail(struct bnx2 *bp, struct bnx2_tx_ring_info *txr)
 	 * needs to be skipped.
 	 */
 	diff = txr->tx_prod - txr->tx_cons;
+<<<<<<< HEAD
 	if (unlikely(diff >= TX_DESC_CNT)) {
 		diff &= 0xffff;
 		if (diff == TX_DESC_CNT)
 			diff = MAX_TX_DESC_CNT;
+=======
+	if (unlikely(diff >= BNX2_TX_DESC_CNT)) {
+		diff &= 0xffff;
+		if (diff == BNX2_TX_DESC_CNT)
+			diff = BNX2_MAX_TX_DESC_CNT;
+>>>>>>> refs/remotes/origin/master
 	}
 	return bp->tx_ring_size - diff;
 }
@@ -273,8 +301,13 @@ bnx2_reg_rd_ind(struct bnx2 *bp, u32 offset)
 	u32 val;
 
 	spin_lock_bh(&bp->indirect_lock);
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCICFG_REG_WINDOW_ADDRESS, offset);
 	val = REG_RD(bp, BNX2_PCICFG_REG_WINDOW);
+=======
+	BNX2_WR(bp, BNX2_PCICFG_REG_WINDOW_ADDRESS, offset);
+	val = BNX2_RD(bp, BNX2_PCICFG_REG_WINDOW);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&bp->indirect_lock);
 	return val;
 }
@@ -283,8 +316,13 @@ static void
 bnx2_reg_wr_ind(struct bnx2 *bp, u32 offset, u32 val)
 {
 	spin_lock_bh(&bp->indirect_lock);
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCICFG_REG_WINDOW_ADDRESS, offset);
 	REG_WR(bp, BNX2_PCICFG_REG_WINDOW, val);
+=======
+	BNX2_WR(bp, BNX2_PCICFG_REG_WINDOW_ADDRESS, offset);
+	BNX2_WR(bp, BNX2_PCICFG_REG_WINDOW, val);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&bp->indirect_lock);
 }
 
@@ -305,6 +343,7 @@ bnx2_ctx_wr(struct bnx2 *bp, u32 cid_addr, u32 offset, u32 val)
 {
 	offset += cid_addr;
 	spin_lock_bh(&bp->indirect_lock);
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
 		int i;
 
@@ -313,13 +352,28 @@ bnx2_ctx_wr(struct bnx2 *bp, u32 cid_addr, u32 offset, u32 val)
 		       offset | BNX2_CTX_CTX_CTRL_WRITE_REQ);
 		for (i = 0; i < 5; i++) {
 			val = REG_RD(bp, BNX2_CTX_CTX_CTRL);
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+		int i;
+
+		BNX2_WR(bp, BNX2_CTX_CTX_DATA, val);
+		BNX2_WR(bp, BNX2_CTX_CTX_CTRL,
+			offset | BNX2_CTX_CTX_CTRL_WRITE_REQ);
+		for (i = 0; i < 5; i++) {
+			val = BNX2_RD(bp, BNX2_CTX_CTX_CTRL);
+>>>>>>> refs/remotes/origin/master
 			if ((val & BNX2_CTX_CTX_CTRL_WRITE_REQ) == 0)
 				break;
 			udelay(5);
 		}
 	} else {
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_CTX_DATA_ADR, offset);
 		REG_WR(bp, BNX2_CTX_DATA, val);
+=======
+		BNX2_WR(bp, BNX2_CTX_DATA_ADR, offset);
+		BNX2_WR(bp, BNX2_CTX_DATA, val);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_bh(&bp->indirect_lock);
 }
@@ -415,7 +469,11 @@ static int bnx2_unregister_cnic(struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct cnic_eth_dev *bnx2_cnic_probe(struct net_device *dev)
+=======
+static struct cnic_eth_dev *bnx2_cnic_probe(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bnx2 *bp = netdev_priv(dev);
 	struct cnic_eth_dev *cp = &bp->cnic_eth_dev;
@@ -433,7 +491,10 @@ struct cnic_eth_dev *bnx2_cnic_probe(struct net_device *dev)
 
 	return cp;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(bnx2_cnic_probe);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void
 bnx2_cnic_stop(struct bnx2 *bp)
@@ -493,11 +554,19 @@ bnx2_read_phy(struct bnx2 *bp, u32 reg, u32 *val)
 	int i, ret;
 
 	if (bp->phy_flags & BNX2_PHY_FLAG_INT_MODE_AUTO_POLLING) {
+<<<<<<< HEAD
 		val1 = REG_RD(bp, BNX2_EMAC_MDIO_MODE);
 		val1 &= ~BNX2_EMAC_MDIO_MODE_AUTO_POLL;
 
 		REG_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
 		REG_RD(bp, BNX2_EMAC_MDIO_MODE);
+=======
+		val1 = BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+		val1 &= ~BNX2_EMAC_MDIO_MODE_AUTO_POLL;
+
+		BNX2_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
+		BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+>>>>>>> refs/remotes/origin/master
 
 		udelay(40);
 	}
@@ -505,16 +574,28 @@ bnx2_read_phy(struct bnx2 *bp, u32 reg, u32 *val)
 	val1 = (bp->phy_addr << 21) | (reg << 16) |
 		BNX2_EMAC_MDIO_COMM_COMMAND_READ | BNX2_EMAC_MDIO_COMM_DISEXT |
 		BNX2_EMAC_MDIO_COMM_START_BUSY;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_MDIO_COMM, val1);
+=======
+	BNX2_WR(bp, BNX2_EMAC_MDIO_COMM, val1);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < 50; i++) {
 		udelay(10);
 
+<<<<<<< HEAD
 		val1 = REG_RD(bp, BNX2_EMAC_MDIO_COMM);
 		if (!(val1 & BNX2_EMAC_MDIO_COMM_START_BUSY)) {
 			udelay(5);
 
 			val1 = REG_RD(bp, BNX2_EMAC_MDIO_COMM);
+=======
+		val1 = BNX2_RD(bp, BNX2_EMAC_MDIO_COMM);
+		if (!(val1 & BNX2_EMAC_MDIO_COMM_START_BUSY)) {
+			udelay(5);
+
+			val1 = BNX2_RD(bp, BNX2_EMAC_MDIO_COMM);
+>>>>>>> refs/remotes/origin/master
 			val1 &= BNX2_EMAC_MDIO_COMM_DATA;
 
 			break;
@@ -531,11 +612,19 @@ bnx2_read_phy(struct bnx2 *bp, u32 reg, u32 *val)
 	}
 
 	if (bp->phy_flags & BNX2_PHY_FLAG_INT_MODE_AUTO_POLLING) {
+<<<<<<< HEAD
 		val1 = REG_RD(bp, BNX2_EMAC_MDIO_MODE);
 		val1 |= BNX2_EMAC_MDIO_MODE_AUTO_POLL;
 
 		REG_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
 		REG_RD(bp, BNX2_EMAC_MDIO_MODE);
+=======
+		val1 = BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+		val1 |= BNX2_EMAC_MDIO_MODE_AUTO_POLL;
+
+		BNX2_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
+		BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+>>>>>>> refs/remotes/origin/master
 
 		udelay(40);
 	}
@@ -550,11 +639,19 @@ bnx2_write_phy(struct bnx2 *bp, u32 reg, u32 val)
 	int i, ret;
 
 	if (bp->phy_flags & BNX2_PHY_FLAG_INT_MODE_AUTO_POLLING) {
+<<<<<<< HEAD
 		val1 = REG_RD(bp, BNX2_EMAC_MDIO_MODE);
 		val1 &= ~BNX2_EMAC_MDIO_MODE_AUTO_POLL;
 
 		REG_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
 		REG_RD(bp, BNX2_EMAC_MDIO_MODE);
+=======
+		val1 = BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+		val1 &= ~BNX2_EMAC_MDIO_MODE_AUTO_POLL;
+
+		BNX2_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
+		BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+>>>>>>> refs/remotes/origin/master
 
 		udelay(40);
 	}
@@ -562,12 +659,20 @@ bnx2_write_phy(struct bnx2 *bp, u32 reg, u32 val)
 	val1 = (bp->phy_addr << 21) | (reg << 16) | val |
 		BNX2_EMAC_MDIO_COMM_COMMAND_WRITE |
 		BNX2_EMAC_MDIO_COMM_START_BUSY | BNX2_EMAC_MDIO_COMM_DISEXT;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_MDIO_COMM, val1);
+=======
+	BNX2_WR(bp, BNX2_EMAC_MDIO_COMM, val1);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < 50; i++) {
 		udelay(10);
 
+<<<<<<< HEAD
 		val1 = REG_RD(bp, BNX2_EMAC_MDIO_COMM);
+=======
+		val1 = BNX2_RD(bp, BNX2_EMAC_MDIO_COMM);
+>>>>>>> refs/remotes/origin/master
 		if (!(val1 & BNX2_EMAC_MDIO_COMM_START_BUSY)) {
 			udelay(5);
 			break;
@@ -580,11 +685,19 @@ bnx2_write_phy(struct bnx2 *bp, u32 reg, u32 val)
 		ret = 0;
 
 	if (bp->phy_flags & BNX2_PHY_FLAG_INT_MODE_AUTO_POLLING) {
+<<<<<<< HEAD
 		val1 = REG_RD(bp, BNX2_EMAC_MDIO_MODE);
 		val1 |= BNX2_EMAC_MDIO_MODE_AUTO_POLL;
 
 		REG_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
 		REG_RD(bp, BNX2_EMAC_MDIO_MODE);
+=======
+		val1 = BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+		val1 |= BNX2_EMAC_MDIO_MODE_AUTO_POLL;
+
+		BNX2_WR(bp, BNX2_EMAC_MDIO_MODE, val1);
+		BNX2_RD(bp, BNX2_EMAC_MDIO_MODE);
+>>>>>>> refs/remotes/origin/master
 
 		udelay(40);
 	}
@@ -600,10 +713,17 @@ bnx2_disable_int(struct bnx2 *bp)
 
 	for (i = 0; i < bp->irq_nvecs; i++) {
 		bnapi = &bp->bnx2_napi[i];
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
 		       BNX2_PCICFG_INT_ACK_CMD_MASK_INT);
 	}
 	REG_RD(bp, BNX2_PCICFG_INT_ACK_CMD);
+=======
+		BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+		       BNX2_PCICFG_INT_ACK_CMD_MASK_INT);
+	}
+	BNX2_RD(bp, BNX2_PCICFG_INT_ACK_CMD);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -615,6 +735,7 @@ bnx2_enable_int(struct bnx2 *bp)
 	for (i = 0; i < bp->irq_nvecs; i++) {
 		bnapi = &bp->bnx2_napi[i];
 
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
 		       BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
 		       BNX2_PCICFG_INT_ACK_CMD_MASK_INT |
@@ -625,6 +746,18 @@ bnx2_enable_int(struct bnx2 *bp)
 		       bnapi->last_status_idx);
 	}
 	REG_WR(bp, BNX2_HC_COMMAND, bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW);
+=======
+		BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+			BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
+			BNX2_PCICFG_INT_ACK_CMD_MASK_INT |
+			bnapi->last_status_idx);
+
+		BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+			BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
+			bnapi->last_status_idx);
+	}
+	BNX2_WR(bp, BNX2_HC_COMMAND, bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -823,7 +956,11 @@ bnx2_free_mem(struct bnx2 *bp)
 
 	for (i = 0; i < bp->ctx_pages; i++) {
 		if (bp->ctx_blk[i]) {
+<<<<<<< HEAD
 			dma_free_coherent(&bp->pdev->dev, BCM_PAGE_SIZE,
+=======
+			dma_free_coherent(&bp->pdev->dev, BNX2_PAGE_SIZE,
+>>>>>>> refs/remotes/origin/master
 					  bp->ctx_blk[i],
 					  bp->ctx_blk_mapping[i]);
 			bp->ctx_blk[i] = NULL;
@@ -853,6 +990,7 @@ bnx2_alloc_mem(struct bnx2 *bp)
 	bp->status_stats_size = status_blk_size +
 				sizeof(struct statistics_block);
 
+<<<<<<< HEAD
 	status_blk = dma_alloc_coherent(&bp->pdev->dev, bp->status_stats_size,
 					&bp->status_blk_mapping, GFP_KERNEL);
 	if (status_blk == NULL)
@@ -860,6 +998,13 @@ bnx2_alloc_mem(struct bnx2 *bp)
 
 	memset(status_blk, 0, bp->status_stats_size);
 
+=======
+	status_blk = dma_zalloc_coherent(&bp->pdev->dev, bp->status_stats_size,
+					 &bp->status_blk_mapping, GFP_KERNEL);
+	if (status_blk == NULL)
+		goto alloc_mem_err;
+
+>>>>>>> refs/remotes/origin/master
 	bnapi = &bp->bnx2_napi[0];
 	bnapi->status_blk.msi = status_blk;
 	bnapi->hw_tx_cons_ptr =
@@ -872,8 +1017,12 @@ bnx2_alloc_mem(struct bnx2 *bp)
 
 			bnapi = &bp->bnx2_napi[i];
 
+<<<<<<< HEAD
 			sblk = (void *) (status_blk +
 					 BNX2_SBLK_MSIX_ALIGN_SIZE * i);
+=======
+			sblk = (status_blk + BNX2_SBLK_MSIX_ALIGN_SIZE * i);
+>>>>>>> refs/remotes/origin/master
 			bnapi->status_blk.msix = sblk;
 			bnapi->hw_tx_cons_ptr =
 				&sblk->status_tx_quick_consumer_index;
@@ -887,13 +1036,22 @@ bnx2_alloc_mem(struct bnx2 *bp)
 
 	bp->stats_blk_mapping = bp->status_blk_mapping + status_blk_size;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
 		bp->ctx_pages = 0x2000 / BCM_PAGE_SIZE;
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+		bp->ctx_pages = 0x2000 / BNX2_PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 		if (bp->ctx_pages == 0)
 			bp->ctx_pages = 1;
 		for (i = 0; i < bp->ctx_pages; i++) {
 			bp->ctx_blk[i] = dma_alloc_coherent(&bp->pdev->dev,
+<<<<<<< HEAD
 						BCM_PAGE_SIZE,
+=======
+						BNX2_PAGE_SIZE,
+>>>>>>> refs/remotes/origin/master
 						&bp->ctx_blk_mapping[i],
 						GFP_KERNEL);
 			if (bp->ctx_blk[i] == NULL)
@@ -1034,7 +1192,11 @@ bnx2_resolve_flow_ctrl(struct bnx2 *bp)
 	}
 
 	if ((bp->phy_flags & BNX2_PHY_FLAG_SERDES) &&
+<<<<<<< HEAD
 	    (CHIP_NUM(bp) == CHIP_NUM_5708)) {
+=======
+	    (BNX2_CHIP(bp) == BNX2_CHIP_5708)) {
+>>>>>>> refs/remotes/origin/master
 		u32 val;
 
 		bnx2_read_phy(bp, BCM5708S_1000X_STAT1, &val);
@@ -1294,6 +1456,7 @@ bnx2_set_mac_link(struct bnx2 *bp)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_TX_LENGTHS, 0x2620);
 	if (bp->link_up && (bp->line_speed == SPEED_1000) &&
 		(bp->duplex == DUPLEX_HALF)) {
@@ -1302,6 +1465,16 @@ bnx2_set_mac_link(struct bnx2 *bp)
 
 	/* Configure the EMAC mode register. */
 	val = REG_RD(bp, BNX2_EMAC_MODE);
+=======
+	BNX2_WR(bp, BNX2_EMAC_TX_LENGTHS, 0x2620);
+	if (bp->link_up && (bp->line_speed == SPEED_1000) &&
+		(bp->duplex == DUPLEX_HALF)) {
+		BNX2_WR(bp, BNX2_EMAC_TX_LENGTHS, 0x26ff);
+	}
+
+	/* Configure the EMAC mode register. */
+	val = BNX2_RD(bp, BNX2_EMAC_MODE);
+>>>>>>> refs/remotes/origin/master
 
 	val &= ~(BNX2_EMAC_MODE_PORT | BNX2_EMAC_MODE_HALF_DUPLEX |
 		BNX2_EMAC_MODE_MAC_LOOP | BNX2_EMAC_MODE_FORCE_LINK |
@@ -1310,7 +1483,11 @@ bnx2_set_mac_link(struct bnx2 *bp)
 	if (bp->link_up) {
 		switch (bp->line_speed) {
 			case SPEED_10:
+<<<<<<< HEAD
 				if (CHIP_NUM(bp) != CHIP_NUM_5706) {
+=======
+				if (BNX2_CHIP(bp) != BNX2_CHIP_5706) {
+>>>>>>> refs/remotes/origin/master
 					val |= BNX2_EMAC_MODE_PORT_MII_10M;
 					break;
 				}
@@ -1333,25 +1510,43 @@ bnx2_set_mac_link(struct bnx2 *bp)
 	/* Set the MAC to operate in the appropriate duplex mode. */
 	if (bp->duplex == DUPLEX_HALF)
 		val |= BNX2_EMAC_MODE_HALF_DUPLEX;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_MODE, val);
+=======
+	BNX2_WR(bp, BNX2_EMAC_MODE, val);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable/disable rx PAUSE. */
 	bp->rx_mode &= ~BNX2_EMAC_RX_MODE_FLOW_EN;
 
 	if (bp->flow_ctrl & FLOW_CTRL_RX)
 		bp->rx_mode |= BNX2_EMAC_RX_MODE_FLOW_EN;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_RX_MODE, bp->rx_mode);
 
 	/* Enable/disable tx PAUSE. */
 	val = REG_RD(bp, BNX2_EMAC_TX_MODE);
+=======
+	BNX2_WR(bp, BNX2_EMAC_RX_MODE, bp->rx_mode);
+
+	/* Enable/disable tx PAUSE. */
+	val = BNX2_RD(bp, BNX2_EMAC_TX_MODE);
+>>>>>>> refs/remotes/origin/master
 	val &= ~BNX2_EMAC_TX_MODE_FLOW_EN;
 
 	if (bp->flow_ctrl & FLOW_CTRL_TX)
 		val |= BNX2_EMAC_TX_MODE_FLOW_EN;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_TX_MODE, val);
 
 	/* Acknowledge the interrupt. */
 	REG_WR(bp, BNX2_EMAC_STATUS, BNX2_EMAC_STATUS_LINK_CHANGE);
+=======
+	BNX2_WR(bp, BNX2_EMAC_TX_MODE, val);
+
+	/* Acknowledge the interrupt. */
+	BNX2_WR(bp, BNX2_EMAC_STATUS, BNX2_EMAC_STATUS_LINK_CHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	bnx2_init_all_rx_contexts(bp);
 }
@@ -1360,7 +1555,11 @@ static void
 bnx2_enable_bmsr1(struct bnx2 *bp)
 {
 	if ((bp->phy_flags & BNX2_PHY_FLAG_SERDES) &&
+<<<<<<< HEAD
 	    (CHIP_NUM(bp) == CHIP_NUM_5709))
+=======
+	    (BNX2_CHIP(bp) == BNX2_CHIP_5709))
+>>>>>>> refs/remotes/origin/master
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR,
 			       MII_BNX2_BLK_ADDR_GP_STATUS);
 }
@@ -1369,7 +1568,11 @@ static void
 bnx2_disable_bmsr1(struct bnx2 *bp)
 {
 	if ((bp->phy_flags & BNX2_PHY_FLAG_SERDES) &&
+<<<<<<< HEAD
 	    (CHIP_NUM(bp) == CHIP_NUM_5709))
+=======
+	    (BNX2_CHIP(bp) == BNX2_CHIP_5709))
+>>>>>>> refs/remotes/origin/master
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR,
 			       MII_BNX2_BLK_ADDR_COMBO_IEEEB0);
 }
@@ -1386,7 +1589,11 @@ bnx2_test_and_enable_2g5(struct bnx2 *bp)
 	if (bp->autoneg & AUTONEG_SPEED)
 		bp->advertising |= ADVERTISED_2500baseX_Full;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR, MII_BNX2_BLK_ADDR_OVER1G);
 
 	bnx2_read_phy(bp, bp->mii_up1, &up1);
@@ -1396,7 +1603,11 @@ bnx2_test_and_enable_2g5(struct bnx2 *bp)
 		ret = 0;
 	}
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR,
 			       MII_BNX2_BLK_ADDR_COMBO_IEEEB0);
 
@@ -1412,7 +1623,11 @@ bnx2_test_and_disable_2g5(struct bnx2 *bp)
 	if (!(bp->phy_flags & BNX2_PHY_FLAG_2_5G_CAPABLE))
 		return 0;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR, MII_BNX2_BLK_ADDR_OVER1G);
 
 	bnx2_read_phy(bp, bp->mii_up1, &up1);
@@ -1422,7 +1637,11 @@ bnx2_test_and_disable_2g5(struct bnx2 *bp)
 		ret = 1;
 	}
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR,
 			       MII_BNX2_BLK_ADDR_COMBO_IEEEB0);
 
@@ -1438,7 +1657,11 @@ bnx2_enable_forced_2g5(struct bnx2 *bp)
 	if (!(bp->phy_flags & BNX2_PHY_FLAG_2_5G_CAPABLE))
 		return;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		u32 val;
 
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR,
@@ -1454,7 +1677,11 @@ bnx2_enable_forced_2g5(struct bnx2 *bp)
 			       MII_BNX2_BLK_ADDR_COMBO_IEEEB0);
 		err = bnx2_read_phy(bp, bp->mii_bmcr, &bmcr);
 
+<<<<<<< HEAD
 	} else if (CHIP_NUM(bp) == CHIP_NUM_5708) {
+=======
+	} else if (BNX2_CHIP(bp) == BNX2_CHIP_5708) {
+>>>>>>> refs/remotes/origin/master
 		err = bnx2_read_phy(bp, bp->mii_bmcr, &bmcr);
 		if (!err)
 			bmcr |= BCM5708S_BMCR_FORCE_2500;
@@ -1482,7 +1709,11 @@ bnx2_disable_forced_2g5(struct bnx2 *bp)
 	if (!(bp->phy_flags & BNX2_PHY_FLAG_2_5G_CAPABLE))
 		return;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		u32 val;
 
 		bnx2_write_phy(bp, MII_BNX2_BLK_ADDR,
@@ -1496,7 +1727,11 @@ bnx2_disable_forced_2g5(struct bnx2 *bp)
 			       MII_BNX2_BLK_ADDR_COMBO_IEEEB0);
 		err = bnx2_read_phy(bp, bp->mii_bmcr, &bmcr);
 
+<<<<<<< HEAD
 	} else if (CHIP_NUM(bp) == CHIP_NUM_5708) {
+=======
+	} else if (BNX2_CHIP(bp) == BNX2_CHIP_5708) {
+>>>>>>> refs/remotes/origin/master
 		err = bnx2_read_phy(bp, bp->mii_bmcr, &bmcr);
 		if (!err)
 			bmcr &= ~BCM5708S_BMCR_FORCE_2500;
@@ -1547,14 +1782,22 @@ bnx2_set_link(struct bnx2 *bp)
 	bnx2_disable_bmsr1(bp);
 
 	if ((bp->phy_flags & BNX2_PHY_FLAG_SERDES) &&
+<<<<<<< HEAD
 	    (CHIP_NUM(bp) == CHIP_NUM_5706)) {
+=======
+	    (BNX2_CHIP(bp) == BNX2_CHIP_5706)) {
+>>>>>>> refs/remotes/origin/master
 		u32 val, an_dbg;
 
 		if (bp->phy_flags & BNX2_PHY_FLAG_FORCED_DOWN) {
 			bnx2_5706s_force_link_dn(bp, 0);
 			bp->phy_flags &= ~BNX2_PHY_FLAG_FORCED_DOWN;
 		}
+<<<<<<< HEAD
 		val = REG_RD(bp, BNX2_EMAC_STATUS);
+=======
+		val = BNX2_RD(bp, BNX2_EMAC_STATUS);
+>>>>>>> refs/remotes/origin/master
 
 		bnx2_write_phy(bp, MII_BNX2_MISC_SHADOW, MISC_SHDW_AN_DBG);
 		bnx2_read_phy(bp, MII_BNX2_MISC_SHADOW, &an_dbg);
@@ -1571,11 +1814,19 @@ bnx2_set_link(struct bnx2 *bp)
 		bp->link_up = 1;
 
 		if (bp->phy_flags & BNX2_PHY_FLAG_SERDES) {
+<<<<<<< HEAD
 			if (CHIP_NUM(bp) == CHIP_NUM_5706)
 				bnx2_5706s_linkup(bp);
 			else if (CHIP_NUM(bp) == CHIP_NUM_5708)
 				bnx2_5708s_linkup(bp);
 			else if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+			if (BNX2_CHIP(bp) == BNX2_CHIP_5706)
+				bnx2_5706s_linkup(bp);
+			else if (BNX2_CHIP(bp) == BNX2_CHIP_5708)
+				bnx2_5708s_linkup(bp);
+			else if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 				bnx2_5709s_linkup(bp);
 		}
 		else {
@@ -1757,7 +2008,11 @@ __acquires(&bp->phy_lock)
 		new_bmcr = bmcr & ~BMCR_ANENABLE;
 		new_bmcr |= BMCR_SPEED1000;
 
+<<<<<<< HEAD
 		if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+		if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 			if (bp->req_line_speed == SPEED_2500)
 				bnx2_enable_forced_2g5(bp);
 			else if (bp->req_line_speed == SPEED_1000) {
@@ -1765,7 +2020,11 @@ __acquires(&bp->phy_lock)
 				new_bmcr &= ~0x2000;
 			}
 
+<<<<<<< HEAD
 		} else if (CHIP_NUM(bp) == CHIP_NUM_5708) {
+=======
+		} else if (BNX2_CHIP(bp) == BNX2_CHIP_5708) {
+>>>>>>> refs/remotes/origin/master
 			if (bp->req_line_speed == SPEED_2500)
 				new_bmcr |= BCM5708S_BMCR_FORCE_2500;
 			else
@@ -1942,8 +2201,13 @@ bnx2_send_heart_beat(struct bnx2 *bp)
 	spin_lock(&bp->indirect_lock);
 	msg = (u32) (++bp->fw_drv_pulse_wr_seq & BNX2_DRV_PULSE_SEQ_MASK);
 	addr = bp->shmem_base + BNX2_DRV_PULSE_MB;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCICFG_REG_WINDOW_ADDRESS, addr);
 	REG_WR(bp, BNX2_PCICFG_REG_WINDOW, msg);
+=======
+	BNX2_WR(bp, BNX2_PCICFG_REG_WINDOW_ADDRESS, addr);
+	BNX2_WR(bp, BNX2_PCICFG_REG_WINDOW, msg);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&bp->indirect_lock);
 }
 
@@ -1972,22 +2236,38 @@ bnx2_remote_phy_event(struct bnx2 *bp)
 		switch (speed) {
 			case BNX2_LINK_STATUS_10HALF:
 				bp->duplex = DUPLEX_HALF;
+<<<<<<< HEAD
+=======
+				/* fall through */
+>>>>>>> refs/remotes/origin/master
 			case BNX2_LINK_STATUS_10FULL:
 				bp->line_speed = SPEED_10;
 				break;
 			case BNX2_LINK_STATUS_100HALF:
 				bp->duplex = DUPLEX_HALF;
+<<<<<<< HEAD
+=======
+				/* fall through */
+>>>>>>> refs/remotes/origin/master
 			case BNX2_LINK_STATUS_100BASE_T4:
 			case BNX2_LINK_STATUS_100FULL:
 				bp->line_speed = SPEED_100;
 				break;
 			case BNX2_LINK_STATUS_1000HALF:
 				bp->duplex = DUPLEX_HALF;
+<<<<<<< HEAD
+=======
+				/* fall through */
+>>>>>>> refs/remotes/origin/master
 			case BNX2_LINK_STATUS_1000FULL:
 				bp->line_speed = SPEED_1000;
 				break;
 			case BNX2_LINK_STATUS_2500HALF:
 				bp->duplex = DUPLEX_HALF;
+<<<<<<< HEAD
+=======
+				/* fall through */
+>>>>>>> refs/remotes/origin/master
 			case BNX2_LINK_STATUS_2500FULL:
 				bp->line_speed = SPEED_2500;
 				break;
@@ -2226,9 +2506,15 @@ bnx2_init_5708s_phy(struct bnx2 *bp, int reset_phy)
 		bnx2_write_phy(bp, BCM5708S_UP1, val);
 	}
 
+<<<<<<< HEAD
 	if ((CHIP_ID(bp) == CHIP_ID_5708_A0) ||
 	    (CHIP_ID(bp) == CHIP_ID_5708_B0) ||
 	    (CHIP_ID(bp) == CHIP_ID_5708_B1)) {
+=======
+	if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_A0) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_B0) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_B1)) {
+>>>>>>> refs/remotes/origin/master
 		/* increase tx signal amplitude */
 		bnx2_write_phy(bp, BCM5708S_BLK_ADDR,
 			       BCM5708S_BLK_ADDR_TX_MISC);
@@ -2264,8 +2550,13 @@ bnx2_init_5706s_phy(struct bnx2 *bp, int reset_phy)
 
 	bp->phy_flags &= ~BNX2_PHY_FLAG_PARALLEL_DETECT;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5706)
         	REG_WR(bp, BNX2_MISC_GP_HW_CTL0, 0x300);
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5706)
+		BNX2_WR(bp, BNX2_MISC_GP_HW_CTL0, 0x300);
+>>>>>>> refs/remotes/origin/master
 
 	if (bp->dev->mtu > 1500) {
 		u32 val;
@@ -2364,7 +2655,11 @@ __acquires(&bp->phy_lock)
 	bp->mii_adv = MII_ADVERTISE;
 	bp->mii_lpa = MII_LPA;
 
+<<<<<<< HEAD
         REG_WR(bp, BNX2_EMAC_ATTENTION_ENA, BNX2_EMAC_ATTENTION_ENA_LINK);
+=======
+	BNX2_WR(bp, BNX2_EMAC_ATTENTION_ENA, BNX2_EMAC_ATTENTION_ENA_LINK);
+>>>>>>> refs/remotes/origin/master
 
 	if (bp->phy_flags & BNX2_PHY_FLAG_REMOTE_PHY_CAP)
 		goto setup_phy;
@@ -2375,11 +2670,19 @@ __acquires(&bp->phy_lock)
 	bp->phy_id |= val & 0xffff;
 
 	if (bp->phy_flags & BNX2_PHY_FLAG_SERDES) {
+<<<<<<< HEAD
 		if (CHIP_NUM(bp) == CHIP_NUM_5706)
 			rc = bnx2_init_5706s_phy(bp, reset_phy);
 		else if (CHIP_NUM(bp) == CHIP_NUM_5708)
 			rc = bnx2_init_5708s_phy(bp, reset_phy);
 		else if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+		if (BNX2_CHIP(bp) == BNX2_CHIP_5706)
+			rc = bnx2_init_5706s_phy(bp, reset_phy);
+		else if (BNX2_CHIP(bp) == BNX2_CHIP_5708)
+			rc = bnx2_init_5708s_phy(bp, reset_phy);
+		else if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 			rc = bnx2_init_5709s_phy(bp, reset_phy);
 	}
 	else {
@@ -2398,10 +2701,17 @@ bnx2_set_mac_loopback(struct bnx2 *bp)
 {
 	u32 mac_mode;
 
+<<<<<<< HEAD
 	mac_mode = REG_RD(bp, BNX2_EMAC_MODE);
 	mac_mode &= ~BNX2_EMAC_MODE_PORT;
 	mac_mode |= BNX2_EMAC_MODE_MAC_LOOP | BNX2_EMAC_MODE_FORCE_LINK;
 	REG_WR(bp, BNX2_EMAC_MODE, mac_mode);
+=======
+	mac_mode = BNX2_RD(bp, BNX2_EMAC_MODE);
+	mac_mode &= ~BNX2_EMAC_MODE_PORT;
+	mac_mode |= BNX2_EMAC_MODE_MAC_LOOP | BNX2_EMAC_MODE_FORCE_LINK;
+	BNX2_WR(bp, BNX2_EMAC_MODE, mac_mode);
+>>>>>>> refs/remotes/origin/master
 	bp->link_up = 1;
 	return 0;
 }
@@ -2427,13 +2737,21 @@ bnx2_set_phy_loopback(struct bnx2 *bp)
 		msleep(100);
 	}
 
+<<<<<<< HEAD
 	mac_mode = REG_RD(bp, BNX2_EMAC_MODE);
+=======
+	mac_mode = BNX2_RD(bp, BNX2_EMAC_MODE);
+>>>>>>> refs/remotes/origin/master
 	mac_mode &= ~(BNX2_EMAC_MODE_PORT | BNX2_EMAC_MODE_HALF_DUPLEX |
 		      BNX2_EMAC_MODE_MAC_LOOP | BNX2_EMAC_MODE_FORCE_LINK |
 		      BNX2_EMAC_MODE_25G_MODE);
 
 	mac_mode |= BNX2_EMAC_MODE_PORT_GMII;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_MODE, mac_mode);
+=======
+	BNX2_WR(bp, BNX2_EMAC_MODE, mac_mode);
+>>>>>>> refs/remotes/origin/master
 	bp->link_up = 1;
 	return 0;
 }
@@ -2445,7 +2763,11 @@ bnx2_dump_mcp_state(struct bnx2 *bp)
 	u32 mcp_p0, mcp_p1;
 
 	netdev_err(dev, "<--- start MCP states dump --->\n");
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		mcp_p0 = BNX2_MCP_STATE_P0;
 		mcp_p1 = BNX2_MCP_STATE_P1;
 	} else {
@@ -2473,6 +2795,10 @@ bnx2_dump_mcp_state(struct bnx2 *bp)
 		   bnx2_shmem_rd(bp, BNX2_BC_STATE_RESET_TYPE));
 	pr_cont(" condition[%08x]\n",
 		bnx2_shmem_rd(bp, BNX2_BC_STATE_CONDITION));
+<<<<<<< HEAD
+=======
+	DP_SHMEM_LINE(bp, BNX2_BC_RESET_TYPE);
+>>>>>>> refs/remotes/origin/master
 	DP_SHMEM_LINE(bp, 0x3cc);
 	DP_SHMEM_LINE(bp, 0x3dc);
 	DP_SHMEM_LINE(bp, 0x3ec);
@@ -2533,10 +2859,17 @@ bnx2_init_5709_context(struct bnx2 *bp)
 	u32 val;
 
 	val = BNX2_CTX_COMMAND_ENABLED | BNX2_CTX_COMMAND_MEM_INIT | (1 << 12);
+<<<<<<< HEAD
 	val |= (BCM_PAGE_BITS - 8) << 16;
 	REG_WR(bp, BNX2_CTX_COMMAND, val);
 	for (i = 0; i < 10; i++) {
 		val = REG_RD(bp, BNX2_CTX_COMMAND);
+=======
+	val |= (BNX2_PAGE_BITS - 8) << 16;
+	BNX2_WR(bp, BNX2_CTX_COMMAND, val);
+	for (i = 0; i < 10; i++) {
+		val = BNX2_RD(bp, BNX2_CTX_COMMAND);
+>>>>>>> refs/remotes/origin/master
 		if (!(val & BNX2_CTX_COMMAND_MEM_INIT))
 			break;
 		udelay(2);
@@ -2548,6 +2881,7 @@ bnx2_init_5709_context(struct bnx2 *bp)
 		int j;
 
 		if (bp->ctx_blk[i])
+<<<<<<< HEAD
 			memset(bp->ctx_blk[i], 0, BCM_PAGE_SIZE);
 		else
 			return -ENOMEM;
@@ -2562,6 +2896,22 @@ bnx2_init_5709_context(struct bnx2 *bp)
 		for (j = 0; j < 10; j++) {
 
 			val = REG_RD(bp, BNX2_CTX_HOST_PAGE_TBL_CTRL);
+=======
+			memset(bp->ctx_blk[i], 0, BNX2_PAGE_SIZE);
+		else
+			return -ENOMEM;
+
+		BNX2_WR(bp, BNX2_CTX_HOST_PAGE_TBL_DATA0,
+			(bp->ctx_blk_mapping[i] & 0xffffffff) |
+			BNX2_CTX_HOST_PAGE_TBL_DATA0_VALID);
+		BNX2_WR(bp, BNX2_CTX_HOST_PAGE_TBL_DATA1,
+			(u64) bp->ctx_blk_mapping[i] >> 32);
+		BNX2_WR(bp, BNX2_CTX_HOST_PAGE_TBL_CTRL, i |
+			BNX2_CTX_HOST_PAGE_TBL_CTRL_WRITE_REQ);
+		for (j = 0; j < 10; j++) {
+
+			val = BNX2_RD(bp, BNX2_CTX_HOST_PAGE_TBL_CTRL);
+>>>>>>> refs/remotes/origin/master
 			if (!(val & BNX2_CTX_HOST_PAGE_TBL_CTRL_WRITE_REQ))
 				break;
 			udelay(5);
@@ -2586,7 +2936,11 @@ bnx2_init_context(struct bnx2 *bp)
 
 		vcid--;
 
+<<<<<<< HEAD
 		if (CHIP_ID(bp) == CHIP_ID_5706_A0) {
+=======
+		if (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) {
+>>>>>>> refs/remotes/origin/master
 			u32 new_vcid;
 
 			vcid_addr = GET_PCID_ADDR(vcid);
@@ -2607,8 +2961,13 @@ bnx2_init_context(struct bnx2 *bp)
 			vcid_addr += (i << PHY_CTX_SHIFT);
 			pcid_addr += (i << PHY_CTX_SHIFT);
 
+<<<<<<< HEAD
 			REG_WR(bp, BNX2_CTX_VIRT_ADDR, vcid_addr);
 			REG_WR(bp, BNX2_CTX_PAGE_TBL, pcid_addr);
+=======
+			BNX2_WR(bp, BNX2_CTX_VIRT_ADDR, vcid_addr);
+			BNX2_WR(bp, BNX2_CTX_PAGE_TBL, pcid_addr);
+>>>>>>> refs/remotes/origin/master
 
 			/* Zero out the context. */
 			for (offset = 0; offset < PHY_CTX_SIZE; offset += 4)
@@ -2628,7 +2987,11 @@ bnx2_alloc_bad_rbuf(struct bnx2 *bp)
 	if (good_mbuf == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_MISC_ENABLE_SET_BITS,
+=======
+	BNX2_WR(bp, BNX2_MISC_ENABLE_SET_BITS,
+>>>>>>> refs/remotes/origin/master
 		BNX2_MISC_ENABLE_SET_BITS_RX_MBUF_ENABLE);
 
 	good_mbuf_cnt = 0;
@@ -2673,21 +3036,35 @@ bnx2_set_mac_addr(struct bnx2 *bp, u8 *mac_addr, u32 pos)
 
 	val = (mac_addr[0] << 8) | mac_addr[1];
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_MAC_MATCH0 + (pos * 8), val);
+=======
+	BNX2_WR(bp, BNX2_EMAC_MAC_MATCH0 + (pos * 8), val);
+>>>>>>> refs/remotes/origin/master
 
 	val = (mac_addr[2] << 24) | (mac_addr[3] << 16) |
 		(mac_addr[4] << 8) | mac_addr[5];
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_MAC_MATCH1 + (pos * 8), val);
+=======
+	BNX2_WR(bp, BNX2_EMAC_MAC_MATCH1 + (pos * 8), val);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int
 bnx2_alloc_rx_page(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr, u16 index, gfp_t gfp)
 {
 	dma_addr_t mapping;
+<<<<<<< HEAD
 	struct sw_pg *rx_pg = &rxr->rx_pg_ring[index];
 	struct rx_bd *rxbd =
 		&rxr->rx_pg_desc_ring[RX_RING(index)][RX_IDX(index)];
+=======
+	struct bnx2_sw_pg *rx_pg = &rxr->rx_pg_ring[index];
+	struct bnx2_rx_bd *rxbd =
+		&rxr->rx_pg_desc_ring[BNX2_RX_RING(index)][BNX2_RX_IDX(index)];
+>>>>>>> refs/remotes/origin/master
 	struct page *page = alloc_page(gfp);
 
 	if (!page)
@@ -2709,7 +3086,11 @@ bnx2_alloc_rx_page(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr, u16 index, gf
 static void
 bnx2_free_rx_page(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr, u16 index)
 {
+<<<<<<< HEAD
 	struct sw_pg *rx_pg = &rxr->rx_pg_ring[index];
+=======
+	struct bnx2_sw_pg *rx_pg = &rxr->rx_pg_ring[index];
+>>>>>>> refs/remotes/origin/master
 	struct page *page = rx_pg->page;
 
 	if (!page)
@@ -2726,9 +3107,16 @@ static inline int
 bnx2_alloc_rx_data(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr, u16 index, gfp_t gfp)
 {
 	u8 *data;
+<<<<<<< HEAD
 	struct sw_bd *rx_buf = &rxr->rx_buf_ring[index];
 	dma_addr_t mapping;
 	struct rx_bd *rxbd = &rxr->rx_desc_ring[RX_RING(index)][RX_IDX(index)];
+=======
+	struct bnx2_sw_bd *rx_buf = &rxr->rx_buf_ring[index];
+	dma_addr_t mapping;
+	struct bnx2_rx_bd *rxbd =
+		&rxr->rx_desc_ring[BNX2_RX_RING(index)][BNX2_RX_IDX(index)];
+>>>>>>> refs/remotes/origin/master
 
 	data = kmalloc(bp->rx_buf_size, gfp);
 	if (!data)
@@ -2765,9 +3153,15 @@ bnx2_phy_event_is_set(struct bnx2 *bp, struct bnx2_napi *bnapi, u32 event)
 	old_link_state = sblk->status_attn_bits_ack & event;
 	if (new_link_state != old_link_state) {
 		if (new_link_state)
+<<<<<<< HEAD
 			REG_WR(bp, BNX2_PCICFG_STATUS_BIT_SET_CMD, event);
 		else
 			REG_WR(bp, BNX2_PCICFG_STATUS_BIT_CLEAR_CMD, event);
+=======
+			BNX2_WR(bp, BNX2_PCICFG_STATUS_BIT_SET_CMD, event);
+		else
+			BNX2_WR(bp, BNX2_PCICFG_STATUS_BIT_CLEAR_CMD, event);
+>>>>>>> refs/remotes/origin/master
 	} else
 		is_set = 0;
 
@@ -2797,7 +3191,11 @@ bnx2_get_hw_tx_cons(struct bnx2_napi *bnapi)
 	barrier();
 	cons = *bnapi->hw_tx_cons_ptr;
 	barrier();
+<<<<<<< HEAD
 	if (unlikely((cons & MAX_TX_DESC_CNT) == MAX_TX_DESC_CNT))
+=======
+	if (unlikely((cons & BNX2_MAX_TX_DESC_CNT) == BNX2_MAX_TX_DESC_CNT))
+>>>>>>> refs/remotes/origin/master
 		cons++;
 	return cons;
 }
@@ -2818,11 +3216,19 @@ bnx2_tx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 	sw_cons = txr->tx_cons;
 
 	while (sw_cons != hw_cons) {
+<<<<<<< HEAD
 		struct sw_tx_bd *tx_buf;
 		struct sk_buff *skb;
 		int i, last;
 
 		sw_ring_cons = TX_RING_IDX(sw_cons);
+=======
+		struct bnx2_sw_tx_bd *tx_buf;
+		struct sk_buff *skb;
+		int i, last;
+
+		sw_ring_cons = BNX2_TX_RING_IDX(sw_cons);
+>>>>>>> refs/remotes/origin/master
 
 		tx_buf = &txr->tx_buf_ring[sw_ring_cons];
 		skb = tx_buf->skb;
@@ -2836,7 +3242,11 @@ bnx2_tx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 
 			last_idx = sw_cons + tx_buf->nr_frags + 1;
 			last_ring_idx = sw_ring_cons + tx_buf->nr_frags + 1;
+<<<<<<< HEAD
 			if (unlikely(last_ring_idx >= MAX_TX_DESC_CNT)) {
+=======
+			if (unlikely(last_ring_idx >= BNX2_MAX_TX_DESC_CNT)) {
+>>>>>>> refs/remotes/origin/master
 				last_idx++;
 			}
 			if (((s16) ((s16) last_idx - (s16) hw_cons)) > 0) {
@@ -2851,17 +3261,31 @@ bnx2_tx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 		last = tx_buf->nr_frags;
 
 		for (i = 0; i < last; i++) {
+<<<<<<< HEAD
 			sw_cons = NEXT_TX_BD(sw_cons);
 
 			dma_unmap_page(&bp->pdev->dev,
 				dma_unmap_addr(
 					&txr->tx_buf_ring[TX_RING_IDX(sw_cons)],
 					mapping),
+=======
+			struct bnx2_sw_tx_bd *tx_buf;
+
+			sw_cons = BNX2_NEXT_TX_BD(sw_cons);
+
+			tx_buf = &txr->tx_buf_ring[BNX2_TX_RING_IDX(sw_cons)];
+			dma_unmap_page(&bp->pdev->dev,
+				dma_unmap_addr(tx_buf, mapping),
+>>>>>>> refs/remotes/origin/master
 				skb_frag_size(&skb_shinfo(skb)->frags[i]),
 				PCI_DMA_TODEVICE);
 		}
 
+<<<<<<< HEAD
 		sw_cons = NEXT_TX_BD(sw_cons);
+=======
+		sw_cons = BNX2_NEXT_TX_BD(sw_cons);
+>>>>>>> refs/remotes/origin/master
 
 		tx_bytes += skb->len;
 		dev_kfree_skb(skb);
@@ -2900,8 +3324,13 @@ static void
 bnx2_reuse_rx_skb_pages(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr,
 			struct sk_buff *skb, int count)
 {
+<<<<<<< HEAD
 	struct sw_pg *cons_rx_pg, *prod_rx_pg;
 	struct rx_bd *cons_bd, *prod_bd;
+=======
+	struct bnx2_sw_pg *cons_rx_pg, *prod_rx_pg;
+	struct bnx2_rx_bd *cons_bd, *prod_bd;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	u16 hw_prod, prod;
 	u16 cons = rxr->rx_pg_cons;
@@ -2928,12 +3357,23 @@ bnx2_reuse_rx_skb_pages(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr,
 	hw_prod = rxr->rx_pg_prod;
 
 	for (i = 0; i < count; i++) {
+<<<<<<< HEAD
 		prod = RX_PG_RING_IDX(hw_prod);
 
 		prod_rx_pg = &rxr->rx_pg_ring[prod];
 		cons_rx_pg = &rxr->rx_pg_ring[cons];
 		cons_bd = &rxr->rx_pg_desc_ring[RX_RING(cons)][RX_IDX(cons)];
 		prod_bd = &rxr->rx_pg_desc_ring[RX_RING(prod)][RX_IDX(prod)];
+=======
+		prod = BNX2_RX_PG_RING_IDX(hw_prod);
+
+		prod_rx_pg = &rxr->rx_pg_ring[prod];
+		cons_rx_pg = &rxr->rx_pg_ring[cons];
+		cons_bd = &rxr->rx_pg_desc_ring[BNX2_RX_RING(cons)]
+						[BNX2_RX_IDX(cons)];
+		prod_bd = &rxr->rx_pg_desc_ring[BNX2_RX_RING(prod)]
+						[BNX2_RX_IDX(prod)];
+>>>>>>> refs/remotes/origin/master
 
 		if (prod != cons) {
 			prod_rx_pg->page = cons_rx_pg->page;
@@ -2945,8 +3385,13 @@ bnx2_reuse_rx_skb_pages(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr,
 			prod_bd->rx_bd_haddr_lo = cons_bd->rx_bd_haddr_lo;
 
 		}
+<<<<<<< HEAD
 		cons = RX_PG_RING_IDX(NEXT_RX_BD(cons));
 		hw_prod = NEXT_RX_BD(hw_prod);
+=======
+		cons = BNX2_RX_PG_RING_IDX(BNX2_NEXT_RX_BD(cons));
+		hw_prod = BNX2_NEXT_RX_BD(hw_prod);
+>>>>>>> refs/remotes/origin/master
 	}
 	rxr->rx_pg_prod = hw_prod;
 	rxr->rx_pg_cons = cons;
@@ -2956,8 +3401,13 @@ static inline void
 bnx2_reuse_rx_data(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr,
 		   u8 *data, u16 cons, u16 prod)
 {
+<<<<<<< HEAD
 	struct sw_bd *cons_rx_buf, *prod_rx_buf;
 	struct rx_bd *cons_bd, *prod_bd;
+=======
+	struct bnx2_sw_bd *cons_rx_buf, *prod_rx_buf;
+	struct bnx2_rx_bd *cons_bd, *prod_bd;
+>>>>>>> refs/remotes/origin/master
 
 	cons_rx_buf = &rxr->rx_buf_ring[cons];
 	prod_rx_buf = &rxr->rx_buf_ring[prod];
@@ -2976,8 +3426,13 @@ bnx2_reuse_rx_data(struct bnx2 *bp, struct bnx2_rx_ring_info *rxr,
 	dma_unmap_addr_set(prod_rx_buf, mapping,
 			dma_unmap_addr(cons_rx_buf, mapping));
 
+<<<<<<< HEAD
 	cons_bd = &rxr->rx_desc_ring[RX_RING(cons)][RX_IDX(cons)];
 	prod_bd = &rxr->rx_desc_ring[RX_RING(prod)][RX_IDX(prod)];
+=======
+	cons_bd = &rxr->rx_desc_ring[BNX2_RX_RING(cons)][BNX2_RX_IDX(cons)];
+	prod_bd = &rxr->rx_desc_ring[BNX2_RX_RING(prod)][BNX2_RX_IDX(prod)];
+>>>>>>> refs/remotes/origin/master
 	prod_bd->rx_bd_haddr_hi = cons_bd->rx_bd_haddr_hi;
 	prod_bd->rx_bd_haddr_lo = cons_bd->rx_bd_haddr_lo;
 }
@@ -3006,7 +3461,11 @@ error:
 
 	dma_unmap_single(&bp->pdev->dev, dma_addr, bp->rx_buf_use_size,
 			 PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
 	skb = build_skb(data);
+=======
+	skb = build_skb(data, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		kfree(data);
 		goto error;
@@ -3017,7 +3476,11 @@ error:
 		return skb;
 	} else {
 		unsigned int i, frag_len, frag_size, pages;
+<<<<<<< HEAD
 		struct sw_pg *rx_pg;
+=======
+		struct bnx2_sw_pg *rx_pg;
+>>>>>>> refs/remotes/origin/master
 		u16 pg_cons = rxr->rx_pg_cons;
 		u16 pg_prod = rxr->rx_pg_prod;
 
@@ -3060,7 +3523,11 @@ error:
 			rx_pg->page = NULL;
 
 			err = bnx2_alloc_rx_page(bp, rxr,
+<<<<<<< HEAD
 						 RX_PG_RING_IDX(pg_prod),
+=======
+						 BNX2_RX_PG_RING_IDX(pg_prod),
+>>>>>>> refs/remotes/origin/master
 						 GFP_ATOMIC);
 			if (unlikely(err)) {
 				rxr->rx_pg_cons = pg_cons;
@@ -3078,8 +3545,13 @@ error:
 			skb->truesize += PAGE_SIZE;
 			skb->len += frag_len;
 
+<<<<<<< HEAD
 			pg_prod = NEXT_RX_BD(pg_prod);
 			pg_cons = RX_PG_RING_IDX(NEXT_RX_BD(pg_cons));
+=======
+			pg_prod = BNX2_NEXT_RX_BD(pg_prod);
+			pg_cons = BNX2_RX_PG_RING_IDX(BNX2_NEXT_RX_BD(pg_cons));
+>>>>>>> refs/remotes/origin/master
 		}
 		rxr->rx_pg_prod = pg_prod;
 		rxr->rx_pg_cons = pg_cons;
@@ -3096,7 +3568,11 @@ bnx2_get_hw_rx_cons(struct bnx2_napi *bnapi)
 	barrier();
 	cons = *bnapi->hw_rx_cons_ptr;
 	barrier();
+<<<<<<< HEAD
 	if (unlikely((cons & MAX_RX_DESC_CNT) == MAX_RX_DESC_CNT))
+=======
+	if (unlikely((cons & BNX2_MAX_RX_DESC_CNT) == BNX2_MAX_RX_DESC_CNT))
+>>>>>>> refs/remotes/origin/master
 		cons++;
 	return cons;
 }
@@ -3120,6 +3596,7 @@ bnx2_rx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 	while (sw_cons != hw_cons) {
 		unsigned int len, hdr_len;
 		u32 status;
+<<<<<<< HEAD
 		struct sw_bd *rx_buf, *next_rx_buf;
 		struct sk_buff *skb;
 		dma_addr_t dma_addr;
@@ -3127,6 +3604,16 @@ bnx2_rx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 
 		sw_ring_cons = RX_RING_IDX(sw_cons);
 		sw_ring_prod = RX_RING_IDX(sw_prod);
+=======
+		struct bnx2_sw_bd *rx_buf, *next_rx_buf;
+		struct sk_buff *skb;
+		dma_addr_t dma_addr;
+		u8 *data;
+		u16 next_ring_idx;
+
+		sw_ring_cons = BNX2_RX_RING_IDX(sw_cons);
+		sw_ring_prod = BNX2_RX_RING_IDX(sw_prod);
+>>>>>>> refs/remotes/origin/master
 
 		rx_buf = &rxr->rx_buf_ring[sw_ring_cons];
 		data = rx_buf->data;
@@ -3141,8 +3628,13 @@ bnx2_rx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 			BNX2_RX_OFFSET + BNX2_RX_COPY_THRESH,
 			PCI_DMA_FROMDEVICE);
 
+<<<<<<< HEAD
 		next_rx_buf =
 			&rxr->rx_buf_ring[RX_RING_IDX(NEXT_RX_BD(sw_cons))];
+=======
+		next_ring_idx = BNX2_RX_RING_IDX(BNX2_NEXT_RX_BD(sw_cons));
+		next_rx_buf = &rxr->rx_buf_ring[next_ring_idx];
+>>>>>>> refs/remotes/origin/master
 		prefetch(get_l2_fhdr(next_rx_buf->data));
 
 		len = rx_hdr->l2_fhdr_pkt_len;
@@ -3203,7 +3695,11 @@ bnx2_rx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 		}
 		if ((status & L2_FHDR_STATUS_L2_VLAN_TAG) &&
 		    !(bp->rx_mode & BNX2_EMAC_RX_MODE_KEEP_VLAN_TAG))
+<<<<<<< HEAD
 			__vlan_hwaccel_put_tag(skb, rx_hdr->l2_fhdr_vlan_tag);
+=======
+			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), rx_hdr->l2_fhdr_vlan_tag);
+>>>>>>> refs/remotes/origin/master
 
 		skb->protocol = eth_type_trans(skb, bp->dev);
 
@@ -3234,8 +3730,13 @@ bnx2_rx_int(struct bnx2 *bp, struct bnx2_napi *bnapi, int budget)
 		rx_pkt++;
 
 next_rx:
+<<<<<<< HEAD
 		sw_cons = NEXT_RX_BD(sw_cons);
 		sw_prod = NEXT_RX_BD(sw_prod);
+=======
+		sw_cons = BNX2_NEXT_RX_BD(sw_cons);
+		sw_prod = BNX2_NEXT_RX_BD(sw_prod);
+>>>>>>> refs/remotes/origin/master
 
 		if ((rx_pkt == budget))
 			break;
@@ -3250,11 +3751,19 @@ next_rx:
 	rxr->rx_prod = sw_prod;
 
 	if (pg_ring_used)
+<<<<<<< HEAD
 		REG_WR16(bp, rxr->rx_pg_bidx_addr, rxr->rx_pg_prod);
 
 	REG_WR16(bp, rxr->rx_bidx_addr, sw_prod);
 
 	REG_WR(bp, rxr->rx_bseq_addr, rxr->rx_prod_bseq);
+=======
+		BNX2_WR16(bp, rxr->rx_pg_bidx_addr, rxr->rx_pg_prod);
+
+	BNX2_WR16(bp, rxr->rx_bidx_addr, sw_prod);
+
+	BNX2_WR(bp, rxr->rx_bseq_addr, rxr->rx_prod_bseq);
+>>>>>>> refs/remotes/origin/master
 
 	mmiowb();
 
@@ -3272,7 +3781,11 @@ bnx2_msi(int irq, void *dev_instance)
 	struct bnx2 *bp = bnapi->bp;
 
 	prefetch(bnapi->status_blk.msi);
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
+=======
+	BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
+>>>>>>> refs/remotes/origin/master
 		BNX2_PCICFG_INT_ACK_CMD_USE_INT_HC_PARAM |
 		BNX2_PCICFG_INT_ACK_CMD_MASK_INT);
 
@@ -3316,18 +3829,30 @@ bnx2_interrupt(int irq, void *dev_instance)
 	 * the status block write.
 	 */
 	if ((sblk->status_idx == bnapi->last_status_idx) &&
+<<<<<<< HEAD
 	    (REG_RD(bp, BNX2_PCICFG_MISC_STATUS) &
 	     BNX2_PCICFG_MISC_STATUS_INTA_VALUE))
 		return IRQ_NONE;
 
 	REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
+=======
+	    (BNX2_RD(bp, BNX2_PCICFG_MISC_STATUS) &
+	     BNX2_PCICFG_MISC_STATUS_INTA_VALUE))
+		return IRQ_NONE;
+
+	BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
+>>>>>>> refs/remotes/origin/master
 		BNX2_PCICFG_INT_ACK_CMD_USE_INT_HC_PARAM |
 		BNX2_PCICFG_INT_ACK_CMD_MASK_INT);
 
 	/* Read back to deassert IRQ immediately to avoid too many
 	 * spurious interrupts.
 	 */
+<<<<<<< HEAD
 	REG_RD(bp, BNX2_PCICFG_INT_ACK_CMD);
+=======
+	BNX2_RD(bp, BNX2_PCICFG_INT_ACK_CMD);
+>>>>>>> refs/remotes/origin/master
 
 	/* Return here if interrupt is shared and is disabled. */
 	if (unlikely(atomic_read(&bp->intr_sem) != 0))
@@ -3383,14 +3908,24 @@ bnx2_chk_missed_msi(struct bnx2 *bp)
 	u32 msi_ctrl;
 
 	if (bnx2_has_work(bnapi)) {
+<<<<<<< HEAD
 		msi_ctrl = REG_RD(bp, BNX2_PCICFG_MSI_CONTROL);
+=======
+		msi_ctrl = BNX2_RD(bp, BNX2_PCICFG_MSI_CONTROL);
+>>>>>>> refs/remotes/origin/master
 		if (!(msi_ctrl & BNX2_PCICFG_MSI_CONTROL_ENABLE))
 			return;
 
 		if (bnapi->last_status_idx == bp->idle_chk_status_idx) {
+<<<<<<< HEAD
 			REG_WR(bp, BNX2_PCICFG_MSI_CONTROL, msi_ctrl &
 			       ~BNX2_PCICFG_MSI_CONTROL_ENABLE);
 			REG_WR(bp, BNX2_PCICFG_MSI_CONTROL, msi_ctrl);
+=======
+			BNX2_WR(bp, BNX2_PCICFG_MSI_CONTROL, msi_ctrl &
+				~BNX2_PCICFG_MSI_CONTROL_ENABLE);
+			BNX2_WR(bp, BNX2_PCICFG_MSI_CONTROL, msi_ctrl);
+>>>>>>> refs/remotes/origin/master
 			bnx2_msi(bp->irq_tbl[0].vector, bnapi);
 		}
 	}
@@ -3429,9 +3964,15 @@ static void bnx2_poll_link(struct bnx2 *bp, struct bnx2_napi *bnapi)
 		/* This is needed to take care of transient status
 		 * during link changes.
 		 */
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_HC_COMMAND,
 		       bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW_WO_INT);
 		REG_RD(bp, BNX2_HC_COMMAND);
+=======
+		BNX2_WR(bp, BNX2_HC_COMMAND,
+			bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW_WO_INT);
+		BNX2_RD(bp, BNX2_HC_COMMAND);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -3468,9 +4009,15 @@ static int bnx2_poll_msix(struct napi_struct *napi, int budget)
 		if (likely(!bnx2_has_fast_work(bnapi))) {
 
 			napi_complete(napi);
+<<<<<<< HEAD
 			REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
 			       BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
 			       bnapi->last_status_idx);
+=======
+			BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+				BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
+				bnapi->last_status_idx);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -3506,6 +4053,7 @@ static int bnx2_poll(struct napi_struct *napi, int budget)
 		if (likely(!bnx2_has_work(bnapi))) {
 			napi_complete(napi);
 			if (likely(bp->flags & BNX2_FLAG_USING_MSI_OR_MSIX)) {
+<<<<<<< HEAD
 				REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
 				       BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
 				       bnapi->last_status_idx);
@@ -3519,6 +4067,21 @@ static int bnx2_poll(struct napi_struct *napi, int budget)
 			REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
 			       BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
 			       bnapi->last_status_idx);
+=======
+				BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
+					BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
+					bnapi->last_status_idx);
+				break;
+			}
+			BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
+				BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
+				BNX2_PCICFG_INT_ACK_CMD_MASK_INT |
+				bnapi->last_status_idx);
+
+			BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD,
+				BNX2_PCICFG_INT_ACK_CMD_INDEX_VALID |
+				bnapi->last_status_idx);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -3545,7 +4108,11 @@ bnx2_set_rx_mode(struct net_device *dev)
 	rx_mode = bp->rx_mode & ~(BNX2_EMAC_RX_MODE_PROMISCUOUS |
 				  BNX2_EMAC_RX_MODE_KEEP_VLAN_TAG);
 	sort_mode = 1 | BNX2_RPM_SORT_USER0_BC_EN;
+<<<<<<< HEAD
 	if (!(dev->features & NETIF_F_HW_VLAN_RX) &&
+=======
+	if (!(dev->features & NETIF_F_HW_VLAN_CTAG_RX) &&
+>>>>>>> refs/remotes/origin/master
 	     (bp->flags & BNX2_FLAG_CAN_KEEP_VLAN))
 		rx_mode |= BNX2_EMAC_RX_MODE_KEEP_VLAN_TAG;
 	if (dev->flags & IFF_PROMISC) {
@@ -3556,8 +4123,13 @@ bnx2_set_rx_mode(struct net_device *dev)
 	}
 	else if (dev->flags & IFF_ALLMULTI) {
 		for (i = 0; i < NUM_MC_HASH_REGISTERS; i++) {
+<<<<<<< HEAD
 			REG_WR(bp, BNX2_EMAC_MULTICAST_HASH0 + (i * 4),
 			       0xffffffff);
+=======
+			BNX2_WR(bp, BNX2_EMAC_MULTICAST_HASH0 + (i * 4),
+				0xffffffff);
+>>>>>>> refs/remotes/origin/master
         	}
 		sort_mode |= BNX2_RPM_SORT_USER0_MC_EN;
 	}
@@ -3579,8 +4151,13 @@ bnx2_set_rx_mode(struct net_device *dev)
 		}
 
 		for (i = 0; i < NUM_MC_HASH_REGISTERS; i++) {
+<<<<<<< HEAD
 			REG_WR(bp, BNX2_EMAC_MULTICAST_HASH0 + (i * 4),
 			       mc_filter[i]);
+=======
+			BNX2_WR(bp, BNX2_EMAC_MULTICAST_HASH0 + (i * 4),
+				mc_filter[i]);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		sort_mode |= BNX2_RPM_SORT_USER0_MC_HSH_EN;
@@ -3605,12 +4182,21 @@ bnx2_set_rx_mode(struct net_device *dev)
 
 	if (rx_mode != bp->rx_mode) {
 		bp->rx_mode = rx_mode;
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_EMAC_RX_MODE, rx_mode);
 	}
 
 	REG_WR(bp, BNX2_RPM_SORT_USER0, 0x0);
 	REG_WR(bp, BNX2_RPM_SORT_USER0, sort_mode);
 	REG_WR(bp, BNX2_RPM_SORT_USER0, sort_mode | BNX2_RPM_SORT_USER0_ENA);
+=======
+		BNX2_WR(bp, BNX2_EMAC_RX_MODE, rx_mode);
+	}
+
+	BNX2_WR(bp, BNX2_RPM_SORT_USER0, 0x0);
+	BNX2_WR(bp, BNX2_RPM_SORT_USER0, sort_mode);
+	BNX2_WR(bp, BNX2_RPM_SORT_USER0, sort_mode | BNX2_RPM_SORT_USER0_ENA);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_bh(&bp->phy_lock);
 }
@@ -3658,10 +4244,17 @@ static int bnx2_request_uncached_firmware(struct bnx2 *bp)
 	const struct bnx2_rv2p_fw_file *rv2p_fw;
 	int rc;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
 		mips_fw_file = FW_MIPS_FILE_09;
 		if ((CHIP_ID(bp) == CHIP_ID_5709_A0) ||
 		    (CHIP_ID(bp) == CHIP_ID_5709_A1))
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+		mips_fw_file = FW_MIPS_FILE_09;
+		if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5709_A0) ||
+		    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5709_A1))
+>>>>>>> refs/remotes/origin/master
 			rv2p_fw_file = FW_RV2P_FILE_09_Ax;
 		else
 			rv2p_fw_file = FW_RV2P_FILE_09;
@@ -3751,6 +4344,7 @@ load_rv2p_fw(struct bnx2 *bp, u32 rv2p_proc,
 	}
 
 	for (i = 0; i < rv2p_code_len; i += 8) {
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_RV2P_INSTR_HIGH, be32_to_cpu(*rv2p_code));
 		rv2p_code++;
 		REG_WR(bp, BNX2_RV2P_INSTR_LOW, be32_to_cpu(*rv2p_code));
@@ -3758,6 +4352,15 @@ load_rv2p_fw(struct bnx2 *bp, u32 rv2p_proc,
 
 		val = (i / 8) | cmd;
 		REG_WR(bp, addr, val);
+=======
+		BNX2_WR(bp, BNX2_RV2P_INSTR_HIGH, be32_to_cpu(*rv2p_code));
+		rv2p_code++;
+		BNX2_WR(bp, BNX2_RV2P_INSTR_LOW, be32_to_cpu(*rv2p_code));
+		rv2p_code++;
+
+		val = (i / 8) | cmd;
+		BNX2_WR(bp, addr, val);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rv2p_code = (__be32 *)(bp->rv2p_firmware->data + file_offset);
@@ -3767,6 +4370,7 @@ load_rv2p_fw(struct bnx2 *bp, u32 rv2p_proc,
 		loc = be32_to_cpu(fw_entry->fixup[i]);
 		if (loc && ((loc * 4) < rv2p_code_len)) {
 			code = be32_to_cpu(*(rv2p_code + loc - 1));
+<<<<<<< HEAD
 			REG_WR(bp, BNX2_RV2P_INSTR_HIGH, code);
 			code = be32_to_cpu(*(rv2p_code + loc));
 			code = rv2p_fw_fixup(rv2p_proc, i, loc, code);
@@ -3774,15 +4378,31 @@ load_rv2p_fw(struct bnx2 *bp, u32 rv2p_proc,
 
 			val = (loc / 2) | cmd;
 			REG_WR(bp, addr, val);
+=======
+			BNX2_WR(bp, BNX2_RV2P_INSTR_HIGH, code);
+			code = be32_to_cpu(*(rv2p_code + loc));
+			code = rv2p_fw_fixup(rv2p_proc, i, loc, code);
+			BNX2_WR(bp, BNX2_RV2P_INSTR_LOW, code);
+
+			val = (loc / 2) | cmd;
+			BNX2_WR(bp, addr, val);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	/* Reset the processor, un-stall is done later. */
 	if (rv2p_proc == RV2P_PROC1) {
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_RV2P_COMMAND, BNX2_RV2P_COMMAND_PROC1_RESET);
 	}
 	else {
 		REG_WR(bp, BNX2_RV2P_COMMAND, BNX2_RV2P_COMMAND_PROC2_RESET);
+=======
+		BNX2_WR(bp, BNX2_RV2P_COMMAND, BNX2_RV2P_COMMAND_PROC1_RESET);
+	}
+	else {
+		BNX2_WR(bp, BNX2_RV2P_COMMAND, BNX2_RV2P_COMMAND_PROC2_RESET);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -3900,6 +4520,7 @@ init_cpu_err:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int
 bnx2_set_power_state(struct bnx2 *bp, pci_power_t state)
 {
@@ -4025,11 +4646,127 @@ bnx2_set_power_state(struct bnx2 *bp, pci_power_t state)
 		}
 		pci_write_config_word(bp->pdev, bp->pm_cap + PCI_PM_CTRL,
 				      pmcsr);
+=======
+static void
+bnx2_setup_wol(struct bnx2 *bp)
+{
+	int i;
+	u32 val, wol_msg;
+
+	if (bp->wol) {
+		u32 advertising;
+		u8 autoneg;
+
+		autoneg = bp->autoneg;
+		advertising = bp->advertising;
+
+		if (bp->phy_port == PORT_TP) {
+			bp->autoneg = AUTONEG_SPEED;
+			bp->advertising = ADVERTISED_10baseT_Half |
+				ADVERTISED_10baseT_Full |
+				ADVERTISED_100baseT_Half |
+				ADVERTISED_100baseT_Full |
+				ADVERTISED_Autoneg;
+		}
+
+		spin_lock_bh(&bp->phy_lock);
+		bnx2_setup_phy(bp, bp->phy_port);
+		spin_unlock_bh(&bp->phy_lock);
+
+		bp->autoneg = autoneg;
+		bp->advertising = advertising;
+
+		bnx2_set_mac_addr(bp, bp->dev->dev_addr, 0);
+
+		val = BNX2_RD(bp, BNX2_EMAC_MODE);
+
+		/* Enable port mode. */
+		val &= ~BNX2_EMAC_MODE_PORT;
+		val |= BNX2_EMAC_MODE_MPKT_RCVD |
+		       BNX2_EMAC_MODE_ACPI_RCVD |
+		       BNX2_EMAC_MODE_MPKT;
+		if (bp->phy_port == PORT_TP) {
+			val |= BNX2_EMAC_MODE_PORT_MII;
+		} else {
+			val |= BNX2_EMAC_MODE_PORT_GMII;
+			if (bp->line_speed == SPEED_2500)
+				val |= BNX2_EMAC_MODE_25G_MODE;
+		}
+
+		BNX2_WR(bp, BNX2_EMAC_MODE, val);
+
+		/* receive all multicast */
+		for (i = 0; i < NUM_MC_HASH_REGISTERS; i++) {
+			BNX2_WR(bp, BNX2_EMAC_MULTICAST_HASH0 + (i * 4),
+				0xffffffff);
+		}
+		BNX2_WR(bp, BNX2_EMAC_RX_MODE, BNX2_EMAC_RX_MODE_SORT_MODE);
+
+		val = 1 | BNX2_RPM_SORT_USER0_BC_EN | BNX2_RPM_SORT_USER0_MC_EN;
+		BNX2_WR(bp, BNX2_RPM_SORT_USER0, 0x0);
+		BNX2_WR(bp, BNX2_RPM_SORT_USER0, val);
+		BNX2_WR(bp, BNX2_RPM_SORT_USER0, val | BNX2_RPM_SORT_USER0_ENA);
+
+		/* Need to enable EMAC and RPM for WOL. */
+		BNX2_WR(bp, BNX2_MISC_ENABLE_SET_BITS,
+			BNX2_MISC_ENABLE_SET_BITS_RX_PARSER_MAC_ENABLE |
+			BNX2_MISC_ENABLE_SET_BITS_TX_HEADER_Q_ENABLE |
+			BNX2_MISC_ENABLE_SET_BITS_EMAC_ENABLE);
+
+		val = BNX2_RD(bp, BNX2_RPM_CONFIG);
+		val &= ~BNX2_RPM_CONFIG_ACPI_ENA;
+		BNX2_WR(bp, BNX2_RPM_CONFIG, val);
+
+		wol_msg = BNX2_DRV_MSG_CODE_SUSPEND_WOL;
+	} else {
+			wol_msg = BNX2_DRV_MSG_CODE_SUSPEND_NO_WOL;
+	}
+
+	if (!(bp->flags & BNX2_FLAG_NO_WOL))
+		bnx2_fw_sync(bp, BNX2_DRV_MSG_DATA_WAIT3 | wol_msg, 1, 0);
+
+}
+
+static int
+bnx2_set_power_state(struct bnx2 *bp, pci_power_t state)
+{
+	switch (state) {
+	case PCI_D0: {
+		u32 val;
+
+		pci_enable_wake(bp->pdev, PCI_D0, false);
+		pci_set_power_state(bp->pdev, PCI_D0);
+
+		val = BNX2_RD(bp, BNX2_EMAC_MODE);
+		val |= BNX2_EMAC_MODE_MPKT_RCVD | BNX2_EMAC_MODE_ACPI_RCVD;
+		val &= ~BNX2_EMAC_MODE_MPKT;
+		BNX2_WR(bp, BNX2_EMAC_MODE, val);
+
+		val = BNX2_RD(bp, BNX2_RPM_CONFIG);
+		val &= ~BNX2_RPM_CONFIG_ACPI_ENA;
+		BNX2_WR(bp, BNX2_RPM_CONFIG, val);
+		break;
+	}
+	case PCI_D3hot: {
+		bnx2_setup_wol(bp);
+		pci_wake_from_d3(bp->pdev, bp->wol);
+		if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) ||
+		    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1)) {
+
+			if (bp->wol)
+				pci_set_power_state(bp->pdev, PCI_D3hot);
+		} else {
+			pci_set_power_state(bp->pdev, PCI_D3hot);
+		}
+>>>>>>> refs/remotes/origin/master
 
 		/* No more memory access after this point until
 		 * device is brought back to D0.
 		 */
+<<<<<<< HEAD
 		udelay(50);
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	default:
@@ -4045,9 +4782,15 @@ bnx2_acquire_nvram_lock(struct bnx2 *bp)
 	int j;
 
 	/* Request access to the flash interface. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_NVM_SW_ARB, BNX2_NVM_SW_ARB_ARB_REQ_SET2);
 	for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
 		val = REG_RD(bp, BNX2_NVM_SW_ARB);
+=======
+	BNX2_WR(bp, BNX2_NVM_SW_ARB, BNX2_NVM_SW_ARB_ARB_REQ_SET2);
+	for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
+		val = BNX2_RD(bp, BNX2_NVM_SW_ARB);
+>>>>>>> refs/remotes/origin/master
 		if (val & BNX2_NVM_SW_ARB_ARB_ARB2)
 			break;
 
@@ -4067,10 +4810,17 @@ bnx2_release_nvram_lock(struct bnx2 *bp)
 	u32 val;
 
 	/* Relinquish nvram interface. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_NVM_SW_ARB, BNX2_NVM_SW_ARB_ARB_REQ_CLR2);
 
 	for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
 		val = REG_RD(bp, BNX2_NVM_SW_ARB);
+=======
+	BNX2_WR(bp, BNX2_NVM_SW_ARB, BNX2_NVM_SW_ARB_ARB_REQ_CLR2);
+
+	for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
+		val = BNX2_RD(bp, BNX2_NVM_SW_ARB);
+>>>>>>> refs/remotes/origin/master
 		if (!(val & BNX2_NVM_SW_ARB_ARB_ARB2))
 			break;
 
@@ -4089,20 +4839,35 @@ bnx2_enable_nvram_write(struct bnx2 *bp)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_MISC_CFG);
 	REG_WR(bp, BNX2_MISC_CFG, val | BNX2_MISC_CFG_NVM_WR_EN_PCI);
+=======
+	val = BNX2_RD(bp, BNX2_MISC_CFG);
+	BNX2_WR(bp, BNX2_MISC_CFG, val | BNX2_MISC_CFG_NVM_WR_EN_PCI);
+>>>>>>> refs/remotes/origin/master
 
 	if (bp->flash_info->flags & BNX2_NV_WREN) {
 		int j;
 
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
 		REG_WR(bp, BNX2_NVM_COMMAND,
 		       BNX2_NVM_COMMAND_WREN | BNX2_NVM_COMMAND_DOIT);
+=======
+		BNX2_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
+		BNX2_WR(bp, BNX2_NVM_COMMAND,
+			BNX2_NVM_COMMAND_WREN | BNX2_NVM_COMMAND_DOIT);
+>>>>>>> refs/remotes/origin/master
 
 		for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
 			udelay(5);
 
+<<<<<<< HEAD
 			val = REG_RD(bp, BNX2_NVM_COMMAND);
+=======
+			val = BNX2_RD(bp, BNX2_NVM_COMMAND);
+>>>>>>> refs/remotes/origin/master
 			if (val & BNX2_NVM_COMMAND_DONE)
 				break;
 		}
@@ -4118,8 +4883,13 @@ bnx2_disable_nvram_write(struct bnx2 *bp)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_MISC_CFG);
 	REG_WR(bp, BNX2_MISC_CFG, val & ~BNX2_MISC_CFG_NVM_WR_EN);
+=======
+	val = BNX2_RD(bp, BNX2_MISC_CFG);
+	BNX2_WR(bp, BNX2_MISC_CFG, val & ~BNX2_MISC_CFG_NVM_WR_EN);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -4128,10 +4898,17 @@ bnx2_enable_nvram_access(struct bnx2 *bp)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_NVM_ACCESS_ENABLE);
 	/* Enable both bits, even on read. */
 	REG_WR(bp, BNX2_NVM_ACCESS_ENABLE,
 	       val | BNX2_NVM_ACCESS_ENABLE_EN | BNX2_NVM_ACCESS_ENABLE_WR_EN);
+=======
+	val = BNX2_RD(bp, BNX2_NVM_ACCESS_ENABLE);
+	/* Enable both bits, even on read. */
+	BNX2_WR(bp, BNX2_NVM_ACCESS_ENABLE,
+		val | BNX2_NVM_ACCESS_ENABLE_EN | BNX2_NVM_ACCESS_ENABLE_WR_EN);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -4139,9 +4916,15 @@ bnx2_disable_nvram_access(struct bnx2 *bp)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_NVM_ACCESS_ENABLE);
 	/* Disable both bits, even after read. */
 	REG_WR(bp, BNX2_NVM_ACCESS_ENABLE,
+=======
+	val = BNX2_RD(bp, BNX2_NVM_ACCESS_ENABLE);
+	/* Disable both bits, even after read. */
+	BNX2_WR(bp, BNX2_NVM_ACCESS_ENABLE,
+>>>>>>> refs/remotes/origin/master
 		val & ~(BNX2_NVM_ACCESS_ENABLE_EN |
 			BNX2_NVM_ACCESS_ENABLE_WR_EN));
 }
@@ -4161,6 +4944,7 @@ bnx2_nvram_erase_page(struct bnx2 *bp, u32 offset)
 	      BNX2_NVM_COMMAND_DOIT;
 
 	/* Need to clear DONE bit separately. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
 
 	/* Address of the NVRAM to read from. */
@@ -4168,6 +4952,15 @@ bnx2_nvram_erase_page(struct bnx2 *bp, u32 offset)
 
 	/* Issue an erase command. */
 	REG_WR(bp, BNX2_NVM_COMMAND, cmd);
+=======
+	BNX2_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
+
+	/* Address of the NVRAM to read from. */
+	BNX2_WR(bp, BNX2_NVM_ADDR, offset & BNX2_NVM_ADDR_NVM_ADDR_VALUE);
+
+	/* Issue an erase command. */
+	BNX2_WR(bp, BNX2_NVM_COMMAND, cmd);
+>>>>>>> refs/remotes/origin/master
 
 	/* Wait for completion. */
 	for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
@@ -4175,7 +4968,11 @@ bnx2_nvram_erase_page(struct bnx2 *bp, u32 offset)
 
 		udelay(5);
 
+<<<<<<< HEAD
 		val = REG_RD(bp, BNX2_NVM_COMMAND);
+=======
+		val = BNX2_RD(bp, BNX2_NVM_COMMAND);
+>>>>>>> refs/remotes/origin/master
 		if (val & BNX2_NVM_COMMAND_DONE)
 			break;
 	}
@@ -4203,6 +5000,7 @@ bnx2_nvram_read_dword(struct bnx2 *bp, u32 offset, u8 *ret_val, u32 cmd_flags)
 	}
 
 	/* Need to clear DONE bit separately. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
 
 	/* Address of the NVRAM to read from. */
@@ -4210,6 +5008,15 @@ bnx2_nvram_read_dword(struct bnx2 *bp, u32 offset, u8 *ret_val, u32 cmd_flags)
 
 	/* Issue a read command. */
 	REG_WR(bp, BNX2_NVM_COMMAND, cmd);
+=======
+	BNX2_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
+
+	/* Address of the NVRAM to read from. */
+	BNX2_WR(bp, BNX2_NVM_ADDR, offset & BNX2_NVM_ADDR_NVM_ADDR_VALUE);
+
+	/* Issue a read command. */
+	BNX2_WR(bp, BNX2_NVM_COMMAND, cmd);
+>>>>>>> refs/remotes/origin/master
 
 	/* Wait for completion. */
 	for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
@@ -4217,9 +5024,15 @@ bnx2_nvram_read_dword(struct bnx2 *bp, u32 offset, u8 *ret_val, u32 cmd_flags)
 
 		udelay(5);
 
+<<<<<<< HEAD
 		val = REG_RD(bp, BNX2_NVM_COMMAND);
 		if (val & BNX2_NVM_COMMAND_DONE) {
 			__be32 v = cpu_to_be32(REG_RD(bp, BNX2_NVM_READ));
+=======
+		val = BNX2_RD(bp, BNX2_NVM_COMMAND);
+		if (val & BNX2_NVM_COMMAND_DONE) {
+			__be32 v = cpu_to_be32(BNX2_RD(bp, BNX2_NVM_READ));
+>>>>>>> refs/remotes/origin/master
 			memcpy(ret_val, &v, 4);
 			break;
 		}
@@ -4249,11 +5062,16 @@ bnx2_nvram_write_dword(struct bnx2 *bp, u32 offset, u8 *val, u32 cmd_flags)
 	}
 
 	/* Need to clear DONE bit separately. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
+=======
+	BNX2_WR(bp, BNX2_NVM_COMMAND, BNX2_NVM_COMMAND_DONE);
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(&val32, val, 4);
 
 	/* Write the data. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_NVM_WRITE, be32_to_cpu(val32));
 
 	/* Address of the NVRAM to write to. */
@@ -4261,12 +5079,25 @@ bnx2_nvram_write_dword(struct bnx2 *bp, u32 offset, u8 *val, u32 cmd_flags)
 
 	/* Issue the write command. */
 	REG_WR(bp, BNX2_NVM_COMMAND, cmd);
+=======
+	BNX2_WR(bp, BNX2_NVM_WRITE, be32_to_cpu(val32));
+
+	/* Address of the NVRAM to write to. */
+	BNX2_WR(bp, BNX2_NVM_ADDR, offset & BNX2_NVM_ADDR_NVM_ADDR_VALUE);
+
+	/* Issue the write command. */
+	BNX2_WR(bp, BNX2_NVM_COMMAND, cmd);
+>>>>>>> refs/remotes/origin/master
 
 	/* Wait for completion. */
 	for (j = 0; j < NVRAM_TIMEOUT_COUNT; j++) {
 		udelay(5);
 
+<<<<<<< HEAD
 		if (REG_RD(bp, BNX2_NVM_COMMAND) & BNX2_NVM_COMMAND_DONE)
+=======
+		if (BNX2_RD(bp, BNX2_NVM_COMMAND) & BNX2_NVM_COMMAND_DONE)
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 	if (j >= NVRAM_TIMEOUT_COUNT)
@@ -4282,13 +5113,21 @@ bnx2_init_nvram(struct bnx2 *bp)
 	int j, entry_count, rc = 0;
 	const struct flash_spec *flash;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		bp->flash_info = &flash_5709;
 		goto get_flash_size;
 	}
 
 	/* Determine the selected interface. */
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_NVM_CFG1);
+=======
+	val = BNX2_RD(bp, BNX2_NVM_CFG1);
+>>>>>>> refs/remotes/origin/master
 
 	entry_count = ARRAY_SIZE(flash_table);
 
@@ -4327,10 +5166,17 @@ bnx2_init_nvram(struct bnx2 *bp)
 				bnx2_enable_nvram_access(bp);
 
 				/* Reconfigure the flash interface */
+<<<<<<< HEAD
 				REG_WR(bp, BNX2_NVM_CFG1, flash->config1);
 				REG_WR(bp, BNX2_NVM_CFG2, flash->config2);
 				REG_WR(bp, BNX2_NVM_CFG3, flash->config3);
 				REG_WR(bp, BNX2_NVM_WRITE1, flash->write1);
+=======
+				BNX2_WR(bp, BNX2_NVM_CFG1, flash->config1);
+				BNX2_WR(bp, BNX2_NVM_CFG2, flash->config2);
+				BNX2_WR(bp, BNX2_NVM_CFG3, flash->config3);
+				BNX2_WR(bp, BNX2_NVM_WRITE1, flash->write1);
+>>>>>>> refs/remotes/origin/master
 
 				/* Disable access to flash interface */
 				bnx2_disable_nvram_access(bp);
@@ -4691,10 +5537,17 @@ bnx2_init_fw_cap(struct bnx2 *bp)
 static void
 bnx2_setup_msix_tbl(struct bnx2 *bp)
 {
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCI_GRC_WINDOW_ADDR, BNX2_PCI_GRC_WINDOW_ADDR_SEP_WIN);
 
 	REG_WR(bp, BNX2_PCI_GRC_WINDOW2_ADDR, BNX2_MSIX_TABLE_ADDR);
 	REG_WR(bp, BNX2_PCI_GRC_WINDOW3_ADDR, BNX2_MSIX_PBA_ADDR);
+=======
+	BNX2_WR(bp, BNX2_PCI_GRC_WINDOW_ADDR, BNX2_PCI_GRC_WINDOW_ADDR_SEP_WIN);
+
+	BNX2_WR(bp, BNX2_PCI_GRC_WINDOW2_ADDR, BNX2_MSIX_TABLE_ADDR);
+	BNX2_WR(bp, BNX2_PCI_GRC_WINDOW3_ADDR, BNX2_MSIX_PBA_ADDR);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -4706,6 +5559,7 @@ bnx2_reset_chip(struct bnx2 *bp, u32 reset_code)
 
 	/* Wait for the current PCI transaction to complete before
 	 * issuing a reset. */
+<<<<<<< HEAD
 	if ((CHIP_NUM(bp) == CHIP_NUM_5706) ||
 	    (CHIP_NUM(bp) == CHIP_NUM_5708)) {
 		REG_WR(bp, BNX2_MISC_ENABLE_CLR_BITS,
@@ -4724,6 +5578,26 @@ bnx2_reset_chip(struct bnx2 *bp, u32 reset_code)
 		for (i = 0; i < 100; i++) {
 			msleep(1);
 			val = REG_RD(bp, BNX2_PCICFG_DEVICE_CONTROL);
+=======
+	if ((BNX2_CHIP(bp) == BNX2_CHIP_5706) ||
+	    (BNX2_CHIP(bp) == BNX2_CHIP_5708)) {
+		BNX2_WR(bp, BNX2_MISC_ENABLE_CLR_BITS,
+			BNX2_MISC_ENABLE_CLR_BITS_TX_DMA_ENABLE |
+			BNX2_MISC_ENABLE_CLR_BITS_DMA_ENGINE_ENABLE |
+			BNX2_MISC_ENABLE_CLR_BITS_RX_DMA_ENABLE |
+			BNX2_MISC_ENABLE_CLR_BITS_HOST_COALESCE_ENABLE);
+		val = BNX2_RD(bp, BNX2_MISC_ENABLE_CLR_BITS);
+		udelay(5);
+	} else {  /* 5709 */
+		val = BNX2_RD(bp, BNX2_MISC_NEW_CORE_CTL);
+		val &= ~BNX2_MISC_NEW_CORE_CTL_DMA_ENABLE;
+		BNX2_WR(bp, BNX2_MISC_NEW_CORE_CTL, val);
+		val = BNX2_RD(bp, BNX2_MISC_NEW_CORE_CTL);
+
+		for (i = 0; i < 100; i++) {
+			msleep(1);
+			val = BNX2_RD(bp, BNX2_PCICFG_DEVICE_CONTROL);
+>>>>>>> refs/remotes/origin/master
 			if (!(val & BNX2_PCICFG_DEVICE_STATUS_NO_PEND))
 				break;
 		}
@@ -4739,17 +5613,29 @@ bnx2_reset_chip(struct bnx2 *bp, u32 reset_code)
 
 	/* Do a dummy read to force the chip to complete all current transaction
 	 * before we issue a reset. */
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_MISC_ID);
 
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
 		REG_WR(bp, BNX2_MISC_COMMAND, BNX2_MISC_COMMAND_SW_RESET);
 		REG_RD(bp, BNX2_MISC_COMMAND);
+=======
+	val = BNX2_RD(bp, BNX2_MISC_ID);
+
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+		BNX2_WR(bp, BNX2_MISC_COMMAND, BNX2_MISC_COMMAND_SW_RESET);
+		BNX2_RD(bp, BNX2_MISC_COMMAND);
+>>>>>>> refs/remotes/origin/master
 		udelay(5);
 
 		val = BNX2_PCICFG_MISC_CONFIG_REG_WINDOW_ENA |
 		      BNX2_PCICFG_MISC_CONFIG_TARGET_MB_WORD_SWAP;
 
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_PCICFG_MISC_CONFIG, val);
+=======
+		BNX2_WR(bp, BNX2_PCICFG_MISC_CONFIG, val);
+>>>>>>> refs/remotes/origin/master
 
 	} else {
 		val = BNX2_PCICFG_MISC_CONFIG_CORE_RST_REQ |
@@ -4757,19 +5643,32 @@ bnx2_reset_chip(struct bnx2 *bp, u32 reset_code)
 		      BNX2_PCICFG_MISC_CONFIG_TARGET_MB_WORD_SWAP;
 
 		/* Chip reset. */
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_PCICFG_MISC_CONFIG, val);
+=======
+		BNX2_WR(bp, BNX2_PCICFG_MISC_CONFIG, val);
+>>>>>>> refs/remotes/origin/master
 
 		/* Reading back any register after chip reset will hang the
 		 * bus on 5706 A0 and A1.  The msleep below provides plenty
 		 * of margin for write posting.
 		 */
+<<<<<<< HEAD
 		if ((CHIP_ID(bp) == CHIP_ID_5706_A0) ||
 		    (CHIP_ID(bp) == CHIP_ID_5706_A1))
+=======
+		if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) ||
+		    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1))
+>>>>>>> refs/remotes/origin/master
 			msleep(20);
 
 		/* Reset takes approximate 30 usec */
 		for (i = 0; i < 10; i++) {
+<<<<<<< HEAD
 			val = REG_RD(bp, BNX2_PCICFG_MISC_CONFIG);
+=======
+			val = BNX2_RD(bp, BNX2_PCICFG_MISC_CONFIG);
+>>>>>>> refs/remotes/origin/master
 			if ((val & (BNX2_PCICFG_MISC_CONFIG_CORE_RST_REQ |
 				    BNX2_PCICFG_MISC_CONFIG_CORE_RST_BSY)) == 0)
 				break;
@@ -4784,7 +5683,11 @@ bnx2_reset_chip(struct bnx2 *bp, u32 reset_code)
 	}
 
 	/* Make sure byte swapping is properly configured. */
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_PCI_SWAP_DIAG0);
+=======
+	val = BNX2_RD(bp, BNX2_PCI_SWAP_DIAG0);
+>>>>>>> refs/remotes/origin/master
 	if (val != 0x01020304) {
 		pr_err("Chip not in correct endian mode\n");
 		return -ENODEV;
@@ -4803,10 +5706,17 @@ bnx2_reset_chip(struct bnx2 *bp, u32 reset_code)
 		bnx2_set_default_remote_link(bp);
 	spin_unlock_bh(&bp->phy_lock);
 
+<<<<<<< HEAD
 	if (CHIP_ID(bp) == CHIP_ID_5706_A0) {
 		/* Adjust the voltage regular to two steps lower.  The default
 		 * of this register is 0x0000000e. */
 		REG_WR(bp, BNX2_MISC_VREG_CONTROL, 0x000000fa);
+=======
+	if (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) {
+		/* Adjust the voltage regular to two steps lower.  The default
+		 * of this register is 0x0000000e. */
+		BNX2_WR(bp, BNX2_MISC_VREG_CONTROL, 0x000000fa);
+>>>>>>> refs/remotes/origin/master
 
 		/* Remove bad rbuf memory from the free pool. */
 		rc = bnx2_alloc_bad_rbuf(bp);
@@ -4815,7 +5725,11 @@ bnx2_reset_chip(struct bnx2 *bp, u32 reset_code)
 	if (bp->flags & BNX2_FLAG_USING_MSIX) {
 		bnx2_setup_msix_tbl(bp);
 		/* Prevent MSIX table reads and write from timing out */
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_MISC_ECO_HW_CTL,
+=======
+		BNX2_WR(bp, BNX2_MISC_ECO_HW_CTL,
+>>>>>>> refs/remotes/origin/master
 			BNX2_MISC_ECO_HW_CTL_LARGE_GRC_TMOUT_EN);
 	}
 
@@ -4829,7 +5743,11 @@ bnx2_init_chip(struct bnx2 *bp)
 	int rc, i;
 
 	/* Make sure the interrupt is not active. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCICFG_INT_ACK_CMD, BNX2_PCICFG_INT_ACK_CMD_MASK_INT);
+=======
+	BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, BNX2_PCICFG_INT_ACK_CMD_MASK_INT);
+>>>>>>> refs/remotes/origin/master
 
 	val = BNX2_DMA_CONFIG_DATA_BYTE_SWAP |
 	      BNX2_DMA_CONFIG_DATA_WORD_SWAP |
@@ -4845,6 +5763,7 @@ bnx2_init_chip(struct bnx2 *bp)
 	if ((bp->flags & BNX2_FLAG_PCIX) && (bp->bus_speed_mhz == 133))
 		val |= (1 << 23);
 
+<<<<<<< HEAD
 	if ((CHIP_NUM(bp) == CHIP_NUM_5706) &&
 	    (CHIP_ID(bp) != CHIP_ID_5706_A0) && !(bp->flags & BNX2_FLAG_PCIX))
 		val |= BNX2_DMA_CONFIG_CNTL_PING_PONG_DMA;
@@ -4855,6 +5774,19 @@ bnx2_init_chip(struct bnx2 *bp)
 		val = REG_RD(bp, BNX2_TDMA_CONFIG);
 		val |= BNX2_TDMA_CONFIG_ONE_DMA;
 		REG_WR(bp, BNX2_TDMA_CONFIG, val);
+=======
+	if ((BNX2_CHIP(bp) == BNX2_CHIP_5706) &&
+	    (BNX2_CHIP_ID(bp) != BNX2_CHIP_ID_5706_A0) &&
+	    !(bp->flags & BNX2_FLAG_PCIX))
+		val |= BNX2_DMA_CONFIG_CNTL_PING_PONG_DMA;
+
+	BNX2_WR(bp, BNX2_DMA_CONFIG, val);
+
+	if (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) {
+		val = BNX2_RD(bp, BNX2_TDMA_CONFIG);
+		val |= BNX2_TDMA_CONFIG_ONE_DMA;
+		BNX2_WR(bp, BNX2_TDMA_CONFIG, val);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (bp->flags & BNX2_FLAG_PCIX) {
@@ -4866,6 +5798,7 @@ bnx2_init_chip(struct bnx2 *bp)
 				      val16 & ~PCI_X_CMD_ERO);
 	}
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_MISC_ENABLE_SET_BITS,
 	       BNX2_MISC_ENABLE_SET_BITS_HOST_COALESCE_ENABLE |
 	       BNX2_MISC_ENABLE_STATUS_BITS_RX_V2P_ENABLE |
@@ -4874,6 +5807,16 @@ bnx2_init_chip(struct bnx2 *bp)
 	/* Initialize context mapping and zero out the quick contexts.  The
 	 * context block must have already been enabled. */
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+	BNX2_WR(bp, BNX2_MISC_ENABLE_SET_BITS,
+		BNX2_MISC_ENABLE_SET_BITS_HOST_COALESCE_ENABLE |
+		BNX2_MISC_ENABLE_STATUS_BITS_RX_V2P_ENABLE |
+		BNX2_MISC_ENABLE_STATUS_BITS_CONTEXT_ENABLE);
+
+	/* Initialize context mapping and zero out the quick contexts.  The
+	 * context block must have already been enabled. */
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		rc = bnx2_init_5709_context(bp);
 		if (rc)
 			return rc;
@@ -4887,6 +5830,7 @@ bnx2_init_chip(struct bnx2 *bp)
 
 	bnx2_set_mac_addr(bp, bp->dev->dev_addr, 0);
 
+<<<<<<< HEAD
 	val = REG_RD(bp, BNX2_MQ_CONFIG);
 	val &= ~BNX2_MQ_CONFIG_KNL_BYP_BLK_SIZE;
 	val |= BNX2_MQ_CONFIG_KNL_BYP_BLK_SIZE_256;
@@ -4910,6 +5854,31 @@ bnx2_init_chip(struct bnx2 *bp)
 	val &= ~BNX2_TBDR_CONFIG_PAGE_SIZE;
 	val |= (BCM_PAGE_BITS - 8) << 24 | 0x40;
 	REG_WR(bp, BNX2_TBDR_CONFIG, val);
+=======
+	val = BNX2_RD(bp, BNX2_MQ_CONFIG);
+	val &= ~BNX2_MQ_CONFIG_KNL_BYP_BLK_SIZE;
+	val |= BNX2_MQ_CONFIG_KNL_BYP_BLK_SIZE_256;
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+		val |= BNX2_MQ_CONFIG_BIN_MQ_MODE;
+		if (BNX2_CHIP_REV(bp) == BNX2_CHIP_REV_Ax)
+			val |= BNX2_MQ_CONFIG_HALT_DIS;
+	}
+
+	BNX2_WR(bp, BNX2_MQ_CONFIG, val);
+
+	val = 0x10000 + (MAX_CID_CNT * MB_KERNEL_CTX_SIZE);
+	BNX2_WR(bp, BNX2_MQ_KNL_BYP_WIND_START, val);
+	BNX2_WR(bp, BNX2_MQ_KNL_WIND_END, val);
+
+	val = (BNX2_PAGE_BITS - 8) << 24;
+	BNX2_WR(bp, BNX2_RV2P_CONFIG, val);
+
+	/* Configure page size. */
+	val = BNX2_RD(bp, BNX2_TBDR_CONFIG);
+	val &= ~BNX2_TBDR_CONFIG_PAGE_SIZE;
+	val |= (BNX2_PAGE_BITS - 8) << 24 | 0x40;
+	BNX2_WR(bp, BNX2_TBDR_CONFIG, val);
+>>>>>>> refs/remotes/origin/master
 
 	val = bp->mac_addr[0] +
 	      (bp->mac_addr[1] << 8) +
@@ -4917,14 +5886,22 @@ bnx2_init_chip(struct bnx2 *bp)
 	      bp->mac_addr[3] +
 	      (bp->mac_addr[4] << 8) +
 	      (bp->mac_addr[5] << 16);
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_BACKOFF_SEED, val);
+=======
+	BNX2_WR(bp, BNX2_EMAC_BACKOFF_SEED, val);
+>>>>>>> refs/remotes/origin/master
 
 	/* Program the MTU.  Also include 4 bytes for CRC32. */
 	mtu = bp->dev->mtu;
 	val = mtu + ETH_HLEN + ETH_FCS_LEN;
 	if (val > (MAX_ETHERNET_PACKET_SIZE + 4))
 		val |= BNX2_EMAC_RX_MTU_SIZE_JUMBO_ENA;
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_RX_MTU_SIZE, val);
+=======
+	BNX2_WR(bp, BNX2_EMAC_RX_MTU_SIZE, val);
+>>>>>>> refs/remotes/origin/master
 
 	if (mtu < 1500)
 		mtu = 1500;
@@ -4942,6 +5919,7 @@ bnx2_init_chip(struct bnx2 *bp)
 	bp->rx_mode = BNX2_EMAC_RX_MODE_SORT_MODE;
 
 	/* Set up how to generate a link change interrupt. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_EMAC_ATTENTION_ENA, BNX2_EMAC_ATTENTION_ENA_LINK);
 
 	REG_WR(bp, BNX2_HC_STATUS_ADDR_L,
@@ -4979,6 +5957,45 @@ bnx2_init_chip(struct bnx2 *bp)
 	REG_WR(bp, BNX2_HC_STAT_COLLECT_TICKS, 0xbb8);  /* 3ms */
 
 	if (CHIP_ID(bp) == CHIP_ID_5706_A1)
+=======
+	BNX2_WR(bp, BNX2_EMAC_ATTENTION_ENA, BNX2_EMAC_ATTENTION_ENA_LINK);
+
+	BNX2_WR(bp, BNX2_HC_STATUS_ADDR_L,
+		(u64) bp->status_blk_mapping & 0xffffffff);
+	BNX2_WR(bp, BNX2_HC_STATUS_ADDR_H, (u64) bp->status_blk_mapping >> 32);
+
+	BNX2_WR(bp, BNX2_HC_STATISTICS_ADDR_L,
+		(u64) bp->stats_blk_mapping & 0xffffffff);
+	BNX2_WR(bp, BNX2_HC_STATISTICS_ADDR_H,
+		(u64) bp->stats_blk_mapping >> 32);
+
+	BNX2_WR(bp, BNX2_HC_TX_QUICK_CONS_TRIP,
+		(bp->tx_quick_cons_trip_int << 16) | bp->tx_quick_cons_trip);
+
+	BNX2_WR(bp, BNX2_HC_RX_QUICK_CONS_TRIP,
+		(bp->rx_quick_cons_trip_int << 16) | bp->rx_quick_cons_trip);
+
+	BNX2_WR(bp, BNX2_HC_COMP_PROD_TRIP,
+		(bp->comp_prod_trip_int << 16) | bp->comp_prod_trip);
+
+	BNX2_WR(bp, BNX2_HC_TX_TICKS, (bp->tx_ticks_int << 16) | bp->tx_ticks);
+
+	BNX2_WR(bp, BNX2_HC_RX_TICKS, (bp->rx_ticks_int << 16) | bp->rx_ticks);
+
+	BNX2_WR(bp, BNX2_HC_COM_TICKS,
+		(bp->com_ticks_int << 16) | bp->com_ticks);
+
+	BNX2_WR(bp, BNX2_HC_CMD_TICKS,
+		(bp->cmd_ticks_int << 16) | bp->cmd_ticks);
+
+	if (bp->flags & BNX2_FLAG_BROKEN_STATS)
+		BNX2_WR(bp, BNX2_HC_STATS_TICKS, 0);
+	else
+		BNX2_WR(bp, BNX2_HC_STATS_TICKS, bp->stats_ticks);
+	BNX2_WR(bp, BNX2_HC_STAT_COLLECT_TICKS, 0xbb8);  /* 3ms */
+
+	if (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1)
+>>>>>>> refs/remotes/origin/master
 		val = BNX2_HC_CONFIG_COLLECT_STATS;
 	else {
 		val = BNX2_HC_CONFIG_RX_TMR_MODE | BNX2_HC_CONFIG_TX_TMR_MODE |
@@ -4986,8 +6003,13 @@ bnx2_init_chip(struct bnx2 *bp)
 	}
 
 	if (bp->flags & BNX2_FLAG_USING_MSIX) {
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_HC_MSIX_BIT_VECTOR,
 		       BNX2_HC_MSIX_BIT_VECTOR_VAL);
+=======
+		BNX2_WR(bp, BNX2_HC_MSIX_BIT_VECTOR,
+			BNX2_HC_MSIX_BIT_VECTOR_VAL);
+>>>>>>> refs/remotes/origin/master
 
 		val |= BNX2_HC_CONFIG_SB_ADDR_INC_128B;
 	}
@@ -4995,7 +6017,11 @@ bnx2_init_chip(struct bnx2 *bp)
 	if (bp->flags & BNX2_FLAG_ONE_SHOT_MSI)
 		val |= BNX2_HC_CONFIG_ONE_SHOT | BNX2_HC_CONFIG_USE_INT_PARAM;
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_HC_CONFIG, val);
+=======
+	BNX2_WR(bp, BNX2_HC_CONFIG, val);
+>>>>>>> refs/remotes/origin/master
 
 	if (bp->rx_ticks < 25)
 		bnx2_reg_wr_ind(bp, BNX2_FW_RX_LOW_LATENCY, 1);
@@ -5006,11 +6032,16 @@ bnx2_init_chip(struct bnx2 *bp)
 		u32 base = ((i - 1) * BNX2_HC_SB_CONFIG_SIZE) +
 			   BNX2_HC_SB_CONFIG_1;
 
+<<<<<<< HEAD
 		REG_WR(bp, base,
+=======
+		BNX2_WR(bp, base,
+>>>>>>> refs/remotes/origin/master
 			BNX2_HC_SB_CONFIG_1_TX_TMR_MODE |
 			BNX2_HC_SB_CONFIG_1_RX_TMR_MODE |
 			BNX2_HC_SB_CONFIG_1_ONE_SHOT);
 
+<<<<<<< HEAD
 		REG_WR(bp, base + BNX2_HC_TX_QUICK_CONS_TRIP_OFF,
 			(bp->tx_quick_cons_trip_int << 16) |
 			 bp->tx_quick_cons_trip);
@@ -5023,31 +6054,67 @@ bnx2_init_chip(struct bnx2 *bp)
 			bp->rx_quick_cons_trip);
 
 		REG_WR(bp, base + BNX2_HC_RX_TICKS_OFF,
+=======
+		BNX2_WR(bp, base + BNX2_HC_TX_QUICK_CONS_TRIP_OFF,
+			(bp->tx_quick_cons_trip_int << 16) |
+			 bp->tx_quick_cons_trip);
+
+		BNX2_WR(bp, base + BNX2_HC_TX_TICKS_OFF,
+			(bp->tx_ticks_int << 16) | bp->tx_ticks);
+
+		BNX2_WR(bp, base + BNX2_HC_RX_QUICK_CONS_TRIP_OFF,
+			(bp->rx_quick_cons_trip_int << 16) |
+			bp->rx_quick_cons_trip);
+
+		BNX2_WR(bp, base + BNX2_HC_RX_TICKS_OFF,
+>>>>>>> refs/remotes/origin/master
 			(bp->rx_ticks_int << 16) | bp->rx_ticks);
 	}
 
 	/* Clear internal stats counters. */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_HC_COMMAND, BNX2_HC_COMMAND_CLR_STAT_NOW);
 
 	REG_WR(bp, BNX2_HC_ATTN_BITS_ENABLE, STATUS_ATTN_EVENTS);
+=======
+	BNX2_WR(bp, BNX2_HC_COMMAND, BNX2_HC_COMMAND_CLR_STAT_NOW);
+
+	BNX2_WR(bp, BNX2_HC_ATTN_BITS_ENABLE, STATUS_ATTN_EVENTS);
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the receive filter. */
 	bnx2_set_rx_mode(bp->dev);
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
 		val = REG_RD(bp, BNX2_MISC_NEW_CORE_CTL);
 		val |= BNX2_MISC_NEW_CORE_CTL_DMA_ENABLE;
 		REG_WR(bp, BNX2_MISC_NEW_CORE_CTL, val);
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+		val = BNX2_RD(bp, BNX2_MISC_NEW_CORE_CTL);
+		val |= BNX2_MISC_NEW_CORE_CTL_DMA_ENABLE;
+		BNX2_WR(bp, BNX2_MISC_NEW_CORE_CTL, val);
+>>>>>>> refs/remotes/origin/master
 	}
 	rc = bnx2_fw_sync(bp, BNX2_DRV_MSG_DATA_WAIT2 | BNX2_DRV_MSG_CODE_RESET,
 			  1, 0);
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_MISC_ENABLE_SET_BITS, BNX2_MISC_ENABLE_DEFAULT);
 	REG_RD(bp, BNX2_MISC_ENABLE_SET_BITS);
 
 	udelay(20);
 
 	bp->hc_cmd = REG_RD(bp, BNX2_HC_COMMAND);
+=======
+	BNX2_WR(bp, BNX2_MISC_ENABLE_SET_BITS, BNX2_MISC_ENABLE_DEFAULT);
+	BNX2_RD(bp, BNX2_MISC_ENABLE_SET_BITS);
+
+	udelay(20);
+
+	bp->hc_cmd = BNX2_RD(bp, BNX2_HC_COMMAND);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -5081,7 +6148,11 @@ bnx2_init_tx_context(struct bnx2 *bp, u32 cid, struct bnx2_tx_ring_info *txr)
 	u32 val, offset0, offset1, offset2, offset3;
 	u32 cid_addr = GET_CID_ADDR(cid);
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		offset0 = BNX2_L2CTX_TYPE_XI;
 		offset1 = BNX2_L2CTX_CMD_TYPE_XI;
 		offset2 = BNX2_L2CTX_TBDR_BHADDR_HI_XI;
@@ -5108,7 +6179,11 @@ bnx2_init_tx_context(struct bnx2 *bp, u32 cid, struct bnx2_tx_ring_info *txr)
 static void
 bnx2_init_tx_ring(struct bnx2 *bp, int ring_num)
 {
+<<<<<<< HEAD
 	struct tx_bd *txbd;
+=======
+	struct bnx2_tx_bd *txbd;
+>>>>>>> refs/remotes/origin/master
 	u32 cid = TX_CID;
 	struct bnx2_napi *bnapi;
 	struct bnx2_tx_ring_info *txr;
@@ -5123,7 +6198,11 @@ bnx2_init_tx_ring(struct bnx2 *bp, int ring_num)
 
 	bp->tx_wake_thresh = bp->tx_ring_size / 2;
 
+<<<<<<< HEAD
 	txbd = &txr->tx_desc_ring[MAX_TX_DESC_CNT];
+=======
+	txbd = &txr->tx_desc_ring[BNX2_MAX_TX_DESC_CNT];
+>>>>>>> refs/remotes/origin/master
 
 	txbd->tx_bd_haddr_hi = (u64) txr->tx_desc_mapping >> 32;
 	txbd->tx_bd_haddr_lo = (u64) txr->tx_desc_mapping & 0xffffffff;
@@ -5138,17 +6217,29 @@ bnx2_init_tx_ring(struct bnx2 *bp, int ring_num)
 }
 
 static void
+<<<<<<< HEAD
 bnx2_init_rxbd_rings(struct rx_bd *rx_ring[], dma_addr_t dma[], u32 buf_size,
 		     int num_rings)
 {
 	int i;
 	struct rx_bd *rxbd;
+=======
+bnx2_init_rxbd_rings(struct bnx2_rx_bd *rx_ring[], dma_addr_t dma[],
+		     u32 buf_size, int num_rings)
+{
+	int i;
+	struct bnx2_rx_bd *rxbd;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < num_rings; i++) {
 		int j;
 
 		rxbd = &rx_ring[i][0];
+<<<<<<< HEAD
 		for (j = 0; j < MAX_RX_DESC_CNT; j++, rxbd++) {
+=======
+		for (j = 0; j < BNX2_MAX_RX_DESC_CNT; j++, rxbd++) {
+>>>>>>> refs/remotes/origin/master
 			rxbd->rx_bd_len = buf_size;
 			rxbd->rx_bd_flags = RX_BD_FLAGS_START | RX_BD_FLAGS_END;
 		}
@@ -5182,9 +6273,15 @@ bnx2_init_rx_ring(struct bnx2 *bp, int ring_num)
 
 	bnx2_init_rx_context(bp, cid);
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
 		val = REG_RD(bp, BNX2_MQ_MAP_L2_5);
 		REG_WR(bp, BNX2_MQ_MAP_L2_5, val | BNX2_MQ_MAP_L2_5_ARM);
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+		val = BNX2_RD(bp, BNX2_MQ_MAP_L2_5);
+		BNX2_WR(bp, BNX2_MQ_MAP_L2_5, val | BNX2_MQ_MAP_L2_5_ARM);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bnx2_ctx_wr(bp, rx_cid_addr, BNX2_L2CTX_PG_BUF_SIZE, 0);
@@ -5203,8 +6300,13 @@ bnx2_init_rx_ring(struct bnx2 *bp, int ring_num)
 		val = (u64) rxr->rx_pg_desc_mapping[0] & 0xffffffff;
 		bnx2_ctx_wr(bp, rx_cid_addr, BNX2_L2CTX_NX_PG_BDHADDR_LO, val);
 
+<<<<<<< HEAD
 		if (CHIP_NUM(bp) == CHIP_NUM_5709)
 			REG_WR(bp, BNX2_MQ_MAP_L2_3, BNX2_MQ_MAP_L2_3_DEFAULT);
+=======
+		if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+			BNX2_WR(bp, BNX2_MQ_MAP_L2_3, BNX2_MQ_MAP_L2_3_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	val = (u64) rxr->rx_desc_mapping[0] >> 32;
@@ -5220,8 +6322,13 @@ bnx2_init_rx_ring(struct bnx2 *bp, int ring_num)
 				    ring_num, i, bp->rx_pg_ring_size);
 			break;
 		}
+<<<<<<< HEAD
 		prod = NEXT_RX_BD(prod);
 		ring_prod = RX_PG_RING_IDX(prod);
+=======
+		prod = BNX2_NEXT_RX_BD(prod);
+		ring_prod = BNX2_RX_PG_RING_IDX(prod);
+>>>>>>> refs/remotes/origin/master
 	}
 	rxr->rx_pg_prod = prod;
 
@@ -5232,8 +6339,13 @@ bnx2_init_rx_ring(struct bnx2 *bp, int ring_num)
 				    ring_num, i, bp->rx_ring_size);
 			break;
 		}
+<<<<<<< HEAD
 		prod = NEXT_RX_BD(prod);
 		ring_prod = RX_RING_IDX(prod);
+=======
+		prod = BNX2_NEXT_RX_BD(prod);
+		ring_prod = BNX2_RX_RING_IDX(prod);
+>>>>>>> refs/remotes/origin/master
 	}
 	rxr->rx_prod = prod;
 
@@ -5241,10 +6353,17 @@ bnx2_init_rx_ring(struct bnx2 *bp, int ring_num)
 	rxr->rx_bseq_addr = MB_GET_CID_ADDR(cid) + BNX2_L2CTX_HOST_BSEQ;
 	rxr->rx_pg_bidx_addr = MB_GET_CID_ADDR(cid) + BNX2_L2CTX_HOST_PG_BDIDX;
 
+<<<<<<< HEAD
 	REG_WR16(bp, rxr->rx_pg_bidx_addr, rxr->rx_pg_prod);
 	REG_WR16(bp, rxr->rx_bidx_addr, prod);
 
 	REG_WR(bp, rxr->rx_bseq_addr, rxr->rx_prod_bseq);
+=======
+	BNX2_WR16(bp, rxr->rx_pg_bidx_addr, rxr->rx_pg_prod);
+	BNX2_WR16(bp, rxr->rx_bidx_addr, prod);
+
+	BNX2_WR(bp, rxr->rx_bseq_addr, rxr->rx_prod_bseq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -5255,15 +6374,26 @@ bnx2_init_all_rings(struct bnx2 *bp)
 
 	bnx2_clear_ring_states(bp);
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_TSCH_TSS_CFG, 0);
+=======
+	BNX2_WR(bp, BNX2_TSCH_TSS_CFG, 0);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < bp->num_tx_rings; i++)
 		bnx2_init_tx_ring(bp, i);
 
 	if (bp->num_tx_rings > 1)
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_TSCH_TSS_CFG, ((bp->num_tx_rings - 1) << 24) |
 		       (TX_TSS_CID << 7));
 
 	REG_WR(bp, BNX2_RLUP_RSS_CONFIG, 0);
+=======
+		BNX2_WR(bp, BNX2_TSCH_TSS_CFG, ((bp->num_tx_rings - 1) << 24) |
+			(TX_TSS_CID << 7));
+
+	BNX2_WR(bp, BNX2_RLUP_RSS_CONFIG, 0);
+>>>>>>> refs/remotes/origin/master
 	bnx2_reg_wr_ind(bp, BNX2_RXP_SCRATCH_RSS_TBL_SZ, 0);
 
 	for (i = 0; i < bp->num_rx_rings; i++)
@@ -5277,8 +6407,13 @@ bnx2_init_all_rings(struct bnx2 *bp)
 
 			tbl_32 |= (i % (bp->num_rx_rings - 1)) << shift;
 			if ((i % 8) == 7) {
+<<<<<<< HEAD
 				REG_WR(bp, BNX2_RLUP_RSS_DATA, tbl_32);
 				REG_WR(bp, BNX2_RLUP_RSS_COMMAND, (i >> 3) |
+=======
+				BNX2_WR(bp, BNX2_RLUP_RSS_DATA, tbl_32);
+				BNX2_WR(bp, BNX2_RLUP_RSS_COMMAND, (i >> 3) |
+>>>>>>> refs/remotes/origin/master
 					BNX2_RLUP_RSS_COMMAND_RSS_WRITE_MASK |
 					BNX2_RLUP_RSS_COMMAND_WRITE |
 					BNX2_RLUP_RSS_COMMAND_HASH_MASK);
@@ -5289,7 +6424,11 @@ bnx2_init_all_rings(struct bnx2 *bp)
 		val = BNX2_RLUP_RSS_CONFIG_IPV4_RSS_TYPE_ALL_XI |
 		      BNX2_RLUP_RSS_CONFIG_IPV6_RSS_TYPE_ALL_XI;
 
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_RLUP_RSS_CONFIG, val);
+=======
+		BNX2_WR(bp, BNX2_RLUP_RSS_CONFIG, val);
+>>>>>>> refs/remotes/origin/master
 
 	}
 }
@@ -5298,8 +6437,13 @@ static u32 bnx2_find_max_ring(u32 ring_size, u32 max_size)
 {
 	u32 max, num_rings = 1;
 
+<<<<<<< HEAD
 	while (ring_size > MAX_RX_DESC_CNT) {
 		ring_size -= MAX_RX_DESC_CNT;
+=======
+	while (ring_size > BNX2_MAX_RX_DESC_CNT) {
+		ring_size -= BNX2_MAX_RX_DESC_CNT;
+>>>>>>> refs/remotes/origin/master
 		num_rings++;
 	}
 	/* round to next power of 2 */
@@ -5332,6 +6476,7 @@ bnx2_set_rx_ring_size(struct bnx2 *bp, u32 size)
 		int pages = PAGE_ALIGN(bp->dev->mtu - 40) >> PAGE_SHIFT;
 
 		jumbo_size = size * pages;
+<<<<<<< HEAD
 		if (jumbo_size > MAX_TOTAL_RX_PG_DESC_CNT)
 			jumbo_size = MAX_TOTAL_RX_PG_DESC_CNT;
 
@@ -5339,6 +6484,16 @@ bnx2_set_rx_ring_size(struct bnx2 *bp, u32 size)
 		bp->rx_max_pg_ring = bnx2_find_max_ring(jumbo_size,
 							MAX_RX_PG_RINGS);
 		bp->rx_max_pg_ring_idx = (bp->rx_max_pg_ring * RX_DESC_CNT) - 1;
+=======
+		if (jumbo_size > BNX2_MAX_TOTAL_RX_PG_DESC_CNT)
+			jumbo_size = BNX2_MAX_TOTAL_RX_PG_DESC_CNT;
+
+		bp->rx_pg_ring_size = jumbo_size;
+		bp->rx_max_pg_ring = bnx2_find_max_ring(jumbo_size,
+							BNX2_MAX_RX_PG_RINGS);
+		bp->rx_max_pg_ring_idx =
+			(bp->rx_max_pg_ring * BNX2_RX_DESC_CNT) - 1;
+>>>>>>> refs/remotes/origin/master
 		rx_size = BNX2_RX_COPY_THRESH + BNX2_RX_OFFSET;
 		bp->rx_copy_thresh = 0;
 	}
@@ -5349,8 +6504,13 @@ bnx2_set_rx_ring_size(struct bnx2 *bp, u32 size)
 		NET_SKB_PAD + SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
 	bp->rx_jumbo_thresh = rx_size - BNX2_RX_OFFSET;
 	bp->rx_ring_size = size;
+<<<<<<< HEAD
 	bp->rx_max_ring = bnx2_find_max_ring(size, MAX_RX_RINGS);
 	bp->rx_max_ring_idx = (bp->rx_max_ring * RX_DESC_CNT) - 1;
+=======
+	bp->rx_max_ring = bnx2_find_max_ring(size, BNX2_MAX_RX_RINGS);
+	bp->rx_max_ring_idx = (bp->rx_max_ring * BNX2_RX_DESC_CNT) - 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -5366,13 +6526,22 @@ bnx2_free_tx_skbs(struct bnx2 *bp)
 		if (txr->tx_buf_ring == NULL)
 			continue;
 
+<<<<<<< HEAD
 		for (j = 0; j < TX_DESC_CNT; ) {
 			struct sw_tx_bd *tx_buf = &txr->tx_buf_ring[j];
+=======
+		for (j = 0; j < BNX2_TX_DESC_CNT; ) {
+			struct bnx2_sw_tx_bd *tx_buf = &txr->tx_buf_ring[j];
+>>>>>>> refs/remotes/origin/master
 			struct sk_buff *skb = tx_buf->skb;
 			int k, last;
 
 			if (skb == NULL) {
+<<<<<<< HEAD
 				j = NEXT_TX_BD(j);
+=======
+				j = BNX2_NEXT_TX_BD(j);
+>>>>>>> refs/remotes/origin/master
 				continue;
 			}
 
@@ -5384,9 +6553,15 @@ bnx2_free_tx_skbs(struct bnx2 *bp)
 			tx_buf->skb = NULL;
 
 			last = tx_buf->nr_frags;
+<<<<<<< HEAD
 			j = NEXT_TX_BD(j);
 			for (k = 0; k < last; k++, j = NEXT_TX_BD(j)) {
 				tx_buf = &txr->tx_buf_ring[TX_RING_IDX(j)];
+=======
+			j = BNX2_NEXT_TX_BD(j);
+			for (k = 0; k < last; k++, j = BNX2_NEXT_TX_BD(j)) {
+				tx_buf = &txr->tx_buf_ring[BNX2_TX_RING_IDX(j)];
+>>>>>>> refs/remotes/origin/master
 				dma_unmap_page(&bp->pdev->dev,
 					dma_unmap_addr(tx_buf, mapping),
 					skb_frag_size(&skb_shinfo(skb)->frags[k]),
@@ -5412,7 +6587,11 @@ bnx2_free_rx_skbs(struct bnx2 *bp)
 			return;
 
 		for (j = 0; j < bp->rx_max_ring_idx; j++) {
+<<<<<<< HEAD
 			struct sw_bd *rx_buf = &rxr->rx_buf_ring[j];
+=======
+			struct bnx2_sw_bd *rx_buf = &rxr->rx_buf_ring[j];
+>>>>>>> refs/remotes/origin/master
 			u8 *data = rx_buf->data;
 
 			if (data == NULL)
@@ -5610,7 +6789,11 @@ bnx2_test_registers(struct bnx2 *bp)
 
 	ret = 0;
 	is_5709 = 0;
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		is_5709 = 1;
 
 	for (i = 0; reg_tbl[i].offset != 0xffff; i++) {
@@ -5709,7 +6892,11 @@ bnx2_test_memory(struct bnx2 *bp)
 	};
 	struct mem_entry *mem_tbl;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+>>>>>>> refs/remotes/origin/master
 		mem_tbl = mem_tbl_5709;
 	else
 		mem_tbl = mem_tbl_5706;
@@ -5736,8 +6923,13 @@ bnx2_run_loopback(struct bnx2 *bp, int loopback_mode)
 	unsigned char *packet;
 	u16 rx_start_idx, rx_idx;
 	dma_addr_t map;
+<<<<<<< HEAD
 	struct tx_bd *txbd;
 	struct sw_bd *rx_buf;
+=======
+	struct bnx2_tx_bd *txbd;
+	struct bnx2_sw_bd *rx_buf;
+>>>>>>> refs/remotes/origin/master
 	struct l2_fhdr *rx_hdr;
 	int ret = -ENODEV;
 	struct bnx2_napi *bnapi = &bp->bnx2_napi[0], *tx_napi;
@@ -5767,8 +6959,13 @@ bnx2_run_loopback(struct bnx2 *bp, int loopback_mode)
 	if (!skb)
 		return -ENOMEM;
 	packet = skb_put(skb, pkt_size);
+<<<<<<< HEAD
 	memcpy(packet, bp->dev->dev_addr, 6);
 	memset(packet + 6, 0x0, 8);
+=======
+	memcpy(packet, bp->dev->dev_addr, ETH_ALEN);
+	memset(packet + ETH_ALEN, 0x0, 8);
+>>>>>>> refs/remotes/origin/master
 	for (i = 14; i < pkt_size; i++)
 		packet[i] = (unsigned char) (i & 0xff);
 
@@ -5779,17 +6976,28 @@ bnx2_run_loopback(struct bnx2 *bp, int loopback_mode)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_HC_COMMAND,
 	       bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW_WO_INT);
 
 	REG_RD(bp, BNX2_HC_COMMAND);
+=======
+	BNX2_WR(bp, BNX2_HC_COMMAND,
+		bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW_WO_INT);
+
+	BNX2_RD(bp, BNX2_HC_COMMAND);
+>>>>>>> refs/remotes/origin/master
 
 	udelay(5);
 	rx_start_idx = bnx2_get_hw_rx_cons(bnapi);
 
 	num_pkts = 0;
 
+<<<<<<< HEAD
 	txbd = &txr->tx_desc_ring[TX_RING_IDX(txr->tx_prod)];
+=======
+	txbd = &txr->tx_desc_ring[BNX2_TX_RING_IDX(txr->tx_prod)];
+>>>>>>> refs/remotes/origin/master
 
 	txbd->tx_bd_haddr_hi = (u64) map >> 32;
 	txbd->tx_bd_haddr_lo = (u64) map & 0xffffffff;
@@ -5797,6 +7005,7 @@ bnx2_run_loopback(struct bnx2 *bp, int loopback_mode)
 	txbd->tx_bd_vlan_tag_flags = TX_BD_FLAGS_START | TX_BD_FLAGS_END;
 
 	num_pkts++;
+<<<<<<< HEAD
 	txr->tx_prod = NEXT_TX_BD(txr->tx_prod);
 	txr->tx_prod_bseq += pkt_size;
 
@@ -5809,6 +7018,20 @@ bnx2_run_loopback(struct bnx2 *bp, int loopback_mode)
 	       bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW_WO_INT);
 
 	REG_RD(bp, BNX2_HC_COMMAND);
+=======
+	txr->tx_prod = BNX2_NEXT_TX_BD(txr->tx_prod);
+	txr->tx_prod_bseq += pkt_size;
+
+	BNX2_WR16(bp, txr->tx_bidx_addr, txr->tx_prod);
+	BNX2_WR(bp, txr->tx_bseq_addr, txr->tx_prod_bseq);
+
+	udelay(100);
+
+	BNX2_WR(bp, BNX2_HC_COMMAND,
+		bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW_WO_INT);
+
+	BNX2_RD(bp, BNX2_HC_COMMAND);
+>>>>>>> refs/remotes/origin/master
 
 	udelay(5);
 
@@ -5957,6 +7180,7 @@ bnx2_test_intr(struct bnx2 *bp)
 	if (!netif_running(bp->dev))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	status_idx = REG_RD(bp, BNX2_PCICFG_INT_ACK_CMD) & 0xffff;
 
 	/* This register is not touched during run-time. */
@@ -5965,6 +7189,16 @@ bnx2_test_intr(struct bnx2 *bp)
 
 	for (i = 0; i < 10; i++) {
 		if ((REG_RD(bp, BNX2_PCICFG_INT_ACK_CMD) & 0xffff) !=
+=======
+	status_idx = BNX2_RD(bp, BNX2_PCICFG_INT_ACK_CMD) & 0xffff;
+
+	/* This register is not touched during run-time. */
+	BNX2_WR(bp, BNX2_HC_COMMAND, bp->hc_cmd | BNX2_HC_COMMAND_COAL_NOW);
+	BNX2_RD(bp, BNX2_HC_COMMAND);
+
+	for (i = 0; i < 10; i++) {
+		if ((BNX2_RD(bp, BNX2_PCICFG_INT_ACK_CMD) & 0xffff) !=
+>>>>>>> refs/remotes/origin/master
 			status_idx) {
 
 			break;
@@ -6127,11 +7361,19 @@ bnx2_timer(unsigned long data)
 
 	/* workaround occasional corrupted counters */
 	if ((bp->flags & BNX2_FLAG_BROKEN_STATS) && bp->stats_ticks)
+<<<<<<< HEAD
 		REG_WR(bp, BNX2_HC_COMMAND, bp->hc_cmd |
 					    BNX2_HC_COMMAND_STATS_NOW);
 
 	if (bp->phy_flags & BNX2_PHY_FLAG_SERDES) {
 		if (CHIP_NUM(bp) == CHIP_NUM_5706)
+=======
+		BNX2_WR(bp, BNX2_HC_COMMAND, bp->hc_cmd |
+			BNX2_HC_COMMAND_STATS_NOW);
+
+	if (bp->phy_flags & BNX2_PHY_FLAG_SERDES) {
+		if (BNX2_CHIP(bp) == BNX2_CHIP_5706)
+>>>>>>> refs/remotes/origin/master
 			bnx2_5706_serdes_timer(bp);
 		else
 			bnx2_5708_serdes_timer(bp);
@@ -6200,6 +7442,7 @@ bnx2_enable_msix(struct bnx2 *bp, int msix_vecs)
 	const int len = sizeof(bp->irq_tbl[0].name);
 
 	bnx2_setup_msix_tbl(bp);
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCI_MSIX_CONTROL, BNX2_MAX_MSIX_HW_VEC - 1);
 	REG_WR(bp, BNX2_PCI_MSIX_TBL_OFF_BIR, BNX2_PCI_GRC_WINDOW2_BASE);
 	REG_WR(bp, BNX2_PCI_MSIX_PBA_OFF_BIT, BNX2_PCI_GRC_WINDOW3_BASE);
@@ -6207,6 +7450,15 @@ bnx2_enable_msix(struct bnx2 *bp, int msix_vecs)
 	/*  Need to flush the previous three writes to ensure MSI-X
 	 *  is setup properly */
 	REG_RD(bp, BNX2_PCI_MSIX_CONTROL);
+=======
+	BNX2_WR(bp, BNX2_PCI_MSIX_CONTROL, BNX2_MAX_MSIX_HW_VEC - 1);
+	BNX2_WR(bp, BNX2_PCI_MSIX_TBL_OFF_BIR, BNX2_PCI_GRC_WINDOW2_BASE);
+	BNX2_WR(bp, BNX2_PCI_MSIX_PBA_OFF_BIT, BNX2_PCI_GRC_WINDOW3_BASE);
+
+	/*  Need to flush the previous three writes to ensure MSI-X
+	 *  is setup properly */
+	BNX2_RD(bp, BNX2_PCI_MSIX_CONTROL);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < BNX2_MAX_MSIX_VEC; i++) {
 		msix_ent[i].entry = i;
@@ -6245,7 +7497,11 @@ bnx2_enable_msix(struct bnx2 *bp, int msix_vecs)
 static int
 bnx2_setup_int_mode(struct bnx2 *bp, int dis_msi)
 {
+<<<<<<< HEAD
 	int cpus = num_online_cpus();
+=======
+	int cpus = netif_get_num_default_rss_queues();
+>>>>>>> refs/remotes/origin/master
 	int msix_vecs;
 
 	if (!bp->num_req_rx_rings)
@@ -6269,7 +7525,11 @@ bnx2_setup_int_mode(struct bnx2 *bp, int dis_msi)
 	    !(bp->flags & BNX2_FLAG_USING_MSIX)) {
 		if (pci_enable_msi(bp->pdev) == 0) {
 			bp->flags |= BNX2_FLAG_USING_MSI;
+<<<<<<< HEAD
 			if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+			if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 				bp->flags |= BNX2_FLAG_ONE_SHOT_MSI;
 				bp->irq_tbl[0].handler = bnx2_msi_1shot;
 			} else
@@ -6307,7 +7567,10 @@ bnx2_open(struct net_device *dev)
 
 	netif_carrier_off(dev);
 
+<<<<<<< HEAD
 	bnx2_set_power_state(bp, PCI_D0);
+=======
+>>>>>>> refs/remotes/origin/master
 	bnx2_disable_int(bp);
 
 	rc = bnx2_setup_int_mode(bp, disable_msi);
@@ -6383,6 +7646,10 @@ bnx2_reset_task(struct work_struct *work)
 {
 	struct bnx2 *bp = container_of(work, struct bnx2, reset_task);
 	int rc;
+<<<<<<< HEAD
+=======
+	u16 pcicmd;
+>>>>>>> refs/remotes/origin/master
 
 	rtnl_lock();
 	if (!netif_running(bp->dev)) {
@@ -6392,6 +7659,15 @@ bnx2_reset_task(struct work_struct *work)
 
 	bnx2_netif_stop(bp, true);
 
+<<<<<<< HEAD
+=======
+	pci_read_config_word(bp->pdev, PCI_COMMAND, &pcicmd);
+	if (!(pcicmd & PCI_COMMAND_MEMORY)) {
+		/* in case PCI block has reset */
+		pci_restore_state(bp->pdev);
+		pci_save_state(bp->pdev);
+	}
+>>>>>>> refs/remotes/origin/master
 	rc = bnx2_init_nic(bp, 1);
 	if (rc) {
 		netdev_err(bp->dev, "failed to reset NIC, closing\n");
@@ -6406,6 +7682,78 @@ bnx2_reset_task(struct work_struct *work)
 	rtnl_unlock();
 }
 
+<<<<<<< HEAD
+=======
+#define BNX2_FTQ_ENTRY(ftq) { __stringify(ftq##FTQ_CTL), BNX2_##ftq##FTQ_CTL }
+
+static void
+bnx2_dump_ftq(struct bnx2 *bp)
+{
+	int i;
+	u32 reg, bdidx, cid, valid;
+	struct net_device *dev = bp->dev;
+	static const struct ftq_reg {
+		char *name;
+		u32 off;
+	} ftq_arr[] = {
+		BNX2_FTQ_ENTRY(RV2P_P),
+		BNX2_FTQ_ENTRY(RV2P_T),
+		BNX2_FTQ_ENTRY(RV2P_M),
+		BNX2_FTQ_ENTRY(TBDR_),
+		BNX2_FTQ_ENTRY(TDMA_),
+		BNX2_FTQ_ENTRY(TXP_),
+		BNX2_FTQ_ENTRY(TXP_),
+		BNX2_FTQ_ENTRY(TPAT_),
+		BNX2_FTQ_ENTRY(RXP_C),
+		BNX2_FTQ_ENTRY(RXP_),
+		BNX2_FTQ_ENTRY(COM_COMXQ_),
+		BNX2_FTQ_ENTRY(COM_COMTQ_),
+		BNX2_FTQ_ENTRY(COM_COMQ_),
+		BNX2_FTQ_ENTRY(CP_CPQ_),
+	};
+
+	netdev_err(dev, "<--- start FTQ dump --->\n");
+	for (i = 0; i < ARRAY_SIZE(ftq_arr); i++)
+		netdev_err(dev, "%s %08x\n", ftq_arr[i].name,
+			   bnx2_reg_rd_ind(bp, ftq_arr[i].off));
+
+	netdev_err(dev, "CPU states:\n");
+	for (reg = BNX2_TXP_CPU_MODE; reg <= BNX2_CP_CPU_MODE; reg += 0x40000)
+		netdev_err(dev, "%06x mode %x state %x evt_mask %x pc %x pc %x instr %x\n",
+			   reg, bnx2_reg_rd_ind(bp, reg),
+			   bnx2_reg_rd_ind(bp, reg + 4),
+			   bnx2_reg_rd_ind(bp, reg + 8),
+			   bnx2_reg_rd_ind(bp, reg + 0x1c),
+			   bnx2_reg_rd_ind(bp, reg + 0x1c),
+			   bnx2_reg_rd_ind(bp, reg + 0x20));
+
+	netdev_err(dev, "<--- end FTQ dump --->\n");
+	netdev_err(dev, "<--- start TBDC dump --->\n");
+	netdev_err(dev, "TBDC free cnt: %ld\n",
+		   BNX2_RD(bp, BNX2_TBDC_STATUS) & BNX2_TBDC_STATUS_FREE_CNT);
+	netdev_err(dev, "LINE     CID  BIDX   CMD  VALIDS\n");
+	for (i = 0; i < 0x20; i++) {
+		int j = 0;
+
+		BNX2_WR(bp, BNX2_TBDC_BD_ADDR, i);
+		BNX2_WR(bp, BNX2_TBDC_CAM_OPCODE,
+			BNX2_TBDC_CAM_OPCODE_OPCODE_CAM_READ);
+		BNX2_WR(bp, BNX2_TBDC_COMMAND, BNX2_TBDC_COMMAND_CMD_REG_ARB);
+		while ((BNX2_RD(bp, BNX2_TBDC_COMMAND) &
+			BNX2_TBDC_COMMAND_CMD_REG_ARB) && j < 100)
+			j++;
+
+		cid = BNX2_RD(bp, BNX2_TBDC_CID);
+		bdidx = BNX2_RD(bp, BNX2_TBDC_BIDX);
+		valid = BNX2_RD(bp, BNX2_TBDC_CAM_OPCODE);
+		netdev_err(dev, "%02x    %06x  %04lx   %02x    [%x]\n",
+			   i, cid, bdidx & BNX2_TBDC_BDIDX_BDIDX,
+			   bdidx >> 24, (valid >> 8) & 0x0ff);
+	}
+	netdev_err(dev, "<--- end TBDC dump --->\n");
+}
+
+>>>>>>> refs/remotes/origin/master
 static void
 bnx2_dump_state(struct bnx2 *bp)
 {
@@ -6419,6 +7767,7 @@ bnx2_dump_state(struct bnx2 *bp)
 	pci_read_config_dword(bp->pdev, BNX2_PCICFG_MISC_CONFIG, &val2);
 	netdev_err(dev, "DEBUG: PCI_PM[%08x] PCI_MISC_CFG[%08x]\n", val1, val2);
 	netdev_err(dev, "DEBUG: EMAC_TX_STATUS[%08x] EMAC_RX_STATUS[%08x]\n",
+<<<<<<< HEAD
 		   REG_RD(bp, BNX2_EMAC_TX_STATUS),
 		   REG_RD(bp, BNX2_EMAC_RX_STATUS));
 	netdev_err(dev, "DEBUG: RPM_MGMT_PKT_CTRL[%08x]\n",
@@ -6428,6 +7777,17 @@ bnx2_dump_state(struct bnx2 *bp)
 	if (bp->flags & BNX2_FLAG_USING_MSIX)
 		netdev_err(dev, "DEBUG: PBA[%08x]\n",
 			   REG_RD(bp, BNX2_PCI_GRC_WINDOW3_BASE));
+=======
+		   BNX2_RD(bp, BNX2_EMAC_TX_STATUS),
+		   BNX2_RD(bp, BNX2_EMAC_RX_STATUS));
+	netdev_err(dev, "DEBUG: RPM_MGMT_PKT_CTRL[%08x]\n",
+		   BNX2_RD(bp, BNX2_RPM_MGMT_PKT_CTRL));
+	netdev_err(dev, "DEBUG: HC_STATS_INTERRUPT_STATUS[%08x]\n",
+		   BNX2_RD(bp, BNX2_HC_STATS_INTERRUPT_STATUS));
+	if (bp->flags & BNX2_FLAG_USING_MSIX)
+		netdev_err(dev, "DEBUG: PBA[%08x]\n",
+			   BNX2_RD(bp, BNX2_PCI_GRC_WINDOW3_BASE));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -6435,6 +7795,10 @@ bnx2_tx_timeout(struct net_device *dev)
 {
 	struct bnx2 *bp = netdev_priv(dev);
 
+<<<<<<< HEAD
+=======
+	bnx2_dump_ftq(bp);
+>>>>>>> refs/remotes/origin/master
 	bnx2_dump_state(bp);
 	bnx2_dump_mcp_state(bp);
 
@@ -6451,8 +7815,13 @@ bnx2_start_xmit(struct sk_buff *skb, struct net_device *dev)
 {
 	struct bnx2 *bp = netdev_priv(dev);
 	dma_addr_t mapping;
+<<<<<<< HEAD
 	struct tx_bd *txbd;
 	struct sw_tx_bd *tx_buf;
+=======
+	struct bnx2_tx_bd *txbd;
+	struct bnx2_sw_tx_bd *tx_buf;
+>>>>>>> refs/remotes/origin/master
 	u32 len, vlan_tag_flags, last_frag, mss;
 	u16 prod, ring_prod;
 	int i;
@@ -6475,7 +7844,11 @@ bnx2_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	}
 	len = skb_headlen(skb);
 	prod = txr->tx_prod;
+<<<<<<< HEAD
 	ring_prod = TX_RING_IDX(prod);
+=======
+	ring_prod = BNX2_TX_RING_IDX(prod);
+>>>>>>> refs/remotes/origin/master
 
 	vlan_tag_flags = 0;
 	if (skb->ip_summed == CHECKSUM_PARTIAL) {
@@ -6545,8 +7918,13 @@ bnx2_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	for (i = 0; i < last_frag; i++) {
 		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 
+<<<<<<< HEAD
 		prod = NEXT_TX_BD(prod);
 		ring_prod = TX_RING_IDX(prod);
+=======
+		prod = BNX2_NEXT_TX_BD(prod);
+		ring_prod = BNX2_TX_RING_IDX(prod);
+>>>>>>> refs/remotes/origin/master
 		txbd = &txr->tx_desc_ring[ring_prod];
 
 		len = skb_frag_size(frag);
@@ -6570,11 +7948,19 @@ bnx2_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
 	netdev_tx_sent_queue(txq, skb->len);
 
+<<<<<<< HEAD
 	prod = NEXT_TX_BD(prod);
 	txr->tx_prod_bseq += skb->len;
 
 	REG_WR16(bp, txr->tx_bidx_addr, prod);
 	REG_WR(bp, txr->tx_bseq_addr, txr->tx_prod_bseq);
+=======
+	prod = BNX2_NEXT_TX_BD(prod);
+	txr->tx_prod_bseq += skb->len;
+
+	BNX2_WR16(bp, txr->tx_bidx_addr, prod);
+	BNX2_WR(bp, txr->tx_bseq_addr, txr->tx_prod_bseq);
+>>>>>>> refs/remotes/origin/master
 
 	mmiowb();
 
@@ -6600,7 +7986,11 @@ dma_error:
 
 	/* start back at beginning and unmap skb */
 	prod = txr->tx_prod;
+<<<<<<< HEAD
 	ring_prod = TX_RING_IDX(prod);
+=======
+	ring_prod = BNX2_TX_RING_IDX(prod);
+>>>>>>> refs/remotes/origin/master
 	tx_buf = &txr->tx_buf_ring[ring_prod];
 	tx_buf->skb = NULL;
 	dma_unmap_single(&bp->pdev->dev, dma_unmap_addr(tx_buf, mapping),
@@ -6608,8 +7998,13 @@ dma_error:
 
 	/* unmap remaining mapped pages */
 	for (i = 0; i < last_frag; i++) {
+<<<<<<< HEAD
 		prod = NEXT_TX_BD(prod);
 		ring_prod = TX_RING_IDX(prod);
+=======
+		prod = BNX2_NEXT_TX_BD(prod);
+		ring_prod = BNX2_TX_RING_IDX(prod);
+>>>>>>> refs/remotes/origin/master
 		tx_buf = &txr->tx_buf_ring[ring_prod];
 		dma_unmap_page(&bp->pdev->dev, dma_unmap_addr(tx_buf, mapping),
 			       skb_frag_size(&skb_shinfo(skb)->frags[i]),
@@ -6628,6 +8023,10 @@ bnx2_close(struct net_device *dev)
 
 	bnx2_disable_int_sync(bp);
 	bnx2_napi_disable(bp);
+<<<<<<< HEAD
+=======
+	netif_tx_disable(dev);
+>>>>>>> refs/remotes/origin/master
 	del_timer_sync(&bp->timer);
 	bnx2_shutdown_chip(bp);
 	bnx2_free_irq(bp);
@@ -6636,7 +8035,10 @@ bnx2_close(struct net_device *dev)
 	bnx2_del_napi(bp);
 	bp->link_up = 0;
 	netif_carrier_off(bp->dev);
+<<<<<<< HEAD
 	bnx2_set_power_state(bp, PCI_D3hot);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -6727,8 +8129,13 @@ bnx2_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *net_stats)
 		GET_32BIT_NET_STATS(stat_Dot3StatsExcessiveCollisions) +
 		GET_32BIT_NET_STATS(stat_Dot3StatsLateCollisions);
 
+<<<<<<< HEAD
 	if ((CHIP_NUM(bp) == CHIP_NUM_5706) ||
 	    (CHIP_ID(bp) == CHIP_ID_5708_A0))
+=======
+	if ((BNX2_CHIP(bp) == BNX2_CHIP_5706) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_A0))
+>>>>>>> refs/remotes/origin/master
 		net_stats->tx_carrier_errors = 0;
 	else {
 		net_stats->tx_carrier_errors =
@@ -6947,7 +8354,11 @@ bnx2_get_regs(struct net_device *dev, struct ethtool_regs *regs, void *_p)
 	offset = reg_boundaries[0];
 	p += offset;
 	while (offset < BNX2_REGDUMP_LEN) {
+<<<<<<< HEAD
 		*p++ = REG_RD(bp, offset);
+=======
+		*p++ = BNX2_RD(bp, offset);
+>>>>>>> refs/remotes/origin/master
 		offset += 4;
 		if (offset == reg_boundaries[i + 1]) {
 			offset = reg_boundaries[i + 2];
@@ -6993,6 +8404,12 @@ bnx2_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
 	else {
 		bp->wol = 0;
 	}
+<<<<<<< HEAD
+=======
+
+	device_set_wakeup_enable(&bp->pdev->dev, bp->wol);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -7068,9 +8485,12 @@ bnx2_get_eeprom(struct net_device *dev, struct ethtool_eeprom *eeprom,
 	struct bnx2 *bp = netdev_priv(dev);
 	int rc;
 
+<<<<<<< HEAD
 	if (!netif_running(dev))
 		return -EAGAIN;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* parameters already validated in ethtool_get_eeprom */
 
 	rc = bnx2_nvram_read(bp, eeprom->offset, eebuf, eeprom->len);
@@ -7085,9 +8505,12 @@ bnx2_set_eeprom(struct net_device *dev, struct ethtool_eeprom *eeprom,
 	struct bnx2 *bp = netdev_priv(dev);
 	int rc;
 
+<<<<<<< HEAD
 	if (!netif_running(dev))
 		return -EAGAIN;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* parameters already validated in ethtool_set_eeprom */
 
 	rc = bnx2_nvram_write(bp, eeprom->offset, eebuf, eeprom->len);
@@ -7171,13 +8594,22 @@ bnx2_get_ringparam(struct net_device *dev, struct ethtool_ringparam *ering)
 {
 	struct bnx2 *bp = netdev_priv(dev);
 
+<<<<<<< HEAD
 	ering->rx_max_pending = MAX_TOTAL_RX_DESC_CNT;
 	ering->rx_jumbo_max_pending = MAX_TOTAL_RX_PG_DESC_CNT;
+=======
+	ering->rx_max_pending = BNX2_MAX_TOTAL_RX_DESC_CNT;
+	ering->rx_jumbo_max_pending = BNX2_MAX_TOTAL_RX_PG_DESC_CNT;
+>>>>>>> refs/remotes/origin/master
 
 	ering->rx_pending = bp->rx_ring_size;
 	ering->rx_jumbo_pending = bp->rx_pg_ring_size;
 
+<<<<<<< HEAD
 	ering->tx_max_pending = MAX_TX_DESC_CNT;
+=======
+	ering->tx_max_pending = BNX2_MAX_TX_DESC_CNT;
+>>>>>>> refs/remotes/origin/master
 	ering->tx_pending = bp->tx_ring_size;
 }
 
@@ -7243,8 +8675,13 @@ bnx2_set_ringparam(struct net_device *dev, struct ethtool_ringparam *ering)
 	struct bnx2 *bp = netdev_priv(dev);
 	int rc;
 
+<<<<<<< HEAD
 	if ((ering->rx_pending > MAX_TOTAL_RX_DESC_CNT) ||
 		(ering->tx_pending > MAX_TX_DESC_CNT) ||
+=======
+	if ((ering->rx_pending > BNX2_MAX_TOTAL_RX_DESC_CNT) ||
+		(ering->tx_pending > BNX2_MAX_TX_DESC_CNT) ||
+>>>>>>> refs/remotes/origin/master
 		(ering->tx_pending <= MAX_SKB_FRAGS)) {
 
 		return -EINVAL;
@@ -7343,8 +8780,12 @@ static struct {
 	{ "rx_fw_discards" },
 };
 
+<<<<<<< HEAD
 #define BNX2_NUM_STATS (sizeof(bnx2_stats_str_arr)/\
 			sizeof(bnx2_stats_str_arr[0]))
+=======
+#define BNX2_NUM_STATS ARRAY_SIZE(bnx2_stats_str_arr)
+>>>>>>> refs/remotes/origin/master
 
 #define STATS_OFFSET32(offset_name) (offsetof(struct statistics_block, offset_name) / 4)
 
@@ -7448,8 +8889,11 @@ bnx2_self_test(struct net_device *dev, struct ethtool_test *etest, u64 *buf)
 {
 	struct bnx2 *bp = netdev_priv(dev);
 
+<<<<<<< HEAD
 	bnx2_set_power_state(bp, PCI_D0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(buf, 0, sizeof(u64) * BNX2_NUM_TESTS);
 	if (etest->flags & ETH_TEST_FL_OFFLINE) {
 		int i;
@@ -7498,8 +8942,11 @@ bnx2_self_test(struct net_device *dev, struct ethtool_test *etest, u64 *buf)
 		etest->flags |= ETH_TEST_FL_FAILED;
 
 	}
+<<<<<<< HEAD
 	if (!netif_running(bp->dev))
 		bnx2_set_power_state(bp, PCI_D3hot);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -7532,10 +8979,17 @@ bnx2_get_ethtool_stats(struct net_device *dev,
 		return;
 	}
 
+<<<<<<< HEAD
 	if ((CHIP_ID(bp) == CHIP_ID_5706_A0) ||
 	    (CHIP_ID(bp) == CHIP_ID_5706_A1) ||
 	    (CHIP_ID(bp) == CHIP_ID_5706_A2) ||
 	    (CHIP_ID(bp) == CHIP_ID_5708_A0))
+=======
+	if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A2) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_A0))
+>>>>>>> refs/remotes/origin/master
 		stats_len_arr = bnx2_5706_stats_len_arr;
 	else
 		stats_len_arr = bnx2_5708_stats_len_arr;
@@ -7571,6 +9025,7 @@ bnx2_set_phys_id(struct net_device *dev, enum ethtool_phys_id_state state)
 
 	switch (state) {
 	case ETHTOOL_ID_ACTIVE:
+<<<<<<< HEAD
 		bnx2_set_power_state(bp, PCI_D0);
 
 		bp->leds_save = REG_RD(bp, BNX2_MISC_CFG);
@@ -7596,6 +9051,28 @@ bnx2_set_phys_id(struct net_device *dev, enum ethtool_phys_id_state state)
 
 		if (!netif_running(dev))
 			bnx2_set_power_state(bp, PCI_D3hot);
+=======
+		bp->leds_save = BNX2_RD(bp, BNX2_MISC_CFG);
+		BNX2_WR(bp, BNX2_MISC_CFG, BNX2_MISC_CFG_LEDMODE_MAC);
+		return 1;	/* cycle on/off once per second */
+
+	case ETHTOOL_ID_ON:
+		BNX2_WR(bp, BNX2_EMAC_LED, BNX2_EMAC_LED_OVERRIDE |
+			BNX2_EMAC_LED_1000MB_OVERRIDE |
+			BNX2_EMAC_LED_100MB_OVERRIDE |
+			BNX2_EMAC_LED_10MB_OVERRIDE |
+			BNX2_EMAC_LED_TRAFFIC_OVERRIDE |
+			BNX2_EMAC_LED_TRAFFIC);
+		break;
+
+	case ETHTOOL_ID_OFF:
+		BNX2_WR(bp, BNX2_EMAC_LED, BNX2_EMAC_LED_OVERRIDE);
+		break;
+
+	case ETHTOOL_ID_INACTIVE:
+		BNX2_WR(bp, BNX2_EMAC_LED, 0);
+		BNX2_WR(bp, BNX2_MISC_CFG, bp->leds_save);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -7608,7 +9085,11 @@ bnx2_fix_features(struct net_device *dev, netdev_features_t features)
 	struct bnx2 *bp = netdev_priv(dev);
 
 	if (!(bp->flags & BNX2_FLAG_CAN_KEEP_VLAN))
+<<<<<<< HEAD
 		features |= NETIF_F_HW_VLAN_RX;
+=======
+		features |= NETIF_F_HW_VLAN_CTAG_RX;
+>>>>>>> refs/remotes/origin/master
 
 	return features;
 }
@@ -7619,12 +9100,20 @@ bnx2_set_features(struct net_device *dev, netdev_features_t features)
 	struct bnx2 *bp = netdev_priv(dev);
 
 	/* TSO with VLAN tag won't work with current firmware */
+<<<<<<< HEAD
 	if (features & NETIF_F_HW_VLAN_TX)
+=======
+	if (features & NETIF_F_HW_VLAN_CTAG_TX)
+>>>>>>> refs/remotes/origin/master
 		dev->vlan_features |= (dev->hw_features & NETIF_F_ALL_TSO);
 	else
 		dev->vlan_features &= ~NETIF_F_ALL_TSO;
 
+<<<<<<< HEAD
 	if ((!!(features & NETIF_F_HW_VLAN_RX) !=
+=======
+	if ((!!(features & NETIF_F_HW_VLAN_CTAG_RX) !=
+>>>>>>> refs/remotes/origin/master
 	    !!(bp->rx_mode & BNX2_EMAC_RX_MODE_KEEP_VLAN_TAG)) &&
 	    netif_running(dev)) {
 		bnx2_netif_stop(bp, false);
@@ -7814,10 +9303,17 @@ poll_bnx2(struct net_device *dev)
 }
 #endif
 
+<<<<<<< HEAD
 static void __devinit
 bnx2_get_5709_media(struct bnx2 *bp)
 {
 	u32 val = REG_RD(bp, BNX2_MISC_DUAL_MEDIA_CTRL);
+=======
+static void
+bnx2_get_5709_media(struct bnx2 *bp)
+{
+	u32 val = BNX2_RD(bp, BNX2_MISC_DUAL_MEDIA_CTRL);
+>>>>>>> refs/remotes/origin/master
 	u32 bond_id = val & BNX2_MISC_DUAL_MEDIA_CTRL_BOND_ID;
 	u32 strap;
 
@@ -7833,7 +9329,11 @@ bnx2_get_5709_media(struct bnx2 *bp)
 	else
 		strap = (val & BNX2_MISC_DUAL_MEDIA_CTRL_PHY_CTRL_STRAP) >> 8;
 
+<<<<<<< HEAD
 	if (PCI_FUNC(bp->pdev->devfn) == 0) {
+=======
+	if (bp->func == 0) {
+>>>>>>> refs/remotes/origin/master
 		switch (strap) {
 		case 0x4:
 		case 0x5:
@@ -7852,18 +9352,30 @@ bnx2_get_5709_media(struct bnx2 *bp)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 bnx2_get_pci_speed(struct bnx2 *bp)
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	reg = REG_RD(bp, BNX2_PCICFG_MISC_STATUS);
+=======
+	reg = BNX2_RD(bp, BNX2_PCICFG_MISC_STATUS);
+>>>>>>> refs/remotes/origin/master
 	if (reg & BNX2_PCICFG_MISC_STATUS_PCIX_DET) {
 		u32 clkreg;
 
 		bp->flags |= BNX2_FLAG_PCIX;
 
+<<<<<<< HEAD
 		clkreg = REG_RD(bp, BNX2_PCICFG_PCI_CLOCK_CONTROL_BITS);
+=======
+		clkreg = BNX2_RD(bp, BNX2_PCICFG_PCI_CLOCK_CONTROL_BITS);
+>>>>>>> refs/remotes/origin/master
 
 		clkreg &= BNX2_PCICFG_PCI_CLOCK_CONTROL_BITS_PCI_CLK_SPD_DET;
 		switch (clkreg) {
@@ -7904,7 +9416,11 @@ bnx2_get_pci_speed(struct bnx2 *bp)
 
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 bnx2_read_vpd_fw_ver(struct bnx2 *bp)
 {
 	int rc, i, j;
@@ -7972,11 +9488,18 @@ vpd_done:
 	kfree(data);
 }
 
+<<<<<<< HEAD
 static int __devinit
 bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 {
 	struct bnx2 *bp;
 	unsigned long mem_len;
+=======
+static int
+bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
+{
+	struct bnx2 *bp;
+>>>>>>> refs/remotes/origin/master
 	int rc, i, j;
 	u32 reg;
 	u64 dma_mask, persist_dma_mask;
@@ -8018,7 +9541,11 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 
 	pci_set_master(pdev);
 
+<<<<<<< HEAD
 	bp->pm_cap = pci_find_capability(pdev, PCI_CAP_ID_PM);
+=======
+	bp->pm_cap = pdev->pm_cap;
+>>>>>>> refs/remotes/origin/master
 	if (bp->pm_cap == 0) {
 		dev_err(&pdev->dev,
 			"Cannot find power management capability, aborting\n");
@@ -8036,6 +9563,7 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 #endif
 	INIT_WORK(&bp->reset_task, bnx2_reset_task);
 
+<<<<<<< HEAD
 	dev->base_addr = dev->mem_start = pci_resource_start(pdev, 0);
 	mem_len = MB_GET_CID_ADDR(TX_TSS_CID + TX_MAX_TSS_RINGS + 1);
 	dev->mem_end = dev->mem_start + mem_len;
@@ -8043,18 +9571,26 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 
 	bp->regview = ioremap_nocache(dev->base_addr, mem_len);
 
+=======
+	bp->regview = pci_iomap(pdev, 0, MB_GET_CID_ADDR(TX_TSS_CID +
+							 TX_MAX_TSS_RINGS + 1));
+>>>>>>> refs/remotes/origin/master
 	if (!bp->regview) {
 		dev_err(&pdev->dev, "Cannot map register space, aborting\n");
 		rc = -ENOMEM;
 		goto err_out_release;
 	}
 
+<<<<<<< HEAD
 	bnx2_set_power_state(bp, PCI_D0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Configure byte swap and enable write to the reg_window registers.
 	 * Rely on CPU to do target byte swapping on big endian systems
 	 * The chip's target access swapping will not swap all accesses
 	 */
+<<<<<<< HEAD
 	REG_WR(bp, BNX2_PCICFG_MISC_CONFIG,
 		   BNX2_PCICFG_MISC_CONFIG_REG_WINDOW_ENA |
 		   BNX2_PCICFG_MISC_CONFIG_TARGET_MB_WORD_SWAP);
@@ -8062,13 +9598,26 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 	bp->chip_id = REG_RD(bp, BNX2_MISC_ID);
 
 	if (CHIP_NUM(bp) == CHIP_NUM_5709) {
+=======
+	BNX2_WR(bp, BNX2_PCICFG_MISC_CONFIG,
+		BNX2_PCICFG_MISC_CONFIG_REG_WINDOW_ENA |
+		BNX2_PCICFG_MISC_CONFIG_TARGET_MB_WORD_SWAP);
+
+	bp->chip_id = BNX2_RD(bp, BNX2_MISC_ID);
+
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709) {
+>>>>>>> refs/remotes/origin/master
 		if (!pci_is_pcie(pdev)) {
 			dev_err(&pdev->dev, "Not PCIE, aborting\n");
 			rc = -EIO;
 			goto err_out_unmap;
 		}
 		bp->flags |= BNX2_FLAG_PCIE;
+<<<<<<< HEAD
 		if (CHIP_REV(bp) == CHIP_REV_Ax)
+=======
+		if (BNX2_CHIP_REV(bp) == BNX2_CHIP_REV_Ax)
+>>>>>>> refs/remotes/origin/master
 			bp->flags |= BNX2_FLAG_JUMBO_BROKEN;
 
 		/* AER (Advanced Error Reporting) hooks */
@@ -8087,6 +9636,7 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 		bp->flags |= BNX2_FLAG_BROKEN_STATS;
 	}
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709 && CHIP_REV(bp) != CHIP_REV_Ax) {
 		if (pci_find_capability(pdev, PCI_CAP_ID_MSIX))
 			bp->flags |= BNX2_FLAG_MSIX_CAP;
@@ -8094,11 +9644,26 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 
 	if (CHIP_ID(bp) != CHIP_ID_5706_A0 && CHIP_ID(bp) != CHIP_ID_5706_A1) {
 		if (pci_find_capability(pdev, PCI_CAP_ID_MSI))
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709 &&
+	    BNX2_CHIP_REV(bp) != BNX2_CHIP_REV_Ax) {
+		if (pdev->msix_cap)
+			bp->flags |= BNX2_FLAG_MSIX_CAP;
+	}
+
+	if (BNX2_CHIP_ID(bp) != BNX2_CHIP_ID_5706_A0 &&
+	    BNX2_CHIP_ID(bp) != BNX2_CHIP_ID_5706_A1) {
+		if (pdev->msi_cap)
+>>>>>>> refs/remotes/origin/master
 			bp->flags |= BNX2_FLAG_MSI_CAP;
 	}
 
 	/* 5708 cannot support DMA addresses > 40-bit.  */
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5708)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5708)
+>>>>>>> refs/remotes/origin/master
 		persist_dma_mask = dma_mask = DMA_BIT_MASK(40);
 	else
 		persist_dma_mask = dma_mask = DMA_BIT_MASK(64);
@@ -8121,12 +9686,20 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 		bnx2_get_pci_speed(bp);
 
 	/* 5706A0 may falsely detect SERR and PERR. */
+<<<<<<< HEAD
 	if (CHIP_ID(bp) == CHIP_ID_5706_A0) {
 		reg = REG_RD(bp, PCI_COMMAND);
 		reg &= ~(PCI_COMMAND_SERR | PCI_COMMAND_PARITY);
 		REG_WR(bp, PCI_COMMAND, reg);
 	}
 	else if ((CHIP_ID(bp) == CHIP_ID_5706_A1) &&
+=======
+	if (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) {
+		reg = BNX2_RD(bp, PCI_COMMAND);
+		reg &= ~(PCI_COMMAND_SERR | PCI_COMMAND_PARITY);
+		BNX2_WR(bp, PCI_COMMAND, reg);
+	} else if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A1) &&
+>>>>>>> refs/remotes/origin/master
 		!(bp->flags & BNX2_FLAG_PCIX)) {
 
 		dev_err(&pdev->dev,
@@ -8138,9 +9711,18 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 
 	reg = bnx2_reg_rd_ind(bp, BNX2_SHM_HDR_SIGNATURE);
 
+<<<<<<< HEAD
 	if ((reg & BNX2_SHM_HDR_SIGNATURE_SIG_MASK) ==
 	    BNX2_SHM_HDR_SIGNATURE_SIG) {
 		u32 off = PCI_FUNC(pdev->devfn) << 2;
+=======
+	if (bnx2_reg_rd_ind(bp, BNX2_MCP_TOE_ID) & BNX2_MCP_TOE_ID_FUNCTION_ID)
+		bp->func = 1;
+
+	if ((reg & BNX2_SHM_HDR_SIGNATURE_SIG_MASK) ==
+	    BNX2_SHM_HDR_SIGNATURE_SIG) {
+		u32 off = bp->func << 2;
+>>>>>>> refs/remotes/origin/master
 
 		bp->shmem_base = bnx2_reg_rd_ind(bp, BNX2_SHM_HDR_ADDR_0 + off);
 	} else
@@ -8220,7 +9802,11 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 	bp->mac_addr[4] = (u8) (reg >> 8);
 	bp->mac_addr[5] = (u8) reg;
 
+<<<<<<< HEAD
 	bp->tx_ring_size = MAX_TX_DESC_CNT;
+=======
+	bp->tx_ring_size = BNX2_MAX_TX_DESC_CNT;
+>>>>>>> refs/remotes/origin/master
 	bnx2_set_rx_ring_size(bp, 255);
 
 	bp->tx_quick_cons_trip_int = 2;
@@ -8240,9 +9826,15 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 	bp->phy_addr = 1;
 
 	/* Disable WOL support if we are running on a SERDES chip. */
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
 		bnx2_get_5709_media(bp);
 	else if (CHIP_BOND_ID(bp) & CHIP_BOND_ID_SERDES_BIT)
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+		bnx2_get_5709_media(bp);
+	else if (BNX2_CHIP_BOND(bp) & BNX2_CHIP_BOND_SERDES_BIT)
+>>>>>>> refs/remotes/origin/master
 		bp->phy_flags |= BNX2_PHY_FLAG_SERDES;
 
 	bp->phy_port = PORT_TP;
@@ -8253,7 +9845,11 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 			bp->flags |= BNX2_FLAG_NO_WOL;
 			bp->wol = 0;
 		}
+<<<<<<< HEAD
 		if (CHIP_NUM(bp) == CHIP_NUM_5706) {
+=======
+		if (BNX2_CHIP(bp) == BNX2_CHIP_5706) {
+>>>>>>> refs/remotes/origin/master
 			/* Don't do parallel detect on this board because of
 			 * some board problems.  The link will not go down
 			 * if we do parallel detect.
@@ -8266,25 +9862,50 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 			if (reg & BNX2_SHARED_HW_CFG_PHY_2_5G)
 				bp->phy_flags |= BNX2_PHY_FLAG_2_5G_CAPABLE;
 		}
+<<<<<<< HEAD
 	} else if (CHIP_NUM(bp) == CHIP_NUM_5706 ||
 		   CHIP_NUM(bp) == CHIP_NUM_5708)
 		bp->phy_flags |= BNX2_PHY_FLAG_CRC_FIX;
 	else if (CHIP_NUM(bp) == CHIP_NUM_5709 &&
 		 (CHIP_REV(bp) == CHIP_REV_Ax ||
 		  CHIP_REV(bp) == CHIP_REV_Bx))
+=======
+	} else if (BNX2_CHIP(bp) == BNX2_CHIP_5706 ||
+		   BNX2_CHIP(bp) == BNX2_CHIP_5708)
+		bp->phy_flags |= BNX2_PHY_FLAG_CRC_FIX;
+	else if (BNX2_CHIP(bp) == BNX2_CHIP_5709 &&
+		 (BNX2_CHIP_REV(bp) == BNX2_CHIP_REV_Ax ||
+		  BNX2_CHIP_REV(bp) == BNX2_CHIP_REV_Bx))
+>>>>>>> refs/remotes/origin/master
 		bp->phy_flags |= BNX2_PHY_FLAG_DIS_EARLY_DAC;
 
 	bnx2_init_fw_cap(bp);
 
+<<<<<<< HEAD
 	if ((CHIP_ID(bp) == CHIP_ID_5708_A0) ||
 	    (CHIP_ID(bp) == CHIP_ID_5708_B0) ||
 	    (CHIP_ID(bp) == CHIP_ID_5708_B1) ||
 	    !(REG_RD(bp, BNX2_PCI_CONFIG_3) & BNX2_PCI_CONFIG_3_VAUX_PRESET)) {
+=======
+	if ((BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_A0) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_B0) ||
+	    (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5708_B1) ||
+	    !(BNX2_RD(bp, BNX2_PCI_CONFIG_3) & BNX2_PCI_CONFIG_3_VAUX_PRESET)) {
+>>>>>>> refs/remotes/origin/master
 		bp->flags |= BNX2_FLAG_NO_WOL;
 		bp->wol = 0;
 	}
 
+<<<<<<< HEAD
 	if (CHIP_ID(bp) == CHIP_ID_5706_A0) {
+=======
+	if (bp->flags & BNX2_FLAG_NO_WOL)
+		device_set_wakeup_capable(&bp->pdev->dev, false);
+	else
+		device_set_wakeup_enable(&bp->pdev->dev, bp->wol);
+
+	if (BNX2_CHIP_ID(bp) == BNX2_CHIP_ID_5706_A0) {
+>>>>>>> refs/remotes/origin/master
 		bp->tx_quick_cons_trip_int =
 			bp->tx_quick_cons_trip;
 		bp->tx_ticks_int = bp->tx_ticks;
@@ -8306,7 +9927,11 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 	 * AMD believes this incompatibility is unique to the 5706, and
 	 * prefers to locally disable MSI rather than globally disabling it.
 	 */
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5706 && disable_msi == 0) {
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5706 && disable_msi == 0) {
+>>>>>>> refs/remotes/origin/master
 		struct pci_dev *amd_8132 = NULL;
 
 		while ((amd_8132 = pci_get_device(PCI_VENDOR_ID_AMD,
@@ -8335,6 +9960,10 @@ bnx2_init_board(struct pci_dev *pdev, struct net_device *dev)
 		bp->cnic_eth_dev.max_iscsi_conn =
 			(bnx2_shmem_rd(bp, BNX2_ISCSI_MAX_CONN) &
 			 BNX2_ISCSI_MAX_CONN_MASK) >> BNX2_ISCSI_MAX_CONN_SHIFT;
+<<<<<<< HEAD
+=======
+	bp->cnic_probe = bnx2_cnic_probe;
+>>>>>>> refs/remotes/origin/master
 #endif
 	pci_save_state(pdev);
 
@@ -8346,23 +9975,35 @@ err_out_unmap:
 		bp->flags &= ~BNX2_FLAG_AER_ENABLED;
 	}
 
+<<<<<<< HEAD
 	if (bp->regview) {
 		iounmap(bp->regview);
 		bp->regview = NULL;
 	}
+=======
+	pci_iounmap(pdev, bp->regview);
+	bp->regview = NULL;
+>>>>>>> refs/remotes/origin/master
 
 err_out_release:
 	pci_release_regions(pdev);
 
 err_out_disable:
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 err_out:
 	return rc;
 }
 
+<<<<<<< HEAD
 static char * __devinit
+=======
+static char *
+>>>>>>> refs/remotes/origin/master
 bnx2_bus_string(struct bnx2 *bp, char *str)
 {
 	char *s = str;
@@ -8428,11 +10069,19 @@ static const struct net_device_ops bnx2_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit
 bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	static int version_printed = 0;
 	struct net_device *dev = NULL;
+=======
+static int
+bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+{
+	static int version_printed = 0;
+	struct net_device *dev;
+>>>>>>> refs/remotes/origin/master
 	struct bnx2 *bp;
 	int rc;
 	char str[40];
@@ -8442,15 +10091,23 @@ bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	/* dev zeroed in init_etherdev */
 	dev = alloc_etherdev_mq(sizeof(*bp), TX_MAX_RINGS);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return -ENOMEM;
 
 	rc = bnx2_init_board(pdev, dev);
+<<<<<<< HEAD
 	if (rc < 0) {
 		free_netdev(dev);
 		return rc;
 	}
+=======
+	if (rc < 0)
+		goto err_free;
+>>>>>>> refs/remotes/origin/master
 
 	dev->netdev_ops = &bnx2_netdev_ops;
 	dev->watchdog_timeo = TX_TIMEOUT;
@@ -8460,18 +10117,30 @@ bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	pci_set_drvdata(pdev, dev);
 
+<<<<<<< HEAD
 	memcpy(dev->dev_addr, bp->mac_addr, 6);
 	memcpy(dev->perm_addr, bp->mac_addr, 6);
+=======
+	memcpy(dev->dev_addr, bp->mac_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	dev->hw_features = NETIF_F_IP_CSUM | NETIF_F_SG |
 		NETIF_F_TSO | NETIF_F_TSO_ECN |
 		NETIF_F_RXHASH | NETIF_F_RXCSUM;
 
+<<<<<<< HEAD
 	if (CHIP_NUM(bp) == CHIP_NUM_5709)
 		dev->hw_features |= NETIF_F_IPV6_CSUM | NETIF_F_TSO6;
 
 	dev->vlan_features = dev->hw_features;
 	dev->hw_features |= NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX;
+=======
+	if (BNX2_CHIP(bp) == BNX2_CHIP_5709)
+		dev->hw_features |= NETIF_F_IPV6_CSUM | NETIF_F_TSO6;
+
+	dev->vlan_features = dev->hw_features;
+	dev->hw_features |= NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX;
+>>>>>>> refs/remotes/origin/master
 	dev->features |= dev->hw_features;
 	dev->priv_flags |= IFF_UNICAST_FLT;
 
@@ -8480,6 +10149,7 @@ bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	netdev_info(dev, "%s (%c%d) %s found at mem %lx, IRQ %d, node addr %pM\n",
 		    board_info[ent->driver_data].name,
 		    ((CHIP_ID(bp) & 0xf000) >> 12) + 'A',
@@ -8487,20 +10157,39 @@ bnx2_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		    bnx2_bus_string(bp, str),
 		    dev->base_addr,
 		    bp->pdev->irq, dev->dev_addr);
+=======
+	netdev_info(dev, "%s (%c%d) %s found at mem %lx, IRQ %d, "
+		    "node addr %pM\n", board_info[ent->driver_data].name,
+		    ((BNX2_CHIP_ID(bp) & 0xf000) >> 12) + 'A',
+		    ((BNX2_CHIP_ID(bp) & 0x0ff0) >> 4),
+		    bnx2_bus_string(bp, str), (long)pci_resource_start(pdev, 0),
+		    pdev->irq, dev->dev_addr);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 error:
+<<<<<<< HEAD
 	if (bp->regview)
 		iounmap(bp->regview);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
 	pci_set_drvdata(pdev, NULL);
+=======
+	pci_iounmap(pdev, bp->regview);
+	pci_release_regions(pdev);
+	pci_disable_device(pdev);
+err_free:
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 bnx2_remove_one(struct pci_dev *pdev)
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
@@ -8511,8 +10200,12 @@ bnx2_remove_one(struct pci_dev *pdev)
 	del_timer_sync(&bp->timer);
 	cancel_work_sync(&bp->reset_task);
 
+<<<<<<< HEAD
 	if (bp->regview)
 		iounmap(bp->regview);
+=======
+	pci_iounmap(bp->pdev, bp->regview);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(bp->temp_stats_blk);
 
@@ -8527,6 +10220,7 @@ bnx2_remove_one(struct pci_dev *pdev)
 
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
 }
 
@@ -8551,26 +10245,72 @@ bnx2_suspend(struct pci_dev *pdev, pm_message_t state)
 	bnx2_shutdown_chip(bp);
 	bnx2_free_skbs(bp);
 	bnx2_set_power_state(bp, pci_choose_state(pdev, state));
+=======
+}
+
+static int
+bnx2_suspend(struct device *device)
+{
+	struct pci_dev *pdev = to_pci_dev(device);
+	struct net_device *dev = pci_get_drvdata(pdev);
+	struct bnx2 *bp = netdev_priv(dev);
+
+	if (netif_running(dev)) {
+		cancel_work_sync(&bp->reset_task);
+		bnx2_netif_stop(bp, true);
+		netif_device_detach(dev);
+		del_timer_sync(&bp->timer);
+		bnx2_shutdown_chip(bp);
+		__bnx2_free_irq(bp);
+		bnx2_free_skbs(bp);
+	}
+	bnx2_setup_wol(bp);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int
+<<<<<<< HEAD
 bnx2_resume(struct pci_dev *pdev)
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct bnx2 *bp = netdev_priv(dev);
 
 	pci_restore_state(pdev);
+=======
+bnx2_resume(struct device *device)
+{
+	struct pci_dev *pdev = to_pci_dev(device);
+	struct net_device *dev = pci_get_drvdata(pdev);
+	struct bnx2 *bp = netdev_priv(dev);
+
+>>>>>>> refs/remotes/origin/master
 	if (!netif_running(dev))
 		return 0;
 
 	bnx2_set_power_state(bp, PCI_D0);
 	netif_device_attach(dev);
+<<<<<<< HEAD
+=======
+	bnx2_request_irq(bp);
+>>>>>>> refs/remotes/origin/master
 	bnx2_init_nic(bp, 1);
 	bnx2_netif_start(bp, true);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static SIMPLE_DEV_PM_OPS(bnx2_pm_ops, bnx2_suspend, bnx2_resume);
+#define BNX2_PM_OPS (&bnx2_pm_ops)
+
+#else
+
+#define BNX2_PM_OPS NULL
+
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 /**
  * bnx2_io_error_detected - called when PCI error is detected
  * @pdev: Pointer to PCI device
@@ -8616,24 +10356,45 @@ static pci_ers_result_t bnx2_io_slot_reset(struct pci_dev *pdev)
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct bnx2 *bp = netdev_priv(dev);
+<<<<<<< HEAD
 	pci_ers_result_t result;
 	int err;
+=======
+	pci_ers_result_t result = PCI_ERS_RESULT_DISCONNECT;
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	rtnl_lock();
 	if (pci_enable_device(pdev)) {
 		dev_err(&pdev->dev,
 			"Cannot re-enable PCI device after reset\n");
+<<<<<<< HEAD
 		result = PCI_ERS_RESULT_DISCONNECT;
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		pci_set_master(pdev);
 		pci_restore_state(pdev);
 		pci_save_state(pdev);
 
+<<<<<<< HEAD
 		if (netif_running(dev)) {
 			bnx2_set_power_state(bp, PCI_D0);
 			bnx2_init_nic(bp, 1);
 		}
 		result = PCI_ERS_RESULT_RECOVERED;
+=======
+		if (netif_running(dev))
+			err = bnx2_init_nic(bp, 1);
+
+		if (!err)
+			result = PCI_ERS_RESULT_RECOVERED;
+	}
+
+	if (result != PCI_ERS_RESULT_RECOVERED && netif_running(dev)) {
+		bnx2_napi_enable(bp);
+		dev_close(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 	rtnl_unlock();
 
@@ -8670,7 +10431,33 @@ static void bnx2_io_resume(struct pci_dev *pdev)
 	rtnl_unlock();
 }
 
+<<<<<<< HEAD
 static struct pci_error_handlers bnx2_err_handler = {
+=======
+static void bnx2_shutdown(struct pci_dev *pdev)
+{
+	struct net_device *dev = pci_get_drvdata(pdev);
+	struct bnx2 *bp;
+
+	if (!dev)
+		return;
+
+	bp = netdev_priv(dev);
+	if (!bp)
+		return;
+
+	rtnl_lock();
+	if (netif_running(dev))
+		dev_close(bp->dev);
+
+	if (system_state == SYSTEM_POWER_OFF)
+		bnx2_set_power_state(bp, PCI_D3hot);
+
+	rtnl_unlock();
+}
+
+static const struct pci_error_handlers bnx2_err_handler = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected	= bnx2_io_error_detected,
 	.slot_reset	= bnx2_io_slot_reset,
 	.resume		= bnx2_io_resume,
@@ -8680,6 +10467,7 @@ static struct pci_driver bnx2_pci_driver = {
 	.name		= DRV_MODULE_NAME,
 	.id_table	= bnx2_pci_tbl,
 	.probe		= bnx2_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bnx2_remove_one),
 	.suspend	= bnx2_suspend,
 	.resume		= bnx2_resume,
@@ -8701,3 +10489,12 @@ module_exit(bnx2_cleanup);
 
 
 
+=======
+	.remove		= bnx2_remove_one,
+	.driver.pm	= BNX2_PM_OPS,
+	.err_handler	= &bnx2_err_handler,
+	.shutdown	= bnx2_shutdown,
+};
+
+module_pci_driver(bnx2_pci_driver);
+>>>>>>> refs/remotes/origin/master

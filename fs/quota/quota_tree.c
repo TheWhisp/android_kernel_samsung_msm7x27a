@@ -22,9 +22,16 @@ MODULE_LICENSE("GPL");
 
 #define __QUOTA_QT_PARANOIA
 
+<<<<<<< HEAD
 static int get_index(struct qtree_mem_dqinfo *info, qid_t id, int depth)
 {
 	unsigned int epb = info->dqi_usable_bs >> 2;
+=======
+static int get_index(struct qtree_mem_dqinfo *info, struct kqid qid, int depth)
+{
+	unsigned int epb = info->dqi_usable_bs >> 2;
+	qid_t id = from_kqid(&init_user_ns, qid);
+>>>>>>> refs/remotes/origin/master
 
 	depth = info->dqi_qtree_depth - depth - 1;
 	while (depth--)
@@ -244,7 +251,11 @@ static uint find_free_dqentry(struct qtree_mem_dqinfo *info,
 		/* This is enough as the block is already zeroed and the entry
 		 * list is empty... */
 		info->dqi_free_entry = blk;
+<<<<<<< HEAD
 		mark_info_dirty(dquot->dq_sb, dquot->dq_type);
+=======
+		mark_info_dirty(dquot->dq_sb, dquot->dq_id.type);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Block will be full? */
 	if (le16_to_cpu(dh->dqdh_entries) + 1 >= qtree_dqstr_in_blk(info)) {
@@ -357,7 +368,11 @@ static inline int dq_insert_tree(struct qtree_mem_dqinfo *info,
  */
 int qtree_write_dquot(struct qtree_mem_dqinfo *info, struct dquot *dquot)
 {
+<<<<<<< HEAD
 	int type = dquot->dq_type;
+=======
+	int type = dquot->dq_id.type;
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = dquot->dq_sb;
 	ssize_t ret;
 	char *ddquot = getdqbuf(info->dqi_entry_size);
@@ -538,8 +553,14 @@ static loff_t find_block_dqentry(struct qtree_mem_dqinfo *info,
 		ddquot += info->dqi_entry_size;
 	}
 	if (i == qtree_dqstr_in_blk(info)) {
+<<<<<<< HEAD
 		quota_error(dquot->dq_sb, "Quota for id %u referenced "
 			    "but not present", dquot->dq_id);
+=======
+		quota_error(dquot->dq_sb,
+			    "Quota for id %u referenced but not present",
+			    from_kqid(&init_user_ns, dquot->dq_id));
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		goto out_buf;
 	} else {
@@ -589,7 +610,11 @@ static inline loff_t find_dqentry(struct qtree_mem_dqinfo *info,
 
 int qtree_read_dquot(struct qtree_mem_dqinfo *info, struct dquot *dquot)
 {
+<<<<<<< HEAD
 	int type = dquot->dq_type;
+=======
+	int type = dquot->dq_id.type;
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = dquot->dq_sb;
 	loff_t offset;
 	char *ddquot;
@@ -607,8 +632,15 @@ int qtree_read_dquot(struct qtree_mem_dqinfo *info, struct dquot *dquot)
 		offset = find_dqentry(info, dquot);
 		if (offset <= 0) {	/* Entry not present? */
 			if (offset < 0)
+<<<<<<< HEAD
 				quota_error(sb, "Can't read quota structure "
 					    "for id %u", dquot->dq_id);
+=======
+				quota_error(sb,"Can't read quota structure "
+					    "for id %u",
+					    from_kqid(&init_user_ns,
+						      dquot->dq_id));
+>>>>>>> refs/remotes/origin/master
 			dquot->dq_off = 0;
 			set_bit(DQ_FAKE_B, &dquot->dq_flags);
 			memset(&dquot->dq_dqb, 0, sizeof(struct mem_dqblk));
@@ -626,7 +658,11 @@ int qtree_read_dquot(struct qtree_mem_dqinfo *info, struct dquot *dquot)
 		if (ret >= 0)
 			ret = -EIO;
 		quota_error(sb, "Error while reading quota structure for id %u",
+<<<<<<< HEAD
 			    dquot->dq_id);
+=======
+			    from_kqid(&init_user_ns, dquot->dq_id));
+>>>>>>> refs/remotes/origin/master
 		set_bit(DQ_FAKE_B, &dquot->dq_flags);
 		memset(&dquot->dq_dqb, 0, sizeof(struct mem_dqblk));
 		kfree(ddquot);

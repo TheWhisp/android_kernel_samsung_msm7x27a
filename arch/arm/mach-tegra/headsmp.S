@@ -2,6 +2,7 @@
 #include <linux/init.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cache.h>
 
@@ -228,3 +229,14 @@ __tegra_cpu_reset_handler_data:
 
 ENTRY(__tegra_cpu_reset_handler_end)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "sleep.h"
+
+        .section ".text.head", "ax"
+
+ENTRY(tegra_secondary_startup)
+        check_cpu_part_num 0xc09, r8, r9
+        bleq    v7_invalidate_l1
+        b       secondary_startup
+ENDPROC(tegra_secondary_startup)
+>>>>>>> refs/remotes/origin/master

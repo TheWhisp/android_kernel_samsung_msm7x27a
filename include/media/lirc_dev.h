@@ -139,6 +139,10 @@ struct lirc_driver {
 	struct lirc_buffer *rbuf;
 	int (*set_use_inc) (void *data);
 	void (*set_use_dec) (void *data);
+<<<<<<< HEAD
+=======
+	struct rc_dev *rdev;
+>>>>>>> refs/remotes/origin/master
 	const struct file_operations *fops;
 	struct device *dev;
 	struct module *owner;

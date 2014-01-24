@@ -23,10 +23,17 @@ static int littlemill_set_bias_level(struct snd_soc_card *card,
 					  struct snd_soc_dapm_context *dapm,
 					  enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
 	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
 	int ret;
 
 	if (dapm->dev != codec_dai->dev)
+=======
+	struct snd_soc_dai *aif1_dai = card->rtd[0].codec_dai;
+	int ret;
+
+	if (dapm->dev != aif1_dai->dev)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	switch (level) {
@@ -36,7 +43,11 @@ static int littlemill_set_bias_level(struct snd_soc_card *card,
 		 * then do so now, otherwise these are noops.
 		 */
 		if (dapm->bias_level == SND_SOC_BIAS_STANDBY) {
+<<<<<<< HEAD
 			ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL1,
+=======
+			ret = snd_soc_dai_set_pll(aif1_dai, WM8994_FLL1,
+>>>>>>> refs/remotes/origin/master
 						  WM8994_FLL_SRC_MCLK2, 32768,
 						  sample_rate * 512);
 			if (ret < 0) {
@@ -44,7 +55,11 @@ static int littlemill_set_bias_level(struct snd_soc_card *card,
 				return ret;
 			}
 
+<<<<<<< HEAD
 			ret = snd_soc_dai_set_sysclk(codec_dai,
+=======
+			ret = snd_soc_dai_set_sysclk(aif1_dai,
+>>>>>>> refs/remotes/origin/master
 						     WM8994_SYSCLK_FLL1,
 						     sample_rate * 512,
 						     SND_SOC_CLOCK_IN);
@@ -66,14 +81,22 @@ static int littlemill_set_bias_level_post(struct snd_soc_card *card,
 					       struct snd_soc_dapm_context *dapm,
 					       enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
 	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
 	int ret;
 
 	if (dapm->dev != codec_dai->dev)
+=======
+	struct snd_soc_dai *aif1_dai = card->rtd[0].codec_dai;
+	int ret;
+
+	if (dapm->dev != aif1_dai->dev)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	switch (level) {
 	case SND_SOC_BIAS_STANDBY:
+<<<<<<< HEAD
 		ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_MCLK2,
 					     32768, SND_SOC_CLOCK_IN);
 		if (ret < 0) {
@@ -85,6 +108,19 @@ static int littlemill_set_bias_level_post(struct snd_soc_card *card,
 					  0, 0, 0);
 		if (ret < 0) {
 			pr_err("Failed to stop FLL: %d\n", ret);
+=======
+		ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_MCLK2,
+					     32768, SND_SOC_CLOCK_IN);
+		if (ret < 0) {
+			pr_err("Failed to switch away from FLL1: %d\n", ret);
+			return ret;
+		}
+
+		ret = snd_soc_dai_set_pll(aif1_dai, WM8994_FLL1,
+					  0, 0, 0);
+		if (ret < 0) {
+			pr_err("Failed to stop FLL1: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 			return ret;
 		}
 		break;
@@ -131,18 +167,99 @@ static struct snd_soc_ops littlemill_ops = {
 	.hw_params = littlemill_hw_params,
 };
 
+<<<<<<< HEAD
+=======
+static const struct snd_soc_pcm_stream baseband_params = {
+	.formats = SNDRV_PCM_FMTBIT_S32_LE,
+	.rate_min = 8000,
+	.rate_max = 8000,
+	.channels_min = 2,
+	.channels_max = 2,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_dai_link littlemill_dai[] = {
 	{
 		.name = "CPU",
 		.stream_name = "CPU",
 		.cpu_dai_name = "samsung-i2s.0",
 		.codec_dai_name = "wm8994-aif1",
+<<<<<<< HEAD
 		.platform_name = "samsung-audio",
+=======
+		.platform_name = "samsung-i2s.0",
+>>>>>>> refs/remotes/origin/master
 		.codec_name = "wm8994-codec",
 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
 				| SND_SOC_DAIFMT_CBM_CFM,
 		.ops = &littlemill_ops,
 	},
+<<<<<<< HEAD
+=======
+	{
+		.name = "Baseband",
+		.stream_name = "Baseband",
+		.cpu_dai_name = "wm8994-aif2",
+		.codec_dai_name = "wm1250-ev1",
+		.codec_name = "wm1250-ev1.1-0027",
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+				| SND_SOC_DAIFMT_CBM_CFM,
+		.ignore_suspend = 1,
+		.params = &baseband_params,
+	},
+};
+
+static int bbclk_ev(struct snd_soc_dapm_widget *w,
+		    struct snd_kcontrol *kcontrol, int event)
+{
+	struct snd_soc_card *card = w->dapm->card;
+	struct snd_soc_dai *aif2_dai = card->rtd[1].cpu_dai;
+	int ret;
+
+	switch (event) {
+	case SND_SOC_DAPM_PRE_PMU:
+		ret = snd_soc_dai_set_pll(aif2_dai, WM8994_FLL2,
+					  WM8994_FLL_SRC_BCLK, 64 * 8000,
+					  8000 * 256);
+		if (ret < 0) {
+			pr_err("Failed to start FLL: %d\n", ret);
+			return ret;
+		}
+
+		ret = snd_soc_dai_set_sysclk(aif2_dai, WM8994_SYSCLK_FLL2,
+					     8000 * 256,
+					     SND_SOC_CLOCK_IN);
+		if (ret < 0) {
+			pr_err("Failed to set SYSCLK: %d\n", ret);
+			return ret;
+		}
+		break;
+	case SND_SOC_DAPM_POST_PMD:
+		ret = snd_soc_dai_set_sysclk(aif2_dai, WM8994_SYSCLK_MCLK2,
+					     32768, SND_SOC_CLOCK_IN);
+		if (ret < 0) {
+			pr_err("Failed to switch away from FLL2: %d\n", ret);
+			return ret;
+		}
+
+		ret = snd_soc_dai_set_pll(aif2_dai, WM8994_FLL2,
+					  0, 0, 0);
+		if (ret < 0) {
+			pr_err("Failed to stop FLL2: %d\n", ret);
+			return ret;
+		}
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static const struct snd_kcontrol_new controls[] = {
+	SOC_DAPM_PIN_SWITCH("WM1250 Input"),
+	SOC_DAPM_PIN_SWITCH("WM1250 Output"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_dapm_widget widgets[] = {
@@ -150,6 +267,13 @@ static struct snd_soc_dapm_widget widgets[] = {
 
 	SND_SOC_DAPM_MIC("AMIC", NULL),
 	SND_SOC_DAPM_MIC("DMIC", NULL),
+<<<<<<< HEAD
+=======
+
+	SND_SOC_DAPM_SUPPLY_S("Baseband Clock", -1, SND_SOC_NOPM, 0, 0,
+			      bbclk_ev,
+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_dapm_route audio_paths[] = {
@@ -162,6 +286,11 @@ static struct snd_soc_dapm_route audio_paths[] = {
 	{ "DMIC", NULL, "MICBIAS2" },   /* Default for DMICBIAS jumper */
 	{ "DMIC1DAT", NULL, "DMIC" },
 	{ "DMIC2DAT", NULL, "DMIC" },
+<<<<<<< HEAD
+=======
+
+	{ "AIF2CLK", NULL, "Baseband Clock" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_jack littlemill_headset;
@@ -169,10 +298,23 @@ static struct snd_soc_jack littlemill_headset;
 static int littlemill_late_probe(struct snd_soc_card *card)
 {
 	struct snd_soc_codec *codec = card->rtd[0].codec;
+<<<<<<< HEAD
 	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
 	int ret;
 
 	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_MCLK2,
+=======
+	struct snd_soc_dai *aif1_dai = card->rtd[0].codec_dai;
+	struct snd_soc_dai *aif2_dai = card->rtd[1].cpu_dai;
+	int ret;
+
+	ret = snd_soc_dai_set_sysclk(aif1_dai, WM8994_SYSCLK_MCLK2,
+				     32768, SND_SOC_CLOCK_IN);
+	if (ret < 0)
+		return ret;
+
+	ret = snd_soc_dai_set_sysclk(aif2_dai, WM8994_SYSCLK_MCLK2,
+>>>>>>> refs/remotes/origin/master
 				     32768, SND_SOC_CLOCK_IN);
 	if (ret < 0)
 		return ret;
@@ -187,7 +329,11 @@ static int littlemill_late_probe(struct snd_soc_card *card)
 		return ret;
 
 	/* This will check device compatibility itself */
+<<<<<<< HEAD
 	wm8958_mic_detect(codec, &littlemill_headset, NULL, NULL);
+=======
+	wm8958_mic_detect(codec, &littlemill_headset, NULL, NULL, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* As will this */
 	wm8994_mic_detect(codec, &littlemill_headset, 1);
@@ -204,6 +350,11 @@ static struct snd_soc_card littlemill = {
 	.set_bias_level = littlemill_set_bias_level,
 	.set_bias_level_post = littlemill_set_bias_level_post,
 
+<<<<<<< HEAD
+=======
+	.controls = controls,
+	.num_controls = ARRAY_SIZE(controls),
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets = widgets,
 	.num_dapm_widgets = ARRAY_SIZE(widgets),
 	.dapm_routes = audio_paths,
@@ -212,7 +363,11 @@ static struct snd_soc_card littlemill = {
 	.late_probe = littlemill_late_probe,
 };
 
+<<<<<<< HEAD
 static __devinit int littlemill_probe(struct platform_device *pdev)
+=======
+static int littlemill_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &littlemill;
 	int ret;
@@ -229,7 +384,11 @@ static __devinit int littlemill_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit littlemill_remove(struct platform_device *pdev)
+=======
+static int littlemill_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -245,7 +404,11 @@ static struct platform_driver littlemill_driver = {
 		.pm = &snd_soc_pm_ops,
 	},
 	.probe = littlemill_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(littlemill_remove),
+=======
+	.remove = littlemill_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(littlemill_driver);

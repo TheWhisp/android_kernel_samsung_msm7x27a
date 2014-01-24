@@ -17,14 +17,20 @@
 #include <linux/serial_core.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 #include <linux/pm_domain.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <linux/pm_domain.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/map.h>
 #include <mach/irqs.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <plat/devs.h>
@@ -40,6 +46,20 @@
 <<<<<<< HEAD
 =======
 #include <mach/regs-modem.h>
+=======
+#include <plat/devs.h>
+#include <plat/pm.h>
+#include <plat/wakeup-mask.h>
+
+#include <mach/regs-gpio.h>
+#include <mach/regs-clock.h>
+#include <mach/gpio-samsung.h>
+
+#include "regs-gpio-memport.h"
+#include "regs-modem.h"
+#include "regs-sys.h"
+#include "regs-syscon-power.h"
+>>>>>>> refs/remotes/origin/master
 
 struct s3c64xx_pm_domain {
 	char *const name;
@@ -182,7 +202,10 @@ static struct s3c64xx_pm_domain *s3c64xx_pm_domains[] = {
 	&s3c64xx_pm_s,
 	&s3c64xx_pm_f,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_S3C_PM_DEBUG_LED_SMDK
 void s3c_pm_debug_smdkled(u32 set, u32 clear)
@@ -202,6 +225,7 @@ void s3c_pm_debug_smdkled(u32 set, u32 clear)
 #endif
 
 static struct sleep_save core_save[] = {
+<<<<<<< HEAD
 	SAVE_ITEM(S3C_APLL_LOCK),
 	SAVE_ITEM(S3C_MPLL_LOCK),
 	SAVE_ITEM(S3C_EPLL_LOCK),
@@ -225,6 +249,10 @@ static struct sleep_save core_save[] = {
 	SAVE_ITEM(S3C_APLL_CON),
 	SAVE_ITEM(S3C_MPLL_CON),
 #endif
+=======
+	SAVE_ITEM(S3C64XX_MEM0DRVCON),
+	SAVE_ITEM(S3C64XX_MEM1DRVCON),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct sleep_save misc_save[] = {
@@ -240,13 +268,19 @@ static struct sleep_save misc_save[] = {
 	SAVE_ITEM(S3C64XX_MEM0CONSLP1),
 	SAVE_ITEM(S3C64XX_MEM1CONSLP),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	SAVE_ITEM(S3C64XX_SDMA_SEL),
 	SAVE_ITEM(S3C64XX_MODEM_MIFPCON),
 
 	SAVE_ITEM(S3C64XX_NORMAL_CFG),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 void s3c_pm_configure_extint(void)
@@ -276,10 +310,14 @@ void s3c_pm_save_core(void)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void s3c64xx_cpu_suspend(void)
 =======
 static int s3c64xx_cpu_suspend(unsigned long arg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int s3c64xx_cpu_suspend(unsigned long arg)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long tmp;
 
@@ -312,7 +350,12 @@ static int s3c64xx_cpu_suspend(unsigned long arg)
 
 	/* we should never get past here */
 
+<<<<<<< HEAD
 	panic("sleep resumed to originator?");
+=======
+	pr_info("Failed to suspend the system\n");
+	return 1; /* Aborting suspend */
+>>>>>>> refs/remotes/origin/master
 }
 
 /* mapping of interrupts to parts of the wakeup mask */
@@ -342,8 +385,11 @@ static void s3c64xx_pm_prepare(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int s3c64xx_pm_init(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int __init s3c64xx_pm_init(void)
 {
 	int i;
@@ -357,14 +403,24 @@ int __init s3c64xx_pm_init(void)
 	for (i = 0; i < ARRAY_SIZE(s3c64xx_pm_domains); i++)
 		pm_genpd_init(&s3c64xx_pm_domains[i]->pd, NULL, false);
 
+<<<<<<< HEAD
 	if (dev_get_platdata(&s3c_device_fb.dev))
 		pm_genpd_add_device(&s3c64xx_pm_f.pd, &s3c_device_fb.dev);
+=======
+#ifdef CONFIG_S3C_DEV_FB
+	if (dev_get_platdata(&s3c_device_fb.dev))
+		pm_genpd_add_device(&s3c64xx_pm_f.pd, &s3c_device_fb.dev);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static __init int s3c64xx_pm_initcall(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	pm_cpu_prep = s3c64xx_pm_prepare;
 	pm_cpu_sleep = s3c64xx_cpu_suspend;
@@ -384,16 +440,25 @@ static __init int s3c64xx_pm_initcall(void)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 arch_initcall(s3c64xx_pm_init);
 =======
 arch_initcall(s3c64xx_pm_initcall);
 
 static __init int s3c64xx_pm_late_initcall(void)
+=======
+arch_initcall(s3c64xx_pm_initcall);
+
+int __init s3c64xx_pm_late_initcall(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pm_genpd_poweroff_unused();
 
 	return 0;
 }
+<<<<<<< HEAD
 late_initcall(s3c64xx_pm_late_initcall);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

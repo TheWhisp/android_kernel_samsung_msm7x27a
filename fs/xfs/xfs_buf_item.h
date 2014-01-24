@@ -18,6 +18,7 @@
 #ifndef	__XFS_BUF_ITEM_H__
 #define	__XFS_BUF_ITEM_H__
 
+<<<<<<< HEAD
 extern kmem_zone_t	*xfs_buf_item_zone;
 
 /*
@@ -63,6 +64,11 @@ typedef struct xfs_buf_log_format {
 /*
  * buf log item flags
  */
+=======
+/* kernel only definitions */
+
+/* buf log item flags */
+>>>>>>> refs/remotes/origin/master
 #define	XFS_BLI_HOLD		0x01
 #define	XFS_BLI_DIRTY		0x02
 #define	XFS_BLI_STALE		0x04
@@ -70,6 +76,10 @@ typedef struct xfs_buf_log_format {
 #define	XFS_BLI_INODE_ALLOC_BUF	0x10
 #define XFS_BLI_STALE_INODE	0x20
 #define	XFS_BLI_INODE_BUF	0x40
+<<<<<<< HEAD
+=======
+#define	XFS_BLI_ORDERED		0x80
+>>>>>>> refs/remotes/origin/master
 
 #define XFS_BLI_FLAGS \
 	{ XFS_BLI_HOLD,		"HOLD" }, \
@@ -78,10 +88,16 @@ typedef struct xfs_buf_log_format {
 	{ XFS_BLI_LOGGED,	"LOGGED" }, \
 	{ XFS_BLI_INODE_ALLOC_BUF, "INODE_ALLOC" }, \
 	{ XFS_BLI_STALE_INODE,	"STALE_INODE" }, \
+<<<<<<< HEAD
 	{ XFS_BLI_INODE_BUF,	"INODE_BUF" }
 
 
 #ifdef __KERNEL__
+=======
+	{ XFS_BLI_INODE_BUF,	"INODE_BUF" }, \
+	{ XFS_BLI_ORDERED,	"ORDERED" }
+
+>>>>>>> refs/remotes/origin/master
 
 struct xfs_buf;
 struct xfs_mount;
@@ -98,11 +114,17 @@ typedef struct xfs_buf_log_item {
 	unsigned int		bli_flags;	/* misc flags */
 	unsigned int		bli_recur;	/* lock recursion count */
 	atomic_t		bli_refcount;	/* cnt of tp refs */
+<<<<<<< HEAD
 #ifdef XFS_TRANS_DEBUG
 	char			*bli_orig;	/* original buffer copy */
 	char			*bli_logged;	/* bytes logged (bitmap) */
 #endif
 	xfs_buf_log_format_t	bli_format;	/* in-log header */
+=======
+	int			bli_format_count;	/* count of headers */
+	struct xfs_buf_log_format *bli_formats;	/* array of in-log header ptrs */
+	struct xfs_buf_log_format __bli_format;	/* embedded in-log header */
+>>>>>>> refs/remotes/origin/master
 } xfs_buf_log_item_t;
 
 void	xfs_buf_item_init(struct xfs_buf *, struct xfs_mount *);
@@ -115,6 +137,7 @@ void	xfs_buf_attach_iodone(struct xfs_buf *,
 void	xfs_buf_iodone_callbacks(struct xfs_buf *);
 void	xfs_buf_iodone(struct xfs_buf *, struct xfs_log_item *);
 
+<<<<<<< HEAD
 #ifdef XFS_TRANS_DEBUG
 void
 xfs_buf_item_flush_log_debug(
@@ -126,5 +149,8 @@ xfs_buf_item_flush_log_debug(
 #endif
 
 #endif	/* __KERNEL__ */
+=======
+extern kmem_zone_t	*xfs_buf_item_zone;
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __XFS_BUF_ITEM_H__ */

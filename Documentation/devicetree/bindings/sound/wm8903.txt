@@ -28,6 +28,28 @@ Optional properties:
     performed. If any entry has the value 0xffffffff, that GPIO's
     configuration will not be modified.
 
+<<<<<<< HEAD
+=======
+Pins on the device (for linking into audio routes):
+
+  * IN1L
+  * IN1R
+  * IN2L
+  * IN2R
+  * IN3L
+  * IN3R
+  * DMICDAT
+  * HPOUTL
+  * HPOUTR
+  * LINEOUTL
+  * LINEOUTR
+  * LOP
+  * LON
+  * ROP
+  * RON
+  * MICBIAS
+
+>>>>>>> refs/remotes/origin/master
 Example:
 
 codec: wm8903@1a {

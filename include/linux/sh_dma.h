@@ -10,6 +10,7 @@
 #ifndef SH_DMA_H
 #define SH_DMA_H
 
+<<<<<<< HEAD
 #include <linux/list.h>
 #include <linux/dmaengine.h>
 
@@ -58,6 +59,69 @@ struct sh_dmae_channel {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+#include <linux/dmaengine.h>
+#include <linux/list.h>
+#include <linux/shdma-base.h>
+#include <linux/types.h>
+
+struct device;
+
+/* Used by slave DMA clients to request DMA to/from a specific peripheral */
+struct sh_dmae_slave {
+	struct shdma_slave		shdma_slave;	/* Set by the platform */
+};
+
+/*
+ * Supplied by platforms to specify, how a DMA channel has to be configured for
+ * a certain peripheral
+ */
+struct sh_dmae_slave_config {
+	int		slave_id;
+	dma_addr_t	addr;
+	u32		chcr;
+	char		mid_rid;
+};
+
+/**
+ * struct sh_dmae_channel - DMAC channel platform data
+ * @offset:		register offset within the main IOMEM resource
+ * @dmars:		channel DMARS register offset
+ * @chclr_offset:	channel CHCLR register offset
+ * @dmars_bit:		channel DMARS field offset within the register
+ * @chclr_bit:		bit position, to be set to reset the channel
+ */
+struct sh_dmae_channel {
+	unsigned int	offset;
+	unsigned int	dmars;
+	unsigned int	chclr_offset;
+	unsigned char	dmars_bit;
+	unsigned char	chclr_bit;
+};
+
+/**
+ * struct sh_dmae_pdata - DMAC platform data
+ * @slave:		array of slaves
+ * @slave_num:		number of slaves in the above array
+ * @channel:		array of DMA channels
+ * @channel_num:	number of channels in the above array
+ * @ts_low_shift:	shift of the low part of the TS field
+ * @ts_low_mask:	low TS field mask
+ * @ts_high_shift:	additional shift of the high part of the TS field
+ * @ts_high_mask:	high TS field mask
+ * @ts_shift:		array of Transfer Size shifts, indexed by TS value
+ * @ts_shift_num:	number of shifts in the above array
+ * @dmaor_init:		DMAOR initialisation value
+ * @chcr_offset:	CHCR address offset
+ * @chcr_ie_bit:	CHCR Interrupt Enable bit
+ * @dmaor_is_32bit:	DMAOR is a 32-bit register
+ * @needs_tend_set:	the TEND register has to be set
+ * @no_dmars:		DMAC has no DMARS registers
+ * @chclr_present:	DMAC has one or several CHCLR registers
+ * @chclr_bitwise:	channel CHCLR registers are bitwise
+ * @slave_only:		DMAC cannot be used for MEMCPY
+ */
+>>>>>>> refs/remotes/origin/master
 struct sh_dmae_pdata {
 	const struct sh_dmae_slave_config *slave;
 	int slave_num;
@@ -71,7 +135,10 @@ struct sh_dmae_pdata {
 	int ts_shift_num;
 	u16 dmaor_init;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int chcr_offset;
 	u32 chcr_ie_bit;
 
@@ -79,6 +146,7 @@ struct sh_dmae_pdata {
 	unsigned int needs_tend_set:1;
 	unsigned int no_dmars:1;
 	unsigned int chclr_present:1;
+<<<<<<< HEAD
 	unsigned int slave_only:1;
 >>>>>>> refs/remotes/origin/cm-10.0
 };
@@ -95,12 +163,19 @@ struct sh_dmae_pdata {
 #define TEND	0x18 /* USB-DMAC */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int chclr_bitwise:1;
+	unsigned int slave_only:1;
+};
+
+>>>>>>> refs/remotes/origin/master
 /* DMAOR definitions */
 #define DMAOR_AE	0x00000004
 #define DMAOR_NMIF	0x00000002
 #define DMAOR_DME	0x00000001
 
 /* Definitions for the SuperH DMAC */
+<<<<<<< HEAD
 #define REQ_L	0x00000000
 #define REQ_E	0x00080000
 #define RACK_H	0x00000000
@@ -109,16 +184,21 @@ struct sh_dmae_pdata {
 #define ACK_W	0x00020000
 #define ACK_H	0x00000000
 #define ACK_L	0x00010000
+=======
+>>>>>>> refs/remotes/origin/master
 #define DM_INC	0x00004000
 #define DM_DEC	0x00008000
 #define DM_FIX	0x0000c000
 #define SM_INC	0x00001000
 #define SM_DEC	0x00002000
 #define SM_FIX	0x00003000
+<<<<<<< HEAD
 #define RS_IN	0x00000200
 #define RS_OUT	0x00000300
 #define TS_BLK	0x00000040
 #define TM_BUR	0x00000020
+=======
+>>>>>>> refs/remotes/origin/master
 #define CHCR_DE	0x00000001
 #define CHCR_TE	0x00000002
 #define CHCR_IE	0x00000004

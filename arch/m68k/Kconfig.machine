@@ -150,6 +150,7 @@ config XCOPILOT_BUGS
 	help
 	  Support the bugs of Xcopilot.
 
+<<<<<<< HEAD
 config UC5272
 	bool "Arcturus Networks uC5272 dimm board support"
 	depends on M5272
@@ -162,6 +163,8 @@ config UC5282
 	help
 	  Support for the Arcturus Networks uC5282 dimm board.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config UCSIMM
 	bool "uCsimm module support"
 	depends on M68EZ328
@@ -205,6 +208,7 @@ config UCQUICC
 	help
 	  Support for the Lineo uCquicc board.
 
+<<<<<<< HEAD
 config ARNEWSH
 	bool
 
@@ -222,6 +226,17 @@ config M5206eC3
 	bool "Motorola M5206eC3 board support"
 	depends on M5206e
 	select FREESCALE
+=======
+config ARN5206
+	bool "Arnewsh 5206 board support"
+	depends on M5206
+	help
+	  Support for the Arnewsh 5206 board.
+
+config M5206eC3
+	bool "Motorola M5206eC3 board support"
+	depends on M5206e
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for the Motorola M5206eC3 board.
 
@@ -231,6 +246,7 @@ config ELITE
 	help
 	  Support for the Motorola M5206eLITE board.
 
+<<<<<<< HEAD
 config M5208EVB
 	bool "Freescale M5208EVB board support"
 	depends on M520x
@@ -242,12 +258,18 @@ config M5235EVB
 	bool "Freescale M5235EVB support"
 	depends on M523x
 	select FREESCALE
+=======
+config M5235EVB
+	bool "Freescale M5235EVB support"
+	depends on M523x
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for the Freescale M5235EVB board.
 
 config M5249C3
 	bool "Motorola M5249C3 board support"
 	depends on M5249
+<<<<<<< HEAD
 	select FREESCALE
 	help
 	  Support for the Motorola M5249C3 board.
@@ -314,6 +336,17 @@ config SOM5282EM
 	help
 	  Support for the EMAC.Inc SOM5282EM module.
 
+=======
+	help
+	  Support for the Motorola M5249C3 board.
+
+config M5272C3
+	bool "Motorola M5272C3 board support"
+	depends on M5272
+	help
+	  Support for the Motorola M5272C3 board.
+
+>>>>>>> refs/remotes/origin/master
 config WILDFIRE
 	bool "Intec Automation Inc. WildFire board support"
 	depends on M528x
@@ -329,14 +362,20 @@ config WILDFIREMOD
 config ARN5307
 	bool "Arnewsh 5307 board support"
 	depends on M5307
+<<<<<<< HEAD
 	select ARNEWSH
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for the Arnewsh 5307 board.
 
 config M5307C3
 	bool "Motorola M5307C3 board support"
 	depends on M5307
+<<<<<<< HEAD
 	select FREESCALE
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for the Motorola M5307C3 board.
 
@@ -346,6 +385,7 @@ config SECUREEDGEMP3
 	help
 	  Support for the SnapGear SecureEdge/MP3 platform.
 
+<<<<<<< HEAD
 config M5329EVB
 	bool "Freescale (Motorola) M5329EVB board support"
 	depends on M532x
@@ -363,6 +403,11 @@ config M5407C3
 	bool "Motorola M5407C3 board support"
 	depends on M5407
 	select FREESCALE
+=======
+config M5407C3
+	bool "Motorola M5407C3 board support"
+	depends on M5407
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for the Motorola M5407C3 board.
 
@@ -396,6 +441,7 @@ config NETtel
 	help
 	  Support for the SnapGear NETtel/SecureEdge/SnapGear boards.
 
+<<<<<<< HEAD
 config SNAPGEAR
 	bool "SnapGear router board support"
 	depends on NETtel
@@ -412,12 +458,15 @@ config CPU16B
 	help
 	  Support for the SNEHA CPU16B board.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MOD5272
 	bool "Netburner MOD-5272 board support"
 	depends on M5272
 	help
 	  Support for the Netburner MOD-5272 board.
 
+<<<<<<< HEAD
 config SAVANT
 	bool
 
@@ -429,6 +478,8 @@ config SAVANTrosie1
 	  Support for the Savant Rosie1 board.
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 if !MMU || COLDFIRE
 
 comment "Machine Options"
@@ -540,6 +591,7 @@ config ROMVEC
 	  68000 type variants the vectors are at the base of the boot device
 	  on system startup.
 
+<<<<<<< HEAD
 config ROMVECSIZE
 	hex "Size of ROM vector region (in bytes)"
 	default "0x400"
@@ -549,6 +601,8 @@ config ROMVECSIZE
 	  variants this would be 0x400 bytes in size. Set to 0 if you do
 	  not want a vector region at the start of the ROM.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ROMSTART
 	hex "Address of the base of system image in ROM"
 	default "0x400"

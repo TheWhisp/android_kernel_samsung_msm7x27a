@@ -15,15 +15,21 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 
 #include <asm/system.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/module.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/uaccess.h>
 #include <linux/bitops.h>
 #include <linux/string.h>
@@ -104,10 +110,14 @@ static struct x25_asy *x25_asy_alloc(void)
 			return sl;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "x25_asy_alloc() - register_netdev() failure.\n");
 =======
 			pr_warn("%s(): register_netdev() failure\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("%s(): register_netdev() failure\n", __func__);
+>>>>>>> refs/remotes/origin/master
 			free_netdev(dev);
 		}
 	}
@@ -126,11 +136,15 @@ static void x25_asy_free(struct x25_asy *sl)
 
 	if (!test_and_clear_bit(SLF_INUSE, &sl->flags))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: x25_asy_free for already free unit.\n",
 			sl->dev->name);
 =======
 		netdev_err(sl->dev, "x25_asy_free for already free unit\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(sl->dev, "x25_asy_free for already free unit\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static int x25_asy_change_mtu(struct net_device *dev, int newmtu)
@@ -144,11 +158,14 @@ static int x25_asy_change_mtu(struct net_device *dev, int newmtu)
 
 	if (xbuff == NULL || rbuff == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: unable to grow X.25 buffers, MTU change cancelled.\n",
 		       dev->name);
 =======
 		netdev_warn(dev, "unable to grow X.25 buffers, MTU change cancelled\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(xbuff);
 		kfree(rbuff);
 		return -ENOMEM;
@@ -218,11 +235,15 @@ static void x25_asy_bump(struct x25_asy *sl)
 	skb = dev_alloc_skb(count+1);
 	if (skb == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: memory squeeze, dropping packet.\n",
 			sl->dev->name);
 =======
 		netdev_warn(sl->dev, "memory squeeze, dropping packet\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(sl->dev, "memory squeeze, dropping packet\n");
+>>>>>>> refs/remotes/origin/master
 		dev->stats.rx_dropped++;
 		return;
 	}
@@ -256,7 +277,11 @@ static void x25_asy_encaps(struct x25_asy *sl, unsigned char *icp, int len)
 	}
 
 	p = icp;
+<<<<<<< HEAD
 	count = x25_asy_esc(p, (unsigned char *) sl->xbuff, len);
+=======
+	count = x25_asy_esc(p, sl->xbuff, len);
+>>>>>>> refs/remotes/origin/master
 
 	/* Order of next two lines is *very* important.
 	 * When we are sending a little amount of data,
@@ -311,6 +336,7 @@ static void x25_asy_timeout(struct net_device *dev)
 		 *      14 Oct 1994 Dmitry Gorodchanin.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: transmit timed out, %s?\n", dev->name,
 		       (tty_chars_in_buffer(sl->tty) || sl->xleft) ?
 		       "bad line quality" : "driver error");
@@ -319,6 +345,11 @@ static void x25_asy_timeout(struct net_device *dev)
 			    (tty_chars_in_buffer(sl->tty) || sl->xleft) ?
 			    "bad line quality" : "driver error");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(dev, "transmit timed out, %s?\n",
+			    (tty_chars_in_buffer(sl->tty) || sl->xleft) ?
+			    "bad line quality" : "driver error");
+>>>>>>> refs/remotes/origin/master
 		sl->xleft = 0;
 		clear_bit(TTY_DO_WRITE_WAKEUP, &sl->tty->flags);
 		x25_asy_unlock(sl);
@@ -336,11 +367,15 @@ static netdev_tx_t x25_asy_xmit(struct sk_buff *skb,
 
 	if (!netif_running(sl->dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: xmit call when iface is down\n",
 			dev->name);
 =======
 		netdev_err(dev, "xmit call when iface is down\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "xmit call when iface is down\n");
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return NETDEV_TX_OK;
 	}
@@ -352,22 +387,32 @@ static netdev_tx_t x25_asy_xmit(struct sk_buff *skb,
 		err = lapb_connect_request(dev);
 		if (err != LAPB_OK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "x25_asy: lapb_connect_request error - %d\n", err);
 =======
 			netdev_err(dev, "lapb_connect_request error: %d\n",
 				   err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(dev, "lapb_connect_request error: %d\n",
+				   err);
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return NETDEV_TX_OK;
 	case X25_IFACE_DISCONNECT: /* do nothing - hang up ?? */
 		err = lapb_disconnect_request(dev);
 		if (err != LAPB_OK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "x25_asy: lapb_disconnect_request error - %d\n", err);
 =======
 			netdev_err(dev, "lapb_disconnect_request error: %d\n",
 				   err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_err(dev, "lapb_disconnect_request error: %d\n",
+				   err);
+>>>>>>> refs/remotes/origin/master
 	default:
 		kfree_skb(skb);
 		return NETDEV_TX_OK;
@@ -387,10 +432,14 @@ static netdev_tx_t x25_asy_xmit(struct sk_buff *skb,
 	err = lapb_data_request(dev, skb);
 	if (err != LAPB_OK) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "x25_asy: lapb_data_request error - %d\n", err);
 =======
 		netdev_err(dev, "lapb_data_request error: %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "lapb_data_request error: %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return NETDEV_TX_OK;
 	}
@@ -426,10 +475,14 @@ static void x25_asy_data_transmit(struct net_device *dev, struct sk_buff *skb)
 	if (netif_queue_stopped(sl->dev) || sl->tty == NULL) {
 		spin_unlock(&sl->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "x25_asy: tbusy drop\n");
 =======
 		netdev_err(dev, "tbusy drop\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "tbusy drop\n");
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return;
 	}
@@ -456,10 +509,14 @@ static void x25_asy_connected(struct net_device *dev, int reason)
 	skb = dev_alloc_skb(1);
 	if (skb == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "x25_asy: out of memory\n");
 =======
 		netdev_err(dev, "out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -479,10 +536,14 @@ static void x25_asy_disconnected(struct net_device *dev, int reason)
 	skb = dev_alloc_skb(1);
 	if (skb == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "x25_asy: out of memory\n");
 =======
 		netdev_err(dev, "out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -494,10 +555,14 @@ static void x25_asy_disconnected(struct net_device *dev, int reason)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct lapb_register_struct x25_asy_callbacks = {
 =======
 static const struct lapb_register_struct x25_asy_callbacks = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct lapb_register_struct x25_asy_callbacks = {
+>>>>>>> refs/remotes/origin/master
 	.connect_confirmation = x25_asy_connected,
 	.connect_indication = x25_asy_connected,
 	.disconnect_confirmation = x25_asy_disconnected,
@@ -505,9 +570,12 @@ static const struct lapb_register_struct x25_asy_callbacks = {
 	.data_indication = x25_asy_data_indication,
 	.data_transmit = x25_asy_data_transmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -670,12 +738,17 @@ static void x25_asy_close_tty(struct tty_struct *tty)
 	err = lapb_unregister(sl->dev);
 	if (err != LAPB_OK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "x25_asy_close: lapb_unregister error -%d\n",
 			err);
 =======
 		pr_err("x25_asy_close: lapb_unregister error: %d\n",
 		       err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("x25_asy_close: lapb_unregister error: %d\n",
+		       err);
+>>>>>>> refs/remotes/origin/master
 
 	tty->disc_data = NULL;
 	sl->tty = NULL;
@@ -854,6 +927,7 @@ static int __init init_x25_asy(void)
 		x25_asy_maxdev = 4; /* Sanity */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "X.25 async: version 0.00 ALPHA "
 			"(dynamic channels, max=%d).\n", x25_asy_maxdev);
 
@@ -865,6 +939,8 @@ static int __init init_x25_asy(void)
 		return -ENOMEM;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("X.25 async: version 0.00 ALPHA (dynamic channels, max=%d)\n",
 		x25_asy_maxdev);
 
@@ -872,7 +948,10 @@ static int __init init_x25_asy(void)
 				GFP_KERNEL);
 	if (!x25_asy_devs)
 		return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return tty_register_ldisc(N_X25, &x25_ldisc);
 }

@@ -54,19 +54,27 @@
 #include <linux/spinlock.h>
 #include <linux/proc_fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/list.h>
 #include <linux/stacktrace.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(latency_lock);
 =======
 static DEFINE_RAW_SPINLOCK(latency_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_RAW_SPINLOCK(latency_lock);
+>>>>>>> refs/remotes/origin/master
 
 #define MAXLR 128
 static struct latency_record latency_record[MAXLR];
@@ -81,22 +89,29 @@ void clear_all_latency_tracing(struct task_struct *p)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&latency_lock, flags);
 	memset(&p->latency_record, 0, sizeof(p->latency_record));
 	p->latency_record_count = 0;
 	spin_unlock_irqrestore(&latency_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spin_lock_irqsave(&latency_lock, flags);
 	memset(&p->latency_record, 0, sizeof(p->latency_record));
 	p->latency_record_count = 0;
 	raw_spin_unlock_irqrestore(&latency_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void clear_global_latency_tracing(void)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&latency_lock, flags);
 	memset(&latency_record, 0, sizeof(latency_record));
@@ -106,6 +121,11 @@ static void clear_global_latency_tracing(void)
 	memset(&latency_record, 0, sizeof(latency_record));
 	raw_spin_unlock_irqrestore(&latency_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&latency_lock, flags);
+	memset(&latency_record, 0, sizeof(latency_record));
+	raw_spin_unlock_irqrestore(&latency_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __sched
@@ -212,10 +232,14 @@ __account_scheduler_latency(struct task_struct *tsk, int usecs, int inter)
 	store_stacktrace(tsk, &lat);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&latency_lock, flags);
 =======
 	raw_spin_lock_irqsave(&latency_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&latency_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	account_global_scheduler_latency(tsk, &lat);
 
@@ -257,10 +281,14 @@ __account_scheduler_latency(struct task_struct *tsk, int usecs, int inter)
 
 out_unlock:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&latency_lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&latency_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&latency_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lstats_show(struct seq_file *m, void *v)

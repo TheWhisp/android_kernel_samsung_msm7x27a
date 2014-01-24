@@ -22,6 +22,10 @@
 #include <linux/syscore_ops.h>
 #include <linux/serial_core.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <asm/mach/arch.h>
@@ -29,6 +33,10 @@
 #include <asm/mach/irq.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
+=======
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/system_misc.h>
 
@@ -37,7 +45,10 @@
 #include <mach/regs-clock.h>
 #include <plat/regs-serial.h>
 
+<<<<<<< HEAD
 #include <plat/s3c2410.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/cpu.h>
 #include <plat/devs.h>
 #include <plat/clock.h>
@@ -49,6 +60,11 @@
 #include <plat/gpio-cfg.h>
 #include <plat/gpio-cfg-helpers.h>
 
+<<<<<<< HEAD
+=======
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 /* Initial IO mappings */
 
 static struct map_desc s3c2410_iodesc[] __initdata = {
@@ -137,6 +153,10 @@ void __init s3c2410_init_clocks(int xtal)
 	s3c2410_baseclk_add();
 	s3c24xx_register_clock(&s3c2410_armclk);
 	clkdev_add_table(s3c2410_clk_lookup, ARRAY_SIZE(s3c2410_clk_lookup));
+<<<<<<< HEAD
+=======
+	samsung_wdt_reset_init(S3C24XX_VA_WATCHDOG);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct bus_type s3c2410_subsys = {
@@ -182,8 +202,13 @@ int __init s3c2410_init(void)
 
 #ifdef CONFIG_PM
 	register_syscore_ops(&s3c2410_pm_syscore_ops);
+<<<<<<< HEAD
 #endif
 	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+=======
+	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	return device_register(&s3c2410_dev);
 }
@@ -194,6 +219,7 @@ int __init s3c2410a_init(void)
 	return s3c2410_init();
 }
 
+<<<<<<< HEAD
 void s3c2410_restart(char mode, const char *cmd)
 {
 	if (mode == 's') {
@@ -201,6 +227,15 @@ void s3c2410_restart(char mode, const char *cmd)
 	}
 
 	arch_wdt_reset();
+=======
+void s3c2410_restart(enum reboot_mode mode, const char *cmd)
+{
+	if (mode == REBOOT_SOFT) {
+		soft_restart(0);
+	}
+
+	samsung_wdt_reset();
+>>>>>>> refs/remotes/origin/master
 
 	/* we'll take a jump through zero as a poor second */
 	soft_restart(0);

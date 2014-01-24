@@ -165,10 +165,14 @@ static irqreturn_t atmel_wm97xx_channel_b_interrupt(int irq, void *dev_id)
 		data = ac97c_readl(atmel_wm97xx, CBRHR);
 		value = data & 0x0fff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		source = data & WM97XX_ADCSRC_MASK;
 =======
 		source = data & WM97XX_ADCSEL_MASK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		source = data & WM97XX_ADCSEL_MASK;
+>>>>>>> refs/remotes/origin/master
 		pen_down = (data & WM97XX_PEN_DOWN) >> 8;
 
 		if (source == WM97XX_ADCSEL_X)
@@ -376,7 +380,10 @@ static int __init atmel_wm97xx_probe(struct platform_device *pdev)
 err_irq:
 	free_irq(atmel_wm97xx->ac97c_irq, atmel_wm97xx);
 err:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(atmel_wm97xx);
 	return ret;
 }
@@ -390,12 +397,16 @@ static int __exit atmel_wm97xx_remove(struct platform_device *pdev)
 	free_irq(atmel_wm97xx->ac97c_irq, atmel_wm97xx);
 	del_timer_sync(&atmel_wm97xx->pen_timer);
 	wm97xx_unregister_mach_ops(wm);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(atmel_wm97xx);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM
 static int atmel_wm97xx_suspend(struct platform_device *pdev, pm_message_t msg)
@@ -406,6 +417,12 @@ static int atmel_wm97xx_suspend(struct *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+static int atmel_wm97xx_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct atmel_wm97xx *atmel_wm97xx = platform_get_drvdata(pdev);
 
 	ac97c_writel(atmel_wm97xx, IDR, AC97C_INT_CBEVT);
@@ -416,6 +433,7 @@ static int atmel_wm97xx_suspend(struct *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int atmel_wm97xx_resume(struct platform_device *pdev)
 {
 =======
@@ -423,6 +441,11 @@ static int atmel_wm97xx_resume(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int atmel_wm97xx_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct atmel_wm97xx *atmel_wm97xx = platform_get_drvdata(pdev);
 	struct wm97xx *wm = atmel_wm97xx->wm;
 
@@ -433,6 +456,7 @@ static int atmel_wm97xx_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else
 #define atmel_wm97xx_suspend	NULL
@@ -447,6 +471,8 @@ static struct platform_driver atmel_wm97xx_driver = {
 	.suspend	= atmel_wm97xx_suspend,
 	.resume		= atmel_wm97xx_resume,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static SIMPLE_DEV_PM_OPS(atmel_wm97xx_pm_ops,
@@ -459,6 +485,7 @@ static struct platform_driver atmel_wm97xx_driver = {
 		.owner	= THIS_MODULE,
 		.pm	= &atmel_wm97xx_pm_ops,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -479,5 +506,12 @@ MODULE_AUTHOR("Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>");
 =======
 MODULE_AUTHOR("Hans-Christian Egtvedt <egtvedt@samfundet.no>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_platform_driver_probe(atmel_wm97xx_driver, atmel_wm97xx_probe);
+
+MODULE_AUTHOR("Hans-Christian Egtvedt <egtvedt@samfundet.no>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("wm97xx continuous touch driver for Atmel AT91 and AVR32");
 MODULE_LICENSE("GPL");

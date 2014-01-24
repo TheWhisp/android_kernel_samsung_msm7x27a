@@ -2,6 +2,7 @@
 #define _ASM_GENERIC_KMAP_TYPES_H
 
 #ifdef __WITH_KM_FENCE
+<<<<<<< HEAD
 # define KMAP_D(n) __KM_FENCE_##n ,
 #else
 # define KMAP_D(n)
@@ -37,4 +38,11 @@ KMAP_D(20)	KM_TYPE_NR
 
 #undef KMAP_D
 
+=======
+# define KM_TYPE_NR 41
+#else
+# define KM_TYPE_NR 20
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -4,6 +4,7 @@
  */
 #include <linux/clockchips.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/jiffies.h>
@@ -95,6 +96,8 @@ static irqreturn_t timer_interrupt(int irq, void *dev_id)
 {
 	pit_clockevent.event_handler(&pit_clockevent);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/i8253.h>
 #include <linux/export.h>
 #include <linux/smp.h>
@@ -105,13 +108,17 @@ static irqreturn_t timer_interrupt(int irq, void *dev_id)
 static irqreturn_t timer_interrupt(int irq, void *dev_id)
 {
 	i8253_clockevent.event_handler(&i8253_clockevent);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
 
 static struct irqaction irq0  = {
 	.handler = timer_interrupt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.flags = IRQF_DISABLED | IRQF_NOBALANCING | IRQF_TIMER,
 	.name = "timer"
@@ -137,6 +144,8 @@ void __init setup_pit_timer(void)
 	clockevents_register_device(cd);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.flags = IRQF_NOBALANCING | IRQF_TIMER,
 	.name = "timer"
 };
@@ -144,7 +153,10 @@ void __init setup_pit_timer(void)
 void __init setup_pit_timer(void)
 {
 	clockevent_i8253_init(true);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	setup_irq(0, &irq0);
 }
 

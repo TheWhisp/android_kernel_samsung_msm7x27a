@@ -34,7 +34,10 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/ptrace.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -73,7 +76,11 @@ struct serial_quirk {
 	unsigned int prodid;
 	int multi;		/* 1 = multifunction, > 1 = # ports */
 	void (*config)(struct pcmcia_device *);
+<<<<<<< HEAD
 	void (*setup)(struct pcmcia_device *, struct uart_port *);
+=======
+	void (*setup)(struct pcmcia_device *, struct uart_8250_port *);
+>>>>>>> refs/remotes/origin/master
 	void (*wakeup)(struct pcmcia_device *);
 	int (*post)(struct pcmcia_device *);
 };
@@ -105,9 +112,15 @@ struct serial_cfg_mem {
  * Elan VPU16551 UART with 14.7456MHz oscillator
  * manfid 0x015D, 0x4C45
  */
+<<<<<<< HEAD
 static void quirk_setup_brainboxes_0104(struct pcmcia_device *link, struct uart_port *port)
 {
 	port->uartclk = 14745600;
+=======
+static void quirk_setup_brainboxes_0104(struct pcmcia_device *link, struct uart_8250_port *uart)
+{
+	uart->port.uartclk = 14745600;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int quirk_post_ibm(struct pcmcia_device *link)
@@ -343,6 +356,7 @@ static void serial_detach(struct pcmcia_device *link)
 static int setup_serial(struct pcmcia_device *handle, struct serial_info * info,
 			unsigned int iobase, int irq)
 {
+<<<<<<< HEAD
 	struct uart_port port;
 	int line;
 
@@ -362,6 +376,27 @@ static int setup_serial(struct pcmcia_device *handle, struct serial_info * info,
 	if (line < 0) {
 		printk(KERN_NOTICE "serial_cs: serial8250_register_port() at "
 		       "0x%04lx, irq %d failed\n", (u_long)iobase, irq);
+=======
+	struct uart_8250_port uart;
+	int line;
+
+	memset(&uart, 0, sizeof(uart));
+	uart.port.iobase = iobase;
+	uart.port.irq = irq;
+	uart.port.flags = UPF_BOOT_AUTOCONF | UPF_SKIP_TEST | UPF_SHARE_IRQ;
+	uart.port.uartclk = 1843200;
+	uart.port.dev = &handle->dev;
+	if (buggy_uart)
+		uart.port.flags |= UPF_BUGGY_UART;
+
+	if (info->quirk && info->quirk->setup)
+		info->quirk->setup(handle, &uart);
+
+	line = serial8250_register_8250_port(&uart);
+	if (line < 0) {
+		pr_err("serial_cs: serial8250_register_8250_port() at 0x%04lx, irq %d failed\n",
+							(unsigned long)iobase, irq);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -852,6 +887,7 @@ static struct pcmcia_driver serial_cs_driver = {
 	.suspend	= serial_suspend,
 	.resume		= serial_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_serial_cs(void)
 {
@@ -865,5 +901,8 @@ static void __exit exit_serial_cs(void)
 
 module_init(init_serial_cs);
 module_exit(exit_serial_cs);
+=======
+module_pcmcia_driver(serial_cs_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

@@ -24,7 +24,11 @@
 
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 unsigned long ioc_timer_gettimeoffset(void)
+=======
+static u32 ioc_timer_gettimeoffset(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int count1, count2, status;
 	long offset;
@@ -56,7 +60,11 @@ unsigned long ioc_timer_gettimeoffset(void)
 	}
 
 	offset = (LATCH - offset) * (tick_nsec / 1000);
+<<<<<<< HEAD
 	return (offset + LATCH/2) / LATCH;
+=======
+	return ((offset + LATCH/2) / LATCH) * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init ioctime_init(void)
@@ -82,6 +90,7 @@ static struct irqaction ioc_timer_irq = {
 /*
  * Set up timer interrupt.
  */
+<<<<<<< HEAD
 static void __init ioc_timer_init(void)
 {
 	ioctime_init();
@@ -93,3 +102,11 @@ struct sys_timer ioc_timer = {
 	.offset		= ioc_timer_gettimeoffset,
 };
 
+=======
+void __init ioc_timer_init(void)
+{
+	arch_gettimeoffset = ioc_timer_gettimeoffset;
+	ioctime_init();
+	setup_irq(IRQ_TIMER0, &ioc_timer_irq);
+}
+>>>>>>> refs/remotes/origin/master

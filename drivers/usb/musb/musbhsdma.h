@@ -31,10 +31,13 @@
  *
  */
 
+<<<<<<< HEAD
 #if defined(CONFIG_SOC_OMAP2430) || defined(CONFIG_SOC_OMAP3430)
 #include "omap2430.h"
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_BLACKFIN
 
 #define MUSB_HSDMA_BASE		0x200

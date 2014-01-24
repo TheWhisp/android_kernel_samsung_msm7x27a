@@ -3,12 +3,17 @@
  *  sep_driver_api.h - Security Processor Driver api definitions
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright(c) 2009,2010 Intel Corporation. All rights reserved.
  *  Contributions(c) 2009,2010 Discretix. All rights reserved.
 =======
  *  Copyright(c) 2009-2011 Intel Corporation. All rights reserved.
  *  Contributions(c) 2009-2011 Discretix. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright(c) 2009-2011 Intel Corporation. All rights reserved.
+ *  Contributions(c) 2009-2011 Discretix. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by the Free
@@ -32,9 +37,13 @@
  *
  *  2010.09.14  Upgrade to Medfield
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  2011.02.22  Enable kernel crypto
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  2011.02.22  Enable kernel crypto
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -46,6 +55,7 @@
 #define SEP_DRIVER_SRC_REQ		2
 #define SEP_DRIVER_SRC_PRINTF		3
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*-------------------------------------------
@@ -68,6 +78,8 @@ struct caller_id_struct {
 	/* caller id hash size in bytes */
 	u32 callerIdSizeInBytes;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Power state */
 #define SEP_DRIVER_POWERON		1
 #define SEP_DRIVER_POWEROFF		2
@@ -94,7 +106,10 @@ enum hash_stage {
 	HASH_DIGEST,
 	HASH_FINUP_DATA,
 	HASH_FINUP_FINISH
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -122,6 +137,7 @@ struct sep_dcblock {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sep_caller_id_entry {
 	int pid;
 	unsigned char callerIdHash[SEP_CALLER_ID_HASH_SIZE_IN_BYTES];
@@ -131,6 +147,10 @@ struct sep_caller_id_entry {
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
 	command structure for building dcb block (currently for ext app only
+=======
+/*
+	command structure for building dcb block (currently for ext app only)
+>>>>>>> refs/remotes/origin/master
 */
 struct build_dcb_struct {
 	/* address value of the data in */
@@ -146,7 +166,10 @@ struct build_dcb_struct {
 	every table will be modulo this parameter */
 	u32  tail_block_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* which application calls the driver DX or applet */
 	u32  is_applet;
@@ -174,7 +197,10 @@ struct build_dcb_struct_kernel {
 
 	struct scatterlist *src_sg;
 	struct scatterlist *dst_sg;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -219,12 +245,18 @@ struct sep_dma_resource {
 	/* number of entries of the output mapp array */
 	u32 out_map_num_entries;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Scatter list for kernel operations */
 	struct scatterlist *src_sg;
 	struct scatterlist *dst_sg;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -247,6 +279,7 @@ struct sep_lli_entry {
 	u32 block_size;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*----------------------------------------------------------------
 	IOCTL command defines
@@ -275,6 +308,8 @@ struct sep_lli_entry {
 #define SEP_IOCGETSTATICPOOLADDR	\
 	_IO(SEP_IOC_MAGIC_NUMBER, 8)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * header format for each fastcall write operation
  */
@@ -307,7 +342,11 @@ struct sep_dma_context {
 	u32 dmatables_len;
 	/* size of input data */
 	u32 input_data_len;
+<<<<<<< HEAD
 	/* secure dma use (for imr memory restriced area in output */
+=======
+	/* secure dma use (for imr memory restricted area in output) */
+>>>>>>> refs/remotes/origin/master
 	bool secure_dma;
 	struct sep_dma_resource dma_res_arr[SEP_MAX_NUM_SYNC_DMA_OPS];
 	/* Scatter gather for kernel crypto */
@@ -420,10 +459,17 @@ int sep_prepare_input_output_dma_table_in_dcb(struct sep_device *sep,
 
 /**
  * sep_free_dma_table_data_handler - free DMA table
+<<<<<<< HEAD
  * @sep: pointere to struct sep_device
  * @dma_ctx: dma context
  *
  * Handles the request to  free DMA table for synchronic actions
+=======
+ * @sep: pointer to struct sep_device
+ * @dma_ctx: dma context
+ *
+ * Handles the request to free DMA table for synchronic actions
+>>>>>>> refs/remotes/origin/master
  */
 int sep_free_dma_table_data_handler(struct sep_device *sep,
 					   struct sep_dma_context **dma_ctx);
@@ -453,12 +499,16 @@ int sep_wait_transaction(struct sep_device *sep);
 /* sends interrupt to sep that message is ready */
 #define SEP_IOCSENDSEPCOMMAND	 \
 	_IO(SEP_IOC_MAGIC_NUMBER, 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* end transaction command */
 #define SEP_IOCENDTRANSACTION	 \
 	_IO(SEP_IOC_MAGIC_NUMBER, 15)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SEP_IOCRARPREPAREMESSAGE	\
 	_IOW(SEP_IOC_MAGIC_NUMBER, 20, struct rar_hndl_to_bus_struct)
@@ -468,6 +518,8 @@ int sep_wait_transaction(struct sep_device *sep);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SEP_IOCPREPAREDCB					\
 	_IOW(SEP_IOC_MAGIC_NUMBER, 35, struct build_dcb_struct)
 
@@ -475,7 +527,10 @@ int sep_wait_transaction(struct sep_device *sep);
 	_IO(SEP_IOC_MAGIC_NUMBER, 36)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct sep_device;
 
 #define SEP_IOCPREPAREDCB_SECURE_DMA	\
@@ -484,5 +539,8 @@ struct sep_device;
 #define SEP_IOCFREEDCB_SECURE_DMA	\
 	_IO(SEP_IOC_MAGIC_NUMBER, 39)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

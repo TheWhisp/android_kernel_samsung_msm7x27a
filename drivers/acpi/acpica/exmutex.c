@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exmutex - ASL Mutex Acquire/Release functions
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -106,7 +113,11 @@ void acpi_ex_unlink_mutex(union acpi_operand_object *obj_desc)
  * FUNCTION:    acpi_ex_link_mutex
  *
  * PARAMETERS:  obj_desc            - The mutex to be linked
+<<<<<<< HEAD
  *              Thread              - Current executing thread object
+=======
+ *              thread              - Current executing thread object
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -142,7 +153,11 @@ acpi_ex_link_mutex(union acpi_operand_object *obj_desc,
  *
  * FUNCTION:    acpi_ex_acquire_mutex_object
  *
+<<<<<<< HEAD
  * PARAMETERS:  Timeout             - Timeout in milliseconds
+=======
+ * PARAMETERS:  timeout             - Timeout in milliseconds
+>>>>>>> refs/remotes/origin/master
  *              obj_desc            - Mutex object
  *              thread_id           - Current thread state
  *
@@ -309,7 +324,11 @@ acpi_status acpi_ex_release_mutex_object(union acpi_operand_object *obj_desc)
 	ACPI_FUNCTION_TRACE(ex_release_mutex_object);
 
 	if (obj_desc->mutex.acquisition_depth == 0) {
+<<<<<<< HEAD
 		return (AE_NOT_ACQUIRED);
+=======
+		return_ACPI_STATUS(AE_NOT_ACQUIRED);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Match multiple Acquires with multiple Releases */
@@ -382,7 +401,12 @@ acpi_ex_release_mutex(union acpi_operand_object *obj_desc,
 		return_ACPI_STATUS(AE_AML_MUTEX_NOT_ACQUIRED);
 	}
 
+<<<<<<< HEAD
 	/* Must have a valid thread. */
+=======
+	/* Must have a valid thread ID */
+
+>>>>>>> refs/remotes/origin/master
 	if (!walk_state->thread) {
 		ACPI_ERROR((AE_INFO,
 			    "Cannot release Mutex [%4.4s], null thread info",
@@ -447,7 +471,11 @@ acpi_ex_release_mutex(union acpi_operand_object *obj_desc,
  *
  * FUNCTION:    acpi_ex_release_all_mutexes
  *
+<<<<<<< HEAD
  * PARAMETERS:  Thread              - Current executing thread object
+=======
+ * PARAMETERS:  thread              - Current executing thread object
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -466,7 +494,11 @@ void acpi_ex_release_all_mutexes(struct acpi_thread_state *thread)
 	union acpi_operand_object *next = thread->acquired_mutex_list;
 	union acpi_operand_object *obj_desc;
 
+<<<<<<< HEAD
 	ACPI_FUNCTION_ENTRY();
+=======
+	ACPI_FUNCTION_NAME(ex_release_all_mutexes);
+>>>>>>> refs/remotes/origin/master
 
 	/* Traverse the list of owned mutexes, releasing each one */
 
@@ -478,6 +510,13 @@ void acpi_ex_release_all_mutexes(struct acpi_thread_state *thread)
 		obj_desc->mutex.next = NULL;
 		obj_desc->mutex.acquisition_depth = 0;
 
+<<<<<<< HEAD
+=======
+		ACPI_DEBUG_PRINT((ACPI_DB_EXEC,
+				  "Force-releasing held mutex: %p\n",
+				  obj_desc));
+
+>>>>>>> refs/remotes/origin/master
 		/* Release the mutex, special case for Global Lock */
 
 		if (obj_desc == acpi_gbl_global_lock_mutex) {

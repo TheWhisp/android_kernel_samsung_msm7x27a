@@ -31,6 +31,7 @@
 #define VERSATILE_PCI_CFG_VIRT_BASE	(void __iomem *)0xe9000000ul
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* CIK guesswork */
 #define PCIBIOS_MIN_IO			0x44000000
 #define PCIBIOS_MIN_MEM			0x50000000
@@ -40,6 +41,9 @@
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 /* macro to get at IO space when running virtually */
+=======
+/* macro to get at MMIO space when running virtually */
+>>>>>>> refs/remotes/origin/master
 #define IO_ADDRESS(x)		(((x) & 0x0fffffff) + (((x) >> 4) & 0x0f000000) + 0xf0000000)
 
 #define __io_address(n)		((void __iomem __force *)IO_ADDRESS(n))

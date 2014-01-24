@@ -105,6 +105,7 @@ void show_trace_task(struct task_struct *tsk)
 	 */
 }
 
+<<<<<<< HEAD
 /*
  * The architecture-independent backtrace generator
  */
@@ -116,6 +117,8 @@ void dump_stack(void)
 }
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void show_registers(struct pt_regs *regs)
 {
 	int i;

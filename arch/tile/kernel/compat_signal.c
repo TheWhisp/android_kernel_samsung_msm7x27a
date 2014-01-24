@@ -32,6 +32,7 @@
 #include <asm/ucontext.h>
 #include <asm/sigframe.h>
 #include <asm/syscalls.h>
+<<<<<<< HEAD
 #include <arch/interrupts.h>
 
 struct compat_sigaction {
@@ -47,6 +48,11 @@ struct compat_sigaltstack {
 	compat_size_t ss_size;
 };
 
+=======
+#include <asm/vdso.h>
+#include <arch/interrupts.h>
+
+>>>>>>> refs/remotes/origin/master
 struct compat_ucontext {
 	compat_ulong_t	  uc_flags;
 	compat_uptr_t     uc_link;
@@ -55,6 +61,7 @@ struct compat_ucontext {
 	sigset_t	  uc_sigmask;	/* mask last for extensibility */
 };
 
+<<<<<<< HEAD
 #define COMPAT_SI_PAD_SIZE	((SI_MAX_SIZE - 3 * sizeof(int)) / sizeof(int))
 
 struct compat_siginfo {
@@ -112,12 +119,15 @@ struct compat_siginfo {
 	} _sifields;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct compat_rt_sigframe {
 	unsigned char save_area[C_ABI_SAVE_AREA_SIZE]; /* caller save area */
 	struct compat_siginfo info;
 	struct compat_ucontext uc;
 };
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 long compat_sys_rt_sigaction(int sig, struct compat_sigaction __user *act,
@@ -178,6 +188,9 @@ long compat_sys_rt_sigqueueinfo(int pid, int sig,
 }
 
 int copy_siginfo_to_user32(struct compat_siginfo __user *to, siginfo_t *from)
+=======
+int copy_siginfo_to_user32(struct compat_siginfo __user *to, const siginfo_t *from)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -255,6 +268,7 @@ int copy_siginfo_from_user32(siginfo_t *to, struct compat_siginfo __user *from)
 	return err;
 }
 
+<<<<<<< HEAD
 long compat_sys_sigaltstack(const struct compat_sigaltstack __user *uss_ptr,
 			    struct compat_sigaltstack __user *uoss_ptr,
 			    struct pt_regs *regs)
@@ -293,6 +307,12 @@ long compat_sys_sigaltstack(const struct compat_sigaltstack __user *uss_ptr,
 /* The assembly shim for this function arranges to ignore the return value. */
 long compat_sys_rt_sigreturn(struct pt_regs *regs)
 {
+=======
+/* The assembly shim for this function arranges to ignore the return value. */
+long compat_sys_rt_sigreturn(void)
+{
+	struct pt_regs *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	struct compat_rt_sigframe __user *frame =
 		(struct compat_rt_sigframe __user *) compat_ptr(regs->sp);
 	sigset_t set;
@@ -302,6 +322,7 @@ long compat_sys_rt_sigreturn(struct pt_regs *regs)
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 <<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
@@ -311,11 +332,18 @@ long compat_sys_rt_sigreturn(struct pt_regs *regs)
 =======
 	set_current_blocked(&set);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext))
 		goto badframe;
 
+<<<<<<< HEAD
 	if (compat_sys_sigaltstack(&frame->uc.uc_stack, NULL, regs) != 0)
+=======
+	if (compat_restore_altstack(&frame->uc.uc_stack))
+>>>>>>> refs/remotes/origin/master
 		goto badframe;
 
 	return 0;
@@ -392,17 +420,25 @@ int compat_setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	err |= __clear_user(&frame->save_area, sizeof(frame->save_area));
 	err |= __put_user(0, &frame->uc.uc_flags);
 	err |= __put_user(0, &frame->uc.uc_link);
+<<<<<<< HEAD
 	err |= __put_user(ptr_to_compat((void *)(current->sas_ss_sp)),
 			  &frame->uc.uc_stack.ss_sp);
 	err |= __put_user(sas_ss_flags(regs->sp),
 			  &frame->uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+=======
+	err |= __compat_save_altstack(&frame->uc.uc_stack, regs->sp);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext(&frame->uc.uc_mcontext, regs);
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
 	if (err)
 		goto give_sigsegv;
 
+<<<<<<< HEAD
 	restorer = VDSO_BASE;
+=======
+	restorer = VDSO_SYM(&__vdso_rt_sigreturn);
+>>>>>>> refs/remotes/origin/master
 	if (ka->sa.sa_flags & SA_RESTORER)
 		restorer = ptr_to_compat_reg(ka->sa.sa_restorer);
 
@@ -421,6 +457,7 @@ int compat_setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	regs->regs[1] = ptr_to_compat_reg(&frame->info);
 	regs->regs[2] = ptr_to_compat_reg(&frame->uc);
 	regs->flags |= PT_FLAGS_CALLER_SAVES;
+<<<<<<< HEAD
 
 	/*
 	 * Notify any tracer that was single-stepping it.
@@ -430,6 +467,8 @@ int compat_setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	if (test_thread_flag(TIF_SINGLESTEP))
 		ptrace_notify(SIGTRAP);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 give_sigsegv:

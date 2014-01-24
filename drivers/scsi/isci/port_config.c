@@ -58,10 +58,14 @@
 #define SCIC_SDS_MPC_RECONFIGURATION_TIMEOUT    (10)
 #define SCIC_SDS_APC_RECONFIGURATION_TIMEOUT    (10)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SCIC_SDS_APC_WAIT_LINK_UP_NOTIFICATION  (100)
 =======
 #define SCIC_SDS_APC_WAIT_LINK_UP_NOTIFICATION  (250)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SCIC_SDS_APC_WAIT_LINK_UP_NOTIFICATION  (1000)
+>>>>>>> refs/remotes/origin/master
 
 enum SCIC_SDS_APC_ACTIVITY {
 	SCIC_SDS_APC_SKIP_PHY,
@@ -315,9 +319,15 @@ sci_mpc_agent_validate_phy_configuration(struct isci_host *ihost,
 					      &ihost->phys[phy_index]);
 
 			assigned_phy_mask |= (1 << phy_index);
+<<<<<<< HEAD
 		}
 
 		phy_index++;
+=======
+			phy_index++;
+		}
+
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return sci_port_configuration_agent_validate_ports(ihost, port_agent);
@@ -471,13 +481,17 @@ sci_apc_agent_validate_phy_configuration(struct isci_host *ihost,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This routine will restart the automatic port configuration timeout
  * timer for the next time period. This could be caused by either a link
  * down event or a link up event where we can not yet tell to which a phy
  * belongs.
  */
+<<<<<<< HEAD
 static void sci_apc_agent_start_timer(
 	struct sci_port_configuration_agent *port_agent,
 	u32 timeout)
@@ -485,11 +499,19 @@ static void sci_apc_agent_start_timer(
 	if (port_agent->timer_pending)
 		sci_del_timer(&port_agent->timer);
 
+=======
+static void sci_apc_agent_start_timer(struct sci_port_configuration_agent *port_agent,
+				      u32 timeout)
+{
+>>>>>>> refs/remotes/origin/master
 	port_agent->timer_pending = true;
 	sci_mod_timer(&port_agent->timer, timeout);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void sci_apc_agent_configure_ports(struct isci_host *ihost,
 					       struct sci_port_configuration_agent *port_agent,
 					       struct isci_phy *iphy,
@@ -590,6 +612,7 @@ static void sci_apc_agent_configure_ports(struct isci_host *ihost,
 
 	case SCIC_SDS_APC_START_TIMER:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/*
 		 * This can occur for either a link down event, or a link
 		 * up event where we cannot yet tell the port to which a
@@ -605,6 +628,10 @@ static void sci_apc_agent_configure_ports(struct isci_host *ihost,
 		sci_apc_agent_start_timer(port_agent,
 					  SCIC_SDS_APC_WAIT_LINK_UP_NOTIFICATION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sci_apc_agent_start_timer(port_agent,
+					  SCIC_SDS_APC_WAIT_LINK_UP_NOTIFICATION);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SCIC_SDS_APC_SKIP_PHY:
@@ -637,11 +664,16 @@ static void sci_apc_agent_link_up(struct isci_host *ihost,
 		/* the phy is not the part of this port */
 		port_agent->phy_ready_mask |= 1 << phy_index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sci_apc_agent_configure_ports(ihost, port_agent, iphy, true);
 =======
 		sci_apc_agent_start_timer(port_agent,
 					  SCIC_SDS_APC_WAIT_LINK_UP_NOTIFICATION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sci_apc_agent_start_timer(port_agent,
+					  SCIC_SDS_APC_WAIT_LINK_UP_NOTIFICATION);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* the phy is already the part of the port */
 		u32 port_state = iport->sm.current_state_id;
@@ -722,6 +754,12 @@ static void apc_agent_timeout(unsigned long data)
 						   &ihost->phys[index], false);
 	}
 
+<<<<<<< HEAD
+=======
+	if (is_controller_start_complete(ihost))
+		sci_controller_transition_to_ready(ihost, SCI_SUCCESS);
+
+>>>>>>> refs/remotes/origin/master
 done:
 	spin_unlock_irqrestore(&ihost->scic_lock, flags);
 }
@@ -757,6 +795,14 @@ void sci_port_configuration_agent_construct(
 	}
 }
 
+<<<<<<< HEAD
+=======
+bool is_port_config_apc(struct isci_host *ihost)
+{
+	return ihost->port_agent.link_up_handler == sci_apc_agent_link_up;
+}
+
+>>>>>>> refs/remotes/origin/master
 enum sci_status sci_port_configuration_agent_initialize(
 	struct isci_host *ihost,
 	struct sci_port_configuration_agent *port_agent)

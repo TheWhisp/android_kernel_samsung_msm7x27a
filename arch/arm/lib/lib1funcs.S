@@ -351,7 +351,11 @@ ENDPROC(__aeabi_idivmod)
 
 #endif
 
+<<<<<<< HEAD
 ENTRY(Ldiv0)
+=======
+Ldiv0:
+>>>>>>> refs/remotes/origin/master
 UNWIND(.fnstart)
 UNWIND(.pad #4)
 UNWIND(.save {lr})

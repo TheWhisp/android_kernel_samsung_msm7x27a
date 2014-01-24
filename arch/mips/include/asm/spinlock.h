@@ -17,7 +17,11 @@
 /*
  * Your basic SMP spinlocks, allowing only a single CPU anywhere
  *
+<<<<<<< HEAD
  * Simple spin lock operations.  There are two variants, one clears IRQ's
+=======
+ * Simple spin lock operations.	 There are two variants, one clears IRQ's
+>>>>>>> refs/remotes/origin/master
  * on the local processor, one does not.
  *
  * These are fair FIFO ticket locks
@@ -71,7 +75,10 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 		"	 nop						\n"
 		"	srl	%[my_ticket], %[ticket], 16		\n"
 		"	andi	%[ticket], %[ticket], 0xffff		\n"
+<<<<<<< HEAD
 		"	andi	%[my_ticket], %[my_ticket], 0xffff	\n"
+=======
+>>>>>>> refs/remotes/origin/master
 		"	bne	%[ticket], %[my_ticket], 4f		\n"
 		"	 subu	%[ticket], %[my_ticket], %[ticket]	\n"
 		"2:							\n"
@@ -105,7 +112,10 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 		"	beqz	%[my_ticket], 1b			\n"
 		"	 srl	%[my_ticket], %[ticket], 16		\n"
 		"	andi	%[ticket], %[ticket], 0xffff		\n"
+<<<<<<< HEAD
 		"	andi	%[my_ticket], %[my_ticket], 0xffff	\n"
+=======
+>>>>>>> refs/remotes/origin/master
 		"	bne	%[ticket], %[my_ticket], 4f		\n"
 		"	 subu	%[ticket], %[my_ticket], %[ticket]	\n"
 		"2:							\n"
@@ -153,7 +163,10 @@ static inline unsigned int arch_spin_trylock(arch_spinlock_t *lock)
 		"							\n"
 		"1:	ll	%[ticket], %[ticket_ptr]		\n"
 		"	srl	%[my_ticket], %[ticket], 16		\n"
+<<<<<<< HEAD
 		"	andi	%[my_ticket], %[my_ticket], 0xffff	\n"
+=======
+>>>>>>> refs/remotes/origin/master
 		"	andi	%[now_serving], %[ticket], 0xffff	\n"
 		"	bne	%[my_ticket], %[now_serving], 3f	\n"
 		"	 addu	%[ticket], %[ticket], %[inc]		\n"
@@ -178,7 +191,10 @@ static inline unsigned int arch_spin_trylock(arch_spinlock_t *lock)
 		"							\n"
 		"1:	ll	%[ticket], %[ticket_ptr]		\n"
 		"	srl	%[my_ticket], %[ticket], 16		\n"
+<<<<<<< HEAD
 		"	andi	%[my_ticket], %[my_ticket], 0xffff	\n"
+=======
+>>>>>>> refs/remotes/origin/master
 		"	andi	%[now_serving], %[ticket], 0xffff	\n"
 		"	bne	%[my_ticket], %[now_serving], 3f	\n"
 		"	 addu	%[ticket], %[ticket], %[inc]		\n"
@@ -222,7 +238,11 @@ static inline unsigned int arch_spin_trylock(arch_spinlock_t *lock)
  * write_can_lock - would write_trylock() succeed?
  * @lock: the rwlock in question.
  */
+<<<<<<< HEAD
 #define arch_write_can_lock(rw)	(!(rw)->lock)
+=======
+#define arch_write_can_lock(rw) (!(rw)->lock)
+>>>>>>> refs/remotes/origin/master
 
 static inline void arch_read_lock(arch_rwlock_t *rw)
 {
@@ -242,6 +262,7 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 		: "m" (rw->lock)
 		: "memory");
 	} else {
+<<<<<<< HEAD
 		__asm__ __volatile__(
 		"	.set	noreorder	# arch_read_lock	\n"
 		"1:	ll	%1, %2					\n"
@@ -261,6 +282,18 @@ static inline void arch_read_lock(arch_rwlock_t *rw)
 		: "=m" (rw->lock), "=&r" (tmp)
 		: "m" (rw->lock)
 		: "memory");
+=======
+		do {
+			__asm__ __volatile__(
+			"1:	ll	%1, %2	# arch_read_lock	\n"
+			"	bltz	%1, 1b				\n"
+			"	 addu	%1, 1				\n"
+			"2:	sc	%1, %0				\n"
+			: "=m" (rw->lock), "=&r" (tmp)
+			: "m" (rw->lock)
+			: "memory");
+		} while (unlikely(!tmp));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	smp_llsc_mb();
@@ -285,6 +318,7 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 		: "m" (rw->lock)
 		: "memory");
 	} else {
+<<<<<<< HEAD
 		__asm__ __volatile__(
 		"	.set	noreorder	# arch_read_unlock	\n"
 		"1:	ll	%1, %2					\n"
@@ -300,6 +334,17 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 		: "=m" (rw->lock), "=&r" (tmp)
 		: "m" (rw->lock)
 		: "memory");
+=======
+		do {
+			__asm__ __volatile__(
+			"1:	ll	%1, %2	# arch_read_unlock	\n"
+			"	sub	%1, 1				\n"
+			"	sc	%1, %0				\n"
+			: "=m" (rw->lock), "=&r" (tmp)
+			: "m" (rw->lock)
+			: "memory");
+		} while (unlikely(!tmp));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -321,6 +366,7 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 		: "m" (rw->lock)
 		: "memory");
 	} else {
+<<<<<<< HEAD
 		__asm__ __volatile__(
 		"	.set	noreorder	# arch_write_lock	\n"
 		"1:	ll	%1, %2					\n"
@@ -340,6 +386,18 @@ static inline void arch_write_lock(arch_rwlock_t *rw)
 		: "=m" (rw->lock), "=&r" (tmp)
 		: "m" (rw->lock)
 		: "memory");
+=======
+		do {
+			__asm__ __volatile__(
+			"1:	ll	%1, %2	# arch_write_lock	\n"
+			"	bnez	%1, 1b				\n"
+			"	 lui	%1, 0x8000			\n"
+			"2:	sc	%1, %0				\n"
+			: "=m" (rw->lock), "=&r" (tmp)
+			: "m" (rw->lock)
+			: "memory");
+		} while (unlikely(!tmp));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	smp_llsc_mb();
@@ -424,6 +482,7 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
 		: "m" (rw->lock)
 		: "memory");
 	} else {
+<<<<<<< HEAD
 		__asm__ __volatile__(
 		"	.set	noreorder	# arch_write_trylock	\n"
 		"	li	%2, 0					\n"
@@ -443,6 +502,23 @@ static inline int arch_write_trylock(arch_rwlock_t *rw)
 		: "=m" (rw->lock), "=&r" (tmp), "=&r" (ret)
 		: "m" (rw->lock)
 		: "memory");
+=======
+		do {
+			__asm__ __volatile__(
+			"	ll	%1, %3	# arch_write_trylock	\n"
+			"	li	%2, 0				\n"
+			"	bnez	%1, 2f				\n"
+			"	lui	%1, 0x8000			\n"
+			"	sc	%1, %0				\n"
+			"	li	%2, 1				\n"
+			"2:						\n"
+			: "=m" (rw->lock), "=&r" (tmp), "=&r" (ret)
+			: "m" (rw->lock)
+			: "memory");
+		} while (unlikely(!tmp));
+
+		smp_llsc_mb();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;

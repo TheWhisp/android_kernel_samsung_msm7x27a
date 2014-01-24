@@ -83,6 +83,7 @@
 #define AT91SAM9G45_BASE_TC4		0xfffd4040
 #define AT91SAM9G45_BASE_TC5		0xfffd4080
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_BASE_SYS			0xffffe200
 
 /*
@@ -110,6 +111,8 @@
 #define AT91_GPBR	(0xfffffd60 - AT91_BASE_SYS)
 #define AT91_RTC	(0xfffffdb0 - AT91_BASE_SYS)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * System Peripherals
@@ -133,12 +136,15 @@
 #define AT91SAM9G45_BASE_WDT	0xfffffd40
 #define AT91SAM9G45_BASE_RTC	0xfffffdb0
 #define AT91SAM9G45_BASE_GPBR	0xfffffd60
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define AT91_USART0	AT91SAM9G45_BASE_US0
 #define AT91_USART1	AT91SAM9G45_BASE_US1
 #define AT91_USART2	AT91SAM9G45_BASE_US2
 #define AT91_USART3	AT91SAM9G45_BASE_US3
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Internal Memory.
@@ -156,10 +162,13 @@
 #define AT91SAM9G45_VDEC_BASE	0x00900000	/* Video Decoder Controller */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CONSISTENT_DMA_SIZE	SZ_4M
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * DMA peripheral identifiers
  * for hardware handshaking interface
@@ -175,6 +184,11 @@
 #define AT_DMA_ID_SSC1_RX	 8
 #define AT_DMA_ID_AC97_TX	 9
 #define AT_DMA_ID_AC97_RX	10
+<<<<<<< HEAD
+=======
+#define AT_DMA_ID_AES_TX	11
+#define AT_DMA_ID_AES_RX	12
+>>>>>>> refs/remotes/origin/master
 #define AT_DMA_ID_MCI1		13
 
 #endif

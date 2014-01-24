@@ -81,6 +81,10 @@
 #include <linux/pid_namespace.h>
 #include <linux/ptrace.h>
 #include <linux/tracehook.h>
+<<<<<<< HEAD
+=======
+#include <linux/user_namespace.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pgtable.h>
 #include <asm/processor.h>
@@ -142,6 +146,10 @@ static const char * const task_state_array[] = {
 	"x (dead)",		/*  64 */
 	"K (wakekill)",		/* 128 */
 	"W (waking)",		/* 256 */
+<<<<<<< HEAD
+=======
+	"P (parked)",		/* 512 */
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline const char *get_task_state(struct task_struct *tsk)
@@ -161,6 +169,10 @@ static inline const char *get_task_state(struct task_struct *tsk)
 static inline void task_state(struct seq_file *m, struct pid_namespace *ns,
 				struct pid *pid, struct task_struct *p)
 {
+<<<<<<< HEAD
+=======
+	struct user_namespace *user_ns = seq_user_ns(m);
+>>>>>>> refs/remotes/origin/master
 	struct group_info *group_info;
 	int g;
 	struct fdtable *fdt = NULL;
@@ -173,10 +185,14 @@ static inline void task_state(struct seq_file *m, struct pid_namespace *ns,
 	tpid = 0;
 	if (pid_alive(p)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct task_struct *tracer = tracehook_tracer_task(p);
 =======
 		struct task_struct *tracer = ptrace_parent(p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct task_struct *tracer = ptrace_parent(p);
+>>>>>>> refs/remotes/origin/master
 		if (tracer)
 			tpid = task_pid_nr_ns(tracer, ns);
 	}
@@ -184,6 +200,10 @@ static inline void task_state(struct seq_file *m, struct pid_namespace *ns,
 	seq_printf(m,
 		"State:\t%s\n"
 		"Tgid:\t%d\n"
+<<<<<<< HEAD
+=======
+		"Ngid:\t%d\n"
+>>>>>>> refs/remotes/origin/master
 		"Pid:\t%d\n"
 		"PPid:\t%d\n"
 		"TracerPid:\t%d\n"
@@ -191,10 +211,24 @@ static inline void task_state(struct seq_file *m, struct pid_namespace *ns,
 		"Gid:\t%d\t%d\t%d\t%d\n",
 		get_task_state(p),
 		task_tgid_nr_ns(p, ns),
+<<<<<<< HEAD
 		pid_nr_ns(pid, ns),
 		ppid, tpid,
 		cred->uid, cred->euid, cred->suid, cred->fsuid,
 		cred->gid, cred->egid, cred->sgid, cred->fsgid);
+=======
+		task_numa_group_id(p),
+		pid_nr_ns(pid, ns),
+		ppid, tpid,
+		from_kuid_munged(user_ns, cred->uid),
+		from_kuid_munged(user_ns, cred->euid),
+		from_kuid_munged(user_ns, cred->suid),
+		from_kuid_munged(user_ns, cred->fsuid),
+		from_kgid_munged(user_ns, cred->gid),
+		from_kgid_munged(user_ns, cred->egid),
+		from_kgid_munged(user_ns, cred->sgid),
+		from_kgid_munged(user_ns, cred->fsgid));
+>>>>>>> refs/remotes/origin/master
 
 	task_lock(p);
 	if (p->files)
@@ -208,14 +242,24 @@ static inline void task_state(struct seq_file *m, struct pid_namespace *ns,
 	group_info = cred->group_info;
 	task_unlock(p);
 
+<<<<<<< HEAD
 	for (g = 0; g < min(group_info->ngroups, NGROUPS_SMALL); g++)
 		seq_printf(m, "%d ", GROUP_AT(group_info, g));
+=======
+	for (g = 0; g < group_info->ngroups; g++)
+		seq_printf(m, "%d ",
+			   from_kgid_munged(user_ns, GROUP_AT(group_info, g)));
+>>>>>>> refs/remotes/origin/master
 	put_cred(cred);
 
 	seq_putc(m, '\n');
 }
 
+<<<<<<< HEAD
 static void render_sigset_t(struct seq_file *m, const char *header,
+=======
+void render_sigset_t(struct seq_file *m, const char *header,
+>>>>>>> refs/remotes/origin/master
 				sigset_t *set)
 {
 	int i;
@@ -303,6 +347,13 @@ static void render_cap_t(struct seq_file *m, const char *header,
 	seq_putc(m, '\n');
 }
 
+<<<<<<< HEAD
+=======
+/* Remove non-existent capabilities */
+#define NORM_CAPS(v) (v.cap[CAP_TO_INDEX(CAP_LAST_CAP)] &= \
+				CAP_TO_MASK(CAP_LAST_CAP + 1) - 1)
+
+>>>>>>> refs/remotes/origin/master
 static inline void task_cap(struct seq_file *m, struct task_struct *p)
 {
 	const struct cred *cred;
@@ -316,12 +367,30 @@ static inline void task_cap(struct seq_file *m, struct task_struct *p)
 	cap_bset	= cred->cap_bset;
 	rcu_read_unlock();
 
+<<<<<<< HEAD
+=======
+	NORM_CAPS(cap_inheritable);
+	NORM_CAPS(cap_permitted);
+	NORM_CAPS(cap_effective);
+	NORM_CAPS(cap_bset);
+
+>>>>>>> refs/remotes/origin/master
 	render_cap_t(m, "CapInh:\t", &cap_inheritable);
 	render_cap_t(m, "CapPrm:\t", &cap_permitted);
 	render_cap_t(m, "CapEff:\t", &cap_effective);
 	render_cap_t(m, "CapBnd:\t", &cap_bset);
 }
 
+<<<<<<< HEAD
+=======
+static inline void task_seccomp(struct seq_file *m, struct task_struct *p)
+{
+#ifdef CONFIG_SECCOMP
+	seq_printf(m, "Seccomp:\t%d\n", p->seccomp.mode);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void task_context_switch_counts(struct seq_file *m,
 						struct task_struct *p)
 {
@@ -355,6 +424,10 @@ int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
 	}
 	task_sig(m, task);
 	task_cap(m, task);
+<<<<<<< HEAD
+=======
+	task_seccomp(m, task);
+>>>>>>> refs/remotes/origin/master
 	task_cpus_allowed(m, task);
 	cpuset_task_status_allowed(m, task);
 	task_context_switch_counts(m, task);
@@ -365,7 +438,11 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 			struct pid *pid, struct task_struct *task, int whole)
 {
 	unsigned long vsize, eip, esp, wchan = ~0UL;
+<<<<<<< HEAD
 	long priority, nice;
+=======
+	int priority, nice;
+>>>>>>> refs/remotes/origin/master
 	int tty_pgrp = -1, tty_nr = 0;
 	sigset_t sigign, sigcatch;
 	char state;
@@ -385,10 +462,14 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 	state = *get_task_state(task);
 	vsize = eip = esp = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	permitted = ptrace_may_access(task, PTRACE_MODE_READ);
 =======
 	permitted = ptrace_may_access(task, PTRACE_MODE_READ | PTRACE_MODE_NOAUDIT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	permitted = ptrace_may_access(task, PTRACE_MODE_READ | PTRACE_MODE_NOAUDIT);
+>>>>>>> refs/remotes/origin/master
 	mm = get_task_mm(task);
 	if (mm) {
 		vsize = task_vsize(mm);
@@ -403,12 +484,17 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 	sigemptyset(&sigign);
 	sigemptyset(&sigcatch);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cutime = cstime = utime = stime = cputime_zero;
 	cgtime = gtime = cputime_zero;
 =======
 	cutime = cstime = utime = stime = 0;
 	cgtime = gtime = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cutime = cstime = utime = stime = 0;
+	cgtime = gtime = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (lock_task_sighand(task, &flags)) {
 		struct signal_struct *sig = task->signal;
@@ -437,21 +523,30 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 				min_flt += t->min_flt;
 				maj_flt += t->maj_flt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				gtime = cputime_add(gtime, t->gtime);
 =======
 				gtime += t->gtime;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				gtime += task_gtime(t);
+>>>>>>> refs/remotes/origin/master
 				t = next_thread(t);
 			} while (t != task);
 
 			min_flt += sig->min_flt;
 			maj_flt += sig->maj_flt;
+<<<<<<< HEAD
 			thread_group_times(task, &utime, &stime);
 <<<<<<< HEAD
 			gtime = cputime_add(gtime, sig->gtime);
 =======
 			gtime += sig->gtime;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			thread_group_cputime_adjusted(task, &utime, &stime);
+			gtime += sig->gtime;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		sid = task_session_nr_ns(task, ns);
@@ -466,8 +561,13 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 	if (!whole) {
 		min_flt = task->min_flt;
 		maj_flt = task->maj_flt;
+<<<<<<< HEAD
 		task_times(task, &utime, &stime);
 		gtime = task->gtime;
+=======
+		task_cputime_adjusted(task, &utime, &stime);
+		gtime = task_gtime(task);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* scale priority and nice values from timeslices to -20..20 */
@@ -483,6 +583,7 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 	/* convert nsec -> ticks */
 	start_time = nsec_to_clock_t(start_time);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	seq_printf(m, "%d (%s) %c %d %d %d %d %d %u %lu \
 %lu %lu %lu %lu %lu %ld %ld %ld %ld %d 0 %llu %lu %ld %lu %lu %lu %lu %lu \
@@ -535,6 +636,8 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 		cputime_to_clock_t(gtime),
 		cputime_to_clock_t(cgtime));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "%d (%s) %c", pid_nr_ns(pid, ns), tcomm, state);
 	seq_put_decimal_ll(m, ' ', ppid);
 	seq_put_decimal_ll(m, ' ', pgid);
@@ -556,7 +659,11 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 	seq_put_decimal_ull(m, ' ', 0);
 	seq_put_decimal_ull(m, ' ', start_time);
 	seq_put_decimal_ull(m, ' ', vsize);
+<<<<<<< HEAD
 	seq_put_decimal_ll(m, ' ', mm ? get_mm_rss(mm) : 0);
+=======
+	seq_put_decimal_ull(m, ' ', mm ? get_mm_rss(mm) : 0);
+>>>>>>> refs/remotes/origin/master
 	seq_put_decimal_ull(m, ' ', rsslim);
 	seq_put_decimal_ull(m, ' ', mm ? (permitted ? mm->start_code : 1) : 0);
 	seq_put_decimal_ull(m, ' ', mm ? (permitted ? mm->end_code : 1) : 0);
@@ -581,11 +688,32 @@ static int do_task_stat(struct seq_file *m, struct pid_namespace *ns,
 	seq_put_decimal_ull(m, ' ', delayacct_blkio_ticks(task));
 	seq_put_decimal_ull(m, ' ', cputime_to_clock_t(gtime));
 	seq_put_decimal_ll(m, ' ', cputime_to_clock_t(cgtime));
+<<<<<<< HEAD
 	seq_put_decimal_ull(m, ' ', (mm && permitted) ? mm->start_data : 0);
 	seq_put_decimal_ull(m, ' ', (mm && permitted) ? mm->end_data : 0);
 	seq_put_decimal_ull(m, ' ', (mm && permitted) ? mm->start_brk : 0);
 	seq_putc(m, '\n');
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (mm && permitted) {
+		seq_put_decimal_ull(m, ' ', mm->start_data);
+		seq_put_decimal_ull(m, ' ', mm->end_data);
+		seq_put_decimal_ull(m, ' ', mm->start_brk);
+		seq_put_decimal_ull(m, ' ', mm->arg_start);
+		seq_put_decimal_ull(m, ' ', mm->arg_end);
+		seq_put_decimal_ull(m, ' ', mm->env_start);
+		seq_put_decimal_ull(m, ' ', mm->env_end);
+	} else
+		seq_printf(m, " 0 0 0 0 0 0 0");
+
+	if (permitted)
+		seq_put_decimal_ll(m, ' ', task->exit_code);
+	else
+		seq_put_decimal_ll(m, ' ', 0);
+
+	seq_putc(m, '\n');
+>>>>>>> refs/remotes/origin/master
 	if (mm)
 		mmput(mm);
 	return 0;
@@ -614,9 +742,12 @@ int proc_pid_statm(struct seq_file *m, struct pid_namespace *ns,
 		mmput(mm);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	seq_printf(m, "%lu %lu %lu %lu 0 %lu 0\n",
 			size, resident, shared, text, data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * For quick read, open code by putting numbers directly
 	 * expected format is
@@ -631,7 +762,136 @@ int proc_pid_statm(struct seq_file *m, struct pid_namespace *ns,
 	seq_put_decimal_ull(m, ' ', data);
 	seq_put_decimal_ull(m, ' ', 0);
 	seq_putc(m, '\n');
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
 }
+=======
+
+	return 0;
+}
+
+#ifdef CONFIG_CHECKPOINT_RESTORE
+static struct pid *
+get_children_pid(struct inode *inode, struct pid *pid_prev, loff_t pos)
+{
+	struct task_struct *start, *task;
+	struct pid *pid = NULL;
+
+	read_lock(&tasklist_lock);
+
+	start = pid_task(proc_pid(inode), PIDTYPE_PID);
+	if (!start)
+		goto out;
+
+	/*
+	 * Lets try to continue searching first, this gives
+	 * us significant speedup on children-rich processes.
+	 */
+	if (pid_prev) {
+		task = pid_task(pid_prev, PIDTYPE_PID);
+		if (task && task->real_parent == start &&
+		    !(list_empty(&task->sibling))) {
+			if (list_is_last(&task->sibling, &start->children))
+				goto out;
+			task = list_first_entry(&task->sibling,
+						struct task_struct, sibling);
+			pid = get_pid(task_pid(task));
+			goto out;
+		}
+	}
+
+	/*
+	 * Slow search case.
+	 *
+	 * We might miss some children here if children
+	 * are exited while we were not holding the lock,
+	 * but it was never promised to be accurate that
+	 * much.
+	 *
+	 * "Just suppose that the parent sleeps, but N children
+	 *  exit after we printed their tids. Now the slow paths
+	 *  skips N extra children, we miss N tasks." (c)
+	 *
+	 * So one need to stop or freeze the leader and all
+	 * its children to get a precise result.
+	 */
+	list_for_each_entry(task, &start->children, sibling) {
+		if (pos-- == 0) {
+			pid = get_pid(task_pid(task));
+			break;
+		}
+	}
+
+out:
+	read_unlock(&tasklist_lock);
+	return pid;
+}
+
+static int children_seq_show(struct seq_file *seq, void *v)
+{
+	struct inode *inode = seq->private;
+	pid_t pid;
+
+	pid = pid_nr_ns(v, inode->i_sb->s_fs_info);
+	return seq_printf(seq, "%d ", pid);
+}
+
+static void *children_seq_start(struct seq_file *seq, loff_t *pos)
+{
+	return get_children_pid(seq->private, NULL, *pos);
+}
+
+static void *children_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+{
+	struct pid *pid;
+
+	pid = get_children_pid(seq->private, v, *pos + 1);
+	put_pid(v);
+
+	++*pos;
+	return pid;
+}
+
+static void children_seq_stop(struct seq_file *seq, void *v)
+{
+	put_pid(v);
+}
+
+static const struct seq_operations children_seq_ops = {
+	.start	= children_seq_start,
+	.next	= children_seq_next,
+	.stop	= children_seq_stop,
+	.show	= children_seq_show,
+};
+
+static int children_seq_open(struct inode *inode, struct file *file)
+{
+	struct seq_file *m;
+	int ret;
+
+	ret = seq_open(file, &children_seq_ops);
+	if (ret)
+		return ret;
+
+	m = file->private_data;
+	m->private = inode;
+
+	return ret;
+}
+
+int children_seq_release(struct inode *inode, struct file *file)
+{
+	seq_release(inode, file);
+	return 0;
+}
+
+const struct file_operations proc_tid_children_operations = {
+	.open    = children_seq_open,
+	.read    = seq_read,
+	.llseek  = seq_lseek,
+	.release = children_seq_release,
+};
+#endif /* CONFIG_CHECKPOINT_RESTORE */
+>>>>>>> refs/remotes/origin/master

@@ -121,10 +121,14 @@ struct iucv_message {
 	u8  rmmsg[8];
 	u8  flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 =======
 } __packed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * struct iucv_handler
@@ -464,7 +468,10 @@ int iucv_message_send2way(struct iucv_path *path, struct iucv_message *msg,
 			  u8 flags, u32 srccls, void *buffer, size_t size,
 			  void *answer, size_t asize, size_t *residual);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct iucv_interface {
 	int (*message_receive)(struct iucv_path *path, struct iucv_message *msg,
@@ -499,4 +506,7 @@ struct iucv_interface {
 };
 
 extern struct iucv_interface iucv_if;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

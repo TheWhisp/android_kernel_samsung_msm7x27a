@@ -145,10 +145,14 @@ static DEFINE_MUTEX(pcd_mutex);
 static DEFINE_SPINLOCK(pcd_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(verbose, bool, 0644);
 =======
 module_param(verbose, int, 0644);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(verbose, int, 0644);
+>>>>>>> refs/remotes/origin/master
 module_param(major, int, 0);
 module_param(name, charp, 0);
 module_param(nice, int, 0);
@@ -240,13 +244,20 @@ static int pcd_block_open(struct block_device *bdev, fmode_t mode)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int pcd_block_release(struct gendisk *disk, fmode_t mode)
+=======
+static void pcd_block_release(struct gendisk *disk, fmode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcd_unit *cd = disk->private_data;
 	mutex_lock(&pcd_mutex);
 	cdrom_release(&cd->info, mode);
 	mutex_unlock(&pcd_mutex);
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pcd_block_ioctl(struct block_device *bdev, fmode_t mode,

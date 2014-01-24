@@ -17,10 +17,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netdevice.h>
 #include <linux/skbuff.h>
 #include <linux/rcupdate.h>
@@ -64,10 +68,14 @@ struct neigh_parms {
 	int	delay_probe_time;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int	queue_len;
 =======
 	int	queue_len_bytes;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int	queue_len_bytes;
+>>>>>>> refs/remotes/origin/master
 	int	ucast_probes;
 	int	app_probes;
 	int	mcast_probes;
@@ -108,9 +116,13 @@ struct neighbour {
 	atomic_t		refcnt;
 	struct sk_buff_head	arp_queue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int		arp_queue_len_bytes;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		arp_queue_len_bytes;
+>>>>>>> refs/remotes/origin/master
 	struct timer_list	timer;
 	unsigned long		used;
 	atomic_t		probes;
@@ -121,12 +133,17 @@ struct neighbour {
 	seqlock_t		ha_lock;
 	unsigned char		ha[ALIGN(MAX_ADDR_LEN, sizeof(unsigned long))];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct hh_cache		*hh;
 	int			(*output)(struct sk_buff *skb);
 =======
 	struct hh_cache		hh;
 	int			(*output)(struct neighbour *, struct sk_buff *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hh_cache		hh;
+	int			(*output)(struct neighbour *, struct sk_buff *);
+>>>>>>> refs/remotes/origin/master
 	const struct neigh_ops	*ops;
 	struct rcu_head		rcu;
 	struct net_device	*dev;
@@ -136,6 +153,7 @@ struct neighbour {
 struct neigh_ops {
 	int			family;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void			(*solicit)(struct neighbour *, struct sk_buff*);
 	void			(*error_report)(struct neighbour *, struct sk_buff*);
 	int			(*output)(struct sk_buff*);
@@ -143,11 +161,16 @@ struct neigh_ops {
 	int			(*hh_output)(struct sk_buff*);
 	int			(*queue_xmit)(struct sk_buff*);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	void			(*solicit)(struct neighbour *, struct sk_buff *);
 	void			(*error_report)(struct neighbour *, struct sk_buff *);
 	int			(*output)(struct neighbour *, struct sk_buff *);
 	int			(*connected_output)(struct neighbour *, struct sk_buff *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pneigh_entry {
@@ -165,18 +188,24 @@ struct pneigh_entry {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct neigh_hash_table {
 	struct neighbour __rcu	**hash_buckets;
 	unsigned int		hash_mask;
 	__u32			hash_rnd;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define NEIGH_NUM_HASH_RND	4
 
 struct neigh_hash_table {
 	struct neighbour __rcu	**hash_buckets;
 	unsigned int		hash_shift;
 	__u32			hash_rnd[NEIGH_NUM_HASH_RND];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rcu_head		rcu;
 };
 
@@ -189,10 +218,14 @@ struct neigh_table {
 	__u32			(*hash)(const void *pkey,
 					const struct net_device *dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					__u32 hash_rnd);
 =======
 					__u32 *hash_rnd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					__u32 *hash_rnd);
+>>>>>>> refs/remotes/origin/master
 	int			(*constructor)(struct neighbour *);
 	int			(*pconstructor)(struct pneigh_entry *);
 	void			(*pdestructor)(struct pneigh_entry *);
@@ -212,14 +245,18 @@ struct neigh_table {
 	rwlock_t		lock;
 	unsigned long		last_rand;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kmem_cache	*kmem_cachep;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct neigh_statistics	__percpu *stats;
 	struct neigh_hash_table __rcu *nht;
 	struct pneigh_entry	**phash_buckets;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define NEIGH_PRIV_ALIGN	sizeof(long long)
@@ -230,6 +267,16 @@ static inline void *neighbour_priv(const struct neighbour *n)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NEIGH_PRIV_ALIGN	sizeof(long long)
+#define NEIGH_ENTRY_SIZE(size)	ALIGN((size), NEIGH_PRIV_ALIGN)
+
+static inline void *neighbour_priv(const struct neighbour *n)
+{
+	return (char *)n + n->tbl->entry_size;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* flags for neigh_update() */
 #define NEIGH_UPDATE_F_OVERRIDE			0x00000001
 #define NEIGH_UPDATE_F_WEAK_OVERRIDE		0x00000002
@@ -237,6 +284,7 @@ static inline void *neighbour_priv(const struct neighbour *n)
 #define NEIGH_UPDATE_F_ISROUTER			0x40000000
 #define NEIGH_UPDATE_F_ADMIN			0x80000000
 
+<<<<<<< HEAD
 extern void			neigh_table_init(struct neigh_table *tbl);
 extern void			neigh_table_init_no_netlink(struct neigh_table *tbl);
 extern int			neigh_table_clear(struct neigh_table *tbl);
@@ -274,10 +322,46 @@ extern void			neigh_parms_release(struct neigh_table *tbl, struct neigh_parms *p
 
 static inline
 struct net			*neigh_parms_net(const struct neigh_parms *parms)
+=======
+void neigh_table_init(struct neigh_table *tbl);
+int neigh_table_clear(struct neigh_table *tbl);
+struct neighbour *neigh_lookup(struct neigh_table *tbl, const void *pkey,
+			       struct net_device *dev);
+struct neighbour *neigh_lookup_nodev(struct neigh_table *tbl, struct net *net,
+				     const void *pkey);
+struct neighbour *__neigh_create(struct neigh_table *tbl, const void *pkey,
+				 struct net_device *dev, bool want_ref);
+static inline struct neighbour *neigh_create(struct neigh_table *tbl,
+					     const void *pkey,
+					     struct net_device *dev)
+{
+	return __neigh_create(tbl, pkey, dev, true);
+}
+void neigh_destroy(struct neighbour *neigh);
+int __neigh_event_send(struct neighbour *neigh, struct sk_buff *skb);
+int neigh_update(struct neighbour *neigh, const u8 *lladdr, u8 new, u32 flags);
+void neigh_changeaddr(struct neigh_table *tbl, struct net_device *dev);
+int neigh_ifdown(struct neigh_table *tbl, struct net_device *dev);
+int neigh_resolve_output(struct neighbour *neigh, struct sk_buff *skb);
+int neigh_connected_output(struct neighbour *neigh, struct sk_buff *skb);
+int neigh_compat_output(struct neighbour *neigh, struct sk_buff *skb);
+int neigh_direct_output(struct neighbour *neigh, struct sk_buff *skb);
+struct neighbour *neigh_event_ns(struct neigh_table *tbl,
+						u8 *lladdr, void *saddr,
+						struct net_device *dev);
+
+struct neigh_parms *neigh_parms_alloc(struct net_device *dev,
+				      struct neigh_table *tbl);
+void neigh_parms_release(struct neigh_table *tbl, struct neigh_parms *parms);
+
+static inline
+struct net *neigh_parms_net(const struct neigh_parms *parms)
+>>>>>>> refs/remotes/origin/master
 {
 	return read_pnet(&parms->net);
 }
 
+<<<<<<< HEAD
 extern unsigned long		neigh_rand_reach_time(unsigned long base);
 
 extern void			pneigh_enqueue(struct neigh_table *tbl, struct neigh_parms *p,
@@ -291,14 +375,39 @@ extern int			pneigh_delete(struct neigh_table *tbl, struct net *net, const void 
 
 static inline
 struct net			*pneigh_net(const struct pneigh_entry *pneigh)
+=======
+unsigned long neigh_rand_reach_time(unsigned long base);
+
+void pneigh_enqueue(struct neigh_table *tbl, struct neigh_parms *p,
+		    struct sk_buff *skb);
+struct pneigh_entry *pneigh_lookup(struct neigh_table *tbl, struct net *net,
+				   const void *key, struct net_device *dev,
+				   int creat);
+struct pneigh_entry *__pneigh_lookup(struct neigh_table *tbl, struct net *net,
+				     const void *key, struct net_device *dev);
+int pneigh_delete(struct neigh_table *tbl, struct net *net, const void *key,
+		  struct net_device *dev);
+
+static inline struct net *pneigh_net(const struct pneigh_entry *pneigh)
+>>>>>>> refs/remotes/origin/master
 {
 	return read_pnet(&pneigh->net);
 }
 
+<<<<<<< HEAD
 extern void neigh_app_ns(struct neighbour *n);
 extern void neigh_for_each(struct neigh_table *tbl, void (*cb)(struct neighbour *, void *), void *cookie);
 extern void __neigh_for_each_release(struct neigh_table *tbl, int (*cb)(struct neighbour *));
 extern void pneigh_for_each(struct neigh_table *tbl, void (*cb)(struct pneigh_entry *));
+=======
+void neigh_app_ns(struct neighbour *n);
+void neigh_for_each(struct neigh_table *tbl,
+		    void (*cb)(struct neighbour *, void *), void *cookie);
+void __neigh_for_each_release(struct neigh_table *tbl,
+			      int (*cb)(struct neighbour *));
+void pneigh_for_each(struct neigh_table *tbl,
+		     void (*cb)(struct pneigh_entry *));
+>>>>>>> refs/remotes/origin/master
 
 struct neigh_seq_state {
 	struct seq_net_private p;
@@ -312,6 +421,7 @@ struct neigh_seq_state {
 #define NEIGH_SEQ_IS_PNEIGH	0x00000002
 #define NEIGH_SEQ_SKIP_NOARP	0x00000004
 };
+<<<<<<< HEAD
 extern void *neigh_seq_start(struct seq_file *, loff_t *, struct neigh_table *, unsigned int);
 extern void *neigh_seq_next(struct seq_file *, void *, loff_t *);
 extern void neigh_seq_stop(struct seq_file *, void *);
@@ -321,6 +431,16 @@ extern int			neigh_sysctl_register(struct net_device *dev,
 						      char *p_name,
 						      proc_handler *proc_handler);
 extern void			neigh_sysctl_unregister(struct neigh_parms *p);
+=======
+void *neigh_seq_start(struct seq_file *, loff_t *, struct neigh_table *,
+		      unsigned int);
+void *neigh_seq_next(struct seq_file *, void *, loff_t *);
+void neigh_seq_stop(struct seq_file *, void *);
+
+int neigh_sysctl_register(struct net_device *dev, struct neigh_parms *p,
+			  char *p_name, proc_handler *proc_handler);
+void neigh_sysctl_unregister(struct neigh_parms *p);
+>>>>>>> refs/remotes/origin/master
 
 static inline void __neigh_parms_put(struct neigh_parms *parms)
 {
@@ -352,12 +472,15 @@ static inline struct neighbour * neigh_clone(struct neighbour *neigh)
 
 #define neigh_hold(n)	atomic_inc(&(n)->refcnt)
 
+<<<<<<< HEAD
 static inline void neigh_confirm(struct neighbour *neigh)
 {
 	if (neigh)
 		neigh->confirmed = jiffies;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int neigh_event_send(struct neighbour *neigh, struct sk_buff *skb)
 {
 	unsigned long now = jiffies;
@@ -372,7 +495,11 @@ static inline int neigh_event_send(struct neighbour *neigh, struct sk_buff *skb)
 #ifdef CONFIG_BRIDGE_NETFILTER
 static inline int neigh_hh_bridge(struct hh_cache *hh, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	unsigned seq, hh_alen;
+=======
+	unsigned int seq, hh_alen;
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		seq = read_seqbegin(&hh->hh_lock);
@@ -383,6 +510,7 @@ static inline int neigh_hh_bridge(struct hh_cache *hh, struct sk_buff *skb)
 }
 #endif
 
+<<<<<<< HEAD
 static inline int neigh_hh_output(struct hh_cache *hh, struct sk_buff *skb)
 {
 	unsigned seq;
@@ -414,6 +542,30 @@ static inline int neigh_output(struct neighbour *n, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+static inline int neigh_hh_output(const struct hh_cache *hh, struct sk_buff *skb)
+{
+	unsigned int seq;
+	int hh_len;
+
+	do {
+		seq = read_seqbegin(&hh->hh_lock);
+		hh_len = hh->hh_len;
+		if (likely(hh_len <= HH_DATA_MOD)) {
+			/* this is inlined by gcc */
+			memcpy(skb->data - HH_DATA_MOD, hh->hh_data, HH_DATA_MOD);
+		} else {
+			int hh_alen = HH_DATA_ALIGN(hh_len);
+
+			memcpy(skb->data - hh_alen, hh->hh_data, hh_alen);
+		}
+	} while (read_seqretry(&hh->hh_lock, seq));
+
+	skb_push(skb, hh_len);
+	return dev_queue_xmit(skb);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline struct neighbour *
 __neigh_lookup(struct neigh_table *tbl, const void *pkey, struct net_device *dev, int creat)
 {

@@ -68,9 +68,13 @@
 #include <linux/bio.h>
 #include <linux/freezer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/mutex.h>
 #include <linux/seq_file.h>
@@ -2008,12 +2012,25 @@ static int lbmRead(struct jfs_log * log, int pn, struct lbuf ** bpp)
 	bio->bi_io_vec[0].bv_offset = bp->l_offset;
 
 	bio->bi_vcnt = 1;
+<<<<<<< HEAD
 	bio->bi_idx = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	bio->bi_size = LOGPSIZE;
 
 	bio->bi_end_io = lbmIODone;
 	bio->bi_private = bp;
+<<<<<<< HEAD
 	submit_bio(READ_SYNC, bio);
+=======
+	/*check if journaling to disk has been disabled*/
+	if (log->no_integrity) {
+		bio->bi_size = 0;
+		lbmIODone(bio, 0);
+	} else {
+		submit_bio(READ_SYNC, bio);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	wait_event(bp->l_ioevent, (bp->l_flag != lbmREAD));
 
@@ -2149,7 +2166,10 @@ static void lbmStartIO(struct lbuf * bp)
 	bio->bi_io_vec[0].bv_offset = bp->l_offset;
 
 	bio->bi_vcnt = 1;
+<<<<<<< HEAD
 	bio->bi_idx = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	bio->bi_size = LOGPSIZE;
 
 	bio->bi_end_io = lbmIODone;
@@ -2354,10 +2374,14 @@ int jfsIOWait(void *arg)
 		if (freezing(current)) {
 			spin_unlock_irq(&log_redrive_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			refrigerator();
 =======
 			try_to_freeze();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			try_to_freeze();
+>>>>>>> refs/remotes/origin/master
 		} else {
 			set_current_state(TASK_INTERRUPTIBLE);
 			spin_unlock_irq(&log_redrive_lock);

@@ -2,10 +2,14 @@
 
     AudioScience HPI driver
 <<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
 =======
     Copyright (C) 1997-2012  AudioScience Inc. <support@audioscience.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2012  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -44,6 +48,7 @@ void hpios_delay_micro_seconds(u32 num_micro_sec)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void hpios_locked_mem_init(void)
 {
 }
@@ -56,6 +61,11 @@ On error, return -ENOMEM, and *pMemArea.size = 0
 
 If allocation fails, return 1, and *pMemArea.size = 0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/** Allocate an area of locked memory for bus master DMA operations.
+
+If allocation fails, return 1, and *pMemArea.size = 0
+>>>>>>> refs/remotes/origin/master
 */
 u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
 	struct pci_dev *pdev)
@@ -77,10 +87,14 @@ u16 hpios_locked_mem_alloc(struct consistent_dma_area *p_mem_area, u32 size,
 			"failed to allocate %d bytes locked memory\n", size);
 		p_mem_area->size = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOMEM;
 =======
 		return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 1;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -100,9 +114,12 @@ u16 hpios_locked_mem_free(struct consistent_dma_area *p_mem_area)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 void hpios_locked_mem_free_all(void)
 {
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _RTL871X_MP_IOCTL_H
 #define _RTL871X_MP_IOCTL_H
 
@@ -336,9 +342,12 @@ struct rfintfs_parm {
 struct mp_xmit_packet {
 	unsigned int len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int mem[MAX_MP_XMITBUF_SZ >> 2];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct psmode_param {
@@ -442,11 +451,15 @@ static struct mp_ioctl_handler mp_ioctl_hdl[] = {
 	{sizeof(struct eeprom_rw_param), NULL, 0},/*14*/
 	{sizeof(struct eeprom_rw_param), NULL, 0},/*15*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{sizeof(u8), oid_rt_pro_set_power_tracking_hdl,
 			     OID_RT_PRO_SET_POWER_TRACKING},/*16*/
 =======
 	{sizeof(unsigned char), NULL, 0},/*16*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{sizeof(unsigned char), NULL, 0},/*16*/
+>>>>>>> refs/remotes/origin/master
 	{sizeof(u32), NULL, 0},/*17*/
 	{sizeof(u32), oid_rt_pro_set_continuous_tx_hdl,
 			     OID_RT_PRO_SET_CONTINUOUS_TX},/*18*/

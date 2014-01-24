@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Description:  keypad driver for ADP5589
 =======
  * Description:  keypad driver for ADP5589, ADP5585
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Description:  keypad driver for ADP5589, ADP5585
+>>>>>>> refs/remotes/origin/master
  *		 I2C QWERTY Keypad and IO Expander
  * Bugs: Enter bugs at http://blackfin.uclinux.org/
  *
@@ -13,9 +17,12 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -31,12 +38,15 @@
 #include <linux/input/adp5589.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* GENERAL_CFG Register */
 #define OSC_EN		(1 << 7)
 #define CORE_CLK(x)	(((x) & 0x3) << 5)
 #define LCK_TRK_LOGIC	(1 << 4)
 #define LCK_TRK_GPI	(1 << 3)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* ADP5589/ADP5585 Common Registers */
 #define ADP5589_5_ID			0x00
 #define ADP5589_5_INT_STATUS		0x01
@@ -173,11 +183,15 @@
 #define CORE_CLK(x)	(((x) & 0x3) << 5)
 #define LCK_TRK_LOGIC	(1 << 4)	/* ADP5589 only */
 #define LCK_TRK_GPI	(1 << 3)	/* ADP5589 only */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define INT_CFG		(1 << 1)
 #define RST_CFG		(1 << 0)
 
 /* INT_EN Register */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LOGIC2_IEN	(1 << 5)
 #define LOGIC1_IEN	(1 << 4)
@@ -187,11 +201,17 @@
 #define LOGIC1_IEN	(1 << 4)
 #define LOCK_IEN	(1 << 3)	/* ADP5589 only */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOGIC2_IEN	(1 << 5)	/* ADP5589 only */
+#define LOGIC1_IEN	(1 << 4)
+#define LOCK_IEN	(1 << 3)	/* ADP5589 only */
+>>>>>>> refs/remotes/origin/master
 #define OVRFLOW_IEN	(1 << 2)
 #define GPI_IEN		(1 << 1)
 #define EVENT_IEN	(1 << 0)
 
 /* Interrupt Status Register */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LOGIC2_INT	(1 << 5)
 #define LOGIC1_INT	(1 << 4)
@@ -201,11 +221,17 @@
 #define LOGIC1_INT	(1 << 4)
 #define LOCK_INT	(1 << 3)	/* ADP5589 only */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOGIC2_INT	(1 << 5)	/* ADP5589 only */
+#define LOGIC1_INT	(1 << 4)
+#define LOCK_INT	(1 << 3)	/* ADP5589 only */
+>>>>>>> refs/remotes/origin/master
 #define OVRFLOW_INT	(1 << 2)
 #define GPI_INT		(1 << 1)
 #define EVENT_INT	(1 << 0)
 
 /* STATUS Register */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define LOGIC2_STAT	(1 << 7)
@@ -216,6 +242,11 @@
 #define LOGIC1_STAT	(1 << 6)
 #define LOCK_STAT	(1 << 5)	/* ADP5589 only */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LOGIC2_STAT	(1 << 7)	/* ADP5589 only */
+#define LOGIC1_STAT	(1 << 6)
+#define LOCK_STAT	(1 << 5)	/* ADP5589 only */
+>>>>>>> refs/remotes/origin/master
 #define KEC		0xF
 
 /* PIN_CONFIG_D Register */
@@ -227,10 +258,14 @@
 
 #define PTIME_MASK	0x3
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LTIME_MASK	0x3
 =======
 #define LTIME_MASK	0x3		/* ADP5589 only */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LTIME_MASK	0x3		/* ADP5589 only */
+>>>>>>> refs/remotes/origin/master
 
 /* Key Event Register xy */
 #define KEY_EV_PRESSED		(1 << 7)
@@ -238,11 +273,14 @@
 
 #define KEYP_MAX_EVENT		16
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define MAXGPIO			19
 #define ADP_BANK(offs)		((offs) >> 3)
 #define ADP_BIT(offs)		(1u << ((offs) & 0x7))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ADP5589_MAXGPIO		19
 #define ADP5585_MAXGPIO		11 /* 10 on the ADP5585-01, 11 on ADP5585-02 */
 
@@ -271,28 +309,41 @@ struct adp_constants {
 	u8 (*bit) (u8 offset);
 	u8 (*reg) (u8 reg);
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct adp5589_kpad {
 	struct i2c_client *client;
 	struct input_dev *input;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const struct adp_constants *var;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct adp_constants *var;
+>>>>>>> refs/remotes/origin/master
 	unsigned short keycode[ADP5589_KEYMAPSIZE];
 	const struct adp5589_gpi_map *gpimap;
 	unsigned short gpimapsize;
 	unsigned extend_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_GPIOLIB
 	unsigned char gpiomap[MAXGPIO];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool is_adp5585;
 	bool adp5585_support_row5;
 #ifdef CONFIG_GPIOLIB
 	unsigned char gpiomap[ADP5589_MAXGPIO];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bool export_gpio;
 	struct gpio_chip gc;
 	struct mutex gpio_lock;	/* Protect cached dir, dat_out */
@@ -302,7 +353,10 @@ struct adp5589_kpad {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  ADP5589 / ADP5585 derivative / variant handling
  */
@@ -426,7 +480,10 @@ static const struct adp_constants const_adp5585 = {
 	.reg			= adp5585_reg,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int adp5589_read(struct i2c_client *client, u8 reg)
 {
 	int ret = i2c_smbus_read_byte_data(client, reg);
@@ -447,19 +504,25 @@ static int adp5589_gpio_get_value(struct gpio_chip *chip, unsigned off)
 {
 	struct adp5589_kpad *kpad = container_of(chip, struct adp5589_kpad, gc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int bank = ADP_BANK(kpad->gpiomap[off]);
 	unsigned int bit = ADP_BIT(kpad->gpiomap[off]);
 
 	return !!(adp5589_read(kpad->client, ADP5589_GPI_STATUS_A + bank) &
 		  bit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int bank = kpad->var->bank(kpad->gpiomap[off]);
 	unsigned int bit = kpad->var->bit(kpad->gpiomap[off]);
 
 	return !!(adp5589_read(kpad->client,
 			       kpad->var->reg(ADP5589_GPI_STATUS_A) + bank) &
 			       bit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void adp5589_gpio_set_value(struct gpio_chip *chip,
@@ -467,12 +530,17 @@ static void adp5589_gpio_set_value(struct gpio_chip *chip,
 {
 	struct adp5589_kpad *kpad = container_of(chip, struct adp5589_kpad, gc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int bank = ADP_BANK(kpad->gpiomap[off]);
 	unsigned int bit = ADP_BIT(kpad->gpiomap[off]);
 =======
 	unsigned int bank = kpad->var->bank(kpad->gpiomap[off]);
 	unsigned int bit = kpad->var->bit(kpad->gpiomap[off]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int bank = kpad->var->bank(kpad->gpiomap[off]);
+	unsigned int bit = kpad->var->bit(kpad->gpiomap[off]);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&kpad->gpio_lock);
 
@@ -482,12 +550,17 @@ static void adp5589_gpio_set_value(struct gpio_chip *chip,
 		kpad->dat_out[bank] &= ~bit;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	adp5589_write(kpad->client, ADP5589_GPO_DATA_OUT_A + bank,
 		      kpad->dat_out[bank]);
 =======
 	adp5589_write(kpad->client, kpad->var->reg(ADP5589_GPO_DATA_OUT_A) +
 		      bank, kpad->dat_out[bank]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adp5589_write(kpad->client, kpad->var->reg(ADP5589_GPO_DATA_OUT_A) +
+		      bank, kpad->dat_out[bank]);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&kpad->gpio_lock);
 }
@@ -496,23 +569,33 @@ static int adp5589_gpio_direction_input(struct gpio_chip *chip, unsigned off)
 {
 	struct adp5589_kpad *kpad = container_of(chip, struct adp5589_kpad, gc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int bank = ADP_BANK(kpad->gpiomap[off]);
 	unsigned int bit = ADP_BIT(kpad->gpiomap[off]);
 =======
 	unsigned int bank = kpad->var->bank(kpad->gpiomap[off]);
 	unsigned int bit = kpad->var->bit(kpad->gpiomap[off]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int bank = kpad->var->bank(kpad->gpiomap[off]);
+	unsigned int bit = kpad->var->bit(kpad->gpiomap[off]);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&kpad->gpio_lock);
 
 	kpad->dir[bank] &= ~bit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = adp5589_write(kpad->client, ADP5589_GPIO_DIRECTION_A + bank,
 =======
 	ret = adp5589_write(kpad->client,
 			    kpad->var->reg(ADP5589_GPIO_DIRECTION_A) + bank,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = adp5589_write(kpad->client,
+			    kpad->var->reg(ADP5589_GPIO_DIRECTION_A) + bank,
+>>>>>>> refs/remotes/origin/master
 			    kpad->dir[bank]);
 
 	mutex_unlock(&kpad->gpio_lock);
@@ -525,12 +608,17 @@ static int adp5589_gpio_direction_output(struct gpio_chip *chip,
 {
 	struct adp5589_kpad *kpad = container_of(chip, struct adp5589_kpad, gc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int bank = ADP_BANK(kpad->gpiomap[off]);
 	unsigned int bit = ADP_BIT(kpad->gpiomap[off]);
 =======
 	unsigned int bank = kpad->var->bank(kpad->gpiomap[off]);
 	unsigned int bit = kpad->var->bit(kpad->gpiomap[off]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int bank = kpad->var->bank(kpad->gpiomap[off]);
+	unsigned int bit = kpad->var->bit(kpad->gpiomap[off]);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&kpad->gpio_lock);
@@ -543,15 +631,21 @@ static int adp5589_gpio_direction_output(struct gpio_chip *chip,
 		kpad->dat_out[bank] &= ~bit;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = adp5589_write(kpad->client, ADP5589_GPO_DATA_OUT_A + bank,
 			    kpad->dat_out[bank]);
 	ret |= adp5589_write(kpad->client, ADP5589_GPIO_DIRECTION_A + bank,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = adp5589_write(kpad->client, kpad->var->reg(ADP5589_GPO_DATA_OUT_A)
 			    + bank, kpad->dat_out[bank]);
 	ret |= adp5589_write(kpad->client,
 			     kpad->var->reg(ADP5589_GPIO_DIRECTION_A) + bank,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			     kpad->dir[bank]);
 
 	mutex_unlock(&kpad->gpio_lock);
@@ -559,6 +653,7 @@ static int adp5589_gpio_direction_output(struct gpio_chip *chip,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5589_build_gpiomap(struct adp5589_kpad *kpad,
 				const struct adp5589_kpad_platform_data *pdata)
 {
@@ -567,49 +662,73 @@ static int __devinit adp5589_build_gpiomap(struct adp5589_kpad *kpad,
 =======
 	bool pin_used[ADP5589_MAXGPIO];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int adp5589_build_gpiomap(struct adp5589_kpad *kpad,
+				const struct adp5589_kpad_platform_data *pdata)
+{
+	bool pin_used[ADP5589_MAXGPIO];
+>>>>>>> refs/remotes/origin/master
 	int n_unused = 0;
 	int i;
 
 	memset(pin_used, false, sizeof(pin_used));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MAXGPIO; i++)
 =======
 	for (i = 0; i < kpad->var->maxgpio; i++)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < kpad->var->maxgpio; i++)
+>>>>>>> refs/remotes/origin/master
 		if (pdata->keypad_en_mask & (1 << i))
 			pin_used[i] = true;
 
 	for (i = 0; i < kpad->gpimapsize; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pin_used[kpad->gpimap[i].pin - ADP5589_GPI_PIN_BASE] = true;
 =======
 		pin_used[kpad->gpimap[i].pin - kpad->var->gpi_pin_base] = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pin_used[kpad->gpimap[i].pin - kpad->var->gpi_pin_base] = true;
+>>>>>>> refs/remotes/origin/master
 
 	if (kpad->extend_cfg & R4_EXTEND_CFG)
 		pin_used[4] = true;
 
 	if (kpad->extend_cfg & C4_EXTEND_CFG)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pin_used[12] = true;
 
 	for (i = 0; i < MAXGPIO; i++)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pin_used[kpad->var->c4_extend_cfg] = true;
 
 	if (!kpad->adp5585_support_row5)
 		pin_used[5] = true;
 
 	for (i = 0; i < kpad->var->maxgpio; i++)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!pin_used[i])
 			kpad->gpiomap[n_unused++] = i;
 
 	return n_unused;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5589_gpio_add(struct adp5589_kpad *kpad)
+=======
+static int adp5589_gpio_add(struct adp5589_kpad *kpad)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &kpad->client->dev;
 	const struct adp5589_kpad_platform_data *pdata = dev->platform_data;
@@ -646,18 +765,24 @@ static int __devinit adp5589_gpio_add(struct adp5589_kpad *kpad)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i <= ADP_BANK(MAXGPIO); i++) {
 		kpad->dat_out[i] = adp5589_read(kpad->client,
 						ADP5589_GPO_DATA_OUT_A + i);
 		kpad->dir[i] = adp5589_read(kpad->client,
 					    ADP5589_GPIO_DIRECTION_A + i);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= kpad->var->bank(kpad->var->maxgpio); i++) {
 		kpad->dat_out[i] = adp5589_read(kpad->client, kpad->var->reg(
 						ADP5589_GPO_DATA_OUT_A) + i);
 		kpad->dir[i] = adp5589_read(kpad->client, kpad->var->reg(
 					    ADP5589_GPIO_DIRECTION_A) + i);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (gpio_data->setup) {
@@ -671,7 +796,11 @@ static int __devinit adp5589_gpio_add(struct adp5589_kpad *kpad)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit adp5589_gpio_remove(struct adp5589_kpad *kpad)
+=======
+static void adp5589_gpio_remove(struct adp5589_kpad *kpad)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &kpad->client->dev;
 	const struct adp5589_kpad_platform_data *pdata = dev->platform_data;
@@ -725,18 +854,24 @@ static void adp5589_report_events(struct adp5589_kpad *kpad, int ev_cnt)
 
 	for (i = 0; i < ev_cnt; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int key = adp5589_read(kpad->client, ADP5589_FIFO_1 + i);
 		int key_val = key & KEY_EV_MASK;
 
 		if (key_val >= ADP5589_GPI_PIN_BASE &&
 		    key_val <= ADP5589_GPI_PIN_END) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int key = adp5589_read(kpad->client, ADP5589_5_FIFO_1 + i);
 		int key_val = key & KEY_EV_MASK;
 
 		if (key_val >= kpad->var->gpi_pin_base &&
 		    key_val <= kpad->var->gpi_pin_end) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			adp5589_report_switches(kpad, key, key_val);
 		} else {
 			input_report_key(kpad->input,
@@ -753,20 +888,28 @@ static irqreturn_t adp5589_irq(int irq, void *handle)
 	int status, ev_cnt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = adp5589_read(client, ADP5589_INT_STATUS);
 =======
 	status = adp5589_read(client, ADP5589_5_INT_STATUS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = adp5589_read(client, ADP5589_5_INT_STATUS);
+>>>>>>> refs/remotes/origin/master
 
 	if (status & OVRFLOW_INT)	/* Unlikely and should never happen */
 		dev_err(&client->dev, "Event Overflow Error\n");
 
 	if (status & EVENT_INT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ev_cnt = adp5589_read(client, ADP5589_STATUS) & KEC;
 =======
 		ev_cnt = adp5589_read(client, ADP5589_5_STATUS) & KEC;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ev_cnt = adp5589_read(client, ADP5589_5_STATUS) & KEC;
+>>>>>>> refs/remotes/origin/master
 		if (ev_cnt) {
 			adp5589_report_events(kpad, ev_cnt);
 			input_sync(kpad->input);
@@ -774,14 +917,19 @@ static irqreturn_t adp5589_irq(int irq, void *handle)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	adp5589_write(client, ADP5589_INT_STATUS, status);	/* Status is W1C */
 =======
 	adp5589_write(client, ADP5589_5_INT_STATUS, status); /* Status is W1C */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	adp5589_write(client, ADP5589_5_INT_STATUS, status); /* Status is W1C */
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __devinit adp5589_get_evcode(struct adp5589_kpad *kpad, unsigned short key)
 {
@@ -791,11 +939,17 @@ static int __devinit adp5589_get_evcode(struct adp5589_kpad *kpad, unsigned shor
 =======
 static int __devinit adp5589_get_evcode(struct adp5589_kpad *kpad,
 					unsigned short key)
+=======
+static int adp5589_get_evcode(struct adp5589_kpad *kpad, unsigned short key)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	for (i = 0; i < kpad->var->keymapsize; i++)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (key == kpad->keycode[i])
 			return (i + 1) | KEY_EV_PRESSED;
 
@@ -804,6 +958,7 @@ static int __devinit adp5589_get_evcode(struct adp5589_kpad *kpad,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 {
 	struct i2c_client *client = kpad->client;
@@ -823,6 +978,12 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 
 	if (pdata->en_keylock) {
 =======
+=======
+static int adp5589_setup(struct adp5589_kpad *kpad)
+{
+	struct i2c_client *client = kpad->client;
+	const struct adp5589_kpad_platform_data *pdata =
+>>>>>>> refs/remotes/origin/master
 		client->dev.platform_data;
 	u8 (*reg) (u8) = kpad->var->reg;
 	unsigned char evt_mode1 = 0, evt_mode2 = 0, evt_mode3 = 0;
@@ -840,7 +1001,10 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 				     (pdata->keypad_en_mask >> 16) & 0xFF);
 
 	if (!kpad->is_adp5585 && pdata->en_keylock) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret |= adp5589_write(client, ADP5589_UNLOCK1,
 				     pdata->unlock_key1);
 		ret |= adp5589_write(client, ADP5589_UNLOCK2,
@@ -852,14 +1016,19 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 
 	for (i = 0; i < KEYP_MAX_EVENT; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret |= adp5589_read(client, ADP5589_FIFO_1 + i);
 =======
 		ret |= adp5589_read(client, ADP5589_5_FIFO_1 + i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret |= adp5589_read(client, ADP5589_5_FIFO_1 + i);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < pdata->gpimapsize; i++) {
 		unsigned short pin = pdata->gpimap[i].pin;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pin <= ADP5589_GPI_PIN_ROW_END) {
 			evt_mode1 |= (1 << (pin - ADP5589_GPI_PIN_ROW_BASE));
@@ -869,6 +1038,8 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 			evt_mode3 |=
 			    ((1 << (pin - ADP5589_GPI_PIN_COL_BASE)) >> 8);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pin <= kpad->var->gpi_pin_row_end) {
 			evt_mode1 |= (1 << (pin - kpad->var->gpi_pin_row_base));
 		} else {
@@ -877,11 +1048,15 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 			if (!kpad->is_adp5585)
 				evt_mode3 |= ((1 << (pin -
 					kpad->var->gpi_pin_col_base)) >> 8);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (pdata->gpimapsize) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret |= adp5589_write(client, ADP5589_GPI_EVENT_EN_A, evt_mode1);
 		ret |= adp5589_write(client, ADP5589_GPI_EVENT_EN_B, evt_mode2);
@@ -903,6 +1078,8 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 			val = 2;
 		else if (pdata->pull_dis_mask & (1 << i))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret |= adp5589_write(client, reg(ADP5589_GPI_EVENT_EN_A),
 				     evt_mode1);
 		ret |= adp5589_write(client, reg(ADP5589_GPI_EVENT_EN_B),
@@ -946,27 +1123,37 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 		else if (pdata->pullup_en_100k & bit)
 			val = 2;
 		else if (pdata->pull_dis_mask & bit)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			val = 3;
 
 		pull_mask |= val << (2 * (i & 0x3));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((i & 0x3) == 0x3 || i == MAXGPIO - 1) {
 			ret |= adp5589_write(client,
 					     ADP5589_RPULL_CONFIG_A + (i >> 2),
 					     pull_mask);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (i == 3 || i == kpad->var->max_col_num) {
 			ret |= adp5589_write(client,
 					     reg(ADP5585_RPULL_CONFIG_C) +
 					     (i >> 2), pull_mask);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pull_mask = 0;
 		}
 	}
 
 	if (pdata->reset1_key_1 && pdata->reset1_key_2 && pdata->reset1_key_3) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret |= adp5589_write(client, ADP5589_RESET1_EVENT_A,
 				     adp5589_get_evcode(kpad,
@@ -976,6 +1163,8 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 							pdata->reset1_key_2));
 		ret |= adp5589_write(client, ADP5589_RESET1_EVENT_C,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret |= adp5589_write(client, reg(ADP5589_RESET1_EVENT_A),
 				     adp5589_get_evcode(kpad,
 							pdata->reset1_key_1));
@@ -983,7 +1172,10 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 				     adp5589_get_evcode(kpad,
 							pdata->reset1_key_2));
 		ret |= adp5589_write(client, reg(ADP5589_RESET1_EVENT_C),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     adp5589_get_evcode(kpad,
 							pdata->reset1_key_3));
 		kpad->extend_cfg |= R4_EXTEND_CFG;
@@ -991,22 +1183,29 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 
 	if (pdata->reset2_key_1 && pdata->reset2_key_2) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret |= adp5589_write(client, ADP5589_RESET2_EVENT_A,
 				     adp5589_get_evcode(kpad,
 							pdata->reset2_key_1));
 		ret |= adp5589_write(client, ADP5589_RESET2_EVENT_B,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret |= adp5589_write(client, reg(ADP5589_RESET2_EVENT_A),
 				     adp5589_get_evcode(kpad,
 							pdata->reset2_key_1));
 		ret |= adp5589_write(client, reg(ADP5589_RESET2_EVENT_B),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     adp5589_get_evcode(kpad,
 							pdata->reset2_key_2));
 		kpad->extend_cfg |= C4_EXTEND_CFG;
 	}
 
 	if (kpad->extend_cfg) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret |= adp5589_write(client, ADP5589_RESET_CFG,
 				     pdata->reset_cfg);
@@ -1028,6 +1227,8 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 			     INT_CFG | OSC_EN | CORE_CLK(3));
 	ret |= adp5589_write(client, ADP5589_INT_EN,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret |= adp5589_write(client, reg(ADP5589_RESET_CFG),
 				     pdata->reset_cfg);
 		ret |= adp5589_write(client, reg(ADP5589_PIN_CONFIG_D),
@@ -1056,7 +1257,10 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 	ret |= adp5589_write(client, reg(ADP5589_GENERAL_CFG),
 			     INT_CFG | OSC_EN | CORE_CLK(3));
 	ret |= adp5589_write(client, reg(ADP5589_INT_EN),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			     OVRFLOW_IEN | GPI_IEN | EVENT_IEN);
 
 	if (ret < 0) {
@@ -1067,6 +1271,7 @@ static int __devinit adp5589_setup(struct adp5589_kpad *kpad)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit adp5589_report_switch_state(struct adp5589_kpad *kpad)
 {
 <<<<<<< HEAD
@@ -1076,6 +1281,10 @@ static void __devinit adp5589_report_switch_state(struct adp5589_kpad *kpad)
 	int gpi_stat_tmp, pin_loc;
 	int i;
 =======
+=======
+static void adp5589_report_switch_state(struct adp5589_kpad *kpad)
+{
+>>>>>>> refs/remotes/origin/master
 	int gpi_stat_tmp, pin_loc;
 	int i;
 	int gpi_stat1 = adp5589_read(kpad->client,
@@ -1084,11 +1293,15 @@ static void __devinit adp5589_report_switch_state(struct adp5589_kpad *kpad)
 				     kpad->var->reg(ADP5589_GPI_STATUS_B));
 	int gpi_stat3 = !kpad->is_adp5585 ?
 			adp5589_read(kpad->client, ADP5589_GPI_STATUS_C) : 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < kpad->gpimapsize; i++) {
 		unsigned short pin = kpad->gpimap[i].pin;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pin <= ADP5589_GPI_PIN_ROW_END) {
 			gpi_stat_tmp = gpi_stat1;
@@ -1100,6 +1313,8 @@ static void __devinit adp5589_report_switch_state(struct adp5589_kpad *kpad)
 			gpi_stat_tmp = gpi_stat3;
 			pin_loc = pin - ADP5589_GPI_PIN_COL_BASE - 8;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pin <= kpad->var->gpi_pin_row_end) {
 			gpi_stat_tmp = gpi_stat1;
 			pin_loc = pin - kpad->var->gpi_pin_row_base;
@@ -1109,11 +1324,15 @@ static void __devinit adp5589_report_switch_state(struct adp5589_kpad *kpad)
 		} else {
 			gpi_stat_tmp = gpi_stat3;
 			pin_loc = pin - kpad->var->gpi_pin_col_base - 8;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (gpi_stat_tmp < 0) {
 			dev_err(&kpad->client->dev,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				"Can't read GPIO_DAT_STAT switch"
 				" %d default to OFF\n", pin);
@@ -1121,6 +1340,10 @@ static void __devinit adp5589_report_switch_state(struct adp5589_kpad *kpad)
 				"Can't read GPIO_DAT_STAT switch %d, default to OFF\n",
 				pin);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"Can't read GPIO_DAT_STAT switch %d, default to OFF\n",
+				pin);
+>>>>>>> refs/remotes/origin/master
 			gpi_stat_tmp = 0;
 		}
 
@@ -1132,6 +1355,7 @@ static void __devinit adp5589_report_switch_state(struct adp5589_kpad *kpad)
 	input_sync(kpad->input);
 }
 
+<<<<<<< HEAD
 static int __devinit adp5589_probe(struct i2c_client *client,
 				   const struct i2c_device_id *id)
 {
@@ -1142,6 +1366,14 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 	const struct adp5589_kpad_platform_data *pdata =
 		client->dev.platform_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int adp5589_probe(struct i2c_client *client,
+			 const struct i2c_device_id *id)
+{
+	struct adp5589_kpad *kpad;
+	const struct adp5589_kpad_platform_data *pdata =
+		client->dev.platform_data;
+>>>>>>> refs/remotes/origin/master
 	struct input_dev *input;
 	unsigned int revid;
 	int ret, i;
@@ -1154,14 +1386,18 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pdata = client->dev.platform_data;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&client->dev, "no platform data?\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!((pdata->keypad_en_mask & 0xFF) &&
 			(pdata->keypad_en_mask >> 8)) || !pdata->keymap) {
@@ -1173,6 +1409,8 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 		dev_err(&client->dev, "invalid keymapsize\n");
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kpad = kzalloc(sizeof(*kpad), GFP_KERNEL);
 	if (!kpad)
 		return -ENOMEM;
@@ -1201,11 +1439,15 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 		dev_err(&client->dev, "invalid keymapsize\n");
 		error = -EINVAL;
 		goto err_free_mem;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!pdata->gpimap && pdata->gpimapsize) {
 		dev_err(&client->dev, "invalid gpimap from pdata\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return -EINVAL;
 	}
@@ -1214,6 +1456,8 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 		dev_err(&client->dev, "invalid gpimapsize\n");
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		error = -EINVAL;
 		goto err_free_mem;
 	}
@@ -1222,12 +1466,16 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 		dev_err(&client->dev, "invalid gpimapsize\n");
 		error = -EINVAL;
 		goto err_free_mem;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < pdata->gpimapsize; i++) {
 		unsigned short pin = pdata->gpimap[i].pin;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pin < ADP5589_GPI_PIN_BASE || pin > ADP5589_GPI_PIN_END) {
 			dev_err(&client->dev, "invalid gpi pin data\n");
@@ -1239,6 +1487,8 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 			dev_err(&client->dev, "invalid gpi row/col data\n");
 			return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pin < kpad->var->gpi_pin_base ||
 				pin > kpad->var->gpi_pin_end) {
 			dev_err(&client->dev, "invalid gpi pin data\n");
@@ -1251,12 +1501,16 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 			dev_err(&client->dev, "invalid gpi row/col data\n");
 			error = -EINVAL;
 			goto err_free_mem;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (!client->irq) {
 		dev_err(&client->dev, "no IRQ?\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return -EINVAL;
 	}
@@ -1265,13 +1519,18 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 	input = input_allocate_device();
 	if (!kpad || !input) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		error = -EINVAL;
 		goto err_free_mem;
 	}
 
 	input = input_allocate_device();
 	if (!input) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		error = -ENOMEM;
 		goto err_free_mem;
 	}
@@ -1279,6 +1538,7 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 	kpad->client = client;
 	kpad->input = input;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = adp5589_read(client, ADP5589_ID);
 	if (ret < 0) {
@@ -1288,6 +1548,8 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 
 	revid = (u8) ret & ADP5589_DEVICE_ID_MASK;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = adp5589_read(client, ADP5589_5_ID);
 	if (ret < 0) {
 		error = ret;
@@ -1295,7 +1557,10 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 	}
 
 	revid = (u8) ret & ADP5589_5_DEVICE_ID_MASK;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	input->name = client->name;
 	input->phys = "adp5589-keys/input0";
@@ -1325,7 +1590,12 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 		__set_bit(EV_REP, input->evbit);
 
 	for (i = 0; i < input->keycodemax; i++)
+<<<<<<< HEAD
 		__set_bit(kpad->keycode[i] & KEY_MAX, input->keybit);
+=======
+		if (kpad->keycode[i] <= KEY_MAX)
+			__set_bit(kpad->keycode[i], input->keybit);
+>>>>>>> refs/remotes/origin/master
 	__clear_bit(KEY_RESERVED, input->keybit);
 
 	if (kpad->gpimapsize)
@@ -1337,10 +1607,14 @@ static int __devinit adp5589_probe(struct i2c_client *client,
 	if (error) {
 		dev_err(&client->dev, "unable to register input device\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto err_free_mem;
 =======
 		goto err_free_input;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_free_input;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = request_threaded_irq(client->irq, NULL, adp5589_irq,
@@ -1374,6 +1648,7 @@ err_unreg_dev:
 	input_unregister_device(input);
 	input = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 err_free_mem:
 	input_free_device(input);
 =======
@@ -1381,11 +1656,17 @@ err_free_input:
 	input_free_device(input);
 err_free_mem:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_free_input:
+	input_free_device(input);
+err_free_mem:
+>>>>>>> refs/remotes/origin/master
 	kfree(kpad);
 
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit adp5589_remove(struct i2c_client *client)
 {
 	struct adp5589_kpad *kpad = i2c_get_clientdata(client);
@@ -1395,6 +1676,13 @@ static int __devexit adp5589_remove(struct i2c_client *client)
 =======
 	adp5589_write(client, kpad->var->reg(ADP5589_GENERAL_CFG), 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int adp5589_remove(struct i2c_client *client)
+{
+	struct adp5589_kpad *kpad = i2c_get_clientdata(client);
+
+	adp5589_write(client, kpad->var->reg(ADP5589_GENERAL_CFG), 0);
+>>>>>>> refs/remotes/origin/master
 	free_irq(client->irq, kpad);
 	input_unregister_device(kpad->input);
 	adp5589_gpio_remove(kpad);
@@ -1435,12 +1723,18 @@ static SIMPLE_DEV_PM_OPS(adp5589_dev_pm_ops, adp5589_suspend, adp5589_resume);
 
 static const struct i2c_device_id adp5589_id[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"adp5589-keys", 0},
 =======
 	{"adp5589-keys", ADP5589},
 	{"adp5585-keys", ADP5585_01},
 	{"adp5585-02-keys", ADP5585_02}, /* Adds ROW5 to ADP5585 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"adp5589-keys", ADP5589},
+	{"adp5585-keys", ADP5585_01},
+	{"adp5585-02-keys", ADP5585_02}, /* Adds ROW5 to ADP5585 */
+>>>>>>> refs/remotes/origin/master
 	{}
 };
 
@@ -1453,6 +1747,7 @@ static struct i2c_driver adp5589_driver = {
 		.pm = &adp5589_dev_pm_ops,
 	},
 	.probe = adp5589_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(adp5589_remove),
 	.id_table = adp5589_id,
 };
@@ -1474,9 +1769,18 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("ADP5589 Keypad driver");
 =======
+=======
+	.remove = adp5589_remove,
+	.id_table = adp5589_id,
+};
+
+>>>>>>> refs/remotes/origin/master
 module_i2c_driver(adp5589_driver);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("ADP5589/ADP5585 Keypad driver");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

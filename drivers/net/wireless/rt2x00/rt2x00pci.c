@@ -33,6 +33,7 @@
 #include "rt2x00pci.h"
 
 /*
+<<<<<<< HEAD
  * Register access.
  */
 int rt2x00pci_regbusy_read(struct rt2x00_dev *rt2x00dev,
@@ -209,6 +210,8 @@ void rt2x00pci_uninitialize(struct rt2x00_dev *rt2x00dev)
 EXPORT_SYMBOL_GPL(rt2x00pci_uninitialize);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * PCI driver handlers.
  */
 static void rt2x00pci_free_reg(struct rt2x00_dev *rt2x00dev)
@@ -244,7 +247,11 @@ static int rt2x00pci_alloc_reg(struct rt2x00_dev *rt2x00dev)
 	return 0;
 
 exit:
+<<<<<<< HEAD
 	ERROR_PROBE("Failed to allocate registers.\n");
+=======
+	rt2x00_probe_err("Failed to allocate registers\n");
+>>>>>>> refs/remotes/origin/master
 
 	rt2x00pci_free_reg(rt2x00dev);
 
@@ -256,33 +263,56 @@ int rt2x00pci_probe(struct pci_dev *pci_dev, const struct rt2x00_ops *ops)
 	struct ieee80211_hw *hw;
 	struct rt2x00_dev *rt2x00dev;
 	int retval;
+<<<<<<< HEAD
 
 	retval = pci_enable_device(pci_dev);
 	if (retval) {
 		ERROR_PROBE("Enable device failed.\n");
+=======
+	u16 chip;
+
+	retval = pci_enable_device(pci_dev);
+	if (retval) {
+		rt2x00_probe_err("Enable device failed\n");
+>>>>>>> refs/remotes/origin/master
 		return retval;
 	}
 
 	retval = pci_request_regions(pci_dev, pci_name(pci_dev));
 	if (retval) {
+<<<<<<< HEAD
 		ERROR_PROBE("PCI request regions failed.\n");
+=======
+		rt2x00_probe_err("PCI request regions failed\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit_disable_device;
 	}
 
 	pci_set_master(pci_dev);
 
 	if (pci_set_mwi(pci_dev))
+<<<<<<< HEAD
 		ERROR_PROBE("MWI not available.\n");
 
 	if (dma_set_mask(&pci_dev->dev, DMA_BIT_MASK(32))) {
 		ERROR_PROBE("PCI DMA not supported.\n");
+=======
+		rt2x00_probe_err("MWI not available\n");
+
+	if (dma_set_mask(&pci_dev->dev, DMA_BIT_MASK(32))) {
+		rt2x00_probe_err("PCI DMA not supported\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -EIO;
 		goto exit_release_regions;
 	}
 
 	hw = ieee80211_alloc_hw(sizeof(struct rt2x00_dev), ops->hw);
 	if (!hw) {
+<<<<<<< HEAD
 		ERROR_PROBE("Failed to allocate hardware.\n");
+=======
+		rt2x00_probe_err("Failed to allocate hardware\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -ENOMEM;
 		goto exit_release_regions;
 	}
@@ -294,7 +324,11 @@ int rt2x00pci_probe(struct pci_dev *pci_dev, const struct rt2x00_ops *ops)
 	rt2x00dev->ops = ops;
 	rt2x00dev->hw = hw;
 	rt2x00dev->irq = pci_dev->irq;
+<<<<<<< HEAD
 	rt2x00dev->name = pci_name(pci_dev);
+=======
+	rt2x00dev->name = ops->name;
+>>>>>>> refs/remotes/origin/master
 
 	if (pci_is_pcie(pci_dev))
 		rt2x00_set_chip_intf(rt2x00dev, RT2X00_CHIP_INTF_PCIE);
@@ -305,6 +339,17 @@ int rt2x00pci_probe(struct pci_dev *pci_dev, const struct rt2x00_ops *ops)
 	if (retval)
 		goto exit_free_device;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Because rt3290 chip use different efuse offset to read efuse data.
+	 * So before read efuse it need to indicate it is the
+	 * rt3290 or not.
+	 */
+	pci_read_config_word(pci_dev, PCI_DEVICE_ID, &chip);
+	rt2x00dev->chip.rt = chip;
+
+>>>>>>> refs/remotes/origin/master
 	retval = rt2x00lib_probe_dev(rt2x00dev);
 	if (retval)
 		goto exit_free_reg;
@@ -374,7 +419,11 @@ int rt2x00pci_resume(struct pci_dev *pci_dev)
 
 	if (pci_set_power_state(pci_dev, PCI_D0) ||
 	    pci_enable_device(pci_dev)) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Failed to resume device.\n");
+=======
+		rt2x00_err(rt2x00dev, "Failed to resume device\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 

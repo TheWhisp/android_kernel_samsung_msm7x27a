@@ -1,8 +1,13 @@
 /*
  * net/tipc/link.c: TIPC link code
  *
+<<<<<<< HEAD
  * Copyright (c) 1996-2007, Ericsson AB
  * Copyright (c) 2004-2007, 2010-2011, Wind River Systems
+=======
+ * Copyright (c) 1996-2007, 2012, Ericsson AB
+ * Copyright (c) 2004-2007, 2010-2013, Wind River Systems
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,17 +46,35 @@
 #include "discover.h"
 #include "config.h"
 
+<<<<<<< HEAD
 
 /*
  * Out-of-range value for link session numbers
  */
 
+=======
+#include <linux/pkt_sched.h>
+
+/*
+ * Error message prefixes
+ */
+static const char *link_co_err = "Link changeover error, ";
+static const char *link_rst_msg = "Resetting link ";
+static const char *link_unk_evt = "Unknown link event ";
+
+/*
+ * Out-of-range value for link session numbers
+ */
+>>>>>>> refs/remotes/origin/master
 #define INVALID_SESSION 0x10000
 
 /*
  * Link state events:
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define  STARTING_EVT    856384768	/* link processing trigger */
 #define  TRAFFIC_MSG_EVT 560815u	/* rx'd ??? */
 #define  TIMEOUT_EVT     560817u	/* link timer expired */
@@ -67,6 +90,7 @@
 /*
  * State value stored in 'exp_msg_count'
  */
+<<<<<<< HEAD
 
 #define START_CHANGEOVER 100000u
 
@@ -100,12 +124,17 @@ static void link_recv_proto_msg(struct link *l_ptr, struct sk_buff *buf);
 static int  link_recv_changeover_msg(struct link **l_ptr, struct sk_buff **buf);
 static void link_set_supervision_props(struct link *l_ptr, u32 tolerance);
 =======
+=======
+#define START_CHANGEOVER 100000u
+
+>>>>>>> refs/remotes/origin/master
 static void link_handle_out_of_seq_msg(struct tipc_link *l_ptr,
 				       struct sk_buff *buf);
 static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf);
 static int  link_recv_changeover_msg(struct tipc_link **l_ptr,
 				     struct sk_buff **buf);
 static void link_set_supervision_props(struct tipc_link *l_ptr, u32 tolerance);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int  link_send_sections_long(struct tipc_port *sender,
 				    struct iovec const *msg_sect,
@@ -120,27 +149,44 @@ static void link_start(struct link *l_ptr);
 static int link_send_long_buf(struct link *l_ptr, struct sk_buff *buf);
 =======
 static void link_check_defragm_bufs(struct tipc_link *l_ptr);
+=======
+static int  link_send_sections_long(struct tipc_port *sender,
+				    struct iovec const *msg_sect,
+				    unsigned int len, u32 destnode);
+>>>>>>> refs/remotes/origin/master
 static void link_state_event(struct tipc_link *l_ptr, u32 event);
 static void link_reset_statistics(struct tipc_link *l_ptr);
 static void link_print(struct tipc_link *l_ptr, const char *str);
 static void link_start(struct tipc_link *l_ptr);
 static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void tipc_link_send_sync(struct tipc_link *l);
+static void tipc_link_recv_sync(struct tipc_node *n, struct sk_buff *buf);
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  Simple link routines
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int align(unsigned int i)
 {
 	return (i + 3) & ~3u;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void link_init_max_pkt(struct link *l_ptr)
 =======
 static void link_init_max_pkt(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_init_max_pkt(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 max_pkt;
 
@@ -158,6 +204,7 @@ static void link_init_max_pkt(struct tipc_link *l_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 link_next_sent(struct link *l_ptr)
 {
 	if (l_ptr->next_out)
@@ -167,6 +214,8 @@ static u32 link_next_sent(struct link *l_ptr)
 
 static u32 link_last_sent(struct link *l_ptr)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 link_next_sent(struct tipc_link *l_ptr)
 {
 	if (l_ptr->next_out)
@@ -175,7 +224,10 @@ static u32 link_next_sent(struct tipc_link *l_ptr)
 }
 
 static u32 link_last_sent(struct tipc_link *l_ptr)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return mod(link_next_sent(l_ptr) - 1);
 }
@@ -183,12 +235,16 @@ static u32 link_last_sent(struct tipc_link *l_ptr)
 /*
  *  Simple non-static link routines (i.e. referenced outside this file)
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 int tipc_link_is_up(struct link *l_ptr)
 =======
 int tipc_link_is_up(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int tipc_link_is_up(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!l_ptr)
 		return 0;
@@ -196,16 +252,21 @@ int tipc_link_is_up(struct tipc_link *l_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int tipc_link_is_active(struct link *l_ptr)
 =======
 int tipc_link_is_active(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int tipc_link_is_active(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	return	(l_ptr->owner->active_links[0] == l_ptr) ||
 		(l_ptr->owner->active_links[1] == l_ptr);
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * link_name_validate - validate & (optionally) deconstruct link name
 =======
@@ -287,6 +348,8 @@ static int link_name_validate(const char *name,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * link_timeout - handle expiration of link timer
  * @l_ptr: pointer to link
  *
@@ -295,17 +358,24 @@ static int link_name_validate(const char *name,
  * another thread because tipc_link_delete() always cancels the link timer before
  * tipc_node_delete() is called.)
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void link_timeout(struct link *l_ptr)
 =======
 static void link_timeout(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_timeout(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	tipc_node_lock(l_ptr->owner);
 
 	/* update counters used in statistical profiling of send traffic */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	l_ptr->stats.accu_queue_sz += l_ptr->out_queue_size;
 	l_ptr->stats.queue_sz_counts++;
 
@@ -339,8 +409,11 @@ static void link_timeout(struct tipc_link *l_ptr)
 
 	/* do all other link processing performed on a periodic basis */
 
+<<<<<<< HEAD
 	link_check_defragm_bufs(l_ptr);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	link_state_event(l_ptr, TIMEOUT_EVT);
 
 	if (l_ptr->next_out)
@@ -350,10 +423,14 @@ static void link_timeout(struct tipc_link *l_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void link_set_timer(struct link *l_ptr, u32 time)
 =======
 static void link_set_timer(struct tipc_link *l_ptr, u32 time)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_set_timer(struct tipc_link *l_ptr, u32 time)
+>>>>>>> refs/remotes/origin/master
 {
 	k_start_timer(&l_ptr->timer, time);
 }
@@ -366,6 +443,7 @@ static void link_set_timer(struct tipc_link *l_ptr, u32 time)
  *
  * Returns pointer to link.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 struct link *tipc_link_create(struct tipc_node *n_ptr,
@@ -374,12 +452,17 @@ struct link *tipc_link_create(struct tipc_node *n_ptr,
 {
 	struct link *l_ptr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct tipc_link *tipc_link_create(struct tipc_node *n_ptr,
 			      struct tipc_bearer *b_ptr,
 			      const struct tipc_media_addr *media_addr)
 {
 	struct tipc_link *l_ptr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tipc_msg *msg;
 	char *if_name;
 	char addr_string[16];
@@ -387,34 +470,52 @@ struct tipc_link *tipc_link_create(struct tipc_node *n_ptr,
 
 	if (n_ptr->link_cnt >= 2) {
 		tipc_addr_string_fill(addr_string, n_ptr->addr);
+<<<<<<< HEAD
 		err("Attempt to establish third link to %s\n", addr_string);
+=======
+		pr_err("Attempt to establish third link to %s\n", addr_string);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
 	if (n_ptr->links[b_ptr->identity]) {
 		tipc_addr_string_fill(addr_string, n_ptr->addr);
+<<<<<<< HEAD
 		err("Attempt to establish second link on <%s> to %s\n",
 		    b_ptr->name, addr_string);
+=======
+		pr_err("Attempt to establish second link on <%s> to %s\n",
+		       b_ptr->name, addr_string);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
 	l_ptr = kzalloc(sizeof(*l_ptr), GFP_ATOMIC);
 	if (!l_ptr) {
+<<<<<<< HEAD
 		warn("Link creation failed, no memory\n");
+=======
+		pr_warn("Link creation failed, no memory\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
 	l_ptr->addr = peer;
 	if_name = strchr(b_ptr->name, ':') + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sprintf(l_ptr->name, "%u.%u.%u:%s-%u.%u.%u:",
 =======
 	sprintf(l_ptr->name, "%u.%u.%u:%s-%u.%u.%u:unknown",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sprintf(l_ptr->name, "%u.%u.%u:%s-%u.%u.%u:unknown",
+>>>>>>> refs/remotes/origin/master
 		tipc_zone(tipc_own_addr), tipc_cluster(tipc_own_addr),
 		tipc_node(tipc_own_addr),
 		if_name,
 		tipc_zone(peer), tipc_cluster(peer), tipc_node(peer));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* note: peer i/f is appended to link name by reset/activate */
 	memcpy(&l_ptr->media_addr, media_addr, sizeof(*media_addr));
@@ -423,6 +524,8 @@ struct tipc_link *tipc_link_create(struct tipc_node *n_ptr,
 	l_ptr->b_ptr = b_ptr;
 	link_set_supervision_props(l_ptr, b_ptr->media->tolerance);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* note: peer i/f name is updated by reset/activate message */
 	memcpy(&l_ptr->media_addr, media_addr, sizeof(*media_addr));
 	l_ptr->owner = n_ptr;
@@ -430,7 +533,10 @@ struct tipc_link *tipc_link_create(struct tipc_node *n_ptr,
 	l_ptr->peer_session = INVALID_SESSION;
 	l_ptr->b_ptr = b_ptr;
 	link_set_supervision_props(l_ptr, b_ptr->tolerance);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	l_ptr->state = RESET_UNKNOWN;
 
 	l_ptr->pmsg = (struct tipc_msg *)&l_ptr->proto_msg;
@@ -443,10 +549,14 @@ struct tipc_link *tipc_link_create(struct tipc_node *n_ptr,
 
 	l_ptr->priority = b_ptr->priority;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tipc_link_set_queue_limits(l_ptr, b_ptr->media->window);
 =======
 	tipc_link_set_queue_limits(l_ptr, b_ptr->window);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tipc_link_set_queue_limits(l_ptr, b_ptr->window);
+>>>>>>> refs/remotes/origin/master
 
 	link_init_max_pkt(l_ptr);
 
@@ -472,6 +582,7 @@ struct tipc_link *tipc_link_create(struct tipc_node *n_ptr,
  * This routine must not grab the node lock until after link timer cancellation
  * to avoid a potential deadlock situation.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_link_delete(struct link *l_ptr)
@@ -481,6 +592,12 @@ void tipc_link_delete(struct tipc_link *l_ptr)
 {
 	if (!l_ptr) {
 		err("Attempt to delete non-existent link\n");
+=======
+void tipc_link_delete(struct tipc_link *l_ptr)
+{
+	if (!l_ptr) {
+		pr_err("Attempt to delete non-existent link\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -497,10 +614,14 @@ void tipc_link_delete(struct tipc_link *l_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void link_start(struct link *l_ptr)
 =======
 static void link_start(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_start(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	tipc_node_lock(l_ptr->owner);
 	link_state_event(l_ptr, STARTING_EVT);
@@ -516,12 +637,16 @@ static void link_start(struct tipc_link *l_ptr)
  * Schedules port for renewed sending of messages after link congestion
  * has abated.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static int link_schedule_port(struct link *l_ptr, u32 origport, u32 sz)
 =======
 static int link_schedule_port(struct tipc_link *l_ptr, u32 origport, u32 sz)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int link_schedule_port(struct tipc_link *l_ptr, u32 origport, u32 sz)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tipc_port *p_ptr;
 
@@ -544,10 +669,14 @@ exit:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tipc_link_wakeup_ports(struct link *l_ptr, int all)
 =======
 void tipc_link_wakeup_ports(struct tipc_link *l_ptr, int all)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_link_wakeup_ports(struct tipc_link *l_ptr, int all)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tipc_port *p_ptr;
 	struct tipc_port *temp_p_ptr;
@@ -581,12 +710,16 @@ exit:
  * link_release_outqueue - purge link's outbound message queue
  * @l_ptr: pointer to link
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void link_release_outqueue(struct link *l_ptr)
 =======
 static void link_release_outqueue(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_release_outqueue(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *buf = l_ptr->first_out;
 	struct sk_buff *next;
@@ -594,10 +727,14 @@ static void link_release_outqueue(struct tipc_link *l_ptr)
 	while (buf) {
 		next = buf->next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf_discard(buf);
 =======
 		kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 		buf = next;
 	}
 	l_ptr->first_out = NULL;
@@ -608,6 +745,7 @@ static void link_release_outqueue(struct tipc_link *l_ptr)
  * tipc_link_reset_fragments - purge link's inbound message fragments queue
  * @l_ptr: pointer to link
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_link_reset_fragments(struct link *l_ptr)
@@ -628,18 +766,29 @@ void tipc_link_reset_fragments(struct tipc_link *l_ptr)
 		buf = next;
 	}
 	l_ptr->defragm_buf = NULL;
+=======
+void tipc_link_reset_fragments(struct tipc_link *l_ptr)
+{
+	kfree_skb(l_ptr->reasm_head);
+	l_ptr->reasm_head = NULL;
+	l_ptr->reasm_tail = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * tipc_link_stop - purge all inbound and outbound messages associated with link
  * @l_ptr: pointer to link
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_link_stop(struct link *l_ptr)
 =======
 void tipc_link_stop(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_link_stop(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *buf;
 	struct sk_buff *next;
@@ -648,10 +797,14 @@ void tipc_link_stop(struct tipc_link *l_ptr)
 	while (buf) {
 		next = buf->next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf_discard(buf);
 =======
 		kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 		buf = next;
 	}
 
@@ -659,15 +812,20 @@ void tipc_link_stop(struct tipc_link *l_ptr)
 	while (buf) {
 		next = buf->next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf_discard(buf);
 =======
 		kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 		buf = next;
 	}
 
 	tipc_link_reset_fragments(l_ptr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	buf_discard(l_ptr->proto_msg_queue);
 	l_ptr->proto_msg_queue = NULL;
@@ -678,12 +836,17 @@ void tipc_link_stop(struct tipc_link *l_ptr)
 
 void tipc_link_reset(struct link *l_ptr)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree_skb(l_ptr->proto_msg_queue);
 	l_ptr->proto_msg_queue = NULL;
 }
 
 void tipc_link_reset(struct tipc_link *l_ptr)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *buf;
 	u32 prev_state = l_ptr->state;
@@ -713,6 +876,7 @@ void tipc_link_reset(struct tipc_link *l_ptr)
 	}
 
 	/* Clean up all queues: */
+<<<<<<< HEAD
 
 	link_release_outqueue(l_ptr);
 <<<<<<< HEAD
@@ -720,15 +884,23 @@ void tipc_link_reset(struct tipc_link *l_ptr)
 =======
 	kfree_skb(l_ptr->proto_msg_queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	link_release_outqueue(l_ptr);
+	kfree_skb(l_ptr->proto_msg_queue);
+>>>>>>> refs/remotes/origin/master
 	l_ptr->proto_msg_queue = NULL;
 	buf = l_ptr->oldest_deferred_in;
 	while (buf) {
 		struct sk_buff *next = buf->next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf_discard(buf);
 =======
 		kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 		buf = next;
 	}
 	if (!list_empty(&l_ptr->waiting_ports))
@@ -749,6 +921,7 @@ void tipc_link_reset(struct tipc_link *l_ptr)
 	l_ptr->stale_count = 0;
 	link_reset_statistics(l_ptr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	link_send_event(tipc_cfg_link_event, l_ptr, 0);
 	if (!in_own_cluster(l_ptr->addr))
@@ -758,21 +931,29 @@ void tipc_link_reset(struct tipc_link *l_ptr)
 
 static void link_activate(struct link *l_ptr)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static void link_activate(struct tipc_link *l_ptr)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	l_ptr->next_in_no = l_ptr->stats.recv_info = 1;
 	tipc_node_link_up(l_ptr->owner, l_ptr);
 	tipc_bearer_add_dest(l_ptr->b_ptr, l_ptr->addr);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	link_send_event(tipc_cfg_link_event, l_ptr, 1);
 	if (!in_own_cluster(l_ptr->addr))
 		link_send_event(tipc_disc_link_event, l_ptr, 1);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -780,6 +961,7 @@ static void link_activate(struct tipc_link *l_ptr)
  * @l_ptr: pointer to link
  * @event: state machine event to process
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void link_state_event(struct link *l_ptr, unsigned event)
@@ -790,6 +972,11 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 {
 	struct tipc_link *other;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_state_event(struct tipc_link *l_ptr, unsigned int event)
+{
+	struct tipc_link *other;
+>>>>>>> refs/remotes/origin/master
 	u32 cont_intv = l_ptr->continuity_interval;
 
 	if (!l_ptr->started && (event != STARTING_EVT))
@@ -829,8 +1016,13 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			link_set_timer(l_ptr, cont_intv / 4);
 			break;
 		case RESET_MSG:
+<<<<<<< HEAD
 			info("Resetting link <%s>, requested by peer\n",
 			     l_ptr->name);
+=======
+			pr_info("%s<%s>, requested by peer\n", link_rst_msg,
+				l_ptr->name);
+>>>>>>> refs/remotes/origin/master
 			tipc_link_reset(l_ptr);
 			l_ptr->state = RESET_RESET;
 			l_ptr->fsm_msg_cnt = 0;
@@ -839,7 +1031,11 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			link_set_timer(l_ptr, cont_intv);
 			break;
 		default:
+<<<<<<< HEAD
 			err("Unknown link event %u in WW state\n", event);
+=======
+			pr_err("%s%u in WW state\n", link_unk_evt, event);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case WORKING_UNKNOWN:
@@ -851,8 +1047,13 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			link_set_timer(l_ptr, cont_intv);
 			break;
 		case RESET_MSG:
+<<<<<<< HEAD
 			info("Resetting link <%s>, requested by peer "
 			     "while probing\n", l_ptr->name);
+=======
+			pr_info("%s<%s>, requested by peer while probing\n",
+				link_rst_msg, l_ptr->name);
+>>>>>>> refs/remotes/origin/master
 			tipc_link_reset(l_ptr);
 			l_ptr->state = RESET_RESET;
 			l_ptr->fsm_msg_cnt = 0;
@@ -877,8 +1078,13 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 				l_ptr->fsm_msg_cnt++;
 				link_set_timer(l_ptr, cont_intv / 4);
 			} else {	/* Link has failed */
+<<<<<<< HEAD
 				warn("Resetting link <%s>, peer not responding\n",
 				     l_ptr->name);
+=======
+				pr_warn("%s<%s>, peer not responding\n",
+					link_rst_msg, l_ptr->name);
+>>>>>>> refs/remotes/origin/master
 				tipc_link_reset(l_ptr);
 				l_ptr->state = RESET_UNKNOWN;
 				l_ptr->fsm_msg_cnt = 0;
@@ -889,7 +1095,11 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			}
 			break;
 		default:
+<<<<<<< HEAD
 			err("Unknown link event %u in WU state\n", event);
+=======
+			pr_err("%s%u in WU state\n", link_unk_evt, event);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case RESET_UNKNOWN:
@@ -905,6 +1115,11 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			link_activate(l_ptr);
 			tipc_link_send_proto_msg(l_ptr, STATE_MSG, 1, 0, 0, 0, 0);
 			l_ptr->fsm_msg_cnt++;
+<<<<<<< HEAD
+=======
+			if (l_ptr->owner->working_links == 1)
+				tipc_link_send_sync(l_ptr);
+>>>>>>> refs/remotes/origin/master
 			link_set_timer(l_ptr, cont_intv);
 			break;
 		case RESET_MSG:
@@ -923,7 +1138,11 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			link_set_timer(l_ptr, cont_intv);
 			break;
 		default:
+<<<<<<< HEAD
 			err("Unknown link event %u in RU state\n", event);
+=======
+			pr_err("%s%u in RU state\n", link_unk_evt, event);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case RESET_RESET:
@@ -938,6 +1157,11 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			link_activate(l_ptr);
 			tipc_link_send_proto_msg(l_ptr, STATE_MSG, 1, 0, 0, 0, 0);
 			l_ptr->fsm_msg_cnt++;
+<<<<<<< HEAD
+=======
+			if (l_ptr->owner->working_links == 1)
+				tipc_link_send_sync(l_ptr);
+>>>>>>> refs/remotes/origin/master
 			link_set_timer(l_ptr, cont_intv);
 			break;
 		case RESET_MSG:
@@ -948,11 +1172,19 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
 			link_set_timer(l_ptr, cont_intv);
 			break;
 		default:
+<<<<<<< HEAD
 			err("Unknown link event %u in RR state\n", event);
 		}
 		break;
 	default:
 		err("Unknown link state %u/%u\n", l_ptr->state, event);
+=======
+			pr_err("%s%u in RR state\n", link_unk_evt, event);
+		}
+		break;
+	default:
+		pr_err("Unknown link state %u/%u\n", l_ptr->state, event);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -960,6 +1192,7 @@ static void link_state_event(struct tipc_link *l_ptr, unsigned event)
  * link_bundle_buf(): Append contents of a buffer to
  * the tail of an existing one.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static int link_bundle_buf(struct link *l_ptr,
@@ -967,6 +1200,9 @@ static int link_bundle_buf(struct link *l_ptr,
 static int link_bundle_buf(struct tipc_link *l_ptr,
 >>>>>>> refs/remotes/origin/cm-10.0
 			   struct sk_buff *bundler,
+=======
+static int link_bundle_buf(struct tipc_link *l_ptr, struct sk_buff *bundler,
+>>>>>>> refs/remotes/origin/master
 			   struct sk_buff *buf)
 {
 	struct tipc_msg *bundler_msg = buf_msg(bundler);
@@ -990,19 +1226,27 @@ static int link_bundle_buf(struct tipc_link *l_ptr,
 	msg_set_size(bundler_msg, to_pos + size);
 	msg_set_msgcnt(bundler_msg, msg_msgcnt(bundler_msg) + 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf_discard(buf);
 =======
 	kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 	l_ptr->stats.sent_bundled++;
 	return 1;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void link_add_to_outqueue(struct link *l_ptr,
 =======
 static void link_add_to_outqueue(struct tipc_link *l_ptr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_add_to_outqueue(struct tipc_link *l_ptr,
+>>>>>>> refs/remotes/origin/master
 				 struct sk_buff *buf,
 				 struct tipc_msg *msg)
 {
@@ -1024,10 +1268,14 @@ static void link_add_to_outqueue(struct tipc_link *l_ptr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void link_add_chain_to_outqueue(struct link *l_ptr,
 =======
 static void link_add_chain_to_outqueue(struct tipc_link *l_ptr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_add_chain_to_outqueue(struct tipc_link *l_ptr,
+>>>>>>> refs/remotes/origin/master
 				       struct sk_buff *buf_chain,
 				       u32 long_msgno)
 {
@@ -1051,12 +1299,16 @@ static void link_add_chain_to_outqueue(struct tipc_link *l_ptr,
  * inside TIPC when the 'fast path' in tipc_send_buf
  * has failed, and from link_send()
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 int tipc_link_send_buf(struct link *l_ptr, struct sk_buff *buf)
 =======
 int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tipc_msg *msg = buf_msg(buf);
 	u32 size = msg_size(msg);
@@ -1066,6 +1318,7 @@ int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 	u32 queue_limit = l_ptr->queue_limit[imp];
 	u32 max_packet = l_ptr->max_pkt;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msg_set_prevnode(msg, tipc_own_addr);	/* If routed message */
 
@@ -1082,19 +1335,32 @@ int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 		}
 		buf_discard(buf);
 =======
+=======
+	/* Match msg importance against queue limits: */
+	if (unlikely(queue_size >= queue_limit)) {
+		if (imp <= TIPC_CRITICAL_IMPORTANCE) {
+			link_schedule_port(l_ptr, msg_origport(msg), size);
+>>>>>>> refs/remotes/origin/master
 			kfree_skb(buf);
 			return -ELINKCONG;
 		}
 		kfree_skb(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (imp > CONN_MANAGER) {
 			warn("Resetting link <%s>, send queue full", l_ptr->name);
+=======
+		if (imp > CONN_MANAGER) {
+			pr_warn("%s<%s>, send queue full", link_rst_msg,
+				l_ptr->name);
+>>>>>>> refs/remotes/origin/master
 			tipc_link_reset(l_ptr);
 		}
 		return dsz;
 	}
 
 	/* Fragmentation needed ? */
+<<<<<<< HEAD
 
 	if (size > max_packet)
 		return link_send_long_buf(l_ptr, buf);
@@ -1116,10 +1382,26 @@ int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 	}
 	/* Congestion: can message be bundled ?: */
 
+=======
+	if (size > max_packet)
+		return link_send_long_buf(l_ptr, buf);
+
+	/* Packet can be queued or sent. */
+	if (likely(!tipc_bearer_blocked(l_ptr->b_ptr) &&
+		   !link_congested(l_ptr))) {
+		link_add_to_outqueue(l_ptr, buf, msg);
+
+		tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr);
+		l_ptr->unacked_window = 0;
+		return dsz;
+	}
+	/* Congestion: can message be bundled ? */
+>>>>>>> refs/remotes/origin/master
 	if ((msg_user(msg) != CHANGEOVER_PROTOCOL) &&
 	    (msg_user(msg) != MSG_FRAGMENTER)) {
 
 		/* Try adding message to an existing bundle */
+<<<<<<< HEAD
 
 		if (l_ptr->next_out &&
 		    link_bundle_buf(l_ptr, l_ptr->last_out, buf)) {
@@ -1129,6 +1411,13 @@ int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 
 		/* Try creating a new bundle */
 
+=======
+		if (l_ptr->next_out &&
+		    link_bundle_buf(l_ptr, l_ptr->last_out, buf))
+			return dsz;
+
+		/* Try creating a new bundle */
+>>>>>>> refs/remotes/origin/master
 		if (size <= max_packet * 2 / 3) {
 			struct sk_buff *bundler = tipc_buf_acquire(max_packet);
 			struct tipc_msg bundler_hdr;
@@ -1149,7 +1438,10 @@ int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 	if (!l_ptr->next_out)
 		l_ptr->next_out = buf;
 	link_add_to_outqueue(l_ptr, buf, msg);
+<<<<<<< HEAD
 	tipc_bearer_resolve_congestion(l_ptr->b_ptr, l_ptr);
+=======
+>>>>>>> refs/remotes/origin/master
 	return dsz;
 }
 
@@ -1158,6 +1450,7 @@ int tipc_link_send_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
  * not been selected yet, and the the owner node is not locked
  * Called by TIPC internal users, e.g. the name distributor
  */
+<<<<<<< HEAD
 
 int tipc_link_send(struct sk_buff *buf, u32 dest, u32 selector)
 {
@@ -1166,6 +1459,11 @@ int tipc_link_send(struct sk_buff *buf, u32 dest, u32 selector)
 =======
 	struct tipc_link *l_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int tipc_link_send(struct sk_buff *buf, u32 dest, u32 selector)
+{
+	struct tipc_link *l_ptr;
+>>>>>>> refs/remotes/origin/master
 	struct tipc_node *n_ptr;
 	int res = -ELINKCONG;
 
@@ -1178,16 +1476,22 @@ int tipc_link_send(struct sk_buff *buf, u32 dest, u32 selector)
 			res = tipc_link_send_buf(l_ptr, buf);
 		else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buf_discard(buf);
 		tipc_node_unlock(n_ptr);
 	} else {
 		buf_discard(buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree_skb(buf);
 		tipc_node_unlock(n_ptr);
 	} else {
 		kfree_skb(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	read_unlock_bh(&tipc_net_lock);
 	return res;
@@ -1195,7 +1499,51 @@ int tipc_link_send(struct sk_buff *buf, u32 dest, u32 selector)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+ * tipc_link_send_sync - synchronize broadcast link endpoints.
+ *
+ * Give a newly added peer node the sequence number where it should
+ * start receiving and acking broadcast packets.
+ *
+ * Called with node locked
+ */
+static void tipc_link_send_sync(struct tipc_link *l)
+{
+	struct sk_buff *buf;
+	struct tipc_msg *msg;
+
+	buf = tipc_buf_acquire(INT_H_SIZE);
+	if (!buf)
+		return;
+
+	msg = buf_msg(buf);
+	tipc_msg_init(msg, BCAST_PROTOCOL, STATE_MSG, INT_H_SIZE, l->addr);
+	msg_set_last_bcast(msg, l->owner->bclink.acked);
+	link_add_chain_to_outqueue(l, buf, 0);
+	tipc_link_push_queue(l);
+}
+
+/*
+ * tipc_link_recv_sync - synchronize broadcast link endpoints.
+ * Receive the sequence number where we should start receiving and
+ * acking broadcast packets from a newly added peer node, and open
+ * up for reception of such packets.
+ *
+ * Called with node locked
+ */
+static void tipc_link_recv_sync(struct tipc_node *n, struct sk_buff *buf)
+{
+	struct tipc_msg *msg = buf_msg(buf);
+
+	n->bclink.last_sent = n->bclink.last_in = msg_last_bcast(msg);
+	n->bclink.recv_permitted = true;
+	kfree_skb(buf);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * tipc_link_send_names - send name table entries to new neighbor
  *
  * Send routine for bulk delivery of name table messages when contact
@@ -1204,7 +1552,10 @@ int tipc_link_send(struct sk_buff *buf, u32 dest, u32 selector)
  * small enough not to require fragmentation.
  * Called without any locks held.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_link_send_names(struct list_head *message_list, u32 dest)
 {
 	struct tipc_node *n_ptr;
@@ -1233,7 +1584,10 @@ void tipc_link_send_names(struct list_head *message_list, u32 dest)
 	read_unlock_bh(&tipc_net_lock);
 
 	/* discard the messages if they couldn't be sent */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_safe(buf, temp_buf, ((struct sk_buff *)message_list)) {
 		list_del((struct list_head *)buf);
 		kfree_skb(buf);
@@ -1241,18 +1595,25 @@ void tipc_link_send_names(struct list_head *message_list, u32 dest)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * link_send_buf_fast: Entry for data messages where the
  * destination link is known and the header is complete,
  * inclusive total message length. Very time critical.
  * Link is locked. Returns user data length.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static int link_send_buf_fast(struct link *l_ptr, struct sk_buff *buf,
 =======
 static int link_send_buf_fast(struct tipc_link *l_ptr, struct sk_buff *buf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int link_send_buf_fast(struct tipc_link *l_ptr, struct sk_buff *buf,
+>>>>>>> refs/remotes/origin/master
 			      u32 *used_max_pkt)
 {
 	struct tipc_msg *msg = buf_msg(buf);
@@ -1260,6 +1621,7 @@ static int link_send_buf_fast(struct tipc_link *l_ptr, struct sk_buff *buf,
 
 	if (likely(!link_congested(l_ptr))) {
 		if (likely(msg_size(msg) <= l_ptr->max_pkt)) {
+<<<<<<< HEAD
 			if (likely(list_empty(&l_ptr->b_ptr->cong_links))) {
 				link_add_to_outqueue(l_ptr, buf, msg);
 				if (likely(tipc_bearer_send(l_ptr->b_ptr, buf,
@@ -1270,6 +1632,13 @@ static int link_send_buf_fast(struct tipc_link *l_ptr, struct sk_buff *buf,
 				tipc_bearer_schedule(l_ptr->b_ptr, l_ptr);
 				l_ptr->stats.bearer_congs++;
 				l_ptr->next_out = buf;
+=======
+			if (likely(!tipc_bearer_blocked(l_ptr->b_ptr))) {
+				link_add_to_outqueue(l_ptr, buf, msg);
+				tipc_bearer_send(l_ptr->b_ptr, buf,
+						 &l_ptr->media_addr);
+				l_ptr->unacked_window = 0;
+>>>>>>> refs/remotes/origin/master
 				return res;
 			}
 		} else
@@ -1279,6 +1648,7 @@ static int link_send_buf_fast(struct tipc_link *l_ptr, struct sk_buff *buf,
 }
 
 /*
+<<<<<<< HEAD
  * tipc_send_buf_fast: Entry for data messages where the
  * destination node is known and the header is complete,
  * inclusive total message length.
@@ -1323,6 +1693,8 @@ int tipc_send_buf_fast(struct sk_buff *buf, u32 destnode)
 
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * tipc_link_send_sections_fast: Entry for messages where the
  * destination processor is known and the header is complete,
  * except for total message length.
@@ -1330,6 +1702,7 @@ int tipc_send_buf_fast(struct sk_buff *buf, u32 destnode)
  */
 int tipc_link_send_sections_fast(struct tipc_port *sender,
 				 struct iovec const *msg_sect,
+<<<<<<< HEAD
 				 const u32 num_sect,
 				 unsigned int total_len,
 				 u32 destaddr)
@@ -1340,6 +1713,12 @@ int tipc_link_send_sections_fast(struct tipc_port *sender,
 =======
 	struct tipc_link *l_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 unsigned int len, u32 destaddr)
+{
+	struct tipc_msg *hdr = &sender->phdr;
+	struct tipc_link *l_ptr;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *buf;
 	struct tipc_node *node;
 	int res;
@@ -1350,9 +1729,16 @@ again:
 	 * Try building message using port's max_pkt hint.
 	 * (Must not hold any locks while building message.)
 	 */
+<<<<<<< HEAD
 
 	res = tipc_msg_build(hdr, msg_sect, num_sect, total_len,
 			     sender->max_pkt, !sender->user_port, &buf);
+=======
+	res = tipc_msg_build(hdr, msg_sect, len, sender->max_pkt, &buf);
+	/* Exit if build request was invalid */
+	if (unlikely(res < 0))
+		return res;
+>>>>>>> refs/remotes/origin/master
 
 	read_lock_bh(&tipc_net_lock);
 	node = tipc_node_find(destaddr);
@@ -1369,6 +1755,7 @@ exit:
 				return res;
 			}
 
+<<<<<<< HEAD
 			/* Exit if build request was invalid */
 
 			if (unlikely(res < 0))
@@ -1378,6 +1765,11 @@ exit:
 
 			if (link_congested(l_ptr) ||
 			    !list_empty(&l_ptr->b_ptr->cong_links)) {
+=======
+			/* Exit if link (or bearer) is congested */
+			if (link_congested(l_ptr) ||
+			    tipc_bearer_blocked(l_ptr->b_ptr)) {
+>>>>>>> refs/remotes/origin/master
 				res = link_schedule_port(l_ptr,
 							 sender->ref, res);
 				goto exit;
@@ -1387,7 +1779,10 @@ exit:
 			 * Message size exceeds max_pkt hint; update hint,
 			 * then re-try fast path or fragment the message
 			 */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			sender->max_pkt = l_ptr->max_pkt;
 			tipc_node_unlock(node);
 			read_unlock_bh(&tipc_net_lock);
@@ -1396,8 +1791,12 @@ exit:
 			if ((msg_hdr_sz(hdr) + res) <= sender->max_pkt)
 				goto again;
 
+<<<<<<< HEAD
 			return link_send_sections_long(sender, msg_sect,
 						       num_sect, total_len,
+=======
+			return link_send_sections_long(sender, msg_sect, len,
+>>>>>>> refs/remotes/origin/master
 						       destaddr);
 		}
 		tipc_node_unlock(node);
@@ -1405,12 +1804,20 @@ exit:
 	read_unlock_bh(&tipc_net_lock);
 
 	/* Couldn't find a link to the destination node */
+<<<<<<< HEAD
 
 	if (buf)
 		return tipc_reject_msg(buf, TIPC_ERR_NO_NODE);
 	if (res >= 0)
 		return tipc_port_reject_sections(sender, hdr, msg_sect, num_sect,
 						 total_len, TIPC_ERR_NO_NODE);
+=======
+	if (buf)
+		return tipc_reject_msg(buf, TIPC_ERR_NO_NODE);
+	if (res >= 0)
+		return tipc_port_reject_sections(sender, hdr, msg_sect,
+						 len, TIPC_ERR_NO_NODE);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -1430,6 +1837,7 @@ exit:
  */
 static int link_send_sections_long(struct tipc_port *sender,
 				   struct iovec const *msg_sect,
+<<<<<<< HEAD
 				   u32 num_sect,
 				   unsigned int total_len,
 				   u32 destaddr)
@@ -1442,13 +1850,28 @@ static int link_send_sections_long(struct tipc_port *sender,
 	struct tipc_node *node;
 	struct tipc_msg *hdr = &sender->phdr;
 	u32 dsz = total_len;
+=======
+				   unsigned int len, u32 destaddr)
+{
+	struct tipc_link *l_ptr;
+	struct tipc_node *node;
+	struct tipc_msg *hdr = &sender->phdr;
+	u32 dsz = len;
+>>>>>>> refs/remotes/origin/master
 	u32 max_pkt, fragm_sz, rest;
 	struct tipc_msg fragm_hdr;
 	struct sk_buff *buf, *buf_chain, *prev;
 	u32 fragm_crs, fragm_rest, hsz, sect_rest;
+<<<<<<< HEAD
 	const unchar *sect_crs;
 	int curr_sect;
 	u32 fragm_no;
+=======
+	const unchar __user *sect_crs;
+	int curr_sect;
+	u32 fragm_no;
+	int res = 0;
+>>>>>>> refs/remotes/origin/master
 
 again:
 	fragm_no = 1;
@@ -1463,15 +1886,23 @@ again:
 	sect_crs = NULL;
 	curr_sect = -1;
 
+<<<<<<< HEAD
 	/* Prepare reusable fragment header: */
 
+=======
+	/* Prepare reusable fragment header */
+>>>>>>> refs/remotes/origin/master
 	tipc_msg_init(&fragm_hdr, MSG_FRAGMENTER, FIRST_FRAGMENT,
 		 INT_H_SIZE, msg_destnode(hdr));
 	msg_set_size(&fragm_hdr, max_pkt);
 	msg_set_fragm_no(&fragm_hdr, 1);
 
+<<<<<<< HEAD
 	/* Prepare header of first fragment: */
 
+=======
+	/* Prepare header of first fragment */
+>>>>>>> refs/remotes/origin/master
 	buf_chain = buf = tipc_buf_acquire(max_pkt);
 	if (!buf)
 		return -ENOMEM;
@@ -1480,8 +1911,12 @@ again:
 	hsz = msg_hdr_sz(hdr);
 	skb_copy_to_linear_data_offset(buf, INT_H_SIZE, hdr, hsz);
 
+<<<<<<< HEAD
 	/* Chop up message: */
 
+=======
+	/* Chop up message */
+>>>>>>> refs/remotes/origin/master
 	fragm_crs = INT_H_SIZE + hsz;
 	fragm_rest = fragm_sz - hsz;
 
@@ -1490,7 +1925,11 @@ again:
 
 		if (!sect_rest) {
 			sect_rest = msg_sect[++curr_sect].iov_len;
+<<<<<<< HEAD
 			sect_crs = (const unchar *)msg_sect[curr_sect].iov_base;
+=======
+			sect_crs = msg_sect[curr_sect].iov_base;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (sect_rest < fragm_rest)
@@ -1498,6 +1937,7 @@ again:
 		else
 			sz = fragm_rest;
 
+<<<<<<< HEAD
 		if (likely(!sender->user_port)) {
 			if (copy_from_user(buf->data + fragm_crs, sect_crs, sz)) {
 error:
@@ -1514,6 +1954,17 @@ error:
 		} else
 			skb_copy_to_linear_data_offset(buf, fragm_crs,
 						       sect_crs, sz);
+=======
+		if (copy_from_user(buf->data + fragm_crs, sect_crs, sz)) {
+			res = -EFAULT;
+error:
+			for (; buf_chain; buf_chain = buf) {
+				buf = buf_chain->next;
+				kfree_skb(buf_chain);
+			}
+			return res;
+		}
+>>>>>>> refs/remotes/origin/master
 		sect_crs += sz;
 		sect_rest -= sz;
 		fragm_crs += sz;
@@ -1533,8 +1984,15 @@ error:
 			msg_set_fragm_no(&fragm_hdr, ++fragm_no);
 			prev = buf;
 			buf = tipc_buf_acquire(fragm_sz + INT_H_SIZE);
+<<<<<<< HEAD
 			if (!buf)
 				goto error;
+=======
+			if (!buf) {
+				res = -ENOMEM;
+				goto error;
+			}
+>>>>>>> refs/remotes/origin/master
 
 			buf->next = NULL;
 			prev->next = buf;
@@ -1562,10 +2020,14 @@ error:
 			for (; buf_chain; buf_chain = buf) {
 				buf = buf_chain->next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				buf_discard(buf_chain);
 =======
 				kfree_skb(buf_chain);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				kfree_skb(buf_chain);
+>>>>>>> refs/remotes/origin/master
 			}
 			goto again;
 		}
@@ -1573,6 +2035,7 @@ error:
 reject:
 		for (; buf_chain; buf_chain = buf) {
 			buf = buf_chain->next;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			buf_discard(buf_chain);
 =======
@@ -1585,6 +2048,15 @@ reject:
 
 	/* Append chain of fragments to send queue & send them */
 
+=======
+			kfree_skb(buf_chain);
+		}
+		return tipc_port_reject_sections(sender, hdr, msg_sect,
+						 len, TIPC_ERR_NO_NODE);
+	}
+
+	/* Append chain of fragments to send queue & send them */
+>>>>>>> refs/remotes/origin/master
 	l_ptr->long_msg_seq_no++;
 	link_add_chain_to_outqueue(l_ptr, buf_chain, l_ptr->long_msg_seq_no);
 	l_ptr->stats.sent_fragments += fragm_no;
@@ -1598,10 +2070,14 @@ reject:
  * tipc_link_push_packet: Push one unsent packet to the media
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 u32 tipc_link_push_packet(struct link *l_ptr)
 =======
 u32 tipc_link_push_packet(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u32 tipc_link_push_packet(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *buf = l_ptr->first_out;
 	u32 r_q_size = l_ptr->retransm_queue_size;
@@ -1609,6 +2085,7 @@ u32 tipc_link_push_packet(struct tipc_link *l_ptr)
 
 	/* Step to position where retransmission failed, if any,    */
 	/* consider that buffers may have been released in meantime */
+<<<<<<< HEAD
 
 	if (r_q_size && buf) {
 		u32 last = lesser(mod(r_q_head + r_q_size),
@@ -1618,6 +2095,12 @@ u32 tipc_link_push_packet(struct tipc_link *l_ptr)
 =======
 		u32 first = buf_seqno(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (r_q_size && buf) {
+		u32 last = lesser(mod(r_q_head + r_q_size),
+				  link_last_sent(l_ptr));
+		u32 first = buf_seqno(buf);
+>>>>>>> refs/remotes/origin/master
 
 		while (buf && less(first, r_q_head)) {
 			first = mod(first + 1);
@@ -1628,6 +2111,7 @@ u32 tipc_link_push_packet(struct tipc_link *l_ptr)
 	}
 
 	/* Continue retransmission now, if there is anything: */
+<<<<<<< HEAD
 
 	if (r_q_size && buf) {
 		msg_set_ack(buf_msg(buf), mod(l_ptr->next_in_no - 1));
@@ -1645,10 +2129,24 @@ u32 tipc_link_push_packet(struct tipc_link *l_ptr)
 
 	/* Send deferred protocol message, if any: */
 
+=======
+	if (r_q_size && buf) {
+		msg_set_ack(buf_msg(buf), mod(l_ptr->next_in_no - 1));
+		msg_set_bcast_ack(buf_msg(buf), l_ptr->owner->bclink.last_in);
+		tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr);
+		l_ptr->retransm_queue_head = mod(++r_q_head);
+		l_ptr->retransm_queue_size = --r_q_size;
+		l_ptr->stats.retransmitted++;
+		return 0;
+	}
+
+	/* Send deferred protocol message, if any: */
+>>>>>>> refs/remotes/origin/master
 	buf = l_ptr->proto_msg_queue;
 	if (buf) {
 		msg_set_ack(buf_msg(buf), mod(l_ptr->next_in_no - 1));
 		msg_set_bcast_ack(buf_msg(buf), l_ptr->owner->bclink.last_in);
+<<<<<<< HEAD
 		if (tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr)) {
 			l_ptr->unacked_window = 0;
 <<<<<<< HEAD
@@ -1666,19 +2164,34 @@ u32 tipc_link_push_packet(struct tipc_link *l_ptr)
 
 	/* Send one deferred data message, if send window not full: */
 
+=======
+		tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr);
+		l_ptr->unacked_window = 0;
+		kfree_skb(buf);
+		l_ptr->proto_msg_queue = NULL;
+		return 0;
+	}
+
+	/* Send one deferred data message, if send window not full: */
+>>>>>>> refs/remotes/origin/master
 	buf = l_ptr->next_out;
 	if (buf) {
 		struct tipc_msg *msg = buf_msg(buf);
 		u32 next = msg_seqno(msg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u32 first = msg_seqno(buf_msg(l_ptr->first_out));
 =======
 		u32 first = buf_seqno(l_ptr->first_out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u32 first = buf_seqno(l_ptr->first_out);
+>>>>>>> refs/remotes/origin/master
 
 		if (mod(next - first) < l_ptr->queue_limit[0]) {
 			msg_set_ack(msg, mod(l_ptr->next_in_no - 1));
 			msg_set_bcast_ack(msg, l_ptr->owner->bclink.last_in);
+<<<<<<< HEAD
 			if (tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr)) {
 				if (msg_user(msg) == MSG_BUNDLER)
 					msg_set_type(msg, CLOSED_MSG);
@@ -1691,12 +2204,23 @@ u32 tipc_link_push_packet(struct tipc_link *l_ptr)
 		}
 	}
 	return PUSH_FINISHED;
+=======
+			tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr);
+			if (msg_user(msg) == MSG_BUNDLER)
+				msg_set_type(msg, CLOSED_MSG);
+			l_ptr->next_out = buf->next;
+			return 0;
+		}
+	}
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * push_queue(): push out the unsent messages of a link where
  *               congestion has abated. Node is locked
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void tipc_link_push_queue(struct link *l_ptr)
 =======
@@ -1706,14 +2230,24 @@ void tipc_link_push_queue(struct tipc_link *l_ptr)
 	u32 res;
 
 	if (tipc_bearer_congested(l_ptr->b_ptr, l_ptr))
+=======
+void tipc_link_push_queue(struct tipc_link *l_ptr)
+{
+	u32 res;
+
+	if (tipc_bearer_blocked(l_ptr->b_ptr))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	do {
 		res = tipc_link_push_packet(l_ptr);
 	} while (!res);
+<<<<<<< HEAD
 
 	if (res == PUSH_FAILED)
 		tipc_bearer_schedule(l_ptr->b_ptr, l_ptr);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void link_reset_all(unsigned long addr)
@@ -1731,8 +2265,13 @@ static void link_reset_all(unsigned long addr)
 
 	tipc_node_lock(n_ptr);
 
+<<<<<<< HEAD
 	warn("Resetting all links to %s\n",
 	     tipc_addr_string_fill(addr_string, n_ptr->addr));
+=======
+	pr_warn("Resetting all links to %s\n",
+		tipc_addr_string_fill(addr_string, n_ptr->addr));
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < MAX_BEARERS; i++) {
 		if (n_ptr->links[i]) {
@@ -1745,6 +2284,7 @@ static void link_reset_all(unsigned long addr)
 	read_unlock_bh(&tipc_net_lock);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void link_retransmit_failure(struct link *l_ptr, struct sk_buff *buf)
 =======
@@ -1760,10 +2300,22 @@ static void link_retransmit_failure(struct tipc_link *l_ptr,
 
 		/* Handle failure on standard link */
 
+=======
+static void link_retransmit_failure(struct tipc_link *l_ptr,
+				    struct sk_buff *buf)
+{
+	struct tipc_msg *msg = buf_msg(buf);
+
+	pr_warn("Retransmission failure on link <%s>\n", l_ptr->name);
+
+	if (l_ptr->addr) {
+		/* Handle failure on standard link */
+>>>>>>> refs/remotes/origin/master
 		link_print(l_ptr, "Resetting link\n");
 		tipc_link_reset(l_ptr);
 
 	} else {
+<<<<<<< HEAD
 
 		/* Handle failure on broadcast link */
 
@@ -1773,11 +2325,21 @@ static void link_retransmit_failure(struct tipc_link *l_ptr,
 		info("Msg seq number: %u,  ", msg_seqno(msg));
 		info("Outstanding acks: %lu\n",
 		     (unsigned long) TIPC_SKB_CB(buf)->handle);
+=======
+		/* Handle failure on broadcast link */
+		struct tipc_node *n_ptr;
+		char addr_string[16];
+
+		pr_info("Msg seq number: %u,  ", msg_seqno(msg));
+		pr_cont("Outstanding acks: %lu\n",
+			(unsigned long) TIPC_SKB_CB(buf)->handle);
+>>>>>>> refs/remotes/origin/master
 
 		n_ptr = tipc_bclink_retransmit_to();
 		tipc_node_lock(n_ptr);
 
 		tipc_addr_string_fill(addr_string, n_ptr->addr);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		info("Multicast link info for %s\n", addr_string);
 		info("Supported: %d,  ", n_ptr->bclink.supported);
@@ -1795,6 +2357,16 @@ static void link_retransmit_failure(struct tipc_link *l_ptr,
 		info("Oos state: %u,  ", n_ptr->bclink.oos_state);
 		info("Last sent: %u\n", n_ptr->bclink.last_sent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Broadcast link info for %s\n", addr_string);
+		pr_info("Reception permitted: %d,  Acked: %u\n",
+			n_ptr->bclink.recv_permitted,
+			n_ptr->bclink.acked);
+		pr_info("Last in: %u,  Oos state: %u,  Last sent: %u\n",
+			n_ptr->bclink.last_in,
+			n_ptr->bclink.oos_state,
+			n_ptr->bclink.last_sent);
+>>>>>>> refs/remotes/origin/master
 
 		tipc_k_signal((Handler)link_reset_all, (unsigned long)n_ptr->addr);
 
@@ -1805,10 +2377,14 @@ static void link_retransmit_failure(struct tipc_link *l_ptr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tipc_link_retransmit(struct link *l_ptr, struct sk_buff *buf,
 =======
 void tipc_link_retransmit(struct tipc_link *l_ptr, struct sk_buff *buf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_link_retransmit(struct tipc_link *l_ptr, struct sk_buff *buf,
+>>>>>>> refs/remotes/origin/master
 			  u32 retransmits)
 {
 	struct tipc_msg *msg;
@@ -1818,11 +2394,16 @@ void tipc_link_retransmit(struct tipc_link *l_ptr, struct sk_buff *buf,
 
 	msg = buf_msg(buf);
 
+<<<<<<< HEAD
 	if (tipc_bearer_congested(l_ptr->b_ptr, l_ptr)) {
+=======
+	if (tipc_bearer_blocked(l_ptr->b_ptr)) {
+>>>>>>> refs/remotes/origin/master
 		if (l_ptr->retransm_queue_size == 0) {
 			l_ptr->retransm_queue_head = msg_seqno(msg);
 			l_ptr->retransm_queue_size = retransmits;
 		} else {
+<<<<<<< HEAD
 			err("Unexpected retransmit on link %s (qsize=%d)\n",
 			    l_ptr->name, l_ptr->retransm_queue_size);
 		}
@@ -1830,6 +2411,14 @@ void tipc_link_retransmit(struct tipc_link *l_ptr, struct sk_buff *buf,
 	} else {
 		/* Detect repeated retransmit failures on uncongested bearer */
 
+=======
+			pr_err("Unexpected retransmit on link %s (qsize=%d)\n",
+			       l_ptr->name, l_ptr->retransm_queue_size);
+		}
+		return;
+	} else {
+		/* Detect repeated retransmit failures on unblocked bearer */
+>>>>>>> refs/remotes/origin/master
 		if (l_ptr->last_retransmitted == msg_seqno(msg)) {
 			if (++l_ptr->stale_count > 100) {
 				link_retransmit_failure(l_ptr, buf);
@@ -1845,6 +2434,7 @@ void tipc_link_retransmit(struct tipc_link *l_ptr, struct sk_buff *buf,
 		msg = buf_msg(buf);
 		msg_set_ack(msg, mod(l_ptr->next_in_no - 1));
 		msg_set_bcast_ack(msg, l_ptr->owner->bclink.last_in);
+<<<<<<< HEAD
 		if (tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr)) {
 			buf = buf->next;
 			retransmits--;
@@ -1860,6 +2450,12 @@ void tipc_link_retransmit(struct tipc_link *l_ptr, struct sk_buff *buf,
 			l_ptr->retransm_queue_size = retransmits;
 			return;
 		}
+=======
+		tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr);
+		buf = buf->next;
+		retransmits--;
+		l_ptr->stats.retransmitted++;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	l_ptr->retransm_queue_head = l_ptr->retransm_queue_size = 0;
@@ -1868,12 +2464,16 @@ void tipc_link_retransmit(struct tipc_link *l_ptr, struct sk_buff *buf,
 /**
  * link_insert_deferred_queue - insert deferred messages back into receive chain
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static struct sk_buff *link_insert_deferred_queue(struct link *l_ptr,
 =======
 static struct sk_buff *link_insert_deferred_queue(struct tipc_link *l_ptr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sk_buff *link_insert_deferred_queue(struct tipc_link *l_ptr,
+>>>>>>> refs/remotes/origin/master
 						  struct sk_buff *buf)
 {
 	u32 seq_no;
@@ -1882,10 +2482,14 @@ static struct sk_buff *link_insert_deferred_queue(struct tipc_link *l_ptr,
 		return buf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	seq_no = msg_seqno(buf_msg(l_ptr->oldest_deferred_in));
 =======
 	seq_no = buf_seqno(l_ptr->oldest_deferred_in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_no = buf_seqno(l_ptr->oldest_deferred_in);
+>>>>>>> refs/remotes/origin/master
 	if (seq_no == mod(l_ptr->next_in_no)) {
 		l_ptr->newest_deferred_in->next = buf;
 		buf = l_ptr->oldest_deferred_in;
@@ -1907,6 +2511,7 @@ static struct sk_buff *link_insert_deferred_queue(struct tipc_link *l_ptr,
  * TIPC will ignore the excess, under the assumption that it is optional info
  * introduced by a later release of the protocol.
  */
+<<<<<<< HEAD
 
 static int link_recv_buf_validate(struct sk_buff *buf)
 {
@@ -1916,6 +2521,12 @@ static int link_recv_buf_validate(struct sk_buff *buf)
 =======
 		SHORT_H_SIZE, MCAST_H_SIZE, NAMED_H_SIZE, BASIC_H_SIZE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int link_recv_buf_validate(struct sk_buff *buf)
+{
+	static u32 min_data_hdr_size[8] = {
+		SHORT_H_SIZE, MCAST_H_SIZE, NAMED_H_SIZE, BASIC_H_SIZE,
+>>>>>>> refs/remotes/origin/master
 		MAX_H_SIZE, MAX_H_SIZE, MAX_H_SIZE, MAX_H_SIZE
 		};
 
@@ -1957,17 +2568,24 @@ static int link_recv_buf_validate(struct sk_buff *buf)
  * Invoked with no locks held.  Bearer pointer must point to a valid bearer
  * structure (i.e. cannot be NULL), but bearer can be inactive.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 {
 	read_lock_bh(&tipc_net_lock);
 	while (head) {
 		struct tipc_node *n_ptr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct link *l_ptr;
 =======
 		struct tipc_link *l_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct tipc_link *l_ptr;
+>>>>>>> refs/remotes/origin/master
 		struct sk_buff *crs;
 		struct sk_buff *buf = head;
 		struct tipc_msg *msg;
@@ -1977,6 +2595,7 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 		int type;
 
 		head = head->next;
+<<<<<<< HEAD
 
 		/* Ensure bearer is still enabled */
 
@@ -1999,6 +2618,23 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 
 		/* Handle arrival of a non-unicast link message */
 
+=======
+		buf->next = NULL;
+
+		/* Ensure bearer is still enabled */
+		if (unlikely(!b_ptr->active))
+			goto discard;
+
+		/* Ensure message is well-formed */
+		if (unlikely(!link_recv_buf_validate(buf)))
+			goto discard;
+
+		/* Ensure message data is a single contiguous unit */
+		if (unlikely(skb_linearize(buf)))
+			goto discard;
+
+		/* Handle arrival of a non-unicast link message */
+>>>>>>> refs/remotes/origin/master
 		msg = buf_msg(buf);
 
 		if (unlikely(msg_non_seq(msg))) {
@@ -2009,6 +2645,7 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 			continue;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		/* Discard unicast link messages destined for another node */
@@ -2059,6 +2696,25 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 =======
 		/* Verify that communication with node is currently allowed */
 
+=======
+		/* Discard unicast link messages destined for another node */
+		if (unlikely(!msg_short(msg) &&
+			     (msg_destnode(msg) != tipc_own_addr)))
+			goto discard;
+
+		/* Locate neighboring node that sent message */
+		n_ptr = tipc_node_find(msg_prevnode(msg));
+		if (unlikely(!n_ptr))
+			goto discard;
+		tipc_node_lock(n_ptr);
+
+		/* Locate unicast link endpoint that should handle message */
+		l_ptr = n_ptr->links[b_ptr->identity];
+		if (unlikely(!l_ptr))
+			goto unlock_discard;
+
+		/* Verify that communication with node is currently allowed */
+>>>>>>> refs/remotes/origin/master
 		if ((n_ptr->block_setup & WAIT_PEER_DOWN) &&
 			msg_user(msg) == LINK_PROTOCOL &&
 			(msg_type(msg) == RESET_MSG ||
@@ -2066,6 +2722,7 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 			!msg_redundant_link(msg))
 			n_ptr->block_setup &= ~WAIT_PEER_DOWN;
 
+<<<<<<< HEAD
 		if (n_ptr->block_setup) {
 >>>>>>> refs/remotes/origin/cm-10.0
 			tipc_node_unlock(n_ptr);
@@ -2074,10 +2731,17 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 
 		/* Validate message sequence number info */
 
+=======
+		if (n_ptr->block_setup)
+			goto unlock_discard;
+
+		/* Validate message sequence number info */
+>>>>>>> refs/remotes/origin/master
 		seq_no = msg_seqno(msg);
 		ackd = msg_ack(msg);
 
 		/* Release acked messages */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 		if (less(n_ptr->bclink.acked, msg_bcast_ack(msg))) {
@@ -2093,6 +2757,9 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 			buf_discard(crs);
 =======
 		if (n_ptr->bclink.supported)
+=======
+		if (n_ptr->bclink.recv_permitted)
+>>>>>>> refs/remotes/origin/master
 			tipc_bclink_acknowledge(n_ptr, msg_bcast_ack(msg));
 
 		crs = l_ptr->first_out;
@@ -2101,7 +2768,10 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 			struct sk_buff *next = crs->next;
 
 			kfree_skb(crs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			crs = next;
 			released++;
 		}
@@ -2111,7 +2781,10 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 		}
 
 		/* Try sending any messages link endpoint has pending */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(l_ptr->next_out))
 			tipc_link_push_queue(l_ptr);
 		if (unlikely(!list_empty(&l_ptr->waiting_ports)))
@@ -2122,6 +2795,7 @@ void tipc_recv_msg(struct sk_buff *head, struct tipc_bearer *b_ptr)
 		}
 
 		/* Now (finally!) process the incoming message */
+<<<<<<< HEAD
 
 protocol_check:
 		if (likely(link_working_working(l_ptr))) {
@@ -2234,11 +2908,38 @@ deliver:
 				tipc_net_route_msg(buf);
 				continue;
 			}
+=======
+protocol_check:
+		if (unlikely(!link_working_working(l_ptr))) {
+			if (msg_user(msg) == LINK_PROTOCOL) {
+				link_recv_proto_msg(l_ptr, buf);
+				head = link_insert_deferred_queue(l_ptr, head);
+				tipc_node_unlock(n_ptr);
+				continue;
+			}
+
+			/* Traffic message. Conditionally activate link */
+			link_state_event(l_ptr, TRAFFIC_MSG_EVT);
+
+			if (link_working_working(l_ptr)) {
+				/* Re-insert buffer in front of queue */
+				buf->next = head;
+				head = buf;
+				tipc_node_unlock(n_ptr);
+				continue;
+			}
+			goto unlock_discard;
+		}
+
+		/* Link is now in state WORKING_WORKING */
+		if (unlikely(seq_no != mod(l_ptr->next_in_no))) {
+>>>>>>> refs/remotes/origin/master
 			link_handle_out_of_seq_msg(l_ptr, buf);
 			head = link_insert_deferred_queue(l_ptr, head);
 			tipc_node_unlock(n_ptr);
 			continue;
 		}
+<<<<<<< HEAD
 
 		if (msg_user(msg) == LINK_PROTOCOL) {
 			link_recv_proto_msg(l_ptr, buf);
@@ -2262,10 +2963,80 @@ cont:
 =======
 		kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		l_ptr->next_in_no++;
+		if (unlikely(l_ptr->oldest_deferred_in))
+			head = link_insert_deferred_queue(l_ptr, head);
+deliver:
+		if (likely(msg_isdata(msg))) {
+			tipc_node_unlock(n_ptr);
+			tipc_port_recv_msg(buf);
+			continue;
+		}
+		switch (msg_user(msg)) {
+			int ret;
+		case MSG_BUNDLER:
+			l_ptr->stats.recv_bundles++;
+			l_ptr->stats.recv_bundled += msg_msgcnt(msg);
+			tipc_node_unlock(n_ptr);
+			tipc_link_recv_bundle(buf);
+			continue;
+		case NAME_DISTRIBUTOR:
+			n_ptr->bclink.recv_permitted = true;
+			tipc_node_unlock(n_ptr);
+			tipc_named_recv(buf);
+			continue;
+		case BCAST_PROTOCOL:
+			tipc_link_recv_sync(n_ptr, buf);
+			tipc_node_unlock(n_ptr);
+			continue;
+		case CONN_MANAGER:
+			tipc_node_unlock(n_ptr);
+			tipc_port_recv_proto_msg(buf);
+			continue;
+		case MSG_FRAGMENTER:
+			l_ptr->stats.recv_fragments++;
+			ret = tipc_link_recv_fragment(&l_ptr->reasm_head,
+						      &l_ptr->reasm_tail,
+						      &buf);
+			if (ret == LINK_REASM_COMPLETE) {
+				l_ptr->stats.recv_fragmented++;
+				msg = buf_msg(buf);
+				goto deliver;
+			}
+			if (ret == LINK_REASM_ERROR)
+				tipc_link_reset(l_ptr);
+			tipc_node_unlock(n_ptr);
+			continue;
+		case CHANGEOVER_PROTOCOL:
+			type = msg_type(msg);
+			if (link_recv_changeover_msg(&l_ptr, &buf)) {
+				msg = buf_msg(buf);
+				seq_no = msg_seqno(msg);
+				if (type == ORIGINAL_MSG)
+					goto deliver;
+				goto protocol_check;
+			}
+			break;
+		default:
+			kfree_skb(buf);
+			buf = NULL;
+			break;
+		}
+		tipc_node_unlock(n_ptr);
+		tipc_net_route_msg(buf);
+		continue;
+unlock_discard:
+
+		tipc_node_unlock(n_ptr);
+discard:
+		kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 	}
 	read_unlock_bh(&tipc_net_lock);
 }
 
+<<<<<<< HEAD
 /*
 <<<<<<< HEAD
  * link_defer_buf(): Sort a received out-of-sequence packet
@@ -2281,18 +3052,27 @@ u32 tipc_link_defer_pkt(struct sk_buff **head,
 	struct sk_buff *crs = *head;
 	u32 seq_no = msg_seqno(buf_msg(buf));
 =======
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * tipc_link_defer_pkt - Add out-of-sequence message to deferred reception queue
  *
  * Returns increase in queue length (i.e. 0 or 1)
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 u32 tipc_link_defer_pkt(struct sk_buff **head, struct sk_buff **tail,
 			struct sk_buff *buf)
 {
 	struct sk_buff *queue_buf;
 	struct sk_buff **prev;
 	u32 seq_no = buf_seqno(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	buf->next = NULL;
 
@@ -2304,15 +3084,20 @@ u32 tipc_link_defer_pkt(struct sk_buff **head, struct sk_buff **tail,
 
 	/* Last ? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (less(msg_seqno(buf_msg(*tail)), seq_no)) {
 =======
 	if (less(buf_seqno(*tail), seq_no)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (less(buf_seqno(*tail), seq_no)) {
+>>>>>>> refs/remotes/origin/master
 		(*tail)->next = buf;
 		*tail = buf;
 		return 1;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Scan through queue and sort it in */
 	do {
@@ -2347,6 +3132,8 @@ static void link_handle_out_of_seq_msg(struct link *l_ptr,
 {
 	u32 seq_no = msg_seqno(buf_msg(buf));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Locate insertion point in queue, then insert; discard if duplicate */
 	prev = head;
 	queue_buf = *head;
@@ -2373,12 +3160,18 @@ static void link_handle_out_of_seq_msg(struct link *l_ptr,
 /*
  * link_handle_out_of_seq_msg - handle arrival of out-of-sequence packet
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void link_handle_out_of_seq_msg(struct tipc_link *l_ptr,
 				       struct sk_buff *buf)
 {
 	u32 seq_no = buf_seqno(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (likely(msg_user(buf_msg(buf)) == LINK_PROTOCOL)) {
 		link_recv_proto_msg(l_ptr, buf);
@@ -2386,13 +3179,17 @@ static void link_handle_out_of_seq_msg(struct tipc_link *l_ptr,
 	}
 
 	/* Record OOS packet arrival (force mismatch on next timeout) */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	l_ptr->checkpoint--;
 
 	/*
 	 * Discard packet if a duplicate; otherwise add it to deferred queue
 	 * and notify peer of gap as per protocol specification
 	 */
+<<<<<<< HEAD
 
 	if (less(seq_no, mod(l_ptr->next_in_no))) {
 		l_ptr->stats.duplicates++;
@@ -2401,6 +3198,11 @@ static void link_handle_out_of_seq_msg(struct tipc_link *l_ptr,
 =======
 		kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (less(seq_no, mod(l_ptr->next_in_no))) {
+		l_ptr->stats.duplicates++;
+		kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -2418,6 +3220,7 @@ static void link_handle_out_of_seq_msg(struct tipc_link *l_ptr,
  * Send protocol message to the other endpoint.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tipc_link_send_proto_msg(struct link *l_ptr, u32 msg_typ, int probe_msg,
 			      u32 gap, u32 tolerance, u32 priority, u32 ack_mtu)
 =======
@@ -2425,12 +3228,18 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
 				int probe_msg, u32 gap, u32 tolerance,
 				u32 priority, u32 ack_mtu)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
+			      int probe_msg, u32 gap, u32 tolerance,
+			      u32 priority, u32 ack_mtu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *buf = NULL;
 	struct tipc_msg *msg = l_ptr->pmsg;
 	u32 msg_size = sizeof(l_ptr->proto_msg);
 	int r_flag;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (link_blocked(l_ptr))
 		return;
@@ -2440,6 +3249,9 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
 =======
 	/* Discard any previous message that was deferred due to congestion */
 
+=======
+	/* Discard any previous message that was deferred due to congestion */
+>>>>>>> refs/remotes/origin/master
 	if (l_ptr->proto_msg_queue) {
 		kfree_skb(l_ptr->proto_msg_queue);
 		l_ptr->proto_msg_queue = NULL;
@@ -2449,16 +3261,25 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
 		return;
 
 	/* Abort non-RESET send if communication with node is prohibited */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((l_ptr->owner->block_setup) && (msg_typ != RESET_MSG))
 		return;
 
 	/* Create protocol message with "out-of-sequence" sequence number */
+<<<<<<< HEAD
 
 	msg_set_type(msg, msg_typ);
 	msg_set_net_plane(msg, l_ptr->b_ptr->net_plane);
 	msg_set_bcast_ack(msg, l_ptr->owner->bclink.last_in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg_set_type(msg, msg_typ);
+	msg_set_net_plane(msg, l_ptr->b_ptr->net_plane);
+	msg_set_bcast_ack(msg, l_ptr->owner->bclink.last_in);
+>>>>>>> refs/remotes/origin/master
 	msg_set_last_bcast(msg, tipc_bclink_get_last_sent());
 
 	if (msg_typ == STATE_MSG) {
@@ -2468,16 +3289,22 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
 			return;
 		if (l_ptr->next_out)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			next_sent = msg_seqno(buf_msg(l_ptr->next_out));
 		msg_set_next_sent(msg, next_sent);
 		if (l_ptr->oldest_deferred_in) {
 			u32 rec = msg_seqno(buf_msg(l_ptr->oldest_deferred_in));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			next_sent = buf_seqno(l_ptr->next_out);
 		msg_set_next_sent(msg, next_sent);
 		if (l_ptr->oldest_deferred_in) {
 			u32 rec = buf_seqno(l_ptr->oldest_deferred_in);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			gap = mod(rec - mod(l_ptr->next_in_no));
 		}
 		msg_set_seq_gap(msg, gap);
@@ -2520,6 +3347,7 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
 	msg_set_redundant_link(msg, r_flag);
 	msg_set_linkprio(msg, l_ptr->priority);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Ensure sequence number will not fit : */
 
@@ -2542,16 +3370,22 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
 	/* Message can be sent */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	msg_set_size(msg, msg_size);
 
 	msg_set_seqno(msg, mod(l_ptr->next_out_no + (0xffff/2)));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	buf = tipc_buf_acquire(msg_size);
 	if (!buf)
 		return;
 
 	skb_copy_to_linear_data(buf, msg, sizeof(l_ptr->proto_msg));
+<<<<<<< HEAD
 <<<<<<< HEAD
 	msg_set_size(buf_msg(buf), msg_size);
 
@@ -2588,6 +3422,19 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
 	l_ptr->unacked_window = 0;
 	kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buf->priority = TC_PRIO_CONTROL;
+
+	/* Defer message if bearer is already blocked */
+	if (tipc_bearer_blocked(l_ptr->b_ptr)) {
+		l_ptr->proto_msg_queue = buf;
+		return;
+	}
+
+	tipc_bearer_send(l_ptr->b_ptr, buf, &l_ptr->media_addr);
+	l_ptr->unacked_window = 0;
+	kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2595,12 +3442,16 @@ void tipc_link_send_proto_msg(struct tipc_link *l_ptr, u32 msg_typ,
  * Note that network plane id propagates through the network, and may
  * change at any time. The node with lowest address rules
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void link_recv_proto_msg(struct link *l_ptr, struct sk_buff *buf)
 =======
 static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 rec_gap = 0;
 	u32 max_pkt_info;
@@ -2612,7 +3463,10 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 		goto exit;
 
 	/* record unnumbered packet arrival (force mismatch on next timeout) */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	l_ptr->checkpoint--;
 
 	if (l_ptr->b_ptr->net_plane != msg_net_plane(msg))
@@ -2627,10 +3481,13 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 		if (!link_working_unknown(l_ptr) &&
 		    (l_ptr->peer_session != INVALID_SESSION)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (msg_session(msg) == l_ptr->peer_session)
 				break; /* duplicate: ignore */
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (less_eq(msg_session(msg), l_ptr->peer_session))
 				break; /* duplicate or old reset: ignore */
 		}
@@ -2646,11 +3503,17 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 
 		link_state_event(l_ptr, RESET_MSG);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		/* fall thru' */
 	case ACTIVATE_MSG:
 		/* Update link settings according other endpoint's values */
 
+=======
+		/* fall thru' */
+	case ACTIVATE_MSG:
+		/* Update link settings according other endpoint's values */
+>>>>>>> refs/remotes/origin/master
 		strcpy((strrchr(l_ptr->name, ':') + 1), (char *)msg_data(msg));
 
 		msg_tol = msg_link_tolerance(msg);
@@ -2670,6 +3533,7 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 			l_ptr->max_pkt = l_ptr->max_pkt_target;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		l_ptr->owner->bclink.supported = (max_pkt_info != 0);
 
 		link_state_event(l_ptr, msg_type(msg));
@@ -2678,17 +3542,25 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 
 		/* Synchronize broadcast link info, if not done previously */
 
+=======
+
+		/* Synchronize broadcast link info, if not done previously */
+>>>>>>> refs/remotes/origin/master
 		if (!tipc_node_is_up(l_ptr->owner)) {
 			l_ptr->owner->bclink.last_sent =
 				l_ptr->owner->bclink.last_in =
 				msg_last_bcast(msg);
 			l_ptr->owner->bclink.oos_state = 0;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		l_ptr->peer_session = msg_session(msg);
 		l_ptr->peer_bearer_id = msg_bearer_id(msg);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Synchronize broadcast sequence numbers */
 		if (!tipc_node_redundant_links(l_ptr->owner))
@@ -2697,6 +3569,10 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 		if (msg_type(msg) == ACTIVATE_MSG)
 			link_state_event(l_ptr, ACTIVATE_MSG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (msg_type(msg) == ACTIVATE_MSG)
+			link_state_event(l_ptr, ACTIVATE_MSG);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case STATE_MSG:
 
@@ -2706,8 +3582,14 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 
 		if (msg_linkprio(msg) &&
 		    (msg_linkprio(msg) != l_ptr->priority)) {
+<<<<<<< HEAD
 			warn("Resetting link <%s>, priority change %u->%u\n",
 			     l_ptr->name, l_ptr->priority, msg_linkprio(msg));
+=======
+			pr_warn("%s<%s>, priority change %u->%u\n",
+				link_rst_msg, l_ptr->name, l_ptr->priority,
+				msg_linkprio(msg));
+>>>>>>> refs/remotes/origin/master
 			l_ptr->priority = msg_linkprio(msg);
 			tipc_link_reset(l_ptr); /* Enforce change to take effect */
 			break;
@@ -2736,6 +3618,7 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 		}
 
 		/* Protocol message before retransmits, reduce loss risk */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 		tipc_bclink_check_gap(l_ptr->owner, msg_last_bcast(msg));
@@ -2744,6 +3627,11 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 			tipc_bclink_update_link_state(l_ptr->owner,
 						      msg_last_bcast(msg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (l_ptr->owner->bclink.recv_permitted)
+			tipc_bclink_update_link_state(l_ptr->owner,
+						      msg_last_bcast(msg));
+>>>>>>> refs/remotes/origin/master
 
 		if (rec_gap || (msg_probe(msg))) {
 			tipc_link_send_proto_msg(l_ptr, STATE_MSG,
@@ -2758,10 +3646,14 @@ static void link_recv_proto_msg(struct tipc_link *l_ptr, struct sk_buff *buf)
 	}
 exit:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf_discard(buf);
 =======
 	kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -2769,6 +3661,7 @@ exit:
  * tipc_link_tunnel(): Send one message via a link belonging to
  * another bearer. Owner node is locked.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void tipc_link_tunnel(struct link *l_ptr,
 =======
@@ -2783,20 +3676,35 @@ static void tipc_link_tunnel(struct tipc_link *l_ptr,
 =======
 	struct tipc_link *tunnel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void tipc_link_tunnel(struct tipc_link *l_ptr,
+			     struct tipc_msg *tunnel_hdr, struct tipc_msg *msg,
+			     u32 selector)
+{
+	struct tipc_link *tunnel;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *buf;
 	u32 length = msg_size(msg);
 
 	tunnel = l_ptr->owner->active_links[selector & 1];
 	if (!tipc_link_is_up(tunnel)) {
+<<<<<<< HEAD
 		warn("Link changeover error, "
 		     "tunnel link no longer available\n");
+=======
+		pr_warn("%stunnel link no longer available\n", link_co_err);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	msg_set_size(tunnel_hdr, length + INT_H_SIZE);
 	buf = tipc_buf_acquire(length + INT_H_SIZE);
 	if (!buf) {
+<<<<<<< HEAD
 		warn("Link changeover error, "
 		     "unable to send tunnel msg\n");
+=======
+		pr_warn("%sunable to send tunnel msg\n", link_co_err);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	skb_copy_to_linear_data(buf, tunnel_hdr, INT_H_SIZE);
@@ -2810,6 +3718,7 @@ static void tipc_link_tunnel(struct tipc_link *l_ptr,
  * changeover(): Send whole message queue via the remaining link
  *               Owner node is locked.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_link_changeover(struct link *l_ptr)
@@ -2818,12 +3727,17 @@ void tipc_link_changeover(struct link *l_ptr)
 	struct sk_buff *crs = l_ptr->first_out;
 	struct link *tunnel = l_ptr->owner->active_links[0];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_link_changeover(struct tipc_link *l_ptr)
 {
 	u32 msgcount = l_ptr->out_queue_size;
 	struct sk_buff *crs = l_ptr->first_out;
 	struct tipc_link *tunnel = l_ptr->owner->active_links[0];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tipc_msg tunnel_hdr;
 	int split_bundles;
 
@@ -2831,8 +3745,12 @@ void tipc_link_changeover(struct tipc_link *l_ptr)
 		return;
 
 	if (!l_ptr->owner->permit_changeover) {
+<<<<<<< HEAD
 		warn("Link changeover error, "
 		     "peer did not permit changeover\n");
+=======
+		pr_warn("%speer did not permit changeover\n", link_co_err);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -2850,8 +3768,13 @@ void tipc_link_changeover(struct tipc_link *l_ptr)
 			msg_set_size(&tunnel_hdr, INT_H_SIZE);
 			tipc_link_send_buf(tunnel, buf);
 		} else {
+<<<<<<< HEAD
 			warn("Link changeover error, "
 			     "unable to send changeover msg\n");
+=======
+			pr_warn("%sunable to send changeover msg\n",
+				link_co_err);
+>>>>>>> refs/remotes/origin/master
 		}
 		return;
 	}
@@ -2883,10 +3806,14 @@ void tipc_link_changeover(struct tipc_link *l_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tipc_link_send_duplicate(struct link *l_ptr, struct link *tunnel)
 =======
 void tipc_link_send_duplicate(struct tipc_link *l_ptr, struct tipc_link *tunnel)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_link_send_duplicate(struct tipc_link *l_ptr, struct tipc_link *tunnel)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *iter;
 	struct tipc_msg tunnel_hdr;
@@ -2908,8 +3835,13 @@ void tipc_link_send_duplicate(struct tipc_link *l_ptr, struct tipc_link *tunnel)
 		msg_set_size(&tunnel_hdr, length + INT_H_SIZE);
 		outbuf = tipc_buf_acquire(length + INT_H_SIZE);
 		if (outbuf == NULL) {
+<<<<<<< HEAD
 			warn("Link changeover error, "
 			     "unable to send duplicate msg\n");
+=======
+			pr_warn("%sunable to send duplicate msg\n",
+				link_co_err);
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 		skb_copy_to_linear_data(outbuf, &tunnel_hdr, INT_H_SIZE);
@@ -2922,8 +3854,11 @@ void tipc_link_send_duplicate(struct tipc_link *l_ptr, struct tipc_link *tunnel)
 	}
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * buf_extract - extracts embedded TIPC message from another message
  * @skb: encapsulating message buffer
@@ -2932,7 +3867,10 @@ void tipc_link_send_duplicate(struct tipc_link *l_ptr, struct tipc_link *tunnel)
  * Returns a new message buffer containing an embedded message.  The
  * encapsulating message itself is left unchanged.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sk_buff *buf_extract(struct sk_buff *skb, u32 from_pos)
 {
 	struct tipc_msg *msg = (struct tipc_msg *)(skb->data + from_pos);
@@ -2949,6 +3887,7 @@ static struct sk_buff *buf_extract(struct sk_buff *skb, u32 from_pos)
  *  link_recv_changeover_msg(): Receive tunneled packet sent
  *  via other link. Node is locked. Return extracted buffer.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static int link_recv_changeover_msg(struct link **l_ptr,
@@ -2957,16 +3896,22 @@ static int link_recv_changeover_msg(struct link **l_ptr,
 	struct sk_buff *tunnel_buf = *buf;
 	struct link *dest_link;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int link_recv_changeover_msg(struct tipc_link **l_ptr,
 				    struct sk_buff **buf)
 {
 	struct sk_buff *tunnel_buf = *buf;
 	struct tipc_link *dest_link;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct tipc_msg *msg;
 	struct tipc_msg *tunnel_msg = buf_msg(tunnel_buf);
 	u32 msg_typ = msg_type(tunnel_msg);
 	u32 msg_count = msg_msgcnt(tunnel_msg);
+<<<<<<< HEAD
 
 	dest_link = (*l_ptr)->owner->links[msg_bearer_id(tunnel_msg)];
 	if (!dest_link)
@@ -2974,6 +3919,18 @@ static int link_recv_changeover_msg(struct tipc_link **l_ptr,
 	if (dest_link == *l_ptr) {
 		err("Unexpected changeover message on link <%s>\n",
 		    (*l_ptr)->name);
+=======
+	u32 bearer_id = msg_bearer_id(tunnel_msg);
+
+	if (bearer_id >= MAX_BEARERS)
+		goto exit;
+	dest_link = (*l_ptr)->owner->links[bearer_id];
+	if (!dest_link)
+		goto exit;
+	if (dest_link == *l_ptr) {
+		pr_err("Unexpected changeover message on link <%s>\n",
+		       (*l_ptr)->name);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 	*l_ptr = dest_link;
@@ -2984,6 +3941,7 @@ static int link_recv_changeover_msg(struct tipc_link **l_ptr,
 			goto exit;
 		*buf = buf_extract(tunnel_buf, INT_H_SIZE);
 		if (*buf == NULL) {
+<<<<<<< HEAD
 			warn("Link changeover error, duplicate msg dropped\n");
 			goto exit;
 		}
@@ -2992,14 +3950,26 @@ static int link_recv_changeover_msg(struct tipc_link **l_ptr,
 =======
 		kfree_skb(tunnel_buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("%sduplicate msg dropped\n", link_co_err);
+			goto exit;
+		}
+		kfree_skb(tunnel_buf);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	/* First original message ?: */
+<<<<<<< HEAD
 
 	if (tipc_link_is_up(dest_link)) {
 		info("Resetting link <%s>, changeover initiated by peer\n",
 		     dest_link->name);
+=======
+	if (tipc_link_is_up(dest_link)) {
+		pr_info("%s<%s>, changeover initiated by peer\n", link_rst_msg,
+			dest_link->name);
+>>>>>>> refs/remotes/origin/master
 		tipc_link_reset(dest_link);
 		dest_link->exp_msg_count = msg_count;
 		if (!msg_count)
@@ -3011,10 +3981,15 @@ static int link_recv_changeover_msg(struct tipc_link **l_ptr,
 	}
 
 	/* Receive original message */
+<<<<<<< HEAD
 
 	if (dest_link->exp_msg_count == 0) {
 		warn("Link switchover error, "
 		     "got too many tunnelled messages\n");
+=======
+	if (dest_link->exp_msg_count == 0) {
+		pr_warn("%sgot too many tunnelled messages\n", link_co_err);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 	dest_link->exp_msg_count--;
@@ -3024,6 +3999,7 @@ static int link_recv_changeover_msg(struct tipc_link **l_ptr,
 		*buf = buf_extract(tunnel_buf, INT_H_SIZE);
 		if (*buf != NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buf_discard(tunnel_buf);
 =======
 			kfree_skb(tunnel_buf);
@@ -3031,15 +4007,25 @@ static int link_recv_changeover_msg(struct tipc_link **l_ptr,
 			return 1;
 		} else {
 			warn("Link changeover error, original msg dropped\n");
+=======
+			kfree_skb(tunnel_buf);
+			return 1;
+		} else {
+			pr_warn("%soriginal msg dropped\n", link_co_err);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 exit:
 	*buf = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf_discard(tunnel_buf);
 =======
 	kfree_skb(tunnel_buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree_skb(tunnel_buf);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3055,34 +4041,49 @@ void tipc_link_recv_bundle(struct sk_buff *buf)
 	while (msgcount--) {
 		obuf = buf_extract(buf, pos);
 		if (obuf == NULL) {
+<<<<<<< HEAD
 			warn("Link unable to unbundle message(s)\n");
+=======
+			pr_warn("Link unable to unbundle message(s)\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		pos += align(msg_size(buf_msg(obuf)));
 		tipc_net_route_msg(obuf);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf_discard(buf);
 =======
 	kfree_skb(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree_skb(buf);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *  Fragmentation/defragmentation:
  */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * link_send_long_buf: Entry for buffers needing fragmentation.
  * The buffer is complete, inclusive total message length.
  * Returns user data length.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int link_send_long_buf(struct link *l_ptr, struct sk_buff *buf)
 =======
 static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *buf_chain = NULL;
 	struct sk_buff *buf_chain_tail = (struct sk_buff *)&buf_chain;
@@ -3103,12 +4104,18 @@ static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 		destaddr = msg_destnode(inmsg);
 
 	/* Prepare reusable fragment header: */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	tipc_msg_init(&fragm_hdr, MSG_FRAGMENTER, FIRST_FRAGMENT,
 		 INT_H_SIZE, destaddr);
 
 	/* Chop up message: */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	while (rest > 0) {
 		struct sk_buff *fragm;
 
@@ -3119,18 +4126,24 @@ static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 		fragm = tipc_buf_acquire(fragm_sz + INT_H_SIZE);
 		if (fragm == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			buf_discard(buf);
 			while (buf_chain) {
 				buf = buf_chain;
 				buf_chain = buf_chain->next;
 				buf_discard(buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree_skb(buf);
 			while (buf_chain) {
 				buf = buf_chain;
 				buf_chain = buf_chain->next;
 				kfree_skb(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			return -ENOMEM;
 		}
@@ -3148,6 +4161,7 @@ static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 		msg_set_type(&fragm_hdr, FRAGMENT);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf_discard(buf);
 =======
 	kfree_skb(buf);
@@ -3155,6 +4169,11 @@ static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 
 	/* Append chain of fragments to send queue & send them */
 
+=======
+	kfree_skb(buf);
+
+	/* Append chain of fragments to send queue & send them */
+>>>>>>> refs/remotes/origin/master
 	l_ptr->long_msg_seq_no++;
 	link_add_chain_to_outqueue(l_ptr, buf_chain, l_ptr->long_msg_seq_no);
 	l_ptr->stats.sent_fragments += fragm_no;
@@ -3165,6 +4184,7 @@ static int link_send_long_buf(struct tipc_link *l_ptr, struct sk_buff *buf)
 }
 
 /*
+<<<<<<< HEAD
  * A pending message being re-assembled must store certain values
  * to handle subsequent fragments correctly. The following functions
  * help storing these values in unused, available fields in the
@@ -3361,6 +4381,53 @@ static void link_set_supervision_props(struct link *l_ptr, u32 tolerance)
 =======
 static void link_set_supervision_props(struct tipc_link *l_ptr, u32 tolerance)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * tipc_link_recv_fragment(): Called with node lock on. Returns
+ * the reassembled buffer if message is complete.
+ */
+int tipc_link_recv_fragment(struct sk_buff **head, struct sk_buff **tail,
+			    struct sk_buff **fbuf)
+{
+	struct sk_buff *frag = *fbuf;
+	struct tipc_msg *msg = buf_msg(frag);
+	u32 fragid = msg_type(msg);
+	bool headstolen;
+	int delta;
+
+	skb_pull(frag, msg_hdr_sz(msg));
+	if (fragid == FIRST_FRAGMENT) {
+		if (*head || skb_unclone(frag, GFP_ATOMIC))
+			goto out_free;
+		*head = frag;
+		skb_frag_list_init(*head);
+		return 0;
+	} else if (*head &&
+		   skb_try_coalesce(*head, frag, &headstolen, &delta)) {
+		kfree_skb_partial(frag, headstolen);
+	} else {
+		if (!*head)
+			goto out_free;
+		if (!skb_has_frag_list(*head))
+			skb_shinfo(*head)->frag_list = frag;
+		else
+			(*tail)->next = frag;
+		*tail = frag;
+		(*head)->truesize += frag->truesize;
+	}
+	if (fragid == LAST_FRAGMENT) {
+		*fbuf = *head;
+		*tail = *head = NULL;
+		return LINK_REASM_COMPLETE;
+	}
+	return 0;
+out_free:
+	pr_warn_ratelimited("Link unable to reassemble fragmented message\n");
+	kfree_skb(*fbuf);
+	return LINK_REASM_ERROR;
+}
+
+static void link_set_supervision_props(struct tipc_link *l_ptr, u32 tolerance)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((tolerance < TIPC_MIN_LINK_TOL) || (tolerance > TIPC_MAX_LINK_TOL))
 		return;
@@ -3371,12 +4438,16 @@ static void link_set_supervision_props(struct tipc_link *l_ptr, u32 tolerance)
 	l_ptr->abort_limit = tolerance / (l_ptr->continuity_interval / 4);
 }
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_link_set_queue_limits(struct link *l_ptr, u32 window)
 =======
 void tipc_link_set_queue_limits(struct tipc_link *l_ptr, u32 window)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_link_set_queue_limits(struct tipc_link *l_ptr, u32 window)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Data messages from this node, inclusive FIRST_FRAGM */
 	l_ptr->queue_limit[TIPC_LOW_IMPORTANCE] = window;
@@ -3397,14 +4468,20 @@ void tipc_link_set_queue_limits(struct tipc_link *l_ptr, u32 window)
 
 /**
  * link_find_link - locate link by name
+<<<<<<< HEAD
  * @name - ptr to link name string
  * @node - ptr to area to be filled with ptr to associated node
+=======
+ * @name: ptr to link name string
+ * @node: ptr to area to be filled with ptr to associated node
+>>>>>>> refs/remotes/origin/master
  *
  * Caller must hold 'tipc_net_lock' to ensure node and bearer are not deleted;
  * this also prevents link deletion.
  *
  * Returns pointer to link (or 0 if invalid link name).
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static struct link *link_find_link(const char *name, struct tipc_node **node)
@@ -3450,6 +4527,37 @@ static struct tipc_link *link_find_link(const char *name,
  * Returns 1 if value is within range, 0 if not.
  */
 
+=======
+static struct tipc_link *link_find_link(const char *name,
+					struct tipc_node **node)
+{
+	struct tipc_link *l_ptr;
+	struct tipc_node *n_ptr;
+	int i;
+
+	list_for_each_entry(n_ptr, &tipc_node_list, list) {
+		for (i = 0; i < MAX_BEARERS; i++) {
+			l_ptr = n_ptr->links[i];
+			if (l_ptr && !strcmp(l_ptr->name, name))
+				goto found;
+		}
+	}
+	l_ptr = NULL;
+	n_ptr = NULL;
+found:
+	*node = n_ptr;
+	return l_ptr;
+}
+
+/**
+ * link_value_is_valid -- validate proposed link tolerance/priority/window
+ *
+ * @cmd: value type (TIPC_CMD_SET_LINK_*)
+ * @new_value: the new value
+ *
+ * Returns 1 if value is within range, 0 if not.
+ */
+>>>>>>> refs/remotes/origin/master
 static int link_value_is_valid(u16 cmd, u32 new_value)
 {
 	switch (cmd) {
@@ -3465,24 +4573,39 @@ static int link_value_is_valid(u16 cmd, u32 new_value)
 	return 0;
 }
 
+<<<<<<< HEAD
 
 /**
  * link_cmd_set_value - change priority/tolerance/window for link/bearer/media
  * @name - ptr to link, bearer, or media name
  * @new_value - new value of link, bearer, or media setting
  * @cmd - which link, bearer, or media attribute to set (TIPC_CMD_SET_LINK_*)
+=======
+/**
+ * link_cmd_set_value - change priority/tolerance/window for link/bearer/media
+ * @name: ptr to link, bearer, or media name
+ * @new_value: new value of link, bearer, or media setting
+ * @cmd: which link, bearer, or media attribute to set (TIPC_CMD_SET_LINK_*)
+>>>>>>> refs/remotes/origin/master
  *
  * Caller must hold 'tipc_net_lock' to ensure link/bearer/media is not deleted.
  *
  * Returns 0 if value updated and negative value on error.
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int link_cmd_set_value(const char *name, u32 new_value, u16 cmd)
 {
 	struct tipc_node *node;
 	struct tipc_link *l_ptr;
 	struct tipc_bearer *b_ptr;
 	struct tipc_media *m_ptr;
+<<<<<<< HEAD
+=======
+	int res = 0;
+>>>>>>> refs/remotes/origin/master
 
 	l_ptr = link_find_link(name, &node);
 	if (l_ptr) {
@@ -3505,9 +4628,18 @@ static int link_cmd_set_value(const char *name, u32 new_value, u16 cmd)
 		case TIPC_CMD_SET_LINK_WINDOW:
 			tipc_link_set_queue_limits(l_ptr, new_value);
 			break;
+<<<<<<< HEAD
 		}
 		tipc_node_unlock(node);
 		return 0;
+=======
+		default:
+			res = -EINVAL;
+			break;
+		}
+		tipc_node_unlock(node);
+		return res;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	b_ptr = tipc_bearer_find(name);
@@ -3515,6 +4647,7 @@ static int link_cmd_set_value(const char *name, u32 new_value, u16 cmd)
 		switch (cmd) {
 		case TIPC_CMD_SET_LINK_TOL:
 			b_ptr->tolerance = new_value;
+<<<<<<< HEAD
 			return 0;
 		case TIPC_CMD_SET_LINK_PRI:
 			b_ptr->priority = new_value;
@@ -3524,6 +4657,20 @@ static int link_cmd_set_value(const char *name, u32 new_value, u16 cmd)
 			return 0;
 		}
 		return -EINVAL;
+=======
+			break;
+		case TIPC_CMD_SET_LINK_PRI:
+			b_ptr->priority = new_value;
+			break;
+		case TIPC_CMD_SET_LINK_WINDOW:
+			b_ptr->window = new_value;
+			break;
+		default:
+			res = -EINVAL;
+			break;
+		}
+		return res;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	m_ptr = tipc_media_find(name);
@@ -3532,6 +4679,7 @@ static int link_cmd_set_value(const char *name, u32 new_value, u16 cmd)
 	switch (cmd) {
 	case TIPC_CMD_SET_LINK_TOL:
 		m_ptr->tolerance = new_value;
+<<<<<<< HEAD
 		return 0;
 	case TIPC_CMD_SET_LINK_PRI:
 		m_ptr->priority = new_value;
@@ -3544,16 +4692,35 @@ static int link_cmd_set_value(const char *name, u32 new_value, u16 cmd)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case TIPC_CMD_SET_LINK_PRI:
+		m_ptr->priority = new_value;
+		break;
+	case TIPC_CMD_SET_LINK_WINDOW:
+		m_ptr->window = new_value;
+		break;
+	default:
+		res = -EINVAL;
+		break;
+	}
+	return res;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct sk_buff *tipc_link_cmd_config(const void *req_tlv_area, int req_tlv_space,
 				     u16 cmd)
 {
 	struct tipc_link_config *args;
 	u32 new_value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct link *l_ptr;
 	struct tipc_node *node;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int res;
 
 	if (!TLV_CHECK(req_tlv_area, req_tlv_space, TIPC_TLV_LINK_CONFIG))
@@ -3563,12 +4730,18 @@ struct sk_buff *tipc_link_cmd_config(const void *req_tlv_area, int req_tlv_space
 	new_value = ntohl(args->value);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!link_value_is_valid(cmd, new_value))
 		return tipc_cfg_reply_error_string(
 			"cannot change, value invalid");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!strcmp(args->name, tipc_bclink_name)) {
 		if ((cmd == TIPC_CMD_SET_LINK_WINDOW) &&
 		    (tipc_bclink_set_queue_limits(new_value) == 0))
@@ -3578,6 +4751,7 @@ struct sk_buff *tipc_link_cmd_config(const void *req_tlv_area, int req_tlv_space
 	}
 
 	read_lock_bh(&tipc_net_lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	l_ptr = link_find_link(args->name, &node);
 	if (!l_ptr) {
@@ -3619,6 +4793,9 @@ struct sk_buff *tipc_link_cmd_config(const void *req_tlv_area, int req_tlv_space
 =======
 	res = link_cmd_set_value(args->name, new_value, cmd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = link_cmd_set_value(args->name, new_value, cmd);
+>>>>>>> refs/remotes/origin/master
 	read_unlock_bh(&tipc_net_lock);
 	if (res)
 		return tipc_cfg_reply_error_string("cannot change link setting");
@@ -3630,12 +4807,16 @@ struct sk_buff *tipc_link_cmd_config(const void *req_tlv_area, int req_tlv_space
  * link_reset_statistics - reset link statistics
  * @l_ptr: pointer to link
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void link_reset_statistics(struct link *l_ptr)
 =======
 static void link_reset_statistics(struct tipc_link *l_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void link_reset_statistics(struct tipc_link *l_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	memset(&l_ptr->stats, 0, sizeof(l_ptr->stats));
 	l_ptr->stats.sent_info = l_ptr->next_out_no;
@@ -3646,10 +4827,14 @@ struct sk_buff *tipc_link_cmd_reset_stats(const void *req_tlv_area, int req_tlv_
 {
 	char *link_name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct link *l_ptr;
 =======
 	struct tipc_link *l_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tipc_link *l_ptr;
+>>>>>>> refs/remotes/origin/master
 	struct tipc_node *node;
 
 	if (!TLV_CHECK(req_tlv_area, req_tlv_space, TIPC_TLV_LINK_NAME))
@@ -3679,7 +4864,10 @@ struct sk_buff *tipc_link_cmd_reset_stats(const void *req_tlv_area, int req_tlv_
 /**
  * percent - convert count to a percentage of total (rounding up or down)
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 percent(u32 count, u32 total)
 {
 	return (count * 100 + (total / 2)) / total;
@@ -3693,6 +4881,7 @@ static u32 percent(u32 count, u32 total)
  *
  * Returns length of print buffer data string (or 0 if error)
  */
+<<<<<<< HEAD
 
 static int tipc_link_stats(const char *name, char *buf, const u32 buf_size)
 {
@@ -3705,19 +4894,36 @@ static int tipc_link_stats(const char *name, char *buf, const u32 buf_size)
 	struct tipc_node *node;
 	char *status;
 	u32 profile_total = 0;
+=======
+static int tipc_link_stats(const char *name, char *buf, const u32 buf_size)
+{
+	struct tipc_link *l;
+	struct tipc_stats *s;
+	struct tipc_node *node;
+	char *status;
+	u32 profile_total = 0;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!strcmp(name, tipc_bclink_name))
 		return tipc_bclink_stats(buf, buf_size);
 
+<<<<<<< HEAD
 	tipc_printbuf_init(&pb, buf, buf_size);
 
 	read_lock_bh(&tipc_net_lock);
 	l_ptr = link_find_link(name, &node);
 	if (!l_ptr) {
+=======
+	read_lock_bh(&tipc_net_lock);
+	l = link_find_link(name, &node);
+	if (!l) {
+>>>>>>> refs/remotes/origin/master
 		read_unlock_bh(&tipc_net_lock);
 		return 0;
 	}
 	tipc_node_lock(node);
+<<<<<<< HEAD
 
 	if (tipc_link_is_active(l_ptr))
 		status = "ACTIVE";
@@ -3788,20 +4994,98 @@ static int tipc_link_stats(const char *name, char *buf, const u32 buf_size)
 
 #define MAX_LINK_STATS_INFO 2000
 
+=======
+	s = &l->stats;
+
+	if (tipc_link_is_active(l))
+		status = "ACTIVE";
+	else if (tipc_link_is_up(l))
+		status = "STANDBY";
+	else
+		status = "DEFUNCT";
+
+	ret = tipc_snprintf(buf, buf_size, "Link <%s>\n"
+			    "  %s  MTU:%u  Priority:%u  Tolerance:%u ms"
+			    "  Window:%u packets\n",
+			    l->name, status, l->max_pkt, l->priority,
+			    l->tolerance, l->queue_limit[0]);
+
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  RX packets:%u fragments:%u/%u bundles:%u/%u\n",
+			     l->next_in_no - s->recv_info, s->recv_fragments,
+			     s->recv_fragmented, s->recv_bundles,
+			     s->recv_bundled);
+
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  TX packets:%u fragments:%u/%u bundles:%u/%u\n",
+			     l->next_out_no - s->sent_info, s->sent_fragments,
+			     s->sent_fragmented, s->sent_bundles,
+			     s->sent_bundled);
+
+	profile_total = s->msg_length_counts;
+	if (!profile_total)
+		profile_total = 1;
+
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  TX profile sample:%u packets  average:%u octets\n"
+			     "  0-64:%u%% -256:%u%% -1024:%u%% -4096:%u%% "
+			     "-16384:%u%% -32768:%u%% -66000:%u%%\n",
+			     s->msg_length_counts,
+			     s->msg_lengths_total / profile_total,
+			     percent(s->msg_length_profile[0], profile_total),
+			     percent(s->msg_length_profile[1], profile_total),
+			     percent(s->msg_length_profile[2], profile_total),
+			     percent(s->msg_length_profile[3], profile_total),
+			     percent(s->msg_length_profile[4], profile_total),
+			     percent(s->msg_length_profile[5], profile_total),
+			     percent(s->msg_length_profile[6], profile_total));
+
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  RX states:%u probes:%u naks:%u defs:%u"
+			     " dups:%u\n", s->recv_states, s->recv_probes,
+			     s->recv_nacks, s->deferred_recv, s->duplicates);
+
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  TX states:%u probes:%u naks:%u acks:%u"
+			     " dups:%u\n", s->sent_states, s->sent_probes,
+			     s->sent_nacks, s->sent_acks, s->retransmitted);
+
+	ret += tipc_snprintf(buf + ret, buf_size - ret,
+			     "  Congestion link:%u  Send queue"
+			     " max:%u avg:%u\n", s->link_congs,
+			     s->max_queue_sz, s->queue_sz_counts ?
+			     (s->accu_queue_sz / s->queue_sz_counts) : 0);
+
+	tipc_node_unlock(node);
+	read_unlock_bh(&tipc_net_lock);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct sk_buff *tipc_link_cmd_show_stats(const void *req_tlv_area, int req_tlv_space)
 {
 	struct sk_buff *buf;
 	struct tlv_desc *rep_tlv;
 	int str_len;
+<<<<<<< HEAD
+=======
+	int pb_len;
+	char *pb;
+>>>>>>> refs/remotes/origin/master
 
 	if (!TLV_CHECK(req_tlv_area, req_tlv_space, TIPC_TLV_LINK_NAME))
 		return tipc_cfg_reply_error_string(TIPC_CFG_TLV_ERROR);
 
+<<<<<<< HEAD
 	buf = tipc_cfg_reply_alloc(TLV_SPACE(MAX_LINK_STATS_INFO));
+=======
+	buf = tipc_cfg_reply_alloc(TLV_SPACE(ULTRA_STRING_MAX_LEN));
+>>>>>>> refs/remotes/origin/master
 	if (!buf)
 		return NULL;
 
 	rep_tlv = (struct tlv_desc *)buf->data;
+<<<<<<< HEAD
 
 	str_len = tipc_link_stats((char *)TLV_DATA(req_tlv_area),
 				  (char *)TLV_DATA(rep_tlv), MAX_LINK_STATS_INFO);
@@ -3814,6 +5098,17 @@ struct sk_buff *tipc_link_cmd_show_stats(const void *req_tlv_area, int req_tlv_s
 		return tipc_cfg_reply_error_string("link not found");
 	}
 
+=======
+	pb = TLV_DATA(rep_tlv);
+	pb_len = ULTRA_STRING_MAX_LEN;
+	str_len = tipc_link_stats((char *)TLV_DATA(req_tlv_area),
+				  pb, pb_len);
+	if (!str_len) {
+		kfree_skb(buf);
+		return tipc_cfg_reply_error_string("link not found");
+	}
+	str_len += 1;	/* for "\0" */
+>>>>>>> refs/remotes/origin/master
 	skb_put(buf, TLV_SPACE(str_len));
 	TLV_SET(rep_tlv, TIPC_TLV_ULTRA_STRING, NULL, str_len);
 
@@ -3827,6 +5122,7 @@ struct sk_buff *tipc_link_cmd_show_stats(const void *req_tlv_area, int req_tlv_s
  *
  * If no active link can be found, uses default maximum packet size.
  */
+<<<<<<< HEAD
 
 u32 tipc_link_get_max_pkt(u32 dest, u32 selector)
 {
@@ -3836,6 +5132,12 @@ u32 tipc_link_get_max_pkt(u32 dest, u32 selector)
 =======
 	struct tipc_link *l_ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u32 tipc_link_get_max_pkt(u32 dest, u32 selector)
+{
+	struct tipc_node *n_ptr;
+	struct tipc_link *l_ptr;
+>>>>>>> refs/remotes/origin/master
 	u32 res = MAX_PKT_DEFAULT;
 
 	if (dest == tipc_own_addr)
@@ -3854,6 +5156,7 @@ u32 tipc_link_get_max_pkt(u32 dest, u32 selector)
 	return res;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void link_print(struct link *l_ptr, const char *str)
 =======
@@ -3935,3 +5238,20 @@ print_state:
 	info("%s", print_area);
 }
 
+=======
+static void link_print(struct tipc_link *l_ptr, const char *str)
+{
+	pr_info("%s Link %x<%s>:", str, l_ptr->addr, l_ptr->b_ptr->name);
+
+	if (link_working_unknown(l_ptr))
+		pr_cont(":WU\n");
+	else if (link_reset_reset(l_ptr))
+		pr_cont(":RR\n");
+	else if (link_reset_unknown(l_ptr))
+		pr_cont(":RU\n");
+	else if (link_working_working(l_ptr))
+		pr_cont(":WW\n");
+	else
+		pr_cont("\n");
+}
+>>>>>>> refs/remotes/origin/master

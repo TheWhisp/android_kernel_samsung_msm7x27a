@@ -11,6 +11,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/smp.h>
@@ -66,6 +67,17 @@ static struct notifier_block userspace_cpufreq_notifier_block = {
 	.notifier_call  = userspace_cpufreq_notifier
 };
 
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/cpufreq.h>
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/mutex.h>
+
+static DEFINE_PER_CPU(unsigned int, cpu_is_managed);
+static DEFINE_MUTEX(userspace_mutex);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * cpufreq_set - set the CPU frequency
@@ -84,6 +96,7 @@ static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 	if (!per_cpu(cpu_is_managed, policy->cpu))
 		goto err;
 
+<<<<<<< HEAD
 	per_cpu(cpu_set_freq, policy->cpu) = freq;
 
 	if (freq < per_cpu(cpu_min_freq, policy->cpu))
@@ -103,15 +116,24 @@ static int cpufreq_set(struct cpufreq_policy *policy, unsigned int freq)
 	 */
 	ret = __cpufreq_driver_target(policy, freq, CPUFREQ_RELATION_L);
 
+=======
+	ret = __cpufreq_driver_target(policy, freq, CPUFREQ_RELATION_L);
+>>>>>>> refs/remotes/origin/master
  err:
 	mutex_unlock(&userspace_mutex);
 	return ret;
 }
 
+<<<<<<< HEAD
 
 static ssize_t show_speed(struct cpufreq_policy *policy, char *buf)
 {
 	return sprintf(buf, "%u\n", per_cpu(cpu_cur_freq, policy->cpu));
+=======
+static ssize_t show_speed(struct cpufreq_policy *policy, char *buf)
+{
+	return sprintf(buf, "%u\n", policy->cur);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int cpufreq_governor_userspace(struct cpufreq_policy *policy,
@@ -122,6 +144,7 @@ static int cpufreq_governor_userspace(struct cpufreq_policy *policy,
 
 	switch (event) {
 	case CPUFREQ_GOV_START:
+<<<<<<< HEAD
 		if (!cpu_online(cpu))
 			return -EINVAL;
 		BUG_ON(!policy->cur);
@@ -162,10 +185,25 @@ static int cpufreq_governor_userspace(struct cpufreq_policy *policy,
 		per_cpu(cpu_max_freq, cpu) = 0;
 		per_cpu(cpu_set_freq, cpu) = 0;
 		pr_debug("managing cpu %u stopped\n", cpu);
+=======
+		BUG_ON(!policy->cur);
+		pr_debug("started managing cpu %u\n", cpu);
+
+		mutex_lock(&userspace_mutex);
+		per_cpu(cpu_is_managed, cpu) = 1;
+		mutex_unlock(&userspace_mutex);
+		break;
+	case CPUFREQ_GOV_STOP:
+		pr_debug("managing cpu %u stopped\n", cpu);
+
+		mutex_lock(&userspace_mutex);
+		per_cpu(cpu_is_managed, cpu) = 0;
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&userspace_mutex);
 		break;
 	case CPUFREQ_GOV_LIMITS:
 		mutex_lock(&userspace_mutex);
+<<<<<<< HEAD
 		pr_debug("limit event for cpu %u: %u - %u kHz, "
 			"currently %u kHz, last set to %u kHz\n",
 			cpu, policy->min, policy->max,
@@ -185,13 +223,28 @@ static int cpufreq_governor_userspace(struct cpufreq_policy *policy,
 		per_cpu(cpu_min_freq, cpu) = policy->min;
 		per_cpu(cpu_max_freq, cpu) = policy->max;
 		per_cpu(cpu_cur_freq, cpu) = policy->cur;
+=======
+		pr_debug("limit event for cpu %u: %u - %u kHz, currently %u kHz\n",
+			cpu, policy->min, policy->max,
+			policy->cur);
+
+		if (policy->max < policy->cur)
+			__cpufreq_driver_target(policy, policy->max,
+						CPUFREQ_RELATION_H);
+		else if (policy->min > policy->cur)
+			__cpufreq_driver_target(policy, policy->min,
+						CPUFREQ_RELATION_L);
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&userspace_mutex);
 		break;
 	}
 	return rc;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE
 static
 #endif
@@ -208,13 +261,19 @@ static int __init cpufreq_gov_userspace_init(void)
 	return cpufreq_register_governor(&cpufreq_gov_userspace);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __exit cpufreq_gov_userspace_exit(void)
 {
 	cpufreq_unregister_governor(&cpufreq_gov_userspace);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Dominik Brodowski <linux@brodo.de>, "
 		"Russell King <rmk@arm.linux.org.uk>");
 MODULE_DESCRIPTION("CPUfreq policy governor 'userspace'");

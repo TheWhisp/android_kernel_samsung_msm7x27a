@@ -24,10 +24,13 @@
 #include "lock.h"
 #include "util.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "member.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int rcom_response(struct dlm_ls *ls)
 {
@@ -77,18 +80,25 @@ static void send_rcom(struct dlm_ls *ls, struct dlm_mhandle *mh,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_rcom_status(struct dlm_ls *ls, struct rcom_status *rs,
 			    uint32_t flags)
 {
 	rs->rs_flags = cpu_to_le32(flags);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* When replying to a status request, a node also sends back its
    configuration values.  The requesting node then checks that the remote
    node is configured the same way as itself. */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void make_config(struct dlm_ls *ls, struct rcom_config *rf)
 {
@@ -101,6 +111,8 @@ static int check_config(struct dlm_ls *ls, struct dlm_rcom *rc, int nodeid)
 	struct rcom_config *rf = (struct rcom_config *) rc->rc_buf;
 	size_t conf_size = sizeof(struct dlm_rcom) + sizeof(struct rcom_config);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void set_rcom_config(struct dlm_ls *ls, struct rcom_config *rf,
 			    uint32_t num_slots)
 {
@@ -115,7 +127,10 @@ static void set_rcom_config(struct dlm_ls *ls, struct rcom_config *rf,
 static int check_rcom_config(struct dlm_ls *ls, struct dlm_rcom *rc, int nodeid)
 {
 	struct rcom_config *rf = (struct rcom_config *) rc->rc_buf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ((rc->rc_header.h_version & 0xFFFF0000) != DLM_HEADER_MAJOR) {
 		log_error(ls, "version mismatch: %x nodeid %d: %x",
@@ -125,6 +140,7 @@ static int check_rcom_config(struct dlm_ls *ls, struct dlm_rcom *rc, int nodeid)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rc->rc_header.h_length < conf_size) {
 		log_error(ls, "config too short: %d nodeid %d",
 			  rc->rc_header.h_length, nodeid);
@@ -133,6 +149,8 @@ static int check_rcom_config(struct dlm_ls *ls, struct dlm_rcom *rc, int nodeid)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (le32_to_cpu(rf->rf_lvblen) != ls->ls_lvblen ||
 	    le32_to_cpu(rf->rf_lsflags) != ls->ls_exflags) {
 		log_error(ls, "config mismatch: %d,%x nodeid %d: %d,%x",
@@ -161,8 +179,11 @@ static void disallow_sync_reply(struct dlm_ls *ls)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dlm_rcom_status(struct dlm_ls *ls, int nodeid)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * low nodeid gathers one slot value at a time from each node.
  * it sets need_slots=0, and saves rf_our_slot returned from each
@@ -175,7 +196,10 @@ int dlm_rcom_status(struct dlm_ls *ls, int nodeid)
  */
 
 int dlm_rcom_status(struct dlm_ls *ls, int nodeid, uint32_t status_flags)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct dlm_rcom *rc;
 	struct dlm_mhandle *mh;
@@ -190,11 +214,14 @@ int dlm_rcom_status(struct dlm_ls *ls, int nodeid, uint32_t status_flags)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = create_rcom(ls, nodeid, DLM_RCOM_STATUS, 0, &rc, &mh);
 	if (error)
 		goto out;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = create_rcom(ls, nodeid, DLM_RCOM_STATUS,
 			    sizeof(struct rcom_status), &rc, &mh);
 	if (error)
@@ -202,7 +229,10 @@ int dlm_rcom_status(struct dlm_ls *ls, int nodeid, uint32_t status_flags)
 
 	set_rcom_status(ls, (struct rcom_status *)rc->rc_buf, status_flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	allow_sync_reply(ls, &rc->rc_id);
 	memset(ls->ls_recover_buf, 0, dlm_config.ci_buffer_size);
 
@@ -220,15 +250,21 @@ int dlm_rcom_status(struct dlm_ls *ls, int nodeid, uint32_t status_flags)
 		log_debug(ls, "remote node %d not ready", nodeid);
 		rc->rc_result = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else
 		error = check_config(ls, rc, nodeid);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		error = 0;
 	} else {
 		error = check_rcom_config(ls, rc, nodeid);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* the caller looks at rc_result for the remote recovery status */
  out:
 	return error;
@@ -238,6 +274,7 @@ static void receive_rcom_status(struct dlm_ls *ls, struct dlm_rcom *rc_in)
 {
 	struct dlm_rcom *rc;
 	struct dlm_mhandle *mh;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int error, nodeid = rc_in->rc_header.h_nodeid;
 
@@ -251,6 +288,8 @@ static void receive_rcom_status(struct dlm_ls *ls, struct dlm_rcom *rc_in)
 	make_config(ls, (struct rcom_config *) rc->rc_buf);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rcom_status *rs;
 	uint32_t status;
 	int nodeid = rc_in->rc_header.h_nodeid;
@@ -305,7 +344,10 @@ static void receive_rcom_status(struct dlm_ls *ls, struct dlm_rcom *rc_in)
 	spin_unlock(&ls->ls_recover_lock);
 
  do_send:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	send_rcom(ls, mh, rc);
 }
 
@@ -333,6 +375,7 @@ int dlm_rcom_names(struct dlm_ls *ls, int nodeid, char *last_name, int last_len)
 	struct dlm_rcom *rc;
 	struct dlm_mhandle *mh;
 	int error = 0;
+<<<<<<< HEAD
 	int max_size = dlm_config.ci_buffer_size - sizeof(struct dlm_rcom);
 
 	ls->ls_recover_nodeid = nodeid;
@@ -346,6 +389,11 @@ int dlm_rcom_names(struct dlm_ls *ls, int nodeid, char *last_name, int last_len)
 		goto out;
 	}
 
+=======
+
+	ls->ls_recover_nodeid = nodeid;
+
+>>>>>>> refs/remotes/origin/master
 	error = create_rcom(ls, nodeid, DLM_RCOM_NAMES, last_len, &rc, &mh);
 	if (error)
 		goto out;
@@ -395,7 +443,30 @@ int dlm_send_rcom_lookup(struct dlm_rsb *r, int dir_nodeid)
 	if (error)
 		goto out;
 	memcpy(rc->rc_buf, r->res_name, r->res_length);
+<<<<<<< HEAD
 	rc->rc_id = (unsigned long) r;
+=======
+	rc->rc_id = (unsigned long) r->res_id;
+
+	send_rcom(ls, mh, rc);
+ out:
+	return error;
+}
+
+int dlm_send_rcom_lookup_dump(struct dlm_rsb *r, int to_nodeid)
+{
+	struct dlm_rcom *rc;
+	struct dlm_mhandle *mh;
+	struct dlm_ls *ls = r->res_ls;
+	int error;
+
+	error = create_rcom(ls, to_nodeid, DLM_RCOM_LOOKUP, r->res_length,
+			    &rc, &mh);
+	if (error)
+		goto out;
+	memcpy(rc->rc_buf, r->res_name, r->res_length);
+	rc->rc_id = 0xFFFFFFFF;
+>>>>>>> refs/remotes/origin/master
 
 	send_rcom(ls, mh, rc);
  out:
@@ -413,7 +484,18 @@ static void receive_rcom_lookup(struct dlm_ls *ls, struct dlm_rcom *rc_in)
 	if (error)
 		return;
 
+<<<<<<< HEAD
 	error = dlm_dir_lookup(ls, nodeid, rc_in->rc_buf, len, &ret_nodeid);
+=======
+	if (rc_in->rc_id == 0xFFFFFFFF) {
+		log_error(ls, "receive_rcom_lookup dump from %d", nodeid);
+		dlm_dump_rsb_name(ls, rc_in->rc_buf, len);
+		return;
+	}
+
+	error = dlm_master_lookup(ls, nodeid, rc_in->rc_buf, len,
+				  DLM_LU_RECOVER_MASTER, &ret_nodeid, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		ret_nodeid = error;
 	rc->rc_result = ret_nodeid;
@@ -544,6 +626,7 @@ int dlm_send_ls_not_ready(int nodeid, struct dlm_rcom *rc_in)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int is_old_reply(struct dlm_ls *ls, struct dlm_rcom *rc)
 {
 	uint64_t seq;
@@ -584,6 +667,104 @@ void dlm_receive_rcom(struct dlm_ls *ls, struct dlm_rcom *rc, int nodeid)
 
 	if (is_old_reply(ls, rc))
 		goto out;
+=======
+/*
+ * Ignore messages for stage Y before we set
+ * recover_status bit for stage X:
+ *
+ * recover_status = 0
+ *
+ * dlm_recover_members()
+ * - send nothing
+ * - recv nothing
+ * - ignore NAMES, NAMES_REPLY
+ * - ignore LOOKUP, LOOKUP_REPLY
+ * - ignore LOCK, LOCK_REPLY
+ *
+ * recover_status |= NODES
+ *
+ * dlm_recover_members_wait()
+ *
+ * dlm_recover_directory()
+ * - send NAMES
+ * - recv NAMES_REPLY
+ * - ignore LOOKUP, LOOKUP_REPLY
+ * - ignore LOCK, LOCK_REPLY
+ *
+ * recover_status |= DIR
+ *
+ * dlm_recover_directory_wait()
+ *
+ * dlm_recover_masters()
+ * - send LOOKUP
+ * - recv LOOKUP_REPLY
+ *
+ * dlm_recover_locks()
+ * - send LOCKS
+ * - recv LOCKS_REPLY
+ *
+ * recover_status |= LOCKS
+ *
+ * dlm_recover_locks_wait()
+ *
+ * recover_status |= DONE
+ */
+
+/* Called by dlm_recv; corresponds to dlm_receive_message() but special
+   recovery-only comms are sent through here. */
+
+void dlm_receive_rcom(struct dlm_ls *ls, struct dlm_rcom *rc, int nodeid)
+{
+	int lock_size = sizeof(struct dlm_rcom) + sizeof(struct rcom_lock);
+	int stop, reply = 0, names = 0, lookup = 0, lock = 0;
+	uint32_t status;
+	uint64_t seq;
+
+	switch (rc->rc_type) {
+	case DLM_RCOM_STATUS_REPLY:
+		reply = 1;
+		break;
+	case DLM_RCOM_NAMES:
+		names = 1;
+		break;
+	case DLM_RCOM_NAMES_REPLY:
+		names = 1;
+		reply = 1;
+		break;
+	case DLM_RCOM_LOOKUP:
+		lookup = 1;
+		break;
+	case DLM_RCOM_LOOKUP_REPLY:
+		lookup = 1;
+		reply = 1;
+		break;
+	case DLM_RCOM_LOCK:
+		lock = 1;
+		break;
+	case DLM_RCOM_LOCK_REPLY:
+		lock = 1;
+		reply = 1;
+		break;
+	};
+
+	spin_lock(&ls->ls_recover_lock);
+	status = ls->ls_recover_status;
+	stop = test_bit(LSFL_RECOVER_STOP, &ls->ls_flags);
+	seq = ls->ls_recover_seq;
+	spin_unlock(&ls->ls_recover_lock);
+
+	if (stop && (rc->rc_type != DLM_RCOM_STATUS))
+		goto ignore;
+
+	if (reply && (rc->rc_seq_reply != seq))
+		goto ignore;
+
+	if (!(status & DLM_RS_NODES) && (names || lookup || lock))
+		goto ignore;
+
+	if (!(status & DLM_RS_DIR) && (lookup || lock))
+		goto ignore;
+>>>>>>> refs/remotes/origin/master
 
 	switch (rc->rc_type) {
 	case DLM_RCOM_STATUS:
@@ -625,10 +806,28 @@ void dlm_receive_rcom(struct dlm_ls *ls, struct dlm_rcom *rc, int nodeid)
 	default:
 		log_error(ls, "receive_rcom bad type %d", rc->rc_type);
 	}
+<<<<<<< HEAD
 out:
 	return;
 Eshort:
 	log_error(ls, "recovery message %x from %d is too short",
 			  rc->rc_type, nodeid);
+=======
+	return;
+
+ignore:
+	log_limit(ls, "dlm_receive_rcom ignore msg %d "
+		  "from %d %llu %llu recover seq %llu sts %x gen %u",
+		   rc->rc_type,
+		   nodeid,
+		   (unsigned long long)rc->rc_seq,
+		   (unsigned long long)rc->rc_seq_reply,
+		   (unsigned long long)seq,
+		   status, ls->ls_generation);
+	return;
+Eshort:
+	log_error(ls, "recovery message %d from %d is too short",
+		  rc->rc_type, nodeid);
+>>>>>>> refs/remotes/origin/master
 }
 

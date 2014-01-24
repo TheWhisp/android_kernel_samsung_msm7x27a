@@ -19,7 +19,10 @@
  */
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/mm.h>
@@ -279,6 +282,7 @@ void as102_dvb_unregister(struct as102_dev_t *as102_dev)
 	pr_info("Unregistered device %s", as102_dev->name);
 }
 
+<<<<<<< HEAD
 static int __init as102_driver_init(void)
 {
 	int ret;
@@ -313,6 +317,10 @@ static void __exit as102_driver_exit(void)
  * indicating where unload function is defined
  */
 module_exit(as102_driver_exit);
+=======
+module_usb_driver(as102_usb_driver);
+
+>>>>>>> refs/remotes/origin/master
 /* modinfo details */
 MODULE_DESCRIPTION(DRIVER_FULL_NAME);
 MODULE_LICENSE("GPL");

@@ -157,10 +157,17 @@ static int fd_request_irq(void)
 {
 	if(can_use_virtual_dma)
 		return request_irq(FLOPPY_IRQ, floppy_hardint,
+<<<<<<< HEAD
 				   IRQF_DISABLED, "floppy", NULL);
 	else
 		return request_irq(FLOPPY_IRQ, floppy_interrupt,
 				   IRQF_DISABLED, "floppy", NULL);
+=======
+				   0, "floppy", NULL);
+	else
+		return request_irq(FLOPPY_IRQ, floppy_interrupt,
+				   0, "floppy", NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long dma_mem_alloc(unsigned long size)

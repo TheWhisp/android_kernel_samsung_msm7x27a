@@ -24,6 +24,7 @@
 #ifndef _LINUX_IF_FDDI_H
 #define _LINUX_IF_FDDI_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /*
@@ -102,6 +103,10 @@ struct fddihdr {
 
 #ifdef __KERNEL__
 #include <linux/netdevice.h>
+=======
+#include <linux/netdevice.h>
+#include <uapi/linux/if_fddi.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Define FDDI statistics structure */
 struct fddi_statistics {
@@ -194,6 +199,9 @@ struct fddi_statistics {
 	__u32	port_ler_flag[2];
 	__u32	port_hardware_present[2];
 };
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_IF_FDDI_H */

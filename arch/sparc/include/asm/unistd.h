@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _SPARC_UNISTD_H
 #define _SPARC_UNISTD_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * System calls under the Sparc.
  *
@@ -14,6 +17,7 @@
  *
  * Copyright (C) 1995 Adrian M. Rodriguez (adrian@remus.rutgers.edu)
  */
+<<<<<<< HEAD
 #ifndef __32bit_syscall_numbers__
 #ifndef __arch64__
 #define __32bit_syscall_numbers__
@@ -429,6 +433,17 @@
 
 #ifdef __KERNEL__
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#ifndef _SPARC_UNISTD_H
+#define _SPARC_UNISTD_H
+
+#include <uapi/asm/unistd.h>
+
+#ifdef __32bit_syscall_numbers__
+#else
+#define __NR_time		231 /* Linux sparc32                               */
+#endif
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_ALARM
@@ -447,11 +462,15 @@
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __32bit_syscall_numbers__
 #define __ARCH_WANT_SYS_IPC
 #else
 #define __ARCH_WANT_COMPAT_SYS_TIME
+<<<<<<< HEAD
 #define __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND
 #endif
 
@@ -464,4 +483,9 @@
 #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x ",sys_ni_syscall")
 
 #endif /* __KERNEL__ */
+=======
+#define __ARCH_WANT_COMPAT_SYS_SENDFILE
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _SPARC_UNISTD_H */

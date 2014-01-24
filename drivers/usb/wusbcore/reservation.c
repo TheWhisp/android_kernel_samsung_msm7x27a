@@ -51,6 +51,10 @@ static void wusbhc_rsv_complete_cb(struct uwb_rsv *rsv)
 	struct uwb_mas_bm mas;
 	char buf[72];
 
+<<<<<<< HEAD
+=======
+	dev_dbg(dev, "%s: state = %d\n", __func__, rsv->state);
+>>>>>>> refs/remotes/origin/master
 	switch (rsv->state) {
 	case UWB_RSV_STATE_O_ESTABLISHED:
 		uwb_rsv_get_usable_mas(rsv, &mas);
@@ -80,6 +84,12 @@ int wusbhc_rsv_establish(struct wusbhc *wusbhc)
 	struct uwb_dev_addr bcid;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (rc == NULL)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	rsv = uwb_rsv_create(rc, wusbhc_rsv_complete_cb, wusbhc);
 	if (rsv == NULL)
 		return -ENOMEM;

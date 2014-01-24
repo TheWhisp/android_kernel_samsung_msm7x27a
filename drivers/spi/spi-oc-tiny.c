@@ -54,7 +54,11 @@ struct tiny_spi {
 	unsigned int txc, rxc;
 	const u8 *txp;
 	u8 *rxp;
+<<<<<<< HEAD
 	unsigned int gpio_cs_count;
+=======
+	int gpio_cs_count;
+>>>>>>> refs/remotes/origin/master
 	int *gpio_cs;
 };
 
@@ -74,7 +78,11 @@ static void tiny_spi_chipselect(struct spi_device *spi, int is_active)
 {
 	struct tiny_spi *hw = tiny_spi_to_hw(spi);
 
+<<<<<<< HEAD
 	if (hw->gpio_cs_count) {
+=======
+	if (hw->gpio_cs_count > 0) {
+>>>>>>> refs/remotes/origin/master
 		gpio_set_value(hw->gpio_cs[spi->chip_select],
 			(spi->mode & SPI_CS_HIGH) ? is_active : !is_active);
 	}
@@ -129,7 +137,11 @@ static int tiny_spi_txrx_bufs(struct spi_device *spi, struct spi_transfer *t)
 	unsigned int i;
 
 	if (hw->irq >= 0) {
+<<<<<<< HEAD
 		/* use intrrupt driven data transfer */
+=======
+		/* use interrupt driven data transfer */
+>>>>>>> refs/remotes/origin/master
 		hw->len = t->len;
 		hw->txp = t->tx_buf;
 		hw->rxp = t->rx_buf;
@@ -243,7 +255,11 @@ static irqreturn_t tiny_spi_irq(int irq, void *dev)
 #ifdef CONFIG_OF
 #include <linux/of_gpio.h>
 
+<<<<<<< HEAD
 static int __devinit tiny_spi_of_probe(struct platform_device *pdev)
+=======
+static int tiny_spi_of_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tiny_spi *hw = platform_get_drvdata(pdev);
 	struct device_node *np = pdev->dev.of_node;
@@ -254,7 +270,11 @@ static int __devinit tiny_spi_of_probe(struct platform_device *pdev)
 	if (!np)
 		return 0;
 	hw->gpio_cs_count = of_gpio_count(np);
+<<<<<<< HEAD
 	if (hw->gpio_cs_count) {
+=======
+	if (hw->gpio_cs_count > 0) {
+>>>>>>> refs/remotes/origin/master
 		hw->gpio_cs = devm_kzalloc(&pdev->dev,
 				hw->gpio_cs_count * sizeof(unsigned int),
 				GFP_KERNEL);
@@ -277,15 +297,25 @@ static int __devinit tiny_spi_of_probe(struct platform_device *pdev)
 	return 0;
 }
 #else /* !CONFIG_OF */
+<<<<<<< HEAD
 static int __devinit tiny_spi_of_probe(struct platform_device *pdev)
+=======
+static int tiny_spi_of_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 #endif /* CONFIG_OF */
 
+<<<<<<< HEAD
 static int __devinit tiny_spi_probe(struct platform_device *pdev)
 {
 	struct tiny_spi_platform_data *platp = pdev->dev.platform_data;
+=======
+static int tiny_spi_probe(struct platform_device *pdev)
+{
+	struct tiny_spi_platform_data *platp = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct tiny_spi *hw;
 	struct spi_master *master;
 	struct resource *res;
@@ -306,7 +336,11 @@ static int __devinit tiny_spi_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, hw);
 
 	/* setup the state for the bitbang driver */
+<<<<<<< HEAD
 	hw->bitbang.master = spi_master_get(master);
+=======
+	hw->bitbang.master = master;
+>>>>>>> refs/remotes/origin/master
 	if (!hw->bitbang.master)
 		return err;
 	hw->bitbang.setup_transfer = tiny_spi_setup_transfer;
@@ -315,6 +349,7 @@ static int __devinit tiny_spi_probe(struct platform_device *pdev)
 
 	/* find and map our resources */
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res)
 		goto exit_busy;
 	if (!devm_request_mem_region(&pdev->dev, res->start, resource_size(res),
@@ -324,6 +359,13 @@ static int __devinit tiny_spi_probe(struct platform_device *pdev)
 					resource_size(res));
 	if (!hw->base)
 		goto exit_busy;
+=======
+	hw->base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(hw->base)) {
+		err = PTR_ERR(hw->base);
+		goto exit;
+	}
+>>>>>>> refs/remotes/origin/master
 	/* irq is optional */
 	hw->irq = platform_get_irq(pdev, 0);
 	if (hw->irq >= 0) {
@@ -337,8 +379,15 @@ static int __devinit tiny_spi_probe(struct platform_device *pdev)
 	if (platp) {
 		hw->gpio_cs_count = platp->gpio_cs_count;
 		hw->gpio_cs = platp->gpio_cs;
+<<<<<<< HEAD
 		if (platp->gpio_cs_count && !platp->gpio_cs)
 			goto exit_busy;
+=======
+		if (platp->gpio_cs_count && !platp->gpio_cs) {
+			err = -EBUSY;
+			goto exit;
+		}
+>>>>>>> refs/remotes/origin/master
 		hw->freq = platp->freq;
 		hw->baudwidth = platp->baudwidth;
 	} else {
@@ -352,7 +401,11 @@ static int __devinit tiny_spi_probe(struct platform_device *pdev)
 			goto exit_gpio;
 		gpio_direction_output(hw->gpio_cs[i], 1);
 	}
+<<<<<<< HEAD
 	hw->bitbang.master->num_chipselect = max(1U, hw->gpio_cs_count);
+=======
+	hw->bitbang.master->num_chipselect = max(1, hw->gpio_cs_count);
+>>>>>>> refs/remotes/origin/master
 
 	/* register our spi controller */
 	err = spi_bitbang_start(&hw->bitbang);
@@ -365,15 +418,23 @@ static int __devinit tiny_spi_probe(struct platform_device *pdev)
 exit_gpio:
 	while (i-- > 0)
 		gpio_free(hw->gpio_cs[i]);
+<<<<<<< HEAD
 exit_busy:
 	err = -EBUSY;
 exit:
 	platform_set_drvdata(pdev, NULL);
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	spi_master_put(master);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit tiny_spi_remove(struct platform_device *pdev)
+=======
+static int tiny_spi_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tiny_spi *hw = platform_get_drvdata(pdev);
 	struct spi_master *master = hw->bitbang.master;
@@ -382,7 +443,10 @@ static int __devexit tiny_spi_remove(struct platform_device *pdev)
 	spi_bitbang_stop(&hw->bitbang);
 	for (i = 0; i < hw->gpio_cs_count; i++)
 		gpio_free(hw->gpio_cs[i]);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_master_put(master);
 	return 0;
 }
@@ -393,18 +457,29 @@ static const struct of_device_id tiny_spi_match[] = {
 	{},
 };
 MODULE_DEVICE_TABLE(of, tiny_spi_match);
+<<<<<<< HEAD
 #else /* CONFIG_OF */
 #define tiny_spi_match NULL
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_OF */
 
 static struct platform_driver tiny_spi_driver = {
 	.probe = tiny_spi_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tiny_spi_remove),
+=======
+	.remove = tiny_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = DRV_NAME,
 		.owner = THIS_MODULE,
 		.pm = NULL,
+<<<<<<< HEAD
 		.of_match_table = tiny_spi_match,
+=======
+		.of_match_table = of_match_ptr(tiny_spi_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 module_platform_driver(tiny_spi_driver);

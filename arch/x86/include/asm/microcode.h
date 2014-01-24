@@ -1,6 +1,24 @@
 #ifndef _ASM_X86_MICROCODE_H
 #define _ASM_X86_MICROCODE_H
 
+<<<<<<< HEAD
+=======
+#define native_rdmsr(msr, val1, val2)			\
+do {							\
+	u64 __val = native_read_msr((msr));		\
+	(void)((val1) = (u32)__val);			\
+	(void)((val2) = (u32)(__val >> 32));		\
+} while (0)
+
+#define native_wrmsr(msr, low, high)			\
+	native_write_msr(msr, low, high)
+
+#define native_wrmsrl(msr, val)				\
+	native_write_msr((msr),				\
+			 (u32)((u64)(val)),		\
+			 (u32)((u64)(val) >> 32))
+
+>>>>>>> refs/remotes/origin/master
 struct cpu_signature {
 	unsigned int sig;
 	unsigned int pf;
@@ -15,8 +33,13 @@ struct microcode_ops {
 	enum ucode_state (*request_microcode_user) (int cpu,
 				const void __user *buf, size_t size);
 
+<<<<<<< HEAD
 	enum ucode_state (*request_microcode_fw) (int cpu,
 				struct device *device);
+=======
+	enum ucode_state (*request_microcode_fw) (int cpu, struct device *,
+						  bool refresh_fw);
+>>>>>>> refs/remotes/origin/master
 
 	void (*microcode_fini_cpu) (int cpu);
 
@@ -49,6 +72,7 @@ static inline struct microcode_ops * __init init_intel_microcode(void)
 #ifdef CONFIG_MICROCODE_AMD
 extern struct microcode_ops * __init init_amd_microcode(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void __exit exit_amd_microcode(void);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -58,15 +82,36 @@ static inline void get_ucode_data(void *to, const u8 *from, size_t n)
 	memcpy(to, from, n);
 }
 
+=======
+extern void __exit exit_amd_microcode(void);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline struct microcode_ops * __init init_amd_microcode(void)
 {
 	return NULL;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline void __exit exit_amd_microcode(void) {}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void __exit exit_amd_microcode(void) {}
+#endif
+
+#ifdef CONFIG_MICROCODE_EARLY
+#define MAX_UCODE_COUNT 128
+extern void __init load_ucode_bsp(void);
+extern void load_ucode_ap(void);
+extern int __init save_microcode_in_initrd(void);
+#else
+static inline void __init load_ucode_bsp(void) {}
+static inline void load_ucode_ap(void) {}
+static inline int __init save_microcode_in_initrd(void)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* _ASM_X86_MICROCODE_H */

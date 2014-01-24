@@ -12,13 +12,19 @@
 #define __LINUX_NET_DSA_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/if_ether.h>
 #include <linux/list.h>
 #include <linux/timer.h>
 #include <linux/workqueue.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DSA_MAX_SWITCHES	4
 #define DSA_MAX_PORTS		12
 
@@ -63,10 +69,13 @@ struct dsa_platform_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern bool dsa_uses_dsa_tags(void *dsa_ptr);
 extern bool dsa_uses_trailer_tags(void *dsa_ptr);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct dsa_switch_tree {
 	/*
 	 * Configuration data for the platform device that owns
@@ -205,6 +214,9 @@ static inline bool dsa_uses_trailer_tags(struct dsa_switch_tree *dst)
 {
 	return !!(dst->tag_protocol == htons(ETH_P_TRAILER));
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

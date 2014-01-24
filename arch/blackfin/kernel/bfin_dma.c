@@ -45,9 +45,21 @@ static int __init blackfin_dma_init(void)
 		atomic_set(&dma_ch[i].chan_status, 0);
 		dma_ch[i].regs = dma_io_base_addr[i];
 	}
+<<<<<<< HEAD
 	/* Mark MEMDMA Channel 0 as requested since we're using it internally */
 	request_dma(CH_MEM_STREAM0_DEST, "Blackfin dma_memcpy");
 	request_dma(CH_MEM_STREAM0_SRC, "Blackfin dma_memcpy");
+=======
+#if defined(CH_MEM_STREAM3_SRC) && defined(CONFIG_BF60x)
+	/* Mark MEMDMA Channel 3 as requested since we're using it internally */
+	request_dma(CH_MEM_STREAM3_DEST, "Blackfin dma_memcpy");
+	request_dma(CH_MEM_STREAM3_SRC, "Blackfin dma_memcpy");
+#else
+	/* Mark MEMDMA Channel 0 as requested since we're using it internally */
+	request_dma(CH_MEM_STREAM0_DEST, "Blackfin dma_memcpy");
+	request_dma(CH_MEM_STREAM0_SRC, "Blackfin dma_memcpy");
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_DEB_DMA_URGENT)
 	bfin_write_EBIU_DDRQUE(bfin_read_EBIU_DDRQUE()
@@ -84,7 +96,12 @@ static const struct file_operations proc_dma_operations = {
 
 static int __init proc_dma_init(void)
 {
+<<<<<<< HEAD
 	return proc_create("dma", 0, NULL, &proc_dma_operations) != NULL;
+=======
+	proc_create("dma", 0, NULL, &proc_dma_operations);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 late_initcall(proc_dma_init);
 #endif
@@ -204,6 +221,10 @@ EXPORT_SYMBOL(free_dma);
 # ifndef MAX_DMA_SUSPEND_CHANNELS
 #  define MAX_DMA_SUSPEND_CHANNELS MAX_DMA_CHANNELS
 # endif
+<<<<<<< HEAD
+=======
+# ifndef CONFIG_BF60x
+>>>>>>> refs/remotes/origin/master
 int blackfin_dma_suspend(void)
 {
 	int i;
@@ -213,7 +234,10 @@ int blackfin_dma_suspend(void)
 			printk(KERN_ERR "DMA Channel %d failed to suspend\n", i);
 			return -EBUSY;
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (i < MAX_DMA_SUSPEND_CHANNELS)
 			dma_ch[i].saved_peripheral_map = dma_ch[i].regs->peripheral_map;
 	}
@@ -230,7 +254,10 @@ void blackfin_dma_resume(void)
 
 	for (i = 0; i < MAX_DMA_CHANNELS; ++i) {
 		dma_ch[i].regs->cfg = 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (i < MAX_DMA_SUSPEND_CHANNELS)
 			dma_ch[i].regs->peripheral_map = dma_ch[i].saved_peripheral_map;
 	}
@@ -238,6 +265,19 @@ void blackfin_dma_resume(void)
 	bfin_write_DMAC_TC_PER(0x0111);
 #endif
 }
+<<<<<<< HEAD
+=======
+# else
+int blackfin_dma_suspend(void)
+{
+	return 0;
+}
+
+void blackfin_dma_resume(void)
+{
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /**
@@ -279,10 +319,17 @@ void __init early_dma_memcpy(void *pdst, const void *psrc, size_t size)
 			src_ch = (struct dma_register *)MDMA_S0_NEXT_DESC_PTR;
 		}
 
+<<<<<<< HEAD
 		if (!bfin_read16(&src_ch->cfg))
 			break;
 		else if (bfin_read16(&dst_ch->irq_status) & DMA_DONE) {
 			bfin_write16(&src_ch->cfg, 0);
+=======
+		if (!DMA_MMR_READ(&src_ch->cfg))
+			break;
+		else if (DMA_MMR_READ(&dst_ch->irq_status) & DMA_DONE) {
+			DMA_MMR_WRITE(&src_ch->cfg, 0);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -295,6 +342,7 @@ void __init early_dma_memcpy(void *pdst, const void *psrc, size_t size)
 
 	/* Destination */
 	bfin_write32(&dst_ch->start_addr, dst);
+<<<<<<< HEAD
 	bfin_write16(&dst_ch->x_count, size >> 2);
 	bfin_write16(&dst_ch->x_modify, 1 << 2);
 	bfin_write16(&dst_ch->irq_status, DMA_DONE | DMA_ERR);
@@ -311,6 +359,33 @@ void __init early_dma_memcpy(void *pdst, const void *psrc, size_t size)
 
 	/* Since we are atomic now, don't use the workaround ssync */
 	__builtin_bfin_ssync();
+=======
+	DMA_MMR_WRITE(&dst_ch->x_count, size >> 2);
+	DMA_MMR_WRITE(&dst_ch->x_modify, 1 << 2);
+	DMA_MMR_WRITE(&dst_ch->irq_status, DMA_DONE | DMA_ERR);
+
+	/* Source */
+	bfin_write32(&src_ch->start_addr, src);
+	DMA_MMR_WRITE(&src_ch->x_count, size >> 2);
+	DMA_MMR_WRITE(&src_ch->x_modify, 1 << 2);
+	DMA_MMR_WRITE(&src_ch->irq_status, DMA_DONE | DMA_ERR);
+
+	/* Enable */
+	DMA_MMR_WRITE(&src_ch->cfg, DMAEN | WDSIZE_32);
+	DMA_MMR_WRITE(&dst_ch->cfg, WNR | DI_EN_X | DMAEN | WDSIZE_32);
+
+	/* Since we are atomic now, don't use the workaround ssync */
+	__builtin_bfin_ssync();
+
+#ifdef CONFIG_BF60x
+	/* Work around a possible MDMA anomaly. Running 2 MDMA channels to
+	 * transfer DDR data to L1 SRAM may corrupt data.
+	 * Should be reverted after this issue is root caused.
+	 */
+	while (!(DMA_MMR_READ(&dst_ch->irq_status) & DMA_DONE))
+		continue;
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init early_dma_memcpy_done(void)
@@ -336,6 +411,45 @@ void __init early_dma_memcpy_done(void)
 	__builtin_bfin_ssync();
 }
 
+<<<<<<< HEAD
+=======
+#if defined(CH_MEM_STREAM3_SRC) && defined(CONFIG_BF60x)
+#define bfin_read_MDMA_S_CONFIG bfin_read_MDMA_S3_CONFIG
+#define bfin_write_MDMA_S_CONFIG bfin_write_MDMA_S3_CONFIG
+#define bfin_write_MDMA_S_START_ADDR bfin_write_MDMA_S3_START_ADDR
+#define bfin_write_MDMA_S_IRQ_STATUS bfin_write_MDMA_S3_IRQ_STATUS
+#define bfin_write_MDMA_S_X_COUNT bfin_write_MDMA_S3_X_COUNT
+#define bfin_write_MDMA_S_X_MODIFY bfin_write_MDMA_S3_X_MODIFY
+#define bfin_write_MDMA_S_Y_COUNT bfin_write_MDMA_S3_Y_COUNT
+#define bfin_write_MDMA_S_Y_MODIFY bfin_write_MDMA_S3_Y_MODIFY
+#define bfin_write_MDMA_D_CONFIG bfin_write_MDMA_D3_CONFIG
+#define bfin_write_MDMA_D_START_ADDR bfin_write_MDMA_D3_START_ADDR
+#define bfin_read_MDMA_D_IRQ_STATUS bfin_read_MDMA_D3_IRQ_STATUS
+#define bfin_write_MDMA_D_IRQ_STATUS bfin_write_MDMA_D3_IRQ_STATUS
+#define bfin_write_MDMA_D_X_COUNT bfin_write_MDMA_D3_X_COUNT
+#define bfin_write_MDMA_D_X_MODIFY bfin_write_MDMA_D3_X_MODIFY
+#define bfin_write_MDMA_D_Y_COUNT bfin_write_MDMA_D3_Y_COUNT
+#define bfin_write_MDMA_D_Y_MODIFY bfin_write_MDMA_D3_Y_MODIFY
+#else
+#define bfin_read_MDMA_S_CONFIG bfin_read_MDMA_S0_CONFIG
+#define bfin_write_MDMA_S_CONFIG bfin_write_MDMA_S0_CONFIG
+#define bfin_write_MDMA_S_START_ADDR bfin_write_MDMA_S0_START_ADDR
+#define bfin_write_MDMA_S_IRQ_STATUS bfin_write_MDMA_S0_IRQ_STATUS
+#define bfin_write_MDMA_S_X_COUNT bfin_write_MDMA_S0_X_COUNT
+#define bfin_write_MDMA_S_X_MODIFY bfin_write_MDMA_S0_X_MODIFY
+#define bfin_write_MDMA_S_Y_COUNT bfin_write_MDMA_S0_Y_COUNT
+#define bfin_write_MDMA_S_Y_MODIFY bfin_write_MDMA_S0_Y_MODIFY
+#define bfin_write_MDMA_D_CONFIG bfin_write_MDMA_D0_CONFIG
+#define bfin_write_MDMA_D_START_ADDR bfin_write_MDMA_D0_START_ADDR
+#define bfin_read_MDMA_D_IRQ_STATUS bfin_read_MDMA_D0_IRQ_STATUS
+#define bfin_write_MDMA_D_IRQ_STATUS bfin_write_MDMA_D0_IRQ_STATUS
+#define bfin_write_MDMA_D_X_COUNT bfin_write_MDMA_D0_X_COUNT
+#define bfin_write_MDMA_D_X_MODIFY bfin_write_MDMA_D0_X_MODIFY
+#define bfin_write_MDMA_D_Y_COUNT bfin_write_MDMA_D0_Y_COUNT
+#define bfin_write_MDMA_D_Y_MODIFY bfin_write_MDMA_D0_Y_MODIFY
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	__dma_memcpy - program the MDMA registers
  *
@@ -358,8 +472,13 @@ static void __dma_memcpy(u32 daddr, s16 dmod, u32 saddr, s16 smod, size_t cnt, u
 	 */
 	__builtin_bfin_ssync();
 
+<<<<<<< HEAD
 	if (bfin_read_MDMA_S0_CONFIG())
 		while (!(bfin_read_MDMA_D0_IRQ_STATUS() & DMA_DONE))
+=======
+	if (bfin_read_MDMA_S_CONFIG())
+		while (!(bfin_read_MDMA_D_IRQ_STATUS() & DMA_DONE))
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 	if (conf & DMA2D) {
@@ -374,6 +493,7 @@ static void __dma_memcpy(u32 daddr, s16 dmod, u32 saddr, s16 smod, size_t cnt, u
 		u32 shift = abs(dmod) >> 1;
 		size_t ycnt = cnt >> (16 - shift);
 		cnt = 1 << (16 - shift);
+<<<<<<< HEAD
 		bfin_write_MDMA_D0_Y_COUNT(ycnt);
 		bfin_write_MDMA_S0_Y_COUNT(ycnt);
 		bfin_write_MDMA_D0_Y_MODIFY(dmod);
@@ -392,21 +512,56 @@ static void __dma_memcpy(u32 daddr, s16 dmod, u32 saddr, s16 smod, size_t cnt, u
 
 	bfin_write_MDMA_S0_CONFIG(DMAEN | conf);
 	bfin_write_MDMA_D0_CONFIG(WNR | DI_EN | DMAEN | conf);
+=======
+		bfin_write_MDMA_D_Y_COUNT(ycnt);
+		bfin_write_MDMA_S_Y_COUNT(ycnt);
+		bfin_write_MDMA_D_Y_MODIFY(dmod);
+		bfin_write_MDMA_S_Y_MODIFY(smod);
+	}
+
+	bfin_write_MDMA_D_START_ADDR(daddr);
+	bfin_write_MDMA_D_X_COUNT(cnt);
+	bfin_write_MDMA_D_X_MODIFY(dmod);
+	bfin_write_MDMA_D_IRQ_STATUS(DMA_DONE | DMA_ERR);
+
+	bfin_write_MDMA_S_START_ADDR(saddr);
+	bfin_write_MDMA_S_X_COUNT(cnt);
+	bfin_write_MDMA_S_X_MODIFY(smod);
+	bfin_write_MDMA_S_IRQ_STATUS(DMA_DONE | DMA_ERR);
+
+	bfin_write_MDMA_S_CONFIG(DMAEN | conf);
+	if (conf & DMA2D)
+		bfin_write_MDMA_D_CONFIG(WNR | DI_EN_Y | DMAEN | conf);
+	else
+		bfin_write_MDMA_D_CONFIG(WNR | DI_EN_X | DMAEN | conf);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&mdma_lock, flags);
 
 	SSYNC();
 
+<<<<<<< HEAD
 	while (!(bfin_read_MDMA_D0_IRQ_STATUS() & DMA_DONE))
 		if (bfin_read_MDMA_S0_CONFIG())
+=======
+	while (!(bfin_read_MDMA_D_IRQ_STATUS() & DMA_DONE))
+		if (bfin_read_MDMA_S_CONFIG())
+>>>>>>> refs/remotes/origin/master
 			continue;
 		else
 			return;
 
+<<<<<<< HEAD
 	bfin_write_MDMA_D0_IRQ_STATUS(DMA_DONE | DMA_ERR);
 
 	bfin_write_MDMA_S0_CONFIG(0);
 	bfin_write_MDMA_D0_CONFIG(0);
+=======
+	bfin_write_MDMA_D_IRQ_STATUS(DMA_DONE | DMA_ERR);
+
+	bfin_write_MDMA_S_CONFIG(0);
+	bfin_write_MDMA_D_CONFIG(0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -448,8 +603,15 @@ static void *_dma_memcpy(void *pdst, const void *psrc, size_t size)
 	}
 	size >>= shift;
 
+<<<<<<< HEAD
 	if (size > 0x10000)
 		conf |= DMA2D;
+=======
+#ifndef DMA_MMR_SIZE_32
+	if (size > 0x10000)
+		conf |= DMA2D;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	__dma_memcpy(dst, mod, src, mod, size, conf);
 
@@ -488,6 +650,12 @@ EXPORT_SYMBOL(dma_memcpy);
  */
 void *dma_memcpy_nocache(void *pdst, const void *psrc, size_t size)
 {
+<<<<<<< HEAD
+=======
+#ifdef DMA_MMR_SIZE_32
+	_dma_memcpy(pdst, psrc, size);
+#else
+>>>>>>> refs/remotes/origin/master
 	size_t bulk, rest;
 
 	bulk = size & ~0xffff;
@@ -495,6 +663,10 @@ void *dma_memcpy_nocache(void *pdst, const void *psrc, size_t size)
 	if (bulk)
 		_dma_memcpy(pdst, psrc, bulk);
 	_dma_memcpy(pdst + bulk, psrc + bulk, rest);
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 	return pdst;
 }
 EXPORT_SYMBOL(dma_memcpy_nocache);
@@ -514,14 +686,22 @@ void *safe_dma_memcpy(void *dst, const void *src, size_t size)
 }
 EXPORT_SYMBOL(safe_dma_memcpy);
 
+<<<<<<< HEAD
 static void _dma_out(unsigned long addr, unsigned long buf, unsigned short len,
+=======
+static void _dma_out(unsigned long addr, unsigned long buf, unsigned DMA_MMR_SIZE_TYPE len,
+>>>>>>> refs/remotes/origin/master
                      u16 size, u16 dma_size)
 {
 	blackfin_dcache_flush_range(buf, buf + len * size);
 	__dma_memcpy(addr, 0, buf, size, len, dma_size);
 }
 
+<<<<<<< HEAD
 static void _dma_in(unsigned long addr, unsigned long buf, unsigned short len,
+=======
+static void _dma_in(unsigned long addr, unsigned long buf, unsigned DMA_MMR_SIZE_TYPE len,
+>>>>>>> refs/remotes/origin/master
                     u16 size, u16 dma_size)
 {
 	blackfin_dcache_invalidate_range(buf, buf + len * size);
@@ -529,7 +709,11 @@ static void _dma_in(unsigned long addr, unsigned long buf, unsigned short len,
 }
 
 #define MAKE_DMA_IO(io, bwl, isize, dmasize, cnst) \
+<<<<<<< HEAD
 void dma_##io##s##bwl(unsigned long addr, cnst void *buf, unsigned short len) \
+=======
+void dma_##io##s##bwl(unsigned long addr, cnst void *buf, unsigned DMA_MMR_SIZE_TYPE len) \
+>>>>>>> refs/remotes/origin/master
 { \
 	_dma_##io(addr, (unsigned long)buf, len, isize, WDSIZE_##dmasize); \
 } \

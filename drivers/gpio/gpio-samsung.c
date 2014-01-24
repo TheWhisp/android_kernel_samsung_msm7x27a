@@ -30,15 +30,26 @@
 
 #include <asm/irq.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/map.h>
 #include <mach/regs-clock.h>
 #include <mach/regs-gpio.h>
 
+=======
+#include <mach/map.h>
+#include <mach/regs-gpio.h>
+
+#if defined(CONFIG_ARCH_S3C24XX) || defined(CONFIG_ARCH_S3C64XX)
+#include <mach/gpio-samsung.h>
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #include <plat/cpu.h>
 #include <plat/gpio-core.h>
 #include <plat/gpio-cfg.h>
 #include <plat/gpio-cfg-helpers.h>
+<<<<<<< HEAD
 #include <plat/gpio-fns.h>
 #include <plat/pm.h>
 
@@ -48,6 +59,10 @@
 #define gpio_dbg(x...) printk(KERN_DEBUG x)
 #endif
 
+=======
+#include <plat/pm.h>
+
+>>>>>>> refs/remotes/origin/master
 int samsung_gpio_setpull_updown(struct samsung_gpio_chip *chip,
 				unsigned int off, samsung_gpio_pull_t pull)
 {
@@ -169,6 +184,7 @@ int s3c24xx_gpio_setpull_1down(struct samsung_gpio_chip *chip,
 	return s3c24xx_gpio_setpull_1(chip, off, pull, S3C_GPIO_PULL_DOWN);
 }
 
+<<<<<<< HEAD
 static int exynos_gpio_setpull(struct samsung_gpio_chip *chip,
 				unsigned int off, samsung_gpio_pull_t pull)
 {
@@ -191,6 +207,8 @@ static samsung_gpio_pull_t exynos_gpio_getpull(struct samsung_gpio_chip *chip,
 	return pull;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * samsung_gpio_setcfg_2bit - Samsung 2bit style GPIO configuration.
  * @chip: The gpio chip that is being configured.
@@ -452,6 +470,7 @@ static struct samsung_gpio_cfg s3c24xx_gpiocfg_banka = {
 };
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_EXYNOS4) || defined(CONFIG_ARCH_EXYNOS5)
 static struct samsung_gpio_cfg exynos_gpio_cfg = {
 	.set_pull	= exynos_gpio_setpull,
@@ -461,6 +480,8 @@ static struct samsung_gpio_cfg exynos_gpio_cfg = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_CPU_S5P6440) || defined(CONFIG_CPU_S5P6450)
 static struct samsung_gpio_cfg s5p64x0_gpio_cfg_rbank = {
 	.cfg_eint	= 0x3,
@@ -503,6 +524,7 @@ static struct samsung_gpio_cfg samsung_gpio_cfgs[] = {
 		.set_config	= samsung_gpio_setcfg_2bit,
 		.get_config	= samsung_gpio_getcfg_2bit,
 	},
+<<<<<<< HEAD
 	[8] = {
 		.set_pull	= exynos_gpio_setpull,
 		.get_pull	= exynos_gpio_getpull,
@@ -512,6 +534,8 @@ static struct samsung_gpio_cfg samsung_gpio_cfgs[] = {
 		.set_pull	= exynos_gpio_setpull,
 		.get_pull	= exynos_gpio_getpull,
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -596,10 +620,20 @@ static int samsung_gpiolib_4bit_input(struct gpio_chip *chip,
 	unsigned long con;
 
 	con = __raw_readl(base + GPIOCON_OFF);
+<<<<<<< HEAD
 	con &= ~(0xf << con_4bit_shift(offset));
 	__raw_writel(con, base + GPIOCON_OFF);
 
 	gpio_dbg("%s: %p: CON now %08lx\n", __func__, base, con);
+=======
+	if (ourchip->bitmap_gpio_int & BIT(offset))
+		con |= 0xf << con_4bit_shift(offset);
+	else
+		con &= ~(0xf << con_4bit_shift(offset));
+	__raw_writel(con, base + GPIOCON_OFF);
+
+	pr_debug("%s: %p: CON now %08lx\n", __func__, base, con);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -627,7 +661,11 @@ static int samsung_gpiolib_4bit_output(struct gpio_chip *chip,
 	__raw_writel(con, base + GPIOCON_OFF);
 	__raw_writel(dat, base + GPIODAT_OFF);
 
+<<<<<<< HEAD
 	gpio_dbg("%s: %p: CON %08lx, DAT %08lx\n", __func__, base, con, dat);
+=======
+	pr_debug("%s: %p: CON %08lx, DAT %08lx\n", __func__, base, con, dat);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -671,7 +709,11 @@ static int samsung_gpiolib_4bit2_input(struct gpio_chip *chip,
 	con &= ~(0xf << con_4bit_shift(offset));
 	__raw_writel(con, regcon);
 
+<<<<<<< HEAD
 	gpio_dbg("%s: %p: CON %08lx\n", __func__, base, con);
+=======
+	pr_debug("%s: %p: CON %08lx\n", __func__, base, con);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -706,7 +748,11 @@ static int samsung_gpiolib_4bit2_output(struct gpio_chip *chip,
 	__raw_writel(con, regcon);
 	__raw_writel(dat, base + GPIODAT_OFF);
 
+<<<<<<< HEAD
 	gpio_dbg("%s: %p: CON %08lx, DAT %08lx\n", __func__, base, con, dat);
+=======
+	pr_debug("%s: %p: CON %08lx, DAT %08lx\n", __func__, base, con, dat);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -926,10 +972,17 @@ static void __init samsung_gpiolib_add(struct samsung_gpio_chip *chip)
 #ifdef CONFIG_PM
 	if (chip->pm != NULL) {
 		if (!chip->pm->save || !chip->pm->resume)
+<<<<<<< HEAD
 			printk(KERN_ERR "gpio: %s has missing PM functions\n",
 			       gc->label);
 	} else
 		printk(KERN_ERR "gpio: %s has no PM function\n", gc->label);
+=======
+			pr_err("gpio: %s has missing PM functions\n",
+			       gc->label);
+	} else
+		pr_err("gpio: %s has no PM function\n", gc->label);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* gpiochip_add() prints own failure message on error. */
@@ -1018,6 +1071,11 @@ static void __init samsung_gpiolib_add_4bit_chips(struct samsung_gpio_chip *chip
 		if ((base != NULL) && (chip->base == NULL))
 			chip->base = base + ((i) * 0x20);
 
+<<<<<<< HEAD
+=======
+		chip->bitmap_gpio_int = 0;
+
+>>>>>>> refs/remotes/origin/master
 		samsung_gpiolib_add(chip);
 	}
 }
@@ -1062,8 +1120,17 @@ int samsung_gpiolib_to_irq(struct gpio_chip *chip, unsigned int offset)
 #ifdef CONFIG_PLAT_S3C24XX
 static int s3c24xx_gpiolib_fbank_to_irq(struct gpio_chip *chip, unsigned offset)
 {
+<<<<<<< HEAD
 	if (offset < 4)
 		return IRQ_EINT0 + offset;
+=======
+	if (offset < 4) {
+		if (soc_is_s3c2412())
+			return IRQ_EINT0_2412 + offset;
+		else
+			return IRQ_EINT0 + offset;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (offset < 8)
 		return IRQ_EINT4 + offset - 4;
@@ -1072,7 +1139,11 @@ static int s3c24xx_gpiolib_fbank_to_irq(struct gpio_chip *chip, unsigned offset)
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_PLAT_S3C64XX
+=======
+#ifdef CONFIG_ARCH_S3C64XX
+>>>>>>> refs/remotes/origin/master
 static int s3c64xx_gpiolib_mbank_to_irq(struct gpio_chip *chip, unsigned pin)
 {
 	return pin < 5 ? IRQ_EINT(23) + pin : -ENXIO;
@@ -1092,7 +1163,11 @@ struct samsung_gpio_chip s3c24xx_gpios[] = {
 			.base			= S3C2410_GPA(0),
 			.owner			= THIS_MODULE,
 			.label			= "GPIOA",
+<<<<<<< HEAD
 			.ngpio			= 24,
+=======
+			.ngpio			= 27,
+>>>>>>> refs/remotes/origin/master
 			.direction_input	= s3c24xx_gpiolib_banka_input,
 			.direction_output	= s3c24xx_gpiolib_banka_output,
 		},
@@ -1101,7 +1176,11 @@ struct samsung_gpio_chip s3c24xx_gpios[] = {
 			.base	= S3C2410_GPB(0),
 			.owner	= THIS_MODULE,
 			.label	= "GPIOB",
+<<<<<<< HEAD
 			.ngpio	= 16,
+=======
+			.ngpio	= 11,
+>>>>>>> refs/remotes/origin/master
 		},
 	}, {
 		.chip	= {
@@ -1146,7 +1225,11 @@ struct samsung_gpio_chip s3c24xx_gpios[] = {
 			.base	= S3C2410_GPH(0),
 			.owner	= THIS_MODULE,
 			.label	= "GPIOH",
+<<<<<<< HEAD
 			.ngpio	= 11,
+=======
+			.ngpio	= 15,
+>>>>>>> refs/remotes/origin/master
 		},
 	},
 		/* GPIOS for the S3C2443 and later devices. */
@@ -1213,7 +1296,11 @@ struct samsung_gpio_chip s3c24xx_gpios[] = {
  */
 
 static struct samsung_gpio_chip s3c64xx_gpios_4bit[] = {
+<<<<<<< HEAD
 #ifdef CONFIG_PLAT_S3C64XX
+=======
+#ifdef CONFIG_ARCH_S3C64XX
+>>>>>>> refs/remotes/origin/master
 	{
 		.chip	= {
 			.base	= S3C64XX_GPA(0),
@@ -1266,7 +1353,11 @@ static struct samsung_gpio_chip s3c64xx_gpios_4bit[] = {
 };
 
 static struct samsung_gpio_chip s3c64xx_gpios_4bit2[] = {
+<<<<<<< HEAD
 #ifdef CONFIG_PLAT_S3C64XX
+=======
+#ifdef CONFIG_ARCH_S3C64XX
+>>>>>>> refs/remotes/origin/master
 	{
 		.base	= S3C64XX_GPH_BASE + 0x4,
 		.chip	= {
@@ -1296,7 +1387,11 @@ static struct samsung_gpio_chip s3c64xx_gpios_4bit2[] = {
 };
 
 static struct samsung_gpio_chip s3c64xx_gpios_2bit[] = {
+<<<<<<< HEAD
 #ifdef CONFIG_PLAT_S3C64XX
+=======
+#ifdef CONFIG_ARCH_S3C64XX
+>>>>>>> refs/remotes/origin/master
 	{
 		.base	= S3C64XX_GPF_BASE,
 		.config	= &samsung_gpio_cfgs[6],
@@ -2114,6 +2209,7 @@ static struct samsung_gpio_chip s5pv210_gpios_4bit[] = {
 #endif
 };
 
+<<<<<<< HEAD
 /*
  * Followings are the gpio banks in EXYNOS SoCs
  *
@@ -2716,16 +2812,32 @@ static __init void exynos_gpiolib_attach_ofnode(struct samsung_gpio_chip *chip,
 }
 #endif /* defined(CONFIG_ARCH_EXYNOS) && defined(CONFIG_OF) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* TODO: cleanup soc_is_* */
 static __init int samsung_gpiolib_init(void)
 {
 	struct samsung_gpio_chip *chip;
 	int i, nr_chips;
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_EXYNOS4210) || defined(CONFIG_SOC_EXYNOS5250)
 	void __iomem *gpio_base1, *gpio_base2, *gpio_base3, *gpio_base4;
 #endif
 	int group = 0;
 
+=======
+	int group = 0;
+
+	/*
+	 * Currently there are two drivers that can provide GPIO support for
+	 * Samsung SoCs. For device tree enabled platforms, the new
+	 * pinctrl-samsung driver is used, providing both GPIO and pin control
+	 * interfaces. For legacy (non-DT) platforms this driver is used.
+	 */
+	if (of_have_populated_dt())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	samsung_gpiolib_set_cfg(samsung_gpio_cfgs, ARRAY_SIZE(samsung_gpio_cfgs));
 
 	if (soc_is_s3c24xx()) {
@@ -2788,6 +2900,7 @@ static __init int samsung_gpiolib_init(void)
 #if defined(CONFIG_CPU_S5PV210) && defined(CONFIG_S5P_GPIO_INT)
 		s5p_register_gpioint_bank(IRQ_GPIOINT, 0, S5P_GPIOINT_GROUP_MAXNR);
 #endif
+<<<<<<< HEAD
 	} else if (soc_is_exynos4210()) {
 #ifdef CONFIG_CPU_EXYNOS4210
 		void __iomem *gpx_base;
@@ -2968,12 +3081,15 @@ static __init int samsung_gpiolib_init(void)
 		samsung_gpiolib_add_4bit_chips(exynos5_gpios_4,
 					       nr_chips, gpio_base4);
 #endif	/* CONFIG_SOC_EXYNOS5250 */
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		WARN(1, "Unknown SoC in gpio-samsung, no GPIOs added\n");
 		return -ENODEV;
 	}
 
 	return 0;
+<<<<<<< HEAD
 
 #if defined(CONFIG_CPU_EXYNOS4210) || defined(CONFIG_SOC_EXYNOS5250)
 err_ioremap4:
@@ -2985,6 +3101,8 @@ err_ioremap2:
 err_ioremap1:
 	return -ENOMEM;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 core_initcall(samsung_gpiolib_init);
 
@@ -3096,6 +3214,7 @@ samsung_gpio_pull_t s3c_gpio_getpull(unsigned int pin)
 }
 EXPORT_SYMBOL(s3c_gpio_getpull);
 
+<<<<<<< HEAD
 /* gpiolib wrappers until these are totally eliminated */
 
 void s3c2410_gpio_pullup(unsigned int pin, unsigned int to)
@@ -3136,6 +3255,8 @@ unsigned int s3c2410_gpio_getpin(unsigned int pin)
 }
 EXPORT_SYMBOL(s3c2410_gpio_getpin);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_S5P_GPIO_DRVSTR
 s5p_gpio_drvstr_t s5p_gpio_get_drvstr(unsigned int pin)
 {

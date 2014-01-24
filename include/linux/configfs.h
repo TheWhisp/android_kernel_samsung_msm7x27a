@@ -43,10 +43,14 @@
 #include <linux/err.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #define CONFIGFS_ITEM_NAME_LEN	20
 
@@ -129,10 +133,14 @@ struct configfs_attribute {
 	const char		*ca_name;
 	struct module 		*ca_owner;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t			ca_mode;
 =======
 	umode_t			ca_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t			ca_mode;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*

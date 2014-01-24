@@ -2,10 +2,14 @@
  * Driver for the Analog Devices digital potentiometers (SPI bus)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 Michael Hennerich, Analog Devices Inc.
 =======
  * Copyright (C) 2010-2011 Michael Hennerich, Analog Devices Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2010-2011 Michael Hennerich, Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -15,6 +19,7 @@
 
 #include "ad525x_dpot.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct ad_dpot_id ad_dpot_spi_devlist[] = {
 	{.name = "ad5160", .devid = AD5160_ID},
@@ -52,6 +57,8 @@ static const struct ad_dpot_id ad_dpot_spi_devlist[] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* SPI bus functions */
 static int write8(void *client, u8 val)
 {
@@ -117,6 +124,7 @@ static const struct ad_dpot_bus_ops bops = {
 	.write_r8d16	= write24,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static const struct ad_dpot_id *dpot_match_id(const struct ad_dpot_id *id,
 						char *name)
@@ -138,11 +146,16 @@ static int __devinit ad_dpot_spi_probe(struct spi_device *spi)
 static int __devinit ad_dpot_spi_probe(struct spi_device *spi)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ad_dpot_spi_probe(struct spi_device *spi)
+{
+>>>>>>> refs/remotes/origin/master
 	struct ad_dpot_bus_data bdata = {
 		.client = spi,
 		.bops = &bops,
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dpot_id = dpot_match_id(ad_dpot_spi_devlist, name);
 
@@ -160,16 +173,27 @@ static int __devinit ad_dpot_spi_probe(struct spi_device *spi)
 }
 
 static int __devexit ad_dpot_spi_remove(struct spi_device *spi)
+=======
+	return ad_dpot_probe(&spi->dev, &bdata,
+			     spi_get_device_id(spi)->driver_data,
+			     spi_get_device_id(spi)->name);
+}
+
+static int ad_dpot_spi_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	return ad_dpot_remove(&spi->dev);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct spi_driver ad_dpot_spi_driver = {
 	.driver = {
 		.name	= "ad_dpot",
 		.bus	= &spi_bus_type,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct spi_device_id ad_dpot_spi_id[] = {
 	{"ad5160", AD5160_ID},
 	{"ad5161", AD5161_ID},
@@ -206,6 +230,7 @@ MODULE_DEVICE_TABLE(spi, ad_dpot_spi_id);
 static struct spi_driver ad_dpot_spi_driver = {
 	.driver = {
 		.name	= "ad_dpot",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		.owner	= THIS_MODULE,
 	},
@@ -226,11 +251,20 @@ static void __exit ad_dpot_spi_exit(void)
 }
 module_exit(ad_dpot_spi_exit);
 =======
+=======
+		.owner	= THIS_MODULE,
+	},
+	.probe		= ad_dpot_spi_probe,
+	.remove		= ad_dpot_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= ad_dpot_spi_id,
 };
 
 module_spi_driver(ad_dpot_spi_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("digital potentiometer SPI bus driver");

@@ -7,11 +7,36 @@
 
 #include "bcma_private.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/bcma/bcma.h>
 
+=======
+#include <linux/export.h>
+#include <linux/bcma/bcma.h>
+
+static bool bcma_core_wait_value(struct bcma_device *core, u16 reg, u32 mask,
+				 u32 value, int timeout)
+{
+	unsigned long deadline = jiffies + timeout;
+	u32 val;
+
+	do {
+		val = bcma_aread32(core, reg);
+		if ((val & mask) == value)
+			return true;
+		cpu_relax();
+		udelay(10);
+	} while (!time_after_eq(jiffies, deadline));
+
+	bcma_warn(core->bus, "Timeout waiting for register 0x%04X!\n", reg);
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 bool bcma_core_is_enabled(struct bcma_device *core)
 {
 	if ((bcma_aread32(core, BCMA_IOCTL) & (BCMA_IOCTL_CLK | BCMA_IOCTL_FGC))
@@ -24,14 +49,19 @@ bool bcma_core_is_enabled(struct bcma_device *core)
 EXPORT_SYMBOL_GPL(bcma_core_is_enabled);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void bcma_core_disable(struct bcma_device *core, u32 flags)
 =======
 void bcma_core_disable(struct bcma_device *core, u32 flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void bcma_core_disable(struct bcma_device *core, u32 flags)
+>>>>>>> refs/remotes/origin/master
 {
 	if (bcma_aread32(core, BCMA_RESET_CTL) & BCMA_RESET_CTL_RESET)
 		return;
 
+<<<<<<< HEAD
 	bcma_awrite32(core, BCMA_IOCTL, flags);
 	bcma_aread32(core, BCMA_IOCTL);
 	udelay(10);
@@ -43,6 +73,19 @@ void bcma_core_disable(struct bcma_device *core, u32 flags)
 =======
 EXPORT_SYMBOL_GPL(bcma_core_disable);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcma_core_wait_value(core, BCMA_RESET_ST, ~0, 0, 300);
+
+	bcma_awrite32(core, BCMA_RESET_CTL, BCMA_RESET_CTL_RESET);
+	bcma_aread32(core, BCMA_RESET_CTL);
+	udelay(1);
+
+	bcma_awrite32(core, BCMA_IOCTL, flags);
+	bcma_aread32(core, BCMA_IOCTL);
+	udelay(10);
+}
+EXPORT_SYMBOL_GPL(bcma_core_disable);
+>>>>>>> refs/remotes/origin/master
 
 int bcma_core_enable(struct bcma_device *core, u32 flags)
 {
@@ -52,6 +95,10 @@ int bcma_core_enable(struct bcma_device *core, u32 flags)
 	bcma_aread32(core, BCMA_IOCTL);
 
 	bcma_awrite32(core, BCMA_RESET_CTL, 0);
+<<<<<<< HEAD
+=======
+	bcma_aread32(core, BCMA_RESET_CTL);
+>>>>>>> refs/remotes/origin/master
 	udelay(1);
 
 	bcma_awrite32(core, BCMA_IOCTL, (BCMA_IOCTL_CLK | flags));
@@ -62,7 +109,10 @@ int bcma_core_enable(struct bcma_device *core, u32 flags)
 }
 EXPORT_SYMBOL_GPL(bcma_core_enable);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void bcma_core_set_clockmode(struct bcma_device *core,
 			     enum bcma_clkmode clkmode)
@@ -76,7 +126,11 @@ void bcma_core_set_clockmode(struct bcma_device *core,
 	switch (clkmode) {
 	case BCMA_CLKMODE_FAST:
 		bcma_set32(core, BCMA_CLKCTLST, BCMA_CLKCTLST_FORCEHT);
+<<<<<<< HEAD
 		udelay(64);
+=======
+		usleep_range(64, 300);
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < 1500; i++) {
 			if (bcma_read32(core, BCMA_CLKCTLST) &
 			    BCMA_CLKCTLST_HAVEHT) {
@@ -86,10 +140,17 @@ void bcma_core_set_clockmode(struct bcma_device *core,
 			udelay(10);
 		}
 		if (i)
+<<<<<<< HEAD
 			pr_err("HT force timeout\n");
 		break;
 	case BCMA_CLKMODE_DYNAMIC:
 		pr_warn("Dynamic clockmode not supported yet!\n");
+=======
+			bcma_err(core->bus, "HT force timeout\n");
+		break;
+	case BCMA_CLKMODE_DYNAMIC:
+		bcma_set32(core, BCMA_CLKCTLST, ~BCMA_CLKCTLST_FORCEHT);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -113,9 +174,21 @@ void bcma_core_pll_ctl(struct bcma_device *core, u32 req, u32 status, bool on)
 			udelay(10);
 		}
 		if (i)
+<<<<<<< HEAD
 			pr_err("PLL enable timeout\n");
 	} else {
 		pr_warn("Disabling PLL not supported yet!\n");
+=======
+			bcma_err(core->bus, "PLL enable timeout\n");
+	} else {
+		/*
+		 * Mask the PLL but don't wait for it to be disabled. PLL may be
+		 * shared between cores and will be still up if there is another
+		 * core using it.
+		 */
+		bcma_mask32(core, BCMA_CLKCTLST, ~req);
+		bcma_read32(core, BCMA_CLKCTLST);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL_GPL(bcma_core_pll_ctl);
@@ -131,10 +204,18 @@ u32 bcma_core_dma_translation(struct bcma_device *core)
 		else
 			return BCMA_DMA_TRANSLATION_DMA32_CMT;
 	default:
+<<<<<<< HEAD
 		pr_err("DMA translation unknown for host %d\n",
 		       core->bus->hosttype);
+=======
+		bcma_err(core->bus, "DMA translation unknown for host %d\n",
+			 core->bus->hosttype);
+>>>>>>> refs/remotes/origin/master
 	}
 	return BCMA_DMA_TRANSLATION_NONE;
 }
 EXPORT_SYMBOL(bcma_core_dma_translation);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

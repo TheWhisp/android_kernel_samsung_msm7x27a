@@ -14,6 +14,7 @@
 #include <linux/module.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cpuidle.h>
@@ -71,11 +72,20 @@ void (*shmobile_cpuidle_setup)(struct cpuidle_device *dev);
 	.name			= "shmobile_cpuidle",
 	.owner			= THIS_MODULE,
 	.en_core_tk_irqen	= 1,
+=======
+#include <asm/cpuidle.h>
+#include <asm/io.h>
+
+static struct cpuidle_driver shmobile_cpuidle_default_driver = {
+	.name			= "shmobile_cpuidle",
+	.owner			= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.states[0]		= ARM_CPUIDLE_WFI_STATE,
 	.safe_state_index	= 0, /* C1 */
 	.state_count		= 1,
 };
 
+<<<<<<< HEAD
 void (*shmobile_cpuidle_setup)(struct cpuidle_driver *drv);
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -130,3 +140,16 @@ static int shmobile_cpuidle_init(void)
 	return 0;
 }
 late_initcall(shmobile_cpuidle_init);
+=======
+static struct cpuidle_driver *cpuidle_drv = &shmobile_cpuidle_default_driver;
+
+void __init shmobile_cpuidle_set_driver(struct cpuidle_driver *drv)
+{
+	cpuidle_drv = drv;
+}
+
+int __init shmobile_cpuidle_init(void)
+{
+	return cpuidle_register(cpuidle_drv, NULL);
+}
+>>>>>>> refs/remotes/origin/master

@@ -9,10 +9,13 @@
  * All rights reserved.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef CAN_CORE_H
@@ -22,10 +25,17 @@
 #include <linux/skbuff.h>
 #include <linux/netdevice.h>
 
+<<<<<<< HEAD
 #define CAN_VERSION "20090105"
 
 /* increment this number each time you change some user-space interface */
 #define CAN_ABI_VERSION "8"
+=======
+#define CAN_VERSION "20120528"
+
+/* increment this number each time you change some user-space interface */
+#define CAN_ABI_VERSION "9"
+>>>>>>> refs/remotes/origin/master
 
 #define CAN_VERSION_STRING "rev " CAN_VERSION " abi " CAN_ABI_VERSION
 

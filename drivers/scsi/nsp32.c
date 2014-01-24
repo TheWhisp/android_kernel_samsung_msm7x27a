@@ -39,9 +39,12 @@
 
 #include <asm/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include <scsi/scsi.h>
@@ -63,18 +66,24 @@ MODULE_PARM_DESC(trans_mode, "transfer mode (0: BIOS(default) 1: Async 2: Ultra2
 #define ULTRA20M_MODE 2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int       auto_param = 0;	/* default: ON */
 module_param     (auto_param, bool, 0);
 MODULE_PARM_DESC(auto_param, "AutoParameter mode (0: ON(default) 1: OFF)");
 
 static int       disc_priv  = 1;	/* default: OFF */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool      auto_param = 0;	/* default: ON */
 module_param     (auto_param, bool, 0);
 MODULE_PARM_DESC(auto_param, "AutoParameter mode (0: ON(default) 1: OFF)");
 
 static bool      disc_priv  = 1;	/* default: OFF */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param     (disc_priv, bool, 0);
 MODULE_PARM_DESC(disc_priv,  "disconnection privilege mode (0: ON 1: OFF(default))");
 
@@ -88,7 +97,11 @@ static const char *nsp32_release_version = "1.2";
 /****************************************************************************
  * Supported hardware
  */
+<<<<<<< HEAD
 static struct pci_device_id nsp32_pci_table[] __devinitdata = {
+=======
+static struct pci_device_id nsp32_pci_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.vendor      = PCI_VENDOR_ID_IODATA,
 		.device      = PCI_DEVICE_ID_NINJASCSI_32BI_CBSC_II,
@@ -198,6 +211,7 @@ static nsp32_sync_table nsp32_sync_table_pci[] = {
  * function declaration
  */
 /* module entry point */
+<<<<<<< HEAD
 static int  __devinit nsp32_probe (struct pci_dev *, const struct pci_device_id *);
 static void __devexit nsp32_remove(struct pci_dev *);
 static int  __init    init_nsp32  (void);
@@ -205,6 +219,15 @@ static void __exit    exit_nsp32  (void);
 
 /* struct struct scsi_host_template */
 static int         nsp32_proc_info   (struct Scsi_Host *, char *, char **, off_t, int, int);
+=======
+static int         nsp32_probe (struct pci_dev *, const struct pci_device_id *);
+static void        nsp32_remove(struct pci_dev *);
+static int  __init init_nsp32  (void);
+static void __exit exit_nsp32  (void);
+
+/* struct struct scsi_host_template */
+static int         nsp32_show_info   (struct seq_file *, struct Scsi_Host *);
+>>>>>>> refs/remotes/origin/master
 
 static int         nsp32_detect      (struct pci_dev *pdev);
 static int         nsp32_queuecommand(struct Scsi_Host *, struct scsi_cmnd *);
@@ -280,7 +303,11 @@ static void nsp32_dmessage(const char *, int, int,    char *, ...);
 static struct scsi_host_template nsp32_template = {
 	.proc_name			= "nsp32",
 	.name				= "Workbit NinjaSCSI-32Bi/UDE",
+<<<<<<< HEAD
 	.proc_info			= nsp32_proc_info,
+=======
+	.show_info			= nsp32_show_info,
+>>>>>>> refs/remotes/origin/master
 	.info				= nsp32_info,
 	.queuecommand			= nsp32_queuecommand,
 	.can_queue			= 1,
@@ -1454,6 +1481,7 @@ static irqreturn_t do_nsp32_isr(int irq, void *dev_id)
 }
 
 #undef SPRINTF
+<<<<<<< HEAD
 #define SPRINTF(args...) \
 	do { \
 		if(length > (pos - buffer)) { \
@@ -1467,6 +1495,12 @@ static int nsp32_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 {
 	char             *pos = buffer;
 	int               thislength;
+=======
+#define SPRINTF(args...) seq_printf(m, ##args)
+
+static int nsp32_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+>>>>>>> refs/remotes/origin/master
 	unsigned long     flags;
 	nsp32_hw_data    *data;
 	int               hostno;
@@ -1475,11 +1509,14 @@ static int nsp32_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 	int               id, speed;
 	long              model;
 
+<<<<<<< HEAD
 	/* Write is not supported, just return. */
 	if (inout == TRUE) {
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	hostno = host->host_no;
 	data = (nsp32_hw_data *)host->hostdata;
 	base = host->io_port;
@@ -1539,6 +1576,7 @@ static int nsp32_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 		}
 		SPRINTF("\n");
 	}
+<<<<<<< HEAD
 
 
 	thislength = pos - (buffer + offset);
@@ -1553,6 +1591,9 @@ static int nsp32_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 	*start = buffer + offset;
 
 	return thislength;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 #undef SPRINTF
 
@@ -3394,7 +3435,11 @@ static int nsp32_resume(struct pci_dev *pdev)
 /************************************************************************
  * PCI/Cardbus probe/remove routine
  */
+<<<<<<< HEAD
 static int __devinit nsp32_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+=======
+static int nsp32_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	nsp32_hw_data *data = &nsp32_data_base;
@@ -3430,7 +3475,11 @@ static int __devinit nsp32_probe(struct pci_dev *pdev, const struct pci_device_i
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit nsp32_remove(struct pci_dev *pdev)
+=======
+static void nsp32_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = pci_get_drvdata(pdev);
 
@@ -3447,7 +3496,11 @@ static struct pci_driver nsp32_driver = {
 	.name		= "nsp32",
 	.id_table	= nsp32_pci_table,
 	.probe		= nsp32_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(nsp32_remove),
+=======
+	.remove		= nsp32_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= nsp32_suspend, 
 	.resume		= nsp32_resume, 

@@ -37,9 +37,13 @@
 #include <linux/etherdevice.h>
 #include <linux/inetdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/ethtool.h>
 #include <linux/mii.h>
@@ -804,6 +808,7 @@ static int c2_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
 	if (skb_shinfo(skb)->nr_frags) {
 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 			maplen = frag->size;
 			mapaddr =
@@ -812,11 +817,16 @@ static int c2_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
 					 PCI_DMA_TODEVICE);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 			maplen = skb_frag_size(frag);
 			mapaddr = skb_frag_dma_map(&c2dev->pcidev->dev, frag,
 						   0, maplen, DMA_TO_DEVICE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			elem = elem->next;
 			elem->skb = NULL;
 			elem->mapaddr = mapaddr;
@@ -933,8 +943,12 @@ static struct net_device *c2_devinit(struct c2_dev *c2dev,
 	return netdev;
 }
 
+<<<<<<< HEAD
 static int __devinit c2_probe(struct pci_dev *pcidev,
 			      const struct pci_device_id *ent)
+=======
+static int c2_probe(struct pci_dev *pcidev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0, i;
 	unsigned long reg0_start, reg0_flags, reg0_len;
@@ -1204,7 +1218,11 @@ static int __devinit c2_probe(struct pci_dev *pcidev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit c2_remove(struct pci_dev *pcidev)
+=======
+static void c2_remove(struct pci_dev *pcidev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct c2_dev *c2dev = pci_get_drvdata(pcidev);
 	struct net_device *netdev = c2dev->netdev;
@@ -1249,6 +1267,7 @@ static struct pci_driver c2_pci_driver = {
 	.name = DRV_NAME,
 	.id_table = c2_pci_table,
 	.probe = c2_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(c2_remove),
 };
 
@@ -1264,3 +1283,9 @@ static void __exit c2_exit_module(void)
 
 module_init(c2_init_module);
 module_exit(c2_exit_module);
+=======
+	.remove = c2_remove,
+};
+
+module_pci_driver(c2_pci_driver);
+>>>>>>> refs/remotes/origin/master

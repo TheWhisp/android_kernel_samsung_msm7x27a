@@ -6,10 +6,14 @@
 #include <linux/pagemap.h>
 #include <linux/buffer_head.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 =======
 #include "reiserfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 
 /* access to tail : when one is going to read tail it must make sure, that is not running.
  direct2indirect and indirect2direct can not run concurrently */
@@ -133,6 +137,7 @@ int direct2indirect(struct reiserfs_transaction_handle *th, struct inode *inode,
 		unsigned pgoff =
 		    (tail_offset + total_tail - 1) & (PAGE_CACHE_SIZE - 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		char *kaddr = kmap_atomic(up_to_date_bh->b_page, KM_USER0);
 		memset(kaddr + pgoff, 0, blk_size - total_tail);
 		kunmap_atomic(kaddr, KM_USER0);
@@ -141,6 +146,11 @@ int direct2indirect(struct reiserfs_transaction_handle *th, struct inode *inode,
 		memset(kaddr + pgoff, 0, blk_size - total_tail);
 		kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		char *kaddr = kmap_atomic(up_to_date_bh->b_page);
+		memset(kaddr + pgoff, 0, blk_size - total_tail);
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	REISERFS_I(inode)->i_first_direct_byte = U32_MAX;

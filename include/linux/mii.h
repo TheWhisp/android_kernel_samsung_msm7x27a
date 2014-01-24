@@ -4,6 +4,7 @@
  *
  * Copyright (C) 1996, 1999, 2001 David S. Miller (davem@redhat.com)
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_MII_H__
 #define __LINUX_MII_H__
@@ -282,6 +283,14 @@ struct mii_ioctl_data {
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/if.h>
+=======
+#ifndef __LINUX_MII_H__
+#define __LINUX_MII_H__
+
+
+#include <linux/if.h>
+#include <uapi/linux/mii.h>
+>>>>>>> refs/remotes/origin/master
 
 struct ethtool_cmd;
 
@@ -311,10 +320,14 @@ extern unsigned int mii_check_media (struct mii_if_info *mii,
 				     unsigned int init_media);
 extern int generic_mii_ioctl(struct mii_if_info *mii_if,
 <<<<<<< HEAD
+<<<<<<< HEAD
                       	     struct mii_ioctl_data *mii_data, int cmd,
 =======
 			     struct mii_ioctl_data *mii_data, int cmd,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     struct mii_ioctl_data *mii_data, int cmd,
+>>>>>>> refs/remotes/origin/master
 			     unsigned int *duplex_changed);
 
 
@@ -324,9 +337,12 @@ static inline struct mii_ioctl_data *if_mii(struct ifreq *rq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * mii_nway_result
  * @negotiated: value of MII ANAR and'd with ANLPAR
@@ -380,7 +396,10 @@ static inline unsigned int mii_duplex (unsigned int duplex_lock,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ethtool_adv_to_mii_adv_t
  * @ethadv: the ethtool advertisement settings
  *
@@ -580,7 +599,10 @@ static inline u32 mii_lpa_to_ethtool_lpa_x(u32 lpa)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * mii_advertise_flowctrl - get flow control advertisement flags
  * @cap: Flow control capabilities (FLOW_CTRL_RX, FLOW_CTRL_TX or both)
  */
@@ -619,5 +641,8 @@ static inline u8 mii_resolve_flowctrl_fdx(u16 lcladv, u16 rmtadv)
 	return cap;
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_MII_H__ */

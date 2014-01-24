@@ -19,9 +19,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "opl3_voice.h"
 
 static int snd_opl3_open_seq_oss(struct snd_seq_oss_arg *arg, void *closure);

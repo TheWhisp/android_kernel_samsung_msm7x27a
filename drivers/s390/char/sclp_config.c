@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/sclp_config.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *    Copyright IBM Corp. 2007
  *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
  */
@@ -12,10 +15,14 @@
 #include <linux/errno.h>
 #include <linux/cpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <asm/smp.h>
 
@@ -36,6 +43,7 @@ static void sclp_cpu_capability_notify(struct work_struct *work)
 {
 	int cpu;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device *sysdev;
 =======
 	struct device *dev;
@@ -52,6 +60,16 @@ static void sclp_cpu_capability_notify(struct work_struct *work)
 		dev = get_cpu_device(cpu);
 		kobject_uevent(&dev->kobj, KOBJ_CHANGE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev;
+
+	s390_adjust_jiffies();
+	pr_info("CPU capability may have changed\n");
+	get_online_cpus();
+	for_each_online_cpu(cpu) {
+		dev = get_cpu_device(cpu);
+		kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+>>>>>>> refs/remotes/origin/master
 	}
 	put_online_cpus();
 }

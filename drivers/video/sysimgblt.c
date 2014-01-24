@@ -152,7 +152,11 @@ static void slow_imageblit(const struct fb_image *image, struct fb_info *p,
 			}
 			shift += bpp;
 			shift &= (32 - 1);
+<<<<<<< HEAD
 			if (!l) { l = 8; s++; };
+=======
+			if (!l) { l = 8; s++; }
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* write trailing bits */

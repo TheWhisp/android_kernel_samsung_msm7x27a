@@ -147,10 +147,14 @@ static void collie_bat_external_power_changed(struct power_supply *psy)
 static irqreturn_t collie_bat_gpio_isr(int irq, void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("collie_bat_gpio irq: %d\n", gpio_get_value(irq_to_gpio(irq)));
 =======
 	pr_info("collie_bat_gpio irq\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("collie_bat_gpio irq\n");
+>>>>>>> refs/remotes/origin/master
 	schedule_work(&bat_work);
 	return IRQ_HANDLED;
 }
@@ -282,6 +286,7 @@ static struct collie_bat collie_bat_bu = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct {
 	int gpio;
 	char *name;
@@ -295,6 +300,8 @@ static struct {
 	{ COLLIE_GPIO_TMP_ON,		"main battery temp",	1, 0 },
 	{ COLLIE_GPIO_BBAT_ON,		"backup battery",	1, 0 },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio collie_batt_gpios[] = {
 	{ COLLIE_GPIO_CO,	    GPIOF_IN,		"main battery full" },
 	{ COLLIE_GPIO_MAIN_BAT_LOW, GPIOF_IN,		"main battery low" },
@@ -302,6 +309,7 @@ static struct gpio collie_batt_gpios[] = {
 	{ COLLIE_GPIO_MBAT_ON,	    GPIOF_OUT_INIT_LOW,	"main battery" },
 	{ COLLIE_GPIO_TMP_ON,	    GPIOF_OUT_INIT_LOW,	"main battery temp" },
 	{ COLLIE_GPIO_BBAT_ON,	    GPIOF_OUT_INIT_LOW,	"backup battery" },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -310,6 +318,15 @@ static int collie_bat_suspend(struct ucb1x00_dev *dev, pm_message_t state)
 {
 	/* flush all pending status updates */
 	flush_work_sync(&bat_work);
+=======
+};
+
+#ifdef CONFIG_PM
+static int collie_bat_suspend(struct ucb1x00_dev *dev)
+{
+	/* flush all pending status updates */
+	flush_work(&bat_work);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -324,6 +341,7 @@ static int collie_bat_resume(struct ucb1x00_dev *dev)
 #define collie_bat_resume NULL
 #endif
 
+<<<<<<< HEAD
 static int __devinit collie_bat_probe(struct ucb1x00_dev *dev)
 {
 	int ret;
@@ -331,12 +349,18 @@ static int __devinit collie_bat_probe(struct ucb1x00_dev *dev)
 	int i;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int collie_bat_probe(struct ucb1x00_dev *dev)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!machine_is_collie())
 		return -ENODEV;
 
 	ucb = dev->ucb;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(gpios); i++) {
 		ret = gpio_request(gpios[i].gpio, gpios[i].name);
@@ -355,11 +379,16 @@ static int __devinit collie_bat_probe(struct ucb1x00_dev *dev)
 			goto err_gpio;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = gpio_request_array(collie_batt_gpios,
 				 ARRAY_SIZE(collie_batt_gpios));
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&collie_bat_main.work_lock);
 
@@ -388,6 +417,7 @@ err_psy_reg_main:
 	/* see comment in collie_bat_remove */
 	cancel_work_sync(&bat_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	i--;
 err_gpio:
@@ -407,6 +437,14 @@ static void __devexit collie_bat_remove(struct ucb1x00_dev *dev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(collie_batt_gpios, ARRAY_SIZE(collie_batt_gpios));
+	return ret;
+}
+
+static void collie_bat_remove(struct ucb1x00_dev *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	free_irq(gpio_to_irq(COLLIE_GPIO_CO), &collie_bat_main);
 
 	power_supply_unregister(&collie_bat_bu.psy);
@@ -419,17 +457,25 @@ static void __devexit collie_bat_remove(struct ucb1x00_dev *dev)
 	 */
 	cancel_work_sync(&bat_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	for (i = ARRAY_SIZE(gpios) - 1; i >= 0; i--)
 		gpio_free(gpios[i].gpio);
 =======
 	gpio_free_array(collie_batt_gpios, ARRAY_SIZE(collie_batt_gpios));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(collie_batt_gpios, ARRAY_SIZE(collie_batt_gpios));
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct ucb1x00_driver collie_bat_driver = {
 	.add		= collie_bat_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(collie_bat_remove),
+=======
+	.remove		= collie_bat_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= collie_bat_suspend,
 	.resume		= collie_bat_resume,
 };

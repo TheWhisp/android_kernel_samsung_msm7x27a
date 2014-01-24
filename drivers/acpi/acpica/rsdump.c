@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,12 +70,15 @@ static void acpi_rs_out_integer64(char *title, u64 value);
 static void acpi_rs_out_title(char *title);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void acpi_rs_dump_byte_list(u16 length, u8 * data);
 
 static void acpi_rs_dump_dword_list(u8 length, u32 * data);
 
 static void acpi_rs_dump_short_byte_list(u8 length, u8 * data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void acpi_rs_dump_byte_list(u16 length, u8 *data);
 
 static void acpi_rs_dump_word_list(u16 length, u16 *data);
@@ -79,7 +86,10 @@ static void acpi_rs_dump_word_list(u16 length, u16 *data);
 static void acpi_rs_dump_dword_list(u8 length, u32 *data);
 
 static void acpi_rs_dump_short_byte_list(u8 length, u8 *data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void
 acpi_rs_dump_resource_source(struct acpi_resource_source *resource_source);
@@ -89,6 +99,7 @@ static void acpi_rs_dump_address_common(union acpi_resource_data *resource);
 static void
 acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table);
 
+<<<<<<< HEAD
 #define ACPI_RSD_OFFSET(f)          (u8) ACPI_OFFSET (union acpi_resource_data,f)
 #define ACPI_PRT_OFFSET(f)          (u8) ACPI_OFFSET (struct acpi_pci_routing_table,f)
 #define ACPI_RSD_TABLE_SIZE(name)   (sizeof(name) / sizeof (struct acpi_rsdump_info))
@@ -496,15 +507,26 @@ static struct acpi_rsdump_info acpi_rs_dump_prt[5] = {
 	{ACPI_RSD_UINT32, ACPI_PRT_OFFSET(source_index), "Source Index", NULL}
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_rs_dump_descriptor
  *
+<<<<<<< HEAD
  * PARAMETERS:  Resource
  *
  * RETURN:      None
  *
  * DESCRIPTION:
+=======
+ * PARAMETERS:  resource            - Buffer containing the resource
+ *              table               - Table entry to decode the resource
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Dump a resource descriptor based on a dump table entry.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
@@ -538,11 +560,19 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			/* Strings */
 
 		case ACPI_RSD_LITERAL:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_string(name,
 					   ACPI_CAST_PTR(char, table->pointer));
 			break;
 
 		case ACPI_RSD_STRING:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_string(name, ACPI_CAST_PTR(char, target));
 			break;
 
@@ -550,8 +580,12 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 
 		case ACPI_RSD_UINT8:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			acpi_rs_out_integer8(name, ACPI_GET8(target));
 =======
+=======
+
+>>>>>>> refs/remotes/origin/master
 			if (table->pointer) {
 				acpi_rs_out_string(name, ACPI_CAST_PTR(char,
 								       table->
@@ -560,24 +594,43 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			} else {
 				acpi_rs_out_integer8(name, ACPI_GET8(target));
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			break;
 
 		case ACPI_RSD_UINT16:
+=======
+			break;
+
+		case ACPI_RSD_UINT16:
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_integer16(name, ACPI_GET16(target));
 			break;
 
 		case ACPI_RSD_UINT32:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_integer32(name, ACPI_GET32(target));
 			break;
 
 		case ACPI_RSD_UINT64:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_integer64(name, ACPI_GET64(target));
 			break;
 
 			/* Flags: 1-bit and 2-bit flags supported */
 
 		case ACPI_RSD_1BITFLAG:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_string(name, ACPI_CAST_PTR(char,
 							       table->
 							       pointer[*target &
@@ -585,6 +638,10 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			break;
 
 		case ACPI_RSD_2BITFLAG:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_string(name, ACPI_CAST_PTR(char,
 							       table->
 							       pointer[*target &
@@ -592,15 +649,23 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case ACPI_RSD_3BITFLAG:
+=======
+		case ACPI_RSD_3BITFLAG:
+
+>>>>>>> refs/remotes/origin/master
 			acpi_rs_out_string(name, ACPI_CAST_PTR(char,
 							       table->
 							       pointer[*target &
 								       0x07]));
 			break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case ACPI_RSD_SHORTLIST:
 			/*
 			 * Short byte list (single line output) for DMA and IRQ resources
@@ -614,7 +679,10 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case ACPI_RSD_SHORTLISTX:
 			/*
 			 * Short byte list (single line output) for GPIO vendor data
@@ -629,7 +697,10 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			}
 			break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case ACPI_RSD_LONGLIST:
 			/*
 			 * Long byte list for Vendor resource data
@@ -655,7 +726,10 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case ACPI_RSD_WORDLIST:
 			/*
 			 * Word list for GPIO Pin Table
@@ -668,7 +742,10 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			}
 			break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case ACPI_RSD_ADDRESS:
 			/*
 			 * Common flags for all Address resources
@@ -682,12 +759,21 @@ acpi_rs_dump_descriptor(void *resource, struct acpi_rsdump_info *table)
 			/*
 			 * Optional resource_source for Address resources
 			 */
+<<<<<<< HEAD
 			acpi_rs_dump_resource_source(ACPI_CAST_PTR(struct
+=======
+			acpi_rs_dump_resource_source(ACPI_CAST_PTR
+						     (struct
+>>>>>>> refs/remotes/origin/master
 								   acpi_resource_source,
 								   target));
 			break;
 
 		default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			acpi_os_printf("**** Invalid table opcode [%X] ****\n",
 				       table->opcode);
 			return;
@@ -731,7 +817,11 @@ acpi_rs_dump_resource_source(struct acpi_resource_source *resource_source)
  *
  * FUNCTION:    acpi_rs_dump_address_common
  *
+<<<<<<< HEAD
  * PARAMETERS:  Resource        - Pointer to an internal resource descriptor
+=======
+ * PARAMETERS:  resource        - Pointer to an internal resource descriptor
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -793,8 +883,14 @@ void acpi_rs_dump_resource_list(struct acpi_resource *resource_list)
 
 	ACPI_FUNCTION_ENTRY();
 
+<<<<<<< HEAD
 	if (!(acpi_dbg_level & ACPI_LV_RESOURCES)
 	    || !(_COMPONENT & acpi_dbg_layer)) {
+=======
+	/* Check if debug output enabled */
+
+	if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_RESOURCES, _COMPONENT)) {
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -814,6 +910,7 @@ void acpi_rs_dump_resource_list(struct acpi_resource *resource_list)
 			return;
 		}
 
+<<<<<<< HEAD
 		/* Dump the resource descriptor */
 
 <<<<<<< HEAD
@@ -826,6 +923,18 @@ void acpi_rs_dump_resource_list(struct acpi_resource *resource_list)
 		    ACPI_ADD_PTR(struct acpi_resource, resource_list,
 				 resource_list->length);
 =======
+=======
+		/* Sanity check the length. It must not be zero, or we loop forever */
+
+		if (!resource_list->length) {
+			acpi_os_printf
+			    ("Invalid zero length descriptor in resource list\n");
+			return;
+		}
+
+		/* Dump the resource descriptor */
+
+>>>>>>> refs/remotes/origin/master
 		if (type == ACPI_RESOURCE_TYPE_SERIAL_BUS) {
 			acpi_rs_dump_descriptor(&resource_list->data,
 						acpi_gbl_dump_serial_bus_dispatch
@@ -840,7 +949,10 @@ void acpi_rs_dump_resource_list(struct acpi_resource *resource_list)
 		/* Point to the next resource structure */
 
 		resource_list = ACPI_NEXT_RESOURCE(resource_list);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Exit when END_TAG descriptor is reached */
 
@@ -866,8 +978,14 @@ void acpi_rs_dump_irq_list(u8 * route_table)
 
 	ACPI_FUNCTION_ENTRY();
 
+<<<<<<< HEAD
 	if (!(acpi_dbg_level & ACPI_LV_RESOURCES)
 	    || !(_COMPONENT & acpi_dbg_layer)) {
+=======
+	/* Check if debug output enabled */
+
+	if (!ACPI_IS_DEBUG_ENABLED(ACPI_LV_RESOURCES, _COMPONENT)) {
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -889,8 +1007,13 @@ void acpi_rs_dump_irq_list(u8 * route_table)
  *
  * FUNCTION:    acpi_rs_out*
  *
+<<<<<<< HEAD
  * PARAMETERS:  Title       - Name of the resource field
  *              Value       - Value of the resource field
+=======
+ * PARAMETERS:  title       - Name of the resource field
+ *              value       - Value of the resource field
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -937,8 +1060,13 @@ static void acpi_rs_out_title(char *title)
  *
  * FUNCTION:    acpi_rs_dump*List
  *
+<<<<<<< HEAD
  * PARAMETERS:  Length      - Number of elements in the list
  *              Data        - Start of the list
+=======
+ * PARAMETERS:  length      - Number of elements in the list
+ *              data        - Start of the list
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -975,7 +1103,10 @@ static void acpi_rs_dump_dword_list(u8 length, u32 * data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void acpi_rs_dump_word_list(u16 length, u16 *data)
 {
 	u16 i;
@@ -985,5 +1116,8 @@ static void acpi_rs_dump_word_list(u16 length, u16 *data)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

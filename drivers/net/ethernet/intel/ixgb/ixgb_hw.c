@@ -32,6 +32,10 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+<<<<<<< HEAD
+=======
+#include <linux/pci_ids.h>
+>>>>>>> refs/remotes/origin/master
 #include "ixgb_hw.h"
 #include "ixgb_ids.h"
 
@@ -96,7 +100,11 @@ static u32 ixgb_mac_reset(struct ixgb_hw *hw)
 	ASSERT(!(ctrl_reg & IXGB_CTRL0_RST));
 #endif
 
+<<<<<<< HEAD
 	if (hw->subsystem_vendor_id == SUN_SUBVENDOR_ID) {
+=======
+	if (hw->subsystem_vendor_id == PCI_VENDOR_ID_SUN) {
+>>>>>>> refs/remotes/origin/master
 		ctrl_reg =  /* Enable interrupt from XFP and SerDes */
 			   IXGB_CTRL1_GPI0_EN |
 			   IXGB_CTRL1_SDP6_DIR |
@@ -271,7 +279,11 @@ ixgb_identify_phy(struct ixgb_hw *hw)
 	}
 
 	/* update phy type for sun specific board */
+<<<<<<< HEAD
 	if (hw->subsystem_vendor_id == SUN_SUBVENDOR_ID)
+=======
+	if (hw->subsystem_vendor_id == PCI_VENDOR_ID_SUN)
+>>>>>>> refs/remotes/origin/master
 		phy_type = ixgb_phy_type_bcm;
 
 	return phy_type;

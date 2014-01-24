@@ -9,6 +9,7 @@
 #ifndef _ASM_PTRACE_H
 #define _ASM_PTRACE_H
 
+<<<<<<< HEAD
 /* 0 - 31 are integer registers, 32 - 63 are fp registers.  */
 #define FPR_BASE	32
 #define PC		64
@@ -21,6 +22,14 @@
 #define DSP_BASE	71		/* 3 more hi / lo register pairs */
 #define DSP_CONTROL	77
 #define ACX		78
+=======
+
+#include <linux/compiler.h>
+#include <linux/linkage.h>
+#include <linux/types.h>
+#include <asm/isadep.h>
+#include <uapi/asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This struct defines the way the registers are stored on the stack during a
@@ -49,6 +58,7 @@ struct pt_regs {
 	unsigned long cp0_tcstatus;
 #endif /* CONFIG_MIPS_MT_SMTC */
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
+<<<<<<< HEAD
 	unsigned long long mpl[3];        /* MTM{0,1,2} */
 	unsigned long long mtp[3];        /* MTP{0,1,2} */
 #endif
@@ -118,6 +128,12 @@ struct pt_watch_regs {
 #include <linux/linkage.h>
 #include <linux/types.h>
 #include <asm/isadep.h>
+=======
+	unsigned long long mpl[3];	  /* MTM{0,1,2} */
+	unsigned long long mtp[3];	  /* MTP{0,1,2} */
+#endif
+} __aligned(8);
+>>>>>>> refs/remotes/origin/master
 
 struct task_struct;
 
@@ -138,8 +154,11 @@ extern int ptrace_set_watch_regs(struct task_struct *child,
 #define user_mode(regs) (((regs)->cp0_status & KU_MASK) == KU_USER)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define regs_return_value(_regs) ((_regs)->regs[2])
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int is_syscall_success(struct pt_regs *regs)
 {
 	return !regs->regs[7];
@@ -153,7 +172,10 @@ static inline long regs_return_value(struct pt_regs *regs)
 		return -regs->regs[2];
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define instruction_pointer(regs) ((regs)->cp0_epc)
 #define profile_pc(regs) instruction_pointer(regs)
 
@@ -161,10 +183,14 @@ extern asmlinkage void syscall_trace_enter(struct pt_regs *regs);
 extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern NORET_TYPE void die(const char *, struct pt_regs *) ATTRIB_NORET;
 =======
 extern void die(const char *, struct pt_regs *) __noreturn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void die(const char *, struct pt_regs *) __noreturn;
+>>>>>>> refs/remotes/origin/master
 
 static inline void die_if_kernel(const char *str, struct pt_regs *regs)
 {
@@ -172,6 +198,27 @@ static inline void die_if_kernel(const char *str, struct pt_regs *regs)
 		die(str, regs);
 }
 
+<<<<<<< HEAD
 #endif
+=======
+#define current_pt_regs()						\
+({									\
+	unsigned long sp = (unsigned long)__builtin_frame_address(0);	\
+	(struct pt_regs *)((sp | (THREAD_SIZE - 1)) + 1 - 32) - 1;	\
+})
+
+/* Helpers for working with the user stack pointer */
+
+static inline unsigned long user_stack_pointer(struct pt_regs *regs)
+{
+	return regs->regs[29];
+}
+
+static inline void user_stack_pointer_set(struct pt_regs *regs,
+	unsigned long val)
+{
+	regs->regs[29] = val;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_PTRACE_H */

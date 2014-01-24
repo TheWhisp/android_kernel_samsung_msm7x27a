@@ -43,9 +43,13 @@
 #include <linux/spinlock.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/ioctls.h>
 #include <asm/uaccess.h>
@@ -267,10 +271,14 @@ static void irda_task_timer_expired(void *data)
 	IRDA_DEBUG(2, "%s()\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	task = (struct irda_task *) data;
 =======
 	task = data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	task = data;
+>>>>>>> refs/remotes/origin/master
 
 	irda_task_kick(task);
 }

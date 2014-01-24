@@ -21,9 +21,13 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -31,7 +35,11 @@
 #include <linux/spi/spi.h>
 #include <linux/spi/at73c213.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio_keys.h>
 #include <linux/input.h>
 
@@ -44,6 +52,7 @@
 #include <asm/mach/irq.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/board.h>
 <<<<<<< HEAD
 #include <mach/gpio.h>
@@ -53,6 +62,14 @@
 #include <mach/at91_shdwc.h>
 #include <mach/system_rev.h>
 
+=======
+#include <mach/at91sam9_smc.h>
+#include <mach/system_rev.h>
+
+#include "at91_aic.h"
+#include "at91_shdwc.h"
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "sam9_smc.h"
 #include "generic.h"
 
@@ -60,6 +77,7 @@
 static void __init ek_init_early(void)
 {
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	at91sam9260_initialize(18432000);
 =======
@@ -90,16 +108,26 @@ static void __init ek_init_irq(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_initialize(18432000);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * USB Host port
  */
 static struct at91_usbh_data __initdata ek_usbh_data = {
 	.ports		= 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.vbus_pin	= {-EINVAL, -EINVAL},
 	.overcurrent_pin= {-EINVAL, -EINVAL},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -108,10 +136,14 @@ static struct at91_usbh_data __initdata ek_usbh_data = {
 static struct at91_udc_data __initdata ek_udc_data = {
 	.vbus_pin	= AT91_PIN_PC5,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pullup_pin	= 0,		/* pull-up driven by UDC */
 =======
 	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -148,7 +180,11 @@ static void __init at73c213_set_clk(struct at73c213_board_info *info) {}
  * SPI devices.
  */
 static struct spi_board_info ek_spi_devices[] = {
+<<<<<<< HEAD
 #if !defined(CONFIG_MMC_AT91)
+=======
+#if !IS_ENABLED(CONFIG_MMC_ATMELMCI)
+>>>>>>> refs/remotes/origin/master
 	{	/* DataFlash chip */
 		.modalias	= "mtd_dataflash",
 		.chip_select	= 1,
@@ -181,10 +217,14 @@ static struct spi_board_info ek_spi_devices[] = {
  * MACB Ethernet device
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct at91_eth_data __initdata ek_macb_data = {
 =======
 static struct macb_platform_data __initdata ek_macb_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data __initdata ek_macb_data = {
+>>>>>>> refs/remotes/origin/master
 	.phy_irq_pin	= AT91_PIN_PA7,
 	.is_rmii	= 1,
 };
@@ -207,6 +247,7 @@ static struct mtd_partition __initdata ek_nand_partition[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct mtd_partition * __init nand_partitions(int size, int *num_partitions)
 {
 	*num_partitions = ARRAY_SIZE(ek_nand_partition);
@@ -221,6 +262,8 @@ static struct atmel_nand_data __initdata ek_nand_data = {
 	.enable_pin	= AT91_PIN_PC14,
 	.partition_info	= nand_partitions,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct atmel_nand_data __initdata ek_nand_data = {
 	.ale		= 21,
 	.cle		= 22,
@@ -231,7 +274,10 @@ static struct atmel_nand_data __initdata ek_nand_data = {
 	.on_flash_bbt	= 1,
 	.parts		= ek_nand_partition,
 	.num_parts	= ARRAY_SIZE(ek_nand_partition),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct sam9_smc_config __initdata ek_nand_smc_config = {
@@ -263,10 +309,14 @@ static void __init ek_add_device_nand(void)
 
 	/* configure chip-select 3 (NAND) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sam9_smc_configure(3, &ek_nand_smc_config);
 =======
 	sam9_smc_configure(0, 3, &ek_nand_smc_config);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sam9_smc_configure(0, 3, &ek_nand_smc_config);
+>>>>>>> refs/remotes/origin/master
 
 	at91_add_device_nand(&ek_nand_data);
 }
@@ -275,6 +325,7 @@ static void __init ek_add_device_nand(void)
 /*
  * MCI (SD/MMC)
  */
+<<<<<<< HEAD
 static struct at91_mmc_data __initdata ek_mmc_data = {
 	.slot_b		= 1,
 	.wire4		= 1,
@@ -287,6 +338,14 @@ static struct at91_mmc_data __initdata ek_mmc_data = {
 	.wp_pin		= -EINVAL,
 	.vcc_pin	= -EINVAL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct mci_platform_data __initdata ek_mci0_data = {
+	.slot[1] = {
+		.bus_width	= 4,
+		.detect_pin	= -EINVAL,
+		.wp_pin		= -EINVAL,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -377,6 +436,19 @@ static void __init ek_add_device_buttons(void) {}
 static void __init ek_board_init(void)
 {
 	/* Serial */
+<<<<<<< HEAD
+=======
+	/* DBGU on ttyS0. (Rx & Tx only) */
+	at91_register_uart(0, 0, 0);
+
+	/* USART0 on ttyS1. (Rx, Tx, CTS, RTS, DTR, DSR, DCD, RI) */
+	at91_register_uart(AT91SAM9260_ID_US0, 1, ATMEL_UART_CTS | ATMEL_UART_RTS
+			   | ATMEL_UART_DTR | ATMEL_UART_DSR | ATMEL_UART_DCD
+			   | ATMEL_UART_RI);
+
+	/* USART1 on ttyS2. (Rx, Tx, RTS, CTS) */
+	at91_register_uart(AT91SAM9260_ID_US1, 2, ATMEL_UART_CTS | ATMEL_UART_RTS);
+>>>>>>> refs/remotes/origin/master
 	at91_add_device_serial();
 	/* USB Host */
 	at91_add_device_usbh(&ek_usbh_data);
@@ -389,7 +461,11 @@ static void __init ek_board_init(void)
 	/* Ethernet */
 	at91_add_device_eth(&ek_macb_data);
 	/* MMC */
+<<<<<<< HEAD
 	at91_add_device_mmc(0, &ek_mmc_data);
+=======
+	at91_add_device_mci(0, &ek_mci0_data);
+>>>>>>> refs/remotes/origin/master
 	/* I2C */
 	at91_add_device_i2c(ek_i2c_devices, ARRAY_SIZE(ek_i2c_devices));
 	/* SSC (to AT73C213) */
@@ -403,6 +479,7 @@ static void __init ek_board_init(void)
 
 MACHINE_START(AT91SAM9260EK, "Atmel AT91SAM9260-EK")
 	/* Maintainer: Atmel */
+<<<<<<< HEAD
 	.timer		= &at91sam926x_timer,
 <<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
@@ -413,5 +490,12 @@ MACHINE_START(AT91SAM9260EK, "Atmel AT91SAM9260-EK")
 	.init_early	= ek_init_early,
 	.init_irq	= at91_init_irq_default,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= at91sam926x_pit_init,
+	.map_io		= at91_map_io,
+	.handle_irq	= at91_aic_handle_irq,
+	.init_early	= ek_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= ek_board_init,
 MACHINE_END

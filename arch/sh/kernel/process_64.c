@@ -31,17 +31,28 @@
 #include <asm/mmu_context.h>
 #include <asm/fpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 struct task_struct *last_task_used_math = NULL;
+=======
+#include <asm/switch_to.h>
+
+struct task_struct *last_task_used_math = NULL;
+struct pt_regs fake_swapper_regs = { 0, };
+>>>>>>> refs/remotes/origin/master
 
 void show_regs(struct pt_regs *regs)
 {
 	unsigned long long ah, al, bh, bl, ch, cl;
 
 	printk("\n");
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_DEFAULT);
+>>>>>>> refs/remotes/origin/master
 
 	ah = (regs->pc) >> 32;
 	al = (regs->pc) & 0xffffffff;
@@ -287,6 +298,7 @@ void show_regs(struct pt_regs *regs)
 }
 
 /*
+<<<<<<< HEAD
  * Create a kernel thread
  */
 <<<<<<< HEAD
@@ -324,6 +336,8 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 EXPORT_SYMBOL(kernel_thread);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Free current thread data structures etc..
  */
 void exit_thread(void)
@@ -407,26 +421,57 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu)
 EXPORT_SYMBOL(dump_fpu);
 
 asmlinkage void ret_from_fork(void);
+<<<<<<< HEAD
 
 int copy_thread(unsigned long clone_flags, unsigned long usp,
 		unsigned long unused,
 		struct task_struct *p, struct pt_regs *regs)
+=======
+asmlinkage void ret_from_kernel_thread(void);
+
+int copy_thread(unsigned long clone_flags, unsigned long usp,
+		unsigned long arg, struct task_struct *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pt_regs *childregs;
 
 #ifdef CONFIG_SH_FPU
+<<<<<<< HEAD
 	if(last_task_used_math == current) {
+=======
+	/* can't happen for a kernel thread */
+	if (last_task_used_math == current) {
+>>>>>>> refs/remotes/origin/master
 		enable_fpu();
 		save_fpu(current);
 		disable_fpu();
 		last_task_used_math = NULL;
+<<<<<<< HEAD
 		regs->sr |= SR_FD;
+=======
+		current_pt_regs()->sr |= SR_FD;
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 	/* Copy from sh version */
 	childregs = (struct pt_regs *)(THREAD_SIZE + task_stack_page(p)) - 1;
+<<<<<<< HEAD
 
 	*childregs = *regs;
+=======
+	p->thread.sp = (unsigned long) childregs;
+
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		childregs->regs[2] = (unsigned long)arg;
+		childregs->regs[3] = (unsigned long)usp;
+		childregs->sr = (1 << 30); /* not user_mode */
+		childregs->sr |= SR_FD; /* Invalidate FPU flag */
+		p->thread.pc = (unsigned long) ret_from_kernel_thread;
+		return 0;
+	}
+	*childregs = *current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Sign extend the edited stack.
@@ -434,6 +479,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	 * 32-bit wide and context switch must take care
 	 * of NEFF sign extension.
 	 */
+<<<<<<< HEAD
 	if (user_mode(regs)) {
 		childregs->regs[15] = neff_sign_extend(usp);
 		p->thread.uregs = childregs;
@@ -442,16 +488,25 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 			neff_sign_extend((unsigned long)task_stack_page(p) +
 					 THREAD_SIZE);
 	}
+=======
+	if (usp)
+		childregs->regs[15] = neff_sign_extend(usp);
+	p->thread.uregs = childregs;
+>>>>>>> refs/remotes/origin/master
 
 	childregs->regs[9] = 0; /* Set return value for child */
 	childregs->sr |= SR_FD; /* Invalidate FPU flag */
 
+<<<<<<< HEAD
 	p->thread.sp = (unsigned long) childregs;
+=======
+>>>>>>> refs/remotes/origin/master
 	p->thread.pc = (unsigned long) ret_from_fork;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 asmlinkage int sys_fork(unsigned long r2, unsigned long r3,
 			unsigned long r4, unsigned long r5,
 			unsigned long r6, unsigned long r7,
@@ -513,6 +568,8 @@ out:
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FRAME_POINTER
 static int in_sh64_switch_to(unsigned long pc)
 {

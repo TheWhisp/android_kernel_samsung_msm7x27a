@@ -12,9 +12,13 @@
 #include <linux/tifm.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "tifm_7xx1"
 #define DRIVER_VERSION "0.8"
@@ -359,8 +363,15 @@ static int tifm_7xx1_probe(struct pci_dev *dev,
 	pci_set_drvdata(dev, fm);
 
 	fm->addr = pci_ioremap_bar(dev, 0);
+<<<<<<< HEAD
 	if (!fm->addr)
 		goto err_out_free;
+=======
+	if (!fm->addr) {
+		rc = -ENODEV;
+		goto err_out_free;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	rc = request_irq(dev->irq, tifm_7xx1_isr, IRQF_SHARED, DRIVER_NAME, fm);
 	if (rc)
@@ -381,7 +392,10 @@ err_out_irq:
 err_out_unmap:
 	iounmap(fm->addr);
 err_out_free:
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	tifm_free_adapter(fm);
 err_out_int:
 	pci_intx(dev, 0);
@@ -408,8 +422,11 @@ static void tifm_7xx1_remove(struct pci_dev *dev)
 	for (cnt = 0; cnt < fm->num_sockets; cnt++)
 		tifm_7xx1_sock_power_off(tifm_7xx1_sock_addr(fm->addr, cnt));
 
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(fm->addr);
 	pci_intx(dev, 0);
 	pci_release_regions(dev);
@@ -437,6 +454,7 @@ static struct pci_driver tifm_7xx1_driver = {
 	.resume = tifm_7xx1_resume,
 };
 
+<<<<<<< HEAD
 static int __init tifm_7xx1_init(void)
 {
 	return pci_register_driver(&tifm_7xx1_driver);
@@ -447,11 +465,17 @@ static void __exit tifm_7xx1_exit(void)
 	pci_unregister_driver(&tifm_7xx1_driver);
 }
 
+=======
+module_pci_driver(tifm_7xx1_driver);
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Alex Dubov");
 MODULE_DESCRIPTION("TI FlashMedia host driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, tifm_7xx1_pci_tbl);
 MODULE_VERSION(DRIVER_VERSION);
+<<<<<<< HEAD
 
 module_init(tifm_7xx1_init);
 module_exit(tifm_7xx1_exit);
+=======
+>>>>>>> refs/remotes/origin/master

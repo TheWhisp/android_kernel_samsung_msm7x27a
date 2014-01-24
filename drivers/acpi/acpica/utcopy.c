@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -182,7 +186,10 @@ acpi_ut_copy_isimple_to_esimple(union acpi_operand_object *internal_object,
 
 		switch (internal_object->reference.class) {
 		case ACPI_REFCLASS_NAME:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * For namepath, return the object handle ("reference")
 			 * We are referring to the namespace node
@@ -268,7 +275,10 @@ acpi_ut_copy_ielement_to_eelement(u8 object_type,
 
 	switch (object_type) {
 	case ACPI_COPY_TYPE_SIMPLE:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * This is a simple or null object
 		 */
@@ -282,7 +292,10 @@ acpi_ut_copy_ielement_to_eelement(u8 object_type,
 		break;
 
 	case ACPI_COPY_TYPE_PACKAGE:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Build the package object
 		 */
@@ -308,6 +321,10 @@ acpi_ut_copy_ielement_to_eelement(u8 object_type,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return (AE_BAD_PARAMETER);
 	}
 
@@ -321,7 +338,11 @@ acpi_ut_copy_ielement_to_eelement(u8 object_type,
  * FUNCTION:    acpi_ut_copy_ipackage_to_epackage
  *
  * PARAMETERS:  internal_object     - Pointer to the object we are returning
+<<<<<<< HEAD
  *              Buffer              - Where the object is returned
+=======
+ *              buffer              - Where the object is returned
+>>>>>>> refs/remotes/origin/master
  *              space_used          - Where the object length is returned
  *
  * RETURN:      Status
@@ -485,6 +506,10 @@ acpi_ut_copy_esimple_to_isimple(union acpi_object *external_object,
 		return_ACPI_STATUS(AE_OK);
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/* All other types are not supported */
 
 		ACPI_ERROR((AE_INFO,
@@ -548,14 +573,24 @@ acpi_ut_copy_esimple_to_isimple(union acpi_object *external_object,
 		break;
 
 	default:
+<<<<<<< HEAD
 		/* Other types can't get here */
+=======
+
+		/* Other types can't get here */
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
 	*ret_internal_object = internal_object;
 	return_ACPI_STATUS(AE_OK);
 
+<<<<<<< HEAD
       error_exit:
+=======
+error_exit:
+>>>>>>> refs/remotes/origin/master
 	acpi_ut_remove_reference(internal_object);
 	return_ACPI_STATUS(AE_NO_MEMORY);
 }
@@ -789,7 +824,11 @@ acpi_ut_copy_simple_object(union acpi_operand_object *source_desc,
 
 		status = acpi_os_create_mutex(&dest_desc->mutex.os_mutex);
 		if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 			return status;
+=======
+			return (status);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -799,12 +838,22 @@ acpi_ut_copy_simple_object(union acpi_operand_object *source_desc,
 						  &dest_desc->event.
 						  os_semaphore);
 		if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 			return status;
+=======
+			return (status);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	default:
+<<<<<<< HEAD
 		/* Nothing to do for other simple objects */
+=======
+
+		/* Nothing to do for other simple objects */
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -872,7 +921,10 @@ acpi_ut_copy_ielement_to_ielement(u8 object_type,
 		break;
 
 	case ACPI_COPY_TYPE_PACKAGE:
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * This object is a package - go down another nesting level
 		 * Create and build the package object
@@ -895,12 +947,20 @@ acpi_ut_copy_ielement_to_ielement(u8 object_type,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return (AE_BAD_PARAMETER);
 	}
 
 	return (status);
 
+<<<<<<< HEAD
       error_exit:
+=======
+error_exit:
+>>>>>>> refs/remotes/origin/master
 	acpi_ut_remove_reference(target_object);
 	return (status);
 }

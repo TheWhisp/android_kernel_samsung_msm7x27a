@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * spidev.c -- simple synchronous userspace interface to SPI devices
 =======
  * Simple synchronous userspace interface to SPI devices
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Simple synchronous userspace interface to SPI devices
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2006 SWAPP
  *	Andrea Paterniani <a.paterniani@swapp-eng.it>
@@ -35,11 +39,20 @@
 #include <linux/mutex.h>
 #include <linux/slab.h>
 #include <linux/compat.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/spi/spi.h>
 #include <linux/spi/spidev.h>
 
+<<<<<<< HEAD
 #include <asm/uaccess.h>
+=======
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -87,7 +100,10 @@ struct spidev_data {
 	struct mutex		buf_lock;
 	unsigned		users;
 	u8			*buffer;
+<<<<<<< HEAD
 	u8			*bufferrx;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static LIST_HEAD(device_list);
@@ -97,6 +113,7 @@ static unsigned bufsiz = 4096;
 module_param(bufsiz, uint, S_IRUGO);
 MODULE_PARM_DESC(bufsiz, "data bytes in biggest supported SPI message");
 
+<<<<<<< HEAD
 /*
  * This can be used for testing the controller, given the busnum and the
  * cs required to use. If those parameters are used, spidev is
@@ -121,6 +138,8 @@ MODULE_PARM_DESC(spimode, "mode of the desired device");
 
 static struct spi_device *spi;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /*
@@ -233,9 +252,15 @@ spidev_write(struct file *filp, const char __user *buf,
 
 	mutex_lock(&spidev->buf_lock);
 	missing = copy_from_user(spidev->buffer, buf, count);
+<<<<<<< HEAD
 	if (missing == 0) {
 		status = spidev_sync_write(spidev, count);
 	} else
+=======
+	if (missing == 0)
+		status = spidev_sync_write(spidev, count);
+	else
+>>>>>>> refs/remotes/origin/master
 		status = -EFAULT;
 	mutex_unlock(&spidev->buf_lock);
 
@@ -250,7 +275,11 @@ static int spidev_message(struct spidev_data *spidev,
 	struct spi_transfer	*k_tmp;
 	struct spi_ioc_transfer *u_tmp;
 	unsigned		n, total;
+<<<<<<< HEAD
 	u8			*buf, *bufrx;
+=======
+	u8			*buf;
+>>>>>>> refs/remotes/origin/master
 	int			status = -EFAULT;
 
 	spi_message_init(&msg);
@@ -263,7 +292,10 @@ static int spidev_message(struct spidev_data *spidev,
 	 * to initialize a kernel version of the same transfer.
 	 */
 	buf = spidev->buffer;
+<<<<<<< HEAD
 	bufrx = spidev->bufferrx;
+=======
+>>>>>>> refs/remotes/origin/master
 	total = 0;
 	for (n = n_xfers, k_tmp = k_xfers, u_tmp = u_xfers;
 			n;
@@ -277,7 +309,11 @@ static int spidev_message(struct spidev_data *spidev,
 		}
 
 		if (u_tmp->rx_buf) {
+<<<<<<< HEAD
 			k_tmp->rx_buf = bufrx;
+=======
+			k_tmp->rx_buf = buf;
+>>>>>>> refs/remotes/origin/master
 			if (!access_ok(VERIFY_WRITE, (u8 __user *)
 						(uintptr_t) u_tmp->rx_buf,
 						u_tmp->len))
@@ -291,7 +327,10 @@ static int spidev_message(struct spidev_data *spidev,
 				goto done;
 		}
 		buf += k_tmp->len;
+<<<<<<< HEAD
 		bufrx += k_tmp->len;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		k_tmp->cs_change = !!u_tmp->cs_change;
 		k_tmp->bits_per_word = u_tmp->bits_per_word;
@@ -316,7 +355,11 @@ static int spidev_message(struct spidev_data *spidev,
 		goto done;
 
 	/* copy any rx data out of bounce buffer */
+<<<<<<< HEAD
 	buf = spidev->bufferrx;
+=======
+	buf = spidev->buffer;
+>>>>>>> refs/remotes/origin/master
 	for (n = n_xfers, u_tmp = u_xfers; n; n--, u_tmp++) {
 		if (u_tmp->rx_buf) {
 			if (__copy_to_user((u8 __user *)
@@ -534,6 +577,7 @@ static int spidev_open(struct inode *inode, struct file *filp)
 				status = -ENOMEM;
 			}
 		}
+<<<<<<< HEAD
 		if (!spidev->bufferrx) {
 			spidev->bufferrx = kmalloc(bufsiz, GFP_KERNEL);
 			if (!spidev->bufferrx) {
@@ -543,6 +587,8 @@ static int spidev_open(struct inode *inode, struct file *filp)
 				status = -ENOMEM;
 			}
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 		if (status == 0) {
 			spidev->users++;
 			filp->private_data = spidev;
@@ -571,8 +617,11 @@ static int spidev_release(struct inode *inode, struct file *filp)
 
 		kfree(spidev->buffer);
 		spidev->buffer = NULL;
+<<<<<<< HEAD
 		kfree(spidev->bufferrx);
 		spidev->bufferrx = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* ... after we unbound from the underlying device? */
 		spin_lock_irq(&spidev->spi_lock);
@@ -613,7 +662,11 @@ static struct class *spidev_class;
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit spidev_probe(struct spi_device *spi)
+=======
+static int spidev_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spidev_data	*spidev;
 	int			status;
@@ -643,7 +696,11 @@ static int __devinit spidev_probe(struct spi_device *spi)
 		dev = device_create(spidev_class, &spi->dev, spidev->devt,
 				    spidev, "spidev%d.%d",
 				    spi->master->bus_num, spi->chip_select);
+<<<<<<< HEAD
 		status = IS_ERR(dev) ? PTR_ERR(dev) : 0;
+=======
+		status = PTR_ERR_OR_ZERO(dev);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_dbg(&spi->dev, "no minor number available!\n");
 		status = -ENODEV;
@@ -662,14 +719,21 @@ static int __devinit spidev_probe(struct spi_device *spi)
 	return status;
 }
 
+<<<<<<< HEAD
 static int __devexit spidev_remove(struct spi_device *spi)
+=======
+static int spidev_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spidev_data	*spidev = spi_get_drvdata(spi);
 
 	/* make sure ops on existing fds can abort cleanly */
 	spin_lock_irq(&spidev->spi_lock);
 	spidev->spi = NULL;
+<<<<<<< HEAD
 	spi_set_drvdata(spi, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&spidev->spi_lock);
 
 	/* prevent new opens */
@@ -684,13 +748,30 @@ static int __devexit spidev_remove(struct spi_device *spi)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id spidev_dt_ids[] = {
+	{ .compatible = "rohm,dh2228fv" },
+	{},
+};
+
+MODULE_DEVICE_TABLE(of, spidev_dt_ids);
+
+>>>>>>> refs/remotes/origin/master
 static struct spi_driver spidev_spi_driver = {
 	.driver = {
 		.name =		"spidev",
 		.owner =	THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe =	spidev_probe,
 	.remove =	__devexit_p(spidev_remove),
+=======
+		.of_match_table = of_match_ptr(spidev_dt_ids),
+	},
+	.probe =	spidev_probe,
+	.remove =	spidev_remove,
+>>>>>>> refs/remotes/origin/master
 
 	/* NOTE:  suspend/resume methods are not necessary here.
 	 * We don't do anything except pass the requests to/from
@@ -716,6 +797,7 @@ static int __init spidev_init(void)
 
 	spidev_class = class_create(THIS_MODULE, "spidev");
 	if (IS_ERR(spidev_class)) {
+<<<<<<< HEAD
 		status = PTR_ERR(spidev_class);
 		goto error_class;
 	}
@@ -758,16 +840,30 @@ error_register:
 	class_destroy(spidev_class);
 error_class:
 	unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+=======
+		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+		return PTR_ERR(spidev_class);
+	}
+
+	status = spi_register_driver(&spidev_spi_driver);
+	if (status < 0) {
+		class_destroy(spidev_class);
+		unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);
+	}
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 module_init(spidev_init);
 
 static void __exit spidev_exit(void)
 {
+<<<<<<< HEAD
 	if (spi) {
 		spi_unregister_device(spi);
 		spi = NULL;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_unregister_driver(&spidev_spi_driver);
 	class_destroy(spidev_class);
 	unregister_chrdev(SPIDEV_MAJOR, spidev_spi_driver.driver.name);

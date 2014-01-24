@@ -22,7 +22,10 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/jiffies.h>
@@ -47,10 +50,14 @@ struct k8temp_data {
 
 	/* registers values */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 sensorsp;		/* sensor presence bits - SEL_CORE & SEL_PLACE */
 =======
 	u8 sensorsp;		/* sensor presence bits - SEL_CORE, SEL_PLACE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 sensorsp;		/* sensor presence bits - SEL_CORE, SEL_PLACE */
+>>>>>>> refs/remotes/origin/master
 	u32 temp[2][2];		/* core, place */
 	u8 swap_core_select;    /* meaning of SEL_CORE is inverted */
 	u32 temp_offset;
@@ -68,10 +75,14 @@ static struct k8temp_data *k8temp_update_device(struct device *dev)
 	    || time_after(jiffies, data->last_updated + HZ)) {
 		pci_read_config_byte(pdev, REG_TEMP, &tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tmp &= ~(SEL_PLACE | SEL_CORE);		/* Select sensor 0, core0 */
 =======
 		tmp &= ~(SEL_PLACE | SEL_CORE);	/* Select sensor 0, core0 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tmp &= ~(SEL_PLACE | SEL_CORE);	/* Select sensor 0, core0 */
+>>>>>>> refs/remotes/origin/master
 		pci_write_config_byte(pdev, REG_TEMP, tmp);
 		pci_read_config_dword(pdev, REG_TEMP, &data->temp[0][0]);
 
@@ -91,10 +102,14 @@ static struct k8temp_data *k8temp_update_device(struct device *dev)
 
 			if (data->sensorsp & SEL_PLACE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				tmp |= SEL_PLACE;	/* Select sensor 1, core1 */
 =======
 				tmp |= SEL_PLACE; /* Select sensor 1, core1 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				tmp |= SEL_PLACE; /* Select sensor 1, core1 */
+>>>>>>> refs/remotes/origin/master
 				pci_write_config_byte(pdev, REG_TEMP, tmp);
 				pci_read_config_dword(pdev, REG_TEMP,
 						      &data->temp[1][1]);
@@ -149,17 +164,25 @@ static SENSOR_DEVICE_ATTR_2(temp4_input, S_IRUGO, show_temp, NULL, 1, 1);
 static DEVICE_ATTR(name, S_IRUGO, show_name, NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id k8temp_ids[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(k8temp_ids) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id k8temp_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_K8_NB_MISC) },
 	{ 0 },
 };
 
 MODULE_DEVICE_TABLE(pci, k8temp_ids);
 
+<<<<<<< HEAD
 static int __devinit is_rev_g_desktop(u8 model)
+=======
+static int is_rev_g_desktop(u8 model)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 brandidx;
 
@@ -190,7 +213,11 @@ static int __devinit is_rev_g_desktop(u8 model)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit k8temp_probe(struct pci_dev *pdev,
+=======
+static int k8temp_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				  const struct pci_device_id *id)
 {
 	int err;
@@ -200,6 +227,7 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 	struct k8temp_data *data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct k8temp_data), GFP_KERNEL))) {
 =======
 	data = kzalloc(sizeof(struct k8temp_data), GFP_KERNEL);
@@ -208,16 +236,27 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct k8temp_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	model = boot_cpu_data.x86_model;
 	stepping = boot_cpu_data.x86_mask;
 
 	/* feature available since SH-C0, exclude older revisions */
+<<<<<<< HEAD
 	if (((model == 4) && (stepping == 0)) ||
 	    ((model == 5) && (stepping <= 1))) {
 		err = -ENODEV;
 		goto exit_free;
 	}
+=======
+	if ((model == 4 && stepping == 0) ||
+	    (model == 5 && stepping <= 1))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * AMD NPT family 0fh, i.e. RevF and RevG:
@@ -225,8 +264,13 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 	 */
 	if (model >= 0x40) {
 		data->swap_core_select = 1;
+<<<<<<< HEAD
 		dev_warn(&pdev->dev, "Temperature readouts might be wrong - "
 			 "check erratum #141\n");
+=======
+		dev_warn(&pdev->dev,
+			 "Temperature readouts might be wrong - check erratum #141\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -239,17 +283,25 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 
 	pci_read_config_byte(pdev, REG_TEMP, &scfg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	scfg &= ~(SEL_PLACE | SEL_CORE);		/* Select sensor 0, core0 */
 =======
 	scfg &= ~(SEL_PLACE | SEL_CORE);	/* Select sensor 0, core0 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scfg &= ~(SEL_PLACE | SEL_CORE);	/* Select sensor 0, core0 */
+>>>>>>> refs/remotes/origin/master
 	pci_write_config_byte(pdev, REG_TEMP, scfg);
 	pci_read_config_byte(pdev, REG_TEMP, &scfg);
 
 	if (scfg & (SEL_PLACE | SEL_CORE)) {
 		dev_err(&pdev->dev, "Configuration bit(s) stuck at 1!\n");
+<<<<<<< HEAD
 		err = -ENODEV;
 		goto exit_free;
+=======
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	scfg |= (SEL_PLACE | SEL_CORE);
@@ -264,10 +316,14 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 		pci_read_config_dword(pdev, REG_TEMP, &temp);
 		scfg |= SEL_CORE;	/* prepare for next selection */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!((temp >> 16) & 0xff))	/* if temp is 0 -49C is not likely */
 =======
 		if (!((temp >> 16) & 0xff)) /* if temp is 0 -49C is unlikely */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!((temp >> 16) & 0xff)) /* if temp is 0 -49C is unlikely */
+>>>>>>> refs/remotes/origin/master
 			data->sensorsp &= ~SEL_PLACE;
 	}
 
@@ -276,10 +332,14 @@ static int __devinit k8temp_probe(struct pci_dev *pdev,
 		pci_write_config_byte(pdev, REG_TEMP, scfg);
 		pci_read_config_dword(pdev, REG_TEMP, &temp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!((temp >> 16) & 0xff))	/* if temp is 0 -49C is not likely */
 =======
 		if (!((temp >> 16) & 0xff)) /* if temp is 0 -49C is unlikely */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!((temp >> 16) & 0xff)) /* if temp is 0 -49C is unlikely */
+>>>>>>> refs/remotes/origin/master
 			data->sensorsp &= ~SEL_CORE;
 	}
 
@@ -339,6 +399,7 @@ exit_remove:
 	device_remove_file(&pdev->dev,
 			   &sensor_dev_attr_temp4_input.dev_attr);
 	device_remove_file(&pdev->dev, &dev_attr_name);
+<<<<<<< HEAD
 exit_free:
 	pci_set_drvdata(pdev, NULL);
 	kfree(data);
@@ -347,6 +408,12 @@ exit:
 }
 
 static void __devexit k8temp_remove(struct pci_dev *pdev)
+=======
+	return err;
+}
+
+static void k8temp_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct k8temp_data *data = pci_get_drvdata(pdev);
 
@@ -360,14 +427,18 @@ static void __devexit k8temp_remove(struct pci_dev *pdev)
 	device_remove_file(&pdev->dev,
 			   &sensor_dev_attr_temp4_input.dev_attr);
 	device_remove_file(&pdev->dev, &dev_attr_name);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pci_driver k8temp_driver = {
 	.name = "k8temp",
 	.id_table = k8temp_ids,
 	.probe = k8temp_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(k8temp_remove),
 };
 
@@ -380,10 +451,19 @@ static void __exit k8temp_exit(void)
 {
 	pci_unregister_driver(&k8temp_driver);
 }
+=======
+	.remove = k8temp_remove,
+};
+
+module_pci_driver(k8temp_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Rudolf Marek <r.marek@assembler.cz>");
 MODULE_DESCRIPTION("AMD K8 core temperature monitor");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(k8temp_init)
 module_exit(k8temp_exit)
+=======
+>>>>>>> refs/remotes/origin/master

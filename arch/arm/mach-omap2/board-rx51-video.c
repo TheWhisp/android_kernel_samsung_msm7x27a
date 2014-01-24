@@ -16,10 +16,19 @@
 #include <linux/mm.h>
 #include <asm/mach-types.h>
 #include <video/omapdss.h>
+<<<<<<< HEAD
 #include <plat/vram.h>
 #include <plat/mcspi.h>
 
 #include <mach/board-rx51.h>
+=======
+#include <video/omap-panel-data.h>
+
+#include <linux/platform_data/spi-omap2-mcspi.h>
+
+#include "soc.h"
+#include "board-rx51.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "mux.h"
 
@@ -27,6 +36,7 @@
 
 #if defined(CONFIG_FB_OMAP2) || defined(CONFIG_FB_OMAP2_MODULE)
 
+<<<<<<< HEAD
 static int rx51_lcd_enable(struct omap_dss_device *dssdev)
 {
 	gpio_set_value(dssdev->reset_gpio, 1);
@@ -64,11 +74,32 @@ static struct omap_dss_board_info rx51_dss_board_info = {
 	.num_devices	= ARRAY_SIZE(rx51_dss_devices),
 	.devices	= rx51_dss_devices,
 	.default_device	= &rx51_lcd_device,
+=======
+static struct connector_atv_platform_data rx51_tv_pdata = {
+	.name = "tv",
+	.source = "venc.0",
+	.connector_type = OMAP_DSS_VENC_TYPE_COMPOSITE,
+	.invert_polarity = false,
+};
+
+static struct platform_device rx51_tv_connector_device = {
+	.name                   = "connector-analog-tv",
+	.id                     = 0,
+	.dev.platform_data      = &rx51_tv_pdata,
+};
+
+static struct omap_dss_board_info rx51_dss_board_info = {
+	.default_display_name = "lcd",
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init rx51_video_init(void)
 {
+<<<<<<< HEAD
 	if (!machine_is_nokia_rx51())
+=======
+	if (!machine_is_nokia_rx51() && !of_machine_is_compatible("nokia,omap3-n900"))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (omap_mux_init_gpio(RX51_LCD_RESET_GPIO, OMAP_PIN_OUTPUT)) {
@@ -76,6 +107,7 @@ static int __init rx51_video_init(void)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (gpio_request_one(RX51_LCD_RESET_GPIO, GPIOF_OUT_INIT_HIGH,
 			     "LCD ACX565AKM reset")) {
 		pr_err("%s failed to get LCD Reset GPIO\n", __func__);
@@ -100,4 +132,14 @@ void __init rx51_video_mem_init(void)
 
 #else
 void __init rx51_video_mem_init(void) { }
+=======
+	omap_display_init(&rx51_dss_board_info);
+
+	platform_device_register(&rx51_tv_connector_device);
+
+	return 0;
+}
+
+omap_subsys_initcall(rx51_video_init);
+>>>>>>> refs/remotes/origin/master
 #endif /* defined(CONFIG_FB_OMAP2) || defined(CONFIG_FB_OMAP2_MODULE) */

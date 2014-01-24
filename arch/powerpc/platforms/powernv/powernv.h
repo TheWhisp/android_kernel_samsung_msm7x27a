@@ -9,8 +9,19 @@ static inline void pnv_smp_init(void) { }
 
 #ifdef CONFIG_PCI
 extern void pnv_pci_init(void);
+<<<<<<< HEAD
 #else
 static inline void pnv_pci_init(void) { }
 #endif
 
+=======
+extern void pnv_pci_shutdown(void);
+#else
+static inline void pnv_pci_init(void) { }
+static inline void pnv_pci_shutdown(void) { }
+#endif
+
+extern void pnv_lpc_init(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _POWERNV_H */

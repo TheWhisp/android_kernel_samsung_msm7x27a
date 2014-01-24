@@ -75,7 +75,11 @@ static void atl2_set_ethtool_ops(struct net_device *netdev);
 
 static void atl2_check_options(struct atl2_adapter *adapter);
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_sw_init - Initialize general software structures (struct atl2_adapter)
  * @adapter: board private structure to initialize
  *
@@ -83,7 +87,11 @@ static void atl2_check_options(struct atl2_adapter *adapter);
  * Fields are initialized based on PCI device information and
  * OS network device settings (MTU size).
  */
+<<<<<<< HEAD
 static int __devinit atl2_sw_init(struct atl2_adapter *adapter)
+=======
+static int atl2_sw_init(struct atl2_adapter *adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atl2_hw *hw = &adapter->hw;
 	struct pci_dev *pdev = adapter->pdev;
@@ -123,7 +131,11 @@ static int __devinit atl2_sw_init(struct atl2_adapter *adapter)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_set_multi - Multicast and Promiscuous mode set
  * @netdev: network interface device structure
  *
@@ -177,7 +189,11 @@ static void init_ring_ptrs(struct atl2_adapter *adapter)
 	adapter->txs_next_clear = 0;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_configure - Configure Transmit&Receive Unit after Reset
  * @adapter: board private structure
  *
@@ -283,7 +299,11 @@ static int atl2_configure(struct atl2_adapter *adapter)
 	return value;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_setup_ring_resources - allocate Tx / RX descriptor resources
  * @adapter: board private structure
  *
@@ -340,7 +360,11 @@ static s32 atl2_setup_ring_resources(struct atl2_adapter *adapter)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_irq_enable - Enable default interrupt generation settings
  * @adapter: board private structure
  */
@@ -350,7 +374,11 @@ static inline void atl2_irq_enable(struct atl2_adapter *adapter)
 	ATL2_WRITE_FLUSH(&adapter->hw);
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_irq_disable - Mask off interrupt generation on the NIC
  * @adapter: board private structure
  */
@@ -363,7 +391,11 @@ static inline void atl2_irq_disable(struct atl2_adapter *adapter)
 
 static void __atl2_vlan_mode(netdev_features_t features, u32 *ctrl)
 {
+<<<<<<< HEAD
 	if (features & NETIF_F_HW_VLAN_RX) {
+=======
+	if (features & NETIF_F_HW_VLAN_CTAG_RX) {
+>>>>>>> refs/remotes/origin/master
 		/* enable VLAN tag insert/strip */
 		*ctrl |= MAC_CTRL_RMV_VLAN;
 	} else {
@@ -399,10 +431,17 @@ static netdev_features_t atl2_fix_features(struct net_device *netdev,
 	 * Since there is no support for separate rx/tx vlan accel
 	 * enable/disable make sure tx flag is always in same state as rx.
 	 */
+<<<<<<< HEAD
 	if (features & NETIF_F_HW_VLAN_RX)
 		features |= NETIF_F_HW_VLAN_TX;
 	else
 		features &= ~NETIF_F_HW_VLAN_TX;
+=======
+	if (features & NETIF_F_HW_VLAN_CTAG_RX)
+		features |= NETIF_F_HW_VLAN_CTAG_TX;
+	else
+		features &= ~NETIF_F_HW_VLAN_CTAG_TX;
+>>>>>>> refs/remotes/origin/master
 
 	return features;
 }
@@ -412,7 +451,11 @@ static int atl2_set_features(struct net_device *netdev,
 {
 	netdev_features_t changed = netdev->features ^ features;
 
+<<<<<<< HEAD
 	if (changed & NETIF_F_HW_VLAN_RX)
+=======
+	if (changed & NETIF_F_HW_VLAN_CTAG_RX)
+>>>>>>> refs/remotes/origin/master
 		atl2_vlan_mode(netdev, features);
 
 	return 0;
@@ -437,9 +480,12 @@ static void atl2_intr_rx(struct atl2_adapter *adapter)
 			/* alloc new buffer */
 			skb = netdev_alloc_skb_ip_align(netdev, rx_size);
 			if (NULL == skb) {
+<<<<<<< HEAD
 				printk(KERN_WARNING
 					"%s: Mem squeeze, deferring packet.\n",
 					netdev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * Check that some rx space is free. If not,
 				 * free one and mark stats->rx_dropped++.
@@ -455,7 +501,11 @@ static void atl2_intr_rx(struct atl2_adapter *adapter)
 					((rxd->status.vtag&7) << 13) |
 					((rxd->status.vtag&8) << 9);
 
+<<<<<<< HEAD
 				__vlan_hwaccel_put_tag(skb, vlan_tag);
+=======
+				__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tag);
+>>>>>>> refs/remotes/origin/master
 			}
 			netif_rx(skb);
 			netdev->stats.rx_bytes += rx_size;
@@ -599,11 +649,18 @@ static inline void atl2_clear_phy_int(struct atl2_adapter *adapter)
 	spin_unlock(&adapter->stats_lock);
 }
 
+<<<<<<< HEAD
 /*
  * atl2_intr - Interrupt Handler
  * @irq: interrupt number
  * @data: pointer to a network interface device structure
  * @pt_regs: CPU registers structure
+=======
+/**
+ * atl2_intr - Interrupt Handler
+ * @irq: interrupt number
+ * @data: pointer to a network interface device structure
+>>>>>>> refs/remotes/origin/master
  */
 static irqreturn_t atl2_intr(int irq, void *data)
 {
@@ -679,7 +736,11 @@ static int atl2_request_irq(struct atl2_adapter *adapter)
 		netdev);
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_free_ring_resources - Free Tx / RX descriptor Resources
  * @adapter: board private structure
  *
@@ -692,7 +753,11 @@ static void atl2_free_ring_resources(struct atl2_adapter *adapter)
 		adapter->ring_dma);
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_open - Called when a network interface is made active
  * @netdev: network interface device structure
  *
@@ -798,7 +863,11 @@ static void atl2_free_irq(struct atl2_adapter *adapter)
 #endif
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_close - Disables a network interface
  * @netdev: network interface device structure
  *
@@ -891,7 +960,11 @@ static netdev_tx_t atl2_xmit_frame(struct sk_buff *skb,
 			skb->len-copy_len);
 		offset = ((u32)(skb->len-copy_len + 3) & ~3);
 	}
+<<<<<<< HEAD
 #ifdef NETIF_F_HW_VLAN_TX
+=======
+#ifdef NETIF_F_HW_VLAN_CTAG_TX
+>>>>>>> refs/remotes/origin/master
 	if (vlan_tx_tag_present(skb)) {
 		u16 vlan_tag = vlan_tx_tag_get(skb);
 		vlan_tag = (vlan_tag << 4) |
@@ -918,7 +991,11 @@ static netdev_tx_t atl2_xmit_frame(struct sk_buff *skb,
 	return NETDEV_TX_OK;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_change_mtu - Change the Maximum Transfer Unit
  * @netdev: network interface device structure
  * @new_mtu: new value for maximum frame size
@@ -943,7 +1020,11 @@ static int atl2_change_mtu(struct net_device *netdev, int new_mtu)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_set_mac - Change the Ethernet Address of the NIC
  * @netdev: network interface device structure
  * @p: pointer to an address structure
@@ -969,12 +1050,15 @@ static int atl2_set_mac(struct net_device *netdev, void *p)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * atl2_mii_ioctl -
  * @netdev:
  * @ifreq:
  * @cmd:
  */
+=======
+>>>>>>> refs/remotes/origin/master
 static int atl2_mii_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
 {
 	struct atl2_adapter *adapter = netdev_priv(netdev);
@@ -1011,12 +1095,15 @@ static int atl2_mii_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * atl2_ioctl -
  * @netdev:
  * @ifreq:
  * @cmd:
  */
+=======
+>>>>>>> refs/remotes/origin/master
 static int atl2_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
 {
 	switch (cmd) {
@@ -1033,7 +1120,11 @@ static int atl2_ioctl(struct net_device *netdev, struct ifreq *ifr, int cmd)
 	}
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_tx_timeout - Respond to a Tx Hang
  * @netdev: network interface device structure
  */
@@ -1045,7 +1136,11 @@ static void atl2_tx_timeout(struct net_device *netdev)
 	schedule_work(&adapter->reset_task);
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_watchdog - Timer Call-back
  * @data: pointer to netdev cast into an unsigned long
  */
@@ -1070,7 +1165,11 @@ static void atl2_watchdog(unsigned long data)
 	}
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_phy_config - Timer Call-back
  * @data: pointer to netdev cast into an unsigned long
  */
@@ -1274,9 +1373,14 @@ static int atl2_check_link(struct atl2_adapter *adapter)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * atl2_link_chg_task - deal with link change event Out of interrupt context
  * @netdev: network interface device structure
+=======
+/**
+ * atl2_link_chg_task - deal with link change event Out of interrupt context
+>>>>>>> refs/remotes/origin/master
  */
 static void atl2_link_chg_task(struct work_struct *work)
 {
@@ -1341,7 +1445,11 @@ static const struct net_device_ops atl2_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_probe - Device Initialization Routine
  * @pdev: PCI device information struct
  * @ent: entry in atl2_pci_tbl
@@ -1352,8 +1460,12 @@ static const struct net_device_ops atl2_netdev_ops = {
  * The OS initialization, configuring of the adapter private structure,
  * and a hardware reset occur.
  */
+<<<<<<< HEAD
 static int __devinit atl2_probe(struct pci_dev *pdev,
 	const struct pci_device_id *ent)
+=======
+static int atl2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev;
 	struct atl2_adapter *adapter;
@@ -1431,8 +1543,13 @@ static int __devinit atl2_probe(struct pci_dev *pdev,
 
 	err = -EIO;
 
+<<<<<<< HEAD
 	netdev->hw_features = NETIF_F_SG | NETIF_F_HW_VLAN_RX;
 	netdev->features |= (NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX);
+=======
+	netdev->hw_features = NETIF_F_SG | NETIF_F_HW_VLAN_CTAG_RX;
+	netdev->features |= (NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX);
+>>>>>>> refs/remotes/origin/master
 
 	/* Init PHY as early as possible due to power saving issue  */
 	atl2_phy_init(&adapter->hw);
@@ -1448,6 +1565,7 @@ static int __devinit atl2_probe(struct pci_dev *pdev,
 	/* copy the MAC address out of the EEPROM */
 	atl2_read_mac_addr(&adapter->hw);
 	memcpy(netdev->dev_addr, adapter->hw.mac_addr, netdev->addr_len);
+<<<<<<< HEAD
 /* FIXME: do we still need this? */
 #ifdef ETHTOOL_GPERMADDR
 	memcpy(netdev->perm_addr, adapter->hw.mac_addr, netdev->addr_len);
@@ -1456,6 +1574,9 @@ static int __devinit atl2_probe(struct pci_dev *pdev,
 #else
 	if (!is_valid_ether_addr(netdev->dev_addr)) {
 #endif
+=======
+	if (!is_valid_ether_addr(netdev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		err = -EIO;
 		goto err_eeprom;
 	}
@@ -1501,7 +1622,11 @@ err_dma:
 	return err;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_remove - Device Removal Routine
  * @pdev: PCI device information struct
  *
@@ -1512,7 +1637,11 @@ err_dma:
  */
 /* FIXME: write the original MAC address back in case it was changed from a
  * BIOS-set value, as in atl1 -- CHS */
+<<<<<<< HEAD
 static void __devexit atl2_remove(struct pci_dev *pdev)
+=======
+static void atl2_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev = pci_get_drvdata(pdev);
 	struct atl2_adapter *adapter = netdev_priv(netdev);
@@ -1719,7 +1848,11 @@ static struct pci_driver atl2_driver = {
 	.name     = atl2_driver_name,
 	.id_table = atl2_pci_tbl,
 	.probe    = atl2_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(atl2_remove),
+=======
+	.remove   = atl2_remove,
+>>>>>>> refs/remotes/origin/master
 	/* Power Management Hooks */
 	.suspend  = atl2_suspend,
 #ifdef CONFIG_PM
@@ -1728,7 +1861,11 @@ static struct pci_driver atl2_driver = {
 	.shutdown = atl2_shutdown,
 };
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_init_module - Driver Registration Routine
  *
  * atl2_init_module is the first routine called when the driver is
@@ -1743,7 +1880,11 @@ static int __init atl2_init_module(void)
 }
 module_init(atl2_init_module);
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_exit_module - Driver Exit Cleanup Routine
  *
  * atl2_exit_module is called just before the driver is removed
@@ -2360,7 +2501,11 @@ static s32 atl2_read_mac_addr(struct atl2_hw *hw)
 {
 	if (get_permanent_address(hw)) {
 		/* for test */
+<<<<<<< HEAD
 		/* FIXME: shouldn't we use random_ether_addr() here? */
+=======
+		/* FIXME: shouldn't we use eth_random_addr() here? */
+>>>>>>> refs/remotes/origin/master
 		hw->perm_mac_addr[0] = 0x00;
 		hw->perm_mac_addr[1] = 0x13;
 		hw->perm_mac_addr[2] = 0x74;
@@ -2859,12 +3004,20 @@ static void atl2_force_ps(struct atl2_hw *hw)
  */
 
 #define ATL2_PARAM(X, desc) \
+<<<<<<< HEAD
     static const int __devinitdata X[ATL2_MAX_NIC + 1] = ATL2_PARAM_INIT; \
+=======
+    static const int X[ATL2_MAX_NIC + 1] = ATL2_PARAM_INIT; \
+>>>>>>> refs/remotes/origin/master
     MODULE_PARM(X, "1-" __MODULE_STRING(ATL2_MAX_NIC) "i"); \
     MODULE_PARM_DESC(X, desc);
 #else
 #define ATL2_PARAM(X, desc) \
+<<<<<<< HEAD
     static int __devinitdata X[ATL2_MAX_NIC+1] = ATL2_PARAM_INIT; \
+=======
+    static int X[ATL2_MAX_NIC+1] = ATL2_PARAM_INIT; \
+>>>>>>> refs/remotes/origin/master
     static unsigned int num_##X; \
     module_param_array_named(X, X, int, &num_##X, 0); \
     MODULE_PARM_DESC(X, desc);
@@ -2948,7 +3101,11 @@ struct atl2_option {
 	} arg;
 };
 
+<<<<<<< HEAD
 static int __devinit atl2_validate_option(int *value, struct atl2_option *opt)
+=======
+static int atl2_validate_option(int *value, struct atl2_option *opt)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct atl2_opt_list *ent;
@@ -2997,7 +3154,11 @@ static int __devinit atl2_validate_option(int *value, struct atl2_option *opt)
 	return -1;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * atl2_check_options - Range Checking for Command Line Parameters
  * @adapter: board private structure
  *
@@ -3006,7 +3167,11 @@ static int __devinit atl2_validate_option(int *value, struct atl2_option *opt)
  * value exists, a default value is used.  The final value is stored
  * in a variable in the adapter structure.
  */
+<<<<<<< HEAD
 static void __devinit atl2_check_options(struct atl2_adapter *adapter)
+=======
+static void atl2_check_options(struct atl2_adapter *adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	int val;
 	struct atl2_option opt;

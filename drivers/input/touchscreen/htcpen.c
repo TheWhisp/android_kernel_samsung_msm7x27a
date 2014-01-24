@@ -41,6 +41,7 @@ MODULE_LICENSE("GPL");
 #define Y_AXIS_MAX		2040
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int invert_x;
 module_param(invert_x, bool, 0644);
 MODULE_PARM_DESC(invert_x, "If set, X axis is inverted");
@@ -55,6 +56,8 @@ static struct pnp_device_id pnp_ids[] = {
 MODULE_DEVICE_TABLE(pnp, pnp_ids);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool invert_x;
 module_param(invert_x, bool, 0644);
 MODULE_PARM_DESC(invert_x, "If set, X axis is inverted");
@@ -62,7 +65,10 @@ static bool invert_y;
 module_param(invert_y, bool, 0644);
 MODULE_PARM_DESC(invert_y, "If set, Y axis is inverted");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t htcpen_interrupt(int irq, void *handle)
 {
 	struct input_dev *htcpen_dev = handle;
@@ -118,7 +124,11 @@ static void htcpen_close(struct input_dev *dev)
 	synchronize_irq(HTCPEN_IRQ);
 }
 
+<<<<<<< HEAD
 static int __devinit htcpen_isa_probe(struct device *dev, unsigned int id)
+=======
+static int htcpen_isa_probe(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *htcpen_dev;
 	int err = -EBUSY;
@@ -190,7 +200,11 @@ static int __devinit htcpen_isa_probe(struct device *dev, unsigned int id)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit htcpen_isa_remove(struct device *dev, unsigned int id)
+=======
+static int htcpen_isa_remove(struct device *dev, unsigned int id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *htcpen_dev = dev_get_drvdata(dev);
 
@@ -202,8 +216,11 @@ static int __devexit htcpen_isa_remove(struct device *dev, unsigned int id)
 	release_region(HTCPEN_PORT_INIT, 1);
 	release_region(HTCPEN_PORT_IRQ_CLEAR, 1);
 
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -226,7 +243,11 @@ static int htcpen_isa_resume(struct device *dev, unsigned int n)
 
 static struct isa_driver htcpen_isa_driver = {
 	.probe		= htcpen_isa_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(htcpen_isa_remove),
+=======
+	.remove		= htcpen_isa_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= htcpen_isa_suspend,
 	.resume		= htcpen_isa_resume,
@@ -237,7 +258,11 @@ static struct isa_driver htcpen_isa_driver = {
 	}
 };
 
+<<<<<<< HEAD
 static struct dmi_system_id __initdata htcshift_dmi_table[] = {
+=======
+static struct dmi_system_id htcshift_dmi_table[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.ident = "Shift",
 		.matches = {
@@ -248,9 +273,13 @@ static struct dmi_system_id __initdata htcshift_dmi_table[] = {
 	{ }
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(dmi, htcshift_dmi_table);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(dmi, htcshift_dmi_table);
+>>>>>>> refs/remotes/origin/master
 
 static int __init htcpen_isa_init(void)
 {

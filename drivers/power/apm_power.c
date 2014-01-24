@@ -11,13 +11,18 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/power_supply.h>
 #include <linux/apm-emulation.h>
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define PSY_PROP(psy, prop, val) psy->get_property(psy, \
 			 POWER_SUPPLY_PROP_##prop, val)
@@ -25,12 +30,17 @@
 #define _MPSY_PROP(prop, val) main_battery->get_property(main_battery, \
 							 prop, val)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PSY_PROP(psy, prop, val) (psy->get_property(psy, \
 			 POWER_SUPPLY_PROP_##prop, val))
 
 #define _MPSY_PROP(prop, val) (main_battery->get_property(main_battery, \
 							 prop, val))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MPSY_PROP(prop, val) _MPSY_PROP(POWER_SUPPLY_PROP_##prop, val)
 

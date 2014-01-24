@@ -120,6 +120,10 @@
 #define SDHCI_SIGNAL_ENABLE	0x38
 #define  SDHCI_INT_RESPONSE	0x00000001
 #define  SDHCI_INT_DATA_END	0x00000002
+<<<<<<< HEAD
+=======
+#define  SDHCI_INT_BLK_GAP	0x00000004
+>>>>>>> refs/remotes/origin/master
 #define  SDHCI_INT_DMA_END	0x00000008
 #define  SDHCI_INT_SPACE_AVAIL	0x00000010
 #define  SDHCI_INT_DATA_AVAIL	0x00000020
@@ -146,7 +150,12 @@
 #define  SDHCI_INT_DATA_MASK	(SDHCI_INT_DATA_END | SDHCI_INT_DMA_END | \
 		SDHCI_INT_DATA_AVAIL | SDHCI_INT_SPACE_AVAIL | \
 		SDHCI_INT_DATA_TIMEOUT | SDHCI_INT_DATA_CRC | \
+<<<<<<< HEAD
 		SDHCI_INT_DATA_END_BIT | SDHCI_INT_ADMA_ERROR)
+=======
+		SDHCI_INT_DATA_END_BIT | SDHCI_INT_ADMA_ERROR | \
+		SDHCI_INT_BLK_GAP)
+>>>>>>> refs/remotes/origin/master
 #define SDHCI_INT_ALL_MASK	((unsigned int)-1)
 
 #define SDHCI_ACMD12_ERR	0x3C
@@ -159,9 +168,13 @@
 #define   SDHCI_CTRL_UHS_SDR104		0x0003
 #define   SDHCI_CTRL_UHS_DDR50		0x0004
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define   SDHCI_CTRL_HS_SDR200		0x0005 /* reserved value in SDIO spec */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define   SDHCI_CTRL_HS_SDR200		0x0005 /* reserved value in SDIO spec */
+>>>>>>> refs/remotes/origin/master
 #define  SDHCI_CTRL_VDD_180		0x0008
 #define  SDHCI_CTRL_DRV_TYPE_MASK	0x0030
 #define   SDHCI_CTRL_DRV_TYPE_B		0x0000
@@ -208,6 +221,10 @@
 #define SDHCI_CAPABILITIES_1	0x44
 
 #define SDHCI_MAX_CURRENT		0x48
+<<<<<<< HEAD
+=======
+#define  SDHCI_MAX_CURRENT_LIMIT	0xFF
+>>>>>>> refs/remotes/origin/master
 #define  SDHCI_MAX_CURRENT_330_MASK	0x0000FF
 #define  SDHCI_MAX_CURRENT_330_SHIFT	0
 #define  SDHCI_MAX_CURRENT_300_MASK	0x00FF00
@@ -229,6 +246,21 @@
 
 /* 60-FB reserved */
 
+<<<<<<< HEAD
+=======
+#define SDHCI_PRESET_FOR_SDR12 0x66
+#define SDHCI_PRESET_FOR_SDR25 0x68
+#define SDHCI_PRESET_FOR_SDR50 0x6A
+#define SDHCI_PRESET_FOR_SDR104        0x6C
+#define SDHCI_PRESET_FOR_DDR50 0x6E
+#define SDHCI_PRESET_DRV_MASK  0xC000
+#define SDHCI_PRESET_DRV_SHIFT  14
+#define SDHCI_PRESET_CLKGEN_SEL_MASK   0x400
+#define SDHCI_PRESET_CLKGEN_SEL_SHIFT	10
+#define SDHCI_PRESET_SDCLK_FREQ_MASK   0x3FF
+#define SDHCI_PRESET_SDCLK_FREQ_SHIFT	0
+
+>>>>>>> refs/remotes/origin/master
 #define SDHCI_SLOT_INT_STATUS	0xFC
 
 #define SDHCI_HOST_VERSION	0xFE
@@ -269,13 +301,18 @@ struct sdhci_ops {
 	unsigned int	(*get_max_clock)(struct sdhci_host *host);
 	unsigned int	(*get_min_clock)(struct sdhci_host *host);
 	unsigned int	(*get_timeout_clock)(struct sdhci_host *host);
+<<<<<<< HEAD
 	int		(*platform_8bit_width)(struct sdhci_host *host,
+=======
+	int		(*platform_bus_width)(struct sdhci_host *host,
+>>>>>>> refs/remotes/origin/master
 					       int width);
 	void (*platform_send_init_74_clocks)(struct sdhci_host *host,
 					     u8 power_mode);
 	unsigned int    (*get_ro)(struct sdhci_host *host);
 	void	(*platform_reset_enter)(struct sdhci_host *host, u8 mask);
 	void	(*platform_reset_exit)(struct sdhci_host *host, u8 mask);
+<<<<<<< HEAD
 	int	(*set_uhs_signaling)(struct sdhci_host *host, unsigned int uhs);
 <<<<<<< HEAD
 
@@ -284,6 +321,16 @@ struct sdhci_ops {
 	void	(*platform_suspend)(struct sdhci_host *host);
 	void	(*platform_resume)(struct sdhci_host *host);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int	(*platform_execute_tuning)(struct sdhci_host *host, u32 opcode);
+	int	(*set_uhs_signaling)(struct sdhci_host *host, unsigned int uhs);
+	void	(*hw_reset)(struct sdhci_host *host);
+	void	(*platform_suspend)(struct sdhci_host *host);
+	void	(*platform_resume)(struct sdhci_host *host);
+	void    (*adma_workaround)(struct sdhci_host *host, u32 intmask);
+	void	(*platform_init)(struct sdhci_host *host);
+	void    (*card_event)(struct sdhci_host *host);
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
@@ -382,6 +429,7 @@ static inline void *sdhci_priv(struct sdhci_host *host)
 extern void sdhci_card_detect(struct sdhci_host *host);
 extern int sdhci_add_host(struct sdhci_host *host);
 extern void sdhci_remove_host(struct sdhci_host *host, int dead);
+<<<<<<< HEAD
 
 #ifdef CONFIG_PM
 <<<<<<< HEAD
@@ -389,16 +437,29 @@ extern int sdhci_suspend_host(struct sdhci_host *host, pm_message_t state);
 =======
 extern int sdhci_suspend_host(struct sdhci_host *host);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void sdhci_send_command(struct sdhci_host *host,
+				struct mmc_command *cmd);
+
+#ifdef CONFIG_PM
+extern int sdhci_suspend_host(struct sdhci_host *host);
+>>>>>>> refs/remotes/origin/master
 extern int sdhci_resume_host(struct sdhci_host *host);
 extern void sdhci_enable_irq_wakeups(struct sdhci_host *host);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_RUNTIME
 extern int sdhci_runtime_suspend_host(struct sdhci_host *host);
 extern int sdhci_runtime_resume_host(struct sdhci_host *host);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __SDHCI_HW_H */

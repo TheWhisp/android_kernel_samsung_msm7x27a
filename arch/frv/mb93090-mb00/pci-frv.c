@@ -195,6 +195,7 @@ void __init pcibios_resource_survey(void)
 	pcibios_assign_resources();
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  *  If we set up a device for bus mastering, we need to check the latency
@@ -217,3 +218,5 @@ void pcibios_set_master(struct pci_dev *dev)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

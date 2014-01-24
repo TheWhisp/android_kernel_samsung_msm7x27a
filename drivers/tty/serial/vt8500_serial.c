@@ -34,6 +34,11 @@
 #include <linux/slab.h>
 #include <linux/clk.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * UART Register offsets
@@ -76,6 +81,11 @@
 #define RX_FIFO_INTS	(RXFAF | RXFF | RXOVER | PER | FER | RXTOUT)
 #define TX_FIFO_INTS	(TXFAE | TXFE | TXUDR)
 
+<<<<<<< HEAD
+=======
+#define VT8500_MAX_PORTS	6
+
+>>>>>>> refs/remotes/origin/master
 struct vt8500_port {
 	struct uart_port	uart;
 	char			name[16];
@@ -83,6 +93,16 @@ struct vt8500_port {
 	unsigned int		ier;
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * we use this variable to keep track of which ports
+ * have been allocated as we can't use pdev->id in
+ * devicetree
+ */
+static unsigned long vt8500_ports_in_use;
+
+>>>>>>> refs/remotes/origin/master
 static inline void vt8500_write(struct uart_port *port, unsigned int val,
 			     unsigned int off)
 {
@@ -126,6 +146,7 @@ static void vt8500_enable_ms(struct uart_port *port)
 
 static void handle_rx(struct uart_port *port)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&port->state->port);
 	if (!tty) {
 		/* Discard data: no tty available */
@@ -135,13 +156,20 @@ static void handle_rx(struct uart_port *port)
 			ch = readw(port->membase + VT8500_RXFIFO);
 		return;
 	}
+=======
+	struct tty_port *tport = &port->state->port;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Handle overrun
 	 */
 	if ((vt8500_read(port, VT8500_URISR) & RXOVER)) {
 		port->icount.overrun++;
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+		tty_insert_flip_char(tport, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* and now the main RX loop */
@@ -164,11 +192,20 @@ static void handle_rx(struct uart_port *port)
 		port->icount.rx++;
 
 		if (!uart_handle_sysrq_char(port, c))
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, c, flag);
 	}
 
 	tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
+=======
+			tty_insert_flip_char(tport, c, flag);
+	}
+
+	spin_unlock(&port->lock);
+	tty_flip_buffer_push(tport);
+	spin_lock(&port->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void handle_tx(struct uart_port *port)
@@ -431,7 +468,11 @@ static int vt8500_verify_port(struct uart_port *port,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct vt8500_port *vt8500_uart_ports[4];
+=======
+static struct vt8500_port *vt8500_uart_ports[VT8500_MAX_PORTS];
+>>>>>>> refs/remotes/origin/master
 static struct uart_driver vt8500_uart_driver;
 
 #ifdef CONFIG_SERIAL_VT8500_CONSOLE
@@ -545,6 +586,7 @@ static struct uart_driver vt8500_uart_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init vt8500_serial_probe(struct platform_device *pdev)
 =======
 static int __devinit vt8500_serial_probe(struct platform_device *pdev)
@@ -553,30 +595,95 @@ static int __devinit vt8500_serial_probe(struct platform_device *pdev)
 	struct vt8500_port *vt8500_port;
 	struct resource *mmres, *irqres;
 	int ret;
+=======
+static int vt8500_serial_probe(struct platform_device *pdev)
+{
+	struct vt8500_port *vt8500_port;
+	struct resource *mmres, *irqres;
+	struct device_node *np = pdev->dev.of_node;
+	int ret;
+	int port;
+>>>>>>> refs/remotes/origin/master
 
 	mmres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	irqres = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!mmres || !irqres)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	vt8500_port = kzalloc(sizeof(struct vt8500_port), GFP_KERNEL);
 	if (!vt8500_port)
 		return -ENOMEM;
 
+=======
+	if (np) {
+		port = of_alias_get_id(np, "serial");
+		if (port >= VT8500_MAX_PORTS)
+			port = -1;
+	} else {
+		port = -1;
+	}
+
+	if (port < 0) {
+		/* calculate the port id */
+		port = find_first_zero_bit(&vt8500_ports_in_use,
+					sizeof(vt8500_ports_in_use));
+	}
+
+	if (port >= VT8500_MAX_PORTS)
+		return -ENODEV;
+
+	/* reserve the port id */
+	if (test_and_set_bit(port, &vt8500_ports_in_use)) {
+		/* port already in use - shouldn't really happen */
+		return -EBUSY;
+	}
+
+	vt8500_port = devm_kzalloc(&pdev->dev, sizeof(struct vt8500_port),
+				   GFP_KERNEL);
+	if (!vt8500_port)
+		return -ENOMEM;
+
+	vt8500_port->uart.membase = devm_ioremap_resource(&pdev->dev, mmres);
+	if (IS_ERR(vt8500_port->uart.membase))
+		return PTR_ERR(vt8500_port->uart.membase);
+
+	vt8500_port->clk = of_clk_get(pdev->dev.of_node, 0);
+	if (IS_ERR(vt8500_port->clk)) {
+		dev_err(&pdev->dev, "failed to get clock\n");
+		return  -EINVAL;
+	}
+
+	ret = clk_prepare_enable(vt8500_port->clk);
+	if (ret) {
+		dev_err(&pdev->dev, "failed to enable clock\n");
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	vt8500_port->uart.type = PORT_VT8500;
 	vt8500_port->uart.iotype = UPIO_MEM;
 	vt8500_port->uart.mapbase = mmres->start;
 	vt8500_port->uart.irq = irqres->start;
 	vt8500_port->uart.fifosize = 16;
 	vt8500_port->uart.ops = &vt8500_uart_pops;
+<<<<<<< HEAD
 	vt8500_port->uart.line = pdev->id;
 	vt8500_port->uart.dev = &pdev->dev;
 	vt8500_port->uart.flags = UPF_IOREMAP | UPF_BOOT_AUTOCONF;
 	vt8500_port->uart.uartclk = 24000000;
+=======
+	vt8500_port->uart.line = port;
+	vt8500_port->uart.dev = &pdev->dev;
+	vt8500_port->uart.flags = UPF_IOREMAP | UPF_BOOT_AUTOCONF;
+
+	vt8500_port->uart.uartclk = clk_get_rate(vt8500_port->clk);
+>>>>>>> refs/remotes/origin/master
 
 	snprintf(vt8500_port->name, sizeof(vt8500_port->name),
 		 "VT8500 UART%d", pdev->id);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vt8500_port->uart.membase = ioremap(mmres->start,
 					    mmres->end - mmres->start + 1);
@@ -589,12 +696,16 @@ static int __devinit vt8500_serial_probe(struct platform_device *pdev)
 	}
 
 	vt8500_uart_ports[pdev->id] = vt8500_port;
+=======
+	vt8500_uart_ports[port] = vt8500_port;
+>>>>>>> refs/remotes/origin/master
 
 	uart_add_one_port(&vt8500_uart_driver, &vt8500_port->uart);
 
 	platform_set_drvdata(pdev, vt8500_port);
 
 	return 0;
+<<<<<<< HEAD
 
 err:
 	kfree(vt8500_port);
@@ -608,10 +719,21 @@ static int __devexit vt8500_serial_remove(struct platform_device *pdev)
 	platform_set_drvdata(pdev, NULL);
 	uart_remove_one_port(&vt8500_uart_driver, &vt8500_port->uart);
 	kfree(vt8500_port);
+=======
+}
+
+static int vt8500_serial_remove(struct platform_device *pdev)
+{
+	struct vt8500_port *vt8500_port = platform_get_drvdata(pdev);
+
+	clk_disable_unprepare(vt8500_port->clk);
+	uart_remove_one_port(&vt8500_uart_driver, &vt8500_port->uart);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver vt8500_platform_driver = {
 	.probe  = vt8500_serial_probe,
 <<<<<<< HEAD
@@ -622,6 +744,20 @@ static struct platform_driver vt8500_platform_driver = {
 	.driver = {
 		.name = "vt8500_serial",
 		.owner = THIS_MODULE,
+=======
+static const struct of_device_id wmt_dt_ids[] = {
+	{ .compatible = "via,vt8500-uart", },
+	{}
+};
+
+static struct platform_driver vt8500_platform_driver = {
+	.probe  = vt8500_serial_probe,
+	.remove = vt8500_serial_remove,
+	.driver = {
+		.name = "vt8500_serial",
+		.owner = THIS_MODULE,
+		.of_match_table = wmt_dt_ids,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -655,4 +791,8 @@ module_exit(vt8500_serial_exit);
 
 MODULE_AUTHOR("Alexey Charkov <alchark@gmail.com>");
 MODULE_DESCRIPTION("Driver for vt8500 serial device");
+<<<<<<< HEAD
 MODULE_LICENSE("GPL");
+=======
+MODULE_LICENSE("GPL v2");
+>>>>>>> refs/remotes/origin/master

@@ -12,6 +12,7 @@
 #include <asm/hardware/iomd.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.macro	disable_fiq
 		mov	r12, #ioc_base_high
 		.if	ioc_base_low
@@ -22,6 +23,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
 		ldrb	\irqstat, [\base, #IOMD_IRQREQB]	@ get high priority first
 		ldr	\tmp, =irq_prio_h

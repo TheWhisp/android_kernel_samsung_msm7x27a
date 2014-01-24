@@ -26,6 +26,7 @@ HOSTCFLAGS_dtc-parser.tab.o := $(HOSTCFLAGS_DTC)
 
 # dependencies on generated files need to be listed explicitly
 <<<<<<< HEAD
+<<<<<<< HEAD
 $(obj)/dtc-parser.tab.o: $(obj)/dtc-parser.tab.c $(obj)/dtc-parser.tab.h
 $(obj)/dtc-lexer.lex.o:  $(obj)/dtc-lexer.lex.c $(obj)/dtc-parser.tab.h
 
@@ -58,3 +59,9 @@ endif
 $(obj)/dtc-lexer.lex.o: $(obj)/dtc-parser.tab.h
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+$(obj)/dtc-lexer.lex.o: $(obj)/dtc-parser.tab.h
+
+# generated files need to be cleaned explicitly
+clean-files	:= dtc-lexer.lex.c dtc-parser.tab.c dtc-parser.tab.h
+>>>>>>> refs/remotes/origin/master

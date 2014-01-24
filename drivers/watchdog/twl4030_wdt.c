@@ -22,15 +22,21 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/watchdog.h>
 #include <linux/platform_device.h>
 #include <linux/miscdevice.h>
 #include <linux/uaccess.h>
+=======
+#include <linux/watchdog.h>
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c/twl.h>
 
 #define TWL4030_WATCHDOG_CFG_REG_OFFS	0x3
 
+<<<<<<< HEAD
 #define TWL4030_WDT_STATE_OPEN		0x1
 #define TWL4030_WDT_STATE_ACTIVE	0x8
 
@@ -49,11 +55,16 @@ module_param(nowayout, int, 0);
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started "
 	"(default=" __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
 static int twl4030_wdt_write(unsigned char val)
 {
+<<<<<<< HEAD
 	return twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, val,
 					TWL4030_WATCHDOG_CFG_REG_OFFS);
 }
@@ -64,10 +75,23 @@ static int twl4030_wdt_enable(struct twl4030_wdt *wdt)
 }
 
 static int twl4030_wdt_disable(struct twl4030_wdt *wdt)
+=======
+	return twl_i2c_write_u8(TWL_MODULE_PM_RECEIVER, val,
+					TWL4030_WATCHDOG_CFG_REG_OFFS);
+}
+
+static int twl4030_wdt_start(struct watchdog_device *wdt)
+{
+	return twl4030_wdt_write(wdt->timeout + 1);
+}
+
+static int twl4030_wdt_stop(struct watchdog_device *wdt)
+>>>>>>> refs/remotes/origin/master
 {
 	return twl4030_wdt_write(0);
 }
 
+<<<<<<< HEAD
 static int twl4030_wdt_set_timeout(struct twl4030_wdt *wdt, int timeout)
 {
 	if (timeout < 0 || timeout > 30) {
@@ -223,6 +247,60 @@ static int __devexit twl4030_wdt_remove(struct platform_device *pdev)
 	platform_set_drvdata(pdev, NULL);
 	kfree(wdt);
 	twl4030_wdt_dev = NULL;
+=======
+static int twl4030_wdt_set_timeout(struct watchdog_device *wdt,
+				   unsigned int timeout)
+{
+	wdt->timeout = timeout;
+	return 0;
+}
+
+static const struct watchdog_info twl4030_wdt_info = {
+	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING,
+	.identity = "TWL4030 Watchdog",
+};
+
+static const struct watchdog_ops twl4030_wdt_ops = {
+	.owner		= THIS_MODULE,
+	.start		= twl4030_wdt_start,
+	.stop		= twl4030_wdt_stop,
+	.set_timeout	= twl4030_wdt_set_timeout,
+};
+
+static int twl4030_wdt_probe(struct platform_device *pdev)
+{
+	int ret = 0;
+	struct watchdog_device *wdt;
+
+	wdt = devm_kzalloc(&pdev->dev, sizeof(*wdt), GFP_KERNEL);
+	if (!wdt)
+		return -ENOMEM;
+
+	wdt->info		= &twl4030_wdt_info;
+	wdt->ops		= &twl4030_wdt_ops;
+	wdt->status		= 0;
+	wdt->timeout		= 30;
+	wdt->min_timeout	= 1;
+	wdt->max_timeout	= 30;
+
+	watchdog_set_nowayout(wdt, nowayout);
+	platform_set_drvdata(pdev, wdt);
+
+	twl4030_wdt_stop(wdt);
+
+	ret = watchdog_register_device(wdt);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+
+static int twl4030_wdt_remove(struct platform_device *pdev)
+{
+	struct watchdog_device *wdt = platform_get_drvdata(pdev);
+
+	watchdog_unregister_device(wdt);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -230,18 +308,30 @@ static int __devexit twl4030_wdt_remove(struct platform_device *pdev)
 #ifdef CONFIG_PM
 static int twl4030_wdt_suspend(struct platform_device *pdev, pm_message_t state)
 {
+<<<<<<< HEAD
 	struct twl4030_wdt *wdt = platform_get_drvdata(pdev);
 	if (wdt->state & TWL4030_WDT_STATE_ACTIVE)
 		return twl4030_wdt_disable(wdt);
+=======
+	struct watchdog_device *wdt = platform_get_drvdata(pdev);
+	if (watchdog_active(wdt))
+		return twl4030_wdt_stop(wdt);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int twl4030_wdt_resume(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct twl4030_wdt *wdt = platform_get_drvdata(pdev);
 	if (wdt->state & TWL4030_WDT_STATE_ACTIVE)
 		return twl4030_wdt_enable(wdt);
+=======
+	struct watchdog_device *wdt = platform_get_drvdata(pdev);
+	if (watchdog_active(wdt))
+		return twl4030_wdt_start(wdt);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -250,6 +340,7 @@ static int twl4030_wdt_resume(struct platform_device *pdev)
 #define twl4030_wdt_resume         NULL
 #endif
 
+<<<<<<< HEAD
 static struct platform_driver twl4030_wdt_driver = {
 	.probe		= twl4030_wdt_probe,
 	.remove		= __devexit_p(twl4030_wdt_remove),
@@ -280,5 +371,29 @@ module_platform_driver(twl4030_wdt_driver);
 MODULE_AUTHOR("Nokia Corporation");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+static const struct of_device_id twl_wdt_of_match[] = {
+	{ .compatible = "ti,twl4030-wdt", },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, twl_wdt_of_match);
+
+static struct platform_driver twl4030_wdt_driver = {
+	.probe		= twl4030_wdt_probe,
+	.remove		= twl4030_wdt_remove,
+	.suspend	= twl4030_wdt_suspend,
+	.resume		= twl4030_wdt_resume,
+	.driver		= {
+		.owner		= THIS_MODULE,
+		.name		= "twl4030_wdt",
+		.of_match_table	= twl_wdt_of_match,
+	},
+};
+
+module_platform_driver(twl4030_wdt_driver);
+
+MODULE_AUTHOR("Nokia Corporation");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:twl4030_wdt");
 

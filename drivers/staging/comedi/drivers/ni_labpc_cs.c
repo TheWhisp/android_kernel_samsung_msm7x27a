@@ -18,12 +18,15 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ************************************************************************
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: ni_labpc_cs
@@ -59,12 +62,19 @@ NI manuals:
 
 */
 
+<<<<<<< HEAD
 #undef LABPC_DEBUG  /* debugging messages */
 
 #include "../comedidev.h"
 
 #include <linux/delay.h>
 #include <linux/slab.h>
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "8253.h"
 #include "8255.h"
@@ -75,6 +85,7 @@ NI manuals:
 #include <pcmcia/cisreg.h>
 #include <pcmcia/ds.h>
 
+<<<<<<< HEAD
 static struct pcmcia_device *pcmcia_cur_dev;
 
 static int labpc_attach(struct comedi_device *dev, struct comedi_devconfig *it);
@@ -168,10 +179,54 @@ struct local_info_t {
 	struct pcmcia_device *link;
 	int stop;
 	struct bus_operations *bus;
+=======
+static const struct labpc_boardinfo labpc_cs_boards[] = {
+	{
+		.name			= "daqcard-1200",
+		.ai_speed		= 10000,
+		.has_ao			= 1,
+		.is_labpc1200		= 1,
+	},
+};
+
+static int labpc_auto_attach(struct comedi_device *dev,
+			     unsigned long context)
+{
+	struct pcmcia_device *link = comedi_to_pcmcia_dev(dev);
+	struct labpc_private *devpriv;
+	int ret;
+
+	/* The ni_labpc driver needs the board_ptr */
+	dev->board_ptr = &labpc_cs_boards[0];
+
+	link->config_flags |= CONF_AUTO_SET_IO |
+			      CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
+	ret = comedi_pcmcia_enable(dev, NULL);
+	if (ret)
+		return ret;
+	dev->iobase = link->resource[0]->start;
+
+	if (!link->irq)
+		return -EINVAL;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	return labpc_common_attach(dev, link->irq, IRQF_SHARED);
+}
+
+static struct comedi_driver driver_labpc_cs = {
+	.driver_name	= "ni_labpc_cs",
+	.module		= THIS_MODULE,
+	.auto_attach	= labpc_auto_attach,
+	.detach		= comedi_pcmcia_disable,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int labpc_cs_attach(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	struct local_info_t *local;
 
 	dev_dbg(&link->dev, "labpc_cs_attach()\n");
@@ -322,3 +377,26 @@ void __exit labpc_exit_module(void)
 
 module_init(labpc_init_module);
 module_exit(labpc_exit_module);
+=======
+	return comedi_pcmcia_auto_config(link, &driver_labpc_cs);
+}
+
+static const struct pcmcia_device_id labpc_cs_ids[] = {
+	PCMCIA_DEVICE_MANF_CARD(0x010b, 0x0103),	/* daqcard-1200 */
+	PCMCIA_DEVICE_NULL
+};
+MODULE_DEVICE_TABLE(pcmcia, labpc_cs_ids);
+
+static struct pcmcia_driver labpc_cs_driver = {
+	.name		= "daqcard-1200",
+	.owner		= THIS_MODULE,
+	.id_table	= labpc_cs_ids,
+	.probe		= labpc_cs_attach,
+	.remove		= comedi_pcmcia_auto_unconfig,
+};
+module_comedi_pcmcia_driver(driver_labpc_cs, labpc_cs_driver);
+
+MODULE_DESCRIPTION("Comedi driver for National Instruments Lab-PC");
+MODULE_AUTHOR("Frank Mori Hess <fmhess@users.sourceforge.net>");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

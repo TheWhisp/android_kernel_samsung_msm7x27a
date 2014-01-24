@@ -10,6 +10,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __LINUX_USB_GADGET_PXA25X_H
@@ -53,7 +56,10 @@ struct pxa25x_ep {
 	struct usb_ep				ep;
 	struct pxa25x_udc			*dev;
 
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head			queue;
 	unsigned long				pio_irqs;
 
@@ -132,10 +138,14 @@ struct pxa25x_udc {
 	struct clk				*clk;
 	struct pxa2xx_udc_mach_info		*mach;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver			*transceiver;
 =======
 	struct usb_phy				*transceiver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_phy				*transceiver;
+>>>>>>> refs/remotes/origin/master
 	u64					dma_mask;
 	struct pxa25x_ep			ep [PXA_UDC_NUM_ENDPOINTS];
 
@@ -143,6 +153,10 @@ struct pxa25x_udc {
 	struct dentry				*debugfs_udc;
 #endif
 };
+<<<<<<< HEAD
+=======
+#define to_pxa25x(g)	(container_of((g), struct pxa25x_udc, gadget))
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -169,10 +183,13 @@ static struct pxa25x_udc *the_controller;
 #ifdef DEBUG
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int is_vbus_present(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *state_name[] = {
 	"EP0_IDLE",
 	"EP0_IN_DATA_PHASE", "EP0_OUT_DATA_PHASE",
@@ -225,11 +242,15 @@ dump_state(struct pxa25x_udc *dev)
 	unsigned	i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DMSG("%s %s, uicr %02X.%02X, usir %02X.%02x, ufnr %02X.%02X\n",
 		is_vbus_present() ? "host " : "disconnected",
 =======
 	DMSG("%s, uicr %02X.%02X, usir %02X.%02x, ufnr %02X.%02X\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DMSG("%s, uicr %02X.%02X, usir %02X.%02x, ufnr %02X.%02X\n",
+>>>>>>> refs/remotes/origin/master
 		state_name[dev->ep0state],
 		UICR1, UICR0, USIR1, USIR0, UFNRH, UFNRL);
 	dump_udccr("udccr");
@@ -247,18 +268,25 @@ dump_state(struct pxa25x_udc *dev)
 		DMSG("ep0 driver '%s'\n", dev->driver->driver.name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!is_vbus_present())
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dump_udccs0 ("udccs0");
 	DMSG("ep0 IN %lu/%lu, OUT %lu/%lu\n",
 		dev->stats.write.bytes, dev->stats.write.ops,
 		dev->stats.read.bytes, dev->stats.read.ops);
 
 	for (i = 1; i < PXA_UDC_NUM_ENDPOINTS; i++) {
+<<<<<<< HEAD
 		if (dev->ep [i].desc == NULL)
+=======
+		if (dev->ep[i].ep.desc == NULL)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		DMSG ("udccs%d = %02x\n", i, *dev->ep->reg_udccs);
 	}

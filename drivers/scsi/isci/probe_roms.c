@@ -111,6 +111,7 @@ struct isci_orom *isci_request_oprom(struct pci_dev *pdev)
 	return rom;
 }
 
+<<<<<<< HEAD
 enum sci_status isci_parse_oem_parameters(struct sci_oem_params *oem,
 					  struct isci_orom *orom, int scu_index)
 {
@@ -123,6 +124,8 @@ enum sci_status isci_parse_oem_parameters(struct sci_oem_params *oem,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct isci_orom *isci_request_firmware(struct pci_dev *pdev, const struct firmware *fw)
 {
 	struct isci_orom *orom = NULL, *data;
@@ -147,10 +150,14 @@ struct isci_orom *isci_request_firmware(struct pci_dev *pdev, const struct firmw
 	memcpy(orom, fw->data, fw->size);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_c0(pdev))
 =======
 	if (is_c0(pdev) || is_c1(pdev))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (is_c0(pdev) || is_c1(pdev))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	/*

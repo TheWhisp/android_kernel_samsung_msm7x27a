@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +60,10 @@ ACPI_MODULE_NAME("rscreate")
 /*******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FUNCTION:    acpi_buffer_to_resource
  *
  * PARAMETERS:  aml_buffer          - Pointer to the resource byte stream
@@ -104,7 +111,11 @@ acpi_buffer_to_resource(u8 *aml_buffer,
 
 	/* Perform the AML-to-Resource conversion */
 
+<<<<<<< HEAD
 	status = acpi_ut_walk_aml_resources(aml_buffer, aml_buffer_length,
+=======
+	status = acpi_ut_walk_aml_resources(NULL, aml_buffer, aml_buffer_length,
+>>>>>>> refs/remotes/origin/master
 					    acpi_rs_convert_aml_to_resources,
 					    &current_resource_ptr);
 	if (status == AE_AML_NO_RESOURCE_END_TAG) {
@@ -121,7 +132,10 @@ acpi_buffer_to_resource(u8 *aml_buffer,
 
 /*******************************************************************************
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * FUNCTION:    acpi_rs_create_resource_list
  *
  * PARAMETERS:  aml_buffer          - Pointer to the resource byte stream
@@ -138,15 +152,21 @@ acpi_buffer_to_resource(u8 *aml_buffer,
  *
  ******************************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 acpi_status
 acpi_rs_create_resource_list(union acpi_operand_object *aml_buffer,
 			     struct acpi_buffer *output_buffer)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 acpi_status
 acpi_rs_create_resource_list(union acpi_operand_object *aml_buffer,
 			     struct acpi_buffer * output_buffer)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 
 	acpi_status status;
@@ -187,7 +207,11 @@ acpi_rs_create_resource_list(union acpi_operand_object *aml_buffer,
 	/* Do the conversion */
 
 	resource = output_buffer->pointer;
+<<<<<<< HEAD
 	status = acpi_ut_walk_aml_resources(aml_start, aml_buffer_length,
+=======
+	status = acpi_ut_walk_aml_resources(NULL, aml_start, aml_buffer_length,
+>>>>>>> refs/remotes/origin/master
 					    acpi_rs_convert_aml_to_resources,
 					    &resource);
 	if (ACPI_FAILURE(status)) {
@@ -203,8 +227,13 @@ acpi_rs_create_resource_list(union acpi_operand_object *aml_buffer,
  *
  * FUNCTION:    acpi_rs_create_pci_routing_table
  *
+<<<<<<< HEAD
  * PARAMETERS:  package_object          - Pointer to a union acpi_operand_object
  *                                        package
+=======
+ * PARAMETERS:  package_object          - Pointer to a package containing one
+ *                                        of more ACPI_OPERAND_OBJECTs
+>>>>>>> refs/remotes/origin/master
  *              output_buffer           - Pointer to the user's buffer
  *
  * RETURN:      Status  AE_OK if okay, else a valid acpi_status code.
@@ -212,7 +241,11 @@ acpi_rs_create_resource_list(union acpi_operand_object *aml_buffer,
  *              AE_BUFFER_OVERFLOW and output_buffer->Length will point
  *              to the size buffer needed.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Takes the union acpi_operand_object    package and creates a
+=======
+ * DESCRIPTION: Takes the union acpi_operand_object package and creates a
+>>>>>>> refs/remotes/origin/master
  *              linked list of PCI interrupt descriptions
  *
  * NOTE: It is the caller's responsibility to ensure that the start of the
@@ -286,6 +319,7 @@ acpi_rs_create_pci_routing_table(union acpi_operand_object *package_object,
 		 */
 		user_prt->length = (sizeof(struct acpi_pci_routing_table) - 4);
 
+<<<<<<< HEAD
 		/* Each element of the top-level package must also be a package */
 
 		if ((*top_object_list)->common.type != ACPI_TYPE_PACKAGE) {
@@ -297,6 +331,8 @@ acpi_rs_create_pci_routing_table(union acpi_operand_object *package_object,
 			return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Each sub-package must be of length 4 */
 
 		if ((*top_object_list)->package.count != 4) {
@@ -340,6 +376,7 @@ acpi_rs_create_pci_routing_table(union acpi_operand_object *package_object,
 		user_prt->pin = (u32) obj_desc->integer.value;
 
 		/*
+<<<<<<< HEAD
 		 * If the BIOS has erroneously reversed the _PRT source_name (index 2)
 		 * and the source_index (index 3), fix it. _PRT is important enough to
 		 * workaround this BIOS error. This also provides compatibility with
@@ -356,6 +393,8 @@ acpi_rs_create_pci_routing_table(union acpi_operand_object *package_object,
 		}
 
 		/*
+=======
+>>>>>>> refs/remotes/origin/master
 		 * 3) Third subobject: Dereference the PRT.source_name
 		 * The name may be unresolved (slack mode), so allow a null object
 		 */
@@ -458,22 +497,36 @@ acpi_rs_create_pci_routing_table(union acpi_operand_object *package_object,
  *
  * FUNCTION:    acpi_rs_create_aml_resources
  *
+<<<<<<< HEAD
  * PARAMETERS:  linked_list_buffer      - Pointer to the resource linked list
  *              output_buffer           - Pointer to the user's buffer
+=======
+ * PARAMETERS:  resource_list           - Pointer to the resource list buffer
+ *              output_buffer           - Where the AML buffer is returned
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status  AE_OK if okay, else a valid acpi_status code.
  *              If the output_buffer is too small, the error will be
  *              AE_BUFFER_OVERFLOW and output_buffer->Length will point
  *              to the size buffer needed.
  *
+<<<<<<< HEAD
  * DESCRIPTION: Takes the linked list of device resources and
  *              creates a bytestream to be used as input for the
  *              _SRS control method.
+=======
+ * DESCRIPTION: Converts a list of device resources to an AML bytestream
+ *              to be used as input for the _SRS control method.
+>>>>>>> refs/remotes/origin/master
  *
  ******************************************************************************/
 
 acpi_status
+<<<<<<< HEAD
 acpi_rs_create_aml_resources(struct acpi_resource *linked_list_buffer,
+=======
+acpi_rs_create_aml_resources(struct acpi_buffer *resource_list,
+>>>>>>> refs/remotes/origin/master
 			     struct acpi_buffer *output_buffer)
 {
 	acpi_status status;
@@ -481,6 +534,7 @@ acpi_rs_create_aml_resources(struct acpi_resource *linked_list_buffer,
 
 	ACPI_FUNCTION_TRACE(rs_create_aml_resources);
 
+<<<<<<< HEAD
 	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "LinkedListBuffer = %p\n",
 			  linked_list_buffer));
 
@@ -495,6 +549,21 @@ acpi_rs_create_aml_resources(struct acpi_resource *linked_list_buffer,
 	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "AmlSizeNeeded=%X, %s\n",
 			  (u32) aml_size_needed,
 			  acpi_format_exception(status)));
+=======
+	/* Params already validated, no need to re-validate here */
+
+	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "ResourceList Buffer = %p\n",
+			  resource_list->pointer));
+
+	/* Get the buffer size needed for the AML byte stream */
+
+	status = acpi_rs_get_aml_length(resource_list->pointer,
+					resource_list->length,
+					&aml_size_needed);
+
+	ACPI_DEBUG_PRINT((ACPI_DB_INFO, "AmlSizeNeeded=%X, %s\n",
+			  (u32)aml_size_needed, acpi_format_exception(status)));
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
 	}
@@ -508,10 +577,16 @@ acpi_rs_create_aml_resources(struct acpi_resource *linked_list_buffer,
 
 	/* Do the conversion */
 
+<<<<<<< HEAD
 	status =
 	    acpi_rs_convert_resources_to_aml(linked_list_buffer,
 					     aml_size_needed,
 					     output_buffer->pointer);
+=======
+	status = acpi_rs_convert_resources_to_aml(resource_list->pointer,
+						  aml_size_needed,
+						  output_buffer->pointer);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
 	}

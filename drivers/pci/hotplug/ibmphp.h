@@ -59,7 +59,11 @@ extern int ibmphp_debug;
 
 
 /************************************************************
+<<<<<<< HEAD
 *  RESOURE TYPE                                             *
+=======
+*  RESOURCE TYPE                                             *
+>>>>>>> refs/remotes/origin/master
 ************************************************************/
 
 #define EBDA_RSRC_TYPE_MASK		0x03
@@ -103,7 +107,11 @@ extern int ibmphp_debug;
 //--------------------------------------------------------------
 
 struct rio_table_hdr {
+<<<<<<< HEAD
 	u8 ver_num; 
+=======
+	u8 ver_num;
+>>>>>>> refs/remotes/origin/master
 	u8 scal_count;
 	u8 riodev_count;
 	u16 offset;
@@ -127,7 +135,11 @@ struct scal_detail {
 };
 
 //--------------------------------------------------------------
+<<<<<<< HEAD
 // RIO DETAIL 
+=======
+// RIO DETAIL
+>>>>>>> refs/remotes/origin/master
 //--------------------------------------------------------------
 
 struct rio_detail {
@@ -152,7 +164,11 @@ struct opt_rio {
 	u8 first_slot_num;
 	u8 middle_num;
 	struct list_head opt_rio_list;
+<<<<<<< HEAD
 };	
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 struct opt_rio_lo {
 	u8 rio_type;
@@ -161,7 +177,11 @@ struct opt_rio_lo {
 	u8 middle_num;
 	u8 pack_count;
 	struct list_head opt_rio_lo_list;
+<<<<<<< HEAD
 };	
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 /****************************************************************
 *  HPC DESCRIPTOR NODE                                          *
@@ -275,6 +295,7 @@ extern struct list_head ibmphp_slot_head;
 * FUNCTION PROTOTYPES                                      *
 ***********************************************************/
 
+<<<<<<< HEAD
 extern void ibmphp_free_ebda_hpc_queue (void);
 extern int ibmphp_access_ebda (void);
 extern struct slot *ibmphp_get_slot_from_physical_num (u8);
@@ -286,6 +307,19 @@ extern struct bus_info *ibmphp_find_same_bus_num (u32);
 extern int ibmphp_get_bus_index (u8);
 extern u16 ibmphp_get_total_controllers (void);
 extern int ibmphp_register_pci (void);
+=======
+void ibmphp_free_ebda_hpc_queue(void);
+int ibmphp_access_ebda(void);
+struct slot *ibmphp_get_slot_from_physical_num(u8);
+int ibmphp_get_total_hp_slots(void);
+void ibmphp_free_ibm_slot(struct slot *);
+void ibmphp_free_bus_info_queue(void);
+void ibmphp_free_ebda_pci_rsrc_queue(void);
+struct bus_info *ibmphp_find_same_bus_num(u32);
+int ibmphp_get_bus_index(u8);
+u16 ibmphp_get_total_controllers(void);
+int ibmphp_register_pci(void);
+>>>>>>> refs/remotes/origin/master
 
 /* passed parameters */
 #define MEM		0
@@ -381,6 +415,7 @@ struct res_needed {
 
 /* functions */
 
+<<<<<<< HEAD
 extern int ibmphp_rsrc_init (void);
 extern int ibmphp_add_resource (struct resource_node *);
 extern int ibmphp_remove_resource (struct resource_node *);
@@ -399,6 +434,26 @@ extern void ibmphp_lock_operations (void);
 extern void ibmphp_unlock_operations (void);
 extern int ibmphp_hpc_start_poll_thread (void);
 extern void ibmphp_hpc_stop_poll_thread (void);
+=======
+int ibmphp_rsrc_init(void);
+int ibmphp_add_resource(struct resource_node *);
+int ibmphp_remove_resource(struct resource_node *);
+int ibmphp_find_resource(struct bus_node *, u32, struct resource_node **, int);
+int ibmphp_check_resource(struct resource_node *, u8);
+int ibmphp_remove_bus(struct bus_node *, u8);
+void ibmphp_free_resources(void);
+int ibmphp_add_pfmem_from_mem(struct resource_node *);
+struct bus_node *ibmphp_find_res_bus(u8);
+void ibmphp_print_test(void);	/* for debugging purposes */
+
+void ibmphp_hpc_initvars(void);
+int ibmphp_hpc_readslot(struct slot *, u8, u8 *);
+int ibmphp_hpc_writeslot(struct slot *, u8);
+void ibmphp_lock_operations(void);
+void ibmphp_unlock_operations(void);
+int ibmphp_hpc_start_poll_thread(void);
+void ibmphp_hpc_stop_poll_thread(void);
+>>>>>>> refs/remotes/origin/master
 
 //----------------------------------------------------------------------------
 
@@ -574,7 +629,11 @@ extern void ibmphp_hpc_stop_poll_thread (void);
 #define HPC_CTLR_IRQ_PENDG	0x80
 
 //----------------------------------------------------------------------------
+<<<<<<< HEAD
 // HPC_CTLR_WROKING status return codes
+=======
+// HPC_CTLR_WORKING status return codes
+>>>>>>> refs/remotes/origin/master
 //----------------------------------------------------------------------------
 #define HPC_CTLR_WORKING_NO	0x00
 #define HPC_CTLR_WORKING_YES	0x01
@@ -749,11 +808,19 @@ struct controller {
 
 /* Functions */
 
+<<<<<<< HEAD
 extern int ibmphp_init_devno (struct slot **);	/* This function is called from EBDA, so we need it not be static */
 extern int ibmphp_do_disable_slot (struct slot *slot_cur);
 extern int ibmphp_update_slot_info (struct slot *);	/* This function is called from HPC, so we need it to not be be static */
 extern int ibmphp_configure_card (struct pci_func *, u8);
 extern int ibmphp_unconfigure_card (struct slot **, int);
+=======
+int ibmphp_init_devno(struct slot **);	/* This function is called from EBDA, so we need it not be static */
+int ibmphp_do_disable_slot(struct slot *slot_cur);
+int ibmphp_update_slot_info(struct slot *);	/* This function is called from HPC, so we need it to not be be static */
+int ibmphp_configure_card(struct pci_func *, u8);
+int ibmphp_unconfigure_card(struct slot **, int);
+>>>>>>> refs/remotes/origin/master
 extern struct hotplug_slot_ops ibmphp_hotplug_slot_ops;
 
 #endif				//__IBMPHP_H

@@ -16,6 +16,7 @@
 /*
  * User-level device driver visible types
  */
+<<<<<<< HEAD
 typedef char            xwidgetnum_t;	/* xtalk widget number  (0..15) */
 
 #define XWIDGET_NONE		-1
@@ -25,6 +26,17 @@ typedef int xwidget_part_num_t;	/* xtalk widget part number */
 #define XWIDGET_PART_NUM_NONE	-1
 
 typedef int             xwidget_rev_num_t;	/* xtalk widget revision number */
+=======
+typedef char		xwidgetnum_t;	/* xtalk widget number	(0..15) */
+
+#define XWIDGET_NONE		-1
+
+typedef int xwidget_part_num_t; /* xtalk widget part number */
+
+#define XWIDGET_PART_NUM_NONE	-1
+
+typedef int		xwidget_rev_num_t;	/* xtalk widget revision number */
+>>>>>>> refs/remotes/origin/master
 
 #define XWIDGET_REV_NUM_NONE	-1
 
@@ -37,6 +49,7 @@ typedef struct xtalk_piomap_s *xtalk_piomap_t;
 /* It is often convenient to fold the XIO target port
  * number into the XIO address.
  */
+<<<<<<< HEAD
 #define	XIO_NOWHERE	(0xFFFFFFFFFFFFFFFFull)
 #define	XIO_ADDR_BITS	(0x0000FFFFFFFFFFFFull)
 #define	XIO_PORT_BITS	(0xF000000000000000ull)
@@ -46,6 +59,26 @@ typedef struct xtalk_piomap_s *xtalk_piomap_t;
 #define	XIO_ADDR(x)	((x)&XIO_ADDR_BITS)
 #define	XIO_PORT(x)	((xwidgetnum_t)(((x)&XIO_PORT_BITS) >> XIO_PORT_SHIFT))
 #define	XIO_PACK(p, o)	((((uint64_t)(p))<<XIO_PORT_SHIFT) | ((o)&XIO_ADDR_BITS))
+=======
+#define XIO_NOWHERE	(0xFFFFFFFFFFFFFFFFull)
+#define XIO_ADDR_BITS	(0x0000FFFFFFFFFFFFull)
+#define XIO_PORT_BITS	(0xF000000000000000ull)
+#define XIO_PORT_SHIFT	(60)
+
+#define XIO_PACKED(x)	(((x)&XIO_PORT_BITS) != 0)
+#define XIO_ADDR(x)	((x)&XIO_ADDR_BITS)
+#define XIO_PORT(x)	((xwidgetnum_t)(((x)&XIO_PORT_BITS) >> XIO_PORT_SHIFT))
+#define XIO_PACK(p, o)	((((uint64_t)(p))<<XIO_PORT_SHIFT) | ((o)&XIO_ADDR_BITS))
+
+#ifdef CONFIG_PCI
+extern int bridge_probe(nasid_t nasid, int widget, int masterwid);
+#else
+static inline int bridge_probe(nasid_t nasid, int widget, int masterwid)
+{
+	return 0;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !__ASSEMBLY__ */
 

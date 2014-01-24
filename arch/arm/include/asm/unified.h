@@ -38,12 +38,19 @@
 #ifdef __ASSEMBLY__
 #define W(instr)	instr.w
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 #define BSYM(sym)	sym + 1
 =======
 #define BSYM(sym)	sym + 1
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BSYM(sym)	sym + 1
+#else
+#define WASM(instr)	#instr ".w"
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #else	/* !CONFIG_THUMB2_KERNEL */
 
@@ -55,12 +62,19 @@
 #ifdef __ASSEMBLY__
 #define W(instr)	instr
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 #define BSYM(sym)	sym
 =======
 #define BSYM(sym)	sym
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BSYM(sym)	sym
+#else
+#define WASM(instr)	#instr
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* CONFIG_THUMB2_KERNEL */
 

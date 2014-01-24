@@ -37,18 +37,26 @@ enum bfi_port_i2h {
 	BFI_PORT_I2H_CLEAR_STATS_RSP	= BFA_I2HM(4),
 };
 
+<<<<<<< HEAD
 /**
  * Generic REQ type
  */
+=======
+/* Generic REQ type */
+>>>>>>> refs/remotes/origin/master
 struct bfi_port_generic_req {
 	struct bfi_mhdr mh;		/*!< msg header			    */
 	u32	msgtag;		/*!< msgtag for reply		    */
 	u32	rsvd;
 };
 
+<<<<<<< HEAD
 /**
  * Generic RSP type
  */
+=======
+/* Generic RSP type */
+>>>>>>> refs/remotes/origin/master
 struct bfi_port_generic_rsp {
 	struct bfi_mhdr mh;		/*!< common msg header		    */
 	u8		status;		/*!< port enable status		    */
@@ -56,6 +64,7 @@ struct bfi_port_generic_rsp {
 	u32	msgtag;		/*!< msgtag for reply		    */
 };
 
+<<<<<<< HEAD
 /**
  * @todo
  * BFI_PORT_H2I_ENABLE_REQ
@@ -77,11 +86,15 @@ struct bfi_port_generic_rsp {
 /**
  * BFI_PORT_H2I_GET_STATS_REQ
  */
+=======
+/* BFI_PORT_H2I_GET_STATS_REQ */
+>>>>>>> refs/remotes/origin/master
 struct bfi_port_get_stats_req {
 	struct bfi_mhdr mh;		/*!< common msg header		    */
 	union bfi_addr_u   dma_addr;
 };
 
+<<<<<<< HEAD
 /**
  * BFI_PORT_I2H_GET_STATS_RSP
  */
@@ -94,6 +107,8 @@ struct bfi_port_get_stats_req {
  * BFI_PORT_I2H_CLEAR_STATS_RSP
  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 union bfi_port_h2i_msg_u {
 	struct bfi_mhdr mh;
 	struct bfi_port_generic_req enable_req;

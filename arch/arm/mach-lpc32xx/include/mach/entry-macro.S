@@ -22,21 +22,27 @@
 #define LPC32XX_INTC_MASKED_STATUS_OFS	0x8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.macro	disable_fiq
 	.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro  get_irqnr_preamble, base, tmp
 	ldr	\base, =IO_ADDRESS(LPC32XX_MIC_BASE)
 	.endm
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.macro  arch_ret_to_user, tmp1, tmp2
 	.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Return IRQ number in irqnr. Also return processor Z flag status in CPSR
  * as set if an interrupt is pending.
@@ -48,9 +54,12 @@
 	teq	\irqstat, #0
 	.endm
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	.macro	irq_prio_table
 	.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

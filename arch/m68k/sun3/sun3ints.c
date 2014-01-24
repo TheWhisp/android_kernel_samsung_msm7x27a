@@ -52,38 +52,53 @@ void sun3_disable_irq(unsigned int irq)
 static irqreturn_t sun3_int7(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*sun3_intreg |=  (1 << irq);
 	if (!(kstat_cpu(0).irqs[irq] % 2000))
 		sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 16000) / 2000]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int cnt;
 
 	cnt = kstat_irqs_cpu(irq, 0);
 	if (!(cnt % 2000))
 		sun3_leds(led_pattern[cnt % 16000 / 2000]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
 static irqreturn_t sun3_int5(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SUN3
 	intersil_clear();
 #endif
         *sun3_intreg |=  (1 << irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int cnt;
 
 #ifdef CONFIG_SUN3
 	intersil_clear();
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sun3_disable_irq(5);
+	sun3_enable_irq(5);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SUN3
 	intersil_clear();
 #endif
 	xtime_update(1);
 	update_process_times(user_mode(get_irq_regs()));
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (!(kstat_cpu(0).irqs[irq] % 20))
                 sun3_leds(led_pattern[(kstat_cpu(0).irqs[irq] % 160) / 20]);
@@ -92,11 +107,17 @@ static irqreturn_t sun3_int5(int irq, void *dev_id)
 	if (!(cnt % 20))
 		sun3_leds(led_pattern[cnt % 160 / 20]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cnt = kstat_irqs_cpu(irq, 0);
+	if (!(cnt % 20))
+		sun3_leds(led_pattern[cnt % 160 / 20]);
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
 static irqreturn_t sun3_vec255(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 //	intersil_clear();
 	return IRQ_HANDLED;
 }
@@ -138,10 +159,16 @@ static struct irq_chip sun3_irq_chip = {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+	return IRQ_HANDLED;
+}
+
+>>>>>>> refs/remotes/origin/master
 void __init sun3_init_IRQ(void)
 {
 	*sun3_intreg = 1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	m68k_setup_auto_interrupt(sun3_inthandle);
 	m68k_setup_irq_controller(&sun3_irq_controller, IRQ_AUTO_1, 7);
@@ -155,6 +182,13 @@ void __init sun3_init_IRQ(void)
 	if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "int5", NULL))
 		pr_err("Couldn't register %s interrupt\n", "int5");
 	if (request_irq(IRQ_AUTO_7, sun3_int7, 0, "int7", NULL))
+=======
+	m68k_setup_user_interrupt(VEC_USER, 128);
+
+	if (request_irq(IRQ_AUTO_5, sun3_int5, 0, "clock", NULL))
+		pr_err("Couldn't register %s interrupt\n", "int5");
+	if (request_irq(IRQ_AUTO_7, sun3_int7, 0, "nmi", NULL))
+>>>>>>> refs/remotes/origin/master
 		pr_err("Couldn't register %s interrupt\n", "int7");
 	if (request_irq(IRQ_USER+127, sun3_vec255, 0, "vec255", NULL))
 		pr_err("Couldn't register %s interrupt\n", "vec255");

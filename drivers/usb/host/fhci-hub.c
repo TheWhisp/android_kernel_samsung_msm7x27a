@@ -97,7 +97,11 @@ void fhci_port_disable(struct fhci_hcd *fhci)
 
 	/* Enable IDLE since we want to know if something comes along */
 	usb->saved_msk |= USB_E_IDLE_MASK;
+<<<<<<< HEAD
 	out_be16(&usb->fhci->regs->usb_mask, usb->saved_msk);
+=======
+	out_be16(&usb->fhci->regs->usb_usbmr, usb->saved_msk);
+>>>>>>> refs/remotes/origin/master
 
 	/* check if during the disconnection process attached new device */
 	if (port_status == FHCI_PORT_WAITING)
@@ -158,21 +162,38 @@ void fhci_port_reset(void *lld)
 
 	fhci_stop_sof_timer(fhci);
 	/* disable the USB controller */
+<<<<<<< HEAD
 	mode = in_8(&fhci->regs->usb_mod);
 	out_8(&fhci->regs->usb_mod, mode & (~USB_MODE_EN));
 
 	/* disable idle interrupts */
 	mask = in_be16(&fhci->regs->usb_mask);
 	out_be16(&fhci->regs->usb_mask, mask & (~USB_E_IDLE_MASK));
+=======
+	mode = in_8(&fhci->regs->usb_usmod);
+	out_8(&fhci->regs->usb_usmod, mode & (~USB_MODE_EN));
+
+	/* disable idle interrupts */
+	mask = in_be16(&fhci->regs->usb_usbmr);
+	out_be16(&fhci->regs->usb_usbmr, mask & (~USB_E_IDLE_MASK));
+>>>>>>> refs/remotes/origin/master
 
 	fhci_io_port_generate_reset(fhci);
 
 	/* enable interrupt on this endpoint */
+<<<<<<< HEAD
 	out_be16(&fhci->regs->usb_mask, mask);
 
 	/* enable the USB controller */
 	mode = in_8(&fhci->regs->usb_mod);
 	out_8(&fhci->regs->usb_mod, mode | USB_MODE_EN);
+=======
+	out_be16(&fhci->regs->usb_usbmr, mask);
+
+	/* enable the USB controller */
+	mode = in_8(&fhci->regs->usb_usmod);
+	out_8(&fhci->regs->usb_usmod, mode | USB_MODE_EN);
+>>>>>>> refs/remotes/origin/master
 	fhci_start_sof_timer(fhci);
 
 	fhci_dbg(fhci, "<- %s\n", __func__);

@@ -12,7 +12,11 @@
 #define u32 uint32_t
 #endif
 
+<<<<<<< HEAD
 #include "sysdep/ptrace.h"
+=======
+#include <sysdep/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 #define MCONSOLE_MAGIC (0xcafebabe)
 #define MCONSOLE_MAX_DATA (512)

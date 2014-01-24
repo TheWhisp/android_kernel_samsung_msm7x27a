@@ -26,7 +26,10 @@
 static struct clk *cpu_clk;
 static struct clk *dmc0_clk;
 static struct clk *dmc1_clk;
+<<<<<<< HEAD
 static struct cpufreq_freqs freqs;
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_MUTEX(set_freq_lock);
 
 /* APLL M,P,S values for 1G/800Mhz */
@@ -36,6 +39,7 @@ static DEFINE_MUTEX(set_freq_lock);
 /* Use 800MHz when entering sleep mode */
 #define SLEEP_FREQ	(800 * 1000)
 
+<<<<<<< HEAD
 /*
  * relation has an additional symantics other than the standard of cpufreq
  * DISALBE_FURTHER_CPUFREQ: disable further access to target
@@ -46,6 +50,9 @@ enum cpufreq_access {
 	ENABLE_FURTHER_CPUFREQ = 0x20,
 };
 
+=======
+/* Tracks if cpu freqency can be updated anymore */
+>>>>>>> refs/remotes/origin/master
 static bool no_cpufreq_access;
 
 /*
@@ -174,6 +181,7 @@ static void s5pv210_set_refresh(enum s5pv210_dmc_port ch, unsigned long freq)
 	__raw_writel(tmp1, reg);
 }
 
+<<<<<<< HEAD
 static int s5pv210_verify_speed(struct cpufreq_policy *policy)
 {
 	if (policy->cpu)
@@ -182,6 +190,8 @@ static int s5pv210_verify_speed(struct cpufreq_policy *policy)
 	return cpufreq_frequency_table_verify(policy, s5pv210_freq_table);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int s5pv210_getspeed(unsigned int cpu)
 {
 	if (cpu)
@@ -190,6 +200,7 @@ static unsigned int s5pv210_getspeed(unsigned int cpu)
 	return clk_get_rate(cpu_clk) / 1000;
 }
 
+<<<<<<< HEAD
 static int s5pv210_target(struct cpufreq_policy *policy,
 			  unsigned int target_freq,
 			  unsigned int relation)
@@ -198,14 +209,26 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 	unsigned int index, priv_index;
 	unsigned int pll_changing = 0;
 	unsigned int bus_speed_changing = 0;
+=======
+static int s5pv210_target(struct cpufreq_policy *policy, unsigned int index)
+{
+	unsigned long reg;
+	unsigned int priv_index;
+	unsigned int pll_changing = 0;
+	unsigned int bus_speed_changing = 0;
+	unsigned int old_freq, new_freq;
+>>>>>>> refs/remotes/origin/master
 	int arm_volt, int_volt;
 	int ret = 0;
 
 	mutex_lock(&set_freq_lock);
 
+<<<<<<< HEAD
 	if (relation & ENABLE_FURTHER_CPUFREQ)
 		no_cpufreq_access = false;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (no_cpufreq_access) {
 #ifdef CONFIG_PM_VERBOSE
 		pr_err("%s:%d denied access to %s as it is disabled"
@@ -215,6 +238,7 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 		goto exit;
 	}
 
+<<<<<<< HEAD
 	if (relation & DISABLE_FURTHER_CPUFREQ)
 		no_cpufreq_access = true;
 
@@ -237,6 +261,15 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 	/* Finding current running level index */
 	if (cpufreq_frequency_table_target(policy, s5pv210_freq_table,
 					   freqs.old, relation, &priv_index)) {
+=======
+	old_freq = s5pv210_getspeed(0);
+	new_freq = s5pv210_freq_table[index].frequency;
+
+	/* Finding current running level index */
+	if (cpufreq_frequency_table_target(policy, s5pv210_freq_table,
+					   old_freq, CPUFREQ_RELATION_H,
+					   &priv_index)) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto exit;
 	}
@@ -244,7 +277,11 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 	arm_volt = dvs_conf[index].arm_volt;
 	int_volt = dvs_conf[index].int_volt;
 
+<<<<<<< HEAD
 	if (freqs.new > freqs.old) {
+=======
+	if (new_freq > old_freq) {
+>>>>>>> refs/remotes/origin/master
 		ret = regulator_set_voltage(arm_regulator,
 				arm_volt, arm_volt_max);
 		if (ret)
@@ -256,8 +293,11 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 			goto exit;
 	}
 
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check if there need to change PLL */
 	if ((index == L0) || (priv_index == L0))
 		pll_changing = 1;
@@ -468,9 +508,13 @@ static int s5pv210_target(struct cpufreq_policy *policy,
 		}
 	}
 
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
 
 	if (freqs.new < freqs.old) {
+=======
+	if (new_freq < old_freq) {
+>>>>>>> refs/remotes/origin/master
 		regulator_set_voltage(int_regulator,
 				int_volt, int_volt_max);
 
@@ -552,6 +596,7 @@ static int __init s5pv210_cpu_init(struct cpufreq_policy *policy)
 	s5pv210_dram_conf[1].refresh = (__raw_readl(S5P_VA_DMC1 + 0x30) * 1000);
 	s5pv210_dram_conf[1].freq = clk_get_rate(dmc1_clk);
 
+<<<<<<< HEAD
 	policy->cur = policy->min = policy->max = s5pv210_getspeed(0);
 
 	cpufreq_frequency_table_get_attr(s5pv210_freq_table, policy->cpu);
@@ -559,6 +604,9 @@ static int __init s5pv210_cpu_init(struct cpufreq_policy *policy)
 	policy->cpuinfo.transition_latency = 40000;
 
 	return cpufreq_frequency_table_cpuinfo(policy, s5pv210_freq_table);
+=======
+	return cpufreq_generic_init(policy, s5pv210_freq_table, 40000);
+>>>>>>> refs/remotes/origin/master
 
 out_dmc1:
 	clk_put(dmc0_clk);
@@ -574,6 +622,7 @@ static int s5pv210_cpufreq_notifier_event(struct notifier_block *this,
 
 	switch (event) {
 	case PM_SUSPEND_PREPARE:
+<<<<<<< HEAD
 		ret = cpufreq_driver_target(cpufreq_cpu_get(0), SLEEP_FREQ,
 					    DISABLE_FURTHER_CPUFREQ);
 		if (ret < 0)
@@ -584,6 +633,20 @@ static int s5pv210_cpufreq_notifier_event(struct notifier_block *this,
 	case PM_POST_SUSPEND:
 		cpufreq_driver_target(cpufreq_cpu_get(0), SLEEP_FREQ,
 				      ENABLE_FURTHER_CPUFREQ);
+=======
+		ret = cpufreq_driver_target(cpufreq_cpu_get(0), SLEEP_FREQ, 0);
+		if (ret < 0)
+			return NOTIFY_BAD;
+
+		/* Disable updation of cpu frequency */
+		no_cpufreq_access = true;
+		return NOTIFY_OK;
+	case PM_POST_RESTORE:
+	case PM_POST_SUSPEND:
+		/* Enable updation of cpu frequency */
+		no_cpufreq_access = false;
+		cpufreq_driver_target(cpufreq_cpu_get(0), SLEEP_FREQ, 0);
+>>>>>>> refs/remotes/origin/master
 
 		return NOTIFY_OK;
 	}
@@ -596,18 +659,31 @@ static int s5pv210_cpufreq_reboot_notifier_event(struct notifier_block *this,
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = cpufreq_driver_target(cpufreq_cpu_get(0), SLEEP_FREQ,
 				    DISABLE_FURTHER_CPUFREQ);
 	if (ret < 0)
 		return NOTIFY_BAD;
 
+=======
+	ret = cpufreq_driver_target(cpufreq_cpu_get(0), SLEEP_FREQ, 0);
+	if (ret < 0)
+		return NOTIFY_BAD;
+
+	no_cpufreq_access = true;
+>>>>>>> refs/remotes/origin/master
 	return NOTIFY_DONE;
 }
 
 static struct cpufreq_driver s5pv210_driver = {
 	.flags		= CPUFREQ_STICKY,
+<<<<<<< HEAD
 	.verify		= s5pv210_verify_speed,
 	.target		= s5pv210_target,
+=======
+	.verify		= cpufreq_generic_frequency_table_verify,
+	.target_index	= s5pv210_target,
+>>>>>>> refs/remotes/origin/master
 	.get		= s5pv210_getspeed,
 	.init		= s5pv210_cpu_init,
 	.name		= "s5pv210",

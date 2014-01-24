@@ -28,9 +28,14 @@
  *    Gareth Hughes <gareth@valinux.com>
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "r128_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/r128_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "r128_drv.h"
 
 /* ================================================================
@@ -1644,7 +1649,11 @@ void r128_driver_lastclose(struct drm_device *dev)
 	r128_do_cleanup_cce(dev);
 }
 
+<<<<<<< HEAD
 struct drm_ioctl_desc r128_ioctls[] = {
+=======
+const struct drm_ioctl_desc r128_ioctls[] = {
+>>>>>>> refs/remotes/origin/master
 	DRM_IOCTL_DEF_DRV(R128_INIT, r128_cce_init, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 	DRM_IOCTL_DEF_DRV(R128_CCE_START, r128_cce_start, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 	DRM_IOCTL_DEF_DRV(R128_CCE_STOP, r128_cce_stop, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),

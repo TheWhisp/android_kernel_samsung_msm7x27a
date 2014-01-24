@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -51,6 +55,7 @@ u32 rtl92c_phy_query_rf_reg(struct ieee80211_hw *hw,
 	u32 original_value, readback_value, bitshift;
 	struct rtl_phy *rtlphy = &(rtlpriv->phy);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE, ("regaddr(%#x), "
@@ -59,13 +64,18 @@ u32 rtl92c_phy_query_rf_reg(struct ieee80211_hw *hw,
 
 	spin_lock_irqsave(&rtlpriv->locks.rf_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE,
 		 "regaddr(%#x), rfpath(%#x), bitmask(%#x)\n",
 		 regaddr, rfpath, bitmask);
 
 	spin_lock(&rtlpriv->locks.rf_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (rtlphy->rf_mode != RF_OP_BY_FW) {
 		original_value = _rtl92c_phy_rf_serial_read(hw,
@@ -79,6 +89,7 @@ u32 rtl92c_phy_query_rf_reg(struct ieee80211_hw *hw,
 	readback_value = (original_value & bitmask) >> bitshift;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rtlpriv->locks.rf_lock, flags);
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE,
@@ -86,12 +97,17 @@ u32 rtl92c_phy_query_rf_reg(struct ieee80211_hw *hw,
 		  "bitmask(%#x), original_value(%#x)\n",
 		  regaddr, rfpath, bitmask, original_value));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&rtlpriv->locks.rf_lock);
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE,
 		 "regaddr(%#x), rfpath(%#x), bitmask(%#x), original_value(%#x)\n",
 		 regaddr, rfpath, bitmask, original_value);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return readback_value;
 }
@@ -105,6 +121,11 @@ bool rtl92c_phy_mac_config(struct ieee80211_hw *hw)
 
 	if (is92c)
 		rtl_write_byte(rtlpriv, 0x14, 0x71);
+<<<<<<< HEAD
+=======
+	else
+		rtl_write_byte(rtlpriv, 0x04CA, 0x0A);
+>>>>>>> refs/remotes/origin/master
 	return rtstatus;
 }
 
@@ -142,6 +163,7 @@ void rtl92ce_phy_set_rf_reg(struct ieee80211_hw *hw,
 	struct rtl_phy *rtlphy = &(rtlpriv->phy);
 	u32 original_value, bitshift;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE,
@@ -150,13 +172,18 @@ void rtl92ce_phy_set_rf_reg(struct ieee80211_hw *hw,
 
 	spin_lock_irqsave(&rtlpriv->locks.rf_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE,
 		 "regaddr(%#x), bitmask(%#x), data(%#x), rfpath(%#x)\n",
 		 regaddr, bitmask, data, rfpath);
 
 	spin_lock(&rtlpriv->locks.rf_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (rtlphy->rf_mode != RF_OP_BY_FW) {
 		if (bitmask != RFREG_OFFSET_MASK) {
@@ -184,6 +211,7 @@ void rtl92ce_phy_set_rf_reg(struct ieee80211_hw *hw,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&rtlpriv->locks.rf_lock, flags);
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE, ("regaddr(%#x), "
@@ -191,12 +219,17 @@ void rtl92ce_phy_set_rf_reg(struct ieee80211_hw *hw,
 					       "rfpath(%#x)\n", regaddr,
 					       bitmask, data, rfpath));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&rtlpriv->locks.rf_lock);
 
 	RT_TRACE(rtlpriv, COMP_RF, DBG_TRACE,
 		 "regaddr(%#x), bitmask(%#x), data(%#x), rfpath(%#x)\n",
 		 regaddr, bitmask, data, rfpath);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool _rtl92c_phy_config_mac_with_headerfile(struct ieee80211_hw *hw)
@@ -207,17 +240,23 @@ static bool _rtl92c_phy_config_mac_with_headerfile(struct ieee80211_hw *hw)
 	u32 *ptrarray;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE, ("Read Rtl819XMACPHY_Array\n"));
 	arraylength = MAC_2T_ARRAYLENGTH;
 	ptrarray = RTL8192CEMAC_2T_ARRAY;
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 		 ("Img:RTL8192CEMAC_2T_ARRAY\n"));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE, "Read Rtl819XMACPHY_Array\n");
 	arraylength = MAC_2T_ARRAYLENGTH;
 	ptrarray = RTL8192CEMAC_2T_ARRAY;
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE, "Img:RTL8192CEMAC_2T_ARRAY\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < arraylength; i = i + 2)
 		rtl_write_byte(rtlpriv, ptrarray[i], (u8) ptrarray[i + 1]);
 	return true;
@@ -263,6 +302,7 @@ bool _rtl92ce_phy_config_bb_with_headerfile(struct ieee80211_hw *hw,
 			udelay(1);
 			RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 ("The phy_regarray_table[0] is %x"
 				  " Rtl819XPHY_REGArray[1] is %x\n",
 				  phy_regarray_table[i],
@@ -272,6 +312,11 @@ bool _rtl92ce_phy_config_bb_with_headerfile(struct ieee80211_hw *hw,
 				 phy_regarray_table[i],
 				 phy_regarray_table[i + 1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "The phy_regarray_table[0] is %x Rtl819XPHY_REGArray[1] is %x\n",
+				 phy_regarray_table[i],
+				 phy_regarray_table[i + 1]);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (configtype == BASEBAND_CONFIG_AGC_TAB) {
 		for (i = 0; i < agctab_arraylen; i = i + 2) {
@@ -279,6 +324,7 @@ bool _rtl92ce_phy_config_bb_with_headerfile(struct ieee80211_hw *hw,
 				      agctab_array_table[i + 1]);
 			udelay(1);
 			RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 ("The agctab_array_table[0] is "
 				  "%x Rtl819XPHY_REGArray[1] is %x\n",
@@ -289,6 +335,11 @@ bool _rtl92ce_phy_config_bb_with_headerfile(struct ieee80211_hw *hw,
 				 agctab_array_table[i],
 				 agctab_array_table[i + 1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "The agctab_array_table[0] is %x Rtl819XPHY_REGArray[1] is %x\n",
+				 agctab_array_table[i],
+				 agctab_array_table[i + 1]);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return true;
@@ -329,10 +380,14 @@ bool _rtl92ce_phy_config_bb_with_pgheaderfile(struct ieee80211_hw *hw,
 
 		RT_TRACE(rtlpriv, COMP_SEND, DBG_TRACE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("configtype != BaseBand_Config_PHY_REG\n"));
 =======
 			 "configtype != BaseBand_Config_PHY_REG\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "configtype != BaseBand_Config_PHY_REG\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	return true;
 }
@@ -343,9 +398,12 @@ bool rtl92c_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
 
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool rtstatus = true;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 *radioa_array_table;
 	u32 *radiob_array_table;
 	u16 radioa_arraylen, radiob_arraylen;
@@ -359,6 +417,7 @@ bool rtl92c_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
 		radiob_array_table = RTL8192CE_RADIOB_2TARRAY;
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("Radio_A:RTL8192CERADIOA_2TARRAY\n"));
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 			 ("Radio_B:RTL8192CE_RADIOB_2TARRAY\n"));
@@ -367,12 +426,18 @@ bool rtl92c_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 			 "Radio_B:RTL8192CE_RADIOB_2TARRAY\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "Radio_A:RTL8192CERADIOA_2TARRAY\n");
+		RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
+			 "Radio_B:RTL8192CE_RADIOB_2TARRAY\n");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		radioa_arraylen = RADIOA_1TARRAYLENGTH;
 		radioa_array_table = RTL8192CE_RADIOA_1TARRAY;
 		radiob_arraylen = RADIOB_1TARRAYLENGTH;
 		radiob_array_table = RTL8192CE_RADIOB_1TARRAY;
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 ("Radio_A:RTL8192CE_RADIOA_1TARRAY\n"));
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
@@ -381,12 +446,17 @@ bool rtl92c_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE, ("Radio No %x\n", rfpath));
 	rtstatus = true;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 "Radio_A:RTL8192CE_RADIOA_1TARRAY\n");
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE,
 			 "Radio_B:RTL8192CE_RADIOB_1TARRAY\n");
 	}
 	RT_TRACE(rtlpriv, COMP_INIT, DBG_TRACE, "Radio No %x\n", rfpath);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (rfpath) {
 	case RF90_PATH_A:
 		for (i = 0; i < radioa_arraylen; i = i + 2) {
@@ -435,18 +505,24 @@ bool rtl92c_phy_config_rf_with_headerfile(struct ieee80211_hw *hw,
 	case RF90_PATH_C:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("switch case not process\n"));
 		break;
 	case RF90_PATH_D:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 			 ("switch case not process\n"));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			 "switch case not processed\n");
 		break;
 	case RF90_PATH_D:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 			 "switch case not processed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return true;
@@ -462,6 +538,7 @@ void rtl92ce_phy_set_bw_mode_callback(struct ieee80211_hw *hw)
 	u8 reg_prsr_rsc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_SCAN, DBG_TRACE,
 		 ("Switch to %s bandwidth\n",
 		  rtlphy->current_chan_bw == HT_CHANNEL_WIDTH_20 ?
@@ -471,6 +548,11 @@ void rtl92ce_phy_set_bw_mode_callback(struct ieee80211_hw *hw)
 		 rtlphy->current_chan_bw == HT_CHANNEL_WIDTH_20 ?
 		 "20MHz" : "40MHz");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RT_TRACE(rtlpriv, COMP_SCAN, DBG_TRACE, "Switch to %s bandwidth\n",
+		 rtlphy->current_chan_bw == HT_CHANNEL_WIDTH_20 ?
+		 "20MHz" : "40MHz");
+>>>>>>> refs/remotes/origin/master
 
 	if (is_hal_stop(rtlhal)) {
 		rtlphy->set_bwmode_inprogress = false;
@@ -495,10 +577,14 @@ void rtl92ce_phy_set_bw_mode_callback(struct ieee80211_hw *hw)
 	default:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("unknown bandwidth: %#X\n", rtlphy->current_chan_bw));
 =======
 			 "unknown bandwidth: %#X\n", rtlphy->current_chan_bw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "unknown bandwidth: %#X\n", rtlphy->current_chan_bw);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -524,19 +610,27 @@ void rtl92ce_phy_set_bw_mode_callback(struct ieee80211_hw *hw)
 	default:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("unknown bandwidth: %#X\n", rtlphy->current_chan_bw));
 =======
 			 "unknown bandwidth: %#X\n", rtlphy->current_chan_bw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "unknown bandwidth: %#X\n", rtlphy->current_chan_bw);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	rtl92ce_phy_rf6052_set_bandwidth(hw, rtlphy->current_chan_bw);
 	rtlphy->set_bwmode_inprogress = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_SCAN, DBG_TRACE, ("<==\n"));
 =======
 	RT_TRACE(rtlpriv, COMP_SCAN, DBG_TRACE, "<==\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RT_TRACE(rtlpriv, COMP_SCAN, DBG_TRACE, "<==\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 void _rtl92ce_phy_lc_calibrate(struct ieee80211_hw *hw, bool is2t)
@@ -608,10 +702,14 @@ static void _rtl92ce_phy_set_rf_sleep(struct ieee80211_hw *hw)
 		rtl_write_byte(rtlpriv, REG_TXPAUSE, 0x00);
 		RT_TRACE(rtlpriv, COMP_POWER, DBG_TRACE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("Switch RF timeout !!!.\n"));
 =======
 			 "Switch RF timeout !!!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "Switch RF timeout !!!\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rtl_write_byte(rtlpriv, REG_SYS_FUNC_EN, 0xE2);
@@ -630,9 +728,12 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 	struct rtl8192_tx_ring *ring = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ppsc->set_rfpowerstate_inprogress = true;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (rfpwr_state) {
 	case ERFON:{
 			if ((ppsc->rfpwr_state == ERFOFF) &&
@@ -643,6 +744,7 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 					InitializeCount++;
 					RT_TRACE(rtlpriv, COMP_RF, DBG_DMESG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						 ("IPS Set eRf nic enable\n"));
 					rtstatus = rtl_ps_enable_nic(hw);
 				} while ((rtstatus != true)
@@ -652,21 +754,32 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 					rtstatus = rtl_ps_enable_nic(hw);
 				} while (!rtstatus && (InitializeCount < 10));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 "IPS Set eRf nic enable\n");
+					rtstatus = rtl_ps_enable_nic(hw);
+				} while (!rtstatus && (InitializeCount < 10));
+>>>>>>> refs/remotes/origin/master
 				RT_CLEAR_PS_LEVEL(ppsc,
 						  RT_RF_OFF_LEVL_HALT_NIC);
 			} else {
 				RT_TRACE(rtlpriv, COMP_RF, DBG_DMESG,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					 ("Set ERFON sleeped:%d ms\n",
 					  jiffies_to_msecs(jiffies -
 						   ppsc->
 						   last_sleep_jiffies)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					 "Set ERFON sleeped:%d ms\n",
 					 jiffies_to_msecs(jiffies -
 							  ppsc->
 							  last_sleep_jiffies));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				ppsc->last_awake_jiffies = jiffies;
 				rtl92ce_phy_set_rf_on(hw);
 			}
@@ -683,10 +796,14 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 			if (ppsc->reg_rfps_level & RT_RF_OFF_LEVL_HALT_NIC) {
 				RT_TRACE(rtlpriv, COMP_RF, DBG_DMESG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					 ("IPS Set eRf nic disable\n"));
 =======
 					 "IPS Set eRf nic disable\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 "IPS Set eRf nic disable\n");
+>>>>>>> refs/remotes/origin/master
 				rtl_ps_disable_nic(hw);
 				RT_SET_PS_LEVEL(ppsc, RT_RF_OFF_LEVL_HALT_NIC);
 			} else {
@@ -703,10 +820,14 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 	case ERFSLEEP:{
 			if (ppsc->rfpwr_state == ERFOFF)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				break;
 =======
 				return false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				return false;
+>>>>>>> refs/remotes/origin/master
 			for (queue_id = 0, i = 0;
 			     queue_id < RTL_PCI_MAX_TX_QUEUE_COUNT;) {
 				ring = &pcipriv->dev.tx_ring[queue_id];
@@ -715,6 +836,7 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 					continue;
 				} else {
 					RT_TRACE(rtlpriv, COMP_ERR, DBG_WARNING,
+<<<<<<< HEAD
 <<<<<<< HEAD
 						 ("eRf Off/Sleep: %d times "
 						  "TcbBusyQueue[%d] =%d before "
@@ -725,6 +847,11 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 						 i + 1, queue_id,
 						 skb_queue_len(&ring->queue));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 "eRf Off/Sleep: %d times TcbBusyQueue[%d] =%d before doze!\n",
+						 i + 1, queue_id,
+						 skb_queue_len(&ring->queue));
+>>>>>>> refs/remotes/origin/master
 
 					udelay(10);
 					i++;
@@ -732,21 +859,28 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 				if (i >= MAX_DOZE_WAITING_TIMES_9x) {
 					RT_TRACE(rtlpriv, COMP_ERR, DBG_WARNING,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						 ("\n ERFSLEEP: %d times "
 						  "TcbBusyQueue[%d] = %d !\n",
 						  MAX_DOZE_WAITING_TIMES_9x,
 						  queue_id,
 						  skb_queue_len(&ring->queue)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						 "ERFSLEEP: %d times TcbBusyQueue[%d] = %d !\n",
 						 MAX_DOZE_WAITING_TIMES_9x,
 						 queue_id,
 						 skb_queue_len(&ring->queue));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 			}
 			RT_TRACE(rtlpriv, COMP_RF, DBG_DMESG,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 ("Set ERFSLEEP awaked:%d ms\n",
 				  jiffies_to_msecs(jiffies -
@@ -756,6 +890,11 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 				 jiffies_to_msecs(jiffies -
 						  ppsc->last_awake_jiffies));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "Set ERFSLEEP awaked:%d ms\n",
+				 jiffies_to_msecs(jiffies -
+						  ppsc->last_awake_jiffies));
+>>>>>>> refs/remotes/origin/master
 			ppsc->last_sleep_jiffies = jiffies;
 			_rtl92ce_phy_set_rf_sleep(hw);
 			break;
@@ -763,19 +902,26 @@ static bool _rtl92ce_phy_set_rf_power_state(struct ieee80211_hw *hw,
 	default:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("switch case not process\n"));
 =======
 			 "switch case not processed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "switch case not processed\n");
+>>>>>>> refs/remotes/origin/master
 		bresult = false;
 		break;
 	}
 	if (bresult)
 		ppsc->rfpwr_state = rfpwr_state;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ppsc->set_rfpowerstate_inprogress = false;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return bresult;
 }
 

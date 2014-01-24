@@ -2,7 +2,11 @@
  * arch/sh/kernel/cpu/sh3/entry.S
  *
  *  Copyright (C) 1999, 2000, 2002  Niibe Yutaka
+<<<<<<< HEAD
  *  Copyright (C) 2003 - 2006  Paul Mundt
+=======
+ *  Copyright (C) 2003 - 2012  Paul Mundt
+>>>>>>> refs/remotes/origin/master
  *
  * This file is subject to the terms and conditions of the GNU General Public
  * License.  See the file "COPYING" in the main directory of this archive
@@ -17,6 +21,10 @@
 #include <cpu/mmu_context.h>
 #include <asm/page.h>
 #include <asm/cache.h>
+<<<<<<< HEAD
+=======
+#include <asm/thread_info.h>
+>>>>>>> refs/remotes/origin/master
 
 ! NOTE:
 ! GNU as (as of 2.9.1) changes bf/s into bt/s and bra, when the address
@@ -114,22 +122,38 @@ ENTRY(tlb_miss_load)
 	.align	2
 ENTRY(tlb_miss_store)
 	bra	call_handle_tlbmiss
+<<<<<<< HEAD
 	 mov	#1, r5
+=======
+	 mov	#FAULT_CODE_WRITE, r5
+>>>>>>> refs/remotes/origin/master
 
 	.align	2
 ENTRY(initial_page_write)
 	bra	call_handle_tlbmiss
+<<<<<<< HEAD
 	 mov	#2, r5
+=======
+	 mov	#FAULT_CODE_INITIAL, r5
+>>>>>>> refs/remotes/origin/master
 
 	.align	2
 ENTRY(tlb_protection_violation_load)
 	bra	call_do_page_fault
+<<<<<<< HEAD
 	 mov	#0, r5
+=======
+	 mov	#FAULT_CODE_PROT, r5
+>>>>>>> refs/remotes/origin/master
 
 	.align	2
 ENTRY(tlb_protection_violation_store)
 	bra	call_do_page_fault
+<<<<<<< HEAD
 	 mov	#1, r5
+=======
+	 mov	#(FAULT_CODE_PROT | FAULT_CODE_WRITE), r5
+>>>>>>> refs/remotes/origin/master
 
 call_handle_tlbmiss:
 	mov.l	1f, r0

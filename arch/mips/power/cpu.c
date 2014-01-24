@@ -5,7 +5,11 @@
  *
  * Copyright (C) 2009 Lemote Inc.
  * Author: Hu Hongbing <huhb@lemote.com>
+<<<<<<< HEAD
  *         Wu Zhangjin <wuzhangjin@gmail.com>
+=======
+ *	   Wu Zhangjin <wuzhangjin@gmail.com>
+>>>>>>> refs/remotes/origin/master
  */
 #include <asm/suspend.h>
 #include <asm/fpu.h>

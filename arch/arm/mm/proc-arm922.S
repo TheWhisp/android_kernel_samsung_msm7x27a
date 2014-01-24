@@ -88,9 +88,13 @@ ENTRY(cpu_arm922_proc_fin)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pushsection	.idmap.text, "ax"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm922_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -104,10 +108,15 @@ ENTRY(cpu_arm922_reset)
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(cpu_arm922_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm922_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_arm922_do_idle()
@@ -218,6 +227,10 @@ ENTRY(arm922_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -327,6 +340,7 @@ ENTRY(arm922_dma_unmap_area)
 ENDPROC(arm922_dma_unmap_area)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm922_cache_fns)
 	.long	arm922_flush_icache_all
 	.long	arm922_flush_kern_cache_all
@@ -343,6 +357,13 @@ ENTRY(arm922_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions arm922
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm922_flush_kern_cache_louis
+	.equ	arm922_flush_kern_cache_louis, arm922_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm922
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -405,8 +426,11 @@ ENTRY(cpu_arm922_set_pte_ext)
 #endif /* CONFIG_MMU */
 	mov	pc, lr
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.type	__arm922_setup, #function
 __arm922_setup:
 	mov	r0, #0
@@ -434,6 +458,7 @@ arm922_crval:
 	crval	clear=0x00003f3f, mmuset=0x00003135, ucset=0x00001130
 
 	__INITDATA
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*
@@ -473,6 +498,8 @@ cpu_arm922_name:
 	.asciz	"ARM922T"
 	.size	cpu_arm922_name, . - cpu_arm922_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions arm922, dabort=v4t_early_abort, pabort=legacy_pabort
 
@@ -481,7 +508,10 @@ cpu_arm922_name:
 	string	cpu_arch_name, "armv4t"
 	string	cpu_elf_name, "v4"
 	string	cpu_arm922_name, "ARM922T"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 

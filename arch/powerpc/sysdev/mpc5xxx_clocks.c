@@ -9,12 +9,19 @@
 #include <linux/kernel.h>
 #include <linux/of_platform.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 unsigned int
 mpc5xxx_get_bus_frequency(struct device_node *node)
+=======
+#include <linux/export.h>
+#include <asm/mpc5xxx.h>
+
+unsigned long mpc5xxx_get_bus_frequency(struct device_node *node)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np;
 	const unsigned int *p_bus_freq = NULL;

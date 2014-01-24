@@ -37,9 +37,13 @@
 #include <linux/dma-mapping.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/idr.h>
 #include <linux/interrupt.h>
@@ -385,6 +389,7 @@ static int cm_init_av_by_path(struct ib_sa_path_rec *path, struct cm_av *av)
 static int cm_alloc_id(struct cm_id_private *cm_id_priv)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	int ret, id;
 	static int next_id;
 
@@ -399,6 +404,20 @@ static int cm_alloc_id(struct cm_id_private *cm_id_priv)
 
 	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
 	return ret;
+=======
+	int id;
+
+	idr_preload(GFP_KERNEL);
+	spin_lock_irqsave(&cm.lock, flags);
+
+	id = idr_alloc_cyclic(&cm.local_id_table, cm_id_priv, 0, 0, GFP_NOWAIT);
+
+	spin_unlock_irqrestore(&cm.lock, flags);
+	idr_preload_end();
+
+	cm_id_priv->id.local_id = (__force __be32)id ^ cm.random_id_operand;
+	return id < 0 ? id : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void cm_free_id(__be32 local_id)
@@ -894,10 +913,15 @@ retest:
 	case IB_CM_ESTABLISHED:
 		spin_unlock_irq(&cm_id_priv->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (cm_id_priv->qp_type == IB_QPT_XRC_TGT)
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (cm_id_priv->qp_type == IB_QPT_XRC_TGT)
+			break;
+>>>>>>> refs/remotes/origin/master
 		ib_send_cm_dreq(cm_id, NULL, 0);
 		goto retest;
 	case IB_CM_DREQ_SENT:
@@ -1018,9 +1042,12 @@ static void cm_format_req(struct cm_req_msg *req_msg,
 	req_msg->local_ca_guid = cm_id_priv->id.device->node_guid;
 	cm_req_set_local_qpn(req_msg, cpu_to_be32(param->qp_num));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_req_set_resp_res(req_msg, param->responder_resources);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cm_req_set_init_depth(req_msg, param->initiator_depth);
 	cm_req_set_remote_resp_timeout(req_msg,
 				       param->remote_cm_response_timeout);
@@ -1030,6 +1057,7 @@ static void cm_format_req(struct cm_req_msg *req_msg,
 	cm_req_set_local_resp_timeout(req_msg,
 				      param->local_cm_response_timeout);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_req_set_retry_count(req_msg, param->retry_count);
 	req_msg->pkey = param->primary_path->pkey;
 	cm_req_set_path_mtu(req_msg, param->primary_path->mtu);
@@ -1037,6 +1065,8 @@ static void cm_format_req(struct cm_req_msg *req_msg,
 	cm_req_set_max_cm_retries(req_msg, param->max_cm_retries);
 	cm_req_set_srq(req_msg, param->srq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	req_msg->pkey = param->primary_path->pkey;
 	cm_req_set_path_mtu(req_msg, param->primary_path->mtu);
 	cm_req_set_max_cm_retries(req_msg, param->max_cm_retries);
@@ -1047,7 +1077,10 @@ static void cm_format_req(struct cm_req_msg *req_msg,
 		cm_req_set_rnr_retry_count(req_msg, param->rnr_retry_count);
 		cm_req_set_srq(req_msg, param->srq);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (pri_path->hop_limit <= 1) {
 		req_msg->primary_local_lid = pri_path->slid;
@@ -1106,11 +1139,16 @@ static int cm_validate_req_param(struct ib_cm_req_param *param)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (param->qp_type != IB_QPT_RC && param->qp_type != IB_QPT_UC)
 =======
 	if (param->qp_type != IB_QPT_RC && param->qp_type != IB_QPT_UC &&
 	    param->qp_type != IB_QPT_XRC_INI)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (param->qp_type != IB_QPT_RC && param->qp_type != IB_QPT_UC &&
+	    param->qp_type != IB_QPT_XRC_INI)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (param->private_data &&
@@ -1632,6 +1670,7 @@ static void cm_format_rep(struct cm_rep_msg *rep_msg,
 	rep_msg->local_comm_id = cm_id_priv->id.local_id;
 	rep_msg->remote_comm_id = cm_id_priv->id.remote_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_rep_set_local_qpn(rep_msg, cpu_to_be32(param->qp_num));
 	cm_rep_set_starting_psn(rep_msg, cpu_to_be32(param->starting_psn));
 	rep_msg->resp_resources = param->responder_resources;
@@ -1645,6 +1684,8 @@ static void cm_format_rep(struct cm_rep_msg *rep_msg,
 	rep_msg->local_ca_guid = cm_id_priv->id.device->node_guid;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cm_rep_set_starting_psn(rep_msg, cpu_to_be32(param->starting_psn));
 	rep_msg->resp_resources = param->responder_resources;
 	cm_rep_set_target_ack_delay(rep_msg,
@@ -1663,7 +1704,10 @@ static void cm_format_rep(struct cm_rep_msg *rep_msg,
 		cm_rep_set_local_eecn(rep_msg, cpu_to_be32(param->qp_num));
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (param->private_data && param->private_data_len)
 		memcpy(rep_msg->private_data, param->private_data,
 		       param->private_data_len);
@@ -1712,10 +1756,14 @@ int ib_send_cm_rep(struct ib_cm_id *cm_id,
 	cm_id_priv->responder_resources = param->responder_resources;
 	cm_id_priv->rq_psn = cm_rep_get_starting_psn(rep_msg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_id_priv->local_qpn = cm_rep_get_local_qpn(rep_msg);
 =======
 	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num & 0xFFFFFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cm_id_priv->local_qpn = cpu_to_be32(param->qp_num & 0xFFFFFF);
+>>>>>>> refs/remotes/origin/master
 
 out:	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
 	return ret;
@@ -1787,10 +1835,14 @@ error:	spin_unlock_irqrestore(&cm_id_priv->lock, flags);
 EXPORT_SYMBOL(ib_send_cm_rtu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void cm_format_rep_event(struct cm_work *work)
 =======
 static void cm_format_rep_event(struct cm_work *work, enum ib_qp_type qp_type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void cm_format_rep_event(struct cm_work *work, enum ib_qp_type qp_type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cm_rep_msg *rep_msg;
 	struct ib_cm_rep_event_param *param;
@@ -1800,10 +1852,14 @@ static void cm_format_rep_event(struct cm_work *work, enum ib_qp_type qp_type)
 	param->remote_ca_guid = rep_msg->local_ca_guid;
 	param->remote_qkey = be32_to_cpu(rep_msg->local_qkey);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	param->remote_qpn = be32_to_cpu(cm_rep_get_local_qpn(rep_msg));
 =======
 	param->remote_qpn = be32_to_cpu(cm_rep_get_qpn(rep_msg, qp_type));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	param->remote_qpn = be32_to_cpu(cm_rep_get_qpn(rep_msg, qp_type));
+>>>>>>> refs/remotes/origin/master
 	param->starting_psn = be32_to_cpu(cm_rep_get_starting_psn(rep_msg));
 	param->responder_resources = rep_msg->initiator_depth;
 	param->initiator_depth = rep_msg->resp_resources;
@@ -1872,10 +1928,14 @@ static int cm_rep_handler(struct cm_work *work)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_format_rep_event(work);
 =======
 	cm_format_rep_event(work, cm_id_priv->qp_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cm_format_rep_event(work, cm_id_priv->qp_type);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&cm_id_priv->lock);
 	switch (cm_id_priv->id.state) {
@@ -1891,10 +1951,14 @@ static int cm_rep_handler(struct cm_work *work)
 	cm_id_priv->timewait_info->work.remote_id = rep_msg->local_comm_id;
 	cm_id_priv->timewait_info->remote_ca_guid = rep_msg->local_ca_guid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_id_priv->timewait_info->remote_qpn = cm_rep_get_local_qpn(rep_msg);
 =======
 	cm_id_priv->timewait_info->remote_qpn = cm_rep_get_qpn(rep_msg, cm_id_priv->qp_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cm_id_priv->timewait_info->remote_qpn = cm_rep_get_qpn(rep_msg, cm_id_priv->qp_type);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&cm.lock);
 	/* Check for duplicate REP. */
@@ -1922,10 +1986,14 @@ static int cm_rep_handler(struct cm_work *work)
 	cm_id_priv->id.state = IB_CM_REP_RCVD;
 	cm_id_priv->id.remote_id = rep_msg->local_comm_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cm_id_priv->remote_qpn = cm_rep_get_local_qpn(rep_msg);
 =======
 	cm_id_priv->remote_qpn = cm_rep_get_qpn(rep_msg, cm_id_priv->qp_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cm_id_priv->remote_qpn = cm_rep_get_qpn(rep_msg, cm_id_priv->qp_type);
+>>>>>>> refs/remotes/origin/master
 	cm_id_priv->initiator_depth = rep_msg->resp_resources;
 	cm_id_priv->responder_resources = rep_msg->initiator_depth;
 	cm_id_priv->sq_psn = cm_rep_get_starting_psn(rep_msg);
@@ -3568,11 +3636,16 @@ static int cm_init_qp_rtr_attr(struct cm_id_private *cm_id_priv,
 		qp_attr->dest_qp_num = be32_to_cpu(cm_id_priv->remote_qpn);
 		qp_attr->rq_psn = be32_to_cpu(cm_id_priv->rq_psn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (cm_id_priv->qp_type == IB_QPT_RC) {
 =======
 		if (cm_id_priv->qp_type == IB_QPT_RC ||
 		    cm_id_priv->qp_type == IB_QPT_XRC_TGT) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (cm_id_priv->qp_type == IB_QPT_RC ||
+		    cm_id_priv->qp_type == IB_QPT_XRC_TGT) {
+>>>>>>> refs/remotes/origin/master
 			*qp_attr_mask |= IB_QP_MAX_DEST_RD_ATOMIC |
 					 IB_QP_MIN_RNR_TIMER;
 			qp_attr->max_dest_rd_atomic =
@@ -3618,6 +3691,7 @@ static int cm_init_qp_rts_attr(struct cm_id_private *cm_id_priv,
 			*qp_attr_mask = IB_QP_STATE | IB_QP_SQ_PSN;
 			qp_attr->sq_psn = be32_to_cpu(cm_id_priv->sq_psn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (cm_id_priv->qp_type == IB_QPT_RC) {
 				*qp_attr_mask |= IB_QP_TIMEOUT | IB_QP_RETRY_CNT |
 						 IB_QP_RNR_RETRY |
@@ -3628,6 +3702,8 @@ static int cm_init_qp_rts_attr(struct cm_id_private *cm_id_priv,
 				qp_attr->max_rd_atomic =
 					cm_id_priv->initiator_depth;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			switch (cm_id_priv->qp_type) {
 			case IB_QPT_RC:
 			case IB_QPT_XRC_INI:
@@ -3643,7 +3719,10 @@ static int cm_init_qp_rts_attr(struct cm_id_private *cm_id_priv,
 				break;
 			default:
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			if (cm_id_priv->alt_av.ah_attr.dlid) {
 				*qp_attr_mask |= IB_QP_PATH_MIG_STATE;
@@ -3738,10 +3817,14 @@ static struct kobj_type cm_port_obj_type = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *cm_devnode(struct device *dev, mode_t *mode)
 =======
 static char *cm_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *cm_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	if (mode)
 		*mode = 0666;
@@ -3926,21 +4009,36 @@ static int __init ib_cm_init(void)
 	cm.remote_sidr_table = RB_ROOT;
 	idr_init(&cm.local_id_table);
 	get_random_bytes(&cm.random_id_operand, sizeof cm.random_id_operand);
+<<<<<<< HEAD
 	idr_pre_get(&cm.local_id_table, GFP_KERNEL);
 	INIT_LIST_HEAD(&cm.timewait_list);
 
 	ret = class_register(&cm_class);
 	if (ret)
 		return -ENOMEM;
+=======
+	INIT_LIST_HEAD(&cm.timewait_list);
+
+	ret = class_register(&cm_class);
+	if (ret) {
+		ret = -ENOMEM;
+		goto error1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	cm.wq = create_workqueue("ib_cm");
 	if (!cm.wq) {
 		ret = -ENOMEM;
+<<<<<<< HEAD
 		goto error1;
+=======
+		goto error2;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = ib_register_client(&cm_client);
 	if (ret)
+<<<<<<< HEAD
 		goto error2;
 
 	return 0;
@@ -3948,6 +4046,17 @@ error2:
 	destroy_workqueue(cm.wq);
 error1:
 	class_unregister(&cm_class);
+=======
+		goto error3;
+
+	return 0;
+error3:
+	destroy_workqueue(cm.wq);
+error2:
+	class_unregister(&cm_class);
+error1:
+	idr_destroy(&cm.local_id_table);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 

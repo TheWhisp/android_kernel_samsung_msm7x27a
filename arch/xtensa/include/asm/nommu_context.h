@@ -2,7 +2,11 @@ static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
 {
 }
 
+<<<<<<< HEAD
 static inline int init_new_context(struct task_struct *tsk, struct mm_struct *mm)
+=======
+static inline int init_new_context(struct task_struct *tsk,struct mm_struct *mm)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }

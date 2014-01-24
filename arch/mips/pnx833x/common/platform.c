@@ -6,7 +6,11 @@
  *    Daniel Laird <daniel.j.laird@nxp.com>
  *
  *  Based on software written by:
+<<<<<<< HEAD
  *      Nikita Youshchenko <yoush@debian.org>, based on PNX8550 code.
+=======
+ *	Nikita Youshchenko <yoush@debian.org>, based on PNX8550 code.
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,7 +46,11 @@
 #include <irq-mapping.h>
 #include <pnx833x.h>
 
+<<<<<<< HEAD
 static u64 uart_dmamask     = DMA_BIT_MASK(32);
+=======
+static u64 uart_dmamask	    = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/master
 
 static struct resource pnx833x_uart_resources[] = {
 	[0] = {
@@ -69,7 +77,11 @@ static struct resource pnx833x_uart_resources[] = {
 
 struct pnx8xxx_port pnx8xxx_ports[] = {
 	[0] = {
+<<<<<<< HEAD
 		.port   = {
+=======
+		.port	= {
+>>>>>>> refs/remotes/origin/master
 			.type		= PORT_PNX8XXX,
 			.iotype		= UPIO_MEM,
 			.membase	= (void __iomem *)PNX833X_UART0_PORTS_START,
@@ -82,7 +94,11 @@ struct pnx8xxx_port pnx8xxx_ports[] = {
 		},
 	},
 	[1] = {
+<<<<<<< HEAD
 		.port   = {
+=======
+		.port	= {
+>>>>>>> refs/remotes/origin/master
 			.type		= PORT_PNX8XXX,
 			.iotype		= UPIO_MEM,
 			.membase	= (void __iomem *)PNX833X_UART1_PORTS_START,
@@ -108,7 +124,11 @@ static struct platform_device pnx833x_uart_device = {
 	.resource	= pnx833x_uart_resources,
 };
 
+<<<<<<< HEAD
 static u64 ehci_dmamask     = DMA_BIT_MASK(32);
+=======
+static u64 ehci_dmamask	    = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/master
 
 static struct resource pnx833x_usb_ehci_resources[] = {
 	[0] = {
@@ -183,7 +203,11 @@ static struct platform_device pnx833x_i2c0_device = {
 	.dev = {
 		.platform_data = &pnx833x_i2c_dev[0],
 	},
+<<<<<<< HEAD
 	.num_resources  = ARRAY_SIZE(pnx833x_i2c0_resources),
+=======
+	.num_resources	= ARRAY_SIZE(pnx833x_i2c0_resources),
+>>>>>>> refs/remotes/origin/master
 	.resource	= pnx833x_i2c0_resources,
 };
 
@@ -193,7 +217,11 @@ static struct platform_device pnx833x_i2c1_device = {
 	.dev = {
 		.platform_data = &pnx833x_i2c_dev[1],
 	},
+<<<<<<< HEAD
 	.num_resources  = ARRAY_SIZE(pnx833x_i2c1_resources),
+=======
+	.num_resources	= ARRAY_SIZE(pnx833x_i2c1_resources),
+>>>>>>> refs/remotes/origin/master
 	.resource	= pnx833x_i2c1_resources,
 };
 #endif
@@ -206,18 +234,30 @@ static struct resource pnx833x_ethernet_resources[] = {
 		.end   = PNX8335_IP3902_PORTS_END,
 		.flags = IORESOURCE_MEM,
 	},
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SOC_PNX8335
+>>>>>>> refs/remotes/origin/master
 	[1] = {
 		.start = PNX8335_PIC_ETHERNET_INT,
 		.end   = PNX8335_PIC_ETHERNET_INT,
 		.flags = IORESOURCE_IRQ,
 	},
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device pnx833x_ethernet_device = {
 	.name = "ip3902-eth",
 	.id   = -1,
 	.dev  = {
+<<<<<<< HEAD
 		.dma_mask          = &ethernet_dmamask,
+=======
+		.dma_mask	   = &ethernet_dmamask,
+>>>>>>> refs/remotes/origin/master
 		.coherent_dma_mask = DMA_BIT_MASK(32),
 	},
 	.num_resources = ARRAY_SIZE(pnx833x_ethernet_resources),
@@ -238,17 +278,25 @@ static struct resource pnx833x_sata_resources[] = {
 };
 
 static struct platform_device pnx833x_sata_device = {
+<<<<<<< HEAD
 	.name          = "pnx833x-sata",
 	.id            = -1,
+=======
+	.name	       = "pnx833x-sata",
+	.id	       = -1,
+>>>>>>> refs/remotes/origin/master
 	.num_resources = ARRAY_SIZE(pnx833x_sata_resources),
 	.resource      = pnx833x_sata_resources,
 };
 
+<<<<<<< HEAD
 static const char *part_probes[] = {
 	"cmdlinepart",
 	NULL
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 pnx833x_flash_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
 {
@@ -268,10 +316,16 @@ static struct platform_nand_data pnx833x_flash_nand_data = {
 	.chip = {
 		.nr_chips		= 1,
 		.chip_delay		= 25,
+<<<<<<< HEAD
 		.part_probe_types 	= part_probes,
 	},
 	.ctrl = {
 		.cmd_ctrl 		= pnx833x_flash_nand_cmd_ctrl
+=======
+	},
+	.ctrl = {
+		.cmd_ctrl		= pnx833x_flash_nand_cmd_ctrl
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -280,6 +334,7 @@ static struct platform_nand_data pnx833x_flash_nand_data = {
  * 12 bytes more seems to be the standard that allows for NAND access.
  */
 static struct resource pnx833x_flash_nand_resource = {
+<<<<<<< HEAD
 	.start 	= PNX8335_NAND_BASE,
 	.end 	= PNX8335_NAND_BASE + 12,
 	.flags 	= IORESOURCE_MEM,
@@ -291,6 +346,19 @@ static struct platform_device pnx833x_flash_nand = {
 	.num_resources	= 1,
 	.resource	    = &pnx833x_flash_nand_resource,
 	.dev            = {
+=======
+	.start	= PNX8335_NAND_BASE,
+	.end	= PNX8335_NAND_BASE + 12,
+	.flags	= IORESOURCE_MEM,
+};
+
+static struct platform_device pnx833x_flash_nand = {
+	.name		= "gen_nand",
+	.id			= -1,
+	.num_resources	= 1,
+	.resource	    = &pnx833x_flash_nand_resource,
+	.dev		= {
+>>>>>>> refs/remotes/origin/master
 		.platform_data = &pnx833x_flash_nand_data,
 	},
 };

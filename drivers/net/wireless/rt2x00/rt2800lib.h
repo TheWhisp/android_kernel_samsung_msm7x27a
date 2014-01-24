@@ -43,6 +43,12 @@ struct rt2800_ops {
 			    const unsigned int offset,
 			    const struct rt2x00_field32 field, u32 *reg);
 
+<<<<<<< HEAD
+=======
+	int (*read_eeprom)(struct rt2x00_dev *rt2x00dev);
+	bool (*hwcrypt_disabled)(struct rt2x00_dev *rt2x00dev);
+
+>>>>>>> refs/remotes/origin/master
 	int (*drv_write_firmware)(struct rt2x00_dev *rt2x00dev,
 				  const u8 *data, const size_t len);
 	int (*drv_init_registers)(struct rt2x00_dev *rt2x00dev);
@@ -114,6 +120,23 @@ static inline int rt2800_regbusy_read(struct rt2x00_dev *rt2x00dev,
 	return rt2800ops->regbusy_read(rt2x00dev, offset, field, reg);
 }
 
+<<<<<<< HEAD
+=======
+static inline int rt2800_read_eeprom(struct rt2x00_dev *rt2x00dev)
+{
+	const struct rt2800_ops *rt2800ops = rt2x00dev->ops->drv;
+
+	return rt2800ops->read_eeprom(rt2x00dev);
+}
+
+static inline bool rt2800_hwcrypt_disabled(struct rt2x00_dev *rt2x00dev)
+{
+	const struct rt2800_ops *rt2800ops = rt2x00dev->ops->drv;
+
+	return rt2800ops->hwcrypt_disabled(rt2x00dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int rt2800_drv_write_firmware(struct rt2x00_dev *rt2x00dev,
 					    const u8 *data, const size_t len)
 {
@@ -153,11 +176,15 @@ void rt2800_write_tx_data(struct queue_entry *entry,
 void rt2800_process_rxwi(struct queue_entry *entry, struct rxdone_entry_desc *txdesc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void rt2800_txdone(struct rt2x00_dev *rt2x00dev);
 void rt2800_txdone_entry(struct queue_entry *entry, u32 status);
 =======
 void rt2800_txdone_entry(struct queue_entry *entry, u32 status, __le32* txwi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void rt2800_txdone_entry(struct queue_entry *entry, u32 status, __le32* txwi);
+>>>>>>> refs/remotes/origin/master
 
 void rt2800_write_beacon(struct queue_entry *entry, struct txentry_desc *txdesc);
 void rt2800_clear_beacon(struct queue_entry *entry);
@@ -172,11 +199,17 @@ int rt2800_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 			       struct rt2x00lib_crypto *crypto,
 			       struct ieee80211_key_conf *key);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int rt2800_sta_add(struct rt2x00_dev *rt2x00dev, struct ieee80211_vif *vif,
 		   struct ieee80211_sta *sta);
 int rt2800_sta_remove(struct rt2x00_dev *rt2x00dev, int wcid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int rt2800_sta_add(struct rt2x00_dev *rt2x00dev, struct ieee80211_vif *vif,
+		   struct ieee80211_sta *sta);
+int rt2800_sta_remove(struct rt2x00_dev *rt2x00dev, int wcid);
+>>>>>>> refs/remotes/origin/master
 void rt2800_config_filter(struct rt2x00_dev *rt2x00dev,
 			  const unsigned int filter_flags);
 void rt2800_config_intf(struct rt2x00_dev *rt2x00dev, struct rt2x00_intf *intf,
@@ -193,37 +226,61 @@ void rt2800_link_tuner(struct rt2x00_dev *rt2x00dev, struct link_qual *qual,
 		       const u32 count);
 void rt2800_gain_calibration(struct rt2x00_dev *rt2x00dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void rt2800_vco_calibration(struct rt2x00_dev *rt2x00dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void rt2800_vco_calibration(struct rt2x00_dev *rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 int rt2800_enable_radio(struct rt2x00_dev *rt2x00dev);
 void rt2800_disable_radio(struct rt2x00_dev *rt2x00dev);
 
 int rt2800_efuse_detect(struct rt2x00_dev *rt2x00dev);
+<<<<<<< HEAD
 void rt2800_read_eeprom_efuse(struct rt2x00_dev *rt2x00dev);
 int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev);
 int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev);
 int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev);
+=======
+int rt2800_read_eeprom_efuse(struct rt2x00_dev *rt2x00dev);
+
+int rt2800_probe_hw(struct rt2x00_dev *rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 void rt2800_get_tkip_seq(struct ieee80211_hw *hw, u8 hw_key_idx, u32 *iv32,
 			 u16 *iv16);
 int rt2800_set_rts_threshold(struct ieee80211_hw *hw, u32 value);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int rt2800_conf_tx(struct ieee80211_hw *hw, u16 queue_idx,
 		   const struct ieee80211_tx_queue_params *params);
 u64 rt2800_get_tsf(struct ieee80211_hw *hw);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int rt2800_conf_tx(struct ieee80211_hw *hw,
 		   struct ieee80211_vif *vif, u16 queue_idx,
 		   const struct ieee80211_tx_queue_params *params);
 u64 rt2800_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int rt2800_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			enum ieee80211_ampdu_mlme_action action,
 			struct ieee80211_sta *sta, u16 tid, u16 *ssn,
 			u8 buf_size);
 int rt2800_get_survey(struct ieee80211_hw *hw, int idx,
 		      struct survey_info *survey);
+<<<<<<< HEAD
+=======
+void rt2800_disable_wpdma(struct rt2x00_dev *rt2x00dev);
+
+void rt2800_get_txwi_rxwi_size(struct rt2x00_dev *rt2x00dev,
+			       unsigned short *txwi_size,
+			       unsigned short *rxwi_size);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* RT2800LIB_H */

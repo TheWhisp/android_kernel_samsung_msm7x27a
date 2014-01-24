@@ -34,9 +34,13 @@
 #include <linux/gpio.h>
 #include <linux/bug.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/portmux.h>
 #include <asm/dma.h>
 #include <asm/blackfin.h>
@@ -49,10 +53,17 @@
 /* note: multichannel is in units of 8 channels,
  * tdm_count is # channels NOT / 8 ! */
 int sport_set_multichannel(struct sport_device *sport,
+<<<<<<< HEAD
 		int tdm_count, u32 mask, int packed)
 {
 	pr_debug("%s tdm_count=%d mask:0x%08x packed=%d\n", __func__,
 			tdm_count, mask, packed);
+=======
+		int tdm_count, u32 tx_mask, u32 rx_mask, int packed)
+{
+	pr_debug("%s tdm_count=%d tx_mask:0x%08x rx_mask:0x%08x packed=%d\n",
+			__func__, tdm_count, tx_mask, rx_mask, packed);
+>>>>>>> refs/remotes/origin/master
 
 	if ((sport->regs->tcr1 & TSPEN) || (sport->regs->rcr1 & RSPEN))
 		return -EBUSY;
@@ -68,8 +79,13 @@ int sport_set_multichannel(struct sport_device *sport,
 		sport->regs->mcmc2 = FRAME_DELAY | MCMEN | \
 				(packed ? (MCDTXPE|MCDRXPE) : 0);
 
+<<<<<<< HEAD
 		sport->regs->mtcs0 = mask;
 		sport->regs->mrcs0 = mask;
+=======
+		sport->regs->mtcs0 = tx_mask;
+		sport->regs->mrcs0 = rx_mask;
+>>>>>>> refs/remotes/origin/master
 		sport->regs->mtcs1 = 0;
 		sport->regs->mrcs1 = 0;
 		sport->regs->mtcs2 = 0;
@@ -182,8 +198,14 @@ static inline int sport_hook_rx_dummy(struct sport_device *sport)
 	struct dmasg *desc, temp_desc;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	BUG_ON(sport->dummy_rx_desc == NULL);
 	BUG_ON(sport->curr_rx_desc == sport->dummy_rx_desc);
+=======
+	if (WARN_ON(!sport->dummy_rx_desc) ||
+	    WARN_ON(sport->curr_rx_desc == sport->dummy_rx_desc))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	/* Maybe the dummy buffer descriptor ring is damaged */
 	sport->dummy_rx_desc->next_desc_addr = sport->dummy_rx_desc + 1;
@@ -253,8 +275,14 @@ int sport_rx_start(struct sport_device *sport)
 		return -EBUSY;
 	if (sport->tx_run) {
 		/* tx is running, rx is not running */
+<<<<<<< HEAD
 		BUG_ON(sport->dma_rx_desc == NULL);
 		BUG_ON(sport->curr_rx_desc != sport->dummy_rx_desc);
+=======
+		if (WARN_ON(!sport->dma_rx_desc) ||
+		    WARN_ON(sport->curr_rx_desc != sport->dummy_rx_desc))
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		local_irq_save(flags);
 		while ((get_dma_curr_desc_ptr(sport->dma_rx_chan) -
 			sizeof(struct dmasg)) != sport->dummy_rx_desc)
@@ -301,8 +329,14 @@ static inline int sport_hook_tx_dummy(struct sport_device *sport)
 	struct dmasg *desc, temp_desc;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	BUG_ON(sport->dummy_tx_desc == NULL);
 	BUG_ON(sport->curr_tx_desc == sport->dummy_tx_desc);
+=======
+	if (WARN_ON(!sport->dummy_tx_desc) ||
+	    WARN_ON(sport->curr_tx_desc == sport->dummy_tx_desc))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	sport->dummy_tx_desc->next_desc_addr = sport->dummy_tx_desc + 1;
 
@@ -334,8 +368,14 @@ int sport_tx_start(struct sport_device *sport)
 	if (sport->tx_run)
 		return -EBUSY;
 	if (sport->rx_run) {
+<<<<<<< HEAD
 		BUG_ON(sport->dma_tx_desc == NULL);
 		BUG_ON(sport->curr_tx_desc != sport->dummy_tx_desc);
+=======
+		if (WARN_ON(!sport->dma_tx_desc) ||
+		    WARN_ON(sport->curr_tx_desc != sport->dummy_tx_desc))
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		/* Hook the normal buffer descriptor */
 		local_irq_save(flags);
 		while ((get_dma_curr_desc_ptr(sport->dma_tx_chan) -
@@ -770,7 +810,12 @@ static irqreturn_t err_handler(int irq, void *dev_id)
 int sport_set_rx_callback(struct sport_device *sport,
 		       void (*rx_callback)(void *), void *rx_data)
 {
+<<<<<<< HEAD
 	BUG_ON(rx_callback == NULL);
+=======
+	if (WARN_ON(!rx_callback))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	sport->rx_callback = rx_callback;
 	sport->rx_data = rx_data;
 
@@ -781,7 +826,12 @@ EXPORT_SYMBOL(sport_set_rx_callback);
 int sport_set_tx_callback(struct sport_device *sport,
 		void (*tx_callback)(void *), void *tx_data)
 {
+<<<<<<< HEAD
 	BUG_ON(tx_callback == NULL);
+=======
+	if (WARN_ON(!tx_callback))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	sport->tx_callback = tx_callback;
 	sport->tx_data = tx_data;
 
@@ -792,7 +842,12 @@ EXPORT_SYMBOL(sport_set_tx_callback);
 int sport_set_err_callback(struct sport_device *sport,
 		void (*err_callback)(void *), void *err_data)
 {
+<<<<<<< HEAD
 	BUG_ON(err_callback == NULL);
+=======
+	if (WARN_ON(!err_callback))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	sport->err_callback = err_callback;
 	sport->err_data = err_data;
 
@@ -859,7 +914,12 @@ struct sport_device *sport_init(struct platform_device *pdev,
 
 	param.wdsize = wdsize;
 	param.dummy_count = dummy_count;
+<<<<<<< HEAD
 	BUG_ON(param.wdsize == 0 || param.dummy_count == 0);
+=======
+	if (WARN_ON(param.wdsize == 0 || param.dummy_count == 0))
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	ret = sport_config_pdev(pdev, &param);
 	if (ret)

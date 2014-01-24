@@ -30,10 +30,16 @@
 #ifndef __LINUX_RCUTREE_H
 #define __LINUX_RCUTREE_H
 
+<<<<<<< HEAD
 extern void rcu_init(void);
 extern void rcu_note_context_switch(int cpu);
 extern int rcu_needs_cpu(int cpu);
 extern void rcu_cpu_stall_reset(void);
+=======
+void rcu_note_context_switch(int cpu);
+int rcu_needs_cpu(int cpu, unsigned long *delta_jiffies);
+void rcu_cpu_stall_reset(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Note a virtualization-based context switch.  This is simply a
@@ -45,6 +51,7 @@ static inline void rcu_virt_note_context_switch(int cpu)
 	rcu_note_context_switch(cpu);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_TREE_PREEMPT_RCU
 
 extern void exit_rcu(void);
@@ -63,6 +70,12 @@ extern void synchronize_rcu_expedited(void);
 
 <<<<<<< HEAD
 =======
+=======
+void synchronize_rcu_bh(void);
+void synchronize_sched_expedited(void);
+void synchronize_rcu_expedited(void);
+
+>>>>>>> refs/remotes/origin/master
 void kfree_call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *rcu));
 
 /**
@@ -81,12 +94,16 @@ void kfree_call_rcu(struct rcu_head *head, void (*func)(struct rcu_head *rcu));
  * to call this function from a CPU-hotplug notifier.  Failing to observe
  * these restriction will result in deadlock.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void synchronize_rcu_bh_expedited(void)
 {
 	synchronize_sched_expedited();
 }
 
+<<<<<<< HEAD
 extern void rcu_barrier(void);
 <<<<<<< HEAD
 =======
@@ -117,4 +134,27 @@ static inline int rcu_blocking_is_gp(void)
 extern void rcu_scheduler_starting(void);
 extern int rcu_scheduler_active __read_mostly;
 
+=======
+void rcu_barrier(void);
+void rcu_barrier_bh(void);
+void rcu_barrier_sched(void);
+
+extern unsigned long rcutorture_testseq;
+extern unsigned long rcutorture_vernum;
+long rcu_batches_completed(void);
+long rcu_batches_completed_bh(void);
+long rcu_batches_completed_sched(void);
+
+void rcu_force_quiescent_state(void);
+void rcu_bh_force_quiescent_state(void);
+void rcu_sched_force_quiescent_state(void);
+
+void exit_rcu(void);
+
+void rcu_scheduler_starting(void);
+extern int rcu_scheduler_active __read_mostly;
+
+bool rcu_is_watching(void);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_RCUTREE_H */

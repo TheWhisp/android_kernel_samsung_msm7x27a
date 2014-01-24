@@ -19,6 +19,7 @@
 #ifdef CONFIG_APB_TIMER
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Langwell DW APB timer registers */
 #define APBTMR_N_LOAD_COUNT    0x00
 #define APBTMR_N_CURRENT_VALUE 0x04
@@ -39,6 +40,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* default memory mapped register base */
 #define LNW_SCU_ADDR           0xFF100000
 #define LNW_EXT_TIMER_OFFSET   0x1B800
@@ -47,21 +50,29 @@
 
 /* APBT clock speed range from PCLK to fabric base, 25-100MHz */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define APBT_MAX_FREQ          50
 #define APBT_MIN_FREQ          1
 =======
 #define APBT_MAX_FREQ          50000000
 #define APBT_MIN_FREQ          1000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define APBT_MAX_FREQ          50000000
+#define APBT_MIN_FREQ          1000000
+>>>>>>> refs/remotes/origin/master
 #define APBT_MMAP_SIZE         1024
 
 #define APBT_DEV_USED  1
 
 extern void apbt_time_init(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct clock_event_device *global_clock_event;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long apbt_quick_calibrate(void);
 extern int arch_setup_apbt_irqs(int irq, int trigger, int mask, int cpu);
 extern void apbt_setup_secondary_clock(void);

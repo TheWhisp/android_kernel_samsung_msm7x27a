@@ -216,7 +216,10 @@ struct goku_ep {
 
 	/* analogous to a host-side qh */
 	struct list_head			queue;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u32 __iomem				*reg_fifo;
 	u32 __iomem				*reg_mode;
@@ -251,8 +254,12 @@ struct goku_udc {
 					got_region:1,
 					req_config:1,
 					configured:1,
+<<<<<<< HEAD
 					enabled:1,
 					registered:1;
+=======
+					enabled:1;
+>>>>>>> refs/remotes/origin/master
 
 	/* pci state used to access those endpoints */
 	struct pci_dev			*pdev;
@@ -262,6 +269,10 @@ struct goku_udc {
 	/* statistics... */
 	unsigned long			irqs;
 };
+<<<<<<< HEAD
+=======
+#define to_goku_udc(g)		(container_of((g), struct goku_udc, gadget))
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 

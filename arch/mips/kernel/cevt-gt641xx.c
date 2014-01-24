@@ -1,7 +1,11 @@
 /*
  *  GT641xx clockevent routines.
  *
+<<<<<<< HEAD
  *  Copyright (C) 2007  Yoichi Yuasa <yuasa@linux-mips.org>
+=======
+ *  Copyright (C) 2007	Yoichi Yuasa <yuasa@linux-mips.org>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -98,7 +102,11 @@ static struct clock_event_device gt641xx_timer0_clockevent = {
 	.name		= "gt641xx-timer0",
 	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.irq		= GT641XX_TIMER0_IRQ,
+<<<<<<< HEAD
 	.set_next_event	= gt641xx_timer0_set_next_event,
+=======
+	.set_next_event = gt641xx_timer0_set_next_event,
+>>>>>>> refs/remotes/origin/master
 	.set_mode	= gt641xx_timer0_set_mode,
 	.event_handler	= gt641xx_timer0_event_handler,
 };
@@ -115,10 +123,14 @@ static irqreturn_t gt641xx_timer0_interrupt(int irq, void *dev_id)
 static struct irqaction gt641xx_timer0_irqaction = {
 	.handler	= gt641xx_timer0_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_PERCPU | IRQF_TIMER,
 =======
 	.flags		= IRQF_PERCPU | IRQF_TIMER,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_PERCPU | IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.name		= "gt641xx_timer0",
 };
 

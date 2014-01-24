@@ -1,15 +1,21 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * ST Microelectronics MFD: stmpe's driver
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ST Microelectronics MFD: stmpe's driver
+ *
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) ST-Ericsson SA 2010
  *
  * License Terms: GNU General Public License, version 2
  * Author: Rabin Vincent <rabin.vincent@stericsson.com> for ST-Ericsson
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -20,15 +26,28 @@
 #include <linux/mfd/core.h>
 #include <linux/mfd/stmpe.h>
 =======
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/export.h>
 #include <linux/kernel.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/pm.h>
 #include <linux/slab.h>
 #include <linux/mfd/core.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqdomain.h>
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+#include <linux/pm.h>
+#include <linux/slab.h>
+#include <linux/mfd/core.h>
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include "stmpe.h"
 
 static int __stmpe_enable(struct stmpe *stmpe, unsigned int blocks)
@@ -46,6 +65,7 @@ static int __stmpe_reg_read(struct stmpe *stmpe, u8 reg)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = i2c_smbus_read_byte_data(stmpe->i2c, reg);
 	if (ret < 0)
 		dev_err(stmpe->dev, "failed to read reg %#x: %d\n",
@@ -55,6 +75,11 @@ static int __stmpe_reg_read(struct stmpe *stmpe, u8 reg)
 	if (ret < 0)
 		dev_err(stmpe->dev, "failed to read reg %#x: %d\n", reg, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = stmpe->ci->read_byte(stmpe, reg);
+	if (ret < 0)
+		dev_err(stmpe->dev, "failed to read reg %#x: %d\n", reg, ret);
+>>>>>>> refs/remotes/origin/master
 
 	dev_vdbg(stmpe->dev, "rd: reg %#x => data %#x\n", reg, ret);
 
@@ -68,6 +93,7 @@ static int __stmpe_reg_write(struct stmpe *stmpe, u8 reg, u8 val)
 	dev_vdbg(stmpe->dev, "wr: reg %#x <= %#x\n", reg, val);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = i2c_smbus_write_byte_data(stmpe->i2c, reg, val);
 	if (ret < 0)
 		dev_err(stmpe->dev, "failed to write reg %#x: %d\n",
@@ -77,6 +103,11 @@ static int __stmpe_reg_write(struct stmpe *stmpe, u8 reg, u8 val)
 	if (ret < 0)
 		dev_err(stmpe->dev, "failed to write reg %#x: %d\n", reg, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = stmpe->ci->write_byte(stmpe, reg, val);
+	if (ret < 0)
+		dev_err(stmpe->dev, "failed to write reg %#x: %d\n", reg, ret);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -101,6 +132,7 @@ static int __stmpe_block_read(struct stmpe *stmpe, u8 reg, u8 length,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = i2c_smbus_read_i2c_block_data(stmpe->i2c, reg, length, values);
 	if (ret < 0)
 		dev_err(stmpe->dev, "failed to read regs %#x: %d\n",
@@ -110,6 +142,11 @@ static int __stmpe_block_read(struct stmpe *stmpe, u8 reg, u8 length,
 	if (ret < 0)
 		dev_err(stmpe->dev, "failed to read regs %#x: %d\n", reg, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = stmpe->ci->read_block(stmpe, reg, length, values);
+	if (ret < 0)
+		dev_err(stmpe->dev, "failed to read regs %#x: %d\n", reg, ret);
+>>>>>>> refs/remotes/origin/master
 
 	dev_vdbg(stmpe->dev, "rd: reg %#x (%d) => ret %#x\n", reg, length, ret);
 	stmpe_dump_bytes("stmpe rd: ", values, length);
@@ -126,6 +163,7 @@ static int __stmpe_block_write(struct stmpe *stmpe, u8 reg, u8 length,
 	stmpe_dump_bytes("stmpe wr: ", values, length);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = i2c_smbus_write_i2c_block_data(stmpe->i2c, reg, length,
 					     values);
 	if (ret < 0)
@@ -136,6 +174,11 @@ static int __stmpe_block_write(struct stmpe *stmpe, u8 reg, u8 length,
 	if (ret < 0)
 		dev_err(stmpe->dev, "failed to write regs %#x: %d\n", reg, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = stmpe->ci->write_block(stmpe, reg, length, values);
+	if (ret < 0)
+		dev_err(stmpe->dev, "failed to write regs %#x: %d\n", reg, ret);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -269,10 +312,14 @@ EXPORT_SYMBOL_GPL(stmpe_block_write);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * stmpe_set_altfunc: set the alternate function for STMPE pins
 =======
  * stmpe_set_altfunc()- set the alternate function for STMPE pins
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * stmpe_set_altfunc()- set the alternate function for STMPE pins
+>>>>>>> refs/remotes/origin/master
  * @stmpe:	Device to configure
  * @pins:	Bitmask of pins to affect
  * @block:	block to enable alternate functions for
@@ -290,6 +337,7 @@ int stmpe_set_altfunc(struct stmpe *stmpe, u32 pins, enum stmpe_block block)
 	int af_bits = variant->af_bits;
 	int numregs = DIV_ROUND_UP(stmpe->num_gpios * af_bits, 8);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int afperreg = 8 / af_bits;
 	int mask = (1 << af_bits) - 1;
 	u8 regs[numregs];
@@ -297,6 +345,8 @@ int stmpe_set_altfunc(struct stmpe *stmpe, u32 pins, enum stmpe_block block)
 	int ret;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int mask = (1 << af_bits) - 1;
 	u8 regs[numregs];
 	int af, afperreg, ret;
@@ -305,7 +355,10 @@ int stmpe_set_altfunc(struct stmpe *stmpe, u32 pins, enum stmpe_block block)
 		return 0;
 
 	afperreg = 8 / af_bits;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&stmpe->lock);
 
 	ret = __stmpe_enable(stmpe, STMPE_BLOCK_GPIO);
@@ -348,12 +401,19 @@ static struct resource stmpe_gpio_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell stmpe_gpio_cell = {
 	.name		= "stmpe-gpio",
+=======
+static const struct mfd_cell stmpe_gpio_cell = {
+	.name		= "stmpe-gpio",
+	.of_compatible	= "st,stmpe-gpio",
+>>>>>>> refs/remotes/origin/master
 	.resources	= stmpe_gpio_resources,
 	.num_resources	= ARRAY_SIZE(stmpe_gpio_resources),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static struct mfd_cell stmpe_gpio_cell_noirq = {
@@ -362,6 +422,14 @@ static struct mfd_cell stmpe_gpio_cell_noirq = {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct mfd_cell stmpe_gpio_cell_noirq = {
+	.name		= "stmpe-gpio",
+	.of_compatible	= "st,stmpe-gpio",
+	/* gpio cell resources consist of an irq only so no resources here */
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Keypad (1601, 2401, 2403)
  */
@@ -369,28 +437,43 @@ static struct mfd_cell stmpe_gpio_cell_noirq = {
 static struct resource stmpe_keypad_resources[] = {
 	{
 		.name	= "KEYPAD",
+<<<<<<< HEAD
 		.start	= 0,
 		.end	= 0,
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
 		.name	= "KEYPAD_OVER",
+<<<<<<< HEAD
 		.start	= 1,
 		.end	= 1,
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell stmpe_keypad_cell = {
 	.name		= "stmpe-keypad",
+=======
+static const struct mfd_cell stmpe_keypad_cell = {
+	.name		= "stmpe-keypad",
+	.of_compatible  = "st,stmpe-keypad",
+>>>>>>> refs/remotes/origin/master
 	.resources	= stmpe_keypad_resources,
 	.num_resources	= ARRAY_SIZE(stmpe_keypad_resources),
 };
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Touchscreen (STMPE811)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * STMPE801
  */
 static const u8 stmpe801_regs[] = {
@@ -454,36 +537,55 @@ static struct stmpe_variant_info stmpe801_noirq = {
 
 /*
  * Touchscreen (STMPE811 or STMPE610)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 static struct resource stmpe_ts_resources[] = {
 	{
 		.name	= "TOUCH_DET",
+<<<<<<< HEAD
 		.start	= 0,
 		.end	= 0,
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 	{
 		.name	= "FIFO_TH",
+<<<<<<< HEAD
 		.start	= 1,
 		.end	= 1,
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell stmpe_ts_cell = {
 	.name		= "stmpe-ts",
+=======
+static const struct mfd_cell stmpe_ts_cell = {
+	.name		= "stmpe-ts",
+	.of_compatible	= "st,stmpe-ts",
+>>>>>>> refs/remotes/origin/master
 	.resources	= stmpe_ts_resources,
 	.num_resources	= ARRAY_SIZE(stmpe_ts_resources),
 };
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * STMPE811
 =======
  * STMPE811 or STMPE610
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * STMPE811 or STMPE610
+>>>>>>> refs/remotes/origin/master
  */
 
 static const u8 stmpe811_regs[] = {
@@ -555,7 +657,10 @@ static struct stmpe_variant_info stmpe811 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Similar to 811, except number of gpios */
 static struct stmpe_variant_info stmpe610 = {
 	.name		= "stmpe610",
@@ -571,7 +676,10 @@ static struct stmpe_variant_info stmpe610 = {
 	.get_altfunc	= stmpe811_get_altfunc,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * STMPE1601
  */
@@ -596,12 +704,20 @@ static const u8 stmpe1601_regs[] = {
 static struct stmpe_variant_block stmpe1601_blocks[] = {
 	{
 		.cell	= &stmpe_gpio_cell,
+<<<<<<< HEAD
 		.irq	= STMPE24XX_IRQ_GPIOC,
+=======
+		.irq	= STMPE1601_IRQ_GPIOC,
+>>>>>>> refs/remotes/origin/master
 		.block	= STMPE_BLOCK_GPIO,
 	},
 	{
 		.cell	= &stmpe_keypad_cell,
+<<<<<<< HEAD
 		.irq	= STMPE24XX_IRQ_KEYPAD,
+=======
+		.irq	= STMPE1601_IRQ_KEYPAD,
+>>>>>>> refs/remotes/origin/master
 		.block	= STMPE_BLOCK_KEYPAD,
 	},
 };
@@ -713,6 +829,91 @@ static struct stmpe_variant_info stmpe1601 = {
 };
 
 /*
+<<<<<<< HEAD
+=======
+ * STMPE1801
+ */
+static const u8 stmpe1801_regs[] = {
+	[STMPE_IDX_CHIP_ID]	= STMPE1801_REG_CHIP_ID,
+	[STMPE_IDX_ICR_LSB]	= STMPE1801_REG_INT_CTRL_LOW,
+	[STMPE_IDX_IER_LSB]	= STMPE1801_REG_INT_EN_MASK_LOW,
+	[STMPE_IDX_ISR_LSB]	= STMPE1801_REG_INT_STA_LOW,
+	[STMPE_IDX_GPMR_LSB]	= STMPE1801_REG_GPIO_MP_LOW,
+	[STMPE_IDX_GPSR_LSB]	= STMPE1801_REG_GPIO_SET_LOW,
+	[STMPE_IDX_GPCR_LSB]	= STMPE1801_REG_GPIO_CLR_LOW,
+	[STMPE_IDX_GPDR_LSB]	= STMPE1801_REG_GPIO_SET_DIR_LOW,
+	[STMPE_IDX_GPRER_LSB]	= STMPE1801_REG_GPIO_RE_LOW,
+	[STMPE_IDX_GPFER_LSB]	= STMPE1801_REG_GPIO_FE_LOW,
+	[STMPE_IDX_IEGPIOR_LSB]	= STMPE1801_REG_INT_EN_GPIO_MASK_LOW,
+	[STMPE_IDX_ISGPIOR_LSB]	= STMPE1801_REG_INT_STA_GPIO_LOW,
+};
+
+static struct stmpe_variant_block stmpe1801_blocks[] = {
+	{
+		.cell	= &stmpe_gpio_cell,
+		.irq	= STMPE1801_IRQ_GPIOC,
+		.block	= STMPE_BLOCK_GPIO,
+	},
+	{
+		.cell	= &stmpe_keypad_cell,
+		.irq	= STMPE1801_IRQ_KEYPAD,
+		.block	= STMPE_BLOCK_KEYPAD,
+	},
+};
+
+static int stmpe1801_enable(struct stmpe *stmpe, unsigned int blocks,
+			    bool enable)
+{
+	unsigned int mask = 0;
+	if (blocks & STMPE_BLOCK_GPIO)
+		mask |= STMPE1801_MSK_INT_EN_GPIO;
+
+	if (blocks & STMPE_BLOCK_KEYPAD)
+		mask |= STMPE1801_MSK_INT_EN_KPC;
+
+	return __stmpe_set_bits(stmpe, STMPE1801_REG_INT_EN_MASK_LOW, mask,
+				enable ? mask : 0);
+}
+
+static int stmpe1801_reset(struct stmpe *stmpe)
+{
+	unsigned long timeout;
+	int ret = 0;
+
+	ret = __stmpe_set_bits(stmpe, STMPE1801_REG_SYS_CTRL,
+		STMPE1801_MSK_SYS_CTRL_RESET, STMPE1801_MSK_SYS_CTRL_RESET);
+	if (ret < 0)
+		return ret;
+
+	timeout = jiffies + msecs_to_jiffies(100);
+	while (time_before(jiffies, timeout)) {
+		ret = __stmpe_reg_read(stmpe, STMPE1801_REG_SYS_CTRL);
+		if (ret < 0)
+			return ret;
+		if (!(ret & STMPE1801_MSK_SYS_CTRL_RESET))
+			return 0;
+		usleep_range(100, 200);
+	};
+	return -EIO;
+}
+
+static struct stmpe_variant_info stmpe1801 = {
+	.name		= "stmpe1801",
+	.id_val		= STMPE1801_ID,
+	.id_mask	= 0xfff0,
+	.num_gpios	= 18,
+	.af_bits	= 0,
+	.regs		= stmpe1801_regs,
+	.blocks		= stmpe1801_blocks,
+	.num_blocks	= ARRAY_SIZE(stmpe1801_blocks),
+	.num_irqs	= STMPE1801_NR_INTERNAL_IRQS,
+	.enable		= stmpe1801_enable,
+	/* stmpe1801 do not have any gpio alternate function */
+	.get_altfunc	= NULL,
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  * STMPE24XX
  */
 
@@ -806,6 +1007,7 @@ static struct stmpe_variant_info stmpe2403 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct stmpe_variant_info *stmpe_variant_info[] = {
 =======
 static struct stmpe_variant_info *stmpe_variant_info[STMPE_NBR_PARTS] = {
@@ -814,12 +1016,23 @@ static struct stmpe_variant_info *stmpe_variant_info[STMPE_NBR_PARTS] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	[STMPE811]	= &stmpe811,
 	[STMPE1601]	= &stmpe1601,
+=======
+static struct stmpe_variant_info *stmpe_variant_info[STMPE_NBR_PARTS] = {
+	[STMPE610]	= &stmpe610,
+	[STMPE801]	= &stmpe801,
+	[STMPE811]	= &stmpe811,
+	[STMPE1601]	= &stmpe1601,
+	[STMPE1801]	= &stmpe1801,
+>>>>>>> refs/remotes/origin/master
 	[STMPE2401]	= &stmpe2401,
 	[STMPE2403]	= &stmpe2403,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * These devices can be connected in a 'no-irq' configuration - the irq pin
  * is not used and the device cannot interrupt the CPU. Here we only list
@@ -830,17 +1043,25 @@ static struct stmpe_variant_info *stmpe_noirq_variant_info[STMPE_NBR_PARTS] = {
 	[STMPE801]	= &stmpe801_noirq,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t stmpe_irq(int irq, void *data)
 {
 	struct stmpe *stmpe = data;
 	struct stmpe_variant_info *variant = stmpe->variant;
 	int num = DIV_ROUND_UP(variant->num_irqs, 8);
+<<<<<<< HEAD
 	u8 israddr = stmpe->regs[STMPE_IDX_ISR_MSB];
+=======
+	u8 israddr;
+>>>>>>> refs/remotes/origin/master
 	u8 isr[num];
 	int ret;
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (variant->id_val == STMPE801_ID) {
@@ -849,6 +1070,20 @@ static irqreturn_t stmpe_irq(int irq, void *data)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (variant->id_val == STMPE801_ID) {
+		int base = irq_create_mapping(stmpe->domain, 0);
+
+		handle_nested_irq(base);
+		return IRQ_HANDLED;
+	}
+
+	if (variant->id_val == STMPE1801_ID)
+		israddr = stmpe->regs[STMPE_IDX_ISR_LSB];
+	else
+		israddr = stmpe->regs[STMPE_IDX_ISR_MSB];
+
+>>>>>>> refs/remotes/origin/master
 	ret = stmpe_block_read(stmpe, israddr, num, isr);
 	if (ret < 0)
 		return IRQ_NONE;
@@ -866,8 +1101,14 @@ static irqreturn_t stmpe_irq(int irq, void *data)
 		while (status) {
 			int bit = __ffs(status);
 			int line = bank * 8 + bit;
+<<<<<<< HEAD
 
 			handle_nested_irq(stmpe->irq_base + line);
+=======
+			int nestedirq = irq_create_mapping(stmpe->domain, line);
+
+			handle_nested_irq(nestedirq);
+>>>>>>> refs/remotes/origin/master
 			status &= ~(1 << bit);
 		}
 
@@ -908,7 +1149,11 @@ static void stmpe_irq_sync_unlock(struct irq_data *data)
 static void stmpe_irq_mask(struct irq_data *data)
 {
 	struct stmpe *stmpe = irq_data_get_irq_chip_data(data);
+<<<<<<< HEAD
 	int offset = data->irq - stmpe->irq_base;
+=======
+	int offset = data->hwirq;
+>>>>>>> refs/remotes/origin/master
 	int regoffset = offset / 8;
 	int mask = 1 << (offset % 8);
 
@@ -918,7 +1163,11 @@ static void stmpe_irq_mask(struct irq_data *data)
 static void stmpe_irq_unmask(struct irq_data *data)
 {
 	struct stmpe *stmpe = irq_data_get_irq_chip_data(data);
+<<<<<<< HEAD
 	int offset = data->irq - stmpe->irq_base;
+=======
+	int offset = data->hwirq;
+>>>>>>> refs/remotes/origin/master
 	int regoffset = offset / 8;
 	int mask = 1 << (offset % 8);
 
@@ -933,6 +1182,7 @@ static struct irq_chip stmpe_irq_chip = {
 	.irq_unmask		= stmpe_irq_unmask,
 };
 
+<<<<<<< HEAD
 static int __devinit stmpe_irq_init(struct stmpe *stmpe)
 {
 <<<<<<< HEAD
@@ -963,10 +1213,30 @@ static int __devinit stmpe_irq_init(struct stmpe *stmpe)
 		irq_set_noprobe(irq);
 #endif
 	}
+=======
+static int stmpe_irq_map(struct irq_domain *d, unsigned int virq,
+                                irq_hw_number_t hwirq)
+{
+	struct stmpe *stmpe = d->host_data;
+	struct irq_chip *chip = NULL;
+
+	if (stmpe->variant->id_val != STMPE801_ID)
+		chip = &stmpe_irq_chip;
+
+	irq_set_chip_data(virq, stmpe);
+	irq_set_chip_and_handler(virq, chip, handle_edge_irq);
+	irq_set_nested_thread(virq, 1);
+#ifdef CONFIG_ARM
+	set_irq_flags(virq, IRQF_VALID);
+#else
+	irq_set_noprobe(virq);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void stmpe_irq_remove(struct stmpe *stmpe)
 {
 	int num_irqs = stmpe->variant->num_irqs;
@@ -983,15 +1253,55 @@ static void stmpe_irq_remove(struct stmpe *stmpe)
 }
 
 static int __devinit stmpe_chip_init(struct stmpe *stmpe)
+=======
+static void stmpe_irq_unmap(struct irq_domain *d, unsigned int virq)
+{
+#ifdef CONFIG_ARM
+		set_irq_flags(virq, 0);
+#endif
+		irq_set_chip_and_handler(virq, NULL, NULL);
+		irq_set_chip_data(virq, NULL);
+}
+
+static struct irq_domain_ops stmpe_irq_ops = {
+        .map    = stmpe_irq_map,
+        .unmap  = stmpe_irq_unmap,
+        .xlate  = irq_domain_xlate_twocell,
+};
+
+static int stmpe_irq_init(struct stmpe *stmpe, struct device_node *np)
+{
+	int base = 0;
+	int num_irqs = stmpe->variant->num_irqs;
+
+	if (!np)
+		base = stmpe->irq_base;
+
+	stmpe->domain = irq_domain_add_simple(np, num_irqs, base,
+					      &stmpe_irq_ops, stmpe);
+	if (!stmpe->domain) {
+		dev_err(stmpe->dev, "Failed to create irqdomain\n");
+		return -ENOSYS;
+	}
+
+	return 0;
+}
+
+static int stmpe_chip_init(struct stmpe *stmpe)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int irq_trigger = stmpe->pdata->irq_trigger;
 	int autosleep_timeout = stmpe->pdata->autosleep_timeout;
 	struct stmpe_variant_info *variant = stmpe->variant;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 icr = STMPE_ICR_LSB_GIM;
 =======
 	u8 icr = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 icr = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned int id;
 	u8 data[2];
 	int ret;
@@ -1015,6 +1325,7 @@ static int __devinit stmpe_chip_init(struct stmpe *stmpe)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (irq_trigger == IRQF_TRIGGER_FALLING ||
 	    irq_trigger == IRQF_TRIGGER_RISING)
 		icr |= STMPE_ICR_LSB_EDGE;
@@ -1026,6 +1337,14 @@ static int __devinit stmpe_chip_init(struct stmpe *stmpe)
 	if (stmpe->pdata->irq_invert_polarity)
 		icr ^= STMPE_ICR_LSB_HIGH;
 =======
+=======
+	if (id == STMPE1801_ID)	{
+		ret =  stmpe1801_reset(stmpe);
+		if (ret < 0)
+			return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (stmpe->irq >= 0) {
 		if (id == STMPE801_ID)
 			icr = STMPE801_REG_SYS_CTRL_INT_EN;
@@ -1046,6 +1365,7 @@ static int __devinit stmpe_chip_init(struct stmpe *stmpe)
 			else
 				icr |= STMPE_ICR_LSB_HIGH;
 		}
+<<<<<<< HEAD
 
 		if (stmpe->pdata->irq_invert_polarity) {
 			if (id == STMPE801_ID)
@@ -1055,6 +1375,9 @@ static int __devinit stmpe_chip_init(struct stmpe *stmpe)
 		}
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (stmpe->pdata->autosleep) {
 		ret = stmpe_autosleep(stmpe, autosleep_timeout);
@@ -1065,6 +1388,7 @@ static int __devinit stmpe_chip_init(struct stmpe *stmpe)
 	return stmpe_reg_write(stmpe, stmpe->regs[STMPE_IDX_ICR_LSB], icr);
 }
 
+<<<<<<< HEAD
 static int __devinit stmpe_add_device(struct stmpe *stmpe,
 				      struct mfd_cell *cell, int irq)
 {
@@ -1073,11 +1397,24 @@ static int __devinit stmpe_add_device(struct stmpe *stmpe,
 }
 
 static int __devinit stmpe_devices_init(struct stmpe *stmpe)
+=======
+static int stmpe_add_device(struct stmpe *stmpe, const struct mfd_cell *cell)
+{
+	return mfd_add_devices(stmpe->dev, stmpe->pdata->id, cell, 1,
+			       NULL, stmpe->irq_base, stmpe->domain);
+}
+
+static int stmpe_devices_init(struct stmpe *stmpe)
+>>>>>>> refs/remotes/origin/master
 {
 	struct stmpe_variant_info *variant = stmpe->variant;
 	unsigned int platform_blocks = stmpe->pdata->blocks;
 	int ret = -EINVAL;
+<<<<<<< HEAD
 	int i;
+=======
+	int i, j;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < variant->num_blocks; i++) {
 		struct stmpe_variant_block *block = &variant->blocks[i];
@@ -1085,8 +1422,22 @@ static int __devinit stmpe_devices_init(struct stmpe *stmpe)
 		if (!(platform_blocks & block->block))
 			continue;
 
+<<<<<<< HEAD
 		platform_blocks &= ~block->block;
 		ret = stmpe_add_device(stmpe, block->cell, block->irq);
+=======
+		for (j = 0; j < block->cell->num_resources; j++) {
+			struct resource *res =
+				(struct resource *) &block->cell->resources[j];
+
+			/* Dynamically fill in a variant's IRQ. */
+			if (res->flags & IORESOURCE_IRQ)
+				res->start = res->end = block->irq + j;
+		}
+
+		platform_blocks &= ~block->block;
+		ret = stmpe_add_device(stmpe, block->cell);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return ret;
 	}
@@ -1099,6 +1450,7 @@ static int __devinit stmpe_devices_init(struct stmpe *stmpe)
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM
 static int stmpe_suspend(struct device *dev)
@@ -1139,12 +1491,71 @@ int __devinit stmpe_probe(struct stmpe_client_info *ci, int partnum)
 		return -EINVAL;
 
 	stmpe = kzalloc(sizeof(struct stmpe), GFP_KERNEL);
+=======
+static void stmpe_of_probe(struct stmpe_platform_data *pdata,
+			   struct device_node *np)
+{
+	struct device_node *child;
+
+	pdata->id = of_alias_get_id(np, "stmpe-i2c");
+	if (pdata->id < 0)
+		pdata->id = -1;
+
+	pdata->irq_trigger = IRQF_TRIGGER_NONE;
+
+	of_property_read_u32(np, "st,autosleep-timeout",
+			&pdata->autosleep_timeout);
+
+	pdata->autosleep = (pdata->autosleep_timeout) ? true : false;
+
+	for_each_child_of_node(np, child) {
+		if (!strcmp(child->name, "stmpe_gpio")) {
+			pdata->blocks |= STMPE_BLOCK_GPIO;
+		} else if (!strcmp(child->name, "stmpe_keypad")) {
+			pdata->blocks |= STMPE_BLOCK_KEYPAD;
+		} else if (!strcmp(child->name, "stmpe_touchscreen")) {
+			pdata->blocks |= STMPE_BLOCK_TOUCHSCREEN;
+		} else if (!strcmp(child->name, "stmpe_adc")) {
+			pdata->blocks |= STMPE_BLOCK_ADC;
+		} else if (!strcmp(child->name, "stmpe_pwm")) {
+			pdata->blocks |= STMPE_BLOCK_PWM;
+		} else if (!strcmp(child->name, "stmpe_rotator")) {
+			pdata->blocks |= STMPE_BLOCK_ROTATOR;
+		}
+	}
+}
+
+/* Called from client specific probe routines */
+int stmpe_probe(struct stmpe_client_info *ci, int partnum)
+{
+	struct stmpe_platform_data *pdata = dev_get_platdata(ci->dev);
+	struct device_node *np = ci->dev->of_node;
+	struct stmpe *stmpe;
+	int ret;
+
+	if (!pdata) {
+		if (!np)
+			return -EINVAL;
+
+		pdata = devm_kzalloc(ci->dev, sizeof(*pdata), GFP_KERNEL);
+		if (!pdata)
+			return -ENOMEM;
+
+		stmpe_of_probe(pdata, np);
+
+		if (of_find_property(np, "interrupts", NULL) == NULL)
+			ci->irq = -1;
+	}
+
+	stmpe = devm_kzalloc(ci->dev, sizeof(struct stmpe), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!stmpe)
 		return -ENOMEM;
 
 	mutex_init(&stmpe->irq_lock);
 	mutex_init(&stmpe->lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	stmpe->dev = &i2c->dev;
 	stmpe->i2c = i2c;
@@ -1174,6 +1585,8 @@ int __devinit stmpe_probe(struct stmpe_client_info *ci, int partnum)
 		dev_err(stmpe->dev, "failed to request IRQ: %d\n", ret);
 		goto out_removeirq;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	stmpe->dev = ci->dev;
 	stmpe->client = ci->client;
 	stmpe->pdata = pdata;
@@ -1189,11 +1602,20 @@ int __devinit stmpe_probe(struct stmpe_client_info *ci, int partnum)
 		ci->init(stmpe);
 
 	if (pdata->irq_over_gpio) {
+<<<<<<< HEAD
 		ret = gpio_request_one(pdata->irq_gpio, GPIOF_DIR_IN, "stmpe");
 		if (ret) {
 			dev_err(stmpe->dev, "failed to request IRQ GPIO: %d\n",
 					ret);
 			goto out_free;
+=======
+		ret = devm_gpio_request_one(ci->dev, pdata->irq_gpio,
+				GPIOF_DIR_IN, "stmpe");
+		if (ret) {
+			dev_err(stmpe->dev, "failed to request IRQ GPIO: %d\n",
+					ret);
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		stmpe->irq = gpio_to_irq(pdata->irq_gpio);
@@ -1210,14 +1632,23 @@ int __devinit stmpe_probe(struct stmpe_client_info *ci, int partnum)
 			dev_err(stmpe->dev,
 				"%s does not support no-irq mode!\n",
 				stmpe->variant->name);
+<<<<<<< HEAD
 			ret = -ENODEV;
 			goto free_gpio;
 		}
 		stmpe->variant = stmpe_noirq_variant_info[stmpe->partnum];
+=======
+			return -ENODEV;
+		}
+		stmpe->variant = stmpe_noirq_variant_info[stmpe->partnum];
+	} else if (pdata->irq_trigger == IRQF_TRIGGER_NONE) {
+		pdata->irq_trigger = irq_get_trigger_type(stmpe->irq);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = stmpe_chip_init(stmpe);
 	if (ret)
+<<<<<<< HEAD
 		goto free_gpio;
 
 	if (stmpe->irq >= 0) {
@@ -1227,10 +1658,22 @@ int __devinit stmpe_probe(struct stmpe_client_info *ci, int partnum)
 
 		ret = request_threaded_irq(stmpe->irq, NULL, stmpe_irq,
 				pdata->irq_trigger | IRQF_ONESHOT,
+=======
+		return ret;
+
+	if (stmpe->irq >= 0) {
+		ret = stmpe_irq_init(stmpe, np);
+		if (ret)
+			return ret;
+
+		ret = devm_request_threaded_irq(ci->dev, stmpe->irq, NULL,
+				stmpe_irq, pdata->irq_trigger | IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				"stmpe", stmpe);
 		if (ret) {
 			dev_err(stmpe->dev, "failed to request IRQ: %d\n",
 					ret);
+<<<<<<< HEAD
 			goto out_removeirq;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1275,10 +1718,27 @@ static int __devexit stmpe_remove(struct i2c_client *client)
 	free_irq(stmpe->i2c->irq, stmpe);
 	stmpe_irq_remove(stmpe);
 =======
+=======
+			return ret;
+		}
+	}
+
+	ret = stmpe_devices_init(stmpe);
+	if (!ret)
+		return 0;
+
+	dev_err(stmpe->dev, "failed to add children\n");
+	mfd_remove_devices(stmpe->dev);
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 int stmpe_remove(struct stmpe *stmpe)
 {
 	mfd_remove_devices(stmpe->dev);
 
+<<<<<<< HEAD
 	if (stmpe->irq >= 0) {
 		free_irq(stmpe->irq, stmpe);
 		stmpe_irq_remove(stmpe);
@@ -1337,6 +1797,11 @@ MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("STMPE MFD core driver");
 MODULE_AUTHOR("Rabin Vincent <rabin.vincent@stericsson.com>");
 =======
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 static int stmpe_suspend(struct device *dev)
 {
@@ -1363,4 +1828,7 @@ const struct dev_pm_ops stmpe_dev_pm_ops = {
 	.resume		= stmpe_resume,
 };
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

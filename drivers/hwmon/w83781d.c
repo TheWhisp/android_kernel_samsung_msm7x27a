@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     w83781d.c - Part of lm_sensors, Linux kernel modules for hardware
                 monitoring
     Copyright (c) 1998 - 2001  Frodo Looijaard <frodol@dds.nl>,
@@ -34,6 +35,8 @@
 
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * w83781d.c - Part of lm_sensors, Linux kernel modules for hardware
  *	       monitoring
  * Copyright (c) 1998 - 2001  Frodo Looijaard <frodol@dds.nl>,
@@ -59,7 +62,11 @@
 /*
  * Supports following chips:
  *
+<<<<<<< HEAD
  * Chip	#vin	#fanin	#pwm	#temp	wchipid	vendid	i2c	ISA
+=======
+ * Chip		#vin	#fanin	#pwm	#temp	wchipid	vendid	i2c	ISA
+>>>>>>> refs/remotes/origin/master
  * as99127f	7	3	0	3	0x31	0x12c3	yes	no
  * as99127f rev.2 (type_name = as99127f)	0x31	0x5ca3	yes	no
  * w83781d	7	3	0	3	0x10-1	0x5ca3	yes	yes
@@ -67,7 +74,10 @@
  * w83783s	5-6	3	2	1-2	0x40	0x5ca3	yes	no
  *
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -100,6 +110,7 @@ enum chips { w83781d, w83782d, w83783s, as99127f };
 /* Insmod parameters */
 static unsigned short force_subclients[4];
 module_param_array(force_subclients, short, NULL, 0);
+<<<<<<< HEAD
 MODULE_PARM_DESC(force_subclients, "List of subclient addresses: "
 		    "{bus, clientaddr, subclientaddr1, subclientaddr2}");
 
@@ -110,12 +121,20 @@ MODULE_PARM_DESC(reset, "Set to one to reset chip on load");
 
 static int init = 1;
 =======
+=======
+MODULE_PARM_DESC(force_subclients,
+		 "List of subclient addresses: {bus, clientaddr, subclientaddr1, subclientaddr2}");
+
+>>>>>>> refs/remotes/origin/master
 static bool reset;
 module_param(reset, bool, 0);
 MODULE_PARM_DESC(reset, "Set to one to reset chip on load");
 
 static bool init = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(init, bool, 0);
 MODULE_PARM_DESC(init, "Set to zero to bypass chip initialization");
 
@@ -190,14 +209,20 @@ static const u8 W83781D_REG_PWM[] = { 0x5B, 0x5A, 0x5E, 0x5F };
 #define W83781D_REG_I2C_SUBADDR		0x4A
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The following are undocumented in the data sheets however we
    received the information in an email from Winbond tech support */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The following are undocumented in the data sheets however we
  * received the information in an email from Winbond tech support
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Sensor selection - not on 781d */
 #define W83781D_REG_SCFG1		0x5D
 static const u8 BIT_SCFG1[] = { 0x02, 0x04, 0x08 };
@@ -208,7 +233,11 @@ static const u8 BIT_SCFG2[] = { 0x10, 0x20, 0x40 };
 #define W83781D_DEFAULT_BETA		3435
 
 /* Conversions */
+<<<<<<< HEAD
 #define IN_TO_REG(val)			SENSORS_LIMIT(((val) + 8) / 16, 0, 255)
+=======
+#define IN_TO_REG(val)			clamp_val(((val) + 8) / 16, 0, 255)
+>>>>>>> refs/remotes/origin/master
 #define IN_FROM_REG(val)		((val) * 16)
 
 static inline u8
@@ -216,8 +245,13 @@ FAN_TO_REG(long rpm, int div)
 {
 	if (rpm == 0)
 		return 255;
+<<<<<<< HEAD
 	rpm = SENSORS_LIMIT(rpm, 1, 1000000);
 	return SENSORS_LIMIT((1350000 + rpm * div / 2) / (rpm * div), 1, 254);
+=======
+	rpm = clamp_val(rpm, 1, 1000000);
+	return clamp_val((1350000 + rpm * div / 2) / (rpm * div), 1, 254);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long
@@ -230,6 +264,7 @@ FAN_FROM_REG(u8 val, int div)
 	return 1350000 / (val * div);
 }
 
+<<<<<<< HEAD
 #define TEMP_TO_REG(val)		SENSORS_LIMIT((val) / 1000, -127, 128)
 #define TEMP_FROM_REG(val)		((val) * 1000)
 
@@ -242,6 +277,14 @@ FAN_FROM_REG(u8 val, int div)
 					 (~(val)) & 0x7fff : (val) & 0xff7fff)
 #define BEEP_MASK_TO_REG(val, type)	((type) == as99127f ? \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TEMP_TO_REG(val)		clamp_val((val) / 1000, -127, 128)
+#define TEMP_FROM_REG(val)		((val) * 1000)
+
+#define BEEP_MASK_FROM_REG(val, type)	((type) == as99127f ? \
+					 (~(val)) & 0x7fff : (val) & 0xff7fff)
+#define BEEP_MASK_TO_REG(val, type)	((type) == as99127f ? \
+>>>>>>> refs/remotes/origin/master
 					 (~(val)) & 0x7fff : (val) & 0xff7fff)
 
 #define DIV_FROM_REG(val)		(1 << (val))
@@ -250,9 +293,14 @@ static inline u8
 DIV_TO_REG(long val, enum chips type)
 {
 	int i;
+<<<<<<< HEAD
 	val = SENSORS_LIMIT(val, 1,
 			    ((type == w83781d
 			      || type == as99127f) ? 8 : 128)) >> 1;
+=======
+	val = clamp_val(val, 1,
+			((type == w83781d || type == as99127f) ? 8 : 128)) >> 1;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 7; i++) {
 		if (val == 0)
 			break;
@@ -296,16 +344,22 @@ struct w83781d_data {
 	u8 pwm[4];		/* Register value */
 	u8 pwm2_enable;		/* Boolean */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 sens[3];		/* 782D/783S only.
 				   1 = pentium diode; 2 = 3904 diode;
 				   4 = thermistor */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 sens[3];		/*
 				 * 782D/783S only.
 				 * 1 = pentium diode; 2 = 3904 diode;
 				 * 4 = thermistor
 				 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vrm;
 };
 
@@ -320,10 +374,14 @@ static void w83781d_init_device(struct device *dev);
 /* following are the sysfs callback functions */
 #define show_in_reg(reg) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##reg (struct device *dev, struct device_attribute *da, \
 =======
 static ssize_t show_##reg(struct device *dev, struct device_attribute *da, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_##reg(struct device *dev, struct device_attribute *da, \
+>>>>>>> refs/remotes/origin/master
 		char *buf) \
 { \
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da); \
@@ -337,15 +395,20 @@ show_in_reg(in_max);
 
 #define store_in_reg(REG, reg) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t store_in_##reg (struct device *dev, struct device_attribute \
 =======
 static ssize_t store_in_##reg(struct device *dev, struct device_attribute \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t store_in_##reg(struct device *dev, struct device_attribute \
+>>>>>>> refs/remotes/origin/master
 		*da, const char *buf, size_t count) \
 { \
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da); \
 	struct w83781d_data *data = dev_get_drvdata(dev); \
 	int nr = attr->index; \
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 val; \
 	 \
@@ -356,6 +419,8 @@ static ssize_t store_in_##reg(struct device *dev, struct device_attribute \
 	w83781d_write_value(data, W83781D_REG_IN_##REG(nr), data->in_##reg[nr]); \
 	 \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val; \
 	int err = kstrtoul(buf, 10, &val); \
 	if (err) \
@@ -365,7 +430,10 @@ static ssize_t store_in_##reg(struct device *dev, struct device_attribute \
 	w83781d_write_value(data, W83781D_REG_IN_##REG(nr), \
 			    data->in_##reg[nr]); \
 	\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock); \
 	return count; \
 }
@@ -392,19 +460,27 @@ sysfs_in_offsets(8);
 
 #define show_fan_reg(reg) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##reg (struct device *dev, struct device_attribute *da, \
 =======
 static ssize_t show_##reg(struct device *dev, struct device_attribute *da, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_##reg(struct device *dev, struct device_attribute *da, \
+>>>>>>> refs/remotes/origin/master
 		char *buf) \
 { \
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da); \
 	struct w83781d_data *data = w83781d_update_device(dev); \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf,"%ld\n", \
 =======
 	return sprintf(buf, "%ld\n", \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%ld\n", \
+>>>>>>> refs/remotes/origin/master
 		FAN_FROM_REG(data->reg[attr->index], \
 			DIV_FROM_REG(data->fan_div[attr->index]))); \
 }
@@ -419,17 +495,23 @@ store_fan_min(struct device *dev, struct device_attribute *da,
 	struct w83781d_data *data = dev_get_drvdata(dev);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val;
 
 	val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[nr] =
@@ -453,10 +535,14 @@ static SENSOR_DEVICE_ATTR(fan3_min, S_IRUGO | S_IWUSR,
 
 #define show_temp_reg(reg) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##reg (struct device *dev, struct device_attribute *da, \
 =======
 static ssize_t show_##reg(struct device *dev, struct device_attribute *da, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_##reg(struct device *dev, struct device_attribute *da, \
+>>>>>>> refs/remotes/origin/master
 		char *buf) \
 { \
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da); \
@@ -464,16 +550,22 @@ static ssize_t show_##reg(struct device *dev, struct device_attribute *da, \
 	int nr = attr->index; \
 	if (nr >= 2) {	/* TEMP2 and TEMP3 */ \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return sprintf(buf,"%d\n", \
 			LM75_TEMP_FROM_REG(data->reg##_add[nr-2])); \
 	} else {	/* TEMP1 */ \
 		return sprintf(buf,"%ld\n", (long)TEMP_FROM_REG(data->reg)); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return sprintf(buf, "%d\n", \
 			LM75_TEMP_FROM_REG(data->reg##_add[nr-2])); \
 	} else {	/* TEMP1 */ \
 		return sprintf(buf, "%ld\n", (long)TEMP_FROM_REG(data->reg)); \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} \
 }
 show_temp_reg(temp);
@@ -482,16 +574,21 @@ show_temp_reg(temp_max_hyst);
 
 #define store_temp_reg(REG, reg) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t store_temp_##reg (struct device *dev, \
 =======
 static ssize_t store_temp_##reg(struct device *dev, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t store_temp_##reg(struct device *dev, \
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *da, const char *buf, size_t count) \
 { \
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(da); \
 	struct w83781d_data *data = dev_get_drvdata(dev); \
 	int nr = attr->index; \
 	long val; \
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 \
 	val = simple_strtol(buf, NULL, 10); \
@@ -501,6 +598,11 @@ static ssize_t store_temp_##reg(struct device *dev, \
 	if (err) \
 		return err; \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err = kstrtol(buf, 10, &val); \
+	if (err) \
+		return err; \
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock); \
 	 \
 	if (nr >= 2) {	/* TEMP2 and TEMP3 */ \
@@ -549,6 +651,7 @@ show_vrm_reg(struct device *dev, struct device_attribute *attr, char *buf)
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 store_vrm_reg(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
 {
 	struct w83781d_data *data = dev_get_drvdata(dev);
@@ -557,6 +660,8 @@ store_vrm_reg(struct device *dev, struct device_attribute *attr, const char *buf
 	val = simple_strtoul(buf, NULL, 10);
 	data->vrm = val;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 store_vrm_reg(struct device *dev, struct device_attribute *attr,
 	      const char *buf, size_t count)
 {
@@ -567,8 +672,12 @@ store_vrm_reg(struct device *dev, struct device_attribute *attr,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 	data->vrm = SENSORS_LIMIT(val, 0, 255);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->vrm = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -618,11 +727,16 @@ static SENSOR_DEVICE_ATTR(temp2_alarm, S_IRUGO, show_alarm, NULL, 5);
 static SENSOR_DEVICE_ATTR(temp3_alarm, S_IRUGO, show_temp3_alarm, NULL, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_beep_mask (struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_beep_mask(struct device *dev,
 			       struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_beep_mask(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w83781d_data *data = w83781d_update_device(dev);
 	return sprintf(buf, "%ld\n",
@@ -635,17 +749,23 @@ store_beep_mask(struct device *dev, struct device_attribute *attr,
 {
 	struct w83781d_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val;
 
 	val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->beep_mask &= 0x8000; /* preserve beep enable */
@@ -681,11 +801,14 @@ store_beep(struct device *dev, struct device_attribute *attr,
 	struct w83781d_data *data = dev_get_drvdata(dev);
 	int bitnr = to_sensor_dev_attr(attr)->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long bit;
 	u8 reg;
 
 	bit = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 reg;
 	unsigned long bit;
 	int err;
@@ -694,7 +817,10 @@ store_beep(struct device *dev, struct device_attribute *attr,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bit & ~1)
 		return -EINVAL;
 
@@ -783,18 +909,24 @@ show_fan_div(struct device *dev, struct device_attribute *da, char *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Note: we save and restore the fan minimum here, because its value is
    determined in part by the fan divisor.  This follows the principle of
    least surprise; the user doesn't expect the fan minimum to change just
    because the divisor changed. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: we save and restore the fan minimum here, because its value is
  * determined in part by the fan divisor.  This follows the principle of
  * least surprise; the user doesn't expect the fan minimum to change just
  * because the divisor changed.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t
 store_fan_div(struct device *dev, struct device_attribute *da,
 		const char *buf, size_t count)
@@ -805,15 +937,21 @@ store_fan_div(struct device *dev, struct device_attribute *da,
 	int nr = attr->index;
 	u8 reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 
@@ -824,18 +962,24 @@ store_fan_div(struct device *dev, struct device_attribute *da,
 	data->fan_div[nr] = DIV_TO_REG(val, data->type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	reg = (w83781d_read_value(data, nr==2 ? W83781D_REG_PIN : W83781D_REG_VID_FANDIV)
 	       & (nr==0 ? 0xcf : 0x3f))
 	    | ((data->fan_div[nr] & 0x03) << (nr==0 ? 4 : 6));
 	w83781d_write_value(data, nr==2 ? W83781D_REG_PIN : W83781D_REG_VID_FANDIV, reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	reg = (w83781d_read_value(data, nr == 2 ?
 				  W83781D_REG_PIN : W83781D_REG_VID_FANDIV)
 		& (nr == 0 ? 0xcf : 0x3f))
 	      | ((data->fan_div[nr] & 0x03) << (nr == 0 ? 4 : 6));
 	w83781d_write_value(data, nr == 2 ?
 			    W83781D_REG_PIN : W83781D_REG_VID_FANDIV, reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* w83781d and as99127f don't have extended divisor bits */
 	if (data->type != w83781d && data->type != as99127f) {
@@ -883,20 +1027,29 @@ store_pwm(struct device *dev, struct device_attribute *da, const char *buf,
 	struct w83781d_data *data = dev_get_drvdata(dev);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val;
 
 	val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mutex_lock(&data->update_lock);
 	data->pwm[nr] = SENSORS_LIMIT(val, 0, 255);
+=======
+
+	mutex_lock(&data->update_lock);
+	data->pwm[nr] = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	w83781d_write_value(data, W83781D_REG_PWM[nr], data->pwm[nr]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -908,10 +1061,13 @@ store_pwm2_enable(struct device *dev, struct device_attribute *da,
 {
 	struct w83781d_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val, reg;
 
 	val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	u32 reg;
 	int err;
@@ -919,7 +1075,10 @@ store_pwm2_enable(struct device *dev, struct device_attribute *da,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 
@@ -970,10 +1129,13 @@ store_sensor(struct device *dev, struct device_attribute *da,
 	struct w83781d_data *data = dev_get_drvdata(dev);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val, tmp;
 
 	val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	u32 tmp;
 	int err;
@@ -981,7 +1143,10 @@ store_sensor(struct device *dev, struct device_attribute *da,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 
@@ -1005,8 +1170,14 @@ store_sensor(struct device *dev, struct device_attribute *da,
 		data->sens[nr] = val;
 		break;
 	case W83781D_DEFAULT_BETA:
+<<<<<<< HEAD
 		dev_warn(dev, "Sensor type %d is deprecated, please use 4 "
 			 "instead\n", W83781D_DEFAULT_BETA);
+=======
+		dev_warn(dev,
+			 "Sensor type %d is deprecated, please use 4 instead\n",
+			 W83781D_DEFAULT_BETA);
+>>>>>>> refs/remotes/origin/master
 		/* fall through */
 	case 4:		/* thermistor */
 		tmp = w83781d_read_value(data, W83781D_REG_SCFG1);
@@ -1032,11 +1203,16 @@ static SENSOR_DEVICE_ATTR(temp3_type, S_IRUGO | S_IWUSR,
 	show_sensor, store_sensor, 2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Assumes that adapter is of I2C, not ISA variety.
 =======
 /*
  * Assumes that adapter is of I2C, not ISA variety.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Assumes that adapter is of I2C, not ISA variety.
+>>>>>>> refs/remotes/origin/master
  * OTHERWISE DON'T CALL THIS
  */
 static int
@@ -1049,6 +1225,10 @@ w83781d_detect_subclients(struct i2c_client *new_client)
 	struct i2c_adapter *adapter = new_client->adapter;
 	struct w83781d_data *data = i2c_get_clientdata(new_client);
 	enum chips kind = data->type;
+<<<<<<< HEAD
+=======
+	int num_sc = 1;
+>>>>>>> refs/remotes/origin/master
 
 	id = i2c_adapter_id(adapter);
 
@@ -1056,8 +1236,13 @@ w83781d_detect_subclients(struct i2c_client *new_client)
 		for (i = 2; i <= 3; i++) {
 			if (force_subclients[i] < 0x48 ||
 			    force_subclients[i] > 0x4f) {
+<<<<<<< HEAD
 				dev_err(&new_client->dev, "Invalid subclient "
 					"address %d; must be 0x48-0x4f\n",
+=======
+				dev_err(&new_client->dev,
+					"Invalid subclient address %d; must be 0x48-0x4f\n",
+>>>>>>> refs/remotes/origin/master
 					force_subclients[i]);
 				err = -EINVAL;
 				goto ERROR_SC_1;
@@ -1073,6 +1258,10 @@ w83781d_detect_subclients(struct i2c_client *new_client)
 	}
 
 	if (kind != w83783s) {
+<<<<<<< HEAD
+=======
+		num_sc = 2;
+>>>>>>> refs/remotes/origin/master
 		if (force_subclients[0] == id &&
 		    force_subclients[1] == address) {
 			sc_addr[1] = force_subclients[3];
@@ -1088,19 +1277,31 @@ w83781d_detect_subclients(struct i2c_client *new_client)
 		}
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i <= 1; i++) {
 		data->lm75[i] = i2c_new_dummy(adapter, sc_addr[i]);
 		if (!data->lm75[i]) {
 			dev_err(&new_client->dev, "Subclient %d "
 				"registration at address 0x%x "
 				"failed.\n", i, sc_addr[i]);
+=======
+	for (i = 0; i < num_sc; i++) {
+		data->lm75[i] = i2c_new_dummy(adapter, sc_addr[i]);
+		if (!data->lm75[i]) {
+			dev_err(&new_client->dev,
+				"Subclient %d registration at address 0x%x failed.\n",
+				i, sc_addr[i]);
+>>>>>>> refs/remotes/origin/master
 			err = -ENOMEM;
 			if (i == 1)
 				goto ERROR_SC_3;
 			goto ERROR_SC_2;
 		}
+<<<<<<< HEAD
 		if (kind == w83783s)
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -1135,10 +1336,14 @@ ERROR_SC_1:
 	&sensor_dev_attr_temp##X##_beep.dev_attr.attr
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute* w83781d_attributes[] = {
 =======
 static struct attribute *w83781d_attributes[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct attribute *w83781d_attributes[] = {
+>>>>>>> refs/remotes/origin/master
 	IN_UNIT_ATTRS(0),
 	IN_UNIT_ATTRS(2),
 	IN_UNIT_ATTRS(3),
@@ -1162,6 +1367,7 @@ static const struct attribute_group w83781d_group = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute *w83781d_attributes_opt[] = {
 	IN_UNIT_ATTRS(1),
 	IN_UNIT_ATTRS(7),
@@ -1173,6 +1379,8 @@ static struct attribute *w83781d_attributes_opt[] = {
 	&sensor_dev_attr_pwm4.dev_attr.attr,
 	&dev_attr_pwm2_enable.attr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct attribute *w83781d_attributes_in1[] = {
 	IN_UNIT_ATTRS(1),
 	NULL
@@ -1218,12 +1426,16 @@ static const struct attribute_group w83781d_group_pwm34 = {
 };
 
 static struct attribute *w83781d_attributes_other[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_temp1_type.dev_attr.attr,
 	&sensor_dev_attr_temp2_type.dev_attr.attr,
 	&sensor_dev_attr_temp3_type.dev_attr.attr,
 	NULL
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct attribute_group w83781d_group_opt = {
 	.attrs = w83781d_attributes_opt,
@@ -1231,6 +1443,10 @@ static const struct attribute_group w83781d_group_opt = {
 static const struct attribute_group w83781d_group_other = {
 	.attrs = w83781d_attributes_other,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct attribute_group w83781d_group_other = {
+	.attrs = w83781d_attributes_other,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* No clean up is done on error, it's up to the caller */
@@ -1239,6 +1455,7 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 {
 	int err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((err = sysfs_create_group(&dev->kobj, &w83781d_group)))
 		return err;
@@ -1291,6 +1508,8 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 		    || (err = device_create_file(dev,
 				&sensor_dev_attr_temp3_beep.dev_attr)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = sysfs_create_group(&dev->kobj, &w83781d_group);
 	if (err)
 		return err;
@@ -1308,7 +1527,10 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 	if (kind != w83783s) {
 		err = sysfs_create_group(&dev->kobj, &w83781d_group_temp3);
 		if (err)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return err;
 
 		if (kind != w83781d) {
@@ -1321,6 +1543,7 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 	}
 
 	if (kind != w83781d && kind != as99127f) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((err = device_create_file(dev,
 				&sensor_dev_attr_pwm1.dev_attr))
@@ -1335,6 +1558,8 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 		    || (err = device_create_file(dev,
 				&sensor_dev_attr_pwm4.dev_attr)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = sysfs_create_group(&dev->kobj, &w83781d_group_pwm12);
 		if (err)
 			return err;
@@ -1342,11 +1567,15 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 	if (kind == w83782d && !is_isa) {
 		err = sysfs_create_group(&dev->kobj, &w83781d_group_pwm34);
 		if (err)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return err;
 	}
 
 	if (kind != as99127f && kind != w83781d) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((err = device_create_file(dev,
 				&sensor_dev_attr_temp1_type.dev_attr))
@@ -1357,6 +1586,8 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 			if ((err = device_create_file(dev,
 					&sensor_dev_attr_temp3_type.dev_attr)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = device_create_file(dev,
 					 &sensor_dev_attr_temp1_type.dev_attr);
 		if (err)
@@ -1369,7 +1600,10 @@ w83781d_create_files(struct device *dev, int kind, int is_isa)
 			err = device_create_file(dev,
 					&sensor_dev_attr_temp3_type.dev_attr);
 			if (err)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				return err;
 		}
 	}
@@ -1392,16 +1626,22 @@ w83781d_detect(struct i2c_client *client, struct i2c_board_info *info)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We block updates of the ISA device to minimize the risk of
 	   concurrent access to the same W83781D chip through different
 	   interfaces. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We block updates of the ISA device to minimize the risk of
 	 * concurrent access to the same W83781D chip through different
 	 * interfaces.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (isa)
 		mutex_lock(&isa->update_lock);
 
@@ -1417,27 +1657,37 @@ w83781d_detect(struct i2c_client *client, struct i2c_board_info *info)
 	if (!(val1 & 0x07) &&
 	    ((!(val1 & 0x80) && val2 != 0xa3 && val2 != 0xc3) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	     ( (val1 & 0x80) && val2 != 0x5c && val2 != 0x12))) {
 =======
 	     ((val1 & 0x80) && val2 != 0x5c && val2 != 0x12))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	     ((val1 & 0x80) && val2 != 0x5c && val2 != 0x12))) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&adapter->dev,
 			"Detection of w83781d chip failed at step 4\n");
 		goto err_nodev;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* If Winbond SMBus, check address at 0x48.
 	   Asus doesn't support, except for as99127f rev.2 */
 	if ((!(val1 & 0x80) && val2 == 0xa3) ||
 	    ( (val1 & 0x80) && val2 == 0x5c)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If Winbond SMBus, check address at 0x48.
 	 * Asus doesn't support, except for as99127f rev.2
 	 */
 	if ((!(val1 & 0x80) && val2 == 0xa3) ||
 	    ((val1 & 0x80) && val2 == 0x5c)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (i2c_smbus_read_byte_data(client, W83781D_REG_I2C_ADDR)
 		    != address) {
 			dev_dbg(&adapter->dev,
@@ -1477,8 +1727,14 @@ w83781d_detect(struct i2c_client *client, struct i2c_board_info *info)
 		goto err_nodev;
 
 	if (val1 <= 0x30 && w83781d_alias_detect(client, val1)) {
+<<<<<<< HEAD
 		dev_dbg(&adapter->dev, "Device at 0x%02x appears to "
 			"be the same as ISA device\n", address);
+=======
+		dev_dbg(&adapter->dev,
+			"Device at 0x%02x appears to be the same as ISA device\n",
+			address);
+>>>>>>> refs/remotes/origin/master
 		goto err_nodev;
 	}
 
@@ -1496,7 +1752,10 @@ w83781d_detect(struct i2c_client *client, struct i2c_board_info *info)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void w83781d_remove_files(struct device *dev)
 {
 	sysfs_remove_group(&dev->kobj, &w83781d_group);
@@ -1508,7 +1767,10 @@ static void w83781d_remove_files(struct device *dev)
 	sysfs_remove_group(&dev->kobj, &w83781d_group_other);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 w83781d_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
@@ -1516,11 +1778,17 @@ w83781d_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	struct w83781d_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct w83781d_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto ERROR1;
 	}
+=======
+	data = devm_kzalloc(dev, sizeof(struct w83781d_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->lock);
@@ -1532,7 +1800,11 @@ w83781d_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	/* attach secondary i2c lm75-like clients */
 	err = w83781d_detect_subclients(client);
 	if (err)
+<<<<<<< HEAD
 		goto ERROR3;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the chip */
 	w83781d_init_device(dev);
@@ -1540,16 +1812,25 @@ w83781d_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	/* Register sysfs hooks */
 	err = w83781d_create_files(dev, data->type, 0);
 	if (err)
+<<<<<<< HEAD
 		goto ERROR4;
+=======
+		goto exit_remove_files;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(dev);
 	if (IS_ERR(data->hwmon_dev)) {
 		err = PTR_ERR(data->hwmon_dev);
+<<<<<<< HEAD
 		goto ERROR4;
+=======
+		goto exit_remove_files;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 ERROR4:
 <<<<<<< HEAD
 	sysfs_remove_group(&dev->kobj, &w83781d_group);
@@ -1558,13 +1839,20 @@ ERROR4:
 =======
 	w83781d_remove_files(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ exit_remove_files:
+	w83781d_remove_files(dev);
+>>>>>>> refs/remotes/origin/master
 	if (data->lm75[0])
 		i2c_unregister_device(data->lm75[0]);
 	if (data->lm75[1])
 		i2c_unregister_device(data->lm75[1]);
+<<<<<<< HEAD
 ERROR3:
 	kfree(data);
 ERROR1:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1576,20 +1864,27 @@ w83781d_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	sysfs_remove_group(&dev->kobj, &w83781d_group);
 	sysfs_remove_group(&dev->kobj, &w83781d_group_opt);
 =======
 	w83781d_remove_files(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	w83781d_remove_files(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (data->lm75[0])
 		i2c_unregister_device(data->lm75[0]);
 	if (data->lm75[1])
 		i2c_unregister_device(data->lm75[1]);
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1614,15 +1909,20 @@ w83781d_read_value_i2c(struct w83781d_data *data, u16 reg)
 		switch (reg & 0xff) {
 		case 0x50:	/* TEMP */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			res = swab16(i2c_smbus_read_word_data(cl, 0));
 =======
 			res = i2c_smbus_read_word_swapped(cl, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			res = i2c_smbus_read_word_swapped(cl, 0);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 0x52:	/* CONFIG */
 			res = i2c_smbus_read_byte_data(cl, 1);
 			break;
 		case 0x53:	/* HYST */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			res = swab16(i2c_smbus_read_word_data(cl, 2));
 			break;
@@ -1630,12 +1930,17 @@ w83781d_read_value_i2c(struct w83781d_data *data, u16 reg)
 		default:
 			res = swab16(i2c_smbus_read_word_data(cl, 3));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			res = i2c_smbus_read_word_swapped(cl, 2);
 			break;
 		case 0x55:	/* OVER */
 		default:
 			res = i2c_smbus_read_word_swapped(cl, 3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1670,16 +1975,22 @@ w83781d_write_value_i2c(struct w83781d_data *data, u16 reg, u16 value)
 			break;
 		case 0x53:	/* HYST */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			i2c_smbus_write_word_data(cl, 2, swab16(value));
 			break;
 		case 0x55:	/* OVER */
 			i2c_smbus_write_word_data(cl, 3, swab16(value));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			i2c_smbus_write_word_swapped(cl, 2, value);
 			break;
 		case 0x55:	/* OVER */
 			i2c_smbus_write_word_swapped(cl, 3, value);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1698,6 +2009,7 @@ w83781d_init_device(struct device *dev)
 	u8 tmp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reset && type != as99127f) { /* this resets registers we don't have
 					   documentation for on the as99127f */
 		/* Resetting the chip has been the default for a long time,
@@ -1707,6 +2019,8 @@ w83781d_init_device(struct device *dev)
 		   as I see very little reason why this would be needed at
 		   all. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (reset && type != as99127f) { /*
 					  * this resets registers we don't have
 					  * documentation for on the as99127f
@@ -1719,13 +2033,19 @@ w83781d_init_device(struct device *dev)
 		 * as I see very little reason why this would be needed at
 		 * all.
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		dev_info(dev, "If reset=1 solved a problem you were "
 			 "having, please report!\n");
+=======
+		dev_info(dev,
+			 "If reset=1 solved a problem you were having, please report!\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* save these registers */
 		i = w83781d_read_value(data, W83781D_REG_BEEP_CONFIG);
 		p = w83781d_read_value(data, W83781D_REG_PWMCLK12);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Reset all except Watchdog values and last conversion values
 		   This sets fan-divs to 2, among others */
@@ -1743,6 +2063,8 @@ w83781d_init_device(struct device *dev)
 	/* Disable power-on abnormal beep, as advised by the datasheet.
 	   Already done if reset=1. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Reset all except Watchdog values and last conversion values
 		 * This sets fan-divs to 2, among others
@@ -1766,7 +2088,10 @@ w83781d_init_device(struct device *dev)
 	 * Disable power-on abnormal beep, as advised by the datasheet.
 	 * Already done if reset=1.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (init && !reset && type != as99127f) {
 		i = w83781d_read_value(data, W83781D_REG_BEEP_CONFIG);
 		w83781d_write_value(data, W83781D_REG_BEEP_CONFIG, i | 0x80);
@@ -1796,8 +2121,13 @@ w83781d_init_device(struct device *dev)
 		/* Enable temp2 */
 		tmp = w83781d_read_value(data, W83781D_REG_TEMP2_CONFIG);
 		if (tmp & 0x01) {
+<<<<<<< HEAD
 			dev_warn(dev, "Enabling temp2, readings "
 				 "might not make sense\n");
+=======
+			dev_warn(dev,
+				 "Enabling temp2, readings might not make sense\n");
+>>>>>>> refs/remotes/origin/master
 			w83781d_write_value(data, W83781D_REG_TEMP2_CONFIG,
 				tmp & 0xfe);
 		}
@@ -1807,8 +2137,13 @@ w83781d_init_device(struct device *dev)
 			tmp = w83781d_read_value(data,
 				W83781D_REG_TEMP3_CONFIG);
 			if (tmp & 0x01) {
+<<<<<<< HEAD
 				dev_warn(dev, "Enabling temp3, "
 					 "readings might not make sense\n");
+=======
+				dev_warn(dev,
+					 "Enabling temp3, readings might not make sense\n");
+>>>>>>> refs/remotes/origin/master
 				w83781d_write_value(data,
 					W83781D_REG_TEMP3_CONFIG, tmp & 0xfe);
 			}
@@ -1873,10 +2208,14 @@ static struct w83781d_data *w83781d_update_device(struct device *dev)
 			/* Only PWM2 can be disabled */
 			data->pwm2_enable = (w83781d_read_value(data,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					      W83781D_REG_PWMCLK12) & 0x08) >> 3;
 =======
 					     W83781D_REG_PWMCLK12) & 0x08) >> 3;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     W83781D_REG_PWMCLK12) & 0x08) >> 3;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		data->temp = w83781d_read_value(data, W83781D_REG_TEMP(1));
@@ -1928,14 +2267,20 @@ static struct w83781d_data *w83781d_update_device(struct device *dev)
 						W83782D_REG_ALARM2) << 8);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* No real-time status registers, fall back to
 			   interrupt status registers */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * No real-time status registers, fall back to
 			 * interrupt status registers
 			 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data->alarms = w83781d_read_value(data,
 						W83781D_REG_ALARM1)
 				     | (w83781d_read_value(data,
@@ -1990,14 +2335,20 @@ static struct platform_device *pdev;
 static unsigned short isa_address = 0x290;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* I2C devices get this name attribute automatically, but for ISA devices
    we must create it by ourselves. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * I2C devices get this name attribute automatically, but for ISA devices
  * we must create it by ourselves.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t
 show_name(struct device *dev, struct device_attribute *devattr, char *buf)
 {
@@ -2028,14 +2379,20 @@ static int w83781d_alias_detect(struct i2c_client *client, u8 chipid)
 		return 0;	/* Chip type doesn't match */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We compare all the limit registers, the config register and the
 	 * interrupt mask registers */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We compare all the limit registers, the config register and the
 	 * interrupt mask registers
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0x2b; i <= 0x3d; i++) {
 		if (w83781d_read_value(isa, i) !=
 		    i2c_smbus_read_byte_data(client, i))
@@ -2117,6 +2474,7 @@ w83781d_write_value_isa(struct w83781d_data *data, u16 reg, u16 value)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The SMBus locks itself, usually, but nothing may access the Winbond between
    bank switches. ISA access must always be locked explicitly!
    We ignore the W83781D BUSY flag at this moment - it could lead to deadlocks,
@@ -2124,6 +2482,8 @@ w83781d_write_value_isa(struct w83781d_data *data, u16 reg, u16 value)
    There are some ugly typecasts here, but the good news is - they should
    nowhere else be necessary! */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The SMBus locks itself, usually, but nothing may access the Winbond between
  * bank switches. ISA access must always be locked explicitly!
@@ -2132,7 +2492,10 @@ w83781d_write_value_isa(struct w83781d_data *data, u16 reg, u16 value)
  * There are some ugly typecasts here, but the good news is - they should
  * nowhere else be necessary!
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 w83781d_read_value(struct w83781d_data *data, u16 reg)
 {
@@ -2162,7 +2525,11 @@ w83781d_write_value(struct w83781d_data *data, u16 reg, u16 value)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 w83781d_isa_probe(struct platform_device *pdev)
 {
 	int err, reg;
@@ -2171,6 +2538,7 @@ w83781d_isa_probe(struct platform_device *pdev)
 
 	/* Reserve the ISA region */
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+<<<<<<< HEAD
 	if (!request_region(res->start + W83781D_ADDR_REG_OFFSET, 2,
 			    "w83781d")) {
 		err = -EBUSY;
@@ -2182,6 +2550,18 @@ w83781d_isa_probe(struct platform_device *pdev)
 		err = -ENOMEM;
 		goto exit_release_region;
 	}
+=======
+	if (!devm_request_region(&pdev->dev,
+				 res->start + W83781D_ADDR_REG_OFFSET, 2,
+				 "w83781d"))
+		return -EBUSY;
+
+	data = devm_kzalloc(&pdev->dev, sizeof(struct w83781d_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&data->lock);
 	data->isa_addr = res->start;
 	platform_set_drvdata(pdev, data);
@@ -2219,6 +2599,7 @@ w83781d_isa_probe(struct platform_device *pdev)
 
  exit_remove_files:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sysfs_remove_group(&pdev->dev.kobj, &w83781d_group);
 	sysfs_remove_group(&pdev->dev.kobj, &w83781d_group_opt);
 =======
@@ -2233,11 +2614,20 @@ w83781d_isa_probe(struct platform_device *pdev)
 }
 
 static int __devexit
+=======
+	w83781d_remove_files(&pdev->dev);
+	device_remove_file(&pdev->dev, &dev_attr_name);
+	return err;
+}
+
+static int
+>>>>>>> refs/remotes/origin/master
 w83781d_isa_remove(struct platform_device *pdev)
 {
 	struct w83781d_data *data = platform_get_drvdata(pdev);
 
 	hwmon_device_unregister(data->hwmon_dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sysfs_remove_group(&pdev->dev.kobj, &w83781d_group);
 	sysfs_remove_group(&pdev->dev.kobj, &w83781d_group_opt);
@@ -2247,6 +2637,10 @@ w83781d_isa_remove(struct platform_device *pdev)
 	device_remove_file(&pdev->dev, &dev_attr_name);
 	release_region(data->isa_addr + W83781D_ADDR_REG_OFFSET, 2);
 	kfree(data);
+=======
+	w83781d_remove_files(&pdev->dev);
+	device_remove_file(&pdev->dev, &dev_attr_name);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2257,7 +2651,11 @@ static struct platform_driver w83781d_isa_driver = {
 		.name = "w83781d",
 	},
 	.probe = w83781d_isa_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(w83781d_isa_remove),
+=======
+	.remove = w83781d_isa_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* return 1 if a supported chip is found, 0 otherwise */
@@ -2268,16 +2666,22 @@ w83781d_isa_found(unsigned short address)
 	int port;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Some boards declare base+0 to base+7 as a PNP device, some base+4
 	 * to base+7 and some base+5 to base+6. So we better request each port
 	 * individually for the probing phase. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Some boards declare base+0 to base+7 as a PNP device, some base+4
 	 * to base+7 and some base+5 to base+6. So we better request each port
 	 * individually for the probing phase.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (port = address; port < address + W83781D_EXTENT; port++) {
 		if (!request_region(port, 1, "w83781d")) {
 			pr_debug("Failed to request port 0x%x\n", port);
@@ -2287,14 +2691,20 @@ w83781d_isa_found(unsigned short address)
 
 #define REALLY_SLOW_IO
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We need the timeouts for at least some W83781D-like
 	   chips. But only if we read 'undefined' registers. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We need the timeouts for at least some W83781D-like
 	 * chips. But only if we read 'undefined' registers.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	val = inb_p(address + 1);
 	if (inb_p(address + 2) != val
 	 || inb_p(address + 3) != val
@@ -2305,14 +2715,20 @@ w83781d_isa_found(unsigned short address)
 #undef REALLY_SLOW_IO
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We should be able to change the 7 LSB of the address port. The
 	   MSB (busy flag) should be clear initially, set after the write. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We should be able to change the 7 LSB of the address port. The
 	 * MSB (busy flag) should be clear initially, set after the write.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	save = inb_p(address + W83781D_ADDR_REG_OFFSET);
 	if (save & 0x80) {
 		pr_debug("Detection failed at step %d\n", 2);
@@ -2499,14 +2915,20 @@ sensors_w83781d_init(void)
 	int res;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We register the ISA device first, so that we can skip the
 	 * registration of an I2C interface to the same device. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We register the ISA device first, so that we can skip the
 	 * registration of an I2C interface to the same device.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	res = w83781d_isa_register();
 	if (res)
 		goto exit;

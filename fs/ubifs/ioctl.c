@@ -147,7 +147,11 @@ out_unlock:
 long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	int flags, err;
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case FS_IOC_GETFLAGS:
@@ -174,19 +178,27 @@ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		 * will not become read-only while we are changing the flags.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mnt_want_write(file->f_path.mnt);
 =======
 		err = mnt_want_write_file(file);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mnt_want_write_file(file);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
 		err = setflags(inode, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(file->f_path.mnt);
 =======
 		mnt_drop_write_file(file);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 

@@ -78,7 +78,11 @@ smbhash(unsigned char *out, const unsigned char *in, unsigned char *key)
 	tfm_des = crypto_alloc_blkcipher("ecb(des)", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(tfm_des)) {
 		rc = PTR_ERR(tfm_des);
+<<<<<<< HEAD
 		cERROR(1, "could not allocate des crypto API\n");
+=======
+		cifs_dbg(VFS, "could not allocate des crypto API\n");
+>>>>>>> refs/remotes/origin/master
 		goto smbhash_err;
 	}
 
@@ -91,7 +95,11 @@ smbhash(unsigned char *out, const unsigned char *in, unsigned char *key)
 
 	rc = crypto_blkcipher_encrypt(&desc, &sgout, &sgin, 8);
 	if (rc)
+<<<<<<< HEAD
 		cERROR(1, "could not encrypt crypt key rc: %d\n", rc);
+=======
+		cifs_dbg(VFS, "could not encrypt crypt key rc: %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 
 	crypto_free_blkcipher(tfm_des);
 smbhash_err:
@@ -139,14 +147,22 @@ mdfour(unsigned char *md4_hash, unsigned char *link_str, int link_len)
 	md4 = crypto_alloc_shash("md4", 0, 0);
 	if (IS_ERR(md4)) {
 		rc = PTR_ERR(md4);
+<<<<<<< HEAD
 		cERROR(1, "%s: Crypto md4 allocation error %d\n", __func__, rc);
+=======
+		cifs_dbg(VFS, "%s: Crypto md4 allocation error %d\n",
+			 __func__, rc);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 	size = sizeof(struct shash_desc) + crypto_shash_descsize(md4);
 	sdescmd4 = kmalloc(size, GFP_KERNEL);
 	if (!sdescmd4) {
 		rc = -ENOMEM;
+<<<<<<< HEAD
 		cERROR(1, "%s: Memory allocation failure\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 		goto mdfour_err;
 	}
 	sdescmd4->shash.tfm = md4;
@@ -154,6 +170,7 @@ mdfour(unsigned char *md4_hash, unsigned char *link_str, int link_len)
 
 	rc = crypto_shash_init(&sdescmd4->shash);
 	if (rc) {
+<<<<<<< HEAD
 		cERROR(1, "%s: Could not init md4 shash\n", __func__);
 		goto mdfour_err;
 	}
@@ -164,12 +181,24 @@ mdfour(unsigned char *md4_hash, unsigned char *link_str, int link_len)
 	rc = crypto_shash_update(&sdescmd4->shash, link_str, link_len);
 	if (rc) {
 		cERROR(1, "%s: Could not update with link_str\n", __func__);
+=======
+		cifs_dbg(VFS, "%s: Could not init md4 shash\n", __func__);
+		goto mdfour_err;
+	}
+	rc = crypto_shash_update(&sdescmd4->shash, link_str, link_len);
+	if (rc) {
+		cifs_dbg(VFS, "%s: Could not update with link_str\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto mdfour_err;
 	}
 	rc = crypto_shash_final(&sdescmd4->shash, md4_hash);
 	if (rc)
+<<<<<<< HEAD
 		cERROR(1, "%s: Could not genereate md4 hash\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cifs_dbg(VFS, "%s: Could not generate md4 hash\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 mdfour_err:
 	crypto_free_shash(md4);
@@ -204,6 +233,7 @@ SMBencrypt(unsigned char *passwd, const unsigned char *c8, unsigned char *p24)
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Routines for Windows NT MD4 Hash functions. */
 static int
@@ -241,11 +271,14 @@ _my_mbstowcs(__u16 *dst, const unsigned char *src, int len)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Creates the MD4 Hash of the users password in NT UNICODE.
  */
 
 int
+<<<<<<< HEAD
 <<<<<<< HEAD
 E_md4hash(const unsigned char *passwd, unsigned char *p16)
 {
@@ -271,6 +304,8 @@ E_md4hash(const unsigned char *passwd, unsigned char *p16)
 	rc = mdfour(p16, (unsigned char *) wpwd, len);
 	memset(wpwd, 0, 129 * 2);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 E_md4hash(const unsigned char *passwd, unsigned char *p16,
 	const struct nls_table *codepage)
 {
@@ -288,11 +323,15 @@ E_md4hash(const unsigned char *passwd, unsigned char *p16,
 
 	rc = mdfour(p16, (unsigned char *) wpwd, len * sizeof(__le16));
 	memset(wpwd, 0, 129 * sizeof(__le16));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if 0 /* currently unused */
 /* Does both the NT and LM owfs of a user's password */
@@ -383,11 +422,16 @@ NTLMSSPOWFencrypt(unsigned char passwd[8],
 int
 SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Does the NT MD4 hash then des encryption. */
 int
 SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24,
 		const struct nls_table *codepage)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	unsigned char p16[16], p21[21];
@@ -396,18 +440,26 @@ SMBNTencrypt(unsigned char *passwd, unsigned char *c8, unsigned char *p24,
 	memset(p21, '\0', 21);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = E_md4hash(passwd, p16);
 =======
 	rc = E_md4hash(passwd, p16, codepage);
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		cFYI(1, "%s Can't generate NT hash, error: %d", __func__, rc);
+=======
+	rc = E_md4hash(passwd, p16, codepage);
+	if (rc) {
+		cifs_dbg(FYI, "%s Can't generate NT hash, error: %d\n",
+			 __func__, rc);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 	memcpy(p21, p16, 16);
 	rc = E_P24(p21, c8, p24);
 	return rc;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -447,3 +499,5 @@ SMBsesskeygen_ntv1(const unsigned char kr[16],
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

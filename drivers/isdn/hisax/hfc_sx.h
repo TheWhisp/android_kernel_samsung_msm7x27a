@@ -6,10 +6,14 @@
  *              based on existing driver for CCD HFC PCI cards
  * Copyright    by Werner Cornelius  <werner@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -53,10 +57,14 @@
 #define HFCSX_MST_EMOD  0x2D
 #define HFCSX_MST_MODE	0x2E
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HFCSX_CONNECT 	0x2F
 =======
 #define HFCSX_CONNECT	0x2F
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HFCSX_CONNECT	0x2F
+>>>>>>> refs/remotes/origin/master
 
 
 /* Interrupt and status registers */
@@ -64,6 +72,7 @@
 #define HFCSX_TRM       0x12
 #define HFCSX_B_MODE    0x13
 #define HFCSX_CHIP_ID   0x16
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HFCSX_CIRM  	0x18
 #define HFCSX_CTMT	0x19
@@ -82,6 +91,8 @@
 #define HFCSX_SQ  	0x34
 #define HFCSX_CLKDEL  	0x37
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define HFCSX_CIRM	0x18
 #define HFCSX_CTMT	0x19
 #define HFCSX_INT_M1	0x1A
@@ -98,7 +109,10 @@
 #define HFCSX_SCTRL_R   0x33
 #define HFCSX_SQ	0x34
 #define HFCSX_CLKDEL	0x37
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define HFCSX_B1_REC    0x3C
 #define HFCSX_B1_SEND   0x3C
 #define HFCSX_B2_REC    0x3D
@@ -125,10 +139,14 @@
 /* bits in status register (READ) */
 #define HFCSX_SX_PROC    0x02
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HFCSX_NBUSY	 0x04 
 =======
 #define HFCSX_NBUSY	 0x04
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HFCSX_NBUSY	 0x04
+>>>>>>> refs/remotes/origin/master
 #define HFCSX_TIMER_ELAP 0x10
 #define HFCSX_STATINT	 0x20
 #define HFCSX_FRAMEINT	 0x40
@@ -149,10 +167,14 @@
 #define HFCSX_IRQ_SELMSK 0x07
 #define HFCSX_IRQ_SELDIS 0x00
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HFCSX_RESET  	 0x08
 =======
 #define HFCSX_RESET	 0x08
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HFCSX_RESET	 0x08
+>>>>>>> refs/remotes/origin/master
 #define HFCSX_FIFO_RESET 0x80
 
 
@@ -225,10 +247,14 @@
 /************************************************************/
 struct hfcsx_extra {
 <<<<<<< HEAD
+<<<<<<< HEAD
   unsigned short marker[2*(MAX_B_FRAMES+1) + (MAX_D_FRAMES+1)];
 =======
 	unsigned short marker[2 * (MAX_B_FRAMES + 1) + (MAX_D_FRAMES + 1)];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short marker[2 * (MAX_B_FRAMES + 1) + (MAX_D_FRAMES + 1)];
+>>>>>>> refs/remotes/origin/master
 };
 
 extern void main_irq_hfcsx(struct BCState *bcs);

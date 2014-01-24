@@ -13,6 +13,7 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 
@@ -22,11 +23,20 @@
 
 =======
 #include <asm/hardware/vic.h>
+=======
+#include <linux/sizes.h>
+
+#include <mach/hardware.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
 #include "soc.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct ep93xx_eth_data __initdata adssphere_eth_data = {
 	.phy_id		= 1,
@@ -42,6 +52,7 @@ static void __init adssphere_init_machine(void)
 MACHINE_START(ADSSPHERE, "ADS Sphere board")
 	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= EP93XX_SDCE3_PHYS_BASE_SYNC + 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
@@ -56,4 +67,13 @@ MACHINE_START(ADSSPHERE, "ADS Sphere board")
 	.init_machine	= adssphere_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ep93xx_map_io,
+	.init_irq	= ep93xx_init_irq,
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= adssphere_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

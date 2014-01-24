@@ -7,8 +7,13 @@
 
 int oz_hcd_init(void);
 void oz_hcd_term(void);
+<<<<<<< HEAD
 void *oz_hcd_pd_arrived(void *ctx);
 void oz_hcd_pd_departed(void *ctx);
+=======
+struct oz_port *oz_hcd_pd_arrived(void *ctx);
+void oz_hcd_pd_departed(struct oz_port *hport);
+>>>>>>> refs/remotes/origin/master
 void oz_hcd_pd_reset(void *hpd, void *hport);
 
 #endif /* _OZHCD_H */

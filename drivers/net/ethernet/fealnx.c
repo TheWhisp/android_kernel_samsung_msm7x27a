@@ -92,7 +92,11 @@ static int full_duplex[MAX_UNITS] = { -1, -1, -1, -1, -1, -1, -1, -1 };
 #include <asm/byteorder.h>
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 	KERN_INFO DRV_NAME ".c:v" DRV_VERSION " " DRV_RELDATE "\n";
 
 
@@ -150,7 +154,11 @@ struct chip_info {
 	int flags;
 };
 
+<<<<<<< HEAD
 static const struct chip_info skel_netdrv_tbl[] __devinitdata = {
+=======
+static const struct chip_info skel_netdrv_tbl[] = {
+>>>>>>> refs/remotes/origin/master
  	{ "100/10M Ethernet PCI Adapter",	HAS_MII_XCVR },
 	{ "100/10M Ethernet PCI Adapter",	HAS_CHIP_XCVR },
 	{ "1000/100/10M Ethernet PCI Adapter",	HAS_MII_XCVR },
@@ -477,8 +485,13 @@ static const struct net_device_ops netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit fealnx_init_one(struct pci_dev *pdev,
 				     const struct pci_device_id *ent)
+=======
+static int fealnx_init_one(struct pci_dev *pdev,
+			   const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netdev_private *np;
 	int i, option, err, irq;
@@ -545,9 +558,12 @@ static int __devinit fealnx_init_one(struct pci_dev *pdev,
 	/* Reset the chip to erase previous misconfiguration. */
 	iowrite32(0x00000001, ioaddr + BCR);
 
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long)ioaddr;
 	dev->irq = irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Make certain the descriptor lists are aligned. */
 	np = netdev_priv(dev);
 	np->mem = ioaddr;
@@ -687,7 +703,11 @@ err_out_res:
 }
 
 
+<<<<<<< HEAD
 static void __devexit fealnx_remove_one(struct pci_dev *pdev)
+=======
+static void fealnx_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
@@ -702,7 +722,10 @@ static void __devexit fealnx_remove_one(struct pci_dev *pdev)
 		pci_iounmap(pdev, np->mem);
 		free_netdev(dev);
 		pci_release_regions(pdev);
+<<<<<<< HEAD
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	} else
 		printk(KERN_ERR "fealnx: remove for unknown device\n");
 }
@@ -832,11 +855,21 @@ static int netdev_open(struct net_device *dev)
 {
 	struct netdev_private *np = netdev_priv(dev);
 	void __iomem *ioaddr = np->mem;
+<<<<<<< HEAD
 	int i;
 
 	iowrite32(0x00000001, ioaddr + BCR);	/* Reset */
 
 	if (request_irq(dev->irq, intr_handler, IRQF_SHARED, dev->name, dev))
+=======
+	const int irq = np->pci_dev->irq;
+	int rc, i;
+
+	iowrite32(0x00000001, ioaddr + BCR);	/* Reset */
+
+	rc = request_irq(irq, intr_handler, IRQF_SHARED, dev->name, dev);
+	if (rc)
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 
 	for (i = 0; i < 3; i++)
@@ -924,8 +957,12 @@ static int netdev_open(struct net_device *dev)
 	np->reset_timer.data = (unsigned long) dev;
 	np->reset_timer.function = reset_timer;
 	np->reset_timer_armed = 0;
+<<<<<<< HEAD
 
 	return 0;
+=======
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1910,7 +1947,11 @@ static int netdev_close(struct net_device *dev)
 	del_timer_sync(&np->timer);
 	del_timer_sync(&np->reset_timer);
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(np->pci_dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Free all the skbuffs in the Rx queue. */
 	for (i = 0; i < RX_RING_SIZE; i++) {
@@ -1952,7 +1993,11 @@ static struct pci_driver fealnx_driver = {
 	.name		= "fealnx",
 	.id_table	= fealnx_pci_tbl,
 	.probe		= fealnx_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(fealnx_remove_one),
+=======
+	.remove		= fealnx_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init fealnx_init(void)

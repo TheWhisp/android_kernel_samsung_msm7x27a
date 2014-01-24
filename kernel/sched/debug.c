@@ -15,6 +15,10 @@
 #include <linux/seq_file.h>
 #include <linux/kallsyms.h>
 #include <linux/utsname.h>
+<<<<<<< HEAD
+=======
+#include <linux/mempolicy.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "sched.h"
 
@@ -61,14 +65,28 @@ static unsigned long nsec_low(unsigned long long nsec)
 static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group *tg)
 {
 	struct sched_entity *se = tg->se[cpu];
+<<<<<<< HEAD
 	if (!se)
 		return;
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define P(F) \
 	SEQ_printf(m, "  .%-30s: %lld\n", #F, (long long)F)
 #define PN(F) \
 	SEQ_printf(m, "  .%-30s: %lld.%06ld\n", #F, SPLIT_NS((long long)F))
 
+<<<<<<< HEAD
+=======
+	if (!se) {
+		struct sched_avg *avg = &cpu_rq(cpu)->avg;
+		P(avg->runnable_avg_sum);
+		P(avg->runnable_avg_period);
+		return;
+	}
+
+
+>>>>>>> refs/remotes/origin/master
 	PN(se->exec_start);
 	PN(se->vruntime);
 	PN(se->sum_exec_runtime);
@@ -85,6 +103,15 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
 	P(se->statistics.wait_count);
 #endif
 	P(se->load.weight);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SMP
+	P(se->avg.runnable_avg_sum);
+	P(se->avg.runnable_avg_period);
+	P(se->avg.load_avg_contrib);
+	P(se->avg.decay_count);
+#endif
+>>>>>>> refs/remotes/origin/master
 #undef PN
 #undef P
 }
@@ -98,6 +125,7 @@ static char *task_group_path(struct task_group *tg)
 	if (autogroup_path(tg, group_path, PATH_MAX))
 		return group_path;
 
+<<<<<<< HEAD
 	/*
 	 * May be NULL if the underlying cgroup isn't fully-created yet
 	 */
@@ -105,6 +133,8 @@ static char *task_group_path(struct task_group *tg)
 		group_path[0] = '\0';
 		return group_path;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	cgroup_path(tg->css.cgroup, group_path, PATH_MAX);
 	return group_path;
 }
@@ -119,7 +149,11 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
 		SEQ_printf(m, " ");
 
 	SEQ_printf(m, "%15s %5d %9Ld.%06ld %9Ld %5d ",
+<<<<<<< HEAD
 		p->comm, p->pid,
+=======
+		p->comm, task_pid_nr(p),
+>>>>>>> refs/remotes/origin/master
 		SPLIT_NS(p->se.vruntime),
 		(long long)(p->nvcsw + p->nivcsw),
 		p->prio);
@@ -132,6 +166,12 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
 	SEQ_printf(m, "%15Ld %15Ld %15Ld.%06ld %15Ld.%06ld %15Ld.%06ld",
 		0LL, 0LL, 0LL, 0L, 0LL, 0L, 0LL, 0L);
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NUMA_BALANCING
+	SEQ_printf(m, " %d", task_node(p));
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CGROUP_SCHED
 	SEQ_printf(m, " %s", task_group_path(task_group(p)));
 #endif
@@ -154,7 +194,11 @@ static void print_rq(struct seq_file *m, struct rq *rq, int rq_cpu)
 	read_lock_irqsave(&tasklist_lock, flags);
 
 	do_each_thread(g, p) {
+<<<<<<< HEAD
 		if (!p->on_rq || task_cpu(p) != rq_cpu)
+=======
+		if (task_cpu(p) != rq_cpu)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		print_task(m, rq, p);
@@ -202,6 +246,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 			SPLIT_NS(spread0));
 	SEQ_printf(m, "  .%-30s: %d\n", "nr_spread_over",
 			cfs_rq->nr_spread_over);
+<<<<<<< HEAD
 	SEQ_printf(m, "  .%-30s: %ld\n", "nr_running", cfs_rq->nr_running);
 	SEQ_printf(m, "  .%-30s: %ld\n", "load", cfs_rq->load.weight);
 #ifdef CONFIG_FAIR_GROUP_SCHED
@@ -216,6 +261,26 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 			atomic_read(&cfs_rq->tg->load_weight));
 #endif
 <<<<<<< HEAD
+=======
+	SEQ_printf(m, "  .%-30s: %d\n", "nr_running", cfs_rq->nr_running);
+	SEQ_printf(m, "  .%-30s: %ld\n", "load", cfs_rq->load.weight);
+#ifdef CONFIG_SMP
+	SEQ_printf(m, "  .%-30s: %ld\n", "runnable_load_avg",
+			cfs_rq->runnable_load_avg);
+	SEQ_printf(m, "  .%-30s: %ld\n", "blocked_load_avg",
+			cfs_rq->blocked_load_avg);
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	SEQ_printf(m, "  .%-30s: %ld\n", "tg_load_contrib",
+			cfs_rq->tg_load_contrib);
+	SEQ_printf(m, "  .%-30s: %d\n", "tg_runnable_contrib",
+			cfs_rq->tg_runnable_contrib);
+	SEQ_printf(m, "  .%-30s: %ld\n", "tg_load_avg",
+			atomic_long_read(&cfs_rq->tg->load_avg));
+	SEQ_printf(m, "  .%-30s: %d\n", "tg->runnable_avg",
+			atomic_read(&cfs_rq->tg->runnable_avg));
+#endif
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CFS_BANDWIDTH
 	SEQ_printf(m, "  .%-30s: %d\n", "tg->cfs_bandwidth.timer_active",
 			cfs_rq->tg->cfs_bandwidth.timer_active);
@@ -224,9 +289,14 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 	SEQ_printf(m, "  .%-30s: %d\n", "throttle_count",
 			cfs_rq->throttle_count);
 #endif
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+>>>>>>> refs/remotes/origin/master
 	print_cfs_group_stats(m, cpu, cfs_rq->tg);
 #endif
 }
@@ -264,6 +334,7 @@ static void print_cpu(struct seq_file *m, int cpu)
 	{
 		unsigned int freq = cpu_khz ? : 1;
 
+<<<<<<< HEAD
 		SEQ_printf(m, "\ncpu#%d, %u.%03u MHz\n",
 			   cpu, freq / 1000, (freq % 1000));
 	}
@@ -273,6 +344,23 @@ static void print_cpu(struct seq_file *m, int cpu)
 
 #define P(x) \
 	SEQ_printf(m, "  .%-30s: %Ld\n", #x, (long long)(rq->x))
+=======
+		SEQ_printf(m, "cpu#%d, %u.%03u MHz\n",
+			   cpu, freq / 1000, (freq % 1000));
+	}
+#else
+	SEQ_printf(m, "cpu#%d\n", cpu);
+#endif
+
+#define P(x)								\
+do {									\
+	if (sizeof(rq->x) == 4)						\
+		SEQ_printf(m, "  .%-30s: %ld\n", #x, (long)(rq->x));	\
+	else								\
+		SEQ_printf(m, "  .%-30s: %Ld\n", #x, (long long)(rq->x));\
+} while (0)
+
+>>>>>>> refs/remotes/origin/master
 #define PN(x) \
 	SEQ_printf(m, "  .%-30s: %Ld.%06ld\n", #x, SPLIT_NS(rq->x))
 
@@ -283,7 +371,11 @@ static void print_cpu(struct seq_file *m, int cpu)
 	P(nr_load_updates);
 	P(nr_uninterruptible);
 	PN(next_balance);
+<<<<<<< HEAD
 	P(curr->pid);
+=======
+	SEQ_printf(m, "  .%-30s: %ld\n", "curr->pid", (long)(task_pid_nr(rq->curr)));
+>>>>>>> refs/remotes/origin/master
 	PN(clock);
 	P(cpu_load[0]);
 	P(cpu_load[1]);
@@ -319,6 +411,10 @@ static void print_cpu(struct seq_file *m, int cpu)
 	print_rq(m, rq, cpu);
 	rcu_read_unlock();
 	spin_unlock_irqrestore(&sched_debug_lock, flags);
+<<<<<<< HEAD
+=======
+	SEQ_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char *sched_tunable_scaling_names[] = {
@@ -327,11 +423,18 @@ static const char *sched_tunable_scaling_names[] = {
 	"linear"
 };
 
+<<<<<<< HEAD
 static int sched_debug_show(struct seq_file *m, void *v)
 {
 	u64 ktime, sched_clk, cpu_clk;
 	unsigned long flags;
 	int cpu;
+=======
+static void sched_debug_header(struct seq_file *m)
+{
+	u64 ktime, sched_clk, cpu_clk;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_save(flags);
 	ktime = ktime_to_ns(ktime_get());
@@ -339,7 +442,11 @@ static int sched_debug_show(struct seq_file *m, void *v)
 	cpu_clk = local_clock();
 	local_irq_restore(flags);
 
+<<<<<<< HEAD
 	SEQ_printf(m, "Sched Debug Version: v0.10, %s %.*s\n",
+=======
+	SEQ_printf(m, "Sched Debug Version: v0.11, %s %.*s\n",
+>>>>>>> refs/remotes/origin/master
 		init_utsname()->release,
 		(int)strcspn(init_utsname()->version, " "),
 		init_utsname()->version);
@@ -353,7 +460,11 @@ static int sched_debug_show(struct seq_file *m, void *v)
 	PN(cpu_clk);
 	P(jiffies);
 #ifdef CONFIG_HAVE_UNSTABLE_SCHED_CLOCK
+<<<<<<< HEAD
 	P(sched_clock_stable);
+=======
+	P(sched_clock_stable());
+>>>>>>> refs/remotes/origin/master
 #endif
 #undef PN
 #undef P
@@ -373,6 +484,7 @@ static int sched_debug_show(struct seq_file *m, void *v)
 #undef PN
 #undef P
 
+<<<<<<< HEAD
 	SEQ_printf(m, "  .%-40s: %d (%s)\n", "sysctl_sched_tunable_scaling",
 		sysctl_sched_tunable_scaling,
 		sched_tunable_scaling_names[sysctl_sched_tunable_scaling]);
@@ -381,25 +493,115 @@ static int sched_debug_show(struct seq_file *m, void *v)
 		print_cpu(m, cpu);
 
 	SEQ_printf(m, "\n");
+=======
+	SEQ_printf(m, "  .%-40s: %d (%s)\n",
+		"sysctl_sched_tunable_scaling",
+		sysctl_sched_tunable_scaling,
+		sched_tunable_scaling_names[sysctl_sched_tunable_scaling]);
+	SEQ_printf(m, "\n");
+}
+
+static int sched_debug_show(struct seq_file *m, void *v)
+{
+	int cpu = (unsigned long)(v - 2);
+
+	if (cpu != -1)
+		print_cpu(m, cpu);
+	else
+		sched_debug_header(m);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 void sysrq_sched_debug_show(void)
 {
+<<<<<<< HEAD
 	sched_debug_show(NULL, NULL);
+=======
+	int cpu;
+
+	sched_debug_header(NULL);
+	for_each_online_cpu(cpu)
+		print_cpu(NULL, cpu);
+
+}
+
+/*
+ * This itererator needs some explanation.
+ * It returns 1 for the header position.
+ * This means 2 is cpu 0.
+ * In a hotplugged system some cpus, including cpu 0, may be missing so we have
+ * to use cpumask_* to iterate over the cpus.
+ */
+static void *sched_debug_start(struct seq_file *file, loff_t *offset)
+{
+	unsigned long n = *offset;
+
+	if (n == 0)
+		return (void *) 1;
+
+	n--;
+
+	if (n > 0)
+		n = cpumask_next(n - 1, cpu_online_mask);
+	else
+		n = cpumask_first(cpu_online_mask);
+
+	*offset = n + 1;
+
+	if (n < nr_cpu_ids)
+		return (void *)(unsigned long)(n + 2);
+	return NULL;
+}
+
+static void *sched_debug_next(struct seq_file *file, void *data, loff_t *offset)
+{
+	(*offset)++;
+	return sched_debug_start(file, offset);
+}
+
+static void sched_debug_stop(struct seq_file *file, void *data)
+{
+}
+
+static const struct seq_operations sched_debug_sops = {
+	.start = sched_debug_start,
+	.next = sched_debug_next,
+	.stop = sched_debug_stop,
+	.show = sched_debug_show,
+};
+
+static int sched_debug_release(struct inode *inode, struct file *file)
+{
+	seq_release(inode, file);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sched_debug_open(struct inode *inode, struct file *filp)
 {
+<<<<<<< HEAD
 	return single_open(filp, sched_debug_show, NULL);
+=======
+	int ret = 0;
+
+	ret = seq_open(filp, &sched_debug_sops);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations sched_debug_fops = {
 	.open		= sched_debug_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
+<<<<<<< HEAD
 	.release	= single_release,
+=======
+	.release	= sched_debug_release,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init init_sched_debug_procfs(void)
@@ -414,10 +616,64 @@ static int __init init_sched_debug_procfs(void)
 
 __initcall(init_sched_debug_procfs);
 
+<<<<<<< HEAD
+=======
+#define __P(F) \
+	SEQ_printf(m, "%-45s:%21Ld\n", #F, (long long)F)
+#define P(F) \
+	SEQ_printf(m, "%-45s:%21Ld\n", #F, (long long)p->F)
+#define __PN(F) \
+	SEQ_printf(m, "%-45s:%14Ld.%06ld\n", #F, SPLIT_NS((long long)F))
+#define PN(F) \
+	SEQ_printf(m, "%-45s:%14Ld.%06ld\n", #F, SPLIT_NS((long long)p->F))
+
+
+static void sched_show_numa(struct task_struct *p, struct seq_file *m)
+{
+#ifdef CONFIG_NUMA_BALANCING
+	struct mempolicy *pol;
+	int node, i;
+
+	if (p->mm)
+		P(mm->numa_scan_seq);
+
+	task_lock(p);
+	pol = p->mempolicy;
+	if (pol && !(pol->flags & MPOL_F_MORON))
+		pol = NULL;
+	mpol_get(pol);
+	task_unlock(p);
+
+	SEQ_printf(m, "numa_migrations, %ld\n", xchg(&p->numa_pages_migrated, 0));
+
+	for_each_online_node(node) {
+		for (i = 0; i < 2; i++) {
+			unsigned long nr_faults = -1;
+			int cpu_current, home_node;
+
+			if (p->numa_faults)
+				nr_faults = p->numa_faults[2*node + i];
+
+			cpu_current = !i ? (task_node(p) == node) :
+				(pol && node_isset(node, pol->v.nodes));
+
+			home_node = (p->numa_preferred_nid == node);
+
+			SEQ_printf(m, "numa_faults, %d, %d, %d, %d, %ld\n",
+				i, node, cpu_current, home_node, nr_faults);
+		}
+	}
+
+	mpol_put(pol);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 void proc_sched_show_task(struct task_struct *p, struct seq_file *m)
 {
 	unsigned long nr_switches;
 
+<<<<<<< HEAD
 	SEQ_printf(m, "%s (%d, #threads: %d)\n", p->comm, p->pid,
 						get_nr_threads(p));
 	SEQ_printf(m,
@@ -430,6 +686,21 @@ void proc_sched_show_task(struct task_struct *p, struct seq_file *m)
 	SEQ_printf(m, "%-35s:%14Ld.%06ld\n", #F, SPLIT_NS((long long)F))
 #define PN(F) \
 	SEQ_printf(m, "%-35s:%14Ld.%06ld\n", #F, SPLIT_NS((long long)p->F))
+=======
+	SEQ_printf(m, "%s (%d, #threads: %d)\n", p->comm, task_pid_nr(p),
+						get_nr_threads(p));
+	SEQ_printf(m,
+		"---------------------------------------------------------"
+		"----------\n");
+#define __P(F) \
+	SEQ_printf(m, "%-45s:%21Ld\n", #F, (long long)F)
+#define P(F) \
+	SEQ_printf(m, "%-45s:%21Ld\n", #F, (long long)p->F)
+#define __PN(F) \
+	SEQ_printf(m, "%-45s:%14Ld.%06ld\n", #F, SPLIT_NS((long long)F))
+#define PN(F) \
+	SEQ_printf(m, "%-45s:%14Ld.%06ld\n", #F, SPLIT_NS((long long)p->F))
+>>>>>>> refs/remotes/origin/master
 
 	PN(se.exec_start);
 	PN(se.vruntime);
@@ -488,12 +759,27 @@ void proc_sched_show_task(struct task_struct *p, struct seq_file *m)
 	}
 #endif
 	__P(nr_switches);
+<<<<<<< HEAD
 	SEQ_printf(m, "%-35s:%21Ld\n",
 		   "nr_voluntary_switches", (long long)p->nvcsw);
 	SEQ_printf(m, "%-35s:%21Ld\n",
 		   "nr_involuntary_switches", (long long)p->nivcsw);
 
 	P(se.load.weight);
+=======
+	SEQ_printf(m, "%-45s:%21Ld\n",
+		   "nr_voluntary_switches", (long long)p->nvcsw);
+	SEQ_printf(m, "%-45s:%21Ld\n",
+		   "nr_involuntary_switches", (long long)p->nivcsw);
+
+	P(se.load.weight);
+#ifdef CONFIG_SMP
+	P(se.avg.runnable_avg_sum);
+	P(se.avg.runnable_avg_period);
+	P(se.avg.load_avg_contrib);
+	P(se.avg.decay_count);
+#endif
+>>>>>>> refs/remotes/origin/master
 	P(policy);
 	P(prio);
 #undef PN
@@ -507,9 +793,17 @@ void proc_sched_show_task(struct task_struct *p, struct seq_file *m)
 
 		t0 = cpu_clock(this_cpu);
 		t1 = cpu_clock(this_cpu);
+<<<<<<< HEAD
 		SEQ_printf(m, "%-35s:%21Ld\n",
 			   "clock-delta", (long long)(t1-t0));
 	}
+=======
+		SEQ_printf(m, "%-45s:%21Ld\n",
+			   "clock-delta", (long long)(t1-t0));
+	}
+
+	sched_show_numa(p, m);
+>>>>>>> refs/remotes/origin/master
 }
 
 void proc_sched_set_task(struct task_struct *p)

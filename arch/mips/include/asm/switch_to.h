@@ -15,6 +15,10 @@
 #include <asm/cpu-features.h>
 #include <asm/watch.h>
 #include <asm/dsp.h>
+<<<<<<< HEAD
+=======
+#include <asm/cop2.h>
+>>>>>>> refs/remotes/origin/master
 
 struct task_struct;
 
@@ -22,7 +26,11 @@ struct task_struct;
  * switch_to(n) should switch tasks to task nr n, first
  * checking that n isn't the current task, in which case it does nothing.
  */
+<<<<<<< HEAD
 extern asmlinkage void *resume(void *last, void *next, void *next_ti);
+=======
+extern asmlinkage void *resume(void *last, void *next, void *next_ti, u32 __usedfpu);
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned int ll_bit;
 extern struct task_struct *ll_task;
@@ -30,7 +38,11 @@ extern struct task_struct *ll_task;
 #ifdef CONFIG_MIPS_MT_FPAFF
 
 /*
+<<<<<<< HEAD
  * Handle the scheduler resume end of FPU affinity management.  We do this
+=======
+ * Handle the scheduler resume end of FPU affinity management.	We do this
+>>>>>>> refs/remotes/origin/master
  * inline to try to keep the overhead down. If we have been forced to run on
  * a "CPU" with an FPU because of a previous high level of FP computation,
  * but did not actually use the FPU during the most recent time-slice (CU1
@@ -66,15 +78,44 @@ do {									\
 
 #define switch_to(prev, next, last)					\
 do {									\
+<<<<<<< HEAD
 	__mips_mt_fpaff_switch_to(prev);				\
 	if (cpu_has_dsp)						\
 		__save_dsp(prev);					\
 	__clear_software_ll_bit();					\
 	(last) = resume(prev, next, task_thread_info(next));		\
+=======
+	u32 __usedfpu, __c0_stat;					\
+	__mips_mt_fpaff_switch_to(prev);				\
+	if (cpu_has_dsp)						\
+		__save_dsp(prev);					\
+	if (cop2_present && (KSTK_STATUS(prev) & ST0_CU2)) {		\
+		if (cop2_lazy_restore)					\
+			KSTK_STATUS(prev) &= ~ST0_CU2;			\
+		__c0_stat = read_c0_status();				\
+		write_c0_status(__c0_stat | ST0_CU2);			\
+		cop2_save(&prev->thread.cp2);				\
+		write_c0_status(__c0_stat & ~ST0_CU2);			\
+	}								\
+	__clear_software_ll_bit();					\
+	__usedfpu = test_and_clear_tsk_thread_flag(prev, TIF_USEDFPU);	\
+	(last) = resume(prev, next, task_thread_info(next), __usedfpu); \
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 #define finish_arch_switch(prev)					\
 do {									\
+<<<<<<< HEAD
+=======
+	u32 __c0_stat;							\
+	if (cop2_present && !cop2_lazy_restore &&			\
+			(KSTK_STATUS(current) & ST0_CU2)) {		\
+		__c0_stat = read_c0_status();				\
+		write_c0_status(__c0_stat | ST0_CU2);			\
+		cop2_restore(&current->thread.cp2);			\
+		write_c0_status(__c0_stat & ~ST0_CU2);			\
+	}								\
+>>>>>>> refs/remotes/origin/master
 	if (cpu_has_dsp)						\
 		__restore_dsp(current);					\
 	if (cpu_has_userlocal)						\

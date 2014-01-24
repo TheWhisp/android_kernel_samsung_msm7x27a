@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation. All rights reserved.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -35,6 +39,10 @@
 #include "../core.h"
 #include "../usb.h"
 #include "../efuse.h"
+<<<<<<< HEAD
+=======
+#include "../base.h"
+>>>>>>> refs/remotes/origin/master
 #include "reg.h"
 #include "def.h"
 #include "phy.h"
@@ -46,10 +54,14 @@
 #include "led.h"
 #include "hw.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/vmalloc.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Georgia		<georgia@realtek.com>");
 MODULE_AUTHOR("Ziv Huang	<ziv_huang@realtek.com>");
@@ -61,6 +73,7 @@ MODULE_FIRMWARE("rtlwifi/rtl8192cufw.bin");
 static int rtl92cu_init_sw_vars(struct ieee80211_hw *hw)
 {
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	const struct firmware *firmware;
 	int err;
@@ -93,6 +106,8 @@ static int rtl92cu_init_sw_vars(struct ieee80211_hw *hw)
 	rtlpriv->rtlhal.fwsize = firmware->size;
 	release_firmware(firmware);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	rtlpriv->dm.dm_initialgain_enable = true;
@@ -115,9 +130,14 @@ static int rtl92cu_init_sw_vars(struct ieee80211_hw *hw)
 				      rtlpriv->cfg->fw_name, rtlpriv->io.dev,
 				      GFP_KERNEL, hw, rtl_fw_cb);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
+=======
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rtl92cu_deinit_sw_vars(struct ieee80211_hw *hw)
@@ -147,8 +167,12 @@ static struct rtl_hal_ops rtl8192cu_hal_ops = {
 	.update_interrupt_mask = rtl92cu_update_interrupt_mask,
 	.get_hw_reg = rtl92cu_get_hw_reg,
 	.set_hw_reg = rtl92cu_set_hw_reg,
+<<<<<<< HEAD
 	.update_rate_tbl = rtl92cu_update_hal_rate_table,
 	.update_rate_mask = rtl92cu_update_hal_rate_mask,
+=======
+	.update_rate_tbl = rtl92cu_update_hal_rate_tbl,
+>>>>>>> refs/remotes/origin/master
 	.fill_tx_desc = rtl92cu_tx_fill_desc,
 	.fill_fake_txdesc = rtl92cu_fill_fake_txdesc,
 	.fill_tx_cmddesc = rtl92cu_tx_fill_cmddesc,
@@ -159,7 +183,11 @@ static struct rtl_hal_ops rtl8192cu_hal_ops = {
 	.set_bw_mode = rtl92c_phy_set_bw_mode,
 	.switch_channel = rtl92c_phy_sw_chnl,
 	.dm_watchdog = rtl92c_dm_watchdog,
+<<<<<<< HEAD
 	.scan_operation_backup = rtl92c_phy_scan_operation_backup,
+=======
+	.scan_operation_backup = rtl_phy_scan_operation_backup,
+>>>>>>> refs/remotes/origin/master
 	.set_rf_power_state = rtl92cu_phy_set_rf_power_state,
 	.led_control = rtl92cu_led_control,
 	.enable_hw_sec = rtl92cu_enable_hw_security_config,
@@ -178,14 +206,21 @@ static struct rtl_hal_ops rtl8192cu_hal_ops = {
 	.phy_lc_calibrate = _rtl92cu_phy_lc_calibrate,
 	.phy_set_bw_mode_callback = rtl92cu_phy_set_bw_mode_callback,
 	.dm_dynamic_txpower = rtl92cu_dm_dynamic_txpower,
+<<<<<<< HEAD
+=======
+	.fill_h2c_cmd = rtl92c_fill_h2c_cmd,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct rtl_mod_params rtl92cu_mod_params = {
 	.sw_crypto = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.debug = DBG_EMERG,
 };
 
@@ -194,7 +229,10 @@ module_param_named(debug, rtl92cu_mod_params.debug, int, 0444);
 MODULE_PARM_DESC(swenc, "Set to 1 for software crypto (default 0)\n");
 MODULE_PARM_DESC(debug, "Set debug level (0-5) (default 0)");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct rtl_hal_usbint_cfg rtl92cu_interface_cfg = {
 	/* rx */
 	.in_ep_num = RTL92C_USB_BULK_IN_NUM,
@@ -269,7 +307,11 @@ static struct rtl_hal_cfg rtl92cu_hal_cfg = {
 
 	.maps[RTL_IMR_TXFOVW] = IMR_TXFOVW,
 	.maps[RTL_IMR_PSTIMEOUT] = IMR_PSTIMEOUT,
+<<<<<<< HEAD
 	.maps[RTL_IMR_BcnInt] = IMR_BCNINT,
+=======
+	.maps[RTL_IMR_BCNINT] = IMR_BCNINT,
+>>>>>>> refs/remotes/origin/master
 	.maps[RTL_IMR_RXFOVW] = IMR_RXFOVW,
 	.maps[RTL_IMR_RDU] = IMR_RDU,
 	.maps[RTL_IMR_ATIMEND] = IMR_ATIMEND,
@@ -286,6 +328,7 @@ static struct rtl_hal_cfg rtl92cu_hal_cfg = {
 	.maps[RTL_IBSS_INT_MASKS] = (IMR_BCNINT | IMR_TBDOK | IMR_TBDER),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.maps[RTL_RC_CCK_RATE1M] = DESC92C_RATE1M,
 	.maps[RTL_RC_CCK_RATE2M] = DESC92C_RATE2M,
 	.maps[RTL_RC_CCK_RATE5_5M] = DESC92C_RATE5_5M,
@@ -301,6 +344,8 @@ static struct rtl_hal_cfg rtl92cu_hal_cfg = {
 	.maps[RTL_RC_HT_RATEMCS7] = DESC92C_RATEMCS7,
 	.maps[RTL_RC_HT_RATEMCS15] = DESC92C_RATEMCS15,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.maps[RTL_RC_CCK_RATE1M] = DESC92_RATE1M,
 	.maps[RTL_RC_CCK_RATE2M] = DESC92_RATE2M,
 	.maps[RTL_RC_CCK_RATE5_5M] = DESC92_RATE5_5M,
@@ -315,7 +360,10 @@ static struct rtl_hal_cfg rtl92cu_hal_cfg = {
 	.maps[RTL_RC_OFDM_RATE54M] = DESC92_RATE54M,
 	.maps[RTL_RC_HT_RATEMCS7] = DESC92_RATEMCS7,
 	.maps[RTL_RC_HT_RATEMCS15] = DESC92_RATEMCS15,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define USB_VENDER_ID_REALTEK		0x0bda
@@ -329,10 +377,15 @@ static struct usb_device_id rtl8192c_usb_ids[] = {
 
 	/****** 8188CU ********/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* RTL8188CTV */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x018a, rtl92cu_hal_cfg)},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* RTL8188CTV */
+	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x018a, rtl92cu_hal_cfg)},
+>>>>>>> refs/remotes/origin/master
 	/* 8188CE-VAU USB minCard */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8170, rtl92cu_hal_cfg)},
 	/* 8188cu 1*1 dongle */
@@ -348,17 +401,24 @@ static struct usb_device_id rtl8192c_usb_ids[] = {
 	/* 8188CE-VAU USB minCard (b/g mode only) */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x817e, rtl92cu_hal_cfg)},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 8188RU in Alfa AWUS036NHR */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x817f, rtl92cu_hal_cfg)},
 	/* RTL8188CUS-VL */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x818a, rtl92cu_hal_cfg)},
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x819a, rtl92cu_hal_cfg)},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 8188 Combo for BC4 */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8754, rtl92cu_hal_cfg)},
 
 	/****** 8192CU ********/
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* 8191cu 1*2 */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8177, rtl92cu_hal_cfg)},
@@ -368,6 +428,10 @@ static struct usb_device_id rtl8192c_usb_ids[] = {
 	/* 8192cu 2*2 */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8178, rtl92cu_hal_cfg)},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 8192cu 2*2 */
+	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x8178, rtl92cu_hal_cfg)},
+>>>>>>> refs/remotes/origin/master
 	/* 8192CE-VAU USB minCard */
 	{RTL_USB_DEVICE(USB_VENDER_ID_REALTEK, 0x817c, rtl92cu_hal_cfg)},
 
@@ -379,6 +443,7 @@ static struct usb_device_id rtl8192c_usb_ids[] = {
 	{RTL_USB_DEVICE(0x07b8, 0x8188, rtl92cu_hal_cfg)}, /*Abocom - Abocom*/
 	{RTL_USB_DEVICE(0x07b8, 0x8189, rtl92cu_hal_cfg)}, /*Funai - Abocom*/
 	{RTL_USB_DEVICE(0x0846, 0x9041, rtl92cu_hal_cfg)}, /*NetGear WNA1000M*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{RTL_USB_DEVICE(0x0Df6, 0x0052, rtl92cu_hal_cfg)}, /*Sitecom - Edimax*/
 	{RTL_USB_DEVICE(0x0eb0, 0x9071, rtl92cu_hal_cfg)}, /*NO Brand - Etop*/
@@ -399,6 +464,8 @@ static struct usb_device_id rtl8192c_usb_ids[] = {
 	{RTL_USB_DEVICE(0x07b8, 0x8178, rtl92cu_hal_cfg)}, /*Funai -Abocom*/
 	{RTL_USB_DEVICE(0x07b8, 0x8178, rtl92cu_hal_cfg)}, /*Abocom -Abocom*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{RTL_USB_DEVICE(0x0bda, 0x5088, rtl92cu_hal_cfg)}, /*Thinkware-CC&C*/
 	{RTL_USB_DEVICE(0x0df6, 0x0052, rtl92cu_hal_cfg)}, /*Sitecom - Edimax*/
 	{RTL_USB_DEVICE(0x0df6, 0x005c, rtl92cu_hal_cfg)}, /*Sitecom - Edimax*/
@@ -438,35 +505,63 @@ static struct usb_device_id rtl8192c_usb_ids[] = {
 	{RTL_USB_DEVICE(0x2019, 0x1201, rtl92cu_hal_cfg)}, /*Planex-Vencer*/
 
 	/****** 8192CU ********/
+<<<<<<< HEAD
+=======
+	{RTL_USB_DEVICE(0x050d, 0x1004, rtl92cu_hal_cfg)}, /*Belcom-SurfN300*/
+>>>>>>> refs/remotes/origin/master
 	{RTL_USB_DEVICE(0x050d, 0x2102, rtl92cu_hal_cfg)}, /*Belcom-Sercomm*/
 	{RTL_USB_DEVICE(0x050d, 0x2103, rtl92cu_hal_cfg)}, /*Belcom-Edimax*/
 	{RTL_USB_DEVICE(0x0586, 0x341f, rtl92cu_hal_cfg)}, /*Zyxel -Abocom*/
 	{RTL_USB_DEVICE(0x07aa, 0x0056, rtl92cu_hal_cfg)}, /*ATKK-Gemtek*/
 	{RTL_USB_DEVICE(0x07b8, 0x8178, rtl92cu_hal_cfg)}, /*Funai -Abocom*/
 	{RTL_USB_DEVICE(0x0846, 0x9021, rtl92cu_hal_cfg)}, /*Netgear-Sercomm*/
+<<<<<<< HEAD
+=======
+	{RTL_USB_DEVICE(0x0846, 0xf001, rtl92cu_hal_cfg)}, /*On Netwrks N300MA*/
+>>>>>>> refs/remotes/origin/master
 	{RTL_USB_DEVICE(0x0b05, 0x17ab, rtl92cu_hal_cfg)}, /*ASUS-Edimax*/
 	{RTL_USB_DEVICE(0x0bda, 0x8186, rtl92cu_hal_cfg)}, /*Realtek 92CE-VAU*/
 	{RTL_USB_DEVICE(0x0df6, 0x0061, rtl92cu_hal_cfg)}, /*Sitecom-Edimax*/
 	{RTL_USB_DEVICE(0x0e66, 0x0019, rtl92cu_hal_cfg)}, /*Hawking-Edimax*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{RTL_USB_DEVICE(0x2001, 0x3307, rtl92cu_hal_cfg)}, /*D-Link-Cameo*/
 	{RTL_USB_DEVICE(0x2001, 0x3309, rtl92cu_hal_cfg)}, /*D-Link-Alpha*/
 	{RTL_USB_DEVICE(0x2001, 0x330a, rtl92cu_hal_cfg)}, /*D-Link-Alpha*/
 	{RTL_USB_DEVICE(0x2019, 0xab2b, rtl92cu_hal_cfg)}, /*Planex -Abocom*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{RTL_USB_DEVICE(0x20f4, 0x624d, rtl92cu_hal_cfg)}, /*TRENDNet*/
 	{RTL_USB_DEVICE(0x2357, 0x0100, rtl92cu_hal_cfg)}, /*TP-Link WN8200ND*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{RTL_USB_DEVICE(0x20f4, 0x624d, rtl92cu_hal_cfg)}, /*TRENDNet*/
+	{RTL_USB_DEVICE(0x2357, 0x0100, rtl92cu_hal_cfg)}, /*TP-Link WN8200ND*/
+>>>>>>> refs/remotes/origin/master
 	{RTL_USB_DEVICE(0x7392, 0x7822, rtl92cu_hal_cfg)}, /*Edimax -Edimax*/
 	{}
 };
 
 MODULE_DEVICE_TABLE(usb, rtl8192c_usb_ids);
 
+<<<<<<< HEAD
 static struct usb_driver rtl8192cu_driver = {
 	.name = "rtl8192cu",
 	.probe = rtl_usb_probe,
+=======
+static int rtl8192cu_probe(struct usb_interface *intf,
+			   const struct usb_device_id *id)
+{
+	return rtl_usb_probe(intf, id, &rtl92cu_hal_cfg);
+}
+
+static struct usb_driver rtl8192cu_driver = {
+	.name = "rtl8192cu",
+	.probe = rtl8192cu_probe,
+>>>>>>> refs/remotes/origin/master
 	.disconnect = rtl_usb_disconnect,
 	.id_table = rtl8192c_usb_ids,
 
@@ -478,6 +573,7 @@ static struct usb_driver rtl8192cu_driver = {
 #ifdef CONFIG_AUTOSUSPEND
 	.supports_autosuspend = 1,
 #endif
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -496,3 +592,9 @@ module_exit(rtl8192cu_exit);
 =======
 module_usb_driver(rtl8192cu_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(rtl8192cu_driver);
+>>>>>>> refs/remotes/origin/master

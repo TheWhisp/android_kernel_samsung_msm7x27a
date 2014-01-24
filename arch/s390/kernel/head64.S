@@ -1,7 +1,11 @@
 /*
+<<<<<<< HEAD
  * arch/s390/kernel/head64.S
  *
  * Copyright (C) IBM Corp. 1999,2010
+=======
+ * Copyright IBM Corp. 1999, 2010
+>>>>>>> refs/remotes/origin/master
  *
  *   Author(s):	Hartmut Penner <hp@de.ibm.com>
  *		Martin Schwidefsky <schwidefsky@de.ibm.com>
@@ -12,20 +16,28 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/linkage.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
 #include <asm/page.h>
 
 __HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	startup_continue
 startup_continue:
 =======
 ENTRY(startup_continue)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(startup_continue)
+>>>>>>> refs/remotes/origin/master
 	larl	%r1,sched_clock_base_cc
 	mvc	0(8,%r1),__LC_LAST_UPDATE_CLOCK
 	larl	%r13,.LPG1		# get base
@@ -55,10 +67,14 @@ ENTRY(startup_continue)
 .LPG1:
 .Lentry:.quad	0x0000000180000000,_stext
 <<<<<<< HEAD
+<<<<<<< HEAD
 .Lctl:	.quad	0x04350002		# cr0: various things
 =======
 .Lctl:	.quad	0x04040000		# cr0: AFP registers & secondary space
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+.Lctl:	.quad	0x04040000		# cr0: AFP registers & secondary space
+>>>>>>> refs/remotes/origin/master
 	.quad	0			# cr1: primary space segment table
 	.quad	.Lduct			# cr2: dispatchable unit control table
 	.quad	0			# cr3: instruction authorization
@@ -89,6 +105,7 @@ ENTRY(startup_continue)
 	.endr
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	_ehead
 _ehead:
 =======
@@ -110,13 +127,24 @@ _stext:	basr	%r13,0			# get base
 	stctg	%c0,%c15,0(%r15)
 	oi	6(%r15),0x40		# enable sigp emergency signal
 =======
+=======
+ENTRY(_ehead)
+
+	.org	0x100000 - 0x11000	# head.o ends at 0x11000
+#
+# startup-code, running in absolute addressing mode
+#
+>>>>>>> refs/remotes/origin/master
 ENTRY(_stext)
 	basr	%r13,0			# get base
 .LPG3:
 # check control registers
 	stctg	%c0,%c15,0(%r15)
 	oi	6(%r15),0x60		# enable sigp emergency & external call
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	oi	4(%r15),0x10		# switch on low address proctection
 	lctlg	%c0,%c15,0(%r15)
 

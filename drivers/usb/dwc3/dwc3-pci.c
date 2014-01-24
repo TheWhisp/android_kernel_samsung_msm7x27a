@@ -6,6 +6,7 @@
  * Authors: Felipe Balbi <balbi@ti.com>,
  *	    Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  *
+<<<<<<< HEAD
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -34,6 +35,16 @@
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=======
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2  of
+ * the License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/kernel.h>
@@ -42,25 +53,101 @@
 #include <linux/pci.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include "core.h"
+=======
+#include <linux/usb/otg.h>
+#include <linux/usb/usb_phy_gen_xceiv.h>
+>>>>>>> refs/remotes/origin/master
 
 /* FIXME define these in <linux/pci_ids.h> */
 #define PCI_VENDOR_ID_SYNOPSYS		0x16c3
 #define PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3	0xabcd
+<<<<<<< HEAD
+=======
+#define PCI_DEVICE_ID_INTEL_BYT		0x0f37
+#define PCI_DEVICE_ID_INTEL_MRFLD	0x119e
+>>>>>>> refs/remotes/origin/master
 
 struct dwc3_pci {
 	struct device		*dev;
 	struct platform_device	*dwc3;
+<<<<<<< HEAD
 };
 
 static int __devinit dwc3_pci_probe(struct pci_dev *pci,
+=======
+	struct platform_device	*usb2_phy;
+	struct platform_device	*usb3_phy;
+};
+
+static int dwc3_pci_register_phys(struct dwc3_pci *glue)
+{
+	struct usb_phy_gen_xceiv_platform_data pdata;
+	struct platform_device	*pdev;
+	int			ret;
+
+	memset(&pdata, 0x00, sizeof(pdata));
+
+	pdev = platform_device_alloc("usb_phy_gen_xceiv", 0);
+	if (!pdev)
+		return -ENOMEM;
+
+	glue->usb2_phy = pdev;
+	pdata.type = USB_PHY_TYPE_USB2;
+	pdata.gpio_reset = -1;
+
+	ret = platform_device_add_data(glue->usb2_phy, &pdata, sizeof(pdata));
+	if (ret)
+		goto err1;
+
+	pdev = platform_device_alloc("usb_phy_gen_xceiv", 1);
+	if (!pdev) {
+		ret = -ENOMEM;
+		goto err1;
+	}
+
+	glue->usb3_phy = pdev;
+	pdata.type = USB_PHY_TYPE_USB3;
+
+	ret = platform_device_add_data(glue->usb3_phy, &pdata, sizeof(pdata));
+	if (ret)
+		goto err2;
+
+	ret = platform_device_add(glue->usb2_phy);
+	if (ret)
+		goto err2;
+
+	ret = platform_device_add(glue->usb3_phy);
+	if (ret)
+		goto err3;
+
+	return 0;
+
+err3:
+	platform_device_del(glue->usb2_phy);
+
+err2:
+	platform_device_put(glue->usb3_phy);
+
+err1:
+	platform_device_put(glue->usb2_phy);
+
+	return ret;
+}
+
+static int dwc3_pci_probe(struct pci_dev *pci,
+>>>>>>> refs/remotes/origin/master
 		const struct pci_device_id *id)
 {
 	struct resource		res[2];
 	struct platform_device	*dwc3;
 	struct dwc3_pci		*glue;
 	int			ret = -ENOMEM;
+<<<<<<< HEAD
 	int			devid;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device		*dev = &pci->dev;
 
 	glue = devm_kzalloc(dev, sizeof(*glue), GFP_KERNEL);
@@ -77,6 +164,7 @@ static int __devinit dwc3_pci_probe(struct pci_dev *pci,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	pci_set_power_state(pci, PCI_D0);
 	pci_set_master(pci);
 
@@ -87,6 +175,17 @@ static int __devinit dwc3_pci_probe(struct pci_dev *pci,
 	}
 
 	dwc3 = platform_device_alloc("dwc3", devid);
+=======
+	pci_set_master(pci);
+
+	ret = dwc3_pci_register_phys(glue);
+	if (ret) {
+		dev_err(dev, "couldn't register PHYs\n");
+		return ret;
+	}
+
+	dwc3 = platform_device_alloc("dwc3", PLATFORM_DEVID_AUTO);
+>>>>>>> refs/remotes/origin/master
 	if (!dwc3) {
 		dev_err(dev, "couldn't allocate dwc3 device\n");
 		ret = -ENOMEM;
@@ -107,7 +206,11 @@ static int __devinit dwc3_pci_probe(struct pci_dev *pci,
 	ret = platform_device_add_resources(dwc3, res, ARRAY_SIZE(res));
 	if (ret) {
 		dev_err(dev, "couldn't add resources to dwc3 device\n");
+<<<<<<< HEAD
 		goto err2;
+=======
+		goto err1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_set_drvdata(pci, glue);
@@ -128,18 +231,23 @@ static int __devinit dwc3_pci_probe(struct pci_dev *pci,
 	return 0;
 
 err3:
+<<<<<<< HEAD
 	pci_set_drvdata(pci, NULL);
 	platform_device_put(dwc3);
 
 err2:
 	dwc3_put_device_id(devid);
 
+=======
+	platform_device_put(dwc3);
+>>>>>>> refs/remotes/origin/master
 err1:
 	pci_disable_device(pci);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit dwc3_pci_remove(struct pci_dev *pci)
 {
 	struct dwc3_pci	*glue = pci_get_drvdata(pci);
@@ -151,23 +259,86 @@ static void __devexit dwc3_pci_remove(struct pci_dev *pci)
 }
 
 static DEFINE_PCI_DEVICE_TABLE(dwc3_pci_id_table) = {
+=======
+static void dwc3_pci_remove(struct pci_dev *pci)
+{
+	struct dwc3_pci	*glue = pci_get_drvdata(pci);
+
+	platform_device_unregister(glue->dwc3);
+	platform_device_unregister(glue->usb2_phy);
+	platform_device_unregister(glue->usb3_phy);
+	pci_disable_device(pci);
+}
+
+static const struct pci_device_id dwc3_pci_id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		PCI_DEVICE(PCI_VENDOR_ID_SYNOPSYS,
 				PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3),
 	},
+<<<<<<< HEAD
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_BYT), },
+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_MRFLD), },
+>>>>>>> refs/remotes/origin/master
 	{  }	/* Terminating Entry */
 };
 MODULE_DEVICE_TABLE(pci, dwc3_pci_id_table);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static int dwc3_pci_suspend(struct device *dev)
+{
+	struct pci_dev	*pci = to_pci_dev(dev);
+
+	pci_disable_device(pci);
+
+	return 0;
+}
+
+static int dwc3_pci_resume(struct device *dev)
+{
+	struct pci_dev	*pci = to_pci_dev(dev);
+	int		ret;
+
+	ret = pci_enable_device(pci);
+	if (ret) {
+		dev_err(dev, "can't re-enable device --> %d\n", ret);
+		return ret;
+	}
+
+	pci_set_master(pci);
+
+	return 0;
+}
+#endif /* CONFIG_PM_SLEEP */
+
+static const struct dev_pm_ops dwc3_pci_dev_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(dwc3_pci_suspend, dwc3_pci_resume)
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct pci_driver dwc3_pci_driver = {
 	.name		= "dwc3-pci",
 	.id_table	= dwc3_pci_id_table,
 	.probe		= dwc3_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dwc3_pci_remove),
 };
 
 MODULE_AUTHOR("Felipe Balbi <balbi@ti.com>");
 MODULE_LICENSE("Dual BSD/GPL");
+=======
+	.remove		= dwc3_pci_remove,
+	.driver		= {
+		.pm	= &dwc3_pci_dev_pm_ops,
+	},
+};
+
+MODULE_AUTHOR("Felipe Balbi <balbi@ti.com>");
+MODULE_LICENSE("GPL v2");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("DesignWare USB3 PCI Glue Layer");
 
 module_pci_driver(dwc3_pci_driver);

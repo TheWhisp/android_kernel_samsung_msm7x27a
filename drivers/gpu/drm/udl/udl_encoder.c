@@ -10,6 +10,7 @@
  * more details.
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm_crtc.h"
 #include "drm_crtc_helper.h"
@@ -17,6 +18,15 @@
 
 /* dummy encoder */
 void udl_enc_destroy(struct drm_encoder *encoder)
+=======
+#include <drm/drmP.h>
+#include <drm/drm_crtc.h>
+#include <drm/drm_crtc_helper.h>
+#include "udl_drv.h"
+
+/* dummy encoder */
+static void udl_enc_destroy(struct drm_encoder *encoder)
+>>>>>>> refs/remotes/origin/master
 {
 	drm_encoder_cleanup(encoder);
 	kfree(encoder);
@@ -27,7 +37,11 @@ static void udl_encoder_disable(struct drm_encoder *encoder)
 }
 
 static bool udl_mode_fixup(struct drm_encoder *encoder,
+<<<<<<< HEAD
 			   struct drm_display_mode *mode,
+=======
+			   const struct drm_display_mode *mode,
+>>>>>>> refs/remotes/origin/master
 			   struct drm_display_mode *adjusted_mode)
 {
 	return true;

@@ -1,6 +1,10 @@
 /* bnx2x_stats.c: Broadcom Everest network driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2007-2012 Broadcom Corporation
+=======
+ * Copyright (c) 2007-2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +23,11 @@
 
 #include "bnx2x_stats.h"
 #include "bnx2x_cmn.h"
+<<<<<<< HEAD
 
+=======
+#include "bnx2x_sriov.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Statistics */
 
@@ -39,6 +47,7 @@ static inline long bnx2x_hilo(u32 *hiref)
 #endif
 }
 
+<<<<<<< HEAD
 static u16 bnx2x_get_port_stats_dma_len(struct bnx2x *bp)
 {
 	u16 res = sizeof(struct host_port_stats) >> 2;
@@ -47,6 +56,41 @@ static u16 bnx2x_get_port_stats_dma_len(struct bnx2x *bp)
 	if (!(bp->flags &  BC_SUPPORTS_PFC_STATS))
 		res -= (sizeof(u32)*4) >> 2;
 
+=======
+static inline u16 bnx2x_get_port_stats_dma_len(struct bnx2x *bp)
+{
+	u16 res = 0;
+
+	/* 'newest' convention - shmem2 cotains the size of the port stats */
+	if (SHMEM2_HAS(bp, sizeof_port_stats)) {
+		u32 size = SHMEM2_RD(bp, sizeof_port_stats);
+		if (size)
+			res = size;
+
+		/* prevent newer BC from causing buffer overflow */
+		if (res > sizeof(struct host_port_stats))
+			res = sizeof(struct host_port_stats);
+	}
+
+	/* Older convention - all BCs support the port stats' fields up until
+	 * the 'not_used' field
+	 */
+	if (!res) {
+		res = offsetof(struct host_port_stats, not_used) + 4;
+
+		/* if PFC stats are supported by the MFW, DMA them as well */
+		if (bp->flags & BC_SUPPORTS_PFC_STATS) {
+			res += offsetof(struct host_port_stats,
+					pfc_frames_rx_lo) -
+			       offsetof(struct host_port_stats,
+					pfc_frames_tx_hi) + 4 ;
+		}
+	}
+
+	res >>= 2;
+
+	WARN_ON(res > 2 * DMAE_LEN32_RD_MAX);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -54,6 +98,45 @@ static u16 bnx2x_get_port_stats_dma_len(struct bnx2x *bp)
  * Init service functions
  */
 
+<<<<<<< HEAD
+=======
+static void bnx2x_dp_stats(struct bnx2x *bp)
+{
+	int i;
+
+	DP(BNX2X_MSG_STATS, "dumping stats:\n"
+	   "fw_stats_req\n"
+	   "    hdr\n"
+	   "        cmd_num %d\n"
+	   "        reserved0 %d\n"
+	   "        drv_stats_counter %d\n"
+	   "        reserved1 %d\n"
+	   "        stats_counters_addrs %x %x\n",
+	   bp->fw_stats_req->hdr.cmd_num,
+	   bp->fw_stats_req->hdr.reserved0,
+	   bp->fw_stats_req->hdr.drv_stats_counter,
+	   bp->fw_stats_req->hdr.reserved1,
+	   bp->fw_stats_req->hdr.stats_counters_addrs.hi,
+	   bp->fw_stats_req->hdr.stats_counters_addrs.lo);
+
+	for (i = 0; i < bp->fw_stats_req->hdr.cmd_num; i++) {
+		DP(BNX2X_MSG_STATS,
+		   "query[%d]\n"
+		   "              kind %d\n"
+		   "              index %d\n"
+		   "              funcID %d\n"
+		   "              reserved %d\n"
+		   "              address %x %x\n",
+		   i, bp->fw_stats_req->query[i].kind,
+		   bp->fw_stats_req->query[i].index,
+		   bp->fw_stats_req->query[i].funcID,
+		   bp->fw_stats_req->query[i].reserved,
+		   bp->fw_stats_req->query[i].address.hi,
+		   bp->fw_stats_req->query[i].address.lo);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Post the next statistics ramrod. Protect it with the spin in
  * order to ensure the strict order between statistics ramrods
  * (each ramrod has a sequence number passed in a
@@ -78,7 +161,13 @@ static void bnx2x_storm_stats_post(struct bnx2x *bp)
 		DP(BNX2X_MSG_STATS, "Sending statistics ramrod %d\n",
 			bp->fw_stats_req->hdr.drv_stats_counter);
 
+<<<<<<< HEAD
 
+=======
+		/* adjust the ramrod to include VF queues statistics */
+		bnx2x_iov_adjust_stats_req(bp);
+		bnx2x_dp_stats(bp);
+>>>>>>> refs/remotes/origin/master
 
 		/* send FW stats ramrod */
 		rc = bnx2x_sp_post(bp, RAMROD_CMD_ID_COMMON_STAT_QUERY, 0,
@@ -101,6 +190,14 @@ static void bnx2x_hw_stats_post(struct bnx2x *bp)
 	if (CHIP_REV_IS_SLOW(bp))
 		return;
 
+<<<<<<< HEAD
+=======
+	/* Update MCP's statistics if possible */
+	if (bp->func_stx)
+		memcpy(bnx2x_sp(bp, func_stats), &bp->func_stats,
+		       sizeof(bp->func_stats));
+
+>>>>>>> refs/remotes/origin/master
 	/* loader */
 	if (bp->executer_idx) {
 		int loader_idx = PMF_DMAE_C(bp);
@@ -128,9 +225,13 @@ static void bnx2x_hw_stats_post(struct bnx2x *bp)
 
 	} else if (bp->func_stx) {
 		*stats_comp = 0;
+<<<<<<< HEAD
 		memcpy(bnx2x_sp(bp, func_stats), &bp->func_stats,
 		       sizeof(bp->func_stats));
 		bnx2x_post_dmae(bp, dmae, INIT_DMAE_C(bp));
+=======
+		bnx2x_issue_dmae_with_comp(bp, dmae, stats_comp);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -146,7 +247,11 @@ static int bnx2x_stats_comp(struct bnx2x *bp)
 			break;
 		}
 		cnt--;
+<<<<<<< HEAD
 		usleep_range(1000, 1000);
+=======
+		usleep_range(1000, 2000);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 1;
 }
@@ -155,7 +260,12 @@ static int bnx2x_stats_comp(struct bnx2x *bp)
  * Statistics service functions
  */
 
+<<<<<<< HEAD
 static void bnx2x_stats_pmf_update(struct bnx2x *bp)
+=======
+/* should be called under stats_sema */
+static void __bnx2x_stats_pmf_update(struct bnx2x *bp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dmae_command *dmae;
 	u32 opcode;
@@ -452,6 +562,7 @@ static void bnx2x_func_stats_init(struct bnx2x *bp)
 	*stats_comp = 0;
 }
 
+<<<<<<< HEAD
 static void bnx2x_stats_start(struct bnx2x *bp)
 {
 	if (bp->port.pmf)
@@ -462,19 +573,74 @@ static void bnx2x_stats_start(struct bnx2x *bp)
 
 	bnx2x_hw_stats_post(bp);
 	bnx2x_storm_stats_post(bp);
+=======
+/* should be called under stats_sema */
+static void __bnx2x_stats_start(struct bnx2x *bp)
+{
+	if (IS_PF(bp)) {
+		if (bp->port.pmf)
+			bnx2x_port_stats_init(bp);
+
+		else if (bp->func_stx)
+			bnx2x_func_stats_init(bp);
+
+		bnx2x_hw_stats_post(bp);
+		bnx2x_storm_stats_post(bp);
+	}
+
+	bp->stats_started = true;
+}
+
+static void bnx2x_stats_start(struct bnx2x *bp)
+{
+	if (down_timeout(&bp->stats_sema, HZ/10))
+		BNX2X_ERR("Unable to acquire stats lock\n");
+	__bnx2x_stats_start(bp);
+	up(&bp->stats_sema);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bnx2x_stats_pmf_start(struct bnx2x *bp)
 {
+<<<<<<< HEAD
 	bnx2x_stats_comp(bp);
 	bnx2x_stats_pmf_update(bp);
 	bnx2x_stats_start(bp);
+=======
+	if (down_timeout(&bp->stats_sema, HZ/10))
+		BNX2X_ERR("Unable to acquire stats lock\n");
+	bnx2x_stats_comp(bp);
+	__bnx2x_stats_pmf_update(bp);
+	__bnx2x_stats_start(bp);
+	up(&bp->stats_sema);
+}
+
+static void bnx2x_stats_pmf_update(struct bnx2x *bp)
+{
+	if (down_timeout(&bp->stats_sema, HZ/10))
+		BNX2X_ERR("Unable to acquire stats lock\n");
+	__bnx2x_stats_pmf_update(bp);
+	up(&bp->stats_sema);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bnx2x_stats_restart(struct bnx2x *bp)
 {
+<<<<<<< HEAD
 	bnx2x_stats_comp(bp);
 	bnx2x_stats_start(bp);
+=======
+	/* vfs travel through here as part of the statistics FSM, but no action
+	 * is required
+	 */
+	if (IS_VF(bp))
+		return;
+	if (down_timeout(&bp->stats_sema, HZ/10))
+		BNX2X_ERR("Unable to acquire stats lock\n");
+	bnx2x_stats_comp(bp);
+	__bnx2x_stats_start(bp);
+	up(&bp->stats_sema);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bnx2x_bmac_stats_update(struct bnx2x *bp)
@@ -785,6 +951,15 @@ static int bnx2x_hw_stats_update(struct bnx2x *bp)
 
 	pstats->host_port_stats_counter++;
 
+<<<<<<< HEAD
+=======
+	if (CHIP_IS_E3(bp)) {
+		u32 lpi_reg = BP_PORT(bp) ? MISC_REG_CPMU_LP_SM_ENT_CNT_P1
+					  : MISC_REG_CPMU_LP_SM_ENT_CNT_P0;
+		estats->eee_tx_lpi += REG_RD(bp, lpi_reg);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!BP_NOMCP(bp)) {
 		u32 nig_timer_max =
 			SHMEM_RD(bp, port_mb[BP_PORT(bp)].stat_nig_timer);
@@ -798,6 +973,7 @@ static int bnx2x_hw_stats_update(struct bnx2x *bp)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int bnx2x_storm_stats_update(struct bnx2x *bp)
 {
 	struct tstorm_per_port_stats *tport =
@@ -817,6 +993,16 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 	spin_lock_bh(&bp->stats_lock);
 	cur_stats_counter = bp->stats_counter - 1;
 	spin_unlock_bh(&bp->stats_lock);
+=======
+static int bnx2x_storm_stats_validate_counters(struct bnx2x *bp)
+{
+	struct stats_counter *counters = &bp->fw_stats_data->storm_counters;
+	u16 cur_stats_counter;
+	/* Make sure we use the value of the counter
+	 * used for sending the last stats ramrod.
+	 */
+	cur_stats_counter = bp->stats_counter - 1;
+>>>>>>> refs/remotes/origin/master
 
 	/* are storm stats valid? */
 	if (le16_to_cpu(counters->xstats_counter) != cur_stats_counter) {
@@ -846,6 +1032,26 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 		   le16_to_cpu(counters->tstats_counter), bp->stats_counter);
 		return -EAGAIN;
 	}
+<<<<<<< HEAD
+=======
+	return 0;
+}
+
+static int bnx2x_storm_stats_update(struct bnx2x *bp)
+{
+	struct tstorm_per_port_stats *tport =
+				&bp->fw_stats_data->port.tstorm_port_statistics;
+	struct tstorm_per_pf_stats *tfunc =
+				&bp->fw_stats_data->pf.tstorm_pf_statistics;
+	struct host_func_stats *fstats = &bp->func_stats;
+	struct bnx2x_eth_stats *estats = &bp->eth_stats;
+	struct bnx2x_eth_stats_old *estats_old = &bp->eth_stats_old;
+	int i;
+
+	/* vfs stat counter is managed by pf */
+	if (IS_PF(bp) && bnx2x_storm_stats_validate_counters(bp))
+		return -EAGAIN;
+>>>>>>> refs/remotes/origin/master
 
 	estats->error_bytes_received_hi = 0;
 	estats->error_bytes_received_lo = 0;
@@ -855,6 +1061,7 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 		struct tstorm_per_queue_stats *tclient =
 			&bp->fw_stats_data->queue_stats[i].
 			tstorm_queue_statistics;
+<<<<<<< HEAD
 		struct tstorm_per_queue_stats *old_tclient = &fp->old_tclient;
 		struct ustorm_per_queue_stats *uclient =
 			&bp->fw_stats_data->queue_stats[i].
@@ -866,6 +1073,24 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 		struct xstorm_per_queue_stats *old_xclient = &fp->old_xclient;
 		struct bnx2x_eth_q_stats *qstats = &fp->eth_q_stats;
 		struct bnx2x_eth_q_stats_old *qstats_old = &fp->eth_q_stats_old;
+=======
+		struct tstorm_per_queue_stats *old_tclient =
+			&bnx2x_fp_stats(bp, fp)->old_tclient;
+		struct ustorm_per_queue_stats *uclient =
+			&bp->fw_stats_data->queue_stats[i].
+			ustorm_queue_statistics;
+		struct ustorm_per_queue_stats *old_uclient =
+			&bnx2x_fp_stats(bp, fp)->old_uclient;
+		struct xstorm_per_queue_stats *xclient =
+			&bp->fw_stats_data->queue_stats[i].
+			xstorm_queue_statistics;
+		struct xstorm_per_queue_stats *old_xclient =
+			&bnx2x_fp_stats(bp, fp)->old_xclient;
+		struct bnx2x_eth_q_stats *qstats =
+			&bnx2x_fp_stats(bp, fp)->eth_q_stats;
+		struct bnx2x_eth_q_stats_old *qstats_old =
+			&bnx2x_fp_stats(bp, fp)->eth_q_stats_old;
+>>>>>>> refs/remotes/origin/master
 
 		u32 diff;
 
@@ -906,7 +1131,10 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 		qstats->valid_bytes_received_lo =
 					qstats->total_bytes_received_lo;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		UPDATE_EXTEND_TSTAT(rcv_ucast_pkts,
 					total_unicast_packets_received);
 		UPDATE_EXTEND_TSTAT(rcv_mcast_pkts,
@@ -914,8 +1142,13 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 		UPDATE_EXTEND_TSTAT(rcv_bcast_pkts,
 					total_broadcast_packets_received);
 		UPDATE_EXTEND_E_TSTAT(pkts_too_big_discard,
+<<<<<<< HEAD
 				      etherstatsoverrsizepkts);
 		UPDATE_EXTEND_E_TSTAT(no_buff_discard, no_buff_discard);
+=======
+				      etherstatsoverrsizepkts, 32);
+		UPDATE_EXTEND_E_TSTAT(no_buff_discard, no_buff_discard, 16);
+>>>>>>> refs/remotes/origin/master
 
 		SUB_EXTEND_USTAT(ucast_no_buff_pkts,
 					total_unicast_packets_received);
@@ -994,6 +1227,7 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 	       estats->total_bytes_received_lo,
 	       estats->rx_stat_ifhcinbadoctets_lo);
 
+<<<<<<< HEAD
 	ADD_64(estats->total_bytes_received_hi,
 	       le32_to_cpu(tfunc->rcv_error_bytes.hi),
 	       estats->total_bytes_received_lo,
@@ -1003,6 +1237,17 @@ static int bnx2x_storm_stats_update(struct bnx2x *bp)
 	       le32_to_cpu(tfunc->rcv_error_bytes.hi),
 	       estats->error_bytes_received_lo,
 	       le32_to_cpu(tfunc->rcv_error_bytes.lo));
+=======
+	ADD_64_LE(estats->total_bytes_received_hi,
+		  tfunc->rcv_error_bytes.hi,
+		  estats->total_bytes_received_lo,
+		  tfunc->rcv_error_bytes.lo);
+
+	ADD_64_LE(estats->error_bytes_received_hi,
+		  tfunc->rcv_error_bytes.hi,
+		  estats->error_bytes_received_lo,
+		  tfunc->rcv_error_bytes.lo);
+>>>>>>> refs/remotes/origin/master
 
 	UPDATE_ESTAT(etherstatsoverrsizepkts, rx_stat_dot3statsframestoolong);
 
@@ -1048,8 +1293,16 @@ static void bnx2x_net_stats_update(struct bnx2x *bp)
 	nstats->tx_bytes = bnx2x_hilo(&estats->total_bytes_transmitted_hi);
 
 	tmp = estats->mac_discard;
+<<<<<<< HEAD
 	for_each_rx_queue(bp, i)
 		tmp += le32_to_cpu(bp->fp[i].old_tclient.checksum_discard);
+=======
+	for_each_rx_queue(bp, i) {
+		struct tstorm_per_queue_stats *old_tclient =
+			&bp->fp_stats[i].old_tclient;
+		tmp += le32_to_cpu(old_tclient->checksum_discard);
+	}
+>>>>>>> refs/remotes/origin/master
 	nstats->rx_dropped = tmp + bp->net_stats_old.rx_dropped;
 
 	nstats->tx_dropped = 0;
@@ -1099,14 +1352,24 @@ static void bnx2x_drv_stats_update(struct bnx2x *bp)
 	int i;
 
 	for_each_queue(bp, i) {
+<<<<<<< HEAD
 		struct bnx2x_eth_q_stats *qstats = &bp->fp[i].eth_q_stats;
 		struct bnx2x_eth_q_stats_old *qstats_old =
 						&bp->fp[i].eth_q_stats_old;
+=======
+		struct bnx2x_eth_q_stats *qstats = &bp->fp_stats[i].eth_q_stats;
+		struct bnx2x_eth_q_stats_old *qstats_old =
+			&bp->fp_stats[i].eth_q_stats_old;
+>>>>>>> refs/remotes/origin/master
 
 		UPDATE_ESTAT_QSTAT(driver_xoff);
 		UPDATE_ESTAT_QSTAT(rx_err_discard_pkt);
 		UPDATE_ESTAT_QSTAT(rx_skb_alloc_failed);
 		UPDATE_ESTAT_QSTAT(hw_csum_err);
+<<<<<<< HEAD
+=======
+		UPDATE_ESTAT_QSTAT(driver_filtered_tx_pkt);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1128,6 +1391,7 @@ static void bnx2x_stats_update(struct bnx2x *bp)
 {
 	u32 *stats_comp = bnx2x_sp(bp, stats_comp);
 
+<<<<<<< HEAD
 	if (bnx2x_edebug_stats_stopped(bp))
 		return;
 
@@ -1141,11 +1405,48 @@ static void bnx2x_stats_update(struct bnx2x *bp)
 		BNX2X_ERR("storm stats were not updated for 3 times\n");
 		bnx2x_panic();
 		return;
+=======
+	/* we run update from timer context, so give up
+	 * if somebody is in the middle of transition
+	 */
+	if (down_trylock(&bp->stats_sema))
+		return;
+
+	if (bnx2x_edebug_stats_stopped(bp) || !bp->stats_started)
+		goto out;
+
+	if (IS_PF(bp)) {
+		if (*stats_comp != DMAE_COMP_VAL)
+			goto out;
+
+		if (bp->port.pmf)
+			bnx2x_hw_stats_update(bp);
+
+		if (bnx2x_storm_stats_update(bp)) {
+			if (bp->stats_pending++ == 3) {
+				BNX2X_ERR("storm stats were not updated for 3 times\n");
+				bnx2x_panic();
+			}
+			goto out;
+		}
+	} else {
+		/* vf doesn't collect HW statistics, and doesn't get completions
+		 * perform only update
+		 */
+		bnx2x_storm_stats_update(bp);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bnx2x_net_stats_update(bp);
 	bnx2x_drv_stats_update(bp);
 
+<<<<<<< HEAD
+=======
+	/* vf is done */
+	if (IS_VF(bp))
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	if (netif_msg_timer(bp)) {
 		struct bnx2x_eth_stats *estats = &bp->eth_stats;
 
@@ -1155,6 +1456,12 @@ static void bnx2x_stats_update(struct bnx2x *bp)
 
 	bnx2x_hw_stats_post(bp);
 	bnx2x_storm_stats_post(bp);
+<<<<<<< HEAD
+=======
+
+out:
+	up(&bp->stats_sema);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bnx2x_port_stats_stop(struct bnx2x *bp)
@@ -1220,6 +1527,14 @@ static void bnx2x_stats_stop(struct bnx2x *bp)
 {
 	int update = 0;
 
+<<<<<<< HEAD
+=======
+	if (down_timeout(&bp->stats_sema, HZ/10))
+		BNX2X_ERR("Unable to acquire stats lock\n");
+
+	bp->stats_started = false;
+
+>>>>>>> refs/remotes/origin/master
 	bnx2x_stats_comp(bp);
 
 	if (bp->port.pmf)
@@ -1236,6 +1551,11 @@ static void bnx2x_stats_stop(struct bnx2x *bp)
 		bnx2x_hw_stats_post(bp);
 		bnx2x_stats_comp(bp);
 	}
+<<<<<<< HEAD
+=======
+
+	up(&bp->stats_sema);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bnx2x_stats_do_nothing(struct bnx2x *bp)
@@ -1264,15 +1584,26 @@ static const struct {
 void bnx2x_stats_handle(struct bnx2x *bp, enum bnx2x_stats_event event)
 {
 	enum bnx2x_stats_state state;
+<<<<<<< HEAD
+=======
+	void (*action)(struct bnx2x *bp);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(bp->panic))
 		return;
 
 	spin_lock_bh(&bp->stats_lock);
 	state = bp->stats_state;
 	bp->stats_state = bnx2x_stats_stm[state][event].next_state;
+<<<<<<< HEAD
 	spin_unlock_bh(&bp->stats_lock);
 
 	bnx2x_stats_stm[state][event].action(bp);
+=======
+	action = bnx2x_stats_stm[state][event].action;
+	spin_unlock_bh(&bp->stats_lock);
+
+	action(bp);
+>>>>>>> refs/remotes/origin/master
 
 	if ((event != STATS_EVENT_UPDATE) || netif_msg_timer(bp))
 		DP(BNX2X_MSG_STATS, "state %d -> event %d -> state %d\n",
@@ -1309,6 +1640,7 @@ static void bnx2x_port_stats_base_init(struct bnx2x *bp)
 	bnx2x_stats_comp(bp);
 }
 
+<<<<<<< HEAD
 /**
  * This function will prepare the statistics ramrod data the way
  * we will only have to increment the statistics counter and
@@ -1317,6 +1649,13 @@ static void bnx2x_port_stats_base_init(struct bnx2x *bp)
  * @param bp
  */
 static inline void bnx2x_prep_fw_stats_req(struct bnx2x *bp)
+=======
+/* This function will prepare the statistics ramrod data the way
+ * we will only have to increment the statistics counter and
+ * send the ramrod each time we have to.
+ */
+static void bnx2x_prep_fw_stats_req(struct bnx2x *bp)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int first_queue_query_index;
@@ -1428,7 +1767,11 @@ static inline void bnx2x_prep_fw_stats_req(struct bnx2x *bp)
 					query[first_queue_query_index + i];
 
 		cur_query_entry->kind = STATS_TYPE_QUEUE;
+<<<<<<< HEAD
 		cur_query_entry->index = bnx2x_stats_id(&bp->fp[FCOE_IDX]);
+=======
+		cur_query_entry->index = bnx2x_stats_id(&bp->fp[FCOE_IDX(bp)]);
+>>>>>>> refs/remotes/origin/master
 		cur_query_entry->funcID = cpu_to_le16(BP_FUNC(bp));
 		cur_query_entry->address.hi =
 			cpu_to_le32(U64_HI(cur_data_offset));
@@ -1437,11 +1780,58 @@ static inline void bnx2x_prep_fw_stats_req(struct bnx2x *bp)
 	}
 }
 
+<<<<<<< HEAD
+=======
+void bnx2x_memset_stats(struct bnx2x *bp)
+{
+	int i;
+
+	/* function stats */
+	for_each_queue(bp, i) {
+		struct bnx2x_fp_stats *fp_stats = &bp->fp_stats[i];
+
+		memset(&fp_stats->old_tclient, 0,
+		       sizeof(fp_stats->old_tclient));
+		memset(&fp_stats->old_uclient, 0,
+		       sizeof(fp_stats->old_uclient));
+		memset(&fp_stats->old_xclient, 0,
+		       sizeof(fp_stats->old_xclient));
+		if (bp->stats_init) {
+			memset(&fp_stats->eth_q_stats, 0,
+			       sizeof(fp_stats->eth_q_stats));
+			memset(&fp_stats->eth_q_stats_old, 0,
+			       sizeof(fp_stats->eth_q_stats_old));
+		}
+	}
+
+	memset(&bp->dev->stats, 0, sizeof(bp->dev->stats));
+
+	if (bp->stats_init) {
+		memset(&bp->net_stats_old, 0, sizeof(bp->net_stats_old));
+		memset(&bp->fw_stats_old, 0, sizeof(bp->fw_stats_old));
+		memset(&bp->eth_stats_old, 0, sizeof(bp->eth_stats_old));
+		memset(&bp->eth_stats, 0, sizeof(bp->eth_stats));
+		memset(&bp->func_stats, 0, sizeof(bp->func_stats));
+	}
+
+	bp->stats_state = STATS_STATE_DISABLED;
+
+	if (bp->port.pmf && bp->port.port_stx)
+		bnx2x_port_stats_base_init(bp);
+
+	/* mark the end of statistics initializiation */
+	bp->stats_init = false;
+}
+
+>>>>>>> refs/remotes/origin/master
 void bnx2x_stats_init(struct bnx2x *bp)
 {
 	int /*abs*/port = BP_PORT(bp);
 	int mb_idx = BP_FW_MB_IDX(bp);
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bp->stats_pending = 0;
 	bp->executer_idx = 0;
@@ -1477,6 +1867,7 @@ void bnx2x_stats_init(struct bnx2x *bp)
 			    &(bp->port.old_nig_stats.egress_mac_pkt1_lo), 2);
 	}
 
+<<<<<<< HEAD
 	/* function stats */
 	for_each_queue(bp, i) {
 		struct bnx2x_fastpath *fp = &bp->fp[i];
@@ -1503,6 +1894,13 @@ void bnx2x_stats_init(struct bnx2x *bp)
 		memset(&bp->func_stats, 0, sizeof(bp->func_stats));
 
 		/* Clean SP from previous statistics */
+=======
+	/* Prepare statistics ramrod data */
+	bnx2x_prep_fw_stats_req(bp);
+
+	/* Clean SP from previous statistics */
+	if (bp->stats_init) {
+>>>>>>> refs/remotes/origin/master
 		if (bp->func_stx) {
 			memset(bnx2x_sp(bp, func_stats), 0,
 			       sizeof(struct host_func_stats));
@@ -1512,6 +1910,7 @@ void bnx2x_stats_init(struct bnx2x *bp)
 		}
 	}
 
+<<<<<<< HEAD
 	bp->stats_state = STATS_STATE_DISABLED;
 
 	if (bp->port.pmf && bp->port.port_stx)
@@ -1519,6 +1918,9 @@ void bnx2x_stats_init(struct bnx2x *bp)
 
 	/* mark the end of statistics initializiation */
 	bp->stats_init = false;
+=======
+	bnx2x_memset_stats(bp);
+>>>>>>> refs/remotes/origin/master
 }
 
 void bnx2x_save_statistics(struct bnx2x *bp)
@@ -1529,8 +1931,15 @@ void bnx2x_save_statistics(struct bnx2x *bp)
 	/* save queue statistics */
 	for_each_eth_queue(bp, i) {
 		struct bnx2x_fastpath *fp = &bp->fp[i];
+<<<<<<< HEAD
 		struct bnx2x_eth_q_stats *qstats = &fp->eth_q_stats;
 		struct bnx2x_eth_q_stats_old *qstats_old = &fp->eth_q_stats_old;
+=======
+		struct bnx2x_eth_q_stats *qstats =
+			&bnx2x_fp_stats(bp, fp)->eth_q_stats;
+		struct bnx2x_eth_q_stats_old *qstats_old =
+			&bnx2x_fp_stats(bp, fp)->eth_q_stats_old;
+>>>>>>> refs/remotes/origin/master
 
 		UPDATE_QSTAT_OLD(total_unicast_bytes_received_hi);
 		UPDATE_QSTAT_OLD(total_unicast_bytes_received_lo);
@@ -1561,3 +1970,287 @@ void bnx2x_save_statistics(struct bnx2x *bp)
 		UPDATE_FW_STAT_OLD(mac_discard);
 	}
 }
+<<<<<<< HEAD
+=======
+
+void bnx2x_afex_collect_stats(struct bnx2x *bp, void *void_afex_stats,
+			      u32 stats_type)
+{
+	int i;
+	struct afex_stats *afex_stats = (struct afex_stats *)void_afex_stats;
+	struct bnx2x_eth_stats *estats = &bp->eth_stats;
+	struct per_queue_stats *fcoe_q_stats =
+		&bp->fw_stats_data->queue_stats[FCOE_IDX(bp)];
+
+	struct tstorm_per_queue_stats *fcoe_q_tstorm_stats =
+		&fcoe_q_stats->tstorm_queue_statistics;
+
+	struct ustorm_per_queue_stats *fcoe_q_ustorm_stats =
+		&fcoe_q_stats->ustorm_queue_statistics;
+
+	struct xstorm_per_queue_stats *fcoe_q_xstorm_stats =
+		&fcoe_q_stats->xstorm_queue_statistics;
+
+	struct fcoe_statistics_params *fw_fcoe_stat =
+		&bp->fw_stats_data->fcoe;
+
+	memset(afex_stats, 0, sizeof(struct afex_stats));
+
+	for_each_eth_queue(bp, i) {
+		struct bnx2x_eth_q_stats *qstats = &bp->fp_stats[i].eth_q_stats;
+
+		ADD_64(afex_stats->rx_unicast_bytes_hi,
+		       qstats->total_unicast_bytes_received_hi,
+		       afex_stats->rx_unicast_bytes_lo,
+		       qstats->total_unicast_bytes_received_lo);
+
+		ADD_64(afex_stats->rx_broadcast_bytes_hi,
+		       qstats->total_broadcast_bytes_received_hi,
+		       afex_stats->rx_broadcast_bytes_lo,
+		       qstats->total_broadcast_bytes_received_lo);
+
+		ADD_64(afex_stats->rx_multicast_bytes_hi,
+		       qstats->total_multicast_bytes_received_hi,
+		       afex_stats->rx_multicast_bytes_lo,
+		       qstats->total_multicast_bytes_received_lo);
+
+		ADD_64(afex_stats->rx_unicast_frames_hi,
+		       qstats->total_unicast_packets_received_hi,
+		       afex_stats->rx_unicast_frames_lo,
+		       qstats->total_unicast_packets_received_lo);
+
+		ADD_64(afex_stats->rx_broadcast_frames_hi,
+		       qstats->total_broadcast_packets_received_hi,
+		       afex_stats->rx_broadcast_frames_lo,
+		       qstats->total_broadcast_packets_received_lo);
+
+		ADD_64(afex_stats->rx_multicast_frames_hi,
+		       qstats->total_multicast_packets_received_hi,
+		       afex_stats->rx_multicast_frames_lo,
+		       qstats->total_multicast_packets_received_lo);
+
+		/* sum to rx_frames_discarded all discraded
+		 * packets due to size, ttl0 and checksum
+		 */
+		ADD_64(afex_stats->rx_frames_discarded_hi,
+		       qstats->total_packets_received_checksum_discarded_hi,
+		       afex_stats->rx_frames_discarded_lo,
+		       qstats->total_packets_received_checksum_discarded_lo);
+
+		ADD_64(afex_stats->rx_frames_discarded_hi,
+		       qstats->total_packets_received_ttl0_discarded_hi,
+		       afex_stats->rx_frames_discarded_lo,
+		       qstats->total_packets_received_ttl0_discarded_lo);
+
+		ADD_64(afex_stats->rx_frames_discarded_hi,
+		       qstats->etherstatsoverrsizepkts_hi,
+		       afex_stats->rx_frames_discarded_lo,
+		       qstats->etherstatsoverrsizepkts_lo);
+
+		ADD_64(afex_stats->rx_frames_dropped_hi,
+		       qstats->no_buff_discard_hi,
+		       afex_stats->rx_frames_dropped_lo,
+		       qstats->no_buff_discard_lo);
+
+		ADD_64(afex_stats->tx_unicast_bytes_hi,
+		       qstats->total_unicast_bytes_transmitted_hi,
+		       afex_stats->tx_unicast_bytes_lo,
+		       qstats->total_unicast_bytes_transmitted_lo);
+
+		ADD_64(afex_stats->tx_broadcast_bytes_hi,
+		       qstats->total_broadcast_bytes_transmitted_hi,
+		       afex_stats->tx_broadcast_bytes_lo,
+		       qstats->total_broadcast_bytes_transmitted_lo);
+
+		ADD_64(afex_stats->tx_multicast_bytes_hi,
+		       qstats->total_multicast_bytes_transmitted_hi,
+		       afex_stats->tx_multicast_bytes_lo,
+		       qstats->total_multicast_bytes_transmitted_lo);
+
+		ADD_64(afex_stats->tx_unicast_frames_hi,
+		       qstats->total_unicast_packets_transmitted_hi,
+		       afex_stats->tx_unicast_frames_lo,
+		       qstats->total_unicast_packets_transmitted_lo);
+
+		ADD_64(afex_stats->tx_broadcast_frames_hi,
+		       qstats->total_broadcast_packets_transmitted_hi,
+		       afex_stats->tx_broadcast_frames_lo,
+		       qstats->total_broadcast_packets_transmitted_lo);
+
+		ADD_64(afex_stats->tx_multicast_frames_hi,
+		       qstats->total_multicast_packets_transmitted_hi,
+		       afex_stats->tx_multicast_frames_lo,
+		       qstats->total_multicast_packets_transmitted_lo);
+
+		ADD_64(afex_stats->tx_frames_dropped_hi,
+		       qstats->total_transmitted_dropped_packets_error_hi,
+		       afex_stats->tx_frames_dropped_lo,
+		       qstats->total_transmitted_dropped_packets_error_lo);
+	}
+
+	/* now add FCoE statistics which are collected separately
+	 * (both offloaded and non offloaded)
+	 */
+	if (!NO_FCOE(bp)) {
+		ADD_64_LE(afex_stats->rx_unicast_bytes_hi,
+			  LE32_0,
+			  afex_stats->rx_unicast_bytes_lo,
+			  fw_fcoe_stat->rx_stat0.fcoe_rx_byte_cnt);
+
+		ADD_64_LE(afex_stats->rx_unicast_bytes_hi,
+			  fcoe_q_tstorm_stats->rcv_ucast_bytes.hi,
+			  afex_stats->rx_unicast_bytes_lo,
+			  fcoe_q_tstorm_stats->rcv_ucast_bytes.lo);
+
+		ADD_64_LE(afex_stats->rx_broadcast_bytes_hi,
+			  fcoe_q_tstorm_stats->rcv_bcast_bytes.hi,
+			  afex_stats->rx_broadcast_bytes_lo,
+			  fcoe_q_tstorm_stats->rcv_bcast_bytes.lo);
+
+		ADD_64_LE(afex_stats->rx_multicast_bytes_hi,
+			  fcoe_q_tstorm_stats->rcv_mcast_bytes.hi,
+			  afex_stats->rx_multicast_bytes_lo,
+			  fcoe_q_tstorm_stats->rcv_mcast_bytes.lo);
+
+		ADD_64_LE(afex_stats->rx_unicast_frames_hi,
+			  LE32_0,
+			  afex_stats->rx_unicast_frames_lo,
+			  fw_fcoe_stat->rx_stat0.fcoe_rx_pkt_cnt);
+
+		ADD_64_LE(afex_stats->rx_unicast_frames_hi,
+			  LE32_0,
+			  afex_stats->rx_unicast_frames_lo,
+			  fcoe_q_tstorm_stats->rcv_ucast_pkts);
+
+		ADD_64_LE(afex_stats->rx_broadcast_frames_hi,
+			  LE32_0,
+			  afex_stats->rx_broadcast_frames_lo,
+			  fcoe_q_tstorm_stats->rcv_bcast_pkts);
+
+		ADD_64_LE(afex_stats->rx_multicast_frames_hi,
+			  LE32_0,
+			  afex_stats->rx_multicast_frames_lo,
+			  fcoe_q_tstorm_stats->rcv_ucast_pkts);
+
+		ADD_64_LE(afex_stats->rx_frames_discarded_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_discarded_lo,
+			  fcoe_q_tstorm_stats->checksum_discard);
+
+		ADD_64_LE(afex_stats->rx_frames_discarded_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_discarded_lo,
+			  fcoe_q_tstorm_stats->pkts_too_big_discard);
+
+		ADD_64_LE(afex_stats->rx_frames_discarded_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_discarded_lo,
+			  fcoe_q_tstorm_stats->ttl0_discard);
+
+		ADD_64_LE16(afex_stats->rx_frames_dropped_hi,
+			    LE16_0,
+			    afex_stats->rx_frames_dropped_lo,
+			    fcoe_q_tstorm_stats->no_buff_discard);
+
+		ADD_64_LE(afex_stats->rx_frames_dropped_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_dropped_lo,
+			  fcoe_q_ustorm_stats->ucast_no_buff_pkts);
+
+		ADD_64_LE(afex_stats->rx_frames_dropped_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_dropped_lo,
+			  fcoe_q_ustorm_stats->mcast_no_buff_pkts);
+
+		ADD_64_LE(afex_stats->rx_frames_dropped_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_dropped_lo,
+			  fcoe_q_ustorm_stats->bcast_no_buff_pkts);
+
+		ADD_64_LE(afex_stats->rx_frames_dropped_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_dropped_lo,
+			  fw_fcoe_stat->rx_stat1.fcoe_rx_drop_pkt_cnt);
+
+		ADD_64_LE(afex_stats->rx_frames_dropped_hi,
+			  LE32_0,
+			  afex_stats->rx_frames_dropped_lo,
+			  fw_fcoe_stat->rx_stat2.fcoe_rx_drop_pkt_cnt);
+
+		ADD_64_LE(afex_stats->tx_unicast_bytes_hi,
+			  LE32_0,
+			  afex_stats->tx_unicast_bytes_lo,
+			  fw_fcoe_stat->tx_stat.fcoe_tx_byte_cnt);
+
+		ADD_64_LE(afex_stats->tx_unicast_bytes_hi,
+			  fcoe_q_xstorm_stats->ucast_bytes_sent.hi,
+			  afex_stats->tx_unicast_bytes_lo,
+			  fcoe_q_xstorm_stats->ucast_bytes_sent.lo);
+
+		ADD_64_LE(afex_stats->tx_broadcast_bytes_hi,
+			  fcoe_q_xstorm_stats->bcast_bytes_sent.hi,
+			  afex_stats->tx_broadcast_bytes_lo,
+			  fcoe_q_xstorm_stats->bcast_bytes_sent.lo);
+
+		ADD_64_LE(afex_stats->tx_multicast_bytes_hi,
+			  fcoe_q_xstorm_stats->mcast_bytes_sent.hi,
+			  afex_stats->tx_multicast_bytes_lo,
+			  fcoe_q_xstorm_stats->mcast_bytes_sent.lo);
+
+		ADD_64_LE(afex_stats->tx_unicast_frames_hi,
+			  LE32_0,
+			  afex_stats->tx_unicast_frames_lo,
+			  fw_fcoe_stat->tx_stat.fcoe_tx_pkt_cnt);
+
+		ADD_64_LE(afex_stats->tx_unicast_frames_hi,
+			  LE32_0,
+			  afex_stats->tx_unicast_frames_lo,
+			  fcoe_q_xstorm_stats->ucast_pkts_sent);
+
+		ADD_64_LE(afex_stats->tx_broadcast_frames_hi,
+			  LE32_0,
+			  afex_stats->tx_broadcast_frames_lo,
+			  fcoe_q_xstorm_stats->bcast_pkts_sent);
+
+		ADD_64_LE(afex_stats->tx_multicast_frames_hi,
+			  LE32_0,
+			  afex_stats->tx_multicast_frames_lo,
+			  fcoe_q_xstorm_stats->mcast_pkts_sent);
+
+		ADD_64_LE(afex_stats->tx_frames_dropped_hi,
+			  LE32_0,
+			  afex_stats->tx_frames_dropped_lo,
+			  fcoe_q_xstorm_stats->error_drop_pkts);
+	}
+
+	/* if port stats are requested, add them to the PMF
+	 * stats, as anyway they will be accumulated by the
+	 * MCP before sent to the switch
+	 */
+	if ((bp->port.pmf) && (stats_type == VICSTATST_UIF_INDEX)) {
+		ADD_64(afex_stats->rx_frames_dropped_hi,
+		       0,
+		       afex_stats->rx_frames_dropped_lo,
+		       estats->mac_filter_discard);
+		ADD_64(afex_stats->rx_frames_dropped_hi,
+		       0,
+		       afex_stats->rx_frames_dropped_lo,
+		       estats->brb_truncate_discard);
+		ADD_64(afex_stats->rx_frames_discarded_hi,
+		       0,
+		       afex_stats->rx_frames_discarded_lo,
+		       estats->mac_discard);
+	}
+}
+
+void bnx2x_stats_safe_exec(struct bnx2x *bp,
+			   void (func_to_exec)(void *cookie),
+			   void *cookie){
+	if (down_timeout(&bp->stats_sema, HZ/10))
+		BNX2X_ERR("Unable to acquire stats lock\n");
+	bnx2x_stats_comp(bp);
+	func_to_exec(cookie);
+	__bnx2x_stats_start(bp);
+	up(&bp->stats_sema);
+}
+>>>>>>> refs/remotes/origin/master

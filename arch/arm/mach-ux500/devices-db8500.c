@@ -9,6 +9,7 @@
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/amba/bus.h>
 #include <linux/amba/pl022.h>
@@ -209,4 +210,22 @@ struct platform_device u8500_ske_keypad_device = {
 	.id = -1,
 	.num_resources = ARRAY_SIZE(keypad_resources),
 	.resource = keypad_resources,
+=======
+#include <linux/amba/bus.h>
+#include <linux/amba/pl022.h>
+#include <linux/mfd/dbx500-prcmu.h>
+
+#include "setup.h"
+#include "irqs.h"
+
+#include "db8500-regs.h"
+#include "devices-db8500.h"
+
+struct prcmu_pdata db8500_prcmu_pdata = {
+	.ab_platdata	= &ab8500_platdata,
+	.ab_irq		= IRQ_DB8500_AB8500,
+	.irq_base	= IRQ_PRCMU_BASE,
+	.version_offset	= DB8500_PRCMU_FW_VERSION_OFFSET,
+	.legacy_offset	= DB8500_PRCMU_LEGACY_OFFSET,
+>>>>>>> refs/remotes/origin/master
 };

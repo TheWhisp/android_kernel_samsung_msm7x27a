@@ -50,9 +50,15 @@
 #include <asm/suspend.h>
 #include <asm/hardware/cache-l2x0.h>
 
+<<<<<<< HEAD
 #include <plat/omap44xx.h>
 
 #include "common.h"
+=======
+#include "soc.h"
+#include "common.h"
+#include "omap44xx.h"
+>>>>>>> refs/remotes/origin/master
 #include "omap4-sar-layout.h"
 #include "pm.h"
 #include "prcm_mpu44xx.h"
@@ -68,12 +74,32 @@ struct omap4_cpu_pm_info {
 	void __iomem *scu_sar_addr;
 	void __iomem *wkup_sar_addr;
 	void __iomem *l2x0_sar_addr;
+<<<<<<< HEAD
+=======
+	void (*secondary_startup)(void);
+};
+
+/**
+ * struct cpu_pm_ops - CPU pm operations
+ * @finish_suspend:	CPU suspend finisher function pointer
+ * @resume:		CPU resume function pointer
+ * @scu_prepare:	CPU Snoop Control program function pointer
+ *
+ * Structure holds functions pointer for CPU low power operations like
+ * suspend, resume and scu programming.
+ */
+struct cpu_pm_ops {
+	int (*finish_suspend)(unsigned long cpu_state);
+	void (*resume)(void);
+	void (*scu_prepare)(unsigned int cpu_id, unsigned int cpu_state);
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_PER_CPU(struct omap4_cpu_pm_info, omap4_pm_info);
 static struct powerdomain *mpuss_pd;
 static void __iomem *sar_base;
 
+<<<<<<< HEAD
 /*
  * Program the wakeup routine address for the CPU0 and CPU1
  * used for OFF or DORMANT wakeup.
@@ -114,6 +140,35 @@ static inline void clear_cpu_prev_pwrst(unsigned int cpu_id)
 	struct omap4_cpu_pm_info *pm_info = &per_cpu(omap4_pm_info, cpu_id);
 
 	pwrdm_clear_all_prev_pwrst(pm_info->pwrdm);
+=======
+static int default_finish_suspend(unsigned long cpu_state)
+{
+	omap_do_wfi();
+	return 0;
+}
+
+static void dummy_cpu_resume(void)
+{}
+
+static void dummy_scu_prepare(unsigned int cpu_id, unsigned int cpu_state)
+{}
+
+struct cpu_pm_ops omap_pm_ops = {
+	.finish_suspend		= default_finish_suspend,
+	.resume			= dummy_cpu_resume,
+	.scu_prepare		= dummy_scu_prepare,
+};
+
+/*
+ * Program the wakeup routine address for the CPU0 and CPU1
+ * used for OFF or DORMANT wakeup.
+ */
+static inline void set_cpu_wakeup_addr(unsigned int cpu_id, u32 addr)
+{
+	struct omap4_cpu_pm_info *pm_info = &per_cpu(omap4_pm_info, cpu_id);
+
+	__raw_writel(addr, pm_info->wkup_sar_addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -169,6 +224,7 @@ static inline void cpu_clear_prev_logic_pwrst(unsigned int cpu_id)
 	}
 }
 
+<<<<<<< HEAD
 /**
  * omap4_mpuss_read_prev_context_state:
  * Function returns the MPUSS previous context state
@@ -183,6 +239,8 @@ u32 omap4_mpuss_read_prev_context_state(void)
 	return reg;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Store the CPU cluster state for L2X0 low power operations.
  */
@@ -202,11 +260,20 @@ static void save_l2x0_context(void)
 {
 	u32 val;
 	void __iomem *l2x0_base = omap4_get_l2cache_base();
+<<<<<<< HEAD
 
 	val = __raw_readl(l2x0_base + L2X0_AUX_CTRL);
 	__raw_writel(val, sar_base + L2X0_AUXCTRL_OFFSET);
 	val = __raw_readl(l2x0_base + L2X0_PREFETCH_CTRL);
 	__raw_writel(val, sar_base + L2X0_PREFETCH_CTRL_OFFSET);
+=======
+	if (l2x0_base) {
+		val = __raw_readl(l2x0_base + L2X0_AUX_CTRL);
+		__raw_writel(val, sar_base + L2X0_AUXCTRL_OFFSET);
+		val = __raw_readl(l2x0_base + L2X0_PREFETCH_CTRL);
+		__raw_writel(val, sar_base + L2X0_PREFETCH_CTRL_OFFSET);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static void save_l2x0_context(void)
@@ -229,6 +296,10 @@ static void save_l2x0_context(void)
  */
 int omap4_enter_lowpower(unsigned int cpu, unsigned int power_state)
 {
+<<<<<<< HEAD
+=======
+	struct omap4_cpu_pm_info *pm_info = &per_cpu(omap4_pm_info, cpu);
+>>>>>>> refs/remotes/origin/master
 	unsigned int save_state = 0;
 	unsigned int wakeup_cpu;
 
@@ -255,7 +326,11 @@ int omap4_enter_lowpower(unsigned int cpu, unsigned int power_state)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	pwrdm_pre_transition();
+=======
+	pwrdm_pre_transition(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check MPUSS next state and save interrupt controller if needed.
@@ -267,15 +342,28 @@ int omap4_enter_lowpower(unsigned int cpu, unsigned int power_state)
 		save_state = 2;
 
 	cpu_clear_prev_logic_pwrst(cpu);
+<<<<<<< HEAD
 	set_cpu_next_pwrst(cpu, power_state);
 	set_cpu_wakeup_addr(cpu, virt_to_phys(omap4_cpu_resume));
 	scu_pwrst_prepare(cpu, power_state);
+=======
+	pwrdm_set_next_pwrst(pm_info->pwrdm, power_state);
+	set_cpu_wakeup_addr(cpu, virt_to_phys(omap_pm_ops.resume));
+	omap_pm_ops.scu_prepare(cpu, power_state);
+>>>>>>> refs/remotes/origin/master
 	l2x0_pwrst_prepare(cpu, save_state);
 
 	/*
 	 * Call low level function  with targeted low power state.
 	 */
+<<<<<<< HEAD
 	cpu_suspend(save_state, omap4_finish_suspend);
+=======
+	if (save_state)
+		cpu_suspend(save_state, omap_pm_ops.finish_suspend);
+	else
+		omap_pm_ops.finish_suspend(save_state);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Restore the CPUx power state to ON otherwise CPUx
@@ -285,9 +373,15 @@ int omap4_enter_lowpower(unsigned int cpu, unsigned int power_state)
 	 * domain transition
 	 */
 	wakeup_cpu = smp_processor_id();
+<<<<<<< HEAD
 	set_cpu_next_pwrst(wakeup_cpu, PWRDM_POWER_ON);
 
 	pwrdm_post_transition();
+=======
+	pwrdm_set_next_pwrst(pm_info->pwrdm, PWRDM_POWER_ON);
+
+	pwrdm_post_transition(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -297,8 +391,14 @@ int omap4_enter_lowpower(unsigned int cpu, unsigned int power_state)
  * @cpu : CPU ID
  * @power_state: CPU low power state.
  */
+<<<<<<< HEAD
 int __cpuinit omap4_hotplug_cpu(unsigned int cpu, unsigned int power_state)
 {
+=======
+int omap4_hotplug_cpu(unsigned int cpu, unsigned int power_state)
+{
+	struct omap4_cpu_pm_info *pm_info = &per_cpu(omap4_pm_info, cpu);
+>>>>>>> refs/remotes/origin/master
 	unsigned int cpu_state = 0;
 
 	if (omap_rev() == OMAP4430_REV_ES1_0)
@@ -307,6 +407,7 @@ int __cpuinit omap4_hotplug_cpu(unsigned int cpu, unsigned int power_state)
 	if (power_state == PWRDM_POWER_OFF)
 		cpu_state = 1;
 
+<<<<<<< HEAD
 	clear_cpu_prev_pwrst(cpu);
 	set_cpu_next_pwrst(cpu, power_state);
 	set_cpu_wakeup_addr(cpu, virt_to_phys(omap_secondary_startup));
@@ -320,6 +421,21 @@ int __cpuinit omap4_hotplug_cpu(unsigned int cpu, unsigned int power_state)
 	omap4_finish_suspend(cpu_state);
 
 	set_cpu_next_pwrst(cpu, PWRDM_POWER_ON);
+=======
+	pwrdm_clear_all_prev_pwrst(pm_info->pwrdm);
+	pwrdm_set_next_pwrst(pm_info->pwrdm, power_state);
+	set_cpu_wakeup_addr(cpu, virt_to_phys(pm_info->secondary_startup));
+	omap_pm_ops.scu_prepare(cpu, power_state);
+
+	/*
+	 * CPU never retuns back if targeted power state is OFF mode.
+	 * CPU ONLINE follows normal CPU ONLINE ptah via
+	 * omap4_secondary_startup().
+	 */
+	omap_pm_ops.finish_suspend(cpu_state);
+
+	pwrdm_set_next_pwrst(pm_info->pwrdm, PWRDM_POWER_ON);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -360,6 +476,14 @@ int __init omap4_mpuss_init(void)
 	pm_info->scu_sar_addr = sar_base + SCU_OFFSET1;
 	pm_info->wkup_sar_addr = sar_base + CPU1_WAKEUP_NS_PA_ADDR_OFFSET;
 	pm_info->l2x0_sar_addr = sar_base + L2X0_SAVE_OFFSET1;
+<<<<<<< HEAD
+=======
+	if (cpu_is_omap446x())
+		pm_info->secondary_startup = omap4460_secondary_startup;
+	else
+		pm_info->secondary_startup = omap4_secondary_startup;
+
+>>>>>>> refs/remotes/origin/master
 	pm_info->pwrdm = pwrdm_lookup("cpu1_pwrdm");
 	if (!pm_info->pwrdm) {
 		pr_err("Lookup failed for CPU1 pwrdm\n");
@@ -389,6 +513,15 @@ int __init omap4_mpuss_init(void)
 
 	save_l2x0_context();
 
+<<<<<<< HEAD
+=======
+	if (cpu_is_omap44xx()) {
+		omap_pm_ops.finish_suspend = omap4_finish_suspend;
+		omap_pm_ops.resume = omap4_cpu_resume;
+		omap_pm_ops.scu_prepare = scu_pwrst_prepare;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

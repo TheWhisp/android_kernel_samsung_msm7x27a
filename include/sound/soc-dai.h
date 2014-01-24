@@ -3,9 +3,12 @@
  *
  * Copyright:	2005-2008 Wolfson Microelectronics. PLC.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -22,9 +25,14 @@
 
 struct snd_pcm_substream;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct snd_soc_dapm_widget;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct snd_soc_dapm_widget;
+struct snd_compr_stream;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * DAI hardware audio formats.
@@ -32,6 +40,7 @@ struct snd_soc_dapm_widget;
  * Describes the physical PCM data formating and clocking. Add new formats
  * to the end.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SND_SOC_DAIFMT_I2S		0 /* I2S mode */
 #define SND_SOC_DAIFMT_RIGHT_J		1 /* Right Justified mode */
@@ -41,6 +50,8 @@ struct snd_soc_dapm_widget;
 #define SND_SOC_DAIFMT_AC97		5 /* AC97 */
 #define SND_SOC_DAIFMT_PDM		6 /* Pulse density modulation */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SND_SOC_DAIFMT_I2S		1 /* I2S mode */
 #define SND_SOC_DAIFMT_RIGHT_J		2 /* Right Justified mode */
 #define SND_SOC_DAIFMT_LEFT_J		3 /* Left Justified mode */
@@ -48,7 +59,10 @@ struct snd_soc_dapm_widget;
 #define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
 #define SND_SOC_DAIFMT_AC97		6 /* AC97 */
 #define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* left and right justified also known as MSB and LSB respectively */
 #define SND_SOC_DAIFMT_MSB		SND_SOC_DAIFMT_LEFT_J
@@ -61,12 +75,17 @@ struct snd_soc_dapm_widget;
  * sending or receiving PCM data in a frame. This can be used to save power.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SND_SOC_DAIFMT_CONT		(0 << 4) /* continuous clock */
 #define SND_SOC_DAIFMT_GATED		(1 << 4) /* clock is gated */
 =======
 #define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
 #define SND_SOC_DAIFMT_GATED		(2 << 4) /* clock is gated */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SND_SOC_DAIFMT_CONT		(1 << 4) /* continuous clock */
+#define SND_SOC_DAIFMT_GATED		(0 << 4) /* clock is gated */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * DAI hardware signal inversions.
@@ -74,6 +93,7 @@ struct snd_soc_dapm_widget;
  * Specifies whether the DAI can also support inverted clocks for the specified
  * format.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
 #define SND_SOC_DAIFMT_NB_IF		(1 << 8) /* normal BCLK + inv FRM */
@@ -85,6 +105,12 @@ struct snd_soc_dapm_widget;
 #define SND_SOC_DAIFMT_IB_NF		(3 << 8) /* invert BCLK + nor FRM */
 #define SND_SOC_DAIFMT_IB_IF		(4 << 8) /* invert BCLK + FRM */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SND_SOC_DAIFMT_NB_NF		(0 << 8) /* normal bit clock + frame */
+#define SND_SOC_DAIFMT_NB_IF		(2 << 8) /* normal BCLK + inv FRM */
+#define SND_SOC_DAIFMT_IB_NF		(3 << 8) /* invert BCLK + nor FRM */
+#define SND_SOC_DAIFMT_IB_IF		(4 << 8) /* invert BCLK + FRM */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * DAI hardware clock masters.
@@ -94,16 +120,22 @@ struct snd_soc_dapm_widget;
  * clk and frame slave.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SND_SOC_DAIFMT_CBM_CFM		(0 << 12) /* codec clk & FRM master */
 #define SND_SOC_DAIFMT_CBS_CFM		(1 << 12) /* codec clk slave & FRM master */
 #define SND_SOC_DAIFMT_CBM_CFS		(2 << 12) /* codec clk master & frame slave */
 #define SND_SOC_DAIFMT_CBS_CFS		(3 << 12) /* codec clk & FRM slave */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SND_SOC_DAIFMT_CBM_CFM		(1 << 12) /* codec clk & FRM master */
 #define SND_SOC_DAIFMT_CBS_CFM		(2 << 12) /* codec clk slave & FRM master */
 #define SND_SOC_DAIFMT_CBM_CFS		(3 << 12) /* codec clk master & frame slave */
 #define SND_SOC_DAIFMT_CBS_CFS		(4 << 12) /* codec clk & FRM slave */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SND_SOC_DAIFMT_FORMAT_MASK	0x000f
 #define SND_SOC_DAIFMT_CLOCK_MASK	0x00f0
@@ -130,6 +162,7 @@ struct snd_soc_dai_driver;
 struct snd_soc_dai;
 struct snd_ac97_bus_ops;
 
+<<<<<<< HEAD
 /* Digital Audio Interface registration */
 int snd_soc_register_dai(struct device *dev,
 		struct snd_soc_dai_driver *dai_drv);
@@ -138,6 +171,8 @@ int snd_soc_register_dais(struct device *dev,
 		struct snd_soc_dai_driver *dai_drv, size_t count);
 void snd_soc_unregister_dais(struct device *dev, size_t count);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Digital Audio Interface clocking API.*/
 int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
 	unsigned int freq, int dir);
@@ -148,6 +183,11 @@ int snd_soc_dai_set_clkdiv(struct snd_soc_dai *dai,
 int snd_soc_dai_set_pll(struct snd_soc_dai *dai,
 	int pll_id, int source, unsigned int freq_in, unsigned int freq_out);
 
+<<<<<<< HEAD
+=======
+int snd_soc_dai_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio);
+
+>>>>>>> refs/remotes/origin/master
 /* Digital Audio interface formatting */
 int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt);
 
@@ -159,6 +199,7 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
 	unsigned int rx_num, unsigned int *rx_slot);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
 	unsigned int *tx_num, unsigned int *tx_slot,
@@ -169,6 +210,15 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
 
 /* Digital Audio Interface mute */
 int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute);
+=======
+int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
+
+/* Digital Audio Interface mute */
+int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+			     int direction);
+
+int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
+>>>>>>> refs/remotes/origin/master
 
 struct snd_soc_dai_ops {
 	/*
@@ -180,6 +230,10 @@ struct snd_soc_dai_ops {
 	int (*set_pll)(struct snd_soc_dai *dai, int pll_id, int source,
 		unsigned int freq_in, unsigned int freq_out);
 	int (*set_clkdiv)(struct snd_soc_dai *dai, int div_id, int div);
+<<<<<<< HEAD
+=======
+	int (*set_bclk_ratio)(struct snd_soc_dai *dai, unsigned int ratio);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * DAI format configuration
@@ -195,16 +249,23 @@ struct snd_soc_dai_ops {
 	int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*get_channel_map)(struct snd_soc_dai *dai,
 		unsigned int *tx_num, unsigned int *tx_slot,
 		unsigned int *rx_num, unsigned int *rx_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * DAI digital mute - optional.
 	 * Called by soc-core to minimise any pops.
 	 */
 	int (*digital_mute)(struct snd_soc_dai *dai, int mute);
+<<<<<<< HEAD
+=======
+	int (*mute_stream)(struct snd_soc_dai *dai, int mute, int stream);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ALSA PCM audio operations - all optional.
@@ -220,6 +281,16 @@ struct snd_soc_dai_ops {
 		struct snd_soc_dai *);
 	int (*prepare)(struct snd_pcm_substream *,
 		struct snd_soc_dai *);
+<<<<<<< HEAD
+=======
+	/*
+	 * NOTE: Commands passed to the trigger function are not necessarily
+	 * compatible with the current state of the dai. For example this
+	 * sequence of commands is possible: START STOP STOP.
+	 * So do not unconditionally use refcounting functions in the trigger
+	 * function, e.g. clk_enable/disable.
+	 */
+>>>>>>> refs/remotes/origin/master
 	int (*trigger)(struct snd_pcm_substream *, int,
 		struct snd_soc_dai *);
 	int (*bespoke_trigger)(struct snd_pcm_substream *, int,
@@ -247,12 +318,21 @@ struct snd_soc_dai_driver {
 	const char *name;
 	unsigned int id;
 	int ac97_control;
+<<<<<<< HEAD
+=======
+	unsigned int base;
+>>>>>>> refs/remotes/origin/master
 
 	/* DAI driver callbacks */
 	int (*probe)(struct snd_soc_dai *dai);
 	int (*remove)(struct snd_soc_dai *dai);
 	int (*suspend)(struct snd_soc_dai *dai);
 	int (*resume)(struct snd_soc_dai *dai);
+<<<<<<< HEAD
+=======
+	/* compress dai */
+	bool compress_dai;
+>>>>>>> refs/remotes/origin/master
 
 	/* ops */
 	const struct snd_soc_dai_ops *ops;
@@ -261,6 +341,11 @@ struct snd_soc_dai_driver {
 	struct snd_soc_pcm_stream capture;
 	struct snd_soc_pcm_stream playback;
 	unsigned int symmetric_rates:1;
+<<<<<<< HEAD
+=======
+	unsigned int symmetric_channels:1;
+	unsigned int symmetric_samplebits:1;
+>>>>>>> refs/remotes/origin/master
 
 	/* probe ordering - for components with runtime dependencies */
 	int probe_order;
@@ -283,6 +368,7 @@ struct snd_soc_dai {
 
 	/* DAI runtime info */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int capture_active:1;		/* stream is in use */
 =======
 	unsigned int capture_active;		/* stream is in use */
@@ -300,10 +386,26 @@ struct snd_soc_dai {
 	struct snd_soc_dapm_widget *capture_widget;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int capture_active:1;		/* stream is in use */
+	unsigned int playback_active:1;		/* stream is in use */
+	unsigned int symmetric_rates:1;
+	unsigned int symmetric_channels:1;
+	unsigned int symmetric_samplebits:1;
+	struct snd_pcm_runtime *runtime;
+	unsigned int active;
+	unsigned char probed:1;
+
+	struct snd_soc_dapm_widget *playback_widget;
+	struct snd_soc_dapm_widget *capture_widget;
+	struct snd_soc_dapm_context dapm;
+
+>>>>>>> refs/remotes/origin/master
 	/* DAI DMA data */
 	void *playback_dma_data;
 	void *capture_dma_data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* parent platform/codec */
 	union {
@@ -313,16 +415,26 @@ struct snd_soc_dai {
 =======
 	/* Symmetry data - only valid if symmetry is being enforced */
 	unsigned int rate;
+=======
+	/* Symmetry data - only valid if symmetry is being enforced */
+	unsigned int rate;
+	unsigned int channels;
+	unsigned int sample_bits;
+>>>>>>> refs/remotes/origin/master
 
 	/* parent platform/codec */
 	struct snd_soc_platform *platform;
 	struct snd_soc_codec *codec;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct snd_soc_card *card;
 
 	struct list_head list;
 	struct list_head card_list;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -333,6 +445,8 @@ struct snd_soc_dai {
 	struct snd_soc_dapm_widget *capture_aif;
 	bool channel_map_instanciated;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void *snd_soc_dai_get_dma_data(const struct snd_soc_dai *dai,
@@ -352,6 +466,16 @@ static inline void snd_soc_dai_set_dma_data(struct snd_soc_dai *dai,
 		dai->capture_dma_data = data;
 }
 
+<<<<<<< HEAD
+=======
+static inline void snd_soc_dai_init_dma_data(struct snd_soc_dai *dai,
+					     void *playback, void *capture)
+{
+	dai->playback_dma_data = playback;
+	dai->capture_dma_data = capture;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void snd_soc_dai_set_drvdata(struct snd_soc_dai *dai,
 		void *data)
 {
@@ -363,6 +487,7 @@ static inline void *snd_soc_dai_get_drvdata(struct snd_soc_dai *dai)
 	return dev_get_drvdata(dai->dev);
 }
 
+<<<<<<< HEAD
 /* Backend DAI PCM ops */
 static inline int snd_soc_dai_startup(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai)
@@ -457,4 +582,6 @@ static inline int snd_soc_dai_trigger(struct snd_pcm_substream *substream,
 		return dai->driver->ops->trigger(substream, cmd, dai);
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

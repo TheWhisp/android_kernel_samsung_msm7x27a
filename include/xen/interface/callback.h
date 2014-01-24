@@ -27,7 +27,11 @@
 #ifndef __XEN_PUBLIC_CALLBACK_H__
 #define __XEN_PUBLIC_CALLBACK_H__
 
+<<<<<<< HEAD
 #include "xen.h"
+=======
+#include <xen/interface/xen.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Prototype for this hypercall is:
@@ -36,7 +40,11 @@
  * @extra_args == Operation-specific extra arguments (NULL if none).
  */
 
+<<<<<<< HEAD
 /* ia64, x86: Callback for event delivery. */
+=======
+/* x86: Callback for event delivery. */
+>>>>>>> refs/remotes/origin/master
 #define CALLBACKTYPE_event                 0
 
 /* x86: Failsafe callback when guest state cannot be restored by Xen. */

@@ -176,8 +176,12 @@ enum SINF_BITS { SINF_NUM_BATTERIES = 0,
 /* R1 handles SINF_AC_CUR_BRIGHT as SINF_CUR_BRIGHT, doesn't know AC state */
 
 static int acpi_pcc_hotkey_add(struct acpi_device *device);
+<<<<<<< HEAD
 static int acpi_pcc_hotkey_remove(struct acpi_device *device, int type);
 static int acpi_pcc_hotkey_resume(struct acpi_device *device);
+=======
+static int acpi_pcc_hotkey_remove(struct acpi_device *device);
+>>>>>>> refs/remotes/origin/master
 static void acpi_pcc_hotkey_notify(struct acpi_device *device, u32 event);
 
 static const struct acpi_device_id pcc_device_ids[] = {
@@ -189,6 +193,14 @@ static const struct acpi_device_id pcc_device_ids[] = {
 };
 MODULE_DEVICE_TABLE(acpi, pcc_device_ids);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_pcc_hotkey_resume(struct device *dev);
+#endif
+static SIMPLE_DEV_PM_OPS(acpi_pcc_hotkey_pm, NULL, acpi_pcc_hotkey_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct acpi_driver acpi_pcc_driver = {
 	.name =		ACPI_PCC_DRIVER_NAME,
 	.class =	ACPI_PCC_CLASS,
@@ -196,9 +208,15 @@ static struct acpi_driver acpi_pcc_driver = {
 	.ops =		{
 				.add =		acpi_pcc_hotkey_add,
 				.remove =	acpi_pcc_hotkey_remove,
+<<<<<<< HEAD
 				.resume =       acpi_pcc_hotkey_resume,
 				.notify =	acpi_pcc_hotkey_notify,
 			},
+=======
+				.notify =	acpi_pcc_hotkey_notify,
+			},
+	.drv.pm =	&acpi_pcc_hotkey_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct key_entry panasonic_keymap[] = {
@@ -460,9 +478,12 @@ static void acpi_pcc_generate_keyinput(struct pcc_acpi *pcc)
 				 "error getting hotkey status\n"));
 		return;
 	}
+<<<<<<< HEAD
 
 	acpi_bus_generate_proc_event(pcc->device, HKEY_NOTIFY, result);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!sparse_keymap_report_event(hotk_input_dev,
 					result & 0xf, result & 0x80, false))
 		ACPI_DEBUG_PRINT((ACPI_DB_ERROR,
@@ -489,11 +510,16 @@ static int acpi_pcc_init_input(struct pcc_acpi *pcc)
 	int error;
 
 	input_dev = input_allocate_device();
+<<<<<<< HEAD
 	if (!input_dev) {
 		ACPI_DEBUG_PRINT((ACPI_DB_ERROR,
 				  "Couldn't allocate input device for hotkey"));
 		return -ENOMEM;
 	}
+=======
+	if (!input_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	input_dev->name = ACPI_PCC_DRIVER_NAME;
 	input_dev->phys = ACPI_PCC_INPUT_PHYS;
@@ -538,11 +564,24 @@ static void acpi_pcc_destroy_input(struct pcc_acpi *pcc)
 
 /* kernel module interface */
 
+<<<<<<< HEAD
 static int acpi_pcc_hotkey_resume(struct acpi_device *device)
 {
 	struct pcc_acpi *pcc = acpi_driver_data(device);
 
 	if (device == NULL || pcc == NULL)
+=======
+#ifdef CONFIG_PM_SLEEP
+static int acpi_pcc_hotkey_resume(struct device *dev)
+{
+	struct pcc_acpi *pcc;
+
+	if (!dev)
+		return -EINVAL;
+
+	pcc = acpi_driver_data(to_acpi_device(dev));
+	if (!pcc)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	ACPI_DEBUG_PRINT((ACPI_DB_ERROR, "Sticky mode restore: %d\n",
@@ -550,6 +589,10 @@ static int acpi_pcc_hotkey_resume(struct acpi_device *device)
 
 	return acpi_pcc_write_sset(pcc, SINF_STICKY_KEY, pcc->sticky_mode);
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int acpi_pcc_hotkey_add(struct acpi_device *device)
 {
@@ -563,12 +606,17 @@ static int acpi_pcc_hotkey_add(struct acpi_device *device)
 	num_sifr = acpi_pcc_get_sqty(device);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (num_sifr > 255) {
 		ACPI_DEBUG_PRINT((ACPI_DB_ERROR, "num_sifr too large"));
 =======
 	if (num_sifr < 0 || num_sifr > 255) {
 		ACPI_DEBUG_PRINT((ACPI_DB_ERROR, "num_sifr out of range"));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (num_sifr < 0 || num_sifr > 255) {
+		ACPI_DEBUG_PRINT((ACPI_DB_ERROR, "num_sifr out of range"));
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -641,6 +689,7 @@ out_hotkey:
 	return result;
 }
 
+<<<<<<< HEAD
 static int __init acpi_pcc_init(void)
 {
 	int result = 0;
@@ -659,6 +708,9 @@ static int __init acpi_pcc_init(void)
 }
 
 static int acpi_pcc_hotkey_remove(struct acpi_device *device, int type)
+=======
+static int acpi_pcc_hotkey_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcc_acpi *pcc = acpi_driver_data(device);
 
@@ -677,6 +729,7 @@ static int acpi_pcc_hotkey_remove(struct acpi_device *device, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __exit acpi_pcc_exit(void)
 {
 	acpi_bus_unregister_driver(&acpi_pcc_driver);
@@ -684,3 +737,6 @@ static void __exit acpi_pcc_exit(void)
 
 module_init(acpi_pcc_init);
 module_exit(acpi_pcc_exit);
+=======
+module_acpi_driver(acpi_pcc_driver);
+>>>>>>> refs/remotes/origin/master

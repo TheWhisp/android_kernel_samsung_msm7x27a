@@ -35,7 +35,10 @@
 #include <linux/if_vlan.h>
 
 #include <asm/ibmebus.h>
+<<<<<<< HEAD
 #include <asm/abs_addr.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #define DRV_NAME	"ehea"

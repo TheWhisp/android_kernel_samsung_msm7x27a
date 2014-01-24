@@ -18,6 +18,10 @@
 #include <linux/slab.h>
 #include <linux/usb.h>
 #include <linux/usb/audio.h>
+<<<<<<< HEAD
+=======
+#include <linux/usb/midi.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/control.h>
 #include <sound/core.h>
@@ -35,9 +39,13 @@
 #include "pcm.h"
 #include "clock.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "stream.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "stream.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * handle the quirks for the contained interfaces
@@ -111,10 +119,14 @@ static int create_standard_audio_quirk(struct snd_usb_audio *chip,
 	alts = &iface->altsetting[0];
 	altsd = get_iface_desc(alts);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_usb_parse_audio_endpoints(chip, altsd->bInterfaceNumber);
 =======
 	err = snd_usb_parse_audio_interface(chip, altsd->bInterfaceNumber);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = snd_usb_parse_audio_interface(chip, altsd->bInterfaceNumber);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		snd_printk(KERN_ERR "cannot setup if %d: error %d\n",
 			   altsd->bInterfaceNumber, err);
@@ -135,6 +147,10 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
 {
 	struct audioformat *fp;
 	struct usb_host_interface *alts;
+<<<<<<< HEAD
+=======
+	struct usb_interface_descriptor *altsd;
+>>>>>>> refs/remotes/origin/master
 	int stream, err;
 	unsigned *rate_table = NULL;
 
@@ -149,29 +165,41 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
 	}
 	if (fp->nr_rates > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rate_table = kmalloc(sizeof(int) * fp->nr_rates, GFP_KERNEL);
 =======
 		rate_table = kmemdup(fp->rate_table,
 				     sizeof(int) * fp->nr_rates, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rate_table = kmemdup(fp->rate_table,
+				     sizeof(int) * fp->nr_rates, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!rate_table) {
 			kfree(fp);
 			return -ENOMEM;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(rate_table, fp->rate_table, sizeof(int) * fp->nr_rates);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		fp->rate_table = rate_table;
 	}
 
 	stream = (fp->endpoint & USB_DIR_IN)
 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_usb_add_audio_endpoint(chip, stream, fp);
 =======
 	err = snd_usb_add_audio_stream(chip, stream, fp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = snd_usb_add_audio_stream(chip, stream, fp);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		kfree(fp);
 		kfree(rate_table);
@@ -184,14 +212,233 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
 		return -EINVAL;
 	}
 	alts = &iface->altsetting[fp->altset_idx];
+<<<<<<< HEAD
 	fp->datainterval = snd_usb_parse_datainterval(chip, alts);
 	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
+=======
+	altsd = get_iface_desc(alts);
+	fp->protocol = altsd->bInterfaceProtocol;
+
+	if (fp->datainterval == 0)
+		fp->datainterval = snd_usb_parse_datainterval(chip, alts);
+	if (fp->maxpacksize == 0)
+		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
+>>>>>>> refs/remotes/origin/master
 	usb_set_interface(chip->dev, fp->iface, 0);
 	snd_usb_init_pitch(chip, fp->iface, alts, fp);
 	snd_usb_init_sample_rate(chip, fp->iface, alts, fp, fp->rate_max);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int create_auto_pcm_quirk(struct snd_usb_audio *chip,
+				 struct usb_interface *iface,
+				 struct usb_driver *driver)
+{
+	struct usb_host_interface *alts;
+	struct usb_interface_descriptor *altsd;
+	struct usb_endpoint_descriptor *epd;
+	struct uac1_as_header_descriptor *ashd;
+	struct uac_format_type_i_discrete_descriptor *fmtd;
+
+	/*
+	 * Most Roland/Yamaha audio streaming interfaces have more or less
+	 * standard descriptors, but older devices might lack descriptors, and
+	 * future ones might change, so ensure that we fail silently if the
+	 * interface doesn't look exactly right.
+	 */
+
+	/* must have a non-zero altsetting for streaming */
+	if (iface->num_altsetting < 2)
+		return -ENODEV;
+	alts = &iface->altsetting[1];
+	altsd = get_iface_desc(alts);
+
+	/* must have an isochronous endpoint for streaming */
+	if (altsd->bNumEndpoints < 1)
+		return -ENODEV;
+	epd = get_endpoint(alts, 0);
+	if (!usb_endpoint_xfer_isoc(epd))
+		return -ENODEV;
+
+	/* must have format descriptors */
+	ashd = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL,
+				       UAC_AS_GENERAL);
+	fmtd = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL,
+				       UAC_FORMAT_TYPE);
+	if (!ashd || ashd->bLength < 7 ||
+	    !fmtd || fmtd->bLength < 8)
+		return -ENODEV;
+
+	return create_standard_audio_quirk(chip, iface, driver, NULL);
+}
+
+static int create_yamaha_midi_quirk(struct snd_usb_audio *chip,
+				    struct usb_interface *iface,
+				    struct usb_driver *driver,
+				    struct usb_host_interface *alts)
+{
+	static const struct snd_usb_audio_quirk yamaha_midi_quirk = {
+		.type = QUIRK_MIDI_YAMAHA
+	};
+	struct usb_midi_in_jack_descriptor *injd;
+	struct usb_midi_out_jack_descriptor *outjd;
+
+	/* must have some valid jack descriptors */
+	injd = snd_usb_find_csint_desc(alts->extra, alts->extralen,
+				       NULL, USB_MS_MIDI_IN_JACK);
+	outjd = snd_usb_find_csint_desc(alts->extra, alts->extralen,
+					NULL, USB_MS_MIDI_OUT_JACK);
+	if (!injd && !outjd)
+		return -ENODEV;
+	if (injd && (injd->bLength < 5 ||
+		     (injd->bJackType != USB_MS_EMBEDDED &&
+		      injd->bJackType != USB_MS_EXTERNAL)))
+		return -ENODEV;
+	if (outjd && (outjd->bLength < 6 ||
+		      (outjd->bJackType != USB_MS_EMBEDDED &&
+		       outjd->bJackType != USB_MS_EXTERNAL)))
+		return -ENODEV;
+	return create_any_midi_quirk(chip, iface, driver, &yamaha_midi_quirk);
+}
+
+static int create_roland_midi_quirk(struct snd_usb_audio *chip,
+				    struct usb_interface *iface,
+				    struct usb_driver *driver,
+				    struct usb_host_interface *alts)
+{
+	static const struct snd_usb_audio_quirk roland_midi_quirk = {
+		.type = QUIRK_MIDI_ROLAND
+	};
+	u8 *roland_desc = NULL;
+
+	/* might have a vendor-specific descriptor <06 24 F1 02 ...> */
+	for (;;) {
+		roland_desc = snd_usb_find_csint_desc(alts->extra,
+						      alts->extralen,
+						      roland_desc, 0xf1);
+		if (!roland_desc)
+			return -ENODEV;
+		if (roland_desc[0] < 6 || roland_desc[3] != 2)
+			continue;
+		return create_any_midi_quirk(chip, iface, driver,
+					     &roland_midi_quirk);
+	}
+}
+
+static int create_std_midi_quirk(struct snd_usb_audio *chip,
+				 struct usb_interface *iface,
+				 struct usb_driver *driver,
+				 struct usb_host_interface *alts)
+{
+	struct usb_ms_header_descriptor *mshd;
+	struct usb_ms_endpoint_descriptor *msepd;
+
+	/* must have the MIDIStreaming interface header descriptor*/
+	mshd = (struct usb_ms_header_descriptor *)alts->extra;
+	if (alts->extralen < 7 ||
+	    mshd->bLength < 7 ||
+	    mshd->bDescriptorType != USB_DT_CS_INTERFACE ||
+	    mshd->bDescriptorSubtype != USB_MS_HEADER)
+		return -ENODEV;
+	/* must have the MIDIStreaming endpoint descriptor*/
+	msepd = (struct usb_ms_endpoint_descriptor *)alts->endpoint[0].extra;
+	if (alts->endpoint[0].extralen < 4 ||
+	    msepd->bLength < 4 ||
+	    msepd->bDescriptorType != USB_DT_CS_ENDPOINT ||
+	    msepd->bDescriptorSubtype != UAC_MS_GENERAL ||
+	    msepd->bNumEmbMIDIJack < 1 ||
+	    msepd->bNumEmbMIDIJack > 16)
+		return -ENODEV;
+
+	return create_any_midi_quirk(chip, iface, driver, NULL);
+}
+
+static int create_auto_midi_quirk(struct snd_usb_audio *chip,
+				  struct usb_interface *iface,
+				  struct usb_driver *driver)
+{
+	struct usb_host_interface *alts;
+	struct usb_interface_descriptor *altsd;
+	struct usb_endpoint_descriptor *epd;
+	int err;
+
+	alts = &iface->altsetting[0];
+	altsd = get_iface_desc(alts);
+
+	/* must have at least one bulk/interrupt endpoint for streaming */
+	if (altsd->bNumEndpoints < 1)
+		return -ENODEV;
+	epd = get_endpoint(alts, 0);
+	if (!usb_endpoint_xfer_bulk(epd) &&
+	    !usb_endpoint_xfer_int(epd))
+		return -ENODEV;
+
+	switch (USB_ID_VENDOR(chip->usb_id)) {
+	case 0x0499: /* Yamaha */
+		err = create_yamaha_midi_quirk(chip, iface, driver, alts);
+		if (err != -ENODEV)
+			return err;
+		break;
+	case 0x0582: /* Roland */
+		err = create_roland_midi_quirk(chip, iface, driver, alts);
+		if (err != -ENODEV)
+			return err;
+		break;
+	}
+
+	return create_std_midi_quirk(chip, iface, driver, alts);
+}
+
+static int create_autodetect_quirk(struct snd_usb_audio *chip,
+				   struct usb_interface *iface,
+				   struct usb_driver *driver)
+{
+	int err;
+
+	err = create_auto_pcm_quirk(chip, iface, driver);
+	if (err == -ENODEV)
+		err = create_auto_midi_quirk(chip, iface, driver);
+	return err;
+}
+
+static int create_autodetect_quirks(struct snd_usb_audio *chip,
+				    struct usb_interface *iface,
+				    struct usb_driver *driver,
+				    const struct snd_usb_audio_quirk *quirk)
+{
+	int probed_ifnum = get_iface_desc(iface->altsetting)->bInterfaceNumber;
+	int ifcount, ifnum, err;
+
+	err = create_autodetect_quirk(chip, iface, driver);
+	if (err < 0)
+		return err;
+
+	/*
+	 * ALSA PCM playback/capture devices cannot be registered in two steps,
+	 * so we have to claim the other corresponding interface here.
+	 */
+	ifcount = chip->dev->actconfig->desc.bNumInterfaces;
+	for (ifnum = 0; ifnum < ifcount; ifnum++) {
+		if (ifnum == probed_ifnum || quirk->ifnum >= 0)
+			continue;
+		iface = usb_ifnum_to_if(chip->dev, ifnum);
+		if (!iface ||
+		    usb_interface_claimed(iface) ||
+		    get_iface_desc(iface->altsetting)->bInterfaceClass !=
+							USB_CLASS_VENDOR_SPEC)
+			continue;
+
+		err = create_autodetect_quirk(chip, iface, driver);
+		if (err >= 0)
+			usb_driver_claim_interface(driver, iface, (void *)-1L);
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Create a stream for an Edirol UA-700/UA-25/UA-4FX interface.  
  * The only way to detect the sample rate is by looking at wMaxPacketSize.
@@ -248,6 +495,7 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
 		return -ENXIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fp = kmalloc(sizeof(*fp), GFP_KERNEL);
 	if (!fp)
 		return -ENOMEM;
@@ -257,6 +505,11 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
 	if (!fp)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fp = kmemdup(&ua_format, sizeof(*fp), GFP_KERNEL);
+	if (!fp)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	fp->iface = altsd->bInterfaceNumber;
 	fp->endpoint = get_endpoint(alts, 0)->bEndpointAddress;
@@ -285,10 +538,14 @@ static int create_uaxx_quirk(struct snd_usb_audio *chip,
 	stream = (fp->endpoint & USB_DIR_IN)
 		? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_usb_add_audio_endpoint(chip, stream, fp);
 =======
 	err = snd_usb_add_audio_stream(chip, stream, fp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = snd_usb_add_audio_stream(chip, stream, fp);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		kfree(fp);
 		return err;
@@ -331,9 +588,17 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
 	static const quirk_func_t quirk_funcs[] = {
 		[QUIRK_IGNORE_INTERFACE] = ignore_interface_quirk,
 		[QUIRK_COMPOSITE] = create_composite_quirk,
+<<<<<<< HEAD
 		[QUIRK_MIDI_STANDARD_INTERFACE] = create_any_midi_quirk,
 		[QUIRK_MIDI_FIXED_ENDPOINT] = create_any_midi_quirk,
 		[QUIRK_MIDI_YAMAHA] = create_any_midi_quirk,
+=======
+		[QUIRK_AUTODETECT] = create_autodetect_quirks,
+		[QUIRK_MIDI_STANDARD_INTERFACE] = create_any_midi_quirk,
+		[QUIRK_MIDI_FIXED_ENDPOINT] = create_any_midi_quirk,
+		[QUIRK_MIDI_YAMAHA] = create_any_midi_quirk,
+		[QUIRK_MIDI_ROLAND] = create_any_midi_quirk,
+>>>>>>> refs/remotes/origin/master
 		[QUIRK_MIDI_MIDIMAN] = create_any_midi_quirk,
 		[QUIRK_MIDI_NOVATION] = create_any_midi_quirk,
 		[QUIRK_MIDI_RAW_BYTES] = create_any_midi_quirk,
@@ -341,9 +606,13 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
 		[QUIRK_MIDI_CME] = create_any_midi_quirk,
 		[QUIRK_MIDI_AKAI] = create_any_midi_quirk,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		[QUIRK_MIDI_FTDI] = create_any_midi_quirk,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		[QUIRK_MIDI_FTDI] = create_any_midi_quirk,
+>>>>>>> refs/remotes/origin/master
 		[QUIRK_AUDIO_STANDARD_INTERFACE] = create_standard_audio_quirk,
 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
 		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk,
@@ -377,10 +646,14 @@ static int snd_usb_extigy_boot_quirk(struct usb_device *dev, struct usb_interfac
 		/* Send message to force it to reconnect with full interface. */
 		err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev,0),
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      0x10, 0x43, 0x0001, 0x000a, NULL, 0, 1000);
 =======
 				      0x10, 0x43, 0x0001, 0x000a, NULL, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      0x10, 0x43, 0x0001, 0x000a, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0) snd_printdd("error sending boot message: %d\n", err);
 		err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
 				&dev->descriptor, sizeof(dev->descriptor));
@@ -402,25 +675,34 @@ static int snd_usb_audigy2nx_boot_quirk(struct usb_device *dev)
 	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), 0x2a,
 			USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			0, 0, &buf, 1, 1000);
 	if (buf == 0) {
 		snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0x29,
 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
 				1, 2000, NULL, 0, 1000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			0, 0, &buf, 1);
 	if (buf == 0) {
 		snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 0x29,
 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
 				1, 2000, NULL, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
 {
 	int err;
@@ -447,7 +729,10 @@ static int snd_usb_fasttrackpro_boot_quirk(struct usb_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * C-Media CM106/CM106+ have four 16-bit internal registers that are nicely
  * documented in the device's data sheet.
@@ -462,10 +747,14 @@ static int snd_usb_cm106_write_int_reg(struct usb_device *dev, int reg, u16 valu
 	return snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), USB_REQ_SET_CONFIGURATION,
 			       USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_ENDPOINT,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       0, 0, &buf, 4, 1000);
 =======
 			       0, 0, &buf, 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       0, 0, &buf, 4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int snd_usb_cm106_boot_quirk(struct usb_device *dev)
@@ -486,10 +775,14 @@ static int snd_usb_cm106_boot_quirk(struct usb_device *dev)
 static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err, reg;
 =======
 	int err  = 0, reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err  = 0, reg;
+>>>>>>> refs/remotes/origin/master
 	int val[] = {0x2004, 0x3000, 0xf800, 0x143f, 0x0000, 0x3000};
 
 	for (reg = 0; reg < ARRAY_SIZE(val); reg++) {
@@ -501,6 +794,33 @@ static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+/* quirk for Plantronics GameCom 780 with CM6302 chip */
+static int snd_usb_gamecon780_boot_quirk(struct usb_device *dev)
+{
+	/* set the initial volume and don't change; other values are either
+	 * too loud or silent due to firmware bug (bko#65251)
+	 */
+	u8 buf[2] = { 0x74, 0xdc };
+	return snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC_SET_CUR,
+			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
+			UAC_FU_VOLUME << 8, 9 << 8, buf, 2);
+}
+
+/*
+ * Novation Twitch DJ controller
+ * Focusrite Novation Saffire 6 USB audio card
+ */
+static int snd_usb_novation_boot_quirk(struct usb_device *dev)
+{
+	/* preemptively set up the device because otherwise the
+	 * raw MIDI endpoints are not active */
+	usb_set_interface(dev, 0, 1);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This call will put the synth in "USB send" mode, i.e it will send MIDI
  * messages through USB (this is disabled at startup). The synth will
@@ -555,6 +875,7 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
 	return -EAGAIN;
 }
 
+<<<<<<< HEAD
 /*
  * Setup quirks
  */
@@ -570,6 +891,97 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
 #define AUDIOPHILE_SET_16B_48K_DI	0x11 /* value for 16bits+48KHz+Digital Input */
 #define AUDIOPHILE_SET_16B_48K_NOTDI	0x01 /* value for 16bits+48KHz+No Digital Input */
 =======
+=======
+static void mbox2_setup_48_24_magic(struct usb_device *dev)
+{
+	u8 srate[3];
+	u8 temp[12];
+
+	/* Choose 48000Hz permanently */
+	srate[0] = 0x80;
+	srate[1] = 0xbb;
+	srate[2] = 0x00;
+
+	/* Send the magic! */
+	snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
+		0x01, 0x22, 0x0100, 0x0085, &temp, 0x0003);
+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
+		0x81, 0xa2, 0x0100, 0x0085, &srate, 0x0003);
+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
+		0x81, 0xa2, 0x0100, 0x0086, &srate, 0x0003);
+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
+		0x81, 0xa2, 0x0100, 0x0003, &srate, 0x0003);
+	return;
+}
+
+/* Digidesign Mbox 2 needs to load firmware onboard
+ * and driver must wait a few seconds for initialisation.
+ */
+
+#define MBOX2_FIRMWARE_SIZE    646
+#define MBOX2_BOOT_LOADING     0x01 /* Hard coded into the device */
+#define MBOX2_BOOT_READY       0x02 /* Hard coded into the device */
+
+static int snd_usb_mbox2_boot_quirk(struct usb_device *dev)
+{
+	struct usb_host_config *config = dev->actconfig;
+	int err;
+	u8 bootresponse[0x12];
+	int fwsize;
+	int count;
+
+	fwsize = le16_to_cpu(get_cfg_desc(config)->wTotalLength);
+
+	if (fwsize != MBOX2_FIRMWARE_SIZE) {
+		snd_printk(KERN_ERR "usb-audio: Invalid firmware size=%d.\n", fwsize);
+		return -ENODEV;
+	}
+
+	snd_printd("usb-audio: Sending Digidesign Mbox 2 boot sequence...\n");
+
+	count = 0;
+	bootresponse[0] = MBOX2_BOOT_LOADING;
+	while ((bootresponse[0] == MBOX2_BOOT_LOADING) && (count < 10)) {
+		msleep(500); /* 0.5 second delay */
+		snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
+			/* Control magic - load onboard firmware */
+			0x85, 0xc0, 0x0001, 0x0000, &bootresponse, 0x0012);
+		if (bootresponse[0] == MBOX2_BOOT_READY)
+			break;
+		snd_printd("usb-audio: device not ready, resending boot sequence...\n");
+		count++;
+	}
+
+	if (bootresponse[0] != MBOX2_BOOT_READY) {
+		snd_printk(KERN_ERR "usb-audio: Unknown bootresponse=%d, or timed out, ignoring device.\n", bootresponse[0]);
+		return -ENODEV;
+	}
+
+	snd_printdd("usb-audio: device initialised!\n");
+
+	err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
+		&dev->descriptor, sizeof(dev->descriptor));
+	config = dev->actconfig;
+	if (err < 0)
+		snd_printd("error usb_get_descriptor: %d\n", err);
+
+	err = usb_reset_configuration(dev);
+	if (err < 0)
+		snd_printd("error usb_reset_configuration: %d\n", err);
+	snd_printdd("mbox2_boot: new boot length = %d\n",
+		le16_to_cpu(get_cfg_desc(config)->wTotalLength));
+
+	mbox2_setup_48_24_magic(dev);
+
+	snd_printk(KERN_INFO "usb-audio: Digidesign Mbox 2: 24bit 48kHz");
+
+	return 0; /* Successful boot */
+}
+
+/*
+ * Setup quirks
+ */
+>>>>>>> refs/remotes/origin/master
 #define MAUDIO_SET		0x01 /* parse device_setup */
 #define MAUDIO_SET_COMPATIBLE	0x80 /* use only "win-compatible" interfaces */
 #define MAUDIO_SET_DTS		0x02 /* enable DTS Digital Output */
@@ -613,7 +1025,10 @@ static int quattro_skip_setting_quirk(struct snd_usb_audio *chip,
 		    altno, iface, chip->setup);
 	return 0; /* keep this altsetting */
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
 					 int iface,
@@ -624,6 +1039,7 @@ static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
 	 */
 	usb_set_interface(chip->dev, iface, 0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (chip->setup & AUDIOPHILE_SET) {
 		if ((chip->setup & AUDIOPHILE_SET_DTS)
@@ -644,6 +1060,8 @@ static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
 		if ((chip->setup & AUDIOPHILE_SET_MASK) ==
 		    AUDIOPHILE_SET_16B_48K_NOTDI && altno != 5)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (chip->setup & MAUDIO_SET) {
 		unsigned int mask;
 		if ((chip->setup & MAUDIO_SET_DTS) && altno != 6)
@@ -658,7 +1076,10 @@ static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
 		if (mask == MAUDIO_SET_16B_48K_DI && altno != 4)
 			return 1; /* skip this altsetting */
 		if (mask == MAUDIO_SET_16B_48K_NOTDI && altno != 5)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 1; /* skip this altsetting */
 	}
 
@@ -666,8 +1087,11 @@ static int audiophile_skip_setting_quirk(struct snd_usb_audio *chip,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
 					   int iface, int altno)
 {
@@ -706,7 +1130,10 @@ static int fasttrackpro_skip_setting_quirk(struct snd_usb_audio *chip,
 	return 0; /* keep this altsetting */
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int snd_usb_apply_interface_quirk(struct snd_usb_audio *chip,
 				  int iface,
 				  int altno)
@@ -715,14 +1142,20 @@ int snd_usb_apply_interface_quirk(struct snd_usb_audio *chip,
 	if (chip->usb_id == USB_ID(0x0763, 0x2003))
 		return audiophile_skip_setting_quirk(chip, iface, altno);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* quattro usb: skip altsets incompatible with device_setup */
 	if (chip->usb_id == USB_ID(0x0763, 0x2001))
 		return quattro_skip_setting_quirk(chip, iface, altno);
 	/* fasttrackpro usb: skip altsets incompatible with device_setup */
 	if (chip->usb_id == USB_ID(0x0763, 0x2012))
 		return fasttrackpro_skip_setting_quirk(chip, iface, altno);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -753,6 +1186,17 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
 	case USB_ID(0x0ccd, 0x00b1): /* Terratec Aureon 7.1 USB */
 		return snd_usb_cm6206_boot_quirk(dev);
 
+<<<<<<< HEAD
+=======
+	case USB_ID(0x0dba, 0x3000):
+		/* Digidesign Mbox 2 */
+		return snd_usb_mbox2_boot_quirk(dev);
+
+	case USB_ID(0x1235, 0x0010): /* Focusrite Novation Saffire 6 USB */
+	case USB_ID(0x1235, 0x0018): /* Focusrite Novation Twitch */
+		return snd_usb_novation_boot_quirk(dev);
+
+>>>>>>> refs/remotes/origin/master
 	case USB_ID(0x133e, 0x0815):
 		/* Access Music VirusTI Desktop */
 		return snd_usb_accessmusic_boot_quirk(dev);
@@ -762,10 +1206,17 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
 	case USB_ID(0x17cc, 0x1020): /* Traktor Audio 10 */
 		return snd_usb_nativeinstruments_boot_quirk(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case USB_ID(0x0763, 0x2012):  /* M-Audio Fast Track Pro USB */
 		return snd_usb_fasttrackpro_boot_quirk(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case USB_ID(0x0763, 0x2012):  /* M-Audio Fast Track Pro USB */
+		return snd_usb_fasttrackpro_boot_quirk(dev);
+	case USB_ID(0x047f, 0xc010): /* Plantronics Gamecom 780 */
+		return snd_usb_gamecon780_boot_quirk(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -777,24 +1228,34 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
 int snd_usb_is_big_endian_format(struct snd_usb_audio *chip, struct audioformat *fp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (chip->usb_id) {
 	case USB_ID(0x0763, 0x2001): /* M-Audio Quattro: captured data only */
 		if (fp->endpoint & USB_DIR_IN)
 =======
 	/* it depends on altsetting wether the device is big-endian or not */
+=======
+	/* it depends on altsetting whether the device is big-endian or not */
+>>>>>>> refs/remotes/origin/master
 	switch (chip->usb_id) {
 	case USB_ID(0x0763, 0x2001): /* M-Audio Quattro: captured data only */
 		if (fp->altsetting == 2 || fp->altsetting == 3 ||
 			fp->altsetting == 5 || fp->altsetting == 6)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		break;
 	case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
 		if (chip->setup == 0x00 ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    fp->altsetting==1 || fp->altsetting==2 || fp->altsetting==3)
 			return 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			fp->altsetting == 1 || fp->altsetting == 2 ||
 			fp->altsetting == 3)
 			return 1;
@@ -804,7 +1265,10 @@ int snd_usb_is_big_endian_format(struct snd_usb_audio *chip, struct audioformat 
 			fp->altsetting == 5 || fp->altsetting == 6)
 			return 1;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -858,6 +1322,10 @@ static void set_format_emu_quirk(struct snd_usb_substream *subs,
 		break;
 	}
 	snd_emuusb_set_samplerate(subs->stream->chip, emu_samplerate_id);
+<<<<<<< HEAD
+=======
+	subs->pkt_offset_adj = (emu_samplerate_id >= EMU_QUIRK_SR_176400HZ) ? 4 : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
@@ -873,3 +1341,80 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
 	}
 }
 
+<<<<<<< HEAD
+=======
+void snd_usb_endpoint_start_quirk(struct snd_usb_endpoint *ep)
+{
+	/*
+	 * "Playback Design" products send bogus feedback data at the start
+	 * of the stream. Ignore them.
+	 */
+	if ((le16_to_cpu(ep->chip->dev->descriptor.idVendor) == 0x23ba) &&
+	    ep->type == SND_USB_ENDPOINT_TYPE_SYNC)
+		ep->skip_packets = 4;
+
+	/*
+	 * M-Audio Fast Track C400/C600 - when packets are not skipped, real
+	 * world latency varies by approx. +/- 50 frames (at 96KHz) each time
+	 * the stream is (re)started. When skipping packets 16 at endpoint
+	 * start up, the real world latency is stable within +/- 1 frame (also
+	 * across power cycles).
+	 */
+	if ((ep->chip->usb_id == USB_ID(0x0763, 0x2030) ||
+	     ep->chip->usb_id == USB_ID(0x0763, 0x2031)) &&
+	    ep->type == SND_USB_ENDPOINT_TYPE_DATA)
+		ep->skip_packets = 16;
+}
+
+void snd_usb_set_interface_quirk(struct usb_device *dev)
+{
+	/*
+	 * "Playback Design" products need a 50ms delay after setting the
+	 * USB interface.
+	 */
+	if (le16_to_cpu(dev->descriptor.idVendor) == 0x23ba)
+		mdelay(50);
+}
+
+void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
+			   __u8 request, __u8 requesttype, __u16 value,
+			   __u16 index, void *data, __u16 size)
+{
+	/*
+	 * "Playback Design" products need a 20ms delay after each
+	 * class compliant request
+	 */
+	if ((le16_to_cpu(dev->descriptor.idVendor) == 0x23ba) &&
+	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
+		mdelay(20);
+}
+
+/*
+ * snd_usb_interface_dsd_format_quirks() is called from format.c to
+ * augment the PCM format bit-field for DSD types. The UAC standards
+ * don't have a designated bit field to denote DSD-capable interfaces,
+ * hence all hardware that is known to support this format has to be
+ * listed here.
+ */
+u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+					struct audioformat *fp,
+					unsigned int sample_bytes)
+{
+	/* Playback Designs */
+	if (le16_to_cpu(chip->dev->descriptor.idVendor) == 0x23ba) {
+		switch (fp->altsetting) {
+		case 1:
+			fp->dsd_dop = true;
+			return SNDRV_PCM_FMTBIT_DSD_U16_LE;
+		case 2:
+			fp->dsd_bitrev = true;
+			return SNDRV_PCM_FMTBIT_DSD_U8;
+		case 3:
+			fp->dsd_bitrev = true;
+			return SNDRV_PCM_FMTBIT_DSD_U16_LE;
+		}
+	}
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master

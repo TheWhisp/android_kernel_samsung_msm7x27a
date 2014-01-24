@@ -16,7 +16,11 @@
  * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+<<<<<<< HEAD
 #include <plat/dsp.h>
+=======
+#include <linux/platform_data/dsp-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/types.h>
 /*  ----------------------------------- Host OS */
@@ -28,11 +32,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/drv.h>
 #include <dspbridge/sync.h>
@@ -76,6 +83,7 @@
 #define PAGES_II_LVL_TABLE   512
 #define PHYS_TO_PAGE(phys)      pfn_to_page((phys) >> PAGE_SHIFT)
 
+<<<<<<< HEAD
 /*
  * This is a totally ugly layer violation, but needed until
  * omap_ctrl_set_dsp_boot*() are provided.
@@ -92,6 +100,12 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* IVA Boot modes */
+#define DIRECT		0
+#define IDLE		1
+
+>>>>>>> refs/remotes/origin/master
 /* Forward Declarations: */
 static int bridge_brd_monitor(struct bridge_dev_context *dev_ctxt);
 static int bridge_brd_read(struct bridge_dev_context *dev_ctxt,
@@ -139,7 +153,12 @@ static int mem_map_vmalloc(struct bridge_dev_context *dev_context,
 				  u32 ul_num_bytes,
 				  struct hw_mmu_map_attrs_t *hw_attrs);
 
+<<<<<<< HEAD
 bool wait_for_start(struct bridge_dev_context *dev_context, u32 dw_sync_addr);
+=======
+bool wait_for_start(struct bridge_dev_context *dev_context,
+			void __iomem *sync_addr);
+>>>>>>> refs/remotes/origin/master
 
 /*  ----------------------------------- Globals */
 
@@ -263,11 +282,14 @@ void bridge_drv_entry(struct bridge_drv_interface **drv_intf,
 		   const char *driver_file_name)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	DBC_REQUIRE(driver_file_name != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (strcmp(driver_file_name, "UMA") == 0)
 		*drv_intf = &drv_interface_fxns;
 	else
@@ -347,7 +369,11 @@ static int bridge_brd_read(struct bridge_dev_context *dev_ctxt,
 					   ul_num_bytes, mem_type);
 		return status;
 	}
+<<<<<<< HEAD
 	/* copy the data from  DSP memory, */
+=======
+	/* copy the data from DSP memory */
+>>>>>>> refs/remotes/origin/master
 	memcpy(host_buff, (void *)(dsp_base_addr + offset), ul_num_bytes);
 	return status;
 }
@@ -382,10 +408,18 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 {
 	int status = 0;
 	struct bridge_dev_context *dev_context = dev_ctxt;
+<<<<<<< HEAD
 	u32 dw_sync_addr = 0;
 	u32 ul_shm_base;	/* Gpp Phys SM base addr(byte) */
 	u32 ul_shm_base_virt;	/* Dsp Virt SM base addr */
 	u32 ul_tlb_base_virt;	/* Base of MMU TLB entry */
+=======
+	void __iomem *sync_addr;
+	u32 ul_shm_base;	/* Gpp Phys SM base addr(byte) */
+	u32 ul_shm_base_virt;	/* Dsp Virt SM base addr */
+	u32 ul_tlb_base_virt;	/* Base of MMU TLB entry */
+	u32 shm_sync_pa;
+>>>>>>> refs/remotes/origin/master
 	/* Offset of shm_base_virt from tlb_base_virt */
 	u32 ul_shm_offset_virt;
 	s32 entry_ndx;
@@ -399,9 +433,13 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 	struct io_mgr *hio_mgr;
 	u32 ul_load_monitor_timer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 wdt_en = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 wdt_en = 0;
+>>>>>>> refs/remotes/origin/master
 	struct omap_dsp_platform_data *pdata =
 		omap_dspbridge_dev->dev.platform_data;
 
@@ -413,6 +451,7 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 			     &ul_shm_base_virt);
 	ul_shm_base_virt *= DSPWORDSIZE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(ul_shm_base_virt != 0);
 	/* DSP Virtual address */
 	ul_tlb_base_virt = dev_context->atlb_entry[0].dsp_va;
@@ -421,24 +460,44 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 	/* DSP Virtual address */
 	ul_tlb_base_virt = dev_context->atlb_entry[0].dsp_va;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* DSP Virtual address */
+	ul_tlb_base_virt = dev_context->atlb_entry[0].dsp_va;
+>>>>>>> refs/remotes/origin/master
 	ul_shm_offset_virt =
 	    ul_shm_base_virt - (ul_tlb_base_virt * DSPWORDSIZE);
 	/* Kernel logical address */
 	ul_shm_base = dev_context->atlb_entry[0].gpp_va + ul_shm_offset_virt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(ul_shm_base != 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* 2nd wd is used as sync field */
 	dw_sync_addr = ul_shm_base + SHMSYNCOFFSET;
+=======
+	/* SHM physical sync address */
+	shm_sync_pa = dev_context->atlb_entry[0].gpp_pa + ul_shm_offset_virt +
+			SHMSYNCOFFSET;
+
+	/* 2nd wd is used as sync field */
+	sync_addr = ioremap(shm_sync_pa, SZ_32);
+	if (!sync_addr)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	/* Write a signature into the shm base + offset; this will
 	 * get cleared when the DSP program starts. */
 	if ((ul_shm_base_virt == 0) || (ul_shm_base == 0)) {
 		pr_err("%s: Illegal SM base\n", __func__);
 		status = -EPERM;
 	} else
+<<<<<<< HEAD
 		__raw_writel(0xffffffff, dw_sync_addr);
+=======
+		__raw_writel(0xffffffff, sync_addr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!status) {
 		resources = dev_context->resources;
@@ -447,6 +506,7 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 
 		/* Assert RST1 i.e only the RST only for DSP megacell */
 		if (!status) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 			/*
@@ -481,6 +541,16 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 
 			iounmap(ctrl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(*pdata->dsp_prm_rmw_bits)(OMAP3430_RST1_IVA2_MASK,
+					OMAP3430_RST1_IVA2_MASK, OMAP3430_IVA2_MOD,
+					OMAP2_RM_RSTCTRL);
+
+			/* Mask address with 1K for compatibility */
+			pdata->set_bootaddr(dsp_addr &
+						OMAP3_IVA2_BOOTADDR_MASK);
+			pdata->set_bootmode(dsp_debug ? IDLE : DIRECT);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (!status) {
@@ -634,14 +704,22 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 		(*pdata->dsp_prm_rmw_bits)(OMAP3430_RST1_IVA2_MASK, 0,
 					OMAP3430_IVA2_MOD, OMAP2_RM_RSTCTRL);
 
+<<<<<<< HEAD
 		dev_dbg(bridge, "Waiting for Sync @ 0x%x\n", dw_sync_addr);
 		dev_dbg(bridge, "DSP c_int00 Address =  0x%x\n", dsp_addr);
 		if (dsp_debug)
 			while (__raw_readw(dw_sync_addr))
+=======
+		dev_dbg(bridge, "Waiting for Sync @ 0x%x\n", *(u32 *)sync_addr);
+		dev_dbg(bridge, "DSP c_int00 Address =  0x%x\n", dsp_addr);
+		if (dsp_debug)
+			while (__raw_readw(sync_addr))
+>>>>>>> refs/remotes/origin/master
 				;
 
 		/* Wait for DSP to clear word in shared memory */
 		/* Read the Location */
+<<<<<<< HEAD
 		if (!wait_for_start(dev_context, dw_sync_addr))
 			status = -ETIMEDOUT;
 
@@ -650,13 +728,21 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 		dsp_wdt_sm_set((void *)ul_shm_base);
 		dsp_wdt_enable(true);
 =======
+=======
+		if (!wait_for_start(dev_context, sync_addr))
+			status = -ETIMEDOUT;
+
+>>>>>>> refs/remotes/origin/master
 		dev_get_symbol(dev_context->dev_obj, "_WDT_enable", &wdt_en);
 		if (wdt_en) {
 			/* Start wdt */
 			dsp_wdt_sm_set((void *)ul_shm_base);
 			dsp_wdt_enable(true);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		status = dev_get_io_mgr(dev_context->dev_obj, &hio_mgr);
 		if (hio_mgr) {
@@ -664,7 +750,11 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 			/* Write the synchronization bit to indicate the
 			 * completion of OPP table update to DSP
 			 */
+<<<<<<< HEAD
 			__raw_writel(0XCAFECAFE, dw_sync_addr);
+=======
+			__raw_writel(0XCAFECAFE, sync_addr);
+>>>>>>> refs/remotes/origin/master
 
 			/* update board state */
 			dev_context->brd_state = BRD_RUNNING;
@@ -673,6 +763,12 @@ static int bridge_brd_start(struct bridge_dev_context *dev_ctxt,
 			dev_context->brd_state = BRD_UNKNOWN;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	iounmap(sync_addr);
+
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -1098,10 +1194,13 @@ static int bridge_dev_destroy(struct bridge_dev_context *dev_ctxt)
 	/* Free the driver's device context: */
 	kfree(drv_datap->base_img);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(drv_datap);
 	dev_set_drvdata(bridge, NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree((void *)dev_ctxt);
 	return status;
 }
@@ -1604,10 +1703,15 @@ EXIT_LOOP:
 static u32 user_va2_pa(struct mm_struct *mm, u32 address)
 {
 	pgd_t *pgd;
+<<<<<<< HEAD
+=======
+	pud_t *pud;
+>>>>>>> refs/remotes/origin/master
 	pmd_t *pmd;
 	pte_t *ptep, pte;
 
 	pgd = pgd_offset(mm, address);
+<<<<<<< HEAD
 	if (!(pgd_none(*pgd) || pgd_bad(*pgd))) {
 		pmd = pmd_offset(pgd, address);
 		if (!(pmd_none(*pmd) || pmd_bad(*pmd))) {
@@ -1618,6 +1722,24 @@ static u32 user_va2_pa(struct mm_struct *mm, u32 address)
 					return pte & PAGE_MASK;
 			}
 		}
+=======
+	if (pgd_none(*pgd) || pgd_bad(*pgd))
+		return 0;
+
+	pud = pud_offset(pgd, address);
+	if (pud_none(*pud) || pud_bad(*pud))
+		return 0;
+
+	pmd = pmd_offset(pud, address);
+	if (pmd_none(*pmd) || pmd_bad(*pmd))
+		return 0;
+
+	ptep = pte_offset_map(pmd, address);
+	if (ptep) {
+		pte = *ptep;
+		if (pte_present(pte))
+			return pte & PAGE_MASK;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -1795,7 +1917,11 @@ static int mem_map_vmalloc(struct bridge_dev_context *dev_context,
 	pa_next = page_to_phys(page[0]);
 	while (!status && (i < num_pages)) {
 		/*
+<<<<<<< HEAD
 		 * Reuse pa_next from the previous iteraion to avoid
+=======
+		 * Reuse pa_next from the previous iteration to avoid
+>>>>>>> refs/remotes/origin/master
 		 * an extra va2pa call
 		 */
 		pa_curr = pa_next;
@@ -1846,12 +1972,21 @@ static int mem_map_vmalloc(struct bridge_dev_context *dev_context,
  *  ======== wait_for_start ========
  *      Wait for the singal from DSP that it has started, or time out.
  */
+<<<<<<< HEAD
 bool wait_for_start(struct bridge_dev_context *dev_context, u32 dw_sync_addr)
+=======
+bool wait_for_start(struct bridge_dev_context *dev_context,
+			void __iomem *sync_addr)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 timeout = TIHELEN_ACKTIMEOUT;
 
 	/*  Wait for response from board */
+<<<<<<< HEAD
 	while (__raw_readw(dw_sync_addr) && --timeout)
+=======
+	while (__raw_readw(sync_addr) && --timeout)
+>>>>>>> refs/remotes/origin/master
 		udelay(10);
 
 	/*  If timed out: return false */

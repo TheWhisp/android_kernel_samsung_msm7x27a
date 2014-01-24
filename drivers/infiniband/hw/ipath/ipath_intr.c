@@ -209,8 +209,12 @@ void ipath_format_hwerrors(u64 hwerrs,
 {
 	int i;
 	const int glen =
+<<<<<<< HEAD
 	    sizeof(ipath_generic_hwerror_msgs) /
 	    sizeof(ipath_generic_hwerror_msgs[0]);
+=======
+	    ARRAY_SIZE(ipath_generic_hwerror_msgs);
+>>>>>>> refs/remotes/origin/master
 
 	for (i=0; i<glen; i++) {
 		if (hwerrs & ipath_generic_hwerror_msgs[i].mask) {

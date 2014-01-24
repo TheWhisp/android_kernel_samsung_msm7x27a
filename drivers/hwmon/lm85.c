@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     lm85.c - Part of lm_sensors, Linux kernel modules for hardware
              monitoring
     Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl>
@@ -25,6 +26,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * lm85.c - Part of lm_sensors, Linux kernel modules for hardware
  *	    monitoring
  * Copyright (c) 1998, 1999  Frodo Looijaard <frodol@dds.nl>
@@ -49,7 +52,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/init.h>
@@ -73,6 +79,7 @@ enum chips {
 
 /* The LM85 registers */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	LM85_REG_IN(nr)			(0x20 + (nr))
 #define	LM85_REG_IN_MIN(nr)		(0x44 + (nr) * 2)
@@ -157,6 +164,8 @@ enum chips {
    variants. Note that you should be a bit careful with which arguments
    these macros are called: arguments may be evaluated more than once.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LM85_REG_IN(nr)			(0x20 + (nr))
 #define LM85_REG_IN_MIN(nr)		(0x44 + (nr) * 2)
 #define LM85_REG_IN_MAX(nr)		(0x45 + (nr) * 2)
@@ -240,7 +249,10 @@ enum chips {
  * Conversions. Rounding and limit checking is only done on the TO_REG
  * variants. Note that you should be a bit careful with which arguments
  * these macros are called: arguments may be evaluated more than once.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* IN are scaled according to built-in resistors */
@@ -251,7 +263,11 @@ static const int lm85_scaling[] = {  /* .001 Volts */
 #define SCALE(val, from, to)	(((val) * (to) + ((from) / 2)) / (from))
 
 #define INS_TO_REG(n, val)	\
+<<<<<<< HEAD
 		SENSORS_LIMIT(SCALE(val, lm85_scaling[n], 192), 0, 255)
+=======
+		clamp_val(SCALE(val, lm85_scaling[n], 192), 0, 255)
+>>>>>>> refs/remotes/origin/master
 
 #define INSEXT_FROM_REG(n, val, ext)	\
 		SCALE(((val) << 4) + (ext), 192 << 4, lm85_scaling[n])
@@ -263,18 +279,27 @@ static inline u16 FAN_TO_REG(unsigned long val)
 {
 	if (!val)
 		return 0xffff;
+<<<<<<< HEAD
 	return SENSORS_LIMIT(5400000 / val, 1, 0xfffe);
+=======
+	return clamp_val(5400000 / val, 1, 0xfffe);
+>>>>>>> refs/remotes/origin/master
 }
 #define FAN_FROM_REG(val)	((val) == 0 ? -1 : (val) == 0xffff ? 0 : \
 				 5400000 / (val))
 
 /* Temperature is reported in .001 degC increments */
 #define TEMP_TO_REG(val)	\
+<<<<<<< HEAD
 		SENSORS_LIMIT(SCALE(val, 1000, 1), -127, 127)
+=======
+		clamp_val(SCALE(val, 1000, 1), -127, 127)
+>>>>>>> refs/remotes/origin/master
 #define TEMPEXT_FROM_REG(val, ext)	\
 		SCALE(((val) << 4) + (ext), 16, 1000)
 #define TEMP_FROM_REG(val)	((val) * 1000)
 
+<<<<<<< HEAD
 #define PWM_TO_REG(val)			SENSORS_LIMIT(val, 0, 255)
 #define PWM_FROM_REG(val)		(val)
 
@@ -285,6 +310,14 @@ static inline u16 FAN_TO_REG(unsigned long val)
 /*
  * ZONEs have the following parameters:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PWM_TO_REG(val)			clamp_val(val, 0, 255)
+#define PWM_FROM_REG(val)		(val)
+
+
+/*
+ * ZONEs have the following parameters:
+>>>>>>> refs/remotes/origin/master
  *    Limit (low) temp,           1. degC
  *    Hysteresis (below limit),   1. degC (0-15)
  *    Range of speed control,     .1 degC (2-80)
@@ -347,11 +380,16 @@ static int FREQ_FROM_REG(const int *map, u8 reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Since we can't use strings, I'm abusing these numbers
 =======
 /*
  * Since we can't use strings, I'm abusing these numbers
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Since we can't use strings, I'm abusing these numbers
+>>>>>>> refs/remotes/origin/master
  *   to stand in for the following meanings:
  *      1 -- PWM responds to Zone 1
  *      2 -- PWM responds to Zone 2
@@ -378,6 +416,7 @@ static int ZONE_TO_REG(int zone)
 	return i << 5;
 }
 
+<<<<<<< HEAD
 #define HYST_TO_REG(val)	SENSORS_LIMIT(((val) + 500) / 1000, 0, 15)
 #define HYST_FROM_REG(val)	((val) * 1000)
 
@@ -387,6 +426,13 @@ static int ZONE_TO_REG(int zone)
 /*
  * Chip sampling rates
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HYST_TO_REG(val)	clamp_val(((val) + 500) / 1000, 0, 15)
+#define HYST_FROM_REG(val)	((val) * 1000)
+
+/*
+ * Chip sampling rates
+>>>>>>> refs/remotes/origin/master
  *
  * Some sensors are not updated more frequently than once per second
  *    so it doesn't make sense to read them more often than that.
@@ -403,11 +449,16 @@ static int ZONE_TO_REG(int zone)
 #define LM85_CONFIG_INTERVAL  (1 * 60 * HZ)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* LM85 can automatically adjust fan speeds based on temperature
 =======
 /*
  * LM85 can automatically adjust fan speeds based on temperature
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * LM85 can automatically adjust fan speeds based on temperature
+>>>>>>> refs/remotes/origin/master
  * This structure encapsulates an entire Zone config.  There are
  * three zones (one for each temperature input) on the lm85
  */
@@ -417,11 +468,16 @@ struct lm85_zone {
 	u8 range;	/* Temp range, encoded */
 	s8 critical;	/* "All fans ON" temp limit */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 max_desired; /* Actual "max" temperature specified.  Preserved
 =======
 	u8 max_desired; /*
 			 * Actual "max" temperature specified.  Preserved
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 max_desired; /*
+			 * Actual "max" temperature specified.  Preserved
+>>>>>>> refs/remotes/origin/master
 			 * to prevent "drift" as other autofan control
 			 * values change.
 			 */
@@ -434,14 +490,20 @@ struct lm85_autofan {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* For each registered chip, we need to keep some data in memory.
    The structure is dynamically allocated. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * For each registered chip, we need to keep some data in memory.
  * The structure is dynamically allocated.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct lm85_data {
 	struct device *hwmon_dev;
 	const int *freq_map;
@@ -537,15 +599,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[nr] = FAN_TO_REG(val);
@@ -598,8 +666,11 @@ static ssize_t store_vrm_reg(struct device *dev, struct device_attribute *attr,
 {
 	struct lm85_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->vrm = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -608,7 +679,10 @@ static ssize_t store_vrm_reg(struct device *dev, struct device_attribute *attr,
 		return err;
 
 	data->vrm = val;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -666,15 +740,21 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->pwm[nr] = PWM_TO_REG(val);
@@ -712,9 +792,12 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 	u8 config;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 config;
 	unsigned long val;
 	int err;
@@ -722,7 +805,10 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (val) {
 	case 0:
@@ -733,14 +819,20 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute
 		break;
 	case 2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Here we have to choose arbitrarily one of the 5 possible
 		   configurations; I go for the safest */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Here we have to choose arbitrarily one of the 5 possible
 		 * configurations; I go for the safest
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		config = 6;
 		break;
 	default:
@@ -780,6 +872,7 @@ static ssize_t set_pwm_freq(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 
 	mutex_lock(&data->update_lock);
@@ -787,6 +880,8 @@ static ssize_t set_pwm_freq(struct device *dev,
 	 * where all PWM outputs are driven by a 22.5 kHz clock.
 	 * This might confuse the user, but there's not much we can do. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -800,7 +895,10 @@ static ssize_t set_pwm_freq(struct device *dev,
 	 * where all PWM outputs are driven by a 22.5 kHz clock.
 	 * This might confuse the user, but there's not much we can do.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (data->type == adt7468 && val >= 11300) {	/* High freq. mode */
 		data->cfg5 &= ~ADT7468_HFPWM;
 		lm85_write_value(client, ADT7468_REG_CFG5, data->cfg5);
@@ -856,15 +954,21 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_min[nr] = INS_TO_REG(nr, val);
@@ -888,15 +992,21 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_max[nr] = INS_TO_REG(nr, val);
@@ -948,15 +1058,21 @@ static ssize_t set_temp_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ADT7468_OFF64(data))
 		val += 64;
@@ -983,15 +1099,21 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ADT7468_OFF64(data))
 		val += 64;
@@ -1033,15 +1155,21 @@ static ssize_t set_pwm_auto_channels(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->autofan[nr].config = (data->autofan[nr].config & (~0xe0))
@@ -1067,15 +1195,21 @@ static ssize_t set_pwm_auto_pwm_min(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->autofan[nr].min_pwm = PWM_TO_REG(val);
@@ -1100,9 +1234,12 @@ static ssize_t set_pwm_auto_pwm_minctl(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 	u8 tmp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 tmp;
 	long val;
 	int err;
@@ -1110,7 +1247,10 @@ static ssize_t set_pwm_auto_pwm_minctl(struct device *dev,
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->autofan[nr].min_off = val;
@@ -1157,15 +1297,21 @@ static ssize_t set_temp_auto_temp_off(struct device *dev,
 	struct lm85_data *data = i2c_get_clientdata(client);
 	int min;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	min = TEMP_FROM_REG(data->zone[nr].limit);
@@ -1197,15 +1343,21 @@ static ssize_t set_temp_auto_temp_min(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->zone[nr].limit = TEMP_TO_REG(val);
@@ -1241,15 +1393,21 @@ static ssize_t set_temp_auto_temp_max(struct device *dev,
 	struct lm85_data *data = i2c_get_clientdata(client);
 	int min;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	min = TEMP_FROM_REG(data->zone[nr].limit);
@@ -1278,15 +1436,21 @@ static ssize_t set_temp_auto_temp_crit(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm85_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->zone[nr].critical = TEMP_TO_REG(val);
@@ -1506,8 +1670,13 @@ static int lm85_detect(struct i2c_client *client, struct i2c_board_info *info)
 	company = lm85_read_value(client, LM85_REG_COMPANY);
 	verstep = lm85_read_value(client, LM85_REG_VERSTEP);
 
+<<<<<<< HEAD
 	dev_dbg(&adapter->dev, "Detecting device at 0x%02x with "
 		"COMPANY: 0x%02x and VERSTEP: 0x%02x\n",
+=======
+	dev_dbg(&adapter->dev,
+		"Detecting device at 0x%02x with COMPANY: 0x%02x and VERSTEP: 0x%02x\n",
+>>>>>>> refs/remotes/origin/master
 		address, company, verstep);
 
 	/* All supported chips have the version in common */
@@ -1600,7 +1769,11 @@ static int lm85_probe(struct i2c_client *client,
 	struct lm85_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct lm85_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct lm85_data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
@@ -1632,7 +1805,11 @@ static int lm85_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&client->dev.kobj, &lm85_group);
 	if (err)
+<<<<<<< HEAD
 		goto err_kfree;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* minctl and temp_off exist on all chips except emc6d103s */
 	if (data->type != emc6d103s) {
@@ -1646,20 +1823,27 @@ static int lm85_probe(struct i2c_client *client,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* The ADT7463/68 have an optional VRM 10 mode where pin 21 is used
 	   as a sixth digital VID input rather than an analog input. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The ADT7463/68 have an optional VRM 10 mode where pin 21 is used
 	 * as a sixth digital VID input rather than an analog input.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (data->type == adt7463 || data->type == adt7468) {
 		u8 vid = lm85_read_value(client, LM85_REG_VID);
 		if (vid & 0x80)
 			data->has_vid5 = true;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!data->has_vid5)
 		if ((err = sysfs_create_group(&client->dev.kobj,
@@ -1672,6 +1856,8 @@ static int lm85_probe(struct i2c_client *client,
 					&lm85_group_in567)))
 			goto err_remove_files;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!data->has_vid5) {
 		err = sysfs_create_group(&client->dev.kobj, &lm85_group_in4);
 		if (err)
@@ -1684,7 +1870,10 @@ static int lm85_probe(struct i2c_client *client,
 		if (err)
 			goto err_remove_files;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -1697,8 +1886,11 @@ static int lm85_probe(struct i2c_client *client,
 	/* Error out and cleanup code */
  err_remove_files:
 	lm85_remove_files(client, data);
+<<<<<<< HEAD
  err_kfree:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1707,7 +1899,10 @@ static int lm85_remove(struct i2c_client *client)
 	struct lm85_data *data = i2c_get_clientdata(client);
 	hwmon_device_unregister(data->hwmon_dev);
 	lm85_remove_files(client, data);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1773,11 +1968,16 @@ static struct lm85_data *lm85_update_device(struct device *dev)
 		dev_dbg(&client->dev, "Reading sensor values\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Have to read extended bits first to "freeze" the
 =======
 		/*
 		 * Have to read extended bits first to "freeze" the
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/*
+		 * Have to read extended bits first to "freeze" the
+>>>>>>> refs/remotes/origin/master
 		 * more significant bits that are read later.
 		 * There are 2 additional resolution bits per channel and we
 		 * have room for 4, so we shift them to the left.
@@ -1838,15 +2038,21 @@ static struct lm85_data *lm85_update_device(struct device *dev)
 		} else if (data->type == emc6d102 || data->type == emc6d103 ||
 			   data->type == emc6d103s) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* Have to read LSB bits after the MSB ones because
 			   the reading of the MSB bits has frozen the
 			   LSBs (backward from the ADM1027).
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Have to read LSB bits after the MSB ones because
 			 * the reading of the MSB bits has frozen the
 			 * LSBs (backward from the ADM1027).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			 */
 			int ext1 = lm85_read_value(client,
 						   EMC6D102_REG_EXTEND_ADC1);
@@ -1953,6 +2159,7 @@ static struct lm85_data *lm85_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init sm_lm85_init(void)
 {
@@ -1966,6 +2173,9 @@ static void __exit sm_lm85_exit(void)
 =======
 module_i2c_driver(lm85_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(lm85_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Philip Pokorny <ppokorny@penguincomputing.com>, "
@@ -1973,8 +2183,11 @@ MODULE_AUTHOR("Philip Pokorny <ppokorny@penguincomputing.com>, "
 	"Justin Thiessen <jthiessen@penguincomputing.com>");
 MODULE_DESCRIPTION("LM85-B, LM85-C driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sm_lm85_init);
 module_exit(sm_lm85_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

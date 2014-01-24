@@ -28,12 +28,16 @@
 
 #ifndef __CARD_H__
 #define __CARD_H__
+<<<<<<< HEAD
 
 #include "ttype.h"
 
 /*---------------------  Export Definitions -------------------------*/
 
 /*---------------------  Export Classes  ----------------------------*/
+=======
+#include "device.h"
+>>>>>>> refs/remotes/origin/master
 
 /* init card type */
 
@@ -52,6 +56,7 @@ typedef enum _CARD_OP_MODE {
 } CARD_OP_MODE, *PCARD_OP_MODE;
 
 #define CB_MAX_CHANNEL_24G  14
+<<<<<<< HEAD
 /* #define CB_MAX_CHANNEL_5G   24 */
 #define CB_MAX_CHANNEL_5G       42 /* add channel9(5045MHz), 41==>42 */
 #define CB_MAX_CHANNEL      (CB_MAX_CHANNEL_24G+CB_MAX_CHANNEL_5G)
@@ -93,5 +98,31 @@ BOOL CARDbChannelSwitch(void *pDeviceHandler,
 			BYTE byMode,
 			BYTE byNewChannel,
 			BYTE byCount);
+=======
+#define CB_MAX_CHANNEL_5G       42 /* add channel9(5045MHz), 41==>42 */
+#define CB_MAX_CHANNEL      (CB_MAX_CHANNEL_24G+CB_MAX_CHANNEL_5G)
+
+struct vnt_private;
+
+void CARDbSetMediaChannel(struct vnt_private *pDevice, u32 uConnectionChannel);
+void CARDvSetRSPINF(struct vnt_private *pDevice, u8 byBBType);
+void vUpdateIFS(struct vnt_private *pDevice);
+void CARDvUpdateBasicTopRate(struct vnt_private *pDevice);
+void CARDbAddBasicRate(struct vnt_private *pDevice, u16 wRateIdx);
+int CARDbIsOFDMinBasicRate(struct vnt_private *pDevice);
+void CARDvAdjustTSF(struct vnt_private *pDevice, u8 byRxRate,
+		u64 qwBSSTimestamp, u64 qwLocalTSF);
+bool CARDbGetCurrentTSF(struct vnt_private *pDevice, u64 *pqwCurrTSF);
+bool CARDbClearCurrentTSF(struct vnt_private *pDevice);
+void CARDvSetFirstNextTBTT(struct vnt_private *pDevice, u16 wBeaconInterval);
+void CARDvUpdateNextTBTT(struct vnt_private *pDevice, u64 qwTSF,
+			 u16 wBeaconInterval);
+u64 CARDqGetNextTBTT(u64 qwTSF, u16 wBeaconInterval);
+u64 CARDqGetTSFOffset(u8 byRxRate, u64 qwTSF1, u64 qwTSF2);
+int CARDbRadioPowerOff(struct vnt_private *pDevice);
+int CARDbRadioPowerOn(struct vnt_private *pDevice);
+u8 CARDbyGetPktType(struct vnt_private *pDevice);
+void CARDvSetBSSMode(struct vnt_private *pDevice);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __CARD_H__ */

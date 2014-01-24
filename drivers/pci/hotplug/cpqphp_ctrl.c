@@ -1231,7 +1231,11 @@ static u8 set_controller_speed(struct controller *ctrl, u8 adapter_speed, u8 hp_
 
 	/* Only if mode change...*/
 	if (((bus->cur_bus_speed == PCI_SPEED_66MHz) && (adapter_speed == PCI_SPEED_66MHz_PCIX)) ||
+<<<<<<< HEAD
 		((bus->cur_bus_speed == PCI_SPEED_66MHz_PCIX) && (adapter_speed == PCI_SPEED_66MHz))) 
+=======
+		((bus->cur_bus_speed == PCI_SPEED_66MHz_PCIX) && (adapter_speed == PCI_SPEED_66MHz)))
+>>>>>>> refs/remotes/origin/master
 			set_SOGO(ctrl);
 
 	wait_for_ctrl_irq(ctrl);
@@ -1828,7 +1832,11 @@ static void interrupt_event_handler(struct controller *ctrl)
 
 				if (ctrl->event_queue[loop].event_type == INT_BUTTON_PRESS) {
 					dbg("button pressed\n");
+<<<<<<< HEAD
 				} else if (ctrl->event_queue[loop].event_type == 
+=======
+				} else if (ctrl->event_queue[loop].event_type ==
+>>>>>>> refs/remotes/origin/master
 					   INT_BUTTON_CANCEL) {
 					dbg("button cancel\n");
 					del_timer(&p_slot->task_event);
@@ -1900,8 +1908,12 @@ static void interrupt_event_handler(struct controller *ctrl)
 					dbg("power fault\n");
 				} else {
 					/* refresh notification */
+<<<<<<< HEAD
 					if (p_slot)
 						update_slot_info(ctrl, p_slot);
+=======
+					update_slot_info(ctrl, p_slot);
+>>>>>>> refs/remotes/origin/master
 				}
 
 				ctrl->event_queue[loop].event_type = 0;
@@ -2412,11 +2424,19 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 		if (rc)
 			return rc;
 
+<<<<<<< HEAD
 		/* find range of busses to use */
 		dbg("find ranges of buses to use\n");
 		bus_node = get_max_resource(&(resources->bus_head), 1);
 
 		/* If we don't have any busses to allocate, we can't continue */
+=======
+		/* find range of buses to use */
+		dbg("find ranges of buses to use\n");
+		bus_node = get_max_resource(&(resources->bus_head), 1);
+
+		/* If we don't have any buses to allocate, we can't continue */
+>>>>>>> refs/remotes/origin/master
 		if (!bus_node)
 			return -ENOMEM;
 
@@ -2520,6 +2540,7 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 
 		/* If we have IO resources copy them and fill in the bridge's
 		 * IO range registers */
+<<<<<<< HEAD
 		if (io_node) {
 			memcpy(hold_IO_node, io_node, sizeof(struct pci_resource));
 			io_node->next = NULL;
@@ -2558,6 +2579,30 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 			kfree(hold_mem_node);
 			hold_mem_node = NULL;
 		}
+=======
+		memcpy(hold_IO_node, io_node, sizeof(struct pci_resource));
+		io_node->next = NULL;
+
+		/* set IO base and Limit registers */
+		temp_byte = io_node->base >> 8;
+		rc = pci_bus_write_config_byte(pci_bus, devfn, PCI_IO_BASE, temp_byte);
+
+		temp_byte = (io_node->base + io_node->length - 1) >> 8;
+		rc = pci_bus_write_config_byte(pci_bus, devfn, PCI_IO_LIMIT, temp_byte);
+
+		/* Copy the memory resources and fill in the bridge's memory
+		 * range registers.
+		 */
+		memcpy(hold_mem_node, mem_node, sizeof(struct pci_resource));
+		mem_node->next = NULL;
+
+		/* set Mem base and Limit registers */
+		temp_word = mem_node->base >> 16;
+		rc = pci_bus_write_config_word(pci_bus, devfn, PCI_MEMORY_BASE, temp_word);
+
+		temp_word = (mem_node->base + mem_node->length - 1) >> 16;
+		rc = pci_bus_write_config_word(pci_bus, devfn, PCI_MEMORY_LIMIT, temp_word);
+>>>>>>> refs/remotes/origin/master
 
 		memcpy(hold_p_mem_node, p_mem_node, sizeof(struct pci_resource));
 		p_mem_node->next = NULL;
@@ -2627,7 +2672,11 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 		/* Return unused bus resources
 		 * First use the temporary node to store information for
 		 * the board */
+<<<<<<< HEAD
 		if (hold_bus_node && bus_node && temp_resources.bus_head) {
+=======
+		if (bus_node && temp_resources.bus_head) {
+>>>>>>> refs/remotes/origin/master
 			hold_bus_node->length = bus_node->base - hold_bus_node->base;
 
 			hold_bus_node->next = func->bus_head;
@@ -2751,7 +2800,11 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 		}
 		/* If we have prefetchable memory space available and there
 		 * is some left at the end, return the unused portion */
+<<<<<<< HEAD
 		if (hold_p_mem_node && temp_resources.p_mem_head) {
+=======
+		if (temp_resources.p_mem_head) {
+>>>>>>> refs/remotes/origin/master
 			p_mem_node = do_pre_bridge_resource_split(&(temp_resources.p_mem_head),
 								  &hold_p_mem_node, 0x100000);
 
@@ -2890,6 +2943,7 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 						func->mem_head = mem_node;
 					} else
 						return -ENOMEM;
+<<<<<<< HEAD
 				} else if ((temp_register & 0x0BL) == 0x04) {
 					/* Map memory */
 					base = temp_register & 0xFFFFFFF0;
@@ -2911,6 +2965,10 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 					return 1;
 				} else {
 					/* Requesting space below 1M */
+=======
+				} else {
+					/* Reserved bits or requesting space below 1M */
+>>>>>>> refs/remotes/origin/master
 					return NOT_ENOUGH_RESOURCES;
 				}
 
@@ -2936,7 +2994,11 @@ static int configure_new_function(struct controller *ctrl, struct pci_func *func
 
 			/* If this function needs an interrupt and we are behind
 			 * a bridge and the pin is tied to something that's
+<<<<<<< HEAD
 			 * alread mapped, set this one the same */
+=======
+			 * already mapped, set this one the same */
+>>>>>>> refs/remotes/origin/master
 			if (temp_byte && resources->irqs &&
 			    (resources->irqs->valid_INT &
 			     (0x01 << ((temp_byte + resources->irqs->barber_pole - 1) & 0x03)))) {

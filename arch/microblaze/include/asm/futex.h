@@ -25,10 +25,14 @@
 			.previous;"					\
 	: "=&r" (oldval), "=&r" (ret)					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	: "b" (uaddr), "i" (-EFAULT), "r" (oparg)			\
 =======
 	: "r" (uaddr), "i" (-EFAULT), "r" (oparg)			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	: "r" (uaddr), "i" (-EFAULT), "r" (oparg)			\
+>>>>>>> refs/remotes/origin/master
 	);								\
 })
 
@@ -109,7 +113,11 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 
 	__asm__ __volatile__ ("1:	lwx	%1, %3, r0;		\
 					cmp	%2, %1, %4;		\
+<<<<<<< HEAD
 					beqi	%2, 3f;			\
+=======
+					bnei	%2, 3f;			\
+>>>>>>> refs/remotes/origin/master
 				2:	swx	%5, %3, r0;		\
 					addic	%2, r0, 0;		\
 					bnei	%2, 1b;			\

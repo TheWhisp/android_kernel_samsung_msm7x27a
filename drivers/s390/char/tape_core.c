@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/tape_core.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    basic function of the tape device driver
  *
  *  S390 and zSeries version
@@ -15,9 +18,12 @@
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>	     // for kernel parameters
 #include <linux/kmod.h>	     // for requesting modules
@@ -405,9 +411,12 @@ tape_generic_online(struct tape_device *device,
 	rc = tapechar_setup_device(device);
 	if (rc)
 		goto out_minor;
+<<<<<<< HEAD
 	rc = tapeblock_setup_device(device);
 	if (rc)
 		goto out_char;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	tape_state_set(device, TS_UNUSED);
 
@@ -415,8 +424,11 @@ tape_generic_online(struct tape_device *device,
 
 	return 0;
 
+<<<<<<< HEAD
 out_char:
 	tapechar_cleanup_device(device);
+=======
+>>>>>>> refs/remotes/origin/master
 out_minor:
 	tape_remove_minor(device);
 out_discipline:
@@ -430,7 +442,10 @@ out:
 static void
 tape_cleanup_device(struct tape_device *device)
 {
+<<<<<<< HEAD
 	tapeblock_cleanup_device(device);
+=======
+>>>>>>> refs/remotes/origin/master
 	tapechar_cleanup_device(device);
 	device->discipline->cleanup_device(device);
 	module_put(device->discipline->owner);
@@ -789,10 +804,13 @@ __tape_start_io(struct tape_device *device, struct tape_request *request)
 {
 	int rc;
 
+<<<<<<< HEAD
 #ifdef CONFIG_S390_TAPE_BLOCK
 	if (request->op == TO_BLOCK)
 		device->discipline->check_locate(device, request);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = ccw_device_start(
 		device->cdev,
 		request->cpaddr,
@@ -1119,9 +1137,12 @@ __tape_do_irq (struct ccw_device *cdev, unsigned long intparm, struct irb *irb)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_TAP]++;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	device = dev_get_drvdata(&cdev->dev);
 	if (device == NULL) {
 		return;
@@ -1261,7 +1282,11 @@ __tape_do_irq (struct ccw_device *cdev, unsigned long intparm, struct irb *irb)
 }
 
 /*
+<<<<<<< HEAD
  * Tape device open function used by tape_char & tape_block frontends.
+=======
+ * Tape device open function used by tape_char frontend.
+>>>>>>> refs/remotes/origin/master
  */
 int
 tape_open(struct tape_device *device)
@@ -1291,7 +1316,11 @@ tape_open(struct tape_device *device)
 }
 
 /*
+<<<<<<< HEAD
  * Tape device release function used by tape_char & tape_block frontends.
+=======
+ * Tape device release function used by tape_char frontend.
+>>>>>>> refs/remotes/origin/master
  */
 int
 tape_release(struct tape_device *device)
@@ -1352,7 +1381,10 @@ tape_init (void)
 	DBF_EVENT(3, "tape init\n");
 	tape_proc_init();
 	tapechar_init ();
+<<<<<<< HEAD
 	tapeblock_init ();
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1366,7 +1398,10 @@ tape_exit(void)
 
 	/* Get rid of the frontends */
 	tapechar_exit();
+<<<<<<< HEAD
 	tapeblock_exit();
+=======
+>>>>>>> refs/remotes/origin/master
 	tape_proc_cleanup();
 	debug_unregister (TAPE_DBF_AREA);
 }

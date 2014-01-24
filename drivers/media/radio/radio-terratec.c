@@ -17,6 +17,7 @@
  *  Volume Control is done digitally
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  there is a I2C controlled RDS decoder (SAA6588)  onboard, which i would like to support someday
  *  (as soon i have understand how to get started :)
  *  If you can help me out with that, please contact me!!
@@ -25,6 +26,9 @@
 =======
  * Converted to the radio-isa framework by Hans Verkuil <hans.verkuil@cisco.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Converted to the radio-isa framework by Hans Verkuil <hans.verkuil@cisco.com>
+>>>>>>> refs/remotes/origin/master
  * Converted to V4L2 API by Mauro Carvalho Chehab <mchehab@infradead.org>
  */
 
@@ -33,6 +37,7 @@
 #include <linux/ioport.h>	/* request_region		*/
 #include <linux/videodev2.h>	/* kernel radio structs		*/
 #include <linux/mutex.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/version.h>      /* for KERNEL_VERSION MACRO     */
 #include <linux/io.h>		/* outb, outb_p			*/
@@ -75,6 +80,8 @@ static struct v4l2_queryctrl radio_qctrl[] = {
 	}
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>		/* outb, outb_p			*/
 #include <linux/slab.h>
 #include <media/v4l2-device.h>
@@ -94,7 +101,10 @@ static int radio_nr = -1;
 
 module_param(radio_nr, int, 0444);
 MODULE_PARM_DESC(radio_nr, "Radio device number");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define WRT_DIS 	0x00
 #define CLK_OFF		0x00
@@ -104,6 +114,7 @@ MODULE_PARM_DESC(radio_nr, "Radio device number");
 #define CLK_ON 		0x08
 #define WRT_EN		0x10
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct terratec
 {
@@ -163,6 +174,8 @@ static int tt_setvol(struct terratec *tt, int vol)
 	tt_write_vol(tt, vol);
 	tt->curvol = vol;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct radio_isa_card *terratec_alloc(void)
 {
 	return kzalloc(sizeof(struct radio_isa_card), GFP_KERNEL);
@@ -181,7 +194,10 @@ static int terratec_s_mute_volume(struct radio_isa_card *isa, bool mute, int vol
 		else
 			outb(0x00, isa->io + 1);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -189,6 +205,7 @@ static int terratec_s_mute_volume(struct radio_isa_card *isa, bool mute, int vol
 /* this is the worst part in this driver */
 /* many more or less strange things are going on here, but hey, it works :) */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tt_setfreq(struct terratec *tt, unsigned long freq1)
 {
@@ -205,6 +222,8 @@ static int tt_setfreq(struct terratec *tt, unsigned long freq1)
 
 	freq = freq1 / 160;			/* convert the freq. to a nice to handle value */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int terratec_s_frequency(struct radio_isa_card *isa, u32 freq)
 {
 	int i;
@@ -214,7 +233,10 @@ static int terratec_s_frequency(struct radio_isa_card *isa, u32 freq)
 	unsigned char buffer[25];		/* we have to bit shift 25 registers */
 
 	freq = freq / 160;			/* convert the freq. to a nice to handle value */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(buffer, 0, sizeof(buffer));
 
 	rest = freq * 10 + 10700;	/* I once had understood what is going on here */
@@ -236,6 +258,7 @@ static int terratec_s_frequency(struct radio_isa_card *isa, u32 freq)
 
 	for (i = 24; i > -1; i--) {	/* bit shift the values to the radiocard */
 		if (buffer[i] == 1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			outb(WRT_EN | DATA, tt->io);
 			outb(WRT_EN | DATA | CLK_ON, tt->io);
@@ -415,6 +438,8 @@ static const struct v4l2_ioctl_ops terratec_ioctl_ops = {
 	.vidioc_g_input     = vidioc_g_input,
 	.vidioc_s_input     = vidioc_s_input,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			outb(WRT_EN | DATA, isa->io);
 			outb(WRT_EN | DATA | CLK_ON, isa->io);
 			outb(WRT_EN | DATA, isa->io);
@@ -460,11 +485,15 @@ static struct radio_isa_driver terratec_driver = {
 	.ops = &terratec_ops,
 	.has_stereo = true,
 	.max_volume = 10,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init terratec_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct terratec *tt = &terratec_card;
 	struct v4l2_device *v4l2_dev = &tt->v4l2_dev;
@@ -511,10 +540,14 @@ static int __init terratec_init(void)
 =======
 	return isa_register_driver(&terratec_driver.driver, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return isa_register_driver(&terratec_driver.driver, 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit terratec_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct terratec *tt = &terratec_card;
 	struct v4l2_device *v4l2_dev = &tt->v4l2_dev;
@@ -526,6 +559,9 @@ static void __exit terratec_exit(void)
 =======
 	isa_unregister_driver(&terratec_driver.driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isa_unregister_driver(&terratec_driver.driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(terratec_init);

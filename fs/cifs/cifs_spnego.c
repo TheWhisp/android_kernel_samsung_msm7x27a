@@ -31,18 +31,29 @@
 
 /* create a new cifs key */
 static int
+<<<<<<< HEAD
 cifs_spnego_key_instantiate(struct key *key, const void *data, size_t datalen)
+=======
+cifs_spnego_key_instantiate(struct key *key, struct key_preparsed_payload *prep)
+>>>>>>> refs/remotes/origin/master
 {
 	char *payload;
 	int ret;
 
 	ret = -ENOMEM;
+<<<<<<< HEAD
 	payload = kmalloc(datalen, GFP_KERNEL);
+=======
+	payload = kmemdup(prep->data, prep->datalen, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!payload)
 		goto error;
 
 	/* attach the data */
+<<<<<<< HEAD
 	memcpy(payload, data, datalen);
+=======
+>>>>>>> refs/remotes/origin/master
 	key->payload.data = payload;
 	ret = 0;
 
@@ -114,16 +125,22 @@ cifs_get_spnego_key(struct cifs_ses *sesInfo)
 		   UID_KEY_LEN + (sizeof(uid_t) * 2) +
 		   CREDUID_KEY_LEN + (sizeof(uid_t) * 2) +
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   USER_KEY_LEN + strlen(sesInfo->user_name) +
 		   PID_KEY_LEN + (sizeof(pid_t) * 2) + 1;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		   PID_KEY_LEN + (sizeof(pid_t) * 2) + 1;
 
 	if (sesInfo->user_name)
 		desc_len += USER_KEY_LEN + strlen(sesInfo->user_name);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spnego_key = ERR_PTR(-ENOMEM);
 	description = kzalloc(desc_len, GFP_KERNEL);
 	if (description == NULL)
@@ -155,6 +172,7 @@ cifs_get_spnego_key(struct cifs_ses *sesInfo)
 		goto out;
 
 	dp = description + strlen(description);
+<<<<<<< HEAD
 	sprintf(dp, ";uid=0x%x", sesInfo->linux_uid);
 
 	dp = description + strlen(description);
@@ -164,16 +182,32 @@ cifs_get_spnego_key(struct cifs_ses *sesInfo)
 	dp = description + strlen(description);
 	sprintf(dp, ";user=%s", sesInfo->user_name);
 =======
+=======
+	sprintf(dp, ";uid=0x%x",
+		from_kuid_munged(&init_user_ns, sesInfo->linux_uid));
+
+	dp = description + strlen(description);
+	sprintf(dp, ";creduid=0x%x",
+		from_kuid_munged(&init_user_ns, sesInfo->cred_uid));
+
+>>>>>>> refs/remotes/origin/master
 	if (sesInfo->user_name) {
 		dp = description + strlen(description);
 		sprintf(dp, ";user=%s", sesInfo->user_name);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dp = description + strlen(description);
 	sprintf(dp, ";pid=0x%x", current->pid);
 
+<<<<<<< HEAD
 	cFYI(1, "key description = %s", description);
+=======
+	cifs_dbg(FYI, "key description = %s\n", description);
+>>>>>>> refs/remotes/origin/master
 	spnego_key = request_key(&cifs_spnego_key_type, description, "");
 
 #ifdef CONFIG_CIFS_DEBUG2

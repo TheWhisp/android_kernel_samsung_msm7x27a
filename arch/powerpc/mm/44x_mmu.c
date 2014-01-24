@@ -28,9 +28,12 @@
 
 #include <asm/mmu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/cacheflush.h>
 
@@ -45,7 +48,11 @@ int icache_44x_need_flush;
 
 unsigned long tlb_47x_boltmap[1024/8];
 
+<<<<<<< HEAD
 static void __cpuinit ppc44x_update_tlb_hwater(void)
+=======
+static void ppc44x_update_tlb_hwater(void)
+>>>>>>> refs/remotes/origin/master
 {
 	extern unsigned int tlb_44x_patch_hwater_D[];
 	extern unsigned int tlb_44x_patch_hwater_I[];
@@ -82,6 +89,7 @@ static void __init ppc44x_pin_tlb(unsigned int virt, unsigned int phys)
 		"tlbwe	%0,%3,%6\n"
 	:
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC47x
 	: "r" (PPC47x_TLB2_S_RWX),
 #else
@@ -90,6 +98,9 @@ static void __init ppc44x_pin_tlb(unsigned int virt, unsigned int phys)
 =======
 	: "r" (PPC44x_TLB_SW | PPC44x_TLB_SR | PPC44x_TLB_SX | PPC44x_TLB_G),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	: "r" (PPC44x_TLB_SW | PPC44x_TLB_SR | PPC44x_TLB_SX | PPC44x_TLB_G),
+>>>>>>> refs/remotes/origin/master
 	  "r" (phys),
 	  "r" (virt | PPC44x_TLB_VALID | PPC44x_TLB_256M),
 	  "r" (entry),
@@ -146,7 +157,11 @@ static void __init ppc47x_update_boltmap(void)
 /*
  * "Pins" a 256MB TLB entry in AS0 for kernel lowmem for 47x type MMU
  */
+<<<<<<< HEAD
 static void __cpuinit ppc47x_pin_tlb(unsigned int virt, unsigned int phys)
+=======
+static void ppc47x_pin_tlb(unsigned int virt, unsigned int phys)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int rA;
 	int bolted;
@@ -194,17 +209,23 @@ unsigned long __init mmu_mapin_ram(unsigned long top)
 {
 	unsigned long addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Pin in enough TLBs to cover any lowmem not covered by the
 	 * initial 256M mapping established in head_44x.S */
 	for (addr = PPC_PIN_SIZE; addr < lowmem_end_addr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long memstart = memstart_addr & ~(PPC_PIN_SIZE - 1);
 
 	/* Pin in enough TLBs to cover any lowmem not covered by the
 	 * initial 256M mapping established in head_44x.S */
 	for (addr = memstart + PPC_PIN_SIZE; addr < lowmem_end_addr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	     addr += PPC_PIN_SIZE) {
 		if (mmu_has_feature(MMU_FTR_TYPE_47x))
 			ppc47x_pin_tlb(addr + PAGE_OFFSET, addr);
@@ -234,25 +255,35 @@ void setup_initial_memory_limit(phys_addr_t first_memblock_base,
 				phys_addr_t first_memblock_size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u64 size;
 
 #ifndef CONFIG_NONSTATIC_KERNEL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 size;
+
+#ifndef CONFIG_NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/master
 	/* We don't currently support the first MEMBLOCK not mapping 0
 	 * physical on those processors
 	 */
 	BUG_ON(first_memblock_base != 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* 44x has a 256M TLB entry pinned at boot */
 	memblock_set_current_limit(min_t(u64, first_memblock_size, PPC_PIN_SIZE));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* 44x has a 256M TLB entry pinned at boot */
 	size = (min_t(u64, first_memblock_size, PPC_PIN_SIZE));
 	memblock_set_current_limit(first_memblock_base + size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -264,6 +295,15 @@ void __cpuinit mmu_init_secondary(int cpu)
 =======
 	unsigned long memstart = memstart_addr & ~(PPC_PIN_SIZE - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+#ifdef CONFIG_SMP
+void mmu_init_secondary(int cpu)
+{
+	unsigned long addr;
+	unsigned long memstart = memstart_addr & ~(PPC_PIN_SIZE - 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Pin in enough TLBs to cover any lowmem not covered by the
 	 * initial 256M mapping established in head_44x.S
@@ -275,10 +315,14 @@ void __cpuinit mmu_init_secondary(int cpu)
 	 * will not work, current thread info isn't accessible, ...
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (addr = PPC_PIN_SIZE; addr < lowmem_end_addr;
 =======
 	for (addr = memstart + PPC_PIN_SIZE; addr < lowmem_end_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (addr = memstart + PPC_PIN_SIZE; addr < lowmem_end_addr;
+>>>>>>> refs/remotes/origin/master
 	     addr += PPC_PIN_SIZE) {
 		if (mmu_has_feature(MMU_FTR_TYPE_47x))
 			ppc47x_pin_tlb(addr + PAGE_OFFSET, addr);

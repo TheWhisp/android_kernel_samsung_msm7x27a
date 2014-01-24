@@ -33,6 +33,11 @@
  *   parts cut'n'pasted from sa1100_ir.c (C) 2000 Russell King
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/errno.h>
@@ -495,7 +500,11 @@ static int init_chrdev(void)
 	driver.dev = &lirc_sir_dev->dev;
 	driver.minor = lirc_register_driver(&driver);
 	if (driver.minor < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": init_chrdev() failed.\n");
+=======
+		pr_err("init_chrdev() failed.\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	return 0;
@@ -604,7 +613,11 @@ static irqreturn_t sir_interrupt(int irq, void *dev_id)
 	}
 
 	if (status & UTSR0_TFS)
+<<<<<<< HEAD
 		printk(KERN_ERR "transmit fifo not full, shouldn't happen\n");
+=======
+		pr_err("transmit fifo not full, shouldn't happen\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* We must clear certain bits. */
 	status &= (UTSR0_RID | UTSR0_RBB | UTSR0_REB);
@@ -785,12 +798,15 @@ static int init_hardware(void)
 	spin_lock_irqsave(&hardware_lock, flags);
 	/* reset UART */
 #ifdef LIRC_ON_SA1100
+<<<<<<< HEAD
 #ifdef CONFIG_SA1100_BITSY
 	if (machine_is_bitsy()) {
 		printk(KERN_INFO "Power on IR module\n");
 		set_bitsy_egpio(EGPIO_BITSY_IR_ON);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SA1100_COLLIE
 	sa1100_irda_set_power_collie(3);	/* power on */
 #endif
@@ -885,8 +901,12 @@ static int init_hardware(void)
 	udelay(1500);
 
 	/* read previous control byte */
+<<<<<<< HEAD
 	printk(KERN_INFO LIRC_DRIVER_NAME
 	       ": 0x%02x\n", sinp(UART_RX));
+=======
+	pr_info("0x%02x\n", sinp(UART_RX));
+>>>>>>> refs/remotes/origin/master
 
 	/* Set DLAB 1. */
 	soutp(UART_LCR, sinp(UART_LCR) | UART_LCR_DLAB);
@@ -941,10 +961,13 @@ static void drop_hardware(void)
 	Ser2UTCR3 = sr.utcr3;
 
 	Ser2HSCR0 = sr.hscr0;
+<<<<<<< HEAD
 #ifdef CONFIG_SA1100_BITSY
 	if (machine_is_bitsy())
 		clr_bitsy_egpio(EGPIO_BITSY_IR_ON);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SA1100_COLLIE
 	sa1100_irda_set_power_collie(0);	/* power off */
 #endif
@@ -964,8 +987,12 @@ static int init_port(void)
 	/* get I/O port access and IRQ line */
 #ifndef LIRC_ON_SA1100
 	if (request_region(io, 8, LIRC_DRIVER_NAME) == NULL) {
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME
 		       ": i/o port 0x%.4x already in use.\n", io);
+=======
+		pr_err("i/o port 0x%.4x already in use.\n", io);
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 #endif
@@ -975,6 +1002,7 @@ static int init_port(void)
 #               ifndef LIRC_ON_SA1100
 		release_region(io, 8);
 #               endif
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME
 			": IRQ %d already in use.\n",
 			irq);
@@ -984,6 +1012,13 @@ static int init_port(void)
 	printk(KERN_INFO LIRC_DRIVER_NAME
 		": I/O port 0x%.4x, IRQ %d.\n",
 		io, irq);
+=======
+		pr_err("IRQ %d already in use.\n", irq);
+		return retval;
+	}
+#ifndef LIRC_ON_SA1100
+	pr_info("I/O port 0x%.4x, IRQ %d.\n", io, irq);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	init_timer(&timerlist);
@@ -1213,24 +1248,40 @@ static int init_lirc_sir(void)
 	if (retval < 0)
 		return retval;
 	init_hardware();
+<<<<<<< HEAD
 	printk(KERN_INFO LIRC_DRIVER_NAME
 		": Installed.\n");
 	return 0;
 }
 
 static int __devinit lirc_sir_probe(struct platform_device *dev)
+=======
+	pr_info("Installed.\n");
+	return 0;
+}
+
+static int lirc_sir_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit lirc_sir_remove(struct platform_device *dev)
+=======
+static int lirc_sir_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
 static struct platform_driver lirc_sir_driver = {
 	.probe		= lirc_sir_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(lirc_sir_remove),
+=======
+	.remove		= lirc_sir_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "lirc_sir",
 		.owner	= THIS_MODULE,
@@ -1243,23 +1294,35 @@ static int __init lirc_sir_init(void)
 
 	retval = platform_driver_register(&lirc_sir_driver);
 	if (retval) {
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform driver register "
 		       "failed!\n");
+=======
+		pr_err("Platform driver register failed!\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	lirc_sir_dev = platform_device_alloc("lirc_dev", 0);
 	if (!lirc_sir_dev) {
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform device alloc "
 		       "failed!\n");
+=======
+		pr_err("Platform device alloc failed!\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -ENOMEM;
 		goto pdev_alloc_fail;
 	}
 
 	retval = platform_device_add(lirc_sir_dev);
 	if (retval) {
+<<<<<<< HEAD
 		printk(KERN_ERR LIRC_DRIVER_NAME ": Platform device add "
 		       "failed!\n");
+=======
+		pr_err("Platform device add failed!\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -ENODEV;
 		goto pdev_add_fail;
 	}
@@ -1292,7 +1355,11 @@ static void __exit lirc_sir_exit(void)
 	drop_port();
 	platform_device_unregister(lirc_sir_dev);
 	platform_driver_unregister(&lirc_sir_driver);
+<<<<<<< HEAD
 	printk(KERN_INFO LIRC_DRIVER_NAME ": Uninstalled.\n");
+=======
+	pr_info("Uninstalled.\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(lirc_sir_init);

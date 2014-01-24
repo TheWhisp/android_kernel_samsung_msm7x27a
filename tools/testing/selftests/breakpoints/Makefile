@@ -17,7 +17,11 @@ else
 endif
 
 run_tests:
+<<<<<<< HEAD
 	./breakpoint_test
+=======
+	@./breakpoint_test || echo "breakpoints selftests: [FAIL]"
+>>>>>>> refs/remotes/origin/master
 
 clean:
 	rm -fr breakpoint_test

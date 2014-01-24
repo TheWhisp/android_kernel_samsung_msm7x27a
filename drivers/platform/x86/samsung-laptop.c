@@ -18,24 +18,35 @@
 #include <linux/pci.h>
 #include <linux/backlight.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/leds.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/leds.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fb.h>
 #include <linux/dmi.h>
 #include <linux/platform_device.h>
 #include <linux/rfkill.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/acpi.h>
 #include <linux/seq_file.h>
 #include <linux/debugfs.h>
 #include <linux/ctype.h>
 #include <linux/efi.h>
+<<<<<<< HEAD
 #if (defined CONFIG_ACPI_VIDEO || defined CONFIG_ACPI_VIDEO_MODULE)
 #include <acpi/video.h>
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <acpi/video.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This driver is needed because a number of Samsung laptops do not hook
@@ -57,10 +68,13 @@
 #define SABI_IFACE_DATA			0x05
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Structure to get data back to the calling function */
 struct sabi_retval {
 	u8 retval[20];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define WL_STATUS_WLAN			0x0
 #define WL_STATUS_BT			0x2
 
@@ -75,7 +89,10 @@ struct sabi_data {
 		};
 		u8 data[11];
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sabi_header_offsets {
@@ -93,12 +110,17 @@ struct sabi_commands {
 	 * Value 0 is for the BIOS to use
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 get_brightness;
 	u8 set_brightness;
 =======
 	u16 get_brightness;
 	u16 set_brightness;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 get_brightness;
+	u16 set_brightness;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * first byte:
@@ -110,6 +132,7 @@ struct sabi_commands {
 	 * TODO, verify 3G is correct, that doesn't seem right...
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 get_wireless_button;
 	u8 set_wireless_button;
 
@@ -117,18 +140,24 @@ struct sabi_commands {
 	u8 get_backlight;
 	u8 set_backlight;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 get_wireless_button;
 	u16 set_wireless_button;
 
 	/* 0 is off, 1 is on */
 	u16 get_backlight;
 	u16 set_backlight;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * 0x80 or 0x00 - no action
 	 * 0x81 - recovery key pressed
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8 get_recovery_mode;
 	u8 set_recovery_mode;
@@ -136,15 +165,22 @@ struct sabi_commands {
 	u16 get_recovery_mode;
 	u16 set_recovery_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 get_recovery_mode;
+	u16 set_recovery_mode;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * on seclinux: 0 is low, 1 is high,
 	 * on swsmi: 0 is normal, 1 is silent, 2 is turbo
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 get_performance_level;
 	u8 set_performance_level;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 get_performance_level;
 	u16 set_performance_level;
 
@@ -162,33 +198,46 @@ struct sabi_commands {
 
 	/* 0x81 to read, (0x82 | level << 8) to set, 0xaabb to enable */
 	u16 kbd_backlight;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Tell the BIOS that Linux is running on this machine.
 	 * 81 is on, 80 is off
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 set_linux;
 =======
 	u16 set_linux;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 set_linux;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sabi_performance_level {
 	const char *name;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8 value;
 };
 
 struct sabi_config {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 value;
 };
 
 struct sabi_config {
 	int sabi_version;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *test_string;
 	u16 main_function;
 	const struct sabi_header_offsets header_offsets;
@@ -201,12 +250,18 @@ struct sabi_config {
 static const struct sabi_config sabi_configs[] = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* I don't know if it is really 2, but it it is
 		 * less than 3 anyway */
 		.sabi_version = 2,
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.test_string = "SECLINUX",
 
 		.main_function = 0x4c49,
@@ -237,7 +292,10 @@ static const struct sabi_config sabi_configs[] = {
 			.set_performance_level = 0x09,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			.get_battery_life_extender = 0xFFFF,
 			.set_battery_life_extender = 0xFFFF,
 
@@ -249,7 +307,10 @@ static const struct sabi_config sabi_configs[] = {
 
 			.kbd_backlight = 0xFFFF,
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.set_linux = 0x0a,
 		},
 
@@ -269,10 +330,15 @@ static const struct sabi_config sabi_configs[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.sabi_version = 3,
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.sabi_version = 3,
+
+>>>>>>> refs/remotes/origin/master
 		.test_string = "SwSmi@",
 
 		.main_function = 0x5843,
@@ -303,7 +369,10 @@ static const struct sabi_config sabi_configs[] = {
 			.set_performance_level = 0x32,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			.get_battery_life_extender = 0x65,
 			.set_battery_life_extender = 0x66,
 
@@ -315,7 +384,10 @@ static const struct sabi_config sabi_configs[] = {
 
 			.kbd_backlight = 0x78,
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.set_linux = 0xff,
 		},
 
@@ -341,6 +413,7 @@ static const struct sabi_config sabi_configs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct sabi_config *sabi_config;
 
 static void __iomem *sabi;
@@ -353,6 +426,8 @@ static struct rfkill *rfk;
 
 static int force;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * samsung-laptop/    - debugfs root directory
  *   f0000_segment    - dump f0000 segment
@@ -431,11 +506,15 @@ static struct samsung_quirks samsung_broken_acpi_video = {
 };
 
 static bool force;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(force, bool, 0);
 MODULE_PARM_DESC(force,
 		"Disable the DMI check and forces the driver to be loaded");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int debug;
 module_param(debug, bool, S_IRUGO | S_IWUSR);
@@ -594,6 +673,8 @@ static int get_brightness(struct backlight_device *bd)
 {
 	return (int)read_brightness();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool debug;
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
@@ -762,11 +843,15 @@ static void check_for_stepping_quirk(struct samsung_laptop *samsung)
 	}
 
 	set_brightness(samsung, orig_level);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int update_status(struct backlight_device *bd)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	set_brightness(bd->props.brightness);
 
@@ -775,6 +860,8 @@ static int update_status(struct backlight_device *bd)
 	else
 		sabi_set_command(sabi_config->commands.set_backlight, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct samsung_laptop *samsung = bl_get_data(bd);
 	const struct sabi_commands *commands = &samsung->config->commands;
 
@@ -785,7 +872,10 @@ static int update_status(struct backlight_device *bd)
 	else
 		sabi_set_commandb(samsung, commands->set_backlight, 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -794,6 +884,7 @@ static const struct backlight_ops backlight_ops = {
 	.update_status	= update_status,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int rfkill_set(void *data, bool blocked)
 {
@@ -843,6 +934,8 @@ static ssize_t get_performance_level(struct device *dev,
 {
 	struct sabi_retval sretval;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int seclinux_rfkill_set(void *data, bool blocked)
 {
 	struct samsung_rfkill *srfkill = data;
@@ -925,11 +1018,15 @@ static ssize_t get_performance_level(struct device *dev,
 	const struct sabi_config *config = samsung->config;
 	const struct sabi_commands *commands = &config->commands;
 	struct sabi_data sretval;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int retval;
 	int i;
 
 	/* Read the state */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	retval = sabi_get_command(sabi_config->commands.get_performance_level,
 				  &sretval);
@@ -937,10 +1034,15 @@ static ssize_t get_performance_level(struct device *dev,
 	retval = sabi_command(samsung, commands->get_performance_level,
 			      NULL, &sretval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = sabi_command(samsung, commands->get_performance_level,
+			      NULL, &sretval);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
 	/* The logic is backwards, yeah, lots of fun... */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; sabi_config->performance_levels[i].name; ++i) {
 		if (sretval.retval[0] == sabi_config->performance_levels[i].value)
@@ -950,6 +1052,11 @@ static ssize_t get_performance_level(struct device *dev,
 		if (sretval.data[0] == config->performance_levels[i].value)
 			return sprintf(buf, "%s\n", config->performance_levels[i].name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; config->performance_levels[i].name; ++i) {
+		if (sretval.data[0] == config->performance_levels[i].value)
+			return sprintf(buf, "%s\n", config->performance_levels[i].name);
+>>>>>>> refs/remotes/origin/master
 	}
 	return sprintf(buf, "%s\n", "unknown");
 }
@@ -958,6 +1065,7 @@ static ssize_t set_performance_level(struct device *dev,
 				struct device_attribute *attr, const char *buf,
 				size_t count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (count >= 1) {
 		int i;
@@ -1202,6 +1310,8 @@ static int find_signature(void __iomem *memcheck, const char *testStr)
 	for (loca = 0; loca < 0xffff; loca++) {
 		char temp = readb(memcheck + loca);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct samsung_laptop *samsung = dev_get_drvdata(dev);
 	const struct sabi_config *config = samsung->config;
 	const struct sabi_commands *commands = &config->commands;
@@ -1382,7 +1492,10 @@ static int find_signature(void __iomem *memcheck, const char *testStr)
 
 	for (loca = 0; loca < 0xffff; loca++) {
 		char temp = readb(memcheck + loca);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (temp == testStr[i]) {
 			if (i == strlen(testStr)-1)
@@ -1395,6 +1508,7 @@ static int find_signature(void __iomem *memcheck, const char *testStr)
 	return loca;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init samsung_init(void)
 {
@@ -1421,6 +1535,8 @@ static int __init samsung_init(void)
 		sabi_config = &sabi_configs[i];
 		loca = find_signature(f0000_segment, sabi_config->test_string);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void samsung_rfkill_exit(struct samsung_laptop *samsung)
 {
 	if (samsung->wlan.rfkill) {
@@ -1924,12 +2040,16 @@ static int __init samsung_sabi_init(struct samsung_laptop *samsung)
 		samsung->config = &sabi_configs[i];
 		loca = find_signature(samsung->f0000_segment,
 				      samsung->config->test_string);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (loca != 0xffff)
 			break;
 	}
 
 	if (loca == 0xffff) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pr_err("This computer does not support SABI\n");
 		goto error_no_signature;
@@ -2033,6 +2153,8 @@ error_no_signature:
 	iounmap(f0000_segment);
 	return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (debug || force)
 			pr_err("This computer does not support SABI\n");
 		ret = -ENODEV;
@@ -2143,6 +2265,18 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
 			DMI_MATCH(DMI_CHASSIS_TYPE, "14"), /* Sub-Notebook */
 		},
 	},
+<<<<<<< HEAD
+=======
+	/* DMI ids for laptops with bad Chassis Type */
+	{
+	  .ident = "R40/R41",
+	  .matches = {
+		DMI_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),
+		DMI_MATCH(DMI_PRODUCT_NAME, "R40/R41"),
+		DMI_MATCH(DMI_BOARD_NAME, "R40/R41"),
+		},
+	},
+>>>>>>> refs/remotes/origin/master
 	/* Specific DMI ids for laptop with quirks */
 	{
 	 .callback = samsung_dmi_matched,
@@ -2186,6 +2320,19 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
 	},
 	{
 	 .callback = samsung_dmi_matched,
+<<<<<<< HEAD
+=======
+	 .ident = "X360",
+	 .matches = {
+		DMI_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),
+		DMI_MATCH(DMI_PRODUCT_NAME, "X360"),
+		DMI_MATCH(DMI_BOARD_NAME, "X360"),
+		},
+	 .driver_data = &samsung_broken_acpi_video,
+	},
+	{
+	 .callback = samsung_dmi_matched,
+>>>>>>> refs/remotes/origin/master
 	 .ident = "N250P",
 	 .matches = {
 		DMI_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),
@@ -2221,6 +2368,7 @@ static int __init samsung_init(void)
 	samsung->quirks = quirks;
 
 
+<<<<<<< HEAD
 #if (defined CONFIG_ACPI_VIDEO || defined CONFIG_ACPI_VIDEO_MODULE)
 	/* Don't handle backlight here if the acpi video already handle it */
 	if (acpi_video_backlight_support()) {
@@ -2230,6 +2378,18 @@ static int __init samsung_init(void)
 		} else {
 			samsung->handle_backlight = false;
 		}
+=======
+#ifdef CONFIG_ACPI
+	if (samsung->quirks->broken_acpi_video)
+		acpi_video_dmi_promote_vendor();
+
+	/* Don't handle backlight here if the acpi video already handle it */
+	if (acpi_video_backlight_support()) {
+		samsung->handle_backlight = false;
+	} else if (samsung->quirks->broken_acpi_video) {
+		pr_info("Disabling ACPI video driver\n");
+		acpi_video_unregister();
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -2243,8 +2403,12 @@ static int __init samsung_init(void)
 
 #ifdef CONFIG_ACPI
 	/* Only log that if we are really on a sabi platform */
+<<<<<<< HEAD
 	if (acpi_video_backlight_support() &&
 	    !samsung->quirks->broken_acpi_video)
+=======
+	if (acpi_video_backlight_support())
+>>>>>>> refs/remotes/origin/master
 		pr_info("Backlight controlled by ACPI video driver\n");
 #endif
 
@@ -2286,11 +2450,15 @@ error_sabi:
 error_platform:
 	kfree(samsung);
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit samsung_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Turn off "Linux" mode in the BIOS */
 	if (sabi_config->commands.set_linux != 0xff)
@@ -2303,6 +2471,8 @@ static void __exit samsung_exit(void)
 	iounmap(f0000_segment);
 	platform_device_unregister(sdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct samsung_laptop *samsung;
 
 	samsung = platform_get_drvdata(samsung_platform_device);
@@ -2317,7 +2487,10 @@ static void __exit samsung_exit(void)
 
 	kfree(samsung);
 	samsung_platform_device = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(samsung_init);

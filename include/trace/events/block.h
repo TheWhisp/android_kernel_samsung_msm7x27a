@@ -6,6 +6,7 @@
 
 #include <linux/blktrace_api.h>
 #include <linux/blkdev.h>
+<<<<<<< HEAD
 #include <linux/tracepoint.h>
 
 <<<<<<< HEAD
@@ -13,6 +14,63 @@
 #define RWBS_LEN	8
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/buffer_head.h>
+#include <linux/tracepoint.h>
+
+#define RWBS_LEN	8
+
+DECLARE_EVENT_CLASS(block_buffer,
+
+	TP_PROTO(struct buffer_head *bh),
+
+	TP_ARGS(bh),
+
+	TP_STRUCT__entry (
+		__field(  dev_t,	dev			)
+		__field(  sector_t,	sector			)
+		__field(  size_t,	size			)
+	),
+
+	TP_fast_assign(
+		__entry->dev		= bh->b_bdev->bd_dev;
+		__entry->sector		= bh->b_blocknr;
+		__entry->size		= bh->b_size;
+	),
+
+	TP_printk("%d,%d sector=%llu size=%zu",
+		MAJOR(__entry->dev), MINOR(__entry->dev),
+		(unsigned long long)__entry->sector, __entry->size
+	)
+);
+
+/**
+ * block_touch_buffer - mark a buffer accessed
+ * @bh: buffer_head being touched
+ *
+ * Called from touch_buffer().
+ */
+DEFINE_EVENT(block_buffer, block_touch_buffer,
+
+	TP_PROTO(struct buffer_head *bh),
+
+	TP_ARGS(bh)
+);
+
+/**
+ * block_dirty_buffer - mark a buffer dirty
+ * @bh: buffer_head being dirtied
+ *
+ * Called from mark_buffer_dirty().
+ */
+DEFINE_EVENT(block_buffer, block_dirty_buffer,
+
+	TP_PROTO(struct buffer_head *bh),
+
+	TP_ARGS(bh)
+);
+
+>>>>>>> refs/remotes/origin/master
 DECLARE_EVENT_CLASS(block_rq_with_error,
 
 	TP_PROTO(struct request_queue *q, struct request *rq),
@@ -25,10 +83,14 @@ DECLARE_EVENT_CLASS(block_rq_with_error,
 		__field(  unsigned int,	nr_sector		)
 		__field(  int,		errors			)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array(  char,		rwbs,	6		)
 =======
 		__array(  char,		rwbs,	RWBS_LEN	)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array(  char,		rwbs,	RWBS_LEN	)
+>>>>>>> refs/remotes/origin/master
 		__dynamic_array( char,	cmd,	blk_cmd_buf_len(rq)	)
 	),
 
@@ -114,10 +176,14 @@ DECLARE_EVENT_CLASS(block_rq,
 		__field(  unsigned int,	nr_sector		)
 		__field(  unsigned int,	bytes			)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array(  char,		rwbs,	6		)
 =======
 		__array(  char,		rwbs,	RWBS_LEN	)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array(  char,		rwbs,	RWBS_LEN	)
+>>>>>>> refs/remotes/origin/master
 		__array(  char,         comm,   TASK_COMM_LEN   )
 		__dynamic_array( char,	cmd,	blk_cmd_buf_len(rq)	)
 	),
@@ -197,10 +263,14 @@ TRACE_EVENT(block_bio_bounce,
 		__field( sector_t,	sector			)
 		__field( unsigned int,	nr_sector		)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array( char,		rwbs,	6		)
 =======
 		__array( char,		rwbs,	RWBS_LEN	)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array( char,		rwbs,	RWBS_LEN	)
+>>>>>>> refs/remotes/origin/master
 		__array( char,		comm,	TASK_COMM_LEN	)
 	),
 
@@ -208,7 +278,11 @@ TRACE_EVENT(block_bio_bounce,
 		__entry->dev		= bio->bi_bdev ?
 					  bio->bi_bdev->bd_dev : 0;
 		__entry->sector		= bio->bi_sector;
+<<<<<<< HEAD
 		__entry->nr_sector	= bio->bi_size >> 9;
+=======
+		__entry->nr_sector	= bio_sectors(bio);
+>>>>>>> refs/remotes/origin/master
 		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_size);
 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
 	),
@@ -240,16 +314,24 @@ TRACE_EVENT(block_bio_complete,
 		__field( unsigned,	nr_sector	)
 		__field( int,		error		)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array( char,		rwbs,	6	)
 =======
 		__array( char,		rwbs,	RWBS_LEN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array( char,		rwbs,	RWBS_LEN)
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_fast_assign(
 		__entry->dev		= bio->bi_bdev->bd_dev;
 		__entry->sector		= bio->bi_sector;
+<<<<<<< HEAD
 		__entry->nr_sector	= bio->bi_size >> 9;
+=======
+		__entry->nr_sector	= bio_sectors(bio);
+>>>>>>> refs/remotes/origin/master
 		__entry->error		= error;
 		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_size);
 	),
@@ -260,28 +342,44 @@ TRACE_EVENT(block_bio_complete,
 		  __entry->nr_sector, __entry->error)
 );
 
+<<<<<<< HEAD
 DECLARE_EVENT_CLASS(block_bio,
 
 	TP_PROTO(struct request_queue *q, struct bio *bio),
 
 	TP_ARGS(q, bio),
+=======
+DECLARE_EVENT_CLASS(block_bio_merge,
+
+	TP_PROTO(struct request_queue *q, struct request *rq, struct bio *bio),
+
+	TP_ARGS(q, rq, bio),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__field( dev_t,		dev			)
 		__field( sector_t,	sector			)
 		__field( unsigned int,	nr_sector		)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array( char,		rwbs,	6		)
 =======
 		__array( char,		rwbs,	RWBS_LEN	)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array( char,		rwbs,	RWBS_LEN	)
+>>>>>>> refs/remotes/origin/master
 		__array( char,		comm,	TASK_COMM_LEN	)
 	),
 
 	TP_fast_assign(
 		__entry->dev		= bio->bi_bdev->bd_dev;
 		__entry->sector		= bio->bi_sector;
+<<<<<<< HEAD
 		__entry->nr_sector	= bio->bi_size >> 9;
+=======
+		__entry->nr_sector	= bio_sectors(bio);
+>>>>>>> refs/remotes/origin/master
 		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_size);
 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
 	),
@@ -295,31 +393,55 @@ DECLARE_EVENT_CLASS(block_bio,
 /**
  * block_bio_backmerge - merging block operation to the end of an existing operation
  * @q: queue holding operation
+<<<<<<< HEAD
+=======
+ * @rq: request bio is being merged into
+>>>>>>> refs/remotes/origin/master
  * @bio: new block operation to merge
  *
  * Merging block request @bio to the end of an existing block request
  * in queue @q.
  */
+<<<<<<< HEAD
 DEFINE_EVENT(block_bio, block_bio_backmerge,
 
 	TP_PROTO(struct request_queue *q, struct bio *bio),
 
 	TP_ARGS(q, bio)
+=======
+DEFINE_EVENT(block_bio_merge, block_bio_backmerge,
+
+	TP_PROTO(struct request_queue *q, struct request *rq, struct bio *bio),
+
+	TP_ARGS(q, rq, bio)
+>>>>>>> refs/remotes/origin/master
 );
 
 /**
  * block_bio_frontmerge - merging block operation to the beginning of an existing operation
  * @q: queue holding operation
+<<<<<<< HEAD
+=======
+ * @rq: request bio is being merged into
+>>>>>>> refs/remotes/origin/master
  * @bio: new block operation to merge
  *
  * Merging block IO operation @bio to the beginning of an existing block
  * operation in queue @q.
  */
+<<<<<<< HEAD
 DEFINE_EVENT(block_bio, block_bio_frontmerge,
 
 	TP_PROTO(struct request_queue *q, struct bio *bio),
 
 	TP_ARGS(q, bio)
+=======
+DEFINE_EVENT(block_bio_merge, block_bio_frontmerge,
+
+	TP_PROTO(struct request_queue *q, struct request *rq, struct bio *bio),
+
+	TP_ARGS(q, rq, bio)
+>>>>>>> refs/remotes/origin/master
 );
 
 /**
@@ -329,11 +451,40 @@ DEFINE_EVENT(block_bio, block_bio_frontmerge,
  *
  * About to place the block IO operation @bio into queue @q.
  */
+<<<<<<< HEAD
 DEFINE_EVENT(block_bio, block_bio_queue,
 
 	TP_PROTO(struct request_queue *q, struct bio *bio),
 
 	TP_ARGS(q, bio)
+=======
+TRACE_EVENT(block_bio_queue,
+
+	TP_PROTO(struct request_queue *q, struct bio *bio),
+
+	TP_ARGS(q, bio),
+
+	TP_STRUCT__entry(
+		__field( dev_t,		dev			)
+		__field( sector_t,	sector			)
+		__field( unsigned int,	nr_sector		)
+		__array( char,		rwbs,	RWBS_LEN	)
+		__array( char,		comm,	TASK_COMM_LEN	)
+	),
+
+	TP_fast_assign(
+		__entry->dev		= bio->bi_bdev->bd_dev;
+		__entry->sector		= bio->bi_sector;
+		__entry->nr_sector	= bio_sectors(bio);
+		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_size);
+		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
+	),
+
+	TP_printk("%d,%d %s %llu + %u [%s]",
+		  MAJOR(__entry->dev), MINOR(__entry->dev), __entry->rwbs,
+		  (unsigned long long)__entry->sector,
+		  __entry->nr_sector, __entry->comm)
+>>>>>>> refs/remotes/origin/master
 );
 
 DECLARE_EVENT_CLASS(block_get_rq,
@@ -347,17 +498,25 @@ DECLARE_EVENT_CLASS(block_get_rq,
 		__field( sector_t,	sector			)
 		__field( unsigned int,	nr_sector		)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array( char,		rwbs,	6		)
 =======
 		__array( char,		rwbs,	RWBS_LEN	)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array( char,		rwbs,	RWBS_LEN	)
+>>>>>>> refs/remotes/origin/master
 		__array( char,		comm,	TASK_COMM_LEN	)
         ),
 
 	TP_fast_assign(
 		__entry->dev		= bio ? bio->bi_bdev->bd_dev : 0;
 		__entry->sector		= bio ? bio->bi_sector : 0;
+<<<<<<< HEAD
 		__entry->nr_sector	= bio ? bio->bi_size >> 9 : 0;
+=======
+		__entry->nr_sector	= bio ? bio_sectors(bio) : 0;
+>>>>>>> refs/remotes/origin/master
 		blk_fill_rwbs(__entry->rwbs,
 			      bio ? bio->bi_rw : 0, __entry->nr_sector);
 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
@@ -486,10 +645,14 @@ TRACE_EVENT(block_split,
 		__field( sector_t,	sector				)
 		__field( sector_t,	new_sector			)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array( char,		rwbs,		6		)
 =======
 		__array( char,		rwbs,		RWBS_LEN	)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array( char,		rwbs,		RWBS_LEN	)
+>>>>>>> refs/remotes/origin/master
 		__array( char,		comm,		TASK_COMM_LEN	)
 	),
 
@@ -532,16 +695,24 @@ TRACE_EVENT(block_bio_remap,
 		__field( dev_t,		old_dev		)
 		__field( sector_t,	old_sector	)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array( char,		rwbs,	6	)
 =======
 		__array( char,		rwbs,	RWBS_LEN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__array( char,		rwbs,	RWBS_LEN)
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_fast_assign(
 		__entry->dev		= bio->bi_bdev->bd_dev;
 		__entry->sector		= bio->bi_sector;
+<<<<<<< HEAD
 		__entry->nr_sector	= bio->bi_size >> 9;
+=======
+		__entry->nr_sector	= bio_sectors(bio);
+>>>>>>> refs/remotes/origin/master
 		__entry->old_dev	= dev;
 		__entry->old_sector	= from;
 		blk_fill_rwbs(__entry->rwbs, bio->bi_rw, bio->bi_size);
@@ -580,10 +751,15 @@ TRACE_EVENT(block_rq_remap,
 		__field( dev_t,		old_dev		)
 		__field( sector_t,	old_sector	)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__array( char,		rwbs,	6	)
 =======
 		__array( char,		rwbs,	RWBS_LEN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__field( unsigned int,	nr_bios		)
+		__array( char,		rwbs,	RWBS_LEN)
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_fast_assign(
@@ -592,15 +768,27 @@ TRACE_EVENT(block_rq_remap,
 		__entry->nr_sector	= blk_rq_sectors(rq);
 		__entry->old_dev	= dev;
 		__entry->old_sector	= from;
+<<<<<<< HEAD
 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags, blk_rq_bytes(rq));
 	),
 
 	TP_printk("%d,%d %s %llu + %u <- (%d,%d) %llu",
+=======
+		__entry->nr_bios	= blk_rq_count_bios(rq);
+		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags, blk_rq_bytes(rq));
+	),
+
+	TP_printk("%d,%d %s %llu + %u <- (%d,%d) %llu %u",
+>>>>>>> refs/remotes/origin/master
 		  MAJOR(__entry->dev), MINOR(__entry->dev), __entry->rwbs,
 		  (unsigned long long)__entry->sector,
 		  __entry->nr_sector,
 		  MAJOR(__entry->old_dev), MINOR(__entry->old_dev),
+<<<<<<< HEAD
 		  (unsigned long long)__entry->old_sector)
+=======
+		  (unsigned long long)__entry->old_sector, __entry->nr_bios)
+>>>>>>> refs/remotes/origin/master
 );
 
 #endif /* _TRACE_BLOCK_H */

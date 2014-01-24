@@ -34,9 +34,13 @@
 #define LINK_TUNE_INTERVAL	round_jiffies_relative(HZ)
 #define AGC_INTERVAL		round_jiffies_relative(4 * HZ)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define VCO_INTERVAL		round_jiffies_relative(10 * HZ) /* 10 sec */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define VCO_INTERVAL		round_jiffies_relative(10 * HZ) /* 10 sec */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * rt2x00_rate: Per rate device information
@@ -106,7 +110,11 @@ void rt2x00lib_config(struct rt2x00_dev *rt2x00dev,
  * rt2x00queue_alloc_rxskb - allocate a skb for RX purposes.
  * @entry: The entry for which the skb will be applicable.
  */
+<<<<<<< HEAD
 struct sk_buff *rt2x00queue_alloc_rxskb(struct queue_entry *entry);
+=======
+struct sk_buff *rt2x00queue_alloc_rxskb(struct queue_entry *entry, gfp_t gfp);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * rt2x00queue_free_skb - free a skb
@@ -149,7 +157,11 @@ void rt2x00queue_remove_l2pad(struct sk_buff *skb, unsigned int header_length);
  * @local: frame is not from mac80211
  */
 int rt2x00queue_write_tx_frame(struct data_queue *queue, struct sk_buff *skb,
+<<<<<<< HEAD
 			       bool local);
+=======
+			       struct ieee80211_sta *sta, bool local);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * rt2x00queue_update_beacon - Send new beacon from mac80211
@@ -283,14 +295,20 @@ void rt2x00link_start_agc(struct rt2x00_dev *rt2x00dev);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * rt2x00link_start_vcocal - Start periodic VCO calibration
  * @rt2x00dev: Pointer to &struct rt2x00_dev.
  */
 void rt2x00link_start_vcocal(struct rt2x00_dev *rt2x00dev);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * rt2x00link_stop_agc - Stop periodic gain calibration
  * @rt2x00dev: Pointer to &struct rt2x00_dev.
  */
@@ -298,14 +316,20 @@ void rt2x00link_stop_agc(struct rt2x00_dev *rt2x00dev);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * rt2x00link_stop_vcocal - Stop periodic VCO calibration
  * @rt2x00dev: Pointer to &struct rt2x00_dev.
  */
 void rt2x00link_stop_vcocal(struct rt2x00_dev *rt2x00dev);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * rt2x00link_register - Initialize link tuning & watchdog functionality
  * @rt2x00dev: Pointer to &struct rt2x00_dev.
  *
@@ -359,11 +383,16 @@ static inline void rt2x00debug_update_crypto(struct rt2x00_dev *rt2x00dev,
 #ifdef CONFIG_RT2X00_LIB_CRYPTO
 enum cipher rt2x00crypto_key_to_cipher(struct ieee80211_key_conf *key);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void rt2x00crypto_create_tx_descriptor(struct queue_entry *entry,
 =======
 void rt2x00crypto_create_tx_descriptor(struct rt2x00_dev *rt2x00dev,
 				       struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void rt2x00crypto_create_tx_descriptor(struct rt2x00_dev *rt2x00dev,
+				       struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 				       struct txentry_desc *txdesc);
 unsigned int rt2x00crypto_tx_overhead(struct rt2x00_dev *rt2x00dev,
 				      struct sk_buff *skb);
@@ -382,11 +411,16 @@ static inline enum cipher rt2x00crypto_key_to_cipher(struct ieee80211_key_conf *
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void rt2x00crypto_create_tx_descriptor(struct queue_entry *entry,
 =======
 static inline void rt2x00crypto_create_tx_descriptor(struct rt2x00_dev *rt2x00dev,
 						     struct sk_buff *skb,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void rt2x00crypto_create_tx_descriptor(struct rt2x00_dev *rt2x00dev,
+						     struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 						     struct txentry_desc *txdesc)
 {
 }

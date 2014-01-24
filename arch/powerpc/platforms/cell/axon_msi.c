@@ -14,9 +14,13 @@
 #include <linux/pci.h>
 #include <linux/msi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/debugfs.h>
 #include <linux/slab.h>
@@ -71,10 +75,14 @@
 
 struct axon_msic {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host *irq_host;
 =======
 	struct irq_domain *irq_domain;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *irq_domain;
+>>>>>>> refs/remotes/origin/master
 	__le32 *fifo_virt;
 	dma_addr_t fifo_phys;
 	dcr_host_t dcr_host;
@@ -122,10 +130,14 @@ static void axon_msi_cascade(unsigned int irq, struct irq_desc *desc)
 			  write_offset, msic->read_offset, msi);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (msi < NR_IRQS && irq_get_chip_data(msi) == msic) {
 =======
 		if (msi < nr_irqs && irq_get_chip_data(msi) == msic) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (msi < nr_irqs && irq_get_chip_data(msi) == msic) {
+>>>>>>> refs/remotes/origin/master
 			generic_handle_irq(msi);
 			msic->fifo_virt[idx] = cpu_to_le32(0xffffffff);
 		} else {
@@ -164,10 +176,14 @@ static void axon_msi_cascade(unsigned int irq, struct irq_desc *desc)
 static struct axon_msic *find_msi_translator(struct pci_dev *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host *irq_host;
 =======
 	struct irq_domain *irq_domain;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *irq_domain;
+>>>>>>> refs/remotes/origin/master
 	struct device_node *dn, *tmp;
 	const phandle *ph;
 	struct axon_msic *msic = NULL;
@@ -200,6 +216,7 @@ static struct axon_msic *find_msi_translator(struct pci_dev *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq_host = irq_find_host(dn);
 	if (!irq_host) {
 		dev_dbg(&dev->dev, "axon_msi: no irq_host found for node %s\n",
@@ -208,15 +225,24 @@ static struct axon_msic *find_msi_translator(struct pci_dev *dev)
 	if (!irq_domain) {
 		dev_dbg(&dev->dev, "axon_msi: no irq_domain found for node %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_domain = irq_find_host(dn);
+	if (!irq_domain) {
+		dev_dbg(&dev->dev, "axon_msi: no irq_domain found for node %s\n",
+>>>>>>> refs/remotes/origin/master
 			dn->full_name);
 		goto out_error;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msic = irq_host->host_data;
 =======
 	msic = irq_domain->host_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msic = irq_domain->host_data;
+>>>>>>> refs/remotes/origin/master
 
 out_error:
 	of_node_put(dn);
@@ -302,6 +328,7 @@ static int axon_msi_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We rely on being able to stash a virq in a u16 */
 	BUILD_BUG_ON(NR_IRQS > 65536);
 
@@ -311,6 +338,10 @@ static int axon_msi_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
 	list_for_each_entry(entry, &dev->msi_list, list) {
 		virq = irq_create_direct_mapping(msic->irq_domain);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry(entry, &dev->msi_list, list) {
+		virq = irq_create_direct_mapping(msic->irq_domain);
+>>>>>>> refs/remotes/origin/master
 		if (virq == NO_IRQ) {
 			dev_warn(&dev->dev,
 				 "axon_msi: virq allocation failed!\n");
@@ -349,10 +380,14 @@ static struct irq_chip msic_irq_chip = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int msic_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int msic_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int msic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			 irq_hw_number_t hw)
 {
 	irq_set_chip_data(virq, h->host_data);
@@ -362,10 +397,14 @@ static int msic_host_map(struct irq_domain *h, unsigned int virq,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host_ops msic_host_ops = {
 =======
 static const struct irq_domain_ops msic_host_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct irq_domain_ops msic_host_ops = {
+>>>>>>> refs/remotes/origin/master
 	.map	= msic_host_map,
 };
 
@@ -376,10 +415,14 @@ static void axon_msi_shutdown(struct platform_device *device)
 
 	pr_devel("axon_msi: disabling %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		  msic->irq_host->of_node->full_name);
 =======
 		  msic->irq_domain->of_node->full_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  msic->irq_domain->of_node->full_name);
+>>>>>>> refs/remotes/origin/master
 	tmp  = dcr_read(msic->dcr_host, MSIC_CTRL_REG);
 	tmp &= ~MSIC_CTRL_ENABLE & ~MSIC_CTRL_IRQ_ENABLE;
 	msic_dcr_write(msic, MSIC_CTRL_REG, tmp);
@@ -435,25 +478,34 @@ static int axon_msi_probe(struct platform_device *device)
 	memset(msic->fifo_virt, 0xff, MSIC_FIFO_SIZE_BYTES);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msic->irq_host = irq_alloc_host(dn, IRQ_HOST_MAP_NOMAP,
 					NR_IRQS, &msic_host_ops, 0);
 	if (!msic->irq_host) {
 		printk(KERN_ERR "axon_msi: couldn't allocate irq_host for %s\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We rely on being able to stash a virq in a u16, so limit irqs to < 65536 */
 	msic->irq_domain = irq_domain_add_nomap(dn, 65536, &msic_host_ops, msic);
 	if (!msic->irq_domain) {
 		printk(KERN_ERR "axon_msi: couldn't allocate irq_domain for %s\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       dn->full_name);
 		goto out_free_fifo;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msic->irq_host->host_data = msic;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_set_handler_data(virq, msic);
 	irq_set_chained_handler(virq, axon_msi_cascade);
 	pr_devel("axon_msi: irq 0x%x setup for axon_msi\n", virq);

@@ -19,6 +19,7 @@ int dlm_add_lkb_callback(struct dlm_lkb *lkb, uint32_t flags, int mode,
 int dlm_rem_lkb_callback(struct dlm_ls *ls, struct dlm_lkb *lkb,
                          struct dlm_callback *cb, int *resid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void dlm_add_ast(struct dlm_lkb *lkb, uint32_t flags, int mode, int status,
 		 uint32_t sbflags);
 
@@ -31,6 +32,8 @@ void dlm_astd_resume(void);
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void dlm_add_cb(struct dlm_lkb *lkb, uint32_t flags, int mode, int status,
                 uint32_t sbflags);
 
@@ -43,4 +46,7 @@ void dlm_callback_resume(struct dlm_ls *ls);
 #endif
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

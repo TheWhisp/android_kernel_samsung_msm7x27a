@@ -262,6 +262,7 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 	u16 dig1;
 	int timeout = 5 * delay;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!wm->pen_probably_down) {
 =======
@@ -269,6 +270,11 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 
 	if (wants_pen && !wm->pen_probably_down) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool wants_pen = adcsel & WM97XX_PEN_DOWN;
+
+	if (wants_pen && !wm->pen_probably_down) {
+>>>>>>> refs/remotes/origin/master
 		u16 data = wm97xx_reg_read(wm, AC97_WM97XX_DIGITISER_RD);
 		if (!(data & WM97XX_PEN_DOWN))
 			return RC_PENUP;
@@ -276,6 +282,7 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 	}
 
 	/* set up digitiser */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (adcsel & 0x8000)
 		adcsel = 1 << ((adcsel & 0x7fff) + 3);
@@ -287,6 +294,8 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 		wm->mach_ops->pre_sample(adcsel);
 	wm97xx_reg_write(wm, AC97_WM9713_DIG1, dig1 | adcsel | WM9713_POLL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dig1 = wm97xx_reg_read(wm, AC97_WM9713_DIG1);
 	dig1 &= ~WM9713_ADCSEL_MASK;
 	/* WM97XX_ADCSEL_* channels need to be converted to WM9713 format */
@@ -295,7 +304,10 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 	if (wm->mach_ops && wm->mach_ops->pre_sample)
 		wm->mach_ops->pre_sample(adcsel);
 	wm97xx_reg_write(wm, AC97_WM9713_DIG1, dig1 | WM9713_POLL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* wait 3 AC97 time slots + delay for conversion */
 	poll_delay(delay);
@@ -322,6 +334,7 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 
 	/* check we have correct sample */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((*sample & WM97XX_ADCSRC_MASK) != ffs(adcsel >> 1) << 12) {
 		dev_dbg(wm->dev, "adc wrong sample, read %x got %x", adcsel,
 			*sample & WM97XX_ADCSRC_MASK);
@@ -330,6 +343,8 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 
 	if (!(*sample & WM97XX_PEN_DOWN)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((*sample ^ adcsel) & WM97XX_ADCSEL_MASK) {
 		dev_dbg(wm->dev, "adc wrong sample, wanted %x got %x",
 			adcsel & WM97XX_ADCSEL_MASK,
@@ -338,7 +353,10 @@ static int wm9713_poll_sample(struct wm97xx *wm, int adcsel, int *sample)
 	}
 
 	if (wants_pen && !(*sample & WM97XX_PEN_DOWN)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		wm->pen_probably_down = 0;
 		return RC_PENUP;
 	}
@@ -429,6 +447,7 @@ static int wm9713_poll_touch(struct wm97xx *wm, struct wm97xx_data *data)
 			return rc;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = wm9713_poll_sample(wm, WM9713_ADCSEL_X, &data->x);
 		if (rc != RC_VALID)
 			return rc;
@@ -438,6 +457,8 @@ static int wm9713_poll_touch(struct wm97xx *wm, struct wm97xx_data *data)
 		if (pil) {
 			rc = wm9713_poll_sample(wm, WM9713_ADCSEL_PRES,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = wm9713_poll_sample(wm, WM97XX_ADCSEL_X | WM97XX_PEN_DOWN, &data->x);
 		if (rc != RC_VALID)
 			return rc;
@@ -446,7 +467,10 @@ static int wm9713_poll_touch(struct wm97xx *wm, struct wm97xx_data *data)
 			return rc;
 		if (pil) {
 			rc = wm9713_poll_sample(wm, WM97XX_ADCSEL_PRES | WM97XX_PEN_DOWN,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						&data->p);
 			if (rc != RC_VALID)
 				return rc;

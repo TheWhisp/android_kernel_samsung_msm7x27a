@@ -57,6 +57,13 @@ void setup_pager(void)
 	}
 	if (!pager)
 		pager = getenv("PAGER");
+<<<<<<< HEAD
+=======
+	if (!pager) {
+		if (!access("/usr/bin/pager", X_OK))
+			pager = "/usr/bin/pager";
+	}
+>>>>>>> refs/remotes/origin/master
 	if (!pager)
 		pager = "less";
 	else if (!*pager || !strcmp(pager, "cat"))

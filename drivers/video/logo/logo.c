@@ -22,10 +22,14 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nologo;
 =======
 static bool nologo;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nologo;
+>>>>>>> refs/remotes/origin/master
 module_param(nologo, bool, 0);
 MODULE_PARM_DESC(nologo, "Disables startup logo");
 

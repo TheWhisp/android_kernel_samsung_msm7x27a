@@ -36,12 +36,23 @@
 /* pltfm-specific */
 #define ESDHC_HOST_CONTROL_LE	0x20
 
+<<<<<<< HEAD
+=======
+/*
+ * P2020 interpretation of the SDHCI_HOST_CONTROL register
+ */
+#define ESDHC_CTRL_4BITBUS          (0x1 << 1)
+#define ESDHC_CTRL_8BITBUS          (0x2 << 1)
+#define ESDHC_CTRL_BUSWIDTH_MASK    (0x3 << 1)
+
+>>>>>>> refs/remotes/origin/master
 /* OF-specific */
 #define ESDHC_DMA_SYSCTL	0x40c
 #define ESDHC_DMA_SNOOP		0x00000040
 
 #define ESDHC_HOST_CONTROL_RES	0x05
 
+<<<<<<< HEAD
 static inline void esdhc_set_clock(struct sdhci_host *host, unsigned int clock)
 {
 	int pre_div = 2;
@@ -82,4 +93,6 @@ out:
 	host->clock = clock;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _DRIVERS_MMC_SDHCI_ESDHC_H */

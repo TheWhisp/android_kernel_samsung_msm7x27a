@@ -35,7 +35,11 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr,
 			: "memory", "cc");
 		break;
 	default:
+<<<<<<< HEAD
 		ret = __xchg_bad_pointer();
+=======
+		__xchg_bad_pointer();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;

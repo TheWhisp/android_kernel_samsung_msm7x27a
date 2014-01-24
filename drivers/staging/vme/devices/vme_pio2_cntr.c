@@ -17,8 +17,13 @@
 #include <linux/device.h>
 #include <linux/types.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 
 #include "../vme.h"
+=======
+#include <linux/vme.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "vme_pio2.h"
 
 static int pio2_cntr_irq_set(struct pio2_card *card, int id)

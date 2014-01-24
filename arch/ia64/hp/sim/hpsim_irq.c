@@ -11,10 +11,15 @@
 #include <linux/irq.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "hpsim_ssc.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "hpsim_ssc.h"
+
+>>>>>>> refs/remotes/origin/master
 static unsigned int
 hpsim_irq_startup(struct irq_data *data)
 {
@@ -43,7 +48,10 @@ static struct irq_chip irq_type_hp_sim = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void hpsim_irq_set_chip(int irq)
 {
 	struct irq_chip *chip = irq_get_chip(irq);
@@ -70,12 +78,16 @@ int hpsim_get_irq(int intr)
 	return irq;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init
 hpsim_irq_init (void)
 {
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for_each_active_irq(i) {
 		struct irq_chip *chip = irq_get_chip(i);
@@ -87,4 +99,8 @@ hpsim_irq_init (void)
 	for_each_active_irq(i)
 		hpsim_irq_set_chip(i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for_each_active_irq(i)
+		hpsim_irq_set_chip(i);
+>>>>>>> refs/remotes/origin/master
 }

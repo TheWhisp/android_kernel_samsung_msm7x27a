@@ -26,6 +26,10 @@
  */
 
 #include <asm/errno.h>
+<<<<<<< HEAD
+=======
+#include <asm/asm.h>
+>>>>>>> refs/remotes/origin/master
 				
 /*
  * computes a partial checksum, e.g. for TCP/UDP fragments
@@ -232,6 +236,7 @@ unsigned int csum_partial_copy_generic (const char *src, char *dst,
 
 #define SRC(y...)			\
 	9999: y;			\
+<<<<<<< HEAD
 	.section __ex_table, "a";	\
 	.long 9999b, 6001f	;	\
 	.previous
@@ -241,6 +246,13 @@ unsigned int csum_partial_copy_generic (const char *src, char *dst,
 	.section __ex_table, "a";	\
 	.long 9999b, 6002f	;	\
 	.previous
+=======
+	_ASM_EXTABLE(9999b, 6001f)
+
+#define DST(y...)			\
+	9999: y;			\
+	_ASM_EXTABLE(9999b, 6002f)
+>>>>>>> refs/remotes/origin/master
 
 .align 4
 

@@ -24,10 +24,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/errno.h>
@@ -45,20 +50,27 @@
 #include <asm/mach-ar7/ar7.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRVNAME "ar7_wdt"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LONGNAME "TI AR7 Watchdog Timer"
 
 MODULE_AUTHOR("Nicolas Thill <nico@openwrt.org>");
 MODULE_DESCRIPTION(LONGNAME);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int margin = 60;
 module_param(margin, int, 0);
 MODULE_PARM_DESC(margin, "Watchdog margin in seconds");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
@@ -66,6 +78,10 @@ module_param(nowayout, int, 0);
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Disable watchdog shutdown on close");
 
 #define READ_REG(x) readl((void __iomem *)&(x))
@@ -84,12 +100,17 @@ struct ar7_wdt {
 
 static unsigned long wdt_is_open;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static spinlock_t wdt_lock;
 static unsigned expect_close;
 =======
 static unsigned expect_close;
 static DEFINE_SPINLOCK(wdt_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned expect_close;
+static DEFINE_SPINLOCK(wdt_lock);
+>>>>>>> refs/remotes/origin/master
 
 /* XXX currently fixed, allows max margin ~68.72 secs */
 #define prescale_value 0xffff
@@ -112,10 +133,14 @@ static void ar7_wdt_kick(u32 value)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT kick reg\n");
 =======
 	pr_err("failed to unlock WDT kick reg\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("failed to unlock WDT kick reg\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ar7_wdt_prescale(u32 value)
@@ -129,10 +154,14 @@ static void ar7_wdt_prescale(u32 value)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT prescale reg\n");
 =======
 	pr_err("failed to unlock WDT prescale reg\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("failed to unlock WDT prescale reg\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ar7_wdt_change(u32 value)
@@ -146,10 +175,14 @@ static void ar7_wdt_change(u32 value)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT change reg\n");
 =======
 	pr_err("failed to unlock WDT change reg\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("failed to unlock WDT change reg\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ar7_wdt_disable(u32 value)
@@ -166,10 +199,14 @@ static void ar7_wdt_disable(u32 value)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_ERR DRVNAME ": failed to unlock WDT disable reg\n");
 =======
 	pr_err("failed to unlock WDT disable reg\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_err("failed to unlock WDT disable reg\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ar7_wdt_update_margin(int new_margin)
@@ -186,6 +223,7 @@ static void ar7_wdt_update_margin(int new_margin)
 	ar7_wdt_change(change);
 	margin = change * prescale_value / vbus_rate;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DRVNAME
 	       ": timer margin %d seconds (prescale %d, change %d, freq %d)\n",
 	       margin, prescale_value, change, vbus_rate);
@@ -193,15 +231,23 @@ static void ar7_wdt_update_margin(int new_margin)
 	pr_info("timer margin %d seconds (prescale %d, change %d, freq %d)\n",
 		margin, prescale_value, change, vbus_rate);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("timer margin %d seconds (prescale %d, change %d, freq %d)\n",
+		margin, prescale_value, change, vbus_rate);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ar7_wdt_enable_wdt(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG DRVNAME ": enabling watchdog timer\n");
 =======
 	pr_debug("enabling watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("enabling watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 	ar7_wdt_disable(1);
 	ar7_wdt_kick(1);
 }
@@ -209,10 +255,14 @@ static void ar7_wdt_enable_wdt(void)
 static void ar7_wdt_disable_wdt(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG DRVNAME ": disabling watchdog timer\n");
 =======
 	pr_debug("disabling watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("disabling watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 	ar7_wdt_disable(0);
 }
 
@@ -231,12 +281,16 @@ static int ar7_wdt_release(struct inode *inode, struct file *file)
 {
 	if (!expect_close)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING DRVNAME
 		": watchdog device closed unexpectedly,"
 		"will not disable the watchdog timer\n");
 =======
 		pr_warn("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 	else if (!nowayout)
 		ar7_wdt_disable_wdt();
 	clear_bit(0, &wdt_is_open);
@@ -327,6 +381,7 @@ static struct miscdevice ar7_wdt_miscdev = {
 	.fops		= &ar7_wdt_fops,
 };
 
+<<<<<<< HEAD
 static int __devinit ar7_wdt_probe(struct platform_device *pdev)
 {
 	int rc;
@@ -379,6 +434,22 @@ static int __devinit ar7_wdt_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 		rc = PTR_ERR(vbus_clk);
 		goto out_mem_region;
+=======
+static int ar7_wdt_probe(struct platform_device *pdev)
+{
+	int rc;
+
+	ar7_regs_wdt =
+		platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
+	ar7_wdt = devm_ioremap_resource(&pdev->dev, ar7_regs_wdt);
+	if (IS_ERR(ar7_wdt))
+		return PTR_ERR(ar7_wdt);
+
+	vbus_clk = clk_get(NULL, "vbus");
+	if (IS_ERR(vbus_clk)) {
+		pr_err("could not get vbus clock\n");
+		return PTR_ERR(vbus_clk);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ar7_wdt_disable_wdt();
@@ -387,6 +458,7 @@ static int __devinit ar7_wdt_probe(struct platform_device *pdev)
 
 	rc = misc_register(&ar7_wdt_miscdev);
 	if (rc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR DRVNAME ": unable to register misc device\n");
 =======
@@ -410,6 +482,24 @@ static int __devexit ar7_wdt_remove(struct platform_device *pdev)
 	iounmap(ar7_wdt);
 	release_mem_region(ar7_regs_wdt->start, resource_size(ar7_regs_wdt));
 
+=======
+		pr_err("unable to register misc device\n");
+		goto out;
+	}
+	return 0;
+
+out:
+	clk_put(vbus_clk);
+	vbus_clk = NULL;
+	return rc;
+}
+
+static int ar7_wdt_remove(struct platform_device *pdev)
+{
+	misc_deregister(&ar7_wdt_miscdev);
+	clk_put(vbus_clk);
+	vbus_clk = NULL;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -421,7 +511,11 @@ static void ar7_wdt_shutdown(struct platform_device *pdev)
 
 static struct platform_driver ar7_wdt_driver = {
 	.probe = ar7_wdt_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ar7_wdt_remove),
+=======
+	.remove = ar7_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown = ar7_wdt_shutdown,
 	.driver = {
 		.owner = THIS_MODULE,
@@ -429,6 +523,7 @@ static struct platform_driver ar7_wdt_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init ar7_wdt_init(void)
 {
@@ -445,3 +540,6 @@ module_exit(ar7_wdt_cleanup);
 =======
 module_platform_driver(ar7_wdt_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(ar7_wdt_driver);
+>>>>>>> refs/remotes/origin/master

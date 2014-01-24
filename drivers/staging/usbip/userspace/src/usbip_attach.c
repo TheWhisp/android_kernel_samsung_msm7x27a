@@ -27,6 +27,10 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <unistd.h>
+<<<<<<< HEAD
+=======
+#include <errno.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "vhci_driver.h"
 #include "usbip_common.h"
@@ -35,7 +39,11 @@
 
 static const char usbip_attach_usage_string[] =
 	"usbip attach <args>\n"
+<<<<<<< HEAD
 	"    -h, --host=<host>      The machine with exported USB devices\n"
+=======
+	"    -r, --remote=<host>      The machine with exported USB devices\n"
+>>>>>>> refs/remotes/origin/master
 	"    -b, --busid=<busid>    Busid of the device on <host>\n";
 
 void usbip_attach_usage(void)
@@ -52,8 +60,23 @@ static int record_connection(char *host, char *port, char *busid, int rhport)
 	int ret;
 
 	ret = mkdir(VHCI_STATE_PATH, 0700);
+<<<<<<< HEAD
 	if (ret < 0)
 		return -1;
+=======
+	if (ret < 0) {
+		/* if VHCI_STATE_PATH exists, then it better be a directory */
+		if (errno == EEXIST) {
+			struct stat s;
+			ret = stat(VHCI_STATE_PATH, &s);
+			if (ret < 0)
+				return -1;
+			if (!(s.st_mode & S_IFDIR))
+				return -1;
+		} else
+			return -1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	snprintf(path, PATH_MAX, VHCI_STATE_PATH"/port%d", rhport);
 
@@ -133,7 +156,11 @@ static int query_import_device(int sockfd, char *busid)
 		return -1;
 	}
 
+<<<<<<< HEAD
 	/* recieve a reply */
+=======
+	/* receive a reply */
+>>>>>>> refs/remotes/origin/master
 	rc = usbip_net_recv_op_common(sockfd, &code);
 	if (rc < 0) {
 		err("recv op_common");
@@ -164,7 +191,11 @@ static int attach_device(char *host, char *busid)
 	int rc;
 	int rhport;
 
+<<<<<<< HEAD
 	sockfd = usbip_net_tcp_connect(host, USBIP_PORT_STRING);
+=======
+	sockfd = usbip_net_tcp_connect(host, usbip_port_string);
+>>>>>>> refs/remotes/origin/master
 	if (sockfd < 0) {
 		err("tcp connect");
 		return -1;
@@ -178,7 +209,11 @@ static int attach_device(char *host, char *busid)
 
 	close(sockfd);
 
+<<<<<<< HEAD
 	rc = record_connection(host, USBIP_PORT_STRING, busid, rhport);
+=======
+	rc = record_connection(host, usbip_port_string, busid, rhport);
+>>>>>>> refs/remotes/origin/master
 	if (rc < 0) {
 		err("record connection");
 		return -1;
@@ -190,9 +225,15 @@ static int attach_device(char *host, char *busid)
 int usbip_attach(int argc, char *argv[])
 {
 	static const struct option opts[] = {
+<<<<<<< HEAD
 		{ "host", required_argument, NULL, 'h' },
 		{ "busid", required_argument, NULL, 'b' },
 		{ NULL, 0, NULL, 0 }
+=======
+		{ "remote", required_argument, NULL, 'r' },
+		{ "busid",  required_argument, NULL, 'b' },
+		{ NULL, 0,  NULL, 0 }
+>>>>>>> refs/remotes/origin/master
 	};
 	char *host = NULL;
 	char *busid = NULL;
@@ -200,13 +241,21 @@ int usbip_attach(int argc, char *argv[])
 	int ret = -1;
 
 	for (;;) {
+<<<<<<< HEAD
 		opt = getopt_long(argc, argv, "h:b:", opts, NULL);
+=======
+		opt = getopt_long(argc, argv, "r:b:", opts, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		if (opt == -1)
 			break;
 
 		switch (opt) {
+<<<<<<< HEAD
 		case 'h':
+=======
+		case 'r':
+>>>>>>> refs/remotes/origin/master
 			host = optarg;
 			break;
 		case 'b':

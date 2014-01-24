@@ -1,15 +1,20 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    Copyright IBM Corp. 2007
 =======
  *    Copyright IBM Corp. 2007,2011
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    Copyright IBM Corp. 2007, 2011
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
  */
 
 #define KMSG_COMPONENT "cpu"
 #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/mm.h>
@@ -23,10 +28,16 @@
 #include <linux/cpuset.h>
 #include <asm/delay.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/bootmem.h>
 #include <linux/cpuset.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/init.h>
@@ -34,7 +45,11 @@
 #include <linux/cpu.h>
 #include <linux/smp.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/sysinfo.h>
+>>>>>>> refs/remotes/origin/master
 
 #define PTF_HORIZONTAL	(0UL)
 #define PTF_VERTICAL	(1UL)
@@ -46,6 +61,7 @@ struct mask_info {
 	cpumask_t mask;
 };
 
+<<<<<<< HEAD
 static int topology_enabled = 1;
 static void topology_work_fn(struct work_struct *work);
 static struct sysinfo_15_1_x *tl_info;
@@ -76,11 +92,28 @@ unsigned char cpu_book_id[NR_CPUS];
 /* smp_cpu_state_mutex must be held when accessing this array */
 int cpu_polarization[NR_CPUS];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void set_topology_timer(void);
+static void topology_work_fn(struct work_struct *work);
+static struct sysinfo_15_1_x *tl_info;
+
+static int topology_enabled = 1;
+static DECLARE_WORK(topology_work, topology_work_fn);
+
+/* topology_lock protects the socket and book linked lists */
+static DEFINE_SPINLOCK(topology_lock);
+static struct mask_info socket_info;
+static struct mask_info book_info;
+
+struct cpu_topology_s390 cpu_topology[NR_CPUS];
+EXPORT_SYMBOL_GPL(cpu_topology);
+>>>>>>> refs/remotes/origin/master
 
 static cpumask_t cpu_group_map(struct mask_info *info, unsigned int cpu)
 {
 	cpumask_t mask;
 
+<<<<<<< HEAD
 	cpumask_clear(&mask);
 	if (!topology_enabled || !MACHINE_HAS_TOPOLOGY) {
 		cpumask_copy(&mask, cpumask_of(cpu));
@@ -131,11 +164,32 @@ static struct mask_info *add_cpus_to_mask(struct topology_cpu *tl_cpu,
 		}
 	}
 =======
+=======
+	cpumask_copy(&mask, cpumask_of(cpu));
+	if (!topology_enabled || !MACHINE_HAS_TOPOLOGY)
+		return mask;
+	for (; info; info = info->next) {
+		if (cpumask_test_cpu(cpu, &info->mask))
+			return info->mask;
+	}
+	return mask;
+}
+
+static struct mask_info *add_cpus_to_mask(struct topology_cpu *tl_cpu,
+					  struct mask_info *book,
+					  struct mask_info *socket,
+					  int one_socket_per_cpu)
+{
+	unsigned int cpu;
+
+	for_each_set_bit(cpu, &tl_cpu->mask[0], TOPOLOGY_CPU_BITS) {
+>>>>>>> refs/remotes/origin/master
 		unsigned int rcpu;
 		int lcpu;
 
 		rcpu = TOPOLOGY_CPU_BITS - 1 - cpu + tl_cpu->origin;
 		lcpu = smp_find_processor_id(rcpu);
+<<<<<<< HEAD
 		if (lcpu >= 0) {
 			cpumask_set_cpu(lcpu, &book->mask);
 			cpu_book_id[lcpu] = book->id;
@@ -151,30 +205,57 @@ static struct mask_info *add_cpus_to_mask(struct topology_cpu *tl_cpu,
 	}
 	return core;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (lcpu < 0)
+			continue;
+		cpumask_set_cpu(lcpu, &book->mask);
+		cpu_topology[lcpu].book_id = book->id;
+		cpumask_set_cpu(lcpu, &socket->mask);
+		cpu_topology[lcpu].core_id = rcpu;
+		if (one_socket_per_cpu) {
+			cpu_topology[lcpu].socket_id = rcpu;
+			socket = socket->next;
+		} else {
+			cpu_topology[lcpu].socket_id = socket->id;
+		}
+		smp_cpu_set_polarization(lcpu, tl_cpu->pp);
+	}
+	return socket;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void clear_masks(void)
 {
 	struct mask_info *info;
 
+<<<<<<< HEAD
 	info = &core_info;
+=======
+	info = &socket_info;
+>>>>>>> refs/remotes/origin/master
 	while (info) {
 		cpumask_clear(&info->mask);
 		info = info->next;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SCHED_BOOK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	info = &book_info;
 	while (info) {
 		cpumask_clear(&info->mask);
 		info = info->next;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static union topology_entry *next_tle(union topology_entry *tle)
@@ -184,6 +265,7 @@ static union topology_entry *next_tle(union topology_entry *tle)
 	return (union topology_entry *)((struct topology_container *)tle + 1);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void tl_to_cores(struct sysinfo_15_1_x *info)
 {
@@ -206,18 +288,30 @@ static void __tl_to_cores_generic(struct sysinfo_15_1_x *info)
 	union topology_entry *tle, *end;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __tl_to_masks_generic(struct sysinfo_15_1_x *info)
+{
+	struct mask_info *socket = &socket_info;
+	struct mask_info *book = &book_info;
+	union topology_entry *tle, *end;
+
+>>>>>>> refs/remotes/origin/master
 	tle = info->tle;
 	end = (union topology_entry *)((unsigned long)info + info->length);
 	while (tle < end) {
 		switch (tle->nl) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SCHED_BOOK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case 2:
 			book = book->next;
 			book->id = tle->container.id;
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 =======
@@ -239,6 +333,14 @@ static void __tl_to_cores_generic(struct sysinfo_15_1_x *info)
 out:
 =======
 			add_cpus_to_mask(&tle->cpu, book, core, 0);
+=======
+		case 1:
+			socket = socket->next;
+			socket->id = tle->container.id;
+			break;
+		case 0:
+			add_cpus_to_mask(&tle->cpu, book, socket, 0);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			clear_masks();
@@ -248,9 +350,15 @@ out:
 	}
 }
 
+<<<<<<< HEAD
 static void __tl_to_cores_z10(struct sysinfo_15_1_x *info)
 {
 	struct mask_info *core = &core_info;
+=======
+static void __tl_to_masks_z10(struct sysinfo_15_1_x *info)
+{
+	struct mask_info *socket = &socket_info;
+>>>>>>> refs/remotes/origin/master
 	struct mask_info *book = &book_info;
 	union topology_entry *tle, *end;
 
@@ -263,7 +371,11 @@ static void __tl_to_cores_z10(struct sysinfo_15_1_x *info)
 			book->id = tle->container.id;
 			break;
 		case 0:
+<<<<<<< HEAD
 			core = add_cpus_to_mask(&tle->cpu, book, core, 1);
+=======
+			socket = add_cpus_to_mask(&tle->cpu, book, socket, 1);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			clear_masks();
@@ -273,22 +385,39 @@ static void __tl_to_cores_z10(struct sysinfo_15_1_x *info)
 	}
 }
 
+<<<<<<< HEAD
 static void tl_to_cores(struct sysinfo_15_1_x *info)
 {
 	struct cpuid cpu_id;
 
 	get_cpu_id(&cpu_id);
 	spin_lock_irq(&topology_lock);
+=======
+static void tl_to_masks(struct sysinfo_15_1_x *info)
+{
+	struct cpuid cpu_id;
+
+	spin_lock_irq(&topology_lock);
+	get_cpu_id(&cpu_id);
+>>>>>>> refs/remotes/origin/master
 	clear_masks();
 	switch (cpu_id.machine) {
 	case 0x2097:
 	case 0x2098:
+<<<<<<< HEAD
 		__tl_to_cores_z10(info);
 		break;
 	default:
 		__tl_to_cores_generic(info);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__tl_to_masks_z10(info);
+		break;
+	default:
+		__tl_to_masks_generic(info);
+	}
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&topology_lock);
 }
 
@@ -299,10 +428,14 @@ static void topology_update_polarization_simple(void)
 	mutex_lock(&smp_cpu_state_mutex);
 	for_each_possible_cpu(cpu)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		smp_cpu_polarization[cpu] = POLARIZATION_HRZ;
 =======
 		cpu_set_polarization(cpu, POLARIZATION_HRZ);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		smp_cpu_set_polarization(cpu, POLARIZATION_HRZ);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&smp_cpu_state_mutex);
 }
 
@@ -322,11 +455,15 @@ static int ptf(unsigned long fc)
 int topology_set_cpu_management(int fc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int cpu;
 	int rc;
 =======
 	int cpu, rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cpu, rc;
+>>>>>>> refs/remotes/origin/master
 
 	if (!MACHINE_HAS_TOPOLOGY)
 		return -EOPNOTSUPP;
@@ -338,6 +475,7 @@ int topology_set_cpu_management(int fc)
 		return -EBUSY;
 	for_each_possible_cpu(cpu)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		smp_cpu_polarization[cpu] = POLARIZATION_UNKNWN;
 =======
 		cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
@@ -346,12 +484,20 @@ int topology_set_cpu_management(int fc)
 }
 
 static void update_cpu_core_map(void)
+=======
+		smp_cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
+	return rc;
+}
+
+static void update_cpu_masks(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	int cpu;
 
 	spin_lock_irqsave(&topology_lock, flags);
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 		cpu_core_map[cpu] = cpu_group_map(&core_info, cpu);
 <<<<<<< HEAD
 #ifdef CONFIG_SCHED_BOOK
@@ -360,12 +506,22 @@ static void update_cpu_core_map(void)
 =======
 		cpu_book_map[cpu] = cpu_group_map(&book_info, cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cpu_topology[cpu].core_mask = cpu_group_map(&socket_info, cpu);
+		cpu_topology[cpu].book_mask = cpu_group_map(&book_info, cpu);
+		if (!MACHINE_HAS_TOPOLOGY) {
+			cpu_topology[cpu].core_id = cpu;
+			cpu_topology[cpu].socket_id = cpu;
+			cpu_topology[cpu].book_id = cpu;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&topology_lock, flags);
 }
 
 void store_topology(struct sysinfo_15_1_x *info)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SCHED_BOOK
 =======
@@ -380,11 +536,18 @@ void store_topology(struct sysinfo_15_1_x *info)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	stsi(info, 15, 1, 2);
+=======
+	if (topology_max_mnest >= 3)
+		stsi(info, 15, 1, 3);
+	else
+		stsi(info, 15, 1, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 int arch_update_cpu_topology(void)
 {
 	struct sysinfo_15_1_x *info = tl_info;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct sys_device *sysdev;
 =======
@@ -394,10 +557,18 @@ int arch_update_cpu_topology(void)
 
 	if (!MACHINE_HAS_TOPOLOGY) {
 		update_cpu_core_map();
+=======
+	struct device *dev;
+	int cpu;
+
+	if (!MACHINE_HAS_TOPOLOGY) {
+		update_cpu_masks();
+>>>>>>> refs/remotes/origin/master
 		topology_update_polarization_simple();
 		return 0;
 	}
 	store_topology(info);
+<<<<<<< HEAD
 	tl_to_cores(info);
 	update_cpu_core_map();
 	for_each_online_cpu(cpu) {
@@ -408,6 +579,13 @@ int arch_update_cpu_topology(void)
 		dev = get_cpu_device(cpu);
 		kobject_uevent(&dev->kobj, KOBJ_CHANGE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tl_to_masks(info);
+	update_cpu_masks();
+	for_each_online_cpu(cpu) {
+		dev = get_cpu_device(cpu);
+		kobject_uevent(&dev->kobj, KOBJ_CHANGE);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 1;
 }
@@ -430,6 +608,7 @@ static void topology_timer_fn(unsigned long ignored)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void set_topology_timer(void)
 {
 	topology_timer.function = topology_timer_fn;
@@ -437,6 +616,8 @@ static void set_topology_timer(void)
 	topology_timer.expires = jiffies + 60 * HZ;
 	add_timer(&topology_timer);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct timer_list topology_timer =
 	TIMER_DEFERRED_INITIALIZER(topology_timer_fn, 0, 0);
 
@@ -461,7 +642,10 @@ void topology_expect_change(void)
 		return;
 	atomic_add(60, &topology_poll);
 	set_topology_timer();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init early_parse_topology(char *p)
@@ -473,6 +657,7 @@ static int __init early_parse_topology(char *p)
 }
 early_param("topology", early_parse_topology);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init init_topology_update(void)
 {
@@ -497,6 +682,10 @@ static void alloc_masks(struct sysinfo_15_1_x *info, struct mask_info *mask,
 static void __init alloc_masks(struct sysinfo_15_1_x *info,
 			       struct mask_info *mask, int offset)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init alloc_masks(struct sysinfo_15_1_x *info,
+			       struct mask_info *mask, int offset)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, nr_masks;
 
@@ -523,6 +712,7 @@ void __init s390_init_cpu_topology(void)
 	pr_info("The CPU configuration topology of the machine is:");
 	for (i = 0; i < TOPOLOGY_NR_MAG; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(" %d", info->mag[i]);
 	printk(" / %d\n", info->mnest);
 	alloc_masks(info, &core_info, 2);
@@ -534,6 +724,11 @@ void __init s390_init_cpu_topology(void)
 		printk(KERN_CONT " %d", info->mag[i]);
 	printk(KERN_CONT " / %d\n", info->mnest);
 	alloc_masks(info, &core_info, 1);
+=======
+		printk(KERN_CONT " %d", info->mag[i]);
+	printk(KERN_CONT " / %d\n", info->mnest);
+	alloc_masks(info, &socket_info, 1);
+>>>>>>> refs/remotes/origin/master
 	alloc_masks(info, &book_info, 2);
 }
 
@@ -588,7 +783,11 @@ static ssize_t cpu_polarization_show(struct device *dev,
 	ssize_t count;
 
 	mutex_lock(&smp_cpu_state_mutex);
+<<<<<<< HEAD
 	switch (cpu_read_polarization(cpu)) {
+=======
+	switch (smp_cpu_get_polarization(cpu)) {
+>>>>>>> refs/remotes/origin/master
 	case POLARIZATION_HRZ:
 		count = sprintf(buf, "horizontal\n");
 		break;
@@ -632,8 +831,15 @@ static int __init topology_init(void)
 	}
 	set_topology_timer();
 out:
+<<<<<<< HEAD
 	update_cpu_core_map();
 	return device_create_file(cpu_subsys.dev_root, &dev_attr_dispatching);
 }
 device_initcall(topology_init);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	update_cpu_masks();
+	return device_create_file(cpu_subsys.dev_root, &dev_attr_dispatching);
+}
+device_initcall(topology_init);
+>>>>>>> refs/remotes/origin/master

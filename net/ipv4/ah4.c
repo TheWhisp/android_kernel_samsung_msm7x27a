@@ -1,8 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) "IPsec: " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "IPsec: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <crypto/hash.h>
 #include <linux/err.h>
 #include <linux/module.h>
@@ -80,7 +85,11 @@ static inline struct scatterlist *ah_req_sg(struct crypto_ahash *ahash,
 
 static int ip_clear_mutable_options(const struct iphdr *iph, __be32 *daddr)
 {
+<<<<<<< HEAD
 	unsigned char * optptr = (unsigned char*)(iph+1);
+=======
+	unsigned char *optptr = (unsigned char *)(iph+1);
+>>>>>>> refs/remotes/origin/master
 	int  l = iph->ihl*4 - sizeof(struct iphdr);
 	int  optlen;
 
@@ -272,7 +281,15 @@ static void ah_input_done(struct crypto_async_request *base, int err)
 	skb->network_header += ah_hlen;
 	memcpy(skb_network_header(skb), work_iph, ihl);
 	__skb_pull(skb, ah_hlen + ihl);
+<<<<<<< HEAD
 	skb_set_transport_header(skb, -ihl);
+=======
+
+	if (x->props.mode == XFRM_MODE_TUNNEL)
+		skb_reset_transport_header(skb);
+	else
+		skb_set_transport_header(skb, -ihl);
+>>>>>>> refs/remotes/origin/master
 out:
 	kfree(AH_SKB_CB(skb)->tmp);
 	xfrm_input_resume(skb, err);
@@ -320,8 +337,12 @@ static int ah_input(struct xfrm_state *x, struct sk_buff *skb)
 
 	/* We are going to _remove_ AH header to keep sockets happy,
 	 * so... Later this can change. */
+<<<<<<< HEAD
 	if (skb_cloned(skb) &&
 	    pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
+=======
+	if (skb_unclone(skb, GFP_ATOMIC))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	skb->ip_summed = CHECKSUM_NONE;
@@ -384,7 +405,14 @@ static int ah_input(struct xfrm_state *x, struct sk_buff *skb)
 	skb->network_header += ah_hlen;
 	memcpy(skb_network_header(skb), work_iph, ihl);
 	__skb_pull(skb, ah_hlen + ihl);
+<<<<<<< HEAD
 	skb_set_transport_header(skb, -ihl);
+=======
+	if (x->props.mode == XFRM_MODE_TUNNEL)
+		skb_reset_transport_header(skb);
+	else
+		skb_set_transport_header(skb, -ihl);
+>>>>>>> refs/remotes/origin/master
 
 	err = nexthdr;
 
@@ -401,16 +429,36 @@ static void ah4_err(struct sk_buff *skb, u32 info)
 	struct ip_auth_hdr *ah = (struct ip_auth_hdr *)(skb->data+(iph->ihl<<2));
 	struct xfrm_state *x;
 
+<<<<<<< HEAD
 	if (icmp_hdr(skb)->type != ICMP_DEST_UNREACH ||
 	    icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
 		return;
+=======
+	switch (icmp_hdr(skb)->type) {
+	case ICMP_DEST_UNREACH:
+		if (icmp_hdr(skb)->code != ICMP_FRAG_NEEDED)
+			return;
+	case ICMP_REDIRECT:
+		break;
+	default:
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	x = xfrm_state_lookup(net, skb->mark, (const xfrm_address_t *)&iph->daddr,
 			      ah->spi, IPPROTO_AH, AF_INET);
 	if (!x)
 		return;
+<<<<<<< HEAD
 	printk(KERN_DEBUG "pmtu discovery on SA AH/%08x/%08x\n",
 	       ntohl(ah->spi), ntohl(iph->daddr));
+=======
+
+	if (icmp_hdr(skb)->type == ICMP_DEST_UNREACH)
+		ipv4_update_pmtu(skb, net, info, 0, 0, IPPROTO_AH, 0);
+	else
+		ipv4_redirect(skb, net, 0, 0, IPPROTO_AH, 0);
+>>>>>>> refs/remotes/origin/master
 	xfrm_state_put(x);
 }
 
@@ -451,15 +499,21 @@ static int ah_init_state(struct xfrm_state *x)
 	if (aalg_desc->uinfo.auth.icv_fullbits/8 !=
 	    crypto_ahash_digestsize(ahash)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "AH: %s digestsize %u != %hu\n",
 		       x->aalg->alg_name, crypto_ahash_digestsize(ahash),
 		       aalg_desc->uinfo.auth.icv_fullbits/8);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("%s: %s digestsize %u != %hu\n",
 			__func__, x->aalg->alg_name,
 			crypto_ahash_digestsize(ahash),
 			aalg_desc->uinfo.auth.icv_fullbits / 8);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -523,18 +577,24 @@ static int __init ah4_init(void)
 {
 	if (xfrm_register_type(&ah_type, AF_INET) < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ip ah init: can't add xfrm type\n");
 		return -EAGAIN;
 	}
 	if (inet_add_protocol(&ah4_protocol, IPPROTO_AH) < 0) {
 		printk(KERN_INFO "ip ah init: can't add protocol\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("%s: can't add xfrm type\n", __func__);
 		return -EAGAIN;
 	}
 	if (inet_add_protocol(&ah4_protocol, IPPROTO_AH) < 0) {
 		pr_info("%s: can't add protocol\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xfrm_unregister_type(&ah_type, AF_INET);
 		return -EAGAIN;
 	}
@@ -545,6 +605,7 @@ static void __exit ah4_fini(void)
 {
 	if (inet_del_protocol(&ah4_protocol, IPPROTO_AH) < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "ip ah close: can't remove protocol\n");
 	if (xfrm_unregister_type(&ah_type, AF_INET) < 0)
 		printk(KERN_INFO "ip ah close: can't remove xfrm type\n");
@@ -553,6 +614,11 @@ static void __exit ah4_fini(void)
 	if (xfrm_unregister_type(&ah_type, AF_INET) < 0)
 		pr_info("%s: can't remove xfrm type\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+	if (xfrm_unregister_type(&ah_type, AF_INET) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ah4_init);

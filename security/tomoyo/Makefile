@@ -1,6 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-y = common.o domain.o file.o gc.o group.o load_policy.o memory.o mount.o realpath.o securityfs_if.o tomoyo.o util.o
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 obj-y = audit.o common.o condition.o domain.o environ.o file.o gc.o group.o load_policy.o memory.o mount.o network.o realpath.o securityfs_if.o tomoyo.o util.o
 
 $(obj)/policy/profile.conf:
@@ -49,4 +52,7 @@ $(obj)/builtin-policy.h: $(obj)/policy/profile.conf $(obj)/policy/exception_poli
 	@mv $@.tmp $@
 
 $(obj)/common.o: $(obj)/builtin-policy.h
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

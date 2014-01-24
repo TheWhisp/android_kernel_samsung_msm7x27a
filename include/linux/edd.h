@@ -30,6 +30,7 @@
 #ifndef _LINUX_EDD_H
 #define _LINUX_EDD_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define EDDNR 0x1e9		/* addr of number of edd_info structs at EDDBUF
@@ -191,4 +192,11 @@ extern struct edd edd;
 #endif /* __KERNEL__ */
 #endif				/*!__ASSEMBLY__ */
 
+=======
+#include <uapi/linux/edd.h>
+
+#ifndef __ASSEMBLY__
+extern struct edd edd;
+#endif				/*!__ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif				/* _LINUX_EDD_H */

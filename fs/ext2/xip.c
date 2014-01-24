@@ -10,10 +10,13 @@
 #include <linux/genhd.h>
 #include <linux/buffer_head.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/ext2_fs_sb.h>
 #include <linux/ext2_fs.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/blkdev.h>
 #include "ext2.h"
 #include "xip.h"
@@ -40,6 +43,10 @@ __ext2_get_block(struct inode *inode, pgoff_t pgoff, int create,
 	int rc;
 
 	memset(&tmp, 0, sizeof(struct buffer_head));
+<<<<<<< HEAD
+=======
+	tmp.b_size = 1 << inode->i_blkbits;
+>>>>>>> refs/remotes/origin/master
 	rc = ext2_get_block(inode, pgoff, &tmp, create);
 	*result = tmp.b_blocknr;
 

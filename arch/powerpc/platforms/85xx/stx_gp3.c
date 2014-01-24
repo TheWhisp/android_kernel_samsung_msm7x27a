@@ -29,9 +29,12 @@
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -43,6 +46,7 @@
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_CPM2
 #include <asm/cpm2.h>
@@ -59,15 +63,21 @@ static void cpm2_cascade(unsigned int irq, struct irq_desc *desc)
 	chip->irq_eoi(&desc->irq_data);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "mpc85xx.h"
 
 #ifdef CONFIG_CPM2
 #include <asm/cpm2.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_CPM2 */
 
 static void __init stx_gp3_pic_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mpic *mpic;
 	struct resource r;
@@ -116,13 +126,18 @@ static void __init stx_gp3_pic_init(void)
 	irq_set_chained_handler(irq, cpm2_cascade);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
 			0, 256, " OpenPIC  ");
 	BUG_ON(mpic == NULL);
 	mpic_init(mpic);
 
 	mpc85xx_cpm2_pic_init();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -130,6 +145,7 @@ static void __init stx_gp3_pic_init(void)
  */
 static void __init stx_gp3_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -145,6 +161,16 @@ static void __init stx_gp3_setup_arch(void)
 	for_each_compatible_node(np, "pci", "fsl,mpc8540-pci")
 		fsl_add_bridge(np, 1);
 #endif
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("stx_gp3_setup_arch()", 0);
+
+	fsl_pci_assign_primary();
+
+#ifdef CONFIG_CPM2
+	cpm2_reset();
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 static void stx_gp3_show_cpuinfo(struct seq_file *m)
@@ -164,6 +190,7 @@ static void stx_gp3_show_cpuinfo(struct seq_file *m)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .compatible = "simple-bus", },
 	{ .compatible = "gianfar", },
@@ -180,6 +207,9 @@ machine_device_initcall(stx_gp3, declare_of_platform_devices);
 =======
 machine_device_initcall(stx_gp3, mpc85xx_common_publish_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_arch_initcall(stx_gp3, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, device-tree isn't unflattened

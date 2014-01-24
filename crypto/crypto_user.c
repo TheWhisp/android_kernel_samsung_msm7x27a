@@ -30,7 +30,13 @@
 
 #include "internal.h"
 
+<<<<<<< HEAD
 DEFINE_MUTEX(crypto_cfg_mutex);
+=======
+#define null_terminated(x)	(strnlen(x, sizeof(x)) < sizeof(x))
+
+static DEFINE_MUTEX(crypto_cfg_mutex);
+>>>>>>> refs/remotes/origin/master
 
 /* The crypto netlink socket */
 static struct sock *crypto_nlsk;
@@ -81,9 +87,15 @@ static int crypto_report_cipher(struct sk_buff *skb, struct crypto_alg *alg)
 	rcipher.min_keysize = alg->cra_cipher.cia_min_keysize;
 	rcipher.max_keysize = alg->cra_cipher.cia_max_keysize;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_CIPHER,
 		sizeof(struct crypto_report_cipher), &rcipher);
 
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_CIPHER,
+		    sizeof(struct crypto_report_cipher), &rcipher))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -95,9 +107,15 @@ static int crypto_report_comp(struct sk_buff *skb, struct crypto_alg *alg)
 	struct crypto_report_comp rcomp;
 
 	strncpy(rcomp.type, "compression", sizeof(rcomp.type));
+<<<<<<< HEAD
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_COMPRESS,
 		sizeof(struct crypto_report_comp), &rcomp);
 
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_COMPRESS,
+		    sizeof(struct crypto_report_comp), &rcomp))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -118,15 +136,26 @@ static int crypto_report_one(struct crypto_alg *alg,
 	ualg->cru_flags = alg->cra_flags;
 	ualg->cru_refcnt = atomic_read(&alg->cra_refcnt);
 
+<<<<<<< HEAD
 	NLA_PUT_U32(skb, CRYPTOCFGA_PRIORITY_VAL, alg->cra_priority);
 
+=======
+	if (nla_put_u32(skb, CRYPTOCFGA_PRIORITY_VAL, alg->cra_priority))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	if (alg->cra_flags & CRYPTO_ALG_LARVAL) {
 		struct crypto_report_larval rl;
 
 		strncpy(rl.type, "larval", sizeof(rl.type));
+<<<<<<< HEAD
 		NLA_PUT(skb, CRYPTOCFGA_REPORT_LARVAL,
 			sizeof(struct crypto_report_larval), &rl);
 
+=======
+		if (nla_put(skb, CRYPTOCFGA_REPORT_LARVAL,
+			    sizeof(struct crypto_report_larval), &rl))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -166,7 +195,11 @@ static int crypto_report_alg(struct crypto_alg *alg,
 	struct crypto_user_alg *ualg;
 	int err = 0;
 
+<<<<<<< HEAD
 	nlh = nlmsg_put(skb, NETLINK_CB(in_skb).pid, info->nlmsg_seq,
+=======
+	nlh = nlmsg_put(skb, NETLINK_CB(in_skb).portid, info->nlmsg_seq,
+>>>>>>> refs/remotes/origin/master
 			CRYPTO_MSG_GETALG, sizeof(*ualg), info->nlmsg_flags);
 	if (!nlh) {
 		err = -EMSGSIZE;
@@ -196,7 +229,14 @@ static int crypto_report(struct sk_buff *in_skb, struct nlmsghdr *in_nlh,
 	struct crypto_dump_info info;
 	int err;
 
+<<<<<<< HEAD
 	if (!p->cru_driver_name)
+=======
+	if (!null_terminated(p->cru_name) || !null_terminated(p->cru_driver_name))
+		return -EINVAL;
+
+	if (!p->cru_driver_name[0])
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	alg = crypto_alg_match(p, 1);
@@ -216,7 +256,11 @@ static int crypto_report(struct sk_buff *in_skb, struct nlmsghdr *in_nlh,
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	return nlmsg_unicast(crypto_nlsk, skb, NETLINK_CB(in_skb).pid);
+=======
+	return nlmsg_unicast(crypto_nlsk, skb, NETLINK_CB(in_skb).portid);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int crypto_dump_report(struct sk_buff *skb, struct netlink_callback *cb)
@@ -260,6 +304,12 @@ static int crypto_update_alg(struct sk_buff *skb, struct nlmsghdr *nlh,
 	struct nlattr *priority = attrs[CRYPTOCFGA_PRIORITY_VAL];
 	LIST_HEAD(list);
 
+<<<<<<< HEAD
+=======
+	if (!null_terminated(p->cru_name) || !null_terminated(p->cru_driver_name))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (priority && !strlen(p->cru_driver_name))
 		return -EINVAL;
 
@@ -287,6 +337,12 @@ static int crypto_del_alg(struct sk_buff *skb, struct nlmsghdr *nlh,
 	struct crypto_alg *alg;
 	struct crypto_user_alg *p = nlmsg_data(nlh);
 
+<<<<<<< HEAD
+=======
+	if (!null_terminated(p->cru_name) || !null_terminated(p->cru_driver_name))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	alg = crypto_alg_match(p, 1);
 	if (!alg)
 		return -ENOENT;
@@ -368,6 +424,12 @@ static int crypto_add_alg(struct sk_buff *skb, struct nlmsghdr *nlh,
 	struct crypto_user_alg *p = nlmsg_data(nlh);
 	struct nlattr *priority = attrs[CRYPTOCFGA_PRIORITY_VAL];
 
+<<<<<<< HEAD
+=======
+	if (!null_terminated(p->cru_name) || !null_terminated(p->cru_driver_name))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (strlen(p->cru_driver_name))
 		exact = 1;
 
@@ -426,7 +488,11 @@ static const struct nla_policy crypto_policy[CRYPTOCFGA_MAX+1] = {
 
 #undef MSGSIZE
 
+<<<<<<< HEAD
 static struct crypto_link {
+=======
+static const struct crypto_link {
+>>>>>>> refs/remotes/origin/master
 	int (*doit)(struct sk_buff *, struct nlmsghdr *, struct nlattr **);
 	int (*dump)(struct sk_buff *, struct netlink_callback *);
 	int (*done)(struct netlink_callback *);
@@ -442,7 +508,11 @@ static struct crypto_link {
 static int crypto_user_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh)
 {
 	struct nlattr *attrs[CRYPTOCFGA_MAX+1];
+<<<<<<< HEAD
 	struct crypto_link *link;
+=======
+	const struct crypto_link *link;
+>>>>>>> refs/remotes/origin/master
 	int type, err;
 
 	type = nlh->nlmsg_type;
@@ -496,9 +566,17 @@ static void crypto_netlink_rcv(struct sk_buff *skb)
 
 static int __init crypto_user_init(void)
 {
+<<<<<<< HEAD
 	crypto_nlsk = netlink_kernel_create(&init_net, NETLINK_CRYPTO,
 					    0, crypto_netlink_rcv,
 					    NULL, THIS_MODULE);
+=======
+	struct netlink_kernel_cfg cfg = {
+		.input	= crypto_netlink_rcv,
+	};
+
+	crypto_nlsk = netlink_kernel_create(&init_net, NETLINK_CRYPTO, &cfg);
+>>>>>>> refs/remotes/origin/master
 	if (!crypto_nlsk)
 		return -ENOMEM;
 

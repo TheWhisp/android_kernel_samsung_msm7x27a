@@ -19,10 +19,14 @@
  * Copyright (C) IBM Corporation, 2004
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Max Asb�ck <amax@us.ibm.com>
 =======
  * Author: Max Asböck <amax@us.ibm.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Max Asböck <amax@us.ibm.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -37,7 +41,11 @@
 
 void ibmasm_register_uart(struct service_processor *sp)
 {
+<<<<<<< HEAD
 	struct uart_port uport;
+=======
+	struct uart_8250_port uart;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *iomem_base;
 
 	iomem_base = sp->base_address + SCOUT_COM_B_BASE;
@@ -51,6 +59,7 @@ void ibmasm_register_uart(struct service_processor *sp)
 		return;
 	}
 
+<<<<<<< HEAD
 	memset(&uport, 0, sizeof(struct uart_port));
 	uport.irq	= sp->irq;
 	uport.uartclk	= 3686400;
@@ -59,6 +68,16 @@ void ibmasm_register_uart(struct service_processor *sp)
 	uport.membase	= iomem_base;
 
 	sp->serial_line = serial8250_register_port(&uport);
+=======
+	memset(&uart, 0, sizeof(uart));
+	uart.port.irq		= sp->irq;
+	uart.port.uartclk	= 3686400;
+	uart.port.flags		= UPF_SHARE_IRQ;
+	uart.port.iotype	= UPIO_MEM;
+	uart.port.membase	= iomem_base;
+
+	sp->serial_line = serial8250_register_8250_port(&uart);
+>>>>>>> refs/remotes/origin/master
 	if (sp->serial_line < 0) {
 		dev_err(sp->dev, "Failed to register serial port\n");
 		return;

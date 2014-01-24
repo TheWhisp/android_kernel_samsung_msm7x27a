@@ -11,9 +11,13 @@
 
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/stat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/pci.h>
 
@@ -29,7 +33,10 @@ static int hose_mmap_page_range(struct pci_controller *hose,
 		base = sparse ? hose->sparse_io_base : hose->dense_io_base;
 
 	vma->vm_pgoff += base >> PAGE_SHIFT;
+<<<<<<< HEAD
 	vma->vm_flags |= (VM_IO | VM_RESERVED);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
 				  vma->vm_end - vma->vm_start,

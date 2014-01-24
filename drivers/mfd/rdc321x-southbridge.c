@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * RDC321x MFD southbrige driver
+=======
+ * RDC321x MFD southbridge driver
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2007-2010 Florian Fainelli <florian@openwrt.org>
  * Copyright (C) 2010 Bernhard Loos <bernhardloos@googlemail.com>
@@ -56,7 +60,11 @@ static struct resource rdc321x_gpio_resources[] = {
 	}
 };
 
+<<<<<<< HEAD
 static struct mfd_cell rdc321x_sb_cells[] = {
+=======
+static const struct mfd_cell rdc321x_sb_cells[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name		= "rdc321x-wdt",
 		.resources	= rdc321x_wdt_resource,
@@ -72,7 +80,11 @@ static struct mfd_cell rdc321x_sb_cells[] = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit rdc321x_sb_probe(struct pci_dev *pdev,
+=======
+static int rdc321x_sb_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 					const struct pci_device_id *ent)
 {
 	int err;
@@ -87,15 +99,27 @@ static int __devinit rdc321x_sb_probe(struct pci_dev *pdev,
 	rdc321x_wdt_pdata.sb_pdev = pdev;
 
 	return mfd_add_devices(&pdev->dev, -1,
+<<<<<<< HEAD
 		rdc321x_sb_cells, ARRAY_SIZE(rdc321x_sb_cells), NULL, 0);
 }
 
 static void __devexit rdc321x_sb_remove(struct pci_dev *pdev)
+=======
+			       rdc321x_sb_cells, ARRAY_SIZE(rdc321x_sb_cells),
+			       NULL, 0, NULL);
+}
+
+static void rdc321x_sb_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	mfd_remove_devices(&pdev->dev);
 }
 
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(rdc321x_sb_table) = {
+=======
+static const struct pci_device_id rdc321x_sb_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_RDC, PCI_DEVICE_ID_RDC_R6030) },
 	{}
 };
@@ -105,6 +129,7 @@ static struct pci_driver rdc321x_sb_driver = {
 	.name		= "RDC321x Southbridge",
 	.id_table	= rdc321x_sb_table,
 	.probe		= rdc321x_sb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rdc321x_sb_remove),
 };
 
@@ -120,6 +145,12 @@ static void __exit rdc321x_sb_exit(void)
 
 module_init(rdc321x_sb_init);
 module_exit(rdc321x_sb_exit);
+=======
+	.remove		= rdc321x_sb_remove,
+};
+
+module_pci_driver(rdc321x_sb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Florian Fainelli <florian@openwrt.org>");
 MODULE_LICENSE("GPL");

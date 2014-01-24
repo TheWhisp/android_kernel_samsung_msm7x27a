@@ -26,14 +26,19 @@
 char *capi_info2str(u16 reason)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     return "..";
 =======
 	return "..";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return "..";
+>>>>>>> refs/remotes/origin/master
 }
 #else
 char *capi_info2str(u16 reason)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     switch (reason) {
 
@@ -166,6 +171,8 @@ char *capi_info2str(u16 reason)
 	case 0x3319: 
 	   return "Illegal parameter coding (e.g. SFF coding error)";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (reason) {
 
 /*-- informative values (corresponding message was processed) -----*/
@@ -296,7 +303,10 @@ char *capi_info2str(u16 reason)
 		return "Disconnected during transfer (local abort)";
 	case 0x3319:
 		return "Illegal parameter coding (e.g. SFF coding error)";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*-- disconnect causes from the network according to ETS 300 102-1/Q.931 -----*/
 	case 0x3481: return "Unallocated (unassigned) number";
@@ -304,12 +314,17 @@ char *capi_info2str(u16 reason)
 	case 0x3483: return "No route to destination";
 	case 0x3486: return "Channel unacceptable";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case 0x3487: 
 	   return "Call awarded and being delivered in an established channel";
 =======
 	case 0x3487:
 		return "Call awarded and being delivered in an established channel";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 0x3487:
+		return "Call awarded and being delivered in an established channel";
+>>>>>>> refs/remotes/origin/master
 	case 0x3490: return "Normal call clearing";
 	case 0x3491: return "User busy";
 	case 0x3492: return "No user responding";
@@ -360,10 +375,14 @@ char *capi_info2str(u16 reason)
 
 	default: return "No additional information";
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -381,6 +400,7 @@ typedef struct {
 
 static _cdef cdef[] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     /*00 */ 
  {_CEND},
@@ -479,6 +499,8 @@ static _cdef cdef[] =
     /*2f */ 
  {_CSTRUCT, offsetof(_cmsg, Useruserdata)}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*00 */
 	{_CEND},
 	/*01 */
@@ -575,11 +597,15 @@ static _cdef cdef[] =
 	{_CWORD, offsetof(_cmsg, Reject)},
 	/*2f */
 	{_CSTRUCT, offsetof(_cmsg, Useruserdata)}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static unsigned char *cpars[] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     /* ALERT_REQ */ [0x01] = "\x03\x04\x0c\x27\x2f\x1c\x01\x01",
     /* CONNECT_REQ */ [0x02] = "\x03\x14\x0e\x10\x0f\x11\x0d\x06\x08\x0a\x05\x07\x09\x01\x0b\x28\x22\x04\x0c\x27\x2f\x1c\x01\x01",
@@ -630,6 +656,8 @@ static unsigned char *cpars[] =
     /* CONNECT_B3_T90_ACTIVE_RESP */ [0x47] = "\x03\x01",
     /* MANUFACTURER_RESP */ [0x4e] = "\x03\x2a\x15\x21\x29\x01",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ALERT_REQ */ [0x01] = "\x03\x04\x0c\x27\x2f\x1c\x01\x01",
 	/* CONNECT_REQ */ [0x02] = "\x03\x14\x0e\x10\x0f\x11\x0d\x06\x08\x0a\x05\x07\x09\x01\x0b\x28\x22\x04\x0c\x27\x2f\x1c\x01\x01",
 	/* DISCONNECT_REQ */ [0x04] = "\x03\x04\x0c\x27\x2f\x1c\x01\x01",
@@ -678,11 +706,15 @@ static unsigned char *cpars[] =
 	/* RESET_B3_RESP */ [0x46] = "\x03\x01",
 	/* CONNECT_B3_T90_ACTIVE_RESP */ [0x47] = "\x03\x01",
 	/* MANUFACTURER_RESP */ [0x4e] = "\x03\x2a\x15\x21\x29\x01",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define byteTLcpy(x,y)        *(u8 *)(x)=*(u8 *)(y);
 #define wordTLcpy(x,y)        *(u16 *)(x)=*(u16 *)(y);
@@ -696,6 +728,8 @@ static unsigned char *cpars[] =
 #define structTRcpy(x,y,l)    memcpy (y,x,l)
 #define structTRcpyovl(x,y,l) memmove (y,x,l)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define byteTLcpy(x, y)         *(u8 *)(x) = *(u8 *)(y);
 #define wordTLcpy(x, y)         *(u16 *)(x) = *(u16 *)(y);
 #define dwordTLcpy(x, y)        memcpy(x, y, 4);
@@ -707,7 +741,10 @@ static unsigned char *cpars[] =
 #define dwordTRcpy(x, y)        memcpy(y, x, 4);
 #define structTRcpy(x, y, l)    memcpy(y, x, l)
 #define structTRcpyovl(x, y, l) memmove(y, x, l)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------*/
 static unsigned command_2_index(unsigned c, unsigned sc)
@@ -725,6 +762,7 @@ static unsigned command_2_index(unsigned c, unsigned sc)
 /*-------------------------------------------------------*/
 #define TYP (cdef[cmsg->par[cmsg->p]].typ)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OFF (((u8 *)cmsg)+cdef[cmsg->par[cmsg->p]].off)
 
 static void jumpcstruct(_cmsg * cmsg)
@@ -733,6 +771,11 @@ static void jumpcstruct(_cmsg * cmsg)
 
 static void jumpcstruct(_cmsg *cmsg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define OFF (((u8 *)cmsg) + cdef[cmsg->par[cmsg->p]].off)
+
+static void jumpcstruct(_cmsg *cmsg)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned layer;
 	for (cmsg->p++, layer = 1; layer;) {
@@ -750,10 +793,14 @@ static void jumpcstruct(_cmsg *cmsg)
 }
 /*-------------------------------------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void pars_2_message(_cmsg * cmsg)
 =======
 static void pars_2_message(_cmsg *cmsg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pars_2_message(_cmsg *cmsg)
+>>>>>>> refs/remotes/origin/master
 {
 
 	for (; TYP != _CEND; cmsg->p++) {
@@ -820,10 +867,14 @@ static void pars_2_message(_cmsg *cmsg)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned capi_cmsg2message(_cmsg * cmsg, u8 * msg)
 =======
 unsigned capi_cmsg2message(_cmsg *cmsg, u8 *msg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned capi_cmsg2message(_cmsg *cmsg, u8 *msg)
+>>>>>>> refs/remotes/origin/master
 {
 	cmsg->m = msg;
 	cmsg->l = 8;
@@ -843,10 +894,14 @@ unsigned capi_cmsg2message(_cmsg *cmsg, u8 *msg)
 
 /*-------------------------------------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void message_2_pars(_cmsg * cmsg)
 =======
 static void message_2_pars(_cmsg *cmsg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void message_2_pars(_cmsg *cmsg)
+>>>>>>> refs/remotes/origin/master
 {
 	for (; TYP != _CEND; cmsg->p++) {
 
@@ -898,10 +953,14 @@ static void message_2_pars(_cmsg *cmsg)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned capi_message2cmsg(_cmsg * cmsg, u8 * msg)
 =======
 unsigned capi_message2cmsg(_cmsg *cmsg, u8 *msg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned capi_message2cmsg(_cmsg *cmsg, u8 *msg)
+>>>>>>> refs/remotes/origin/master
 {
 	memset(cmsg, 0, sizeof(_cmsg));
 	cmsg->m = msg;
@@ -933,10 +992,14 @@ unsigned capi_message2cmsg(_cmsg *cmsg, u8 *msg)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned capi_cmsg_header(_cmsg * cmsg, u16 _ApplId,
 =======
 unsigned capi_cmsg_header(_cmsg *cmsg, u16 _ApplId,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned capi_cmsg_header(_cmsg *cmsg, u16 _ApplId,
+>>>>>>> refs/remotes/origin/master
 			  u8 _Command, u8 _Subcommand,
 			  u16 _Messagenumber, u32 _Controller)
 {
@@ -1026,6 +1089,7 @@ char *capi_cmd2str(u8 cmd, u8 subcmd)
 static char *pnames[] =
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*00 */ NULL,
     /*01 */ NULL,
     /*02 */ NULL,
@@ -1075,6 +1139,8 @@ static char *pnames[] =
     /*2e */ "Reject",
     /*2f */ "Useruserdata"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*00 */ NULL,
 	/*01 */ NULL,
 	/*02 */ NULL,
@@ -1123,7 +1189,10 @@ static char *pnames[] =
 	/*2d */ "Reason_B3",
 	/*2e */ "Reject",
 	/*2f */ "Useruserdata"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1132,16 +1201,22 @@ static char *pnames[] =
 
 /*-------------------------------------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 static _cdebbuf *bufprint(_cdebbuf *cdb, char *fmt,...)
 {
 	va_list f;
 	size_t n,r;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static _cdebbuf *bufprint(_cdebbuf *cdb, char *fmt, ...)
 {
 	va_list f;
 	size_t n, r;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!cdb)
 		return NULL;
@@ -1178,10 +1253,14 @@ static _cdebbuf *bufprint(_cdebbuf *cdb, char *fmt, ...)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static _cdebbuf *printstructlen(_cdebbuf *cdb, u8 * m, unsigned len)
 =======
 static _cdebbuf *printstructlen(_cdebbuf *cdb, u8 *m, unsigned len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static _cdebbuf *printstructlen(_cdebbuf *cdb, u8 *m, unsigned len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned hex = 0;
 
@@ -1206,10 +1285,14 @@ static _cdebbuf *printstructlen(_cdebbuf *cdb, u8 *m, unsigned len)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static _cdebbuf *printstruct(_cdebbuf *cdb, u8 * m)
 =======
 static _cdebbuf *printstruct(_cdebbuf *cdb, u8 *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static _cdebbuf *printstruct(_cdebbuf *cdb, u8 *m)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned len;
 
@@ -1343,10 +1426,14 @@ void cdebbuf_free(_cdebbuf *cdb)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _cdebbuf *capi_message2str(u8 * msg)
 =======
 _cdebbuf *capi_message2str(u8 *msg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+_cdebbuf *capi_message2str(u8 *msg)
+>>>>>>> refs/remotes/origin/master
 {
 	_cdebbuf *cdb;
 	_cmsg	*cmsg;
@@ -1371,16 +1458,22 @@ _cdebbuf *capi_message2str(u8 *msg)
 
 	cdb = bufprint(cdb, "%-26s ID=%03d #0x%04x LEN=%04d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 mnames[command_2_index(cmsg->Command, cmsg->Subcommand)],
 		 ((unsigned short *) msg)[1],
 		 ((unsigned short *) msg)[3],
 		 ((unsigned short *) msg)[0]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       mnames[command_2_index(cmsg->Command, cmsg->Subcommand)],
 		       ((unsigned short *) msg)[1],
 		       ((unsigned short *) msg)[3],
 		       ((unsigned short *) msg)[0]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cdb = protocol_message_2_pars(cdb, cmsg, 1);
 	if (unlikely(cmsg != g_cmsg))
@@ -1400,10 +1493,14 @@ _cdebbuf *capi_message2str(u8 *msg)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _cdebbuf *capi_cmsg2str(_cmsg * cmsg)
 =======
 _cdebbuf *capi_cmsg2str(_cmsg *cmsg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+_cdebbuf *capi_cmsg2str(_cmsg *cmsg)
+>>>>>>> refs/remotes/origin/master
 {
 	_cdebbuf *cdb;
 
@@ -1416,16 +1513,22 @@ _cdebbuf *capi_cmsg2str(_cmsg *cmsg)
 	cmsg->p = 0;
 	cdb = bufprint(cdb, "%s ID=%03d #0x%04x LEN=%04d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 mnames[command_2_index(cmsg->Command, cmsg->Subcommand)],
 		 ((u16 *) cmsg->m)[1],
 		 ((u16 *) cmsg->m)[3],
 		 ((u16 *) cmsg->m)[0]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       mnames[command_2_index(cmsg->Command, cmsg->Subcommand)],
 		       ((u16 *) cmsg->m)[1],
 		       ((u16 *) cmsg->m)[3],
 		       ((u16 *) cmsg->m)[0]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cdb = protocol_message_2_pars(cdb, cmsg, 1);
 	return cdb;
 }
@@ -1433,10 +1536,14 @@ _cdebbuf *capi_cmsg2str(_cmsg *cmsg)
 int __init cdebug_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	g_cmsg= kmalloc(sizeof(_cmsg), GFP_KERNEL);
 =======
 	g_cmsg = kmalloc(sizeof(_cmsg), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	g_cmsg = kmalloc(sizeof(_cmsg), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!g_cmsg)
 		return -ENOMEM;
 	g_debbuf = kmalloc(sizeof(_cdebbuf), GFP_KERNEL);
@@ -1470,19 +1577,27 @@ void __exit cdebug_exit(void)
 static _cdebbuf g_debbuf = {"CONFIG_CAPI_TRACE not enabled", NULL, 0, 0};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _cdebbuf *capi_message2str(u8 * msg)
 =======
 _cdebbuf *capi_message2str(u8 *msg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+_cdebbuf *capi_message2str(u8 *msg)
+>>>>>>> refs/remotes/origin/master
 {
 	return &g_debbuf;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 _cdebbuf *capi_cmsg2str(_cmsg * cmsg)
 =======
 _cdebbuf *capi_cmsg2str(_cmsg *cmsg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+_cdebbuf *capi_cmsg2str(_cmsg *cmsg)
+>>>>>>> refs/remotes/origin/master
 {
 	return &g_debbuf;
 }

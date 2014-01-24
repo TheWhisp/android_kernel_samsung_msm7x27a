@@ -16,6 +16,7 @@
 #include <linux/init.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/cpu.h>
 
 =======
@@ -26,6 +27,16 @@
 #include <mach/hardware.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_info.h>
+
+#include "soc.h"
+
+#include <mach/hardware.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 #define OMAP_DIE_ID_0		0xfffe1800
 #define OMAP_DIE_ID_1		0xfffe1804
 #define OMAP_PRODUCTION_ID_0	0xfffe2000

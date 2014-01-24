@@ -1,8 +1,15 @@
 ASoC Machine Driver
 ===================
 
+<<<<<<< HEAD
 The ASoC machine (or board) driver is the code that glues together the platform
 and codec drivers.
+=======
+The ASoC machine (or board) driver is the code that glues together all the
+component drivers (e.g. codecs, platforms and DAIs). It also describes the
+relationships between each componnent which include audio paths, GPIOs,
+interrupts, clocking, jacks and voltage regulators.
+>>>>>>> refs/remotes/origin/master
 
 The machine driver can contain codec and platform specific code. It registers
 the audio subsystem with the kernel as a platform device and is represented by
@@ -51,11 +58,15 @@ The machine DAI configuration glues all the codec and CPU DAIs together. It can
 also be used to set up the DAI system clock and for any machine related DAI
 initialisation e.g. the machine audio map can be connected to the codec audio
 <<<<<<< HEAD
+<<<<<<< HEAD
 map, unconnected codec pins can be set as such. Please see corgi.c, spitz.c
 for examples.
 =======
 map, unconnected codec pins can be set as such.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+map, unconnected codec pins can be set as such.
+>>>>>>> refs/remotes/origin/master
 
 struct snd_soc_dai_link is used to set up each DAI in your machine. e.g.
 
@@ -88,11 +99,15 @@ The machine driver can optionally extend the codec power map and to become an
 audio power map of the audio subsystem. This allows for automatic power up/down
 of speaker/HP amplifiers, etc. Codec pins can be connected to the machines jack
 <<<<<<< HEAD
+<<<<<<< HEAD
 sockets in the machine init function. See soc/pxa/spitz.c and dapm.txt for
 details.
 =======
 sockets in the machine init function.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+sockets in the machine init function.
+>>>>>>> refs/remotes/origin/master
 
 
 Machine Controls

@@ -24,6 +24,7 @@
 
 #include <linux/raid/pq.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_ALTIVEC
 
 #include <altivec.h>
@@ -36,6 +37,12 @@
 # include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+#include <altivec.h>
+#ifdef __KERNEL__
+# include <asm/cputable.h>
+# include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is the C data type to use.  We use a vector of

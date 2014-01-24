@@ -17,6 +17,7 @@
 #include "usb.h"
 
 /* Active configuration fields */
+<<<<<<< HEAD
 #define usb_actconfig_show(field, multiplier, format_string)		\
 static ssize_t  show_##field(struct device *dev,			\
 		struct device_attribute *attr, char *buf)		\
@@ -42,10 +43,39 @@ usb_actconfig_attr(bmAttributes, 1, "%2x\n")
 usb_actconfig_attr(bMaxPower, 2, "%3dmA\n")
 
 static ssize_t show_configuration_string(struct device *dev,
+=======
+#define usb_actconfig_show(field, format_string)			\
+static ssize_t field##_show(struct device *dev,				\
+			    struct device_attribute *attr, char *buf)	\
+{									\
+	struct usb_device *udev;					\
+	struct usb_host_config *actconfig;				\
+	ssize_t rc = 0;							\
+									\
+	udev = to_usb_device(dev);					\
+	usb_lock_device(udev);						\
+	actconfig = udev->actconfig;					\
+	if (actconfig)							\
+		rc = sprintf(buf, format_string,			\
+				actconfig->desc.field);			\
+	usb_unlock_device(udev);					\
+	return rc;							\
+}									\
+
+#define usb_actconfig_attr(field, format_string)		\
+	usb_actconfig_show(field, format_string)		\
+	static DEVICE_ATTR_RO(field)
+
+usb_actconfig_attr(bNumInterfaces, "%2d\n");
+usb_actconfig_attr(bmAttributes, "%2x\n");
+
+static ssize_t bMaxPower_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)
 {
 	struct usb_device *udev;
 	struct usb_host_config *actconfig;
+<<<<<<< HEAD
 
 	udev = to_usb_device(dev);
 	actconfig = udev->actconfig;
@@ -61,6 +91,43 @@ usb_actconfig_show(bConfigurationValue, 1, "%u\n");
 static ssize_t
 set_bConfigurationValue(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
+=======
+	ssize_t rc = 0;
+
+	udev = to_usb_device(dev);
+	usb_lock_device(udev);
+	actconfig = udev->actconfig;
+	if (actconfig)
+		rc = sprintf(buf, "%dmA\n", usb_get_max_power(udev, actconfig));
+	usb_unlock_device(udev);
+	return rc;
+}
+static DEVICE_ATTR_RO(bMaxPower);
+
+static ssize_t configuration_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct usb_device *udev;
+	struct usb_host_config *actconfig;
+	ssize_t rc = 0;
+
+	udev = to_usb_device(dev);
+	usb_lock_device(udev);
+	actconfig = udev->actconfig;
+	if (actconfig && actconfig->string)
+		rc = sprintf(buf, "%s\n", actconfig->string);
+	usb_unlock_device(udev);
+	return rc;
+}
+static DEVICE_ATTR_RO(configuration);
+
+/* configuration value is always present, and r/w */
+usb_actconfig_show(bConfigurationValue, "%u\n");
+
+static ssize_t bConfigurationValue_store(struct device *dev,
+					 struct device_attribute *attr,
+					 const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device	*udev = to_usb_device(dev);
 	int			config, value;
@@ -72,6 +139,7 @@ set_bConfigurationValue(struct device *dev, struct device_attribute *attr,
 	usb_unlock_device(udev);
 	return (value < 0) ? value : count;
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(bConfigurationValue, S_IRUGO | S_IWUSR,
 		show_bConfigurationValue, set_bConfigurationValue);
@@ -79,6 +147,14 @@ static DEVICE_ATTR(bConfigurationValue, S_IRUGO | S_IWUSR,
 /* String fields */
 #define usb_string_attr(name)						\
 static ssize_t  show_##name(struct device *dev,				\
+=======
+static DEVICE_ATTR_IGNORE_LOCKDEP(bConfigurationValue, S_IRUGO | S_IWUSR,
+		bConfigurationValue_show, bConfigurationValue_store);
+
+/* String fields */
+#define usb_string_attr(name)						\
+static ssize_t  name##_show(struct device *dev,				\
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)		\
 {									\
 	struct usb_device *udev;					\
@@ -90,14 +166,23 @@ static ssize_t  show_##name(struct device *dev,				\
 	usb_unlock_device(udev);					\
 	return retval;							\
 }									\
+<<<<<<< HEAD
 static DEVICE_ATTR(name, S_IRUGO, show_##name, NULL);
+=======
+static DEVICE_ATTR_RO(name)
+>>>>>>> refs/remotes/origin/master
 
 usb_string_attr(product);
 usb_string_attr(manufacturer);
 usb_string_attr(serial);
 
+<<<<<<< HEAD
 static ssize_t
 show_speed(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t speed_show(struct device *dev, struct device_attribute *attr,
+			  char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 	char *speed;
@@ -126,40 +211,68 @@ show_speed(struct device *dev, struct device_attribute *attr, char *buf)
 	}
 	return sprintf(buf, "%s\n", speed);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(speed, S_IRUGO, show_speed, NULL);
 
 static ssize_t
 show_busnum(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(speed);
+
+static ssize_t busnum_show(struct device *dev, struct device_attribute *attr,
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 
 	udev = to_usb_device(dev);
 	return sprintf(buf, "%d\n", udev->bus->busnum);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(busnum, S_IRUGO, show_busnum, NULL);
 
 static ssize_t
 show_devnum(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(busnum);
+
+static ssize_t devnum_show(struct device *dev, struct device_attribute *attr,
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 
 	udev = to_usb_device(dev);
 	return sprintf(buf, "%d\n", udev->devnum);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(devnum, S_IRUGO, show_devnum, NULL);
 
 static ssize_t
 show_devpath(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(devnum);
+
+static ssize_t devpath_show(struct device *dev, struct device_attribute *attr,
+			    char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 
 	udev = to_usb_device(dev);
 	return sprintf(buf, "%s\n", udev->devpath);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(devpath, S_IRUGO, show_devpath, NULL);
 
 static ssize_t
 show_version(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(devpath);
+
+static ssize_t version_show(struct device *dev, struct device_attribute *attr,
+			    char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 	u16 bcdUSB;
@@ -168,34 +281,56 @@ show_version(struct device *dev, struct device_attribute *attr, char *buf)
 	bcdUSB = le16_to_cpu(udev->descriptor.bcdUSB);
 	return sprintf(buf, "%2x.%02x\n", bcdUSB >> 8, bcdUSB & 0xff);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(version, S_IRUGO, show_version, NULL);
 
 static ssize_t
 show_maxchild(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(version);
+
+static ssize_t maxchild_show(struct device *dev, struct device_attribute *attr,
+			     char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 
 	udev = to_usb_device(dev);
 	return sprintf(buf, "%d\n", udev->maxchild);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(maxchild, S_IRUGO, show_maxchild, NULL);
 
 static ssize_t
 show_quirks(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(maxchild);
+
+static ssize_t quirks_show(struct device *dev, struct device_attribute *attr,
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 
 	udev = to_usb_device(dev);
 	return sprintf(buf, "0x%x\n", udev->quirks);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(quirks, S_IRUGO, show_quirks, NULL);
 
 static ssize_t
 show_avoid_reset_quirk(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(quirks);
+
+static ssize_t avoid_reset_quirk_show(struct device *dev,
+				      struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 
 	udev = to_usb_device(dev);
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", !!(udev->quirks & USB_QUIRK_RESET_MORPHS));
 }
 
@@ -222,18 +357,51 @@ static DEVICE_ATTR(avoid_reset_quirk, S_IRUGO | S_IWUSR,
 
 static ssize_t
 show_urbnum(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+	return sprintf(buf, "%d\n", !!(udev->quirks & USB_QUIRK_RESET));
+}
+
+static ssize_t avoid_reset_quirk_store(struct device *dev,
+				      struct device_attribute *attr,
+				      const char *buf, size_t count)
+{
+	struct usb_device	*udev = to_usb_device(dev);
+	int			val;
+
+	if (sscanf(buf, "%d", &val) != 1 || val < 0 || val > 1)
+		return -EINVAL;
+	usb_lock_device(udev);
+	if (val)
+		udev->quirks |= USB_QUIRK_RESET;
+	else
+		udev->quirks &= ~USB_QUIRK_RESET;
+	usb_unlock_device(udev);
+	return count;
+}
+static DEVICE_ATTR_RW(avoid_reset_quirk);
+
+static ssize_t urbnum_show(struct device *dev, struct device_attribute *attr,
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 
 	udev = to_usb_device(dev);
 	return sprintf(buf, "%d\n", atomic_read(&udev->urbnum));
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(urbnum, S_IRUGO, show_urbnum, NULL);
 
 <<<<<<< HEAD
 =======
 static ssize_t
 show_removable(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(urbnum);
+
+static ssize_t removable_show(struct device *dev, struct device_attribute *attr,
+			      char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev;
 	char *state;
@@ -253,6 +421,7 @@ show_removable(struct device *dev, struct device_attribute *attr, char *buf)
 
 	return sprintf(buf, "%s\n", state);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(removable, S_IRUGO, show_removable, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -260,15 +429,37 @@ static DEVICE_ATTR(removable, S_IRUGO, show_removable, NULL);
 
 static ssize_t
 show_persist(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(removable);
+
+static ssize_t ltm_capable_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	if (usb_device_supports_ltm(to_usb_device(dev)))
+		return sprintf(buf, "%s\n", "yes");
+	return sprintf(buf, "%s\n", "no");
+}
+static DEVICE_ATTR_RO(ltm_capable);
+
+#ifdef	CONFIG_PM
+
+static ssize_t persist_show(struct device *dev, struct device_attribute *attr,
+			    char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 
 	return sprintf(buf, "%d\n", udev->persist_enabled);
 }
 
+<<<<<<< HEAD
 static ssize_t
 set_persist(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
+=======
+static ssize_t persist_store(struct device *dev, struct device_attribute *attr,
+			     const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 	int value;
@@ -285,8 +476,12 @@ set_persist(struct device *dev, struct device_attribute *attr,
 	usb_unlock_device(udev);
 	return count;
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(persist, S_IRUGO | S_IWUSR, show_persist, set_persist);
+=======
+static DEVICE_ATTR_RW(persist);
+>>>>>>> refs/remotes/origin/master
 
 static int add_persist_attributes(struct device *dev)
 {
@@ -319,19 +514,30 @@ static void remove_persist_attributes(struct device *dev)
 
 #endif	/* CONFIG_PM */
 
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_SUSPEND
 
 static ssize_t
 show_connected_duration(struct device *dev, struct device_attribute *attr,
 		char *buf)
+=======
+#ifdef	CONFIG_PM_RUNTIME
+
+static ssize_t connected_duration_show(struct device *dev,
+				       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 
 	return sprintf(buf, "%u\n",
 			jiffies_to_msecs(jiffies - udev->connect_time));
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(connected_duration, S_IRUGO, show_connected_duration, NULL);
+=======
+static DEVICE_ATTR_RO(connected_duration);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * If the device is resumed, the last time the device was suspended has
@@ -340,9 +546,14 @@ static DEVICE_ATTR(connected_duration, S_IRUGO, show_connected_duration, NULL);
  *
  * If the device is suspended, the active_duration is up-to-date.
  */
+<<<<<<< HEAD
 static ssize_t
 show_active_duration(struct device *dev, struct device_attribute *attr,
 		char *buf)
+=======
+static ssize_t active_duration_show(struct device *dev,
+				    struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 	int duration;
@@ -353,18 +564,31 @@ show_active_duration(struct device *dev, struct device_attribute *attr,
 		duration = jiffies_to_msecs(udev->active_duration);
 	return sprintf(buf, "%u\n", duration);
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(active_duration, S_IRUGO, show_active_duration, NULL);
 
 static ssize_t
 show_autosuspend(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(active_duration);
+
+static ssize_t autosuspend_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf, "%d\n", dev->power.autosuspend_delay / 1000);
 }
 
+<<<<<<< HEAD
 static ssize_t
 set_autosuspend(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
+=======
+static ssize_t autosuspend_store(struct device *dev,
+				 struct device_attribute *attr, const char *buf,
+				 size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	int value;
 
@@ -375,14 +599,23 @@ set_autosuspend(struct device *dev, struct device_attribute *attr,
 	pm_runtime_set_autosuspend_delay(dev, value * 1000);
 	return count;
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(autosuspend, S_IRUGO | S_IWUSR,
 		show_autosuspend, set_autosuspend);
+=======
+static DEVICE_ATTR_RW(autosuspend);
+>>>>>>> refs/remotes/origin/master
 
 static const char on_string[] = "on";
 static const char auto_string[] = "auto";
 
+<<<<<<< HEAD
 static void warn_level(void) {
+=======
+static void warn_level(void)
+{
+>>>>>>> refs/remotes/origin/master
 	static int level_warned;
 
 	if (!level_warned) {
@@ -392,8 +625,13 @@ static void warn_level(void) {
 	}
 }
 
+<<<<<<< HEAD
 static ssize_t
 show_level(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t level_show(struct device *dev, struct device_attribute *attr,
+			  char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 	const char *p = auto_string;
@@ -404,9 +642,14 @@ show_level(struct device *dev, struct device_attribute *attr, char *buf)
 	return sprintf(buf, "%s\n", p);
 }
 
+<<<<<<< HEAD
 static ssize_t
 set_level(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
+=======
+static ssize_t level_store(struct device *dev, struct device_attribute *attr,
+			   const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 	int len = count;
@@ -434,6 +677,7 @@ set_level(struct device *dev, struct device_attribute *attr,
 	usb_unlock_device(udev);
 	return rc;
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(level, S_IRUGO | S_IWUSR, show_level, set_level);
 
@@ -442,11 +686,21 @@ static DEVICE_ATTR(level, S_IRUGO | S_IWUSR, show_level, set_level);
 static ssize_t
 show_usb2_hardware_lpm(struct device *dev, struct device_attribute *attr,
 				char *buf)
+=======
+static DEVICE_ATTR_RW(level);
+
+static ssize_t usb2_hardware_lpm_show(struct device *dev,
+				      struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 	const char *p;
 
+<<<<<<< HEAD
 	if (udev->usb2_hw_lpm_enabled == 1)
+=======
+	if (udev->usb2_hw_lpm_allowed == 1)
+>>>>>>> refs/remotes/origin/master
 		p = "enabled";
 	else
 		p = "disabled";
@@ -454,9 +708,15 @@ show_usb2_hardware_lpm(struct device *dev, struct device_attribute *attr,
 	return sprintf(buf, "%s\n", p);
 }
 
+<<<<<<< HEAD
 static ssize_t
 set_usb2_hardware_lpm(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
+=======
+static ssize_t usb2_hardware_lpm_store(struct device *dev,
+				       struct device_attribute *attr,
+				       const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 	bool value;
@@ -466,8 +726,15 @@ set_usb2_hardware_lpm(struct device *dev, struct device_attribute *attr,
 
 	ret = strtobool(buf, &value);
 
+<<<<<<< HEAD
 	if (!ret)
 		ret = usb_set_usb2_hardware_lpm(udev, value);
+=======
+	if (!ret) {
+		udev->usb2_hw_lpm_allowed = value;
+		ret = usb_set_usb2_hardware_lpm(udev, value);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	usb_unlock_device(udev);
 
@@ -476,12 +743,68 @@ set_usb2_hardware_lpm(struct device *dev, struct device_attribute *attr,
 
 	return ret;
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(usb2_hardware_lpm, S_IRUGO | S_IWUSR, show_usb2_hardware_lpm,
 			set_usb2_hardware_lpm);
 
 static struct attribute *usb2_hardware_lpm_attr[] = {
 	&dev_attr_usb2_hardware_lpm.attr,
+=======
+static DEVICE_ATTR_RW(usb2_hardware_lpm);
+
+static ssize_t usb2_lpm_l1_timeout_show(struct device *dev,
+					struct device_attribute *attr,
+					char *buf)
+{
+	struct usb_device *udev = to_usb_device(dev);
+	return sprintf(buf, "%d\n", udev->l1_params.timeout);
+}
+
+static ssize_t usb2_lpm_l1_timeout_store(struct device *dev,
+					 struct device_attribute *attr,
+					 const char *buf, size_t count)
+{
+	struct usb_device *udev = to_usb_device(dev);
+	u16 timeout;
+
+	if (kstrtou16(buf, 0, &timeout))
+		return -EINVAL;
+
+	udev->l1_params.timeout = timeout;
+
+	return count;
+}
+static DEVICE_ATTR_RW(usb2_lpm_l1_timeout);
+
+static ssize_t usb2_lpm_besl_show(struct device *dev,
+				  struct device_attribute *attr, char *buf)
+{
+	struct usb_device *udev = to_usb_device(dev);
+	return sprintf(buf, "%d\n", udev->l1_params.besl);
+}
+
+static ssize_t usb2_lpm_besl_store(struct device *dev,
+				   struct device_attribute *attr,
+				   const char *buf, size_t count)
+{
+	struct usb_device *udev = to_usb_device(dev);
+	u8 besl;
+
+	if (kstrtou8(buf, 0, &besl) || besl > 15)
+		return -EINVAL;
+
+	udev->l1_params.besl = besl;
+
+	return count;
+}
+static DEVICE_ATTR_RW(usb2_lpm_besl);
+
+static struct attribute *usb2_hardware_lpm_attr[] = {
+	&dev_attr_usb2_hardware_lpm.attr,
+	&dev_attr_usb2_lpm_l1_timeout.attr,
+	&dev_attr_usb2_lpm_besl.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 static struct attribute_group usb2_hardware_lpm_attr_group = {
@@ -489,7 +812,10 @@ static struct attribute_group usb2_hardware_lpm_attr_group = {
 	.attrs	= usb2_hardware_lpm_attr,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct attribute *power_attrs[] = {
 	&dev_attr_autosuspend.attr,
 	&dev_attr_level.attr,
@@ -507,9 +833,12 @@ static int add_power_attributes(struct device *dev)
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (is_usb_device(dev))
 		rc = sysfs_merge_group(&dev->kobj, &power_attr_group);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (is_usb_device(dev)) {
 		struct usb_device *udev = to_usb_device(dev);
 		rc = sysfs_merge_group(&dev->kobj, &power_attr_group);
@@ -518,16 +847,23 @@ static int add_power_attributes(struct device *dev)
 					&usb2_hardware_lpm_attr_group);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 static void remove_power_attributes(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sysfs_unmerge_group(&dev->kobj, &usb2_hardware_lpm_attr_group);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sysfs_unmerge_group(&dev->kobj, &usb2_hardware_lpm_attr_group);
+>>>>>>> refs/remotes/origin/master
 	sysfs_unmerge_group(&dev->kobj, &power_attr_group);
 }
 
@@ -536,13 +872,21 @@ static void remove_power_attributes(struct device *dev)
 #define add_power_attributes(dev)	0
 #define remove_power_attributes(dev)	do {} while (0)
 
+<<<<<<< HEAD
 #endif	/* CONFIG_USB_SUSPEND */
+=======
+#endif	/* CONFIG_PM_RUNTIME */
+>>>>>>> refs/remotes/origin/master
 
 
 /* Descriptor fields */
 #define usb_descriptor_attr_le16(field, format_string)			\
 static ssize_t								\
+<<<<<<< HEAD
 show_##field(struct device *dev, struct device_attribute *attr,	\
+=======
+field##_show(struct device *dev, struct device_attribute *attr,	\
+>>>>>>> refs/remotes/origin/master
 		char *buf)						\
 {									\
 	struct usb_device *udev;					\
@@ -551,6 +895,7 @@ show_##field(struct device *dev, struct device_attribute *attr,	\
 	return sprintf(buf, format_string, 				\
 			le16_to_cpu(udev->descriptor.field));		\
 }									\
+<<<<<<< HEAD
 static DEVICE_ATTR(field, S_IRUGO, show_##field, NULL);
 
 usb_descriptor_attr_le16(idVendor, "%04x\n")
@@ -560,6 +905,17 @@ usb_descriptor_attr_le16(bcdDevice, "%04x\n")
 #define usb_descriptor_attr(field, format_string)			\
 static ssize_t								\
 show_##field(struct device *dev, struct device_attribute *attr,	\
+=======
+static DEVICE_ATTR_RO(field)
+
+usb_descriptor_attr_le16(idVendor, "%04x\n");
+usb_descriptor_attr_le16(idProduct, "%04x\n");
+usb_descriptor_attr_le16(bcdDevice, "%04x\n");
+
+#define usb_descriptor_attr(field, format_string)			\
+static ssize_t								\
+field##_show(struct device *dev, struct device_attribute *attr,	\
+>>>>>>> refs/remotes/origin/master
 		char *buf)						\
 {									\
 	struct usb_device *udev;					\
@@ -567,6 +923,7 @@ show_##field(struct device *dev, struct device_attribute *attr,	\
 	udev = to_usb_device(dev);					\
 	return sprintf(buf, format_string, udev->descriptor.field);	\
 }									\
+<<<<<<< HEAD
 static DEVICE_ATTR(field, S_IRUGO, show_##field, NULL);
 
 usb_descriptor_attr(bDeviceClass, "%02x\n")
@@ -581,20 +938,43 @@ usb_descriptor_attr(bMaxPacketSize0, "%d\n")
 static ssize_t usb_dev_authorized_show(struct device *dev,
 				       struct device_attribute *attr,
 				       char *buf)
+=======
+static DEVICE_ATTR_RO(field)
+
+usb_descriptor_attr(bDeviceClass, "%02x\n");
+usb_descriptor_attr(bDeviceSubClass, "%02x\n");
+usb_descriptor_attr(bDeviceProtocol, "%02x\n");
+usb_descriptor_attr(bNumConfigurations, "%d\n");
+usb_descriptor_attr(bMaxPacketSize0, "%d\n");
+
+
+/* show if the device is authorized (1) or not (0) */
+static ssize_t authorized_show(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *usb_dev = to_usb_device(dev);
 	return snprintf(buf, PAGE_SIZE, "%u\n", usb_dev->authorized);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Authorize a device to be used in the system
  *
  * Writing a 0 deauthorizes the device, writing a 1 authorizes it.
  */
+<<<<<<< HEAD
 static ssize_t usb_dev_authorized_store(struct device *dev,
 					struct device_attribute *attr,
 					const char *buf, size_t size)
+=======
+static ssize_t authorized_store(struct device *dev,
+				struct device_attribute *attr, const char *buf,
+				size_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	ssize_t result;
 	struct usb_device *usb_dev = to_usb_device(dev);
@@ -606,6 +986,7 @@ static ssize_t usb_dev_authorized_store(struct device *dev,
 		result = usb_deauthorize_device(usb_dev);
 	else
 		result = usb_authorize_device(usb_dev);
+<<<<<<< HEAD
 	return result < 0? result : size;
 }
 
@@ -616,6 +997,16 @@ static DEVICE_ATTR(authorized, 0644,
 static ssize_t usb_remove_store(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t count)
+=======
+	return result < 0 ? result : size;
+}
+static DEVICE_ATTR_IGNORE_LOCKDEP(authorized, S_IRUGO | S_IWUSR,
+				  authorized_show, authorized_store);
+
+/* "Safely remove a device" */
+static ssize_t remove_store(struct device *dev, struct device_attribute *attr,
+			    const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *udev = to_usb_device(dev);
 	int rc = 0;
@@ -632,7 +1023,11 @@ static ssize_t usb_remove_store(struct device *dev,
 	usb_unlock_device(udev);
 	return rc;
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(remove, 0200, NULL, usb_remove_store);
+=======
+static DEVICE_ATTR_IGNORE_LOCKDEP(remove, S_IWUSR, NULL, remove_store);
+>>>>>>> refs/remotes/origin/master
 
 
 static struct attribute *dev_attrs[] = {
@@ -663,9 +1058,14 @@ static struct attribute *dev_attrs[] = {
 	&dev_attr_authorized.attr,
 	&dev_attr_remove.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&dev_attr_removable.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_removable.attr,
+	&dev_attr_ltm_capable.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 static struct attribute_group dev_attr_grp = {
@@ -683,10 +1083,14 @@ static struct attribute *dev_string_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t dev_string_attrs_are_visible(struct kobject *kobj,
 =======
 static umode_t dev_string_attrs_are_visible(struct kobject *kobj,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t dev_string_attrs_are_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
 		struct attribute *a, int n)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
@@ -734,6 +1138,10 @@ read_descriptors(struct file *filp, struct kobject *kobj,
 	 * Following that are the raw descriptor entries for all the
 	 * configurations (config plus subsidiary descriptors).
 	 */
+<<<<<<< HEAD
+=======
+	usb_lock_device(udev);
+>>>>>>> refs/remotes/origin/master
 	for (cfgno = -1; cfgno < udev->descriptor.bNumConfigurations &&
 			nleft > 0; ++cfgno) {
 		if (cfgno < 0) {
@@ -754,6 +1162,10 @@ read_descriptors(struct file *filp, struct kobject *kobj,
 			off -= srclen;
 		}
 	}
+<<<<<<< HEAD
+=======
+	usb_unlock_device(udev);
+>>>>>>> refs/remotes/origin/master
 	return count - nleft;
 }
 
@@ -794,10 +1206,17 @@ void usb_remove_sysfs_dev_files(struct usb_device *udev)
 	device_remove_bin_file(dev, &dev_bin_attr_descriptors);
 }
 
+<<<<<<< HEAD
 /* Interface Accociation Descriptor fields */
 #define usb_intf_assoc_attr(field, format_string)			\
 static ssize_t								\
 show_iad_##field(struct device *dev, struct device_attribute *attr,	\
+=======
+/* Interface Association Descriptor fields */
+#define usb_intf_assoc_attr(field, format_string)			\
+static ssize_t								\
+iad_##field##_show(struct device *dev, struct device_attribute *attr,	\
+>>>>>>> refs/remotes/origin/master
 		char *buf)						\
 {									\
 	struct usb_interface *intf = to_usb_interface(dev);		\
@@ -805,6 +1224,7 @@ show_iad_##field(struct device *dev, struct device_attribute *attr,	\
 	return sprintf(buf, format_string,				\
 			intf->intf_assoc->field); 			\
 }									\
+<<<<<<< HEAD
 static DEVICE_ATTR(iad_##field, S_IRUGO, show_iad_##field, NULL);
 
 usb_intf_assoc_attr(bFirstInterface, "%02x\n")
@@ -812,11 +1232,24 @@ usb_intf_assoc_attr(bInterfaceCount, "%02d\n")
 usb_intf_assoc_attr(bFunctionClass, "%02x\n")
 usb_intf_assoc_attr(bFunctionSubClass, "%02x\n")
 usb_intf_assoc_attr(bFunctionProtocol, "%02x\n")
+=======
+static DEVICE_ATTR_RO(iad_##field)
+
+usb_intf_assoc_attr(bFirstInterface, "%02x\n");
+usb_intf_assoc_attr(bInterfaceCount, "%02d\n");
+usb_intf_assoc_attr(bFunctionClass, "%02x\n");
+usb_intf_assoc_attr(bFunctionSubClass, "%02x\n");
+usb_intf_assoc_attr(bFunctionProtocol, "%02x\n");
+>>>>>>> refs/remotes/origin/master
 
 /* Interface fields */
 #define usb_intf_attr(field, format_string)				\
 static ssize_t								\
+<<<<<<< HEAD
 show_##field(struct device *dev, struct device_attribute *attr,	\
+=======
+field##_show(struct device *dev, struct device_attribute *attr,		\
+>>>>>>> refs/remotes/origin/master
 		char *buf)						\
 {									\
 	struct usb_interface *intf = to_usb_interface(dev);		\
@@ -824,6 +1257,7 @@ show_##field(struct device *dev, struct device_attribute *attr,	\
 	return sprintf(buf, format_string,				\
 			intf->cur_altsetting->desc.field); 		\
 }									\
+<<<<<<< HEAD
 static DEVICE_ATTR(field, S_IRUGO, show_##field, NULL);
 
 usb_intf_attr(bInterfaceNumber, "%02x\n")
@@ -835,22 +1269,46 @@ usb_intf_attr(bInterfaceProtocol, "%02x\n")
 
 static ssize_t show_interface_string(struct device *dev,
 		struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(field)
+
+usb_intf_attr(bInterfaceNumber, "%02x\n");
+usb_intf_attr(bAlternateSetting, "%2d\n");
+usb_intf_attr(bNumEndpoints, "%02x\n");
+usb_intf_attr(bInterfaceClass, "%02x\n");
+usb_intf_attr(bInterfaceSubClass, "%02x\n");
+usb_intf_attr(bInterfaceProtocol, "%02x\n");
+
+static ssize_t interface_show(struct device *dev, struct device_attribute *attr,
+			      char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_interface *intf;
 	char *string;
 
 	intf = to_usb_interface(dev);
+<<<<<<< HEAD
 	string = intf->cur_altsetting->string;
 	barrier();		/* The altsetting might change! */
 
+=======
+	string = ACCESS_ONCE(intf->cur_altsetting->string);
+>>>>>>> refs/remotes/origin/master
 	if (!string)
 		return 0;
 	return sprintf(buf, "%s\n", string);
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(interface, S_IRUGO, show_interface_string, NULL);
 
 static ssize_t show_modalias(struct device *dev,
 		struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(interface);
+
+static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
+			     char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_interface *intf;
 	struct usb_device *udev;
@@ -858,10 +1316,17 @@ static ssize_t show_modalias(struct device *dev,
 
 	intf = to_usb_interface(dev);
 	udev = interface_to_usbdev(intf);
+<<<<<<< HEAD
 	alt = intf->cur_altsetting;
 
 	return sprintf(buf, "usb:v%04Xp%04Xd%04Xdc%02Xdsc%02Xdp%02X"
 			"ic%02Xisc%02Xip%02X\n",
+=======
+	alt = ACCESS_ONCE(intf->cur_altsetting);
+
+	return sprintf(buf, "usb:v%04Xp%04Xd%04Xdc%02Xdsc%02Xdp%02X"
+			"ic%02Xisc%02Xip%02Xin%02X\n",
+>>>>>>> refs/remotes/origin/master
 			le16_to_cpu(udev->descriptor.idVendor),
 			le16_to_cpu(udev->descriptor.idProduct),
 			le16_to_cpu(udev->descriptor.bcdDevice),
@@ -870,6 +1335,7 @@ static ssize_t show_modalias(struct device *dev,
 			udev->descriptor.bDeviceProtocol,
 			alt->desc.bInterfaceClass,
 			alt->desc.bInterfaceSubClass,
+<<<<<<< HEAD
 			alt->desc.bInterfaceProtocol);
 }
 static DEVICE_ATTR(modalias, S_IRUGO, show_modalias, NULL);
@@ -896,6 +1362,27 @@ static ssize_t show_supports_autosuspend(struct device *dev,
 	return ret;
 }
 static DEVICE_ATTR(supports_autosuspend, S_IRUGO, show_supports_autosuspend, NULL);
+=======
+			alt->desc.bInterfaceProtocol,
+			alt->desc.bInterfaceNumber);
+}
+static DEVICE_ATTR_RO(modalias);
+
+static ssize_t supports_autosuspend_show(struct device *dev,
+					 struct device_attribute *attr,
+					 char *buf)
+{
+	int s;
+
+	device_lock(dev);
+	/* Devices will be autosuspended even when an interface isn't claimed */
+	s = (!dev->driver || to_usb_driver(dev->driver)->supports_autosuspend);
+	device_unlock(dev);
+
+	return sprintf(buf, "%u\n", s);
+}
+static DEVICE_ATTR_RO(supports_autosuspend);
+>>>>>>> refs/remotes/origin/master
 
 static struct attribute *intf_attrs[] = {
 	&dev_attr_bInterfaceNumber.attr,
@@ -922,10 +1409,14 @@ static struct attribute *intf_assoc_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static mode_t intf_assoc_attrs_are_visible(struct kobject *kobj,
 =======
 static umode_t intf_assoc_attrs_are_visible(struct kobject *kobj,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static umode_t intf_assoc_attrs_are_visible(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
 		struct attribute *a, int n)
 {
 	struct device *dev = container_of(kobj, struct device, kobj);

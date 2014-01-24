@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    Copyright IBM Corp. 1999,2010
 =======
  *    Copyright IBM Corp. 1999,2012
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    Copyright IBM Corp. 1999, 2012
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Hartmut Penner <hp@de.ibm.com>,
  *		 Martin Schwidefsky <schwidefsky@de.ibm.com>,
  *		 Denis Joseph Barrow,
@@ -17,6 +21,7 @@
 #include <asm/cpu.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void restart_int_handler(void);
 void ext_int_handler(void);
 void system_call(void);
@@ -26,6 +31,8 @@ void io_int_handler(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_32BIT
 
 #define LC_ORDER 0
@@ -63,10 +70,14 @@ struct _lowcore {
 	psw_t	io_new_psw;			/* 0x0078 */
 	__u32	ext_params;			/* 0x0080 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u16	cpu_addr;			/* 0x0084 */
 =======
 	__u16	ext_cpu_addr;			/* 0x0084 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16	ext_cpu_addr;			/* 0x0084 */
+>>>>>>> refs/remotes/origin/master
 	__u16	ext_int_code;			/* 0x0086 */
 	__u16	svc_ilc;			/* 0x0088 */
 	__u16	svc_code;			/* 0x008a */
@@ -107,6 +118,7 @@ struct _lowcore {
 	__u32	gpregs_save_area[16];		/* 0x0180 */
 	__u32	cregs_save_area[16];		/* 0x01c0 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Return psws. */
 	__u32	save_area[16];			/* 0x0200 */
@@ -150,6 +162,8 @@ struct _lowcore {
 	__u32	ftrace_func;			/* 0x02e4 */
 	__u8	pad_0x02e8[0x0300-0x02e8];	/* 0x02e8 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Save areas. */
 	__u32	save_area_sync[8];		/* 0x0200 */
 	__u32	save_area_async[8];		/* 0x0220 */
@@ -201,7 +215,10 @@ struct _lowcore {
 	__u32	machine_flags;			/* 0x02f4 */
 	__u32	ftrace_func;			/* 0x02f8 */
 	__u8	pad_0x02fc[0x0300-0x02fc];	/* 0x02fc */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Interrupt response block */
 	__u8	irb[64];			/* 0x0300 */
@@ -216,13 +233,19 @@ struct _lowcore {
 	__u32	ipib;				/* 0x0e00 */
 	__u32	ipib_checksum;			/* 0x0e04 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u8	pad_0x0e08[0x0f00-0x0e08];	/* 0x0e08 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__u32	vmcore_info;			/* 0x0e08 */
 	__u8	pad_0x0e0c[0x0e18-0x0e0c];	/* 0x0e0c */
 	__u32	os_info;			/* 0x0e18 */
 	__u8	pad_0x0e1c[0x0f00-0x0e1c];	/* 0x0e1c */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Extended facility list */
 	__u64	stfle_fac_list[32];		/* 0x0f00 */
@@ -255,10 +278,14 @@ struct _lowcore {
 	__u8	pad_0x0018[0x0080-0x0018];	/* 0x0018 */
 	__u32	ext_params;			/* 0x0080 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u16	cpu_addr;			/* 0x0084 */
 =======
 	__u16	ext_cpu_addr;			/* 0x0084 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16	ext_cpu_addr;			/* 0x0084 */
+>>>>>>> refs/remotes/origin/master
 	__u16	ext_int_code;			/* 0x0086 */
 	__u16	svc_ilc;			/* 0x0088 */
 	__u16	svc_code;			/* 0x008a */
@@ -303,6 +330,7 @@ struct _lowcore {
 	psw_t	mcck_new_psw;			/* 0x01e0 */
 	psw_t	io_new_psw;			/* 0x01f0 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Entry/exit save area & return psws. */
 	__u64	save_area[16];			/* 0x0200 */
@@ -356,6 +384,8 @@ struct _lowcore {
 
 	__u8	pad_0x0400[0x0e00-0x0400];	/* 0x0400 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Save areas. */
 	__u64	save_area_sync[8];		/* 0x0200 */
 	__u64	save_area_async[8];		/* 0x0240 */
@@ -417,7 +447,10 @@ struct _lowcore {
 	__u32	paste[16];			/* 0x0440 */
 
 	__u8	pad_0x0480[0x0e00-0x0480];	/* 0x0480 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * 0xe00 contains the address of the IPL Parameter Information
@@ -426,6 +459,7 @@ struct _lowcore {
 	 */
 	__u64	ipib;				/* 0x0e00 */
 	__u32	ipib_checksum;			/* 0x0e08 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__u8	pad_0x0e0c[0x0f00-0x0e0c];	/* 0x0e0c */
 =======
@@ -439,6 +473,12 @@ struct _lowcore {
 	__u64	os_info;			/* 0x0e18 */
 	__u8	pad_0x0e20[0x0f00-0x0e20];	/* 0x0e20 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u64	vmcore_info;			/* 0x0e0c */
+	__u8	pad_0x0e14[0x0e18-0x0e14];	/* 0x0e14 */
+	__u64	os_info;			/* 0x0e18 */
+	__u8	pad_0x0e20[0x0f00-0x0e20];	/* 0x0e20 */
+>>>>>>> refs/remotes/origin/master
 
 	/* Extended facility list */
 	__u64	stfle_fac_list[32];		/* 0x0f00 */
@@ -462,9 +502,19 @@ struct _lowcore {
 	__u8	pad_0x1338[0x1340-0x1338];	/* 0x1338 */
 	__u32	access_regs_save_area[16];	/* 0x1340 */
 	__u64	cregs_save_area[16];		/* 0x1380 */
+<<<<<<< HEAD
 
 	/* align to the top of the prefix area */
 	__u8	pad_0x1400[0x2000-0x1400];	/* 0x1400 */
+=======
+	__u8	pad_0x1400[0x1800-0x1400];	/* 0x1400 */
+
+	/* Transaction abort diagnostic block */
+	__u8	pgm_tdb[256];			/* 0x1800 */
+
+	/* align to the top of the prefix area */
+	__u8	pad_0x1900[0x2000-0x1900];	/* 0x1900 */
+>>>>>>> refs/remotes/origin/master
 } __packed;
 
 #endif /* CONFIG_32BIT */

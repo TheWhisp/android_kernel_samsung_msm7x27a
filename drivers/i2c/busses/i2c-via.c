@@ -90,17 +90,25 @@ static struct i2c_adapter vt586b_adapter = {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id vt586b_ids[] __devinitconst = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(vt586b_ids) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(vt586b_ids) = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C586_3) },
 	{ 0, }
 };
 
 MODULE_DEVICE_TABLE (pci, vt586b_ids);
 
+<<<<<<< HEAD
 static int __devinit vt586b_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int vt586b_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 base;
 	u8 rev;
@@ -150,7 +158,11 @@ static int __devinit vt586b_probe(struct pci_dev *dev, const struct pci_device_i
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit vt586b_remove(struct pci_dev *dev)
+=======
+static void vt586b_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	i2c_del_adapter(&vt586b_adapter);
 	release_region(I2C_DIR, IOSPACE);
@@ -162,6 +174,7 @@ static struct pci_driver vt586b_driver = {
 	.name		= "vt586b_smbus",
 	.id_table	= vt586b_ids,
 	.probe		= vt586b_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vt586b_remove),
 };
 
@@ -175,10 +188,19 @@ static void __exit i2c_vt586b_exit(void)
 	pci_unregister_driver(&vt586b_driver);
 }
 
+=======
+	.remove		= vt586b_remove,
+};
+
+module_pci_driver(vt586b_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kyösti Mälkki <kmalkki@cc.hut.fi>");
 MODULE_DESCRIPTION("i2c for Via vt82c586b southbridge");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(i2c_vt586b_init);
 module_exit(i2c_vt586b_exit);
+=======
+>>>>>>> refs/remotes/origin/master

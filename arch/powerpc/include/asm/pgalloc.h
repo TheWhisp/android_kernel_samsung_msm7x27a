@@ -3,6 +3,10 @@
 #ifdef __KERNEL__
 
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/tlb.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC_BOOK3E
 extern void tlb_flush_pgtable(struct mmu_gather *tlb, unsigned long address);
@@ -13,6 +17,7 @@ static inline void tlb_flush_pgtable(struct mmu_gather *tlb,
 }
 #endif /* !CONFIG_PPC_BOOK3E */
 
+<<<<<<< HEAD
 static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
 {
 	free_page((unsigned long)pte);
@@ -24,12 +29,15 @@ static inline void pte_free(struct mm_struct *mm, pgtable_t ptepage)
 	__free_page(ptepage);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC64
 #include <asm/pgalloc-64.h>
 #else
 #include <asm/pgalloc-32.h>
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 struct mmu_gather;
 extern void tlb_remove_table(struct mmu_gather *, void *);
@@ -64,5 +72,7 @@ static inline void __pte_free_tlb(struct mmu_gather *tlb, struct page *ptepage,
 	pgtable_free_tlb(tlb, page_address(ptepage), 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __KERNEL__ */
 #endif /* _ASM_POWERPC_PGALLOC_H */

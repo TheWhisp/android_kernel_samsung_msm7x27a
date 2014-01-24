@@ -355,12 +355,17 @@ static const u32 bf_sbox[256 * 4] = {
 #define GET32_0(x) (((x) >> (24)) & (0xff))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define bf_F(x) (((S[GET32_0(x)] + S[256 + GET32_1(x)]) ^ \
     S[512 + GET32_2(x)]) + S[768 + GET32_3(x)])
 =======
 #define bf_F(x) (((S[GET32_0(x)] + S[256 + GET32_1(x)]) ^	\
 		  S[512 + GET32_2(x)]) + S[768 + GET32_3(x)])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define bf_F(x) (((S[GET32_0(x)] + S[256 + GET32_1(x)]) ^	\
+		  S[512 + GET32_2(x)]) + S[768 + GET32_3(x)])
+>>>>>>> refs/remotes/origin/master
 
 #define EROUND(a, b, n)  do { b ^= P[n]; a ^= bf_F(b); } while (0)
 #define DROUND(a, b, n)  do { a ^= bf_F(b); b ^= P[n]; } while (0)
@@ -394,6 +399,7 @@ dsp_bf_encrypt(struct dsp *dsp, u8 *data, int len)
 		/* transcode 9 samples xlaw to 8 bytes */
 		yl = dsp_audio_law2seven[bf_data_in[0]];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		yl = (yl<<7) | dsp_audio_law2seven[bf_data_in[1]];
 		yl = (yl<<7) | dsp_audio_law2seven[bf_data_in[2]];
 		yl = (yl<<7) | dsp_audio_law2seven[bf_data_in[3]];
@@ -406,6 +412,8 @@ dsp_bf_encrypt(struct dsp *dsp, u8 *data, int len)
 		yr = (yr<<7) | dsp_audio_law2seven[bf_data_in[8]];
 		yr = (yr<<1) | (bf_data_in[0] & 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		yl = (yl << 7) | dsp_audio_law2seven[bf_data_in[1]];
 		yl = (yl << 7) | dsp_audio_law2seven[bf_data_in[2]];
 		yl = (yl << 7) | dsp_audio_law2seven[bf_data_in[3]];
@@ -417,7 +425,10 @@ dsp_bf_encrypt(struct dsp *dsp, u8 *data, int len)
 		yr = (yr << 7) | dsp_audio_law2seven[bf_data_in[7]];
 		yr = (yr << 7) | dsp_audio_law2seven[bf_data_in[8]];
 		yr = (yr << 1) | (bf_data_in[0] & 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* fill unused bit with random noise of audio input */
 		/* encrypt */
@@ -443,23 +454,30 @@ dsp_bf_encrypt(struct dsp *dsp, u8 *data, int len)
 
 		/* calculate 3-bit checksumme */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs = yl ^ (yl>>3) ^ (yl>>6) ^ (yl>>9) ^ (yl>>12) ^ (yl>>15)
 			^ (yl>>18) ^ (yl>>21) ^ (yl>>24) ^ (yl>>27) ^ (yl>>30)
 			^ (yr<<2) ^ (yr>>1) ^ (yr>>4) ^ (yr>>7) ^ (yr>>10)
 			^ (yr>>13) ^ (yr>>16) ^ (yr>>19) ^ (yr>>22) ^ (yr>>25)
 			^ (yr>>28) ^ (yr>>31);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		cs = yl ^ (yl >> 3) ^ (yl >> 6) ^ (yl >> 9) ^ (yl >> 12) ^ (yl >> 15)
 			^ (yl >> 18) ^ (yl >> 21) ^ (yl >> 24) ^ (yl >> 27) ^ (yl >> 30)
 			^ (yr << 2) ^ (yr >> 1) ^ (yr >> 4) ^ (yr >> 7) ^ (yr >> 10)
 			^ (yr >> 13) ^ (yr >> 16) ^ (yr >> 19) ^ (yr >> 22) ^ (yr >> 25)
 			^ (yr >> 28) ^ (yr >> 31);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * transcode 8 crypted bytes to 9 data bytes with sync
 		 * and checksum information
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bf_crypt_out[0] = (yl>>25) | 0x80;
 		bf_crypt_out[1] = (yl>>18) & 0x7f;
@@ -470,6 +488,8 @@ dsp_bf_encrypt(struct dsp *dsp, u8 *data, int len)
 		bf_crypt_out[6] = ((yr>>15) & 0x7f) | ((cs<<6) & 0x80);
 		bf_crypt_out[7] = ((yr>>8) & 0x7f) | (cs<<7);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		bf_crypt_out[0] = (yl >> 25) | 0x80;
 		bf_crypt_out[1] = (yl >> 18) & 0x7f;
 		bf_crypt_out[2] = (yl >> 11) & 0x7f;
@@ -478,7 +498,10 @@ dsp_bf_encrypt(struct dsp *dsp, u8 *data, int len)
 		bf_crypt_out[5] = ((yr >> 22) & 0x7f) | ((cs << 5) & 0x80);
 		bf_crypt_out[6] = ((yr >> 15) & 0x7f) | ((cs << 6) & 0x80);
 		bf_crypt_out[7] = ((yr >> 8) & 0x7f) | (cs << 7);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bf_crypt_out[8] = yr;
 	}
 
@@ -513,10 +536,14 @@ dsp_bf_decrypt(struct dsp *dsp, u8 *data, int len)
 		 * send current decrypted data
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sync = (sync<<1) | ((*data)>>7);
 =======
 		sync = (sync << 1) | ((*data) >> 7);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sync = (sync << 1) | ((*data) >> 7);
+>>>>>>> refs/remotes/origin/master
 		bf_crypt_inring[j++ & 15] = *data;
 		*data++ = bf_data_out[k++];
 		i++;
@@ -524,14 +551,19 @@ dsp_bf_decrypt(struct dsp *dsp, u8 *data, int len)
 			k = 0; /* repeat if no sync has been found */
 		/* check if not in sync */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((sync&0x1f0) != 0x100)
 =======
 		if ((sync & 0x1f0) != 0x100)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((sync & 0x1f0) != 0x100)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		j -= 9;
 		/* transcode receive data to 64 bit block of encrypted data */
 		yl = bf_crypt_inring[j++ & 15];
+<<<<<<< HEAD
 <<<<<<< HEAD
 		yl = (yl<<7) | bf_crypt_inring[j++ & 15]; /* bit7 = 0 */
 		yl = (yl<<7) | bf_crypt_inring[j++ & 15]; /* bit7 = 0 */
@@ -561,6 +593,8 @@ dsp_bf_decrypt(struct dsp *dsp, u8 *data, int len)
 				    "DSP BLOWFISH: received corrupt frame, "
 				    "checksumme is not correct\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		yl = (yl << 7) | bf_crypt_inring[j++ & 15]; /* bit7 = 0 */
 		yl = (yl << 7) | bf_crypt_inring[j++ & 15]; /* bit7 = 0 */
 		yl = (yl << 7) | bf_crypt_inring[j++ & 15]; /* bit7 = 0 */
@@ -588,7 +622,10 @@ dsp_bf_decrypt(struct dsp *dsp, u8 *data, int len)
 				printk(KERN_DEBUG
 				       "DSP BLOWFISH: received corrupt frame, "
 				       "checksumme is not correct\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -614,6 +651,7 @@ dsp_bf_decrypt(struct dsp *dsp, u8 *data, int len)
 
 		/* transcode 8 crypted bytes to 9 sample bytes */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bf_data_out[0] = dsp_audio_seven2law[(yl>>25) & 0x7f];
 		bf_data_out[1] = dsp_audio_seven2law[(yl>>18) & 0x7f];
 		bf_data_out[2] = dsp_audio_seven2law[(yl>>11) & 0x7f];
@@ -626,6 +664,8 @@ dsp_bf_decrypt(struct dsp *dsp, u8 *data, int len)
 		bf_data_out[7] = dsp_audio_seven2law[(yr>>8) & 0x7f];
 		bf_data_out[8] = dsp_audio_seven2law[(yr>>1) & 0x7f];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		bf_data_out[0] = dsp_audio_seven2law[(yl >> 25) & 0x7f];
 		bf_data_out[1] = dsp_audio_seven2law[(yl >> 18) & 0x7f];
 		bf_data_out[2] = dsp_audio_seven2law[(yl >> 11) & 0x7f];
@@ -637,7 +677,10 @@ dsp_bf_decrypt(struct dsp *dsp, u8 *data, int len)
 		bf_data_out[6] = dsp_audio_seven2law[(yr >> 15) & 0x7f];
 		bf_data_out[7] = dsp_audio_seven2law[(yr >> 8) & 0x7f];
 		bf_data_out[8] = dsp_audio_seven2law[(yr >> 1) & 0x7f];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		k = 0; /* start with new decoded frame */
 	}
 
@@ -722,6 +765,7 @@ dsp_bf_init(struct dsp *dsp, const u8 *key, uint keylen)
 	for (j = 0, i = 0; i < 16 + 2; i++) {
 		temp = (((u32)key[j] << 24) |
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    ((u32)key[(j + 1) % keylen] << 16) |
 		    ((u32)key[(j + 2) % keylen] << 8) |
 		    ((u32)key[(j + 3) % keylen]));
@@ -730,6 +774,11 @@ dsp_bf_init(struct dsp *dsp, const u8 *key, uint keylen)
 			((u32)key[(j + 2) % keylen] << 8) |
 			((u32)key[(j + 3) % keylen]));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			((u32)key[(j + 1) % keylen] << 16) |
+			((u32)key[(j + 2) % keylen] << 8) |
+			((u32)key[(j + 3) % keylen]));
+>>>>>>> refs/remotes/origin/master
 
 		P[i] = P[i] ^ temp;
 		j = (j + 4) % keylen;

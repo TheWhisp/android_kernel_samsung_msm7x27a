@@ -24,6 +24,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "nouveau_drv.h"
@@ -120,11 +121,22 @@ nouveau_dma_init(struct nouveau_channel *chan)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <core/client.h>
+
+#include "nouveau_drm.h"
+#include "nouveau_dma.h"
+
+>>>>>>> refs/remotes/origin/master
 void
 OUT_RINGp(struct nouveau_channel *chan, const void *data, unsigned nr_dwords)
 {
 	bool is_iomem;
+<<<<<<< HEAD
 	u32 *mem = ttm_kmap_obj_virtual(&chan->pushbuf_bo->kmap, &is_iomem);
+=======
+	u32 *mem = ttm_kmap_obj_virtual(&chan->push.buffer->kmap, &is_iomem);
+>>>>>>> refs/remotes/origin/master
 	mem = &mem[chan->dma.cur];
 	if (is_iomem)
 		memcpy_toio((void __force __iomem *)mem, data, nr_dwords * 4);
@@ -142,20 +154,29 @@ OUT_RINGp(struct nouveau_channel *chan, const void *data, unsigned nr_dwords)
  */
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 READ_GET(struct nouveau_channel *chan, uint32_t *prev_get, uint32_t *timeout)
 {
 	uint32_t val;
 
 	val = nvchan_rd32(chan, chan->user_get);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 READ_GET(struct nouveau_channel *chan, uint64_t *prev_get, int *timeout)
 {
 	uint64_t val;
 
+<<<<<<< HEAD
 	val = nvchan_rd32(chan, chan->user_get);
         if (chan->user_get_hi)
                 val |= (uint64_t)nvchan_rd32(chan, chan->user_get_hi) << 32;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = nv_ro32(chan->object, chan->user_get);
+        if (chan->user_get_hi)
+                val |= (uint64_t)nv_ro32(chan->object, chan->user_get_hi) << 32;
+>>>>>>> refs/remotes/origin/master
 
 	/* reset counter as long as GET is still advancing, this is
 	 * to avoid misdetecting a GPU lockup if the GPU happens to
@@ -167,37 +188,62 @@ READ_GET(struct nouveau_channel *chan, uint64_t *prev_get, int *timeout)
 	}
 
 	if ((++*timeout & 0xff) == 0) {
+<<<<<<< HEAD
 		DRM_UDELAY(1);
+=======
+		udelay(1);
+>>>>>>> refs/remotes/origin/master
 		if (*timeout > 100000)
 			return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	if (val < chan->pushbuf_base ||
 	    val > chan->pushbuf_base + (chan->dma.max << 2))
 		return -EINVAL;
 
 	return (val - chan->pushbuf_base) >> 2;
+=======
+	if (val < chan->push.vma.offset ||
+	    val > chan->push.vma.offset + (chan->dma.max << 2))
+		return -EINVAL;
+
+	return (val - chan->push.vma.offset) >> 2;
+>>>>>>> refs/remotes/origin/master
 }
 
 void
 nv50_dma_push(struct nouveau_channel *chan, struct nouveau_bo *bo,
 	      int delta, int length)
 {
+<<<<<<< HEAD
 	struct nouveau_bo *pb = chan->pushbuf_bo;
 <<<<<<< HEAD
 	uint64_t offset = bo->bo.offset + delta;
 	int ip = (chan->dma.ib_put * 2) + chan->dma.ib_base;
 =======
+=======
+	struct nouveau_bo *pb = chan->push.buffer;
+>>>>>>> refs/remotes/origin/master
 	struct nouveau_vma *vma;
 	int ip = (chan->dma.ib_put * 2) + chan->dma.ib_base;
 	u64 offset;
 
+<<<<<<< HEAD
 	vma = nouveau_bo_vma_find(bo, chan->vm);
 	BUG_ON(!vma);
 	offset = vma->offset + delta;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	BUG_ON(chan->dma.ib_free < 1);
+=======
+	vma = nouveau_bo_vma_find(bo, nv_client(chan->cli)->vm);
+	BUG_ON(!vma);
+	offset = vma->offset + delta;
+
+	BUG_ON(chan->dma.ib_free < 1);
+
+>>>>>>> refs/remotes/origin/master
 	nouveau_bo_wr32(pb, ip++, lower_32_bits(offset));
 	nouveau_bo_wr32(pb, ip++, upper_32_bits(offset) | length << 8);
 
@@ -207,7 +253,11 @@ nv50_dma_push(struct nouveau_channel *chan, struct nouveau_bo *bo,
 	/* Flush writes. */
 	nouveau_bo_rd32(pb, 0);
 
+<<<<<<< HEAD
 	nvchan_wr32(chan, 0x8c, chan->dma.ib_put);
+=======
+	nv_wo32(chan->object, 0x8c, chan->dma.ib_put);
+>>>>>>> refs/remotes/origin/master
 	chan->dma.ib_free--;
 }
 
@@ -217,7 +267,11 @@ nv50_dma_push_wait(struct nouveau_channel *chan, int count)
 	uint32_t cnt = 0, prev_get = 0;
 
 	while (chan->dma.ib_free < count) {
+<<<<<<< HEAD
 		uint32_t get = nvchan_rd32(chan, 0x88);
+=======
+		uint32_t get = nv_ro32(chan->object, 0x88);
+>>>>>>> refs/remotes/origin/master
 		if (get != prev_get) {
 			prev_get = get;
 			cnt = 0;
@@ -241,12 +295,17 @@ static int
 nv50_dma_wait(struct nouveau_channel *chan, int slots, int count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t cnt = 0, prev_get = 0;
 	int ret;
 =======
 	uint64_t prev_get = 0;
 	int ret, cnt = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint64_t prev_get = 0;
+	int ret, cnt = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ret = nv50_dma_push_wait(chan, slots + 1);
 	if (unlikely(ret))
@@ -289,12 +348,17 @@ int
 nouveau_dma_wait(struct nouveau_channel *chan, int slots, int size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t prev_get = 0, cnt = 0;
 	int get;
 =======
 	uint64_t prev_get = 0;
 	int cnt = 0, get;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint64_t prev_get = 0;
+	int cnt = 0, get;
+>>>>>>> refs/remotes/origin/master
 
 	if (chan->dma.ib_max)
 		return nv50_dma_wait(chan, slots, size);
@@ -338,7 +402,11 @@ nouveau_dma_wait(struct nouveau_channel *chan, int slots, int size)
 			 * instruct the GPU to jump back to the start right
 			 * after processing the currently pending commands.
 			 */
+<<<<<<< HEAD
 			OUT_RING(chan, chan->pushbuf_base | 0x20000000);
+=======
+			OUT_RING(chan, chan->push.vma.offset | 0x20000000);
+>>>>>>> refs/remotes/origin/master
 
 			/* wait for GET to depart from the skips area.
 			 * prevents writing GET==PUT and causing a race

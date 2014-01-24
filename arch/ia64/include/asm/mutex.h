@@ -29,6 +29,7 @@ __mutex_fastpath_lock(atomic_t *count, void (*fail_fn)(atomic_t *))
  *  __mutex_fastpath_lock_retval - try to take the lock by moving the count
  *                                 from 1 to a 0 value
  *  @count: pointer of type atomic_t
+<<<<<<< HEAD
  *  @fail_fn: function to call if the original value was not 1
  *
  * Change the count from 1 to a value lower than 1, and call <fail_fn> if
@@ -40,6 +41,17 @@ __mutex_fastpath_lock_retval(atomic_t *count, int (*fail_fn)(atomic_t *))
 {
 	if (unlikely(ia64_fetchadd4_acq(count, -1) != 1))
 		return fail_fn(count);
+=======
+ *
+ * Change the count from 1 to a value lower than 1. This function returns 0
+ * if the fastpath succeeds, or -1 otherwise.
+ */
+static inline int
+__mutex_fastpath_lock_retval(atomic_t *count)
+{
+	if (unlikely(ia64_fetchadd4_acq(count, -1) != 1))
+		return -1;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

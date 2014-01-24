@@ -8,12 +8,18 @@
 #ifdef CONFIG_MMU
 #include <asm/virtconvert.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SUN3
 =======
 #if defined(CONFIG_COLDFIRE)
 #include <asm/mcf_pgalloc.h>
 #elif defined(CONFIG_SUN3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_COLDFIRE)
+#include <asm/mcf_pgalloc.h>
+#elif defined(CONFIG_SUN3)
+>>>>>>> refs/remotes/origin/master
 #include <asm/sun3_pgalloc.h>
 #else
 #include <asm/motorola_pgalloc.h>

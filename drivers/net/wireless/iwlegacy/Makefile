@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_IWLWIFI_LEGACY)	+= iwl-legacy.o
 iwl-legacy-objs 		:= iwl-core.o iwl-eeprom.o iwl-hcmd.o iwl-power.o
 iwl-legacy-objs 		+= iwl-rx.o iwl-tx.o iwl-sta.o
@@ -23,6 +24,8 @@ obj-$(CONFIG_IWL3945)	+= iwl3945.o
 iwl3945-objs		:= iwl3945-base.o iwl-3945.o iwl-3945-rs.o iwl-3945-led.o
 iwl3945-$(CONFIG_IWLWIFI_LEGACY_DEBUGFS) += iwl-3945-debugfs.o
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_IWLEGACY)	+= iwlegacy.o
 iwlegacy-objs 		:= common.o
 iwlegacy-$(CONFIG_IWLEGACY_DEBUGFS) += debug.o
@@ -38,6 +41,9 @@ iwl4965-$(CONFIG_IWLEGACY_DEBUGFS) += 4965-debug.o
 obj-$(CONFIG_IWL3945)	+= iwl3945.o
 iwl3945-objs		:= 3945-mac.o 3945.o 3945-rs.o
 iwl3945-$(CONFIG_IWLEGACY_DEBUGFS) += 3945-debug.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 ccflags-y += -D__CHECK_ENDIAN__

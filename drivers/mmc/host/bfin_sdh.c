@@ -24,9 +24,13 @@
 #include <asm/portmux.h>
 #include <asm/bfin_sdh.h>
 
+<<<<<<< HEAD
 #if defined(CONFIG_BF51x)
 #define bfin_read_SDH_PWR_CTL		bfin_read_RSI_PWR_CTL
 #define bfin_write_SDH_PWR_CTL		bfin_write_RSI_PWR_CTL
+=======
+#if defined(CONFIG_BF51x) || defined(__ADSPBF60x__)
+>>>>>>> refs/remotes/origin/master
 #define bfin_read_SDH_CLK_CTL		bfin_read_RSI_CLK_CTL
 #define bfin_write_SDH_CLK_CTL		bfin_write_RSI_CLK_CTL
 #define bfin_write_SDH_ARGUMENT		bfin_write_RSI_ARGUMENT
@@ -45,6 +49,7 @@
 #define bfin_write_SDH_E_STATUS		bfin_write_RSI_E_STATUS
 #define bfin_read_SDH_STATUS		bfin_read_RSI_STATUS
 #define bfin_write_SDH_MASK0		bfin_write_RSI_MASK0
+<<<<<<< HEAD
 #define bfin_read_SDH_CFG		bfin_read_RSI_CFG
 #define bfin_write_SDH_CFG		bfin_write_RSI_CFG
 #endif
@@ -56,6 +61,20 @@ struct dma_desc_array {
 	short		x_modify;
 } __packed;
 
+=======
+#define bfin_write_SDH_E_MASK		bfin_write_RSI_E_MASK
+#define bfin_read_SDH_CFG		bfin_read_RSI_CFG
+#define bfin_write_SDH_CFG		bfin_write_RSI_CFG
+# if defined(__ADSPBF60x__)
+#  define bfin_read_SDH_BLK_SIZE	bfin_read_RSI_BLKSZ
+#  define bfin_write_SDH_BLK_SIZE	bfin_write_RSI_BLKSZ
+# else
+#  define bfin_read_SDH_PWR_CTL		bfin_read_RSI_PWR_CTL
+#  define bfin_write_SDH_PWR_CTL	bfin_write_RSI_PWR_CTL
+# endif
+#endif
+
+>>>>>>> refs/remotes/origin/master
 struct sdh_host {
 	struct mmc_host		*mmc;
 	spinlock_t		lock;
@@ -69,6 +88,10 @@ struct sdh_host {
 	dma_addr_t		sg_dma;
 	int			dma_len;
 
+<<<<<<< HEAD
+=======
+	unsigned long		sclk;
+>>>>>>> refs/remotes/origin/master
 	unsigned int		imask;
 	unsigned int		power_mode;
 	unsigned int		clk_div;
@@ -134,11 +157,23 @@ static int sdh_setup_data(struct sdh_host *host, struct mmc_data *data)
 	/* Only supports power-of-2 block size */
 	if (data->blksz & (data->blksz - 1))
 		return -EINVAL;
+<<<<<<< HEAD
 	data_ctl |= ((ffs(data->blksz) - 1) << 4);
 
 	bfin_write_SDH_DATA_CTL(data_ctl);
 	/* the time of a host clock period in ns */
 	cycle_ns = 1000000000 / (get_sclk() / (2 * (host->clk_div + 1)));
+=======
+#ifndef RSI_BLKSZ
+	data_ctl |= ((ffs(data->blksz) - 1) << 4);
+#else
+        bfin_write_SDH_BLK_SIZE(data->blksz);
+#endif
+
+	bfin_write_SDH_DATA_CTL(data_ctl);
+	/* the time of a host clock period in ns */
+	cycle_ns = 1000000000 / (host->sclk / (2 * (host->clk_div + 1)));
+>>>>>>> refs/remotes/origin/master
 	timeout = data->timeout_ns / cycle_ns;
 	timeout += data->timeout_clks;
 	bfin_write_SDH_DATA_TIMER(timeout);
@@ -152,8 +187,18 @@ static int sdh_setup_data(struct sdh_host *host, struct mmc_data *data)
 
 	sdh_enable_stat_irq(host, (DAT_CRC_FAIL | DAT_TIME_OUT | DAT_END));
 	host->dma_len = dma_map_sg(mmc_dev(host->mmc), data->sg, data->sg_len, host->dma_dir);
+<<<<<<< HEAD
 #if defined(CONFIG_BF54x)
 	dma_cfg |= DMAFLOW_ARRAY | NDSIZE_5 | RESTART | WDSIZE_32 | DMAEN;
+=======
+#if defined(CONFIG_BF54x) || defined(CONFIG_BF60x)
+	dma_cfg |= DMAFLOW_ARRAY | RESTART | WDSIZE_32 | DMAEN;
+# ifdef RSI_BLKSZ
+	dma_cfg |= PSIZE_32 | NDSIZE_3;
+# else
+	dma_cfg |= NDSIZE_5;
+# endif
+>>>>>>> refs/remotes/origin/master
 	{
 		struct scatterlist *sg;
 		int i;
@@ -163,7 +208,11 @@ static int sdh_setup_data(struct sdh_host *host, struct mmc_data *data)
 			host->sg_cpu[i].x_count = sg_dma_len(sg) / 4;
 			host->sg_cpu[i].x_modify = 4;
 			dev_dbg(mmc_dev(host->mmc), "%d: start_addr:0x%lx, "
+<<<<<<< HEAD
 				"cfg:0x%x, x_count:0x%x, x_modify:0x%x\n",
+=======
+				"cfg:0x%lx, x_count:0x%lx, x_modify:0x%lx\n",
+>>>>>>> refs/remotes/origin/master
 				i, host->sg_cpu[i].start_addr,
 				host->sg_cpu[i].cfg, host->sg_cpu[i].x_count,
 				host->sg_cpu[i].x_modify);
@@ -179,6 +228,10 @@ static int sdh_setup_data(struct sdh_host *host, struct mmc_data *data)
 	set_dma_curr_desc_addr(host->dma_ch, (unsigned long *)host->sg_dma);
 	set_dma_x_count(host->dma_ch, 0);
 	set_dma_x_modify(host->dma_ch, 0);
+<<<<<<< HEAD
+=======
+	SSYNC();
+>>>>>>> refs/remotes/origin/master
 	set_dma_config(host->dma_ch, dma_cfg);
 #elif defined(CONFIG_BF51x)
 	/* RSI DMA doesn't work in array mode */
@@ -186,6 +239,10 @@ static int sdh_setup_data(struct sdh_host *host, struct mmc_data *data)
 	set_dma_start_addr(host->dma_ch, sg_dma_address(&data->sg[0]));
 	set_dma_x_count(host->dma_ch, length / 4);
 	set_dma_x_modify(host->dma_ch, 4);
+<<<<<<< HEAD
+=======
+	SSYNC();
+>>>>>>> refs/remotes/origin/master
 	set_dma_config(host->dma_ch, dma_cfg);
 #endif
 	bfin_write_SDH_DATA_CTL(bfin_read_SDH_DATA_CTL() | DTX_DMA_E | DTX_E);
@@ -303,7 +360,10 @@ static int sdh_data_done(struct sdh_host *host, unsigned int stat)
 	else
 		data->bytes_xfered = 0;
 
+<<<<<<< HEAD
 	sdh_disable_stat_irq(host, DAT_END | DAT_TIME_OUT | DAT_CRC_FAIL | RX_OVERRUN | TX_UNDERRUN);
+=======
+>>>>>>> refs/remotes/origin/master
 	bfin_write_SDH_STATUS_CLR(DAT_END_STAT | DAT_TIMEOUT_STAT | \
 			DAT_CRC_FAIL_STAT | DAT_BLK_END_STAT | RX_OVERRUN | TX_UNDERRUN);
 	bfin_write_SDH_DATA_CTL(0);
@@ -328,21 +388,35 @@ static void sdh_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	dev_dbg(mmc_dev(host->mmc), "%s enter, mrp:%p, cmd:%p\n", __func__, mrq, mrq->cmd);
 	WARN_ON(host->mrq != NULL);
 
+<<<<<<< HEAD
+=======
+	spin_lock(&host->lock);
+>>>>>>> refs/remotes/origin/master
 	host->mrq = mrq;
 	host->data = mrq->data;
 
 	if (mrq->data && mrq->data->flags & MMC_DATA_READ) {
 		ret = sdh_setup_data(host, mrq->data);
 		if (ret)
+<<<<<<< HEAD
 			return;
 	}
 
 	sdh_start_cmd(host, mrq->cmd);
+=======
+			goto data_err;
+	}
+
+	sdh_start_cmd(host, mrq->cmd);
+data_err:
+	spin_unlock(&host->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sdh_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 {
 	struct sdh_host *host;
+<<<<<<< HEAD
 	unsigned long flags;
 	u16 clk_ctl = 0;
 	u16 pwr_ctl = 0;
@@ -396,6 +470,98 @@ static void sdh_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	SSYNC();
 
 	spin_unlock_irqrestore(&host->lock, flags);
+=======
+	u16 clk_ctl = 0;
+#ifndef RSI_BLKSZ
+	u16 pwr_ctl = 0;
+#endif
+	u16 cfg;
+	host = mmc_priv(mmc);
+
+	spin_lock(&host->lock);
+
+	cfg = bfin_read_SDH_CFG();
+	cfg |= MWE;
+	switch (ios->bus_width) {
+	case MMC_BUS_WIDTH_4:
+#ifndef RSI_BLKSZ
+		cfg &= ~PD_SDDAT3;
+#endif
+		cfg |= PUP_SDDAT3;
+		/* Enable 4 bit SDIO */
+		cfg |= SD4E;
+		clk_ctl |= WIDE_BUS_4;
+		break;
+	case MMC_BUS_WIDTH_8:
+#ifndef RSI_BLKSZ
+		cfg &= ~PD_SDDAT3;
+#endif
+		cfg |= PUP_SDDAT3;
+		/* Disable 4 bit SDIO */
+		cfg &= ~SD4E;
+		clk_ctl |= BYTE_BUS_8;
+		break;
+	default:
+		cfg &= ~PUP_SDDAT3;
+		/* Disable 4 bit SDIO */
+		cfg &= ~SD4E;
+	}
+	bfin_write_SDH_CFG(cfg);
+
+	host->power_mode = ios->power_mode;
+#ifndef RSI_BLKSZ
+	if (ios->bus_mode == MMC_BUSMODE_OPENDRAIN) {
+		pwr_ctl |= ROD_CTL;
+# ifndef CONFIG_SDH_BFIN_MISSING_CMD_PULLUP_WORKAROUND
+		pwr_ctl |= SD_CMD_OD;
+# endif
+	}
+
+	if (ios->power_mode != MMC_POWER_OFF)
+		pwr_ctl |= PWR_ON;
+	else
+		pwr_ctl &= ~PWR_ON;
+
+	bfin_write_SDH_PWR_CTL(pwr_ctl);
+#else
+# ifndef CONFIG_SDH_BFIN_MISSING_CMD_PULLUP_WORKAROUND
+	if (ios->bus_mode == MMC_BUSMODE_OPENDRAIN)
+		cfg |= SD_CMD_OD;
+	else
+		cfg &= ~SD_CMD_OD;
+# endif
+
+	if (ios->power_mode != MMC_POWER_OFF)
+		cfg |= PWR_ON;
+	else
+		cfg &= ~PWR_ON;
+
+	bfin_write_SDH_CFG(cfg);
+#endif
+	SSYNC();
+
+	if (ios->power_mode == MMC_POWER_ON && ios->clock) {
+		unsigned char clk_div;
+		clk_div = (get_sclk() / ios->clock - 1) / 2;
+		clk_div = min_t(unsigned char, clk_div, 0xFF);
+		clk_ctl |= clk_div;
+		clk_ctl |= CLK_E;
+		host->clk_div = clk_div;
+		bfin_write_SDH_CLK_CTL(clk_ctl);
+	} else
+		sdh_stop_clock(host);
+
+	/* set up sdh interrupt mask*/
+	if (ios->power_mode == MMC_POWER_ON)
+		bfin_write_SDH_MASK0(DAT_END | DAT_TIME_OUT | DAT_CRC_FAIL |
+			RX_OVERRUN | TX_UNDERRUN | CMD_SENT | CMD_RESP_END |
+			CMD_TIME_OUT | CMD_CRC_FAIL);
+	else
+		bfin_write_SDH_MASK0(0);
+	SSYNC();
+
+	spin_unlock(&host->lock);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(mmc_dev(host->mmc), "SDH: clk_div = 0x%x actual clock:%ld expected clock:%d\n",
 		host->clk_div,
@@ -412,7 +578,11 @@ static irqreturn_t sdh_dma_irq(int irq, void *devid)
 {
 	struct sdh_host *host = devid;
 
+<<<<<<< HEAD
 	dev_dbg(mmc_dev(host->mmc), "%s enter, irq_stat: 0x%04x\n", __func__,
+=======
+	dev_dbg(mmc_dev(host->mmc), "%s enter, irq_stat: 0x%04lx\n", __func__,
+>>>>>>> refs/remotes/origin/master
 		get_dma_curr_irqstat(host->dma_ch));
 	clear_dma_irqstat(host->dma_ch);
 	SSYNC();
@@ -427,6 +597,12 @@ static irqreturn_t sdh_stat_irq(int irq, void *devid)
 	int handled = 0;
 
 	dev_dbg(mmc_dev(host->mmc), "%s enter\n", __func__);
+<<<<<<< HEAD
+=======
+
+	spin_lock(&host->lock);
+
+>>>>>>> refs/remotes/origin/master
 	status = bfin_read_SDH_E_STATUS();
 	if (status & SD_CARD_DET) {
 		mmc_detect_change(host->mmc, 0);
@@ -444,12 +620,38 @@ static irqreturn_t sdh_stat_irq(int irq, void *devid)
 	if (status & (DAT_END | DAT_TIME_OUT | DAT_CRC_FAIL | RX_OVERRUN | TX_UNDERRUN))
 		handled |= sdh_data_done(host, status);
 
+<<<<<<< HEAD
+=======
+	spin_unlock(&host->lock);
+
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(mmc_dev(host->mmc), "%s exit\n\n", __func__);
 
 	return IRQ_RETVAL(handled);
 }
 
+<<<<<<< HEAD
 static int __devinit sdh_probe(struct platform_device *pdev)
+=======
+static void sdh_reset(void)
+{
+#if defined(CONFIG_BF54x)
+	/* Secure Digital Host shares DMA with Nand controller */
+	bfin_write_DMAC1_PERIMUX(bfin_read_DMAC1_PERIMUX() | 0x1);
+#endif
+
+	bfin_write_SDH_CFG(bfin_read_SDH_CFG() | CLKS_EN);
+	SSYNC();
+
+	/* Disable card inserting detection pin. set MMC_CAP_NEEDS_POLL, and
+	 * mmc stack will do the detection.
+	 */
+	bfin_write_SDH_CFG((bfin_read_SDH_CFG() & 0x1F) | (PUP_SDDAT | PUP_SDDAT3));
+	SSYNC();
+}
+
+static int sdh_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_host *mmc;
 	struct sdh_host *host;
@@ -469,8 +671,21 @@ static int __devinit sdh_probe(struct platform_device *pdev)
 	}
 
 	mmc->ops = &sdh_ops;
+<<<<<<< HEAD
 	mmc->max_segs = 32;
 	mmc->max_seg_size = 1 << 16;
+=======
+#if defined(CONFIG_BF51x)
+	mmc->max_segs = 1;
+#else
+	mmc->max_segs = PAGE_SIZE / sizeof(struct dma_desc_array);
+#endif
+#ifdef RSI_BLKSZ
+	mmc->max_seg_size = -1;
+#else
+	mmc->max_seg_size = 1 << 16;
+#endif
+>>>>>>> refs/remotes/origin/master
 	mmc->max_blk_size = 1 << 11;
 	mmc->max_blk_count = 1 << 11;
 	mmc->max_req_size = PAGE_SIZE;
@@ -480,6 +695,10 @@ static int __devinit sdh_probe(struct platform_device *pdev)
 	mmc->caps = MMC_CAP_4_BIT_DATA | MMC_CAP_NEEDS_POLL;
 	host = mmc_priv(mmc);
 	host->mmc = mmc;
+<<<<<<< HEAD
+=======
+	host->sclk = get_sclk();
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&host->lock);
 	host->irq = drv_data->irq_int0;
@@ -504,7 +723,10 @@ static int __devinit sdh_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, mmc);
+<<<<<<< HEAD
 	mmc_add_host(mmc);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = request_irq(host->irq, sdh_stat_irq, 0, "SDH Status IRQ", host);
 	if (ret) {
@@ -517,6 +739,7 @@ static int __devinit sdh_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "unable to request peripheral pins\n");
 		goto out4;
 	}
+<<<<<<< HEAD
 #if defined(CONFIG_BF54x)
 	/* Secure Digital Host shares DMA with Nand controller */
 	bfin_write_DMAC1_PERIMUX(bfin_read_DMAC1_PERIMUX() | 0x1);
@@ -531,6 +754,12 @@ static int __devinit sdh_probe(struct platform_device *pdev)
 	bfin_write_SDH_CFG((bfin_read_SDH_CFG() & 0x1F) | (PUP_SDDAT | PUP_SDDAT3));
 	SSYNC();
 
+=======
+
+	sdh_reset();
+
+	mmc_add_host(mmc);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out4:
@@ -546,12 +775,19 @@ out1:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit sdh_remove(struct platform_device *pdev)
 {
 	struct mmc_host *mmc = platform_get_drvdata(pdev);
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+static int sdh_remove(struct platform_device *pdev)
+{
+	struct mmc_host *mmc = platform_get_drvdata(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	if (mmc) {
 		struct sdh_host *host = mmc_priv(mmc);
 
@@ -571,6 +807,7 @@ static int __devexit sdh_remove(struct platform_device *pdev)
 #ifdef CONFIG_PM
 static int sdh_suspend(struct platform_device *dev, pm_message_t state)
 {
+<<<<<<< HEAD
 	struct mmc_host *mmc = platform_get_drvdata(dev);
 	struct bfin_sd_host *drv_data = get_sdh_data(dev);
 	int ret = 0;
@@ -582,11 +819,21 @@ static int sdh_suspend(struct platform_device *dev, pm_message_t state)
 	peripheral_free_list(drv_data->pin_req);
 
 	return ret;
+=======
+	struct bfin_sd_host *drv_data = get_sdh_data(dev);
+
+	peripheral_free_list(drv_data->pin_req);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sdh_resume(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct mmc_host *mmc = platform_get_drvdata(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bfin_sd_host *drv_data = get_sdh_data(dev);
 	int ret = 0;
 
@@ -596,6 +843,7 @@ static int sdh_resume(struct platform_device *dev)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	bfin_write_SDH_PWR_CTL(bfin_read_SDH_PWR_CTL() | PWR_ON);
 #if defined(CONFIG_BF54x)
 	/* Secure Digital Host shares DMA with Nand controller */
@@ -610,6 +858,9 @@ static int sdh_resume(struct platform_device *dev)
 	if (mmc)
 		ret = mmc_resume_host(mmc);
 
+=======
+	sdh_reset();
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 #else
@@ -619,7 +870,11 @@ static int sdh_resume(struct platform_device *dev)
 
 static struct platform_driver sdh_driver = {
 	.probe   = sdh_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(sdh_remove),
+=======
+	.remove  = sdh_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = sdh_suspend,
 	.resume  = sdh_resume,
 	.driver  = {
@@ -627,6 +882,7 @@ static struct platform_driver sdh_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init sdh_init(void)
 {
@@ -642,6 +898,9 @@ module_exit(sdh_exit);
 =======
 module_platform_driver(sdh_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sdh_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Blackfin Secure Digital Host Driver");
 MODULE_AUTHOR("Cliff Cai, Roy Huang");

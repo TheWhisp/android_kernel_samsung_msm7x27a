@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -46,12 +50,17 @@ struct cfcnfg_phyinfo {
 	int ifindex;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Use Start of frame extension */
 	bool use_stx;
 =======
 	/* Protocol head room added for CAIF link layer */
 	int head_room;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Protocol head room added for CAIF link layer */
+	int head_room;
+>>>>>>> refs/remotes/origin/master
 
 	/* Use Start of frame checksum */
 	bool use_fcs;
@@ -66,11 +75,19 @@ struct cfcnfg {
 };
 
 static void cfcnfg_linkup_rsp(struct cflayer *layer, u8 channel_id,
+<<<<<<< HEAD
 			     enum cfctrl_srv serv, u8 phyid,
 			     struct cflayer *adapt_layer);
 static void cfcnfg_linkdestroy_rsp(struct cflayer *layer, u8 channel_id);
 static void cfcnfg_reject_rsp(struct cflayer *layer, u8 channel_id,
 			     struct cflayer *adapt_layer);
+=======
+			      enum cfctrl_srv serv, u8 phyid,
+			      struct cflayer *adapt_layer);
+static void cfcnfg_linkdestroy_rsp(struct cflayer *layer, u8 channel_id);
+static void cfcnfg_reject_rsp(struct cflayer *layer, u8 channel_id,
+			      struct cflayer *adapt_layer);
+>>>>>>> refs/remotes/origin/master
 static void cfctrl_resp_func(void);
 static void cfctrl_enum_resp(void);
 
@@ -84,6 +101,7 @@ struct cfcnfg *cfcnfg_create(void)
 	/* Initiate this layer */
 	this = kzalloc(sizeof(struct cfcnfg), GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!this) {
 		pr_warn("Out of memory\n");
 		return NULL;
@@ -92,6 +110,10 @@ struct cfcnfg *cfcnfg_create(void)
 	if (!this)
 		return NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!this)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	this->mux = cfmuxl_create();
 	if (!this->mux)
 		goto out_of_mem;
@@ -119,10 +141,13 @@ struct cfcnfg *cfcnfg_create(void)
 	return this;
 out_of_mem:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_warn("Out of memory\n");
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	synchronize_rcu();
 
 	kfree(this->mux);
@@ -148,7 +173,11 @@ static void cfctrl_resp_func(void)
 }
 
 static struct cfcnfg_phyinfo *cfcnfg_get_phyinfo_rcu(struct cfcnfg *cnfg,
+<<<<<<< HEAD
 							u8 phyid)
+=======
+						     u8 phyid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfcnfg_phyinfo *phy;
 
@@ -205,17 +234,24 @@ int caif_disconnect_client(struct net *net, struct cflayer *adap_layer)
 		struct cflayer *servl;
 		servl = cfmuxl_remove_uplayer(cfg->mux, channel_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		cfctrl_linkdown_req(cfg->ctrl, channel_id, adap_layer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cfctrl_linkdown_req(cfg->ctrl, channel_id, adap_layer);
+>>>>>>> refs/remotes/origin/master
 		if (servl != NULL)
 			layer_set_up(servl, NULL);
 	} else
 		pr_debug("nothing to disconnect\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cfctrl_linkdown_req(cfg->ctrl, channel_id, adap_layer);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Do RCU sync before initiating cleanup */
 	synchronize_rcu();
@@ -240,8 +276,13 @@ static const int protohead[CFCTRL_SRV_MASK] = {
 
 
 static int caif_connect_req_to_link_param(struct cfcnfg *cnfg,
+<<<<<<< HEAD
 				   struct caif_connect_request *s,
 				   struct cfctrl_link_param *l)
+=======
+					  struct caif_connect_request *s,
+					  struct cfctrl_link_param *l)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dev_info *dev_info;
 	enum cfcnfg_phy_preference pref;
@@ -325,8 +366,12 @@ static int caif_connect_req_to_link_param(struct cfcnfg *cnfg,
 
 int caif_connect_client(struct net *net, struct caif_connect_request *conn_req,
 			struct cflayer *adap_layer, int *ifindex,
+<<<<<<< HEAD
 				int *proto_head,
 				int *proto_tail)
+=======
+			int *proto_head, int *proto_tail)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cflayer *frml;
 	struct cfcnfg_phyinfo *phy;
@@ -374,12 +419,16 @@ int caif_connect_client(struct net *net, struct caif_connect_request *conn_req,
 	*ifindex = phy->ifindex;
 	*proto_tail = 2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*proto_head =
 
 	protohead[param.linktype] + (phy->use_stx ? 1 : 0);
 =======
 	*proto_head = protohead[param.linktype] + phy->head_room;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*proto_head = protohead[param.linktype] + phy->head_room;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_unlock();
 
@@ -394,7 +443,11 @@ unlock:
 EXPORT_SYMBOL(caif_connect_client);
 
 static void cfcnfg_reject_rsp(struct cflayer *layer, u8 channel_id,
+<<<<<<< HEAD
 			     struct cflayer *adapt_layer)
+=======
+			      struct cflayer *adapt_layer)
+>>>>>>> refs/remotes/origin/master
 {
 	if (adapt_layer != NULL && adapt_layer->ctrlcmd != NULL)
 		adapt_layer->ctrlcmd(adapt_layer,
@@ -432,7 +485,11 @@ cfcnfg_linkup_rsp(struct cflayer *layer, u8 channel_id, enum cfctrl_srv serv,
 
 	phyinfo = cfcnfg_get_phyinfo_rcu(cnfg, phyid);
 	if (phyinfo == NULL) {
+<<<<<<< HEAD
 		pr_err("ERROR: Link Layer Device dissapeared"
+=======
+		pr_err("ERROR: Link Layer Device disappeared"
+>>>>>>> refs/remotes/origin/master
 				"while connecting\n");
 		goto unlock;
 	}
@@ -472,6 +529,7 @@ cfcnfg_linkup_rsp(struct cflayer *layer, u8 channel_id, enum cfctrl_srv serv,
 		goto unlock;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!servicel) {
 		pr_warn("Out of memory\n");
 		goto unlock;
@@ -480,6 +538,10 @@ cfcnfg_linkup_rsp(struct cflayer *layer, u8 channel_id, enum cfctrl_srv serv,
 	if (!servicel)
 		goto unlock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!servicel)
+		goto unlock;
+>>>>>>> refs/remotes/origin/master
 	layer_set_dn(servicel, cnfg->mux);
 	cfmuxl_set_uplayer(cnfg->mux, servicel, channel_id);
 	layer_set_up(servicel, adapt_layer);
@@ -495,6 +557,7 @@ unlock:
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 cfcnfg_add_phy_layer(struct cfcnfg *cnfg, enum cfcnfg_phy_type phy_type,
 		     struct net_device *dev, struct cflayer *phy_layer,
 		     enum cfcnfg_phy_preference pref,
@@ -504,6 +567,8 @@ cfcnfg_add_phy_layer(struct cfcnfg *cnfg, enum cfcnfg_phy_type phy_type,
 	struct cflayer *phy_driver = NULL;
 	struct cfcnfg_phyinfo *phyinfo;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 cfcnfg_add_phy_layer(struct cfcnfg *cnfg,
 		     struct net_device *dev, struct cflayer *phy_layer,
 		     enum cfcnfg_phy_preference pref,
@@ -512,7 +577,10 @@ cfcnfg_add_phy_layer(struct cfcnfg *cnfg,
 {
 	struct cflayer *frml;
 	struct cfcnfg_phyinfo *phyinfo = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	u8 phyid;
 
@@ -531,6 +599,7 @@ cfcnfg_add_phy_layer(struct cfcnfg *cnfg,
 
 got_phyid:
 	phyinfo = kzalloc(sizeof(struct cfcnfg_phyinfo), GFP_ATOMIC);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	switch (phy_type) {
@@ -553,6 +622,11 @@ got_phyid:
 		goto out_err;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!phyinfo)
+		goto out_err;
+
+>>>>>>> refs/remotes/origin/master
 	phy_layer->id = phyid;
 	phyinfo->pref = pref;
 	phyinfo->id = phyid;
@@ -561,14 +635,19 @@ got_phyid:
 	phyinfo->phy_layer = phy_layer;
 	phyinfo->ifindex = dev->ifindex;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	phyinfo->use_stx = stx;
 =======
 	phyinfo->head_room = head_room;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phyinfo->head_room = head_room;
+>>>>>>> refs/remotes/origin/master
 	phyinfo->use_fcs = fcs;
 
 	frml = cffrml_create(phyid, fcs);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!frml) {
 		pr_warn("Out of memory\n");
@@ -585,6 +664,8 @@ got_phyid:
 		layer_set_dn(phy_driver, phy_layer);
 		layer_set_up(phy_layer, phy_driver);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!frml)
 		goto out_err;
 	phyinfo->frm_layer = frml;
@@ -596,7 +677,10 @@ got_phyid:
 		layer_set_up(link_support, frml);
 		layer_set_dn(link_support, phy_layer);
 		layer_set_up(phy_layer, link_support);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		layer_set_dn(frml, phy_layer);
 		layer_set_up(phy_layer, frml);
@@ -606,18 +690,28 @@ got_phyid:
 out:
 	mutex_unlock(&cnfg->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 
 out_err:
 	kfree(phyinfo);
 	mutex_unlock(&cnfg->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(cfcnfg_add_phy_layer);
 
 int cfcnfg_set_phy_state(struct cfcnfg *cnfg, struct cflayer *phy_layer,
+<<<<<<< HEAD
 		bool up)
+=======
+			 bool up)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cfcnfg_phyinfo *phyinfo;
 

@@ -27,6 +27,7 @@
 #include <linux/io.h>
 #include <linux/err.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
 
 #include <plat/usb.h>
 #include "control.h"
@@ -48,11 +49,37 @@ static int usbotghs_control;
 
 int omap4430_phy_init(struct device *dev)
 {
+=======
+#include <linux/usb/musb.h>
+
+#include "soc.h"
+#include "control.h"
+#include "usb.h"
+
+#define CONTROL_DEV_CONF		0x300
+#define PHY_PD				0x1
+
+/**
+ * omap4430_phy_power_down: disable MUSB PHY during early init
+ *
+ * OMAP4 MUSB PHY module is enabled by default on reset, but this will
+ * prevent core retention if not disabled by SW. USB driver will
+ * later on enable this, once and if the driver needs it.
+ */
+static int __init omap4430_phy_power_down(void)
+{
+	void __iomem *ctrl_base;
+
+	if (!cpu_is_omap44xx())
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	ctrl_base = ioremap(OMAP443X_SCM_BASE, SZ_1K);
 	if (!ctrl_base) {
 		pr_err("control module ioremap failed\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	/* Power down the phy */
 	__raw_writel(PHY_PD, ctrl_base + CONTROL_DEV_CONF);
 
@@ -168,6 +195,17 @@ int omap4430_phy_exit(struct device *dev)
 
 	return 0;
 }
+=======
+
+	/* Power down the phy */
+	__raw_writel(PHY_PD, ctrl_base + CONTROL_DEV_CONF);
+
+	iounmap(ctrl_base);
+
+	return 0;
+}
+omap_early_initcall(omap4430_phy_power_down);
+>>>>>>> refs/remotes/origin/master
 
 void am35x_musb_reset(void)
 {
@@ -239,6 +277,7 @@ void am35x_set_mode(u8 musb_mode)
 
 	devconf2 &= ~CONF2_OTGMODE;
 	switch (musb_mode) {
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_MUSB_HDRC_HCD
 	case MUSB_HOST:		/* Force VBUS valid, ID = 0 */
 		devconf2 |= CONF2_FORCE_HOST;
@@ -254,6 +293,17 @@ void am35x_set_mode(u8 musb_mode)
 		devconf2 |= CONF2_NO_OVERRIDE;
 		break;
 #endif
+=======
+	case MUSB_HOST:		/* Force VBUS valid, ID = 0 */
+		devconf2 |= CONF2_FORCE_HOST;
+		break;
+	case MUSB_PERIPHERAL:	/* Force VBUS valid, ID = 1 */
+		devconf2 |= CONF2_FORCE_DEVICE;
+		break;
+	case MUSB_OTG:		/* Don't override the VBUS/ID comparators */
+		devconf2 |= CONF2_NO_OVERRIDE;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		pr_info(KERN_INFO "Unsupported mode %u\n", musb_mode);
 	}
@@ -261,7 +311,10 @@ void am35x_set_mode(u8 musb_mode)
 	omap_ctrl_writel(devconf2, AM35XX_CONTROL_DEVCONF2);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void ti81xx_musb_phy_power(u8 on)
 {
@@ -297,4 +350,7 @@ void ti81xx_musb_phy_power(u8 on)
 
 	iounmap(scm_base);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

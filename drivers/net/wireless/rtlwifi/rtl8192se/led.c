@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -57,12 +61,17 @@ void rtl92se_sw_led_on(struct ieee80211_hw *hw, struct rtl_led *pled)
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD,
 		 ("LedAddr:%X ledpin=%d\n", LEDCFG, pled->ledpin));
 =======
 	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD, "LedAddr:%X ledpin=%d\n",
 		 LEDCFG, pled->ledpin);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD, "LedAddr:%X ledpin=%d\n",
+		 LEDCFG, pled->ledpin);
+>>>>>>> refs/remotes/origin/master
 
 	ledcfg = rtl_read_byte(rtlpriv, LEDCFG);
 
@@ -78,10 +87,14 @@ void rtl92se_sw_led_on(struct ieee80211_hw *hw, struct rtl_led *pled)
 	default:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("switch case not process\n"));
 =======
 			 "switch case not processed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "switch case not processed\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	pled->ledon = true;
@@ -90,6 +103,7 @@ void rtl92se_sw_led_on(struct ieee80211_hw *hw, struct rtl_led *pled)
 void rtl92se_sw_led_off(struct ieee80211_hw *hw, struct rtl_led *pled)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	struct rtl_pci_priv *pcipriv = rtl_pcipriv(hw);
 	u8 ledcfg;
@@ -97,6 +111,8 @@ void rtl92se_sw_led_off(struct ieee80211_hw *hw, struct rtl_led *pled)
 	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD,
 		 ("LedAddr:%X ledpin=%d\n", LEDCFG, pled->ledpin));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rtl_priv *rtlpriv;
 	struct rtl_pci_priv *pcipriv = rtl_pcipriv(hw);
 	u8 ledcfg;
@@ -106,7 +122,10 @@ void rtl92se_sw_led_off(struct ieee80211_hw *hw, struct rtl_led *pled)
 		return;
 	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD, "LedAddr:%X ledpin=%d\n",
 		 LEDCFG, pled->ledpin);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ledcfg = rtl_read_byte(rtlpriv, LEDCFG);
 
@@ -116,10 +135,14 @@ void rtl92se_sw_led_off(struct ieee80211_hw *hw, struct rtl_led *pled)
 	case LED_PIN_LED0:
 		ledcfg &= 0xf0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pcipriv->ledctl.led_opendrain == true)
 =======
 		if (pcipriv->ledctl.led_opendrain)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pcipriv->ledctl.led_opendrain)
+>>>>>>> refs/remotes/origin/master
 			rtl_write_byte(rtlpriv, LEDCFG, (ledcfg | BIT(1)));
 		else
 			rtl_write_byte(rtlpriv, LEDCFG, (ledcfg | BIT(3)));
@@ -131,10 +154,14 @@ void rtl92se_sw_led_off(struct ieee80211_hw *hw, struct rtl_led *pled)
 	default:
 		RT_TRACE(rtlpriv, COMP_ERR, DBG_EMERG,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 ("switch case not process\n"));
 =======
 			 "switch case not processed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "switch case not processed\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	pled->ledon = false;
@@ -175,11 +202,15 @@ void rtl92se_led_control(struct ieee80211_hw *hw, enum led_ctl_mode ledaction)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD, ("ledaction %d,\n",
 		 ledaction));
 =======
 	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD, "ledaction %d\n", ledaction);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RT_TRACE(rtlpriv, COMP_LED, DBG_LOUD, "ledaction %d\n", ledaction);
+>>>>>>> refs/remotes/origin/master
 
 	_rtl92se_sw_led_control(hw, ledaction);
 }

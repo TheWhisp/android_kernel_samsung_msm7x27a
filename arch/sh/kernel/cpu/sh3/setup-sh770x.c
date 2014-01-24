@@ -20,9 +20,14 @@
 #include <linux/serial_sci.h>
 #include <linux/sh_timer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <cpu/serial.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sh_intc.h>
+#include <cpu/serial.h>
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	UNUSED = 0,
@@ -98,7 +103,11 @@ static struct resource rtc_resources[] = {
 		.flags  = IORESOURCE_IO,
 	},
 	[1] =	{
+<<<<<<< HEAD
 		.start	= 20,
+=======
+		.start	= evt2irq(0x480),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -113,19 +122,29 @@ static struct platform_device rtc_device = {
 static struct plat_sci_port scif0_platform_data = {
 	.mapbase	= 0xfffffe80,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.port_reg	= 0xa4000136,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.port_reg	= 0xa4000136,
+>>>>>>> refs/remotes/origin/master
 	.flags		= UPF_BOOT_AUTOCONF,
 	.scscr		= SCSCR_TE | SCSCR_RE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCI,
+<<<<<<< HEAD
 	.irqs		= { 23, 23, 23, 0 },
 <<<<<<< HEAD
 =======
 	.ops		= &sh770x_sci_port_ops,
 	.regshift	= 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x4e0)),
+	.ops		= &sh770x_sci_port_ops,
+	.regshift	= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif0_device = {
@@ -144,12 +163,18 @@ static struct plat_sci_port scif1_platform_data = {
 	.scscr		= SCSCR_TE | SCSCR_RE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		= { 56, 56, 56, 56 },
 <<<<<<< HEAD
 =======
 	.ops		= &sh770x_sci_port_ops,
 	.regtype	= SCIx_SH3_SCIF_REGTYPE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x900)),
+	.ops		= &sh770x_sci_port_ops,
+	.regtype	= SCIx_SH3_SCIF_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif1_device = {
@@ -165,19 +190,29 @@ static struct platform_device scif1_device = {
 static struct plat_sci_port scif2_platform_data = {
 	.mapbase	= 0xa4000140,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.port_reg	= SCIx_NOT_SUPPORTED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.port_reg	= SCIx_NOT_SUPPORTED,
+>>>>>>> refs/remotes/origin/master
 	.flags		= UPF_BOOT_AUTOCONF,
 	.scscr		= SCSCR_TE | SCSCR_RE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_IRDA,
+<<<<<<< HEAD
 	.irqs		= { 52, 52, 52, 52 },
 <<<<<<< HEAD
 =======
 	.ops		= &sh770x_sci_port_ops,
 	.regshift	= 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(evt2irq(0x880)),
+	.ops		= &sh770x_sci_port_ops,
+	.regshift	= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif2_device = {
@@ -202,7 +237,11 @@ static struct resource tmu0_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 16,
+=======
+		.start	= evt2irq(0x400),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -230,7 +269,11 @@ static struct resource tmu1_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 17,
+=======
+		.start	= evt2irq(0x420),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -257,7 +300,11 @@ static struct resource tmu2_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 18,
+=======
+		.start	= evt2irq(0x440),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };

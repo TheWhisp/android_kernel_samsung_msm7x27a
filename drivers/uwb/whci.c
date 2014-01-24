@@ -8,9 +8,13 @@
 #include <linux/delay.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
@@ -256,6 +260,7 @@ static struct pci_driver whci_driver = {
 	.remove   = whci_remove,
 };
 
+<<<<<<< HEAD
 static int __init whci_init(void)
 {
 	return pci_register_driver(&whci_driver);
@@ -269,6 +274,9 @@ static void __exit whci_exit(void)
 module_init(whci_init);
 module_exit(whci_exit);
 
+=======
+module_pci_driver(whci_driver);
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("WHCI UWB Multi-interface Controller enumerator");
 MODULE_AUTHOR("Cambridge Silicon Radio Ltd.");
 MODULE_LICENSE("GPL");

@@ -13,9 +13,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/sched.h>	/* for init_mm */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>	/* for init_mm */
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -56,8 +60,15 @@ static struct iowa_bus *iowa_pci_find(unsigned long vaddr, unsigned long paddr)
 	return NULL;
 }
 
+<<<<<<< HEAD
 struct iowa_bus *iowa_mem_find_bus(const PCI_IO_ADDR addr)
 {
+=======
+#ifdef CONFIG_PPC_INDIRECT_MMIO
+struct iowa_bus *iowa_mem_find_bus(const PCI_IO_ADDR addr)
+{
+	unsigned hugepage_shift;
+>>>>>>> refs/remotes/origin/master
 	struct iowa_bus *bus;
 	int token;
 
@@ -73,11 +84,25 @@ struct iowa_bus *iowa_mem_find_bus(const PCI_IO_ADDR addr)
 		if (vaddr < PHB_IO_BASE || vaddr >= PHB_IO_END)
 			return NULL;
 
+<<<<<<< HEAD
 		ptep = find_linux_pte(init_mm.pgd, vaddr);
 		if (ptep == NULL)
 			paddr = 0;
 		else
 			paddr = pte_pfn(*ptep) << PAGE_SHIFT;
+=======
+		ptep = find_linux_pte_or_hugepte(init_mm.pgd, vaddr,
+						 &hugepage_shift);
+		if (ptep == NULL)
+			paddr = 0;
+		else {
+			/*
+			 * we don't have hugepages backing iomem
+			 */
+			WARN_ON(hugepage_shift);
+			paddr = pte_pfn(*ptep) << PAGE_SHIFT;
+		}
+>>>>>>> refs/remotes/origin/master
 		bus = iowa_pci_find(vaddr, paddr);
 
 		if (bus == NULL)
@@ -86,13 +111,33 @@ struct iowa_bus *iowa_mem_find_bus(const PCI_IO_ADDR addr)
 
 	return bus;
 }
+<<<<<<< HEAD
 
+=======
+#else /* CONFIG_PPC_INDIRECT_MMIO */
+struct iowa_bus *iowa_mem_find_bus(const PCI_IO_ADDR addr)
+{
+	return NULL;
+}
+#endif /* !CONFIG_PPC_INDIRECT_MMIO */
+
+#ifdef CONFIG_PPC_INDIRECT_PIO
+>>>>>>> refs/remotes/origin/master
 struct iowa_bus *iowa_pio_find_bus(unsigned long port)
 {
 	unsigned long vaddr = (unsigned long)pci_io_base + port;
 	return iowa_pci_find(vaddr, 0);
 }
+<<<<<<< HEAD
 
+=======
+#else
+struct iowa_bus *iowa_pio_find_bus(unsigned long port)
+{
+	return NULL;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define DEF_PCI_AC_RET(name, ret, at, al, space, aa)		\
 static ret iowa_##name at					\
@@ -121,7 +166,11 @@ static void iowa_##name at					\
 #undef DEF_PCI_AC_RET
 #undef DEF_PCI_AC_NORET
 
+<<<<<<< HEAD
 static const struct ppc_pci_io __devinitconst iowa_pci_io = {
+=======
+static const struct ppc_pci_io iowa_pci_io = {
+>>>>>>> refs/remotes/origin/master
 
 #define DEF_PCI_AC_RET(name, ret, at, al, space, aa)	.name = iowa_##name,
 #define DEF_PCI_AC_NORET(name, at, al, space, aa)	.name = iowa_##name,
@@ -133,6 +182,10 @@ static const struct ppc_pci_io __devinitconst iowa_pci_io = {
 
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_INDIRECT_MMIO
+>>>>>>> refs/remotes/origin/master
 static void __iomem *iowa_ioremap(phys_addr_t addr, unsigned long size,
 				  unsigned long flags, void *caller)
 {
@@ -147,9 +200,18 @@ static void __iomem *iowa_ioremap(phys_addr_t addr, unsigned long size,
 	}
 	return res;
 }
+<<<<<<< HEAD
 
 /* Enable IO workaround */
 static void __devinit io_workaround_init(void)
+=======
+#else /* CONFIG_PPC_INDIRECT_MMIO */
+#define iowa_ioremap NULL
+#endif /* !CONFIG_PPC_INDIRECT_MMIO */
+
+/* Enable IO workaround */
+static void io_workaround_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	static int io_workaround_inited;
 
@@ -161,9 +223,14 @@ static void __devinit io_workaround_init(void)
 }
 
 /* Register new bus to support workaround */
+<<<<<<< HEAD
 void __devinit iowa_register_bus(struct pci_controller *phb,
 			struct ppc_pci_io *ops,
 			int (*initfunc)(struct iowa_bus *, void *), void *data)
+=======
+void iowa_register_bus(struct pci_controller *phb, struct ppc_pci_io *ops,
+		       int (*initfunc)(struct iowa_bus *, void *), void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iowa_bus *bus;
 	struct device_node *np = phb->dn;

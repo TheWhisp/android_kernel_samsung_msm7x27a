@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __RTL8712_GP_BITDEF_H__
 #define __RTL8712_GP_BITDEF_H__
 
@@ -73,7 +79,11 @@
 #define		GPIOSEL_BT	2	/* BT_coex*/
 #define		GPIOSEL_WLANDBG	3	/* WLANDBG*/
 #define		GPIOSEL_GPIO_MASK	(~(BIT(0)|BIT(1)))
+<<<<<<< HEAD
 /* HW Readio OFF switch (GPIO BIT) */
+=======
+/* HW Radio OFF switch (GPIO BIT) */
+>>>>>>> refs/remotes/origin/master
 #define		HAL_8192S_HW_GPIO_OFF_BIT	BIT(3)
 #define		HAL_8192S_HW_GPIO_OFF_MASK	0xF7
 #define		HAL_8192S_HW_GPIO_WPS_BIT	BIT(4)

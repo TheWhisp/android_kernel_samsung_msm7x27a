@@ -23,9 +23,12 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/soc.h>
@@ -33,6 +36,11 @@
 #include <linux/i2c.h>
 #include <linux/delay.h>
 #include <linux/regulator/consumer.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_device.h>
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The codec isn't really big-endian or little-endian, since the I2S
@@ -114,6 +122,7 @@
  * This array contains the power-on default values of the registers, with the
  * exception of the "CHIPID" register (01h).  The lower four bits of that
  * register contain the hardware revision, so it is treated as volatile.
+<<<<<<< HEAD
  *
  * Also note that on the CS4270, the first readable register is 1, but ASoC
  * assumes the first register is 0.  Therfore, the array must have an entry for
@@ -122,6 +131,17 @@
  */
 static const u8 cs4270_default_reg_cache[CS4270_LASTREG + 1] = {
 	0x00, 0x00, 0x00, 0x30, 0x00, 0x60, 0x20, 0x00, 0x00
+=======
+ */
+static const struct reg_default cs4270_reg_defaults[] = {
+	{ 2, 0x00 },
+	{ 3, 0x30 },
+	{ 4, 0x00 },
+	{ 5, 0x60 },
+	{ 6, 0x20 },
+	{ 7, 0x00 },
+	{ 8, 0x00 },
+>>>>>>> refs/remotes/origin/master
 };
 
 static const char *supply_names[] = {
@@ -130,11 +150,15 @@ static const char *supply_names[] = {
 
 /* Private data for the CS4270 */
 struct cs4270_private {
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
 <<<<<<< HEAD
 	void *control_data;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	unsigned int mclk; /* Input frequency of the MCLK pin */
 	unsigned int mode; /* The mode (I2S or left-justified) */
 	unsigned int slave_mode;
@@ -144,6 +168,25 @@ struct cs4270_private {
 	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
 };
 
+<<<<<<< HEAD
+=======
+static const struct snd_soc_dapm_widget cs4270_dapm_widgets[] = {
+SND_SOC_DAPM_INPUT("AINL"),
+SND_SOC_DAPM_INPUT("AINR"),
+
+SND_SOC_DAPM_OUTPUT("AOUTL"),
+SND_SOC_DAPM_OUTPUT("AOUTR"),
+};
+
+static const struct snd_soc_dapm_route cs4270_dapm_routes[] = {
+	{ "Capture", NULL, "AINA" },
+	{ "Capture", NULL, "AINB" },
+
+	{ "AOUTA", NULL, "Playback" },
+	{ "AOUTB", NULL, "Playback" },
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct cs4270_mode_ratios - clock ratio tables
  * @ratio: the ratio of MCLK to the sample rate
@@ -199,12 +242,20 @@ static struct cs4270_mode_ratios cs4270_mode_ratios[] = {
 /* The number of MCLK/LRCK ratios supported by the CS4270 */
 #define NUM_MCLK_RATIOS		ARRAY_SIZE(cs4270_mode_ratios)
 
+<<<<<<< HEAD
 static int cs4270_reg_is_readable(struct snd_soc_codec *codec, unsigned int reg)
+=======
+static bool cs4270_reg_is_readable(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	return (reg >= CS4270_FIRSTREG) && (reg <= CS4270_LASTREG);
 }
 
+<<<<<<< HEAD
 static int cs4270_reg_is_volatile(struct snd_soc_codec *codec, unsigned int reg)
+=======
+static bool cs4270_reg_is_volatile(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Unreadable registers are considered volatile */
 	if ((reg < CS4270_FIRSTREG) || (reg > CS4270_LASTREG))
@@ -269,9 +320,12 @@ static int cs4270_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* set DAI format */
 	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
@@ -282,10 +336,14 @@ static int cs4270_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	default:
 		dev_err(codec->dev, "invalid dai format\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -EINVAL;
 =======
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* set master/slave audio interface */
@@ -299,17 +357,23 @@ static int cs4270_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	default:
 		/* all other modes are unsupported by the hardware */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -EINVAL;
 	}
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_err(codec->dev, "Unknown master/slave configuration\n");
 		return -EINVAL;
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -330,8 +394,12 @@ static int cs4270_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
 	int ret;
 	unsigned int i;
@@ -470,10 +538,14 @@ static const struct snd_kcontrol_new cs4270_snd_controls[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops cs4270_dai_ops = {
 =======
 static const struct snd_soc_dai_ops cs4270_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops cs4270_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= cs4270_hw_params,
 	.set_sysclk	= cs4270_set_dai_sysclk,
 	.set_fmt	= cs4270_set_dai_fmt,
@@ -484,7 +556,11 @@ static struct snd_soc_dai_driver cs4270_dai = {
 	.name = "cs4270-hifi",
 	.playback = {
 		.stream_name = "Playback",
+<<<<<<< HEAD
 		.channels_min = 1,
+=======
+		.channels_min = 2,
+>>>>>>> refs/remotes/origin/master
 		.channels_max = 2,
 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
 		.rate_min = 4000,
@@ -493,7 +569,11 @@ static struct snd_soc_dai_driver cs4270_dai = {
 	},
 	.capture = {
 		.stream_name = "Capture",
+<<<<<<< HEAD
 		.channels_min = 1,
+=======
+		.channels_min = 2,
+>>>>>>> refs/remotes/origin/master
 		.channels_max = 2,
 		.rates = SNDRV_PCM_RATE_CONTINUOUS,
 		.rate_min = 4000,
@@ -513,6 +593,7 @@ static struct snd_soc_dai_driver cs4270_dai = {
 static int cs4270_probe(struct snd_soc_codec *codec)
 {
 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	int i, ret;
 
 <<<<<<< HEAD
@@ -524,6 +605,14 @@ static int cs4270_probe(struct snd_soc_codec *codec)
 	 * then do the I2C transactions itself.
 	 */
 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, cs4270->control_type);
+=======
+	int ret;
+
+	/* Tell ASoC what kind of I/O to use to read the registers.  ASoC will
+	 * then do the I2C transactions itself.
+	 */
+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "failed to set cache I/O (ret=%i)\n", ret);
 		return ret;
@@ -552,6 +641,7 @@ static int cs4270_probe(struct snd_soc_codec *codec)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	/* Add the non-DAPM controls */
 <<<<<<< HEAD
 	ret = snd_soc_add_controls(codec, cs4270_snd_controls,
@@ -583,6 +673,10 @@ static int cs4270_probe(struct snd_soc_codec *codec)
 error_free_regulators:
 	regulator_bulk_free(ARRAY_SIZE(cs4270->supplies),
 			    cs4270->supplies);
+=======
+	ret = regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
+				    cs4270->supplies);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -598,7 +692,10 @@ static int cs4270_remove(struct snd_soc_codec *codec)
 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
 
 	regulator_bulk_disable(ARRAY_SIZE(cs4270->supplies), cs4270->supplies);
+<<<<<<< HEAD
 	regulator_bulk_free(ARRAY_SIZE(cs4270->supplies), cs4270->supplies);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 };
@@ -615,10 +712,14 @@ static int cs4270_remove(struct snd_soc_codec *codec)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int cs4270_soc_suspend(struct snd_soc_codec *codec, pm_message_t mesg)
 =======
 static int cs4270_soc_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cs4270_soc_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
 	int reg, ret;
@@ -641,6 +742,7 @@ static int cs4270_soc_resume(struct snd_soc_codec *codec)
 {
 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct i2c_client *i2c_client = codec->control_data;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -648,12 +750,21 @@ static int cs4270_soc_resume(struct snd_soc_codec *codec)
 
 	regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
 			      cs4270->supplies);
+=======
+	int reg, ret;
+
+	ret = regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
+				    cs4270->supplies);
+	if (ret != 0)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* In case the device was put to hard reset during sleep, we need to
 	 * wait 500ns here before any I2C communication. */
 	ndelay(500);
 
 	/* first restore the entire register cache ... */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (reg = CS4270_FIRSTREG; reg <= CS4270_LASTREG; reg++) {
 		u8 val = snd_soc_read(codec, reg);
@@ -666,6 +777,9 @@ static int cs4270_soc_resume(struct snd_soc_codec *codec)
 =======
 	snd_soc_cache_sync(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regcache_sync(cs4270->regmap);
+>>>>>>> refs/remotes/origin/master
 
 	/* ... then disable the power-down bits */
 	reg = snd_soc_read(codec, CS4270_PWRCTL);
@@ -680,6 +794,7 @@ static int cs4270_soc_resume(struct snd_soc_codec *codec)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ASoC codec device structure
  *
  * Assign this variable to the codec_dev field of the machine driver's
@@ -687,17 +802,51 @@ static int cs4270_soc_resume(struct snd_soc_codec *codec)
 =======
  * ASoC codec driver structure
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ASoC codec driver structure
+>>>>>>> refs/remotes/origin/master
  */
 static const struct snd_soc_codec_driver soc_codec_device_cs4270 = {
 	.probe =		cs4270_probe,
 	.remove =		cs4270_remove,
 	.suspend =		cs4270_soc_suspend,
 	.resume =		cs4270_soc_resume,
+<<<<<<< HEAD
 	.volatile_register =	cs4270_reg_is_volatile,
 	.readable_register =	cs4270_reg_is_readable,
 	.reg_cache_size =	CS4270_LASTREG + 1,
 	.reg_word_size =	sizeof(u8),
 	.reg_cache_default =	cs4270_default_reg_cache,
+=======
+
+	.controls =		cs4270_snd_controls,
+	.num_controls =		ARRAY_SIZE(cs4270_snd_controls),
+	.dapm_widgets =		cs4270_dapm_widgets,
+	.num_dapm_widgets =	ARRAY_SIZE(cs4270_dapm_widgets),
+	.dapm_routes =		cs4270_dapm_routes,
+	.num_dapm_routes =	ARRAY_SIZE(cs4270_dapm_routes),
+};
+
+/*
+ * cs4270_of_match - the device tree bindings
+ */
+static const struct of_device_id cs4270_of_match[] = {
+	{ .compatible = "cirrus,cs4270", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, cs4270_of_match);
+
+static const struct regmap_config cs4270_regmap = {
+	.reg_bits =		8,
+	.val_bits =		8,
+	.max_register =		CS4270_LASTREG,
+	.reg_defaults =		cs4270_reg_defaults,
+	.num_reg_defaults =	ARRAY_SIZE(cs4270_reg_defaults),
+	.cache_type =		REGCACHE_RBTREE,
+
+	.readable_reg =		cs4270_reg_is_readable,
+	.volatile_reg =		cs4270_reg_is_volatile,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -711,19 +860,69 @@ static const struct snd_soc_codec_driver soc_codec_device_cs4270 = {
 static int cs4270_i2c_probe(struct i2c_client *i2c_client,
 	const struct i2c_device_id *id)
 {
+<<<<<<< HEAD
 	struct cs4270_private *cs4270;
 	int ret;
 
 	/* Verify that we have a CS4270 */
 
 	ret = i2c_smbus_read_byte_data(i2c_client, CS4270_CHIPID);
+=======
+	struct device_node *np = i2c_client->dev.of_node;
+	struct cs4270_private *cs4270;
+	unsigned int val;
+	int ret, i;
+
+	cs4270 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs4270_private),
+			      GFP_KERNEL);
+	if (!cs4270) {
+		dev_err(&i2c_client->dev, "could not allocate codec\n");
+		return -ENOMEM;
+	}
+
+	/* get the power supply regulators */
+	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
+		cs4270->supplies[i].supply = supply_names[i];
+
+	ret = devm_regulator_bulk_get(&i2c_client->dev,
+				      ARRAY_SIZE(cs4270->supplies),
+				      cs4270->supplies);
+	if (ret < 0)
+		return ret;
+
+	/* See if we have a way to bring the codec out of reset */
+	if (np) {
+		enum of_gpio_flags flags;
+		int gpio = of_get_named_gpio_flags(np, "reset-gpio", 0, &flags);
+
+		if (gpio_is_valid(gpio)) {
+			ret = devm_gpio_request_one(&i2c_client->dev, gpio,
+				     flags & OF_GPIO_ACTIVE_LOW ?
+					GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH,
+				     "cs4270 reset");
+			if (ret < 0)
+				return ret;
+		}
+	}
+
+	cs4270->regmap = devm_regmap_init_i2c(i2c_client, &cs4270_regmap);
+	if (IS_ERR(cs4270->regmap))
+		return PTR_ERR(cs4270->regmap);
+
+	/* Verify that we have a CS4270 */
+	ret = regmap_read(cs4270->regmap, CS4270_CHIPID, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&i2c_client->dev, "failed to read i2c at addr %X\n",
 		       i2c_client->addr);
 		return ret;
 	}
 	/* The top four bits of the chip ID should be 1100. */
+<<<<<<< HEAD
 	if ((ret & 0xF0) != 0xC0) {
+=======
+	if ((val & 0xF0) != 0xC0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&i2c_client->dev, "device at addr %X is not a CS4270\n",
 		       i2c_client->addr);
 		return -ENODEV;
@@ -731,6 +930,7 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
 
 	dev_info(&i2c_client->dev, "found device at i2c address %X\n",
 		i2c_client->addr);
+<<<<<<< HEAD
 	dev_info(&i2c_client->dev, "hardware revision %X\n", ret & 0xF);
 
 <<<<<<< HEAD
@@ -758,6 +958,14 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
 		kfree(cs4270);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_info(&i2c_client->dev, "hardware revision %X\n", val & 0xF);
+
+	i2c_set_clientdata(i2c_client, cs4270);
+
+	ret = snd_soc_register_codec(&i2c_client->dev,
+			&soc_codec_device_cs4270, &cs4270_dai, 1);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -771,9 +979,12 @@ static int cs4270_i2c_remove(struct i2c_client *i2c_client)
 {
 	snd_soc_unregister_codec(&i2c_client->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(i2c_get_clientdata(i2c_client));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -795,17 +1006,24 @@ MODULE_DEVICE_TABLE(i2c, cs4270_id);
 static struct i2c_driver cs4270_i2c_driver = {
 	.driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "cs4270-codec",
 =======
 		.name = "cs4270",
 >>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
+=======
+		.name = "cs4270",
+		.owner = THIS_MODULE,
+		.of_match_table = cs4270_of_match,
+>>>>>>> refs/remotes/origin/master
 	},
 	.id_table = cs4270_id,
 	.probe = cs4270_i2c_probe,
 	.remove = cs4270_i2c_remove,
 };
 
+<<<<<<< HEAD
 static int __init cs4270_init(void)
 {
 	return i2c_add_driver(&cs4270_i2c_driver);
@@ -817,6 +1035,9 @@ static void __exit cs4270_exit(void)
 	i2c_del_driver(&cs4270_i2c_driver);
 }
 module_exit(cs4270_exit);
+=======
+module_i2c_driver(cs4270_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
 MODULE_DESCRIPTION("Cirrus Logic CS4270 ALSA SoC Codec Driver");

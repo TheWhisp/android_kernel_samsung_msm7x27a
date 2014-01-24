@@ -26,6 +26,7 @@
 #include <asm/pgtable.h>
 #include <asm/cacheflush.h>	/* flush_sig_insns */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -34,6 +35,12 @@
 
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
+=======
+#include <asm/switch_to.h>
+
+#include "sigutil.h"
+
+>>>>>>> refs/remotes/origin/master
 extern void fpsave(unsigned long *fpregs, unsigned long *fsr,
 		   void *fpqueue, unsigned long *fpqdepth);
 extern void fpload(unsigned long *fpregs, unsigned long *fsr);
@@ -64,6 +71,7 @@ struct rt_signal_frame {
 #define SF_ALIGNEDSZ  (((sizeof(struct signal_frame) + 7) & (~7)))
 #define RT_ALIGNEDSZ  (((sizeof(struct rt_signal_frame) + 7) & (~7)))
 
+<<<<<<< HEAD
 static int _sigpause_common(old_sigset_t set)
 {
 <<<<<<< HEAD
@@ -95,6 +103,8 @@ asmlinkage int sys_sigsuspend(old_sigset_t set)
 	return _sigpause_common(set);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage void do_sigreturn(struct pt_regs *regs)
 {
 	struct signal_frame __user *sf;
@@ -152,6 +162,7 @@ asmlinkage void do_sigreturn(struct pt_regs *regs)
 	if (err)
 		goto segv_and_exit;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 <<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
@@ -161,6 +172,9 @@ asmlinkage void do_sigreturn(struct pt_regs *regs)
 =======
 	set_current_blocked(&set);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 	return;
 
 segv_and_exit:
@@ -173,9 +187,13 @@ asmlinkage void do_rt_sigreturn(struct pt_regs *regs)
 	unsigned int psr, pc, npc;
 	__siginfo_fpu_t __user *fpu_save;
 	__siginfo_rwin_t __user *rwin_save;
+<<<<<<< HEAD
 	mm_segment_t old_fs;
 	sigset_t set;
 	stack_t st;
+=======
+	sigset_t set;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	synchronize_user_stack();
@@ -203,8 +221,12 @@ asmlinkage void do_rt_sigreturn(struct pt_regs *regs)
 	if (!err && fpu_save)
 		err |= restore_fpu_state(regs, fpu_save);
 	err |= __copy_from_user(&set, &sf->mask, sizeof(sigset_t));
+<<<<<<< HEAD
 	
 	err |= __copy_from_user(&st, &sf->stack, sizeof(stack_t));
+=======
+	err |= restore_altstack(&sf->stack);
+>>>>>>> refs/remotes/origin/master
 	
 	if (err)
 		goto segv;
@@ -212,6 +234,7 @@ asmlinkage void do_rt_sigreturn(struct pt_regs *regs)
 	regs->pc = pc;
 	regs->npc = npc;
 	
+<<<<<<< HEAD
 	/* It is more difficult to avoid calling this function than to
 	 * call it and ignore errors.
 	 */
@@ -220,12 +243,15 @@ asmlinkage void do_rt_sigreturn(struct pt_regs *regs)
 	do_sigaltstack((const stack_t __user *) &st, NULL, (unsigned long)sf);
 	set_fs(old_fs);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	err |= __get_user(rwin_save, &sf->rwin_save);
 	if (!err && rwin_save) {
 		if (restore_rwin_state(rwin_save))
 			goto segv;
 	}
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 <<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
@@ -235,6 +261,9 @@ asmlinkage void do_rt_sigreturn(struct pt_regs *regs)
 =======
 	set_current_blocked(&set);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 	return;
 segv:
 	force_sig(SIGSEGV, current);
@@ -243,6 +272,7 @@ segv:
 /* Checks if the fp is valid */
 static inline int invalid_frame_pointer(void __user *fp, int fplen)
 {
+<<<<<<< HEAD
 	if ((((unsigned long) fp) & 7) ||
 	    !__access_ok((unsigned long)fp, fplen) ||
 	    ((sparc_cpu_model == sun4 || sparc_cpu_model == sun4c) &&
@@ -253,6 +283,15 @@ static inline int invalid_frame_pointer(void __user *fp, int fplen)
 }
 
 static inline void __user *get_sigframe(struct sigaction *sa, struct pt_regs *regs, unsigned long framesize)
+=======
+	if ((((unsigned long) fp) & 7) || !__access_ok((unsigned long)fp, fplen))
+		return 1;
+
+	return 0;
+}
+
+static inline void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs, unsigned long framesize)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long sp = regs->u_regs[UREG_FP];
 
@@ -264,12 +303,16 @@ static inline void __user *get_sigframe(struct sigaction *sa, struct pt_regs *re
 		return (void __user *) -1L;
 
 	/* This is the X/Open sanctioned signal stack switching.  */
+<<<<<<< HEAD
 	if (sa->sa_flags & SA_ONSTACK) {
 		if (sas_ss_flags(sp) == 0)
 			sp = current->sas_ss_sp + current->sas_ss_size;
 	}
 
 	sp -= framesize;
+=======
+	sp = sigsp(sp, ksig) - framesize;
+>>>>>>> refs/remotes/origin/master
 
 	/* Always align the stack frame.  This handles two cases.  First,
 	 * sigaltstack need not be mindful of platform specific stack
@@ -282,8 +325,13 @@ static inline void __user *get_sigframe(struct sigaction *sa, struct pt_regs *re
 	return (void __user *) sp;
 }
 
+<<<<<<< HEAD
 static int setup_frame(struct k_sigaction *ka, struct pt_regs *regs,
 		       int signo, sigset_t *oldset)
+=======
+static int setup_frame(struct ksignal *ksig, struct pt_regs *regs,
+		       sigset_t *oldset)
+>>>>>>> refs/remotes/origin/master
 {
 	struct signal_frame __user *sf;
 	int sigframe_size, err, wsaved;
@@ -301,10 +349,19 @@ static int setup_frame(struct k_sigaction *ka, struct pt_regs *regs,
 		sigframe_size += sizeof(__siginfo_rwin_t);
 
 	sf = (struct signal_frame __user *)
+<<<<<<< HEAD
 		get_sigframe(&ka->sa, regs, sigframe_size);
 
 	if (invalid_frame_pointer(sf, sigframe_size))
 		goto sigill_and_return;
+=======
+		get_sigframe(ksig, regs, sigframe_size);
+
+	if (invalid_frame_pointer(sf, sigframe_size)) {
+		do_exit(SIGILL);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	tail = sf + 1;
 
@@ -343,21 +400,38 @@ static int setup_frame(struct k_sigaction *ka, struct pt_regs *regs,
 		err |= __copy_to_user(sf, rp, sizeof(struct reg_window32));
 	}
 	if (err)
+<<<<<<< HEAD
 		goto sigsegv;
 	
 	/* 3. signal handler back-trampoline and parameters */
 	regs->u_regs[UREG_FP] = (unsigned long) sf;
 	regs->u_regs[UREG_I0] = signo;
+=======
+		return err;
+	
+	/* 3. signal handler back-trampoline and parameters */
+	regs->u_regs[UREG_FP] = (unsigned long) sf;
+	regs->u_regs[UREG_I0] = ksig->sig;
+>>>>>>> refs/remotes/origin/master
 	regs->u_regs[UREG_I1] = (unsigned long) &sf->info;
 	regs->u_regs[UREG_I2] = (unsigned long) &sf->info;
 
 	/* 4. signal handler */
+<<<<<<< HEAD
 	regs->pc = (unsigned long) ka->sa.sa_handler;
 	regs->npc = (regs->pc + 4);
 
 	/* 5. return to kernel instructions */
 	if (ka->ka_restorer)
 		regs->u_regs[UREG_I7] = (unsigned long)ka->ka_restorer;
+=======
+	regs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+	regs->npc = (regs->pc + 4);
+
+	/* 5. return to kernel instructions */
+	if (ksig->ka.ka_restorer)
+		regs->u_regs[UREG_I7] = (unsigned long)ksig->ka.ka_restorer;
+>>>>>>> refs/remotes/origin/master
 	else {
 		regs->u_regs[UREG_I7] = (unsigned long)(&(sf->insns[0]) - 2);
 
@@ -367,12 +441,17 @@ static int setup_frame(struct k_sigaction *ka, struct pt_regs *regs,
 		/* t 0x10 */
 		err |= __put_user(0x91d02010, &sf->insns[1]);
 		if (err)
+<<<<<<< HEAD
 			goto sigsegv;
+=======
+			return err;
+>>>>>>> refs/remotes/origin/master
 
 		/* Flush instruction space. */
 		flush_sig_insns(current->mm, (unsigned long) &(sf->insns[0]));
 	}
 	return 0;
+<<<<<<< HEAD
 
 sigill_and_return:
 	do_exit(SIGILL);
@@ -385,6 +464,12 @@ sigsegv:
 
 static int setup_rt_frame(struct k_sigaction *ka, struct pt_regs *regs,
 			  int signo, sigset_t *oldset, siginfo_t *info)
+=======
+}
+
+static int setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs,
+			  sigset_t *oldset)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rt_signal_frame __user *sf;
 	int sigframe_size, wsaved;
@@ -400,9 +485,17 @@ static int setup_rt_frame(struct k_sigaction *ka, struct pt_regs *regs,
 	if (wsaved)
 		sigframe_size += sizeof(__siginfo_rwin_t);
 	sf = (struct rt_signal_frame __user *)
+<<<<<<< HEAD
 		get_sigframe(&ka->sa, regs, sigframe_size);
 	if (invalid_frame_pointer(sf, sigframe_size))
 		goto sigill;
+=======
+		get_sigframe(ksig, regs, sigframe_size);
+	if (invalid_frame_pointer(sf, sigframe_size)) {
+		do_exit(SIGILL);
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	tail = sf + 1;
 	err  = __put_user(regs->pc, &sf->regs.pc);
@@ -434,9 +527,13 @@ static int setup_rt_frame(struct k_sigaction *ka, struct pt_regs *regs,
 	err |= __copy_to_user(&sf->mask, &oldset->sig[0], sizeof(sigset_t));
 	
 	/* Setup sigaltstack */
+<<<<<<< HEAD
 	err |= __put_user(current->sas_ss_sp, &sf->stack.ss_sp);
 	err |= __put_user(sas_ss_flags(regs->u_regs[UREG_FP]), &sf->stack.ss_flags);
 	err |= __put_user(current->sas_ss_size, &sf->stack.ss_size);
+=======
+	err |= __save_altstack(&sf->stack, regs->u_regs[UREG_FP]);
+>>>>>>> refs/remotes/origin/master
 	
 	if (!wsaved) {
 		err |= __copy_to_user(sf, (char *) regs->u_regs[UREG_FP],
@@ -448,6 +545,7 @@ static int setup_rt_frame(struct k_sigaction *ka, struct pt_regs *regs,
 		err |= __copy_to_user(sf, rp, sizeof(struct reg_window32));
 	}
 
+<<<<<<< HEAD
 	err |= copy_siginfo_to_user(&sf->info, info);
 
 	if (err)
@@ -463,6 +561,23 @@ static int setup_rt_frame(struct k_sigaction *ka, struct pt_regs *regs,
 
 	if (ka->ka_restorer)
 		regs->u_regs[UREG_I7] = (unsigned long)ka->ka_restorer;
+=======
+	err |= copy_siginfo_to_user(&sf->info, &ksig->info);
+
+	if (err)
+		return err;
+
+	regs->u_regs[UREG_FP] = (unsigned long) sf;
+	regs->u_regs[UREG_I0] = ksig->sig;
+	regs->u_regs[UREG_I1] = (unsigned long) &sf->info;
+	regs->u_regs[UREG_I2] = (unsigned long) &sf->regs;
+
+	regs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+	regs->npc = (regs->pc + 4);
+
+	if (ksig->ka.ka_restorer)
+		regs->u_regs[UREG_I7] = (unsigned long)ksig->ka.ka_restorer;
+>>>>>>> refs/remotes/origin/master
 	else {
 		regs->u_regs[UREG_I7] = (unsigned long)(&(sf->insns[0]) - 2);
 
@@ -472,12 +587,17 @@ static int setup_rt_frame(struct k_sigaction *ka, struct pt_regs *regs,
 		/* t 0x10 */
 		err |= __put_user(0x91d02010, &sf->insns[1]);
 		if (err)
+<<<<<<< HEAD
 			goto sigsegv;
+=======
+			return err;
+>>>>>>> refs/remotes/origin/master
 
 		/* Flush instruction space. */
 		flush_sig_insns(current->mm, (unsigned long) &(sf->insns[0]));
 	}
 	return 0;
+<<<<<<< HEAD
 
 sigill:
 	do_exit(SIGILL);
@@ -516,6 +636,21 @@ handle_signal(unsigned long signr, struct k_sigaction *ka,
 	tracehook_signal_handler(signr, info, ka, regs, 0);
 
 	return 0;
+=======
+}
+
+static inline void
+handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+{
+	sigset_t *oldset = sigmask_to_save();
+	int err;
+
+	if (ksig->ka.sa.sa_flags & SA_SIGINFO)
+		err = setup_rt_frame(ksig, regs, oldset);
+	else
+		err = setup_frame(ksig, regs, oldset);
+	signal_setup_done(err, ksig, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void syscall_restart(unsigned long orig_i0, struct pt_regs *regs,
@@ -545,11 +680,17 @@ static inline void syscall_restart(unsigned long orig_i0, struct pt_regs *regs,
  */
 static void do_signal(struct pt_regs *regs, unsigned long orig_i0)
 {
+<<<<<<< HEAD
 	struct k_sigaction ka;
 	int restart_syscall;
 	sigset_t *oldset;
 	siginfo_t info;
 	int signr;
+=======
+	struct ksignal ksig;
+	int restart_syscall;
+	bool has_handler;
+>>>>>>> refs/remotes/origin/master
 
 	/* It's a lot of work and synchronization to add a new ptrace
 	 * register for GDB to save and restore in order to get
@@ -572,12 +713,16 @@ static void do_signal(struct pt_regs *regs, unsigned long orig_i0)
 	if (pt_regs_is_syscall(regs) && (regs->psr & PSR_C))
 		regs->u_regs[UREG_G6] = orig_i0;
 
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_RESTORE_SIGMASK))
 		oldset = &current->saved_sigmask;
 	else
 		oldset = &current->blocked;
 
 	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+=======
+	has_handler = get_signal(&ksig);
+>>>>>>> refs/remotes/origin/master
 
 	/* If the debugger messes with the program counter, it clears
 	 * the software "in syscall" bit, directing us to not perform
@@ -589,6 +734,7 @@ static void do_signal(struct pt_regs *regs, unsigned long orig_i0)
 		orig_i0 = regs->u_regs[UREG_G6];
 	}
 
+<<<<<<< HEAD
 
 	if (signr > 0) {
 		if (restart_syscall)
@@ -632,19 +778,51 @@ static void do_signal(struct pt_regs *regs, unsigned long orig_i0)
 =======
 		set_current_blocked(&current->saved_sigmask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (has_handler) {
+		if (restart_syscall)
+			syscall_restart(orig_i0, regs, &ksig.ka.sa);
+		handle_signal(&ksig, regs);
+	} else {
+		if (restart_syscall) {
+			switch (regs->u_regs[UREG_I0]) {
+			case ERESTARTNOHAND:
+	     		case ERESTARTSYS:
+			case ERESTARTNOINTR:
+				/* replay the system call when we are done */
+				regs->u_regs[UREG_I0] = orig_i0;
+				regs->pc -= 4;
+				regs->npc -= 4;
+				pt_regs_clear_syscall(regs);
+			case ERESTART_RESTARTBLOCK:
+				regs->u_regs[UREG_G1] = __NR_restart_syscall;
+				regs->pc -= 4;
+				regs->npc -= 4;
+				pt_regs_clear_syscall(regs);
+			}
+		}
+		restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 void do_notify_resume(struct pt_regs *regs, unsigned long orig_i0,
 		      unsigned long thread_info_flags)
 {
+<<<<<<< HEAD
 	if (thread_info_flags & (_TIF_SIGPENDING | _TIF_RESTORE_SIGMASK))
+=======
+	if (thread_info_flags & _TIF_SIGPENDING)
+>>>>>>> refs/remotes/origin/master
 		do_signal(regs, orig_i0);
 	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
 		clear_thread_flag(TIF_NOTIFY_RESUME);
 		tracehook_notify_resume(regs);
+<<<<<<< HEAD
 		if (current->replacement_session_keyring)
 			key_replace_session_keyring();
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

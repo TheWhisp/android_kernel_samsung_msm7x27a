@@ -9,10 +9,14 @@
 #define __ASM_HW_IRQ_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 extern atomic_t irq_err_count;
 

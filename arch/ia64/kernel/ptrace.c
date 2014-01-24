@@ -27,9 +27,12 @@
 #include <asm/ptrace_offsets.h>
 #include <asm/rse.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/unwind.h>
 #ifdef CONFIG_PERFMON
@@ -676,6 +679,7 @@ ptrace_attach_sync_user_rbs (struct task_struct *child)
 	read_unlock(&tasklist_lock);
 }
 
+<<<<<<< HEAD
 static inline int
 thread_matches (struct task_struct *thread, unsigned long addr)
 {
@@ -703,6 +707,8 @@ thread_matches (struct task_struct *thread, unsigned long addr)
 	return 1;	/* looks like we've got a winner */
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Write f32-f127 back to task->thread.fph if it has been modified.
  */
@@ -1250,6 +1256,7 @@ syscall_trace_enter (long arg0, long arg1, long arg2, long arg3,
 		ia64_sync_krbs();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context)) {
 		long syscall;
 		int arch;
@@ -1263,6 +1270,10 @@ syscall_trace_enter (long arg0, long arg1, long arg2, long arg3,
 
 	audit_syscall_entry(AUDIT_ARCH_IA64, regs.r15, arg0, arg1, arg2, arg3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	audit_syscall_entry(AUDIT_ARCH_IA64, regs.r15, arg0, arg1, arg2, arg3);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1277,6 +1288,7 @@ syscall_trace_leave (long arg0, long arg1, long arg2, long arg3,
 	int step;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context)) {
 		int success = AUDITSC_RESULT(regs.r10);
 		long result = regs.r8;
@@ -1288,6 +1300,9 @@ syscall_trace_leave (long arg0, long arg1, long arg2, long arg3,
 =======
 	audit_syscall_exit(&regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_exit(&regs);
+>>>>>>> refs/remotes/origin/master
 
 	step = test_thread_flag(TIF_SINGLESTEP);
 	if (step || test_thread_flag(TIF_SYSCALL_TRACE))

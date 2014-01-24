@@ -41,10 +41,14 @@
  *
  * AMD Athlon 64 and AMD Opteron Processors, AMD Publication 26094,
 <<<<<<< HEAD
+<<<<<<< HEAD
  * http://support.amd.com/us/Processor_TechDocs/26094.PDF 
 =======
  * http://support.amd.com/us/Processor_TechDocs/26094.PDF
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * http://support.amd.com/us/Processor_TechDocs/26094.PDF
+>>>>>>> refs/remotes/origin/master
  * Table 74. VID Code Voltages
  * This corresponds to an arbitrary VRM code of 24 in the functions below.
  * These CPU models (K8 revision <= E) have 5 VID pins. See also:
@@ -88,6 +92,7 @@ int vid_from_reg(int val, u8 vrm)
 	int vid;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(vrm) {
 
 	case 100:               /* VRD 10.0 */
@@ -103,6 +108,8 @@ int vid_from_reg(int val, u8 vrm)
 			vid -= 12500;
 		return((vid + 500) / 1000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (vrm) {
 
 	case 100:		/* VRD 10.0 */
@@ -117,7 +124,10 @@ int vid_from_reg(int val, u8 vrm)
 		if (val & 0x20)
 			vid -= 12500;
 		return (vid + 500) / 1000;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case 110:		/* Intel Conroe */
 				/* compute in uV, round to mV */
@@ -125,10 +135,14 @@ int vid_from_reg(int val, u8 vrm)
 		if (val < 0x02 || val > 0xb2)
 			return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return((1600000 - (val - 2) * 6250 + 500) / 1000);
 =======
 		return (1600000 - (val - 2) * 6250 + 500) / 1000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (1600000 - (val - 2) * 6250 + 500) / 1000;
+>>>>>>> refs/remotes/origin/master
 
 	case 24:		/* Athlon64 & Opteron */
 		val &= 0x1f;
@@ -140,6 +154,7 @@ int vid_from_reg(int val, u8 vrm)
 		return (val < 32) ? 1550 - 25 * val
 			: 775 - (25 * (val - 31)) / 2;
 
+<<<<<<< HEAD
 	case 91:		/* VRM 9.1 */
 	case 90:		/* VRM 9.0 */
 		val &= 0x1f;
@@ -153,6 +168,17 @@ int vid_from_reg(int val, u8 vrm)
 		       ((val & 0x0f) > 0x04 ? 2050 : 1250) -
 		       ((val & 0x0f) * 50));
 =======
+=======
+	case 26:		/* AMD family 10h to 15h, serial VID */
+		val &= 0x7f;
+		if (val >= 0x7c)
+			return 0;
+		return DIV_ROUND_CLOSEST(15500 - 125 * val, 10);
+
+	case 91:		/* VRM 9.1 */
+	case 90:		/* VRM 9.0 */
+		val &= 0x1f;
+>>>>>>> refs/remotes/origin/master
 		return val == 0x1f ? 0 :
 				     1850 - val * 25;
 
@@ -161,13 +187,17 @@ int vid_from_reg(int val, u8 vrm)
 		return (val & 0x10  ? 25 : 0) +
 		       ((val & 0x0f) > 0x04 ? 2050 : 1250) -
 		       ((val & 0x0f) * 50);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case 84:		/* VRM 8.4 */
 		val &= 0x0f;
 				/* fall through */
 	case 82:		/* VRM 8.2 */
 		val &= 0x1f;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return(val == 0x1f ? 0 :
 		       val & 0x10  ? 5100 - (val) * 100 :
@@ -184,6 +214,8 @@ int vid_from_reg(int val, u8 vrm)
 		val &= 0x7f;
 		return(val > 0x77 ? 0 : (1500000 - (val * 12500) + 500) / 1000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return val == 0x1f ? 0 :
 		       val & 0x10  ? 5100 - (val) * 100 :
 				     2050 - (val) * 50;
@@ -202,7 +234,10 @@ int vid_from_reg(int val, u8 vrm)
 				/* compute in uV, round to mV */
 		val &= 0x7f;
 		return val > 0x77 ? 0 : (1500000 - (val * 12500) + 500) / 1000;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:		/* report 0 for unknown */
 		if (vrm)
 			pr_warn("Requested unsupported VRM version (%u)\n",
@@ -211,10 +246,14 @@ int vid_from_reg(int val, u8 vrm)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 EXPORT_SYMBOL(vid_from_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(vid_from_reg);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * After this point is the code to automatically determine which
@@ -224,15 +263,21 @@ EXPORT_SYMBOL(vid_from_reg);
 struct vrm_model {
 	u8 vendor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 eff_family;
 	u8 eff_model;
 	u8 eff_stepping;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 family;
 	u8 model_from;
 	u8 model_to;
 	u8 stepping_to;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vrm_type;
 };
 
@@ -242,15 +287,20 @@ struct vrm_model {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * The stepping parameter is highest acceptable stepping for current line.
 =======
  * The stepping_to parameter is highest acceptable stepping for current line.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * The stepping_to parameter is highest acceptable stepping for current line.
+>>>>>>> refs/remotes/origin/master
  * The model match must be exact for 4-bit values. For model values 0x10
  * and above (extended model), all models below the parameter will match.
  */
 
 static struct vrm_model vrm_models[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{X86_VENDOR_AMD, 0x6, ANY, ANY, 90},		/* Athlon Duron etc */
 	{X86_VENDOR_AMD, 0xF, 0x3F, ANY, 24},		/* Athlon 64, Opteron */
@@ -298,6 +348,8 @@ static u8 find_vrm(u8 eff_family, u8 eff_model, u8 eff_stepping, u8 vendor)
 				return vrm_models[i].vrm_type;
 		i++;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{X86_VENDOR_AMD, 0x6, 0x0, ANY, ANY, 90},	/* Athlon Duron etc */
 	{X86_VENDOR_AMD, 0xF, 0x0, 0x3F, ANY, 24},	/* Athlon 64, Opteron */
 	/*
@@ -309,6 +361,13 @@ static u8 find_vrm(u8 eff_family, u8 eff_model, u8 eff_stepping, u8 vendor)
 	{X86_VENDOR_AMD, 0xF, 0x40, 0x7F, ANY, 24},	/* NPT family 0Fh */
 	{X86_VENDOR_AMD, 0xF, 0x80, ANY, ANY, 25},	/* future fam. 0Fh */
 	{X86_VENDOR_AMD, 0x10, 0x0, ANY, ANY, 25},	/* NPT family 10h */
+<<<<<<< HEAD
+=======
+	{X86_VENDOR_AMD, 0x11, 0x0, ANY, ANY, 26},	/* family 11h */
+	{X86_VENDOR_AMD, 0x12, 0x0, ANY, ANY, 26},	/* family 12h */
+	{X86_VENDOR_AMD, 0x14, 0x0, ANY, ANY, 26},	/* family 14h */
+	{X86_VENDOR_AMD, 0x15, 0x0, ANY, ANY, 26},	/* family 15h */
+>>>>>>> refs/remotes/origin/master
 
 	{X86_VENDOR_INTEL, 0x6, 0x0, 0x6, ANY, 82},	/* Pentium Pro,
 							 * Pentium II, Xeon,
@@ -350,7 +409,11 @@ static u8 find_vrm(u8 eff_family, u8 eff_model, u8 eff_stepping, u8 vendor)
  */
 static u8 get_via_model_d_vrm(void)
 {
+<<<<<<< HEAD
 	unsigned int vid, brand, dummy;
+=======
+	unsigned int vid, brand, __maybe_unused dummy;
+>>>>>>> refs/remotes/origin/master
 	static const char *brands[4] = {
 		"C7-M", "C7", "Eden", "C7-D"
 	};
@@ -384,7 +447,10 @@ static u8 find_vrm(u8 family, u8 model, u8 stepping, u8 vendor)
 		    model <= vrm_models[i].model_to &&
 		    stepping <= vrm_models[i].stepping_to)
 			return vrm_models[i].vrm_type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -393,6 +459,7 @@ static u8 find_vrm(u8 family, u8 model, u8 stepping, u8 vendor)
 u8 vid_which_vrm(void)
 {
 	struct cpuinfo_x86 *c = &cpu_data(0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 eax;
 	u8 eff_family, eff_model, eff_stepping, vrm_ret;
@@ -410,6 +477,8 @@ u8 vid_which_vrm(void)
 	}
 	vrm_ret = find_vrm(eff_family, eff_model, eff_stepping, c->x86_vendor);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vrm_ret;
 
 	if (c->x86 < 6)		/* Any CPU with family lower than 6 */
@@ -418,7 +487,10 @@ u8 vid_which_vrm(void)
 	vrm_ret = find_vrm(c->x86, c->x86_model, c->x86_mask, c->x86_vendor);
 	if (vrm_ret == 134)
 		vrm_ret = get_via_model_d_vrm();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vrm_ret == 0)
 		pr_info("Unknown VRM version of your x86 CPU\n");
 	return vrm_ret;
@@ -433,10 +505,13 @@ u8 vid_which_vrm(void)
 }
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(vid_from_reg);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(vid_which_vrm);
 
 MODULE_AUTHOR("Rudolf Marek <r.marek@assembler.cz>");

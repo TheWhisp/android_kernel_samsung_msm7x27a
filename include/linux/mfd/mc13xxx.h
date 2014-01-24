@@ -21,8 +21,11 @@ int mc13xxx_reg_write(struct mc13xxx *mc13xxx, unsigned int offset, u32 val);
 int mc13xxx_reg_rmw(struct mc13xxx *mc13xxx, unsigned int offset,
 		u32 mask, u32 val);
 
+<<<<<<< HEAD
 int mc13xxx_get_flags(struct mc13xxx *mc13xxx);
 
+=======
+>>>>>>> refs/remotes/origin/master
 int mc13xxx_irq_request(struct mc13xxx *mc13xxx, int irq,
 		irq_handler_t handler, const char *name, void *dev);
 int mc13xxx_irq_request_nounmask(struct mc13xxx *mc13xxx, int irq,
@@ -38,12 +41,25 @@ int mc13xxx_irq_ack(struct mc13xxx *mc13xxx, int irq);
 int mc13xxx_get_flags(struct mc13xxx *mc13xxx);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int mc13xxx_adc_do_conversion(struct mc13xxx *mc13xxx,
 		unsigned int mode, unsigned int channel,
 		u8 ato, bool atox, unsigned int *sample);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MC13783_AUDIO_RX0	36
+#define MC13783_AUDIO_RX1	37
+#define MC13783_AUDIO_TX	38
+#define MC13783_SSI_NETWORK	39
+#define MC13783_AUDIO_CODEC	40
+#define MC13783_AUDIO_DAC	41
+
+>>>>>>> refs/remotes/origin/master
 #define MC13XXX_IRQ_ADCDONE	0
 #define MC13XXX_IRQ_ADCBISDONE	1
 #define MC13XXX_IRQ_TS		2
@@ -74,9 +90,13 @@ struct mc13xxx_regulator_init_data {
 	int id;
 	struct regulator_init_data *init_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct device_node *node;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device_node *node;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mc13xxx_regulator_platform_data {
@@ -84,6 +104,7 @@ struct mc13xxx_regulator_platform_data {
 	struct mc13xxx_regulator_init_data *regulators;
 };
 
+<<<<<<< HEAD
 struct mc13xxx_led_platform_data {
 #define MC13783_LED_MD		0
 #define MC13783_LED_AD		1
@@ -98,6 +119,32 @@ struct mc13xxx_led_platform_data {
 #define MC13783_LED_G3		10
 #define MC13783_LED_B3		11
 #define MC13783_LED_MAX MC13783_LED_B3
+=======
+enum {
+	/* MC13783 LED IDs */
+	MC13783_LED_MD,
+	MC13783_LED_AD,
+	MC13783_LED_KP,
+	MC13783_LED_R1,
+	MC13783_LED_G1,
+	MC13783_LED_B1,
+	MC13783_LED_R2,
+	MC13783_LED_G2,
+	MC13783_LED_B2,
+	MC13783_LED_R3,
+	MC13783_LED_G3,
+	MC13783_LED_B3,
+	/* MC13892 LED IDs */
+	MC13892_LED_MD,
+	MC13892_LED_AD,
+	MC13892_LED_KP,
+	MC13892_LED_R,
+	MC13892_LED_G,
+	MC13892_LED_B,
+};
+
+struct mc13xxx_led_platform_data {
+>>>>>>> refs/remotes/origin/master
 	int id;
 	const char *name;
 	const char *default_trigger;
@@ -106,6 +153,7 @@ struct mc13xxx_led_platform_data {
 	char max_current;
 };
 
+<<<<<<< HEAD
 struct mc13xxx_leds_platform_data {
 	int num_leds;
 	struct mc13xxx_led_platform_data *led;
@@ -150,6 +198,40 @@ struct mc13xxx_leds_platform_data {
 
 <<<<<<< HEAD
 =======
+=======
+#define MAX_LED_CONTROL_REGS	6
+
+struct mc13xxx_leds_platform_data {
+	struct mc13xxx_led_platform_data *led;
+	int num_leds;
+
+/* LED Control 0 */
+#define MC13783_LED_C0_ENABLE		(1 << 0)
+#define MC13783_LED_C0_TRIODE_MD	(1 << 7)
+#define MC13783_LED_C0_TRIODE_AD	(1 << 8)
+#define MC13783_LED_C0_TRIODE_KP	(1 << 9)
+#define MC13783_LED_C0_BOOST		(1 << 10)
+#define MC13783_LED_C0_ABMODE(x)	(((x) & 0x7) << 11)
+#define MC13783_LED_C0_ABREF(x)		(((x) & 0x3) << 14)
+/* LED Control 1 */
+#define MC13783_LED_C1_TC1HALF		(1 << 18)
+#define MC13783_LED_C1_SLEWLIM		(1 << 23)
+/* LED Control 2 */
+#define MC13783_LED_C2_PERIOD(x)	(((x) & 0x3) << 21)
+#define MC13783_LED_C2_SLEWLIM		(1 << 23)
+/* LED Control 3 */
+#define MC13783_LED_C3_PERIOD(x)	(((x) & 0x3) << 21)
+#define MC13783_LED_C3_TRIODE_TC1	(1 << 23)
+/* LED Control 4 */
+#define MC13783_LED_C4_PERIOD(x)	(((x) & 0x3) << 21)
+#define MC13783_LED_C4_TRIODE_TC2	(1 << 23)
+/* LED Control 5 */
+#define MC13783_LED_C5_PERIOD(x)	(((x) & 0x3) << 21)
+#define MC13783_LED_C5_TRIODE_TC3	(1 << 23)
+	u32 led_control[MAX_LED_CONTROL_REGS];
+};
+
+>>>>>>> refs/remotes/origin/master
 struct mc13xxx_buttons_platform_data {
 #define MC13783_BUTTON_DBNC_0MS		0
 #define MC13783_BUTTON_DBNC_30MS	1
@@ -178,27 +260,49 @@ struct mc13xxx_ts_platform_data {
 	bool atox;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum mc13783_ssi_port {
+	MC13783_SSI1_PORT,
+	MC13783_SSI2_PORT,
+};
+
+struct mc13xxx_codec_platform_data {
+	enum mc13783_ssi_port adc_ssi_port;
+	enum mc13783_ssi_port dac_ssi_port;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct mc13xxx_platform_data {
 #define MC13XXX_USE_TOUCHSCREEN (1 << 0)
 #define MC13XXX_USE_CODEC	(1 << 1)
 #define MC13XXX_USE_ADC		(1 << 2)
 #define MC13XXX_USE_RTC		(1 << 3)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MC13XXX_USE_REGULATOR	(1 << 4)
 #define MC13XXX_USE_LED		(1 << 5)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int flags;
 
 	struct mc13xxx_regulator_platform_data regulators;
 	struct mc13xxx_leds_platform_data *leds;
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
 =======
 	struct mc13xxx_buttons_platform_data *buttons;
 	struct mc13xxx_ts_platform_data touch;
+=======
+	struct mc13xxx_buttons_platform_data *buttons;
+	struct mc13xxx_ts_platform_data touch;
+	struct mc13xxx_codec_platform_data *codec;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define MC13XXX_ADC_MODE_TS		1
@@ -225,5 +329,8 @@ struct mc13xxx_platform_data {
 					MC13XXX_ADC0_CHRGICON | \
 					MC13XXX_ADC0_BATICON)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* ifndef __LINUX_MFD_MC13XXX_H */

@@ -231,12 +231,21 @@ static void bluecard_write_wakeup(bluecard_info_t *info)
 	}
 
 	do {
+<<<<<<< HEAD
 		register unsigned int iobase = info->p_dev->resource[0]->start;
 		register unsigned int offset;
 		register unsigned char command;
 		register unsigned long ready_bit;
 		register struct sk_buff *skb;
 		register int len;
+=======
+		unsigned int iobase = info->p_dev->resource[0]->start;
+		unsigned int offset;
+		unsigned char command;
+		unsigned long ready_bit;
+		register struct sk_buff *skb;
+		int len;
+>>>>>>> refs/remotes/origin/master
 
 		clear_bit(XMIT_WAKEUP, &(info->tx_state));
 
@@ -399,7 +408,10 @@ static void bluecard_receive(bluecard_info_t *info, unsigned int offset)
 
 		if (info->rx_state == RECV_WAIT_PACKET_TYPE) {
 
+<<<<<<< HEAD
 			info->rx_skb->dev = (void *) info->hdev;
+=======
+>>>>>>> refs/remotes/origin/master
 			bt_cb(info->rx_skb)->pkt_type = buf[i];
 
 			switch (bt_cb(info->rx_skb)->pkt_type) {
@@ -477,7 +489,11 @@ static void bluecard_receive(bluecard_info_t *info, unsigned int offset)
 					break;
 
 				case RECV_WAIT_DATA:
+<<<<<<< HEAD
 					hci_recv_frame(info->rx_skb);
+=======
+					hci_recv_frame(info->hdev, info->rx_skb);
+>>>>>>> refs/remotes/origin/master
 					info->rx_skb = NULL;
 					break;
 
@@ -561,7 +577,11 @@ static irqreturn_t bluecard_interrupt(int irq, void *dev_inst)
 
 static int bluecard_hci_set_baud_rate(struct hci_dev *hdev, int baud)
 {
+<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
+=======
+	bluecard_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 
 	/* Ericsson baud rate command */
@@ -609,7 +629,11 @@ static int bluecard_hci_set_baud_rate(struct hci_dev *hdev, int baud)
 
 static int bluecard_hci_flush(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
+=======
+	bluecard_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Drop TX queue */
 	skb_queue_purge(&(info->txq));
@@ -620,8 +644,12 @@ static int bluecard_hci_flush(struct hci_dev *hdev)
 
 static int bluecard_hci_open(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
 	unsigned int iobase = info->p_dev->resource[0]->start;
+=======
+	bluecard_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(CARD_HAS_PCCARD_ID, &(info->hw_state)))
 		bluecard_hci_set_baud_rate(hdev, DEFAULT_BAUD_RATE);
@@ -630,6 +658,11 @@ static int bluecard_hci_open(struct hci_dev *hdev)
 		return 0;
 
 	if (test_bit(CARD_HAS_PCCARD_ID, &(info->hw_state))) {
+<<<<<<< HEAD
+=======
+		unsigned int iobase = info->p_dev->resource[0]->start;
+
+>>>>>>> refs/remotes/origin/master
 		/* Enable LED */
 		outb(0x08 | 0x20, iobase + 0x30);
 	}
@@ -640,8 +673,12 @@ static int bluecard_hci_open(struct hci_dev *hdev)
 
 static int bluecard_hci_close(struct hci_dev *hdev)
 {
+<<<<<<< HEAD
 	bluecard_info_t *info = (bluecard_info_t *)(hdev->driver_data);
 	unsigned int iobase = info->p_dev->resource[0]->start;
+=======
+	bluecard_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_and_clear_bit(HCI_RUNNING, &(hdev->flags)))
 		return 0;
@@ -649,6 +686,11 @@ static int bluecard_hci_close(struct hci_dev *hdev)
 	bluecard_hci_flush(hdev);
 
 	if (test_bit(CARD_HAS_PCCARD_ID, &(info->hw_state))) {
+<<<<<<< HEAD
+=======
+		unsigned int iobase = info->p_dev->resource[0]->start;
+
+>>>>>>> refs/remotes/origin/master
 		/* Disable LED */
 		outb(0x00, iobase + 0x30);
 	}
@@ -657,6 +699,7 @@ static int bluecard_hci_close(struct hci_dev *hdev)
 }
 
 
+<<<<<<< HEAD
 static int bluecard_hci_send_frame(struct sk_buff *skb)
 {
 	bluecard_info_t *info;
@@ -668,6 +711,11 @@ static int bluecard_hci_send_frame(struct sk_buff *skb)
 	}
 
 	info = (bluecard_info_t *)(hdev->driver_data);
+=======
+static int bluecard_hci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
+{
+	bluecard_info_t *info = hci_get_drvdata(hdev);
+>>>>>>> refs/remotes/origin/master
 
 	switch (bt_cb(skb)->pkt_type) {
 	case HCI_COMMAND_PKT:
@@ -679,7 +727,11 @@ static int bluecard_hci_send_frame(struct sk_buff *skb)
 	case HCI_SCODATA_PKT:
 		hdev->stat.sco_tx++;
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Prepend skb with frame type */
 	memcpy(skb_push(skb, 1), &bt_cb(skb)->pkt_type, 1);
@@ -691,6 +743,7 @@ static int bluecard_hci_send_frame(struct sk_buff *skb)
 }
 
 
+<<<<<<< HEAD
 static void bluecard_hci_destruct(struct hci_dev *hdev)
 {
 }
@@ -702,6 +755,8 @@ static int bluecard_hci_ioctl(struct hci_dev *hdev, unsigned int cmd, unsigned l
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* ======================== Card services HCI interaction ======================== */
 
@@ -734,6 +789,7 @@ static int bluecard_open(bluecard_info_t *info)
 	info->hdev = hdev;
 
 	hdev->bus = HCI_PCCARD;
+<<<<<<< HEAD
 	hdev->driver_data = info;
 	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
 
@@ -745,6 +801,15 @@ static int bluecard_open(bluecard_info_t *info)
 	hdev->ioctl    = bluecard_hci_ioctl;
 
 	hdev->owner = THIS_MODULE;
+=======
+	hci_set_drvdata(hdev, info);
+	SET_HCIDEV_DEV(hdev, &info->p_dev->dev);
+
+	hdev->open  = bluecard_hci_open;
+	hdev->close = bluecard_hci_close;
+	hdev->flush = bluecard_hci_flush;
+	hdev->send  = bluecard_hci_send_frame;
+>>>>>>> refs/remotes/origin/master
 
 	id = inb(iobase + 0x30);
 
@@ -844,9 +909,13 @@ static int bluecard_close(bluecard_info_t *info)
 	/* Turn FPGA off */
 	outb(0x80, iobase + 0x30);
 
+<<<<<<< HEAD
 	if (hci_unregister_dev(hdev) < 0)
 		BT_ERR("Can't unregister HCI device %s", hdev->name);
 
+=======
+	hci_unregister_dev(hdev);
+>>>>>>> refs/remotes/origin/master
 	hci_free_dev(hdev);
 
 	return 0;
@@ -857,7 +926,11 @@ static int bluecard_probe(struct pcmcia_device *link)
 	bluecard_info_t *info;
 
 	/* Create new info device */
+<<<<<<< HEAD
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&link->dev, sizeof(*info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info)
 		return -ENOMEM;
 
@@ -872,10 +945,14 @@ static int bluecard_probe(struct pcmcia_device *link)
 
 static void bluecard_detach(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	bluecard_info_t *info = link->priv;
 
 	bluecard_release(link);
 	kfree(info);
+=======
+	bluecard_release(link);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -930,7 +1007,11 @@ static void bluecard_release(struct pcmcia_device *link)
 	pcmcia_disable_device(link);
 }
 
+<<<<<<< HEAD
 static struct pcmcia_device_id bluecard_ids[] = {
+=======
+static const struct pcmcia_device_id bluecard_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	PCMCIA_DEVICE_PROD_ID12("BlueCard", "LSE041", 0xbaf16fbf, 0x657cc15e),
 	PCMCIA_DEVICE_PROD_ID12("BTCFCARD", "LSE139", 0xe3987764, 0x2524b59c),
 	PCMCIA_DEVICE_PROD_ID12("WSS", "LSE039", 0x0a0736ec, 0x24e6dfab),
@@ -945,6 +1026,7 @@ static struct pcmcia_driver bluecard_driver = {
 	.remove		= bluecard_detach,
 	.id_table	= bluecard_ids,
 };
+<<<<<<< HEAD
 
 static int __init init_bluecard_cs(void)
 {
@@ -959,3 +1041,6 @@ static void __exit exit_bluecard_cs(void)
 
 module_init(init_bluecard_cs);
 module_exit(exit_bluecard_cs);
+=======
+module_pcmcia_driver(bluecard_driver);
+>>>>>>> refs/remotes/origin/master

@@ -24,6 +24,7 @@
 #include <linux/cpu.h>
 #include <linux/notifier.h>
 #include <linux/cpu_pm.h>
+<<<<<<< HEAD
 
 #include <asm/hardware/gic.h>
 
@@ -35,16 +36,46 @@
 
 #define NR_REG_BANKS		4
 #define MAX_IRQS		128
+=======
+#include <linux/irqchip/arm-gic.h>
+
+#include "omap-wakeupgen.h"
+#include "omap-secure.h"
+
+#include "soc.h"
+#include "omap4-sar-layout.h"
+#include "common.h"
+
+#define AM43XX_NR_REG_BANKS	7
+#define AM43XX_IRQS		224
+#define MAX_NR_REG_BANKS	AM43XX_NR_REG_BANKS
+#define MAX_IRQS		AM43XX_IRQS
+#define DEFAULT_NR_REG_BANKS	5
+#define DEFAULT_IRQS		160
+>>>>>>> refs/remotes/origin/master
 #define WKG_MASK_ALL		0x00000000
 #define WKG_UNMASK_ALL		0xffffffff
 #define CPU_ENA_OFFSET		0x400
 #define CPU0_ID			0x0
 #define CPU1_ID			0x1
+<<<<<<< HEAD
 
 static void __iomem *wakeupgen_base;
 static void __iomem *sar_base;
 static DEFINE_SPINLOCK(wakeupgen_lock);
 static unsigned int irq_target_cpu[NR_IRQS];
+=======
+#define OMAP4_NR_BANKS		4
+#define OMAP4_NR_IRQS		128
+
+static void __iomem *wakeupgen_base;
+static void __iomem *sar_base;
+static DEFINE_RAW_SPINLOCK(wakeupgen_lock);
+static unsigned int irq_target_cpu[MAX_IRQS];
+static unsigned int irq_banks = DEFAULT_NR_REG_BANKS;
+static unsigned int max_irqs = DEFAULT_IRQS;
+static unsigned int omap_secure_apis;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Static helper functions.
@@ -128,9 +159,15 @@ static void wakeupgen_mask(struct irq_data *d)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&wakeupgen_lock, flags);
 	_wakeupgen_clear(d->irq, irq_target_cpu[d->irq]);
 	spin_unlock_irqrestore(&wakeupgen_lock, flags);
+=======
+	raw_spin_lock_irqsave(&wakeupgen_lock, flags);
+	_wakeupgen_clear(d->irq, irq_target_cpu[d->irq]);
+	raw_spin_unlock_irqrestore(&wakeupgen_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -140,6 +177,7 @@ static void wakeupgen_unmask(struct irq_data *d)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&wakeupgen_lock, flags);
 	_wakeupgen_set(d->irq, irq_target_cpu[d->irq]);
 	spin_unlock_irqrestore(&wakeupgen_lock, flags);
@@ -147,12 +185,25 @@ static void wakeupgen_unmask(struct irq_data *d)
 
 #ifdef CONFIG_HOTPLUG_CPU
 static DEFINE_PER_CPU(u32 [NR_REG_BANKS], irqmasks);
+=======
+	raw_spin_lock_irqsave(&wakeupgen_lock, flags);
+	_wakeupgen_set(d->irq, irq_target_cpu[d->irq]);
+	raw_spin_unlock_irqrestore(&wakeupgen_lock, flags);
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+static DEFINE_PER_CPU(u32 [MAX_NR_REG_BANKS], irqmasks);
+>>>>>>> refs/remotes/origin/master
 
 static void _wakeupgen_save_masks(unsigned int cpu)
 {
 	u8 i;
 
+<<<<<<< HEAD
 	for (i = 0; i < NR_REG_BANKS; i++)
+=======
+	for (i = 0; i < irq_banks; i++)
+>>>>>>> refs/remotes/origin/master
 		per_cpu(irqmasks, cpu)[i] = wakeupgen_readl(i, cpu);
 }
 
@@ -160,7 +211,11 @@ static void _wakeupgen_restore_masks(unsigned int cpu)
 {
 	u8 i;
 
+<<<<<<< HEAD
 	for (i = 0; i < NR_REG_BANKS; i++)
+=======
+	for (i = 0; i < irq_banks; i++)
+>>>>>>> refs/remotes/origin/master
 		wakeupgen_writel(per_cpu(irqmasks, cpu)[i], i, cpu);
 }
 
@@ -168,7 +223,11 @@ static void _wakeupgen_set_all(unsigned int cpu, unsigned int reg)
 {
 	u8 i;
 
+<<<<<<< HEAD
 	for (i = 0; i < NR_REG_BANKS; i++)
+=======
+	for (i = 0; i < irq_banks; i++)
+>>>>>>> refs/remotes/origin/master
 		wakeupgen_writel(reg, i, cpu);
 }
 
@@ -183,7 +242,11 @@ static void wakeupgen_irqmask_all(unsigned int cpu, unsigned int set)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&wakeupgen_lock, flags);
+=======
+	raw_spin_lock_irqsave(&wakeupgen_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	if (set) {
 		_wakeupgen_save_masks(cpu);
 		_wakeupgen_set_all(cpu, WKG_MASK_ALL);
@@ -191,11 +254,16 @@ static void wakeupgen_irqmask_all(unsigned int cpu, unsigned int set)
 		_wakeupgen_set_all(cpu, WKG_UNMASK_ALL);
 		_wakeupgen_restore_masks(cpu);
 	}
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&wakeupgen_lock, flags);
+=======
+	raw_spin_unlock_irqrestore(&wakeupgen_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 #ifdef CONFIG_CPU_PM
+<<<<<<< HEAD
 /*
  * Save WakeupGen interrupt context in SAR BANK3. Restore is done by
  * ROM code. WakeupGen IP is integrated along with GIC to manage the
@@ -205,16 +273,23 @@ static void wakeupgen_irqmask_all(unsigned int cpu, unsigned int set)
  * at WakeupGen and GIC so that interrupts are not lost.
  */
 static void irq_save_context(void)
+=======
+static inline void omap4_irq_save_context(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i, val;
 
 	if (omap_rev() == OMAP4430_REV_ES1_0)
 		return;
 
+<<<<<<< HEAD
 	if (!sar_base)
 		sar_base = omap4_get_sar_ram_base();
 
 	for (i = 0; i < NR_REG_BANKS; i++) {
+=======
+	for (i = 0; i < irq_banks; i++) {
+>>>>>>> refs/remotes/origin/master
 		/* Save the CPUx interrupt mask for IRQ 0 to 127 */
 		val = wakeupgen_readl(i, 0);
 		sar_writel(val, WAKEUPGENENB_OFFSET_CPU0, i);
@@ -235,6 +310,7 @@ static void irq_save_context(void)
 	/* Save AuxBoot* registers */
 	val = __raw_readl(wakeupgen_base + OMAP_AUX_CORE_BOOT_0);
 	__raw_writel(val, sar_base + AUXCOREBOOT0_OFFSET);
+<<<<<<< HEAD
 	val = __raw_readl(wakeupgen_base + OMAP_AUX_CORE_BOOT_0);
 	__raw_writel(val, sar_base + AUXCOREBOOT1_OFFSET);
 
@@ -242,6 +318,9 @@ static void irq_save_context(void)
 	val = __raw_readl(wakeupgen_base + OMAP_AUX_CORE_BOOT_0);
 	__raw_writel(val, sar_base + AUXCOREBOOT0_OFFSET);
 	val = __raw_readl(wakeupgen_base + OMAP_AUX_CORE_BOOT_0);
+=======
+	val = __raw_readl(wakeupgen_base + OMAP_AUX_CORE_BOOT_1);
+>>>>>>> refs/remotes/origin/master
 	__raw_writel(val, sar_base + AUXCOREBOOT1_OFFSET);
 
 	/* Save SyncReq generation logic */
@@ -254,17 +333,81 @@ static void irq_save_context(void)
 	val = __raw_readl(sar_base + SAR_BACKUP_STATUS_OFFSET);
 	val |= SAR_BACKUP_STATUS_WAKEUPGEN;
 	__raw_writel(val, sar_base + SAR_BACKUP_STATUS_OFFSET);
+<<<<<<< HEAD
+=======
+
+}
+
+static inline void omap5_irq_save_context(void)
+{
+	u32 i, val;
+
+	for (i = 0; i < irq_banks; i++) {
+		/* Save the CPUx interrupt mask for IRQ 0 to 159 */
+		val = wakeupgen_readl(i, 0);
+		sar_writel(val, OMAP5_WAKEUPGENENB_OFFSET_CPU0, i);
+		val = wakeupgen_readl(i, 1);
+		sar_writel(val, OMAP5_WAKEUPGENENB_OFFSET_CPU1, i);
+		sar_writel(0x0, OMAP5_WAKEUPGENENB_SECURE_OFFSET_CPU0, i);
+		sar_writel(0x0, OMAP5_WAKEUPGENENB_SECURE_OFFSET_CPU1, i);
+	}
+
+	/* Save AuxBoot* registers */
+	val = __raw_readl(wakeupgen_base + OMAP_AUX_CORE_BOOT_0);
+	__raw_writel(val, sar_base + OMAP5_AUXCOREBOOT0_OFFSET);
+	val = __raw_readl(wakeupgen_base + OMAP_AUX_CORE_BOOT_0);
+	__raw_writel(val, sar_base + OMAP5_AUXCOREBOOT1_OFFSET);
+
+	/* Set the Backup Bit Mask status */
+	val = __raw_readl(sar_base + OMAP5_SAR_BACKUP_STATUS_OFFSET);
+	val |= SAR_BACKUP_STATUS_WAKEUPGEN;
+	__raw_writel(val, sar_base + OMAP5_SAR_BACKUP_STATUS_OFFSET);
+
+}
+
+/*
+ * Save WakeupGen interrupt context in SAR BANK3. Restore is done by
+ * ROM code. WakeupGen IP is integrated along with GIC to manage the
+ * interrupt wakeups from CPU low power states. It manages
+ * masking/unmasking of Shared peripheral interrupts(SPI). So the
+ * interrupt enable/disable control should be in sync and consistent
+ * at WakeupGen and GIC so that interrupts are not lost.
+ */
+static void irq_save_context(void)
+{
+	if (!sar_base)
+		sar_base = omap4_get_sar_ram_base();
+
+	if (soc_is_omap54xx())
+		omap5_irq_save_context();
+	else
+		omap4_irq_save_context();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Clear WakeupGen SAR backup status.
  */
+<<<<<<< HEAD
 void irq_sar_clear(void)
 {
 	u32 val;
 	val = __raw_readl(sar_base + SAR_BACKUP_STATUS_OFFSET);
 	val &= ~SAR_BACKUP_STATUS_WAKEUPGEN;
 	__raw_writel(val, sar_base + SAR_BACKUP_STATUS_OFFSET);
+=======
+static void irq_sar_clear(void)
+{
+	u32 val;
+	u32 offset = SAR_BACKUP_STATUS_OFFSET;
+
+	if (soc_is_omap54xx())
+		offset = OMAP5_SAR_BACKUP_STATUS_OFFSET;
+
+	val = __raw_readl(sar_base + offset);
+	val &= ~SAR_BACKUP_STATUS_WAKEUPGEN;
+	__raw_writel(val, sar_base + offset);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -283,8 +426,13 @@ static void irq_save_secure_context(void)
 #endif
 
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 static int __cpuinit irq_cpu_hotplug_notify(struct notifier_block *self,
 					 unsigned long action, void *hcpu)
+=======
+static int irq_cpu_hotplug_notify(struct notifier_block *self,
+				  unsigned long action, void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = (unsigned int)hcpu;
 
@@ -336,13 +484,32 @@ static struct notifier_block irq_notifier_block = {
 
 static void __init irq_pm_init(void)
 {
+<<<<<<< HEAD
 	cpu_pm_register_notifier(&irq_notifier_block);
+=======
+	/* FIXME: Remove this when MPU OSWR support is added */
+	if (!soc_is_omap54xx())
+		cpu_pm_register_notifier(&irq_notifier_block);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static void __init irq_pm_init(void)
 {}
 #endif
 
+<<<<<<< HEAD
+=======
+void __iomem *omap_get_wakeupgen_base(void)
+{
+	return wakeupgen_base;
+}
+
+int omap_secure_apis_support(void)
+{
+	return omap_secure_apis;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialise the wakeupgen module.
  */
@@ -358,6 +525,7 @@ int __init omap_wakeupgen_init(void)
 	}
 
 	/* Static mapping, never released */
+<<<<<<< HEAD
 	wakeupgen_base = ioremap(OMAP44XX_WKUPGEN_BASE, SZ_4K);
 	if (WARN_ON(!wakeupgen_base))
 		return -ENOMEM;
@@ -366,6 +534,26 @@ int __init omap_wakeupgen_init(void)
 	for (i = 0; i < NR_REG_BANKS; i++) {
 		wakeupgen_writel(0, i, CPU0_ID);
 		wakeupgen_writel(0, i, CPU1_ID);
+=======
+	wakeupgen_base = ioremap(OMAP_WKUPGEN_BASE, SZ_4K);
+	if (WARN_ON(!wakeupgen_base))
+		return -ENOMEM;
+
+	if (cpu_is_omap44xx()) {
+		irq_banks = OMAP4_NR_BANKS;
+		max_irqs = OMAP4_NR_IRQS;
+		omap_secure_apis = 1;
+	} else if (soc_is_am43xx()) {
+		irq_banks = AM43XX_NR_REG_BANKS;
+		max_irqs = AM43XX_IRQS;
+	}
+
+	/* Clear all IRQ bitmasks at wakeupGen level */
+	for (i = 0; i < irq_banks; i++) {
+		wakeupgen_writel(0, i, CPU0_ID);
+		if (!soc_is_am43xx())
+			wakeupgen_writel(0, i, CPU1_ID);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -382,7 +570,11 @@ int __init omap_wakeupgen_init(void)
 	 */
 
 	/* Associate all the IRQs to boot CPU like GIC init does. */
+<<<<<<< HEAD
 	for (i = 0; i < NR_IRQS; i++)
+=======
+	for (i = 0; i < max_irqs; i++)
+>>>>>>> refs/remotes/origin/master
 		irq_target_cpu[i] = boot_cpu;
 
 	irq_hotplug_init();

@@ -44,6 +44,10 @@
 #define RTC_YMR		0x34	/* Year match register */
 #define RTC_YLR		0x38	/* Year data load register */
 
+<<<<<<< HEAD
+=======
+#define RTC_CR_EN	(1 << 0)	/* counter enable bit */
+>>>>>>> refs/remotes/origin/master
 #define RTC_CR_CWEN	(1 << 26)	/* Clockwatch enable bit */
 
 #define RTC_TCR_EN	(1 << 1) /* Periodic timer enable bit */
@@ -68,11 +72,34 @@
 
 #define RTC_TIMER_FREQ 32768
 
+<<<<<<< HEAD
 struct pl031_local {
 	struct rtc_device *rtc;
 	void __iomem *base;
 	u8 hw_designer;
 	u8 hw_revision:4;
+=======
+/**
+ * struct pl031_vendor_data - per-vendor variations
+ * @ops: the vendor-specific operations used on this silicon version
+ * @clockwatch: if this is an ST Microelectronics silicon version with a
+ *	clockwatch function
+ * @st_weekday: if this is an ST Microelectronics silicon version that need
+ *	the weekday fix
+ * @irqflags: special IRQ flags per variant
+ */
+struct pl031_vendor_data {
+	struct rtc_class_ops ops;
+	bool clockwatch;
+	bool st_weekday;
+	unsigned long irqflags;
+};
+
+struct pl031_local {
+	struct pl031_vendor_data *vendor;
+	struct rtc_device *rtc;
+	void __iomem *base;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int pl031_alarm_irq_enable(struct device *dev,
@@ -220,6 +247,7 @@ static irqreturn_t pl031_interrupt(int irq, void *dev_id)
 	unsigned long events = 0;
 
 	rtcmis = readl(ldata->base + RTC_MIS);
+<<<<<<< HEAD
 	if (rtcmis) {
 		writel(rtcmis, ldata->base + RTC_ICR);
 
@@ -231,6 +259,11 @@ static irqreturn_t pl031_interrupt(int irq, void *dev_id)
 			(ldata->hw_designer == AMBA_VENDOR_ST))
 			events |= (RTC_PF | RTC_IRQF);
 
+=======
+	if (rtcmis & RTC_BIT_AI) {
+		writel(RTC_BIT_AI, ldata->base + RTC_ICR);
+		events |= (RTC_AF | RTC_IRQF);
+>>>>>>> refs/remotes/origin/master
 		rtc_update_irq(ldata->rtc, 1, events);
 
 		return IRQ_HANDLED;
@@ -297,8 +330,12 @@ static int pl031_remove(struct amba_device *adev)
 {
 	struct pl031_local *ldata = dev_get_drvdata(&adev->dev);
 
+<<<<<<< HEAD
 	amba_set_drvdata(adev, NULL);
 	free_irq(adev->irq[0], ldata->rtc);
+=======
+	free_irq(adev->irq[0], ldata);
+>>>>>>> refs/remotes/origin/master
 	rtc_device_unregister(ldata->rtc);
 	iounmap(ldata->base);
 	kfree(ldata);
@@ -311,8 +348,14 @@ static int pl031_probe(struct amba_device *adev, const struct amba_id *id)
 {
 	int ret;
 	struct pl031_local *ldata;
+<<<<<<< HEAD
 	struct rtc_class_ops *ops = id->data;
 	unsigned long time;
+=======
+	struct pl031_vendor_data *vendor = id->data;
+	struct rtc_class_ops *ops = &vendor->ops;
+	unsigned long time, data;
+>>>>>>> refs/remotes/origin/master
 
 	ret = amba_request_regions(adev, NULL);
 	if (ret)
@@ -323,6 +366,10 @@ static int pl031_probe(struct amba_device *adev, const struct amba_id *id)
 		ret = -ENOMEM;
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+	ldata->vendor = vendor;
+>>>>>>> refs/remotes/origin/master
 
 	ldata->base = ioremap(adev->res.start, resource_size(&adev->res));
 
@@ -333,6 +380,7 @@ static int pl031_probe(struct amba_device *adev, const struct amba_id *id)
 
 	amba_set_drvdata(adev, ldata);
 
+<<<<<<< HEAD
 	ldata->hw_designer = amba_manf(adev);
 	ldata->hw_revision = amba_rev(adev);
 
@@ -343,12 +391,28 @@ static int pl031_probe(struct amba_device *adev, const struct amba_id *id)
 	if (ldata->hw_designer == AMBA_VENDOR_ST)
 		writel(readl(ldata->base + RTC_CR) | RTC_CR_CWEN,
 		       ldata->base + RTC_CR);
+=======
+	dev_dbg(&adev->dev, "designer ID = 0x%02x\n", amba_manf(adev));
+	dev_dbg(&adev->dev, "revision = 0x%01x\n", amba_rev(adev));
+
+	data = readl(ldata->base + RTC_CR);
+	/* Enable the clockwatch on ST Variants */
+	if (vendor->clockwatch)
+		data |= RTC_CR_CWEN;
+	else
+		data |= RTC_CR_EN;
+	writel(data, ldata->base + RTC_CR);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * On ST PL031 variants, the RTC reset value does not provide correct
 	 * weekday for 2000-01-01. Correct the erroneous sunday to saturday.
 	 */
+<<<<<<< HEAD
 	if (ldata->hw_designer == AMBA_VENDOR_ST) {
+=======
+	if (vendor->st_weekday) {
+>>>>>>> refs/remotes/origin/master
 		if (readl(ldata->base + RTC_YDR) == 0x2000) {
 			time = readl(ldata->base + RTC_DR);
 			if ((time &
@@ -361,6 +425,10 @@ static int pl031_probe(struct amba_device *adev, const struct amba_id *id)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	device_init_wakeup(&adev->dev, 1);
+>>>>>>> refs/remotes/origin/master
 	ldata->rtc = rtc_device_register("pl031", &adev->dev, ops,
 					THIS_MODULE);
 	if (IS_ERR(ldata->rtc)) {
@@ -370,10 +438,14 @@ static int pl031_probe(struct amba_device *adev, const struct amba_id *id)
 
 	if (request_irq(adev->irq[0], pl031_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, "rtc-pl031", ldata)) {
 =======
 			0, "rtc-pl031", ldata)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			vendor->irqflags, "rtc-pl031", ldata)) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		goto out_no_irq;
 	}
@@ -384,7 +456,10 @@ out_no_irq:
 	rtc_device_unregister(ldata->rtc);
 out_no_rtc:
 	iounmap(ldata->base);
+<<<<<<< HEAD
 	amba_set_drvdata(adev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 out_no_remap:
 	kfree(ldata);
 out:
@@ -395,6 +470,7 @@ err_req:
 }
 
 /* Operations for the original ARM version */
+<<<<<<< HEAD
 static struct rtc_class_ops arm_pl031_ops = {
 	.read_time = pl031_read_time,
 	.set_time = pl031_set_time,
@@ -419,33 +495,93 @@ static struct rtc_class_ops stv2_pl031_ops = {
 	.read_alarm = pl031_stv2_read_alarm,
 	.set_alarm = pl031_stv2_set_alarm,
 	.alarm_irq_enable = pl031_alarm_irq_enable,
+=======
+static struct pl031_vendor_data arm_pl031 = {
+	.ops = {
+		.read_time = pl031_read_time,
+		.set_time = pl031_set_time,
+		.read_alarm = pl031_read_alarm,
+		.set_alarm = pl031_set_alarm,
+		.alarm_irq_enable = pl031_alarm_irq_enable,
+	},
+	.irqflags = IRQF_NO_SUSPEND,
+};
+
+/* The First ST derivative */
+static struct pl031_vendor_data stv1_pl031 = {
+	.ops = {
+		.read_time = pl031_read_time,
+		.set_time = pl031_set_time,
+		.read_alarm = pl031_read_alarm,
+		.set_alarm = pl031_set_alarm,
+		.alarm_irq_enable = pl031_alarm_irq_enable,
+	},
+	.clockwatch = true,
+	.st_weekday = true,
+	.irqflags = IRQF_NO_SUSPEND,
+};
+
+/* And the second ST derivative */
+static struct pl031_vendor_data stv2_pl031 = {
+	.ops = {
+		.read_time = pl031_stv2_read_time,
+		.set_time = pl031_stv2_set_time,
+		.read_alarm = pl031_stv2_read_alarm,
+		.set_alarm = pl031_stv2_set_alarm,
+		.alarm_irq_enable = pl031_alarm_irq_enable,
+	},
+	.clockwatch = true,
+	.st_weekday = true,
+	/*
+	 * This variant shares the IRQ with another block and must not
+	 * suspend that IRQ line.
+	 */
+	.irqflags = IRQF_SHARED | IRQF_NO_SUSPEND,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct amba_id pl031_ids[] = {
 	{
 		.id = 0x00041031,
 		.mask = 0x000fffff,
+<<<<<<< HEAD
 		.data = &arm_pl031_ops,
+=======
+		.data = &arm_pl031,
+>>>>>>> refs/remotes/origin/master
 	},
 	/* ST Micro variants */
 	{
 		.id = 0x00180031,
 		.mask = 0x00ffffff,
+<<<<<<< HEAD
 		.data = &stv1_pl031_ops,
+=======
+		.data = &stv1_pl031,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.id = 0x00280031,
 		.mask = 0x00ffffff,
+<<<<<<< HEAD
 		.data = &stv2_pl031_ops,
+=======
+		.data = &stv2_pl031,
+>>>>>>> refs/remotes/origin/master
 	},
 	{0, 0},
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(amba, pl031_ids);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(amba, pl031_ids);
+
+>>>>>>> refs/remotes/origin/master
 static struct amba_driver pl031_driver = {
 	.drv = {
 		.name = "rtc-pl031",
@@ -455,6 +591,7 @@ static struct amba_driver pl031_driver = {
 	.remove = pl031_remove,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init pl031_init(void)
 {
@@ -471,6 +608,9 @@ module_exit(pl031_exit);
 =======
 module_amba_driver(pl031_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_amba_driver(pl031_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Deepak Saxena <dsaxena@plexity.net");
 MODULE_DESCRIPTION("ARM AMBA PL031 RTC Driver");

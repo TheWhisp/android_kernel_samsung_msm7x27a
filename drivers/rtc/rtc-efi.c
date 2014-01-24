@@ -13,6 +13,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/time.h>
@@ -47,7 +52,11 @@ compute_wday(efi_time_t *eft)
 	int ndays = 0;
 
 	if (eft->year < 1998) {
+<<<<<<< HEAD
 		printk(KERN_ERR "efirtc: EFI year < 1998, invalid date\n");
+=======
+		pr_err("EFI year < 1998, invalid date\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -70,7 +79,11 @@ convert_to_efi_time(struct rtc_time *wtime, efi_time_t *eft)
 	eft->day	= wtime->tm_mday;
 	eft->hour	= wtime->tm_hour;
 	eft->minute	= wtime->tm_min;
+<<<<<<< HEAD
 	eft->second 	= wtime->tm_sec;
+=======
+	eft->second	= wtime->tm_sec;
+>>>>>>> refs/remotes/origin/master
 	eft->nanosecond = 0;
 	eft->daylight	= wtime->tm_isdst ? EFI_ISDST : 0;
 	eft->timezone	= EFI_UNSPECIFIED_TIMEZONE;
@@ -142,7 +155,11 @@ static int efi_set_alarm(struct device *dev, struct rtc_wkalrm *wkalrm)
 	 */
 	status = efi.set_wakeup_time((efi_bool_t)wkalrm->enabled, &eft);
 
+<<<<<<< HEAD
 	printk(KERN_WARNING "write status is %d\n", (int)status);
+=======
+	dev_warn(dev, "write status is %d\n", (int)status);
+>>>>>>> refs/remotes/origin/master
 
 	return status == EFI_SUCCESS ? 0 : -EINVAL;
 }
@@ -157,7 +174,11 @@ static int efi_read_time(struct device *dev, struct rtc_time *tm)
 
 	if (status != EFI_SUCCESS) {
 		/* should never happen */
+<<<<<<< HEAD
 		printk(KERN_ERR "efitime: can't read time\n");
+=======
+		dev_err(dev, "can't read time\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -189,7 +210,11 @@ static int __init efi_rtc_probe(struct platform_device *dev)
 {
 	struct rtc_device *rtc;
 
+<<<<<<< HEAD
 	rtc = rtc_device_register("rtc-efi", &dev->dev, &efi_rtc_ops,
+=======
+	rtc = devm_rtc_device_register(&dev->dev, "rtc-efi", &efi_rtc_ops,
+>>>>>>> refs/remotes/origin/master
 					THIS_MODULE);
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
@@ -199,6 +224,7 @@ static int __init efi_rtc_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __exit efi_rtc_remove(struct platform_device *dev)
 {
 	struct rtc_device *rtc = platform_get_drvdata(dev);
@@ -208,11 +234,14 @@ static int __exit efi_rtc_remove(struct platform_device *dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver efi_rtc_driver = {
 	.driver = {
 		.name = "rtc-efi",
 		.owner = THIS_MODULE,
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.probe = efi_rtc_probe,
 =======
@@ -232,6 +261,11 @@ static void __exit efi_rtc_exit(void)
 
 module_init(efi_rtc_init);
 module_exit(efi_rtc_exit);
+=======
+};
+
+module_platform_driver_probe(efi_rtc_driver, efi_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("dann frazier <dannf@hp.com>");
 MODULE_LICENSE("GPL");

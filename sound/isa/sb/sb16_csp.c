@@ -27,9 +27,13 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/info.h>
@@ -211,6 +215,10 @@ static int snd_sb_csp_ioctl(struct snd_hwdep * hw, struct file *file, unsigned i
 	switch (cmd) {
 		/* get information */
 	case SNDRV_SB_CSP_IOCTL_INFO:
+<<<<<<< HEAD
+=======
+		memset(&info, 0, sizeof(info));
+>>>>>>> refs/remotes/origin/master
 		*info.codec_name = *p->codec_name;
 		info.func_nr = p->func_nr;
 		info.acc_format = p->acc_format;

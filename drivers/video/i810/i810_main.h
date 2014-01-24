@@ -64,7 +64,11 @@ static inline void flush_cache(void)
 
 #include <asm/mtrr.h>
 
+<<<<<<< HEAD
 static inline void __devinit set_mtrr(struct i810fb_par *par)
+=======
+static inline void set_mtrr(struct i810fb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	par->mtrr_reg = mtrr_add((u32) par->aperture.physical, 
 		 par->aperture.size, MTRR_TYPE_WRCOMB, 1);

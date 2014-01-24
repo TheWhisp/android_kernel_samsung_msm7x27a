@@ -56,9 +56,15 @@ static int ir_sanyo_decode(struct rc_dev *dev, struct ir_raw_event ev)
 {
 	struct sanyo_dec *data = &dev->raw->sanyo;
 	u32 scancode;
+<<<<<<< HEAD
 	u8 address, not_address, command, not_command;
 
 	if (!(dev->raw->enabled_protocols & RC_TYPE_SANYO))
+=======
+	u8 address, command, not_command;
+
+	if (!(dev->enabled_protocols & RC_BIT_SANYO))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!is_timing_event(ev)) {
@@ -154,7 +160,11 @@ static int ir_sanyo_decode(struct rc_dev *dev, struct ir_raw_event ev)
 			break;
 
 		address     = bitrev16((data->bits >> 29) & 0x1fff) >> 3;
+<<<<<<< HEAD
 		not_address = bitrev16((data->bits >> 16) & 0x1fff) >> 3;
+=======
+		/* not_address = bitrev16((data->bits >> 16) & 0x1fff) >> 3; */
+>>>>>>> refs/remotes/origin/master
 		command	    = bitrev8((data->bits >>  8) & 0xff);
 		not_command = bitrev8((data->bits >>  0) & 0xff);
 
@@ -179,7 +189,11 @@ static int ir_sanyo_decode(struct rc_dev *dev, struct ir_raw_event ev)
 }
 
 static struct ir_raw_handler sanyo_handler = {
+<<<<<<< HEAD
 	.protocols	= RC_TYPE_SANYO,
+=======
+	.protocols	= RC_BIT_SANYO,
+>>>>>>> refs/remotes/origin/master
 	.decode		= ir_sanyo_decode,
 };
 

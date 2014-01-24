@@ -211,6 +211,7 @@ static struct flash_platform_data bfin_spi_flash_data = {
 static struct bfin5xx_spi_chip spi_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -236,6 +237,8 @@ static struct bfin5xx_spi_chip spidev_chip_info = {
 	.bits_per_word = 8,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -254,6 +257,7 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_BFIN_SPI_ADC) || defined(CONFIG_BFIN_SPI_ADC_MODULE)
 	{
 		.modalias = "bfin_spi_adc", /* Name of spi_driver for this device */
@@ -267,6 +271,8 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
 	{
 		.modalias = "ad183x",
@@ -274,9 +280,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &ad1836_spi_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 #if defined(CONFIG_SPI_SPIDEV) || defined(CONFIG_SPI_SPIDEV_MODULE)
@@ -286,18 +295,25 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &spidev_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 /* SPI (0) */
 static struct resource bfin_spi0_resource[] = {
 	[0] = {
@@ -345,9 +361,12 @@ static struct resource bfin_uart0_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX + 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART0_TX,
 		.end = IRQ_UART0_TX,
 		.flags = IORESOURCE_IRQ,
@@ -355,7 +374,10 @@ static struct resource bfin_uart0_resources[] = {
 	{
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -507,6 +529,7 @@ static struct platform_device bfin_i2s = {
 };
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
 static struct platform_device bfin_tdm = {
 	.name = "bfin-tdm",
@@ -515,6 +538,8 @@ static struct platform_device bfin_tdm = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
 static struct platform_device bfin_ac97 = {
 	.name = "bfin-ac97",
@@ -542,10 +567,14 @@ static struct platform_device *ezkit_devices[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 	&bfin_spi0_device,
 #endif
 
@@ -577,10 +606,13 @@ static struct platform_device *ezkit_devices[] __initdata = {
 	&bfin_i2s,
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
 	&bfin_tdm,
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
 	&bfin_ac97,
 #endif

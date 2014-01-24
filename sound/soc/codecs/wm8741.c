@@ -1,7 +1,11 @@
 /*
  * wm8741.c  --  WM8741 ALSA SoC Audio driver
  *
+<<<<<<< HEAD
  * Copyright 2010 Wolfson Microelectronics plc
+=======
+ * Copyright 2010-1 Wolfson Microelectronics plc
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Ian Lartey <ian@opensource.wolfsonmicro.com>
  *
@@ -18,6 +22,7 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/regulator/consumer.h>
 #include <linux/slab.h>
@@ -27,6 +32,13 @@
 #include <linux/slab.h>
 #include <linux/of_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/spi/spi.h>
+#include <linux/regmap.h>
+#include <linux/regulator/consumer.h>
+#include <linux/slab.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -46,12 +58,17 @@ static const char *wm8741_supply_names[WM8741_NUM_SUPPLIES] = {
 
 /* codec private data */
 struct wm8741_priv {
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	struct regulator_bulk_data supplies[WM8741_NUM_SUPPLIES];
 	unsigned int sysclk;
 	struct snd_pcm_hw_constraint_list *sysclk_constraints;
 };
 
+<<<<<<< HEAD
 static const u16 wm8741_reg_defaults[WM8741_REGISTER_COUNT] = {
 	0x0000,     /* R0  - DACLLSB Attenuation */
 	0x0000,     /* R1  - DACLMSB Attenuation */
@@ -66,6 +83,39 @@ static const u16 wm8741_reg_defaults[WM8741_REGISTER_COUNT] = {
 	0x0002,     /* R32 - ADDITONAL_CONTROL_1 */
 };
 
+=======
+static const struct reg_default wm8741_reg_defaults[] = {
+	{  0, 0x0000 },     /* R0  - DACLLSB Attenuation */
+	{  1, 0x0000 },     /* R1  - DACLMSB Attenuation */
+	{  2, 0x0000 },     /* R2  - DACRLSB Attenuation */
+	{  3, 0x0000 },     /* R3  - DACRMSB Attenuation */
+	{  4, 0x0000 },     /* R4  - Volume Control */
+	{  5, 0x000A },     /* R5  - Format Control */
+	{  6, 0x0000 },     /* R6  - Filter Control */
+	{  7, 0x0000 },     /* R7  - Mode Control 1 */
+	{  8, 0x0002 },     /* R8  - Mode Control 2 */
+	{ 32, 0x0002 },     /* R32 - ADDITONAL_CONTROL_1 */
+};
+
+static bool wm8741_readable(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8741_DACLLSB_ATTENUATION:
+	case WM8741_DACLMSB_ATTENUATION:
+	case WM8741_DACRLSB_ATTENUATION:
+	case WM8741_DACRMSB_ATTENUATION:
+	case WM8741_VOLUME_CONTROL:
+	case WM8741_FORMAT_CONTROL:
+	case WM8741_FILTER_CONTROL:
+	case WM8741_MODE_CONTROL_1:
+	case WM8741_MODE_CONTROL_2:
+	case WM8741_ADDITIONAL_CONTROL_1:
+		return true;
+	default:
+		return false;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 static int wm8741_reset(struct snd_soc_codec *codec)
 {
@@ -92,16 +142,21 @@ SND_SOC_DAPM_OUTPUT("VOUTRN"),
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route intercon[] = {
 =======
 static const struct snd_soc_dapm_route wm8741_dapm_routes[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8741_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "VOUTLP", NULL, "DACL" },
 	{ "VOUTLN", NULL, "DACL" },
 	{ "VOUTRP", NULL, "DACR" },
 	{ "VOUTRN", NULL, "DACR" },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wm8741_add_widgets(struct snd_soc_codec *codec)
 {
@@ -116,6 +171,8 @@ static int wm8741_add_widgets(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct {
 	int value;
 	int ratio;
@@ -227,8 +284,12 @@ static int wm8741_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
 	u16 iface = snd_soc_read(codec, WM8741_FORMAT_CONTROL) & 0x1FC;
 	int i;
@@ -395,10 +456,14 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8741_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm8741_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8741_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= wm8741_startup,
 	.hw_params	= wm8741_hw_params,
 	.set_sysclk	= wm8741_set_dai_sysclk,
@@ -421,6 +486,7 @@ static struct snd_soc_dai_driver wm8741_dai = {
 static int wm8741_resume(struct snd_soc_codec *codec)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 *cache = codec->reg_cache;
 	int i;
 
@@ -433,6 +499,9 @@ static int wm8741_resume(struct snd_soc_codec *codec)
 =======
 	snd_soc_cache_sync(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_cache_sync(codec);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else
@@ -444,6 +513,7 @@ static int wm8741_probe(struct snd_soc_codec *codec)
 {
 	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
 	int ret = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	int i;
@@ -457,6 +527,8 @@ static int wm8741_probe(struct snd_soc_codec *codec)
 		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
 		goto err;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8741->supplies),
 				    wm8741->supplies);
@@ -464,6 +536,7 @@ static int wm8741_probe(struct snd_soc_codec *codec)
 		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
 		goto err_get;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8741->control_type);
@@ -474,16 +547,27 @@ static int wm8741_probe(struct snd_soc_codec *codec)
 =======
 		goto err_enable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+	if (ret != 0) {
+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+		goto err_enable;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = wm8741_reset(codec);
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to issue reset\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ret;
 =======
 		goto err_enable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_enable;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Change some default settings - latch VU */
@@ -493,6 +577,7 @@ static int wm8741_probe(struct snd_soc_codec *codec)
 			    WM8741_UPDATELM, WM8741_UPDATELM);
 	snd_soc_update_bits(codec, WM8741_DACRLSB_ATTENUATION,
 			    WM8741_UPDATERL, WM8741_UPDATERL);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	snd_soc_update_bits(codec, WM8741_DACRLSB_ATTENUATION,
 			    WM8741_UPDATERM, WM8741_UPDATERM);
@@ -504,6 +589,8 @@ static int wm8741_probe(struct snd_soc_codec *codec)
 	dev_dbg(codec->dev, "Successful registration\n");
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_update_bits(codec, WM8741_DACRMSB_ATTENUATION,
 			    WM8741_UPDATERM, WM8741_UPDATERM);
 
@@ -513,8 +600,11 @@ static int wm8741_probe(struct snd_soc_codec *codec)
 err_enable:
 	regulator_bulk_disable(ARRAY_SIZE(wm8741->supplies), wm8741->supplies);
 err_get:
+<<<<<<< HEAD
 	regulator_bulk_free(ARRAY_SIZE(wm8741->supplies), wm8741->supplies);
 err:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -523,14 +613,20 @@ static int wm8741_remove(struct snd_soc_codec *codec)
 	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
 
 	regulator_bulk_disable(ARRAY_SIZE(wm8741->supplies), wm8741->supplies);
+<<<<<<< HEAD
 	regulator_bulk_free(ARRAY_SIZE(wm8741->supplies), wm8741->supplies);
 
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct snd_soc_codec_driver soc_codec_dev_wm8741 = {
 	.probe =	wm8741_probe,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	.remove =	wm8741_remove,
@@ -542,6 +638,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8741 = {
 <<<<<<< HEAD
 };
 =======
+=======
+	.remove =	wm8741_remove,
+	.resume =	wm8741_resume,
+>>>>>>> refs/remotes/origin/master
 
 	.controls = wm8741_snd_controls,
 	.num_controls = ARRAY_SIZE(wm8741_snd_controls),
@@ -556,23 +656,48 @@ static const struct of_device_id wm8741_of_match[] = {
 	{ }
 };
 MODULE_DEVICE_TABLE(of, wm8741_of_match);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+
+static const struct regmap_config wm8741_regmap = {
+	.reg_bits = 7,
+	.val_bits = 9,
+	.max_register = WM8741_MAX_REGISTER,
+
+	.reg_defaults = wm8741_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8741_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+
+	.readable_reg = wm8741_readable,
+};
+
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 static int wm8741_i2c_probe(struct i2c_client *i2c,
 			    const struct i2c_device_id *id)
 {
 	struct wm8741_priv *wm8741;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, i;
 
 	wm8741 = kzalloc(sizeof(struct wm8741_priv), GFP_KERNEL);
+=======
+	int ret, i;
+
+	wm8741 = devm_kzalloc(&i2c->dev, sizeof(struct wm8741_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (wm8741 == NULL)
 		return -ENOMEM;
 
 	for (i = 0; i < ARRAY_SIZE(wm8741->supplies); i++)
 		wm8741->supplies[i].supply = wm8741_supply_names[i];
 
+<<<<<<< HEAD
 	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm8741->supplies),
 				 wm8741->supplies);
 	if (ret != 0) {
@@ -613,16 +738,37 @@ err:
 
 	i2c_set_clientdata(i2c, wm8741);
 	wm8741->control_type = SND_SOC_I2C;
+=======
+	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm8741->supplies),
+				      wm8741->supplies);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
+		return ret;
+	}
+
+	wm8741->regmap = devm_regmap_init_i2c(i2c, &wm8741_regmap);
+	if (IS_ERR(wm8741->regmap)) {
+		ret = PTR_ERR(wm8741->regmap);
+		dev_err(&i2c->dev, "Failed to init regmap: %d\n", ret);
+		return ret;
+	}
+
+	i2c_set_clientdata(i2c, wm8741);
+>>>>>>> refs/remotes/origin/master
 
 	ret = snd_soc_register_codec(&i2c->dev,
 				     &soc_codec_dev_wm8741, &wm8741_dai, 1);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int wm8741_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct wm8741_priv *wm8741 = i2c_get_clientdata(client);
 
@@ -632,6 +778,9 @@ static int wm8741_i2c_remove(struct i2c_client *client)
 =======
 	snd_soc_unregister_codec(&client->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -644,6 +793,7 @@ MODULE_DEVICE_TABLE(i2c, wm8741_i2c_id);
 static struct i2c_driver wm8741_i2c_driver = {
 	.driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "wm8741-codec",
 		.owner = THIS_MODULE,
 =======
@@ -651,6 +801,11 @@ static struct i2c_driver wm8741_i2c_driver = {
 		.owner = THIS_MODULE,
 		.of_match_table = wm8741_of_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "wm8741",
+		.owner = THIS_MODULE,
+		.of_match_table = wm8741_of_match,
+>>>>>>> refs/remotes/origin/master
 	},
 	.probe =    wm8741_i2c_probe,
 	.remove =   wm8741_i2c_remove,
@@ -659,19 +814,47 @@ static struct i2c_driver wm8741_i2c_driver = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_SPI_MASTER)
 static int __devinit wm8741_spi_probe(struct spi_device *spi)
 {
 	struct wm8741_priv *wm8741;
 	int ret;
+=======
+#if defined(CONFIG_SPI_MASTER)
+static int wm8741_spi_probe(struct spi_device *spi)
+{
+	struct wm8741_priv *wm8741;
+	int ret, i;
+>>>>>>> refs/remotes/origin/master
 
 	wm8741 = devm_kzalloc(&spi->dev, sizeof(struct wm8741_priv),
 			     GFP_KERNEL);
 	if (wm8741 == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	wm8741->control_type = SND_SOC_SPI;
+=======
+	for (i = 0; i < ARRAY_SIZE(wm8741->supplies); i++)
+		wm8741->supplies[i].supply = wm8741_supply_names[i];
+
+	ret = devm_regulator_bulk_get(&spi->dev, ARRAY_SIZE(wm8741->supplies),
+				      wm8741->supplies);
+	if (ret != 0) {
+		dev_err(&spi->dev, "Failed to request supplies: %d\n", ret);
+		return ret;
+	}
+
+	wm8741->regmap = devm_regmap_init_spi(spi, &wm8741_regmap);
+	if (IS_ERR(wm8741->regmap)) {
+		ret = PTR_ERR(wm8741->regmap);
+		dev_err(&spi->dev, "Failed to init regmap: %d\n", ret);
+		return ret;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	spi_set_drvdata(spi, wm8741);
 
 	ret = snd_soc_register_codec(&spi->dev,
@@ -679,7 +862,11 @@ static int __devinit wm8741_spi_probe(struct spi_device *spi)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit wm8741_spi_remove(struct spi_device *spi)
+=======
+static int wm8741_spi_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&spi->dev);
 	return 0;
@@ -692,22 +879,36 @@ static struct spi_driver wm8741_spi_driver = {
 		.of_match_table = wm8741_of_match,
 	},
 	.probe		= wm8741_spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wm8741_spi_remove),
 };
 #endif /* CONFIG_SPI_MASTER */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= wm8741_spi_remove,
+};
+#endif /* CONFIG_SPI_MASTER */
+
+>>>>>>> refs/remotes/origin/master
 static int __init wm8741_modinit(void)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	ret = i2c_add_driver(&wm8741_i2c_driver);
 	if (ret != 0)
 		pr_err("Failed to register WM8741 I2C driver: %d\n", ret);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SPI_MASTER)
 	ret = spi_register_driver(&wm8741_spi_driver);
 	if (ret != 0) {
@@ -715,7 +916,10 @@ static int __init wm8741_modinit(void)
 		       ret);
 	}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -724,12 +928,19 @@ module_init(wm8741_modinit);
 static void __exit wm8741_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_SPI_MASTER)
 	spi_unregister_driver(&wm8741_spi_driver);
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+=======
+#if defined(CONFIG_SPI_MASTER)
+	spi_unregister_driver(&wm8741_spi_driver);
+#endif
+#if IS_ENABLED(CONFIG_I2C)
+>>>>>>> refs/remotes/origin/master
 	i2c_del_driver(&wm8741_i2c_driver);
 #endif
 }

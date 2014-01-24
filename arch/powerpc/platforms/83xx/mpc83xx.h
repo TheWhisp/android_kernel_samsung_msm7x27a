@@ -71,7 +71,10 @@ extern int mpc837x_usb_cfg(void);
 extern int mpc834x_usb_cfg(void);
 extern int mpc831x_usb_cfg(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void mpc83xx_ipic_init_IRQ(void);
 #ifdef CONFIG_QUICC_ENGINE
 extern void mpc83xx_qe_init_IRQ(void);
@@ -88,6 +91,9 @@ extern void mpc83xx_setup_pci(void);
 #endif
 
 extern int mpc83xx_declare_of_platform_devices(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* __MPC83XX_H__ */

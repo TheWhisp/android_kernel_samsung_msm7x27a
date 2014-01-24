@@ -26,7 +26,11 @@
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/sunrpc/clnt.h>
+<<<<<<< HEAD
 #include <linux/sunrpc/svc.h>
+=======
+#include <linux/sunrpc/svc_xprt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/lockd/nlm.h>
 #include <linux/lockd/lockd.h>
 #include <linux/kthread.h>
@@ -47,9 +51,12 @@ static int nlmsvc_setgrantargs(struct nlm_rqst *call, struct nlm_lock *lock);
 static void nlmsvc_freegrantargs(struct nlm_rqst *call);
 static const struct rpc_call_ops nlmsvc_grant_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The list of blocked locks to retry
@@ -58,7 +65,10 @@ static LIST_HEAD(nlm_blocked);
 static DEFINE_SPINLOCK(nlm_blocked_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef LOCKD_DEBUG
 static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
 {
@@ -88,7 +98,10 @@ static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Insert a blocked lock into the global list
  */
@@ -226,7 +239,10 @@ nlmsvc_create_block(struct svc_rqst *rqstp, struct nlm_host *host,
 	struct nlm_block	*block;
 	struct nlm_rqst		*call = NULL;
 
+<<<<<<< HEAD
 	nlm_get_host(host);
+=======
+>>>>>>> refs/remotes/origin/master
 	call = nlm_alloc_call(host);
 	if (call == NULL)
 		return NULL;
@@ -284,7 +300,11 @@ static int nlmsvc_unlink_block(struct nlm_block *block)
 	dprintk("lockd: unlinking block %p...\n", block);
 
 	/* Remove block from list */
+<<<<<<< HEAD
 	status = posix_unblock_lock(block->b_file->f_file, &block->b_call->a_args.lock.fl);
+=======
+	status = posix_unblock_lock(&block->b_call->a_args.lock.fl);
+>>>>>>> refs/remotes/origin/master
 	nlmsvc_remove_block(block);
 	return status;
 }
@@ -297,7 +317,10 @@ static void nlmsvc_free_block(struct kref *kref)
 	dprintk("lockd: freeing block %p...\n", block);
 
 	/* Remove block from file's list of blocks */
+<<<<<<< HEAD
 	mutex_lock(&file->f_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	list_del_init(&block->b_flist);
 	mutex_unlock(&file->f_mutex);
 
@@ -311,7 +334,11 @@ static void nlmsvc_free_block(struct kref *kref)
 static void nlmsvc_release_block(struct nlm_block *block)
 {
 	if (block != NULL)
+<<<<<<< HEAD
 		kref_put(&block->b_count, nlmsvc_free_block);
+=======
+		kref_put_mutex(&block->b_count, nlmsvc_free_block, &block->b_file->f_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -415,8 +442,13 @@ nlmsvc_lock(struct svc_rqst *rqstp, struct nlm_file *file,
 	__be32			ret;
 
 	dprintk("lockd: nlmsvc_lock(%s/%ld, ty=%d, pi=%d, %Ld-%Ld, bl=%d)\n",
+<<<<<<< HEAD
 				file->f_file->f_path.dentry->d_inode->i_sb->s_id,
 				file->f_file->f_path.dentry->d_inode->i_ino,
+=======
+				file_inode(file->f_file)->i_sb->s_id,
+				file_inode(file->f_file)->i_ino,
+>>>>>>> refs/remotes/origin/master
 				lock->fl.fl_type, lock->fl.fl_pid,
 				(long long)lock->fl.fl_start,
 				(long long)lock->fl.fl_end,
@@ -454,11 +486,19 @@ nlmsvc_lock(struct svc_rqst *rqstp, struct nlm_file *file,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (locks_in_grace() && !reclaim) {
 		ret = nlm_lck_denied_grace_period;
 		goto out;
 	}
 	if (reclaim && !locks_in_grace()) {
+=======
+	if (locks_in_grace(SVC_NET(rqstp)) && !reclaim) {
+		ret = nlm_lck_denied_grace_period;
+		goto out;
+	}
+	if (reclaim && !locks_in_grace(SVC_NET(rqstp))) {
+>>>>>>> refs/remotes/origin/master
 		ret = nlm_lck_denied_grace_period;
 		goto out;
 	}
@@ -522,8 +562,13 @@ nlmsvc_testlock(struct svc_rqst *rqstp, struct nlm_file *file,
 	__be32			ret;
 
 	dprintk("lockd: nlmsvc_testlock(%s/%ld, ty=%d, %Ld-%Ld)\n",
+<<<<<<< HEAD
 				file->f_file->f_path.dentry->d_inode->i_sb->s_id,
 				file->f_file->f_path.dentry->d_inode->i_ino,
+=======
+				file_inode(file->f_file)->i_sb->s_id,
+				file_inode(file->f_file)->i_ino,
+>>>>>>> refs/remotes/origin/master
 				lock->fl.fl_type,
 				(long long)lock->fl.fl_start,
 				(long long)lock->fl.fl_end);
@@ -566,7 +611,11 @@ nlmsvc_testlock(struct svc_rqst *rqstp, struct nlm_file *file,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (locks_in_grace()) {
+=======
+	if (locks_in_grace(SVC_NET(rqstp))) {
+>>>>>>> refs/remotes/origin/master
 		ret = nlm_lck_denied_grace_period;
 		goto out;
 	}
@@ -610,19 +659,32 @@ out:
  * must be removed.
  */
 __be32
+<<<<<<< HEAD
 nlmsvc_unlock(struct nlm_file *file, struct nlm_lock *lock)
+=======
+nlmsvc_unlock(struct net *net, struct nlm_file *file, struct nlm_lock *lock)
+>>>>>>> refs/remotes/origin/master
 {
 	int	error;
 
 	dprintk("lockd: nlmsvc_unlock(%s/%ld, pi=%d, %Ld-%Ld)\n",
+<<<<<<< HEAD
 				file->f_file->f_path.dentry->d_inode->i_sb->s_id,
 				file->f_file->f_path.dentry->d_inode->i_ino,
+=======
+				file_inode(file->f_file)->i_sb->s_id,
+				file_inode(file->f_file)->i_ino,
+>>>>>>> refs/remotes/origin/master
 				lock->fl.fl_pid,
 				(long long)lock->fl.fl_start,
 				(long long)lock->fl.fl_end);
 
 	/* First, cancel any lock that might be there */
+<<<<<<< HEAD
 	nlmsvc_cancel_blocked(file, lock);
+=======
+	nlmsvc_cancel_blocked(net, file, lock);
+>>>>>>> refs/remotes/origin/master
 
 	lock->fl.fl_type = F_UNLCK;
 	error = vfs_lock_file(file->f_file, F_SETLK, &lock->fl, NULL);
@@ -638,19 +700,32 @@ nlmsvc_unlock(struct nlm_file *file, struct nlm_lock *lock)
  * The calling procedure must check whether the file can be closed.
  */
 __be32
+<<<<<<< HEAD
 nlmsvc_cancel_blocked(struct nlm_file *file, struct nlm_lock *lock)
+=======
+nlmsvc_cancel_blocked(struct net *net, struct nlm_file *file, struct nlm_lock *lock)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nlm_block	*block;
 	int status = 0;
 
 	dprintk("lockd: nlmsvc_cancel(%s/%ld, pi=%d, %Ld-%Ld)\n",
+<<<<<<< HEAD
 				file->f_file->f_path.dentry->d_inode->i_sb->s_id,
 				file->f_file->f_path.dentry->d_inode->i_ino,
+=======
+				file_inode(file->f_file)->i_sb->s_id,
+				file_inode(file->f_file)->i_ino,
+>>>>>>> refs/remotes/origin/master
 				lock->fl.fl_pid,
 				(long long)lock->fl.fl_start,
 				(long long)lock->fl.fl_end);
 
+<<<<<<< HEAD
 	if (locks_in_grace())
+=======
+	if (locks_in_grace(net))
+>>>>>>> refs/remotes/origin/master
 		return nlm_lck_denied_grace_period;
 
 	mutex_lock(&file->f_mutex);
@@ -668,10 +743,14 @@ nlmsvc_cancel_blocked(struct nlm_file *file, struct nlm_lock *lock)
 /*
  * This is a callback from the filesystem for VFS file lock requests.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * It will be used if fl_grant is defined and the filesystem can not
 =======
  * It will be used if lm_grant is defined and the filesystem can not
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * It will be used if lm_grant is defined and the filesystem can not
+>>>>>>> refs/remotes/origin/master
  * respond to the request immediately.
  * For GETLK request it will copy the reply to the nlm_block.
  * For SETLK or SETLKW request it will get the local posix lock.
@@ -757,6 +836,7 @@ static int nlmsvc_same_owner(struct file_lock *fl1, struct file_lock *fl2)
 	return fl1->fl_owner == fl2->fl_owner && fl1->fl_pid == fl2->fl_pid;
 }
 
+<<<<<<< HEAD
 const struct lock_manager_operations nlmsvc_lock_operations = {
 <<<<<<< HEAD
 	.fl_compare_owner = nlmsvc_same_owner,
@@ -767,6 +847,24 @@ const struct lock_manager_operations nlmsvc_lock_operations = {
 	.lm_notify = nlmsvc_notify_blocked,
 	.lm_grant = nlmsvc_grant_deferred,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Since NLM uses two "keys" for tracking locks, we need to hash them down
+ * to one for the blocked_hash. Here, we're just xor'ing the host address
+ * with the pid in order to create a key value for picking a hash bucket.
+ */
+static unsigned long
+nlmsvc_owner_key(struct file_lock *fl)
+{
+	return (unsigned long)fl->fl_owner ^ (unsigned long)fl->fl_pid;
+}
+
+const struct lock_manager_operations nlmsvc_lock_operations = {
+	.lm_compare_owner = nlmsvc_same_owner,
+	.lm_owner_key = nlmsvc_owner_key,
+	.lm_notify = nlmsvc_notify_blocked,
+	.lm_grant = nlmsvc_grant_deferred,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -985,6 +1083,7 @@ nlmsvc_retry_blocked(void)
 	return timeout;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef RPC_DEBUG
 static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
@@ -1016,3 +1115,5 @@ static const char *nlmdbg_cookie2a(const struct nlm_cookie *cookie)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -21,9 +21,13 @@
 #include <linux/firmware.h>
 #include <linux/etherdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/mac80211.h>
 
@@ -31,10 +35,14 @@
 #include "lmac.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int modparam_nohwcrypt;
 =======
 static bool modparam_nohwcrypt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool modparam_nohwcrypt;
+>>>>>>> refs/remotes/origin/master
 module_param_named(nohwcrypt, modparam_nohwcrypt, bool, S_IRUGO);
 MODULE_PARM_DESC(nohwcrypt, "Disable hardware encryption.");
 MODULE_AUTHOR("Michael Wu <flamingice@sourmilk.net>");
@@ -146,6 +154,10 @@ static int p54_beacon_format_ie_tim(struct sk_buff *skb)
 static int p54_beacon_update(struct p54_common *priv,
 			struct ieee80211_vif *vif)
 {
+<<<<<<< HEAD
+=======
+	struct ieee80211_tx_control control = { };
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *beacon;
 	int ret;
 
@@ -165,7 +177,11 @@ static int p54_beacon_update(struct p54_common *priv,
 	 * to cancel the old beacon template by hand, instead the firmware
 	 * will release the previous one through the feedback mechanism.
 	 */
+<<<<<<< HEAD
 	p54_tx_80211(priv->hw, beacon);
+=======
+	p54_tx_80211(priv->hw, &control, beacon);
+>>>>>>> refs/remotes/origin/master
 	priv->tsf_high32 = 0;
 	priv->tsf_low32 = 0;
 
@@ -213,6 +229,7 @@ static void p54_stop(struct ieee80211_hw *dev)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&priv->conf_mutex);
 	priv->mode = NL80211_IFTYPE_UNSPECIFIED;
 	priv->softled_state = 0;
@@ -221,12 +238,17 @@ static void p54_stop(struct ieee80211_hw *dev)
 	cancel_delayed_work_sync(&priv->work);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->mode = NL80211_IFTYPE_UNSPECIFIED;
 	priv->softled_state = 0;
 	cancel_delayed_work_sync(&priv->work);
 	mutex_lock(&priv->conf_mutex);
 	p54_set_leds(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->stop(dev);
 	skb_queue_purge(&priv->tx_pending);
 	skb_queue_purge(&priv->tx_queue);
@@ -245,11 +267,17 @@ static int p54_add_interface(struct ieee80211_hw *dev,
 {
 	struct p54_common *priv = dev->priv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int err;
 
 	vif->driver_flags |= IEEE80211_VIF_BEACON_FILTER;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+
+	vif->driver_flags |= IEEE80211_VIF_BEACON_FILTER;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&priv->conf_mutex);
 	if (priv->mode != NL80211_IFTYPE_MONITOR) {
@@ -273,6 +301,7 @@ static int p54_add_interface(struct ieee80211_hw *dev,
 
 	memcpy(priv->mac_addr, vif->addr, ETH_ALEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p54_setup_mac(priv);
 	mutex_unlock(&priv->conf_mutex);
 	return 0;
@@ -281,6 +310,11 @@ static int p54_add_interface(struct ieee80211_hw *dev,
 	mutex_unlock(&priv->conf_mutex);
 	return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = p54_setup_mac(priv);
+	mutex_unlock(&priv->conf_mutex);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void p54_remove_interface(struct ieee80211_hw *dev,
@@ -307,7 +341,10 @@ static void p54_remove_interface(struct ieee80211_hw *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int p54_wait_for_stats(struct ieee80211_hw *dev)
 {
 	struct p54_common *priv = dev->priv;
@@ -344,7 +381,10 @@ static void p54_reset_stats(struct p54_common *priv)
 	priv->survey_raw.tx = 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int p54_config(struct ieee80211_hw *dev, u32 changed)
 {
 	int ret = 0;
@@ -355,6 +395,7 @@ static int p54_config(struct ieee80211_hw *dev, u32 changed)
 	if (changed & IEEE80211_CONF_CHANGE_POWER)
 		priv->output_power = conf->power_level << 2;
 	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = p54_scan(priv, P54_SCAN_EXIT, 0);
 		if (ret)
@@ -370,6 +411,8 @@ static int p54_config(struct ieee80211_hw *dev, u32 changed)
 		if (ret)
 			goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *oldchan;
 		WARN_ON(p54_wait_for_stats(dev));
 		oldchan = priv->curchan;
@@ -383,7 +426,11 @@ static int p54_config(struct ieee80211_hw *dev, u32 changed)
 		 * TODO: Use the LM_SCAN_TRAP to determine the current
 		 * operating channel.
 		 */
+<<<<<<< HEAD
 		priv->curchan = priv->hw->conf.channel;
+=======
+		priv->curchan = priv->hw->conf.chandef.chan;
+>>>>>>> refs/remotes/origin/master
 		p54_reset_stats(priv);
 		WARN_ON(p54_fetch_statistics(priv));
 	}
@@ -400,7 +447,10 @@ static int p54_config(struct ieee80211_hw *dev, u32 changed)
 		if (ret)
 			goto out;
 		WARN_ON(p54_wait_for_stats(dev));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
@@ -454,11 +504,16 @@ static void p54_configure_filter(struct ieee80211_hw *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int p54_conf_tx(struct ieee80211_hw *dev, u16 queue,
 =======
 static int p54_conf_tx(struct ieee80211_hw *dev,
 		       struct ieee80211_vif *vif, u16 queue,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int p54_conf_tx(struct ieee80211_hw *dev,
+		       struct ieee80211_vif *vif, u16 queue,
+>>>>>>> refs/remotes/origin/master
 		       const struct ieee80211_tx_queue_params *params)
 {
 	struct p54_common *priv = dev->priv;
@@ -490,12 +545,18 @@ static void p54_work(struct work_struct *work)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p54_fetch_statistics(priv);
 =======
 	mutex_lock(&priv->conf_mutex);
 	WARN_ON_ONCE(p54_fetch_statistics(priv));
 	mutex_unlock(&priv->conf_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&priv->conf_mutex);
+	WARN_ON_ONCE(p54_fetch_statistics(priv));
+	mutex_unlock(&priv->conf_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int p54_get_stats(struct ieee80211_hw *dev,
@@ -532,7 +593,11 @@ static void p54_bss_info_changed(struct ieee80211_hw *dev,
 		p54_set_edcf(priv);
 	}
 	if (changed & BSS_CHANGED_BASIC_RATES) {
+<<<<<<< HEAD
 		if (dev->conf.channel->band == IEEE80211_BAND_5GHZ)
+=======
+		if (dev->conf.chandef.chan->band == IEEE80211_BAND_5GHZ)
+>>>>>>> refs/remotes/origin/master
 			priv->basic_rate_mask = (info->basic_rates << 4);
 		else
 			priv->basic_rate_mask = info->basic_rates;
@@ -567,6 +632,20 @@ static int p54_set_key(struct ieee80211_hw *dev, enum set_key_cmd cmd,
 	if (modparam_nohwcrypt)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
+=======
+	if (key->flags & IEEE80211_KEY_FLAG_RX_MGMT) {
+		/*
+		 * Unfortunately most/all firmwares are trying to decrypt
+		 * incoming management frames if a suitable key can be found.
+		 * However, in doing so the data in these frames gets
+		 * corrupted. So, we can't have firmware supported crypto
+		 * offload in this case.
+		 */
+		return -EOPNOTSUPP;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&priv->conf_mutex);
 	if (cmd == SET_KEY) {
 		switch (key->cipher) {
@@ -653,6 +732,7 @@ static int p54_get_survey(struct ieee80211_hw *dev, int idx,
 {
 	struct p54_common *priv = dev->priv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ieee80211_conf *conf = &dev->conf;
 
 	if (idx != 0)
@@ -664,6 +744,8 @@ static int p54_get_survey(struct ieee80211_hw *dev, int idx,
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ieee80211_channel *chan;
 	int err, tries;
 	bool in_use = false;
@@ -705,7 +787,10 @@ static int p54_get_survey(struct ieee80211_hw *dev, int idx,
 	}
 	return -ETIMEDOUT;
 #undef MAX_TRIES
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int p54_flush_count(struct p54_common *priv)
@@ -724,7 +809,11 @@ static unsigned int p54_flush_count(struct p54_common *priv)
 	return total;
 }
 
+<<<<<<< HEAD
 static void p54_flush(struct ieee80211_hw *dev, bool drop)
+=======
+static void p54_flush(struct ieee80211_hw *dev, u32 queues, bool drop)
+>>>>>>> refs/remotes/origin/master
 {
 	struct p54_common *priv = dev->priv;
 	unsigned int total, i;
@@ -804,9 +893,13 @@ struct ieee80211_hw *p54_init_common(size_t priv_data_len)
 		     IEEE80211_HW_SUPPORTS_PS |
 		     IEEE80211_HW_PS_NULLFUNC_STACK |
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     IEEE80211_HW_BEACON_FILTER |
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     IEEE80211_HW_MFP_CAPABLE |
+>>>>>>> refs/remotes/origin/master
 		     IEEE80211_HW_REPORTS_TX_ACK_STATUS;
 
 	dev->wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION) |
@@ -845,19 +938,28 @@ struct ieee80211_hw *p54_init_common(size_t priv_data_len)
 	mutex_init(&priv->conf_mutex);
 	mutex_init(&priv->eeprom_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	init_completion(&priv->stat_comp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_completion(&priv->stat_comp);
+>>>>>>> refs/remotes/origin/master
 	init_completion(&priv->eeprom_comp);
 	init_completion(&priv->beacon_comp);
 	INIT_DELAYED_WORK(&priv->work, p54_work);
 
 	memset(&priv->mc_maclist[0], ~0, ETH_ALEN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	priv->curchan = NULL;
 	p54_reset_stats(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->curchan = NULL;
+	p54_reset_stats(priv);
+>>>>>>> refs/remotes/origin/master
 	return dev;
 }
 EXPORT_SYMBOL_GPL(p54_init_common);
@@ -872,11 +974,22 @@ int p54_register_common(struct ieee80211_hw *dev, struct device *pdev)
 		dev_err(pdev, "Cannot register device (%d).\n", err);
 		return err;
 	}
+<<<<<<< HEAD
 
 #ifdef CONFIG_P54_LEDS
 	err = p54_init_leds(priv);
 	if (err)
 		return err;
+=======
+	priv->registered = true;
+
+#ifdef CONFIG_P54_LEDS
+	err = p54_init_leds(priv);
+	if (err) {
+		p54_unregister_common(dev);
+		return err;
+	}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_P54_LEDS */
 
 	dev_info(pdev, "is registered as '%s'\n", wiphy_name(dev->wiphy));
@@ -898,18 +1011,26 @@ void p54_free_common(struct ieee80211_hw *dev)
 	kfree(priv->rssi_db);
 	kfree(priv->used_rxkeys);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(priv->survey);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(priv->survey);
+>>>>>>> refs/remotes/origin/master
 	priv->iq_autocal = NULL;
 	priv->output_limit = NULL;
 	priv->curve_data = NULL;
 	priv->rssi_db = NULL;
 	priv->used_rxkeys = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	priv->survey = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->survey = NULL;
+>>>>>>> refs/remotes/origin/master
 	ieee80211_free_hw(dev);
 }
 EXPORT_SYMBOL_GPL(p54_free_common);
@@ -922,7 +1043,15 @@ void p54_unregister_common(struct ieee80211_hw *dev)
 	p54_unregister_leds(priv);
 #endif /* CONFIG_P54_LEDS */
 
+<<<<<<< HEAD
 	ieee80211_unregister_hw(dev);
+=======
+	if (priv->registered) {
+		priv->registered = false;
+		ieee80211_unregister_hw(dev);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	mutex_destroy(&priv->conf_mutex);
 	mutex_destroy(&priv->eeprom_mutex);
 }

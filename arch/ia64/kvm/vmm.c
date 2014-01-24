@@ -20,9 +20,15 @@
  */
 
 
+<<<<<<< HEAD
 #include<linux/kernel.h>
 #include<linux/module.h>
 #include<asm/fpswa.h>
+=======
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <asm/fpswa.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "vcpu.h"
 

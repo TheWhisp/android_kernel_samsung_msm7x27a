@@ -11,10 +11,14 @@
 #include <linux/fs.h>
 #include <linux/pagemap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uio.h>
 #include <linux/rmap.h>
 #include <linux/mmu_notifier.h>
@@ -30,7 +34,11 @@
  * of ZERO_PAGE(), such as /dev/zero
  */
 static DEFINE_MUTEX(xip_sparse_mutex);
+<<<<<<< HEAD
 static seqcount_t xip_sparse_seq = SEQCNT_ZERO;
+=======
+static seqcount_t xip_sparse_seq = SEQCNT_ZERO(xip_sparse_seq);
+>>>>>>> refs/remotes/origin/master
 static struct page *__xip_sparse_page;
 
 /* called under xip_sparse_mutex */
@@ -171,7 +179,10 @@ __xip_unmap (struct address_space * mapping,
 {
 	struct vm_area_struct *vma;
 	struct mm_struct *mm;
+<<<<<<< HEAD
 	struct prio_tree_iter iter;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long address;
 	pte_t *pte;
 	pte_t pteval;
@@ -188,7 +199,11 @@ __xip_unmap (struct address_space * mapping,
 
 retry:
 	mutex_lock(&mapping->i_mmap_mutex);
+<<<<<<< HEAD
 	vma_prio_tree_foreach(vma, &iter, &mapping->i_mmap, pgoff, pgoff) {
+=======
+	vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
+>>>>>>> refs/remotes/origin/master
 		mm = vma->vm_mm;
 		address = vma->vm_start +
 			((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
@@ -197,11 +212,20 @@ retry:
 		if (pte) {
 			/* Nuke the page table entry. */
 			flush_cache_page(vma, address, pte_pfn(*pte));
+<<<<<<< HEAD
 			pteval = ptep_clear_flush_notify(vma, address, pte);
+=======
+			pteval = ptep_clear_flush(vma, address, pte);
+>>>>>>> refs/remotes/origin/master
 			page_remove_rmap(page);
 			dec_mm_counter(mm, MM_FILEPAGES);
 			BUG_ON(pte_dirty(pteval));
 			pte_unmap_unlock(pte, ptl);
+<<<<<<< HEAD
+=======
+			/* must invalidate_page _before_ freeing the page */
+			mmu_notifier_invalidate_page(mm, address);
+>>>>>>> refs/remotes/origin/master
 			page_cache_release(page);
 		}
 	}
@@ -308,6 +332,11 @@ out:
 
 static const struct vm_operations_struct xip_file_vm_ops = {
 	.fault	= xip_file_fault,
+<<<<<<< HEAD
+=======
+	.page_mkwrite	= filemap_page_mkwrite,
+	.remap_pages = generic_file_remap_pages,
+>>>>>>> refs/remotes/origin/master
 };
 
 int xip_file_mmap(struct file * file, struct vm_area_struct * vma)
@@ -316,7 +345,11 @@ int xip_file_mmap(struct file * file, struct vm_area_struct * vma)
 
 	file_accessed(file);
 	vma->vm_ops = &xip_file_vm_ops;
+<<<<<<< HEAD
 	vma->vm_flags |= VM_CAN_NONLINEAR | VM_MIXEDMAP;
+=======
+	vma->vm_flags |= VM_MIXEDMAP;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(xip_file_mmap);
@@ -415,8 +448,11 @@ xip_file_write(struct file *filp, const char __user *buf, size_t len,
 	pos = *ppos;
 	count = len;
 
+<<<<<<< HEAD
 	vfs_check_frozen(inode->i_sb, SB_FREEZE_WRITE);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We can write back this queue in page reclaim */
 	current->backing_dev_info = mapping->backing_dev_info;
 
@@ -430,7 +466,13 @@ xip_file_write(struct file *filp, const char __user *buf, size_t len,
 	if (ret)
 		goto out_backing;
 
+<<<<<<< HEAD
 	file_update_time(filp);
+=======
+	ret = file_update_time(filp);
+	if (ret)
+		goto out_backing;
+>>>>>>> refs/remotes/origin/master
 
 	ret = __xip_file_write (filp, buf, count, pos, ppos);
 

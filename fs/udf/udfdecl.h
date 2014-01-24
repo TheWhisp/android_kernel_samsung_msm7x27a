@@ -2,10 +2,15 @@
 #define __UDF_DECL_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) "UDF-fs: " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "UDF-fs: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include "ecma_167.h"
 #include "osta_udf.h"
 
@@ -21,6 +26,7 @@
 #define UDF_PREALLOCATE
 #define UDF_DEFAULT_PREALLOC_BLOCKS	8
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #undef UDFFS_DEBUG
 
@@ -40,6 +46,8 @@ do { \
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern __printf(3, 4) void _udf_err(struct super_block *sb,
 		const char *function, const char *fmt, ...);
 #define udf_err(sb, fmt, ...)					\
@@ -64,7 +72,10 @@ extern __printf(3, 4) void _udf_warn(struct super_block *sb,
 	no_printk(fmt, ##__VA_ARGS__)
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define udf_fixed_to_variable(x) ( ( ( (x) >> 5 ) * 39 ) + ( (x) & 0x0000001F ) )
 #define udf_variable_to_fixed(x) ( ( ( (x) / 39 ) << 5 ) + ( (x) % 39 ) )
 
@@ -136,6 +147,7 @@ struct ustr {
 	uint8_t u_len;
 };
 
+<<<<<<< HEAD
 struct extent_position {
 	struct buffer_head *bh;
 	uint32_t offset;
@@ -149,6 +161,11 @@ __attribute__((format(printf, 3, 4)))
 extern void udf_warning(struct super_block *, const char *, const char *, ...);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* super.c */
+
+>>>>>>> refs/remotes/origin/master
 static inline void udf_updated_lvid(struct super_block *sb)
 {
 	struct buffer_head *bh = UDF_SB(sb)->s_lvid_bh;
@@ -157,6 +174,7 @@ static inline void udf_updated_lvid(struct super_block *sb)
 	WARN_ON_ONCE(((struct logicalVolIntegrityDesc *)
 		     bh->b_data)->integrityType !=
 		     cpu_to_le32(LVID_INTEGRITY_TYPE_OPEN));
+<<<<<<< HEAD
 	sb->s_dirt = 1;
 	UDF_SB(sb)->s_lvid_dirty = 1;
 }
@@ -166,6 +184,13 @@ extern u64 lvid_get_unique_id(struct super_block *sb);
 struct inode *udf_find_metadata_inode_efe(struct super_block *sb,
 					u32 meta_file_loc, u32 partition_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	UDF_SB(sb)->s_lvid_dirty = 1;
+}
+extern u64 lvid_get_unique_id(struct super_block *sb);
+struct inode *udf_find_metadata_inode_efe(struct super_block *sb,
+					u32 meta_file_loc, u32 partition_num);
+>>>>>>> refs/remotes/origin/master
 
 /* namei.c */
 extern int udf_write_fi(struct inode *inode, struct fileIdentDesc *,
@@ -247,10 +272,14 @@ extern int udf_CS0toUTF8(struct ustr *, const struct ustr *);
 /* ialloc.c */
 extern void udf_free_inode(struct inode *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct inode *udf_new_inode(struct inode *, int, int *);
 =======
 extern struct inode *udf_new_inode(struct inode *, umode_t, int *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct inode *udf_new_inode(struct inode *, umode_t, int *);
+>>>>>>> refs/remotes/origin/master
 
 /* truncate.c */
 extern void udf_truncate_tail_extent(struct inode *);

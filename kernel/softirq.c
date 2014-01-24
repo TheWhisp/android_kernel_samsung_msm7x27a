@@ -6,6 +6,7 @@
  *	Distribute under GPLv2.
  *
  *	Rewritten. Old one was good in 2.2, but in 2.3 it was immoral. --ANK (990903)
+<<<<<<< HEAD
  *
  *	Remote softirq infrastructure is by Jens Axboe.
  */
@@ -15,6 +16,11 @@
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel_stat.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
@@ -27,12 +33,19 @@
 #include <linux/rcupdate.h>
 #include <linux/ftrace.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
+=======
+#include <linux/smpboot.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/tick.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/irq.h>
 
+<<<<<<< HEAD
 #include <asm/irq.h>
+=======
+>>>>>>> refs/remotes/origin/master
 /*
    - No shared variables, all the data are CPU local.
    - If a softirq needs serialization, let it serialize itself
@@ -95,7 +108,11 @@ static void wakeup_softirqd(void)
  * where hardirqs are disabled legitimately:
  */
 #ifdef CONFIG_TRACE_IRQFLAGS
+<<<<<<< HEAD
 static void __local_bh_disable(unsigned long ip, unsigned int cnt)
+=======
+void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -103,23 +120,36 @@ static void __local_bh_disable(unsigned long ip, unsigned int cnt)
 
 	raw_local_irq_save(flags);
 	/*
+<<<<<<< HEAD
 	 * The preempt tracer hooks into add_preempt_count and will break
+=======
+	 * The preempt tracer hooks into preempt_count_add and will break
+>>>>>>> refs/remotes/origin/master
 	 * lockdep because it calls back into lockdep after SOFTIRQ_OFFSET
 	 * is set and before current->softirq_enabled is cleared.
 	 * We must manually increment preempt_count here and manually
 	 * call the trace_preempt_off later.
 	 */
+<<<<<<< HEAD
 	preempt_count() += cnt;
 	/*
 	 * Were softirqs turned off above:
 	 */
 	if (softirq_count() == cnt)
+=======
+	__preempt_count_add(cnt);
+	/*
+	 * Were softirqs turned off above:
+	 */
+	if (softirq_count() == (cnt & SOFTIRQ_MASK))
+>>>>>>> refs/remotes/origin/master
 		trace_softirqs_off(ip);
 	raw_local_irq_restore(flags);
 
 	if (preempt_count() == cnt)
 		trace_preempt_off(CALLER_ADDR0, get_parent_ip(CALLER_ADDR1));
 }
+<<<<<<< HEAD
 #else /* !CONFIG_TRACE_IRQFLAGS */
 static inline void __local_bh_disable(unsigned long ip, unsigned int cnt)
 {
@@ -144,6 +174,18 @@ static void __local_bh_enable(unsigned int cnt)
 	if (softirq_count() == cnt)
 		trace_softirqs_on((unsigned long)__builtin_return_address(0));
 	sub_preempt_count(cnt);
+=======
+EXPORT_SYMBOL(__local_bh_disable_ip);
+#endif /* CONFIG_TRACE_IRQFLAGS */
+
+static void __local_bh_enable(unsigned int cnt)
+{
+	WARN_ON_ONCE(!irqs_disabled());
+
+	if (softirq_count() == (cnt & SOFTIRQ_MASK))
+		trace_softirqs_on(_RET_IP_);
+	preempt_count_sub(cnt);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -153,12 +195,20 @@ static void __local_bh_enable(unsigned int cnt)
  */
 void _local_bh_enable(void)
 {
+<<<<<<< HEAD
+=======
+	WARN_ON_ONCE(in_irq());
+>>>>>>> refs/remotes/origin/master
 	__local_bh_enable(SOFTIRQ_DISABLE_OFFSET);
 }
 
 EXPORT_SYMBOL(_local_bh_enable);
 
+<<<<<<< HEAD
 static inline void _local_bh_enable_ip(unsigned long ip)
+=======
+void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>>>>>>> refs/remotes/origin/master
 {
 	WARN_ON_ONCE(in_irq() || irqs_disabled());
 #ifdef CONFIG_TRACE_IRQFLAGS
@@ -173,17 +223,32 @@ static inline void _local_bh_enable_ip(unsigned long ip)
 	 * Keep preemption disabled until we are done with
 	 * softirq processing:
  	 */
+<<<<<<< HEAD
 	sub_preempt_count(SOFTIRQ_DISABLE_OFFSET - 1);
 
 	if (unlikely(!in_interrupt() && local_softirq_pending()))
 		do_softirq();
 
 	dec_preempt_count();
+=======
+	preempt_count_sub(cnt - 1);
+
+	if (unlikely(!in_interrupt() && local_softirq_pending())) {
+		/*
+		 * Run softirq if any pending. And do it in its own stack
+		 * as we may be calling this deep in a task call stack already.
+		 */
+		do_softirq();
+	}
+
+	preempt_count_dec();
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TRACE_IRQFLAGS
 	local_irq_enable();
 #endif
 	preempt_check_resched();
 }
+<<<<<<< HEAD
 
 void local_bh_enable(void)
 {
@@ -202,10 +267,24 @@ EXPORT_SYMBOL(local_bh_enable_ip);
  * and we fall back to softirqd after that.
  *
  * This number has been established via experimentation.
+=======
+EXPORT_SYMBOL(__local_bh_enable_ip);
+
+/*
+ * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
+ * but break the loop if need_resched() is set or after 2 ms.
+ * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but in
+ * certain cases, such as stop_machine(), jiffies may cease to
+ * increment and so we need the MAX_SOFTIRQ_RESTART limit as
+ * well to make sure we eventually return from this method.
+ *
+ * These limits have been established via experimentation.
+>>>>>>> refs/remotes/origin/master
  * The two things to balance is latency against fairness -
  * we want to handle softirqs as soon as possible, but they
  * should not be able to lock up the box.
  */
+<<<<<<< HEAD
 #define MAX_SOFTIRQ_RESTART 10
 
 asmlinkage void __do_softirq(void)
@@ -221,6 +300,66 @@ asmlinkage void __do_softirq(void)
 	__local_bh_disable((unsigned long)__builtin_return_address(0),
 				SOFTIRQ_OFFSET);
 	lockdep_softirq_enter();
+=======
+#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
+#define MAX_SOFTIRQ_RESTART 10
+
+#ifdef CONFIG_TRACE_IRQFLAGS
+/*
+ * When we run softirqs from irq_exit() and thus on the hardirq stack we need
+ * to keep the lockdep irq context tracking as tight as possible in order to
+ * not miss-qualify lock contexts and miss possible deadlocks.
+ */
+
+static inline bool lockdep_softirq_start(void)
+{
+	bool in_hardirq = false;
+
+	if (trace_hardirq_context(current)) {
+		in_hardirq = true;
+		trace_hardirq_exit();
+	}
+
+	lockdep_softirq_enter();
+
+	return in_hardirq;
+}
+
+static inline void lockdep_softirq_end(bool in_hardirq)
+{
+	lockdep_softirq_exit();
+
+	if (in_hardirq)
+		trace_hardirq_enter();
+}
+#else
+static inline bool lockdep_softirq_start(void) { return false; }
+static inline void lockdep_softirq_end(bool in_hardirq) { }
+#endif
+
+asmlinkage void __do_softirq(void)
+{
+	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+	unsigned long old_flags = current->flags;
+	int max_restart = MAX_SOFTIRQ_RESTART;
+	struct softirq_action *h;
+	bool in_hardirq;
+	__u32 pending;
+	int cpu;
+
+	/*
+	 * Mask out PF_MEMALLOC s current task context is borrowed for the
+	 * softirq. A softirq handled such as network RX might set PF_MEMALLOC
+	 * again if the socket is related to swap
+	 */
+	current->flags &= ~PF_MEMALLOC;
+
+	pending = local_softirq_pending();
+	account_irq_enter_time(current);
+
+	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_OFFSET);
+	in_hardirq = lockdep_softirq_start();
+>>>>>>> refs/remotes/origin/master
 
 	cpu = smp_processor_id();
 restart:
@@ -247,7 +386,11 @@ restart:
 				       " exited with %08x?\n", vec_nr,
 				       softirq_to_name[vec_nr], h->action,
 				       prev_count, preempt_count());
+<<<<<<< HEAD
 				preempt_count() = prev_count;
+=======
+				preempt_count_set(prev_count);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			rcu_bh_qs(cpu);
@@ -259,6 +402,7 @@ restart:
 	local_irq_disable();
 
 	pending = local_softirq_pending();
+<<<<<<< HEAD
 	if (pending && --max_restart)
 		goto restart;
 
@@ -273,6 +417,23 @@ restart:
 
 #ifndef __ARCH_HAS_DO_SOFTIRQ
 
+=======
+	if (pending) {
+		if (time_before(jiffies, end) && !need_resched() &&
+		    --max_restart)
+			goto restart;
+
+		wakeup_softirqd();
+	}
+
+	lockdep_softirq_end(in_hardirq);
+	account_irq_exit_time(current);
+	__local_bh_enable(SOFTIRQ_OFFSET);
+	WARN_ON_ONCE(in_interrupt());
+	tsk_restore_flags(current, old_flags, PF_MEMALLOC);
+}
+
+>>>>>>> refs/remotes/origin/master
 asmlinkage void do_softirq(void)
 {
 	__u32 pending;
@@ -286,18 +447,26 @@ asmlinkage void do_softirq(void)
 	pending = local_softirq_pending();
 
 	if (pending)
+<<<<<<< HEAD
 		__do_softirq();
+=======
+		do_softirq_own_stack();
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Enter an interrupt context.
  */
 void irq_enter(void)
 {
+<<<<<<< HEAD
 	int cpu = smp_processor_id();
 
 	rcu_irq_enter();
@@ -306,18 +475,27 @@ void irq_enter(void)
 =======
 	if (is_idle_task(current) && !in_interrupt()) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_irq_enter();
+	if (is_idle_task(current) && !in_interrupt()) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Prevent raise_softirq from needlessly waking up ksoftirqd
 		 * here, as softirq will be serviced on return from interrupt.
 		 */
 		local_bh_disable();
+<<<<<<< HEAD
 		tick_check_idle(cpu);
+=======
+		tick_check_idle();
+>>>>>>> refs/remotes/origin/master
 		_local_bh_enable();
 	}
 
 	__irq_enter();
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef __ARCH_IRQ_EXIT_IRQS_DISABLED
 static inline void invoke_softirq(void)
@@ -358,12 +536,50 @@ static inline void invoke_softirq(void)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void invoke_softirq(void)
+{
+	if (!force_irqthreads) {
+#ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+		/*
+		 * We can safely execute softirq on the current stack if
+		 * it is the irq stack, because it should be near empty
+		 * at this stage.
+		 */
+		__do_softirq();
+#else
+		/*
+		 * Otherwise, irq_exit() is called on the task stack that can
+		 * be potentially deep already. So call softirq in its own stack
+		 * to prevent from any overrun.
+		 */
+		do_softirq_own_stack();
+#endif
+	} else {
+		wakeup_softirqd();
+	}
+}
+
+static inline void tick_irq_exit(void)
+{
+#ifdef CONFIG_NO_HZ_COMMON
+	int cpu = smp_processor_id();
+
+	/* Make sure that timer wheel updates are propagated */
+	if ((idle_cpu(cpu) && !need_resched()) || tick_nohz_full_cpu(cpu)) {
+		if (!in_interrupt())
+			tick_nohz_irq_exit();
+	}
+#endif
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Exit an interrupt context. Process softirqs if needed and possible:
  */
 void irq_exit(void)
 {
+<<<<<<< HEAD
 	account_system_vtime(current);
 	trace_hardirq_exit();
 	sub_preempt_count(IRQ_EXIT_OFFSET);
@@ -387,6 +603,22 @@ void irq_exit(void)
 	rcu_irq_exit();
 	sched_preempt_enable_no_resched();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __ARCH_IRQ_EXIT_IRQS_DISABLED
+	local_irq_disable();
+#else
+	WARN_ON_ONCE(!irqs_disabled());
+#endif
+
+	account_irq_exit_time(current);
+	preempt_count_sub(HARDIRQ_OFFSET);
+	if (!in_interrupt() && local_softirq_pending())
+		invoke_softirq();
+
+	tick_irq_exit();
+	rcu_irq_exit();
+	trace_hardirq_exit(); /* must be last! */
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -419,14 +651,20 @@ void raise_softirq(unsigned int nr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void __raise_softirq_irqoff(unsigned int nr)
 {
 	trace_softirq_raise(nr);
 	or_softirq_pending(1UL << nr);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void open_softirq(int nr, void (*action)(struct softirq_action *))
 {
 	softirq_vec[nr].action = action;
@@ -633,6 +871,7 @@ void tasklet_hrtimer_init(struct tasklet_hrtimer *ttimer,
 }
 EXPORT_SYMBOL_GPL(tasklet_hrtimer_init);
 
+<<<<<<< HEAD
 /*
  * Remote softirq bits
  */
@@ -758,27 +997,38 @@ static struct notifier_block __cpuinitdata remote_softirq_cpu_notifier = {
 	.notifier_call	= remote_softirq_cpu_notify,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init softirq_init(void)
 {
 	int cpu;
 
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 		int i;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		per_cpu(tasklet_vec, cpu).tail =
 			&per_cpu(tasklet_vec, cpu).head;
 		per_cpu(tasklet_hi_vec, cpu).tail =
 			&per_cpu(tasklet_hi_vec, cpu).head;
+<<<<<<< HEAD
 		for (i = 0; i < NR_SOFTIRQS; i++)
 			INIT_LIST_HEAD(&per_cpu(softirq_work_list[i], cpu));
 	}
 
 	register_hotcpu_notifier(&remote_softirq_cpu_notifier);
 
+=======
+	}
+
+>>>>>>> refs/remotes/origin/master
 	open_softirq(TASKLET_SOFTIRQ, tasklet_action);
 	open_softirq(HI_SOFTIRQ, tasklet_hi_action);
 }
 
+<<<<<<< HEAD
 static int run_ksoftirqd(void * __bind_cpu)
 {
 	set_current_state(TASK_INTERRUPTIBLE);
@@ -832,6 +1082,28 @@ wait_to_die:
 	}
 	__set_current_state(TASK_RUNNING);
 	return 0;
+=======
+static int ksoftirqd_should_run(unsigned int cpu)
+{
+	return local_softirq_pending();
+}
+
+static void run_ksoftirqd(unsigned int cpu)
+{
+	local_irq_disable();
+	if (local_softirq_pending()) {
+		/*
+		 * We can safely run softirq on inline stack, as we are not deep
+		 * in the task stack here.
+		 */
+		__do_softirq();
+		rcu_note_context_switch(cpu);
+		local_irq_enable();
+		cond_resched();
+		return;
+	}
+	local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_HOTPLUG_CPU
@@ -893,6 +1165,7 @@ static void takeover_tasklets(unsigned int cpu)
 }
 #endif /* CONFIG_HOTPLUG_CPU */
 
+<<<<<<< HEAD
 static int __cpuinit cpu_callback(struct notifier_block *nfb,
 				  unsigned long action,
 				  void *hcpu)
@@ -956,6 +1229,40 @@ static __init int spawn_ksoftirqd(void)
 	BUG_ON(err != NOTIFY_OK);
 	cpu_callback(&cpu_nfb, CPU_ONLINE, cpu);
 	register_cpu_notifier(&cpu_nfb);
+=======
+static int cpu_callback(struct notifier_block *nfb,
+				  unsigned long action,
+				  void *hcpu)
+{
+	switch (action) {
+#ifdef CONFIG_HOTPLUG_CPU
+	case CPU_DEAD:
+	case CPU_DEAD_FROZEN:
+		takeover_tasklets((unsigned long)hcpu);
+		break;
+#endif /* CONFIG_HOTPLUG_CPU */
+	}
+	return NOTIFY_OK;
+}
+
+static struct notifier_block cpu_nfb = {
+	.notifier_call = cpu_callback
+};
+
+static struct smp_hotplug_thread softirq_threads = {
+	.store			= &ksoftirqd,
+	.thread_should_run	= ksoftirqd_should_run,
+	.thread_fn		= run_ksoftirqd,
+	.thread_comm		= "ksoftirqd/%u",
+};
+
+static __init int spawn_ksoftirqd(void)
+{
+	register_cpu_notifier(&cpu_nfb);
+
+	BUG_ON(smpboot_register_percpu_thread(&softirq_threads));
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 early_initcall(spawn_ksoftirqd);
@@ -970,7 +1277,10 @@ int __init __weak early_irq_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_HARDIRQS
+=======
+>>>>>>> refs/remotes/origin/master
 int __init __weak arch_probe_nr_irqs(void)
 {
 	return NR_IRQS_LEGACY;
@@ -980,4 +1290,7 @@ int __init __weak arch_early_irq_init(void)
 {
 	return 0;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

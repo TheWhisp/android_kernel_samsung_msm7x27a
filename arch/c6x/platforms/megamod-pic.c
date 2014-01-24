@@ -243,11 +243,17 @@ static struct megamod_pic * __init init_megamod_pic(struct device_node *np)
 	 * as their interrupt parent.
 	 */
 	for (i = 0; i < NR_COMBINERS; i++) {
+<<<<<<< HEAD
+=======
+		struct irq_data *irq_data;
+		irq_hw_number_t hwirq;
+>>>>>>> refs/remotes/origin/master
 
 		irq = irq_of_parse_and_map(np, i);
 		if (irq == NO_IRQ)
 			continue;
 
+<<<<<<< HEAD
 		/*
 		 * We count on the core priority interrupts (4 - 15) being
 		 * direct mapped. Check that device tree provided something
@@ -256,14 +262,39 @@ static struct megamod_pic * __init init_megamod_pic(struct device_node *np)
 		if (irq < 4 || irq >= NR_PRIORITY_IRQS) {
 			pr_err("%s: combiner-%d virq %d out of range!\n",
 				 np->full_name, i, irq);
+=======
+		irq_data = irq_get_irq_data(irq);
+		if (!irq_data) {
+			pr_err("%s: combiner-%d no irq_data for virq %d!\n",
+			       np->full_name, i, irq);
+			continue;
+		}
+
+		hwirq = irq_data->hwirq;
+
+		/*
+		 * Check that device tree provided something in the range
+		 * of the core priority interrupts (4 - 15).
+		 */
+		if (hwirq < 4 || hwirq >= NR_PRIORITY_IRQS) {
+			pr_err("%s: combiner-%d core irq %ld out of range!\n",
+			       np->full_name, i, hwirq);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
 		/* record the mapping */
+<<<<<<< HEAD
 		mapping[irq - 4] = i;
 
 		pr_debug("%s: combiner-%d cascading to virq %d\n",
 			 np->full_name, i, irq);
+=======
+		mapping[hwirq - 4] = i;
+
+		pr_debug("%s: combiner-%d cascading to hwirq %ld\n",
+			 np->full_name, i, hwirq);
+>>>>>>> refs/remotes/origin/master
 
 		cascade_data[i].pic = pic;
 		cascade_data[i].index = i;

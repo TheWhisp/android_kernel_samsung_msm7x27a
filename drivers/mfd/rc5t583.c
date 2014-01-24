@@ -74,7 +74,12 @@ static struct deepsleep_control_data deepsleep_data[] = {
 #define EXT_PWR_REQ		\
 	(RC5T583_EXT_PWRREQ1_CONTROL | RC5T583_EXT_PWRREQ2_CONTROL)
 
+<<<<<<< HEAD
 static struct mfd_cell rc5t583_subdevs[] = {
+=======
+static const struct mfd_cell rc5t583_subdevs[] = {
+	{.name = "rc5t583-gpio",},
+>>>>>>> refs/remotes/origin/master
 	{.name = "rc5t583-regulator",},
 	{.name = "rc5t583-rtc",      },
 	{.name = "rc5t583-key",      }
@@ -84,7 +89,11 @@ static int __rc5t583_set_ext_pwrreq1_control(struct device *dev,
 	int id, int ext_pwr, int slots)
 {
 	int ret;
+<<<<<<< HEAD
 	uint8_t sleepseq_val;
+=======
+	uint8_t sleepseq_val = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned int en_bit;
 	unsigned int slot_bit;
 
@@ -245,11 +254,19 @@ static const struct regmap_config rc5t583_regmap_config = {
 	.cache_type = REGCACHE_RBTREE,
 };
 
+<<<<<<< HEAD
 static int __devinit rc5t583_i2c_probe(struct i2c_client *i2c,
 			      const struct i2c_device_id *id)
 {
 	struct rc5t583 *rc5t583;
 	struct rc5t583_platform_data *pdata = i2c->dev.platform_data;
+=======
+static int rc5t583_i2c_probe(struct i2c_client *i2c,
+			      const struct i2c_device_id *id)
+{
+	struct rc5t583 *rc5t583;
+	struct rc5t583_platform_data *pdata = dev_get_platdata(&i2c->dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	bool irq_init_success = false;
 
@@ -267,7 +284,11 @@ static int __devinit rc5t583_i2c_probe(struct i2c_client *i2c,
 	rc5t583->dev = &i2c->dev;
 	i2c_set_clientdata(i2c, rc5t583);
 
+<<<<<<< HEAD
 	rc5t583->regmap = regmap_init_i2c(i2c, &rc5t583_regmap_config);
+=======
+	rc5t583->regmap = devm_regmap_init_i2c(i2c, &rc5t583_regmap_config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rc5t583->regmap)) {
 		ret = PTR_ERR(rc5t583->regmap);
 		dev_err(&i2c->dev, "regmap initialization failed: %d\n", ret);
@@ -276,11 +297,19 @@ static int __devinit rc5t583_i2c_probe(struct i2c_client *i2c,
 
 	ret = rc5t583_clear_ext_power_req(rc5t583, pdata);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto err_irq_init;
 
 	if (i2c->irq) {
 		ret = rc5t583_irq_init(rc5t583, i2c->irq, pdata->irq_base);
 		/* Still continue with waring if irq init fails */
+=======
+		return ret;
+
+	if (i2c->irq) {
+		ret = rc5t583_irq_init(rc5t583, i2c->irq, pdata->irq_base);
+		/* Still continue with warning, if irq init fails */
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			dev_warn(&i2c->dev, "IRQ init failed: %d\n", ret);
 		else
@@ -288,7 +317,11 @@ static int __devinit rc5t583_i2c_probe(struct i2c_client *i2c,
 	}
 
 	ret = mfd_add_devices(rc5t583->dev, -1, rc5t583_subdevs,
+<<<<<<< HEAD
 			ARRAY_SIZE(rc5t583_subdevs), NULL, 0);
+=======
+			      ARRAY_SIZE(rc5t583_subdevs), NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&i2c->dev, "add mfd devices failed: %d\n", ret);
 		goto err_add_devs;
@@ -299,18 +332,28 @@ static int __devinit rc5t583_i2c_probe(struct i2c_client *i2c,
 err_add_devs:
 	if (irq_init_success)
 		rc5t583_irq_exit(rc5t583);
+<<<<<<< HEAD
 err_irq_init:
 	regmap_exit(rc5t583->regmap);
 	return ret;
 }
 
 static int  __devexit rc5t583_i2c_remove(struct i2c_client *i2c)
+=======
+	return ret;
+}
+
+static int  rc5t583_i2c_remove(struct i2c_client *i2c)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rc5t583 *rc5t583 = i2c_get_clientdata(i2c);
 
 	mfd_remove_devices(rc5t583->dev);
 	rc5t583_irq_exit(rc5t583);
+<<<<<<< HEAD
 	regmap_exit(rc5t583->regmap);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -327,7 +370,11 @@ static struct i2c_driver rc5t583_i2c_driver = {
 		   .owner = THIS_MODULE,
 		   },
 	.probe = rc5t583_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(rc5t583_i2c_remove),
+=======
+	.remove = rc5t583_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = rc5t583_i2c_id,
 };
 

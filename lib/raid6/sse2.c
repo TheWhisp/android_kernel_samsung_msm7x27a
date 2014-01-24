@@ -17,8 +17,11 @@
  *
  */
 
+<<<<<<< HEAD
 #if (defined(__i386__) || defined(__x86_64__)) && !defined(__arch_um__)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/raid/pq.h>
 #include "x86.h"
 
@@ -159,9 +162,13 @@ const struct raid6_calls raid6_sse2x2 = {
 	1			/* Has cache hints */
 };
 
+<<<<<<< HEAD
 #endif
 
 #if defined(__x86_64__) && !defined(__arch_um__)
+=======
+#ifdef CONFIG_X86_64
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Unrolled-by-4 SSE2 implementation
@@ -259,4 +266,8 @@ const struct raid6_calls raid6_sse2x4 = {
 	1			/* Has cache hints */
 };
 
+<<<<<<< HEAD
 #endif
+=======
+#endif /* CONFIG_X86_64 */
+>>>>>>> refs/remotes/origin/master

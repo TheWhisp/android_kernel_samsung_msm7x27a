@@ -299,7 +299,11 @@ Byte 1:
 min threshold (scale as bank 0x26)
 
 
+<<<<<<< HEAD
 Warning for the adventerous
+=======
+Warning for the adventurous
+>>>>>>> refs/remotes/origin/master
 ===========================
 
 A word of caution to those who want to experiment and see if they can figure

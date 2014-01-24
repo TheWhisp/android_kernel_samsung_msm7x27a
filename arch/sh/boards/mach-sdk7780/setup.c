@@ -94,7 +94,10 @@ static void __init sdk7780_setup(char **cmdline_p)
 static struct sh_machine_vector mv_se7780 __initmv = {
 	.mv_name        = "Renesas SDK7780-R3" ,
 	.mv_setup		= sdk7780_setup,
+<<<<<<< HEAD
 	.mv_nr_irqs		= 111,
+=======
+>>>>>>> refs/remotes/origin/master
 	.mv_init_irq	= init_sdk7780_IRQ,
 };
 

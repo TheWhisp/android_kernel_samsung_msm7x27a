@@ -12,11 +12,15 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/idprom.h>
 #include <asm/machines.h>
+=======
+#include <asm/idprom.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/oplib.h>
 #include <asm/auxio.h>
 #include <asm/irq.h>
@@ -107,6 +111,7 @@ static struct sun_floppy_ops sun_fdops;
 /* Routines unique to each controller type on a Sun. */
 static void sun_set_dor(unsigned char value, int fdc_82077)
 {
+<<<<<<< HEAD
 	if (sparc_cpu_model == sun4c) {
 		unsigned int bits = 0;
 		if (value & 0x10)
@@ -118,14 +123,22 @@ static void sun_set_dor(unsigned char value, int fdc_82077)
 	if (fdc_82077) {
 		sun_fdc->dor_82077 = value;
 	}
+=======
+	if (fdc_82077)
+		sun_fdc->dor_82077 = value;
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned char sun_read_dir(void)
 {
+<<<<<<< HEAD
 	if (sparc_cpu_model == sun4c)
 		return (get_auxio() & AUXIO_FLPY_DCHG) ? 0x80 : 0;
 	else
 		return sun_fdc->dir_82077;
+=======
+	return sun_fdc->dir_82077;
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned char sun_82072_fd_inb(int port)
@@ -246,10 +259,14 @@ static inline void virtual_dma_init(void)
 static inline void sun_fd_disable_dma(void)
 {
 	doing_pdma = 0;
+<<<<<<< HEAD
 	if (pdma_base) {
 		mmu_unlockarea(pdma_base, pdma_areasize);
 		pdma_base = NULL;
 	}
+=======
+	pdma_base = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void sun_fd_set_dma_mode(int mode)
@@ -279,7 +296,10 @@ static inline void sun_fd_set_dma_count(int length)
 
 static inline void sun_fd_enable_dma(void)
 {
+<<<<<<< HEAD
 	pdma_vaddr = mmu_lockarea(pdma_vaddr, pdma_size);
+=======
+>>>>>>> refs/remotes/origin/master
 	pdma_base = pdma_vaddr;
 	pdma_areasize = pdma_size;
 }
@@ -305,38 +325,62 @@ static int sun_floppy_init(void)
 {
 	struct platform_device *op;
 	struct device_node *dp;
+<<<<<<< HEAD
 	char state[128];
 	phandle tnode, fd_node;
 	int num_regs;
 	struct resource r;
+=======
+	struct resource r;
+	char state[128];
+	phandle fd_node;
+	phandle tnode;
+	int num_regs;
+>>>>>>> refs/remotes/origin/master
 
 	use_virtual_dma = 1;
 
 	/* Forget it if we aren't on a machine that could possibly
 	 * ever have a floppy drive.
 	 */
+<<<<<<< HEAD
 	if((sparc_cpu_model != sun4c && sparc_cpu_model != sun4m) ||
 	   ((idprom->id_machtype == (SM_SUN4C | SM_4C_SLC)) ||
 	    (idprom->id_machtype == (SM_SUN4C | SM_4C_ELC)))) {
+=======
+	if (sparc_cpu_model != sun4m) {
+>>>>>>> refs/remotes/origin/master
 		/* We certainly don't have a floppy controller. */
 		goto no_sun_fdc;
 	}
 	/* Well, try to find one. */
 	tnode = prom_getchild(prom_root_node);
 	fd_node = prom_searchsiblings(tnode, "obio");
+<<<<<<< HEAD
 	if(fd_node != 0) {
+=======
+	if (fd_node != 0) {
+>>>>>>> refs/remotes/origin/master
 		tnode = prom_getchild(fd_node);
 		fd_node = prom_searchsiblings(tnode, "SUNW,fdtwo");
 	} else {
 		fd_node = prom_searchsiblings(tnode, "fd");
 	}
+<<<<<<< HEAD
 	if(fd_node == 0) {
+=======
+	if (fd_node == 0) {
+>>>>>>> refs/remotes/origin/master
 		goto no_sun_fdc;
 	}
 
 	/* The sun4m lets us know if the controller is actually usable. */
+<<<<<<< HEAD
 	if(sparc_cpu_model == sun4m &&
 	   prom_getproperty(fd_node, "status", state, sizeof(state)) != -1) {
+=======
+	if (prom_getproperty(fd_node, "status", state, sizeof(state)) != -1) {
+>>>>>>> refs/remotes/origin/master
 		if(!strcmp(state, "disabled")) {
 			goto no_sun_fdc;
 		}
@@ -347,12 +391,20 @@ static int sun_floppy_init(void)
 	memset(&r, 0, sizeof(r));
 	r.flags = fd_regs[0].which_io;
 	r.start = fd_regs[0].phys_addr;
+<<<<<<< HEAD
 	sun_fdc = (struct sun_flpy_controller *)
 	    of_ioremap(&r, 0, fd_regs[0].reg_size, "floppy");
+=======
+	sun_fdc = of_ioremap(&r, 0, fd_regs[0].reg_size, "floppy");
+>>>>>>> refs/remotes/origin/master
 
 	/* Look up irq in platform_device.
 	 * We try "SUNW,fdtwo" and "fd"
 	 */
+<<<<<<< HEAD
+=======
+	op = NULL;
+>>>>>>> refs/remotes/origin/master
 	for_each_node_by_name(dp, "SUNW,fdtwo") {
 		op = of_find_device_by_node(dp);
 		if (op)
@@ -371,7 +423,11 @@ static int sun_floppy_init(void)
 	FLOPPY_IRQ = op->archdata.irqs[0];
 
 	/* Last minute sanity check... */
+<<<<<<< HEAD
 	if(sun_fdc->status_82072 == 0xff) {
+=======
+	if (sun_fdc->status_82072 == 0xff) {
+>>>>>>> refs/remotes/origin/master
 		sun_fdc = NULL;
 		goto no_sun_fdc;
 	}

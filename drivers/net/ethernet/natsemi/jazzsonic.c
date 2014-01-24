@@ -83,8 +83,12 @@ static int jazzsonic_open(struct net_device* dev)
 {
 	int retval;
 
+<<<<<<< HEAD
 	retval = request_irq(dev->irq, sonic_interrupt, IRQF_DISABLED,
 				"sonic", dev);
+=======
+	retval = request_irq(dev->irq, sonic_interrupt, 0, "sonic", dev);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		printk(KERN_ERR "%s: unable to get IRQ %d.\n",
 				dev->name, dev->irq);
@@ -117,7 +121,11 @@ static const struct net_device_ops sonic_netdev_ops = {
 	.ndo_set_mac_address	= eth_mac_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit sonic_probe1(struct net_device *dev)
+=======
+static int sonic_probe1(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	static unsigned version_printed;
 	unsigned int silicon_revision;
@@ -175,6 +183,7 @@ static int __devinit sonic_probe1(struct net_device *dev)
 
 	/* Allocate the entire chunk of memory for the descriptors.
            Note that this cannot cross a 64K boundary. */
+<<<<<<< HEAD
 	if ((lp->descriptors = dma_alloc_coherent(lp->device,
 				SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
 				&lp->descriptors_laddr, GFP_KERNEL)) == NULL) {
@@ -182,6 +191,15 @@ static int __devinit sonic_probe1(struct net_device *dev)
 		       dev_name(lp->device));
 		goto out;
 	}
+=======
+	lp->descriptors = dma_alloc_coherent(lp->device,
+					     SIZEOF_SONIC_DESC *
+					     SONIC_BUS_SCALE(lp->dma_bitmode),
+					     &lp->descriptors_laddr,
+					     GFP_KERNEL);
+	if (lp->descriptors == NULL)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* Now set up the pointers to point to the appropriate places */
 	lp->cda = lp->descriptors;
@@ -220,7 +238,11 @@ out:
  * Probe for a SONIC ethernet controller on a Mips Jazz board.
  * Actually probing is superfluous but we're paranoid.
  */
+<<<<<<< HEAD
 static int __devinit jazz_sonic_probe(struct platform_device *pdev)
+=======
+static int jazz_sonic_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct sonic_local *lp;
@@ -270,7 +292,11 @@ MODULE_ALIAS("platform:jazzsonic");
 
 #include "sonic.c"
 
+<<<<<<< HEAD
 static int __devexit jazz_sonic_device_remove (struct platform_device *pdev)
+=======
+static int jazz_sonic_device_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = platform_get_drvdata(pdev);
 	struct sonic_local* lp = netdev_priv(dev);
@@ -286,7 +312,11 @@ static int __devexit jazz_sonic_device_remove (struct platform_device *pdev)
 
 static struct platform_driver jazz_sonic_driver = {
 	.probe	= jazz_sonic_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(jazz_sonic_device_remove),
+=======
+	.remove	= jazz_sonic_device_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= jazz_sonic_string,
 		.owner	= THIS_MODULE,

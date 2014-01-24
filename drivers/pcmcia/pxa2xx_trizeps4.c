@@ -30,6 +30,7 @@
 extern void board_pcmcia_power(int power);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{ 0, IRQ_GPIO(GPIO_PCD), "cs0_cd" }
 	/* on other baseboards we can have more inputs */
@@ -42,11 +43,16 @@ static int trizeps_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 static int trizeps_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int trizeps_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
+{
+>>>>>>> refs/remotes/origin/master
 	/* we dont have voltage/card/ready detection
 	 * so we dont need interrupts for it
 	 */
 	switch (skt->nr) {
 	case 0:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (gpio_request(GPIO_PRDY, "cf_irq") < 0) {
 			pr_err("%s: sock %d unable to request gpio %d\n", __func__,
@@ -66,18 +72,24 @@ static int trizeps_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	case 1:
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		skt->stat[SOC_STAT_CD].gpio = GPIO_PCD;
 		skt->stat[SOC_STAT_CD].name = "cs0_cd";
 		skt->stat[SOC_STAT_RDY].gpio = GPIO_PRDY;
 		skt->stat[SOC_STAT_RDY].name = "cs0_rdy";
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		break;
 	}
 	/* release the reset of this card */
 	pr_debug("%s: sock %d irq %d\n", __func__, skt->nr, skt->socket.pci_irq);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* supplementory irqs for the socket */
 	for (i = 0; i < ARRAY_SIZE(irqs); i++) {
@@ -115,6 +127,9 @@ static void trizeps_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long trizeps_pcmcia_status[2];
@@ -139,18 +154,24 @@ static void trizeps_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 	case 0:
 		/* just fill in fix states */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		state->detect = gpio_get_value(GPIO_PCD) ? 0 : 1;
 		state->ready  = gpio_get_value(GPIO_PRDY) ? 1 : 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		state->bvd1   = (status & ConXS_CFSR_BVD1) ? 1 : 0;
 		state->bvd2   = (status & ConXS_CFSR_BVD2) ? 1 : 0;
 		state->vs_3v  = (status & ConXS_CFSR_VS1) ? 0 : 1;
 		state->vs_Xv  = (status & ConXS_CFSR_VS2) ? 0 : 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		state->wrprot = 0;	/* not available */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 #ifndef CONFIG_MACH_TRIZEPS_CONXS
@@ -163,9 +184,12 @@ static void trizeps_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 		state->vs_3v  = 0;
 		state->vs_Xv  = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		state->wrprot = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 #endif
@@ -234,9 +258,12 @@ static struct pcmcia_low_level trizeps_pcmcia_ops = {
 	.owner			= THIS_MODULE,
 	.hw_init		= trizeps_pcmcia_hw_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.hw_shutdown		= trizeps_pcmcia_hw_shutdown,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.socket_state		= trizeps_pcmcia_socket_state,
 	.configure_socket	= trizeps_pcmcia_configure_socket,
 	.socket_init		= trizeps_pcmcia_socket_init,

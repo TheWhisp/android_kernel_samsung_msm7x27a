@@ -11,6 +11,10 @@
 
 #include <linux/list.h>
 #include <asm/bug.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 #ifndef __powerpc64__
@@ -60,16 +64,22 @@ struct mod_arch_specific {
  */
 
 #ifdef __powerpc64__
+<<<<<<< HEAD
 #    define Elf_Shdr	Elf64_Shdr
 #    define Elf_Sym	Elf64_Sym
 #    define Elf_Ehdr	Elf64_Ehdr
+=======
+>>>>>>> refs/remotes/origin/master
 #    ifdef MODULE
 	asm(".section .stubs,\"ax\",@nobits; .align 3; .previous");
 #    endif
 #else
+<<<<<<< HEAD
 #    define Elf_Shdr	Elf32_Shdr
 #    define Elf_Sym	Elf32_Sym
 #    define Elf_Ehdr	Elf32_Ehdr
+=======
+>>>>>>> refs/remotes/origin/master
 #    ifdef MODULE
 	asm(".section .plt,\"ax\",@nobits; .align 3; .previous");
 	asm(".section .init.plt,\"ax\",@nobits; .align 3; .previous");

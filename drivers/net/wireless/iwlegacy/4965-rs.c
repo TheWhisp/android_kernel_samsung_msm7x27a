@@ -873,7 +873,11 @@ il4965_rs_tx_status(void *il_r, struct ieee80211_supported_band *sband,
 	    tbl_type.is_SGI != !!(mac_flags & IEEE80211_TX_RC_SHORT_GI) ||
 	    tbl_type.is_ht40 != !!(mac_flags & IEEE80211_TX_RC_40_MHZ_WIDTH) ||
 	    tbl_type.is_dup != !!(mac_flags & IEEE80211_TX_RC_DUP_DATA) ||
+<<<<<<< HEAD
 	    tbl_type.ant_type != info->antenna_sel_tx ||
+=======
+	    tbl_type.ant_type != info->status.antenna ||
+>>>>>>> refs/remotes/origin/master
 	    !!(tx_rate & RATE_MCS_HT_MSK) != !!(mac_flags & IEEE80211_TX_RC_MCS)
 	    || !!(tx_rate & RATE_MCS_GF_MSK) !=
 	    !!(mac_flags & IEEE80211_TX_RC_GREEN_FIELD) || rs_idx != mac_idx) {
@@ -1183,8 +1187,12 @@ il4965_rs_switch_to_mimo2(struct il_priv *il, struct il_lq_sta *lq_sta,
 	if (!conf_is_ht(conf) || !sta->ht_cap.ht_supported)
 		return -1;
 
+<<<<<<< HEAD
 	if (((sta->ht_cap.cap & IEEE80211_HT_CAP_SM_PS) >> 2) ==
 	    WLAN_HT_CAP_SM_PS_STATIC)
+=======
+	if (sta->smps_mode == IEEE80211_SMPS_STATIC)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 
 	/* Need both Tx chains/antennas to support MIMO */
@@ -2153,7 +2161,11 @@ il4965_rs_initialize_lq(struct il_priv *il, struct ieee80211_conf *conf,
 	int rate_idx;
 	int i;
 	u32 rate;
+<<<<<<< HEAD
 	u8 use_green = il4965_rs_use_green(il, sta);
+=======
+	u8 use_green;
+>>>>>>> refs/remotes/origin/master
 	u8 active_tbl = 0;
 	u8 valid_tx_ant;
 	struct il_station_priv *sta_priv;
@@ -2161,6 +2173,10 @@ il4965_rs_initialize_lq(struct il_priv *il, struct ieee80211_conf *conf,
 	if (!sta || !lq_sta)
 		return;
 
+<<<<<<< HEAD
+=======
+	use_green = il4965_rs_use_green(il, sta);
+>>>>>>> refs/remotes/origin/master
 	sta_priv = (void *)sta->drv_priv;
 
 	i = lq_sta->last_txrate_idx;
@@ -2268,7 +2284,11 @@ il4965_rs_get_rate(void *il_r, struct ieee80211_sta *sta, void *il_sta,
 		info->control.rates[0].flags = 0;
 	}
 	info->control.rates[0].idx = rate_idx;
+<<<<<<< HEAD
 
+=======
+	info->control.rates[0].count = 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *
@@ -2300,7 +2320,11 @@ il4965_rs_rate_init(struct il_priv *il, struct ieee80211_sta *sta, u8 sta_id)
 
 	sta_priv = (struct il_station_priv *)sta->drv_priv;
 	lq_sta = &sta_priv->lq_sta;
+<<<<<<< HEAD
 	sband = hw->wiphy->bands[conf->channel->band];
+=======
+	sband = hw->wiphy->bands[conf->chandef.chan->band];
+>>>>>>> refs/remotes/origin/master
 
 	lq_sta->lq.sta_id = sta_id;
 
@@ -2803,6 +2827,10 @@ il4965_rs_remove_debugfs(void *il, void *il_sta)
  */
 static void
 il4965_rs_rate_init_stub(void *il_r, struct ieee80211_supported_band *sband,
+<<<<<<< HEAD
+=======
+			 struct cfg80211_chan_def *chandef,
+>>>>>>> refs/remotes/origin/master
 			 struct ieee80211_sta *sta, void *il_sta)
 {
 }

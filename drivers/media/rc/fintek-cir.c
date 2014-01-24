@@ -23,6 +23,11 @@
  * USA
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/pnp.h>
@@ -110,13 +115,17 @@ static u8 fintek_cir_reg_read(struct fintek_dev *fintek, u8 offset)
 	return val;
 }
 
+<<<<<<< HEAD
 #define pr_reg(text, ...) \
 	printk(KERN_INFO KBUILD_MODNAME ": " text, ## __VA_ARGS__)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* dump current cir register contents */
 static void cir_dump_regs(struct fintek_dev *fintek)
 {
 	fintek_config_mode_enable(fintek);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
 =======
@@ -138,6 +147,30 @@ static void cir_dump_regs(struct fintek_dev *fintek)
 	pr_reg(" * RX_DATA:    0x%x\n", fintek_cir_reg_read(fintek, CIR_RX_DATA));
 	pr_reg(" * TX_CONTROL: 0x%x\n", fintek_cir_reg_read(fintek, CIR_TX_CONTROL));
 	pr_reg(" * TX_DATA:    0x%x\n", fintek_cir_reg_read(fintek, CIR_TX_DATA));
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+
+	pr_info("%s: Dump CIR logical device registers:\n", FINTEK_DRIVER_NAME);
+	pr_info(" * CR CIR BASE ADDR: 0x%x\n",
+		(fintek_cr_read(fintek, CIR_CR_BASE_ADDR_HI) << 8) |
+		fintek_cr_read(fintek, CIR_CR_BASE_ADDR_LO));
+	pr_info(" * CR CIR IRQ NUM:   0x%x\n",
+		fintek_cr_read(fintek, CIR_CR_IRQ_SEL));
+
+	fintek_config_mode_disable(fintek);
+
+	pr_info("%s: Dump CIR registers:\n", FINTEK_DRIVER_NAME);
+	pr_info(" * STATUS:     0x%x\n",
+		fintek_cir_reg_read(fintek, CIR_STATUS));
+	pr_info(" * CONTROL:    0x%x\n",
+		fintek_cir_reg_read(fintek, CIR_CONTROL));
+	pr_info(" * RX_DATA:    0x%x\n",
+		fintek_cir_reg_read(fintek, CIR_RX_DATA));
+	pr_info(" * TX_CONTROL: 0x%x\n",
+		fintek_cir_reg_read(fintek, CIR_TX_CONTROL));
+	pr_info(" * TX_DATA:    0x%x\n",
+		fintek_cir_reg_read(fintek, CIR_TX_DATA));
+>>>>>>> refs/remotes/origin/master
 }
 
 /* detect hardware features */
@@ -148,10 +181,14 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 	u8 vendor_major, vendor_minor;
 	u8 portsel, ir_class;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 vendor;
 =======
 	u16 vendor, chip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 vendor, chip;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	fintek_config_mode_enable(fintek);
@@ -185,9 +222,13 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 	chip_major = fintek_cr_read(fintek, GCR_CHIP_ID_HI);
 	chip_minor = fintek_cr_read(fintek, GCR_CHIP_ID_LO);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	chip  = chip_major << 8 | chip_minor;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip  = chip_major << 8 | chip_minor;
+>>>>>>> refs/remotes/origin/master
 
 	vendor_major = fintek_cr_read(fintek, GCR_VENDOR_ID_HI);
 	vendor_minor = fintek_cr_read(fintek, GCR_VENDOR_ID_LO);
@@ -205,7 +246,10 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 	fintek->chip_minor  = chip_minor;
 	fintek->chip_vendor = vendor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Newer reviews of this chipset uses port 8 instead of 5
@@ -215,7 +259,10 @@ static int fintek_hw_detect(struct fintek_dev *fintek)
 	else
 		fintek->logical_dev_cir = LOGICAL_DEV_CIR_REV1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
 
 	return ret;
@@ -225,10 +272,14 @@ static void fintek_cir_ldev_init(struct fintek_dev *fintek)
 {
 	/* Select CIR logical device and enable */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
 =======
 	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/master
 	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
 
 	/* Write allocated CIR address and IRQ information to hardware */
@@ -309,6 +360,10 @@ static void fintek_process_rx_ir_data(struct fintek_dev *fintek)
 {
 	DEFINE_IR_RAW_EVENT(rawir);
 	u8 sample;
+<<<<<<< HEAD
+=======
+	bool event = false;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < fintek->pkts; i++) {
@@ -346,7 +401,13 @@ static void fintek_process_rx_ir_data(struct fintek_dev *fintek)
 			fit_dbg("Storing %s with duration %d",
 				rawir.pulse ? "pulse" : "space",
 				rawir.duration);
+<<<<<<< HEAD
 			ir_raw_event_store_with_filter(fintek->rdev, &rawir);
+=======
+			if (ir_raw_event_store_with_filter(fintek->rdev,
+									&rawir))
+				event = true;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -356,8 +417,15 @@ static void fintek_process_rx_ir_data(struct fintek_dev *fintek)
 
 	fintek->pkts = 0;
 
+<<<<<<< HEAD
 	fit_dbg("Calling ir_raw_event_handle");
 	ir_raw_event_handle(fintek->rdev);
+=======
+	if (event) {
+		fit_dbg("Calling ir_raw_event_handle");
+		ir_raw_event_handle(fintek->rdev);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* copy data from hardware rx register into driver buffer */
@@ -410,10 +478,14 @@ static irqreturn_t fintek_cir_isr(int irq, void *data)
 
 	fintek_config_mode_enable(fintek);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
 =======
 	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/master
 	fintek_config_mode_disable(fintek);
 
 	/*
@@ -455,10 +527,14 @@ static void fintek_enable_cir(struct fintek_dev *fintek)
 
 	/* enable the CIR logical device */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
 =======
 	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/master
 	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);
@@ -476,10 +552,14 @@ static void fintek_disable_cir(struct fintek_dev *fintek)
 
 	/* disable the CIR logical device */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
 =======
 	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/master
 	fintek_cr_write(fintek, LOGICAL_DEV_DISABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);
@@ -521,18 +601,30 @@ static int fintek_probe(struct pnp_dev *pdev, const struct pnp_device_id *dev_id
 	/* input device for IR remote (and tx) */
 	rdev = rc_allocate_device();
 	if (!rdev)
+<<<<<<< HEAD
 		goto failure;
+=======
+		goto exit_free_dev_rdev;
+>>>>>>> refs/remotes/origin/master
 
 	ret = -ENODEV;
 	/* validate pnp resources */
 	if (!pnp_port_valid(pdev, 0)) {
 		dev_err(&pdev->dev, "IR PNP Port not valid!\n");
+<<<<<<< HEAD
 		goto failure;
+=======
+		goto exit_free_dev_rdev;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!pnp_irq_valid(pdev, 0)) {
 		dev_err(&pdev->dev, "IR PNP IRQ not valid!\n");
+<<<<<<< HEAD
 		goto failure;
+=======
+		goto exit_free_dev_rdev;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fintek->cir_addr = pnp_port_start(pdev, 0);
@@ -549,7 +641,11 @@ static int fintek_probe(struct pnp_dev *pdev, const struct pnp_device_id *dev_id
 
 	ret = fintek_hw_detect(fintek);
 	if (ret)
+<<<<<<< HEAD
 		goto failure;
+=======
+		goto exit_free_dev_rdev;
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize CIR & CIR Wake Logical Devices */
 	fintek_config_mode_enable(fintek);
@@ -562,7 +658,11 @@ static int fintek_probe(struct pnp_dev *pdev, const struct pnp_device_id *dev_id
 	/* Set up the rc device */
 	rdev->priv = fintek;
 	rdev->driver_type = RC_DRIVER_IR_RAW;
+<<<<<<< HEAD
 	rdev->allowed_protos = RC_TYPE_ALL;
+=======
+	rdev->allowed_protos = RC_BIT_ALL;
+>>>>>>> refs/remotes/origin/master
 	rdev->open = fintek_open;
 	rdev->close = fintek_close;
 	rdev->input_name = FINTEK_DESCRIPTION;
@@ -578,10 +678,16 @@ static int fintek_probe(struct pnp_dev *pdev, const struct pnp_device_id *dev_id
 	/* rx resolution is hardwired to 50us atm, 1, 25, 100 also possible */
 	rdev->rx_resolution = US_TO_NS(CIR_SAMPLE_PERIOD);
 
+<<<<<<< HEAD
+=======
+	fintek->rdev = rdev;
+
+>>>>>>> refs/remotes/origin/master
 	ret = -EBUSY;
 	/* now claim resources */
 	if (!request_region(fintek->cir_addr,
 			    fintek->cir_port_len, FINTEK_DRIVER_NAME))
+<<<<<<< HEAD
 		goto failure;
 
 	if (request_irq(fintek->cir_irq, fintek_cir_isr, IRQF_SHARED,
@@ -594,25 +700,51 @@ static int fintek_probe(struct pnp_dev *pdev, const struct pnp_device_id *dev_id
 
 	device_init_wakeup(&pdev->dev, true);
 	fintek->rdev = rdev;
+=======
+		goto exit_free_dev_rdev;
+
+	if (request_irq(fintek->cir_irq, fintek_cir_isr, IRQF_SHARED,
+			FINTEK_DRIVER_NAME, (void *)fintek))
+		goto exit_free_cir_addr;
+
+	ret = rc_register_device(rdev);
+	if (ret)
+		goto exit_free_irq;
+
+	device_init_wakeup(&pdev->dev, true);
+
+>>>>>>> refs/remotes/origin/master
 	fit_pr(KERN_NOTICE, "driver has been successfully loaded\n");
 	if (debug)
 		cir_dump_regs(fintek);
 
 	return 0;
 
+<<<<<<< HEAD
 failure:
 	if (fintek->cir_irq)
 		free_irq(fintek->cir_irq, fintek);
 	if (fintek->cir_addr)
 		release_region(fintek->cir_addr, fintek->cir_port_len);
 
+=======
+exit_free_irq:
+	free_irq(fintek->cir_irq, fintek);
+exit_free_cir_addr:
+	release_region(fintek->cir_addr, fintek->cir_port_len);
+exit_free_dev_rdev:
+>>>>>>> refs/remotes/origin/master
 	rc_free_device(rdev);
 	kfree(fintek);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit fintek_remove(struct pnp_dev *pdev)
+=======
+static void fintek_remove(struct pnp_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fintek_dev *fintek = pnp_get_drvdata(pdev);
 	unsigned long flags;
@@ -652,10 +784,14 @@ static int fintek_suspend(struct pnp_dev *pdev, pm_message_t state)
 
 	/* disable cir logical dev */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
 =======
 	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/master
 	fintek_cr_write(fintek, LOGICAL_DEV_DISABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);
@@ -679,10 +815,14 @@ static int fintek_resume(struct pnp_dev *pdev)
 	/* Enable CIR logical device */
 	fintek_config_mode_enable(fintek);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fintek_select_logical_dev(fintek, LOGICAL_DEV_CIR);
 =======
 	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
+>>>>>>> refs/remotes/origin/master
 	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
 
 	fintek_config_mode_disable(fintek);
@@ -708,18 +848,30 @@ static struct pnp_driver fintek_driver = {
 	.id_table	= fintek_ids,
 	.flags		= PNP_DRIVER_RES_DO_NOT_CHANGE,
 	.probe		= fintek_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(fintek_remove),
+=======
+	.remove		= fintek_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= fintek_suspend,
 	.resume		= fintek_resume,
 	.shutdown	= fintek_shutdown,
 };
 
+<<<<<<< HEAD
 int fintek_init(void)
+=======
+static int fintek_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return pnp_register_driver(&fintek_driver);
 }
 
+<<<<<<< HEAD
 void fintek_exit(void)
+=======
+static void fintek_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pnp_unregister_driver(&fintek_driver);
 }

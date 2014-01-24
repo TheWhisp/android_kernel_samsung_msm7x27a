@@ -105,10 +105,14 @@ static bool sil164_readb(struct intel_dvo_device *dvo, int addr, uint8_t *ch)
 static bool sil164_writeb(struct intel_dvo_device *dvo, int addr, uint8_t ch)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sil164_priv *sil= dvo->dev_priv;
 =======
 	struct sil164_priv *sil = dvo->dev_priv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sil164_priv *sil = dvo->dev_priv;
+>>>>>>> refs/remotes/origin/master
 	struct i2c_adapter *adapter = dvo->i2c_bus;
 	uint8_t out_buf[2];
 	struct i2c_msg msg = {
@@ -212,7 +216,11 @@ static void sil164_mode_set(struct intel_dvo_device *dvo,
 }
 
 /* set the SIL164 power state */
+<<<<<<< HEAD
 static void sil164_dpms(struct intel_dvo_device *dvo, int mode)
+=======
+static void sil164_dpms(struct intel_dvo_device *dvo, bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	unsigned char ch;
@@ -221,7 +229,11 @@ static void sil164_dpms(struct intel_dvo_device *dvo, int mode)
 	if (ret == false)
 		return;
 
+<<<<<<< HEAD
 	if (mode == DRM_MODE_DPMS_ON)
+=======
+	if (enable)
+>>>>>>> refs/remotes/origin/master
 		ch |= SIL164_8_PD;
 	else
 		ch &= ~SIL164_8_PD;
@@ -230,6 +242,24 @@ static void sil164_dpms(struct intel_dvo_device *dvo, int mode)
 	return;
 }
 
+<<<<<<< HEAD
+=======
+static bool sil164_get_hw_state(struct intel_dvo_device *dvo)
+{
+	int ret;
+	unsigned char ch;
+
+	ret = sil164_readb(dvo, SIL164_REG8, &ch);
+	if (ret == false)
+		return false;
+
+	if (ch & SIL164_8_PD)
+		return true;
+	else
+		return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void sil164_dump_regs(struct intel_dvo_device *dvo)
 {
 	uint8_t val;
@@ -262,6 +292,10 @@ struct intel_dvo_dev_ops sil164_ops = {
 	.mode_valid = sil164_mode_valid,
 	.mode_set = sil164_mode_set,
 	.dpms = sil164_dpms,
+<<<<<<< HEAD
+=======
+	.get_hw_state = sil164_get_hw_state,
+>>>>>>> refs/remotes/origin/master
 	.dump_regs = sil164_dump_regs,
 	.destroy = sil164_destroy,
 };

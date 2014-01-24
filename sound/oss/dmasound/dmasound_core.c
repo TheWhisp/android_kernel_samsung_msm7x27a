@@ -619,6 +619,7 @@ static ssize_t sq_write(struct file *file, const char __user *src, size_t uLeft,
 	}
 
 	while (uLeft) {
+<<<<<<< HEAD
 		while (write_sq.count >= write_sq.max_active) {
 			sq_play();
 			if (write_sq.non_blocking)
@@ -628,6 +629,29 @@ static ssize_t sq_write(struct file *file, const char __user *src, size_t uLeft,
 				return uWritten > 0 ? uWritten : -EINTR;
 		}
 
+=======
+		DEFINE_WAIT(wait);
+
+		while (write_sq.count >= write_sq.max_active) {
+			prepare_to_wait(&write_sq.action_queue, &wait, TASK_INTERRUPTIBLE);
+			sq_play();
+			if (write_sq.non_blocking) {
+				finish_wait(&write_sq.action_queue, &wait);
+				return uWritten > 0 ? uWritten : -EAGAIN;
+			}
+			if (write_sq.count < write_sq.max_active)
+				break;
+
+			schedule_timeout(HZ);
+			if (signal_pending(current)) {
+				finish_wait(&write_sq.action_queue, &wait);
+				return uWritten > 0 ? uWritten : -EINTR;
+			}
+		}
+
+		finish_wait(&write_sq.action_queue, &wait);
+
+>>>>>>> refs/remotes/origin/master
 		/* Here, we can avoid disabling the interrupt by first
 		 * copying and translating the data, and then updating
 		 * the write_sq variables. Until this is done, the interrupt
@@ -707,11 +731,16 @@ static int sq_open2(struct sound_queue *sq, struct file *file, fmode_t mode,
 			if (file->f_flags & O_NONBLOCK)
 				return rc;
 			rc = -EINTR;
+<<<<<<< HEAD
 			while (sq->busy) {
 				SLEEP(sq->open_queue);
 				if (signal_pending(current))
 					return rc;
 			}
+=======
+			if (wait_event_interruptible(sq->open_queue, !sq->busy))
+				return rc;
+>>>>>>> refs/remotes/origin/master
 			rc = 0;
 #else
 			/* OSS manual says we will return EBUSY regardless
@@ -835,7 +864,11 @@ static void sq_reset(void)
 	shared_resources_initialised = 0 ;
 }
 
+<<<<<<< HEAD
 static int sq_fsync(struct file *filp, struct dentry *dentry)
+=======
+static int sq_fsync(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 	int timeout = 5;
@@ -844,7 +877,12 @@ static int sq_fsync(struct file *filp, struct dentry *dentry)
 	sq_play();	/* there may be an incomplete frame waiting */
 
 	while (write_sq.active) {
+<<<<<<< HEAD
 		SLEEP(write_sq.sync_queue);
+=======
+		wait_event_interruptible_timeout(write_sq.sync_queue,
+						 !write_sq.active, HZ);
+>>>>>>> refs/remotes/origin/master
 		if (signal_pending(current)) {
 			/* While waiting for audio output to drain, an
 			 * interrupt occurred.  Stop audio output immediately
@@ -874,7 +912,11 @@ static int sq_release(struct inode *inode, struct file *file)
 
 	if (file->f_mode & FMODE_WRITE) {
 		if (write_sq.busy)
+<<<<<<< HEAD
 			rc = sq_fsync(file, file->f_path.dentry);
+=======
+			rc = sq_fsync();
+>>>>>>> refs/remotes/origin/master
 
 		sq_reset_output() ; /* make sure dma is stopped and all is quiet */
 		write_sq_release_buffers();
@@ -1025,7 +1067,11 @@ static int sq_ioctl(struct file *file, u_int cmd, u_long arg)
 		*/
 		result = 0 ;
 		if (file->f_mode & FMODE_WRITE) {
+<<<<<<< HEAD
 			result = sq_fsync(file, file->f_path.dentry);
+=======
+			result = sq_fsync();
+>>>>>>> refs/remotes/origin/master
 			sq_reset_output() ;
 		}
 		/* if we are the shared resource owner then release them */

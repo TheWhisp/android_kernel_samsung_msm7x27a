@@ -18,9 +18,16 @@
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/irqdomain.h>
+#include <linux/of.h>
+#include <linux/regulator/consumer.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct device_type mfd_dev_type = {
 	.name	= "mfd_device",
@@ -64,7 +71,12 @@ int mfd_cell_disable(struct platform_device *pdev)
 EXPORT_SYMBOL(mfd_cell_disable);
 
 static int mfd_platform_add_cell(struct platform_device *pdev,
+<<<<<<< HEAD
 				 const struct mfd_cell *cell)
+=======
+				 const struct mfd_cell *cell,
+				 atomic_t *usage_count)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!cell)
 		return 0;
@@ -73,16 +85,30 @@ static int mfd_platform_add_cell(struct platform_device *pdev,
 	if (!pdev->mfd_cell)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	pdev->mfd_cell->usage_count = usage_count;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int mfd_add_device(struct device *parent, int id,
+<<<<<<< HEAD
 			  const struct mfd_cell *cell,
 			  struct resource *mem_base,
 			  int irq_base)
 {
 	struct resource *res;
 	struct platform_device *pdev;
+=======
+			  const struct mfd_cell *cell, atomic_t *usage_count,
+			  struct resource *mem_base,
+			  int irq_base, struct irq_domain *domain)
+{
+	struct resource *res;
+	struct platform_device *pdev;
+	struct device_node *np = NULL;
+>>>>>>> refs/remotes/origin/master
 	int ret = -ENOMEM;
 	int r;
 
@@ -96,17 +122,47 @@ static int mfd_add_device(struct device *parent, int id,
 
 	pdev->dev.parent = parent;
 	pdev->dev.type = &mfd_dev_type;
+<<<<<<< HEAD
+=======
+	pdev->dev.dma_mask = parent->dma_mask;
+	pdev->dev.dma_parms = parent->dma_parms;
+
+	ret = devm_regulator_bulk_register_supply_alias(
+			&pdev->dev, cell->parent_supplies,
+			parent, cell->parent_supplies,
+			cell->num_parent_supplies);
+	if (ret < 0)
+		goto fail_res;
+
+	if (parent->of_node && cell->of_compatible) {
+		for_each_child_of_node(parent->of_node, np) {
+			if (of_device_is_compatible(np, cell->of_compatible)) {
+				pdev->dev.of_node = np;
+				break;
+			}
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (cell->pdata_size) {
 		ret = platform_device_add_data(pdev,
 					cell->platform_data, cell->pdata_size);
 		if (ret)
+<<<<<<< HEAD
 			goto fail_res;
 	}
 
 	ret = mfd_platform_add_cell(pdev, cell);
 	if (ret)
 		goto fail_res;
+=======
+			goto fail_alias;
+	}
+
+	ret = mfd_platform_add_cell(pdev, cell, usage_count);
+	if (ret)
+		goto fail_alias;
+>>>>>>> refs/remotes/origin/master
 
 	for (r = 0; r < cell->num_resources; r++) {
 		res[r].name = cell->resources[r].name;
@@ -120,10 +176,25 @@ static int mfd_add_device(struct device *parent, int id,
 			res[r].end = mem_base->start +
 				cell->resources[r].end;
 		} else if (cell->resources[r].flags & IORESOURCE_IRQ) {
+<<<<<<< HEAD
 			res[r].start = irq_base +
 				cell->resources[r].start;
 			res[r].end   = irq_base +
 				cell->resources[r].end;
+=======
+			if (domain) {
+				/* Unable to create mappings for IRQ ranges. */
+				WARN_ON(cell->resources[r].start !=
+					cell->resources[r].end);
+				res[r].start = res[r].end = irq_create_mapping(
+					domain, cell->resources[r].start);
+			} else {
+				res[r].start = irq_base +
+					cell->resources[r].start;
+				res[r].end   = irq_base +
+					cell->resources[r].end;
+			}
+>>>>>>> refs/remotes/origin/master
 		} else {
 			res[r].parent = cell->resources[r].parent;
 			res[r].start = cell->resources[r].start;
@@ -133,17 +204,29 @@ static int mfd_add_device(struct device *parent, int id,
 		if (!cell->ignore_resource_conflicts) {
 			ret = acpi_check_resource_conflict(&res[r]);
 			if (ret)
+<<<<<<< HEAD
 				goto fail_res;
+=======
+				goto fail_alias;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	ret = platform_device_add_resources(pdev, res, cell->num_resources);
 	if (ret)
+<<<<<<< HEAD
 		goto fail_res;
 
 	ret = platform_device_add(pdev);
 	if (ret)
 		goto fail_res;
+=======
+		goto fail_alias;
+
+	ret = platform_device_add(pdev);
+	if (ret)
+		goto fail_alias;
+>>>>>>> refs/remotes/origin/master
 
 	if (cell->pm_runtime_no_callbacks)
 		pm_runtime_no_callbacks(&pdev->dev);
@@ -152,6 +235,13 @@ static int mfd_add_device(struct device *parent, int id,
 
 	return 0;
 
+<<<<<<< HEAD
+=======
+fail_alias:
+	devm_regulator_bulk_unregister_supply_alias(&pdev->dev,
+						    cell->parent_supplies,
+						    cell->num_parent_supplies);
+>>>>>>> refs/remotes/origin/master
 fail_res:
 	kfree(res);
 fail_device:
@@ -161,6 +251,7 @@ fail_alloc:
 }
 
 int mfd_add_devices(struct device *parent, int id,
+<<<<<<< HEAD
 		    struct mfd_cell *cells, int n_devs,
 		    struct resource *mem_base,
 		    int irq_base)
@@ -175,11 +266,24 @@ int mfd_add_devices(struct device *parent, int id,
 =======
 	cnts = kcalloc(n_devs, sizeof(*cnts), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    const struct mfd_cell *cells, int n_devs,
+		    struct resource *mem_base,
+		    int irq_base, struct irq_domain *domain)
+{
+	int i;
+	int ret;
+	atomic_t *cnts;
+
+	/* initialize reference counting for all cells */
+	cnts = kcalloc(n_devs, sizeof(*cnts), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!cnts)
 		return -ENOMEM;
 
 	for (i = 0; i < n_devs; i++) {
 		atomic_set(&cnts[i], 0);
+<<<<<<< HEAD
 		cells[i].usage_count = &cnts[i];
 		ret = mfd_add_device(parent, id, cells + i, mem_base, irq_base);
 		if (ret)
@@ -189,6 +293,21 @@ int mfd_add_devices(struct device *parent, int id,
 	if (ret)
 		mfd_remove_devices(parent);
 
+=======
+		ret = mfd_add_device(parent, id, cells + i, cnts + i, mem_base,
+				     irq_base, domain);
+		if (ret)
+			goto fail;
+	}
+
+	return 0;
+
+fail:
+	if (i)
+		mfd_remove_devices(parent);
+	else
+		kfree(cnts);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(mfd_add_devices);
@@ -243,7 +362,12 @@ int mfd_clone_cell(const char *cell, const char **clones, size_t n_clones)
 	for (i = 0; i < n_clones; i++) {
 		cell_entry.name = clones[i];
 		/* don't give up if a single call fails; just report error */
+<<<<<<< HEAD
 		if (mfd_add_device(pdev->dev.parent, -1, &cell_entry, NULL, 0))
+=======
+		if (mfd_add_device(pdev->dev.parent, -1, &cell_entry,
+				   cell_entry.usage_count, NULL, 0, NULL))
+>>>>>>> refs/remotes/origin/master
 			dev_err(dev, "failed to create platform device '%s'\n",
 					clones[i]);
 	}

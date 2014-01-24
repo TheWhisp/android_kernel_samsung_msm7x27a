@@ -65,6 +65,7 @@ static void audit_file_mask(struct audit_buffer *ab, u32 mask)
 static void file_audit_cb(struct audit_buffer *ab, void *va)
 {
 	struct common_audit_data *sa = va;
+<<<<<<< HEAD
 	uid_t fsuid = current_fsuid();
 
 <<<<<<< HEAD
@@ -85,6 +86,10 @@ static void file_audit_cb(struct audit_buffer *ab, void *va)
 		audit_log_format(ab, " target=");
 		audit_log_untrustedstring(ab, sa->aad.fs.target);
 =======
+=======
+	kuid_t fsuid = current_fsuid();
+
+>>>>>>> refs/remotes/origin/master
 	if (sa->aad->fs.request & AA_AUDIT_FILE_MASK) {
 		audit_log_format(ab, " requested_mask=");
 		audit_file_mask(ab, sa->aad->fs.request);
@@ -94,14 +99,24 @@ static void file_audit_cb(struct audit_buffer *ab, void *va)
 		audit_file_mask(ab, sa->aad->fs.denied);
 	}
 	if (sa->aad->fs.request & AA_AUDIT_FILE_MASK) {
+<<<<<<< HEAD
 		audit_log_format(ab, " fsuid=%d", fsuid);
 		audit_log_format(ab, " ouid=%d", sa->aad->fs.ouid);
+=======
+		audit_log_format(ab, " fsuid=%d",
+				 from_kuid(&init_user_ns, fsuid));
+		audit_log_format(ab, " ouid=%d",
+				 from_kuid(&init_user_ns, sa->aad->fs.ouid));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (sa->aad->fs.target) {
 		audit_log_format(ab, " target=");
 		audit_log_untrustedstring(ab, sa->aad->fs.target);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -122,6 +137,7 @@ static void file_audit_cb(struct audit_buffer *ab, void *va)
  */
 int aa_audit_file(struct aa_profile *profile, struct file_perms *perms,
 		  gfp_t gfp, int op, u32 request, const char *name,
+<<<<<<< HEAD
 		  const char *target, uid_t ouid, const char *info, int error)
 {
 	int type = AUDIT_APPARMOR_AUTO;
@@ -140,6 +156,14 @@ int aa_audit_file(struct aa_profile *profile, struct file_perms *perms,
 =======
 	struct apparmor_audit_data aad = {0,};
 	COMMON_AUDIT_DATA_INIT(&sa, NONE);
+=======
+		  const char *target, kuid_t ouid, const char *info, int error)
+{
+	int type = AUDIT_APPARMOR_AUTO;
+	struct common_audit_data sa;
+	struct apparmor_audit_data aad = {0,};
+	sa.type = LSM_AUDIT_DATA_NONE;
+>>>>>>> refs/remotes/origin/master
 	sa.aad = &aad;
 	aad.op = op,
 	aad.fs.request = request;
@@ -150,13 +174,17 @@ int aa_audit_file(struct aa_profile *profile, struct file_perms *perms,
 	aad.error = error;
 
 	if (likely(!sa.aad->error)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		u32 mask = perms->audit;
 
 		if (unlikely(AUDIT_MODE(profile) == AUDIT_ALL))
 			mask = 0xffff;
 
 		/* mask off perms that are not being force audited */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sa.aad.fs.request &= mask;
 
@@ -166,10 +194,16 @@ int aa_audit_file(struct aa_profile *profile, struct file_perms *perms,
 
 		if (likely(!sa.aad->fs.request))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sa.aad->fs.request &= mask;
+
+		if (likely(!sa.aad->fs.request))
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		type = AUDIT_APPARMOR_AUDIT;
 	} else {
 		/* only report permissions that were denied */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sa.aad.fs.request = sa.aad.fs.request & ~perms->allow;
 
@@ -188,6 +222,8 @@ int aa_audit_file(struct aa_profile *profile, struct file_perms *perms,
 
 	sa.aad.fs.denied = sa.aad.fs.request & ~perms->allow;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		sa.aad->fs.request = sa.aad->fs.request & ~perms->allow;
 
 		if (sa.aad->fs.request & perms->kill)
@@ -204,7 +240,10 @@ int aa_audit_file(struct aa_profile *profile, struct file_perms *perms,
 	}
 
 	sa.aad->fs.denied = sa.aad->fs.request & ~perms->allow;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return aa_audit(type, profile, gfp, &sa, file_audit_cb);
 }
 
@@ -233,10 +272,13 @@ static u32 map_old_perms(u32 old)
 		new |= AA_EXEC_MMAP;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	new |= AA_MAY_META_READ;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return new;
 }
 
@@ -263,7 +305,11 @@ static struct file_perms compute_perms(struct aa_dfa *dfa, unsigned int state,
 	 */
 	perms.kill = 0;
 
+<<<<<<< HEAD
 	if (current_fsuid() == cond->uid) {
+=======
+	if (uid_eq(current_fsuid(), cond->uid)) {
+>>>>>>> refs/remotes/origin/master
 		perms.allow = map_old_perms(dfa_user_allow(dfa, state));
 		perms.audit = map_old_perms(dfa_user_audit(dfa, state));
 		perms.quiet = map_old_perms(dfa_user_quiet(dfa, state));
@@ -275,18 +321,27 @@ static struct file_perms compute_perms(struct aa_dfa *dfa, unsigned int state,
 		perms.xindex = dfa_other_xindex(dfa, state);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	perms.allow |= AA_MAY_META_READ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	perms.allow |= AA_MAY_META_READ;
+>>>>>>> refs/remotes/origin/master
 
 	/* change_profile wasn't determined by ownership in old mapping */
 	if (ACCEPT_TABLE(dfa)[state] & 0x80000000)
 		perms.allow |= AA_MAY_CHANGE_PROFILE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (ACCEPT_TABLE(dfa)[state] & 0x40000000)
 		perms.allow |= AA_MAY_ONEXEC;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ACCEPT_TABLE(dfa)[state] & 0x40000000)
+		perms.allow |= AA_MAY_ONEXEC;
+>>>>>>> refs/remotes/origin/master
 
 	return perms;
 }
@@ -351,16 +406,21 @@ int aa_path_perm(int op, struct aa_profile *profile, struct path *path,
 
 	flags |= profile->path_flags | (S_ISDIR(cond->mode) ? PATH_IS_DIR : 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = aa_get_name(path, flags, &buffer, &name);
 =======
 	error = aa_path_name(path, flags, &buffer, &name, &info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = aa_path_name(path, flags, &buffer, &name, &info);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		if (error == -ENOENT && is_deleted(path->dentry)) {
 			/* Access to open files that are deleted are
 			 * give a pass (implicit delegation)
 			 */
 			error = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			perms.allow = request;
 		} else if (error == -ENOENT)
@@ -376,6 +436,11 @@ int aa_path_perm(int op, struct aa_profile *profile, struct path *path,
 			perms.allow = request;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			info = NULL;
+			perms.allow = request;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else {
 		aa_str_perms(profile->file.dfa, profile->file.start, name, cond,
 			     &perms);
@@ -447,21 +512,31 @@ int aa_path_link(struct aa_profile *profile, struct dentry *old_dentry,
 
 	/* buffer freed below, lname is pointer in buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = aa_get_name(&link, profile->path_flags, &buffer, &lname);
 =======
 	error = aa_path_name(&link, profile->path_flags, &buffer, &lname,
 			     &info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = aa_path_name(&link, profile->path_flags, &buffer, &lname,
+			     &info);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto audit;
 
 	/* buffer2 freed below, tname is pointer in buffer2 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	error = aa_get_name(&target, profile->path_flags, &buffer2, &tname);
 =======
 	error = aa_path_name(&target, profile->path_flags, &buffer2, &tname,
 			     &info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = aa_path_name(&target, profile->path_flags, &buffer2, &tname,
+			     &info);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto audit;
 
@@ -539,8 +614,13 @@ int aa_file_perm(int op, struct aa_profile *profile, struct file *file,
 		 u32 request)
 {
 	struct path_cond cond = {
+<<<<<<< HEAD
 		.uid = file->f_path.dentry->d_inode->i_uid,
 		.mode = file->f_path.dentry->d_inode->i_mode
+=======
+		.uid = file_inode(file)->i_uid,
+		.mode = file_inode(file)->i_mode
+>>>>>>> refs/remotes/origin/master
 	};
 
 	return aa_path_perm(op, profile, &file->f_path, PATH_DELEGATE_DELETED,

@@ -806,10 +806,14 @@ static void vortex_fifo_setadbvalid(vortex_t * vortex, int fifo, int en)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 vortex_fifo_setadbctrl(vortex_t * vortex, int fifo, int b, int priority,
 =======
 vortex_fifo_setadbctrl(vortex_t * vortex, int fifo, int stereo, int priority,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+vortex_fifo_setadbctrl(vortex_t * vortex, int fifo, int stereo, int priority,
+>>>>>>> refs/remotes/origin/master
 		       int empty, int valid, int f)
 {
 	int temp, lifeboat = 0;
@@ -842,10 +846,14 @@ vortex_fifo_setadbctrl(vortex_t * vortex, int fifo, int stereo, int priority,
 			temp = (this_4 & 0x3f) << 0xc;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 			temp = (temp & 0xfffffffd) | ((b & 1) << 1);
 =======
 			temp = (temp & 0xfffffffd) | ((stereo & 1) << 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			temp = (temp & 0xfffffffd) | ((stereo & 1) << 1);
+>>>>>>> refs/remotes/origin/master
 			temp = (temp & 0xfffffff3) | ((priority & 3) << 2);
 			temp = (temp & 0xffffffef) | ((valid & 1) << 4);
 			temp |= FIFO_U1;
@@ -1157,18 +1165,24 @@ vortex_adbdma_setbuffers(vortex_t * vortex, int adbdma,
 static void
 vortex_adbdma_setmode(vortex_t * vortex, int adbdma, int ie, int dir,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      int fmt, int d, u32 offset)
 {
 	stream_t *dma = &vortex->dma_adb[adbdma];
 
 	dma->dma_unknown = d;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		      int fmt, int stereo, u32 offset)
 {
 	stream_t *dma = &vortex->dma_adb[adbdma];
 
 	dma->dma_unknown = stereo;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dma->dma_ctrl =
 	    ((offset & OFFSET_MASK) | (dma->dma_ctrl & ~OFFSET_MASK));
 	/* Enable PCMOUT interrupts. */
@@ -1353,9 +1367,12 @@ static void vortex_adbdma_pausefifo(vortex_t * vortex, int adbdma)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if 0				// Using pause instead
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void vortex_adbdma_stopfifo(vortex_t * vortex, int adbdma)
 {
 	stream_t *dma = &vortex->dma_adb[adbdma];
@@ -1371,9 +1388,12 @@ static void vortex_adbdma_stopfifo(vortex_t * vortex, int adbdma)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* WTDMA */
 
 #ifndef CHIP_AU8810
@@ -2075,10 +2095,13 @@ vortex_adb_checkinout(vortex_t * vortex, int resmap[], int out, int restype)
 
 /* Default Connections  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int
 vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int type);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void vortex_connect_default(vortex_t * vortex, int en)
 {
@@ -2139,6 +2162,7 @@ static void vortex_connect_default(vortex_t * vortex, int en)
 */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int type)
 {
 	stream_t *stream;
@@ -2149,6 +2173,8 @@ vortex_adb_allocroute(vortex_t * vortex, int dma, int nr_ch, int dir, int type)
 		return -EBUSY;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
 			int type, int subdev)
 {
@@ -2156,7 +2182,10 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
 	int i, en;
 	struct pcm_vol *p;
 	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dma >= 0) {
 		en = 0;
 		vortex_adb_checkinout(vortex,
@@ -2288,7 +2317,10 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
 #endif
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (stream->type == VORTEX_PCM_ADB && en) {
 				p = &vortex->pcm_vol[subdev];
 				p->dma = dma;
@@ -2297,7 +2329,10 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
 				for (i = 0; i < ch_top; i++)
 					p->vol[i] = 0;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 #ifndef CHIP_AU8820
 		else {
@@ -2505,7 +2540,16 @@ static irqreturn_t vortex_interrupt(int irq, void *dev_id)
 #ifndef CHIP_AU8810
 		for (i = 0; i < NR_WT; i++) {
 			if (vortex->dma_wt[i].fifo_status == FIFO_START) {
+<<<<<<< HEAD
 				if (vortex_wtdma_bufshift(vortex, i)) ;
+=======
+				/* FIXME: we ignore the return value from
+				 * vortex_wtdma_bufshift() below as the delta
+				 * calculation seems not working for wavetable
+				 * by some reason
+				 */
+				vortex_wtdma_bufshift(vortex, i);
+>>>>>>> refs/remotes/origin/master
 				spin_unlock(&vortex->lock);
 				snd_pcm_period_elapsed(vortex->dma_wt[i].
 						       substream);
@@ -2522,10 +2566,14 @@ static irqreturn_t vortex_interrupt(int irq, void *dev_id)
 		handled = 1;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (source & IRQ_MIDI) {
 =======
 	if ((source & IRQ_MIDI) && vortex->rmidi) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((source & IRQ_MIDI) && vortex->rmidi) {
+>>>>>>> refs/remotes/origin/master
 		snd_mpu401_uart_interrupt(vortex->irq,
 					  vortex->rmidi->private_data);
 		handled = 1;
@@ -2723,7 +2771,11 @@ static void vortex_spdif_init(vortex_t * vortex, int spdif_sr, int spdif_mode)
 
 /* Initialization */
 
+<<<<<<< HEAD
 static int __devinit vortex_core_init(vortex_t * vortex)
+=======
+static int vortex_core_init(vortex_t *vortex)
+>>>>>>> refs/remotes/origin/master
 {
 
 	printk(KERN_INFO "Vortex: init.... ");

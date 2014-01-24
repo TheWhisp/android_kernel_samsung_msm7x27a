@@ -11,12 +11,17 @@
 #include <linux/moduleparam.h>
 #include <linux/cpuidle.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
+=======
+#include <linux/notifier.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/paca.h>
 #include <asm/reg.h>
 #include <asm/machdep.h>
 #include <asm/firmware.h>
 #include <asm/runlatch.h>
+<<<<<<< HEAD
 
 #include "plpar_wrappers.h"
 #include "pseries.h"
@@ -24,6 +29,13 @@
 struct cpuidle_driver pseries_idle_driver = {
 	.name =		"pseries_idle",
 	.owner =	THIS_MODULE,
+=======
+#include <asm/plpar_wrappers.h>
+
+struct cpuidle_driver pseries_idle_driver = {
+	.name             = "pseries_idle",
+	.owner            = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define MAX_IDLE_STATE_COUNT	2
@@ -32,6 +44,7 @@ static int max_idle_state = MAX_IDLE_STATE_COUNT - 1;
 static struct cpuidle_device __percpu *pseries_cpuidle_devices;
 static struct cpuidle_state *cpuidle_state_table;
 
+<<<<<<< HEAD
 void update_smt_snooze_delay(int snooze)
 {
 	struct cpuidle_driver *drv = cpuidle_get_driver();
@@ -43,6 +56,10 @@ static inline void idle_loop_prolog(unsigned long *in_purr, ktime_t *kt_before)
 {
 
 	*kt_before = ktime_get_real();
+=======
+static inline void idle_loop_prolog(unsigned long *in_purr)
+{
+>>>>>>> refs/remotes/origin/master
 	*in_purr = mfspr(SPRN_PURR);
 	/*
 	 * Indicate to the HV that we are idle. Now would be
@@ -51,12 +68,23 @@ static inline void idle_loop_prolog(unsigned long *in_purr, ktime_t *kt_before)
 	get_lppaca()->idle = 1;
 }
 
+<<<<<<< HEAD
 static inline  s64 idle_loop_epilog(unsigned long in_purr, ktime_t kt_before)
 {
 	get_lppaca()->wait_state_cycles += mfspr(SPRN_PURR) - in_purr;
 	get_lppaca()->idle = 0;
 
 	return ktime_to_us(ktime_sub(ktime_get_real(), kt_before));
+=======
+static inline void idle_loop_epilog(unsigned long in_purr)
+{
+	u64 wait_cycles;
+
+	wait_cycles = be64_to_cpu(get_lppaca()->wait_state_cycles);
+	wait_cycles += mfspr(SPRN_PURR) - in_purr;
+	get_lppaca()->wait_state_cycles = cpu_to_be64(wait_cycles);
+	get_lppaca()->idle = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int snooze_loop(struct cpuidle_device *dev,
@@ -64,6 +92,7 @@ static int snooze_loop(struct cpuidle_device *dev,
 			int index)
 {
 	unsigned long in_purr;
+<<<<<<< HEAD
 	ktime_t kt_before;
 	unsigned long start_snooze;
 	long snooze = drv->states[0].target_residency;
@@ -93,6 +122,26 @@ out:
 	HMT_medium();
 	dev->last_residency =
 		(int)idle_loop_epilog(in_purr, kt_before);
+=======
+	int cpu = dev->cpu;
+
+	idle_loop_prolog(&in_purr);
+	local_irq_enable();
+	set_thread_flag(TIF_POLLING_NRFLAG);
+
+	while ((!need_resched()) && cpu_online(cpu)) {
+		ppc64_runlatch_off();
+		HMT_low();
+		HMT_very_low();
+	}
+
+	HMT_medium();
+	clear_thread_flag(TIF_POLLING_NRFLAG);
+	smp_mb();
+
+	idle_loop_epilog(in_purr);
+
+>>>>>>> refs/remotes/origin/master
 	return index;
 }
 
@@ -118,9 +167,14 @@ static int dedicated_cede_loop(struct cpuidle_device *dev,
 				int index)
 {
 	unsigned long in_purr;
+<<<<<<< HEAD
 	ktime_t kt_before;
 
 	idle_loop_prolog(&in_purr, &kt_before);
+=======
+
+	idle_loop_prolog(&in_purr);
+>>>>>>> refs/remotes/origin/master
 	get_lppaca()->donate_dedicated_cpu = 1;
 
 	ppc64_runlatch_off();
@@ -128,8 +182,14 @@ static int dedicated_cede_loop(struct cpuidle_device *dev,
 	check_and_cede_processor();
 
 	get_lppaca()->donate_dedicated_cpu = 0;
+<<<<<<< HEAD
 	dev->last_residency =
 		(int)idle_loop_epilog(in_purr, kt_before);
+=======
+
+	idle_loop_epilog(in_purr);
+
+>>>>>>> refs/remotes/origin/master
 	return index;
 }
 
@@ -138,9 +198,14 @@ static int shared_cede_loop(struct cpuidle_device *dev,
 			int index)
 {
 	unsigned long in_purr;
+<<<<<<< HEAD
 	ktime_t kt_before;
 
 	idle_loop_prolog(&in_purr, &kt_before);
+=======
+
+	idle_loop_prolog(&in_purr);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Yield the processor to the hypervisor.  We return if
@@ -151,8 +216,13 @@ static int shared_cede_loop(struct cpuidle_device *dev,
 	 */
 	check_and_cede_processor();
 
+<<<<<<< HEAD
 	dev->last_residency =
 		(int)idle_loop_epilog(in_purr, kt_before);
+=======
+	idle_loop_epilog(in_purr);
+
+>>>>>>> refs/remotes/origin/master
 	return index;
 }
 
@@ -171,8 +241,13 @@ static struct cpuidle_state dedicated_states[MAX_IDLE_STATE_COUNT] = {
 		.name = "CEDE",
 		.desc = "CEDE",
 		.flags = CPUIDLE_FLAG_TIME_VALID,
+<<<<<<< HEAD
 		.exit_latency = 1,
 		.target_residency = 10,
+=======
+		.exit_latency = 10,
+		.target_residency = 100,
+>>>>>>> refs/remotes/origin/master
 		.enter = &dedicated_cede_loop },
 };
 
@@ -189,6 +264,7 @@ static struct cpuidle_state shared_states[MAX_IDLE_STATE_COUNT] = {
 		.enter = &shared_cede_loop },
 };
 
+<<<<<<< HEAD
 int pseries_notify_cpuidle_add_cpu(int cpu)
 {
 	struct cpuidle_device *dev =
@@ -200,6 +276,59 @@ int pseries_notify_cpuidle_add_cpu(int cpu)
 	return 0;
 }
 
+=======
+void update_smt_snooze_delay(int cpu, int residency)
+{
+	struct cpuidle_driver *drv = cpuidle_get_driver();
+	struct cpuidle_device *dev = per_cpu(cpuidle_devices, cpu);
+
+	if (cpuidle_state_table != dedicated_states)
+		return;
+
+	if (residency < 0) {
+		/* Disable the Nap state on that cpu */
+		if (dev)
+			dev->states_usage[1].disable = 1;
+	} else
+		if (drv)
+			drv->states[1].target_residency = residency;
+}
+
+static int pseries_cpuidle_add_cpu_notifier(struct notifier_block *n,
+			unsigned long action, void *hcpu)
+{
+	int hotcpu = (unsigned long)hcpu;
+	struct cpuidle_device *dev =
+			per_cpu_ptr(pseries_cpuidle_devices, hotcpu);
+
+	if (dev && cpuidle_get_driver()) {
+		switch (action) {
+		case CPU_ONLINE:
+		case CPU_ONLINE_FROZEN:
+			cpuidle_pause_and_lock();
+			cpuidle_enable_device(dev);
+			cpuidle_resume_and_unlock();
+			break;
+
+		case CPU_DEAD:
+		case CPU_DEAD_FROZEN:
+			cpuidle_pause_and_lock();
+			cpuidle_disable_device(dev);
+			cpuidle_resume_and_unlock();
+			break;
+
+		default:
+			return NOTIFY_DONE;
+		}
+	}
+	return NOTIFY_OK;
+}
+
+static struct notifier_block setup_hotplug_notifier = {
+	.notifier_call = pseries_cpuidle_add_cpu_notifier,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * pseries_cpuidle_driver_init()
  */
@@ -222,10 +351,13 @@ static int pseries_cpuidle_driver_init(void)
 		drv->states[drv->state_count] =	/* structure copy */
 			cpuidle_state_table[idle_state];
 
+<<<<<<< HEAD
 		if (cpuidle_state_table == dedicated_states)
 			drv->states[drv->state_count].target_residency =
 				__get_cpu_var(smt_snooze_delay);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		drv->state_count += 1;
 	}
 
@@ -294,7 +426,11 @@ static int pseries_idle_probe(void)
 		return -EPERM;
 	}
 
+<<<<<<< HEAD
 	if (get_lppaca()->shared_proc)
+=======
+	if (lppaca_shared_proc(get_lppaca()))
+>>>>>>> refs/remotes/origin/master
 		cpuidle_state_table = shared_states;
 	else
 		cpuidle_state_table = dedicated_states;
@@ -324,6 +460,10 @@ static int __init pseries_processor_idle_init(void)
 		return retval;
 	}
 
+<<<<<<< HEAD
+=======
+	register_cpu_notifier(&setup_hotplug_notifier);
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_DEBUG "pseries_idle_driver registered\n");
 
 	return 0;
@@ -332,6 +472,10 @@ static int __init pseries_processor_idle_init(void)
 static void __exit pseries_processor_idle_exit(void)
 {
 
+<<<<<<< HEAD
+=======
+	unregister_cpu_notifier(&setup_hotplug_notifier);
+>>>>>>> refs/remotes/origin/master
 	pseries_idle_devices_uninit();
 	cpuidle_unregister_driver(&pseries_idle_driver);
 

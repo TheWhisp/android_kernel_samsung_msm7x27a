@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2011  Realtek Corporation. All rights reserved.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -33,9 +37,12 @@
 #define __RTL_USB_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/usb.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 
 #define RTL_RX_DESC_SIZE		24
@@ -144,11 +151,21 @@ struct rtl_usb {
 	void (*usb_tx_cleanup)(struct ieee80211_hw *, struct sk_buff *);
 
 	/* Rx */
+<<<<<<< HEAD
 	u8 in_ep_nums ;
+=======
+	u8 in_ep_nums;
+>>>>>>> refs/remotes/origin/master
 	u32 in_ep;		/* Bulk IN endpoint number */
 	u32 rx_max_size;	/* Bulk IN max buffer size */
 	u32 rx_urb_num;		/* How many Bulk INs are submitted to host. */
 	struct usb_anchor	rx_submitted;
+<<<<<<< HEAD
+=======
+	struct usb_anchor	rx_cleanup_urbs;
+	struct tasklet_struct   rx_work_tasklet;
+	struct sk_buff_head	rx_queue;
+>>>>>>> refs/remotes/origin/master
 	void (*usb_rx_segregate_hdl)(struct ieee80211_hw *, struct sk_buff *,
 				     struct sk_buff_head *);
 	void (*usb_rx_hdl)(struct ieee80211_hw *, struct sk_buff *);
@@ -164,8 +181,14 @@ struct rtl_usb_priv {
 
 
 
+<<<<<<< HEAD
 int __devinit rtl_usb_probe(struct usb_interface *intf,
 			    const struct usb_device_id *id);
+=======
+int rtl_usb_probe(struct usb_interface *intf,
+		  const struct usb_device_id *id,
+		  struct rtl_hal_cfg *rtl92cu_hal_cfg);
+>>>>>>> refs/remotes/origin/master
 void rtl_usb_disconnect(struct usb_interface *intf);
 int rtl_usb_suspend(struct usb_interface *pusb_intf, pm_message_t message);
 int rtl_usb_resume(struct usb_interface *pusb_intf);

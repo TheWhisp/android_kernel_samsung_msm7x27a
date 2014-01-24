@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 include include/asm-generic/Kbuild.asm
 
 header-y += boot.h
@@ -31,8 +32,16 @@ header-y += vsyscall.h
 =======
 header-y += vm86.h
 header-y += vsyscall.h
+=======
+
+>>>>>>> refs/remotes/origin/master
 
 genhdr-y += unistd_32.h
 genhdr-y += unistd_64.h
 genhdr-y += unistd_x32.h
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+generic-y += clkdev.h
+>>>>>>> refs/remotes/origin/master

@@ -11,6 +11,7 @@
  * 2004/02/19 Paul Clements
  *            Removed PARANOIA, plus various cleanup and comments
  */
+<<<<<<< HEAD
 
 #ifndef LINUX_NBD_H
 #define LINUX_NBD_H
@@ -45,6 +46,15 @@ enum {
 /* values for flags field */
 #define NBD_READ_ONLY 0x0001
 #define NBD_WRITE_NOCHK 0x0002
+=======
+#ifndef LINUX_NBD_H
+#define LINUX_NBD_H
+
+
+#include <linux/wait.h>
+#include <linux/mutex.h>
+#include <uapi/linux/nbd.h>
+>>>>>>> refs/remotes/origin/master
 
 struct request;
 
@@ -68,6 +78,7 @@ struct nbd_device {
 	u64 bytesize;
 	pid_t pid; /* pid of nbd-client, if attached */
 	int xmit_timeout;
+<<<<<<< HEAD
 };
 
 #endif
@@ -100,3 +111,9 @@ struct nbd_reply {
 	char handle[8];		/* handle you got from request	*/
 };
 #endif
+=======
+	int disconnect; /* a disconnect has been requested by user */
+};
+
+#endif
+>>>>>>> refs/remotes/origin/master

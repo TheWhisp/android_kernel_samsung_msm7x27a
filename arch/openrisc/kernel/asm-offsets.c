@@ -34,15 +34,22 @@
 #include <linux/mm.h>
 #include <linux/io.h>
 #include <linux/thread_info.h>
+<<<<<<< HEAD
+=======
+#include <linux/kbuild.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/processor.h>
 
+<<<<<<< HEAD
 #define DEFINE(sym, val) \
 		asm volatile("\n->" #sym " %0 " #val : : "i" (val))
 
 #define BLANK() asm volatile("\n->" : : )
 
+=======
+>>>>>>> refs/remotes/origin/master
 int main(void)
 {
 	/* offsets into the task_struct */

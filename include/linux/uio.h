@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 #ifndef __LINUX_UIO_H
 #define __LINUX_UIO_H
 
 #include <linux/compiler.h>
 #include <linux/types.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Berkeley style UIO structures	-	Alan Cox 1994.
  *
@@ -12,6 +15,7 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 struct iovec
 {
@@ -27,6 +31,13 @@ struct iovec
 #define UIO_MAXIOV	1024
 
 #ifdef __KERNEL__
+=======
+#ifndef __LINUX_UIO_H
+#define __LINUX_UIO_H
+
+#include <uapi/linux/uio.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct kvec {
 	void *iov_base; /* and that should *never* hold a userland pointer */
@@ -51,6 +62,12 @@ static inline size_t iov_length(const struct iovec *iov, unsigned long nr_segs)
 }
 
 unsigned long iov_shorten(struct iovec *iov, unsigned long nr_segs, size_t to);
+<<<<<<< HEAD
 #endif
 
+=======
+
+int memcpy_fromiovec(unsigned char *kdata, struct iovec *iov, int len);
+int memcpy_toiovec(struct iovec *iov, unsigned char *kdata, int len);
+>>>>>>> refs/remotes/origin/master
 #endif

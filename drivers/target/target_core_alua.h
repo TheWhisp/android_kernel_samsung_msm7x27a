@@ -7,15 +7,24 @@
  * from spc4r17 section 6.4.2 Table 135
  */
 #define TPGS_NO_ALUA				0x00
+<<<<<<< HEAD
 #define TPGS_IMPLICT_ALUA			0x10
 #define TPGS_EXPLICT_ALUA			0x20
+=======
+#define TPGS_IMPLICIT_ALUA			0x10
+#define TPGS_EXPLICIT_ALUA			0x20
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ASYMMETRIC ACCESS STATE field
  *
  * from spc4r17 section 6.27 Table 245
  */
+<<<<<<< HEAD
 #define ALUA_ACCESS_STATE_ACTIVE_OPTMIZED	0x0
+=======
+#define ALUA_ACCESS_STATE_ACTIVE_OPTIMIZED	0x0
+>>>>>>> refs/remotes/origin/master
 #define ALUA_ACCESS_STATE_ACTIVE_NON_OPTIMIZED	0x1
 #define ALUA_ACCESS_STATE_STANDBY		0x2
 #define ALUA_ACCESS_STATE_UNAVAILABLE		0x3
@@ -23,13 +32,32 @@
 #define ALUA_ACCESS_STATE_TRANSITION		0xf
 
 /*
+<<<<<<< HEAD
+=======
+ * from spc4r36j section 6.37 Table 306
+ */
+#define ALUA_T_SUP		0x80
+#define ALUA_O_SUP		0x40
+#define ALUA_LBD_SUP		0x10
+#define ALUA_U_SUP		0x08
+#define ALUA_S_SUP		0x04
+#define ALUA_AN_SUP		0x02
+#define ALUA_AO_SUP		0x01
+
+/*
+>>>>>>> refs/remotes/origin/master
  * REPORT_TARGET_PORT_GROUP STATUS CODE
  *
  * from spc4r17 section 6.27 Table 246
  */
 #define ALUA_STATUS_NONE				0x00
+<<<<<<< HEAD
 #define ALUA_STATUS_ALTERED_BY_EXPLICT_STPG		0x01
 #define ALUA_STATUS_ALTERED_BY_IMPLICT_ALUA		0x02
+=======
+#define ALUA_STATUS_ALTERED_BY_EXPLICIT_STPG		0x01
+#define ALUA_STATUS_ALTERED_BY_IMPLICIT_ALUA		0x02
+>>>>>>> refs/remotes/origin/master
 
 /*
  * From spc4r17, Table D.1: ASC and ASCQ Assignement
@@ -46,12 +74,25 @@
 #define ALUA_DEFAULT_NONOP_DELAY_MSECS			100
 #define ALUA_MAX_NONOP_DELAY_MSECS			10000 /* 10 seconds */
 /*
+<<<<<<< HEAD
  * Used for implict and explict ALUA transitional delay, that is disabled
+=======
+ * Used for implicit and explicit ALUA transitional delay, that is disabled
+>>>>>>> refs/remotes/origin/master
  * by default, and is intended to be used for debugging client side ALUA code.
  */
 #define ALUA_DEFAULT_TRANS_DELAY_MSECS			0
 #define ALUA_MAX_TRANS_DELAY_MSECS			30000 /* 30 seconds */
 /*
+<<<<<<< HEAD
+=======
+ * Used for the recommended application client implicit transition timeout
+ * in seconds, returned by the REPORT_TARGET_PORT_GROUPS w/ extended header.
+ */
+#define ALUA_DEFAULT_IMPLICIT_TRANS_SECS			0
+#define ALUA_MAX_IMPLICIT_TRANS_SECS			255
+/*
+>>>>>>> refs/remotes/origin/master
  * Used by core_alua_update_tpg_primary_metadata() and
  * core_alua_update_tpg_secondary_metadata()
  */
@@ -67,12 +108,17 @@ extern struct kmem_cache *t10_alua_tg_pt_gp_cache;
 extern struct kmem_cache *t10_alua_tg_pt_gp_mem_cache;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int core_emulate_report_target_port_groups(struct se_cmd *);
 extern int core_emulate_set_target_port_groups(struct se_cmd *);
 =======
 extern int target_emulate_report_target_port_groups(struct se_task *);
 extern int target_emulate_set_target_port_groups(struct se_task *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern sense_reason_t target_emulate_report_target_port_groups(struct se_cmd *);
+extern sense_reason_t target_emulate_set_target_port_groups(struct se_cmd *);
+>>>>>>> refs/remotes/origin/master
 extern int core_alua_check_nonop_delay(struct se_cmd *);
 extern int core_alua_do_port_transition(struct t10_alua_tg_pt_gp *,
 				struct se_device *, struct se_port *,
@@ -90,7 +136,11 @@ extern void __core_alua_drop_lu_gp_mem(struct t10_alua_lu_gp_member *,
 					struct t10_alua_lu_gp *);
 extern void core_alua_drop_lu_gp_dev(struct se_device *);
 extern struct t10_alua_tg_pt_gp *core_alua_allocate_tg_pt_gp(
+<<<<<<< HEAD
 			struct se_subsystem_dev *, const char *, int);
+=======
+			struct se_device *, const char *, int);
+>>>>>>> refs/remotes/origin/master
 extern int core_alua_set_tg_pt_gp_id(struct t10_alua_tg_pt_gp *, u16);
 extern struct t10_alua_tg_pt_gp_member *core_alua_allocate_tg_pt_gp_mem(
 					struct se_port *);
@@ -112,6 +162,13 @@ extern ssize_t core_alua_show_trans_delay_msecs(struct t10_alua_tg_pt_gp *,
 					char *);
 extern ssize_t core_alua_store_trans_delay_msecs(struct t10_alua_tg_pt_gp *,
 					const char *, size_t);
+<<<<<<< HEAD
+=======
+extern ssize_t core_alua_show_implicit_trans_secs(struct t10_alua_tg_pt_gp *,
+					char *);
+extern ssize_t core_alua_store_implicit_trans_secs(struct t10_alua_tg_pt_gp *,
+					const char *, size_t);
+>>>>>>> refs/remotes/origin/master
 extern ssize_t core_alua_show_preferred_bit(struct t10_alua_tg_pt_gp *,
 					char *);
 extern ssize_t core_alua_store_preferred_bit(struct t10_alua_tg_pt_gp *,
@@ -126,6 +183,11 @@ extern ssize_t core_alua_show_secondary_write_metadata(struct se_lun *,
 					char *);
 extern ssize_t core_alua_store_secondary_write_metadata(struct se_lun *,
 					const char *, size_t);
+<<<<<<< HEAD
 extern int core_setup_alua(struct se_device *, int);
+=======
+extern int core_setup_alua(struct se_device *);
+extern sense_reason_t target_alua_state_check(struct se_cmd *cmd);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* TARGET_CORE_ALUA_H */

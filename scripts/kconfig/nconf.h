@@ -90,10 +90,14 @@ int btn_dialog(WINDOW *main_window, const char *msg, int btn_num, ...);
 int dialog_inputbox(WINDOW *main_window,
 		const char *title, const char *prompt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		const char *init, char *result, int result_len);
 =======
 		const char *init, char **resultp, int *result_len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const char *init, char **resultp, int *result_len);
+>>>>>>> refs/remotes/origin/master
 void refresh_all_windows(WINDOW *main_window);
 void show_scroll_win(WINDOW *main_window,
 		const char *title,

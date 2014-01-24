@@ -4,10 +4,13 @@
 #ifdef __KERNEL__
 #include <asm-generic/pci-dma-compat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/mach/pci.h> /* for pci_sys_data */
 #include <mach/hardware.h> /* for PCIBIOS_MIN_* */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/pci-bridge.h>
 
 #include <asm/mach/pci.h> /* for pci_sys_data */
@@ -21,7 +24,10 @@ static inline int pcibios_assign_all_busses(void)
 {
 	return pci_has_flag(PCI_REASSIGN_ALL_RSRC);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PCI_DOMAINS
 static inline int pci_domain_nr(struct pci_bus *bus)
@@ -38,6 +44,7 @@ static inline int pci_proc_domain(struct pci_bus *bus)
 #endif /* CONFIG_PCI_DOMAINS */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PCI_HOST_ITE8152
 /* ITE bridge requires setting latency timer to avoid early bus access
    termination by PIC bus mater devices
@@ -52,6 +59,8 @@ static inline void pcibios_set_master(struct pci_dev *dev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void pcibios_penalize_isa_irq(int irq, int active)
 {
 	/* We don't do dynamic PCI IRQ allocation */
@@ -79,6 +88,7 @@ extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
                                enum pci_mmap_state mmap_state, int write_combine);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void
 pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
 			 struct resource *res);
@@ -89,6 +99,8 @@ pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Dummy implementation; always return 0.
  */

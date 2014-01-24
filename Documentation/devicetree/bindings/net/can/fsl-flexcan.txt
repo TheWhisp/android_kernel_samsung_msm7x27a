@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 CAN Device Tree Bindings
 ------------------------
 2011 Freescale Semiconductor, Inc.
@@ -61,6 +62,9 @@ Examples:
 		clock-frequency = <fixed by u-boot>;
 =======
 Flexcan CAN contoller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
+=======
+Flexcan CAN controller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
+>>>>>>> refs/remotes/origin/master
 
 Required properties:
 
@@ -73,8 +77,18 @@ Required properties:
 
 - reg : Offset and length of the register set for this device
 - interrupts : Interrupt tuple for this device
+<<<<<<< HEAD
 - clock-frequency : The oscillator frequency driving the flexcan device
 
+=======
+
+Optional properties:
+
+- clock-frequency : The oscillator frequency driving the flexcan device
+
+- xceiver-supply: Regulator that powers the CAN transceiver
+
+>>>>>>> refs/remotes/origin/master
 Example:
 
 	can@1c000 {
@@ -83,5 +97,8 @@ Example:
 		interrupts = <48 0x2>;
 		interrupt-parent = <&mpic>;
 		clock-frequency = <200000000>; // filled in by bootloader
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	};

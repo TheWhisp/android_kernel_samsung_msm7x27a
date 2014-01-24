@@ -25,9 +25,13 @@
 #include <linux/suspend.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <mach/pm.h>
@@ -58,7 +62,10 @@
 #ifdef CONFIG_PM
 static int sharpsl_off_charge_battery(void);
 static int sharpsl_check_battery_voltage(void);
+<<<<<<< HEAD
 static int sharpsl_fatal_check(void);
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 static int sharpsl_check_battery_temp(void);
 static int sharpsl_ac_check(void);
@@ -173,9 +180,13 @@ struct battery_thresh sharpsl_battery_levels_noac[] = {
 #define MAXCTRL_STR      (1u << 7)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int max1111_read_channel(int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int max1111_read_channel(int);
+>>>>>>> refs/remotes/origin/master
 /*
  * Read MAX1111 ADC
  */
@@ -186,10 +197,13 @@ int sharpsl_pm_pxa_read_max1111(int channel)
 	    return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	extern int max1111_read_channel(int);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* max1111 accepts channels from 0-3, however,
 	 * it is encoded from 0-7 here in the code.
 	 */
@@ -590,8 +604,13 @@ static int sharpsl_ac_check(void)
 static int sharpsl_pm_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	sharpsl_pm.flags |= SHARPSL_SUSPENDED;
+<<<<<<< HEAD
 	flush_delayed_work_sync(&toggle_charger);
 	flush_delayed_work_sync(&sharpsl_bat);
+=======
+	flush_delayed_work(&toggle_charger);
+	flush_delayed_work(&sharpsl_bat);
+>>>>>>> refs/remotes/origin/master
 
 	if (sharpsl_pm.charge_mode == CHRG_ON)
 		sharpsl_pm.flags |= SHARPSL_DO_OFFLINE_CHRG;
@@ -697,6 +716,7 @@ static int corgi_pxa_pm_enter(suspend_state_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Check for fatal battery errors
  * Fatal returns -1
@@ -744,6 +764,8 @@ static int sharpsl_fatal_check(void)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int sharpsl_off_charge_error(void)
 {
 	dev_err(sharpsl_pm.dev, "Offline Charger: Error occurred.\n");
@@ -888,9 +910,15 @@ static const struct platform_suspend_ops sharpsl_pm_ops = {
 };
 #endif
 
+<<<<<<< HEAD
 static int __devinit sharpsl_pm_probe(struct platform_device *pdev)
 {
 	int ret;
+=======
+static int sharpsl_pm_probe(struct platform_device *pdev)
+{
+	int ret, irq;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdev->dev.platform_data)
 		return -EINVAL;
@@ -919,6 +947,7 @@ static int __devinit sharpsl_pm_probe(struct platform_device *pdev)
 
 	/* Register interrupt handlers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(IRQ_GPIO(sharpsl_pm.machinfo->gpio_acin), sharpsl_ac_isr, IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING, "AC Input Detect", sharpsl_ac_isr)) {
 		dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", IRQ_GPIO(sharpsl_pm.machinfo->gpio_acin));
 	}
@@ -943,11 +972,28 @@ static int __devinit sharpsl_pm_probe(struct platform_device *pdev)
 		if (request_irq(PXA_GPIO_TO_IRQ(sharpsl_pm.machinfo->gpio_fatal), sharpsl_fatal_isr, IRQF_DISABLED | IRQF_TRIGGER_FALLING, "Fatal Battery", sharpsl_fatal_isr)) {
 			dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", PXA_GPIO_TO_IRQ(sharpsl_pm.machinfo->gpio_fatal));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq = gpio_to_irq(sharpsl_pm.machinfo->gpio_acin);
+	if (request_irq(irq, sharpsl_ac_isr, IRQF_DISABLED | IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING, "AC Input Detect", sharpsl_ac_isr)) {
+		dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", irq);
+	}
+
+	irq = gpio_to_irq(sharpsl_pm.machinfo->gpio_batlock);
+	if (request_irq(irq, sharpsl_fatal_isr, IRQF_DISABLED | IRQF_TRIGGER_FALLING, "Battery Cover", sharpsl_fatal_isr)) {
+		dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", irq);
+	}
+
+	if (sharpsl_pm.machinfo->gpio_fatal) {
+		irq = gpio_to_irq(sharpsl_pm.machinfo->gpio_fatal);
+		if (request_irq(irq, sharpsl_fatal_isr, IRQF_DISABLED | IRQF_TRIGGER_FALLING, "Fatal Battery", sharpsl_fatal_isr)) {
+			dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", irq);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (sharpsl_pm.machinfo->batfull_irq) {
 		/* Register interrupt handler. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (request_irq(IRQ_GPIO(sharpsl_pm.machinfo->gpio_batfull), sharpsl_chrg_full_isr, IRQF_DISABLED | IRQF_TRIGGER_RISING, "CO", sharpsl_chrg_full_isr)) {
 			dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", IRQ_GPIO(sharpsl_pm.machinfo->gpio_batfull));
@@ -955,6 +1001,11 @@ static int __devinit sharpsl_pm_probe(struct platform_device *pdev)
 		if (request_irq(PXA_GPIO_TO_IRQ(sharpsl_pm.machinfo->gpio_batfull), sharpsl_chrg_full_isr, IRQF_DISABLED | IRQF_TRIGGER_RISING, "CO", sharpsl_chrg_full_isr)) {
 			dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", PXA_GPIO_TO_IRQ(sharpsl_pm.machinfo->gpio_batfull));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		irq = gpio_to_irq(sharpsl_pm.machinfo->gpio_batfull);
+		if (request_irq(irq, sharpsl_chrg_full_isr, IRQF_DISABLED | IRQF_TRIGGER_RISING, "CO", sharpsl_chrg_full_isr)) {
+			dev_err(sharpsl_pm.dev, "Could not get irq %d.\n", irq);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -984,6 +1035,7 @@ static int sharpsl_pm_remove(struct platform_device *pdev)
 	led_trigger_unregister_simple(sharpsl_charge_led_trigger);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(IRQ_GPIO(sharpsl_pm.machinfo->gpio_acin), sharpsl_ac_isr);
 	free_irq(IRQ_GPIO(sharpsl_pm.machinfo->gpio_batlock), sharpsl_fatal_isr);
 
@@ -1002,6 +1054,16 @@ static int sharpsl_pm_remove(struct platform_device *pdev)
 	if (sharpsl_pm.machinfo->batfull_irq)
 		free_irq(PXA_GPIO_TO_IRQ(sharpsl_pm.machinfo->gpio_batfull), sharpsl_chrg_full_isr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(gpio_to_irq(sharpsl_pm.machinfo->gpio_acin), sharpsl_ac_isr);
+	free_irq(gpio_to_irq(sharpsl_pm.machinfo->gpio_batlock), sharpsl_fatal_isr);
+
+	if (sharpsl_pm.machinfo->gpio_fatal)
+		free_irq(gpio_to_irq(sharpsl_pm.machinfo->gpio_fatal), sharpsl_fatal_isr);
+
+	if (sharpsl_pm.machinfo->batfull_irq)
+		free_irq(gpio_to_irq(sharpsl_pm.machinfo->gpio_batfull), sharpsl_chrg_full_isr);
+>>>>>>> refs/remotes/origin/master
 
 	gpio_free(sharpsl_pm.machinfo->gpio_batlock);
 	gpio_free(sharpsl_pm.machinfo->gpio_batfull);
@@ -1026,7 +1088,11 @@ static struct platform_driver sharpsl_pm_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit sharpsl_pm_init(void)
+=======
+static int sharpsl_pm_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return platform_driver_register(&sharpsl_pm_driver);
 }

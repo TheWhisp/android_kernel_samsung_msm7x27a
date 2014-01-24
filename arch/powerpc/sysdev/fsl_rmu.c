@@ -27,6 +27,10 @@
 #include <linux/types.h>
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/slab.h>
 

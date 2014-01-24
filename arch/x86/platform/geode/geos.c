@@ -87,7 +87,11 @@ static struct platform_device geos_leds_dev = {
 	.dev.platform_data = &geos_leds_data,
 };
 
+<<<<<<< HEAD
 static struct __initdata platform_device *geos_devs[] = {
+=======
+static struct platform_device *geos_devs[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	&geos_buttons_dev,
 	&geos_leds_dev,
 };

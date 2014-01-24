@@ -23,6 +23,7 @@
 
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/cpu.h>
 #include <linux/cpuidle.h>
 #include <linux/hrtimer.h>
@@ -105,3 +106,38 @@ static int __init tegra_cpuidle_init(void)
 	return 0;
 }
 device_initcall(tegra_cpuidle_init);
+=======
+
+#include "fuse.h"
+#include "cpuidle.h"
+
+void __init tegra_cpuidle_init(void)
+{
+	switch (tegra_chip_id) {
+	case TEGRA20:
+		if (IS_ENABLED(CONFIG_ARCH_TEGRA_2x_SOC))
+			tegra20_cpuidle_init();
+		break;
+	case TEGRA30:
+		if (IS_ENABLED(CONFIG_ARCH_TEGRA_3x_SOC))
+			tegra30_cpuidle_init();
+		break;
+	case TEGRA114:
+	case TEGRA124:
+		if (IS_ENABLED(CONFIG_ARCH_TEGRA_114_SOC) ||
+		    IS_ENABLED(CONFIG_ARCH_TEGRA_124_SOC))
+			tegra114_cpuidle_init();
+		break;
+	}
+}
+
+void tegra_cpuidle_pcie_irqs_in_use(void)
+{
+	switch (tegra_chip_id) {
+	case TEGRA20:
+		if (IS_ENABLED(CONFIG_ARCH_TEGRA_2x_SOC))
+			tegra20_cpuidle_pcie_irqs_in_use();
+		break;
+	}
+}
+>>>>>>> refs/remotes/origin/master

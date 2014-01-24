@@ -25,12 +25,19 @@ void __init ath79_register_gpio_keys_polled(int id,
 	struct gpio_keys_button *p;
 	int err;
 
+<<<<<<< HEAD
 	p = kmalloc(nbuttons * sizeof(*p), GFP_KERNEL);
 	if (!p)
 		return;
 
 	memcpy(p, buttons, nbuttons * sizeof(*p));
 
+=======
+	p = kmemdup(buttons, nbuttons * sizeof(*p), GFP_KERNEL);
+	if (!p)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	pdev = platform_device_alloc("gpio-keys-polled", id);
 	if (!pdev)
 		goto err_free_buttons;

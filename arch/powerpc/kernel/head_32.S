@@ -140,11 +140,15 @@ __start:
 #endif /* CONFIG_PPC_PMAC */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 1:	mr	r31,r3			/* save parameters */
 	mr	r30,r4
 =======
 1:	mr	r31,r3			/* save device tree ptr */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+1:	mr	r31,r3			/* save device tree ptr */
+>>>>>>> refs/remotes/origin/master
 	li	r24,0			/* cpu # */
 
 /*
@@ -401,10 +405,14 @@ DataAccess:
 1:	lwz	r5,_DSISR(r11)		/* get DSISR value */
 	mfspr	r4,SPRN_DAR
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x300, handle_page_fault)
 =======
 	EXC_XFER_LITE(0x300, handle_page_fault)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXC_XFER_LITE(0x300, handle_page_fault)
+>>>>>>> refs/remotes/origin/master
 
 
 /* Instruction access exception. */
@@ -420,10 +428,14 @@ InstructionAccess:
 1:	mr	r4,r12
 	mr	r5,r9
 <<<<<<< HEAD
+<<<<<<< HEAD
 	EXC_XFER_EE_LITE(0x400, handle_page_fault)
 =======
 	EXC_XFER_LITE(0x400, handle_page_fault)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	EXC_XFER_LITE(0x400, handle_page_fault)
+>>>>>>> refs/remotes/origin/master
 
 /* External interrupt */
 	EXCEPTION(0x500, HardwareInterrupt, do_IRQ, EXC_XFER_LITE)
@@ -977,12 +989,17 @@ start_here:
  * and set up the MMU.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mr	r3,r31
 	mr	r4,r30
 =======
 	li	r3,0
 	mr	r4,r31
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	li	r3,0
+	mr	r4,r31
+>>>>>>> refs/remotes/origin/master
 	bl	machine_init
 	bl	__save_cpu_setup
 	bl	MMU_init

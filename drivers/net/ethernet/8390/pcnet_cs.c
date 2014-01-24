@@ -1694,6 +1694,7 @@ static struct pcmcia_driver pcnet_driver = {
 	.suspend	= pcnet_suspend,
 	.resume		= pcnet_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_pcnet_cs(void)
 {
@@ -1707,3 +1708,6 @@ static void __exit exit_pcnet_cs(void)
 
 module_init(init_pcnet_cs);
 module_exit(exit_pcnet_cs);
+=======
+module_pcmcia_driver(pcnet_driver);
+>>>>>>> refs/remotes/origin/master

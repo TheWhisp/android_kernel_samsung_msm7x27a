@@ -49,18 +49,24 @@ static inline void wrusp(unsigned long usp)
  */
 #ifdef CONFIG_MMU
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 #define TASK_SIZE	(0xF0000000UL)
 #else
 #define TASK_SIZE	(0x0E000000UL)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_COLDFIRE)
 #define TASK_SIZE	(0xC0000000UL)
 #elif defined(CONFIG_SUN3)
 #define TASK_SIZE	(0x0E000000UL)
 #else
 #define TASK_SIZE	(0xF0000000UL)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #else
 #define TASK_SIZE	(0xFFFFFFFFUL)
@@ -76,18 +82,24 @@ static inline void wrusp(unsigned long usp)
  */
 #ifdef CONFIG_MMU
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 #define TASK_UNMAPPED_BASE	0xC0000000UL
 #else
 #define TASK_UNMAPPED_BASE	0x0A000000UL
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_COLDFIRE)
 #define TASK_UNMAPPED_BASE	0x60000000UL
 #elif defined(CONFIG_SUN3)
 #define TASK_UNMAPPED_BASE	0x0A000000UL
 #else
 #define TASK_UNMAPPED_BASE	0xC0000000UL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #define TASK_UNMAPPED_ALIGN(addr, off)	PAGE_ALIGN(addr)
 #else
@@ -107,9 +119,12 @@ struct thread_struct {
 	unsigned long  fpcntl[3];	/* fp control regs */
 	unsigned char  fpstate[FPSTATESIZE];  /* floating point state */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct thread_info info;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define INIT_THREAD  {							\
@@ -117,11 +132,26 @@ struct thread_struct {
 	.sr	= PS_S,							\
 	.fs	= __KERNEL_DS,						\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.info	= INIT_THREAD_INFO(init_task),				\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+}
+
+/*
+ * ColdFire stack format sbould be 0x4 for an aligned usp (will always be
+ * true on thread creation). We need to set this explicitly.
+ */
+#ifdef CONFIG_COLDFIRE
+#define setframeformat(_regs)	do { (_regs)->format = 0x4; } while(0)
+#else
+#define setframeformat(_regs)	do { } while (0)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 /*
  * Do necessary setup to start up a newly executed thread.
@@ -130,6 +160,7 @@ static inline void start_thread(struct pt_regs * regs, unsigned long pc,
 				unsigned long usp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* reads from user space */
 	set_fs(USER_DS);
 
@@ -137,6 +168,11 @@ static inline void start_thread(struct pt_regs * regs, unsigned long pc,
 >>>>>>> refs/remotes/origin/cm-10.0
 	regs->pc = pc;
 	regs->sr &= ~0x2000;
+=======
+	regs->pc = pc;
+	regs->sr &= ~0x2000;
+	setframeformat(regs);
+>>>>>>> refs/remotes/origin/master
 	wrusp(usp);
 }
 
@@ -144,6 +180,7 @@ extern int handle_kernel_fault(struct pt_regs *regs);
 
 #else
 
+<<<<<<< HEAD
 /*
  * Coldfire stacks need to be re-aligned on trap exit, conventional
  * 68k can handle this case cleanly.
@@ -163,6 +200,12 @@ do {                                                    \
 	(_regs)->pc = (_pc);                            \
 	((struct switch_stack *)(_regs))[-1].a6 = 0;    \
 	reformat(_regs);                                \
+=======
+#define start_thread(_regs, _pc, _usp)                  \
+do {                                                    \
+	(_regs)->pc = (_pc);                            \
+	setframeformat(_regs);                          \
+>>>>>>> refs/remotes/origin/master
 	if (current->mm)                                \
 		(_regs)->d5 = current->mm->start_data;  \
 	(_regs)->sr &= ~0x2000;                         \
@@ -170,14 +213,20 @@ do {                                                    \
 } while(0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline  int handle_kernel_fault(struct pt_regs *regs)
 {
 	/* Any fault in kernel is fatal on non-mmu */
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Forward declaration, a strange C thing */
@@ -188,11 +237,14 @@ static inline void release_thread(struct task_struct *dead_task)
 {
 }
 
+<<<<<<< HEAD
 /* Prepare to copy thread state - unlazy all lazy status */
 #define prepare_to_copy(tsk)	do { } while (0)
 
 extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Free current thread data structures etc..
  */

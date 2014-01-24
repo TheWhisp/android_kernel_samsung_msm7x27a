@@ -1,10 +1,14 @@
 /* Key garbage collector
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009 Red Hat, Inc. All Rights Reserved.
 =======
  * Copyright (C) 2009-2011 Red Hat, Inc. All Rights Reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2009-2011 Red Hat, Inc. All Rights Reserved.
+>>>>>>> refs/remotes/origin/master
  * Written by David Howells (dhowells@redhat.com)
  *
  * This program is free software; you can redistribute it and/or
@@ -15,10 +19,15 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/slab.h>
 #include <linux/security.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+#include <linux/security.h>
+>>>>>>> refs/remotes/origin/master
 #include <keys/keyring-type.h>
 #include "internal.h"
 
@@ -28,6 +37,7 @@
 unsigned key_gc_delay = 5 * 60;
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Reaper
  */
@@ -41,6 +51,8 @@ static unsigned long key_gc_executing;
 static time_t key_gc_next_run = LONG_MAX;
 static time_t key_gc_new_timer;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Reaper for unused keys.
  */
 static void key_garbage_collector(struct work_struct *work);
@@ -68,7 +80,10 @@ static unsigned long key_gc_flags;
 struct key_type key_type_dead = {
 	.name = "dead",
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Schedule a garbage collection run.
@@ -82,6 +97,7 @@ void key_schedule_gc(time_t gc_at)
 	kenter("%ld", gc_at - now);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (gc_at <= now) {
 		schedule_work(&key_gc_work);
 	} else if (gc_at < key_gc_next_run) {
@@ -93,6 +109,14 @@ void key_schedule_gc(time_t gc_at)
 		kdebug("DEFERRED");
 		key_gc_next_run = gc_at;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (gc_at <= now || test_bit(KEY_GC_REAP_KEYTYPE, &key_gc_flags)) {
+		kdebug("IMMEDIATE");
+		schedule_work(&key_gc_work);
+	} else if (gc_at < key_gc_next_run) {
+		kdebug("DEFERRED");
+		key_gc_next_run = gc_at;
+>>>>>>> refs/remotes/origin/master
 		expires = jiffies + (gc_at - now) * HZ;
 		mod_timer(&key_gc_timer, expires);
 	}
@@ -100,21 +124,39 @@ void key_schedule_gc(time_t gc_at)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * The garbage collector timer kicked off
 =======
  * Some key's cleanup time was met after it expired, so we need to get the
  * reaper to go through a cycle finding expired keys.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Schedule a dead links collection run.
+ */
+void key_schedule_gc_links(void)
+{
+	set_bit(KEY_GC_KEY_EXPIRED, &key_gc_flags);
+	schedule_work(&key_gc_work);
+}
+
+/*
+ * Some key's cleanup time was met after it expired, so we need to get the
+ * reaper to go through a cycle finding expired keys.
+>>>>>>> refs/remotes/origin/master
  */
 static void key_gc_timer_func(unsigned long data)
 {
 	kenter("");
 	key_gc_next_run = LONG_MAX;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	schedule_work(&key_gc_work);
 =======
 	set_bit(KEY_GC_KEY_EXPIRED, &key_gc_flags);
 	queue_work(system_nrt_wq, &key_gc_work);
+=======
+	key_schedule_gc_links();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -146,7 +188,11 @@ void key_gc_keytype(struct key_type *ktype)
 	set_bit(KEY_GC_REAP_KEYTYPE, &key_gc_flags);
 
 	kdebug("schedule");
+<<<<<<< HEAD
 	queue_work(system_nrt_wq, &key_gc_work);
+=======
+	schedule_work(&key_gc_work);
+>>>>>>> refs/remotes/origin/master
 
 	kdebug("sleep");
 	wait_on_bit(&key_gc_flags, KEY_GC_REAPING_KEYTYPE, key_gc_wait_bit,
@@ -154,6 +200,7 @@ void key_gc_keytype(struct key_type *ktype)
 
 	key_gc_dead_keytype = NULL;
 	kleave("");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -283,6 +330,50 @@ static noinline void key_gc_unused_key(struct key *key)
 	key->magic = KEY_DEBUG_MAGIC_X;
 #endif
 	kmem_cache_free(key_jar, key);
+=======
+}
+
+/*
+ * Garbage collect a list of unreferenced, detached keys
+ */
+static noinline void key_gc_unused_keys(struct list_head *keys)
+{
+	while (!list_empty(keys)) {
+		struct key *key =
+			list_entry(keys->next, struct key, graveyard_link);
+		list_del(&key->graveyard_link);
+
+		kdebug("- %u", key->serial);
+		key_check(key);
+
+		security_key_free(key);
+
+		/* deal with the user's key tracking and quota */
+		if (test_bit(KEY_FLAG_IN_QUOTA, &key->flags)) {
+			spin_lock(&key->user->lock);
+			key->user->qnkeys--;
+			key->user->qnbytes -= key->quotalen;
+			spin_unlock(&key->user->lock);
+		}
+
+		atomic_dec(&key->user->nkeys);
+		if (test_bit(KEY_FLAG_INSTANTIATED, &key->flags))
+			atomic_dec(&key->user->nikeys);
+
+		key_user_put(key->user);
+
+		/* now throw away the key memory */
+		if (key->type->destroy)
+			key->type->destroy(key);
+
+		kfree(key->description);
+
+#ifdef KEY_DEBUGGING
+		key->magic = KEY_DEBUG_MAGIC_X;
+#endif
+		kmem_cache_free(key_jar, key);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -294,6 +385,10 @@ static noinline void key_gc_unused_key(struct key *key)
  */
 static void key_garbage_collector(struct work_struct *work)
 {
+<<<<<<< HEAD
+=======
+	static LIST_HEAD(graveyard);
+>>>>>>> refs/remotes/origin/master
 	static u8 gc_state;		/* Internal persistent state */
 #define KEY_GC_REAP_AGAIN	0x01	/* - Need another cycle */
 #define KEY_GC_REAPING_LINKS	0x02	/* - We need to reap links */
@@ -310,12 +405,16 @@ static void key_garbage_collector(struct work_struct *work)
 	kenter("[%lx,%x]", key_gc_flags, gc_state);
 
 	limit = current_kernel_time().tv_sec;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (limit > key_gc_delay)
 		limit -= key_gc_delay;
 	else
 		limit = key_gc_delay;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock(&key_serial_lock);
 
@@ -404,6 +503,8 @@ reached_the_end:
 	}
 	kleave(" [end]");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Work out what we're going to be doing in this pass */
 	gc_state &= KEY_GC_REAPING_DEAD_1 | KEY_GC_REAPING_DEAD_2;
 	gc_state <<= 1;
@@ -488,6 +589,7 @@ maybe_resched:
 		key_schedule_gc(new_timer);
 	}
 
+<<<<<<< HEAD
 	if (unlikely(gc_state & KEY_GC_REAPING_DEAD_2)) {
 		/* Make sure everyone revalidates their keys if we marked a
 		 * bunch as being dead and make sure all keyring ex-payloads
@@ -497,6 +599,24 @@ maybe_resched:
 		synchronize_rcu();
 	}
 
+=======
+	if (unlikely(gc_state & KEY_GC_REAPING_DEAD_2) ||
+	    !list_empty(&graveyard)) {
+		/* Make sure that all pending keyring payload destructions are
+		 * fulfilled and that people aren't now looking at dead or
+		 * dying keys that they don't have a reference upon or a link
+		 * to.
+		 */
+		kdebug("gc sync");
+		synchronize_rcu();
+	}
+
+	if (!list_empty(&graveyard)) {
+		kdebug("gc keys");
+		key_gc_unused_keys(&graveyard);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(gc_state & (KEY_GC_REAPING_DEAD_1 |
 				 KEY_GC_REAPING_DEAD_2))) {
 		if (!(gc_state & KEY_GC_FOUND_DEAD_KEY)) {
@@ -519,7 +639,11 @@ maybe_resched:
 	}
 
 	if (gc_state & KEY_GC_REAP_AGAIN)
+<<<<<<< HEAD
 		queue_work(system_nrt_wq, &key_gc_work);
+=======
+		schedule_work(&key_gc_work);
+>>>>>>> refs/remotes/origin/master
 	kleave(" [end %x]", gc_state);
 	return;
 
@@ -531,7 +655,11 @@ found_unreferenced_key:
 	rb_erase(&key->serial_node, &key_serial_tree);
 	spin_unlock(&key_serial_lock);
 
+<<<<<<< HEAD
 	key_gc_unused_key(key);
+=======
+	list_add_tail(&key->graveyard_link, &graveyard);
+>>>>>>> refs/remotes/origin/master
 	gc_state |= KEY_GC_REAP_AGAIN;
 	goto maybe_resched;
 
@@ -542,8 +670,12 @@ found_unreferenced_key:
 	 */
 found_keyring:
 	spin_unlock(&key_serial_lock);
+<<<<<<< HEAD
 	kdebug("scan keyring %d", key->serial);
 	key_gc_keyring(key, limit);
+=======
+	keyring_gc(key, limit);
+>>>>>>> refs/remotes/origin/master
 	goto maybe_resched;
 
 	/* We found a dead key that is still referenced.  Reset its type and
@@ -559,5 +691,8 @@ destroy_dead_key:
 	memset(&key->payload, KEY_DESTROY, sizeof(key->payload));
 	up_write(&key->sem);
 	goto maybe_resched;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

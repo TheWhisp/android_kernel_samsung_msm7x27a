@@ -7,10 +7,14 @@
 #include <linux/fs.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/namei.h>
 #include <linux/sched.h>
 #include <linux/writeback.h>
@@ -19,9 +23,12 @@
 #include <linux/pagemap.h>
 #include <linux/quotaops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/backing-dev.h>
 #include "internal.h"
 
@@ -35,6 +42,7 @@
  * wait == 1 case since in that case write_inode() functions do
  * sync_dirty_buffer() and thus effectively write one block at a time.
  */
+<<<<<<< HEAD
 static int __sync_filesystem(struct super_block *sb, int wait)
 {
 	/*
@@ -55,6 +63,15 @@ static int __sync_filesystem(struct super_block *sb, int wait)
 =======
 		writeback_inodes_sb(sb, WB_REASON_SYNC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __sync_filesystem(struct super_block *sb, int wait,
+			     unsigned long start)
+{
+	if (wait)
+		sync_inodes_sb(sb, start);
+	else
+		writeback_inodes_sb(sb, WB_REASON_SYNC);
+>>>>>>> refs/remotes/origin/master
 
 	if (sb->s_op->sync_fs)
 		sb->s_op->sync_fs(sb, wait);
@@ -69,6 +86,10 @@ static int __sync_filesystem(struct super_block *sb, int wait)
 int sync_filesystem(struct super_block *sb)
 {
 	int ret;
+<<<<<<< HEAD
+=======
+	unsigned long start = jiffies;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We need to be protected against the filesystem going from
@@ -82,6 +103,7 @@ int sync_filesystem(struct super_block *sb)
 	if (sb->s_flags & MS_RDONLY)
 		return 0;
 
+<<<<<<< HEAD
 	ret = __sync_filesystem(sb, 0);
 	if (ret < 0)
 		return ret;
@@ -116,6 +138,58 @@ SYSCALL_DEFINE0(sync)
 >>>>>>> refs/remotes/origin/cm-10.0
 	sync_filesystems(0);
 	sync_filesystems(1);
+=======
+	ret = __sync_filesystem(sb, 0, start);
+	if (ret < 0)
+		return ret;
+	return __sync_filesystem(sb, 1, start);
+}
+EXPORT_SYMBOL_GPL(sync_filesystem);
+
+static void sync_inodes_one_sb(struct super_block *sb, void *arg)
+{
+	if (!(sb->s_flags & MS_RDONLY))
+		sync_inodes_sb(sb, *((unsigned long *)arg));
+}
+
+static void sync_fs_one_sb(struct super_block *sb, void *arg)
+{
+	if (!(sb->s_flags & MS_RDONLY) && sb->s_op->sync_fs)
+		sb->s_op->sync_fs(sb, *(int *)arg);
+}
+
+static void fdatawrite_one_bdev(struct block_device *bdev, void *arg)
+{
+	filemap_fdatawrite(bdev->bd_inode->i_mapping);
+}
+
+static void fdatawait_one_bdev(struct block_device *bdev, void *arg)
+{
+	filemap_fdatawait(bdev->bd_inode->i_mapping);
+}
+
+/*
+ * Sync everything. We start by waking flusher threads so that most of
+ * writeback runs on all devices in parallel. Then we sync all inodes reliably
+ * which effectively also waits for all flusher threads to finish doing
+ * writeback. At this point all data is on disk so metadata should be stable
+ * and we tell filesystems to sync their metadata via ->sync_fs() calls.
+ * Finally, we writeout all block devices because some filesystems (e.g. ext2)
+ * just write metadata (such as inodes or bitmaps) to block device page cache
+ * and do not sync it on their own in ->sync_fs().
+ */
+SYSCALL_DEFINE0(sync)
+{
+	int nowait = 0, wait = 1;
+	unsigned long start = jiffies;
+
+	wakeup_flusher_threads(0, WB_REASON_SYNC);
+	iterate_supers(sync_inodes_one_sb, &start);
+	iterate_supers(sync_fs_one_sb, &nowait);
+	iterate_supers(sync_fs_one_sb, &wait);
+	iterate_bdevs(fdatawrite_one_bdev, NULL);
+	iterate_bdevs(fdatawait_one_bdev, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(laptop_mode))
 		laptop_sync_completion();
 	return 0;
@@ -123,12 +197,26 @@ SYSCALL_DEFINE0(sync)
 
 static void do_sync_work(struct work_struct *work)
 {
+<<<<<<< HEAD
+=======
+	int nowait = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Sync twice to reduce the possibility we skipped some inodes / pages
 	 * because they were temporarily locked
 	 */
+<<<<<<< HEAD
 	sync_filesystems(0);
 	sync_filesystems(0);
+=======
+	iterate_supers(sync_inodes_one_sb, &nowait);
+	iterate_supers(sync_fs_one_sb, &nowait);
+	iterate_bdevs(fdatawrite_one_bdev, NULL);
+	iterate_supers(sync_inodes_one_sb, &nowait);
+	iterate_supers(sync_fs_one_sb, &nowait);
+	iterate_bdevs(fdatawrite_one_bdev, NULL);
+>>>>>>> refs/remotes/origin/master
 	printk("Emergency Sync complete\n");
 	kfree(work);
 }
@@ -149,6 +237,7 @@ void emergency_sync(void)
  */
 SYSCALL_DEFINE1(syncfs, int, fd)
 {
+<<<<<<< HEAD
 	struct file *file;
 	struct super_block *sb;
 	int ret;
@@ -158,12 +247,25 @@ SYSCALL_DEFINE1(syncfs, int, fd)
 	if (!file)
 		return -EBADF;
 	sb = file->f_dentry->d_sb;
+=======
+	struct fd f = fdget(fd);
+	struct super_block *sb;
+	int ret;
+
+	if (!f.file)
+		return -EBADF;
+	sb = f.file->f_dentry->d_sb;
+>>>>>>> refs/remotes/origin/master
 
 	down_read(&sb->s_umount);
 	ret = sync_filesystem(sb);
 	up_read(&sb->s_umount);
 
+<<<<<<< HEAD
 	fput_light(file, fput_needed);
+=======
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -180,6 +282,7 @@ SYSCALL_DEFINE1(syncfs, int, fd)
  */
 int vfs_fsync_range(struct file *file, loff_t start, loff_t end, int datasync)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct address_space *mapping = file->f_mapping;
 	int err, ret;
@@ -208,6 +311,11 @@ out:
 		return -EINVAL;
 	return file->f_op->fsync(file, start, end, datasync);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!file->f_op->fsync)
+		return -EINVAL;
+	return file->f_op->fsync(file, start, end, datasync);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(vfs_fsync_range);
 
@@ -227,6 +335,7 @@ EXPORT_SYMBOL(vfs_fsync);
 
 static int do_fsync(unsigned int fd, int datasync)
 {
+<<<<<<< HEAD
 	struct file *file;
 	int ret = -EBADF;
 
@@ -234,6 +343,14 @@ static int do_fsync(unsigned int fd, int datasync)
 	if (file) {
 		ret = vfs_fsync(file, datasync);
 		fput(file);
+=======
+	struct fd f = fdget(fd);
+	int ret = -EBADF;
+
+	if (f.file) {
+		ret = vfs_fsync(f.file, datasync);
+		fdput(f);
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -312,6 +429,7 @@ EXPORT_SYMBOL(generic_write_sync);
  * already-instantiated disk blocks, there are no guarantees here that the data
  * will be available after a crash.
  */
+<<<<<<< HEAD
 SYSCALL_DEFINE(sync_file_range)(int fd, loff_t offset, loff_t nbytes,
 				unsigned int flags)
 {
@@ -320,6 +438,15 @@ SYSCALL_DEFINE(sync_file_range)(int fd, loff_t offset, loff_t nbytes,
 	struct address_space *mapping;
 	loff_t endbyte;			/* inclusive */
 	int fput_needed;
+=======
+SYSCALL_DEFINE4(sync_file_range, int, fd, loff_t, offset, loff_t, nbytes,
+				unsigned int, flags)
+{
+	int ret;
+	struct fd f;
+	struct address_space *mapping;
+	loff_t endbyte;			/* inclusive */
+>>>>>>> refs/remotes/origin/master
 	umode_t i_mode;
 
 	ret = -EINVAL;
@@ -358,17 +485,29 @@ SYSCALL_DEFINE(sync_file_range)(int fd, loff_t offset, loff_t nbytes,
 		endbyte--;		/* inclusive */
 
 	ret = -EBADF;
+<<<<<<< HEAD
 	file = fget_light(fd, &fput_needed);
 	if (!file)
 		goto out;
 
 	i_mode = file->f_path.dentry->d_inode->i_mode;
+=======
+	f = fdget(fd);
+	if (!f.file)
+		goto out;
+
+	i_mode = file_inode(f.file)->i_mode;
+>>>>>>> refs/remotes/origin/master
 	ret = -ESPIPE;
 	if (!S_ISREG(i_mode) && !S_ISBLK(i_mode) && !S_ISDIR(i_mode) &&
 			!S_ISLNK(i_mode))
 		goto out_put;
 
+<<<<<<< HEAD
 	mapping = file->f_mapping;
+=======
+	mapping = f.file->f_mapping;
+>>>>>>> refs/remotes/origin/master
 	if (!mapping) {
 		ret = -EINVAL;
 		goto out_put;
@@ -391,6 +530,7 @@ SYSCALL_DEFINE(sync_file_range)(int fd, loff_t offset, loff_t nbytes,
 		ret = filemap_fdatawait_range(mapping, offset, endbyte);
 
 out_put:
+<<<<<<< HEAD
 	fput_light(file, fput_needed);
 out:
 	return ret;
@@ -421,3 +561,17 @@ asmlinkage long SyS_sync_file_range2(long fd, long flags,
 }
 SYSCALL_ALIAS(sys_sync_file_range2, SyS_sync_file_range2);
 #endif
+=======
+	fdput(f);
+out:
+	return ret;
+}
+
+/* It would be nice if people remember that not all the world's an i386
+   when they introduce new system calls */
+SYSCALL_DEFINE4(sync_file_range2, int, fd, unsigned int, flags,
+				 loff_t, offset, loff_t, nbytes)
+{
+	return sys_sync_file_range(fd, offset, nbytes, flags);
+}
+>>>>>>> refs/remotes/origin/master

@@ -16,7 +16,10 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/sched.h>
 #include <linux/list.h>
@@ -28,7 +31,10 @@
 #include <linux/uaccess.h>
 
 #include "go7007-priv.h"
+<<<<<<< HEAD
 #include "wis-i2c.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 /********************* Driver for on-board I2C adapter *********************/
 
@@ -52,6 +58,7 @@ static DEFINE_MUTEX(adlink_mpg24_i2c_lock);
 static int go7007_i2c_xfer(struct go7007 *go, u16 addr, int read,
 		u16 command, int flags, u8 *data)
 {
+<<<<<<< HEAD
 	int i, ret = -1;
 	u16 val;
 
@@ -64,6 +71,20 @@ static int go7007_i2c_xfer(struct go7007 *go, u16 addr, int read,
 			command, addr);
 	else
 		printk(KERN_DEBUG
+=======
+	int i, ret = -EIO;
+	u16 val;
+
+	if (go->status == STATUS_SHUTDOWN)
+		return -ENODEV;
+
+#ifdef GO7007_I2C_DEBUG
+	if (read)
+		dev_dbg(go->dev, "go7007-i2c: reading 0x%02x on 0x%02x\n",
+			command, addr);
+	else
+		dev_dbg(go->dev,
+>>>>>>> refs/remotes/origin/master
 			"go7007-i2c: writing 0x%02x to 0x%02x on 0x%02x\n",
 			*data, command, addr);
 #endif
@@ -85,7 +106,11 @@ static int go7007_i2c_xfer(struct go7007 *go, u16 addr, int read,
 		msleep(100);
 	}
 	if (i == 10) {
+<<<<<<< HEAD
 		printk(KERN_ERR "go7007-i2c: I2C adapter is hung\n");
+=======
+		dev_err(go->dev, "go7007-i2c: I2C adapter is hung\n");
+>>>>>>> refs/remotes/origin/master
 		goto i2c_done;
 	}
 
@@ -119,7 +144,11 @@ static int go7007_i2c_xfer(struct go7007 *go, u16 addr, int read,
 		msleep(100);
 	}
 	if (i == 10) {
+<<<<<<< HEAD
 		printk(KERN_ERR "go7007-i2c: I2C adapter is hung\n");
+=======
+		dev_err(go->dev, "go7007-i2c: I2C adapter is hung\n");
+>>>>>>> refs/remotes/origin/master
 		goto i2c_done;
 	}
 
@@ -146,7 +175,11 @@ static int go7007_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
 	struct go7007 *go = i2c_get_adapdata(adapter);
 
 	if (size != I2C_SMBUS_BYTE_DATA)
+<<<<<<< HEAD
 		return -1;
+=======
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 	return go7007_i2c_xfer(go, addr, read_write == I2C_SMBUS_READ, command,
 			flags & I2C_CLIENT_SCCB ? 0x10 : 0x00, &data->byte);
 }
@@ -170,6 +203,7 @@ static int go7007_i2c_master_xfer(struct i2c_adapter *adapter,
 					(msgs[i].flags & I2C_M_RD) ||
 					!(msgs[i + 1].flags & I2C_M_RD) ||
 					msgs[i + 1].len != 1)
+<<<<<<< HEAD
 				return -1;
 			if (go7007_i2c_xfer(go, msgs[i].addr, 1,
 					(msgs[i].buf[0] << 8) | msgs[i].buf[1],
@@ -190,6 +224,28 @@ static int go7007_i2c_master_xfer(struct i2c_adapter *adapter,
 	}
 
 	return 0;
+=======
+				return -EIO;
+			if (go7007_i2c_xfer(go, msgs[i].addr, 1,
+					(msgs[i].buf[0] << 8) | msgs[i].buf[1],
+					0x01, &msgs[i + 1].buf[0]) < 0)
+				return -EIO;
+			++i;
+		} else if (msgs[i].len == 3) {
+			if (msgs[i].flags & I2C_M_RD)
+				return -EIO;
+			if (msgs[i].len != 3)
+				return -EIO;
+			if (go7007_i2c_xfer(go, msgs[i].addr, 0,
+					(msgs[i].buf[0] << 8) | msgs[i].buf[1],
+					0x01, &msgs[i].buf[2]) < 0)
+				return -EIO;
+		} else
+			return -EIO;
+	}
+
+	return num;
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 go7007_functionality(struct i2c_adapter *adapter)
@@ -216,7 +272,11 @@ int go7007_i2c_init(struct go7007 *go)
 	go->i2c_adapter.dev.parent = go->dev;
 	i2c_set_adapdata(&go->i2c_adapter, go);
 	if (i2c_add_adapter(&go->i2c_adapter) < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR
+=======
+		dev_err(go->dev,
+>>>>>>> refs/remotes/origin/master
 			"go7007-i2c: error: i2c_add_adapter failed\n");
 		return -1;
 	}

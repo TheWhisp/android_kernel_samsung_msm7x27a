@@ -6,11 +6,15 @@
 #ifndef __SYSDEP_I386_PTRACE_H
 #define __SYSDEP_I386_PTRACE_H
 
+<<<<<<< HEAD
 #include <generated/user_constants.h>
 #include "sysdep/faultinfo.h"
 
 #define MAX_REG_NR (UM_FRAME_SIZE / sizeof(unsigned long))
 #define MAX_REG_OFFSET (UM_FRAME_SIZE)
+=======
+#define MAX_FP_NR HOST_FPX_SIZE
+>>>>>>> refs/remotes/origin/master
 
 static inline void update_debugregs(int seq) {}
 
@@ -24,6 +28,7 @@ void set_using_sysemu(int value);
 int get_using_sysemu(void);
 extern int sysemu_supported;
 
+<<<<<<< HEAD
 #define REGS_IP(r) ((r)[HOST_IP])
 #define REGS_SP(r) ((r)[HOST_SP])
 #define REGS_EFLAGS(r) ((r)[HOST_EFLAGS])
@@ -46,10 +51,13 @@ extern int sysemu_supported;
 #define IP_RESTART_SYSCALL(ip) ((ip) -= 2)
 #define REGS_RESTART_SYSCALL(r) IP_RESTART_SYSCALL(REGS_IP(r))
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef PTRACE_SYSEMU_SINGLESTEP
 #define PTRACE_SYSEMU_SINGLESTEP 32
 #endif
 
+<<<<<<< HEAD
 struct uml_pt_regs {
 	unsigned long gp[MAX_REG_NR];
 	unsigned long fp[HOST_FPX_SIZE];
@@ -108,6 +116,14 @@ struct syscall_args {
 #define UPT_SYSCALL_RET(r) UPT_EAX(r)
 
 #define UPT_FAULTINFO(r) (&(r)->faultinfo)
+=======
+#define UPT_SYSCALL_ARG1(r) UPT_BX(r)
+#define UPT_SYSCALL_ARG2(r) UPT_CX(r)
+#define UPT_SYSCALL_ARG3(r) UPT_DX(r)
+#define UPT_SYSCALL_ARG4(r) UPT_SI(r)
+#define UPT_SYSCALL_ARG5(r) UPT_DI(r)
+#define UPT_SYSCALL_ARG6(r) UPT_BP(r)
+>>>>>>> refs/remotes/origin/master
 
 extern void arch_init_registers(int pid);
 

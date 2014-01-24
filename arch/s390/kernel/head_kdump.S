@@ -5,6 +5,11 @@
  * Author(s): Michael Holzheu <holzheu@linux.vnet.ibm.com>
  */
 
+<<<<<<< HEAD
+=======
+#include <asm/sigp.h>
+
+>>>>>>> refs/remotes/origin/master
 #define DATAMOVER_ADDR	0x4000
 #define COPY_PAGE_ADDR	0x6000
 
@@ -19,7 +24,11 @@
 .align 2
 .Lep_startup_kdump:
 	lhi	%r1,2				# mode 2 = esame (dump)
+<<<<<<< HEAD
 	sigp	%r1,%r0,0x12			# Switch to esame mode
+=======
+	sigp	%r1,%r0,SIGP_SET_ARCHITECTURE	# Switch to esame mode
+>>>>>>> refs/remotes/origin/master
 	sam64					# Switch to 64 bit addressing
 	basr	%r13,0
 .Lbase:
@@ -83,6 +92,7 @@
 .align 2
 startup_kdump_relocated:
 	basr	%r13,0
+<<<<<<< HEAD
 0:
 	mvc	0(8,%r0),.Lrestart_psw-0b(%r13)	# Setup restart PSW
 	mvc	464(16,%r0),.Lpgm_psw-0b(%r13)	# Setup pgm check PSW
@@ -100,6 +110,12 @@ startup_kdump_relocated:
 	.long	0x00080000,0x80000000 + startup
 .Lpgm_psw:
 	.quad	0x0000000180000000,0x0000000000000000 + .Lno_diag308
+=======
+0:	lpswe	.Lrestart_psw-0b(%r13)		# Start new kernel...
+.align	8
+.Lrestart_psw:
+	.quad	0x0000000080000000,0x0000000000000000 + startup
+>>>>>>> refs/remotes/origin/master
 #else
 .align 2
 .Lep_startup_kdump:

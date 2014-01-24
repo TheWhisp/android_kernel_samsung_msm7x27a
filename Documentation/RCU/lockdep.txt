@@ -33,10 +33,13 @@ checking of rcu_dereference() primitives:
 		Check for SRCU read-side critical section.
 	rcu_dereference_check(p, c):
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Use explicit check expression "c".  This is useful in
 		code that is invoked by both readers and updaters.
 	rcu_dereference_raw(p)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		Use explicit check expression "c" along with
 		rcu_read_lock_held().  This is useful in code that is
 		invoked by both RCU readers and updaters.
@@ -58,7 +61,10 @@ checking of rcu_dereference() primitives:
 		This is useful in code that uses RCU-protected arrays
 		that is invoked by both RCU readers and updaters.
 	rcu_dereference_raw(p):
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		Don't check.  (Use sparingly, if at all.)
 	rcu_dereference_protected(p, c):
 		Use explicit check expression "c", and omit all barriers
@@ -70,6 +76,7 @@ checking of rcu_dereference() primitives:
 		but retain the compiler constraints that prevent duplicating
 		or coalescsing.  This is useful when when testing the
 		value of the pointer itself, for example, against NULL.
+<<<<<<< HEAD
 
 The rcu_dereference_check() check expression can be any boolean
 <<<<<<< HEAD
@@ -81,12 +88,24 @@ the following:
 	file = rcu_dereference_check(fdt->fd[fd],
 				     rcu_read_lock_held() ||
 =======
+=======
+	rcu_access_index(idx):
+		Return the value of the index and omit all barriers, but
+		retain the compiler constraints that prevent duplicating
+		or coalescsing.  This is useful when when testing the
+		value of the index itself, for example, against -1.
+
+The rcu_dereference_check() check expression can be any boolean
+>>>>>>> refs/remotes/origin/master
 expression, but would normally include a lockdep expression.  However,
 any boolean expression can be used.  For a moderately ornate example,
 consider the following:
 
 	file = rcu_dereference_check(fdt->fd[fd],
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     lockdep_is_held(&files->file_lock) ||
 				     atomic_read(&files->count) == 1);
 
@@ -95,10 +114,14 @@ and, if CONFIG_PROVE_RCU is configured, verifies that this expression
 is used in:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 1.	An RCU read-side critical section, or
 =======
 1.	An RCU read-side critical section (implicit), or
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+1.	An RCU read-side critical section (implicit), or
+>>>>>>> refs/remotes/origin/master
 2.	with files->file_lock held, or
 3.	on an unshared files_struct.
 

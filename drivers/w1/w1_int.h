@@ -2,10 +2,14 @@
  *	w1_int.h
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
 =======
  * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify

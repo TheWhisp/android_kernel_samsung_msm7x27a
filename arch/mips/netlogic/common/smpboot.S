@@ -49,6 +49,7 @@
 #include <asm/netlogic/xlp-hal/sys.h>
 #include <asm/netlogic/xlp-hal/cpucontrol.h>
 
+<<<<<<< HEAD
 #define	CP0_EBASE	$15
 #define SYS_CPU_COHERENT_BASE(node)	CKSEG1ADDR(XLP_DEFAULT_IO_BASE) + \
 			XLP_IO_SYS_OFFSET(node) + XLP_IO_PCI_HDRSZ + \
@@ -195,6 +196,16 @@ EXPORT(nlm_reset_entry_end)
 FEXPORT(xlp_boot_core0_siblings)	/* "Master" cpu starts from here */
 	__config_lsu
 	dmtc0   sp, $4, 2		/* SP saved in UserLocal */
+=======
+#define CP0_EBASE	$15
+
+	.set	noreorder
+	.set	noat
+	.set	arch=xlr		/* for mfcr/mtcr, XLR is sufficient */
+
+FEXPORT(xlp_boot_core0_siblings)	/* "Master" cpu starts from here */
+	dmtc0	sp, $4, 2		/* SP saved in UserLocal */
+>>>>>>> refs/remotes/origin/master
 	SAVE_ALL
 	sync
 	/* find the location to which nlm_boot_siblings was relocated */
@@ -208,14 +219,29 @@ FEXPORT(xlp_boot_core0_siblings)	/* "Master" cpu starts from here */
 	nop
 	/* not reached */
 
+<<<<<<< HEAD
 	__CPUINIT
 NESTED(nlm_boot_secondary_cpus, 16, sp)
+=======
+NESTED(nlm_boot_secondary_cpus, 16, sp)
+	/* Initialize CP0 Status */
+	move	t1, zero
+#ifdef CONFIG_64BIT
+	ori	t1, ST0_KX
+#endif
+	mtc0	t1, CP0_STATUS
+>>>>>>> refs/remotes/origin/master
 	PTR_LA	t1, nlm_next_sp
 	PTR_L	sp, 0(t1)
 	PTR_LA	t1, nlm_next_gp
 	PTR_L	gp, 0(t1)
 
 	/* a0 has the processor id */
+<<<<<<< HEAD
+=======
+	mfc0	a0, CP0_EBASE, 1
+	andi	a0, 0x3ff		/* a0 <- node/core */
+>>>>>>> refs/remotes/origin/master
 	PTR_LA	t0, nlm_early_init_secondary
 	jalr	t0
 	nop
@@ -224,7 +250,10 @@ NESTED(nlm_boot_secondary_cpus, 16, sp)
 	jr	t0
 	nop
 END(nlm_boot_secondary_cpus)
+<<<<<<< HEAD
 	__FINIT
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * In case of RMIboot bootloader which is used on XLR boards, the CPUs
@@ -232,6 +261,7 @@ END(nlm_boot_secondary_cpus)
  * This will get them out of the bootloader code and into linux. Needed
  *  because the bootloader area will be taken and initialized by linux.
  */
+<<<<<<< HEAD
 	__CPUINIT
 NESTED(nlm_rmiboot_preboot, 16, sp)
 	mfc0	t0, $15, 1	# read ebase
@@ -270,3 +300,42 @@ NESTED(nlm_rmiboot_preboot, 16, sp)
 	nop
 END(nlm_rmiboot_preboot)
 	__FINIT
+=======
+NESTED(nlm_rmiboot_preboot, 16, sp)
+	mfc0	t0, $15, 1	/* read ebase */
+	andi	t0, 0x1f	/* t0 has the processor_id() */
+	andi	t2, t0, 0x3	/* thread num */
+	sll	t0, 2		/* offset in cpu array */
+
+	li	t3, CKSEG1ADDR(RESET_DATA_PHYS)
+	ADDIU	t1, t3, BOOT_CPU_READY
+	ADDU	t1, t0
+	li	t3, 1
+	sw	t3, 0(t1)
+
+	bnez	t2, 1f		/* skip thread programming */
+	nop			/* for thread id != 0 */
+
+	/*
+	 * XLR MMU setup only for first thread in core
+	 */
+	li	t0, 0x400
+	mfcr	t1, t0
+	li	t2, 6		/* XLR thread mode mask */
+	nor	t3, t2, zero
+	and	t2, t1, t2	/* t2 - current thread mode */
+	li	v0, CKSEG1ADDR(RESET_DATA_PHYS)
+	lw	v1, BOOT_THREAD_MODE(v0) /* v1 - new thread mode */
+	sll	v1, 1
+	beq	v1, t2, 1f	/* same as request value */
+	nop			/* nothing to do */
+
+	and	t2, t1, t3	/* mask out old thread mode */
+	or	t1, t2, v1	/* put in new value */
+	mtcr	t1, t0		/* update core control */
+
+1:	wait
+	b	1b
+	nop
+END(nlm_rmiboot_preboot)
+>>>>>>> refs/remotes/origin/master

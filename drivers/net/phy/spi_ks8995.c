@@ -11,6 +11,11 @@
  * by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -262,7 +267,11 @@ static struct bin_attribute ks8995_registers_attr = {
 
 /* ------------------------------------------------------------------------ */
 
+<<<<<<< HEAD
 static int __devinit ks8995_probe(struct spi_device *spi)
+=======
+static int ks8995_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ks8995_switch    *ks;
 	struct ks8995_pdata     *pdata;
@@ -273,15 +282,24 @@ static int __devinit ks8995_probe(struct spi_device *spi)
 	pdata = spi->dev.platform_data;
 
 	ks = kzalloc(sizeof(*ks), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!ks) {
 		dev_err(&spi->dev, "no memory for private data\n");
 		return -ENOMEM;
 	}
+=======
+	if (!ks)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&ks->lock);
 	ks->pdata = pdata;
 	ks->spi = spi_dev_get(spi);
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, ks);
+=======
+	spi_set_drvdata(spi, ks);
+>>>>>>> refs/remotes/origin/master
 
 	spi->mode = SPI_MODE_0;
 	spi->bits_per_word = 8;
@@ -325,11 +343,16 @@ static int __devinit ks8995_probe(struct spi_device *spi)
 	return 0;
 
 err_drvdata:
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, NULL);
+=======
+	spi_set_drvdata(spi, NULL);
+>>>>>>> refs/remotes/origin/master
 	kfree(ks);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ks8995_remove(struct spi_device *spi)
 {
 	struct ks8995_data      *ks8995;
@@ -338,6 +361,16 @@ static int __devexit ks8995_remove(struct spi_device *spi)
 	sysfs_remove_bin_file(&spi->dev.kobj, &ks8995_registers_attr);
 
 	dev_set_drvdata(&spi->dev, NULL);
+=======
+static int ks8995_remove(struct spi_device *spi)
+{
+	struct ks8995_data      *ks8995;
+
+	ks8995 = spi_get_drvdata(spi);
+	sysfs_remove_bin_file(&spi->dev.kobj, &ks8995_registers_attr);
+
+	spi_set_drvdata(spi, NULL);
+>>>>>>> refs/remotes/origin/master
 	kfree(ks8995);
 
 	return 0;
@@ -348,6 +381,7 @@ static int __devexit ks8995_remove(struct spi_device *spi)
 static struct spi_driver ks8995_driver = {
 	.driver = {
 		.name	    = "spi-ks8995",
+<<<<<<< HEAD
 		.bus	     = &spi_bus_type,
 		.owner	   = THIS_MODULE,
 	},
@@ -368,6 +402,15 @@ static void __exit ks8995_exit(void)
 	spi_unregister_driver(&ks8995_driver);
 }
 module_exit(ks8995_exit);
+=======
+		.owner	   = THIS_MODULE,
+	},
+	.probe	  = ks8995_probe,
+	.remove	  = ks8995_remove,
+};
+
+module_spi_driver(ks8995_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION(DRV_DESC);
 MODULE_VERSION(DRV_VERSION);

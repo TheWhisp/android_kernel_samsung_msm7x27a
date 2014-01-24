@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  * arch/arm/plat-omap/include/mach/cpu.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * OMAP cpu type detection
  *
  * Copyright (C) 2004, 2008 Nokia Corporation
@@ -9,7 +12,11 @@
  *
  * Written by Tony Lindgren <tony.lindgren@nokia.com>
  *
+<<<<<<< HEAD
  * Added OMAP4 specific defines - Santosh Shilimkar<santosh.shilimkar@ti.com>
+=======
+ * Added OMAP4/5 specific defines - Santosh Shilimkar<santosh.shilimkar@ti.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +37,7 @@
 #ifndef __ASM_ARCH_OMAP_CPU_H
 #define __ASM_ARCH_OMAP_CPU_H
 
+<<<<<<< HEAD
 #include <linux/bitops.h>
 #include <plat/multi.h>
 
@@ -691,4 +699,10 @@ OMAP4_HAS_FEATURE(mpu_1_2ghz, MPU_1_2GHZ)
 OMAP4_HAS_FEATURE(mpu_1_5ghz, MPU_1_5GHZ)
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#ifdef CONFIG_ARCH_OMAP1
+#include <mach/soc.h>
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif

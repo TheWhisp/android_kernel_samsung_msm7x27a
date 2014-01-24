@@ -15,9 +15,13 @@
 #include <linux/interrupt.h>
 #include <linux/cache.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/clockchips.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clockchips.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/profile.h>
 #include <linux/errno.h>
 #include <linux/mm.h>
@@ -28,10 +32,14 @@
 #include <linux/irq.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cacheflush.h>
 #include <asm/irq_handler.h>
 #include <asm/mmu_context.h>
@@ -54,6 +62,7 @@ unsigned long blackfin_iflush_l1_entry[NR_CPUS];
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __cpuinitdata *init_retx_coreb, *init_saved_retx_coreb,
 	*init_saved_seqstat_coreb, *init_saved_icplb_fault_addr_coreb,
 	*init_saved_dcplb_fault_addr_coreb;
@@ -69,6 +78,18 @@ struct blackfin_initial_pda __cpuinitdata initial_pda_coreb;
 #define BFIN_IPI_CALL_FUNC    2
 #define BFIN_IPI_CPU_STOP     3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct blackfin_initial_pda initial_pda_coreb;
+
+enum ipi_message_type {
+	BFIN_IPI_NONE,
+	BFIN_IPI_TIMER,
+	BFIN_IPI_RESCHEDULE,
+	BFIN_IPI_CALL_FUNC,
+	BFIN_IPI_CALL_FUNC_SINGLE,
+	BFIN_IPI_CPU_STOP,
+};
+>>>>>>> refs/remotes/origin/master
 
 struct blackfin_flush_data {
 	unsigned long start;
@@ -77,6 +98,7 @@ struct blackfin_flush_data {
 
 void *secondary_stack;
 
+<<<<<<< HEAD
 
 struct smp_call_struct {
 	void (*func)(void *info);
@@ -85,19 +107,25 @@ struct smp_call_struct {
 	cpumask_t *waitmask;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct blackfin_flush_data smp_flush_data;
 
 static DEFINE_SPINLOCK(stop_lock);
 
+<<<<<<< HEAD
 struct ipi_message {
 	unsigned long type;
 	struct smp_call_struct call_struct;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* A magic number - stress test shows this is safe for common cases */
 #define BFIN_IPI_MSGQ_LEN 5
 
 /* Simple FIFO buffer, overflow leads to panic */
+<<<<<<< HEAD
 struct ipi_message_queue {
 	spinlock_t lock;
 	unsigned long count;
@@ -106,6 +134,14 @@ struct ipi_message_queue {
 };
 
 static DEFINE_PER_CPU(struct ipi_message_queue, ipi_msg_queue);
+=======
+struct ipi_data {
+	atomic_t count;
+	atomic_t bits;
+};
+
+static DEFINE_PER_CPU(struct ipi_data, bfin_ipi);
+>>>>>>> refs/remotes/origin/master
 
 static void ipi_cpu_stop(unsigned int cpu)
 {
@@ -146,6 +182,7 @@ static void ipi_flush_icache(void *info)
 	blackfin_icache_flush_range(fdata->start, fdata->end);
 }
 
+<<<<<<< HEAD
 static void ipi_call_function(unsigned int cpu, struct ipi_message *msg)
 {
 	int wait;
@@ -168,6 +205,8 @@ static void ipi_call_function(unsigned int cpu, struct ipi_message *msg)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Use IRQ_SUPPLE_0 to request reschedule.
  * When returning from interrupt to user space,
  * there is chance to reschedule */
@@ -180,7 +219,10 @@ static irqreturn_t ipi_handler_int0(int irq, void *dev_instance)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 DECLARE_PER_CPU(struct clock_event_device, coretmr_events);
 void ipi_timer(void)
 {
@@ -189,6 +231,7 @@ void ipi_timer(void)
 	evt->event_handler(evt);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static irqreturn_t ipi_handler_int1(int irq, void *dev_instance)
 {
@@ -352,15 +395,107 @@ void smp_send_reschedule(int cpu)
 
 	smp_send_message(callmap, BFIN_IPI_RESCHEDULE, NULL, NULL, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static irqreturn_t ipi_handler_int1(int irq, void *dev_instance)
+{
+	struct ipi_data *bfin_ipi_data;
+	unsigned int cpu = smp_processor_id();
+	unsigned long pending;
+	unsigned long msg;
+
+	platform_clear_ipi(cpu, IRQ_SUPPLE_1);
+
+	smp_rmb();
+	bfin_ipi_data = &__get_cpu_var(bfin_ipi);
+	while ((pending = atomic_xchg(&bfin_ipi_data->bits, 0)) != 0) {
+		msg = 0;
+		do {
+			msg = find_next_bit(&pending, BITS_PER_LONG, msg + 1);
+			switch (msg) {
+			case BFIN_IPI_TIMER:
+				ipi_timer();
+				break;
+			case BFIN_IPI_RESCHEDULE:
+				scheduler_ipi();
+				break;
+			case BFIN_IPI_CALL_FUNC:
+				generic_smp_call_function_interrupt();
+				break;
+			case BFIN_IPI_CALL_FUNC_SINGLE:
+				generic_smp_call_function_single_interrupt();
+				break;
+			case BFIN_IPI_CPU_STOP:
+				ipi_cpu_stop(cpu);
+				break;
+			default:
+				goto out;
+			}
+			atomic_dec(&bfin_ipi_data->count);
+		} while (msg < BITS_PER_LONG);
+
+	}
+out:
+	return IRQ_HANDLED;
+}
+
+static void bfin_ipi_init(void)
+{
+	unsigned int cpu;
+	struct ipi_data *bfin_ipi_data;
+	for_each_possible_cpu(cpu) {
+		bfin_ipi_data = &per_cpu(bfin_ipi, cpu);
+		atomic_set(&bfin_ipi_data->bits, 0);
+		atomic_set(&bfin_ipi_data->count, 0);
+	}
+}
+
+void send_ipi(const struct cpumask *cpumask, enum ipi_message_type msg)
+{
+	unsigned int cpu;
+	struct ipi_data *bfin_ipi_data;
+	unsigned long flags;
+
+	local_irq_save(flags);
+	for_each_cpu(cpu, cpumask) {
+		bfin_ipi_data = &per_cpu(bfin_ipi, cpu);
+		atomic_set_mask((1 << msg), &bfin_ipi_data->bits);
+		atomic_inc(&bfin_ipi_data->count);
+	}
+	local_irq_restore(flags);
+	smp_wmb();
+	for_each_cpu(cpu, cpumask)
+		platform_send_ipi_cpu(cpu, IRQ_SUPPLE_1);
+}
+
+void arch_send_call_function_single_ipi(int cpu)
+{
+	send_ipi(cpumask_of(cpu), BFIN_IPI_CALL_FUNC_SINGLE);
+}
+
+void arch_send_call_function_ipi_mask(const struct cpumask *mask)
+{
+	send_ipi(mask, BFIN_IPI_CALL_FUNC);
+}
+
+void smp_send_reschedule(int cpu)
+{
+	send_ipi(cpumask_of(cpu), BFIN_IPI_RESCHEDULE);
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void smp_send_msg(const struct cpumask *mask, unsigned long type)
 {
 	smp_send_message(*mask, type, NULL, NULL, 0);
+=======
+void smp_send_msg(const struct cpumask *mask, unsigned long type)
+{
+	send_ipi(mask, type);
+>>>>>>> refs/remotes/origin/master
 }
 
 void smp_timer_broadcast(const struct cpumask *mask)
@@ -368,7 +503,10 @@ void smp_timer_broadcast(const struct cpumask *mask)
 	smp_send_msg(mask, BFIN_IPI_TIMER);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void smp_send_stop(void)
 {
 	cpumask_t callmap;
@@ -377,13 +515,18 @@ void smp_send_stop(void)
 	cpumask_copy(&callmap, cpu_online_mask);
 	cpumask_clear_cpu(smp_processor_id(), &callmap);
 	if (!cpumask_empty(&callmap))
+<<<<<<< HEAD
 		smp_send_message(callmap, BFIN_IPI_CPU_STOP, NULL, NULL, 0);
+=======
+		send_ipi(&callmap, BFIN_IPI_CPU_STOP);
+>>>>>>> refs/remotes/origin/master
 
 	preempt_enable();
 
 	return;
 }
 
+<<<<<<< HEAD
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	int ret;
@@ -419,6 +562,12 @@ int __cpuinit __cpu_up(unsigned int cpu)
 		init_idle(idle, cpu);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *idle)
+{
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	secondary_stack = task_stack_page(idle) + THREAD_SIZE;
 
 	ret = platform_boot_secondary(cpu, idle);
@@ -428,7 +577,11 @@ int __cpuinit __cpu_up(unsigned int cpu)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __cpuinit setup_secondary(unsigned int cpu)
+=======
+static void setup_secondary(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long ilat;
 
@@ -446,7 +599,11 @@ static void __cpuinit setup_secondary(unsigned int cpu)
 	    IMASK_IVG10 | IMASK_IVG9 | IMASK_IVG8 | IMASK_IVG7 | IMASK_IVGHW;
 }
 
+<<<<<<< HEAD
 void __cpuinit secondary_start_kernel(void)
+=======
+void secondary_start_kernel(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = smp_processor_id();
 	struct mm_struct *mm = &init_mm;
@@ -454,6 +611,7 @@ void __cpuinit secondary_start_kernel(void)
 	if (_bfin_swrst & SWRST_DBL_FAULT_B) {
 		printk(KERN_EMERG "CoreB Recovering from DOUBLE FAULT event\n");
 #ifdef CONFIG_DEBUG_DOUBLEFAULT
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_EMERG " While handling exception (EXCAUSE = 0x%x) at %pF\n",
 			(int)init_saved_seqstat_coreb & SEQSTAT_EXCAUSE, init_saved_retx_coreb);
@@ -463,6 +621,8 @@ void __cpuinit secondary_start_kernel(void)
 		printk(KERN_NOTICE " The instruction at %pF caused a double exception\n",
 			init_retx_coreb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_EMERG " While handling exception (EXCAUSE = %#x) at %pF\n",
 			initial_pda_coreb.seqstat_doublefault & SEQSTAT_EXCAUSE,
 			initial_pda_coreb.retx_doublefault);
@@ -473,7 +633,10 @@ void __cpuinit secondary_start_kernel(void)
 #endif
 		printk(KERN_NOTICE " The instruction at %pF caused a double exception\n",
 			initial_pda_coreb.retx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -495,7 +658,10 @@ void __cpuinit secondary_start_kernel(void)
 	setup_secondary(cpu);
 
 	platform_secondary_init(cpu);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* setup local core timer */
 	bfin_local_timer_setup();
 
@@ -504,9 +670,13 @@ void __cpuinit secondary_start_kernel(void)
 	bfin_setup_caches(cpu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	notify_cpu_starting(cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	notify_cpu_starting(cpu);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Calibrate loops per jiffy value.
 	 * IRQs need to be enabled here - D-cache can be invalidated
@@ -514,7 +684,13 @@ void __cpuinit secondary_start_kernel(void)
 	 */
 	calibrate_delay();
 
+<<<<<<< HEAD
 	cpu_idle();
+=======
+	/* We are done with local CPU inits, unblock the boot CPU. */
+	set_cpu_online(cpu, true);
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_prepare_boot_cpu(void)
@@ -524,7 +700,11 @@ void __init smp_prepare_boot_cpu(void)
 void __init smp_prepare_cpus(unsigned int max_cpus)
 {
 	platform_prepare_cpus(max_cpus);
+<<<<<<< HEAD
 	ipi_queue_init();
+=======
+	bfin_ipi_init();
+>>>>>>> refs/remotes/origin/master
 	platform_request_ipi(IRQ_SUPPLE_0, ipi_handler_int0);
 	platform_request_ipi(IRQ_SUPPLE_1, ipi_handler_int1);
 }
@@ -550,14 +730,20 @@ void smp_icache_flush_range_others(unsigned long start, unsigned long end)
 	smp_flush_data.end = end;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (smp_call_function(&ipi_flush_icache, &smp_flush_data, 0))
 		printk(KERN_WARNING "SMP: failed to run I-cache flush request on other CPUs\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	preempt_disable();
 	if (smp_call_function(&ipi_flush_icache, &smp_flush_data, 1))
 		printk(KERN_WARNING "SMP: failed to run I-cache flush request on other CPUs\n");
 	preempt_enable();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(smp_icache_flush_range_others);
 
@@ -588,7 +774,11 @@ EXPORT_SYMBOL(resync_core_dcache);
 #endif
 
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 int __cpuexit __cpu_disable(void)
+=======
+int __cpu_disable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = smp_processor_id();
 
@@ -601,7 +791,11 @@ int __cpuexit __cpu_disable(void)
 
 static DECLARE_COMPLETION(cpu_killed);
 
+<<<<<<< HEAD
 int __cpuexit __cpu_die(unsigned int cpu)
+=======
+int __cpu_die(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	return wait_for_completion_timeout(&cpu_killed, 5000);
 }

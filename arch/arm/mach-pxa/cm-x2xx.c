@@ -22,6 +22,7 @@
 #include <asm/mach/map.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/pxa2xx-regs.h>
 =======
 #include <mach/pxa25x.h>
@@ -29,6 +30,13 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/audio.h>
 #include <mach/pxafb.h>
+=======
+#include <mach/pxa25x.h>
+#undef GPIO24_SSP1_SFRM
+#include <mach/pxa27x.h>
+#include <mach/audio.h>
+#include <linux/platform_data/video-pxafb.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/smemc.h>
 
 #include <asm/hardware/it8152.h>
@@ -44,10 +52,14 @@ extern void cmx270_init(void);
 
 /* virtual addresses for statically mapped regions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CMX2XX_VIRT_BASE	(0xe8000000)
 =======
 #define CMX2XX_VIRT_BASE	(void __iomem *)(0xe8000000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CMX2XX_VIRT_BASE	(void __iomem *)(0xe8000000)
+>>>>>>> refs/remotes/origin/master
 #define CMX2XX_IT8152_VIRT	(CMX2XX_VIRT_BASE)
 
 /* physical address if local-bus attached devices */
@@ -67,12 +79,17 @@ extern void cmx270_init(void);
 #define CMX270_GPIO_IT8152_IRQ	(22)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CMX255_ETHIRQ		IRQ_GPIO(GPIO22_ETHIRQ)
 #define CMX270_ETHIRQ		IRQ_GPIO(GPIO10_ETHIRQ)
 =======
 #define CMX255_ETHIRQ		PXA_GPIO_TO_IRQ(GPIO22_ETHIRQ)
 #define CMX270_ETHIRQ		PXA_GPIO_TO_IRQ(GPIO10_ETHIRQ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CMX255_ETHIRQ		PXA_GPIO_TO_IRQ(GPIO22_ETHIRQ)
+#define CMX270_ETHIRQ		PXA_GPIO_TO_IRQ(GPIO10_ETHIRQ)
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_DM9000) || defined(CONFIG_DM9000_MODULE)
 static struct resource cmx255_dm9000_resource[] = {
@@ -496,10 +513,14 @@ static void __init cmx2xx_init_irq(void)
 static struct map_desc cmx2xx_io_desc[] __initdata = {
 	[0] = { /* PCI bridge */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual	= CMX2XX_IT8152_VIRT,
 =======
 		.virtual	= (unsigned long)CMX2XX_IT8152_VIRT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= (unsigned long)CMX2XX_IT8152_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(PXA_CS4_PHYS),
 		.length		= SZ_64M,
 		.type		= MT_DEVICE
@@ -531,6 +552,7 @@ static void __init cmx2xx_map_io(void)
 
 MACHINE_START(ARMCORE, "Compulab CM-X2XX")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= cmx2xx_map_io,
 	.nr_irqs	= CMX2XX_NR_IRQS,
@@ -538,17 +560,26 @@ MACHINE_START(ARMCORE, "Compulab CM-X2XX")
 	.timer		= &pxa_timer,
 	.init_machine	= cmx2xx_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= cmx2xx_map_io,
 	.nr_irqs	= CMX2XX_NR_IRQS,
 	.init_irq	= cmx2xx_init_irq,
 	/* NOTE: pxa25x_handle_irq() works on PXA27x w/o camera support */
 	.handle_irq	= pxa25x_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
+=======
+	.init_time	= pxa_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= cmx2xx_init,
 #ifdef CONFIG_PCI
 	.dma_zone_size	= SZ_64M,
 #endif
 	.restart	= pxa_restart,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

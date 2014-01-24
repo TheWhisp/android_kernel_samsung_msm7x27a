@@ -116,8 +116,13 @@ search path and 'use'ing a few support modules (see module
 descriptions below):
 
 ----
+<<<<<<< HEAD
  use lib "$ENV{'PERF_EXEC_PATH'}/scripts/perl/perf-script-Util/lib";
  use lib "./perf-script-Util/lib";
+=======
+ use lib "$ENV{'PERF_EXEC_PATH'}/scripts/perl/Perf-Trace-Util/lib";
+ use lib "./Perf-Trace-Util/lib";
+>>>>>>> refs/remotes/origin/master
  use Perf::Trace::Core;
  use Perf::Trace::Context;
  use Perf::Trace::Util;

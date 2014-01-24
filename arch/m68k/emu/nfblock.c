@@ -41,8 +41,13 @@ static inline s32 nfhd_read_write(u32 major, u32 minor, u32 rwflag, u32 recno,
 static inline s32 nfhd_get_capacity(u32 major, u32 minor, u32 *blocks,
 				    u32 *blocksize)
 {
+<<<<<<< HEAD
 	return nf_call(nfhd_id + NFHD_GET_CAPACITY, major, minor, blocks,
 		       blocksize);
+=======
+	return nf_call(nfhd_id + NFHD_GET_CAPACITY, major, minor,
+		       virt_to_phys(blocks), virt_to_phys(blocksize));
+>>>>>>> refs/remotes/origin/master
 }
 
 static LIST_HEAD(nfhd_list);
@@ -60,10 +65,14 @@ struct nfhd_device {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nfhd_make_request(struct request_queue *queue, struct bio *bio)
 =======
 static void nfhd_make_request(struct request_queue *queue, struct bio *bio)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void nfhd_make_request(struct request_queue *queue, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfhd_device *dev = queue->queuedata;
 	struct bio_vec *bvec;
@@ -81,9 +90,12 @@ static void nfhd_make_request(struct request_queue *queue, struct bio *bio)
 	}
 	bio_endio(bio, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int nfhd_getgeo(struct block_device *bdev, struct hd_geometry *geo)

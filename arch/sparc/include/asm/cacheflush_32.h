@@ -1,6 +1,7 @@
 #ifndef _SPARC_CACHEFLUSH_H
 #define _SPARC_CACHEFLUSH_H
 
+<<<<<<< HEAD
 #include <linux/mm.h>		/* Common for other includes */
 // #include <linux/kernel.h> from pgalloc.h
 // #include <linux/sched.h>  from pgalloc.h
@@ -51,6 +52,20 @@ BTFIXUPDEF_CALL(void, flush_cache_page, struct vm_area_struct *, unsigned long)
 #define flush_cache_dup_mm(mm) BTFIXUP_CALL(flush_cache_mm)(mm)
 #define flush_cache_range(vma,start,end) BTFIXUP_CALL(flush_cache_range)(vma,start,end)
 #define flush_cache_page(vma,addr,pfn) BTFIXUP_CALL(flush_cache_page)(vma,addr)
+=======
+#include <asm/cachetlb_32.h>
+
+#define flush_cache_all() \
+	sparc32_cachetlb_ops->cache_all()
+#define flush_cache_mm(mm) \
+	sparc32_cachetlb_ops->cache_mm(mm)
+#define flush_cache_dup_mm(mm) \
+	sparc32_cachetlb_ops->cache_mm(mm)
+#define flush_cache_range(vma,start,end) \
+	sparc32_cachetlb_ops->cache_range(vma, start, end)
+#define flush_cache_page(vma,addr,pfn) \
+	sparc32_cachetlb_ops->cache_page(vma, addr)
+>>>>>>> refs/remotes/origin/master
 #define flush_icache_range(start, end)		do { } while (0)
 #define flush_icache_page(vma, pg)		do { } while (0)
 
@@ -67,11 +82,20 @@ BTFIXUPDEF_CALL(void, flush_cache_page, struct vm_area_struct *, unsigned long)
 		memcpy(dst, src, len);				\
 	} while (0)
 
+<<<<<<< HEAD
 BTFIXUPDEF_CALL(void, __flush_page_to_ram, unsigned long)
 BTFIXUPDEF_CALL(void, flush_sig_insns, struct mm_struct *, unsigned long)
 
 #define __flush_page_to_ram(addr) BTFIXUP_CALL(__flush_page_to_ram)(addr)
 #define flush_sig_insns(mm,insn_addr) BTFIXUP_CALL(flush_sig_insns)(mm,insn_addr)
+=======
+#define __flush_page_to_ram(addr) \
+	sparc32_cachetlb_ops->page_to_ram(addr)
+#define flush_sig_insns(mm,insn_addr) \
+	sparc32_cachetlb_ops->sig_insns(mm, insn_addr)
+#define flush_page_for_dma(addr) \
+	sparc32_cachetlb_ops->page_for_dma(addr)
+>>>>>>> refs/remotes/origin/master
 
 extern void sparc_flush_page_to_ram(struct page *page);
 
@@ -84,7 +108,10 @@ extern void sparc_flush_page_to_ram(struct page *page);
 #define flush_cache_vunmap(start, end)		flush_cache_all()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* When a context switch happens we must flush all user windows so that
  * the windows of the current process are flushed onto its stack. This
  * way the windows are all clean for the next process and the stack
@@ -94,5 +121,8 @@ extern void flush_user_windows(void);
 extern void kill_user_windows(void);
 extern void flushw_all(void);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _SPARC_CACHEFLUSH_H */

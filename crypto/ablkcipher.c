@@ -16,25 +16,37 @@
 #include <crypto/internal/skcipher.h>
 #include <linux/cpumask.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/rtnetlink.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/cryptouser.h>
 #include <net/netlink.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cryptouser.h>
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <crypto/scatterwalk.h>
 
 #include "internal.h"
 
+<<<<<<< HEAD
 static const char *skcipher_default_geniv __read_mostly;
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct ablkcipher_buffer {
 	struct list_head	entry;
 	struct scatter_walk	dst;
@@ -387,7 +399,10 @@ static int crypto_init_ablkcipher_ops(struct crypto_tfm *tfm, u32 type,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NET
 static int crypto_ablkcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
@@ -402,9 +417,15 @@ static int crypto_ablkcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 	rblkcipher.max_keysize = alg->cra_ablkcipher.max_keysize;
 	rblkcipher.ivsize = alg->cra_ablkcipher.ivsize;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_BLKCIPHER,
 		sizeof(struct crypto_report_blkcipher), &rblkcipher);
 
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_BLKCIPHER,
+		    sizeof(struct crypto_report_blkcipher), &rblkcipher))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -417,7 +438,10 @@ static int crypto_ablkcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void crypto_ablkcipher_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_ablkcipher_show(struct seq_file *m, struct crypto_alg *alg)
@@ -441,9 +465,13 @@ const struct crypto_type crypto_ablkcipher_type = {
 	.show = crypto_ablkcipher_show,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.report = crypto_ablkcipher_report,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.report = crypto_ablkcipher_report,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(crypto_ablkcipher_type);
 
@@ -474,7 +502,10 @@ static int crypto_init_givcipher_ops(struct crypto_tfm *tfm, u32 type,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NET
 static int crypto_givcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
@@ -489,9 +520,15 @@ static int crypto_givcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 	rblkcipher.max_keysize = alg->cra_ablkcipher.max_keysize;
 	rblkcipher.ivsize = alg->cra_ablkcipher.ivsize;
 
+<<<<<<< HEAD
 	NLA_PUT(skb, CRYPTOCFGA_REPORT_BLKCIPHER,
 		sizeof(struct crypto_report_blkcipher), &rblkcipher);
 
+=======
+	if (nla_put(skb, CRYPTOCFGA_REPORT_BLKCIPHER,
+		    sizeof(struct crypto_report_blkcipher), &rblkcipher))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
@@ -504,7 +541,10 @@ static int crypto_givcipher_report(struct sk_buff *skb, struct crypto_alg *alg)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void crypto_givcipher_show(struct seq_file *m, struct crypto_alg *alg)
 	__attribute__ ((unused));
 static void crypto_givcipher_show(struct seq_file *m, struct crypto_alg *alg)
@@ -528,9 +568,13 @@ const struct crypto_type crypto_givcipher_type = {
 	.show = crypto_givcipher_show,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.report = crypto_givcipher_report,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.report = crypto_givcipher_report,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(crypto_givcipher_type);
 
@@ -542,8 +586,12 @@ const char *crypto_default_geniv(const struct crypto_alg *alg)
 	    alg->cra_blocksize)
 		return "chainiv";
 
+<<<<<<< HEAD
 	return alg->cra_flags & CRYPTO_ALG_ASYNC ?
 	       "eseqiv" : skcipher_default_geniv;
+=======
+	return "eseqiv";
+>>>>>>> refs/remotes/origin/master
 }
 
 static int crypto_givcipher_default(struct crypto_alg *alg, u32 type, u32 mask)
@@ -629,11 +677,15 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct crypto_alg *crypto_lookup_skcipher(const char *name, u32 type,
 						 u32 mask)
 =======
 struct crypto_alg *crypto_lookup_skcipher(const char *name, u32 type, u32 mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct crypto_alg *crypto_lookup_skcipher(const char *name, u32 type, u32 mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct crypto_alg *alg;
 
@@ -672,9 +724,13 @@ struct crypto_alg *crypto_lookup_skcipher(const char *name, u32 type, u32 mask)
 	return ERR_PTR(crypto_givcipher_default(alg, type, mask));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(crypto_lookup_skcipher);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(crypto_lookup_skcipher);
+>>>>>>> refs/remotes/origin/master
 
 int crypto_grab_skcipher(struct crypto_skcipher_spawn *spawn, const char *name,
 			 u32 type, u32 mask)
@@ -732,6 +788,7 @@ err:
 	return ERR_PTR(err);
 }
 EXPORT_SYMBOL_GPL(crypto_alloc_ablkcipher);
+<<<<<<< HEAD
 
 static int __init skcipher_module_init(void)
 {
@@ -746,3 +803,5 @@ static void skcipher_module_exit(void)
 
 module_init(skcipher_module_init);
 module_exit(skcipher_module_exit);
+=======
+>>>>>>> refs/remotes/origin/master

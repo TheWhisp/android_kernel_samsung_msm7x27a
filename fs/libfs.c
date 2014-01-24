@@ -4,16 +4,21 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pagemap.h>
 #include <linux/slab.h>
 #include <linux/mount.h>
 #include <linux/vfs.h>
 #include <linux/quotaops.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/exportfs.h>
 #include <linux/writeback.h>
 <<<<<<< HEAD
@@ -22,13 +27,21 @@
 #include <asm/uaccess.h>
 
 =======
+=======
+#include <linux/namei.h>
+#include <linux/exportfs.h>
+#include <linux/writeback.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/buffer_head.h> /* sync_mapping_buffers */
 
 #include <asm/uaccess.h>
 
 #include "internal.h"
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int simple_positive(struct dentry *dentry)
 {
 	return dentry->d_inode && !d_unhashed(dentry);
@@ -42,6 +55,10 @@ int simple_getattr(struct vfsmount *mnt, struct dentry *dentry,
 	stat->blocks = inode->i_mapping->nrpages << (PAGE_CACHE_SHIFT - 9);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_getattr);
+>>>>>>> refs/remotes/origin/master
 
 int simple_statfs(struct dentry *dentry, struct kstatfs *buf)
 {
@@ -50,20 +67,38 @@ int simple_statfs(struct dentry *dentry, struct kstatfs *buf)
 	buf->f_namelen = NAME_MAX;
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_statfs);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Retaining negative dentries for an in-memory filesystem just wastes
  * memory and lookup time: arrange for them to be deleted immediately.
  */
+<<<<<<< HEAD
 static int simple_delete_dentry(const struct dentry *dentry)
 {
 	return 1;
 }
+=======
+int always_delete_dentry(const struct dentry *dentry)
+{
+	return 1;
+}
+EXPORT_SYMBOL(always_delete_dentry);
+
+const struct dentry_operations simple_dentry_operations = {
+	.d_delete = always_delete_dentry,
+};
+EXPORT_SYMBOL(simple_dentry_operations);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Lookup the data. This is trivial - if the dentry didn't already
  * exist, we know it is negative.  Set d_op to delete negative dentries.
  */
+<<<<<<< HEAD
 struct dentry *simple_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
 {
 	static const struct dentry_operations simple_dentry_operations = {
@@ -80,23 +115,53 @@ struct dentry *simple_lookup(struct inode *dir, struct dentry *dentry, struct na
 int dcache_dir_open(struct inode *inode, struct file *file)
 {
 	static struct qstr cursor_name = {.len = 1, .name = "."};
+=======
+struct dentry *simple_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+{
+	if (dentry->d_name.len > NAME_MAX)
+		return ERR_PTR(-ENAMETOOLONG);
+	if (!dentry->d_sb->s_d_op)
+		d_set_d_op(dentry, &simple_dentry_operations);
+	d_add(dentry, NULL);
+	return NULL;
+}
+EXPORT_SYMBOL(simple_lookup);
+
+int dcache_dir_open(struct inode *inode, struct file *file)
+{
+	static struct qstr cursor_name = QSTR_INIT(".", 1);
+>>>>>>> refs/remotes/origin/master
 
 	file->private_data = d_alloc(file->f_path.dentry, &cursor_name);
 
 	return file->private_data ? 0 : -ENOMEM;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dcache_dir_open);
+>>>>>>> refs/remotes/origin/master
 
 int dcache_dir_close(struct inode *inode, struct file *file)
 {
 	dput(file->private_data);
 	return 0;
 }
+<<<<<<< HEAD
 
 loff_t dcache_dir_lseek(struct file *file, loff_t offset, int origin)
 {
 	struct dentry *dentry = file->f_path.dentry;
 	mutex_lock(&dentry->d_inode->i_mutex);
 	switch (origin) {
+=======
+EXPORT_SYMBOL(dcache_dir_close);
+
+loff_t dcache_dir_lseek(struct file *file, loff_t offset, int whence)
+{
+	struct dentry *dentry = file->f_path.dentry;
+	mutex_lock(&dentry->d_inode->i_mutex);
+	switch (whence) {
+>>>>>>> refs/remotes/origin/master
 		case 1:
 			offset += file->f_pos;
 		case 0:
@@ -133,6 +198,10 @@ loff_t dcache_dir_lseek(struct file *file, loff_t offset, int origin)
 	mutex_unlock(&dentry->d_inode->i_mutex);
 	return offset;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(dcache_dir_lseek);
+>>>>>>> refs/remotes/origin/master
 
 /* Relationship between i_mode and the DT_xxx types */
 static inline unsigned char dt_type(struct inode *inode)
@@ -146,6 +215,7 @@ static inline unsigned char dt_type(struct inode *inode)
  * both impossible due to the lock on directory.
  */
 
+<<<<<<< HEAD
 int dcache_readdir(struct file * filp, void * dirent, filldir_t filldir)
 {
 	struct dentry *dentry = filp->f_path.dentry;
@@ -202,24 +272,78 @@ int dcache_readdir(struct file * filp, void * dirent, filldir_t filldir)
 	}
 	return 0;
 }
+=======
+int dcache_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct dentry *dentry = file->f_path.dentry;
+	struct dentry *cursor = file->private_data;
+	struct list_head *p, *q = &cursor->d_u.d_child;
+
+	if (!dir_emit_dots(file, ctx))
+		return 0;
+	spin_lock(&dentry->d_lock);
+	if (ctx->pos == 2)
+		list_move(q, &dentry->d_subdirs);
+
+	for (p = q->next; p != &dentry->d_subdirs; p = p->next) {
+		struct dentry *next = list_entry(p, struct dentry, d_u.d_child);
+		spin_lock_nested(&next->d_lock, DENTRY_D_LOCK_NESTED);
+		if (!simple_positive(next)) {
+			spin_unlock(&next->d_lock);
+			continue;
+		}
+
+		spin_unlock(&next->d_lock);
+		spin_unlock(&dentry->d_lock);
+		if (!dir_emit(ctx, next->d_name.name, next->d_name.len,
+			      next->d_inode->i_ino, dt_type(next->d_inode)))
+			return 0;
+		spin_lock(&dentry->d_lock);
+		spin_lock_nested(&next->d_lock, DENTRY_D_LOCK_NESTED);
+		/* next is still alive */
+		list_move(q, p);
+		spin_unlock(&next->d_lock);
+		p = q;
+		ctx->pos++;
+	}
+	spin_unlock(&dentry->d_lock);
+	return 0;
+}
+EXPORT_SYMBOL(dcache_readdir);
+>>>>>>> refs/remotes/origin/master
 
 ssize_t generic_read_dir(struct file *filp, char __user *buf, size_t siz, loff_t *ppos)
 {
 	return -EISDIR;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(generic_read_dir);
+>>>>>>> refs/remotes/origin/master
 
 const struct file_operations simple_dir_operations = {
 	.open		= dcache_dir_open,
 	.release	= dcache_dir_close,
 	.llseek		= dcache_dir_lseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= dcache_readdir,
 	.fsync		= noop_fsync,
 };
+=======
+	.iterate	= dcache_readdir,
+	.fsync		= noop_fsync,
+};
+EXPORT_SYMBOL(simple_dir_operations);
+>>>>>>> refs/remotes/origin/master
 
 const struct inode_operations simple_dir_inode_operations = {
 	.lookup		= simple_lookup,
 };
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_dir_inode_operations);
+>>>>>>> refs/remotes/origin/master
 
 static const struct super_operations simple_super_operations = {
 	.statfs		= simple_statfs,
@@ -233,6 +357,7 @@ struct dentry *mount_pseudo(struct file_system_type *fs_type, char *name,
 	const struct super_operations *ops,
 	const struct dentry_operations *dops, unsigned long magic)
 {
+<<<<<<< HEAD
 	struct super_block *s = sget(fs_type, NULL, set_anon_super, NULL);
 	struct dentry *dentry;
 	struct inode *root;
@@ -242,6 +367,17 @@ struct dentry *mount_pseudo(struct file_system_type *fs_type, char *name,
 		return ERR_CAST(s);
 
 	s->s_flags = MS_NOUSER;
+=======
+	struct super_block *s;
+	struct dentry *dentry;
+	struct inode *root;
+	struct qstr d_name = QSTR_INIT(name, strlen(name));
+
+	s = sget(fs_type, NULL, set_anon_super, MS_NOUSER, NULL);
+	if (IS_ERR(s))
+		return ERR_CAST(s);
+
+>>>>>>> refs/remotes/origin/master
 	s->s_maxbytes = MAX_LFS_FILESIZE;
 	s->s_blocksize = PAGE_SIZE;
 	s->s_blocksize_bits = PAGE_SHIFT;
@@ -260,19 +396,26 @@ struct dentry *mount_pseudo(struct file_system_type *fs_type, char *name,
 	root->i_mode = S_IFDIR | S_IRUSR | S_IWUSR;
 	root->i_atime = root->i_mtime = root->i_ctime = CURRENT_TIME;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dentry = d_alloc(NULL, &d_name);
 =======
 	dentry = __d_alloc(s, &d_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dentry = __d_alloc(s, &d_name);
+>>>>>>> refs/remotes/origin/master
 	if (!dentry) {
 		iput(root);
 		goto Enomem;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dentry->d_sb = s;
 	dentry->d_parent = dentry;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	d_instantiate(dentry, root);
 	s->s_root = dentry;
 	s->s_d_op = dops;
@@ -283,17 +426,27 @@ Enomem:
 	deactivate_locked_super(s);
 	return ERR_PTR(-ENOMEM);
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
+=======
+EXPORT_SYMBOL(mount_pseudo);
+
+>>>>>>> refs/remotes/origin/master
 int simple_open(struct inode *inode, struct file *file)
 {
 	if (inode->i_private)
 		file->private_data = inode->i_private;
 	return 0;
 }
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(simple_open);
+
+>>>>>>> refs/remotes/origin/master
 int simple_link(struct dentry *old_dentry, struct inode *dir, struct dentry *dentry)
 {
 	struct inode *inode = old_dentry->d_inode;
@@ -305,6 +458,10 @@ int simple_link(struct dentry *old_dentry, struct inode *dir, struct dentry *den
 	d_instantiate(dentry, inode);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_link);
+>>>>>>> refs/remotes/origin/master
 
 int simple_empty(struct dentry *dentry)
 {
@@ -325,6 +482,10 @@ out:
 	spin_unlock(&dentry->d_lock);
 	return ret;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_empty);
+>>>>>>> refs/remotes/origin/master
 
 int simple_unlink(struct inode *dir, struct dentry *dentry)
 {
@@ -335,6 +496,10 @@ int simple_unlink(struct inode *dir, struct dentry *dentry)
 	dput(dentry);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_unlink);
+>>>>>>> refs/remotes/origin/master
 
 int simple_rmdir(struct inode *dir, struct dentry *dentry)
 {
@@ -346,6 +511,10 @@ int simple_rmdir(struct inode *dir, struct dentry *dentry)
 	drop_nlink(dir);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_rmdir);
+>>>>>>> refs/remotes/origin/master
 
 int simple_rename(struct inode *old_dir, struct dentry *old_dentry,
 		struct inode *new_dir, struct dentry *new_dentry)
@@ -359,14 +528,20 @@ int simple_rename(struct inode *old_dir, struct dentry *old_dentry,
 	if (new_dentry->d_inode) {
 		simple_unlink(new_dir, new_dentry);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (they_are_dirs)
 			drop_nlink(old_dir);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (they_are_dirs) {
 			drop_nlink(new_dentry->d_inode);
 			drop_nlink(old_dir);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (they_are_dirs) {
 		drop_nlink(old_dir);
 		inc_nlink(new_dir);
@@ -377,6 +552,10 @@ int simple_rename(struct inode *old_dir, struct dentry *old_dentry,
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_rename);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * simple_setattr - setattr for simple filesystem
@@ -397,8 +576,11 @@ int simple_setattr(struct dentry *dentry, struct iattr *iattr)
 	struct inode *inode = dentry->d_inode;
 	int error;
 
+<<<<<<< HEAD
 	WARN_ON_ONCE(inode->i_op->truncate);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	error = inode_change_ok(inode, iattr);
 	if (error)
 		return error;
@@ -419,6 +601,10 @@ int simple_readpage(struct file *file, struct page *page)
 	unlock_page(page);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_readpage);
+>>>>>>> refs/remotes/origin/master
 
 int simple_write_begin(struct file *file, struct address_space *mapping,
 			loff_t pos, unsigned len, unsigned flags,
@@ -442,6 +628,10 @@ int simple_write_begin(struct file *file, struct address_space *mapping,
 	}
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_write_begin);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * simple_write_end - .write_end helper for non-block-device FSes
@@ -493,6 +683,10 @@ int simple_write_end(struct file *file, struct address_space *mapping,
 
 	return copied;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_write_end);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * the inodes created here are not hashed. If you use iunique to generate
@@ -526,6 +720,7 @@ int simple_fill_super(struct super_block *s, unsigned long magic,
 	inode->i_op = &simple_dir_inode_operations;
 	inode->i_fop = &simple_dir_operations;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 2;
 	root = d_alloc_root(inode);
 	if (!root) {
@@ -533,11 +728,16 @@ int simple_fill_super(struct super_block *s, unsigned long magic,
 		return -ENOMEM;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	set_nlink(inode, 2);
 	root = d_make_root(inode);
 	if (!root)
 		return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; !files->name || files->name[0]; i++, files++) {
 		if (!files->name)
 			continue;
@@ -553,14 +753,20 @@ int simple_fill_super(struct super_block *s, unsigned long magic,
 			goto out;
 		inode = new_inode(s);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!inode)
 			goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!inode) {
 			dput(dentry);
 			goto out;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		inode->i_mode = S_IFREG | files->mode;
 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
 		inode->i_fop = files->ops;
@@ -572,12 +778,20 @@ int simple_fill_super(struct super_block *s, unsigned long magic,
 out:
 	d_genocide(root);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	shrink_dcache_parent(root);
 >>>>>>> refs/remotes/origin/cm-10.0
 	dput(root);
 	return -ENOMEM;
 }
+=======
+	shrink_dcache_parent(root);
+	dput(root);
+	return -ENOMEM;
+}
+EXPORT_SYMBOL(simple_fill_super);
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_SPINLOCK(pin_fs_lock);
 
@@ -588,10 +802,14 @@ int simple_pin_fs(struct file_system_type *type, struct vfsmount **mount, int *c
 	if (unlikely(!*mount)) {
 		spin_unlock(&pin_fs_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt = vfs_kern_mount(type, 0, type->name, NULL);
 =======
 		mnt = vfs_kern_mount(type, MS_KERNMOUNT, type->name, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt = vfs_kern_mount(type, MS_KERNMOUNT, type->name, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(mnt))
 			return PTR_ERR(mnt);
 		spin_lock(&pin_fs_lock);
@@ -604,6 +822,10 @@ int simple_pin_fs(struct file_system_type *type, struct vfsmount **mount, int *c
 	mntput(mnt);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_pin_fs);
+>>>>>>> refs/remotes/origin/master
 
 void simple_release_fs(struct vfsmount **mount, int *count)
 {
@@ -615,6 +837,10 @@ void simple_release_fs(struct vfsmount **mount, int *count)
 	spin_unlock(&pin_fs_lock);
 	mntput(mnt);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_release_fs);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * simple_read_from_buffer - copy data from the buffer to user space
@@ -649,6 +875,10 @@ ssize_t simple_read_from_buffer(void __user *to, size_t count, loff_t *ppos,
 	*ppos = pos + count;
 	return count;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_read_from_buffer);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * simple_write_to_buffer - copy data from user space to the buffer
@@ -683,6 +913,10 @@ ssize_t simple_write_to_buffer(void *to, size_t available, loff_t *ppos,
 	*ppos = pos + count;
 	return count;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_write_to_buffer);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * memory_read_from_buffer - copy data from the buffer
@@ -714,6 +948,10 @@ ssize_t memory_read_from_buffer(void *to, size_t count, loff_t *ppos,
 
 	return count;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(memory_read_from_buffer);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Transaction based IO.
@@ -735,6 +973,10 @@ void simple_transaction_set(struct file *file, size_t n)
 	smp_mb();
 	ar->size = n;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_transaction_set);
+>>>>>>> refs/remotes/origin/master
 
 char *simple_transaction_get(struct file *file, const char __user *buf, size_t size)
 {
@@ -766,6 +1008,10 @@ char *simple_transaction_get(struct file *file, const char __user *buf, size_t s
 
 	return ar->data;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_transaction_get);
+>>>>>>> refs/remotes/origin/master
 
 ssize_t simple_transaction_read(struct file *file, char __user *buf, size_t size, loff_t *pos)
 {
@@ -775,12 +1021,20 @@ ssize_t simple_transaction_read(struct file *file, char __user *buf, size_t size
 		return 0;
 	return simple_read_from_buffer(buf, size, pos, ar->data, ar->size);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_transaction_read);
+>>>>>>> refs/remotes/origin/master
 
 int simple_transaction_release(struct inode *inode, struct file *file)
 {
 	free_page((unsigned long)file->private_data);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(simple_transaction_release);
+>>>>>>> refs/remotes/origin/master
 
 /* Simple attribute files */
 
@@ -816,12 +1070,20 @@ int simple_attr_open(struct inode *inode, struct file *file,
 
 	return nonseekable_open(inode, file);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(simple_attr_open);
+>>>>>>> refs/remotes/origin/master
 
 int simple_attr_release(struct inode *inode, struct file *file)
 {
 	kfree(file->private_data);
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(simple_attr_release);	/* GPL-only?  This?  Really? */
+>>>>>>> refs/remotes/origin/master
 
 /* read from the buffer that is filled with the get function */
 ssize_t simple_attr_read(struct file *file, char __user *buf,
@@ -857,6 +1119,10 @@ out:
 	mutex_unlock(&attr->mutex);
 	return ret;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(simple_attr_read);
+>>>>>>> refs/remotes/origin/master
 
 /* interpret the buffer as a number to call the set function with */
 ssize_t simple_attr_write(struct file *file, const char __user *buf,
@@ -889,6 +1155,10 @@ out:
 	mutex_unlock(&attr->mutex);
 	return ret;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(simple_attr_write);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * generic_fh_to_dentry - generic helper for the fh_to_dentry export operation
@@ -923,7 +1193,11 @@ struct dentry *generic_fh_to_dentry(struct super_block *sb, struct fid *fid,
 EXPORT_SYMBOL_GPL(generic_fh_to_dentry);
 
 /**
+<<<<<<< HEAD
  * generic_fh_to_dentry - generic helper for the fh_to_parent export operation
+=======
+ * generic_fh_to_parent - generic helper for the fh_to_parent export operation
+>>>>>>> refs/remotes/origin/master
  * @sb:		filesystem to do the file handle conversion on
  * @fid:	file handle to convert
  * @fh_len:	length of the file handle in bytes
@@ -965,16 +1239,22 @@ EXPORT_SYMBOL_GPL(generic_fh_to_parent);
  * hanging off the address_space structure.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int generic_file_fsync(struct file *file, int datasync)
 =======
 int generic_file_fsync(struct file *file, loff_t start, loff_t end,
 		       int datasync)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int generic_file_fsync(struct file *file, loff_t start, loff_t end,
+		       int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = file->f_mapping->host;
 	int err;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = sync_mapping_buffers(inode->i_mapping);
 	if (!(inode->i_state & I_DIRTY))
@@ -982,6 +1262,8 @@ int generic_file_fsync(struct file *file, loff_t start, loff_t end,
 	if (datasync && !(inode->i_state & I_DIRTY_DATASYNC))
 		return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (err)
 		return err;
@@ -992,16 +1274,24 @@ int generic_file_fsync(struct file *file, loff_t start, loff_t end,
 		goto out;
 	if (datasync && !(inode->i_state & I_DIRTY_DATASYNC))
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = sync_inode_metadata(inode, 1);
 	if (ret == 0)
 		ret = err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 	mutex_unlock(&inode->i_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL(generic_file_fsync);
@@ -1038,6 +1328,7 @@ EXPORT_SYMBOL(generic_check_addressable);
 /*
  * No-op implementation of ->fsync for in-memory filesystems.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int noop_fsync(struct file *file, int datasync)
 =======
@@ -1085,3 +1376,62 @@ EXPORT_SYMBOL_GPL(simple_attr_open);
 EXPORT_SYMBOL_GPL(simple_attr_release);
 EXPORT_SYMBOL_GPL(simple_attr_read);
 EXPORT_SYMBOL_GPL(simple_attr_write);
+=======
+int noop_fsync(struct file *file, loff_t start, loff_t end, int datasync)
+{
+	return 0;
+}
+EXPORT_SYMBOL(noop_fsync);
+
+void kfree_put_link(struct dentry *dentry, struct nameidata *nd,
+				void *cookie)
+{
+	char *s = nd_get_link(nd);
+	if (!IS_ERR(s))
+		kfree(s);
+}
+EXPORT_SYMBOL(kfree_put_link);
+
+/*
+ * nop .set_page_dirty method so that people can use .page_mkwrite on
+ * anon inodes.
+ */
+static int anon_set_page_dirty(struct page *page)
+{
+	return 0;
+};
+
+/*
+ * A single inode exists for all anon_inode files. Contrary to pipes,
+ * anon_inode inodes have no associated per-instance data, so we need
+ * only allocate one of them.
+ */
+struct inode *alloc_anon_inode(struct super_block *s)
+{
+	static const struct address_space_operations anon_aops = {
+		.set_page_dirty = anon_set_page_dirty,
+	};
+	struct inode *inode = new_inode_pseudo(s);
+
+	if (!inode)
+		return ERR_PTR(-ENOMEM);
+
+	inode->i_ino = get_next_ino();
+	inode->i_mapping->a_ops = &anon_aops;
+
+	/*
+	 * Mark the inode dirty from the very beginning,
+	 * that way it will never be moved to the dirty
+	 * list because mark_inode_dirty() will think
+	 * that it already _is_ on the dirty list.
+	 */
+	inode->i_state = I_DIRTY;
+	inode->i_mode = S_IRUSR | S_IWUSR;
+	inode->i_uid = current_fsuid();
+	inode->i_gid = current_fsgid();
+	inode->i_flags |= S_PRIVATE;
+	inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+	return inode;
+}
+EXPORT_SYMBOL(alloc_anon_inode);
+>>>>>>> refs/remotes/origin/master

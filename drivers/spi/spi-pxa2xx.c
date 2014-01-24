@@ -1,5 +1,9 @@
 /*
  * Copyright (C) 2005 Stephen Street / StreetFire Sound Labs
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2013, Intel Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,20 +25,37 @@
 #include <linux/device.h>
 #include <linux/ioport.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 #include <linux/spi/pxa2xx_spi.h>
 #include <linux/dma-mapping.h>
+=======
+#include <linux/err.h>
+#include <linux/interrupt.h>
+#include <linux/platform_device.h>
+#include <linux/spi/pxa2xx_spi.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spi/spi.h>
 #include <linux/workqueue.h>
 #include <linux/delay.h>
 #include <linux/gpio.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/clk.h>
+#include <linux/pm_runtime.h>
+#include <linux/acpi.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/delay.h>
 
+<<<<<<< HEAD
+=======
+#include "spi-pxa2xx.h"
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Stephen Street");
 MODULE_DESCRIPTION("PXA2xx SSP SPI Controller");
@@ -45,12 +66,15 @@ MODULE_ALIAS("platform:pxa2xx-spi");
 
 #define TIMOUT_DFLT		1000
 
+<<<<<<< HEAD
 #define DMA_INT_MASK		(DCSR_ENDINTR | DCSR_STARTINTR | DCSR_BUSERR)
 #define RESET_DMA_CHANNEL	(DCSR_NODESC | DMA_INT_MASK)
 #define IS_DMA_ALIGNED(x)	((((u32)(x)) & 0x07) == 0)
 #define MAX_DMA_LEN		8191
 #define DMA_ALIGNMENT		8
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * for testing SSCR1 changes that require SSP restart, basically
  * everything except the service and interrupt enables, the pxa270 developer
@@ -65,6 +89,7 @@ MODULE_ALIAS("platform:pxa2xx-spi");
 				| SSCR1_RFT | SSCR1_TFT | SSCR1_MWDS \
 				| SSCR1_SPH | SSCR1_SPO | SSCR1_LBM)
 
+<<<<<<< HEAD
 #define DEFINE_SSP_REG(reg, off) \
 static inline u32 read_##reg(void const __iomem *p) \
 { return __raw_readl(p + (off)); } \
@@ -174,6 +199,111 @@ struct chip_data {
 };
 
 static void pump_messages(struct work_struct *work);
+=======
+#define LPSS_RX_THRESH_DFLT	64
+#define LPSS_TX_LOTHRESH_DFLT	160
+#define LPSS_TX_HITHRESH_DFLT	224
+
+/* Offset from drv_data->lpss_base */
+#define GENERAL_REG		0x08
+#define GENERAL_REG_RXTO_HOLDOFF_DISABLE BIT(24)
+#define SSP_REG			0x0c
+#define SPI_CS_CONTROL		0x18
+#define SPI_CS_CONTROL_SW_MODE	BIT(0)
+#define SPI_CS_CONTROL_CS_HIGH	BIT(1)
+
+static bool is_lpss_ssp(const struct driver_data *drv_data)
+{
+	return drv_data->ssp_type == LPSS_SSP;
+}
+
+/*
+ * Read and write LPSS SSP private registers. Caller must first check that
+ * is_lpss_ssp() returns true before these can be called.
+ */
+static u32 __lpss_ssp_read_priv(struct driver_data *drv_data, unsigned offset)
+{
+	WARN_ON(!drv_data->lpss_base);
+	return readl(drv_data->lpss_base + offset);
+}
+
+static void __lpss_ssp_write_priv(struct driver_data *drv_data,
+				  unsigned offset, u32 value)
+{
+	WARN_ON(!drv_data->lpss_base);
+	writel(value, drv_data->lpss_base + offset);
+}
+
+/*
+ * lpss_ssp_setup - perform LPSS SSP specific setup
+ * @drv_data: pointer to the driver private data
+ *
+ * Perform LPSS SSP specific setup. This function must be called first if
+ * one is going to use LPSS SSP private registers.
+ */
+static void lpss_ssp_setup(struct driver_data *drv_data)
+{
+	unsigned offset = 0x400;
+	u32 value, orig;
+
+	if (!is_lpss_ssp(drv_data))
+		return;
+
+	/*
+	 * Perform auto-detection of the LPSS SSP private registers. They
+	 * can be either at 1k or 2k offset from the base address.
+	 */
+	orig = readl(drv_data->ioaddr + offset + SPI_CS_CONTROL);
+
+	value = orig | SPI_CS_CONTROL_SW_MODE;
+	writel(value, drv_data->ioaddr + offset + SPI_CS_CONTROL);
+	value = readl(drv_data->ioaddr + offset + SPI_CS_CONTROL);
+	if (value != (orig | SPI_CS_CONTROL_SW_MODE)) {
+		offset = 0x800;
+		goto detection_done;
+	}
+
+	value &= ~SPI_CS_CONTROL_SW_MODE;
+	writel(value, drv_data->ioaddr + offset + SPI_CS_CONTROL);
+	value = readl(drv_data->ioaddr + offset + SPI_CS_CONTROL);
+	if (value != orig) {
+		offset = 0x800;
+		goto detection_done;
+	}
+
+detection_done:
+	/* Now set the LPSS base */
+	drv_data->lpss_base = drv_data->ioaddr + offset;
+
+	/* Enable software chip select control */
+	value = SPI_CS_CONTROL_SW_MODE | SPI_CS_CONTROL_CS_HIGH;
+	__lpss_ssp_write_priv(drv_data, SPI_CS_CONTROL, value);
+
+	/* Enable multiblock DMA transfers */
+	if (drv_data->master_info->enable_dma) {
+		__lpss_ssp_write_priv(drv_data, SSP_REG, 1);
+
+		value = __lpss_ssp_read_priv(drv_data, GENERAL_REG);
+		value |= GENERAL_REG_RXTO_HOLDOFF_DISABLE;
+		__lpss_ssp_write_priv(drv_data, GENERAL_REG, value);
+	}
+}
+
+static void lpss_ssp_cs_control(struct driver_data *drv_data, bool enable)
+{
+	u32 value;
+
+	if (!is_lpss_ssp(drv_data))
+		return;
+
+	value = __lpss_ssp_read_priv(drv_data, SPI_CS_CONTROL);
+	if (enable)
+		value &= ~SPI_CS_CONTROL_CS_HIGH;
+	else
+		value |= SPI_CS_CONTROL_CS_HIGH;
+	__lpss_ssp_write_priv(drv_data, SPI_CS_CONTROL, value);
+}
+>>>>>>> refs/remotes/origin/master
 
 static void cs_assert(struct driver_data *drv_data)
 {
@@ -189,8 +319,17 @@ static void cs_assert(struct driver_data *drv_data)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (gpio_is_valid(chip->gpio_cs))
 		gpio_set_value(chip->gpio_cs, chip->gpio_cs_inverted);
+=======
+	if (gpio_is_valid(chip->gpio_cs)) {
+		gpio_set_value(chip->gpio_cs, chip->gpio_cs_inverted);
+		return;
+	}
+
+	lpss_ssp_cs_control(drv_data, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void cs_deassert(struct driver_data *drv_data)
@@ -205,6 +344,7 @@ static void cs_deassert(struct driver_data *drv_data)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (gpio_is_valid(chip->gpio_cs))
 		gpio_set_value(chip->gpio_cs, !chip->gpio_cs_inverted);
 }
@@ -229,6 +369,17 @@ static int pxa25x_ssp_comp(struct driver_data *drv_data)
 }
 
 static int flush(struct driver_data *drv_data)
+=======
+	if (gpio_is_valid(chip->gpio_cs)) {
+		gpio_set_value(chip->gpio_cs, !chip->gpio_cs_inverted);
+		return;
+	}
+
+	lpss_ssp_cs_control(drv_data, false);
+}
+
+int pxa2xx_spi_flush(struct driver_data *drv_data)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long limit = loops_per_jiffy << 1;
 
@@ -354,7 +505,11 @@ static int u32_reader(struct driver_data *drv_data)
 	return drv_data->rx == drv_data->rx_end;
 }
 
+<<<<<<< HEAD
 static void *next_transfer(struct driver_data *drv_data)
+=======
+void *pxa2xx_spi_next_transfer(struct driver_data *drv_data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_message *msg = drv_data->cur_msg;
 	struct spi_transfer *trans = drv_data->cur_transfer;
@@ -370,6 +525,7 @@ static void *next_transfer(struct driver_data *drv_data)
 		return DONE_STATE;
 }
 
+<<<<<<< HEAD
 static int map_dma_buffers(struct driver_data *drv_data)
 {
 	struct spi_message *msg = drv_data->cur_msg;
@@ -440,10 +596,13 @@ static void unmap_dma_buffers(struct driver_data *drv_data)
 	drv_data->dma_mapped = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* caller already set message->status; dma and pio irqs are blocked */
 static void giveback(struct driver_data *drv_data)
 {
 	struct spi_transfer* last_transfer;
+<<<<<<< HEAD
 	unsigned long flags;
 	struct spi_message *msg;
 
@@ -453,6 +612,13 @@ static void giveback(struct driver_data *drv_data)
 	drv_data->cur_transfer = NULL;
 	queue_work(drv_data->workqueue, &drv_data->pump_messages);
 	spin_unlock_irqrestore(&drv_data->lock, flags);
+=======
+	struct spi_message *msg;
+
+	msg = drv_data->cur_msg;
+	drv_data->cur_msg = NULL;
+	drv_data->cur_transfer = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	last_transfer = list_entry(msg->transfers.prev,
 					struct spi_transfer,
@@ -481,6 +647,7 @@ static void giveback(struct driver_data *drv_data)
 		 */
 
 		/* get a pointer to the next message, if any */
+<<<<<<< HEAD
 		spin_lock_irqsave(&drv_data->lock, flags);
 		if (list_empty(&drv_data->queue))
 			next_msg = NULL;
@@ -488,6 +655,9 @@ static void giveback(struct driver_data *drv_data)
 			next_msg = list_entry(drv_data->queue.next,
 					struct spi_message, queue);
 		spin_unlock_irqrestore(&drv_data->lock, flags);
+=======
+		next_msg = spi_get_next_queued_message(drv_data->master);
+>>>>>>> refs/remotes/origin/master
 
 		/* see if the next and current messages point
 		 * to the same chip
@@ -498,6 +668,7 @@ static void giveback(struct driver_data *drv_data)
 			cs_deassert(drv_data);
 	}
 
+<<<<<<< HEAD
 	msg->state = NULL;
 	if (msg->complete)
 		msg->complete(msg->context);
@@ -660,6 +831,12 @@ static irqreturn_t dma_transfer(struct driver_data *drv_data)
 	return IRQ_NONE;
 }
 
+=======
+	spi_finalize_current_message(drv_data->master);
+	drv_data->cur_chip = NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void reset_sccr1(struct driver_data *drv_data)
 {
 	void __iomem *reg = drv_data->ioaddr;
@@ -681,7 +858,11 @@ static void int_error_stop(struct driver_data *drv_data, const char* msg)
 	reset_sccr1(drv_data);
 	if (!pxa25x_ssp_comp(drv_data))
 		write_SSTO(0, reg);
+<<<<<<< HEAD
 	flush(drv_data);
+=======
+	pxa2xx_spi_flush(drv_data);
+>>>>>>> refs/remotes/origin/master
 	write_SSCR0(read_SSCR0(reg) & ~SSCR0_SSE, reg);
 
 	dev_err(&drv_data->pdev->dev, "%s\n", msg);
@@ -709,7 +890,11 @@ static void int_transfer_complete(struct driver_data *drv_data)
 	 */
 
 	/* Move to next transfer */
+<<<<<<< HEAD
 	drv_data->cur_msg->state = next_transfer(drv_data);
+=======
+	drv_data->cur_msg->state = pxa2xx_spi_next_transfer(drv_data);
+>>>>>>> refs/remotes/origin/master
 
 	/* Schedule transfer tasklet */
 	tasklet_schedule(&drv_data->pump_transfers);
@@ -789,11 +974,38 @@ static irqreturn_t ssp_int(int irq, void *dev_id)
 {
 	struct driver_data *drv_data = dev_id;
 	void __iomem *reg = drv_data->ioaddr;
+<<<<<<< HEAD
 	u32 sccr1_reg = read_SSCR1(reg);
 	u32 mask = drv_data->mask_sr;
 	u32 status;
 
 	status = read_SSSR(reg);
+=======
+	u32 sccr1_reg;
+	u32 mask = drv_data->mask_sr;
+	u32 status;
+
+	/*
+	 * The IRQ might be shared with other peripherals so we must first
+	 * check that are we RPM suspended or not. If we are we assume that
+	 * the IRQ was not for us (we shouldn't be RPM suspended when the
+	 * interrupt is enabled).
+	 */
+	if (pm_runtime_suspended(&drv_data->pdev->dev))
+		return IRQ_NONE;
+
+	/*
+	 * If the device is not yet in RPM suspended state and we get an
+	 * interrupt that is meant for another device, check if status bits
+	 * are all set to one. That means that the device is already
+	 * powered off.
+	 */
+	status = read_SSSR(reg);
+	if (status == ~0)
+		return IRQ_NONE;
+
+	sccr1_reg = read_SSCR1(reg);
+>>>>>>> refs/remotes/origin/master
 
 	/* Ignore possible writes if we don't need to write */
 	if (!(sccr1_reg & SSCR1_TIE))
@@ -810,8 +1022,13 @@ static irqreturn_t ssp_int(int irq, void *dev_id)
 			write_SSTO(0, reg);
 		write_SSSR_CS(drv_data, drv_data->clear_sr);
 
+<<<<<<< HEAD
 		dev_err(&drv_data->pdev->dev, "bad message state "
 			"in interrupt handler\n");
+=======
+		dev_err(&drv_data->pdev->dev,
+			"bad message state in interrupt handler\n");
+>>>>>>> refs/remotes/origin/master
 
 		/* Never fail */
 		return IRQ_HANDLED;
@@ -820,6 +1037,7 @@ static irqreturn_t ssp_int(int irq, void *dev_id)
 	return drv_data->transfer_handler(drv_data);
 }
 
+<<<<<<< HEAD
 static int set_dma_burst_and_threshold(struct chip_data *chip,
 				struct spi_device *spi,
 				u8 bits_per_word, u32 *burst_code,
@@ -920,6 +1138,14 @@ static int set_dma_burst_and_threshold(struct chip_data *chip,
 static unsigned int ssp_get_clk_div(struct ssp_device *ssp, int rate)
 {
 	unsigned long ssp_clk = clk_get_rate(ssp->clk);
+=======
+static unsigned int ssp_get_clk_div(struct driver_data *drv_data, int rate)
+{
+	unsigned long ssp_clk = drv_data->max_clk_rate;
+	const struct ssp_device *ssp = drv_data->ssp;
+
+	rate = min_t(int, ssp_clk, rate);
+>>>>>>> refs/remotes/origin/master
 
 	if (ssp->type == PXA25x_SSP || ssp->type == CE4100_SSP)
 		return ((ssp_clk / (2 * rate) - 1) & 0xff) << 8;
@@ -934,7 +1160,10 @@ static void pump_transfers(unsigned long data)
 	struct spi_transfer *transfer = NULL;
 	struct spi_transfer *previous = NULL;
 	struct chip_data *chip = NULL;
+<<<<<<< HEAD
 	struct ssp_device *ssp = drv_data->ssp;
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem *reg = drv_data->ioaddr;
 	u32 clk_div = 0;
 	u8 bits = 0;
@@ -976,15 +1205,25 @@ static void pump_transfers(unsigned long data)
 			cs_deassert(drv_data);
 	}
 
+<<<<<<< HEAD
 	/* Check for transfers that need multiple DMA segments */
 	if (transfer->len > MAX_DMA_LEN && chip->enable_dma) {
+=======
+	/* Check if we can DMA this transfer */
+	if (!pxa2xx_spi_dma_is_possible(transfer->len) && chip->enable_dma) {
+>>>>>>> refs/remotes/origin/master
 
 		/* reject already-mapped transfers; PIO won't always work */
 		if (message->is_dma_mapped
 				|| transfer->rx_dma || transfer->tx_dma) {
 			dev_err(&drv_data->pdev->dev,
+<<<<<<< HEAD
 				"pump_transfers: mapped transfer length "
 				"of %u is greater than %d\n",
+=======
+				"pump_transfers: mapped transfer length of "
+				"%u is greater than %d\n",
+>>>>>>> refs/remotes/origin/master
 				transfer->len, MAX_DMA_LEN);
 			message->status = -EINVAL;
 			giveback(drv_data);
@@ -992,6 +1231,7 @@ static void pump_transfers(unsigned long data)
 		}
 
 		/* warn ... we force this to PIO mode */
+<<<<<<< HEAD
 		if (printk_ratelimit())
 			dev_warn(&message->spi->dev, "pump_transfers: "
 				"DMA disabled for transfer length %ld "
@@ -1001,20 +1241,37 @@ static void pump_transfers(unsigned long data)
 
 	/* Setup the transfer state based on the type of transfer */
 	if (flush(drv_data) == 0) {
+=======
+		dev_warn_ratelimited(&message->spi->dev,
+				     "pump_transfers: DMA disabled for transfer length %ld "
+				     "greater than %d\n",
+				     (long)drv_data->len, MAX_DMA_LEN);
+	}
+
+	/* Setup the transfer state based on the type of transfer */
+	if (pxa2xx_spi_flush(drv_data) == 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&drv_data->pdev->dev, "pump_transfers: flush failed\n");
 		message->status = -EIO;
 		giveback(drv_data);
 		return;
 	}
 	drv_data->n_bytes = chip->n_bytes;
+<<<<<<< HEAD
 	drv_data->dma_width = chip->dma_width;
+=======
+>>>>>>> refs/remotes/origin/master
 	drv_data->tx = (void *)transfer->tx_buf;
 	drv_data->tx_end = drv_data->tx + transfer->len;
 	drv_data->rx = transfer->rx_buf;
 	drv_data->rx_end = drv_data->rx + transfer->len;
 	drv_data->rx_dma = transfer->rx_dma;
 	drv_data->tx_dma = transfer->tx_dma;
+<<<<<<< HEAD
 	drv_data->len = transfer->len & DCMD_LENGTH;
+=======
+	drv_data->len = transfer->len;
+>>>>>>> refs/remotes/origin/master
 	drv_data->write = drv_data->tx ? chip->write : null_writer;
 	drv_data->read = drv_data->rx ? chip->read : null_reader;
 
@@ -1031,25 +1288,38 @@ static void pump_transfers(unsigned long data)
 		if (transfer->bits_per_word)
 			bits = transfer->bits_per_word;
 
+<<<<<<< HEAD
 		clk_div = ssp_get_clk_div(ssp, speed);
 
 		if (bits <= 8) {
 			drv_data->n_bytes = 1;
 			drv_data->dma_width = DCMD_WIDTH1;
+=======
+		clk_div = ssp_get_clk_div(drv_data, speed);
+
+		if (bits <= 8) {
+			drv_data->n_bytes = 1;
+>>>>>>> refs/remotes/origin/master
 			drv_data->read = drv_data->read != null_reader ?
 						u8_reader : null_reader;
 			drv_data->write = drv_data->write != null_writer ?
 						u8_writer : null_writer;
 		} else if (bits <= 16) {
 			drv_data->n_bytes = 2;
+<<<<<<< HEAD
 			drv_data->dma_width = DCMD_WIDTH2;
+=======
+>>>>>>> refs/remotes/origin/master
 			drv_data->read = drv_data->read != null_reader ?
 						u16_reader : null_reader;
 			drv_data->write = drv_data->write != null_writer ?
 						u16_writer : null_writer;
 		} else if (bits <= 32) {
 			drv_data->n_bytes = 4;
+<<<<<<< HEAD
 			drv_data->dma_width = DCMD_WIDTH4;
+=======
+>>>>>>> refs/remotes/origin/master
 			drv_data->read = drv_data->read != null_reader ?
 						u32_reader : null_reader;
 			drv_data->write = drv_data->write != null_writer ?
@@ -1058,6 +1328,7 @@ static void pump_transfers(unsigned long data)
 		/* if bits/word is changed in dma mode, then must check the
 		 * thresholds and burst also */
 		if (chip->enable_dma) {
+<<<<<<< HEAD
 			if (set_dma_burst_and_threshold(chip, message->spi,
 							bits, &dma_burst,
 							&dma_thresh))
@@ -1066,6 +1337,14 @@ static void pump_transfers(unsigned long data)
 						"pump_transfers: "
 						"DMA burst size reduced to "
 						"match bits_per_word\n");
+=======
+			if (pxa2xx_spi_set_dma_burst_and_threshold(chip,
+							message->spi,
+							bits, &dma_burst,
+							&dma_thresh))
+				dev_warn_ratelimited(&message->spi->dev,
+						     "pump_transfers: DMA burst size reduced to match bits_per_word\n");
+>>>>>>> refs/remotes/origin/master
 		}
 
 		cr0 = clk_div
@@ -1077,6 +1356,7 @@ static void pump_transfers(unsigned long data)
 
 	message->state = RUNNING_STATE;
 
+<<<<<<< HEAD
 	/* Try to map dma buffer and do a dma transfer if successful, but
 	 * only if the length is non-zero and less than MAX_DMA_LEN.
 	 *
@@ -1135,12 +1415,28 @@ static void pump_transfers(unsigned long data)
 		/* Enable dma end irqs on SSP to detect end of transfer */
 		if (drv_data->ssp_type == PXA25x_SSP)
 			DCMD(drv_data->tx_channel) |= DCMD_ENDIRQEN;
+=======
+	drv_data->dma_mapped = 0;
+	if (pxa2xx_spi_dma_is_possible(drv_data->len))
+		drv_data->dma_mapped = pxa2xx_spi_map_dma_buffers(drv_data);
+	if (drv_data->dma_mapped) {
+
+		/* Ensure we have the correct interrupt handler */
+		drv_data->transfer_handler = pxa2xx_spi_dma_transfer;
+
+		pxa2xx_spi_dma_prepare(drv_data, dma_burst);
+>>>>>>> refs/remotes/origin/master
 
 		/* Clear status and start DMA engine */
 		cr1 = chip->cr1 | dma_thresh | drv_data->dma_cr1;
 		write_SSSR(drv_data->clear_sr, reg);
+<<<<<<< HEAD
 		DCSR(drv_data->rx_channel) |= DCSR_RUN;
 		DCSR(drv_data->tx_channel) |= DCSR_RUN;
+=======
+
+		pxa2xx_spi_dma_start(drv_data);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Ensure we have the correct interrupt handler	*/
 		drv_data->transfer_handler = interrupt_transfer;
@@ -1150,6 +1446,16 @@ static void pump_transfers(unsigned long data)
 		write_SSSR_CS(drv_data, drv_data->clear_sr);
 	}
 
+<<<<<<< HEAD
+=======
+	if (is_lpss_ssp(drv_data)) {
+		if ((read_SSIRF(reg) & 0xff) != chip->lpss_rx_threshold)
+			write_SSIRF(chip->lpss_rx_threshold, reg);
+		if ((read_SSITF(reg) & 0xffff) != chip->lpss_tx_threshold)
+			write_SSITF(chip->lpss_tx_threshold, reg);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* see if we need to reload the config registers */
 	if ((read_SSCR0(reg) != cr0)
 		|| (read_SSCR1(reg) & SSCR1_CHANGE_MASK) !=
@@ -1176,6 +1482,7 @@ static void pump_transfers(unsigned long data)
 	write_SSCR1(cr1, reg);
 }
 
+<<<<<<< HEAD
 static void pump_messages(struct work_struct *work)
 {
 	struct driver_data *drv_data =
@@ -1201,6 +1508,14 @@ static void pump_messages(struct work_struct *work)
 					struct spi_message, queue);
 	list_del_init(&drv_data->cur_msg->queue);
 
+=======
+static int pxa2xx_spi_transfer_one_message(struct spi_master *master,
+					   struct spi_message *msg)
+{
+	struct driver_data *drv_data = spi_master_get_devdata(master);
+
+	drv_data->cur_msg = msg;
+>>>>>>> refs/remotes/origin/master
 	/* Initial message state*/
 	drv_data->cur_msg->state = START_STATE;
 	drv_data->cur_transfer = list_entry(drv_data->cur_msg->transfers.next,
@@ -1213,6 +1528,7 @@ static void pump_messages(struct work_struct *work)
 
 	/* Mark as busy and launch transfers */
 	tasklet_schedule(&drv_data->pump_transfers);
+<<<<<<< HEAD
 
 	drv_data->busy = 1;
 	spin_unlock_irqrestore(&drv_data->lock, flags);
@@ -1240,6 +1556,18 @@ static int transfer(struct spi_device *spi, struct spi_message *msg)
 		queue_work(drv_data->workqueue, &drv_data->pump_messages);
 
 	spin_unlock_irqrestore(&drv_data->lock, flags);
+=======
+	return 0;
+}
+
+static int pxa2xx_spi_unprepare_transfer(struct spi_master *master)
+{
+	struct driver_data *drv_data = spi_master_get_devdata(master);
+
+	/* Disable the SSP now */
+	write_SSCR0(read_SSCR0(drv_data->ioaddr) & ~SSCR0_SSE,
+		    drv_data->ioaddr);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1267,8 +1595,13 @@ static int setup_cs(struct spi_device *spi, struct chip_data *chip,
 	if (gpio_is_valid(chip_info->gpio_cs)) {
 		err = gpio_request(chip_info->gpio_cs, "SPI_CS");
 		if (err) {
+<<<<<<< HEAD
 			dev_err(&spi->dev, "failed to request chip select "
 					"GPIO%d\n", chip_info->gpio_cs);
+=======
+			dev_err(&spi->dev, "failed to request chip select GPIO%d\n",
+				chip_info->gpio_cs);
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 
@@ -1287,6 +1620,7 @@ static int setup(struct spi_device *spi)
 	struct pxa2xx_spi_chip *chip_info = NULL;
 	struct chip_data *chip;
 	struct driver_data *drv_data = spi_master_get_devdata(spi->master);
+<<<<<<< HEAD
 	struct ssp_device *ssp = drv_data->ssp;
 	unsigned int clk_div;
 	uint tx_thres = TX_THRESH_DFLT;
@@ -1305,6 +1639,19 @@ static int setup(struct spi_device *spi)
 				"b/w not 4-16 for type PXA25x_SSP\n",
 				drv_data->ssp_type, spi->bits_per_word);
 		return -EINVAL;
+=======
+	unsigned int clk_div;
+	uint tx_thres, tx_hi_thres, rx_thres;
+
+	if (is_lpss_ssp(drv_data)) {
+		tx_thres = LPSS_TX_LOTHRESH_DFLT;
+		tx_hi_thres = LPSS_TX_HITHRESH_DFLT;
+		rx_thres = LPSS_RX_THRESH_DFLT;
+	} else {
+		tx_thres = TX_THRESH_DFLT;
+		tx_hi_thres = 0;
+		rx_thres = RX_THRESH_DFLT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Only alloc on first setup */
@@ -1319,8 +1666,13 @@ static int setup(struct spi_device *spi)
 
 		if (drv_data->ssp_type == CE4100_SSP) {
 			if (spi->chip_select > 4) {
+<<<<<<< HEAD
 				dev_err(&spi->dev, "failed setup: "
 				"cs number must not be > 4.\n");
+=======
+				dev_err(&spi->dev,
+					"failed setup: cs number must not be > 4.\n");
+>>>>>>> refs/remotes/origin/master
 				kfree(chip);
 				return -EINVAL;
 			}
@@ -1330,8 +1682,11 @@ static int setup(struct spi_device *spi)
 			chip->gpio_cs = -1;
 		chip->enable_dma = 0;
 		chip->timeout = TIMOUT_DFLT;
+<<<<<<< HEAD
 		chip->dma_burst_size = drv_data->master_info->enable_dma ?
 					DCMD_BURST8 : 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* protocol drivers may change the chip settings, so...
@@ -1345,22 +1700,45 @@ static int setup(struct spi_device *spi)
 			chip->timeout = chip_info->timeout;
 		if (chip_info->tx_threshold)
 			tx_thres = chip_info->tx_threshold;
+<<<<<<< HEAD
+=======
+		if (chip_info->tx_hi_threshold)
+			tx_hi_thres = chip_info->tx_hi_threshold;
+>>>>>>> refs/remotes/origin/master
 		if (chip_info->rx_threshold)
 			rx_thres = chip_info->rx_threshold;
 		chip->enable_dma = drv_data->master_info->enable_dma;
 		chip->dma_threshold = 0;
 		if (chip_info->enable_loopback)
 			chip->cr1 = SSCR1_LBM;
+<<<<<<< HEAD
+=======
+	} else if (ACPI_HANDLE(&spi->dev)) {
+		/*
+		 * Slave devices enumerated from ACPI namespace don't
+		 * usually have chip_info but we still might want to use
+		 * DMA with them.
+		 */
+		chip->enable_dma = drv_data->master_info->enable_dma;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	chip->threshold = (SSCR1_RxTresh(rx_thres) & SSCR1_RFT) |
 			(SSCR1_TxTresh(tx_thres) & SSCR1_TFT);
 
+<<<<<<< HEAD
+=======
+	chip->lpss_rx_threshold = SSIRF_RxThresh(rx_thres);
+	chip->lpss_tx_threshold = SSITF_TxLoThresh(tx_thres)
+				| SSITF_TxHiThresh(tx_hi_thres);
+
+>>>>>>> refs/remotes/origin/master
 	/* set dma burst and threshold outside of chip_info path so that if
 	 * chip_info goes away after setting chip->enable_dma, the
 	 * burst and threshold can still respond to changes in bits_per_word */
 	if (chip->enable_dma) {
 		/* set up legal burst and threshold for dma */
+<<<<<<< HEAD
 		if (set_dma_burst_and_threshold(chip, spi, spi->bits_per_word,
 						&chip->dma_burst_size,
 						&chip->dma_threshold)) {
@@ -1370,6 +1748,18 @@ static int setup(struct spi_device *spi)
 	}
 
 	clk_div = ssp_get_clk_div(ssp, spi->max_speed_hz);
+=======
+		if (pxa2xx_spi_set_dma_burst_and_threshold(chip, spi,
+						spi->bits_per_word,
+						&chip->dma_burst_size,
+						&chip->dma_threshold)) {
+			dev_warn(&spi->dev,
+				 "in setup: DMA burst size reduced to match bits_per_word\n");
+		}
+	}
+
+	clk_div = ssp_get_clk_div(drv_data, spi->max_speed_hz);
+>>>>>>> refs/remotes/origin/master
 	chip->speed_hz = spi->max_speed_hz;
 
 	chip->cr0 = clk_div
@@ -1382,37 +1772,62 @@ static int setup(struct spi_device *spi)
 	chip->cr1 |= (((spi->mode & SPI_CPHA) != 0) ? SSCR1_SPH : 0)
 			| (((spi->mode & SPI_CPOL) != 0) ? SSCR1_SPO : 0);
 
+<<<<<<< HEAD
 	/* NOTE:  PXA25x_SSP _could_ use external clocking ... */
 	if (!pxa25x_ssp_comp(drv_data))
 		dev_dbg(&spi->dev, "%ld Hz actual, %s\n",
 			clk_get_rate(ssp->clk)
+=======
+	if (spi->mode & SPI_LOOP)
+		chip->cr1 |= SSCR1_LBM;
+
+	/* NOTE:  PXA25x_SSP _could_ use external clocking ... */
+	if (!pxa25x_ssp_comp(drv_data))
+		dev_dbg(&spi->dev, "%ld Hz actual, %s\n",
+			drv_data->max_clk_rate
+>>>>>>> refs/remotes/origin/master
 				/ (1 + ((chip->cr0 & SSCR0_SCR(0xfff)) >> 8)),
 			chip->enable_dma ? "DMA" : "PIO");
 	else
 		dev_dbg(&spi->dev, "%ld Hz actual, %s\n",
+<<<<<<< HEAD
 			clk_get_rate(ssp->clk) / 2
+=======
+			drv_data->max_clk_rate / 2
+>>>>>>> refs/remotes/origin/master
 				/ (1 + ((chip->cr0 & SSCR0_SCR(0x0ff)) >> 8)),
 			chip->enable_dma ? "DMA" : "PIO");
 
 	if (spi->bits_per_word <= 8) {
 		chip->n_bytes = 1;
+<<<<<<< HEAD
 		chip->dma_width = DCMD_WIDTH1;
+=======
+>>>>>>> refs/remotes/origin/master
 		chip->read = u8_reader;
 		chip->write = u8_writer;
 	} else if (spi->bits_per_word <= 16) {
 		chip->n_bytes = 2;
+<<<<<<< HEAD
 		chip->dma_width = DCMD_WIDTH2;
+=======
+>>>>>>> refs/remotes/origin/master
 		chip->read = u16_reader;
 		chip->write = u16_writer;
 	} else if (spi->bits_per_word <= 32) {
 		chip->cr0 |= SSCR0_EDSS;
 		chip->n_bytes = 4;
+<<<<<<< HEAD
 		chip->dma_width = DCMD_WIDTH4;
 		chip->read = u32_reader;
 		chip->write = u32_writer;
 	} else {
 		dev_err(&spi->dev, "invalid wordsize\n");
 		return -ENODEV;
+=======
+		chip->read = u32_reader;
+		chip->write = u32_writer;
+>>>>>>> refs/remotes/origin/master
 	}
 	chip->bits_per_word = spi->bits_per_word;
 
@@ -1438,6 +1853,7 @@ static void cleanup(struct spi_device *spi)
 	kfree(chip);
 }
 
+<<<<<<< HEAD
 static int __devinit init_queue(struct driver_data *drv_data)
 {
 	INIT_LIST_HEAD(&drv_data->queue);
@@ -1527,6 +1943,73 @@ static int destroy_queue(struct driver_data *drv_data)
 }
 
 static int __devinit pxa2xx_spi_probe(struct platform_device *pdev)
+=======
+#ifdef CONFIG_ACPI
+static struct pxa2xx_spi_master *
+pxa2xx_spi_acpi_get_pdata(struct platform_device *pdev)
+{
+	struct pxa2xx_spi_master *pdata;
+	struct acpi_device *adev;
+	struct ssp_device *ssp;
+	struct resource *res;
+	int devid;
+
+	if (!ACPI_HANDLE(&pdev->dev) ||
+	    acpi_bus_get_device(ACPI_HANDLE(&pdev->dev), &adev))
+		return NULL;
+
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata) {
+		dev_err(&pdev->dev,
+			"failed to allocate memory for platform data\n");
+		return NULL;
+	}
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res)
+		return NULL;
+
+	ssp = &pdata->ssp;
+
+	ssp->phys_base = res->start;
+	ssp->mmio_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(ssp->mmio_base))
+		return NULL;
+
+	ssp->clk = devm_clk_get(&pdev->dev, NULL);
+	ssp->irq = platform_get_irq(pdev, 0);
+	ssp->type = LPSS_SSP;
+	ssp->pdev = pdev;
+
+	ssp->port_id = -1;
+	if (adev->pnp.unique_id && !kstrtoint(adev->pnp.unique_id, 0, &devid))
+		ssp->port_id = devid;
+
+	pdata->num_chipselect = 1;
+	pdata->enable_dma = true;
+
+	return pdata;
+}
+
+static struct acpi_device_id pxa2xx_spi_acpi_match[] = {
+	{ "INT33C0", 0 },
+	{ "INT33C1", 0 },
+	{ "INT3430", 0 },
+	{ "INT3431", 0 },
+	{ "80860F0E", 0 },
+	{ },
+};
+MODULE_DEVICE_TABLE(acpi, pxa2xx_spi_acpi_match);
+#else
+static inline struct pxa2xx_spi_master *
+pxa2xx_spi_acpi_get_pdata(struct platform_device *pdev)
+{
+	return NULL;
+}
+#endif
+
+static int pxa2xx_spi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	struct pxa2xx_spi_master *platform_info;
@@ -1535,11 +2018,29 @@ static int __devinit pxa2xx_spi_probe(struct platform_device *pdev)
 	struct ssp_device *ssp;
 	int status;
 
+<<<<<<< HEAD
 	platform_info = dev->platform_data;
 
 	ssp = pxa_ssp_request(pdev->id, pdev->name);
 	if (ssp == NULL) {
 		dev_err(&pdev->dev, "failed to request SSP%d\n", pdev->id);
+=======
+	platform_info = dev_get_platdata(dev);
+	if (!platform_info) {
+		platform_info = pxa2xx_spi_acpi_get_pdata(pdev);
+		if (!platform_info) {
+			dev_err(&pdev->dev, "missing platform data\n");
+			return -ENODEV;
+		}
+	}
+
+	ssp = pxa_ssp_request(pdev->id, pdev->name);
+	if (!ssp)
+		ssp = &platform_info->ssp;
+
+	if (!ssp->mmio_base) {
+		dev_err(&pdev->dev, "failed to get ssp\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -1559,29 +2060,54 @@ static int __devinit pxa2xx_spi_probe(struct platform_device *pdev)
 	master->dev.parent = &pdev->dev;
 	master->dev.of_node = pdev->dev.of_node;
 	/* the spi->mode bits understood by this driver: */
+<<<<<<< HEAD
 	master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH;
 
 	master->bus_num = pdev->id;
+=======
+	master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH | SPI_LOOP;
+
+	master->bus_num = ssp->port_id;
+>>>>>>> refs/remotes/origin/master
 	master->num_chipselect = platform_info->num_chipselect;
 	master->dma_alignment = DMA_ALIGNMENT;
 	master->cleanup = cleanup;
 	master->setup = setup;
+<<<<<<< HEAD
 	master->transfer = transfer;
 
 	drv_data->ssp_type = ssp->type;
 	drv_data->null_dma_buf = (u32 *)ALIGN((u32)(drv_data +
 						sizeof(struct driver_data)), 8);
+=======
+	master->transfer_one_message = pxa2xx_spi_transfer_one_message;
+	master->unprepare_transfer_hardware = pxa2xx_spi_unprepare_transfer;
+	master->auto_runtime_pm = true;
+
+	drv_data->ssp_type = ssp->type;
+	drv_data->null_dma_buf = (u32 *)PTR_ALIGN(&drv_data[1], DMA_ALIGNMENT);
+>>>>>>> refs/remotes/origin/master
 
 	drv_data->ioaddr = ssp->mmio_base;
 	drv_data->ssdr_physical = ssp->phys_base + SSDR;
 	if (pxa25x_ssp_comp(drv_data)) {
+<<<<<<< HEAD
+=======
+		master->bits_per_word_mask = SPI_BPW_RANGE_MASK(4, 16);
+>>>>>>> refs/remotes/origin/master
 		drv_data->int_cr1 = SSCR1_TIE | SSCR1_RIE;
 		drv_data->dma_cr1 = 0;
 		drv_data->clear_sr = SSSR_ROR;
 		drv_data->mask_sr = SSSR_RFS | SSSR_TFS | SSSR_ROR;
 	} else {
+<<<<<<< HEAD
 		drv_data->int_cr1 = SSCR1_TIE | SSCR1_RIE | SSCR1_TINTE;
 		drv_data->dma_cr1 = SSCR1_TSRE | SSCR1_RSRE | SSCR1_TINTE;
+=======
+		master->bits_per_word_mask = SPI_BPW_RANGE_MASK(4, 32);
+		drv_data->int_cr1 = SSCR1_TIE | SSCR1_RIE | SSCR1_TINTE;
+		drv_data->dma_cr1 = DEFAULT_DMA_CR1;
+>>>>>>> refs/remotes/origin/master
 		drv_data->clear_sr = SSSR_ROR | SSSR_TINT;
 		drv_data->mask_sr = SSSR_TINT | SSSR_RFS | SSSR_TFS | SSSR_ROR;
 	}
@@ -1597,6 +2123,7 @@ static int __devinit pxa2xx_spi_probe(struct platform_device *pdev)
 	drv_data->tx_channel = -1;
 	drv_data->rx_channel = -1;
 	if (platform_info->enable_dma) {
+<<<<<<< HEAD
 
 		/* Get two DMA channels	(rx and tx) */
 		drv_data->rx_channel = pxa_request_dma("pxa2xx_spi_ssp_rx",
@@ -1626,6 +2153,19 @@ static int __devinit pxa2xx_spi_probe(struct platform_device *pdev)
 
 	/* Enable SOC clock */
 	clk_enable(ssp->clk);
+=======
+		status = pxa2xx_spi_dma_setup(drv_data);
+		if (status) {
+			dev_dbg(dev, "no DMA channels available, using PIO\n");
+			platform_info->enable_dma = false;
+		}
+	}
+
+	/* Enable SOC clock */
+	clk_prepare_enable(ssp->clk);
+
+	drv_data->max_clk_rate = clk_get_rate(ssp->clk);
+>>>>>>> refs/remotes/origin/master
 
 	/* Load default SSP configuration */
 	write_SSCR0(0, drv_data->ioaddr);
@@ -1640,6 +2180,7 @@ static int __devinit pxa2xx_spi_probe(struct platform_device *pdev)
 		write_SSTO(0, drv_data->ioaddr);
 	write_SSPSP(0, drv_data->ioaddr);
 
+<<<<<<< HEAD
 	/* Initial and start queue */
 	status = init_queue(drv_data);
 	if (status != 0) {
@@ -1675,6 +2216,31 @@ out_error_dma_alloc:
 		pxa_free_dma(drv_data->rx_channel);
 
 out_error_irq_alloc:
+=======
+	lpss_ssp_setup(drv_data);
+
+	tasklet_init(&drv_data->pump_transfers, pump_transfers,
+		     (unsigned long)drv_data);
+
+	/* Register with the SPI framework */
+	platform_set_drvdata(pdev, drv_data);
+	status = devm_spi_register_master(&pdev->dev, master);
+	if (status != 0) {
+		dev_err(&pdev->dev, "problem registering spi master\n");
+		goto out_error_clock_enabled;
+	}
+
+	pm_runtime_set_autosuspend_delay(&pdev->dev, 50);
+	pm_runtime_use_autosuspend(&pdev->dev);
+	pm_runtime_set_active(&pdev->dev);
+	pm_runtime_enable(&pdev->dev);
+
+	return status;
+
+out_error_clock_enabled:
+	clk_disable_unprepare(ssp->clk);
+	pxa2xx_spi_dma_release(drv_data);
+>>>>>>> refs/remotes/origin/master
 	free_irq(ssp->irq, drv_data);
 
 out_error_master_alloc:
@@ -1687,12 +2253,16 @@ static int pxa2xx_spi_remove(struct platform_device *pdev)
 {
 	struct driver_data *drv_data = platform_get_drvdata(pdev);
 	struct ssp_device *ssp;
+<<<<<<< HEAD
 	int status = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!drv_data)
 		return 0;
 	ssp = drv_data->ssp;
 
+<<<<<<< HEAD
 	/* Remove the queue */
 	status = destroy_queue(drv_data);
 	if (status != 0)
@@ -1718,6 +2288,20 @@ static int pxa2xx_spi_remove(struct platform_device *pdev)
 		pxa_free_dma(drv_data->tx_channel);
 		pxa_free_dma(drv_data->rx_channel);
 	}
+=======
+	pm_runtime_get_sync(&pdev->dev);
+
+	/* Disable the SSP at the peripheral and SOC level */
+	write_SSCR0(0, drv_data->ioaddr);
+	clk_disable_unprepare(ssp->clk);
+
+	/* Release DMA */
+	if (drv_data->master_info->enable_dma)
+		pxa2xx_spi_dma_release(drv_data);
+
+	pm_runtime_put_noidle(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Release IRQ */
 	free_irq(ssp->irq, drv_data);
@@ -1725,12 +2309,15 @@ static int pxa2xx_spi_remove(struct platform_device *pdev)
 	/* Release SSP */
 	pxa_ssp_free(ssp);
 
+<<<<<<< HEAD
 	/* Disconnect from the SPI framework */
 	spi_unregister_master(drv_data->master);
 
 	/* Prevent double remove */
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1749,11 +2336,19 @@ static int pxa2xx_spi_suspend(struct device *dev)
 	struct ssp_device *ssp = drv_data->ssp;
 	int status = 0;
 
+<<<<<<< HEAD
 	status = stop_queue(drv_data);
 	if (status != 0)
 		return status;
 	write_SSCR0(0, drv_data->ioaddr);
 	clk_disable(ssp->clk);
+=======
+	status = spi_master_suspend(drv_data->master);
+	if (status != 0)
+		return status;
+	write_SSCR0(0, drv_data->ioaddr);
+	clk_disable_unprepare(ssp->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1764,6 +2359,7 @@ static int pxa2xx_spi_resume(struct device *dev)
 	struct ssp_device *ssp = drv_data->ssp;
 	int status = 0;
 
+<<<<<<< HEAD
 	if (drv_data->rx_channel != -1)
 		DRCMR(drv_data->ssp->drcmr_rx) =
 			DRCMR_MAPVLD | drv_data->rx_channel;
@@ -1776,6 +2372,18 @@ static int pxa2xx_spi_resume(struct device *dev)
 
 	/* Start the queue running */
 	status = start_queue(drv_data);
+=======
+	pxa2xx_spi_dma_resume(drv_data);
+
+	/* Enable the SSP clock */
+	clk_prepare_enable(ssp->clk);
+
+	/* Restore LPSS private register bits */
+	lpss_ssp_setup(drv_data);
+
+	/* Start the queue running */
+	status = spi_master_resume(drv_data->master);
+>>>>>>> refs/remotes/origin/master
 	if (status != 0) {
 		dev_err(dev, "problem starting queue (%d)\n", status);
 		return status;
@@ -1783,20 +2391,53 @@ static int pxa2xx_spi_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static const struct dev_pm_ops pxa2xx_spi_pm_ops = {
 	.suspend	= pxa2xx_spi_suspend,
 	.resume		= pxa2xx_spi_resume,
 };
 #endif
+=======
+#endif
+
+#ifdef CONFIG_PM_RUNTIME
+static int pxa2xx_spi_runtime_suspend(struct device *dev)
+{
+	struct driver_data *drv_data = dev_get_drvdata(dev);
+
+	clk_disable_unprepare(drv_data->ssp->clk);
+	return 0;
+}
+
+static int pxa2xx_spi_runtime_resume(struct device *dev)
+{
+	struct driver_data *drv_data = dev_get_drvdata(dev);
+
+	clk_prepare_enable(drv_data->ssp->clk);
+	return 0;
+}
+#endif
+
+static const struct dev_pm_ops pxa2xx_spi_pm_ops = {
+	SET_SYSTEM_SLEEP_PM_OPS(pxa2xx_spi_suspend, pxa2xx_spi_resume)
+	SET_RUNTIME_PM_OPS(pxa2xx_spi_runtime_suspend,
+			   pxa2xx_spi_runtime_resume, NULL)
+};
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_driver driver = {
 	.driver = {
 		.name	= "pxa2xx-spi",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm	= &pxa2xx_spi_pm_ops,
 #endif
+=======
+		.pm	= &pxa2xx_spi_pm_ops,
+		.acpi_match_table = ACPI_PTR(pxa2xx_spi_acpi_match),
+>>>>>>> refs/remotes/origin/master
 	},
 	.probe = pxa2xx_spi_probe,
 	.remove = pxa2xx_spi_remove,

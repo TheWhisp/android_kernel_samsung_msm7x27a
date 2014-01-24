@@ -44,9 +44,13 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/rawmidi.h>
@@ -59,10 +63,14 @@
 static int index[SNDRV_CARDS]  = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS]   = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_device *platform_devices[SNDRV_CARDS]; 
 static int device_count;
@@ -103,9 +111,15 @@ static int portman_free(struct portman *pm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit portman_create(struct snd_card *card, 
 				    struct pardevice *pardev, 
 				    struct portman **rchip)
+=======
+static int portman_create(struct snd_card *card,
+			  struct pardevice *pardev,
+			  struct portman **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct portman *pm;
 
@@ -568,7 +582,11 @@ static struct snd_rawmidi_ops snd_portman_midi_input = {
 };
 
 /* Create and initialize the rawmidi component */
+<<<<<<< HEAD
 static int __devinit snd_portman_rawmidi_create(struct snd_card *card)
+=======
+static int snd_portman_rawmidi_create(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct portman *pm = card->private_data;
 	struct snd_rawmidi *rmidi;
@@ -655,7 +673,11 @@ static void snd_portman_interrupt(void *userdata)
 	spin_unlock(&pm->reg_lock);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_portman_probe_port(struct parport *p)
+=======
+static int snd_portman_probe_port(struct parport *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pardevice *pardev;
 	int res;
@@ -679,7 +701,11 @@ static int __devinit snd_portman_probe_port(struct parport *p)
 	return res ? -EIO : 0;
 }
 
+<<<<<<< HEAD
 static void __devinit snd_portman_attach(struct parport *p)
+=======
+static void snd_portman_attach(struct parport *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *device;
 
@@ -735,7 +761,11 @@ static void snd_portman_card_private_free(struct snd_card *card)
 	portman_free(pm);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_portman_probe(struct platform_device *pdev)
+=======
+static int snd_portman_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pardevice *pardev;
 	struct parport *p;
@@ -821,7 +851,11 @@ __err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_portman_remove(struct platform_device *pdev)
+=======
+static int snd_portman_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
 
@@ -834,9 +868,16 @@ static int __devexit snd_portman_remove(struct platform_device *pdev)
 
 static struct platform_driver snd_portman_driver = {
 	.probe  = snd_portman_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(snd_portman_remove),
 	.driver = {
 		.name = PLATFORM_DRIVER
+=======
+	.remove = snd_portman_remove,
+	.driver = {
+		.name = PLATFORM_DRIVER,
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	}
 };
 

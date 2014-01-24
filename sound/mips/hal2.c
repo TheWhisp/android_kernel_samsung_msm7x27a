@@ -27,9 +27,13 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sgi/hpc3.h>
 #include <asm/sgi/ip22.h>
@@ -263,7 +267,11 @@ static int hal2_gain_put(struct snd_kcontrol *kcontrol,
 	return old != new;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new hal2_ctrl_headphone __devinitdata = {
+=======
+static struct snd_kcontrol_new hal2_ctrl_headphone = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "Headphone Playback Volume",
 	.access         = SNDRV_CTL_ELEM_ACCESS_READWRITE,
@@ -273,7 +281,11 @@ static struct snd_kcontrol_new hal2_ctrl_headphone __devinitdata = {
 	.put            = hal2_gain_put,
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new hal2_ctrl_mic __devinitdata = {
+=======
+static struct snd_kcontrol_new hal2_ctrl_mic = {
+>>>>>>> refs/remotes/origin/master
 	.iface          = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name           = "Mic Capture Volume",
 	.access         = SNDRV_CTL_ELEM_ACCESS_READWRITE,
@@ -283,7 +295,11 @@ static struct snd_kcontrol_new hal2_ctrl_mic __devinitdata = {
 	.put            = hal2_gain_put,
 };
 
+<<<<<<< HEAD
 static int __devinit hal2_mixer_create(struct snd_hal2 *hal2)
+=======
+static int hal2_mixer_create(struct snd_hal2 *hal2)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -736,7 +752,11 @@ static struct snd_pcm_ops hal2_capture_ops = {
 	.ack =         hal2_capture_ack,
 };
 
+<<<<<<< HEAD
 static int __devinit hal2_pcm_create(struct snd_hal2 *hal2)
+=======
+static int hal2_pcm_create(struct snd_hal2 *hal2)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int err;
@@ -877,7 +897,11 @@ static int hal2_create(struct snd_card *card, struct snd_hal2 **rchip)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit hal2_probe(struct platform_device *pdev)
+=======
+static int hal2_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_hal2 *chip;
@@ -920,24 +944,36 @@ static int __devinit hal2_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit hal2_remove(struct platform_device *pdev)
+=======
+static int hal2_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
 
 	snd_card_free(card);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver hal2_driver = {
 	.probe	= hal2_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(hal2_remove),
+=======
+	.remove	= hal2_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= "sgihal2",
 		.owner	= THIS_MODULE,
 	}
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init alsa_card_hal2_init(void)
 {
@@ -954,3 +990,6 @@ module_exit(alsa_card_hal2_exit);
 =======
 module_platform_driver(hal2_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(hal2_driver);
+>>>>>>> refs/remotes/origin/master

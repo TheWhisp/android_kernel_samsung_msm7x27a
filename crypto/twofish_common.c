@@ -581,6 +581,7 @@ static const u8 calc_sb_tbl[512] = {
 
 /* Perform the key setup. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int twofish_setkey(struct crypto_tfm *tfm, const u8 *key, unsigned int key_len)
 {
 
@@ -592,6 +593,11 @@ int __twofish_setkey(struct twofish_ctx *ctx, const u8 *key,
 		     unsigned int key_len, u32 *flags)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __twofish_setkey(struct twofish_ctx *ctx, const u8 *key,
+		     unsigned int key_len, u32 *flags)
+{
+>>>>>>> refs/remotes/origin/master
 	int i, j, k;
 
 	/* Temporaries for CALC_K. */
@@ -708,8 +714,11 @@ int __twofish_setkey(struct twofish_ctx *ctx, const u8 *key,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(__twofish_setkey);
 
 int twofish_setkey(struct crypto_tfm *tfm, const u8 *key, unsigned int key_len)
@@ -717,7 +726,10 @@ int twofish_setkey(struct crypto_tfm *tfm, const u8 *key, unsigned int key_len)
 	return __twofish_setkey(crypto_tfm_ctx(tfm), key, key_len,
 				&tfm->crt_flags);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(twofish_setkey);
 
 MODULE_LICENSE("GPL");

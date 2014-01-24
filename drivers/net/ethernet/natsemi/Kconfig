@@ -5,10 +5,13 @@
 config NET_VENDOR_NATSEMI
 	bool "National Semi-conductor devices"
 	default y
+<<<<<<< HEAD
 	depends on AMIGA_PCMCIA || ARM || EISA || EXPERIMENTAL || H8300 || \
 		   ISA || M32R || MAC || MACH_JAZZ || MACH_TX49XX || MCA || \
 		   MCA_LEGACY || MIPS || PCI || PCMCIA || SUPERH || \
 		   XTENSA_PLATFORM_XT2000 || ZORRO
+=======
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from
@@ -21,6 +24,7 @@ config NET_VENDOR_NATSEMI
 
 if NET_VENDOR_NATSEMI
 
+<<<<<<< HEAD
 config IBMLANA
 	tristate "IBM LAN Adapter/A support"
 	depends on MCA
@@ -36,6 +40,8 @@ config IBMLANA
 	  boards with this driver should be possible, but has not been tested
 	  up to now due to lack of hardware.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MACSONIC
 	tristate "Macintosh SONIC based ethernet (onboard, NuBus, LC, CS)"
 	depends on MAC

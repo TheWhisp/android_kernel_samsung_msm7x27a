@@ -45,12 +45,20 @@ static void resume_irqs(bool want_early)
 	struct irq_desc *desc;
 	int irq;
 
+<<<<<<< HEAD
 	for_each_irq_desc_reverse(irq, desc) {
+=======
+	for_each_irq_desc(irq, desc) {
+>>>>>>> refs/remotes/origin/master
 		unsigned long flags;
 		bool is_early = desc->action &&
 			desc->action->flags & IRQF_EARLY_RESUME;
 
+<<<<<<< HEAD
 		if (is_early != want_early)
+=======
+		if (!is_early && want_early)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		raw_spin_lock_irqsave(&desc->lock, flags);
@@ -103,6 +111,7 @@ int check_wakeup_irqs(void)
 	int irq;
 
 	for_each_irq_desc(irq, desc) {
+<<<<<<< HEAD
 		if (irqd_is_wakeup_set(&desc->irq_data)) {
 			if (desc->istate & IRQS_PENDING) {
 				pr_info("Wakeup IRQ %d %s pending, suspend aborted\n",
@@ -111,6 +120,16 @@ int check_wakeup_irqs(void)
 					desc->action->name : "");
 				return -EBUSY;
 			}
+=======
+		/*
+		 * Only interrupts which are marked as wakeup source
+		 * and have not been disabled before the suspend check
+		 * can abort suspend.
+		 */
+		if (irqd_is_wakeup_set(&desc->irq_data)) {
+			if (desc->depth == 1 && desc->istate & IRQS_PENDING)
+				return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		/*

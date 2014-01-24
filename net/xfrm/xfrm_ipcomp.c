@@ -71,15 +71,20 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
 	while ((scratch += len, dlen -= len) > 0) {
 		skb_frag_t *frag;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		struct page *page;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct page *page;
+>>>>>>> refs/remotes/origin/master
 
 		err = -EMSGSIZE;
 		if (WARN_ON(skb_shinfo(skb)->nr_frags >= MAX_SKB_FRAGS))
 			goto out;
 
 		frag = skb_shinfo(skb)->frags + skb_shinfo(skb)->nr_frags;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		frag->page = alloc_page(GFP_ATOMIC);
 
@@ -88,6 +93,8 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
 			goto out;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		page = alloc_page(GFP_ATOMIC);
 
 		err = -ENOMEM;
@@ -96,22 +103,31 @@ static int ipcomp_decompress(struct xfrm_state *x, struct sk_buff *skb)
 
 		__skb_frag_set_page(frag, page);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		len = PAGE_SIZE;
 		if (dlen < len)
 			len = dlen;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		memcpy(page_address(frag->page), scratch, len);
 
 		frag->page_offset = 0;
 		frag->size = len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		frag->page_offset = 0;
 		skb_frag_size_set(frag, len);
 		memcpy(skb_frag_address(frag), scratch, len);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		skb->truesize += len;
 		skb->data_len += len;
 		skb->len += len;
@@ -160,6 +176,7 @@ static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
 	const int plen = skb->len;
 	int dlen = IPCOMP_SCRATCH_SIZE;
 	u8 *start = skb->data;
+<<<<<<< HEAD
 	const int cpu = get_cpu();
 	u8 *scratch = *per_cpu_ptr(ipcomp_scratches, cpu);
 	struct crypto_comp *tfm = *per_cpu_ptr(ipcd->tfms, cpu);
@@ -168,6 +185,16 @@ static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
 	local_bh_disable();
 	err = crypto_comp_compress(tfm, start, plen, scratch, &dlen);
 	local_bh_enable();
+=======
+	struct crypto_comp *tfm;
+	u8 *scratch;
+	int err;
+
+	local_bh_disable();
+	scratch = *this_cpu_ptr(ipcomp_scratches);
+	tfm = *this_cpu_ptr(ipcd->tfms);
+	err = crypto_comp_compress(tfm, start, plen, scratch, &dlen);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 
@@ -177,13 +204,21 @@ static int ipcomp_compress(struct xfrm_state *x, struct sk_buff *skb)
 	}
 
 	memcpy(start + sizeof(struct ip_comp_hdr), scratch, dlen);
+<<<<<<< HEAD
 	put_cpu();
+=======
+	local_bh_enable();
+>>>>>>> refs/remotes/origin/master
 
 	pskb_trim(skb, dlen + sizeof(struct ip_comp_hdr));
 	return 0;
 
 out:
+<<<<<<< HEAD
 	put_cpu();
+=======
+	local_bh_enable();
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -239,8 +274,13 @@ static void ipcomp_free_scratches(void)
 
 static void * __percpu *ipcomp_alloc_scratches(void)
 {
+<<<<<<< HEAD
 	int i;
 	void * __percpu *scratches;
+=======
+	void * __percpu *scratches;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	if (ipcomp_scratch_users++)
 		return ipcomp_scratches;
@@ -252,7 +292,13 @@ static void * __percpu *ipcomp_alloc_scratches(void)
 	ipcomp_scratches = scratches;
 
 	for_each_possible_cpu(i) {
+<<<<<<< HEAD
 		void *scratch = vmalloc(IPCOMP_SCRATCH_SIZE);
+=======
+		void *scratch;
+
+		scratch = vmalloc_node(IPCOMP_SCRATCH_SIZE, cpu_to_node(i));
+>>>>>>> refs/remotes/origin/master
 		if (!scratch)
 			return NULL;
 		*per_cpu_ptr(scratches, i) = scratch;
@@ -295,18 +341,30 @@ static struct crypto_comp * __percpu *ipcomp_alloc_tfms(const char *alg_name)
 	struct crypto_comp * __percpu *tfms;
 	int cpu;
 
+<<<<<<< HEAD
 	/* This can be any valid CPU ID so we don't need locking. */
 	cpu = raw_smp_processor_id();
+=======
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry(pos, &ipcomp_tfms_list, list) {
 		struct crypto_comp *tfm;
 
+<<<<<<< HEAD
 		tfms = pos->tfms;
 		tfm = *per_cpu_ptr(tfms, cpu);
 
 		if (!strcmp(crypto_comp_name(tfm), alg_name)) {
 			pos->users++;
 			return tfms;
+=======
+		/* This can be any valid CPU ID so we don't need locking. */
+		tfm = __this_cpu_read(*pos->tfms);
+
+		if (!strcmp(crypto_comp_name(tfm), alg_name)) {
+			pos->users++;
+			return pos->tfms;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 

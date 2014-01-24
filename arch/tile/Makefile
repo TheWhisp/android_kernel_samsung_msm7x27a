@@ -30,6 +30,7 @@ endif
 # In kernel modules, this causes load failures due to unsupported relocations.
 KBUILD_CFLAGS   += -fno-asynchronous-unwind-tables
 
+<<<<<<< HEAD
 ifneq ($(CONFIG_DEBUG_EXTRA_FLAGS),"")
 KBUILD_CFLAGS   += $(CONFIG_DEBUG_EXTRA_FLAGS)
 endif
@@ -43,6 +44,18 @@ LIBGCC_PATH     := \
 
 # Provide the path to use for "make defconfig".
 KBUILD_DEFCONFIG := $(ARCH)_defconfig
+=======
+LIBGCC_PATH     := \
+  $(shell $(CC) $(KBUILD_CFLAGS) $(KCFLAGS) -print-libgcc-file-name)
+
+# Provide the path to use for "make defconfig".
+# We default to the newer TILE-Gx architecture if only "tile" is given.
+ifeq ($(ARCH),tile)
+        KBUILD_DEFCONFIG := tilegx_defconfig
+else
+        KBUILD_DEFCONFIG := $(ARCH)_defconfig
+endif
+>>>>>>> refs/remotes/origin/master
 
 # Used as a file extension when useful, e.g. head_$(BITS).o
 # Not needed for (e.g.) "$(CC) -m32" since the compiler automatically
@@ -63,10 +76,15 @@ libs-y		+= $(LIBGCC_PATH)
 core-y		+= arch/tile/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 core-$(CONFIG_KVM) += arch/tile/kvm/
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+core-$(CONFIG_TILE_GXIO) += arch/tile/gxio/
+
+>>>>>>> refs/remotes/origin/master
 ifdef TILERA_ROOT
 INSTALL_PATH ?= $(TILERA_ROOT)/tile/boot
 endif

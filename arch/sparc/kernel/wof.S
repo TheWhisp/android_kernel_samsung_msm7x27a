@@ -163,9 +163,14 @@ spwin_fromuser:
 	 * the label 'spwin_user_stack_is_bolixed' which will take
 	 * care of things at that point.
 	 */
+<<<<<<< HEAD
 	.globl	spwin_mmu_patchme
 spwin_mmu_patchme:	b	spwin_sun4c_stackchk
 				 andcc	%sp, 0x7, %g0
+=======
+	b	spwin_srmmu_stackchk
+	 andcc	%sp, 0x7, %g0
+>>>>>>> refs/remotes/origin/master
 
 spwin_good_ustack:
 	/* LOCATION: Window to be saved */
@@ -306,6 +311,7 @@ spwin_bad_ustack_from_kernel:
  * As noted above %curptr cannot be touched by this routine at all.
  */
 
+<<<<<<< HEAD
 spwin_sun4c_stackchk:
 	/* LOCATION: Window to be saved on the stack */
 
@@ -373,6 +379,8 @@ spwin_sun4c_onepage:
 	b	spwin_user_stack_is_bolixed + 0x4
 	 nop
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* This is a generic SRMMU routine.  As far as I know this
 	 * works for all current v8/srmmu implementations, we'll
 	 * see...
@@ -400,17 +408,29 @@ spwin_srmmu_stackchk:
 	 mov	AC_M_SFSR, %glob_tmp
 
 	/* Clear the fault status and turn on the no_fault bit. */
+<<<<<<< HEAD
 	lda	[%glob_tmp] ASI_M_MMUREGS, %g0		! eat SFSR
 
 	lda	[%g0] ASI_M_MMUREGS, %glob_tmp		! read MMU control
 	or	%glob_tmp, 0x2, %glob_tmp		! or in no_fault bit
 	sta	%glob_tmp, [%g0] ASI_M_MMUREGS		! set it
+=======
+LEON_PI(lda	[%glob_tmp] ASI_LEON_MMUREGS, %g0)	! eat SFSR
+SUN_PI_(lda	[%glob_tmp] ASI_M_MMUREGS, %g0)		! eat SFSR
+
+LEON_PI(lda	[%g0] ASI_LEON_MMUREGS, %glob_tmp)	! read MMU control
+SUN_PI_(lda	[%g0] ASI_M_MMUREGS, %glob_tmp)		! read MMU control
+	or	%glob_tmp, 0x2, %glob_tmp		! or in no_fault bit
+LEON_PI(sta	%glob_tmp, [%g0] ASI_LEON_MMUREGS)	! set it
+SUN_PI_(sta	%glob_tmp, [%g0] ASI_M_MMUREGS)		! set it
+>>>>>>> refs/remotes/origin/master
 
 	/* Dump the registers and cross fingers. */
 	STORE_WINDOW(sp)
 
 	/* Clear the no_fault bit and check the status. */
 	andn	%glob_tmp, 0x2, %glob_tmp
+<<<<<<< HEAD
 	sta	%glob_tmp, [%g0] ASI_M_MMUREGS
 
 	mov	AC_M_SFAR, %glob_tmp
@@ -418,6 +438,18 @@ spwin_srmmu_stackchk:
 
 	mov	AC_M_SFSR, %glob_tmp
 	lda	[%glob_tmp] ASI_M_MMUREGS, %glob_tmp
+=======
+LEON_PI(sta	%glob_tmp, [%g0] ASI_LEON_MMUREGS)
+SUN_PI_(sta	%glob_tmp, [%g0] ASI_M_MMUREGS)
+
+	mov	AC_M_SFAR, %glob_tmp
+LEON_PI(lda	[%glob_tmp] ASI_LEON_MMUREGS, %g0)
+SUN_PI_(lda	[%glob_tmp] ASI_M_MMUREGS, %g0)
+
+	mov	AC_M_SFSR, %glob_tmp
+LEON_PI(lda	[%glob_tmp] ASI_LEON_MMUREGS, %glob_tmp)
+SUN_PI_(lda	[%glob_tmp] ASI_M_MMUREGS, %glob_tmp)
+>>>>>>> refs/remotes/origin/master
 	andcc	%glob_tmp, 0x2, %g0			! did we fault?
 	be,a	spwin_finish_up + 0x4			! cool beans, success
 	 restore %g0, %g0, %g0

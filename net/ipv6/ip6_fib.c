@@ -18,6 +18,12 @@
  * 				routing table.
  * 	Ville Nuorvala:		Fixed routing subtrees.
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) "IPv6: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <linux/net.h>
@@ -29,12 +35,15 @@
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef 	CONFIG_PROC_FS
 #include <linux/proc_fs.h>
 #endif
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <net/ipv6.h>
 #include <net/ndisc.h>
 #include <net/addrconf.h>
@@ -45,7 +54,11 @@
 #define RT6_DEBUG 2
 
 #if RT6_DEBUG >= 3
+<<<<<<< HEAD
 #define RT6_TRACE(x...) printk(KERN_DEBUG x)
+=======
+#define RT6_TRACE(x...) pr_debug(x)
+>>>>>>> refs/remotes/origin/master
 #else
 #define RT6_TRACE(x...) do { ; } while (0)
 #endif
@@ -198,6 +211,7 @@ static struct fib6_table *fib6_alloc_table(struct net *net, u32 id)
 
 	table = kzalloc(sizeof(*table), GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (table != NULL) {
 =======
 	if (table) {
@@ -205,6 +219,13 @@ static struct fib6_table *fib6_alloc_table(struct net *net, u32 id)
 		table->tb6_id = id;
 		table->tb6_root.leaf = net->ipv6.ip6_null_entry;
 		table->tb6_root.fn_flags = RTN_ROOT | RTN_TL_ROOT | RTN_RTINFO;
+=======
+	if (table) {
+		table->tb6_id = id;
+		table->tb6_root.leaf = net->ipv6.ip6_null_entry;
+		table->tb6_root.fn_flags = RTN_ROOT | RTN_TL_ROOT | RTN_RTINFO;
+		inet_peer_base_init(&table->tb6_peers);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return table;
@@ -222,10 +243,14 @@ struct fib6_table *fib6_new_table(struct net *net, u32 id)
 
 	tb = fib6_alloc_table(net, id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (tb != NULL)
 =======
 	if (tb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tb)
+>>>>>>> refs/remotes/origin/master
 		fib6_link_table(net, tb);
 
 	return tb;
@@ -235,7 +260,10 @@ struct fib6_table *fib6_get_table(struct net *net, u32 id)
 {
 	struct fib6_table *tb;
 	struct hlist_head *head;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int h;
 
 	if (id == 0)
@@ -243,7 +271,11 @@ struct fib6_table *fib6_get_table(struct net *net, u32 id)
 	h = id & (FIB6_TABLE_HASHSZ - 1);
 	rcu_read_lock();
 	head = &net->ipv6.fib_table_hash[h];
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(tb, node, head, tb6_hlist) {
+=======
+	hlist_for_each_entry_rcu(tb, head, tb6_hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (tb->tb6_id == id) {
 			rcu_read_unlock();
 			return tb;
@@ -374,7 +406,10 @@ static int inet6_dump_fib(struct sk_buff *skb, struct netlink_callback *cb)
 	struct rt6_rtnl_dump_arg arg;
 	struct fib6_walker_t *w;
 	struct fib6_table *tb;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hlist_head *head;
 	int res = 0;
 
@@ -383,10 +418,14 @@ static int inet6_dump_fib(struct sk_buff *skb, struct netlink_callback *cb)
 
 	w = (void *)cb->args[2];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (w == NULL) {
 =======
 	if (!w) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!w) {
+>>>>>>> refs/remotes/origin/master
 		/* New dump:
 		 *
 		 * 1. hook callback destructor.
@@ -399,10 +438,14 @@ static int inet6_dump_fib(struct sk_buff *skb, struct netlink_callback *cb)
 		 */
 		w = kzalloc(sizeof(*w), GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (w == NULL)
 =======
 		if (!w)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!w)
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		w->func = fib6_dump_node;
 		cb->args[2] = (long)w;
@@ -417,7 +460,11 @@ static int inet6_dump_fib(struct sk_buff *skb, struct netlink_callback *cb)
 	for (h = s_h; h < FIB6_TABLE_HASHSZ; h++, s_e = 0) {
 		e = 0;
 		head = &net->ipv6.fib_table_hash[h];
+<<<<<<< HEAD
 		hlist_for_each_entry_rcu(tb, node, head, tb6_hlist) {
+=======
+		hlist_for_each_entry_rcu(tb, head, tb6_hlist) {
+>>>>>>> refs/remotes/origin/master
 			if (e < s_e)
 				goto next;
 			res = fib6_dump_table(tb, skb, cb);
@@ -446,6 +493,7 @@ out:
  *	node.
  */
 
+<<<<<<< HEAD
 static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 				     int addrlen, int plen,
 <<<<<<< HEAD
@@ -454,6 +502,12 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 				     int offset, int allow_create,
 				     int replace_required)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct fib6_node *fib6_add_1(struct fib6_node *root,
+				     struct in6_addr *addr, int plen,
+				     int offset, int allow_create,
+				     int replace_required)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fib6_node *fn, *in, *ln;
 	struct fib6_node *pn = NULL;
@@ -476,6 +530,7 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 		 */
 		if (plen < fn->fn_bit ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    !ipv6_prefix_equal(&key->addr, addr, fn->fn_bit))
 			goto insert_above;
 =======
@@ -492,6 +547,18 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 			goto insert_above;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    !ipv6_prefix_equal(&key->addr, addr, fn->fn_bit)) {
+			if (!allow_create) {
+				if (replace_required) {
+					pr_warn("Can't replace route, no match found\n");
+					return ERR_PTR(-ENOENT);
+				}
+				pr_warn("NLM_F_CREATE should be set when creating new route\n");
+			}
+			goto insert_above;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 *	Exact match ?
@@ -500,10 +567,14 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 		if (plen == fn->fn_bit) {
 			/* clean up an intermediate node */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ((fn->fn_flags & RTN_RTINFO) == 0) {
 =======
 			if (!(fn->fn_flags & RTN_RTINFO)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!(fn->fn_flags & RTN_RTINFO)) {
+>>>>>>> refs/remotes/origin/master
 				rt6_release(fn->leaf);
 				fn->leaf = NULL;
 			}
@@ -525,7 +596,10 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 	} while (fn);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!allow_create) {
 		/* We should not create new node because
 		 * NLM_F_REPLACE was specified without NLM_F_CREATE
@@ -537,6 +611,7 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 		 * That would keep IPv6 consistent with IPv4
 		 */
 		if (replace_required) {
+<<<<<<< HEAD
 			pr_warn("IPv6: Can't replace route, no match found\n");
 			return ERR_PTR(-ENOENT);
 		}
@@ -544,6 +619,13 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 			"when creating new route\n");
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("Can't replace route, no match found\n");
+			return ERR_PTR(-ENOENT);
+		}
+		pr_warn("NLM_F_CREATE should be set when creating new route\n");
+	}
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	We walked to the bottom of tree.
 	 *	Create new leaf node without children.
@@ -552,11 +634,16 @@ static struct fib6_node * fib6_add_1(struct fib6_node *root, void *addr,
 	ln = node_alloc();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ln == NULL)
 =======
 	if (!ln)
 >>>>>>> refs/remotes/origin/cm-10.0
 		return NULL;
+=======
+	if (!ln)
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 	ln->fn_bit = plen;
 
 	ln->parent = pn;
@@ -587,7 +674,11 @@ insert_above:
 	   but if it is >= plen, the value is ignored in any case.
 	 */
 
+<<<<<<< HEAD
 	bit = __ipv6_addr_diff(addr, &key->addr, addrlen);
+=======
+	bit = __ipv6_addr_diff(addr, &key->addr, sizeof(*addr));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *		(intermediate)[in]
@@ -599,15 +690,23 @@ insert_above:
 		ln = node_alloc();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (in == NULL || ln == NULL) {
 =======
 		if (!in || !ln) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!in || !ln) {
+>>>>>>> refs/remotes/origin/master
 			if (in)
 				node_free(in);
 			if (ln)
 				node_free(ln);
+<<<<<<< HEAD
 			return NULL;
+=======
+			return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -657,11 +756,16 @@ insert_above:
 		ln = node_alloc();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ln == NULL)
 =======
 		if (!ln)
 >>>>>>> refs/remotes/origin/cm-10.0
 			return NULL;
+=======
+		if (!ln)
+			return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 
 		ln->fn_bit = plen;
 
@@ -684,6 +788,15 @@ insert_above:
 	return ln;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool rt6_qualify_for_ecmp(struct rt6_info *rt)
+{
+	return (rt->rt6i_flags & (RTF_GATEWAY|RTF_ADDRCONF|RTF_DYNAMIC)) ==
+	       RTF_GATEWAY;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	Insert routing information in a node.
  */
@@ -694,21 +807,31 @@ static int fib6_add_rt2node(struct fib6_node *fn, struct rt6_info *rt,
 	struct rt6_info *iter = NULL;
 	struct rt6_info **ins;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ins = &fn->leaf;
 
 	for (iter = fn->leaf; iter; iter=iter->dst.rt6_next) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int replace = (info->nlh &&
 		       (info->nlh->nlmsg_flags & NLM_F_REPLACE));
 	int add = (!info->nlh ||
 		   (info->nlh->nlmsg_flags & NLM_F_CREATE));
 	int found = 0;
+<<<<<<< HEAD
+=======
+	bool rt_can_ecmp = rt6_qualify_for_ecmp(rt);
+>>>>>>> refs/remotes/origin/master
 
 	ins = &fn->leaf;
 
 	for (iter = fn->leaf; iter; iter = iter->dst.rt6_next) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 *	Search for duplicates
 		 */
@@ -717,6 +840,7 @@ static int fib6_add_rt2node(struct fib6_node *fn, struct rt6_info *rt,
 			/*
 			 *	Same priority level
 			 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			if (iter->rt6i_dev == rt->rt6i_dev &&
@@ -731,6 +855,8 @@ static int fib6_add_rt2node(struct fib6_node *fn, struct rt6_info *rt,
 					iter->rt6i_expires = 0;
 				}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (info->nlh &&
 			    (info->nlh->nlmsg_flags & NLM_F_EXCL))
 				return -EEXIST;
@@ -743,15 +869,39 @@ static int fib6_add_rt2node(struct fib6_node *fn, struct rt6_info *rt,
 			    iter->rt6i_idev == rt->rt6i_idev &&
 			    ipv6_addr_equal(&iter->rt6i_gateway,
 					    &rt->rt6i_gateway)) {
+<<<<<<< HEAD
+=======
+				if (rt->rt6i_nsiblings)
+					rt->rt6i_nsiblings = 0;
+>>>>>>> refs/remotes/origin/master
 				if (!(iter->rt6i_flags & RTF_EXPIRES))
 					return -EEXIST;
 				if (!(rt->rt6i_flags & RTF_EXPIRES))
 					rt6_clean_expires(iter);
 				else
 					rt6_set_expires(iter, rt->dst.expires);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 				return -EEXIST;
 			}
+=======
+				return -EEXIST;
+			}
+			/* If we have the same destination and the same metric,
+			 * but not the same gateway, then the route we try to
+			 * add is sibling to this route, increment our counter
+			 * of siblings, and later we will add our route to the
+			 * list.
+			 * Only static routes (which don't have flag
+			 * RTF_EXPIRES) are used for ECMPv6.
+			 *
+			 * To avoid long list, we only had siblings if the
+			 * route have a gateway.
+			 */
+			if (rt_can_ecmp &&
+			    rt6_qualify_for_ecmp(iter))
+				rt->rt6i_nsiblings++;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (iter->rt6i_metric > rt->rt6i_metric)
@@ -764,6 +914,7 @@ static int fib6_add_rt2node(struct fib6_node *fn, struct rt6_info *rt,
 	if (ins == &fn->leaf)
 		fn->rr_ptr = NULL;
 
+<<<<<<< HEAD
 	/*
 	 *	insert node
 	 */
@@ -783,6 +934,44 @@ static int fib6_add_rt2node(struct fib6_node *fn, struct rt6_info *rt,
 	if (!replace) {
 		if (!add)
 			pr_warn("IPv6: NLM_F_CREATE should be set when creating new route\n");
+=======
+	/* Link this route to others same route. */
+	if (rt->rt6i_nsiblings) {
+		unsigned int rt6i_nsiblings;
+		struct rt6_info *sibling, *temp_sibling;
+
+		/* Find the first route that have the same metric */
+		sibling = fn->leaf;
+		while (sibling) {
+			if (sibling->rt6i_metric == rt->rt6i_metric &&
+			    rt6_qualify_for_ecmp(sibling)) {
+				list_add_tail(&rt->rt6i_siblings,
+					      &sibling->rt6i_siblings);
+				break;
+			}
+			sibling = sibling->dst.rt6_next;
+		}
+		/* For each sibling in the list, increment the counter of
+		 * siblings. BUG() if counters does not match, list of siblings
+		 * is broken!
+		 */
+		rt6i_nsiblings = 0;
+		list_for_each_entry_safe(sibling, temp_sibling,
+					 &rt->rt6i_siblings, rt6i_siblings) {
+			sibling->rt6i_nsiblings++;
+			BUG_ON(sibling->rt6i_nsiblings != rt->rt6i_nsiblings);
+			rt6i_nsiblings++;
+		}
+		BUG_ON(rt6i_nsiblings != rt->rt6i_nsiblings);
+	}
+
+	/*
+	 *	insert node
+	 */
+	if (!replace) {
+		if (!add)
+			pr_warn("NLM_F_CREATE should be set when creating new route\n");
+>>>>>>> refs/remotes/origin/master
 
 add:
 		rt->dst.rt6_next = iter;
@@ -801,7 +990,11 @@ add:
 		if (!found) {
 			if (add)
 				goto add;
+<<<<<<< HEAD
 			pr_warn("IPv6: NLM_F_REPLACE set, but no existing node found!\n");
+=======
+			pr_warn("NLM_F_REPLACE set, but no existing node found!\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENOENT;
 		}
 		*ins = rt;
@@ -814,7 +1007,10 @@ add:
 			info->nl_net->ipv6.rt6_stats->fib_route_nodes++;
 			fn->fn_flags |= RTN_RTINFO;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -824,10 +1020,14 @@ static __inline__ void fib6_start_gc(struct net *net, struct rt6_info *rt)
 {
 	if (!timer_pending(&net->ipv6.ip6_fib_timer) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (rt->rt6i_flags & (RTF_EXPIRES|RTF_CACHE)))
 =======
 	    (rt->rt6i_flags & (RTF_EXPIRES | RTF_CACHE)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (rt->rt6i_flags & (RTF_EXPIRES | RTF_CACHE)))
+>>>>>>> refs/remotes/origin/master
 		mod_timer(&net->ipv6.ip6_fib_timer,
 			  jiffies + net->ipv6.sysctl.ip6_rt_gc_interval);
 }
@@ -850,12 +1050,15 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 	struct fib6_node *fn, *pn = NULL;
 	int err = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	fn = fib6_add_1(root, &rt->rt6i_dst.addr, sizeof(struct in6_addr),
 			rt->rt6i_dst.plen, offsetof(struct rt6_info, rt6i_dst));
 
 	if (fn == NULL)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int allow_create = 1;
 	int replace_required = 0;
 
@@ -866,6 +1069,7 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 			replace_required = 1;
 	}
 	if (!allow_create && !replace_required)
+<<<<<<< HEAD
 		pr_warn("IPv6: RTM_NEWROUTE with no NLM_F_CREATE or NLM_F_REPLACE\n");
 
 	fn = fib6_add_1(root, &rt->rt6i_dst.addr, sizeof(struct in6_addr),
@@ -880,6 +1084,18 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 	if (!fn)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto out;
+=======
+		pr_warn("RTM_NEWROUTE with no NLM_F_CREATE or NLM_F_REPLACE\n");
+
+	fn = fib6_add_1(root, &rt->rt6i_dst.addr, rt->rt6i_dst.plen,
+			offsetof(struct rt6_info, rt6i_dst), allow_create,
+			replace_required);
+	if (IS_ERR(fn)) {
+		err = PTR_ERR(fn);
+		fn = NULL;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	pn = fn;
 
@@ -888,10 +1104,14 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 		struct fib6_node *sn;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (fn->subtree == NULL) {
 =======
 		if (!fn->subtree) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!fn->subtree) {
+>>>>>>> refs/remotes/origin/master
 			struct fib6_node *sfn;
 
 			/*
@@ -907,10 +1127,14 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 			/* Create subtree root node */
 			sfn = node_alloc();
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (sfn == NULL)
 =======
 			if (!sfn)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!sfn)
+>>>>>>> refs/remotes/origin/master
 				goto st_failure;
 
 			sfn->leaf = info->nl_net->ipv6.ip6_null_entry;
@@ -921,26 +1145,37 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 			/* Now add the first leaf node to new subtree */
 
 			sn = fib6_add_1(sfn, &rt->rt6i_src.addr,
+<<<<<<< HEAD
 					sizeof(struct in6_addr), rt->rt6i_src.plen,
 <<<<<<< HEAD
 					offsetof(struct rt6_info, rt6i_src));
 
 			if (sn == NULL) {
 =======
+=======
+					rt->rt6i_src.plen,
+>>>>>>> refs/remotes/origin/master
 					offsetof(struct rt6_info, rt6i_src),
 					allow_create, replace_required);
 
 			if (IS_ERR(sn)) {
+<<<<<<< HEAD
 				err = PTR_ERR(sn);
 				sn = NULL;
 			}
 			if (!sn) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				/* If it is failed, discard just allocated
 				   root, and then (in st_failure) stale node
 				   in main tree.
 				 */
 				node_free(sfn);
+<<<<<<< HEAD
+=======
+				err = PTR_ERR(sn);
+>>>>>>> refs/remotes/origin/master
 				goto st_failure;
 			}
 
@@ -949,6 +1184,7 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 			fn->subtree = sfn;
 		} else {
 			sn = fib6_add_1(fn->subtree, &rt->rt6i_src.addr,
+<<<<<<< HEAD
 					sizeof(struct in6_addr), rt->rt6i_src.plen,
 <<<<<<< HEAD
 					offsetof(struct rt6_info, rt6i_src));
@@ -959,11 +1195,15 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 
 		if (fn->leaf == NULL) {
 =======
+=======
+					rt->rt6i_src.plen,
+>>>>>>> refs/remotes/origin/master
 					offsetof(struct rt6_info, rt6i_src),
 					allow_create, replace_required);
 
 			if (IS_ERR(sn)) {
 				err = PTR_ERR(sn);
+<<<<<<< HEAD
 				sn = NULL;
 			}
 			if (!sn)
@@ -972,6 +1212,13 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 
 		if (!fn->leaf) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				goto st_failure;
+			}
+		}
+
+		if (!fn->leaf) {
+>>>>>>> refs/remotes/origin/master
 			fn->leaf = rt;
 			atomic_inc(&rt->rt6i_ref);
 		}
@@ -980,6 +1227,7 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 #endif
 
 	err = fib6_add_rt2node(fn, rt, info);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	if (err == 0) {
@@ -990,6 +1238,11 @@ int fib6_add(struct fib6_node *root, struct rt6_info *rt, struct nl_info *info)
 		fib6_start_gc(info->nl_net, rt);
 		if (!(rt->rt6i_flags & RTF_CACHE))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!err) {
+		fib6_start_gc(info->nl_net, rt);
+		if (!(rt->rt6i_flags & RTF_CACHE))
+>>>>>>> refs/remotes/origin/master
 			fib6_prune_clones(info->nl_net, pn, rt);
 	}
 
@@ -1038,10 +1291,14 @@ st_failure:
 
 struct lookup_args {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		offset;		/* key offset on rt6_info	*/
 =======
 	int			offset;		/* key offset on rt6_info	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			offset;		/* key offset on rt6_info	*/
+>>>>>>> refs/remotes/origin/master
 	const struct in6_addr	*addr;		/* search key			*/
 };
 
@@ -1072,17 +1329,23 @@ static struct fib6_node * fib6_lookup_1(struct fib6_node *root,
 			continue;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		break;
 	}
 
 	while(fn) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
 	while (fn) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (FIB6_SUBTREE(fn) || fn->fn_flags & RTN_RTINFO) {
 			struct rt6key *key;
 
@@ -1138,11 +1401,15 @@ struct fib6_node * fib6_lookup(struct fib6_node *root, const struct in6_addr *da
 
 	fn = fib6_lookup_1(root, daddr ? args : args + 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (fn == NULL || fn->fn_flags & RTN_TL_ROOT)
 =======
 	if (!fn || fn->fn_flags & RTN_TL_ROOT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!fn || fn->fn_flags & RTN_TL_ROOT)
+>>>>>>> refs/remotes/origin/master
 		fn = root;
 
 	return fn;
@@ -1203,10 +1470,14 @@ struct fib6_node * fib6_locate(struct fib6_node *root,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fn && fn->fn_flags&RTN_RTINFO)
 =======
 	if (fn && fn->fn_flags & RTN_RTINFO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fn && fn->fn_flags & RTN_RTINFO)
+>>>>>>> refs/remotes/origin/master
 		return fn;
 
 	return NULL;
@@ -1221,6 +1492,7 @@ struct fib6_node * fib6_locate(struct fib6_node *root,
 static struct rt6_info *fib6_find_prefix(struct net *net, struct fib6_node *fn)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fn->fn_flags&RTN_ROOT)
 		return net->ipv6.ip6_null_entry;
 
@@ -1230,6 +1502,8 @@ static struct rt6_info *fib6_find_prefix(struct net *net, struct fib6_node *fn)
 
 		if(fn->right)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (fn->fn_flags & RTN_ROOT)
 		return net->ipv6.ip6_null_entry;
 
@@ -1237,7 +1511,10 @@ static struct rt6_info *fib6_find_prefix(struct net *net, struct fib6_node *fn)
 		if (fn->left)
 			return fn->left->leaf;
 		if (fn->right)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return fn->right->leaf;
 
 		fn = FIB6_SUBTREE(fn);
@@ -1276,19 +1553,27 @@ static struct fib6_node *fib6_repair_tree(struct net *net,
 #ifdef CONFIG_IPV6_SUBTREES
 		    /* Subtree root (i.e. fn) may have one child */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    || (children && fn->fn_flags&RTN_ROOT)
 =======
 		    || (children && fn->fn_flags & RTN_ROOT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    || (children && fn->fn_flags & RTN_ROOT)
+>>>>>>> refs/remotes/origin/master
 #endif
 		    ) {
 			fn->leaf = fib6_find_prefix(net, fn);
 #if RT6_DEBUG >= 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (fn->leaf==NULL) {
 =======
 			if (!fn->leaf) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!fn->leaf) {
+>>>>>>> refs/remotes/origin/master
 				WARN_ON(!fn->leaf);
 				fn->leaf = net->ipv6.ip6_null_entry;
 			}
@@ -1322,10 +1607,14 @@ static struct fib6_node *fib6_repair_tree(struct net *net,
 		read_lock(&fib6_walker_lock);
 		FOR_WALKERS(w) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (child == NULL) {
 =======
 			if (!child) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!child) {
+>>>>>>> refs/remotes/origin/master
 				if (w->root == fn) {
 					w->root = w->node = NULL;
 					RT6_TRACE("W %p adjusted by delroot 1\n", w);
@@ -1355,10 +1644,14 @@ static struct fib6_node *fib6_repair_tree(struct net *net,
 
 		node_free(fn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (pn->fn_flags&RTN_RTINFO || FIB6_SUBTREE(pn))
 =======
 		if (pn->fn_flags & RTN_RTINFO || FIB6_SUBTREE(pn))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pn->fn_flags & RTN_RTINFO || FIB6_SUBTREE(pn))
+>>>>>>> refs/remotes/origin/master
 			return pn;
 
 		rt6_release(pn->leaf);
@@ -1386,6 +1679,20 @@ static void fib6_del_route(struct fib6_node *fn, struct rt6_info **rtp,
 	if (fn->rr_ptr == rt)
 		fn->rr_ptr = NULL;
 
+<<<<<<< HEAD
+=======
+	/* Remove this entry from other siblings */
+	if (rt->rt6i_nsiblings) {
+		struct rt6_info *sibling, *next_sibling;
+
+		list_for_each_entry_safe(sibling, next_sibling,
+					 &rt->rt6i_siblings, rt6i_siblings)
+			sibling->rt6i_nsiblings--;
+		rt->rt6i_nsiblings = 0;
+		list_del_init(&rt->rt6i_siblings);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Adjust walkers */
 	read_lock(&fib6_walker_lock);
 	FOR_WALKERS(w) {
@@ -1393,10 +1700,14 @@ static void fib6_del_route(struct fib6_node *fn, struct rt6_info **rtp,
 			RT6_TRACE("walker %p adjusted by delroute\n", w);
 			w->leaf = rt->dst.rt6_next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (w->leaf == NULL)
 =======
 			if (!w->leaf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!w->leaf)
+>>>>>>> refs/remotes/origin/master
 				w->state = FWS_U;
 		}
 	}
@@ -1406,10 +1717,14 @@ static void fib6_del_route(struct fib6_node *fn, struct rt6_info **rtp,
 
 	/* If it was last route, expunge its radix tree node */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fn->leaf == NULL) {
 =======
 	if (!fn->leaf) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!fn->leaf) {
+>>>>>>> refs/remotes/origin/master
 		fn->fn_flags &= ~RTN_RTINFO;
 		net->ipv6.rt6_stats->fib_route_nodes--;
 		fn = fib6_repair_tree(net, fn);
@@ -1424,10 +1739,14 @@ static void fib6_del_route(struct fib6_node *fn, struct rt6_info **rtp,
 		 */
 		while (fn) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!(fn->fn_flags&RTN_RTINFO) && fn->leaf == rt) {
 =======
 			if (!(fn->fn_flags & RTN_RTINFO) && fn->leaf == rt) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!(fn->fn_flags & RTN_RTINFO) && fn->leaf == rt) {
+>>>>>>> refs/remotes/origin/master
 				fn->leaf = fib6_find_prefix(net, fn);
 				atomic_inc(&fn->leaf->rt6i_ref);
 				rt6_release(rt);
@@ -1455,28 +1774,40 @@ int fib6_del(struct rt6_info *rt, struct nl_info *info)
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fn == NULL || rt == net->ipv6.ip6_null_entry)
 =======
 	if (!fn || rt == net->ipv6.ip6_null_entry)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!fn || rt == net->ipv6.ip6_null_entry)
+>>>>>>> refs/remotes/origin/master
 		return -ENOENT;
 
 	WARN_ON(!(fn->fn_flags & RTN_RTINFO));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(rt->rt6i_flags&RTF_CACHE)) {
 =======
 	if (!(rt->rt6i_flags & RTF_CACHE)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(rt->rt6i_flags & RTF_CACHE)) {
+>>>>>>> refs/remotes/origin/master
 		struct fib6_node *pn = fn;
 #ifdef CONFIG_IPV6_SUBTREES
 		/* clones of this route might be in another subtree */
 		if (rt->rt6i_src.plen) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			while (!(pn->fn_flags&RTN_ROOT))
 =======
 			while (!(pn->fn_flags & RTN_ROOT))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			while (!(pn->fn_flags & RTN_ROOT))
+>>>>>>> refs/remotes/origin/master
 				pn = pn->parent;
 			pn = pn->parent;
 		}
@@ -1528,18 +1859,24 @@ static int fib6_walk_continue(struct fib6_walker_t *w)
 	for (;;) {
 		fn = w->node;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (fn == NULL)
 			return 0;
 
 		if (w->prune && fn != w->root &&
 		    fn->fn_flags&RTN_RTINFO && w->state < FWS_C) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!fn)
 			return 0;
 
 		if (w->prune && fn != w->root &&
 		    fn->fn_flags & RTN_RTINFO && w->state < FWS_C) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			w->state = FWS_C;
 			w->leaf = fn->leaf;
 		}
@@ -1569,6 +1906,7 @@ static int fib6_walk_continue(struct fib6_walker_t *w)
 			w->leaf = fn->leaf;
 		case FWS_C:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (w->leaf && fn->fn_flags&RTN_RTINFO) {
 =======
 			if (w->leaf && fn->fn_flags & RTN_RTINFO) {
@@ -1577,6 +1915,13 @@ static int fib6_walk_continue(struct fib6_walker_t *w)
 
 				if (w->count < w->skip) {
 					w->count++;
+=======
+			if (w->leaf && fn->fn_flags & RTN_RTINFO) {
+				int err;
+
+				if (w->skip) {
+					w->skip--;
+>>>>>>> refs/remotes/origin/master
 					continue;
 				}
 
@@ -1646,7 +1991,12 @@ static int fib6_clean_node(struct fib6_walker_t *w)
 			res = fib6_del(rt, &info);
 			if (res) {
 #if RT6_DEBUG >= 2
+<<<<<<< HEAD
 				printk(KERN_DEBUG "fib6_clean_node: del failed: rt=%p@%p err=%d\n", rt, rt->rt6i_node, res);
+=======
+				pr_debug("%s: del failed: rt=%p@%p err=%d\n",
+					 __func__, rt, rt->rt6i_node, res);
+>>>>>>> refs/remotes/origin/master
 #endif
 				continue;
 			}
@@ -1688,6 +2038,7 @@ static void fib6_clean_tree(struct net *net, struct fib6_node *root,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void fib6_clean_all_ro(struct net *net, int (*func)(struct rt6_info *, void *arg),
 		    int prune, void *arg)
@@ -1710,18 +2061,27 @@ void fib6_clean_all_ro(struct net *net, int (*func)(struct rt6_info *, void *arg
 	rcu_read_unlock();
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void fib6_clean_all(struct net *net, int (*func)(struct rt6_info *, void *arg),
 		    int prune, void *arg)
 {
 	struct fib6_table *table;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hlist_head *head;
 	unsigned int h;
 
 	rcu_read_lock();
 	for (h = 0; h < FIB6_TABLE_HASHSZ; h++) {
 		head = &net->ipv6.fib_table_hash[h];
+<<<<<<< HEAD
 		hlist_for_each_entry_rcu(table, node, head, tb6_hlist) {
+=======
+		hlist_for_each_entry_rcu(table, head, tb6_hlist) {
+>>>>>>> refs/remotes/origin/master
 			write_lock_bh(&table->tb6_lock);
 			fib6_clean_tree(net, &table->tb6_root,
 					func, prune, arg);
@@ -1770,12 +2130,17 @@ static int fib6_age(struct rt6_info *rt, void *arg)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rt->rt6i_flags&RTF_EXPIRES && rt->rt6i_expires) {
 		if (time_after(now, rt->rt6i_expires)) {
 =======
 	if (rt->rt6i_flags & RTF_EXPIRES && rt->dst.expires) {
 		if (time_after(now, rt->dst.expires)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rt->rt6i_flags & RTF_EXPIRES && rt->dst.expires) {
+		if (time_after(now, rt->dst.expires)) {
+>>>>>>> refs/remotes/origin/master
 			RT6_TRACE("expiring %p\n", rt);
 			return -1;
 		}
@@ -1786,12 +2151,15 @@ static int fib6_age(struct rt6_info *rt, void *arg)
 			RT6_TRACE("aging clone %p\n", rt);
 			return -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else if ((rt->rt6i_flags & RTF_GATEWAY) &&
 			   (!(dst_get_neighbour_raw(&rt->dst)->flags & NTF_ROUTER))) {
 			RT6_TRACE("purging route %p via non-router but gateway\n",
 				  rt);
 			return -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (rt->rt6i_flags & RTF_GATEWAY) {
 			struct neighbour *neigh;
 			__u8 neigh_flags = 0;
@@ -1806,7 +2174,10 @@ static int fib6_age(struct rt6_info *rt, void *arg)
 					  rt);
 				return -1;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		gc_args.more++;
 	}
@@ -1816,6 +2187,7 @@ static int fib6_age(struct rt6_info *rt, void *arg)
 
 static DEFINE_SPINLOCK(fib6_gc_lock);
 
+<<<<<<< HEAD
 void fib6_run_gc(unsigned long expires, struct net *net)
 {
 	if (expires != ~0UL) {
@@ -1829,14 +2201,37 @@ void fib6_run_gc(unsigned long expires, struct net *net)
 		}
 		gc_args.timeout = net->ipv6.sysctl.ip6_rt_gc_interval;
 	}
+=======
+void fib6_run_gc(unsigned long expires, struct net *net, bool force)
+{
+	unsigned long now;
+
+	if (force) {
+		spin_lock_bh(&fib6_gc_lock);
+	} else if (!spin_trylock_bh(&fib6_gc_lock)) {
+		mod_timer(&net->ipv6.ip6_fib_timer, jiffies + HZ);
+		return;
+	}
+	gc_args.timeout = expires ? (int)expires :
+			  net->ipv6.sysctl.ip6_rt_gc_interval;
+>>>>>>> refs/remotes/origin/master
 
 	gc_args.more = icmp6_dst_gc();
 
 	fib6_clean_all(net, fib6_age, 0, NULL);
+<<<<<<< HEAD
 
 	if (gc_args.more)
 		mod_timer(&net->ipv6.ip6_fib_timer,
 			  round_jiffies(jiffies
+=======
+	now = jiffies;
+	net->ipv6.ip6_rt_last_gc = now;
+
+	if (gc_args.more)
+		mod_timer(&net->ipv6.ip6_fib_timer,
+			  round_jiffies(now
+>>>>>>> refs/remotes/origin/master
 					+ net->ipv6.sysctl.ip6_rt_gc_interval));
 	else
 		del_timer(&net->ipv6.ip6_fib_timer);
@@ -1845,7 +2240,11 @@ void fib6_run_gc(unsigned long expires, struct net *net)
 
 static void fib6_gc_timer_cb(unsigned long arg)
 {
+<<<<<<< HEAD
 	fib6_run_gc(0, (struct net *)arg);
+=======
+	fib6_run_gc(0, (struct net *)arg, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __net_init fib6_net_init(struct net *net)
@@ -1874,6 +2273,10 @@ static int __net_init fib6_net_init(struct net *net)
 	net->ipv6.fib6_main_tbl->tb6_root.leaf = net->ipv6.ip6_null_entry;
 	net->ipv6.fib6_main_tbl->tb6_root.fn_flags =
 		RTN_ROOT | RTN_TL_ROOT | RTN_RTINFO;
+<<<<<<< HEAD
+=======
+	inet_peer_base_init(&net->ipv6.fib6_main_tbl->tb6_peers);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IPV6_MULTIPLE_TABLES
 	net->ipv6.fib6_local_tbl = kzalloc(sizeof(*net->ipv6.fib6_local_tbl),
@@ -1884,6 +2287,10 @@ static int __net_init fib6_net_init(struct net *net)
 	net->ipv6.fib6_local_tbl->tb6_root.leaf = net->ipv6.ip6_null_entry;
 	net->ipv6.fib6_local_tbl->tb6_root.fn_flags =
 		RTN_ROOT | RTN_TL_ROOT | RTN_RTINFO;
+<<<<<<< HEAD
+=======
+	inet_peer_base_init(&net->ipv6.fib6_local_tbl->tb6_peers);
+>>>>>>> refs/remotes/origin/master
 #endif
 	fib6_tables_init(net);
 
@@ -1907,8 +2314,15 @@ static void fib6_net_exit(struct net *net)
 	del_timer_sync(&net->ipv6.ip6_fib_timer);
 
 #ifdef CONFIG_IPV6_MULTIPLE_TABLES
+<<<<<<< HEAD
 	kfree(net->ipv6.fib6_local_tbl);
 #endif
+=======
+	inetpeer_invalidate_tree(&net->ipv6.fib6_local_tbl->tb6_peers);
+	kfree(net->ipv6.fib6_local_tbl);
+#endif
+	inetpeer_invalidate_tree(&net->ipv6.fib6_main_tbl->tb6_peers);
+>>>>>>> refs/remotes/origin/master
 	kfree(net->ipv6.fib6_main_tbl);
 	kfree(net->ipv6.fib_table_hash);
 	kfree(net->ipv6.rt6_stats);
@@ -1953,3 +2367,192 @@ void fib6_gc_cleanup(void)
 	unregister_pernet_subsys(&fib6_net_ops);
 	kmem_cache_destroy(fib6_node_kmem);
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_PROC_FS
+
+struct ipv6_route_iter {
+	struct seq_net_private p;
+	struct fib6_walker_t w;
+	loff_t skip;
+	struct fib6_table *tbl;
+	__u32 sernum;
+};
+
+static int ipv6_route_seq_show(struct seq_file *seq, void *v)
+{
+	struct rt6_info *rt = v;
+	struct ipv6_route_iter *iter = seq->private;
+
+	seq_printf(seq, "%pi6 %02x ", &rt->rt6i_dst.addr, rt->rt6i_dst.plen);
+
+#ifdef CONFIG_IPV6_SUBTREES
+	seq_printf(seq, "%pi6 %02x ", &rt->rt6i_src.addr, rt->rt6i_src.plen);
+#else
+	seq_puts(seq, "00000000000000000000000000000000 00 ");
+#endif
+	if (rt->rt6i_flags & RTF_GATEWAY)
+		seq_printf(seq, "%pi6", &rt->rt6i_gateway);
+	else
+		seq_puts(seq, "00000000000000000000000000000000");
+
+	seq_printf(seq, " %08x %08x %08x %08x %8s\n",
+		   rt->rt6i_metric, atomic_read(&rt->dst.__refcnt),
+		   rt->dst.__use, rt->rt6i_flags,
+		   rt->dst.dev ? rt->dst.dev->name : "");
+	iter->w.leaf = NULL;
+	return 0;
+}
+
+static int ipv6_route_yield(struct fib6_walker_t *w)
+{
+	struct ipv6_route_iter *iter = w->args;
+
+	if (!iter->skip)
+		return 1;
+
+	do {
+		iter->w.leaf = iter->w.leaf->dst.rt6_next;
+		iter->skip--;
+		if (!iter->skip && iter->w.leaf)
+			return 1;
+	} while (iter->w.leaf);
+
+	return 0;
+}
+
+static void ipv6_route_seq_setup_walk(struct ipv6_route_iter *iter)
+{
+	memset(&iter->w, 0, sizeof(iter->w));
+	iter->w.func = ipv6_route_yield;
+	iter->w.root = &iter->tbl->tb6_root;
+	iter->w.state = FWS_INIT;
+	iter->w.node = iter->w.root;
+	iter->w.args = iter;
+	iter->sernum = iter->w.root->fn_sernum;
+	INIT_LIST_HEAD(&iter->w.lh);
+	fib6_walker_link(&iter->w);
+}
+
+static struct fib6_table *ipv6_route_seq_next_table(struct fib6_table *tbl,
+						    struct net *net)
+{
+	unsigned int h;
+	struct hlist_node *node;
+
+	if (tbl) {
+		h = (tbl->tb6_id & (FIB6_TABLE_HASHSZ - 1)) + 1;
+		node = rcu_dereference_bh(hlist_next_rcu(&tbl->tb6_hlist));
+	} else {
+		h = 0;
+		node = NULL;
+	}
+
+	while (!node && h < FIB6_TABLE_HASHSZ) {
+		node = rcu_dereference_bh(
+			hlist_first_rcu(&net->ipv6.fib_table_hash[h++]));
+	}
+	return hlist_entry_safe(node, struct fib6_table, tb6_hlist);
+}
+
+static void ipv6_route_check_sernum(struct ipv6_route_iter *iter)
+{
+	if (iter->sernum != iter->w.root->fn_sernum) {
+		iter->sernum = iter->w.root->fn_sernum;
+		iter->w.state = FWS_INIT;
+		iter->w.node = iter->w.root;
+		WARN_ON(iter->w.skip);
+		iter->w.skip = iter->w.count;
+	}
+}
+
+static void *ipv6_route_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+{
+	int r;
+	struct rt6_info *n;
+	struct net *net = seq_file_net(seq);
+	struct ipv6_route_iter *iter = seq->private;
+
+	if (!v)
+		goto iter_table;
+
+	n = ((struct rt6_info *)v)->dst.rt6_next;
+	if (n) {
+		++*pos;
+		return n;
+	}
+
+iter_table:
+	ipv6_route_check_sernum(iter);
+	read_lock(&iter->tbl->tb6_lock);
+	r = fib6_walk_continue(&iter->w);
+	read_unlock(&iter->tbl->tb6_lock);
+	if (r > 0) {
+		if (v)
+			++*pos;
+		return iter->w.leaf;
+	} else if (r < 0) {
+		fib6_walker_unlink(&iter->w);
+		return NULL;
+	}
+	fib6_walker_unlink(&iter->w);
+
+	iter->tbl = ipv6_route_seq_next_table(iter->tbl, net);
+	if (!iter->tbl)
+		return NULL;
+
+	ipv6_route_seq_setup_walk(iter);
+	goto iter_table;
+}
+
+static void *ipv6_route_seq_start(struct seq_file *seq, loff_t *pos)
+	__acquires(RCU_BH)
+{
+	struct net *net = seq_file_net(seq);
+	struct ipv6_route_iter *iter = seq->private;
+
+	rcu_read_lock_bh();
+	iter->tbl = ipv6_route_seq_next_table(NULL, net);
+	iter->skip = *pos;
+
+	if (iter->tbl) {
+		ipv6_route_seq_setup_walk(iter);
+		return ipv6_route_seq_next(seq, NULL, pos);
+	} else {
+		return NULL;
+	}
+}
+
+static bool ipv6_route_iter_active(struct ipv6_route_iter *iter)
+{
+	struct fib6_walker_t *w = &iter->w;
+	return w->node && !(w->state == FWS_U && w->node == w->root);
+}
+
+static void ipv6_route_seq_stop(struct seq_file *seq, void *v)
+	__releases(RCU_BH)
+{
+	struct ipv6_route_iter *iter = seq->private;
+
+	if (ipv6_route_iter_active(iter))
+		fib6_walker_unlink(&iter->w);
+
+	rcu_read_unlock_bh();
+}
+
+static const struct seq_operations ipv6_route_seq_ops = {
+	.start	= ipv6_route_seq_start,
+	.next	= ipv6_route_seq_next,
+	.stop	= ipv6_route_seq_stop,
+	.show	= ipv6_route_seq_show
+};
+
+int ipv6_route_open(struct inode *inode, struct file *file)
+{
+	return seq_open_net(inode, file, &ipv6_route_seq_ops,
+			    sizeof(struct ipv6_route_iter));
+}
+
+#endif /* CONFIG_PROC_FS */
+>>>>>>> refs/remotes/origin/master

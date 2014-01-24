@@ -29,11 +29,17 @@ EXPORT_PER_CPU_SYMBOL(irq_regs);
 
 #ifdef CONFIG_DEBUG_STACKOVERFLOW
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 int sysctl_panic_on_stackoverflow __read_mostly;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+int sysctl_panic_on_stackoverflow __read_mostly;
+
+>>>>>>> refs/remotes/origin/master
 /* Debugging check for stack overflow: is there less than 1KB free? */
 static int check_stack_overflow(void)
 {
@@ -50,10 +56,15 @@ static void print_stack_overflow(void)
 	printk(KERN_WARNING "low stack detected by irq handler\n");
 	dump_stack();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (sysctl_panic_on_stackoverflow)
 		panic("low stack detected by irq handler - check messages\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sysctl_panic_on_stackoverflow)
+		panic("low stack detected by irq handler - check messages\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
@@ -107,6 +118,7 @@ execute_on_irq_stack(int overflow, struct irq_desc *desc, int irq)
 	irqctx->tinfo.previous_esp = current_stack_pointer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Copy the softirq bits in preempt_count so that the
 	 * softirq checks work in the hardirq context.
@@ -119,6 +131,8 @@ execute_on_irq_stack(int overflow, struct irq_desc *desc, int irq)
 	irqctx->tinfo.preempt_count = curctx->tinfo.preempt_count;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(overflow))
 		call_on_stack(print_stack_overflow, isp);
 
@@ -135,7 +149,11 @@ execute_on_irq_stack(int overflow, struct irq_desc *desc, int irq)
 /*
  * allocate per-cpu stacks for hardirq and for softirq processing
  */
+<<<<<<< HEAD
 void __cpuinit irq_ctx_init(int cpu)
+=======
+void irq_ctx_init(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	union irq_ctx *irqctx;
 
@@ -143,18 +161,30 @@ void __cpuinit irq_ctx_init(int cpu)
 		return;
 
 	irqctx = page_address(alloc_pages_node(cpu_to_node(cpu),
+<<<<<<< HEAD
 					       THREAD_FLAGS,
 					       THREAD_ORDER));
 	memset(&irqctx->tinfo, 0, sizeof(struct thread_info));
 	irqctx->tinfo.cpu		= cpu;
 	irqctx->tinfo.preempt_count	= HARDIRQ_OFFSET;
+=======
+					       THREADINFO_GFP,
+					       THREAD_SIZE_ORDER));
+	memset(&irqctx->tinfo, 0, sizeof(struct thread_info));
+	irqctx->tinfo.cpu		= cpu;
+>>>>>>> refs/remotes/origin/master
 	irqctx->tinfo.addr_limit	= MAKE_MM_SEG(0);
 
 	per_cpu(hardirq_ctx, cpu) = irqctx;
 
 	irqctx = page_address(alloc_pages_node(cpu_to_node(cpu),
+<<<<<<< HEAD
 					       THREAD_FLAGS,
 					       THREAD_ORDER));
+=======
+					       THREADINFO_GFP,
+					       THREAD_SIZE_ORDER));
+>>>>>>> refs/remotes/origin/master
 	memset(&irqctx->tinfo, 0, sizeof(struct thread_info));
 	irqctx->tinfo.cpu		= cpu;
 	irqctx->tinfo.addr_limit	= MAKE_MM_SEG(0);
@@ -165,13 +195,19 @@ void __cpuinit irq_ctx_init(int cpu)
 	       cpu, per_cpu(hardirq_ctx, cpu),  per_cpu(softirq_ctx, cpu));
 }
 
+<<<<<<< HEAD
 asmlinkage void do_softirq(void)
 {
 	unsigned long flags;
+=======
+void do_softirq_own_stack(void)
+{
+>>>>>>> refs/remotes/origin/master
 	struct thread_info *curctx;
 	union irq_ctx *irqctx;
 	u32 *isp;
 
+<<<<<<< HEAD
 	if (in_interrupt())
 		return;
 
@@ -194,6 +230,17 @@ asmlinkage void do_softirq(void)
 	}
 
 	local_irq_restore(flags);
+=======
+	curctx = current_thread_info();
+	irqctx = __this_cpu_read(softirq_ctx);
+	irqctx->tinfo.task = curctx->task;
+	irqctx->tinfo.previous_esp = current_stack_pointer;
+
+	/* build the stack frame on the softirq stack */
+	isp = (u32 *) ((char *)irqctx + sizeof(*irqctx));
+
+	call_on_stack(__do_softirq, isp);
+>>>>>>> refs/remotes/origin/master
 }
 
 bool handle_irq(unsigned irq, struct pt_regs *regs)
@@ -208,10 +255,14 @@ bool handle_irq(unsigned irq, struct pt_regs *regs)
 		return false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!execute_on_irq_stack(overflow, desc, irq)) {
 =======
 	if (user_mode_vm(regs) || !execute_on_irq_stack(overflow, desc, irq)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (user_mode_vm(regs) || !execute_on_irq_stack(overflow, desc, irq)) {
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(overflow))
 			print_stack_overflow();
 		desc->handle_irq(irq, desc);

@@ -30,6 +30,10 @@
 
 static struct class *ilo_class;
 static unsigned int ilo_major;
+<<<<<<< HEAD
+=======
+static unsigned int max_ccb = 16;
+>>>>>>> refs/remotes/origin/master
 static char ilo_hwdev[MAX_ILO_DEV];
 
 static inline int get_entry_id(int entry)
@@ -424,7 +428,11 @@ static void ilo_set_reset(struct ilo_hwinfo *hw)
 	 * Mapped memory is zeroed on ilo reset, so set a per ccb flag
 	 * to indicate that this ccb needs to be closed and reopened.
 	 */
+<<<<<<< HEAD
 	for (slot = 0; slot < MAX_CCB; slot++) {
+=======
+	for (slot = 0; slot < max_ccb; slot++) {
+>>>>>>> refs/remotes/origin/master
 		if (!hw->ccb_alloc[slot])
 			continue;
 		set_channel_reset(&hw->ccb_alloc[slot]->driver_ccb);
@@ -535,7 +543,11 @@ static int ilo_close(struct inode *ip, struct file *fp)
 	struct ilo_hwinfo *hw;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	slot = iminor(ip) % MAX_CCB;
+=======
+	slot = iminor(ip) % max_ccb;
+>>>>>>> refs/remotes/origin/master
 	hw = container_of(ip->i_cdev, struct ilo_hwinfo, cdev);
 
 	spin_lock(&hw->open_lock);
@@ -566,7 +578,11 @@ static int ilo_open(struct inode *ip, struct file *fp)
 	struct ilo_hwinfo *hw;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	slot = iminor(ip) % MAX_CCB;
+=======
+	slot = iminor(ip) % max_ccb;
+>>>>>>> refs/remotes/origin/master
 	hw = container_of(ip->i_cdev, struct ilo_hwinfo, cdev);
 
 	/* new ccb allocation */
@@ -663,7 +679,11 @@ static irqreturn_t ilo_isr(int irq, void *data)
 		ilo_set_reset(hw);
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < MAX_CCB; i++) {
+=======
+	for (i = 0; i < max_ccb; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (!hw->ccb_alloc[i])
 			continue;
 		if (pending & (1 << i))
@@ -685,7 +705,11 @@ static void ilo_unmap_device(struct pci_dev *pdev, struct ilo_hwinfo *hw)
 	pci_iounmap(pdev, hw->mmio_vaddr);
 }
 
+<<<<<<< HEAD
 static int __devinit ilo_map_device(struct pci_dev *pdev, struct ilo_hwinfo *hw)
+=======
+static int ilo_map_device(struct pci_dev *pdev, struct ilo_hwinfo *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	int error = -ENOMEM;
 
@@ -697,14 +721,22 @@ static int __devinit ilo_map_device(struct pci_dev *pdev, struct ilo_hwinfo *hw)
 	}
 
 	/* map the adapter shared memory region */
+<<<<<<< HEAD
 	hw->ram_vaddr = pci_iomap(pdev, 2, MAX_CCB * ILOHW_CCB_SZ);
+=======
+	hw->ram_vaddr = pci_iomap(pdev, 2, max_ccb * ILOHW_CCB_SZ);
+>>>>>>> refs/remotes/origin/master
 	if (hw->ram_vaddr == NULL) {
 		dev_err(&pdev->dev, "Error mapping shared mem\n");
 		goto mmio_free;
 	}
 
 	/* map the doorbell aperture */
+<<<<<<< HEAD
 	hw->db_vaddr = pci_iomap(pdev, 3, MAX_CCB * ONE_DB_SIZE);
+=======
+	hw->db_vaddr = pci_iomap(pdev, 3, max_ccb * ONE_DB_SIZE);
+>>>>>>> refs/remotes/origin/master
 	if (hw->db_vaddr == NULL) {
 		dev_err(&pdev->dev, "Error mapping doorbell\n");
 		goto ram_free;
@@ -724,10 +756,20 @@ static void ilo_remove(struct pci_dev *pdev)
 	int i, minor;
 	struct ilo_hwinfo *ilo_hw = pci_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	clear_device(ilo_hw);
 
 	minor = MINOR(ilo_hw->cdev.dev);
 	for (i = minor; i < minor + MAX_CCB; i++)
+=======
+	if (!ilo_hw)
+		return;
+
+	clear_device(ilo_hw);
+
+	minor = MINOR(ilo_hw->cdev.dev);
+	for (i = minor; i < minor + max_ccb; i++)
+>>>>>>> refs/remotes/origin/master
 		device_destroy(ilo_class, MKDEV(ilo_major, i));
 
 	cdev_del(&ilo_hw->cdev);
@@ -735,6 +777,7 @@ static void ilo_remove(struct pci_dev *pdev)
 	free_irq(pdev->irq, ilo_hw);
 	ilo_unmap_device(pdev, ilo_hw);
 	pci_release_regions(pdev);
+<<<<<<< HEAD
 	pci_disable_device(pdev);
 	kfree(ilo_hw);
 	ilo_hwdev[(minor / MAX_CCB)] = 0;
@@ -746,6 +789,35 @@ static int __devinit ilo_probe(struct pci_dev *pdev,
 	int devnum, minor, start, error;
 	struct ilo_hwinfo *ilo_hw;
 
+=======
+	/*
+	 * pci_disable_device(pdev) used to be here. But this PCI device has
+	 * two functions with interrupt lines connected to a single pin. The
+	 * other one is a USB host controller. So when we disable the PIN here
+	 * e.g. by rmmod hpilo, the controller stops working. It is because
+	 * the interrupt link is disabled in ACPI since it is not refcounted
+	 * yet. See acpi_pci_link_free_irq called from acpi_pci_irq_disable.
+	 */
+	kfree(ilo_hw);
+	ilo_hwdev[(minor / max_ccb)] = 0;
+}
+
+static int ilo_probe(struct pci_dev *pdev,
+			       const struct pci_device_id *ent)
+{
+	int devnum, minor, start, error = 0;
+	struct ilo_hwinfo *ilo_hw;
+
+	/* Ignore subsystem_device = 0x1979 (set by BIOS)  */
+	if (pdev->subsystem_device == 0x1979)
+		return 0;
+
+	if (max_ccb > MAX_CCB)
+		max_ccb = MAX_CCB;
+	else if (max_ccb < MIN_CCB)
+		max_ccb = MIN_CCB;
+
+>>>>>>> refs/remotes/origin/master
 	/* find a free range for device files */
 	for (devnum = 0; devnum < MAX_ILO_DEV; devnum++) {
 		if (ilo_hwdev[devnum] == 0) {
@@ -795,14 +867,23 @@ static int __devinit ilo_probe(struct pci_dev *pdev,
 
 	cdev_init(&ilo_hw->cdev, &ilo_fops);
 	ilo_hw->cdev.owner = THIS_MODULE;
+<<<<<<< HEAD
 	start = devnum * MAX_CCB;
 	error = cdev_add(&ilo_hw->cdev, MKDEV(ilo_major, start), MAX_CCB);
+=======
+	start = devnum * max_ccb;
+	error = cdev_add(&ilo_hw->cdev, MKDEV(ilo_major, start), max_ccb);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		dev_err(&pdev->dev, "Could not add cdev\n");
 		goto remove_isr;
 	}
 
+<<<<<<< HEAD
 	for (minor = 0 ; minor < MAX_CCB; minor++) {
+=======
+	for (minor = 0 ; minor < max_ccb; minor++) {
+>>>>>>> refs/remotes/origin/master
 		struct device *dev;
 		dev = device_create(ilo_class, &pdev->dev,
 				    MKDEV(ilo_major, minor), NULL,
@@ -820,7 +901,11 @@ unmap:
 free_regions:
 	pci_release_regions(pdev);
 disable:
+<<<<<<< HEAD
 	pci_disable_device(pdev);
+=======
+/*	pci_disable_device(pdev);  see comment in ilo_remove */
+>>>>>>> refs/remotes/origin/master
 free:
 	kfree(ilo_hw);
 out:
@@ -839,7 +924,11 @@ static struct pci_driver ilo_driver = {
 	.name 	  = ILO_NAME,
 	.id_table = ilo_devices,
 	.probe 	  = ilo_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(ilo_remove),
+=======
+	.remove   = ilo_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ilo_init(void)
@@ -879,11 +968,21 @@ static void __exit ilo_exit(void)
 	class_destroy(ilo_class);
 }
 
+<<<<<<< HEAD
 MODULE_VERSION("1.2");
+=======
+MODULE_VERSION("1.4.1");
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS(ILO_NAME);
 MODULE_DESCRIPTION(ILO_NAME);
 MODULE_AUTHOR("David Altobelli <david.altobelli@hp.com>");
 MODULE_LICENSE("GPL v2");
 
+<<<<<<< HEAD
+=======
+module_param(max_ccb, uint, 0444);
+MODULE_PARM_DESC(max_ccb, "Maximum number of HP iLO channels to attach (16)");
+
+>>>>>>> refs/remotes/origin/master
 module_init(ilo_init);
 module_exit(ilo_exit);

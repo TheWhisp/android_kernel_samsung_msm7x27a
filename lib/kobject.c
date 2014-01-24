@@ -15,12 +15,37 @@
 #include <linux/kobject.h>
 #include <linux/string.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/stat.h>
 #include <linux/slab.h>
+=======
+#include <linux/export.h>
+#include <linux/stat.h>
+#include <linux/slab.h>
+#include <linux/random.h>
+
+/**
+ * kobject_namespace - return @kobj's namespace tag
+ * @kobj: kobject in question
+ *
+ * Returns namespace tag of @kobj if its parent has namespace ops enabled
+ * and thus @kobj should have a namespace tag associated with it.  Returns
+ * %NULL otherwise.
+ */
+const void *kobject_namespace(struct kobject *kobj)
+{
+	const struct kobj_ns_type_operations *ns_ops = kobj_ns_ops(kobj);
+
+	if (!ns_ops || ns_ops->type == KOBJ_NS_TYPE_NONE)
+		return NULL;
+
+	return kobj->ktype->namespace(kobj);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * populate_dir - populate directory with attributes.
@@ -50,6 +75,7 @@ static int populate_dir(struct kobject *kobj)
 
 static int create_dir(struct kobject *kobj)
 {
+<<<<<<< HEAD
 	int error = 0;
 	if (kobject_name(kobj)) {
 		error = sysfs_create_dir(kobj);
@@ -60,6 +86,41 @@ static int create_dir(struct kobject *kobj)
 		}
 	}
 	return error;
+=======
+	const struct kobj_ns_type_operations *ops;
+	int error;
+
+	error = sysfs_create_dir_ns(kobj, kobject_namespace(kobj));
+	if (error)
+		return error;
+
+	error = populate_dir(kobj);
+	if (error) {
+		sysfs_remove_dir(kobj);
+		return error;
+	}
+
+	/*
+	 * @kobj->sd may be deleted by an ancestor going away.  Hold an
+	 * extra reference so that it stays until @kobj is gone.
+	 */
+	sysfs_get(kobj->sd);
+
+	/*
+	 * If @kobj has ns_ops, its children need to be filtered based on
+	 * their namespace tags.  Enable namespace support on @kobj->sd.
+	 */
+	ops = kobj_child_ns_ops(kobj);
+	if (ops) {
+		BUG_ON(ops->type <= KOBJ_NS_TYPE_NONE);
+		BUG_ON(ops->type >= KOBJ_NS_TYPES);
+		BUG_ON(!kobj_ns_type_registered(ops->type));
+
+		kernfs_enable_ns(kobj->sd);
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int get_kobj_path_length(struct kobject *kobj)
@@ -197,6 +258,7 @@ static int kobject_add_internal(struct kobject *kobj)
 		/* be noisy on error issues */
 		if (error == -EEXIST)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s failed for %s with "
 			       "-EEXIST, don't try to register things with "
 			       "the same name in the same directory.\n",
@@ -206,6 +268,8 @@ static int kobject_add_internal(struct kobject *kobj)
 			       __func__, kobject_name(kobj), error);
 		dump_stack();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			WARN(1, "%s failed for %s with "
 			     "-EEXIST, don't try to register things with "
 			     "the same name in the same directory.\n",
@@ -214,7 +278,10 @@ static int kobject_add_internal(struct kobject *kobj)
 			WARN(1, "%s failed for %s (error: %d parent: %s)\n",
 			     __func__, kobject_name(kobj), error,
 			     parent ? kobject_name(parent) : "'none'");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else
 		kobj->state_in_sysfs = 1;
 
@@ -237,8 +304,15 @@ int kobject_set_name_vargs(struct kobject *kobj, const char *fmt,
 		return 0;
 
 	kobj->name = kvasprintf(GFP_KERNEL, fmt, vargs);
+<<<<<<< HEAD
 	if (!kobj->name)
 		return -ENOMEM;
+=======
+	if (!kobj->name) {
+		kobj->name = old_name;
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* ewww... some of these buggers have '/' in the name ... */
 	while ((s = strchr(kobj->name, '/')))
@@ -336,7 +410,11 @@ static int kobject_add_varg(struct kobject *kobj, struct kobject *parent,
  *
  * If @parent is set, then the parent of the @kobj will be set to it.
  * If @parent is NULL, then the parent of the @kobj will be set to the
+<<<<<<< HEAD
  * kobject associted with the kset assigned to this kobject.  If no kset
+=======
+ * kobject associated with the kset assigned to this kobject.  If no kset
+>>>>>>> refs/remotes/origin/master
  * is assigned to the kobject, then the kobject will be located in the
  * root of the sysfs tree.
  *
@@ -445,7 +523,11 @@ int kobject_rename(struct kobject *kobj, const char *new_name)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	error = sysfs_rename_dir(kobj, new_name);
+=======
+	error = sysfs_rename_dir_ns(kobj, new_name, kobject_namespace(kobj));
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto out;
 
@@ -489,6 +571,10 @@ int kobject_move(struct kobject *kobj, struct kobject *new_parent)
 		if (kobj->kset)
 			new_parent = kobject_get(&kobj->kset->kobj);
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* old object path */
 	devpath = kobject_get_path(kobj, GFP_KERNEL);
 	if (!devpath) {
@@ -503,7 +589,11 @@ int kobject_move(struct kobject *kobj, struct kobject *new_parent)
 	sprintf(devpath_string, "DEVPATH_OLD=%s", devpath);
 	envp[0] = devpath_string;
 	envp[1] = NULL;
+<<<<<<< HEAD
 	error = sysfs_move_dir(kobj, new_parent);
+=======
+	error = sysfs_move_dir_ns(kobj, new_parent, kobject_namespace(kobj));
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto out;
 	old_parent = kobj->parent;
@@ -525,10 +615,22 @@ out:
  */
 void kobject_del(struct kobject *kobj)
 {
+<<<<<<< HEAD
 	if (!kobj)
 		return;
 
 	sysfs_remove_dir(kobj);
+=======
+	struct kernfs_node *sd;
+
+	if (!kobj)
+		return;
+
+	sd = kobj->sd;
+	sysfs_remove_dir(kobj);
+	sysfs_put(sd);
+
+>>>>>>> refs/remotes/origin/master
 	kobj->state_in_sysfs = 0;
 	kobj_kset_leave(kobj);
 	kobject_put(kobj->parent);
@@ -547,15 +649,22 @@ struct kobject *kobject_get(struct kobject *kobj)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct kobject *kobject_get_unless_zero(struct kobject *kobj)
+=======
+static struct kobject * __must_check kobject_get_unless_zero(struct kobject *kobj)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!kref_get_unless_zero(&kobj->kref))
 		kobj = NULL;
 	return kobj;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * kobject_cleanup - free kobject resources.
  * @kobj: object to cleanup
@@ -565,8 +674,13 @@ static void kobject_cleanup(struct kobject *kobj)
 	struct kobj_type *t = get_ktype(kobj);
 	const char *name = kobj->name;
 
+<<<<<<< HEAD
 	pr_debug("kobject: '%s' (%p): %s\n",
 		 kobject_name(kobj), kobj, __func__);
+=======
+	pr_debug("kobject: '%s' (%p): %s, parent %p\n",
+		 kobject_name(kobj), kobj, __func__, kobj->parent);
+>>>>>>> refs/remotes/origin/master
 
 	if (t && !t->release)
 		pr_debug("kobject: '%s' (%p): does not have a release() "
@@ -600,9 +714,33 @@ static void kobject_cleanup(struct kobject *kobj)
 	}
 }
 
+<<<<<<< HEAD
 static void kobject_release(struct kref *kref)
 {
 	kobject_cleanup(container_of(kref, struct kobject, kref));
+=======
+#ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+static void kobject_delayed_cleanup(struct work_struct *work)
+{
+	kobject_cleanup(container_of(to_delayed_work(work),
+				     struct kobject, release));
+}
+#endif
+
+static void kobject_release(struct kref *kref)
+{
+	struct kobject *kobj = container_of(kref, struct kobject, kref);
+#ifdef CONFIG_DEBUG_KOBJECT_RELEASE
+	unsigned long delay = HZ + HZ * (get_random_int() & 0x3);
+	pr_info("kobject: '%s' (%p): %s, parent %p (delayed %ld)\n",
+		 kobject_name(kobj), kobj, __func__, kobj->parent, delay);
+	INIT_DELAYED_WORK(&kobj->release, kobject_delayed_cleanup);
+
+	schedule_delayed_work(&kobj->release, delay);
+#else
+	kobject_cleanup(kobj);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -659,7 +797,11 @@ struct kobject *kobject_create(void)
 /**
  * kobject_create_and_add - create a struct kobject dynamically and register it with sysfs
  *
+<<<<<<< HEAD
  * @name: the name for the kset
+=======
+ * @name: the name for the kobject
+>>>>>>> refs/remotes/origin/master
  * @parent: the parent kobject of this kobject, if any.
  *
  * This function creates a kobject structure dynamically and registers it
@@ -757,6 +899,10 @@ void kset_unregister(struct kset *k)
 {
 	if (!k)
 		return;
+<<<<<<< HEAD
+=======
+	kobject_del(&k->kobj);
+>>>>>>> refs/remotes/origin/master
 	kobject_put(&k->kobj);
 }
 
@@ -771,6 +917,7 @@ void kset_unregister(struct kset *k)
  */
 struct kobject *kset_find_obj(struct kset *kset, const char *name)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return kset_find_obj_hinted(kset, name, NULL);
 }
@@ -791,11 +938,14 @@ struct kobject *kset_find_obj_hinted(struct kset *kset, const char *name,
 {
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct kobject *k;
 	struct kobject *ret = NULL;
 
 	spin_lock(&kset->list_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!hint)
 		goto slow_search;
@@ -820,10 +970,16 @@ slow_search:
 		if (kobject_name(k) && !strcmp(kobject_name(k), name)) {
 			ret = kobject_get_unless_zero(k);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry(k, &kset->list, entry) {
+		if (kobject_name(k) && !strcmp(kobject_name(k), name)) {
+			ret = kobject_get_unless_zero(k);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 unlock_exit:
 	spin_unlock(&kset->list_lock);
@@ -834,6 +990,9 @@ unlock_exit:
 =======
 	spin_unlock(&kset->list_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&kset->list_lock);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -875,7 +1034,11 @@ static struct kset *kset_create(const char *name,
 	kset = kzalloc(sizeof(*kset), GFP_KERNEL);
 	if (!kset)
 		return NULL;
+<<<<<<< HEAD
 	retval = kobject_set_name(&kset->kobj, name);
+=======
+	retval = kobject_set_name(&kset->kobj, "%s", name);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		kfree(kset);
 		return NULL;
@@ -985,6 +1148,21 @@ const struct kobj_ns_type_operations *kobj_ns_ops(struct kobject *kobj)
 	return kobj_child_ns_ops(kobj->parent);
 }
 
+<<<<<<< HEAD
+=======
+bool kobj_ns_current_may_mount(enum kobj_ns_type type)
+{
+	bool may_mount = true;
+
+	spin_lock(&kobj_ns_type_lock);
+	if ((type > KOBJ_NS_TYPE_NONE) && (type < KOBJ_NS_TYPES) &&
+	    kobj_ns_ops_tbl[type])
+		may_mount = kobj_ns_ops_tbl[type]->current_may_mount();
+	spin_unlock(&kobj_ns_type_lock);
+
+	return may_mount;
+}
+>>>>>>> refs/remotes/origin/master
 
 void *kobj_ns_grab_current(enum kobj_ns_type type)
 {

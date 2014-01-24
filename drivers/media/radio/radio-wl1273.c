@@ -24,9 +24,13 @@
 #include <linux/mfd/wl1273-core.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/v4l2-common.h>
 #include <media/v4l2-ctrls.h>
 #include <media/v4l2-device.h>
@@ -378,7 +382,11 @@ static int wl1273_fm_set_tx_freq(struct wl1273_device *radio, unsigned int freq)
 	if (r)
 		return r;
 
+<<<<<<< HEAD
 	INIT_COMPLETION(radio->busy);
+=======
+	reinit_completion(&radio->busy);
+>>>>>>> refs/remotes/origin/master
 
 	/* wait for the FR IRQ */
 	r = wait_for_completion_timeout(&radio->busy, msecs_to_jiffies(2000));
@@ -392,7 +400,11 @@ static int wl1273_fm_set_tx_freq(struct wl1273_device *radio, unsigned int freq)
 	if (r)
 		return r;
 
+<<<<<<< HEAD
 	INIT_COMPLETION(radio->busy);
+=======
+	reinit_completion(&radio->busy);
+>>>>>>> refs/remotes/origin/master
 
 	/* wait for the POWER_ENB IRQ */
 	r = wait_for_completion_timeout(&radio->busy, msecs_to_jiffies(1000));
@@ -447,7 +459,11 @@ static int wl1273_fm_set_rx_freq(struct wl1273_device *radio, unsigned int freq)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	INIT_COMPLETION(radio->busy);
+=======
+	reinit_completion(&radio->busy);
+>>>>>>> refs/remotes/origin/master
 
 	r = wait_for_completion_timeout(&radio->busy, msecs_to_jiffies(2000));
 	if (!r) {
@@ -808,7 +824,11 @@ static int wl1273_fm_set_seek(struct wl1273_device *radio,
 	if (level < SCHAR_MIN || level > SCHAR_MAX)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	INIT_COMPLETION(radio->busy);
+=======
+	reinit_completion(&radio->busy);
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(radio->dev, "%s: BUSY\n", __func__);
 
 	r = core->write(core, WL1273_INT_MASK_SET, radio->irq_flags);
@@ -850,7 +870,11 @@ static int wl1273_fm_set_seek(struct wl1273_device *radio,
 	if (r)
 		goto out;
 
+<<<<<<< HEAD
 	INIT_COMPLETION(radio->busy);
+=======
+	reinit_completion(&radio->busy);
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(radio->dev, "%s: BUSY\n", __func__);
 
 	r = core->write(core, WL1273_TUNER_MODE_SET, TUNER_MODE_AUTO_SEEK);
@@ -1387,10 +1411,14 @@ static int wl1273_fm_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
 	switch (ctrl->id) {
 	case  V4L2_CID_TUNE_ANTENNA_CAPACITOR:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ctrl->cur.val = wl1273_fm_get_tx_ctune(radio);
 =======
 		ctrl->val = wl1273_fm_get_tx_ctune(radio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctrl->val = wl1273_fm_get_tx_ctune(radio);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -1486,7 +1514,11 @@ static int wl1273_fm_vidioc_g_audio(struct file *file, void *priv,
 }
 
 static int wl1273_fm_vidioc_s_audio(struct file *file, void *priv,
+<<<<<<< HEAD
 				    struct v4l2_audio *audio)
+=======
+				    const struct v4l2_audio *audio)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wl1273_device *radio = video_get_drvdata(video_devdata(file));
 
@@ -1521,7 +1553,12 @@ static int wl1273_fm_vidioc_g_tuner(struct file *file, void *priv,
 	tuner->rangehigh = WL1273_FREQ(WL1273_BAND_OTHER_HIGH);
 
 	tuner->capability = V4L2_TUNER_CAP_LOW | V4L2_TUNER_CAP_RDS |
+<<<<<<< HEAD
 		V4L2_TUNER_CAP_STEREO | V4L2_TUNER_CAP_RDS_BLOCK_IO;
+=======
+		V4L2_TUNER_CAP_STEREO | V4L2_TUNER_CAP_RDS_BLOCK_IO |
+		V4L2_TUNER_CAP_HWSEEK_BOUNDED | V4L2_TUNER_CAP_HWSEEK_WRAP;
+>>>>>>> refs/remotes/origin/master
 
 	if (radio->stereo)
 		tuner->audmode = V4L2_TUNER_MODE_STEREO;
@@ -1565,7 +1602,11 @@ out:
 }
 
 static int wl1273_fm_vidioc_s_tuner(struct file *file, void *priv,
+<<<<<<< HEAD
 				    struct v4l2_tuner *tuner)
+=======
+				    const struct v4l2_tuner *tuner)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wl1273_device *radio = video_get_drvdata(video_devdata(file));
 	struct wl1273_core *core = radio->core;
@@ -1646,7 +1687,11 @@ static int wl1273_fm_vidioc_g_frequency(struct file *file, void *priv,
 }
 
 static int wl1273_fm_vidioc_s_frequency(struct file *file, void *priv,
+<<<<<<< HEAD
 					struct v4l2_frequency *freq)
+=======
+					const struct v4l2_frequency *freq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wl1273_device *radio = video_get_drvdata(video_devdata(file));
 	struct wl1273_core *core = radio->core;
@@ -1688,7 +1733,11 @@ static int wl1273_fm_vidioc_s_frequency(struct file *file, void *priv,
 #define WL1273_DEFAULT_SEEK_LEVEL	7
 
 static int wl1273_fm_vidioc_s_hw_freq_seek(struct file *file, void *priv,
+<<<<<<< HEAD
 					   struct v4l2_hw_freq_seek *seek)
+=======
+					   const struct v4l2_hw_freq_seek *seek)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wl1273_device *radio = video_get_drvdata(video_devdata(file));
 	struct wl1273_core *core = radio->core;
@@ -1699,6 +1748,12 @@ static int wl1273_fm_vidioc_s_hw_freq_seek(struct file *file, void *priv,
 	if (seek->tuner != 0 || seek->type != V4L2_TUNER_RADIO)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (file->f_flags & O_NONBLOCK)
+		return -EWOULDBLOCK;
+
+>>>>>>> refs/remotes/origin/master
 	if (mutex_lock_interruptible(&core->lock))
 		return -EINTR;
 
@@ -1721,7 +1776,11 @@ out:
 }
 
 static int wl1273_fm_vidioc_s_modulator(struct file *file, void *priv,
+<<<<<<< HEAD
 					struct v4l2_modulator *modulator)
+=======
+					const struct v4l2_modulator *modulator)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wl1273_device *radio = video_get_drvdata(video_devdata(file));
 	struct wl1273_core *core = radio->core;
@@ -1974,6 +2033,10 @@ static struct video_device wl1273_viddev_template = {
 	.ioctl_ops		= &wl1273_ioctl_ops,
 	.name			= WL1273_FM_DRIVER_NAME,
 	.release		= wl1273_vdev_release,
+<<<<<<< HEAD
+=======
+	.vfl_dir		= VFL_DIR_TX,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int wl1273_fm_radio_remove(struct platform_device *pdev)
@@ -1989,14 +2052,21 @@ static int wl1273_fm_radio_remove(struct platform_device *pdev)
 	v4l2_ctrl_handler_free(&radio->ctrl_handler);
 	video_unregister_device(&radio->videodev);
 	v4l2_device_unregister(&radio->v4l2dev);
+<<<<<<< HEAD
 	kfree(radio->buffer);
 	kfree(radio->write_buf);
 	kfree(radio);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
+=======
+static int wl1273_fm_radio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wl1273_core **core = pdev->dev.platform_data;
 	struct wl1273_device *radio;
@@ -2011,7 +2081,11 @@ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
 		goto pdata_err;
 	}
 
+<<<<<<< HEAD
 	radio = kzalloc(sizeof(*radio), GFP_KERNEL);
+=======
+	radio = devm_kzalloc(&pdev->dev, sizeof(*radio), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!radio) {
 		r = -ENOMEM;
 		goto pdata_err;
@@ -2019,11 +2093,19 @@ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
 
 	/* RDS buffer allocation */
 	radio->buf_size = rds_buf * RDS_BLOCK_SIZE;
+<<<<<<< HEAD
 	radio->buffer = kmalloc(radio->buf_size, GFP_KERNEL);
 	if (!radio->buffer) {
 		pr_err("Cannot allocate memory for RDS buffer.\n");
 		r = -ENOMEM;
 		goto err_kmalloc;
+=======
+	radio->buffer = devm_kzalloc(&pdev->dev, radio->buf_size, GFP_KERNEL);
+	if (!radio->buffer) {
+		pr_err("Cannot allocate memory for RDS buffer.\n");
+		r = -ENOMEM;
+		goto pdata_err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	radio->core = *core;
@@ -2049,7 +2131,11 @@ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
 		if (r) {
 			dev_err(radio->dev, WL1273_FM_DRIVER_NAME
 				": Cannot get platform data\n");
+<<<<<<< HEAD
 			goto err_resources;
+=======
+			goto pdata_err;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		dev_dbg(radio->dev, "irq: %d\n", radio->core->client->irq);
@@ -2067,13 +2153,21 @@ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
 		dev_err(radio->dev, WL1273_FM_DRIVER_NAME ": Core WL1273 IRQ"
 			" not configured");
 		r = -EINVAL;
+<<<<<<< HEAD
 		goto err_resources;
+=======
+		goto pdata_err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	init_completion(&radio->busy);
 	init_waitqueue_head(&radio->read_queue);
 
+<<<<<<< HEAD
 	radio->write_buf = kmalloc(256, GFP_KERNEL);
+=======
+	radio->write_buf = devm_kzalloc(&pdev->dev, 256, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!radio->write_buf) {
 		r = -ENOMEM;
 		goto write_buf_err;
@@ -2086,12 +2180,20 @@ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
 	r = v4l2_device_register(&pdev->dev, &radio->v4l2dev);
 	if (r) {
 		dev_err(&pdev->dev, "Cannot register v4l2_device.\n");
+<<<<<<< HEAD
 		goto device_register_err;
 	}
 
 	/* V4L2 configuration */
 	memcpy(&radio->videodev, &wl1273_viddev_template,
 	       sizeof(wl1273_viddev_template));
+=======
+		goto write_buf_err;
+	}
+
+	/* V4L2 configuration */
+	radio->videodev = wl1273_viddev_template;
+>>>>>>> refs/remotes/origin/master
 
 	radio->videodev.v4l2_dev = &radio->v4l2dev;
 
@@ -2118,10 +2220,14 @@ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
 				 0, 255, 1, 255);
 	if (ctrl)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ctrl->is_volatile = 1;
 =======
 		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ctrl->flags |= V4L2_CTRL_FLAG_VOLATILE;
+>>>>>>> refs/remotes/origin/master
 
 	if (radio->ctrl_handler.error) {
 		r = radio->ctrl_handler.error;
@@ -2145,20 +2251,27 @@ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
 handler_init_err:
 	v4l2_ctrl_handler_free(&radio->ctrl_handler);
 	v4l2_device_unregister(&radio->v4l2dev);
+<<<<<<< HEAD
 device_register_err:
 	kfree(radio->write_buf);
+=======
+>>>>>>> refs/remotes/origin/master
 write_buf_err:
 	free_irq(radio->core->client->irq, radio);
 err_request_irq:
 	radio->core->pdata->free_resources();
+<<<<<<< HEAD
 err_resources:
 	kfree(radio->buffer);
 err_kmalloc:
 	kfree(radio);
+=======
+>>>>>>> refs/remotes/origin/master
 pdata_err:
 	return r;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 MODULE_ALIAS("platform:wl1273_fm_radio");
 
@@ -2167,12 +2280,18 @@ MODULE_ALIAS("platform:wl1273_fm_radio");
 static struct platform_driver wl1273_fm_radio_driver = {
 	.probe		= wl1273_fm_radio_probe,
 	.remove		= __devexit_p(wl1273_fm_radio_remove),
+=======
+static struct platform_driver wl1273_fm_radio_driver = {
+	.probe		= wl1273_fm_radio_probe,
+	.remove		= wl1273_fm_radio_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wl1273_fm_radio",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init wl1273_fm_module_init(void)
 {
@@ -2190,11 +2309,18 @@ module_exit(wl1273_fm_module_exit);
 =======
 module_platform_driver(wl1273_fm_radio_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wl1273_fm_radio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Matti Aaltonen <matti.j.aaltonen@nokia.com>");
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:wl1273_fm_radio");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:wl1273_fm_radio");
+>>>>>>> refs/remotes/origin/master

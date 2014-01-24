@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     abituguru.c Copyright (c) 2005-2006 Hans de Goede <hdegoede@redhat.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -22,6 +23,8 @@
     of lack of specs the CPU/RAM voltage & frequency control is not supported!
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * abituguru.c Copyright (c) 2005-2006 Hans de Goede <hdegoede@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,7 +46,10 @@
  * the custom Abit uGuru chip found on Abit uGuru motherboards. Note: because
  * of lack of specs the CPU/RAM voltage & frequency control is not supported!
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -69,14 +75,20 @@
 /* max nr of sensors in bank1, a bank1 sensor can be in, temp or nc */
 #define ABIT_UGURU_MAX_BANK1_SENSORS		16
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Warning if you increase one of the 2 MAX defines below to 10 or higher you
    should adjust the belonging _NAMES_LENGTH macro for the 2 digit number! */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Warning if you increase one of the 2 MAX defines below to 10 or higher you
  * should adjust the belonging _NAMES_LENGTH macro for the 2 digit number!
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* max nr of sensors in bank2, currently mb's with max 6 fans are known */
 #define ABIT_UGURU_MAX_BANK2_SENSORS		6
 /* max nr of pwm outputs, currently mb's with max 5 pwm outputs are known */
@@ -102,6 +114,7 @@
 #define ABIT_UGURU_TEMP_SENSOR			1
 #define ABIT_UGURU_NC				2
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* In many cases we need to wait for the uGuru to reach a certain status, most
    of the time it will reach this status within 30 - 90 ISA reads, and thus we
    can best busy wait. This define gives the total amount of reads to try. */
@@ -113,6 +126,8 @@
 /* Normally all expected status in abituguru_ready, are reported after the
    first read, but sometimes not and we need to poll. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * In many cases we need to wait for the uGuru to reach a certain status, most
  * of the time it will reach this status within 30 - 90 ISA reads, and thus we
@@ -129,7 +144,10 @@
  * Normally all expected status in abituguru_ready, are reported after the
  * first read, but sometimes not and we need to poll.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ABIT_UGURU_READY_TIMEOUT		5
 /* Maximum 3 retries on timedout reads/writes, delay 200 ms before retrying */
 #define ABIT_UGURU_MAX_RETRIES			3
@@ -138,6 +156,7 @@
 #define ABIT_UGURU_MAX_TIMEOUTS			2
 /* utility macros */
 #define ABIT_UGURU_NAME				"abituguru"
+<<<<<<< HEAD
 #define ABIT_UGURU_DEBUG(level, format, arg...)				\
 	if (level <= verbose)						\
 		printk(KERN_DEBUG ABIT_UGURU_NAME ": "	format , ## arg)
@@ -155,6 +174,15 @@
 /* sum of strlen of: pwm?_enable\0, pwm?_auto_channels_temp\0,
    pwm?_auto_point{1,2}_pwm\0, pwm?_auto_point{1,2}_temp\0 */
 =======
+=======
+#define ABIT_UGURU_DEBUG(level, format, arg...)		\
+	do {						\
+		if (level <= verbose)			\
+			pr_debug(format , ## arg);	\
+	} while (0)
+
+/* Macros to help calculate the sysfs_names array length */
+>>>>>>> refs/remotes/origin/master
 /*
  * sum of strlen of: in??_input\0, in??_{min,max}\0, in??_{min,max}_alarm\0,
  * in??_{min,max}_alarm_enable\0, in??_beep\0, in??_shutdown\0
@@ -174,7 +202,10 @@
  * sum of strlen of: pwm?_enable\0, pwm?_auto_channels_temp\0,
  * pwm?_auto_point{1,2}_pwm\0, pwm?_auto_point{1,2}_temp\0
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ABITUGURU_PWM_NAMES_LENGTH	(12 + 24 + 2 * 21 + 2 * 22)
 /* IN_NAMES_LENGTH > TEMP_NAMES_LENGTH so assume all bank1 sensors are in */
 #define ABITUGURU_SYSFS_NAMES_LENGTH	( \
@@ -183,18 +214,24 @@
 	ABIT_UGURU_MAX_PWMS * ABITUGURU_PWM_NAMES_LENGTH)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* All the macros below are named identical to the oguru and oguru2 programs
    reverse engineered by Olle Sandberg, hence the names might not be 100%
    logical. I could come up with better names, but I prefer keeping the names
    identical so that this driver can be compared with his work more easily. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * All the macros below are named identical to the oguru and oguru2 programs
  * reverse engineered by Olle Sandberg, hence the names might not be 100%
  * logical. I could come up with better names, but I prefer keeping the names
  * identical so that this driver can be compared with his work more easily.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Two i/o-ports are used by uGuru */
 #define ABIT_UGURU_BASE				0x00E0
 /* Used to tell uGuru what to read and to read the actual data */
@@ -212,6 +249,7 @@
 /* in (Volt) sensors go up to 3494 mV, temp to 255000 millidegrees Celsius */
 static const int abituguru_bank1_max_value[2] = { 3494, 255000 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Min / Max allowed values for sensor2 (fan) alarm threshold, these values
    correspond to 300-3000 RPM */
 static const u8 abituguru_bank2_min_threshold = 5;
@@ -223,6 +261,8 @@ static const int abituguru_pwm_settings_multiplier[5] = { 0, 1, 1, 1000, 1000 };
    special case the minium allowed pwm% setting for this is 30% (77) on
    some MB's this special case is handled in the code! */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Min / Max allowed values for sensor2 (fan) alarm threshold, these values
  * correspond to 300-3000 RPM
@@ -236,20 +276,30 @@ static const u8 abituguru_bank2_max_threshold = 50;
 static const int abituguru_pwm_settings_multiplier[5] = { 0, 1, 1, 1000, 1000 };
 /*
  * Min / Max allowed values for pwm_settings. Note: pwm1 (CPU fan) is a
+<<<<<<< HEAD
  * special case the minium allowed pwm% setting for this is 30% (77) on
  * some MB's this special case is handled in the code!
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * special case the minimum allowed pwm% setting for this is 30% (77) on
+ * some MB's this special case is handled in the code!
+ */
+>>>>>>> refs/remotes/origin/master
 static const u8 abituguru_pwm_min[5] = { 0, 170, 170, 25, 25 };
 static const u8 abituguru_pwm_max[5] = { 0, 255, 255, 75, 75 };
 
 
 /* Insmod parameters */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int force;
 =======
 static bool force;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool force;
+>>>>>>> refs/remotes/origin/master
 module_param(force, bool, 0);
 MODULE_PARM_DESC(force, "Set to one to force detection.");
 static int bank1_types[ABIT_UGURU_MAX_BANK1_SENSORS] = { -1, -1, -1, -1, -1,
@@ -280,22 +330,29 @@ MODULE_PARM_DESC(verbose, "How verbose should the driver be? (0-3):\n"
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* For the Abit uGuru, we need to keep some data in memory.
    The structure is dynamically allocated, at the same time when a new
    abituguru device is allocated. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * For the Abit uGuru, we need to keep some data in memory.
  * The structure is dynamically allocated, at the same time when a new
  * abituguru device is allocated.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct abituguru_data {
 	struct device *hwmon_dev;	/* hwmon registered device */
 	struct mutex update_lock;	/* protect access to data and uGuru */
 	unsigned long last_updated;	/* In jiffies */
 	unsigned short addr;		/* uguru base address */
 	char uguru_ready;		/* is the uguru in ready state? */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned char update_timeouts;	/* number of update timeouts since last
 					   successful update */
@@ -306,6 +363,8 @@ struct abituguru_data {
 	   easier todo things the same way.  For in sensors we have 9 (temp 7)
 	   sysfs entries per sensor, for bank2 and pwms 6. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char update_timeouts;	/*
 					 * number of update timeouts since last
 					 * successful update
@@ -318,7 +377,10 @@ struct abituguru_data {
 	 * easier todo things the same way.  For in sensors we have 9 (temp 7)
 	 * sysfs entries per sensor, for bank2 and pwms 6.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sensor_device_attribute_2 sysfs_attr[
 		ABIT_UGURU_MAX_BANK1_SENSORS * 9 +
 		ABIT_UGURU_MAX_BANK2_SENSORS * 6 + ABIT_UGURU_MAX_PWMS * 6];
@@ -331,12 +393,15 @@ struct abituguru_data {
 	u8 bank1_address[2][ABIT_UGURU_MAX_BANK1_SENSORS];
 	u8 bank1_value[ABIT_UGURU_MAX_BANK1_SENSORS];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* This array holds 3 entries per sensor for the bank 1 sensor settings
 	   (flags, min, max for voltage / flags, warn, shutdown for temp). */
 	u8 bank1_settings[ABIT_UGURU_MAX_BANK1_SENSORS][3];
 	/* Maximum value for each sensor used for scaling in mV/millidegrees
 	   Celsius. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This array holds 3 entries per sensor for the bank 1 sensor settings
 	 * (flags, min, max for voltage / flags, warn, shutdown for temp).
@@ -346,7 +411,10 @@ struct abituguru_data {
 	 * Maximum value for each sensor used for scaling in mV/millidegrees
 	 * Celsius.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int bank1_max_value[ABIT_UGURU_MAX_BANK1_SENSORS];
 
 	/* Bank 2 data, ABIT_UGURU_MAX_BANK2_SENSORS entries for bank2 */
@@ -376,14 +444,20 @@ static int abituguru_wait(struct abituguru_data *data, u8 state)
 		if (timeout == 0)
 			return -EBUSY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* sleep a bit before our last few tries, see the comment on
 		   this where ABIT_UGURU_WAIT_TIMEOUT_SLEEP is defined. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * sleep a bit before our last few tries, see the comment on
 		 * this where ABIT_UGURU_WAIT_TIMEOUT_SLEEP is defined.
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (timeout <= ABIT_UGURU_WAIT_TIMEOUT_SLEEP)
 			msleep(0);
 	}
@@ -420,14 +494,20 @@ static int abituguru_ready(struct abituguru_data *data)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* After this the ABIT_UGURU_DATA port should contain
 	   ABIT_UGURU_STATUS_INPUT */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * After this the ABIT_UGURU_DATA port should contain
 	 * ABIT_UGURU_STATUS_INPUT
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	timeout = ABIT_UGURU_READY_TIMEOUT;
 	while (inb_p(data->addr + ABIT_UGURU_DATA) != ABIT_UGURU_STATUS_INPUT) {
 		timeout--;
@@ -444,6 +524,7 @@ static int abituguru_ready(struct abituguru_data *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Send the bank and then sensor address to the uGuru for the next read/write
    cycle. This function gets called as the first part of a read/write by
    abituguru_read and abituguru_write. This function should never be
@@ -459,6 +540,8 @@ static int abituguru_send_address(struct abituguru_data *data,
 		/* Make sure the uguru is ready and then send the bank address,
 		   after this the uguru is no longer "ready". */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Send the bank and then sensor address to the uGuru for the next read/write
  * cycle. This function gets called as the first part of a read/write by
@@ -479,21 +562,30 @@ static int abituguru_send_address(struct abituguru_data *data,
 		 * Make sure the uguru is ready and then send the bank address,
 		 * after this the uguru is no longer "ready".
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (abituguru_ready(data) != 0)
 			return -EIO;
 		outb(bank_addr, data->addr + ABIT_UGURU_DATA);
 		data->uguru_ready = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Wait till the uguru is ABIT_UGURU_STATUS_INPUT state again
 		   and send the sensor addr */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Wait till the uguru is ABIT_UGURU_STATUS_INPUT state again
 		 * and send the sensor addr
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (abituguru_wait(data, ABIT_UGURU_STATUS_INPUT)) {
 			if (retries) {
 				ABIT_UGURU_DEBUG(3, "timeout exceeded "
@@ -516,14 +608,20 @@ static int abituguru_send_address(struct abituguru_data *data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Read count bytes from sensor sensor_addr in bank bank_addr and store the
    result in buf, retry the send address part of the read retries times. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Read count bytes from sensor sensor_addr in bank bank_addr and store the
  * result in buf, retry the send address part of the read retries times.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int abituguru_read(struct abituguru_data *data,
 	u8 bank_addr, u8 sensor_addr, u8 *buf, int count, int retries)
 {
@@ -553,6 +651,7 @@ static int abituguru_read(struct abituguru_data *data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Write count bytes from buf to sensor sensor_addr in bank bank_addr, the send
    address part of the write is always retried ABIT_UGURU_MAX_RETRIES times. */
 static int abituguru_write(struct abituguru_data *data,
@@ -561,6 +660,8 @@ static int abituguru_write(struct abituguru_data *data,
 	/* We use the ready timeout as we have to wait for 0xAC just like the
 	   ready function */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Write count bytes from buf to sensor sensor_addr in bank bank_addr, the send
  * address part of the write is always retried ABIT_UGURU_MAX_RETRIES times.
@@ -572,7 +673,10 @@ static int abituguru_write(struct abituguru_data *data,
 	 * We use the ready timeout as we have to wait for 0xAC just like the
 	 * ready function
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i, timeout = ABIT_UGURU_READY_TIMEOUT;
 
 	/* Send the address */
@@ -593,16 +697,22 @@ static int abituguru_write(struct abituguru_data *data,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Now we need to wait till the chip is ready to be read again,
 	   so that we can read 0xAC as confirmation that our write has
 	   succeeded. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Now we need to wait till the chip is ready to be read again,
 	 * so that we can read 0xAC as confirmation that our write has
 	 * succeeded.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (abituguru_wait(data, ABIT_UGURU_STATUS_READ)) {
 		ABIT_UGURU_DEBUG(1, "timeout exceeded waiting for read state "
 			"after write (bank: %d, sensor: %d)\n", (int)bank_addr,
@@ -629,6 +739,7 @@ static int abituguru_write(struct abituguru_data *data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Detect sensor type. Temp and Volt sensors are enabled with
    different masks and will ignore enable masks not meant for them.
    This enables us to test what kind of sensor we're dealing with.
@@ -636,6 +747,8 @@ static int abituguru_write(struct abituguru_data *data,
    alarm for sensor type X and then enabling the sensor as sensor type
    X, if we then get an alarm it is a sensor of type X. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Detect sensor type. Temp and Volt sensors are enabled with
  * different masks and will ignore enable masks not meant for them.
@@ -644,8 +757,12 @@ static int abituguru_write(struct abituguru_data *data,
  * alarm for sensor type X and then enabling the sensor as sensor type
  * X, if we then get an alarm it is a sensor of type X.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 				   u8 sensor_addr)
 {
@@ -672,20 +789,27 @@ abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 			"unable to determine sensor type, skipping sensor\n",
 			(int)sensor_addr, (int)val);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* assume no sensor is there for sensors for which we can't
 		   determine the sensor type because their reading is too close
 		   to their limits, this usually means no sensor is there. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * assume no sensor is there for sensors for which we can't
 		 * determine the sensor type because their reading is too close
 		 * to their limits, this usually means no sensor is there.
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ABIT_UGURU_NC;
 	}
 
 	ABIT_UGURU_DEBUG(2, "testing bank1 sensor %d\n", (int)sensor_addr);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Volt sensor test, enable volt low alarm, set min value ridicously
 	   high, or vica versa if the reading is very high. If its a volt
@@ -697,6 +821,13 @@ abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 	 * sensor this should always give us an alarm.
 	 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Volt sensor test, enable volt low alarm, set min value ridiculously
+	 * high, or vica versa if the reading is very high. If its a volt
+	 * sensor this should always give us an alarm.
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (val <= 240u) {
 		buf[0] = ABIT_UGURU_VOLT_LOW_ALARM_ENABLE;
 		buf[1] = 245;
@@ -713,14 +844,20 @@ abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 			buf, 3) != 3)
 		goto abituguru_detect_bank1_sensor_type_exit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Now we need 20 ms to give the uguru time to read the sensors
 	   and raise a voltage alarm */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Now we need 20 ms to give the uguru time to read the sensors
 	 * and raise a voltage alarm
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	set_current_state(TASK_UNINTERRUPTIBLE);
 	schedule_timeout(HZ/50);
 	/* Check for alarm and check the alarm is a volt low alarm. */
@@ -744,6 +881,7 @@ abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 			"test\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Temp sensor test, enable sensor as a temp sensor, set beep value
 	   ridicously low (but not too low, otherwise uguru ignores it).
 	   If its a temp sensor this should always give us an alarm. */
@@ -754,6 +892,13 @@ abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 	 * If its a temp sensor this should always give us an alarm.
 	 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Temp sensor test, enable sensor as a temp sensor, set beep value
+	 * ridiculously low (but not too low, otherwise uguru ignores it).
+	 * If its a temp sensor this should always give us an alarm.
+	 */
+>>>>>>> refs/remotes/origin/master
 	buf[0] = ABIT_UGURU_TEMP_HIGH_ALARM_ENABLE;
 	buf[1] = 5;
 	buf[2] = 10;
@@ -761,14 +906,20 @@ abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 			buf, 3) != 3)
 		goto abituguru_detect_bank1_sensor_type_exit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Now we need 50 ms to give the uguru time to read the sensors
 	   and raise a temp alarm */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Now we need 50 ms to give the uguru time to read the sensors
 	 * and raise a temp alarm
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	set_current_state(TASK_UNINTERRUPTIBLE);
 	schedule_timeout(HZ/20);
 	/* Check for alarm and check the alarm is a temp high alarm. */
@@ -794,16 +945,22 @@ abituguru_detect_bank1_sensor_type(struct abituguru_data *data,
 	ret = ABIT_UGURU_NC;
 abituguru_detect_bank1_sensor_type_exit:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Restore original settings, failing here is really BAD, it has been
 	   reported that some BIOS-es hang when entering the uGuru menu with
 	   invalid settings present in the uGuru, so we try this 3 times. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Restore original settings, failing here is really BAD, it has been
 	 * reported that some BIOS-es hang when entering the uGuru menu with
 	 * invalid settings present in the uGuru, so we try this 3 times.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 3; i++)
 		if (abituguru_write(data, ABIT_UGURU_SENSOR_BANK1 + 2,
 				sensor_addr, data->bank1_settings[sensor_addr],
@@ -817,6 +974,7 @@ abituguru_detect_bank1_sensor_type_exit:
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* These functions try to find out how many sensors there are in bank2 and how
    many pwms there are. The purpose of this is to make sure that we don't give
@@ -836,6 +994,8 @@ abituguru_detect_bank1_sensor_type_exit:
    read/write test would be feasible because of the reaction above, I've
    however opted to stay on the safe side. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * These functions try to find out how many sensors there are in bank2 and how
  * many pwms there are. The purpose of this is to make sure that we don't give
@@ -855,8 +1015,12 @@ abituguru_detect_bank1_sensor_type_exit:
  * read/write test would be feasible because of the reaction above, I've
  * however opted to stay on the safe side.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 abituguru_detect_no_bank2_sensors(struct abituguru_data *data)
 {
 	int i;
@@ -872,6 +1036,7 @@ abituguru_detect_no_bank2_sensors(struct abituguru_data *data)
 	ABIT_UGURU_DEBUG(2, "detecting number of fan sensors\n");
 	for (i = 0; i < ABIT_UGURU_MAX_BANK2_SENSORS; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* 0x89 are the known used bits:
 		   -0x80 enable shutdown
 		   -0x08 enable beep
@@ -879,6 +1044,8 @@ abituguru_detect_no_bank2_sensors(struct abituguru_data *data)
 		   All other bits should be 0, but on some motherboards
 		   0x40 (bit 6) is also high for some of the fans?? */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * 0x89 are the known used bits:
 		 * -0x80 enable shutdown
@@ -887,7 +1054,10 @@ abituguru_detect_no_bank2_sensors(struct abituguru_data *data)
 		 * All other bits should be 0, but on some motherboards
 		 * 0x40 (bit 6) is also high for some of the fans??
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (data->bank2_settings[i][0] & ~0xC9) {
 			ABIT_UGURU_DEBUG(2, "  bank2 sensor %d does not seem "
 				"to be a fan sensor: settings[0] = %02X\n",
@@ -921,7 +1091,11 @@ abituguru_detect_no_bank2_sensors(struct abituguru_data *data)
 		(int)data->bank2_sensors);
 }
 
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 abituguru_detect_no_pwms(struct abituguru_data *data)
 {
 	int i, j;
@@ -936,16 +1110,22 @@ abituguru_detect_no_pwms(struct abituguru_data *data)
 	ABIT_UGURU_DEBUG(2, "detecting number of PWM outputs\n");
 	for (i = 0; i < ABIT_UGURU_MAX_PWMS; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* 0x80 is the enable bit and the low
 		   nibble is which temp sensor to use,
 		   the other bits should be 0 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * 0x80 is the enable bit and the low
 		 * nibble is which temp sensor to use,
 		 * the other bits should be 0
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (data->pwm_settings[i][0] & ~0x8F) {
 			ABIT_UGURU_DEBUG(2, "  pwm channel %d does not seem "
 				"to be a pwm channel: settings[0] = %02X\n",
@@ -954,14 +1134,20 @@ abituguru_detect_no_pwms(struct abituguru_data *data)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* the low nibble must correspond to one of the temp sensors
 		   we've found */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * the low nibble must correspond to one of the temp sensors
 		 * we've found
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		for (j = 0; j < data->bank1_sensors[ABIT_UGURU_TEMP_SENSOR];
 				j++) {
 			if (data->bank1_address[ABIT_UGURU_TEMP_SENSOR][j] ==
@@ -1029,16 +1215,22 @@ abituguru_detect_no_pwms_exit:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Following are the sysfs callback functions. These functions expect:
    sensor_device_attribute_2->index:   sensor address/offset in the bank
    sensor_device_attribute_2->nr:      register offset, bitmask or NA. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Following are the sysfs callback functions. These functions expect:
  * sensor_device_attribute_2->index:   sensor address/offset in the bank
  * sensor_device_attribute_2->nr:      register offset, bitmask or NA.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct abituguru_data *abituguru_update_device(struct device *dev);
 
 static ssize_t show_bank1_value(struct device *dev,
@@ -1089,11 +1281,14 @@ static ssize_t store_bank1_setting(struct device *dev, struct device_attribute
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	struct abituguru_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val = (simple_strtoul(buf, NULL, 10) * 255 +
 		data->bank1_max_value[attr->index]/2) /
 		data->bank1_max_value[attr->index];
 	ssize_t ret = count;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	ssize_t ret;
 
@@ -1106,7 +1301,10 @@ static ssize_t store_bank1_setting(struct device *dev, struct device_attribute
 		data->bank1_max_value[attr->index];
 	if (val > 255)
 		return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	if (data->bank1_settings[attr->index][attr->nr] != val) {
@@ -1129,6 +1327,7 @@ static ssize_t store_bank2_setting(struct device *dev, struct device_attribute
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	struct abituguru_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 val = (simple_strtoul(buf, NULL, 10)*255 + ABIT_UGURU_FAN_MAX/2) /
 		ABIT_UGURU_FAN_MAX;
 	ssize_t ret = count;
@@ -1137,6 +1336,8 @@ static ssize_t store_bank2_setting(struct device *dev, struct device_attribute
 	if ((val < abituguru_bank2_min_threshold) ||
 			(val > abituguru_bank2_max_threshold))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	ssize_t ret;
 
@@ -1150,7 +1351,10 @@ static ssize_t store_bank2_setting(struct device *dev, struct device_attribute
 	/* this check can be done before taking the lock */
 	if (val < abituguru_bank2_min_threshold ||
 			val > abituguru_bank2_max_threshold)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
@@ -1176,12 +1380,15 @@ static ssize_t show_bank1_alarm(struct device *dev,
 	if (!data)
 		return -EIO;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* See if the alarm bit for this sensor is set, and if the
 	   alarm matches the type of alarm we're looking for (for volt
 	   it can be either low or high). The type is stored in a few
 	   readonly bits in the settings part of the relevant sensor.
 	   The bitmask of the type is passed to us in attr->nr. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * See if the alarm bit for this sensor is set, and if the
 	 * alarm matches the type of alarm we're looking for (for volt
@@ -1189,7 +1396,10 @@ static ssize_t show_bank1_alarm(struct device *dev,
 	 * readonly bits in the settings part of the relevant sensor.
 	 * The bitmask of the type is passed to us in attr->nr.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((data->alarms[attr->index / 8] & (0x01 << (attr->index % 8))) &&
 			(data->bank1_settings[attr->index][0] & attr->nr))
 		return sprintf(buf, "1\n");
@@ -1238,11 +1448,14 @@ static ssize_t store_bank1_mask(struct device *dev,
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	struct abituguru_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mask = simple_strtoul(buf, NULL, 10);
 	ssize_t ret = count;
 	u8 orig_val;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 	u8 orig_val;
 	unsigned long mask;
@@ -1252,7 +1465,10 @@ static ssize_t store_bank1_mask(struct device *dev,
 		return ret;
 
 	ret = count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	orig_val = data->bank1_settings[attr->index][0];
 
@@ -1278,11 +1494,14 @@ static ssize_t store_bank2_mask(struct device *dev,
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	struct abituguru_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mask = simple_strtoul(buf, NULL, 10);
 	ssize_t ret = count;
 	u8 orig_val;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 	u8 orig_val;
 	unsigned long mask;
@@ -1292,7 +1511,10 @@ static ssize_t store_bank2_mask(struct device *dev,
 		return ret;
 
 	ret = count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	orig_val = data->bank2_settings[attr->index][0];
 
@@ -1328,11 +1550,14 @@ static ssize_t store_pwm_setting(struct device *dev, struct device_attribute
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	struct abituguru_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 min, val = (simple_strtoul(buf, NULL, 10) +
 		abituguru_pwm_settings_multiplier[attr->nr]/2) /
 		abituguru_pwm_settings_multiplier[attr->nr];
 	ssize_t ret = count;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 min;
 	unsigned long val;
 	ssize_t ret;
@@ -1344,7 +1569,10 @@ static ssize_t store_pwm_setting(struct device *dev, struct device_attribute
 	ret = count;
 	val = (val + abituguru_pwm_settings_multiplier[attr->nr] / 2) /
 				abituguru_pwm_settings_multiplier[attr->nr];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* special case pwm1 min pwm% */
 	if ((attr->index == 0) && ((attr->nr == 1) || (attr->nr == 2)))
@@ -1354,10 +1582,14 @@ static ssize_t store_pwm_setting(struct device *dev, struct device_attribute
 
 	/* this check can be done before taking the lock */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((val < min) || (val > abituguru_pwm_max[attr->nr]))
 =======
 	if (val < min || val > abituguru_pwm_max[attr->nr])
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (val < min || val > abituguru_pwm_max[attr->nr])
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->update_lock);
@@ -1390,14 +1622,20 @@ static ssize_t show_pwm_sensor(struct device *dev,
 	struct abituguru_data *data = dev_get_drvdata(dev);
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* We need to walk to the temp sensor addresses to find what
 	   the userspace id of the configured temp sensor is. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We need to walk to the temp sensor addresses to find what
 	 * the userspace id of the configured temp sensor is.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < data->bank1_sensors[ABIT_UGURU_TEMP_SENSOR]; i++)
 		if (data->bank1_address[ABIT_UGURU_TEMP_SENSOR][i] ==
 				(data->pwm_settings[attr->index][0] & 0x0F))
@@ -1411,6 +1649,7 @@ static ssize_t store_pwm_sensor(struct device *dev, struct device_attribute
 {
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	struct abituguru_data *data = dev_get_drvdata(dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10) - 1;
 	ssize_t ret = count;
@@ -1434,6 +1673,8 @@ static ssize_t store_pwm_sensor(struct device *dev, struct device_attribute
 	else
 		ret = -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 	unsigned long val;
 	u8 orig_val;
@@ -1460,7 +1701,10 @@ static ssize_t store_pwm_sensor(struct device *dev, struct device_attribute
 			ret = -EIO;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return ret;
 }
@@ -1482,6 +1726,7 @@ static ssize_t store_pwm_enable(struct device *dev, struct device_attribute
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	struct abituguru_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 orig_val, user_val = simple_strtoul(buf, NULL, 10);
 	ssize_t ret = count;
 
@@ -1499,6 +1744,8 @@ static ssize_t store_pwm_enable(struct device *dev, struct device_attribute
 		default:
 			ret = -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 orig_val;
 	ssize_t ret;
 	unsigned long user_val;
@@ -1520,7 +1767,10 @@ static ssize_t store_pwm_enable(struct device *dev, struct device_attribute
 		break;
 	default:
 		ret = -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if ((data->pwm_settings[attr->index][0] != orig_val) &&
 			(abituguru_write(data, ABIT_UGURU_FAN_PWM + 1,
@@ -1609,31 +1859,47 @@ static struct sensor_device_attribute_2 abituguru_sysfs_attr[] = {
 	SENSOR_ATTR_2(name, 0444, show_name, NULL, 0, 0),
 };
 
+<<<<<<< HEAD
 static int __devinit abituguru_probe(struct platform_device *pdev)
+=======
+static int abituguru_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct abituguru_data *data;
 	int i, j, used, sysfs_names_free, sysfs_attr_i, res = -ENODEV;
 	char *sysfs_filename;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* El weirdo probe order, to keep the sysfs order identical to the
 	   BIOS and window-appliction listing order. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * El weirdo probe order, to keep the sysfs order identical to the
 	 * BIOS and window-appliction listing order.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const u8 probe_order[ABIT_UGURU_MAX_BANK1_SENSORS] = {
 		0x00, 0x01, 0x03, 0x04, 0x0A, 0x08, 0x0E, 0x02,
 		0x09, 0x06, 0x05, 0x0B, 0x0F, 0x0D, 0x07, 0x0C };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct abituguru_data), GFP_KERNEL)))
 =======
 	data = kzalloc(sizeof(struct abituguru_data), GFP_KERNEL);
 	if (!data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct abituguru_data),
+			    GFP_KERNEL);
+	if (!data)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	data->addr = platform_get_resource(pdev, IORESOURCE_IO, 0)->start;
@@ -1645,16 +1911,22 @@ static int __devinit abituguru_probe(struct platform_device *pdev)
 		data->uguru_ready = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Completely read the uGuru this has 2 purposes:
 	   - testread / see if one really is there.
 	   - make an in memory copy of all the uguru settings for future use. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Completely read the uGuru this has 2 purposes:
 	 * - testread / see if one really is there.
 	 * - make an in memory copy of all the uguru settings for future use.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (abituguru_read(data, ABIT_UGURU_ALARM_BANK, 0,
 			data->alarms, 3, ABIT_UGURU_MAX_RETRIES) != 3)
 		goto abituguru_probe_error;
@@ -1670,12 +1942,15 @@ static int __devinit abituguru_probe(struct platform_device *pdev)
 			goto abituguru_probe_error;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Note: We don't know how many bank2 sensors / pwms there really are,
 	   but in order to "detect" this we need to read the maximum amount
 	   anyways. If we read sensors/pwms not there we'll just read crap
 	   this can't hurt. We need the detection because we don't want
 	   unwanted writes, which will hurt! */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Note: We don't know how many bank2 sensors / pwms there really are,
 	 * but in order to "detect" this we need to read the maximum amount
@@ -1683,7 +1958,10 @@ static int __devinit abituguru_probe(struct platform_device *pdev)
 	 * this can't hurt. We need the detection because we don't want
 	 * unwanted writes, which will hurt!
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ABIT_UGURU_MAX_BANK2_SENSORS; i++) {
 		if (abituguru_read(data, ABIT_UGURU_SENSOR_BANK2, i,
 				&data->bank2_value[i], 1,
@@ -1802,12 +2080,19 @@ abituguru_probe_error:
 	for (i = 0; i < ARRAY_SIZE(abituguru_sysfs_attr); i++)
 		device_remove_file(&pdev->dev,
 			&abituguru_sysfs_attr[i].dev_attr);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	kfree(data);
 	return res;
 }
 
 static int __devexit abituguru_remove(struct platform_device *pdev)
+=======
+	return res;
+}
+
+static int abituguru_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct abituguru_data *data = platform_get_drvdata(pdev);
@@ -1818,8 +2103,11 @@ static int __devexit abituguru_remove(struct platform_device *pdev)
 	for (i = 0; i < ARRAY_SIZE(abituguru_sysfs_attr); i++)
 		device_remove_file(&pdev->dev,
 			&abituguru_sysfs_attr[i].dev_attr);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1834,6 +2122,7 @@ static struct abituguru_data *abituguru_update_device(struct device *dev)
 	mutex_lock(&data->update_lock);
 	if (time_after(jiffies, data->last_updated + HZ)) {
 		success = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((err = abituguru_read(data, ABIT_UGURU_ALARM_BANK, 0,
 				data->alarms, 3, 0)) != 3)
@@ -1854,6 +2143,8 @@ static struct abituguru_data *abituguru_update_device(struct device *dev)
 					&data->bank2_value[i], 1, 0)) != 1)
 				goto LEAVE_UPDATE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = abituguru_read(data, ABIT_UGURU_ALARM_BANK, 0,
 				     data->alarms, 3, 0);
 		if (err != 3)
@@ -1874,7 +2165,10 @@ static struct abituguru_data *abituguru_update_device(struct device *dev)
 			if (err != 1)
 				goto LEAVE_UPDATE;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* success! */
 		success = 1;
 		data->update_timeouts = 0;
@@ -1906,6 +2200,7 @@ LEAVE_UPDATE:
 		return NULL;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int abituguru_suspend(struct platform_device *pdev, pm_message_t state)
 {
@@ -1914,42 +2209,73 @@ static int abituguru_suspend(struct platform_device *pdev, pm_message_t state)
 	/* make sure all communications with the uguru are done and no new
 	   ones are started */
 =======
+=======
+#ifdef CONFIG_PM_SLEEP
+static int abituguru_suspend(struct device *dev)
+{
+	struct abituguru_data *data = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * make sure all communications with the uguru are done and no new
 	 * ones are started
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int abituguru_resume(struct platform_device *pdev)
 {
 	struct abituguru_data *data = platform_get_drvdata(pdev);
+=======
+static int abituguru_resume(struct device *dev)
+{
+	struct abituguru_data *data = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	/* See if the uGuru is still ready */
 	if (inb_p(data->addr + ABIT_UGURU_DATA) != ABIT_UGURU_STATUS_INPUT)
 		data->uguru_ready = 0;
 	mutex_unlock(&data->update_lock);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define abituguru_suspend	NULL
 #define abituguru_resume	NULL
+=======
+
+static SIMPLE_DEV_PM_OPS(abituguru_pm, abituguru_suspend, abituguru_resume);
+#define ABIT_UGURU_PM	(&abituguru_pm)
+#else
+#define ABIT_UGURU_PM	NULL
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PM */
 
 static struct platform_driver abituguru_driver = {
 	.driver = {
 		.owner	= THIS_MODULE,
 		.name	= ABIT_UGURU_NAME,
+<<<<<<< HEAD
 	},
 	.probe		= abituguru_probe,
 	.remove		= __devexit_p(abituguru_remove),
 	.suspend	= abituguru_suspend,
 	.resume		= abituguru_resume,
+=======
+		.pm	= ABIT_UGURU_PM,
+	},
+	.probe		= abituguru_probe,
+	.remove		= abituguru_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init abituguru_detect(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* See if there is an uguru there. After a reboot uGuru will hold 0x00
 	   at DATA and 0xAC, when this driver has already been loaded once
@@ -1958,6 +2284,8 @@ static int __init abituguru_detect(void)
 	   Some uGuru's initially hold 0x09 at DATA and will only hold 0x08
 	   after reading CMD first, so CMD must be read first! */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * See if there is an uguru there. After a reboot uGuru will hold 0x00
 	 * at DATA and 0xAC, when this driver has already been loaded once
@@ -1966,7 +2294,10 @@ static int __init abituguru_detect(void)
 	 * Some uGuru's initially hold 0x09 at DATA and will only hold 0x08
 	 * after reading CMD first, so CMD must be read first!
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 cmd_val = inb_p(ABIT_UGURU_BASE + ABIT_UGURU_CMD);
 	u8 data_val = inb_p(ABIT_UGURU_BASE + ABIT_UGURU_DATA);
 	if (((data_val == 0x00) || (data_val == 0x08)) &&

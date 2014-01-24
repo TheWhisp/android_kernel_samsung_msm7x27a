@@ -47,6 +47,7 @@ static int afeb9260_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int err;
 
@@ -74,6 +75,10 @@ static int afeb9260_hw_params(struct snd_pcm_substream *substream,
 	int err;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+
+>>>>>>> refs/remotes/origin/master
 	/* Set the codec system clock for DAC and ADC */
 	err =
 	    snd_soc_dai_set_sysclk(codec_dai, 0, CODEC_CLOCK, SND_SOC_CLOCK_IN);
@@ -97,10 +102,14 @@ static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
 =======
 static const struct snd_soc_dapm_route afeb9260_audio_map[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route afeb9260_audio_map[] = {
+>>>>>>> refs/remotes/origin/master
 	{"Headphone Jack", NULL, "LHPOUT"},
 	{"Headphone Jack", NULL, "RHPOUT"},
 
@@ -116,6 +125,7 @@ static int afeb9260_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add afeb9260 specific widgets */
 	snd_soc_dapm_new_controls(dapm, tlv320aic23_dapm_widgets,
 				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
@@ -125,15 +135,20 @@ static int afeb9260_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
 	snd_soc_dapm_enable_pin(dapm, "Line In");
 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -147,10 +162,15 @@ static struct snd_soc_dai_link afeb9260_dai = {
 	.codec_name = "tlv320aic23-codec.0-001a",
 	.init = afeb9260_tlv320aic23_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
 		   SND_SOC_DAIFMT_CBM_CFM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
+		   SND_SOC_DAIFMT_CBM_CFM,
+>>>>>>> refs/remotes/origin/master
 	.ops = &afeb9260_ops,
 };
 
@@ -158,9 +178,12 @@ static struct snd_soc_dai_link afeb9260_dai = {
 static struct snd_soc_card snd_soc_machine_afeb9260 = {
 	.name = "AFEB9260",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link = &afeb9260_dai,
 	.num_links = 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE,
 	.dai_link = &afeb9260_dai,
 	.num_links = 1,
@@ -169,7 +192,10 @@ static struct snd_soc_card snd_soc_machine_afeb9260 = {
 	.num_dapm_widgets = ARRAY_SIZE(tlv320aic23_dapm_widgets),
 	.dapm_routes = afeb9260_audio_map,
 	.num_dapm_routes = ARRAY_SIZE(afeb9260_audio_map),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *afeb9260_snd_device;

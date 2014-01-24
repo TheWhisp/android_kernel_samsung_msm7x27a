@@ -84,7 +84,12 @@ static int ttsp_read_block_data(struct cyttsp *ts, u8 command,
 	int tries;
 
 	for (tries = 0; tries < CY_NUM_RETRY; tries++) {
+<<<<<<< HEAD
 		error = ts->bus_ops->read(ts, command, length, buf);
+=======
+		error = ts->bus_ops->read(ts->dev, ts->xfer_buf, command,
+				length, buf);
+>>>>>>> refs/remotes/origin/master
 		if (!error)
 			return 0;
 
@@ -101,7 +106,12 @@ static int ttsp_write_block_data(struct cyttsp *ts, u8 command,
 	int tries;
 
 	for (tries = 0; tries < CY_NUM_RETRY; tries++) {
+<<<<<<< HEAD
 		error = ts->bus_ops->write(ts, command, length, buf);
+=======
+		error = ts->bus_ops->write(ts->dev, ts->xfer_buf, command,
+				length, buf);
+>>>>>>> refs/remotes/origin/master
 		if (!error)
 			return 0;
 
@@ -116,6 +126,18 @@ static int ttsp_send_command(struct cyttsp *ts, u8 cmd)
 	return ttsp_write_block_data(ts, CY_REG_BASE, sizeof(cmd), &cmd);
 }
 
+<<<<<<< HEAD
+=======
+static int cyttsp_handshake(struct cyttsp *ts)
+{
+	if (ts->pdata->use_hndshk)
+		return ttsp_send_command(ts,
+				ts->xy_data.hst_mode ^ CY_HNDSHK_BIT);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int cyttsp_load_bl_regs(struct cyttsp *ts)
 {
 	memset(&ts->bl_data, 0, sizeof(ts->bl_data));
@@ -167,6 +189,13 @@ static int cyttsp_set_operational_mode(struct cyttsp *ts)
 	if (error)
 		return error;
 
+<<<<<<< HEAD
+=======
+	error = cyttsp_handshake(ts);
+	if (error)
+		return error;
+
+>>>>>>> refs/remotes/origin/master
 	return ts->xy_data.act_dist == CY_ACT_DIST_DFLT ? -EIO : 0;
 }
 
@@ -188,6 +217,13 @@ static int cyttsp_set_sysinfo_mode(struct cyttsp *ts)
 	if (error)
 		return error;
 
+<<<<<<< HEAD
+=======
+	error = cyttsp_handshake(ts);
+	if (error)
+		return error;
+
+>>>>>>> refs/remotes/origin/master
 	if (!ts->sysinfo_data.tts_verh && !ts->sysinfo_data.tts_verl)
 		return -EIO;
 
@@ -223,7 +259,11 @@ static int cyttsp_soft_reset(struct cyttsp *ts)
 	int retval;
 
 	/* wait for interrupt to set ready completion */
+<<<<<<< HEAD
 	INIT_COMPLETION(ts->bl_ready);
+=======
+	reinit_completion(&ts->bl_ready);
+>>>>>>> refs/remotes/origin/master
 	ts->state = CY_BL_STATE;
 
 	enable_irq(ts->irq);
@@ -344,12 +384,18 @@ static irqreturn_t cyttsp_irq(int irq, void *handle)
 		goto out;
 
 	/* provide flow control handshake */
+<<<<<<< HEAD
 	if (ts->pdata->use_hndshk) {
 		error = ttsp_send_command(ts,
 				ts->xy_data.hst_mode ^ CY_HNDSHK_BIT);
 		if (error)
 			goto out;
 	}
+=======
+	error = cyttsp_handshake(ts);
+	if (error)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(ts->state == CY_IDLE_STATE))
 		goto out;
@@ -571,7 +617,11 @@ struct cyttsp *cyttsp_probe(const struct cyttsp_bus_ops *bus_ops,
 	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR,
 			     0, CY_MAXZ, 0, 0);
 
+<<<<<<< HEAD
 	input_mt_init_slots(input_dev, CY_MAX_ID);
+=======
+	input_mt_init_slots(input_dev, CY_MAX_ID, 0);
+>>>>>>> refs/remotes/origin/master
 
 	error = request_threaded_irq(ts->irq, NULL, cyttsp_irq,
 				     IRQF_TRIGGER_FALLING | IRQF_ONESHOT,

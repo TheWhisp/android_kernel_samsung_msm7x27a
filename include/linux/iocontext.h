@@ -2,6 +2,7 @@
 #define IOCONTEXT_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/bitmap.h>
 #include <linux/radix-tree.h>
 #include <linux/rcupdate.h>
@@ -40,16 +41,22 @@ enum {
 	IOC_BFQ_IOPRIO_CHANGED,
 	IOC_IOPRIO_CHANGED_BITS
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/radix-tree.h>
 #include <linux/rcupdate.h>
 #include <linux/workqueue.h>
 
 enum {
+<<<<<<< HEAD
 	ICQ_IOPRIO_CHANGED	= 1 << 0,
 	ICQ_CGROUP_CHANGED	= 1 << 1,
 	ICQ_EXITED		= 1 << 2,
 
 	ICQ_CHANGED_MASK	= ICQ_IOPRIO_CHANGED | ICQ_CGROUP_CHANGED,
+=======
+	ICQ_EXITED		= 1 << 2,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -131,7 +138,10 @@ struct io_cq {
 	};
 
 	unsigned int		flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -140,12 +150,17 @@ struct io_cq {
  */
 struct io_context {
 	atomic_long_t refcount;
+<<<<<<< HEAD
+=======
+	atomic_t active_ref;
+>>>>>>> refs/remotes/origin/master
 	atomic_t nr_tasks;
 
 	/* all the fields below are protected by this lock */
 	spinlock_t lock;
 
 	unsigned short ioprio;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DECLARE_BITMAP(ioprio_changed, IOC_IOPRIO_CHANGED_BITS);
 
@@ -154,6 +169,8 @@ struct io_context {
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * For request batching
@@ -162,17 +179,21 @@ struct io_context {
 	unsigned long last_waited; /* Time last woken after wait for request */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct radix_tree_root radix_root;
 	struct hlist_head cic_list;
 	struct radix_tree_root bfq_radix_root;
 	struct hlist_head bfq_cic_list;
 	void __rcu *ioc_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct radix_tree_root	icq_tree;
 	struct io_cq __rcu	*icq_hint;
 	struct hlist_head	icq_list;
 
 	struct work_struct release_work;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -215,11 +236,49 @@ struct io_context *get_task_io_context(struct task_struct *task,
 void ioc_ioprio_changed(struct io_context *ioc, int ioprio);
 void ioc_cgroup_changed(struct io_context *ioc);
 unsigned int icq_get_changed(struct io_cq *icq);
+=======
+};
+
+/**
+ * get_io_context_active - get active reference on ioc
+ * @ioc: ioc of interest
+ *
+ * Only iocs with active reference can issue new IOs.  This function
+ * acquires an active reference on @ioc.  The caller must already have an
+ * active reference on @ioc.
+ */
+static inline void get_io_context_active(struct io_context *ioc)
+{
+	WARN_ON_ONCE(atomic_long_read(&ioc->refcount) <= 0);
+	WARN_ON_ONCE(atomic_read(&ioc->active_ref) <= 0);
+	atomic_long_inc(&ioc->refcount);
+	atomic_inc(&ioc->active_ref);
+}
+
+static inline void ioc_task_link(struct io_context *ioc)
+{
+	get_io_context_active(ioc);
+
+	WARN_ON_ONCE(atomic_read(&ioc->nr_tasks) <= 0);
+	atomic_inc(&ioc->nr_tasks);
+}
+
+struct task_struct;
+#ifdef CONFIG_BLOCK
+void put_io_context(struct io_context *ioc);
+void put_io_context_active(struct io_context *ioc);
+void exit_io_context(struct task_struct *task);
+struct io_context *get_task_io_context(struct task_struct *task,
+				       gfp_t gfp_flags, int node);
+>>>>>>> refs/remotes/origin/master
 #else
 struct io_context;
 static inline void put_io_context(struct io_context *ioc) { }
 static inline void exit_io_context(struct task_struct *task) { }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif

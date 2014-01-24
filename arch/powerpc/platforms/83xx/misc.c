@@ -12,11 +12,14 @@
 #include <linux/stddef.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/io.h>
 #include <asm/hw_irq.h>
 #include <sysdev/fsl_soc.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/pci.h>
 
@@ -26,7 +29,10 @@
 #include <asm/qe_ic.h>
 #include <sysdev/fsl_soc.h>
 #include <sysdev/fsl_pci.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "mpc83xx.h"
 
@@ -78,7 +84,10 @@ long __init mpc83xx_time_init(void)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void __init mpc83xx_ipic_init_IRQ(void)
 {
@@ -151,4 +160,7 @@ void __init mpc83xx_setup_pci(void)
 		mpc83xx_add_bridge(np);
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

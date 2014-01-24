@@ -13,6 +13,10 @@
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/smc91x.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/machvec.h>
 #include <asm/sizes.h>
 
@@ -20,7 +24,11 @@
 #define SMC_IO_OFFSET	0x300
 #define SMC_IOADDR	(SMC_IOBASE + SMC_IO_OFFSET)
 
+<<<<<<< HEAD
 #define ETHERNET_IRQ	0x09
+=======
+#define ETHERNET_IRQ	evt2irq(0x320)
+>>>>>>> refs/remotes/origin/master
 
 static void __init sh_edosk7705_init_irq(void)
 {
@@ -73,6 +81,9 @@ device_initcall(init_edosk7705_devices);
  */
 static struct sh_machine_vector mv_edosk7705 __initmv = {
 	.mv_name		= "EDOSK7705",
+<<<<<<< HEAD
 	.mv_nr_irqs		= 80,
+=======
+>>>>>>> refs/remotes/origin/master
 	.mv_init_irq		= sh_edosk7705_init_irq,
 };

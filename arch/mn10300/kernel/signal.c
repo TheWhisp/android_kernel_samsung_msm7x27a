@@ -31,6 +31,7 @@
 
 #define DEBUG_SIG 0
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 /*
@@ -94,6 +95,8 @@ asmlinkage long sys_sigaltstack(const stack_t __user *uss, stack_t *uoss)
 	return do_sigaltstack(uss, uoss, current_frame()->sp);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * do a signal return; undo the signal stack.
  */
@@ -171,11 +174,15 @@ asmlinkage long sys_sigreturn(void)
 			     sizeof(frame->extramask)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(current_frame(), &frame->sc, &d0))
 		goto badframe;
@@ -202,17 +209,25 @@ asmlinkage long sys_rt_sigreturn(void)
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(current_frame(), &frame->uc.uc_mcontext, &d0))
 		goto badframe;
 
+<<<<<<< HEAD
 	if (do_sigaltstack(&frame->uc.uc_stack, NULL, current_frame()->sp) ==
 	    -EFAULT)
+=======
+	if (restore_altstack(&frame->uc.uc_stack))
+>>>>>>> refs/remotes/origin/master
 		goto badframe;
 
 	return d0;
@@ -335,10 +350,13 @@ static int setup_frame(int sig, struct k_sigaction *ka, sigset_t *set,
 	regs->d0 = sig;
 	regs->d1 = (unsigned long) &frame->sc;
 
+<<<<<<< HEAD
 	/* the tracer may want to single-step inside the handler */
 	if (test_thread_flag(TIF_SINGLESTEP))
 		ptrace_notify(SIGTRAP);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if DEBUG_SIG
 	printk(KERN_DEBUG "SIG deliver %d (%s:%d): sp=%p pc=%lx ra=%p\n",
 	       sig, current->comm, current->pid, frame, regs->pc,
@@ -381,9 +399,13 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	/* create the ucontext.  */
 	if (__put_user(0, &frame->uc.uc_flags) ||
 	    __put_user(0, &frame->uc.uc_link) ||
+<<<<<<< HEAD
 	    __put_user((void *)current->sas_ss_sp, &frame->uc.uc_stack.ss_sp) ||
 	    __put_user(sas_ss_flags(regs->sp), &frame->uc.uc_stack.ss_flags) ||
 	    __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size) ||
+=======
+	    __save_altstack(&frame->uc.uc_stack, regs->sp) ||
+>>>>>>> refs/remotes/origin/master
 	    setup_sigcontext(&frame->uc.uc_mcontext,
 			     &frame->fpuctx, regs, set->sig[0]) ||
 	    __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set)))
@@ -416,10 +438,13 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	regs->d0 = sig;
 	regs->d1 = (long) &frame->info;
 
+<<<<<<< HEAD
 	/* the tracer may want to single-step inside the handler */
 	if (test_thread_flag(TIF_SINGLESTEP))
 		ptrace_notify(SIGTRAP);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if DEBUG_SIG
 	printk(KERN_DEBUG "SIG deliver %d (%s:%d): sp=%p pc=%lx ra=%p\n",
 	       sig, current->comm, current->pid, frame, regs->pc,
@@ -444,8 +469,14 @@ static inline void stepback(struct pt_regs *regs)
  */
 static int handle_signal(int sig,
 			 siginfo_t *info, struct k_sigaction *ka,
+<<<<<<< HEAD
 			 sigset_t *oldset, struct pt_regs *regs)
 {
+=======
+			 struct pt_regs *regs)
+{
+	sigset_t *oldset = sigmask_to_save();
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* Are we from a system call? */
@@ -475,6 +506,7 @@ static int handle_signal(int sig,
 		ret = setup_rt_frame(sig, ka, info, oldset, regs);
 	else
 		ret = setup_frame(sig, ka, oldset, regs);
+<<<<<<< HEAD
 
 	if (ret == 0) {
 		spin_lock_irq(&current->sighand->siglock);
@@ -487,6 +519,14 @@ static int handle_signal(int sig,
 	}
 
 	return ret;
+=======
+	if (ret)
+		return ret;
+
+	signal_delivered(sig, info, ka, regs,
+			 test_thread_flag(TIF_SINGLESTEP));
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -496,6 +536,7 @@ static void do_signal(struct pt_regs *regs)
 {
 	struct k_sigaction ka;
 	siginfo_t info;
+<<<<<<< HEAD
 	sigset_t *oldset;
 	int signr;
 
@@ -521,6 +562,13 @@ static void do_signal(struct pt_regs *regs)
 
 			tracehook_signal_handler(signr, &info, &ka, regs,
 						 test_thread_flag(TIF_SINGLESTEP));
+=======
+	int signr;
+
+	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+	if (signr > 0) {
+		if (handle_signal(signr, &info, &ka, regs) == 0) {
+>>>>>>> refs/remotes/origin/master
 		}
 
 		return;
@@ -546,10 +594,14 @@ static void do_signal(struct pt_regs *regs)
 
 	/* if there's no signal to deliver, we just put the saved sigmask
 	 * back */
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
 		clear_thread_flag(TIF_RESTORE_SIGMASK);
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
 	}
+=======
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -569,13 +621,20 @@ asmlinkage void do_notify_resume(struct pt_regs *regs, u32 thread_info_flags)
 	}
 
 	/* deal with pending signal delivery */
+<<<<<<< HEAD
 	if (thread_info_flags & (_TIF_SIGPENDING | _TIF_RESTORE_SIGMASK))
+=======
+	if (thread_info_flags & _TIF_SIGPENDING)
+>>>>>>> refs/remotes/origin/master
 		do_signal(regs);
 
 	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
 		clear_thread_flag(TIF_NOTIFY_RESUME);
 		tracehook_notify_resume(current_frame());
+<<<<<<< HEAD
 		if (current->replacement_session_keyring)
 			key_replace_session_keyring();
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }

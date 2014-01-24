@@ -22,6 +22,7 @@
 #define __LINUX_SMSC911X_H__
 
 #include <linux/phy.h>
+<<<<<<< HEAD
 
 /* platform_device configuration data, should be assigned to
  * the platform_device's dev.platform_data
@@ -32,15 +33,25 @@
  * Default would be zero if its not being assigned any value.
  * Both values would need to set in the appropriate board file
  */
+=======
+#include <linux/if_ether.h>
+
+/* platform_device configuration data, should be assigned to
+ * the platform_device's dev.platform_data */
+>>>>>>> refs/remotes/origin/master
 struct smsc911x_platform_config {
 	unsigned int irq_polarity;
 	unsigned int irq_type;
 	unsigned int flags;
 	unsigned int shift;
 	phy_interface_t phy_interface;
+<<<<<<< HEAD
 	unsigned char mac[6];
 	unsigned char has_reset_gpio;
 	unsigned int reset_gpio;
+=======
+	unsigned char mac[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Constants for platform_device irq polarity configuration */

@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: sbe_bid.h,v 1.0 2005/09/28 00:10:09 rickd PMCC4_3_1B $
  */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_SBEBID_H_
 #define _INC_SBEBID_H_
 
@@ -28,6 +31,7 @@
  *
  *-----------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 1.0 $
  * Last changed on $Date: 2005/09/28 00:10:09 $
@@ -40,6 +44,8 @@
  *-----------------------------------------------------------------------------
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #define SBE_BID_REG        0x00000000   /* Board ID Register */

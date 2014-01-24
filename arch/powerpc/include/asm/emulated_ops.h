@@ -19,10 +19,14 @@
 #define _ASM_POWERPC_EMULATED_OPS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/perf_event.h>
 
 
@@ -47,11 +51,18 @@ extern struct ppc_emulated {
 	struct ppc_emulated_entry popcntb;
 	struct ppc_emulated_entry spe;
 	struct ppc_emulated_entry string;
+<<<<<<< HEAD
 	struct ppc_emulated_entry unaligned;
 #ifdef CONFIG_MATH_EMULATION
 	struct ppc_emulated_entry math;
 #elif defined(CONFIG_8XX_MINIMAL_FPEMU)
 	struct ppc_emulated_entry 8xx;
+=======
+	struct ppc_emulated_entry sync;
+	struct ppc_emulated_entry unaligned;
+#ifdef CONFIG_MATH_EMULATION
+	struct ppc_emulated_entry math;
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_VSX
 	struct ppc_emulated_entry vsx;
@@ -83,10 +94,14 @@ extern void ppc_warn_emulated_print(const char *type);
 	do {								\
 		perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS,		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			1, 0, regs, 0);					\
 =======
 			1, regs, 0);					\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			1, regs, 0);					\
+>>>>>>> refs/remotes/origin/master
 		__PPC_WARN_EMULATED(type);				\
 	} while (0)
 
@@ -94,10 +109,14 @@ extern void ppc_warn_emulated_print(const char *type);
 	do {								\
 		perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS,		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			1, 0, regs, regs->dar);				\
 =======
 			1, regs, regs->dar);				\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			1, regs, regs->dar);				\
+>>>>>>> refs/remotes/origin/master
 		__PPC_WARN_EMULATED(type);				\
 	} while (0)
 

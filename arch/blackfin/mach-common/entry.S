@@ -25,6 +25,7 @@
 
 #include <asm/context.S>
 
+<<<<<<< HEAD
 #if defined(CONFIG_BFIN_SCRATCH_REG_RETN)
 # define EX_SCRATCH_REG RETN
 #elif defined(CONFIG_BFIN_SCRATCH_REG_RETE)
@@ -32,6 +33,8 @@
 #else
 # define EX_SCRATCH_REG CYCLES
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_EXCPT_IRQ_SYSC_L1
 .section .l1.text
@@ -537,6 +540,7 @@ ENTRY(_trap) /* Exception: 4th entry into system event table(supervisor mode)*/
 	jump .Lsyscall_really_exit;
 ENDPROC(_trap)
 
+<<<<<<< HEAD
 ENTRY(_kernel_execve)
 	link SIZEOF_PTREGS;
 	p0 = sp;
@@ -592,6 +596,8 @@ ENTRY(_kernel_execve)
 	rts;
 ENDPROC(_kernel_execve)
 
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(_system_call)
 	/* Store IPEND */
 	p2.l = lo(IPEND);
@@ -711,8 +717,11 @@ ENTRY(_system_call)
 	jump .Lresume_userspace_1;
 
 .Lsyscall_sigpending:
+<<<<<<< HEAD
 	cc = BITTST(r7, TIF_RESTORE_SIGMASK);
 	if cc jump .Lsyscall_do_signals;
+=======
+>>>>>>> refs/remotes/origin/master
 	cc = BITTST(r7, TIF_SIGPENDING);
 	if cc jump .Lsyscall_do_signals;
 	cc = BITTST(r7, TIF_NOTIFY_RESUME);
@@ -1141,7 +1150,12 @@ ENTRY(_schedule_and_signal_from_int)
 	sti r0;
 
 	/* finish the userspace "atomic" functions for it */
+<<<<<<< HEAD
 	r1 = FIXED_CODE_END;
+=======
+	r1.l = lo(FIXED_CODE_END);
+	r1.h = hi(FIXED_CODE_END);
+>>>>>>> refs/remotes/origin/master
 	r2 = [sp + PT_PC];
 	cc = r1 <= r2;
 	if cc jump .Lresume_userspace (bp);
@@ -1245,10 +1259,14 @@ ENTRY(_software_trace_buff)
 #endif /* CONFIG_DEBUG_BFIN_HWTRACE_EXPAND */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if CONFIG_EARLY_PRINTK
 =======
 #ifdef CONFIG_EARLY_PRINTK
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_EARLY_PRINTK
+>>>>>>> refs/remotes/origin/master
 __INIT
 ENTRY(_early_trap)
 	SAVE_ALL_SYS
@@ -1380,7 +1398,11 @@ END(_ex_table)
 ENTRY(_sys_call_table)
 	.long _sys_restart_syscall	/* 0 */
 	.long _sys_exit
+<<<<<<< HEAD
 	.long _sys_fork
+=======
+	.long _sys_ni_syscall	/* fork */
+>>>>>>> refs/remotes/origin/master
 	.long _sys_read
 	.long _sys_write
 	.long _sys_open		/* 5 */
@@ -1498,7 +1520,11 @@ ENTRY(_sys_call_table)
 	.long _sys_ni_syscall	/* old sys_ipc */
 	.long _sys_fsync
 	.long _sys_ni_syscall	/* old sys_sigreturn */
+<<<<<<< HEAD
 	.long _sys_clone		/* 120 */
+=======
+	.long _bfin_clone		/* 120 */
+>>>>>>> refs/remotes/origin/master
 	.long _sys_setdomainname
 	.long _sys_newuname
 	.long _sys_ni_syscall	/* old sys_modify_ldt */
@@ -1548,10 +1574,14 @@ ENTRY(_sys_call_table)
 	.long _sys_ni_syscall	/* old "query_module" */
 	.long _sys_ni_syscall	/* sys_poll */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.long _sys_nfsservctl
 =======
 	.long _sys_ni_syscall   /* old nfsservctl */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long _sys_ni_syscall   /* old nfsservctl */
+>>>>>>> refs/remotes/origin/master
 	.long _sys_setresgid	/* setresgid16 */	/* 170 */
 	.long _sys_getresgid	/* getresgid16 */
 	.long _sys_prctl
@@ -1764,10 +1794,15 @@ ENTRY(_sys_call_table)
 	.long _sys_setns
 	.long _sys_sendmmsg		/* 380 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.long _sys_process_vm_readv
 	.long _sys_process_vm_writev
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long _sys_process_vm_readv
+	.long _sys_process_vm_writev
+>>>>>>> refs/remotes/origin/master
 
 	.rept NR_syscalls-(.-_sys_call_table)/4
 	.long _sys_ni_syscall

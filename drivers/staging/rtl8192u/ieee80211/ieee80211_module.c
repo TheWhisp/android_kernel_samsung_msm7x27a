@@ -47,9 +47,12 @@
 #include <linux/tcp.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/wireless.h>
 #include <linux/etherdevice.h>
 #include <asm/uaccess.h>
@@ -165,7 +168,11 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
 	if (ieee->pHTInfo == NULL)
 	{
 		IEEE80211_DEBUG(IEEE80211_DL_ERR, "can't alloc memory for HTInfo\n");
+<<<<<<< HEAD
 		return NULL;
+=======
+		goto failed;
+>>>>>>> refs/remotes/origin/master
 	}
 	HTUpdateDefaultSetting(ieee);
 	HTInitializeHTInfo(ieee); //may move to other place.
@@ -224,7 +231,11 @@ void free_ieee80211(struct net_device *dev)
 
 #ifdef CONFIG_IEEE80211_DEBUG
 
+<<<<<<< HEAD
 u32 ieee80211_debug_level = 0;
+=======
+u32 ieee80211_debug_level;
+>>>>>>> refs/remotes/origin/master
 static int debug = \
 	//		    IEEE80211_DL_INFO	|
 	//		    IEEE80211_DL_WX	|
@@ -237,14 +248,21 @@ static int debug = \
 	//		    IEEE80211_DL_TX	|
 	//		    IEEE80211_DL_RX	|
 			    //IEEE80211_DL_QOS    |
+<<<<<<< HEAD
 	//		    IEEE80211_DL_HT 	|
 	//		    IEEE80211_DL_TS	|
 //			    IEEE80211_DL_BA 	|
+=======
+	//		    IEEE80211_DL_HT	|
+	//		    IEEE80211_DL_TS	|
+//			    IEEE80211_DL_BA	|
+>>>>>>> refs/remotes/origin/master
 	//		    IEEE80211_DL_REORDER|
 //			    IEEE80211_DL_TRACE  |
 			    //IEEE80211_DL_DATA	|
 			    IEEE80211_DL_ERR	  //awayls open this flags to show error out
 			    ;
+<<<<<<< HEAD
 struct proc_dir_entry *ieee80211_proc = NULL;
 
 static int show_debug_level(char *page, char **start, off_t offset,
@@ -280,6 +298,39 @@ static int store_debug_level(struct file *file, const char *buffer,
 	return strnlen(buf, count);
 }
 
+=======
+static struct proc_dir_entry *ieee80211_proc;
+
+static int show_debug_level(struct seq_file *m, void *v)
+{
+	return seq_printf(m, "0x%08X\n", ieee80211_debug_level);
+}
+
+static ssize_t write_debug_level(struct file *file, const char __user *buffer,
+			     size_t count, loff_t *ppos)
+{
+	unsigned long val;
+	int err = kstrtoul_from_user(buffer, count, 0, &val);
+	if (err)
+		return err;
+	ieee80211_debug_level = val;
+	return count;
+}
+
+static int open_debug_level(struct inode *inode, struct file *file)
+{
+	return single_open(file, show_debug_level, NULL);
+}
+
+static const struct file_operations fops = {
+	.open = open_debug_level,
+	.read = seq_read,
+	.llseek = seq_lseek,
+	.write = write_debug_level,
+	.release = single_release,
+};
+
+>>>>>>> refs/remotes/origin/master
 int __init ieee80211_debug_init(void)
 {
 	struct proc_dir_entry *e;
@@ -287,26 +338,38 @@ int __init ieee80211_debug_init(void)
 	ieee80211_debug_level = debug;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ieee80211_proc = create_proc_entry(DRV_NAME, S_IFDIR, init_net.proc_net);
 =======
 	ieee80211_proc = proc_mkdir(DRV_NAME, init_net.proc_net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ieee80211_proc = proc_mkdir(DRV_NAME, init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 	if (ieee80211_proc == NULL) {
 		IEEE80211_ERROR("Unable to create " DRV_NAME
 				" proc directory\n");
 		return -EIO;
 	}
+<<<<<<< HEAD
 	e = create_proc_entry("debug_level", S_IFREG | S_IRUGO | S_IWUSR,
 			      ieee80211_proc);
+=======
+	e = proc_create("debug_level", S_IRUGO | S_IWUSR, 
+			      ieee80211_proc, &fops);
+>>>>>>> refs/remotes/origin/master
 	if (!e) {
 		remove_proc_entry(DRV_NAME, init_net.proc_net);
 		ieee80211_proc = NULL;
 		return -EIO;
 	}
+<<<<<<< HEAD
 	e->read_proc = show_debug_level;
 	e->write_proc = store_debug_level;
 	e->data = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

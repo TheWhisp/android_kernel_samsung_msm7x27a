@@ -21,9 +21,13 @@
 #include <linux/cdrom.h>
 #include <linux/highmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 
 #include <scsi/scsi.h>
@@ -362,7 +366,11 @@ static struct scsi_host_template ps3rom_host_template = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit ps3rom_probe(struct ps3_system_bus_device *_dev)
+=======
+static int ps3rom_probe(struct ps3_system_bus_device *_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ps3_storage_device *dev = to_ps3_storage_device(&_dev->core);
 	int error;

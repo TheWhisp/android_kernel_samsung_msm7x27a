@@ -33,13 +33,25 @@
 #define IXGBE_DEV_ID_X540_VF            0x1515
 
 #define IXGBE_VF_IRQ_CLEAR_MASK         7
+<<<<<<< HEAD
 #define IXGBE_VF_MAX_TX_QUEUES          1
 #define IXGBE_VF_MAX_RX_QUEUES          1
+=======
+#define IXGBE_VF_MAX_TX_QUEUES          8
+#define IXGBE_VF_MAX_RX_QUEUES          8
+
+/* DCB define */
+#define IXGBE_VF_MAX_TRAFFIC_CLASS	8
+>>>>>>> refs/remotes/origin/master
 
 /* Link speed */
 typedef u32 ixgbe_link_speed;
 #define IXGBE_LINK_SPEED_1GB_FULL       0x0020
 #define IXGBE_LINK_SPEED_10GB_FULL      0x0080
+<<<<<<< HEAD
+=======
+#define IXGBE_LINK_SPEED_100_FULL	0x0008
+>>>>>>> refs/remotes/origin/master
 
 #define IXGBE_CTRL_RST              0x04000000 /* Reset (SW) */
 #define IXGBE_RXDCTL_ENABLE         0x02000000 /* Enable specific Rx Queue */
@@ -48,6 +60,10 @@ typedef u32 ixgbe_link_speed;
 #define IXGBE_LINKS_SPEED_82599     0x30000000
 #define IXGBE_LINKS_SPEED_10G_82599 0x30000000
 #define IXGBE_LINKS_SPEED_1G_82599  0x20000000
+<<<<<<< HEAD
+=======
+#define IXGBE_LINKS_SPEED_100_82599 0x10000000
+>>>>>>> refs/remotes/origin/master
 
 /* Number of Transmit and Receive Descriptors must be a multiple of 8 */
 #define IXGBE_REQ_TX_DESCRIPTOR_MULTIPLE  8
@@ -249,6 +265,10 @@ struct ixgbe_adv_tx_context_desc {
 #define IXGBE_ADVTXD_TUCMD_L4T_TCP   0x00000800  /* L4 Packet TYPE of TCP */
 #define IXGBE_ADVTXD_TUCMD_L4T_SCTP  0x00001000  /* L4 Packet TYPE of SCTP */
 #define IXGBE_ADVTXD_IDX_SHIFT  4 /* Adv desc Index shift */
+<<<<<<< HEAD
+=======
+#define IXGBE_ADVTXD_CC		0x00000080 /* Check Context */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_ADVTXD_POPTS_SHIFT      8  /* Adv desc POPTS shift */
 #define IXGBE_ADVTXD_POPTS_IXSM (IXGBE_TXD_POPTS_IXSM << \
 				 IXGBE_ADVTXD_POPTS_SHIFT)
@@ -262,6 +282,7 @@ struct ixgbe_adv_tx_context_desc {
 
 /* Interrupt register bitmasks */
 
+<<<<<<< HEAD
 /* Extended Interrupt Cause Read */
 #define IXGBE_EICR_RTX_QUEUE    0x0000FFFF /* RTx Queue Interrupt */
 #define IXGBE_EICR_MAILBOX      0x00080000 /* VF to PF Mailbox Interrupt */
@@ -288,9 +309,18 @@ struct ixgbe_adv_tx_context_desc {
 				IXGBE_EIMS_OTHER)
 
 #define IXGBE_EITR_CNT_WDIS     0x80000000
+=======
+#define IXGBE_EITR_CNT_WDIS     0x80000000
+#define IXGBE_MAX_EITR		0x00000FF8
+#define IXGBE_MIN_EITR		8
+>>>>>>> refs/remotes/origin/master
 
 /* Error Codes */
 #define IXGBE_ERR_INVALID_MAC_ADDR              -1
 #define IXGBE_ERR_RESET_FAILED                  -2
+<<<<<<< HEAD
+=======
+#define IXGBE_ERR_INVALID_ARGUMENT              -3
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _IXGBEVF_DEFINES_H_ */

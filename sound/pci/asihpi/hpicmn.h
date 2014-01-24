@@ -2,10 +2,14 @@
 
     AudioScience HPI driver
 <<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
 =======
     Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -23,6 +27,7 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct hpi_adapter_obj {
 	struct hpi_pci pci;	/* PCI info - bus#,dev#,address etc */
 	u16 adapter_type;	/* ASI6701 etc */
@@ -30,6 +35,8 @@ struct hpi_adapter_obj {
 	u16 open;		/* =1 when adapter open */
 	u16 mixer_open;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct hpi_adapter_obj;
 
 /* a function that takes an adapter obj and returns an int */
@@ -39,7 +46,10 @@ struct hpi_adapter_obj {
 	struct hpi_pci pci;	/* PCI info - bus#,dev#,address etc */
 	u16 type;		/* 0x6644 == ASI6644 etc */
 	u16 index;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct hpios_spinlock dsp_lock;
 

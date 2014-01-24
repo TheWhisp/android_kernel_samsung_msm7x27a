@@ -21,10 +21,15 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 #include <linux/moduleparam.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/time.h>
 #include <linux/slab.h>
 #include <linux/ioport.h>
@@ -71,15 +76,23 @@ void __snd_printk(unsigned int level, const char *path, int line,
 {
 	va_list args;
 #ifdef CONFIG_SND_VERBOSE_PRINTK
+<<<<<<< HEAD
+=======
+	int kern_level;
+>>>>>>> refs/remotes/origin/master
 	struct va_format vaf;
 	char verbose_fmt[] = KERN_DEFAULT "ALSA %s:%d %pV";
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SND_DEBUG	
 =======
 #ifdef CONFIG_SND_DEBUG
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SND_DEBUG
+>>>>>>> refs/remotes/origin/master
 	if (debug < level)
 		return;
 #endif
@@ -88,12 +101,25 @@ void __snd_printk(unsigned int level, const char *path, int line,
 #ifdef CONFIG_SND_VERBOSE_PRINTK
 	vaf.fmt = format;
 	vaf.va = &args;
+<<<<<<< HEAD
 	if (format[0] == '<' && format[2] == '>') {
 		memcpy(verbose_fmt, format, 3);
 		vaf.fmt = format + 3;
 	} else if (level)
 		memcpy(verbose_fmt, KERN_DEBUG, 3);
 	printk(verbose_fmt, sanity_file_name(path), line, &vaf);
+=======
+
+	kern_level = printk_get_level(format);
+	if (kern_level) {
+		const char *end_of_header = printk_skip_level(format);
+		memcpy(verbose_fmt, format, end_of_header - format);
+		vaf.fmt = end_of_header;
+	} else if (level)
+		memcpy(verbose_fmt, KERN_DEBUG, sizeof(KERN_DEBUG) - 1);
+	printk(verbose_fmt, sanity_file_name(path), line, &vaf);
+
+>>>>>>> refs/remotes/origin/master
 #else
 	vprintk(format, args);
 #endif

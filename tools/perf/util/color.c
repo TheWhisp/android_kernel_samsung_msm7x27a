@@ -1,9 +1,16 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "cache.h"
 #include "color.h"
+=======
+#include <linux/kernel.h>
+#include "cache.h"
+#include "color.h"
+#include <math.h>
+>>>>>>> refs/remotes/origin/master
 
 int perf_use_color_default = -1;
 
@@ -187,6 +194,7 @@ static int __color_vsnprintf(char *bf, size_t size, const char *color,
 
 	if (perf_use_color_default && *color)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		r += snprintf(bf, size, "%s", color);
 	r += vsnprintf(bf + r, size - r, fmt, args);
 	if (perf_use_color_default && *color)
@@ -194,13 +202,18 @@ static int __color_vsnprintf(char *bf, size_t size, const char *color,
 	if (trail)
 		r += snprintf(bf + r, size - r, "%s", trail);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		r += scnprintf(bf, size, "%s", color);
 	r += vscnprintf(bf + r, size - r, fmt, args);
 	if (perf_use_color_default && *color)
 		r += scnprintf(bf + r, size - r, "%s", PERF_COLOR_RESET);
 	if (trail)
 		r += scnprintf(bf + r, size - r, "%s", trail);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -214,10 +227,14 @@ static int __color_vfprintf(FILE *fp, const char *color, const char *fmt,
 	 */
 	if (perf_use_color_default < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (isatty(1) || pager_in_use())
 =======
 		if (isatty(fileno(fp)) || pager_in_use())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (isatty(fileno(fp)) || pager_in_use())
+>>>>>>> refs/remotes/origin/master
 			perf_use_color_default = 1;
 		else
 			perf_use_color_default = 0;
@@ -314,10 +331,17 @@ const char *get_percent_color(double percent)
 	 * entries in green - and keep the low overhead places
 	 * normal:
 	 */
+<<<<<<< HEAD
 	if (percent >= MIN_RED)
 		color = PERF_COLOR_RED;
 	else {
 		if (percent > MIN_GREEN)
+=======
+	if (fabs(percent) >= MIN_RED)
+		color = PERF_COLOR_RED;
+	else {
+		if (fabs(percent) > MIN_GREEN)
+>>>>>>> refs/remotes/origin/master
 			color = PERF_COLOR_GREEN;
 	}
 	return color;
@@ -334,8 +358,26 @@ int percent_color_fprintf(FILE *fp, const char *fmt, double percent)
 	return r;
 }
 
+<<<<<<< HEAD
 int percent_color_snprintf(char *bf, size_t size, const char *fmt, double percent)
 {
 	const char *color = get_percent_color(percent);
 	return color_snprintf(bf, size, color, fmt, percent);
+=======
+int value_color_snprintf(char *bf, size_t size, const char *fmt, double value)
+{
+	const char *color = get_percent_color(value);
+	return color_snprintf(bf, size, color, fmt, value);
+}
+
+int percent_color_snprintf(char *bf, size_t size, const char *fmt, ...)
+{
+	va_list args;
+	double percent;
+
+	va_start(args, fmt);
+	percent = va_arg(args, double);
+	va_end(args);
+	return value_color_snprintf(bf, size, fmt, percent);
+>>>>>>> refs/remotes/origin/master
 }

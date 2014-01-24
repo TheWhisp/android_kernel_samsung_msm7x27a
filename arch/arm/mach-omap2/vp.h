@@ -20,7 +20,10 @@
 #include <linux/kernel.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct voltagedomain;
 
 /*
@@ -32,11 +35,15 @@ struct voltagedomain;
 #define OMAP4_VP_VDD_IVA_ID 1
 #define OMAP4_VP_VDD_MPU_ID 2
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* XXX document */
 #define VP_IDLE_TIMEOUT		200
 #define VP_TRANXDONE_TIMEOUT	300
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /**
@@ -45,6 +52,8 @@ struct voltagedomain;
  * @vpconfig_initvoltage_mask: INITVOLTAGE bitmask in the PRM_VP*_CONFIG reg
  * @vpconfig_timeouten_mask: TIMEOUT bitmask in the PRM_VP*_CONFIG reg
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct omap_vp_ops - per-VP operations
  * @check_txdone: check for VP transaction done
@@ -61,13 +70,17 @@ struct omap_vp_ops {
  * @vpconfig_errorgain_mask: ERRORGAIN bitmask in the PRM_VP*_CONFIG reg
  * @vpconfig_initvoltage_mask: INITVOLTAGE bitmask in the PRM_VP*_CONFIG reg
  * @vpconfig_timeouten: TIMEOUT bitmask in the PRM_VP*_CONFIG reg
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @vpconfig_initvdd: INITVDD bitmask in the PRM_VP*_CONFIG reg
  * @vpconfig_forceupdate: FORCEUPDATE bitmask in the PRM_VP*_CONFIG reg
  * @vpconfig_vpenable: VPENABLE bitmask in the PRM_VP*_CONFIG reg
  * @vpconfig_erroroffset_shift: ERROROFFSET field shift in PRM_VP*_CONFIG reg
  * @vpconfig_errorgain_shift: ERRORGAIN field shift in PRM_VP*_CONFIG reg
  * @vpconfig_initvoltage_shift: INITVOLTAGE field shift in PRM_VP*_CONFIG reg
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @vpconfig_stepmin_shift: VSTEPMIN field shift in the PRM_VP*_VSTEPMIN reg
  * @vpconfig_smpswaittimemin_shift: SMPSWAITTIMEMIN field shift in PRM_VP*_VSTEPMIN reg
@@ -92,6 +105,8 @@ struct omap_vp_common_data {
 	u8 vpconfig_errorgain_shift;
 	u8 vpconfig_initvoltage_shift;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @vstepmin_stepmin_shift: VSTEPMIN field shift in the PRM_VP*_VSTEPMIN reg
  * @vstepmin_smpswaittimemin_shift: SMPSWAITTIMEMIN field shift in PRM_VP*_VSTEPMIN reg
  * @vstepmax_stepmax_shift: VSTEPMAX field shift in the PRM_VP*_VSTEPMAX reg
@@ -109,7 +124,10 @@ struct omap_vp_common {
 	u8 vpconfig_initvdd;
 	u8 vpconfig_forceupdate;
 	u8 vpconfig_vpenable;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vstepmin_stepmin_shift;
 	u8 vstepmin_smpswaittimemin_shift;
 	u8 vstepmax_stepmax_shift;
@@ -117,6 +135,7 @@ struct omap_vp_common {
 	u8 vlimitto_vddmin_shift;
 	u8 vlimitto_vddmax_shift;
 	u8 vlimitto_timeout_shift;
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -140,6 +159,8 @@ struct omap_vp_prm_irqst_data {
  * @vp_common: pointer to struct omap_vp_common_data * for this SoC
  * @prm_irqst_data: pointer to struct omap_vp_prm_irqst_data for this VDD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vpvoltage_mask;
 
 	const struct omap_vp_ops *ops;
@@ -148,12 +169,16 @@ struct omap_vp_prm_irqst_data {
 /**
  * struct omap_vp_instance - VP register offsets (per-VDD)
  * @common: pointer to struct omap_vp_common * for this SoC
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @vpconfig: PRM_VP*_CONFIG reg offset from PRM start
  * @vstepmin: PRM_VP*_VSTEPMIN reg offset from PRM start
  * @vlimitto: PRM_VP*_VLIMITTO reg offset from PRM start
  * @vstatus: PRM_VP*_VSTATUS reg offset from PRM start
  * @voltage: PRM_VP*_VOLTAGE reg offset from PRM start
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * XXX vp_common is probably not needed since it is per-SoC
@@ -162,6 +187,8 @@ struct omap_vp_instance_data {
 	const struct omap_vp_common_data *vp_common;
 	const struct omap_vp_prm_irqst_data *prm_irqst_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @id: Unique identifier for VP instance.
  * @enabled: flag to keep track of whether vp is enabled or not
  *
@@ -169,13 +196,17 @@ struct omap_vp_instance_data {
  */
 struct omap_vp_instance {
 	const struct omap_vp_common *common;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vpconfig;
 	u8 vstepmin;
 	u8 vstepmax;
 	u8 vlimitto;
 	u8 vstatus;
 	u8 voltage;
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -215,6 +246,8 @@ extern struct omap_vp_instance_data omap4_vp_mpu_data;
 extern struct omap_vp_instance_data omap4_vp_iva_data;
 extern struct omap_vp_instance_data omap4_vp_core_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 id;
 	bool enabled;
 };
@@ -226,6 +259,16 @@ extern struct omap_vp_instance omap4_vp_mpu;
 extern struct omap_vp_instance omap4_vp_iva;
 extern struct omap_vp_instance omap4_vp_core;
 
+<<<<<<< HEAD
+=======
+extern struct omap_vp_param omap3_mpu_vp_data;
+extern struct omap_vp_param omap3_core_vp_data;
+
+extern struct omap_vp_param omap4_mpu_vp_data;
+extern struct omap_vp_param omap4_iva_vp_data;
+extern struct omap_vp_param omap4_core_vp_data;
+
+>>>>>>> refs/remotes/origin/master
 void omap_vp_init(struct voltagedomain *voltdm);
 void omap_vp_enable(struct voltagedomain *voltdm);
 void omap_vp_disable(struct voltagedomain *voltdm);
@@ -233,6 +276,9 @@ int omap_vp_forceupdate_scale(struct voltagedomain *voltdm,
 			      unsigned long target_volt);
 int omap_vp_update_errorgain(struct voltagedomain *voltdm,
 			     unsigned long target_volt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

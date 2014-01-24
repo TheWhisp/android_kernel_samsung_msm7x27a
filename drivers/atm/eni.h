@@ -9,19 +9,27 @@
 #include <linux/atm.h>
 #include <linux/atmdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sonet.h>
 #include <linux/skbuff.h>
 #include <linux/time.h>
 #include <linux/pci.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "midway.h"
 
@@ -80,9 +88,13 @@ struct eni_dev {
 	/*-------------------------------- base pointers into Midway address
 					   space */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void __iomem *ioaddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem *ioaddr;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *phy;		/* PHY interface chip registers */
 	void __iomem *reg;		/* register base */
 	void __iomem *ram;		/* RAM base */
@@ -98,12 +110,18 @@ struct eni_dev {
 	int tx_bw;			/* remaining bandwidth */
 	u32 dma[TX_DMA_BUF*2];		/* DMA request scratch area */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct eni_zero {		/* aligned "magic" zeroes */
 		u32 *addr;
 		dma_addr_t dma;
 	} zero;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int tx_mult;			/* buffer size multiplier (percent) */
 	/*-------------------------------- RX part */
 	u32 serv_read;			/* host service read index */

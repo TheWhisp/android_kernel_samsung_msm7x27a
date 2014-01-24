@@ -22,10 +22,14 @@
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/amba/bus.h>
 #include <linux/amba/clcd.h>
@@ -34,6 +38,7 @@
 #include <linux/ata_platform.h>
 #include <linux/amba/mmci.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
 #include <linux/clkdev.h>
 #include <linux/mtd/physmap.h>
 
@@ -44,6 +49,12 @@
 #include <mach/hardware.h>
 #include <asm/irq.h>
 #include <asm/leds.h>
+=======
+#include <linux/mtd/physmap.h>
+
+#include <mach/hardware.h>
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/hardware/arm_timer.h>
 #include <asm/hardware/icst.h>
@@ -52,7 +63,10 @@
 #include <asm/mach/irq.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <asm/hardware/gic.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/platform.h>
 #include <mach/irqs.h>
@@ -234,6 +248,7 @@ struct mmci_platform_data realview_mmc1_plat_data = {
 	.cd_invert	= true,
 };
 
+<<<<<<< HEAD
 /*
  * Clock handling
  */
@@ -332,10 +347,13 @@ static struct clk_lookup lookups[] = {
 	},
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init realview_init_early(void)
 {
 	void __iomem *sys = __io_address(REALVIEW_SYS_BASE);
 
+<<<<<<< HEAD
 	if (machine_is_realview_pb1176())
 		oscvco_clk.vcoreg = sys + REALVIEW_SYS_OSC0_OFFSET;
 	else
@@ -343,6 +361,8 @@ void __init realview_init_early(void)
 
 	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	versatile_sched_clock_init(sys + REALVIEW_SYS_24MHz_OFFSET, 24000000);
 }
 
@@ -444,6 +464,7 @@ struct clcd_board clcd_plat_data = {
 	.remove		= versatile_clcd_remove_dma,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_LEDS
 #define VA_LEDS_BASE (__io_address(REALVIEW_SYS_BASE) + REALVIEW_SYS_LED_OFFSET)
 
@@ -482,6 +503,8 @@ void realview_leds_event(led_event_t ledevt)
 }
 #endif	/* CONFIG_LEDS */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Where is the timer (VA)?
  */
@@ -525,11 +548,15 @@ void __init realview_timer_init(unsigned int timer_irq)
  * Setup the memory banks.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void realview_fixup(struct machine_desc *mdesc, struct tag *tags, char **from,
 		    struct meminfo *meminfo)
 =======
 void realview_fixup(struct tag *tags, char **from, struct meminfo *meminfo)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void realview_fixup(struct tag *tags, char **from, struct meminfo *meminfo)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Most RealView platforms have 512MB contiguous RAM at 0x70000000.

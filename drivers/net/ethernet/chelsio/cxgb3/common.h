@@ -42,10 +42,16 @@
 #include <linux/mdio.h>
 #include "version.h"
 
+<<<<<<< HEAD
 #define CH_ERR(adap, fmt, ...)   dev_err(&adap->pdev->dev, fmt, ## __VA_ARGS__)
 #define CH_WARN(adap, fmt, ...)  dev_warn(&adap->pdev->dev, fmt, ## __VA_ARGS__)
 #define CH_ALERT(adap, fmt, ...) \
 	dev_printk(KERN_ALERT, &adap->pdev->dev, fmt, ## __VA_ARGS__)
+=======
+#define CH_ERR(adap, fmt, ...)   dev_err(&adap->pdev->dev, fmt, ##__VA_ARGS__)
+#define CH_WARN(adap, fmt, ...)  dev_warn(&adap->pdev->dev, fmt, ##__VA_ARGS__)
+#define CH_ALERT(adap, fmt, ...) dev_alert(&adap->pdev->dev, fmt, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * More powerful macro that selectively prints messages based on msg_enable.

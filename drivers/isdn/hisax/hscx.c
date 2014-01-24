@@ -5,10 +5,14 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -59,10 +63,14 @@ modehscx(struct BCState *bcs, int mode, int bc)
 	cs->BC_Write_Reg(cs, hscx, HSCX_RLCR, 0x0);
 	cs->BC_Write_Reg(cs, hscx, HSCX_CCR1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		test_bit(HW_IPAC, &cs->HW_Flags) ? 0x82 : 0x85);
 =======
 			 test_bit(HW_IPAC, &cs->HW_Flags) ? 0x82 : 0x85);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 test_bit(HW_IPAC, &cs->HW_Flags) ? 0x82 : 0x85);
+>>>>>>> refs/remotes/origin/master
 	cs->BC_Write_Reg(cs, hscx, HSCX_CCR2, 0x30);
 	cs->BC_Write_Reg(cs, hscx, HSCX_XCCR, 7);
 	cs->BC_Write_Reg(cs, hscx, HSCX_RCCR, 7);
@@ -74,6 +82,7 @@ modehscx(struct BCState *bcs, int mode, int bc)
 	if (bc == 0) {
 		cs->BC_Write_Reg(cs, hscx, HSCX_TSAX,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      test_bit(HW_IOM1, &cs->HW_Flags) ? 0x7 : bcs->hw.hscx.tsaxr0);
 		cs->BC_Write_Reg(cs, hscx, HSCX_TSAR,
 			      test_bit(HW_IOM1, &cs->HW_Flags) ? 0x7 : bcs->hw.hscx.tsaxr0);
@@ -82,11 +91,17 @@ modehscx(struct BCState *bcs, int mode, int bc)
 		cs->BC_Write_Reg(cs, hscx, HSCX_TSAR,
 				 test_bit(HW_IOM1, &cs->HW_Flags) ? 0x7 : bcs->hw.hscx.tsaxr0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 test_bit(HW_IOM1, &cs->HW_Flags) ? 0x7 : bcs->hw.hscx.tsaxr0);
+		cs->BC_Write_Reg(cs, hscx, HSCX_TSAR,
+				 test_bit(HW_IOM1, &cs->HW_Flags) ? 0x7 : bcs->hw.hscx.tsaxr0);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		cs->BC_Write_Reg(cs, hscx, HSCX_TSAX, bcs->hw.hscx.tsaxr1);
 		cs->BC_Write_Reg(cs, hscx, HSCX_TSAR, bcs->hw.hscx.tsaxr1);
 	}
 	switch (mode) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (L1_MODE_NULL):
 			cs->BC_Write_Reg(cs, hscx, HSCX_TSAX, 0x1f);
@@ -102,6 +117,8 @@ modehscx(struct BCState *bcs, int mode, int bc)
 			cs->BC_Write_Reg(cs, hscx, HSCX_MODE, 0x8c);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (L1_MODE_NULL):
 		cs->BC_Write_Reg(cs, hscx, HSCX_TSAX, 0x1f);
 		cs->BC_Write_Reg(cs, hscx, HSCX_TSAR, 0x1f);
@@ -115,7 +132,10 @@ modehscx(struct BCState *bcs, int mode, int bc)
 				 test_bit(HW_IPAC, &cs->HW_Flags) ? 0x8a : 0x8d);
 		cs->BC_Write_Reg(cs, hscx, HSCX_MODE, 0x8c);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (mode)
 		cs->BC_Write_Reg(cs, hscx, HSCX_CMDR, 0x41);
@@ -130,6 +150,7 @@ hscx_l2l1(struct PStack *st, int pr, void *arg)
 	struct sk_buff *skb = arg;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			spin_lock_irqsave(&bcs->cs->lock, flags);
@@ -181,6 +202,8 @@ hscx_l2l1(struct PStack *st, int pr, void *arg)
 			st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		spin_lock_irqsave(&bcs->cs->lock, flags);
 		if (bcs->tx_skb) {
@@ -230,7 +253,10 @@ hscx_l2l1(struct PStack *st, int pr, void *arg)
 		spin_unlock_irqrestore(&bcs->cs->lock, flags);
 		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -260,20 +286,28 @@ open_hscxstate(struct IsdnCardState *cs, struct BCState *bcs)
 		if (!(bcs->hw.hscx.rcvbuf = kmalloc(HSCX_BUFMAX, GFP_ATOMIC))) {
 			printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"HiSax: No memory for hscx.rcvbuf\n");
 =======
 			       "HiSax: No memory for hscx.rcvbuf\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "HiSax: No memory for hscx.rcvbuf\n");
+>>>>>>> refs/remotes/origin/master
 			test_and_clear_bit(BC_FLG_INIT, &bcs->Flag);
 			return (1);
 		}
 		if (!(bcs->blog = kmalloc(MAX_BLOG_SPACE, GFP_ATOMIC))) {
 			printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"HiSax: No memory for bcs->blog\n");
 =======
 			       "HiSax: No memory for bcs->blog\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "HiSax: No memory for bcs->blog\n");
+>>>>>>> refs/remotes/origin/master
 			test_and_clear_bit(BC_FLG_INIT, &bcs->Flag);
 			kfree(bcs->hw.hscx.rcvbuf);
 			bcs->hw.hscx.rcvbuf = NULL;

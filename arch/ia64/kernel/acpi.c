@@ -51,6 +51,7 @@
 #include <asm/machvec.h>
 #include <asm/page.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -58,6 +59,11 @@
 #include <asm/sal.h>
 #include <asm/cyclone.h>
 #include <asm/xen/hypervisor.h>
+=======
+#include <asm/numa.h>
+#include <asm/sal.h>
+#include <asm/cyclone.h>
+>>>>>>> refs/remotes/origin/master
 
 #define BAD_MADT_ENTRY(entry, end) (                                        \
 		(!entry) || (unsigned long)entry + sizeof(*entry) > end ||  \
@@ -92,10 +98,14 @@ acpi_get_sysname(void)
 	struct acpi_table_xsdt *xsdt;
 	struct acpi_table_header *hdr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DMAR
 =======
 #ifdef CONFIG_INTEL_IOMMU
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/master
 	u64 i, nentries;
 #endif
 
@@ -128,6 +138,7 @@ acpi_get_sysname(void)
 			return "uv";
 		else
 			return "sn2";
+<<<<<<< HEAD
 	} else if (xen_pv_domain() && !strcmp(hdr->oem_id, "XEN")) {
 		return "xen";
 	}
@@ -137,6 +148,11 @@ acpi_get_sysname(void)
 =======
 #ifdef CONFIG_INTEL_IOMMU
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/master
 	/* Look for Intel IOMMU */
 	nentries = (hdr->length - sizeof(*hdr)) /
 			 sizeof(xsdt->table_offset_entry[0]);
@@ -361,18 +377,24 @@ acpi_parse_int_src_ovr(struct acpi_subtable_header * header,
 	iosapic_override_isa_irq(p->source_irq, p->global_irq,
 				 ((p->inti_flags & ACPI_MADT_POLARITY_MASK) ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  ACPI_MADT_POLARITY_ACTIVE_HIGH) ?
 				 IOSAPIC_POL_HIGH : IOSAPIC_POL_LOW,
 				 ((p->inti_flags & ACPI_MADT_TRIGGER_MASK) ==
 				 ACPI_MADT_TRIGGER_EDGE) ?
 				 IOSAPIC_EDGE : IOSAPIC_LEVEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  ACPI_MADT_POLARITY_ACTIVE_LOW) ?
 				 IOSAPIC_POL_LOW : IOSAPIC_POL_HIGH,
 				 ((p->inti_flags & ACPI_MADT_TRIGGER_MASK) ==
 				 ACPI_MADT_TRIGGER_LEVEL) ?
 				 IOSAPIC_LEVEL : IOSAPIC_EDGE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -442,7 +464,11 @@ static int __init acpi_parse_madt(struct acpi_table_header *table)
 #define PXM_FLAG_LEN ((MAX_PXM_DOMAINS + 1)/32)
 
 static int __initdata srat_num_cpus;	/* number of cpus */
+<<<<<<< HEAD
 static u32 __devinitdata pxm_flag[PXM_FLAG_LEN];
+=======
+static u32 pxm_flag[PXM_FLAG_LEN];
+>>>>>>> refs/remotes/origin/master
 #define pxm_bit_set(bit)	(set_bit(bit,(void *)pxm_flag))
 #define pxm_bit_test(bit)	(test_bit(bit,(void *)pxm_flag))
 static struct acpi_table_slit __initdata *slit_table;
@@ -517,7 +543,11 @@ acpi_numa_processor_affinity_init(struct acpi_srat_cpu_affinity *pa)
 	srat_num_cpus++;
 }
 
+<<<<<<< HEAD
 void __init
+=======
+int __init
+>>>>>>> refs/remotes/origin/master
 acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
 {
 	unsigned long paddr, size;
@@ -532,7 +562,11 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
 
 	/* Ignore disabled entries */
 	if (!(ma->flags & ACPI_SRAT_MEM_ENABLED))
+<<<<<<< HEAD
 		return;
+=======
+		return -1;
+>>>>>>> refs/remotes/origin/master
 
 	/* record this node in proximity bitmap */
 	pxm_bit_set(pxm);
@@ -551,6 +585,10 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
 	p->size = size;
 	p->nid = pxm;
 	num_node_memblks++;
+<<<<<<< HEAD
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init acpi_numa_arch_fixup(void)
@@ -652,6 +690,10 @@ int acpi_register_gsi(struct device *dev, u32 gsi, int triggering, int polarity)
 				      ACPI_EDGE_SENSITIVE) ? IOSAPIC_EDGE :
 				     IOSAPIC_LEVEL);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(acpi_register_gsi);
+>>>>>>> refs/remotes/origin/master
 
 void acpi_unregister_gsi(u32 gsi)
 {
@@ -663,6 +705,10 @@ void acpi_unregister_gsi(u32 gsi)
 
 	iosapic_unregister_intr(gsi);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(acpi_unregister_gsi);
+>>>>>>> refs/remotes/origin/master
 
 static int __init acpi_parse_fadt(struct acpi_table_header *table)
 {
@@ -824,7 +870,11 @@ int acpi_isa_irq_to_gsi(unsigned isa_irq, u32 *gsi)
  *  ACPI based hotplug CPU support
  */
 #ifdef CONFIG_ACPI_HOTPLUG_CPU
+<<<<<<< HEAD
 static __cpuinit
+=======
+static
+>>>>>>> refs/remotes/origin/master
 int acpi_map_cpu2node(acpi_handle handle, int cpu, int physid)
 {
 #ifdef CONFIG_ACPI_NUMA
@@ -860,18 +910,24 @@ early_param("additional_cpus", setup_additional_cpus);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * cpu_possible_map should be static, it cannot change as CPUs
  * are onlined, or offlined. The reason is per-cpu data-structures
  * are allocated by some modules at init time, and dont expect to
  * do this dynamically on cpu arrival/departure.
  * cpu_present_map on the other hand can change dynamically.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * cpu_possible_mask should be static, it cannot change as CPUs
  * are onlined, or offlined. The reason is per-cpu data-structures
  * are allocated by some modules at init time, and dont expect to
  * do this dynamically on cpu arrival/departure.
  * cpu_present_mask on the other hand can change dynamically.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * In case when cpu_hotplug is not compiled, then we resort to current
  * behaviour, which is cpu_possible == cpu_present.
  * - Ashok Raj
@@ -907,6 +963,7 @@ __init void prefill_possible_map(void)
 		set_cpu_possible(i, true);
 }
 
+<<<<<<< HEAD
 static int __cpuinit _acpi_map_lsapic(acpi_handle handle, int *pcpu)
 {
 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
@@ -941,6 +998,12 @@ static int __cpuinit _acpi_map_lsapic(acpi_handle handle, int *pcpu)
 	kfree(buffer.pointer);
 	buffer.length = ACPI_ALLOCATE_BUFFER;
 	buffer.pointer = NULL;
+=======
+static int _acpi_map_lsapic(acpi_handle handle, int physid, int *pcpu)
+{
+	cpumask_t tmp_map;
+	int cpu;
+>>>>>>> refs/remotes/origin/master
 
 	cpumask_complement(&tmp_map, cpu_present_mask);
 	cpu = cpumask_first(&tmp_map);
@@ -950,10 +1013,14 @@ static int __cpuinit _acpi_map_lsapic(acpi_handle handle, int *pcpu)
 	acpi_map_cpu2node(handle, cpu, physid);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_set(cpu, cpu_present_map);
 =======
 	set_cpu_present(cpu, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_present(cpu, true);
+>>>>>>> refs/remotes/origin/master
 	ia64_cpu_to_sapicid[cpu] = physid;
 
 	acpi_processor_set_pdc(handle);
@@ -963,9 +1030,15 @@ static int __cpuinit _acpi_map_lsapic(acpi_handle handle, int *pcpu)
 }
 
 /* wrapper to silence section mismatch warning */
+<<<<<<< HEAD
 int __ref acpi_map_lsapic(acpi_handle handle, int *pcpu)
 {
 	return _acpi_map_lsapic(handle, pcpu);
+=======
+int __ref acpi_map_lsapic(acpi_handle handle, int physid, int *pcpu)
+{
+	return _acpi_map_lsapic(handle, physid, pcpu);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(acpi_map_lsapic);
 
@@ -973,10 +1046,14 @@ int acpi_unmap_lsapic(int cpu)
 {
 	ia64_cpu_to_sapicid[cpu] = -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_clear(cpu, cpu_present_map);
 =======
 	set_cpu_present(cpu, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_present(cpu, false);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_ACPI_NUMA
 	/* NUMA specific cleanup's */
@@ -989,8 +1066,13 @@ EXPORT_SYMBOL(acpi_unmap_lsapic);
 #endif				/* CONFIG_ACPI_HOTPLUG_CPU */
 
 #ifdef CONFIG_ACPI_NUMA
+<<<<<<< HEAD
 static acpi_status __devinit
 acpi_map_iosapic(acpi_handle handle, u32 depth, void *context, void **ret)
+=======
+static acpi_status acpi_map_iosapic(acpi_handle handle, u32 depth,
+				    void *context, void **ret)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
 	union acpi_object *obj;

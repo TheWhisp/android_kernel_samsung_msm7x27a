@@ -2,10 +2,14 @@
  *	w1_family.h
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
 =======
  * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,15 +33,23 @@
 #include <linux/types.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #define W1_FAMILY_DEFAULT	0
 #define W1_FAMILY_SMEM_01	0x01
 #define W1_FAMILY_SMEM_81	0x81
 #define W1_THERM_DS18S20 	0x10
+<<<<<<< HEAD
+=======
+#define W1_FAMILY_DS28E04	0x1C
+>>>>>>> refs/remotes/origin/master
 #define W1_COUNTER_DS2423	0x1D
 #define W1_THERM_DS1822  	0x22
 #define W1_EEPROM_DS2433  	0x23
@@ -47,10 +59,17 @@
 #define W1_FAMILY_DS2760	0x30
 #define W1_FAMILY_DS2780	0x32
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define W1_FAMILY_DS2781	0x3D
 #define W1_THERM_DS28EA00	0x42
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define W1_FAMILY_DS2413	0x3A
+#define W1_THERM_DS1825		0x3B
+#define W1_FAMILY_DS2781	0x3D
+#define W1_THERM_DS28EA00	0x42
+>>>>>>> refs/remotes/origin/master
 
 #define MAXNAMELEN		32
 
@@ -60,6 +79,10 @@ struct w1_family_ops
 {
 	int  (* add_slave)(struct w1_slave *);
 	void (* remove_slave)(struct w1_slave *);
+<<<<<<< HEAD
+=======
+	const struct attribute_group **groups;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct w1_family

@@ -86,7 +86,11 @@ fail:
 }
 EXPORT_SYMBOL(tps6105x_mask_and_set);
 
+<<<<<<< HEAD
 static int __devinit tps6105x_startup(struct tps6105x *tps6105x)
+=======
+static int tps6105x_startup(struct tps6105x *tps6105x)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	u8 regval;
@@ -133,7 +137,11 @@ static struct mfd_cell tps6105x_cells[] = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit tps6105x_probe(struct i2c_client *client,
+=======
+static int tps6105x_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 			const struct i2c_device_id *id)
 {
 	struct tps6105x			*tps6105x;
@@ -147,7 +155,11 @@ static int __devinit tps6105x_probe(struct i2c_client *client,
 
 	i2c_set_clientdata(client, tps6105x);
 	tps6105x->client = client;
+<<<<<<< HEAD
 	pdata = client->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	tps6105x->pdata = pdata;
 	mutex_init(&tps6105x->lock);
 
@@ -188,7 +200,11 @@ static int __devinit tps6105x_probe(struct i2c_client *client,
 	}
 
 	ret = mfd_add_devices(&client->dev, 0, tps6105x_cells,
+<<<<<<< HEAD
 		ARRAY_SIZE(tps6105x_cells), NULL, 0);
+=======
+			      ARRAY_SIZE(tps6105x_cells), NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto fail;
 
@@ -199,7 +215,11 @@ fail:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit tps6105x_remove(struct i2c_client *client)
+=======
+static int tps6105x_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tps6105x *tps6105x = i2c_get_clientdata(client);
 
@@ -226,7 +246,11 @@ static struct i2c_driver tps6105x_driver = {
 		.name	= "tps6105x",
 	},
 	.probe		= tps6105x_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(tps6105x_remove),
+=======
+	.remove		= tps6105x_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= tps6105x_id,
 };
 

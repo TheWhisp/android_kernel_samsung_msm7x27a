@@ -37,6 +37,10 @@ int  bfad_im_scsi_host_alloc(struct bfad_s *bfad,
 		struct bfad_im_port_s *im_port, struct device *dev);
 void bfad_im_scsi_host_free(struct bfad_s *bfad,
 				struct bfad_im_port_s *im_port);
+<<<<<<< HEAD
+=======
+u32 bfad_im_supported_speeds(struct bfa_s *bfa);
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_FCP_TARGET 1024
 #define MAX_FCP_LUN 16384
@@ -92,9 +96,13 @@ struct bfad_itnim_s {
 	struct bfa_itnim_s *bfa_itnim;
 	u16        scsi_tgt_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16	   channel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16	   channel;
+>>>>>>> refs/remotes/origin/master
 	u16        queue_work;
 	unsigned long	last_ramp_up_time;
 	unsigned long	last_queue_full_time;
@@ -120,9 +128,12 @@ struct bfad_im_s {
 	struct workqueue_struct *drv_workq;
 	char            drv_workq_name[KOBJ_NAME_LEN];
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct work_struct	aen_im_notify_work;
 };
 
@@ -147,7 +158,10 @@ struct bfad_im_s {
 			   &(_drv)->im->aen_im_notify_work);		      \
 } while (0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct Scsi_Host *bfad_scsi_host_alloc(struct bfad_im_port_s *im_port,
 				struct bfad_s *);
 bfa_status_t bfad_thread_workq(struct bfad_s *bfad);
@@ -173,7 +187,10 @@ extern struct device_attribute *bfad_im_vport_attrs[];
 irqreturn_t bfad_intx(int irq, void *dev_id);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int bfad_im_bsg_request(struct fc_bsg_job *job);
 int bfad_im_bsg_timeout(struct fc_bsg_job *job);
 
@@ -203,5 +220,8 @@ int bfad_im_bsg_timeout(struct fc_bsg_job *job);
 	}								\
 } while (0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

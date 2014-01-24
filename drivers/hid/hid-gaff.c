@@ -29,6 +29,7 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 #include <linux/hid.h>
 <<<<<<< HEAD
@@ -39,6 +40,13 @@
 
 #ifdef CONFIG_GREENASIA_FF
 #include "usbhid/usbhid.h"
+=======
+#include <linux/hid.h>
+#include <linux/module.h>
+#include "hid-ids.h"
+
+#ifdef CONFIG_GREENASIA_FF
+>>>>>>> refs/remotes/origin/master
 
 struct gaff_device {
 	struct hid_report *report;
@@ -66,14 +74,22 @@ static int hid_gaff_play(struct input_dev *dev, void *data,
 	gaff->report->field[0]->value[4] = left;
 	gaff->report->field[0]->value[5] = 0;
 	dbg_hid("running with 0x%02x 0x%02x", left, right);
+<<<<<<< HEAD
 	usbhid_submit_report(hid, gaff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, gaff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	gaff->report->field[0]->value[0] = 0xfa;
 	gaff->report->field[0]->value[1] = 0xfe;
 	gaff->report->field[0]->value[2] = 0x0;
 	gaff->report->field[0]->value[4] = 0x0;
 
+<<<<<<< HEAD
 	usbhid_submit_report(hid, gaff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, gaff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -125,12 +141,20 @@ static int gaff_init(struct hid_device *hid)
 	gaff->report->field[0]->value[1] = 0x00;
 	gaff->report->field[0]->value[2] = 0x00;
 	gaff->report->field[0]->value[3] = 0x00;
+<<<<<<< HEAD
 	usbhid_submit_report(hid, gaff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, gaff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	gaff->report->field[0]->value[0] = 0xfa;
 	gaff->report->field[0]->value[1] = 0xfe;
 
+<<<<<<< HEAD
 	usbhid_submit_report(hid, gaff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, gaff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	hid_info(hid, "Force Feedback for GreenAsia 0x12 devices by Lukasz Lubojanski <lukasz@lubojanski.info>\n");
 
@@ -179,6 +203,7 @@ static struct hid_driver ga_driver = {
 	.id_table = ga_devices,
 	.probe = ga_probe,
 };
+<<<<<<< HEAD
 
 static int __init ga_init(void)
 {
@@ -192,4 +217,8 @@ static void __exit ga_exit(void)
 
 module_init(ga_init);
 module_exit(ga_exit);
+=======
+module_hid_driver(ga_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

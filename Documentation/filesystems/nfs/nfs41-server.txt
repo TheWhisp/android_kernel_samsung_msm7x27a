@@ -40,6 +40,7 @@ interoperability problems with future clients.  Known issues:
 	  conformant with the spec (for example, we don't use kerberos
 	  on the backchannel correctly).
 <<<<<<< HEAD
+<<<<<<< HEAD
 	- no trunking support: no clients currently take advantage of
 	  trunking, but this is a mandatory feature, and its use is
 	  recommended to clients in a number of places.  (E.g. to ensure
@@ -59,10 +60,13 @@ interoperability problems with future clients.  Known issues:
 	  clients may fail.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	- We do not support SSV, which provides security for shared
 	  client-server state (thus preventing unauthorized tampering
 	  with locks and opens, for example).  It is mandatory for
 	  servers to support this, though no clients use it yet.
+<<<<<<< HEAD
 	- Mandatory operations which we do not support, such as
 <<<<<<< HEAD
 	  DESTROY_CLIENTID, FREE_STATEID, SECINFO_NO_NAME, and
@@ -74,11 +78,14 @@ interoperability problems with future clients.  Known issues:
 	  clients should not be expected to know how to recover from the
 	  case where they are not supported.  This will eventually cause
 	  interoperability failures.
+=======
+>>>>>>> refs/remotes/origin/master
 
 In addition, some limitations are inherited from the current NFSv4
 implementation:
 
 	- Incomplete delegation enforcement: if a file is renamed or
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  unlinked, a client holding a delegation may continue to
 	  indefinitely allow opens of the file under the old name.
@@ -87,6 +94,11 @@ implementation:
 	  continue to indefinitely allow opens of the file under the old
 	  name.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  unlinked by a local process, a client holding a delegation may
+	  continue to indefinitely allow opens of the file under the old
+	  name.
+>>>>>>> refs/remotes/origin/master
 
 The table below, taken from the NFSv4.1 document, lists
 the operations that are mandatory to implement (REQ), optional
@@ -114,12 +126,17 @@ Operations
    |                      | MNI        | or OPT)      |                |
    +----------------------+------------+--------------+----------------+
    | ACCESS               | REQ        |              | Section 18.1   |
+<<<<<<< HEAD
 NS | BACKCHANNEL_CTL      | REQ        |              | Section 18.33  |
 <<<<<<< HEAD
 NS | BIND_CONN_TO_SESSION | REQ        |              | Section 18.34  |
 =======
 I  | BIND_CONN_TO_SESSION | REQ        |              | Section 18.34  |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+I  | BACKCHANNEL_CTL      | REQ        |              | Section 18.33  |
+I  | BIND_CONN_TO_SESSION | REQ        |              | Section 18.34  |
+>>>>>>> refs/remotes/origin/master
    | CLOSE                | REQ        |              | Section 18.2   |
    | COMMIT               | REQ        |              | Section 18.3   |
    | CREATE               | REQ        |              | Section 18.4   |
@@ -128,6 +145,7 @@ NS*| DELEGPURGE           | OPT        | FDELG (REQ)  | Section 18.5   |
    | DELEGRETURN          | OPT        | FDELG,       | Section 18.6   |
    |                      |            | DDELG, pNFS  |                |
    |                      |            | (REQ)        |                |
+<<<<<<< HEAD
 NS | DESTROY_CLIENTID     | REQ        |              | Section 18.50  |
 I  | DESTROY_SESSION      | REQ        |              | Section 18.37  |
 I  | EXCHANGE_ID          | REQ        |              | Section 18.35  |
@@ -136,6 +154,12 @@ NS | FREE_STATEID         | REQ        |              | Section 18.38  |
 =======
 I  | FREE_STATEID         | REQ        |              | Section 18.38  |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+I  | DESTROY_CLIENTID     | REQ        |              | Section 18.50  |
+I  | DESTROY_SESSION      | REQ        |              | Section 18.37  |
+I  | EXCHANGE_ID          | REQ        |              | Section 18.35  |
+I  | FREE_STATEID         | REQ        |              | Section 18.38  |
+>>>>>>> refs/remotes/origin/master
    | GETATTR              | REQ        |              | Section 18.7   |
 P  | GETDEVICEINFO        | OPT        | pNFS (REQ)   | Section 18.40  |
 P  | GETDEVICELIST        | OPT        | pNFS (OPT)   | Section 18.41  |
@@ -170,10 +194,14 @@ NS*| OPENATTR             | OPT        |              | Section 18.17  |
    | SAVEFH               | REQ        |              | Section 18.28  |
    | SECINFO              | REQ        |              | Section 18.29  |
 <<<<<<< HEAD
+<<<<<<< HEAD
 NS | SECINFO_NO_NAME      | REC        | pNFS files   | Section 18.45, |
 =======
 I  | SECINFO_NO_NAME      | REC        | pNFS files   | Section 18.45, |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+I  | SECINFO_NO_NAME      | REC        | pNFS files   | Section 18.45, |
+>>>>>>> refs/remotes/origin/master
    |                      |            | layout (REQ) | Section 13.12  |
 I  | SEQUENCE             | REQ        |              | Section 18.46  |
    | SETATTR              | REQ        |              | Section 18.30  |
@@ -181,10 +209,14 @@ I  | SEQUENCE             | REQ        |              | Section 18.46  |
    | SETCLIENTID_CONFIRM  | MNI        |              | N/A            |
 NS | SET_SSV              | REQ        |              | Section 18.47  |
 <<<<<<< HEAD
+<<<<<<< HEAD
 NS | TEST_STATEID         | REQ        |              | Section 18.48  |
 =======
 I  | TEST_STATEID         | REQ        |              | Section 18.48  |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+I  | TEST_STATEID         | REQ        |              | Section 18.48  |
+>>>>>>> refs/remotes/origin/master
    | VERIFY               | REQ        |              | Section 18.31  |
 NS*| WANT_DELEGATION      | OPT        | FDELG (OPT)  | Section 18.49  |
    | WRITE                | REQ        |              | Section 18.32  |
@@ -233,11 +265,15 @@ EXCHANGE_ID:
 
 CREATE_SESSION:
 * backchannel attributes are ignored
+<<<<<<< HEAD
 * backchannel security parameters are ignored
+=======
+>>>>>>> refs/remotes/origin/master
 
 SEQUENCE:
 * no support for dynamic slot table renegotiation (optional)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 nfsv4.1 COMPOUND rules:
 The following cases aren't supported yet:
@@ -247,11 +283,14 @@ The following cases aren't supported yet:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Nonstandard compound limitations:
 * No support for a sessions fore channel RPC compound that requires both a
   ca_maxrequestsize request and a ca_maxresponsesize reply, so we may
   fail to live up to the promise we made in CREATE_SESSION fore channel
   negotiation.
+<<<<<<< HEAD
 * No more than one IO operation (read, write, readdir) allowed per
   compound.
 <<<<<<< HEAD
@@ -259,3 +298,9 @@ Nonstandard compound limitations:
 
 See also http://wiki.linux-nfs.org/wiki/index.php/Server_4.0_and_4.1_issues.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+* No more than one read-like operation allowed per compound; encoding
+  replies that cross page boundaries (except for read data) not handled.
+
+See also http://wiki.linux-nfs.org/wiki/index.php/Server_4.0_and_4.1_issues.
+>>>>>>> refs/remotes/origin/master

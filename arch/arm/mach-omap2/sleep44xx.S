@@ -14,10 +14,17 @@
 #include <asm/memory.h>
 #include <asm/hardware/cache-l2x0.h>
 
+<<<<<<< HEAD
 #include <plat/omap44xx.h>
 #include <mach/omap-secure.h>
 
 #include "common.h"
+=======
+#include "omap-secure.h"
+
+#include "common.h"
+#include "omap44xx.h"
+>>>>>>> refs/remotes/origin/master
 #include "omap4-sar-layout.h"
 
 #if defined(CONFIG_SMP) && defined(CONFIG_PM)
@@ -34,6 +41,11 @@ ppa_zero_params:
 ppa_por_params:
 	.word		1, 0
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARCH_OMAP4
+
+>>>>>>> refs/remotes/origin/master
 /*
  * =============================
  * == CPU suspend finisher ==
@@ -56,9 +68,19 @@ ppa_por_params:
  * The restore function pointer is stored at CPUx_WAKEUP_NS_PA_ADDR_OFFSET.
  * It returns to the caller for CPU INACTIVE and ON power states or in case
  * CPU failed to transition to targeted OFF/DORMANT state.
+<<<<<<< HEAD
  */
 ENTRY(omap4_finish_suspend)
 	stmfd	sp!, {lr}
+=======
+ *
+ * omap4_finish_suspend() calls v7_flush_dcache_all() which doesn't save
+ * stack frame and it expects the caller to take care of it. Hence the entire
+ * stack frame is saved to avoid possible stack corruption.
+ */
+ENTRY(omap4_finish_suspend)
+	stmfd	sp!, {r4-r12, lr}
+>>>>>>> refs/remotes/origin/master
 	cmp	r0, #0x0
 	beq	do_WFI				@ No lowpower state, jump to WFI
 
@@ -226,7 +248,11 @@ scu_gp_clear:
 skip_scu_gp_clear:
 	isb
 	dsb
+<<<<<<< HEAD
 	ldmfd	sp!, {pc}
+=======
+	ldmfd	sp!, {r4-r12, pc}
+>>>>>>> refs/remotes/origin/master
 ENDPROC(omap4_finish_suspend)
 
 /*
@@ -322,7 +348,13 @@ skip_l2en:
 
 	b	cpu_resume			@ Jump to generic resume
 ENDPROC(omap4_cpu_resume)
+<<<<<<< HEAD
 #endif
+=======
+#endif	/* CONFIG_ARCH_OMAP4 */
+
+#endif	/* defined(CONFIG_SMP) && defined(CONFIG_PM) */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_OMAP4_ERRATA_I688
 ENTRY(omap_bus_sync)

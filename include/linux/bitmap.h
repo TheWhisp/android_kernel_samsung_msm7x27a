@@ -45,7 +45,10 @@
  * bitmap_set(dst, pos, nbits)			Set specified bit area
  * bitmap_clear(dst, pos, nbits)		Clear specified bit area
  * bitmap_find_next_zero_area(buf, len, pos, n, mask)	Find bit free area
+<<<<<<< HEAD
  * bitmap_find_next_zero_area_off(buf, len, pos, n, mask)	as above
+=======
+>>>>>>> refs/remotes/origin/master
  * bitmap_shift_right(dst, src, n, nbits)	*dst = *src >> n
  * bitmap_shift_left(dst, src, n, nbits)	*dst = *src << n
  * bitmap_remap(dst, src, old, new, nbits)	*dst = map(old, new)(src)
@@ -115,6 +118,7 @@ extern int __bitmap_weight(const unsigned long *bitmap, int bits);
 
 extern void bitmap_set(unsigned long *map, int i, int len);
 extern void bitmap_clear(unsigned long *map, int start, int nr);
+<<<<<<< HEAD
 
 extern unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
 						    unsigned long size,
@@ -133,6 +137,13 @@ bitmap_find_next_zero_area(unsigned long *map,
 	return bitmap_find_next_zero_area_off(map, size, start, nr,
 					      align_mask, 0);
 }
+=======
+extern unsigned long bitmap_find_next_zero_area(unsigned long *map,
+					 unsigned long size,
+					 unsigned long start,
+					 unsigned int nr,
+					 unsigned long align_mask);
+>>>>>>> refs/remotes/origin/master
 
 extern int bitmap_scnprintf(char *buf, unsigned int len,
 			const unsigned long *src, int nbits);
@@ -159,12 +170,18 @@ extern void bitmap_release_region(unsigned long *bitmap, int pos, int order);
 extern int bitmap_allocate_region(unsigned long *bitmap, int pos, int order);
 extern void bitmap_copy_le(void *dst, const unsigned long *src, int nbits);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 extern int bitmap_ord_to_pos(const unsigned long *bitmap, int n, int bits);
 
 #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) % BITS_PER_LONG))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int bitmap_ord_to_pos(const unsigned long *bitmap, int n, int bits);
+
+#define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) % BITS_PER_LONG))
+>>>>>>> refs/remotes/origin/master
 #define BITMAP_LAST_WORD_MASK(nbits)					\
 (									\
 	((nbits) % BITS_PER_LONG) ?					\

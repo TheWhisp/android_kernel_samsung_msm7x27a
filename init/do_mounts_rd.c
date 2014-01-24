@@ -1,3 +1,15 @@
+<<<<<<< HEAD
+=======
+/*
+ * Many of the syscalls used in this file expect some of the arguments
+ * to be __user pointers not __kernel pointers.  To limit the sparse
+ * noise, turn off sparse checking for this file.
+ */
+#ifdef __CHECKER__
+#undef __CHECKER__
+#warning "Sparse checking disabled for this file"
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel.h>
 #include <linux/fs.h>
@@ -48,6 +60,14 @@ static int __init crd_load(int in_fd, int out_fd, decompress_fn deco);
  *	cramfs
  *	squashfs
  *	gzip
+<<<<<<< HEAD
+=======
+ *	bzip2
+ *	lzma
+ *	xz
+ *	lzo
+ *	lz4
+>>>>>>> refs/remotes/origin/master
  */
 static int __init
 identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
@@ -55,9 +75,12 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 	const int size = 512;
 	struct minix_super_block *minixsb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ext2_super_block *ext2sb;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct romfs_super_block *romfsb;
 	struct cramfs_super *cramfsb;
 	struct squashfs_super_block *squashfsb;
@@ -65,9 +88,13 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 	unsigned char *buf;
 	const char *compress_name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long n;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long n;
+>>>>>>> refs/remotes/origin/master
 
 	buf = kmalloc(size, GFP_KERNEL);
 	if (!buf)
@@ -75,9 +102,12 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 
 	minixsb = (struct minix_super_block *) buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ext2sb = (struct ext2_super_block *) buf;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	romfsb = (struct romfs_super_block *) buf;
 	cramfsb = (struct cramfs_super *) buf;
 	squashfsb = (struct squashfs_super_block *) buf;
@@ -131,7 +161,10 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Read 512 bytes further to check if cramfs is padded
 	 */
 	sys_lseek(fd, start_block * BLOCK_SIZE + 0x200, 0);
@@ -146,7 +179,10 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 	}
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Read block 1 to test for minix and ext2 superblock
 	 */
 	sys_lseek(fd, (start_block+1) * BLOCK_SIZE, 0);
@@ -164,6 +200,7 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 
 	/* Try ext2 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ext2sb->s_magic == cpu_to_le16(EXT2_SUPER_MAGIC)) {
 		printk(KERN_NOTICE
 		       "RAMDISK: ext2 filesystem found at block %d\n",
@@ -171,13 +208,18 @@ identify_ramdisk_image(int fd, int start_block, decompress_fn *decompressor)
 		nblocks = le32_to_cpu(ext2sb->s_blocks_count) <<
 			le32_to_cpu(ext2sb->s_log_block_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	n = ext2_image_size(buf);
 	if (n) {
 		printk(KERN_NOTICE
 		       "RAMDISK: ext2 filesystem found at block %d\n",
 		       start_block);
 		nblocks = n;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 
@@ -201,6 +243,7 @@ int __init rd_load_image(char *from)
 	unsigned short rotate = 0;
 	decompress_fn decompressor = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if !defined(CONFIG_S390) && !defined(CONFIG_PPC_ISERIES)
 =======
 #if !defined(CONFIG_S390)
@@ -209,6 +252,13 @@ int __init rd_load_image(char *from)
 #endif
 
 	out_fd = sys_open((const char __user __force *) "/dev/ram", O_RDWR, 0);
+=======
+#if !defined(CONFIG_S390)
+	char rotator[4] = { '|' , '/' , '-' , '\\' };
+#endif
+
+	out_fd = sys_open("/dev/ram", O_RDWR, 0);
+>>>>>>> refs/remotes/origin/master
 	if (out_fd < 0)
 		goto out;
 
@@ -291,10 +341,14 @@ int __init rd_load_image(char *from)
 		sys_read(in_fd, buf, BLOCK_SIZE);
 		sys_write(out_fd, buf, BLOCK_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if !defined(CONFIG_S390) && !defined(CONFIG_PPC_ISERIES)
 =======
 #if !defined(CONFIG_S390)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !defined(CONFIG_S390)
+>>>>>>> refs/remotes/origin/master
 		if (!(i % 16)) {
 			printk("%c\b", rotator[rotate & 0x3]);
 			rotate++;
@@ -311,7 +365,11 @@ noclose_input:
 	sys_close(out_fd);
 out:
 	kfree(buf);
+<<<<<<< HEAD
 	sys_unlink((const char __user __force *) "/dev/ram");
+=======
+	sys_unlink("/dev/ram");
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -364,6 +422,16 @@ static int __init crd_load(int in_fd, int out_fd, decompress_fn deco)
 	int result;
 	crd_infd = in_fd;
 	crd_outfd = out_fd;
+<<<<<<< HEAD
+=======
+
+	if (!deco) {
+		pr_emerg("Invalid ramdisk decompression routine.  "
+			 "Select appropriate config option.\n");
+		panic("Could not decompress initial ramdisk image.");
+	}
+
+>>>>>>> refs/remotes/origin/master
 	result = deco(NULL, 0, compr_fill, compr_flush, NULL, NULL, error);
 	if (decompress_error)
 		result = 1;

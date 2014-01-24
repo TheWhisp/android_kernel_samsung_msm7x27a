@@ -11,10 +11,14 @@
 #include <linux/percpu.h>
 #include <linux/nmi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kprobes.h>
 #include <linux/kernel_stat.h>
 #include <linux/reboot.h>
@@ -27,9 +31,12 @@
 #include <asm/ptrace.h>
 #include <asm/pcr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/perfctr.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "kstack.h"
 
@@ -116,7 +123,11 @@ notrace __kprobes void perfctr_irq(int irq, struct pt_regs *regs)
 		       pt_regs_trap_type(regs), SIGINT) == NOTIFY_STOP)
 		touched = 1;
 	else
+<<<<<<< HEAD
 		pcr_ops->write(PCR_PIC_PRIV);
+=======
+		pcr_ops->write_pcr(0, pcr_ops->pcr_nmi_disable);
+>>>>>>> refs/remotes/origin/master
 
 	sum = local_cpu_data().irq0_irqs;
 	if (__get_cpu_var(nmi_touch)) {
@@ -133,8 +144,13 @@ notrace __kprobes void perfctr_irq(int irq, struct pt_regs *regs)
 		__this_cpu_write(alert_counter, 0);
 	}
 	if (__get_cpu_var(wd_enabled)) {
+<<<<<<< HEAD
 		write_pic(picl_value(nmi_hz));
 		pcr_ops->write(pcr_enable);
+=======
+		pcr_ops->write_pic(0, pcr_ops->nmi_picl_value(nmi_hz));
+		pcr_ops->write_pcr(0, pcr_ops->pcr_nmi_enable);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	restore_hardirq_stack(orig_sp);
@@ -173,7 +189,11 @@ static void report_broken_nmi(int cpu, int *prev_nmi_count)
 
 void stop_nmi_watchdog(void *unused)
 {
+<<<<<<< HEAD
 	pcr_ops->write(PCR_PIC_PRIV);
+=======
+	pcr_ops->write_pcr(0, pcr_ops->pcr_nmi_disable);
+>>>>>>> refs/remotes/origin/master
 	__get_cpu_var(wd_enabled) = 0;
 	atomic_dec(&nmi_active);
 }
@@ -230,10 +250,17 @@ void start_nmi_watchdog(void *unused)
 	__get_cpu_var(wd_enabled) = 1;
 	atomic_inc(&nmi_active);
 
+<<<<<<< HEAD
 	pcr_ops->write(PCR_PIC_PRIV);
 	write_pic(picl_value(nmi_hz));
 
 	pcr_ops->write(pcr_enable);
+=======
+	pcr_ops->write_pcr(0, pcr_ops->pcr_nmi_disable);
+	pcr_ops->write_pic(0, pcr_ops->nmi_picl_value(nmi_hz));
+
+	pcr_ops->write_pcr(0, pcr_ops->pcr_nmi_enable);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void nmi_adjust_hz_one(void *unused)
@@ -241,10 +268,17 @@ static void nmi_adjust_hz_one(void *unused)
 	if (!__get_cpu_var(wd_enabled))
 		return;
 
+<<<<<<< HEAD
 	pcr_ops->write(PCR_PIC_PRIV);
 	write_pic(picl_value(nmi_hz));
 
 	pcr_ops->write(pcr_enable);
+=======
+	pcr_ops->write_pcr(0, pcr_ops->pcr_nmi_disable);
+	pcr_ops->write_pic(0, pcr_ops->nmi_picl_value(nmi_hz));
+
+	pcr_ops->write_pcr(0, pcr_ops->pcr_nmi_enable);
+>>>>>>> refs/remotes/origin/master
 }
 
 void nmi_adjust_hz(unsigned int new_hz)

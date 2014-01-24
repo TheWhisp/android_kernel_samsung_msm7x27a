@@ -10,10 +10,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -23,18 +28,26 @@
 #include <linux/err.h>
 #include <linux/mount.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/parser.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/parser.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/jffs2.h>
 #include <linux/pagemap.h>
 #include <linux/mtd/super.h>
 #include <linux/ctype.h>
 #include <linux/namei.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/seq_file.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/exportfs.h>
 #include "compr.h"
 #include "nodelist.h"
@@ -57,9 +70,12 @@ static void jffs2_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(jffs2_inode_cachep, JFFS2_INODE_INFO(inode));
 }
 
@@ -76,6 +92,7 @@ static void jffs2_i_init_once(void *foo)
 	inode_init_once(&f->vfs_inode);
 }
 
+<<<<<<< HEAD
 static void jffs2_write_super(struct super_block *sb)
 {
 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
@@ -97,6 +114,8 @@ static void jffs2_write_super(struct super_block *sb)
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *jffs2_compr_name(unsigned int compr)
 {
 	switch (compr) {
@@ -124,16 +143,30 @@ static int jffs2_show_options(struct seq_file *s, struct dentry *root)
 
 	if (opts->override_compr)
 		seq_printf(s, ",compr=%s", jffs2_compr_name(opts->compr));
+<<<<<<< HEAD
+=======
+	if (opts->rp_size)
+		seq_printf(s, ",rp_size=%u", opts->rp_size / 1024);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int jffs2_sync_fs(struct super_block *sb, int wait)
 {
 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
 
+<<<<<<< HEAD
 	jffs2_write_super(sb);
+=======
+#ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+	cancel_delayed_work_sync(&c->wbuf_dwork);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&c->alloc_sem);
 	jffs2_flush_wbuf_pad(c);
@@ -188,20 +221,35 @@ static const struct export_operations jffs2_export_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * JFFS2 mount options.
  *
  * Opt_override_compr: override default compressor
+<<<<<<< HEAD
+=======
+ * Opt_rp_size: size of reserved pool in KiB
+>>>>>>> refs/remotes/origin/master
  * Opt_err: just end of array marker
  */
 enum {
 	Opt_override_compr,
+<<<<<<< HEAD
+=======
+	Opt_rp_size,
+>>>>>>> refs/remotes/origin/master
 	Opt_err,
 };
 
 static const match_table_t tokens = {
 	{Opt_override_compr, "compr=%s"},
+<<<<<<< HEAD
+=======
+	{Opt_rp_size, "rp_size=%u"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_err, NULL},
 };
 
@@ -209,6 +257,10 @@ static int jffs2_parse_options(struct jffs2_sb_info *c, char *data)
 {
 	substring_t args[MAX_OPT_ARGS];
 	char *p, *name;
+<<<<<<< HEAD
+=======
+	unsigned int opt;
+>>>>>>> refs/remotes/origin/master
 
 	if (!data)
 		return 0;
@@ -246,6 +298,20 @@ static int jffs2_parse_options(struct jffs2_sb_info *c, char *data)
 			kfree(name);
 			c->mount_opts.override_compr = true;
 			break;
+<<<<<<< HEAD
+=======
+		case Opt_rp_size:
+			if (match_int(&args[0], &opt))
+				return -EINVAL;
+			opt *= 1024;
+			if (opt > c->mtd->size) {
+				pr_warn("Too large reserve pool specified, max "
+					"is %llu KB\n", c->mtd->size / 1024);
+				return -EINVAL;
+			}
+			c->mount_opts.rp_size = opt;
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			pr_err("Error: unrecognized mount option '%s' or missing value\n",
 			       p);
@@ -268,21 +334,31 @@ static int jffs2_remount_fs(struct super_block *sb, int *flags, char *data)
 	return jffs2_do_remount_fs(sb, flags, data);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct super_operations jffs2_super_operations =
 {
 	.alloc_inode =	jffs2_alloc_inode,
 	.destroy_inode =jffs2_destroy_inode,
 	.put_super =	jffs2_put_super,
+<<<<<<< HEAD
 	.write_super =	jffs2_write_super,
+=======
+>>>>>>> refs/remotes/origin/master
 	.statfs =	jffs2_statfs,
 	.remount_fs =	jffs2_remount_fs,
 	.evict_inode =	jffs2_evict_inode,
 	.dirty_inode =	jffs2_dirty_inode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.show_options =	jffs2_show_options,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.show_options =	jffs2_show_options,
+>>>>>>> refs/remotes/origin/master
 	.sync_fs =	jffs2_sync_fs,
 };
 
@@ -295,6 +371,7 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_get_sb_mtd():"
 		  " New superblock for device %d (\"%s\")\n",
 		  sb->s_mtd->index, sb->s_mtd->name));
@@ -303,6 +380,11 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
 		  " New superblock for device %d (\"%s\")\n",
 		  sb->s_mtd->index, sb->s_mtd->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "jffs2_get_sb_mtd():"
+		  " New superblock for device %d (\"%s\")\n",
+		  sb->s_mtd->index, sb->s_mtd->name);
+>>>>>>> refs/remotes/origin/master
 
 	c = kzalloc(sizeof(*c), GFP_KERNEL);
 	if (!c)
@@ -313,14 +395,20 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_fs_info = c;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = jffs2_parse_options(c, data);
 	if (ret) {
 		kfree(c);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize JFFS2 superblock locks, the further initialization will
 	 * be done later */
 	mutex_init(&c->alloc_sem);
@@ -353,6 +441,7 @@ static void jffs2_put_super (struct super_block *sb)
 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D2(printk(KERN_DEBUG "jffs2: jffs2_put_super()\n"));
 =======
 	jffs2_dbg(2, "%s()\n", __func__);
@@ -360,6 +449,9 @@ static void jffs2_put_super (struct super_block *sb)
 
 	if (sb->s_dirt)
 		jffs2_write_super(sb);
+=======
+	jffs2_dbg(2, "%s()\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&c->alloc_sem);
 	jffs2_flush_wbuf_pad(c);
@@ -377,6 +469,7 @@ static void jffs2_put_super (struct super_block *sb)
 	kfree(c->inocache_list);
 	jffs2_clear_xattr_subsystem(c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->mtd->sync)
 		c->mtd->sync(c->mtd);
 
@@ -385,6 +478,10 @@ static void jffs2_put_super (struct super_block *sb)
 	mtd_sync(c->mtd);
 	jffs2_dbg(1, "%s(): returning\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_sync(c->mtd);
+	jffs2_dbg(1, "%s(): returning\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void jffs2_kill_sb(struct super_block *sb)
@@ -402,6 +499,10 @@ static struct file_system_type jffs2_fs_type = {
 	.mount =	jffs2_mount,
 	.kill_sb =	jffs2_kill_sb,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("jffs2");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_jffs2_fs(void)
 {
@@ -420,10 +521,14 @@ static int __init init_jffs2_fs(void)
 	BUILD_BUG_ON(sizeof(struct jffs2_raw_summary) != 32);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "JFFS2 version 2.2."
 =======
 	pr_info("version 2.2."
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("version 2.2."
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
 	       " (NAND)"
 #endif
@@ -439,37 +544,53 @@ static int __init init_jffs2_fs(void)
 					     jffs2_i_init_once);
 	if (!jffs2_inode_cachep) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "JFFS2 error: Failed to initialise inode cache\n");
 =======
 		pr_err("error: Failed to initialise inode cache\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("error: Failed to initialise inode cache\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	ret = jffs2_compressors_init();
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "JFFS2 error: Failed to initialise compressors\n");
 =======
 		pr_err("error: Failed to initialise compressors\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("error: Failed to initialise compressors\n");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	ret = jffs2_create_slab_caches();
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "JFFS2 error: Failed to initialise slab caches\n");
 =======
 		pr_err("error: Failed to initialise slab caches\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("error: Failed to initialise slab caches\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_compressors;
 	}
 	ret = register_filesystem(&jffs2_fs_type);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "JFFS2 error: Failed to register filesystem\n");
 =======
 		pr_err("error: Failed to register filesystem\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("error: Failed to register filesystem\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_slab;
 	}
 	return 0;
@@ -488,6 +609,15 @@ static void __exit exit_jffs2_fs(void)
 	unregister_filesystem(&jffs2_fs_type);
 	jffs2_destroy_slab_caches();
 	jffs2_compressors_exit();
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(jffs2_inode_cachep);
 }
 

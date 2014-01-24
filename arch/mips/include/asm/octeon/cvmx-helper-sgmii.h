@@ -92,9 +92,15 @@ extern int __cvmx_helper_sgmii_link_set(int ipd_port,
  *
  * @ipd_port: IPD/PKO port to loopback.
  * @enable_internal:
+<<<<<<< HEAD
  *                 Non zero if you want internal loopback
  * @enable_external:
  *                 Non zero if you want external loopback
+=======
+ *		   Non zero if you want internal loopback
+ * @enable_external:
+ *		   Non zero if you want external loopback
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Zero on success, negative on failure.
  */

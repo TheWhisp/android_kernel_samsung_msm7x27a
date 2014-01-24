@@ -3,10 +3,14 @@
  * Simplemachines Sim.One support.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 Ryan Mallon <ryan@bluewatersys.com>
 =======
  * Copyright (C) 2010 Ryan Mallon
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2010 Ryan Mallon
+>>>>>>> refs/remotes/origin/master
  *
  * Based on the 2.6.24.7 support:
  *   Copyright (C) 2009 Simplemachines
@@ -23,13 +27,17 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c.h>
 #include <linux/i2c-gpio.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/fb.h>
 <<<<<<< HEAD
 
@@ -40,12 +48,20 @@
 #include <mach/gpio-ep93xx.h>
 
 #include <asm/hardware/vic.h>
+=======
+#include <linux/platform_data/video-ep93xx.h>
+#include <mach/gpio-ep93xx.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
 #include "soc.h"
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ep93xx_eth_data __initdata simone_eth_data = {
 	.phy_id		= 1,
 };
@@ -72,7 +88,10 @@ static struct i2c_board_info __initdata simone_i2c_board_info[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device simone_audio_device = {
 	.name		= "simone-audio",
 	.id		= -1,
@@ -84,7 +103,10 @@ static void __init simone_register_audio(void)
 	platform_device_register(&simone_audio_device);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init simone_init_machine(void)
 {
 	ep93xx_init_devices();
@@ -93,6 +115,7 @@ static void __init simone_init_machine(void)
 	ep93xx_register_fb(&simone_fb_info);
 	ep93xx_register_i2c(&simone_i2c_gpio_data, simone_i2c_board_info,
 			    ARRAY_SIZE(simone_i2c_board_info));
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ep93xx_register_ac97();
 }
@@ -105,6 +128,8 @@ MACHINE_START(SIM_ONE, "Simplemachines Sim.One Board")
 	.timer		= &ep93xx_timer,
 	.init_machine	= simone_init_machine,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	simone_register_audio();
 }
 
@@ -113,9 +138,16 @@ MACHINE_START(SIM_ONE, "Simplemachines Sim.One Board")
 	.atag_offset	= 0x100,
 	.map_io		= ep93xx_map_io,
 	.init_irq	= ep93xx_init_irq,
+<<<<<<< HEAD
 	.handle_irq	= vic_handle_irq,
 	.timer		= &ep93xx_timer,
 	.init_machine	= simone_init_machine,
 	.restart	= ep93xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= simone_init_machine,
+	.init_late	= ep93xx_init_late,
+	.restart	= ep93xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

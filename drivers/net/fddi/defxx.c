@@ -228,7 +228,11 @@
 #define DRV_VERSION "v1.10"
 #define DRV_RELDATE "2006/12/14"
 
+<<<<<<< HEAD
 static char version[] __devinitdata =
+=======
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 	DRV_NAME ": " DRV_VERSION " " DRV_RELDATE
 	"  Lawrence V. Stefani and others\n";
 
@@ -515,7 +519,11 @@ static const struct net_device_ops dfx_netdev_ops = {
  *   initialized and the board resources are read and stored in
  *   the device structure.
  */
+<<<<<<< HEAD
 static int __devinit dfx_register(struct device *bdev)
+=======
+static int dfx_register(struct device *bdev)
+>>>>>>> refs/remotes/origin/master
 {
 	static int version_disp;
 	int dfx_bus_pci = DFX_BUS_PCI(bdev);
@@ -663,7 +671,11 @@ err_out:
  *   enabled yet.
  */
 
+<<<<<<< HEAD
 static void __devinit dfx_bus_init(struct net_device *dev)
+=======
+static void dfx_bus_init(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	DFX_board_t *bp = netdev_priv(dev);
 	struct device *bdev = bp->bus_dev;
@@ -809,7 +821,11 @@ static void __devinit dfx_bus_init(struct net_device *dev)
  *   Interrupts are disabled at the adapter bus-specific logic.
  */
 
+<<<<<<< HEAD
 static void __devexit dfx_bus_uninit(struct net_device *dev)
+=======
+static void dfx_bus_uninit(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	DFX_board_t *bp = netdev_priv(dev);
 	struct device *bdev = bp->bus_dev;
@@ -866,7 +882,11 @@ static void __devexit dfx_bus_uninit(struct net_device *dev)
  *   None
  */
 
+<<<<<<< HEAD
 static void __devinit dfx_bus_config_check(DFX_board_t *bp)
+=======
+static void dfx_bus_config_check(DFX_board_t *bp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device __maybe_unused *bdev = bp->bus_dev;
 	int dfx_bus_eisa = DFX_BUS_EISA(bdev);
@@ -962,9 +982,14 @@ static void __devinit dfx_bus_config_check(DFX_board_t *bp)
  *   returning from this routine.
  */
 
+<<<<<<< HEAD
 static int __devinit dfx_driver_init(struct net_device *dev,
 				     const char *print_name,
 				     resource_size_t bar_start)
+=======
+static int dfx_driver_init(struct net_device *dev, const char *print_name,
+			   resource_size_t bar_start)
+>>>>>>> refs/remotes/origin/master
 {
 	DFX_board_t *bp = netdev_priv(dev);
 	struct device *bdev = bp->bus_dev;
@@ -1069,6 +1094,7 @@ static int __devinit dfx_driver_init(struct net_device *dev,
 #endif
 					sizeof(PI_CONSUMER_BLOCK) +
 					(PI_ALIGN_K_DESC_BLK - 1);
+<<<<<<< HEAD
 	bp->kmalloced = top_v = dma_alloc_coherent(bp->bus_dev, alloc_size,
 						   &bp->kmalloced_dma,
 						   GFP_ATOMIC);
@@ -1078,6 +1104,14 @@ static int __devinit dfx_driver_init(struct net_device *dev,
 		return DFX_K_FAILURE;
 	}
 	memset(top_v, 0, alloc_size);	/* zero out memory before continuing */
+=======
+	bp->kmalloced = top_v = dma_zalloc_coherent(bp->bus_dev, alloc_size,
+						    &bp->kmalloced_dma,
+						    GFP_ATOMIC);
+	if (top_v == NULL)
+		return DFX_K_FAILURE;
+
+>>>>>>> refs/remotes/origin/master
 	top_p = bp->kmalloced_dma;	/* get physical address of buffer */
 
 	/*
@@ -2962,7 +2996,11 @@ static int dfx_rcv_init(DFX_board_t *bp, int get_buffers)
 			bp->descr_block_virt->rcv_data[i+j].long_0 = (u32) (PI_RCV_DESCR_M_SOP |
 				((PI_RCV_DATA_K_SIZE_MAX / PI_ALIGN_K_RCV_DATA_BUFF) << PI_RCV_DESCR_V_SEG_LEN));
 			bp->descr_block_virt->rcv_data[i+j].long_1 = (u32) (bp->rcv_block_phys + (i * PI_RCV_DATA_K_SIZE_MAX));
+<<<<<<< HEAD
 			bp->p_rcv_buff_va[i+j] = (char *) (bp->rcv_block_virt + (i * PI_RCV_DATA_K_SIZE_MAX));
+=======
+			bp->p_rcv_buff_va[i+j] = (bp->rcv_block_virt + (i * PI_RCV_DATA_K_SIZE_MAX));
+>>>>>>> refs/remotes/origin/master
 			}
 #endif
 	}
@@ -3030,7 +3068,11 @@ static void dfx_rcv_queue_process(
 #ifdef DYNAMIC_BUFFERS
 		p_buff = (char *) (((struct sk_buff *)bp->p_rcv_buff_va[entry])->data);
 #else
+<<<<<<< HEAD
 		p_buff = (char *) bp->p_rcv_buff_va[entry];
+=======
+		p_buff = bp->p_rcv_buff_va[entry];
+>>>>>>> refs/remotes/origin/master
 #endif
 		memcpy(&descr, p_buff + RCV_BUFF_K_DESCR, sizeof(u32));
 
@@ -3579,7 +3621,11 @@ static void dfx_xmt_flush( DFX_board_t *bp )
  *   Device structures for FDDI adapters (fddi0, fddi1, etc) are
  *   freed.
  */
+<<<<<<< HEAD
 static void __devexit dfx_unregister(struct device *bdev)
+=======
+static void dfx_unregister(struct device *bdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = dev_get_drvdata(bdev);
 	DFX_board_t *bp = netdev_priv(dev);
@@ -3619,6 +3665,7 @@ static void __devexit dfx_unregister(struct device *bdev)
 }
 
 
+<<<<<<< HEAD
 static int __devinit __maybe_unused dfx_dev_register(struct device *);
 static int __devexit __maybe_unused dfx_dev_unregister(struct device *);
 
@@ -3626,6 +3673,14 @@ static int __devexit __maybe_unused dfx_dev_unregister(struct device *);
 static int __devinit dfx_pci_register(struct pci_dev *,
 				      const struct pci_device_id *);
 static void __devexit dfx_pci_unregister(struct pci_dev *);
+=======
+static int __maybe_unused dfx_dev_register(struct device *);
+static int __maybe_unused dfx_dev_unregister(struct device *);
+
+#ifdef CONFIG_PCI
+static int dfx_pci_register(struct pci_dev *, const struct pci_device_id *);
+static void dfx_pci_unregister(struct pci_dev *);
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_PCI_DEVICE_TABLE(dfx_pci_table) = {
 	{ PCI_DEVICE(PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_FDDI) },
@@ -3637,16 +3692,28 @@ static struct pci_driver dfx_pci_driver = {
 	.name		= "defxx",
 	.id_table	= dfx_pci_table,
 	.probe		= dfx_pci_register,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dfx_pci_unregister),
 };
 
 static __devinit int dfx_pci_register(struct pci_dev *pdev,
 				      const struct pci_device_id *ent)
+=======
+	.remove		= dfx_pci_unregister,
+};
+
+static int dfx_pci_register(struct pci_dev *pdev,
+			    const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	return dfx_register(&pdev->dev);
 }
 
+<<<<<<< HEAD
 static void __devexit dfx_pci_unregister(struct pci_dev *pdev)
+=======
+static void dfx_pci_unregister(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	dfx_unregister(&pdev->dev);
 }
@@ -3668,7 +3735,11 @@ static struct eisa_driver dfx_eisa_driver = {
 		.name	= "defxx",
 		.bus	= &eisa_bus_type,
 		.probe	= dfx_dev_register,
+<<<<<<< HEAD
 		.remove	= __devexit_p(dfx_dev_unregister),
+=======
+		.remove	= dfx_dev_unregister,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 #endif /* CONFIG_EISA */
@@ -3689,12 +3760,20 @@ static struct tc_driver dfx_tc_driver = {
 		.name	= "defxx",
 		.bus	= &tc_bus_type,
 		.probe	= dfx_dev_register,
+<<<<<<< HEAD
 		.remove	= __devexit_p(dfx_dev_unregister),
+=======
+		.remove	= dfx_dev_unregister,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 #endif /* CONFIG_TC */
 
+<<<<<<< HEAD
 static int __devinit __maybe_unused dfx_dev_register(struct device *dev)
+=======
+static int __maybe_unused dfx_dev_register(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 
@@ -3704,7 +3783,11 @@ static int __devinit __maybe_unused dfx_dev_register(struct device *dev)
 	return status;
 }
 
+<<<<<<< HEAD
 static int __devexit __maybe_unused dfx_dev_unregister(struct device *dev)
+=======
+static int __maybe_unused dfx_dev_unregister(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	put_device(dev);
 	dfx_unregister(dev);
@@ -3712,7 +3795,11 @@ static int __devexit __maybe_unused dfx_dev_unregister(struct device *dev)
 }
 
 
+<<<<<<< HEAD
 static int __devinit dfx_init(void)
+=======
+static int dfx_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 
@@ -3724,7 +3811,11 @@ static int __devinit dfx_init(void)
 	return status;
 }
 
+<<<<<<< HEAD
 static void __devexit dfx_cleanup(void)
+=======
+static void dfx_cleanup(void)
+>>>>>>> refs/remotes/origin/master
 {
 	tc_unregister_driver(&dfx_tc_driver);
 	eisa_driver_unregister(&dfx_eisa_driver);

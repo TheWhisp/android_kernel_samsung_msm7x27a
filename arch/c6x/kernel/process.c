@@ -25,6 +25,7 @@ void	(*c6x_restart)(void);
 void	(*c6x_halt)(void);
 
 extern asmlinkage void ret_from_fork(void);
+<<<<<<< HEAD
 
 static struct signal_struct init_signals = INIT_SIGNALS(init_signals);
 static struct sighand_struct init_sighand = INIT_SIGHAND(init_sighand);
@@ -41,6 +42,9 @@ union thread_union init_thread_union __init_task_data =	{
  */
 struct task_struct init_task = INIT_TASK(init_task);
 EXPORT_SYMBOL(init_task);
+=======
+extern asmlinkage void ret_from_kernel_thread(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * power off function, if any
@@ -48,7 +52,11 @@ EXPORT_SYMBOL(init_task);
 void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
 
+<<<<<<< HEAD
 static void c6x_idle(void)
+=======
+void arch_cpu_idle(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long tmp;
 
@@ -64,6 +72,7 @@ static void c6x_idle(void)
 		      : "=b"(tmp));
 }
 
+<<<<<<< HEAD
 /*
  * The idle loop for C64x
  */
@@ -90,6 +99,8 @@ void cpu_idle(void)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void halt_loop(void)
 {
 	printk(KERN_EMERG "System Halted, OK to turn off power\n");
@@ -119,6 +130,7 @@ void machine_power_off(void)
 	halt_loop();
 }
 
+<<<<<<< HEAD
 static void kernel_thread_helper(int dummy, void *arg, int (*fn)(void *))
 {
 	do_exit(fn(arg));
@@ -150,6 +162,8 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 }
 EXPORT_SYMBOL(kernel_thread);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void flush_thread(void)
 {
 }
@@ -158,6 +172,7 @@ void exit_thread(void)
 {
 }
 
+<<<<<<< HEAD
 SYSCALL_DEFINE1(c6x_clone, struct pt_regs *, regs)
 {
 	unsigned long clone_flags;
@@ -174,6 +189,8 @@ SYSCALL_DEFINE1(c6x_clone, struct pt_regs *, regs)
 		       (int __user *)regs->b6);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Do necessary setup to start up a newly executed thread.
  */
@@ -201,12 +218,17 @@ void start_thread(struct pt_regs *regs, unsigned int pc, unsigned long usp)
  */
 int copy_thread(unsigned long clone_flags, unsigned long usp,
 		unsigned long ustk_size,
+<<<<<<< HEAD
 		struct task_struct *p, struct pt_regs *regs)
+=======
+		struct task_struct *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pt_regs *childregs;
 
 	childregs = task_pt_regs(p);
 
+<<<<<<< HEAD
 	*childregs = *regs;
 	childregs->a4 = 0;
 
@@ -223,6 +245,27 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	thread_saved_ksp(p) = (unsigned long)childregs - 8;
 	p->thread.pc = (unsigned int) ret_from_fork;
 	p->thread.wchan	= (unsigned long) ret_from_fork;
+=======
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		/* case of  __kernel_thread: we return to supervisor space */
+		memset(childregs, 0, sizeof(struct pt_regs));
+		childregs->sp = (unsigned long)(childregs + 1);
+		p->thread.pc = (unsigned long) ret_from_kernel_thread;
+		childregs->a0 = usp;		/* function */
+		childregs->a1 = ustk_size;	/* argument */
+	} else {
+		/* Otherwise use the given stack */
+		*childregs = *current_pt_regs();
+		if (usp)
+			childregs->sp = usp;
+		p->thread.pc = (unsigned long) ret_from_fork;
+	}
+
+	/* Set usp/ksp */
+	p->thread.usp = childregs->sp;
+	thread_saved_ksp(p) = (unsigned long)childregs - 8;
+	p->thread.wchan	= p->thread.pc;
+>>>>>>> refs/remotes/origin/master
 #ifdef __DSBT__
 	{
 		unsigned long dp;
@@ -237,6 +280,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * c6x_execve() executes a new program.
  */
@@ -259,6 +303,8 @@ out:
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *p)
 {
 	return p->thread.wchan;

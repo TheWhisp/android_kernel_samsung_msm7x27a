@@ -34,11 +34,17 @@ asmlinkage unsigned long sys_getpagesize(void)
 	return PAGE_SIZE; /* Possibly older binaries want 8192 on sun4's? */
 }
 
+<<<<<<< HEAD
 #define COLOUR_ALIGN(addr)      (((addr)+SHMLBA-1)&~(SHMLBA-1))
 
 unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr, unsigned long len, unsigned long pgoff, unsigned long flags)
 {
 	struct vm_area_struct * vmm;
+=======
+unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr, unsigned long len, unsigned long pgoff, unsigned long flags)
+{
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	if (flags & MAP_FIXED) {
 		/* We do not accept a shared mapping if it would violate
@@ -53,6 +59,7 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr, unsi
 	/* See asm-sparc/uaccess.h */
 	if (len > TASK_SIZE - PAGE_SIZE)
 		return -ENOMEM;
+<<<<<<< HEAD
 	if (ARCH_SUN4C && len > 0x20000000)
 		return -ENOMEM;
 	if (!addr)
@@ -77,6 +84,19 @@ unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr, unsi
 		if (flags & MAP_SHARED)
 			addr = COLOUR_ALIGN(addr);
 	}
+=======
+	if (!addr)
+		addr = TASK_UNMAPPED_BASE;
+
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = addr;
+	info.high_limit = TASK_SIZE;
+	info.align_mask = (flags & MAP_SHARED) ?
+		(PAGE_MASK & (SHMLBA - 1)) : 0;
+	info.align_offset = pgoff << PAGE_SHIFT;
+	return vm_unmapped_area(&info);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -99,11 +119,14 @@ out:
 
 int sparc_mmap_check(unsigned long addr, unsigned long len)
 {
+<<<<<<< HEAD
 	if (ARCH_SUN4C &&
 	    (len > 0x20000000 ||
 	     (addr < 0xe0000000 && addr + len > 0x20000000)))
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* See asm-sparc/uaccess.h */
 	if (len > TASK_SIZE - PAGE_SIZE || addr + len > TASK_SIZE - PAGE_SIZE)
 		return -EINVAL;
@@ -180,6 +203,7 @@ sparc_breakpoint (struct pt_regs *regs)
 #endif
 }
 
+<<<<<<< HEAD
 asmlinkage int
 sparc_sigaction (int sig, const struct old_sigaction __user *act,
 		 struct old_sigaction __user *oact)
@@ -228,6 +252,21 @@ sys_rt_sigaction(int sig,
 		 struct sigaction __user *oact,
 		 void __user *restorer,
 		 size_t sigsetsize)
+=======
+SYSCALL_DEFINE3(sparc_sigaction, int, sig,
+		struct old_sigaction __user *,act,
+		struct old_sigaction __user *,oact)
+{
+	WARN_ON_ONCE(sig >= 0);
+	return sys_sigaction(-sig, act, oact);
+}
+
+SYSCALL_DEFINE5(rt_sigaction, int, sig,
+		 const struct sigaction __user *, act,
+		 struct sigaction __user *, oact,
+		 void __user *, restorer,
+		 size_t, sigsetsize)
+>>>>>>> refs/remotes/origin/master
 {
 	struct k_sigaction new_ka, old_ka;
 	int ret;
@@ -274,6 +313,7 @@ out:
 	up_read(&uts_sem);
 	return err;
 }
+<<<<<<< HEAD
 
 /*
  * Do a system call from kernel instead of calling sys_execve so we
@@ -298,3 +338,5 @@ int kernel_execve(const char *filename,
 		      : "cc");
 	return __res;
 }
+=======
+>>>>>>> refs/remotes/origin/master

@@ -17,9 +17,13 @@
 
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq.h>
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
@@ -61,10 +65,14 @@ struct jz4740_adc {
 
 	int irq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int irq_base;
 =======
 	struct irq_chip_generic *gc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_chip_generic *gc;
+>>>>>>> refs/remotes/origin/master
 
 	struct clk *clk;
 	atomic_t clk_ref;
@@ -72,6 +80,7 @@ struct jz4740_adc {
 	spinlock_t lock;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void jz4740_adc_irq_set_masked(struct jz4740_adc *adc, int irq,
 	bool masked)
@@ -131,6 +140,8 @@ static void jz4740_adc_irq_demux(unsigned int irq, struct irq_desc *desc)
 		if (status & BIT(i))
 			generic_handle_irq(adc->irq_base + i);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void jz4740_adc_irq_demux(unsigned int irq, struct irq_desc *desc)
 {
 	struct irq_chip_generic *gc = irq_desc_get_handler_data(desc);
@@ -142,7 +153,10 @@ static void jz4740_adc_irq_demux(unsigned int irq, struct irq_desc *desc)
 	for (i = 0; i < 5; ++i) {
 		if (status & BIT(i))
 			generic_handle_irq(gc->irq_base + i);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -153,13 +167,21 @@ static void jz4740_adc_irq_demux(unsigned int irq, struct irq_desc *desc)
 static inline void jz4740_adc_clk_enable(struct jz4740_adc *adc)
 {
 	if (atomic_inc_return(&adc->clk_ref) == 1)
+<<<<<<< HEAD
 		clk_enable(adc->clk);
+=======
+		clk_prepare_enable(adc->clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void jz4740_adc_clk_disable(struct jz4740_adc *adc)
 {
 	if (atomic_dec_return(&adc->clk_ref) == 0)
+<<<<<<< HEAD
 		clk_disable(adc->clk);
+=======
+		clk_disable_unprepare(adc->clk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void jz4740_adc_set_enabled(struct jz4740_adc *adc, int engine,
@@ -249,10 +271,14 @@ static struct resource jz4740_battery_resources[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const struct mfd_cell jz4740_adc_cells[] = {
 =======
 static struct mfd_cell jz4740_adc_cells[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct mfd_cell jz4740_adc_cells[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.id = 0,
 		.name = "jz4740-hwmon",
@@ -273,6 +299,7 @@ static struct mfd_cell jz4740_adc_cells[] = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -281,15 +308,24 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 	struct resource *mem_base;
 	int irq;
 =======
+=======
+static int jz4740_adc_probe(struct platform_device *pdev)
+{
+>>>>>>> refs/remotes/origin/master
 	struct irq_chip_generic *gc;
 	struct irq_chip_type *ct;
 	struct jz4740_adc *adc;
 	struct resource *mem_base;
 	int ret;
 	int irq_base;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	adc = kmalloc(sizeof(*adc), GFP_KERNEL);
+=======
+
+	adc = devm_kzalloc(&pdev->dev, sizeof(*adc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!adc) {
 		dev_err(&pdev->dev, "Failed to allocate driver structure\n");
 		return -ENOMEM;
@@ -299,6 +335,7 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 	if (adc->irq < 0) {
 		ret = adc->irq;
 		dev_err(&pdev->dev, "Failed to get platform irq: %d\n", ret);
+<<<<<<< HEAD
 		goto err_free;
 	}
 
@@ -313,22 +350,41 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 		dev_err(&pdev->dev, "Failed to get irq base: %d\n", ret);
 		goto err_free;
+=======
+		return ret;
+	}
+
+	irq_base = platform_get_irq(pdev, 1);
+	if (irq_base < 0) {
+		dev_err(&pdev->dev, "Failed to get irq base: %d\n", irq_base);
+		return irq_base;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mem_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!mem_base) {
+<<<<<<< HEAD
 		ret = -ENOENT;
 		dev_err(&pdev->dev, "Failed to get platform mmio resource\n");
 		goto err_free;
+=======
+		dev_err(&pdev->dev, "Failed to get platform mmio resource\n");
+		return -ENOENT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Only request the shared registers for the MFD driver */
 	adc->mem = request_mem_region(mem_base->start, JZ_REG_ADC_STATUS,
 					pdev->name);
 	if (!adc->mem) {
+<<<<<<< HEAD
 		ret = -EBUSY;
 		dev_err(&pdev->dev, "Failed to request mmio memory region\n");
 		goto err_free;
+=======
+		dev_err(&pdev->dev, "Failed to request mmio memory region\n");
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	adc->base = ioremap_nocache(adc->mem->start, resource_size(adc->mem));
@@ -351,6 +407,7 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, adc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (irq = adc->irq_base; irq < adc->irq_base + 5; ++irq) {
 		irq_set_chip_data(irq, adc);
 		irq_set_chip_and_handler(irq, &jz4740_adc_irq_chip,
@@ -359,6 +416,8 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 
 	irq_set_handler_data(adc->irq, adc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	gc = irq_alloc_generic_chip("INTC", 1, irq_base, adc->base,
 		handle_level_irq);
 
@@ -374,7 +433,10 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 	adc->gc = gc;
 
 	irq_set_handler_data(adc->irq, gc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_set_chained_handler(adc->irq, jz4740_adc_irq_demux);
 
 	writeb(0x00, adc->base + JZ_REG_ADC_ENABLE);
@@ -382,10 +444,15 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 
 	ret = mfd_add_devices(&pdev->dev, 0, jz4740_adc_cells,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ARRAY_SIZE(jz4740_adc_cells), mem_base, adc->irq_base);
 =======
 		ARRAY_SIZE(jz4740_adc_cells), mem_base, irq_base);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      ARRAY_SIZE(jz4740_adc_cells), mem_base,
+			      irq_base, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto err_clk_put;
 
@@ -394,6 +461,7 @@ static int __devinit jz4740_adc_probe(struct platform_device *pdev)
 err_clk_put:
 	clk_put(adc->clk);
 err_iounmap:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	iounmap(adc->base);
 err_release_mem_region:
@@ -405,16 +473,30 @@ err_free:
 }
 
 static int __devexit jz4740_adc_remove(struct platform_device *pdev)
+=======
+	iounmap(adc->base);
+err_release_mem_region:
+	release_mem_region(adc->mem->start, resource_size(adc->mem));
+	return ret;
+}
+
+static int jz4740_adc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jz4740_adc *adc = platform_get_drvdata(pdev);
 
 	mfd_remove_devices(&pdev->dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	irq_remove_generic_chip(adc->gc, IRQ_MSK(5), IRQ_NOPROBE | IRQ_LEVEL, 0);
 	kfree(adc->gc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_remove_generic_chip(adc->gc, IRQ_MSK(5), IRQ_NOPROBE | IRQ_LEVEL, 0);
+	kfree(adc->gc);
+>>>>>>> refs/remotes/origin/master
 	irq_set_handler_data(adc->irq, NULL);
 	irq_set_chained_handler(adc->irq, NULL);
 
@@ -423,6 +505,7 @@ static int __devexit jz4740_adc_remove(struct platform_device *pdev)
 
 	clk_put(adc->clk);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	kfree(adc);
@@ -437,12 +520,21 @@ static struct platform_driver jz4740_adc_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	.probe	= jz4740_adc_probe,
 	.remove = __devexit_p(jz4740_adc_remove),
+=======
+	return 0;
+}
+
+static struct platform_driver jz4740_adc_driver = {
+	.probe	= jz4740_adc_probe,
+	.remove = jz4740_adc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-adc",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init jz4740_adc_init(void)
 {
@@ -458,6 +550,9 @@ module_exit(jz4740_adc_exit);
 =======
 module_platform_driver(jz4740_adc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jz4740_adc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("JZ4740 SoC ADC driver");
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");

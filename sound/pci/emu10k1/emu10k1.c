@@ -27,10 +27,14 @@
 #include <linux/pci.h>
 #include <linux/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/emu10k1.h>
 #include <sound/initval.h>
@@ -49,20 +53,28 @@ MODULE_SUPPORTED_DEVICE("{{Creative Labs,SB Live!/PCI512/E-mu APS},"
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static int extin[SNDRV_CARDS];
 static int extout[SNDRV_CARDS];
 static int seq_ports[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 4};
 static int max_synth_voices[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 64};
 static int max_buffer_size[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 128};
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable_ir[SNDRV_CARDS];
 =======
 static bool enable_ir[SNDRV_CARDS];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable_ir[SNDRV_CARDS];
+>>>>>>> refs/remotes/origin/master
 static uint subsystem[SNDRV_CARDS]; /* Force card subsystem model */
 static uint delay_pcm_irq[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
 
@@ -111,8 +123,13 @@ static DEFINE_PCI_DEVICE_TABLE(snd_emu10k1_ids) = {
 
 MODULE_DEVICE_TABLE(pci, snd_emu10k1_ids);
 
+<<<<<<< HEAD
 static int __devinit snd_card_emu10k1_probe(struct pci_dev *pci,
 					    const struct pci_device_id *pci_id)
+=======
+static int snd_card_emu10k1_probe(struct pci_dev *pci,
+				  const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -211,6 +228,7 @@ static int __devinit snd_card_emu10k1_probe(struct pci_dev *pci,
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_card_emu10k1_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -222,10 +240,28 @@ static void __devexit snd_card_emu10k1_remove(struct pci_dev *pci)
 static int snd_emu10k1_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+static void snd_card_emu10k1_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+
+#ifdef CONFIG_PM_SLEEP
+static int snd_emu10k1_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_emu10k1 *emu = card->private_data;
 
 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
 
+<<<<<<< HEAD
+=======
+	emu->suspend = 1;
+
+>>>>>>> refs/remotes/origin/master
 	snd_pcm_suspend_all(emu->pcm);
 	snd_pcm_suspend_all(emu->pcm_mic);
 	snd_pcm_suspend_all(emu->pcm_efx);
@@ -243,6 +279,7 @@ static int snd_emu10k1_suspend(struct pci_dev *pci, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -250,6 +287,16 @@ static int snd_emu10k1_suspend(struct pci_dev *pci, pm_message_t state)
 static int snd_emu10k1_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int snd_emu10k1_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_emu10k1 *emu = card->private_data;
 
 	pci_set_power_state(pci, PCI_D0);
@@ -270,6 +317,7 @@ static int snd_emu10k1_resume(struct pci_dev *pci)
 	if (emu->card_capabilities->ca0151_chip)
 		snd_p16v_resume(emu);
 
+<<<<<<< HEAD
 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 	return 0;
 }
@@ -302,3 +350,28 @@ static void __exit alsa_card_emu10k1_exit(void)
 
 module_init(alsa_card_emu10k1_init)
 module_exit(alsa_card_emu10k1_exit)
+=======
+	emu->suspend = 0;
+
+	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(snd_emu10k1_pm, snd_emu10k1_suspend, snd_emu10k1_resume);
+#define SND_EMU10K1_PM_OPS	&snd_emu10k1_pm
+#else
+#define SND_EMU10K1_PM_OPS	NULL
+#endif /* CONFIG_PM_SLEEP */
+
+static struct pci_driver emu10k1_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_emu10k1_ids,
+	.probe = snd_card_emu10k1_probe,
+	.remove = snd_card_emu10k1_remove,
+	.driver = {
+		.pm = SND_EMU10K1_PM_OPS,
+	},
+};
+
+module_pci_driver(emu10k1_driver);
+>>>>>>> refs/remotes/origin/master

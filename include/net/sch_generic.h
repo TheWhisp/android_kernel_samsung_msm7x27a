@@ -5,9 +5,12 @@
 #include <linux/types.h>
 #include <linux/rcupdate.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pkt_sched.h>
 #include <linux/pkt_cls.h>
 #include <net/gen_stats.h>
@@ -50,14 +53,19 @@ struct Qdisc {
 	int 			(*enqueue)(struct sk_buff *skb, struct Qdisc *dev);
 	struct sk_buff *	(*dequeue)(struct Qdisc *dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned		flags;
 =======
 	unsigned int		flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		flags;
+>>>>>>> refs/remotes/origin/master
 #define TCQ_F_BUILTIN		1
 #define TCQ_F_INGRESS		2
 #define TCQ_F_CAN_BYPASS	4
 #define TCQ_F_MQROOT		8
+<<<<<<< HEAD
 #define TCQ_F_WARN_NONWC	(1 << 16)
 	int			padded;
 <<<<<<< HEAD
@@ -65,12 +73,27 @@ struct Qdisc {
 =======
 	const struct Qdisc_ops	*ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TCQ_F_ONETXQUEUE	0x10 /* dequeue_skb() can assume all skbs are for
+				      * q->dev_queue : It can test
+				      * netif_xmit_frozen_or_stopped() before
+				      * dequeueing next packet.
+				      * Its true for MQ/MQPRIO slaves, or non
+				      * multiqueue device.
+				      */
+#define TCQ_F_WARN_NONWC	(1 << 16)
+	u32			limit;
+	const struct Qdisc_ops	*ops;
+>>>>>>> refs/remotes/origin/master
 	struct qdisc_size_table	__rcu *stab;
 	struct list_head	list;
 	u32			handle;
 	u32			parent;
+<<<<<<< HEAD
 	atomic_t		refcnt;
 	struct gnet_stats_rate_est	rate_est;
+=======
+>>>>>>> refs/remotes/origin/master
 	int			(*reshape_fail)(struct sk_buff *skb,
 					struct Qdisc *q);
 
@@ -81,8 +104,14 @@ struct Qdisc {
 	 */
 	struct Qdisc		*__parent;
 	struct netdev_queue	*dev_queue;
+<<<<<<< HEAD
 	struct Qdisc		*next_sched;
 
+=======
+
+	struct gnet_stats_rate_est64	rate_est;
+	struct Qdisc		*next_sched;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff		*gso_skb;
 	/*
 	 * For performance sake on SMP, we put highly modified fields at the end
@@ -93,8 +122,15 @@ struct Qdisc {
 	unsigned int		__state;
 	struct gnet_stats_queue	qstats;
 	struct rcu_head		rcu_head;
+<<<<<<< HEAD
 	spinlock_t		busylock;
 	u32			limit;
+=======
+	int			padded;
+	atomic_t		refcnt;
+
+	spinlock_t		busylock ____cacheline_aligned_in_smp;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline bool qdisc_is_running(const struct Qdisc *qdisc)
@@ -193,6 +229,7 @@ struct tcf_proto_ops {
 	char			kind[IFNAMSIZ];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			(*classify)(struct sk_buff*, struct tcf_proto*,
 					struct tcf_result *);
 =======
@@ -200,12 +237,22 @@ struct tcf_proto_ops {
 					    const struct tcf_proto *,
 					    struct tcf_result *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			(*classify)(struct sk_buff *,
+					    const struct tcf_proto *,
+					    struct tcf_result *);
+>>>>>>> refs/remotes/origin/master
 	int			(*init)(struct tcf_proto*);
 	void			(*destroy)(struct tcf_proto*);
 
 	unsigned long		(*get)(struct tcf_proto*, u32 handle);
 	void			(*put)(struct tcf_proto*, unsigned long);
+<<<<<<< HEAD
 	int			(*change)(struct tcf_proto*, unsigned long,
+=======
+	int			(*change)(struct net *net, struct sk_buff *,
+					struct tcf_proto*, unsigned long,
+>>>>>>> refs/remotes/origin/master
 					u32 handle, struct nlattr **,
 					unsigned long *);
 	int			(*delete)(struct tcf_proto*, unsigned long);
@@ -223,6 +270,7 @@ struct tcf_proto {
 	struct tcf_proto	*next;
 	void			*root;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			(*classify)(struct sk_buff*, struct tcf_proto*,
 					struct tcf_result *);
 =======
@@ -230,6 +278,11 @@ struct tcf_proto {
 					    const struct tcf_proto *,
 					    struct tcf_result *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			(*classify)(struct sk_buff *,
+					    const struct tcf_proto *,
+					    struct tcf_result *);
+>>>>>>> refs/remotes/origin/master
 	__be16			protocol;
 
 	/* All the rest */
@@ -238,15 +291,23 @@ struct tcf_proto {
 	struct Qdisc		*q;
 	void			*data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct tcf_proto_ops	*ops;
 =======
 	const struct tcf_proto_ops	*ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct tcf_proto_ops	*ops;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct qdisc_skb_cb {
 	unsigned int		pkt_len;
+<<<<<<< HEAD
 	u16			bond_queue_mapping;
+=======
+	u16			slave_dev_queue_mapping;
+>>>>>>> refs/remotes/origin/master
 	u16			_pad;
 	unsigned char		data[20];
 };
@@ -260,10 +321,14 @@ static inline void qdisc_cb_private_validate(const struct sk_buff *skb, int sz)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int qdisc_qlen(struct Qdisc *q)
 =======
 static inline int qdisc_qlen(const struct Qdisc *q)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int qdisc_qlen(const struct Qdisc *q)
+>>>>>>> refs/remotes/origin/master
 {
 	return q->q.qlen;
 }
@@ -279,19 +344,27 @@ static inline spinlock_t *qdisc_lock(struct Qdisc *qdisc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct Qdisc *qdisc_root(struct Qdisc *qdisc)
 =======
 static inline struct Qdisc *qdisc_root(const struct Qdisc *qdisc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct Qdisc *qdisc_root(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/master
 {
 	return qdisc->dev_queue->qdisc;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct Qdisc *qdisc_root_sleeping(struct Qdisc *qdisc)
 =======
 static inline struct Qdisc *qdisc_root_sleeping(const struct Qdisc *qdisc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct Qdisc *qdisc_root_sleeping(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/master
 {
 	return qdisc->dev_queue->qdisc_sleeping;
 }
@@ -308,10 +381,14 @@ static inline struct Qdisc *qdisc_root_sleeping(const struct Qdisc *qdisc)
  * all users of this lock accessor must do.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline spinlock_t *qdisc_root_lock(struct Qdisc *qdisc)
 =======
 static inline spinlock_t *qdisc_root_lock(const struct Qdisc *qdisc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline spinlock_t *qdisc_root_lock(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Qdisc *root = qdisc_root(qdisc);
 
@@ -320,10 +397,14 @@ static inline spinlock_t *qdisc_root_lock(const struct Qdisc *qdisc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline spinlock_t *qdisc_root_sleeping_lock(struct Qdisc *qdisc)
 =======
 static inline spinlock_t *qdisc_root_sleeping_lock(const struct Qdisc *qdisc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline spinlock_t *qdisc_root_sleeping_lock(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Qdisc *root = qdisc_root_sleeping(qdisc);
 
@@ -332,28 +413,40 @@ static inline spinlock_t *qdisc_root_sleeping_lock(const struct Qdisc *qdisc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct net_device *qdisc_dev(struct Qdisc *qdisc)
 =======
 static inline struct net_device *qdisc_dev(const struct Qdisc *qdisc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct net_device *qdisc_dev(const struct Qdisc *qdisc)
+>>>>>>> refs/remotes/origin/master
 {
 	return qdisc->dev_queue->dev;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void sch_tree_lock(struct Qdisc *q)
 =======
 static inline void sch_tree_lock(const struct Qdisc *q)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void sch_tree_lock(const struct Qdisc *q)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock_bh(qdisc_root_sleeping_lock(q));
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void sch_tree_unlock(struct Qdisc *q)
 =======
 static inline void sch_tree_unlock(const struct Qdisc *q)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void sch_tree_unlock(const struct Qdisc *q)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_unlock_bh(qdisc_root_sleeping_lock(q));
 }
@@ -365,6 +458,10 @@ extern struct Qdisc noop_qdisc;
 extern struct Qdisc_ops noop_qdisc_ops;
 extern struct Qdisc_ops pfifo_fast_ops;
 extern struct Qdisc_ops mq_qdisc_ops;
+<<<<<<< HEAD
+=======
+extern const struct Qdisc_ops *default_qdisc_ops;
+>>>>>>> refs/remotes/origin/master
 
 struct Qdisc_class_common {
 	u32			classid;
@@ -387,6 +484,7 @@ static inline unsigned int qdisc_class_hash(u32 id, u32 mask)
 
 static inline struct Qdisc_class_common *
 <<<<<<< HEAD
+<<<<<<< HEAD
 qdisc_class_find(struct Qdisc_class_hash *hash, u32 id)
 =======
 qdisc_class_find(const struct Qdisc_class_hash *hash, u32 id)
@@ -398,12 +496,22 @@ qdisc_class_find(const struct Qdisc_class_hash *hash, u32 id)
 
 	h = qdisc_class_hash(id, hash->hashmask);
 	hlist_for_each_entry(cl, n, &hash->hash[h], hnode) {
+=======
+qdisc_class_find(const struct Qdisc_class_hash *hash, u32 id)
+{
+	struct Qdisc_class_common *cl;
+	unsigned int h;
+
+	h = qdisc_class_hash(id, hash->hashmask);
+	hlist_for_each_entry(cl, &hash->hash[h], hnode) {
+>>>>>>> refs/remotes/origin/master
 		if (cl->classid == id)
 			return cl;
 	}
 	return NULL;
 }
 
+<<<<<<< HEAD
 extern int qdisc_class_hash_init(struct Qdisc_class_hash *);
 extern void qdisc_class_hash_insert(struct Qdisc_class_hash *, struct Qdisc_class_common *);
 extern void qdisc_class_hash_remove(struct Qdisc_class_hash *, struct Qdisc_class_common *);
@@ -428,6 +536,34 @@ extern void __qdisc_calculate_pkt_len(struct sk_buff *skb,
 				      const struct qdisc_size_table *stab);
 extern void tcf_destroy(struct tcf_proto *tp);
 extern void tcf_destroy_chain(struct tcf_proto **fl);
+=======
+int qdisc_class_hash_init(struct Qdisc_class_hash *);
+void qdisc_class_hash_insert(struct Qdisc_class_hash *,
+			     struct Qdisc_class_common *);
+void qdisc_class_hash_remove(struct Qdisc_class_hash *,
+			     struct Qdisc_class_common *);
+void qdisc_class_hash_grow(struct Qdisc *, struct Qdisc_class_hash *);
+void qdisc_class_hash_destroy(struct Qdisc_class_hash *);
+
+void dev_init_scheduler(struct net_device *dev);
+void dev_shutdown(struct net_device *dev);
+void dev_activate(struct net_device *dev);
+void dev_deactivate(struct net_device *dev);
+void dev_deactivate_many(struct list_head *head);
+struct Qdisc *dev_graft_qdisc(struct netdev_queue *dev_queue,
+			      struct Qdisc *qdisc);
+void qdisc_reset(struct Qdisc *qdisc);
+void qdisc_destroy(struct Qdisc *qdisc);
+void qdisc_tree_decrease_qlen(struct Qdisc *qdisc, unsigned int n);
+struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
+			  const struct Qdisc_ops *ops);
+struct Qdisc *qdisc_create_dflt(struct netdev_queue *dev_queue,
+				const struct Qdisc_ops *ops, u32 parentid);
+void __qdisc_calculate_pkt_len(struct sk_buff *skb,
+			       const struct qdisc_size_table *stab);
+void tcf_destroy(struct tcf_proto *tp);
+void tcf_destroy_chain(struct tcf_proto **fl);
+>>>>>>> refs/remotes/origin/master
 
 /* Reset all TX qdiscs greater then index of a device.  */
 static inline void qdisc_reset_all_tx_gt(struct net_device *dev, unsigned int i)
@@ -465,10 +601,14 @@ static inline bool qdisc_all_tx_empty(const struct net_device *dev)
 
 /* Are any of the TX qdiscs changing?  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline bool qdisc_tx_changing(struct net_device *dev)
 =======
 static inline bool qdisc_tx_changing(const struct net_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline bool qdisc_tx_changing(const struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 	for (i = 0; i < dev->num_tx_queues; i++) {
@@ -737,4 +877,45 @@ static inline struct sk_buff *skb_act_clone(struct sk_buff *skb, gfp_t gfp_mask,
 }
 #endif
 
+<<<<<<< HEAD
+=======
+struct psched_ratecfg {
+	u64	rate_bytes_ps; /* bytes per second */
+	u32	mult;
+	u16	overhead;
+	u8	linklayer;
+	u8	shift;
+};
+
+static inline u64 psched_l2t_ns(const struct psched_ratecfg *r,
+				unsigned int len)
+{
+	len += r->overhead;
+
+	if (unlikely(r->linklayer == TC_LINKLAYER_ATM))
+		return ((u64)(DIV_ROUND_UP(len,48)*53) * r->mult) >> r->shift;
+
+	return ((u64)len * r->mult) >> r->shift;
+}
+
+void psched_ratecfg_precompute(struct psched_ratecfg *r,
+			       const struct tc_ratespec *conf,
+			       u64 rate64);
+
+static inline void psched_ratecfg_getrate(struct tc_ratespec *res,
+					  const struct psched_ratecfg *r)
+{
+	memset(res, 0, sizeof(*res));
+
+	/* legacy struct tc_ratespec has a 32bit @rate field
+	 * Qdisc using 64bit rate should add new attributes
+	 * in order to maintain compatibility.
+	 */
+	res->rate = min_t(u64, r->rate_bytes_ps, ~0U);
+
+	res->overhead = r->overhead;
+	res->linklayer = (r->linklayer & TC_LINKLAYER_MASK);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif

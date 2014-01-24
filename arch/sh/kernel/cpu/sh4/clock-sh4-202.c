@@ -42,10 +42,14 @@ static inline int frqcr3_lookup(struct clk *clk, unsigned long rate)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_ops sh4202_emi_clk_ops = {
 =======
 static struct sh_clk_ops sh4202_emi_clk_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_clk_ops sh4202_emi_clk_ops = {
+>>>>>>> refs/remotes/origin/master
 	.recalc		= emi_clk_recalc,
 };
 
@@ -61,10 +65,14 @@ static unsigned long femi_clk_recalc(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_ops sh4202_femi_clk_ops = {
 =======
 static struct sh_clk_ops sh4202_femi_clk_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_clk_ops sh4202_femi_clk_ops = {
+>>>>>>> refs/remotes/origin/master
 	.recalc		= femi_clk_recalc,
 };
 
@@ -139,10 +147,14 @@ static int shoc_clk_set_rate(struct clk *clk, unsigned long rate)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_ops sh4202_shoc_clk_ops = {
 =======
 static struct sh_clk_ops sh4202_shoc_clk_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_clk_ops sh4202_shoc_clk_ops = {
+>>>>>>> refs/remotes/origin/master
 	.init		= shoc_clk_init,
 	.recalc		= shoc_clk_recalc,
 	.set_rate	= shoc_clk_set_rate,
@@ -160,10 +172,13 @@ static struct clk *sh4202_onchip_clocks[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CLKDEV_CON_ID(_id, _clk) { .con_id = _id, .clk = _clk }
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clk_lookup lookups[] = {
 	/* main clocks */
 	CLKDEV_CON_ID("emi_clk", &sh4202_emi_clk),

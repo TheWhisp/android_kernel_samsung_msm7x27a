@@ -22,6 +22,7 @@
  * Authors: Ben Skeggs
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 
 #include "nouveau_drv.h"
@@ -1053,6 +1054,39 @@ nouveau_dp_dpms(struct drm_encoder *encoder, int mode, u32 datarate,
 
 	if (mode == DRM_MODE_DPMS_ON)
 		nouveau_dp_link_train(encoder, datarate, func);
+=======
+#include <drm/drmP.h>
+#include <drm/drm_dp_helper.h>
+
+#include "nouveau_drm.h"
+#include "nouveau_connector.h"
+#include "nouveau_encoder.h"
+#include "nouveau_crtc.h"
+
+#include <core/class.h>
+
+#include <subdev/gpio.h>
+#include <subdev/i2c.h>
+
+static void
+nouveau_dp_probe_oui(struct drm_device *dev, struct nouveau_i2c_port *auxch,
+		     u8 *dpcd)
+{
+	struct nouveau_drm *drm = nouveau_drm(dev);
+	u8 buf[3];
+
+	if (!(dpcd[DP_DOWN_STREAM_PORT_COUNT] & DP_OUI_SUPPORT))
+		return;
+
+	if (!nv_rdaux(auxch, DP_SINK_OUI, buf, 3))
+		NV_DEBUG(drm, "Sink OUI: %02hx%02hx%02hx\n",
+			     buf[0], buf[1], buf[2]);
+
+	if (!nv_rdaux(auxch, DP_BRANCH_OUI, buf, 3))
+		NV_DEBUG(drm, "Branch OUI: %02hx%02hx%02hx\n",
+			     buf[0], buf[1], buf[2]);
+
+>>>>>>> refs/remotes/origin/master
 }
 
 bool
@@ -1060,6 +1094,7 @@ nouveau_dp_detect(struct drm_encoder *encoder)
 {
 	struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
 	struct drm_device *dev = encoder->dev;
+<<<<<<< HEAD
 	struct nouveau_i2c_chan *auxch;
 	u8 *dpcd = nv_encoder->dp.dpcd;
 	int ret;
@@ -1069,15 +1104,33 @@ nouveau_dp_detect(struct drm_encoder *encoder)
 		return false;
 
 	ret = auxch_tx(dev, auxch->drive, 9, DP_DPCD_REV, dpcd, 8);
+=======
+	struct nouveau_drm *drm = nouveau_drm(dev);
+	struct nouveau_i2c_port *auxch;
+	u8 *dpcd = nv_encoder->dp.dpcd;
+	int ret;
+
+	auxch = nv_encoder->i2c;
+	if (!auxch)
+		return false;
+
+	ret = nv_rdaux(auxch, DP_DPCD_REV, dpcd, 8);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return false;
 
 	nv_encoder->dp.link_bw = 27000 * dpcd[1];
 	nv_encoder->dp.link_nr = dpcd[2] & DP_MAX_LANE_COUNT_MASK;
 
+<<<<<<< HEAD
 	NV_DEBUG_KMS(dev, "display: %dx%d dpcd 0x%02x\n",
 		     nv_encoder->dp.link_nr, nv_encoder->dp.link_bw, dpcd[0]);
 	NV_DEBUG_KMS(dev, "encoder: %dx%d\n",
+=======
+	NV_DEBUG(drm, "display: %dx%d dpcd 0x%02x\n",
+		     nv_encoder->dp.link_nr, nv_encoder->dp.link_bw, dpcd[0]);
+	NV_DEBUG(drm, "encoder: %dx%d\n",
+>>>>>>> refs/remotes/origin/master
 		     nv_encoder->dcb->dpconf.link_nr,
 		     nv_encoder->dcb->dpconf.link_bw);
 
@@ -1086,6 +1139,7 @@ nouveau_dp_detect(struct drm_encoder *encoder)
 	if (nv_encoder->dcb->dpconf.link_bw < nv_encoder->dp.link_bw)
 		nv_encoder->dp.link_bw = nv_encoder->dcb->dpconf.link_bw;
 
+<<<<<<< HEAD
 	NV_DEBUG_KMS(dev, "maximum: %dx%d\n",
 		     nv_encoder->dp.link_nr, nv_encoder->dp.link_bw);
 
@@ -1167,3 +1221,12 @@ const struct i2c_algorithm nouveau_dp_i2c_algo = {
 	.master_xfer = nouveau_dp_i2c_xfer,
 	.functionality = nouveau_dp_i2c_func
 };
+=======
+	NV_DEBUG(drm, "maximum: %dx%d\n",
+		     nv_encoder->dp.link_nr, nv_encoder->dp.link_bw);
+
+	nouveau_dp_probe_oui(dev, auxch, dpcd);
+
+	return true;
+}
+>>>>>>> refs/remotes/origin/master

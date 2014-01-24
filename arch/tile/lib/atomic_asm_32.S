@@ -71,10 +71,14 @@
 
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <asm/atomic_32.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/atomic_32.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/processor.h>
 
@@ -168,6 +172,10 @@ STD_ENTRY_SECTION(__atomic\name, .text.atomic)
 	STD_ENDPROC(__atomic\name)
 	.ifc \bitwidth,32
 	.pushsection __ex_table,"a"
+<<<<<<< HEAD
+=======
+	.align  4
+>>>>>>> refs/remotes/origin/master
 	.word   1b, __atomic\name
 	.word   2b, __atomic\name
 	.word   __atomic\name, __atomic_bad_address

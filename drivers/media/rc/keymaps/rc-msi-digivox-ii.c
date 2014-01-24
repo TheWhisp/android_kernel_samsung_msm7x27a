@@ -20,6 +20,7 @@
 
 #include <media/rc-map.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -43,6 +44,29 @@ static struct rc_map_table msi_digivox_ii[] = {
 	{ 0x001c, KEY_4 },
 	{ 0x001d, KEY_6 },
 	{ 0x001f, KEY_VOLUMEDOWN },
+=======
+#include <linux/module.h>
+
+static struct rc_map_table msi_digivox_ii[] = {
+	{ 0x0302, KEY_2 },
+	{ 0x0303, KEY_UP },              /* up */
+	{ 0x0304, KEY_3 },
+	{ 0x0305, KEY_CHANNELDOWN },
+	{ 0x0308, KEY_5 },
+	{ 0x0309, KEY_0 },
+	{ 0x030b, KEY_8 },
+	{ 0x030d, KEY_DOWN },            /* down */
+	{ 0x0310, KEY_9 },
+	{ 0x0311, KEY_7 },
+	{ 0x0314, KEY_VOLUMEUP },
+	{ 0x0315, KEY_CHANNELUP },
+	{ 0x0316, KEY_OK },
+	{ 0x0317, KEY_POWER2 },
+	{ 0x031a, KEY_1 },
+	{ 0x031c, KEY_4 },
+	{ 0x031d, KEY_6 },
+	{ 0x031f, KEY_VOLUMEDOWN },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct rc_map_list msi_digivox_ii_map = {

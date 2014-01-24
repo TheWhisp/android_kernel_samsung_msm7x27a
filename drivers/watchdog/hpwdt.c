@@ -14,10 +14,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/fs.h>
 #include <linux/init.h>
@@ -41,6 +46,7 @@
 #include <asm/cacheflush.h>
 #endif /* CONFIG_HPWDT_NMI_DECODING */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define HPWDT_VERSION			"1.2.0"
 =======
@@ -48,6 +54,11 @@
 
 #define HPWDT_VERSION			"1.3.0"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/nmi.h>
+
+#define HPWDT_VERSION			"1.3.2"
+>>>>>>> refs/remotes/origin/master
 #define SECS_TO_TICKS(secs)		((secs) * 1000 / 128)
 #define TICKS_TO_SECS(ticks)		((ticks) * 128 / 1000)
 #define HPWDT_MAX_TIMER			TICKS_TO_SECS(65535)
@@ -56,10 +67,14 @@
 static unsigned int soft_margin = DEFAULT_MARGIN;	/* in seconds */
 static unsigned int reload;			/* the computed soft_margin */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 static char expect_release;
 static unsigned long hpwdt_is_open;
 
@@ -103,7 +118,10 @@ struct smbios_cru64_info {
 #define SMBIOS_CRU64_INFORMATION	212
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* type 219 */
 struct smbios_proliant_info {
 	u8 type;
@@ -117,7 +135,10 @@ struct smbios_proliant_info {
 #define SMBIOS_ICRU_INFORMATION		219
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct cmn_registers {
 	union {
 		struct {
@@ -161,12 +182,18 @@ struct cmn_registers {
 }  __attribute__((packed));
 
 static unsigned int hpwdt_nmi_decoding;
+<<<<<<< HEAD
 static unsigned int allow_kdump;
 static unsigned int priority;		/* hpwdt at end of die_notify list */
 <<<<<<< HEAD
 =======
 static unsigned int is_icru;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int allow_kdump = 1;
+static unsigned int is_icru;
+static unsigned int is_uefi;
+>>>>>>> refs/remotes/origin/master
 static DEFINE_SPINLOCK(rom_lock);
 static void *cru_rom_addr;
 static struct cmn_registers cmn_regs;
@@ -180,7 +207,12 @@ extern asmlinkage void asminline_call(struct cmn_registers *pi86Regs,
 #define HPWDT_ARCH	32
 
 asm(".text                          \n\t"
+<<<<<<< HEAD
     ".align 4                       \n"
+=======
+    ".align 4                       \n\t"
+    ".globl asminline_call	    \n"
+>>>>>>> refs/remotes/origin/master
     "asminline_call:                \n\t"
     "pushl       %ebp               \n\t"
     "movl        %esp, %ebp         \n\t"
@@ -231,7 +263,11 @@ asm(".text                          \n\t"
  *	0        :  SUCCESS
  *	<0       :  FAILURE
  */
+<<<<<<< HEAD
 static int __devinit cru_detect(unsigned long map_entry,
+=======
+static int cru_detect(unsigned long map_entry,
+>>>>>>> refs/remotes/origin/master
 	unsigned long map_offset)
 {
 	void *bios32_map;
@@ -256,11 +292,15 @@ static int __devinit cru_detect(unsigned long map_entry,
 
 	if (cmn_regs.u1.ral != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 			"hpwdt: Call succeeded but with an error: 0x%x\n",
 =======
 		pr_warn("Call succeeded but with an error: 0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Call succeeded but with an error: 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 			cmn_regs.u1.ral);
 	} else {
 		physical_bios_base = cmn_regs.u2.rebx;
@@ -281,6 +321,7 @@ static int __devinit cru_detect(unsigned long map_entry,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "hpwdt: CRU Base Address:   0x%lx\n",
 			physical_bios_base);
 		printk(KERN_DEBUG "hpwdt: CRU Offset Address: 0x%lx\n",
@@ -290,11 +331,16 @@ static int __devinit cru_detect(unsigned long map_entry,
 		printk(KERN_DEBUG "hpwdt: CRU Mapped Address: %p\n",
 			&cru_rom_addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("CRU Base Address:   0x%lx\n", physical_bios_base);
 		pr_debug("CRU Offset Address: 0x%lx\n", physical_bios_offset);
 		pr_debug("CRU Length:         0x%lx\n", cru_length);
 		pr_debug("CRU Mapped Address: %p\n", &cru_rom_addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	iounmap(bios32_map);
 	return retval;
@@ -303,7 +349,11 @@ static int __devinit cru_detect(unsigned long map_entry,
 /*
  *	bios_checksum
  */
+<<<<<<< HEAD
 static int __devinit bios_checksum(const char __iomem *ptr, int len)
+=======
+static int bios_checksum(const char __iomem *ptr, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	char sum = 0;
 	int i;
@@ -328,7 +378,11 @@ static int __devinit bios_checksum(const char __iomem *ptr, int len)
  *	0        :  SUCCESS
  *	<0       :  FAILURE
  */
+<<<<<<< HEAD
 static int __devinit bios32_present(const char __iomem *p)
+=======
+static int bios32_present(const char __iomem *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bios32_service_dir *bios_32_ptr;
 	int length;
@@ -358,7 +412,11 @@ static int __devinit bios32_present(const char __iomem *p)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devinit detect_cru_service(void)
+=======
+static int detect_cru_service(void)
+>>>>>>> refs/remotes/origin/master
 {
 	char __iomem *p, *q;
 	int rc = -1;
@@ -386,7 +444,12 @@ static int __devinit detect_cru_service(void)
 #define HPWDT_ARCH	64
 
 asm(".text                      \n\t"
+<<<<<<< HEAD
     ".align 4                   \n"
+=======
+    ".align 4                   \n\t"
+    ".globl asminline_call	\n"
+>>>>>>> refs/remotes/origin/master
     "asminline_call:            \n\t"
     "pushq      %rbp            \n\t"
     "movq       %rsp, %rbp      \n\t"
@@ -430,7 +493,11 @@ asm(".text                      \n\t"
  *	This function checks whether or not a SMBIOS/DMI record is
  *	the 64bit CRU info or not
  */
+<<<<<<< HEAD
 static void __devinit dmi_find_cru(const struct dmi_header *dm, void *dummy)
+=======
+static void dmi_find_cru(const struct dmi_header *dm, void *dummy)
+>>>>>>> refs/remotes/origin/master
 {
 	struct smbios_cru64_info *smbios_cru64_ptr;
 	unsigned long cru_physical_address;
@@ -449,7 +516,11 @@ static void __devinit dmi_find_cru(const struct dmi_header *dm, void *dummy)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit detect_cru_service(void)
+=======
+static int detect_cru_service(void)
+>>>>>>> refs/remotes/origin/master
 {
 	cru_rom_addr = NULL;
 
@@ -470,16 +541,21 @@ static void hpwdt_start(void)
 	reload = SECS_TO_TICKS(soft_margin);
 	iowrite16(reload, hpwdt_timer_reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iowrite16(0x85, hpwdt_timer_con);
 =======
 	iowrite8(0x85, hpwdt_timer_con);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iowrite8(0x85, hpwdt_timer_con);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hpwdt_stop(void)
 {
 	unsigned long data;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	data = ioread16(hpwdt_timer_con);
 	data &= 0xFE;
@@ -489,6 +565,11 @@ static void hpwdt_stop(void)
 	data &= 0xFE;
 	iowrite8(data, hpwdt_timer_con);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = ioread8(hpwdt_timer_con);
+	data &= 0xFE;
+	iowrite8(data, hpwdt_timer_con);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hpwdt_ping(void)
@@ -500,16 +581,21 @@ static int hpwdt_change_timer(int new_margin)
 {
 	if (new_margin < 1 || new_margin > HPWDT_MAX_TIMER) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 			"hpwdt: New value passed in is invalid: %d seconds.\n",
 =======
 		pr_warn("New value passed in is invalid: %d seconds\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("New value passed in is invalid: %d seconds\n",
+>>>>>>> refs/remotes/origin/master
 			new_margin);
 		return -EINVAL;
 	}
 
 	soft_margin = new_margin;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk(KERN_DEBUG
 		"hpwdt: New timer passed in is %d seconds.\n",
@@ -517,6 +603,9 @@ static int hpwdt_change_timer(int new_margin)
 =======
 	pr_debug("New timer passed in is %d seconds\n", new_margin);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("New timer passed in is %d seconds\n", new_margin);
+>>>>>>> refs/remotes/origin/master
 	reload = SECS_TO_TICKS(soft_margin);
 
 	return 0;
@@ -532,25 +621,33 @@ static int hpwdt_time_left(void)
  *	NMI Handler
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int hpwdt_pretimeout(struct notifier_block *nb, unsigned long ulReason,
 				void *data)
 =======
 static int hpwdt_pretimeout(unsigned int ulReason, struct pt_regs *regs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int hpwdt_pretimeout(unsigned int ulReason, struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long rom_pl;
 	static int die_nmi_called;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ulReason != DIE_NMIUNKNOWN)
 		goto out;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hpwdt_nmi_decoding)
 		goto out;
 
 	spin_lock_irqsave(&rom_lock, rom_pl);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!die_nmi_called)
 		asminline_call(&cmn_regs, cru_rom_addr);
@@ -569,6 +666,9 @@ out:
 	return NOTIFY_OK;
 =======
 	if (!die_nmi_called && !is_icru)
+=======
+	if (!die_nmi_called && !is_icru && !is_uefi)
+>>>>>>> refs/remotes/origin/master
 		asminline_call(&cmn_regs, cru_rom_addr);
 	die_nmi_called = 1;
 	spin_unlock_irqrestore(&rom_lock, rom_pl);
@@ -576,7 +676,11 @@ out:
 	if (allow_kdump)
 		hpwdt_stop();
 
+<<<<<<< HEAD
 	if (!is_icru) {
+=======
+	if (!is_icru && !is_uefi) {
+>>>>>>> refs/remotes/origin/master
 		if (cmn_regs.u1.ral == 0) {
 			panic("An NMI occurred, "
 				"but unable to determine source.\n");
@@ -587,7 +691,10 @@ out:
 
 out:
 	return NMI_DONE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_HPWDT_NMI_DECODING */
 
@@ -614,11 +721,15 @@ static int hpwdt_release(struct inode *inode, struct file *file)
 		hpwdt_stop();
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT
 			"hpwdt: Unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("Unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		hpwdt_ping();
 	}
 
@@ -732,6 +843,7 @@ static struct miscdevice hpwdt_miscdev = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_HPWDT_NMI_DECODING
 static struct notifier_block die_notifier = {
 	.notifier_call = hpwdt_pretimeout,
@@ -741,13 +853,19 @@ static struct notifier_block die_notifier = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Init & Exit
  */
 
 #ifdef CONFIG_HPWDT_NMI_DECODING
 #ifdef CONFIG_X86_LOCAL_APIC
+<<<<<<< HEAD
 static void __devinit hpwdt_check_nmi_decoding(struct pci_dev *dev)
+=======
+static void hpwdt_check_nmi_decoding(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * If nmi_watchdog is turned off then we can turn on
@@ -756,7 +874,11 @@ static void __devinit hpwdt_check_nmi_decoding(struct pci_dev *dev)
 	hpwdt_nmi_decoding = 1;
 }
 #else
+<<<<<<< HEAD
 static void __devinit hpwdt_check_nmi_decoding(struct pci_dev *dev)
+=======
+static void hpwdt_check_nmi_decoding(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_warn(&dev->dev, "NMI decoding is disabled. "
 		"Your kernel does not support a NMI Watchdog.\n");
@@ -764,7 +886,10 @@ static void __devinit hpwdt_check_nmi_decoding(struct pci_dev *dev)
 #endif /* CONFIG_X86_LOCAL_APIC */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	dmi_find_icru
  *
@@ -773,7 +898,11 @@ static void __devinit hpwdt_check_nmi_decoding(struct pci_dev *dev)
  *	This check is independent of architecture and needs to be made for
  *	any ProLiant system.
  */
+<<<<<<< HEAD
 static void __devinit dmi_find_icru(const struct dmi_header *dm, void *dummy)
+=======
+static void dmi_find_icru(const struct dmi_header *dm, void *dummy)
+>>>>>>> refs/remotes/origin/master
 {
 	struct smbios_proliant_info *smbios_proliant_ptr;
 
@@ -781,15 +910,25 @@ static void __devinit dmi_find_icru(const struct dmi_header *dm, void *dummy)
 		smbios_proliant_ptr = (struct smbios_proliant_info *) dm;
 		if (smbios_proliant_ptr->misc_features & 0x01)
 			is_icru = 1;
+<<<<<<< HEAD
 	}
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit hpwdt_init_nmi_decoding(struct pci_dev *dev)
+=======
+		if (smbios_proliant_ptr->misc_features & 0x408)
+			is_uefi = 1;
+	}
+}
+
+static int hpwdt_init_nmi_decoding(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * We need to map the ROM to get the CRU service.
 	 * For 32 bit Operating Systems we need to go through the 32 Bit
@@ -811,6 +950,8 @@ static int __devinit hpwdt_init_nmi_decoding(struct pci_dev *dev)
 	cmn_regs.u1.rah = 0x0D;
 	cmn_regs.u1.ral = 0x02;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * On typical CRU-based systems we need to map that service in
 	 * the BIOS. For 32 bit Operating Systems we need to go through
 	 * the 32 Bit BIOS Service Directory. For 64 bit Operating
@@ -821,7 +962,11 @@ static int __devinit hpwdt_init_nmi_decoding(struct pci_dev *dev)
 	 * the old cru detect code.
 	 */
 	dmi_walk(dmi_find_icru, NULL);
+<<<<<<< HEAD
 	if (!is_icru) {
+=======
+	if (!is_icru && !is_uefi) {
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		* We need to map the ROM to get the CRU service.
@@ -844,6 +989,7 @@ static int __devinit hpwdt_init_nmi_decoding(struct pci_dev *dev)
 		cmn_regs.u1.rah = 0x0D;
 		cmn_regs.u1.ral = 0x02;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
@@ -876,24 +1022,71 @@ static int __devinit hpwdt_init_nmi_decoding(struct pci_dev *dev)
 			(allow_kdump == 0) ? "OFF" : "ON",
 			(priority == 0) ? "LAST" : "FIRST");
 	return 0;
+=======
+
+	/*
+	 * Only one function can register for NMI_UNKNOWN
+	 */
+	retval = register_nmi_handler(NMI_UNKNOWN, hpwdt_pretimeout, 0, "hpwdt");
+	if (retval)
+		goto error;
+	retval = register_nmi_handler(NMI_SERR, hpwdt_pretimeout, 0, "hpwdt");
+	if (retval)
+		goto error1;
+	retval = register_nmi_handler(NMI_IO_CHECK, hpwdt_pretimeout, 0, "hpwdt");
+	if (retval)
+		goto error2;
+
+	dev_info(&dev->dev,
+			"HP Watchdog Timer Driver: NMI decoding initialized"
+			", allow kernel dump: %s (default = 0/OFF)\n",
+			(allow_kdump == 0) ? "OFF" : "ON");
+	return 0;
+
+error2:
+	unregister_nmi_handler(NMI_SERR, "hpwdt");
+error1:
+	unregister_nmi_handler(NMI_UNKNOWN, "hpwdt");
+error:
+	dev_warn(&dev->dev,
+		"Unable to register a die notifier (err=%d).\n",
+		retval);
+	if (cru_rom_addr)
+		iounmap(cru_rom_addr);
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hpwdt_exit_nmi_decoding(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unregister_die_notifier(&die_notifier);
 =======
 	unregister_nmi_handler(NMI_UNKNOWN, "hpwdt");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unregister_nmi_handler(NMI_UNKNOWN, "hpwdt");
+	unregister_nmi_handler(NMI_SERR, "hpwdt");
+	unregister_nmi_handler(NMI_IO_CHECK, "hpwdt");
+>>>>>>> refs/remotes/origin/master
 	if (cru_rom_addr)
 		iounmap(cru_rom_addr);
 }
 #else /* !CONFIG_HPWDT_NMI_DECODING */
+<<<<<<< HEAD
 static void __devinit hpwdt_check_nmi_decoding(struct pci_dev *dev)
 {
 }
 
 static int __devinit hpwdt_init_nmi_decoding(struct pci_dev *dev)
+=======
+static void hpwdt_check_nmi_decoding(struct pci_dev *dev)
+{
+}
+
+static int hpwdt_init_nmi_decoding(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -903,7 +1096,11 @@ static void hpwdt_exit_nmi_decoding(void)
 }
 #endif /* CONFIG_HPWDT_NMI_DECODING */
 
+<<<<<<< HEAD
 static int __devinit hpwdt_init_one(struct pci_dev *dev,
+=======
+static int hpwdt_init_one(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 					const struct pci_device_id *ent)
 {
 	int retval;
@@ -924,6 +1121,15 @@ static int __devinit hpwdt_init_one(struct pci_dev *dev,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Ignore all auxilary iLO devices with the following PCI ID
+	 */
+	if (dev->subsystem_device == 0x1979)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	if (pci_enable_device(dev)) {
 		dev_warn(&dev->dev,
 			"Not possible to enable PCI Device: 0x%x:0x%x.\n",
@@ -975,7 +1181,11 @@ error_pci_iomap:
 	return retval;
 }
 
+<<<<<<< HEAD
 static void __devexit hpwdt_exit(struct pci_dev *dev)
+=======
+static void hpwdt_exit(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!nowayout)
 		hpwdt_stop();
@@ -990,6 +1200,7 @@ static struct pci_driver hpwdt_driver = {
 	.name = "hpwdt",
 	.id_table = hpwdt_devices,
 	.probe = hpwdt_init_one,
+<<<<<<< HEAD
 	.remove = __devexit_p(hpwdt_exit),
 };
 
@@ -1003,26 +1214,39 @@ static int __init hpwdt_init(void)
 	return pci_register_driver(&hpwdt_driver);
 }
 
+=======
+	.remove = hpwdt_exit,
+};
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Tom Mingarelli");
 MODULE_DESCRIPTION("hp watchdog driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(HPWDT_VERSION);
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_param(soft_margin, int, 0);
 MODULE_PARM_DESC(soft_margin, "Watchdog timeout in seconds");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
 =======
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 		__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
 #ifdef CONFIG_HPWDT_NMI_DECODING
 module_param(allow_kdump, int, 0);
 MODULE_PARM_DESC(allow_kdump, "Start a kernel dump after NMI occurs");
+<<<<<<< HEAD
 
 module_param(priority, int, 0);
 MODULE_PARM_DESC(priority, "The hpwdt driver handles NMIs first or last"
@@ -1031,3 +1255,8 @@ MODULE_PARM_DESC(priority, "The hpwdt driver handles NMIs first or last"
 
 module_init(hpwdt_init);
 module_exit(hpwdt_cleanup);
+=======
+#endif /* !CONFIG_HPWDT_NMI_DECODING */
+
+module_pci_driver(hpwdt_driver);
+>>>>>>> refs/remotes/origin/master

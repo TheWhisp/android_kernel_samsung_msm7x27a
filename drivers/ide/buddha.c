@@ -24,9 +24,13 @@
 #include <linux/ide.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/amigahw.h>
 #include <asm/amigaints.h>
@@ -201,7 +205,11 @@ fail_base2:
 				continue;
 			}
 		}	  
+<<<<<<< HEAD
 		buddha_board = ZTWO_VADDR(board);
+=======
+		buddha_board = (unsigned long)ZTWO_VADDR(board);
+>>>>>>> refs/remotes/origin/master
 		
 		/* write to BUDDHA_IRQ_MR to enable the board IRQ */
 		/* X-Surf doesn't have this.  IRQs are always on */

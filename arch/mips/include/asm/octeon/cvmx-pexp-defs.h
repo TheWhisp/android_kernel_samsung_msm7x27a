@@ -5,10 +5,14 @@
  * This file is part of the OCTEON SDK
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2003-2010 Cavium Networks
 =======
  * Copyright (c) 2003-2011 Cavium Networks
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2003-2012 Cavium Networks
+>>>>>>> refs/remotes/origin/master
  *
  * This file is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, Version 2, as
@@ -30,6 +34,7 @@
  ***********************license end**************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * cvmx-pexp-defs.h
  *
@@ -39,6 +44,8 @@
  */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __CVMX_PEXP_DEFS_H__
 #define __CVMX_PEXP_DEFS_H__
 
@@ -147,10 +154,14 @@
 #define CVMX_PEXP_NPEI_WINDOW_CTL (CVMX_ADD_IO_SEG(0x00011F0000008380ull))
 #define CVMX_PEXP_SLI_BIST_STATUS (CVMX_ADD_IO_SEG(0x00011F0000010580ull))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CVMX_PEXP_SLI_CTL_PORTX(offset) (CVMX_ADD_IO_SEG(0x00011F0000010050ull) + ((offset) & 1) * 16)
 =======
 #define CVMX_PEXP_SLI_CTL_PORTX(offset) (CVMX_ADD_IO_SEG(0x00011F0000010050ull) + ((offset) & 3) * 16)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CVMX_PEXP_SLI_CTL_PORTX(offset) (CVMX_ADD_IO_SEG(0x00011F0000010050ull) + ((offset) & 3) * 16)
+>>>>>>> refs/remotes/origin/master
 #define CVMX_PEXP_SLI_CTL_STATUS (CVMX_ADD_IO_SEG(0x00011F0000010570ull))
 #define CVMX_PEXP_SLI_DATA_OUT_CNT (CVMX_ADD_IO_SEG(0x00011F00000105F0ull))
 #define CVMX_PEXP_SLI_DBG_DATA (CVMX_ADD_IO_SEG(0x00011F0000010310ull))
@@ -164,13 +175,19 @@
 #define CVMX_PEXP_SLI_LAST_WIN_RDATA0 (CVMX_ADD_IO_SEG(0x00011F0000010600ull))
 #define CVMX_PEXP_SLI_LAST_WIN_RDATA1 (CVMX_ADD_IO_SEG(0x00011F0000010610ull))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CVMX_PEXP_SLI_MAC_CREDIT_CNT (CVMX_ADD_IO_SEG(0x00011F0000013D70ull))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CVMX_PEXP_SLI_LAST_WIN_RDATA2 (CVMX_ADD_IO_SEG(0x00011F00000106C0ull))
 #define CVMX_PEXP_SLI_LAST_WIN_RDATA3 (CVMX_ADD_IO_SEG(0x00011F00000106D0ull))
 #define CVMX_PEXP_SLI_MAC_CREDIT_CNT (CVMX_ADD_IO_SEG(0x00011F0000013D70ull))
 #define CVMX_PEXP_SLI_MAC_CREDIT_CNT2 (CVMX_ADD_IO_SEG(0x00011F0000013E10ull))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CVMX_PEXP_SLI_MEM_ACCESS_CTL (CVMX_ADD_IO_SEG(0x00011F00000102F0ull))
 #define CVMX_PEXP_SLI_MEM_ACCESS_SUBIDX(offset) (CVMX_ADD_IO_SEG(0x00011F00000100E0ull) + ((offset) & 31) * 16 - 16*12)
 #define CVMX_PEXP_SLI_MSI_ENB0 (CVMX_ADD_IO_SEG(0x00011F0000013C50ull))
@@ -225,9 +242,13 @@
 #define CVMX_PEXP_SLI_PKT_OUTPUT_WMARK (CVMX_ADD_IO_SEG(0x00011F0000011180ull))
 #define CVMX_PEXP_SLI_PKT_OUT_BMODE (CVMX_ADD_IO_SEG(0x00011F00000110D0ull))
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CVMX_PEXP_SLI_PKT_OUT_BP_EN (CVMX_ADD_IO_SEG(0x00011F0000011240ull))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CVMX_PEXP_SLI_PKT_OUT_BP_EN (CVMX_ADD_IO_SEG(0x00011F0000011240ull))
+>>>>>>> refs/remotes/origin/master
 #define CVMX_PEXP_SLI_PKT_OUT_ENB (CVMX_ADD_IO_SEG(0x00011F0000011010ull))
 #define CVMX_PEXP_SLI_PKT_PCIE_PORT (CVMX_ADD_IO_SEG(0x00011F00000110E0ull))
 #define CVMX_PEXP_SLI_PKT_PORT_IN_RST (CVMX_ADD_IO_SEG(0x00011F00000111F0ull))
@@ -237,20 +258,29 @@
 #define CVMX_PEXP_SLI_PKT_TIME_INT (CVMX_ADD_IO_SEG(0x00011F0000011140ull))
 #define CVMX_PEXP_SLI_PKT_TIME_INT_ENB (CVMX_ADD_IO_SEG(0x00011F0000011160ull))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CVMX_PEXP_SLI_S2M_PORTX_CTL(offset) (CVMX_ADD_IO_SEG(0x00011F0000013D80ull) + ((offset) & 1) * 16)
 =======
 #define CVMX_PEXP_SLI_PORTX_PKIND(offset) (CVMX_ADD_IO_SEG(0x00011F0000010800ull) + ((offset) & 31) * 16)
 #define CVMX_PEXP_SLI_S2M_PORTX_CTL(offset) (CVMX_ADD_IO_SEG(0x00011F0000013D80ull) + ((offset) & 3) * 16)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CVMX_PEXP_SLI_PORTX_PKIND(offset) (CVMX_ADD_IO_SEG(0x00011F0000010800ull) + ((offset) & 31) * 16)
+#define CVMX_PEXP_SLI_S2M_PORTX_CTL(offset) (CVMX_ADD_IO_SEG(0x00011F0000013D80ull) + ((offset) & 3) * 16)
+>>>>>>> refs/remotes/origin/master
 #define CVMX_PEXP_SLI_SCRATCH_1 (CVMX_ADD_IO_SEG(0x00011F00000103C0ull))
 #define CVMX_PEXP_SLI_SCRATCH_2 (CVMX_ADD_IO_SEG(0x00011F00000103D0ull))
 #define CVMX_PEXP_SLI_STATE1 (CVMX_ADD_IO_SEG(0x00011F0000010620ull))
 #define CVMX_PEXP_SLI_STATE2 (CVMX_ADD_IO_SEG(0x00011F0000010630ull))
 #define CVMX_PEXP_SLI_STATE3 (CVMX_ADD_IO_SEG(0x00011F0000010640ull))
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CVMX_PEXP_SLI_TX_PIPE (CVMX_ADD_IO_SEG(0x00011F0000011230ull))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CVMX_PEXP_SLI_TX_PIPE (CVMX_ADD_IO_SEG(0x00011F0000011230ull))
+>>>>>>> refs/remotes/origin/master
 #define CVMX_PEXP_SLI_WINDOW_CTL (CVMX_ADD_IO_SEG(0x00011F00000102E0ull))
 
 #endif

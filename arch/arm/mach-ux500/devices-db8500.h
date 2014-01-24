@@ -8,6 +8,7 @@
 #ifndef __DEVICES_DB8500_H
 #define __DEVICES_DB8500_H
 
+<<<<<<< HEAD
 #include "devices-common.h"
 
 struct ske_keypad_platform_data;
@@ -209,5 +210,14 @@ db8500_add_ssp(struct device *parent, const char *name, resource_size_t base,
 	dbx500_add_uart(parent, "uart2", U8500_UART2_BASE, \
 			IRQ_DB8500_UART2, pdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "irqs.h"
+#include "db8500-regs.h"
+
+struct platform_device;
+
+extern struct ab8500_platform_data ab8500_platdata;
+extern struct prcmu_pdata db8500_prcmu_pdata;
+>>>>>>> refs/remotes/origin/master
 
 #endif

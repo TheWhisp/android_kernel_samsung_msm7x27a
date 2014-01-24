@@ -1,10 +1,15 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 %option backup nostdinit noyywrap never-interactive full ecs
 %option 8bit backup nodefault perf-report perf-report
 =======
 %option nostdinit noyywrap never-interactive full ecs
 %option 8bit nodefault perf-report perf-report
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+%option nostdinit noyywrap never-interactive full ecs
+%option 8bit nodefault perf-report perf-report
+>>>>>>> refs/remotes/origin/master
 %option noinput
 %x COMMAND HELP STRING PARAM
 %{
@@ -20,9 +25,12 @@
 #include <unistd.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 
 #define START_STRSIZE	16
@@ -49,7 +57,11 @@ static void zconf_endfile(void);
 
 static void new_string(void)
 {
+<<<<<<< HEAD
 	text = malloc(START_STRSIZE);
+=======
+	text = xmalloc(START_STRSIZE);
+>>>>>>> refs/remotes/origin/master
 	text_asize = START_STRSIZE;
 	text_size = 0;
 	*text = 0;
@@ -71,13 +83,20 @@ static void append_string(const char *str, int size)
 
 static void alloc_string(const char *str, int size)
 {
+<<<<<<< HEAD
 	text = malloc(size + 1);
+=======
+	text = xmalloc(size + 1);
+>>>>>>> refs/remotes/origin/master
 	memcpy(text, str, size);
 	text[size] = 0;
 }
 %}
 
+<<<<<<< HEAD
 ws	[ \n\t]
+=======
+>>>>>>> refs/remotes/origin/master
 n	[A-Za-z0-9_]
 
 %%
@@ -105,10 +124,14 @@ n	[A-Za-z0-9_]
 <COMMAND>{
 	{n}+	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
 =======
 		const struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
+>>>>>>> refs/remotes/origin/master
 		BEGIN(PARAM);
 		current_pos.file = current_file;
 		current_pos.lineno = current_file->lineno;
@@ -145,10 +168,14 @@ n	[A-Za-z0-9_]
 	---	/* ignore */
 	({n}|[-/.])+	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
 =======
 		const struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct kconf_id *id = kconf_id_lookup(yytext, yyleng);
+>>>>>>> refs/remotes/origin/master
 		if (id && id->flags & TF_PARAM) {
 			zconflval.id = id;
 			return id->token;
@@ -305,7 +332,11 @@ void zconf_initscan(const char *name)
 		exit(1);
 	}
 
+<<<<<<< HEAD
 	current_buf = malloc(sizeof(*current_buf));
+=======
+	current_buf = xmalloc(sizeof(*current_buf));
+>>>>>>> refs/remotes/origin/master
 	memset(current_buf, 0, sizeof(*current_buf));
 
 	current_file = file_lookup(name);
@@ -316,7 +347,11 @@ void zconf_nextfile(const char *name)
 {
 	struct file *iter;
 	struct file *file = file_lookup(name);
+<<<<<<< HEAD
 	struct buffer *buf = malloc(sizeof(*buf));
+=======
+	struct buffer *buf = xmalloc(sizeof(*buf));
+>>>>>>> refs/remotes/origin/master
 	memset(buf, 0, sizeof(*buf));
 
 	current_buf->state = YY_CURRENT_BUFFER;

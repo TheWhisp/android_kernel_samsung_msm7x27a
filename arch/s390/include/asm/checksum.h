@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef _S390_CHECKSUM_H
 #define _S390_CHECKSUM_H
 
@@ -8,11 +9,24 @@
  *
  *  S390 version
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+/*
+ *    S390 fast network checksum routines
+ *
+ *  S390 version
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Ulrich Hild        (first version)
  *               Martin Schwidefsky (heavily optimized CKSM version)
  *               D.J. Barrow        (third attempt) 
  */
 
+<<<<<<< HEAD
+=======
+#ifndef _S390_CHECKSUM_H
+#define _S390_CHECKSUM_H
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 /*

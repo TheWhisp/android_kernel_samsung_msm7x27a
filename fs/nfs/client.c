@@ -37,12 +37,15 @@
 #include <linux/in6.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <net/ipv6.h>
 #include <linux/nfs_xdr.h>
 #include <linux/sunrpc/bc_xprt.h>
 
 #include <asm/system.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/idr.h>
 #include <net/ipv6.h>
 #include <linux/nfs_xdr.h>
@@ -50,7 +53,10 @@
 #include <linux/nsproxy.h>
 #include <linux/pid_namespace.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "nfs4_fs.h"
 #include "callback.h"
@@ -59,6 +65,7 @@
 #include "internal.h"
 #include "fscache.h"
 #include "pnfs.h"
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define NFSDBG_FACILITY		NFSDBG_CLIENT
@@ -70,11 +77,15 @@ static DECLARE_WAIT_QUEUE_HEAD(nfs_client_active_wq);
 #ifdef CONFIG_NFS_V4
 static DEFINE_IDR(cb_ident_idr); /* Protected by nfs_client_lock */
 =======
+=======
+#include "nfs.h"
+>>>>>>> refs/remotes/origin/master
 #include "netns.h"
 
 #define NFSDBG_FACILITY		NFSDBG_CLIENT
 
 static DECLARE_WAIT_QUEUE_HEAD(nfs_client_active_wq);
+<<<<<<< HEAD
 #ifdef CONFIG_NFS_V4
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -120,10 +131,16 @@ static int nfs4_disable_idmapping = 0;
 =======
 static bool nfs4_disable_idmapping = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(nfs_version_lock);
+static DEFINE_MUTEX(nfs_version_mutex);
+static LIST_HEAD(nfs_versions);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * RPC cruft for NFS
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct rpc_version *nfs_version[5] = {
 =======
@@ -143,22 +160,36 @@ struct rpc_program nfs_program = {
 =======
 const struct rpc_program nfs_program = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct rpc_version *nfs_version[5] = {
+	[2] = NULL,
+	[3] = NULL,
+	[4] = NULL,
+};
+
+const struct rpc_program nfs_program = {
+>>>>>>> refs/remotes/origin/master
 	.name			= "nfs",
 	.number			= NFS_PROGRAM,
 	.nrvers			= ARRAY_SIZE(nfs_version),
 	.version		= nfs_version,
 	.stats			= &nfs_rpcstat,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pipe_dir_name		= "/nfs",
 =======
 	.pipe_dir_name		= NFS_PIPE_DIRNAME,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pipe_dir_name		= NFS_PIPE_DIRNAME,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct rpc_stat nfs_rpcstat = {
 	.program		= &nfs_program
 };
 
+<<<<<<< HEAD
 
 #ifdef CONFIG_NFS_V3_ACL
 static struct rpc_stat		nfsacl_rpcstat = { &nfsacl_program };
@@ -195,6 +226,66 @@ struct nfs_client_initdata {
 	struct net *net;
 >>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+static struct nfs_subversion *find_nfs_version(unsigned int version)
+{
+	struct nfs_subversion *nfs;
+	spin_lock(&nfs_version_lock);
+
+	list_for_each_entry(nfs, &nfs_versions, list) {
+		if (nfs->rpc_ops->version == version) {
+			spin_unlock(&nfs_version_lock);
+			return nfs;
+		}
+	}
+
+	spin_unlock(&nfs_version_lock);
+	return ERR_PTR(-EPROTONOSUPPORT);
+}
+
+struct nfs_subversion *get_nfs_version(unsigned int version)
+{
+	struct nfs_subversion *nfs = find_nfs_version(version);
+
+	if (IS_ERR(nfs)) {
+		mutex_lock(&nfs_version_mutex);
+		request_module("nfsv%d", version);
+		nfs = find_nfs_version(version);
+		mutex_unlock(&nfs_version_mutex);
+	}
+
+	if (!IS_ERR(nfs))
+		try_module_get(nfs->owner);
+	return nfs;
+}
+
+void put_nfs_version(struct nfs_subversion *nfs)
+{
+	module_put(nfs->owner);
+}
+
+void register_nfs_version(struct nfs_subversion *nfs)
+{
+	spin_lock(&nfs_version_lock);
+
+	list_add(&nfs->list, &nfs_versions);
+	nfs_version[nfs->rpc_ops->version] = nfs->rpc_vers;
+
+	spin_unlock(&nfs_version_lock);
+}
+EXPORT_SYMBOL_GPL(register_nfs_version);
+
+void unregister_nfs_version(struct nfs_subversion *nfs)
+{
+	spin_lock(&nfs_version_lock);
+
+	nfs_version[nfs->rpc_ops->version] = NULL;
+	list_del(&nfs->list);
+
+	spin_unlock(&nfs_version_lock);
+}
+EXPORT_SYMBOL_GPL(unregister_nfs_version);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Allocate a shared client record
@@ -202,7 +293,11 @@ struct nfs_client_initdata {
  * Since these are allocated/deallocated very rarely, we don't
  * bother putting them in a slab cache...
  */
+<<<<<<< HEAD
 static struct nfs_client *nfs_alloc_client(const struct nfs_client_initdata *cl_init)
+=======
+struct nfs_client *nfs_alloc_client(const struct nfs_client_initdata *cl_init)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_client *clp;
 	struct rpc_cred *cred;
@@ -211,7 +306,14 @@ static struct nfs_client *nfs_alloc_client(const struct nfs_client_initdata *cl_
 	if ((clp = kzalloc(sizeof(*clp), GFP_KERNEL)) == NULL)
 		goto error_0;
 
+<<<<<<< HEAD
 	clp->rpc_ops = cl_init->rpc_ops;
+=======
+	clp->cl_nfs_mod = cl_init->nfs_mod;
+	try_module_get(clp->cl_nfs_mod->owner);
+
+	clp->rpc_ops = clp->cl_nfs_mod->rpc_ops;
+>>>>>>> refs/remotes/origin/master
 
 	atomic_set(&clp->cl_count, 1);
 	clp->cl_cons_state = NFS_CS_INITING;
@@ -230,6 +332,7 @@ static struct nfs_client *nfs_alloc_client(const struct nfs_client_initdata *cl_
 	clp->cl_rpcclient = ERR_PTR(-EINVAL);
 
 	clp->cl_proto = cl_init->proto;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	clp->net = get_net(cl_init->net);
@@ -260,15 +363,27 @@ static struct nfs_client *nfs_alloc_client(const struct nfs_client_initdata *cl_
 	if (!IS_ERR(cred))
 		clp->cl_machine_cred = cred;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clp->cl_net = get_net(cl_init->net);
+
+	cred = rpc_lookup_machine_cred("*");
+	if (!IS_ERR(cred))
+		clp->cl_machine_cred = cred;
+>>>>>>> refs/remotes/origin/master
 	nfs_fscache_get_client_cookie(clp);
 
 	return clp;
 
 error_cleanup:
+<<<<<<< HEAD
+=======
+	put_nfs_version(clp->cl_nfs_mod);
+>>>>>>> refs/remotes/origin/master
 	kfree(clp);
 error_0:
 	return ERR_PTR(err);
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_NFS_V4
 #ifdef CONFIG_NFS_V4_1
@@ -318,17 +433,26 @@ void nfs_cleanup_cb_ident_idr(void)
 {
 	idr_destroy(&cb_ident_idr);
 =======
+=======
+EXPORT_SYMBOL_GPL(nfs_alloc_client);
+
+#if IS_ENABLED(CONFIG_NFS_V4)
+>>>>>>> refs/remotes/origin/master
 void nfs_cleanup_cb_ident_idr(struct net *net)
 {
 	struct nfs_net *nn = net_generic(net, nfs_net_id);
 
 	idr_destroy(&nn->cb_ident_idr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* nfs_client_lock held */
 static void nfs_cb_idr_remove_locked(struct nfs_client *clp)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (clp->cl_cb_ident)
 		idr_remove(&cb_ident_idr, clp->cl_cb_ident);
@@ -338,6 +462,12 @@ static void nfs_cb_idr_remove_locked(struct nfs_client *clp)
 	if (clp->cl_cb_ident)
 		idr_remove(&nn->cb_ident_idr, clp->cl_cb_ident);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn = net_generic(clp->cl_net, nfs_net_id);
+
+	if (clp->cl_cb_ident)
+		idr_remove(&nn->cb_ident_idr, clp->cl_cb_ident);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pnfs_init_server(struct nfs_server *server)
@@ -345,6 +475,7 @@ static void pnfs_init_server(struct nfs_server *server)
 	rpc_init_wait_queue(&server->roc_rpcwaitq, "pNFS ROC");
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static void nfs4_destroy_server(struct nfs_server *server)
@@ -363,6 +494,10 @@ void nfs_cleanup_cb_ident_idr(void)
 =======
 void nfs_cleanup_cb_ident_idr(struct net *net)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else
+void nfs_cleanup_cb_ident_idr(struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -379,12 +514,19 @@ static void pnfs_init_server(struct nfs_server *server)
 /*
  * Destroy a shared client record
  */
+<<<<<<< HEAD
 static void nfs_free_client(struct nfs_client *clp)
 {
 	dprintk("--> nfs_free_client(%u)\n", clp->rpc_ops->version);
 
 	nfs4_shutdown_client(clp);
 
+=======
+void nfs_free_client(struct nfs_client *clp)
+{
+	dprintk("--> nfs_free_client(%u)\n", clp->rpc_ops->version);
+
+>>>>>>> refs/remotes/origin/master
 	nfs_fscache_release_client_cookie(clp);
 
 	/* -EIO all pending I/O */
@@ -395,6 +537,7 @@ static void nfs_free_client(struct nfs_client *clp)
 		put_rpccred(clp->cl_machine_cred);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nfs4_deviceid_purge_client(clp);
 
 	kfree(clp->cl_hostname);
@@ -404,10 +547,19 @@ static void nfs_free_client(struct nfs_client *clp)
 	kfree(clp->server_scope);
 	kfree(clp->impl_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	put_net(clp->cl_net);
+	put_nfs_version(clp->cl_nfs_mod);
+	kfree(clp->cl_hostname);
+>>>>>>> refs/remotes/origin/master
 	kfree(clp);
 
 	dprintk("<-- nfs_free_client()\n");
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nfs_free_client);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Release a reference to a shared client record
@@ -415,14 +567,20 @@ static void nfs_free_client(struct nfs_client *clp)
 void nfs_put_client(struct nfs_client *clp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct nfs_net *nn;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn;
+
+>>>>>>> refs/remotes/origin/master
 	if (!clp)
 		return;
 
 	dprintk("--> nfs_put_client({%d})\n", atomic_read(&clp->cl_count));
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	if (atomic_dec_and_lock(&clp->cl_count, &nfs_client_lock)) {
@@ -431,16 +589,26 @@ void nfs_put_client(struct nfs_client *clp)
 		spin_unlock(&nfs_client_lock);
 =======
 	nn = net_generic(clp->net, nfs_net_id);
+=======
+	nn = net_generic(clp->cl_net, nfs_net_id);
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_dec_and_lock(&clp->cl_count, &nn->nfs_client_lock)) {
 		list_del(&clp->cl_share_link);
 		nfs_cb_idr_remove_locked(clp);
 		spin_unlock(&nn->nfs_client_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		BUG_ON(!list_empty(&clp->cl_superblocks));
 
 		nfs_free_client(clp);
+=======
+
+		WARN_ON_ONCE(!list_empty(&clp->cl_superblocks));
+
+		clp->rpc_ops->free_client(clp);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL_GPL(nfs_put_client);
@@ -464,19 +632,25 @@ static int nfs_sockaddr_match_ipaddr6(const struct sockaddr *sa1,
 	const struct sockaddr_in6 *sin2 = (const struct sockaddr_in6 *)sa2;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ipv6_addr_scope(&sin1->sin6_addr) == IPV6_ADDR_SCOPE_LINKLOCAL &&
 	    sin1->sin6_scope_id != sin2->sin6_scope_id)
 		return 0;
 
 	return ipv6_addr_equal(&sin1->sin6_addr, &sin2->sin6_addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!ipv6_addr_equal(&sin1->sin6_addr, &sin2->sin6_addr))
 		return 0;
 	else if (ipv6_addr_type(&sin1->sin6_addr) & IPV6_ADDR_LINKLOCAL)
 		return sin1->sin6_scope_id == sin2->sin6_scope_id;
 
 	return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #else	/* !defined(CONFIG_IPV6) && !defined(CONFIG_IPV6_MODULE) */
 static int nfs_sockaddr_match_ipaddr6(const struct sockaddr *sa1,
@@ -523,15 +697,24 @@ static int nfs_sockaddr_cmp_ip4(const struct sockaddr *sa1,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_NFS_V4_1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_NFS_V4_1)
+>>>>>>> refs/remotes/origin/master
 /*
  * Test if two socket addresses represent the same actual socket,
  * by comparing (only) relevant fields, excluding the port number.
  */
+<<<<<<< HEAD
 static int nfs_sockaddr_match_ipaddr(const struct sockaddr *sa1,
 				     const struct sockaddr *sa2)
+=======
+int nfs_sockaddr_match_ipaddr(const struct sockaddr *sa1,
+			      const struct sockaddr *sa2)
+>>>>>>> refs/remotes/origin/master
 {
 	if (sa1->sa_family != sa2->sa_family)
 		return 0;
@@ -545,9 +728,14 @@ static int nfs_sockaddr_match_ipaddr(const struct sockaddr *sa1,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif /* CONFIG_NFS_V4_1 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(nfs_sockaddr_match_ipaddr);
+#endif /* CONFIG_NFS_V4_1 */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Test if two socket addresses represent the same actual socket,
@@ -568,6 +756,7 @@ static int nfs_sockaddr_cmp(const struct sockaddr *sa1,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Common match routine for v4.0 and v4.1 callback services */
 bool
@@ -603,6 +792,8 @@ static bool nfs4_cb_match_client(const struct sockaddr *addr,
 #endif /* CONFIG_NFS_V4_1 */
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Find an nfs_client on the list that matches the initialisation data
  * that is supplied.
@@ -612,6 +803,7 @@ static struct nfs_client *nfs_match_client(const struct nfs_client_initdata *dat
 	struct nfs_client *clp;
 	const struct sockaddr *sap = data->addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	list_for_each_entry(clp, &nfs_client_list, cl_share_link) {
 =======
@@ -619,13 +811,22 @@ static struct nfs_client *nfs_match_client(const struct nfs_client_initdata *dat
 
 	list_for_each_entry(clp, &nn->nfs_client_list, cl_share_link) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn = net_generic(data->net, nfs_net_id);
+
+	list_for_each_entry(clp, &nn->nfs_client_list, cl_share_link) {
+>>>>>>> refs/remotes/origin/master
 	        const struct sockaddr *clap = (struct sockaddr *)&clp->cl_addr;
 		/* Don't match clients that failed to initialise properly */
 		if (clp->cl_cons_state < 0)
 			continue;
 
 		/* Different NFS versions cannot share the same nfs_client */
+<<<<<<< HEAD
 		if (clp->rpc_ops != data->rpc_ops)
+=======
+		if (clp->rpc_ops != data->nfs_mod->rpc_ops)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		if (clp->cl_proto != data->proto)
@@ -643,10 +844,54 @@ static struct nfs_client *nfs_match_client(const struct nfs_client_initdata *dat
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+static bool nfs_client_init_is_complete(const struct nfs_client *clp)
+{
+	return clp->cl_cons_state != NFS_CS_INITING;
+}
+
+int nfs_wait_client_init_complete(const struct nfs_client *clp)
+{
+	return wait_event_killable(nfs_client_active_wq,
+			nfs_client_init_is_complete(clp));
+}
+EXPORT_SYMBOL_GPL(nfs_wait_client_init_complete);
+
+/*
+ * Found an existing client.  Make sure it's ready before returning.
+ */
+static struct nfs_client *
+nfs_found_client(const struct nfs_client_initdata *cl_init,
+		 struct nfs_client *clp)
+{
+	int error;
+
+	error = nfs_wait_client_init_complete(clp);
+	if (error < 0) {
+		nfs_put_client(clp);
+		return ERR_PTR(-ERESTARTSYS);
+	}
+
+	if (clp->cl_cons_state < NFS_CS_READY) {
+		error = clp->cl_cons_state;
+		nfs_put_client(clp);
+		return ERR_PTR(error);
+	}
+
+	smp_rmb();
+
+	dprintk("<-- %s found nfs_client %p for %s\n",
+		__func__, clp, cl_init->hostname ?: "");
+	return clp;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Look up a client by IP address and protocol version
  * - creates a new record if one doesn't yet exist
  */
+<<<<<<< HEAD
 static struct nfs_client *
 nfs_get_client(const struct nfs_client_initdata *cl_init,
 	       const struct rpc_timeout *timeparms,
@@ -741,12 +986,57 @@ found_client:
 	dprintk("--> nfs_get_client() = %p [share]\n", clp);
 	return clp;
 }
+=======
+struct nfs_client *
+nfs_get_client(const struct nfs_client_initdata *cl_init,
+	       const struct rpc_timeout *timeparms,
+	       const char *ip_addr,
+	       rpc_authflavor_t authflavour)
+{
+	struct nfs_client *clp, *new = NULL;
+	struct nfs_net *nn = net_generic(cl_init->net, nfs_net_id);
+	const struct nfs_rpc_ops *rpc_ops = cl_init->nfs_mod->rpc_ops;
+
+	dprintk("--> nfs_get_client(%s,v%u)\n",
+		cl_init->hostname ?: "", rpc_ops->version);
+
+	/* see if the client already exists */
+	do {
+		spin_lock(&nn->nfs_client_lock);
+
+		clp = nfs_match_client(cl_init);
+		if (clp) {
+			spin_unlock(&nn->nfs_client_lock);
+			if (new)
+				new->rpc_ops->free_client(new);
+			return nfs_found_client(cl_init, clp);
+		}
+		if (new) {
+			list_add_tail(&new->cl_share_link,
+					&nn->nfs_client_list);
+			spin_unlock(&nn->nfs_client_lock);
+			new->cl_flags = cl_init->init_flags;
+			return rpc_ops->init_client(new, timeparms, ip_addr);
+		}
+
+		spin_unlock(&nn->nfs_client_lock);
+
+		new = rpc_ops->alloc_client(cl_init);
+	} while (!IS_ERR(new));
+
+	dprintk("<-- nfs_get_client() Failed to find %s (%ld)\n",
+		cl_init->hostname ?: "", PTR_ERR(new));
+	return new;
+}
+EXPORT_SYMBOL_GPL(nfs_get_client);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Mark a server as ready or failed
  */
 void nfs_mark_client_ready(struct nfs_client *clp, int state)
 {
+<<<<<<< HEAD
 	clp->cl_cons_state = state;
 	wake_up_all(&nfs_client_active_wq);
 }
@@ -766,11 +1056,22 @@ int nfs4_check_client_ready(struct nfs_client *clp)
 		return -EPROTONOSUPPORT;
 	return 0;
 }
+=======
+	smp_wmb();
+	clp->cl_cons_state = state;
+	wake_up_all(&nfs_client_active_wq);
+}
+EXPORT_SYMBOL_GPL(nfs_mark_client_ready);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Initialise the timeout values for a connection
  */
+<<<<<<< HEAD
 static void nfs_init_timeout_values(struct rpc_timeout *to, int proto,
+=======
+void nfs_init_timeout_values(struct rpc_timeout *to, int proto,
+>>>>>>> refs/remotes/origin/master
 				    unsigned int timeo, unsigned int retrans)
 {
 	to->to_initval = timeo * HZ / 10;
@@ -807,10 +1108,15 @@ static void nfs_init_timeout_values(struct rpc_timeout *to, int proto,
 		BUG();
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nfs_init_timeout_values);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Create an RPC client handle
  */
+<<<<<<< HEAD
 static int nfs_create_rpc_client(struct nfs_client *clp,
 				 const struct rpc_timeout *timeparms,
 				 rpc_authflavor_t flavor,
@@ -823,6 +1129,15 @@ static int nfs_create_rpc_client(struct nfs_client *clp,
 =======
 		.net		= clp->net,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int nfs_create_rpc_client(struct nfs_client *clp,
+			  const struct rpc_timeout *timeparms,
+			  rpc_authflavor_t flavor)
+{
+	struct rpc_clnt		*clnt = NULL;
+	struct rpc_create_args args = {
+		.net		= clp->cl_net,
+>>>>>>> refs/remotes/origin/master
 		.protocol	= clp->cl_proto,
 		.address	= (struct sockaddr *)&clp->cl_addr,
 		.addrsize	= clp->cl_addrlen,
@@ -833,10 +1148,21 @@ static int nfs_create_rpc_client(struct nfs_client *clp,
 		.authflavor	= flavor,
 	};
 
+<<<<<<< HEAD
 	if (discrtry)
 		args.flags |= RPC_CLNT_CREATE_DISCRTRY;
 	if (noresvport)
 		args.flags |= RPC_CLNT_CREATE_NONPRIVPORT;
+=======
+	if (test_bit(NFS_CS_DISCRTRY, &clp->cl_flags))
+		args.flags |= RPC_CLNT_CREATE_DISCRTRY;
+	if (test_bit(NFS_CS_NO_RETRANS_TIMEOUT, &clp->cl_flags))
+		args.flags |= RPC_CLNT_CREATE_NO_RETRANS_TIMEOUT;
+	if (test_bit(NFS_CS_NORESVPORT, &clp->cl_flags))
+		args.flags |= RPC_CLNT_CREATE_NONPRIVPORT;
+	if (test_bit(NFS_CS_INFINITE_SLOTS, &clp->cl_flags))
+		args.flags |= RPC_CLNT_CREATE_INFINITE_SLOTS;
+>>>>>>> refs/remotes/origin/master
 
 	if (!IS_ERR(clp->cl_rpcclient))
 		return 0;
@@ -851,6 +1177,10 @@ static int nfs_create_rpc_client(struct nfs_client *clp,
 	clp->cl_rpcclient = clnt;
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nfs_create_rpc_client);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Version 2 or 3 client destruction
@@ -876,9 +1206,13 @@ static int nfs_start_lockd(struct nfs_server *server)
 		.noresvport	= server->flags & NFS_MOUNT_NORESVPORT ?
 					1 : 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.net		= clp->net,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.net		= clp->cl_net,
+>>>>>>> refs/remotes/origin/master
 	};
 
 	if (nlm_init.nfs_version > 3)
@@ -905,6 +1239,7 @@ static int nfs_start_lockd(struct nfs_server *server)
 }
 
 /*
+<<<<<<< HEAD
  * Initialise an NFSv3 ACL client connection
  */
 #ifdef CONFIG_NFS_V3_ACL
@@ -938,12 +1273,22 @@ static inline void nfs_init_server_aclclient(struct nfs_server *server)
  * Create a general RPC client
  */
 static int nfs_init_server_rpcclient(struct nfs_server *server,
+=======
+ * Create a general RPC client
+ */
+int nfs_init_server_rpcclient(struct nfs_server *server,
+>>>>>>> refs/remotes/origin/master
 		const struct rpc_timeout *timeo,
 		rpc_authflavor_t pseudoflavour)
 {
 	struct nfs_client *clp = server->nfs_client;
 
+<<<<<<< HEAD
 	server->client = rpc_clone_client(clp->cl_rpcclient);
+=======
+	server->client = rpc_clone_client_set_auth(clp->cl_rpcclient,
+							pseudoflavour);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(server->client)) {
 		dprintk("%s: couldn't create rpc_client!\n", __func__);
 		return PTR_ERR(server->client);
@@ -953,6 +1298,7 @@ static int nfs_init_server_rpcclient(struct nfs_server *server,
 			timeo,
 			sizeof(server->client->cl_timeout_default));
 	server->client->cl_timeout = &server->client->cl_timeout_default;
+<<<<<<< HEAD
 
 	if (pseudoflavour != clp->cl_rpcclient->cl_auth->au_flavor) {
 		struct rpc_auth *auth;
@@ -963,12 +1309,15 @@ static int nfs_init_server_rpcclient(struct nfs_server *server,
 			return PTR_ERR(auth);
 		}
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	server->client->cl_softrtry = 0;
 	if (server->flags & NFS_MOUNT_SOFT)
 		server->client->cl_softrtry = 1;
 
 	return 0;
 }
+<<<<<<< HEAD
 
 /*
  * Initialise an NFS2 or NFS3 client
@@ -976,19 +1325,40 @@ static int nfs_init_server_rpcclient(struct nfs_server *server,
 int nfs_init_client(struct nfs_client *clp, const struct rpc_timeout *timeparms,
 		    const char *ip_addr, rpc_authflavor_t authflavour,
 		    int noresvport)
+=======
+EXPORT_SYMBOL_GPL(nfs_init_server_rpcclient);
+
+/**
+ * nfs_init_client - Initialise an NFS2 or NFS3 client
+ *
+ * @clp: nfs_client to initialise
+ * @timeparms: timeout parameters for underlying RPC transport
+ * @ip_addr: IP presentation address (not used)
+ *
+ * Returns pointer to an NFS client, or an ERR_PTR value.
+ */
+struct nfs_client *nfs_init_client(struct nfs_client *clp,
+		    const struct rpc_timeout *timeparms,
+		    const char *ip_addr)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 
 	if (clp->cl_cons_state == NFS_CS_READY) {
 		/* the client is already initialised */
 		dprintk("<-- nfs_init_client() = 0 [already %p]\n", clp);
+<<<<<<< HEAD
 		return 0;
+=======
+		return clp;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
 	 * Create a client RPC handle for doing FSSTAT with UNIX auth only
 	 * - RFC 2623, sec 2.3.2
 	 */
+<<<<<<< HEAD
 	error = nfs_create_rpc_client(clp, timeparms, RPC_AUTH_UNIX,
 				      0, noresvport);
 	if (error < 0)
@@ -1001,23 +1371,49 @@ error:
 	dprintk("<-- nfs_init_client() = xerror %d\n", error);
 	return error;
 }
+=======
+	error = nfs_create_rpc_client(clp, timeparms, RPC_AUTH_UNIX);
+	if (error < 0)
+		goto error;
+	nfs_mark_client_ready(clp, NFS_CS_READY);
+	return clp;
+
+error:
+	nfs_mark_client_ready(clp, error);
+	nfs_put_client(clp);
+	dprintk("<-- nfs_init_client() = xerror %d\n", error);
+	return ERR_PTR(error);
+}
+EXPORT_SYMBOL_GPL(nfs_init_client);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Create a version 2 or 3 client
  */
 static int nfs_init_server(struct nfs_server *server,
+<<<<<<< HEAD
 			   const struct nfs_parsed_mount_data *data)
+=======
+			   const struct nfs_parsed_mount_data *data,
+			   struct nfs_subversion *nfs_mod)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_client_initdata cl_init = {
 		.hostname = data->nfs_server.hostname,
 		.addr = (const struct sockaddr *)&data->nfs_server.address,
 		.addrlen = data->nfs_server.addrlen,
+<<<<<<< HEAD
 		.rpc_ops = &nfs_v2_clientops,
 		.proto = data->nfs_server.protocol,
 <<<<<<< HEAD
 =======
 		.net = data->net,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.nfs_mod = nfs_mod,
+		.proto = data->nfs_server.protocol,
+		.net = data->net,
+>>>>>>> refs/remotes/origin/master
 	};
 	struct rpc_timeout timeparms;
 	struct nfs_client *clp;
@@ -1025,6 +1421,7 @@ static int nfs_init_server(struct nfs_server *server,
 
 	dprintk("--> nfs_init_server()\n");
 
+<<<<<<< HEAD
 #ifdef CONFIG_NFS_V3
 	if (data->version == 3)
 		cl_init.rpc_ops = &nfs_v3_clientops;
@@ -1036,6 +1433,15 @@ static int nfs_init_server(struct nfs_server *server,
 	/* Allocate or find a client reference we can use */
 	clp = nfs_get_client(&cl_init, &timeparms, NULL, RPC_AUTH_UNIX,
 			     data->flags & NFS_MOUNT_NORESVPORT);
+=======
+	nfs_init_timeout_values(&timeparms, data->nfs_server.protocol,
+			data->timeo, data->retrans);
+	if (data->flags & NFS_MOUNT_NORESVPORT)
+		set_bit(NFS_CS_NORESVPORT, &cl_init.init_flags);
+
+	/* Allocate or find a client reference we can use */
+	clp = nfs_get_client(&cl_init, &timeparms, NULL, RPC_AUTH_UNIX);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(clp)) {
 		dprintk("<-- nfs_init_server() = error %ld\n", PTR_ERR(clp));
 		return PTR_ERR(clp);
@@ -1048,7 +1454,11 @@ static int nfs_init_server(struct nfs_server *server,
 	server->options = data->options;
 	server->caps |= NFS_CAP_HARDLINKS|NFS_CAP_SYMLINKS|NFS_CAP_FILEID|
 		NFS_CAP_MODE|NFS_CAP_NLINK|NFS_CAP_OWNER|NFS_CAP_OWNER_GROUP|
+<<<<<<< HEAD
 		NFS_CAP_ATIME|NFS_CAP_CTIME|NFS_CAP_MTIME;
+=======
+		NFS_CAP_ATIME|NFS_CAP_CTIME|NFS_CAP_MTIME|NFS_CAP_CHANGE_ATTR;
+>>>>>>> refs/remotes/origin/master
 
 	if (data->rsize)
 		server->rsize = nfs_block_size(data->rsize, NULL);
@@ -1066,8 +1476,15 @@ static int nfs_init_server(struct nfs_server *server,
 		goto error;
 
 	server->port = data->nfs_server.port;
+<<<<<<< HEAD
 
 	error = nfs_init_server_rpcclient(server, &timeparms, data->auth_flavors[0]);
+=======
+	server->auth_info = data->auth_info;
+
+	error = nfs_init_server_rpcclient(server, &timeparms,
+					  data->selected_flavor);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0)
 		goto error;
 
@@ -1082,8 +1499,11 @@ static int nfs_init_server(struct nfs_server *server,
 	server->mountd_protocol = data->mount_server.protocol;
 
 	server->namelen  = data->namlen;
+<<<<<<< HEAD
 	/* Create a client RPC handle for the NFSv3 ACL management interface */
 	nfs_init_server_aclclient(server);
+=======
+>>>>>>> refs/remotes/origin/master
 	dprintk("<-- nfs_init_server() = 0 [new %p]\n", clp);
 	return 0;
 
@@ -1098,12 +1518,18 @@ error:
  * Load up the server record from information gained in an fsinfo record
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void nfs_server_set_fsinfo(struct nfs_server *server, struct nfs_fsinfo *fsinfo)
 =======
 static void nfs_server_set_fsinfo(struct nfs_server *server,
 				  struct nfs_fh *mntfh,
 				  struct nfs_fsinfo *fsinfo)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void nfs_server_set_fsinfo(struct nfs_server *server,
+				  struct nfs_fh *mntfh,
+				  struct nfs_fsinfo *fsinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long max_rpc_payload;
 
@@ -1134,11 +1560,14 @@ static void nfs_server_set_fsinfo(struct nfs_server *server,
 		server->wsize = NFS_MAX_FILE_IO_SIZE;
 	server->wpages = (server->wsize + PAGE_CACHE_SIZE - 1) >> PAGE_CACHE_SHIFT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_pnfs_layoutdriver(server, fsinfo->layouttype);
 =======
 	server->pnfs_blksize = fsinfo->blksize;
 	set_pnfs_layoutdriver(server, mntfh, fsinfo->layouttype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	server->wtmult = nfs_block_bits(fsinfo->wtmult, NULL);
 
@@ -1164,7 +1593,11 @@ static void nfs_server_set_fsinfo(struct nfs_server *server,
 /*
  * Probe filesystem information, including the FSID on v2/v3
  */
+<<<<<<< HEAD
 static int nfs_probe_fsinfo(struct nfs_server *server, struct nfs_fh *mntfh, struct nfs_fattr *fattr)
+=======
+int nfs_probe_fsinfo(struct nfs_server *server, struct nfs_fh *mntfh, struct nfs_fattr *fattr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_fsinfo fsinfo;
 	struct nfs_client *clp = server->nfs_client;
@@ -1185,10 +1618,14 @@ static int nfs_probe_fsinfo(struct nfs_server *server, struct nfs_fh *mntfh, str
 		goto out_error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nfs_server_set_fsinfo(server, &fsinfo);
 =======
 	nfs_server_set_fsinfo(server, mntfh, &fsinfo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nfs_server_set_fsinfo(server, mntfh, &fsinfo);
+>>>>>>> refs/remotes/origin/master
 
 	/* Get some general file system info */
 	if (server->namelen == 0) {
@@ -1208,11 +1645,19 @@ out_error:
 	dprintk("nfs_probe_fsinfo: error = %d\n", -error);
 	return error;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nfs_probe_fsinfo);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Copy useful information when duplicating a server record
  */
+<<<<<<< HEAD
 static void nfs_server_copy_userdata(struct nfs_server *target, struct nfs_server *source)
+=======
+void nfs_server_copy_userdata(struct nfs_server *target, struct nfs_server *source)
+>>>>>>> refs/remotes/origin/master
 {
 	target->flags = source->flags;
 	target->rsize = source->rsize;
@@ -1223,6 +1668,7 @@ static void nfs_server_copy_userdata(struct nfs_server *target, struct nfs_serve
 	target->acdirmax = source->acdirmax;
 	target->caps = source->caps;
 	target->options = source->options;
+<<<<<<< HEAD
 }
 
 static void nfs_server_insert_lists(struct nfs_server *server)
@@ -1237,12 +1683,23 @@ static void nfs_server_insert_lists(struct nfs_server *server)
 	spin_unlock(&nfs_client_lock);
 =======
 	struct nfs_net *nn = net_generic(clp->net, nfs_net_id);
+=======
+	target->auth_info = source->auth_info;
+}
+EXPORT_SYMBOL_GPL(nfs_server_copy_userdata);
+
+void nfs_server_insert_lists(struct nfs_server *server)
+{
+	struct nfs_client *clp = server->nfs_client;
+	struct nfs_net *nn = net_generic(clp->cl_net, nfs_net_id);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&nn->nfs_client_lock);
 	list_add_tail_rcu(&server->client_link, &clp->cl_superblocks);
 	list_add_tail(&server->master_link, &nn->nfs_volume_list);
 	clear_bit(NFS_CS_STOP_RENEW, &clp->cl_res_state);
 	spin_unlock(&nn->nfs_client_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 }
@@ -1259,26 +1716,50 @@ static void nfs_server_remove_lists(struct nfs_server *server)
 	list_del(&server->master_link);
 	spin_unlock(&nfs_client_lock);
 =======
+=======
+
+}
+EXPORT_SYMBOL_GPL(nfs_server_insert_lists);
+
+void nfs_server_remove_lists(struct nfs_server *server)
+{
+	struct nfs_client *clp = server->nfs_client;
+>>>>>>> refs/remotes/origin/master
 	struct nfs_net *nn;
 
 	if (clp == NULL)
 		return;
+<<<<<<< HEAD
 	nn = net_generic(clp->net, nfs_net_id);
+=======
+	nn = net_generic(clp->cl_net, nfs_net_id);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&nn->nfs_client_lock);
 	list_del_rcu(&server->client_link);
 	if (list_empty(&clp->cl_superblocks))
 		set_bit(NFS_CS_STOP_RENEW, &clp->cl_res_state);
 	list_del(&server->master_link);
 	spin_unlock(&nn->nfs_client_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	synchronize_rcu();
 }
+=======
+
+	synchronize_rcu();
+}
+EXPORT_SYMBOL_GPL(nfs_server_remove_lists);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Allocate and initialise a server record
  */
+<<<<<<< HEAD
 static struct nfs_server *nfs_alloc_server(void)
+=======
+struct nfs_server *nfs_alloc_server(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_server *server;
 
@@ -1293,10 +1774,15 @@ static struct nfs_server *nfs_alloc_server(void)
 	INIT_LIST_HEAD(&server->master_link);
 	INIT_LIST_HEAD(&server->delegations);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_LIST_HEAD(&server->layouts);
 	INIT_LIST_HEAD(&server->state_owners_lru);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&server->layouts);
+	INIT_LIST_HEAD(&server->state_owners_lru);
+>>>>>>> refs/remotes/origin/master
 
 	atomic_set(&server->active, 0);
 
@@ -1313,14 +1799,23 @@ static struct nfs_server *nfs_alloc_server(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ida_init(&server->openowner_id);
 	ida_init(&server->lockowner_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ida_init(&server->openowner_id);
+	ida_init(&server->lockowner_id);
+>>>>>>> refs/remotes/origin/master
 	pnfs_init_server(server);
 
 	return server;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nfs_alloc_server);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Free up a server record
@@ -1330,7 +1825,10 @@ void nfs_free_server(struct nfs_server *server)
 	dprintk("--> nfs_free_server()\n");
 
 	nfs_server_remove_lists(server);
+<<<<<<< HEAD
 	unset_pnfs_layoutdriver(server);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (server->destroy != NULL)
 		server->destroy(server);
@@ -1343,23 +1841,37 @@ void nfs_free_server(struct nfs_server *server)
 	nfs_put_client(server->nfs_client);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ida_destroy(&server->lockowner_id);
 	ida_destroy(&server->openowner_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ida_destroy(&server->lockowner_id);
+	ida_destroy(&server->openowner_id);
+>>>>>>> refs/remotes/origin/master
 	nfs_free_iostats(server->io_stats);
 	bdi_destroy(&server->backing_dev_info);
 	kfree(server);
 	nfs_release_automount_timer();
 	dprintk("<-- nfs_free_server()\n");
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nfs_free_server);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Create a version 2 or 3 volume record
  * - keyed on server and FSID
  */
+<<<<<<< HEAD
 struct nfs_server *nfs_create_server(const struct nfs_parsed_mount_data *data,
 				     struct nfs_fh *mntfh)
+=======
+struct nfs_server *nfs_create_server(struct nfs_mount_info *mount_info,
+				     struct nfs_subversion *nfs_mod)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_server *server;
 	struct nfs_fattr *fattr;
@@ -1375,6 +1887,7 @@ struct nfs_server *nfs_create_server(const struct nfs_parsed_mount_data *data,
 		goto error;
 
 	/* Get a client representation */
+<<<<<<< HEAD
 	error = nfs_init_server(server, data);
 	if (error < 0)
 		goto error;
@@ -1385,12 +1898,24 @@ struct nfs_server *nfs_create_server(const struct nfs_parsed_mount_data *data,
 
 	/* Probe the root fh to retrieve its FSID */
 	error = nfs_probe_fsinfo(server, mntfh, fattr);
+=======
+	error = nfs_init_server(server, mount_info->parsed, nfs_mod);
+	if (error < 0)
+		goto error;
+
+	/* Probe the root fh to retrieve its FSID */
+	error = nfs_probe_fsinfo(server, mount_info->mntfh, fattr);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0)
 		goto error;
 	if (server->nfs_client->rpc_ops->version == 3) {
 		if (server->namelen == 0 || server->namelen > NFS3_MAXNAMLEN)
 			server->namelen = NFS3_MAXNAMLEN;
+<<<<<<< HEAD
 		if (!(data->flags & NFS_MOUNT_NORDIRPLUS))
+=======
+		if (!(mount_info->parsed->flags & NFS_MOUNT_NORDIRPLUS))
+>>>>>>> refs/remotes/origin/master
 			server->caps |= NFS_CAP_READDIRPLUS;
 	} else {
 		if (server->namelen == 0 || server->namelen > NFS2_MAXNAMLEN)
@@ -1398,7 +1923,11 @@ struct nfs_server *nfs_create_server(const struct nfs_parsed_mount_data *data,
 	}
 
 	if (!(fattr->valid & NFS_ATTR_FATTR)) {
+<<<<<<< HEAD
 		error = server->nfs_client->rpc_ops->getattr(server, mntfh, fattr);
+=======
+		error = nfs_mod->rpc_ops->getattr(server, mount_info->mntfh, fattr, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (error < 0) {
 			dprintk("nfs_create_server: getattr error = %d\n", -error);
 			goto error;
@@ -1420,6 +1949,7 @@ error:
 	nfs_free_server(server);
 	return ERR_PTR(error);
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_NFS_V4
 /*
@@ -2038,6 +2568,9 @@ error:
 }
 
 #endif /* CONFIG_NFS_V4 */
+=======
+EXPORT_SYMBOL_GPL(nfs_create_server);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Clone an NFS2, NFS3 or NFS4 server record
@@ -2045,11 +2578,16 @@ error:
 struct nfs_server *nfs_clone_server(struct nfs_server *source,
 				    struct nfs_fh *fh,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    struct nfs_fattr *fattr)
 =======
 				    struct nfs_fattr *fattr,
 				    rpc_authflavor_t flavor)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    struct nfs_fattr *fattr,
+				    rpc_authflavor_t flavor)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_server *server;
 	struct nfs_fattr *fattr_fsinfo;
@@ -2071,9 +2609,13 @@ struct nfs_server *nfs_clone_server(struct nfs_server *source,
 	/* Copy data from the source */
 	server->nfs_client = source->nfs_client;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	server->destroy = source->destroy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	server->destroy = source->destroy;
+>>>>>>> refs/remotes/origin/master
 	atomic_inc(&server->nfs_client->cl_count);
 	nfs_server_copy_userdata(server, source);
 
@@ -2081,6 +2623,7 @@ struct nfs_server *nfs_clone_server(struct nfs_server *source,
 
 	error = nfs_init_server_rpcclient(server,
 			source->client->cl_timeout,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			source->client->cl_auth->au_flavor);
 =======
@@ -2090,6 +2633,11 @@ struct nfs_server *nfs_clone_server(struct nfs_server *source,
 		goto out_free_server;
 	if (!IS_ERR(source->client_acl))
 		nfs_init_server_aclclient(server);
+=======
+			flavor);
+	if (error < 0)
+		goto out_free_server;
+>>>>>>> refs/remotes/origin/master
 
 	/* probe the filesystem info for this server filesystem */
 	error = nfs_probe_fsinfo(server, fh, fattr_fsinfo);
@@ -2120,15 +2668,21 @@ out_free_server:
 	dprintk("<-- nfs_clone_server() = error %d\n", error);
 	return ERR_PTR(error);
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
+=======
+EXPORT_SYMBOL_GPL(nfs_clone_server);
+
+>>>>>>> refs/remotes/origin/master
 void nfs_clients_init(struct net *net)
 {
 	struct nfs_net *nn = net_generic(net, nfs_net_id);
 
 	INIT_LIST_HEAD(&nn->nfs_client_list);
 	INIT_LIST_HEAD(&nn->nfs_volume_list);
+<<<<<<< HEAD
 #ifdef CONFIG_NFS_V4
 	idr_init(&nn->cb_ident_idr);
 #endif
@@ -2136,6 +2690,15 @@ void nfs_clients_init(struct net *net)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_NFS_V4)
+	idr_init(&nn->cb_ident_idr);
+#endif
+	spin_lock_init(&nn->nfs_client_lock);
+	nn->boot_time = CURRENT_TIME;
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_FS
 static struct proc_dir_entry *proc_fs_nfs;
 
@@ -2190,10 +2753,15 @@ static int nfs_server_list_open(struct inode *inode, struct file *file)
 	struct seq_file *m;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pid_namespace *pid_ns = file->f_dentry->d_sb->s_fs_info;
 	struct net *net = pid_ns->child_reaper->nsproxy->net_ns;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pid_namespace *pid_ns = file->f_dentry->d_sb->s_fs_info;
+	struct net *net = pid_ns->child_reaper->nsproxy->net_ns;
+>>>>>>> refs/remotes/origin/master
 
 	ret = seq_open(file, &nfs_server_list_ops);
 	if (ret < 0)
@@ -2201,10 +2769,14 @@ static int nfs_server_list_open(struct inode *inode, struct file *file)
 
 	m = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	m->private = PDE(inode)->data;
 =======
 	m->private = net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m->private = net;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2215,16 +2787,22 @@ static int nfs_server_list_open(struct inode *inode, struct file *file)
 static void *nfs_server_list_start(struct seq_file *m, loff_t *_pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* lock the list against modification */
 	spin_lock(&nfs_client_lock);
 	return seq_list_start_head(&nfs_client_list, *_pos);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfs_net *nn = net_generic(m->private, nfs_net_id);
 
 	/* lock the list against modification */
 	spin_lock(&nn->nfs_client_lock);
 	return seq_list_start_head(&nn->nfs_client_list, *_pos);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2233,12 +2811,18 @@ static void *nfs_server_list_start(struct seq_file *m, loff_t *_pos)
 static void *nfs_server_list_next(struct seq_file *p, void *v, loff_t *pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return seq_list_next(v, &nfs_client_list, pos);
 =======
 	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
 
 	return seq_list_next(v, &nn->nfs_client_list, pos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
+
+	return seq_list_next(v, &nn->nfs_client_list, pos);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2247,12 +2831,18 @@ static void *nfs_server_list_next(struct seq_file *p, void *v, loff_t *pos)
 static void nfs_server_list_stop(struct seq_file *p, void *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&nfs_client_lock);
 =======
 	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
 
 	spin_unlock(&nn->nfs_client_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
+
+	spin_unlock(&nn->nfs_client_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2262,15 +2852,21 @@ static int nfs_server_list_show(struct seq_file *m, void *v)
 {
 	struct nfs_client *clp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* display header on line 1 */
 	if (v == &nfs_client_list) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfs_net *nn = net_generic(m->private, nfs_net_id);
 
 	/* display header on line 1 */
 	if (v == &nn->nfs_client_list) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		seq_puts(m, "NV SERVER   PORT USE HOSTNAME\n");
 		return 0;
 	}
@@ -2279,13 +2875,19 @@ static int nfs_server_list_show(struct seq_file *m, void *v)
 	clp = list_entry(v, struct nfs_client, cl_share_link);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check if the client is initialized */
 	if (clp->cl_cons_state != NFS_CS_READY)
 		return 0;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "v%u %s %s %3d %s\n",
 		   clp->rpc_ops->version,
 		   rpc_peeraddr2str(clp->cl_rpcclient, RPC_DISPLAY_HEX_ADDR),
@@ -2293,9 +2895,13 @@ static int nfs_server_list_show(struct seq_file *m, void *v)
 		   atomic_read(&clp->cl_count),
 		   clp->cl_hostname);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	rcu_read_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2308,10 +2914,15 @@ static int nfs_volume_list_open(struct inode *inode, struct file *file)
 	struct seq_file *m;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pid_namespace *pid_ns = file->f_dentry->d_sb->s_fs_info;
 	struct net *net = pid_ns->child_reaper->nsproxy->net_ns;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pid_namespace *pid_ns = file->f_dentry->d_sb->s_fs_info;
+	struct net *net = pid_ns->child_reaper->nsproxy->net_ns;
+>>>>>>> refs/remotes/origin/master
 
 	ret = seq_open(file, &nfs_volume_list_ops);
 	if (ret < 0)
@@ -2319,10 +2930,14 @@ static int nfs_volume_list_open(struct inode *inode, struct file *file)
 
 	m = file->private_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	m->private = PDE(inode)->data;
 =======
 	m->private = net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m->private = net;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2333,16 +2948,22 @@ static int nfs_volume_list_open(struct inode *inode, struct file *file)
 static void *nfs_volume_list_start(struct seq_file *m, loff_t *_pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* lock the list against modification */
 	spin_lock(&nfs_client_lock);
 	return seq_list_start_head(&nfs_volume_list, *_pos);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfs_net *nn = net_generic(m->private, nfs_net_id);
 
 	/* lock the list against modification */
 	spin_lock(&nn->nfs_client_lock);
 	return seq_list_start_head(&nn->nfs_volume_list, *_pos);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2351,12 +2972,18 @@ static void *nfs_volume_list_start(struct seq_file *m, loff_t *_pos)
 static void *nfs_volume_list_next(struct seq_file *p, void *v, loff_t *pos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return seq_list_next(v, &nfs_volume_list, pos);
 =======
 	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
 
 	return seq_list_next(v, &nn->nfs_volume_list, pos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
+
+	return seq_list_next(v, &nn->nfs_volume_list, pos);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2365,12 +2992,18 @@ static void *nfs_volume_list_next(struct seq_file *p, void *v, loff_t *pos)
 static void nfs_volume_list_stop(struct seq_file *p, void *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&nfs_client_lock);
 =======
 	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
 
 	spin_unlock(&nn->nfs_client_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_net *nn = net_generic(p->private, nfs_net_id);
+
+	spin_unlock(&nn->nfs_client_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2382,15 +3015,21 @@ static int nfs_volume_list_show(struct seq_file *m, void *v)
 	struct nfs_client *clp;
 	char dev[8], fsid[17];
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* display header on line 1 */
 	if (v == &nfs_volume_list) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfs_net *nn = net_generic(m->private, nfs_net_id);
 
 	/* display header on line 1 */
 	if (v == &nn->nfs_volume_list) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		seq_puts(m, "NV SERVER   PORT DEV     FSID              FSC\n");
 		return 0;
 	}
@@ -2406,9 +3045,13 @@ static int nfs_volume_list_show(struct seq_file *m, void *v)
 		 (unsigned long long) server->fsid.minor);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	rcu_read_lock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_read_lock();
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "v%u %s %s %-7s %-17s %s\n",
 		   clp->rpc_ops->version,
 		   rpc_peeraddr2str(clp->cl_rpcclient, RPC_DISPLAY_HEX_ADDR),
@@ -2417,9 +3060,13 @@ static int nfs_volume_list_show(struct seq_file *m, void *v)
 		   fsid,
 		   nfs_server_fscache_state(server));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	rcu_read_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2467,7 +3114,10 @@ void nfs_fs_proc_exit(void)
 }
 
 #endif /* CONFIG_PROC_FS */
+<<<<<<< HEAD
 
 module_param(nfs4_disable_idmapping, bool, 0644);
 MODULE_PARM_DESC(nfs4_disable_idmapping,
 		"Turn off NFSv4 idmapping when using 'sec=sys'");
+=======
+>>>>>>> refs/remotes/origin/master

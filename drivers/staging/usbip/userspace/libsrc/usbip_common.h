@@ -3,6 +3,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef _USBIP_COMMON_H
 #define _USBIP_COMMON_H
 
@@ -19,6 +20,8 @@
 #include <netdb.h>
 #include <sys/socket.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __USBIP_COMMON_H
 #define __USBIP_COMMON_H
 
@@ -31,7 +34,10 @@
 
 #include <syslog.h>
 #include <unistd.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef USBIDS_FILE
 #define USBIDS_FILE "/usr/share/hwdata/usb.ids"
@@ -42,8 +48,11 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //#include <linux/usb_ch9.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* kernel module names */
 #define USBIP_CORE_MOD_NAME	"usbip-core"
 #define USBIP_HOST_DRV_NAME	"usbip-host"
@@ -97,7 +106,10 @@ extern int usbip_use_debug ;
 		abort();				\
 	} while (0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum usb_device_speed {
 	USB_SPEED_UNKNOWN = 0,                  /* enumerating */
 	USB_SPEED_LOW, USB_SPEED_FULL,          /* usb 1.1 */
@@ -106,7 +118,11 @@ enum usb_device_speed {
 };
 
 /* FIXME: how to sync with drivers/usbip_common.h ? */
+<<<<<<< HEAD
 enum usbip_device_status{
+=======
+enum usbip_device_status {
+>>>>>>> refs/remotes/origin/master
 	/* sdev is available. */
 	SDEV_ST_AVAILABLE = 0x01,
 	/* sdev is now used. */
@@ -122,6 +138,7 @@ enum usbip_device_status{
 	VDEV_ST_ERROR
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int usbip_use_syslog;
 extern int usbip_use_stderr;
@@ -177,6 +194,9 @@ struct usb_interface {
 =======
 struct usbip_usb_interface {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct usbip_usb_interface {
+>>>>>>> refs/remotes/origin/master
 	uint8_t bInterfaceClass;
 	uint8_t bInterfaceSubClass;
 	uint8_t bInterfaceProtocol;
@@ -184,12 +204,16 @@ struct usbip_usb_interface {
 } __attribute__((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 struct usb_device {
 =======
 struct usbip_usb_device {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct usbip_usb_device {
+>>>>>>> refs/remotes/origin/master
 	char path[SYSFS_PATH_MAX];
 	char busid[SYSFS_BUS_ID_SIZE];
 
@@ -212,6 +236,7 @@ struct usbip_usb_device {
 #define to_string(s)	#s
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void dump_usb_interface(struct usb_interface *);
 void dump_usb_device(struct usb_device *);
 int read_usb_device(struct sysfs_device *sdev, struct usb_device *udev);
@@ -225,12 +250,22 @@ int read_attr_value(struct sysfs_device *dev, const char *name, const char *form
 int read_usb_interface(struct usbip_usb_device *udev, int i,
 		       struct usbip_usb_interface *uinf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void dump_usb_interface(struct usbip_usb_interface *);
+void dump_usb_device(struct usbip_usb_device *);
+int read_usb_device(struct sysfs_device *sdev, struct usbip_usb_device *udev);
+int read_attr_value(struct sysfs_device *dev, const char *name,
+		    const char *format);
+int read_usb_interface(struct usbip_usb_device *udev, int i,
+		       struct usbip_usb_interface *uinf);
+>>>>>>> refs/remotes/origin/master
 
 const char *usbip_speed_string(int num);
 const char *usbip_status_string(int32_t status);
 
 int usbip_names_init(char *);
 void usbip_names_free(void);
+<<<<<<< HEAD
 void usbip_names_get_product(char *buff, size_t size, uint16_t vendor, uint16_t product);
 void usbip_names_get_class(char *buff, size_t size, uint8_t class, uint8_t subclass, uint8_t protocol);
 
@@ -239,3 +274,11 @@ void usbip_names_get_class(char *buff, size_t size, uint8_t class, uint8_t subcl
 =======
 #endif /* __USBIP_COMMON_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void usbip_names_get_product(char *buff, size_t size, uint16_t vendor,
+			     uint16_t product);
+void usbip_names_get_class(char *buff, size_t size, uint8_t class,
+			   uint8_t subclass, uint8_t protocol);
+
+#endif /* __USBIP_COMMON_H */
+>>>>>>> refs/remotes/origin/master

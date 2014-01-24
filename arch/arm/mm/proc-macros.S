@@ -38,9 +38,20 @@
 
 /*
  * mmid - get context id from mm pointer (mm->context.id)
+<<<<<<< HEAD
  */
 	.macro	mmid, rd, rn
 	ldr	\rd, [\rn, #MM_CONTEXT_ID]
+=======
+ * note, this field is 64bit, so in big-endian the two words are swapped too.
+ */
+	.macro	mmid, rd, rn
+#ifdef __ARMEB__
+	ldr	\rd, [\rn, #MM_CONTEXT_ID + 4 ]
+#else
+	ldr	\rd, [\rn, #MM_CONTEXT_ID]
+#endif
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 /*
@@ -92,6 +103,7 @@
 #error PTE shared bit mismatch
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if (L_PTE_XN+L_PTE_USER+L_PTE_RDONLY+L_PTE_DIRTY+L_PTE_YOUNG+\
      L_PTE_FILE+L_PTE_PRESENT) > L_PTE_SHARED
 =======
@@ -99,6 +111,11 @@
 	(L_PTE_XN+L_PTE_USER+L_PTE_RDONLY+L_PTE_DIRTY+L_PTE_YOUNG+\
 	 L_PTE_FILE+L_PTE_PRESENT) > L_PTE_SHARED
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !defined (CONFIG_ARM_LPAE) && \
+	(L_PTE_XN+L_PTE_USER+L_PTE_RDONLY+L_PTE_DIRTY+L_PTE_YOUNG+\
+	 L_PTE_FILE+L_PTE_PRESENT) > L_PTE_SHARED
+>>>>>>> refs/remotes/origin/master
 #error Invalid Linux PTE bit settings
 #endif
 #endif	/* CONFIG_MMU */
@@ -172,6 +189,13 @@
 	tst	r1, #L_PTE_YOUNG
 	tstne	r1, #L_PTE_PRESENT
 	moveq	r3, #0
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_CPU_USE_DOMAINS
+	tstne	r1, #L_PTE_NONE
+	movne	r3, #0
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	str	r3, [r0]
 	mcr	p15, 0, r0, c7, c10, 1		@ flush_pte
@@ -261,7 +285,10 @@
 	mcr	p15, 0, ip, c7, c10, 4		@ data write barrier
 	.endm
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 .macro define_processor_functions name:req, dabort:req, pabort:req, nommu=0, suspend=0
 	.type	\name\()_processor_functions, #object
@@ -306,6 +333,10 @@ ENTRY(\name\()_processor_functions)
 ENTRY(\name\()_cache_fns)
 	.long	\name\()_flush_icache_all
 	.long	\name\()_flush_kern_cache_all
+<<<<<<< HEAD
+=======
+	.long   \name\()_flush_kern_cache_louis
+>>>>>>> refs/remotes/origin/master
 	.long	\name\()_flush_user_cache_all
 	.long	\name\()_flush_user_cache_range
 	.long	\name\()_coherent_kern_range
@@ -313,8 +344,11 @@ ENTRY(\name\()_cache_fns)
 	.long	\name\()_flush_kern_dcache_area
 	.long	\name\()_dma_map_area
 	.long	\name\()_dma_unmap_area
+<<<<<<< HEAD
 	.long	\name\()_dma_inv_range
 	.long	\name\()_dma_clean_range
+=======
+>>>>>>> refs/remotes/origin/master
 	.long	\name\()_dma_flush_range
 	.size	\name\()_cache_fns, . - \name\()_cache_fns
 .endm
@@ -332,4 +366,12 @@ ENTRY(\name\()_tlb_fns)
 	.endif
 	.size	\name\()_tlb_fns, . - \name\()_tlb_fns
 .endm
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+.macro globl_equ x, y
+	.globl	\x
+	.equ	\x, \y
+.endm
+>>>>>>> refs/remotes/origin/master

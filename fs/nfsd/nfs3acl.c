@@ -184,7 +184,11 @@ static int nfs3svc_encode_getaclres(struct svc_rqst *rqstp, __be32 *p,
 			(resp->mask & NFS_ACL)   ? resp->acl_access  : NULL,
 			(resp->mask & NFS_DFACL) ? resp->acl_default : NULL);
 		while (w > 0) {
+<<<<<<< HEAD
 			if (!rqstp->rq_respages[rqstp->rq_resused++])
+=======
+			if (!*(rqstp->rq_next_page++))
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			w -= PAGE_SIZE;
 		}

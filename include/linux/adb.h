@@ -4,6 +4,7 @@
 #ifndef __ADB_H
 #define __ADB_H
 
+<<<<<<< HEAD
 /* ADB commands */
 #define ADB_BUSRESET		0
 #define ADB_FLUSH(id)		(0x01 | ((id) << 4))
@@ -41,6 +42,10 @@
 #define ADB_QUERY_GETDEVINFO	1
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/adb.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct adb_request {
 	unsigned char data[32];
@@ -98,6 +103,9 @@ int adb_reset_bus(void);
 int adb_try_handler_change(int address, int new_id);
 int adb_get_infos(int address, int *original_address, int *handler_id);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ADB_H */

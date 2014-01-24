@@ -15,6 +15,10 @@
 #include <linux/vfs.h>
 #include <linux/parser.h>
 #include <linux/namei.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "befs.h"
 #include "btree.h"
@@ -30,18 +34,30 @@ MODULE_LICENSE("GPL");
 /* The units the vfs expects inode->i_blocks to be in */
 #define VFS_BLOCK_SIZE 512
 
+<<<<<<< HEAD
 static int befs_readdir(struct file *, void *, filldir_t);
 static int befs_get_block(struct inode *, sector_t, struct buffer_head *, int);
 static int befs_readpage(struct file *file, struct page *page);
 static sector_t befs_bmap(struct address_space *mapping, sector_t block);
 static struct dentry *befs_lookup(struct inode *, struct dentry *, struct nameidata *);
+=======
+static int befs_readdir(struct file *, struct dir_context *);
+static int befs_get_block(struct inode *, sector_t, struct buffer_head *, int);
+static int befs_readpage(struct file *file, struct page *page);
+static sector_t befs_bmap(struct address_space *mapping, sector_t block);
+static struct dentry *befs_lookup(struct inode *, struct dentry *, unsigned int);
+>>>>>>> refs/remotes/origin/master
 static struct inode *befs_iget(struct super_block *, unsigned long);
 static struct inode *befs_alloc_inode(struct super_block *sb);
 static void befs_destroy_inode(struct inode *inode);
 static int befs_init_inodecache(void);
 static void befs_destroy_inodecache(void);
 static void *befs_follow_link(struct dentry *, struct nameidata *);
+<<<<<<< HEAD
 static void befs_put_link(struct dentry *, struct nameidata *, void *);
+=======
+static void *befs_fast_follow_link(struct dentry *, struct nameidata *);
+>>>>>>> refs/remotes/origin/master
 static int befs_utf2nls(struct super_block *sb, const char *in, int in_len,
 			char **out, int *out_len);
 static int befs_nls2utf(struct super_block *sb, const char *in, int in_len,
@@ -65,7 +81,11 @@ static struct kmem_cache *befs_inode_cachep;
 
 static const struct file_operations befs_dir_operations = {
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= befs_readdir,
+=======
+	.iterate	= befs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.llseek		= generic_file_llseek,
 };
 
@@ -78,10 +98,22 @@ static const struct address_space_operations befs_aops = {
 	.bmap		= befs_bmap,
 };
 
+<<<<<<< HEAD
 static const struct inode_operations befs_symlink_inode_operations = {
 	.readlink	= generic_readlink,
 	.follow_link	= befs_follow_link,
 	.put_link	= befs_put_link,
+=======
+static const struct inode_operations befs_fast_symlink_inode_operations = {
+	.readlink	= generic_readlink,
+	.follow_link	= befs_fast_follow_link,
+};
+
+static const struct inode_operations befs_symlink_inode_operations = {
+	.readlink	= generic_readlink,
+	.follow_link	= befs_follow_link,
+	.put_link	= kfree_put_link,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* 
@@ -159,7 +191,11 @@ befs_get_block(struct inode *inode, sector_t block,
 }
 
 static struct dentry *
+<<<<<<< HEAD
 befs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
+=======
+befs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = NULL;
 	struct super_block *sb = dir->i_sb;
@@ -210,9 +246,15 @@ befs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
 }
 
 static int
+<<<<<<< HEAD
 befs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+befs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct super_block *sb = inode->i_sb;
 	befs_data_stream *ds = &BEFS_I(inode)->i_data.ds;
 	befs_off_t value;
@@ -220,6 +262,7 @@ befs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	size_t keysize;
 	unsigned char d_type;
 	char keybuf[BEFS_NAME_LEN + 1];
+<<<<<<< HEAD
 	char *nlsname;
 	int nlsnamelen;
 	const char *dirname = filp->f_path.dentry->d_name.name;
@@ -229,6 +272,16 @@ befs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		   dirname, inode->i_ino, filp->f_pos);
 
 	result = befs_btree_read(sb, ds, filp->f_pos, BEFS_NAME_LEN + 1,
+=======
+	const char *dirname = file->f_path.dentry->d_name.name;
+
+	befs_debug(sb, "---> befs_readdir() "
+		   "name %s, inode %ld, ctx->pos %Ld",
+		   dirname, inode->i_ino, ctx->pos);
+
+more:
+	result = befs_btree_read(sb, ds, ctx->pos, BEFS_NAME_LEN + 1,
+>>>>>>> refs/remotes/origin/master
 				 keybuf, &keysize, &value);
 
 	if (result == BEFS_ERR) {
@@ -250,12 +303,18 @@ befs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 
 	/* Convert to NLS */
 	if (BEFS_SB(sb)->nls) {
+<<<<<<< HEAD
+=======
+		char *nlsname;
+		int nlsnamelen;
+>>>>>>> refs/remotes/origin/master
 		result =
 		    befs_utf2nls(sb, keybuf, keysize, &nlsname, &nlsnamelen);
 		if (result < 0) {
 			befs_debug(sb, "<--- befs_readdir() ERROR");
 			return result;
 		}
+<<<<<<< HEAD
 		result = filldir(dirent, nlsname, nlsnamelen, filp->f_pos,
 				 (ino_t) value, d_type);
 		kfree(nlsname);
@@ -268,6 +327,23 @@ befs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	filp->f_pos++;
 
 	befs_debug(sb, "<--- befs_readdir() filp->f_pos %Ld", filp->f_pos);
+=======
+		if (!dir_emit(ctx, nlsname, nlsnamelen,
+				 (ino_t) value, d_type)) {
+			kfree(nlsname);
+			return 0;
+		}
+		kfree(nlsname);
+	} else {
+		if (!dir_emit(ctx, keybuf, keysize,
+				 (ino_t) value, d_type))
+			return 0;
+	}
+	ctx->pos++;
+	goto more;
+
+	befs_debug(sb, "<--- befs_readdir() pos %Ld", ctx->pos);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -287,9 +363,12 @@ static void befs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
         kmem_cache_free(befs_inode_cachep, BEFS_I(inode));
 }
 
@@ -356,6 +435,7 @@ static struct inode *befs_iget(struct super_block *sb, unsigned long ino)
 	 */   
 
 	inode->i_uid = befs_sb->mount_opts.use_uid ?
+<<<<<<< HEAD
 	    befs_sb->mount_opts.uid : (uid_t) fs32_to_cpu(sb, raw_inode->uid);
 	inode->i_gid = befs_sb->mount_opts.use_gid ?
 	    befs_sb->mount_opts.gid : (gid_t) fs32_to_cpu(sb, raw_inode->gid);
@@ -365,6 +445,15 @@ static struct inode *befs_iget(struct super_block *sb, unsigned long ino)
 =======
 	set_nlink(inode, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		befs_sb->mount_opts.uid :
+		make_kuid(&init_user_ns, fs32_to_cpu(sb, raw_inode->uid));
+	inode->i_gid = befs_sb->mount_opts.use_gid ?
+		befs_sb->mount_opts.gid :
+		make_kgid(&init_user_ns, fs32_to_cpu(sb, raw_inode->gid));
+
+	set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * BEFS's time is 64 bits, but current VFS is 32 bits...
@@ -412,7 +501,14 @@ static struct inode *befs_iget(struct super_block *sb, unsigned long ino)
 		inode->i_op = &befs_dir_inode_operations;
 		inode->i_fop = &befs_dir_operations;
 	} else if (S_ISLNK(inode->i_mode)) {
+<<<<<<< HEAD
 		inode->i_op = &befs_symlink_inode_operations;
+=======
+		if (befs_ino->i_flags & BEFS_LONG_SYMLINK)
+			inode->i_op = &befs_symlink_inode_operations;
+		else
+			inode->i_op = &befs_fast_symlink_inode_operations;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		befs_error(sb, "Inode %lu is not a regular file, "
 			   "directory or symlink. THAT IS WRONG! BeFS has no "
@@ -462,6 +558,14 @@ befs_init_inodecache(void)
 static void
 befs_destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(befs_inode_cachep);
 }
 
@@ -473,6 +577,7 @@ befs_destroy_inodecache(void)
 static void *
 befs_follow_link(struct dentry *dentry, struct nameidata *nd)
 {
+<<<<<<< HEAD
 	befs_inode_info *befs_ino = BEFS_I(dentry->d_inode);
 	char *link;
 
@@ -502,10 +607,36 @@ befs_follow_link(struct dentry *dentry, struct nameidata *nd)
 		link = befs_ino->i_data.symlink;
 	}
 
+=======
+	struct super_block *sb = dentry->d_sb;
+	befs_inode_info *befs_ino = BEFS_I(dentry->d_inode);
+	befs_data_stream *data = &befs_ino->i_data.ds;
+	befs_off_t len = data->size;
+	char *link;
+
+	if (len == 0) {
+		befs_error(sb, "Long symlink with illegal length");
+		link = ERR_PTR(-EIO);
+	} else {
+		befs_debug(sb, "Follow long symlink");
+
+		link = kmalloc(len, GFP_NOFS);
+		if (!link) {
+			link = ERR_PTR(-ENOMEM);
+		} else if (befs_read_lsymlink(sb, data, link, len) != len) {
+			kfree(link);
+			befs_error(sb, "Failed to read entire long symlink");
+			link = ERR_PTR(-EIO);
+		} else {
+			link[len - 1] = '\0';
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	nd_set_link(nd, link);
 	return NULL;
 }
 
+<<<<<<< HEAD
 static void befs_put_link(struct dentry *dentry, struct nameidata *nd, void *p)
 {
 	befs_inode_info *befs_ino = BEFS_I(dentry->d_inode);
@@ -514,6 +645,15 @@ static void befs_put_link(struct dentry *dentry, struct nameidata *nd, void *p)
 		if (!IS_ERR(link))
 			kfree(link);
 	}
+=======
+
+static void *
+befs_fast_follow_link(struct dentry *dentry, struct nameidata *nd)
+{
+	befs_inode_info *befs_ino = BEFS_I(dentry->d_inode);
+	nd_set_link(nd, befs_ino->i_data.symlink);
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -682,10 +822,19 @@ parse_options(char *options, befs_mount_options * opts)
 	char *p;
 	substring_t args[MAX_OPT_ARGS];
 	int option;
+<<<<<<< HEAD
 
 	/* Initialize options */
 	opts->uid = 0;
 	opts->gid = 0;
+=======
+	kuid_t uid;
+	kgid_t gid;
+
+	/* Initialize options */
+	opts->uid = GLOBAL_ROOT_UID;
+	opts->gid = GLOBAL_ROOT_GID;
+>>>>>>> refs/remotes/origin/master
 	opts->use_uid = 0;
 	opts->use_gid = 0;
 	opts->iocharset = NULL;
@@ -704,23 +853,45 @@ parse_options(char *options, befs_mount_options * opts)
 		case Opt_uid:
 			if (match_int(&args[0], &option))
 				return 0;
+<<<<<<< HEAD
 			if (option < 0) {
+=======
+			uid = INVALID_UID;
+			if (option >= 0)
+				uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(uid)) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_ERR "BeFS: Invalid uid %d, "
 						"using default\n", option);
 				break;
 			}
+<<<<<<< HEAD
 			opts->uid = option;
+=======
+			opts->uid = uid;
+>>>>>>> refs/remotes/origin/master
 			opts->use_uid = 1;
 			break;
 		case Opt_gid:
 			if (match_int(&args[0], &option))
 				return 0;
+<<<<<<< HEAD
 			if (option < 0) {
+=======
+			gid = INVALID_GID;
+			if (option >= 0)
+				gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(gid)) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_ERR "BeFS: Invalid gid %d, "
 						"using default\n", option);
 				break;
 			}
+<<<<<<< HEAD
 			opts->gid = option;
+=======
+			opts->gid = gid;
+>>>>>>> refs/remotes/origin/master
 			opts->use_gid = 1;
 			break;
 		case Opt_charset:
@@ -861,6 +1032,7 @@ befs_fill_super(struct super_block *sb, void *data, int silent)
 		goto unacquire_priv_sbp;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root) {
 		iput(root);
@@ -868,6 +1040,10 @@ befs_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_root = d_make_root(root);
 	if (!sb->s_root) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root) {
+>>>>>>> refs/remotes/origin/master
 		befs_error(sb, "get root inode failed");
 		goto unacquire_priv_sbp;
 	}
@@ -949,6 +1125,10 @@ static struct file_system_type befs_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,	
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("befs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init
 init_befs_fs(void)

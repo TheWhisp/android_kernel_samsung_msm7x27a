@@ -37,12 +37,17 @@ static void mISDN_dev_release(struct device *dev)
 	/* nothing to do: the device is part of its parent's data structure */
 }
 
+<<<<<<< HEAD
 static ssize_t _show_id(struct device *dev,
 <<<<<<< HEAD
 				struct device_attribute *attr, char *buf)
 =======
 			struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t id_show(struct device *dev,
+		       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
 
@@ -50,6 +55,7 @@ static ssize_t _show_id(struct device *dev,
 		return -ENODEV;
 	return sprintf(buf, "%d\n", mdev->id);
 }
+<<<<<<< HEAD
 
 static ssize_t _show_nrbchan(struct device *dev,
 <<<<<<< HEAD
@@ -57,6 +63,12 @@ static ssize_t _show_nrbchan(struct device *dev,
 =======
 			     struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(id);
+
+static ssize_t nrbchan_show(struct device *dev,
+			    struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
 
@@ -64,6 +76,7 @@ static ssize_t _show_nrbchan(struct device *dev,
 		return -ENODEV;
 	return sprintf(buf, "%d\n", mdev->nrbchan);
 }
+<<<<<<< HEAD
 
 static ssize_t _show_d_protocols(struct device *dev,
 <<<<<<< HEAD
@@ -71,6 +84,12 @@ static ssize_t _show_d_protocols(struct device *dev,
 =======
 				 struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(nrbchan);
+
+static ssize_t d_protocols_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
 
@@ -78,6 +97,7 @@ static ssize_t _show_d_protocols(struct device *dev,
 		return -ENODEV;
 	return sprintf(buf, "%d\n", mdev->Dprotocols);
 }
+<<<<<<< HEAD
 
 static ssize_t _show_b_protocols(struct device *dev,
 <<<<<<< HEAD
@@ -85,6 +105,12 @@ static ssize_t _show_b_protocols(struct device *dev,
 =======
 				 struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(d_protocols);
+
+static ssize_t b_protocols_show(struct device *dev,
+				struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
 
@@ -92,6 +118,7 @@ static ssize_t _show_b_protocols(struct device *dev,
 		return -ENODEV;
 	return sprintf(buf, "%d\n", mdev->Bprotocols | get_all_Bprotocols());
 }
+<<<<<<< HEAD
 
 static ssize_t _show_protocol(struct device *dev,
 <<<<<<< HEAD
@@ -99,6 +126,12 @@ static ssize_t _show_protocol(struct device *dev,
 =======
 			      struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(b_protocols);
+
+static ssize_t protocol_show(struct device *dev,
+			     struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
 
@@ -106,6 +139,7 @@ static ssize_t _show_protocol(struct device *dev,
 		return -ENODEV;
 	return sprintf(buf, "%d\n", mdev->D.protocol);
 }
+<<<<<<< HEAD
 
 static ssize_t _show_name(struct device *dev,
 <<<<<<< HEAD
@@ -113,10 +147,17 @@ static ssize_t _show_name(struct device *dev,
 =======
 			  struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(protocol);
+
+static ssize_t name_show(struct device *dev,
+			 struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	strcpy(buf, dev_name(dev));
 	return strlen(buf);
 }
+<<<<<<< HEAD
 
 #if 0 /* hangs */
 static ssize_t _set_name(struct device *dev, struct device_attribute *attr,
@@ -125,6 +166,13 @@ static ssize_t _set_name(struct device *dev, struct device_attribute *attr,
 =======
 			 const char *buf, size_t count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(name);
+
+#if 0 /* hangs */
+static ssize_t name_set(struct device *dev, struct device_attribute *attr,
+			const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 	char *out = kmalloc(count + 1, GFP_KERNEL);
@@ -141,10 +189,18 @@ static ssize_t _set_name(struct device *dev, struct device_attribute *attr,
 
 	return (err < 0) ? err : count;
 }
+<<<<<<< HEAD
 #endif
 
 static ssize_t _show_channelmap(struct device *dev,
 				struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RW(name);
+#endif
+
+static ssize_t channelmap_show(struct device *dev,
+			       struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
 	char *bp = buf;
@@ -155,6 +211,7 @@ static ssize_t _show_channelmap(struct device *dev,
 
 	return bp - buf;
 }
+<<<<<<< HEAD
 
 static struct device_attribute mISDN_dev_attrs[] = {
 	__ATTR(id,          S_IRUGO,         _show_id,          NULL),
@@ -173,6 +230,22 @@ static struct device_attribute mISDN_dev_attrs[] = {
 };
 
 #ifdef CONFIG_HOTPLUG
+=======
+static DEVICE_ATTR_RO(channelmap);
+
+static struct attribute *mISDN_attrs[] = {
+	&dev_attr_id.attr,
+	&dev_attr_d_protocols.attr,
+	&dev_attr_b_protocols.attr,
+	&dev_attr_protocol.attr,
+	&dev_attr_channelmap.attr,
+	&dev_attr_nrbchan.attr,
+	&dev_attr_name.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(mISDN);
+
+>>>>>>> refs/remotes/origin/master
 static int mISDN_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
@@ -185,7 +258,10 @@ static int mISDN_uevent(struct device *dev, struct kobj_uevent_env *env)
 
 	return 0;
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void mISDN_class_release(struct class *cls)
 {
@@ -195,22 +271,35 @@ static void mISDN_class_release(struct class *cls)
 static struct class mISDN_class = {
 	.name = "mISDN",
 	.owner = THIS_MODULE,
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
 	.dev_uevent = mISDN_uevent,
 #endif
 	.dev_attrs = mISDN_dev_attrs,
+=======
+	.dev_uevent = mISDN_uevent,
+	.dev_groups = mISDN_groups,
+>>>>>>> refs/remotes/origin/master
 	.dev_release = mISDN_dev_release,
 	.class_release = mISDN_class_release,
 };
 
 static int
+<<<<<<< HEAD
 _get_mdevice(struct device *dev, void *id)
+=======
+_get_mdevice(struct device *dev, const void *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mISDNdevice *mdev = dev_to_mISDN(dev);
 
 	if (!mdev)
 		return 0;
+<<<<<<< HEAD
 	if (mdev->id != *(u_int *)id)
+=======
+	if (mdev->id != *(const u_int *)id)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	return 1;
 }
@@ -220,10 +309,14 @@ struct mISDNdevice
 {
 	return dev_to_mISDN(class_find_device(&mISDN_class, NULL, &id,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		_get_mdevice));
 =======
 					      _get_mdevice));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      _get_mdevice));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -258,10 +351,14 @@ get_free_devid(void)
 int
 mISDN_register_device(struct mISDNdevice *dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct device *parent, char *name)
 =======
 		      struct device *parent, char *name)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      struct device *parent, char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	int	err;
 
@@ -278,10 +375,14 @@ mISDN_register_device(struct mISDNdevice *dev,
 	if (debug & DEBUG_CORE)
 		printk(KERN_DEBUG "mISDN_register %s %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_name(&dev->dev), dev->id);
 =======
 		       dev_name(&dev->dev), dev->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       dev_name(&dev->dev), dev->id);
+>>>>>>> refs/remotes/origin/master
 	err = create_stack(dev);
 	if (err)
 		goto error1;
@@ -310,10 +411,14 @@ mISDN_unregister_device(struct mISDNdevice *dev) {
 	if (debug & DEBUG_CORE)
 		printk(KERN_DEBUG "mISDN_unregister %s %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_name(&dev->dev), dev->id);
 =======
 		       dev_name(&dev->dev), dev->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       dev_name(&dev->dev), dev->id);
+>>>>>>> refs/remotes/origin/master
 	/* sysfs_remove_link(&dev->dev.kobj, "device"); */
 	device_del(&dev->dev);
 	dev_set_drvdata(&dev->dev, NULL);
@@ -360,10 +465,14 @@ get_Bprotocol4id(u_int id)
 	if (id < ISDN_P_B_START || id > 63) {
 		printk(KERN_WARNING "%s id not in range  %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    __func__, id);
 =======
 		       __func__, id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, id);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 	m = 1 << (id & ISDN_P_B_MASK);
@@ -379,6 +488,7 @@ mISDN_register_Bprotocol(struct Bprotocol *bp)
 	if (debug & DEBUG_CORE)
 		printk(KERN_DEBUG "%s: %s/%x\n", __func__,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    bp->name, bp->Bprotocols);
 	old = get_Bprotocol4mask(bp->Bprotocols);
 	if (old) {
@@ -386,13 +496,18 @@ mISDN_register_Bprotocol(struct Bprotocol *bp)
 		    "register duplicate protocol old %s/%x new %s/%x\n",
 		    old->name, old->Bprotocols, bp->name, bp->Bprotocols);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       bp->name, bp->Bprotocols);
 	old = get_Bprotocol4mask(bp->Bprotocols);
 	if (old) {
 		printk(KERN_WARNING
 		       "register duplicate protocol old %s/%x new %s/%x\n",
 		       old->name, old->Bprotocols, bp->name, bp->Bprotocols);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 	write_lock_irqsave(&bp_lock, flags);
@@ -410,16 +525,39 @@ mISDN_unregister_Bprotocol(struct Bprotocol *bp)
 	if (debug & DEBUG_CORE)
 		printk(KERN_DEBUG "%s: %s/%x\n", __func__, bp->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bp->Bprotocols);
 =======
 		       bp->Bprotocols);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       bp->Bprotocols);
+>>>>>>> refs/remotes/origin/master
 	write_lock_irqsave(&bp_lock, flags);
 	list_del(&bp->list);
 	write_unlock_irqrestore(&bp_lock, flags);
 }
 EXPORT_SYMBOL(mISDN_unregister_Bprotocol);
 
+<<<<<<< HEAD
+=======
+static const char *msg_no_channel = "<no channel>";
+static const char *msg_no_stack = "<no stack>";
+static const char *msg_no_stackdev = "<no stack device>";
+
+const char *mISDNDevName4ch(struct mISDNchannel *ch)
+{
+	if (!ch)
+		return msg_no_channel;
+	if (!ch->st)
+		return msg_no_stack;
+	if (!ch->st->dev)
+		return msg_no_stackdev;
+	return dev_name(&ch->st->dev->dev);
+};
+EXPORT_SYMBOL(mISDNDevName4ch);
+
+>>>>>>> refs/remotes/origin/master
 static int
 mISDNInit(void)
 {
@@ -427,10 +565,14 @@ mISDNInit(void)
 
 	printk(KERN_INFO "Modular ISDN core version %d.%d.%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		MISDN_MAJOR_VERSION, MISDN_MINOR_VERSION, MISDN_RELEASE);
 =======
 	       MISDN_MAJOR_VERSION, MISDN_MINOR_VERSION, MISDN_RELEASE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       MISDN_MAJOR_VERSION, MISDN_MINOR_VERSION, MISDN_RELEASE);
+>>>>>>> refs/remotes/origin/master
 	mISDN_init_clock(&debug);
 	mISDN_initstack(&debug);
 	err = class_register(&mISDN_class);
@@ -476,6 +618,9 @@ static void mISDN_cleanup(void)
 module_init(mISDNInit);
 module_exit(mISDN_cleanup);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

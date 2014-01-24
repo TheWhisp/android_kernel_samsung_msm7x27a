@@ -29,7 +29,11 @@ extern void iscsi_dump_conn_ops(struct iscsi_conn_ops *);
 extern void iscsi_dump_sess_ops(struct iscsi_sess_ops *);
 extern void iscsi_print_params(struct iscsi_param_list *);
 extern int iscsi_create_default_params(struct iscsi_param_list **);
+<<<<<<< HEAD
 extern int iscsi_set_keys_to_negotiate(int, struct iscsi_param_list *);
+=======
+extern int iscsi_set_keys_to_negotiate(struct iscsi_param_list *, bool);
+>>>>>>> refs/remotes/origin/master
 extern int iscsi_set_keys_irrelevant_for_discovery(struct iscsi_param_list *);
 extern int iscsi_copy_param_list(struct iscsi_param_list **,
 			struct iscsi_param_list *, int);
@@ -38,7 +42,11 @@ extern void iscsi_release_param_list(struct iscsi_param_list *);
 extern struct iscsi_param *iscsi_find_param_from_key(char *, struct iscsi_param_list *);
 extern int iscsi_extract_key_value(char *, char **, char **);
 extern int iscsi_update_param_value(struct iscsi_param *, char *);
+<<<<<<< HEAD
 extern int iscsi_decode_text_input(u8, u8, char *, u32, struct iscsi_param_list *);
+=======
+extern int iscsi_decode_text_input(u8, u8, char *, u32, struct iscsi_conn *);
+>>>>>>> refs/remotes/origin/master
 extern int iscsi_encode_text_output(u8, u8, char *, u32 *,
 			struct iscsi_param_list *);
 extern int iscsi_check_negotiated_keys(struct iscsi_param_list *);
@@ -72,6 +80,10 @@ extern void iscsi_set_session_parameters(struct iscsi_sess_ops *,
 #define INITIALR2T			"InitialR2T"
 #define IMMEDIATEDATA			"ImmediateData"
 #define MAXRECVDATASEGMENTLENGTH	"MaxRecvDataSegmentLength"
+<<<<<<< HEAD
+=======
+#define MAXXMITDATASEGMENTLENGTH	"MaxXmitDataSegmentLength"
+>>>>>>> refs/remotes/origin/master
 #define MAXBURSTLENGTH			"MaxBurstLength"
 #define FIRSTBURSTLENGTH		"FirstBurstLength"
 #define DEFAULTTIME2WAIT		"DefaultTime2Wait"
@@ -90,6 +102,16 @@ extern void iscsi_set_session_parameters(struct iscsi_sess_ops *,
 #define X_EXTENSIONKEY_CISCO_OLD	"X-com.cisco.iscsi.draft"
 
 /*
+<<<<<<< HEAD
+=======
+ * Parameter names of iSCSI Extentions for RDMA (iSER).  See RFC-5046
+ */
+#define RDMAEXTENSIONS			"RDMAExtensions"
+#define INITIATORRECVDATASEGMENTLENGTH	"InitiatorRecvDataSegmentLength"
+#define TARGETRECVDATASEGMENTLENGTH	"TargetRecvDataSegmentLength"
+
+/*
+>>>>>>> refs/remotes/origin/master
  * For AuthMethod.
  */
 #define KRB5				"KRB5"
@@ -115,6 +137,13 @@ extern void iscsi_set_session_parameters(struct iscsi_sess_ops *,
 #define INITIAL_INITIALR2T			YES
 #define INITIAL_IMMEDIATEDATA			YES
 #define INITIAL_MAXRECVDATASEGMENTLENGTH	"8192"
+<<<<<<< HEAD
+=======
+/*
+ * Match outgoing MXDSL default to incoming Open-iSCSI default
+ */
+#define INITIAL_MAXXMITDATASEGMENTLENGTH	"262144"
+>>>>>>> refs/remotes/origin/master
 #define INITIAL_MAXBURSTLENGTH			"262144"
 #define INITIAL_FIRSTBURSTLENGTH		"65536"
 #define INITIAL_DEFAULTTIME2WAIT		"2"
@@ -130,6 +159,16 @@ extern void iscsi_set_session_parameters(struct iscsi_sess_ops *,
 #define INITIAL_OFMARKINT			"2048~65535"
 
 /*
+<<<<<<< HEAD
+=======
+ * Initial values for iSER parameters following RFC-5046 Section 6
+ */
+#define INITIAL_RDMAEXTENSIONS			NO
+#define INITIAL_INITIATORRECVDATASEGMENTLENGTH	"262144"
+#define INITIAL_TARGETRECVDATASEGMENTLENGTH	"8192"
+
+/*
+>>>>>>> refs/remotes/origin/master
  * For [Header,Data]Digests.
  */
 #define CRC32C				"CRC32C"

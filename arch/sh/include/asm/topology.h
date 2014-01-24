@@ -3,6 +3,7 @@
 
 #ifdef CONFIG_NUMA
 
+<<<<<<< HEAD
 /* sched_domains SD_NODE_INIT for sh machines */
 #define SD_NODE_INIT (struct sched_domain) {		\
 	.parent			= NULL,			\
@@ -28,6 +29,8 @@
 	.nr_balance_failed	= 0,			\
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define cpu_to_node(cpu)	((void)(cpu),0)
 #define parent_node(node)	((void)(node),0)
 

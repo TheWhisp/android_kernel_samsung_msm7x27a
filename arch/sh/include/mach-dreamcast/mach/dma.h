@@ -11,9 +11,13 @@
 #define __ASM_SH_DREAMCAST_DMA_H
 
 /* Number of DMA channels */
+<<<<<<< HEAD
 #define ONCHIP_NR_DMA_CHANNELS	4
 #define G2_NR_DMA_CHANNELS	4
 #define PVR2_NR_DMA_CHANNELS	1
+=======
+#define G2_NR_DMA_CHANNELS	4
+>>>>>>> refs/remotes/origin/master
 
 /* Channels for cascading */
 #define PVR2_CASCADE_CHAN	2

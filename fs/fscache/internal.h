@@ -93,14 +93,21 @@ static inline bool fscache_object_congested(void)
 
 extern int fscache_wait_bit(void *);
 extern int fscache_wait_bit_interruptible(void *);
+<<<<<<< HEAD
+=======
+extern int fscache_wait_atomic_t(atomic_t *);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * object.c
  */
+<<<<<<< HEAD
 extern const char fscache_object_states_short[FSCACHE_OBJECT__NSTATES][5];
 
 extern void fscache_withdrawing_object(struct fscache_cache *,
 				       struct fscache_object *);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void fscache_enqueue_object(struct fscache_object *);
 
 /*
@@ -110,8 +117,15 @@ extern void fscache_enqueue_object(struct fscache_object *);
 extern const struct file_operations fscache_objlist_fops;
 
 extern void fscache_objlist_add(struct fscache_object *);
+<<<<<<< HEAD
 #else
 #define fscache_objlist_add(object) do {} while(0)
+=======
+extern void fscache_objlist_remove(struct fscache_object *);
+#else
+#define fscache_objlist_add(object) do {} while(0)
+#define fscache_objlist_remove(object) do {} while(0)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -121,12 +135,32 @@ extern int fscache_submit_exclusive_op(struct fscache_object *,
 				       struct fscache_operation *);
 extern int fscache_submit_op(struct fscache_object *,
 			     struct fscache_operation *);
+<<<<<<< HEAD
 extern int fscache_cancel_op(struct fscache_operation *);
+=======
+extern int fscache_cancel_op(struct fscache_operation *,
+			     void (*)(struct fscache_operation *));
+extern void fscache_cancel_all_ops(struct fscache_object *);
+>>>>>>> refs/remotes/origin/master
 extern void fscache_abort_object(struct fscache_object *);
 extern void fscache_start_operations(struct fscache_object *);
 extern void fscache_operation_gc(struct work_struct *);
 
 /*
+<<<<<<< HEAD
+=======
+ * page.c
+ */
+extern int fscache_wait_for_deferred_lookup(struct fscache_cookie *);
+extern int fscache_wait_for_operation_activation(struct fscache_object *,
+						 struct fscache_operation *,
+						 atomic_t *,
+						 atomic_t *,
+						 void (*)(struct fscache_operation *));
+extern void fscache_invalidate_writes(struct fscache_cookie *);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * proc.c
  */
 #ifdef CONFIG_PROC_FS
@@ -194,6 +228,10 @@ extern atomic_t fscache_n_store_vmscan_not_storing;
 extern atomic_t fscache_n_store_vmscan_gone;
 extern atomic_t fscache_n_store_vmscan_busy;
 extern atomic_t fscache_n_store_vmscan_cancelled;
+<<<<<<< HEAD
+=======
+extern atomic_t fscache_n_store_vmscan_wait;
+>>>>>>> refs/remotes/origin/master
 
 extern atomic_t fscache_n_marks;
 extern atomic_t fscache_n_uncaches;
@@ -205,6 +243,12 @@ extern atomic_t fscache_n_acquires_ok;
 extern atomic_t fscache_n_acquires_nobufs;
 extern atomic_t fscache_n_acquires_oom;
 
+<<<<<<< HEAD
+=======
+extern atomic_t fscache_n_invalidates;
+extern atomic_t fscache_n_invalidates_run;
+
+>>>>>>> refs/remotes/origin/master
 extern atomic_t fscache_n_updates;
 extern atomic_t fscache_n_updates_null;
 extern atomic_t fscache_n_updates_run;
@@ -237,6 +281,10 @@ extern atomic_t fscache_n_cop_alloc_object;
 extern atomic_t fscache_n_cop_lookup_object;
 extern atomic_t fscache_n_cop_lookup_complete;
 extern atomic_t fscache_n_cop_grab_object;
+<<<<<<< HEAD
+=======
+extern atomic_t fscache_n_cop_invalidate_object;
+>>>>>>> refs/remotes/origin/master
 extern atomic_t fscache_n_cop_update_object;
 extern atomic_t fscache_n_cop_drop_object;
 extern atomic_t fscache_n_cop_put_object;
@@ -278,6 +326,14 @@ extern const struct file_operations fscache_stats_fops;
 static inline void fscache_raise_event(struct fscache_object *object,
 				       unsigned event)
 {
+<<<<<<< HEAD
+=======
+	BUG_ON(event >= NR_FSCACHE_OBJECT_EVENTS);
+#if 0
+	printk("*** fscache_raise_event(OBJ%d{%lx},%x)\n",
+	       object->debug_id, object->event_mask, (1 << event));
+#endif
+>>>>>>> refs/remotes/origin/master
 	if (!test_and_set_bit(event, &object->events) &&
 	    test_bit(event, &object->event_mask))
 		fscache_enqueue_object(object);

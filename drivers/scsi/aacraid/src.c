@@ -38,9 +38,12 @@
 #include <linux/blkdev.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/completion.h>
 #include <linux/time.h>
 #include <linux/interrupt.h>
@@ -60,6 +63,7 @@ static irqreturn_t aac_src_intr_message(int irq, void *dev_id)
 	if (bellbits & PmDoorBellResponseSent) {
 		bellbits = PmDoorBellResponseSent;
 		/* handle async. status */
+<<<<<<< HEAD
 		our_interrupt = 1;
 		index = dev->host_rrq_idx;
 		if (dev->host_rrq[index] == 0) {
@@ -79,6 +83,16 @@ static irqreturn_t aac_src_intr_message(int irq, void *dev_id)
 			isFastResponse = 0;
 			/* remove toggle bit (31) */
 			handle = (dev->host_rrq[index] & 0x7fffffff);
+=======
+		src_writel(dev, MUnit.ODR_C, bellbits);
+		src_readl(dev, MUnit.ODR_C);
+		our_interrupt = 1;
+		index = dev->host_rrq_idx;
+		for (;;) {
+			isFastResponse = 0;
+			/* remove toggle bit (31) */
+			handle = le32_to_cpu(dev->host_rrq[index]) & 0x7fffffff;
+>>>>>>> refs/remotes/origin/master
 			/* check fast response bit (30) */
 			if (handle & 0x40000000)
 				isFastResponse = 1;
@@ -97,15 +111,36 @@ static irqreturn_t aac_src_intr_message(int irq, void *dev_id)
 	} else {
 		bellbits_shifted = (bellbits >> SRC_ODR_SHIFT);
 		if (bellbits_shifted & DoorBellAifPending) {
+<<<<<<< HEAD
 			our_interrupt = 1;
 			/* handle AIF */
 			aac_intr_normal(dev, 0, 2, 0, NULL);
 <<<<<<< HEAD
 =======
+=======
+			src_writel(dev, MUnit.ODR_C, bellbits);
+			src_readl(dev, MUnit.ODR_C);
+			our_interrupt = 1;
+			/* handle AIF */
+			aac_intr_normal(dev, 0, 2, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 		} else if (bellbits_shifted & OUTBOUNDDOORBELL_0) {
 			unsigned long sflags;
 			struct list_head *entry;
 			int send_it = 0;
+<<<<<<< HEAD
+=======
+			extern int aac_sync_mode;
+
+			src_writel(dev, MUnit.ODR_C, bellbits);
+			src_readl(dev, MUnit.ODR_C);
+
+			if (!aac_sync_mode) {
+				src_writel(dev, MUnit.ODR_C, bellbits);
+				src_readl(dev, MUnit.ODR_C);
+				our_interrupt = 1;
+			}
+>>>>>>> refs/remotes/origin/master
 
 			if (dev->sync_fib) {
 				our_interrupt = 1;
@@ -134,12 +169,18 @@ static irqreturn_t aac_src_intr_message(int irq, void *dev_id)
 						NULL, NULL, NULL, NULL, NULL);
 				}
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (our_interrupt) {
+<<<<<<< HEAD
 		src_writel(dev, MUnit.ODR_C, bellbits);
+=======
+>>>>>>> refs/remotes/origin/master
 		return IRQ_HANDLED;
 	}
 	return IRQ_NONE;
@@ -217,6 +258,7 @@ static int src_sync_cmd(struct aac_dev *dev, u32 command,
 	src_writel(dev, MUnit.IDR, INBOUNDDOORBELL_0 << SRC_IDR_SHIFT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ok = 0;
 	start = jiffies;
 
@@ -268,6 +310,8 @@ static int src_sync_cmd(struct aac_dev *dev, u32 command,
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dev->sync_mode || command != SEND_SYNCHRONOUS_FIB) {
 		ok = 0;
 		start = jiffies;
@@ -325,7 +369,10 @@ static int src_sync_cmd(struct aac_dev *dev, u32 command,
 	 */
 	aac_adapter_enable_int(dev);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -396,6 +443,12 @@ static void aac_src_start_adapter(struct aac_dev *dev)
 {
 	struct aac_init *init;
 
+<<<<<<< HEAD
+=======
+	 /* reset host_rrq_idx first */
+	dev->host_rrq_idx = 0;
+
+>>>>>>> refs/remotes/origin/master
 	init = dev->init;
 	init->HostElapsedSeconds = cpu_to_le32(get_seconds());
 
@@ -449,13 +502,20 @@ static int aac_src_deliver_message(struct fib *fib)
 	struct aac_queue *q = &dev->queues->queue[AdapNormCmdQueue];
 	unsigned long qflags;
 	u32 fibsize;
+<<<<<<< HEAD
 	u64 address;
 	struct aac_fib_xporthdr *pFibX;
+=======
+	dma_addr_t address;
+	struct aac_fib_xporthdr *pFibX;
+	u16 hdr_size = le16_to_cpu(fib->hw_fib_va->header.Size);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(q->lock, qflags);
 	q->numpending++;
 	spin_unlock_irqrestore(q->lock, qflags);
 
+<<<<<<< HEAD
 	/* Calculate the amount to the fibsize bits */
 	fibsize = (sizeof(struct aac_fib_xporthdr) +
 		fib->hw_fib_va->header.Size + 127) / 128 - 1;
@@ -473,6 +533,45 @@ static int aac_src_deliver_message(struct fib *fib)
 
 	src_writel(dev, MUnit.IQ_H, (u32)(address >> 32));
 	src_writel(dev, MUnit.IQ_L, (u32)(address & 0xffffffff) + fibsize);
+=======
+	if (dev->comm_interface == AAC_COMM_MESSAGE_TYPE2) {
+		/* Calculate the amount to the fibsize bits */
+		fibsize = (hdr_size + 127) / 128 - 1;
+		if (fibsize > (ALIGN32 - 1))
+			return -EMSGSIZE;
+		/* New FIB header, 32-bit */
+		address = fib->hw_fib_pa;
+		fib->hw_fib_va->header.StructType = FIB_MAGIC2;
+		fib->hw_fib_va->header.SenderFibAddress = (u32)address;
+		fib->hw_fib_va->header.u.TimeStamp = 0;
+		BUG_ON(upper_32_bits(address) != 0L);
+		address |= fibsize;
+	} else {
+		/* Calculate the amount to the fibsize bits */
+		fibsize = (sizeof(struct aac_fib_xporthdr) + hdr_size + 127) / 128 - 1;
+		if (fibsize > (ALIGN32 - 1))
+			return -EMSGSIZE;
+
+		/* Fill XPORT header */
+		pFibX = (void *)fib->hw_fib_va - sizeof(struct aac_fib_xporthdr);
+		pFibX->Handle = cpu_to_le32(fib->hw_fib_va->header.Handle);
+		pFibX->HostAddress = cpu_to_le64(fib->hw_fib_pa);
+		pFibX->Size = cpu_to_le32(hdr_size);
+
+		/*
+		 * The xport header has been 32-byte aligned for us so that fibsize
+		 * can be masked out of this address by hardware. -- BenC
+		 */
+		address = fib->hw_fib_pa - sizeof(struct aac_fib_xporthdr);
+		if (address & (ALIGN32 - 1))
+			return -EINVAL;
+		address |= fibsize;
+	}
+
+	src_writel(dev, MUnit.IQ_H, upper_32_bits(address) & 0xffffffff);
+	src_writel(dev, MUnit.IQ_L, address & 0xffffffff);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -484,6 +583,7 @@ static int aac_src_deliver_message(struct fib *fib)
 static int aac_src_ioremap(struct aac_dev *dev, u32 size)
 {
 	if (!size) {
+<<<<<<< HEAD
 		iounmap(dev->regs.src.bar0);
 <<<<<<< HEAD
 		dev->regs.src.bar0 = NULL;
@@ -492,6 +592,12 @@ static int aac_src_ioremap(struct aac_dev *dev, u32 size)
 =======
 		dev->base = dev->regs.src.bar0 = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iounmap(dev->regs.src.bar1);
+		dev->regs.src.bar1 = NULL;
+		iounmap(dev->regs.src.bar0);
+		dev->base = dev->regs.src.bar0 = NULL;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	dev->regs.src.bar1 = ioremap(pci_resource_start(dev->pdev, 2),
@@ -499,8 +605,12 @@ static int aac_src_ioremap(struct aac_dev *dev, u32 size)
 	dev->base = NULL;
 	if (dev->regs.src.bar1 == NULL)
 		return -1;
+<<<<<<< HEAD
 	dev->base = dev->regs.src.bar0 = ioremap(dev->scsi_host_ptr->base,
 				size);
+=======
+	dev->base = dev->regs.src.bar0 = ioremap(dev->base_start, size);
+>>>>>>> refs/remotes/origin/master
 	if (dev->base == NULL) {
 		iounmap(dev->regs.src.bar1);
 		dev->regs.src.bar1 = NULL;
@@ -508,8 +618,11 @@ static int aac_src_ioremap(struct aac_dev *dev, u32 size)
 	}
 	dev->IndexRegs = &((struct src_registers __iomem *)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->base)->IndexRegs;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev->base)->u.tupelo.IndexRegs;
 	return 0;
 }
@@ -526,12 +639,19 @@ static int aac_srcv_ioremap(struct aac_dev *dev, u32 size)
 		dev->base = dev->regs.src.bar0 = NULL;
 		return 0;
 	}
+<<<<<<< HEAD
 	dev->base = dev->regs.src.bar0 = ioremap(dev->scsi_host_ptr->base, size);
+=======
+	dev->base = dev->regs.src.bar0 = ioremap(dev->base_start, size);
+>>>>>>> refs/remotes/origin/master
 	if (dev->base == NULL)
 		return -1;
 	dev->IndexRegs = &((struct src_registers __iomem *)
 		dev->base)->u.denali.IndexRegs;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -547,10 +667,14 @@ static int aac_src_restart_adapter(struct aac_dev *dev, int bled)
 			0, 0, 0, 0, 0, 0, &var, &reset_mask, NULL, NULL, NULL);
 			if (bled || (var != 0x00000001))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				bled = -EINVAL;
 =======
 				return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		if (dev->supplement_adapter_info.SupportedOptions2 &
 			AAC_OPTION_DOORBELL_RESET) {
 			src_writel(dev, MUnit.IDR, reset_mask);
@@ -711,6 +835,7 @@ int aac_src_init(struct aac_dev *dev)
 
 	aac_adapter_enable_int(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 *	Tell the adapter that all is configured, and it can
 	 * start accepting requests
@@ -718,6 +843,8 @@ int aac_src_init(struct aac_dev *dev)
 	aac_src_start_adapter(dev);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev->sync_mode) {
 		/*
@@ -763,6 +890,31 @@ int aac_srcv_init(struct aac_dev *dev)
 		!aac_src_restart_adapter(dev, 0))
 		++restart;
 	/*
+<<<<<<< HEAD
+=======
+	 *	Check to see if flash update is running.
+	 *	Wait for the adapter to be up and running. Wait up to 5 minutes
+	 */
+	status = src_readl(dev, MUnit.OMR);
+	if (status & FLASH_UPD_PENDING) {
+		start = jiffies;
+		do {
+			status = src_readl(dev, MUnit.OMR);
+			if (time_after(jiffies, start+HZ*FWUPD_TIMEOUT)) {
+				printk(KERN_ERR "%s%d: adapter flash update failed.\n",
+					dev->name, instance);
+				goto error_iounmap;
+			}
+		} while (!(status & FLASH_UPD_SUCCESS) &&
+			 !(status & FLASH_UPD_FAILED));
+		/* Delay 10 seconds.
+		 * Because right now FW is doing a soft reset,
+		 * do not read scratch pad register at this time
+		 */
+		ssleep(10);
+	}
+	/*
+>>>>>>> refs/remotes/origin/master
 	 *	Check to see if the board panic'd while booting.
 	 */
 	status = src_readl(dev, MUnit.OMR);
@@ -790,7 +942,13 @@ int aac_srcv_init(struct aac_dev *dev)
 	/*
 	 *	Wait for the adapter to be up and running. Wait up to 3 minutes
 	 */
+<<<<<<< HEAD
 	while (!((status = src_readl(dev, MUnit.OMR)) & KERNEL_UP_AND_RUNNING)) {
+=======
+	while (!((status = src_readl(dev, MUnit.OMR)) &
+		KERNEL_UP_AND_RUNNING) ||
+		status == 0xffffffff) {
+>>>>>>> refs/remotes/origin/master
 		if ((restart &&
 		  (status & (KERNEL_PANIC|SELF_TEST_FAILED|MONITOR_PANIC))) ||
 		  time_after(jiffies, start+HZ*startup_timeout)) {
@@ -833,7 +991,11 @@ int aac_srcv_init(struct aac_dev *dev)
 
 	if (aac_init_adapter(dev) == NULL)
 		goto error_iounmap;
+<<<<<<< HEAD
 	if (dev->comm_interface != AAC_COMM_MESSAGE_TYPE1)
+=======
+	if (dev->comm_interface != AAC_COMM_MESSAGE_TYPE2)
+>>>>>>> refs/remotes/origin/master
 		goto error_iounmap;
 	dev->msi = aac_msi && !pci_enable_msi(dev->pdev);
 	if (request_irq(dev->pdev->irq, dev->a_ops.adapter_intr,
@@ -844,7 +1006,11 @@ int aac_srcv_init(struct aac_dev *dev)
 			name, instance);
 		goto error_iounmap;
 	}
+<<<<<<< HEAD
 	dev->dbg_base = dev->scsi_host_ptr->base;
+=======
+	dev->dbg_base = dev->base_start;
+>>>>>>> refs/remotes/origin/master
 	dev->dbg_base_mapped = dev->base;
 	dev->dbg_size = dev->base_size;
 
@@ -857,7 +1023,10 @@ int aac_srcv_init(struct aac_dev *dev)
 		 */
 		aac_src_start_adapter(dev);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 error_iounmap:
@@ -865,6 +1034,10 @@ error_iounmap:
 	return -1;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master

@@ -10,9 +10,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel_stat.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/kdev_t.h>
@@ -24,6 +27,10 @@
 #include <linux/interrupt.h>
 #include <linux/err.h>
 #include <linux/reboot.h>
+<<<<<<< HEAD
+=======
+#include <linux/serial.h> /* ASYNC_* flags */
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <asm/ccwdev.h>
 #include <asm/cio.h>
@@ -48,6 +55,7 @@
 #define RAW3215_TIMEOUT	    HZ/10     /* time for delayed output */
 
 #define RAW3215_FIXED	    1	      /* 3215 console device is not be freed */
+<<<<<<< HEAD
 #define RAW3215_ACTIVE	    2	      /* set if the device is in use */
 #define RAW3215_WORKING	    4	      /* set if a request is being worked on */
 #define RAW3215_THROTTLED   8	      /* set if reading is disabled */
@@ -56,6 +64,13 @@
 #define RAW3215_TIMER_RUNS  64	      /* set if the output delay timer is on */
 #define RAW3215_FLUSHING    128	      /* set to flush buffer (no delay) */
 #define RAW3215_FROZEN	    256	      /* set if 3215 is frozen for suspend */
+=======
+#define RAW3215_WORKING	    4	      /* set if a request is being worked on */
+#define RAW3215_THROTTLED   8	      /* set if reading is disabled */
+#define RAW3215_STOPPED	    16	      /* set if writing is disabled */
+#define RAW3215_TIMER_RUNS  64	      /* set if the output delay timer is on */
+#define RAW3215_FLUSHING    128	      /* set to flush buffer (no delay) */
+>>>>>>> refs/remotes/origin/master
 
 #define TAB_STOP_SIZE	    8	      /* tab stop size */
 
@@ -80,6 +95,10 @@ struct raw3215_req {
 } __attribute__ ((aligned(8)));
 
 struct raw3215_info {
+<<<<<<< HEAD
+=======
+	struct tty_port port;
+>>>>>>> refs/remotes/origin/master
 	struct ccw_device *cdev;      /* device for tty driver */
 	spinlock_t *lock;	      /* pointer to irq lock */
 	int flags;		      /* state flags */
@@ -88,6 +107,7 @@ struct raw3215_info {
 	int head;		      /* first free byte in output buffer */
 	int count;		      /* number of bytes in output buffer */
 	int written;		      /* number of bytes in write requests */
+<<<<<<< HEAD
 	struct tty_struct *tty;	      /* pointer to tty structure if present */
 	struct raw3215_req *queued_read; /* pointer to queued read requests */
 	struct raw3215_req *queued_write;/* pointer to queued write requests */
@@ -95,6 +115,11 @@ struct raw3215_info {
 =======
 	struct tasklet_struct tlet;   /* tasklet to invoke tty_wakeup */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct raw3215_req *queued_read; /* pointer to queued read requests */
+	struct raw3215_req *queued_write;/* pointer to queued write requests */
+	struct tasklet_struct tlet;   /* tasklet to invoke tty_wakeup */
+>>>>>>> refs/remotes/origin/master
 	wait_queue_head_t empty_wait; /* wait queue for flushing */
 	struct timer_list timer;      /* timer for delayed output */
 	int line_pos;		      /* position on the line (for tabs) */
@@ -300,7 +325,11 @@ static void raw3215_timeout(unsigned long __data)
 	if (raw->flags & RAW3215_TIMER_RUNS) {
 		del_timer(&raw->timer);
 		raw->flags &= ~RAW3215_TIMER_RUNS;
+<<<<<<< HEAD
 		if (!(raw->flags & RAW3215_FROZEN)) {
+=======
+		if (!(raw->port.flags & ASYNC_SUSPENDED)) {
+>>>>>>> refs/remotes/origin/master
 			raw3215_mk_write_req(raw);
 			raw3215_start_io(raw);
 		}
@@ -316,7 +345,12 @@ static void raw3215_timeout(unsigned long __data)
  */
 static inline void raw3215_try_io(struct raw3215_info *raw)
 {
+<<<<<<< HEAD
 	if (!(raw->flags & RAW3215_ACTIVE) || (raw->flags & RAW3215_FROZEN))
+=======
+	if (!(raw->port.flags & ASYNC_INITIALIZED) ||
+			(raw->port.flags & ASYNC_SUSPENDED))
+>>>>>>> refs/remotes/origin/master
 		return;
 	if (raw->queued_read != NULL)
 		raw3215_start_io(raw);
@@ -331,10 +365,14 @@ static inline void raw3215_try_io(struct raw3215_info *raw)
 			}
 		} else if (!(raw->flags & RAW3215_TIMER_RUNS)) {
 			/* delay small writes */
+<<<<<<< HEAD
 			init_timer(&raw->timer);
 			raw->timer.expires = RAW3215_TIMEOUT + jiffies;
 			raw->timer.data = (unsigned long) raw;
 			raw->timer.function = raw3215_timeout;
+=======
+			raw->timer.expires = RAW3215_TIMEOUT + jiffies;
+>>>>>>> refs/remotes/origin/master
 			add_timer(&raw->timer);
 			raw->flags |= RAW3215_TIMER_RUNS;
 		}
@@ -343,12 +381,16 @@ static inline void raw3215_try_io(struct raw3215_info *raw)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Call tty_wakeup from tasklet context
  */
 static void raw3215_wakeup(unsigned long data)
 {
 	struct raw3215_info *raw = (struct raw3215_info *) data;
+<<<<<<< HEAD
 	tty_wakeup(raw->tty);
 }
 
@@ -374,6 +416,26 @@ static void raw3215_next_io(struct raw3215_info *raw)
 	if (raw->tty && RAW3215_BUFFER_SIZE - raw->count >= RAW3215_MIN_SPACE)
 		tasklet_schedule(&raw->tlet);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tty_struct *tty;
+
+	tty = tty_port_tty_get(&raw->port);
+	if (tty) {
+		tty_wakeup(tty);
+		tty_kref_put(tty);
+	}
+}
+
+/*
+ * Try to start the next IO and wake up processes waiting on the tty.
+ */
+static void raw3215_next_io(struct raw3215_info *raw, struct tty_struct *tty)
+{
+	raw3215_mk_write_req(raw);
+	raw3215_try_io(raw);
+	if (tty && RAW3215_BUFFER_SIZE - raw->count >= RAW3215_MIN_SPACE)
+		tasklet_schedule(&raw->tlet);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -389,6 +451,7 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 	int count;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[IOINT_C15]++;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -398,6 +461,15 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 	dstat = irb->scsw.cmd.dstat;
 	if (cstat != 0)
 		raw3215_next_io(raw);
+=======
+	raw = dev_get_drvdata(&cdev->dev);
+	req = (struct raw3215_req *) intparm;
+	tty = tty_port_tty_get(&raw->port);
+	cstat = irb->scsw.cmd.cstat;
+	dstat = irb->scsw.cmd.dstat;
+	if (cstat != 0)
+		raw3215_next_io(raw, tty);
+>>>>>>> refs/remotes/origin/master
 	if (dstat & 0x01) { /* we got a unit exception */
 		dstat &= ~0x01;	 /* we can ignore it */
 	}
@@ -407,13 +479,21 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 			break;
 		/* Attention interrupt, someone hit the enter key */
 		raw3215_mk_read_req(raw);
+<<<<<<< HEAD
 		raw3215_next_io(raw);
+=======
+		raw3215_next_io(raw, tty);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 0x08:
 	case 0x0C:
 		/* Channel end interrupt. */
 		if ((raw = req->info) == NULL)
+<<<<<<< HEAD
 			return;		     /* That shouldn't happen ... */
+=======
+			goto put_tty;	     /* That shouldn't happen ... */
+>>>>>>> refs/remotes/origin/master
 		if (req->type == RAW3215_READ) {
 			/* store residual count, then wait for device end */
 			req->residual = irb->scsw.cmd.count;
@@ -423,11 +503,18 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 	case 0x04:
 		/* Device end interrupt. */
 		if ((raw = req->info) == NULL)
+<<<<<<< HEAD
 			return;		     /* That shouldn't happen ... */
 		if (req->type == RAW3215_READ && raw->tty != NULL) {
 			unsigned int cchar;
 
 			tty = raw->tty;
+=======
+			goto put_tty;	     /* That shouldn't happen ... */
+		if (req->type == RAW3215_READ && tty != NULL) {
+			unsigned int cchar;
+
+>>>>>>> refs/remotes/origin/master
 			count = 160 - req->residual;
 			EBCASC(raw->inbuf, count);
 			cchar = ctrlchar_handle(raw->inbuf, count, tty);
@@ -436,8 +523,14 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 				break;
 
 			case CTRLCHAR_CTRL:
+<<<<<<< HEAD
 				tty_insert_flip_char(tty, cchar, TTY_NORMAL);
 				tty_flip_buffer_push(raw->tty);
+=======
+				tty_insert_flip_char(&raw->port, cchar,
+						TTY_NORMAL);
+				tty_flip_buffer_push(&raw->port);
+>>>>>>> refs/remotes/origin/master
 				break;
 
 			case CTRLCHAR_NONE:
@@ -449,8 +542,14 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 					count++;
 				} else
 					count -= 2;
+<<<<<<< HEAD
 				tty_insert_flip_string(tty, raw->inbuf, count);
 				tty_flip_buffer_push(raw->tty);
+=======
+				tty_insert_flip_string(&raw->port, raw->inbuf,
+						count);
+				tty_flip_buffer_push(&raw->port);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 		} else if (req->type == RAW3215_WRITE) {
@@ -465,7 +564,11 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 		    raw->queued_read == NULL) {
 			wake_up_interruptible(&raw->empty_wait);
 		}
+<<<<<<< HEAD
 		raw3215_next_io(raw);
+=======
+		raw3215_next_io(raw, tty);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		/* Strange interrupt, I'll do my best to clean up */
@@ -477,9 +580,16 @@ static void raw3215_irq(struct ccw_device *cdev, unsigned long intparm,
 			raw->flags &= ~RAW3215_WORKING;
 			raw3215_free_req(req);
 		}
+<<<<<<< HEAD
 		raw3215_next_io(raw);
 	}
 	return;
+=======
+		raw3215_next_io(raw, tty);
+	}
+put_tty:
+	tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -513,7 +623,11 @@ static void raw3215_make_room(struct raw3215_info *raw, unsigned int length)
 		/* While console is frozen for suspend we have no other
 		 * choice but to drop message from the buffer to make
 		 * room for even more messages. */
+<<<<<<< HEAD
 		if (raw->flags & RAW3215_FROZEN) {
+=======
+		if (raw->port.flags & ASYNC_SUSPENDED) {
+>>>>>>> refs/remotes/origin/master
 			raw3215_drop_line(raw);
 			continue;
 		}
@@ -523,7 +637,11 @@ static void raw3215_make_room(struct raw3215_info *raw, unsigned int length)
 		raw3215_try_io(raw);
 		raw->flags &= ~RAW3215_FLUSHING;
 #ifdef CONFIG_TN3215_CONSOLE
+<<<<<<< HEAD
 		wait_cons_dev();
+=======
+		ccw_device_wait_idle(raw->cdev);
+>>>>>>> refs/remotes/origin/master
 #endif
 		/* Enough room freed up ? */
 		if (RAW3215_BUFFER_SIZE - raw->count >= length)
@@ -635,10 +753,17 @@ static int raw3215_startup(struct raw3215_info *raw)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (raw->flags & RAW3215_ACTIVE)
 		return 0;
 	raw->line_pos = 0;
 	raw->flags |= RAW3215_ACTIVE;
+=======
+	if (raw->port.flags & ASYNC_INITIALIZED)
+		return 0;
+	raw->line_pos = 0;
+	raw->port.flags |= ASYNC_INITIALIZED;
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(get_ccwdev_lock(raw->cdev), flags);
 	raw3215_try_io(raw);
 	spin_unlock_irqrestore(get_ccwdev_lock(raw->cdev), flags);
@@ -654,14 +779,23 @@ static void raw3215_shutdown(struct raw3215_info *raw)
 	DECLARE_WAITQUEUE(wait, current);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (!(raw->flags & RAW3215_ACTIVE) || (raw->flags & RAW3215_FIXED))
+=======
+	if (!(raw->port.flags & ASYNC_INITIALIZED) ||
+	    (raw->flags & RAW3215_FIXED))
+>>>>>>> refs/remotes/origin/master
 		return;
 	/* Wait for outstanding requests, then free irq */
 	spin_lock_irqsave(get_ccwdev_lock(raw->cdev), flags);
 	if ((raw->flags & RAW3215_WORKING) ||
 	    raw->queued_write != NULL ||
 	    raw->queued_read != NULL) {
+<<<<<<< HEAD
 		raw->flags |= RAW3215_CLOSING;
+=======
+		raw->port.flags |= ASYNC_CLOSING;
+>>>>>>> refs/remotes/origin/master
 		add_wait_queue(&raw->empty_wait, &wait);
 		set_current_state(TASK_INTERRUPTIBLE);
 		spin_unlock_irqrestore(get_ccwdev_lock(raw->cdev), flags);
@@ -669,11 +803,49 @@ static void raw3215_shutdown(struct raw3215_info *raw)
 		spin_lock_irqsave(get_ccwdev_lock(raw->cdev), flags);
 		remove_wait_queue(&raw->empty_wait, &wait);
 		set_current_state(TASK_RUNNING);
+<<<<<<< HEAD
 		raw->flags &= ~(RAW3215_ACTIVE | RAW3215_CLOSING);
+=======
+		raw->port.flags &= ~(ASYNC_INITIALIZED | ASYNC_CLOSING);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(get_ccwdev_lock(raw->cdev), flags);
 }
 
+<<<<<<< HEAD
+=======
+static struct raw3215_info *raw3215_alloc_info(void)
+{
+	struct raw3215_info *info;
+
+	info = kzalloc(sizeof(struct raw3215_info), GFP_KERNEL | GFP_DMA);
+	if (!info)
+		return NULL;
+
+	info->buffer = kzalloc(RAW3215_BUFFER_SIZE, GFP_KERNEL | GFP_DMA);
+	info->inbuf = kzalloc(RAW3215_INBUF_SIZE, GFP_KERNEL | GFP_DMA);
+	if (!info->buffer || !info->inbuf) {
+		kfree(info);
+		return NULL;
+	}
+
+	setup_timer(&info->timer, raw3215_timeout, (unsigned long)info);
+	init_waitqueue_head(&info->empty_wait);
+	tasklet_init(&info->tlet, raw3215_wakeup, (unsigned long)info);
+	tty_port_init(&info->port);
+
+	return info;
+}
+
+static void raw3215_free_info(struct raw3215_info *raw)
+{
+	kfree(raw->inbuf);
+	kfree(raw->buffer);
+	tty_port_destroy(&raw->port);
+	kfree(raw);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int raw3215_probe (struct ccw_device *cdev)
 {
 	struct raw3215_info *raw;
@@ -682,11 +854,23 @@ static int raw3215_probe (struct ccw_device *cdev)
 	/* Console is special. */
 	if (raw3215[0] && (raw3215[0] == dev_get_drvdata(&cdev->dev)))
 		return 0;
+<<<<<<< HEAD
 	raw = kmalloc(sizeof(struct raw3215_info) +
 		      RAW3215_INBUF_SIZE, GFP_KERNEL|GFP_DMA);
 	if (raw == NULL)
 		return -ENOMEM;
 
+=======
+
+	raw = raw3215_alloc_info();
+	if (raw == NULL)
+		return -ENOMEM;
+
+	raw->cdev = cdev;
+	dev_set_drvdata(&cdev->dev, raw);
+	cdev->handler = raw3215_irq;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&raw3215_device_lock);
 	for (line = 0; line < NR_3215; line++) {
 		if (!raw3215[line]) {
@@ -696,6 +880,7 @@ static int raw3215_probe (struct ccw_device *cdev)
 	}
 	spin_unlock(&raw3215_device_lock);
 	if (line == NR_3215) {
+<<<<<<< HEAD
 		kfree(raw);
 		return -ENODEV;
 	}
@@ -721,19 +906,40 @@ static int raw3215_probe (struct ccw_device *cdev)
 	dev_set_drvdata(&cdev->dev, raw);
 	cdev->handler = raw3215_irq;
 
+=======
+		raw3215_free_info(raw);
+		return -ENODEV;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void raw3215_remove (struct ccw_device *cdev)
 {
 	struct raw3215_info *raw;
+<<<<<<< HEAD
+=======
+	unsigned int line;
+>>>>>>> refs/remotes/origin/master
 
 	ccw_device_set_offline(cdev);
 	raw = dev_get_drvdata(&cdev->dev);
 	if (raw) {
+<<<<<<< HEAD
 		dev_set_drvdata(&cdev->dev, NULL);
 		kfree(raw->buffer);
 		kfree(raw);
+=======
+		spin_lock(&raw3215_device_lock);
+		for (line = 0; line < NR_3215; line++)
+			if (raw3215[line] == raw)
+				break;
+		raw3215[line] = NULL;
+		spin_unlock(&raw3215_device_lock);
+		dev_set_drvdata(&cdev->dev, NULL);
+		raw3215_free_info(raw);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -770,7 +976,11 @@ static int raw3215_pm_stop(struct ccw_device *cdev)
 	raw = dev_get_drvdata(&cdev->dev);
 	spin_lock_irqsave(get_ccwdev_lock(raw->cdev), flags);
 	raw3215_make_room(raw, RAW3215_BUFFER_SIZE);
+<<<<<<< HEAD
 	raw->flags |= RAW3215_FROZEN;
+=======
+	raw->port.flags |= ASYNC_SUSPENDED;
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(get_ccwdev_lock(raw->cdev), flags);
 	return 0;
 }
@@ -783,7 +993,11 @@ static int raw3215_pm_start(struct ccw_device *cdev)
 	/* Allow I/O again and flush output buffer. */
 	raw = dev_get_drvdata(&cdev->dev);
 	spin_lock_irqsave(get_ccwdev_lock(raw->cdev), flags);
+<<<<<<< HEAD
 	raw->flags &= ~RAW3215_FROZEN;
+=======
+	raw->port.flags &= ~ASYNC_SUSPENDED;
+>>>>>>> refs/remotes/origin/master
 	raw->flags |= RAW3215_FLUSHING;
 	raw3215_try_io(raw);
 	raw->flags &= ~RAW3215_FLUSHING;
@@ -810,9 +1024,13 @@ static struct ccw_driver raw3215_ccw_driver = {
 	.thaw		= &raw3215_pm_start,
 	.restore	= &raw3215_pm_start,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.int_class	= IOINT_C15,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.int_class	= IRQIO_C15,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_TN3215_CONSOLE
@@ -859,9 +1077,15 @@ static void con3215_flush(void)
 	unsigned long flags;
 
 	raw = raw3215[0];  /* console 3215 is the first one */
+<<<<<<< HEAD
 	if (raw->flags & RAW3215_FROZEN)
 		/* The console is still frozen for suspend. */
 		if (ccw_device_force_console())
+=======
+	if (raw->port.flags & ASYNC_SUSPENDED)
+		/* The console is still frozen for suspend. */
+		if (ccw_device_force_console(raw->cdev))
+>>>>>>> refs/remotes/origin/master
 			/* Forcing didn't work, no panic message .. */
 			return;
 	spin_lock_irqsave(get_ccwdev_lock(raw->cdev), flags);
@@ -929,15 +1153,20 @@ static int __init con3215_init(void)
 	if (IS_ERR(cdev))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	raw3215[0] = raw = (struct raw3215_info *)
 		kzalloc(sizeof(struct raw3215_info), GFP_KERNEL | GFP_DMA);
 	raw->buffer = kzalloc(RAW3215_BUFFER_SIZE, GFP_KERNEL | GFP_DMA);
 	raw->inbuf = kzalloc(RAW3215_INBUF_SIZE, GFP_KERNEL | GFP_DMA);
+=======
+	raw3215[0] = raw = raw3215_alloc_info();
+>>>>>>> refs/remotes/origin/master
 	raw->cdev = cdev;
 	dev_set_drvdata(&cdev->dev, raw);
 	cdev->handler = raw3215_irq;
 
 	raw->flags |= RAW3215_FIXED;
+<<<<<<< HEAD
 	init_waitqueue_head(&raw->empty_wait);
 <<<<<<< HEAD
 =======
@@ -949,6 +1178,12 @@ static int __init con3215_init(void)
 		kfree(raw->inbuf);
 		kfree(raw->buffer);
 		kfree(raw);
+=======
+
+	/* Request the console irq */
+	if (raw3215_startup(raw) != 0) {
+		raw3215_free_info(raw);
+>>>>>>> refs/remotes/origin/master
 		raw3215[0] = NULL;
 		return -ENODEV;
 	}
@@ -960,6 +1195,22 @@ static int __init con3215_init(void)
 console_initcall(con3215_init);
 #endif
 
+<<<<<<< HEAD
+=======
+static int tty3215_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	struct raw3215_info *raw;
+
+	raw = raw3215[tty->index];
+	if (raw == NULL)
+		return -ENODEV;
+
+	tty->driver_data = raw;
+
+	return tty_port_install(&raw->port, driver, tty);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * tty3215_open
  *
@@ -967,6 +1218,7 @@ console_initcall(con3215_init);
  */
 static int tty3215_open(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
 	struct raw3215_info *raw;
 <<<<<<< HEAD
 	int retval, line;
@@ -988,6 +1240,14 @@ static int tty3215_open(struct tty_struct *tty, struct file * filp)
 	raw->tty = tty;
 
 	tty->low_latency = 0;  /* don't use bottom half for pushing chars */
+=======
+	struct raw3215_info *raw = tty->driver_data;
+	int retval;
+
+	tty_port_tty_set(&raw->port, tty);
+
+	raw->port.low_latency = 0; /* don't use bottom half for pushing chars */
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Start up 3215 device
 	 */
@@ -1015,11 +1275,17 @@ static void tty3215_close(struct tty_struct *tty, struct file * filp)
 	/* Shutdown the terminal */
 	raw3215_shutdown(raw);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	tasklet_kill(&raw->tlet);
 >>>>>>> refs/remotes/origin/cm-10.0
 	tty->closing = 0;
 	raw->tty = NULL;
+=======
+	tasklet_kill(&raw->tlet);
+	tty->closing = 0;
+	tty_port_tty_set(&raw->port, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1148,6 +1414,10 @@ static void tty3215_start(struct tty_struct *tty)
 }
 
 static const struct tty_operations tty3215_ops = {
+<<<<<<< HEAD
+=======
+	.install = tty3215_install,
+>>>>>>> refs/remotes/origin/master
 	.open = tty3215_open,
 	.close = tty3215_close,
 	.write = tty3215_write,
@@ -1190,9 +1460,12 @@ static int __init tty3215_init(void)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	driver->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	driver->driver_name = "tty3215";
 	driver->name = "ttyS";
 	driver->major = TTY_MAJOR;

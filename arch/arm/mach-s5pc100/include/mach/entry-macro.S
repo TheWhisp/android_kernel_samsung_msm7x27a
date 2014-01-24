@@ -13,6 +13,7 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/hardware/vic.h>
 #include <mach/map.h>
 #include <plat/irqs.h>
@@ -49,9 +50,14 @@
 	clzne	\irqstat, \irqstat
 	subne	\irqnr, \irqnr, \irqstat
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro	get_irqnr_preamble, base, tmp
 	.endm
 
 	.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.endm

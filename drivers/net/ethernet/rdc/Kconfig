@@ -22,7 +22,10 @@ config R6040
 	tristate "RDC R6040 Fast Ethernet Adapter support"
 	depends on PCI
 	select CRC32
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	select PHYLIB
 	---help---

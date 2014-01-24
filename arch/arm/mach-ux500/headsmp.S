@@ -11,8 +11,11 @@
 #include <linux/linkage.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
 	__INIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * U8500 specific entry point for secondary CPUs.
  */
@@ -33,11 +36,17 @@ pen:	ldr	r7, [r6]
 	 */
 	b	secondary_startup
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 ENDPROC(u8500_secondary_startup)
 
 	.align 2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(u8500_secondary_startup)
+
+	.align 2
+>>>>>>> refs/remotes/origin/master
 1:	.long	.
 	.long	pen_release

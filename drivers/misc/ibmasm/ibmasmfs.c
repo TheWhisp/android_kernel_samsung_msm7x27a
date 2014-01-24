@@ -18,10 +18,14 @@
  * Copyright (C) IBM Corporation, 2004
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Max Asb�ck <amax@us.ibm.com>
 =======
  * Author: Max Asböck <amax@us.ibm.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Max Asböck <amax@us.ibm.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -92,10 +96,14 @@ static LIST_HEAD(service_processors);
 
 static struct inode *ibmasmfs_make_inode(struct super_block *sb, int mode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ibmasmfs_create_files (struct super_block *sb, struct dentry *root);
 =======
 static void ibmasmfs_create_files (struct super_block *sb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ibmasmfs_create_files (struct super_block *sb);
+>>>>>>> refs/remotes/origin/master
 static int ibmasmfs_fill_super (struct super_block *sb, void *data, int silent);
 
 
@@ -118,14 +126,21 @@ static struct file_system_type ibmasmfs_type = {
 	.mount          = ibmasmfs_mount,
 	.kill_sb        = kill_litter_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("ibmasmfs");
+>>>>>>> refs/remotes/origin/master
 
 static int ibmasmfs_fill_super (struct super_block *sb, void *data, int silent)
 {
 	struct inode *root;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *root_dentry;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sb->s_blocksize = PAGE_CACHE_SIZE;
 	sb->s_blocksize_bits = PAGE_CACHE_SHIFT;
@@ -141,6 +156,7 @@ static int ibmasmfs_fill_super (struct super_block *sb, void *data, int silent)
 	root->i_fop = ibmasmfs_dir_ops;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	root_dentry = d_alloc_root(root);
 	if (!root_dentry) {
 		iput(root);
@@ -150,12 +166,17 @@ static int ibmasmfs_fill_super (struct super_block *sb, void *data, int silent)
 
 	ibmasmfs_create_files(sb, root_dentry);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sb->s_root = d_make_root(root);
 	if (!sb->s_root)
 		return -ENOMEM;
 
 	ibmasmfs_create_files(sb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -171,8 +192,12 @@ static struct inode *ibmasmfs_make_inode(struct super_block *sb, int mode)
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct dentry *ibmasmfs_create_file (struct super_block *sb,
 			struct dentry *parent,
+=======
+static struct dentry *ibmasmfs_create_file(struct dentry *parent,
+>>>>>>> refs/remotes/origin/master
 			const char *name,
 			const struct file_operations *fops,
 			void *data,
@@ -185,7 +210,11 @@ static struct dentry *ibmasmfs_create_file (struct super_block *sb,
 	if (!dentry)
 		return NULL;
 
+<<<<<<< HEAD
 	inode = ibmasmfs_make_inode(sb, S_IFREG | mode);
+=======
+	inode = ibmasmfs_make_inode(parent->d_sb, S_IFREG | mode);
+>>>>>>> refs/remotes/origin/master
 	if (!inode) {
 		dput(dentry);
 		return NULL;
@@ -198,8 +227,12 @@ static struct dentry *ibmasmfs_create_file (struct super_block *sb,
 	return dentry;
 }
 
+<<<<<<< HEAD
 static struct dentry *ibmasmfs_create_dir (struct super_block *sb,
 				struct dentry *parent,
+=======
+static struct dentry *ibmasmfs_create_dir(struct dentry *parent,
+>>>>>>> refs/remotes/origin/master
 				const char *name)
 {
 	struct dentry *dentry;
@@ -209,7 +242,11 @@ static struct dentry *ibmasmfs_create_dir (struct super_block *sb,
 	if (!dentry)
 		return NULL;
 
+<<<<<<< HEAD
 	inode = ibmasmfs_make_inode(sb, S_IFDIR | 0500);
+=======
+	inode = ibmasmfs_make_inode(parent->d_sb, S_IFDIR | 0500);
+>>>>>>> refs/remotes/origin/master
 	if (!inode) {
 		dput(dentry);
 		return NULL;
@@ -524,6 +561,7 @@ static ssize_t r_heartbeat_file_write(struct file *file, const char __user *buf,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int remote_settings_file_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
@@ -532,6 +570,8 @@ static int remote_settings_file_open(struct inode *inode, struct file *file)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int remote_settings_file_close(struct inode *inode, struct file *file)
 {
 	return 0;
@@ -627,10 +667,14 @@ static const struct file_operations r_heartbeat_fops = {
 
 static const struct file_operations remote_settings_fops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open =		remote_settings_file_open,
 =======
 	.open =		simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open =		simple_open,
+>>>>>>> refs/remotes/origin/master
 	.release =	remote_settings_file_close,
 	.read =		remote_settings_file_read,
 	.write =	remote_settings_file_write,
@@ -639,10 +683,14 @@ static const struct file_operations remote_settings_fops = {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ibmasmfs_create_files (struct super_block *sb, struct dentry *root)
 =======
 static void ibmasmfs_create_files (struct super_block *sb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ibmasmfs_create_files (struct super_block *sb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *entry;
 	struct service_processor *sp;
@@ -651,6 +699,7 @@ static void ibmasmfs_create_files (struct super_block *sb)
 		struct dentry *dir;
 		struct dentry *remote_dir;
 		sp = list_entry(entry, struct service_processor, node);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dir = ibmasmfs_create_dir(sb, root, sp->dirname);
 =======
@@ -670,5 +719,22 @@ static void ibmasmfs_create_files (struct super_block *sb)
 		ibmasmfs_create_file(sb, remote_dir, "width", &remote_settings_fops, (void *)display_width(sp), S_IRUSR|S_IWUSR);
 		ibmasmfs_create_file(sb, remote_dir, "height", &remote_settings_fops, (void *)display_height(sp), S_IRUSR|S_IWUSR);
 		ibmasmfs_create_file(sb, remote_dir, "depth", &remote_settings_fops, (void *)display_depth(sp), S_IRUSR|S_IWUSR);
+=======
+		dir = ibmasmfs_create_dir(sb->s_root, sp->dirname);
+		if (!dir)
+			continue;
+
+		ibmasmfs_create_file(dir, "command", &command_fops, sp, S_IRUSR|S_IWUSR);
+		ibmasmfs_create_file(dir, "event", &event_fops, sp, S_IRUSR|S_IWUSR);
+		ibmasmfs_create_file(dir, "reverse_heartbeat", &r_heartbeat_fops, sp, S_IRUSR|S_IWUSR);
+
+		remote_dir = ibmasmfs_create_dir(dir, "remote_video");
+		if (!remote_dir)
+			continue;
+
+		ibmasmfs_create_file(remote_dir, "width", &remote_settings_fops, (void *)display_width(sp), S_IRUSR|S_IWUSR);
+		ibmasmfs_create_file(remote_dir, "height", &remote_settings_fops, (void *)display_height(sp), S_IRUSR|S_IWUSR);
+		ibmasmfs_create_file(remote_dir, "depth", &remote_settings_fops, (void *)display_depth(sp), S_IRUSR|S_IWUSR);
+>>>>>>> refs/remotes/origin/master
 	}
 }

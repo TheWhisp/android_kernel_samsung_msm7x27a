@@ -28,6 +28,7 @@
 #include <asm/ucontext.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <arch/system.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -36,6 +37,12 @@
 
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
+=======
+#include <arch/system.h>
+
+#define DEBUG_SIG 0
+
+>>>>>>> refs/remotes/origin/master
 /* a syscall in Linux/CRIS is a break 13 instruction which is 2 bytes */
 /* manipulate regs so that upon return, it will be re-executed */
 
@@ -47,6 +54,7 @@
 void do_signal(int canrestart, struct pt_regs *regs);
 
 /*
+<<<<<<< HEAD
  * Atomically swap in the new signal mask, and wait for a signal.  Define
  * dummy arguments to be able to reach the regs argument.  (Note that this
  * arrangement relies on old_sigset_t occupying one register.)
@@ -104,6 +112,8 @@ int sys_sigaltstack(const stack_t *uss, stack_t __user *uoss)
 
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Do a signal return; undo the signal stack.
  */
 
@@ -163,11 +173,17 @@ badframe:
 	return 1;
 }
 
+<<<<<<< HEAD
 /* Define dummy arguments to be able to reach the regs argument.  */
 
 asmlinkage int sys_sigreturn(long r10, long r11, long r12, long r13, long mof,
                              long srp, struct pt_regs *regs)
 {
+=======
+asmlinkage int sys_sigreturn(void)
+{
+	struct pt_regs *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	struct sigframe __user *frame = (struct sigframe *)rdusp();
 	sigset_t set;
 
@@ -187,11 +203,15 @@ asmlinkage int sys_sigreturn(long r10, long r11, long r12, long r13, long mof,
 				    sizeof(frame->extramask))))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(regs, &frame->sc))
 		goto badframe;
@@ -205,11 +225,17 @@ badframe:
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Define dummy arguments to be able to reach the regs argument.  */
 
 asmlinkage int sys_rt_sigreturn(long r10, long r11, long r12, long r13,
                                 long mof, long srp, struct pt_regs *regs)
 {
+=======
+asmlinkage int sys_rt_sigreturn(void)
+{
+	struct pt_regs *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	struct rt_sigframe __user *frame = (struct rt_sigframe *)rdusp();
 	sigset_t set;
 
@@ -226,16 +252,24 @@ asmlinkage int sys_rt_sigreturn(long r10, long r11, long r12, long r13,
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 	spin_lock_irq(&current->sighand->siglock);
 	current->blocked = set;
 	recalc_sigpending();
 	spin_unlock_irq(&current->sighand->siglock);
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext))
 		goto badframe;
 
+<<<<<<< HEAD
 	if (do_sigaltstack(&frame->uc.uc_stack, NULL, rdusp()) == -EFAULT)
+=======
+	if (restore_altstack(&frame->uc.uc_stack))
+>>>>>>> refs/remotes/origin/master
 		goto badframe;
 
 	return regs->r10;
@@ -383,6 +417,11 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
 
+<<<<<<< HEAD
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, rdusp());
+
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto give_sigsegv;
 
@@ -432,10 +471,18 @@ give_sigsegv:
  * OK, we're invoking a handler
  */
 
+<<<<<<< HEAD
 static inline int handle_signal(int canrestart, unsigned long sig,
 	siginfo_t *info, struct k_sigaction *ka,
 	sigset_t *oldset, struct pt_regs *regs)
 {
+=======
+static inline void handle_signal(int canrestart, unsigned long sig,
+	siginfo_t *info, struct k_sigaction *ka,
+	struct pt_regs *regs)
+{
+	sigset_t *oldset = sigmask_to_save();
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* Are we from a system call? */
@@ -472,6 +519,7 @@ static inline int handle_signal(int canrestart, unsigned long sig,
 	else
 		ret = setup_frame(sig, ka, oldset, regs);
 
+<<<<<<< HEAD
 	if (ret == 0) {
 		spin_lock_irq(&current->sighand->siglock);
 		sigorsets(&current->blocked, &current->blocked,
@@ -482,6 +530,10 @@ static inline int handle_signal(int canrestart, unsigned long sig,
 		spin_unlock_irq(&current->sighand->siglock);
 	}
 	return ret;
+=======
+	if (ret == 0)
+		signal_delivered(sig, info, ka, regs, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -501,7 +553,10 @@ void do_signal(int canrestart, struct pt_regs *regs)
 	siginfo_t info;
 	int signr;
         struct k_sigaction ka;
+<<<<<<< HEAD
 	sigset_t *oldset;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We want the common case to go fast, which
@@ -512,6 +567,7 @@ void do_signal(int canrestart, struct pt_regs *regs)
 	if (!user_mode(regs))
 		return;
 
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_RESTORE_SIGMASK))
 		oldset = &current->saved_sigmask;
 	else
@@ -529,6 +585,12 @@ void do_signal(int canrestart, struct pt_regs *regs)
 			if (test_thread_flag(TIF_RESTORE_SIGMASK))
 				clear_thread_flag(TIF_RESTORE_SIGMASK);
 		}
+=======
+	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+	if (signr > 0) {
+		/* Whee!  Actually deliver the signal.  */
+		handle_signal(canrestart, signr, &info, &ka, regs);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -548,8 +610,12 @@ void do_signal(int canrestart, struct pt_regs *regs)
 
 	/* if there's no signal to deliver, we just put the saved sigmask
 	 * back */
+<<<<<<< HEAD
 	if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
 		clear_thread_flag(TIF_RESTORE_SIGMASK);
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
 	}
+=======
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 }

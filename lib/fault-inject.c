@@ -6,6 +6,7 @@
 #include <linux/types.h>
 #include <linux/fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/stacktrace.h>
@@ -15,6 +16,11 @@
 #include <linux/interrupt.h>
 #include <linux/stacktrace.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/interrupt.h>
+#include <linux/stacktrace.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fault-inject.h>
 
 /*
@@ -22,10 +28,14 @@
  * returns 0 on error, because that is what __setup handlers do.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init setup_fault_attr(struct fault_attr *attr, char *str)
 =======
 int setup_fault_attr(struct fault_attr *attr, char *str)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int setup_fault_attr(struct fault_attr *attr, char *str)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long probability;
 	unsigned long interval;
@@ -48,9 +58,13 @@ int setup_fault_attr(struct fault_attr *attr, char *str)
 	return 1;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(setup_fault_attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(setup_fault_attr);
+>>>>>>> refs/remotes/origin/master
 
 static void fail_dump(struct fault_attr *attr)
 {
@@ -115,6 +129,13 @@ static inline bool fail_stacktrace(struct fault_attr *attr)
 
 bool should_fail(struct fault_attr *attr, ssize_t size)
 {
+<<<<<<< HEAD
+=======
+	/* No need to check any other properties if the probability is 0 */
+	if (attr->probability == 0)
+		return false;
+
+>>>>>>> refs/remotes/origin/master
 	if (attr->task_filter && !fail_task(attr, current))
 		return false;
 
@@ -132,7 +153,11 @@ bool should_fail(struct fault_attr *attr, ssize_t size)
 			return false;
 	}
 
+<<<<<<< HEAD
 	if (attr->probability <= random32() % 100)
+=======
+	if (attr->probability <= prandom_u32() % 100)
+>>>>>>> refs/remotes/origin/master
 		return false;
 
 	if (!fail_stacktrace(attr))
@@ -146,9 +171,13 @@ bool should_fail(struct fault_attr *attr, ssize_t size)
 	return true;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(should_fail);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(should_fail);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
 
@@ -158,6 +187,7 @@ static int debugfs_ul_set(void *data, u64 val)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_FAULT_INJECTION_STACKTRACE_FILTER
 static int debugfs_ul_set_MAX_STACK_TRACE_DEPTH(void *data, u64 val)
@@ -171,6 +201,8 @@ static int debugfs_ul_set_MAX_STACK_TRACE_DEPTH(void *data, u64 val)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int debugfs_ul_get(void *data, u64 *val)
 {
 	*val = *(unsigned long *)data;
@@ -180,16 +212,21 @@ static int debugfs_ul_get(void *data, u64 *val)
 DEFINE_SIMPLE_ATTRIBUTE(fops_ul, debugfs_ul_get, debugfs_ul_set, "%llu\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct dentry *debugfs_create_ul(const char *name, mode_t mode,
 =======
 static struct dentry *debugfs_create_ul(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dentry *debugfs_create_ul(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				struct dentry *parent, unsigned long *value)
 {
 	return debugfs_create_file(name, mode, parent, value, &fops_ul);
 }
 
 #ifdef CONFIG_FAULT_INJECTION_STACKTRACE_FILTER
+<<<<<<< HEAD
 <<<<<<< HEAD
 DEFINE_SIMPLE_ATTRIBUTE(fops_ul_MAX_STACK_TRACE_DEPTH, debugfs_ul_get,
 			debugfs_ul_set_MAX_STACK_TRACE_DEPTH, "%llu\n");
@@ -202,6 +239,8 @@ static struct dentry *debugfs_create_ul_MAX_STACK_TRACE_DEPTH(
 				   &fops_ul_MAX_STACK_TRACE_DEPTH);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int debugfs_stacktrace_depth_set(void *data, u64 val)
 {
@@ -222,6 +261,7 @@ static struct dentry *debugfs_create_stacktrace_depth(
 				   &fops_stacktrace_depth);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_FAULT_INJECTION_STACKTRACE_FILTER */
 
@@ -331,6 +371,10 @@ int init_fault_attr_dentries(struct fault_attr *attr, const char *name)
 	    !attr->dentries.times_file || !attr->dentries.space_file ||
 	    !attr->dentries.verbose_file || !attr->dentries.task_filter_file)
 =======
+=======
+#endif /* CONFIG_FAULT_INJECTION_STACKTRACE_FILTER */
+
+>>>>>>> refs/remotes/origin/master
 struct dentry *fault_create_debugfs_attr(const char *name,
 			struct dentry *parent, struct fault_attr *attr)
 {
@@ -352,11 +396,15 @@ struct dentry *fault_create_debugfs_attr(const char *name,
 	if (!debugfs_create_ul("verbose", mode, dir, &attr->verbose))
 		goto fail;
 	if (!debugfs_create_bool("task-filter", mode, dir, &attr->task_filter))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto fail;
 
 #ifdef CONFIG_FAULT_INJECTION_STACKTRACE_FILTER
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	attr->dentries.stacktrace_depth_file =
 		debugfs_create_ul_MAX_STACK_TRACE_DEPTH(
@@ -380,6 +428,8 @@ struct dentry *fault_create_debugfs_attr(const char *name,
 	    !attr->dentries.reject_start_file ||
 	    !attr->dentries.reject_end_file)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!debugfs_create_stacktrace_depth("stacktrace-depth", mode, dir,
 				&attr->stacktrace_depth))
 		goto fail;
@@ -391,11 +441,15 @@ struct dentry *fault_create_debugfs_attr(const char *name,
 	if (!debugfs_create_ul("reject-start", mode, dir, &attr->reject_start))
 		goto fail;
 	if (!debugfs_create_ul("reject-end", mode, dir, &attr->reject_end))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto fail;
 
 #endif /* CONFIG_FAULT_INJECTION_STACKTRACE_FILTER */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return 0;
 fail:
@@ -403,6 +457,8 @@ fail:
 	return -ENOMEM;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return dir;
 fail:
 	debugfs_remove_recursive(dir);
@@ -410,6 +466,9 @@ fail:
 	return ERR_PTR(-ENOMEM);
 }
 EXPORT_SYMBOL_GPL(fault_create_debugfs_attr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */

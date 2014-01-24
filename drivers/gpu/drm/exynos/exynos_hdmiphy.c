@@ -11,11 +11,19 @@
  *
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 
 #include <linux/kernel.h>
 #include <linux/i2c.h>
 #include <linux/module.h>
+=======
+#include <drm/drmP.h>
+
+#include <linux/kernel.h>
+#include <linux/i2c.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "exynos_drm_drv.h"
 #include "exynos_hdmi.h"
@@ -40,19 +48,41 @@ static int hdmiphy_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct i2c_device_id hdmiphy_id[] = {
 	{ "s5p_hdmiphy", 0 },
 	{ },
+=======
+static struct of_device_id hdmiphy_match_types[] = {
+	{
+		.compatible = "samsung,exynos5-hdmiphy",
+	}, {
+		.compatible = "samsung,exynos4210-hdmiphy",
+	}, {
+		.compatible = "samsung,exynos4212-hdmiphy",
+	}, {
+		/* end node */
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 struct i2c_driver hdmiphy_driver = {
 	.driver = {
+<<<<<<< HEAD
 		.name	= "s5p-hdmiphy",
 		.owner	= THIS_MODULE,
 	},
 	.id_table = hdmiphy_id,
 	.probe		= hdmiphy_probe,
 	.remove		= __devexit_p(hdmiphy_remove),
+=======
+		.name	= "exynos-hdmiphy",
+		.owner	= THIS_MODULE,
+		.of_match_table = hdmiphy_match_types,
+	},
+	.probe		= hdmiphy_probe,
+	.remove		= hdmiphy_remove,
+>>>>>>> refs/remotes/origin/master
 	.command		= NULL,
 };
 EXPORT_SYMBOL(hdmiphy_driver);

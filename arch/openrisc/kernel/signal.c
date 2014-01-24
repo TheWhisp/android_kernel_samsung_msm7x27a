@@ -33,6 +33,7 @@
 
 #define DEBUG_SIG 0
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 asmlinkage long
@@ -41,6 +42,8 @@ _sys_sigaltstack(const stack_t *uss, stack_t *uoss, struct pt_regs *regs)
 	return do_sigaltstack(uss, uoss, regs->sp);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct rt_sigframe {
 	struct siginfo *pinfo;
 	void *puc;
@@ -86,7 +89,10 @@ asmlinkage long _sys_rt_sigreturn(struct pt_regs *regs)
 {
 	struct rt_sigframe *frame = (struct rt_sigframe __user *)regs->sp;
 	sigset_t set;
+<<<<<<< HEAD
 	stack_t st;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Since we stacked the signal on a dword boundary,
@@ -101,17 +107,25 @@ asmlinkage long _sys_rt_sigreturn(struct pt_regs *regs)
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
+=======
+>>>>>>> refs/remotes/origin/master
 	set_current_blocked(&set);
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext))
 		goto badframe;
 
+<<<<<<< HEAD
 	if (__copy_from_user(&st, &frame->uc.uc_stack, sizeof(st)))
 		goto badframe;
 	/* It is more difficult to avoid calling this function than to
 	   call it and ignore errors.  */
 	do_sigaltstack(&st, NULL, regs->sp);
+=======
+	if (restore_altstack(&frame->uc.uc_stack))
+		goto badframe;
+>>>>>>> refs/remotes/origin/master
 
 	return regs->gpr[11];
 
@@ -210,10 +224,14 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	err |= __clear_user(&frame->uc, offsetof(struct ucontext, uc_mcontext));
 	err |= __put_user(0, &frame->uc.uc_flags);
 	err |= __put_user(NULL, &frame->uc.uc_link);
+<<<<<<< HEAD
 	err |= __put_user((void *)current->sas_ss_sp,
 			  &frame->uc.uc_stack.ss_sp);
 	err |= __put_user(sas_ss_flags(regs->sp), &frame->uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, regs->sp);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext(&frame->uc.uc_mcontext, regs, set->sig[0]);
 
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
@@ -251,6 +269,7 @@ give_sigsegv:
 	return -EFAULT;
 }
 
+<<<<<<< HEAD
 static inline int
 handle_signal(unsigned long sig,
 	      siginfo_t *info, struct k_sigaction *ka,
@@ -265,6 +284,21 @@ handle_signal(unsigned long sig,
 	block_sigmask(ka, sig);
 
 	return 0;
+=======
+static inline void
+handle_signal(unsigned long sig,
+	      siginfo_t *info, struct k_sigaction *ka,
+	      struct pt_regs *regs)
+{
+	int ret;
+
+	ret = setup_rt_frame(sig, ka, info, sigmask_to_save(), regs);
+	if (ret)
+		return;
+
+	signal_delivered(sig, info, ka, regs,
+				 test_thread_flag(TIF_SINGLESTEP));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -339,6 +373,7 @@ void do_signal(struct pt_regs *regs)
 	if (signr <= 0) {
 		/* no signal to deliver so we just put the saved sigmask
 		 * back */
+<<<<<<< HEAD
 		if (test_thread_flag(TIF_RESTORE_SIGMASK)) {
 			clear_thread_flag(TIF_RESTORE_SIGMASK);
 			sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
@@ -363,6 +398,12 @@ void do_signal(struct pt_regs *regs)
 
 		tracehook_signal_handler(signr, &info, &ka, regs,
 					 test_thread_flag(TIF_SINGLESTEP));
+=======
+		restore_saved_sigmask();
+	} else {		/* signr > 0 */
+		/* Whee!  Actually deliver the signal.  */
+		handle_signal(signr, &info, &ka, regs);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return;
@@ -376,7 +417,10 @@ asmlinkage void do_notify_resume(struct pt_regs *regs)
 	if (current_thread_info()->flags & _TIF_NOTIFY_RESUME) {
 		clear_thread_flag(TIF_NOTIFY_RESUME);
 		tracehook_notify_resume(regs);
+<<<<<<< HEAD
 		if (current->replacement_session_keyring)
 			key_replace_session_keyring();
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }

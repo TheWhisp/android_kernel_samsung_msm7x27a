@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 NIC_SELECT = RTL8192E
 
 ccflags-y := -DRTL8192E
@@ -38,6 +39,8 @@ r8192e_pci-objs :=		\
 obj-$(CONFIG_RTL8192E) += r8192e_pci.o
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 rtllib-objs :=			\
 	dot11d.o		\
 	rtllib_module.o		\
@@ -59,4 +62,7 @@ obj-$(CONFIG_RTLLIB_CRYPTO_WEP) += rtllib_crypt_wep.o
 obj-$(CONFIG_RTL8192E) += rtl8192e/
 
 ccflags-y += -D__CHECK_ENDIAN__
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

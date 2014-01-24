@@ -8,6 +8,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,6 +24,11 @@
 
 #include <linux/kernel.h>
 #include <linux/utsname.h>
+=======
+ */
+
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/hid.h>
 #include <linux/cdev.h>
@@ -30,14 +36,31 @@
 #include <linux/poll.h>
 #include <linux/uaccess.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
 #include <linux/usb/g_hid.h>
 
+=======
+#include <linux/sched.h>
+#include <linux/usb/g_hid.h>
+
+#include "u_f.h"
+
+>>>>>>> refs/remotes/origin/master
 static int major, minors;
 static struct class *hidg_class;
 
 /*-------------------------------------------------------------------------*/
 /*                            HID gadget struct                            */
 
+<<<<<<< HEAD
+=======
+struct f_hidg_req_list {
+	struct usb_request	*req;
+	unsigned int		pos;
+	struct list_head 	list;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct f_hidg {
 	/* configuration */
 	unsigned char			bInterfaceSubClass;
@@ -47,10 +70,17 @@ struct f_hidg {
 	unsigned short			report_length;
 
 	/* recv report */
+<<<<<<< HEAD
 	char				*set_report_buff;
 	unsigned short			set_report_length;
 	spinlock_t			spinlock;
 	wait_queue_head_t		read_queue;
+=======
+	struct list_head		completed_out_req;
+	spinlock_t			spinlock;
+	wait_queue_head_t		read_queue;
+	unsigned int			qlen;
+>>>>>>> refs/remotes/origin/master
 
 	/* send report */
 	struct mutex			lock;
@@ -61,12 +91,18 @@ struct f_hidg {
 	int				minor;
 	struct cdev			cdev;
 	struct usb_function		func;
+<<<<<<< HEAD
 	struct usb_ep			*in_ep;
 <<<<<<< HEAD
 	struct usb_endpoint_descriptor	*fs_in_ep_desc;
 	struct usb_endpoint_descriptor	*hs_in_ep_desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	struct usb_ep			*in_ep;
+	struct usb_ep			*out_ep;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct f_hidg *func_to_hidg(struct usb_function *f)
@@ -82,7 +118,11 @@ static struct usb_interface_descriptor hidg_interface_desc = {
 	.bDescriptorType	= USB_DT_INTERFACE,
 	/* .bInterfaceNumber	= DYNAMIC */
 	.bAlternateSetting	= 0,
+<<<<<<< HEAD
 	.bNumEndpoints		= 1,
+=======
+	.bNumEndpoints		= 2,
+>>>>>>> refs/remotes/origin/master
 	.bInterfaceClass	= USB_CLASS_HID,
 	/* .bInterfaceSubClass	= DYNAMIC */
 	/* .bInterfaceProtocol	= DYNAMIC */
@@ -113,10 +153,29 @@ static struct usb_endpoint_descriptor hidg_hs_in_ep_desc = {
 				      */
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_endpoint_descriptor hidg_hs_out_ep_desc = {
+	.bLength		= USB_DT_ENDPOINT_SIZE,
+	.bDescriptorType	= USB_DT_ENDPOINT,
+	.bEndpointAddress	= USB_DIR_OUT,
+	.bmAttributes		= USB_ENDPOINT_XFER_INT,
+	/*.wMaxPacketSize	= DYNAMIC */
+	.bInterval		= 4, /* FIXME: Add this field in the
+				      * HID gadget configuration?
+				      * (struct hidg_func_descriptor)
+				      */
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct usb_descriptor_header *hidg_hs_descriptors[] = {
 	(struct usb_descriptor_header *)&hidg_interface_desc,
 	(struct usb_descriptor_header *)&hidg_desc,
 	(struct usb_descriptor_header *)&hidg_hs_in_ep_desc,
+<<<<<<< HEAD
+=======
+	(struct usb_descriptor_header *)&hidg_hs_out_ep_desc,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -134,10 +193,29 @@ static struct usb_endpoint_descriptor hidg_fs_in_ep_desc = {
 				       */
 };
 
+<<<<<<< HEAD
+=======
+static struct usb_endpoint_descriptor hidg_fs_out_ep_desc = {
+	.bLength		= USB_DT_ENDPOINT_SIZE,
+	.bDescriptorType	= USB_DT_ENDPOINT,
+	.bEndpointAddress	= USB_DIR_OUT,
+	.bmAttributes		= USB_ENDPOINT_XFER_INT,
+	/*.wMaxPacketSize	= DYNAMIC */
+	.bInterval		= 10, /* FIXME: Add this field in the
+				       * HID gadget configuration?
+				       * (struct hidg_func_descriptor)
+				       */
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct usb_descriptor_header *hidg_fs_descriptors[] = {
 	(struct usb_descriptor_header *)&hidg_interface_desc,
 	(struct usb_descriptor_header *)&hidg_desc,
 	(struct usb_descriptor_header *)&hidg_fs_in_ep_desc,
+<<<<<<< HEAD
+=======
+	(struct usb_descriptor_header *)&hidg_fs_out_ep_desc,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -147,9 +225,17 @@ static struct usb_descriptor_header *hidg_fs_descriptors[] = {
 static ssize_t f_hidg_read(struct file *file, char __user *buffer,
 			size_t count, loff_t *ptr)
 {
+<<<<<<< HEAD
 	struct f_hidg	*hidg     = file->private_data;
 	char		*tmp_buff = NULL;
 	unsigned long	flags;
+=======
+	struct f_hidg *hidg = file->private_data;
+	struct f_hidg_req_list *list;
+	struct usb_request *req;
+	unsigned long flags;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!count)
 		return 0;
@@ -159,8 +245,14 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
 
 	spin_lock_irqsave(&hidg->spinlock, flags);
 
+<<<<<<< HEAD
 #define READ_COND (hidg->set_report_buff != NULL)
 
+=======
+#define READ_COND (!list_empty(&hidg->completed_out_req))
+
+	/* wait for at least one buffer to complete */
+>>>>>>> refs/remotes/origin/master
 	while (!READ_COND) {
 		spin_unlock_irqrestore(&hidg->spinlock, flags);
 		if (file->f_flags & O_NONBLOCK)
@@ -172,6 +264,7 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
 		spin_lock_irqsave(&hidg->spinlock, flags);
 	}
 
+<<<<<<< HEAD
 
 	count = min_t(unsigned, count, hidg->set_report_length);
 	tmp_buff = hidg->set_report_buff;
@@ -185,6 +278,36 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
 		kfree(tmp_buff);
 	} else
 		count = -ENOMEM;
+=======
+	/* pick the first one */
+	list = list_first_entry(&hidg->completed_out_req,
+				struct f_hidg_req_list, list);
+	req = list->req;
+	count = min_t(unsigned int, count, req->actual - list->pos);
+	spin_unlock_irqrestore(&hidg->spinlock, flags);
+
+	/* copy to user outside spinlock */
+	count -= copy_to_user(buffer, req->buf + list->pos, count);
+	list->pos += count;
+
+	/*
+	 * if this request is completely handled and transfered to
+	 * userspace, remove its entry from the list and requeue it
+	 * again. Otherwise, we will revisit it again upon the next
+	 * call, taking into account its current read position.
+	 */
+	if (list->pos == req->actual) {
+		spin_lock_irqsave(&hidg->spinlock, flags);
+		list_del(&list->list);
+		kfree(list);
+		spin_unlock_irqrestore(&hidg->spinlock, flags);
+
+		req->length = hidg->report_length;
+		ret = usb_ep_queue(hidg->out_ep, req, GFP_KERNEL);
+		if (ret < 0)
+			return ret;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -299,6 +422,7 @@ static int f_hidg_open(struct inode *inode, struct file *fd)
 /*-------------------------------------------------------------------------*/
 /*                                usb_function                             */
 
+<<<<<<< HEAD
 static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
 {
 	struct f_hidg *hidg = (struct f_hidg *)req->context;
@@ -321,6 +445,29 @@ static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
 	memcpy(hidg->set_report_buff, req->buf, req->actual);
 
 	spin_unlock(&hidg->spinlock);
+=======
+static inline struct usb_request *hidg_alloc_ep_req(struct usb_ep *ep,
+						    unsigned length)
+{
+	return alloc_ep_req(ep, length, length);
+}
+
+static void hidg_set_report_complete(struct usb_ep *ep, struct usb_request *req)
+{
+	struct f_hidg *hidg = (struct f_hidg *) req->context;
+	struct f_hidg_req_list *req_list;
+	unsigned long flags;
+
+	req_list = kzalloc(sizeof(*req_list), GFP_ATOMIC);
+	if (!req_list)
+		return;
+
+	req_list->req = req;
+
+	spin_lock_irqsave(&hidg->spinlock, flags);
+	list_add_tail(&req_list->list, &hidg->completed_out_req);
+	spin_unlock_irqrestore(&hidg->spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	wake_up(&hidg->read_queue);
 }
@@ -361,9 +508,13 @@ static int hidg_setup(struct usb_function *f,
 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
 		  | HID_REQ_SET_REPORT):
 		VDBG(cdev, "set_report | wLenght=%d\n", ctrl->wLength);
+<<<<<<< HEAD
 		req->context  = hidg;
 		req->complete = hidg_set_report_complete;
 		goto respond;
+=======
+		goto stall;
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
@@ -376,7 +527,10 @@ static int hidg_setup(struct usb_function *f,
 		  | USB_REQ_GET_DESCRIPTOR):
 		switch (value >> 8) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case HID_DT_HID:
 			VDBG(cdev, "USB_REQ_GET_DESCRIPTOR: HID\n");
 			length = min_t(unsigned short, length,
@@ -384,7 +538,10 @@ static int hidg_setup(struct usb_function *f,
 			memcpy(req->buf, &hidg_desc, length);
 			goto respond;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case HID_DT_REPORT:
 			VDBG(cdev, "USB_REQ_GET_DESCRIPTOR: REPORT\n");
 			length = min_t(unsigned short, length,
@@ -394,7 +551,11 @@ static int hidg_setup(struct usb_function *f,
 			break;
 
 		default:
+<<<<<<< HEAD
 			VDBG(cdev, "Unknown decriptor request 0x%x\n",
+=======
+			VDBG(cdev, "Unknown descriptor request 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 				 value >> 8);
 			goto stall;
 			break;
@@ -423,9 +584,24 @@ respond:
 static void hidg_disable(struct usb_function *f)
 {
 	struct f_hidg *hidg = func_to_hidg(f);
+<<<<<<< HEAD
 
 	usb_ep_disable(hidg->in_ep);
 	hidg->in_ep->driver_data = NULL;
+=======
+	struct f_hidg_req_list *list, *next;
+
+	usb_ep_disable(hidg->in_ep);
+	hidg->in_ep->driver_data = NULL;
+
+	usb_ep_disable(hidg->out_ep);
+	hidg->out_ep->driver_data = NULL;
+
+	list_for_each_entry_safe(list, next, &hidg->completed_out_req, list) {
+		list_del(&list->list);
+		kfree(list);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
@@ -433,10 +609,14 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 	struct usb_composite_dev		*cdev = f->config->cdev;
 	struct f_hidg				*hidg = func_to_hidg(f);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*ep_desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	int status = 0;
+=======
+	int i, status = 0;
+>>>>>>> refs/remotes/origin/master
 
 	VDBG(cdev, "hidg_set_alt intf:%d alt:%d\n", intf, alt);
 
@@ -446,10 +626,13 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			usb_ep_disable(hidg->in_ep);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ep_desc = ep_choose(f->config->cdev->gadget,
 				hidg->hs_in_ep_desc, hidg->fs_in_ep_desc);
 		status = usb_ep_enable(hidg->in_ep, ep_desc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		status = config_ep_by_speed(f->config->cdev->gadget, f,
 					    hidg->in_ep);
 		if (status) {
@@ -457,13 +640,65 @@ static int hidg_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			goto fail;
 		}
 		status = usb_ep_enable(hidg->in_ep);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (status < 0) {
 			ERROR(cdev, "Enable endpoint FAILED!\n");
+=======
+		if (status < 0) {
+			ERROR(cdev, "Enable IN endpoint FAILED!\n");
+>>>>>>> refs/remotes/origin/master
 			goto fail;
 		}
 		hidg->in_ep->driver_data = hidg;
 	}
+<<<<<<< HEAD
+=======
+
+
+	if (hidg->out_ep != NULL) {
+		/* restart endpoint */
+		if (hidg->out_ep->driver_data != NULL)
+			usb_ep_disable(hidg->out_ep);
+
+		status = config_ep_by_speed(f->config->cdev->gadget, f,
+					    hidg->out_ep);
+		if (status) {
+			ERROR(cdev, "config_ep_by_speed FAILED!\n");
+			goto fail;
+		}
+		status = usb_ep_enable(hidg->out_ep);
+		if (status < 0) {
+			ERROR(cdev, "Enable IN endpoint FAILED!\n");
+			goto fail;
+		}
+		hidg->out_ep->driver_data = hidg;
+
+		/*
+		 * allocate a bunch of read buffers and queue them all at once.
+		 */
+		for (i = 0; i < hidg->qlen && status == 0; i++) {
+			struct usb_request *req =
+					hidg_alloc_ep_req(hidg->out_ep,
+							  hidg->report_length);
+			if (req) {
+				req->complete = hidg_set_report_complete;
+				req->context  = hidg;
+				status = usb_ep_queue(hidg->out_ep, req,
+						      GFP_ATOMIC);
+				if (status)
+					ERROR(cdev, "%s queue req --> %d\n",
+						hidg->out_ep->name, status);
+			} else {
+				usb_ep_disable(hidg->out_ep);
+				hidg->out_ep->driver_data = NULL;
+				status = -ENOMEM;
+				goto fail;
+			}
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 fail:
 	return status;
 }
@@ -491,7 +726,10 @@ static int __init hidg_bind(struct usb_configuration *c, struct usb_function *f)
 		goto fail;
 	hidg_interface_desc.bInterfaceNumber = status;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* allocate instance-specific endpoints */
 	status = -ENODEV;
 	ep = usb_ep_autoconfig(c->cdev->gadget, &hidg_fs_in_ep_desc);
@@ -500,13 +738,25 @@ static int __init hidg_bind(struct usb_configuration *c, struct usb_function *f)
 	ep->driver_data = c->cdev;	/* claim */
 	hidg->in_ep = ep;
 
+<<<<<<< HEAD
+=======
+	ep = usb_ep_autoconfig(c->cdev->gadget, &hidg_fs_out_ep_desc);
+	if (!ep)
+		goto fail;
+	ep->driver_data = c->cdev;	/* claim */
+	hidg->out_ep = ep;
+
+>>>>>>> refs/remotes/origin/master
 	/* preallocate request and buffer */
 	status = -ENOMEM;
 	hidg->req = usb_ep_alloc_request(hidg->in_ep, GFP_KERNEL);
 	if (!hidg->req)
 		goto fail;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	hidg->req->buf = kmalloc(hidg->report_length, GFP_KERNEL);
 	if (!hidg->req->buf)
 		goto fail;
@@ -516,10 +766,16 @@ static int __init hidg_bind(struct usb_configuration *c, struct usb_function *f)
 	hidg_interface_desc.bInterfaceProtocol = hidg->bInterfaceProtocol;
 	hidg_hs_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
 	hidg_fs_in_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
+<<<<<<< HEAD
+=======
+	hidg_hs_out_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
+	hidg_fs_out_ep_desc.wMaxPacketSize = cpu_to_le16(hidg->report_length);
+>>>>>>> refs/remotes/origin/master
 	hidg_desc.desc[0].bDescriptorType = HID_DT_REPORT;
 	hidg_desc.desc[0].wDescriptorLength =
 		cpu_to_le16(hidg->report_desc_length);
 
+<<<<<<< HEAD
 	hidg->set_report_buff = NULL;
 
 	/* copy descriptors */
@@ -550,10 +806,26 @@ static int __init hidg_bind(struct usb_configuration *c, struct usb_function *f)
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
+=======
+	hidg_hs_in_ep_desc.bEndpointAddress =
+		hidg_fs_in_ep_desc.bEndpointAddress;
+	hidg_hs_out_ep_desc.bEndpointAddress =
+		hidg_fs_out_ep_desc.bEndpointAddress;
+
+	status = usb_assign_descriptors(f, hidg_fs_descriptors,
+			hidg_hs_descriptors, NULL);
+	if (status)
+		goto fail;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&hidg->lock);
 	spin_lock_init(&hidg->spinlock);
 	init_waitqueue_head(&hidg->write_queue);
 	init_waitqueue_head(&hidg->read_queue);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&hidg->completed_out_req);
+>>>>>>> refs/remotes/origin/master
 
 	/* create char device */
 	cdev_init(&hidg->cdev, &f_hidg_fops);
@@ -574,9 +846,13 @@ fail:
 			usb_ep_free_request(hidg->in_ep, hidg->req);
 	}
 
+<<<<<<< HEAD
 	usb_free_descriptors(f->hs_descriptors);
 	usb_free_descriptors(f->descriptors);
 
+=======
+	usb_free_all_descriptors(f);
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -593,12 +869,18 @@ static void hidg_unbind(struct usb_configuration *c, struct usb_function *f)
 	kfree(hidg->req->buf);
 	usb_ep_free_request(hidg->in_ep, hidg->req);
 
+<<<<<<< HEAD
 	/* free descriptors copies */
 	usb_free_descriptors(f->hs_descriptors);
 	usb_free_descriptors(f->descriptors);
 
 	kfree(hidg->report_desc);
 	kfree(hidg->set_report_buff);
+=======
+	usb_free_all_descriptors(f);
+
+	kfree(hidg->report_desc);
+>>>>>>> refs/remotes/origin/master
 	kfree(hidg);
 }
 
@@ -669,6 +951,12 @@ int __init hidg_bind_config(struct usb_configuration *c,
 	hidg->func.disable = hidg_disable;
 	hidg->func.setup   = hidg_setup;
 
+<<<<<<< HEAD
+=======
+	/* this could me made configurable at some point */
+	hidg->qlen	   = 4;
+
+>>>>>>> refs/remotes/origin/master
 	status = usb_add_function(c, &hidg->func);
 	if (status)
 		kfree(hidg);

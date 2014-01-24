@@ -33,12 +33,21 @@
 #include <mach/pxa27x.h>
 #include <mach/audio.h>
 #include <mach/vpac270.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
 #include <mach/pxafb.h>
 #include <mach/ohci.h>
 #include <mach/pxa27x-udc.h>
 #include <mach/udc.h>
 #include <mach/pata_pxa.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <mach/pxa27x-udc.h>
+#include <mach/udc.h>
+#include <linux/platform_data/ata-pxa.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 #include "devices.h"
@@ -396,12 +405,17 @@ static struct resource vpac270_dm9000_resources[] = {
 	},
 	[2] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= IRQ_GPIO(GPIO114_VPAC270_ETH_IRQ),
 		.end	= IRQ_GPIO(GPIO114_VPAC270_ETH_IRQ),
 =======
 		.start	= PXA_GPIO_TO_IRQ(GPIO114_VPAC270_ETH_IRQ),
 		.end	= PXA_GPIO_TO_IRQ(GPIO114_VPAC270_ETH_IRQ),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= PXA_GPIO_TO_IRQ(GPIO114_VPAC270_ETH_IRQ),
+		.end	= PXA_GPIO_TO_IRQ(GPIO114_VPAC270_ETH_IRQ),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	},
 };
@@ -439,10 +453,14 @@ static pxa2xx_audio_ops_t vpac270_ac97_pdata = {
 
 static struct ucb1400_pdata vpac270_ucb1400_pdata = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.irq		= IRQ_GPIO(GPIO113_VPAC270_TS_IRQ),
 =======
 	.irq		= PXA_GPIO_TO_IRQ(GPIO113_VPAC270_TS_IRQ),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irq		= PXA_GPIO_TO_IRQ(GPIO113_VPAC270_TS_IRQ),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device vpac270_ucb1400_device = {
@@ -620,12 +638,17 @@ static struct resource vpac270_ide_resources[] = {
 	},
 	[3] = {	/* IDE IRQ pin */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	       .start	= gpio_to_irq(GPIO36_VPAC270_IDE_IRQ),
 	       .end	= gpio_to_irq(GPIO36_VPAC270_IDE_IRQ),
 =======
 	       .start	= PXA_GPIO_TO_IRQ(GPIO36_VPAC270_IDE_IRQ),
 	       .end	= PXA_GPIO_TO_IRQ(GPIO36_VPAC270_IDE_IRQ),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       .start	= PXA_GPIO_TO_IRQ(GPIO36_VPAC270_IDE_IRQ),
+	       .end	= PXA_GPIO_TO_IRQ(GPIO36_VPAC270_IDE_IRQ),
+>>>>>>> refs/remotes/origin/master
 	       .flags	= IORESOURCE_IRQ
 	}
 };
@@ -654,9 +677,13 @@ static inline void vpac270_ide_init(void) {}
 #if defined(CONFIG_REGULATOR_MAX1586) || \
     defined(CONFIG_REGULATOR_MAX1586_MODULE)
 static struct regulator_consumer_supply vpac270_max1587a_consumers[] = {
+<<<<<<< HEAD
 	{
 		.supply	= "vcc_core",
 	}
+=======
+	REGULATOR_SUPPLY("vcc_core", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data vpac270_max1587a_v3_info = {
@@ -731,19 +758,28 @@ static void __init vpac270_init(void)
 
 MACHINE_START(VPAC270, "Voipac PXA270")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa27x_map_io,
 	.init_irq	= pxa27x_init_irq,
 	.timer		= &pxa_timer,
 	.init_machine	= vpac270_init
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= pxa27x_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa27x_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.init_machine	= vpac270_init,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= vpac270_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -26,6 +26,7 @@
 #include <linux/mtd/physmap.h>
 #include <linux/i2c.h>
 #include <linux/i2c/pxa-i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
 #include <linux/apm-emulation.h>
 #include <linux/can/platform/mcp251x.h>
@@ -37,12 +38,22 @@
 
 #include <mach/pxa2xx-regs.h>
 =======
+=======
+#include <linux/platform_data/pca953x.h>
+#include <linux/apm-emulation.h>
+#include <linux/can/platform/mcp251x.h>
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/machine.h>
+
+#include <asm/mach-types.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/suspend.h>
 #include <asm/system_info.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
 #include <mach/pxa27x.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/regs-uart.h>
 #include <mach/ohci.h>
@@ -57,6 +68,17 @@
 #include <mach/pm.h>
 #include <mach/audio.h>
 #include <mach/arcom-pcmcia.h>
+=======
+#include <mach/regs-uart.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <mach/pxa27x-udc.h>
+#include <mach/udc.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <mach/pm.h>
+#include <mach/audio.h>
+#include <linux/platform_data/pcmcia-pxa2xx_viper.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/zeus.h>
 #include <mach/smemc.h>
 
@@ -246,10 +268,14 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	{ /* COM1 */
 		.mapbase	= 0x10000000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(ZEUS_UARTA_GPIO),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTA_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTA_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.irqflags	= IRQF_TRIGGER_RISING,
 		.uartclk	= 14745600,
 		.regshift	= 1,
@@ -259,10 +285,14 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	{ /* COM2 */
 		.mapbase	= 0x10800000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(ZEUS_UARTB_GPIO),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTB_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTB_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.irqflags	= IRQF_TRIGGER_RISING,
 		.uartclk	= 14745600,
 		.regshift	= 1,
@@ -272,10 +302,14 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	{ /* COM3 */
 		.mapbase	= 0x11000000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(ZEUS_UARTC_GPIO),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTC_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTC_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.irqflags	= IRQF_TRIGGER_RISING,
 		.uartclk	= 14745600,
 		.regshift	= 1,
@@ -285,10 +319,14 @@ static struct plat_serial8250_port serial_platform_data[] = {
 	{ /* COM4 */
 		.mapbase	= 0x11800000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(ZEUS_UARTD_GPIO),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTD_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(ZEUS_UARTD_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.irqflags	= IRQF_TRIGGER_RISING,
 		.uartclk	= 14745600,
 		.regshift	= 1,
@@ -350,12 +388,17 @@ static struct resource zeus_dm9k0_resource[] = {
 	},
 	[2] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = gpio_to_irq(ZEUS_ETH0_GPIO),
 		.end   = gpio_to_irq(ZEUS_ETH0_GPIO),
 =======
 		.start = PXA_GPIO_TO_IRQ(ZEUS_ETH0_GPIO),
 		.end   = PXA_GPIO_TO_IRQ(ZEUS_ETH0_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start = PXA_GPIO_TO_IRQ(ZEUS_ETH0_GPIO),
+		.end   = PXA_GPIO_TO_IRQ(ZEUS_ETH0_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE,
 	},
 };
@@ -373,12 +416,17 @@ static struct resource zeus_dm9k1_resource[] = {
 	},
 	[2] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = gpio_to_irq(ZEUS_ETH1_GPIO),
 		.end   = gpio_to_irq(ZEUS_ETH1_GPIO),
 =======
 		.start = PXA_GPIO_TO_IRQ(ZEUS_ETH1_GPIO),
 		.end   = PXA_GPIO_TO_IRQ(ZEUS_ETH1_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start = PXA_GPIO_TO_IRQ(ZEUS_ETH1_GPIO),
+		.end   = PXA_GPIO_TO_IRQ(ZEUS_ETH1_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE,
 	},
 };
@@ -428,6 +476,7 @@ static struct pxa2xx_spi_master pxa2xx_spi_ssp3_master_info = {
 };
 
 /* CAN bus on SPI */
+<<<<<<< HEAD
 static int zeus_mcp2515_setup(struct spi_device *sdev)
 {
 	int err;
@@ -455,6 +504,36 @@ static struct mcp251x_platform_data zeus_mcp2515_pdata = {
 	.oscillator_frequency	= 16*1000*1000,
 	.board_specific_setup	= zeus_mcp2515_setup,
 	.power_enable		= zeus_mcp2515_transceiver_enable,
+=======
+static struct regulator_consumer_supply can_regulator_consumer =
+	REGULATOR_SUPPLY("vdd", "spi3.0");
+
+static struct regulator_init_data can_regulator_init_data = {
+	.constraints	= {
+		.valid_ops_mask	= REGULATOR_CHANGE_STATUS,
+	},
+	.consumer_supplies	= &can_regulator_consumer,
+	.num_consumer_supplies	= 1,
+};
+
+static struct fixed_voltage_config can_regulator_pdata = {
+	.supply_name	= "CAN_SHDN",
+	.microvolts	= 3300000,
+	.gpio		= ZEUS_CAN_SHDN_GPIO,
+	.init_data	= &can_regulator_init_data,
+};
+
+static struct platform_device can_regulator_device = {
+	.name	= "reg-fixed-volage",
+	.id	= -1,
+	.dev	= {
+		.platform_data	= &can_regulator_pdata,
+	},
+};
+
+static struct mcp251x_platform_data zeus_mcp2515_pdata = {
+	.oscillator_frequency	= 16*1000*1000,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct spi_board_info zeus_spi_board_info[] = {
@@ -462,10 +541,14 @@ static struct spi_board_info zeus_spi_board_info[] = {
 		.modalias	= "mcp2515",
 		.platform_data	= &zeus_mcp2515_pdata,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(ZEUS_CAN_GPIO),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(ZEUS_CAN_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(ZEUS_CAN_GPIO),
+>>>>>>> refs/remotes/origin/master
 		.max_speed_hz	= 1*1000*1000,
 		.bus_num	= 3,
 		.mode		= SPI_MODE_0,
@@ -557,6 +640,10 @@ static struct platform_device *zeus_devices[] __initdata = {
 	&zeus_leds_device,
 	&zeus_pcmcia_device,
 	&zeus_max6369_device,
+<<<<<<< HEAD
+=======
+	&can_regulator_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* AC'97 */
@@ -719,10 +806,14 @@ static void zeus_power_off(void)
 {
 	local_irq_disable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pxa27x_cpu_suspend(PWRMODE_DEEPSLEEP, PLAT_PHYS_OFFSET - PAGE_OFFSET);
 =======
 	cpu_suspend(PWRMODE_DEEPSLEEP, pxa27x_finish_suspend);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpu_suspend(PWRMODE_DEEPSLEEP, pxa27x_finish_suspend);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 #define zeus_power_off   NULL
@@ -800,10 +891,14 @@ static struct i2c_board_info __initdata zeus_i2c_devices[] = {
 		I2C_BOARD_INFO("pca9535",	0x20),
 		.platform_data	= &zeus_pca953x_pdata[2],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(ZEUS_EXTGPIO_GPIO),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(ZEUS_EXTGPIO_GPIO),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(ZEUS_EXTGPIO_GPIO),
+>>>>>>> refs/remotes/origin/master
 	},
 	{ I2C_BOARD_INFO("lm75a",	0x48) },
 	{ I2C_BOARD_INFO("24c01",	0x50) },
@@ -911,40 +1006,56 @@ static void __init zeus_init(void)
 static struct map_desc zeus_io_desc[] __initdata = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual = ZEUS_CPLD_VERSION,
 =======
 		.virtual = (unsigned long)ZEUS_CPLD_VERSION,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual = (unsigned long)ZEUS_CPLD_VERSION,
+>>>>>>> refs/remotes/origin/master
 		.pfn     = __phys_to_pfn(ZEUS_CPLD_VERSION_PHYS),
 		.length  = 0x1000,
 		.type    = MT_DEVICE,
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual = ZEUS_CPLD_ISA_IRQ,
 =======
 		.virtual = (unsigned long)ZEUS_CPLD_ISA_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual = (unsigned long)ZEUS_CPLD_ISA_IRQ,
+>>>>>>> refs/remotes/origin/master
 		.pfn     = __phys_to_pfn(ZEUS_CPLD_ISA_IRQ_PHYS),
 		.length  = 0x1000,
 		.type    = MT_DEVICE,
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual = ZEUS_CPLD_CONTROL,
 =======
 		.virtual = (unsigned long)ZEUS_CPLD_CONTROL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual = (unsigned long)ZEUS_CPLD_CONTROL,
+>>>>>>> refs/remotes/origin/master
 		.pfn     = __phys_to_pfn(ZEUS_CPLD_CONTROL_PHYS),
 		.length  = 0x1000,
 		.type    = MT_DEVICE,
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual = ZEUS_PC104IO,
 =======
 		.virtual = (unsigned long)ZEUS_PC104IO,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual = (unsigned long)ZEUS_PC104IO,
+>>>>>>> refs/remotes/origin/master
 		.pfn     = __phys_to_pfn(ZEUS_PC104IO_PHYS),
 		.length  = 0x00800000,
 		.type    = MT_DEVICE,
@@ -971,6 +1082,7 @@ static void __init zeus_map_io(void)
 MACHINE_START(ARCOM_ZEUS, "Arcom/Eurotech ZEUS")
 	/* Maintainer: Marc Zyngier <maz@misterjones.org> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= zeus_map_io,
 	.nr_irqs	= ZEUS_NR_IRQS,
@@ -978,14 +1090,22 @@ MACHINE_START(ARCOM_ZEUS, "Arcom/Eurotech ZEUS")
 	.timer		= &pxa_timer,
 	.init_machine	= zeus_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= zeus_map_io,
 	.nr_irqs	= ZEUS_NR_IRQS,
 	.init_irq	= zeus_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.init_machine	= zeus_init,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= zeus_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 

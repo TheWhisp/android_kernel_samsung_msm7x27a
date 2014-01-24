@@ -1,6 +1,10 @@
 config DM_PERSISTENT_DATA
        tristate
+<<<<<<< HEAD
        depends on BLK_DEV_DM && EXPERIMENTAL
+=======
+       depends on BLK_DEV_DM
+>>>>>>> refs/remotes/origin/master
        select LIBCRC32C
        select DM_BUFIO
        ---help---

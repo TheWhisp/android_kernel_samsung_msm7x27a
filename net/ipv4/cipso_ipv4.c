@@ -51,10 +51,14 @@
 #include <net/netlabel.h>
 #include <net/cipso_ipv4.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/bug.h>
 #include <asm/unaligned.h>
 
@@ -481,10 +485,14 @@ int cipso_v4_doi_add(struct cipso_v4_doi *doi_def,
 	doi_type = doi_def->type;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (doi_def == NULL || doi_def->doi == CIPSO_V4_DOI_UNKNOWN)
 =======
 	if (doi_def->doi == CIPSO_V4_DOI_UNKNOWN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (doi_def->doi == CIPSO_V4_DOI_UNKNOWN)
+>>>>>>> refs/remotes/origin/master
 		goto doi_add_return;
 	for (iter = 0; iter < CIPSO_V4_TAG_MAXCNT; iter++) {
 		switch (doi_def->tags[iter]) {
@@ -1868,6 +1876,7 @@ static int cipso_v4_genopt(unsigned char *buf, u32 buf_len,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void opt_kfree_rcu(struct rcu_head *head)
 {
 	kfree(container_of(head, struct ip_options_rcu, rcu));
@@ -1875,6 +1884,8 @@ static void opt_kfree_rcu(struct rcu_head *head)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * cipso_v4_sock_setattr - Add a CIPSO option to a socket
  * @sk: the socket
@@ -1952,10 +1963,14 @@ int cipso_v4_sock_setattr(struct sock *sk,
 	rcu_assign_pointer(sk_inet->inet_opt, opt);
 	if (old)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		call_rcu(&old->rcu, opt_kfree_rcu);
 =======
 		kfree_rcu(old, rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_rcu(old, rcu);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -2023,10 +2038,14 @@ int cipso_v4_req_setattr(struct request_sock *req,
 	opt = xchg(&req_inet->opt, opt);
 	if (opt)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		call_rcu(&opt->rcu, opt_kfree_rcu);
 =======
 		kfree_rcu(opt, rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_rcu(opt, rcu);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -2097,10 +2116,14 @@ static int cipso_v4_delopt(struct ip_options_rcu **opt_ptr)
 		*opt_ptr = NULL;
 		hdr_delta = opt->opt.optlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		call_rcu(&opt->rcu, opt_kfree_rcu);
 =======
 		kfree_rcu(opt, rcu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_rcu(opt, rcu);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return hdr_delta;

@@ -21,7 +21,10 @@
  */
 
 #include <linux/init.h>
+<<<<<<< HEAD
 #include <linux/memblock.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/of.h>
 #include <linux/of_platform.h>
 #include <linux/rtc.h>
@@ -47,7 +50,11 @@ static __initdata struct of_device_id ppc47x_of_bus[] = {
 
 /* The EEPROM is missing and the default values are bogus.  This forces USB in
  * to EHCI mode */
+<<<<<<< HEAD
 static void __devinit quirk_ppc_currituck_usb_fixup(struct pci_dev *dev)
+=======
+static void quirk_ppc_currituck_usb_fixup(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (of_machine_is_compatible("ibm,currituck")) {
 		pci_write_config_dword(dev, 0xe0, 0x0114231f);
@@ -92,12 +99,20 @@ static void __init ppc47x_init_irq(void)
 }
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 static void __cpuinit smp_ppc47x_setup_cpu(int cpu)
+=======
+static void smp_ppc47x_setup_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	mpic_setup_this_cpu();
 }
 
+<<<<<<< HEAD
 static int __cpuinit smp_ppc47x_kick_cpu(int cpu)
+=======
+static int smp_ppc47x_kick_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *cpunode = of_get_cpu_node(cpu, NULL);
 	const u64 *spin_table_addr_prop;
@@ -159,6 +174,7 @@ static void __init ppc47x_setup_arch(void)
 
 	/* No need to check the DMA config as we /know/ our windows are all of
  	 * RAM.  Lets hope that doesn't change */
+<<<<<<< HEAD
 #ifdef CONFIG_SWIOTLB
 	if (memblock_end_of_DRAM() > 0xffffffff) {
 		ppc_swiotlb_enable = 1;
@@ -166,6 +182,10 @@ static void __init ppc47x_setup_arch(void)
 		ppc_md.pci_dma_dev_setup = pci_dma_dev_setup_swiotlb;
 	}
 #endif
+=======
+	swiotlb_detect_4g();
+
+>>>>>>> refs/remotes/origin/master
 	ppc47x_smp_init();
 }
 
@@ -182,13 +202,56 @@ static int __init ppc47x_probe(void)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+static int board_rev = -1;
+static int __init ppc47x_get_board_rev(void)
+{
+	u8 fpga_reg0;
+	void *fpga;
+	struct device_node *np;
+
+	np = of_find_compatible_node(NULL, NULL, "ibm,currituck-fpga");
+	if (!np)
+		goto fail;
+
+	fpga = of_iomap(np, 0);
+	of_node_put(np);
+	if (!fpga)
+		goto fail;
+
+	fpga_reg0 = ioread8(fpga);
+	board_rev = fpga_reg0 & 0x03;
+	pr_info("%s: Found board revision %d\n", __func__, board_rev);
+	iounmap(fpga);
+	return 0;
+
+fail:
+	pr_info("%s: Unable to find board revision\n", __func__);
+	return 0;
+}
+machine_arch_initcall(ppc47x, ppc47x_get_board_rev);
+
+>>>>>>> refs/remotes/origin/master
 /* Use USB controller should have been hardware swizzled but it wasn't :( */
 static void ppc47x_pci_irq_fixup(struct pci_dev *dev)
 {
 	if (dev->vendor == 0x1033 && (dev->device == 0x0035 ||
 	                              dev->device == 0x00e0)) {
+<<<<<<< HEAD
 		dev->irq = irq_create_mapping(NULL, 47);
 		pr_info("%s: Mapping irq 47 %d\n", __func__, dev->irq);
+=======
+		if (board_rev == 0) {
+			dev->irq = irq_create_mapping(NULL, 47);
+			pr_info("%s: Mapping irq %d\n", __func__, dev->irq);
+		} else if (board_rev == 2) {
+			dev->irq = irq_create_mapping(NULL, 49);
+			pr_info("%s: Mapping irq %d\n", __func__, dev->irq);
+		} else {
+			pr_alert("%s: Unknown board revision\n", __func__);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

@@ -13,7 +13,13 @@
 #ifndef __ASSEMBLY__
 
 struct blackfin_pda {			/* Per-processor Data Area */
+<<<<<<< HEAD
 	struct blackfin_pda *next;
+=======
+#ifdef CONFIG_SMP
+	struct blackfin_pda *next;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long syscfg;
 #ifdef CONFIG_SMP
@@ -55,7 +61,10 @@ struct blackfin_pda {			/* Per-processor Data Area */
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct blackfin_initial_pda {
 	void *retx;
 #ifdef CONFIG_DEBUG_DOUBLEFAULT
@@ -66,7 +75,10 @@ struct blackfin_initial_pda {
 #endif
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct blackfin_pda cpu_pda[];
 
 #endif	/* __ASSEMBLY__ */

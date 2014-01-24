@@ -15,6 +15,7 @@
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
@@ -32,10 +33,25 @@
 
 void omap2_mcbsp1_mux_clkr_src(u8 mux)
 =======
+=======
+#include <linux/of.h>
+#include <linux/platform_device.h>
+#include <linux/slab.h>
+#include <linux/platform_data/asoc-ti-mcbsp.h>
+#include <linux/pm_runtime.h>
+
+#include <linux/omap-dma.h>
+
+#include "soc.h"
+#include "omap_device.h"
+#include "clock.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * FIXME: Find a mechanism to enable/disable runtime the McBSP ICLK autoidle.
  * Sidetone needs non-gated ICLK and sidetone autoidle is broken.
  */
+<<<<<<< HEAD
 #include "cm2xxx_3xxx.h"
 #include "cm-regbits-34xx.h"
 
@@ -218,10 +234,20 @@ static int omap3_enable_st_clock(unsigned int id, bool enable)
 {
 	unsigned int w;
 
+=======
+#include "cm3xxx.h"
+#include "cm-regbits-34xx.h"
+
+static struct clk *mcbsp_iclks[5];
+
+static int omap3_enable_st_clock(unsigned int id, bool enable)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Sidetone uses McBSP ICLK - which must not idle when sidetones
 	 * are enabled or sidetones start sounding ugly.
 	 */
+<<<<<<< HEAD
 	w = omap2_cm_read_mod_reg(OMAP3430_PER_MOD, CM_AUTOIDLE);
 	if (enable)
 		w &= ~(1 << (id - 2));
@@ -234,16 +260,30 @@ static int omap3_enable_st_clock(unsigned int id, bool enable)
 
 static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (enable)
+		return omap2_clk_deny_idle(mcbsp_iclks[id]);
+	else
+		return omap2_clk_allow_idle(mcbsp_iclks[id]);
+}
+
+static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
+>>>>>>> refs/remotes/origin/master
 {
 	int id, count = 1;
 	char *name = "omap-mcbsp";
 	struct omap_hwmod *oh_device[2];
 	struct omap_mcbsp_platform_data *pdata = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct omap_device *od;
 =======
 	struct platform_device *pdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct platform_device *pdev;
+	char clk_name[11];
+>>>>>>> refs/remotes/origin/master
 
 	sscanf(oh->name, "mcbsp%d", &id);
 
@@ -254,8 +294,11 @@ static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pdata->mcbsp_config_type = oh->class->rev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pdata->reg_step = 4;
 	if (oh->class->rev < MCBSP_CONFIG_TYPE2) {
 		pdata->reg_size = 2;
@@ -263,6 +306,7 @@ static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
 		pdata->reg_size = 4;
 		pdata->has_ccr = true;
 	}
+<<<<<<< HEAD
 	pdata->set_clk_src = omap2_mcbsp_set_clk_src;
 
 	/* On OMAP2/3 the McBSP1 port has 6 pin configuration */
@@ -275,6 +319,13 @@ static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (oh->class->rev == MCBSP_CONFIG_TYPE3) {
+=======
+
+	if (oh->class->rev == MCBSP_CONFIG_TYPE2) {
+		/* The FIFO has 128 locations */
+		pdata->buffer_size = 0x80;
+	} else if (oh->class->rev == MCBSP_CONFIG_TYPE3) {
+>>>>>>> refs/remotes/origin/master
 		if (id == 2)
 			/* The FIFO has 1024 + 256 locations */
 			pdata->buffer_size = 0x500;
@@ -282,9 +333,12 @@ static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
 			/* The FIFO has 128 locations */
 			pdata->buffer_size = 0x80;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (oh->class->rev == MCBSP_CONFIG_TYPE4) {
 		/* The FIFO has 128 locations for all instances */
 		pdata->buffer_size = 0x80;
@@ -293,12 +347,16 @@ static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
 	if (oh->class->rev >= MCBSP_CONFIG_TYPE3)
 		pdata->has_wakeup = true;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	oh_device[0] = oh;
 
 	if (oh->dev_attr) {
 		oh_device[1] = omap_hwmod_lookup((
 		(struct omap_mcbsp_dev_attr *)(oh->dev_attr))->sidetone);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		count++;
 	}
@@ -318,18 +376,31 @@ static int __init omap_init_mcbsp(struct omap_hwmod *oh, void *unused)
 	}
 	pdev = omap_device_build_ss(name, id, oh_device, count, pdata,
 				sizeof(*pdata), NULL, 0, false);
+=======
+		pdata->enable_st_clock = omap3_enable_st_clock;
+		sprintf(clk_name, "mcbsp%d_ick", id);
+		mcbsp_iclks[id] = clk_get(NULL, clk_name);
+		count++;
+	}
+	pdev = omap_device_build_ss(name, id, oh_device, count, pdata,
+				    sizeof(*pdata));
+>>>>>>> refs/remotes/origin/master
 	kfree(pdata);
 	if (IS_ERR(pdev))  {
 		pr_err("%s: Can't build omap_device for %s:%s.\n", __func__,
 					name, oh->name);
 		return PTR_ERR(pdev);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int __init omap2_mcbsp_init(void)
 {
+<<<<<<< HEAD
 	omap_hwmod_for_each_by_class("mcbsp", omap_init_mcbsp, NULL);
 
 <<<<<<< HEAD
@@ -344,3 +415,11 @@ static int __init omap2_mcbsp_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 arch_initcall(omap2_mcbsp_init);
+=======
+	if (!of_have_populated_dt())
+		omap_hwmod_for_each_by_class("mcbsp", omap_init_mcbsp, NULL);
+
+	return 0;
+}
+omap_arch_initcall(omap2_mcbsp_init);
+>>>>>>> refs/remotes/origin/master

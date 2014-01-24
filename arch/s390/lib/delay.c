@@ -1,7 +1,11 @@
 /*
  *    Precise Delay Loops for S390
  *
+<<<<<<< HEAD
  *    Copyright IBM Corp. 1999,2008
+=======
+ *    Copyright IBM Corp. 1999, 2008
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky <schwidefsky@de.ibm.com>,
  *		 Heiko Carstens <heiko.carstens@de.ibm.com>,
  */
@@ -12,11 +16,16 @@
 #include <linux/module.h>
 #include <linux/irqflags.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
 #include <asm/div64.h>
 <<<<<<< HEAD
 =======
 #include <asm/timer.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/vtimer.h>
+#include <asm/div64.h>
+>>>>>>> refs/remotes/origin/master
 
 void __delay(unsigned long loops)
 {
@@ -32,6 +41,7 @@ void __delay(unsigned long loops)
 
 static void __udelay_disabled(unsigned long long usecs)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long mask, cr0, cr0_saved;
 	u64 clock_saved;
@@ -57,6 +67,12 @@ static void __udelay_disabled(unsigned long long usecs)
 	u64 clock_saved, end;
 
 	end = get_clock() + (usecs << 12);
+=======
+	unsigned long cr0, cr6, new;
+	u64 clock_saved, end;
+
+	end = get_tod_clock() + (usecs << 12);
+>>>>>>> refs/remotes/origin/master
 	clock_saved = local_tick_disable();
 	__ctl_store(cr0, 0, 0);
 	__ctl_store(cr6, 6, 6);
@@ -68,17 +84,25 @@ static void __udelay_disabled(unsigned long long usecs)
 	do {
 		set_clock_comparator(end);
 		vtime_stop_cpu();
+<<<<<<< HEAD
 		local_irq_disable();
 	} while (get_clock() < end);
 	lockdep_on();
 	__ctl_load(cr0, 0, 0);
 	__ctl_load(cr6, 6, 6);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} while (get_tod_clock_fast() < end);
+	lockdep_on();
+	__ctl_load(cr0, 0, 0);
+	__ctl_load(cr6, 6, 6);
+>>>>>>> refs/remotes/origin/master
 	local_tick_enable(clock_saved);
 }
 
 static void __udelay_enabled(unsigned long long usecs)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long mask;
 	u64 clock_saved;
@@ -90,12 +114,18 @@ static void __udelay_enabled(unsigned long long usecs)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	end = get_clock() + (usecs << 12);
+=======
+	u64 clock_saved, end;
+
+	end = get_tod_clock_fast() + (usecs << 12);
+>>>>>>> refs/remotes/origin/master
 	do {
 		clock_saved = 0;
 		if (end < S390_lowcore.clock_comparator) {
 			clock_saved = local_tick_disable();
 			set_clock_comparator(end);
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		trace_hardirqs_on();
 		__load_psw_mask(mask);
@@ -106,6 +136,12 @@ static void __udelay_enabled(unsigned long long usecs)
 		if (clock_saved)
 			local_tick_enable(clock_saved);
 	} while (get_clock() < end);
+=======
+		vtime_stop_cpu();
+		if (clock_saved)
+			local_tick_enable(clock_saved);
+	} while (get_tod_clock_fast() < end);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -149,8 +185,13 @@ void udelay_simple(unsigned long long usecs)
 {
 	u64 end;
 
+<<<<<<< HEAD
 	end = get_clock() + (usecs << 12);
 	while (get_clock() < end)
+=======
+	end = get_tod_clock_fast() + (usecs << 12);
+	while (get_tod_clock_fast() < end)
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 }
 
@@ -160,10 +201,17 @@ void __ndelay(unsigned long long nsecs)
 
 	nsecs <<= 9;
 	do_div(nsecs, 125);
+<<<<<<< HEAD
 	end = get_clock() + nsecs;
 	if (nsecs & ~0xfffUL)
 		__udelay(nsecs >> 12);
 	while (get_clock() < end)
+=======
+	end = get_tod_clock_fast() + nsecs;
+	if (nsecs & ~0xfffUL)
+		__udelay(nsecs >> 12);
+	while (get_tod_clock_fast() < end)
+>>>>>>> refs/remotes/origin/master
 		barrier();
 }
 EXPORT_SYMBOL(__ndelay);

@@ -166,7 +166,11 @@ ha16:
 	/* R_PPC_ADDR16_LO */
 lo16:
 	cmpwi	r4, R_PPC_ADDR16_LO
+<<<<<<< HEAD
 	bne	nxtrela
+=======
+	bne	unknown_type
+>>>>>>> refs/remotes/origin/master
 	lwz	r4, 0(r9)	/* r_offset */
 	lwz	r0, 8(r9)	/* r_addend */
 	add	r0, r0, r3
@@ -191,6 +195,10 @@ nxtrela:
 	dcbst	r4,r7
 	sync			/* Ensure the data is flushed before icbi */
 	icbi	r4,r7
+<<<<<<< HEAD
+=======
+unknown_type:
+>>>>>>> refs/remotes/origin/master
 	cmpwi	r8, 0		/* relasz = 0 ? */
 	ble	done
 	add	r9, r9, r6	/* move to next entry in the .rela table */

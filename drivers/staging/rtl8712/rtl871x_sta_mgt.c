@@ -43,6 +43,7 @@ static void _init_stainfo(struct sta_info *psta)
 	_r8712_init_sta_xmit_priv(&psta->sta_xmitpriv);
 	_r8712_init_sta_recv_priv(&psta->sta_recvpriv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_R8712_AP
 	_init_listhead(&psta->auth_list);
 #endif
@@ -50,6 +51,10 @@ static void _init_stainfo(struct sta_info *psta)
 	_init_listhead(&psta->asoc_list);
 	_init_listhead(&psta->auth_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_init_listhead(&psta->asoc_list);
+	_init_listhead(&psta->auth_list);
+>>>>>>> refs/remotes/origin/master
 }
 
 u32 _r8712_init_sta_priv(struct	sta_priv *pstapriv)
@@ -77,6 +82,7 @@ u32 _r8712_init_sta_priv(struct	sta_priv *pstapriv)
 		psta++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_R8712_AP
 	_init_listhead(&pstapriv->asoc_list);
 	_init_listhead(&pstapriv->auth_list);
@@ -85,6 +91,10 @@ u32 _r8712_init_sta_priv(struct	sta_priv *pstapriv)
 	_init_listhead(&pstapriv->asoc_list);
 	_init_listhead(&pstapriv->auth_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_init_listhead(&pstapriv->asoc_list);
+	_init_listhead(&pstapriv->auth_list);
+>>>>>>> refs/remotes/origin/master
 	return _SUCCESS;
 }
 
@@ -151,7 +161,11 @@ struct sta_info *r8712_alloc_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
 		}
 		phash_list = &(pstapriv->sta_hash[index]);
 		list_insert_tail(&psta->hash_list, phash_list);
+<<<<<<< HEAD
 		pstapriv->asoc_sta_count++ ;
+=======
+		pstapriv->asoc_sta_count++;
+>>>>>>> refs/remotes/origin/master
 
 /* For the SMC router, the sequence number of first packet of WPS handshake
  * will be 0. In this case, this packet will be dropped by recv_decache function
@@ -162,7 +176,11 @@ struct sta_info *r8712_alloc_stainfo(struct sta_priv *pstapriv, u8 *hwaddr)
 			memcpy(&psta->sta_recvpriv.rxcache.tid_rxseq[i],
 				&wRxSeqInitialValue, 2);
 		/* for A-MPDU Rx reordering buffer control */
+<<<<<<< HEAD
 		for (i = 0; i < 16 ; i++) {
+=======
+		for (i = 0; i < 16; i++) {
+>>>>>>> refs/remotes/origin/master
 			preorder_ctrl = &psta->recvreorder_ctrl[i];
 			preorder_ctrl->padapter = pstapriv->padapter;
 			preorder_ctrl->indicate_seq = 0xffff;

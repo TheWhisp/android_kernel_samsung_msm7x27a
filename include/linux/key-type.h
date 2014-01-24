@@ -13,6 +13,10 @@
 #define _LINUX_KEY_TYPE_H
 
 #include <linux/key.h>
+<<<<<<< HEAD
+=======
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KEYS
 
@@ -25,6 +29,31 @@ struct key_construction {
 	struct key	*authkey;/* authorisation for key being constructed */
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * Pre-parsed payload, used by key add, update and instantiate.
+ *
+ * This struct will be cleared and data and datalen will be set with the data
+ * and length parameters from the caller and quotalen will be set from
+ * def_datalen from the key type.  Then if the preparse() op is provided by the
+ * key type, that will be called.  Then the struct will be passed to the
+ * instantiate() or the update() op.
+ *
+ * If the preparse() op is given, the free_preparse() op will be called to
+ * clear the contents.
+ */
+struct key_preparsed_payload {
+	char		*description;	/* Proposed key description (or NULL) */
+	void		*type_data[2];	/* Private key-type data */
+	void		*payload;	/* Proposed payload */
+	const void	*data;		/* Raw data */
+	size_t		datalen;	/* Raw datalen */
+	size_t		quotalen;	/* Quota length for proposed payload */
+	bool		trusted;	/* True if key is trusted */
+};
+
+>>>>>>> refs/remotes/origin/master
 typedef int (*request_key_actor_t)(struct key_construction *key,
 				   const char *op, void *aux);
 
@@ -41,21 +70,50 @@ struct key_type {
 	 */
 	size_t def_datalen;
 
+<<<<<<< HEAD
 	/* vet a description */
 	int (*vet_description)(const char *description);
 
+=======
+	/* Default key search algorithm. */
+	unsigned def_lookup_type;
+#define KEYRING_SEARCH_LOOKUP_DIRECT	0x0000	/* Direct lookup by description. */
+#define KEYRING_SEARCH_LOOKUP_ITERATE	0x0001	/* Iterative search. */
+
+	/* vet a description */
+	int (*vet_description)(const char *description);
+
+	/* Preparse the data blob from userspace that is to be the payload,
+	 * generating a proposed description and payload that will be handed to
+	 * the instantiate() and update() ops.
+	 */
+	int (*preparse)(struct key_preparsed_payload *prep);
+
+	/* Free a preparse data structure.
+	 */
+	void (*free_preparse)(struct key_preparsed_payload *prep);
+
+>>>>>>> refs/remotes/origin/master
 	/* instantiate a key of this type
 	 * - this method should call key_payload_reserve() to determine if the
 	 *   user's quota will hold the payload
 	 */
+<<<<<<< HEAD
 	int (*instantiate)(struct key *key, const void *data, size_t datalen);
+=======
+	int (*instantiate)(struct key *key, struct key_preparsed_payload *prep);
+>>>>>>> refs/remotes/origin/master
 
 	/* update a key of this type (optional)
 	 * - this method should call key_payload_reserve() to recalculate the
 	 *   quota consumption
 	 * - the key must be locked against read when modifying
 	 */
+<<<<<<< HEAD
 	int (*update)(struct key *key, const void *data, size_t datalen);
+=======
+	int (*update)(struct key *key, struct key_preparsed_payload *prep);
+>>>>>>> refs/remotes/origin/master
 
 	/* match a key against a description */
 	int (*match)(const struct key *key, const void *desc);
@@ -93,9 +151,13 @@ struct key_type {
 	/* internal fields */
 	struct list_head	link;		/* link in types list */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct lock_class_key	lock_class;	/* key->sem lock class */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct lock_class_key	lock_class;	/* key->sem lock class */
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct key_type key_type_keyring;

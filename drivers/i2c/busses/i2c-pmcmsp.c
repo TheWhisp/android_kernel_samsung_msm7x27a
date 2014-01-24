@@ -270,7 +270,11 @@ static irqreturn_t pmcmsptwi_interrupt(int irq, void *ptr)
 /*
  * Probe for and register the device and return 0 if there is one.
  */
+<<<<<<< HEAD
 static int __devinit pmcmsptwi_probe(struct platform_device *pldev)
+=======
+static int pmcmsptwi_probe(struct platform_device *pldev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	int rc = -ENODEV;
@@ -307,11 +311,15 @@ static int __devinit pmcmsptwi_probe(struct platform_device *pldev)
 	if (pmcmsptwi_data.irq) {
 		rc = request_irq(pmcmsptwi_data.irq, &pmcmsptwi_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED | IRQF_DISABLED | IRQF_SAMPLE_RANDOM,
 =======
 			IRQF_SHARED | IRQF_SAMPLE_RANDOM,
 >>>>>>> refs/remotes/origin/cm-10.0
 			pldev->name, &pmcmsptwi_data);
+=======
+				 IRQF_SHARED, pldev->name, &pmcmsptwi_data);
+>>>>>>> refs/remotes/origin/master
 		if (rc == 0) {
 			/*
 			 * Enable 'DONE' interrupt only.
@@ -354,7 +362,10 @@ static int __devinit pmcmsptwi_probe(struct platform_device *pldev)
 	return 0;
 
 ret_unmap:
+<<<<<<< HEAD
 	platform_set_drvdata(pldev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pmcmsptwi_data.irq) {
 		pmcmsptwi_writel(0,
 			pmcmsptwi_data.iobase + MSP_TWI_INT_MSK_REG_OFFSET);
@@ -373,13 +384,20 @@ ret_err:
 /*
  * Release the device and return 0 if there is one.
  */
+<<<<<<< HEAD
 static int __devexit pmcmsptwi_remove(struct platform_device *pldev)
+=======
+static int pmcmsptwi_remove(struct platform_device *pldev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 
 	i2c_del_adapter(&pmcmsptwi_adapter);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pldev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pmcmsptwi_data.irq) {
 		pmcmsptwi_writel(0,
 			pmcmsptwi_data.iobase + MSP_TWI_INT_MSK_REG_OFFSET);
@@ -632,6 +650,7 @@ static struct i2c_adapter pmcmsptwi_adapter = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* work with hotplug and coldplug */
 MODULE_ALIAS("platform:" DRV_NAME);
 
@@ -640,12 +659,18 @@ MODULE_ALIAS("platform:" DRV_NAME);
 static struct platform_driver pmcmsptwi_driver = {
 	.probe  = pmcmsptwi_probe,
 	.remove	= __devexit_p(pmcmsptwi_remove),
+=======
+static struct platform_driver pmcmsptwi_driver = {
+	.probe  = pmcmsptwi_probe,
+	.remove	= pmcmsptwi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init pmcmsptwi_init(void)
 {
@@ -663,9 +688,14 @@ MODULE_LICENSE("GPL");
 module_init(pmcmsptwi_init);
 module_exit(pmcmsptwi_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(pmcmsptwi_driver);
 
 MODULE_DESCRIPTION("PMC MSP TWI/SMBus/I2C driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:" DRV_NAME);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

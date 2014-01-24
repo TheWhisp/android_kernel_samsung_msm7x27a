@@ -105,10 +105,14 @@ static int htcherald_panel_resume(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver htcherald_panel_driver = {
 =======
 static struct platform_driver htcherald_panel_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver htcherald_panel_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= htcherald_panel_probe,
 	.remove		= htcherald_panel_remove,
 	.suspend	= htcherald_panel_suspend,
@@ -119,6 +123,7 @@ static struct platform_driver htcherald_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init htcherald_panel_drv_init(void)
 {
@@ -136,3 +141,6 @@ module_exit(htcherald_panel_drv_cleanup);
 =======
 module_platform_driver(htcherald_panel_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(htcherald_panel_driver);
+>>>>>>> refs/remotes/origin/master

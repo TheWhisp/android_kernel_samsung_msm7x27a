@@ -153,6 +153,7 @@ static const struct file_operations dccpprobe_fops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static __init int setup_jprobe(void)
 {
@@ -166,6 +167,8 @@ static __init int setup_jprobe(void)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static __init int dccpprobe_init(void)
 {
 	int ret = -ENOMEM;
@@ -174,6 +177,7 @@ static __init int dccpprobe_init(void)
 	spin_lock_init(&dccpw.lock);
 	if (kfifo_alloc(&dccpw.fifo, bufsize, GFP_KERNEL))
 		return ret;
+<<<<<<< HEAD
 	if (!proc_net_fops_create(&init_net, procname, S_IRUSR, &dccpprobe_fops))
 		goto err0;
 
@@ -183,13 +187,29 @@ static __init int dccpprobe_init(void)
 =======
 	ret = setup_jprobe();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!proc_create(procname, S_IRUSR, init_net.proc_net, &dccpprobe_fops))
+		goto err0;
+
+	ret = register_jprobe(&dccp_send_probe);
+	if (ret) {
+		ret = request_module("dccp");
+		if (!ret)
+			ret = register_jprobe(&dccp_send_probe);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err1;
 
 	pr_info("DCCP watch registered (port=%d)\n", port);
 	return 0;
 err1:
+<<<<<<< HEAD
 	proc_net_remove(&init_net, procname);
+=======
+	remove_proc_entry(procname, init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 err0:
 	kfifo_free(&dccpw.fifo);
 	return ret;
@@ -199,7 +219,11 @@ module_init(dccpprobe_init);
 static __exit void dccpprobe_exit(void)
 {
 	kfifo_free(&dccpw.fifo);
+<<<<<<< HEAD
 	proc_net_remove(&init_net, procname);
+=======
+	remove_proc_entry(procname, init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 	unregister_jprobe(&dccp_send_probe);
 
 }

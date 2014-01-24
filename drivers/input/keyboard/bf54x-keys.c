@@ -177,7 +177,11 @@ static irqreturn_t bfin_kpad_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit bfin_kpad_probe(struct platform_device *pdev)
+=======
+static int bfin_kpad_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bf54x_kpad *bf54x_kpad;
 	struct bfin_kpad_platform_data *pdata = pdev->dev.platform_data;
@@ -289,7 +293,12 @@ static int __devinit bfin_kpad_probe(struct platform_device *pdev)
 		__set_bit(EV_REP, input->evbit);
 
 	for (i = 0; i < input->keycodemax; i++)
+<<<<<<< HEAD
 		__set_bit(bf54x_kpad->keycode[i] & KEY_MAX, input->keybit);
+=======
+		if (bf54x_kpad->keycode[i] <= KEY_MAX)
+			__set_bit(bf54x_kpad->keycode[i], input->keybit);
+>>>>>>> refs/remotes/origin/master
 	__clear_bit(KEY_RESERVED, input->keybit);
 
 	error = input_register_device(input);
@@ -326,12 +335,19 @@ out0:
 	kfree(bf54x_kpad->keycode);
 out:
 	kfree(bf54x_kpad);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit bfin_kpad_remove(struct platform_device *pdev)
+=======
+static int bfin_kpad_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bfin_kpad_platform_data *pdata = pdev->dev.platform_data;
 	struct bf54x_kpad *bf54x_kpad = platform_get_drvdata(pdev);
@@ -346,7 +362,10 @@ static int __devexit bfin_kpad_remove(struct platform_device *pdev)
 
 	kfree(bf54x_kpad->keycode);
 	kfree(bf54x_kpad);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -385,15 +404,20 @@ static int bfin_kpad_resume(struct platform_device *pdev)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver bfin_kpad_device_driver = {
 =======
 static struct platform_driver bfin_kpad_device_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver bfin_kpad_device_driver = {
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRV_NAME,
 		.owner	= THIS_MODULE,
 	},
 	.probe		= bfin_kpad_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bfin_kpad_remove),
 	.suspend	= bfin_kpad_suspend,
 	.resume		= bfin_kpad_resume,
@@ -415,6 +439,13 @@ module_exit(bfin_kpad_exit);
 =======
 module_platform_driver(bfin_kpad_device_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= bfin_kpad_remove,
+	.suspend	= bfin_kpad_suspend,
+	.resume		= bfin_kpad_resume,
+};
+module_platform_driver(bfin_kpad_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");

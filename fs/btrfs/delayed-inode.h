@@ -26,10 +26,14 @@
 #include <linux/list.h>
 #include <linux/wait.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ctree.h"
 
@@ -47,6 +51,10 @@ struct btrfs_delayed_root {
 	 */
 	struct list_head prepare_list;
 	atomic_t items;		/* for delayed items */
+<<<<<<< HEAD
+=======
+	atomic_t items_seq;	/* for delayed items */
+>>>>>>> refs/remotes/origin/master
 	int nodes;		/* for delayed nodes */
 	wait_queue_head_t wait;
 };
@@ -90,6 +98,10 @@ static inline void btrfs_init_delayed_root(
 				struct btrfs_delayed_root *delayed_root)
 {
 	atomic_set(&delayed_root->items, 0);
+<<<<<<< HEAD
+=======
+	atomic_set(&delayed_root->items_seq, 0);
+>>>>>>> refs/remotes/origin/master
 	delayed_root->nodes = 0;
 	spin_lock_init(&delayed_root->lock);
 	init_waitqueue_head(&delayed_root->wait);
@@ -111,6 +123,11 @@ int btrfs_inode_delayed_dir_index_count(struct inode *inode);
 
 int btrfs_run_delayed_items(struct btrfs_trans_handle *trans,
 			    struct btrfs_root *root);
+<<<<<<< HEAD
+=======
+int btrfs_run_delayed_items_nr(struct btrfs_trans_handle *trans,
+			       struct btrfs_root *root, int nr);
+>>>>>>> refs/remotes/origin/master
 
 void btrfs_balance_delayed_items(struct btrfs_root *root);
 
@@ -119,6 +136,10 @@ int btrfs_commit_inode_delayed_items(struct btrfs_trans_handle *trans,
 /* Used for evicting the inode. */
 void btrfs_remove_delayed_node(struct inode *inode);
 void btrfs_kill_delayed_inode_items(struct inode *inode);
+<<<<<<< HEAD
+=======
+int btrfs_commit_inode_delayed_inode(struct inode *inode);
+>>>>>>> refs/remotes/origin/master
 
 
 int btrfs_delayed_update_inode(struct btrfs_trans_handle *trans,
@@ -128,6 +149,12 @@ int btrfs_fill_inode(struct inode *inode, u32 *rdev);
 /* Used for drop dead root */
 void btrfs_kill_all_delayed_nodes(struct btrfs_root *root);
 
+<<<<<<< HEAD
+=======
+/* Used for clean the transaction */
+void btrfs_destroy_delayed_inodes(struct btrfs_root *root);
+
+>>>>>>> refs/remotes/origin/master
 /* Used for readdir() */
 void btrfs_get_delayed_items(struct inode *inode, struct list_head *ins_list,
 			     struct list_head *del_list);
@@ -135,8 +162,12 @@ void btrfs_put_delayed_items(struct list_head *ins_list,
 			     struct list_head *del_list);
 int btrfs_should_delete_dir_index(struct list_head *del_list,
 				  u64 index);
+<<<<<<< HEAD
 int btrfs_readdir_delayed_dir_index(struct file *filp, void *dirent,
 				    filldir_t filldir,
+=======
+int btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
+>>>>>>> refs/remotes/origin/master
 				    struct list_head *ins_list);
 
 /* for init */

@@ -23,13 +23,20 @@
  */
 #include <linux/kernel_stat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/ioport.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqchip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/random.h>
 #include <linux/smp.h>
 #include <linux/init.h>
@@ -38,16 +45,23 @@
 #include <linux/list.h>
 #include <linux/kallsyms.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
 
 #include <asm/exception.h>
 <<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+
+#include <asm/exception.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 #include <asm/perftypes.h>
 
 /*
@@ -57,6 +71,8 @@
 #define irq_finish(irq) do { } while (0)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long irq_err_count;
 
 int arch_show_interrupts(struct seq_file *p, int prec)
@@ -81,7 +97,10 @@ void handle_IRQ(unsigned int irq, struct pt_regs *regs)
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
+<<<<<<< HEAD
 	perf_mon_interrupt_in();
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_enter();
 
 	/*
@@ -96,12 +115,17 @@ void handle_IRQ(unsigned int irq, struct pt_regs *regs)
 		generic_handle_irq(irq);
 	}
 
+<<<<<<< HEAD
 	/* AT91 specific workaround */
 	irq_finish(irq);
 
 	irq_exit();
 	set_irq_regs(old_regs);
 	perf_mon_interrupt_out();
+=======
+	irq_exit();
+	set_irq_regs(old_regs);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -118,10 +142,14 @@ void set_irq_flags(unsigned int irq, unsigned int iflags)
 	unsigned long clr = 0, set = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (irq >= NR_IRQS) {
 =======
 	if (irq >= nr_irqs) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (irq >= nr_irqs) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "Trying to set irq flags for IRQ%d\n", irq);
 		return;
 	}
@@ -135,11 +163,33 @@ void set_irq_flags(unsigned int irq, unsigned int iflags)
 	/* Order is clear bits in "clr" then set bits in "set" */
 	irq_modify_status(irq, clr, set & ~clr);
 }
+<<<<<<< HEAD
 
 void __init init_IRQ(void)
 {
 	machine_desc->init_irq();
 }
+=======
+EXPORT_SYMBOL_GPL(set_irq_flags);
+
+void __init init_IRQ(void)
+{
+	if (IS_ENABLED(CONFIG_OF) && !machine_desc->init_irq)
+		irqchip_init();
+	else
+		machine_desc->init_irq();
+}
+
+#ifdef CONFIG_MULTI_IRQ_HANDLER
+void __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
+{
+	if (handle_arch_irq)
+		return;
+
+	handle_arch_irq = handle_irq;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SPARSE_IRQ
 int __init arch_probe_nr_irqs(void)
@@ -172,16 +222,22 @@ static bool migrate_one_irq(struct irq_desc *desc)
 
 	c = irq_data_get_irq_chip(d);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->irq_set_affinity)
 		c->irq_set_affinity(d, affinity, true);
 	else
 		pr_debug("IRQ%u: unable to set affinity\n", d->irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!c->irq_set_affinity)
 		pr_debug("IRQ%u: unable to set affinity\n", d->irq);
 	else if (c->irq_set_affinity(d, affinity, true) == IRQ_SET_MASK_OK && ret)
 		cpumask_copy(d->affinity, affinity);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -204,6 +260,7 @@ void migrate_irqs(void)
 
 	for_each_irq_desc(i, desc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bool affinity_broken = false;
 
 		if (!desc)
@@ -211,6 +268,9 @@ void migrate_irqs(void)
 =======
 		bool affinity_broken;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bool affinity_broken;
+>>>>>>> refs/remotes/origin/master
 
 		raw_spin_lock(&desc->lock);
 		affinity_broken = migrate_one_irq(desc);

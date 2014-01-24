@@ -8,6 +8,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/jbd.h>
 #include <linux/capability.h>
@@ -18,15 +19,24 @@
 #include <linux/compat.h>
 #include <asm/uaccess.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mount.h>
 #include <linux/compat.h>
 #include <asm/uaccess.h>
 #include "ext3.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 long ext3_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct inode *inode = filp->f_dentry->d_inode;
+=======
+
+long ext3_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	struct ext3_inode_info *ei = EXT3_I(inode);
 	unsigned int flags;
 	unsigned short rsv_window_size;
@@ -52,10 +62,14 @@ long ext3_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			return -EFAULT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mnt_want_write(filp->f_path.mnt);
 =======
 		err = mnt_want_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 
@@ -122,10 +136,14 @@ flags_err:
 flags_out:
 		mutex_unlock(&inode->i_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
 =======
 		mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	case EXT3_IOC_GETVERSION:
@@ -142,10 +160,14 @@ flags_out:
 			return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mnt_want_write(filp->f_path.mnt);
 =======
 		err = mnt_want_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 		if (get_user(generation, (int __user *) arg)) {
@@ -154,17 +176,23 @@ flags_out:
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		handle = ext3_journal_start(inode, 1);
 		if (IS_ERR(handle)) {
 			err = PTR_ERR(handle);
 			goto setversion_out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&inode->i_mutex);
 		handle = ext3_journal_start(inode, 1);
 		if (IS_ERR(handle)) {
 			err = PTR_ERR(handle);
 			goto unlock_out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		err = ext3_reserve_inode_write(handle, inode, &iloc);
 		if (err == 0) {
@@ -173,6 +201,7 @@ flags_out:
 			err = ext3_mark_iloc_dirty(handle, inode, &iloc);
 		}
 		ext3_journal_stop(handle);
+<<<<<<< HEAD
 <<<<<<< HEAD
 setversion_out:
 		mnt_drop_write(filp->f_path.mnt);
@@ -203,6 +232,8 @@ setversion_out:
 		}
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 unlock_out:
 		mutex_unlock(&inode->i_mutex);
@@ -210,7 +241,10 @@ setversion_out:
 		mnt_drop_write_file(filp);
 		return err;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case EXT3_IOC_GETRSVSZ:
 		if (test_opt(inode->i_sb, RESERVATION)
 			&& S_ISREG(inode->i_mode)
@@ -226,10 +260,14 @@ setversion_out:
 			return -ENOTTY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mnt_want_write(filp->f_path.mnt);
 =======
 		err = mnt_want_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 
@@ -261,10 +299,14 @@ setversion_out:
 		mutex_unlock(&ei->truncate_mutex);
 setrsvsz_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
 =======
 		mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	case EXT3_IOC_GROUP_EXTEND: {
@@ -276,10 +318,14 @@ setrsvsz_out:
 			return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mnt_want_write(filp->f_path.mnt);
 =======
 		err = mnt_want_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 
@@ -295,10 +341,14 @@ setrsvsz_out:
 			err = err2;
 group_extend_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
 =======
 		mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	case EXT3_IOC_GROUP_ADD: {
@@ -310,10 +360,14 @@ group_extend_out:
 			return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mnt_want_write(filp->f_path.mnt);
 =======
 		err = mnt_want_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 
@@ -331,10 +385,14 @@ group_extend_out:
 			err = err2;
 group_add_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
 =======
 		mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	case FITRIM: {
@@ -347,10 +405,14 @@ group_add_out:
 			return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (copy_from_user(&range, (struct fstrim_range *)arg,
 =======
 		if (copy_from_user(&range, (struct fstrim_range __user *)arg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (copy_from_user(&range, (struct fstrim_range __user *)arg,
+>>>>>>> refs/remotes/origin/master
 				   sizeof(range)))
 			return -EFAULT;
 
@@ -359,10 +421,14 @@ group_add_out:
 			return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (copy_to_user((struct fstrim_range *)arg, &range,
 =======
 		if (copy_to_user((struct fstrim_range __user *)arg, &range,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (copy_to_user((struct fstrim_range __user *)arg, &range,
+>>>>>>> refs/remotes/origin/master
 				 sizeof(range)))
 			return -EFAULT;
 

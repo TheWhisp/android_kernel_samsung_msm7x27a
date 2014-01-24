@@ -73,6 +73,7 @@ static struct ctl_table x25_table[] = {
 	{ 0, },
 };
 
+<<<<<<< HEAD
 static struct ctl_path x25_path[] = {
 	{ .procname = "net", },
 	{ .procname = "x25", },
@@ -82,9 +83,18 @@ static struct ctl_path x25_path[] = {
 void __init x25_register_sysctl(void)
 {
 	x25_table_header = register_sysctl_paths(x25_path, x25_table);
+=======
+void __init x25_register_sysctl(void)
+{
+	x25_table_header = register_net_sysctl(&init_net, "net/x25", x25_table);
+>>>>>>> refs/remotes/origin/master
 }
 
 void x25_unregister_sysctl(void)
 {
+<<<<<<< HEAD
 	unregister_sysctl_table(x25_table_header);
+=======
+	unregister_net_sysctl_table(x25_table_header);
+>>>>>>> refs/remotes/origin/master
 }

@@ -1,9 +1,12 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * PHY functions
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2004-2007 Reyk Floeter <reyk@openbsd.org>
  * Copyright (c) 2006-2009 Nick Kossifidis <mickflemm@gmail.com>
  * Copyright (c) 2007-2008 Jiri Slaby <jirislaby@gmail.com>
@@ -24,6 +27,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/slab.h>
 
@@ -33,10 +37,17 @@
 #include "rfbuffer.h"
 #include "rfgain.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /***********************\
 * PHY related functions *
 \***********************/
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <asm/unaligned.h>
@@ -79,7 +90,10 @@
  * functions, what we have comes mostly from Atheros's code, reverse
  * engineering and patent docs/presentations etc.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /******************\
@@ -87,11 +101,14 @@
 \******************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Get the PHY Chip revision
  */
 u16 ath5k_hw_radio_revision(struct ath5k_hw *ah, unsigned int chan)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_radio_revision() - Get the PHY Chip revision
  * @ah: The &struct ath5k_hw
@@ -102,7 +119,10 @@ u16 ath5k_hw_radio_revision(struct ath5k_hw *ah, unsigned int chan)
  */
 u16
 ath5k_hw_radio_revision(struct ath5k_hw *ah, enum ieee80211_band band)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 	u32 srev;
@@ -112,18 +132,24 @@ ath5k_hw_radio_revision(struct ath5k_hw *ah, enum ieee80211_band band)
 	 * Set the radio chip access register
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (chan) {
 	case CHANNEL_2GHZ:
 		ath5k_hw_reg_write(ah, AR5K_PHY_SHIFT_2GHZ, AR5K_PHY(0));
 		break;
 	case CHANNEL_5GHZ:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (band) {
 	case IEEE80211_BAND_2GHZ:
 		ath5k_hw_reg_write(ah, AR5K_PHY_SHIFT_2GHZ, AR5K_PHY(0));
 		break;
 	case IEEE80211_BAND_5GHZ:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ath5k_hw_reg_write(ah, AR5K_PHY_SHIFT_5GHZ, AR5K_PHY(0));
 		break;
 	default:
@@ -131,10 +157,14 @@ ath5k_hw_radio_revision(struct ath5k_hw *ah, enum ieee80211_band band)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdelay(2);
 =======
 	usleep_range(2000, 2500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(2000, 2500);
+>>>>>>> refs/remotes/origin/master
 
 	/* ...wait until PHY is ready and read the selected radio revision */
 	ath5k_hw_reg_write(ah, 0x00001c16, AR5K_PHY(0x34));
@@ -158,6 +188,7 @@ ath5k_hw_radio_revision(struct ath5k_hw *ah, enum ieee80211_band band)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Check if a channel is supported
  */
@@ -170,6 +201,8 @@ bool ath5k_channel_ok(struct ath5k_hw *ah, u16 freq, unsigned int flags)
 			return true;
 	} else if (flags & CHANNEL_5GHZ)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_channel_ok() - Check if a channel is supported by the hw
  * @ah: The &struct ath5k_hw
@@ -189,7 +222,10 @@ ath5k_channel_ok(struct ath5k_hw *ah, struct ieee80211_channel *channel)
 		    (freq <= ah->ah_capabilities.cap_range.range_2ghz_max))
 			return true;
 	} else if (channel->band == IEEE80211_BAND_5GHZ)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((freq >= ah->ah_capabilities.cap_range.range_5ghz_min) &&
 		    (freq <= ah->ah_capabilities.cap_range.range_5ghz_max))
 			return true;
@@ -198,8 +234,11 @@ ath5k_channel_ok(struct ath5k_hw *ah, struct ieee80211_channel *channel)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool ath5k_hw_chan_has_spur_noise(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_chan_has_spur_noise() - Check if channel is sensitive to spur noise
  * @ah: The &struct ath5k_hw
@@ -207,7 +246,10 @@ bool ath5k_hw_chan_has_spur_noise(struct ath5k_hw *ah,
  */
 bool
 ath5k_hw_chan_has_spur_noise(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				struct ieee80211_channel *channel)
 {
 	u8 refclk_freq;
@@ -215,9 +257,13 @@ ath5k_hw_chan_has_spur_noise(struct ath5k_hw *ah,
 	if ((ah->ah_radio == AR5K_RF5112) ||
 	(ah->ah_radio == AR5K_RF5413) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	(ah->ah_radio == AR5K_RF2413) ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(ah->ah_radio == AR5K_RF2413) ||
+>>>>>>> refs/remotes/origin/master
 	(ah->ah_mac_version == (AR5K_SREV_AR2417 >> 4)))
 		refclk_freq = 40;
 	else
@@ -232,12 +278,15 @@ ath5k_hw_chan_has_spur_noise(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Used to modify RF Banks before writing them to AR5K_RF_BUFFER
  */
 static unsigned int ath5k_hw_rfb_op(struct ath5k_hw *ah,
 					const struct ath5k_rf_reg *rf_regs,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rfb_op() - Perform an operation on the given RF Buffer
  * @ah: The &struct ath5k_hw
@@ -252,7 +301,10 @@ static unsigned int ath5k_hw_rfb_op(struct ath5k_hw *ah,
  */
 static unsigned int
 ath5k_hw_rfb_op(struct ath5k_hw *ah, const struct ath5k_rf_reg *rf_regs,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					u32 val, u8 reg_id, bool set)
 {
 	const struct ath5k_rf_reg *rfreg = NULL;
@@ -304,10 +356,14 @@ ath5k_hw_rfb_op(struct ath5k_hw *ah, const struct ath5k_rf_reg *rf_regs,
 
 	for (bits_shifted = 0, bits_left = num_bits; bits_left > 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	position = 0, entry++) {
 =======
 	     position = 0, entry++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	     position = 0, entry++) {
+>>>>>>> refs/remotes/origin/master
 
 		last_bit = (position + bits_left > 8) ? 8 :
 					position + bits_left;
@@ -335,11 +391,15 @@ ath5k_hw_rfb_op(struct ath5k_hw *ah, const struct ath5k_rf_reg *rf_regs,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_write_ofdm_timings - set OFDM timings on AR5212
  *
 =======
  * ath5k_hw_write_ofdm_timings() - set OFDM timings on AR5212
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_write_ofdm_timings() - set OFDM timings on AR5212
+>>>>>>> refs/remotes/origin/master
  * @ah: the &struct ath5k_hw
  * @channel: the currently set channel upon reset
  *
@@ -351,17 +411,23 @@ ath5k_hw_rfb_op(struct ath5k_hw *ah, const struct ath5k_rf_reg *rf_regs,
  *
  * For more infos i think this patent is related
 <<<<<<< HEAD
+<<<<<<< HEAD
  * http://www.freepatentsonline.com/7184495.html
  */
 static inline int ath5k_hw_write_ofdm_timings(struct ath5k_hw *ah,
 	struct ieee80211_channel *channel)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * "http://www.freepatentsonline.com/7184495.html"
  */
 static inline int
 ath5k_hw_write_ofdm_timings(struct ath5k_hw *ah,
 				struct ieee80211_channel *channel)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	/* Get exponent and mantissa and set it */
 	u32 coef_scaled, coef_exp, coef_man,
@@ -369,10 +435,14 @@ ath5k_hw_write_ofdm_timings(struct ath5k_hw *ah,
 
 	BUG_ON(!(ah->ah_version == AR5K_AR5212) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		!(channel->hw_value & CHANNEL_OFDM));
 =======
 		(channel->hw_value == AR5K_MODE_11B));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(channel->hw_value == AR5K_MODE_11B));
+>>>>>>> refs/remotes/origin/master
 
 	/* Get coefficient
 	 * ALGO: coef = (5 * clock / carrier_freq) / 2
@@ -425,12 +495,18 @@ ath5k_hw_write_ofdm_timings(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_phy_disable() - Disable PHY
  * @ah: The &struct ath5k_hw
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ath5k_hw_phy_disable(struct ath5k_hw *ah)
 {
 	/*Just a try M.F.*/
@@ -440,11 +516,14 @@ int ath5k_hw_phy_disable(struct ath5k_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Wait for synth to settle
  */
 static void ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_wait_for_synth() - Wait for synth to settle
  * @ah: The &struct ath5k_hw
@@ -452,7 +531,10 @@ static void ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
  */
 static void
 ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			struct ieee80211_channel *channel)
 {
 	/*
@@ -464,10 +546,14 @@ ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
 		delay = ath5k_hw_reg_read(ah, AR5K_PHY_RX_DELAY) &
 			AR5K_PHY_RX_DELAY_M;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		delay = (channel->hw_value & CHANNEL_CCK) ?
 =======
 		delay = (channel->hw_value == AR5K_MODE_11B) ?
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		delay = (channel->hw_value == AR5K_MODE_11B) ?
+>>>>>>> refs/remotes/origin/master
 			((delay << 2) / 22) : (delay / 10);
 		if (ah->ah_bwmode == AR5K_BWMODE_10MHZ)
 			delay = delay << 1;
@@ -475,6 +561,7 @@ ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
 			delay = delay << 2;
 		/* XXX: /2 on turbo ? Let's be safe
 		 * for now */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		udelay(100 + delay);
 	} else {
@@ -484,6 +571,11 @@ ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
 	} else {
 		usleep_range(1000, 1500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usleep_range(100 + delay, 100 + (2 * delay));
+	} else {
+		usleep_range(1000, 1500);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -493,12 +585,18 @@ ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
 \**********************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
 =======
 /**
  * DOC: RF Gain optimization
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * DOC: RF Gain optimization
+ *
+>>>>>>> refs/remotes/origin/master
  * This code is used to optimize RF gain on different environments
  * (temperature mostly) based on feedback from a power detector.
  *
@@ -507,6 +605,7 @@ ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
  * no gain optimization ladder-.
  *
  * For more infos check out this patent doc
+<<<<<<< HEAD
 <<<<<<< HEAD
  * http://www.freepatentsonline.com/7400691.html
  *
@@ -525,6 +624,8 @@ ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
 
 /* Initialize ah_gain during attach */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * "http://www.freepatentsonline.com/7400691.html"
  *
  * This paper describes power drops as seen on the receiver due to
@@ -541,7 +642,10 @@ ath5k_hw_wait_for_synth(struct ath5k_hw *ah,
  * ath5k_hw_rfgain_opt_init() - Initialize ah_gain during attach
  * @ah: The &struct ath5k_hw
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ath5k_hw_rfgain_opt_init(struct ath5k_hw *ah)
 {
 	/* Initialize the gain optimization values */
@@ -566,18 +670,25 @@ int ath5k_hw_rfgain_opt_init(struct ath5k_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Schedule a gain probe check on the next transmited packet.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_request_rfgain_probe() - Request a PAPD probe packet
  * @ah: The &struct ath5k_hw
  *
  * Schedules a gain probe check on the next transmitted packet.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * That means our next packet is going to be sent with lower
  * tx power and a Peak to Average Power Detector (PAPD) will try
  * to measure the gain.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * XXX:  How about forcing a tx packet (bypassing PCU arbitrator etc)
  * just after we enable the probe so that we don't mess with
@@ -586,13 +697,18 @@ int ath5k_hw_rfgain_opt_init(struct ath5k_hw *ah)
  */
 static void ath5k_hw_request_rfgain_probe(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * TODO: Force a tx packet (bypassing PCU arbitrator etc)
  * just after we enable the probe so that we don't mess with
  * standard traffic.
  */
 static void
 ath5k_hw_request_rfgain_probe(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 
 	/* Skip if gain calibration is inactive or
@@ -611,10 +727,13 @@ ath5k_hw_request_rfgain_probe(struct ath5k_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Calculate gain_F measurement correction
  * based on the current step for RF5112 rev. 2 */
 static u32 ath5k_hw_rf_gainf_corr(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf_gainf_corr() - Calculate Gain_F measurement correction
  * @ah: The &struct ath5k_hw
@@ -624,7 +743,10 @@ static u32 ath5k_hw_rf_gainf_corr(struct ath5k_hw *ah)
  */
 static u32
 ath5k_hw_rf_gainf_corr(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mix, step;
 	u32 *rf;
@@ -678,12 +800,15 @@ ath5k_hw_rf_gainf_corr(struct ath5k_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Check if current gain_F measurement is in the range of our
  * power detector windows. If we get a measurement outside range
  * we know it's not accurate (detectors can't measure anything outside
  * their detection window) so we must ignore it */
 static bool ath5k_hw_rf_check_gainf_readback(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf_check_gainf_readback() - Validate Gain_F feedback from detector
  * @ah: The &struct ath5k_hw
@@ -697,7 +822,10 @@ static bool ath5k_hw_rf_check_gainf_readback(struct ath5k_hw *ah)
  */
 static bool
 ath5k_hw_rf_check_gainf_readback(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ath5k_rf_reg *rf_regs;
 	u32 step, mix_ovr, level[4];
@@ -720,10 +848,14 @@ ath5k_hw_rf_check_gainf_readback(struct ath5k_hw *ah)
 		level[1] = (step == 63) ? 50 : step + 4;
 		level[2] = (step != 63) ? 64 : level[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		level[3] = level[2] + 50 ;
 =======
 		level[3] = level[2] + 50;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		level[3] = level[2] + 50;
+>>>>>>> refs/remotes/origin/master
 
 		ah->ah_gain.g_high = level[3] -
 			(step == 63 ? AR5K_GAIN_DYN_ADJUST_HI_MARGIN : -5);
@@ -754,10 +886,13 @@ ath5k_hw_rf_check_gainf_readback(struct ath5k_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Perform gain_F adjustment by choosing the right set
  * of parameters from RF gain optimization ladder */
 static s8 ath5k_hw_rf_gainf_adjust(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf_gainf_adjust() - Perform Gain_F adjustment
  * @ah: The &struct ath5k_hw
@@ -767,7 +902,10 @@ static s8 ath5k_hw_rf_gainf_adjust(struct ath5k_hw *ah)
  */
 static s8
 ath5k_hw_rf_gainf_adjust(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ath5k_gain_opt *go;
 	const struct ath5k_gain_opt_step *g_step;
@@ -813,10 +951,14 @@ ath5k_hw_rf_gainf_adjust(struct ath5k_hw *ah)
 		for (ah->ah_gain.g_target = ah->ah_gain.g_current;
 				ah->ah_gain.g_target <= ah->ah_gain.g_low &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ah->ah_gain.g_step_idx < go->go_steps_count-1;
 =======
 				ah->ah_gain.g_step_idx < go->go_steps_count - 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ah->ah_gain.g_step_idx < go->go_steps_count - 1;
+>>>>>>> refs/remotes/origin/master
 				g_step = &go->go_step[ah->ah_gain.g_step_idx])
 			ah->ah_gain.g_target -= 2 *
 			    (go->go_step[++ah->ah_gain.g_step_idx].gos_gain -
@@ -828,10 +970,14 @@ ath5k_hw_rf_gainf_adjust(struct ath5k_hw *ah)
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_CALIBRATE,
 =======
 	ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 		"ret %d, gain step %u, current gain %u, target gain %u\n",
 		ret, ah->ah_gain.g_step_idx, ah->ah_gain.g_current,
 		ah->ah_gain.g_target);
@@ -839,6 +985,7 @@ done:
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Main callback for thermal RF gain calibration engine
  * Check for a new gain reading and schedule an adjustment
@@ -848,6 +995,8 @@ done:
  * adjustment */
 enum ath5k_rfgain ath5k_hw_gainf_calibrate(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_gainf_calibrate() - Do a gain_F calibration
  * @ah: The &struct ath5k_hw
@@ -860,7 +1009,10 @@ enum ath5k_rfgain ath5k_hw_gainf_calibrate(struct ath5k_hw *ah)
  */
 enum ath5k_rfgain
 ath5k_hw_gainf_calibrate(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 data, type;
 	struct ath5k_eeprom_info *ee = &ah->ah_capabilities.cap_eeprom;
@@ -901,20 +1053,28 @@ ath5k_hw_gainf_calibrate(struct ath5k_hw *ah)
 			ah->ah_gain.g_current =
 				ah->ah_gain.g_current >= ah->ah_gain.g_f_corr ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(ah->ah_gain.g_current-ah->ah_gain.g_f_corr) :
 =======
 				(ah->ah_gain.g_current - ah->ah_gain.g_f_corr) :
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				(ah->ah_gain.g_current - ah->ah_gain.g_f_corr) :
+>>>>>>> refs/remotes/origin/master
 				0;
 		}
 
 		/* Check if measurement is ok and if we need
 		 * to adjust gain, schedule a gain adjustment,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * else switch back to the acive state */
 =======
 		 * else switch back to the active state */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * else switch back to the active state */
+>>>>>>> refs/remotes/origin/master
 		if (ath5k_hw_rf_check_gainf_readback(ah) &&
 		AR5K_GAIN_CHECK_ADJUST(&ah->ah_gain) &&
 		ath5k_hw_rf_gainf_adjust(ah)) {
@@ -929,11 +1089,14 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Write initial RF gain table to set the RF sensitivity
  * this one works on all RF chips and has nothing to do
  * with gain_F calibration */
 static int ath5k_hw_rfgain_init(struct ath5k_hw *ah, enum ieee80211_band band)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rfgain_init() - Write initial RF gain settings to hw
  * @ah: The &struct ath5k_hw
@@ -946,7 +1109,10 @@ static int ath5k_hw_rfgain_init(struct ath5k_hw *ah, enum ieee80211_band band)
  */
 static int
 ath5k_hw_rfgain_init(struct ath5k_hw *ah, enum ieee80211_band band)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ath5k_ini_rfgain *ath5k_rfg;
 	unsigned int i, size, index;
@@ -994,13 +1160,17 @@ ath5k_hw_rfgain_init(struct ath5k_hw *ah, enum ieee80211_band band)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /********************\
 * RF Registers setup *
 \********************/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Setup RF registers by writing RF buffer on hw
@@ -1008,6 +1178,8 @@ ath5k_hw_rfgain_init(struct ath5k_hw *ah, enum ieee80211_band band)
 static int ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 	struct ieee80211_channel *channel, unsigned int mode)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rfregs_init() - Initialize RF register settings
  * @ah: The &struct ath5k_hw
@@ -1021,7 +1193,10 @@ static int
 ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 			struct ieee80211_channel *channel,
 			unsigned int mode)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ath5k_rf_reg *rf_regs;
 	const struct ath5k_ini_rfbuffer *ini_rfb;
@@ -1101,10 +1276,14 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 								GFP_KERNEL);
 		if (ah->ah_rf_banks == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ATH5K_ERR(ah->ah_sc, "out of memory\n");
 =======
 			ATH5K_ERR(ah, "out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ATH5K_ERR(ah, "out of memory\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 	}
@@ -1115,10 +1294,14 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 	for (i = 0; i < ah->ah_rf_banks_size; i++) {
 		if (ini_rfb[i].rfb_bank >= AR5K_MAX_RF_BANKS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ATH5K_ERR(ah->ah_sc, "invalid bank\n");
 =======
 			ATH5K_ERR(ah, "invalid bank\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ATH5K_ERR(ah, "invalid bank\n");
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 
@@ -1133,6 +1316,7 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 
 	/* Set Output and Driver bias current (OB/DB) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (channel->hw_value & CHANNEL_2GHZ) {
 
 		if (channel->hw_value & CHANNEL_CCK)
@@ -1141,6 +1325,11 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 
 		if (channel->hw_value == AR5K_MODE_11B)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (channel->band == IEEE80211_BAND_2GHZ) {
+
+		if (channel->hw_value == AR5K_MODE_11B)
+>>>>>>> refs/remotes/origin/master
 			ee_mode = AR5K_EEPROM_MODE_11B;
 		else
 			ee_mode = AR5K_EEPROM_MODE_11G;
@@ -1150,10 +1339,14 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 		 * in eeprom on ee->ee_ob[ee_mode][0]
 		 *
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * For all other chips we use OB/DB for 2Ghz
 =======
 		 * For all other chips we use OB/DB for 2GHz
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * For all other chips we use OB/DB for 2GHz
+>>>>>>> refs/remotes/origin/master
 		 * stored in the b/g modal section just like
 		 * 802.11a on ee->ee_ob[ee_mode][1] */
 		if ((ah->ah_radio == AR5K_RF5111) ||
@@ -1170,10 +1363,14 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 
 	/* RF5111 always needs OB/DB for 5GHz, even if we use 2GHz */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if ((channel->hw_value & CHANNEL_5GHZ) ||
 =======
 	} else if ((channel->band == IEEE80211_BAND_5GHZ) ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if ((channel->band == IEEE80211_BAND_5GHZ) ||
+>>>>>>> refs/remotes/origin/master
 			(ah->ah_radio == AR5K_RF5111)) {
 
 		/* For 11a, Turbo and XR we need to choose
@@ -1206,10 +1403,14 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 
 		/* Set gain_F settings according to current step */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (channel->hw_value & CHANNEL_OFDM) {
 =======
 		if (channel->hw_value != AR5K_MODE_11B) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (channel->hw_value != AR5K_MODE_11B) {
+>>>>>>> refs/remotes/origin/master
 
 			AR5K_REG_WRITE_BITS(ah, AR5K_PHY_FRAME_CTL,
 					AR5K_PHY_FRAME_CTL_TX_CLIP,
@@ -1267,10 +1468,14 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 
 		/* Set gain_F settings according to current step */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (channel->hw_value & CHANNEL_OFDM) {
 =======
 		if (channel->hw_value != AR5K_MODE_11B) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (channel->hw_value != AR5K_MODE_11B) {
+>>>>>>> refs/remotes/origin/master
 
 			ath5k_hw_rfb_op(ah, rf_regs, g_step->gos_param[0],
 						AR5K_RF_MIXGAIN_OVR, true);
@@ -1329,6 +1534,7 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 
 			/* Lower synth voltage on Rev 2 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath5k_hw_rfb_op(ah, rf_regs, 2,
 					AR5K_RF_HIGH_VC_CP, true);
 
@@ -1341,6 +1547,8 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 			ath5k_hw_rfb_op(ah, rf_regs, 2,
 					AR5K_RF_PUSH_UP, true);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (ah->ah_radio == AR5K_RF5112 &&
 			    (ah->ah_radio_5ghz_revision & AR5K_SREV_REV) > 0) {
 				ath5k_hw_rfb_op(ah, rf_regs, 2,
@@ -1355,7 +1563,10 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 				ath5k_hw_rfb_op(ah, rf_regs, 2,
 						AR5K_RF_PUSH_UP, true);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			/* Decrease power consumption on 5213+ BaseBand */
 			if (ah->ah_phy_revision >= AR5K_SREV_PHY_5212A) {
@@ -1397,10 +1608,14 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 
 	if (ah->ah_radio == AR5K_RF5413 &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	channel->hw_value & CHANNEL_2GHZ) {
 =======
 	channel->band == IEEE80211_BAND_2GHZ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	channel->band == IEEE80211_BAND_2GHZ) {
+>>>>>>> refs/remotes/origin/master
 
 		ath5k_hw_rfb_op(ah, rf_regs, 1, AR5K_RF_DERBY_CHAN_SEL_MODE,
 									true);
@@ -1428,6 +1643,7 @@ ath5k_hw_rfregs_init(struct ath5k_hw *ah,
 \**************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Conversion needed for RF5110
  */
@@ -1442,6 +1658,8 @@ static u32 ath5k_hw_rf5110_chan2athchan(struct ieee80211_channel *channel)
 	 * different RF/PHY part.
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf5110_chan2athchan() - Convert channel freq on RF5110
  * @channel: The &struct ieee80211_channel
@@ -1454,7 +1672,10 @@ ath5k_hw_rf5110_chan2athchan(struct ieee80211_channel *channel)
 {
 	u32 athchan;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	athchan = (ath5k_hw_bitswap(
 			(ieee80211_frequency_to_channel(
 				channel->center_freq) - 24) / 2, 5)
@@ -1463,11 +1684,14 @@ ath5k_hw_rf5110_chan2athchan(struct ieee80211_channel *channel)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set channel on RF5110
  */
 static int ath5k_hw_rf5110_channel(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf5110_channel() - Set channel frequency on RF5110
  * @ah: The &struct ath5k_hw
@@ -1475,7 +1699,10 @@ static int ath5k_hw_rf5110_channel(struct ath5k_hw *ah,
  */
 static int
 ath5k_hw_rf5110_channel(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *channel)
 {
 	u32 data;
@@ -1487,20 +1714,27 @@ ath5k_hw_rf5110_channel(struct ath5k_hw *ah,
 	ath5k_hw_reg_write(ah, data, AR5K_RF_BUFFER);
 	ath5k_hw_reg_write(ah, 0, AR5K_RF_BUFFER_CONTROL_0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdelay(1);
 =======
 	usleep_range(1000, 1500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(1000, 1500);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Conversion needed for 5111
  */
 static int ath5k_hw_rf5111_chan2athchan(unsigned int ieee,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf5111_chan2athchan() - Handle 2GHz channels on RF5111/2111
  * @ieee: IEEE channel number
@@ -1513,7 +1747,10 @@ static int ath5k_hw_rf5111_chan2athchan(unsigned int ieee,
  */
 static int
 ath5k_hw_rf5111_chan2athchan(unsigned int ieee,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ath5k_athchan_2ghz *athchan)
 {
 	int channel;
@@ -1540,11 +1777,14 @@ ath5k_hw_rf5111_chan2athchan(unsigned int ieee,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set channel on 5111
  */
 static int ath5k_hw_rf5111_channel(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf5111_channel() - Set channel frequency on RF5111/2111
  * @ah: The &struct ath5k_hw
@@ -1552,7 +1792,10 @@ static int ath5k_hw_rf5111_channel(struct ath5k_hw *ah,
  */
 static int
 ath5k_hw_rf5111_channel(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *channel)
 {
 	struct ath5k_athchan_2ghz ath5k_channel_2ghz;
@@ -1567,10 +1810,14 @@ ath5k_hw_rf5111_channel(struct ath5k_hw *ah,
 	data0 = data1 = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (channel->hw_value & CHANNEL_2GHZ) {
 =======
 	if (channel->band == IEEE80211_BAND_2GHZ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (channel->band == IEEE80211_BAND_2GHZ) {
+>>>>>>> refs/remotes/origin/master
 		/* Map 2GHz channel to 5GHz Atheros channel ID */
 		ret = ath5k_hw_rf5111_chan2athchan(
 			ieee80211_frequency_to_channel(channel->center_freq),
@@ -1602,11 +1849,14 @@ ath5k_hw_rf5111_channel(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set channel on 5112 and newer
  */
 static int ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf5112_channel() - Set channel frequency on 5112 and newer
  * @ah: The &struct ath5k_hw
@@ -1621,7 +1871,10 @@ static int ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
  */
 static int
 ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *channel)
 {
 	u32 data, data0, data1, data2;
@@ -1631,12 +1884,15 @@ ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
 	c = channel->center_freq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (c < 4800) {
 		if (!((c - 2224) % 5)) {
 			data0 = ((2 * (c - 704)) - 3040) / 10;
 			data1 = 1;
 		} else if (!((c - 2192) % 5)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* My guess based on code:
 	 * 2GHz RF has 2 synth modes, one with a Local Oscillator
 	 * at 2224Hz and one with a LO at 2192Hz. IF is 1520Hz
@@ -1653,7 +1909,10 @@ ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
 		 * below/above (standard channels without channel 14) */
 		} else if (!((c - 2192) % 5)) {
 			/* Same as (c - 2192) / 5 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data0 = ((2 * (c - 672)) - 3040) / 10;
 			data1 = 0;
 		} else
@@ -1661,7 +1920,10 @@ ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
 
 		data0 = ath5k_hw_bitswap((data0 << 2) & 0xff, 8);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* This is more complex, we have a single synthesizer with
 	 * 4 reference clock settings (?) based on frequency spacing
 	 * and set using data2. LO is at 4800Hz and data0 is again used
@@ -1671,7 +1933,10 @@ ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
 	 * that mentions a method called dual direct conversion
 	 * with 1GHz sliding IF for RF5110. Maybe that's what we
 	 * have here, or an updated version. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if ((c % 5) != 2 || c > 5435) {
 		if (!(c % 20) && c >= 5120) {
 			data0 = ath5k_hw_bitswap(((c - 4800) / 20 << 2), 8);
@@ -1698,11 +1963,14 @@ ath5k_hw_rf5112_channel(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set the channel on the RF2425
  */
 static int ath5k_hw_rf2425_channel(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_rf2425_channel() - Set channel frequency on RF2425
  * @ah: The &struct ath5k_hw
@@ -1713,7 +1981,10 @@ static int ath5k_hw_rf2425_channel(struct ath5k_hw *ah,
  */
 static int
 ath5k_hw_rf2425_channel(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *channel)
 {
 	u32 data, data0, data2;
@@ -1750,11 +2021,14 @@ ath5k_hw_rf2425_channel(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set a channel on the radio chip
  */
 static int ath5k_hw_channel(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_channel() - Set a channel on the radio chip
  * @ah: The &struct ath5k_hw
@@ -1765,11 +2039,15 @@ static int ath5k_hw_channel(struct ath5k_hw *ah,
  */
 static int
 ath5k_hw_channel(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *channel)
 {
 	int ret;
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Check bounds supported by the PHY (we don't care about regultory
 	 * restrictions at this point). Note: hw_value already has the band
@@ -1778,12 +2056,17 @@ ath5k_hw_channel(struct ath5k_hw *ah,
 	if (!ath5k_channel_ok(ah, channel->center_freq, channel->hw_value)) {
 		ATH5K_ERR(ah->ah_sc,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Check bounds supported by the PHY (we don't care about regulatory
 	 * restrictions at this point).
 	 */
 	if (!ath5k_channel_ok(ah, channel)) {
 		ATH5K_ERR(ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"channel frequency (%u MHz) out of supported "
 			"band range\n",
 			channel->center_freq);
@@ -1827,16 +2110,23 @@ ath5k_hw_channel(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*****************\
   PHY calibration
 \*****************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static s32 ath5k_hw_read_measured_noise_floor(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * DOC: PHY Calibration routines
  *
@@ -1872,7 +2162,10 @@ static s32 ath5k_hw_read_measured_noise_floor(struct ath5k_hw *ah)
  */
 static s32
 ath5k_hw_read_measured_noise_floor(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	s32 val;
 
@@ -1881,15 +2174,21 @@ ath5k_hw_read_measured_noise_floor(struct ath5k_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ath5k_hw_init_nfcal_hist(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_init_nfcal_hist() - Initialize NF calibration history buffer
  * @ah: The &struct ath5k_hw
  */
 void
 ath5k_hw_init_nfcal_hist(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -1898,6 +2197,7 @@ ath5k_hw_init_nfcal_hist(struct ath5k_hw *ah)
 		ah->ah_nfcal_hist.nfval[i] = AR5K_TUNE_CCA_MAX_GOOD_VALUE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
 {
@@ -1908,6 +2208,8 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
 
 static s16 ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_update_nfcal_hist() - Update NF calibration history buffer
  * @ah: The &struct ath5k_hw
@@ -1926,7 +2228,10 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
  */
 static s16
 ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	s16 sort[ATH5K_NF_CAL_HIST_MAX];
 	s16 tmp;
@@ -1936,20 +2241,27 @@ ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
 	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
 		for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (sort[j] > sort[j-1]) {
 				tmp = sort[j];
 				sort[j] = sort[j-1];
 				sort[j-1] = tmp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (sort[j] > sort[j - 1]) {
 				tmp = sort[j];
 				sort[j] = sort[j - 1];
 				sort[j - 1] = tmp;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
 	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_CALIBRATE,
 			"cal %d:%d\n", i, sort[i]);
@@ -1970,6 +2282,8 @@ ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
  */
 void ath5k_hw_update_noise_floor(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
 			"cal %d:%d\n", i, sort[i]);
 	}
@@ -1986,7 +2300,10 @@ void ath5k_hw_update_noise_floor(struct ath5k_hw *ah)
  */
 void
 ath5k_hw_update_noise_floor(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath5k_eeprom_info *ee = &ah->ah_capabilities.cap_eeprom;
 	u32 val;
@@ -1996,21 +2313,31 @@ ath5k_hw_update_noise_floor(struct ath5k_hw *ah)
 	/* keep last value if calibration hasn't completed */
 	if (ath5k_hw_reg_read(ah, AR5K_PHY_AGCCTL) & AR5K_PHY_AGCCTL_NF) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_CALIBRATE,
 =======
 		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"NF did not complete in calibration window\n");
 
 		return;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ah->ah_cal_mask |= AR5K_CALIBRATION_NF;
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	ee_mode = ath5k_eeprom_mode_from_channel(ah->ah_current_channel);
+=======
+	ah->ah_cal_mask |= AR5K_CALIBRATION_NF;
+
+	ee_mode = ath5k_eeprom_mode_from_channel(ah, ah->ah_current_channel);
+>>>>>>> refs/remotes/origin/master
 
 	/* completed NF calibration, test threshold */
 	nf = ath5k_hw_read_measured_noise_floor(ah);
@@ -2018,10 +2345,14 @@ ath5k_hw_update_noise_floor(struct ath5k_hw *ah)
 
 	if (nf > threshold) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_CALIBRATE,
 =======
 		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"noise floor failure detected; "
 			"read %d, threshold %d\n",
 			nf, threshold);
@@ -2059,6 +2390,7 @@ ath5k_hw_update_noise_floor(struct ath5k_hw *ah)
 	ah->ah_noise_floor = nf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_CALIBRATE,
 		"noise floor calibrated: %d\n", nf);
 }
@@ -2069,6 +2401,8 @@ ath5k_hw_update_noise_floor(struct ath5k_hw *ah)
  */
 static int ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ah->ah_cal_mask &= ~AR5K_CALIBRATION_NF;
 
 	ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
@@ -2084,18 +2418,27 @@ static int ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
  */
 static int
 ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *channel)
 {
 	u32 phy_sig, phy_agc, phy_sat, beacon;
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!(ah->ah_cal_mask & AR5K_CALIBRATION_FULL))
 		return 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(ah->ah_cal_mask & AR5K_CALIBRATION_FULL))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Disable beacons and RX/TX queues, wait
 	 */
@@ -2105,10 +2448,14 @@ ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
 	ath5k_hw_reg_write(ah, beacon & ~AR5K_BEACON_ENABLE, AR5K_BEACON_5210);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdelay(2);
 =======
 	usleep_range(2000, 2500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(2000, 2500);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set the channel (with AGC turned off)
@@ -2122,10 +2469,14 @@ ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
 	 */
 	ath5k_hw_reg_write(ah, AR5K_PHY_ACT_ENABLE, AR5K_PHY_ACT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdelay(1);
 =======
 	usleep_range(1000, 1500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(1000, 1500);
+>>>>>>> refs/remotes/origin/master
 
 	AR5K_REG_DISABLE_BITS(ah, AR5K_PHY_AGC, AR5K_PHY_AGC_DISABLE);
 
@@ -2163,10 +2514,14 @@ ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
 	AR5K_REG_DISABLE_BITS(ah, AR5K_PHY_AGC, AR5K_PHY_AGC_DISABLE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdelay(1);
 =======
 	usleep_range(1000, 1500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usleep_range(1000, 1500);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Enable calibration and wait until completion
@@ -2183,10 +2538,14 @@ ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
 
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "calibration timeout (%uMHz)\n",
 =======
 		ATH5K_ERR(ah, "calibration timeout (%uMHz)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_ERR(ah, "calibration timeout (%uMHz)\n",
+>>>>>>> refs/remotes/origin/master
 				channel->center_freq);
 		return ret;
 	}
@@ -2202,6 +2561,7 @@ ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Perform I/Q calibration on RF5111/5112 and newer chips
 =======
@@ -2209,6 +2569,11 @@ ath5k_hw_rf5110_calibrate(struct ath5k_hw *ah,
  * ath5k_hw_rf511x_iq_calibrate() - Perform I/Q calibration on RF5111 and newer
  * @ah: The &struct ath5k_hw
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * ath5k_hw_rf511x_iq_calibrate() - Perform I/Q calibration on RF5111 and newer
+ * @ah: The &struct ath5k_hw
+>>>>>>> refs/remotes/origin/master
  */
 static int
 ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
@@ -2218,6 +2583,7 @@ ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ah->ah_calibration ||
 		ath5k_hw_reg_read(ah, AR5K_PHY_IQ) & AR5K_PHY_IQ_RUN)
 		return 0;
@@ -2225,6 +2591,8 @@ ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
 	/* Calibration has finished, get the results and re-run */
 	/* work around empty results which can apparently happen on 5212 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Skip if I/Q calibration is not needed or if it's still running */
 	if (!ah->ah_iq_cal_needed)
 		return -EINVAL;
@@ -2238,16 +2606,23 @@ ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
 
 	/* Work around for empty results which can apparently happen on 5212:
 	 * Read registers up to 10 times until we get both i_pr and q_pwr */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i <= 10; i++) {
 		iq_corr = ath5k_hw_reg_read(ah, AR5K_PHY_IQRES_CAL_CORR);
 		i_pwr = ath5k_hw_reg_read(ah, AR5K_PHY_IQRES_CAL_PWR_I);
 		q_pwr = ath5k_hw_reg_read(ah, AR5K_PHY_IQRES_CAL_PWR_Q);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_DBG_UNLIMIT(ah->ah_sc, ATH5K_DEBUG_CALIBRATE,
 =======
 		ATH5K_DBG_UNLIMIT(ah, ATH5K_DEBUG_CALIBRATE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_DBG_UNLIMIT(ah, ATH5K_DEBUG_CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"iq_corr:%x i_pwr:%x q_pwr:%x", iq_corr, i_pwr, q_pwr);
 		if (i_pwr && q_pwr)
 			break;
@@ -2261,10 +2636,13 @@ ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
 		q_coffd = q_pwr >> 7;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* protect against divide by 0 and loss of sign bits */
 	if (i_coffd == 0 || q_coffd < 2)
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* In case i_coffd became zero, cancel calibration
 	 * not only it's too small, it'll also result a divide
 	 * by zero later on. */
@@ -2272,7 +2650,10 @@ ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
 		return -ECANCELED;
 
 	/* Protect against loss of sign bits */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	i_coff = (-iq_corr) / i_coffd;
 	i_coff = clamp(i_coff, -32, 31); /* signed 6 bit */
@@ -2284,10 +2665,14 @@ ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
 	q_coff = clamp(q_coff, -16, 15); /* signed 5 bit */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ATH5K_DBG_UNLIMIT(ah->ah_sc, ATH5K_DEBUG_CALIBRATE,
 =======
 	ATH5K_DBG_UNLIMIT(ah, ATH5K_DEBUG_CALIBRATE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ATH5K_DBG_UNLIMIT(ah, ATH5K_DEBUG_CALIBRATE,
+>>>>>>> refs/remotes/origin/master
 			"new I:%d Q:%d (i_coffd:%x q_coffd:%x)",
 			i_coff, q_coff, i_coffd, q_coffd);
 
@@ -2306,11 +2691,14 @@ ath5k_hw_rf511x_iq_calibrate(struct ath5k_hw *ah)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Perform a PHY calibration
  */
 int ath5k_hw_phy_calibrate(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_phy_calibrate() - Perform a PHY calibration
  * @ah: The &struct ath5k_hw
@@ -2322,12 +2710,16 @@ int ath5k_hw_phy_calibrate(struct ath5k_hw *ah,
  */
 int
 ath5k_hw_phy_calibrate(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ieee80211_channel *channel)
 {
 	int ret;
 
 	if (ah->ah_radio == AR5K_RF5110)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = ath5k_hw_rf5110_calibrate(ah, channel);
 	else {
@@ -2336,6 +2728,8 @@ ath5k_hw_phy_calibrate(struct ath5k_hw *ah,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return ath5k_hw_rf5110_calibrate(ah, channel);
 
 	ret = ath5k_hw_rf511x_iq_calibrate(ah);
@@ -2361,7 +2755,10 @@ ath5k_hw_phy_calibrate(struct ath5k_hw *ah,
 	if (!(ah->ah_cal_mask & AR5K_CALIBRATION_NF))
 		ath5k_hw_update_noise_floor(ah);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2371,7 +2768,10 @@ ath5k_hw_phy_calibrate(struct ath5k_hw *ah,
 \***************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_set_spur_mitigation_filter() - Configure SPUR filter
  * @ah: The &struct ath5k_hw
@@ -2382,7 +2782,10 @@ ath5k_hw_phy_calibrate(struct ath5k_hw *ah,
  * generated due to "reflection" effects, for more information on this
  * method check out patent US7643810
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 ath5k_hw_set_spur_mitigation_filter(struct ath5k_hw *ah,
 				struct ieee80211_channel *channel)
@@ -2400,10 +2803,14 @@ ath5k_hw_set_spur_mitigation_filter(struct ath5k_hw *ah,
 	 * are stored on EEPROM, check out ath5k_eeprom_bin2freq) and scale
 	 * up by 2 so we can compare it later */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (channel->hw_value & CHANNEL_2GHZ) {
 =======
 	if (channel->band == IEEE80211_BAND_2GHZ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (channel->band == IEEE80211_BAND_2GHZ) {
+>>>>>>> refs/remotes/origin/master
 		chan_fbin = (channel->center_freq - 2300) * 10;
 		freq_band = AR5K_EEPROM_BAND_2GHZ;
 	} else {
@@ -2459,17 +2866,27 @@ ath5k_hw_set_spur_mitigation_filter(struct ath5k_hw *ah,
 			spur_delta_phase = (spur_offset << 18) / 25;
 			spur_freq_sigma_delta = (spur_delta_phase >> 10);
 			symbol_width = AR5K_SPUR_SYMBOL_WIDTH_BASE_100Hz / 2;
+<<<<<<< HEAD
+=======
+			break;
+>>>>>>> refs/remotes/origin/master
 		case AR5K_BWMODE_5MHZ:
 			/* Both sample_freq and chip_freq are 10MHz (?) */
 			spur_delta_phase = (spur_offset << 19) / 25;
 			spur_freq_sigma_delta = (spur_delta_phase >> 10);
 			symbol_width = AR5K_SPUR_SYMBOL_WIDTH_BASE_100Hz / 4;
+<<<<<<< HEAD
 		default:
 <<<<<<< HEAD
 			if (channel->hw_value == CHANNEL_A) {
 =======
 			if (channel->band == IEEE80211_BAND_5GHZ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			break;
+		default:
+			if (channel->band == IEEE80211_BAND_5GHZ) {
+>>>>>>> refs/remotes/origin/master
 				/* Both sample_freq and chip_freq are 40MHz */
 				spur_delta_phase = (spur_offset << 17) / 25;
 				spur_freq_sigma_delta =
@@ -2589,10 +3006,14 @@ ath5k_hw_set_spur_mitigation_filter(struct ath5k_hw *ah,
 	} else if (ath5k_hw_reg_read(ah, AR5K_PHY_IQ) &
 	AR5K_PHY_IQ_SPUR_FILT_EN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Clean up spur mitigation settings and disable fliter */
 =======
 		/* Clean up spur mitigation settings and disable filter */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Clean up spur mitigation settings and disable filter */
+>>>>>>> refs/remotes/origin/master
 		AR5K_REG_WRITE_BITS(ah, AR5K_PHY_BIN_MASK_CTL,
 					AR5K_PHY_BIN_MASK_CTL_RATE, 0);
 		AR5K_REG_DISABLE_BITS(ah, AR5K_PHY_IQ,
@@ -2635,8 +3056,11 @@ ath5k_hw_set_spur_mitigation_filter(struct ath5k_hw *ah,
 \*****************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void /*TODO:Boundary check*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * DOC: Antenna control
  *
@@ -2693,7 +3117,10 @@ static void /*TODO:Boundary check*/
  * @ant: Antenna number
  */
 static void
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ath5k_hw_set_def_antenna(struct ath5k_hw *ah, u8 ant)
 {
 	if (ah->ah_version != AR5K_AR5210)
@@ -2701,15 +3128,21 @@ ath5k_hw_set_def_antenna(struct ath5k_hw *ah, u8 ant)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Enable/disable fast rx antenna diversity
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_set_fast_div() -  Enable/disable fast rx antenna diversity
  * @ah: The &struct ath5k_hw
  * @ee_mode: One of enum ath5k_driver_mode
  * @enable: True to enable, false to disable
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static void
 ath5k_hw_set_fast_div(struct ath5k_hw *ah, u8 ee_mode, bool enable)
@@ -2750,7 +3183,10 @@ ath5k_hw_set_fast_div(struct ath5k_hw *ah, u8 ee_mode, bool enable)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_set_antenna_switch() - Set up antenna switch table
  * @ah: The &struct ath5k_hw
@@ -2759,7 +3195,10 @@ ath5k_hw_set_fast_div(struct ath5k_hw *ah, u8 ee_mode, bool enable)
  * Switch table comes from EEPROM and includes information on controlling
  * the 2 antenna RX attenuators
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void
 ath5k_hw_set_antenna_switch(struct ath5k_hw *ah, u8 ee_mode)
 {
@@ -2792,14 +3231,20 @@ ath5k_hw_set_antenna_switch(struct ath5k_hw *ah, u8 ee_mode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set antenna operating mode
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_set_antenna_mode() -  Set antenna operating mode
  * @ah: The &struct ath5k_hw
  * @ant_mode: One of enum ath5k_ant_mode
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void
 ath5k_hw_set_antenna_mode(struct ath5k_hw *ah, u8 ant_mode)
@@ -2820,6 +3265,7 @@ ath5k_hw_set_antenna_mode(struct ath5k_hw *ah, u8 ant_mode)
 
 	def_ant = ah->ah_def_ant;
 
+<<<<<<< HEAD
 	ee_mode = ath5k_eeprom_mode_from_channel(channel);
 	if (ee_mode < 0) {
 <<<<<<< HEAD
@@ -2830,6 +3276,9 @@ ath5k_hw_set_antenna_mode(struct ath5k_hw *ah, u8 ant_mode)
 			"invalid channel: %d\n", channel->center_freq);
 		return;
 	}
+=======
+	ee_mode = ath5k_eeprom_mode_from_channel(ah, channel);
+>>>>>>> refs/remotes/origin/master
 
 	switch (ant_mode) {
 	case AR5K_ANTMODE_DEFAULT:
@@ -2927,9 +3376,12 @@ ath5k_hw_set_antenna_mode(struct ath5k_hw *ah, u8 ant_mode)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Do linear interpolation between two given (x, y) points
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_get_interpolated_value() - Get interpolated Y val between two points
  * @target: X value of the middle point
@@ -2937,7 +3389,10 @@ ath5k_hw_set_antenna_mode(struct ath5k_hw *ah, u8 ant_mode)
  * @x_right: X value of the right point
  * @y_left: Y value of the left point
  * @y_right: Y value of the right point
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static s16
 ath5k_get_interpolated_value(s16 target, s16 x_left, s16 x_right,
@@ -2957,10 +3412,14 @@ ath5k_get_interpolated_value(s16 target, s16 x_left, s16 x_right,
 	 * to have some accuracy both for 0.5 and 0.25 steps.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ratio = ((100 * y_right - 100 * y_left)/(x_right - x_left));
 =======
 	ratio = ((100 * y_right - 100 * y_left) / (x_right - x_left));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ratio = ((100 * y_right - 100 * y_left) / (x_right - x_left));
+>>>>>>> refs/remotes/origin/master
 
 	/* Now scale down to be in range */
 	result = y_left + (ratio * (target - x_left) / 100);
@@ -2968,6 +3427,7 @@ ath5k_get_interpolated_value(s16 target, s16 x_left, s16 x_right,
 	return result;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Find vertical boundary (min pwr) for the linear PCDAC curve.
@@ -2977,6 +3437,8 @@ ath5k_get_interpolated_value(s16 target, s16 x_left, s16 x_right,
  * (x value) that is so that we don't go below y axis and have negative
  * pcdac values when creating the curve, or fill the table with zeroes.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_get_linear_pcdac_min() - Find vertical boundary (min pwr) for the
  * linear PCDAC curve
@@ -2989,7 +3451,10 @@ ath5k_get_interpolated_value(s16 target, s16 x_left, s16 x_right,
  * until we reach 1 (1 pcdac step) we need to know which point
  * (x value) that is so that we don't go below x axis and have negative
  * pcdac values when creating the curve, or fill the table with zeros.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static s16
 ath5k_get_linear_pcdac_min(const u8 *stepL, const u8 *stepR,
@@ -3036,8 +3501,11 @@ ath5k_get_linear_pcdac_min(const u8 *stepL, const u8 *stepR,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_create_power_curve() - Create a Power to PDADC or PCDAC curve
  * @pmin: Minimum power value (xmin)
@@ -3048,7 +3516,10 @@ ath5k_get_linear_pcdac_min(const u8 *stepL, const u8 *stepR,
  * @vpd_table: Array to fill with the full PCDAC/PDADC values (y values)
  * @type: One of enum ath5k_powertable_type (eeprom.h)
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Interpolate (pwr,vpd) points to create a Power to PDADC or a
  * Power to PCDAC curve.
  *
@@ -3068,10 +3539,14 @@ ath5k_create_power_curve(s16 pmin, s16 pmax,
 {
 	u8 idx[2] = { 0, 1 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s16 pwr_i = 2*pmin;
 =======
 	s16 pwr_i = 2 * pmin;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s16 pwr_i = 2 * pmin;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (num_points < 2)
@@ -3111,8 +3586,11 @@ ath5k_create_power_curve(s16 pmin, s16 pmax,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_get_chan_pcal_surrounding_piers() - Get surrounding calibration piers
  * for a given channel.
@@ -3121,7 +3599,10 @@ ath5k_create_power_curve(s16 pmin, s16 pmax,
  * @pcinfo_l: The &struct ath5k_chan_pcal_info to put the left cal. pier
  * @pcinfo_r: The &struct ath5k_chan_pcal_info to put the right cal. pier
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Get the surrounding per-channel power calibration piers
  * for a given frequency so that we can interpolate between
  * them and come up with an appropriate dataset for our current
@@ -3143,6 +3624,7 @@ ath5k_get_chan_pcal_surrounding_piers(struct ath5k_hw *ah,
 	idx_r = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(channel->hw_value & CHANNEL_OFDM)) {
 		pcinfo = ee->ee_pwr_cal_b;
 		mode = AR5K_EEPROM_MODE_11B;
@@ -3153,6 +3635,8 @@ ath5k_get_chan_pcal_surrounding_piers(struct ath5k_hw *ah,
 		pcinfo = ee->ee_pwr_cal_a;
 		mode = AR5K_EEPROM_MODE_11A;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (channel->hw_value) {
 	case AR5K_EEPROM_MODE_11A:
 		pcinfo = ee->ee_pwr_cal_a;
@@ -3167,7 +3651,10 @@ ath5k_get_chan_pcal_surrounding_piers(struct ath5k_hw *ah,
 		pcinfo = ee->ee_pwr_cal_g;
 		mode = AR5K_EEPROM_MODE_11G;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	max = ee->ee_n_piers[mode] - 1;
 
@@ -3217,12 +3704,15 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Get the surrounding per-rate power calibration data
  * for a given frequency and interpolate between power
  * values to set max target power supported by hw for
  * each rate.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_get_rate_pcal_data() - Get the interpolated per-rate power
  * calibration data
@@ -3234,7 +3724,10 @@ done:
  * for a given frequency and interpolate between power
  * values to set max target power supported by hw for
  * each rate on this frequency.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static void
 ath5k_get_rate_pcal_data(struct ath5k_hw *ah,
@@ -3251,6 +3744,7 @@ ath5k_get_rate_pcal_data(struct ath5k_hw *ah,
 	idx_r = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(channel->hw_value & CHANNEL_OFDM)) {
 		rpinfo = ee->ee_rate_tpwr_b;
 		mode = AR5K_EEPROM_MODE_11B;
@@ -3261,6 +3755,8 @@ ath5k_get_rate_pcal_data(struct ath5k_hw *ah,
 		rpinfo = ee->ee_rate_tpwr_a;
 		mode = AR5K_EEPROM_MODE_11A;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (channel->hw_value) {
 	case AR5K_MODE_11A:
 		rpinfo = ee->ee_rate_tpwr_a;
@@ -3275,7 +3771,10 @@ ath5k_get_rate_pcal_data(struct ath5k_hw *ah,
 		rpinfo = ee->ee_rate_tpwr_g;
 		mode = AR5K_EEPROM_MODE_11G;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	max = ee->ee_rate_target_pwr_num[mode] - 1;
 
@@ -3335,14 +3834,20 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_get_max_ctl_power() - Get max edge power for a given frequency
  * @ah: the &struct ath5k_hw
  * @channel: The &struct ieee80211_channel
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Get the max edge power for this channel if
  * we have such data from EEPROM's Conformance Test
  * Limits (CTL), and limit max power if needed.
@@ -3365,27 +3870,37 @@ ath5k_get_max_ctl_power(struct ath5k_hw *ah,
 	ctl_mode = ath_regd_get_band_ctl(regulatory, channel->band);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (channel->hw_value & CHANNEL_MODES) {
 	case CHANNEL_A:
 =======
 	switch (channel->hw_value) {
 	case AR5K_MODE_11A:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (channel->hw_value) {
+	case AR5K_MODE_11A:
+>>>>>>> refs/remotes/origin/master
 		if (ah->ah_bwmode == AR5K_BWMODE_40MHZ)
 			ctl_mode |= AR5K_CTL_TURBO;
 		else
 			ctl_mode |= AR5K_CTL_11A;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case CHANNEL_G:
 =======
 	case AR5K_MODE_11G:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case AR5K_MODE_11G:
+>>>>>>> refs/remotes/origin/master
 		if (ah->ah_bwmode == AR5K_BWMODE_40MHZ)
 			ctl_mode |= AR5K_CTL_TURBOG;
 		else
 			ctl_mode |= AR5K_CTL_11G;
 		break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	case CHANNEL_B:
 		ctl_mode |= AR5K_CTL_11B;
@@ -3397,6 +3912,11 @@ ath5k_get_max_ctl_power(struct ath5k_hw *ah,
 		ctl_mode |= AR5K_CTL_11B;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case AR5K_MODE_11B:
+		ctl_mode |= AR5K_CTL_11B;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return;
 	}
@@ -3432,10 +3952,14 @@ ath5k_get_max_ctl_power(struct ath5k_hw *ah,
 
 	if (edge_pwr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ah->ah_txpower.txp_max_pwr = 4*min(edge_pwr, max_chan_pwr);
 =======
 		ah->ah_txpower.txp_max_pwr = 4 * min(edge_pwr, max_chan_pwr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ah->ah_txpower.txp_max_pwr = 4 * min(edge_pwr, max_chan_pwr);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -3444,9 +3968,12 @@ ath5k_get_max_ctl_power(struct ath5k_hw *ah,
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Fill Power to PCDAC table on RF5111
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * DOC: Power to PCDAC table functions
  *
@@ -3480,7 +4007,10 @@ ath5k_get_max_ctl_power(struct ath5k_hw *ah,
  * @ah: The &struct ath5k_hw
  * @table_min: Minimum power (x min)
  * @table_max: Maximum power (x max)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * No further processing is needed for RF5111, the only thing we have to
  * do is fill the values below and above calibration range since eeprom data
@@ -3491,10 +4021,14 @@ ath5k_fill_pwr_to_pcdac_table(struct ath5k_hw *ah, s16* table_min,
 							s16 *table_max)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 	*pcdac_out = ah->ah_txpower.txp_pd_table;
 =======
 	u8	*pcdac_out = ah->ah_txpower.txp_pd_table;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	*pcdac_out = ah->ah_txpower.txp_pd_table;
+>>>>>>> refs/remotes/origin/master
 	u8	*pcdac_tmp = ah->ah_txpower.tmpL[0];
 	u8	pcdac_0, pcdac_n, pcdac_i, pwr_idx, i;
 	s16	min_pwr, max_pwr;
@@ -3514,12 +4048,17 @@ ath5k_fill_pwr_to_pcdac_table(struct ath5k_hw *ah, s16* table_min,
 	/* Copy values from pcdac_tmp */
 	pwr_idx = min_pwr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0 ; pwr_idx <= max_pwr &&
 	pcdac_i < AR5K_EEPROM_POWER_TABLE_SIZE; i++) {
 =======
 	for (i = 0; pwr_idx <= max_pwr &&
 		    pcdac_i < AR5K_EEPROM_POWER_TABLE_SIZE; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; pwr_idx <= max_pwr &&
+		    pcdac_i < AR5K_EEPROM_POWER_TABLE_SIZE; i++) {
+>>>>>>> refs/remotes/origin/master
 		pcdac_out[pcdac_i++] = pcdac_tmp[i];
 		pwr_idx++;
 	}
@@ -3531,11 +4070,14 @@ ath5k_fill_pwr_to_pcdac_table(struct ath5k_hw *ah, s16* table_min,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Combine available XPD Curves and fill Linear Power to PCDAC table
  * on RF5112
  *
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_combine_linear_pcdac_curves() - Combine available PCDAC Curves
  * @ah: The &struct ath5k_hw
@@ -3544,7 +4086,10 @@ ath5k_fill_pwr_to_pcdac_table(struct ath5k_hw *ah, s16* table_min,
  * @pdcurves: Number of pd curves
  *
  * Combine available XPD Curves and fill Linear Power to PCDAC table on RF5112
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * RFX112 can have up to 2 curves (one for low txpower range and one for
  * higher txpower range). We need to put them both on pcdac_out and place
  * them in the correct location. In case we only have one curve available
@@ -3557,10 +4102,14 @@ ath5k_combine_linear_pcdac_curves(struct ath5k_hw *ah, s16* table_min,
 						s16 *table_max, u8 pdcurves)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 	*pcdac_out = ah->ah_txpower.txp_pd_table;
 =======
 	u8	*pcdac_out = ah->ah_txpower.txp_pd_table;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	*pcdac_out = ah->ah_txpower.txp_pd_table;
+>>>>>>> refs/remotes/origin/master
 	u8	*pcdac_low_pwr;
 	u8	*pcdac_high_pwr;
 	u8	*pcdac_tmp;
@@ -3569,12 +4118,17 @@ ath5k_combine_linear_pcdac_curves(struct ath5k_hw *ah, s16* table_min,
 	s16	min_pwr_idx;
 	s16	mid_pwr_idx = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Edge flag turs on the 7nth bit on the PCDAC
 	 * to delcare the higher power curve (force values
 =======
 	/* Edge flag turns on the 7nth bit on the PCDAC
 	 * to declare the higher power curve (force values
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Edge flag turns on the 7nth bit on the PCDAC
+	 * to declare the higher power curve (force values
+>>>>>>> refs/remotes/origin/master
 	 * to be greater than 64). If we only have one curve
 	 * we don't need to set this, if we have 2 curves and
 	 * fill the table backwards this can also be used to
@@ -3616,10 +4170,14 @@ ath5k_combine_linear_pcdac_curves(struct ath5k_hw *ah, s16* table_min,
 
 	/* This is used when setting tx power*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ah->ah_txpower.txp_min_idx = min_pwr_idx/2;
 =======
 	ah->ah_txpower.txp_min_idx = min_pwr_idx / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ah->ah_txpower.txp_min_idx = min_pwr_idx / 2;
+>>>>>>> refs/remotes/origin/master
 
 	/* Fill Power to PCDAC table backwards */
 	pwr = max_pwr_idx;
@@ -3628,6 +4186,7 @@ ath5k_combine_linear_pcdac_curves(struct ath5k_hw *ah, s16* table_min,
 		 * edge flag and set pcdac_tmp to lower
 		 * power curve.*/
 		if (edge_flag == 0x40 &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 		(2*pwr <= (table_max[1] - table_min[0]) || pwr == 0)) {
 			edge_flag = 0x00;
@@ -3638,6 +4197,8 @@ ath5k_combine_linear_pcdac_curves(struct ath5k_hw *ah, s16* table_min,
 		/* Don't go below 1, extrapolate below if we have
 		 * already swithced to the lower power curve -or
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		(2 * pwr <= (table_max[1] - table_min[0]) || pwr == 0)) {
 			edge_flag = 0x00;
 			pcdac_tmp = pcdac_low_pwr;
@@ -3646,7 +4207,10 @@ ath5k_combine_linear_pcdac_curves(struct ath5k_hw *ah, s16* table_min,
 
 		/* Don't go below 1, extrapolate below if we have
 		 * already switched to the lower power curve -or
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 * we only have one curve and edge_flag is zero
 		 * anyway */
 		if (pcdac_tmp[pwr] < 1 && (edge_flag == 0x00)) {
@@ -3671,12 +4235,15 @@ ath5k_combine_linear_pcdac_curves(struct ath5k_hw *ah, s16* table_min,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Write PCDAC values on hw */
 static void
 ath5k_write_pcdac_table(struct ath5k_hw *ah)
 {
 	u8 	*pcdac_out = ah->ah_txpower.txp_pd_table;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_write_pcdac_table() - Write the PCDAC values on hw
  * @ah: The &struct ath5k_hw
@@ -3685,7 +4252,10 @@ static void
 ath5k_write_pcdac_table(struct ath5k_hw *ah)
 {
 	u8	*pcdac_out = ah->ah_txpower.txp_pd_table;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int	i;
 
 	/*
@@ -3694,12 +4264,17 @@ ath5k_write_pcdac_table(struct ath5k_hw *ah)
 	for (i = 0; i < (AR5K_EEPROM_POWER_TABLE_SIZE / 2); i++) {
 		ath5k_hw_reg_write(ah,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(((pcdac_out[2*i + 0] << 8 | 0xff) & 0xffff) << 0) |
 			(((pcdac_out[2*i + 1] << 8 | 0xff) & 0xffff) << 16),
 =======
 			(((pcdac_out[2 * i + 0] << 8 | 0xff) & 0xffff) << 0) |
 			(((pcdac_out[2 * i + 1] << 8 | 0xff) & 0xffff) << 16),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(((pcdac_out[2 * i + 0] << 8 | 0xff) & 0xffff) << 0) |
+			(((pcdac_out[2 * i + 1] << 8 | 0xff) & 0xffff) << 16),
+>>>>>>> refs/remotes/origin/master
 			AR5K_PHY_PCDAC_TXPOWER(i));
 	}
 }
@@ -3710,10 +4285,13 @@ ath5k_write_pcdac_table(struct ath5k_hw *ah)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set the gain boundaries and create final Power to PDADC table
  *
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * DOC: Power to PDADC table functions
  *
@@ -3740,7 +4318,10 @@ ath5k_write_pcdac_table(struct ath5k_hw *ah)
  * @pdcurves: Number of available curves
  *
  * Combine the various pd curves and create the final Power to PDADC table
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * We can have up to 4 pd curves, we need to do a similar process
  * as we do for RF5112. This time we don't have an edge_flag but we
  * set the gain boundaries on a separate register.
@@ -3865,14 +4446,20 @@ ath5k_combine_pwr_to_pdadc_curves(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Write PDADC values on hw */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_write_pwr_to_pdadc_table() - Write the PDADC values on hw
  * @ah: The &struct ath5k_hw
  * @ee_mode: One of enum ath5k_driver_mode
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 ath5k_write_pwr_to_pdadc_table(struct ath5k_hw *ah, u8 ee_mode)
 {
@@ -3920,6 +4507,7 @@ ath5k_write_pwr_to_pdadc_table(struct ath5k_hw *ah, u8 ee_mode)
 	 */
 	for (i = 0; i < (AR5K_EEPROM_POWER_TABLE_SIZE / 2); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath5k_hw_reg_write(ah,
 			((pdadc_out[4*i + 0] & 0xff) << 0) |
 			((pdadc_out[4*i + 1] & 0xff) << 8) |
@@ -3930,6 +4518,10 @@ ath5k_write_pwr_to_pdadc_table(struct ath5k_hw *ah, u8 ee_mode)
 		u32 val = get_unaligned_le32(&pdadc_out[4 * i]);
 		ath5k_hw_reg_write(ah, val, AR5K_PHY_PDADC_TXPOWER(i));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u32 val = get_unaligned_le32(&pdadc_out[4 * i]);
+		ath5k_hw_reg_write(ah, val, AR5K_PHY_PDADC_TXPOWER(i));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -3939,11 +4531,14 @@ ath5k_write_pwr_to_pdadc_table(struct ath5k_hw *ah, u8 ee_mode)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * This is the main function that uses all of the above
  * to set PCDAC/PDADC table on hw for the current channel.
  * This table is used for tx power calibration on the basband,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_setup_channel_powertable() - Set up power table for this channel
  * @ah: The &struct ath5k_hw
@@ -3954,7 +4549,10 @@ ath5k_write_pwr_to_pdadc_table(struct ath5k_hw *ah, u8 ee_mode)
  * This is the main function that uses all of the above
  * to set PCDAC/PDADC table on hw for the current channel.
  * This table is used for tx power calibration on the baseband,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * without it we get weird tx power levels and in some cases
  * distorted spectral mask
  */
@@ -4150,15 +4748,21 @@ ath5k_setup_channel_powertable(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Write power table for current channel to hw */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_write_channel_powertable() - Set power table for current channel on hw
  * @ah: The &struct ath5k_hw
  * @ee_mode: One of enum ath5k_driver_mode
  * @type: One of enum ath5k_powertable_type (eeprom.h)
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 ath5k_write_channel_powertable(struct ath5k_hw *ah, u8 ee_mode, u8 type)
 {
@@ -4168,6 +4772,7 @@ ath5k_write_channel_powertable(struct ath5k_hw *ah, u8 ee_mode, u8 type)
 		ath5k_write_pcdac_table(ah);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Per-rate tx power setting
@@ -4188,6 +4793,8 @@ ath5k_write_channel_powertable(struct ath5k_hw *ah, u8 ee_mode, u8 type)
  * Rate power table contains indices to PCDAC/PDADC table (0.5dB steps)
  * and is indexed as follows:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * DOC: Per-rate tx power setting
@@ -4206,13 +4813,19 @@ ath5k_write_channel_powertable(struct ath5k_hw *ah, u8 ee_mode, u8 type)
  *
  * Rate power table contains indices to PCDAC/PDADC table (0.5dB steps -
  * x values) and is indexed as follows:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * rates[0] - rates[7] -> OFDM rates
  * rates[8] - rates[14] -> CCK rates
  * rates[15] -> XR rates (they all have the same power)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ath5k_setup_rate_powertable() - Set up rate power table for a given tx power
@@ -4221,7 +4834,10 @@ ath5k_write_channel_powertable(struct ath5k_hw *ah, u8 ee_mode, u8 type)
  * @rate_info: The &struct ath5k_rate_pcal_info to fill
  * @ee_mode: One of enum ath5k_driver_mode
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 ath5k_setup_rate_powertable(struct ath5k_hw *ah, u16 max_pwr,
 			struct ath5k_rate_pcal_info *rate_info,
@@ -4229,6 +4845,10 @@ ath5k_setup_rate_powertable(struct ath5k_hw *ah, u16 max_pwr,
 {
 	unsigned int i;
 	u16 *rates;
+<<<<<<< HEAD
+=======
+	s16 rate_idx_scaled = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* max_pwr is power level we got from driver/user in 0.5dB
 	 * units, switch to 0.25dB units so we can compare */
@@ -4275,10 +4895,28 @@ ath5k_setup_rate_powertable(struct ath5k_hw *ah, u16 max_pwr,
 		for (i = 8; i <= 15; i++)
 			rates[i] -= ah->ah_txpower.txp_cck_ofdm_gainf_delta;
 
+<<<<<<< HEAD
+=======
+	/* Save min/max and current tx power for this channel
+	 * in 0.25dB units.
+	 *
+	 * Note: We use rates[0] for current tx power because
+	 * it covers most of the rates, in most cases. It's our
+	 * tx power limit and what the user expects to see. */
+	ah->ah_txpower.txp_min_pwr = 2 * rates[7];
+	ah->ah_txpower.txp_cur_pwr = 2 * rates[0];
+
+	/* Set max txpower for correct OFDM operation on all rates
+	 * -that is the txpower for 54Mbit-, it's used for the PAPD
+	 * gain probe and it's in 0.5dB units */
+	ah->ah_txpower.txp_ofdm = rates[7];
+
+>>>>>>> refs/remotes/origin/master
 	/* Now that we have all rates setup use table offset to
 	 * match the power range set by user with the power indices
 	 * on PCDAC/PDADC table */
 	for (i = 0; i < 16; i++) {
+<<<<<<< HEAD
 		rates[i] += ah->ah_txpower.txp_offset;
 		/* Don't get out of bounds */
 		if (rates[i] > 63)
@@ -4296,6 +4934,19 @@ ath5k_setup_rate_powertable(struct ath5k_hw *ah, u16 max_pwr,
 /*
  * Set transmission power
 =======
+=======
+		rate_idx_scaled = rates[i] + ah->ah_txpower.txp_offset;
+		/* Don't get out of bounds */
+		if (rate_idx_scaled > 63)
+			rate_idx_scaled = 63;
+		if (rate_idx_scaled < 0)
+			rate_idx_scaled = 0;
+		rates[i] = rate_idx_scaled;
+	}
+}
+
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_txpower() - Set transmission power limit for a given channel
  * @ah: The &struct ath5k_hw
@@ -4304,7 +4955,10 @@ ath5k_setup_rate_powertable(struct ath5k_hw *ah, u16 max_pwr,
  *
  * Combines all of the above to set the requested tx power limit
  * on hw.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int
 ath5k_hw_txpower(struct ath5k_hw *ah, struct ieee80211_channel *channel,
@@ -4317,6 +4971,7 @@ ath5k_hw_txpower(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 	int ret;
 
 	if (txpower > AR5K_TUNE_MAX_TXPOWER) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "invalid tx power: %u\n", txpower);
 =======
@@ -4335,6 +4990,13 @@ ath5k_hw_txpower(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 			"invalid channel: %d\n", channel->center_freq);
 		return -EINVAL;
 	}
+=======
+		ATH5K_ERR(ah, "invalid tx power: %u\n", txpower);
+		return -EINVAL;
+	}
+
+	ee_mode = ath5k_eeprom_mode_from_channel(ah, channel);
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize TX power table */
 	switch (ah->ah_radio) {
@@ -4365,10 +5027,24 @@ ath5k_hw_txpower(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 	if (!ah->ah_txpower.txp_setup ||
 	    (channel->hw_value != curr_channel->hw_value) ||
 	    (channel->center_freq != curr_channel->center_freq)) {
+<<<<<<< HEAD
 		/* Reset TX power values */
 		memset(&ah->ah_txpower, 0, sizeof(ah->ah_txpower));
 		ah->ah_txpower.txp_tpc = AR5K_TUNE_TPC_TXPOWER;
 
+=======
+		/* Reset TX power values but preserve requested
+		 * tx power from above */
+		int requested_txpower = ah->ah_txpower.txp_requested;
+
+		memset(&ah->ah_txpower, 0, sizeof(ah->ah_txpower));
+
+		/* Restore TPC setting and requested tx power */
+		ah->ah_txpower.txp_tpc = AR5K_TUNE_TPC_TXPOWER;
+
+		ah->ah_txpower.txp_requested = requested_txpower;
+
+>>>>>>> refs/remotes/origin/master
 		/* Calculate the powertable */
 		ret = ath5k_setup_channel_powertable(ah, channel,
 							ee_mode, type);
@@ -4431,10 +5107,13 @@ ath5k_hw_txpower(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ath5k_hw_set_txpower_limit(struct ath5k_hw *ah, u8 txpower)
 {
 	ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_TXPOWER,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_set_txpower_limit() - Set txpower limit for the current channel
  * @ah: The &struct ath5k_hw
@@ -4447,23 +5126,33 @@ int
 ath5k_hw_set_txpower_limit(struct ath5k_hw *ah, u8 txpower)
 {
 	ATH5K_DBG(ah, ATH5K_DEBUG_TXPOWER,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		"changing txpower to %d\n", txpower);
 
 	return ath5k_hw_txpower(ah, ah->ah_current_channel, txpower);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*************\
  Init function
 \*************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_phy_init() - Initialize PHY
  * @ah: The &struct ath5k_hw
@@ -4479,7 +5168,10 @@ int ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
  */
 int
 ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		      u8 mode, bool fast)
 {
 	struct ieee80211_channel *curr_channel;
@@ -4528,18 +5220,28 @@ ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 	 * RF buffer settings on 5211/5212+ so that we
 	 * properly set curve indices.
 	 */
+<<<<<<< HEAD
 	ret = ath5k_hw_txpower(ah, channel, ah->ah_txpower.txp_cur_pwr ?
 			ah->ah_txpower.txp_cur_pwr / 2 : AR5K_TUNE_MAX_TXPOWER);
+=======
+	ret = ath5k_hw_txpower(ah, channel, ah->ah_txpower.txp_requested ?
+					ah->ah_txpower.txp_requested * 2 :
+					AR5K_TUNE_MAX_TXPOWER);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	/* Write OFDM timings on 5212*/
 	if (ah->ah_version == AR5K_AR5212 &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		channel->hw_value & CHANNEL_OFDM) {
 =======
 		channel->hw_value != AR5K_MODE_11B) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		channel->hw_value != AR5K_MODE_11B) {
+>>>>>>> refs/remotes/origin/master
 
 		ret = ath5k_hw_write_ofdm_timings(ah, channel);
 		if (ret)
@@ -4594,10 +5296,14 @@ ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 			return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mdelay(1);
 =======
 		usleep_range(1000, 1500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usleep_range(1000, 1500);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Write RF buffer
@@ -4619,16 +5325,22 @@ ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 
 	} else if (ah->ah_version == AR5K_AR5210) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mdelay(1);
 		/* Disable phy and wait */
 		ath5k_hw_reg_write(ah, AR5K_PHY_ACT_DISABLE, AR5K_PHY_ACT);
 		mdelay(1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		usleep_range(1000, 1500);
 		/* Disable phy and wait */
 		ath5k_hw_reg_write(ah, AR5K_PHY_ACT_DISABLE, AR5K_PHY_ACT);
 		usleep_range(1000, 1500);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Set channel on PHY */
@@ -4655,10 +5367,14 @@ ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 		if (!(ath5k_hw_reg_read(ah, AR5K_PHY_ADC_TEST) & 0x10))
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udelay(200);
 =======
 		usleep_range(200, 250);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usleep_range(200, 250);
+>>>>>>> refs/remotes/origin/master
 	}
 	ath5k_hw_reg_write(ah, phy_tst1, AR5K_PHY_TST1);
 
@@ -4687,6 +5403,7 @@ ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 	/* At the same time start I/Q calibration for QAM constellation
 	 * -no need for CCK- */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ah->ah_calibration = false;
 	if (!(mode == AR5K_MODE_11B)) {
 		ah->ah_calibration = true;
@@ -4695,6 +5412,11 @@ ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 	if (!(mode == AR5K_MODE_11B)) {
 		ah->ah_iq_cal_needed = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ah->ah_iq_cal_needed = false;
+	if (!(mode == AR5K_MODE_11B)) {
+		ah->ah_iq_cal_needed = true;
+>>>>>>> refs/remotes/origin/master
 		AR5K_REG_WRITE_BITS(ah, AR5K_PHY_IQ,
 				AR5K_PHY_IQ_CAL_NUM_LOG_MAX, 15);
 		AR5K_REG_ENABLE_BITS(ah, AR5K_PHY_IQ,
@@ -4706,10 +5428,14 @@ ath5k_hw_phy_init(struct ath5k_hw *ah, struct ieee80211_channel *channel,
 	if (ath5k_hw_register_timeout(ah, AR5K_PHY_AGCCTL,
 			AR5K_PHY_AGCCTL_CAL, 0, false)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "gain calibration timeout (%uMHz)\n",
 =======
 		ATH5K_ERR(ah, "gain calibration timeout (%uMHz)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_ERR(ah, "gain calibration timeout (%uMHz)\n",
+>>>>>>> refs/remotes/origin/master
 			channel->center_freq);
 	}
 

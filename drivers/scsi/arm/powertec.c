@@ -237,6 +237,7 @@ powertecscsi_set_proc_info(struct Scsi_Host *host, char *buffer, int length)
  *	      inout   - 0 for reading, 1 for writing.
  * Returns  : length of data written to buffer.
  */
+<<<<<<< HEAD
 int powertecscsi_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset,
 			    int length, int inout)
 {
@@ -263,6 +264,22 @@ int powertecscsi_proc_info(struct Scsi_Host *host, char *buffer, char **start, o
 		pos = length;
 
 	return pos;
+=======
+static int powertecscsi_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	struct powertec_info *info;
+
+	info = (struct powertec_info *)host->hostdata;
+
+	seq_printf(m, "PowerTec SCSI driver v%s\n", VERSION);
+	fas216_print_host(&info->info, m);
+	seq_printf(m, "Term    : o%s\n",
+			info->term_ctl ? "n" : "ff");
+
+	fas216_print_stats(&info->info, m);
+	fas216_print_devices(&info->info, m);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t powertecscsi_show_term(struct device *dev, struct device_attribute *attr, char *buf)
@@ -291,7 +308,12 @@ static DEVICE_ATTR(bus_term, S_IRUGO | S_IWUSR,
 
 static struct scsi_host_template powertecscsi_template = {
 	.module				= THIS_MODULE,
+<<<<<<< HEAD
 	.proc_info			= powertecscsi_proc_info,
+=======
+	.show_info			= powertecscsi_show_info,
+	.write_info			= powertecscsi_set_proc_info,
+>>>>>>> refs/remotes/origin/master
 	.name				= "PowerTec SCSI",
 	.info				= powertecscsi_info,
 	.queuecommand			= fas216_queue_command,
@@ -309,8 +331,13 @@ static struct scsi_host_template powertecscsi_template = {
 	.proc_name			= "powertec",
 };
 
+<<<<<<< HEAD
 static int __devinit
 powertecscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int powertecscsi_probe(struct expansion_card *ec,
+			      const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	struct powertec_info *info;
@@ -409,7 +436,11 @@ powertecscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit powertecscsi_remove(struct expansion_card *ec)
+=======
+static void powertecscsi_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = ecard_get_drvdata(ec);
 	struct powertec_info *info = (struct powertec_info *)host->hostdata;
@@ -435,7 +466,11 @@ static const struct ecard_id powertecscsi_cids[] = {
 
 static struct ecard_driver powertecscsi_driver = {
 	.probe		= powertecscsi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(powertecscsi_remove),
+=======
+	.remove		= powertecscsi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= powertecscsi_cids,
 	.drv = {
 		.name		= "powertecscsi",

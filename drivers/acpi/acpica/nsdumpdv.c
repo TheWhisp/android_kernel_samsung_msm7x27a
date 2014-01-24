@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +50,10 @@
  */
 
 #include <acpi/acpi.h>
+<<<<<<< HEAD
 #include "accommon.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* TBD: This entire module is apparently obsolete and should be removed */
 
@@ -59,9 +66,15 @@ ACPI_MODULE_NAME("nsdumpdv")
  *
  * FUNCTION:    acpi_ns_dump_one_device
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle              - Node to be dumped
  *              Level               - Nesting level of the handle
  *              Context             - Passed into walk_namespace
+=======
+ * PARAMETERS:  handle              - Node to be dumped
+ *              level               - Nesting level of the handle
+ *              context             - Passed into walk_namespace
+>>>>>>> refs/remotes/origin/master
  *              return_value        - Not used
  *
  * RETURN:      Status
@@ -74,6 +87,10 @@ static acpi_status
 acpi_ns_dump_one_device(acpi_handle obj_handle,
 			u32 level, void *context, void **return_value)
 {
+<<<<<<< HEAD
+=======
+	struct acpi_buffer buffer;
+>>>>>>> refs/remotes/origin/master
 	struct acpi_device_info *info;
 	acpi_status status;
 	u32 i;
@@ -83,15 +100,26 @@ acpi_ns_dump_one_device(acpi_handle obj_handle,
 	status =
 	    acpi_ns_dump_one_object(obj_handle, level, context, return_value);
 
+<<<<<<< HEAD
 	status = acpi_get_object_info(obj_handle, &info);
 	if (ACPI_SUCCESS(status)) {
+=======
+	buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
+	status = acpi_get_object_info(obj_handle, &buffer);
+	if (ACPI_SUCCESS(status)) {
+		info = buffer.pointer;
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < level; i++) {
 			ACPI_DEBUG_PRINT_RAW((ACPI_DB_TABLES, " "));
 		}
 
 		ACPI_DEBUG_PRINT_RAW((ACPI_DB_TABLES,
 				      "    HID: %s, ADR: %8.8X%8.8X, Status: %X\n",
+<<<<<<< HEAD
 				      info->hardware_id.string,
+=======
+				      info->hardware_id.value,
+>>>>>>> refs/remotes/origin/master
 				      ACPI_FORMAT_UINT64(info->address),
 				      info->current_status));
 		ACPI_FREE(info);
@@ -126,10 +154,14 @@ void acpi_ns_dump_root_devices(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = acpi_get_handle(NULL, ACPI_NS_SYSTEM_BUS, &sys_bus_handle);
 =======
 	status = acpi_get_handle(NULL, METHOD_NAME__SB_, &sys_bus_handle);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = acpi_get_handle(NULL, METHOD_NAME__SB_, &sys_bus_handle);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		return;
 	}

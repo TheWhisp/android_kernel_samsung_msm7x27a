@@ -22,6 +22,7 @@
 #include <linux/uaccess.h>
 #include <linux/mmzone.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/backtrace.h>
 #include <asm/page.h>
 #include <asm/tlbflush.h>
@@ -29,13 +30,24 @@
 =======
 #include <linux/dcache.h>
 #include <linux/fs.h>
+=======
+#include <linux/dcache.h>
+#include <linux/fs.h>
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/backtrace.h>
 #include <asm/page.h>
 #include <asm/ucontext.h>
 #include <asm/switch_to.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/sigframe.h>
 #include <asm/stack.h>
+=======
+#include <asm/sigframe.h>
+#include <asm/stack.h>
+#include <asm/vdso.h>
+>>>>>>> refs/remotes/origin/master
 #include <arch/abi.h>
 #include <arch/interrupts.h>
 
@@ -53,6 +65,7 @@ static int in_kernel_stack(struct KBacktraceIterator *kbt, unsigned long sp)
 	return sp >= kstack_base && sp < kstack_base + THREAD_SIZE;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Is address valid for reading? */
 static int valid_address(struct KBacktraceIterator *kbt, unsigned long address)
@@ -108,6 +121,8 @@ static int valid_address(struct KBacktraceIterator *kbt, unsigned long address)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Callback for backtracer; basically a glorified memcpy */
 static bool read_memory_func(void *result, unsigned long address,
 			     unsigned int size, void *vkbt)
@@ -115,11 +130,17 @@ static bool read_memory_func(void *result, unsigned long address,
 	int retval;
 	struct KBacktraceIterator *kbt = (struct KBacktraceIterator *)vkbt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	if (address == 0)
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (address == 0)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	if (__kernel_text_address(address)) {
 		/* OK to read kernel code. */
 	} else if (address >= PAGE_OFFSET) {
@@ -127,12 +148,17 @@ static bool read_memory_func(void *result, unsigned long address,
 		if (!in_kernel_stack(kbt, address))
 			return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!valid_address(kbt, address)) {
 		return 0;	/* invalid user-space address */
 =======
 	} else if (!kbt->is_current) {
 		return 0;	/* can't read from other user address spaces */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!kbt->is_current) {
+		return 0;	/* can't read from other user address spaces */
+>>>>>>> refs/remotes/origin/master
 	}
 	pagefault_disable();
 	retval = __copy_from_user_inatomic(result,
@@ -151,10 +177,15 @@ static struct pt_regs *valid_fault_handler(struct KBacktraceIterator* kbt)
 	struct pt_regs *p;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (sp % sizeof(long) != 0)
 		return NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sp % sizeof(long) != 0)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	if (!in_kernel_stack(kbt, sp))
 		return NULL;
 	if (!in_kernel_stack(kbt, sp + C_ABI_SAVE_AREA_SIZE + PTREGS_SIZE-1))
@@ -175,9 +206,14 @@ static struct pt_regs *valid_fault_handler(struct KBacktraceIterator* kbt)
 	    p->sp >= sp) {
 		if (kbt->verbose)
 			pr_err("  <%s while in kernel mode>\n", fault);
+<<<<<<< HEAD
 	} else if (EX1_PL(p->ex1) == USER_PL &&
 	    p->pc < PAGE_OFFSET &&
 	    p->sp < PAGE_OFFSET) {
+=======
+	} else if (user_mode(p) &&
+		   p->sp < PAGE_OFFSET && p->sp != 0) {
+>>>>>>> refs/remotes/origin/master
 		if (kbt->verbose)
 			pr_err("  <%s while in user mode>\n", fault);
 	} else if (kbt->verbose) {
@@ -185,7 +221,11 @@ static struct pt_regs *valid_fault_handler(struct KBacktraceIterator* kbt)
 		       p->pc, p->sp, p->ex1);
 		p = NULL;
 	}
+<<<<<<< HEAD
 	if (!kbt->profile || (INT_MASK(p->faultnum) & QUEUED_INTERRUPTS) == 0)
+=======
+	if (!kbt->profile || ((1ULL << p->faultnum) & QUEUED_INTERRUPTS) == 0)
+>>>>>>> refs/remotes/origin/master
 		return p;
 	return NULL;
 }
@@ -193,6 +233,7 @@ static struct pt_regs *valid_fault_handler(struct KBacktraceIterator* kbt)
 /* Is the pc pointing to a sigreturn trampoline? */
 static int is_sigreturn(unsigned long pc)
 {
+<<<<<<< HEAD
 	return (pc == VDSO_BASE);
 }
 
@@ -220,12 +261,22 @@ static struct pt_regs *valid_sigframe(struct KBacktraceIterator* kbt)
 		}
 		return (struct pt_regs *)&frame->uc.uc_mcontext;
 =======
+=======
+	return current->mm && (pc == VDSO_SYM(&__vdso_rt_sigreturn));
+}
+
+/* Return a pt_regs pointer for a valid signal handler frame */
+>>>>>>> refs/remotes/origin/master
 static struct pt_regs *valid_sigframe(struct KBacktraceIterator* kbt,
 				      struct rt_sigframe* kframe)
 {
 	BacktraceIterator *b = &kbt->it;
 
+<<<<<<< HEAD
 	if (b->pc == VDSO_BASE && b->sp < PAGE_OFFSET &&
+=======
+	if (is_sigreturn(b->pc) && b->sp < PAGE_OFFSET &&
+>>>>>>> refs/remotes/origin/master
 	    b->sp % sizeof(long) == 0) {
 		int retval;
 		pagefault_disable();
@@ -241,7 +292,10 @@ static struct pt_regs *valid_sigframe(struct KBacktraceIterator* kbt,
 			       kframe->info.si_signo);
 		}
 		return (struct pt_regs *)&kframe->uc.uc_mcontext;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return NULL;
 }
@@ -255,17 +309,23 @@ static int KBacktraceIterator_restart(struct KBacktraceIterator *kbt)
 {
 	struct pt_regs *p;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	p = valid_fault_handler(kbt);
 	if (p == NULL)
 		p = valid_sigframe(kbt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rt_sigframe kframe;
 
 	p = valid_fault_handler(kbt);
 	if (p == NULL)
 		p = valid_sigframe(kbt, &kframe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p == NULL)
 		return 0;
 	backtrace_init(&kbt->it, read_memory_func, kbt,
@@ -299,6 +359,7 @@ static int KBacktraceIterator_next_item_inclusive(
  */
 static void validate_stack(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	int cpu = smp_processor_id();
 	unsigned long ksp0 = get_current_ksp0();
 	unsigned long ksp0_base = ksp0 - THREAD_SIZE;
@@ -314,6 +375,23 @@ static void validate_stack(struct pt_regs *regs)
 		pr_err("WARNING: cpu %d: kernel stack page %#lx overrun!\n"
 		       "  sp %#lx (%#lx in caller), caller pc %#lx, lr %#lx\n",
 		       cpu, ksp0_base, sp, regs->sp, regs->pc, regs->lr);
+=======
+	int cpu = raw_smp_processor_id();
+	unsigned long ksp0 = get_current_ksp0();
+	unsigned long ksp0_base = ksp0 & -THREAD_SIZE;
+	unsigned long sp = stack_pointer;
+
+	if (EX1_PL(regs->ex1) == KERNEL_PL && regs->sp >= ksp0) {
+		pr_err("WARNING: cpu %d: kernel stack %#lx..%#lx underrun!\n"
+		       "  sp %#lx (%#lx in caller), caller pc %#lx, lr %#lx\n",
+		       cpu, ksp0_base, ksp0, sp, regs->sp, regs->pc, regs->lr);
+	}
+
+	else if (sp < ksp0_base + sizeof(struct thread_info)) {
+		pr_err("WARNING: cpu %d: kernel stack %#lx..%#lx overrun!\n"
+		       "  sp %#lx (%#lx in caller), caller pc %#lx, lr %#lx\n",
+		       cpu, ksp0_base, ksp0, sp, regs->sp, regs->pc, regs->lr);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -326,6 +404,7 @@ void KBacktraceIterator_init(struct KBacktraceIterator *kbt,
 	/*
 	 * Set up callback information.  We grab the kernel stack base
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * so we will allow reads of that address range, and if we're
 	 * asking about the current process we grab the page table
 	 * so we can check user accesses before trying to read them.
@@ -337,10 +416,16 @@ void KBacktraceIterator_init(struct KBacktraceIterator *kbt,
 	 */
 	is_current = (t == NULL || t == current);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * so we will allow reads of that address range.
+	 */
+	is_current = (t == NULL || t == current);
+>>>>>>> refs/remotes/origin/master
 	kbt->is_current = is_current;
 	if (is_current)
 		t = validate_current();
 	kbt->task = t;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kbt->pgtable = NULL;
 	kbt->verbose = 0;   /* override in caller if desired */
@@ -368,13 +453,18 @@ void KBacktraceIterator_init(struct KBacktraceIterator *kbt,
 		validate_stack(regs);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kbt->verbose = 0;   /* override in caller if desired */
 	kbt->profile = 0;   /* override in caller if desired */
 	kbt->end = KBT_ONGOING;
 	kbt->new_context = 1;
 	if (is_current)
 		validate_stack(regs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (regs == NULL) {
 		if (is_current || t->state == TASK_RUNNING) {
@@ -421,7 +511,10 @@ void KBacktraceIterator_next(struct KBacktraceIterator *kbt)
 EXPORT_SYMBOL(KBacktraceIterator_next);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void describe_addr(struct KBacktraceIterator *kbt,
 			  unsigned long address,
 			  int have_mmap_sem, char *buf, size_t bufsize)
@@ -475,6 +568,7 @@ static void describe_addr(struct KBacktraceIterator *kbt,
 	}
 
 	if (vma->vm_file) {
+<<<<<<< HEAD
 		char *s;
 		p = d_path(&vma->vm_file->f_path, buf, bufsize);
 		if (IS_ERR(p))
@@ -490,11 +584,48 @@ static void describe_addr(struct KBacktraceIterator *kbt,
 	namelen = strlen(p);
 	remaining = (bufsize - 1) - namelen;
 	memmove(buf, p, namelen);
+=======
+		p = d_path(&vma->vm_file->f_path, buf, bufsize);
+		if (IS_ERR(p))
+			p = "?";
+		name = kbasename(p);
+	} else {
+		name = "anon";
+	}
+
+	/* Generate a string description of the vma info. */
+	namelen = strlen(name);
+	remaining = (bufsize - 1) - namelen;
+	memmove(buf, name, namelen);
+>>>>>>> refs/remotes/origin/master
 	snprintf(buf + namelen, remaining, "[%lx+%lx] ",
 		 vma->vm_start, vma->vm_end - vma->vm_start);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Avoid possible crash recursion during backtrace.  If it happens, it
+ * makes it easy to lose the actual root cause of the failure, so we
+ * put a simple guard on all the backtrace loops.
+ */
+static bool start_backtrace(void)
+{
+	if (current->thread.in_backtrace) {
+		pr_err("Backtrace requested while in backtrace!\n");
+		return false;
+	}
+	current->thread.in_backtrace = true;
+	return true;
+}
+
+static void end_backtrace(void)
+{
+	current->thread.in_backtrace = false;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This method wraps the backtracer's more generic support.
  * It is only invoked from the architecture-specific code; show_stack()
@@ -504,10 +635,17 @@ void tile_show_stack(struct KBacktraceIterator *kbt, int headers)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int have_mmap_sem = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	int have_mmap_sem = 0;
+
+	if (!start_backtrace())
+		return;
+>>>>>>> refs/remotes/origin/master
 	if (headers) {
 		/*
 		 * Add a blank line since if we are called from panic(),
@@ -518,11 +656,16 @@ void tile_show_stack(struct KBacktraceIterator *kbt, int headers)
 		pr_err("Starting stack dump of tid %d, pid %d (%s)"
 		       " on cpu %d at cycle %lld\n",
 		       kbt->task->pid, kbt->task->tgid, kbt->task->comm,
+<<<<<<< HEAD
 		       smp_processor_id(), get_cycles());
+=======
+		       raw_smp_processor_id(), get_cycles());
+>>>>>>> refs/remotes/origin/master
 	}
 	kbt->verbose = 1;
 	i = 0;
 	for (; !KBacktraceIterator_end(kbt); KBacktraceIterator_next(kbt)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		char *modname;
 		const char *name;
@@ -550,6 +693,8 @@ void tile_show_stack(struct KBacktraceIterator *kbt, int headers)
 			namebuf[sizeof(namebuf)-1] = '\0';
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		char namebuf[KSYM_NAME_LEN+100];
 		unsigned long address = kbt->it.pc;
 
@@ -560,7 +705,10 @@ void tile_show_stack(struct KBacktraceIterator *kbt, int headers)
 
 		describe_addr(kbt, address, have_mmap_sem,
 			      namebuf, sizeof(namebuf));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		pr_err("  frame %d: 0x%lx %s(sp 0x%lx)\n",
 		       i++, address, namebuf, (unsigned long)(kbt->it.sp));
@@ -576,10 +724,16 @@ void tile_show_stack(struct KBacktraceIterator *kbt, int headers)
 	if (headers)
 		pr_err("Stack dump complete\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (have_mmap_sem)
 		up_read(&kbt->task->mm->mmap_sem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (have_mmap_sem)
+		up_read(&kbt->task->mm->mmap_sem);
+	end_backtrace();
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(tile_show_stack);
 
@@ -620,7 +774,11 @@ void _KBacktraceIterator_init_current(struct KBacktraceIterator *kbt, ulong pc,
 				regs_to_pt_regs(&regs, pc, lr, sp, r52));
 }
 
+<<<<<<< HEAD
 /* This is called only from kernel/sched.c, with esp == NULL */
+=======
+/* This is called only from kernel/sched/core.c, with esp == NULL */
+>>>>>>> refs/remotes/origin/master
 void show_stack(struct task_struct *task, unsigned long *esp)
 {
 	struct KBacktraceIterator kbt;
@@ -641,6 +799,11 @@ void save_stack_trace_tsk(struct task_struct *task, struct stack_trace *trace)
 	int skip = trace->skip;
 	int i = 0;
 
+<<<<<<< HEAD
+=======
+	if (!start_backtrace())
+		goto done;
+>>>>>>> refs/remotes/origin/master
 	if (task == NULL || task == current)
 		KBacktraceIterator_init_current(&kbt);
 	else
@@ -654,6 +817,11 @@ void save_stack_trace_tsk(struct task_struct *task, struct stack_trace *trace)
 			break;
 		trace->entries[i++] = kbt.it.pc;
 	}
+<<<<<<< HEAD
+=======
+	end_backtrace();
+done:
+>>>>>>> refs/remotes/origin/master
 	trace->nr_entries = i;
 }
 EXPORT_SYMBOL(save_stack_trace_tsk);
@@ -662,6 +830,10 @@ void save_stack_trace(struct stack_trace *trace)
 {
 	save_stack_trace_tsk(NULL, trace);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(save_stack_trace);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

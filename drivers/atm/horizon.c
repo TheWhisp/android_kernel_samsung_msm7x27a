@@ -39,13 +39,18 @@
 #include <linux/uio.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/wait.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/io.h>
@@ -54,6 +59,10 @@
 #include <asm/io.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/string.h>
 #include <asm/byteorder.h>
@@ -1798,7 +1807,11 @@ static void CLOCK_IT (const hrz_dev *dev, u32 ctrl)
 	WRITE_IT_WAIT(dev, ctrl | SEEPROM_SK);
 }
 
+<<<<<<< HEAD
 static u16 __devinit read_bia (const hrz_dev * dev, u16 addr)
+=======
+static u16 read_bia(const hrz_dev *dev, u16 addr)
+>>>>>>> refs/remotes/origin/master
 {
   u32 ctrl = rd_regl (dev, CONTROL_0_REG);
   
@@ -1854,7 +1867,12 @@ static u16 __devinit read_bia (const hrz_dev * dev, u16 addr)
 
 /********** initialise a card **********/
 
+<<<<<<< HEAD
 static int __devinit hrz_init (hrz_dev * dev) {
+=======
+static int hrz_init(hrz_dev *dev)
+{
+>>>>>>> refs/remotes/origin/master
   int onefivefive;
   
   u16 chan;
@@ -2191,7 +2209,10 @@ static int hrz_open (struct atm_vcc *atm_vcc)
     default:
       PRINTD (DBG_QOS|DBG_VCC, "Bad AAL!");
       return -EINVAL;
+<<<<<<< HEAD
       break;
+=======
+>>>>>>> refs/remotes/origin/master
   }
   
   // TX traffic parameters
@@ -2366,7 +2387,10 @@ static int hrz_open (struct atm_vcc *atm_vcc)
       default: {
 	PRINTD (DBG_QOS, "unsupported TX traffic class");
 	return -EINVAL;
+<<<<<<< HEAD
 	break;
+=======
+>>>>>>> refs/remotes/origin/master
       }
     }
   }
@@ -2442,7 +2466,10 @@ static int hrz_open (struct atm_vcc *atm_vcc)
       default: {
 	PRINTD (DBG_QOS, "unsupported RX traffic class");
 	return -EINVAL;
+<<<<<<< HEAD
 	break;
+=======
+>>>>>>> refs/remotes/origin/master
       }
     }
   }
@@ -2590,7 +2617,10 @@ static int hrz_getsockopt (struct atm_vcc * atm_vcc, int level, int optname,
 //	  break;
 	default:
 	  return -ENOPROTOOPT;
+<<<<<<< HEAD
 	  break;
+=======
+>>>>>>> refs/remotes/origin/master
       };
       break;
   }
@@ -2610,7 +2640,10 @@ static int hrz_setsockopt (struct atm_vcc * atm_vcc, int level, int optname,
 //	  break;
 	default:
 	  return -ENOPROTOOPT;
+<<<<<<< HEAD
 	  break;
+=======
+>>>>>>> refs/remotes/origin/master
       };
       break;
   }
@@ -2695,7 +2728,12 @@ static const struct atmdev_ops hrz_ops = {
   .owner	= THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static int __devinit hrz_probe(struct pci_dev *pci_dev, const struct pci_device_id *pci_ent)
+=======
+static int hrz_probe(struct pci_dev *pci_dev,
+		     const struct pci_device_id *pci_ent)
+>>>>>>> refs/remotes/origin/master
 {
 	hrz_dev * dev;
 	int err = 0;
@@ -2850,7 +2888,11 @@ out_disable:
 	goto out;
 }
 
+<<<<<<< HEAD
 static void __devexit hrz_remove_one(struct pci_dev *pci_dev)
+=======
+static void hrz_remove_one(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	hrz_dev *dev;
 
@@ -2915,7 +2957,11 @@ MODULE_DEVICE_TABLE(pci, hrz_pci_tbl);
 static struct pci_driver hrz_driver = {
 	.name =		"horizon",
 	.probe =	hrz_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(hrz_remove_one),
+=======
+	.remove =	hrz_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table =	hrz_pci_tbl,
 };
 

@@ -8,6 +8,18 @@ config SND_PXA2XX_SOC
 	  the PXA2xx AC97, I2S or SSP interface. You will also need
 	  to select the audio interfaces to support below.
 
+<<<<<<< HEAD
+=======
+config SND_MMP_SOC
+	bool "Soc Audio for Marvell MMP chips"
+	depends on ARCH_MMP
+	select SND_SOC_GENERIC_DMAENGINE_PCM
+	select SND_ARM
+	help
+	  Say Y if you want to add support for codecs attached to
+	  the MMP SSPA interface.
+
+>>>>>>> refs/remotes/origin/master
 config SND_PXA2XX_AC97
 	tristate
 	select SND_AC97_CODEC
@@ -26,6 +38,12 @@ config SND_PXA_SOC_SSP
 	tristate
 	select PXA_SSP
 
+<<<<<<< HEAD
+=======
+config SND_MMP_SOC_SSPA
+	tristate
+
+>>>>>>> refs/remotes/origin/master
 config SND_PXA2XX_SOC_CORGI
 	tristate "SoC Audio support for Sharp Zaurus SL-C7x0"
 	depends on SND_PXA2XX_SOC && PXA_SHARP_C7xx
@@ -118,6 +136,7 @@ config SND_PXA2XX_SOC_PALM27X
 	  Say Y if you want to add support for SoC audio on
 	  Palm T|X, T5, E2 or LifeDrive handheld computer.
 
+<<<<<<< HEAD
 config SND_SOC_SAARB
 	tristate "SoC Audio support for Marvell Saarb"
 	depends on SND_PXA2XX_SOC && MACH_SAARB
@@ -143,6 +162,27 @@ config SND_SOC_TAVOREVB3
 	help
 	  Say Y if you want to add support for SoC audio on the
 	  Marvell Saarb reference platform.
+=======
+config SND_PXA910_SOC
+	tristate "SoC Audio for Marvell PXA910 chip"
+	depends on ARCH_MMP && SND
+	select SND_PCM
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  Marvell PXA910 reference platform.
+
+config SND_SOC_TTC_DKB
+	bool "SoC Audio support for TTC DKB"
+	depends on SND_PXA910_SOC && MACH_TTC_DKB
+	select PXA_SSP
+	select SND_PXA_SOC_SSP
+	select SND_MMP_SOC
+	select MFD_88PM860X
+	select SND_SOC_88PM860X
+	help
+	  Say Y if you want to add support for SoC audio on TTC DKB
+
+>>>>>>> refs/remotes/origin/master
 
 config SND_SOC_ZYLONITE
 	tristate "SoC Audio support for Marvell Zylonite"
@@ -158,9 +198,13 @@ config SND_SOC_RAUMFELD
 	tristate "SoC Audio support Raumfeld audio adapter"
 	depends on SND_PXA2XX_SOC && (MACH_RAUMFELD_SPEAKER || MACH_RAUMFELD_CONNECTOR)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	depends on I2C && SPI_MASTER
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on I2C && SPI_MASTER
+>>>>>>> refs/remotes/origin/master
 	select SND_PXA_SOC_SSP
 	select SND_SOC_CS4270
 	select SND_SOC_AK4104
@@ -170,10 +214,14 @@ config SND_SOC_RAUMFELD
 config SND_PXA2XX_SOC_HX4700
 	tristate "SoC Audio support for HP iPAQ hx4700"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on SND_PXA2XX_SOC && MACH_H4700
 =======
 	depends on SND_PXA2XX_SOC && MACH_H4700 && I2C
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on SND_PXA2XX_SOC && MACH_H4700 && I2C
+>>>>>>> refs/remotes/origin/master
 	select SND_PXA2XX_SOC_I2S
 	select SND_SOC_AK4641
 	help
@@ -207,3 +255,16 @@ config SND_PXA2XX_SOC_IMOTE2
        help
          Say Y if you want to add support for SoC audio on the
 	 IMote 2.
+<<<<<<< HEAD
+=======
+
+config SND_MMP_SOC_BROWNSTONE
+	tristate "SoC Audio support for Marvell Brownstone"
+	depends on SND_MMP_SOC && MACH_BROWNSTONE
+	select SND_MMP_SOC_SSPA
+	select MFD_WM8994
+	select SND_SOC_WM8994
+	help
+	  Say Y if you want to add support for SoC audio on the
+	  Marvell Brownstone reference platform.
+>>>>>>> refs/remotes/origin/master

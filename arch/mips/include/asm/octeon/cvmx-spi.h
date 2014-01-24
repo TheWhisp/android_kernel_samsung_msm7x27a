@@ -32,7 +32,11 @@
 #ifndef __CVMX_SPI_H__
 #define __CVMX_SPI_H__
 
+<<<<<<< HEAD
 #include "cvmx-gmxx-defs.h"
+=======
+#include <asm/octeon/cvmx-gmxx-defs.h>
+>>>>>>> refs/remotes/origin/master
 
 /* CSR typedefs have been moved to cvmx-csr-*.h */
 
@@ -84,11 +88,19 @@ static inline int cvmx_spi_is_spi_interface(int interface)
  * Initialize and start the SPI interface.
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  * @timeout:   Timeout to wait for clock synchronization in seconds
  * @num_ports: Number of SPI ports to configure
  *
@@ -102,11 +114,19 @@ extern int cvmx_spi_start_interface(int interface, cvmx_spi_mode_t mode,
  * with its corespondant system.
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  * @timeout:   Timeout to wait for clock synchronization in seconds
  * Returns Zero on success, negative of failure.
  */
@@ -154,7 +174,11 @@ static inline union cvmx_gmxx_rxx_rx_inbnd cvmx_spi4000_check_speed(
 /**
  * Get current SPI4 initialization callbacks
  *
+<<<<<<< HEAD
  * @callbacks:  Pointer to the callbacks structure.to fill
+=======
+ * @callbacks:	Pointer to the callbacks structure.to fill
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Pointer to cvmx_spi_callbacks_t structure.
  */
@@ -171,11 +195,19 @@ extern void cvmx_spi_set_callbacks(cvmx_spi_callbacks_t *new_callbacks);
  * Callback to perform SPI4 reset
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Zero on success, non-zero error code on failure (will cause
  * SPI initialization to abort)
@@ -187,11 +219,19 @@ extern int cvmx_spi_reset_cb(int interface, cvmx_spi_mode_t mode);
  * detection
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  * @num_ports: Number of ports to configure on SPI
  *
  * Returns Zero on success, non-zero error code on failure (will cause
@@ -204,11 +244,19 @@ extern int cvmx_spi_calendar_setup_cb(int interface, cvmx_spi_mode_t mode,
  * Callback to perform clock detection
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  * @timeout:   Timeout to wait for clock synchronization in seconds
  *
  * Returns Zero on success, non-zero error code on failure (will cause
@@ -221,11 +269,19 @@ extern int cvmx_spi_clock_detect_cb(int interface, cvmx_spi_mode_t mode,
  * Callback to perform link training
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  * @timeout:   Timeout to wait for link to be trained (in seconds)
  *
  * Returns Zero on success, non-zero error code on failure (will cause
@@ -238,11 +294,19 @@ extern int cvmx_spi_training_cb(int interface, cvmx_spi_mode_t mode,
  * Callback to perform calendar data synchronization
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  * @timeout:   Timeout to wait for calendar data in seconds
  *
  * Returns Zero on success, non-zero error code on failure (will cause
@@ -255,11 +319,19 @@ extern int cvmx_spi_calendar_sync_cb(int interface, cvmx_spi_mode_t mode,
  * Callback to handle interface up
  *
  * @interface: The identifier of the packet interface to configure and
+<<<<<<< HEAD
  *                  use as a SPI interface.
  * @mode:      The operating mode for the SPI interface. The interface
  *                  can operate as a full duplex (both Tx and Rx data paths
  *                  active) or as a halfplex (either the Tx data path is
  *                  active or the Rx data path is active, but not both).
+=======
+ *		    use as a SPI interface.
+ * @mode:      The operating mode for the SPI interface. The interface
+ *		    can operate as a full duplex (both Tx and Rx data paths
+ *		    active) or as a halfplex (either the Tx data path is
+ *		    active or the Rx data path is active, but not both).
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Zero on success, non-zero error code on failure (will cause
  * SPI initialization to abort)

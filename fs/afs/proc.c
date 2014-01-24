@@ -190,7 +190,11 @@ static int afs_proc_cells_open(struct inode *inode, struct file *file)
 		return ret;
 
 	m = file->private_data;
+<<<<<<< HEAD
 	m->private = PDE(inode)->data;
+=======
+	m->private = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -448,7 +452,11 @@ static int afs_proc_cell_volumes_open(struct inode *inode, struct file *file)
 	struct seq_file *m;
 	int ret;
 
+<<<<<<< HEAD
 	cell = PDE(inode)->data;
+=======
+	cell = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	if (!cell)
 		return -ENOENT;
 
@@ -554,7 +562,11 @@ static int afs_proc_cell_vlservers_open(struct inode *inode, struct file *file)
 	struct seq_file *m;
 	int ret;
 
+<<<<<<< HEAD
 	cell = PDE(inode)->data;
+=======
+	cell = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	if (!cell)
 		return -ENOENT;
 
@@ -659,7 +671,11 @@ static int afs_proc_cell_servers_open(struct inode *inode, struct file *file)
 	struct seq_file *m;
 	int ret;
 
+<<<<<<< HEAD
 	cell = PDE(inode)->data;
+=======
+	cell = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	if (!cell)
 		return -ENOENT;
 

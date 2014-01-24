@@ -72,6 +72,10 @@ struct vnic_rq_buf {
 	unsigned int len;
 	unsigned int index;
 	void *desc;
+<<<<<<< HEAD
+=======
+	uint64_t wr_id;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct vnic_rq {
@@ -110,7 +114,12 @@ static inline unsigned int vnic_rq_next_index(struct vnic_rq *rq)
 
 static inline void vnic_rq_post(struct vnic_rq *rq,
 	void *os_buf, unsigned int os_buf_index,
+<<<<<<< HEAD
 	dma_addr_t dma_addr, unsigned int len)
+=======
+	dma_addr_t dma_addr, unsigned int len,
+	uint64_t wrid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vnic_rq_buf *buf = rq->to_use;
 
@@ -118,6 +127,10 @@ static inline void vnic_rq_post(struct vnic_rq *rq,
 	buf->os_buf_index = os_buf_index;
 	buf->dma_addr = dma_addr;
 	buf->len = len;
+<<<<<<< HEAD
+=======
+	buf->wr_id = wrid;
+>>>>>>> refs/remotes/origin/master
 
 	buf = buf->next;
 	rq->to_use = buf;

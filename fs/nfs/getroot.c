@@ -23,15 +23,22 @@
 #include <linux/sunrpc/stats.h>
 #include <linux/nfs_fs.h>
 #include <linux/nfs_mount.h>
+<<<<<<< HEAD
 #include <linux/nfs4_mount.h>
 #include <linux/lockd/bind.h>
 #include <linux/seq_file.h>
 #include <linux/mount.h>
 #include <linux/nfs_idmap.h>
+=======
+#include <linux/lockd/bind.h>
+#include <linux/seq_file.h>
+#include <linux/mount.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vfs.h>
 #include <linux/namei.h>
 #include <linux/security.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/system.h>
 =======
@@ -40,6 +47,10 @@
 
 #include "nfs4_fs.h"
 #include "delegation.h"
+=======
+#include <asm/uaccess.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "internal.h"
 
 #define NFSDBG_FACILITY		NFSDBG_CLIENT
@@ -53,6 +64,7 @@ static int nfs_superblock_set_dummy_root(struct super_block *sb, struct inode *i
 	/* The mntroot acts as the dummy root dentry for this superblock */
 	if (sb->s_root == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sb->s_root = d_alloc_root(inode);
 		if (sb->s_root == NULL) {
 			iput(inode);
@@ -63,6 +75,11 @@ static int nfs_superblock_set_dummy_root(struct super_block *sb, struct inode *i
 		if (sb->s_root == NULL)
 			return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sb->s_root = d_make_root(inode);
+		if (sb->s_root == NULL)
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		ihold(inode);
 		/*
 		 * Ensure that this dentry is invisible to d_find_alias().
@@ -74,7 +91,11 @@ static int nfs_superblock_set_dummy_root(struct super_block *sb, struct inode *i
 		 */
 		spin_lock(&sb->s_root->d_inode->i_lock);
 		spin_lock(&sb->s_root->d_lock);
+<<<<<<< HEAD
 		list_del_init(&sb->s_root->d_alias);
+=======
+		hlist_del_init(&sb->s_root->d_alias);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&sb->s_root->d_lock);
 		spin_unlock(&sb->s_root->d_inode->i_lock);
 	}
@@ -111,7 +132,11 @@ struct dentry *nfs_get_root(struct super_block *sb, struct nfs_fh *mntfh,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	inode = nfs_fhget(sb, mntfh, fsinfo.fattr);
+=======
+	inode = nfs_fhget(sb, mntfh, fsinfo.fattr, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(inode)) {
 		dprintk("nfs_get_root: get root inode failed\n");
 		ret = ERR_CAST(inode);
@@ -142,6 +167,7 @@ struct dentry *nfs_get_root(struct super_block *sb, struct nfs_fh *mntfh,
 	}
 	spin_unlock(&ret->d_lock);
 out:
+<<<<<<< HEAD
 	if (name)
 		kfree(name);
 	nfs_free_fattr(fsinfo.fattr);
@@ -274,3 +300,9 @@ out:
 }
 
 #endif /* CONFIG_NFS_V4 */
+=======
+	kfree(name);
+	nfs_free_fattr(fsinfo.fattr);
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master

@@ -20,7 +20,11 @@
 #include <linux/leds.h>
 #include <linux/i2c.h>
 #include <linux/i2c/pxa-i2c.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
+=======
+#include <linux/platform_data/pca953x.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spi/spi.h>
 #include <linux/spi/ads7846.h>
 #include <linux/spi/corgi_lcd.h>
@@ -31,9 +35,14 @@
 #include <linux/regulator/machine.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/setup.h>
 #include <asm/mach-types.h>
@@ -44,10 +53,17 @@
 #include <mach/pxa27x.h>
 #include <mach/pxa27x-udc.h>
 #include <mach/reset.h>
+<<<<<<< HEAD
 #include <mach/irda.h>
 #include <mach/mmc.h>
 #include <mach/ohci.h>
 #include <mach/pxafb.h>
+=======
+#include <linux/platform_data/irda-pxaficp.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/video-pxafb.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/spitz.h>
 #include <mach/sharpsl_pm.h>
 #include <mach/smemc.h>
@@ -556,10 +572,14 @@ static struct spi_board_info spitz_spi_devices[] = {
 		.platform_data		= &spitz_ads7846_info,
 		.controller_data	= &spitz_ads7846_chip,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq			= gpio_to_irq(SPITZ_GPIO_TP_INT),
 =======
 		.irq			= PXA_GPIO_TO_IRQ(SPITZ_GPIO_TP_INT),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq			= PXA_GPIO_TO_IRQ(SPITZ_GPIO_TP_INT),
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.modalias		= "corgi-lcd",
 		.max_speed_hz		= 50000,
@@ -604,7 +624,11 @@ static inline void spitz_spi_init(void) {}
  * NOTE: The card detect interrupt isn't debounced so we delay it by 250ms to
  * give the card a chance to fully insert/eject.
  */
+<<<<<<< HEAD
 static void spitz_mci_setpower(struct device *dev, unsigned int vdd)
+=======
+static int spitz_mci_setpower(struct device *dev, unsigned int vdd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxamci_platform_data* p_d = dev->platform_data;
 
@@ -612,6 +636,11 @@ static void spitz_mci_setpower(struct device *dev, unsigned int vdd)
 		spitz_card_pwr_ctrl(SCOOP_CPR_SD_3V, SCOOP_CPR_SD_3V);
 	else
 		spitz_card_pwr_ctrl(SCOOP_CPR_SD_3V, 0x0);
+<<<<<<< HEAD
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pxamci_platform_data spitz_mci_platform_data = {
@@ -739,7 +768,11 @@ static inline void spitz_lcd_init(void) {}
 #endif
 
 /******************************************************************************
+<<<<<<< HEAD
  * Framebuffer
+=======
+ * NAND Flash
+>>>>>>> refs/remotes/origin/master
  ******************************************************************************/
 #if defined(CONFIG_MTD_NAND_SHARPSL) || defined(CONFIG_MTD_NAND_SHARPSL_MODULE)
 static struct mtd_partition spitz_nand_partitions[] = {
@@ -865,7 +898,11 @@ static inline void spitz_nor_init(void) {}
 #endif
 
 /******************************************************************************
+<<<<<<< HEAD
  * GPIO expander
+=======
+ * I2C devices
+>>>>>>> refs/remotes/origin/master
  ******************************************************************************/
 #if defined(CONFIG_I2C_PXA) || defined(CONFIG_I2C_PXA_MODULE)
 static struct pca953x_platform_data akita_pca953x_pdata = {
@@ -884,9 +921,13 @@ static struct i2c_board_info spitz_i2c_devs[] = {
 };
 
 static struct regulator_consumer_supply isl6271a_consumers[] = {
+<<<<<<< HEAD
 	{
 		.supply	= "vcc_core",
 	}
+=======
+	REGULATOR_SUPPLY("vcc_core", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data isl6271a_info[] = {
@@ -934,6 +975,7 @@ static inline void spitz_i2c_init(void) {}
 static void spitz_poweroff(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arm_machine_restart('g', NULL);
 =======
 	pxa_restart('g', NULL);
@@ -941,6 +983,12 @@ static void spitz_poweroff(void)
 }
 
 static void spitz_restart(char mode, const char *cmd)
+=======
+	pxa_restart(REBOOT_GPIO, NULL);
+}
+
+static void spitz_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t msc0 = __raw_readl(MSC0);
 	/* Bootloader magic for a reboot */
@@ -955,9 +1003,12 @@ static void __init spitz_init(void)
 	init_gpio_reset(SPITZ_GPIO_ON_RESET, 1, 0);
 	pm_power_off = spitz_poweroff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arm_pm_restart = spitz_restart;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	PMCR = 0x00;
 
@@ -986,12 +1037,17 @@ static void __init spitz_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init spitz_fixup(struct machine_desc *desc,
 		struct tag *tags, char **cmdline, struct meminfo *mi)
 =======
 static void __init spitz_fixup(struct tag *tags, char **cmdline,
 			       struct meminfo *mi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init spitz_fixup(struct tag *tags, char **cmdline,
+			       struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 	sharpsl_save_param();
 	mi->nr_banks = 1;
@@ -1002,6 +1058,7 @@ static void __init spitz_fixup(struct tag *tags, char **cmdline,
 #ifdef CONFIG_MACH_SPITZ
 MACHINE_START(SPITZ, "SHARP Spitz")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.fixup		= spitz_fixup,
 	.map_io		= pxa27x_map_io,
 	.init_irq	= pxa27x_init_irq,
@@ -1009,42 +1066,28 @@ MACHINE_START(SPITZ, "SHARP Spitz")
 	.timer		= &pxa_timer,
 =======
 	.restart_mode	= 'g',
+=======
+>>>>>>> refs/remotes/origin/master
 	.fixup		= spitz_fixup,
 	.map_io		= pxa27x_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa27x_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
 	.init_machine	= spitz_init,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.restart	= spitz_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= spitz_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_BORZOI
 MACHINE_START(BORZOI, "SHARP Borzoi")
 <<<<<<< HEAD
-	.fixup		= spitz_fixup,
-	.map_io		= pxa27x_map_io,
-	.init_irq	= pxa27x_init_irq,
-	.init_machine	= spitz_init,
-	.timer		= &pxa_timer,
-=======
-	.restart_mode	= 'g',
-	.fixup		= spitz_fixup,
-	.map_io		= pxa27x_map_io,
-	.nr_irqs	= PXA_NR_IRQS,
-	.init_irq	= pxa27x_init_irq,
-	.handle_irq	= pxa27x_handle_irq,
-	.init_machine	= spitz_init,
-	.timer		= &pxa_timer,
-	.restart	= spitz_restart,
->>>>>>> refs/remotes/origin/cm-10.0
-MACHINE_END
-#endif
-
-#ifdef CONFIG_MACH_AKITA
-MACHINE_START(AKITA, "SHARP Akita")
 <<<<<<< HEAD
 	.fixup		= spitz_fixup,
 	.map_io		= pxa27x_map_io,
@@ -1053,14 +1096,51 @@ MACHINE_START(AKITA, "SHARP Akita")
 	.timer		= &pxa_timer,
 =======
 	.restart_mode	= 'g',
+=======
+>>>>>>> refs/remotes/origin/master
 	.fixup		= spitz_fixup,
 	.map_io		= pxa27x_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa27x_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
 	.init_machine	= spitz_init,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.restart	= spitz_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= spitz_restart,
+>>>>>>> refs/remotes/origin/master
+MACHINE_END
+#endif
+
+#ifdef CONFIG_MACH_AKITA
+MACHINE_START(AKITA, "SHARP Akita")
+<<<<<<< HEAD
+<<<<<<< HEAD
+	.fixup		= spitz_fixup,
+	.map_io		= pxa27x_map_io,
+	.init_irq	= pxa27x_init_irq,
+	.init_machine	= spitz_init,
+	.timer		= &pxa_timer,
+=======
+	.restart_mode	= 'g',
+=======
+>>>>>>> refs/remotes/origin/master
+	.fixup		= spitz_fixup,
+	.map_io		= pxa27x_map_io,
+	.nr_irqs	= PXA_NR_IRQS,
+	.init_irq	= pxa27x_init_irq,
+	.handle_irq	= pxa27x_handle_irq,
+	.init_machine	= spitz_init,
+<<<<<<< HEAD
+	.timer		= &pxa_timer,
+	.restart	= spitz_restart,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= spitz_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

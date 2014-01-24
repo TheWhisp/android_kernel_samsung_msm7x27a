@@ -1,11 +1,18 @@
 /*
+<<<<<<< HEAD
  * File...........: linux/drivers/s390/block/dasd.c
+=======
+>>>>>>> refs/remotes/origin/master
  * Author(s)......: Holger Smolinski <Holger.Smolinski@de.ibm.com>
  *		    Horst Hummel <Horst.Hummel@de.ibm.com>
  *		    Carsten Otte <Cotte@de.ibm.com>
  *		    Martin Schwidefsky <schwidefsky@de.ibm.com>
  * Bugreports.to..: <Linux390@de.ibm.com>
+<<<<<<< HEAD
  * (C) IBM Corporation, IBM Deutschland Entwicklung GmbH, 1999-2001
+=======
+ * Copyright IBM Corp. 1999, 2001
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -103,7 +110,11 @@ dasd_default_erp_action(struct dasd_ccw_req *cqr)
 		pr_err("%s: default ERP has run out of retries and failed\n",
 		       dev_name(&device->cdev->dev));
 		cqr->status = DASD_CQR_FAILED;
+<<<<<<< HEAD
 		cqr->stopclk = get_clock();
+=======
+		cqr->stopclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
         }
         return cqr;
 }				/* end dasd_default_erp_action */
@@ -125,10 +136,21 @@ dasd_default_erp_action(struct dasd_ccw_req *cqr)
 struct dasd_ccw_req *dasd_default_erp_postaction(struct dasd_ccw_req *cqr)
 {
 	int success;
+<<<<<<< HEAD
+=======
+	unsigned long long startclk, stopclk;
+	struct dasd_device *startdev;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(cqr->refers == NULL || cqr->function == NULL);
 
 	success = cqr->status == DASD_CQR_DONE;
+<<<<<<< HEAD
+=======
+	startclk = cqr->startclk;
+	stopclk = cqr->stopclk;
+	startdev = cqr->startdev;
+>>>>>>> refs/remotes/origin/master
 
 	/* free all ERPs - but NOT the original cqr */
 	while (cqr->refers != NULL) {
@@ -143,11 +165,21 @@ struct dasd_ccw_req *dasd_default_erp_postaction(struct dasd_ccw_req *cqr)
 	}
 
 	/* set corresponding status to original cqr */
+<<<<<<< HEAD
+=======
+	cqr->startclk = startclk;
+	cqr->stopclk = stopclk;
+	cqr->startdev = startdev;
+>>>>>>> refs/remotes/origin/master
 	if (success)
 		cqr->status = DASD_CQR_DONE;
 	else {
 		cqr->status = DASD_CQR_FAILED;
+<<<<<<< HEAD
 		cqr->stopclk = get_clock();
+=======
+		cqr->stopclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return cqr;
@@ -160,6 +192,19 @@ dasd_log_sense(struct dasd_ccw_req *cqr, struct irb *irb)
 	struct dasd_device *device;
 
 	device = cqr->startdev;
+<<<<<<< HEAD
+=======
+	if (cqr->intrc == -ETIMEDOUT) {
+		dev_err(&device->cdev->dev,
+			"A timeout error occurred for cqr %p", cqr);
+		return;
+	}
+	if (cqr->intrc == -ENOLINK) {
+		dev_err(&device->cdev->dev,
+			"A transport error occurred for cqr %p", cqr);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	/* dump sense data */
 	if (device->discipline && device->discipline->dump_sense)
 		device->discipline->dump_sense(device, cqr, irb);

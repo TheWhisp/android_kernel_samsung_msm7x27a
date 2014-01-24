@@ -171,7 +171,11 @@ static struct bf5xx_nand_info *to_nand_info(struct platform_device *pdev)
 
 static struct bf5xx_nand_platform *to_nand_plat(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	return pdev->dev.platform_data;
+=======
+	return dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -558,7 +562,11 @@ static void bf5xx_nand_dma_write_buf(struct mtd_info *mtd,
 }
 
 static int bf5xx_nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+<<<<<<< HEAD
 		uint8_t *buf, int page)
+=======
+		uint8_t *buf, int oob_required, int page)
+>>>>>>> refs/remotes/origin/master
 {
 	bf5xx_nand_read_buf(mtd, buf, mtd->writesize);
 	bf5xx_nand_read_buf(mtd, chip->oob_poi, mtd->oobsize);
@@ -566,11 +574,21 @@ static int bf5xx_nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip
 	return 0;
 }
 
+<<<<<<< HEAD
 static void bf5xx_nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
 		const uint8_t *buf)
 {
 	bf5xx_nand_write_buf(mtd, buf, mtd->writesize);
 	bf5xx_nand_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+=======
+static int bf5xx_nand_write_page_raw(struct mtd_info *mtd,
+		struct nand_chip *chip,	const uint8_t *buf, int oob_required)
+{
+	bf5xx_nand_write_buf(mtd, buf, mtd->writesize);
+	bf5xx_nand_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -656,7 +674,11 @@ static int bf5xx_nand_hw_init(struct bf5xx_nand_info *info)
 /*
  * Device management interface
  */
+<<<<<<< HEAD
 static int __devinit bf5xx_nand_add_partition(struct bf5xx_nand_info *info)
+=======
+static int bf5xx_nand_add_partition(struct bf5xx_nand_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mtd_info *mtd = &info->mtd;
 	struct mtd_partition *parts = info->platform->partitions;
@@ -665,12 +687,19 @@ static int __devinit bf5xx_nand_add_partition(struct bf5xx_nand_info *info)
 	return mtd_device_register(mtd, parts, nr);
 }
 
+<<<<<<< HEAD
 static int __devexit bf5xx_nand_remove(struct platform_device *pdev)
 {
 	struct bf5xx_nand_info *info = to_nand_info(pdev);
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+static int bf5xx_nand_remove(struct platform_device *pdev)
+{
+	struct bf5xx_nand_info *info = to_nand_info(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	/* first thing we need to do is release all our mtds
 	 * and their partitions, then go through freeing the
 	 * resources used
@@ -703,16 +732,22 @@ static int bf5xx_nand_scan(struct mtd_info *mtd)
 			chip->ecc.size = 512;
 			chip->ecc.bytes = 6;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else {
 			chip->ecc.size = 256;
 			chip->ecc.bytes = 3;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			chip->ecc.strength = 2;
 		} else {
 			chip->ecc.size = 256;
 			chip->ecc.bytes = 3;
 			chip->ecc.strength = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			bfin_write_NFC_CTL(bfin_read_NFC_CTL() & ~(1 << NFC_PG_SIZE_OFFSET));
 			SSYNC();
 		}
@@ -729,7 +764,11 @@ static int bf5xx_nand_scan(struct mtd_info *mtd)
  * it can allocate all necessary resources then calls the
  * nand layer to look for devices
  */
+<<<<<<< HEAD
 static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
+=======
+static int bf5xx_nand_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bf5xx_nand_platform *plat = to_nand_plat(pdev);
 	struct bf5xx_nand_info *info = NULL;
@@ -836,7 +875,10 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
 out_err_nand_scan:
 	bf5xx_nand_dma_remove(info);
 out_err_hw_init:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(info);
 out_err_kzalloc:
 	peripheral_free_list(bfin_nfc_pin_req);
@@ -869,7 +911,11 @@ static int bf5xx_nand_resume(struct platform_device *dev)
 /* driver device registration */
 static struct platform_driver bf5xx_nand_driver = {
 	.probe		= bf5xx_nand_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bf5xx_nand_remove),
+=======
+	.remove		= bf5xx_nand_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= bf5xx_nand_suspend,
 	.resume		= bf5xx_nand_resume,
 	.driver		= {
@@ -878,6 +924,7 @@ static struct platform_driver bf5xx_nand_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init bf5xx_nand_init(void)
 {
 	printk(KERN_INFO "%s, Version %s (c) 2007 Analog Devices, Inc.\n",
@@ -893,6 +940,9 @@ static void __exit bf5xx_nand_exit(void)
 
 module_init(bf5xx_nand_init);
 module_exit(bf5xx_nand_exit);
+=======
+module_platform_driver(bf5xx_nand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR(DRV_AUTHOR);

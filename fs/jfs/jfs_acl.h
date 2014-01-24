@@ -21,10 +21,14 @@
 #ifdef CONFIG_JFS_POSIX_ACL
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int jfs_check_acl(struct inode *, int, unsigned int flags);
 =======
 struct posix_acl *jfs_get_acl(struct inode *inode, int type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct posix_acl *jfs_get_acl(struct inode *inode, int type);
+>>>>>>> refs/remotes/origin/master
 int jfs_init_acl(tid_t, struct inode *, struct inode *);
 int jfs_acl_chmod(struct inode *inode);
 

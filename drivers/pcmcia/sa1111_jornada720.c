@@ -91,7 +91,11 @@ static struct pcmcia_low_level jornada720_pcmcia_ops = {
 	.nr			= 2,
 };
 
+<<<<<<< HEAD
 int __devinit pcmcia_jornada720_init(struct device *dev)
+=======
+int pcmcia_jornada720_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 

@@ -1,9 +1,13 @@
 /*******************************************************************************
  * This file houses the main functions for the iSCSI CHAP support
  *
+<<<<<<< HEAD
  * \u00a9 Copyright 2007-2011 RisingTide Systems LLC.
  *
  * Licensed to the Linux Foundation under the General Public License (GPL) version 2.
+=======
+ * (c) Copyright 2007-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Nicholas A. Bellinger <nab@linux-iscsi.org>
  *
@@ -49,6 +53,7 @@ static void chap_binaryhex_to_asciihex(char *dst, char *src, int src_len)
 	}
 }
 
+<<<<<<< HEAD
 static void chap_set_random(char *data, int length)
 {
 	long r;
@@ -75,6 +80,8 @@ static void chap_set_random(char *data, int length)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void chap_gen_challenge(
 	struct iscsi_conn *conn,
 	int caller,
@@ -86,7 +93,11 @@ static void chap_gen_challenge(
 
 	memset(challenge_asciihex, 0, CHAP_CHALLENGE_LENGTH * 2 + 1);
 
+<<<<<<< HEAD
 	chap_set_random(chap->challenge, CHAP_CHALLENGE_LENGTH);
+=======
+	get_random_bytes(chap->challenge, CHAP_CHALLENGE_LENGTH);
+>>>>>>> refs/remotes/origin/master
 	chap_binaryhex_to_asciihex(challenge_asciihex, chap->challenge,
 				CHAP_CHALLENGE_LENGTH);
 	/*
@@ -139,7 +150,11 @@ static struct iscsi_chap *chap_server_open(
 	/*
 	 * Set Identifier.
 	 */
+<<<<<<< HEAD
 	chap->id = ISCSI_TPG_C(conn)->tpg_chap_id++;
+=======
+	chap->id = conn->tpg->tpg_chap_id++;
+>>>>>>> refs/remotes/origin/master
 	*aic_len += sprintf(aic_str + *aic_len, "CHAP_I=%d", chap->id);
 	*aic_len += 1;
 	pr_debug("[server] Sending CHAP_I=%d\n", chap->id);
@@ -174,6 +189,10 @@ static int chap_server_compute_md5(
 	unsigned char client_digest[MD5_SIGNATURE_SIZE];
 	unsigned char server_digest[MD5_SIGNATURE_SIZE];
 	unsigned char chap_n[MAX_CHAP_N_SIZE], chap_r[MAX_RESPONSE_LENGTH];
+<<<<<<< HEAD
+=======
+	size_t compare_len;
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_chap *chap = conn->auth_protocol;
 	struct crypto_hash *tfm;
 	struct hash_desc desc;
@@ -212,7 +231,13 @@ static int chap_server_compute_md5(
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (memcmp(chap_n, auth->userid, strlen(auth->userid)) != 0) {
+=======
+	/* Include the terminating NULL in the compare */
+	compare_len = strlen(auth->userid) + 1;
+	if (strncmp(chap_n, auth->userid, compare_len) != 0) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("CHAP_N values do not match!\n");
 		goto out;
 	}

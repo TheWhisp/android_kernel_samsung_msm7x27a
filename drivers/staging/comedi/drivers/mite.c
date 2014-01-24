@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 /*
@@ -49,6 +52,7 @@
 
 /* #define USE_KMALLOC */
 
+<<<<<<< HEAD
 #include "mite.h"
 
 #include "comedi_fc.h"
@@ -110,6 +114,50 @@ static void dump_chip_signature(u32 csigr_bits)
 }
 
 unsigned mite_fifo_size(struct mite_struct *mite, unsigned channel)
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/module.h>
+#include <linux/pci.h>
+
+#include "../comedidev.h"
+
+#include "comedi_fc.h"
+#include "mite.h"
+
+#define TOP_OF_PAGE(x) ((x)|(~(PAGE_MASK)))
+
+struct mite_struct *mite_alloc(struct pci_dev *pcidev)
+{
+	struct mite_struct *mite;
+	unsigned int i;
+
+	mite = kzalloc(sizeof(*mite), GFP_KERNEL);
+	if (mite) {
+		spin_lock_init(&mite->lock);
+		mite->pcidev = pcidev;
+		for (i = 0; i < MAX_MITE_DMA_CHANNELS; ++i) {
+			mite->channels[i].mite = mite;
+			mite->channels[i].channel = i;
+			mite->channels[i].done = 1;
+		}
+	}
+	return mite;
+}
+EXPORT_SYMBOL_GPL(mite_alloc);
+
+static void dump_chip_signature(u32 csigr_bits)
+{
+	pr_info("version = %i, type = %i, mite mode = %i, interface mode = %i\n",
+		mite_csigr_version(csigr_bits), mite_csigr_type(csigr_bits),
+		mite_csigr_mmode(csigr_bits), mite_csigr_imode(csigr_bits));
+	pr_info("num channels = %i, write post fifo depth = %i, wins = %i, iowins = %i\n",
+		mite_csigr_dmac(csigr_bits), mite_csigr_wpdep(csigr_bits),
+		mite_csigr_wins(csigr_bits), mite_csigr_iowins(csigr_bits));
+}
+
+static unsigned mite_fifo_size(struct mite_struct *mite, unsigned channel)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned fcr_bits = readl(mite->mite_io_addr + MITE_FCR(channel));
 	unsigned empty_count = (fcr_bits >> 16) & 0xff;
@@ -120,11 +168,15 @@ unsigned mite_fifo_size(struct mite_struct *mite, unsigned channel)
 int mite_setup2(struct mite_struct *mite, unsigned use_iodwbsr_1)
 {
 	unsigned long length;
+<<<<<<< HEAD
 	resource_size_t addr;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	u32 csigr_bits;
 	unsigned unknown_dma_burst_bits;
 
+<<<<<<< HEAD
 	if (comedi_pci_enable(mite->pcidev, "mite")) {
 		printk(KERN_ERR "error enabling mite and requesting io regions\n");
 		return -EIO;
@@ -159,6 +211,31 @@ int mite_setup2(struct mite_struct *mite, unsigned use_iodwbsr_1)
 	if (use_iodwbsr_1) {
 		writel(0, mite->mite_io_addr + MITE_IODWBSR);
 		printk(KERN_INFO "mite: using I/O Window Base Size register 1\n");
+=======
+	pci_set_master(mite->pcidev);
+
+	mite->mite_io_addr = pci_ioremap_bar(mite->pcidev, 0);
+	if (!mite->mite_io_addr) {
+		dev_err(&mite->pcidev->dev,
+			"Failed to remap mite io memory address\n");
+		return -ENOMEM;
+	}
+	mite->mite_phys_addr = pci_resource_start(mite->pcidev, 0);
+
+	mite->daq_io_addr = pci_ioremap_bar(mite->pcidev, 1);
+	if (!mite->daq_io_addr) {
+		dev_err(&mite->pcidev->dev,
+			"Failed to remap daq io memory address\n");
+		return -ENOMEM;
+	}
+	mite->daq_phys_addr = pci_resource_start(mite->pcidev, 1);
+	length = pci_resource_len(mite->pcidev, 1);
+
+	if (use_iodwbsr_1) {
+		writel(0, mite->mite_io_addr + MITE_IODWBSR);
+		dev_info(&mite->pcidev->dev,
+			 "using I/O Window Base Size register 1\n");
+>>>>>>> refs/remotes/origin/master
 		writel(mite->daq_phys_addr | WENAB |
 		       MITE_IODWBSR_1_WSIZE_bits(length),
 		       mite->mite_io_addr + MITE_IODWBSR_1);
@@ -183,9 +260,15 @@ int mite_setup2(struct mite_struct *mite, unsigned use_iodwbsr_1)
 	csigr_bits = readl(mite->mite_io_addr + MITE_CSIGR);
 	mite->num_channels = mite_csigr_dmac(csigr_bits);
 	if (mite->num_channels > MAX_MITE_DMA_CHANNELS) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "mite: bug? chip claims to have %i dma "
 		       "channels. Setting to %i.\n",
 		       mite->num_channels, MAX_MITE_DMA_CHANNELS);
+=======
+		dev_warn(&mite->pcidev->dev,
+			 "mite: bug? chip claims to have %i dma channels. Setting to %i.\n",
+			 mite->num_channels, MAX_MITE_DMA_CHANNELS);
+>>>>>>> refs/remotes/origin/master
 		mite->num_channels = MAX_MITE_DMA_CHANNELS;
 	}
 	dump_chip_signature(csigr_bits);
@@ -198,17 +281,25 @@ int mite_setup2(struct mite_struct *mite, unsigned use_iodwbsr_1)
 		       mite->mite_io_addr + MITE_CHCR(i));
 	}
 	mite->fifo_size = mite_fifo_size(mite, 0);
+<<<<<<< HEAD
 	printk(KERN_INFO "mite: fifo size is %i.\n", mite->fifo_size);
 	mite->used = 1;
 
 	return 0;
 }
 EXPORT_SYMBOL(mite_setup2);
+=======
+	dev_info(&mite->pcidev->dev, "fifo size is %i.\n", mite->fifo_size);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(mite_setup2);
+>>>>>>> refs/remotes/origin/master
 
 int mite_setup(struct mite_struct *mite)
 {
 	return mite_setup2(mite, 0);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_setup);
 
 void mite_cleanup(void)
@@ -221,6 +312,9 @@ void mite_cleanup(void)
 		kfree(mite);
 	}
 }
+=======
+EXPORT_SYMBOL_GPL(mite_setup);
+>>>>>>> refs/remotes/origin/master
 
 void mite_unsetup(struct mite_struct *mite)
 {
@@ -237,6 +331,7 @@ void mite_unsetup(struct mite_struct *mite)
 		iounmap(mite->daq_io_addr);
 		mite->daq_io_addr = NULL;
 	}
+<<<<<<< HEAD
 	if (mite->mite_phys_addr) {
 		comedi_pci_disable(mite->pcidev);
 		mite->mite_phys_addr = 0;
@@ -261,6 +356,47 @@ void mite_list_devices(void)
 	printk(KERN_INFO "\n");
 }
 EXPORT_SYMBOL(mite_list_devices);
+=======
+	if (mite->mite_phys_addr)
+		mite->mite_phys_addr = 0;
+}
+EXPORT_SYMBOL_GPL(mite_unsetup);
+
+struct mite_dma_descriptor_ring *mite_alloc_ring(struct mite_struct *mite)
+{
+	struct mite_dma_descriptor_ring *ring =
+	    kmalloc(sizeof(struct mite_dma_descriptor_ring), GFP_KERNEL);
+
+	if (ring == NULL)
+		return ring;
+	ring->hw_dev = get_device(&mite->pcidev->dev);
+	if (ring->hw_dev == NULL) {
+		kfree(ring);
+		return NULL;
+	}
+	ring->n_links = 0;
+	ring->descriptors = NULL;
+	ring->descriptors_dma_addr = 0;
+	return ring;
+};
+EXPORT_SYMBOL_GPL(mite_alloc_ring);
+
+void mite_free_ring(struct mite_dma_descriptor_ring *ring)
+{
+	if (ring) {
+		if (ring->descriptors) {
+			dma_free_coherent(ring->hw_dev,
+					  ring->n_links *
+					  sizeof(struct mite_dma_descriptor),
+					  ring->descriptors,
+					  ring->descriptors_dma_addr);
+		}
+		put_device(ring->hw_dev);
+		kfree(ring);
+	}
+};
+EXPORT_SYMBOL_GPL(mite_free_ring);
+>>>>>>> refs/remotes/origin/master
 
 struct mite_channel *mite_request_channel_in_range(struct mite_struct *mite,
 						   struct
@@ -287,7 +423,11 @@ struct mite_channel *mite_request_channel_in_range(struct mite_struct *mite,
 	spin_unlock_irqrestore(&mite->lock, flags);
 	return channel;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_request_channel_in_range);
+=======
+EXPORT_SYMBOL_GPL(mite_request_channel_in_range);
+>>>>>>> refs/remotes/origin/master
 
 void mite_release_channel(struct mite_channel *mite_chan)
 {
@@ -314,7 +454,11 @@ void mite_release_channel(struct mite_channel *mite_chan)
 	}
 	spin_unlock_irqrestore(&mite->lock, flags);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_release_channel);
+=======
+EXPORT_SYMBOL_GPL(mite_release_channel);
+>>>>>>> refs/remotes/origin/master
 
 void mite_dma_arm(struct mite_channel *mite_chan)
 {
@@ -322,7 +466,10 @@ void mite_dma_arm(struct mite_channel *mite_chan)
 	int chor;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	MDPRINTK("mite_dma_arm ch%i\n", channel);
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * memory barrier is intended to insure any twiddling with the buffer
 	 * is done before writing to the mite to arm dma transfer
@@ -337,7 +484,11 @@ void mite_dma_arm(struct mite_channel *mite_chan)
 	spin_unlock_irqrestore(&mite->lock, flags);
 /*       mite_dma_tcr(mite, channel); */
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_dma_arm);
+=======
+EXPORT_SYMBOL_GPL(mite_dma_arm);
+>>>>>>> refs/remotes/origin/master
 
 /**************************************/
 
@@ -363,14 +514,22 @@ int mite_buf_change(struct mite_dma_descriptor_ring *ring,
 
 	n_links = async->prealloc_bufsz >> PAGE_SHIFT;
 
+<<<<<<< HEAD
 	MDPRINTK("ring->hw_dev=%p, n_links=0x%04x\n", ring->hw_dev, n_links);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ring->descriptors =
 	    dma_alloc_coherent(ring->hw_dev,
 			       n_links * sizeof(struct mite_dma_descriptor),
 			       &ring->descriptors_dma_addr, GFP_KERNEL);
 	if (!ring->descriptors) {
+<<<<<<< HEAD
 		printk(KERN_ERR "mite: ring buffer allocation failed\n");
+=======
+		dev_err(async->subdevice->device->class_dev,
+			"mite: ring buffer allocation failed\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	ring->n_links = n_links;
@@ -378,7 +537,11 @@ int mite_buf_change(struct mite_dma_descriptor_ring *ring,
 	for (i = 0; i < n_links; i++) {
 		ring->descriptors[i].count = cpu_to_le32(PAGE_SIZE);
 		ring->descriptors[i].addr =
+<<<<<<< HEAD
 		    cpu_to_le32(async->buf_page_list[i].dma_addr);
+=======
+		    cpu_to_le32(async->buf_map->page_list[i].dma_addr);
+>>>>>>> refs/remotes/origin/master
 		ring->descriptors[i].next =
 		    cpu_to_le32(ring->descriptors_dma_addr + (i +
 							      1) *
@@ -393,7 +556,11 @@ int mite_buf_change(struct mite_dma_descriptor_ring *ring,
 	smp_wmb();
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_buf_change);
+=======
+EXPORT_SYMBOL_GPL(mite_buf_change);
+>>>>>>> refs/remotes/origin/master
 
 void mite_prep_dma(struct mite_channel *mite_chan,
 		   unsigned int num_device_bits, unsigned int num_memory_bits)
@@ -401,8 +568,11 @@ void mite_prep_dma(struct mite_channel *mite_chan,
 	unsigned int chor, chcr, mcr, dcr, lkcr;
 	struct mite_struct *mite = mite_chan->mite;
 
+<<<<<<< HEAD
 	MDPRINTK("mite_prep_dma ch%i\n", mite_chan->channel);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* reset DMA and FIFO */
 	chor = CHOR_DMARESET | CHOR_FRESET;
 	writel(chor, mite->mite_io_addr + MITE_CHOR(mite_chan->channel));
@@ -447,8 +617,12 @@ void mite_prep_dma(struct mite_channel *mite_chan,
 		mcr |= CR_PSIZE32;
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "mite: bug! invalid mem bit width for dma "
 		       "transfer\n");
+=======
+		pr_warn("bug! invalid mem bit width for dma transfer\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	writel(mcr, mite->mite_io_addr + MITE_MCR(mite_chan->channel));
@@ -467,8 +641,12 @@ void mite_prep_dma(struct mite_channel *mite_chan,
 		dcr |= CR_PSIZE32;
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_WARNING "mite: bug! invalid dev bit width for dma "
 		       "transfer\n");
+=======
+		pr_warn("bug! invalid dev bit width for dma transfer\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	writel(dcr, mite->mite_io_addr + MITE_DCR(mite_chan->channel));
@@ -483,12 +661,19 @@ void mite_prep_dma(struct mite_channel *mite_chan,
 	/* starting address for link chaining */
 	writel(mite_chan->ring->descriptors_dma_addr,
 	       mite->mite_io_addr + MITE_LKAR(mite_chan->channel));
+<<<<<<< HEAD
 
 	MDPRINTK("exit mite_prep_dma\n");
 }
 EXPORT_SYMBOL(mite_prep_dma);
 
 u32 mite_device_bytes_transferred(struct mite_channel *mite_chan)
+=======
+}
+EXPORT_SYMBOL_GPL(mite_prep_dma);
+
+static u32 mite_device_bytes_transferred(struct mite_channel *mite_chan)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mite_struct *mite = mite_chan->mite;
 	return readl(mite->mite_io_addr + MITE_DAR(mite_chan->channel));
@@ -500,7 +685,11 @@ u32 mite_bytes_in_transit(struct mite_channel *mite_chan)
 	return readl(mite->mite_io_addr +
 		     MITE_FCR(mite_chan->channel)) & 0x000000FF;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_bytes_in_transit);
+=======
+EXPORT_SYMBOL_GPL(mite_bytes_in_transit);
+>>>>>>> refs/remotes/origin/master
 
 /* returns lower bound for number of bytes transferred from device to memory */
 u32 mite_bytes_written_to_memory_lb(struct mite_channel *mite_chan)
@@ -510,7 +699,11 @@ u32 mite_bytes_written_to_memory_lb(struct mite_channel *mite_chan)
 	device_byte_count = mite_device_bytes_transferred(mite_chan);
 	return device_byte_count - mite_bytes_in_transit(mite_chan);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_bytes_written_to_memory_lb);
+=======
+EXPORT_SYMBOL_GPL(mite_bytes_written_to_memory_lb);
+>>>>>>> refs/remotes/origin/master
 
 /* returns upper bound for number of bytes transferred from device to memory */
 u32 mite_bytes_written_to_memory_ub(struct mite_channel *mite_chan)
@@ -520,7 +713,11 @@ u32 mite_bytes_written_to_memory_ub(struct mite_channel *mite_chan)
 	in_transit_count = mite_bytes_in_transit(mite_chan);
 	return mite_device_bytes_transferred(mite_chan) - in_transit_count;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_bytes_written_to_memory_ub);
+=======
+EXPORT_SYMBOL_GPL(mite_bytes_written_to_memory_ub);
+>>>>>>> refs/remotes/origin/master
 
 /* returns lower bound for number of bytes read from memory to device */
 u32 mite_bytes_read_from_memory_lb(struct mite_channel *mite_chan)
@@ -530,7 +727,11 @@ u32 mite_bytes_read_from_memory_lb(struct mite_channel *mite_chan)
 	device_byte_count = mite_device_bytes_transferred(mite_chan);
 	return device_byte_count + mite_bytes_in_transit(mite_chan);
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_bytes_read_from_memory_lb);
+=======
+EXPORT_SYMBOL_GPL(mite_bytes_read_from_memory_lb);
+>>>>>>> refs/remotes/origin/master
 
 /* returns upper bound for number of bytes read from memory to device */
 u32 mite_bytes_read_from_memory_ub(struct mite_channel *mite_chan)
@@ -540,7 +741,11 @@ u32 mite_bytes_read_from_memory_ub(struct mite_channel *mite_chan)
 	in_transit_count = mite_bytes_in_transit(mite_chan);
 	return mite_device_bytes_transferred(mite_chan) + in_transit_count;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_bytes_read_from_memory_ub);
+=======
+EXPORT_SYMBOL_GPL(mite_bytes_read_from_memory_ub);
+>>>>>>> refs/remotes/origin/master
 
 unsigned mite_dma_tcr(struct mite_channel *mite_chan)
 {
@@ -550,12 +755,19 @@ unsigned mite_dma_tcr(struct mite_channel *mite_chan)
 
 	lkar = readl(mite->mite_io_addr + MITE_LKAR(mite_chan->channel));
 	tcr = readl(mite->mite_io_addr + MITE_TCR(mite_chan->channel));
+<<<<<<< HEAD
 	MDPRINTK("mite_dma_tcr ch%i, lkar=0x%08x tcr=%d\n", mite_chan->channel,
 		 lkar, tcr);
 
 	return tcr;
 }
 EXPORT_SYMBOL(mite_dma_tcr);
+=======
+
+	return tcr;
+}
+EXPORT_SYMBOL_GPL(mite_dma_tcr);
+>>>>>>> refs/remotes/origin/master
 
 void mite_dma_disarm(struct mite_channel *mite_chan)
 {
@@ -566,7 +778,11 @@ void mite_dma_disarm(struct mite_channel *mite_chan)
 	chor = CHOR_ABORT;
 	writel(chor, mite->mite_io_addr + MITE_CHOR(mite_chan->channel));
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_dma_disarm);
+=======
+EXPORT_SYMBOL_GPL(mite_dma_disarm);
+>>>>>>> refs/remotes/origin/master
 
 int mite_sync_input_dma(struct mite_channel *mite_chan,
 			struct comedi_async *async)
@@ -582,7 +798,12 @@ int mite_sync_input_dma(struct mite_channel *mite_chan,
 	nbytes = mite_bytes_written_to_memory_lb(mite_chan);
 	if ((int)(mite_bytes_written_to_memory_ub(mite_chan) -
 		  old_alloc_count) > 0) {
+<<<<<<< HEAD
 		printk("mite: DMA overwrite of free area\n");
+=======
+		dev_warn(async->subdevice->device->class_dev,
+			 "mite: DMA overwrite of free area\n");
+>>>>>>> refs/remotes/origin/master
 		async->events |= COMEDI_CB_OVERFLOW;
 		return -1;
 	}
@@ -603,7 +824,11 @@ int mite_sync_input_dma(struct mite_channel *mite_chan,
 	async->events |= COMEDI_CB_BLOCK;
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_sync_input_dma);
+=======
+EXPORT_SYMBOL_GPL(mite_sync_input_dma);
+>>>>>>> refs/remotes/origin/master
 
 int mite_sync_output_dma(struct mite_channel *mite_chan,
 			 struct comedi_async *async)
@@ -626,7 +851,12 @@ int mite_sync_output_dma(struct mite_channel *mite_chan,
 	    (int)(nbytes_ub - stop_count) > 0)
 		nbytes_ub = stop_count;
 	if ((int)(nbytes_ub - old_alloc_count) > 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "mite: DMA underrun\n");
+=======
+		dev_warn(async->subdevice->device->class_dev,
+			 "mite: DMA underrun\n");
+>>>>>>> refs/remotes/origin/master
 		async->events |= COMEDI_CB_OVERFLOW;
 		return -1;
 	}
@@ -640,7 +870,11 @@ int mite_sync_output_dma(struct mite_channel *mite_chan,
 	}
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_sync_output_dma);
+=======
+EXPORT_SYMBOL_GPL(mite_sync_output_dma);
+>>>>>>> refs/remotes/origin/master
 
 unsigned mite_get_status(struct mite_channel *mite_chan)
 {
@@ -659,7 +893,11 @@ unsigned mite_get_status(struct mite_channel *mite_chan)
 	spin_unlock_irqrestore(&mite->lock, flags);
 	return status;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_get_status);
+=======
+EXPORT_SYMBOL_GPL(mite_get_status);
+>>>>>>> refs/remotes/origin/master
 
 int mite_done(struct mite_channel *mite_chan)
 {
@@ -673,6 +911,7 @@ int mite_done(struct mite_channel *mite_chan)
 	spin_unlock_irqrestore(&mite->lock, flags);
 	return done;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(mite_done);
 
 #ifdef DEBUG_MITE
@@ -828,6 +1067,21 @@ void __exit cleanup_module(void)
 	mite_cleanup();
 }
 #endif
+=======
+EXPORT_SYMBOL_GPL(mite_done);
+
+static int __init mite_module_init(void)
+{
+	return 0;
+}
+
+static void __exit mite_module_exit(void)
+{
+}
+
+module_init(mite_module_init);
+module_exit(mite_module_exit);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

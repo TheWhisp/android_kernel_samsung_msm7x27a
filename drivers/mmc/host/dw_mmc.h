@@ -15,10 +15,15 @@
 #define _DW_MMC_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DW_MMC_240A		0x240a
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DW_MMC_240A		0x240a
+
+>>>>>>> refs/remotes/origin/master
 #define SDMMC_CTRL		0x000
 #define SDMMC_PWREN		0x004
 #define SDMMC_CLKDIV		0x008
@@ -57,8 +62,12 @@
 #define SDMMC_DSCADDR		0x094
 #define SDMMC_BUFADDR		0x098
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SDMMC_DATA		0x100
 =======
+=======
+#define SDMMC_CDTHRCTL		0x100
+>>>>>>> refs/remotes/origin/master
 #define SDMMC_DATA(x)		(x)
 
 /*
@@ -67,7 +76,10 @@
  */
 #define DATA_OFFSET		0x100
 #define DATA_240A_OFFSET	0x200
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* shift bit field */
 #define _SBF(f, v)		((v) << (f))
@@ -99,17 +111,25 @@
 #define SDMMC_CTYPE_1BIT		0
 /* Interrupt status & mask register defines */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SDMMC_INT_SDIO			BIT(16)
 =======
 #define SDMMC_INT_SDIO(n)		BIT(16 + (n))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SDMMC_INT_SDIO(n)		BIT(16 + (n))
+>>>>>>> refs/remotes/origin/master
 #define SDMMC_INT_EBE			BIT(15)
 #define SDMMC_INT_ACD			BIT(14)
 #define SDMMC_INT_SBE			BIT(13)
 #define SDMMC_INT_HLE			BIT(12)
 #define SDMMC_INT_FRUN			BIT(11)
 #define SDMMC_INT_HTO			BIT(10)
+<<<<<<< HEAD
 #define SDMMC_INT_DTO			BIT(9)
+=======
+#define SDMMC_INT_DRTO			BIT(9)
+>>>>>>> refs/remotes/origin/master
 #define SDMMC_INT_RTO			BIT(8)
 #define SDMMC_INT_DCRC			BIT(7)
 #define SDMMC_INT_RCRC			BIT(6)
@@ -122,6 +142,10 @@
 #define SDMMC_INT_ERROR			0xbfc2
 /* Command register defines */
 #define SDMMC_CMD_START			BIT(31)
+<<<<<<< HEAD
+=======
+#define SDMMC_CMD_USE_HOLD_REG	BIT(29)
+>>>>>>> refs/remotes/origin/master
 #define SDMMC_CMD_CCS_EXP		BIT(23)
 #define SDMMC_CMD_CEATA_RD		BIT(22)
 #define SDMMC_CMD_UPD_CLK		BIT(21)
@@ -138,11 +162,19 @@
 #define SDMMC_CMD_INDX(n)		((n) & 0x1F)
 /* Status register defines */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SDMMC_GET_FCNT(x)		(((x)>>17) & 0x1FF)
 #define SDMMC_FIFO_SZ			32
 =======
 #define SDMMC_GET_FCNT(x)		(((x)>>17) & 0x1FFF)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SDMMC_GET_FCNT(x)		(((x)>>17) & 0x1FFF)
+/* FIFOTH register defines */
+#define SDMMC_SET_FIFOTH(m, r, t)	(((m) & 0x7) << 28 | \
+					 ((r) & 0xFFF) << 16 | \
+					 ((t) & 0xFFF))
+>>>>>>> refs/remotes/origin/master
 /* Internal DMAC interrupt defines */
 #define SDMMC_IDMAC_INT_AI		BIT(9)
 #define SDMMC_IDMAC_INT_NI		BIT(8)
@@ -155,6 +187,7 @@
 #define SDMMC_IDMAC_ENABLE		BIT(7)
 #define SDMMC_IDMAC_FB			BIT(1)
 #define SDMMC_IDMAC_SWRESET		BIT(0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* Register access macros */
@@ -171,6 +204,12 @@
 =======
 /* Version ID register define */
 #define SDMMC_GET_VERID(x)		((x) & 0xFFFF)
+=======
+/* Version ID register define */
+#define SDMMC_GET_VERID(x)		((x) & 0xFFFF)
+/* Card read threshold */
+#define SDMMC_SET_RD_THLD(v, x)		(((v) & 0x1FFF) << 16 | (x))
+>>>>>>> refs/remotes/origin/master
 
 /* Register access macros */
 #define mci_readl(dev, reg)			\
@@ -183,11 +222,15 @@
 	__raw_readw((dev)->regs + SDMMC_##reg)
 #define mci_writew(dev, reg, value)			\
 	__raw_writew((value), (dev)->regs + SDMMC_##reg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* 64-bit FIFO access macros */
 #ifdef readq
 #define mci_readq(dev, reg)			\
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__raw_readq(dev->regs + SDMMC_##reg)
 #define mci_writeq(dev, reg, value)			\
@@ -197,6 +240,11 @@
 #define mci_writeq(dev, reg, value)			\
 	__raw_writeq((value), (dev)->regs + SDMMC_##reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__raw_readq((dev)->regs + SDMMC_##reg)
+#define mci_writeq(dev, reg, value)			\
+	__raw_writeq((value), (dev)->regs + SDMMC_##reg)
+>>>>>>> refs/remotes/origin/master
 #else
 /*
  * Dummy readq implementation for architectures that don't define it.
@@ -208,10 +256,13 @@
  */
 #define mci_readq(dev, reg)			\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(*(volatile u64 __force *)(dev->regs + SDMMC_##reg))
 #define mci_writeq(dev, reg, value)			\
 	(*(volatile u64 __force *)(dev->regs + SDMMC_##reg) = value)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	(*(volatile u64 __force *)((dev)->regs + SDMMC_##reg))
 #define mci_writeq(dev, reg, value)			\
 	(*(volatile u64 __force *)((dev)->regs + SDMMC_##reg) = (value))
@@ -222,7 +273,81 @@ extern void dw_mci_remove(struct dw_mci *host);
 #ifdef CONFIG_PM
 extern int dw_mci_suspend(struct dw_mci *host);
 extern int dw_mci_resume(struct dw_mci *host);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+#endif
+
+/**
+ * struct dw_mci_slot - MMC slot state
+ * @mmc: The mmc_host representing this slot.
+ * @host: The MMC controller this slot is using.
+ * @quirks: Slot-level quirks (DW_MCI_SLOT_QUIRK_XXX)
+ * @wp_gpio: If gpio_is_valid() we'll use this to read write protect.
+ * @ctype: Card type for this slot.
+ * @mrq: mmc_request currently being processed or waiting to be
+ *	processed, or NULL when the slot is idle.
+ * @queue_node: List node for placing this node in the @queue list of
+ *	&struct dw_mci.
+ * @clock: Clock rate configured by set_ios(). Protected by host->lock.
+ * @__clk_old: The last updated clock with reflecting clock divider.
+ *	Keeping track of this helps us to avoid spamming the console
+ *	with CONFIG_MMC_CLKGATE.
+ * @flags: Random state bits associated with the slot.
+ * @id: Number of this slot.
+ * @last_detect_state: Most recently observed card detect state.
+ */
+struct dw_mci_slot {
+	struct mmc_host		*mmc;
+	struct dw_mci		*host;
+
+	int			quirks;
+	int			wp_gpio;
+
+	u32			ctype;
+
+	struct mmc_request	*mrq;
+	struct list_head	queue_node;
+
+	unsigned int		clock;
+	unsigned int		__clk_old;
+
+	unsigned long		flags;
+#define DW_MMC_CARD_PRESENT	0
+#define DW_MMC_CARD_NEED_INIT	1
+	int			id;
+	int			last_detect_state;
+};
+
+struct dw_mci_tuning_data {
+	const u8 *blk_pattern;
+	unsigned int blksz;
+};
+
+/**
+ * dw_mci driver data - dw-mshc implementation specific driver data.
+ * @caps: mmc subsystem specified capabilities of the controller(s).
+ * @init: early implementation specific initialization.
+ * @setup_clock: implementation specific clock configuration.
+ * @prepare_command: handle CMD register extensions.
+ * @set_ios: handle bus specific extensions.
+ * @parse_dt: parse implementation specific device tree properties.
+ *
+ * Provide controller implementation specific extensions. The usage of this
+ * data structure is fully optional and usage of each member in this structure
+ * is optional as well.
+ */
+struct dw_mci_drv_data {
+	unsigned long	*caps;
+	int		(*init)(struct dw_mci *host);
+	int		(*setup_clock)(struct dw_mci *host);
+	void		(*prepare_command)(struct dw_mci *host, u32 *cmdr);
+	void		(*set_ios)(struct dw_mci *host, struct mmc_ios *ios);
+	int		(*parse_dt)(struct dw_mci *host);
+	int		(*execute_tuning)(struct dw_mci_slot *slot, u32 opcode,
+					struct dw_mci_tuning_data *tuning_data);
+};
+>>>>>>> refs/remotes/origin/master
 #endif /* _DW_MMC_H_ */

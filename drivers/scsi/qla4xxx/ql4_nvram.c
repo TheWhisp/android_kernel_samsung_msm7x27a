@@ -1,6 +1,10 @@
 /*
  * QLogic iSCSI HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2010 QLogic Corporation
+=======
+ * Copyright (c)  2003-2013 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qla4xxx for copyright and licensing details.
  */
@@ -157,7 +161,10 @@ u16 rd_nvram_word(struct scsi_qla_host * ha, int offset)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 u8 rd_nvram_byte(struct scsi_qla_host *ha, int offset)
 {
 	u16 val = 0;
@@ -179,7 +186,10 @@ u8 rd_nvram_byte(struct scsi_qla_host *ha, int offset)
 	return rval;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int qla4xxx_is_nvram_configuration_valid(struct scsi_qla_host * ha)
 {
 	int status = QLA_ERROR;

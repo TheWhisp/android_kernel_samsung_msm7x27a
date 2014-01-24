@@ -13,7 +13,10 @@
 
 #define OS_INFO_VMCOREINFO	0
 #define OS_INFO_REIPL_BLOCK	1
+<<<<<<< HEAD
 #define OS_INFO_INIT_FN		2
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct os_info_entry {
 	u64	addr;
@@ -28,8 +31,13 @@ struct os_info {
 	u16	version_minor;
 	u64	crashkernel_addr;
 	u64	crashkernel_size;
+<<<<<<< HEAD
 	struct os_info_entry entry[3];
 	u8	reserved[4004];
+=======
+	struct os_info_entry entry[2];
+	u8	reserved[4024];
+>>>>>>> refs/remotes/origin/master
 } __packed;
 
 void os_info_init(void);

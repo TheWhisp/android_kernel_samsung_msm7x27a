@@ -4,6 +4,7 @@
 #include "smcommon.h"
 #include "smil.h"
 
+<<<<<<< HEAD
 int         Check_D_LogCHS              (WORD *,BYTE *,BYTE *);
 void        Initialize_D_Media          (void);
 void        PowerOff_D_Media            (void);
@@ -54,12 +55,43 @@ static BYTE  WorkRedund[REDTSIZE];
 //WORD  Log2Phy[MAX_ZONENUM][MAX_LOGBLOCK];
 static WORD  *Log2Phy[MAX_ZONENUM];                 // 128 x 1000,   Log2Phy[MAX_ZONENUM][MAX_LOGBLOCK];
 static BYTE  Assign[MAX_ZONENUM][MAX_BLOCKNUM/8];
+=======
+static int         Conv_D_MediaAddr(struct us_data *, DWORD);
+static int         Inc_D_MediaAddr(struct us_data *);
+static int         Media_D_ReadOneSect(struct us_data *, WORD, BYTE *);
+
+static int  Copy_D_BlockAll(struct us_data *, DWORD);
+
+static int  Assign_D_WriteBlock(void);
+static int  Release_D_ReadBlock(struct us_data *);
+static int  Release_D_WriteBlock(struct us_data *);
+static int  Release_D_CopySector(struct us_data *);
+
+static int  Copy_D_PhyOneSect(struct us_data *);
+static int  Read_D_PhyOneSect(struct us_data *, WORD, BYTE *);
+static int  Erase_D_PhyOneBlock(struct us_data *);
+
+static int  Set_D_PhyFmtValue(struct us_data *);
+static int  Search_D_CIS(struct us_data *);
+static int  Make_D_LogTable(struct us_data *);
+
+static int  MarkFail_D_PhyOneBlock(struct us_data *);
+
+static DWORD ErrCode;
+static BYTE  WorkBuf[SECTSIZE];
+static BYTE  Redundant[REDTSIZE];
+static BYTE  WorkRedund[REDTSIZE];
+/* 128 x 1000, Log2Phy[MAX_ZONENUM][MAX_LOGBLOCK]; */
+static WORD  *Log2Phy[MAX_ZONENUM];
+static BYTE  Assign[MAX_ZONENUM][MAX_BLOCKNUM / 8];
+>>>>>>> refs/remotes/origin/master
 static WORD  AssignStart[MAX_ZONENUM];
 WORD  ReadBlock;
 WORD  WriteBlock;
 DWORD MediaChange;
 static DWORD SectCopyMode;
 
+<<<<<<< HEAD
 //BIT Control Macro
 static BYTE BitData[] = { 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 } ;
 #define Set_D_Bit(a,b)    (a[(BYTE)((b)/8)]|= BitData[(b)%8])
@@ -94,20 +126,35 @@ BYTE     IsXDCompliance;
 //}
 
 //----- SM_FreeMem() -------------------------------------------------
+=======
+/* BIT Control Macro */
+static BYTE BitData[] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
+#define Set_D_Bit(a, b)    (a[(BYTE)((b) / 8)] |= BitData[(b) % 8])
+#define Clr_D_Bit(a, b)    (a[(BYTE)((b) / 8)] &= ~BitData[(b) % 8])
+#define Chk_D_Bit(a, b)    (a[(BYTE)((b) / 8)] & BitData[(b) % 8])
+
+/* ----- SM_FreeMem() ------------------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 int SM_FreeMem(void)
 {
 	int	i;
 
 	pr_info("SM_FreeMem start\n");
+<<<<<<< HEAD
 	for (i=0; i<MAX_ZONENUM; i++)
 	{
 		if (Log2Phy[i]!=NULL)
 		{
+=======
+	for (i = 0; i < MAX_ZONENUM; i++) {
+		if (Log2Phy[i] != NULL) {
+>>>>>>> refs/remotes/origin/master
 			pr_info("Free Zone = %x, Addr = %p\n", i, Log2Phy[i]);
 			kfree(Log2Phy[i]);
 			Log2Phy[i] = NULL;
 		}
 	}
+<<<<<<< HEAD
 	return(NO_ERROR);
 }
 
@@ -161,28 +208,55 @@ int Media_D_ReadSector(struct us_data *us, DWORD start,WORD count,BYTE *buf)
 
 	while(1)
 	{
+=======
+	return NO_ERROR;
+}
+
+/* SmartMedia Read/Write/Erase Function */
+/* ----- Media_D_ReadSector() ------------------------------------------- */
+int Media_D_ReadSector(struct us_data *us, DWORD start, WORD count, BYTE *buf)
+{
+	WORD len, bn;
+
+	if (Conv_D_MediaAddr(us, start))
+		return ErrCode;
+
+	while (1) {
+>>>>>>> refs/remotes/origin/master
 		len = Ssfdc.MaxSectors - Media.Sector;
 		if (count > len)
 			bn = len;
 		else
 			bn = count;
+<<<<<<< HEAD
 		//if (Media_D_ReadOneSect(fdoExt, SectBuf))
 		//if (Media_D_ReadOneSect(fdoExt, count, buf))
 		if (Media_D_ReadOneSect(us, bn, buf))
 		{
 			ErrCode = ERR_EccReadErr;
 			return(ErrCode);
+=======
+
+		if (Media_D_ReadOneSect(us, bn, buf)) {
+			ErrCode = ERR_EccReadErr;
+			return ErrCode;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		Media.Sector += bn;
 		count -= bn;
 
+<<<<<<< HEAD
 		if (count<=0)
+=======
+		if (count <= 0)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		buf += bn * SECTSIZE;
 
 		if (Inc_D_MediaAddr(us))
+<<<<<<< HEAD
 			return(ErrCode);
 	}
 
@@ -206,6 +280,26 @@ int Media_D_CopySector(struct us_data *us, DWORD start,WORD count,BYTE *buf)
 	{
 		if (Assign_D_WriteBlock())
 			return(ERROR);
+=======
+			return ErrCode;
+	}
+
+	return NO_ERROR;
+}
+/* here */
+/* ----- Media_D_CopySector() ------------------------------------------ */
+int Media_D_CopySector(struct us_data *us, DWORD start, WORD count, BYTE *buf)
+{
+	WORD len, bn;
+
+	/* pr_info("Media_D_CopySector !!!\n"); */
+	if (Conv_D_MediaAddr(us, start))
+		return ErrCode;
+
+	while (1) {
+		if (Assign_D_WriteBlock())
+			return ERROR;
+>>>>>>> refs/remotes/origin/master
 
 		len = Ssfdc.MaxSectors - Media.Sector;
 		if (count > len)
@@ -213,6 +307,7 @@ int Media_D_CopySector(struct us_data *us, DWORD start,WORD count,BYTE *buf)
 		else
 		bn = count;
 
+<<<<<<< HEAD
 		//if (Ssfdc_D_CopyBlock(fdoExt,count,buf,Redundant))
 		if (Ssfdc_D_CopyBlock(us,bn,buf,Redundant))
 		{
@@ -228,16 +323,33 @@ int Media_D_CopySector(struct us_data *us, DWORD start,WORD count,BYTE *buf)
 			{
 				ErrCode = ERR_WriteFault;
 				return(ErrCode);
+=======
+		if (Ssfdc_D_CopyBlock(us, bn, buf, Redundant)) {
+			ErrCode = ERR_WriteFault;
+			return ErrCode;
+		}
+
+		Media.Sector = 0x1F;
+		if (Release_D_CopySector(us)) {
+			if (ErrCode == ERR_HwError) {
+				ErrCode = ERR_WriteFault;
+				return ErrCode;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		count -= bn;
 
+<<<<<<< HEAD
 		if (count<=0)
+=======
+		if (count <= 0)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		buf += bn * SECTSIZE;
 
 		if (Inc_D_MediaAddr(us))
+<<<<<<< HEAD
 			return(ErrCode);
 
 	}
@@ -667,10 +779,44 @@ int Check_D_MediaFmt(struct us_data *us)
 	//usleep(56*1024);
 	if (!MediaChange)
 		return(SMSUCCESS);
+=======
+			return ErrCode;
+
+	}
+	return NO_ERROR;
+}
+
+/* ----- Release_D_CopySector() ------------------------------------------ */
+static int Release_D_CopySector(struct us_data *us)
+{
+	Log2Phy[Media.Zone][Media.LogBlock] = WriteBlock;
+	Media.PhyBlock = ReadBlock;
+
+	if (Media.PhyBlock == NO_ASSIGN) {
+		Media.PhyBlock = WriteBlock;
+		return SMSUCCESS;
+	}
+
+	Clr_D_Bit(Assign[Media.Zone], Media.PhyBlock);
+	Media.PhyBlock = WriteBlock;
+
+	return SMSUCCESS;
+}
+
+/* SmartMedia Physical Format Test Subroutine */
+/* ----- Check_D_MediaFmt() --------------------------------------------- */
+int Check_D_MediaFmt(struct us_data *us)
+{
+	pr_info("Check_D_MediaFmt\n");
+
+	if (!MediaChange)
+		return SMSUCCESS;
+>>>>>>> refs/remotes/origin/master
 
 	MediaChange  = ERROR;
 	SectCopyMode = COMPLETED;
 
+<<<<<<< HEAD
 	//usleep(56*1024);
 	if (Set_D_PhyFmtValue(us))
 	{
@@ -818,6 +964,84 @@ int Inc_D_MediaAddr(struct us_data *us)
 			{
 				ErrCode = ERR_IllegalFmt;
 				return(ERROR);
+=======
+	if (Set_D_PhyFmtValue(us)) {
+		ErrCode = ERR_UnknownMedia;
+		return ERROR;
+	}
+
+	if (Search_D_CIS(us)) {
+		ErrCode = ERR_IllegalFmt;
+		return ERROR;
+	}
+
+	MediaChange = SMSUCCESS;
+	return SMSUCCESS;
+}
+
+/* SmartMedia Physical Address Control Subroutine */
+/* ----- Conv_D_MediaAddr() --------------------------------------------- */
+static int Conv_D_MediaAddr(struct us_data *us, DWORD addr)
+{
+	DWORD temp;
+
+	temp           = addr / Ssfdc.MaxSectors;
+	Media.Zone     = (BYTE) (temp / Ssfdc.MaxLogBlocks);
+
+	if (Log2Phy[Media.Zone] == NULL) {
+		if (Make_D_LogTable(us)) {
+			ErrCode = ERR_IllegalFmt;
+			return ERROR;
+		}
+	}
+
+	Media.Sector   = (BYTE) (addr % Ssfdc.MaxSectors);
+	Media.LogBlock = (WORD) (temp % Ssfdc.MaxLogBlocks);
+
+	if (Media.Zone < Ssfdc.MaxZones) {
+		Clr_D_RedundantData(Redundant);
+		Set_D_LogBlockAddr(Redundant);
+		Media.PhyBlock = Log2Phy[Media.Zone][Media.LogBlock];
+		return SMSUCCESS;
+	}
+
+	ErrCode = ERR_OutOfLBA;
+	return ERROR;
+}
+
+/* ----- Inc_D_MediaAddr() ---------------------------------------------- */
+static int Inc_D_MediaAddr(struct us_data *us)
+{
+	WORD        LogBlock = Media.LogBlock;
+
+	if (++Media.Sector < Ssfdc.MaxSectors)
+		return SMSUCCESS;
+
+	if (Log2Phy[Media.Zone] == NULL) {
+		if (Make_D_LogTable(us)) {
+			ErrCode = ERR_IllegalFmt;
+			return ERROR;
+		}
+	}
+
+	Media.Sector = 0;
+	Media.LogBlock = LogBlock;
+
+	if (++Media.LogBlock < Ssfdc.MaxLogBlocks) {
+		Clr_D_RedundantData(Redundant);
+		Set_D_LogBlockAddr(Redundant);
+		Media.PhyBlock = Log2Phy[Media.Zone][Media.LogBlock];
+		return SMSUCCESS;
+	}
+
+	Media.LogBlock = 0;
+
+	if (++Media.Zone < Ssfdc.MaxZones) {
+		if (Log2Phy[Media.Zone] == NULL) {
+			if (Make_D_LogTable(us)) {
+				ErrCode = ERR_IllegalFmt;
+				return ERROR;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -825,6 +1049,7 @@ int Inc_D_MediaAddr(struct us_data *us)
 
 		Clr_D_RedundantData(Redundant);
 		Set_D_LogBlockAddr(Redundant);
+<<<<<<< HEAD
 		Media.PhyBlock=Log2Phy[Media.Zone][Media.LogBlock];
 		return(SMSUCCESS);
 	}
@@ -862,10 +1087,26 @@ int Check_D_LastSect(void)
 //SmartMedia Read/Write Subroutine with Retry
 //----- Media_D_ReadOneSect() ------------------------------------------
 int Media_D_ReadOneSect(struct us_data *us, WORD count, BYTE *buf)
+=======
+		Media.PhyBlock = Log2Phy[Media.Zone][Media.LogBlock];
+		return SMSUCCESS;
+	}
+
+	Media.Zone = 0;
+	ErrCode = ERR_OutOfLBA;
+
+	return ERROR;
+}
+
+/* SmartMedia Read/Write Subroutine with Retry */
+/* ----- Media_D_ReadOneSect() ------------------------------------------ */
+static int Media_D_ReadOneSect(struct us_data *us, WORD count, BYTE *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	DWORD err, retry;
 
 	if (!Read_D_PhyOneSect(us, count, buf))
+<<<<<<< HEAD
 		return(SMSUCCESS);
 	if (ErrCode==ERR_HwError)
 		return(ERROR);
@@ -887,17 +1128,45 @@ int Media_D_ReadOneSect(struct us_data *us, WORD count, BYTE *buf)
 		{
 			if (ErrCode==ERR_HwError)
 				return(ERROR);
+=======
+		return SMSUCCESS;
+	if (ErrCode == ERR_HwError)
+		return ERROR;
+	if (ErrCode == ERR_DataStatus)
+		return ERROR;
+
+#ifdef RDERR_REASSIGN
+	if (Ssfdc.Attribute & MWP) {
+		if (ErrCode == ERR_CorReadErr)
+			return SMSUCCESS;
+		return ERROR;
+	}
+
+	err = ErrCode;
+	for (retry = 0; retry < 2; retry++) {
+		if (Copy_D_BlockAll(us,
+			(err == ERR_EccReadErr) ? REQ_FAIL : REQ_ERASE)) {
+			if (ErrCode == ERR_HwError)
+				return ERROR;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
 		ErrCode = err;
+<<<<<<< HEAD
 		if (ErrCode==ERR_CorReadErr)
 			return(SMSUCCESS);
 		return(ERROR);
+=======
+		if (ErrCode == ERR_CorReadErr)
+			return SMSUCCESS;
+		return ERROR;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	MediaChange = ERROR;
 #else
+<<<<<<< HEAD
 	if (ErrCode==ERR_CorReadErr) return(SMSUCCESS);
 #endif
 
@@ -1112,10 +1381,46 @@ int Copy_D_BlockAll(struct us_data *us, DWORD mode)
 			Media.Sector=sect;
 
 			return(ERROR);
+=======
+	if (ErrCode == ERR_CorReadErr)
+		return SMSUCCESS;
+#endif
+
+	return ERROR;
+}
+
+/* SmartMedia Physical Sector Data Copy Subroutine */
+/* ----- Copy_D_BlockAll() ---------------------------------------------- */
+static int Copy_D_BlockAll(struct us_data *us, DWORD mode)
+{
+	BYTE sect;
+
+	sect = Media.Sector;
+
+	if (Assign_D_WriteBlock())
+		return ERROR;
+	if (mode == REQ_FAIL)
+		SectCopyMode = REQ_FAIL;
+
+	for (Media.Sector = 0; Media.Sector < Ssfdc.MaxSectors;
+							Media.Sector++) {
+		if (Copy_D_PhyOneSect(us)) {
+			if (ErrCode == ERR_HwError)
+				return ERROR;
+			if (Release_D_WriteBlock(us))
+				return ERROR;
+
+			ErrCode = ERR_WriteFault;
+			Media.PhyBlock = ReadBlock;
+			Media.Sector = sect;
+
+			return ERROR;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (Release_D_ReadBlock(us))
+<<<<<<< HEAD
 		return(ERROR);
 
 	Media.PhyBlock=WriteBlock;
@@ -1372,16 +1677,163 @@ int Copy_D_PhyOneSect(struct us_data *us)
 		err=SMSUCCESS;
 		for(i=0; i<SECTSIZE; i++)
 			WorkBuf[i]=DUMMY_DATA;
+=======
+		return ERROR;
+
+	Media.PhyBlock = WriteBlock;
+	Media.Sector = sect;
+	return SMSUCCESS;
+}
+
+/* SmartMedia Physical Block Assign/Release Subroutine */
+/* ----- Assign_D_WriteBlock() ------------------------------------------ */
+static int Assign_D_WriteBlock(void)
+{
+	ReadBlock = Media.PhyBlock;
+
+	for (WriteBlock = AssignStart[Media.Zone];
+			WriteBlock < Ssfdc.MaxBlocks; WriteBlock++) {
+		if (!Chk_D_Bit(Assign[Media.Zone], WriteBlock)) {
+			Set_D_Bit(Assign[Media.Zone], WriteBlock);
+			AssignStart[Media.Zone] = WriteBlock + 1;
+			Media.PhyBlock = WriteBlock;
+			SectCopyMode = REQ_ERASE;
+			return SMSUCCESS;
+		}
+	}
+
+	for (WriteBlock = 0;
+			WriteBlock < AssignStart[Media.Zone]; WriteBlock++) {
+		if (!Chk_D_Bit(Assign[Media.Zone], WriteBlock)) {
+			Set_D_Bit(Assign[Media.Zone], WriteBlock);
+			AssignStart[Media.Zone] = WriteBlock + 1;
+			Media.PhyBlock = WriteBlock;
+			SectCopyMode = REQ_ERASE;
+			return SMSUCCESS;
+		}
+	}
+
+	WriteBlock = NO_ASSIGN;
+	ErrCode = ERR_WriteFault;
+
+	return ERROR;
+}
+
+/* ----- Release_D_ReadBlock() ------------------------------------------ */
+static int Release_D_ReadBlock(struct us_data *us)
+{
+	DWORD mode;
+
+	mode = SectCopyMode;
+	SectCopyMode = COMPLETED;
+
+	if (mode == COMPLETED)
+		return SMSUCCESS;
+
+	Log2Phy[Media.Zone][Media.LogBlock] = WriteBlock;
+	Media.PhyBlock = ReadBlock;
+
+	if (Media.PhyBlock == NO_ASSIGN) {
+		Media.PhyBlock = WriteBlock;
+		return SMSUCCESS;
+	}
+
+	if (mode == REQ_ERASE) {
+		if (Erase_D_PhyOneBlock(us)) {
+			if (ErrCode == ERR_HwError)
+				return ERROR;
+			if (MarkFail_D_PhyOneBlock(us))
+				return ERROR;
+		} else
+			Clr_D_Bit(Assign[Media.Zone], Media.PhyBlock);
+	} else if (MarkFail_D_PhyOneBlock(us))
+		return ERROR;
+
+	Media.PhyBlock = WriteBlock;
+	return SMSUCCESS;
+}
+
+/* ----- Release_D_WriteBlock() ----------------------------------------- */
+static int Release_D_WriteBlock(struct us_data *us)
+{
+	SectCopyMode = COMPLETED;
+	Media.PhyBlock = WriteBlock;
+
+	if (MarkFail_D_PhyOneBlock(us))
+		return ERROR;
+
+	Media.PhyBlock = ReadBlock;
+	return SMSUCCESS;
+}
+
+/* SmartMedia Physical Sector Data Copy Subroutine */
+/* ----- Copy_D_PhyOneSect() -------------------------------------------- */
+static int Copy_D_PhyOneSect(struct us_data *us)
+{
+	int           i;
+	DWORD  err, retry;
+
+	/* pr_info("Copy_D_PhyOneSect --- Sector = %x\n", Media.Sector); */
+	if (ReadBlock != NO_ASSIGN) {
+		Media.PhyBlock = ReadBlock;
+		for (retry = 0; retry < 2; retry++) {
+			if (retry != 0) {
+				Ssfdc_D_Reset(us);
+				if (Ssfdc_D_ReadCisSect(us, WorkBuf,
+								WorkRedund)) {
+					ErrCode = ERR_HwError;
+					MediaChange = ERROR;
+					return ERROR;
+				}
+
+				if (Check_D_CISdata(WorkBuf, WorkRedund)) {
+					ErrCode = ERR_HwError;
+					MediaChange = ERROR;
+					return ERROR;
+				}
+			}
+
+			if (Ssfdc_D_ReadSect(us, WorkBuf, WorkRedund)) {
+				ErrCode = ERR_HwError;
+				MediaChange = ERROR;
+				return ERROR;
+			}
+			if (Check_D_DataStatus(WorkRedund)) {
+				err = ERROR;
+				break;
+			}
+			if (!Check_D_ReadError(WorkRedund)) {
+				err = SMSUCCESS;
+				break;
+			}
+			if (!Check_D_Correct(WorkBuf, WorkRedund)) {
+				err = SMSUCCESS;
+				break;
+			}
+
+			err = ERROR;
+			SectCopyMode = REQ_FAIL;
+		}
+	} else {
+		err = SMSUCCESS;
+		for (i = 0; i < SECTSIZE; i++)
+			WorkBuf[i] = DUMMY_DATA;
+>>>>>>> refs/remotes/origin/master
 		Clr_D_RedundantData(WorkRedund);
 	}
 
 	Set_D_LogBlockAddr(WorkRedund);
+<<<<<<< HEAD
 	if (err==ERROR)
 	{
+=======
+	if (err == ERROR) {
+>>>>>>> refs/remotes/origin/master
 		Set_D_RightECC(WorkRedund);
 		Set_D_DataStaus(WorkRedund);
 	}
 
+<<<<<<< HEAD
 	Media.PhyBlock=WriteBlock;
 
 	if (Ssfdc_D_WriteSectForCopy(us, WorkBuf, WorkRedund))
@@ -1565,12 +2017,121 @@ int Search_D_CIS(struct us_data *us)
 		{
 			Ssfdc_D_Reset(us);
 			return(ERROR);
+=======
+	Media.PhyBlock = WriteBlock;
+
+	if (Ssfdc_D_WriteSectForCopy(us, WorkBuf, WorkRedund)) {
+		ErrCode = ERR_HwError;
+		MediaChange = ERROR;
+		return ERROR;
+	}
+	if (Ssfdc_D_CheckStatus()) {
+		ErrCode = ERR_WriteFault;
+		return ERROR;
+	}
+
+	Media.PhyBlock = ReadBlock;
+	return SMSUCCESS;
+}
+
+/* SmartMedia Physical Sector Read/Write/Erase Subroutine */
+/* ----- Read_D_PhyOneSect() -------------------------------------------- */
+static int Read_D_PhyOneSect(struct us_data *us, WORD count, BYTE *buf)
+{
+	int           i;
+	DWORD  retry;
+
+	if (Media.PhyBlock == NO_ASSIGN) {
+		for (i = 0; i < SECTSIZE; i++)
+			*buf++ = DUMMY_DATA;
+		return SMSUCCESS;
+	}
+
+	for (retry = 0; retry < 2; retry++) {
+		if (retry != 0) {
+			Ssfdc_D_Reset(us);
+
+			if (Ssfdc_D_ReadCisSect(us, WorkBuf, WorkRedund)) {
+				ErrCode = ERR_HwError;
+				MediaChange = ERROR;
+				return ERROR;
+			}
+			if (Check_D_CISdata(WorkBuf, WorkRedund)) {
+				ErrCode = ERR_HwError;
+				MediaChange = ERROR;
+				return ERROR;
+			}
+		}
+
+		if (Ssfdc_D_ReadBlock(us, count, buf, Redundant)) {
+			ErrCode = ERR_HwError;
+			MediaChange = ERROR;
+			return ERROR;
+		}
+		if (Check_D_DataStatus(Redundant)) {
+			ErrCode = ERR_DataStatus;
+			return ERROR;
+		}
+
+		if (!Check_D_ReadError(Redundant))
+			return SMSUCCESS;
+
+		if (!Check_D_Correct(buf, Redundant)) {
+			ErrCode = ERR_CorReadErr;
+			return ERROR;
+		}
+	}
+
+	ErrCode = ERR_EccReadErr;
+	return ERROR;
+}
+
+/* ----- Erase_D_PhyOneBlock() ------------------------------------------ */
+static int Erase_D_PhyOneBlock(struct us_data *us)
+{
+	if (Ssfdc_D_EraseBlock(us)) {
+		ErrCode = ERR_HwError;
+		MediaChange = ERROR;
+		return ERROR;
+	}
+	if (Ssfdc_D_CheckStatus()) {
+		ErrCode = ERR_WriteFault;
+		return ERROR;
+	}
+
+	return SMSUCCESS;
+}
+
+/* SmartMedia Physical Format Check Local Subroutine */
+/* ----- Set_D_PhyFmtValue() -------------------------------------------- */
+static int Set_D_PhyFmtValue(struct us_data *us)
+{
+	if (Set_D_SsfdcModel(us->SM_DeviceID))
+		return ERROR;
+
+	return SMSUCCESS;
+}
+
+/* ----- Search_D_CIS() ------------------------------------------------- */
+static int Search_D_CIS(struct us_data *us)
+{
+	Media.Zone = 0;
+	Media.Sector = 0;
+
+	for (Media.PhyBlock = 0;
+		Media.PhyBlock < (Ssfdc.MaxBlocks - Ssfdc.MaxLogBlocks - 1);
+		Media.PhyBlock++) {
+		if (Ssfdc_D_ReadRedtData(us, Redundant)) {
+			Ssfdc_D_Reset(us);
+			return ERROR;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!Check_D_FailBlock(Redundant))
 			break;
 	}
 
+<<<<<<< HEAD
 	if (Media.PhyBlock==(Ssfdc.MaxBlocks-Ssfdc.MaxLogBlocks-1))
 	{
 		Ssfdc_D_Reset(us);
@@ -1605,12 +2166,42 @@ int Search_D_CIS(struct us_data *us)
 			CisArea.Sector=Media.Sector;
 			Ssfdc_D_Reset(us);
 			return(SMSUCCESS);
+=======
+	if (Media.PhyBlock == (Ssfdc.MaxBlocks - Ssfdc.MaxLogBlocks - 1)) {
+		Ssfdc_D_Reset(us);
+		return ERROR;
+	}
+
+	while (Media.Sector < CIS_SEARCH_SECT) {
+		if (Media.Sector) {
+			if (Ssfdc_D_ReadRedtData(us, Redundant)) {
+				Ssfdc_D_Reset(us);
+				return ERROR;
+			}
+		}
+		if (!Check_D_DataStatus(Redundant)) {
+			if (Ssfdc_D_ReadSect(us, WorkBuf, Redundant)) {
+				Ssfdc_D_Reset(us);
+				return ERROR;
+			}
+
+			if (Check_D_CISdata(WorkBuf, Redundant)) {
+				Ssfdc_D_Reset(us);
+				return ERROR;
+			}
+
+			CisArea.PhyBlock = Media.PhyBlock;
+			CisArea.Sector = Media.Sector;
+			Ssfdc_D_Reset(us);
+			return SMSUCCESS;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		Media.Sector++;
 	}
 
 	Ssfdc_D_Reset(us);
+<<<<<<< HEAD
 	return(ERROR);
 }
 
@@ -1759,10 +2350,128 @@ int MarkFail_D_PhyOneBlock(struct us_data *us)
 	{
 		if (Ssfdc_D_WriteRedtData(us, WorkRedund))
 		{
+=======
+	return ERROR;
+}
+
+/* ----- Make_D_LogTable() ---------------------------------------------- */
+static int Make_D_LogTable(struct us_data *us)
+{
+	WORD  phyblock, logblock;
+
+	if (Log2Phy[Media.Zone] == NULL) {
+		Log2Phy[Media.Zone] = kmalloc(MAX_LOGBLOCK * sizeof(WORD),
+								GFP_KERNEL);
+		/* pr_info("ExAllocatePool Zone = %x, Addr = %x\n",
+				Media.Zone, Log2Phy[Media.Zone]); */
+		if (Log2Phy[Media.Zone] == NULL)
+			return ERROR;
+	}
+
+	Media.Sector = 0;
+
+	/* pr_info("Make_D_LogTable --- MediaZone = 0x%x\n",
+						Media.Zone); */
+	for (Media.LogBlock = 0; Media.LogBlock < Ssfdc.MaxLogBlocks;
+						Media.LogBlock++)
+		Log2Phy[Media.Zone][Media.LogBlock] = NO_ASSIGN;
+
+	for (Media.PhyBlock = 0; Media.PhyBlock < (MAX_BLOCKNUM / 8);
+						Media.PhyBlock++)
+		Assign[Media.Zone][Media.PhyBlock] = 0x00;
+
+	for (Media.PhyBlock = 0; Media.PhyBlock < Ssfdc.MaxBlocks;
+						Media.PhyBlock++) {
+		if ((!Media.Zone) && (Media.PhyBlock <= CisArea.PhyBlock)) {
+			Set_D_Bit(Assign[Media.Zone], Media.PhyBlock);
+			continue;
+		}
+
+		if (Ssfdc_D_ReadRedtData(us, Redundant)) {
+			Ssfdc_D_Reset(us);
+			return ERROR;
+		}
+
+		if (!Check_D_DataBlank(Redundant))
+			continue;
+
+		Set_D_Bit(Assign[Media.Zone], Media.PhyBlock);
+
+		if (Check_D_FailBlock(Redundant))
+			continue;
+
+		if (Load_D_LogBlockAddr(Redundant))
+			continue;
+
+		if (Media.LogBlock >= Ssfdc.MaxLogBlocks)
+			continue;
+
+		if (Log2Phy[Media.Zone][Media.LogBlock] == NO_ASSIGN) {
+			Log2Phy[Media.Zone][Media.LogBlock] = Media.PhyBlock;
+			continue;
+		}
+
+		phyblock     = Media.PhyBlock;
+		logblock     = Media.LogBlock;
+		Media.Sector = (BYTE)(Ssfdc.MaxSectors - 1);
+
+		if (Ssfdc_D_ReadRedtData(us, Redundant)) {
+			Ssfdc_D_Reset(us);
+			return ERROR;
+		}
+
+		if (!Load_D_LogBlockAddr(Redundant) &&
+				(Media.LogBlock == logblock)) {
+			Media.PhyBlock = Log2Phy[Media.Zone][logblock];
+
+			if (Ssfdc_D_ReadRedtData(us, Redundant)) {
+				Ssfdc_D_Reset(us);
+				return ERROR;
+			}
+
+			Media.PhyBlock = phyblock;
+
+			if (!Load_D_LogBlockAddr(Redundant)) {
+				if (Media.LogBlock != logblock) {
+					Media.PhyBlock =
+						Log2Phy[Media.Zone][logblock];
+					Log2Phy[Media.Zone][logblock] =
+								phyblock;
+				}
+			} else {
+				Media.PhyBlock = Log2Phy[Media.Zone][logblock];
+				Log2Phy[Media.Zone][logblock] = phyblock;
+			}
+		}
+
+		Media.Sector = 0;
+		Media.PhyBlock = phyblock;
+
+	AssignStart[Media.Zone] = 0;
+
+	} /* End for (Media.Zone<MAX_ZONENUM) */
+
+	Ssfdc_D_Reset(us);
+	return SMSUCCESS;
+}
+
+/* ----- MarkFail_D_PhyOneBlock() --------------------------------------- */
+static int MarkFail_D_PhyOneBlock(struct us_data *us)
+{
+	BYTE sect;
+
+	sect = Media.Sector;
+	Set_D_FailBlock(WorkRedund);
+
+	for (Media.Sector = 0; Media.Sector < Ssfdc.MaxSectors;
+							Media.Sector++) {
+		if (Ssfdc_D_WriteRedtData(us, WorkRedund)) {
+>>>>>>> refs/remotes/origin/master
 			Ssfdc_D_Reset(us);
 			Media.Sector   = sect;
 			ErrCode        = ERR_HwError;
 			MediaChange = ERROR;
+<<<<<<< HEAD
 			return(ERROR);
 		} // NO Status Check
 	}
@@ -1856,3 +2565,13 @@ int MarkFail_D_PhyOneBlock(struct us_data *us)
 //
 //    return STATUS_CMD_SUCCESS;
 //}*/
+=======
+			return ERROR;
+		} /* NO Status Check */
+	}
+
+	Ssfdc_D_Reset(us);
+	Media.Sector = sect;
+	return SMSUCCESS;
+}
+>>>>>>> refs/remotes/origin/master

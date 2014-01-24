@@ -23,7 +23,12 @@
 #include <linux/platform_device.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <plat/fpga.h>
+=======
+#include <mach/hardware.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "omapfb.h"
 
 static int innovator1510_panel_init(struct lcd_panel *panel,
@@ -38,13 +43,21 @@ static void innovator1510_panel_cleanup(struct lcd_panel *panel)
 
 static int innovator1510_panel_enable(struct lcd_panel *panel)
 {
+<<<<<<< HEAD
 	fpga_write(0x7, OMAP1510_FPGA_LCD_PANEL_CONTROL);
+=======
+	__raw_writeb(0x7, OMAP1510_FPGA_LCD_PANEL_CONTROL);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void innovator1510_panel_disable(struct lcd_panel *panel)
 {
+<<<<<<< HEAD
 	fpga_write(0x0, OMAP1510_FPGA_LCD_PANEL_CONTROL);
+=======
+	__raw_writeb(0x0, OMAP1510_FPGA_LCD_PANEL_CONTROL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long innovator1510_panel_get_caps(struct lcd_panel *panel)
@@ -99,10 +112,14 @@ static int innovator1510_panel_resume(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_driver innovator1510_panel_driver = {
 =======
 static struct platform_driver innovator1510_panel_driver = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver innovator1510_panel_driver = {
+>>>>>>> refs/remotes/origin/master
 	.probe		= innovator1510_panel_probe,
 	.remove		= innovator1510_panel_remove,
 	.suspend	= innovator1510_panel_suspend,
@@ -113,6 +130,7 @@ static struct platform_driver innovator1510_panel_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init innovator1510_panel_drv_init(void)
 {
@@ -130,3 +148,6 @@ module_exit(innovator1510_panel_drv_cleanup);
 =======
 module_platform_driver(innovator1510_panel_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(innovator1510_panel_driver);
+>>>>>>> refs/remotes/origin/master

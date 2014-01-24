@@ -22,6 +22,12 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/spi/spi.h>
 #include <linux/spi/spi_bitbang.h>
@@ -46,6 +52,10 @@ struct spi_gpio {
 	struct spi_bitbang		bitbang;
 	struct spi_gpio_platform_data	pdata;
 	struct platform_device		*pdev;
+<<<<<<< HEAD
+=======
+	int				cs_gpios[0];
+>>>>>>> refs/remotes/origin/master
 };
 
 /*----------------------------------------------------------------------*/
@@ -89,6 +99,7 @@ struct spi_gpio {
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static inline const struct spi_gpio_platform_data * __pure
 spi_to_pdata(const struct spi_device *spi)
 {
@@ -98,6 +109,23 @@ spi_to_pdata(const struct spi_device *spi)
 	bang = spi_master_get_devdata(spi->master);
 	spi_gpio = container_of(bang, struct spi_gpio, bitbang);
 	return &spi_gpio->pdata;
+=======
+static inline struct spi_gpio * __pure
+spi_to_spi_gpio(const struct spi_device *spi)
+{
+	const struct spi_bitbang	*bang;
+	struct spi_gpio			*spi_gpio;
+
+	bang = spi_master_get_devdata(spi->master);
+	spi_gpio = container_of(bang, struct spi_gpio, bitbang);
+	return spi_gpio;
+}
+
+static inline struct spi_gpio_platform_data * __pure
+spi_to_pdata(const struct spi_device *spi)
+{
+	return &spi_to_spi_gpio(spi)->pdata;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* this is #defined to avoid unused-variable warnings when inlining */
@@ -210,7 +238,12 @@ static u32 spi_gpio_spec_txrx_word_mode3(struct spi_device *spi,
 
 static void spi_gpio_chipselect(struct spi_device *spi, int is_active)
 {
+<<<<<<< HEAD
 	unsigned long cs = (unsigned long) spi->controller_data;
+=======
+	struct spi_gpio *spi_gpio = spi_to_spi_gpio(spi);
+	unsigned int cs = spi_gpio->cs_gpios[spi->chip_select];
+>>>>>>> refs/remotes/origin/master
 
 	/* set initial clock polarity */
 	if (is_active)
@@ -224,22 +257,55 @@ static void spi_gpio_chipselect(struct spi_device *spi, int is_active)
 
 static int spi_gpio_setup(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	unsigned long	cs = (unsigned long) spi->controller_data;
 	int		status = 0;
 
 	if (spi->bits_per_word > 32)
 		return -EINVAL;
+=======
+	unsigned int		cs;
+	int			status = 0;
+	struct spi_gpio		*spi_gpio = spi_to_spi_gpio(spi);
+	struct device_node	*np = spi->master->dev.of_node;
+
+	if (np) {
+		/*
+		 * In DT environments, the CS GPIOs have already been
+		 * initialized from the "cs-gpios" property of the node.
+		 */
+		cs = spi_gpio->cs_gpios[spi->chip_select];
+	} else {
+		/*
+		 * ... otherwise, take it from spi->controller_data
+		 */
+		cs = (unsigned int) spi->controller_data;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (!spi->controller_state) {
 		if (cs != SPI_GPIO_NO_CHIPSELECT) {
 			status = gpio_request(cs, dev_name(&spi->dev));
 			if (status)
 				return status;
+<<<<<<< HEAD
 			status = gpio_direction_output(cs, spi->mode & SPI_CS_HIGH);
 		}
 	}
 	if (!status)
 		status = spi_bitbang_setup(spi);
+=======
+			status = gpio_direction_output(cs,
+					!(spi->mode & SPI_CS_HIGH));
+		}
+	}
+	if (!status) {
+		/* in case it was initialized from static board data */
+		spi_gpio->cs_gpios[spi->chip_select] = cs;
+		status = spi_bitbang_setup(spi);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (status) {
 		if (!spi->controller_state && cs != SPI_GPIO_NO_CHIPSELECT)
 			gpio_free(cs);
@@ -249,14 +315,23 @@ static int spi_gpio_setup(struct spi_device *spi)
 
 static void spi_gpio_cleanup(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	unsigned long	cs = (unsigned long) spi->controller_data;
+=======
+	struct spi_gpio *spi_gpio = spi_to_spi_gpio(spi);
+	unsigned int cs = spi_gpio->cs_gpios[spi->chip_select];
+>>>>>>> refs/remotes/origin/master
 
 	if (cs != SPI_GPIO_NO_CHIPSELECT)
 		gpio_free(cs);
 	spi_bitbang_cleanup(spi);
 }
 
+<<<<<<< HEAD
 static int __devinit spi_gpio_alloc(unsigned pin, const char *label, bool is_in)
+=======
+static int spi_gpio_alloc(unsigned pin, const char *label, bool is_in)
+>>>>>>> refs/remotes/origin/master
 {
 	int value;
 
@@ -270,9 +345,14 @@ static int __devinit spi_gpio_alloc(unsigned pin, const char *label, bool is_in)
 	return value;
 }
 
+<<<<<<< HEAD
 static int __devinit
 spi_gpio_request(struct spi_gpio_platform_data *pdata, const char *label,
 	u16 *res_flags)
+=======
+static int spi_gpio_request(struct spi_gpio_platform_data *pdata,
+			    const char *label, u16 *res_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	int value;
 
@@ -312,15 +392,97 @@ done:
 	return value;
 }
 
+<<<<<<< HEAD
 static int __devinit spi_gpio_probe(struct platform_device *pdev)
+=======
+#ifdef CONFIG_OF
+static struct of_device_id spi_gpio_dt_ids[] = {
+	{ .compatible = "spi-gpio" },
+	{}
+};
+MODULE_DEVICE_TABLE(of, spi_gpio_dt_ids);
+
+static int spi_gpio_probe_dt(struct platform_device *pdev)
+{
+	int ret;
+	u32 tmp;
+	struct spi_gpio_platform_data	*pdata;
+	struct device_node *np = pdev->dev.of_node;
+	const struct of_device_id *of_id =
+			of_match_device(spi_gpio_dt_ids, &pdev->dev);
+
+	if (!of_id)
+		return 0;
+
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	ret = of_get_named_gpio(np, "gpio-sck", 0);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "gpio-sck property not found\n");
+		goto error_free;
+	}
+	pdata->sck = ret;
+
+	ret = of_get_named_gpio(np, "gpio-miso", 0);
+	if (ret < 0) {
+		dev_info(&pdev->dev, "gpio-miso property not found, switching to no-rx mode\n");
+		pdata->miso = SPI_GPIO_NO_MISO;
+	} else
+		pdata->miso = ret;
+
+	ret = of_get_named_gpio(np, "gpio-mosi", 0);
+	if (ret < 0) {
+		dev_info(&pdev->dev, "gpio-mosi property not found, switching to no-tx mode\n");
+		pdata->mosi = SPI_GPIO_NO_MOSI;
+	} else
+		pdata->mosi = ret;
+
+	ret = of_property_read_u32(np, "num-chipselects", &tmp);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "num-chipselects property not found\n");
+		goto error_free;
+	}
+
+	pdata->num_chipselect = tmp;
+	pdev->dev.platform_data = pdata;
+
+	return 1;
+
+error_free:
+	devm_kfree(&pdev->dev, pdata);
+	return ret;
+}
+#else
+static inline int spi_gpio_probe_dt(struct platform_device *pdev)
+{
+	return 0;
+}
+#endif
+
+static int spi_gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int				status;
 	struct spi_master		*master;
 	struct spi_gpio			*spi_gpio;
 	struct spi_gpio_platform_data	*pdata;
 	u16 master_flags = 0;
+<<<<<<< HEAD
 
 	pdata = pdev->dev.platform_data;
+=======
+	bool use_of = 0;
+
+	status = spi_gpio_probe_dt(pdev);
+	if (status < 0)
+		return status;
+	if (status > 0)
+		use_of = 1;
+
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 #ifdef GENERIC_BITBANG
 	if (!pdata || !pdata->num_chipselect)
 		return -ENODEV;
@@ -330,7 +492,12 @@ static int __devinit spi_gpio_probe(struct platform_device *pdev)
 	if (status < 0)
 		return status;
 
+<<<<<<< HEAD
 	master = spi_alloc_master(&pdev->dev, sizeof *spi_gpio);
+=======
+	master = spi_alloc_master(&pdev->dev, sizeof(*spi_gpio) +
+					(sizeof(int) * SPI_N_CHIPSEL));
+>>>>>>> refs/remotes/origin/master
 	if (!master) {
 		status = -ENOMEM;
 		goto gpio_free;
@@ -342,13 +509,39 @@ static int __devinit spi_gpio_probe(struct platform_device *pdev)
 	if (pdata)
 		spi_gpio->pdata = *pdata;
 
+<<<<<<< HEAD
+=======
+	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(1, 32);
+>>>>>>> refs/remotes/origin/master
 	master->flags = master_flags;
 	master->bus_num = pdev->id;
 	master->num_chipselect = SPI_N_CHIPSEL;
 	master->setup = spi_gpio_setup;
 	master->cleanup = spi_gpio_cleanup;
+<<<<<<< HEAD
 
 	spi_gpio->bitbang.master = spi_master_get(master);
+=======
+#ifdef CONFIG_OF
+	master->dev.of_node = pdev->dev.of_node;
+
+	if (use_of) {
+		int i;
+		struct device_node *np = pdev->dev.of_node;
+
+		/*
+		 * In DT environments, take the CS GPIO from the "cs-gpios"
+		 * property of the node.
+		 */
+
+		for (i = 0; i < SPI_N_CHIPSEL; i++)
+			spi_gpio->cs_gpios[i] =
+				of_get_named_gpio(np, "cs-gpios", i);
+	}
+#endif
+
+	spi_gpio->bitbang.master = master;
+>>>>>>> refs/remotes/origin/master
 	spi_gpio->bitbang.chipselect = spi_gpio_chipselect;
 
 	if ((master_flags & (SPI_MASTER_NO_TX | SPI_MASTER_NO_RX)) == 0) {
@@ -367,7 +560,10 @@ static int __devinit spi_gpio_probe(struct platform_device *pdev)
 
 	status = spi_bitbang_start(&spi_gpio->bitbang);
 	if (status < 0) {
+<<<<<<< HEAD
 		spi_master_put(spi_gpio->bitbang.master);
+=======
+>>>>>>> refs/remotes/origin/master
 gpio_free:
 		if (SPI_MISO_GPIO != SPI_GPIO_NO_MISO)
 			gpio_free(SPI_MISO_GPIO);
@@ -380,13 +576,18 @@ gpio_free:
 	return status;
 }
 
+<<<<<<< HEAD
 static int __devexit spi_gpio_remove(struct platform_device *pdev)
+=======
+static int spi_gpio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_gpio			*spi_gpio;
 	struct spi_gpio_platform_data	*pdata;
 	int				status;
 
 	spi_gpio = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
 
 	/* stop() unregisters child devices too */
@@ -394,12 +595,22 @@ static int __devexit spi_gpio_remove(struct platform_device *pdev)
 	spi_master_put(spi_gpio->bitbang.master);
 
 	platform_set_drvdata(pdev, NULL);
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+
+	/* stop() unregisters child devices too */
+	status = spi_bitbang_stop(&spi_gpio->bitbang);
+>>>>>>> refs/remotes/origin/master
 
 	if (SPI_MISO_GPIO != SPI_GPIO_NO_MISO)
 		gpio_free(SPI_MISO_GPIO);
 	if (SPI_MOSI_GPIO != SPI_GPIO_NO_MOSI)
 		gpio_free(SPI_MOSI_GPIO);
 	gpio_free(SPI_SCK_GPIO);
+<<<<<<< HEAD
+=======
+	spi_master_put(spi_gpio->bitbang.master);
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
@@ -407,10 +618,20 @@ static int __devexit spi_gpio_remove(struct platform_device *pdev)
 MODULE_ALIAS("platform:" DRIVER_NAME);
 
 static struct platform_driver spi_gpio_driver = {
+<<<<<<< HEAD
 	.driver.name	= DRIVER_NAME,
 	.driver.owner	= THIS_MODULE,
 	.probe		= spi_gpio_probe,
 	.remove		= __devexit_p(spi_gpio_remove),
+=======
+	.driver = {
+		.name	= DRIVER_NAME,
+		.owner	= THIS_MODULE,
+		.of_match_table = of_match_ptr(spi_gpio_dt_ids),
+	},
+	.probe		= spi_gpio_probe,
+	.remove		= spi_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 module_platform_driver(spi_gpio_driver);
 

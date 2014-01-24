@@ -18,6 +18,7 @@
 #include <linux/i2c.h>
 #include <linux/rtc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "../iio.h"
 =======
@@ -27,6 +28,13 @@
 #include "../events.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "../sysfs.h"
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/events.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 #include "adt7316.h"
 
 /*
@@ -182,9 +190,12 @@
 
 struct adt7316_chip_info {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev		*indio_dev;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct adt7316_bus	bus;
 	u16			ldac_pin;
 	u16			int_mask;	/* 0x2f */
@@ -215,10 +226,14 @@ struct adt7316_chip_info {
 #define ADT7516_AIN_INT_MASK		0xE0
 #define ADT7316_TEMP_AIN_INT_MASK	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	(ADT7316_TEMP_INT_MASK | ADT7316_TEMP_INT_MASK)
 =======
 	(ADT7316_TEMP_INT_MASK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(ADT7316_TEMP_INT_MASK)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * struct adt7316_chip_info - chip specifc information
@@ -233,12 +248,17 @@ static ssize_t adt7316_show_enabled(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", !!(chip->config1 & ADT7316_EN));
 }
@@ -269,6 +289,7 @@ static ssize_t adt7316_store_enabled(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -278,6 +299,13 @@ static ssize_t adt7316_store_enabled(struct device *dev,
 	int enable;
 
 	if (!memcmp(buf, "1", 1))
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	int enable;
+
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		enable = 1;
 	else
 		enable = 0;
@@ -297,12 +325,17 @@ static ssize_t adt7316_show_select_ex_temp(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if ((chip->id & ID_FAMILY_MASK) != ID_ADT75XX)
 		return -EPERM;
@@ -315,12 +348,17 @@ static ssize_t adt7316_store_select_ex_temp(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config1;
 	int ret;
 
@@ -328,7 +366,11 @@ static ssize_t adt7316_store_select_ex_temp(struct device *dev,
 		return -EPERM;
 
 	config1 = chip->config1 & (~ADT7516_SEL_EX_TEMP);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config1 |= ADT7516_SEL_EX_TEMP;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG1, config1);
@@ -349,12 +391,17 @@ static ssize_t adt7316_show_mode(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (chip->config2 & ADT7316_AD_SINGLE_CH_MODE)
 		return sprintf(buf, "single_channel\n");
@@ -367,12 +414,17 @@ static ssize_t adt7316_store_mode(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config2;
 	int ret;
 
@@ -407,12 +459,17 @@ static ssize_t adt7316_show_ad_channel(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(chip->config2 & ADT7316_AD_SINGLE_CH_MODE))
 		return -EPERM;
@@ -450,6 +507,7 @@ static ssize_t adt7316_store_ad_channel(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -458,12 +516,22 @@ static ssize_t adt7316_store_ad_channel(struct device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 	u8 config2;
 	unsigned long data = 0;
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	u8 config2;
+	u8 data;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (!(chip->config2 & ADT7316_AD_SINGLE_CH_MODE))
 		return -EPERM;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &data);
+=======
+	ret = kstrtou8(buf, 10, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return -EINVAL;
 
@@ -500,12 +568,17 @@ static ssize_t adt7316_show_all_ad_channels(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(chip->config2 & ADT7316_AD_SINGLE_CH_MODE))
 		return -EPERM;
@@ -526,12 +599,17 @@ static ssize_t adt7316_show_disable_averaging(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n",
 		!!(chip->config2 & ADT7316_DISABLE_AVERAGING));
@@ -542,17 +620,26 @@ static ssize_t adt7316_store_disable_averaging(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config2;
 	int ret;
 
 	config2 = chip->config2 & (~ADT7316_DISABLE_AVERAGING);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config2 |= ADT7316_DISABLE_AVERAGING;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG2, config2);
@@ -573,12 +660,17 @@ static ssize_t adt7316_show_enable_smbus_timeout(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n",
 		!!(chip->config2 & ADT7316_EN_SMBUS_TIMEOUT));
@@ -589,17 +681,26 @@ static ssize_t adt7316_store_enable_smbus_timeout(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config2;
 	int ret;
 
 	config2 = chip->config2 & (~ADT7316_EN_SMBUS_TIMEOUT);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config2 |= ADT7316_EN_SMBUS_TIMEOUT;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG2, config2);
@@ -616,6 +717,7 @@ static IIO_DEVICE_ATTR(enable_smbus_timeout, S_IRUGO | S_IWUSR,
 		adt7316_store_enable_smbus_timeout,
 		0);
 
+<<<<<<< HEAD
 
 static ssize_t adt7316_store_reset(struct device *dev,
 		struct device_attribute *attr,
@@ -645,16 +747,23 @@ static IIO_DEVICE_ATTR(reset, S_IWUSR,
 		adt7316_store_reset,
 		0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t adt7316_show_powerdown(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", !!(chip->config1 & ADT7316_PD));
 }
@@ -664,17 +773,26 @@ static ssize_t adt7316_store_powerdown(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config1;
 	int ret;
 
 	config1 = chip->config1 & (~ADT7316_PD);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config1 |= ADT7316_PD;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG1, config1);
@@ -695,12 +813,17 @@ static ssize_t adt7316_show_fast_ad_clock(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", !!(chip->config3 & ADT7316_ADCLK_22_5));
 }
@@ -710,17 +833,26 @@ static ssize_t adt7316_store_fast_ad_clock(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config3;
 	int ret;
 
 	config3 = chip->config3 & (~ADT7316_ADCLK_22_5);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config3 |= ADT7316_ADCLK_22_5;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG3, config3);
@@ -741,12 +873,17 @@ static ssize_t adt7316_show_da_high_resolution(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (chip->config3 & ADT7316_DA_HIGH_RESOLUTION) {
 		if (chip->id == ID_ADT7316 || chip->id == ID_ADT7516)
@@ -763,18 +900,27 @@ static ssize_t adt7316_store_da_high_resolution(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config3;
 	int ret;
 
 	chip->dac_bits = 8;
 
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1)) {
+=======
+	if (buf[0] == '1') {
+>>>>>>> refs/remotes/origin/master
 		config3 = chip->config3 | ADT7316_DA_HIGH_RESOLUTION;
 		if (chip->id == ID_ADT7316 || chip->id == ID_ADT7516)
 			chip->dac_bits = 12;
@@ -801,12 +947,17 @@ static ssize_t adt7316_show_AIN_internal_Vref(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if ((chip->id & ID_FAMILY_MASK) != ID_ADT75XX)
 		return -EPERM;
@@ -820,19 +971,28 @@ static ssize_t adt7316_store_AIN_internal_Vref(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config3;
 	int ret;
 
 	if ((chip->id & ID_FAMILY_MASK) != ID_ADT75XX)
 		return -EPERM;
 
+<<<<<<< HEAD
 	if (memcmp(buf, "1", 1))
+=======
+	if (buf[0] != '1')
+>>>>>>> refs/remotes/origin/master
 		config3 = chip->config3 & (~ADT7516_AIN_IN_VREF);
 	else
 		config3 = chip->config3 | ADT7516_AIN_IN_VREF;
@@ -856,12 +1016,17 @@ static ssize_t adt7316_show_enable_prop_DACA(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n",
 		!!(chip->config3 & ADT7316_EN_IN_TEMP_PROP_DACA));
@@ -872,17 +1037,26 @@ static ssize_t adt7316_store_enable_prop_DACA(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config3;
 	int ret;
 
 	config3 = chip->config3 & (~ADT7316_EN_IN_TEMP_PROP_DACA);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config3 |= ADT7316_EN_IN_TEMP_PROP_DACA;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG3, config3);
@@ -903,12 +1077,17 @@ static ssize_t adt7316_show_enable_prop_DACB(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n",
 		!!(chip->config3 & ADT7316_EN_EX_TEMP_PROP_DACB));
@@ -919,17 +1098,26 @@ static ssize_t adt7316_store_enable_prop_DACB(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config3;
 	int ret;
 
 	config3 = chip->config3 & (~ADT7316_EN_EX_TEMP_PROP_DACB);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config3 |= ADT7316_EN_EX_TEMP_PROP_DACB;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG3, config3);
@@ -950,12 +1138,17 @@ static ssize_t adt7316_show_DAC_2Vref_ch_mask(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "0x%x\n",
 		chip->dac_config & ADT7316_DA_2VREF_CH_MASK);
@@ -966,6 +1159,7 @@ static ssize_t adt7316_store_DAC_2Vref_ch_mask(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -977,6 +1171,15 @@ static ssize_t adt7316_store_DAC_2Vref_ch_mask(struct device *dev,
 	int ret;
 
 	ret = strict_strtoul(buf, 16, &data);
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	u8 dac_config;
+	u8 data;
+	int ret;
+
+	ret = kstrtou8(buf, 16, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret || data > ADT7316_DA_2VREF_CH_MASK)
 		return -EINVAL;
 
@@ -1001,12 +1204,17 @@ static ssize_t adt7316_show_DAC_update_mode(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(chip->config3 & ADT7316_DA_EN_VIA_DAC_LDCA))
 		return sprintf(buf, "manual\n");
@@ -1029,6 +1237,7 @@ static ssize_t adt7316_store_DAC_update_mode(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -1037,12 +1246,22 @@ static ssize_t adt7316_store_DAC_update_mode(struct device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 	u8 dac_config;
 	unsigned long data;
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	u8 dac_config;
+	u8 data;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (!(chip->config3 & ADT7316_DA_EN_VIA_DAC_LDCA))
 		return -EPERM;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &data);
+=======
+	ret = kstrtou8(buf, 10, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret || data > ADT7316_DA_EN_MODE_MASK)
 		return -EINVAL;
 
@@ -1067,12 +1286,17 @@ static ssize_t adt7316_show_all_DAC_update_modes(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if (chip->config3 & ADT7316_DA_EN_VIA_DAC_LDCA)
 		return sprintf(buf, "0 - auto at any MSB DAC writing\n"
@@ -1092,6 +1316,7 @@ static ssize_t adt7316_store_update_DAC(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -1100,6 +1325,12 @@ static ssize_t adt7316_store_update_DAC(struct device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 	u8 ldac_config;
 	unsigned long data;
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	u8 ldac_config;
+	u8 data;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (chip->config3 & ADT7316_DA_EN_VIA_DAC_LDCA) {
@@ -1107,7 +1338,11 @@ static ssize_t adt7316_store_update_DAC(struct device *dev,
 			ADT7316_DA_EN_MODE_LDAC)
 			return -EPERM;
 
+<<<<<<< HEAD
 		ret = strict_strtoul(buf, 16, &data);
+=======
+		ret = kstrtou8(buf, 16, &data);
+>>>>>>> refs/remotes/origin/master
 		if (ret || data > ADT7316_LDAC_EN_DA_MASK)
 			return -EINVAL;
 
@@ -1135,12 +1370,17 @@ static ssize_t adt7316_show_DA_AB_Vref_bypass(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if ((chip->id & ID_FAMILY_MASK) == ID_ADT75XX)
 		return -EPERM;
@@ -1154,12 +1394,17 @@ static ssize_t adt7316_store_DA_AB_Vref_bypass(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 dac_config;
 	int ret;
 
@@ -1167,7 +1412,11 @@ static ssize_t adt7316_store_DA_AB_Vref_bypass(struct device *dev,
 		return -EPERM;
 
 	dac_config = chip->dac_config & (~ADT7316_VREF_BYPASS_DAC_AB);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		dac_config |= ADT7316_VREF_BYPASS_DAC_AB;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_DAC_CONFIG, dac_config);
@@ -1188,12 +1437,17 @@ static ssize_t adt7316_show_DA_CD_Vref_bypass(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if ((chip->id & ID_FAMILY_MASK) == ID_ADT75XX)
 		return -EPERM;
@@ -1207,12 +1461,17 @@ static ssize_t adt7316_store_DA_CD_Vref_bypass(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 dac_config;
 	int ret;
 
@@ -1220,7 +1479,11 @@ static ssize_t adt7316_store_DA_CD_Vref_bypass(struct device *dev,
 		return -EPERM;
 
 	dac_config = chip->dac_config & (~ADT7316_VREF_BYPASS_DAC_CD);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		dac_config |= ADT7316_VREF_BYPASS_DAC_CD;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_DAC_CONFIG, dac_config);
@@ -1241,12 +1504,17 @@ static ssize_t adt7316_show_DAC_internal_Vref(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	if ((chip->id & ID_FAMILY_MASK) == ID_ADT75XX)
 		return sprintf(buf, "0x%x\n",
@@ -1262,6 +1530,7 @@ static ssize_t adt7316_store_DAC_internal_Vref(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -1274,6 +1543,16 @@ static ssize_t adt7316_store_DAC_internal_Vref(struct device *dev,
 
 	if ((chip->id & ID_FAMILY_MASK) == ID_ADT75XX) {
 		ret = strict_strtoul(buf, 16, &data);
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	u8 ldac_config;
+	u8 data;
+	int ret;
+
+	if ((chip->id & ID_FAMILY_MASK) == ID_ADT75XX) {
+		ret = kstrtou8(buf, 16, &data);
+>>>>>>> refs/remotes/origin/master
 		if (ret || data > 3)
 			return -EINVAL;
 
@@ -1283,7 +1562,11 @@ static ssize_t adt7316_store_DAC_internal_Vref(struct device *dev,
 		else if (data & 0x2)
 			ldac_config |= ADT7516_DAC_CD_IN_VREF;
 	} else {
+<<<<<<< HEAD
 		ret = strict_strtoul(buf, 16, &data);
+=======
+		ret = kstrtou8(buf, 16, &data);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return -EINVAL;
 
@@ -1385,12 +1668,17 @@ static ssize_t adt7316_show_VDD(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_ad(chip, ADT7316_AD_SINGLE_CH_VDD, buf);
 }
@@ -1400,12 +1688,17 @@ static ssize_t adt7316_show_in_temp(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_ad(chip, ADT7316_AD_SINGLE_CH_IN, buf);
 }
@@ -1416,12 +1709,17 @@ static ssize_t adt7316_show_ex_temp_AIN1(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_ad(chip, ADT7316_AD_SINGLE_CH_EX, buf);
 }
@@ -1433,12 +1731,17 @@ static ssize_t adt7316_show_AIN2(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_ad(chip, ADT7516_AD_SINGLE_CH_AIN2, buf);
 }
@@ -1448,12 +1751,17 @@ static ssize_t adt7316_show_AIN3(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_ad(chip, ADT7516_AD_SINGLE_CH_AIN3, buf);
 }
@@ -1463,12 +1771,17 @@ static ssize_t adt7316_show_AIN4(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_ad(chip, ADT7516_AD_SINGLE_CH_AIN4, buf);
 }
@@ -1495,11 +1808,19 @@ static ssize_t adt7316_show_temp_offset(struct adt7316_chip_info *chip,
 static ssize_t adt7316_store_temp_offset(struct adt7316_chip_info *chip,
 		int offset_addr, const char *buf, size_t len)
 {
+<<<<<<< HEAD
 	long data;
 	u8 val;
 	int ret;
 
 	ret = strict_strtol(buf, 10, &data);
+=======
+	int data;
+	u8 val;
+	int ret;
+
+	ret = kstrtoint(buf, 10, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret || data > 127 || data < -128)
 		return -EINVAL;
 
@@ -1519,12 +1840,17 @@ static ssize_t adt7316_show_in_temp_offset(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_temp_offset(chip, ADT7316_IN_TEMP_OFFSET, buf);
 }
@@ -1534,12 +1860,17 @@ static ssize_t adt7316_store_in_temp_offset(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_temp_offset(chip, ADT7316_IN_TEMP_OFFSET, buf, len);
 }
@@ -1552,12 +1883,17 @@ static ssize_t adt7316_show_ex_temp_offset(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_temp_offset(chip, ADT7316_EX_TEMP_OFFSET, buf);
 }
@@ -1567,12 +1903,17 @@ static ssize_t adt7316_store_ex_temp_offset(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_temp_offset(chip, ADT7316_EX_TEMP_OFFSET, buf, len);
 }
@@ -1585,12 +1926,17 @@ static ssize_t adt7316_show_in_analog_temp_offset(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_temp_offset(chip,
 			ADT7316_IN_ANALOG_TEMP_OFFSET, buf);
@@ -1601,12 +1947,17 @@ static ssize_t adt7316_store_in_analog_temp_offset(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_temp_offset(chip,
 			ADT7316_IN_ANALOG_TEMP_OFFSET, buf, len);
@@ -1620,12 +1971,17 @@ static ssize_t adt7316_show_ex_analog_temp_offset(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_temp_offset(chip,
 			ADT7316_EX_ANALOG_TEMP_OFFSET, buf);
@@ -1636,12 +1992,17 @@ static ssize_t adt7316_store_ex_analog_temp_offset(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_temp_offset(chip,
 			ADT7316_EX_ANALOG_TEMP_OFFSET, buf, len);
@@ -1688,7 +2049,11 @@ static ssize_t adt7316_store_DAC(struct adt7316_chip_info *chip,
 		int channel, const char *buf, size_t len)
 {
 	u8 msb, lsb, offset;
+<<<<<<< HEAD
 	unsigned long data;
+=======
+	u16 data;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (channel >= ADT7316_DA_MSB_DATA_REGS ||
@@ -1700,7 +2065,11 @@ static ssize_t adt7316_store_DAC(struct adt7316_chip_info *chip,
 
 	offset = chip->dac_bits - 8;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &data);
+=======
+	ret = kstrtou16(buf, 10, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret || data >= (1 << chip->dac_bits))
 		return -EINVAL;
 
@@ -1725,12 +2094,17 @@ static ssize_t adt7316_show_DAC_A(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_DAC(chip, 0, buf);
 }
@@ -1740,12 +2114,17 @@ static ssize_t adt7316_store_DAC_A(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_DAC(chip, 0, buf, len);
 }
@@ -1757,12 +2136,17 @@ static ssize_t adt7316_show_DAC_B(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_DAC(chip, 1, buf);
 }
@@ -1772,12 +2156,17 @@ static ssize_t adt7316_store_DAC_B(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_DAC(chip, 1, buf, len);
 }
@@ -1789,12 +2178,17 @@ static ssize_t adt7316_show_DAC_C(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_DAC(chip, 2, buf);
 }
@@ -1804,12 +2198,17 @@ static ssize_t adt7316_store_DAC_C(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_DAC(chip, 2, buf, len);
 }
@@ -1821,12 +2220,17 @@ static ssize_t adt7316_show_DAC_D(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_show_DAC(chip, 3, buf);
 }
@@ -1836,12 +2240,17 @@ static ssize_t adt7316_store_DAC_D(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return adt7316_store_DAC(chip, 3, buf, len);
 }
@@ -1853,12 +2262,17 @@ static ssize_t adt7316_show_device_id(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 id;
 	int ret;
 
@@ -1875,12 +2289,17 @@ static ssize_t adt7316_show_manufactorer_id(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 id;
 	int ret;
 
@@ -1898,12 +2317,17 @@ static ssize_t adt7316_show_device_rev(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 rev;
 	int ret;
 
@@ -1920,12 +2344,17 @@ static ssize_t adt7316_show_bus_type(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 stat;
 	int ret;
 
@@ -1944,7 +2373,10 @@ static IIO_DEVICE_ATTR(bus_type, S_IRUGO, adt7316_show_bus_type, NULL, 0);
 static struct attribute *adt7316_attributes[] = {
 	&iio_dev_attr_all_modes.dev_attr.attr,
 	&iio_dev_attr_mode.dev_attr.attr,
+<<<<<<< HEAD
 	&iio_dev_attr_reset.dev_attr.attr,
+=======
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_enabled.dev_attr.attr,
 	&iio_dev_attr_ad_channel.dev_attr.attr,
 	&iio_dev_attr_all_ad_channels.dev_attr.attr,
@@ -1988,7 +2420,10 @@ static struct attribute *adt7516_attributes[] = {
 	&iio_dev_attr_all_modes.dev_attr.attr,
 	&iio_dev_attr_mode.dev_attr.attr,
 	&iio_dev_attr_select_ex_temp.dev_attr.attr,
+<<<<<<< HEAD
 	&iio_dev_attr_reset.dev_attr.attr,
+=======
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_enabled.dev_attr.attr,
 	&iio_dev_attr_ad_channel.dev_attr.attr,
 	&iio_dev_attr_all_ad_channels.dev_attr.attr,
@@ -2036,10 +2471,14 @@ static irqreturn_t adt7316_event_handler(int irq, void *private)
 {
 	struct iio_dev *indio_dev = private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct adt7316_chip_info *chip = iio_dev_get_devdata(indio_dev);
 =======
 	struct adt7316_chip_info *chip = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct adt7316_chip_info *chip = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	u8 stat1, stat2;
 	int ret;
 	s64 time;
@@ -2052,45 +2491,62 @@ static irqreturn_t adt7316_event_handler(int irq, void *private)
 		time = iio_get_time_ns();
 		if (stat1 & (1 << 0))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 =======
 			iio_push_event(indio_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/master
 				       IIO_UNMOD_EVENT_CODE(IIO_TEMP, 0,
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_RISING),
 				       time);
 		if (stat1 & (1 << 1))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 =======
 			iio_push_event(indio_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/master
 				       IIO_UNMOD_EVENT_CODE(IIO_TEMP, 0,
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_FALLING),
 				       time);
 		if (stat1 & (1 << 2))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 =======
 			iio_push_event(indio_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/master
 				       IIO_UNMOD_EVENT_CODE(IIO_TEMP, 1,
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_RISING),
 				       time);
 		if (stat1 & (1 << 3))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 =======
 			iio_push_event(indio_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/master
 				       IIO_UNMOD_EVENT_CODE(IIO_TEMP, 1,
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_FALLING),
 				       time);
 		if (stat1 & (1 << 5))
+<<<<<<< HEAD
 <<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 				       IIO_UNMOD_EVENT_CODE(IIO_IN, 1,
@@ -2098,10 +2554,15 @@ static irqreturn_t adt7316_event_handler(int irq, void *private)
 			iio_push_event(indio_dev,
 				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE, 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE, 1,
+>>>>>>> refs/remotes/origin/master
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_EITHER),
 				       time);
 		if (stat1 & (1 << 6))
+<<<<<<< HEAD
 <<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 				       IIO_UNMOD_EVENT_CODE(IIO_IN, 2,
@@ -2109,10 +2570,15 @@ static irqreturn_t adt7316_event_handler(int irq, void *private)
 			iio_push_event(indio_dev,
 				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE, 2,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE, 2,
+>>>>>>> refs/remotes/origin/master
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_EITHER),
 				       time);
 		if (stat1 & (1 << 7))
+<<<<<<< HEAD
 <<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 				       IIO_UNMOD_EVENT_CODE(IIO_IN, 3,
@@ -2120,6 +2586,10 @@ static irqreturn_t adt7316_event_handler(int irq, void *private)
 			iio_push_event(indio_dev,
 				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE, 3,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE, 3,
+>>>>>>> refs/remotes/origin/master
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_EITHER),
 				       time);
@@ -2128,12 +2598,17 @@ static irqreturn_t adt7316_event_handler(int irq, void *private)
 	if (!ret) {
 		if (stat2 & ADT7316_INT_MASK2_VDD)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iio_push_event(chip->indio_dev, 0,
 				       IIO_UNMOD_EVENT_CODE(IIO_IN,
 =======
 			iio_push_event(indio_dev,
 				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
+>>>>>>> refs/remotes/origin/master
 							    0,
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_RISING),
@@ -2150,12 +2625,17 @@ static ssize_t adt7316_show_int_mask(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "0x%x\n", chip->int_mask);
 }
@@ -2168,6 +2648,7 @@ static ssize_t adt7316_set_int_mask(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -2179,6 +2660,15 @@ static ssize_t adt7316_set_int_mask(struct device *dev,
 	u8 mask;
 
 	ret = strict_strtoul(buf, 16, &data);
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	u16 data;
+	int ret;
+	u8 mask;
+
+	ret = kstrtou16(buf, 16, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret || data >= ADT7316_VDD_INT_MASK + 1)
 		return -EINVAL;
 
@@ -2212,12 +2702,17 @@ static inline ssize_t adt7316_show_ad_bound(struct device *dev,
 		char *buf)
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 val;
 	int data;
 	int ret;
@@ -2247,6 +2742,7 @@ static inline ssize_t adt7316_set_ad_bound(struct device *dev,
 		size_t len)
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
@@ -2254,6 +2750,11 @@ static inline ssize_t adt7316_set_ad_bound(struct device *dev,
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
 	long data;
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+	int data;
+>>>>>>> refs/remotes/origin/master
 	u8 val;
 	int ret;
 
@@ -2261,7 +2762,11 @@ static inline ssize_t adt7316_set_ad_bound(struct device *dev,
 		this_attr->address > ADT7316_EX_TEMP_LOW)
 		return -EPERM;
 
+<<<<<<< HEAD
 	ret = strict_strtol(buf, 10, &data);
+=======
+	ret = kstrtoint(buf, 10, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return -EINVAL;
 
@@ -2290,12 +2795,17 @@ static ssize_t adt7316_show_int_enabled(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", !!(chip->config1 & ADT7316_INT_EN));
 }
@@ -2305,17 +2815,26 @@ static ssize_t adt7316_set_int_enabled(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct adt7316_chip_info *chip = dev_info->dev_data;
 =======
 	struct adt7316_chip_info *chip = iio_priv(dev_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+	struct adt7316_chip_info *chip = iio_priv(dev_info);
+>>>>>>> refs/remotes/origin/master
 	u8 config1;
 	int ret;
 
 	config1 = chip->config1 & (~ADT7316_INT_EN);
+<<<<<<< HEAD
 	if (!memcmp(buf, "1", 1))
+=======
+	if (buf[0] == '1')
+>>>>>>> refs/remotes/origin/master
 		config1 |= ADT7316_INT_EN;
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG1, config1);
@@ -2399,9 +2918,13 @@ static struct attribute *adt7316_event_attributes[] = {
 static struct attribute_group adt7316_event_attribute_group = {
 	.attrs = adt7316_event_attributes,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.name = "events",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name = "events",
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct attribute *adt7516_event_attributes[] = {
@@ -2422,6 +2945,7 @@ static struct attribute *adt7516_event_attributes[] = {
 
 static struct attribute_group adt7516_event_attribute_group = {
 	.attrs = adt7516_event_attributes,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -2444,6 +2968,8 @@ int adt7316_enable(struct device *dev)
 }
 EXPORT_SYMBOL(adt7316_enable);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.name = "events",
 };
 
@@ -2466,15 +2992,21 @@ static int adt7316_enable(struct device *dev)
 
 SIMPLE_DEV_PM_OPS(adt7316_pm_ops, adt7316_disable, adt7316_enable);
 EXPORT_SYMBOL_GPL(adt7316_pm_ops);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static const struct iio_info adt7316_info = {
 	.attrs = &adt7316_attribute_group,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_interrupt_lines = 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.event_attrs = &adt7316_event_attribute_group,
 	.driver_module = THIS_MODULE,
 };
@@ -2482,9 +3014,12 @@ static const struct iio_info adt7316_info = {
 static const struct iio_info adt7516_info = {
 	.attrs = &adt7516_attribute_group,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_interrupt_lines = 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.event_attrs = &adt7516_event_attribute_group,
 	.driver_module = THIS_MODULE,
 };
@@ -2492,6 +3027,7 @@ static const struct iio_info adt7516_info = {
 /*
  * device probe and remove
  */
+<<<<<<< HEAD
 int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 		const char *name)
 {
@@ -2508,10 +3044,17 @@ int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 	/* this is only used for device removal purposes */
 	dev_set_drvdata(dev, chip);
 =======
+=======
+int adt7316_probe(struct device *dev, struct adt7316_bus *bus,
+		const char *name)
+{
+	struct adt7316_chip_info *chip;
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev *indio_dev;
 	unsigned short *adt7316_platform_data = dev->platform_data;
 	int ret = 0;
 
+<<<<<<< HEAD
 	indio_dev = iio_allocate_device(sizeof(*chip));
 	if (indio_dev == NULL) {
 		ret = -ENOMEM;
@@ -2521,6 +3064,14 @@ int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 	/* this is only used for device removal purposes */
 	dev_set_drvdata(dev, indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	indio_dev = devm_iio_device_alloc(dev, sizeof(*chip));
+	if (!indio_dev)
+		return -ENOMEM;
+	chip = iio_priv(indio_dev);
+	/* this is only used for device removal purposes */
+	dev_set_drvdata(dev, indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	chip->bus = *bus;
 
@@ -2542,6 +3093,7 @@ int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 		chip->int_mask |= ADT7516_AIN_INT_MASK;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	chip->indio_dev = iio_allocate_device(0);
 	if (chip->indio_dev == NULL) {
 		ret = -ENOMEM;
@@ -2561,6 +3113,8 @@ int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 	if (ret)
 		goto error_free_dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	indio_dev->dev.parent = dev;
 	if ((chip->id & ID_FAMILY_MASK) == ID_ADT75XX)
 		indio_dev->info = &adt7516_info;
@@ -2568,12 +3122,16 @@ int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 		indio_dev->info = &adt7316_info;
 	indio_dev->name = name;
 	indio_dev->modes = INDIO_DIRECT_MODE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (chip->bus.irq > 0) {
 		if (adt7316_platform_data[0])
 			chip->bus.irq_flags = adt7316_platform_data[0];
 
+<<<<<<< HEAD
 		ret = request_threaded_irq(chip->bus.irq,
 					   NULL,
 					   &adt7316_event_handler,
@@ -2589,12 +3147,24 @@ int __devinit adt7316_probe(struct device *dev, struct adt7316_bus *bus,
 		if (ret)
 			goto error_free_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = devm_request_threaded_irq(dev, chip->bus.irq,
+						NULL,
+						&adt7316_event_handler,
+						chip->bus.irq_flags |
+						IRQF_ONESHOT,
+						indio_dev->name,
+						indio_dev);
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 
 		if (chip->bus.irq_flags & IRQF_TRIGGER_HIGH)
 			chip->config1 |= ADT7316_INT_POLARITY;
 	}
 
 	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG1, chip->config1);
+<<<<<<< HEAD
 	if (ret) {
 		ret = -EIO;
 		goto error_unreg_irq;
@@ -2667,6 +3237,26 @@ int __devexit adt7316_remove(struct device *dev)
 }
 EXPORT_SYMBOL(adt7316_remove);
 
+=======
+	if (ret)
+		return -EIO;
+
+	ret = chip->bus.write(chip->bus.client, ADT7316_CONFIG3, chip->config3);
+	if (ret)
+		return -EIO;
+
+	ret = devm_iio_device_register(dev, indio_dev);
+	if (ret)
+		return ret;
+
+	dev_info(dev, "%s temperature sensor, ADC and DAC registered.\n",
+			indio_dev->name);
+
+	return 0;
+}
+EXPORT_SYMBOL(adt7316_probe);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Sonic Zhang <sonic.zhang@analog.com>");
 MODULE_DESCRIPTION("Analog Devices ADT7316/7/8 and ADT7516/7/9 digital"
 			" temperature sensor, ADC and DAC driver");

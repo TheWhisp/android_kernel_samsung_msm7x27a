@@ -75,4 +75,10 @@ struct ixp46x_ts_regs {
 #define TX_SNAPSHOT_LOCKED (1<<0)
 #define RX_SNAPSHOT_LOCKED (1<<1)
 
+<<<<<<< HEAD
+=======
+/* The ptp_ixp46x module will set this variable */
+extern int ixp46x_phc_index;
+
+>>>>>>> refs/remotes/origin/master
 #endif

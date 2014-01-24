@@ -2,6 +2,7 @@
  * Cryptographic API.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * s390 implementation of the SHA256 Secure Hash Algorithm.
  *
  * s390 Version:
@@ -19,6 +20,14 @@
  *   Author(s): Jan Glauber (jang@de.ibm.com)
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * s390 implementation of the SHA256 and SHA224 Secure Hash Algorithm.
+ *
+ * s390 Version:
+ *   Copyright IBM Corp. 2005, 2011
+ *   Author(s): Jan Glauber (jang@de.ibm.com)
+ *
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option)
@@ -75,10 +84,14 @@ static int sha256_import(struct shash_desc *desc, const void *in)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct shash_alg alg = {
 =======
 static struct shash_alg sha256_alg = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct shash_alg sha256_alg = {
+>>>>>>> refs/remotes/origin/master
 	.digestsize	=	SHA256_DIGEST_SIZE,
 	.init		=	sha256_init,
 	.update		=	s390_sha_update,
@@ -98,6 +111,7 @@ static struct shash_alg sha256_alg = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sha256_s390_init(void)
 {
 	if (!crypt_s390_func_available(KIMD_SHA_256, CRYPT_S390_MSA))
@@ -105,6 +119,8 @@ static int sha256_s390_init(void)
 
 	return crypto_register_shash(&alg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int sha224_init(struct shash_desc *desc)
 {
 	struct s390_sha_ctx *sctx = shash_desc_ctx(desc);
@@ -156,23 +172,32 @@ static int __init sha256_s390_init(void)
 		crypto_unregister_shash(&sha256_alg);
 out:
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit sha256_s390_fini(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	crypto_unregister_shash(&alg);
 =======
 	crypto_unregister_shash(&sha224_alg);
 	crypto_unregister_shash(&sha256_alg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	crypto_unregister_shash(&sha224_alg);
+	crypto_unregister_shash(&sha256_alg);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(sha256_s390_init);
 module_exit(sha256_s390_fini);
 
 MODULE_ALIAS("sha256");
+<<<<<<< HEAD
 <<<<<<< HEAD
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SHA256 Secure Hash Algorithm");
@@ -181,3 +206,8 @@ MODULE_ALIAS("sha224");
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("SHA256 and SHA224 Secure Hash Algorithm");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("sha224");
+MODULE_LICENSE("GPL");
+MODULE_DESCRIPTION("SHA256 and SHA224 Secure Hash Algorithm");
+>>>>>>> refs/remotes/origin/master

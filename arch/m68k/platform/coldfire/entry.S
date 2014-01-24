@@ -55,15 +55,19 @@ sw_usp:
 .globl sys_call_table
 .globl inthandler
 <<<<<<< HEAD
+<<<<<<< HEAD
 .globl fasthandler
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enosys:
 	mov.l	#sys_ni_syscall,%d3
 	bra	1f
 
 ENTRY(system_call)
+<<<<<<< HEAD
 <<<<<<< HEAD
 	SAVE_ALL
 	move	#0x2000,%sr		/* enable intrs again */
@@ -72,6 +76,11 @@ ENTRY(system_call)
 	move	#0x2000,%sr		/* enable intrs again */
 	GET_CURRENT(%d2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_ALL_SYS
+	move	#0x2000,%sr		/* enable intrs again */
+	GET_CURRENT(%d2)
+>>>>>>> refs/remotes/origin/master
 
 	cmpl	#NR_syscalls,%d0
 	jcc	enosys
@@ -146,10 +155,14 @@ Luser_return:
 	andl	#-THREAD_SIZE,%d1	/* at base of kernel stack */
 	movel	%d1,%a0
 <<<<<<< HEAD
+<<<<<<< HEAD
 	movel	%a0@(TINFO_FLAGS),%d1	/* get thread_info->flags */
 =======
 	moveb	%a0@(TINFO_FLAGS+3),%d1	/* thread_info->flags (low 8 bits) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	moveb	%a0@(TINFO_FLAGS+3),%d1	/* thread_info->flags (low 8 bits) */
+>>>>>>> refs/remotes/origin/master
 	jne	Lwork_to_do		/* still work to do */
 
 Lreturn:
@@ -162,15 +175,22 @@ Lwork_to_do:
 	jne	reschedule
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* GERG: do we need something here for TRACEing?? */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Lsignal_return:
 	subql	#4,%sp			/* dummy return address */
 	SAVE_SWITCH_STACK
 	pea	%sp@(SWITCH_STACK_SIZE)
+<<<<<<< HEAD
 	jsr	do_signal
+=======
+	jsr	do_notify_resume
+>>>>>>> refs/remotes/origin/master
 	addql	#4,%sp
 	RESTORE_SWITCH_STACK
 	addql	#4,%sp
@@ -182,6 +202,7 @@ Lsignal_return:
  */
 ENTRY(inthandler)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SAVE_ALL
 	moveq	#-1,%d0
 	movel	%d0,%sp@(PT_OFF_ORIG_D0)
@@ -189,6 +210,10 @@ ENTRY(inthandler)
 	SAVE_ALL_INT
 	GET_CURRENT(%d2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SAVE_ALL_INT
+	GET_CURRENT(%d2)
+>>>>>>> refs/remotes/origin/master
 
 	movew	%sp@(PT_OFF_FORMATVEC),%d0 /* put exception # in d0 */
 	andl	#0x03fc,%d0		/* mask out vector only */
@@ -203,6 +228,7 @@ ENTRY(inthandler)
 
 /*
  * Beware - when entering resume, prev (the current task) is
+<<<<<<< HEAD
 <<<<<<< HEAD
  * in a0, next (the new task) is in a1,so don't change these
  * registers until their contents are no longer needed.
@@ -223,6 +249,8 @@ ENTRY(resume)
 	WRUSP
 	rts
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * in a0, next (the new task) is in a1, so don't change these
  * registers until their contents are no longer needed.
  */
@@ -245,4 +273,7 @@ ENTRY(resume)
 	RESTORE_SWITCH_STACK
 	rts
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

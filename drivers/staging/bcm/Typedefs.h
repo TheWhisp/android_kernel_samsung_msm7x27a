@@ -6,10 +6,17 @@
 #define  STATUS_SUCCESS	0
 #define  STATUS_FAILURE -1
 
+<<<<<<< HEAD
 #define	 FALSE		0
 #define	 TRUE		1
 
 typedef char BOOLEAN;
+=======
+
+#define	 TRUE		1
+
+
+>>>>>>> refs/remotes/origin/master
 typedef char CHAR;
 typedef int INT;
 typedef short SHORT;

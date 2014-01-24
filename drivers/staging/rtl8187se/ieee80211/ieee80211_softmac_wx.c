@@ -1,5 +1,9 @@
 /* IEEE 802.11 SoftMAC layer
+<<<<<<< HEAD
  * Copyright (c) 2005 Andrea Merello <andreamrl@tiscali.it>
+=======
+ * Copyright (c) 2005 Andrea Merello <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Mostly extracted from the rtl8180-sa2400 driver for the
  * in-kernel generic ieee802.11 stack.
@@ -14,6 +18,11 @@
  */
 
 
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "ieee80211.h"
 
 /* FIXME: add A freqs */
@@ -26,6 +35,7 @@ const long ieee80211_wlan_frequencies[] = {
 };
 
 
+<<<<<<< HEAD
 int ieee80211_wx_set_freq(struct ieee80211_device *ieee, struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
 {
@@ -35,6 +45,18 @@ int ieee80211_wx_set_freq(struct ieee80211_device *ieee, struct iw_request_info 
 	down(&ieee->wx_sem);
 
 	if(ieee->iw_mode == IW_MODE_INFRA){
+=======
+int ieee80211_wx_set_freq(struct ieee80211_device *ieee,
+			  struct iw_request_info *a, union iwreq_data *wrqu,
+			  char *b)
+{
+	int ret;
+	struct iw_freq *fwrq = &wrqu->freq;
+//	printk("in %s\n",__func__);
+	down(&ieee->wx_sem);
+
+	if (ieee->iw_mode == IW_MODE_INFRA) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EOPNOTSUPP;
 		goto out;
 	}
@@ -55,21 +77,36 @@ int ieee80211_wx_set_freq(struct ieee80211_device *ieee, struct iw_request_info 
 		}
 	}
 
+<<<<<<< HEAD
 	if (fwrq->e > 0 || fwrq->m > 14 || fwrq->m < 1 ){
 		ret = -EOPNOTSUPP;
 		goto out;
 
 	}else { /* Set the channel */
+=======
+	if (fwrq->e > 0 || fwrq->m > 14 || fwrq->m < 1) {
+		ret = -EOPNOTSUPP;
+		goto out;
+
+	} else { /* Set the channel */
+>>>>>>> refs/remotes/origin/master
 
 
 		ieee->current_network.channel = fwrq->m;
 		ieee->set_chan(ieee->dev, ieee->current_network.channel);
 
+<<<<<<< HEAD
 		if(ieee->iw_mode == IW_MODE_ADHOC || ieee->iw_mode == IW_MODE_MASTER)
 			if(ieee->state == IEEE80211_LINKED){
 
 			ieee80211_stop_send_beacons(ieee);
 			ieee80211_start_send_beacons(ieee);
+=======
+		if (ieee->iw_mode == IW_MODE_ADHOC || ieee->iw_mode == IW_MODE_MASTER)
+			if (ieee->state == IEEE80211_LINKED) {
+				ieee80211_stop_send_beacons(ieee);
+				ieee80211_start_send_beacons(ieee);
+>>>>>>> refs/remotes/origin/master
 			}
 	}
 
@@ -81,10 +118,17 @@ out:
 
 
 int ieee80211_wx_get_freq(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 			     struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
 {
 	struct iw_freq *fwrq = & wrqu->freq;
+=======
+			  struct iw_request_info *a, union iwreq_data *wrqu,
+			  char *b)
+{
+	struct iw_freq *fwrq = &wrqu->freq;
+>>>>>>> refs/remotes/origin/master
 
 	if (ieee->current_network.channel == 0)
 		return -1;
@@ -96,8 +140,13 @@ int ieee80211_wx_get_freq(struct ieee80211_device *ieee,
 }
 
 int ieee80211_wx_get_wap(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 			    struct iw_request_info *info,
 			    union iwreq_data *wrqu, char *extra)
+=======
+			 struct iw_request_info *info, union iwreq_data *wrqu,
+			 char *extra)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -125,13 +174,20 @@ int ieee80211_wx_get_wap(struct ieee80211_device *ieee,
 
 
 int ieee80211_wx_set_wap(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 			 struct iw_request_info *info,
 			 union iwreq_data *awrq,
+=======
+			 struct iw_request_info *info, union iwreq_data *awrq,
+>>>>>>> refs/remotes/origin/master
 			 char *extra)
 {
 
 	int ret = 0;
+<<<<<<< HEAD
 	u8 zero[] = {0,0,0,0,0,0};
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	short ifup = ieee->proto_started;//dev->flags & IFF_UP;
@@ -142,12 +198,20 @@ int ieee80211_wx_set_wap(struct ieee80211_device *ieee,
 
 	down(&ieee->wx_sem);
 	/* use ifconfig hw ether */
+<<<<<<< HEAD
 	if (ieee->iw_mode == IW_MODE_MASTER){
+=======
+	if (ieee->iw_mode == IW_MODE_MASTER) {
+>>>>>>> refs/remotes/origin/master
 		ret = -1;
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (temp->sa_family != ARPHRD_ETHER){
+=======
+	if (temp->sa_family != ARPHRD_ETHER) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
@@ -161,7 +225,11 @@ int ieee80211_wx_set_wap(struct ieee80211_device *ieee,
 	spin_lock_irqsave(&ieee->lock, flags);
 
 	memcpy(ieee->current_network.bssid, temp->sa_data, ETH_ALEN);
+<<<<<<< HEAD
 	ieee->wap_set = memcmp(temp->sa_data, zero,ETH_ALEN)!=0;
+=======
+	ieee->wap_set = !is_zero_ether_addr(temp->sa_data);
+>>>>>>> refs/remotes/origin/master
 	//printk(" %x:%x:%x:%x:%x:%x\n", ieee->current_network.bssid[0],ieee->current_network.bssid[1],ieee->current_network.bssid[2],ieee->current_network.bssid[3],ieee->current_network.bssid[4],ieee->current_network.bssid[5]);
 
 	spin_unlock_irqrestore(&ieee->lock, flags);
@@ -174,9 +242,17 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
  int ieee80211_wx_get_essid(struct ieee80211_device *ieee, struct iw_request_info *a,union iwreq_data *wrqu,char *b)
 {
 	int len,ret = 0;
+=======
+int ieee80211_wx_get_essid(struct ieee80211_device *ieee,
+			   struct iw_request_info *a, union iwreq_data *wrqu,
+			   char *b)
+{
+	int len, ret = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (ieee->iw_mode == IW_MODE_MONITOR)
@@ -199,7 +275,11 @@ out:
 	}
 	len = ieee->current_network.ssid_len;
 	wrqu->essid.length = len;
+<<<<<<< HEAD
 	strncpy(b,ieee->current_network.ssid,len);
+=======
+	strncpy(b, ieee->current_network.ssid, len);
+>>>>>>> refs/remotes/origin/master
 	wrqu->essid.flags = 1;
 
 out:
@@ -210,18 +290,31 @@ out:
 }
 
 int ieee80211_wx_set_rate(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
+=======
+			  struct iw_request_info *info, union iwreq_data *wrqu,
+			  char *extra)
+>>>>>>> refs/remotes/origin/master
 {
 
 	u32 target_rate = wrqu->bitrate.value;
 
 	//added by lizhaoming for auto mode
+<<<<<<< HEAD
 	if(target_rate == -1){
 	ieee->rate = 110;
 	} else {
 	ieee->rate = target_rate/100000;
 	}
+=======
+	if (target_rate == -1)
+		ieee->rate = 110;
+	else
+		ieee->rate = target_rate/100000;
+
+>>>>>>> refs/remotes/origin/master
 	//FIXME: we might want to limit rate also in management protocols.
 	return 0;
 }
@@ -229,8 +322,13 @@ int ieee80211_wx_set_rate(struct ieee80211_device *ieee,
 
 
 int ieee80211_wx_get_rate(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
+=======
+			  struct iw_request_info *info, union iwreq_data *wrqu,
+			  char *extra)
+>>>>>>> refs/remotes/origin/master
 {
 
 	wrqu->bitrate.value = ieee->rate * 100000;
@@ -238,8 +336,14 @@ int ieee80211_wx_get_rate(struct ieee80211_device *ieee,
 	return 0;
 }
 
+<<<<<<< HEAD
 int ieee80211_wx_set_mode(struct ieee80211_device *ieee, struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
+=======
+int ieee80211_wx_set_mode(struct ieee80211_device *ieee,
+			  struct iw_request_info *a, union iwreq_data *wrqu,
+			  char *b)
+>>>>>>> refs/remotes/origin/master
 {
 
 	ieee->sync_scan_hurryup = 1;
@@ -249,6 +353,7 @@ int ieee80211_wx_set_mode(struct ieee80211_device *ieee, struct iw_request_info 
 	if (wrqu->mode == ieee->iw_mode)
 		goto out;
 
+<<<<<<< HEAD
 	if (wrqu->mode == IW_MODE_MONITOR){
 
 		ieee->dev->type = ARPHRD_IEEE80211;
@@ -259,6 +364,16 @@ int ieee80211_wx_set_mode(struct ieee80211_device *ieee, struct iw_request_info 
 	if (!ieee->proto_started){
 		ieee->iw_mode = wrqu->mode;
 	}else{
+=======
+	if (wrqu->mode == IW_MODE_MONITOR)
+		ieee->dev->type = ARPHRD_IEEE80211;
+	else
+		ieee->dev->type = ARPHRD_ETHER;
+
+	if (!ieee->proto_started) {
+		ieee->iw_mode = wrqu->mode;
+	} else {
+>>>>>>> refs/remotes/origin/master
 		ieee80211_stop_protocol(ieee);
 		ieee->iw_mode = wrqu->mode;
 		ieee80211_start_protocol(ieee);
@@ -295,7 +410,11 @@ void ieee80211_wx_sync_scan_wq(struct work_struct *work)
 	if (ieee->data_hard_resume)
 		ieee->data_hard_resume(ieee->dev);
 
+<<<<<<< HEAD
 	if(ieee->iw_mode == IW_MODE_ADHOC || ieee->iw_mode == IW_MODE_MASTER)
+=======
+	if (ieee->iw_mode == IW_MODE_ADHOC || ieee->iw_mode == IW_MODE_MASTER)
+>>>>>>> refs/remotes/origin/master
 		ieee80211_start_send_beacons(ieee);
 
 	//YJ,add,080828, In prevent of lossing ping packet during scanning
@@ -306,14 +425,24 @@ void ieee80211_wx_sync_scan_wq(struct work_struct *work)
 
 }
 
+<<<<<<< HEAD
 int ieee80211_wx_set_scan(struct ieee80211_device *ieee, struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
+=======
+int ieee80211_wx_set_scan(struct ieee80211_device *ieee,
+			  struct iw_request_info *a, union iwreq_data *wrqu,
+			  char *b)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 
 	down(&ieee->wx_sem);
 
+<<<<<<< HEAD
 	if (ieee->iw_mode == IW_MODE_MONITOR || !(ieee->proto_started)){
+=======
+	if (ieee->iw_mode == IW_MODE_MONITOR || !(ieee->proto_started)) {
+>>>>>>> refs/remotes/origin/master
 		ret = -1;
 		goto out;
 	}
@@ -322,7 +451,11 @@ int ieee80211_wx_set_scan(struct ieee80211_device *ieee, struct iw_request_info 
 	//ieee80211_sta_ps_send_null_frame(ieee, true);
 	//YJ,add,080828,end
 
+<<<<<<< HEAD
 	if ( ieee->state == IEEE80211_LINKED){
+=======
+	if (ieee->state == IEEE80211_LINKED) {
+>>>>>>> refs/remotes/origin/master
 		queue_work(ieee->wq, &ieee->wx_sync_scan_wq);
 		/* intentionally forget to up sem */
 		return 0;
@@ -334,11 +467,19 @@ out:
 }
 
 int ieee80211_wx_set_essid(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 			      struct iw_request_info *a,
 			      union iwreq_data *wrqu, char *extra)
 {
 
 	int ret=0,len;
+=======
+			   struct iw_request_info *a, union iwreq_data *wrqu,
+			   char *extra)
+{
+
+	int ret = 0, len;
+>>>>>>> refs/remotes/origin/master
 	short proto_started;
 	unsigned long flags;
 
@@ -348,6 +489,7 @@ int ieee80211_wx_set_essid(struct ieee80211_device *ieee,
 
 	proto_started = ieee->proto_started;
 
+<<<<<<< HEAD
 	if (wrqu->essid.length > IW_ESSID_MAX_SIZE){
 		ret= -E2BIG;
 		goto out;
@@ -363,6 +505,23 @@ int ieee80211_wx_set_essid(struct ieee80211_device *ieee,
 
 	/* this is just to be sure that the GET wx callback
 	 * has consisten infos. not needed otherwise
+=======
+	if (wrqu->essid.length > IW_ESSID_MAX_SIZE) {
+		ret = -E2BIG;
+		goto out;
+	}
+
+	if (ieee->iw_mode == IW_MODE_MONITOR) {
+		ret = -1;
+		goto out;
+	}
+
+	if (proto_started)
+		ieee80211_stop_protocol(ieee);
+
+	/* this is just to be sure that the GET wx callback
+	 * has consistent infos. not needed otherwise
+>>>>>>> refs/remotes/origin/master
 	 */
 	spin_lock_irqsave(&ieee->lock, flags);
 
@@ -376,13 +535,21 @@ int ieee80211_wx_set_essid(struct ieee80211_device *ieee,
 //YJ,modified,080819,end
 
 		//YJ,add,080819,for hidden ap
+<<<<<<< HEAD
 		if(len == 0){
+=======
+		if (len == 0) {
+>>>>>>> refs/remotes/origin/master
 			memset(ieee->current_network.bssid, 0, ETH_ALEN);
 			ieee->current_network.capability = 0;
 		}
 		//YJ,add,080819,for hidden ap,end
+<<<<<<< HEAD
 	}
 	else{
+=======
+	} else {
+>>>>>>> refs/remotes/origin/master
 		ieee->ssid_set = 0;
 		ieee->current_network.ssid[0] = '\0';
 		ieee->current_network.ssid_len = 0;
@@ -397,17 +564,29 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
  int ieee80211_wx_get_mode(struct ieee80211_device *ieee, struct iw_request_info *a,
 			     union iwreq_data *wrqu, char *b)
+=======
+int ieee80211_wx_get_mode(struct ieee80211_device *ieee,
+			  struct iw_request_info *a, union iwreq_data *wrqu,
+			  char *b)
+>>>>>>> refs/remotes/origin/master
 {
 
 	wrqu->mode = ieee->iw_mode;
 	return 0;
 }
 
+<<<<<<< HEAD
  int ieee80211_wx_set_rawtx(struct ieee80211_device *ieee,
 			       struct iw_request_info *info,
 			       union iwreq_data *wrqu, char *extra)
+=======
+int ieee80211_wx_set_rawtx(struct ieee80211_device *ieee,
+			   struct iw_request_info *info, union iwreq_data *wrqu,
+			   char *extra)
+>>>>>>> refs/remotes/origin/master
 {
 
 	int *parms = (int *)extra;
@@ -416,24 +595,40 @@ out:
 
 	down(&ieee->wx_sem);
 
+<<<<<<< HEAD
 	if(enable)
+=======
+	if (enable)
+>>>>>>> refs/remotes/origin/master
 		ieee->raw_tx = 1;
 	else
 		ieee->raw_tx = 0;
 
+<<<<<<< HEAD
 	printk(KERN_INFO"raw TX is %s\n",
 	      ieee->raw_tx ? "enabled" : "disabled");
 
 	if(ieee->iw_mode == IW_MODE_MONITOR)
 	{
 		if(prev == 0 && ieee->raw_tx){
+=======
+	netdev_info(ieee->dev, "raw TX is %s\n",
+		    ieee->raw_tx ? "enabled" : "disabled");
+
+	if (ieee->iw_mode == IW_MODE_MONITOR) {
+		if (prev == 0 && ieee->raw_tx) {
+>>>>>>> refs/remotes/origin/master
 			if (ieee->data_hard_resume)
 				ieee->data_hard_resume(ieee->dev);
 
 			netif_carrier_on(ieee->dev);
 		}
 
+<<<<<<< HEAD
 		if(prev && ieee->raw_tx == 1)
+=======
+		if (prev && ieee->raw_tx == 1)
+>>>>>>> refs/remotes/origin/master
 			netif_carrier_off(ieee->dev);
 	}
 
@@ -443,6 +638,7 @@ out:
 }
 
 int ieee80211_wx_get_name(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 			     struct iw_request_info *info,
 			     union iwreq_data *wrqu, char *extra)
 {
@@ -459,6 +655,24 @@ int ieee80211_wx_get_name(struct ieee80211_device *ieee,
 		strlcat(wrqu->name,"  link", IFNAMSIZ);
 	else if(ieee->state != IEEE80211_NOLINK)
 		strlcat(wrqu->name," .....", IFNAMSIZ);
+=======
+			  struct iw_request_info *info, union iwreq_data *wrqu,
+			  char *extra)
+{
+	strlcpy(wrqu->name, "802.11", IFNAMSIZ);
+	if (ieee->modulation & IEEE80211_CCK_MODULATION) {
+		strlcat(wrqu->name, "b", IFNAMSIZ);
+		if (ieee->modulation & IEEE80211_OFDM_MODULATION)
+			strlcat(wrqu->name, "/g", IFNAMSIZ);
+	} else if (ieee->modulation & IEEE80211_OFDM_MODULATION)
+		strlcat(wrqu->name, "g", IFNAMSIZ);
+
+	if ((ieee->state == IEEE80211_LINKED) ||
+		(ieee->state == IEEE80211_LINKED_SCANNING))
+		strlcat(wrqu->name, "  link", IFNAMSIZ);
+	else if (ieee->state != IEEE80211_NOLINK)
+		strlcat(wrqu->name, " .....", IFNAMSIZ);
+>>>>>>> refs/remotes/origin/master
 
 
 	return 0;
@@ -467,6 +681,7 @@ int ieee80211_wx_get_name(struct ieee80211_device *ieee,
 
 /* this is mostly stolen from hostap */
 int ieee80211_wx_set_power(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 				 struct iw_request_info *info,
 				 union iwreq_data *wrqu, char *extra)
 {
@@ -477,6 +692,17 @@ int ieee80211_wx_set_power(struct ieee80211_device *ieee,
 		(!ieee->ps_request_tx_ack) ||
 		(!ieee->enter_sleep_state) ||
 		(!ieee->ps_is_queue_empty)){
+=======
+			   struct iw_request_info *info, union iwreq_data *wrqu,
+			   char *extra)
+{
+	int ret = 0;
+
+	if ((!ieee->sta_wake_up) ||
+	    (!ieee->ps_request_tx_ack) ||
+	    (!ieee->enter_sleep_state) ||
+	    (!ieee->ps_is_queue_empty)) {
+>>>>>>> refs/remotes/origin/master
 
 		printk("ERROR. PS mode tried to be use but driver missed a callback\n\n");
 
@@ -485,7 +711,11 @@ int ieee80211_wx_set_power(struct ieee80211_device *ieee,
 
 	down(&ieee->wx_sem);
 
+<<<<<<< HEAD
 	if (wrqu->power.disabled){
+=======
+	if (wrqu->power.disabled) {
+>>>>>>> refs/remotes/origin/master
 		ieee->ps = IEEE80211_PS_DISABLED;
 
 		goto exit;
@@ -511,7 +741,11 @@ int ieee80211_wx_set_power(struct ieee80211_device *ieee,
 	if (wrqu->power.flags & IW_POWER_TIMEOUT) {
 
 		ieee->ps_timeout = wrqu->power.value / 1000;
+<<<<<<< HEAD
 		printk("Timeout %d\n",ieee->ps_timeout);
+=======
+		printk("Timeout %d\n", ieee->ps_timeout);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (wrqu->power.flags & IW_POWER_PERIOD) {
@@ -529,6 +763,7 @@ exit:
 
 /* this is stolen from hostap */
 int ieee80211_wx_get_power(struct ieee80211_device *ieee,
+<<<<<<< HEAD
 				 struct iw_request_info *info,
 				 union iwreq_data *wrqu, char *extra)
 {
@@ -537,6 +772,16 @@ int ieee80211_wx_get_power(struct ieee80211_device *ieee,
 	down(&ieee->wx_sem);
 
 	if(ieee->ps == IEEE80211_PS_DISABLED){
+=======
+			   struct iw_request_info *info, union iwreq_data *wrqu,
+			   char *extra)
+{
+	int ret = 0;
+
+	down(&ieee->wx_sem);
+
+	if (ieee->ps == IEEE80211_PS_DISABLED) {
+>>>>>>> refs/remotes/origin/master
 		wrqu->power.disabled = 1;
 		goto exit;
 	}

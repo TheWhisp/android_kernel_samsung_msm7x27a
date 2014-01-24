@@ -68,10 +68,14 @@ struct ff_effect_compat {
 static inline size_t input_event_size(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return INPUT_COMPAT_TEST ?
 =======
 	return (INPUT_COMPAT_TEST && !COMPAT_USE_64BIT_TIME) ?
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (INPUT_COMPAT_TEST && !COMPAT_USE_64BIT_TIME) ?
+>>>>>>> refs/remotes/origin/master
 		sizeof(struct input_event_compat) : sizeof(struct input_event);
 }
 

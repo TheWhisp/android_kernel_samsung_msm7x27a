@@ -21,7 +21,11 @@ ccflags-y := \
 	-Idrivers/net/wireless/brcm80211/brcmsmac/phy \
 	-Idrivers/net/wireless/brcm80211/include
 
+<<<<<<< HEAD
 BRCMSMAC_OFILES := \
+=======
+brcmsmac-y := \
+>>>>>>> refs/remotes/origin/master
 	mac80211_if.o \
 	ucode_loader.o \
 	ampdu.o \
@@ -39,6 +43,7 @@ BRCMSMAC_OFILES := \
 	phy/phytbl_lcn.o \
 	phy/phytbl_n.o \
 	phy/phy_qmath.o \
+<<<<<<< HEAD
 	otp.o \
 	srom.o \
 	dma.o \
@@ -49,3 +54,12 @@ MODULEPFX := brcmsmac
 
 obj-$(CONFIG_BRCMSMAC)	+= $(MODULEPFX).o
 $(MODULEPFX)-objs	= $(BRCMSMAC_OFILES)
+=======
+	dma.o \
+	brcms_trace_events.o \
+	debug.o
+
+brcmsmac-$(CONFIG_BCMA_DRIVER_GPIO) += led.o
+
+obj-$(CONFIG_BRCMSMAC)	+= brcmsmac.o
+>>>>>>> refs/remotes/origin/master

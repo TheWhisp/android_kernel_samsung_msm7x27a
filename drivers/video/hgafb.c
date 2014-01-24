@@ -106,7 +106,11 @@ static DEFINE_SPINLOCK(hga_reg_lock);
 
 /* Framebuffer driver structures */
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo hga_default_var __devinitdata = {
+=======
+static struct fb_var_screeninfo hga_default_var = {
+>>>>>>> refs/remotes/origin/master
 	.xres		= 720,
 	.yres 		= 348,
 	.xres_virtual 	= 720,
@@ -120,7 +124,11 @@ static struct fb_var_screeninfo hga_default_var __devinitdata = {
 	.width 		= -1,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo hga_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo hga_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id 		= "HGA",
 	.type 		= FB_TYPE_PACKED_PIXELS,	/* (not sure) */
 	.visual 	= FB_VISUAL_MONO10,
@@ -134,10 +142,14 @@ static struct fb_fix_screeninfo hga_fix __devinitdata = {
 static int release_io_port = 0;
 static int release_io_ports = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nologo = 0;
 =======
 static bool nologo = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nologo = 0;
+>>>>>>> refs/remotes/origin/master
 
 /* -------------------------------------------------------------------------
  *
@@ -280,7 +292,11 @@ static void hga_blank(int blank_mode)
 	spin_unlock_irqrestore(&hga_reg_lock, flags);
 }
 
+<<<<<<< HEAD
 static int __devinit hga_card_detect(void)
+=======
+static int hga_card_detect(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int count = 0;
 	void __iomem *p, *q;
@@ -427,12 +443,17 @@ static int hgafb_pan_display(struct fb_var_screeninfo *var,
 			return -EINVAL;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (var->xoffset + var->xres > info->var.xres_virtual
 		 || var->yoffset + var->yres > info->var.yres_virtual
 =======
 		if (var->xoffset + info->var.xres > info->var.xres_virtual
 		 || var->yoffset + info->var.yres > info->var.yres_virtual
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (var->xoffset + info->var.xres > info->var.xres_virtual
+		 || var->yoffset + info->var.yres > info->var.yres_virtual
+>>>>>>> refs/remotes/origin/master
 		 || var->yoffset % 8)
 			return -EINVAL;
 	}
@@ -555,7 +576,11 @@ static struct fb_ops hgafb_ops = {
 	 *  Initialization
 	 */
 
+<<<<<<< HEAD
 static int __devinit hgafb_probe(struct platform_device *pdev)
+=======
+static int hgafb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 
@@ -595,13 +620,21 @@ static int __devinit hgafb_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
         printk(KERN_INFO "fb%d: %s frame buffer device\n",
                info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(pdev, info);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit hgafb_remove(struct platform_device *pdev)
+=======
+static int hgafb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(pdev);
 
@@ -626,7 +659,11 @@ static int __devexit hgafb_remove(struct platform_device *pdev)
 
 static struct platform_driver hgafb_driver = {
 	.probe = hgafb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(hgafb_remove),
+=======
+	.remove = hgafb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "hgafb",
 	},

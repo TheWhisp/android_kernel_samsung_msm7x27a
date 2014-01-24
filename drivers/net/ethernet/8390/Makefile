@@ -3,6 +3,7 @@
 #
 
 obj-$(CONFIG_MAC8390) += mac8390.o
+<<<<<<< HEAD
 obj-$(CONFIG_AC3200) += ac3200.o 8390.o
 obj-$(CONFIG_APNE) += apne.o 8390.o
 obj-$(CONFIG_ARM_ETHERH) += etherh.o
@@ -19,11 +20,23 @@ obj-$(CONFIG_NE2_MCA) += ne2.o 8390p.o
 obj-$(CONFIG_NE2K_PCI) += ne2k-pci.o 8390.o
 obj-$(CONFIG_NE3210) += ne3210.o 8390.o
 obj-$(CONFIG_NE_H8300) += ne-h8300.o 8390.o
+=======
+obj-$(CONFIG_APNE) += apne.o 8390.o
+obj-$(CONFIG_ARM_ETHERH) += etherh.o
+obj-$(CONFIG_AX88796) += ax88796.o
+obj-$(CONFIG_HYDRA) += hydra.o 8390.o
+obj-$(CONFIG_MCF8390) += mcf8390.o 8390.o
+obj-$(CONFIG_NE2000) += ne.o 8390p.o
+obj-$(CONFIG_NE2K_PCI) += ne2k-pci.o 8390.o
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PCMCIA_AXNET) += axnet_cs.o 8390.o
 obj-$(CONFIG_PCMCIA_PCNET) += pcnet_cs.o 8390.o
 obj-$(CONFIG_STNIC) += stnic.o 8390.o
 obj-$(CONFIG_ULTRA) += smc-ultra.o 8390.o
+<<<<<<< HEAD
 obj-$(CONFIG_ULTRA32) += smc-ultra32.o 8390.o
 obj-$(CONFIG_ULTRAMCA) += smc-mca.o 8390.o
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_WD80x3) += wd.o 8390.o
 obj-$(CONFIG_ZORRO8390) += zorro8390.o 8390.o

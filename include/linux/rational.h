@@ -1,7 +1,11 @@
 /*
  * rational fractions
  *
+<<<<<<< HEAD
  * Copyright (C) 2009 emlix GmbH, Oskar Schirmer <os@emlix.com>
+=======
+ * Copyright (C) 2009 emlix GmbH, Oskar Schirmer <oskar@scara.com>
+>>>>>>> refs/remotes/origin/master
  *
  * helper functions when coping with rational numbers,
  * e.g. when calculating optimum numerator/denominator pairs for

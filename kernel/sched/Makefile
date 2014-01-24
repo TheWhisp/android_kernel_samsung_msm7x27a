@@ -11,6 +11,7 @@ ifneq ($(CONFIG_SCHED_OMIT_FRAME_POINTER),y)
 CFLAGS_core.o := $(PROFILING) -fno-omit-frame-pointer
 endif
 
+<<<<<<< HEAD
 obj-y += core.o clock.o idle_task.o fair.o rt.o stop_task.o
 obj-$(CONFIG_SMP) += cpupri.o
 obj-$(CONFIG_SCHED_AUTOGROUP) += auto_group.o
@@ -18,3 +19,13 @@ obj-$(CONFIG_SCHEDSTATS) += stats.o
 obj-$(CONFIG_SCHED_DEBUG) += debug.o
 
 
+=======
+obj-y += core.o proc.o clock.o cputime.o
+obj-y += idle_task.o fair.o rt.o deadline.o stop_task.o
+obj-y += wait.o completion.o
+obj-$(CONFIG_SMP) += cpupri.o cpudeadline.o
+obj-$(CONFIG_SCHED_AUTOGROUP) += auto_group.o
+obj-$(CONFIG_SCHEDSTATS) += stats.o
+obj-$(CONFIG_SCHED_DEBUG) += debug.o
+obj-$(CONFIG_CGROUP_CPUACCT) += cpuacct.o
+>>>>>>> refs/remotes/origin/master

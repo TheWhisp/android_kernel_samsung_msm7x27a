@@ -2,9 +2,15 @@
 #define _ASMARM_BUG_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/linkage.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+#include <linux/types.h>
+#include <asm/opcodes.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_BUG
 
@@ -15,10 +21,17 @@
  */
 #ifdef CONFIG_THUMB2_KERNEL
 #define BUG_INSTR_VALUE 0xde02
+<<<<<<< HEAD
 #define BUG_INSTR_TYPE ".hword "
 #else
 #define BUG_INSTR_VALUE 0xe7f001f2
 #define BUG_INSTR_TYPE ".word "
+=======
+#define BUG_INSTR(__value) __inst_thumb16(__value)
+#else
+#define BUG_INSTR_VALUE 0xe7f001f2
+#define BUG_INSTR(__value) __inst_arm(__value)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -37,10 +50,14 @@
 #define __BUG(__file, __line, __value)				\
 do {								\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUILD_BUG_ON(sizeof(struct bug_entry) != 12);		\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	asm volatile("1:\t" BUG_INSTR_TYPE #__value "\n"	\
+=======
+	asm volatile("1:\t" BUG_INSTR(__value) "\n"  \
+>>>>>>> refs/remotes/origin/master
 		".pushsection .rodata.str, \"aMS\", %progbits, 1\n" \
 		"2:\t.asciz " #__file "\n" 			\
 		".popsection\n" 				\
@@ -55,7 +72,11 @@ do {								\
 
 #define __BUG(__file, __line, __value)				\
 do {								\
+<<<<<<< HEAD
 	asm volatile(BUG_INSTR_TYPE #__value);			\
+=======
+	asm volatile(BUG_INSTR(__value) "\n");			\
+>>>>>>> refs/remotes/origin/master
 	unreachable();						\
 } while (0)
 #endif  /* CONFIG_DEBUG_BUGVERBOSE */
@@ -66,7 +87,10 @@ do {								\
 #include <asm-generic/bug.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct pt_regs;
 void die(const char *msg, struct pt_regs *regs, int err);
 
@@ -96,5 +120,8 @@ struct mm_struct;
 extern void show_pte(struct mm_struct *mm, unsigned long addr);
 extern void __show_regs(struct pt_regs *);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

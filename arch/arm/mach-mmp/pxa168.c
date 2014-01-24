@@ -8,15 +8,19 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/io.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include <asm/mach/time.h>
@@ -37,12 +41,28 @@
 #include <mach/devices.h>
 #include <mach/mfp.h>
 =======
+=======
+#include <linux/platform_device.h>
+#include <linux/platform_data/mv_usb.h>
+
+#include <asm/mach/time.h>
+#include <asm/system_misc.h>
+#include <mach/cputype.h>
+#include <mach/addr-map.h>
+#include <mach/regs-apbc.h>
+#include <mach/regs-apmu.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/dma.h>
 #include <mach/devices.h>
 #include <mach/mfp.h>
 #include <linux/dma-mapping.h>
 #include <mach/pxa168.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/regs-usb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 #include "clock.h"
@@ -59,6 +79,7 @@ static struct mfp_addr_map pxa168_mfp_addr_map[] __initdata =
 	MFP_ADDR_END,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define APMASK(i)	(GPIO_REGS_VIRT + BANK_OFF(i) + 0x09c)
 
@@ -153,13 +174,24 @@ static struct clk_lookup pxa168_clkregs[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+void __init pxa168_init_irq(void)
+{
+	icu_init_irq();
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init pxa168_init(void)
 {
 	if (cpu_is_pxa168()) {
 		mfp_init_base(MFPR_VIRT_BASE);
 		mfp_init_addr(pxa168_mfp_addr_map);
 		pxa_init_dma(IRQ_PXA168_DMA_INT0, 32);
+<<<<<<< HEAD
 		clkdev_add_table(ARRAY_AND_SIZE(pxa168_clkregs));
+=======
+		pxa168_clk_init();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -168,25 +200,41 @@ postcore_initcall(pxa168_init);
 
 /* system timer - clock enabled, 3.25MHz */
 #define TIMER_CLK_RST	(APBC_APBCLK | APBC_FNCLK | APBC_FNCLKSEL(3))
+<<<<<<< HEAD
 
 static void __init pxa168_timer_init(void)
+=======
+#define APBC_TIMERS	APBC_REG(0x34)
+
+void __init pxa168_timer_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* this is early, we have to initialize the CCU registers by
 	 * ourselves instead of using clk_* API. Clock rate is defined
 	 * by APBC_TIMERS_CLK_RST (3.25MHz) and enabled free-running
 	 */
+<<<<<<< HEAD
 	__raw_writel(APBC_APBCLK | APBC_RST, APBC_PXA168_TIMERS);
 
 	/* 3.25MHz, bus/functional clock enabled, release reset */
 	__raw_writel(TIMER_CLK_RST, APBC_PXA168_TIMERS);
+=======
+	__raw_writel(APBC_APBCLK | APBC_RST, APBC_TIMERS);
+
+	/* 3.25MHz, bus/functional clock enabled, release reset */
+	__raw_writel(TIMER_CLK_RST, APBC_TIMERS);
+>>>>>>> refs/remotes/origin/master
 
 	timer_init(IRQ_PXA168_TIMER1);
 }
 
+<<<<<<< HEAD
 struct sys_timer pxa168_timer = {
 	.init	= pxa168_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 void pxa168_clear_keypad_wakeup(void)
 {
 	uint32_t val;
@@ -201,9 +249,13 @@ void pxa168_clear_keypad_wakeup(void)
 PXA168_DEVICE(uart1, "pxa2xx-uart", 0, UART1, 0xd4017000, 0x30, 21, 22);
 PXA168_DEVICE(uart2, "pxa2xx-uart", 1, UART2, 0xd4018000, 0x30, 23, 24);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 PXA168_DEVICE(uart3, "pxa2xx-uart", 2, UART3, 0xd4026000, 0x30, 23, 24);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+PXA168_DEVICE(uart3, "pxa2xx-uart", 2, UART3, 0xd4026000, 0x30, 23, 24);
+>>>>>>> refs/remotes/origin/master
 PXA168_DEVICE(twsi0, "pxa2xx-i2c", 0, TWSI0, 0xd4011000, 0x28);
 PXA168_DEVICE(twsi1, "pxa2xx-i2c", 1, TWSI1, 0xd4025000, 0x28);
 PXA168_DEVICE(pwm1, "pxa168-pwm", 0, NONE, 0xd401a000, 0x10);
@@ -219,7 +271,10 @@ PXA168_DEVICE(ssp5, "pxa168-ssp", 4, SSP5, 0xd4021000, 0x40, 60, 61);
 PXA168_DEVICE(fb, "pxa168-fb", -1, LCD, 0xd420b000, 0x1c8);
 PXA168_DEVICE(keypad, "pxa27x-keypad", -1, KEYPAD, 0xd4012000, 0x4c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 PXA168_DEVICE(eth, "pxa168-eth", -1, MFU, 0xc0800000, 0x0fff);
 
 struct resource pxa168_resource_gpio[] = {
@@ -236,7 +291,11 @@ struct resource pxa168_resource_gpio[] = {
 };
 
 struct platform_device pxa168_device_gpio = {
+<<<<<<< HEAD
 	.name		= "pxa-gpio",
+=======
+	.name		= "mmp-gpio",
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(pxa168_resource_gpio),
 	.resource	= pxa168_resource_gpio,
@@ -245,6 +304,7 @@ struct platform_device pxa168_device_gpio = {
 struct resource pxa168_usb_host_resources[] = {
 	/* USB Host conroller register base */
 	[0] = {
+<<<<<<< HEAD
 		.start	= 0xd4209000,
 		.end	= 0xd4209000 + 0x200,
 		.flags	= IORESOURCE_MEM,
@@ -256,6 +316,19 @@ struct resource pxa168_usb_host_resources[] = {
 		.end	= 0xd4206000 + 0xff,
 		.flags	= IORESOURCE_MEM,
 		.name	= "pxa168-usb-phy",
+=======
+		.start	= PXA168_U2H_REGBASE + U2x_CAPREGS_OFFSET,
+		.end	= PXA168_U2H_REGBASE + USB_REG_RANGE,
+		.flags	= IORESOURCE_MEM,
+		.name	= "capregs",
+	},
+	/* USB PHY register base */
+	[1] = {
+		.start	= PXA168_U2H_PHYBASE,
+		.end	= PXA168_U2H_PHYBASE + USB_PHY_RANGE,
+		.flags	= IORESOURCE_MEM,
+		.name	= "phyregs",
+>>>>>>> refs/remotes/origin/master
 	},
 	[2] = {
 		.start	= IRQ_PXA168_USB2,
@@ -266,7 +339,11 @@ struct resource pxa168_usb_host_resources[] = {
 
 static u64 pxa168_usb_host_dmamask = DMA_BIT_MASK(32);
 struct platform_device pxa168_device_usb_host = {
+<<<<<<< HEAD
 	.name = "pxa168-ehci",
+=======
+	.name = "pxa-sph",
+>>>>>>> refs/remotes/origin/master
 	.id   = -1,
 	.dev  = {
 		.dma_mask = &pxa168_usb_host_dmamask,
@@ -277,14 +354,25 @@ struct platform_device pxa168_device_usb_host = {
 	.resource      = pxa168_usb_host_resources,
 };
 
+<<<<<<< HEAD
 int __init pxa168_add_usb_host(struct pxa168_usb_pdata *pdata)
+=======
+int __init pxa168_add_usb_host(struct mv_usb_platform_data *pdata)
+>>>>>>> refs/remotes/origin/master
 {
 	pxa168_device_usb_host.dev.platform_data = pdata;
 	return platform_device_register(&pxa168_device_usb_host);
 }
 
+<<<<<<< HEAD
 void pxa168_restart(char mode, const char *cmd)
 {
 	soft_restart(0xffff0000);
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void pxa168_restart(enum reboot_mode mode, const char *cmd)
+{
+	soft_restart(0xffff0000);
+}
+>>>>>>> refs/remotes/origin/master

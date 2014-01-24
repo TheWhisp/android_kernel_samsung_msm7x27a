@@ -474,19 +474,27 @@ static int it821x_smart_set_mode(struct ata_link *link, struct ata_device **unus
 		   and this comes from the current configuration flags */
 		if (ata_id_has_dma(dev->id)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO, "configured for DMA\n");
 =======
 			ata_dev_info(dev, "configured for DMA\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_info(dev, "configured for DMA\n");
+>>>>>>> refs/remotes/origin/master
 			dev->xfer_mode = XFER_MW_DMA_0;
 			dev->xfer_shift = ATA_SHIFT_MWDMA;
 			dev->flags &= ~ATA_DFLAG_PIO;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO, "configured for PIO\n");
 =======
 			ata_dev_info(dev, "configured for PIO\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_info(dev, "configured for PIO\n");
+>>>>>>> refs/remotes/origin/master
 			dev->xfer_mode = XFER_PIO_0;
 			dev->xfer_shift = ATA_SHIFT_PIO;
 			dev->flags |= ATA_DFLAG_PIO;
@@ -517,6 +525,7 @@ static void it821x_dev_config(struct ata_device *adev)
 	if (strstr(model_num, "Integrated Technology Express")) {
 		/* RAID mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(adev, KERN_INFO, "%sRAID%d volume",
 			adev->id[147]?"Bootable ":"",
 			adev->id[129]);
@@ -524,13 +533,18 @@ static void it821x_dev_config(struct ata_device *adev)
 			printk("(%dK stripe)", adev->id[146]);
 		printk(".\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ata_dev_info(adev, "%sRAID%d volume",
 			     adev->id[147] ? "Bootable " : "",
 			     adev->id[129]);
 		if (adev->id[129] != 1)
 			pr_cont("(%dK stripe)", adev->id[146]);
 		pr_cont("\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	/* This is a controller firmware triggered funny, don't
 	   report the drive faulty! */
@@ -628,10 +642,14 @@ static void it821x_display_disk(int n, u8 *buf)
 
 	static const char *types[5] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"RAID0", "RAID1" "RAID 0+1", "JBOD", "DISK"
 =======
 		"RAID0", "RAID1", "RAID 0+1", "JBOD", "DISK"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"RAID0", "RAID1", "RAID 0+1", "JBOD", "DISK"
+>>>>>>> refs/remotes/origin/master
 	};
 
 	if (buf[52] > 4)	/* No Disk */
@@ -960,7 +978,11 @@ static int it821x_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 #ifdef CONFIG_PM
 static int it821x_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -993,6 +1015,7 @@ static struct pci_driver it821x_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init it821x_init(void)
 {
 	return pci_register_driver(&it821x_pci_driver);
@@ -1002,6 +1025,9 @@ static void __exit it821x_exit(void)
 {
 	pci_unregister_driver(&it821x_pci_driver);
 }
+=======
+module_pci_driver(it821x_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for the IT8211/IT8212 IDE RAID controller");
@@ -1009,9 +1035,14 @@ MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, it821x);
 MODULE_VERSION(DRV_VERSION);
 
+<<<<<<< HEAD
 
 module_param_named(noraid, it8212_noraid, int, S_IRUGO);
 MODULE_PARM_DESC(noraid, "Force card into bypass mode");
 
 module_init(it821x_init);
 module_exit(it821x_exit);
+=======
+module_param_named(noraid, it8212_noraid, int, S_IRUGO);
+MODULE_PARM_DESC(noraid, "Force card into bypass mode");
+>>>>>>> refs/remotes/origin/master

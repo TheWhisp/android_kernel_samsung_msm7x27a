@@ -19,6 +19,7 @@
 #include <asm/barrier.h>
 #include <asm/cpu-features.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/war.h>
 #include <asm/system.h>
 =======
@@ -27,6 +28,12 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define ATOMIC_INIT(i)    { (i) }
+=======
+#include <asm/cmpxchg.h>
+#include <asm/war.h>
+
+#define ATOMIC_INIT(i)	  { (i) }
+>>>>>>> refs/remotes/origin/master
 
 /*
  * atomic_read - read atomic variable
@@ -64,8 +71,13 @@ static __inline__ void atomic_add(int i, atomic_t * v)
 		"	sc	%0, %1					\n"
 		"	beqzl	%0, 1b					\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter));
+=======
+		: "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else if (kernel_uses_llsc) {
 		int temp;
 
@@ -76,8 +88,13 @@ static __inline__ void atomic_add(int i, atomic_t * v)
 			"	addu	%0, %2				\n"
 			"	sc	%0, %1				\n"
 			"	.set	mips0				\n"
+<<<<<<< HEAD
 			: "=&r" (temp), "=m" (v->counter)
 			: "Ir" (i), "m" (v->counter));
+=======
+			: "=&r" (temp), "+m" (v->counter)
+			: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 		} while (unlikely(!temp));
 	} else {
 		unsigned long flags;
@@ -107,8 +124,13 @@ static __inline__ void atomic_sub(int i, atomic_t * v)
 		"	sc	%0, %1					\n"
 		"	beqzl	%0, 1b					\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter));
+=======
+		: "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else if (kernel_uses_llsc) {
 		int temp;
 
@@ -119,8 +141,13 @@ static __inline__ void atomic_sub(int i, atomic_t * v)
 			"	subu	%0, %2				\n"
 			"	sc	%0, %1				\n"
 			"	.set	mips0				\n"
+<<<<<<< HEAD
 			: "=&r" (temp), "=m" (v->counter)
 			: "Ir" (i), "m" (v->counter));
+=======
+			: "=&r" (temp), "+m" (v->counter)
+			: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 		} while (unlikely(!temp));
 	} else {
 		unsigned long flags;
@@ -151,9 +178,14 @@ static __inline__ int atomic_add_return(int i, atomic_t * v)
 		"	beqzl	%0, 1b					\n"
 		"	addu	%0, %1, %3				\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (result), "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter)
 		: "memory");
+=======
+		: "=&r" (result), "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else if (kernel_uses_llsc) {
 		int temp;
 
@@ -164,9 +196,14 @@ static __inline__ int atomic_add_return(int i, atomic_t * v)
 			"	addu	%0, %1, %3			\n"
 			"	sc	%0, %2				\n"
 			"	.set	mips0				\n"
+<<<<<<< HEAD
 			: "=&r" (result), "=&r" (temp), "=m" (v->counter)
 			: "Ir" (i), "m" (v->counter)
 			: "memory");
+=======
+			: "=&r" (result), "=&r" (temp), "+m" (v->counter)
+			: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 		} while (unlikely(!result));
 
 		result = temp + i;
@@ -217,9 +254,14 @@ static __inline__ int atomic_sub_return(int i, atomic_t * v)
 			"	subu	%0, %1, %3			\n"
 			"	sc	%0, %2				\n"
 			"	.set	mips0				\n"
+<<<<<<< HEAD
 			: "=&r" (result), "=&r" (temp), "=m" (v->counter)
 			: "Ir" (i), "m" (v->counter)
 			: "memory");
+=======
+			: "=&r" (result), "=&r" (temp), "+m" (v->counter)
+			: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 		} while (unlikely(!result));
 
 		result = temp - i;
@@ -267,7 +309,11 @@ static __inline__ int atomic_sub_if_positive(int i, atomic_t * v)
 		"	.set	reorder					\n"
 		"1:							\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (result), "=&r" (temp), "=m" (v->counter)
+=======
+		: "=&r" (result), "=&r" (temp), "+m" (v->counter)
+>>>>>>> refs/remotes/origin/master
 		: "Ir" (i), "m" (v->counter)
 		: "memory");
 	} else if (kernel_uses_llsc) {
@@ -285,9 +331,14 @@ static __inline__ int atomic_sub_if_positive(int i, atomic_t * v)
 		"	.set	reorder					\n"
 		"1:							\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (result), "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter)
 		: "memory");
+=======
+		: "=&r" (result), "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else {
 		unsigned long flags;
 
@@ -309,15 +360,20 @@ static __inline__ int atomic_sub_if_positive(int i, atomic_t * v)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
 =======
  * __atomic_add_unless - add unless the number is a given value
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/master
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as it was not @u.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
@@ -327,6 +383,11 @@ static __inline__ int atomic_add_unless(atomic_t *v, int a, int u)
  */
 static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns the old value of @v.
+ */
+static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
 	int c, old;
 	c = atomic_read(v);
@@ -339,6 +400,7 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 		c = old;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return c != (u);
 }
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
@@ -346,6 +408,10 @@ static __inline__ int __atomic_add_unless(atomic_t *v, int a, int u)
 	return c;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return c;
+}
+>>>>>>> refs/remotes/origin/master
 
 #define atomic_dec_return(v) atomic_sub_return(1, (v))
 #define atomic_inc_return(v) atomic_add_return(1, (v))
@@ -451,8 +517,13 @@ static __inline__ void atomic64_add(long i, atomic64_t * v)
 		"	scd	%0, %1					\n"
 		"	beqzl	%0, 1b					\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter));
+=======
+		: "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else if (kernel_uses_llsc) {
 		long temp;
 
@@ -463,8 +534,13 @@ static __inline__ void atomic64_add(long i, atomic64_t * v)
 			"	daddu	%0, %2				\n"
 			"	scd	%0, %1				\n"
 			"	.set	mips0				\n"
+<<<<<<< HEAD
 			: "=&r" (temp), "=m" (v->counter)
 			: "Ir" (i), "m" (v->counter));
+=======
+			: "=&r" (temp), "+m" (v->counter)
+			: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 		} while (unlikely(!temp));
 	} else {
 		unsigned long flags;
@@ -494,8 +570,13 @@ static __inline__ void atomic64_sub(long i, atomic64_t * v)
 		"	scd	%0, %1					\n"
 		"	beqzl	%0, 1b					\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter));
+=======
+		: "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else if (kernel_uses_llsc) {
 		long temp;
 
@@ -506,8 +587,13 @@ static __inline__ void atomic64_sub(long i, atomic64_t * v)
 			"	dsubu	%0, %2				\n"
 			"	scd	%0, %1				\n"
 			"	.set	mips0				\n"
+<<<<<<< HEAD
 			: "=&r" (temp), "=m" (v->counter)
 			: "Ir" (i), "m" (v->counter));
+=======
+			: "=&r" (temp), "+m" (v->counter)
+			: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 		} while (unlikely(!temp));
 	} else {
 		unsigned long flags;
@@ -538,9 +624,14 @@ static __inline__ long atomic64_add_return(long i, atomic64_t * v)
 		"	beqzl	%0, 1b					\n"
 		"	daddu	%0, %1, %3				\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (result), "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter)
 		: "memory");
+=======
+		: "=&r" (result), "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else if (kernel_uses_llsc) {
 		long temp;
 
@@ -670,9 +761,14 @@ static __inline__ long atomic64_sub_if_positive(long i, atomic64_t * v)
 		"	.set	reorder					\n"
 		"1:							\n"
 		"	.set	mips0					\n"
+<<<<<<< HEAD
 		: "=&r" (result), "=&r" (temp), "=m" (v->counter)
 		: "Ir" (i), "m" (v->counter)
 		: "memory");
+=======
+		: "=&r" (result), "=&r" (temp), "+m" (v->counter)
+		: "Ir" (i));
+>>>>>>> refs/remotes/origin/master
 	} else {
 		unsigned long flags;
 
@@ -701,10 +797,14 @@ static __inline__ long atomic64_sub_if_positive(long i, atomic64_t * v)
  *
  * Atomically adds @a to @v, so long as it was not @u.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
 =======
  * Returns the old value of @v.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns the old value of @v.
+>>>>>>> refs/remotes/origin/master
  */
 static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 {
@@ -791,12 +891,15 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 #define atomic64_add_negative(i, v) (atomic64_add_return(i, (v)) < 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else /* !CONFIG_64BIT */
 
 #include <asm-generic/atomic64.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_64BIT */
 
 /*
@@ -809,8 +912,11 @@ static __inline__ int atomic64_add_unless(atomic64_t *v, long a, long u)
 #define smp_mb__after_atomic_inc()	smp_llsc_mb()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/atomic-long.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_ATOMIC_H */

@@ -4,16 +4,24 @@
  *
  * Copyright 2005, Broadcom Corporation
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2006, 2007, Michael Buesch <mb@bu3sch.de>
 =======
  * Copyright 2006, 2007, Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2006, 2007, Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
 
 #include <linux/ssb/ssb.h>
 
+<<<<<<< HEAD
+=======
+#include <linux/mtd/physmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial.h>
 #include <linux/serial_core.h>
 #include <linux/serial_reg.h>
@@ -21,6 +29,28 @@
 
 #include "ssb_private.h"
 
+<<<<<<< HEAD
+=======
+static const char * const part_probes[] = { "bcm47xxpart", NULL };
+
+static struct physmap_flash_data ssb_pflash_data = {
+	.part_probe_types	= part_probes,
+};
+
+static struct resource ssb_pflash_resource = {
+	.name	= "ssb_pflash",
+	.flags  = IORESOURCE_MEM,
+};
+
+struct platform_device ssb_pflash_dev = {
+	.name		= "physmap-flash",
+	.dev		= {
+		.platform_data  = &ssb_pflash_data,
+	},
+	.resource	= &ssb_pflash_resource,
+	.num_resources	= 1,
+};
+>>>>>>> refs/remotes/origin/master
 
 static inline u32 mips_read32(struct ssb_mipscore *mcore,
 			      u16 offset)
@@ -151,13 +181,19 @@ static void set_irq(struct ssb_device *dev, unsigned int irq)
 		irqflag |= (ipsflag & ~ipsflag_irq_mask[irq]);
 		ssb_write32(mdev, SSB_IPSFLAG, irqflag);
 	}
+<<<<<<< HEAD
 	ssb_dprintk(KERN_INFO PFX
 		    "set_irq: core 0x%04x, irq %d => %d\n",
 		    dev->id.coreid, oldirq+2, irq+2);
+=======
+	ssb_dbg("set_irq: core 0x%04x, irq %d => %d\n",
+		dev->id.coreid, oldirq+2, irq+2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void print_irq(struct ssb_device *dev, unsigned int irq)
 {
+<<<<<<< HEAD
 	int i;
 	static const char *irq_name[] = {"2(S)", "3", "4", "5", "6", "D", "I"};
 	ssb_dprintk(KERN_INFO PFX
@@ -166,6 +202,18 @@ static void print_irq(struct ssb_device *dev, unsigned int irq)
 		ssb_dprintk(" %s%s", irq_name[i], i==irq?"*":" ");
 	}
 	ssb_dprintk("\n");
+=======
+	static const char *irq_name[] = {"2(S)", "3", "4", "5", "6", "D", "I"};
+	ssb_dbg("core 0x%04x, irq : %s%s %s%s %s%s %s%s %s%s %s%s %s%s\n",
+		dev->id.coreid,
+		irq_name[0], irq == 0 ? "*" : " ",
+		irq_name[1], irq == 1 ? "*" : " ",
+		irq_name[2], irq == 2 ? "*" : " ",
+		irq_name[3], irq == 3 ? "*" : " ",
+		irq_name[4], irq == 4 ? "*" : " ",
+		irq_name[5], irq == 5 ? "*" : " ",
+		irq_name[6], irq == 6 ? "*" : " ");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dump_irq(struct ssb_bus *bus)
@@ -182,9 +230,15 @@ static void ssb_mips_serial_init(struct ssb_mipscore *mcore)
 {
 	struct ssb_bus *bus = mcore->dev->bus;
 
+<<<<<<< HEAD
 	if (bus->extif.dev)
 		mcore->nr_serial_ports = ssb_extif_serial_init(&bus->extif, mcore->serial_ports);
 	else if (bus->chipco.dev)
+=======
+	if (ssb_extif_available(&bus->extif))
+		mcore->nr_serial_ports = ssb_extif_serial_init(&bus->extif, mcore->serial_ports);
+	else if (ssb_chipco_available(&bus->chipco))
+>>>>>>> refs/remotes/origin/master
 		mcore->nr_serial_ports = ssb_chipco_serial_init(&bus->chipco, mcore->serial_ports);
 	else
 		mcore->nr_serial_ports = 0;
@@ -193,6 +247,7 @@ static void ssb_mips_serial_init(struct ssb_mipscore *mcore)
 static void ssb_mips_flash_detect(struct ssb_mipscore *mcore)
 {
 	struct ssb_bus *bus = mcore->dev->bus;
+<<<<<<< HEAD
 
 	mcore->flash_buswidth = 2;
 	if (bus->chipco.dev) {
@@ -204,6 +259,44 @@ static void ssb_mips_flash_detect(struct ssb_mipscore *mcore)
 	} else {
 		mcore->flash_window = 0x1fc00000;
 		mcore->flash_window_size = 0x00400000;
+=======
+	struct ssb_pflash *pflash = &mcore->pflash;
+
+	/* When there is no chipcommon on the bus there is 4MB flash */
+	if (!ssb_chipco_available(&bus->chipco)) {
+		pflash->present = true;
+		pflash->buswidth = 2;
+		pflash->window = SSB_FLASH1;
+		pflash->window_size = SSB_FLASH1_SZ;
+		goto ssb_pflash;
+	}
+
+	/* There is ChipCommon, so use it to read info about flash */
+	switch (bus->chipco.capabilities & SSB_CHIPCO_CAP_FLASHT) {
+	case SSB_CHIPCO_FLASHT_STSER:
+	case SSB_CHIPCO_FLASHT_ATSER:
+		pr_debug("Found serial flash\n");
+		ssb_sflash_init(&bus->chipco);
+		break;
+	case SSB_CHIPCO_FLASHT_PARA:
+		pr_debug("Found parallel flash\n");
+		pflash->present = true;
+		pflash->window = SSB_FLASH2;
+		pflash->window_size = SSB_FLASH2_SZ;
+		if ((ssb_read32(bus->chipco.dev, SSB_CHIPCO_FLASH_CFG)
+		               & SSB_CHIPCO_CFG_DS16) == 0)
+			pflash->buswidth = 1;
+		else
+			pflash->buswidth = 2;
+		break;
+	}
+
+ssb_pflash:
+	if (pflash->present) {
+		ssb_pflash_data.width = pflash->buswidth;
+		ssb_pflash_resource.start = pflash->window;
+		ssb_pflash_resource.end = pflash->window + pflash->window_size;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -213,6 +306,7 @@ u32 ssb_cpu_clock(struct ssb_mipscore *mcore)
 	u32 pll_type, n, m, rate = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (bus->chipco.capabilities & SSB_CHIPCO_CAP_PMU)
 		return ssb_pmu_get_cpu_clock(&bus->chipco);
@@ -221,6 +315,14 @@ u32 ssb_cpu_clock(struct ssb_mipscore *mcore)
 	if (bus->extif.dev) {
 		ssb_extif_get_clockcontrol(&bus->extif, &pll_type, &n, &m);
 	} else if (bus->chipco.dev) {
+=======
+	if (bus->chipco.capabilities & SSB_CHIPCO_CAP_PMU)
+		return ssb_pmu_get_cpu_clock(&bus->chipco);
+
+	if (ssb_extif_available(&bus->extif)) {
+		ssb_extif_get_clockcontrol(&bus->extif, &pll_type, &n, &m);
+	} else if (ssb_chipco_available(&bus->chipco)) {
+>>>>>>> refs/remotes/origin/master
 		ssb_chipco_get_clockcpu(&bus->chipco, &pll_type, &n, &m);
 	} else
 		return 0;
@@ -248,7 +350,11 @@ void ssb_mipscore_init(struct ssb_mipscore *mcore)
 	if (!mcore->dev)
 		return; /* We don't have a MIPS core */
 
+<<<<<<< HEAD
 	ssb_dprintk(KERN_INFO PFX "Initializing MIPS core...\n");
+=======
+	ssb_dbg("Initializing MIPS core...\n");
+>>>>>>> refs/remotes/origin/master
 
 	bus = mcore->dev->bus;
 	hz = ssb_clockspeed(bus);
@@ -256,9 +362,15 @@ void ssb_mipscore_init(struct ssb_mipscore *mcore)
 		hz = 100000000;
 	ns = 1000000000 / hz;
 
+<<<<<<< HEAD
 	if (bus->extif.dev)
 		ssb_extif_timing_init(&bus->extif, ns);
 	else if (bus->chipco.dev)
+=======
+	if (ssb_extif_available(&bus->extif))
+		ssb_extif_timing_init(&bus->extif, ns);
+	else if (ssb_chipco_available(&bus->chipco))
+>>>>>>> refs/remotes/origin/master
 		ssb_chipco_timing_init(&bus->chipco, ns);
 
 	/* Assign IRQs to all cores on the bus, start with irq line 2, because serial usually takes 1 */
@@ -296,7 +408,11 @@ void ssb_mipscore_init(struct ssb_mipscore *mcore)
 			break;
 		}
 	}
+<<<<<<< HEAD
 	ssb_dprintk(KERN_INFO PFX "after irq reconfiguration\n");
+=======
+	ssb_dbg("after irq reconfiguration\n");
+>>>>>>> refs/remotes/origin/master
 	dump_irq(bus);
 
 	ssb_mips_serial_init(mcore);

@@ -21,9 +21,12 @@
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/machdep.h>
 #include <asm/pci-bridge.h>
@@ -39,9 +42,13 @@
 #include <sysdev/cpm2_pic.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "mpc85xx.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "mpc85xx.h"
+>>>>>>> refs/remotes/origin/master
 
 #define KSI8560_CPLD_HVR		0x04 /* Hardware Version Register */
 #define KSI8560_CPLD_PVR		0x08 /* PLD Version Register */
@@ -61,6 +68,7 @@ static void machine_restart(char *cmd)
 	for (;;);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void cpm2_cascade(unsigned int irq, struct irq_desc *desc)
 {
@@ -117,6 +125,8 @@ static void __init ksi8560_pic_init(void)
 	irq_set_chained_handler(irq, cpm2_cascade);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init ksi8560_pic_init(void)
 {
 	struct mpic *mpic = mpic_alloc(NULL, 0, MPIC_BIG_ENDIAN,
@@ -125,7 +135,10 @@ static void __init ksi8560_pic_init(void)
 	mpic_init(mpic);
 
 	mpc85xx_cpm2_pic_init();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_CPM2
@@ -234,6 +247,7 @@ static void ksi8560_show_cpuinfo(struct seq_file *m)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .type = "soc", },
 	{ .type = "simple-bus", },
@@ -253,6 +267,9 @@ machine_device_initcall(ksi8560, declare_of_platform_devices);
 =======
 machine_device_initcall(ksi8560, mpc85xx_common_publish_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_device_initcall(ksi8560, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, device-tree isn't unflattened

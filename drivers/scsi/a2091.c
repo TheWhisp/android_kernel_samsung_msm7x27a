@@ -6,9 +6,13 @@
 #include <linux/spinlock.h>
 #include <linux/zorro.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -169,7 +173,12 @@ static int a2091_bus_reset(struct scsi_cmnd *cmd)
 static struct scsi_host_template a2091_scsi_template = {
 	.module			= THIS_MODULE,
 	.name			= "Commodore A2091/A590 SCSI",
+<<<<<<< HEAD
 	.proc_info		= wd33c93_proc_info,
+=======
+	.show_info		= wd33c93_show_info,
+	.write_info		= wd33c93_write_info,
+>>>>>>> refs/remotes/origin/master
 	.proc_name		= "A2901",
 	.queuecommand		= wd33c93_queuecommand,
 	.eh_abort_handler	= wd33c93_abort,
@@ -182,8 +191,12 @@ static struct scsi_host_template a2091_scsi_template = {
 	.use_clustering		= DISABLE_CLUSTERING
 };
 
+<<<<<<< HEAD
 static int __devinit a2091_probe(struct zorro_dev *z,
 				 const struct zorro_device_id *ent)
+=======
+static int a2091_probe(struct zorro_dev *z, const struct zorro_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *instance;
 	int error;
@@ -204,7 +217,11 @@ static int __devinit a2091_probe(struct zorro_dev *z,
 	instance->irq = IRQ_AMIGA_PORTS;
 	instance->unique_id = z->slotaddr;
 
+<<<<<<< HEAD
 	regs = (struct a2091_scsiregs *)ZTWO_VADDR(z->resource.start);
+=======
+	regs = ZTWO_VADDR(z->resource.start);
+>>>>>>> refs/remotes/origin/master
 	regs->DAWR = DAWR_A2091;
 
 	wdregs.SASR = &regs->SASR;
@@ -242,7 +259,11 @@ fail_alloc:
 	return error;
 }
 
+<<<<<<< HEAD
 static void __devexit a2091_remove(struct zorro_dev *z)
+=======
+static void a2091_remove(struct zorro_dev *z)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *instance = zorro_get_drvdata(z);
 	struct a2091_hostdata *hdata = shost_priv(instance);
@@ -254,7 +275,11 @@ static void __devexit a2091_remove(struct zorro_dev *z)
 	release_mem_region(z->resource.start, 256);
 }
 
+<<<<<<< HEAD
 static struct zorro_device_id a2091_zorro_tbl[] __devinitdata = {
+=======
+static struct zorro_device_id a2091_zorro_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ ZORRO_PROD_CBM_A590_A2091_1 },
 	{ ZORRO_PROD_CBM_A590_A2091_2 },
 	{ 0 }
@@ -265,7 +290,11 @@ static struct zorro_driver a2091_driver = {
 	.name		= "a2091",
 	.id_table	= a2091_zorro_tbl,
 	.probe		= a2091_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(a2091_remove),
+=======
+	.remove		= a2091_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init a2091_init(void)

@@ -18,10 +18,15 @@
 #include <linux/io.h>
 #include <linux/interrupt.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 
 #include <video/exynos_dp.h>
 
 #include <plat/cpu.h>
+=======
+#include <linux/of.h>
+#include <linux/phy/phy.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "exynos_dp_core.h"
 
@@ -29,6 +34,14 @@ static int exynos_dp_init_dp(struct exynos_dp_device *dp)
 {
 	exynos_dp_reset(dp);
 
+<<<<<<< HEAD
+=======
+	exynos_dp_swreset(dp);
+
+	exynos_dp_init_analog_param(dp);
+	exynos_dp_init_interrupt(dp);
+
+>>>>>>> refs/remotes/origin/master
 	/* SW defined function Normal operation */
 	exynos_dp_enable_sw_function(dp);
 
@@ -45,17 +58,24 @@ static int exynos_dp_detect_hpd(struct exynos_dp_device *dp)
 {
 	int timeout_loop = 0;
 
+<<<<<<< HEAD
 	exynos_dp_init_hpd(dp);
 
 	udelay(200);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	while (exynos_dp_get_plug_in_status(dp) != 0) {
 		timeout_loop++;
 		if (DP_TIMEOUT_LOOP_COUNT < timeout_loop) {
 			dev_err(dp->dev, "failed to get hpd plug status\n");
 			return -ETIMEDOUT;
 		}
+<<<<<<< HEAD
 		udelay(10);
+=======
+		usleep_range(10, 11);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -87,9 +107,17 @@ static int exynos_dp_read_edid(struct exynos_dp_device *dp)
 	 */
 
 	/* Read Extension Flag, Number of 128-byte EDID extension blocks */
+<<<<<<< HEAD
 	exynos_dp_read_byte_from_i2c(dp, I2C_EDID_DEVICE_ADDR,
 				EDID_EXTENSION_FLAG,
 				&extend_block);
+=======
+	retval = exynos_dp_read_byte_from_i2c(dp, I2C_EDID_DEVICE_ADDR,
+				EDID_EXTENSION_FLAG,
+				&extend_block);
+	if (retval)
+		return retval;
+>>>>>>> refs/remotes/origin/master
 
 	if (extend_block > 0) {
 		dev_dbg(dp->dev, "EDID data includes a single extension!\n");
@@ -178,14 +206,25 @@ static int exynos_dp_handle_edid(struct exynos_dp_device *dp)
 	int retval;
 
 	/* Read DPCD DPCD_ADDR_DPCD_REV~RECEIVE_PORT1_CAP_1 */
+<<<<<<< HEAD
 	exynos_dp_read_bytes_from_dpcd(dp,
 		DPCD_ADDR_DPCD_REV,
 		12, buf);
+=======
+	retval = exynos_dp_read_bytes_from_dpcd(dp, DPCD_ADDR_DPCD_REV,
+				12, buf);
+	if (retval)
+		return retval;
+>>>>>>> refs/remotes/origin/master
 
 	/* Read EDID */
 	for (i = 0; i < 3; i++) {
 		retval = exynos_dp_read_edid(dp);
+<<<<<<< HEAD
 		if (retval == 0)
+=======
+		if (!retval)
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 
@@ -258,11 +297,18 @@ static void exynos_dp_set_lane_lane_pre_emphasis(struct exynos_dp_device *dp,
 	}
 }
 
+<<<<<<< HEAD
 static void exynos_dp_link_start(struct exynos_dp_device *dp)
 {
 	u8 buf[5];
 	int lane;
 	int lane_count;
+=======
+static int exynos_dp_link_start(struct exynos_dp_device *dp)
+{
+	u8 buf[4];
+	int lane, lane_count, pll_tries, retval;
+>>>>>>> refs/remotes/origin/master
 
 	lane_count = dp->link_train.lane_count;
 
@@ -272,10 +318,13 @@ static void exynos_dp_link_start(struct exynos_dp_device *dp)
 	for (lane = 0; lane < lane_count; lane++)
 		dp->link_train.cr_loop[lane] = 0;
 
+<<<<<<< HEAD
 	/* Set sink to D0 (Sink Not Ready) mode. */
 	exynos_dp_write_byte_to_dpcd(dp, DPCD_ADDR_SINK_POWER_STATE,
 				DPCD_SET_POWER_STATE_D0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set link rate and count as you want to establish*/
 	exynos_dp_set_link_bandwidth(dp, dp->link_train.link_rate);
 	exynos_dp_set_lane_count(dp, dp->link_train.lane_count);
@@ -283,32 +332,73 @@ static void exynos_dp_link_start(struct exynos_dp_device *dp)
 	/* Setup RX configuration */
 	buf[0] = dp->link_train.link_rate;
 	buf[1] = dp->link_train.lane_count;
+<<<<<<< HEAD
 	exynos_dp_write_bytes_to_dpcd(dp, DPCD_ADDR_LINK_BW_SET,
 				2, buf);
+=======
+	retval = exynos_dp_write_bytes_to_dpcd(dp, DPCD_ADDR_LINK_BW_SET,
+				2, buf);
+	if (retval)
+		return retval;
+>>>>>>> refs/remotes/origin/master
 
 	/* Set TX pre-emphasis to minimum */
 	for (lane = 0; lane < lane_count; lane++)
 		exynos_dp_set_lane_lane_pre_emphasis(dp,
 			PRE_EMPHASIS_LEVEL_0, lane);
 
+<<<<<<< HEAD
+=======
+	/* Wait for PLL lock */
+	pll_tries = 0;
+	while (exynos_dp_get_pll_lock_status(dp) == PLL_UNLOCKED) {
+		if (pll_tries == DP_TIMEOUT_LOOP_COUNT) {
+			dev_err(dp->dev, "Wait for PLL lock timed out\n");
+			return -ETIMEDOUT;
+		}
+
+		pll_tries++;
+		usleep_range(90, 120);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Set training pattern 1 */
 	exynos_dp_set_training_pattern(dp, TRAINING_PTN1);
 
 	/* Set RX training pattern */
+<<<<<<< HEAD
 	buf[0] = DPCD_SCRAMBLING_DISABLED |
 		 DPCD_TRAINING_PATTERN_1;
 	exynos_dp_write_byte_to_dpcd(dp,
 		DPCD_ADDR_TRAINING_PATTERN_SET, buf[0]);
+=======
+	retval = exynos_dp_write_byte_to_dpcd(dp,
+			DPCD_ADDR_TRAINING_PATTERN_SET,
+			DPCD_SCRAMBLING_DISABLED | DPCD_TRAINING_PATTERN_1);
+	if (retval)
+		return retval;
+>>>>>>> refs/remotes/origin/master
 
 	for (lane = 0; lane < lane_count; lane++)
 		buf[lane] = DPCD_PRE_EMPHASIS_PATTERN2_LEVEL0 |
 			    DPCD_VOLTAGE_SWING_PATTERN1_LEVEL0;
+<<<<<<< HEAD
 	exynos_dp_write_bytes_to_dpcd(dp,
 		DPCD_ADDR_TRAINING_PATTERN_SET,
 		lane_count, buf);
 }
 
 static unsigned char exynos_dp_get_lane_status(u8 link_status[6], int lane)
+=======
+
+	retval = exynos_dp_write_bytes_to_dpcd(dp, DPCD_ADDR_TRAINING_LANE0_SET,
+			lane_count, buf);
+
+	return retval;
+}
+
+static unsigned char exynos_dp_get_lane_status(u8 link_status[2], int lane)
+>>>>>>> refs/remotes/origin/master
 {
 	int shift = (lane & 1) * 4;
 	u8 link_value = link_status[lane>>1];
@@ -316,7 +406,11 @@ static unsigned char exynos_dp_get_lane_status(u8 link_status[6], int lane)
 	return (link_value >> shift) & 0xf;
 }
 
+<<<<<<< HEAD
 static int exynos_dp_clock_recovery_ok(u8 link_status[6], int lane_count)
+=======
+static int exynos_dp_clock_recovery_ok(u8 link_status[2], int lane_count)
+>>>>>>> refs/remotes/origin/master
 {
 	int lane;
 	u8 lane_status;
@@ -329,6 +423,7 @@ static int exynos_dp_clock_recovery_ok(u8 link_status[6], int lane_count)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int exynos_dp_channel_eq_ok(u8 link_status[6], int lane_count)
 {
 	int lane;
@@ -337,6 +432,15 @@ static int exynos_dp_channel_eq_ok(u8 link_status[6], int lane_count)
 
 	lane_align = link_status[2];
 	if ((lane_align == DPCD_INTERLANE_ALIGN_DONE) == 0)
+=======
+static int exynos_dp_channel_eq_ok(u8 link_status[2], u8 link_align,
+				int lane_count)
+{
+	int lane;
+	u8 lane_status;
+
+	if ((link_align & DPCD_INTERLANE_ALIGN_DONE) == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	for (lane = 0; lane < lane_count; lane++) {
@@ -345,6 +449,10 @@ static int exynos_dp_channel_eq_ok(u8 link_status[6], int lane_count)
 		if (lane_status != DPCD_CHANNEL_EQ_BITS)
 			return -EINVAL;
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -407,6 +515,12 @@ static unsigned int exynos_dp_get_lane_link_training(
 	case 3:
 		reg = exynos_dp_get_lane3_link_training(dp);
 		break;
+<<<<<<< HEAD
+=======
+	default:
+		WARN_ON(1);
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return reg;
@@ -414,6 +528,7 @@ static unsigned int exynos_dp_get_lane_link_training(
 
 static void exynos_dp_reduce_link_rate(struct exynos_dp_device *dp)
 {
+<<<<<<< HEAD
 	if (dp->link_train.link_rate == LINK_RATE_2_70GBPS) {
 		/* set to reduced bit rate */
 		dp->link_train.link_rate = LINK_RATE_1_62GBPS;
@@ -436,6 +551,19 @@ static void exynos_dp_get_adjust_train(struct exynos_dp_device *dp,
 	u8 voltage_swing;
 	u8 pre_emphasis;
 	u8 training_lane;
+=======
+	exynos_dp_training_pattern_dis(dp);
+	exynos_dp_set_enhanced_mode(dp);
+
+	dp->link_train.lt_state = FAILED;
+}
+
+static void exynos_dp_get_adjust_training_lane(struct exynos_dp_device *dp,
+					u8 adjust_request[2])
+{
+	int lane, lane_count;
+	u8 voltage_swing, pre_emphasis, training_lane;
+>>>>>>> refs/remotes/origin/master
 
 	lane_count = dp->link_train.lane_count;
 	for (lane = 0; lane < lane_count; lane++) {
@@ -446,15 +574,24 @@ static void exynos_dp_get_adjust_train(struct exynos_dp_device *dp,
 		training_lane = DPCD_VOLTAGE_SWING_SET(voltage_swing) |
 				DPCD_PRE_EMPHASIS_SET(pre_emphasis);
 
+<<<<<<< HEAD
 		if (voltage_swing == VOLTAGE_LEVEL_3 ||
 		   pre_emphasis == PRE_EMPHASIS_LEVEL_3) {
 			training_lane |= DPCD_MAX_SWING_REACHED;
 			training_lane |= DPCD_MAX_PRE_EMPHASIS_REACHED;
 		}
+=======
+		if (voltage_swing == VOLTAGE_LEVEL_3)
+			training_lane |= DPCD_MAX_SWING_REACHED;
+		if (pre_emphasis == PRE_EMPHASIS_LEVEL_3)
+			training_lane |= DPCD_MAX_PRE_EMPHASIS_REACHED;
+
+>>>>>>> refs/remotes/origin/master
 		dp->link_train.training_lane[lane] = training_lane;
 	}
 }
 
+<<<<<<< HEAD
 static int exynos_dp_check_max_cr_loop(struct exynos_dp_device *dp,
 					u8 voltage_swing)
 {
@@ -489,10 +626,33 @@ static int exynos_dp_process_clock_recovery(struct exynos_dp_device *dp)
 				6, link_status);
 	lane_count = dp->link_train.lane_count;
 
+=======
+static int exynos_dp_process_clock_recovery(struct exynos_dp_device *dp)
+{
+	int lane, lane_count, retval;
+	u8 voltage_swing, pre_emphasis, training_lane;
+	u8 link_status[2], adjust_request[2];
+
+	usleep_range(100, 101);
+
+	lane_count = dp->link_train.lane_count;
+
+	retval =  exynos_dp_read_bytes_from_dpcd(dp,
+			DPCD_ADDR_LANE0_1_STATUS, 2, link_status);
+	if (retval)
+		return retval;
+
+	retval =  exynos_dp_read_bytes_from_dpcd(dp,
+			DPCD_ADDR_ADJUST_REQUEST_LANE0_1, 2, adjust_request);
+	if (retval)
+		return retval;
+
+>>>>>>> refs/remotes/origin/master
 	if (exynos_dp_clock_recovery_ok(link_status, lane_count) == 0) {
 		/* set training pattern 2 for EQ */
 		exynos_dp_set_training_pattern(dp, TRAINING_PTN2);
 
+<<<<<<< HEAD
 		adjust_request = link_status + (DPCD_ADDR_ADJUST_REQUEST_LANE0_1
 						- DPCD_ADDR_LANE0_1_STATUS);
 
@@ -525,6 +685,18 @@ static int exynos_dp_process_clock_recovery(struct exynos_dp_device *dp)
 			&data);
 		adjust_request[1] = data;
 
+=======
+		retval = exynos_dp_write_byte_to_dpcd(dp,
+				DPCD_ADDR_TRAINING_PATTERN_SET,
+				DPCD_SCRAMBLING_DISABLED |
+				DPCD_TRAINING_PATTERN_2);
+		if (retval)
+			return retval;
+
+		dev_info(dp->dev, "Link Training Clock Recovery success\n");
+		dp->link_train.lt_state = EQUALIZER_TRAINING;
+	} else {
+>>>>>>> refs/remotes/origin/master
 		for (lane = 0; lane < lane_count; lane++) {
 			training_lane = exynos_dp_get_lane_link_training(
 							dp, lane);
@@ -532,6 +704,7 @@ static int exynos_dp_process_clock_recovery(struct exynos_dp_device *dp)
 							adjust_request, lane);
 			pre_emphasis = exynos_dp_get_adjust_request_pre_emphasis(
 							adjust_request, lane);
+<<<<<<< HEAD
 			if ((DPCD_VOLTAGE_SWING_GET(training_lane) == voltage_swing) &&
 			    (DPCD_PRE_EMPHASIS_GET(training_lane) == pre_emphasis))
 				dp->link_train.cr_loop[lane]++;
@@ -551,15 +724,49 @@ static int exynos_dp_process_clock_recovery(struct exynos_dp_device *dp)
 				exynos_dp_write_byte_to_dpcd(dp,
 					DPCD_ADDR_TRAINING_LANE0_SET + lane,
 					buf[lane]);
+=======
+
+			if (DPCD_VOLTAGE_SWING_GET(training_lane) ==
+					voltage_swing &&
+			    DPCD_PRE_EMPHASIS_GET(training_lane) ==
+					pre_emphasis)
+				dp->link_train.cr_loop[lane]++;
+
+			if (dp->link_train.cr_loop[lane] == MAX_CR_LOOP ||
+			    voltage_swing == VOLTAGE_LEVEL_3 ||
+			    pre_emphasis == PRE_EMPHASIS_LEVEL_3) {
+				dev_err(dp->dev, "CR Max reached (%d,%d,%d)\n",
+					dp->link_train.cr_loop[lane],
+					voltage_swing, pre_emphasis);
+				exynos_dp_reduce_link_rate(dp);
+				return -EIO;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+	exynos_dp_get_adjust_training_lane(dp, adjust_request);
+
+	for (lane = 0; lane < lane_count; lane++)
+		exynos_dp_set_lane_link_training(dp,
+			dp->link_train.training_lane[lane], lane);
+
+	retval = exynos_dp_write_bytes_to_dpcd(dp,
+			DPCD_ADDR_TRAINING_LANE0_SET, lane_count,
+			dp->link_train.training_lane);
+	if (retval)
+		return retval;
+
+	return retval;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int exynos_dp_process_equalizer_training(struct exynos_dp_device *dp)
 {
+<<<<<<< HEAD
 	u8 link_status[6];
 	int lane;
 	int lane_count;
@@ -626,6 +833,82 @@ static int exynos_dp_process_equalizer_training(struct exynos_dp_device *dp)
 
 static void exynos_dp_get_max_rx_bandwidth(struct exynos_dp_device *dp,
 			u8 *bandwidth)
+=======
+	int lane, lane_count, retval;
+	u32 reg;
+	u8 link_align, link_status[2], adjust_request[2];
+
+	usleep_range(400, 401);
+
+	lane_count = dp->link_train.lane_count;
+
+	retval = exynos_dp_read_bytes_from_dpcd(dp,
+			DPCD_ADDR_LANE0_1_STATUS, 2, link_status);
+	if (retval)
+		return retval;
+
+	if (exynos_dp_clock_recovery_ok(link_status, lane_count)) {
+		exynos_dp_reduce_link_rate(dp);
+		return -EIO;
+	}
+
+	retval = exynos_dp_read_bytes_from_dpcd(dp,
+			DPCD_ADDR_ADJUST_REQUEST_LANE0_1, 2, adjust_request);
+	if (retval)
+		return retval;
+
+	retval = exynos_dp_read_byte_from_dpcd(dp,
+			DPCD_ADDR_LANE_ALIGN_STATUS_UPDATED, &link_align);
+	if (retval)
+		return retval;
+
+	exynos_dp_get_adjust_training_lane(dp, adjust_request);
+
+	if (!exynos_dp_channel_eq_ok(link_status, link_align, lane_count)) {
+		/* traing pattern Set to Normal */
+		exynos_dp_training_pattern_dis(dp);
+
+		dev_info(dp->dev, "Link Training success!\n");
+
+		exynos_dp_get_link_bandwidth(dp, &reg);
+		dp->link_train.link_rate = reg;
+		dev_dbg(dp->dev, "final bandwidth = %.2x\n",
+			dp->link_train.link_rate);
+
+		exynos_dp_get_lane_count(dp, &reg);
+		dp->link_train.lane_count = reg;
+		dev_dbg(dp->dev, "final lane count = %.2x\n",
+			dp->link_train.lane_count);
+
+		/* set enhanced mode if available */
+		exynos_dp_set_enhanced_mode(dp);
+		dp->link_train.lt_state = FINISHED;
+
+		return 0;
+	}
+
+	/* not all locked */
+	dp->link_train.eq_loop++;
+
+	if (dp->link_train.eq_loop > MAX_EQ_LOOP) {
+		dev_err(dp->dev, "EQ Max loop\n");
+		exynos_dp_reduce_link_rate(dp);
+		return -EIO;
+	}
+
+	for (lane = 0; lane < lane_count; lane++)
+		exynos_dp_set_lane_link_training(dp,
+			dp->link_train.training_lane[lane], lane);
+
+	retval = exynos_dp_write_bytes_to_dpcd(dp, DPCD_ADDR_TRAINING_LANE0_SET,
+			lane_count, dp->link_train.training_lane);
+
+	return retval;
+}
+
+static void exynos_dp_get_max_rx_bandwidth(struct exynos_dp_device *dp,
+					u8 *bandwidth)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 data;
 
@@ -638,7 +921,11 @@ static void exynos_dp_get_max_rx_bandwidth(struct exynos_dp_device *dp,
 }
 
 static void exynos_dp_get_max_rx_lane_count(struct exynos_dp_device *dp,
+<<<<<<< HEAD
 			u8 *lane_count)
+=======
+					u8 *lane_count)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 data;
 
@@ -689,6 +976,7 @@ static void exynos_dp_init_training(struct exynos_dp_device *dp,
 
 static int exynos_dp_sw_link_training(struct exynos_dp_device *dp)
 {
+<<<<<<< HEAD
 	int retval = 0;
 	int training_finished;
 
@@ -697,10 +985,14 @@ static int exynos_dp_sw_link_training(struct exynos_dp_device *dp)
 		exynos_dp_set_analog_power_down(dp, CH1_BLOCK, 1);
 
 	training_finished = 0;
+=======
+	int retval = 0, training_finished = 0;
+>>>>>>> refs/remotes/origin/master
 
 	dp->link_train.lt_state = START;
 
 	/* Process here */
+<<<<<<< HEAD
 	while (!training_finished) {
 		switch (dp->link_train.lt_state) {
 		case START:
@@ -711,6 +1003,24 @@ static int exynos_dp_sw_link_training(struct exynos_dp_device *dp)
 			break;
 		case EQUALIZER_TRAINING:
 			exynos_dp_process_equalizer_training(dp);
+=======
+	while (!retval && !training_finished) {
+		switch (dp->link_train.lt_state) {
+		case START:
+			retval = exynos_dp_link_start(dp);
+			if (retval)
+				dev_err(dp->dev, "LT link start failed!\n");
+			break;
+		case CLOCK_RECOVERY:
+			retval = exynos_dp_process_clock_recovery(dp);
+			if (retval)
+				dev_err(dp->dev, "LT CR failed!\n");
+			break;
+		case EQUALIZER_TRAINING:
+			retval = exynos_dp_process_equalizer_training(dp);
+			if (retval)
+				dev_err(dp->dev, "LT EQ failed!\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		case FINISHED:
 			training_finished = 1;
@@ -719,6 +1029,11 @@ static int exynos_dp_sw_link_training(struct exynos_dp_device *dp)
 			return -EREMOTEIO;
 		}
 	}
+<<<<<<< HEAD
+=======
+	if (retval)
+		dev_err(dp->dev, "eDP link training failed (%d)\n", retval);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -736,25 +1051,39 @@ static int exynos_dp_set_link_train(struct exynos_dp_device *dp,
 		if (retval == 0)
 			break;
 
+<<<<<<< HEAD
 		udelay(100);
+=======
+		usleep_range(100, 110);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return retval;
 }
 
+<<<<<<< HEAD
 static int exynos_dp_config_video(struct exynos_dp_device *dp,
 			struct video_info *video_info)
+=======
+static int exynos_dp_config_video(struct exynos_dp_device *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval = 0;
 	int timeout_loop = 0;
 	int done_count = 0;
 
+<<<<<<< HEAD
 	exynos_dp_config_video_slave_mode(dp, video_info);
 
 	exynos_dp_set_video_color_format(dp, video_info->color_depth,
 			video_info->color_space,
 			video_info->dynamic_range,
 			video_info->ycbcr_coeff);
+=======
+	exynos_dp_config_video_slave_mode(dp);
+
+	exynos_dp_set_video_color_format(dp);
+>>>>>>> refs/remotes/origin/master
 
 	if (exynos_dp_get_pll_lock_status(dp) == PLL_UNLOCKED) {
 		dev_err(dp->dev, "PLL is not locked yet.\n");
@@ -770,7 +1099,11 @@ static int exynos_dp_config_video(struct exynos_dp_device *dp,
 			return -ETIMEDOUT;
 		}
 
+<<<<<<< HEAD
 		mdelay(100);
+=======
+		usleep_range(1, 2);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Set to use the register calculated M/N video */
@@ -804,7 +1137,11 @@ static int exynos_dp_config_video(struct exynos_dp_device *dp,
 			return -ETIMEDOUT;
 		}
 
+<<<<<<< HEAD
 		mdelay(100);
+=======
+		usleep_range(1000, 1001);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (retval != 0)
@@ -842,6 +1179,7 @@ static irqreturn_t exynos_dp_irq_handler(int irq, void *arg)
 {
 	struct exynos_dp_device *dp = arg;
 
+<<<<<<< HEAD
 	dev_err(dp->dev, "exynos_dp_irq_handler\n");
 	return IRQ_HANDLED;
 }
@@ -948,11 +1286,264 @@ static int __devinit exynos_dp_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "unable to config video\n");
 		goto err_irq;
+=======
+	enum dp_irq_type irq_type;
+
+	irq_type = exynos_dp_get_irq_type(dp);
+	switch (irq_type) {
+	case DP_IRQ_TYPE_HP_CABLE_IN:
+		dev_dbg(dp->dev, "Received irq - cable in\n");
+		schedule_work(&dp->hotplug_work);
+		exynos_dp_clear_hotplug_interrupts(dp);
+		break;
+	case DP_IRQ_TYPE_HP_CABLE_OUT:
+		dev_dbg(dp->dev, "Received irq - cable out\n");
+		exynos_dp_clear_hotplug_interrupts(dp);
+		break;
+	case DP_IRQ_TYPE_HP_CHANGE:
+		/*
+		 * We get these change notifications once in a while, but there
+		 * is nothing we can do with them. Just ignore it for now and
+		 * only handle cable changes.
+		 */
+		dev_dbg(dp->dev, "Received irq - hotplug change; ignoring.\n");
+		exynos_dp_clear_hotplug_interrupts(dp);
+		break;
+	default:
+		dev_err(dp->dev, "Received irq - unknown type!\n");
+		break;
+	}
+	return IRQ_HANDLED;
+}
+
+static void exynos_dp_hotplug(struct work_struct *work)
+{
+	struct exynos_dp_device *dp;
+	int ret;
+
+	dp = container_of(work, struct exynos_dp_device, hotplug_work);
+
+	ret = exynos_dp_detect_hpd(dp);
+	if (ret) {
+		/* Cable has been disconnected, we're done */
+		return;
+	}
+
+	ret = exynos_dp_handle_edid(dp);
+	if (ret) {
+		dev_err(dp->dev, "unable to handle edid\n");
+		return;
+	}
+
+	ret = exynos_dp_set_link_train(dp, dp->video_info->lane_count,
+					dp->video_info->link_rate);
+	if (ret) {
+		dev_err(dp->dev, "unable to do link train\n");
+		return;
+	}
+
+	exynos_dp_enable_scramble(dp, 1);
+	exynos_dp_enable_rx_to_enhanced_mode(dp, 1);
+	exynos_dp_enable_enhanced_mode(dp, 1);
+
+	exynos_dp_set_lane_count(dp, dp->video_info->lane_count);
+	exynos_dp_set_link_bandwidth(dp, dp->video_info->link_rate);
+
+	exynos_dp_init_video(dp);
+	ret = exynos_dp_config_video(dp);
+	if (ret)
+		dev_err(dp->dev, "unable to config video\n");
+}
+
+static struct video_info *exynos_dp_dt_parse_pdata(struct device *dev)
+{
+	struct device_node *dp_node = dev->of_node;
+	struct video_info *dp_video_config;
+
+	dp_video_config = devm_kzalloc(dev,
+				sizeof(*dp_video_config), GFP_KERNEL);
+	if (!dp_video_config) {
+		dev_err(dev, "memory allocation for video config failed\n");
+		return ERR_PTR(-ENOMEM);
+	}
+
+	dp_video_config->h_sync_polarity =
+		of_property_read_bool(dp_node, "hsync-active-high");
+
+	dp_video_config->v_sync_polarity =
+		of_property_read_bool(dp_node, "vsync-active-high");
+
+	dp_video_config->interlaced =
+		of_property_read_bool(dp_node, "interlaced");
+
+	if (of_property_read_u32(dp_node, "samsung,color-space",
+				&dp_video_config->color_space)) {
+		dev_err(dev, "failed to get color-space\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (of_property_read_u32(dp_node, "samsung,dynamic-range",
+				&dp_video_config->dynamic_range)) {
+		dev_err(dev, "failed to get dynamic-range\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (of_property_read_u32(dp_node, "samsung,ycbcr-coeff",
+				&dp_video_config->ycbcr_coeff)) {
+		dev_err(dev, "failed to get ycbcr-coeff\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (of_property_read_u32(dp_node, "samsung,color-depth",
+				&dp_video_config->color_depth)) {
+		dev_err(dev, "failed to get color-depth\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (of_property_read_u32(dp_node, "samsung,link-rate",
+				&dp_video_config->link_rate)) {
+		dev_err(dev, "failed to get link-rate\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (of_property_read_u32(dp_node, "samsung,lane-count",
+				&dp_video_config->lane_count)) {
+		dev_err(dev, "failed to get lane-count\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	return dp_video_config;
+}
+
+static int exynos_dp_dt_parse_phydata(struct exynos_dp_device *dp)
+{
+	struct device_node *dp_phy_node = of_node_get(dp->dev->of_node);
+	u32 phy_base;
+	int ret = 0;
+
+	dp_phy_node = of_find_node_by_name(dp_phy_node, "dptx-phy");
+	if (!dp_phy_node) {
+		dp->phy = devm_phy_get(dp->dev, "dp");
+		if (IS_ERR(dp->phy))
+			return PTR_ERR(dp->phy);
+		else
+			return 0;
+	}
+
+	if (of_property_read_u32(dp_phy_node, "reg", &phy_base)) {
+		dev_err(dp->dev, "failed to get reg for dptx-phy\n");
+		ret = -EINVAL;
+		goto err;
+	}
+
+	if (of_property_read_u32(dp_phy_node, "samsung,enable-mask",
+				&dp->enable_mask)) {
+		dev_err(dp->dev, "failed to get enable-mask for dptx-phy\n");
+		ret = -EINVAL;
+		goto err;
+	}
+
+	dp->phy_addr = ioremap(phy_base, SZ_4);
+	if (!dp->phy_addr) {
+		dev_err(dp->dev, "failed to ioremap dp-phy\n");
+		ret = -ENOMEM;
+		goto err;
+	}
+
+err:
+	of_node_put(dp_phy_node);
+
+	return ret;
+}
+
+static void exynos_dp_phy_init(struct exynos_dp_device *dp)
+{
+	if (dp->phy) {
+		phy_power_on(dp->phy);
+	} else if (dp->phy_addr) {
+		u32 reg;
+
+		reg = __raw_readl(dp->phy_addr);
+		reg |= dp->enable_mask;
+		__raw_writel(reg, dp->phy_addr);
+	}
+}
+
+static void exynos_dp_phy_exit(struct exynos_dp_device *dp)
+{
+	if (dp->phy) {
+		phy_power_off(dp->phy);
+	} else if (dp->phy_addr) {
+		u32 reg;
+
+		reg = __raw_readl(dp->phy_addr);
+		reg &= ~(dp->enable_mask);
+		__raw_writel(reg, dp->phy_addr);
+	}
+}
+
+static int exynos_dp_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	struct exynos_dp_device *dp;
+
+	int ret = 0;
+
+	dp = devm_kzalloc(&pdev->dev, sizeof(struct exynos_dp_device),
+				GFP_KERNEL);
+	if (!dp) {
+		dev_err(&pdev->dev, "no memory for device data\n");
+		return -ENOMEM;
+	}
+
+	dp->dev = &pdev->dev;
+
+	dp->video_info = exynos_dp_dt_parse_pdata(&pdev->dev);
+	if (IS_ERR(dp->video_info))
+		return PTR_ERR(dp->video_info);
+
+	ret = exynos_dp_dt_parse_phydata(dp);
+	if (ret)
+		return ret;
+
+	dp->clock = devm_clk_get(&pdev->dev, "dp");
+	if (IS_ERR(dp->clock)) {
+		dev_err(&pdev->dev, "failed to get clock\n");
+		return PTR_ERR(dp->clock);
+	}
+
+	clk_prepare_enable(dp->clock);
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	dp->reg_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(dp->reg_base))
+		return PTR_ERR(dp->reg_base);
+
+	dp->irq = platform_get_irq(pdev, 0);
+	if (dp->irq == -ENXIO) {
+		dev_err(&pdev->dev, "failed to get irq\n");
+		return -ENODEV;
+	}
+
+	INIT_WORK(&dp->hotplug_work, exynos_dp_hotplug);
+
+	exynos_dp_phy_init(dp);
+
+	exynos_dp_init_dp(dp);
+
+	ret = devm_request_irq(&pdev->dev, dp->irq, exynos_dp_irq_handler, 0,
+				"exynos-dp", dp);
+	if (ret) {
+		dev_err(&pdev->dev, "failed to request irq\n");
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, dp);
 
 	return 0;
+<<<<<<< HEAD
 
 err_irq:
 	free_irq(dp->irq, dp);
@@ -985,6 +1576,20 @@ static int __devexit exynos_dp_remove(struct platform_device *pdev)
 	release_mem_region(dp->res->start, resource_size(dp->res));
 
 	kfree(dp);
+=======
+}
+
+static int exynos_dp_remove(struct platform_device *pdev)
+{
+	struct exynos_dp_device *dp = platform_get_drvdata(pdev);
+
+	flush_work(&dp->hotplug_work);
+
+	exynos_dp_phy_exit(dp);
+
+	clk_disable_unprepare(dp->clock);
+
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -992,6 +1597,7 @@ static int __devexit exynos_dp_remove(struct platform_device *pdev)
 #ifdef CONFIG_PM_SLEEP
 static int exynos_dp_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct exynos_dp_platdata *pdata = pdev->dev.platform_data;
 	struct exynos_dp_device *dp = platform_get_drvdata(pdev);
@@ -1000,12 +1606,24 @@ static int exynos_dp_suspend(struct device *dev)
 		pdata->phy_exit();
 
 	clk_disable(dp->clock);
+=======
+	struct exynos_dp_device *dp = dev_get_drvdata(dev);
+
+	disable_irq(dp->irq);
+
+	flush_work(&dp->hotplug_work);
+
+	exynos_dp_phy_exit(dp);
+
+	clk_disable_unprepare(dp->clock);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int exynos_dp_resume(struct device *dev)
 {
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct exynos_dp_platdata *pdata = pdev->dev.platform_data;
 	struct exynos_dp_device *dp = platform_get_drvdata(pdev);
@@ -1032,6 +1650,17 @@ static int exynos_dp_resume(struct device *dev)
 
 	exynos_dp_init_video(dp);
 	exynos_dp_config_video(dp, dp->video_info);
+=======
+	struct exynos_dp_device *dp = dev_get_drvdata(dev);
+
+	exynos_dp_phy_init(dp);
+
+	clk_prepare_enable(dp->clock);
+
+	exynos_dp_init_dp(dp);
+
+	enable_irq(dp->irq);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1041,13 +1670,29 @@ static const struct dev_pm_ops exynos_dp_pm_ops = {
 	SET_SYSTEM_SLEEP_PM_OPS(exynos_dp_suspend, exynos_dp_resume)
 };
 
+<<<<<<< HEAD
 static struct platform_driver exynos_dp_driver = {
 	.probe		= exynos_dp_probe,
 	.remove		= __devexit_p(exynos_dp_remove),
+=======
+static const struct of_device_id exynos_dp_match[] = {
+	{ .compatible = "samsung,exynos5-dp" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, exynos_dp_match);
+
+static struct platform_driver exynos_dp_driver = {
+	.probe		= exynos_dp_probe,
+	.remove		= exynos_dp_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "exynos-dp",
 		.owner	= THIS_MODULE,
 		.pm	= &exynos_dp_pm_ops,
+<<<<<<< HEAD
+=======
+		.of_match_table = exynos_dp_match,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

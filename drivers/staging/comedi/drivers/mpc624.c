@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: mpc624
@@ -56,9 +59,15 @@ Configuration Options:
 	1      -10.1V .. +10.1V
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
+=======
+#include <linux/module.h>
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 
 /* Consecutive I/O port addresses */
@@ -122,13 +131,20 @@ Configuration Options:
 #define MPC624_SPEED_6_875_Hz \
 	(MPC624_OSR4 | MPC624_OSR3 | MPC624_OSR2 | MPC624_OSR1 | MPC624_OSR0)
 /* -------------------------------------------------------------------------- */
+<<<<<<< HEAD
 struct skel_private {
+=======
+struct mpc624_private {
+>>>>>>> refs/remotes/origin/master
 
 	/*  set by mpc624_attach() from driver's parameters */
 	unsigned long int ulConvertionRate;
 };
 
+<<<<<<< HEAD
 #define devpriv ((struct skel_private *)dev->private)
+=======
+>>>>>>> refs/remotes/origin/master
 /* -------------------------------------------------------------------------- */
 static const struct comedi_lrange range_mpc624_bipolar1 = {
 	1,
@@ -148,6 +164,7 @@ static const struct comedi_lrange range_mpc624_bipolar10 = {
 	 }
 };
 
+<<<<<<< HEAD
 /* -------------------------------------------------------------------------- */
 static int mpc624_attach(struct comedi_device *dev,
 			 struct comedi_devconfig *it);
@@ -273,6 +290,8 @@ static int mpc624_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Timeout 200ms */
 #define TIMEOUT 200
 
@@ -280,6 +299,10 @@ static int mpc624_ai_rinsn(struct comedi_device *dev,
 			   struct comedi_subdevice *s, struct comedi_insn *insn,
 			   unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct mpc624_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n, i;
 	unsigned long int data_in, data_out;
 	unsigned char ucPort;
@@ -289,11 +312,14 @@ static int mpc624_ai_rinsn(struct comedi_device *dev,
 	 *  We always write 0 to GNSWA bit, so the channel range is +-/10.1Vdc
 	 */
 	outb(insn->chanspec, dev->iobase + MPC624_GNMUXCH);
+<<<<<<< HEAD
 /* printk("Channel %d:\n", insn->chanspec); */
 	if (!insn->n) {
 		printk(KERN_INFO "MPC624: Warning, no data to acquire\n");
 		return 0;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (n = 0; n < insn->n; n++) {
 		/*  Trigger the conversion */
@@ -312,11 +338,17 @@ static int mpc624_ai_rinsn(struct comedi_device *dev,
 			else
 				break;
 		}
+<<<<<<< HEAD
 		if (i == TIMEOUT) {
 			printk(KERN_ERR "MPC624: timeout (%dms)\n", TIMEOUT);
 			data[n] = 0;
 			return -ETIMEDOUT;
 		}
+=======
+		if (i == TIMEOUT)
+			return -ETIMEDOUT;
+
+>>>>>>> refs/remotes/origin/master
 		/*  Start reading data */
 		data_in = 0;
 		data_out = devpriv->ulConvertionRate;
@@ -375,11 +407,19 @@ static int mpc624_ai_rinsn(struct comedi_device *dev,
 		 */
 
 		if (data_in & MPC624_EOC_BIT)
+<<<<<<< HEAD
 			printk(KERN_INFO "MPC624:EOC bit is set (data_in=%lu)!",
 			       data_in);
 		if (data_in & MPC624_DMY_BIT)
 			printk(KERN_INFO "MPC624:DMY bit is set (data_in=%lu)!",
 			       data_in);
+=======
+			dev_dbg(dev->class_dev,
+				"EOC bit is set (data_in=%lu)!", data_in);
+		if (data_in & MPC624_DMY_BIT)
+			dev_dbg(dev->class_dev,
+				"DMY bit is set (data_in=%lu)!", data_in);
+>>>>>>> refs/remotes/origin/master
 		if (data_in & MPC624_SGN_BIT) {	/* Volatge is positive */
 			/*
 			 * comedi operates on unsigned numbers, so mask off EOC
@@ -406,6 +446,7 @@ static int mpc624_ai_rinsn(struct comedi_device *dev,
 	return n;
 }
 
+<<<<<<< HEAD
 static int __init driver_mpc624_init_module(void)
 {
 	return comedi_driver_register(&driver_mpc624);
@@ -418,6 +459,90 @@ static void __exit driver_mpc624_cleanup_module(void)
 
 module_init(driver_mpc624_init_module);
 module_exit(driver_mpc624_cleanup_module);
+=======
+static int mpc624_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	struct mpc624_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], MPC624_SIZE);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	switch (it->options[1]) {
+	case 0:
+		devpriv->ulConvertionRate = MPC624_SPEED_3_52_kHz;
+		break;
+	case 1:
+		devpriv->ulConvertionRate = MPC624_SPEED_1_76_kHz;
+		break;
+	case 2:
+		devpriv->ulConvertionRate = MPC624_SPEED_880_Hz;
+		break;
+	case 3:
+		devpriv->ulConvertionRate = MPC624_SPEED_440_Hz;
+		break;
+	case 4:
+		devpriv->ulConvertionRate = MPC624_SPEED_220_Hz;
+		break;
+	case 5:
+		devpriv->ulConvertionRate = MPC624_SPEED_110_Hz;
+		break;
+	case 6:
+		devpriv->ulConvertionRate = MPC624_SPEED_55_Hz;
+		break;
+	case 7:
+		devpriv->ulConvertionRate = MPC624_SPEED_27_5_Hz;
+		break;
+	case 8:
+		devpriv->ulConvertionRate = MPC624_SPEED_13_75_Hz;
+		break;
+	case 9:
+		devpriv->ulConvertionRate = MPC624_SPEED_6_875_Hz;
+		break;
+	default:
+		devpriv->ulConvertionRate = MPC624_SPEED_3_52_kHz;
+	}
+
+	ret = comedi_alloc_subdevices(dev, 1);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	s->type = COMEDI_SUBD_AI;
+	s->subdev_flags = SDF_READABLE | SDF_DIFF;
+	s->n_chan = 8;
+	switch (it->options[1]) {
+	default:
+		s->maxdata = 0x3FFFFFFF;
+	}
+
+	switch (it->options[1]) {
+	case 0:
+		s->range_table = &range_mpc624_bipolar1;
+		break;
+	default:
+		s->range_table = &range_mpc624_bipolar10;
+	}
+	s->len_chanlist = 1;
+	s->insn_read = mpc624_ai_rinsn;
+
+	return 1;
+}
+
+static struct comedi_driver mpc624_driver = {
+	.driver_name	= "mpc624",
+	.module		= THIS_MODULE,
+	.attach		= mpc624_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(mpc624_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

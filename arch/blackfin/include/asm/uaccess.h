@@ -34,6 +34,7 @@ static inline void set_fs(mm_segment_t fs)
 
 #define access_ok(type, addr, size) _access_ok((unsigned long)(addr), (size))
 
+<<<<<<< HEAD
 static inline int is_in_rom(unsigned long addr)
 {
 	/*
@@ -51,6 +52,8 @@ static inline int is_in_rom(unsigned long addr)
 	return (0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The fs value determines whether argument validity checking should be
  * performed or not.  If get_fs() == USER_DS, checking is performed, with
@@ -89,7 +92,11 @@ struct exception_table_entry {
 	({							\
 		int _err = 0;					\
 		typeof(*(p)) _x = (x);				\
+<<<<<<< HEAD
 		typeof(*(p)) *_p = (p);				\
+=======
+		typeof(*(p)) __user *_p = (p);				\
+>>>>>>> refs/remotes/origin/master
 		if (!access_ok(VERIFY_WRITE, _p, sizeof(*(_p)))) {\
 			_err = -EFAULT;				\
 		}						\
@@ -108,8 +115,13 @@ struct exception_table_entry {
 			long _xl, _xh;				\
 			_xl = ((long *)&_x)[0];			\
 			_xh = ((long *)&_x)[1];			\
+<<<<<<< HEAD
 			__put_user_asm(_xl, ((long *)_p)+0, );	\
 			__put_user_asm(_xh, ((long *)_p)+1, );	\
+=======
+			__put_user_asm(_xl, ((long __user *)_p)+0, );	\
+			__put_user_asm(_xh, ((long __user *)_p)+1, );	\
+>>>>>>> refs/remotes/origin/master
 		} break;					\
 		default:					\
 			_err = __put_user_bad();		\
@@ -136,7 +148,11 @@ static inline int bad_user_access_length(void)
  * aliasing issues.
  */
 
+<<<<<<< HEAD
 #define __ptr(x) ((unsigned long *)(x))
+=======
+#define __ptr(x) ((unsigned long __force *)(x))
+>>>>>>> refs/remotes/origin/master
 
 #define __put_user_asm(x,p,bhw)				\
 	__asm__ (#bhw"[%1] = %0;\n\t"			\
@@ -196,10 +212,14 @@ copy_from_user(void *to, const void __user *from, unsigned long n)
 {
 	if (access_ok(VERIFY_READ, from, n))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memcpy(to, from, n);
 =======
 		memcpy(to, (const void __force *)from, n);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(to, (const void __force *)from, n);
+>>>>>>> refs/remotes/origin/master
 	else
 		return n;
 	return 0;
@@ -207,18 +227,27 @@ copy_from_user(void *to, const void __user *from, unsigned long n)
 
 static inline unsigned long __must_check
 <<<<<<< HEAD
+<<<<<<< HEAD
 copy_to_user(void *to, const void __user *from, unsigned long n)
 {
 	if (access_ok(VERIFY_WRITE, to, n))
 		memcpy(to, from, n);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 copy_to_user(void __user *to, const void *from, unsigned long n)
 {
 	if (access_ok(VERIFY_WRITE, to, n))
 		memcpy((void __force *)to, from, n);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	else
 		return n;
+=======
+	else
+		return n;
+	SSYNC();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -227,12 +256,20 @@ copy_to_user(void __user *to, const void *from, unsigned long n)
  */
 
 static inline long __must_check
+<<<<<<< HEAD
 strncpy_from_user(char *dst, const char *src, long count)
+=======
+strncpy_from_user(char *dst, const char __user *src, long count)
+>>>>>>> refs/remotes/origin/master
 {
 	char *tmp;
 	if (!access_ok(VERIFY_READ, src, 1))
 		return -EFAULT;
+<<<<<<< HEAD
 	strncpy(dst, src, count);
+=======
+	strncpy(dst, (const char __force *)src, count);
+>>>>>>> refs/remotes/origin/master
 	for (tmp = dst; *tmp && count > 0; tmp++, count--) ;
 	return (tmp - dst);
 }
@@ -248,6 +285,7 @@ strncpy_from_user(char *dst, const char *src, long count)
  * On exception, returns 0.
  * If the string is too long, returns a value greater than n.
  */
+<<<<<<< HEAD
 static inline long __must_check strnlen_user(const char *src, long n)
 {
 	if (!access_ok(VERIFY_READ, src, 1))
@@ -260,6 +298,20 @@ static inline long __must_check strlen_user(const char *src)
 	if (!access_ok(VERIFY_READ, src, 1))
 		return 0;
 	return strlen(src) + 1;
+=======
+static inline long __must_check strnlen_user(const char __user *src, long n)
+{
+	if (!access_ok(VERIFY_READ, src, 1))
+		return 0;
+	return strnlen((const char __force *)src, n) + 1;
+}
+
+static inline long __must_check strlen_user(const char __user *src)
+{
+	if (!access_ok(VERIFY_READ, src, 1))
+		return 0;
+	return strlen((const char __force *)src) + 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -267,11 +319,19 @@ static inline long __must_check strlen_user(const char *src)
  */
 
 static inline unsigned long __must_check
+<<<<<<< HEAD
 __clear_user(void *to, unsigned long n)
 {
 	if (!access_ok(VERIFY_WRITE, to, n))
 		return n;
 	memset(to, 0, n);
+=======
+__clear_user(void __user *to, unsigned long n)
+{
+	if (!access_ok(VERIFY_WRITE, to, n))
+		return n;
+	memset((void __force *)to, 0, n);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

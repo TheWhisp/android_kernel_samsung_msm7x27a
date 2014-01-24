@@ -13,9 +13,13 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/snmp.h>
 #include <net/xfrm.h>
 
@@ -46,6 +50,11 @@ static const struct snmp_mib xfrm_mib_list[] = {
 	SNMP_MIB_ITEM("XfrmOutPolDead", LINUX_MIB_XFRMOUTPOLDEAD),
 	SNMP_MIB_ITEM("XfrmOutPolError", LINUX_MIB_XFRMOUTPOLERROR),
 	SNMP_MIB_ITEM("XfrmFwdHdrError", LINUX_MIB_XFRMFWDHDRERROR),
+<<<<<<< HEAD
+=======
+	SNMP_MIB_ITEM("XfrmOutStateInvalid", LINUX_MIB_XFRMOUTSTATEINVALID),
+	SNMP_MIB_ITEM("XfrmAcquireError", LINUX_MIB_XFRMACQUIREERROR),
+>>>>>>> refs/remotes/origin/master
 	SNMP_MIB_SENTINEL
 };
 
@@ -76,13 +85,22 @@ static const struct file_operations xfrm_statistics_seq_fops = {
 
 int __net_init xfrm_proc_init(struct net *net)
 {
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "xfrm_stat", S_IRUGO,
 				  &xfrm_statistics_seq_fops))
+=======
+	if (!proc_create("xfrm_stat", S_IRUGO, net->proc_net,
+			 &xfrm_statistics_seq_fops))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	return 0;
 }
 
 void xfrm_proc_fini(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "xfrm_stat");
+=======
+	remove_proc_entry("xfrm_stat", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }

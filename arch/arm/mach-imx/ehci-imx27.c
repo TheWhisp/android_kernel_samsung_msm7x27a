@@ -15,9 +15,15 @@
 
 #include <linux/platform_device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/mxc_ehci.h>
+=======
+#include <linux/platform_data/usb-ehci-mxc.h>
+
+#include "hardware.h"
+>>>>>>> refs/remotes/origin/master
 
 #define USBCTRL_OTGBASE_OFFSET	0x600
 

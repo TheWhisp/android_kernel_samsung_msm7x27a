@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 #ifndef _COMEDI_NI_TIO_INTERNAL_H
@@ -26,6 +29,7 @@
 
 #include "ni_tio.h"
 
+<<<<<<< HEAD
 static inline enum ni_gpct_register NITIO_Gi_Autoincrement_Reg(unsigned
 							       counter_index)
 {
@@ -429,6 +433,28 @@ static inline enum ni_gpct_register NITIO_Gi_Interrupt_Enable_Reg(int
 	}
 	return 0;
 }
+=======
+#define NITIO_AUTO_INC_REG(x)		(NITIO_G0_AUTO_INC + (x))
+#define NITIO_CMD_REG(x)		(NITIO_G0_CMD + (x))
+#define NITIO_HW_SAVE_REG(x)		(NITIO_G0_HW_SAVE + (x))
+#define NITIO_SW_SAVE_REG(x)		(NITIO_G0_SW_SAVE + (x))
+#define NITIO_MODE_REG(x)		(NITIO_G0_MODE + (x))
+#define NITIO_LOADA_REG(x)		(NITIO_G0_LOADA + (x))
+#define NITIO_LOADB_REG(x)		(NITIO_G0_LOADB + (x))
+#define NITIO_INPUT_SEL_REG(x)		(NITIO_G0_INPUT_SEL + (x))
+#define NITIO_CNT_MODE_REG(x)		(NITIO_G0_CNT_MODE + (x))
+#define NITIO_GATE2_REG(x)		(NITIO_G0_GATE2 + (x))
+#define NITIO_SHARED_STATUS_REG(x)	(NITIO_G01_STATUS + ((x) / 2))
+#define NITIO_RESET_REG(x)		(NITIO_G01_RESET + ((x) / 2))
+#define NITIO_STATUS1_REG(x)		(NITIO_G01_STATUS1 + ((x) / 2))
+#define NITIO_STATUS2_REG(x)		(NITIO_G01_STATUS2 + ((x) / 2))
+#define NITIO_DMA_CFG_REG(x)		(NITIO_G0_DMA_CFG + (x))
+#define NITIO_DMA_STATUS_REG(x)		(NITIO_G0_DMA_STATUS + (x))
+#define NITIO_ABZ_REG(x)		(NITIO_G0_ABZ + (x))
+#define NITIO_INT_ACK_REG(x)		(NITIO_G0_INT_ACK + (x))
+#define NITIO_STATUS_REG(x)		(NITIO_G0_STATUS + (x))
+#define NITIO_INT_ENA_REG(x)		(NITIO_G0_INT_ENA + (x))
+>>>>>>> refs/remotes/origin/master
 
 enum Gi_Auto_Increment_Reg_Bits {
 	Gi_Auto_Increment_Mask = 0xff
@@ -472,6 +498,7 @@ enum Gi_Counting_Mode_Reg_Bits {
 	Gi_Index_Phase_LowA_HighB = 0x1 << Gi_Index_Phase_Bitshift,
 	Gi_Index_Phase_HighA_LowB = 0x2 << Gi_Index_Phase_Bitshift,
 	Gi_Index_Phase_HighA_HighB = 0x3 << Gi_Index_Phase_Bitshift,
+<<<<<<< HEAD
 	Gi_HW_Arm_Enable_Bit = 0x80,	/* from m-series example code, not documented in 660x register level manual */
 	Gi_660x_HW_Arm_Select_Mask = 0x7 << Gi_HW_Arm_Select_Shift,	/* from m-series example code, not documented in 660x register level manual */
 	Gi_660x_Prescale_X8_Bit = 0x1000,
@@ -481,6 +508,24 @@ enum Gi_Counting_Mode_Reg_Bits {
 	Gi_660x_Alternate_Sync_Bit = 0x2000,
 	Gi_M_Series_Alternate_Sync_Bit = 0x4000,
 	Gi_660x_Prescale_X2_Bit = 0x4000,	/* from m-series example code, not documented in 660x register level manual */
+=======
+	/* from m-series example code, not documented in 660x register level
+	 * manual */
+	Gi_HW_Arm_Enable_Bit = 0x80,
+	/* from m-series example code, not documented in 660x register level
+	 * manual */
+	Gi_660x_HW_Arm_Select_Mask = 0x7 << Gi_HW_Arm_Select_Shift,
+	Gi_660x_Prescale_X8_Bit = 0x1000,
+	Gi_M_Series_Prescale_X8_Bit = 0x2000,
+	Gi_M_Series_HW_Arm_Select_Mask = 0x1f << Gi_HW_Arm_Select_Shift,
+	/* must be set for clocks over 40MHz, which includes synchronous
+	 * counting and quadrature modes */
+	Gi_660x_Alternate_Sync_Bit = 0x2000,
+	Gi_M_Series_Alternate_Sync_Bit = 0x4000,
+	/* from m-series example code, not documented in 660x register level
+	 * manual */
+	Gi_660x_Prescale_X2_Bit = 0x4000,
+>>>>>>> refs/remotes/origin/master
 	Gi_M_Series_Prescale_X2_Bit = 0x8000,
 };
 
@@ -503,7 +548,12 @@ enum Gi_Mode_Bits {
 	Gi_Level_Gating_Bits = 0x1,
 	Gi_Rising_Edge_Gating_Bits = 0x2,
 	Gi_Falling_Edge_Gating_Bits = 0x3,
+<<<<<<< HEAD
 	Gi_Gate_On_Both_Edges_Bit = 0x4,	/* used in conjunction with rising edge gating mode */
+=======
+	Gi_Gate_On_Both_Edges_Bit = 0x4,	/* used in conjunction with
+						 * rising edge gating mode */
+>>>>>>> refs/remotes/origin/master
 	Gi_Trigger_Mode_for_Edge_Gate_Mask = 0x18,
 	Gi_Edge_Gate_Starts_Stops_Bits = 0x0,
 	Gi_Edge_Gate_Stops_Starts_Bits = 0x8,
@@ -686,25 +736,40 @@ static inline unsigned Gi_Gate_Interrupt_Enable_Bit(unsigned counter_index)
 {
 	unsigned bit;
 
+<<<<<<< HEAD
 	if (counter_index % 2) {
 		bit = G1_Gate_Interrupt_Enable_Bit;
 	} else {
 		bit = G0_Gate_Interrupt_Enable_Bit;
 	}
+=======
+	if (counter_index % 2)
+		bit = G1_Gate_Interrupt_Enable_Bit;
+	else
+		bit = G0_Gate_Interrupt_Enable_Bit;
+>>>>>>> refs/remotes/origin/master
 	return bit;
 }
 
 static inline void write_register(struct ni_gpct *counter, unsigned bits,
 				  enum ni_gpct_register reg)
 {
+<<<<<<< HEAD
 	BUG_ON(reg >= NITIO_Num_Registers);
+=======
+	BUG_ON(reg >= NITIO_NUM_REGS);
+>>>>>>> refs/remotes/origin/master
 	counter->counter_dev->write_register(counter, bits, reg);
 }
 
 static inline unsigned read_register(struct ni_gpct *counter,
 				     enum ni_gpct_register reg)
 {
+<<<<<<< HEAD
 	BUG_ON(reg >= NITIO_Num_Registers);
+=======
+	BUG_ON(reg >= NITIO_NUM_REGS);
+>>>>>>> refs/remotes/origin/master
 	return counter->counter_dev->read_register(counter, reg);
 }
 
@@ -736,7 +801,11 @@ static inline void ni_tio_set_bits_transient(struct ni_gpct *counter,
 	struct ni_gpct_device *counter_dev = counter->counter_dev;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	BUG_ON(register_index >= NITIO_Num_Registers);
+=======
+	BUG_ON(register_index >= NITIO_NUM_REGS);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&counter_dev->regs_lock, flags);
 	counter_dev->regs[register_index] &= ~bit_mask;
 	counter_dev->regs[register_index] |= (bit_values & bit_mask);
@@ -748,8 +817,14 @@ static inline void ni_tio_set_bits_transient(struct ni_gpct *counter,
 }
 
 /* ni_tio_set_bits( ) is for safely writing to registers whose bits may be
+<<<<<<< HEAD
 twiddled in interrupt context, or whose software copy may be read in interrupt context.
 */
+=======
+ * twiddled in interrupt context, or whose software copy may be read in
+ * interrupt context.
+ */
+>>>>>>> refs/remotes/origin/master
 static inline void ni_tio_set_bits(struct ni_gpct *counter,
 				   enum ni_gpct_register register_index,
 				   unsigned bit_mask, unsigned bit_values)
@@ -770,7 +845,11 @@ static inline unsigned ni_tio_get_soft_copy(const struct ni_gpct *counter,
 	unsigned long flags;
 	unsigned value;
 
+<<<<<<< HEAD
 	BUG_ON(register_index >= NITIO_Num_Registers);
+=======
+	BUG_ON(register_index >= NITIO_NUM_REGS);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&counter_dev->regs_lock, flags);
 	value = counter_dev->regs[register_index];
 	spin_unlock_irqrestore(&counter_dev->regs_lock, flags);

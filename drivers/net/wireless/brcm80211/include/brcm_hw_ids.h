@@ -17,6 +17,7 @@
 #ifndef	_BRCM_HW_IDS_H_
 #define	_BRCM_HW_IDS_H_
 
+<<<<<<< HEAD
 #define	BCM4325_D11DUAL_ID	0x431b
 #define	BCM4325_D11G_ID		0x431c
 #define	BCM4325_D11A_ID		0x431d
@@ -28,6 +29,9 @@
 #define BCM4319_D11N_ID		0x4337	/* 4319 802.11n dualband device */
 #define BCM4319_D11N2G_ID	0x4338	/* 4319 802.11n 2.4G device */
 #define BCM4319_D11N5G_ID	0x4339	/* 4319 802.11n 5G device */
+=======
+#define BCM4313_D11N2G_ID	0x4727	/* 4313 802.11n 2.4G device */
+>>>>>>> refs/remotes/origin/master
 
 #define BCM43224_D11N_ID	0x4353	/* 43224 802.11n dualband device */
 #define BCM43224_D11N_ID_VEN1	0x0576	/* Vendor specific 43224 802.11n db */
@@ -37,6 +41,7 @@
 #define BCM43236_D11N_ID	0x4346	/* 43236 802.11n dualband device */
 #define BCM43236_D11N2G_ID	0x4347	/* 43236 802.11n 2.4GHz device */
 
+<<<<<<< HEAD
 #define BCM4313_D11N2G_ID	0x4727	/* 4313 802.11n 2.4G device */
 
 /* Chip IDs */
@@ -55,5 +60,22 @@
 #define BCM4336_CHIP_ID		0x4336	/* 4336 chipcommon chipid */
 #define BCM4330_CHIP_ID		0x4330	/* 4330 chipcommon chipid */
 #define BCM6362_CHIP_ID		0x6362	/* 6362 chipcommon chipid */
+=======
+/* Chipcommon Core Chip IDs */
+#define BCM4313_CHIP_ID		0x4313
+#define BCM43143_CHIP_ID	43143
+#define BCM43224_CHIP_ID	43224
+#define BCM43225_CHIP_ID	43225
+#define BCM43235_CHIP_ID	43235
+#define BCM43236_CHIP_ID	43236
+#define BCM43238_CHIP_ID	43238
+#define BCM43241_CHIP_ID	0x4324
+#define BCM4329_CHIP_ID		0x4329
+#define BCM4330_CHIP_ID		0x4330
+#define BCM4331_CHIP_ID		0x4331
+#define BCM4334_CHIP_ID		0x4334
+#define BCM4335_CHIP_ID		0x4335
+#define BCM4339_CHIP_ID		0x4339
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* _BRCM_HW_IDS_H_ */

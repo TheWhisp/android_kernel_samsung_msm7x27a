@@ -1,8 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 void do_bad_area(unsigned long addr, unsigned int fsr, struct pt_regs *regs);
 
 unsigned long search_exception_table(unsigned long addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ARCH_ARM_FAULT_H
 #define __ARCH_ARM_FAULT_H
 
@@ -31,4 +34,7 @@ void do_bad_area(unsigned long addr, unsigned int fsr, struct pt_regs *regs);
 unsigned long search_exception_table(unsigned long addr);
 
 #endif	/* __ARCH_ARM_FAULT_H */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

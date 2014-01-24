@@ -78,14 +78,18 @@ struct nand_bbt_descr {
 #define NAND_BBT_LASTBLOCK	0x00000010
 /* The bbt is at the given page, else we must scan for the bbt */
 #define NAND_BBT_ABSPAGE	0x00000020
+<<<<<<< HEAD
 /* The bbt is at the given page, else we must scan for the bbt */
 #define NAND_BBT_SEARCH		0x00000040
+=======
+>>>>>>> refs/remotes/origin/master
 /* bbt is stored per chip on multichip devices */
 #define NAND_BBT_PERCHIP	0x00000080
 /* bbt has a version counter at offset veroffs */
 #define NAND_BBT_VERSION	0x00000100
 /* Create a bbt if none exists */
 #define NAND_BBT_CREATE		0x00000200
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Search good / bad pattern through all pages of a block */
 #define NAND_BBT_SCANALLPAGES	0x00000400
@@ -106,6 +110,8 @@ struct nand_bbt_descr {
 /* The bad block table does not OOB for marker */
 #define NAND_BBT_NO_OOB		0x00400000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Create an empty BBT with no vendor information. Vendor's information may be
  * unavailable, for example, if the NAND controller has a different data and OOB
@@ -113,10 +119,13 @@ struct nand_bbt_descr {
  * with NAND_BBT_CREATE.
  */
 #define NAND_BBT_CREATE_EMPTY	0x00000400
+<<<<<<< HEAD
 /* Search good / bad pattern through all pages of a block */
 #define NAND_BBT_SCANALLPAGES	0x00000800
 /* Scan block empty during good / bad block scan */
 #define NAND_BBT_SCANEMPTY	0x00001000
+=======
+>>>>>>> refs/remotes/origin/master
 /* Write bbt if neccecary */
 #define NAND_BBT_WRITE		0x00002000
 /* Read and write back block contents when writing bbt */
@@ -130,7 +139,14 @@ struct nand_bbt_descr {
  * OOB area. This option is passed to the default bad block table function.
  */
 #define NAND_BBT_USE_FLASH	0x00020000
+<<<<<<< HEAD
 /* Do not store flash based bad block table in OOB area; store it in-band */
+=======
+/*
+ * Do not store flash based bad block table marker in the OOB area; store it
+ * in-band.
+ */
+>>>>>>> refs/remotes/origin/master
 #define NAND_BBT_NO_OOB		0x00040000
 /*
  * Do not write new bad block markers to OOB; useful, e.g., when ECC covers
@@ -144,7 +160,10 @@ struct nand_bbt_descr {
  * in nand_chip.bbt_options.
  */
 #define NAND_BBT_DYNAMICSTRUCT	0x80000000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* The maximum number of blocks to scan for a bbt */
 #define NAND_BBT_SCAN_MAXBLOCKS	4

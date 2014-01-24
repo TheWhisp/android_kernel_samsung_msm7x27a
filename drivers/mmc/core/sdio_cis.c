@@ -55,7 +55,11 @@ static int cistpl_vers_1(struct mmc_card *card, struct sdio_func *func,
 
 	for (i = 0; i < nr_strings; i++) {
 		buffer[i] = string;
+<<<<<<< HEAD
 		strlcpy(string, buf, sizeof(string));
+=======
+		strcpy(string, buf);
+>>>>>>> refs/remotes/origin/master
 		string += strlen(string) + 1;
 		buf += strlen(buf) + 1;
 	}
@@ -133,10 +137,14 @@ static int cis_tpl_parse(struct mmc_card *card, struct sdio_func *func,
 		}
 		if (ret && ret != -EILSEQ && ret != -ENOENT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: bad %s tuple 0x%02x (%u bytes)\n",
 =======
 			pr_err("%s: bad %s tuple 0x%02x (%u bytes)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("%s: bad %s tuple 0x%02x (%u bytes)\n",
+>>>>>>> refs/remotes/origin/master
 			       mmc_hostname(card->host), tpl_descr, code, size);
 		}
 	} else {
@@ -274,6 +282,7 @@ static int sdio_read_cis(struct mmc_card *card, struct sdio_func *func)
 			break;
 
 		/* null entries have no link field or data */
+<<<<<<< HEAD
 		if (tpl_code == 0x00) {
 			if (card->cis.vendor == 0x70 &&
 				(card->cis.device == 0x2460 ||
@@ -284,6 +293,10 @@ static int sdio_read_cis(struct mmc_card *card, struct sdio_func *func)
 			else
 				continue;
 		}
+=======
+		if (tpl_code == 0x00)
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		ret = mmc_io_rw_direct(card, 0, 0, ptr++, 0, &tpl_link);
 		if (ret)
@@ -326,10 +339,14 @@ static int sdio_read_cis(struct mmc_card *card, struct sdio_func *func)
 			if (ret == -ENOENT) {
 				/* warn about unknown tuples */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_WARNING "%s: queuing unknown"
 =======
 				pr_warning("%s: queuing unknown"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_warn_ratelimited("%s: queuing unknown"
+>>>>>>> refs/remotes/origin/master
 				       " CIS tuple 0x%02x (%u bytes)\n",
 				       mmc_hostname(card->host),
 				       tpl_code, tpl_link);

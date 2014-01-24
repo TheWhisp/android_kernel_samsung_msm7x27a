@@ -1,14 +1,22 @@
 #include <linux/sh_intc.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/radix-tree.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 
 #define _INTC_MK(fn, mode, addr_e, addr_d, width, shift) \
 	((shift) | ((width) << 5) | ((fn) << 9) | ((mode) << 13) | \
@@ -56,10 +64,14 @@ struct intc_subgroup_entry {
 struct intc_desc_int {
 	struct list_head list;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device sysdev;
 =======
 	struct device dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device dev;
+>>>>>>> refs/remotes/origin/master
 	struct radix_tree_root tree;
 	raw_spinlock_t lock;
 	unsigned int index;
@@ -74,11 +86,17 @@ struct intc_desc_int {
 	unsigned int nr_sense;
 	struct intc_window *window;
 	unsigned int nr_windows;
+<<<<<<< HEAD
 	struct irq_chip chip;
 <<<<<<< HEAD
 =======
 	bool skip_suspend;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *domain;
+	struct irq_chip chip;
+	bool skip_suspend;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -120,7 +138,10 @@ static inline void activate_irq(int irq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int intc_handle_int_cmp(const void *a, const void *b)
 {
 	const struct intc_handle_int *_a = a;
@@ -129,7 +150,10 @@ static inline int intc_handle_int_cmp(const void *a, const void *b)
 	return _a->irq - _b->irq;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* access.c */
 extern unsigned long
 (*intc_reg_fns[])(unsigned long addr, unsigned long h, unsigned long data);
@@ -180,11 +204,15 @@ void _intc_enable(struct irq_data *data, unsigned long handle);
 extern struct list_head intc_list;
 extern raw_spinlock_t intc_big_lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned int nr_intc_controllers;
 extern struct sysdev_class intc_sysdev_class;
 =======
 extern struct bus_type intc_subsys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct bus_type intc_subsys;
+>>>>>>> refs/remotes/origin/master
 
 unsigned int intc_get_dfl_prio_level(void);
 unsigned int intc_get_prio_level(unsigned int irq);
@@ -206,6 +234,12 @@ unsigned long intc_get_ack_handle(unsigned int irq);
 void intc_enable_disable_enum(struct intc_desc *desc, struct intc_desc_int *d,
 			      intc_enum enum_id, int enable);
 
+<<<<<<< HEAD
+=======
+/* irqdomain.c */
+void intc_irq_domain_init(struct intc_desc_int *d, struct intc_hw_desc *hw);
+
+>>>>>>> refs/remotes/origin/master
 /* virq.c */
 void intc_subgroup_init(struct intc_desc *desc, struct intc_desc_int *d);
 void intc_irq_xlate_set(unsigned int irq, intc_enum id, struct intc_desc_int *d);

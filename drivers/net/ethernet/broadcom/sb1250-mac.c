@@ -831,11 +831,16 @@ static int sbdma_add_rcvbuffer(struct sbmac_softc *sc, struct sbmacdma *d,
 		sb_new = netdev_alloc_skb(dev, ENET_PACKET_SIZE +
 					       SMP_CACHE_BYTES * 2 +
 					       NET_IP_ALIGN);
+<<<<<<< HEAD
 		if (sb_new == NULL) {
 			pr_info("%s: sk_buff allocation failed\n",
 			       d->sbdma_eth->sbm_dev->name);
 			return -ENOBUFS;
 		}
+=======
+		if (sb_new == NULL)
+			return -ENOBUFS;
+>>>>>>> refs/remotes/origin/master
 
 		sbdma_align_skb(sb_new, SMP_CACHE_BYTES, NET_IP_ALIGN);
 	}
@@ -2200,7 +2205,11 @@ static const struct net_device_ops sbmac_netdev_ops = {
 
 static int sbmac_init(struct platform_device *pldev, long long base)
 {
+<<<<<<< HEAD
 	struct net_device *dev = dev_get_drvdata(&pldev->dev);
+=======
+	struct net_device *dev = platform_get_drvdata(pldev);
+>>>>>>> refs/remotes/origin/master
 	int idx = pldev->id;
 	struct sbmac_softc *sc = netdev_priv(dev);
 	unsigned char *eaddr;
@@ -2278,7 +2287,11 @@ static int sbmac_init(struct platform_device *pldev, long long base)
 		       dev->name);
 		goto free_mdio;
 	}
+<<<<<<< HEAD
 	dev_set_drvdata(&pldev->dev, sc->mii_bus);
+=======
+	platform_set_drvdata(pldev, sc->mii_bus);
+>>>>>>> refs/remotes/origin/master
 
 	err = register_netdev(dev);
 	if (err) {
@@ -2303,7 +2316,10 @@ static int sbmac_init(struct platform_device *pldev, long long base)
 	return 0;
 unreg_mdio:
 	mdiobus_unregister(sc->mii_bus);
+<<<<<<< HEAD
 	dev_set_drvdata(&pldev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 free_mdio:
 	mdiobus_free(sc->mii_bus);
 uninit_ctx:
@@ -2385,7 +2401,11 @@ static int sbmac_mii_probe(struct net_device *dev)
 		return -ENXIO;
 	}
 
+<<<<<<< HEAD
 	phy_dev = phy_connect(dev, dev_name(&phy_dev->dev), &sbmac_mii_poll, 0,
+=======
+	phy_dev = phy_connect(dev, dev_name(&phy_dev->dev), &sbmac_mii_poll,
+>>>>>>> refs/remotes/origin/master
 			      PHY_INTERFACE_MODE_GMII);
 	if (IS_ERR(phy_dev)) {
 		printk(KERN_ERR "%s: could not attach to PHY\n", dev->name);
@@ -2586,7 +2606,11 @@ static int sbmac_poll(struct napi_struct *napi, int budget)
 }
 
 
+<<<<<<< HEAD
 static int __devinit sbmac_probe(struct platform_device *pldev)
+=======
+static int sbmac_probe(struct platform_device *pldev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct sbmac_softc *sc;
@@ -2627,7 +2651,11 @@ static int __devinit sbmac_probe(struct platform_device *pldev)
 		goto out_unmap;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pldev->dev, dev);
+=======
+	platform_set_drvdata(pldev, dev);
+>>>>>>> refs/remotes/origin/master
 	SET_NETDEV_DEV(dev, &pldev->dev);
 
 	sc = netdev_priv(dev);
@@ -2652,7 +2680,11 @@ out_out:
 
 static int __exit sbmac_remove(struct platform_device *pldev)
 {
+<<<<<<< HEAD
 	struct net_device *dev = dev_get_drvdata(&pldev->dev);
+=======
+	struct net_device *dev = platform_get_drvdata(pldev);
+>>>>>>> refs/remotes/origin/master
 	struct sbmac_softc *sc = netdev_priv(dev);
 
 	unregister_netdev(dev);

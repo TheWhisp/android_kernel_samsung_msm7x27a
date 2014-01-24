@@ -11,7 +11,11 @@
 /*
  * These structs MUST NOT be changed.
  * They are the ABI between hypervisor and guest OS.
+<<<<<<< HEAD
  * Both Xen and KVM are using this.
+=======
+ * KVM is using this.
+>>>>>>> refs/remotes/origin/master
  *
  * pvclock_vcpu_time_info holds the system time and the tsc timestamp
  * of the last update. So the guest can use the tsc delta to get a

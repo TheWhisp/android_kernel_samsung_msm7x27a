@@ -215,10 +215,14 @@ replacing "/usr/src" with wherever you keep your Linux kernel source tree:
   make bzImage (or zImage)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Then install "arch/i386/boot/bzImage" or "arch/i386/boot/zImage" as your
 =======
 Then install "arch/x86/boot/bzImage" or "arch/x86/boot/zImage" as your
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Then install "arch/x86/boot/bzImage" or "arch/x86/boot/zImage" as your
+>>>>>>> refs/remotes/origin/master
 standard kernel, run lilo if appropriate, and reboot.
 
 To create the necessary devices in /dev, the "make_rd" script included in

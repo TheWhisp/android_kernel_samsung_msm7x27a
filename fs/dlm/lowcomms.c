@@ -53,10 +53,14 @@
 #include <linux/sctp.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/sctp/sctp.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <net/sctp/user.h>
+=======
+#include <net/sctp/sctp.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/ipv6.h>
 
 #include "dlm_internal.h"
@@ -129,6 +133,10 @@ struct connection {
 	struct connection *othercon;
 	struct work_struct rwork; /* Receive workqueue */
 	struct work_struct swork; /* Send workqueue */
+<<<<<<< HEAD
+=======
+	bool try_new_addr;
+>>>>>>> refs/remotes/origin/master
 };
 #define sock2con(x) ((struct connection *)(x)->sk_user_data)
 
@@ -143,8 +151,25 @@ struct writequeue_entry {
 	struct connection *con;
 };
 
+<<<<<<< HEAD
 static struct sockaddr_storage *dlm_local_addr[DLM_MAX_ADDR_COUNT];
 static int dlm_local_count;
+=======
+struct dlm_node_addr {
+	struct list_head list;
+	int nodeid;
+	int addr_count;
+	int curr_addr_index;
+	struct sockaddr_storage *addr[DLM_MAX_ADDR_COUNT];
+};
+
+static LIST_HEAD(dlm_node_addrs);
+static DEFINE_SPINLOCK(dlm_node_addrs_spin);
+
+static struct sockaddr_storage *dlm_local_addr[DLM_MAX_ADDR_COUNT];
+static int dlm_local_count;
+static int dlm_allow_conn;
+>>>>>>> refs/remotes/origin/master
 
 /* Work queues */
 static struct workqueue_struct *recv_workqueue;
@@ -169,12 +194,19 @@ static inline int nodeid_hash(int nodeid)
 static struct connection *__find_con(int nodeid)
 {
 	int r;
+<<<<<<< HEAD
 	struct hlist_node *h;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct connection *con;
 
 	r = nodeid_hash(nodeid);
 
+<<<<<<< HEAD
 	hlist_for_each_entry(con, h, &connection_hash[r], list) {
+=======
+	hlist_for_each_entry(con, &connection_hash[r], list) {
+>>>>>>> refs/remotes/origin/master
 		if (con->nodeid == nodeid)
 			return con;
 	}
@@ -224,6 +256,7 @@ static struct connection *__nodeid2con(int nodeid, gfp_t alloc)
 static void foreach_conn(void (*conn_func)(struct connection *c))
 {
 	int i;
+<<<<<<< HEAD
 	struct hlist_node *h, *n;
 	struct connection *con;
 
@@ -231,6 +264,14 @@ static void foreach_conn(void (*conn_func)(struct connection *c))
 		hlist_for_each_entry_safe(con, h, n, &connection_hash[i], list){
 			conn_func(con);
 		}
+=======
+	struct hlist_node *n;
+	struct connection *con;
+
+	for (i = 0; i < CONN_HASH_SIZE; i++) {
+		hlist_for_each_entry_safe(con, n, &connection_hash[i], list)
+			conn_func(con);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -249,13 +290,20 @@ static struct connection *nodeid2con(int nodeid, gfp_t allocation)
 static struct connection *assoc2con(int assoc_id)
 {
 	int i;
+<<<<<<< HEAD
 	struct hlist_node *h;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct connection *con;
 
 	mutex_lock(&connections_lock);
 
 	for (i = 0 ; i < CONN_HASH_SIZE; i++) {
+<<<<<<< HEAD
 		hlist_for_each_entry(con, h, &connection_hash[i], list) {
+=======
+		hlist_for_each_entry(con, &connection_hash[i], list) {
+>>>>>>> refs/remotes/origin/master
 			if (con->sctp_assoc == assoc_id) {
 				mutex_unlock(&connections_lock);
 				return con;
@@ -266,14 +314,61 @@ static struct connection *assoc2con(int assoc_id)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int nodeid_to_addr(int nodeid, struct sockaddr *retaddr)
 {
 	struct sockaddr_storage addr;
 	int error;
+=======
+static struct dlm_node_addr *find_node_addr(int nodeid)
+{
+	struct dlm_node_addr *na;
+
+	list_for_each_entry(na, &dlm_node_addrs, list) {
+		if (na->nodeid == nodeid)
+			return na;
+	}
+	return NULL;
+}
+
+static int addr_compare(struct sockaddr_storage *x, struct sockaddr_storage *y)
+{
+	switch (x->ss_family) {
+	case AF_INET: {
+		struct sockaddr_in *sinx = (struct sockaddr_in *)x;
+		struct sockaddr_in *siny = (struct sockaddr_in *)y;
+		if (sinx->sin_addr.s_addr != siny->sin_addr.s_addr)
+			return 0;
+		if (sinx->sin_port != siny->sin_port)
+			return 0;
+		break;
+	}
+	case AF_INET6: {
+		struct sockaddr_in6 *sinx = (struct sockaddr_in6 *)x;
+		struct sockaddr_in6 *siny = (struct sockaddr_in6 *)y;
+		if (!ipv6_addr_equal(&sinx->sin6_addr, &siny->sin6_addr))
+			return 0;
+		if (sinx->sin6_port != siny->sin6_port)
+			return 0;
+		break;
+	}
+	default:
+		return 0;
+	}
+	return 1;
+}
+
+static int nodeid_to_addr(int nodeid, struct sockaddr_storage *sas_out,
+			  struct sockaddr *sa_out, bool try_new_addr)
+{
+	struct sockaddr_storage sas;
+	struct dlm_node_addr *na;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dlm_local_count)
 		return -1;
 
+<<<<<<< HEAD
 	error = dlm_nodeid_to_addr(nodeid, &addr);
 	if (error)
 		return error;
@@ -290,11 +385,115 @@ static int nodeid_to_addr(int nodeid, struct sockaddr *retaddr)
 =======
 		ret6->sin6_addr = in6->sin6_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&dlm_node_addrs_spin);
+	na = find_node_addr(nodeid);
+	if (na && na->addr_count) {
+		if (try_new_addr) {
+			na->curr_addr_index++;
+			if (na->curr_addr_index == na->addr_count)
+				na->curr_addr_index = 0;
+		}
+
+		memcpy(&sas, na->addr[na->curr_addr_index ],
+			sizeof(struct sockaddr_storage));
+	}
+	spin_unlock(&dlm_node_addrs_spin);
+
+	if (!na)
+		return -EEXIST;
+
+	if (!na->addr_count)
+		return -ENOENT;
+
+	if (sas_out)
+		memcpy(sas_out, &sas, sizeof(struct sockaddr_storage));
+
+	if (!sa_out)
+		return 0;
+
+	if (dlm_local_addr[0]->ss_family == AF_INET) {
+		struct sockaddr_in *in4  = (struct sockaddr_in *) &sas;
+		struct sockaddr_in *ret4 = (struct sockaddr_in *) sa_out;
+		ret4->sin_addr.s_addr = in4->sin_addr.s_addr;
+	} else {
+		struct sockaddr_in6 *in6  = (struct sockaddr_in6 *) &sas;
+		struct sockaddr_in6 *ret6 = (struct sockaddr_in6 *) sa_out;
+		ret6->sin6_addr = in6->sin6_addr;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int addr_to_nodeid(struct sockaddr_storage *addr, int *nodeid)
+{
+	struct dlm_node_addr *na;
+	int rv = -EEXIST;
+	int addr_i;
+
+	spin_lock(&dlm_node_addrs_spin);
+	list_for_each_entry(na, &dlm_node_addrs, list) {
+		if (!na->addr_count)
+			continue;
+
+		for (addr_i = 0; addr_i < na->addr_count; addr_i++) {
+			if (addr_compare(na->addr[addr_i], addr)) {
+				*nodeid = na->nodeid;
+				rv = 0;
+				goto unlock;
+			}
+		}
+	}
+unlock:
+	spin_unlock(&dlm_node_addrs_spin);
+	return rv;
+}
+
+int dlm_lowcomms_addr(int nodeid, struct sockaddr_storage *addr, int len)
+{
+	struct sockaddr_storage *new_addr;
+	struct dlm_node_addr *new_node, *na;
+
+	new_node = kzalloc(sizeof(struct dlm_node_addr), GFP_NOFS);
+	if (!new_node)
+		return -ENOMEM;
+
+	new_addr = kzalloc(sizeof(struct sockaddr_storage), GFP_NOFS);
+	if (!new_addr) {
+		kfree(new_node);
+		return -ENOMEM;
+	}
+
+	memcpy(new_addr, addr, len);
+
+	spin_lock(&dlm_node_addrs_spin);
+	na = find_node_addr(nodeid);
+	if (!na) {
+		new_node->nodeid = nodeid;
+		new_node->addr[0] = new_addr;
+		new_node->addr_count = 1;
+		list_add(&new_node->list, &dlm_node_addrs);
+		spin_unlock(&dlm_node_addrs_spin);
+		return 0;
+	}
+
+	if (na->addr_count >= DLM_MAX_ADDR_COUNT) {
+		spin_unlock(&dlm_node_addrs_spin);
+		kfree(new_addr);
+		kfree(new_node);
+		return -ENOSPC;
+	}
+
+	na->addr[na->addr_count++] = new_addr;
+	spin_unlock(&dlm_node_addrs_spin);
+	kfree(new_node);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Data available on socket or listen socket received a connect */
 static void lowcomms_data_ready(struct sock *sk, int count_unused)
 {
@@ -354,7 +553,11 @@ int dlm_lowcomms_connect_node(int nodeid)
 }
 
 /* Make a socket active */
+<<<<<<< HEAD
 static int add_sock(struct socket *sock, struct connection *con)
+=======
+static void add_sock(struct socket *sock, struct connection *con)
+>>>>>>> refs/remotes/origin/master
 {
 	con->sock = sock;
 
@@ -364,7 +567,10 @@ static int add_sock(struct socket *sock, struct connection *con)
 	con->sock->sk->sk_state_change = lowcomms_state_change;
 	con->sock->sk->sk_user_data = con;
 	con->sock->sk->sk_allocation = GFP_NOFS;
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Add the port number to an IPv6 or 4 sockaddr and return the address
@@ -446,8 +652,28 @@ static void sctp_send_shutdown(sctp_assoc_t associd)
 
 static void sctp_init_failed_foreach(struct connection *con)
 {
+<<<<<<< HEAD
 	con->sctp_assoc = 0;
 	if (test_and_clear_bit(CF_CONNECT_PENDING, &con->flags)) {
+=======
+
+	/*
+	 * Don't try to recover base con and handle race where the
+	 * other node's assoc init creates a assoc and we get that
+	 * notification, then we get a notification that our attempt
+	 * failed due. This happens when we are still trying the primary
+	 * address, but the other node has already tried secondary addrs
+	 * and found one that worked.
+	 */
+	if (!con->nodeid || con->sctp_assoc)
+		return;
+
+	log_print("Retrying SCTP association init for node %d\n", con->nodeid);
+
+	con->try_new_addr = true;
+	con->sctp_assoc = 0;
+	if (test_and_clear_bit(CF_INIT_PENDING, &con->flags)) {
+>>>>>>> refs/remotes/origin/master
 		if (!test_and_set_bit(CF_WRITE_PENDING, &con->flags))
 			queue_work(send_workqueue, &con->swork);
 	}
@@ -464,15 +690,67 @@ static void sctp_init_failed(void)
 	mutex_unlock(&connections_lock);
 }
 
+<<<<<<< HEAD
+=======
+static void retry_failed_sctp_send(struct connection *recv_con,
+				   struct sctp_send_failed *sn_send_failed,
+				   char *buf)
+{
+	int len = sn_send_failed->ssf_length - sizeof(struct sctp_send_failed);
+	struct dlm_mhandle *mh;
+	struct connection *con;
+	char *retry_buf;
+	int nodeid = sn_send_failed->ssf_info.sinfo_ppid;
+
+	log_print("Retry sending %d bytes to node id %d", len, nodeid);
+
+	con = nodeid2con(nodeid, 0);
+	if (!con) {
+		log_print("Could not look up con for nodeid %d\n",
+			  nodeid);
+		return;
+	}
+
+	mh = dlm_lowcomms_get_buffer(nodeid, len, GFP_NOFS, &retry_buf);
+	if (!mh) {
+		log_print("Could not allocate buf for retry.");
+		return;
+	}
+	memcpy(retry_buf, buf + sizeof(struct sctp_send_failed), len);
+	dlm_lowcomms_commit_buffer(mh);
+
+	/*
+	 * If we got a assoc changed event before the send failed event then
+	 * we only need to retry the send.
+	 */
+	if (con->sctp_assoc) {
+		if (!test_and_set_bit(CF_WRITE_PENDING, &con->flags))
+			queue_work(send_workqueue, &con->swork);
+	} else
+		sctp_init_failed_foreach(con);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Something happened to an association */
 static void process_sctp_notification(struct connection *con,
 				      struct msghdr *msg, char *buf)
 {
 	union sctp_notification *sn = (union sctp_notification *)buf;
+<<<<<<< HEAD
 
 	if (sn->sn_header.sn_type == SCTP_ASSOC_CHANGE) {
 		switch (sn->sn_assoc_change.sac_state) {
 
+=======
+	struct linger linger;
+
+	switch (sn->sn_header.sn_type) {
+	case SCTP_SEND_FAILED:
+		retry_failed_sctp_send(con, &sn->sn_send_failed, buf);
+		break;
+	case SCTP_ASSOC_CHANGE:
+		switch (sn->sn_assoc_change.sac_state) {
+>>>>>>> refs/remotes/origin/master
 		case SCTP_COMM_UP:
 		case SCTP_RESTART:
 		{
@@ -483,11 +761,14 @@ static void process_sctp_notification(struct connection *con,
 			int addr_len;
 			struct connection *new_con;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sctp_peeloff_arg_t parg;
 			int parglen = sizeof(parg);
 			int err;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * We get this before any data for an association.
@@ -522,6 +803,7 @@ static void process_sctp_notification(struct connection *con,
 				return;
 			}
 			make_sockaddr(&prim.ssp_addr, 0, &addr_len);
+<<<<<<< HEAD
 			if (dlm_addr_to_nodeid(&prim.ssp_addr, &nodeid)) {
 <<<<<<< HEAD
 				int i;
@@ -531,11 +813,17 @@ static void process_sctp_notification(struct connection *con,
 					printk("%02x ", b[i]);
 				printk("\n");
 =======
+=======
+			if (addr_to_nodeid(&prim.ssp_addr, &nodeid)) {
+>>>>>>> refs/remotes/origin/master
 				unsigned char *b=(unsigned char *)&prim.ssp_addr;
 				log_print("reject connect from unknown addr");
 				print_hex_dump_bytes("ss: ", DUMP_PREFIX_NONE, 
 						     b, sizeof(struct sockaddr_storage));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				sctp_send_shutdown(prim.ssp_assoc_id);
 				return;
 			}
@@ -545,6 +833,7 @@ static void process_sctp_notification(struct connection *con,
 				return;
 
 			/* Peel off a new sock */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			parg.associd = sn->sn_assoc_change.sac_assoc_id;
 			ret = kernel_getsockopt(con->sock, IPPROTO_SCTP,
@@ -564,6 +853,8 @@ static void process_sctp_notification(struct connection *con,
 			add_sock(new_con->sock, new_con);
 			sockfd_put(new_con->sock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			sctp_lock_sock(con->sock->sk);
 			ret = sctp_do_peeloff(con->sock->sk,
 				sn->sn_assoc_change.sac_assoc_id,
@@ -577,14 +868,32 @@ static void process_sctp_notification(struct connection *con,
 				return;
 			}
 			add_sock(new_con->sock, new_con);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+			linger.l_onoff = 1;
+			linger.l_linger = 0;
+			ret = kernel_setsockopt(new_con->sock, SOL_SOCKET, SO_LINGER,
+						(char *)&linger, sizeof(linger));
+			if (ret < 0)
+				log_print("set socket option SO_LINGER failed");
+>>>>>>> refs/remotes/origin/master
 
 			log_print("connecting to %d sctp association %d",
 				 nodeid, (int)sn->sn_assoc_change.sac_assoc_id);
 
+<<<<<<< HEAD
 			/* Send any pending writes */
 			clear_bit(CF_CONNECT_PENDING, &new_con->flags);
 			clear_bit(CF_INIT_PENDING, &con->flags);
+=======
+			new_con->sctp_assoc = sn->sn_assoc_change.sac_assoc_id;
+			new_con->try_new_addr = false;
+			/* Send any pending writes */
+			clear_bit(CF_CONNECT_PENDING, &new_con->flags);
+			clear_bit(CF_INIT_PENDING, &new_con->flags);
+>>>>>>> refs/remotes/origin/master
 			if (!test_and_set_bit(CF_WRITE_PENDING, &new_con->flags)) {
 				queue_work(send_workqueue, &new_con->swork);
 			}
@@ -603,6 +912,7 @@ static void process_sctp_notification(struct connection *con,
 		}
 		break;
 
+<<<<<<< HEAD
 		/* We don't know which INIT failed, so clear the PENDING flags
 		 * on them all.  if assoc_id is zero then it will then try
 		 * again */
@@ -611,6 +921,12 @@ static void process_sctp_notification(struct connection *con,
 		{
 			log_print("Can't start SCTP association - retrying");
 			sctp_init_failed();
+=======
+		case SCTP_CANT_STR_ASSOC:
+		{
+			/* Will retry init when we get the send failed notification */
+			log_print("Can't start SCTP association - retrying");
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -619,6 +935,11 @@ static void process_sctp_notification(struct connection *con,
 				  (int)sn->sn_assoc_change.sac_assoc_id,
 				  sn->sn_assoc_change.sac_state);
 		}
+<<<<<<< HEAD
+=======
+	default:
+		; /* fall through */
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -752,6 +1073,16 @@ static int tcp_accept_from_sock(struct connection *con)
 	struct connection *newcon;
 	struct connection *addcon;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&connections_lock);
+	if (!dlm_allow_conn) {
+		mutex_unlock(&connections_lock);
+		return -1;
+	}
+	mutex_unlock(&connections_lock);
+
+>>>>>>> refs/remotes/origin/master
 	memset(&peeraddr, 0, sizeof(peeraddr));
 	result = sock_create_kern(dlm_local_addr[0]->ss_family, SOCK_STREAM,
 				  IPPROTO_TCP, &newsock);
@@ -781,15 +1112,22 @@ static int tcp_accept_from_sock(struct connection *con)
 
 	/* Get the new node's NODEID */
 	make_sockaddr(&peeraddr, 0, &len);
+<<<<<<< HEAD
 	if (dlm_addr_to_nodeid(&peeraddr, &nodeid)) {
 <<<<<<< HEAD
 		log_print("connect from non cluster node");
 =======
+=======
+	if (addr_to_nodeid(&peeraddr, &nodeid)) {
+>>>>>>> refs/remotes/origin/master
 		unsigned char *b=(unsigned char *)&peeraddr;
 		log_print("connect from non cluster node");
 		print_hex_dump_bytes("ss: ", DUMP_PREFIX_NONE, 
 				     b, sizeof(struct sockaddr_storage));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sock_release(newsock);
 		mutex_unlock(&con->sock_mutex);
 		return -1;
@@ -875,6 +1213,27 @@ static void free_entry(struct writequeue_entry *e)
 	kfree(e);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * writequeue_entry_complete - try to delete and free write queue entry
+ * @e: write queue entry to try to delete
+ * @completed: bytes completed
+ *
+ * writequeue_lock must be held.
+ */
+static void writequeue_entry_complete(struct writequeue_entry *e, int completed)
+{
+	e->offset += completed;
+	e->len -= completed;
+
+	if (e->len == 0 && e->users == 0) {
+		list_del(&e->list);
+		free_entry(e);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Initiate an SCTP association.
    This is a special case of send_to_sock() in that we don't yet have a
    peeled-off socket for this association, so we use the listening socket
@@ -894,6 +1253,7 @@ static void sctp_init_assoc(struct connection *con)
 	int addrlen;
 	struct kvec iov[1];
 
+<<<<<<< HEAD
 	if (test_and_set_bit(CF_INIT_PENDING, &con->flags))
 		return;
 
@@ -903,6 +1263,16 @@ static void sctp_init_assoc(struct connection *con)
 	if (nodeid_to_addr(con->nodeid, (struct sockaddr *)&rem_addr)) {
 		log_print("no address for nodeid %d", con->nodeid);
 		return;
+=======
+	mutex_lock(&con->sock_mutex);
+	if (test_and_set_bit(CF_INIT_PENDING, &con->flags))
+		goto unlock;
+
+	if (nodeid_to_addr(con->nodeid, NULL, (struct sockaddr *)&rem_addr,
+			   con->try_new_addr)) {
+		log_print("no address for nodeid %d", con->nodeid);
+		goto unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 	base_con = nodeid2con(0, 0);
 	BUG_ON(base_con == NULL);
@@ -920,17 +1290,36 @@ static void sctp_init_assoc(struct connection *con)
 	if (list_empty(&con->writequeue)) {
 		spin_unlock(&con->writequeue_lock);
 		log_print("writequeue empty for nodeid %d", con->nodeid);
+<<<<<<< HEAD
 		return;
+=======
+		goto unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	e = list_first_entry(&con->writequeue, struct writequeue_entry, list);
 	len = e->len;
 	offset = e->offset;
+<<<<<<< HEAD
 	spin_unlock(&con->writequeue_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Send the first block off the write queue */
 	iov[0].iov_base = page_address(e->page)+offset;
 	iov[0].iov_len = len;
+<<<<<<< HEAD
+=======
+	spin_unlock(&con->writequeue_lock);
+
+	if (rem_addr.ss_family == AF_INET) {
+		struct sockaddr_in *sin = (struct sockaddr_in *)&rem_addr;
+		log_print("Trying to connect to %pI4", &sin->sin_addr.s_addr);
+	} else {
+		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&rem_addr;
+		log_print("Trying to connect to %pI6", &sin6->sin6_addr);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	cmsg = CMSG_FIRSTHDR(&outmessage);
 	cmsg->cmsg_level = IPPROTO_SCTP;
@@ -938,8 +1327,14 @@ static void sctp_init_assoc(struct connection *con)
 	cmsg->cmsg_len = CMSG_LEN(sizeof(struct sctp_sndrcvinfo));
 	sinfo = CMSG_DATA(cmsg);
 	memset(sinfo, 0x00, sizeof(struct sctp_sndrcvinfo));
+<<<<<<< HEAD
 	sinfo->sinfo_ppid = cpu_to_le32(dlm_our_nodeid());
 	outmessage.msg_controllen = cmsg->cmsg_len;
+=======
+	sinfo->sinfo_ppid = cpu_to_le32(con->nodeid);
+	outmessage.msg_controllen = cmsg->cmsg_len;
+	sinfo->sinfo_flags |= SCTP_ADDR_OVER;
+>>>>>>> refs/remotes/origin/master
 
 	ret = kernel_sendmsg(base_con->sock, &outmessage, iov, 1, len);
 	if (ret < 0) {
@@ -952,6 +1347,7 @@ static void sctp_init_assoc(struct connection *con)
 	}
 	else {
 		spin_lock(&con->writequeue_lock);
+<<<<<<< HEAD
 		e->offset += ret;
 		e->len -= ret;
 
@@ -961,16 +1357,31 @@ static void sctp_init_assoc(struct connection *con)
 		}
 		spin_unlock(&con->writequeue_lock);
 	}
+=======
+		writequeue_entry_complete(e, ret);
+		spin_unlock(&con->writequeue_lock);
+	}
+
+unlock:
+	mutex_unlock(&con->sock_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Connect a new socket to its peer */
 static void tcp_connect_to_sock(struct connection *con)
 {
+<<<<<<< HEAD
 	int result = -EHOSTUNREACH;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sockaddr_storage saddr, src_addr;
 	int addr_len;
 	struct socket *sock = NULL;
 	int one = 1;
+<<<<<<< HEAD
+=======
+	int result;
+>>>>>>> refs/remotes/origin/master
 
 	if (con->nodeid == 0) {
 		log_print("attempt to connect sock 0 foiled");
@@ -982,10 +1393,15 @@ static void tcp_connect_to_sock(struct connection *con)
 		goto out;
 
 	/* Some odd races can cause double-connects, ignore them */
+<<<<<<< HEAD
 	if (con->sock) {
 		result = 0;
 		goto out;
 	}
+=======
+	if (con->sock)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* Create a socket to communicate with */
 	result = sock_create_kern(dlm_local_addr[0]->ss_family, SOCK_STREAM,
@@ -994,8 +1410,16 @@ static void tcp_connect_to_sock(struct connection *con)
 		goto out_err;
 
 	memset(&saddr, 0, sizeof(saddr));
+<<<<<<< HEAD
 	if (dlm_nodeid_to_addr(con->nodeid, &saddr))
 		goto out_err;
+=======
+	result = nodeid_to_addr(con->nodeid, &saddr, NULL, false);
+	if (result < 0) {
+		log_print("no address for nodeid %d", con->nodeid);
+		goto out_err;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	sock->sk->sk_user_data = con;
 	con->rx_action = receive_from_sock;
@@ -1021,8 +1445,12 @@ static void tcp_connect_to_sock(struct connection *con)
 	kernel_setsockopt(sock, SOL_TCP, TCP_NODELAY, (char *)&one,
 			  sizeof(one));
 
+<<<<<<< HEAD
 	result =
 		sock->ops->connect(sock, (struct sockaddr *)&saddr, addr_len,
+=======
+	result = sock->ops->connect(sock, (struct sockaddr *)&saddr, addr_len,
+>>>>>>> refs/remotes/origin/master
 				   O_NONBLOCK);
 	if (result == -EINPROGRESS)
 		result = 0;
@@ -1040,11 +1468,25 @@ out_err:
 	 * Some errors are fatal and this list might need adjusting. For other
 	 * errors we try again until the max number of retries is reached.
 	 */
+<<<<<<< HEAD
 	if (result != -EHOSTUNREACH && result != -ENETUNREACH &&
 	    result != -ENETDOWN && result != -EINVAL
 	    && result != -EPROTONOSUPPORT) {
 		lowcomms_connect_sock(con);
 		result = 0;
+=======
+	if (result != -EHOSTUNREACH &&
+	    result != -ENETUNREACH &&
+	    result != -ENETDOWN && 
+	    result != -EINVAL &&
+	    result != -EPROTONOSUPPORT) {
+		log_print("connect %d try %d error %d", con->nodeid,
+			  con->retries, result);
+		mutex_unlock(&con->sock_mutex);
+		msleep(1000);
+		lowcomms_connect_sock(con);
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 out:
 	mutex_unlock(&con->sock_mutex);
@@ -1082,10 +1524,15 @@ static struct socket *tcp_create_listen_sock(struct connection *con,
 	if (result < 0) {
 		log_print("Failed to set SO_REUSEADDR on socket: %d", result);
 	}
+<<<<<<< HEAD
 	sock->sk->sk_user_data = con;
 	con->rx_action = tcp_accept_from_sock;
 	con->connect_action = tcp_connect_to_sock;
 	con->sock = sock;
+=======
+	con->rx_action = tcp_accept_from_sock;
+	con->connect_action = tcp_connect_to_sock;
+>>>>>>> refs/remotes/origin/master
 
 	/* Bind to our port */
 	make_sockaddr(saddr, dlm_config.ci_tcp_port, &addr_len);
@@ -1123,10 +1570,14 @@ static void init_local(void)
 
 	dlm_local_count = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < DLM_MAX_ADDR_COUNT - 1; i++) {
 =======
 	for (i = 0; i < DLM_MAX_ADDR_COUNT; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < DLM_MAX_ADDR_COUNT; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (dlm_our_addr(&sas, i))
 			break;
 
@@ -1171,6 +1622,10 @@ static int sctp_listen_for_all(void)
 	int result = -EINVAL, num = 1, i, addr_len;
 	struct connection *con = nodeid2con(0, GFP_NOFS);
 	int bufsize = NEEDED_RMEM;
+<<<<<<< HEAD
+=======
+	int one = 1;
+>>>>>>> refs/remotes/origin/master
 
 	if (!con)
 		return -ENOMEM;
@@ -1205,6 +1660,14 @@ static int sctp_listen_for_all(void)
 		goto create_delsock;
 	}
 
+<<<<<<< HEAD
+=======
+	result = kernel_setsockopt(sock, SOL_SCTP, SCTP_NODELAY, (char *)&one,
+				   sizeof(one));
+	if (result < 0)
+		log_print("Could not set SCTP NODELAY error %d\n", result);
+
+>>>>>>> refs/remotes/origin/master
 	/* Init con struct */
 	sock->sk->sk_user_data = con;
 	con->sock = sock;
@@ -1299,7 +1762,10 @@ void *dlm_lowcomms_get_buffer(int nodeid, int len, gfp_t allocation, char **ppc)
 	struct connection *con;
 	struct writequeue_entry *e;
 	int offset = 0;
+<<<<<<< HEAD
 	int users = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	con = nodeid2con(nodeid, allocation);
 	if (!con)
@@ -1313,7 +1779,11 @@ void *dlm_lowcomms_get_buffer(int nodeid, int len, gfp_t allocation, char **ppc)
 	} else {
 		offset = e->end;
 		e->end += len;
+<<<<<<< HEAD
 		users = e->users++;
+=======
+		e->users++;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&con->writequeue_lock);
 
@@ -1328,7 +1798,11 @@ void *dlm_lowcomms_get_buffer(int nodeid, int len, gfp_t allocation, char **ppc)
 		spin_lock(&con->writequeue_lock);
 		offset = e->end;
 		e->end += len;
+<<<<<<< HEAD
 		users = e->users++;
+=======
+		e->users++;
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&e->list, &con->writequeue);
 		spin_unlock(&con->writequeue_lock);
 		goto got_one;
@@ -1400,8 +1874,12 @@ static void send_to_sock(struct connection *con)
 				}
 				cond_resched();
 				goto out;
+<<<<<<< HEAD
 			}
 			if (ret <= 0)
+=======
+			} else if (ret < 0)
+>>>>>>> refs/remotes/origin/master
 				goto send_error;
 		}
 
@@ -1412,6 +1890,7 @@ static void send_to_sock(struct connection *con)
 		}
 
 		spin_lock(&con->writequeue_lock);
+<<<<<<< HEAD
 		e->offset += ret;
 		e->len -= ret;
 
@@ -1420,6 +1899,9 @@ static void send_to_sock(struct connection *con)
 			free_entry(e);
 			continue;
 		}
+=======
+		writequeue_entry_complete(e, ret);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&con->writequeue_lock);
 out:
@@ -1436,7 +1918,10 @@ out_connect:
 	mutex_unlock(&con->sock_mutex);
 	if (!test_bit(CF_INIT_PENDING, &con->flags))
 		lowcomms_connect_sock(con);
+<<<<<<< HEAD
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void clean_one_writequeue(struct connection *con)
@@ -1456,6 +1941,10 @@ static void clean_one_writequeue(struct connection *con)
 int dlm_lowcomms_close(int nodeid)
 {
 	struct connection *con;
+<<<<<<< HEAD
+=======
+	struct dlm_node_addr *na;
+>>>>>>> refs/remotes/origin/master
 
 	log_print("closing connection to node %d", nodeid);
 	con = nodeid2con(nodeid, 0);
@@ -1470,6 +1959,20 @@ int dlm_lowcomms_close(int nodeid)
 		clean_one_writequeue(con);
 		close_connection(con, true);
 	}
+<<<<<<< HEAD
+=======
+
+	spin_lock(&dlm_node_addrs_spin);
+	na = find_node_addr(nodeid);
+	if (na) {
+		list_del(&na->list);
+		while (na->addr_count--)
+			kfree(na->addr[na->addr_count]);
+		kfree(na);
+	}
+	spin_unlock(&dlm_node_addrs_spin);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1553,6 +2056,10 @@ void dlm_lowcomms_stop(void)
 	   socket activity.
 	*/
 	mutex_lock(&connections_lock);
+<<<<<<< HEAD
+=======
+	dlm_allow_conn = 0;
+>>>>>>> refs/remotes/origin/master
 	foreach_conn(stop_conn);
 	mutex_unlock(&connections_lock);
 
@@ -1580,7 +2087,11 @@ int dlm_lowcomms_start(void)
 	if (!dlm_local_count) {
 		error = -ENOTCONN;
 		log_print("no local IP address has been set");
+<<<<<<< HEAD
 		goto out;
+=======
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = -ENOMEM;
@@ -1588,7 +2099,17 @@ int dlm_lowcomms_start(void)
 				      __alignof__(struct connection), 0,
 				      NULL);
 	if (!con_cache)
+<<<<<<< HEAD
 		goto out;
+=======
+		goto fail;
+
+	error = work_start();
+	if (error)
+		goto fail_destroy;
+
+	dlm_allow_conn = 1;
+>>>>>>> refs/remotes/origin/master
 
 	/* Start listening */
 	if (dlm_config.ci_protocol == 0)
@@ -1598,6 +2119,7 @@ int dlm_lowcomms_start(void)
 	if (error)
 		goto fail_unlisten;
 
+<<<<<<< HEAD
 	error = work_start();
 	if (error)
 		goto fail_unlisten;
@@ -1605,13 +2127,41 @@ int dlm_lowcomms_start(void)
 	return 0;
 
 fail_unlisten:
+=======
+	return 0;
+
+fail_unlisten:
+	dlm_allow_conn = 0;
+>>>>>>> refs/remotes/origin/master
 	con = nodeid2con(0,0);
 	if (con) {
 		close_connection(con, false);
 		kmem_cache_free(con_cache, con);
 	}
+<<<<<<< HEAD
 	kmem_cache_destroy(con_cache);
 
 out:
 	return error;
 }
+=======
+fail_destroy:
+	kmem_cache_destroy(con_cache);
+fail:
+	return error;
+}
+
+void dlm_lowcomms_exit(void)
+{
+	struct dlm_node_addr *na, *safe;
+
+	spin_lock(&dlm_node_addrs_spin);
+	list_for_each_entry_safe(na, safe, &dlm_node_addrs, list) {
+		list_del(&na->list);
+		while (na->addr_count--)
+			kfree(na->addr[na->addr_count]);
+		kfree(na);
+	}
+	spin_unlock(&dlm_node_addrs_spin);
+}
+>>>>>>> refs/remotes/origin/master

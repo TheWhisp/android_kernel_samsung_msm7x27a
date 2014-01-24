@@ -14,11 +14,16 @@ mpi-y = \
 	generic_mpih-add1.o		\
 	mpicoder.o			\
 	mpi-bit.o			\
+<<<<<<< HEAD
+=======
+	mpi-cmp.o			\
+>>>>>>> refs/remotes/origin/master
 	mpih-cmp.o			\
 	mpih-div.o			\
 	mpih-mul.o			\
 	mpi-pow.o			\
 	mpiutil.o
+<<<<<<< HEAD
 
 mpi-$(CONFIG_MPILIB_EXTRA) += \
 	mpi-add.o			\
@@ -30,3 +35,5 @@ mpi-$(CONFIG_MPILIB_EXTRA) += \
 	mpi-mpow.o			\
 	mpi-mul.o			\
 	mpi-scan.o
+=======
+>>>>>>> refs/remotes/origin/master

@@ -214,7 +214,11 @@ out:
 	err = ubifs_add_bud_to_log(c, jhead, lnum, offs);
 	if (err)
 		goto out_return;
+<<<<<<< HEAD
 	err = ubifs_wbuf_seek_nolock(wbuf, lnum, offs, wbuf->dtype);
+=======
+	err = ubifs_wbuf_seek_nolock(wbuf, lnum, offs);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out_unlock;
 
@@ -385,9 +389,15 @@ out:
 	if (err == -ENOSPC) {
 		/* This are some budgeting problems, print useful information */
 		down_write(&c->commit_sem);
+<<<<<<< HEAD
 		dbg_dump_stack();
 		dbg_dump_budg(c, &c->bi);
 		dbg_dump_lprops(c);
+=======
+		dump_stack();
+		ubifs_dump_budg(c, &c->bi);
+		ubifs_dump_lprops(c);
+>>>>>>> refs/remotes/origin/master
 		cmt_retries = dbg_check_lprops(c);
 		up_write(&c->commit_sem);
 	}
@@ -469,8 +479,13 @@ static void pack_inode(struct ubifs_info *c, struct ubifs_ino_node *ino,
 	ino->ctime_nsec = cpu_to_le32(inode->i_ctime.tv_nsec);
 	ino->mtime_sec  = cpu_to_le64(inode->i_mtime.tv_sec);
 	ino->mtime_nsec = cpu_to_le32(inode->i_mtime.tv_nsec);
+<<<<<<< HEAD
 	ino->uid   = cpu_to_le32(inode->i_uid);
 	ino->gid   = cpu_to_le32(inode->i_gid);
+=======
+	ino->uid   = cpu_to_le32(i_uid_read(inode));
+	ino->gid   = cpu_to_le32(i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 	ino->mode  = cpu_to_le32(inode->i_mode);
 	ino->flags = cpu_to_le32(ui->flags);
 	ino->size  = cpu_to_le64(ui->ui_size);
@@ -698,6 +713,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
 	struct ubifs_inode *ui = ubifs_inode(inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_jnl("ino %lu, blk %u, len %d, key %s",
 		(unsigned long)key_inum(c, key), key_block(c, key), len,
 		DBGKEY(key));
@@ -705,6 +721,10 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
 	dbg_jnlk(key, "ino %lu, blk %u, len %d, key ",
 		(unsigned long)key_inum(c, key), key_block(c, key), len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_jnlk(key, "ino %lu, blk %u, len %d, key ",
+		(unsigned long)key_inum(c, key), key_block(c, key), len);
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(len <= UBIFS_BLOCK_SIZE);
 
 	data = kmalloc(dlen, GFP_NOFS | __GFP_NOWARN);
@@ -939,10 +959,15 @@ int ubifs_jnl_rename(struct ubifs_info *c, const struct inode *old_dir,
 	int move = (old_dir != new_dir);
 	struct ubifs_inode *uninitialized_var(new_ui);
 
+<<<<<<< HEAD
 	dbg_jnl("dent '%.*s' in dir ino %lu to dent '%.*s' in dir ino %lu",
 		old_dentry->d_name.len, old_dentry->d_name.name,
 		old_dir->i_ino, new_dentry->d_name.len,
 		new_dentry->d_name.name, new_dir->i_ino);
+=======
+	dbg_jnl("dent '%pd' in dir ino %lu to dent '%pd' in dir ino %lu",
+		old_dentry, old_dir->i_ino, new_dentry, new_dir->i_ino);
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(ubifs_inode(old_dir)->data_len == 0);
 	ubifs_assert(ubifs_inode(new_dir)->data_len == 0);
 	ubifs_assert(mutex_is_locked(&ubifs_inode(old_dir)->ui_mutex));
@@ -1183,10 +1208,14 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
 		blk = new_size >> UBIFS_BLOCK_SHIFT;
 		data_key_init(c, &key, inum, blk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbg_jnl("last block key %s", DBGKEY(&key));
 =======
 		dbg_jnlk(&key, "last block key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg_jnlk(&key, "last block key ");
+>>>>>>> refs/remotes/origin/master
 		err = ubifs_tnc_lookup(c, &key, dn);
 		if (err == -ENOENT)
 			dlen = 0; /* Not found (so it is a hole) */
@@ -1277,7 +1306,10 @@ out_free:
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_XATTR
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ubifs_jnl_delete_xattr - delete an extended attribute.
@@ -1472,4 +1504,7 @@ out_free:
 	return err;
 }
 
+<<<<<<< HEAD
 #endif /* CONFIG_UBIFS_FS_XATTR */
+=======
+>>>>>>> refs/remotes/origin/master

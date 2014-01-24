@@ -44,25 +44,41 @@
 static inline int pciehp_readw(struct controller *ctrl, int reg, u16 *value)
 {
 	struct pci_dev *dev = ctrl->pcie->port;
+<<<<<<< HEAD
 	return pci_read_config_word(dev, pci_pcie_cap(dev) + reg, value);
+=======
+	return pcie_capability_read_word(dev, reg, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int pciehp_readl(struct controller *ctrl, int reg, u32 *value)
 {
 	struct pci_dev *dev = ctrl->pcie->port;
+<<<<<<< HEAD
 	return pci_read_config_dword(dev, pci_pcie_cap(dev) + reg, value);
+=======
+	return pcie_capability_read_dword(dev, reg, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int pciehp_writew(struct controller *ctrl, int reg, u16 value)
 {
 	struct pci_dev *dev = ctrl->pcie->port;
+<<<<<<< HEAD
 	return pci_write_config_word(dev, pci_pcie_cap(dev) + reg, value);
+=======
+	return pcie_capability_write_word(dev, reg, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int pciehp_writel(struct controller *ctrl, int reg, u32 value)
 {
 	struct pci_dev *dev = ctrl->pcie->port;
+<<<<<<< HEAD
 	return pci_write_config_dword(dev, pci_pcie_cap(dev) + reg, value);
+=======
+	return pcie_capability_write_dword(dev, reg, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Power Control Command */
@@ -92,7 +108,11 @@ static void start_int_poll_timer(struct controller *ctrl, int sec)
 {
 	/* Clamp to sane value */
 	if ((sec <= 0) || (sec > 60))
+<<<<<<< HEAD
         	sec = 2;
+=======
+		sec = 2;
+>>>>>>> refs/remotes/origin/master
 
 	ctrl->poll_timer.function = &int_poll_timeout;
 	ctrl->poll_timer.data = (unsigned long)ctrl;
@@ -194,7 +214,11 @@ static int pcie_write_cmd(struct controller *ctrl, u16 cmd, u16 mask)
 			ctrl_dbg(ctrl, "CMD_COMPLETED not clear after 1 sec\n");
 		} else if (!NO_CMD_CMPL(ctrl)) {
 			/*
+<<<<<<< HEAD
 			 * This controller semms to notify of command completed
+=======
+			 * This controller seems to notify of command completed
+>>>>>>> refs/remotes/origin/master
 			 * event even though it supports none of power
 			 * controller, attention led, power led and EMI.
 			 */
@@ -242,6 +266,7 @@ static int pcie_write_cmd(struct controller *ctrl, u16 cmd, u16 mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int check_link_active(struct controller *ctrl)
 {
 	u16 link_status;
@@ -257,6 +282,8 @@ static void pcie_wait_link_active(struct controller *ctrl)
 
 	if (check_link_active(ctrl))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool check_link_active(struct controller *ctrl)
 {
 	bool ret = false;
@@ -278,17 +305,23 @@ static void __pcie_wait_link_active(struct controller *ctrl, bool active)
 	int timeout = 1000;
 
 	if (check_link_active(ctrl) == active)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	while (timeout > 0) {
 		msleep(10);
 		timeout -= 10;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (check_link_active(ctrl))
 			return;
 	}
 	ctrl_dbg(ctrl, "Data Link Layer Link Active not set in 1000 msec\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (check_link_active(ctrl) == active)
 			return;
 	}
@@ -330,7 +363,10 @@ static bool pci_bus_check_dev(struct pci_bus *bus, int devfn)
 			PCI_FUNC(devfn), count, step, l);
 
 	return found;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int pciehp_check_link_status(struct controller *ctrl)
@@ -338,15 +374,20 @@ int pciehp_check_link_status(struct controller *ctrl)
 	u16 lnk_status;
 	int retval = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool found = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool found = false;
+>>>>>>> refs/remotes/origin/master
 
         /*
          * Data Link Layer Link Active Reporting must be capable for
          * hot-plug capable downstream port. But old controller might
          * not implement it. In this case, we wait for 1000 ms.
          */
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (ctrl->link_active_reporting){
                 /* Wait for Data Link Layer Link Active bit to be set */
@@ -361,6 +402,8 @@ int pciehp_check_link_status(struct controller *ctrl)
                 msleep(1000);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
         if (ctrl->link_active_reporting)
                 pcie_wait_link_active(ctrl);
         else
@@ -371,7 +414,10 @@ int pciehp_check_link_status(struct controller *ctrl)
 	found = pci_bus_check_dev(ctrl->pcie->port->subordinate,
 					PCI_DEVFN(0, 0));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = pciehp_readw(ctrl, PCI_EXP_LNKSTA, &lnk_status);
 	if (retval) {
 		ctrl_err(ctrl, "Cannot read LNKSTATUS register\n");
@@ -387,10 +433,13 @@ int pciehp_check_link_status(struct controller *ctrl)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return retval;
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pcie_update_link_speed(ctrl->pcie->port->subordinate, lnk_status);
 
 	if (!found && !retval)
@@ -435,7 +484,10 @@ static int pciehp_link_disable(struct controller *ctrl)
 	return __pciehp_link_set(ctrl, false);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int pciehp_get_attention_status(struct slot *slot, u8 *status)
 {
 	struct controller *ctrl = slot->ctrl;
@@ -624,9 +676,12 @@ int pciehp_power_on_slot(struct slot * slot)
 	u16 cmd_mask;
 	u16 slot_status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 lnk_status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int retval = 0;
 
 	/* Clear sticky power-fault bit from previous power failures */
@@ -659,6 +714,7 @@ int pciehp_power_on_slot(struct slot * slot)
 		 pci_pcie_cap(ctrl->pcie->port) + PCI_EXP_SLTCTL, slot_cmd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = pciehp_readw(ctrl, PCI_EXP_LNKSTA, &lnk_status);
 	if (retval) {
 		ctrl_err(ctrl, "%s: Cannot read LNKSTA register\n",
@@ -671,6 +727,11 @@ int pciehp_power_on_slot(struct slot * slot)
 	if (retval)
 		ctrl_err(ctrl, "%s: Can not enable the link!\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = pciehp_link_enable(ctrl);
+	if (retval)
+		ctrl_err(ctrl, "%s: Can not enable the link!\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -683,7 +744,10 @@ int pciehp_power_off_slot(struct slot * slot)
 	int retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Disable the link at first */
 	pciehp_link_disable(ctrl);
 	/* wait the link is down */
@@ -692,7 +756,10 @@ int pciehp_power_off_slot(struct slot * slot)
 	else
 		msleep(1000);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	slot_cmd = POWER_OFF;
 	cmd_mask = PCI_EXP_SLTCTL_PCC;
 	retval = pcie_write_cmd(ctrl, slot_cmd, cmd_mask);
@@ -770,6 +837,7 @@ static irqreturn_t pcie_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 int pciehp_get_max_lnk_width(struct slot *slot,
 				 enum pcie_link_width *value)
 {
@@ -871,6 +939,8 @@ int pciehp_get_cur_lnk_width(struct slot *slot,
 	return retval;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int pcie_enable_notification(struct controller *ctrl)
 {
 	u16 cmd, mask;
@@ -915,6 +985,40 @@ static void pcie_disable_notification(struct controller *ctrl)
 		ctrl_warn(ctrl, "Cannot disable software notification\n");
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * pciehp has a 1:1 bus:slot relationship so we ultimately want a secondary
+ * bus reset of the bridge, but if the slot supports surprise removal we need
+ * to disable presence detection around the bus reset and clear any spurious
+ * events after.
+ */
+int pciehp_reset_slot(struct slot *slot, int probe)
+{
+	struct controller *ctrl = slot->ctrl;
+
+	if (probe)
+		return 0;
+
+	if (HP_SUPR_RM(ctrl)) {
+		pcie_write_cmd(ctrl, 0, PCI_EXP_SLTCTL_PDCE);
+		if (pciehp_poll_mode)
+			del_timer_sync(&ctrl->poll_timer);
+	}
+
+	pci_reset_bridge_secondary_bus(ctrl->pcie->port);
+
+	if (HP_SUPR_RM(ctrl)) {
+		pciehp_writew(ctrl, PCI_EXP_SLTSTA, PCI_EXP_SLTSTA_PDC);
+		pcie_write_cmd(ctrl, PCI_EXP_SLTCTL_PDCE, PCI_EXP_SLTCTL_PDCE);
+		if (pciehp_poll_mode)
+			int_poll_timeout(ctrl->poll_timer.data);
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 int pcie_init_notification(struct controller *ctrl)
 {
 	if (pciehp_request_irq(ctrl))
@@ -940,14 +1044,18 @@ static int pcie_init_slot(struct controller *ctrl)
 {
 	struct slot *slot;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char name[32];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	slot = kzalloc(sizeof(*slot), GFP_KERNEL);
 	if (!slot)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	snprintf(name, sizeof(name), "pciehp-%u", PSN(ctrl));
@@ -956,17 +1064,29 @@ static int pcie_init_slot(struct controller *ctrl)
 		goto abort;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	slot->wq = alloc_workqueue("pciehp-%u", 0, 0, PSN(ctrl));
+	if (!slot->wq)
+		goto abort;
+
+>>>>>>> refs/remotes/origin/master
 	slot->ctrl = ctrl;
 	mutex_init(&slot->lock);
 	INIT_DELAYED_WORK(&slot->work, pciehp_queue_pushbutton_work);
 	ctrl->slot = slot;
 	return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 abort:
 	kfree(slot);
 	return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+abort:
+	kfree(slot);
+	return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pcie_cleanup_slot(struct controller *ctrl)
@@ -974,11 +1094,15 @@ static void pcie_cleanup_slot(struct controller *ctrl)
 	struct slot *slot = ctrl->slot;
 	cancel_delayed_work(&slot->work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	flush_workqueue(pciehp_wq);
 	flush_workqueue(pciehp_ordered_wq);
 =======
 	destroy_workqueue(slot->wq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	destroy_workqueue(slot->wq);
+>>>>>>> refs/remotes/origin/master
 	kfree(slot);
 }
 
@@ -1044,10 +1168,13 @@ struct controller *pcie_init(struct pcie_device *dev)
 		goto abort;
 	}
 	ctrl->pcie = dev;
+<<<<<<< HEAD
 	if (!pci_pcie_cap(pdev)) {
 		ctrl_err(ctrl, "Cannot find PCI Express capability\n");
 		goto abort_ctrl;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pciehp_readl(ctrl, PCI_EXP_SLTCAP, &slot_cap)) {
 		ctrl_err(ctrl, "Cannot read SLOTCAP register\n");
 		goto abort_ctrl;
@@ -1081,7 +1208,11 @@ struct controller *pcie_init(struct pcie_device *dev)
 	if (pciehp_writew(ctrl, PCI_EXP_SLTSTA, 0x1f))
 		goto abort_ctrl;
 
+<<<<<<< HEAD
 	/* Disable sotfware notification */
+=======
+	/* Disable software notification */
+>>>>>>> refs/remotes/origin/master
 	pcie_disable_notification(ctrl);
 
 	ctrl_info(ctrl, "HPC vendor_id %x device_id %x ss_vid %x ss_did %x\n",

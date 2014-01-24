@@ -1,18 +1,26 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cpu.h>
 #include <linux/smp.h>
 #include <linux/percpu.h>
 #include <linux/init.h>
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/nodemask.h>
 #include <linux/cpumask.h>
 #include <linux/notifier.h>
@@ -21,14 +29,21 @@
 #include <asm/processor.h>
 #include <asm/cputable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/firmware.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/hvcall.h>
 #include <asm/prom.h>
 #include <asm/machdep.h>
 #include <asm/smp.h>
 #include <asm/pmc.h>
+<<<<<<< HEAD
+=======
+#include <asm/firmware.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "cacheinfo.h"
 
@@ -49,6 +64,7 @@ static DEFINE_PER_CPU(struct cpu, cpu_devices);
 DEFINE_PER_CPU(long, smt_snooze_delay) = { 100 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t store_smt_snooze_delay(struct sys_device *dev,
 				      struct sysdev_attribute *attr,
 				      const char *buf,
@@ -56,13 +72,18 @@ static ssize_t store_smt_snooze_delay(struct sys_device *dev,
 {
 	struct cpu *cpu = container_of(dev, struct cpu, sysdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t store_smt_snooze_delay(struct device *dev,
 				      struct device_attribute *attr,
 				      const char *buf,
 				      size_t count)
 {
 	struct cpu *cpu = container_of(dev, struct cpu, dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 	long snooze;
 
@@ -71,15 +92,21 @@ static ssize_t store_smt_snooze_delay(struct device *dev,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	per_cpu(smt_snooze_delay, cpu->sysdev.id) = snooze;
 =======
 	per_cpu(smt_snooze_delay, cpu->dev.id) = snooze;
 	update_smt_snooze_delay(snooze);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	per_cpu(smt_snooze_delay, cpu->dev.id) = snooze;
+	update_smt_snooze_delay(cpu->dev.id, snooze);
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_smt_snooze_delay(struct sys_device *dev,
 				     struct sysdev_attribute *attr,
@@ -92,6 +119,8 @@ static ssize_t show_smt_snooze_delay(struct sys_device *dev,
 
 static SYSDEV_ATTR(smt_snooze_delay, 0644, show_smt_snooze_delay,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_smt_snooze_delay(struct device *dev,
 				     struct device_attribute *attr,
 				     char *buf)
@@ -102,7 +131,10 @@ static ssize_t show_smt_snooze_delay(struct device *dev,
 }
 
 static DEVICE_ATTR(smt_snooze_delay, 0644, show_smt_snooze_delay,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		   store_smt_snooze_delay);
 
 static int __init setup_smt_snooze_delay(char *str)
@@ -156,6 +188,7 @@ static void write_##NAME(void *val) \
 	mtspr(ADDRESS, *(unsigned long *)val);	\
 } \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##NAME(struct sys_device *dev, \
 			struct sysdev_attribute *attr, \
 			char *buf) \
@@ -171,6 +204,8 @@ static ssize_t __used \
 { \
 	struct cpu *cpu = container_of(dev, struct cpu, sysdev); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_##NAME(struct device *dev, \
 			struct device_attribute *attr, \
 			char *buf) \
@@ -185,16 +220,23 @@ static ssize_t __used \
 			const char *buf, size_t count) \
 { \
 	struct cpu *cpu = container_of(dev, struct cpu, dev); \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val; \
 	int ret = sscanf(buf, "%lx", &val); \
 	if (ret != 1) \
 		return -EINVAL; \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smp_call_function_single(cpu->sysdev.id, write_##NAME, &val, 1); \
 =======
 	smp_call_function_single(cpu->dev.id, write_##NAME, &val, 1); \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smp_call_function_single(cpu->dev.id, write_##NAME, &val, 1); \
+>>>>>>> refs/remotes/origin/master
 	return count; \
 }
 
@@ -237,6 +279,7 @@ SYSFS_PMCSETUP(purr, SPRN_PURR);
 SYSFS_PMCSETUP(spurr, SPRN_SPURR);
 SYSFS_PMCSETUP(dscr, SPRN_DSCR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static SYSDEV_ATTR(mmcra, 0600, show_mmcra, store_mmcra);
 static SYSDEV_ATTR(spurr, 0600, show_spurr, NULL);
@@ -251,10 +294,25 @@ static DEVICE_ATTR(dscr, 0600, show_dscr, store_dscr);
 static DEVICE_ATTR(purr, 0600, show_purr, store_purr);
 static DEVICE_ATTR(pir, 0400, show_pir, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SYSFS_PMCSETUP(pir, SPRN_PIR);
+
+/*
+  Lets only enable read for phyp resources and
+  enable write when needed with a separate function.
+  Lets be conservative and default to pseries.
+*/
+static DEVICE_ATTR(mmcra, 0600, show_mmcra, store_mmcra);
+static DEVICE_ATTR(spurr, 0400, show_spurr, NULL);
+static DEVICE_ATTR(dscr, 0600, show_dscr, store_dscr);
+static DEVICE_ATTR(purr, 0400, show_purr, store_purr);
+static DEVICE_ATTR(pir, 0400, show_pir, NULL);
+>>>>>>> refs/remotes/origin/master
 
 unsigned long dscr_default = 0;
 EXPORT_SYMBOL(dscr_default);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_dscr_default(struct sysdev_class *class,
 		struct sysdev_class_attribute *attr, char *buf)
@@ -262,6 +320,15 @@ static ssize_t show_dscr_default(struct sysdev_class *class,
 static ssize_t show_dscr_default(struct device *dev,
 		struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void add_write_permission_dev_attr(struct device_attribute *attr)
+{
+	attr->attr.mode |= 0200;
+}
+
+static ssize_t show_dscr_default(struct device *dev,
+		struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf, "%lx\n", dscr_default);
 }
@@ -275,12 +342,17 @@ static void update_dscr(void *dummy)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t __used store_dscr_default(struct sysdev_class *class,
 		struct sysdev_class_attribute *attr, const char *buf,
 =======
 static ssize_t __used store_dscr_default(struct device *dev,
 		struct device_attribute *attr, const char *buf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t __used store_dscr_default(struct device *dev,
+		struct device_attribute *attr, const char *buf,
+>>>>>>> refs/remotes/origin/master
 		size_t count)
 {
 	unsigned long val;
@@ -297,10 +369,14 @@ static ssize_t __used store_dscr_default(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(dscr_default, 0600,
 =======
 static DEVICE_ATTR(dscr_default, 0600,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(dscr_default, 0600,
+>>>>>>> refs/remotes/origin/master
 		show_dscr_default, store_dscr_default);
 
 static void sysfs_create_dscr_default(void)
@@ -308,11 +384,15 @@ static void sysfs_create_dscr_default(void)
 	int err = 0;
 	if (cpu_has_feature(CPU_FTR_DSCR))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = sysfs_create_file(&cpu_sysdev_class.kset.kobj,
 			&attr_dscr_default.attr);
 =======
 		err = device_create_file(cpu_subsys.dev_root, &dev_attr_dscr_default);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = device_create_file(cpu_subsys.dev_root, &dev_attr_dscr_default);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_PPC64 */
 
@@ -357,6 +437,7 @@ SYSFS_PMCSETUP(tsr3, SPRN_PA6T_TSR3);
 
 #ifdef HAS_PPC_PMC_IBM
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_attribute ibm_common_attrs[] = {
 	_SYSDEV_ATTR(mmcr0, 0600, show_mmcr0, store_mmcr0),
 	_SYSDEV_ATTR(mmcr1, 0600, show_mmcr1, store_mmcr1),
@@ -365,10 +446,16 @@ static struct device_attribute ibm_common_attrs[] = {
 	__ATTR(mmcr0, 0600, show_mmcr0, store_mmcr0),
 	__ATTR(mmcr1, 0600, show_mmcr1, store_mmcr1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct device_attribute ibm_common_attrs[] = {
+	__ATTR(mmcr0, 0600, show_mmcr0, store_mmcr0),
+	__ATTR(mmcr1, 0600, show_mmcr1, store_mmcr1),
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* HAS_PPC_PMC_G4 */
 
 #ifdef HAS_PPC_PMC_G4
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct sysdev_attribute g4_common_attrs[] = {
 	_SYSDEV_ATTR(mmcr0, 0600, show_mmcr0, store_mmcr0),
@@ -388,6 +475,8 @@ static struct sysdev_attribute classic_pmc_attrs[] = {
 	_SYSDEV_ATTR(pmc7, 0600, show_pmc7, store_pmc7),
 	_SYSDEV_ATTR(pmc8, 0600, show_pmc8, store_pmc8),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct device_attribute g4_common_attrs[] = {
 	__ATTR(mmcr0, 0600, show_mmcr0, store_mmcr0),
 	__ATTR(mmcr1, 0600, show_mmcr1, store_mmcr1),
@@ -405,11 +494,15 @@ static struct device_attribute classic_pmc_attrs[] = {
 #ifdef CONFIG_PPC64
 	__ATTR(pmc7, 0600, show_pmc7, store_pmc7),
 	__ATTR(pmc8, 0600, show_pmc8, store_pmc8),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
 #ifdef HAS_PPC_PMC_PA6T
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct sysdev_attribute pa6t_attrs[] = {
 	_SYSDEV_ATTR(mmcr0, 0600, show_mmcr0, store_mmcr0),
@@ -450,6 +543,8 @@ static struct sysdev_attribute pa6t_attrs[] = {
 	_SYSDEV_ATTR(tsr2, 0600, show_tsr2, store_tsr2),
 	_SYSDEV_ATTR(tsr3, 0600, show_tsr3, store_tsr3),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct device_attribute pa6t_attrs[] = {
 	__ATTR(mmcr0, 0600, show_mmcr0, store_mmcr0),
 	__ATTR(mmcr1, 0600, show_mmcr1, store_mmcr1),
@@ -488,12 +583,16 @@ static struct device_attribute pa6t_attrs[] = {
 	__ATTR(tsr1, 0600, show_tsr1, store_tsr1),
 	__ATTR(tsr2, 0600, show_tsr2, store_tsr2),
 	__ATTR(tsr3, 0600, show_tsr3, store_tsr3),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_DEBUG_KERNEL */
 };
 #endif /* HAS_PPC_PMC_PA6T */
 #endif /* HAS_PPC_PMC_CLASSIC */
 
+<<<<<<< HEAD
 static void __cpuinit register_cpu_online(unsigned int cpu)
 {
 	struct cpu *c = &per_cpu(cpu_devices, cpu);
@@ -507,6 +606,11 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 			cpu_has_feature(CPU_FTR_SMT))
 		sysdev_create_file(s, &attr_smt_snooze_delay);
 =======
+=======
+static void register_cpu_online(unsigned int cpu)
+{
+	struct cpu *c = &per_cpu(cpu_devices, cpu);
+>>>>>>> refs/remotes/origin/master
 	struct device *s = &c->dev;
 	struct device_attribute *attrs, *pmc_attrs;
 	int i, nattrs;
@@ -514,7 +618,10 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 #ifdef CONFIG_PPC64
 	if (cpu_has_feature(CPU_FTR_SMT))
 		device_create_file(s, &dev_attr_smt_snooze_delay);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* PMC stuff */
@@ -523,10 +630,14 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 	case PPC_PMC_IBM:
 		attrs = ibm_common_attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nattrs = sizeof(ibm_common_attrs) / sizeof(struct sysdev_attribute);
 =======
 		nattrs = sizeof(ibm_common_attrs) / sizeof(struct device_attribute);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nattrs = sizeof(ibm_common_attrs) / sizeof(struct device_attribute);
+>>>>>>> refs/remotes/origin/master
 		pmc_attrs = classic_pmc_attrs;
 		break;
 #endif /* HAS_PPC_PMC_IBM */
@@ -534,10 +645,14 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 	case PPC_PMC_G4:
 		attrs = g4_common_attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nattrs = sizeof(g4_common_attrs) / sizeof(struct sysdev_attribute);
 =======
 		nattrs = sizeof(g4_common_attrs) / sizeof(struct device_attribute);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nattrs = sizeof(g4_common_attrs) / sizeof(struct device_attribute);
+>>>>>>> refs/remotes/origin/master
 		pmc_attrs = classic_pmc_attrs;
 		break;
 #endif /* HAS_PPC_PMC_G4 */
@@ -546,10 +661,14 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 		/* PA Semi starts counting at PMC0 */
 		attrs = pa6t_attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nattrs = sizeof(pa6t_attrs) / sizeof(struct sysdev_attribute);
 =======
 		nattrs = sizeof(pa6t_attrs) / sizeof(struct device_attribute);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nattrs = sizeof(pa6t_attrs) / sizeof(struct device_attribute);
+>>>>>>> refs/remotes/origin/master
 		pmc_attrs = NULL;
 		break;
 #endif /* HAS_PPC_PMC_PA6T */
@@ -560,6 +679,7 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 	}
 
 	for (i = 0; i < nattrs; i++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sysdev_create_file(s, &attrs[i]);
 
@@ -580,6 +700,8 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 	if (cpu_has_feature(CPU_FTR_DSCR))
 		sysdev_create_file(s, &attr_dscr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		device_create_file(s, &attrs[i]);
 
 	if (pmc_attrs)
@@ -590,8 +712,16 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 	if (cpu_has_feature(CPU_FTR_MMCRA))
 		device_create_file(s, &dev_attr_mmcra);
 
+<<<<<<< HEAD
 	if (cpu_has_feature(CPU_FTR_PURR))
 		device_create_file(s, &dev_attr_purr);
+=======
+	if (cpu_has_feature(CPU_FTR_PURR)) {
+		if (!firmware_has_feature(FW_FEATURE_LPAR))
+			add_write_permission_dev_attr(&dev_attr_purr);
+		device_create_file(s, &dev_attr_purr);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (cpu_has_feature(CPU_FTR_SPURR))
 		device_create_file(s, &dev_attr_spurr);
@@ -601,7 +731,10 @@ static void __cpuinit register_cpu_online(unsigned int cpu)
 
 	if (cpu_has_feature(CPU_FTR_PPCAS_ARCH_V2))
 		device_create_file(s, &dev_attr_pir);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC64 */
 
 	cacheinfo_cpu_online(cpu);
@@ -612,17 +745,23 @@ static void unregister_cpu_online(unsigned int cpu)
 {
 	struct cpu *c = &per_cpu(cpu_devices, cpu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device *s = &c->sysdev;
 	struct sysdev_attribute *attrs, *pmc_attrs;
 =======
 	struct device *s = &c->dev;
 	struct device_attribute *attrs, *pmc_attrs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *s = &c->dev;
+	struct device_attribute *attrs, *pmc_attrs;
+>>>>>>> refs/remotes/origin/master
 	int i, nattrs;
 
 	BUG_ON(!c->hotpluggable);
 
 #ifdef CONFIG_PPC64
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!firmware_has_feature(FW_FEATURE_ISERIES) &&
 			cpu_has_feature(CPU_FTR_SMT))
@@ -631,6 +770,10 @@ static void unregister_cpu_online(unsigned int cpu)
 	if (cpu_has_feature(CPU_FTR_SMT))
 		device_remove_file(s, &dev_attr_smt_snooze_delay);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_has_feature(CPU_FTR_SMT))
+		device_remove_file(s, &dev_attr_smt_snooze_delay);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/* PMC stuff */
@@ -639,10 +782,14 @@ static void unregister_cpu_online(unsigned int cpu)
 	case PPC_PMC_IBM:
 		attrs = ibm_common_attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nattrs = sizeof(ibm_common_attrs) / sizeof(struct sysdev_attribute);
 =======
 		nattrs = sizeof(ibm_common_attrs) / sizeof(struct device_attribute);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nattrs = sizeof(ibm_common_attrs) / sizeof(struct device_attribute);
+>>>>>>> refs/remotes/origin/master
 		pmc_attrs = classic_pmc_attrs;
 		break;
 #endif /* HAS_PPC_PMC_IBM */
@@ -650,10 +797,14 @@ static void unregister_cpu_online(unsigned int cpu)
 	case PPC_PMC_G4:
 		attrs = g4_common_attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nattrs = sizeof(g4_common_attrs) / sizeof(struct sysdev_attribute);
 =======
 		nattrs = sizeof(g4_common_attrs) / sizeof(struct device_attribute);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nattrs = sizeof(g4_common_attrs) / sizeof(struct device_attribute);
+>>>>>>> refs/remotes/origin/master
 		pmc_attrs = classic_pmc_attrs;
 		break;
 #endif /* HAS_PPC_PMC_G4 */
@@ -662,10 +813,14 @@ static void unregister_cpu_online(unsigned int cpu)
 		/* PA Semi starts counting at PMC0 */
 		attrs = pa6t_attrs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nattrs = sizeof(pa6t_attrs) / sizeof(struct sysdev_attribute);
 =======
 		nattrs = sizeof(pa6t_attrs) / sizeof(struct device_attribute);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nattrs = sizeof(pa6t_attrs) / sizeof(struct device_attribute);
+>>>>>>> refs/remotes/origin/master
 		pmc_attrs = NULL;
 		break;
 #endif /* HAS_PPC_PMC_PA6T */
@@ -676,6 +831,7 @@ static void unregister_cpu_online(unsigned int cpu)
 	}
 
 	for (i = 0; i < nattrs; i++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sysdev_remove_file(s, &attrs[i]);
 
@@ -696,6 +852,8 @@ static void unregister_cpu_online(unsigned int cpu)
 	if (cpu_has_feature(CPU_FTR_DSCR))
 		sysdev_remove_file(s, &attr_dscr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		device_remove_file(s, &attrs[i]);
 
 	if (pmc_attrs)
@@ -717,7 +875,10 @@ static void unregister_cpu_online(unsigned int cpu)
 
 	if (cpu_has_feature(CPU_FTR_PPCAS_ARCH_V2))
 		device_remove_file(s, &dev_attr_pir);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC64 */
 
 	cacheinfo_cpu_offline(cpu);
@@ -743,7 +904,11 @@ ssize_t arch_cpu_release(const char *buf, size_t count)
 
 #endif /* CONFIG_HOTPLUG_CPU */
 
+<<<<<<< HEAD
 static int __cpuinit sysfs_cpu_notify(struct notifier_block *self,
+=======
+static int sysfs_cpu_notify(struct notifier_block *self,
+>>>>>>> refs/remotes/origin/master
 				      unsigned long action, void *hcpu)
 {
 	unsigned int cpu = (unsigned int)(long)hcpu;
@@ -763,17 +928,25 @@ static int __cpuinit sysfs_cpu_notify(struct notifier_block *self,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata sysfs_cpu_nb = {
+=======
+static struct notifier_block sysfs_cpu_nb = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call	= sysfs_cpu_notify,
 };
 
 static DEFINE_MUTEX(cpu_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int cpu_add_sysdev_attr(struct sysdev_attribute *attr)
 =======
 int cpu_add_dev_attr(struct device_attribute *attr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int cpu_add_dev_attr(struct device_attribute *attr)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu;
 
@@ -781,15 +954,20 @@ int cpu_add_dev_attr(struct device_attribute *attr)
 
 	for_each_possible_cpu(cpu) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_create_file(get_cpu_sysdev(cpu), attr);
 =======
 		device_create_file(get_cpu_device(cpu), attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_create_file(get_cpu_device(cpu), attr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&cpu_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL_GPL(cpu_add_sysdev_attr);
 
@@ -798,18 +976,24 @@ int cpu_add_sysdev_attr_group(struct attribute_group *attrs)
 	int cpu;
 	struct sys_device *sysdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(cpu_add_dev_attr);
 
 int cpu_add_dev_attr_group(struct attribute_group *attrs)
 {
 	int cpu;
 	struct device *dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&cpu_mutex);
 
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sysdev = get_cpu_sysdev(cpu);
 		ret = sysfs_create_group(&sysdev->kobj, attrs);
@@ -817,6 +1001,10 @@ int cpu_add_dev_attr_group(struct attribute_group *attrs)
 		dev = get_cpu_device(cpu);
 		ret = sysfs_create_group(&dev->kobj, attrs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev = get_cpu_device(cpu);
+		ret = sysfs_create_group(&dev->kobj, attrs);
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(ret != 0);
 	}
 
@@ -824,16 +1012,22 @@ int cpu_add_dev_attr_group(struct attribute_group *attrs)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(cpu_add_sysdev_attr_group);
 
 
 void cpu_remove_sysdev_attr(struct sysdev_attribute *attr)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(cpu_add_dev_attr_group);
 
 
 void cpu_remove_dev_attr(struct device_attribute *attr)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu;
 
@@ -841,14 +1035,19 @@ void cpu_remove_dev_attr(struct device_attribute *attr)
 
 	for_each_possible_cpu(cpu) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_remove_file(get_cpu_sysdev(cpu), attr);
 =======
 		device_remove_file(get_cpu_device(cpu), attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_remove_file(get_cpu_device(cpu), attr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&cpu_mutex);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL_GPL(cpu_remove_sysdev_attr);
 
@@ -857,17 +1056,23 @@ void cpu_remove_sysdev_attr_group(struct attribute_group *attrs)
 	int cpu;
 	struct sys_device *sysdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(cpu_remove_dev_attr);
 
 void cpu_remove_dev_attr_group(struct attribute_group *attrs)
 {
 	int cpu;
 	struct device *dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&cpu_mutex);
 
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sysdev = get_cpu_sysdev(cpu);
 		sysfs_remove_group(&sysdev->kobj, attrs);
@@ -875,15 +1080,23 @@ void cpu_remove_dev_attr_group(struct attribute_group *attrs)
 		dev = get_cpu_device(cpu);
 		sysfs_remove_group(&dev->kobj, attrs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev = get_cpu_device(cpu);
+		sysfs_remove_group(&dev->kobj, attrs);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&cpu_mutex);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(cpu_remove_sysdev_attr_group);
 =======
 EXPORT_SYMBOL_GPL(cpu_remove_dev_attr_group);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(cpu_remove_dev_attr_group);
+>>>>>>> refs/remotes/origin/master
 
 
 /* NUMA stuff */
@@ -898,6 +1111,7 @@ static void register_nodes(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int sysfs_add_device_to_node(struct sys_device *dev, int nid)
 {
 	struct node *node = &node_devices[nid];
@@ -908,10 +1122,17 @@ int sysfs_add_device_to_node(struct device *dev, int nid)
 	struct node *node = &node_devices[nid];
 	return sysfs_create_link(&node->dev.kobj, &dev->kobj,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int sysfs_add_device_to_node(struct device *dev, int nid)
+{
+	struct node *node = node_devices[nid];
+	return sysfs_create_link(&node->dev.kobj, &dev->kobj,
+>>>>>>> refs/remotes/origin/master
 			kobject_name(&dev->kobj));
 }
 EXPORT_SYMBOL_GPL(sysfs_add_device_to_node);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void sysfs_remove_device_from_node(struct sys_device *dev, int nid)
 {
@@ -923,6 +1144,12 @@ void sysfs_remove_device_from_node(struct device *dev, int nid)
 	struct node *node = &node_devices[nid];
 	sysfs_remove_link(&node->dev.kobj, kobject_name(&dev->kobj));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sysfs_remove_device_from_node(struct device *dev, int nid)
+{
+	struct node *node = node_devices[nid];
+	sysfs_remove_link(&node->dev.kobj, kobject_name(&dev->kobj));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(sysfs_remove_device_from_node);
 
@@ -936,6 +1163,7 @@ static void register_nodes(void)
 
 /* Only valid if CPU is present. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_physical_id(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
 {
@@ -945,6 +1173,8 @@ static ssize_t show_physical_id(struct sys_device *dev,
 }
 static SYSDEV_ATTR(physical_id, 0444, show_physical_id, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_physical_id(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
@@ -953,7 +1183,10 @@ static ssize_t show_physical_id(struct device *dev,
 	return sprintf(buf, "%d\n", get_hard_smp_processor_id(cpu->dev.id));
 }
 static DEVICE_ATTR(physical_id, 0444, show_physical_id, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int __init topology_init(void)
 {
@@ -979,10 +1212,14 @@ static int __init topology_init(void)
 			register_cpu(c, cpu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sysdev_create_file(&c->sysdev, &attr_physical_id);
 =======
 			device_create_file(&c->dev, &dev_attr_physical_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			device_create_file(&c->dev, &dev_attr_physical_id);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (cpu_online(cpu))

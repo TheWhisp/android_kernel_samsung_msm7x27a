@@ -31,9 +31,12 @@
 #include <asm/machdep.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pmac_feature.h>
 #include <asm/sections.h>
 #include <asm/nvram.h>
@@ -42,8 +45,12 @@
 #include <asm/serial.h>
 #include <asm/udbg.h>
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
 
 #include "setup.h"
+=======
+#include <asm/epapr_hcalls.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DBG(fmt...)
 
@@ -52,12 +59,17 @@ extern void bootx_init(unsigned long r4, unsigned long phys);
 int boot_cpuid = -1;
 EXPORT_SYMBOL_GPL(boot_cpuid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __initdata boot_cpu_count;
 int boot_cpuid_phys;
 =======
 int boot_cpuid_phys;
 EXPORT_SYMBOL_GPL(boot_cpuid_phys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int boot_cpuid_phys;
+EXPORT_SYMBOL_GPL(boot_cpuid_phys);
+>>>>>>> refs/remotes/origin/master
 
 int smp_hw_index[NR_CPUS];
 
@@ -128,10 +140,14 @@ notrace unsigned long __init early_init(unsigned long dt_ptr)
  * MMU environment has been set up but before MMU_init is called.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 notrace void __init machine_init(unsigned long dt_ptr)
 =======
 notrace void __init machine_init(u64 dt_ptr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+notrace void __init machine_init(u64 dt_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	lockdep_init();
 
@@ -142,10 +158,17 @@ notrace void __init machine_init(u64 dt_ptr)
 	early_init_devtree(__va(dt_ptr));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	early_init_mmu();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	epapr_paravirt_early_init();
+
+	early_init_mmu();
+
+>>>>>>> refs/remotes/origin/master
 	probe_machine();
 
 	setup_kdump_trampoline();
@@ -165,6 +188,7 @@ notrace void __init machine_init(u64 dt_ptr)
 		ppc_md.progress("id mach(): done", 0x200);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_BOOKE_WDT
 <<<<<<< HEAD
 =======
@@ -192,6 +216,8 @@ int __init early_parse_wdt_period (char *p)
 early_param("wdt_period", early_parse_wdt_period);
 #endif	/* CONFIG_BOOKE_WDT */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Checks "l2cr=xxxx" command-line option */
 int __init ppc_setup_l2cr(char *str)
 {
@@ -338,9 +364,12 @@ void __init setup_arch(char **cmdline_p)
 	if (cpu_has_feature(CPU_FTR_UNIFIED_ID_CACHE))
 		ucache_bsize = icache_bsize = dcache_bsize;
 
+<<<<<<< HEAD
 	/* reboot on panic */
 	panic_timeout = 180;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.panic)
 		setup_panic();
 
@@ -369,5 +398,8 @@ void __init setup_arch(char **cmdline_p)
 
 	/* Initialize the MMU context management stuff */
 	mmu_context_init();
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 }

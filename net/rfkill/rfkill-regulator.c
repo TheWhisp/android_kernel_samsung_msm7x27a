@@ -30,12 +30,17 @@ struct rfkill_regulator_data {
 static int rfkill_regulator_set_block(void *data, bool blocked)
 {
 	struct rfkill_regulator_data *rfkill_data = data;
+<<<<<<< HEAD
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s: blocked: %d\n", __func__, blocked);
 
 	if (blocked) {
 		if (rfkill_data->reg_enabled) {
 			regulator_disable(rfkill_data->vcc);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			rfkill_data->reg_enabled = 0;
 =======
@@ -50,12 +55,22 @@ static int rfkill_regulator_set_block(void *data, bool blocked)
 =======
 			rfkill_data->reg_enabled = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rfkill_data->reg_enabled = false;
+		}
+	} else {
+		if (!rfkill_data->reg_enabled) {
+			ret = regulator_enable(rfkill_data->vcc);
+			if (!ret)
+				rfkill_data->reg_enabled = true;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	pr_debug("%s: regulator_is_enabled after set_block: %d\n", __func__,
 		regulator_is_enabled(rfkill_data->vcc));
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -64,6 +79,16 @@ struct rfkill_ops rfkill_regulator_ops = {
 };
 
 static int __devinit rfkill_regulator_probe(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static struct rfkill_ops rfkill_regulator_ops = {
+	.set_block = rfkill_regulator_set_block,
+};
+
+static int rfkill_regulator_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill_regulator_platform_data *pdata = pdev->dev.platform_data;
 	struct rfkill_regulator_data *rfkill_data;
@@ -99,9 +124,12 @@ static int __devinit rfkill_regulator_probe(struct platform_device *pdev)
 				&rfkill_regulator_ops, rfkill_data);
 	if (rf_kill == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "Cannot alloc rfkill device\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto err_rfkill_alloc;
 	}
@@ -109,10 +137,14 @@ static int __devinit rfkill_regulator_probe(struct platform_device *pdev)
 	if (regulator_is_enabled(vcc)) {
 		dev_dbg(&pdev->dev, "Regulator already enabled\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rfkill_data->reg_enabled = 1;
 =======
 		rfkill_data->reg_enabled = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rfkill_data->reg_enabled = true;
+>>>>>>> refs/remotes/origin/master
 	}
 	rfkill_data->vcc = vcc;
 	rfkill_data->rf_kill = rf_kill;
@@ -138,7 +170,11 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit rfkill_regulator_remove(struct platform_device *pdev)
+=======
+static int rfkill_regulator_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rfkill_regulator_data *rfkill_data = platform_get_drvdata(pdev);
 	struct rfkill *rf_kill = rfkill_data->rf_kill;
@@ -153,13 +189,18 @@ static int __devexit rfkill_regulator_remove(struct platform_device *pdev)
 
 static struct platform_driver rfkill_regulator_driver = {
 	.probe = rfkill_regulator_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(rfkill_regulator_remove),
+=======
+	.remove = rfkill_regulator_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "rfkill-regulator",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init rfkill_regulator_init(void)
 {
@@ -175,6 +216,9 @@ module_exit(rfkill_regulator_exit);
 =======
 module_platform_driver(rfkill_regulator_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(rfkill_regulator_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Guiming Zhuo <gmzhuo@gmail.com>");
 MODULE_AUTHOR("Antonio Ospite <ospite@studenti.unina.it>");

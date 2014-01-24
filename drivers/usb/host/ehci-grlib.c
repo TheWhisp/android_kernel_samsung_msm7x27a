@@ -25,7 +25,11 @@
  * Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+<<<<<<< HEAD
 
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 
 #include <linux/of_irq.h>
@@ -34,6 +38,7 @@
 
 #define GRUSBHC_HCIVERSION 0x0100 /* Known value of cap. reg. HCIVERSION */
 
+<<<<<<< HEAD
 /* called during probe() after chip reset completes */
 static int ehci_grlib_setup(struct usb_hcd *hcd)
 {
@@ -55,6 +60,8 @@ static int ehci_grlib_setup(struct usb_hcd *hcd)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct hc_driver ehci_grlib_hc_driver = {
 	.description		= hcd_name,
 	.product_desc		= "GRLIB GRUSBHC EHCI",
@@ -64,12 +71,20 @@ static const struct hc_driver ehci_grlib_hc_driver = {
 	 * generic hardware linkage
 	 */
 	.irq			= ehci_irq,
+<<<<<<< HEAD
 	.flags			= HCD_MEMORY | HCD_USB2,
+=======
+	.flags			= HCD_MEMORY | HCD_USB2 | HCD_BH,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * basic lifecycle operations
 	 */
+<<<<<<< HEAD
 	.reset			= ehci_grlib_setup,
+=======
+	.reset			= ehci_setup,
+>>>>>>> refs/remotes/origin/master
 	.start			= ehci_run,
 	.stop			= ehci_stop,
 	.shutdown		= ehci_shutdown,
@@ -103,7 +118,11 @@ static const struct hc_driver ehci_grlib_hc_driver = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit ehci_hcd_grlib_probe(struct platform_device *op)
+=======
+static int ehci_hcd_grlib_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dn = op->dev.of_node;
 	struct usb_hcd *hcd;
@@ -131,6 +150,7 @@ static int __devinit ehci_hcd_grlib_probe(struct platform_device *op)
 
 	hcd->rsrc_start = res.start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res.end - res.start + 1;
 =======
 	hcd->rsrc_len = resource_size(&res);
@@ -145,14 +165,28 @@ static int __devinit ehci_hcd_grlib_probe(struct platform_device *op)
 	irq = irq_of_parse_and_map(dn, 0);
 	if (irq == NO_IRQ) {
 		printk(KERN_ERR "%s: irq_of_parse_and_map failed\n", __FILE__);
+=======
+	hcd->rsrc_len = resource_size(&res);
+
+	irq = irq_of_parse_and_map(dn, 0);
+	if (irq == NO_IRQ) {
+		dev_err(&op->dev, "%s: irq_of_parse_and_map failed\n",
+			__FILE__);
+>>>>>>> refs/remotes/origin/master
 		rv = -EBUSY;
 		goto err_irq;
 	}
 
+<<<<<<< HEAD
 	hcd->regs = ioremap(hcd->rsrc_start, hcd->rsrc_len);
 	if (!hcd->regs) {
 		printk(KERN_ERR "%s: ioremap failed\n", __FILE__);
 		rv = -ENOMEM;
+=======
+	hcd->regs = devm_ioremap_resource(&op->dev, &res);
+	if (IS_ERR(hcd->regs)) {
+		rv = PTR_ERR(hcd->regs);
+>>>>>>> refs/remotes/origin/master
 		goto err_ioremap;
 	}
 
@@ -168,6 +202,7 @@ static int __devinit ehci_hcd_grlib_probe(struct platform_device *op)
 		ehci->big_endian_capbase = 1;
 	}
 
+<<<<<<< HEAD
 	ehci->regs = hcd->regs +
 		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
 
@@ -187,6 +222,18 @@ err_ioremap:
 err_irq:
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 err_rmr:
+=======
+	rv = usb_add_hcd(hcd, irq, 0);
+	if (rv)
+		goto err_ioremap;
+
+	device_wakeup_enable(hcd->self.controller);
+	return 0;
+
+err_ioremap:
+	irq_dispose_mapping(irq);
+err_irq:
+>>>>>>> refs/remotes/origin/master
 	usb_put_hcd(hcd);
 
 	return rv;
@@ -195,17 +242,25 @@ err_rmr:
 
 static int ehci_hcd_grlib_remove(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
 
 	dev_set_drvdata(&op->dev, NULL);
+=======
+	struct usb_hcd *hcd = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(&op->dev, "stopping GRLIB GRUSBHC EHCI USB Controller\n");
 
 	usb_remove_hcd(hcd);
 
+<<<<<<< HEAD
 	iounmap(hcd->regs);
 	irq_dispose_mapping(hcd->irq);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+=======
+	irq_dispose_mapping(hcd->irq);
+>>>>>>> refs/remotes/origin/master
 
 	usb_put_hcd(hcd);
 
@@ -213,6 +268,7 @@ static int ehci_hcd_grlib_remove(struct platform_device *op)
 }
 
 
+<<<<<<< HEAD
 static void ehci_hcd_grlib_shutdown(struct platform_device *op)
 {
 	struct usb_hcd *hcd = dev_get_drvdata(&op->dev);
@@ -222,6 +278,8 @@ static void ehci_hcd_grlib_shutdown(struct platform_device *op)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct of_device_id ehci_hcd_grlib_of_match[] = {
 	{
 		.name = "GAISLER_EHCI",
@@ -237,7 +295,11 @@ MODULE_DEVICE_TABLE(of, ehci_hcd_grlib_of_match);
 static struct platform_driver ehci_grlib_driver = {
 	.probe		= ehci_hcd_grlib_probe,
 	.remove		= ehci_hcd_grlib_remove,
+<<<<<<< HEAD
 	.shutdown	= ehci_hcd_grlib_shutdown,
+=======
+	.shutdown	= usb_hcd_platform_shutdown,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "grlib-ehci",
 		.owner = THIS_MODULE,

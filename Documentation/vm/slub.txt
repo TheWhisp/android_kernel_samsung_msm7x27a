@@ -18,10 +18,14 @@ slabs that have data in them. See "slabinfo -h" for more options when
 running the command. slabinfo can be compiled with
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 gcc -o slabinfo Documentation/vm/slabinfo.c
 =======
 gcc -o slabinfo tools/slub/slabinfo.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+gcc -o slabinfo tools/vm/slabinfo.c
+>>>>>>> refs/remotes/origin/master
 
 Some of the modes of operation of slabinfo require that slub debugging
 be enabled on the command line. F.e. no tracking information will be
@@ -122,10 +126,14 @@ can be influenced by kernel parameters:
 slub_min_objects=x		(default 4)
 slub_min_order=x		(default 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 slub_max_order=x		(default 1)
 =======
 slub_max_order=x		(default 3 (PAGE_ALLOC_COSTLY_ORDER))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+slub_max_order=x		(default 3 (PAGE_ALLOC_COSTLY_ORDER))
+>>>>>>> refs/remotes/origin/master
 
 slub_min_objects allows to specify how many objects must at least fit
 into one slab in order for the allocation order to be acceptable.
@@ -140,13 +148,19 @@ slub_max_order specified the order at which slub_min_objects should no
 longer be checked. This is useful to avoid SLUB trying to generate
 super large order pages to fit slub_min_objects of a slab cache with
 <<<<<<< HEAD
+<<<<<<< HEAD
 large object sizes into one high order page.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 large object sizes into one high order page. Setting command line
 parameter debug_guardpage_minorder=N (N > 0), forces setting
 slub_max_order to 0, what cause minimum possible order of slabs
 allocation.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 SLUB Debug output
 -----------------

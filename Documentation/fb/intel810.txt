@@ -212,10 +212,14 @@ Using the same setup as described above, load the module like this:
 	         vsync2=85 accel=1 mtrr=1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Or just add the following to /etc/modprobe.conf
 =======
 Or just add the following to a configuration file in /etc/modprobe.d/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Or just add the following to a configuration file in /etc/modprobe.d/
+>>>>>>> refs/remotes/origin/master
 
 	options i810fb vram=2 xres=1024 bpp=16 hsync1=30 hsync2=55 vsync1=50 \
 	vsync2=85 accel=1 mtrr=1

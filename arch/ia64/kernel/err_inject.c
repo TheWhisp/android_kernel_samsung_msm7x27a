@@ -25,10 +25,14 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/cpu.h>
@@ -40,16 +44,22 @@
 
 #define define_one_ro(name) 						\
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_ATTR(name, 0444, show_##name, NULL)
 
 #define define_one_rw(name) 						\
 static SYSDEV_ATTR(name, 0644, show_##name, store_##name)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(name, 0444, show_##name, NULL)
 
 #define define_one_rw(name) 						\
 static DEVICE_ATTR(name, 0644, show_##name, store_##name)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static u64 call_start[NR_CPUS];
 static u64 phys_addr[NR_CPUS];
@@ -67,10 +77,14 @@ static u64 resources[NR_CPUS];
 #define show(name) 							\
 static ssize_t 								\
 <<<<<<< HEAD
+<<<<<<< HEAD
 show_##name(struct sys_device *dev, struct sysdev_attribute *attr,	\
 =======
 show_##name(struct device *dev, struct device_attribute *attr,	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+show_##name(struct device *dev, struct device_attribute *attr,	\
+>>>>>>> refs/remotes/origin/master
 		char *buf)						\
 {									\
 	u32 cpu=dev->id;						\
@@ -80,10 +94,14 @@ show_##name(struct device *dev, struct device_attribute *attr,	\
 #define store(name)							\
 static ssize_t 								\
 <<<<<<< HEAD
+<<<<<<< HEAD
 store_##name(struct sys_device *dev, struct sysdev_attribute *attr,	\
 =======
 store_##name(struct device *dev, struct device_attribute *attr,	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+store_##name(struct device *dev, struct device_attribute *attr,	\
+>>>>>>> refs/remotes/origin/master
 					const char *buf, size_t size)	\
 {									\
 	unsigned int cpu=dev->id;					\
@@ -98,10 +116,14 @@ show(call_start)
  */
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 store_call_start(struct sys_device *dev, struct sysdev_attribute *attr,
 =======
 store_call_start(struct device *dev, struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+store_call_start(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 		const char *buf, size_t size)
 {
 	unsigned int cpu=dev->id;
@@ -151,10 +173,14 @@ store(err_type_info)
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 show_virtual_to_phys(struct sys_device *dev, struct sysdev_attribute *attr,
 =======
 show_virtual_to_phys(struct device *dev, struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+show_virtual_to_phys(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			char *buf)
 {
 	unsigned int cpu=dev->id;
@@ -163,10 +189,14 @@ show_virtual_to_phys(struct device *dev, struct device_attribute *attr,
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 store_virtual_to_phys(struct sys_device *dev, struct sysdev_attribute *attr,
 =======
 store_virtual_to_phys(struct device *dev, struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+store_virtual_to_phys(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			const char *buf, size_t size)
 {
 	unsigned int cpu=dev->id;
@@ -191,12 +221,17 @@ store(err_struct_info)
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 show_err_data_buffer(struct sys_device *dev,
 			struct sysdev_attribute *attr, char *buf)
 =======
 show_err_data_buffer(struct device *dev,
 			struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+show_err_data_buffer(struct device *dev,
+			struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu=dev->id;
 
@@ -208,12 +243,17 @@ show_err_data_buffer(struct device *dev,
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 store_err_data_buffer(struct sys_device *dev,
 			struct sysdev_attribute *attr,
 =======
 store_err_data_buffer(struct device *dev,
 			struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+store_err_data_buffer(struct device *dev,
+			struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			const char *buf, size_t size)
 {
 	unsigned int cpu=dev->id;
@@ -251,6 +291,7 @@ define_one_ro(resources);
 
 static struct attribute *default_attrs[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&attr_call_start.attr,
 	&attr_virtual_to_phys.attr,
 	&attr_err_type_info.attr,
@@ -260,6 +301,8 @@ static struct attribute *default_attrs[] = {
 	&attr_capabilities.attr,
 	&attr_resources.attr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_call_start.attr,
 	&dev_attr_virtual_to_phys.attr,
 	&dev_attr_err_type_info.attr,
@@ -268,7 +311,10 @@ static struct attribute *default_attrs[] = {
 	&dev_attr_status.attr,
 	&dev_attr_capabilities.attr,
 	&dev_attr_resources.attr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
@@ -278,23 +324,32 @@ static struct attribute_group err_inject_attr_group = {
 };
 /* Add/Remove err_inject interface for CPU device */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __cpuinit err_inject_add_dev(struct sys_device * sys_dev)
 =======
 static int __cpuinit err_inject_add_dev(struct device * sys_dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int err_inject_add_dev(struct device *sys_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return sysfs_create_group(&sys_dev->kobj, &err_inject_attr_group);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __cpuinit err_inject_remove_dev(struct sys_device * sys_dev)
 =======
 static int __cpuinit err_inject_remove_dev(struct device * sys_dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int err_inject_remove_dev(struct device *sys_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	sysfs_remove_group(&sys_dev->kobj, &err_inject_attr_group);
 	return 0;
 }
+<<<<<<< HEAD
 static int __cpuinit err_inject_cpu_callback(struct notifier_block *nfb,
 		unsigned long action, void *hcpu)
 {
@@ -308,6 +363,15 @@ static int __cpuinit err_inject_cpu_callback(struct notifier_block *nfb,
 
 	sys_dev = get_cpu_device(cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int err_inject_cpu_callback(struct notifier_block *nfb,
+		unsigned long action, void *hcpu)
+{
+	unsigned int cpu = (unsigned long)hcpu;
+	struct device *sys_dev;
+
+	sys_dev = get_cpu_device(cpu);
+>>>>>>> refs/remotes/origin/master
 	switch (action) {
 	case CPU_ONLINE:
 	case CPU_ONLINE_FROZEN:
@@ -322,7 +386,11 @@ static int __cpuinit err_inject_cpu_callback(struct notifier_block *nfb,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata err_inject_cpu_notifier =
+=======
+static struct notifier_block err_inject_cpu_notifier =
+>>>>>>> refs/remotes/origin/master
 {
 	.notifier_call = err_inject_cpu_callback,
 };
@@ -350,20 +418,28 @@ err_inject_exit(void)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sys_device *sys_dev;
 =======
 	struct device *sys_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *sys_dev;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef ERR_INJ_DEBUG
 	printk(KERN_INFO "Exit error injection driver.\n");
 #endif
 	for_each_online_cpu(i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sys_dev = get_cpu_sysdev(i);
 =======
 		sys_dev = get_cpu_device(i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sys_dev = get_cpu_device(i);
+>>>>>>> refs/remotes/origin/master
 		sysfs_remove_group(&sys_dev->kobj, &err_inject_attr_group);
 	}
 	unregister_hotcpu_notifier(&err_inject_cpu_notifier);

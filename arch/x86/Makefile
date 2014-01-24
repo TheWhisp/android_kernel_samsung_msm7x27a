@@ -2,7 +2,15 @@
 
 # select defconfig based on actual architecture
 ifeq ($(ARCH),x86)
+<<<<<<< HEAD
         KBUILD_DEFCONFIG := i386_defconfig
+=======
+  ifeq ($(shell uname -m),x86_64)
+        KBUILD_DEFCONFIG := x86_64_defconfig
+  else
+        KBUILD_DEFCONFIG := i386_defconfig
+  endif
+>>>>>>> refs/remotes/origin/master
 else
         KBUILD_DEFCONFIG := $(ARCH)_defconfig
 endif
@@ -12,6 +20,13 @@ endif
 # e.g.: obj-y += foo_$(BITS).o
 export BITS
 
+<<<<<<< HEAD
+=======
+ifdef CONFIG_X86_NEED_RELOCS
+        LDFLAGS_vmlinux := --emit-relocs
+endif
+
+>>>>>>> refs/remotes/origin/master
 ifeq ($(CONFIG_X86_32),y)
         BITS := 32
         UTS_MACHINE := i386
@@ -21,12 +36,24 @@ ifeq ($(CONFIG_X86_32),y)
         KBUILD_AFLAGS += $(biarch)
         KBUILD_CFLAGS += $(biarch)
 
+<<<<<<< HEAD
         ifdef CONFIG_RELOCATABLE
                 LDFLAGS_vmlinux := --emit-relocs
         endif
 
         KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
 
+=======
+        KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
+
+        # Don't autogenerate MMX or SSE instructions
+        KBUILD_CFLAGS += -mno-mmx -mno-sse
+
+        # Never want PIC in a 32-bit kernel, prevent breakage with GCC built
+        # with nonstandard options
+        KBUILD_CFLAGS += -fno-pic
+
+>>>>>>> refs/remotes/origin/master
         # prevent gcc from keeping the stack 16 byte aligned
         KBUILD_CFLAGS += $(call cc-option,-mpreferred-stack-boundary=2)
 
@@ -49,6 +76,15 @@ else
         KBUILD_AFLAGS += -m64
         KBUILD_CFLAGS += -m64
 
+<<<<<<< HEAD
+=======
+        # Don't autogenerate MMX or SSE instructions
+        KBUILD_CFLAGS += -mno-mmx -mno-sse
+
+	# Use -mpreferred-stack-boundary=3 if supported.
+	KBUILD_CFLAGS += $(call cc-option,-mpreferred-stack-boundary=3)
+
+>>>>>>> refs/remotes/origin/master
         # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
         cflags-$(CONFIG_MK8) += $(call cc-option,-march=k8)
         cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
@@ -72,6 +108,7 @@ else
         KBUILD_CFLAGS += -maccumulate-outgoing-args
 endif
 
+<<<<<<< HEAD
 ifdef CONFIG_CC_STACKPROTECTOR
 	cc_has_sp := $(srctree)/scripts/gcc-x86_$(BITS)-has-stack-protector.sh
         ifeq ($(shell $(CONFIG_SHELL) $(cc_has_sp) $(CC) $(KBUILD_CPPFLAGS) $(biarch)),y)
@@ -84,6 +121,16 @@ endif
 
 <<<<<<< HEAD
 =======
+=======
+# Make sure compiler does not have buggy stack-protector support.
+ifdef CONFIG_CC_STACKPROTECTOR
+	cc_has_sp := $(srctree)/scripts/gcc-x86_$(BITS)-has-stack-protector.sh
+        ifneq ($(shell $(CONFIG_SHELL) $(cc_has_sp) $(CC) $(KBUILD_CPPFLAGS) $(biarch)),y)
+                $(warning stack-protector enabled but compiler support broken)
+        endif
+endif
+
+>>>>>>> refs/remotes/origin/master
 ifdef CONFIG_X86_X32
 	x32_ld_ok := $(call try-run,\
 			/bin/echo -e '1: .quad 1b' | \
@@ -100,7 +147,10 @@ ifdef CONFIG_X86_X32
 endif
 export CONFIG_X86_X32_ABI
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # Don't unroll struct assignments with kmemcheck enabled
 ifeq ($(CONFIG_KMEMCHECK),y)
 	KBUILD_CFLAGS += $(call cc-option,-fno-builtin-memcpy)
@@ -118,9 +168,17 @@ cfi-sections := $(call as-instr,.cfi_sections .debug_frame,-DCONFIG_AS_CFI_SECTI
 
 # does binutils support specific instructions?
 asinstr := $(call as-instr,fxsaveq (%rax),-DCONFIG_AS_FXSAVEQ=1)
+<<<<<<< HEAD
 
 KBUILD_AFLAGS += $(cfi) $(cfi-sigframe) $(cfi-sections) $(asinstr)
 KBUILD_CFLAGS += $(cfi) $(cfi-sigframe) $(cfi-sections) $(asinstr)
+=======
+avx_instr := $(call as-instr,vxorps %ymm0$(comma)%ymm1$(comma)%ymm2,-DCONFIG_AS_AVX=1)
+avx2_instr :=$(call as-instr,vpbroadcastb %xmm0$(comma)%ymm1,-DCONFIG_AS_AVX2=1)
+
+KBUILD_AFLAGS += $(cfi) $(cfi-sigframe) $(cfi-sections) $(asinstr) $(avx_instr) $(avx2_instr)
+KBUILD_CFLAGS += $(cfi) $(cfi-sigframe) $(cfi-sections) $(asinstr) $(avx_instr) $(avx2_instr)
+>>>>>>> refs/remotes/origin/master
 
 LDFLAGS := -m elf_$(UTS_MACHINE)
 
@@ -133,16 +191,24 @@ KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
 # prevent gcc from generating any FP code by mistake
 KBUILD_CFLAGS += $(call cc-option,-mno-sse -mno-mmx -mno-sse2 -mno-3dnow,)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
+>>>>>>> refs/remotes/origin/master
 
 KBUILD_CFLAGS += $(mflags-y)
 KBUILD_AFLAGS += $(mflags-y)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 archscripts:
+=======
+archscripts: scripts_basic
+>>>>>>> refs/remotes/origin/master
 	$(Q)$(MAKE) $(build)=arch/x86/tools relocs
 
 ###
@@ -151,14 +217,20 @@ archscripts:
 archheaders:
 	$(Q)$(MAKE) $(build)=arch/x86/syscalls all
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ###
 # Kernel objects
 
 head-y := arch/x86/kernel/head_$(BITS).o
 head-y += arch/x86/kernel/head$(BITS).o
 head-y += arch/x86/kernel/head.o
+<<<<<<< HEAD
 head-y += arch/x86/kernel/init_task.o
+=======
+>>>>>>> refs/remotes/origin/master
 
 libs-y  += arch/x86/lib/
 
@@ -215,6 +287,16 @@ archclean:
 	$(Q)rm -rf $(objtree)/arch/i386
 	$(Q)rm -rf $(objtree)/arch/x86_64
 	$(Q)$(MAKE) $(clean)=$(boot)
+<<<<<<< HEAD
+=======
+	$(Q)$(MAKE) $(clean)=arch/x86/tools
+
+PHONY += kvmconfig
+kvmconfig:
+	$(if $(wildcard $(objtree)/.config),, $(error You need an existing .config for this target))
+	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m -O $(objtree) $(objtree)/.config arch/x86/configs/kvm_guest.config
+	$(Q)yes "" | $(MAKE) oldconfig
+>>>>>>> refs/remotes/origin/master
 
 define archhelp
   echo  '* bzImage      - Compressed kernel image (arch/x86/boot/bzImage)'
@@ -229,4 +311,8 @@ define archhelp
   echo  '                  bzdisk/fdimage*/isoimage also accept:'
   echo  '                  FDARGS="..."  arguments for the booted kernel'
   echo  '                  FDINITRD=file initrd for the booted kernel'
+<<<<<<< HEAD
+=======
+  echo  '  kvmconfig	- Enable additional options for guest kernel support'
+>>>>>>> refs/remotes/origin/master
 endef

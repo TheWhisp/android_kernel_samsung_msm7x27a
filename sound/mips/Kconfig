@@ -24,22 +24,33 @@ config SND_SGI_HAL2
 
 config SND_AU1X00
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Au1x00 AC97 Port Driver"
 	depends on SOC_AU1000 || SOC_AU1100 || SOC_AU1500
 =======
 	tristate "Au1x00 AC97 Port Driver (DEPRECATED)"
 	depends on MIPS_ALCHEMY
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "Au1x00 AC97 Port Driver (DEPRECATED)"
+	depends on MIPS_ALCHEMY
+>>>>>>> refs/remotes/origin/master
 	select SND_PCM
 	select SND_AC97_CODEC
 	help
 	  ALSA Sound driver for the Au1x00's AC97 port.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	  Newer drivers for ASoC are available, please do not use
 	  this driver as it will be removed in the future.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Newer drivers for ASoC are available, please do not use
+	  this driver as it will be removed in the future.
+
+>>>>>>> refs/remotes/origin/master
 endif	# SND_MIPS
 

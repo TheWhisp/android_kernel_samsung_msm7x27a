@@ -12,6 +12,7 @@
 #include <linux/interrupt.h>
 #include <linux/clockchips.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/mach/map.h>
 #include <asm/mach/time.h>
 #include <asm/mach/irq.h>
@@ -44,6 +45,27 @@ static struct map_desc cns3xxx_io_desc[] __initdata = {
 		.pfn		= __phys_to_pfn(CNS3XXX_TC11MP_SCU_BASE),
 		.length		= SZ_8K,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqchip/arm-gic.h>
+#include <linux/of_platform.h>
+#include <linux/platform_device.h>
+#include <linux/usb/ehci_pdriver.h>
+#include <linux/usb/ohci_pdriver.h>
+#include <asm/mach/arch.h>
+#include <asm/mach/map.h>
+#include <asm/mach/time.h>
+#include <asm/mach/irq.h>
+#include <asm/hardware/cache-l2x0.h>
+#include "cns3xxx.h"
+#include "core.h"
+#include "pm.h"
+
+static struct map_desc cns3xxx_io_desc[] __initdata = {
+	{
+		.virtual	= CNS3XXX_TC11MP_SCU_BASE_VIRT,
+		.pfn		= __phys_to_pfn(CNS3XXX_TC11MP_SCU_BASE),
+		.length		= SZ_8K,
+>>>>>>> refs/remotes/origin/master
 		.type		= MT_DEVICE,
 	}, {
 		.virtual	= CNS3XXX_TIMER1_2_3_BASE_VIRT,
@@ -51,6 +73,7 @@ static struct map_desc cns3xxx_io_desc[] __initdata = {
 		.length		= SZ_4K,
 		.type		= MT_DEVICE,
 	}, {
+<<<<<<< HEAD
 		.virtual	= CNS3XXX_GPIOA_BASE_VIRT,
 		.pfn		= __phys_to_pfn(CNS3XXX_GPIOA_BASE),
 		.length		= SZ_4K,
@@ -61,6 +84,8 @@ static struct map_desc cns3xxx_io_desc[] __initdata = {
 		.length		= SZ_4K,
 		.type		= MT_DEVICE,
 	}, {
+=======
+>>>>>>> refs/remotes/origin/master
 		.virtual	= CNS3XXX_MISC_BASE_VIRT,
 		.pfn		= __phys_to_pfn(CNS3XXX_MISC_BASE),
 		.length		= SZ_4K,
@@ -82,21 +107,30 @@ void __init cns3xxx_map_io(void)
 void __init cns3xxx_init_irq(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gic_init(0, 29, __io(CNS3XXX_TC11MP_GIC_DIST_BASE_VIRT),
 		 __io(CNS3XXX_TC11MP_GIC_CPU_BASE_VIRT));
 =======
 	gic_init(0, 29, IOMEM(CNS3XXX_TC11MP_GIC_DIST_BASE_VIRT),
 		 IOMEM(CNS3XXX_TC11MP_GIC_CPU_BASE_VIRT));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gic_init(0, 29, IOMEM(CNS3XXX_TC11MP_GIC_DIST_BASE_VIRT),
+		 IOMEM(CNS3XXX_TC11MP_GIC_CPU_BASE_VIRT));
+>>>>>>> refs/remotes/origin/master
 }
 
 void cns3xxx_power_off(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 __iomem *pm_base = __io(CNS3XXX_PM_BASE_VIRT);
 =======
 	u32 __iomem *pm_base = IOMEM(CNS3XXX_PM_BASE_VIRT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 __iomem *pm_base = IOMEM(CNS3XXX_PM_BASE_VIRT);
+>>>>>>> refs/remotes/origin/master
 	u32 clkctrl;
 
 	printk(KERN_INFO "powering system down...\n");
@@ -152,7 +186,10 @@ static int cns3xxx_timer_set_next_event(unsigned long evt,
 
 static struct clock_event_device cns3xxx_tmr1_clockevent = {
 	.name		= "cns3xxx timer1",
+<<<<<<< HEAD
 	.shift		= 8,
+=======
+>>>>>>> refs/remotes/origin/master
 	.features       = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.set_mode	= cns3xxx_timer_set_mode,
 	.set_next_event	= cns3xxx_timer_set_next_event,
@@ -163,6 +200,7 @@ static struct clock_event_device cns3xxx_tmr1_clockevent = {
 static void __init cns3xxx_clockevents_init(unsigned int timer_irq)
 {
 	cns3xxx_tmr1_clockevent.irq = timer_irq;
+<<<<<<< HEAD
 	cns3xxx_tmr1_clockevent.mult =
 		div_sc((cns3xxx_cpu_clock() >> 3) * 1000000, NSEC_PER_SEC,
 		       cns3xxx_tmr1_clockevent.shift);
@@ -172,6 +210,11 @@ static void __init cns3xxx_clockevents_init(unsigned int timer_irq)
 		clockevent_delta2ns(0xf, &cns3xxx_tmr1_clockevent);
 
 	clockevents_register_device(&cns3xxx_tmr1_clockevent);
+=======
+	clockevents_config_and_register(&cns3xxx_tmr1_clockevent,
+					(cns3xxx_cpu_clock() >> 3) * 1000000,
+					0xf, 0xffffffff);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -253,6 +296,7 @@ static void __init __cns3xxx_timer_init(unsigned int timer_irq)
 	cns3xxx_clockevents_init(timer_irq);
 }
 
+<<<<<<< HEAD
 static void __init cns3xxx_timer_init(void)
 {
 <<<<<<< HEAD
@@ -260,16 +304,24 @@ static void __init cns3xxx_timer_init(void)
 =======
 	cns3xxx_tmr1 = IOMEM(CNS3XXX_TIMER1_2_3_BASE_VIRT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init cns3xxx_timer_init(void)
+{
+	cns3xxx_tmr1 = IOMEM(CNS3XXX_TIMER1_2_3_BASE_VIRT);
+>>>>>>> refs/remotes/origin/master
 
 	__cns3xxx_timer_init(IRQ_CNS3XXX_TIMER0);
 }
 
+<<<<<<< HEAD
 struct sys_timer cns3xxx_timer = {
 	.init = cns3xxx_timer_init,
 };
 <<<<<<< HEAD
 =======
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CACHE_L2X0
 
 void __init cns3xxx_l2x0_init(void)
@@ -311,4 +363,120 @@ void __init cns3xxx_l2x0_init(void)
 }
 
 #endif /* CONFIG_CACHE_L2X0 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static int csn3xxx_usb_power_on(struct platform_device *pdev)
+{
+	/*
+	 * EHCI and OHCI share the same clock and power,
+	 * resetting twice would cause the 1st controller been reset.
+	 * Therefore only do power up  at the first up device, and
+	 * power down at the last down device.
+	 *
+	 * Set USB AHB INCR length to 16
+	 */
+	if (atomic_inc_return(&usb_pwr_ref) == 1) {
+		cns3xxx_pwr_power_up(1 << PM_PLL_HM_PD_CTRL_REG_OFFSET_PLL_USB);
+		cns3xxx_pwr_clk_en(1 << PM_CLK_GATE_REG_OFFSET_USB_HOST);
+		cns3xxx_pwr_soft_rst(1 << PM_SOFT_RST_REG_OFFST_USB_HOST);
+		__raw_writel((__raw_readl(MISC_CHIP_CONFIG_REG) | (0X2 << 24)),
+			MISC_CHIP_CONFIG_REG);
+	}
+
+	return 0;
+}
+
+static void csn3xxx_usb_power_off(struct platform_device *pdev)
+{
+	/*
+	 * EHCI and OHCI share the same clock and power,
+	 * resetting twice would cause the 1st controller been reset.
+	 * Therefore only do power up  at the first up device, and
+	 * power down at the last down device.
+	 */
+	if (atomic_dec_return(&usb_pwr_ref) == 0)
+		cns3xxx_pwr_clk_dis(1 << PM_CLK_GATE_REG_OFFSET_USB_HOST);
+}
+
+static struct usb_ehci_pdata cns3xxx_usb_ehci_pdata = {
+	.power_on	= csn3xxx_usb_power_on,
+	.power_off	= csn3xxx_usb_power_off,
+};
+
+static struct usb_ohci_pdata cns3xxx_usb_ohci_pdata = {
+	.num_ports	= 1,
+	.power_on	= csn3xxx_usb_power_on,
+	.power_off	= csn3xxx_usb_power_off,
+};
+
+static struct of_dev_auxdata cns3xxx_auxdata[] __initconst = {
+	{ "intel,usb-ehci", CNS3XXX_USB_BASE, "ehci-platform", &cns3xxx_usb_ehci_pdata },
+	{ "intel,usb-ohci", CNS3XXX_USB_OHCI_BASE, "ohci-platform", &cns3xxx_usb_ohci_pdata },
+	{ "cavium,cns3420-ahci", CNS3XXX_SATA2_BASE, "ahci", NULL },
+	{ "cavium,cns3420-sdhci", CNS3XXX_SDIO_BASE, "ahci", NULL },
+	{},
+};
+
+static void __init cns3xxx_init(void)
+{
+	struct device_node *dn;
+
+	cns3xxx_l2x0_init();
+
+	dn = of_find_compatible_node(NULL, NULL, "cavium,cns3420-ahci");
+	if (of_device_is_available(dn)) {
+		u32 tmp;
+	
+		tmp = __raw_readl(MISC_SATA_POWER_MODE);
+		tmp |= 0x1 << 16; /* Disable SATA PHY 0 from SLUMBER Mode */
+		tmp |= 0x1 << 17; /* Disable SATA PHY 1 from SLUMBER Mode */
+		__raw_writel(tmp, MISC_SATA_POWER_MODE);
+	
+		/* Enable SATA PHY */
+		cns3xxx_pwr_power_up(0x1 << PM_PLL_HM_PD_CTRL_REG_OFFSET_SATA_PHY0);
+		cns3xxx_pwr_power_up(0x1 << PM_PLL_HM_PD_CTRL_REG_OFFSET_SATA_PHY1);
+	
+		/* Enable SATA Clock */
+		cns3xxx_pwr_clk_en(0x1 << PM_CLK_GATE_REG_OFFSET_SATA);
+	
+		/* De-Asscer SATA Reset */
+		cns3xxx_pwr_soft_rst(CNS3XXX_PWR_SOFTWARE_RST(SATA));
+	}
+
+	dn = of_find_compatible_node(NULL, NULL, "cavium,cns3420-sdhci");
+	if (of_device_is_available(dn)) {
+		u32 __iomem *gpioa = IOMEM(CNS3XXX_MISC_BASE_VIRT + 0x0014);
+		u32 gpioa_pins = __raw_readl(gpioa);
+	
+		/* MMC/SD pins share with GPIOA */
+		gpioa_pins |= 0x1fff0004;
+		__raw_writel(gpioa_pins, gpioa);
+	
+		cns3xxx_pwr_clk_en(CNS3XXX_PWR_CLK_EN(SDIO));
+		cns3xxx_pwr_soft_rst(CNS3XXX_PWR_SOFTWARE_RST(SDIO));
+	}
+
+	pm_power_off = cns3xxx_power_off;
+
+	of_platform_populate(NULL, of_default_bus_match_table,
+                        cns3xxx_auxdata, NULL);
+}
+
+static const char *cns3xxx_dt_compat[] __initdata = {
+	"cavium,cns3410",
+	"cavium,cns3420",
+	NULL,
+};
+
+DT_MACHINE_START(CNS3XXX_DT, "Cavium Networks CNS3xxx")
+	.dt_compat	= cns3xxx_dt_compat,
+	.nr_irqs	= NR_IRQS_CNS3XXX,
+	.map_io		= cns3xxx_map_io,
+	.init_irq	= cns3xxx_init_irq,
+	.init_time	= cns3xxx_timer_init,
+	.init_machine	= cns3xxx_init,
+	.restart	= cns3xxx_restart,
+MACHINE_END
+>>>>>>> refs/remotes/origin/master

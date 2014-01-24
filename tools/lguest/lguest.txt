@@ -29,10 +29,13 @@ Running Lguest:
 
   You will need to configure your kernel with the following options:
 
+<<<<<<< HEAD
   "General setup":
      "Prompt for development and/or incomplete code/drivers" = Y
         (CONFIG_EXPERIMENTAL=y)
 
+=======
+>>>>>>> refs/remotes/origin/master
   "Processor type and features":
      "Paravirtualized guest support" = Y
         "Lguest guest support" = Y
@@ -43,10 +46,17 @@ Running Lguest:
 
   "Device Drivers":
      "Block devices"
+<<<<<<< HEAD
         "Virtio block driver (EXPERIMENTAL)" = M/Y
      "Network device support"
         "Universal TUN/TAP device driver support" = M/Y
         "Virtio network driver (EXPERIMENTAL)" = M/Y
+=======
+        "Virtio block driver" = M/Y
+     "Network device support"
+        "Universal TUN/TAP device driver support" = M/Y
+        "Virtio network driver" = M/Y
+>>>>>>> refs/remotes/origin/master
            (CONFIG_VIRTIO_BLK=m, CONFIG_VIRTIO_NET=m and CONFIG_TUN=m)
 
   "Virtualization"
@@ -74,7 +84,11 @@ Running Lguest:
 
 - Run an lguest as root:
 
+<<<<<<< HEAD
       Documentation/virtual/lguest/lguest 64 vmlinux --tunnet=192.168.19.1 \
+=======
+      tools/lguest/lguest 64 vmlinux --tunnet=192.168.19.1 \
+>>>>>>> refs/remotes/origin/master
         --block=rootfile root=/dev/vda
 
    Explanation:

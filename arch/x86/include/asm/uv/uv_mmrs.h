@@ -5,16 +5,35 @@
  *
  * SGI UV MMR definitions
  *
+<<<<<<< HEAD
  * Copyright (C) 2007-2011 Silicon Graphics, Inc. All rights reserved.
+=======
+ * Copyright (C) 2007-2013 Silicon Graphics, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _ASM_X86_UV_UV_MMRS_H
 #define _ASM_X86_UV_UV_MMRS_H
 
 /*
+<<<<<<< HEAD
  * This file contains MMR definitions for both UV1 & UV2 hubs.
  *
  * In general, MMR addresses and structures are identical on both hubs.
+=======
+ * This file contains MMR definitions for all UV hubs types.
+ *
+ * To minimize coding differences between hub types, the symbols are
+ * grouped by architecture types.
+ *
+ * UVH  - definitions common to all UV hub types.
+ * UVXH - definitions common to all UV eXtended hub types (currently 2 & 3).
+ * UV1H - definitions specific to UV type 1 hub.
+ * UV2H - definitions specific to UV type 2 hub.
+ * UV3H - definitions specific to UV type 3 hub.
+ *
+ * So in general, MMR addresses and structures are identical on all hubs types.
+>>>>>>> refs/remotes/origin/master
  * These MMRs are identified as:
  *	#define UVH_xxx		<address>
  *	union uvh_xxx {
@@ -23,6 +42,7 @@
  *		} s;
  *	};
  *
+<<<<<<< HEAD
  * If the MMR exists on both hub type but has different addresses or
  * contents, the MMR definition is similar to:
  *	#define UV1H_xxx	<uv1 address>
@@ -41,6 +61,38 @@
  * Only essential difference are enumerated. For example, if the address is
  * the same for both UV1 & UV2, only a single #define is generated. Likewise,
  * if the contents is the same for both hubs, only the "s" structure is
+=======
+ * If the MMR exists on all hub types but have different addresses:
+ *	#define UV1Hxxx	a
+ *	#define UV2Hxxx	b
+ *	#define UV3Hxxx	c
+ *	#define UVHxxx	(is_uv1_hub() ? UV1Hxxx :
+ *			(is_uv2_hub() ? UV2Hxxx :
+ *					UV3Hxxx))
+ *
+ * If the MMR exists on all hub types > 1 but have different addresses:
+ *	#define UV2Hxxx	b
+ *	#define UV3Hxxx	c
+ *	#define UVXHxxx (is_uv2_hub() ? UV2Hxxx :
+ *					UV3Hxxx))
+ *
+ *	union uvh_xxx {
+ *		unsigned long       v;
+ *		struct uvh_xxx_s {	 # Common fields only
+ *		} s;
+ *		struct uv1h_xxx_s {	 # Full UV1 definition (*)
+ *		} s1;
+ *		struct uv2h_xxx_s {	 # Full UV2 definition (*)
+ *		} s2;
+ *		struct uv3h_xxx_s {	 # Full UV3 definition (*)
+ *		} s3;
+ *	};
+ *		(* - if present and different than the common struct)
+ *
+ * Only essential differences are enumerated. For example, if the address is
+ * the same for all UV's, only a single #define is generated. Likewise,
+ * if the contents is the same for all hubs, only the "s" structure is
+>>>>>>> refs/remotes/origin/master
  * generated.
  *
  * If the MMR exists on ONLY 1 type of hub, no generic definition is
@@ -51,12 +103,18 @@
  *		struct uvh_int_cmpd_s {
  *		} sn;
  *	};
+<<<<<<< HEAD
+=======
+ *
+ * (GEN Flags: mflags_opt= undefs=0 UV23=UVXH)
+>>>>>>> refs/remotes/origin/master
  */
 
 #define UV_MMR_ENABLE		(1UL << 63)
 
 #define UV1_HUB_PART_NUMBER	0x88a5
 #define UV2_HUB_PART_NUMBER	0x8eb8
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define UV2_HUB_PART_NUMBER_X	0x1111
@@ -68,6 +126,15 @@
 <<<<<<< HEAD
 /* KABI compat: if this #define is present, KABI hacks are present */
 #define UV2_HUB_KABI_HACKS	1
+=======
+#define UV2_HUB_PART_NUMBER_X	0x1111
+#define UV3_HUB_PART_NUMBER	0x9578
+#define UV3_HUB_PART_NUMBER_X	0x4321
+
+/* Compat: Indicate which UV Hubs are supported. */
+#define UV2_HUB_IS_SUPPORTED	1
+#define UV3_HUB_IS_SUPPORTED	1
+>>>>>>> refs/remotes/origin/master
 
 /* ========================================================================= */
 /*                          UVH_BAU_DATA_BROADCAST                           */
@@ -75,6 +142,7 @@
 #define UVH_BAU_DATA_BROADCAST 0x61688UL
 #define UVH_BAU_DATA_BROADCAST_32 0x440
 
+<<<<<<< HEAD
 #define UVH_BAU_DATA_BROADCAST_ENABLE_SHFT 0
 #define UVH_BAU_DATA_BROADCAST_ENABLE_MASK 0x0000000000000001UL
 
@@ -91,6 +159,8 @@ union uvh_bau_data_broadcast_u {
 #define UVH_BAU_DATA_BROADCAST				0x61688UL
 #define UVH_BAU_DATA_BROADCAST_32			0x440
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define UVH_BAU_DATA_BROADCAST_ENABLE_SHFT		0
 #define UVH_BAU_DATA_BROADCAST_ENABLE_MASK		0x0000000000000001UL
 
@@ -100,12 +170,16 @@ union uvh_bau_data_broadcast_u {
 		unsigned long	enable:1;			/* RW */
 		unsigned long	rsvd_1_63:63;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                           UVH_BAU_DATA_CONFIG                             */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_BAU_DATA_CONFIG 0x61680UL
 #define UVH_BAU_DATA_CONFIG_32 0x438
@@ -145,6 +219,11 @@ union uvh_bau_data_config_u {
 #define UVH_BAU_DATA_CONFIG				0x61680UL
 #define UVH_BAU_DATA_CONFIG_32				0x438
 
+=======
+#define UVH_BAU_DATA_CONFIG 0x61680UL
+#define UVH_BAU_DATA_CONFIG_32 0x438
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_BAU_DATA_CONFIG_VECTOR_SHFT			0
 #define UVH_BAU_DATA_CONFIG_DM_SHFT			8
 #define UVH_BAU_DATA_CONFIG_DESTMODE_SHFT		11
@@ -176,12 +255,16 @@ union uvh_bau_data_config_u {
 		unsigned long	rsvd_17_31:15;
 		unsigned long	apic_id:32;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                           UVH_EVENT_OCCURRED0                             */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_EVENT_OCCURRED0 0x70000UL
 #define UVH_EVENT_OCCURRED0_32 0x5e8
@@ -549,6 +632,16 @@ union uvh_event_occurred0_u {
 #define UVH_EVENT_OCCURRED0_32				0x5e8
 
 #define UV1H_EVENT_OCCURRED0_LB_HCERR_SHFT		0
+=======
+#define UVH_EVENT_OCCURRED0 0x70000UL
+#define UVH_EVENT_OCCURRED0_32 0x5e8
+
+#define UVH_EVENT_OCCURRED0_LB_HCERR_SHFT		0
+#define UVH_EVENT_OCCURRED0_RH_AOERR0_SHFT		11
+#define UVH_EVENT_OCCURRED0_LB_HCERR_MASK		0x0000000000000001UL
+#define UVH_EVENT_OCCURRED0_RH_AOERR0_MASK		0x0000000000000800UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV1H_EVENT_OCCURRED0_GR0_HCERR_SHFT		1
 #define UV1H_EVENT_OCCURRED0_GR1_HCERR_SHFT		2
 #define UV1H_EVENT_OCCURRED0_LH_HCERR_SHFT		3
@@ -559,7 +652,10 @@ union uvh_event_occurred0_u {
 #define UV1H_EVENT_OCCURRED0_GR0_AOERR0_SHFT		8
 #define UV1H_EVENT_OCCURRED0_GR1_AOERR0_SHFT		9
 #define UV1H_EVENT_OCCURRED0_LH_AOERR0_SHFT		10
+<<<<<<< HEAD
 #define UV1H_EVENT_OCCURRED0_RH_AOERR0_SHFT		11
+=======
+>>>>>>> refs/remotes/origin/master
 #define UV1H_EVENT_OCCURRED0_XN_AOERR0_SHFT		12
 #define UV1H_EVENT_OCCURRED0_SI_AOERR0_SHFT		13
 #define UV1H_EVENT_OCCURRED0_LB_AOERR1_SHFT		14
@@ -605,7 +701,10 @@ union uvh_event_occurred0_u {
 #define UV1H_EVENT_OCCURRED0_RTC3_SHFT			54
 #define UV1H_EVENT_OCCURRED0_BAU_DATA_SHFT		55
 #define UV1H_EVENT_OCCURRED0_POWER_MANAGEMENT_REQ_SHFT	56
+<<<<<<< HEAD
 #define UV1H_EVENT_OCCURRED0_LB_HCERR_MASK		0x0000000000000001UL
+=======
+>>>>>>> refs/remotes/origin/master
 #define UV1H_EVENT_OCCURRED0_GR0_HCERR_MASK		0x0000000000000002UL
 #define UV1H_EVENT_OCCURRED0_GR1_HCERR_MASK		0x0000000000000004UL
 #define UV1H_EVENT_OCCURRED0_LH_HCERR_MASK		0x0000000000000008UL
@@ -616,7 +715,10 @@ union uvh_event_occurred0_u {
 #define UV1H_EVENT_OCCURRED0_GR0_AOERR0_MASK		0x0000000000000100UL
 #define UV1H_EVENT_OCCURRED0_GR1_AOERR0_MASK		0x0000000000000200UL
 #define UV1H_EVENT_OCCURRED0_LH_AOERR0_MASK		0x0000000000000400UL
+<<<<<<< HEAD
 #define UV1H_EVENT_OCCURRED0_RH_AOERR0_MASK		0x0000000000000800UL
+=======
+>>>>>>> refs/remotes/origin/master
 #define UV1H_EVENT_OCCURRED0_XN_AOERR0_MASK		0x0000000000001000UL
 #define UV1H_EVENT_OCCURRED0_SI_AOERR0_MASK		0x0000000000002000UL
 #define UV1H_EVENT_OCCURRED0_LB_AOERR1_MASK		0x0000000000004000UL
@@ -663,6 +765,7 @@ union uvh_event_occurred0_u {
 #define UV1H_EVENT_OCCURRED0_BAU_DATA_MASK		0x0080000000000000UL
 #define UV1H_EVENT_OCCURRED0_POWER_MANAGEMENT_REQ_MASK	0x0100000000000000UL
 
+<<<<<<< HEAD
 #define UV2H_EVENT_OCCURRED0_LB_HCERR_SHFT		0
 #define UV2H_EVENT_OCCURRED0_QP_HCERR_SHFT		1
 #define UV2H_EVENT_OCCURRED0_RH_HCERR_SHFT		2
@@ -845,6 +948,132 @@ union uvh_event_occurred0_u {
 		unsigned long	rsvd_57_63:7;
 	} s1;
 	struct uv2h_event_occurred0_s {
+=======
+#define UVXH_EVENT_OCCURRED0_QP_HCERR_SHFT		1
+#define UVXH_EVENT_OCCURRED0_RH_HCERR_SHFT		2
+#define UVXH_EVENT_OCCURRED0_LH0_HCERR_SHFT		3
+#define UVXH_EVENT_OCCURRED0_LH1_HCERR_SHFT		4
+#define UVXH_EVENT_OCCURRED0_GR0_HCERR_SHFT		5
+#define UVXH_EVENT_OCCURRED0_GR1_HCERR_SHFT		6
+#define UVXH_EVENT_OCCURRED0_NI0_HCERR_SHFT		7
+#define UVXH_EVENT_OCCURRED0_NI1_HCERR_SHFT		8
+#define UVXH_EVENT_OCCURRED0_LB_AOERR0_SHFT		9
+#define UVXH_EVENT_OCCURRED0_QP_AOERR0_SHFT		10
+#define UVXH_EVENT_OCCURRED0_LH0_AOERR0_SHFT		12
+#define UVXH_EVENT_OCCURRED0_LH1_AOERR0_SHFT		13
+#define UVXH_EVENT_OCCURRED0_GR0_AOERR0_SHFT		14
+#define UVXH_EVENT_OCCURRED0_GR1_AOERR0_SHFT		15
+#define UVXH_EVENT_OCCURRED0_XB_AOERR0_SHFT		16
+#define UVXH_EVENT_OCCURRED0_RT_AOERR0_SHFT		17
+#define UVXH_EVENT_OCCURRED0_NI0_AOERR0_SHFT		18
+#define UVXH_EVENT_OCCURRED0_NI1_AOERR0_SHFT		19
+#define UVXH_EVENT_OCCURRED0_LB_AOERR1_SHFT		20
+#define UVXH_EVENT_OCCURRED0_QP_AOERR1_SHFT		21
+#define UVXH_EVENT_OCCURRED0_RH_AOERR1_SHFT		22
+#define UVXH_EVENT_OCCURRED0_LH0_AOERR1_SHFT		23
+#define UVXH_EVENT_OCCURRED0_LH1_AOERR1_SHFT		24
+#define UVXH_EVENT_OCCURRED0_GR0_AOERR1_SHFT		25
+#define UVXH_EVENT_OCCURRED0_GR1_AOERR1_SHFT		26
+#define UVXH_EVENT_OCCURRED0_XB_AOERR1_SHFT		27
+#define UVXH_EVENT_OCCURRED0_RT_AOERR1_SHFT		28
+#define UVXH_EVENT_OCCURRED0_NI0_AOERR1_SHFT		29
+#define UVXH_EVENT_OCCURRED0_NI1_AOERR1_SHFT		30
+#define UVXH_EVENT_OCCURRED0_SYSTEM_SHUTDOWN_INT_SHFT	31
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_0_SHFT		32
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_1_SHFT		33
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_2_SHFT		34
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_3_SHFT		35
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_4_SHFT		36
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_5_SHFT		37
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_6_SHFT		38
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_7_SHFT		39
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_8_SHFT		40
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_9_SHFT		41
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_10_SHFT		42
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_11_SHFT		43
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_12_SHFT		44
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_13_SHFT		45
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_14_SHFT		46
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_15_SHFT		47
+#define UVXH_EVENT_OCCURRED0_L1_NMI_INT_SHFT		48
+#define UVXH_EVENT_OCCURRED0_STOP_CLOCK_SHFT		49
+#define UVXH_EVENT_OCCURRED0_ASIC_TO_L1_SHFT		50
+#define UVXH_EVENT_OCCURRED0_L1_TO_ASIC_SHFT		51
+#define UVXH_EVENT_OCCURRED0_LA_SEQ_TRIGGER_SHFT	52
+#define UVXH_EVENT_OCCURRED0_IPI_INT_SHFT		53
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT0_SHFT		54
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT1_SHFT		55
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT2_SHFT		56
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT3_SHFT		57
+#define UVXH_EVENT_OCCURRED0_PROFILE_INT_SHFT		58
+#define UVXH_EVENT_OCCURRED0_QP_HCERR_MASK		0x0000000000000002UL
+#define UVXH_EVENT_OCCURRED0_RH_HCERR_MASK		0x0000000000000004UL
+#define UVXH_EVENT_OCCURRED0_LH0_HCERR_MASK		0x0000000000000008UL
+#define UVXH_EVENT_OCCURRED0_LH1_HCERR_MASK		0x0000000000000010UL
+#define UVXH_EVENT_OCCURRED0_GR0_HCERR_MASK		0x0000000000000020UL
+#define UVXH_EVENT_OCCURRED0_GR1_HCERR_MASK		0x0000000000000040UL
+#define UVXH_EVENT_OCCURRED0_NI0_HCERR_MASK		0x0000000000000080UL
+#define UVXH_EVENT_OCCURRED0_NI1_HCERR_MASK		0x0000000000000100UL
+#define UVXH_EVENT_OCCURRED0_LB_AOERR0_MASK		0x0000000000000200UL
+#define UVXH_EVENT_OCCURRED0_QP_AOERR0_MASK		0x0000000000000400UL
+#define UVXH_EVENT_OCCURRED0_LH0_AOERR0_MASK		0x0000000000001000UL
+#define UVXH_EVENT_OCCURRED0_LH1_AOERR0_MASK		0x0000000000002000UL
+#define UVXH_EVENT_OCCURRED0_GR0_AOERR0_MASK		0x0000000000004000UL
+#define UVXH_EVENT_OCCURRED0_GR1_AOERR0_MASK		0x0000000000008000UL
+#define UVXH_EVENT_OCCURRED0_XB_AOERR0_MASK		0x0000000000010000UL
+#define UVXH_EVENT_OCCURRED0_RT_AOERR0_MASK		0x0000000000020000UL
+#define UVXH_EVENT_OCCURRED0_NI0_AOERR0_MASK		0x0000000000040000UL
+#define UVXH_EVENT_OCCURRED0_NI1_AOERR0_MASK		0x0000000000080000UL
+#define UVXH_EVENT_OCCURRED0_LB_AOERR1_MASK		0x0000000000100000UL
+#define UVXH_EVENT_OCCURRED0_QP_AOERR1_MASK		0x0000000000200000UL
+#define UVXH_EVENT_OCCURRED0_RH_AOERR1_MASK		0x0000000000400000UL
+#define UVXH_EVENT_OCCURRED0_LH0_AOERR1_MASK		0x0000000000800000UL
+#define UVXH_EVENT_OCCURRED0_LH1_AOERR1_MASK		0x0000000001000000UL
+#define UVXH_EVENT_OCCURRED0_GR0_AOERR1_MASK		0x0000000002000000UL
+#define UVXH_EVENT_OCCURRED0_GR1_AOERR1_MASK		0x0000000004000000UL
+#define UVXH_EVENT_OCCURRED0_XB_AOERR1_MASK		0x0000000008000000UL
+#define UVXH_EVENT_OCCURRED0_RT_AOERR1_MASK		0x0000000010000000UL
+#define UVXH_EVENT_OCCURRED0_NI0_AOERR1_MASK		0x0000000020000000UL
+#define UVXH_EVENT_OCCURRED0_NI1_AOERR1_MASK		0x0000000040000000UL
+#define UVXH_EVENT_OCCURRED0_SYSTEM_SHUTDOWN_INT_MASK	0x0000000080000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_0_MASK		0x0000000100000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_1_MASK		0x0000000200000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_2_MASK		0x0000000400000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_3_MASK		0x0000000800000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_4_MASK		0x0000001000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_5_MASK		0x0000002000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_6_MASK		0x0000004000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_7_MASK		0x0000008000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_8_MASK		0x0000010000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_9_MASK		0x0000020000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_10_MASK		0x0000040000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_11_MASK		0x0000080000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_12_MASK		0x0000100000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_13_MASK		0x0000200000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_14_MASK		0x0000400000000000UL
+#define UVXH_EVENT_OCCURRED0_LB_IRQ_INT_15_MASK		0x0000800000000000UL
+#define UVXH_EVENT_OCCURRED0_L1_NMI_INT_MASK		0x0001000000000000UL
+#define UVXH_EVENT_OCCURRED0_STOP_CLOCK_MASK		0x0002000000000000UL
+#define UVXH_EVENT_OCCURRED0_ASIC_TO_L1_MASK		0x0004000000000000UL
+#define UVXH_EVENT_OCCURRED0_L1_TO_ASIC_MASK		0x0008000000000000UL
+#define UVXH_EVENT_OCCURRED0_LA_SEQ_TRIGGER_MASK	0x0010000000000000UL
+#define UVXH_EVENT_OCCURRED0_IPI_INT_MASK		0x0020000000000000UL
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT0_MASK		0x0040000000000000UL
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT1_MASK		0x0080000000000000UL
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT2_MASK		0x0100000000000000UL
+#define UVXH_EVENT_OCCURRED0_EXTIO_INT3_MASK		0x0200000000000000UL
+#define UVXH_EVENT_OCCURRED0_PROFILE_INT_MASK		0x0400000000000000UL
+
+union uvh_event_occurred0_u {
+	unsigned long	v;
+	struct uvh_event_occurred0_s {
+		unsigned long	lb_hcerr:1;			/* RW, W1C */
+		unsigned long	rsvd_1_10:10;
+		unsigned long	rh_aoerr0:1;			/* RW, W1C */
+		unsigned long	rsvd_12_63:52;
+	} s;
+	struct uvxh_event_occurred0_s {
+>>>>>>> refs/remotes/origin/master
 		unsigned long	lb_hcerr:1;			/* RW */
 		unsigned long	qp_hcerr:1;			/* RW */
 		unsigned long	rh_hcerr:1;			/* RW */
@@ -905,13 +1134,18 @@ union uvh_event_occurred0_u {
 		unsigned long	extio_int3:1;			/* RW */
 		unsigned long	profile_int:1;			/* RW */
 		unsigned long	rsvd_59_63:5;
+<<<<<<< HEAD
 	} s2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} sx;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                        UVH_EVENT_OCCURRED0_ALIAS                          */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_EVENT_OCCURRED0_ALIAS 0x0000000000070008UL
 #define UVH_EVENT_OCCURRED0_ALIAS_32 0x5f0
@@ -959,6 +1193,33 @@ union uvh_gr0_tlb_int0_config_u {
     } s;
 =======
 #define UVH_GR0_TLB_INT0_CONFIG				0x61b00UL
+=======
+#define UVH_EVENT_OCCURRED0_ALIAS 0x70008UL
+#define UVH_EVENT_OCCURRED0_ALIAS_32 0x5f0
+
+
+/* ========================================================================= */
+/*                         UVH_EXTIO_INT0_BROADCAST                          */
+/* ========================================================================= */
+#define UVH_EXTIO_INT0_BROADCAST 0x61448UL
+#define UVH_EXTIO_INT0_BROADCAST_32 0x3f0
+
+#define UVH_EXTIO_INT0_BROADCAST_ENABLE_SHFT		0
+#define UVH_EXTIO_INT0_BROADCAST_ENABLE_MASK		0x0000000000000001UL
+
+union uvh_extio_int0_broadcast_u {
+	unsigned long	v;
+	struct uvh_extio_int0_broadcast_s {
+		unsigned long	enable:1;			/* RW */
+		unsigned long	rsvd_1_63:63;
+	} s;
+};
+
+/* ========================================================================= */
+/*                         UVH_GR0_TLB_INT0_CONFIG                           */
+/* ========================================================================= */
+#define UVH_GR0_TLB_INT0_CONFIG 0x61b00UL
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_GR0_TLB_INT0_CONFIG_VECTOR_SHFT		0
 #define UVH_GR0_TLB_INT0_CONFIG_DM_SHFT			8
@@ -991,12 +1252,16 @@ union uvh_gr0_tlb_int0_config_u {
 		unsigned long	rsvd_17_31:15;
 		unsigned long	apic_id:32;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                         UVH_GR0_TLB_INT1_CONFIG                           */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_GR0_TLB_INT1_CONFIG 0x61b40UL
 
@@ -1034,6 +1299,10 @@ union uvh_gr0_tlb_int1_config_u {
 =======
 #define UVH_GR0_TLB_INT1_CONFIG				0x61b40UL
 
+=======
+#define UVH_GR0_TLB_INT1_CONFIG 0x61b40UL
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_GR0_TLB_INT1_CONFIG_VECTOR_SHFT		0
 #define UVH_GR0_TLB_INT1_CONFIG_DM_SHFT			8
 #define UVH_GR0_TLB_INT1_CONFIG_DESTMODE_SHFT		11
@@ -1072,9 +1341,17 @@ union uvh_gr0_tlb_int1_config_u {
 /* ========================================================================= */
 #define UV1H_GR0_TLB_MMR_CONTROL 0x401080UL
 #define UV2H_GR0_TLB_MMR_CONTROL 0xc01080UL
+<<<<<<< HEAD
 #define UVH_GR0_TLB_MMR_CONTROL (is_uv1_hub() ?				\
 			UV1H_GR0_TLB_MMR_CONTROL :			\
 			UV2H_GR0_TLB_MMR_CONTROL)
+=======
+#define UV3H_GR0_TLB_MMR_CONTROL 0xc01080UL
+#define UVH_GR0_TLB_MMR_CONTROL						\
+		(is_uv1_hub() ? UV1H_GR0_TLB_MMR_CONTROL :		\
+		(is_uv2_hub() ? UV2H_GR0_TLB_MMR_CONTROL :		\
+				UV3H_GR0_TLB_MMR_CONTROL))
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_GR0_TLB_MMR_CONTROL_INDEX_SHFT		0
 #define UVH_GR0_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
@@ -1112,6 +1389,24 @@ union uvh_gr0_tlb_int1_config_u {
 #define UV1H_GR0_TLB_MMR_CONTROL_MMR_INJ_TLBRREG_MASK	0x0100000000000000UL
 #define UV1H_GR0_TLB_MMR_CONTROL_MMR_INJ_TLBLRUV_MASK	0x1000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UVXH_GR0_TLB_MMR_CONTROL_INDEX_SHFT		0
+#define UVXH_GR0_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
+#define UVXH_GR0_TLB_MMR_CONTROL_AUTO_VALID_EN_SHFT	16
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_SHFT	20
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_WRITE_SHFT		30
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_READ_SHFT		31
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_OP_DONE_SHFT	32
+#define UVXH_GR0_TLB_MMR_CONTROL_INDEX_MASK		0x0000000000000fffUL
+#define UVXH_GR0_TLB_MMR_CONTROL_MEM_SEL_MASK		0x0000000000003000UL
+#define UVXH_GR0_TLB_MMR_CONTROL_AUTO_VALID_EN_MASK	0x0000000000010000UL
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_MASK	0x0000000000100000UL
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_WRITE_MASK		0x0000000040000000UL
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_READ_MASK		0x0000000080000000UL
+#define UVXH_GR0_TLB_MMR_CONTROL_MMR_OP_DONE_MASK	0x0000000100000000UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV2H_GR0_TLB_MMR_CONTROL_INDEX_SHFT		0
 #define UV2H_GR0_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
 #define UV2H_GR0_TLB_MMR_CONTROL_AUTO_VALID_EN_SHFT	16
@@ -1131,6 +1426,26 @@ union uvh_gr0_tlb_int1_config_u {
 #define UV2H_GR0_TLB_MMR_CONTROL_MMR_INJ_CON_MASK	0x0001000000000000UL
 #define UV2H_GR0_TLB_MMR_CONTROL_MMR_INJ_TLBRAM_MASK	0x0010000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV3H_GR0_TLB_MMR_CONTROL_INDEX_SHFT		0
+#define UV3H_GR0_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
+#define UV3H_GR0_TLB_MMR_CONTROL_AUTO_VALID_EN_SHFT	16
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_SHFT	20
+#define UV3H_GR0_TLB_MMR_CONTROL_ECC_SEL_SHFT		21
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_WRITE_SHFT		30
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_READ_SHFT		31
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_OP_DONE_SHFT	32
+#define UV3H_GR0_TLB_MMR_CONTROL_INDEX_MASK		0x0000000000000fffUL
+#define UV3H_GR0_TLB_MMR_CONTROL_MEM_SEL_MASK		0x0000000000003000UL
+#define UV3H_GR0_TLB_MMR_CONTROL_AUTO_VALID_EN_MASK	0x0000000000010000UL
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_MASK	0x0000000000100000UL
+#define UV3H_GR0_TLB_MMR_CONTROL_ECC_SEL_MASK		0x0000000000200000UL
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_WRITE_MASK		0x0000000040000000UL
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_READ_MASK		0x0000000080000000UL
+#define UV3H_GR0_TLB_MMR_CONTROL_MMR_OP_DONE_MASK	0x0000000100000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_gr0_tlb_mmr_control_u {
 	unsigned long	v;
 	struct uvh_gr0_tlb_mmr_control_s {
@@ -1143,7 +1458,13 @@ union uvh_gr0_tlb_mmr_control_u {
 		unsigned long	rsvd_21_29:9;
 		unsigned long	mmr_write:1;			/* WP */
 		unsigned long	mmr_read:1;			/* WP */
+<<<<<<< HEAD
 		unsigned long	rsvd_32_63:32;
+=======
+		unsigned long	rsvd_32_48:17;
+		unsigned long	rsvd_49_51:3;
+		unsigned long	rsvd_52_63:12;
+>>>>>>> refs/remotes/origin/master
 	} s;
 	struct uv1h_gr0_tlb_mmr_control_s {
 		unsigned long	index:12;			/* RW */
@@ -1167,6 +1488,26 @@ union uvh_gr0_tlb_mmr_control_u {
 		unsigned long	mmr_inj_tlblruv:1;		/* RW */
 		unsigned long	rsvd_61_63:3;
 	} s1;
+<<<<<<< HEAD
+=======
+	struct uvxh_gr0_tlb_mmr_control_s {
+		unsigned long	index:12;			/* RW */
+		unsigned long	mem_sel:2;			/* RW */
+		unsigned long	rsvd_14_15:2;
+		unsigned long	auto_valid_en:1;		/* RW */
+		unsigned long	rsvd_17_19:3;
+		unsigned long	mmr_hash_index_en:1;		/* RW */
+		unsigned long	rsvd_21_29:9;
+		unsigned long	mmr_write:1;			/* WP */
+		unsigned long	mmr_read:1;			/* WP */
+		unsigned long	mmr_op_done:1;			/* RW */
+		unsigned long	rsvd_33_47:15;
+		unsigned long	rsvd_48:1;
+		unsigned long	rsvd_49_51:3;
+		unsigned long	rsvd_52:1;
+		unsigned long	rsvd_53_63:11;
+	} sx;
+>>>>>>> refs/remotes/origin/master
 	struct uv2h_gr0_tlb_mmr_control_s {
 		unsigned long	index:12;			/* RW */
 		unsigned long	mem_sel:2;			/* RW */
@@ -1184,6 +1525,27 @@ union uvh_gr0_tlb_mmr_control_u {
 		unsigned long	mmr_inj_tlbram:1;		/* RW */
 		unsigned long	rsvd_53_63:11;
 	} s2;
+<<<<<<< HEAD
+=======
+	struct uv3h_gr0_tlb_mmr_control_s {
+		unsigned long	index:12;			/* RW */
+		unsigned long	mem_sel:2;			/* RW */
+		unsigned long	rsvd_14_15:2;
+		unsigned long	auto_valid_en:1;		/* RW */
+		unsigned long	rsvd_17_19:3;
+		unsigned long	mmr_hash_index_en:1;		/* RW */
+		unsigned long	ecc_sel:1;			/* RW */
+		unsigned long	rsvd_22_29:8;
+		unsigned long	mmr_write:1;			/* WP */
+		unsigned long	mmr_read:1;			/* WP */
+		unsigned long	mmr_op_done:1;			/* RW */
+		unsigned long	rsvd_33_47:15;
+		unsigned long	undef_48:1;			/* Undefined */
+		unsigned long	rsvd_49_51:3;
+		unsigned long	undef_52:1;			/* Undefined */
+		unsigned long	rsvd_53_63:11;
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
@@ -1191,9 +1553,17 @@ union uvh_gr0_tlb_mmr_control_u {
 /* ========================================================================= */
 #define UV1H_GR0_TLB_MMR_READ_DATA_HI 0x4010a0UL
 #define UV2H_GR0_TLB_MMR_READ_DATA_HI 0xc010a0UL
+<<<<<<< HEAD
 #define UVH_GR0_TLB_MMR_READ_DATA_HI (is_uv1_hub() ?			\
 			UV1H_GR0_TLB_MMR_READ_DATA_HI :			\
 			UV2H_GR0_TLB_MMR_READ_DATA_HI)
+=======
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI 0xc010a0UL
+#define UVH_GR0_TLB_MMR_READ_DATA_HI					\
+		(is_uv1_hub() ? UV1H_GR0_TLB_MMR_READ_DATA_HI :		\
+		(is_uv2_hub() ? UV2H_GR0_TLB_MMR_READ_DATA_HI :		\
+				UV3H_GR0_TLB_MMR_READ_DATA_HI))
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_GR0_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
 #define UVH_GR0_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
@@ -1204,6 +1574,49 @@ union uvh_gr0_tlb_mmr_control_u {
 #define UVH_GR0_TLB_MMR_READ_DATA_HI_DIRTY_MASK		0x0000080000000000UL
 #define UVH_GR0_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UV1H_GR0_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UVXH_GR0_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UV2H_GR0_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_AA_EXT_SHFT	45
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_WAY_ECC_SHFT	55
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_AA_EXT_MASK	0x0000200000000000UL
+#define UV3H_GR0_TLB_MMR_READ_DATA_HI_WAY_ECC_MASK	0xff80000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_gr0_tlb_mmr_read_data_hi_u {
 	unsigned long	v;
 	struct uvh_gr0_tlb_mmr_read_data_hi_s {
@@ -1213,6 +1626,39 @@ union uvh_gr0_tlb_mmr_read_data_hi_u {
 		unsigned long	larger:1;			/* RO */
 		unsigned long	rsvd_45_63:19;
 	} s;
+<<<<<<< HEAD
+=======
+	struct uv1h_gr0_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	rsvd_45_63:19;
+	} s1;
+	struct uvxh_gr0_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	rsvd_45_63:19;
+	} sx;
+	struct uv2h_gr0_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	rsvd_45_63:19;
+	} s2;
+	struct uv3h_gr0_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	aa_ext:1;			/* RO */
+		unsigned long	undef_46_54:9;			/* Undefined */
+		unsigned long	way_ecc:9;			/* RO */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
@@ -1220,9 +1666,17 @@ union uvh_gr0_tlb_mmr_read_data_hi_u {
 /* ========================================================================= */
 #define UV1H_GR0_TLB_MMR_READ_DATA_LO 0x4010a8UL
 #define UV2H_GR0_TLB_MMR_READ_DATA_LO 0xc010a8UL
+<<<<<<< HEAD
 #define UVH_GR0_TLB_MMR_READ_DATA_LO (is_uv1_hub() ?			\
 			UV1H_GR0_TLB_MMR_READ_DATA_LO :			\
 			UV2H_GR0_TLB_MMR_READ_DATA_LO)
+=======
+#define UV3H_GR0_TLB_MMR_READ_DATA_LO 0xc010a8UL
+#define UVH_GR0_TLB_MMR_READ_DATA_LO					\
+		(is_uv1_hub() ? UV1H_GR0_TLB_MMR_READ_DATA_LO :		\
+		(is_uv2_hub() ? UV2H_GR0_TLB_MMR_READ_DATA_LO :		\
+				UV3H_GR0_TLB_MMR_READ_DATA_LO))
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_GR0_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
 #define UVH_GR0_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
@@ -1231,6 +1685,37 @@ union uvh_gr0_tlb_mmr_read_data_hi_u {
 #define UVH_GR0_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
 #define UVH_GR0_TLB_MMR_READ_DATA_LO_VALID_MASK		0x8000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV1H_GR0_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UV1H_GR0_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UV1H_GR0_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UV1H_GR0_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UV1H_GR0_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UV1H_GR0_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+#define UVXH_GR0_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UVXH_GR0_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UVXH_GR0_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UVXH_GR0_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UVXH_GR0_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UVXH_GR0_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+#define UV2H_GR0_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UV2H_GR0_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UV2H_GR0_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UV2H_GR0_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UV2H_GR0_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UV2H_GR0_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+#define UV3H_GR0_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UV3H_GR0_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UV3H_GR0_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UV3H_GR0_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UV3H_GR0_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UV3H_GR0_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_gr0_tlb_mmr_read_data_lo_u {
 	unsigned long	v;
 	struct uvh_gr0_tlb_mmr_read_data_lo_s {
@@ -1238,12 +1723,36 @@ union uvh_gr0_tlb_mmr_read_data_lo_u {
 		unsigned long	asid:24;			/* RO */
 		unsigned long	valid:1;			/* RO */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uv1h_gr0_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} s1;
+	struct uvxh_gr0_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} sx;
+	struct uv2h_gr0_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} s2;
+	struct uv3h_gr0_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                         UVH_GR1_TLB_INT0_CONFIG                           */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_GR1_TLB_INT0_CONFIG 0x61f00UL
 
@@ -1281,6 +1790,10 @@ union uvh_gr1_tlb_int0_config_u {
 =======
 #define UVH_GR1_TLB_INT0_CONFIG				0x61f00UL
 
+=======
+#define UVH_GR1_TLB_INT0_CONFIG 0x61f00UL
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_GR1_TLB_INT0_CONFIG_VECTOR_SHFT		0
 #define UVH_GR1_TLB_INT0_CONFIG_DM_SHFT			8
 #define UVH_GR1_TLB_INT0_CONFIG_DESTMODE_SHFT		11
@@ -1312,12 +1825,16 @@ union uvh_gr1_tlb_int0_config_u {
 		unsigned long	rsvd_17_31:15;
 		unsigned long	apic_id:32;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                         UVH_GR1_TLB_INT1_CONFIG                           */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_GR1_TLB_INT1_CONFIG 0x61f40UL
 
@@ -1355,6 +1872,10 @@ union uvh_gr1_tlb_int1_config_u {
 =======
 #define UVH_GR1_TLB_INT1_CONFIG				0x61f40UL
 
+=======
+#define UVH_GR1_TLB_INT1_CONFIG 0x61f40UL
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_GR1_TLB_INT1_CONFIG_VECTOR_SHFT		0
 #define UVH_GR1_TLB_INT1_CONFIG_DM_SHFT			8
 #define UVH_GR1_TLB_INT1_CONFIG_DESTMODE_SHFT		11
@@ -1393,9 +1914,17 @@ union uvh_gr1_tlb_int1_config_u {
 /* ========================================================================= */
 #define UV1H_GR1_TLB_MMR_CONTROL 0x801080UL
 #define UV2H_GR1_TLB_MMR_CONTROL 0x1001080UL
+<<<<<<< HEAD
 #define UVH_GR1_TLB_MMR_CONTROL (is_uv1_hub() ?				\
 			UV1H_GR1_TLB_MMR_CONTROL :			\
 			UV2H_GR1_TLB_MMR_CONTROL)
+=======
+#define UV3H_GR1_TLB_MMR_CONTROL 0x1001080UL
+#define UVH_GR1_TLB_MMR_CONTROL						\
+		(is_uv1_hub() ? UV1H_GR1_TLB_MMR_CONTROL :		\
+		(is_uv2_hub() ? UV2H_GR1_TLB_MMR_CONTROL :		\
+				UV3H_GR1_TLB_MMR_CONTROL))
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_GR1_TLB_MMR_CONTROL_INDEX_SHFT		0
 #define UVH_GR1_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
@@ -1433,6 +1962,24 @@ union uvh_gr1_tlb_int1_config_u {
 #define UV1H_GR1_TLB_MMR_CONTROL_MMR_INJ_TLBRREG_MASK	0x0100000000000000UL
 #define UV1H_GR1_TLB_MMR_CONTROL_MMR_INJ_TLBLRUV_MASK	0x1000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UVXH_GR1_TLB_MMR_CONTROL_INDEX_SHFT		0
+#define UVXH_GR1_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
+#define UVXH_GR1_TLB_MMR_CONTROL_AUTO_VALID_EN_SHFT	16
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_SHFT	20
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_WRITE_SHFT		30
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_READ_SHFT		31
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_OP_DONE_SHFT	32
+#define UVXH_GR1_TLB_MMR_CONTROL_INDEX_MASK		0x0000000000000fffUL
+#define UVXH_GR1_TLB_MMR_CONTROL_MEM_SEL_MASK		0x0000000000003000UL
+#define UVXH_GR1_TLB_MMR_CONTROL_AUTO_VALID_EN_MASK	0x0000000000010000UL
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_MASK	0x0000000000100000UL
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_WRITE_MASK		0x0000000040000000UL
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_READ_MASK		0x0000000080000000UL
+#define UVXH_GR1_TLB_MMR_CONTROL_MMR_OP_DONE_MASK	0x0000000100000000UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV2H_GR1_TLB_MMR_CONTROL_INDEX_SHFT		0
 #define UV2H_GR1_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
 #define UV2H_GR1_TLB_MMR_CONTROL_AUTO_VALID_EN_SHFT	16
@@ -1452,6 +1999,26 @@ union uvh_gr1_tlb_int1_config_u {
 #define UV2H_GR1_TLB_MMR_CONTROL_MMR_INJ_CON_MASK	0x0001000000000000UL
 #define UV2H_GR1_TLB_MMR_CONTROL_MMR_INJ_TLBRAM_MASK	0x0010000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV3H_GR1_TLB_MMR_CONTROL_INDEX_SHFT		0
+#define UV3H_GR1_TLB_MMR_CONTROL_MEM_SEL_SHFT		12
+#define UV3H_GR1_TLB_MMR_CONTROL_AUTO_VALID_EN_SHFT	16
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_SHFT	20
+#define UV3H_GR1_TLB_MMR_CONTROL_ECC_SEL_SHFT		21
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_WRITE_SHFT		30
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_READ_SHFT		31
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_OP_DONE_SHFT	32
+#define UV3H_GR1_TLB_MMR_CONTROL_INDEX_MASK		0x0000000000000fffUL
+#define UV3H_GR1_TLB_MMR_CONTROL_MEM_SEL_MASK		0x0000000000003000UL
+#define UV3H_GR1_TLB_MMR_CONTROL_AUTO_VALID_EN_MASK	0x0000000000010000UL
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_HASH_INDEX_EN_MASK	0x0000000000100000UL
+#define UV3H_GR1_TLB_MMR_CONTROL_ECC_SEL_MASK		0x0000000000200000UL
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_WRITE_MASK		0x0000000040000000UL
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_READ_MASK		0x0000000080000000UL
+#define UV3H_GR1_TLB_MMR_CONTROL_MMR_OP_DONE_MASK	0x0000000100000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_gr1_tlb_mmr_control_u {
 	unsigned long	v;
 	struct uvh_gr1_tlb_mmr_control_s {
@@ -1464,7 +2031,13 @@ union uvh_gr1_tlb_mmr_control_u {
 		unsigned long	rsvd_21_29:9;
 		unsigned long	mmr_write:1;			/* WP */
 		unsigned long	mmr_read:1;			/* WP */
+<<<<<<< HEAD
 		unsigned long	rsvd_32_63:32;
+=======
+		unsigned long	rsvd_32_48:17;
+		unsigned long	rsvd_49_51:3;
+		unsigned long	rsvd_52_63:12;
+>>>>>>> refs/remotes/origin/master
 	} s;
 	struct uv1h_gr1_tlb_mmr_control_s {
 		unsigned long	index:12;			/* RW */
@@ -1488,6 +2061,26 @@ union uvh_gr1_tlb_mmr_control_u {
 		unsigned long	mmr_inj_tlblruv:1;		/* RW */
 		unsigned long	rsvd_61_63:3;
 	} s1;
+<<<<<<< HEAD
+=======
+	struct uvxh_gr1_tlb_mmr_control_s {
+		unsigned long	index:12;			/* RW */
+		unsigned long	mem_sel:2;			/* RW */
+		unsigned long	rsvd_14_15:2;
+		unsigned long	auto_valid_en:1;		/* RW */
+		unsigned long	rsvd_17_19:3;
+		unsigned long	mmr_hash_index_en:1;		/* RW */
+		unsigned long	rsvd_21_29:9;
+		unsigned long	mmr_write:1;			/* WP */
+		unsigned long	mmr_read:1;			/* WP */
+		unsigned long	mmr_op_done:1;			/* RW */
+		unsigned long	rsvd_33_47:15;
+		unsigned long	rsvd_48:1;
+		unsigned long	rsvd_49_51:3;
+		unsigned long	rsvd_52:1;
+		unsigned long	rsvd_53_63:11;
+	} sx;
+>>>>>>> refs/remotes/origin/master
 	struct uv2h_gr1_tlb_mmr_control_s {
 		unsigned long	index:12;			/* RW */
 		unsigned long	mem_sel:2;			/* RW */
@@ -1505,6 +2098,27 @@ union uvh_gr1_tlb_mmr_control_u {
 		unsigned long	mmr_inj_tlbram:1;		/* RW */
 		unsigned long	rsvd_53_63:11;
 	} s2;
+<<<<<<< HEAD
+=======
+	struct uv3h_gr1_tlb_mmr_control_s {
+		unsigned long	index:12;			/* RW */
+		unsigned long	mem_sel:2;			/* RW */
+		unsigned long	rsvd_14_15:2;
+		unsigned long	auto_valid_en:1;		/* RW */
+		unsigned long	rsvd_17_19:3;
+		unsigned long	mmr_hash_index_en:1;		/* RW */
+		unsigned long	ecc_sel:1;			/* RW */
+		unsigned long	rsvd_22_29:8;
+		unsigned long	mmr_write:1;			/* WP */
+		unsigned long	mmr_read:1;			/* WP */
+		unsigned long	mmr_op_done:1;			/* RW */
+		unsigned long	rsvd_33_47:15;
+		unsigned long	undef_48:1;			/* Undefined */
+		unsigned long	rsvd_49_51:3;
+		unsigned long	undef_52:1;			/* Undefined */
+		unsigned long	rsvd_53_63:11;
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
@@ -1512,9 +2126,17 @@ union uvh_gr1_tlb_mmr_control_u {
 /* ========================================================================= */
 #define UV1H_GR1_TLB_MMR_READ_DATA_HI 0x8010a0UL
 #define UV2H_GR1_TLB_MMR_READ_DATA_HI 0x10010a0UL
+<<<<<<< HEAD
 #define UVH_GR1_TLB_MMR_READ_DATA_HI (is_uv1_hub() ?			\
 			UV1H_GR1_TLB_MMR_READ_DATA_HI :			\
 			UV2H_GR1_TLB_MMR_READ_DATA_HI)
+=======
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI 0x10010a0UL
+#define UVH_GR1_TLB_MMR_READ_DATA_HI					\
+		(is_uv1_hub() ? UV1H_GR1_TLB_MMR_READ_DATA_HI :		\
+		(is_uv2_hub() ? UV2H_GR1_TLB_MMR_READ_DATA_HI :		\
+				UV3H_GR1_TLB_MMR_READ_DATA_HI))
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_GR1_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
 #define UVH_GR1_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
@@ -1525,6 +2147,49 @@ union uvh_gr1_tlb_mmr_control_u {
 #define UVH_GR1_TLB_MMR_READ_DATA_HI_DIRTY_MASK		0x0000080000000000UL
 #define UVH_GR1_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UV1H_GR1_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UVXH_GR1_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UV2H_GR1_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_PFN_SHFT		0
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_GAA_SHFT		41
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_DIRTY_SHFT	43
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_LARGER_SHFT	44
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_AA_EXT_SHFT	45
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_WAY_ECC_SHFT	55
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_PFN_MASK		0x000001ffffffffffUL
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_GAA_MASK		0x0000060000000000UL
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_DIRTY_MASK	0x0000080000000000UL
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_LARGER_MASK	0x0000100000000000UL
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_AA_EXT_MASK	0x0000200000000000UL
+#define UV3H_GR1_TLB_MMR_READ_DATA_HI_WAY_ECC_MASK	0xff80000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_gr1_tlb_mmr_read_data_hi_u {
 	unsigned long	v;
 	struct uvh_gr1_tlb_mmr_read_data_hi_s {
@@ -1534,6 +2199,39 @@ union uvh_gr1_tlb_mmr_read_data_hi_u {
 		unsigned long	larger:1;			/* RO */
 		unsigned long	rsvd_45_63:19;
 	} s;
+<<<<<<< HEAD
+=======
+	struct uv1h_gr1_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	rsvd_45_63:19;
+	} s1;
+	struct uvxh_gr1_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	rsvd_45_63:19;
+	} sx;
+	struct uv2h_gr1_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	rsvd_45_63:19;
+	} s2;
+	struct uv3h_gr1_tlb_mmr_read_data_hi_s {
+		unsigned long	pfn:41;				/* RO */
+		unsigned long	gaa:2;				/* RO */
+		unsigned long	dirty:1;			/* RO */
+		unsigned long	larger:1;			/* RO */
+		unsigned long	aa_ext:1;			/* RO */
+		unsigned long	undef_46_54:9;			/* Undefined */
+		unsigned long	way_ecc:9;			/* RO */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
@@ -1541,9 +2239,17 @@ union uvh_gr1_tlb_mmr_read_data_hi_u {
 /* ========================================================================= */
 #define UV1H_GR1_TLB_MMR_READ_DATA_LO 0x8010a8UL
 #define UV2H_GR1_TLB_MMR_READ_DATA_LO 0x10010a8UL
+<<<<<<< HEAD
 #define UVH_GR1_TLB_MMR_READ_DATA_LO (is_uv1_hub() ?			\
 			UV1H_GR1_TLB_MMR_READ_DATA_LO :			\
 			UV2H_GR1_TLB_MMR_READ_DATA_LO)
+=======
+#define UV3H_GR1_TLB_MMR_READ_DATA_LO 0x10010a8UL
+#define UVH_GR1_TLB_MMR_READ_DATA_LO					\
+		(is_uv1_hub() ? UV1H_GR1_TLB_MMR_READ_DATA_LO :		\
+		(is_uv2_hub() ? UV2H_GR1_TLB_MMR_READ_DATA_LO :		\
+				UV3H_GR1_TLB_MMR_READ_DATA_LO))
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_GR1_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
 #define UVH_GR1_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
@@ -1552,6 +2258,37 @@ union uvh_gr1_tlb_mmr_read_data_hi_u {
 #define UVH_GR1_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
 #define UVH_GR1_TLB_MMR_READ_DATA_LO_VALID_MASK		0x8000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV1H_GR1_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UV1H_GR1_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UV1H_GR1_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UV1H_GR1_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UV1H_GR1_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UV1H_GR1_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+#define UVXH_GR1_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UVXH_GR1_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UVXH_GR1_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UVXH_GR1_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UVXH_GR1_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UVXH_GR1_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+#define UV2H_GR1_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UV2H_GR1_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UV2H_GR1_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UV2H_GR1_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UV2H_GR1_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UV2H_GR1_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+#define UV3H_GR1_TLB_MMR_READ_DATA_LO_VPN_SHFT		0
+#define UV3H_GR1_TLB_MMR_READ_DATA_LO_ASID_SHFT		39
+#define UV3H_GR1_TLB_MMR_READ_DATA_LO_VALID_SHFT	63
+#define UV3H_GR1_TLB_MMR_READ_DATA_LO_VPN_MASK		0x0000007fffffffffUL
+#define UV3H_GR1_TLB_MMR_READ_DATA_LO_ASID_MASK		0x7fffff8000000000UL
+#define UV3H_GR1_TLB_MMR_READ_DATA_LO_VALID_MASK	0x8000000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_gr1_tlb_mmr_read_data_lo_u {
 	unsigned long	v;
 	struct uvh_gr1_tlb_mmr_read_data_lo_s {
@@ -1559,12 +2296,36 @@ union uvh_gr1_tlb_mmr_read_data_lo_u {
 		unsigned long	asid:24;			/* RO */
 		unsigned long	valid:1;			/* RO */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uv1h_gr1_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} s1;
+	struct uvxh_gr1_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} sx;
+	struct uv2h_gr1_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} s2;
+	struct uv3h_gr1_tlb_mmr_read_data_lo_s {
+		unsigned long	vpn:39;				/* RO */
+		unsigned long	asid:24;			/* RO */
+		unsigned long	valid:1;			/* RO */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                               UVH_INT_CMPB                                */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_INT_CMPB 0x22080UL
 
@@ -1580,6 +2341,10 @@ union uvh_int_cmpb_u {
 =======
 #define UVH_INT_CMPB					0x22080UL
 
+=======
+#define UVH_INT_CMPB 0x22080UL
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_INT_CMPB_REAL_TIME_CMPB_SHFT		0
 #define UVH_INT_CMPB_REAL_TIME_CMPB_MASK		0x00ffffffffffffffUL
 
@@ -1589,12 +2354,16 @@ union uvh_int_cmpb_u {
 		unsigned long	real_time_cmpb:56;		/* RW */
 		unsigned long	rsvd_56_63:8;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                               UVH_INT_CMPC                                */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_INT_CMPC 0x22100UL
 
@@ -1620,6 +2389,15 @@ union uvh_int_cmpc_u {
 
 #define UVH_INT_CMPC_REAL_TIME_CMPC_SHFT		0
 #define UVH_INT_CMPC_REAL_TIME_CMPC_MASK		0xffffffffffffffUL
+=======
+#define UVH_INT_CMPC 0x22100UL
+
+#define UV1H_INT_CMPC_REAL_TIME_CMPC_SHFT		0
+#define UV1H_INT_CMPC_REAL_TIME_CMPC_MASK		0x00ffffffffffffffUL
+
+#define UVXH_INT_CMPC_REAL_TIME_CMP_2_SHFT		0
+#define UVXH_INT_CMPC_REAL_TIME_CMP_2_MASK		0x00ffffffffffffffUL
+>>>>>>> refs/remotes/origin/master
 
 union uvh_int_cmpc_u {
 	unsigned long	v;
@@ -1627,12 +2405,16 @@ union uvh_int_cmpc_u {
 		unsigned long	real_time_cmpc:56;		/* RW */
 		unsigned long	rsvd_56_63:8;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                               UVH_INT_CMPD                                */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_INT_CMPD 0x22180UL
 
@@ -1658,6 +2440,15 @@ union uvh_int_cmpd_u {
 
 #define UVH_INT_CMPD_REAL_TIME_CMPD_SHFT		0
 #define UVH_INT_CMPD_REAL_TIME_CMPD_MASK		0xffffffffffffffUL
+=======
+#define UVH_INT_CMPD 0x22180UL
+
+#define UV1H_INT_CMPD_REAL_TIME_CMPD_SHFT		0
+#define UV1H_INT_CMPD_REAL_TIME_CMPD_MASK		0x00ffffffffffffffUL
+
+#define UVXH_INT_CMPD_REAL_TIME_CMP_3_SHFT		0
+#define UVXH_INT_CMPD_REAL_TIME_CMP_3_MASK		0x00ffffffffffffffUL
+>>>>>>> refs/remotes/origin/master
 
 union uvh_int_cmpd_u {
 	unsigned long	v;
@@ -1665,12 +2456,16 @@ union uvh_int_cmpd_u {
 		unsigned long	real_time_cmpd:56;		/* RW */
 		unsigned long	rsvd_56_63:8;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                               UVH_IPI_INT                                 */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_IPI_INT 0x60500UL
 #define UVH_IPI_INT_32 0x348
@@ -1701,6 +2496,11 @@ union uvh_ipi_int_u {
 #define UVH_IPI_INT					0x60500UL
 #define UVH_IPI_INT_32					0x348
 
+=======
+#define UVH_IPI_INT 0x60500UL
+#define UVH_IPI_INT_32 0x348
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_IPI_INT_VECTOR_SHFT				0
 #define UVH_IPI_INT_DELIVERY_MODE_SHFT			8
 #define UVH_IPI_INT_DESTMODE_SHFT			11
@@ -1723,17 +2523,24 @@ union uvh_ipi_int_u {
 		unsigned long	rsvd_48_62:15;
 		unsigned long	send:1;				/* WP */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                   UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST                     */
 /* ========================================================================= */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST 0x320050UL
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_32 0x9c0
 
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_ADDRESS_SHFT 4
+<<<<<<< HEAD
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_ADDRESS_MASK 0x000007fffffffff0UL
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_NODE_ID_SHFT 49
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_NODE_ID_MASK 0x7ffe000000000000UL
@@ -1752,6 +2559,8 @@ union uvh_lb_bau_intd_payload_queue_first_u {
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_32		0x9c0
 
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_ADDRESS_SHFT 4
+=======
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_NODE_ID_SHFT 49
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_ADDRESS_MASK 0x000007fffffffff0UL
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_FIRST_NODE_ID_MASK 0x7ffe000000000000UL
@@ -1765,12 +2574,16 @@ union uvh_lb_bau_intd_payload_queue_first_u {
 		unsigned long	node_id:14;			/* RW */
 		unsigned long	rsvd_63:1;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                    UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST                     */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST 0x320060UL
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST_32 0x9c8
@@ -1789,6 +2602,11 @@ union uvh_lb_bau_intd_payload_queue_last_u {
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST		0x320060UL
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST_32		0x9c8
 
+=======
+#define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST 0x320060UL
+#define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST_32 0x9c8
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST_ADDRESS_SHFT	4
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_LAST_ADDRESS_MASK	0x000007fffffffff0UL
 
@@ -1799,12 +2617,16 @@ union uvh_lb_bau_intd_payload_queue_last_u {
 		unsigned long	address:39;			/* RW */
 		unsigned long	rsvd_43_63:21;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                    UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL                     */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL 0x320070UL
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL_32 0x9d0
@@ -1823,6 +2645,11 @@ union uvh_lb_bau_intd_payload_queue_tail_u {
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL		0x320070UL
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL_32		0x9d0
 
+=======
+#define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL 0x320070UL
+#define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL_32 0x9d0
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL_ADDRESS_SHFT	4
 #define UVH_LB_BAU_INTD_PAYLOAD_QUEUE_TAIL_ADDRESS_MASK	0x000007fffffffff0UL
 
@@ -1833,17 +2660,24 @@ union uvh_lb_bau_intd_payload_queue_tail_u {
 		unsigned long	address:39;			/* RW */
 		unsigned long	rsvd_43_63:21;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                   UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE                    */
 /* ========================================================================= */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE 0x320080UL
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_32 0xa68
 
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_0_SHFT 0
+<<<<<<< HEAD
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_0_MASK 0x0000000000000001UL
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_1_SHFT 1
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_1_MASK 0x0000000000000002UL
@@ -1902,6 +2736,8 @@ union uvh_lb_bau_intd_software_acknowledge_u {
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_32		0xa68
 
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_0_SHFT 0
+=======
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_1_SHFT 1
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_2_SHFT 2
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_PENDING_3_SHFT 3
@@ -1955,12 +2791,16 @@ union uvh_lb_bau_intd_software_acknowledge_u {
 		unsigned long	timeout_7:1;			/* RW, W1C */
 		unsigned long	rsvd_16_63:48;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS                 */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS 0x0000000000320088UL
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS_32 0xa70
@@ -1968,10 +2808,16 @@ union uvh_lb_bau_intd_software_acknowledge_u {
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS	0x0000000000320088UL
 #define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS_32	0xa70
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS 0x320088UL
+#define UVH_LB_BAU_INTD_SOFTWARE_ACKNOWLEDGE_ALIAS_32 0xa70
+
+>>>>>>> refs/remotes/origin/master
 
 /* ========================================================================= */
 /*                         UVH_LB_BAU_MISC_CONTROL                           */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_MISC_CONTROL 0x320170UL
 #define UVH_LB_BAU_MISC_CONTROL_32 0xa10
@@ -2160,6 +3006,21 @@ union uvh_lb_bau_misc_control_u {
 #define UVH_LB_BAU_MISC_CONTROL_APIC_MODE_SHFT		8
 #define UVH_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_SHFT	9
 #define UVH_LB_BAU_MISC_CONTROL_FORCE_LOCK_NOP_SHFT	10
+=======
+#define UVH_LB_BAU_MISC_CONTROL 0x320170UL
+#define UV1H_LB_BAU_MISC_CONTROL 0x320170UL
+#define UV2H_LB_BAU_MISC_CONTROL 0x320170UL
+#define UV3H_LB_BAU_MISC_CONTROL 0x320170UL
+#define UVH_LB_BAU_MISC_CONTROL_32 0xa10
+#define UV1H_LB_BAU_MISC_CONTROL_32 0x320170UL
+#define UV2H_LB_BAU_MISC_CONTROL_32 0x320170UL
+#define UV3H_LB_BAU_MISC_CONTROL_32 0x320170UL
+
+#define UVH_LB_BAU_MISC_CONTROL_REJECTION_DELAY_SHFT	0
+#define UVH_LB_BAU_MISC_CONTROL_APIC_MODE_SHFT		8
+#define UVH_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_SHFT	9
+#define UVH_LB_BAU_MISC_CONTROL_FORCE_LOCK_NOP_SHFT	10
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_MISC_CONTROL_QPI_AGENT_PRESENCE_VECTOR_SHFT 11
 #define UVH_LB_BAU_MISC_CONTROL_DESCRIPTOR_FETCH_MODE_SHFT 14
 #define UVH_LB_BAU_MISC_CONTROL_ENABLE_INTD_SOFT_ACK_MODE_SHFT 15
@@ -2171,6 +3032,10 @@ union uvh_lb_bau_misc_control_u {
 #define UVH_LB_BAU_MISC_CONTROL_PROGRAMMED_INITIAL_PRIORITY_SHFT 24
 #define UVH_LB_BAU_MISC_CONTROL_USE_INCOMING_PRIORITY_SHFT 27
 #define UVH_LB_BAU_MISC_CONTROL_ENABLE_PROGRAMMED_INITIAL_PRIORITY_SHFT 28
+<<<<<<< HEAD
+=======
+#define UVH_LB_BAU_MISC_CONTROL_FUN_SHFT		48
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_MISC_CONTROL_REJECTION_DELAY_MASK	0x00000000000000ffUL
 #define UVH_LB_BAU_MISC_CONTROL_APIC_MODE_MASK		0x0000000000000100UL
 #define UVH_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_MASK	0x0000000000000200UL
@@ -2186,6 +3051,10 @@ union uvh_lb_bau_misc_control_u {
 #define UVH_LB_BAU_MISC_CONTROL_PROGRAMMED_INITIAL_PRIORITY_MASK 0x0000000007000000UL
 #define UVH_LB_BAU_MISC_CONTROL_USE_INCOMING_PRIORITY_MASK 0x0000000008000000UL
 #define UVH_LB_BAU_MISC_CONTROL_ENABLE_PROGRAMMED_INITIAL_PRIORITY_MASK 0x0000000010000000UL
+<<<<<<< HEAD
+=======
+#define UVH_LB_BAU_MISC_CONTROL_FUN_MASK		0xffff000000000000UL
+>>>>>>> refs/remotes/origin/master
 
 #define UV1H_LB_BAU_MISC_CONTROL_REJECTION_DELAY_SHFT	0
 #define UV1H_LB_BAU_MISC_CONTROL_APIC_MODE_SHFT		8
@@ -2220,6 +3089,56 @@ union uvh_lb_bau_misc_control_u {
 #define UV1H_LB_BAU_MISC_CONTROL_ENABLE_PROGRAMMED_INITIAL_PRIORITY_MASK 0x0000000010000000UL
 #define UV1H_LB_BAU_MISC_CONTROL_FUN_MASK		0xffff000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UVXH_LB_BAU_MISC_CONTROL_REJECTION_DELAY_SHFT	0
+#define UVXH_LB_BAU_MISC_CONTROL_APIC_MODE_SHFT		8
+#define UVXH_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_SHFT	9
+#define UVXH_LB_BAU_MISC_CONTROL_FORCE_LOCK_NOP_SHFT	10
+#define UVXH_LB_BAU_MISC_CONTROL_QPI_AGENT_PRESENCE_VECTOR_SHFT 11
+#define UVXH_LB_BAU_MISC_CONTROL_DESCRIPTOR_FETCH_MODE_SHFT 14
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_INTD_SOFT_ACK_MODE_SHFT 15
+#define UVXH_LB_BAU_MISC_CONTROL_INTD_SOFT_ACK_TIMEOUT_PERIOD_SHFT 16
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_DUAL_MAPPING_MODE_SHFT 20
+#define UVXH_LB_BAU_MISC_CONTROL_VGA_IO_PORT_DECODE_ENABLE_SHFT 21
+#define UVXH_LB_BAU_MISC_CONTROL_VGA_IO_PORT_16_BIT_DECODE_SHFT 22
+#define UVXH_LB_BAU_MISC_CONTROL_SUPPRESS_DEST_REGISTRATION_SHFT 23
+#define UVXH_LB_BAU_MISC_CONTROL_PROGRAMMED_INITIAL_PRIORITY_SHFT 24
+#define UVXH_LB_BAU_MISC_CONTROL_USE_INCOMING_PRIORITY_SHFT 27
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_PROGRAMMED_INITIAL_PRIORITY_SHFT 28
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_AUTOMATIC_APIC_MODE_SELECTION_SHFT 29
+#define UVXH_LB_BAU_MISC_CONTROL_APIC_MODE_STATUS_SHFT	30
+#define UVXH_LB_BAU_MISC_CONTROL_SUPPRESS_INTERRUPTS_TO_SELF_SHFT 31
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_LOCK_BASED_SYSTEM_FLUSH_SHFT 32
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_EXTENDED_SB_STATUS_SHFT 33
+#define UVXH_LB_BAU_MISC_CONTROL_SUPPRESS_INT_PRIO_UDT_TO_SELF_SHFT 34
+#define UVXH_LB_BAU_MISC_CONTROL_USE_LEGACY_DESCRIPTOR_FORMATS_SHFT 35
+#define UVXH_LB_BAU_MISC_CONTROL_FUN_SHFT		48
+#define UVXH_LB_BAU_MISC_CONTROL_REJECTION_DELAY_MASK	0x00000000000000ffUL
+#define UVXH_LB_BAU_MISC_CONTROL_APIC_MODE_MASK		0x0000000000000100UL
+#define UVXH_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_MASK	0x0000000000000200UL
+#define UVXH_LB_BAU_MISC_CONTROL_FORCE_LOCK_NOP_MASK	0x0000000000000400UL
+#define UVXH_LB_BAU_MISC_CONTROL_QPI_AGENT_PRESENCE_VECTOR_MASK 0x0000000000003800UL
+#define UVXH_LB_BAU_MISC_CONTROL_DESCRIPTOR_FETCH_MODE_MASK 0x0000000000004000UL
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_INTD_SOFT_ACK_MODE_MASK 0x0000000000008000UL
+#define UVXH_LB_BAU_MISC_CONTROL_INTD_SOFT_ACK_TIMEOUT_PERIOD_MASK 0x00000000000f0000UL
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_DUAL_MAPPING_MODE_MASK 0x0000000000100000UL
+#define UVXH_LB_BAU_MISC_CONTROL_VGA_IO_PORT_DECODE_ENABLE_MASK 0x0000000000200000UL
+#define UVXH_LB_BAU_MISC_CONTROL_VGA_IO_PORT_16_BIT_DECODE_MASK 0x0000000000400000UL
+#define UVXH_LB_BAU_MISC_CONTROL_SUPPRESS_DEST_REGISTRATION_MASK 0x0000000000800000UL
+#define UVXH_LB_BAU_MISC_CONTROL_PROGRAMMED_INITIAL_PRIORITY_MASK 0x0000000007000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_USE_INCOMING_PRIORITY_MASK 0x0000000008000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_PROGRAMMED_INITIAL_PRIORITY_MASK 0x0000000010000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_AUTOMATIC_APIC_MODE_SELECTION_MASK 0x0000000020000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_APIC_MODE_STATUS_MASK	0x0000000040000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_SUPPRESS_INTERRUPTS_TO_SELF_MASK 0x0000000080000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_LOCK_BASED_SYSTEM_FLUSH_MASK 0x0000000100000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_ENABLE_EXTENDED_SB_STATUS_MASK 0x0000000200000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_SUPPRESS_INT_PRIO_UDT_TO_SELF_MASK 0x0000000400000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_USE_LEGACY_DESCRIPTOR_FORMATS_MASK 0x0000000800000000UL
+#define UVXH_LB_BAU_MISC_CONTROL_FUN_MASK		0xffff000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV2H_LB_BAU_MISC_CONTROL_REJECTION_DELAY_SHFT	0
 #define UV2H_LB_BAU_MISC_CONTROL_APIC_MODE_SHFT		8
 #define UV2H_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_SHFT	9
@@ -2267,6 +3186,62 @@ union uvh_lb_bau_misc_control_u {
 #define UV2H_LB_BAU_MISC_CONTROL_USE_LEGACY_DESCRIPTOR_FORMATS_MASK 0x0000000800000000UL
 #define UV2H_LB_BAU_MISC_CONTROL_FUN_MASK		0xffff000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV3H_LB_BAU_MISC_CONTROL_REJECTION_DELAY_SHFT	0
+#define UV3H_LB_BAU_MISC_CONTROL_APIC_MODE_SHFT		8
+#define UV3H_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_SHFT	9
+#define UV3H_LB_BAU_MISC_CONTROL_FORCE_LOCK_NOP_SHFT	10
+#define UV3H_LB_BAU_MISC_CONTROL_QPI_AGENT_PRESENCE_VECTOR_SHFT 11
+#define UV3H_LB_BAU_MISC_CONTROL_DESCRIPTOR_FETCH_MODE_SHFT 14
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_INTD_SOFT_ACK_MODE_SHFT 15
+#define UV3H_LB_BAU_MISC_CONTROL_INTD_SOFT_ACK_TIMEOUT_PERIOD_SHFT 16
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_DUAL_MAPPING_MODE_SHFT 20
+#define UV3H_LB_BAU_MISC_CONTROL_VGA_IO_PORT_DECODE_ENABLE_SHFT 21
+#define UV3H_LB_BAU_MISC_CONTROL_VGA_IO_PORT_16_BIT_DECODE_SHFT 22
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_DEST_REGISTRATION_SHFT 23
+#define UV3H_LB_BAU_MISC_CONTROL_PROGRAMMED_INITIAL_PRIORITY_SHFT 24
+#define UV3H_LB_BAU_MISC_CONTROL_USE_INCOMING_PRIORITY_SHFT 27
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_PROGRAMMED_INITIAL_PRIORITY_SHFT 28
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_AUTOMATIC_APIC_MODE_SELECTION_SHFT 29
+#define UV3H_LB_BAU_MISC_CONTROL_APIC_MODE_STATUS_SHFT	30
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_INTERRUPTS_TO_SELF_SHFT 31
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_LOCK_BASED_SYSTEM_FLUSH_SHFT 32
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_EXTENDED_SB_STATUS_SHFT 33
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_INT_PRIO_UDT_TO_SELF_SHFT 34
+#define UV3H_LB_BAU_MISC_CONTROL_USE_LEGACY_DESCRIPTOR_FORMATS_SHFT 35
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_QUIESCE_MSGS_TO_QPI_SHFT 36
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_INTD_PREFETCH_HINT_SHFT 37
+#define UV3H_LB_BAU_MISC_CONTROL_THREAD_KILL_TIMEBASE_SHFT 38
+#define UV3H_LB_BAU_MISC_CONTROL_FUN_SHFT		48
+#define UV3H_LB_BAU_MISC_CONTROL_REJECTION_DELAY_MASK	0x00000000000000ffUL
+#define UV3H_LB_BAU_MISC_CONTROL_APIC_MODE_MASK		0x0000000000000100UL
+#define UV3H_LB_BAU_MISC_CONTROL_FORCE_BROADCAST_MASK	0x0000000000000200UL
+#define UV3H_LB_BAU_MISC_CONTROL_FORCE_LOCK_NOP_MASK	0x0000000000000400UL
+#define UV3H_LB_BAU_MISC_CONTROL_QPI_AGENT_PRESENCE_VECTOR_MASK 0x0000000000003800UL
+#define UV3H_LB_BAU_MISC_CONTROL_DESCRIPTOR_FETCH_MODE_MASK 0x0000000000004000UL
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_INTD_SOFT_ACK_MODE_MASK 0x0000000000008000UL
+#define UV3H_LB_BAU_MISC_CONTROL_INTD_SOFT_ACK_TIMEOUT_PERIOD_MASK 0x00000000000f0000UL
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_DUAL_MAPPING_MODE_MASK 0x0000000000100000UL
+#define UV3H_LB_BAU_MISC_CONTROL_VGA_IO_PORT_DECODE_ENABLE_MASK 0x0000000000200000UL
+#define UV3H_LB_BAU_MISC_CONTROL_VGA_IO_PORT_16_BIT_DECODE_MASK 0x0000000000400000UL
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_DEST_REGISTRATION_MASK 0x0000000000800000UL
+#define UV3H_LB_BAU_MISC_CONTROL_PROGRAMMED_INITIAL_PRIORITY_MASK 0x0000000007000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_USE_INCOMING_PRIORITY_MASK 0x0000000008000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_PROGRAMMED_INITIAL_PRIORITY_MASK 0x0000000010000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_AUTOMATIC_APIC_MODE_SELECTION_MASK 0x0000000020000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_APIC_MODE_STATUS_MASK	0x0000000040000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_INTERRUPTS_TO_SELF_MASK 0x0000000080000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_LOCK_BASED_SYSTEM_FLUSH_MASK 0x0000000100000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_EXTENDED_SB_STATUS_MASK 0x0000000200000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_INT_PRIO_UDT_TO_SELF_MASK 0x0000000400000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_USE_LEGACY_DESCRIPTOR_FORMATS_MASK 0x0000000800000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_SUPPRESS_QUIESCE_MSGS_TO_QPI_MASK 0x0000001000000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_ENABLE_INTD_PREFETCH_HINT_MASK 0x0000002000000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_THREAD_KILL_TIMEBASE_MASK 0x00003fc000000000UL
+#define UV3H_LB_BAU_MISC_CONTROL_FUN_MASK		0xffff000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_lb_bau_misc_control_u {
 	unsigned long	v;
 	struct uvh_lb_bau_misc_control_s {
@@ -2285,7 +3260,12 @@ union uvh_lb_bau_misc_control_u {
 		unsigned long	programmed_initial_priority:3;	/* RW */
 		unsigned long	use_incoming_priority:1;	/* RW */
 		unsigned long	enable_programmed_initial_priority:1;/* RW */
+<<<<<<< HEAD
 		unsigned long	rsvd_29_63:35;
+=======
+		unsigned long	rsvd_29_47:19;
+		unsigned long	fun:16;				/* RW */
+>>>>>>> refs/remotes/origin/master
 	} s;
 	struct uv1h_lb_bau_misc_control_s {
 		unsigned long	rejection_delay:8;		/* RW */
@@ -2306,6 +3286,35 @@ union uvh_lb_bau_misc_control_u {
 		unsigned long	rsvd_29_47:19;
 		unsigned long	fun:16;				/* RW */
 	} s1;
+<<<<<<< HEAD
+=======
+	struct uvxh_lb_bau_misc_control_s {
+		unsigned long	rejection_delay:8;		/* RW */
+		unsigned long	apic_mode:1;			/* RW */
+		unsigned long	force_broadcast:1;		/* RW */
+		unsigned long	force_lock_nop:1;		/* RW */
+		unsigned long	qpi_agent_presence_vector:3;	/* RW */
+		unsigned long	descriptor_fetch_mode:1;	/* RW */
+		unsigned long	enable_intd_soft_ack_mode:1;	/* RW */
+		unsigned long	intd_soft_ack_timeout_period:4;	/* RW */
+		unsigned long	enable_dual_mapping_mode:1;	/* RW */
+		unsigned long	vga_io_port_decode_enable:1;	/* RW */
+		unsigned long	vga_io_port_16_bit_decode:1;	/* RW */
+		unsigned long	suppress_dest_registration:1;	/* RW */
+		unsigned long	programmed_initial_priority:3;	/* RW */
+		unsigned long	use_incoming_priority:1;	/* RW */
+		unsigned long	enable_programmed_initial_priority:1;/* RW */
+		unsigned long	enable_automatic_apic_mode_selection:1;/* RW */
+		unsigned long	apic_mode_status:1;		/* RO */
+		unsigned long	suppress_interrupts_to_self:1;	/* RW */
+		unsigned long	enable_lock_based_system_flush:1;/* RW */
+		unsigned long	enable_extended_sb_status:1;	/* RW */
+		unsigned long	suppress_int_prio_udt_to_self:1;/* RW */
+		unsigned long	use_legacy_descriptor_formats:1;/* RW */
+		unsigned long	rsvd_36_47:12;
+		unsigned long	fun:16;				/* RW */
+	} sx;
+>>>>>>> refs/remotes/origin/master
 	struct uv2h_lb_bau_misc_control_s {
 		unsigned long	rejection_delay:8;		/* RW */
 		unsigned long	apic_mode:1;			/* RW */
@@ -2332,12 +3341,45 @@ union uvh_lb_bau_misc_control_u {
 		unsigned long	rsvd_36_47:12;
 		unsigned long	fun:16;				/* RW */
 	} s2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uv3h_lb_bau_misc_control_s {
+		unsigned long	rejection_delay:8;		/* RW */
+		unsigned long	apic_mode:1;			/* RW */
+		unsigned long	force_broadcast:1;		/* RW */
+		unsigned long	force_lock_nop:1;		/* RW */
+		unsigned long	qpi_agent_presence_vector:3;	/* RW */
+		unsigned long	descriptor_fetch_mode:1;	/* RW */
+		unsigned long	enable_intd_soft_ack_mode:1;	/* RW */
+		unsigned long	intd_soft_ack_timeout_period:4;	/* RW */
+		unsigned long	enable_dual_mapping_mode:1;	/* RW */
+		unsigned long	vga_io_port_decode_enable:1;	/* RW */
+		unsigned long	vga_io_port_16_bit_decode:1;	/* RW */
+		unsigned long	suppress_dest_registration:1;	/* RW */
+		unsigned long	programmed_initial_priority:3;	/* RW */
+		unsigned long	use_incoming_priority:1;	/* RW */
+		unsigned long	enable_programmed_initial_priority:1;/* RW */
+		unsigned long	enable_automatic_apic_mode_selection:1;/* RW */
+		unsigned long	apic_mode_status:1;		/* RO */
+		unsigned long	suppress_interrupts_to_self:1;	/* RW */
+		unsigned long	enable_lock_based_system_flush:1;/* RW */
+		unsigned long	enable_extended_sb_status:1;	/* RW */
+		unsigned long	suppress_int_prio_udt_to_self:1;/* RW */
+		unsigned long	use_legacy_descriptor_formats:1;/* RW */
+		unsigned long	suppress_quiesce_msgs_to_qpi:1;	/* RW */
+		unsigned long	enable_intd_prefetch_hint:1;	/* RW */
+		unsigned long	thread_kill_timebase:8;		/* RW */
+		unsigned long	rsvd_46_47:2;
+		unsigned long	fun:16;				/* RW */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                     UVH_LB_BAU_SB_ACTIVATION_CONTROL                      */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_SB_ACTIVATION_CONTROL 0x320020UL
 #define UVH_LB_BAU_SB_ACTIVATION_CONTROL_32 0x9a8
@@ -2361,6 +3403,11 @@ union uvh_lb_bau_sb_activation_control_u {
 #define UVH_LB_BAU_SB_ACTIVATION_CONTROL		0x320020UL
 #define UVH_LB_BAU_SB_ACTIVATION_CONTROL_32		0x9a8
 
+=======
+#define UVH_LB_BAU_SB_ACTIVATION_CONTROL 0x320020UL
+#define UVH_LB_BAU_SB_ACTIVATION_CONTROL_32 0x9a8
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_SB_ACTIVATION_CONTROL_INDEX_SHFT	0
 #define UVH_LB_BAU_SB_ACTIVATION_CONTROL_PUSH_SHFT	62
 #define UVH_LB_BAU_SB_ACTIVATION_CONTROL_INIT_SHFT	63
@@ -2376,12 +3423,16 @@ union uvh_lb_bau_sb_activation_control_u {
 		unsigned long	push:1;				/* WP */
 		unsigned long	init:1;				/* WP */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                    UVH_LB_BAU_SB_ACTIVATION_STATUS_0                      */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_0 0x320030UL
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_0_32 0x9b0
@@ -2398,6 +3449,11 @@ union uvh_lb_bau_sb_activation_status_0_u {
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_0		0x320030UL
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_0_32		0x9b0
 
+=======
+#define UVH_LB_BAU_SB_ACTIVATION_STATUS_0 0x320030UL
+#define UVH_LB_BAU_SB_ACTIVATION_STATUS_0_32 0x9b0
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_0_STATUS_SHFT	0
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_0_STATUS_MASK	0xffffffffffffffffUL
 
@@ -2406,12 +3462,16 @@ union uvh_lb_bau_sb_activation_status_0_u {
 	struct uvh_lb_bau_sb_activation_status_0_s {
 		unsigned long	status:64;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                    UVH_LB_BAU_SB_ACTIVATION_STATUS_1                      */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_1 0x320040UL
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_1_32 0x9b8
@@ -2428,6 +3488,11 @@ union uvh_lb_bau_sb_activation_status_1_u {
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_1		0x320040UL
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_1_32		0x9b8
 
+=======
+#define UVH_LB_BAU_SB_ACTIVATION_STATUS_1 0x320040UL
+#define UVH_LB_BAU_SB_ACTIVATION_STATUS_1_32 0x9b8
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_1_STATUS_SHFT	0
 #define UVH_LB_BAU_SB_ACTIVATION_STATUS_1_STATUS_MASK	0xffffffffffffffffUL
 
@@ -2436,12 +3501,16 @@ union uvh_lb_bau_sb_activation_status_1_u {
 	struct uvh_lb_bau_sb_activation_status_1_s {
 		unsigned long	status:64;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                      UVH_LB_BAU_SB_DESCRIPTOR_BASE                        */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_LB_BAU_SB_DESCRIPTOR_BASE 0x320010UL
 #define UVH_LB_BAU_SB_DESCRIPTOR_BASE_32 0x9a0
@@ -2464,6 +3533,11 @@ union uvh_lb_bau_sb_descriptor_base_u {
 #define UVH_LB_BAU_SB_DESCRIPTOR_BASE			0x320010UL
 #define UVH_LB_BAU_SB_DESCRIPTOR_BASE_32		0x9a0
 
+=======
+#define UVH_LB_BAU_SB_DESCRIPTOR_BASE 0x320010UL
+#define UVH_LB_BAU_SB_DESCRIPTOR_BASE_32 0x9a0
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_LB_BAU_SB_DESCRIPTOR_BASE_PAGE_ADDRESS_SHFT	12
 #define UVH_LB_BAU_SB_DESCRIPTOR_BASE_NODE_ID_SHFT	49
 #define UVH_LB_BAU_SB_DESCRIPTOR_BASE_PAGE_ADDRESS_MASK	0x000007fffffff000UL
@@ -2478,12 +3552,16 @@ union uvh_lb_bau_sb_descriptor_base_u {
 		unsigned long	node_id:14;			/* RW */
 		unsigned long	rsvd_63:1;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                               UVH_NODE_ID                                 */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_NODE_ID 0x0UL
 
@@ -2563,6 +3641,12 @@ union uvh_node_id_u {
     } s2;
 =======
 #define UVH_NODE_ID					0x0UL
+=======
+#define UVH_NODE_ID 0x0UL
+#define UV1H_NODE_ID 0x0UL
+#define UV2H_NODE_ID 0x0UL
+#define UV3H_NODE_ID 0x0UL
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_NODE_ID_FORCE1_SHFT				0
 #define UVH_NODE_ID_MANUFACTURER_SHFT			1
@@ -2590,6 +3674,24 @@ union uvh_node_id_u {
 #define UV1H_NODE_ID_NODES_PER_BIT_MASK			0x007f000000000000UL
 #define UV1H_NODE_ID_NI_PORT_MASK			0x0f00000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UVXH_NODE_ID_FORCE1_SHFT			0
+#define UVXH_NODE_ID_MANUFACTURER_SHFT			1
+#define UVXH_NODE_ID_PART_NUMBER_SHFT			12
+#define UVXH_NODE_ID_REVISION_SHFT			28
+#define UVXH_NODE_ID_NODE_ID_SHFT			32
+#define UVXH_NODE_ID_NODES_PER_BIT_SHFT			50
+#define UVXH_NODE_ID_NI_PORT_SHFT			57
+#define UVXH_NODE_ID_FORCE1_MASK			0x0000000000000001UL
+#define UVXH_NODE_ID_MANUFACTURER_MASK			0x0000000000000ffeUL
+#define UVXH_NODE_ID_PART_NUMBER_MASK			0x000000000ffff000UL
+#define UVXH_NODE_ID_REVISION_MASK			0x00000000f0000000UL
+#define UVXH_NODE_ID_NODE_ID_MASK			0x00007fff00000000UL
+#define UVXH_NODE_ID_NODES_PER_BIT_MASK			0x01fc000000000000UL
+#define UVXH_NODE_ID_NI_PORT_MASK			0x3e00000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV2H_NODE_ID_FORCE1_SHFT			0
 #define UV2H_NODE_ID_MANUFACTURER_SHFT			1
 #define UV2H_NODE_ID_PART_NUMBER_SHFT			12
@@ -2605,6 +3707,28 @@ union uvh_node_id_u {
 #define UV2H_NODE_ID_NODES_PER_BIT_MASK			0x01fc000000000000UL
 #define UV2H_NODE_ID_NI_PORT_MASK			0x3e00000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV3H_NODE_ID_FORCE1_SHFT			0
+#define UV3H_NODE_ID_MANUFACTURER_SHFT			1
+#define UV3H_NODE_ID_PART_NUMBER_SHFT			12
+#define UV3H_NODE_ID_REVISION_SHFT			28
+#define UV3H_NODE_ID_NODE_ID_SHFT			32
+#define UV3H_NODE_ID_ROUTER_SELECT_SHFT			48
+#define UV3H_NODE_ID_RESERVED_2_SHFT			49
+#define UV3H_NODE_ID_NODES_PER_BIT_SHFT			50
+#define UV3H_NODE_ID_NI_PORT_SHFT			57
+#define UV3H_NODE_ID_FORCE1_MASK			0x0000000000000001UL
+#define UV3H_NODE_ID_MANUFACTURER_MASK			0x0000000000000ffeUL
+#define UV3H_NODE_ID_PART_NUMBER_MASK			0x000000000ffff000UL
+#define UV3H_NODE_ID_REVISION_MASK			0x00000000f0000000UL
+#define UV3H_NODE_ID_NODE_ID_MASK			0x00007fff00000000UL
+#define UV3H_NODE_ID_ROUTER_SELECT_MASK			0x0001000000000000UL
+#define UV3H_NODE_ID_RESERVED_2_MASK			0x0002000000000000UL
+#define UV3H_NODE_ID_NODES_PER_BIT_MASK			0x01fc000000000000UL
+#define UV3H_NODE_ID_NI_PORT_MASK			0x3e00000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_node_id_u {
 	unsigned long	v;
 	struct uvh_node_id_s {
@@ -2627,6 +3751,20 @@ union uvh_node_id_u {
 		unsigned long	ni_port:4;			/* RO */
 		unsigned long	rsvd_60_63:4;
 	} s1;
+<<<<<<< HEAD
+=======
+	struct uvxh_node_id_s {
+		unsigned long	force1:1;			/* RO */
+		unsigned long	manufacturer:11;		/* RO */
+		unsigned long	part_number:16;			/* RO */
+		unsigned long	revision:4;			/* RO */
+		unsigned long	node_id:15;			/* RW */
+		unsigned long	rsvd_47_49:3;
+		unsigned long	nodes_per_bit:7;		/* RO */
+		unsigned long	ni_port:5;			/* RO */
+		unsigned long	rsvd_62_63:2;
+	} sx;
+>>>>>>> refs/remotes/origin/master
 	struct uv2h_node_id_s {
 		unsigned long	force1:1;			/* RO */
 		unsigned long	manufacturer:11;		/* RO */
@@ -2638,12 +3776,29 @@ union uvh_node_id_u {
 		unsigned long	ni_port:5;			/* RO */
 		unsigned long	rsvd_62_63:2;
 	} s2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uv3h_node_id_s {
+		unsigned long	force1:1;			/* RO */
+		unsigned long	manufacturer:11;		/* RO */
+		unsigned long	part_number:16;			/* RO */
+		unsigned long	revision:4;			/* RO */
+		unsigned long	node_id:15;			/* RW */
+		unsigned long	rsvd_47:1;
+		unsigned long	router_select:1;		/* RO */
+		unsigned long	rsvd_49:1;
+		unsigned long	nodes_per_bit:7;		/* RO */
+		unsigned long	ni_port:5;			/* RO */
+		unsigned long	rsvd_62_63:2;
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                          UVH_NODE_PRESENT_TABLE                           */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_NODE_PRESENT_TABLE 0x1400UL
 #define UVH_NODE_PRESENT_TABLE_DEPTH 16
@@ -2660,6 +3815,11 @@ union uvh_node_present_table_u {
 #define UVH_NODE_PRESENT_TABLE				0x1400UL
 #define UVH_NODE_PRESENT_TABLE_DEPTH			16
 
+=======
+#define UVH_NODE_PRESENT_TABLE 0x1400UL
+#define UVH_NODE_PRESENT_TABLE_DEPTH 16
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_NODE_PRESENT_TABLE_NODES_SHFT		0
 #define UVH_NODE_PRESENT_TABLE_NODES_MASK		0xffffffffffffffffUL
 
@@ -2668,12 +3828,16 @@ union uvh_node_present_table_u {
 	struct uvh_node_present_table_s {
 		unsigned long	nodes:64;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                 UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR                  */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR 0x16000c8UL
 
@@ -2698,6 +3862,11 @@ union uvh_rh_gam_alias210_overlay_config_0_mmr_u {
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR	0x16000c8UL
 
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR_BASE_SHFT 24
+=======
+#define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR 0x16000c8UL
+
+#define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR_BASE_SHFT 24
+>>>>>>> refs/remotes/origin/master
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR_M_ALIAS_SHFT 48
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR_ENABLE_SHFT 63
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_0_MMR_BASE_MASK 0x00000000ff000000UL
@@ -2714,12 +3883,16 @@ union uvh_rh_gam_alias210_overlay_config_0_mmr_u {
 		unsigned long	rsvd_53_62:10;
 		unsigned long	enable:1;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                 UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR                  */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR 0x16000d8UL
 
@@ -2744,6 +3917,11 @@ union uvh_rh_gam_alias210_overlay_config_1_mmr_u {
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR	0x16000d8UL
 
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR_BASE_SHFT 24
+=======
+#define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR 0x16000d8UL
+
+#define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR_BASE_SHFT 24
+>>>>>>> refs/remotes/origin/master
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR_M_ALIAS_SHFT 48
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR_ENABLE_SHFT 63
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_1_MMR_BASE_MASK 0x00000000ff000000UL
@@ -2760,12 +3938,16 @@ union uvh_rh_gam_alias210_overlay_config_1_mmr_u {
 		unsigned long	rsvd_53_62:10;
 		unsigned long	enable:1;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                 UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR                  */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR 0x16000e8UL
 
@@ -2790,6 +3972,11 @@ union uvh_rh_gam_alias210_overlay_config_2_mmr_u {
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR	0x16000e8UL
 
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR_BASE_SHFT 24
+=======
+#define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR 0x16000e8UL
+
+#define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR_BASE_SHFT 24
+>>>>>>> refs/remotes/origin/master
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR_M_ALIAS_SHFT 48
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR_ENABLE_SHFT 63
 #define UVH_RH_GAM_ALIAS210_OVERLAY_CONFIG_2_MMR_BASE_MASK 0x00000000ff000000UL
@@ -2806,22 +3993,30 @@ union uvh_rh_gam_alias210_overlay_config_2_mmr_u {
 		unsigned long	rsvd_53_62:10;
 		unsigned long	enable:1;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_0_MMR                  */
 /* ========================================================================= */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_0_MMR 0x16000d0UL
 =======
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_0_MMR	0x16000d0UL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_0_MMR 0x16000d0UL
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_0_MMR_DEST_BASE_SHFT 24
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_0_MMR_DEST_BASE_MASK 0x00003fffff000000UL
 
 union uvh_rh_gam_alias210_redirect_config_0_mmr_u {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned long	v;
     struct uvh_rh_gam_alias210_redirect_config_0_mmr_s {
@@ -2830,28 +4025,38 @@ union uvh_rh_gam_alias210_redirect_config_0_mmr_u {
 	unsigned long	rsvd_46_63: 18;  /*    */
     } s;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long	v;
 	struct uvh_rh_gam_alias210_redirect_config_0_mmr_s {
 		unsigned long	rsvd_0_23:24;
 		unsigned long	dest_base:22;			/* RW */
 		unsigned long	rsvd_46_63:18;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_1_MMR                  */
 /* ========================================================================= */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_1_MMR 0x16000e0UL
 =======
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_1_MMR	0x16000e0UL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_1_MMR 0x16000e0UL
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_1_MMR_DEST_BASE_SHFT 24
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_1_MMR_DEST_BASE_MASK 0x00003fffff000000UL
 
 union uvh_rh_gam_alias210_redirect_config_1_mmr_u {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned long	v;
     struct uvh_rh_gam_alias210_redirect_config_1_mmr_s {
@@ -2860,28 +4065,38 @@ union uvh_rh_gam_alias210_redirect_config_1_mmr_u {
 	unsigned long	rsvd_46_63: 18;  /*    */
     } s;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long	v;
 	struct uvh_rh_gam_alias210_redirect_config_1_mmr_s {
 		unsigned long	rsvd_0_23:24;
 		unsigned long	dest_base:22;			/* RW */
 		unsigned long	rsvd_46_63:18;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_2_MMR                  */
 /* ========================================================================= */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_2_MMR 0x16000f0UL
 =======
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_2_MMR	0x16000f0UL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_2_MMR 0x16000f0UL
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_2_MMR_DEST_BASE_SHFT 24
 #define UVH_RH_GAM_ALIAS210_REDIRECT_CONFIG_2_MMR_DEST_BASE_MASK 0x00003fffff000000UL
 
 union uvh_rh_gam_alias210_redirect_config_2_mmr_u {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned long	v;
     struct uvh_rh_gam_alias210_redirect_config_2_mmr_s {
@@ -2890,18 +4105,24 @@ union uvh_rh_gam_alias210_redirect_config_2_mmr_u {
 	unsigned long	rsvd_46_63: 18;  /*    */
     } s;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long	v;
 	struct uvh_rh_gam_alias210_redirect_config_2_mmr_s {
 		unsigned long	rsvd_0_23:24;
 		unsigned long	dest_base:22;			/* RW */
 		unsigned long	rsvd_46_63:18;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                          UVH_RH_GAM_CONFIG_MMR                            */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RH_GAM_CONFIG_MMR 0x1600000UL
 
@@ -2943,6 +4164,12 @@ union uvh_rh_gam_config_mmr_u {
     } s2;
 =======
 #define UVH_RH_GAM_CONFIG_MMR				0x1600000UL
+=======
+#define UVH_RH_GAM_CONFIG_MMR 0x1600000UL
+#define UV1H_RH_GAM_CONFIG_MMR 0x1600000UL
+#define UV2H_RH_GAM_CONFIG_MMR 0x1600000UL
+#define UV3H_RH_GAM_CONFIG_MMR 0x1600000UL
+>>>>>>> refs/remotes/origin/master
 
 #define UVH_RH_GAM_CONFIG_MMR_M_SKT_SHFT		0
 #define UVH_RH_GAM_CONFIG_MMR_N_SKT_SHFT		6
@@ -2956,11 +4183,27 @@ union uvh_rh_gam_config_mmr_u {
 #define UV1H_RH_GAM_CONFIG_MMR_N_SKT_MASK		0x00000000000003c0UL
 #define UV1H_RH_GAM_CONFIG_MMR_MMIOL_CFG_MASK		0x0000000000001000UL
 
+<<<<<<< HEAD
+=======
+#define UVXH_RH_GAM_CONFIG_MMR_M_SKT_SHFT		0
+#define UVXH_RH_GAM_CONFIG_MMR_N_SKT_SHFT		6
+#define UVXH_RH_GAM_CONFIG_MMR_M_SKT_MASK		0x000000000000003fUL
+#define UVXH_RH_GAM_CONFIG_MMR_N_SKT_MASK		0x00000000000003c0UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV2H_RH_GAM_CONFIG_MMR_M_SKT_SHFT		0
 #define UV2H_RH_GAM_CONFIG_MMR_N_SKT_SHFT		6
 #define UV2H_RH_GAM_CONFIG_MMR_M_SKT_MASK		0x000000000000003fUL
 #define UV2H_RH_GAM_CONFIG_MMR_N_SKT_MASK		0x00000000000003c0UL
 
+<<<<<<< HEAD
+=======
+#define UV3H_RH_GAM_CONFIG_MMR_M_SKT_SHFT		0
+#define UV3H_RH_GAM_CONFIG_MMR_N_SKT_SHFT		6
+#define UV3H_RH_GAM_CONFIG_MMR_M_SKT_MASK		0x000000000000003fUL
+#define UV3H_RH_GAM_CONFIG_MMR_N_SKT_MASK		0x00000000000003c0UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_rh_gam_config_mmr_u {
 	unsigned long	v;
 	struct uvh_rh_gam_config_mmr_s {
@@ -2975,17 +4218,34 @@ union uvh_rh_gam_config_mmr_u {
 		unsigned long	mmiol_cfg:1;			/* RW */
 		unsigned long	rsvd_13_63:51;
 	} s1;
+<<<<<<< HEAD
+=======
+	struct uvxh_rh_gam_config_mmr_s {
+		unsigned long	m_skt:6;			/* RW */
+		unsigned long	n_skt:4;			/* RW */
+		unsigned long	rsvd_10_63:54;
+	} sx;
+>>>>>>> refs/remotes/origin/master
 	struct uv2h_rh_gam_config_mmr_s {
 		unsigned long	m_skt:6;			/* RW */
 		unsigned long	n_skt:4;			/* RW */
 		unsigned long	rsvd_10_63:54;
 	} s2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uv3h_rh_gam_config_mmr_s {
+		unsigned long	m_skt:6;			/* RW */
+		unsigned long	n_skt:4;			/* RW */
+		unsigned long	rsvd_10_63:54;
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                    UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR                      */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR 0x1600010UL
 
@@ -3039,6 +4299,19 @@ union uvh_rh_gam_gru_overlay_config_mmr_u {
 
 #define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT	28
 #define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffff0000000UL
+=======
+#define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR 0x1600010UL
+#define UV1H_RH_GAM_GRU_OVERLAY_CONFIG_MMR 0x1600010UL
+#define UV2H_RH_GAM_GRU_OVERLAY_CONFIG_MMR 0x1600010UL
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR 0x1600010UL
+
+#define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT	28
+#define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_SHFT	52
+#define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
+#define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffff0000000UL
+#define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_MASK	0x00f0000000000000UL
+#define UVH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
+>>>>>>> refs/remotes/origin/master
 
 #define UV1H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT	28
 #define UV1H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_GR4_SHFT	48
@@ -3049,6 +4322,16 @@ union uvh_rh_gam_gru_overlay_config_mmr_u {
 #define UV1H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_MASK	0x00f0000000000000UL
 #define UV1H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UVXH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT	28
+#define UVXH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_SHFT	52
+#define UVXH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
+#define UVXH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffff0000000UL
+#define UVXH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_MASK	0x00f0000000000000UL
+#define UVXH_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV2H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT	28
 #define UV2H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_SHFT	52
 #define UV2H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
@@ -3056,12 +4339,30 @@ union uvh_rh_gam_gru_overlay_config_mmr_u {
 #define UV2H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_MASK	0x00f0000000000000UL
 #define UV2H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_SHFT	28
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_SHFT	52
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_MODE_SHFT	62
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffff0000000UL
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_N_GRU_MASK	0x00f0000000000000UL
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_MODE_MASK	0x4000000000000000UL
+#define UV3H_RH_GAM_GRU_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_rh_gam_gru_overlay_config_mmr_u {
 	unsigned long	v;
 	struct uvh_rh_gam_gru_overlay_config_mmr_s {
 		unsigned long	rsvd_0_27:28;
 		unsigned long	base:18;			/* RW */
+<<<<<<< HEAD
 		unsigned long	rsvd_46_62:17;
+=======
+		unsigned long	rsvd_46_51:6;
+		unsigned long	n_gru:4;			/* RW */
+		unsigned long	rsvd_56_62:7;
+>>>>>>> refs/remotes/origin/master
 		unsigned long	enable:1;			/* RW */
 	} s;
 	struct uv1h_rh_gam_gru_overlay_config_mmr_s {
@@ -3074,6 +4375,17 @@ union uvh_rh_gam_gru_overlay_config_mmr_u {
 		unsigned long	rsvd_56_62:7;
 		unsigned long	enable:1;			/* RW */
 	} s1;
+<<<<<<< HEAD
+=======
+	struct uvxh_rh_gam_gru_overlay_config_mmr_s {
+		unsigned long	rsvd_0_27:28;
+		unsigned long	base:18;			/* RW */
+		unsigned long	rsvd_46_51:6;
+		unsigned long	n_gru:4;			/* RW */
+		unsigned long	rsvd_56_62:7;
+		unsigned long	enable:1;			/* RW */
+	} sx;
+>>>>>>> refs/remotes/origin/master
 	struct uv2h_rh_gam_gru_overlay_config_mmr_s {
 		unsigned long	rsvd_0_27:28;
 		unsigned long	base:18;			/* RW */
@@ -3082,12 +4394,25 @@ union uvh_rh_gam_gru_overlay_config_mmr_u {
 		unsigned long	rsvd_56_62:7;
 		unsigned long	enable:1;			/* RW */
 	} s2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uv3h_rh_gam_gru_overlay_config_mmr_s {
+		unsigned long	rsvd_0_27:28;
+		unsigned long	base:18;			/* RW */
+		unsigned long	rsvd_46_51:6;
+		unsigned long	n_gru:4;			/* RW */
+		unsigned long	rsvd_56_61:6;
+		unsigned long	mode:1;				/* RW */
+		unsigned long	enable:1;			/* RW */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                   UVH_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR                     */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR 0x1600030UL
 
@@ -3129,6 +4454,10 @@ union uvh_rh_gam_mmioh_overlay_config_mmr_u {
     } s2;
 =======
 #define UVH_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR		0x1600030UL
+=======
+#define UV1H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR 0x1600030UL
+#define UV2H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR 0x1600030UL
+>>>>>>> refs/remotes/origin/master
 
 #define UV1H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR_BASE_SHFT	30
 #define UV1H_RH_GAM_MMIOH_OVERLAY_CONFIG_MMR_M_IO_SHFT	46
@@ -3166,12 +4495,16 @@ union uvh_rh_gam_mmioh_overlay_config_mmr_u {
 		unsigned long	rsvd_56_62:7;
 		unsigned long	enable:1;			/* RW */
 	} s2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                    UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR                      */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR 0x1600028UL
 
@@ -3216,6 +4549,17 @@ union uvh_rh_gam_mmr_overlay_config_mmr_u {
 
 #define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_SHFT	26
 #define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffffc000000UL
+=======
+#define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR 0x1600028UL
+#define UV1H_RH_GAM_MMR_OVERLAY_CONFIG_MMR 0x1600028UL
+#define UV2H_RH_GAM_MMR_OVERLAY_CONFIG_MMR 0x1600028UL
+#define UV3H_RH_GAM_MMR_OVERLAY_CONFIG_MMR 0x1600028UL
+
+#define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_SHFT	26
+#define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
+#define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffffc000000UL
+#define UVH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
+>>>>>>> refs/remotes/origin/master
 
 #define UV1H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_SHFT	26
 #define UV1H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_DUAL_HUB_SHFT 46
@@ -3224,11 +4568,27 @@ union uvh_rh_gam_mmr_overlay_config_mmr_u {
 #define UV1H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_DUAL_HUB_MASK 0x0000400000000000UL
 #define UV1H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UVXH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_SHFT	26
+#define UVXH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
+#define UVXH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffffc000000UL
+#define UVXH_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 #define UV2H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_SHFT	26
 #define UV2H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
 #define UV2H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffffc000000UL
 #define UV2H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
 
+<<<<<<< HEAD
+=======
+#define UV3H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_SHFT	26
+#define UV3H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_SHFT	63
+#define UV3H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_BASE_MASK	0x00003ffffc000000UL
+#define UV3H_RH_GAM_MMR_OVERLAY_CONFIG_MMR_ENABLE_MASK	0x8000000000000000UL
+
+>>>>>>> refs/remotes/origin/master
 union uvh_rh_gam_mmr_overlay_config_mmr_u {
 	unsigned long	v;
 	struct uvh_rh_gam_mmr_overlay_config_mmr_s {
@@ -3244,18 +4604,37 @@ union uvh_rh_gam_mmr_overlay_config_mmr_u {
 		unsigned long	rsvd_47_62:16;
 		unsigned long	enable:1;			/* RW */
 	} s1;
+<<<<<<< HEAD
+=======
+	struct uvxh_rh_gam_mmr_overlay_config_mmr_s {
+		unsigned long	rsvd_0_25:26;
+		unsigned long	base:20;			/* RW */
+		unsigned long	rsvd_46_62:17;
+		unsigned long	enable:1;			/* RW */
+	} sx;
+>>>>>>> refs/remotes/origin/master
 	struct uv2h_rh_gam_mmr_overlay_config_mmr_s {
 		unsigned long	rsvd_0_25:26;
 		unsigned long	base:20;			/* RW */
 		unsigned long	rsvd_46_62:17;
 		unsigned long	enable:1;			/* RW */
 	} s2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct uv3h_rh_gam_mmr_overlay_config_mmr_s {
+		unsigned long	rsvd_0_25:26;
+		unsigned long	base:20;			/* RW */
+		unsigned long	rsvd_46_62:17;
+		unsigned long	enable:1;			/* RW */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                                 UVH_RTC                                   */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RTC 0x340000UL
 
@@ -3271,6 +4650,10 @@ union uvh_rtc_u {
 =======
 #define UVH_RTC						0x340000UL
 
+=======
+#define UVH_RTC 0x340000UL
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_RTC_REAL_TIME_CLOCK_SHFT			0
 #define UVH_RTC_REAL_TIME_CLOCK_MASK			0x00ffffffffffffffUL
 
@@ -3280,12 +4663,16 @@ union uvh_rtc_u {
 		unsigned long	real_time_clock:56;		/* RW */
 		unsigned long	rsvd_56_63:8;
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                           UVH_RTC1_INT_CONFIG                             */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_RTC1_INT_CONFIG 0x615c0UL
 
@@ -3323,6 +4710,10 @@ union uvh_rtc1_int_config_u {
 =======
 #define UVH_RTC1_INT_CONFIG				0x615c0UL
 
+=======
+#define UVH_RTC1_INT_CONFIG 0x615c0UL
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_RTC1_INT_CONFIG_VECTOR_SHFT			0
 #define UVH_RTC1_INT_CONFIG_DM_SHFT			8
 #define UVH_RTC1_INT_CONFIG_DESTMODE_SHFT		11
@@ -3354,12 +4745,16 @@ union uvh_rtc1_int_config_u {
 		unsigned long	rsvd_17_31:15;
 		unsigned long	apic_id:32;			/* RW */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                               UVH_SCRATCH5                                */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UVH_SCRATCH5 0x2d0200UL
 #define UVH_SCRATCH5_32 0x778
@@ -3376,6 +4771,11 @@ union uvh_scratch5_u {
 #define UVH_SCRATCH5					0x2d0200UL
 #define UVH_SCRATCH5_32					0x778
 
+=======
+#define UVH_SCRATCH5 0x2d0200UL
+#define UVH_SCRATCH5_32 0x778
+
+>>>>>>> refs/remotes/origin/master
 #define UVH_SCRATCH5_SCRATCH5_SHFT			0
 #define UVH_SCRATCH5_SCRATCH5_MASK			0xffffffffffffffffUL
 
@@ -3384,6 +4784,7 @@ union uvh_scratch5_u {
 	struct uvh_scratch5_s {
 		unsigned long	scratch5:64;			/* RW, W1CS */
 	} s;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -3568,6 +4969,98 @@ union uv2h_event_occurred2_u {
 union uv2h_event_occurred2_u {
 	unsigned long	v;
 	struct uv2h_event_occurred2_s {
+=======
+};
+
+/* ========================================================================= */
+/*                            UVH_SCRATCH5_ALIAS                             */
+/* ========================================================================= */
+#define UVH_SCRATCH5_ALIAS 0x2d0208UL
+#define UVH_SCRATCH5_ALIAS_32 0x780
+
+
+/* ========================================================================= */
+/*                           UVH_SCRATCH5_ALIAS_2                            */
+/* ========================================================================= */
+#define UVH_SCRATCH5_ALIAS_2 0x2d0210UL
+#define UVH_SCRATCH5_ALIAS_2_32 0x788
+
+
+/* ========================================================================= */
+/*                          UVXH_EVENT_OCCURRED2                             */
+/* ========================================================================= */
+#define UVXH_EVENT_OCCURRED2 0x70100UL
+#define UVXH_EVENT_OCCURRED2_32 0xb68
+
+#define UVXH_EVENT_OCCURRED2_RTC_0_SHFT			0
+#define UVXH_EVENT_OCCURRED2_RTC_1_SHFT			1
+#define UVXH_EVENT_OCCURRED2_RTC_2_SHFT			2
+#define UVXH_EVENT_OCCURRED2_RTC_3_SHFT			3
+#define UVXH_EVENT_OCCURRED2_RTC_4_SHFT			4
+#define UVXH_EVENT_OCCURRED2_RTC_5_SHFT			5
+#define UVXH_EVENT_OCCURRED2_RTC_6_SHFT			6
+#define UVXH_EVENT_OCCURRED2_RTC_7_SHFT			7
+#define UVXH_EVENT_OCCURRED2_RTC_8_SHFT			8
+#define UVXH_EVENT_OCCURRED2_RTC_9_SHFT			9
+#define UVXH_EVENT_OCCURRED2_RTC_10_SHFT		10
+#define UVXH_EVENT_OCCURRED2_RTC_11_SHFT		11
+#define UVXH_EVENT_OCCURRED2_RTC_12_SHFT		12
+#define UVXH_EVENT_OCCURRED2_RTC_13_SHFT		13
+#define UVXH_EVENT_OCCURRED2_RTC_14_SHFT		14
+#define UVXH_EVENT_OCCURRED2_RTC_15_SHFT		15
+#define UVXH_EVENT_OCCURRED2_RTC_16_SHFT		16
+#define UVXH_EVENT_OCCURRED2_RTC_17_SHFT		17
+#define UVXH_EVENT_OCCURRED2_RTC_18_SHFT		18
+#define UVXH_EVENT_OCCURRED2_RTC_19_SHFT		19
+#define UVXH_EVENT_OCCURRED2_RTC_20_SHFT		20
+#define UVXH_EVENT_OCCURRED2_RTC_21_SHFT		21
+#define UVXH_EVENT_OCCURRED2_RTC_22_SHFT		22
+#define UVXH_EVENT_OCCURRED2_RTC_23_SHFT		23
+#define UVXH_EVENT_OCCURRED2_RTC_24_SHFT		24
+#define UVXH_EVENT_OCCURRED2_RTC_25_SHFT		25
+#define UVXH_EVENT_OCCURRED2_RTC_26_SHFT		26
+#define UVXH_EVENT_OCCURRED2_RTC_27_SHFT		27
+#define UVXH_EVENT_OCCURRED2_RTC_28_SHFT		28
+#define UVXH_EVENT_OCCURRED2_RTC_29_SHFT		29
+#define UVXH_EVENT_OCCURRED2_RTC_30_SHFT		30
+#define UVXH_EVENT_OCCURRED2_RTC_31_SHFT		31
+#define UVXH_EVENT_OCCURRED2_RTC_0_MASK			0x0000000000000001UL
+#define UVXH_EVENT_OCCURRED2_RTC_1_MASK			0x0000000000000002UL
+#define UVXH_EVENT_OCCURRED2_RTC_2_MASK			0x0000000000000004UL
+#define UVXH_EVENT_OCCURRED2_RTC_3_MASK			0x0000000000000008UL
+#define UVXH_EVENT_OCCURRED2_RTC_4_MASK			0x0000000000000010UL
+#define UVXH_EVENT_OCCURRED2_RTC_5_MASK			0x0000000000000020UL
+#define UVXH_EVENT_OCCURRED2_RTC_6_MASK			0x0000000000000040UL
+#define UVXH_EVENT_OCCURRED2_RTC_7_MASK			0x0000000000000080UL
+#define UVXH_EVENT_OCCURRED2_RTC_8_MASK			0x0000000000000100UL
+#define UVXH_EVENT_OCCURRED2_RTC_9_MASK			0x0000000000000200UL
+#define UVXH_EVENT_OCCURRED2_RTC_10_MASK		0x0000000000000400UL
+#define UVXH_EVENT_OCCURRED2_RTC_11_MASK		0x0000000000000800UL
+#define UVXH_EVENT_OCCURRED2_RTC_12_MASK		0x0000000000001000UL
+#define UVXH_EVENT_OCCURRED2_RTC_13_MASK		0x0000000000002000UL
+#define UVXH_EVENT_OCCURRED2_RTC_14_MASK		0x0000000000004000UL
+#define UVXH_EVENT_OCCURRED2_RTC_15_MASK		0x0000000000008000UL
+#define UVXH_EVENT_OCCURRED2_RTC_16_MASK		0x0000000000010000UL
+#define UVXH_EVENT_OCCURRED2_RTC_17_MASK		0x0000000000020000UL
+#define UVXH_EVENT_OCCURRED2_RTC_18_MASK		0x0000000000040000UL
+#define UVXH_EVENT_OCCURRED2_RTC_19_MASK		0x0000000000080000UL
+#define UVXH_EVENT_OCCURRED2_RTC_20_MASK		0x0000000000100000UL
+#define UVXH_EVENT_OCCURRED2_RTC_21_MASK		0x0000000000200000UL
+#define UVXH_EVENT_OCCURRED2_RTC_22_MASK		0x0000000000400000UL
+#define UVXH_EVENT_OCCURRED2_RTC_23_MASK		0x0000000000800000UL
+#define UVXH_EVENT_OCCURRED2_RTC_24_MASK		0x0000000001000000UL
+#define UVXH_EVENT_OCCURRED2_RTC_25_MASK		0x0000000002000000UL
+#define UVXH_EVENT_OCCURRED2_RTC_26_MASK		0x0000000004000000UL
+#define UVXH_EVENT_OCCURRED2_RTC_27_MASK		0x0000000008000000UL
+#define UVXH_EVENT_OCCURRED2_RTC_28_MASK		0x0000000010000000UL
+#define UVXH_EVENT_OCCURRED2_RTC_29_MASK		0x0000000020000000UL
+#define UVXH_EVENT_OCCURRED2_RTC_30_MASK		0x0000000040000000UL
+#define UVXH_EVENT_OCCURRED2_RTC_31_MASK		0x0000000080000000UL
+
+union uvxh_event_occurred2_u {
+	unsigned long	v;
+	struct uvxh_event_occurred2_s {
+>>>>>>> refs/remotes/origin/master
 		unsigned long	rtc_0:1;			/* RW */
 		unsigned long	rtc_1:1;			/* RW */
 		unsigned long	rtc_2:1;			/* RW */
@@ -3601,6 +5094,7 @@ union uv2h_event_occurred2_u {
 		unsigned long	rtc_30:1;			/* RW */
 		unsigned long	rtc_31:1;			/* RW */
 		unsigned long	rsvd_32_63:32;
+<<<<<<< HEAD
 	} s1;
 >>>>>>> refs/remotes/origin/cm-10.0
 };
@@ -3626,10 +5120,35 @@ union uv2h_event_occurred2_u {
 #define UV2H_LB_BAU_SB_ACTIVATION_STATUS_2		0x320130UL
 #define UV2H_LB_BAU_SB_ACTIVATION_STATUS_2_32		0x9f0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} sx;
+};
+
+/* ========================================================================= */
+/*                       UVXH_EVENT_OCCURRED2_ALIAS                          */
+/* ========================================================================= */
+#define UVXH_EVENT_OCCURRED2_ALIAS 0x70108UL
+#define UVXH_EVENT_OCCURRED2_ALIAS_32 0xb70
+
+
+/* ========================================================================= */
+/*                   UVXH_LB_BAU_SB_ACTIVATION_STATUS_2                      */
+/* ========================================================================= */
+#define UVXH_LB_BAU_SB_ACTIVATION_STATUS_2 0x320130UL
+#define UV2H_LB_BAU_SB_ACTIVATION_STATUS_2 0x320130UL
+#define UV3H_LB_BAU_SB_ACTIVATION_STATUS_2 0x320130UL
+#define UVXH_LB_BAU_SB_ACTIVATION_STATUS_2_32 0x9f0
+#define UV2H_LB_BAU_SB_ACTIVATION_STATUS_2_32 0x320130UL
+#define UV3H_LB_BAU_SB_ACTIVATION_STATUS_2_32 0x320130UL
+
+#define UVXH_LB_BAU_SB_ACTIVATION_STATUS_2_AUX_ERROR_SHFT 0
+#define UVXH_LB_BAU_SB_ACTIVATION_STATUS_2_AUX_ERROR_MASK 0xffffffffffffffffUL
+>>>>>>> refs/remotes/origin/master
 
 #define UV2H_LB_BAU_SB_ACTIVATION_STATUS_2_AUX_ERROR_SHFT 0
 #define UV2H_LB_BAU_SB_ACTIVATION_STATUS_2_AUX_ERROR_MASK 0xffffffffffffffffUL
 
+<<<<<<< HEAD
 union uv2h_lb_bau_sb_activation_status_2_u {
 <<<<<<< HEAD
     unsigned long	v;
@@ -3642,11 +5161,28 @@ union uv2h_lb_bau_sb_activation_status_2_u {
 		unsigned long	aux_error:64;			/* RW */
 	} s1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UV3H_LB_BAU_SB_ACTIVATION_STATUS_2_AUX_ERROR_SHFT 0
+#define UV3H_LB_BAU_SB_ACTIVATION_STATUS_2_AUX_ERROR_MASK 0xffffffffffffffffUL
+
+union uvxh_lb_bau_sb_activation_status_2_u {
+	unsigned long	v;
+	struct uvxh_lb_bau_sb_activation_status_2_s {
+		unsigned long	aux_error:64;			/* RW */
+	} sx;
+	struct uv2h_lb_bau_sb_activation_status_2_s {
+		unsigned long	aux_error:64;			/* RW */
+	} s2;
+	struct uv3h_lb_bau_sb_activation_status_2_s {
+		unsigned long	aux_error:64;			/* RW */
+	} s3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ========================================================================= */
 /*                   UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK                    */
 /* ========================================================================= */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK 0x320130UL
 #define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK_32 0x9f0
@@ -3654,11 +5190,16 @@ union uv2h_lb_bau_sb_activation_status_2_u {
 #define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK		0x320130UL
 #define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK_32		0x9f0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK		0x320130UL
+#define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK_32		0x9f0
+>>>>>>> refs/remotes/origin/master
 
 #define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK_BIT_ENABLES_SHFT 0
 #define UV1H_LB_TARGET_PHYSICAL_APIC_ID_MASK_BIT_ENABLES_MASK 0x00000000ffffffffUL
 
 union uv1h_lb_target_physical_apic_id_mask_u {
+<<<<<<< HEAD
 <<<<<<< HEAD
     unsigned long	v;
     struct uv1h_lb_target_physical_apic_id_mask_s {
@@ -3670,6 +5211,8 @@ union uv1h_lb_target_physical_apic_id_mask_u {
 
 #endif /* __ASM_UV_MMRS_X86_H__ */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long	v;
 	struct uv1h_lb_target_physical_apic_id_mask_s {
 		unsigned long	bit_enables:32;			/* RW */
@@ -3677,6 +5220,93 @@ union uv1h_lb_target_physical_apic_id_mask_u {
 	} s1;
 };
 
+<<<<<<< HEAD
 
 #endif /* _ASM_X86_UV_UV_MMRS_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ========================================================================= */
+/*                   UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR                   */
+/* ========================================================================= */
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR		0x1603000UL
+
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR_BASE_SHFT	26
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR_M_IO_SHFT	46
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR_ENABLE_SHFT 63
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR_BASE_MASK	0x00003ffffc000000UL
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR_M_IO_MASK	0x000fc00000000000UL
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG0_MMR_ENABLE_MASK 0x8000000000000000UL
+
+union uv3h_rh_gam_mmioh_overlay_config0_mmr_u {
+	unsigned long	v;
+	struct uv3h_rh_gam_mmioh_overlay_config0_mmr_s {
+		unsigned long	rsvd_0_25:26;
+		unsigned long	base:20;			/* RW */
+		unsigned long	m_io:6;				/* RW */
+		unsigned long	n_io:4;
+		unsigned long	rsvd_56_62:7;
+		unsigned long	enable:1;			/* RW */
+	} s3;
+};
+
+/* ========================================================================= */
+/*                   UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR                   */
+/* ========================================================================= */
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR		0x1604000UL
+
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR_BASE_SHFT	26
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR_M_IO_SHFT	46
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR_ENABLE_SHFT 63
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR_BASE_MASK	0x00003ffffc000000UL
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR_M_IO_MASK	0x000fc00000000000UL
+#define UV3H_RH_GAM_MMIOH_OVERLAY_CONFIG1_MMR_ENABLE_MASK 0x8000000000000000UL
+
+union uv3h_rh_gam_mmioh_overlay_config1_mmr_u {
+	unsigned long	v;
+	struct uv3h_rh_gam_mmioh_overlay_config1_mmr_s {
+		unsigned long	rsvd_0_25:26;
+		unsigned long	base:20;			/* RW */
+		unsigned long	m_io:6;				/* RW */
+		unsigned long	n_io:4;
+		unsigned long	rsvd_56_62:7;
+		unsigned long	enable:1;			/* RW */
+	} s3;
+};
+
+/* ========================================================================= */
+/*                  UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_MMR                   */
+/* ========================================================================= */
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_MMR		0x1603800UL
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_MMR_DEPTH	128
+
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_MMR_NASID_SHFT 0
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG0_MMR_NASID_MASK 0x0000000000007fffUL
+
+union uv3h_rh_gam_mmioh_redirect_config0_mmr_u {
+	unsigned long	v;
+	struct uv3h_rh_gam_mmioh_redirect_config0_mmr_s {
+		unsigned long	nasid:15;			/* RW */
+		unsigned long	rsvd_15_63:49;
+	} s3;
+};
+
+/* ========================================================================= */
+/*                  UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG1_MMR                   */
+/* ========================================================================= */
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG1_MMR		0x1604800UL
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG1_MMR_DEPTH	128
+
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG1_MMR_NASID_SHFT 0
+#define UV3H_RH_GAM_MMIOH_REDIRECT_CONFIG1_MMR_NASID_MASK 0x0000000000007fffUL
+
+union uv3h_rh_gam_mmioh_redirect_config1_mmr_u {
+	unsigned long	v;
+	struct uv3h_rh_gam_mmioh_redirect_config1_mmr_s {
+		unsigned long	nasid:15;			/* RW */
+		unsigned long	rsvd_15_63:49;
+	} s3;
+};
+
+
+#endif /* _ASM_X86_UV_UV_MMRS_H */
+>>>>>>> refs/remotes/origin/master

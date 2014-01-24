@@ -36,9 +36,13 @@
 
 #include <asm/msr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cpu_device_id.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 #include <acpi/processor.h>
 
 #include "longhaul.h"
@@ -81,10 +85,14 @@ static int scale_voltage;
 static int disable_acpi_c3;
 static int revid_errata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 static int enable;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int enable;
+>>>>>>> refs/remotes/origin/master
 
 /* Clock ratios multiplied by 10 */
 static int mults[32];
@@ -249,7 +257,12 @@ static void do_powersaver(int cx_address, unsigned int mults_index,
  * Sets a new clock ratio.
  */
 
+<<<<<<< HEAD
 static void longhaul_setstate(unsigned int table_index)
+=======
+static void longhaul_setstate(struct cpufreq_policy *policy,
+		unsigned int table_index)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int mults_index;
 	int speed, mult;
@@ -260,7 +273,11 @@ static void longhaul_setstate(unsigned int table_index)
 	u32 bm_timeout = 1000;
 	unsigned int dir = 0;
 
+<<<<<<< HEAD
 	mults_index = longhaul_table[table_index].index;
+=======
+	mults_index = longhaul_table[table_index].driver_data;
+>>>>>>> refs/remotes/origin/master
 	/* Safety precautions */
 	mult = mults[mults_index & 0x1f];
 	if (mult == -1)
@@ -274,9 +291,14 @@ static void longhaul_setstate(unsigned int table_index)
 
 	freqs.old = calc_speed(longhaul_get_cpu_mult());
 	freqs.new = speed;
+<<<<<<< HEAD
 	freqs.cpu = 0; /* longhaul.c is UP only driver */
 
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
+=======
+
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_PRECHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("Setting to FSB:%dMHz Mult:%d.%dx (%s)\n",
 			fsb, mult/10, mult%10, print_speed(speed/1000));
@@ -393,7 +415,11 @@ retry_loop:
 		}
 	}
 	/* Report true CPU frequency */
+<<<<<<< HEAD
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
+=======
+	cpufreq_notify_transition(policy, &freqs, CPUFREQ_POSTCHANGE);
+>>>>>>> refs/remotes/origin/master
 
 	if (!bm_timeout)
 		printk(KERN_INFO PFX "Warning: Timeout while waiting for "
@@ -429,7 +455,11 @@ static int guess_fsb(int mult)
 }
 
 
+<<<<<<< HEAD
 static int __cpuinit longhaul_get_ranges(void)
+=======
+static int longhaul_get_ranges(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i, j, k = 0;
 	unsigned int ratio;
@@ -494,7 +524,11 @@ static int __cpuinit longhaul_get_ranges(void)
 		if (ratio > maxmult || ratio < minmult)
 			continue;
 		longhaul_table[k].frequency = calc_speed(ratio);
+<<<<<<< HEAD
 		longhaul_table[k].index	= j;
+=======
+		longhaul_table[k].driver_data	= j;
+>>>>>>> refs/remotes/origin/master
 		k++;
 	}
 	if (k <= 1) {
@@ -515,8 +549,13 @@ static int __cpuinit longhaul_get_ranges(void)
 		if (min_i != j) {
 			swap(longhaul_table[j].frequency,
 			     longhaul_table[min_i].frequency);
+<<<<<<< HEAD
 			swap(longhaul_table[j].index,
 			     longhaul_table[min_i].index);
+=======
+			swap(longhaul_table[j].driver_data,
+			     longhaul_table[min_i].driver_data);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -524,7 +563,11 @@ static int __cpuinit longhaul_get_ranges(void)
 
 	/* Find index we are running on */
 	for (j = 0; j < k; j++) {
+<<<<<<< HEAD
 		if (mults[longhaul_table[j].index & 0x1f] == mult) {
+=======
+		if (mults[longhaul_table[j].driver_data & 0x1f] == mult) {
+>>>>>>> refs/remotes/origin/master
 			longhaul_index = j;
 			break;
 		}
@@ -533,7 +576,11 @@ static int __cpuinit longhaul_get_ranges(void)
 }
 
 
+<<<<<<< HEAD
 static void __cpuinit longhaul_setup_voltagescaling(void)
+=======
+static void longhaul_setup_voltagescaling(void)
+>>>>>>> refs/remotes/origin/master
 {
 	union msr_longhaul longhaul;
 	struct mV_pos minvid, maxvid, vid;
@@ -620,7 +667,11 @@ static void __cpuinit longhaul_setup_voltagescaling(void)
 			pos = (speed - min_vid_speed) / kHz_step + minvid.pos;
 		else
 			pos = minvid.pos;
+<<<<<<< HEAD
 		longhaul_table[j].index |= mV_vrm_table[pos] << 8;
+=======
+		longhaul_table[j].driver_data |= mV_vrm_table[pos] << 8;
+>>>>>>> refs/remotes/origin/master
 		vid = vrm_mV_table[mV_vrm_table[pos]];
 		printk(KERN_INFO PFX "f: %d kHz, index: %d, vid: %d mV\n",
 				speed, j, vid.mV);
@@ -632,6 +683,7 @@ static void __cpuinit longhaul_setup_voltagescaling(void)
 }
 
 
+<<<<<<< HEAD
 static int longhaul_verify(struct cpufreq_policy *policy)
 {
 	return cpufreq_frequency_table_verify(policy, longhaul_table);
@@ -642,10 +694,16 @@ static int longhaul_target(struct cpufreq_policy *policy,
 			    unsigned int target_freq, unsigned int relation)
 {
 	unsigned int table_index = 0;
+=======
+static int longhaul_target(struct cpufreq_policy *policy,
+			    unsigned int table_index)
+{
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	unsigned int dir = 0;
 	u8 vid, current_vid;
 
+<<<<<<< HEAD
 	if (cpufreq_frequency_table_target(policy, longhaul_table, target_freq,
 				relation, &table_index))
 		return -EINVAL;
@@ -656,6 +714,10 @@ static int longhaul_target(struct cpufreq_policy *policy,
 
 	if (!can_scale_voltage)
 		longhaul_setstate(table_index);
+=======
+	if (!can_scale_voltage)
+		longhaul_setstate(policy, table_index);
+>>>>>>> refs/remotes/origin/master
 	else {
 		/* On test system voltage transitions exceeding single
 		 * step up or down were turning motherboard off. Both
@@ -663,14 +725,24 @@ static int longhaul_target(struct cpufreq_policy *policy,
 		 * this in hardware, C3 is old and we need to do this
 		 * in software. */
 		i = longhaul_index;
+<<<<<<< HEAD
 		current_vid = (longhaul_table[longhaul_index].index >> 8);
+=======
+		current_vid = (longhaul_table[longhaul_index].driver_data >> 8);
+>>>>>>> refs/remotes/origin/master
 		current_vid &= 0x1f;
 		if (table_index > longhaul_index)
 			dir = 1;
 		while (i != table_index) {
+<<<<<<< HEAD
 			vid = (longhaul_table[i].index >> 8) & 0x1f;
 			if (vid != current_vid) {
 				longhaul_setstate(i);
+=======
+			vid = (longhaul_table[i].driver_data >> 8) & 0x1f;
+			if (vid != current_vid) {
+				longhaul_setstate(policy, i);
+>>>>>>> refs/remotes/origin/master
 				current_vid = vid;
 				msleep(200);
 			}
@@ -679,7 +751,11 @@ static int longhaul_target(struct cpufreq_policy *policy,
 			else
 				i--;
 		}
+<<<<<<< HEAD
 		longhaul_setstate(table_index);
+=======
+		longhaul_setstate(policy, table_index);
+>>>>>>> refs/remotes/origin/master
 	}
 	longhaul_index = table_index;
 	return 0;
@@ -787,7 +863,11 @@ static int longhaul_setup_southbridge(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __cpuinit longhaul_cpu_init(struct cpufreq_policy *policy)
+=======
+static int longhaul_cpu_init(struct cpufreq_policy *policy)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpuinfo_x86 *c = &cpu_data(0);
 	char *cpuname = NULL;
@@ -926,6 +1006,7 @@ static int __cpuinit longhaul_cpu_init(struct cpufreq_policy *policy)
 		longhaul_setup_voltagescaling();
 
 	policy->cpuinfo.transition_latency = 200000;	/* nsec */
+<<<<<<< HEAD
 	policy->cur = calc_speed(longhaul_get_cpu_mult());
 
 	ret = cpufreq_frequency_table_cpuinfo(policy, longhaul_table);
@@ -961,22 +1042,44 @@ static struct cpufreq_driver longhaul_driver = {
 
 <<<<<<< HEAD
 =======
+=======
+
+	return cpufreq_table_validate_and_show(policy, longhaul_table);
+}
+
+static struct cpufreq_driver longhaul_driver = {
+	.verify	= cpufreq_generic_frequency_table_verify,
+	.target_index = longhaul_target,
+	.get	= longhaul_get,
+	.init	= longhaul_cpu_init,
+	.exit	= cpufreq_generic_exit,
+	.name	= "longhaul",
+	.attr	= cpufreq_generic_attr,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct x86_cpu_id longhaul_id[] = {
 	{ X86_VENDOR_CENTAUR, 6 },
 	{}
 };
 MODULE_DEVICE_TABLE(x86cpu, longhaul_id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int __init longhaul_init(void)
 {
 	struct cpuinfo_x86 *c = &cpu_data(0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->x86_vendor != X86_VENDOR_CENTAUR || c->x86 != 6)
 		return -ENODEV;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!x86_match_cpu(longhaul_id))
 		return -ENODEV;
 
@@ -984,7 +1087,10 @@ static int __init longhaul_init(void)
 		printk(KERN_ERR PFX "Option \"enable\" not set. Aborting.\n");
 		return -ENODEV;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 	if (num_online_cpus() > 1) {
 		printk(KERN_ERR PFX "More than 1 CPU detected, "
@@ -1014,15 +1120,27 @@ static int __init longhaul_init(void)
 
 static void __exit longhaul_exit(void)
 {
+<<<<<<< HEAD
+=======
+	struct cpufreq_policy *policy = cpufreq_cpu_get(0);
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < numscales; i++) {
 		if (mults[i] == maxmult) {
+<<<<<<< HEAD
 			longhaul_setstate(i);
+=======
+			longhaul_setstate(policy, i);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	cpufreq_cpu_put(policy);
+>>>>>>> refs/remotes/origin/master
 	cpufreq_unregister_driver(&longhaul_driver);
 	kfree(longhaul_table);
 }
@@ -1042,12 +1160,18 @@ MODULE_PARM_DESC(scale_voltage, "Scale voltage of processor");
 module_param(revid_errata, int, 0644);
 MODULE_PARM_DESC(revid_errata, "Ignore CPU Revision ID");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* By default driver is disabled to prevent incompatible
  * system freeze. */
 module_param(enable, int, 0644);
 MODULE_PARM_DESC(enable, "Enable driver");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Dave Jones <davej@redhat.com>");
 MODULE_DESCRIPTION("Longhaul driver for VIA Cyrix processors.");

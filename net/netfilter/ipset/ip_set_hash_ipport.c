@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (C) 2003-2011 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+=======
+/* Copyright (C) 2003-2013 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -21,6 +25,7 @@
 #include <linux/netfilter.h>
 #include <linux/netfilter/ipset/pfxlen.h>
 #include <linux/netfilter/ipset/ip_set.h>
+<<<<<<< HEAD
 #include <linux/netfilter/ipset/ip_set_timeout.h>
 #include <linux/netfilter/ipset/ip_set_getport.h>
 #include <linux/netfilter/ipset/ip_set_hash.h>
@@ -42,6 +47,27 @@ hash_ipport_same_set(const struct ip_set *a, const struct ip_set *b);
 /* The type variant functions: IPv4 */
 
 /* Member elements without timeout */
+=======
+#include <linux/netfilter/ipset/ip_set_getport.h>
+#include <linux/netfilter/ipset/ip_set_hash.h>
+
+#define IPSET_TYPE_REV_MIN	0
+/*				1    SCTP and UDPLITE support added */
+/*				2    Counters support added */
+#define IPSET_TYPE_REV_MAX	3 /* Comments support added */
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>");
+IP_SET_MODULE_DESC("hash:ip,port", IPSET_TYPE_REV_MIN, IPSET_TYPE_REV_MAX);
+MODULE_ALIAS("ip_set_hash:ip,port");
+
+/* Type specific function prefix */
+#define HTYPE		hash_ipport
+
+/* IPv4 variant */
+
+/* Member elements */
+>>>>>>> refs/remotes/origin/master
 struct hash_ipport4_elem {
 	__be32 ip;
 	__be16 port;
@@ -49,6 +75,7 @@ struct hash_ipport4_elem {
 	u8 padding;
 };
 
+<<<<<<< HEAD
 /* Member elements with timeout support */
 struct hash_ipport4_telem {
 	__be32 ip;
@@ -66,12 +93,21 @@ hash_ipport4_data_equal(const struct hash_ipport4_elem *ip1,
 			const struct hash_ipport4_elem *ip2,
 			u32 *multi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Common functions */
+
+static inline bool
+hash_ipport4_data_equal(const struct hash_ipport4_elem *ip1,
+			const struct hash_ipport4_elem *ip2,
+			u32 *multi)
+>>>>>>> refs/remotes/origin/master
 {
 	return ip1->ip == ip2->ip &&
 	       ip1->port == ip2->port &&
 	       ip1->proto == ip2->proto;
 }
 
+<<<<<<< HEAD
 static inline bool
 hash_ipport4_data_isnull(const struct hash_ipport4_elem *elem)
 {
@@ -93,10 +129,13 @@ hash_ipport4_data_zero_out(struct hash_ipport4_elem *elem)
 	elem->proto = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static bool
 hash_ipport4_data_list(struct sk_buff *skb,
 		       const struct hash_ipport4_elem *data)
 {
+<<<<<<< HEAD
 	NLA_PUT_IPADDR4(skb, IPSET_ATTR_IP, data->ip);
 	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
 	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
@@ -119,12 +158,19 @@ hash_ipport4_data_tlist(struct sk_buff *skb,
 	NLA_PUT_NET32(skb, IPSET_ATTR_TIMEOUT,
 		      htonl(ip_set_timeout_get(tdata->timeout)));
 
+=======
+	if (nla_put_ipaddr4(skb, IPSET_ATTR_IP, data->ip) ||
+	    nla_put_net16(skb, IPSET_ATTR_PORT, data->port) ||
+	    nla_put_u8(skb, IPSET_ATTR_PROTO, data->proto))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
 	return 1;
 }
 
+<<<<<<< HEAD
 #define PF		4
 #define HOST_MASK	32
 #include <linux/netfilter/ipset/ip_set_ahash.h>
@@ -169,10 +215,42 @@ hash_ipport4_kadt(struct ip_set *set, const struct sk_buff *skb,
 
 	return adtfn(set, &data, opt_timeout(opt, h), opt->cmdflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void
+hash_ipport4_data_next(struct hash_ipport4_elem *next,
+		       const struct hash_ipport4_elem *d)
+{
+	next->ip = d->ip;
+	next->port = d->port;
+}
+
+#define MTYPE           hash_ipport4
+#define PF              4
+#define HOST_MASK       32
+#define HKEY_DATALEN	sizeof(struct hash_ipport4_elem)
+#include "ip_set_hash_gen.h"
+
+static int
+hash_ipport4_kadt(struct ip_set *set, const struct sk_buff *skb,
+		  const struct xt_action_param *par,
+		  enum ipset_adt adt, struct ip_set_adt_opt *opt)
+{
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_ipport4_elem e = { };
+	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
+
+	if (!ip_set_get_ip4_port(skb, opt->flags & IPSET_DIM_TWO_SRC,
+				 &e.port, &e.proto))
+		return -EINVAL;
+
+	ip4addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &e.ip);
+	return adtfn(set, &e, &ext, &opt->ext, opt->cmdflags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
+<<<<<<< HEAD
 <<<<<<< HEAD
 		  enum ipset_adt adt, u32 *lineno, u32 flags)
 =======
@@ -188,36 +266,68 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
 	u32 ip, ip_to = 0, p = 0, port, port_to;
 >>>>>>> refs/remotes/origin/cm-10.0
 	u32 timeout = h->timeout;
+=======
+		  enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+{
+	const struct hash_ipport *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_ipport4_elem e = { };
+	struct ip_set_ext ext = IP_SET_INIT_UEXT(set);
+	u32 ip, ip_to = 0, p = 0, port, port_to;
+>>>>>>> refs/remotes/origin/master
 	bool with_ports = false;
 	int ret;
 
 	if (unlikely(!tb[IPSET_ATTR_IP] ||
 		     !ip_set_attr_netorder(tb, IPSET_ATTR_PORT) ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PORT_TO) ||
+<<<<<<< HEAD
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT)))
+=======
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PACKETS) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_BYTES)))
+>>>>>>> refs/remotes/origin/master
 		return -IPSET_ERR_PROTOCOL;
 
 	if (tb[IPSET_ATTR_LINENO])
 		*lineno = nla_get_u32(tb[IPSET_ATTR_LINENO]);
 
+<<<<<<< HEAD
 	ret = ip_set_get_ipaddr4(tb[IPSET_ATTR_IP], &data.ip);
+=======
+	ret = ip_set_get_ipaddr4(tb[IPSET_ATTR_IP], &e.ip) ||
+	      ip_set_get_extensions(set, tb, &ext);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	if (tb[IPSET_ATTR_PORT])
+<<<<<<< HEAD
 		data.port = nla_get_be16(tb[IPSET_ATTR_PORT]);
+=======
+		e.port = nla_get_be16(tb[IPSET_ATTR_PORT]);
+>>>>>>> refs/remotes/origin/master
 	else
 		return -IPSET_ERR_PROTOCOL;
 
 	if (tb[IPSET_ATTR_PROTO]) {
+<<<<<<< HEAD
 		data.proto = nla_get_u8(tb[IPSET_ATTR_PROTO]);
 		with_ports = ip_set_proto_with_ports(data.proto);
 
 		if (data.proto == 0)
+=======
+		e.proto = nla_get_u8(tb[IPSET_ATTR_PROTO]);
+		with_ports = ip_set_proto_with_ports(e.proto);
+
+		if (e.proto == 0)
+>>>>>>> refs/remotes/origin/master
 			return -IPSET_ERR_INVALID_PROTO;
 	} else
 		return -IPSET_ERR_MISSING_PROTO;
 
+<<<<<<< HEAD
 	if (!(with_ports || data.proto == IPPROTO_ICMP))
 		data.port = 0;
 
@@ -226,10 +336,15 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
 			return -IPSET_ERR_TIMEOUT;
 		timeout = ip_set_timeout_uget(tb[IPSET_ATTR_TIMEOUT]);
 	}
+=======
+	if (!(with_ports || e.proto == IPPROTO_ICMP))
+		e.port = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (adt == IPSET_TEST ||
 	    !(tb[IPSET_ATTR_IP_TO] || tb[IPSET_ATTR_CIDR] ||
 	      tb[IPSET_ATTR_PORT_TO])) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = adtfn(set, &data, timeout);
 =======
@@ -239,6 +354,13 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
 	}
 
 	ip = ntohl(data.ip);
+=======
+		ret = adtfn(set, &e, &ext, &ext, flags);
+		return ip_set_eexist(ret, flags) ? 0 : ret;
+	}
+
+	ip_to = ip = ntohl(e.ip);
+>>>>>>> refs/remotes/origin/master
 	if (tb[IPSET_ATTR_IP_TO]) {
 		ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP_TO], &ip_to);
 		if (ret)
@@ -248,6 +370,7 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
 	} else if (tb[IPSET_ATTR_CIDR]) {
 		u8 cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
 
+<<<<<<< HEAD
 		if (cidr > 32)
 			return -IPSET_ERR_INVALID_CIDR;
 <<<<<<< HEAD
@@ -260,12 +383,21 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
 		ip_to = ip;
 
 	port_to = port = ntohs(data.port);
+=======
+		if (!cidr || cidr > 32)
+			return -IPSET_ERR_INVALID_CIDR;
+		ip_set_mask_from_to(ip, ip_to, cidr);
+	}
+
+	port_to = port = ntohs(e.port);
+>>>>>>> refs/remotes/origin/master
 	if (with_ports && tb[IPSET_ATTR_PORT_TO]) {
 		port_to = ip_set_get_h16(tb[IPSET_ATTR_PORT_TO]);
 		if (port > port_to)
 			swap(port, port_to);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (; !before(ip_to, ip); ip++)
 		for (p = port; p <= port_to; p++) {
@@ -282,12 +414,24 @@ hash_ipport4_uadt(struct ip_set *set, struct nlattr *tb[],
 			data.port = htons(p);
 			ret = adtfn(set, &data, timeout, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (retried)
+		ip = ntohl(h->next.ip);
+	for (; !before(ip_to, ip); ip++) {
+		p = retried && ip == ntohl(h->next.ip) ? ntohs(h->next.port)
+						       : port;
+		for (; p <= port_to; p++) {
+			e.ip = htonl(ip);
+			e.port = htons(p);
+			ret = adtfn(set, &e, &ext, &ext, flags);
+>>>>>>> refs/remotes/origin/master
 
 			if (ret && !ip_set_eexist(ret, flags))
 				return ret;
 			else
 				ret = 0;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	}
@@ -307,6 +451,13 @@ hash_ipport_same_set(const struct ip_set *a, const struct ip_set *b)
 }
 
 /* The type variant functions: IPv6 */
+=======
+	}
+	return ret;
+}
+
+/* IPv6 variant */
+>>>>>>> refs/remotes/origin/master
 
 struct hash_ipport6_elem {
 	union nf_inet_addr ip;
@@ -315,6 +466,7 @@ struct hash_ipport6_elem {
 	u8 padding;
 };
 
+<<<<<<< HEAD
 struct hash_ipport6_telem {
 	union nf_inet_addr ip;
 	__be16 port;
@@ -333,10 +485,21 @@ hash_ipport6_data_equal(const struct hash_ipport6_elem *ip1,
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	return ipv6_addr_cmp(&ip1->ip.in6, &ip2->ip.in6) == 0 &&
+=======
+/* Common functions */
+
+static inline bool
+hash_ipport6_data_equal(const struct hash_ipport6_elem *ip1,
+			const struct hash_ipport6_elem *ip2,
+			u32 *multi)
+{
+	return ipv6_addr_equal(&ip1->ip.in6, &ip2->ip.in6) &&
+>>>>>>> refs/remotes/origin/master
 	       ip1->port == ip2->port &&
 	       ip1->proto == ip2->proto;
 }
 
+<<<<<<< HEAD
 static inline bool
 hash_ipport6_data_isnull(const struct hash_ipport6_elem *elem)
 {
@@ -356,19 +519,29 @@ hash_ipport6_data_zero_out(struct hash_ipport6_elem *elem)
 	elem->proto = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static bool
 hash_ipport6_data_list(struct sk_buff *skb,
 		       const struct hash_ipport6_elem *data)
 {
+<<<<<<< HEAD
 	NLA_PUT_IPADDR6(skb, IPSET_ATTR_IP, &data->ip);
 	NLA_PUT_NET16(skb, IPSET_ATTR_PORT, data->port);
 	NLA_PUT_U8(skb, IPSET_ATTR_PROTO, data->proto);
+=======
+	if (nla_put_ipaddr6(skb, IPSET_ATTR_IP, &data->ip.in6) ||
+	    nla_put_net16(skb, IPSET_ATTR_PORT, data->port) ||
+	    nla_put_u8(skb, IPSET_ATTR_PROTO, data->proto))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
 	return 1;
 }
 
+<<<<<<< HEAD
 static bool
 hash_ipport6_data_tlist(struct sk_buff *skb,
 			const struct hash_ipport6_elem *data)
@@ -405,10 +578,31 @@ hash_ipport6_data_next(struct ip_set_hash *h,
 {
 	h->next.port = ntohs(d->port);
 }
+=======
+static inline void
+hash_ipport6_data_next(struct hash_ipport4_elem *next,
+		       const struct hash_ipport6_elem *d)
+{
+	next->port = d->port;
+}
+
+#undef MTYPE
+#undef PF
+#undef HOST_MASK
+#undef HKEY_DATALEN
+
+#define MTYPE		hash_ipport6
+#define PF		6
+#define HOST_MASK	128
+#define HKEY_DATALEN	sizeof(struct hash_ipport6_elem)
+#define	IP_SET_EMIT_CREATE
+#include "ip_set_hash_gen.h"
+>>>>>>> refs/remotes/origin/master
 
 static int
 hash_ipport6_kadt(struct ip_set *set, const struct sk_buff *skb,
 		  const struct xt_action_param *par,
+<<<<<<< HEAD
 		  enum ipset_adt adt, const struct ip_set_adt_opt *opt)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
@@ -433,10 +627,25 @@ hash_ipport6_kadt(struct ip_set *set, const struct sk_buff *skb,
 
 	return adtfn(set, &data, opt_timeout(opt, h), opt->cmdflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  enum ipset_adt adt, struct ip_set_adt_opt *opt)
+{
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_ipport6_elem e = { };
+	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
+
+	if (!ip_set_get_ip6_port(skb, opt->flags & IPSET_DIM_TWO_SRC,
+				 &e.port, &e.proto))
+		return -EINVAL;
+
+	ip6addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &e.ip.in6);
+	return adtfn(set, &e, &ext, &opt->ext, opt->cmdflags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 hash_ipport6_uadt(struct ip_set *set, struct nlattr *tb[],
+<<<<<<< HEAD
 <<<<<<< HEAD
 		  enum ipset_adt adt, u32 *lineno, u32 flags)
 =======
@@ -448,6 +657,15 @@ hash_ipport6_uadt(struct ip_set *set, struct nlattr *tb[],
 	struct hash_ipport6_elem data = { };
 	u32 port, port_to;
 	u32 timeout = h->timeout;
+=======
+		  enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+{
+	const struct hash_ipport *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_ipport6_elem e = { };
+	struct ip_set_ext ext = IP_SET_INIT_UEXT(set);
+	u32 port, port_to;
+>>>>>>> refs/remotes/origin/master
 	bool with_ports = false;
 	int ret;
 
@@ -455,6 +673,11 @@ hash_ipport6_uadt(struct ip_set *set, struct nlattr *tb[],
 		     !ip_set_attr_netorder(tb, IPSET_ATTR_PORT) ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PORT_TO) ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+<<<<<<< HEAD
+=======
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PACKETS) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_BYTES) ||
+>>>>>>> refs/remotes/origin/master
 		     tb[IPSET_ATTR_IP_TO] ||
 		     tb[IPSET_ATTR_CIDR]))
 		return -IPSET_ERR_PROTOCOL;
@@ -462,24 +685,41 @@ hash_ipport6_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (tb[IPSET_ATTR_LINENO])
 		*lineno = nla_get_u32(tb[IPSET_ATTR_LINENO]);
 
+<<<<<<< HEAD
 	ret = ip_set_get_ipaddr6(tb[IPSET_ATTR_IP], &data.ip);
+=======
+	ret = ip_set_get_ipaddr6(tb[IPSET_ATTR_IP], &e.ip) ||
+	      ip_set_get_extensions(set, tb, &ext);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	if (tb[IPSET_ATTR_PORT])
+<<<<<<< HEAD
 		data.port = nla_get_be16(tb[IPSET_ATTR_PORT]);
+=======
+		e.port = nla_get_be16(tb[IPSET_ATTR_PORT]);
+>>>>>>> refs/remotes/origin/master
 	else
 		return -IPSET_ERR_PROTOCOL;
 
 	if (tb[IPSET_ATTR_PROTO]) {
+<<<<<<< HEAD
 		data.proto = nla_get_u8(tb[IPSET_ATTR_PROTO]);
 		with_ports = ip_set_proto_with_ports(data.proto);
 
 		if (data.proto == 0)
+=======
+		e.proto = nla_get_u8(tb[IPSET_ATTR_PROTO]);
+		with_ports = ip_set_proto_with_ports(e.proto);
+
+		if (e.proto == 0)
+>>>>>>> refs/remotes/origin/master
 			return -IPSET_ERR_INVALID_PROTO;
 	} else
 		return -IPSET_ERR_MISSING_PROTO;
 
+<<<<<<< HEAD
 	if (!(with_ports || data.proto == IPPROTO_ICMPV6))
 		data.port = 0;
 
@@ -499,10 +739,22 @@ hash_ipport6_uadt(struct ip_set *set, struct nlattr *tb[],
 	}
 
 	port = ntohs(data.port);
+=======
+	if (!(with_ports || e.proto == IPPROTO_ICMPV6))
+		e.port = 0;
+
+	if (adt == IPSET_TEST || !with_ports || !tb[IPSET_ATTR_PORT_TO]) {
+		ret = adtfn(set, &e, &ext, &ext, flags);
+		return ip_set_eexist(ret, flags) ? 0 : ret;
+	}
+
+	port = ntohs(e.port);
+>>>>>>> refs/remotes/origin/master
 	port_to = ip_set_get_h16(tb[IPSET_ATTR_PORT_TO]);
 	if (port > port_to)
 		swap(port, port_to);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (; port <= port_to; port++) {
 		data.port = htons(port);
@@ -514,6 +766,13 @@ hash_ipport6_uadt(struct ip_set *set, struct nlattr *tb[],
 		data.port = htons(port);
 		ret = adtfn(set, &data, timeout, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (retried)
+		port = ntohs(h->next.port);
+	for (; port <= port_to; port++) {
+		e.port = htons(port);
+		ret = adtfn(set, &e, &ext, &ext, flags);
+>>>>>>> refs/remotes/origin/master
 
 		if (ret && !ip_set_eexist(ret, flags))
 			return ret;
@@ -523,6 +782,7 @@ hash_ipport6_uadt(struct ip_set *set, struct nlattr *tb[],
 	return ret;
 }
 
+<<<<<<< HEAD
 /* Create hash:ip type of sets */
 
 static int
@@ -617,11 +877,14 @@ hash_ipport_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ip_set_type hash_ipport_type __read_mostly = {
 	.name		= "hash:ip,port",
 	.protocol	= IPSET_PROTOCOL,
 	.features	= IPSET_TYPE_IP | IPSET_TYPE_PORT,
 	.dimension	= IPSET_DIM_TWO,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.family		= AF_UNSPEC,
 	.revision	= 1,
@@ -630,6 +893,11 @@ static struct ip_set_type hash_ipport_type __read_mostly = {
 	.revision_min	= 0,
 	.revision_max	= 1,	/* SCTP and UDPLITE support added */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.family		= NFPROTO_UNSPEC,
+	.revision_min	= IPSET_TYPE_REV_MIN,
+	.revision_max	= IPSET_TYPE_REV_MAX,
+>>>>>>> refs/remotes/origin/master
 	.create		= hash_ipport_create,
 	.create_policy	= {
 		[IPSET_ATTR_HASHSIZE]	= { .type = NLA_U32 },
@@ -638,6 +906,10 @@ static struct ip_set_type hash_ipport_type __read_mostly = {
 		[IPSET_ATTR_RESIZE]	= { .type = NLA_U8  },
 		[IPSET_ATTR_PROTO]	= { .type = NLA_U8 },
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_CADT_FLAGS]	= { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/master
 	},
 	.adt_policy	= {
 		[IPSET_ATTR_IP]		= { .type = NLA_NESTED },
@@ -648,6 +920,12 @@ static struct ip_set_type hash_ipport_type __read_mostly = {
 		[IPSET_ATTR_PROTO]	= { .type = NLA_U8 },
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
 		[IPSET_ATTR_LINENO]	= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_BYTES]	= { .type = NLA_U64 },
+		[IPSET_ATTR_PACKETS]	= { .type = NLA_U64 },
+		[IPSET_ATTR_COMMENT]	= { .type = NLA_NUL_STRING },
+>>>>>>> refs/remotes/origin/master
 	},
 	.me		= THIS_MODULE,
 };

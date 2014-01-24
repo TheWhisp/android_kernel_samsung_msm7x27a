@@ -114,6 +114,7 @@ static inline struct sk_buff *pktq_ppeek_tail(struct pktq *pq, int prec)
 	return skb_peek_tail(&pq->q[prec].skblist);
 }
 
+<<<<<<< HEAD
 extern struct sk_buff *brcmu_pktq_penq(struct pktq *pq, int prec,
 				 struct sk_buff *p);
 extern struct sk_buff *brcmu_pktq_penq_head(struct pktq *pq, int prec,
@@ -135,6 +136,31 @@ extern void brcmu_pktq_pflush(struct pktq *pq, int prec,
 extern int brcmu_pktq_mlen(struct pktq *pq, uint prec_bmp);
 extern struct sk_buff *brcmu_pktq_mdeq(struct pktq *pq, uint prec_bmp,
 	int *prec_out);
+=======
+struct sk_buff *brcmu_pktq_penq(struct pktq *pq, int prec, struct sk_buff *p);
+struct sk_buff *brcmu_pktq_penq_head(struct pktq *pq, int prec,
+				     struct sk_buff *p);
+struct sk_buff *brcmu_pktq_pdeq(struct pktq *pq, int prec);
+struct sk_buff *brcmu_pktq_pdeq_tail(struct pktq *pq, int prec);
+struct sk_buff *brcmu_pktq_pdeq_match(struct pktq *pq, int prec,
+				      bool (*match_fn)(struct sk_buff *p,
+						       void *arg),
+				      void *arg);
+
+/* packet primitives */
+struct sk_buff *brcmu_pkt_buf_get_skb(uint len);
+void brcmu_pkt_buf_free_skb(struct sk_buff *skb);
+
+/* Empty the queue at particular precedence level */
+/* callback function fn(pkt, arg) returns true if pkt belongs to if */
+void brcmu_pktq_pflush(struct pktq *pq, int prec, bool dir,
+		       bool (*fn)(struct sk_buff *, void *), void *arg);
+
+/* operations on a set of precedences in packet queue */
+
+int brcmu_pktq_mlen(struct pktq *pq, uint prec_bmp);
+struct sk_buff *brcmu_pktq_mdeq(struct pktq *pq, uint prec_bmp, int *prec_out);
+>>>>>>> refs/remotes/origin/master
 
 /* operations on packet queue as a whole */
 
@@ -163,27 +189,69 @@ static inline bool pktq_empty(struct pktq *pq)
 	return pq->len == 0;
 }
 
+<<<<<<< HEAD
 extern void brcmu_pktq_init(struct pktq *pq, int num_prec, int max_len);
 /* prec_out may be NULL if caller is not interested in return value */
 extern struct sk_buff *brcmu_pktq_peek_tail(struct pktq *pq, int *prec_out);
 extern void brcmu_pktq_flush(struct pktq *pq, bool dir,
 		bool (*fn)(struct sk_buff *, void *), void *arg);
+=======
+void brcmu_pktq_init(struct pktq *pq, int num_prec, int max_len);
+/* prec_out may be NULL if caller is not interested in return value */
+struct sk_buff *brcmu_pktq_peek_tail(struct pktq *pq, int *prec_out);
+void brcmu_pktq_flush(struct pktq *pq, bool dir,
+		      bool (*fn)(struct sk_buff *, void *), void *arg);
+>>>>>>> refs/remotes/origin/master
 
 /* externs */
 /* ip address */
 struct ipv4_addr;
 
+<<<<<<< HEAD
+=======
+/*
+ * bitfield macros using masking and shift
+ *
+ * remark: the mask parameter should be a shifted mask.
+ */
+static inline void brcmu_maskset32(u32 *var, u32 mask, u8 shift, u32 value)
+{
+	value = (value << shift) & mask;
+	*var = (*var & ~mask) | value;
+}
+static inline u32 brcmu_maskget32(u32 var, u32 mask, u8 shift)
+{
+	return (var & mask) >> shift;
+}
+static inline void brcmu_maskset16(u16 *var, u16 mask, u8 shift, u16 value)
+{
+	value = (value << shift) & mask;
+	*var = (*var & ~mask) | value;
+}
+static inline u16 brcmu_maskget16(u16 var, u16 mask, u8 shift)
+{
+	return (var & mask) >> shift;
+}
+>>>>>>> refs/remotes/origin/master
 
 /* externs */
 /* format/print */
 #ifdef DEBUG
+<<<<<<< HEAD
 extern void brcmu_prpkt(const char *msg, struct sk_buff *p0);
+=======
+void brcmu_prpkt(const char *msg, struct sk_buff *p0);
+>>>>>>> refs/remotes/origin/master
 #else
 #define brcmu_prpkt(a, b)
 #endif				/* DEBUG */
 
 #ifdef DEBUG
+<<<<<<< HEAD
 extern __printf(3, 4)
+=======
+__printf(3, 4)
+>>>>>>> refs/remotes/origin/master
 void brcmu_dbg_hex_dump(const void *data, size_t size, const char *fmt, ...);
 #else
 __printf(3, 4)

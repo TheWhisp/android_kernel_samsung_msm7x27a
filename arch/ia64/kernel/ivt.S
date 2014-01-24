@@ -55,9 +55,12 @@
 #include <asm/processor.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/thread_info.h>
 #include <asm/unistd.h>
 #include <asm/errno.h>
@@ -788,7 +791,11 @@ ENTRY(break_fault)
 
 (p8)	adds r28=16,r28				// A    switch cr.iip to next bundle
 (p9)	adds r8=1,r8				// A    increment ei to next slot
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 	;;
 	mov b6=r30				// I0   setup syscall handler branch reg early
 #else
@@ -805,7 +812,11 @@ ENTRY(break_fault)
 	//
 ///////////////////////////////////////////////////////////////////////
 	st1 [r16]=r0				// M2|3 clear current->thread.on_ustack flag
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 	MOV_FROM_ITC(p0, p14, r30, r18)		// M    get cycle for accounting
 #else
 	mov b6=r30				// I0   setup syscall handler branch reg early
@@ -821,7 +832,11 @@ ENTRY(break_fault)
 	cmp.eq p14,p0=r9,r0			// A    are syscalls being traced/audited?
 	br.call.sptk.many b7=ia64_syscall_setup	// B
 1:
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 	// mov.m r30=ar.itc is called in advance, and r13 is current
 	add r16=TI_AC_STAMP+IA64_TASK_SIZE,r13	// A
 	add r17=TI_AC_LEAVE+IA64_TASK_SIZE,r13	// A
@@ -1047,7 +1062,11 @@ END(ia64_syscall_setup)
 	DBG_FAULT(16)
 	FAULT(16)
 
+<<<<<<< HEAD
 #if defined(CONFIG_VIRT_CPU_ACCOUNTING) && defined(__IA64_ASM_PARAVIRTUALIZED_NATIVE)
+=======
+#if defined(CONFIG_VIRT_CPU_ACCOUNTING_NATIVE) && defined(__IA64_ASM_PARAVIRTUALIZED_NATIVE)
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * There is no particular reason for this code to be here, other than
 	 * that there happens to be space here that would go unused otherwise.

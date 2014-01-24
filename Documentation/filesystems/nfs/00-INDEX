@@ -1,5 +1,6 @@
 00-INDEX
 <<<<<<< HEAD
+<<<<<<< HEAD
         - this file (nfs-related documentation).
 Exporting
         - explanation of how to make filesystems exportable.
@@ -22,6 +23,8 @@ rpc-cache.txt
 idmapper.txt
         - information for configuring request-keys to be used by idmapper
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	- this file (nfs-related documentation).
 Exporting
 	- explanation of how to make filesystems exportable.
@@ -43,4 +46,9 @@ rpc-cache.txt
 	- introduction to the caching mechanisms in the sunrpc layer.
 idmapper.txt
 	- information for configuring request-keys to be used by idmapper
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+knfsd-rpcgss.txt
+	- Information on GSS authentication support in the NFS Server
+>>>>>>> refs/remotes/origin/master

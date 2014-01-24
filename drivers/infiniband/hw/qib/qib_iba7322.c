@@ -1,5 +1,10 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2008, 2009, 2010 QLogic Corporation. All rights reserved.
+=======
+ * Copyright (c) 2012 Intel Corporation.  All rights reserved.
+ * Copyright (c) 2008 - 2012 QLogic Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is available to you under a choice of one of two
  * licenses.  You may choose to be licensed under the terms of the GNU
@@ -41,17 +46,33 @@
 #include <linux/io.h>
 #include <linux/jiffies.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <rdma/ib_verbs.h>
 #include <rdma/ib_smi.h>
+=======
+#include <linux/module.h>
+#include <rdma/ib_verbs.h>
+#include <rdma/ib_smi.h>
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+#include <linux/dca.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include "qib.h"
 #include "qib_7322_regs.h"
 #include "qib_qsfp.h"
 
 #include "qib_mad.h"
+<<<<<<< HEAD
+=======
+#include "qib_verbs.h"
+
+#undef pr_fmt
+#define pr_fmt(fmt) QIB_DRV_NAME " " fmt
+>>>>>>> refs/remotes/origin/master
 
 static void qib_setup_7322_setextled(struct qib_pportdata *, u32);
 static void qib_7322_handle_hwerrors(struct qib_devdata *, char *, size_t);
@@ -78,6 +99,10 @@ static void ibsd_wr_allchans(struct qib_pportdata *, int, unsigned, unsigned);
 static void serdes_7322_los_enable(struct qib_pportdata *, int);
 static int serdes_7322_init_old(struct qib_pportdata *);
 static int serdes_7322_init_new(struct qib_pportdata *);
+<<<<<<< HEAD
+=======
+static void dump_sdma_7322_state(struct qib_pportdata *);
+>>>>>>> refs/remotes/origin/master
 
 #define BMASK(msb, lsb) (((1 << ((msb) + 1 - (lsb))) - 1) << (lsb))
 
@@ -119,12 +144,18 @@ module_param_named(singleport, qib_singleport, ushort, S_IRUGO);
 MODULE_PARM_DESC(singleport, "Use only IB port 1; more per-port buffer space");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ushort qib_krcvq01_no_msi;
 module_param_named(krcvq01_no_msi, qib_krcvq01_no_msi, ushort, S_IRUGO);
 MODULE_PARM_DESC(krcvq01_no_msi, "No MSI for kctx < 2");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Receive header queue sizes
  */
@@ -409,9 +440,12 @@ MODULE_PARM_DESC(txselect, \
 #define crp_txhdrerr CREG_IDX(TxHeadersErrCnt)
 #define crp_txlenerr CREG_IDX(TxLenErrCnt)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define crp_txlenerr CREG_IDX(TxLenErrCnt)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define crp_txminmaxlenerr CREG_IDX(TxMaxMinLenErrCnt)
 #define crp_txsdmadesc CREG_IDX(TxSDmaDescCnt)
 #define crp_txunderrun CREG_IDX(TxUnderrunCnt)
@@ -524,6 +558,17 @@ static const u8 qib_7322_physportstate[0x20] = {
 	[0x17] = IB_PHYSPORTSTATE_CFG_TRAIN
 };
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+struct qib_irq_notify {
+	int rcv;
+	void *arg;
+	struct irq_affinity_notify notify;
+};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 struct qib_chip_specific {
 	u64 __iomem *cregbase;
 	u64 *cntrs;
@@ -552,11 +597,21 @@ struct qib_chip_specific {
 	u32 stay_in_freeze;
 	u32 recovery_ports_initted;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct msix_entry *msix_entries;
 	void  **msix_arg;
 =======
 	struct qib_msix_entry *msix_entries;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+	u32 dca_ctrl;
+	int rhdr_cpu[18];
+	int sdma_cpu[2];
+	u64 dca_rcvhdr_ctrl[5]; /* B, C, D, E, F */
+#endif
+	struct qib_msix_entry *msix_entries;
+>>>>>>> refs/remotes/origin/master
 	unsigned long *sendchkenable;
 	unsigned long *sendgrhchk;
 	unsigned long *sendibchk;
@@ -583,7 +638,11 @@ struct vendor_txdds_ent {
 static void write_tx_serdes_param(struct qib_pportdata *, struct txdds_ent *);
 
 #define TXDDS_TABLE_SZ 16 /* number of entries per speed in onchip table */
+<<<<<<< HEAD
 #define TXDDS_EXTRA_SZ 13 /* number of extra tx settings entries */
+=======
+#define TXDDS_EXTRA_SZ 18 /* number of extra tx settings entries */
+>>>>>>> refs/remotes/origin/master
 #define TXDDS_MFG_SZ 2    /* number of mfg tx settings entries */
 #define SERDES_CHANS 4 /* yes, it's obvious, but one less magic number */
 
@@ -630,12 +689,17 @@ struct qib_chippport_specific {
 	u64 ibcctrl_a; /* krp_ibcctrl_a shadow */
 	u64 ibcctrl_b; /* krp_ibcctrl_b shadow */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 qdr_dfe_time;
 	u64 chase_end;
 =======
 	unsigned long qdr_dfe_time;
 	unsigned long chase_end;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long qdr_dfe_time;
+	unsigned long chase_end;
+>>>>>>> refs/remotes/origin/master
 	u32 autoneg_tries;
 	u32 recovery_init;
 	u32 qdr_dfe_on;
@@ -650,6 +714,10 @@ struct qib_chippport_specific {
 	u8 ibmalfusesnap;
 	struct qib_qsfp_data qsfp_data;
 	char epmsgbuf[192]; /* for port error interrupt msg buffer */
+<<<<<<< HEAD
+=======
+	char sdmamsgbuf[192]; /* for per-port sdma error messages */
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct {
@@ -657,6 +725,7 @@ static struct {
 	irq_handler_t handler;
 	int lsb;
 	int port; /* 0 if not port-specific, else port # */
+<<<<<<< HEAD
 } irq_table[] = {
 <<<<<<< HEAD
 	{ QIB_DRV_NAME, qib_7322intr, -1, 0 },
@@ -700,6 +769,78 @@ static struct {
 		SYM_LSB(IntStatus, SDmaCleanupDone_1), 2 },
 };
 
+=======
+	int dca;
+} irq_table[] = {
+	{ "", qib_7322intr, -1, 0, 0 },
+	{ " (buf avail)", qib_7322bufavail,
+		SYM_LSB(IntStatus, SendBufAvail), 0, 0},
+	{ " (sdma 0)", sdma_intr,
+		SYM_LSB(IntStatus, SDmaInt_0), 1, 1 },
+	{ " (sdma 1)", sdma_intr,
+		SYM_LSB(IntStatus, SDmaInt_1), 2, 1 },
+	{ " (sdmaI 0)", sdma_idle_intr,
+		SYM_LSB(IntStatus, SDmaIdleInt_0), 1, 1},
+	{ " (sdmaI 1)", sdma_idle_intr,
+		SYM_LSB(IntStatus, SDmaIdleInt_1), 2, 1},
+	{ " (sdmaP 0)", sdma_progress_intr,
+		SYM_LSB(IntStatus, SDmaProgressInt_0), 1, 1 },
+	{ " (sdmaP 1)", sdma_progress_intr,
+		SYM_LSB(IntStatus, SDmaProgressInt_1), 2, 1 },
+	{ " (sdmaC 0)", sdma_cleanup_intr,
+		SYM_LSB(IntStatus, SDmaCleanupDone_0), 1, 0 },
+	{ " (sdmaC 1)", sdma_cleanup_intr,
+		SYM_LSB(IntStatus, SDmaCleanupDone_1), 2 , 0},
+};
+
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+
+static const struct dca_reg_map {
+	int     shadow_inx;
+	int     lsb;
+	u64     mask;
+	u16     regno;
+} dca_rcvhdr_reg_map[] = {
+	{ 0, SYM_LSB(DCACtrlB, RcvHdrq0DCAOPH),
+	   ~SYM_MASK(DCACtrlB, RcvHdrq0DCAOPH) , KREG_IDX(DCACtrlB) },
+	{ 0, SYM_LSB(DCACtrlB, RcvHdrq1DCAOPH),
+	   ~SYM_MASK(DCACtrlB, RcvHdrq1DCAOPH) , KREG_IDX(DCACtrlB) },
+	{ 0, SYM_LSB(DCACtrlB, RcvHdrq2DCAOPH),
+	   ~SYM_MASK(DCACtrlB, RcvHdrq2DCAOPH) , KREG_IDX(DCACtrlB) },
+	{ 0, SYM_LSB(DCACtrlB, RcvHdrq3DCAOPH),
+	   ~SYM_MASK(DCACtrlB, RcvHdrq3DCAOPH) , KREG_IDX(DCACtrlB) },
+	{ 1, SYM_LSB(DCACtrlC, RcvHdrq4DCAOPH),
+	   ~SYM_MASK(DCACtrlC, RcvHdrq4DCAOPH) , KREG_IDX(DCACtrlC) },
+	{ 1, SYM_LSB(DCACtrlC, RcvHdrq5DCAOPH),
+	   ~SYM_MASK(DCACtrlC, RcvHdrq5DCAOPH) , KREG_IDX(DCACtrlC) },
+	{ 1, SYM_LSB(DCACtrlC, RcvHdrq6DCAOPH),
+	   ~SYM_MASK(DCACtrlC, RcvHdrq6DCAOPH) , KREG_IDX(DCACtrlC) },
+	{ 1, SYM_LSB(DCACtrlC, RcvHdrq7DCAOPH),
+	   ~SYM_MASK(DCACtrlC, RcvHdrq7DCAOPH) , KREG_IDX(DCACtrlC) },
+	{ 2, SYM_LSB(DCACtrlD, RcvHdrq8DCAOPH),
+	   ~SYM_MASK(DCACtrlD, RcvHdrq8DCAOPH) , KREG_IDX(DCACtrlD) },
+	{ 2, SYM_LSB(DCACtrlD, RcvHdrq9DCAOPH),
+	   ~SYM_MASK(DCACtrlD, RcvHdrq9DCAOPH) , KREG_IDX(DCACtrlD) },
+	{ 2, SYM_LSB(DCACtrlD, RcvHdrq10DCAOPH),
+	   ~SYM_MASK(DCACtrlD, RcvHdrq10DCAOPH) , KREG_IDX(DCACtrlD) },
+	{ 2, SYM_LSB(DCACtrlD, RcvHdrq11DCAOPH),
+	   ~SYM_MASK(DCACtrlD, RcvHdrq11DCAOPH) , KREG_IDX(DCACtrlD) },
+	{ 3, SYM_LSB(DCACtrlE, RcvHdrq12DCAOPH),
+	   ~SYM_MASK(DCACtrlE, RcvHdrq12DCAOPH) , KREG_IDX(DCACtrlE) },
+	{ 3, SYM_LSB(DCACtrlE, RcvHdrq13DCAOPH),
+	   ~SYM_MASK(DCACtrlE, RcvHdrq13DCAOPH) , KREG_IDX(DCACtrlE) },
+	{ 3, SYM_LSB(DCACtrlE, RcvHdrq14DCAOPH),
+	   ~SYM_MASK(DCACtrlE, RcvHdrq14DCAOPH) , KREG_IDX(DCACtrlE) },
+	{ 3, SYM_LSB(DCACtrlE, RcvHdrq15DCAOPH),
+	   ~SYM_MASK(DCACtrlE, RcvHdrq15DCAOPH) , KREG_IDX(DCACtrlE) },
+	{ 4, SYM_LSB(DCACtrlF, RcvHdrq16DCAOPH),
+	   ~SYM_MASK(DCACtrlF, RcvHdrq16DCAOPH) , KREG_IDX(DCACtrlF) },
+	{ 4, SYM_LSB(DCACtrlF, RcvHdrq17DCAOPH),
+	   ~SYM_MASK(DCACtrlF, RcvHdrq17DCAOPH) , KREG_IDX(DCACtrlF) },
+};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* ibcctrl bits */
 #define QLOGIC_IB_IBCC_LINKINITCMD_DISABLE 1
 /* cycle through TS1/TS2 till OK */
@@ -722,6 +863,16 @@ static void write_7322_init_portregs(struct qib_pportdata *);
 static void setup_7322_link_recovery(struct qib_pportdata *, u32);
 static void check_7322_rxe_status(struct qib_pportdata *);
 static u32 __iomem *qib_7322_getsendbuf(struct qib_pportdata *, u64, u32 *);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+static void qib_setup_dca(struct qib_devdata *dd);
+static void setup_dca_notifier(struct qib_devdata *dd,
+			       struct qib_msix_entry *m);
+static void reset_dca_notifier(struct qib_devdata *dd,
+			       struct qib_msix_entry *m);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  * qib_read_ureg32 - read 32-bit virtualized per-context register
@@ -1152,6 +1303,7 @@ static inline u32 read_7322_creg32_port(const struct qib_pportdata *ppd,
 
 #define HWE_AUTO(fldname) { .mask = SYM_MASK(HwErrMask, fldname##Mask), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.msg = #fldname }
 #define HWE_AUTO_P(fldname, port) { .mask = SYM_MASK(HwErrMask, \
 	fldname##Mask##_##port), .msg = #fldname }
@@ -1160,6 +1312,11 @@ static inline u32 read_7322_creg32_port(const struct qib_pportdata *ppd,
 #define HWE_AUTO_P(fldname, port) { .mask = SYM_MASK(HwErrMask, \
 	fldname##Mask##_##port), .msg = #fldname , .sz = sizeof(#fldname) }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.msg = #fldname , .sz = sizeof(#fldname) }
+#define HWE_AUTO_P(fldname, port) { .mask = SYM_MASK(HwErrMask, \
+	fldname##Mask##_##port), .msg = #fldname , .sz = sizeof(#fldname) }
+>>>>>>> refs/remotes/origin/master
 static const struct qib_hwerror_msgs qib_7322_hwerror_msgs[] = {
 	HWE_AUTO_P(IBSerdesPClkNotDetect, 1),
 	HWE_AUTO_P(IBSerdesPClkNotDetect, 0),
@@ -1178,6 +1335,7 @@ static const struct qib_hwerror_msgs qib_7322_hwerror_msgs[] = {
 	HWE_AUTO(statusValidNoEop),
 	HWE_AUTO(LATriggered),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .mask = 0 }
 };
 
@@ -1187,6 +1345,8 @@ static const struct qib_hwerror_msgs qib_7322_hwerror_msgs[] = {
 	.msg = #fldname }
 static const struct qib_hwerror_msgs qib_7322error_msgs[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ .mask = 0, .sz = 0 }
 };
 
@@ -1197,7 +1357,10 @@ static const struct qib_hwerror_msgs qib_7322error_msgs[] = {
 static const struct qib_hwerror_msgs qib_7322error_msgs[] = {
 	E_AUTO(RcvEgrFullErr),
 	E_AUTO(RcvHdrFullErr),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	E_AUTO(ResetNegated),
 	E_AUTO(HardwareErr),
 	E_AUTO(InvalidAddrErr),
@@ -1211,12 +1374,16 @@ static const struct qib_hwerror_msgs qib_7322error_msgs[] = {
 	E_AUTO(SDmaWrongPortErr),
 	E_AUTO(SDmaBufMaskDuplicateErr),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	E_AUTO(RcvHdrFullErr),
 	E_AUTO(RcvEgrFullErr),
 	{ .mask = 0 }
 =======
 	{ .mask = 0, .sz = 0 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ .mask = 0, .sz = 0 }
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct  qib_hwerror_msgs qib_7322p_error_msgs[] = {
@@ -1227,11 +1394,16 @@ static const struct  qib_hwerror_msgs qib_7322p_error_msgs[] = {
 	 * SDmaHaltErr is not really an error, make it clearer;
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{.mask = SYM_MASK(ErrMask_0, SDmaHaltErrMask), .msg = "SDmaHalted"},
 =======
 	{.mask = SYM_MASK(ErrMask_0, SDmaHaltErrMask), .msg = "SDmaHalted",
 		.sz = 11},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{.mask = SYM_MASK(ErrMask_0, SDmaHaltErrMask), .msg = "SDmaHalted",
+		.sz = 11},
+>>>>>>> refs/remotes/origin/master
 	E_P_AUTO(SDmaDescAddrMisalignErr),
 	E_P_AUTO(SDmaUnexpDataErr),
 	E_P_AUTO(SDmaMissingDwErr),
@@ -1268,10 +1440,14 @@ static const struct  qib_hwerror_msgs qib_7322p_error_msgs[] = {
 	E_P_AUTO(RcvVCRCErr),
 	E_P_AUTO(RcvFormatErr),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .mask = 0 }
 =======
 	{ .mask = 0, .sz = 0 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ .mask = 0, .sz = 0 }
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1280,28 +1456,40 @@ static const struct  qib_hwerror_msgs qib_7322p_error_msgs[] = {
  */
 #define INTR_AUTO(fldname) { .mask = SYM_MASK(IntMask, fldname##Mask), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.msg = #fldname }
 =======
 	.msg = #fldname, .sz = sizeof(#fldname) }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.msg = #fldname, .sz = sizeof(#fldname) }
+>>>>>>> refs/remotes/origin/master
 /* Below generates "auto-message" for interrupts specific to a port */
 #define INTR_AUTO_P(fldname) { .mask = MASK_ACROSS(\
 	SYM_LSB(IntMask, fldname##Mask##_0), \
 	SYM_LSB(IntMask, fldname##Mask##_1)), \
 <<<<<<< HEAD
-	.msg = #fldname "_P" }
-=======
-	.msg = #fldname "_P", .sz = sizeof(#fldname "_P") }
->>>>>>> refs/remotes/origin/cm-10.0
-/* For some reason, the SerDesTrimDone bits are reversed */
-#define INTR_AUTO_PI(fldname) { .mask = MASK_ACROSS(\
-	SYM_LSB(IntMask, fldname##Mask##_1), \
-	SYM_LSB(IntMask, fldname##Mask##_0)), \
 <<<<<<< HEAD
 	.msg = #fldname "_P" }
 =======
 	.msg = #fldname "_P", .sz = sizeof(#fldname "_P") }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.msg = #fldname "_P", .sz = sizeof(#fldname "_P") }
+>>>>>>> refs/remotes/origin/master
+/* For some reason, the SerDesTrimDone bits are reversed */
+#define INTR_AUTO_PI(fldname) { .mask = MASK_ACROSS(\
+	SYM_LSB(IntMask, fldname##Mask##_1), \
+	SYM_LSB(IntMask, fldname##Mask##_0)), \
+<<<<<<< HEAD
+<<<<<<< HEAD
+	.msg = #fldname "_P" }
+=======
+	.msg = #fldname "_P", .sz = sizeof(#fldname "_P") }
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.msg = #fldname "_P", .sz = sizeof(#fldname "_P") }
+>>>>>>> refs/remotes/origin/master
 /*
  * Below generates "auto-message" for interrupts specific to a context,
  * with ctxt-number appended
@@ -1310,10 +1498,14 @@ static const struct  qib_hwerror_msgs qib_7322p_error_msgs[] = {
 	SYM_LSB(IntMask, fldname##0IntMask), \
 	SYM_LSB(IntMask, fldname##17IntMask)), \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.msg = #fldname "_C"}
 =======
 	.msg = #fldname "_C", .sz = sizeof(#fldname "_C") }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.msg = #fldname "_C", .sz = sizeof(#fldname "_C") }
+>>>>>>> refs/remotes/origin/master
 
 static const struct  qib_hwerror_msgs qib_7322_intr_msgs[] = {
 	INTR_AUTO_P(SDmaInt),
@@ -1328,19 +1520,25 @@ static const struct  qib_hwerror_msgs qib_7322_intr_msgs[] = {
 	INTR_AUTO(SendBufAvailInt),
 	INTR_AUTO_C(RcvAvail),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .mask = 0 }
 };
 
 #define TXSYMPTOM_AUTO_P(fldname) \
 	{ .mask = SYM_MASK(SendHdrErrSymptom_0, fldname), .msg = #fldname }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ .mask = 0, .sz = 0 }
 };
 
 #define TXSYMPTOM_AUTO_P(fldname) \
 	{ .mask = SYM_MASK(SendHdrErrSymptom_0, fldname), \
 	.msg = #fldname, .sz = sizeof(#fldname) }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct  qib_hwerror_msgs hdrchk_msgs[] = {
 	TXSYMPTOM_AUTO_P(NonKeyPacket),
 	TXSYMPTOM_AUTO_P(GRHFail),
@@ -1350,10 +1548,14 @@ static const struct  qib_hwerror_msgs hdrchk_msgs[] = {
 	TXSYMPTOM_AUTO_P(RawIPV6),
 	TXSYMPTOM_AUTO_P(PacketTooSmall),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .mask = 0 }
 =======
 	{ .mask = 0, .sz = 0 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ .mask = 0, .sz = 0 }
+>>>>>>> refs/remotes/origin/master
 };
 
 #define IBA7322_HDRHEAD_PKTINT_SHIFT 32 /* interrupt cnt in upper 32 bits */
@@ -1399,10 +1601,14 @@ static void err_decode(char *msg, size_t len, u64 errs,
 	int took, multi, n = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (msp && msp->mask) {
 =======
 	while (errs && msp && msp->mask) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (errs && msp && msp->mask) {
+>>>>>>> refs/remotes/origin/master
 		multi = (msp->mask & (msp->mask - 1));
 		while (errs & msp->mask) {
 			these = (errs & msp->mask);
@@ -1414,10 +1620,13 @@ static void err_decode(char *msg, size_t len, u64 errs,
 					len--;
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 				took = scnprintf(msg, len, "%s", msp->msg);
 				len -= took;
 				msg += took;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				BUG_ON(!msp->sz);
 				/* msp->sz counts the nul */
 				took = min_t(size_t, msp->sz - (size_t)1, len);
@@ -1426,7 +1635,10 @@ static void err_decode(char *msg, size_t len, u64 errs,
 				msg += took;
 				if (len)
 					*msg = '\0';
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			errs &= ~lmask;
 			if (len && multi) {
@@ -1627,6 +1839,11 @@ static void sdma_7322_p_errors(struct qib_pportdata *ppd, u64 errs)
 	struct qib_devdata *dd = ppd->dd;
 
 	errs &= QIB_E_P_SDMAERRS;
+<<<<<<< HEAD
+=======
+	err_decode(ppd->cpspec->sdmamsgbuf, sizeof(ppd->cpspec->sdmamsgbuf),
+		   errs, qib_7322p_error_msgs);
+>>>>>>> refs/remotes/origin/master
 
 	if (errs & QIB_E_P_SDMAUNEXPDATA)
 		qib_dev_err(dd, "IB%u:%u SDmaUnexpData\n", dd->unit,
@@ -1634,6 +1851,18 @@ static void sdma_7322_p_errors(struct qib_pportdata *ppd, u64 errs)
 
 	spin_lock_irqsave(&ppd->sdma_lock, flags);
 
+<<<<<<< HEAD
+=======
+	if (errs != QIB_E_P_SDMAHALT) {
+		/* SDMA errors have QIB_E_P_SDMAHALT and another bit set */
+		qib_dev_porterr(dd, ppd->port,
+			"SDMA %s 0x%016llx %s\n",
+			qib_sdma_state_names[ppd->sdma_state.current_state],
+			errs, ppd->cpspec->sdmamsgbuf);
+		dump_sdma_7322_state(ppd);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	switch (ppd->sdma_state.current_state) {
 	case qib_sdma_state_s00_hw_down:
 		break;
@@ -1685,8 +1914,13 @@ static noinline void handle_7322_errors(struct qib_devdata *dd)
 	qib_stats.sps_errints++;
 	errs = qib_read_kreg64(dd, kr_errstatus);
 	if (!errs) {
+<<<<<<< HEAD
 		qib_devinfo(dd->pcidev, "device error interrupt, "
 			 "but no error bits set!\n");
+=======
+		qib_devinfo(dd->pcidev,
+			"device error interrupt, but no error bits set!\n");
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 
@@ -1732,8 +1966,13 @@ static noinline void handle_7322_errors(struct qib_devdata *dd)
 	if (errs & QIB_E_RESET) {
 		int pidx;
 
+<<<<<<< HEAD
 		qib_dev_err(dd, "Got reset, requires re-init "
 			    "(unload and reload driver)\n");
+=======
+		qib_dev_err(dd,
+			"Got reset, requires re-init (unload and reload driver)\n");
+>>>>>>> refs/remotes/origin/master
 		dd->flags &= ~QIB_INITTED;  /* needs re-init */
 		/* mark as having had error */
 		*dd->devstatusp |= QIB_STATUS_HWERROR;
@@ -1765,7 +2004,10 @@ done:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void qib_error_tasklet(unsigned long data)
 {
 	struct qib_devdata *dd = (struct qib_devdata *)data;
@@ -1774,7 +2016,10 @@ static void qib_error_tasklet(unsigned long data)
 	qib_write_kreg(dd, kr_errmask, dd->cspec->errormask);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void reenable_chase(unsigned long opaque)
 {
 	struct qib_pportdata *ppd = (struct qib_pportdata *)opaque;
@@ -1785,11 +2030,16 @@ static void reenable_chase(unsigned long opaque)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void disable_chase(struct qib_pportdata *ppd, u64 tnow, u8 ibclt)
 =======
 static void disable_chase(struct qib_pportdata *ppd, unsigned long tnow,
 		u8 ibclt)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void disable_chase(struct qib_pportdata *ppd, unsigned long tnow,
+		u8 ibclt)
+>>>>>>> refs/remotes/origin/master
 {
 	ppd->cpspec->chase_end = 0;
 
@@ -1806,10 +2056,14 @@ static void handle_serdes_issues(struct qib_pportdata *ppd, u64 ibcst)
 {
 	u8 ibclt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 tnow;
 =======
 	unsigned long tnow;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long tnow;
+>>>>>>> refs/remotes/origin/master
 
 	ibclt = (u8)SYM_FIELD(ibcst, IBCStatusA_0, LinkTrainingState);
 
@@ -1825,6 +2079,7 @@ static void handle_serdes_issues(struct qib_pportdata *ppd, u64 ibcst)
 	case IB_7322_LT_STATE_TXREVLANES:
 	case IB_7322_LT_STATE_CFGENH:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tnow = get_jiffies_64();
 		if (ppd->cpspec->chase_end &&
 		     time_after64(tnow, ppd->cpspec->chase_end))
@@ -1833,6 +2088,11 @@ static void handle_serdes_issues(struct qib_pportdata *ppd, u64 ibcst)
 		if (ppd->cpspec->chase_end &&
 		     time_after(tnow, ppd->cpspec->chase_end))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tnow = jiffies;
+		if (ppd->cpspec->chase_end &&
+		     time_after(tnow, ppd->cpspec->chase_end))
+>>>>>>> refs/remotes/origin/master
 			disable_chase(ppd, tnow, ibclt);
 		else if (!ppd->cpspec->chase_end)
 			ppd->cpspec->chase_end = tnow + QIB_CHASE_TIME;
@@ -1887,9 +2147,15 @@ static void handle_serdes_issues(struct qib_pportdata *ppd, u64 ibcst)
 					    ppd->dd->cspec->r1 ?
 					    QDR_STATIC_ADAPT_DOWN_R1 :
 					    QDR_STATIC_ADAPT_DOWN);
+<<<<<<< HEAD
 			printk(KERN_INFO QIB_DRV_NAME
 				" IB%u:%u re-enabled QDR adaptation "
 				"ibclt %x\n", ppd->dd->unit, ppd->port, ibclt);
+=======
+			pr_info(
+				"IB%u:%u re-enabled QDR adaptation ibclt %x\n",
+				ppd->dd->unit, ppd->port, ibclt);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -1931,9 +2197,15 @@ static noinline void handle_7322_p_errors(struct qib_pportdata *ppd)
 		if (!*msg)
 			snprintf(msg, sizeof ppd->cpspec->epmsgbuf,
 				 "no others");
+<<<<<<< HEAD
 		qib_dev_porterr(dd, ppd->port, "error interrupt with unknown"
 				" errors 0x%016Lx set (and %s)\n",
 				(errs & ~QIB_E_P_BITSEXTANT), msg);
+=======
+		qib_dev_porterr(dd, ppd->port,
+			"error interrupt with unknown errors 0x%016Lx set (and %s)\n",
+			(errs & ~QIB_E_P_BITSEXTANT), msg);
+>>>>>>> refs/remotes/origin/master
 		*msg = '\0';
 	}
 
@@ -2151,8 +2423,13 @@ static void qib_7322_handle_hwerrors(struct qib_devdata *dd, char *msg,
 	if (!hwerrs)
 		goto bail;
 	if (hwerrs == ~0ULL) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Read of hardware error status failed "
 			    "(all bits set); ignoring\n");
+=======
+		qib_dev_err(dd,
+			"Read of hardware error status failed (all bits set); ignoring\n");
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 	qib_stats.sps_hwerrs++;
@@ -2166,8 +2443,14 @@ static void qib_7322_handle_hwerrors(struct qib_devdata *dd, char *msg,
 	/* no EEPROM logging, yet */
 
 	if (hwerrs)
+<<<<<<< HEAD
 		qib_devinfo(dd->pcidev, "Hardware error: hwerr=0x%llx "
 			    "(cleared)\n", (unsigned long long) hwerrs);
+=======
+		qib_devinfo(dd->pcidev,
+			"Hardware error: hwerr=0x%llx (cleared)\n",
+			(unsigned long long) hwerrs);
+>>>>>>> refs/remotes/origin/master
 
 	ctrl = qib_read_kreg32(dd, kr_control);
 	if ((ctrl & SYM_MASK(Control, FreezeMode)) && !dd->diag_client) {
@@ -2191,8 +2474,14 @@ static void qib_7322_handle_hwerrors(struct qib_devdata *dd, char *msg,
 
 	if (hwerrs & HWE_MASK(PowerOnBISTFailed)) {
 		isfatal = 1;
+<<<<<<< HEAD
 		strlcpy(msg, "[Memory BIST test failed, "
 			"InfiniPath hardware unusable]", msgl);
+=======
+		strlcpy(msg,
+			"[Memory BIST test failed, InfiniPath hardware unusable]",
+			msgl);
+>>>>>>> refs/remotes/origin/master
 		/* ignore from now on, so disable until driver reloaded */
 		dd->cspec->hwerrmask &= ~HWE_MASK(PowerOnBISTFailed);
 		qib_write_kreg(dd, kr_hwerrmask, dd->cspec->hwerrmask);
@@ -2204,9 +2493,39 @@ static void qib_7322_handle_hwerrors(struct qib_devdata *dd, char *msg,
 
 	qib_dev_err(dd, "%s hardware error\n", msg);
 
+<<<<<<< HEAD
 	if (isfatal && !dd->diag_client) {
 		qib_dev_err(dd, "Fatal Hardware Error, no longer"
 			    " usable, SN %.16s\n", dd->serial);
+=======
+	if (hwerrs &
+		   (SYM_MASK(HwErrMask, SDmaMemReadErrMask_0) |
+		    SYM_MASK(HwErrMask, SDmaMemReadErrMask_1))) {
+		int pidx = 0;
+		int err;
+		unsigned long flags;
+		struct qib_pportdata *ppd = dd->pport;
+		for (; pidx < dd->num_pports; ++pidx, ppd++) {
+			err = 0;
+			if (pidx == 0 && (hwerrs &
+				SYM_MASK(HwErrMask, SDmaMemReadErrMask_0)))
+				err++;
+			if (pidx == 1 && (hwerrs &
+				SYM_MASK(HwErrMask, SDmaMemReadErrMask_1)))
+				err++;
+			if (err) {
+				spin_lock_irqsave(&ppd->sdma_lock, flags);
+				dump_sdma_7322_state(ppd);
+				spin_unlock_irqrestore(&ppd->sdma_lock, flags);
+			}
+		}
+	}
+
+	if (isfatal && !dd->diag_client) {
+		qib_dev_err(dd,
+			"Fatal Hardware Error, no longer usable, SN %.16s\n",
+			dd->serial);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * for /sys status file and user programs to print; if no
 		 * trailing brace is copied, we'll know it was truncated.
@@ -2435,21 +2754,27 @@ static int qib_7322_bringup_serdes(struct qib_pportdata *ppd)
 	ppd->cpspec->ibcctrl_a = ibc; /* without linkcmd or linkinitcmd! */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* initially come up waiting for TS1, without sending anything. */
 	val = ppd->cpspec->ibcctrl_a | (QLOGIC_IB_IBCC_LINKINITCMD_DISABLE <<
 		QLOGIC_IB_IBCC_LINKINITCMD_SHIFT);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Reset the PCS interface to the serdes (and also ibc, which is still
 	 * in reset from above).  Writes new value of ibcctrl_a as last step.
 	 */
 	qib_7322_mini_pcs_reset(ppd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	qib_write_kreg(dd, kr_scratch, 0ULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!ppd->cpspec->ibcctrl_b) {
 		unsigned lse = ppd->link_speed_enabled;
@@ -2516,7 +2841,10 @@ static int qib_7322_bringup_serdes(struct qib_pportdata *ppd)
 	set_vls(ppd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* initially come up DISABLED, without sending anything. */
 	val = ppd->cpspec->ibcctrl_a | (QLOGIC_IB_IBCC_LINKINITCMD_DISABLE <<
 					QLOGIC_IB_IBCC_LINKINITCMD_SHIFT);
@@ -2525,13 +2853,17 @@ static int qib_7322_bringup_serdes(struct qib_pportdata *ppd)
 	/* clear the linkinit cmds */
 	ppd->cpspec->ibcctrl_a = val & ~SYM_MASK(IBCCtrlA_0, LinkInitCmd);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* be paranoid against later code motion, etc. */
 	spin_lock_irqsave(&dd->cspec->rcvmod_lock, flags);
 	ppd->p_rcvctrl |= SYM_MASK(RcvCtrl_0, RcvIBPortEnable);
 	qib_write_kreg_port(ppd, krp_rcvctrl, ppd->p_rcvctrl);
 	spin_unlock_irqrestore(&dd->cspec->rcvmod_lock, flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Hold the link state machine for mezz boards */
 	if (IS_QMH(dd) || IS_QME(dd))
@@ -2540,6 +2872,8 @@ static int qib_7322_bringup_serdes(struct qib_pportdata *ppd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Also enable IBSTATUSCHG interrupt.  */
 	val = qib_read_kreg_port(ppd, krp_errmask);
 	qib_write_kreg_port(ppd, krp_errmask,
@@ -2699,6 +3033,165 @@ static void qib_setup_7322_setextled(struct qib_pportdata *ppd, u32 on)
 		qib_write_kreg_port(ppd, krp_rcvpktledcnt, ledblink);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+
+static int qib_7322_notify_dca(struct qib_devdata *dd, unsigned long event)
+{
+	switch (event) {
+	case DCA_PROVIDER_ADD:
+		if (dd->flags & QIB_DCA_ENABLED)
+			break;
+		if (!dca_add_requester(&dd->pcidev->dev)) {
+			qib_devinfo(dd->pcidev, "DCA enabled\n");
+			dd->flags |= QIB_DCA_ENABLED;
+			qib_setup_dca(dd);
+		}
+		break;
+	case DCA_PROVIDER_REMOVE:
+		if (dd->flags & QIB_DCA_ENABLED) {
+			dca_remove_requester(&dd->pcidev->dev);
+			dd->flags &= ~QIB_DCA_ENABLED;
+			dd->cspec->dca_ctrl = 0;
+			qib_write_kreg(dd, KREG_IDX(DCACtrlA),
+				dd->cspec->dca_ctrl);
+		}
+		break;
+	}
+	return 0;
+}
+
+static void qib_update_rhdrq_dca(struct qib_ctxtdata *rcd, int cpu)
+{
+	struct qib_devdata *dd = rcd->dd;
+	struct qib_chip_specific *cspec = dd->cspec;
+
+	if (!(dd->flags & QIB_DCA_ENABLED))
+		return;
+	if (cspec->rhdr_cpu[rcd->ctxt] != cpu) {
+		const struct dca_reg_map *rmp;
+
+		cspec->rhdr_cpu[rcd->ctxt] = cpu;
+		rmp = &dca_rcvhdr_reg_map[rcd->ctxt];
+		cspec->dca_rcvhdr_ctrl[rmp->shadow_inx] &= rmp->mask;
+		cspec->dca_rcvhdr_ctrl[rmp->shadow_inx] |=
+			(u64) dca3_get_tag(&dd->pcidev->dev, cpu) << rmp->lsb;
+		qib_devinfo(dd->pcidev,
+			"Ctxt %d cpu %d dca %llx\n", rcd->ctxt, cpu,
+			(long long) cspec->dca_rcvhdr_ctrl[rmp->shadow_inx]);
+		qib_write_kreg(dd, rmp->regno,
+			       cspec->dca_rcvhdr_ctrl[rmp->shadow_inx]);
+		cspec->dca_ctrl |= SYM_MASK(DCACtrlA, RcvHdrqDCAEnable);
+		qib_write_kreg(dd, KREG_IDX(DCACtrlA), cspec->dca_ctrl);
+	}
+}
+
+static void qib_update_sdma_dca(struct qib_pportdata *ppd, int cpu)
+{
+	struct qib_devdata *dd = ppd->dd;
+	struct qib_chip_specific *cspec = dd->cspec;
+	unsigned pidx = ppd->port - 1;
+
+	if (!(dd->flags & QIB_DCA_ENABLED))
+		return;
+	if (cspec->sdma_cpu[pidx] != cpu) {
+		cspec->sdma_cpu[pidx] = cpu;
+		cspec->dca_rcvhdr_ctrl[4] &= ~(ppd->hw_pidx ?
+			SYM_MASK(DCACtrlF, SendDma1DCAOPH) :
+			SYM_MASK(DCACtrlF, SendDma0DCAOPH));
+		cspec->dca_rcvhdr_ctrl[4] |=
+			(u64) dca3_get_tag(&dd->pcidev->dev, cpu) <<
+				(ppd->hw_pidx ?
+					SYM_LSB(DCACtrlF, SendDma1DCAOPH) :
+					SYM_LSB(DCACtrlF, SendDma0DCAOPH));
+		qib_devinfo(dd->pcidev,
+			"sdma %d cpu %d dca %llx\n", ppd->hw_pidx, cpu,
+			(long long) cspec->dca_rcvhdr_ctrl[4]);
+		qib_write_kreg(dd, KREG_IDX(DCACtrlF),
+			       cspec->dca_rcvhdr_ctrl[4]);
+		cspec->dca_ctrl |= ppd->hw_pidx ?
+			SYM_MASK(DCACtrlA, SendDMAHead1DCAEnable) :
+			SYM_MASK(DCACtrlA, SendDMAHead0DCAEnable);
+		qib_write_kreg(dd, KREG_IDX(DCACtrlA), cspec->dca_ctrl);
+	}
+}
+
+static void qib_setup_dca(struct qib_devdata *dd)
+{
+	struct qib_chip_specific *cspec = dd->cspec;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(cspec->rhdr_cpu); i++)
+		cspec->rhdr_cpu[i] = -1;
+	for (i = 0; i < ARRAY_SIZE(cspec->sdma_cpu); i++)
+		cspec->sdma_cpu[i] = -1;
+	cspec->dca_rcvhdr_ctrl[0] =
+		(1ULL << SYM_LSB(DCACtrlB, RcvHdrq0DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlB, RcvHdrq1DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlB, RcvHdrq2DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlB, RcvHdrq3DCAXfrCnt));
+	cspec->dca_rcvhdr_ctrl[1] =
+		(1ULL << SYM_LSB(DCACtrlC, RcvHdrq4DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlC, RcvHdrq5DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlC, RcvHdrq6DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlC, RcvHdrq7DCAXfrCnt));
+	cspec->dca_rcvhdr_ctrl[2] =
+		(1ULL << SYM_LSB(DCACtrlD, RcvHdrq8DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlD, RcvHdrq9DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlD, RcvHdrq10DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlD, RcvHdrq11DCAXfrCnt));
+	cspec->dca_rcvhdr_ctrl[3] =
+		(1ULL << SYM_LSB(DCACtrlE, RcvHdrq12DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlE, RcvHdrq13DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlE, RcvHdrq14DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlE, RcvHdrq15DCAXfrCnt));
+	cspec->dca_rcvhdr_ctrl[4] =
+		(1ULL << SYM_LSB(DCACtrlF, RcvHdrq16DCAXfrCnt)) |
+		(1ULL << SYM_LSB(DCACtrlF, RcvHdrq17DCAXfrCnt));
+	for (i = 0; i < ARRAY_SIZE(cspec->sdma_cpu); i++)
+		qib_write_kreg(dd, KREG_IDX(DCACtrlB) + i,
+			       cspec->dca_rcvhdr_ctrl[i]);
+	for (i = 0; i < cspec->num_msix_entries; i++)
+		setup_dca_notifier(dd, &cspec->msix_entries[i]);
+}
+
+static void qib_irq_notifier_notify(struct irq_affinity_notify *notify,
+			     const cpumask_t *mask)
+{
+	struct qib_irq_notify *n =
+		container_of(notify, struct qib_irq_notify, notify);
+	int cpu = cpumask_first(mask);
+
+	if (n->rcv) {
+		struct qib_ctxtdata *rcd = (struct qib_ctxtdata *)n->arg;
+		qib_update_rhdrq_dca(rcd, cpu);
+	} else {
+		struct qib_pportdata *ppd = (struct qib_pportdata *)n->arg;
+		qib_update_sdma_dca(ppd, cpu);
+	}
+}
+
+static void qib_irq_notifier_release(struct kref *ref)
+{
+	struct qib_irq_notify *n =
+		container_of(ref, struct qib_irq_notify, notify.kref);
+	struct qib_devdata *dd;
+
+	if (n->rcv) {
+		struct qib_ctxtdata *rcd = (struct qib_ctxtdata *)n->arg;
+		dd = rcd->dd;
+	} else {
+		struct qib_pportdata *ppd = (struct qib_pportdata *)n->arg;
+		dd = ppd->dd;
+	}
+	qib_devinfo(dd->pcidev,
+		"release on HCA notify 0x%p n 0x%p\n", ref, n);
+	kfree(n);
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Disable MSIx interrupt if enabled, call generic MSIx code
  * to cleanup, and clear pending MSIx interrupts.
@@ -2716,18 +3209,28 @@ static void qib_7322_nomsix(struct qib_devdata *dd)
 
 		dd->cspec->num_msix_entries = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < n; i++)
 			free_irq(dd->cspec->msix_entries[i].vector,
 				 dd->cspec->msix_arg[i]);
 =======
 		for (i = 0; i < n; i++) {
+=======
+		for (i = 0; i < n; i++) {
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+			reset_dca_notifier(dd, &dd->cspec->msix_entries[i]);
+#endif
+>>>>>>> refs/remotes/origin/master
 			irq_set_affinity_hint(
 			  dd->cspec->msix_entries[i].msix.vector, NULL);
 			free_cpumask_var(dd->cspec->msix_entries[i].mask);
 			free_irq(dd->cspec->msix_entries[i].msix.vector,
 			   dd->cspec->msix_entries[i].arg);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		qib_nomsix(dd);
 	}
 	/* make sure no MSIx interrupts are left pending */
@@ -2749,6 +3252,18 @@ static void qib_setup_7322_cleanup(struct qib_devdata *dd)
 {
 	int i;
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+	if (dd->flags & QIB_DCA_ENABLED) {
+		dca_remove_requester(&dd->pcidev->dev);
+		dd->flags &= ~QIB_DCA_ENABLED;
+		dd->cspec->dca_ctrl = 0;
+		qib_write_kreg(dd, KREG_IDX(DCACtrlA), dd->cspec->dca_ctrl);
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	qib_7322_free_irq(dd);
 	kfree(dd->cspec->cntrs);
 	kfree(dd->cspec->sendchkenable);
@@ -2756,9 +3271,12 @@ static void qib_setup_7322_cleanup(struct qib_devdata *dd)
 	kfree(dd->cspec->sendibchk);
 	kfree(dd->cspec->msix_entries);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(dd->cspec->msix_arg);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < dd->num_pports; i++) {
 		unsigned long flags;
 		u32 mask = QSFP_GPIO_MOD_PRS_N |
@@ -2826,8 +3344,14 @@ static noinline void unknown_7322_ibits(struct qib_devdata *dd, u64 istat)
 	char msg[128];
 
 	kills = istat & ~QIB_I_BITSEXTANT;
+<<<<<<< HEAD
 	qib_dev_err(dd, "Clearing reserved interrupt(s) 0x%016llx:"
 		    " %s\n", (unsigned long long) kills, msg);
+=======
+	qib_dev_err(dd,
+		"Clearing reserved interrupt(s) 0x%016llx: %s\n",
+		(unsigned long long) kills, msg);
+>>>>>>> refs/remotes/origin/master
 	qib_write_kreg(dd, kr_intmask, (dd->cspec->int_enable_mask & ~kills));
 }
 
@@ -2877,10 +3401,14 @@ static noinline void unknown_7322_gpio_intr(struct qib_devdata *dd)
 			if (!(pins & mask)) {
 				++handled;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				qd->t_insert = get_jiffies_64();
 =======
 				qd->t_insert = jiffies;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				qd->t_insert = jiffies;
+>>>>>>> refs/remotes/origin/master
 				queue_work(ib_wq, &qd->work);
 			}
 		}
@@ -2909,14 +3437,20 @@ static noinline void unlikely_7322_intr(struct qib_devdata *dd, u64 istat)
 	if (istat & QIB_I_GPIO)
 		unknown_7322_gpio_intr(dd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (istat & QIB_I_C_ERROR)
 		handle_7322_errors(dd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (istat & QIB_I_C_ERROR) {
 		qib_write_kreg(dd, kr_errmask, 0ULL);
 		tasklet_schedule(&dd->error_tasklet);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (istat & INT_MASK_P(Err, 0) && dd->rcd[0])
 		handle_7322_p_errors(dd->rcd[0]->ppd);
 	if (istat & INT_MASK_P(Err, 1) && dd->rcd[1])
@@ -3024,6 +3558,7 @@ static irqreturn_t qib_7322intr(int irq, void *data)
 			if (ctxtrbits & rmask) {
 				ctxtrbits &= ~rmask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (dd->rcd[i]) {
 					qib_kreceive(dd->rcd[i], NULL, &npkts);
 				}
@@ -3031,6 +3566,10 @@ static irqreturn_t qib_7322intr(int irq, void *data)
 				if (dd->rcd[i])
 					qib_kreceive(dd->rcd[i], NULL, &npkts);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (dd->rcd[i])
+					qib_kreceive(dd->rcd[i], NULL, &npkts);
+>>>>>>> refs/remotes/origin/master
 			}
 			rmask <<= 1;
 		}
@@ -3233,6 +3772,56 @@ static irqreturn_t sdma_cleanup_intr(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+
+static void reset_dca_notifier(struct qib_devdata *dd, struct qib_msix_entry *m)
+{
+	if (!m->dca)
+		return;
+	qib_devinfo(dd->pcidev,
+		"Disabling notifier on HCA %d irq %d\n",
+		dd->unit,
+		m->msix.vector);
+	irq_set_affinity_notifier(
+		m->msix.vector,
+		NULL);
+	m->notifier = NULL;
+}
+
+static void setup_dca_notifier(struct qib_devdata *dd, struct qib_msix_entry *m)
+{
+	struct qib_irq_notify *n;
+
+	if (!m->dca)
+		return;
+	n = kzalloc(sizeof(*n), GFP_KERNEL);
+	if (n) {
+		int ret;
+
+		m->notifier = n;
+		n->notify.irq = m->msix.vector;
+		n->notify.notify = qib_irq_notifier_notify;
+		n->notify.release = qib_irq_notifier_release;
+		n->arg = m->arg;
+		n->rcv = m->rcv;
+		qib_devinfo(dd->pcidev,
+			"set notifier irq %d rcv %d notify %p\n",
+			n->notify.irq, n->rcv, &n->notify);
+		ret = irq_set_affinity_notifier(
+				n->notify.irq,
+				&n->notify);
+		if (ret) {
+			m->notifier = NULL;
+			kfree(n);
+		}
+	}
+}
+
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Set up our chip-specific interrupt handler.
  * The interrupt type has already been setup, so
@@ -3247,10 +3836,15 @@ static void qib_setup_7322_interrupt(struct qib_devdata *dd, int clearpend)
 	u64 redirect[6];
 	u64 mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const struct cpumask *local_mask;
 	int firstcpu, secondcpu = 0, currrcvcpu = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct cpumask *local_mask;
+	int firstcpu, secondcpu = 0, currrcvcpu = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dd->num_pports)
 		return;
@@ -3278,16 +3872,27 @@ static void qib_setup_7322_interrupt(struct qib_devdata *dd, int clearpend)
 		/* Try to get INTx interrupt */
 try_intx:
 		if (!dd->pcidev->irq) {
+<<<<<<< HEAD
 			qib_dev_err(dd, "irq is 0, BIOS error?  "
 				    "Interrupts won't work\n");
+=======
+			qib_dev_err(dd,
+				"irq is 0, BIOS error?  Interrupts won't work\n");
+>>>>>>> refs/remotes/origin/master
 			goto bail;
 		}
 		ret = request_irq(dd->pcidev->irq, qib_7322intr,
 				  IRQF_SHARED, QIB_DRV_NAME, dd);
 		if (ret) {
+<<<<<<< HEAD
 			qib_dev_err(dd, "Couldn't setup INTx "
 				    "interrupt (irq=%d): %d\n",
 				    dd->pcidev->irq, ret);
+=======
+			qib_dev_err(dd,
+				"Couldn't setup INTx interrupt (irq=%d): %d\n",
+				dd->pcidev->irq, ret);
+>>>>>>> refs/remotes/origin/master
 			goto bail;
 		}
 		dd->cspec->irq = dd->pcidev->irq;
@@ -3300,10 +3905,13 @@ try_intx:
 	mask = ~0ULL;
 	msixnum = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; msixnum < dd->cspec->num_msix_entries; i++) {
 		irq_handler_t handler;
 		const char *name;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	local_mask = cpumask_of_pcibus(dd->pcidev->bus);
 	firstcpu = cpumask_first(local_mask);
 	if (firstcpu >= nr_cpu_ids ||
@@ -3319,6 +3927,7 @@ try_intx:
 	}
 	for (i = 0; msixnum < dd->cspec->num_msix_entries; i++) {
 		irq_handler_t handler;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		void *arg;
 		u64 val;
@@ -3330,6 +3939,18 @@ try_intx:
 			name[sizeof(dd->cspec->msix_entries[msixnum].name) - 1]
 			= '\0';
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		void *arg;
+		u64 val;
+		int lsb, reg, sh;
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+		int dca = 0;
+#endif
+
+		dd->cspec->msix_entries[msixnum].
+			name[sizeof(dd->cspec->msix_entries[msixnum].name) - 1]
+			= '\0';
+>>>>>>> refs/remotes/origin/master
 		if (i < ARRAY_SIZE(irq_table)) {
 			if (irq_table[i].port) {
 				/* skip if for a non-configured port */
@@ -3338,17 +3959,28 @@ try_intx:
 				arg = dd->pport + irq_table[i].port - 1;
 			} else
 				arg = dd;
+<<<<<<< HEAD
 			lsb = irq_table[i].lsb;
 			handler = irq_table[i].handler;
 <<<<<<< HEAD
 			name = irq_table[i].name;
 =======
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+			dca = irq_table[i].dca;
+#endif
+			lsb = irq_table[i].lsb;
+			handler = irq_table[i].handler;
+>>>>>>> refs/remotes/origin/master
 			snprintf(dd->cspec->msix_entries[msixnum].name,
 				sizeof(dd->cspec->msix_entries[msixnum].name)
 				 - 1,
 				QIB_DRV_NAME "%d%s", dd->unit,
 				irq_table[i].name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			unsigned ctxt;
 
@@ -3357,6 +3989,7 @@ try_intx:
 			arg = dd->rcd[ctxt];
 			if (!arg)
 				continue;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			lsb = QIB_I_RCVAVAIL_LSB + ctxt;
 			handler = qib_7322pintr;
@@ -3367,6 +4000,13 @@ try_intx:
 =======
 			if (qib_krcvq01_no_msi && ctxt < 2)
 				continue;
+=======
+			if (qib_krcvq01_no_msi && ctxt < 2)
+				continue;
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+			dca = 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 			lsb = QIB_I_RCVAVAIL_LSB + ctxt;
 			handler = qib_7322pintr;
 			snprintf(dd->cspec->msix_entries[msixnum].name,
@@ -3378,12 +4018,16 @@ try_intx:
 			dd->cspec->msix_entries[msixnum].msix.vector,
 			handler, 0, dd->cspec->msix_entries[msixnum].name,
 			arg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			/*
 			 * Shouldn't happen since the enable said we could
 			 * have as many as we are trying to setup here.
 			 */
+<<<<<<< HEAD
 			qib_dev_err(dd, "Couldn't setup MSIx "
 <<<<<<< HEAD
 				    "interrupt (vec=%d, irq=%d): %d\n", msixnum,
@@ -3395,13 +4039,26 @@ try_intx:
 		dd->cspec->msix_arg[msixnum] = arg;
 =======
 				"interrupt (vec=%d, irq=%d): %d\n", msixnum,
+=======
+			qib_dev_err(dd,
+				"Couldn't setup MSIx interrupt (vec=%d, irq=%d): %d\n",
+				msixnum,
+>>>>>>> refs/remotes/origin/master
 				dd->cspec->msix_entries[msixnum].msix.vector,
 				ret);
 			qib_7322_nomsix(dd);
 			goto try_intx;
 		}
 		dd->cspec->msix_entries[msixnum].arg = arg;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+		dd->cspec->msix_entries[msixnum].dca = dca;
+		dd->cspec->msix_entries[msixnum].rcv =
+			handler == qib_7322pintr;
+#endif
+>>>>>>> refs/remotes/origin/master
 		if (lsb >= 0) {
 			reg = lsb / IBA7322_REDIRECT_VEC_PER_REG;
 			sh = (lsb % IBA7322_REDIRECT_VEC_PER_REG) *
@@ -3412,7 +4069,10 @@ try_intx:
 		val = qib_read_kreg64(dd, 2 * msixnum + 1 +
 			(QIB_7322_MsixTable_OFFS / sizeof(u64)));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (firstcpu < nr_cpu_ids &&
 			zalloc_cpumask_var(
 				&dd->cspec->msix_entries[msixnum].mask,
@@ -3432,7 +4092,10 @@ try_intx:
 				dd->cspec->msix_entries[msixnum].msix.vector,
 				dd->cspec->msix_entries[msixnum].mask);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		msixnum++;
 	}
 	/* Initialize the vector mapping */
@@ -3440,10 +4103,15 @@ try_intx:
 		qib_write_kreg(dd, kr_intredirect + i, redirect[i]);
 	dd->cspec->main_int_mask = mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	tasklet_init(&dd->error_tasklet, qib_error_tasklet,
 		(unsigned long)dd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tasklet_init(&dd->error_tasklet, qib_error_tasklet,
+		(unsigned long)dd);
+>>>>>>> refs/remotes/origin/master
 bail:;
 }
 
@@ -3520,8 +4188,14 @@ static unsigned qib_7322_boardname(struct qib_devdata *dd)
 		 (unsigned)SYM_FIELD(dd->revision, Revision_R, SW));
 
 	if (qib_singleport && (features >> PORT_SPD_CAP_SHIFT) & PORT_SPD_CAP) {
+<<<<<<< HEAD
 		qib_devinfo(dd->pcidev, "IB%u: Forced to single port mode"
 			    " by module parameter\n", dd->unit);
+=======
+		qib_devinfo(dd->pcidev,
+			"IB%u: Forced to single port mode by module parameter\n",
+			dd->unit);
+>>>>>>> refs/remotes/origin/master
 		features &= PORT_SPD_CAP;
 	}
 
@@ -3615,8 +4289,13 @@ static int qib_do_7322_reset(struct qib_devdata *dd)
 		if (val == dd->revision)
 			break;
 		if (i == 5) {
+<<<<<<< HEAD
 			qib_dev_err(dd, "Failed to initialize after reset, "
 				    "unusable\n");
+=======
+			qib_dev_err(dd,
+				"Failed to initialize after reset, unusable\n");
+>>>>>>> refs/remotes/origin/master
 			ret = 0;
 			goto  bail;
 		}
@@ -3628,10 +4307,14 @@ static int qib_do_7322_reset(struct qib_devdata *dd)
 		/* restore the MSIx vector address and data if saved above */
 		for (i = 0; i < msix_entries; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dd->cspec->msix_entries[i].entry = i;
 =======
 			dd->cspec->msix_entries[i].msix.entry = i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dd->cspec->msix_entries[i].msix.entry = i;
+>>>>>>> refs/remotes/origin/master
 			if (!msix_vecsave || !msix_vecsave[2 * i])
 				continue;
 			qib_write_kreg(dd, 2 * i +
@@ -3651,8 +4334,13 @@ static int qib_do_7322_reset(struct qib_devdata *dd)
 	if (qib_pcie_params(dd, dd->lbus_width,
 			    &dd->cspec->num_msix_entries,
 			    dd->cspec->msix_entries))
+<<<<<<< HEAD
 		qib_dev_err(dd, "Reset failed to setup PCIe or interrupts; "
 				"continuing anyway\n");
+=======
+		qib_dev_err(dd,
+			"Reset failed to setup PCIe or interrupts; continuing anyway\n");
+>>>>>>> refs/remotes/origin/master
 
 	qib_setup_7322_interrupt(dd, 1);
 
@@ -3693,8 +4381,14 @@ static void qib_7322_put_tid(struct qib_devdata *dd, u64 __iomem *tidptr,
 			return;
 		}
 		if (chippa >= (1UL << IBA7322_TID_SZ_SHIFT)) {
+<<<<<<< HEAD
 			qib_dev_err(dd, "Physical page address 0x%lx "
 				"larger than supported\n", pa);
+=======
+			qib_dev_err(dd,
+				"Physical page address 0x%lx larger than supported\n",
+				pa);
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 
@@ -3870,10 +4564,14 @@ static void qib_7322_config_ctxts(struct qib_devdata *dd)
 		dd->rcvhdrcnt = max(dd->cspec->rcvegrcnt, qib_rcvhdrcnt);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dd->rcvhdrcnt = max(dd->cspec->rcvegrcnt,
 =======
 		dd->rcvhdrcnt = 2 * max(dd->cspec->rcvegrcnt,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dd->rcvhdrcnt = 2 * max(dd->cspec->rcvegrcnt,
+>>>>>>> refs/remotes/origin/master
 				    dd->num_pports > 1 ? 1024U : 2048U);
 }
 
@@ -4252,8 +4950,14 @@ static int qib_7322_set_loopback(struct qib_pportdata *ppd, const char *what)
 							Loopback);
 		/* enable heart beat again */
 		val = IBA7322_IBC_HRTBT_RMASK << IBA7322_IBC_HRTBT_LSB;
+<<<<<<< HEAD
 		qib_devinfo(ppd->dd->pcidev, "Disabling IB%u:%u IBC loopback "
 			    "(normal)\n", ppd->dd->unit, ppd->port);
+=======
+		qib_devinfo(ppd->dd->pcidev,
+			"Disabling IB%u:%u IBC loopback (normal)\n",
+			ppd->dd->unit, ppd->port);
+>>>>>>> refs/remotes/origin/master
 	} else
 		ret = -EINVAL;
 	if (!ret) {
@@ -4937,8 +5641,13 @@ static void init_7322_cntrnames(struct qib_devdata *dd)
 		dd->pport[i].cpspec->portcntrs = kmalloc(dd->cspec->nportcntrs
 			* sizeof(u64), GFP_KERNEL);
 		if (!dd->pport[i].cpspec->portcntrs)
+<<<<<<< HEAD
 			qib_dev_err(dd, "Failed allocation for"
 				    " portcounters\n");
+=======
+			qib_dev_err(dd,
+				"Failed allocation for portcounters\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -5068,10 +5777,14 @@ static void qib_get_7322_faststats(unsigned long opaque)
 				    QIBL_LINKACTIVE)) &&
 		    ppd->cpspec->qdr_dfe_time &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    time_after64(get_jiffies_64(), ppd->cpspec->qdr_dfe_time)) {
 =======
 		    time_is_before_jiffies(ppd->cpspec->qdr_dfe_time)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    time_is_before_jiffies(ppd->cpspec->qdr_dfe_time)) {
+>>>>>>> refs/remotes/origin/master
 			ppd->cpspec->qdr_dfe_on = 0;
 
 			qib_write_kreg_port(ppd, krp_static_adapt_dis(2),
@@ -5092,8 +5805,13 @@ static int qib_7322_intr_fallback(struct qib_devdata *dd)
 	if (!dd->cspec->num_msix_entries)
 		return 0; /* already using INTx */
 
+<<<<<<< HEAD
 	qib_devinfo(dd->pcidev, "MSIx interrupt not detected,"
 		 " trying INTx interrupts\n");
+=======
+	qib_devinfo(dd->pcidev,
+		"MSIx interrupt not detected, trying INTx interrupts\n");
+>>>>>>> refs/remotes/origin/master
 	qib_7322_nomsix(dd);
 	qib_enable_intx(dd->pcidev);
 	qib_setup_7322_interrupt(dd, 0);
@@ -5378,6 +6096,7 @@ static void try_7322_ipg(struct qib_pportdata *ppd)
 		goto retry;
 
 	if (!ibp->smi_ah) {
+<<<<<<< HEAD
 		struct ib_ah_attr attr;
 		struct ib_ah *ah;
 
@@ -5387,6 +6106,13 @@ static void try_7322_ipg(struct qib_pportdata *ppd)
 		ah = ib_create_ah(ibp->qp0->ibqp.pd, &attr);
 		if (IS_ERR(ah))
 			ret = -EINVAL;
+=======
+		struct ib_ah *ah;
+
+		ah = qib_create_qp0_ah(ibp, be16_to_cpu(IB_LID_PERMISSIVE));
+		if (IS_ERR(ah))
+			ret = PTR_ERR(ah);
+>>>>>>> refs/remotes/origin/master
 		else {
 			send_buf->ah = ah;
 			ibp->smi_ah = to_iah(ah);
@@ -5506,10 +6232,15 @@ static int qib_7322_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
 			set_7322_ibspeed_fast(ppd, ppd->link_speed_enabled);
 		if (!(ppd->lflags & QIBL_IB_AUTONEG_INPROG)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			struct qib_qsfp_data *qd =
 				&ppd->cpspec->qsfp_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct qib_qsfp_data *qd =
+				&ppd->cpspec->qsfp_data;
+>>>>>>> refs/remotes/origin/master
 			/* unlock the Tx settings, speed may change */
 			qib_write_kreg_port(ppd, krp_tx_deemph_override,
 				SYM_MASK(IBSD_TX_DEEMPHASIS_OVERRIDE_0,
@@ -5518,14 +6249,20 @@ static int qib_7322_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
 			/* on link down, ensure sane pcs state */
 			qib_7322_mini_pcs_reset(ppd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			/* schedule the qsfp refresh which should turn the link
 			   off */
 			if (ppd->dd->flags & QIB_HAS_QSFP) {
 				qd->t_insert = jiffies;
 				queue_work(ib_wq, &qd->work);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			spin_lock_irqsave(&ppd->sdma_lock, flags);
 			if (__qib_sdma_running(ppd))
 				__qib_sdma_process_event(ppd,
@@ -5876,16 +6613,22 @@ static void qsfp_7322_event(struct work_struct *work)
 	struct qib_qsfp_data *qd;
 	struct qib_pportdata *ppd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 pwrup;
 =======
 	unsigned long pwrup;
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long pwrup;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u32 le2;
 
 	qd = container_of(work, struct qib_qsfp_data, work);
 	ppd = qd->ppd;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pwrup = qd->t_insert + msecs_to_jiffies(QSFP_PWR_LAG_MSEC);
 
@@ -5920,6 +6663,8 @@ static void qsfp_7322_event(struct work_struct *work)
 	ibsd_wr_allchans(ppd, 13, (le2 << 7), BMASK(9, 7));
 	init_txdds_table(ppd, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pwrup = qd->t_insert +
 		msecs_to_jiffies(QSFP_PWR_LAG_MSEC - QSFP_MODPRS_LAG_MSEC);
 
@@ -5986,7 +6731,10 @@ static void qsfp_7322_event(struct work_struct *work)
 			spin_unlock_irqrestore(&ppd->lflags_lock, flags);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -6091,11 +6839,16 @@ static void set_no_qsfp_atten(struct qib_devdata *dd, int change)
 			init_txdds_table(ppd, 1);
 			/* Re-enable the physical state machine on mezz boards
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 * now that the correct settings have been set. */
 =======
 			 * now that the correct settings have been set.
 			 * QSFP boards are handles by the QSFP event handler */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 * now that the correct settings have been set.
+			 * QSFP boards are handles by the QSFP event handler */
+>>>>>>> refs/remotes/origin/master
 			if (IS_QMH(dd) || IS_QME(dd))
 				qib_set_ib_7322_lstate(ppd, 0,
 					    QLOGIC_IB_IBCC_LINKINITCMD_SLEEP);
@@ -6122,15 +6875,23 @@ static int setup_txselect(const char *str, struct kernel_param *kp)
 	unsigned long val;
 	char *n;
 	if (strlen(str) >= MAX_ATTEN_LEN) {
+<<<<<<< HEAD
 		printk(KERN_INFO QIB_DRV_NAME " txselect_values string "
 		       "too long\n");
+=======
+		pr_info("txselect_values string too long\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOSPC;
 	}
 	val = simple_strtoul(str, &n, 0);
 	if (n == str || val >= (TXDDS_TABLE_SZ + TXDDS_EXTRA_SZ +
 				TXDDS_MFG_SZ)) {
+<<<<<<< HEAD
 		printk(KERN_INFO QIB_DRV_NAME
 		       "txselect_values must start with a number < %d\n",
+=======
+		pr_info("txselect_values must start with a number < %d\n",
+>>>>>>> refs/remotes/origin/master
 			TXDDS_TABLE_SZ + TXDDS_EXTRA_SZ + TXDDS_MFG_SZ);
 		return -EINVAL;
 	}
@@ -6158,11 +6919,18 @@ static int qib_late_7322_initreg(struct qib_devdata *dd)
 	qib_write_kreg(dd, kr_sendpioavailaddr, dd->pioavailregs_phys);
 	val = qib_read_kreg64(dd, kr_sendpioavailaddr);
 	if (val != dd->pioavailregs_phys) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Catastrophic software error, "
 			    "SendPIOAvailAddr written as %lx, "
 			    "read back as %llx\n",
 			    (unsigned long) dd->pioavailregs_phys,
 			    (unsigned long long) val);
+=======
+		qib_dev_err(dd,
+			"Catastrophic software error, SendPIOAvailAddr written as %lx, read back as %llx\n",
+			(unsigned long) dd->pioavailregs_phys,
+			(unsigned long long) val);
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 	}
 
@@ -6374,8 +7142,13 @@ static int qib_init_7322_variables(struct qib_devdata *dd)
 	dd->revision = readq(&dd->kregbase[kr_revision]);
 
 	if ((dd->revision & 0xffffffffU) == 0xffffffffU) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Revision register read failure, "
 			    "giving up initialization\n");
+=======
+		qib_dev_err(dd,
+			"Revision register read failure, giving up initialization\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		goto bail;
 	}
@@ -6541,9 +7314,15 @@ static int qib_init_7322_variables(struct qib_devdata *dd)
 		 */
 		if (!(dd->flags & QIB_HAS_QSFP)) {
 			if (!IS_QMH(dd) && !IS_QME(dd))
+<<<<<<< HEAD
 				qib_devinfo(dd->pcidev, "IB%u:%u: "
 					    "Unknown mezzanine card type\n",
 					    dd->unit, ppd->port);
+=======
+				qib_devinfo(dd->pcidev,
+					"IB%u:%u: Unknown mezzanine card type\n",
+					dd->unit, ppd->port);
+>>>>>>> refs/remotes/origin/master
 			cp->h1_val = IS_QMH(dd) ? H1_FORCE_QMH : H1_FORCE_QME;
 			/*
 			 * Choose center value as default tx serdes setting
@@ -6574,10 +7353,15 @@ static int qib_init_7322_variables(struct qib_devdata *dd)
 	/* we always allocate at least 2048 bytes for eager buffers */
 	dd->rcvegrbufsize = max(mtu, 2048);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BUG_ON(!is_power_of_2(dd->rcvegrbufsize));
 	dd->rcvegrbufsize_shift = ilog2(dd->rcvegrbufsize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BUG_ON(!is_power_of_2(dd->rcvegrbufsize));
+	dd->rcvegrbufsize_shift = ilog2(dd->rcvegrbufsize);
+>>>>>>> refs/remotes/origin/master
 
 	qib_7322_tidtemplate(dd);
 
@@ -6618,8 +7402,15 @@ static int qib_init_7322_variables(struct qib_devdata *dd)
 			dd->piobcnt4k * dd->align4k;
 		dd->piovl15base	= ioremap_nocache(vl15off,
 						  NUM_VL15_BUFS * dd->align4k);
+<<<<<<< HEAD
 		if (!dd->piovl15base)
 			goto bail;
+=======
+		if (!dd->piovl15base) {
+			ret = -ENOMEM;
+			goto bail;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	qib_7322_set_baseaddrs(dd); /* set chip access pointers now */
 
@@ -6658,6 +7449,10 @@ static int qib_init_7322_variables(struct qib_devdata *dd)
 		dd->cspec->sdmabufcnt;
 	dd->lastctxt_piobuf = dd->cspec->lastbuf_for_pio - sbufs;
 	dd->cspec->lastbuf_for_pio--; /* range is <= , not < */
+<<<<<<< HEAD
+=======
+	dd->last_pio = dd->cspec->lastbuf_for_pio;
+>>>>>>> refs/remotes/origin/master
 	dd->pbufsctxt = (dd->cfgctxts > dd->first_user_ctxt) ?
 		dd->lastctxt_piobuf / (dd->cfgctxts - dd->first_user_ctxt) : 0;
 
@@ -6721,6 +7516,89 @@ static void qib_sdma_set_7322_desc_cnt(struct qib_pportdata *ppd, unsigned cnt)
 	qib_write_kreg_port(ppd, krp_senddmadesccnt, cnt);
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * sdma_lock should be acquired before calling this routine
+ */
+static void dump_sdma_7322_state(struct qib_pportdata *ppd)
+{
+	u64 reg, reg1, reg2;
+
+	reg = qib_read_kreg_port(ppd, krp_senddmastatus);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmastatus: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_sendctrl);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA sendctrl: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmabase);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmabase: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmabufmask0);
+	reg1 = qib_read_kreg_port(ppd, krp_senddmabufmask1);
+	reg2 = qib_read_kreg_port(ppd, krp_senddmabufmask2);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmabufmask 0:%llx  1:%llx  2:%llx\n",
+		 reg, reg1, reg2);
+
+	/* get bufuse bits, clear them, and print them again if non-zero */
+	reg = qib_read_kreg_port(ppd, krp_senddmabuf_use0);
+	qib_write_kreg_port(ppd, krp_senddmabuf_use0, reg);
+	reg1 = qib_read_kreg_port(ppd, krp_senddmabuf_use1);
+	qib_write_kreg_port(ppd, krp_senddmabuf_use0, reg1);
+	reg2 = qib_read_kreg_port(ppd, krp_senddmabuf_use2);
+	qib_write_kreg_port(ppd, krp_senddmabuf_use0, reg2);
+	/* 0 and 1 should always be zero, so print as short form */
+	qib_dev_porterr(ppd->dd, ppd->port,
+		 "SDMA current senddmabuf_use 0:%llx  1:%llx  2:%llx\n",
+		 reg, reg1, reg2);
+	reg = qib_read_kreg_port(ppd, krp_senddmabuf_use0);
+	reg1 = qib_read_kreg_port(ppd, krp_senddmabuf_use1);
+	reg2 = qib_read_kreg_port(ppd, krp_senddmabuf_use2);
+	/* 0 and 1 should always be zero, so print as short form */
+	qib_dev_porterr(ppd->dd, ppd->port,
+		 "SDMA cleared senddmabuf_use 0:%llx  1:%llx  2:%llx\n",
+		 reg, reg1, reg2);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmatail);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmatail: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmahead);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmahead: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmaheadaddr);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmaheadaddr: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmalengen);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmalengen: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmadesccnt);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmadesccnt: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmaidlecnt);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmaidlecnt: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmaprioritythld);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmapriorityhld: 0x%016llx\n", reg);
+
+	reg = qib_read_kreg_port(ppd, krp_senddmareloadcnt);
+	qib_dev_porterr(ppd->dd, ppd->port,
+		"SDMA senddmareloadcnt: 0x%016llx\n", reg);
+
+	dump_sdma_state(ppd);
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct sdma_set_state_action sdma_7322_action_table[] = {
 	[qib_sdma_state_s00_hw_down] = {
 		.go_s99_running_tofalse = 1,
@@ -7154,6 +8032,12 @@ struct qib_devdata *qib_init_iba7322_funcs(struct pci_dev *pdev,
 	dd->f_sdma_init_early   = qib_7322_sdma_init_early;
 	dd->f_writescratch      = writescratch;
 	dd->f_tempsense_rd	= qib_7322_tempsense_rd;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+	dd->f_notify_dca	= qib_7322_notify_dca;
+#endif
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Do remaining PCIe setup and save PCIe values in dd.
 	 * Any error printing is already done by the init code.
@@ -7186,6 +8070,7 @@ struct qib_devdata *qib_init_iba7322_funcs(struct pci_dev *pdev,
 		     dd->rcd[i - ARRAY_SIZE(irq_table)]))
 			actual_cnt++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tabsize = actual_cnt;
 	dd->cspec->msix_entries = kmalloc(tabsize *
 			sizeof(struct msix_entry), GFP_KERNEL);
@@ -7193,19 +8078,28 @@ struct qib_devdata *qib_init_iba7322_funcs(struct pci_dev *pdev,
 			sizeof(void *), GFP_KERNEL);
 	if (!dd->cspec->msix_entries || !dd->cspec->msix_arg) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* reduce by ctxt's < 2 */
 	if (qib_krcvq01_no_msi)
 		actual_cnt -= dd->num_pports;
 
 	tabsize = actual_cnt;
+<<<<<<< HEAD
 	dd->cspec->msix_entries = kmalloc(tabsize *
 			sizeof(struct qib_msix_entry), GFP_KERNEL);
 	if (!dd->cspec->msix_entries) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dd->cspec->msix_entries = kzalloc(tabsize *
+			sizeof(struct qib_msix_entry), GFP_KERNEL);
+	if (!dd->cspec->msix_entries) {
+>>>>>>> refs/remotes/origin/master
 		qib_dev_err(dd, "No memory for MSIx table\n");
 		tabsize = 0;
 	}
 	for (i = 0; i < tabsize; i++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dd->cspec->msix_entries[i].entry = i;
 =======
@@ -7215,6 +8109,13 @@ struct qib_devdata *qib_init_iba7322_funcs(struct pci_dev *pdev,
 	if (qib_pcie_params(dd, 8, &tabsize, dd->cspec->msix_entries))
 		qib_dev_err(dd, "Failed to setup PCIe or interrupts; "
 			    "continuing anyway\n");
+=======
+		dd->cspec->msix_entries[i].msix.entry = i;
+
+	if (qib_pcie_params(dd, 8, &tabsize, dd->cspec->msix_entries))
+		qib_dev_err(dd,
+			"Failed to setup PCIe or interrupts; continuing anyway\n");
+>>>>>>> refs/remotes/origin/master
 	/* may be less than we wanted, if not enough available */
 	dd->cspec->num_msix_entries = tabsize;
 
@@ -7223,7 +8124,17 @@ struct qib_devdata *qib_init_iba7322_funcs(struct pci_dev *pdev,
 
 	/* clear diagctrl register, in case diags were running and crashed */
 	qib_write_kreg(dd, kr_hwdiagctrl, 0);
+<<<<<<< HEAD
 
+=======
+#ifdef CONFIG_INFINIBAND_QIB_DCA
+	if (!dca_add_requester(&pdev->dev)) {
+		qib_devinfo(dd->pcidev, "DCA enabled\n");
+		dd->flags |= QIB_DCA_ENABLED;
+		qib_setup_dca(dd);
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	goto bail;
 
 bail_cleanup:
@@ -7438,6 +8349,7 @@ static const struct txdds_ent txdds_extra_sdr[TXDDS_EXTRA_SZ] = {
 	{  0, 0, 0,  1 },	/* QMH7342 backplane settings */
 	{  0, 0, 0,  2 },	/* QMH7342 backplane settings */
 	{  0, 0, 0,  2 },	/* QMH7342 backplane settings */
+<<<<<<< HEAD
 	{  0, 0, 0, 11 },	/* QME7342 backplane settings */
 	{  0, 0, 0, 11 },	/* QME7342 backplane settings */
 	{  0, 0, 0, 11 },	/* QME7342 backplane settings */
@@ -7447,6 +8359,22 @@ static const struct txdds_ent txdds_extra_sdr[TXDDS_EXTRA_SZ] = {
 	{  0, 0, 0, 11 },	/* QME7342 backplane settings */
 	{  0, 0, 0,  3 },	/* QMH7342 backplane settings */
 	{  0, 0, 0,  4 },	/* QMH7342 backplane settings */
+=======
+	{  0, 0, 0,  3 },	/* QMH7342 backplane settings */
+	{  0, 0, 0,  4 },	/* QMH7342 backplane settings */
+	{  0, 1, 4, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 3, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 12 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 11 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0,  9 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 14 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 2, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 11 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  7 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  9 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  6 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  8 },       /* QME7342 backplane settings 1.1 */
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct txdds_ent txdds_extra_ddr[TXDDS_EXTRA_SZ] = {
@@ -7455,6 +8383,7 @@ static const struct txdds_ent txdds_extra_ddr[TXDDS_EXTRA_SZ] = {
 	{  0, 0, 0,  7 },	/* QMH7342 backplane settings */
 	{  0, 0, 0,  8 },	/* QMH7342 backplane settings */
 	{  0, 0, 0,  8 },	/* QMH7342 backplane settings */
+<<<<<<< HEAD
 	{  0, 0, 0, 13 },	/* QME7342 backplane settings */
 	{  0, 0, 0, 13 },	/* QME7342 backplane settings */
 	{  0, 0, 0, 13 },	/* QME7342 backplane settings */
@@ -7464,6 +8393,22 @@ static const struct txdds_ent txdds_extra_ddr[TXDDS_EXTRA_SZ] = {
 	{  0, 0, 0, 13 },	/* QME7342 backplane settings */
 	{  0, 0, 0,  9 },	/* QMH7342 backplane settings */
 	{  0, 0, 0, 10 },	/* QMH7342 backplane settings */
+=======
+	{  0, 0, 0,  9 },	/* QMH7342 backplane settings */
+	{  0, 0, 0, 10 },	/* QMH7342 backplane settings */
+	{  0, 1, 4, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 3, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 12 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 11 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0,  9 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 14 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 2, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1, 0, 11 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  7 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  9 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  6 },       /* QME7342 backplane settings 1.1 */
+	{  0, 1, 0,  8 },       /* QME7342 backplane settings 1.1 */
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct txdds_ent txdds_extra_qdr[TXDDS_EXTRA_SZ] = {
@@ -7472,6 +8417,7 @@ static const struct txdds_ent txdds_extra_qdr[TXDDS_EXTRA_SZ] = {
 	{  0, 1,  0,  5 },	/* QMH7342 backplane settings */
 	{  0, 1,  0,  6 },	/* QMH7342 backplane settings */
 	{  0, 1,  0,  8 },	/* QMH7342 backplane settings */
+<<<<<<< HEAD
 	{  0, 1, 12, 10 },	/* QME7342 backplane setting */
 	{  0, 1, 12, 11 },	/* QME7342 backplane setting */
 	{  0, 1, 12, 12 },	/* QME7342 backplane setting */
@@ -7481,6 +8427,22 @@ static const struct txdds_ent txdds_extra_qdr[TXDDS_EXTRA_SZ] = {
 	{  0, 1, 12,  8 },	/* QME7342 backplane setting */
 	{  0, 1,  0, 10 },	/* QMH7342 backplane settings */
 	{  0, 1,  0, 12 },	/* QMH7342 backplane settings */
+=======
+	{  0, 1,  0, 10 },	/* QMH7342 backplane settings */
+	{  0, 1,  0, 12 },	/* QMH7342 backplane settings */
+	{  0, 1,  4, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1,  3, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1,  0, 12 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1,  0, 11 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1,  0,  9 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1,  0, 14 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1,  2, 15 },	/* QME7342 backplane settings 1.0 */
+	{  0, 1,  0, 11 },      /* QME7342 backplane settings 1.1 */
+	{  0, 1,  0,  7 },      /* QME7342 backplane settings 1.1 */
+	{  0, 1,  0,  9 },      /* QME7342 backplane settings 1.1 */
+	{  0, 1,  0,  6 },      /* QME7342 backplane settings 1.1 */
+	{  0, 1,  0,  8 },      /* QME7342 backplane settings 1.1 */
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct txdds_ent txdds_extra_mfg[TXDDS_MFG_SZ] = {
@@ -7532,11 +8494,16 @@ static void find_best_ent(struct qib_pportdata *ppd,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Lookup serdes setting by cable type and attenuation */
 =======
 	/* Active cables don't have attenuation so we only set SERDES
 	 * settings to account for the attenuation of the board traces. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Active cables don't have attenuation so we only set SERDES
+	 * settings to account for the attenuation of the board traces. */
+>>>>>>> refs/remotes/origin/master
 	if (!override && QSFP_IS_ACTIVE(qd->tech)) {
 		*sdr_dds = txdds_sdr + ppd->dd->board_atten;
 		*ddr_dds = txdds_ddr + ppd->dd->board_atten;
@@ -7571,8 +8538,12 @@ static void find_best_ent(struct qib_pportdata *ppd,
 		   ppd->cpspec->no_eep < (TXDDS_TABLE_SZ + TXDDS_EXTRA_SZ +
 					  TXDDS_MFG_SZ)) {
 		idx = ppd->cpspec->no_eep - (TXDDS_TABLE_SZ + TXDDS_EXTRA_SZ);
+<<<<<<< HEAD
 		printk(KERN_INFO QIB_DRV_NAME
 			" IB%u:%u use idx %u into txdds_mfg\n",
+=======
+		pr_info("IB%u:%u use idx %u into txdds_mfg\n",
+>>>>>>> refs/remotes/origin/master
 			ppd->dd->unit, ppd->port, idx);
 		*sdr_dds = &txdds_extra_mfg[idx];
 		*ddr_dds = &txdds_extra_mfg[idx];
@@ -7727,11 +8698,19 @@ static void serdes_7322_los_enable(struct qib_pportdata *ppd, int enable)
 	u8 state = SYM_FIELD(data, IBSerdesCtrl_0, RXLOSEN);
 
 	if (enable && !state) {
+<<<<<<< HEAD
 		printk(KERN_INFO QIB_DRV_NAME " IB%u:%u Turning LOS on\n",
 			ppd->dd->unit, ppd->port);
 		data |= SYM_MASK(IBSerdesCtrl_0, RXLOSEN);
 	} else if (!enable && state) {
 		printk(KERN_INFO QIB_DRV_NAME " IB%u:%u Turning LOS off\n",
+=======
+		pr_info("IB%u:%u Turning LOS on\n",
+			ppd->dd->unit, ppd->port);
+		data |= SYM_MASK(IBSerdesCtrl_0, RXLOSEN);
+	} else if (!enable && state) {
+		pr_info("IB%u:%u Turning LOS off\n",
+>>>>>>> refs/remotes/origin/master
 			ppd->dd->unit, ppd->port);
 		data &= ~SYM_MASK(IBSerdesCtrl_0, RXLOSEN);
 	}
@@ -7850,6 +8829,7 @@ static int serdes_7322_init_old(struct qib_pportdata *ppd)
 static int serdes_7322_init_new(struct qib_pportdata *ppd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 tstart;
 	u32 le_val, rxcaldone;
 	int chan, chan_done = (1 << SERDES_CHANS) - 1;
@@ -7861,11 +8841,16 @@ static int serdes_7322_init_new(struct qib_pportdata *ppd)
 	init_txdds_table(ppd, 0);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long tend;
 	u32 le_val, rxcaldone;
 	int chan, chan_done = (1 << SERDES_CHANS) - 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Clear cmode-override, may be set from older driver */
 	ahb_mod(ppd->dd, IBSD(ppd->hw_pidx), 5, 10, 0 << 14, 1 << 14);
 
@@ -7968,6 +8953,7 @@ static int serdes_7322_init_new(struct qib_pportdata *ppd)
 	/*       Start Calibration */
 	ibsd_wr_allchans(ppd, 4, (1 << 10), BMASK(10, 10));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tstart = get_jiffies_64();
 	while (chan_done &&
 	       !time_after64(get_jiffies_64(),
@@ -7976,6 +8962,10 @@ static int serdes_7322_init_new(struct qib_pportdata *ppd)
 	tend = jiffies + msecs_to_jiffies(500);
 	while (chan_done && !time_is_before_jiffies(tend)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tend = jiffies + msecs_to_jiffies(500);
+	while (chan_done && !time_is_before_jiffies(tend)) {
+>>>>>>> refs/remotes/origin/master
 		msleep(20);
 		for (chan = 0; chan < SERDES_CHANS; ++chan) {
 			rxcaldone = ahb_mod(ppd->dd, IBSD(ppd->hw_pidx),
@@ -7987,8 +8977,12 @@ static int serdes_7322_init_new(struct qib_pportdata *ppd)
 		}
 	}
 	if (chan_done) {
+<<<<<<< HEAD
 		printk(KERN_INFO QIB_DRV_NAME
 			 " Serdes %d calibration not done after .5 sec: 0x%x\n",
+=======
+		pr_info("Serdes %d calibration not done after .5 sec: 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 			 IBSD(ppd->hw_pidx), chan_done);
 	} else {
 		for (chan = 0; chan < SERDES_CHANS; ++chan) {
@@ -7996,9 +8990,14 @@ static int serdes_7322_init_new(struct qib_pportdata *ppd)
 					    (chan + (chan >> 1)),
 					    25, 0, 0);
 			if ((~rxcaldone & (u32)BMASK(10, 10)) == 0)
+<<<<<<< HEAD
 				printk(KERN_INFO QIB_DRV_NAME
 					 " Serdes %d chan %d calibration "
 					 "failed\n", IBSD(ppd->hw_pidx), chan);
+=======
+				pr_info("Serdes %d chan %d calibration failed\n",
+					IBSD(ppd->hw_pidx), chan);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -8024,7 +9023,11 @@ static int serdes_7322_init_new(struct qib_pportdata *ppd)
 	ibsd_wr_allchans(ppd, 5, 0, BMASK(0, 0));
 	msleep(20);
 	/*       Set Frequency Loop Bandwidth */
+<<<<<<< HEAD
 	ibsd_wr_allchans(ppd, 2, (7 << 5), BMASK(8, 5));
+=======
+	ibsd_wr_allchans(ppd, 2, (15 << 5), BMASK(8, 5));
+>>>>>>> refs/remotes/origin/master
 	/*       Enable Frequency Loop */
 	ibsd_wr_allchans(ppd, 2, (1 << 4), BMASK(4, 4));
 	/*       Set Timing Loop Bandwidth */
@@ -8057,14 +9060,20 @@ static int serdes_7322_init_new(struct qib_pportdata *ppd)
 	ibsd_wr_allchans(ppd, 12, (3 << 2), BMASK(3, 2));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Initialize the Tx DDS tables.  Also done every QSFP event,
 	 * for adapters with QSFP
 	 */
 	init_txdds_table(ppd, 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

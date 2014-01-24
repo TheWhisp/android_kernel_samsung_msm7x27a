@@ -18,16 +18,22 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "softing.h"
 
@@ -485,7 +491,11 @@ static void softing_card_shutdown(struct softing *card)
 	mutex_unlock(&card->fw.lock);
 }
 
+<<<<<<< HEAD
 static __devinit int softing_card_boot(struct softing *card)
+=======
+static int softing_card_boot(struct softing *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret, j;
 	static const uint8_t stream[] = {
@@ -601,7 +611,11 @@ static ssize_t store_output(struct device *dev, struct device_attribute *attr,
 	unsigned long val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 0, &val);
+=======
+	ret = kstrtoul(buf, 0, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 	val &= 0xFF;
@@ -652,8 +666,13 @@ static const struct can_bittiming_const softing_btr_const = {
 };
 
 
+<<<<<<< HEAD
 static __devinit struct net_device *softing_netdev_create(struct softing *card,
 		uint16_t chip_id)
+=======
+static struct net_device *softing_netdev_create(struct softing *card,
+						uint16_t chip_id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev;
 	struct softing_priv *priv;
@@ -683,7 +702,11 @@ static __devinit struct net_device *softing_netdev_create(struct softing *card,
 	return netdev;
 }
 
+<<<<<<< HEAD
 static __devinit int softing_netdev_register(struct net_device *netdev)
+=======
+static int softing_netdev_register(struct net_device *netdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -752,7 +775,11 @@ static const struct attribute_group softing_pdev_group = {
 /*
  * platform driver
  */
+<<<<<<< HEAD
 static __devexit int softing_pdev_remove(struct platform_device *pdev)
+=======
+static int softing_pdev_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct softing *card = platform_get_drvdata(pdev);
 	int j;
@@ -773,9 +800,15 @@ static __devexit int softing_pdev_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static __devinit int softing_pdev_probe(struct platform_device *pdev)
 {
 	const struct softing_platform_data *pdat = pdev->dev.platform_data;
+=======
+static int softing_pdev_probe(struct platform_device *pdev)
+{
+	const struct softing_platform_data *pdat = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct softing *card;
 	struct net_device *netdev;
 	struct softing_priv *priv;
@@ -807,10 +840,14 @@ static __devinit int softing_pdev_probe(struct platform_device *pdev)
 		goto platform_resource_failed;
 	card->dpram_phys = pres->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	card->dpram_size = pres->end - pres->start + 1;
 =======
 	card->dpram_size = resource_size(pres);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	card->dpram_size = resource_size(pres);
+>>>>>>> refs/remotes/origin/master
 	card->dpram = ioremap_nocache(card->dpram_phys, card->dpram_size);
 	if (!card->dpram) {
 		dev_alert(&card->pdev->dev, "dpram ioremap failed\n");
@@ -837,12 +874,19 @@ static __devinit int softing_pdev_probe(struct platform_device *pdev)
 		goto sysfs_failed;
 	}
 
+<<<<<<< HEAD
 	ret = -ENOMEM;
+=======
+>>>>>>> refs/remotes/origin/master
 	for (j = 0; j < ARRAY_SIZE(card->net); ++j) {
 		card->net[j] = netdev =
 			softing_netdev_create(card, card->id.chip[j]);
 		if (!netdev) {
 			dev_alert(&pdev->dev, "failed to make can[%i]", j);
+<<<<<<< HEAD
+=======
+			ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			goto netdev_failed;
 		}
 		priv = netdev_priv(card->net[j]);
@@ -882,6 +926,7 @@ static struct platform_driver softing_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = softing_pdev_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(softing_pdev_remove),
 };
 
@@ -906,6 +951,14 @@ module_platform_driver(softing_driver);
 
 MODULE_ALIAS("platform:softing");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = softing_pdev_remove,
+};
+
+module_platform_driver(softing_driver);
+
+MODULE_ALIAS("platform:softing");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Softing DPRAM CAN driver");
 MODULE_AUTHOR("Kurt Van Dijck <kurt.van.dijck@eia.be>");
 MODULE_LICENSE("GPL v2");

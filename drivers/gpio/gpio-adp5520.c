@@ -87,9 +87,15 @@ static int adp5520_gpio_direction_output(struct gpio_chip *chip,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit adp5520_gpio_probe(struct platform_device *pdev)
 {
 	struct adp5520_gpio_platform_data *pdata = pdev->dev.platform_data;
+=======
+static int adp5520_gpio_probe(struct platform_device *pdev)
+{
+	struct adp5520_gpio_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp5520_gpio *dev;
 	struct gpio_chip *gc;
 	int ret, i, gpios;
@@ -105,7 +111,11 @@ static int __devinit adp5520_gpio_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+=======
+	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (dev == NULL) {
 		dev_err(&pdev->dev, "failed to alloc memory\n");
 		return -ENOMEM;
@@ -127,7 +137,11 @@ static int __devinit adp5520_gpio_probe(struct platform_device *pdev)
 	gc->direction_output = adp5520_gpio_direction_output;
 	gc->get = adp5520_gpio_get_value;
 	gc->set = adp5520_gpio_set_value;
+<<<<<<< HEAD
 	gc->can_sleep = 1;
+=======
+	gc->can_sleep = true;
+>>>>>>> refs/remotes/origin/master
 
 	gc->base = pdata->gpio_start;
 	gc->ngpio = gpios;
@@ -163,11 +177,18 @@ static int __devinit adp5520_gpio_probe(struct platform_device *pdev)
 	return 0;
 
 err:
+<<<<<<< HEAD
 	kfree(dev);
 	return ret;
 }
 
 static int __devexit adp5520_gpio_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int adp5520_gpio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adp5520_gpio *dev;
 	int ret;
@@ -180,7 +201,10 @@ static int __devexit adp5520_gpio_remove(struct platform_device *pdev)
 		return ret;
 	}
 
+<<<<<<< HEAD
 	kfree(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -190,7 +214,11 @@ static struct platform_driver adp5520_gpio_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= adp5520_gpio_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(adp5520_gpio_remove),
+=======
+	.remove		= adp5520_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(adp5520_gpio_driver);

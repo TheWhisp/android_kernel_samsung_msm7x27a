@@ -12,6 +12,7 @@
  *		2 of the License, or (at your option) any later version.
  *
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_IF_PPPOX_H
 #define __LINUX_IF_PPPOX_H
@@ -168,6 +169,16 @@ struct pppoe_hdr {
 
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
+=======
+#ifndef __LINUX_IF_PPPOX_H
+#define __LINUX_IF_PPPOX_H
+
+#include <linux/if.h>
+#include <linux/netdevice.h>
+#include <linux/ppp_channel.h>
+#include <linux/skbuff.h>
+#include <uapi/linux/if_pppox.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct pppoe_hdr *pppoe_hdr(const struct sk_buff *skb)
 {
@@ -189,6 +200,7 @@ struct pptp_opt {
 	u32 seq_sent, seq_recv;
 	int ppp_flags;
 };
+<<<<<<< HEAD
 
 struct pppolac_opt {
 	__u32		local;
@@ -208,6 +220,8 @@ struct pppopns_opt {
 	int		(*backlog_rcv)(struct sock *sk_raw, struct sk_buff *skb);
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <net/sock.h>
 
 struct pppox_sock {
@@ -218,8 +232,11 @@ struct pppox_sock {
 	union {
 		struct pppoe_opt pppoe;
 		struct pptp_opt  pptp;
+<<<<<<< HEAD
 		struct pppolac_opt lac;
 		struct pppopns_opt pns;
+=======
+>>>>>>> refs/remotes/origin/master
 	} proto;
 	__be16			num;
 };
@@ -262,6 +279,9 @@ enum {
     PPPOX_DEAD		= 16  /* dead, useless, please clean me up!*/
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__LINUX_IF_PPPOX_H) */

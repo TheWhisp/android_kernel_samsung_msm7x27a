@@ -19,7 +19,12 @@
 #include "internal.h"
 
 static int afs_readpage(struct file *file, struct page *page);
+<<<<<<< HEAD
 static void afs_invalidatepage(struct page *page, unsigned long offset);
+=======
+static void afs_invalidatepage(struct page *page, unsigned int offset,
+			       unsigned int length);
+>>>>>>> refs/remotes/origin/master
 static int afs_releasepage(struct page *page, gfp_t gfp_flags);
 static int afs_launder_page(struct page *page);
 
@@ -252,10 +257,14 @@ static int afs_readpages(struct file *file, struct address_space *mapping,
 
 	vnode = AFS_FS_I(mapping->host);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (vnode->flags & AFS_VNODE_DELETED) {
 =======
 	if (test_bit(AFS_VNODE_DELETED, &vnode->flags)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(AFS_VNODE_DELETED, &vnode->flags)) {
+>>>>>>> refs/remotes/origin/master
 		_leave(" = -ESTALE");
 		return -ESTALE;
 	}
@@ -314,16 +323,29 @@ static int afs_launder_page(struct page *page)
  * - release a page and clean up its private data if offset is 0 (indicating
  *   the entire page)
  */
+<<<<<<< HEAD
 static void afs_invalidatepage(struct page *page, unsigned long offset)
 {
 	struct afs_writeback *wb = (struct afs_writeback *) page_private(page);
 
 	_enter("{%lu},%lu", page->index, offset);
+=======
+static void afs_invalidatepage(struct page *page, unsigned int offset,
+			       unsigned int length)
+{
+	struct afs_writeback *wb = (struct afs_writeback *) page_private(page);
+
+	_enter("{%lu},%u,%u", page->index, offset, length);
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!PageLocked(page));
 
 	/* we clean up only if the entire page is being invalidated */
+<<<<<<< HEAD
 	if (offset == 0) {
+=======
+	if (offset == 0 && length == PAGE_CACHE_SIZE) {
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_AFS_FSCACHE
 		if (PageFsCache(page)) {
 			struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);

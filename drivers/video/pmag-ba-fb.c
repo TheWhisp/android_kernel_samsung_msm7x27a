@@ -34,9 +34,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <video/pmag-ba-fb.h>
 
@@ -47,7 +50,11 @@ struct pmagbafb_par {
 };
 
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo pmagbafb_defined __devinitdata = {
+=======
+static struct fb_var_screeninfo pmagbafb_defined = {
+>>>>>>> refs/remotes/origin/master
 	.xres		= 1024,
 	.yres		= 864,
 	.xres_virtual	= 1024,
@@ -71,7 +78,11 @@ static struct fb_var_screeninfo pmagbafb_defined __devinitdata = {
 	.vmode		= FB_VMODE_NONINTERLACED,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo pmagbafb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo pmagbafb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "PMAG-BA",
 	.smem_len	= (1024 * 1024),
 	.type		= FB_TYPE_PACKED_PIXELS,
@@ -145,7 +156,11 @@ static void __init pmagbafb_erase_cursor(struct fb_info *info)
 }
 
 
+<<<<<<< HEAD
 static int __devinit pmagbafb_probe(struct device *dev)
+=======
+static int pmagbafb_probe(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tc_dev *tdev = to_tc_dev(dev);
 	resource_size_t start, len;
@@ -216,8 +231,13 @@ static int __devinit pmagbafb_probe(struct device *dev)
 
 	get_device(dev);
 
+<<<<<<< HEAD
 	pr_info("fb%d: %s frame buffer device at %s\n",
 		info->node, info->fix.id, dev_name(dev));
+=======
+	fb_info(info, "%s frame buffer device at %s\n",
+		info->fix.id, dev_name(dev));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 

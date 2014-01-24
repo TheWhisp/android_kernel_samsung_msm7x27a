@@ -7,10 +7,14 @@
  * as CIPSO and RIPSO.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
 =======
  * Author: Paul Moore <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -138,10 +142,14 @@ static inline void netlbl_af4list_audit_addr(struct audit_buffer *audit_buf,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 
 #define __af6list_entry(ptr) container_of(ptr, struct netlbl_af6list, list)
 

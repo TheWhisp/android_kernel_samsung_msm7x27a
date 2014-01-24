@@ -4,7 +4,11 @@
 
 
 /***************************************************************************
+<<<<<<< HEAD
 Define Difinetion
+=======
+Define Definition
+>>>>>>> refs/remotes/origin/master
 ***************************************************************************/
 #define SMSUCCESS           0x0000 /* SUCCESS */
 #define ERROR               0xFFFF /* ERROR */
@@ -25,7 +29,10 @@ Define Difinetion
 #define ERR_NoSmartMedia    0x003A /* Medium Not Present */
 
 /***************************************************************************/
+<<<<<<< HEAD
 void StringCopy(char *, char *, int);
 int  StringCmp(char *, char *, int);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

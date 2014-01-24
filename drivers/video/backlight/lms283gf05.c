@@ -18,9 +18,13 @@
 #include <linux/spi/spi.h>
 #include <linux/spi/lms283gf05.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 struct lms283gf05_state {
 	struct spi_device	*spi;
@@ -34,7 +38,11 @@ struct lms283gf05_seq {
 };
 
 /* Magic sequences supplied by manufacturer, for details refer to datasheet */
+<<<<<<< HEAD
 static struct lms283gf05_seq disp_initseq[] = {
+=======
+static const struct lms283gf05_seq disp_initseq[] = {
+>>>>>>> refs/remotes/origin/master
 	/* REG, VALUE, DELAY */
 	{ 0x07, 0x0000, 0 },
 	{ 0x13, 0x0000, 10 },
@@ -81,7 +89,11 @@ static struct lms283gf05_seq disp_initseq[] = {
 	{ 0x22, 0x0000, 0 }
 };
 
+<<<<<<< HEAD
 static struct lms283gf05_seq disp_pdwnseq[] = {
+=======
+static const struct lms283gf05_seq disp_pdwnseq[] = {
+>>>>>>> refs/remotes/origin/master
 	{ 0x07, 0x0016, 30 },
 
 	{ 0x07, 0x0004, 0 },
@@ -107,7 +119,11 @@ static void lms283gf05_reset(unsigned long gpio, bool inverted)
 }
 
 static void lms283gf05_toggle(struct spi_device *spi,
+<<<<<<< HEAD
 			struct lms283gf05_seq *seq, int sz)
+=======
+				const struct lms283gf05_seq *seq, int sz)
+>>>>>>> refs/remotes/origin/master
 {
 	char buf[3];
 	int i;
@@ -131,7 +147,11 @@ static int lms283gf05_power_set(struct lcd_device *ld, int power)
 {
 	struct lms283gf05_state *st = lcd_get_data(ld);
 	struct spi_device *spi = st->spi;
+<<<<<<< HEAD
 	struct lms283gf05_pdata *pdata = spi->dev.platform_data;
+=======
+	struct lms283gf05_pdata *pdata = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (power <= FB_BLANK_NORMAL) {
 		if (pdata)
@@ -153,14 +173,22 @@ static struct lcd_ops lms_ops = {
 	.get_power	= NULL,
 };
 
+<<<<<<< HEAD
 static int __devinit lms283gf05_probe(struct spi_device *spi)
 {
 	struct lms283gf05_state *st;
 	struct lms283gf05_pdata *pdata = spi->dev.platform_data;
+=======
+static int lms283gf05_probe(struct spi_device *spi)
+{
+	struct lms283gf05_state *st;
+	struct lms283gf05_pdata *pdata = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	struct lcd_device *ld;
 	int ret = 0;
 
 	if (pdata != NULL) {
+<<<<<<< HEAD
 		ret = gpio_request(pdata->reset_gpio, "LMS285GF05 RESET");
 		if (ret)
 			return ret;
@@ -183,11 +211,36 @@ static int __devinit lms283gf05_probe(struct spi_device *spi)
 		ret = PTR_ERR(ld);
 		goto err2;
 	}
+=======
+		ret = devm_gpio_request_one(&spi->dev, pdata->reset_gpio,
+				GPIOF_DIR_OUT | (!pdata->reset_inverted ?
+				GPIOF_INIT_HIGH : GPIOF_INIT_LOW),
+				"LMS285GF05 RESET");
+		if (ret)
+			return ret;
+	}
+
+	st = devm_kzalloc(&spi->dev, sizeof(struct lms283gf05_state),
+				GFP_KERNEL);
+	if (st == NULL) {
+		dev_err(&spi->dev, "No memory for device state\n");
+		return -ENOMEM;
+	}
+
+	ld = devm_lcd_device_register(&spi->dev, "lms283gf05", &spi->dev, st,
+					&lms_ops);
+	if (IS_ERR(ld))
+		return PTR_ERR(ld);
+>>>>>>> refs/remotes/origin/master
 
 	st->spi = spi;
 	st->ld = ld;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, st);
+=======
+	spi_set_drvdata(spi, st);
+>>>>>>> refs/remotes/origin/master
 
 	/* kick in the LCD */
 	if (pdata)
@@ -195,6 +248,7 @@ static int __devinit lms283gf05_probe(struct spi_device *spi)
 	lms283gf05_toggle(spi, disp_initseq, ARRAY_SIZE(disp_initseq));
 
 	return 0;
+<<<<<<< HEAD
 
 err2:
 	kfree(st);
@@ -218,6 +272,8 @@ static int __devexit lms283gf05_remove(struct spi_device *spi)
 	kfree(st);
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct spi_driver lms283gf05_driver = {
@@ -226,6 +282,7 @@ static struct spi_driver lms283gf05_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= lms283gf05_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(lms283gf05_remove),
 };
 
@@ -245,6 +302,11 @@ module_exit(lms283gf05_exit);
 =======
 module_spi_driver(lms283gf05_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_spi_driver(lms283gf05_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");
 MODULE_DESCRIPTION("LCD283GF05 LCD");

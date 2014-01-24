@@ -49,6 +49,7 @@ static struct _lcd_scaling_factor lcd_scaling_factor_CLE = {
 };
 
 static bool lvds_identify_integratedlvds(void);
+<<<<<<< HEAD
 static void __devinit fp_id_to_vindex(int panel_id);
 static int lvds_register_read(int index);
 static void load_lcd_scaling(int set_hres, int set_vres, int panel_hres,
@@ -60,6 +61,12 @@ static void via_pitch_alignment_patch_lcd(
 				   *plvds_chip_info);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fp_id_to_vindex(int panel_id);
+static int lvds_register_read(int index);
+static void load_lcd_scaling(int set_hres, int set_vres, int panel_hres,
+		      int panel_vres);
+>>>>>>> refs/remotes/origin/master
 static void lcd_patch_skew_dvp0(struct lvds_setting_information
 			 *plvds_setting_info,
 			 struct lvds_chip_information *plvds_chip_info);
@@ -83,18 +90,25 @@ static void check_diport_of_integrated_lvds(
 				     struct lvds_setting_information
 				     *plvds_setting_info);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct display_timing lcd_centering_timging(struct display_timing
 					    mode_crt_reg,
 					   struct display_timing panel_crt_reg);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline bool check_lvds_chip(int device_id_subaddr, int device_id)
 {
 	return lvds_register_read(device_id_subaddr) == device_id;
 }
 
+<<<<<<< HEAD
 void __devinit viafb_init_lcd_size(void)
+=======
+void viafb_init_lcd_size(void)
+>>>>>>> refs/remotes/origin/master
 {
 	DEBUG_MSG(KERN_INFO "viafb_init_lcd_size()\n");
 
@@ -152,7 +166,11 @@ static bool lvds_identify_integratedlvds(void)
 	return true;
 }
 
+<<<<<<< HEAD
 bool __devinit viafb_lvds_trasmitter_identify(void)
+=======
+bool viafb_lvds_trasmitter_identify(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (viafb_lvds_identify_vt1636(VIA_PORT_31)) {
 		viaparinfo->chip_info->lvds_chip_info.i2c_port = VIA_PORT_31;
@@ -193,7 +211,11 @@ bool __devinit viafb_lvds_trasmitter_identify(void)
 	return false;
 }
 
+<<<<<<< HEAD
 static void __devinit fp_id_to_vindex(int panel_id)
+=======
+static void fp_id_to_vindex(int panel_id)
+>>>>>>> refs/remotes/origin/master
 {
 	DEBUG_MSG(KERN_INFO "fp_get_panel_id()\n");
 
@@ -461,6 +483,7 @@ static void load_lcd_scaling(int set_hres, int set_vres, int panel_hres,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void via_pitch_alignment_patch_lcd(
 	struct lvds_setting_information *plvds_setting_info,
 				   struct lvds_chip_information
@@ -468,11 +491,15 @@ static void via_pitch_alignment_patch_lcd(
 =======
 static void via_pitch_alignment_patch_lcd(int iga_path, int hres, int bpp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void via_pitch_alignment_patch_lcd(int iga_path, int hres, int bpp)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char cr13, cr35, cr65, cr66, cr67;
 	unsigned long dwScreenPitch = 0;
 	unsigned long dwPitch;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dwPitch = plvds_setting_info->h_active * (plvds_setting_info->bpp >> 3);
 	if (dwPitch & 0x1F) {
@@ -480,12 +507,17 @@ static void via_pitch_alignment_patch_lcd(int iga_path, int hres, int bpp)
 		if (plvds_setting_info->iga_path == IGA2) {
 			if (plvds_setting_info->bpp > 8) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dwPitch = hres * (bpp >> 3);
 	if (dwPitch & 0x1F) {
 		dwScreenPitch = ((dwPitch + 31) & ~31) >> 3;
 		if (iga_path == IGA2) {
 			if (bpp > 8) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				cr66 = (unsigned char)(dwScreenPitch & 0xFF);
 				viafb_write_reg(CR66, VIACR, cr66);
 				cr67 = viafb_read_reg(VIACR, CR67) & 0xFC;
@@ -504,10 +536,14 @@ static void via_pitch_alignment_patch_lcd(int iga_path, int hres, int bpp)
 			viafb_write_reg(CR65, VIACR, cr65);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (plvds_setting_info->bpp > 8) {
 =======
 			if (bpp > 8) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (bpp > 8) {
+>>>>>>> refs/remotes/origin/master
 				cr13 = (unsigned char)(dwScreenPitch & 0xFF);
 				viafb_write_reg(CR13, VIACR, cr13);
 				cr35 = viafb_read_reg(VIACR, CR35) & 0x1F;
@@ -571,6 +607,7 @@ static void lcd_patch_skew(struct lvds_setting_information
 
 /* LCD Set Mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void viafb_lcd_set_mode(struct crt_mode_table *mode_crt_table,
 		  struct lvds_setting_information *plvds_setting_info,
 		  struct lvds_chip_information *plvds_chip_info)
@@ -625,6 +662,8 @@ void viafb_lcd_set_mode(struct crt_mode_table *mode_crt_table,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void viafb_lcd_set_mode(const struct fb_var_screeninfo *var, u16 cxres,
 	u16 cyres, struct lvds_setting_information *plvds_setting_info,
 	struct lvds_chip_information *plvds_chip_info)
@@ -636,7 +675,11 @@ void viafb_lcd_set_mode(const struct fb_var_screeninfo *var, u16 cxres,
 	int panel_hres = plvds_setting_info->lcd_panel_hres;
 	int panel_vres = plvds_setting_info->lcd_panel_vres;
 	u32 clock;
+<<<<<<< HEAD
 	struct display_timing timing;
+=======
+	struct via_display_timing timing;
+>>>>>>> refs/remotes/origin/master
 	struct fb_var_screeninfo panel_var;
 	const struct fb_videomode *mode_crt_table, *panel_crt_table;
 
@@ -669,7 +712,10 @@ void viafb_lcd_set_mode(const struct fb_var_screeninfo *var, u16 cxres,
 	else if (set_iga == IGA2)
 		via_set_secondary_timing(&timing);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Fetch count for IGA2 only */
 	viafb_load_fetch_count_reg(set_hres, mode_bpp / 8, set_iga);
 
@@ -688,11 +734,16 @@ void viafb_lcd_set_mode(const struct fb_var_screeninfo *var, u16 cxres,
 
 	/* Patch for non 32bit alignment mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	via_pitch_alignment_patch_lcd(plvds_setting_info, plvds_chip_info);
 =======
 	via_pitch_alignment_patch_lcd(plvds_setting_info->iga_path, set_hres,
 		var->bits_per_pixel);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	via_pitch_alignment_patch_lcd(plvds_setting_info->iga_path, set_hres,
+		var->bits_per_pixel);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void integrated_lvds_disable(struct lvds_setting_information
@@ -1006,7 +1057,11 @@ static void check_diport_of_integrated_lvds(
 		  plvds_chip_info->output_interface);
 }
 
+<<<<<<< HEAD
 void __devinit viafb_init_lvds_output_interface(struct lvds_chip_information
+=======
+void viafb_init_lvds_output_interface(struct lvds_chip_information
+>>>>>>> refs/remotes/origin/master
 				*plvds_chip_info,
 				struct lvds_setting_information
 				*plvds_setting_info)
@@ -1053,6 +1108,7 @@ void __devinit viafb_init_lvds_output_interface(struct lvds_chip_information
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct display_timing lcd_centering_timging(struct display_timing
 					    mode_crt_reg,
 					    struct display_timing panel_crt_reg)
@@ -1086,6 +1142,8 @@ static struct display_timing lcd_centering_timging(struct display_timing
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 bool viafb_lcd_get_mobile_state(bool *mobile)
 {
 	unsigned char __iomem *romptr, *tableptr, *biosptr;

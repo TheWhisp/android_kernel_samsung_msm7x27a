@@ -2,6 +2,7 @@
 #define __ASM_AVR32_KMAP_TYPES_H
 
 #ifdef CONFIG_DEBUG_HIGHMEM
+<<<<<<< HEAD
 # define D(n) __KM_FENCE_##n ,
 #else
 # define D(n)
@@ -27,4 +28,11 @@ D(14)	KM_TYPE_NR
 
 #undef D
 
+=======
+# define KM_TYPE_NR 29
+#else
+# define KM_TYPE_NR 14
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_AVR32_KMAP_TYPES_H */

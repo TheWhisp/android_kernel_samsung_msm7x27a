@@ -36,18 +36,24 @@ OPTIONS
 -p::
 --pid=<pid>::
 <<<<<<< HEAD
+<<<<<<< HEAD
         stat events on existing process id
 
 -t::
 --tid=<tid>::
         stat events on existing thread id
 =======
+=======
+>>>>>>> refs/remotes/origin/master
         stat events on existing process id (comma separated list)
 
 -t::
 --tid=<tid>::
         stat events on existing thread id (comma separated list)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 -a::
@@ -60,7 +66,11 @@ OPTIONS
 
 -r::
 --repeat=<n>::
+<<<<<<< HEAD
 	repeat command and print average + stddev (max: 100)
+=======
+	repeat command and print average + stddev (max: 100). 0 means forever.
+>>>>>>> refs/remotes/origin/master
 
 -B::
 --big-num::
@@ -103,7 +113,10 @@ corresponding events, i.e., they always refer to events defined earlier on the c
 line.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 -o file::
 --output file::
 Print the output into the designated file.
@@ -118,9 +131,46 @@ with it.  --append may be used here.  Examples:
      3>results  perf stat --log-fd 3          -- $cmd
      3>>results perf stat --log-fd 3 --append -- $cmd
 
+<<<<<<< HEAD
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+--pre::
+--post::
+	Pre and post measurement hooks, e.g.:
+
+perf stat --repeat 10 --null --sync --pre 'make -s O=defconfig-build/clean' -- make -s -j64 O=defconfig-build/ bzImage
+
+-I msecs::
+--interval-print msecs::
+	Print count deltas every N milliseconds (minimum: 100ms)
+	example: perf stat -I 1000 -e cycles -a sleep 5
+
+--per-socket::
+Aggregate counts per processor socket for system-wide mode measurements.  This
+is a useful mode to detect imbalance between sockets.  To enable this mode,
+use --per-socket in addition to -a. (system-wide).  The output includes the
+socket number and the number of online processors on that socket. This is
+useful to gauge the amount of aggregation.
+
+--per-core::
+Aggregate counts per physical processor for system-wide mode measurements.  This
+is a useful mode to detect imbalance between physical cores.  To enable this mode,
+use --per-core in addition to -a. (system-wide).  The output includes the
+core number and the number of online logical processors on that physical processor.
+
+-D msecs::
+--delay msecs::
+After starting the program, wait msecs before measuring. This is useful to
+filter out the startup phase of the program, which is often very different.
+
+-T::
+--transaction::
+
+Print statistics of transactional execution if supported.
+
+>>>>>>> refs/remotes/origin/master
 EXAMPLES
 --------
 

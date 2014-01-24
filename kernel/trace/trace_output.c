@@ -14,7 +14,11 @@
 /* must be a power of 2 */
 #define EVENT_HASHSIZE	128
 
+<<<<<<< HEAD
 DECLARE_RWSEM(trace_event_mutex);
+=======
+DECLARE_RWSEM(trace_event_sem);
+>>>>>>> refs/remotes/origin/master
 
 static struct hlist_head event_hash[EVENT_HASHSIZE] __read_mostly;
 
@@ -37,6 +41,25 @@ int trace_print_seq(struct seq_file *m, struct trace_seq *s)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+enum print_line_t trace_print_bputs_msg_only(struct trace_iterator *iter)
+{
+	struct trace_seq *s = &iter->seq;
+	struct trace_entry *entry = iter->ent;
+	struct bputs_entry *field;
+	int ret;
+
+	trace_assign_type(field, entry);
+
+	ret = trace_seq_puts(s, field->str);
+	if (!ret)
+		return TRACE_TYPE_PARTIAL_LINE;
+
+	return TRACE_TYPE_HANDLED;
+}
+
+>>>>>>> refs/remotes/origin/master
 enum print_line_t trace_print_bprintk_msg_only(struct trace_iterator *iter)
 {
 	struct trace_seq *s = &iter->seq;
@@ -62,7 +85,11 @@ enum print_line_t trace_print_printk_msg_only(struct trace_iterator *iter)
 
 	trace_assign_type(field, entry);
 
+<<<<<<< HEAD
 	ret = trace_seq_printf(s, "%s", field->buf);
+=======
+	ret = trace_seq_puts(s, field->buf);
+>>>>>>> refs/remotes/origin/master
 	if (!ret)
 		return TRACE_TYPE_PARTIAL_LINE;
 
@@ -265,10 +292,14 @@ void *trace_seq_reserve(struct trace_seq *s, size_t len)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int trace_seq_path(struct trace_seq *s, struct path *path)
 =======
 int trace_seq_path(struct trace_seq *s, const struct path *path)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int trace_seq_path(struct trace_seq *s, const struct path *path)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char *p;
 
@@ -305,10 +336,14 @@ ftrace_print_flags_seq(struct trace_seq *p, const char *delim,
 	const char *str;
 	const char *ret = p->buffer + p->len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 =======
 	int i, first = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, first = 1;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0;  flag_array[i].name && flags; i++) {
 
@@ -319,24 +354,34 @@ ftrace_print_flags_seq(struct trace_seq *p, const char *delim,
 		str = flag_array[i].name;
 		flags &= ~mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (p->len && delim)
 			trace_seq_puts(p, delim);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!first && delim)
 			trace_seq_puts(p, delim);
 		else
 			first = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		trace_seq_puts(p, str);
 	}
 
 	/* check for left over flags */
 	if (flags) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (p->len && delim)
 =======
 		if (!first && delim)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!first && delim)
+>>>>>>> refs/remotes/origin/master
 			trace_seq_puts(p, delim);
 		trace_seq_printf(p, "0x%lx", flags);
 	}
@@ -364,10 +409,14 @@ ftrace_print_symbols_seq(struct trace_seq *p, unsigned long val,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!p->len)
 =======
 	if (ret == (const char *)(p->buffer + p->len))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret == (const char *)(p->buffer + p->len))
+>>>>>>> refs/remotes/origin/master
 		trace_seq_printf(p, "0x%lx", val);
 		
 	trace_seq_putc(p, 0);
@@ -394,10 +443,14 @@ ftrace_print_symbols_seq_u64(struct trace_seq *p, unsigned long long val,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!p->len)
 =======
 	if (ret == (const char *)(p->buffer + p->len))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret == (const char *)(p->buffer + p->len))
+>>>>>>> refs/remotes/origin/master
 		trace_seq_printf(p, "0x%llx", val);
 
 	trace_seq_putc(p, 0);
@@ -422,6 +475,35 @@ ftrace_print_hex_seq(struct trace_seq *p, const unsigned char *buf, int buf_len)
 }
 EXPORT_SYMBOL(ftrace_print_hex_seq);
 
+<<<<<<< HEAD
+=======
+int ftrace_raw_output_prep(struct trace_iterator *iter,
+			   struct trace_event *trace_event)
+{
+	struct ftrace_event_call *event;
+	struct trace_seq *s = &iter->seq;
+	struct trace_seq *p = &iter->tmp_seq;
+	struct trace_entry *entry;
+	int ret;
+
+	event = container_of(trace_event, struct ftrace_event_call, event);
+	entry = iter->ent;
+
+	if (entry->type != event->event.type) {
+		WARN_ON_ONCE(1);
+		return TRACE_TYPE_UNHANDLED;
+	}
+
+	trace_seq_init(p);
+	ret = trace_seq_printf(s, "%s: ", event->name);
+	if (!ret)
+		return TRACE_TYPE_PARTIAL_LINE;
+
+	return 0;
+}
+EXPORT_SYMBOL(ftrace_raw_output_prep);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_KRETPROBES
 static inline const char *kretprobed(const char *name)
 {
@@ -541,14 +623,22 @@ seq_print_userip_objs(const struct userstack_entry *entry, struct trace_seq *s,
 			if (ret)
 				ret = trace_seq_puts(s, "??");
 			if (ret)
+<<<<<<< HEAD
 				ret = trace_seq_puts(s, "\n");
+=======
+				ret = trace_seq_putc(s, '\n');
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		if (!ret)
 			break;
 		if (ret)
 			ret = seq_print_user_ip(s, mm, ip, sym_flags);
+<<<<<<< HEAD
 		ret = trace_seq_puts(s, "\n");
+=======
+		ret = trace_seq_putc(s, '\n');
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (mm)
@@ -562,7 +652,11 @@ seq_print_ip_sym(struct trace_seq *s, unsigned long ip, unsigned long sym_flags)
 	int ret;
 
 	if (!ip)
+<<<<<<< HEAD
 		return trace_seq_printf(s, "0");
+=======
+		return trace_seq_putc(s, '0');
+>>>>>>> refs/remotes/origin/master
 
 	if (sym_flags & TRACE_ITER_SYM_OFFSET)
 		ret = seq_print_sym_offset(s, "%s", ip);
@@ -601,8 +695,28 @@ int trace_print_lat_fmt(struct trace_seq *s, struct trace_entry *entry)
 		(entry->flags & TRACE_FLAG_IRQS_OFF) ? 'd' :
 		(entry->flags & TRACE_FLAG_IRQS_NOSUPPORT) ? 'X' :
 		'.';
+<<<<<<< HEAD
 	need_resched =
 		(entry->flags & TRACE_FLAG_NEED_RESCHED) ? 'N' : '.';
+=======
+
+	switch (entry->flags & (TRACE_FLAG_NEED_RESCHED |
+				TRACE_FLAG_PREEMPT_RESCHED)) {
+	case TRACE_FLAG_NEED_RESCHED | TRACE_FLAG_PREEMPT_RESCHED:
+		need_resched = 'N';
+		break;
+	case TRACE_FLAG_NEED_RESCHED:
+		need_resched = 'n';
+		break;
+	case TRACE_FLAG_PREEMPT_RESCHED:
+		need_resched = 'p';
+		break;
+	default:
+		need_resched = '.';
+		break;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	hardsoft_irq =
 		(hardirq && softirq) ? 'H' :
 		hardirq ? 'h' :
@@ -635,6 +749,7 @@ lat_print_generic(struct trace_seq *s, struct trace_entry *entry, int cpu)
 	return trace_print_lat_fmt(s, entry);
 }
 
+<<<<<<< HEAD
 static unsigned long preempt_mark_thresh = 100;
 
 static int
@@ -644,12 +759,55 @@ lat_print_timestamp(struct trace_seq *s, u64 abs_usecs,
 	return trace_seq_printf(s, " %4lldus%c: ", abs_usecs,
 				rel_usecs > preempt_mark_thresh ? '!' :
 				  rel_usecs > 1 ? '+' : ' ');
+=======
+static unsigned long preempt_mark_thresh_us = 100;
+
+static int
+lat_print_timestamp(struct trace_iterator *iter, u64 next_ts)
+{
+	unsigned long verbose = trace_flags & TRACE_ITER_VERBOSE;
+	unsigned long in_ns = iter->iter_flags & TRACE_FILE_TIME_IN_NS;
+	unsigned long long abs_ts = iter->ts - iter->trace_buffer->time_start;
+	unsigned long long rel_ts = next_ts - iter->ts;
+	struct trace_seq *s = &iter->seq;
+
+	if (in_ns) {
+		abs_ts = ns2usecs(abs_ts);
+		rel_ts = ns2usecs(rel_ts);
+	}
+
+	if (verbose && in_ns) {
+		unsigned long abs_usec = do_div(abs_ts, USEC_PER_MSEC);
+		unsigned long abs_msec = (unsigned long)abs_ts;
+		unsigned long rel_usec = do_div(rel_ts, USEC_PER_MSEC);
+		unsigned long rel_msec = (unsigned long)rel_ts;
+
+		return trace_seq_printf(
+				s, "[%08llx] %ld.%03ldms (+%ld.%03ldms): ",
+				ns2usecs(iter->ts),
+				abs_msec, abs_usec,
+				rel_msec, rel_usec);
+	} else if (verbose && !in_ns) {
+		return trace_seq_printf(
+				s, "[%016llx] %lld (+%lld): ",
+				iter->ts, abs_ts, rel_ts);
+	} else if (!verbose && in_ns) {
+		return trace_seq_printf(
+				s, " %4lldus%c: ",
+				abs_ts,
+				rel_ts > preempt_mark_thresh_us ? '!' :
+				  rel_ts > 1 ? '+' : ' ');
+	} else { /* !verbose && !in_ns */
+		return trace_seq_printf(s, " %4lld: ", abs_ts);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 int trace_print_context(struct trace_iterator *iter)
 {
 	struct trace_seq *s = &iter->seq;
 	struct trace_entry *entry = iter->ent;
+<<<<<<< HEAD
 	unsigned long long t = ns2usecs(iter->ts);
 	unsigned long usec_rem = do_div(t, USEC_PER_SEC);
 	unsigned long secs = (unsigned long)t;
@@ -661,6 +819,11 @@ int trace_print_context(struct trace_iterator *iter)
 	return trace_seq_printf(s, "%16s-%-5d [%03d] %5lu.%06lu: ",
 				comm, entry->pid, iter->cpu, secs, usec_rem);
 =======
+=======
+	unsigned long long t;
+	unsigned long secs, usec_rem;
+	char comm[TASK_COMM_LEN];
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	trace_find_cmdline(entry->pid, comm);
@@ -676,9 +839,19 @@ int trace_print_context(struct trace_iterator *iter)
 			return 0;
 	}
 
+<<<<<<< HEAD
 	return trace_seq_printf(s, " %5lu.%06lu: ",
 				secs, usec_rem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (iter->iter_flags & TRACE_FILE_TIME_IN_NS) {
+		t = ns2usecs(iter->ts);
+		usec_rem = do_div(t, USEC_PER_SEC);
+		secs = (unsigned long)t;
+		return trace_seq_printf(s, " %5lu.%06lu: ", secs, usec_rem);
+	} else
+		return trace_seq_printf(s, " %12llu: ", iter->ts);
+>>>>>>> refs/remotes/origin/master
 }
 
 int trace_print_lat_context(struct trace_iterator *iter)
@@ -686,15 +859,21 @@ int trace_print_lat_context(struct trace_iterator *iter)
 	u64 next_ts;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* trace_find_next_entry will reset ent_size */
 	int ent_size = iter->ent_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* trace_find_next_entry will reset ent_size */
+	int ent_size = iter->ent_size;
+>>>>>>> refs/remotes/origin/master
 	struct trace_seq *s = &iter->seq;
 	struct trace_entry *entry = iter->ent,
 			   *next_entry = trace_find_next_entry(iter, NULL,
 							       &next_ts);
 	unsigned long verbose = (trace_flags & TRACE_ITER_VERBOSE);
+<<<<<<< HEAD
 	unsigned long abs_usecs = ns2usecs(iter->ts - iter->tr->time_start);
 	unsigned long rel_usecs;
 
@@ -707,12 +886,21 @@ int trace_print_lat_context(struct trace_iterator *iter)
 	if (!next_entry)
 		next_ts = iter->ts;
 	rel_usecs = ns2usecs(next_ts - iter->ts);
+=======
+
+	/* Restore the original ent_size */
+	iter->ent_size = ent_size;
+
+	if (!next_entry)
+		next_ts = iter->ts;
+>>>>>>> refs/remotes/origin/master
 
 	if (verbose) {
 		char comm[TASK_COMM_LEN];
 
 		trace_find_cmdline(entry->pid, comm);
 
+<<<<<<< HEAD
 		ret = trace_seq_printf(s, "%16s %5d %3d %d %08x %08lx [%08llx]"
 				       " %ld.%03ldms (+%ld.%03ldms): ", comm,
 				       entry->pid, iter->cpu, entry->flags,
@@ -728,6 +916,19 @@ int trace_print_lat_context(struct trace_iterator *iter)
 			ret = lat_print_timestamp(s, abs_usecs, rel_usecs);
 	}
 
+=======
+		ret = trace_seq_printf(
+				s, "%16s %5d %3d %d %08x %08lx ",
+				comm, entry->pid, iter->cpu, entry->flags,
+				entry->preempt_count, iter->idx);
+	} else {
+		ret = lat_print_generic(s, entry, iter->cpu);
+	}
+
+	if (ret)
+		ret = lat_print_timestamp(iter, next_ts);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -750,12 +951,19 @@ static int task_state_char(unsigned long state)
 struct trace_event *ftrace_find_event(int type)
 {
 	struct trace_event *event;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned key;
 
 	key = type & (EVENT_HASHSIZE - 1);
 
+<<<<<<< HEAD
 	hlist_for_each_entry(event, n, &event_hash[key], node) {
+=======
+	hlist_for_each_entry(event, &event_hash[key], node) {
+>>>>>>> refs/remotes/origin/master
 		if (event->type == type)
 			return event;
 	}
@@ -795,12 +1003,20 @@ static int trace_search_list(struct list_head **list)
 
 void trace_event_read_lock(void)
 {
+<<<<<<< HEAD
 	down_read(&trace_event_mutex);
+=======
+	down_read(&trace_event_sem);
+>>>>>>> refs/remotes/origin/master
 }
 
 void trace_event_read_unlock(void)
 {
+<<<<<<< HEAD
 	up_read(&trace_event_mutex);
+=======
+	up_read(&trace_event_sem);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -823,7 +1039,11 @@ int register_ftrace_event(struct trace_event *event)
 	unsigned key;
 	int ret = 0;
 
+<<<<<<< HEAD
 	down_write(&trace_event_mutex);
+=======
+	down_write(&trace_event_sem);
+>>>>>>> refs/remotes/origin/master
 
 	if (WARN_ON(!event))
 		goto out;
@@ -878,14 +1098,22 @@ int register_ftrace_event(struct trace_event *event)
 
 	ret = event->type;
  out:
+<<<<<<< HEAD
 	up_write(&trace_event_mutex);
+=======
+	up_write(&trace_event_sem);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 EXPORT_SYMBOL_GPL(register_ftrace_event);
 
 /*
+<<<<<<< HEAD
  * Used by module code with the trace_event_mutex held for write.
+=======
+ * Used by module code with the trace_event_sem held for write.
+>>>>>>> refs/remotes/origin/master
  */
 int __unregister_ftrace_event(struct trace_event *event)
 {
@@ -900,9 +1128,15 @@ int __unregister_ftrace_event(struct trace_event *event)
  */
 int unregister_ftrace_event(struct trace_event *event)
 {
+<<<<<<< HEAD
 	down_write(&trace_event_mutex);
 	__unregister_ftrace_event(event);
 	up_write(&trace_event_mutex);
+=======
+	down_write(&trace_event_sem);
+	__unregister_ftrace_event(event);
+	up_write(&trace_event_sem);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -934,14 +1168,22 @@ static enum print_line_t trace_fn_trace(struct trace_iterator *iter, int flags,
 		goto partial;
 
 	if ((flags & TRACE_ITER_PRINT_PARENT) && field->parent_ip) {
+<<<<<<< HEAD
 		if (!trace_seq_printf(s, " <-"))
+=======
+		if (!trace_seq_puts(s, " <-"))
+>>>>>>> refs/remotes/origin/master
 			goto partial;
 		if (!seq_print_ip_sym(s,
 				      field->parent_ip,
 				      flags))
 			goto partial;
 	}
+<<<<<<< HEAD
 	if (!trace_seq_printf(s, "\n"))
+=======
+	if (!trace_seq_putc(s, '\n'))
+>>>>>>> refs/remotes/origin/master
 		goto partial;
 
 	return TRACE_TYPE_HANDLED;
@@ -1166,6 +1408,7 @@ static enum print_line_t trace_stack_print(struct trace_iterator *iter,
 	struct stack_entry *field;
 	struct trace_seq *s = &iter->seq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	trace_assign_type(field, iter->ent);
@@ -1180,6 +1423,8 @@ static enum print_line_t trace_stack_print(struct trace_iterator *iter,
 
 		if (!seq_print_ip_sym(s, field->caller[i], flags))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long *p;
 	unsigned long *end;
 
@@ -1194,9 +1439,14 @@ static enum print_line_t trace_stack_print(struct trace_iterator *iter,
 			goto partial;
 
 		if (!seq_print_ip_sym(s, *p, flags))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			goto partial;
 		if (!trace_seq_puts(s, "\n"))
+=======
+			goto partial;
+		if (!trace_seq_putc(s, '\n'))
+>>>>>>> refs/remotes/origin/master
 			goto partial;
 	}
 
@@ -1245,6 +1495,67 @@ static struct trace_event trace_user_stack_event = {
 	.funcs		= &trace_user_stack_funcs,
 };
 
+<<<<<<< HEAD
+=======
+/* TRACE_BPUTS */
+static enum print_line_t
+trace_bputs_print(struct trace_iterator *iter, int flags,
+		   struct trace_event *event)
+{
+	struct trace_entry *entry = iter->ent;
+	struct trace_seq *s = &iter->seq;
+	struct bputs_entry *field;
+
+	trace_assign_type(field, entry);
+
+	if (!seq_print_ip_sym(s, field->ip, flags))
+		goto partial;
+
+	if (!trace_seq_puts(s, ": "))
+		goto partial;
+
+	if (!trace_seq_puts(s, field->str))
+		goto partial;
+
+	return TRACE_TYPE_HANDLED;
+
+ partial:
+	return TRACE_TYPE_PARTIAL_LINE;
+}
+
+
+static enum print_line_t
+trace_bputs_raw(struct trace_iterator *iter, int flags,
+		struct trace_event *event)
+{
+	struct bputs_entry *field;
+	struct trace_seq *s = &iter->seq;
+
+	trace_assign_type(field, iter->ent);
+
+	if (!trace_seq_printf(s, ": %lx : ", field->ip))
+		goto partial;
+
+	if (!trace_seq_puts(s, field->str))
+		goto partial;
+
+	return TRACE_TYPE_HANDLED;
+
+ partial:
+	return TRACE_TYPE_PARTIAL_LINE;
+}
+
+static struct trace_event_functions trace_bputs_funcs = {
+	.trace		= trace_bputs_print,
+	.raw		= trace_bputs_raw,
+};
+
+static struct trace_event trace_bputs_event = {
+	.type		= TRACE_BPUTS,
+	.funcs		= &trace_bputs_funcs,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* TRACE_BPRINT */
 static enum print_line_t
 trace_bprint_print(struct trace_iterator *iter, int flags,
@@ -1357,6 +1668,10 @@ static struct trace_event *events[] __initdata = {
 	&trace_wake_event,
 	&trace_stack_event,
 	&trace_user_stack_event,
+<<<<<<< HEAD
+=======
+	&trace_bputs_event,
+>>>>>>> refs/remotes/origin/master
 	&trace_bprint_event,
 	&trace_print_event,
 	NULL
@@ -1380,4 +1695,8 @@ __init static int init_events(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 device_initcall(init_events);
+=======
+early_initcall(init_events);
+>>>>>>> refs/remotes/origin/master

@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 #include "m68360_regs.h"
 #include "m68360_pram.h"
 #include "m68360_quicc.h"
 #include "m68360_enet.h"
+=======
+#include <asm/m68360_regs.h>
+#include <asm/m68360_pram.h>
+#include <asm/m68360_quicc.h>
+#include <asm/m68360_enet.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_M68360
 

@@ -1,7 +1,10 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * File Name: hostmibs.c
  *
@@ -9,6 +12,7 @@
  *
  * Abstract: This file contains the routines to copy the statistics used by
  * the driver to the Host MIBS structure and giving the same to Application.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  */
@@ -78,10 +82,13 @@ INT  ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMi
 						&pstPhsRule->u8PHSI,
 						sizeof(S_PHS_RULE));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include "headers.h"
 
+<<<<<<< HEAD
 INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMibs)
 {
 	S_SERVICEFLOW_ENTRY *pstServiceFlowEntry = NULL;
@@ -89,6 +96,15 @@ INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMib
 	S_CLASSIFIER_TABLE *pstClassifierTable = NULL;
 	S_CLASSIFIER_ENTRY *pstClassifierRule = NULL;
 	PPHS_DEVICE_EXTENSION pDeviceExtension = (PPHS_DEVICE_EXTENSION) &Adapter->stBCMPhsContext;
+=======
+INT ProcessGetHostMibs(struct bcm_mini_adapter *Adapter, struct bcm_host_stats_mibs *pstHostMibs)
+{
+	struct bcm_phs_entry *pstServiceFlowEntry = NULL;
+	struct bcm_phs_rule *pstPhsRule = NULL;
+	struct bcm_phs_classifier_table *pstClassifierTable = NULL;
+	struct bcm_phs_classifier_entry *pstClassifierRule = NULL;
+	struct bcm_phs_extension *pDeviceExtension = (struct bcm_phs_extension *) &Adapter->stBCMPhsContext;
+>>>>>>> refs/remotes/origin/master
 
 	UINT nClassifierIndex = 0, nPhsTableIndex = 0, nSfIndex = 0, uiIndex = 0;
 
@@ -104,7 +120,11 @@ INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMib
 			       astClassifierTable[nClassifierIndex],
 			       (PVOID) & Adapter->
 			       astClassifierTable[nClassifierIndex],
+<<<<<<< HEAD
 			       sizeof(S_MIBS_CLASSIFIER_RULE));
+=======
+			       sizeof(struct bcm_mibs_classifier_rule));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Copy the SF Table */
@@ -112,7 +132,11 @@ INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMib
 		if (Adapter->PackInfo[nSfIndex].bValid) {
 			memcpy((PVOID) & pstHostMibs->astSFtable[nSfIndex],
 			       (PVOID) & Adapter->PackInfo[nSfIndex],
+<<<<<<< HEAD
 			       sizeof(S_MIBS_SERVICEFLOW_TABLE));
+=======
+				sizeof(struct bcm_mibs_table));
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* If index in not valid,
 			 * don't process this for the PHS table.
@@ -143,8 +167,12 @@ INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMib
 
 				memcpy(&pstHostMibs->
 				       astPhsRulesTable[nPhsTableIndex].u8PHSI,
+<<<<<<< HEAD
 				       &pstPhsRule->u8PHSI, sizeof(S_PHS_RULE));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       &pstPhsRule->u8PHSI, sizeof(struct bcm_phs_rule));
+>>>>>>> refs/remotes/origin/master
 				nPhsTableIndex++;
 
 			}
@@ -154,6 +182,7 @@ INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMib
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	//copy other Host Statistics parameters
 	pstHostMibs->stHostInfo.GoodTransmits = Adapter->dev->stats.tx_packets;
@@ -161,16 +190,22 @@ INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMib
 	pstHostMibs->stHostInfo.CurrNumFreeDesc =
 			atomic_read(&Adapter->CurrNumFreeTxDesc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Copy other Host Statistics parameters */
 	pstHostMibs->stHostInfo.GoodTransmits = Adapter->dev->stats.tx_packets;
 	pstHostMibs->stHostInfo.GoodReceives = Adapter->dev->stats.rx_packets;
 	pstHostMibs->stHostInfo.CurrNumFreeDesc = atomic_read(&Adapter->CurrNumFreeTxDesc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pstHostMibs->stHostInfo.BEBucketSize = Adapter->BEBucketSize;
 	pstHostMibs->stHostInfo.rtPSBucketSize = Adapter->rtPSBucketSize;
 	pstHostMibs->stHostInfo.TimerActive = Adapter->TimerActive;
 	pstHostMibs->stHostInfo.u32TotalDSD = Adapter->u32TotalDSD;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memcpy(pstHostMibs->stHostInfo.aTxPktSizeHist,Adapter->aTxPktSizeHist,sizeof(UINT32)*MIBS_MAX_HIST_ENTRIES);
 	memcpy(pstHostMibs->stHostInfo.aRxPktSizeHist,Adapter->aRxPktSizeHist,sizeof(UINT32)*MIBS_MAX_HIST_ENTRIES);
@@ -178,10 +213,15 @@ INT ProcessGetHostMibs(PMINI_ADAPTER Adapter, S_MIBS_HOST_STATS_MIBS *pstHostMib
 	memcpy(pstHostMibs->stHostInfo.aTxPktSizeHist, Adapter->aTxPktSizeHist, sizeof(UINT32) * MIBS_MAX_HIST_ENTRIES);
 	memcpy(pstHostMibs->stHostInfo.aRxPktSizeHist, Adapter->aRxPktSizeHist, sizeof(UINT32) * MIBS_MAX_HIST_ENTRIES);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(pstHostMibs->stHostInfo.aTxPktSizeHist, Adapter->aTxPktSizeHist, sizeof(UINT32) * MIBS_MAX_HIST_ENTRIES);
+	memcpy(pstHostMibs->stHostInfo.aRxPktSizeHist, Adapter->aRxPktSizeHist, sizeof(UINT32) * MIBS_MAX_HIST_ENTRIES);
+>>>>>>> refs/remotes/origin/master
 
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 VOID GetDroppedAppCntrlPktMibs(S_MIBS_HOST_STATS_MIBS *pstHostMibs, const PPER_TARANG_DATA pTarang)
@@ -237,6 +277,18 @@ VOID GetDroppedAppCntrlPktMibs(S_MIBS_HOST_STATS_MIBS *pstHostMibs, const PPER_T
 VOID CopyMIBSExtendedSFParameters(PMINI_ADAPTER Adapter, CServiceFlowParamSI *psfLocalSet, UINT uiSearchRuleIndex)
 {
 	S_MIBS_EXTSERVICEFLOW_PARAMETERS *t = &Adapter->PackInfo[uiSearchRuleIndex].stMibsExtServiceFlowTable;
+=======
+VOID GetDroppedAppCntrlPktMibs(struct bcm_host_stats_mibs *pstHostMibs, struct bcm_tarang_data *pTarang)
+{
+	memcpy(&(pstHostMibs->stDroppedAppCntrlMsgs),
+	       &(pTarang->stDroppedAppCntrlMsgs),
+	       sizeof(struct bcm_mibs_dropped_cntrl_msg));
+}
+
+VOID CopyMIBSExtendedSFParameters(struct bcm_mini_adapter *Adapter, struct bcm_connect_mgr_params *psfLocalSet, UINT uiSearchRuleIndex)
+{
+	struct bcm_mibs_parameters *t = &Adapter->PackInfo[uiSearchRuleIndex].stMibsExtServiceFlowTable;
+>>>>>>> refs/remotes/origin/master
 
 	t->wmanIfSfid = psfLocalSet->u32SFID;
 	t->wmanIfCmnCpsMaxSustainedRate = psfLocalSet->u32MaxSustainedTrafficRate;
@@ -270,6 +322,9 @@ VOID CopyMIBSExtendedSFParameters(PMINI_ADAPTER Adapter, CServiceFlowParamSI *ps
 	t->wmanIfCmnSfCsSpecification = ntohl(t->wmanIfCmnSfCsSpecification);
 	t->wmanIfCmnCpsTargetSaid = ntohs(psfLocalSet->u16TargetSAID);
 	t->wmanIfCmnCpsTargetSaid = ntohl(t->wmanIfCmnCpsTargetSaid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 }

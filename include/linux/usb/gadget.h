@@ -16,8 +16,11 @@
 #define __LINUX_USB_GADGET_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/slab.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/errno.h>
 #include <linux/init.h>
@@ -25,8 +28,13 @@
 #include <linux/slab.h>
 #include <linux/scatterlist.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <linux/usb/ch9.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/workqueue.h>
+#include <linux/usb/ch9.h>
+>>>>>>> refs/remotes/origin/master
 
 struct usb_ep;
 
@@ -38,14 +46,20 @@ struct usb_ep;
  *	field, and the usb controller needs one, it is responsible
  *	for mapping and unmapping the buffer.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @length: Length of that data
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @sg: a scatterlist for SG-capable controllers.
  * @num_sgs: number of SG entries
  * @num_mapped_sgs: number of SG entries mapped to DMA (internal)
  * @length: Length of that data
  * @stream_id: The stream id, when USB3.0 bulk streams are being used
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @no_interrupt: If true, hints that no completion irq is needed.
  *	Helpful sometimes with deep request queues that are handled
  *	directly by DMA controllers.
@@ -76,7 +90,10 @@ struct usb_ep;
  *	Note that for writes (IN transfers) some data bytes may still
  *	reside in a device-side FIFO when the request is reported as
  *	complete.
+<<<<<<< HEAD
  *@udc_priv: Vendor private data in usage by the UDC.
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * These are allocated/freed through the endpoint they're used with.  The
  * hardware's driver can add extra per-request data to the memory it returns,
@@ -102,13 +119,19 @@ struct usb_request {
 	dma_addr_t		dma;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct scatterlist	*sg;
 	unsigned		num_sgs;
 	unsigned		num_mapped_sgs;
 
 	unsigned		stream_id:16;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned		no_interrupt:1;
 	unsigned		zero:1;
 	unsigned		short_not_ok:1;
@@ -120,7 +143,10 @@ struct usb_request {
 
 	int			status;
 	unsigned		actual;
+<<<<<<< HEAD
 	unsigned		udc_priv;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -140,6 +166,10 @@ struct usb_ep_ops {
 	struct usb_request *(*alloc_request) (struct usb_ep *ep,
 		gfp_t gfp_flags);
 	void (*free_request) (struct usb_ep *ep, struct usb_request *req);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	int (*queue) (struct usb_ep *ep, struct usb_request *req,
 		gfp_t gfp_flags);
 	int (*dequeue) (struct usb_ep *ep, struct usb_request *req);
@@ -160,9 +190,15 @@ struct usb_ep_ops {
  *	value can sometimes be reduced (hardware allowing), according to
  *      the endpoint descriptor used to configure the endpoint.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @driver_data:for use by the gadget driver.  all other fields are
  *	read-only to gadget drivers.
 =======
+=======
+ * @maxpacket_limit:The maximum packet size value which can be handled by this
+ *	endpoint. It's set once by UDC driver when endpoint is initialized, and
+ *	should not be changed. Should not be confused with maxpacket.
+>>>>>>> refs/remotes/origin/master
  * @max_streams: The maximum number of streams supported
  *	by this EP (0 - 16, actual number is 2^n)
  * @mult: multiplier, 'mult' value for SS Isoc EPs
@@ -174,7 +210,10 @@ struct usb_ep_ops {
  *	enabled and remains valid until the endpoint is disabled.
  * @comp_desc: In case of SuperSpeed support, this is the endpoint companion
  *	descriptor that is used to configure the endpoint
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * the bus controller driver lists all the general purpose endpoints in
  * gadget->ep_list.  the control endpoint (gadget->ep0) is not in that list,
@@ -188,19 +227,27 @@ struct usb_ep {
 	struct list_head	ep_list;
 	unsigned		maxpacket:16;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+	unsigned		maxpacket_limit:16;
+>>>>>>> refs/remotes/origin/master
 	unsigned		max_streams:16;
 	unsigned		mult:2;
 	unsigned		maxburst:5;
 	u8			address;
 	const struct usb_endpoint_descriptor	*desc;
 	const struct usb_ss_ep_comp_descriptor	*comp_desc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
 
 /**
+<<<<<<< HEAD
  * usb_ep_enable - configure endpoint, making it usable
  * @ep:the endpoint being configured.  may not be the endpoint named "ep0".
  *	drivers discover endpoints through the ep_list of a usb_gadget.
@@ -214,6 +261,28 @@ struct usb_ep {
  *
  * When configurations are set, or when interface settings change, the driver
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * usb_ep_set_maxpacket_limit - set maximum packet size limit for endpoint
+ * @ep:the endpoint being configured
+ * @maxpacket_limit:value of maximum packet size limit
+ *
+ * This function shoud be used only in UDC drivers to initialize endpoint
+ * (usually in probe function).
+ */
+static inline void usb_ep_set_maxpacket_limit(struct usb_ep *ep,
+					      unsigned maxpacket_limit)
+{
+	ep->maxpacket_limit = maxpacket_limit;
+	ep->maxpacket = maxpacket_limit;
+}
+
+/**
+ * usb_ep_enable - configure endpoint, making it usable
+ * @ep:the endpoint being configured.  may not be the endpoint named "ep0".
+ *	drivers discover endpoints through the ep_list of a usb_gadget.
+ *
+ * When configurations are set, or when interface settings change, the driver
+>>>>>>> refs/remotes/origin/master
  * will enable or disable the relevant endpoints.  while it is enabled, an
  * endpoint may be used for i/o until the driver receives a disconnect() from
  * the host or until the endpoint is disabled.
@@ -229,6 +298,7 @@ struct usb_ep {
  * returns zero, or a negative error code.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int usb_ep_enable(struct usb_ep *ep,
 				const struct usb_endpoint_descriptor *desc)
 {
@@ -238,6 +308,11 @@ static inline int usb_ep_enable(struct usb_ep *ep)
 {
 	return ep->ops->enable(ep, ep->desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int usb_ep_enable(struct usb_ep *ep)
+{
+	return ep->ops->enable(ep, ep->desc);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -479,8 +554,11 @@ static inline void usb_ep_fifo_flush(struct usb_ep *ep)
 /*-------------------------------------------------------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct usb_gadget;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct usb_dcd_config_params {
 	__u8  bU1devExitLat;	/* U1 Device exit Latency */
 #define USB_DEFAULT_U1_DEV_EXIT_LAT	0x01	/* Less then 1 microsec */
@@ -491,7 +569,10 @@ struct usb_dcd_config_params {
 
 struct usb_gadget;
 struct usb_gadget_driver;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* the rest of the api to the controller hardware: device operations,
  * which don't involve endpoints (or i/o).
@@ -506,27 +587,38 @@ struct usb_gadget_ops {
 	int	(*ioctl)(struct usb_gadget *,
 				unsigned code, unsigned long param);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	void	(*get_config_params)(struct usb_dcd_config_params *);
 	int	(*udc_start)(struct usb_gadget *,
 			struct usb_gadget_driver *);
 	int	(*udc_stop)(struct usb_gadget *,
 			struct usb_gadget_driver *);
+<<<<<<< HEAD
 
 	/* Those two are deprecated */
 	int	(*start)(struct usb_gadget_driver *,
 			int (*bind)(struct usb_gadget *));
 	int	(*stop)(struct usb_gadget_driver *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
  * struct usb_gadget - represents a usb slave device
+<<<<<<< HEAD
+=======
+ * @work: (internal use) Workqueue to be used for sysfs_notify()
+>>>>>>> refs/remotes/origin/master
  * @ops: Function pointers used to access hardware-specific operations.
  * @ep0: Endpoint zero, used when reading or writing responses to
  *	driver setup() requests
  * @ep_list: List of other endpoints supported by the device.
  * @speed: Speed of current connection to USB host.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @is_dualspeed: True if the controller supports both high and full speed
  *	operation.  If it does, the gadget driver must also support both.
@@ -535,6 +627,17 @@ struct usb_gadget_ops {
  *      and all slower speeds.
  * @sg_supported: true if we can handle scatter-gather
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @max_speed: Maximal speed the UDC can handle.  UDC must support this
+ *      and all slower speeds.
+ * @state: the state we are now (attached, suspended, configured, etc)
+ * @name: Identifies the controller hardware type.  Used in diagnostics
+ *	and sometimes configuration.
+ * @dev: Driver model state for this abstract device.
+ * @out_epnum: last used out ep number
+ * @in_epnum: last used in ep number
+ * @sg_supported: true if we can handle scatter-gather
+>>>>>>> refs/remotes/origin/master
  * @is_otg: True if the USB device port uses a Mini-AB jack, so that the
  *	gadget driver must provide a USB OTG descriptor.
  * @is_a_peripheral: False unless is_otg, the "A" end of a USB cable
@@ -546,6 +649,7 @@ struct usb_gadget_ops {
  *	only supports HNP on a different root port.
  * @b_hnp_enable: OTG device feature flag, indicating that the A-Host
  *	enabled HNP support.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @name: Identifies the controller hardware type.  Used in diagnostics
  *	and sometimes configuration.
@@ -560,6 +664,10 @@ struct usb_gadget_ops {
  * @usb_core_id: Identifies the usb core controlled by this usb_gadget.
  *		 Used in case of more then one core operates concurrently.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @quirk_ep_out_aligned_size: epout requires buffer size to be aligned to
+ *	MaxPacketSize.
+>>>>>>> refs/remotes/origin/master
  *
  * Gadgets have a mostly-portable "gadget driver" implementing device
  * functions, handling all usb configurations and interfaces.  Gadget
@@ -580,22 +688,38 @@ struct usb_gadget_ops {
  * device is acting as a B-Peripheral (so is_a_peripheral is false).
  */
 struct usb_gadget {
+<<<<<<< HEAD
+=======
+	struct work_struct		work;
+>>>>>>> refs/remotes/origin/master
 	/* readonly to gadget driver */
 	const struct usb_gadget_ops	*ops;
 	struct usb_ep			*ep0;
 	struct list_head		ep_list;	/* of usb_ep */
 	enum usb_device_speed		speed;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned			is_dualspeed:1;
 =======
 	enum usb_device_speed		max_speed;
 	unsigned			sg_supported:1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum usb_device_speed		max_speed;
+	enum usb_device_state		state;
+	const char			*name;
+	struct device			dev;
+	unsigned			out_epnum;
+	unsigned			in_epnum;
+
+	unsigned			sg_supported:1;
+>>>>>>> refs/remotes/origin/master
 	unsigned			is_otg:1;
 	unsigned			is_a_peripheral:1;
 	unsigned			b_hnp_enable:1;
 	unsigned			a_hnp_support:1;
 	unsigned			a_alt_hnp_support:1;
+<<<<<<< HEAD
 	unsigned			host_request:1;
 <<<<<<< HEAD
 	const char			*name;
@@ -607,6 +731,11 @@ struct usb_gadget {
 	u8				usb_core_id;
 >>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+	unsigned			quirk_ep_out_aligned_size:1;
+};
+#define work_to_gadget(w)	(container_of((w), struct usb_gadget, work))
+>>>>>>> refs/remotes/origin/master
 
 static inline void set_gadget_data(struct usb_gadget *gadget, void *data)
 	{ dev_set_drvdata(&gadget->dev, data); }
@@ -623,11 +752,32 @@ static inline struct usb_gadget *dev_to_usb_gadget(struct device *dev)
 
 
 /**
+<<<<<<< HEAD
+=======
+ * usb_ep_align_maybe - returns @len aligned to ep's maxpacketsize if gadget
+ *	requires quirk_ep_out_aligned_size, otherwise reguens len.
+ * @g: controller to check for quirk
+ * @ep: the endpoint whose maxpacketsize is used to align @len
+ * @len: buffer size's length to align to @ep's maxpacketsize
+ *
+ * This helper is used in case it's required for any reason to check and maybe
+ * align buffer's size to an ep's maxpacketsize.
+ */
+static inline size_t
+usb_ep_align_maybe(struct usb_gadget *g, struct usb_ep *ep, size_t len)
+{
+	return !g->quirk_ep_out_aligned_size ? len :
+			round_up(len, (size_t)ep->desc->wMaxPacketSize);
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * gadget_is_dualspeed - return true iff the hardware handles high speed
  * @g: controller that might support both high and full speeds
  */
 static inline int gadget_is_dualspeed(struct usb_gadget *g)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_DUALSPEED
 <<<<<<< HEAD
 	/* runtime test would check "g->is_dualspeed" ... that might be
@@ -658,6 +808,18 @@ static inline int gadget_is_superspeed(struct usb_gadget *g)
 #else
 	return 0;
 #endif
+=======
+	return g->max_speed >= USB_SPEED_HIGH;
+}
+
+/**
+ * gadget_is_superspeed() - return true if the hardware handles superspeed
+ * @g: controller that might support superspeed
+ */
+static inline int gadget_is_superspeed(struct usb_gadget *g)
+{
+	return g->max_speed >= USB_SPEED_SUPER;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -845,10 +1007,14 @@ static inline int usb_gadget_disconnect(struct usb_gadget *gadget)
  * struct usb_gadget_driver - driver for usb 'slave' devices
  * @function: String describing the gadget's function
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @speed: Highest speed the driver handles.
 =======
  * @max_speed: Highest speed the driver handles.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @max_speed: Highest speed the driver handles.
+>>>>>>> refs/remotes/origin/master
  * @setup: Invoked for ep0 control requests that aren't handled by
  *	the hardware level driver. Most calls must be handled by
  *	the gadget driver, including descriptor and configuration
@@ -859,6 +1025,10 @@ static inline int usb_gadget_disconnect(struct usb_gadget *gadget)
  *	when the host is disconnected.  May be called in_interrupt; this
  *	may not sleep.  Some devices can't detect disconnect, so this might
  *	not be called except as part of controller shutdown.
+<<<<<<< HEAD
+=======
+ * @bind: the driver's bind callback
+>>>>>>> refs/remotes/origin/master
  * @unbind: Invoked when the driver is unbound from a gadget,
  *	usually from rmmod (after a disconnect is reported).
  *	Called in a context that permits sleeping.
@@ -866,10 +1036,13 @@ static inline int usb_gadget_disconnect(struct usb_gadget *gadget)
  * @resume: Invoked on USB resume.  May be called in_interrupt.
  * @driver: Driver model state for this driver.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @usb_core_id: Identifies the usb core controlled by this usb_gadget_driver.
  *               Used in case of more then one core operates concurrently.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Devices are disabled till a gadget driver successfully bind()s, which
  * means the driver will handle setup() requests needed to enumerate (and
@@ -918,10 +1091,16 @@ static inline int usb_gadget_disconnect(struct usb_gadget *gadget)
 struct usb_gadget_driver {
 	char			*function;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum usb_device_speed	speed;
 =======
 	enum usb_device_speed	max_speed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum usb_device_speed	max_speed;
+	int			(*bind)(struct usb_gadget *gadget,
+					struct usb_gadget_driver *driver);
+>>>>>>> refs/remotes/origin/master
 	void			(*unbind)(struct usb_gadget *);
 	int			(*setup)(struct usb_gadget *,
 					const struct usb_ctrlrequest *);
@@ -932,10 +1111,13 @@ struct usb_gadget_driver {
 	/* FIXME support safe rmmod */
 	struct device_driver	driver;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	u8			usb_core_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -952,7 +1134,10 @@ struct usb_gadget_driver {
 /**
  * usb_gadget_probe_driver - probe a gadget driver
  * @driver: the driver being registered
+<<<<<<< HEAD
  * @bind: the driver's bind callback
+=======
+>>>>>>> refs/remotes/origin/master
  * Context: can sleep
  *
  * Call this in your gadget driver's module initialization function,
@@ -961,8 +1146,12 @@ struct usb_gadget_driver {
  * registration call returns.  It's expected that the @bind() function will
  * be in init sections.
  */
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *));
+=======
+int usb_gadget_probe_driver(struct usb_gadget_driver *driver);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_gadget_unregister_driver - unregister a gadget driver
@@ -980,11 +1169,21 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 int usb_gadget_unregister_driver(struct usb_gadget_driver *driver);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int usb_add_gadget_udc(struct device *parent, struct usb_gadget *gadget);
 extern void usb_del_gadget_udc(struct usb_gadget *gadget);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int usb_add_gadget_udc_release(struct device *parent,
+		struct usb_gadget *gadget, void (*release)(struct device *dev));
+extern int usb_add_gadget_udc(struct device *parent, struct usb_gadget *gadget);
+extern void usb_del_gadget_udc(struct usb_gadget *gadget);
+extern int udc_attach_driver(const char *name,
+		struct usb_gadget_driver *driver);
+
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /* utility to simplify dealing with string descriptors */
@@ -1015,6 +1214,14 @@ struct usb_gadget_strings {
 	struct usb_string	*strings;
 };
 
+<<<<<<< HEAD
+=======
+struct usb_gadget_string_container {
+	struct list_head        list;
+	u8                      *stash[0];
+};
+
+>>>>>>> refs/remotes/origin/master
 /* put descriptor for string with that id into buf (buflen >= 256) */
 int usb_gadget_get_string(struct usb_gadget_strings *table, int id, u8 *buf);
 
@@ -1023,6 +1230,7 @@ int usb_gadget_get_string(struct usb_gadget_strings *table, int id, u8 *buf);
 /* utility to simplify managing config descriptors */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Find and fill the requested descriptor into buffer */
 int
@@ -1030,6 +1238,8 @@ usb_find_descriptor_fillbuf(void *, unsigned,
 		const struct usb_descriptor_header **, u8);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* write vector of descriptors into buffer */
 int usb_descriptor_fillbuf(void *, unsigned,
 		const struct usb_descriptor_header **);
@@ -1043,6 +1253,7 @@ struct usb_descriptor_header **usb_copy_descriptors(
 		struct usb_descriptor_header **);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* return copy of endpoint descriptor given original descriptor set */
 struct usb_endpoint_descriptor *usb_find_endpoint(
 	struct usb_descriptor_header **src,
@@ -1051,6 +1262,8 @@ struct usb_endpoint_descriptor *usb_find_endpoint(
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * usb_free_descriptors - free descriptors returned by usb_copy_descriptors()
  * @v: vector of descriptors
@@ -1060,10 +1273,22 @@ static inline void usb_free_descriptors(struct usb_descriptor_header **v)
 	kfree(v);
 }
 
+<<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
 <<<<<<< HEAD
 =======
+=======
+struct usb_function;
+int usb_assign_descriptors(struct usb_function *f,
+		struct usb_descriptor_header **fs,
+		struct usb_descriptor_header **hs,
+		struct usb_descriptor_header **ss);
+void usb_free_all_descriptors(struct usb_function *f);
+
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /* utility to simplify map/unmap of usb_requests to/from DMA */
 
 extern int usb_gadget_map_request(struct usb_gadget *gadget,
@@ -1074,20 +1299,36 @@ extern void usb_gadget_unmap_request(struct usb_gadget *gadget,
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* utility to set gadget state properly */
+
+extern void usb_gadget_set_state(struct usb_gadget *gadget,
+		enum usb_device_state state);
+
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /* utility wrapping a simple endpoint selection policy */
 
 extern struct usb_ep *usb_ep_autoconfig(struct usb_gadget *,
 			struct usb_endpoint_descriptor *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern struct usb_ep *usb_ep_autoconfig_ss(struct usb_gadget *,
 			struct usb_endpoint_descriptor *,
 			struct usb_ss_ep_comp_descriptor *);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void usb_ep_autoconfig_reset(struct usb_gadget *);
 
 #endif /* __LINUX_USB_GADGET_H */

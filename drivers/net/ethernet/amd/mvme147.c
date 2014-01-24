@@ -188,9 +188,13 @@ static struct net_device *dev_mvme147_lance;
 int __init init_module(void)
 {
 	dev_mvme147_lance = mvme147lance_probe(-1);
+<<<<<<< HEAD
 	if (IS_ERR(dev_mvme147_lance))
 		return PTR_ERR(dev_mvme147_lance);
 	return 0;
+=======
+	return PTR_ERR_OR_ZERO(dev_mvme147_lance);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __exit cleanup_module(void)

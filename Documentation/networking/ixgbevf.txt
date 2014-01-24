@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 Linux* Base Driver for Intel(R) Network Connection
 ==================================================
 
 Intel Gigabit Linux driver.
 Copyright(c) 1999 - 2010 Intel Corporation.
+=======
+Linux* Base Driver for Intel(R) Ethernet Network Connection
+===========================================================
+
+Intel Gigabit Linux driver.
+Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
 Contents
 ========

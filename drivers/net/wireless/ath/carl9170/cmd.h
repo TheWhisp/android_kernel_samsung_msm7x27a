@@ -51,9 +51,13 @@ int carl9170_reboot(struct ar9170 *ar);
 int carl9170_mac_reset(struct ar9170 *ar);
 int carl9170_powersave(struct ar9170 *ar, const bool power_on);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int carl9170_collect_tally(struct ar9170 *ar);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int carl9170_collect_tally(struct ar9170 *ar);
+>>>>>>> refs/remotes/origin/master
 int carl9170_bcn_ctrl(struct ar9170 *ar, const unsigned int vif_id,
 		       const u32 mode, const u32 addr, const u32 len);
 
@@ -92,10 +96,14 @@ do {									\
 	__ar->cmd_buf[2 * __nreg + 2] = cpu_to_le32(v);			\
 	__nreg++;							\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((__nreg >= PAYLOAD_MAX/2)) {				\
 =======
 	if ((__nreg >= PAYLOAD_MAX / 2)) {				\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((__nreg >= PAYLOAD_MAX / 2)) {				\
+>>>>>>> refs/remotes/origin/master
 		if (IS_ACCEPTING_CMD(__ar))				\
 			__err = carl9170_exec_cmd(__ar,			\
 				CARL9170_CMD_WREG, 8 * __nreg,		\
@@ -121,7 +129,11 @@ __regwrite_out :							\
 
 #define carl9170_regwrite_result()					\
 	__err;								\
+<<<<<<< HEAD
 } while (0);
+=======
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 
 #define carl9170_async_regwrite_get_buf()				\
@@ -133,7 +145,11 @@ do {									\
 		__err = -ENOMEM;					\
 		goto __async_regwrite_out;				\
 	}								\
+<<<<<<< HEAD
 } while (0);
+=======
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #define carl9170_async_regwrite_begin(carl)				\
 do {									\
@@ -169,10 +185,14 @@ do {									\
 
 #define carl9170_async_regwrite_finish() do {				\
 <<<<<<< HEAD
+<<<<<<< HEAD
 __async_regwrite_out :							\
 =======
 __async_regwrite_out:							\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+__async_regwrite_out:							\
+>>>>>>> refs/remotes/origin/master
 	if (__cmd != NULL && __err == 0)				\
 		carl9170_async_regwrite_flush();			\
 	kfree(__cmd);							\
@@ -180,6 +200,10 @@ __async_regwrite_out:							\
 
 #define carl9170_async_regwrite_result()				\
 	__err;								\
+<<<<<<< HEAD
 } while (0);
+=======
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __CMD_H */

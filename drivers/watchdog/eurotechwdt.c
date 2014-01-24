@@ -46,10 +46,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -65,18 +70,25 @@
 #include <linux/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static unsigned long eurwdt_is_open;
 static int eurwdt_timeout;
 static char eur_expect_close;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static spinlock_t eurwdt_lock;
 =======
 static DEFINE_SPINLOCK(eurwdt_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(eurwdt_lock);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * You must set these - there is no sane way to probe for this board.
@@ -89,12 +101,17 @@ static char *ev = "int";
 #define WDT_TIMEOUT		60                /* 1 minute */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -162,18 +179,24 @@ static void eurwdt_activate_timer(void)
 	/* Setting interrupt line */
 	if (irq == 2 || irq > 15 || irq < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR ": invalid irq number\n");
 		irq = 0;	/* if invalid we disable interrupt */
 	}
 	if (irq == 0)
 		printk(KERN_INFO ": interrupt disabled\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("invalid irq number\n");
 		irq = 0;	/* if invalid we disable interrupt */
 	}
 	if (irq == 0)
 		pr_info("interrupt disabled\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	eurwdt_write_reg(WDT_TIMER_CFG, irq << 4);
 
@@ -189,6 +212,7 @@ static void eurwdt_activate_timer(void)
 static irqreturn_t eurwdt_interrupt(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_CRIT "timeout WDT timeout\n");
 
 #ifdef ONLY_TESTING
@@ -196,13 +220,18 @@ static irqreturn_t eurwdt_interrupt(int irq, void *dev_id)
 #else
 	printk(KERN_CRIT "Initiating system reboot.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_crit("timeout WDT timeout\n");
 
 #ifdef ONLY_TESTING
 	pr_crit("Would Reboot\n");
 #else
 	pr_crit("Initiating system reboot\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	emergency_restart();
 #endif
 	return IRQ_HANDLED;
@@ -370,11 +399,15 @@ static int eurwdt_release(struct inode *inode, struct file *file)
 		eurwdt_disable_timer();
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT
 			"eurwdt: Unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("Unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		eurwdt_ping();
 	}
 	clear_bit(0, &eurwdt_is_open);
@@ -466,6 +499,7 @@ static int __init eurwdt_init(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(irq, eurwdt_interrupt, IRQF_DISABLED, "eurwdt", NULL);
 	if (ret) {
 		printk(KERN_ERR "eurwdt: IRQ %d is not free.\n", irq);
@@ -474,21 +508,31 @@ static int __init eurwdt_init(void)
 	if (ret) {
 		pr_err("IRQ %d is not free\n", irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(irq, eurwdt_interrupt, 0, "eurwdt", NULL);
+	if (ret) {
+		pr_err("IRQ %d is not free\n", irq);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	if (!request_region(io, 2, "eurwdt")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "eurwdt: IO %X is not free.\n", io);
 =======
 		pr_err("IO %X is not free\n", io);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("IO %X is not free\n", io);
+>>>>>>> refs/remotes/origin/master
 		ret = -EBUSY;
 		goto outirq;
 	}
 
 	ret = register_reboot_notifier(&eurwdt_notifier);
 	if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR
 		    "eurwdt: can't register reboot notifier (err=%d)\n", ret);
@@ -502,6 +546,8 @@ static int __init eurwdt_init(void)
 		printk(KERN_ERR "eurwdt: can't misc_register on minor=%d\n",
 		WATCHDOG_MINOR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("can't register reboot notifier (err=%d)\n", ret);
 		goto outreg;
 	}
@@ -509,7 +555,10 @@ static int __init eurwdt_init(void)
 	ret = misc_register(&eurwdt_miscdev);
 	if (ret) {
 		pr_err("can't misc_register on minor=%d\n", WATCHDOG_MINOR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto outreboot;
 	}
 
@@ -517,11 +566,15 @@ static int __init eurwdt_init(void)
 
 	ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Eurotech WDT driver 0.01 at %X (Interrupt %d)"
 		" - timeout event: %s\n",
 =======
 	pr_info("Eurotech WDT driver 0.01 at %X (Interrupt %d) - timeout event: %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Eurotech WDT driver 0.01 at %X (Interrupt %d) - timeout event: %s\n",
+>>>>>>> refs/remotes/origin/master
 		io, irq, (!strcmp("int", ev) ? "int" : "reboot"));
 
 out:
@@ -544,4 +597,7 @@ module_exit(eurwdt_exit);
 MODULE_AUTHOR("Rodolfo Giometti");
 MODULE_DESCRIPTION("Driver for Eurotech CPU-1220/1410 on board watchdog");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

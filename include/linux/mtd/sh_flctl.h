@@ -20,6 +20,7 @@
 #ifndef __SH_FLCTL_H__
 #define __SH_FLCTL_H__
 
+<<<<<<< HEAD
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
@@ -27,6 +28,13 @@
 =======
 #include <linux/pm_qos.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/completion.h>
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/nand.h>
+#include <linux/mtd/partitions.h>
+#include <linux/pm_qos.h>
+>>>>>>> refs/remotes/origin/master
 
 /* FLCTL registers */
 #define FLCMNCR(f)		(f->reg + 0x0)
@@ -43,9 +51,13 @@
 #define FLECFIFO(f)		(f->reg + 0x28)
 #define FLTRCR(f)		(f->reg + 0x2C)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define FLHOLDCR(f)		(f->reg + 0x38)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FLHOLDCR(f)		(f->reg + 0x38)
+>>>>>>> refs/remotes/origin/master
 #define	FL4ECCRESULT0(f)	(f->reg + 0x80)
 #define	FL4ECCRESULT1(f)	(f->reg + 0x84)
 #define	FL4ECCRESULT2(f)	(f->reg + 0x88)
@@ -55,7 +67,10 @@
 #define	FLERRADR(f)		(f->reg + 0x98)
 
 /* FLCMNCR control bits */
+<<<<<<< HEAD
 #define ECCPOS2		(0x1 << 25)
+=======
+>>>>>>> refs/remotes/origin/master
 #define _4ECCCNTEN	(0x1 << 24)
 #define _4ECCEN		(0x1 << 23)
 #define _4ECCCORRECT	(0x1 << 22)
@@ -65,9 +80,12 @@
 #define QTSEL_E		(0x1 << 17)
 #define ENDIAN		(0x1 << 16)	/* 1 = little endian */
 #define FCKSEL_E	(0x1 << 15)
+<<<<<<< HEAD
 #define ECCPOS_00	(0x00 << 12)
 #define ECCPOS_01	(0x01 << 12)
 #define ECCPOS_02	(0x02 << 12)
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACM_SACCES_MODE	(0x01 << 10)
 #define NANWF_E		(0x1 << 9)
 #define SE_D		(0x1 << 8)	/* Spare area disable */
@@ -76,7 +94,10 @@
 #define	TYPESEL_SET	(0x1 << 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Clock settings using the PULSEx registers from FLCMNCR
  *
@@ -101,7 +122,10 @@
 #define CLK_16B_9L_3H			(PULSE0 | PULSE1 | PULSE2)
 #define CLK_16B_12L_4H			(PULSE0 | PULSE2)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* FLCMDCR control bits */
 #define ADRCNT2_E	(0x1 << 31)	/* 5byte address enable */
 #define ADRMD_E		(0x1 << 26)	/* Sector address access */
@@ -116,12 +140,27 @@
 #define DOCMD2_E	(0x1 << 17)	/* 2nd cmd stage execute */
 #define DOCMD1_E	(0x1 << 16)	/* 1st cmd stage execute */
 
+<<<<<<< HEAD
+=======
+/* FLINTDMACR control bits */
+#define ESTERINTE	(0x1 << 24)	/* ECC error interrupt enable */
+#define AC1CLR		(0x1 << 19)	/* ECC FIFO clear */
+#define AC0CLR		(0x1 << 18)	/* Data FIFO clear */
+#define DREQ0EN		(0x1 << 16)	/* FLDTFIFODMA Request Enable */
+#define ECERB		(0x1 << 9)	/* ECC error */
+#define STERB		(0x1 << 8)	/* Status error */
+#define STERINTE	(0x1 << 4)	/* Status error enable */
+
+>>>>>>> refs/remotes/origin/master
 /* FLTRCR control bits */
 #define TRSTRT		(0x1 << 0)	/* translation start */
 #define TREND		(0x1 << 1)	/* translation end */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * FLHOLDCR control bits
  *
@@ -131,34 +170,60 @@
  */
 #define HOLDEN		(0x1 << 0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* FL4ECCCR control bits */
 #define	_4ECCFA		(0x1 << 2)	/* 4 symbols correct fault */
 #define	_4ECCEND	(0x1 << 1)	/* 4 symbols end */
 #define	_4ECCEXST	(0x1 << 0)	/* 4 symbols exist */
 
+<<<<<<< HEAD
 #define INIT_FL4ECCRESULT_VAL	0x03FF03FF
 #define LOOP_TIMEOUT_MAX	0x00010000
 
+=======
+#define LOOP_TIMEOUT_MAX	0x00010000
+
+enum flctl_ecc_res_t {
+	FL_SUCCESS,
+	FL_REPAIRABLE,
+	FL_ERROR,
+	FL_TIMEOUT
+};
+
+struct dma_chan;
+
+>>>>>>> refs/remotes/origin/master
 struct sh_flctl {
 	struct mtd_info		mtd;
 	struct nand_chip	chip;
 	struct platform_device	*pdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct dev_pm_qos_request pm_qos;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dev_pm_qos_request pm_qos;
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*reg;
 
 	uint8_t	done_buff[2048 + 64];	/* max size 2048 + 64 */
 	int	read_bytes;
+<<<<<<< HEAD
 	int	index;
+=======
+	unsigned int index;
+>>>>>>> refs/remotes/origin/master
 	int	seqin_column;		/* column in SEQIN cmd */
 	int	seqin_page_addr;	/* page_addr in SEQIN cmd */
 	uint32_t seqin_read_cmd;		/* read cmd in SEQIN cmd */
 	int	erase1_page_addr;	/* page_addr in ERASE1 cmd */
 	uint32_t erase_ADRCNT;		/* bits of FLCMDCR in ERASE1 cmd */
 	uint32_t rw_ADRCNT;	/* bits of FLCMDCR in READ WRITE cmd */
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	uint32_t flcmncr_base;	/* base value of FLCMNCR */
@@ -173,6 +238,20 @@ struct sh_flctl {
 	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
 	unsigned qos_request:1;	/* QoS request to prevent deep power shutdown */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint32_t flcmncr_base;	/* base value of FLCMNCR */
+	uint32_t flintdmacr_base;	/* irq enable bits */
+
+	unsigned page_size:1;	/* NAND page size (0 = 512, 1 = 2048) */
+	unsigned hwecc:1;	/* Hardware ECC (0 = disabled, 1 = enabled) */
+	unsigned holden:1;	/* Hardware has FLHOLDCR and HOLDEN is set */
+	unsigned qos_request:1;	/* QoS request to prevent deep power shutdown */
+
+	/* DMA related objects */
+	struct dma_chan		*chan_fifo0_rx;
+	struct dma_chan		*chan_fifo0_tx;
+	struct completion	dma_complete;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sh_flctl_platform_data {
@@ -182,9 +261,16 @@ struct sh_flctl_platform_data {
 
 	unsigned has_hwecc:1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned use_holden:1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned use_holden:1;
+
+	unsigned int            slave_id_fifo0_tx;
+	unsigned int            slave_id_fifo0_rx;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)

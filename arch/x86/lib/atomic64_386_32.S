@@ -138,6 +138,7 @@ RET_ENDP
 #undef v
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define v %ecx
 BEGIN(add_unless)
 	addl %eax, %esi
@@ -146,6 +147,8 @@ BEGIN(add_unless)
 	adcl 4(v), %edx
 	cmpl %eax, %esi
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define v %esi
 BEGIN(add_unless)
 	addl %eax, %ecx
@@ -153,7 +156,10 @@ BEGIN(add_unless)
 	addl  (v), %eax
 	adcl 4(v), %edx
 	cmpl %eax, %ecx
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	je 3f
 1:
 	movl %eax,  (v)

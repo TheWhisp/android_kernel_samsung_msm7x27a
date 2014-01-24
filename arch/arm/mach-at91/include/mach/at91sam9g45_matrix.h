@@ -16,6 +16,7 @@
 #define AT91SAM9G45_MATRIX_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_MCFG0	(AT91_MATRIX + 0x00)	/* Master Configuration Register 0 */
 #define AT91_MATRIX_MCFG1	(AT91_MATRIX + 0x04)	/* Master Configuration Register 1 */
 #define AT91_MATRIX_MCFG2	(AT91_MATRIX + 0x08)	/* Master Configuration Register 2 */
@@ -29,6 +30,8 @@
 #define AT91_MATRIX_MCFG10	(AT91_MATRIX + 0x28)	/* Master Configuration Register 10 */
 #define AT91_MATRIX_MCFG11	(AT91_MATRIX + 0x2C)	/* Master Configuration Register 11 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AT91_MATRIX_MCFG0	0x00			/* Master Configuration Register 0 */
 #define AT91_MATRIX_MCFG1	0x04			/* Master Configuration Register 1 */
 #define AT91_MATRIX_MCFG2	0x08			/* Master Configuration Register 2 */
@@ -41,7 +44,10 @@
 #define AT91_MATRIX_MCFG9	0x24			/* Master Configuration Register 9 */
 #define AT91_MATRIX_MCFG10	0x28			/* Master Configuration Register 10 */
 #define AT91_MATRIX_MCFG11	0x2C			/* Master Configuration Register 11 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_ULBT	(7 << 0)	/* Undefined Length Burst Type */
 #define			AT91_MATRIX_ULBT_INFINITE	(0 << 0)
 #define			AT91_MATRIX_ULBT_SINGLE		(1 << 0)
@@ -53,6 +59,7 @@
 #define			AT91_MATRIX_ULBT_128		(7 << 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_SCFG0	(AT91_MATRIX + 0x40)	/* Slave Configuration Register 0 */
 #define AT91_MATRIX_SCFG1	(AT91_MATRIX + 0x44)	/* Slave Configuration Register 1 */
 #define AT91_MATRIX_SCFG2	(AT91_MATRIX + 0x48)	/* Slave Configuration Register 2 */
@@ -62,6 +69,8 @@
 #define AT91_MATRIX_SCFG6	(AT91_MATRIX + 0x58)	/* Slave Configuration Register 6 */
 #define AT91_MATRIX_SCFG7	(AT91_MATRIX + 0x5C)	/* Slave Configuration Register 7 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AT91_MATRIX_SCFG0	0x40			/* Slave Configuration Register 0 */
 #define AT91_MATRIX_SCFG1	0x44			/* Slave Configuration Register 1 */
 #define AT91_MATRIX_SCFG2	0x48			/* Slave Configuration Register 2 */
@@ -70,7 +79,10 @@
 #define AT91_MATRIX_SCFG5	0x54			/* Slave Configuration Register 5 */
 #define AT91_MATRIX_SCFG6	0x58			/* Slave Configuration Register 6 */
 #define AT91_MATRIX_SCFG7	0x5C			/* Slave Configuration Register 7 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_SLOT_CYCLE		(0x1ff << 0)	/* Maximum Number of Allowed Cycles for a Burst */
 #define		AT91_MATRIX_DEFMSTR_TYPE	(3    << 16)	/* Default Master Type */
 #define			AT91_MATRIX_DEFMSTR_TYPE_NONE	(0 << 16)
@@ -78,6 +90,7 @@
 #define			AT91_MATRIX_DEFMSTR_TYPE_FIXED	(2 << 16)
 #define		AT91_MATRIX_FIXED_DEFMSTR	(0xf  << 18)	/* Fixed Index of Default Master */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define AT91_MATRIX_PRAS0	(AT91_MATRIX + 0x80)	/* Priority Register A for Slave 0 */
 #define AT91_MATRIX_PRBS0	(AT91_MATRIX + 0x84)	/* Priority Register B for Slave 0 */
@@ -96,6 +109,8 @@
 #define AT91_MATRIX_PRAS7	(AT91_MATRIX + 0xB8)	/* Priority Register A for Slave 7 */
 #define AT91_MATRIX_PRBS7	(AT91_MATRIX + 0xBC)	/* Priority Register B for Slave 7 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AT91_MATRIX_PRAS0	0x80			/* Priority Register A for Slave 0 */
 #define AT91_MATRIX_PRBS0	0x84			/* Priority Register B for Slave 0 */
 #define AT91_MATRIX_PRAS1	0x88			/* Priority Register A for Slave 1 */
@@ -112,7 +127,10 @@
 #define AT91_MATRIX_PRBS6	0xB4			/* Priority Register B for Slave 6 */
 #define AT91_MATRIX_PRAS7	0xB8			/* Priority Register A for Slave 7 */
 #define AT91_MATRIX_PRBS7	0xBC			/* Priority Register B for Slave 7 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_M0PR		(3 << 0)	/* Master 0 Priority */
 #define		AT91_MATRIX_M1PR		(3 << 4)	/* Master 1 Priority */
 #define		AT91_MATRIX_M2PR		(3 << 8)	/* Master 2 Priority */
@@ -127,10 +145,14 @@
 #define		AT91_MATRIX_M11PR		(3 << 12)	/* Master 11 Priority (in Register B) */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_MRCR	(AT91_MATRIX + 0x100)	/* Master Remap Control Register */
 =======
 #define AT91_MATRIX_MRCR	0x100			/* Master Remap Control Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_MATRIX_MRCR	0x100			/* Master Remap Control Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_RCB0		(1 << 0)	/* Remap Command for AHB Master 0 (ARM926EJ-S Instruction Master) */
 #define		AT91_MATRIX_RCB1		(1 << 1)	/* Remap Command for AHB Master 1 (ARM926EJ-S Data Master) */
 #define		AT91_MATRIX_RCB2		(1 << 2)
@@ -145,10 +167,14 @@
 #define		AT91_MATRIX_RCB11		(1 << 11)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_TCMR	(AT91_MATRIX + 0x110)	/* TCM Configuration Register */
 =======
 #define AT91_MATRIX_TCMR	0x110			/* TCM Configuration Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_MATRIX_TCMR	0x110			/* TCM Configuration Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_ITCM_SIZE		(0xf << 0)	/* Size of ITCM enabled memory block */
 #define			AT91_MATRIX_ITCM_0		(0 << 0)
 #define			AT91_MATRIX_ITCM_32		(6 << 0)
@@ -161,19 +187,27 @@
 #define			AT91_MATRIX_TCM_ONE_WS		(0x1 << 11)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_VIDEO	(AT91_MATRIX + 0x118)	/* Video Mode Configuration Register */
 =======
 #define AT91_MATRIX_VIDEO	0x118			/* Video Mode Configuration Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_MATRIX_VIDEO	0x118			/* Video Mode Configuration Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91C_VDEC_SEL			(0x1 <<  0) /* Video Mode Selection */
 #define			AT91C_VDEC_SEL_OFF		(0 << 0)
 #define			AT91C_VDEC_SEL_ON		(1 << 0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_EBICSA	(AT91_MATRIX + 0x128)	/* EBI Chip Select Assignment Register */
 =======
 #define AT91_MATRIX_EBICSA	0x128			/* EBI Chip Select Assignment Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_MATRIX_EBICSA	0x128			/* EBI Chip Select Assignment Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_EBI_CS1A		(1 << 1)	/* Chip Select 1 Assignment */
 #define			AT91_MATRIX_EBI_CS1A_SMC		(0 << 1)
 #define			AT91_MATRIX_EBI_CS1A_SDRAMC		(1 << 1)
@@ -200,20 +234,28 @@
 #define			AT91_MATRIX_EBI_DDR_IOSR_NORMAL		(1 << 18)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_WPMR	(AT91_MATRIX + 0x1E4)	/* Write Protect Mode Register */
 =======
 #define AT91_MATRIX_WPMR	0x1E4			/* Write Protect Mode Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_MATRIX_WPMR	0x1E4			/* Write Protect Mode Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_WPMR_WPEN		(1 << 0)	/* Write Protect ENable */
 #define			AT91_MATRIX_WPMR_WP_WPDIS		(0 << 0)
 #define			AT91_MATRIX_WPMR_WP_WPEN		(1 << 0)
 #define		AT91_MATRIX_WPMR_WPKEY		(0xFFFFFF << 8)	/* Write Protect KEY */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MATRIX_WPSR	(AT91_MATRIX + 0x1E8)	/* Write Protect Status Register */
 =======
 #define AT91_MATRIX_WPSR	0x1E8			/* Write Protect Status Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_MATRIX_WPSR	0x1E8			/* Write Protect Status Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MATRIX_WPSR_WPVS		(1 << 0)	/* Write Protect Violation Status */
 #define			AT91_MATRIX_WPSR_NO_WPV		(0 << 0)
 #define			AT91_MATRIX_WPSR_WPV		(1 << 0)

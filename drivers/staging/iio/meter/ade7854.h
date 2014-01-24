@@ -142,12 +142,16 @@
 #define ADE7854_SPI_BURST	(u32)(1000 * 1000)
 #define ADE7854_SPI_FAST	(u32)(2000 * 1000)
 
+<<<<<<< HEAD
 #define DRIVER_NAME		"ade7854"
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct ade7854_state - device instance specific data
  * @spi:			actual spi_device
  * @indio_dev:		industrial I/O device structure
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @tx:			transmit buffer
  * @rx:			receive buffer
@@ -174,6 +178,8 @@ struct ade7854_state {
 extern int ade7854_probe(struct ade7854_state *st, struct device *dev);
 extern int ade7854_remove(struct ade7854_state *st);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @buf_lock:		mutex to protect tx and rx
  * @tx:			transmit buffer
  * @rx:			receive buffer
@@ -198,6 +204,9 @@ struct ade7854_state {
 
 extern int ade7854_probe(struct iio_dev *indio_dev, struct device *dev);
 extern int ade7854_remove(struct iio_dev *indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

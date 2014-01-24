@@ -21,7 +21,10 @@
 #include <linux/time.h>
 #include <linux/smp.h>
 #include <linux/sem.h>
+<<<<<<< HEAD
 #include <linux/msg.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/shm.h>
 #include <linux/slab.h>
 #include <linux/uio.h>
@@ -43,8 +46,11 @@
 #include <asm/uaccess.h>
 #include <asm/mmu_context.h>
 
+<<<<<<< HEAD
 #include "sys32.h"
 
+=======
+>>>>>>> refs/remotes/origin/master
 #undef DEBUG
 
 #ifdef DEBUG
@@ -53,6 +59,7 @@
 #define DBG(x)
 #endif
 
+<<<<<<< HEAD
 /*
  * sys32_execve() executes a new program.
  */
@@ -75,6 +82,8 @@ out:
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage long sys32_unimplemented(int r26, int r25, int r24, int r23,
 	int r22, int r21, int r20)
 {
@@ -82,6 +91,7 @@ asmlinkage long sys32_unimplemented(int r26, int r25, int r24, int r23,
     	current->comm, current->pid, r20);
     return -ENOSYS;
 }
+<<<<<<< HEAD
 
 asmlinkage long sys32_sched_rr_get_interval(pid_t pid,
 	struct compat_timespec __user *interval)
@@ -236,3 +246,5 @@ asmlinkage long compat_sys_fanotify_mark(int fan_fd, int flags, u32 mask_hi,
 	return sys_fanotify_mark(fan_fd, flags, ((u64)mask_hi << 32) | mask_lo,
 				 fd, pathname);
 }
+=======
+>>>>>>> refs/remotes/origin/master

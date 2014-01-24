@@ -14,6 +14,7 @@ platforms += jz4740
 platforms += lantiq
 platforms += lasat
 platforms += loongson
+<<<<<<< HEAD
 platforms += mipssim
 platforms += mti-malta
 <<<<<<< HEAD
@@ -24,6 +25,15 @@ platforms += pmc-sierra
 platforms += pnx833x
 platforms += pnx8550
 platforms += powertv
+=======
+platforms += loongson1
+platforms += mti-malta
+platforms += mti-sead3
+platforms += netlogic
+platforms += pmcs-msp71xx
+platforms += pnx833x
+platforms += ralink
+>>>>>>> refs/remotes/origin/master
 platforms += rb532
 platforms += sgi-ip22
 platforms += sgi-ip27
@@ -32,7 +42,10 @@ platforms += sibyte
 platforms += sni
 platforms += txx9
 platforms += vr41xx
+<<<<<<< HEAD
 platforms += wrppmc
+=======
+>>>>>>> refs/remotes/origin/master
 
 # include the platform specific files
 include $(patsubst %, $(srctree)/arch/mips/%/Platform, $(platforms))

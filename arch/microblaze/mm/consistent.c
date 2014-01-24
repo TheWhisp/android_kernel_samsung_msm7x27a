@@ -13,7 +13,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/sched.h>
 #include <linux/kernel.h>
@@ -37,7 +41,11 @@
 #include <asm/pgalloc.h>
 #include <linux/io.h>
 #include <linux/hardirq.h>
+<<<<<<< HEAD
 #include <asm/mmu_context.h>
+=======
+#include <linux/mmu_context.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu.h>
 #include <linux/uaccess.h>
 #include <asm/pgtable.h>
@@ -102,8 +110,12 @@ void *consistent_alloc(gfp_t gfp, size_t size, dma_addr_t *dma_handle)
 # endif
 	if ((unsigned int)ret > cpuinfo.dcache_base &&
 				(unsigned int)ret < cpuinfo.dcache_high)
+<<<<<<< HEAD
 		printk(KERN_WARNING
 			"ERROR: Your cache coherent area is CACHED!!!\n");
+=======
+		pr_warn("ERROR: Your cache coherent area is CACHED!!!\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* dma_handle is same as physical (shadowed) address */
 	*dma_handle = (dma_addr_t)ret;
@@ -177,8 +189,12 @@ void consistent_free(size_t size, void *vaddr)
 	page = virt_to_page(vaddr);
 
 	do {
+<<<<<<< HEAD
 		ClearPageReserved(page);
 		__free_page(page);
+=======
+		__free_reserved_page(page);
+>>>>>>> refs/remotes/origin/master
 		page++;
 	} while (size -= PAGE_SIZE);
 #else
@@ -195,9 +211,13 @@ void consistent_free(size_t size, void *vaddr)
 			pte_clear(&init_mm, (unsigned int)vaddr, ptep);
 			if (pfn_valid(pfn)) {
 				page = pfn_to_page(pfn);
+<<<<<<< HEAD
 
 				ClearPageReserved(page);
 				__free_page(page);
+=======
+				__free_reserved_page(page);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		vaddr += PAGE_SIZE;

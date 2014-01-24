@@ -42,7 +42,11 @@ config SCSI_DMA
 
 config SCSI_TGT
 	tristate "SCSI target support"
+<<<<<<< HEAD
 	depends on SCSI && EXPERIMENTAL
+=======
+	depends on SCSI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you want to use SCSI target mode drivers enable this option.
 	  If you choose M, the module will be called scsi_tgt.
@@ -263,6 +267,7 @@ config SCSI_SCAN_ASYNC
 	  You can override this choice by specifying "scsi_mod.scan=sync"
 	  or async on the kernel's command line.
 
+<<<<<<< HEAD
 config SCSI_WAIT_SCAN
 	tristate  # No prompt here, this is an invisible symbol.
 	default m
@@ -280,6 +285,8 @@ config SCSI_WAIT_SCAN
 # disabling it, whereas people who accidentally switch it off may wonder why
 # their mkinitrd gets into trouble.
 
+=======
+>>>>>>> refs/remotes/origin/master
 menu "SCSI Transports"
 	depends on SCSI
 
@@ -310,9 +317,13 @@ config SCSI_ISCSI_ATTRS
 	tristate "iSCSI Transport Attributes"
 	depends on SCSI && NET
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select BLK_DEV_BSGLIB
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select BLK_DEV_BSGLIB
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you wish to export transport-specific information about
 	  each attached iSCSI device to sysfs, say Y.
@@ -411,6 +422,10 @@ config BLK_DEV_3W_XXXX_RAID
 config SCSI_HPSA
 	tristate "HP Smart Array SCSI driver"
 	depends on PCI && SCSI
+<<<<<<< HEAD
+=======
+	select CHECK_SIGNATURE
+>>>>>>> refs/remotes/origin/master
 	help
 	  This driver supports HP Smart Array Controllers (circa 2009).
 	  It is a SCSI alternative to the cciss driver, which is a block
@@ -463,7 +478,11 @@ config SCSI_ACARD
 
 config SCSI_AHA152X
 	tristate "Adaptec AHA152X/2825 support"
+<<<<<<< HEAD
 	depends on ISA && SCSI && !64BIT
+=======
+	depends on ISA && SCSI
+>>>>>>> refs/remotes/origin/master
 	select SCSI_SPI_ATTRS
 	select CHECK_SIGNATURE
 	---help---
@@ -564,7 +583,10 @@ source "drivers/scsi/aic94xx/Kconfig"
 source "drivers/scsi/mvsas/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config SCSI_MVUMI
 	tristate "Marvell UMI driver"
 	depends on SCSI && PCI
@@ -574,7 +596,10 @@ config SCSI_MVUMI
 	  To compile this driver as a module, choose M here: the
 	  module will be called mvumi.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config SCSI_DPT_I2O
 	tristate "Adaptec I2O RAID support "
 	depends on SCSI && PCI && VIRT_TO_BUS
@@ -624,6 +649,7 @@ config SCSI_ARCMSR
 	  module will be called arcmsr (modprobe arcmsr).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config SCSI_ARCMSR_AER
 	bool "Enable PCI Error Recovery Capability in Areca Driver(ARCMSR)"
 	depends on SCSI_ARCMSR && PCIEAER
@@ -645,6 +671,13 @@ source "drivers/scsi/megaraid/Kconfig.megaraid"
 source "drivers/scsi/mpt2sas/Kconfig"
 source "drivers/scsi/ufs/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "drivers/scsi/esas2r/Kconfig"
+source "drivers/scsi/megaraid/Kconfig.megaraid"
+source "drivers/scsi/mpt2sas/Kconfig"
+source "drivers/scsi/mpt3sas/Kconfig"
+source "drivers/scsi/ufs/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 config SCSI_HPTIOP
 	tristate "HighPoint RocketRAID 3xxx/4xxx Controller support"
@@ -673,7 +706,11 @@ config SCSI_BUSLOGIC
 
 config SCSI_FLASHPOINT
 	bool "FlashPoint support"
+<<<<<<< HEAD
 	depends on SCSI_BUSLOGIC && PCI && X86_32
+=======
+	depends on SCSI_BUSLOGIC && PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option allows you to add FlashPoint support to the
 	  BusLogic SCSI driver. The FlashPoint SCCB Manager code is
@@ -689,7 +726,10 @@ config VMWARE_PVSCSI
 	  module will be called vmw_pvscsi.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config HYPERV_STORAGE
 	tristate "Microsoft Hyper-V virtual storage driver"
 	depends on SCSI && HYPERV
@@ -697,7 +737,10 @@ config HYPERV_STORAGE
 	help
 	  Select this option to enable the Hyper-V virtual storage driver.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config LIBFC
 	tristate "LibFC module"
 	select SCSI_FC_ATTRS
@@ -835,6 +878,7 @@ config SCSI_FUTURE_DOMAIN
 	  To compile this driver as a module, choose M here: the
 	  module will be called fdomain.
 
+<<<<<<< HEAD
 config SCSI_FD_MCS
 	tristate "Future Domain MCS-600/700 SCSI support"
 	depends on MCA_LEGACY && SCSI
@@ -848,6 +892,8 @@ config SCSI_FD_MCS
 	  To compile this driver as a module, choose M here: the
 	  module will be called fd_mcs.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SCSI_GDTH
 	tristate "Intel/ICP (former GDT SCSI Disk Array) RAID Controller support"
 	depends on (ISA || EISA || PCI) && SCSI && ISA_DMA_API
@@ -867,20 +913,26 @@ config SCSI_ISCI
 	depends on PCI && SCSI
 	depends on X86
 <<<<<<< HEAD
+<<<<<<< HEAD
 	# (temporary): known alpha quality driver
 	depends on EXPERIMENTAL
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select SCSI_SAS_LIBSAS
 	---help---
 	  This driver supports the 6Gb/s SAS capabilities of the storage
 	  control unit found in the Intel(R) C600 series chipset.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  The experimental tag will be removed after the driver exits alpha
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config SCSI_GENERIC_NCR5380
 	tristate "Generic NCR5380/53c400 SCSI PIO support"
 	depends on ISA && SCSI
@@ -927,6 +979,7 @@ config SCSI_GENERIC_NCR53C400
 	  not detect your card.  See the file
 	  <file:Documentation/scsi/g_NCR5380.txt> for details.
 
+<<<<<<< HEAD
 config SCSI_IBMMCA
 	tristate "IBMMCA SCSI support"
 	depends on MCA && SCSI
@@ -997,6 +1050,8 @@ config IBMMCA_SCSI_DEV_RESET
 	  you know that one of your older devices needs it; N is the safe
 	  answer.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SCSI_IPS
 	tristate "IBM ServeRAID support"
 	depends on PCI && SCSI
@@ -1014,6 +1069,7 @@ config SCSI_IPS
 config SCSI_IBMVSCSI
 	tristate "IBM Virtual SCSI support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on PPC_PSERIES || PPC_ISERIES
 	select SCSI_SRP_ATTRS
 	select VIOPATH if PPC_ISERIES
@@ -1021,11 +1077,19 @@ config SCSI_IBMVSCSI
 	depends on PPC_PSERIES
 	select SCSI_SRP_ATTRS
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on PPC_PSERIES
+	select SCSI_SRP_ATTRS
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the IBM POWER Virtual SCSI Client
 
 	  To compile this driver as a module, choose M here: the
+<<<<<<< HEAD
 	  module will be called ibmvscsic.
+=======
+	  module will be called ibmvscsi.
+>>>>>>> refs/remotes/origin/master
 
 config SCSI_IBMVSCSIS
 	tristate "IBM Virtual SCSI Server support"
@@ -1495,6 +1559,10 @@ config SCSI_LPFC
 	tristate "Emulex LightPulse Fibre Channel Support"
 	depends on PCI && SCSI
 	select SCSI_FC_ATTRS
+<<<<<<< HEAD
+=======
+	select CRC_T10DIF
+>>>>>>> refs/remotes/origin/master
 	help
           This lpfc driver supports the Emulex LightPulse
           Family of Fibre Channel PCI host adapters.
@@ -1534,8 +1602,13 @@ config SCSI_SYM53C416
 	  module will be called sym53c416.
 
 config SCSI_DC395x
+<<<<<<< HEAD
 	tristate "Tekram DC395(U/UW/F) and DC315(U) SCSI support (EXPERIMENTAL)"
 	depends on PCI && SCSI && EXPERIMENTAL
+=======
+	tristate "Tekram DC395(U/UW/F) and DC315(U) SCSI support"
+	depends on PCI && SCSI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This driver supports PCI SCSI host adapters based on the ASIC
 	  TRM-S1040 chip, e.g Tekram DC395(U/UW/F) and DC315(U) variants.
@@ -1760,8 +1833,13 @@ config GVP11_SCSI
 	  module will be called gvp11.
 
 config SCSI_A4000T
+<<<<<<< HEAD
 	tristate "A4000T NCR53c710 SCSI support (EXPERIMENTAL)"
 	depends on AMIGA && SCSI && EXPERIMENTAL
+=======
+	tristate "A4000T NCR53c710 SCSI support"
+	depends on AMIGA && SCSI
+>>>>>>> refs/remotes/origin/master
 	select SCSI_SPI_ATTRS
 	help
 	  If you have an Amiga 4000T and have SCSI devices connected to the
@@ -1771,8 +1849,13 @@ config SCSI_A4000T
 	  module will be called a4000t.
 
 config SCSI_ZORRO7XX
+<<<<<<< HEAD
 	tristate "Zorro NCR53c710 SCSI support (EXPERIMENTAL)"
 	depends on ZORRO && SCSI && EXPERIMENTAL
+=======
+	tristate "Zorro NCR53c710 SCSI support"
+	depends on ZORRO && SCSI
+>>>>>>> refs/remotes/origin/master
 	select SCSI_SPI_ATTRS
 	help
 	  Support for various NCR53c710-based SCSI controllers on Zorro
@@ -1915,12 +1998,15 @@ config ZFCP
           and read <file:Documentation/kbuild/modules.txt>.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config ZFCP_DIF
 	tristate "T10 DIF/DIX support for the zfcp driver (EXPERIMENTAL)"
 	depends on ZFCP && EXPERIMENTAL
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config SCSI_PMCRAID
 	tristate "PMC SIERRA Linux MaxRAID adapter support"
 	depends on PCI && SCSI && NET
@@ -1956,16 +2042,27 @@ config SCSI_BFA_FC
 	  be called bfa.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config SCSI_VIRTIO
 	tristate "virtio-scsi support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && VIRTIO
+=======
+config SCSI_VIRTIO
+	tristate "virtio-scsi support"
+	depends on VIRTIO
+>>>>>>> refs/remotes/origin/master
 	help
           This is the virtual HBA driver for virtio.  If the kernel will
           be used in a virtual machine, say Y or M.
 
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "drivers/scsi/csiostor/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 endif # SCSI_LOWLEVEL
 
 source "drivers/scsi/pcmcia/Kconfig"

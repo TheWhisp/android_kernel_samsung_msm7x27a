@@ -13,9 +13,13 @@
  */
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/selinux.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/selinux.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "security.h"
 

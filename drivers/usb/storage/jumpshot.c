@@ -69,6 +69,7 @@ MODULE_LICENSE("GPL");
 		    vendorName, productName, useProtocol, useTransport, \
 		    initFunction, flags) \
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
 <<<<<<< HEAD
@@ -76,6 +77,11 @@ struct usb_device_id jumpshot_usb_ids[] = {
 =======
 static struct usb_device_id jumpshot_usb_ids[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  .driver_info = (flags) }
+
+static struct usb_device_id jumpshot_usb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 #	include "unusual_jumpshot.h"
 	{ }		/* Terminating entry */
 };
@@ -122,7 +128,11 @@ static inline int jumpshot_bulk_read(struct us_data *us,
 	if (len == 0)
 		return USB_STOR_XFER_GOOD;
 
+<<<<<<< HEAD
 	US_DEBUGP("jumpshot_bulk_read:  len = %d\n", len);
+=======
+	usb_stor_dbg(us, "len = %d\n", len);
+>>>>>>> refs/remotes/origin/master
 	return usb_stor_bulk_transfer_buf(us, us->recv_bulk_pipe,
 			data, len, NULL);
 }
@@ -135,7 +145,11 @@ static inline int jumpshot_bulk_write(struct us_data *us,
 	if (len == 0)
 		return USB_STOR_XFER_GOOD;
 
+<<<<<<< HEAD
 	US_DEBUGP("jumpshot_bulk_write:  len = %d\n", len);
+=======
+	usb_stor_dbg(us, "len = %d\n", len);
+>>>>>>> refs/remotes/origin/master
 	return usb_stor_bulk_transfer_buf(us, us->send_bulk_pipe,
 			data, len, NULL);
 }
@@ -156,8 +170,12 @@ static int jumpshot_get_status(struct us_data  *us)
 		return USB_STOR_TRANSPORT_ERROR;
 
 	if (us->iobuf[0] != 0x50) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_get_status:  0x%2x\n",
 			  us->iobuf[0]);
+=======
+		usb_stor_dbg(us, "0x%2x\n", us->iobuf[0]);
+>>>>>>> refs/remotes/origin/master
 		return USB_STOR_TRANSPORT_ERROR;
 	}
 
@@ -222,7 +240,11 @@ static int jumpshot_read_data(struct us_data *us,
 		if (result != USB_STOR_XFER_GOOD)
 			goto leave;
 
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_read_data:  %d bytes\n", len);
+=======
+		usb_stor_dbg(us, "%d bytes\n", len);
+>>>>>>> refs/remotes/origin/master
 
 		// Store the data in the transfer buffer
 		usb_stor_access_xfer_buf(buffer, len, us->srb,
@@ -318,7 +340,11 @@ static int jumpshot_write_data(struct us_data *us,
 		} while ((result != USB_STOR_TRANSPORT_GOOD) && (waitcount < 10));
 
 		if (result != USB_STOR_TRANSPORT_GOOD)
+<<<<<<< HEAD
 			US_DEBUGP("jumpshot_write_data:  Gah!  Waitcount = 10.  Bad write!?\n");
+=======
+			usb_stor_dbg(us, "Gah!  Waitcount = 10.  Bad write!?\n");
+>>>>>>> refs/remotes/origin/master
 
 		sector += thistime;
 		totallen -= len;
@@ -353,8 +379,12 @@ static int jumpshot_id_device(struct us_data *us,
 				   0, 0x20, 0, 6, command, 2);
 
 	if (rc != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_id_device:  Gah! "
 			  "send_control for read_capacity failed\n");
+=======
+		usb_stor_dbg(us, "Gah! send_control for read_capacity failed\n");
+>>>>>>> refs/remotes/origin/master
 		rc = USB_STOR_TRANSPORT_ERROR;
 		goto leave;
 	}
@@ -404,6 +434,7 @@ static int jumpshot_handle_mode_sense(struct us_data *us,
 
 	switch (pc) {
 	   case 0x0:
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_handle_mode_sense:  Current values\n");
 		break;
 	   case 0x1:
@@ -415,6 +446,19 @@ static int jumpshot_handle_mode_sense(struct us_data *us,
 	   case 0x3:
 		US_DEBUGP("jumpshot_handle_mode_sense:  Saves values\n");
 		break;
+=======
+		   usb_stor_dbg(us, "Current values\n");
+		   break;
+	   case 0x1:
+		   usb_stor_dbg(us, "Changeable values\n");
+		   break;
+	   case 0x2:
+		   usb_stor_dbg(us, "Default values\n");
+		   break;
+	   case 0x3:
+		   usb_stor_dbg(us, "Saves values\n");
+		   break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	memset(ptr, 0, 8);
@@ -498,17 +542,27 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 
 	if (!us->extra) {
 		us->extra = kzalloc(sizeof(struct jumpshot_info), GFP_NOIO);
+<<<<<<< HEAD
 		if (!us->extra) {
 			US_DEBUGP("jumpshot_transport:  Gah! Can't allocate storage for jumpshot info struct!\n");
 			return USB_STOR_TRANSPORT_ERROR;
 		}
+=======
+		if (!us->extra)
+			return USB_STOR_TRANSPORT_ERROR;
+
+>>>>>>> refs/remotes/origin/master
 		us->extra_destructor = jumpshot_info_destructor;
 	}
 
 	info = (struct jumpshot_info *) (us->extra);
 
 	if (srb->cmnd[0] == INQUIRY) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  INQUIRY.  Returning bogus response.\n");
+=======
+		usb_stor_dbg(us, "INQUIRY - Returning bogus response\n");
+>>>>>>> refs/remotes/origin/master
 		memcpy(ptr, inquiry_response, sizeof(inquiry_response));
 		fill_inquiry_response(us, ptr, 36);
 		return USB_STOR_TRANSPORT_GOOD;
@@ -525,8 +579,13 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 		if (rc != USB_STOR_TRANSPORT_GOOD)
 			return rc;
 
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  READ_CAPACITY:  %ld sectors, %ld bytes per sector\n",
 			  info->sectors, info->ssize);
+=======
+		usb_stor_dbg(us, "READ_CAPACITY:  %ld sectors, %ld bytes per sector\n",
+			     info->sectors, info->ssize);
+>>>>>>> refs/remotes/origin/master
 
 		// build the reply
 		//
@@ -538,7 +597,11 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 	}
 
 	if (srb->cmnd[0] == MODE_SELECT_10) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  Gah! MODE_SELECT_10.\n");
+=======
+		usb_stor_dbg(us, "Gah! MODE_SELECT_10\n");
+>>>>>>> refs/remotes/origin/master
 		return USB_STOR_TRANSPORT_ERROR;
 	}
 
@@ -548,7 +611,12 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 
 		blocks = ((u32)(srb->cmnd[7]) << 8) | ((u32)(srb->cmnd[8]));
 
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  READ_10: read block 0x%04lx  count %ld\n", block, blocks);
+=======
+		usb_stor_dbg(us, "READ_10: read block 0x%04lx  count %ld\n",
+			     block, blocks);
+>>>>>>> refs/remotes/origin/master
 		return jumpshot_read_data(us, info, block, blocks);
 	}
 
@@ -561,7 +629,12 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 		blocks = ((u32)(srb->cmnd[6]) << 24) | ((u32)(srb->cmnd[7]) << 16) |
 			 ((u32)(srb->cmnd[8]) <<  8) | ((u32)(srb->cmnd[9]));
 
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  READ_12: read block 0x%04lx  count %ld\n", block, blocks);
+=======
+		usb_stor_dbg(us, "READ_12: read block 0x%04lx  count %ld\n",
+			     block, blocks);
+>>>>>>> refs/remotes/origin/master
 		return jumpshot_read_data(us, info, block, blocks);
 	}
 
@@ -571,7 +644,12 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 
 		blocks = ((u32)(srb->cmnd[7]) << 8) | ((u32)(srb->cmnd[8]));
 
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  WRITE_10: write block 0x%04lx  count %ld\n", block, blocks);
+=======
+		usb_stor_dbg(us, "WRITE_10: write block 0x%04lx  count %ld\n",
+			     block, blocks);
+>>>>>>> refs/remotes/origin/master
 		return jumpshot_write_data(us, info, block, blocks);
 	}
 
@@ -584,18 +662,31 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 		blocks = ((u32)(srb->cmnd[6]) << 24) | ((u32)(srb->cmnd[7]) << 16) |
 			 ((u32)(srb->cmnd[8]) <<  8) | ((u32)(srb->cmnd[9]));
 
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  WRITE_12: write block 0x%04lx  count %ld\n", block, blocks);
+=======
+		usb_stor_dbg(us, "WRITE_12: write block 0x%04lx  count %ld\n",
+			     block, blocks);
+>>>>>>> refs/remotes/origin/master
 		return jumpshot_write_data(us, info, block, blocks);
 	}
 
 
 	if (srb->cmnd[0] == TEST_UNIT_READY) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  TEST_UNIT_READY.\n");
+=======
+		usb_stor_dbg(us, "TEST_UNIT_READY\n");
+>>>>>>> refs/remotes/origin/master
 		return jumpshot_get_status(us);
 	}
 
 	if (srb->cmnd[0] == REQUEST_SENSE) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  REQUEST_SENSE.\n");
+=======
+		usb_stor_dbg(us, "REQUEST_SENSE\n");
+>>>>>>> refs/remotes/origin/master
 
 		memset(ptr, 0, 18);
 		ptr[0] = 0xF0;
@@ -609,12 +700,20 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 	}
 
 	if (srb->cmnd[0] == MODE_SENSE) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  MODE_SENSE_6 detected\n");
+=======
+		usb_stor_dbg(us, "MODE_SENSE_6 detected\n");
+>>>>>>> refs/remotes/origin/master
 		return jumpshot_handle_mode_sense(us, srb, 1);
 	}
 
 	if (srb->cmnd[0] == MODE_SENSE_10) {
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  MODE_SENSE_10 detected\n");
+=======
+		usb_stor_dbg(us, "MODE_SENSE_10 detected\n");
+>>>>>>> refs/remotes/origin/master
 		return jumpshot_handle_mode_sense(us, srb, 0);
 	}
 
@@ -628,7 +727,11 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 	if (srb->cmnd[0] == START_STOP) {
 		/* this is used by sd.c'check_scsidisk_media_change to detect
 		   media change */
+<<<<<<< HEAD
 		US_DEBUGP("jumpshot_transport:  START_STOP.\n");
+=======
+		usb_stor_dbg(us, "START_STOP\n");
+>>>>>>> refs/remotes/origin/master
 		/* the first jumpshot_id_device after a media change returns
 		   an error (determined experimentally) */
 		rc = jumpshot_id_device(us, info);
@@ -642,8 +745,13 @@ static int jumpshot_transport(struct scsi_cmnd *srb, struct us_data *us)
 		return rc;
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("jumpshot_transport:  Gah! Unknown command: %d (0x%x)\n",
 		  srb->cmnd[0], srb->cmnd[0]);
+=======
+	usb_stor_dbg(us, "Gah! Unknown command: %d (0x%x)\n",
+		     srb->cmnd[0], srb->cmnd[0]);
+>>>>>>> refs/remotes/origin/master
 	info->sense_key = 0x05;
 	info->sense_asc = 0x20;
 	info->sense_ascq = 0x00;
@@ -682,6 +790,7 @@ static struct usb_driver jumpshot_driver = {
 	.id_table =	jumpshot_usb_ids,
 	.soft_unbind =	1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init jumpshot_init(void)
@@ -697,8 +806,13 @@ static void __exit jumpshot_exit(void)
 module_init(jumpshot_init);
 module_exit(jumpshot_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.no_dynamic_id = 1,
 };
 
 module_usb_driver(jumpshot_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

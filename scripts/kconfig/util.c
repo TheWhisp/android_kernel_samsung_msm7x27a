@@ -6,10 +6,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <stdarg.h>
 #include <stdlib.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <stdarg.h>
+#include <stdlib.h>
+>>>>>>> refs/remotes/origin/master
 #include <string.h>
 #include "lkc.h"
 
@@ -26,7 +31,11 @@ struct file *file_lookup(const char *name)
 		}
 	}
 
+<<<<<<< HEAD
 	file = malloc(sizeof(*file));
+=======
+	file = xmalloc(sizeof(*file));
+>>>>>>> refs/remotes/origin/master
 	memset(file, 0, sizeof(*file));
 	file->name = file_name;
 	file->next = file_list;
@@ -84,7 +93,11 @@ int file_write_dep(const char *name)
 struct gstr str_new(void)
 {
 	struct gstr gs;
+<<<<<<< HEAD
 	gs.s = malloc(sizeof(char) * 64);
+=======
+	gs.s = xmalloc(sizeof(char) * 64);
+>>>>>>> refs/remotes/origin/master
 	gs.len = 64;
 	gs.max_width = 0;
 	strcpy(gs.s, "\0");
@@ -141,3 +154,25 @@ const char *str_get(struct gstr *gs)
 	return gs->s;
 }
 
+<<<<<<< HEAD
+=======
+void *xmalloc(size_t size)
+{
+	void *p = malloc(size);
+	if (p)
+		return p;
+	fprintf(stderr, "Out of memory.\n");
+	exit(1);
+}
+
+void *xcalloc(size_t nmemb, size_t size)
+{
+	void *p = calloc(nmemb, size);
+	if (p)
+		return p;
+	fprintf(stderr, "Out of memory.\n");
+	exit(1);
+}
+
+
+>>>>>>> refs/remotes/origin/master

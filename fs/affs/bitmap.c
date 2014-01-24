@@ -10,6 +10,7 @@
 #include <linux/slab.h>
 #include "affs.h"
 
+<<<<<<< HEAD
 /* This is, of course, shamelessly stolen from fs/minix */
 
 static const int nibblemap[] = { 0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4 };
@@ -34,6 +35,8 @@ affs_count_free_bits(u32 blocksize, const void *data)
 	return free;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 u32
 affs_count_free_blocks(struct super_block *sb)
 {
@@ -103,7 +106,11 @@ affs_free_block(struct super_block *sb, u32 block)
 	*(__be32 *)bh->b_data = cpu_to_be32(tmp - mask);
 
 	mark_buffer_dirty(bh);
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+	affs_mark_sb_dirty(sb);
+>>>>>>> refs/remotes/origin/master
 	bm->bm_free++;
 
 	mutex_unlock(&sbi->s_bmlock);
@@ -248,7 +255,11 @@ find_bit:
 	*(__be32 *)bh->b_data = cpu_to_be32(tmp + mask);
 
 	mark_buffer_dirty(bh);
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+	affs_mark_sb_dirty(sb);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&sbi->s_bmlock);
 
@@ -317,7 +328,11 @@ int affs_init_bitmap(struct super_block *sb, int *flags)
 			goto out;
 		}
 		pr_debug("AFFS: read bitmap block %d: %d\n", blk, bm->bm_key);
+<<<<<<< HEAD
 		bm->bm_free = affs_count_free_bits(sb->s_blocksize - 4, bh->b_data + 4);
+=======
+		bm->bm_free = memweight(bh->b_data + 4, sb->s_blocksize - 4);
+>>>>>>> refs/remotes/origin/master
 
 		/* Don't try read the extension if this is the last block,
 		 * but we also need the right bm pointer below
@@ -367,7 +382,11 @@ int affs_init_bitmap(struct super_block *sb, int *flags)
 
 	/* recalculate bitmap count for last block */
 	bm--;
+<<<<<<< HEAD
 	bm->bm_free = affs_count_free_bits(sb->s_blocksize - 4, bh->b_data + 4);
+=======
+	bm->bm_free = memweight(bh->b_data + 4, sb->s_blocksize - 4);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	affs_brelse(bh);

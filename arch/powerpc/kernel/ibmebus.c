@@ -38,9 +38,13 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/console.h>
 #include <linux/kobject.h>
 #include <linux/dma-mapping.h>
@@ -48,12 +52,18 @@
 #include <linux/of.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/stat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/of_platform.h>
 #include <asm/ibmebus.h>
 #include <asm/abs_addr.h>
+=======
+#include <linux/stat.h>
+#include <linux/of_platform.h>
+#include <asm/ibmebus.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct device ibmebus_bus_device = { /* fake "parent" device */
 	.init_name = "ibmebus",
@@ -72,11 +82,16 @@ static void *ibmebus_alloc_coherent(struct device *dev,
 				    size_t size,
 				    dma_addr_t *dma_handle,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    gfp_t flag)
 =======
 				    gfp_t flag,
 				    struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    gfp_t flag,
+				    struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *mem;
 
@@ -89,11 +104,16 @@ static void *ibmebus_alloc_coherent(struct device *dev,
 static void ibmebus_free_coherent(struct device *dev,
 				  size_t size, void *vaddr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  dma_addr_t dma_handle)
 =======
 				  dma_addr_t dma_handle,
 				  struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  dma_addr_t dma_handle,
+				  struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	kfree(vaddr);
 }
@@ -144,6 +164,7 @@ static void ibmebus_unmap_sg(struct device *dev,
 static int ibmebus_dma_supported(struct device *dev, u64 mask)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 1;
 }
 
@@ -156,6 +177,8 @@ static struct dma_map_ops ibmebus_dma_ops = {
 	.map_page       = ibmebus_map_page,
 	.unmap_page     = ibmebus_unmap_page,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return mask == DMA_BIT_MASK(64);
 }
 
@@ -173,7 +196,10 @@ static struct dma_map_ops ibmebus_dma_ops = {
 	.get_required_mask  = ibmebus_dma_get_required_mask,
 	.map_page           = ibmebus_map_page,
 	.unmap_page         = ibmebus_unmap_page,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int ibmebus_match_path(struct device *dev, void *data)
@@ -234,7 +260,11 @@ static int ibmebus_create_devices(const struct of_device_id *matches)
 	return ret;
 }
 
+<<<<<<< HEAD
 int ibmebus_register_driver(struct of_platform_driver *drv)
+=======
+int ibmebus_register_driver(struct platform_driver *drv)
+>>>>>>> refs/remotes/origin/master
 {
 	/* If the driver uses devices that ibmebus doesn't know, add them */
 	ibmebus_create_devices(drv->driver.of_match_table);
@@ -244,7 +274,11 @@ int ibmebus_register_driver(struct of_platform_driver *drv)
 }
 EXPORT_SYMBOL(ibmebus_register_driver);
 
+<<<<<<< HEAD
 void ibmebus_unregister_driver(struct of_platform_driver *drv)
+=======
+void ibmebus_unregister_driver(struct platform_driver *drv)
+>>>>>>> refs/remotes/origin/master
 {
 	driver_unregister(&drv->driver);
 }
@@ -321,6 +355,10 @@ out:
 		return rc;
 	return count;
 }
+<<<<<<< HEAD
+=======
+static BUS_ATTR(probe, S_IWUSR, NULL, ibmebus_store_probe);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t ibmebus_store_remove(struct bus_type *bus,
 				    const char *buf, size_t count)
@@ -346,6 +384,7 @@ static ssize_t ibmebus_store_remove(struct bus_type *bus,
 		return -ENODEV;
 	}
 }
+<<<<<<< HEAD
 
 
 static struct bus_attribute ibmebus_bus_attrs[] = {
@@ -353,6 +392,16 @@ static struct bus_attribute ibmebus_bus_attrs[] = {
 	__ATTR(remove, S_IWUSR, NULL, ibmebus_store_remove),
 	__ATTR_NULL
 };
+=======
+static BUS_ATTR(remove, S_IWUSR, NULL, ibmebus_store_remove);
+
+static struct attribute *ibmbus_bus_attrs[] = {
+	&bus_attr_probe.attr,
+	&bus_attr_remove.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(ibmbus_bus);
+>>>>>>> refs/remotes/origin/master
 
 static int ibmebus_bus_bus_match(struct device *dev, struct device_driver *drv)
 {
@@ -367,11 +416,18 @@ static int ibmebus_bus_bus_match(struct device *dev, struct device_driver *drv)
 static int ibmebus_bus_device_probe(struct device *dev)
 {
 	int error = -ENODEV;
+<<<<<<< HEAD
 	struct of_platform_driver *drv;
 	struct platform_device *of_dev;
 	const struct of_device_id *match;
 
 	drv = to_of_platform_driver(dev->driver);
+=======
+	struct platform_driver *drv;
+	struct platform_device *of_dev;
+
+	drv = to_platform_driver(dev->driver);
+>>>>>>> refs/remotes/origin/master
 	of_dev = to_platform_device(dev);
 
 	if (!drv->probe)
@@ -379,9 +435,14 @@ static int ibmebus_bus_device_probe(struct device *dev)
 
 	of_dev_get(of_dev);
 
+<<<<<<< HEAD
 	match = of_match_device(drv->driver.of_match_table, dev);
 	if (match)
 		error = drv->probe(of_dev, match);
+=======
+	if (of_driver_match_device(dev, dev->driver))
+		error = drv->probe(of_dev);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		of_dev_put(of_dev);
 
@@ -391,7 +452,11 @@ static int ibmebus_bus_device_probe(struct device *dev)
 static int ibmebus_bus_device_remove(struct device *dev)
 {
 	struct platform_device *of_dev = to_platform_device(dev);
+<<<<<<< HEAD
 	struct of_platform_driver *drv = to_of_platform_driver(dev->driver);
+=======
+	struct platform_driver *drv = to_platform_driver(dev->driver);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->driver && drv->remove)
 		drv->remove(of_dev);
@@ -401,7 +466,11 @@ static int ibmebus_bus_device_remove(struct device *dev)
 static void ibmebus_bus_device_shutdown(struct device *dev)
 {
 	struct platform_device *of_dev = to_platform_device(dev);
+<<<<<<< HEAD
 	struct of_platform_driver *drv = to_of_platform_driver(dev->driver);
+=======
+	struct platform_driver *drv = to_platform_driver(dev->driver);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->driver && drv->shutdown)
 		drv->shutdown(of_dev);
@@ -448,7 +517,11 @@ struct device_attribute ibmebus_bus_device_attrs[] = {
 static int ibmebus_bus_legacy_suspend(struct device *dev, pm_message_t mesg)
 {
 	struct platform_device *of_dev = to_platform_device(dev);
+<<<<<<< HEAD
 	struct of_platform_driver *drv = to_of_platform_driver(dev->driver);
+=======
+	struct platform_driver *drv = to_platform_driver(dev->driver);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (dev->driver && drv->suspend)
@@ -459,7 +532,11 @@ static int ibmebus_bus_legacy_suspend(struct device *dev, pm_message_t mesg)
 static int ibmebus_bus_legacy_resume(struct device *dev)
 {
 	struct platform_device *of_dev = to_platform_device(dev);
+<<<<<<< HEAD
 	struct of_platform_driver *drv = to_of_platform_driver(dev->driver);
+=======
+	struct platform_driver *drv = to_platform_driver(dev->driver);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (dev->driver && drv->resume)
@@ -744,11 +821,16 @@ static struct dev_pm_ops ibmebus_bus_dev_pm_ops = {
 struct bus_type ibmebus_bus_type = {
 	.name      = "ibmebus",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.uevent    = of_device_uevent,
 =======
 	.uevent    = of_device_uevent_modalias,
 >>>>>>> refs/remotes/origin/cm-10.0
 	.bus_attrs = ibmebus_bus_attrs,
+=======
+	.uevent    = of_device_uevent_modalias,
+	.bus_groups = ibmbus_bus_groups,
+>>>>>>> refs/remotes/origin/master
 	.match     = ibmebus_bus_bus_match,
 	.probe     = ibmebus_bus_device_probe,
 	.remove    = ibmebus_bus_device_remove,

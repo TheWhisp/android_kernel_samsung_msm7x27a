@@ -45,7 +45,11 @@ static struct fb_monspecs merisc_fb_monspecs = {
 	.dclkmax	= 30000000,
 };
 
+<<<<<<< HEAD
 struct atmel_lcdfb_info merisc_lcdc_data = {
+=======
+struct atmel_lcdfb_pdata merisc_lcdc_data = {
+>>>>>>> refs/remotes/origin/master
 	.default_bpp		= 24,
 	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
 	.default_lcdcon2	= (ATMEL_LCDC_DISTYPE_TFT

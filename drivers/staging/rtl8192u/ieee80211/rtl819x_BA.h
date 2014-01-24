@@ -1,7 +1,11 @@
 #ifndef _BATYPE_H_
 #define _BATYPE_H_
 
+<<<<<<< HEAD
 #define 	TOTAL_TXBA_NUM	16
+=======
+#define		TOTAL_TXBA_NUM	16
+>>>>>>> refs/remotes/origin/master
 #define	TOTAL_RXBA_NUM	16
 
 #define	BA_SETUP_TIMEOUT	200
@@ -28,8 +32,12 @@ struct ieee80211_ADDBA_Req{
 //Is this need?I put here just to make it easier to define structure BA_RECORD //WB
 typedef union _SEQUENCE_CONTROL{
 	u16 ShortData;
+<<<<<<< HEAD
 	struct
 	{
+=======
+	struct {
+>>>>>>> refs/remotes/origin/master
 		u16	FragNum:4;
 		u16	SeqNum:12;
 	}field;
@@ -66,4 +74,7 @@ typedef struct _BA_RECORD {
 } BA_RECORD, *PBA_RECORD;
 
 #endif //end _BATYPE_H_
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

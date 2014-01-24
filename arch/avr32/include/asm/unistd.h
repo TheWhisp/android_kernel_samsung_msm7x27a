@@ -8,6 +8,7 @@
 #ifndef __ASM_AVR32_UNISTD_H
 #define __ASM_AVR32_UNISTD_H
 
+<<<<<<< HEAD
 /*
  * This file contains the system call numbers.
  */
@@ -302,6 +303,10 @@
 #define __NR_setns		283
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/unistd.h>
+
+>>>>>>> refs/remotes/origin/master
 #define NR_syscalls		284
 
 /* Old stuff */
@@ -318,7 +323,10 @@
 /* SMP stuff */
 #define __IGNORE_getcpu
 
+<<<<<<< HEAD
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_ALARM
 #define __ARCH_WANT_SYS_GETHOSTNAME
@@ -330,6 +338,7 @@
 #define __ARCH_WANT_SYS_GETPGRP
 #define __ARCH_WANT_SYS_LLSEEK
 #define __ARCH_WANT_SYS_GETPGRP
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
@@ -342,5 +351,10 @@
 #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x ",sys_ni_syscall");
 
 #endif /* __KERNEL__ */
+=======
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_CLONE
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_AVR32_UNISTD_H */

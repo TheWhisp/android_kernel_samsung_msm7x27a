@@ -11,7 +11,11 @@
 #include <asm/system_misc.h>
 #include <mach/hardware.h>
 
+<<<<<<< HEAD
 void iop3xx_restart(char mode, const char *cmd)
+=======
+void iop3xx_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	*IOP3XX_PCSR = 0x30;
 

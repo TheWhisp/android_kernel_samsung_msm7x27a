@@ -21,9 +21,13 @@
 
 #include <linux/efi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/efi.h>
 #include <linux/io.h>
 #include <asm/uv/bios.h>

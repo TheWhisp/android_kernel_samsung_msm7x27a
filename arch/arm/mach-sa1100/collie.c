@@ -21,11 +21,17 @@
 #include <linux/kernel.h>
 #include <linux/tty.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 <<<<<<< HEAD
 =======
 #include <linux/mfd/ucb1x00.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/sa11x0-serial.h>
+#include <linux/platform_device.h>
+#include <linux/mfd/ucb1x00.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/timer.h>
@@ -33,36 +39,51 @@
 #include <linux/pda_power.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/irq.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <video/sa1100fb.h>
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/setup.h>
 #include <mach/collie.h>
 
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <asm/mach/serial_sa1100.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/hardware/scoop.h>
 #include <asm/mach/sharpsl_param.h>
 #include <asm/hardware/locomo.h>
+<<<<<<< HEAD
 #include <mach/mcp.h>
 <<<<<<< HEAD
 =======
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/mfd-mcp-sa11x0.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
 static struct resource collie_scoop_resources[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	[0] = {
 		.start		= 0x40800000,
@@ -72,6 +93,9 @@ static struct resource collie_scoop_resources[] = {
 =======
 	[0] = DEFINE_RES_MEM(0x40800000, SZ_4K),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[0] = DEFINE_RES_MEM(0x40800000, SZ_4K),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct scoop_config collie_scoop_setup = {
@@ -105,11 +129,14 @@ static struct scoop_pcmcia_config collie_pcmcia_config = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct mcp_plat_data collie_mcp_data = {
 	.mccr0		= MCCR0_ADM | MCCR0_ExtClk,
 	.sclk_rate	= 9216000,
 	.gpio_base	= COLLIE_TC35143_GPIO_BASE,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ucb1x00_plat_data collie_ucb1x00_data = {
 	.gpio_base	= COLLIE_TC35143_GPIO_BASE,
 };
@@ -118,7 +145,10 @@ static struct mcp_plat_data collie_mcp_data = {
 	.mccr0		= MCCR0_ADM | MCCR0_ExtClk,
 	.sclk_rate	= 9216000,
 	.codec_pdata	= &collie_ucb1x00_data,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -169,10 +199,13 @@ static struct resource collie_power_resource[] = {
 	{
 		.name		= "ac",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start		= gpio_to_irq(COLLIE_GPIO_AC_IN),
 		.end		= gpio_to_irq(COLLIE_GPIO_AC_IN),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags		= IORESOURCE_IRQ |
 				  IORESOURCE_IRQ_HIGHEDGE |
 				  IORESOURCE_IRQ_LOWEDGE,
@@ -257,6 +290,7 @@ device_initcall(collie_uart_init);
 
 static struct resource locomo_resources[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[0] = {
 		.start		= 0x40000000,
 		.end		= 0x40001fff,
@@ -271,6 +305,10 @@ static struct resource locomo_resources[] = {
 	[0] = DEFINE_RES_MEM(0x40000000, SZ_8K),
 	[1] = DEFINE_RES_IRQ(IRQ_GPIO25),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[0] = DEFINE_RES_MEM(0x40000000, SZ_8K),
+	[1] = DEFINE_RES_IRQ(IRQ_GPIO25),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct locomo_platform_data locomo_info = {
@@ -334,7 +372,11 @@ static void collie_flash_exit(void)
 }
 
 static struct flash_platform_data collie_flash_data = {
+<<<<<<< HEAD
 	.map_name	= "cfi_probe",
+=======
+	.map_name	= "jedec_probe",
+>>>>>>> refs/remotes/origin/master
 	.init		= collie_flash_init,
 	.set_vpp	= collie_set_vpp,
 	.exit		= collie_flash_exit,
@@ -344,12 +386,15 @@ static struct flash_platform_data collie_flash_data = {
 
 static struct resource collie_flash_resources[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{
 		.start	= SA1100_CS0_PHYS,
 		.end	= SA1100_CS0_PHYS + SZ_32M - 1,
 		.flags	= IORESOURCE_MEM,
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_32M),
 };
 
@@ -369,7 +414,10 @@ static struct sa1100fb_mach_info collie_lcd_info = {
 #ifdef CONFIG_BACKLIGHT_LOCOMO
 	.lcd_power	= locomolcd_power
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init collie_init(void)
@@ -402,13 +450,19 @@ static void __init collie_init(void)
 	GPSR |= _COLLIE_GPIO_UCB1x00_RESET;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	collie_power_resource[0].start = gpio_to_irq(COLLIE_GPIO_AC_IN);
 	collie_power_resource[0].end = gpio_to_irq(COLLIE_GPIO_AC_IN);
 
 	sa11x0_ppc_configure_mcp();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	platform_scoop_config = &collie_pcmcia_config;
 
@@ -418,9 +472,13 @@ static void __init collie_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sa11x0_register_lcd(&collie_lcd_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sa11x0_register_lcd(&collie_lcd_info);
+>>>>>>> refs/remotes/origin/master
 	sa11x0_register_mtd(&collie_flash_data, collie_flash_resources,
 			    ARRAY_SIZE(collie_flash_resources));
 	sa11x0_register_mcp(&collie_mcp_data);
@@ -457,6 +515,7 @@ static void __init collie_map_io(void)
 MACHINE_START(COLLIE, "Sharp-Collie")
 	.map_io		= collie_map_io,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= sa1100_init_irq,
 	.timer		= &sa1100_timer,
 	.init_machine	= collie_init,
@@ -467,4 +526,12 @@ MACHINE_START(COLLIE, "Sharp-Collie")
 	.init_machine	= collie_init,
 	.restart	= sa11x0_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.nr_irqs	= SA1100_NR_IRQS,
+	.init_irq	= sa1100_init_irq,
+	.init_time	= sa1100_timer_init,
+	.init_machine	= collie_init,
+	.init_late	= sa11x0_init_late,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

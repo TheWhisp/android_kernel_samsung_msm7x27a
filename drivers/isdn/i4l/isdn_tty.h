@@ -94,18 +94,24 @@
 #define RESULT_RUNG		12
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TTY_IS_FCLASS1(info) \
 	((info->emu.mdmreg[REG_L2PROT] == ISDN_PROTO_L2_FAX) && \
 	 (info->emu.mdmreg[REG_L3PROT] == ISDN_PROTO_L3_FCLASS1))
 #define TTY_IS_FCLASS2(info) \
 	((info->emu.mdmreg[REG_L2PROT] == ISDN_PROTO_L2_FAX) && \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TTY_IS_FCLASS1(info)						\
 	((info->emu.mdmreg[REG_L2PROT] == ISDN_PROTO_L2_FAX) &&		\
 	 (info->emu.mdmreg[REG_L3PROT] == ISDN_PROTO_L3_FCLASS1))
 #define TTY_IS_FCLASS2(info)						\
 	((info->emu.mdmreg[REG_L2PROT] == ISDN_PROTO_L2_FAX) &&		\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 (info->emu.mdmreg[REG_L3PROT] == ISDN_PROTO_L3_FCLASS2))
 
 extern void isdn_tty_modem_escape(void);
@@ -119,10 +125,14 @@ extern int  isdn_tty_find_icall(int, int, setup_parm *);
 extern int  isdn_tty_stat_callback(int, isdn_ctrl *);
 extern int  isdn_tty_rcv_skb(int, int, int, struct sk_buff *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int  isdn_tty_capi_facility(capi_msg *cm); 
 =======
 extern int  isdn_tty_capi_facility(capi_msg *cm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int  isdn_tty_capi_facility(capi_msg *cm);
+>>>>>>> refs/remotes/origin/master
 extern void isdn_tty_at_cout(char *, modem_info *);
 extern void isdn_tty_modem_hup(modem_info *, int);
 #ifdef CONFIG_ISDN_TTY_FAX

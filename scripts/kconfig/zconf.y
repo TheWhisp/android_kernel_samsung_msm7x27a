@@ -12,9 +12,12 @@
 #include <stdbool.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LKC_DIRECT_LINK
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "lkc.h"
 
 #define printd(mask, fmt...) if (cdebug & (mask)) printf(fmt)
@@ -29,15 +32,20 @@ static void zconfprint(const char *err, ...);
 static void zconf_error(const char *err, ...);
 static void zconferror(const char *err);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool zconf_endtoken(struct kconf_id *id, int starttoken, int endtoken);
 =======
 static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken);
+>>>>>>> refs/remotes/origin/master
 
 struct symbol *symbol_hash[SYMBOL_HASHSIZE];
 
 static struct menu *current_menu, *current_entry;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define YYDEBUG 0
 #if YYDEBUG
@@ -45,6 +53,8 @@ static struct menu *current_menu, *current_entry;
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 %}
 %expect 30
 
@@ -56,10 +66,14 @@ static struct menu *current_menu, *current_entry;
 	struct expr *expr;
 	struct menu *menu;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kconf_id *id;
 =======
 	const struct kconf_id *id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct kconf_id *id;
+>>>>>>> refs/remotes/origin/master
 }
 
 %token <id>T_MAINMENU
@@ -244,10 +258,14 @@ symbol_option_list:
 	| symbol_option_list T_WORD symbol_option_arg
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kconf_id *id = kconf_id_lookup($2, strlen($2));
 =======
 	const struct kconf_id *id = kconf_id_lookup($2, strlen($2));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct kconf_id *id = kconf_id_lookup($2, strlen($2));
+>>>>>>> refs/remotes/origin/master
 	if (id && id->flags & TF_OPTION)
 		menu_add_option(id->token, $3);
 	else
@@ -516,6 +534,7 @@ void conf_parse(const char *name)
 
 	sym_init();
 	_menu_init();
+<<<<<<< HEAD
 	modules_sym = sym_lookup(NULL, 0);
 	modules_sym->type = S_BOOLEAN;
 	modules_sym->flags |= SYMBOL_AUTO;
@@ -539,6 +558,17 @@ void conf_parse(const char *name)
 		prop = prop_alloc(P_DEFAULT, modules_sym);
 		prop->expr = expr_alloc_symbol(sym_lookup("MODULES", 0));
 	}
+=======
+	rootmenu.prompt = menu_add_prompt(P_MENU, "Linux Kernel Configuration", NULL);
+
+	if (getenv("ZCONF_DEBUG"))
+		zconfdebug = 1;
+	zconfparse();
+	if (zconfnerrs)
+		exit(1);
+	if (!modules_sym)
+		modules_sym = sym_find( "n" );
+>>>>>>> refs/remotes/origin/master
 
 	rootmenu.prompt->text = _(rootmenu.prompt->text);
 	rootmenu.prompt->text = sym_expand_string_value(rootmenu.prompt->text);
@@ -569,10 +599,14 @@ static const char *zconf_tokenname(int token)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool zconf_endtoken(struct kconf_id *id, int starttoken, int endtoken)
 =======
 static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool zconf_endtoken(const struct kconf_id *id, int starttoken, int endtoken)
+>>>>>>> refs/remotes/origin/master
 {
 	if (id->token != endtoken) {
 		zconf_error("unexpected '%s' within %s block",
@@ -618,12 +652,16 @@ static void zconf_error(const char *err, ...)
 static void zconferror(const char *err)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if YYDEBUG
 	fprintf(stderr, "%s:%d: %s\n", zconf_curname(), zconf_lineno() + 1, err);
 #endif
 =======
 	fprintf(stderr, "%s:%d: %s\n", zconf_curname(), zconf_lineno() + 1, err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fprintf(stderr, "%s:%d: %s\n", zconf_curname(), zconf_lineno() + 1, err);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void print_quoted_string(FILE *out, const char *str)
@@ -773,10 +811,14 @@ void zconfdump(FILE *out)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "lex.zconf.c"
 =======
 #include "zconf.lex.c"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "zconf.lex.c"
+>>>>>>> refs/remotes/origin/master
 #include "util.c"
 #include "confdata.c"
 #include "expr.c"

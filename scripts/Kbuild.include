@@ -22,12 +22,18 @@ basetarget = $(basename $(notdir $@))
 
 ###
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # filename of first prerequisite with directory and extension stripped
 baseprereq = $(basename $(notdir $<))
 
 ###
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # Escape single quote for use in echo statements
 escsq = $(subst $(squote),'\$(squote)',$1)
 
@@ -108,10 +114,14 @@ as-option = $(call try-run,\
 
 as-instr = $(call try-run,\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/bin/echo -e "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
 =======
 	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
+>>>>>>> refs/remotes/origin/master
 
 # cc-option
 # Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
@@ -155,7 +165,11 @@ cc-ldoption = $(call try-run,\
 # ld-option
 # Usage: LDFLAGS += $(call ld-option, -X)
 ld-option = $(call try-run,\
+<<<<<<< HEAD
 	$(CC) /dev/null -c -o "$$TMPO" ; $(LD) $(1) "$$TMPO" -o "$$TMP",$(1),$(2))
+=======
+	$(CC) -x c /dev/null -c -o "$$TMPO" ; $(LD) $(1) "$$TMPO" -o "$$TMP",$(1),$(2))
+>>>>>>> refs/remotes/origin/master
 
 # ar-option
 # Usage: KBUILD_ARFLAGS := $(call ar-option,D)

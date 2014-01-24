@@ -5,18 +5,27 @@
 #include <linux/amba/bus.h>
 #include <linux/amba/mmci.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 <<<<<<< HEAD
 =======
+=======
+#include <linux/smp.h>
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_address.h>
 #include <linux/of_fdt.h>
 #include <linux/of_irq.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/ata_platform.h>
 #include <linux/smsc911x.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
@@ -25,6 +34,14 @@
 #include <linux/usb/isp1760.h>
 #include <linux/clkdev.h>
 #include <linux/mtd/physmap.h>
+=======
+#include <linux/usb/isp1760.h>
+#include <linux/mtd/physmap.h>
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/machine.h>
+#include <linux/vexpress.h>
+#include <linux/clkdev.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/sizes.h>
@@ -32,6 +49,7 @@
 #include <asm/mach/map.h>
 #include <asm/mach/time.h>
 #include <asm/hardware/arm_timer.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/hardware/timer-sp.h>
 #include <asm/hardware/sp810.h>
@@ -42,11 +60,19 @@
 #include <asm/hardware/sp810.h>
 #include <asm/hardware/gic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hardware/cache-l2x0.h>
+#include <asm/hardware/timer-sp.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/ct-ca9x4.h>
 #include <mach/motherboard.h>
 
 #include <plat/sched_clock.h>
+<<<<<<< HEAD
+=======
+#include <plat/platsmp.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "core.h"
 
@@ -59,16 +85,21 @@
 static struct map_desc v2m_io_desc[] __initdata = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual	= __MMIO_P2V(V2M_PA_CS7),
 =======
 		.virtual	= V2M_PERIPH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= V2M_PERIPH,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(V2M_PA_CS7),
 		.length		= SZ_128K,
 		.type		= MT_DEVICE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init v2m_timer_init(void)
 {
@@ -103,18 +134,24 @@ static void __init v2m_sysctl_init(void __iomem *base)
 	writel(scctrl, base + SCCTRL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init v2m_sp804_init(void __iomem *base, unsigned int irq)
 {
 	if (WARN_ON(!base || irq == NO_IRQ))
 		return;
 
+<<<<<<< HEAD
 	writel(0, base + TIMER_1_BASE + TIMER_CTRL);
 	writel(0, base + TIMER_2_BASE + TIMER_CTRL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	sp804_clocksource_init(base + TIMER_2_BASE, "v2m-timer1");
 	sp804_clockevents_init(base + TIMER_1_BASE, irq, "v2m-timer0");
 }
 
+<<<<<<< HEAD
 static void __init v2m_timer_init(void)
 {
 	v2m_sysctl_init(ioremap(V2M_SYSCTL, SZ_4K));
@@ -208,6 +245,8 @@ void __init v2m_flags_set(u32 data)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct resource v2m_pcie_i2c_resource = {
 	.start	= V2M_SERIAL_BUS_PCI,
@@ -262,6 +301,14 @@ static struct platform_device v2m_eth_device = {
 	.dev.platform_data = &v2m_eth_config,
 };
 
+<<<<<<< HEAD
+=======
+static struct regulator_consumer_supply v2m_eth_supplies[] = {
+	REGULATOR_SUPPLY("vddvario", "smsc911x"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x"),
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct resource v2m_usb_resources[] = {
 	{
 		.start	= V2M_ISP1761,
@@ -291,6 +338,7 @@ static struct platform_device v2m_usb_device = {
 	.dev.platform_data = &v2m_usb_config,
 };
 
+<<<<<<< HEAD
 static void v2m_flash_set_vpp(struct platform_device *pdev, int on)
 {
 <<<<<<< HEAD
@@ -303,6 +351,10 @@ static void v2m_flash_set_vpp(struct platform_device *pdev, int on)
 static struct physmap_flash_data v2m_flash_data = {
 	.width		= 4,
 	.set_vpp	= v2m_flash_set_vpp,
+=======
+static struct physmap_flash_data v2m_flash_data = {
+	.width		= 4,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource v2m_flash_resources[] = {
@@ -349,6 +401,7 @@ static struct platform_device v2m_cf_device = {
 	.dev.platform_data = &v2m_pata_data,
 };
 
+<<<<<<< HEAD
 static unsigned int v2m_mmci_status(struct device *dev)
 {
 <<<<<<< HEAD
@@ -375,6 +428,65 @@ static AMBA_DEVICE(uart3, "mb:uart3", V2M_UART3, NULL);
 static AMBA_DEVICE(wdt,   "mb:wdt",   V2M_WDT, NULL);
 static AMBA_DEVICE(rtc,   "mb:rtc",   V2M_RTC, NULL);
 =======
+=======
+static struct mmci_platform_data v2m_mmci_data = {
+	.ocr_mask	= MMC_VDD_32_33|MMC_VDD_33_34,
+	.gpio_wp	= VEXPRESS_GPIO_MMC_WPROT,
+	.gpio_cd	= VEXPRESS_GPIO_MMC_CARDIN,
+};
+
+static struct resource v2m_sysreg_resources[] = {
+	{
+		.start	= V2M_SYSREGS,
+		.end	= V2M_SYSREGS + 0xfff,
+		.flags	= IORESOURCE_MEM,
+	},
+};
+
+static struct platform_device v2m_sysreg_device = {
+	.name		= "vexpress-sysreg",
+	.id		= -1,
+	.resource	= v2m_sysreg_resources,
+	.num_resources	= ARRAY_SIZE(v2m_sysreg_resources),
+};
+
+static struct platform_device v2m_muxfpga_device = {
+	.name		= "vexpress-muxfpga",
+	.id		= 0,
+	.num_resources	= 1,
+	.resource	= (struct resource []) {
+		VEXPRESS_RES_FUNC(0, 7),
+	}
+};
+
+static struct platform_device v2m_shutdown_device = {
+	.name		= "vexpress-shutdown",
+	.id		= 0,
+	.num_resources	= 1,
+	.resource	= (struct resource []) {
+		VEXPRESS_RES_FUNC(0, 8),
+	}
+};
+
+static struct platform_device v2m_reboot_device = {
+	.name		= "vexpress-reboot",
+	.id		= 0,
+	.num_resources	= 1,
+	.resource	= (struct resource []) {
+		VEXPRESS_RES_FUNC(0, 9),
+	}
+};
+
+static struct platform_device v2m_dvimode_device = {
+	.name		= "vexpress-dvimode",
+	.id		= 0,
+	.num_resources	= 1,
+	.resource	= (struct resource []) {
+		VEXPRESS_RES_FUNC(0, 11),
+	}
+};
+
+>>>>>>> refs/remotes/origin/master
 static AMBA_APB_DEVICE(aaci,  "mb:aaci",  0, V2M_AACI, IRQ_V2M_AACI, NULL);
 static AMBA_APB_DEVICE(mmci,  "mb:mmci",  0, V2M_MMCI, IRQ_V2M_MMCI, &v2m_mmci_data);
 static AMBA_APB_DEVICE(kmi0,  "mb:kmi0",  0, V2M_KMI0, IRQ_V2M_KMI0, NULL);
@@ -385,7 +497,10 @@ static AMBA_APB_DEVICE(uart2, "mb:uart2", 0, V2M_UART2, IRQ_V2M_UART2, NULL);
 static AMBA_APB_DEVICE(uart3, "mb:uart3", 0, V2M_UART3, IRQ_V2M_UART3, NULL);
 static AMBA_APB_DEVICE(wdt,   "mb:wdt",   0, V2M_WDT, IRQ_V2M_WDT, NULL);
 static AMBA_APB_DEVICE(rtc,   "mb:rtc",   0, V2M_RTC, IRQ_V2M_RTC, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct amba_device *v2m_amba_devs[] __initdata = {
 	&aaci_device,
@@ -400,6 +515,7 @@ static struct amba_device *v2m_amba_devs[] __initdata = {
 	&rtc_device,
 };
 
+<<<<<<< HEAD
 
 static long v2m_osc_round(struct clk *clk, unsigned long rate)
 {
@@ -504,6 +620,19 @@ static void v2m_restart(char str, const char *cmd)
 {
 	if (v2m_cfg_write(SYS_CFG_REBOOT | SYS_CFG_SITE_MB, 0))
 		printk(KERN_EMERG "Unable to reboot\n");
+=======
+static void __init v2m_timer_init(void)
+{
+	vexpress_clk_init(ioremap(V2M_SYSCTL, SZ_4K));
+	v2m_sp804_init(ioremap(V2M_TIMER01, SZ_4K), IRQ_V2M_TIMER0);
+}
+
+static void __init v2m_init_early(void)
+{
+	if (ct_desc->init_early)
+		ct_desc->init_early();
+	versatile_sched_clock_init(vexpress_get_24mhz_clock_base(), 24000000);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct ct_desc *ct_desc;
@@ -521,17 +650,23 @@ static void __init v2m_populate_ct_desc(void)
 
 	ct_desc = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current_tile_id = readl(MMIO_P2V(V2M_SYS_PROCID0)) & V2M_CT_ID_MASK;
 =======
 	current_tile_id = readl(v2m_sysreg_base + V2M_SYS_PROCID0)
 				& V2M_CT_ID_MASK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	current_tile_id = vexpress_get_procid(VEXPRESS_SITE_MASTER)
+				& V2M_CT_ID_MASK;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(ct_descs) && !ct_desc; ++i)
 		if (ct_descs[i]->id == current_tile_id)
 			ct_desc = ct_descs[i];
 
 	if (!ct_desc)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		panic("vexpress: failed to populate core tile description "
 		      "for tile ID 0x%8x\n", current_tile_id);
@@ -540,15 +675,24 @@ static void __init v2m_populate_ct_desc(void)
 		      "You may need a device tree blob or a different kernel to boot on this board.\n",
 		      current_tile_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		panic("vexpress: this kernel does not support core tile ID 0x%08x when booting via ATAGs.\n"
+		      "You may need a device tree blob or a different kernel to boot on this board.\n",
+		      current_tile_id);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init v2m_map_io(void)
 {
 	iotable_init(v2m_io_desc, ARRAY_SIZE(v2m_io_desc));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	v2m_sysreg_base = ioremap(V2M_SYSREGS, SZ_4K);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vexpress_sysreg_early_init(ioremap(V2M_SYSREGS, SZ_4K));
+>>>>>>> refs/remotes/origin/master
 	v2m_populate_ct_desc();
 	ct_desc->map_io();
 }
@@ -562,6 +706,18 @@ static void __init v2m_init(void)
 {
 	int i;
 
+<<<<<<< HEAD
+=======
+	regulator_register_fixed(0, v2m_eth_supplies,
+			ARRAY_SIZE(v2m_eth_supplies));
+
+	platform_device_register(&v2m_muxfpga_device);
+	platform_device_register(&v2m_shutdown_device);
+	platform_device_register(&v2m_reboot_device);
+	platform_device_register(&v2m_dvimode_device);
+
+	platform_device_register(&v2m_sysreg_device);
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&v2m_pcie_i2c_device);
 	platform_device_register(&v2m_ddc_i2c_device);
 	platform_device_register(&v2m_flash_device);
@@ -572,16 +728,20 @@ static void __init v2m_init(void)
 	for (i = 0; i < ARRAY_SIZE(v2m_amba_devs); i++)
 		amba_device_register(v2m_amba_devs[i], &iomem_resource);
 
+<<<<<<< HEAD
 	pm_power_off = v2m_power_off;
 <<<<<<< HEAD
 	arm_pm_restart = v2m_restart;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ct_desc->init_tile();
 }
 
 MACHINE_START(VEXPRESS, "ARM-Versatile Express")
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= PLAT_PHYS_OFFSET + 0x00000100,
 =======
@@ -602,6 +762,17 @@ MACHINE_END
 
 #if defined(CONFIG_ARCH_VEXPRESS_DT)
 
+=======
+	.atag_offset	= 0x100,
+	.smp		= smp_ops(vexpress_smp_ops),
+	.map_io		= v2m_map_io,
+	.init_early	= v2m_init_early,
+	.init_irq	= v2m_init_irq,
+	.init_time	= v2m_timer_init,
+	.init_machine	= v2m_init,
+MACHINE_END
+
+>>>>>>> refs/remotes/origin/master
 static struct map_desc v2m_rs1_io_desc __initdata = {
 	.virtual	= V2M_PERIPH,
 	.pfn		= __phys_to_pfn(0x1c000000),
@@ -638,6 +809,7 @@ void __init v2m_dt_map_io(void)
 #endif
 }
 
+<<<<<<< HEAD
 static struct clk_lookup v2m_dt_lookups[] = {
 	{	/* AMBA bus clock */
 		.con_id		= "apb_pclk",
@@ -725,12 +897,24 @@ void __init v2m_dt_init_early(void)
 		u32 id = readl(v2m_sysreg_base + (misc & SYS_MISC_MASTERSITE ?
 				V2M_SYS_PROCID1 : V2M_SYS_PROCID0));
 		u32 hbi = id & SYS_PROCIDx_HBI_MASK;
+=======
+void __init v2m_dt_init_early(void)
+{
+	u32 dt_hbi;
+
+	vexpress_sysreg_of_early_init();
+
+	/* Confirm board type against DT property, if available */
+	if (of_property_read_u32(of_allnodes, "arm,hbi", &dt_hbi) == 0) {
+		u32 hbi = vexpress_get_hbi(VEXPRESS_SITE_MASTER);
+>>>>>>> refs/remotes/origin/master
 
 		if (WARN_ON(dt_hbi != hbi))
 			pr_warning("vexpress: DT HBI (%x) is not matching "
 					"hardware (%x)!\n", dt_hbi, hbi);
 	}
 
+<<<<<<< HEAD
 	clkdev_add_table(v2m_dt_lookups, ARRAY_SIZE(v2m_dt_lookups));
 	versatile_sched_clock_init(v2m_sysreg_base + V2M_SYS_24MHZ, 24000000);
 }
@@ -773,24 +957,41 @@ static struct of_dev_auxdata v2m_dt_auxdata_lookup[] __initdata = {
 	OF_DEV_AUXDATA("arm,vexpress-flash", 0x08000000, "physmap-flash",
 			&v2m_flash_data),
 	OF_DEV_AUXDATA("arm,primecell", 0x1c050000, "mb:mmci", &v2m_mmci_data),
+=======
+	versatile_sched_clock_init(vexpress_get_24mhz_clock_base(), 24000000);
+}
+
+static const struct of_device_id v2m_dt_bus_match[] __initconst = {
+	{ .compatible = "simple-bus", },
+	{ .compatible = "arm,amba-bus", },
+	{ .compatible = "arm,vexpress,config-bus", },
+>>>>>>> refs/remotes/origin/master
 	{}
 };
 
 static void __init v2m_dt_init(void)
 {
 	l2x0_of_init(0x00400000, 0xfe0fffff);
+<<<<<<< HEAD
 	of_platform_populate(NULL, of_default_bus_match_table,
 			v2m_dt_auxdata_lookup, NULL);
 	pm_power_off = v2m_power_off;
 }
 
 const static char *v2m_dt_match[] __initconst = {
+=======
+	of_platform_populate(NULL, v2m_dt_bus_match, NULL, NULL);
+}
+
+static const char * const v2m_dt_match[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	"arm,vexpress",
 	NULL,
 };
 
 DT_MACHINE_START(VEXPRESS_DT, "ARM-Versatile Express")
 	.dt_compat	= v2m_dt_match,
+<<<<<<< HEAD
 	.map_io		= v2m_dt_map_io,
 	.init_early	= v2m_dt_init_early,
 	.init_irq	= v2m_dt_init_irq,
@@ -802,3 +1003,11 @@ MACHINE_END
 
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.smp		= smp_ops(vexpress_smp_ops),
+	.smp_init	= smp_init_ops(vexpress_smp_init_ops),
+	.map_io		= v2m_dt_map_io,
+	.init_early	= v2m_dt_init_early,
+	.init_machine	= v2m_dt_init,
+MACHINE_END
+>>>>>>> refs/remotes/origin/master

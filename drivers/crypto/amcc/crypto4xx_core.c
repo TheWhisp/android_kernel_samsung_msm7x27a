@@ -27,6 +27,12 @@
 #include <linux/dma-mapping.h>
 #include <linux/platform_device.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/slab.h>
 #include <asm/dcr.h>
@@ -52,9 +58,13 @@ static void crypto4xx_hw_init(struct crypto4xx_device *dev)
 	u32 rand_num;
 	union ce_pe_dma_cfg pe_dma_cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 device_ctrl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 device_ctrl;
+>>>>>>> refs/remotes/origin/master
 
 	writel(PPC4XX_BYTE_ORDER, dev->ce_base + CRYPTO4XX_BYTE_ORDER_CFG);
 	/* setup pe dma, include reset sg, pdr and pe, then release reset */
@@ -89,12 +99,18 @@ static void crypto4xx_hw_init(struct crypto4xx_device *dev)
 	ring_ctrl.w = 0;
 	writel(ring_ctrl.w, dev->ce_base + CRYPTO4XX_RING_CTRL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel(PPC4XX_DC_3DES_EN, dev->ce_base + CRYPTO4XX_DEVICE_CTRL);
 =======
 	device_ctrl = readl(dev->ce_base + CRYPTO4XX_DEVICE_CTRL);
 	device_ctrl |= PPC4XX_DC_3DES_EN;
 	writel(device_ctrl, dev->ce_base + CRYPTO4XX_DEVICE_CTRL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	device_ctrl = readl(dev->ce_base + CRYPTO4XX_DEVICE_CTRL);
+	device_ctrl |= PPC4XX_DC_3DES_EN;
+	writel(device_ctrl, dev->ce_base + CRYPTO4XX_DEVICE_CTRL);
+>>>>>>> refs/remotes/origin/master
 	writel(dev->gdr_pa, dev->ce_base + CRYPTO4XX_GATH_RING_BASE);
 	writel(dev->sdr_pa, dev->ce_base + CRYPTO4XX_SCAT_RING_BASE);
 	part_ring_size.w = 0;
@@ -1233,6 +1249,10 @@ static int __init crypto4xx_probe(struct platform_device *ofdev)
 	core_dev->dev->ce_base = of_iomap(ofdev->dev.of_node, 0);
 	if (!core_dev->dev->ce_base) {
 		dev_err(dev, "failed to of_iomap\n");
+<<<<<<< HEAD
+=======
+		rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto err_iomap;
 	}
 
@@ -1251,9 +1271,15 @@ err_start_dev:
 	iounmap(core_dev->dev->ce_base);
 err_iomap:
 	free_irq(core_dev->irq, dev);
+<<<<<<< HEAD
 	irq_dispose_mapping(core_dev->irq);
 	tasklet_kill(&core_dev->tasklet);
 err_request_irq:
+=======
+err_request_irq:
+	irq_dispose_mapping(core_dev->irq);
+	tasklet_kill(&core_dev->tasklet);
+>>>>>>> refs/remotes/origin/master
 	crypto4xx_destroy_sdr(core_dev->dev);
 err_build_sdr:
 	crypto4xx_destroy_gdr(core_dev->dev);
@@ -1300,6 +1326,7 @@ static struct platform_driver crypto4xx_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init crypto4xx_init(void)
 {
 	return platform_driver_register(&crypto4xx_driver);
@@ -1315,6 +1342,9 @@ module_exit(crypto4xx_exit);
 =======
 module_platform_driver(crypto4xx_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(crypto4xx_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("James Hsiao <jhsiao@amcc.com>");

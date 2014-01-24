@@ -1,8 +1,13 @@
 #ifndef _ASM_X86_PAGE_64_DEFS_H
 #define _ASM_X86_PAGE_64_DEFS_H
 
+<<<<<<< HEAD
 #define THREAD_ORDER	1
 #define THREAD_SIZE  (PAGE_SIZE << THREAD_ORDER)
+=======
+#define THREAD_SIZE_ORDER	1
+#define THREAD_SIZE  (PAGE_SIZE << THREAD_SIZE_ORDER)
+>>>>>>> refs/remotes/origin/master
 #define CURRENT_MASK (~(THREAD_SIZE - 1))
 
 #define EXCEPTION_STACK_ORDER 0
@@ -32,11 +37,14 @@
  */
 #define __PAGE_OFFSET           _AC(0xffff880000000000, UL)
 
+<<<<<<< HEAD
 #define __PHYSICAL_START	((CONFIG_PHYSICAL_START +	 	\
 				  (CONFIG_PHYSICAL_ALIGN - 1)) &	\
 				 ~(CONFIG_PHYSICAL_ALIGN - 1))
 
 #define __START_KERNEL		(__START_KERNEL_map + __PHYSICAL_START)
+=======
+>>>>>>> refs/remotes/origin/master
 #define __START_KERNEL_map	_AC(0xffffffff80000000, UL)
 
 /* See Documentation/x86/x86_64/mm.txt for a description of the memory map. */
@@ -44,6 +52,7 @@
 #define __VIRTUAL_MASK_SHIFT	47
 
 /*
+<<<<<<< HEAD
  * Kernel image size is limited to 512 MB (see level2_kernel_pgt in
  * arch/x86/kernel/head_64.S), and it is mapped here:
  */
@@ -70,6 +79,20 @@ extern void init_extra_mapping_wb(unsigned long phys, unsigned long size);
 
 #ifdef CONFIG_FLATMEM
 #define pfn_valid(pfn)          ((pfn) < max_pfn)
+=======
+ * Kernel image size is limited to 1GiB due to the fixmap living in the
+ * next 1GiB (see level2_kernel_pgt in arch/x86/kernel/head_64.S). Use
+ * 512MiB by default, leaving 1.5GiB for modules once the page tables
+ * are fully set up. If kernel ASLR is configured, it can extend the
+ * kernel page table mapping, reducing the size of the modules area.
+ */
+#define KERNEL_IMAGE_SIZE_DEFAULT      (512 * 1024 * 1024)
+#if defined(CONFIG_RANDOMIZE_BASE) && \
+	CONFIG_RANDOMIZE_BASE_MAX_OFFSET > KERNEL_IMAGE_SIZE_DEFAULT
+#define KERNEL_IMAGE_SIZE   CONFIG_RANDOMIZE_BASE_MAX_OFFSET
+#else
+#define KERNEL_IMAGE_SIZE      KERNEL_IMAGE_SIZE_DEFAULT
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* _ASM_X86_PAGE_64_DEFS_H */

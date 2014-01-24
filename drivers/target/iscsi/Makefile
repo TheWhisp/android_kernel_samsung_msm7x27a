@@ -15,6 +15,11 @@ iscsi_target_mod-y +=		iscsi_target_parameters.o \
 				iscsi_target_util.o \
 				iscsi_target.o \
 				iscsi_target_configfs.o \
+<<<<<<< HEAD
 				iscsi_target_stat.o
+=======
+				iscsi_target_stat.o \
+				iscsi_target_transport.o
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_ISCSI_TARGET)	+= iscsi_target_mod.o

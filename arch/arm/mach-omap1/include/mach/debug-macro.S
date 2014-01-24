@@ -14,6 +14,7 @@
 #include <linux/serial_reg.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/memory.h>
 
 #include <plat/serial.h>
@@ -25,6 +26,10 @@
 #include <plat/serial.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "serial.h"
+
+>>>>>>> refs/remotes/origin/master
 		.pushsection .data
 omap_uart_phys:	.word	0x0
 omap_uart_virt:	.word	0x0
@@ -36,6 +41,7 @@ omap_uart_virt:	.word	0x0
 		 * the desired UART phys and virt addresses temporarily into
 		 * the omap_uart_phys and omap_uart_virt above.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.macro	addruart, rp, rv
 
@@ -58,6 +64,8 @@ omap_uart_virt:	.word	0x0
 		ldrne	\rp, =omap_uart_p2v(OMAP_UART_INFO)	@ MMU enabled
 		ldr	\rp, [\rp, #0]
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.macro	addruart, rp, rv, tmp
 
 		/* Use omap_uart_phys/virt if already configured */
@@ -76,7 +84,10 @@ omap_uart_virt:	.word	0x0
 		and	\rp, pc, #0xff000000
 		ldr	\rv, =OMAP_UART_INFO_OFS
 		ldr	\rp, [\rp, \rv]
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Select the UART to use based on the UART1 scratchpad value */
 10:		cmp	\rp, #0			@ no port configured?
@@ -101,6 +112,7 @@ omap_uart_virt:	.word	0x0
 		/* Store both phys and virt address for the uart */
 98:		add	\rp, \rp, #0xff000000	@ phys base
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mrc	p15, 0, \rv, c1, c0
 		tst	\rv, #1			@ MMU enabled?
 		ldreq	\rv, =omap_uart_v2p(omap_uart_phys)	@ MMU disabled
@@ -113,6 +125,8 @@ omap_uart_virt:	.word	0x0
 		b	9b
 99:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		str	\rp, [\tmp, #0]		@ omap_uart_phys
 		sub	\rp, \rp, #0xff000000	@ phys base
 		add	\rp, \rp, #0xfe000000	@ virt base
@@ -125,7 +139,10 @@ omap_uart_virt:	.word	0x0
 		.ltorg
 
 100:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.endm
 
 		.macro	senduart,rd,rx

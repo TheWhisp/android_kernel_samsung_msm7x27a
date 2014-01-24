@@ -49,7 +49,11 @@ tsb_miss_page_table_walk:
 	/* Before committing to a full page table walk,
 	 * check the huge page TSB.
 	 */
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 
 661:	ldx		[%g7 + TRAP_PER_CPU_TSB_HUGE], %g5
 	nop
@@ -75,7 +79,11 @@ tsb_miss_page_table_walk:
 	mov		512, %g7
 	andn		%g5, 0x7, %g5
 	sllx		%g7, %g6, %g7
+<<<<<<< HEAD
 	srlx		%g4, HPAGE_SHIFT, %g6
+=======
+	srlx		%g4, REAL_HPAGE_SHIFT, %g6
+>>>>>>> refs/remotes/origin/master
 	sub		%g7, 1, %g7
 	and		%g6, %g7, %g6
 	sllx		%g6, 4, %g6
@@ -110,12 +118,18 @@ tsb_miss_page_table_walk:
 tsb_miss_page_table_walk_sun4v_fastpath:
 	USER_PGTABLE_WALK_TL1(%g4, %g7, %g5, %g2, tsb_do_fault)
 
+<<<<<<< HEAD
 	/* Load and check PTE.  */
 	ldxa		[%g5] ASI_PHYS_USE_EC, %g5
 	brgez,pn	%g5, tsb_do_fault
 	 nop
 
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+	/* Valid PTE is now in %g5.  */
+
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 661:	sethi		%uhi(_PAGE_SZALL_4U), %g7
 	sllx		%g7, 32, %g7
 	.section	.sun4v_2insn_patch, "ax"
@@ -139,12 +153,52 @@ tsb_miss_page_table_walk_sun4v_fastpath:
 	 nop
 
 	/* It is a huge page, use huge page TSB entry address we
+<<<<<<< HEAD
 	 * calculated above.
 	 */
 	TRAP_LOAD_TRAP_BLOCK(%g7, %g2)
 	ldx		[%g7 + TRAP_PER_CPU_TSB_HUGE_TEMP], %g2
 	cmp		%g2, -1
 	movne		%xcc, %g2, %g1
+=======
+	 * calculated above.  If the huge page TSB has not been
+	 * allocated, setup a trap stack and call hugetlb_setup()
+	 * to do so, then return from the trap to replay the TLB
+	 * miss.
+	 *
+	 * This is necessary to handle the case of transparent huge
+	 * pages where we don't really have a non-atomic context
+	 * in which to allocate the hugepage TSB hash table.  When
+	 * the 'mm' faults in the hugepage for the first time, we
+	 * thus handle it here.  This also makes sure that we can
+	 * allocate the TSB hash table on the correct NUMA node.
+	 */
+	TRAP_LOAD_TRAP_BLOCK(%g7, %g2)
+	ldx		[%g7 + TRAP_PER_CPU_TSB_HUGE_TEMP], %g1
+	cmp		%g1, -1
+	bne,pt		%xcc, 60f
+	 nop
+
+661:	rdpr		%pstate, %g5
+	wrpr		%g5, PSTATE_AG | PSTATE_MG, %pstate
+	.section	.sun4v_2insn_patch, "ax"
+	.word		661b
+	SET_GL(1)
+	nop
+	.previous
+
+	rdpr	%tl, %g3
+	cmp	%g3, 1
+	bne,pn	%xcc, winfix_trampoline
+	 nop
+	ba,pt	%xcc, etrap
+	 rd	%pc, %g7
+	call	hugetlb_setup
+	 add	%sp, PTREGS_OFF, %o0
+	ba,pt	%xcc, rtrap
+	 nop
+
+>>>>>>> refs/remotes/origin/master
 60:
 #endif
 

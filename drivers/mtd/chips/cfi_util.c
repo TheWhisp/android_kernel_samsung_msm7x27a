@@ -174,6 +174,7 @@ int cfi_varsize_frob(struct mtd_info *mtd, varsize_frob_t frob,
 	struct mtd_erase_region_info *regions = mtd->eraseregions;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ofs > mtd->size)
 		return -EINVAL;
 
@@ -182,6 +183,8 @@ int cfi_varsize_frob(struct mtd_info *mtd, varsize_frob_t frob,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check that both start and end of the requested erase are
 	 * aligned with the erasesize at the appropriate addresses.
 	 */

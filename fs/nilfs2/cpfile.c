@@ -219,18 +219,24 @@ int nilfs_cpfile_get_checkpoint(struct inode *cpfile,
 		mark_buffer_dirty(cp_bh);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(header_bh->b_page, KM_USER0);
 		header = nilfs_cpfile_block_get_header(cpfile, header_bh,
 						       kaddr);
 		le64_add_cpu(&header->ch_ncheckpoints, 1);
 		kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kaddr = kmap_atomic(header_bh->b_page);
 		header = nilfs_cpfile_block_get_header(cpfile, header_bh,
 						       kaddr);
 		le64_add_cpu(&header->ch_ncheckpoints, 1);
 		kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mark_buffer_dirty(header_bh);
 		nilfs_mdt_mark_dirty(cpfile);
 	}
@@ -294,7 +300,11 @@ int nilfs_cpfile_delete_checkpoints(struct inode *cpfile,
 	__u64 cno;
 	void *kaddr;
 	unsigned long tnicps;
+<<<<<<< HEAD
 	int ret, ncps, nicps, count, i;
+=======
+	int ret, ncps, nicps, nss, count, i;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(start == 0 || start > end)) {
 		printk(KERN_ERR "%s: invalid range of checkpoint numbers: "
@@ -309,6 +319,10 @@ int nilfs_cpfile_delete_checkpoints(struct inode *cpfile,
 	if (ret < 0)
 		goto out_sem;
 	tnicps = 0;
+<<<<<<< HEAD
+=======
+	nss = 0;
+>>>>>>> refs/remotes/origin/master
 
 	for (cno = start; cno < end; cno += ncps) {
 		ncps = nilfs_cpfile_checkpoints_in_block(cpfile, cno, end);
@@ -322,16 +336,26 @@ int nilfs_cpfile_delete_checkpoints(struct inode *cpfile,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(cp_bh->b_page, KM_USER0);
 =======
 		kaddr = kmap_atomic(cp_bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(cp_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 		cp = nilfs_cpfile_block_get_checkpoint(
 			cpfile, cno, cp_bh, kaddr);
 		nicps = 0;
 		for (i = 0; i < ncps; i++, cp = (void *)cp + cpsz) {
+<<<<<<< HEAD
 			WARN_ON(nilfs_checkpoint_snapshot(cp));
 			if (!nilfs_checkpoint_invalid(cp)) {
+=======
+			if (nilfs_checkpoint_snapshot(cp)) {
+				nss++;
+			} else if (!nilfs_checkpoint_invalid(cp)) {
+>>>>>>> refs/remotes/origin/master
 				nilfs_checkpoint_set_invalid(cp);
 				nicps++;
 			}
@@ -347,10 +371,14 @@ int nilfs_cpfile_delete_checkpoints(struct inode *cpfile,
 				if (count == 0) {
 					/* make hole */
 <<<<<<< HEAD
+<<<<<<< HEAD
 					kunmap_atomic(kaddr, KM_USER0);
 =======
 					kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 					brelse(cp_bh);
 					ret =
 					  nilfs_cpfile_delete_checkpoint_block(
@@ -366,24 +394,33 @@ int nilfs_cpfile_delete_checkpoints(struct inode *cpfile,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
 =======
 		kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 		brelse(cp_bh);
 	}
 
 	if (tnicps > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(header_bh->b_page, KM_USER0);
 =======
 		kaddr = kmap_atomic(header_bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(header_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 		header = nilfs_cpfile_block_get_header(cpfile, header_bh,
 						       kaddr);
 		le64_add_cpu(&header->ch_ncheckpoints, -(u64)tnicps);
 		mark_buffer_dirty(header_bh);
 		nilfs_mdt_mark_dirty(cpfile);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
 =======
@@ -392,6 +429,14 @@ int nilfs_cpfile_delete_checkpoints(struct inode *cpfile,
 	}
 
 	brelse(header_bh);
+=======
+		kunmap_atomic(kaddr);
+	}
+
+	brelse(header_bh);
+	if (nss > 0)
+		ret = -EBUSY;
+>>>>>>> refs/remotes/origin/master
 
  out_sem:
 	up_write(&NILFS_MDT(cpfile)->mi_sem);
@@ -437,10 +482,14 @@ static ssize_t nilfs_cpfile_do_get_cpinfo(struct inode *cpfile, __u64 *cnop,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(bh->b_page, KM_USER0);
 =======
 		kaddr = kmap_atomic(bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kaddr = kmap_atomic(bh->b_page);
+>>>>>>> refs/remotes/origin/master
 		cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, bh, kaddr);
 		for (i = 0; i < ncps && n < nci; i++, cp = (void *)cp + cpsz) {
 			if (!nilfs_checkpoint_invalid(cp)) {
@@ -451,10 +500,14 @@ static ssize_t nilfs_cpfile_do_get_cpinfo(struct inode *cpfile, __u64 *cnop,
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
 =======
 		kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 		brelse(bh);
 	}
 
@@ -488,16 +541,22 @@ static ssize_t nilfs_cpfile_do_get_ssinfo(struct inode *cpfile, __u64 *cnop,
 		if (ret < 0)
 			goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kaddr = kmap_atomic(bh->b_page, KM_USER0);
 		header = nilfs_cpfile_block_get_header(cpfile, bh, kaddr);
 		curr = le64_to_cpu(header->ch_snapshot_list.ssl_next);
 		kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kaddr = kmap_atomic(bh->b_page);
 		header = nilfs_cpfile_block_get_header(cpfile, bh, kaddr);
 		curr = le64_to_cpu(header->ch_snapshot_list.ssl_next);
 		kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		brelse(bh);
 		if (curr == 0) {
 			ret = 0;
@@ -516,10 +575,14 @@ static ssize_t nilfs_cpfile_do_get_ssinfo(struct inode *cpfile, __u64 *cnop,
 		goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(bh->b_page, KM_USER0);
 =======
 	kaddr = kmap_atomic(bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	while (n < nci) {
 		cp = nilfs_cpfile_block_get_checkpoint(cpfile, curr, bh, kaddr);
 		curr = ~(__u64)0; /* Terminator */
@@ -536,10 +599,14 @@ static ssize_t nilfs_cpfile_do_get_ssinfo(struct inode *cpfile, __u64 *cnop,
 		next_blkoff = nilfs_cpfile_get_blkoff(cpfile, next);
 		if (curr_blkoff != next_blkoff) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(kaddr, KM_USER0);
 =======
 			kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 			brelse(bh);
 			ret = nilfs_cpfile_get_checkpoint_block(cpfile, next,
 								0, &bh);
@@ -548,19 +615,27 @@ static ssize_t nilfs_cpfile_do_get_ssinfo(struct inode *cpfile, __u64 *cnop,
 				goto out;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kaddr = kmap_atomic(bh->b_page, KM_USER0);
 =======
 			kaddr = kmap_atomic(bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kaddr = kmap_atomic(bh->b_page);
+>>>>>>> refs/remotes/origin/master
 		}
 		curr = next;
 		curr_blkoff = next_blkoff;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 =======
 	kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	brelse(bh);
 	*cnop = curr;
 	ret = n;
@@ -652,42 +727,58 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 	if (ret < 0)
 		goto out_sem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(cp_bh->b_page, KM_USER0);
 	cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, cp_bh, kaddr);
 	if (nilfs_checkpoint_invalid(cp)) {
 		ret = -ENOENT;
 		kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kaddr = kmap_atomic(cp_bh->b_page);
 	cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, cp_bh, kaddr);
 	if (nilfs_checkpoint_invalid(cp)) {
 		ret = -ENOENT;
 		kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_cp;
 	}
 	if (nilfs_checkpoint_snapshot(cp)) {
 		ret = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
 		goto out_cp;
 	}
 	kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kunmap_atomic(kaddr);
 		goto out_cp;
 	}
 	kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = nilfs_cpfile_get_header_block(cpfile, &header_bh);
 	if (ret < 0)
 		goto out_cp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(header_bh->b_page, KM_USER0);
 =======
 	kaddr = kmap_atomic(header_bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(header_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	header = nilfs_cpfile_block_get_header(cpfile, header_bh, kaddr);
 	list = &header->ch_snapshot_list;
 	curr_bh = header_bh;
@@ -700,20 +791,28 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 		curr = prev;
 		if (curr_blkoff != prev_blkoff) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(kaddr, KM_USER0);
 =======
 			kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 			brelse(curr_bh);
 			ret = nilfs_cpfile_get_checkpoint_block(cpfile, curr,
 								0, &curr_bh);
 			if (ret < 0)
 				goto out_header;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kaddr = kmap_atomic(curr_bh->b_page, KM_USER0);
 =======
 			kaddr = kmap_atomic(curr_bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kaddr = kmap_atomic(curr_bh->b_page);
+>>>>>>> refs/remotes/origin/master
 		}
 		curr_blkoff = prev_blkoff;
 		cp = nilfs_cpfile_block_get_checkpoint(
@@ -722,10 +821,14 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 		prev = le64_to_cpu(list->ssl_prev);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 =======
 	kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	if (prev != 0) {
 		ret = nilfs_cpfile_get_checkpoint_block(cpfile, prev, 0,
@@ -738,6 +841,7 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(curr_bh->b_page, KM_USER0);
 	list = nilfs_cpfile_block_get_snapshot_list(
 		cpfile, curr, curr_bh, kaddr);
@@ -746,6 +850,8 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 
 	kaddr = kmap_atomic(cp_bh->b_page, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kaddr = kmap_atomic(curr_bh->b_page);
 	list = nilfs_cpfile_block_get_snapshot_list(
 		cpfile, curr, curr_bh, kaddr);
@@ -753,11 +859,15 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 	kunmap_atomic(kaddr);
 
 	kaddr = kmap_atomic(cp_bh->b_page);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, cp_bh, kaddr);
 	cp->cp_snapshot_list.ssl_next = cpu_to_le64(curr);
 	cp->cp_snapshot_list.ssl_prev = cpu_to_le64(prev);
 	nilfs_checkpoint_set_snapshot(cp);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 
@@ -772,6 +882,8 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 	le64_add_cpu(&header->ch_nsnapshots, 1);
 	kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kunmap_atomic(kaddr);
 
 	kaddr = kmap_atomic(prev_bh->b_page);
@@ -784,7 +896,10 @@ static int nilfs_cpfile_set_snapshot(struct inode *cpfile, __u64 cno)
 	header = nilfs_cpfile_block_get_header(cpfile, header_bh, kaddr);
 	le64_add_cpu(&header->ch_nsnapshots, 1);
 	kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mark_buffer_dirty(prev_bh);
 	mark_buffer_dirty(curr_bh);
@@ -826,27 +941,37 @@ static int nilfs_cpfile_clear_snapshot(struct inode *cpfile, __u64 cno)
 	if (ret < 0)
 		goto out_sem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(cp_bh->b_page, KM_USER0);
 	cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, cp_bh, kaddr);
 	if (nilfs_checkpoint_invalid(cp)) {
 		ret = -ENOENT;
 		kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kaddr = kmap_atomic(cp_bh->b_page);
 	cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, cp_bh, kaddr);
 	if (nilfs_checkpoint_invalid(cp)) {
 		ret = -ENOENT;
 		kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_cp;
 	}
 	if (!nilfs_checkpoint_snapshot(cp)) {
 		ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(kaddr, KM_USER0);
 =======
 		kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 		goto out_cp;
 	}
 
@@ -854,10 +979,14 @@ static int nilfs_cpfile_clear_snapshot(struct inode *cpfile, __u64 cno)
 	next = le64_to_cpu(list->ssl_next);
 	prev = le64_to_cpu(list->ssl_prev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 =======
 	kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 
 	ret = nilfs_cpfile_get_header_block(cpfile, &header_bh);
 	if (ret < 0)
@@ -882,6 +1011,7 @@ static int nilfs_cpfile_clear_snapshot(struct inode *cpfile, __u64 cno)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(next_bh->b_page, KM_USER0);
 	list = nilfs_cpfile_block_get_snapshot_list(
 		cpfile, next, next_bh, kaddr);
@@ -896,6 +1026,8 @@ static int nilfs_cpfile_clear_snapshot(struct inode *cpfile, __u64 cno)
 
 	kaddr = kmap_atomic(cp_bh->b_page, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kaddr = kmap_atomic(next_bh->b_page);
 	list = nilfs_cpfile_block_get_snapshot_list(
 		cpfile, next, next_bh, kaddr);
@@ -909,11 +1041,15 @@ static int nilfs_cpfile_clear_snapshot(struct inode *cpfile, __u64 cno)
 	kunmap_atomic(kaddr);
 
 	kaddr = kmap_atomic(cp_bh->b_page);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, cp_bh, kaddr);
 	cp->cp_snapshot_list.ssl_next = cpu_to_le64(0);
 	cp->cp_snapshot_list.ssl_prev = cpu_to_le64(0);
 	nilfs_checkpoint_clear_snapshot(cp);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 
@@ -922,13 +1058,18 @@ static int nilfs_cpfile_clear_snapshot(struct inode *cpfile, __u64 cno)
 	le64_add_cpu(&header->ch_nsnapshots, -1);
 	kunmap_atomic(kaddr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kunmap_atomic(kaddr);
 
 	kaddr = kmap_atomic(header_bh->b_page);
 	header = nilfs_cpfile_block_get_header(cpfile, header_bh, kaddr);
 	le64_add_cpu(&header->ch_nsnapshots, -1);
 	kunmap_atomic(kaddr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mark_buffer_dirty(next_bh);
 	mark_buffer_dirty(prev_bh);
@@ -986,20 +1127,28 @@ int nilfs_cpfile_is_snapshot(struct inode *cpfile, __u64 cno)
 	if (ret < 0)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(bh->b_page, KM_USER0);
 =======
 	kaddr = kmap_atomic(bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	cp = nilfs_cpfile_block_get_checkpoint(cpfile, cno, bh, kaddr);
 	if (nilfs_checkpoint_invalid(cp))
 		ret = -ENOENT;
 	else
 		ret = nilfs_checkpoint_snapshot(cp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 =======
 	kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	brelse(bh);
 
  out:
@@ -1077,19 +1226,27 @@ int nilfs_cpfile_get_stat(struct inode *cpfile, struct nilfs_cpstat *cpstat)
 	if (ret < 0)
 		goto out_sem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(bh->b_page, KM_USER0);
 =======
 	kaddr = kmap_atomic(bh->b_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(bh->b_page);
+>>>>>>> refs/remotes/origin/master
 	header = nilfs_cpfile_block_get_header(cpfile, bh, kaddr);
 	cpstat->cs_cno = nilfs_mdt_cno(cpfile);
 	cpstat->cs_ncps = le64_to_cpu(header->ch_ncheckpoints);
 	cpstat->cs_nsss = le64_to_cpu(header->ch_nsnapshots);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 =======
 	kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	brelse(bh);
 
  out_sem:

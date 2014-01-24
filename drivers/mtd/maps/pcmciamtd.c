@@ -15,9 +15,12 @@
 #include <linux/init.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/ds.h>
@@ -25,6 +28,7 @@
 #include <linux/mtd/map.h>
 #include <linux/mtd/mtd.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MTD_DEBUG
 static int debug = CONFIG_MTD_DEBUG_VERBOSE;
@@ -44,6 +48,8 @@ static const int debug = 0;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define info(format, arg...) printk(KERN_INFO "pcmciamtd: " format "\n" , ## arg)
 
 #define DRIVER_DESC	"PCMCIA Flash memory card driver"
@@ -112,20 +118,28 @@ static caddr_t remap_window(struct map_info *map, unsigned long to)
 
 	if (!pcmcia_dev_present(dev->p_dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(1, "device removed");
 =======
 		pr_debug("device removed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("device removed\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	offset = to & ~(dev->win_size-1);
 	if (offset != dev->offset) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "Remapping window from 0x%8.8x to 0x%8.8x",
 =======
 		pr_debug("Remapping window from 0x%8.8x to 0x%8.8x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("Remapping window from 0x%8.8x to 0x%8.8x\n",
+>>>>>>> refs/remotes/origin/master
 		      dev->offset, offset);
 		ret = pcmcia_map_mem_page(dev->p_dev, win, offset);
 		if (ret != 0)
@@ -147,10 +161,14 @@ static map_word pcmcia_read8_remap(struct map_info *map, unsigned long ofs)
 
 	d.x[0] = readb(addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx", ofs, addr, d.x[0]);
 =======
 	pr_debug("ofs = 0x%08lx (%p) data = 0x%02lx\n", ofs, addr, d.x[0]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("ofs = 0x%08lx (%p) data = 0x%02lx\n", ofs, addr, d.x[0]);
+>>>>>>> refs/remotes/origin/master
 	return d;
 }
 
@@ -166,10 +184,14 @@ static map_word pcmcia_read16_remap(struct map_info *map, unsigned long ofs)
 
 	d.x[0] = readw(addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx", ofs, addr, d.x[0]);
 =======
 	pr_debug("ofs = 0x%08lx (%p) data = 0x%04lx\n", ofs, addr, d.x[0]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("ofs = 0x%08lx (%p) data = 0x%04lx\n", ofs, addr, d.x[0]);
+>>>>>>> refs/remotes/origin/master
 	return d;
 }
 
@@ -180,10 +202,14 @@ static void pcmcia_copy_from_remap(struct map_info *map, void *to, unsigned long
 	unsigned long win_size = dev->win_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "to = %p from = %lu len = %zd", to, from, len);
 =======
 	pr_debug("to = %p from = %lu len = %zd\n", to, from, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("to = %p from = %lu len = %zd\n", to, from, len);
+>>>>>>> refs/remotes/origin/master
 	while(len) {
 		int toread = win_size - (from & (win_size-1));
 		caddr_t addr;
@@ -196,10 +222,14 @@ static void pcmcia_copy_from_remap(struct map_info *map, void *to, unsigned long
 			return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(4, "memcpy from %p to %p len = %d", addr, to, toread);
 =======
 		pr_debug("memcpy from %p to %p len = %d\n", addr, to, toread);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("memcpy from %p to %p len = %d\n", addr, to, toread);
+>>>>>>> refs/remotes/origin/master
 		memcpy_fromio(to, addr, toread);
 		len -= toread;
 		to += toread;
@@ -216,10 +246,14 @@ static void pcmcia_write8_remap(struct map_info *map, map_word d, unsigned long 
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx", adr, addr, d.x[0]);
 =======
 	pr_debug("adr = 0x%08lx (%p)  data = 0x%02lx\n", adr, addr, d.x[0]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("adr = 0x%08lx (%p)  data = 0x%02lx\n", adr, addr, d.x[0]);
+>>>>>>> refs/remotes/origin/master
 	writeb(d.x[0], addr);
 }
 
@@ -231,10 +265,14 @@ static void pcmcia_write16_remap(struct map_info *map, map_word d, unsigned long
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx", adr, addr, d.x[0]);
 =======
 	pr_debug("adr = 0x%08lx (%p)  data = 0x%04lx\n", adr, addr, d.x[0]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("adr = 0x%08lx (%p)  data = 0x%04lx\n", adr, addr, d.x[0]);
+>>>>>>> refs/remotes/origin/master
 	writew(d.x[0], addr);
 }
 
@@ -245,10 +283,14 @@ static void pcmcia_copy_to_remap(struct map_info *map, unsigned long to, const v
 	unsigned long win_size = dev->win_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "to = %lu from = %p len = %zd", to, from, len);
 =======
 	pr_debug("to = %lu from = %p len = %zd\n", to, from, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("to = %lu from = %p len = %zd\n", to, from, len);
+>>>>>>> refs/remotes/origin/master
 	while(len) {
 		int towrite = win_size - (to & (win_size-1));
 		caddr_t addr;
@@ -261,10 +303,14 @@ static void pcmcia_copy_to_remap(struct map_info *map, unsigned long to, const v
 			return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(4, "memcpy from %p to %p len = %d", from, addr, towrite);
 =======
 		pr_debug("memcpy from %p to %p len = %d\n", from, addr, towrite);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("memcpy from %p to %p len = %d\n", from, addr, towrite);
+>>>>>>> refs/remotes/origin/master
 		memcpy_toio(addr, from, towrite);
 		len -= towrite;
 		to += towrite;
@@ -287,10 +333,14 @@ static map_word pcmcia_read8(struct map_info *map, unsigned long ofs)
 
 	d.x[0] = readb(win_base + ofs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx",
 =======
 	pr_debug("ofs = 0x%08lx (%p) data = 0x%02lx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("ofs = 0x%08lx (%p) data = 0x%02lx\n",
+>>>>>>> refs/remotes/origin/master
 	      ofs, win_base + ofs, d.x[0]);
 	return d;
 }
@@ -306,10 +356,14 @@ static map_word pcmcia_read16(struct map_info *map, unsigned long ofs)
 
 	d.x[0] = readw(win_base + ofs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx",
 =======
 	pr_debug("ofs = 0x%08lx (%p) data = 0x%04lx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("ofs = 0x%08lx (%p) data = 0x%04lx\n",
+>>>>>>> refs/remotes/origin/master
 	      ofs, win_base + ofs, d.x[0]);
 	return d;
 }
@@ -323,10 +377,14 @@ static void pcmcia_copy_from(struct map_info *map, void *to, unsigned long from,
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "to = %p from = %lu len = %zd", to, from, len);
 =======
 	pr_debug("to = %p from = %lu len = %zd\n", to, from, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("to = %p from = %lu len = %zd\n", to, from, len);
+>>>>>>> refs/remotes/origin/master
 	memcpy_fromio(to, win_base + from, len);
 }
 
@@ -339,10 +397,14 @@ static void pcmcia_write8(struct map_info *map, map_word d, unsigned long adr)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx",
 =======
 	pr_debug("adr = 0x%08lx (%p)  data = 0x%02lx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("adr = 0x%08lx (%p)  data = 0x%02lx\n",
+>>>>>>> refs/remotes/origin/master
 	      adr, win_base + adr, d.x[0]);
 	writeb(d.x[0], win_base + adr);
 }
@@ -356,10 +418,14 @@ static void pcmcia_write16(struct map_info *map, map_word d, unsigned long adr)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx",
 =======
 	pr_debug("adr = 0x%08lx (%p)  data = 0x%04lx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("adr = 0x%08lx (%p)  data = 0x%04lx\n",
+>>>>>>> refs/remotes/origin/master
 	      adr, win_base + adr, d.x[0]);
 	writew(d.x[0], win_base + adr);
 }
@@ -373,28 +439,40 @@ static void pcmcia_copy_to(struct map_info *map, unsigned long to, const void *f
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "to = %lu from = %p len = %zd", to, from, len);
 =======
 	pr_debug("to = %lu from = %p len = %zd\n", to, from, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("to = %lu from = %p len = %zd\n", to, from, len);
+>>>>>>> refs/remotes/origin/master
 	memcpy_toio(win_base + to, from, len);
 }
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static DEFINE_SPINLOCK(pcmcia_vpp_lock);
 static int pcmcia_vpp_refcnt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_SPINLOCK(pcmcia_vpp_lock);
+static int pcmcia_vpp_refcnt;
+>>>>>>> refs/remotes/origin/master
 static void pcmciamtd_set_vpp(struct map_info *map, int on)
 {
 	struct pcmciamtd_dev *dev = (struct pcmciamtd_dev *)map->map_priv_1;
 	struct pcmcia_device *link = dev->p_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	DEBUG(2, "dev = %p on = %d vpp = %d\n", dev, on, dev->vpp);
 	pcmcia_fixup_vpp(link, on ? dev->vpp : 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	pr_debug("dev = %p on = %d vpp = %d\n\n", dev, on, dev->vpp);
@@ -407,7 +485,10 @@ static void pcmciamtd_set_vpp(struct map_info *map, int on)
 			pcmcia_fixup_vpp(link, 0);
 	}
 	spin_unlock_irqrestore(&pcmcia_vpp_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -416,10 +497,14 @@ static void pcmciamtd_release(struct pcmcia_device *link)
 	struct pcmciamtd_dev *dev = link->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "link = 0x%p", link);
 =======
 	pr_debug("link = 0x%p\n", link);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("link = 0x%p\n", link);
+>>>>>>> refs/remotes/origin/master
 
 	if (link->resource[2]->end) {
 		if(dev->win_base) {
@@ -432,9 +517,12 @@ static void pcmciamtd_release(struct pcmcia_device *link)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MTD_DEBUG
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int pcmciamtd_cistpl_format(struct pcmcia_device *p_dev,
 				tuple_t *tuple,
 				void *priv_data)
@@ -445,10 +533,14 @@ static int pcmciamtd_cistpl_format(struct pcmcia_device *p_dev,
 		cistpl_format_t *t = &parse.format;
 		(void)t; /* Shut up, gcc */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "Format type: %u, Error Detection: %u, offset = %u, length =%u",
 =======
 		pr_debug("Format type: %u, Error Detection: %u, offset = %u, length =%u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("Format type: %u, Error Detection: %u, offset = %u, length =%u\n",
+>>>>>>> refs/remotes/origin/master
 			t->type, t->edc, t->offset, t->length);
 	}
 	return -ENOSPC;
@@ -465,18 +557,25 @@ static int pcmciamtd_cistpl_jedec(struct pcmcia_device *p_dev,
 		cistpl_jedec_t *t = &parse.jedec;
 		for (i = 0; i < t->nid; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG(2, "JEDEC: 0x%02x 0x%02x",
 =======
 			pr_debug("JEDEC: 0x%02x 0x%02x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("JEDEC: 0x%02x 0x%02x\n",
+>>>>>>> refs/remotes/origin/master
 			      t->id[i].mfr, t->id[i].info);
 	}
 	return -ENOSPC;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int pcmciamtd_cistpl_device(struct pcmcia_device *p_dev,
 				tuple_t *tuple,
@@ -491,6 +590,7 @@ static int pcmciamtd_cistpl_device(struct pcmcia_device *p_dev,
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(2, "Common memory:");
 	dev->pcmcia_map.size = t->dev[0].size;
 	/* from here on: DEBUG only */
@@ -500,6 +600,8 @@ static int pcmciamtd_cistpl_device(struct pcmcia_device *p_dev,
 		DEBUG(2, "Region %d, speed = %u ns", i, t->dev[i].speed);
 		DEBUG(2, "Region %d, size = %u bytes", i, t->dev[i].size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_debug("Common memory:\n");
 	dev->pcmcia_map.size = t->dev[0].size;
 	/* from here on: DEBUG only */
@@ -508,7 +610,10 @@ static int pcmciamtd_cistpl_device(struct pcmcia_device *p_dev,
 		pr_debug("Region %d, wp = %u\n", i, t->dev[i].wp);
 		pr_debug("Region %d, speed = %u ns\n", i, t->dev[i].speed);
 		pr_debug("Region %d, size = %u bytes\n", i, t->dev[i].size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -529,6 +634,7 @@ static int pcmciamtd_cistpl_geo(struct pcmcia_device *p_dev,
 	/* from here on: DEBUG only */
 	for (i = 0; i < t->ngeo; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "region: %d bankwidth = %u", i, t->geo[i].buswidth);
 		DEBUG(2, "region: %d erase_block = %u", i, t->geo[i].erase_block);
 		DEBUG(2, "region: %d read_block = %u", i, t->geo[i].read_block);
@@ -536,13 +642,18 @@ static int pcmciamtd_cistpl_geo(struct pcmcia_device *p_dev,
 		DEBUG(2, "region: %d partition = %u", i, t->geo[i].partition);
 		DEBUG(2, "region: %d interleave = %u", i, t->geo[i].interleave);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("region: %d bankwidth = %u\n", i, t->geo[i].buswidth);
 		pr_debug("region: %d erase_block = %u\n", i, t->geo[i].erase_block);
 		pr_debug("region: %d read_block = %u\n", i, t->geo[i].read_block);
 		pr_debug("region: %d write_block = %u\n", i, t->geo[i].write_block);
 		pr_debug("region: %d partition = %u\n", i, t->geo[i].partition);
 		pr_debug("region: %d interleave = %u\n", i, t->geo[i].interleave);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -561,6 +672,7 @@ static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *p_dev
 				strcat(dev->mtd_name, p_dev->prod_id[i]);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "Found name: %s", dev->mtd_name);
 	}
 
@@ -569,12 +681,17 @@ static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *p_dev
 	pcmcia_loop_tuple(p_dev, CISTPL_JEDEC_C, pcmciamtd_cistpl_jedec, NULL);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("Found name: %s\n", dev->mtd_name);
 	}
 
 	pcmcia_loop_tuple(p_dev, CISTPL_FORMAT, pcmciamtd_cistpl_format, NULL);
 	pcmcia_loop_tuple(p_dev, CISTPL_JEDEC_C, pcmciamtd_cistpl_jedec, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pcmcia_loop_tuple(p_dev, CISTPL_DEVICE, pcmciamtd_cistpl_device, dev);
 	pcmcia_loop_tuple(p_dev, CISTPL_DEVICE_GEO, pcmciamtd_cistpl_geo, dev);
 
@@ -587,19 +704,27 @@ static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *p_dev
 	if(force_size) {
 		dev->pcmcia_map.size = force_size << 20;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "size forced to %dM", force_size);
 =======
 		pr_debug("size forced to %dM\n", force_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("size forced to %dM\n", force_size);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if(bankwidth) {
 		dev->pcmcia_map.bankwidth = bankwidth;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "bankwidth forced to %d", bankwidth);
 =======
 		pr_debug("bankwidth forced to %d\n", bankwidth);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("bankwidth forced to %d\n", bankwidth);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->pcmcia_map.name = dev->mtd_name;
@@ -609,10 +734,14 @@ static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *p_dev
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(1, "Device: Size: %lu Width:%d Name: %s",
 =======
 	pr_debug("Device: Size: %lu Width:%d Name: %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Device: Size: %lu Width:%d Name: %s\n",
+>>>>>>> refs/remotes/origin/master
 	      dev->pcmcia_map.size,
 	      dev->pcmcia_map.bankwidth << 3, dev->mtd_name);
 }
@@ -628,10 +757,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 	int new_name = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "link=0x%p", link);
 =======
 	pr_debug("link=0x%p\n", link);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("link=0x%p\n", link);
+>>>>>>> refs/remotes/origin/master
 
 	card_settings(dev, link, &new_name);
 
@@ -665,18 +798,24 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 	do {
 		int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(2, "requesting window with size = %luKiB memspeed = %d",
 			(unsigned long) resource_size(link->resource[2]) >> 10,
 			mem_speed);
 		ret = pcmcia_request_window(link, link->resource[2], mem_speed);
 		DEBUG(2, "ret = %d dev->win_size = %d", ret, dev->win_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("requesting window with size = %luKiB memspeed = %d\n",
 			(unsigned long) resource_size(link->resource[2]) >> 10,
 			mem_speed);
 		ret = pcmcia_request_window(link, link->resource[2], mem_speed);
 		pr_debug("ret = %d dev->win_size = %d\n", ret, dev->win_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if(ret) {
 			j++;
 			link->resource[2]->start = 0;
@@ -685,10 +824,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 			link->resource[2]->end >>= j;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG(2, "Got window of size %luKiB", (unsigned long)
 =======
 			pr_debug("Got window of size %luKiB\n", (unsigned long)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("Got window of size %luKiB\n", (unsigned long)
+>>>>>>> refs/remotes/origin/master
 				resource_size(link->resource[2]) >> 10);
 			dev->win_size = resource_size(link->resource[2]);
 			break;
@@ -696,10 +839,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 	} while (link->resource[2]->end >= 0x1000);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(2, "dev->win_size = %d", dev->win_size);
 =======
 	pr_debug("dev->win_size = %d\n", dev->win_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("dev->win_size = %d\n", dev->win_size);
+>>>>>>> refs/remotes/origin/master
 
 	if(!dev->win_size) {
 		dev_err(&dev->p_dev->dev, "Cannot allocate memory window\n");
@@ -707,10 +854,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(1, "Allocated a window of %dKiB", dev->win_size >> 10);
 =======
 	pr_debug("Allocated a window of %dKiB\n", dev->win_size >> 10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Allocated a window of %dKiB\n", dev->win_size >> 10);
+>>>>>>> refs/remotes/origin/master
 
 	/* Get write protect status */
 	dev->win_base = ioremap(link->resource[2]->start,
@@ -722,10 +873,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 		return -ENODEV;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(1, "mapped window dev = %p @ %pR, base = %p",
 =======
 	pr_debug("mapped window dev = %p @ %pR, base = %p\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("mapped window dev = %p @ %pR, base = %p\n",
+>>>>>>> refs/remotes/origin/master
 	      dev, link->resource[2], dev->win_base);
 
 	dev->offset = 0;
@@ -741,10 +896,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 
 	link->config_index = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(2, "Setting Configuration");
 =======
 	pr_debug("Setting Configuration\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Setting Configuration\n");
+>>>>>>> refs/remotes/origin/master
 	ret = pcmcia_enable_device(link);
 	if (ret != 0) {
 		if (dev->win_base) {
@@ -761,28 +920,40 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 	} else {
 		for(i = 0; i < ARRAY_SIZE(probes); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG(1, "Trying %s", probes[i]);
 =======
 			pr_debug("Trying %s\n", probes[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("Trying %s\n", probes[i]);
+>>>>>>> refs/remotes/origin/master
 			mtd = do_map_probe(probes[i], &dev->pcmcia_map);
 			if(mtd)
 				break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUG(1, "FAILED: %s", probes[i]);
 =======
 			pr_debug("FAILED: %s\n", probes[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("FAILED: %s\n", probes[i]);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if(!mtd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(1, "Can not find an MTD");
 =======
 		pr_debug("Can not find an MTD\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("Can not find an MTD\n");
+>>>>>>> refs/remotes/origin/master
 		pcmciamtd_release(link);
 		return -ENODEV;
 	}
@@ -810,10 +981,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 	   use the faster non-remapping read/write functions */
 	if(mtd->size <= dev->win_size) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUG(1, "Using non remapping memory functions");
 =======
 		pr_debug("Using non remapping memory functions\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("Using non remapping memory functions\n");
+>>>>>>> refs/remotes/origin/master
 		dev->pcmcia_map.map_priv_2 = (unsigned long)dev->win_base;
 		if (dev->pcmcia_map.bankwidth == 1) {
 			dev->pcmcia_map.read = pcmcia_read8;
@@ -842,10 +1017,14 @@ static int pcmciamtd_config(struct pcmcia_device *link)
 static int pcmciamtd_suspend(struct pcmcia_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(2, "EVENT_PM_RESUME");
 =======
 	pr_debug("EVENT_PM_RESUME\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("EVENT_PM_RESUME\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* get_lock(link); */
 
@@ -855,10 +1034,14 @@ static int pcmciamtd_suspend(struct pcmcia_device *dev)
 static int pcmciamtd_resume(struct pcmcia_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(2, "EVENT_PM_SUSPEND");
 =======
 	pr_debug("EVENT_PM_SUSPEND\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("EVENT_PM_SUSPEND\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* free_lock(link); */
 
@@ -871,10 +1054,14 @@ static void pcmciamtd_detach(struct pcmcia_device *link)
 	struct pcmciamtd_dev *dev = link->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(3, "link=0x%p", link);
 =======
 	pr_debug("link=0x%p\n", link);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("link=0x%p\n", link);
+>>>>>>> refs/remotes/origin/master
 
 	if(dev->mtd_info) {
 		mtd_device_unregister(dev->mtd_info);
@@ -895,10 +1082,14 @@ static int pcmciamtd_probe(struct pcmcia_device *link)
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev) return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(1, "dev=0x%p", dev);
 =======
 	pr_debug("dev=0x%p\n", dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("dev=0x%p\n", dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev->p_dev = link;
 	link->priv = dev;
@@ -968,10 +1159,14 @@ static int __init init_pcmciamtd(void)
 static void __exit exit_pcmciamtd(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DEBUG(1, DRIVER_DESC " unloading");
 =======
 	pr_debug(DRIVER_DESC " unloading");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug(DRIVER_DESC " unloading");
+>>>>>>> refs/remotes/origin/master
 	pcmcia_unregister_driver(&pcmciamtd_driver);
 }
 

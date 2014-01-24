@@ -35,9 +35,12 @@
  *  Returns:
  *  Requires:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *      msg_mod_init(void) called.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      msg_man != NULL.
  *      hdev_obj != NULL.
  *      msg_callback != NULL.
@@ -56,14 +59,18 @@ extern int msg_create(struct msg_mgr **msg_man,
  *  Returns:
  *  Requires:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *      msg_mod_init(void) called.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      Valid hmsg_mgr.
  *  Ensures:
  */
 extern void msg_delete(struct msg_mgr *hmsg_mgr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  *  ======== msg_exit ========
@@ -92,4 +99,6 @@ extern bool msg_mod_init(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* MSG_ */

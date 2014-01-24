@@ -26,7 +26,10 @@ obj-$(CONFIG_BRIDGE)		+= bridge/
 obj-$(CONFIG_NET_DSA)		+= dsa/
 obj-$(CONFIG_IPX)		+= ipx/
 obj-$(CONFIG_ATALK)		+= appletalk/
+<<<<<<< HEAD
 obj-$(CONFIG_WAN_ROUTER)	+= wanrouter/
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_X25)		+= x25/
 obj-$(CONFIG_LAPB)		+= lapb/
 obj-$(CONFIG_NETROM)		+= netrom/
@@ -40,7 +43,10 @@ obj-$(CONFIG_AF_RXRPC)		+= rxrpc/
 obj-$(CONFIG_ATM)		+= atm/
 obj-$(CONFIG_L2TP)		+= l2tp/
 obj-$(CONFIG_DECNET)		+= decnet/
+<<<<<<< HEAD
 obj-$(CONFIG_ECONET)		+= econet/
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PHONET)		+= phonet/
 ifneq ($(CONFIG_VLAN_8021Q),)
 obj-y				+= 8021q/
@@ -49,10 +55,14 @@ obj-$(CONFIG_IP_DCCP)		+= dccp/
 obj-$(CONFIG_IP_SCTP)		+= sctp/
 obj-$(CONFIG_RDS)		+= rds/
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_WIRELESS)		+= wireless/
 =======
 obj-$(CONFIG_WIRELESS)		+= wireless_ath/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_WIRELESS)		+= wireless/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_MAC80211)		+= mac80211/
 obj-$(CONFIG_TIPC)		+= tipc/
 obj-$(CONFIG_NETLABEL)		+= netlabel/
@@ -64,6 +74,10 @@ ifneq ($(CONFIG_DCB),)
 obj-y				+= dcb/
 endif
 obj-$(CONFIG_IEEE802154)	+= ieee802154/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_MAC802154)		+= mac802154/
+>>>>>>> refs/remotes/origin/master
 
 ifeq ($(CONFIG_NET),y)
 obj-$(CONFIG_SYSCTL)		+= sysctl_net.o
@@ -73,8 +87,16 @@ obj-$(CONFIG_DNS_RESOLVER)	+= dns_resolver/
 obj-$(CONFIG_CEPH_LIB)		+= ceph/
 obj-$(CONFIG_BATMAN_ADV)	+= batman-adv/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 obj-$(CONFIG_NFC)		+= nfc/
 obj-$(CONFIG_OPENVSWITCH)	+= openvswitch/
 >>>>>>> refs/remotes/origin/cm-10.0
 obj-$(CONFIG_NET_ACTIVITY_STATS)		+= activity_stats.o
+=======
+obj-$(CONFIG_NFC)		+= nfc/
+obj-$(CONFIG_OPENVSWITCH)	+= openvswitch/
+obj-$(CONFIG_VSOCKETS)	+= vmw_vsock/
+obj-$(CONFIG_NET_MPLS_GSO)	+= mpls/
+obj-$(CONFIG_HSR)		+= hsr/
+>>>>>>> refs/remotes/origin/master

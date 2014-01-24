@@ -2,12 +2,17 @@
 #define __ASM_ARM_DIV64
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <linux/types.h>
 =======
 #include <linux/types.h>
 #include <asm/compiler.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+#include <asm/compiler.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The semantics of do_div() are:
@@ -51,7 +56,11 @@
 	__rem;							\
 })
 
+<<<<<<< HEAD
 #if __GNUC__ < 4
+=======
+#if __GNUC__ < 4 || !defined(CONFIG_AEABI)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * gcc versions earlier than 4.0 are simply too problematic for the

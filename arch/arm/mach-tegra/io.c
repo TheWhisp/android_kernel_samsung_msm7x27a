@@ -25,6 +25,7 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <asm/page.h>
 #include <asm/mach/map.h>
@@ -43,36 +44,59 @@ static struct map_desc tegra_io_desc[] __initdata = {
 =======
 		.virtual = (unsigned long)IO_PPSB_VIRT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/page.h>
+#include <asm/mach/map.h>
+
+#include "board.h"
+#include "iomap.h"
+
+static struct map_desc tegra_io_desc[] __initdata = {
+	{
+		.virtual = (unsigned long)IO_PPSB_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn = __phys_to_pfn(IO_PPSB_PHYS),
 		.length = IO_PPSB_SIZE,
 		.type = MT_DEVICE,
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual = IO_APB_VIRT,
 =======
 		.virtual = (unsigned long)IO_APB_VIRT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual = (unsigned long)IO_APB_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn = __phys_to_pfn(IO_APB_PHYS),
 		.length = IO_APB_SIZE,
 		.type = MT_DEVICE,
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual = IO_CPU_VIRT,
 =======
 		.virtual = (unsigned long)IO_CPU_VIRT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual = (unsigned long)IO_CPU_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn = __phys_to_pfn(IO_CPU_PHYS),
 		.length = IO_CPU_SIZE,
 		.type = MT_DEVICE,
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual = IO_IRAM_VIRT,
 =======
 		.virtual = (unsigned long)IO_IRAM_VIRT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual = (unsigned long)IO_IRAM_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn = __phys_to_pfn(IO_IRAM_PHYS),
 		.length = IO_IRAM_SIZE,
 		.type = MT_DEVICE,
@@ -81,6 +105,7 @@ static struct map_desc tegra_io_desc[] __initdata = {
 
 void __init tegra_map_common_io(void)
 {
+<<<<<<< HEAD
 	iotable_init(tegra_io_desc, ARRAY_SIZE(tegra_io_desc));
 }
 <<<<<<< HEAD
@@ -107,3 +132,8 @@ void tegra_iounmap(volatile void __iomem *addr)
 EXPORT_SYMBOL(tegra_iounmap);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	debug_ll_io_init();
+	iotable_init(tegra_io_desc, ARRAY_SIZE(tegra_io_desc));
+}
+>>>>>>> refs/remotes/origin/master

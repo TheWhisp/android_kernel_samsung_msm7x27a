@@ -121,7 +121,11 @@ static const struct rtc_class_ops ds1390_rtc_ops = {
 	.set_time	= ds1390_set_time,
 };
 
+<<<<<<< HEAD
 static int __devinit ds1390_probe(struct spi_device *spi)
+=======
+static int ds1390_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char tmp;
 	struct ds1390 *chip;
@@ -131,16 +135,25 @@ static int __devinit ds1390_probe(struct spi_device *spi)
 	spi->bits_per_word = 8;
 	spi_setup(spi);
 
+<<<<<<< HEAD
 	chip = kzalloc(sizeof *chip, GFP_KERNEL);
+=======
+	chip = devm_kzalloc(&spi->dev, sizeof(*chip), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!chip) {
 		dev_err(&spi->dev, "unable to allocate device memory\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, chip);
+=======
+	spi_set_drvdata(spi, chip);
+>>>>>>> refs/remotes/origin/master
 
 	res = ds1390_get_reg(&spi->dev, DS1390_REG_SECONDS, &tmp);
 	if (res != 0) {
 		dev_err(&spi->dev, "unable to read device\n");
+<<<<<<< HEAD
 		kfree(chip);
 		return res;
 	}
@@ -151,11 +164,22 @@ static int __devinit ds1390_probe(struct spi_device *spi)
 		dev_err(&spi->dev, "unable to register device\n");
 		res = PTR_ERR(chip->rtc);
 		kfree(chip);
+=======
+		return res;
+	}
+
+	chip->rtc = devm_rtc_device_register(&spi->dev, "ds1390",
+					&ds1390_rtc_ops, THIS_MODULE);
+	if (IS_ERR(chip->rtc)) {
+		dev_err(&spi->dev, "unable to register device\n");
+		res = PTR_ERR(chip->rtc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devexit ds1390_remove(struct spi_device *spi)
 {
 	struct ds1390 *chip = spi_get_drvdata(spi);
@@ -166,12 +190,15 @@ static int __devexit ds1390_remove(struct spi_device *spi)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct spi_driver ds1390_driver = {
 	.driver = {
 		.name	= "rtc-ds1390",
 		.owner	= THIS_MODULE,
 	},
 	.probe	= ds1390_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ds1390_remove),
 };
 
@@ -190,6 +217,11 @@ module_exit(ds1390_exit);
 =======
 module_spi_driver(ds1390_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_spi_driver(ds1390_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Dallas/Maxim DS1390/93/94 SPI RTC driver");
 MODULE_AUTHOR("Mark Jackson <mpfj@mimc.co.uk>");

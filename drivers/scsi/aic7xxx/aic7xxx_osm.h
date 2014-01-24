@@ -383,6 +383,7 @@ void ahc_insb(struct ahc_softc * ahc, long port,
 int		ahc_linux_register_host(struct ahc_softc *,
 					struct scsi_host_template *);
 
+<<<<<<< HEAD
 /*************************** Pretty Printing **********************************/
 struct info_str {
 	char *buffer;
@@ -391,6 +392,8 @@ struct info_str {
 	int pos;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************** Locking *************************************/
 /* Lock protecting internal data structures */
 
@@ -523,8 +526,13 @@ ahc_flush_device_writes(struct ahc_softc *ahc)
 }
 
 /**************************** Proc FS Support *********************************/
+<<<<<<< HEAD
 int	ahc_linux_proc_info(struct Scsi_Host *, char *, char **,
 			    off_t, int, int);
+=======
+int	ahc_proc_write_seeprom(struct Scsi_Host *, char *, int);
+int	ahc_linux_show_info(struct seq_file *, struct Scsi_Host *);
+>>>>>>> refs/remotes/origin/master
 
 /*************************** Domain Validation ********************************/
 /*********************** Transaction Access Wrappers *************************/

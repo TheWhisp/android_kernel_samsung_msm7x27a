@@ -4,18 +4,27 @@
 #include <linux/init.h>
 #include <linux/sysctl.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/proc_fs.h>
 #include <linux/security.h>
 #include <linux/namei.h>
 =======
 #include <linux/poll.h>
 #include <linux/proc_fs.h>
+=======
+#include <linux/poll.h>
+#include <linux/proc_fs.h>
+#include <linux/printk.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/security.h>
 #include <linux/sched.h>
 #include <linux/namei.h>
 #include <linux/mm.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "internal.h"
 
 static const struct dentry_operations proc_sys_dentry_operations;
@@ -25,7 +34,10 @@ static const struct file_operations proc_sys_dir_file_operations;
 static const struct inode_operations proc_sys_dir_operations;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void proc_sys_poll_notify(struct ctl_table_poll *poll)
 {
 	if (!poll)
@@ -65,7 +77,11 @@ static void sysctl_print_dir(struct ctl_dir *dir)
 {
 	if (dir->header.parent)
 		sysctl_print_dir(dir->header.parent);
+<<<<<<< HEAD
 	printk(KERN_CONT "%s/", dir->header.ctl_table[0].procname);
+=======
+	pr_cont("%s/", dir->header.ctl_table[0].procname);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int namecmp(const char *name1, int len1, const char *name2, int len2)
@@ -142,14 +158,24 @@ static int insert_entry(struct ctl_table_header *head, struct ctl_table *entry)
 		else if (cmp > 0)
 			p = &(*p)->rb_right;
 		else {
+<<<<<<< HEAD
 			printk(KERN_ERR "sysctl duplicate entry: ");
 			sysctl_print_dir(head->parent);
 			printk(KERN_CONT "/%s\n", entry->procname);
+=======
+			pr_err("sysctl duplicate entry: ");
+			sysctl_print_dir(head->parent);
+			pr_cont("/%s\n", entry->procname);
+>>>>>>> refs/remotes/origin/master
 			return -EEXIST;
 		}
 	}
 
 	rb_link_node(node, parent, p);
+<<<<<<< HEAD
+=======
+	rb_insert_color(node, &head->parent->root);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -176,10 +202,15 @@ static void init_header(struct ctl_table_header *head,
 	head->node = node;
 	if (node) {
 		struct ctl_table *entry;
+<<<<<<< HEAD
 		for (entry = table; entry->procname; entry++, node++) {
 			rb_init_node(&node->node);
 			node->header = head;
 		}
+=======
+		for (entry = table; entry->procname; entry++, node++)
+			node->header = head;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -274,8 +305,12 @@ void sysctl_head_put(struct ctl_table_header *head)
 
 static struct ctl_table_header *sysctl_head_grab(struct ctl_table_header *head)
 {
+<<<<<<< HEAD
 	if (!head)
 		BUG();
+=======
+	BUG_ON(!head);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&sysctl_lock);
 	if (!use_table(head))
 		head = ERR_PTR(-ENOENT);
@@ -379,28 +414,47 @@ void register_sysctl_root(struct ctl_table_root *root)
 
 static int test_perm(int mode, int op)
 {
+<<<<<<< HEAD
 	if (!current_euid())
 		mode >>= 6;
 	else if (in_egroup_p(0))
+=======
+	if (uid_eq(current_euid(), GLOBAL_ROOT_UID))
+		mode >>= 6;
+	else if (in_egroup_p(GLOBAL_ROOT_GID))
+>>>>>>> refs/remotes/origin/master
 		mode >>= 3;
 	if ((op & ~mode & (MAY_READ|MAY_WRITE|MAY_EXEC)) == 0)
 		return 0;
 	return -EACCES;
 }
 
+<<<<<<< HEAD
 static int sysctl_perm(struct ctl_table_root *root, struct ctl_table *table, int op)
 {
 	int mode;
 
 	if (root->permissions)
 		mode = root->permissions(root, current->nsproxy, table);
+=======
+static int sysctl_perm(struct ctl_table_header *head, struct ctl_table *table, int op)
+{
+	struct ctl_table_root *root = head->root;
+	int mode;
+
+	if (root->permissions)
+		mode = root->permissions(head, table);
+>>>>>>> refs/remotes/origin/master
 	else
 		mode = table->mode;
 
 	return test_perm(mode, op);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct inode *proc_sys_make_inode(struct super_block *sb,
 		struct ctl_table_header *head, struct ctl_table *table)
 {
@@ -421,19 +475,26 @@ static struct inode *proc_sys_make_inode(struct super_block *sb,
 	inode->i_mtime = inode->i_atime = inode->i_ctime = CURRENT_TIME;
 	inode->i_mode = table->mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!table->child) {
 =======
 	if (!S_ISDIR(table->mode)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!S_ISDIR(table->mode)) {
+>>>>>>> refs/remotes/origin/master
 		inode->i_mode |= S_IFREG;
 		inode->i_op = &proc_sys_inode_operations;
 		inode->i_fop = &proc_sys_file_operations;
 	} else {
 		inode->i_mode |= S_IFDIR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		inode->i_op = &proc_sys_dir_operations;
 		inode->i_fop = &proc_sys_dir_file_operations;
 	}
@@ -441,6 +502,7 @@ out:
 	return inode;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct ctl_table *find_in_table(struct ctl_table *p, struct qstr *name)
 {
@@ -470,12 +532,15 @@ static struct ctl_table_header *grab_header(struct inode *inode)
 	else
 		return sysctl_head_next(NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ctl_table_header *grab_header(struct inode *inode)
 {
 	struct ctl_table_header *head = PROC_I(inode)->sysctl;
 	if (!head)
 		head = &sysctl_table_root.default_set.dir.header;
 	return sysctl_head_grab(head);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -487,20 +552,34 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 	struct ctl_table *table = PROC_I(dir)->sysctl_entry;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
+					unsigned int flags)
+{
+	struct ctl_table_header *head = grab_header(dir);
+>>>>>>> refs/remotes/origin/master
 	struct ctl_table_header *h = NULL;
 	struct qstr *name = &dentry->d_name;
 	struct ctl_table *p;
 	struct inode *inode;
 	struct dentry *err = ERR_PTR(-ENOENT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct ctl_dir *ctl_dir;
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ctl_dir *ctl_dir;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(head))
 		return ERR_CAST(head);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (table && !table->child) {
 		WARN_ON(1);
@@ -529,6 +608,8 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 		sysctl_head_finish(h);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ctl_dir = container_of(head, struct ctl_dir, header);
 
 	p = lookup_entry(&h, ctl_dir, name->name, name->len);
@@ -544,7 +625,10 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 
 	err = ERR_PTR(-ENOMEM);
 	inode = proc_sys_make_inode(dir->i_sb, h ? h : head, p);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!inode)
 		goto out;
 
@@ -554,10 +638,15 @@ static struct dentry *proc_sys_lookup(struct inode *dir, struct dentry *dentry,
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (h)
 		sysctl_head_finish(h);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (h)
+		sysctl_head_finish(h);
+>>>>>>> refs/remotes/origin/master
 	sysctl_head_finish(head);
 	return err;
 }
@@ -565,7 +654,11 @@ out:
 static ssize_t proc_sys_call_handler(struct file *filp, void __user *buf,
 		size_t count, loff_t *ppos, int write)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	struct ctl_table_header *head = grab_header(inode);
 	struct ctl_table *table = PROC_I(inode)->sysctl_entry;
 	ssize_t error;
@@ -579,7 +672,11 @@ static ssize_t proc_sys_call_handler(struct file *filp, void __user *buf,
 	 * and won't be until we finish.
 	 */
 	error = -EPERM;
+<<<<<<< HEAD
 	if (sysctl_perm(head->root, table, write ? MAY_WRITE : MAY_READ))
+=======
+	if (sysctl_perm(head, table, write ? MAY_WRITE : MAY_READ))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	/* if that can happen at all, it should be -EINVAL, not -EISDIR */
@@ -611,7 +708,10 @@ static ssize_t proc_sys_write(struct file *filp, const char __user *buf,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int proc_sys_open(struct inode *inode, struct file *filp)
 {
 	struct ctl_table_header *head = grab_header(inode);
@@ -631,7 +731,11 @@ static int proc_sys_open(struct inode *inode, struct file *filp)
 
 static unsigned int proc_sys_poll(struct file *filp, poll_table *wait)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	struct ctl_table_header *head = grab_header(inode);
 	struct ctl_table *table = PROC_I(inode)->sysctl_entry;
 	unsigned int ret = DEFAULT_POLLMASK;
@@ -660,6 +764,7 @@ out:
 
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static int proc_sys_fill_cache(struct file *filp, void *dirent,
@@ -668,6 +773,15 @@ static int proc_sys_fill_cache(struct file *filp, void *dirent,
 				struct ctl_table *table)
 {
 	struct dentry *child, *dir = filp->f_path.dentry;
+=======
+
+static bool proc_sys_fill_cache(struct file *file,
+				struct dir_context *ctx,
+				struct ctl_table_header *head,
+				struct ctl_table *table)
+{
+	struct dentry *child, *dir = file->f_path.dentry;
+>>>>>>> refs/remotes/origin/master
 	struct inode *inode;
 	struct qstr qname;
 	ino_t ino = 0;
@@ -684,19 +798,28 @@ static int proc_sys_fill_cache(struct file *filp, void *dirent,
 			inode = proc_sys_make_inode(dir->d_sb, head, table);
 			if (!inode) {
 				dput(child);
+<<<<<<< HEAD
 				return -ENOMEM;
+=======
+				return false;
+>>>>>>> refs/remotes/origin/master
 			} else {
 				d_set_d_op(child, &proc_sys_dentry_operations);
 				d_add(child, inode);
 			}
 		} else {
+<<<<<<< HEAD
 			return -ENOMEM;
+=======
+			return false;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	inode = child->d_inode;
 	ino  = inode->i_ino;
 	type = inode->i_mode >> 12;
 	dput(child);
+<<<<<<< HEAD
 	return !!filldir(dirent, qname.name, qname.len, filp->f_pos, ino, type);
 }
 
@@ -708,21 +831,41 @@ static int proc_sys_link_fill_cache(struct file *filp, void *dirent,
 				    struct ctl_table *table)
 {
 	int err, ret = 0;
+=======
+	return dir_emit(ctx, qname.name, qname.len, ino, type);
+}
+
+static bool proc_sys_link_fill_cache(struct file *file,
+				    struct dir_context *ctx,
+				    struct ctl_table_header *head,
+				    struct ctl_table *table)
+{
+	bool ret = true;
+>>>>>>> refs/remotes/origin/master
 	head = sysctl_head_grab(head);
 
 	if (S_ISLNK(table->mode)) {
 		/* It is not an error if we can not follow the link ignore it */
+<<<<<<< HEAD
 		err = sysctl_follow_link(&head, &table, current->nsproxy);
+=======
+		int err = sysctl_follow_link(&head, &table, current->nsproxy);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 	}
 
+<<<<<<< HEAD
 	ret = proc_sys_fill_cache(filp, dirent, filldir, head, table);
+=======
+	ret = proc_sys_fill_cache(file, ctx, head, table);
+>>>>>>> refs/remotes/origin/master
 out:
 	sysctl_head_finish(head);
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int scan(struct ctl_table_header *head, ctl_table *table,
 		unsigned long *pos, struct file *file,
@@ -780,10 +923,40 @@ static int proc_sys_readdir(struct file *filp, void *dirent, filldir_t filldir)
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long pos;
 	int ret = -EINVAL;
+=======
+static int scan(struct ctl_table_header *head, ctl_table *table,
+		unsigned long *pos, struct file *file,
+		struct dir_context *ctx)
+{
+	bool res;
+
+	if ((*pos)++ < ctx->pos)
+		return true;
+
+	if (unlikely(S_ISLNK(table->mode)))
+		res = proc_sys_link_fill_cache(file, ctx, head, table);
+	else
+		res = proc_sys_fill_cache(file, ctx, head, table);
+
+	if (res)
+		ctx->pos = *pos;
+
+	return res;
+}
+
+static int proc_sys_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct ctl_table_header *head = grab_header(file_inode(file));
+	struct ctl_table_header *h = NULL;
+	struct ctl_table *entry;
+	struct ctl_dir *ctl_dir;
+	unsigned long pos;
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(head))
 		return PTR_ERR(head);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (table && !table->child) {
 		WARN_ON(1);
@@ -825,10 +998,22 @@ static int proc_sys_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		ret = scan(h, entry, &pos, filp, dirent, filldir);
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (ret) {
+=======
+	ctl_dir = container_of(head, struct ctl_dir, header);
+
+	if (!dir_emit_dots(file, ctx))
+		return 0;
+
+	pos = 2;
+
+	for (first_entry(ctl_dir, &h, &entry); h; next_entry(&h, &entry)) {
+		if (!scan(h, entry, &pos, file, ctx)) {
+>>>>>>> refs/remotes/origin/master
 			sysctl_head_finish(h);
 			break;
 		}
 	}
+<<<<<<< HEAD
 	ret = 1;
 out:
 	sysctl_head_finish(head);
@@ -840,6 +1025,13 @@ static int proc_sys_permission(struct inode *inode, int mask,unsigned int flags)
 =======
 static int proc_sys_permission(struct inode *inode, int mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sysctl_head_finish(head);
+	return 0;
+}
+
+static int proc_sys_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * sysctl entries that are not writeable,
@@ -862,10 +1054,14 @@ static int proc_sys_permission(struct inode *inode, int mask)
 		error = mask & MAY_WRITE ? -EACCES : 0;
 	else /* Use the permissions on the sysctl table entry */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		error = sysctl_perm(head->root, table, mask);
 =======
 		error = sysctl_perm(head->root, table, mask & ~MAY_NOT_BLOCK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = sysctl_perm(head, table, mask & ~MAY_NOT_BLOCK);
+>>>>>>> refs/remotes/origin/master
 
 	sysctl_head_finish(head);
 	return error;
@@ -883,6 +1079,7 @@ static int proc_sys_setattr(struct dentry *dentry, struct iattr *attr)
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 	if ((attr->ia_valid & ATTR_SIZE) &&
 	    attr->ia_size != i_size_read(inode)) {
 		error = vmtruncate(inode, attr->ia_size);
@@ -890,6 +1087,8 @@ static int proc_sys_setattr(struct dentry *dentry, struct iattr *attr)
 			return error;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	setattr_copy(inode, attr);
 	mark_inode_dirty(inode);
 	return 0;
@@ -914,10 +1113,15 @@ static int proc_sys_getattr(struct vfsmount *mnt, struct dentry *dentry, struct 
 
 static const struct file_operations proc_sys_file_operations = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.open		= proc_sys_open,
 	.poll		= proc_sys_poll,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open		= proc_sys_open,
+	.poll		= proc_sys_poll,
+>>>>>>> refs/remotes/origin/master
 	.read		= proc_sys_read,
 	.write		= proc_sys_write,
 	.llseek		= default_llseek,
@@ -925,10 +1129,15 @@ static const struct file_operations proc_sys_file_operations = {
 
 static const struct file_operations proc_sys_dir_file_operations = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.read		= generic_read_dir,
 >>>>>>> refs/remotes/origin/cm-10.0
 	.readdir	= proc_sys_readdir,
+=======
+	.read		= generic_read_dir,
+	.iterate	= proc_sys_readdir,
+>>>>>>> refs/remotes/origin/master
 	.llseek		= generic_file_llseek,
 };
 
@@ -945,9 +1154,15 @@ static const struct inode_operations proc_sys_dir_operations = {
 	.getattr	= proc_sys_getattr,
 };
 
+<<<<<<< HEAD
 static int proc_sys_revalidate(struct dentry *dentry, struct nameidata *nd)
 {
 	if (nd->flags & LOOKUP_RCU)
+=======
+static int proc_sys_revalidate(struct dentry *dentry, unsigned int flags)
+{
+	if (flags & LOOKUP_RCU)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 	return !PROC_I(dentry->d_inode)->sysctl->unregistering;
 }
@@ -958,7 +1173,10 @@ static int proc_sys_delete(const struct dentry *dentry)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int sysctl_is_seen(struct ctl_table_header *p)
 {
 	struct ctl_table_set *set = p->set;
@@ -974,6 +1192,7 @@ static int sysctl_is_seen(struct ctl_table_header *p)
 	return res;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int proc_sys_compare(const struct dentry *parent,
 		const struct inode *pinode,
@@ -984,6 +1203,18 @@ static int proc_sys_compare(const struct dentry *parent,
 	/* Although proc doesn't have negative dentries, rcu-walk means
 	 * that inode here can be NULL */
 	/* AV: can it, indeed? */
+=======
+static int proc_sys_compare(const struct dentry *parent, const struct dentry *dentry,
+		unsigned int len, const char *str, const struct qstr *name)
+{
+	struct ctl_table_header *head;
+	struct inode *inode;
+
+	/* Although proc doesn't have negative dentries, rcu-walk means
+	 * that inode here can be NULL */
+	/* AV: can it, indeed? */
+	inode = ACCESS_ONCE(dentry->d_inode);
+>>>>>>> refs/remotes/origin/master
 	if (!inode)
 		return 1;
 	if (name->len != len)
@@ -1001,7 +1232,10 @@ static const struct dentry_operations proc_sys_dentry_operations = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ctl_dir *find_subdir(struct ctl_dir *dir,
 				   const char *name, int namelen)
 {
@@ -1092,9 +1326,15 @@ found:
 	subdir->header.nreg++;
 failed:
 	if (unlikely(IS_ERR(subdir))) {
+<<<<<<< HEAD
 		printk(KERN_ERR "sysctl could not get directory: ");
 		sysctl_print_dir(dir);
 		printk(KERN_CONT "/%*.*s %ld\n",
+=======
+		pr_err("sysctl could not get directory: ");
+		sysctl_print_dir(dir);
+		pr_cont("/%*.*s %ld\n",
+>>>>>>> refs/remotes/origin/master
 			namelen, namelen, name, PTR_ERR(subdir));
 	}
 	drop_sysctl_table(&dir->header);
@@ -1160,8 +1400,13 @@ static int sysctl_err(const char *path, struct ctl_table *table, char *fmt, ...)
 	vaf.fmt = fmt;
 	vaf.va = &args;
 
+<<<<<<< HEAD
 	printk(KERN_ERR "sysctl table check failed: %s/%s %pV\n",
 		path, table->procname, &vaf);
+=======
+	pr_err("sysctl table check failed: %s/%s %pV\n",
+	       path, table->procname, &vaf);
+>>>>>>> refs/remotes/origin/master
 
 	va_end(args);
 	return -EINVAL;
@@ -1675,9 +1920,15 @@ static void put_links(struct ctl_table_header *header)
 			drop_sysctl_table(link_head);
 		}
 		else {
+<<<<<<< HEAD
 			printk(KERN_ERR "sysctl link missing during unregister: ");
 			sysctl_print_dir(parent);
 			printk(KERN_CONT "/%s\n", name);
+=======
+			pr_err("sysctl link missing during unregister: ");
+			sysctl_print_dir(parent);
+			pr_cont("/%s\n", name);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -1749,7 +2000,10 @@ void retire_sysctl_set(struct ctl_table_set *set)
 	WARN_ON(!RB_EMPTY_ROOT(&set->dir.root));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int __init proc_sys_init(void)
 {
 	struct proc_dir_entry *proc_sys_root;
@@ -1759,9 +2013,14 @@ int __init proc_sys_init(void)
 	proc_sys_root->proc_fops = &proc_sys_dir_file_operations;
 	proc_sys_root->nlink = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 
 	return sysctl_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return sysctl_init();
+>>>>>>> refs/remotes/origin/master
 }

@@ -1,4 +1,5 @@
 #
+<<<<<<< HEAD
 # Industrial I/O subsytem configuration
 #
 
@@ -75,10 +76,17 @@ config IIO_CONSUMERS_PER_TRIGGER
        help
 	This value controls the maximum number of consumers that a
 	given trigger may handle. Default is 2.
+=======
+# Industrial I/O subsystem configuration
+#
+menu "IIO staging drivers"
+	depends on IIO
+>>>>>>> refs/remotes/origin/master
 
 source "drivers/staging/iio/accel/Kconfig"
 source "drivers/staging/iio/adc/Kconfig"
 source "drivers/staging/iio/addac/Kconfig"
+<<<<<<< HEAD
 <<<<<<< HEAD
 source "drivers/staging/iio/dac/Kconfig"
 source "drivers/staging/iio/dds/Kconfig"
@@ -91,6 +99,12 @@ source "drivers/staging/iio/gyro/Kconfig"
 source "drivers/staging/iio/impedance-analyzer/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/staging/iio/imu/Kconfig"
+=======
+source "drivers/staging/iio/cdc/Kconfig"
+source "drivers/staging/iio/frequency/Kconfig"
+source "drivers/staging/iio/gyro/Kconfig"
+source "drivers/staging/iio/impedance-analyzer/Kconfig"
+>>>>>>> refs/remotes/origin/master
 source "drivers/staging/iio/light/Kconfig"
 source "drivers/staging/iio/magnetometer/Kconfig"
 source "drivers/staging/iio/meter/Kconfig"
@@ -98,7 +112,10 @@ source "drivers/staging/iio/resolver/Kconfig"
 source "drivers/staging/iio/trigger/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config IIO_DUMMY_EVGEN
        tristate
 
@@ -119,11 +136,19 @@ config IIO_SIMPLE_DUMMY_EVENTS
 
 config IIO_SIMPLE_DUMMY_BUFFER
        boolean "Buffered capture support"
+<<<<<<< HEAD
        depends on IIO_KFIFO_BUF
+=======
+       select IIO_KFIFO_BUF
+>>>>>>> refs/remotes/origin/master
        help
          Add buffered data capture to the simple dummy driver.
 
 endif # IIO_SIMPLE_DUMMY
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 endif # IIO
+=======
+endmenu
+>>>>>>> refs/remotes/origin/master

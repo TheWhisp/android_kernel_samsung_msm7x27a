@@ -24,9 +24,12 @@
 #ifdef CONFIG_X86
 #include <video/vga.h>
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_MTRR
 #include <asm/mtrr.h>
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #include "edid.h"
 
 static struct cb_id uvesafb_cn_id = {
@@ -36,13 +39,18 @@ static struct cb_id uvesafb_cn_id = {
 static char v86d_path[PATH_MAX] = "/sbin/v86d";
 static char v86d_started;	/* has v86d been started by uvesafb? */
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo uvesafb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo uvesafb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id	= "VESA VGA",
 	.type	= FB_TYPE_PACKED_PIXELS,
 	.accel	= FB_ACCEL_NONE,
 	.visual = FB_VISUAL_TRUECOLOR,
 };
 
+<<<<<<< HEAD
 static int mtrr		__devinitdata = 3; /* enable mtrr by default */
 <<<<<<< HEAD
 static int blank	= 1;		   /* enable blanking by default */
@@ -64,6 +72,21 @@ static u16 maxvf	__devinitdata; /* maximum vertical frequency */
 static u16 maxhf	__devinitdata; /* maximum horizontal frequency */
 static u16 vbemode	__devinitdata; /* force use of a specific VBE mode */
 static char *mode_option __devinitdata;
+=======
+static int mtrr		= 3;	/* enable mtrr by default */
+static bool blank	= 1;	/* enable blanking by default */
+static int ypan		= 1;	/* 0: scroll, 1: ypan, 2: ywrap */
+static bool pmi_setpal	= true; /* use PMI for palette changes */
+static bool nocrtc;		/* ignore CRTC settings */
+static bool noedid;		/* don't try DDC transfers */
+static int vram_remap;		/* set amt. of memory to be used */
+static int vram_total;		/* set total amount of memory */
+static u16 maxclk;		/* maximum pixel clock */
+static u16 maxvf;		/* maximum vertical frequency */
+static u16 maxhf;		/* maximum horizontal frequency */
+static u16 vbemode;		/* force use of a specific VBE mode */
+static char *mode_option;
+>>>>>>> refs/remotes/origin/master
 static u8  dac_width	= 6;
 
 static struct uvesafb_ktask *uvfb_tasks[UVESAFB_TASKS_MAX];
@@ -82,10 +105,14 @@ static void uvesafb_cn_callback(struct cn_msg *msg, struct netlink_skb_parms *ns
 	struct uvesafb_ktask *task;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cap_raised(current_cap(), CAP_SYS_ADMIN))
 =======
 	if (!capable(CAP_SYS_ADMIN))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!capable(CAP_SYS_ADMIN))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (msg->seq >= UVESAFB_TASKS_MAX)
@@ -134,10 +161,14 @@ static int uvesafb_helper_start(void)
 	};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return call_usermodehelper(v86d_path, argv, envp, 1);
 =======
 	return call_usermodehelper(v86d_path, argv, envp, UMH_WAIT_PROC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return call_usermodehelper(v86d_path, argv, envp, UMH_WAIT_PROC);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -182,7 +213,11 @@ static int uvesafb_exec(struct uvesafb_ktask *task)
 	memcpy(&m->id, &uvesafb_cn_id, sizeof(m->id));
 	m->seq = seq;
 	m->len = len;
+<<<<<<< HEAD
 	m->ack = random32();
+=======
+	m->ack = prandom_u32();
+>>>>>>> refs/remotes/origin/master
 
 	/* uvesafb_task structure */
 	memcpy(m + 1, &task->t, sizeof(task->t));
@@ -252,8 +287,12 @@ out:
 static void uvesafb_free(struct uvesafb_ktask *task)
 {
 	if (task) {
+<<<<<<< HEAD
 		if (task->done)
 			kfree(task->done);
+=======
+		kfree(task->done);
+>>>>>>> refs/remotes/origin/master
 		kfree(task);
 	}
 }
@@ -379,10 +418,14 @@ static u8 *uvesafb_vbe_state_save(struct uvesafb_par *par)
 	state = kmalloc(par->vbe_state_size, GFP_KERNEL);
 	if (!state)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NULL;
 =======
 		return ERR_PTR(-ENOMEM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ERR_PTR(-ENOMEM);
+>>>>>>> refs/remotes/origin/master
 
 	task = uvesafb_prep();
 	if (!task) {
@@ -438,8 +481,13 @@ static void uvesafb_vbe_state_restore(struct uvesafb_par *par, u8 *state_buf)
 	uvesafb_free(task);
 }
 
+<<<<<<< HEAD
 static int __devinit uvesafb_vbe_getinfo(struct uvesafb_ktask *task,
 		struct uvesafb_par *par)
+=======
+static int uvesafb_vbe_getinfo(struct uvesafb_ktask *task,
+			       struct uvesafb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -497,8 +545,13 @@ static int __devinit uvesafb_vbe_getinfo(struct uvesafb_ktask *task,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit uvesafb_vbe_getmodes(struct uvesafb_ktask *task,
 		struct uvesafb_par *par)
+=======
+static int uvesafb_vbe_getmodes(struct uvesafb_ktask *task,
+				struct uvesafb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	int off = 0, err;
 	u16 *mode;
@@ -576,8 +629,13 @@ static int __devinit uvesafb_vbe_getmodes(struct uvesafb_ktask *task,
  * x86 and not x86_64.
  */
 #ifdef CONFIG_X86_32
+<<<<<<< HEAD
 static int __devinit uvesafb_vbe_getpmi(struct uvesafb_ktask *task,
 		struct uvesafb_par *par)
+=======
+static int uvesafb_vbe_getpmi(struct uvesafb_ktask *task,
+			      struct uvesafb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err;
 
@@ -622,8 +680,13 @@ static int __devinit uvesafb_vbe_getpmi(struct uvesafb_ktask *task,
  * Check whether a video mode is supported by the Video BIOS and is
  * compatible with the monitor limits.
  */
+<<<<<<< HEAD
 static int __devinit uvesafb_is_valid_mode(struct fb_videomode *mode,
 		struct fb_info *info)
+=======
+static int uvesafb_is_valid_mode(struct fb_videomode *mode,
+				 struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	if (info->monspecs.gtf) {
 		fb_videomode_to_var(&info->var, mode);
@@ -638,8 +701,12 @@ static int __devinit uvesafb_is_valid_mode(struct fb_videomode *mode,
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit uvesafb_vbe_getedid(struct uvesafb_ktask *task,
 		struct fb_info *info)
+=======
+static int uvesafb_vbe_getedid(struct uvesafb_ktask *task, struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uvesafb_par *par = info->par;
 	int err = 0;
@@ -679,6 +746,11 @@ static int __devinit uvesafb_vbe_getedid(struct uvesafb_ktask *task,
 	task->t.flags = TF_BUF_RET | TF_BUF_ESDI;
 	task->t.buf_len = EDID_LENGTH;
 	task->buf = kzalloc(EDID_LENGTH, GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (!task->buf)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	err = uvesafb_exec(task);
 
@@ -702,8 +774,13 @@ static int __devinit uvesafb_vbe_getedid(struct uvesafb_ktask *task,
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devinit uvesafb_vbe_getmonspecs(struct uvesafb_ktask *task,
 		struct fb_info *info)
+=======
+static void uvesafb_vbe_getmonspecs(struct uvesafb_ktask *task,
+				    struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uvesafb_par *par = info->par;
 	int i;
@@ -783,8 +860,13 @@ static void __devinit uvesafb_vbe_getmonspecs(struct uvesafb_ktask *task,
 	return;
 }
 
+<<<<<<< HEAD
 static void __devinit uvesafb_vbe_getstatesize(struct uvesafb_ktask *task,
 		struct uvesafb_par *par)
+=======
+static void uvesafb_vbe_getstatesize(struct uvesafb_ktask *task,
+				     struct uvesafb_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -812,7 +894,11 @@ static void __devinit uvesafb_vbe_getstatesize(struct uvesafb_ktask *task,
 	par->vbe_state_size = 64 * (task->t.regs.ebx & 0xffff);
 }
 
+<<<<<<< HEAD
 static int __devinit uvesafb_vbe_init(struct fb_info *info)
+=======
+static int uvesafb_vbe_init(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uvesafb_ktask *task = NULL;
 	struct uvesafb_par *par = info->par;
@@ -838,8 +924,13 @@ static int __devinit uvesafb_vbe_init(struct fb_info *info)
 	if (par->pmi_setpal || par->ypan) {
 		if (__supported_pte_mask & _PAGE_NX) {
 			par->pmi_setpal = par->ypan = 0;
+<<<<<<< HEAD
 			printk(KERN_WARNING "uvesafb: NX protection is actively."
 				"We have better not to use the PMI.\n");
+=======
+			printk(KERN_WARNING "uvesafb: NX protection is active, "
+					    "better not use the PMI.\n");
+>>>>>>> refs/remotes/origin/master
 		} else {
 			uvesafb_vbe_getpmi(task, par);
 		}
@@ -857,7 +948,11 @@ out:	uvesafb_free(task);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit uvesafb_vbe_init_mode(struct fb_info *info)
+=======
+static int uvesafb_vbe_init_mode(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *pos;
 	struct fb_modelist *modelist;
@@ -1200,10 +1295,13 @@ static int uvesafb_open(struct fb_info *info, int user)
 	struct uvesafb_par *par = info->par;
 	int cnt = atomic_read(&par->ref_count);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!cnt && par->vbe_state_size)
 		par->vbe_state_orig = uvesafb_vbe_state_save(par);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 *buf = NULL;
 
 	if (!cnt && par->vbe_state_size) {
@@ -1215,7 +1313,10 @@ static int uvesafb_open(struct fb_info *info, int user)
 			par->vbe_state_orig = buf;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	atomic_inc(&par->ref_count);
 	return 0;
@@ -1360,8 +1461,13 @@ setmode:
 				FB_VISUAL_PSEUDOCOLOR : FB_VISUAL_TRUECOLOR;
 	info->fix.line_length = mode->bytes_per_scan_line;
 
+<<<<<<< HEAD
 out:	if (crtc != NULL)
 		kfree(crtc);
+=======
+out:
+	kfree(crtc);
+>>>>>>> refs/remotes/origin/master
 	uvesafb_free(task);
 
 	return err;
@@ -1468,8 +1574,12 @@ static struct fb_ops uvesafb_ops = {
 	.fb_set_par	= uvesafb_set_par,
 };
 
+<<<<<<< HEAD
 static void __devinit uvesafb_init_info(struct fb_info *info,
 		struct vbe_mode_ib *mode)
+=======
+static void uvesafb_init_info(struct fb_info *info, struct vbe_mode_ib *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int size_vmode;
 	unsigned int size_remap;
@@ -1564,6 +1674,7 @@ static void __devinit uvesafb_init_info(struct fb_info *info,
 		info->fbops->fb_pan_display = NULL;
 }
 
+<<<<<<< HEAD
 static void __devinit uvesafb_init_mtrr(struct fb_info *info)
 {
 #ifdef CONFIG_MTRR
@@ -1627,6 +1738,34 @@ static void __devinit uvesafb_ioremap(struct fb_info *info)
 #else
 	info->screen_base = ioremap(info->fix.smem_start, info->fix.smem_len);
 #endif /* CONFIG_X86 */
+=======
+static void uvesafb_init_mtrr(struct fb_info *info)
+{
+	struct uvesafb_par *par = info->par;
+
+	if (mtrr && !(info->fix.smem_start & (PAGE_SIZE - 1))) {
+		int temp_size = info->fix.smem_len;
+
+		int rc;
+
+		/* Find the largest power-of-two */
+		temp_size = roundup_pow_of_two(temp_size);
+
+		/* Try and find a power of two to add */
+		do {
+			rc = arch_phys_wc_add(info->fix.smem_start, temp_size);
+			temp_size >>= 1;
+		} while (temp_size >= PAGE_SIZE && rc == -EINVAL);
+
+		if (rc >= 0)
+			par->mtrr_handle = rc;
+	}
+}
+
+static void uvesafb_ioremap(struct fb_info *info)
+{
+	info->screen_base = ioremap_wc(info->fix.smem_start, info->fix.smem_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t uvesafb_show_vbe_ver(struct device *dev,
@@ -1762,7 +1901,11 @@ static struct attribute_group uvesafb_dev_attgrp = {
 	.attrs = uvesafb_dev_attrs,
 };
 
+<<<<<<< HEAD
 static int __devinit uvesafb_probe(struct platform_device *dev)
+=======
+static int uvesafb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct vbe_mode_ib *mode = NULL;
@@ -1837,6 +1980,7 @@ static int __devinit uvesafb_probe(struct platform_device *dev)
 			"using %dk, total %dk\n", info->fix.smem_start,
 			info->screen_base, info->fix.smem_len/1024,
 			par->vbe_ib.total_memory * 64);
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n", info->node,
 			info->fix.id);
 
@@ -1844,6 +1988,13 @@ static int __devinit uvesafb_probe(struct platform_device *dev)
 	if (err != 0)
 		printk(KERN_WARNING "fb%d: failed to register attributes\n",
 			info->node);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+
+	err = sysfs_create_group(&dev->dev.kobj, &uvesafb_dev_attgrp);
+	if (err != 0)
+		fb_warn(info, "failed to register attributes\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1859,8 +2010,12 @@ out_mode:
 	fb_destroy_modedb(info->monspecs.modedb);
 	fb_dealloc_cmap(&info->cmap);
 out:
+<<<<<<< HEAD
 	if (par->vbe_modes)
 		kfree(par->vbe_modes);
+=======
+	kfree(par->vbe_modes);
+>>>>>>> refs/remotes/origin/master
 
 	framebuffer_release(info);
 	return err;
@@ -1877,17 +2032,27 @@ static int uvesafb_remove(struct platform_device *dev)
 		unregister_framebuffer(info);
 		release_region(0x3c0, 32);
 		iounmap(info->screen_base);
+<<<<<<< HEAD
+=======
+		arch_phys_wc_del(par->mtrr_handle);
+>>>>>>> refs/remotes/origin/master
 		release_mem_region(info->fix.smem_start, info->fix.smem_len);
 		fb_destroy_modedb(info->monspecs.modedb);
 		fb_dealloc_cmap(&info->cmap);
 
 		if (par) {
+<<<<<<< HEAD
 			if (par->vbe_modes)
 				kfree(par->vbe_modes);
 			if (par->vbe_state_orig)
 				kfree(par->vbe_state_orig);
 			if (par->vbe_state_saved)
 				kfree(par->vbe_state_saved);
+=======
+			kfree(par->vbe_modes);
+			kfree(par->vbe_state_orig);
+			kfree(par->vbe_state_saved);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		framebuffer_release(info);
@@ -1906,7 +2071,11 @@ static struct platform_driver uvesafb_driver = {
 static struct platform_device *uvesafb_device;
 
 #ifndef MODULE
+<<<<<<< HEAD
 static int __devinit uvesafb_setup(char *options)
+=======
+static int uvesafb_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	char *this_opt;
 
@@ -1956,6 +2125,12 @@ static int __devinit uvesafb_setup(char *options)
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (mtrr != 3 && mtrr != 0)
+		pr_warn("uvesafb: mtrr should be set to 0 or 3; %d is unsupported", mtrr);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #endif /* !MODULE */
@@ -1974,7 +2149,11 @@ static ssize_t store_v86d(struct device_driver *dev, const char *buf,
 
 static DRIVER_ATTR(v86d, S_IRUGO | S_IWUSR, show_v86d, store_v86d);
 
+<<<<<<< HEAD
 static int __devinit uvesafb_init(void)
+=======
+static int uvesafb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -1999,7 +2178,12 @@ static int __devinit uvesafb_init(void)
 			err = -ENOMEM;
 
 		if (err) {
+<<<<<<< HEAD
 			platform_device_put(uvesafb_device);
+=======
+			if (uvesafb_device)
+				platform_device_put(uvesafb_device);
+>>>>>>> refs/remotes/origin/master
 			platform_driver_unregister(&uvesafb_driver);
 			cn_del_callback(&uvesafb_cn_id);
 			return err;
@@ -2018,7 +2202,11 @@ static int __devinit uvesafb_init(void)
 
 module_init(uvesafb_init);
 
+<<<<<<< HEAD
 static void __devexit uvesafb_exit(void)
+=======
+static void uvesafb_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uvesafb_ktask *task;
 

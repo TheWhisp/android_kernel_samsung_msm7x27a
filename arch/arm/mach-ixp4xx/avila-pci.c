@@ -47,10 +47,14 @@ void __init avila_pci_preinit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init avila_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init avila_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init avila_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static int pci_irq_table[IRQ_LINES] = {
 		IXP4XX_GPIO_IRQ(INTA),
@@ -69,10 +73,16 @@ static int __init avila_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 
 struct hw_pci avila_pci __initdata = {
 	.nr_controllers = 1,
+<<<<<<< HEAD
 	.preinit	= avila_pci_preinit,
 	.swizzle	= pci_std_swizzle,
 	.setup		= ixp4xx_setup,
 	.scan		= ixp4xx_scan_bus,
+=======
+	.ops		= &ixp4xx_ops,
+	.preinit	= avila_pci_preinit,
+	.setup		= ixp4xx_setup,
+>>>>>>> refs/remotes/origin/master
 	.map_irq	= avila_map_irq,
 };
 

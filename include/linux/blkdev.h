@@ -2,18 +2,28 @@
 #define _LINUX_BLKDEV_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_BLOCK
 
 #include <linux/sched.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 
 #ifdef CONFIG_BLOCK
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/major.h>
 #include <linux/genhd.h>
 #include <linux/list.h>
+=======
+#include <linux/major.h>
+#include <linux/genhd.h>
+#include <linux/list.h>
+#include <linux/llist.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/workqueue.h>
 #include <linux/pagemap.h>
@@ -22,13 +32,17 @@
 #include <linux/mempool.h>
 #include <linux/bio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/stringify.h>
 #include <linux/gfp.h>
 #include <linux/bsg.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
 
 #include <asm/scatterlist.h>
 
@@ -36,6 +50,13 @@
 =======
 struct module;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+
+#include <asm/scatterlist.h>
+
+struct module;
+>>>>>>> refs/remotes/origin/master
 struct scsi_ioctl_command;
 
 struct request_queue;
@@ -45,26 +66,59 @@ struct blk_trace;
 struct request;
 struct sg_io_hdr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct bsg_job;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct bsg_job;
+struct blkcg_gq;
+>>>>>>> refs/remotes/origin/master
 
 #define BLKDEV_MIN_RQ	4
 #define BLKDEV_MAX_RQ	128	/* Default maximum */
 
+<<<<<<< HEAD
 struct request;
 typedef void (rq_end_io_fn)(struct request *, int);
 
 struct request_list {
+=======
+/*
+ * Maximum number of blkcg policies allowed to be registered concurrently.
+ * Defined here to simplify include dependency.
+ */
+#define BLKCG_MAX_POLS		2
+
+struct request;
+typedef void (rq_end_io_fn)(struct request *, int);
+
+#define BLK_RL_SYNCFULL		(1U << 0)
+#define BLK_RL_ASYNCFULL	(1U << 1)
+
+struct request_list {
+	struct request_queue	*q;	/* the queue this rl belongs to */
+#ifdef CONFIG_BLK_CGROUP
+	struct blkcg_gq		*blkg;	/* blkg this request pool belongs to */
+#endif
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * count[], starved[], and wait[] are indexed by
 	 * BLK_RW_SYNC/BLK_RW_ASYNC
 	 */
+<<<<<<< HEAD
 	int count[2];
 	int starved[2];
 	int elvpriv;
 	mempool_t *rq_pool;
 	wait_queue_head_t wait[2];
+=======
+	int			count[2];
+	int			starved[2];
+	mempool_t		*rq_pool;
+	wait_queue_head_t	wait[2];
+	unsigned int		flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -92,6 +146,7 @@ enum rq_cmd_type_bits {
 /*
  * try to put the fields that are referenced together in the same cacheline.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * if you modify this structure, be sure to check block/blk-core.c:rq_init()
 =======
  * if you modify this structure, be sure to check block/blk-core.c:blk_rq_init()
@@ -105,6 +160,25 @@ struct request {
 	struct request_queue *q;
 
 	unsigned int cmd_flags;
+=======
+ * if you modify this structure, be sure to check block/blk-core.c:blk_rq_init()
+ * as well!
+ */
+struct request {
+	union {
+		struct list_head queuelist;
+		struct llist_node ll_list;
+	};
+	union {
+		struct call_single_data csd;
+		struct work_struct mq_flush_data;
+	};
+
+	struct request_queue *q;
+	struct blk_mq_ctx *mq_ctx;
+
+	u64 cmd_flags;
+>>>>>>> refs/remotes/origin/master
 	enum rq_cmd_type_bits cmd_type;
 	unsigned long atomic_flags;
 
@@ -133,6 +207,7 @@ struct request {
 	 * more they have to dynamically allocate it.  Flush requests are
 	 * never put on the IO scheduler. So let the flush fields share
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * space with the three elevator_private pointers.
 	 */
 	union {
@@ -141,6 +216,8 @@ struct request {
 			unsigned int		seq;
 			struct list_head	list;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * space with the elevator data.
 	 */
 	union {
@@ -153,7 +230,10 @@ struct request {
 			unsigned int		seq;
 			struct list_head	list;
 			rq_end_io_fn		*saved_end_io;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} flush;
 	};
 
@@ -161,6 +241,10 @@ struct request {
 	struct hd_struct *part;
 	unsigned long start_time;
 #ifdef CONFIG_BLK_CGROUP
+<<<<<<< HEAD
+=======
+	struct request_list *rl;		/* rl this rq is alloced from */
+>>>>>>> refs/remotes/origin/master
 	unsigned long long start_time_ns;
 	unsigned long long io_start_time_ns;    /* when passed to hardware */
 #endif
@@ -174,8 +258,11 @@ struct request {
 
 	unsigned short ioprio;
 
+<<<<<<< HEAD
 	int ref_count;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	void *special;		/* opaque pointer available for LLD use */
 	char *buffer;		/* kaddr of the current segment if available */
 
@@ -229,12 +316,19 @@ struct request_pm_state
 
 #include <linux/elevator.h>
 
+<<<<<<< HEAD
 typedef void (request_fn_proc) (struct request_queue *q);
 <<<<<<< HEAD
 typedef int (make_request_fn) (struct request_queue *q, struct bio *bio);
 =======
 typedef void (make_request_fn) (struct request_queue *q, struct bio *bio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct blk_queue_ctx;
+
+typedef void (request_fn_proc) (struct request_queue *q);
+typedef void (make_request_fn) (struct request_queue *q, struct bio *bio);
+>>>>>>> refs/remotes/origin/master
 typedef int (prep_rq_fn) (struct request_queue *, struct request *);
 typedef void (unprep_rq_fn) (struct request_queue *, struct request *);
 
@@ -251,9 +345,13 @@ typedef void (softirq_done_fn)(struct request *);
 typedef int (dma_drain_needed_fn)(struct request *);
 typedef int (lld_busy_fn) (struct request_queue *q);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 typedef int (bsg_job_fn) (struct bsg_job *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef int (bsg_job_fn) (struct bsg_job *);
+>>>>>>> refs/remotes/origin/master
 
 enum blk_eh_timer_return {
 	BLK_EH_NOT_HANDLED,
@@ -292,6 +390,10 @@ struct queue_limits {
 	unsigned int		io_min;
 	unsigned int		io_opt;
 	unsigned int		max_discard_sectors;
+<<<<<<< HEAD
+=======
+	unsigned int		max_write_same_sectors;
+>>>>>>> refs/remotes/origin/master
 	unsigned int		discard_granularity;
 	unsigned int		discard_alignment;
 
@@ -306,17 +408,22 @@ struct queue_limits {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct request_queue
 {
 =======
 struct request_queue {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct request_queue {
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Together with queue_head for cacheline sharing
 	 */
 	struct list_head	queue_head;
 	struct request		*last_merge;
 	struct elevator_queue	*elevator;
+<<<<<<< HEAD
 
 	/*
 	 * the queue request freelist, one for reads and one for writes
@@ -328,6 +435,20 @@ struct request_queue {
 	request_fn_proc		*urgent_request_fn;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			nr_rqs[2];	/* # allocated [a]sync rqs */
+	int			nr_rqs_elvpriv;	/* # allocated rqs w/ elvpriv */
+
+	/*
+	 * If blkcg is not used, @q->root_rl serves all requests.  If blkcg
+	 * is used, root blkg allocates from @q->root_rl and all other
+	 * blkgs from their own blkg->rl.  Which one to use should be
+	 * determined using bio_request_list().
+	 */
+	struct request_list	root_rl;
+
+	request_fn_proc		*request_fn;
+>>>>>>> refs/remotes/origin/master
 	make_request_fn		*make_request_fn;
 	prep_rq_fn		*prep_rq_fn;
 	unprep_rq_fn		*unprep_rq_fn;
@@ -337,6 +458,21 @@ struct request_queue {
 	dma_drain_needed_fn	*dma_drain_needed;
 	lld_busy_fn		*lld_busy_fn;
 
+<<<<<<< HEAD
+=======
+	struct blk_mq_ops	*mq_ops;
+
+	unsigned int		*mq_map;
+
+	/* sw queues */
+	struct blk_mq_ctx	*queue_ctx;
+	unsigned int		nr_queues;
+
+	/* hw dispatch queues */
+	struct blk_mq_hw_ctx	**queue_hw_ctx;
+	unsigned int		nr_hw_queues;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Dispatch queue sorting
 	 */
@@ -358,6 +494,7 @@ struct request_queue {
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * queue needs bounce pages for pages above this limit
 	 */
 	gfp_t			bounce_gfp;
@@ -367,6 +504,8 @@ struct request_queue {
 	 */
 	unsigned long		queue_flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * various queue flags, see QUEUE_* below
 	 */
 	unsigned long		queue_flags;
@@ -381,7 +520,10 @@ struct request_queue {
 	 * queue needs bounce pages for pages above this limit
 	 */
 	gfp_t			bounce_gfp;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * protects queue structures from reentrancy. ->__queue_lock should
@@ -397,6 +539,20 @@ struct request_queue {
 	struct kobject kobj;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * mq queue kobject
+	 */
+	struct kobject mq_kobj;
+
+#ifdef CONFIG_PM_RUNTIME
+	struct device		*dev;
+	int			rpm_status;
+	unsigned int		nr_pending;
+#endif
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * queue settings
 	 */
 	unsigned long		nr_requests;	/* Max # of requests */
@@ -405,12 +561,17 @@ struct request_queue {
 	unsigned int		nr_batching;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void			*dma_drain_buffer;
 	unsigned int		dma_drain_size;
 =======
 	unsigned int		dma_drain_size;
 	void			*dma_drain_buffer;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		dma_drain_size;
+	void			*dma_drain_buffer;
+>>>>>>> refs/remotes/origin/master
 	unsigned int		dma_pad_mask;
 	unsigned int		dma_alignment;
 
@@ -419,11 +580,21 @@ struct request_queue {
 
 	unsigned int		nr_sorted;
 	unsigned int		in_flight[2];
+<<<<<<< HEAD
+=======
+	/*
+	 * Number of active block driver functions for which blk_drain_queue()
+	 * must wait. Must be incremented around functions that unlock the
+	 * queue_lock internally, e.g. scsi_request_fn().
+	 */
+	unsigned int		request_fn_active;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int		rq_timeout;
 	struct timer_list	timeout;
 	struct list_head	timeout_list;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct queue_limits	limits;
 	bool			notified_urgent;
@@ -433,6 +604,16 @@ struct request_queue {
 
 	struct queue_limits	limits;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head	icq_list;
+#ifdef CONFIG_BLK_CGROUP
+	DECLARE_BITMAP		(blkcg_pols, BLKCG_MAX_POLS);
+	struct blkcg_gq		*root_blkg;
+	struct list_head	blkg_list;
+#endif
+
+	struct queue_limits	limits;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * sg stuff
@@ -454,6 +635,7 @@ struct request_queue {
 	unsigned long		flush_pending_since;
 	struct list_head	flush_queue[2];
 	struct list_head	flush_data_in_flight;
+<<<<<<< HEAD
 	struct request		flush_rq;
 
 	struct mutex		sysfs_lock;
@@ -464,6 +646,23 @@ struct request_queue {
 	bsg_job_fn		*bsg_job_fn;
 	int			bsg_job_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	union {
+		struct request	flush_rq;
+		struct {
+			spinlock_t mq_flush_lock;
+			struct work_struct mq_flush_work;
+		};
+	};
+
+	struct mutex		sysfs_lock;
+
+	int			bypass_depth;
+
+#if defined(CONFIG_BLK_DEV_BSG)
+	bsg_job_fn		*bsg_job_fn;
+	int			bsg_job_size;
+>>>>>>> refs/remotes/origin/master
 	struct bsg_class_device bsg_dev;
 #endif
 
@@ -471,12 +670,20 @@ struct request_queue {
 	/* Throttle data */
 	struct throtl_data *td;
 #endif
+<<<<<<< HEAD
+=======
+	struct rcu_head		rcu_head;
+	wait_queue_head_t	mq_freeze_wq;
+	struct percpu_counter	mq_usage_counter;
+	struct list_head	all_q_node;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define QUEUE_FLAG_QUEUED	1	/* uses generic tag queueing */
 #define QUEUE_FLAG_STOPPED	2	/* queue is stopped */
 #define	QUEUE_FLAG_SYNCFULL	3	/* read queue has been filled */
 #define QUEUE_FLAG_ASYNCFULL	4	/* write queue has been filled */
+<<<<<<< HEAD
 #define QUEUE_FLAG_DEAD		5	/* queue being torn down */
 #define QUEUE_FLAG_ELVSWITCH	6	/* don't use elevator, just do FIFO */
 #define QUEUE_FLAG_BIDI		7	/* queue supports bidi requests */
@@ -486,6 +693,13 @@ struct request_queue {
 =======
 #define QUEUE_FLAG_SAME_COMP	9	/* complete on same CPU-group */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define QUEUE_FLAG_DYING	5	/* queue being torn down */
+#define QUEUE_FLAG_BYPASS	6	/* act as dumb FIFO queue */
+#define QUEUE_FLAG_BIDI		7	/* queue supports bidi requests */
+#define QUEUE_FLAG_NOMERGES     8	/* disable merge attempts */
+#define QUEUE_FLAG_SAME_COMP	9	/* complete on same CPU-group */
+>>>>>>> refs/remotes/origin/master
 #define QUEUE_FLAG_FAIL_IO     10	/* fake timeout */
 #define QUEUE_FLAG_STACKABLE   11	/* supports request stacking */
 #define QUEUE_FLAG_NONROT      12	/* non-rotational device (SSD) */
@@ -496,16 +710,23 @@ struct request_queue {
 #define QUEUE_FLAG_ADD_RANDOM  16	/* Contributes to random pool */
 #define QUEUE_FLAG_SECDISCARD  17	/* supports SECDISCARD */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define QUEUE_FLAG_SAME_FORCE  18	/* force complete on same CPU */
 #define QUEUE_FLAG_SANITIZE    19	/* supports SANITIZE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define QUEUE_FLAG_SAME_FORCE  18	/* force complete on same CPU */
+#define QUEUE_FLAG_DEAD        19	/* queue tear-down finished */
+#define QUEUE_FLAG_INIT_DONE   20	/* queue is initialized */
+>>>>>>> refs/remotes/origin/master
 
 #define QUEUE_FLAG_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
 				 (1 << QUEUE_FLAG_STACKABLE)	|	\
 				 (1 << QUEUE_FLAG_SAME_COMP)	|	\
 				 (1 << QUEUE_FLAG_ADD_RANDOM))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int queue_is_locked(struct request_queue *q)
 {
@@ -516,11 +737,19 @@ static inline int queue_is_locked(struct request_queue *q)
 	return 1;
 #endif
 =======
+=======
+#define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+				 (1 << QUEUE_FLAG_SAME_COMP))
+
+>>>>>>> refs/remotes/origin/master
 static inline void queue_lockdep_assert_held(struct request_queue *q)
 {
 	if (q->queue_lock)
 		lockdep_assert_held(q->queue_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void queue_flag_set_unlocked(unsigned int flag,
@@ -533,10 +762,14 @@ static inline int queue_flag_test_and_clear(unsigned int flag,
 					    struct request_queue *q)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON_ONCE(!queue_is_locked(q));
 =======
 	queue_lockdep_assert_held(q);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_lockdep_assert_held(q);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(flag, &q->queue_flags)) {
 		__clear_bit(flag, &q->queue_flags);
@@ -550,10 +783,14 @@ static inline int queue_flag_test_and_set(unsigned int flag,
 					  struct request_queue *q)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON_ONCE(!queue_is_locked(q));
 =======
 	queue_lockdep_assert_held(q);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_lockdep_assert_held(q);
+>>>>>>> refs/remotes/origin/master
 
 	if (!test_bit(flag, &q->queue_flags)) {
 		__set_bit(flag, &q->queue_flags);
@@ -566,10 +803,14 @@ static inline int queue_flag_test_and_set(unsigned int flag,
 static inline void queue_flag_set(unsigned int flag, struct request_queue *q)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON_ONCE(!queue_is_locked(q));
 =======
 	queue_lockdep_assert_held(q);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_lockdep_assert_held(q);
+>>>>>>> refs/remotes/origin/master
 	__set_bit(flag, &q->queue_flags);
 }
 
@@ -587,19 +828,30 @@ static inline int queue_in_flight(struct request_queue *q)
 static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON_ONCE(!queue_is_locked(q));
 =======
 	queue_lockdep_assert_held(q);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	queue_lockdep_assert_held(q);
+>>>>>>> refs/remotes/origin/master
 	__clear_bit(flag, &q->queue_flags);
 }
 
 #define blk_queue_tagged(q)	test_bit(QUEUE_FLAG_QUEUED, &(q)->queue_flags)
 #define blk_queue_stopped(q)	test_bit(QUEUE_FLAG_STOPPED, &(q)->queue_flags)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define blk_queue_dead(q)	test_bit(QUEUE_FLAG_DEAD, &(q)->queue_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define blk_queue_dying(q)	test_bit(QUEUE_FLAG_DYING, &(q)->queue_flags)
+#define blk_queue_dead(q)	test_bit(QUEUE_FLAG_DEAD, &(q)->queue_flags)
+#define blk_queue_bypass(q)	test_bit(QUEUE_FLAG_BYPASS, &(q)->queue_flags)
+#define blk_queue_init_done(q)	test_bit(QUEUE_FLAG_INIT_DONE, &(q)->queue_flags)
+>>>>>>> refs/remotes/origin/master
 #define blk_queue_nomerges(q)	test_bit(QUEUE_FLAG_NOMERGES, &(q)->queue_flags)
 #define blk_queue_noxmerges(q)	\
 	test_bit(QUEUE_FLAG_NOXMERGES, &(q)->queue_flags)
@@ -610,9 +862,12 @@ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
 	test_bit(QUEUE_FLAG_STACKABLE, &(q)->queue_flags)
 #define blk_queue_discard(q)	test_bit(QUEUE_FLAG_DISCARD, &(q)->queue_flags)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define blk_queue_sanitize(q)	test_bit(QUEUE_FLAG_SANITIZE, &(q)->queue_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define blk_queue_secdiscard(q)	(blk_queue_discard(q) && \
 	test_bit(QUEUE_FLAG_SECDISCARD, &(q)->queue_flags))
 
@@ -622,8 +877,12 @@ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
 
 #define blk_account_rq(rq) \
 	(((rq)->cmd_flags & REQ_STARTED) && \
+<<<<<<< HEAD
 	 ((rq)->cmd_type == REQ_TYPE_FS || \
 	  ((rq)->cmd_flags & REQ_DISCARD)))
+=======
+	 ((rq)->cmd_type == REQ_TYPE_FS))
+>>>>>>> refs/remotes/origin/master
 
 #define blk_pm_request(rq)	\
 	((rq)->cmd_type == REQ_TYPE_PM_SUSPEND || \
@@ -636,7 +895,11 @@ static inline void queue_flag_clear(unsigned int flag, struct request_queue *q)
 
 #define list_entry_rq(ptr)	list_entry((ptr), struct request, queuelist)
 
+<<<<<<< HEAD
 #define rq_data_dir(rq)		((rq)->cmd_flags & 1)
+=======
+#define rq_data_dir(rq)		(((rq)->cmd_flags & 1) != 0)
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned int blk_queue_cluster(struct request_queue *q)
 {
@@ -656,6 +919,7 @@ static inline bool rq_is_sync(struct request *rq)
 	return rw_is_sync(rq->cmd_flags);
 }
 
+<<<<<<< HEAD
 static inline int blk_queue_full(struct request_queue *q, int sync)
 {
 	if (sync)
@@ -690,6 +954,62 @@ static inline void blk_clear_queue_full(struct request_queue *q, int sync)
 	(!((rq)->cmd_flags & RQ_NOMERGE_FLAGS) && \
 	 (((rq)->cmd_flags & REQ_DISCARD) || \
 	  (rq)->cmd_type == REQ_TYPE_FS))
+=======
+static inline bool blk_rl_full(struct request_list *rl, bool sync)
+{
+	unsigned int flag = sync ? BLK_RL_SYNCFULL : BLK_RL_ASYNCFULL;
+
+	return rl->flags & flag;
+}
+
+static inline void blk_set_rl_full(struct request_list *rl, bool sync)
+{
+	unsigned int flag = sync ? BLK_RL_SYNCFULL : BLK_RL_ASYNCFULL;
+
+	rl->flags |= flag;
+}
+
+static inline void blk_clear_rl_full(struct request_list *rl, bool sync)
+{
+	unsigned int flag = sync ? BLK_RL_SYNCFULL : BLK_RL_ASYNCFULL;
+
+	rl->flags &= ~flag;
+}
+
+static inline bool rq_mergeable(struct request *rq)
+{
+	if (rq->cmd_type != REQ_TYPE_FS)
+		return false;
+
+	if (rq->cmd_flags & REQ_NOMERGE_FLAGS)
+		return false;
+
+	return true;
+}
+
+static inline bool blk_check_merge_flags(unsigned int flags1,
+					 unsigned int flags2)
+{
+	if ((flags1 & REQ_DISCARD) != (flags2 & REQ_DISCARD))
+		return false;
+
+	if ((flags1 & REQ_SECURE) != (flags2 & REQ_SECURE))
+		return false;
+
+	if ((flags1 & REQ_WRITE_SAME) != (flags2 & REQ_WRITE_SAME))
+		return false;
+
+	return true;
+}
+
+static inline bool blk_write_same_mergeable(struct bio *a, struct bio *b)
+{
+	if (bio_data(a) == bio_data(b))
+		return true;
+
+	return false;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * q->prep_rq_fn return values
@@ -784,6 +1104,7 @@ extern struct request *blk_get_request(struct request_queue *, int, gfp_t);
 extern struct request *blk_make_request(struct request_queue *, struct bio *,
 					gfp_t);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void blk_insert_request(struct request_queue *, struct request *, int, void *);
 extern void blk_requeue_request(struct request_queue *, struct request *);
 extern int blk_reinsert_request(struct request_queue *q, struct request *rq);
@@ -791,6 +1112,9 @@ extern bool blk_reinsert_req_sup(struct request_queue *q);
 =======
 extern void blk_requeue_request(struct request_queue *, struct request *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void blk_requeue_request(struct request_queue *, struct request *);
+>>>>>>> refs/remotes/origin/master
 extern void blk_add_request_payload(struct request *rq, struct page *page,
 		unsigned int len);
 extern int blk_rq_check_limits(struct request_queue *q, struct request *rq);
@@ -813,10 +1137,15 @@ extern int sg_scsi_ioctl(struct request_queue *, struct gendisk *, fmode_t,
 			 struct scsi_ioctl_command __user *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void blk_queue_bio(struct request_queue *q, struct bio *bio);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void blk_queue_bio(struct request_queue *q, struct bio *bio);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * A queue has just exitted congestion.  Note this in the global counter of
  * congested queues, and wake up anyone who was waiting for requests to be
@@ -896,6 +1225,42 @@ static inline unsigned int blk_rq_cur_sectors(const struct request *rq)
 	return blk_rq_cur_bytes(rq) >> 9;
 }
 
+<<<<<<< HEAD
+=======
+static inline unsigned int blk_queue_get_max_sectors(struct request_queue *q,
+						     unsigned int cmd_flags)
+{
+	if (unlikely(cmd_flags & REQ_DISCARD))
+		return min(q->limits.max_discard_sectors, UINT_MAX >> 9);
+
+	if (unlikely(cmd_flags & REQ_WRITE_SAME))
+		return q->limits.max_write_same_sectors;
+
+	return q->limits.max_sectors;
+}
+
+static inline unsigned int blk_rq_get_max_sectors(struct request *rq)
+{
+	struct request_queue *q = rq->q;
+
+	if (unlikely(rq->cmd_type == REQ_TYPE_BLOCK_PC))
+		return q->limits.max_hw_sectors;
+
+	return blk_queue_get_max_sectors(q, rq->cmd_flags);
+}
+
+static inline unsigned int blk_rq_count_bios(struct request *rq)
+{
+	unsigned int nr_bios = 0;
+	struct bio *bio;
+
+	__rq_for_each_bio(bio, rq)
+		nr_bios++;
+
+	return nr_bios;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Request issue related functions.
  */
@@ -932,7 +1297,10 @@ extern bool __blk_end_request_err(struct request *rq, int error);
 extern void blk_complete_request(struct request *);
 extern void __blk_complete_request(struct request *);
 extern void blk_abort_request(struct request *);
+<<<<<<< HEAD
 extern void blk_abort_queue(struct request_queue *);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void blk_unprep_request(struct request *);
 
 /*
@@ -944,9 +1312,12 @@ extern struct request_queue *blk_init_queue(request_fn_proc *, spinlock_t *);
 extern struct request_queue *blk_init_allocated_queue(struct request_queue *,
 						      request_fn_proc *, spinlock_t *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void blk_urgent_request(struct request_queue *q, request_fn_proc *fn);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void blk_cleanup_queue(struct request_queue *);
 extern void blk_queue_make_request(struct request_queue *, make_request_fn *);
 extern void blk_queue_bounce_limit(struct request_queue *, u64);
@@ -956,6 +1327,11 @@ extern void blk_queue_max_segments(struct request_queue *, unsigned short);
 extern void blk_queue_max_segment_size(struct request_queue *, unsigned int);
 extern void blk_queue_max_discard_sectors(struct request_queue *q,
 		unsigned int max_discard_sectors);
+<<<<<<< HEAD
+=======
+extern void blk_queue_max_write_same_sectors(struct request_queue *q,
+		unsigned int max_write_same_sectors);
+>>>>>>> refs/remotes/origin/master
 extern void blk_queue_logical_block_size(struct request_queue *, unsigned short);
 extern void blk_queue_physical_block_size(struct request_queue *, unsigned int);
 extern void blk_queue_alignment_offset(struct request_queue *q,
@@ -966,9 +1342,13 @@ extern void blk_limits_io_opt(struct queue_limits *limits, unsigned int opt);
 extern void blk_queue_io_opt(struct request_queue *q, unsigned int opt);
 extern void blk_set_default_limits(struct queue_limits *lim);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void blk_set_stacking_limits(struct queue_limits *lim);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void blk_set_stacking_limits(struct queue_limits *lim);
+>>>>>>> refs/remotes/origin/master
 extern int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
 			    sector_t offset);
 extern int bdev_stack_limits(struct queue_limits *t, struct block_device *bdev,
@@ -996,6 +1376,7 @@ extern void blk_queue_flush_queueable(struct request_queue *q, bool queueable);
 extern struct backing_dev_info *blk_get_backing_dev_info(struct block_device *bdev);
 
 extern int blk_rq_map_sg(struct request_queue *, struct request *, struct scatterlist *);
+<<<<<<< HEAD
 extern void blk_dump_rq_flags(struct request *, char *);
 extern long nr_blockdev_pages(void);
 
@@ -1004,10 +1385,19 @@ int blk_get_queue(struct request_queue *);
 =======
 bool __must_check blk_get_queue(struct request_queue *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int blk_bio_map_sg(struct request_queue *q, struct bio *bio,
+			  struct scatterlist *sglist);
+extern void blk_dump_rq_flags(struct request *, char *);
+extern long nr_blockdev_pages(void);
+
+bool __must_check blk_get_queue(struct request_queue *);
+>>>>>>> refs/remotes/origin/master
 struct request_queue *blk_alloc_queue(gfp_t);
 struct request_queue *blk_alloc_queue_node(gfp_t, int);
 extern void blk_put_queue(struct request_queue *);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct blk_plug {
 	unsigned long magic;
@@ -1016,6 +1406,29 @@ struct blk_plug {
 	unsigned int should_sort;
 };
 =======
+=======
+/*
+ * block layer runtime pm functions
+ */
+#ifdef CONFIG_PM_RUNTIME
+extern void blk_pm_runtime_init(struct request_queue *q, struct device *dev);
+extern int blk_pre_runtime_suspend(struct request_queue *q);
+extern void blk_post_runtime_suspend(struct request_queue *q, int err);
+extern void blk_pre_runtime_resume(struct request_queue *q);
+extern void blk_post_runtime_resume(struct request_queue *q, int err);
+#else
+static inline void blk_pm_runtime_init(struct request_queue *q,
+	struct device *dev) {}
+static inline int blk_pre_runtime_suspend(struct request_queue *q)
+{
+	return -ENOSYS;
+}
+static inline void blk_post_runtime_suspend(struct request_queue *q, int err) {}
+static inline void blk_pre_runtime_resume(struct request_queue *q) {}
+static inline void blk_post_runtime_resume(struct request_queue *q, int err) {}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * blk_plug permits building a queue of related requests by holding the I/O
  * fragments for a short period. This allows merging of sequential requests
@@ -1031,6 +1444,7 @@ struct blk_plug {
 struct blk_plug {
 	unsigned long magic; /* detect uninitialized use-cases */
 	struct list_head list; /* requests */
+<<<<<<< HEAD
 	struct list_head cb_list; /* md requires an unplug callback */
 	unsigned int should_sort; /* list to be sorted before flushing? */
 };
@@ -1042,6 +1456,22 @@ struct blk_plug_cb {
 	void (*callback)(struct blk_plug_cb *);
 };
 
+=======
+	struct list_head mq_list; /* blk-mq requests */
+	struct list_head cb_list; /* md requires an unplug callback */
+};
+#define BLK_MAX_REQUEST_COUNT 16
+
+struct blk_plug_cb;
+typedef void (*blk_plug_cb_fn)(struct blk_plug_cb *, bool);
+struct blk_plug_cb {
+	struct list_head list;
+	blk_plug_cb_fn callback;
+	void *data;
+};
+extern struct blk_plug_cb *blk_check_plugged(blk_plug_cb_fn unplug,
+					     void *data, int size);
+>>>>>>> refs/remotes/origin/master
 extern void blk_start_plug(struct blk_plug *);
 extern void blk_finish_plug(struct blk_plug *);
 extern void blk_flush_plug_list(struct blk_plug *, bool);
@@ -1066,7 +1496,14 @@ static inline bool blk_needs_flush_plug(struct task_struct *tsk)
 {
 	struct blk_plug *plug = tsk->plug;
 
+<<<<<<< HEAD
 	return plug && (!list_empty(&plug->list) || !list_empty(&plug->cb_list));
+=======
+	return plug &&
+		(!list_empty(&plug->list) ||
+		 !list_empty(&plug->mq_list) ||
+		 !list_empty(&plug->cb_list));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1097,9 +1534,14 @@ extern int blkdev_issue_flush(struct block_device *, gfp_t, sector_t *);
 extern int blkdev_issue_discard(struct block_device *bdev, sector_t sector,
 		sector_t nr_sects, gfp_t gfp_mask, unsigned long flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int blkdev_issue_sanitize(struct block_device *bdev, gfp_t gfp_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int blkdev_issue_write_same(struct block_device *bdev, sector_t sector,
+		sector_t nr_sects, gfp_t gfp_mask, struct page *page);
+>>>>>>> refs/remotes/origin/master
 extern int blkdev_issue_zeroout(struct block_device *bdev, sector_t sector,
 			sector_t nr_sects, gfp_t gfp_mask);
 static inline int sb_issue_discard(struct super_block *sb, sector_t block,
@@ -1245,13 +1687,44 @@ static inline int queue_discard_alignment(struct request_queue *q)
 
 static inline int queue_limit_discard_alignment(struct queue_limits *lim, sector_t sector)
 {
+<<<<<<< HEAD
 	unsigned int alignment = (sector << 9) & (lim->discard_granularity - 1);
+=======
+	unsigned int alignment, granularity, offset;
+>>>>>>> refs/remotes/origin/master
 
 	if (!lim->max_discard_sectors)
 		return 0;
 
+<<<<<<< HEAD
 	return (lim->discard_granularity + lim->discard_alignment - alignment)
 		& (lim->discard_granularity - 1);
+=======
+	/* Why are these in bytes, not sectors? */
+	alignment = lim->discard_alignment >> 9;
+	granularity = lim->discard_granularity >> 9;
+	if (!granularity)
+		return 0;
+
+	/* Offset of the partition start in 'granularity' sectors */
+	offset = sector_div(sector, granularity);
+
+	/* And why do we do this modulus *again* in blkdev_issue_discard()? */
+	offset = (granularity + alignment - offset) % granularity;
+
+	/* Turn it back into bytes, gaah */
+	return offset << 9;
+}
+
+static inline int bdev_discard_alignment(struct block_device *bdev)
+{
+	struct request_queue *q = bdev_get_queue(bdev);
+
+	if (bdev != bdev->bd_contains)
+		return bdev->bd_part->discard_alignment;
+
+	return q->limits.discard_alignment;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned int queue_discard_zeroes_data(struct request_queue *q)
@@ -1267,6 +1740,19 @@ static inline unsigned int bdev_discard_zeroes_data(struct block_device *bdev)
 	return queue_discard_zeroes_data(bdev_get_queue(bdev));
 }
 
+<<<<<<< HEAD
+=======
+static inline unsigned int bdev_write_same(struct block_device *bdev)
+{
+	struct request_queue *q = bdev_get_queue(bdev);
+
+	if (q)
+		return q->limits.max_write_same_sectors;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int queue_dma_alignment(struct request_queue *q)
 {
 	return q ? q->dma_alignment : 511;
@@ -1311,6 +1797,10 @@ static inline void put_dev_sector(Sector p)
 
 struct work_struct;
 int kblockd_schedule_work(struct request_queue *q, struct work_struct *work);
+<<<<<<< HEAD
+=======
+int kblockd_schedule_delayed_work(struct request_queue *q, struct delayed_work *dwork, unsigned long delay);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_BLK_CGROUP
 /*
@@ -1355,6 +1845,7 @@ static inline uint64_t rq_io_start_time_ns(struct request *req)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_BLK_DEV_THROTTLING
 extern int blk_throtl_init(struct request_queue *q);
 extern void blk_throtl_exit(struct request_queue *q);
@@ -1371,6 +1862,8 @@ static inline int blk_throtl_exit(struct request_queue *q) { return 0; }
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MODULE_ALIAS_BLOCKDEV(major,minor) \
 	MODULE_ALIAS("block-major-" __stringify(major) "-" __stringify(minor))
 #define MODULE_ALIAS_BLOCKDEV_MAJOR(major) \
@@ -1457,6 +1950,7 @@ queue_max_integrity_segments(struct request_queue *q)
 #else /* CONFIG_BLK_DEV_INTEGRITY */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define blk_integrity_rq(rq)			(0)
 #define blk_rq_count_integrity_sg(a, b)		(0)
 #define blk_rq_map_integrity_sg(a, b, c)	(0)
@@ -1471,6 +1965,8 @@ queue_max_integrity_segments(struct request_queue *q)
 #define blk_integrity_merge_bio(a, b, c)	(0)
 #define blk_integrity_is_initialized(a)		(0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct bio;
 struct block_device;
 struct gendisk;
@@ -1535,13 +2031,20 @@ static inline bool blk_integrity_is_initialized(struct gendisk *g)
 {
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_BLK_DEV_INTEGRITY */
 
 struct block_device_operations {
 	int (*open) (struct block_device *, fmode_t);
+<<<<<<< HEAD
 	int (*release) (struct gendisk *, fmode_t);
+=======
+	void (*release) (struct gendisk *, fmode_t);
+>>>>>>> refs/remotes/origin/master
 	int (*ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
 	int (*compat_ioctl) (struct block_device *, fmode_t, unsigned, unsigned long);
 	int (*direct_access) (struct block_device *, sector_t,

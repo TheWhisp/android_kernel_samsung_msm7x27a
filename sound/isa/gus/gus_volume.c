@@ -20,9 +20,13 @@
 
 #include <linux/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/gus.h>
 #define __GUS_TABLES_ALLOC__

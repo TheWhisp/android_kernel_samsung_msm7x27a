@@ -21,10 +21,15 @@
 #define	_FC_FCP_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <scsi/scsi.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/scsi.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Fibre Channel Protocol for SCSI.
  * From T10 FCP-3, T10 project 1560-D Rev 4, Sept. 13, 2005.
@@ -51,10 +56,14 @@
  */
 struct fcp_cmnd {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u8		fc_lun[8];	/* logical unit number */
 =======
 	struct scsi_lun	fc_lun;		/* logical unit number */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	fc_lun;		/* logical unit number */
+>>>>>>> refs/remotes/origin/master
 	__u8		fc_cmdref;	/* command reference number */
 	__u8		fc_pri_ta;	/* priority and task attribute */
 	__u8		fc_tm_flags;	/* task management flags */
@@ -67,10 +76,14 @@ struct fcp_cmnd {
 
 struct fcp_cmnd32 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__u8		fc_lun[8];	/* logical unit number */
 =======
 	struct scsi_lun	fc_lun;		/* logical unit number */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	fc_lun;		/* logical unit number */
+>>>>>>> refs/remotes/origin/master
 	__u8		fc_cmdref;	/* command reference number */
 	__u8		fc_pri_ta;	/* priority and task attribute */
 	__u8		fc_tm_flags;	/* task management flags */
@@ -138,6 +151,12 @@ struct fcp_txrdy {
  *
  * All response frames will always contain the fcp_resp template.  Some
  * will also include the fcp_resp_len template.
+<<<<<<< HEAD
+=======
+ *
+ * From Table 23, the FCP_RSP_INFO can either be 4 bytes or 8 bytes, both
+ * are valid length.
+>>>>>>> refs/remotes/origin/master
  */
 struct fcp_resp {
 	__u8		_fr_resvd[8];	/* reserved */
@@ -167,6 +186,12 @@ struct fcp_resp_rsp_info {
     __u8      _fr_resvd2[4];      /* reserved */
 };
 
+<<<<<<< HEAD
+=======
+#define FCP_RESP_RSP_INFO_LEN4    4 /* without reserved field */
+#define FCP_RESP_RSP_INFO_LEN8    8 /* with reserved field */
+
+>>>>>>> refs/remotes/origin/master
 struct fcp_resp_with_ext {
 	struct fcp_resp resp;
 	struct fcp_resp_ext ext;

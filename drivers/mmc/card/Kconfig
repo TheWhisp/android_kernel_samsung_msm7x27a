@@ -50,6 +50,7 @@ config MMC_BLOCK_BOUNCE
 
 	  If unsure, say Y here.
 
+<<<<<<< HEAD
 config MMC_BLOCK_DEFERRED_RESUME
 	bool "Deferr MMC layer resume until I/O is requested"
 	depends on MMC_BLOCK
@@ -61,6 +62,11 @@ config MMC_BLOCK_DEFERRED_RESUME
 
 config SDIO_UART
 	tristate "SDIO UART/GPS class support"
+=======
+config SDIO_UART
+	tristate "SDIO UART/GPS class support"
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	help
 	  SDIO function driver for SDIO cards that implements the UART
 	  class, as well as the GPS class which appears like a UART.
@@ -77,6 +83,7 @@ config MMC_TEST
 	  This driver is only of interest to those developing or
 	  testing a host driver. Most people should say N here.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 config MMC_BLOCK_TEST
@@ -90,3 +97,5 @@ config MMC_BLOCK_TEST
 	  BKOPs).
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

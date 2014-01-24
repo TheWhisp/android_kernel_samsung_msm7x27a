@@ -26,8 +26,12 @@ struct ufs_buffer_head * _ubh_bread_ (struct ufs_sb_private_info * uspi,
 	count = size >> uspi->s_fshift;
 	if (count > UFS_MAXFRAG)
 		return NULL;
+<<<<<<< HEAD
 	ubh = (struct ufs_buffer_head *)
 		kmalloc (sizeof (struct ufs_buffer_head), GFP_NOFS);
+=======
+	ubh = kmalloc (sizeof (struct ufs_buffer_head), GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 	if (!ubh)
 		return NULL;
 	ubh->fragment = fragment;

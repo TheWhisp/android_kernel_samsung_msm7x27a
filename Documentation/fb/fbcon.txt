@@ -150,7 +150,11 @@ C. Boot options
 
 C. Attaching, Detaching and Unloading
 
+<<<<<<< HEAD
 Before going on on how to attach, detach and unload the framebuffer console, an
+=======
+Before going on how to attach, detach and unload the framebuffer console, an
+>>>>>>> refs/remotes/origin/master
 illustration of the dependencies may help.
 
 The console layer, as with most subsystems, needs a driver that interfaces with

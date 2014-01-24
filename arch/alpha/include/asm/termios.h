@@ -1,6 +1,7 @@
 #ifndef _ALPHA_TERMIOS_H
 #define _ALPHA_TERMIOS_H
 
+<<<<<<< HEAD
 #include <asm/ioctls.h>
 #include <asm/termbits.h>
 
@@ -67,6 +68,10 @@ struct termio {
 #define _VSWTC	7
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/termios.h>
+
+>>>>>>> refs/remotes/origin/master
 /*	eof=^D		eol=\0		eol2=\0		erase=del
 	werase=^W	kill=^U		reprint=^R	sxtc=\0
 	intr=^C		quit=^\		susp=^Z		<OSF/1 VDSUSP>
@@ -141,6 +146,9 @@ struct termio {
 #define kernel_termios_to_user_termios(u, k) \
 	copy_to_user(u, k, sizeof(struct termios))
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _ALPHA_TERMIOS_H */

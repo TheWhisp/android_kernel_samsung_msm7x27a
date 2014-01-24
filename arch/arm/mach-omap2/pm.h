@@ -15,6 +15,7 @@
 
 #include "powerdomain.h"
 
+<<<<<<< HEAD
 extern void *omap3_secure_ram_storage;
 extern void omap3_pm_off_mode_enable(int);
 extern void omap_sram_idle(void);
@@ -29,6 +30,28 @@ extern int omap4_idle_init(void);
 extern int omap_pm_clkdms_setup(struct clockdomain *clkdm, void *unused);
 extern int (*omap_pm_suspend)(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_CPU_IDLE
+extern int __init omap3_idle_init(void);
+extern int __init omap4_idle_init(void);
+#else
+static inline int omap3_idle_init(void)
+{
+	return 0;
+}
+
+static inline int omap4_idle_init(void)
+{
+	return 0;
+}
+#endif
+
+extern void *omap3_secure_ram_storage;
+extern void omap3_pm_off_mode_enable(int);
+extern void omap_sram_idle(void);
+extern int omap_pm_clkdms_setup(struct clockdomain *clkdm, void *unused);
+extern int (*omap_pm_suspend)(void);
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_PM_OPP)
 extern int omap3_opp_init(void);
@@ -44,6 +67,7 @@ static inline int omap4_opp_init(void)
 }
 #endif
 
+<<<<<<< HEAD
 /*
  * cpuidle mach specific parameters
  *
@@ -86,15 +110,24 @@ extern u32 sleep_while_idle;
 #define enable_off_mode 0
 #define sleep_while_idle 0
 =======
+=======
+extern int omap3_pm_get_suspend_state(struct powerdomain *pwrdm);
+extern int omap3_pm_set_suspend_state(struct powerdomain *pwrdm, int state);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_DEBUG
 extern u32 enable_off_mode;
 #else
 #define enable_off_mode 0
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #if defined(CONFIG_PM_DEBUG) && defined(CONFIG_DEBUG_FS)
 extern void pm_dbg_update_time(struct powerdomain *pwrdm, int prev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int pm_dbg_regset_save(int reg_set);
 extern int pm_dbg_regset_init(int reg_set);
@@ -117,6 +150,8 @@ extern unsigned int save_secure_ram_context_sz;
 extern unsigned int omap24xx_cpu_suspend_sz;
 extern unsigned int omap34xx_cpu_suspend_sz;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define pm_dbg_update_time(pwrdm, prev) do {} while (0);
 #endif /* CONFIG_PM_DEBUG */
@@ -143,10 +178,17 @@ extern int save_secure_ram_context(u32 *addr);
 extern unsigned int save_secure_ram_context_sz;
 
 extern void omap3_save_scratchpad_contents(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define PM_RTA_ERRATUM_i608		(1 << 0)
 #define PM_SDRC_WAKEUP_ERRATUM_i583	(1 << 1)
+=======
+
+#define PM_RTA_ERRATUM_i608		(1 << 0)
+#define PM_SDRC_WAKEUP_ERRATUM_i583	(1 << 1)
+#define PM_PER_MEMORIES_ERRATUM_i582	(1 << 2)
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_PM) && defined(CONFIG_ARCH_OMAP3)
 extern u16 pm34xx_errata;
@@ -157,7 +199,20 @@ extern void enable_omap3630_toggle_l2_on_restore(void);
 static inline void enable_omap3630_toggle_l2_on_restore(void) { }
 #endif		/* defined(CONFIG_PM) && defined(CONFIG_ARCH_OMAP3) */
 
+<<<<<<< HEAD
 #ifdef CONFIG_OMAP_SMARTREFLEX
+=======
+#define PM_OMAP4_ROM_SMP_BOOT_ERRATUM_GICD	(1 << 0)
+
+#if defined(CONFIG_ARCH_OMAP4)
+extern u16 pm44xx_errata;
+#define IS_PM44XX_ERRATUM(id)		(pm44xx_errata & (id))
+#else
+#define IS_PM44XX_ERRATUM(id)		0
+#endif
+
+#ifdef CONFIG_POWER_AVS_OMAP
+>>>>>>> refs/remotes/origin/master
 extern int omap_devinit_smartreflex(void);
 extern void omap_enable_smartreflex_on_init(void);
 #else
@@ -184,4 +239,17 @@ static inline int omap4_twl_init(void)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+extern void omap_pm_setup_oscillator(u32 tstart, u32 tshut);
+extern void omap_pm_get_oscillator(u32 *tstart, u32 *tshut);
+extern void omap_pm_setup_sr_i2c_pcb_length(u32 mm);
+#else
+static inline void omap_pm_setup_oscillator(u32 tstart, u32 tshut) { }
+static inline void omap_pm_get_oscillator(u32 *tstart, u32 *tshut) { *tstart = *tshut = 0; }
+static inline void omap_pm_setup_sr_i2c_pcb_length(u32 mm) { }
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -3,7 +3,10 @@
 #include <linux/usb/hcd.h>
 #include <linux/usb/quirks.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/device.h>
 #include <asm/byteorder.h>
@@ -125,6 +128,7 @@ static void usb_parse_ss_endpoint_companion(struct device *ddev, int cfgno,
 	if (usb_endpoint_xfer_isoc(&ep->desc))
 		max_tx = (desc->bMaxBurst + 1) * (desc->bmAttributes + 1) *
 <<<<<<< HEAD
+<<<<<<< HEAD
 			le16_to_cpu(ep->desc.wMaxPacketSize);
 	else if (usb_endpoint_xfer_int(&ep->desc))
 		max_tx = le16_to_cpu(ep->desc.wMaxPacketSize) *
@@ -133,6 +137,11 @@ static void usb_parse_ss_endpoint_companion(struct device *ddev, int cfgno,
 	else if (usb_endpoint_xfer_int(&ep->desc))
 		max_tx = usb_endpoint_maxp(&ep->desc) *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			usb_endpoint_maxp(&ep->desc);
+	else if (usb_endpoint_xfer_int(&ep->desc))
+		max_tx = usb_endpoint_maxp(&ep->desc) *
+>>>>>>> refs/remotes/origin/master
 			(desc->bMaxBurst + 1);
 	else
 		max_tx = 999999;
@@ -248,10 +257,14 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno, int inum,
 		endpoint->desc.bmAttributes = USB_ENDPOINT_XFER_INT;
 		endpoint->desc.bInterval = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (le16_to_cpu(endpoint->desc.wMaxPacketSize) > 8)
 =======
 		if (usb_endpoint_maxp(&endpoint->desc) > 8)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (usb_endpoint_maxp(&endpoint->desc) > 8)
+>>>>>>> refs/remotes/origin/master
 			endpoint->desc.wMaxPacketSize = cpu_to_le16(8);
 	}
 
@@ -265,10 +278,14 @@ static int usb_parse_endpoint(struct device *ddev, int cfgno, int inum,
 		unsigned maxp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		maxp = le16_to_cpu(endpoint->desc.wMaxPacketSize) & 0x07ff;
 =======
 		maxp = usb_endpoint_maxp(&endpoint->desc) & 0x07ff;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		maxp = usb_endpoint_maxp(&endpoint->desc) & 0x07ff;
+>>>>>>> refs/remotes/origin/master
 		if (maxp != 512)
 			dev_warn(ddev, "config %d interface %d altsetting %d "
 				"bulk endpoint 0x%X has invalid maxpacket %d\n",
@@ -665,10 +682,13 @@ void usb_destroy_configuration(struct usb_device *dev)
  *
  * hub-only!! ... and only in reset path, or usb_new_device()
  * (used by real hubs and virtual root hubs)
+<<<<<<< HEAD
  *
  * NOTE: if this is a WUSB device and is not authorized, we skip the
  *       whole thing. A non-authorized USB device has no
  *       configurations.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 int usb_get_configuration(struct usb_device *dev)
 {
@@ -680,8 +700,11 @@ int usb_get_configuration(struct usb_device *dev)
 	struct usb_config_descriptor *desc;
 
 	cfgno = 0;
+<<<<<<< HEAD
 	if (dev->authorized == 0)	/* Not really an error */
 		goto out_not_authorized;
+=======
+>>>>>>> refs/remotes/origin/master
 	result = -ENOMEM;
 	if (ncfg > USB_MAXCONFIG) {
 		dev_warn(ddev, "too many configurations: %d, "
@@ -717,6 +740,11 @@ int usb_get_configuration(struct usb_device *dev)
 		if (result < 0) {
 			dev_err(ddev, "unable to read config index %d "
 			    "descriptor/%s: %d\n", cfgno, "start", result);
+<<<<<<< HEAD
+=======
+			if (result != -EPIPE)
+				goto err;
+>>>>>>> refs/remotes/origin/master
 			dev_err(ddev, "chopping to %d config(s)\n", cfgno);
 			dev->descriptor.bNumConfigurations = cfgno;
 			break;
@@ -763,7 +791,10 @@ int usb_get_configuration(struct usb_device *dev)
 
 err:
 	kfree(desc);
+<<<<<<< HEAD
 out_not_authorized:
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->descriptor.bNumConfigurations = cfgno;
 err2:
 	if (result == -ENOMEM)
@@ -771,7 +802,10 @@ err2:
 	return result;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void usb_release_bos_descriptor(struct usb_device *dev)
 {
@@ -875,4 +909,7 @@ err:
 	usb_release_bos_descriptor(dev);
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

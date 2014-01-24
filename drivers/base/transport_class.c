@@ -28,9 +28,13 @@
  * allow it to be used by any physical HBA in the system.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/attribute_container.h>
 #include <linux/transport_class.h>
 

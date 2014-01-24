@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __IOCTL_SET_H
 #define __IOCTL_SET_H
 
@@ -51,10 +57,14 @@ u8 r8712_set_802_11_disassociate(struct _adapter *padapter);
 u8 r8712_set_802_11_bssid_list_scan(struct _adapter *padapter);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 u8 r8712_set_802_11_infrastructure_mode(struct _adapter *padapter,
 =======
 void r8712_set_802_11_infrastructure_mode(struct _adapter *padapter,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void r8712_set_802_11_infrastructure_mode(struct _adapter *padapter,
+>>>>>>> refs/remotes/origin/master
 			enum NDIS_802_11_NETWORK_INFRASTRUCTURE networktype);
 
 void r8712_set_802_11_ssid(struct _adapter *padapter,

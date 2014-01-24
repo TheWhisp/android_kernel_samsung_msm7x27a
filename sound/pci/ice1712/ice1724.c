@@ -22,17 +22,24 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/io.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/init.h>
 #include <linux/pci.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <sound/core.h>
 #include <sound/info.h>
@@ -58,6 +65,10 @@
 #include "wtm.h"
 #include "se.h"
 #include "quartet.h"
+<<<<<<< HEAD
+=======
+#include "psc724.h"
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
 MODULE_DESCRIPTION("VIA ICEnsemble ICE1724/1720 (Envy24HT/PT)");
@@ -85,10 +96,14 @@ MODULE_SUPPORTED_DEVICE("{"
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;		/* Enable this card */
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;		/* Enable this card */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;		/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static char *model[SNDRV_CARDS];
 
 module_param_array(index, int, NULL, 0444);
@@ -114,7 +129,11 @@ static int PRO_RATE_LOCKED;
 static int PRO_RATE_RESET = 1;
 static unsigned int PRO_RATE_DEFAULT = 44100;
 
+<<<<<<< HEAD
 static char *ext_clock_names[1] = { "IEC958 In" };
+=======
+static const char * const ext_clock_names[1] = { "IEC958 In" };
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  Basic I/O
@@ -1022,7 +1041,10 @@ static int set_rate_constraints(struct snd_ice1712 *ice,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* if the card has the internal rate locked (is_pro_locked), limit runtime
    hw rates to the current internal rate only.
 */
@@ -1042,7 +1064,10 @@ static void constrain_rate_if_locked(struct snd_pcm_substream *substream)
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* multi-channel playback needs alignment 8x32bit regardless of the channels
  * actually used
  */
@@ -1077,9 +1102,13 @@ static int snd_vt1724_playback_pro_open(struct snd_pcm_substream *substream)
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	constrain_rate_if_locked(substream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/master
 	if (ice->pro_open)
 		ice->pro_open(ice, substream);
 	return 0;
@@ -1101,9 +1130,13 @@ static int snd_vt1724_capture_pro_open(struct snd_pcm_substream *substream)
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	constrain_rate_if_locked(substream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/master
 	if (ice->pro_open)
 		ice->pro_open(ice, substream);
 	return 0;
@@ -1152,6 +1185,7 @@ static struct snd_pcm_ops snd_vt1724_capture_pro_ops = {
 	.pointer =	snd_vt1724_pcm_pointer,
 };
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
 {
 	struct snd_pcm *pcm;
@@ -1160,6 +1194,11 @@ static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
 
 	err = snd_pcm_new(ice->card, "ICE1724", device, 1, 1, &pcm);
 =======
+=======
+static int snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
+{
+	struct snd_pcm *pcm;
+>>>>>>> refs/remotes/origin/master
 	int capt, err;
 
 	if ((ice->eeprom.data[ICE_EEP2_SYSCONF] & VT1724_CFG_ADC_MASK) ==
@@ -1168,11 +1207,15 @@ static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
 	else
 		capt = 1;
 	err = snd_pcm_new(ice->card, "ICE1724", device, 1, capt, &pcm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_vt1724_playback_pro_ops);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_vt1724_capture_pro_ops);
 =======
@@ -1180,6 +1223,11 @@ static int __devinit snd_vt1724_pcm_profi(struct snd_ice1712 *ice, int device)
 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
 			&snd_vt1724_capture_pro_ops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (capt)
+		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE,
+			&snd_vt1724_capture_pro_ops);
+>>>>>>> refs/remotes/origin/master
 
 	pcm->private_data = ice;
 	pcm->info_flags = 0;
@@ -1264,9 +1312,13 @@ static int snd_vt1724_playback_spdif_open(struct snd_pcm_substream *substream)
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	constrain_rate_if_locked(substream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/master
 	if (ice->spdif.ops.open)
 		ice->spdif.ops.open(ice, substream);
 	return 0;
@@ -1304,9 +1356,13 @@ static int snd_vt1724_capture_spdif_open(struct snd_pcm_substream *substream)
 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
 				   VT1724_BUFFER_ALIGN);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	constrain_rate_if_locked(substream);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	constrain_rate_if_locked(substream);
+>>>>>>> refs/remotes/origin/master
 	if (ice->spdif.ops.open)
 		ice->spdif.ops.open(ice, substream);
 	return 0;
@@ -1348,7 +1404,11 @@ static struct snd_pcm_ops snd_vt1724_capture_spdif_ops = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_pcm_spdif(struct snd_ice1712 *ice, int device)
+=======
+static int snd_vt1724_pcm_spdif(struct snd_ice1712 *ice, int device)
+>>>>>>> refs/remotes/origin/master
 {
 	char *name;
 	struct snd_pcm *pcm;
@@ -1482,7 +1542,11 @@ static struct snd_pcm_ops snd_vt1724_playback_indep_ops = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_pcm_indep(struct snd_ice1712 *ice, int device)
+=======
+static int snd_vt1724_pcm_indep(struct snd_ice1712 *ice, int device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm;
 	int play;
@@ -1517,7 +1581,11 @@ static int __devinit snd_vt1724_pcm_indep(struct snd_ice1712 *ice, int device)
  *  Mixer section
  */
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_ac97_mixer(struct snd_ice1712 *ice)
+=======
+static int snd_vt1724_ac97_mixer(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -1603,7 +1671,11 @@ static void snd_vt1724_proc_read(struct snd_info_entry *entry,
 			    idx, inb(ice->profi_port+idx));
 }
 
+<<<<<<< HEAD
 static void __devinit snd_vt1724_proc_init(struct snd_ice1712 *ice)
+=======
+static void snd_vt1724_proc_init(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -1632,7 +1704,11 @@ static int snd_vt1724_eeprom_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_eeprom __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vt1724_eeprom = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
 	.name = "ICE1724 EEPROM",
 	.access = SNDRV_CTL_ELEM_ACCESS_READ,
@@ -1745,7 +1821,11 @@ static int snd_vt1724_spdif_default_put(struct snd_kcontrol *kcontrol,
 	return val != old;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_spdif_default __devinitdata =
+=======
+static struct snd_kcontrol_new snd_vt1724_spdif_default =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
 	.name =         SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
@@ -1777,7 +1857,11 @@ static int snd_vt1724_spdif_maskp_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_spdif_maskc __devinitdata =
+=======
+static struct snd_kcontrol_new snd_vt1724_spdif_maskc =
+>>>>>>> refs/remotes/origin/master
 {
 	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
@@ -1786,7 +1870,11 @@ static struct snd_kcontrol_new snd_vt1724_spdif_maskc __devinitdata =
 	.get =		snd_vt1724_spdif_maskc_get,
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_spdif_maskp __devinitdata =
+=======
+static struct snd_kcontrol_new snd_vt1724_spdif_maskp =
+>>>>>>> refs/remotes/origin/master
 {
 	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
@@ -1823,7 +1911,11 @@ static int snd_vt1724_spdif_sw_put(struct snd_kcontrol *kcontrol,
 	return old != val;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_spdif_switch __devinitdata =
+=======
+static struct snd_kcontrol_new snd_vt1724_spdif_switch =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	/* FIXME: the following conflict with IEC958 Playback Route */
@@ -1889,15 +1981,21 @@ static int snd_vt1724_pro_internal_clock_info(struct snd_kcontrol *kcontrol,
 	uinfo->count = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uinfo->value.enumerated.items = hw_rates_count + ice->ext_clock_count;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* internal clocks */
 	uinfo->value.enumerated.items = hw_rates_count;
 	/* external clocks */
 	if (ice->force_rdma1 ||
 	    (ice->eeprom.data[ICE_EEP2_SPDIF] & VT1724_CFG_SPDIF_IN))
 		uinfo->value.enumerated.items += ice->ext_clock_count;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* upper limit - keep at top */
 	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
 		uinfo->value.enumerated.item = uinfo->value.enumerated.items - 1;
@@ -2002,7 +2100,11 @@ static int snd_vt1724_pro_internal_clock_put(struct snd_kcontrol *kcontrol,
 	return old_rate != new_rate;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_pro_internal_clock __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vt1724_pro_internal_clock = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Multi Track Internal Clock",
 	.info = snd_vt1724_pro_internal_clock_info,
@@ -2033,7 +2135,11 @@ static int snd_vt1724_pro_rate_locking_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_pro_rate_locking __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vt1724_pro_rate_locking = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Multi Track Rate Locking",
 	.info = snd_vt1724_pro_rate_locking_info,
@@ -2064,7 +2170,11 @@ static int snd_vt1724_pro_rate_reset_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_pro_rate_reset __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vt1724_pro_rate_reset = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Multi Track Rate Reset",
 	.info = snd_vt1724_pro_rate_reset_info,
@@ -2079,7 +2189,11 @@ static struct snd_kcontrol_new snd_vt1724_pro_rate_reset __devinitdata = {
 static int snd_vt1724_pro_route_info(struct snd_kcontrol *kcontrol,
 				     struct snd_ctl_elem_info *uinfo)
 {
+<<<<<<< HEAD
 	static char *texts[] = {
+=======
+	static const char * const texts[] = {
+>>>>>>> refs/remotes/origin/master
 		"PCM Out", /* 0 */
 		"H/W In 0", "H/W In 1", /* 1-2 */
 		"IEC958 In L", "IEC958 In R", /* 3-4 */
@@ -2186,7 +2300,11 @@ static int snd_vt1724_pro_route_spdif_put(struct snd_kcontrol *kcontrol,
 					 digital_route_shift(idx));
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_mixer_pro_analog_route __devinitdata =
+=======
+static struct snd_kcontrol_new snd_vt1724_mixer_pro_analog_route =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "H/W Playback Route",
@@ -2195,7 +2313,11 @@ static struct snd_kcontrol_new snd_vt1724_mixer_pro_analog_route __devinitdata =
 	.put = snd_vt1724_pro_route_analog_put,
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_mixer_pro_spdif_route __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vt1724_mixer_pro_spdif_route = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, NONE) "Route",
 	.info = snd_vt1724_pro_route_info,
@@ -2231,7 +2353,11 @@ static int snd_vt1724_pro_peak_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
 	.name = "Multi Track Peak",
 	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
@@ -2243,15 +2369,24 @@ static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak __devinitdata = {
  *
  */
 
+<<<<<<< HEAD
 static struct snd_ice1712_card_info no_matched __devinitdata;
 
 <<<<<<< HEAD
 =======
+=======
+static struct snd_ice1712_card_info no_matched;
+
+>>>>>>> refs/remotes/origin/master
 
 /*
   ooAoo cards with no controls
 */
+<<<<<<< HEAD
 static unsigned char ooaoo_sq210_eeprom[] __devinitdata = {
+=======
+static unsigned char ooaoo_sq210_eeprom[] = {
+>>>>>>> refs/remotes/origin/master
 	[ICE_EEP2_SYSCONF]     = 0x4c,	/* 49MHz crystal, no mpu401, no ADC,
 					   1xDACs */
 	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
@@ -2271,7 +2406,11 @@ static unsigned char ooaoo_sq210_eeprom[] __devinitdata = {
 };
 
 
+<<<<<<< HEAD
 struct snd_ice1712_card_info snd_vt1724_ooaoo_cards[] __devinitdata = {
+=======
+static struct snd_ice1712_card_info snd_vt1724_ooaoo_cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "ooAoo SQ210a",
 		.model = "sq210a",
@@ -2281,8 +2420,12 @@ struct snd_ice1712_card_info snd_vt1724_ooaoo_cards[] __devinitdata = {
 	{ } /* terminator */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
+=======
+static struct snd_ice1712_card_info *card_tables[] = {
+>>>>>>> refs/remotes/origin/master
 	snd_vt1724_revo_cards,
 	snd_vt1724_amp_cards,
 	snd_vt1724_aureon_cards,
@@ -2297,9 +2440,14 @@ static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
 	snd_vt1724_se_cards,
 	snd_vt1724_qtet_cards,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	snd_vt1724_ooaoo_cards,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_vt1724_ooaoo_cards,
+	snd_vt1724_psc724_cards,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -2349,8 +2497,13 @@ void snd_vt1724_write_i2c(struct snd_ice1712 *ice,
 	mutex_unlock(&ice->i2c_mutex);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
 					    const char *modelname)
+=======
+static int snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
+				  const char *modelname)
+>>>>>>> refs/remotes/origin/master
 {
 	const int dev = 0xa0;		/* EEPROM device address */
 	unsigned int i, size;
@@ -2384,10 +2537,14 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
 	}
 	for (tbl = card_tables; *tbl; tbl++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (c = *tbl; c->subvendor; c++) {
 =======
 		for (c = *tbl; c->name; c++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (c = *tbl; c->name; c++) {
+>>>>>>> refs/remotes/origin/master
 			if (modelname && c->model &&
 			    !strcmp(modelname, c->model)) {
 				printk(KERN_INFO "ice1724: Using board model %s\n",
@@ -2395,6 +2552,10 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
 				ice->eeprom.subvendor = c->subvendor;
 			} else if (c->subvendor != ice->eeprom.subvendor)
 				continue;
+<<<<<<< HEAD
+=======
+			ice->card_info = c;
+>>>>>>> refs/remotes/origin/master
 			if (!c->eeprom_size || !c->eeprom_data)
 				goto found;
 			/* if the EEPROM is given by the driver, use it */
@@ -2407,6 +2568,13 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
 	}
 	printk(KERN_WARNING "ice1724: No matching model found for ID 0x%x\n",
 	       ice->eeprom.subvendor);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+	/* assume AC97-only card which can suspend without additional code */
+	ice->pm_suspend_enabled = 1;
+#endif
+>>>>>>> refs/remotes/origin/master
 
  found:
 	ice->eeprom.size = snd_vt1724_read_i2c(ice, dev, 0x04);
@@ -2418,7 +2586,11 @@ static int __devinit snd_vt1724_read_eeprom(struct snd_ice1712 *ice,
 		return -EIO;
 	}
 	ice->eeprom.version = snd_vt1724_read_i2c(ice, dev, 0x05);
+<<<<<<< HEAD
 	if (ice->eeprom.version != 2)
+=======
+	if (ice->eeprom.version != 1 && ice->eeprom.version != 2)
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "ice1724: Invalid EEPROM version %i\n",
 		       ice->eeprom.version);
 	size = ice->eeprom.size - 6;
@@ -2471,7 +2643,11 @@ static int snd_vt1724_chip_init(struct snd_ice1712 *ice)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_spdif_build_controls(struct snd_ice1712 *ice)
+=======
+static int snd_vt1724_spdif_build_controls(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_kcontrol *kctl;
@@ -2513,7 +2689,11 @@ static int __devinit snd_vt1724_spdif_build_controls(struct snd_ice1712 *ice)
 }
 
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_build_controls(struct snd_ice1712 *ice)
+=======
+static int snd_vt1724_build_controls(struct snd_ice1712 *ice)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -2573,10 +2753,17 @@ static int snd_vt1724_dev_free(struct snd_device *device)
 	return snd_vt1724_free(ice);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_create(struct snd_card *card,
 				       struct pci_dev *pci,
 				       const char *modelname,
 				       struct snd_ice1712 **r_ice1712)
+=======
+static int snd_vt1724_create(struct snd_card *card,
+			     struct pci_dev *pci,
+			     const char *modelname,
+			     struct snd_ice1712 **r_ice1712)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ice1712 *ice;
 	int err;
@@ -2627,10 +2814,14 @@ static int __devinit snd_vt1724_create(struct snd_card *card,
 
 	if (request_irq(pci->irq, snd_vt1724_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED, "ICE1724", ice)) {
 =======
 			IRQF_SHARED, KBUILD_MODNAME, ice)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, KBUILD_MODNAME, ice)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_vt1724_free(ice);
 		return -EIO;
@@ -2667,8 +2858,13 @@ static int __devinit snd_vt1724_create(struct snd_card *card,
  *
  */
 
+<<<<<<< HEAD
 static int __devinit snd_vt1724_probe(struct pci_dev *pci,
 				      const struct pci_device_id *pci_id)
+=======
+static int snd_vt1724_probe(struct pci_dev *pci,
+			    const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -2701,14 +2897,20 @@ static int __devinit snd_vt1724_probe(struct pci_dev *pci,
 
 	for (tbl = card_tables; *tbl; tbl++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (c = *tbl; c->subvendor; c++) {
 			if (c->subvendor == ice->eeprom.subvendor) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		for (c = *tbl; c->name; c++) {
 			if ((model[dev] && c->model &&
 			     !strcmp(model[dev], c->model)) ||
 			    (c->subvendor == ice->eeprom.subvendor)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				strcpy(card->shortname, c->name);
 				if (c->driver) /* specific driver? */
 					strcpy(card->driver, c->driver);
@@ -2842,6 +3044,7 @@ __found:
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_vt1724_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -2852,6 +3055,23 @@ static void __devexit snd_vt1724_remove(struct pci_dev *pci)
 static int snd_vt1724_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+static void snd_vt1724_remove(struct pci_dev *pci)
+{
+	struct snd_card *card = pci_get_drvdata(pci);
+	struct snd_ice1712 *ice = card->private_data;
+
+	if (ice->card_info && ice->card_info->chip_exit)
+		ice->card_info->chip_exit(ice);
+	snd_card_free(card);
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int snd_vt1724_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_ice1712 *ice = card->private_data;
 
 	if (!ice->pm_suspend_enabled)
@@ -2876,6 +3096,7 @@ static int snd_vt1724_suspend(struct pci_dev *pci, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
@@ -2883,6 +3104,16 @@ static int snd_vt1724_suspend(struct pci_dev *pci, pm_message_t state)
 static int snd_vt1724_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+
+static int snd_vt1724_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct snd_ice1712 *ice = card->private_data;
 
 	if (!ice->pm_suspend_enabled)
@@ -2913,7 +3144,16 @@ static int snd_vt1724_resume(struct pci_dev *pci)
 		ice->set_spdif_clock(ice, 0);
 	} else {
 		/* internal on-card clock */
+<<<<<<< HEAD
 		snd_vt1724_set_pro_rate(ice, ice->pro_rate_default, 1);
+=======
+		int rate;
+		if (ice->cur_rate)
+			rate = ice->cur_rate;
+		else
+			rate = ice->pro_rate_default;
+		snd_vt1724_set_pro_rate(ice, rate, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	update_spdif_bits(ice, ice->pm_saved_spdif_ctrl);
@@ -2927,6 +3167,7 @@ static int snd_vt1724_resume(struct pci_dev *pci)
 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 	return 0;
 }
+<<<<<<< HEAD
 #endif
 
 static struct pci_driver driver = {
@@ -2956,3 +3197,23 @@ static void __exit alsa_card_ice1724_exit(void)
 
 module_init(alsa_card_ice1724_init)
 module_exit(alsa_card_ice1724_exit)
+=======
+
+static SIMPLE_DEV_PM_OPS(snd_vt1724_pm, snd_vt1724_suspend, snd_vt1724_resume);
+#define SND_VT1724_PM_OPS	&snd_vt1724_pm
+#else
+#define SND_VT1724_PM_OPS	NULL
+#endif /* CONFIG_PM_SLEEP */
+
+static struct pci_driver vt1724_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_vt1724_ids,
+	.probe = snd_vt1724_probe,
+	.remove = snd_vt1724_remove,
+	.driver = {
+		.pm = SND_VT1724_PM_OPS,
+	},
+};
+
+module_pci_driver(vt1724_driver);
+>>>>>>> refs/remotes/origin/master

@@ -24,9 +24,15 @@
 #include <asm/cacheops.h>
 #include <asm/sibyte/board.h>
 
+<<<<<<< HEAD
 #define C0_ERRCTL     $26             /* CP0: Error info */
 #define C0_CERR_I     $27             /* CP0: Icache error */
 #define C0_CERR_D     $27,1           /* CP0: Dcache error */
+=======
+#define C0_ERRCTL     $26	      /* CP0: Error info */
+#define C0_CERR_I     $27	      /* CP0: Icache error */
+#define C0_CERR_D     $27,1	      /* CP0: Dcache error */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Based on SiByte sample software cache-err/cerr.S
@@ -49,8 +55,11 @@
 	 * (0x170-0x17f) are used to preserve k0, k1, and ra.
 	 */
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 LEAF(except_vec2_sb1)
 	/*
 	 * If this error is recoverable, we need to exit the handler
@@ -88,7 +97,11 @@ attempt_recovery:
 	/*
 	 * k0 has C0_ERRCTL << 1, which puts 'DC' at bit 31.  Any
 	 * Dcache errors we can recover from will take more extensive
+<<<<<<< HEAD
 	 * processing.  For now, they are considered "unrecoverable".
+=======
+	 * processing.	For now, they are considered "unrecoverable".
+>>>>>>> refs/remotes/origin/master
 	 * Note that 'DC' becoming set (outside of ERL mode) will
 	 * cause 'IC' to clear; so if there's an Icache error, we'll
 	 * only find out about it if we recover from this error and
@@ -142,8 +155,11 @@ unrecoverable:
 
 END(except_vec2_sb1)
 
+<<<<<<< HEAD
 	__FINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	LEAF(handle_vec2_sb1)
 	mfc0	k0,CP0_CONFIG
 	li	k1,~CONF_CM_CMASK

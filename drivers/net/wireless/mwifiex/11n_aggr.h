@@ -22,14 +22,22 @@
 
 #define PKT_TYPE_AMSDU	0xE6
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MIN_NUM_AMSDU 2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MIN_NUM_AMSDU 2
+>>>>>>> refs/remotes/origin/master
 
 int mwifiex_11n_deaggregate_pkt(struct mwifiex_private *priv,
 				struct sk_buff *skb);
 int mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
+<<<<<<< HEAD
 			      struct mwifiex_ra_list_tbl *ptr, int headroom,
+=======
+			      struct mwifiex_ra_list_tbl *ptr,
+>>>>>>> refs/remotes/origin/master
 			      int ptr_index, unsigned long flags)
 			      __releases(&priv->wmm.ra_list_spinlock);
 

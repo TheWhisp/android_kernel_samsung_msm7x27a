@@ -30,9 +30,13 @@
 
 #include <linux/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 #include <linux/workqueue.h>
 #include <linux/firmware.h>
@@ -42,10 +46,15 @@
 #include <linux/input-polldev.h>
 #include <linux/kfifo.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/timer.h>
 =======
 #include <linux/hrtimer.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hrtimer.h>
+#include <linux/average.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/mac80211.h>
 
@@ -61,6 +70,7 @@
 #define DRV_VERSION	"2.3.0"
 #define DRV_PROJECT	"http://rt2x00.serialmonkey.com"
 
+<<<<<<< HEAD
 /*
  * Debug definitions.
  * Debug output has to be enabled during compile time.
@@ -104,6 +114,38 @@
 	DEBUG_PRINTK(__dev, KERN_DEBUG, "Debug", __msg, ##__args)
 #define EEPROM(__dev, __msg, __args...) \
 	DEBUG_PRINTK(__dev, KERN_DEBUG, "EEPROM recovery", __msg, ##__args)
+=======
+/* Debug definitions.
+ * Debug output has to be enabled during compile time.
+ */
+#ifdef CONFIG_RT2X00_DEBUG
+#define DEBUG
+#endif /* CONFIG_RT2X00_DEBUG */
+
+/* Utility printing macros
+ * rt2x00_probe_err is for messages when rt2x00_dev is uninitialized
+ */
+#define rt2x00_probe_err(fmt, ...)					\
+	printk(KERN_ERR KBUILD_MODNAME ": %s: Error - " fmt,		\
+	       __func__, ##__VA_ARGS__)
+#define rt2x00_err(dev, fmt, ...)					\
+	wiphy_err((dev)->hw->wiphy, "%s: Error - " fmt,			\
+		  __func__, ##__VA_ARGS__)
+#define rt2x00_warn(dev, fmt, ...)					\
+	wiphy_warn((dev)->hw->wiphy, "%s: Warning - " fmt,		\
+		   __func__, ##__VA_ARGS__)
+#define rt2x00_info(dev, fmt, ...)					\
+	wiphy_info((dev)->hw->wiphy, "%s: Info - " fmt,			\
+		   __func__, ##__VA_ARGS__)
+
+/* Various debug levels */
+#define rt2x00_dbg(dev, fmt, ...)					\
+	wiphy_dbg((dev)->hw->wiphy, "%s: Debug - " fmt,			\
+		  __func__, ##__VA_ARGS__)
+#define rt2x00_eeprom_dbg(dev, fmt, ...)				\
+	wiphy_dbg((dev)->hw->wiphy, "%s: EEPROM recovery - " fmt,	\
+		  __func__, ##__VA_ARGS__)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Duration calculations
@@ -158,6 +200,7 @@
 #define SHORT_EIFS		( SIFS + SHORT_DIFS + \
 				  GET_DURATION(IEEE80211_HEADER + ACK_SIZE, 10) )
 
+<<<<<<< HEAD
 /*
  * Structure for average calculation
  * The avg field contains the actual average value,
@@ -169,6 +212,8 @@ struct avg_val {
 	int avg_weight;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum rt2x00_chip_intf {
 	RT2X00_CHIP_INTF_PCI,
 	RT2X00_CHIP_INTF_PCIE,
@@ -194,6 +239,7 @@ struct rt2x00_chip {
 #define RT3070		0x3070
 #define RT3071		0x3071
 #define RT3090		0x3090	/* 2.4GHz PCIe */
+<<<<<<< HEAD
 #define RT3390		0x3390
 #define RT3572		0x3572
 <<<<<<< HEAD
@@ -201,11 +247,21 @@ struct rt2x00_chip {
 #define RT3883		0x3883	/* WSOC */
 #define RT5390         0x5390  /* 2.4GHz */
 =======
+=======
+#define RT3290		0x3290
+#define RT3352		0x3352  /* WSOC */
+#define RT3390		0x3390
+#define RT3572		0x3572
+>>>>>>> refs/remotes/origin/master
 #define RT3593		0x3593
 #define RT3883		0x3883	/* WSOC */
 #define RT5390		0x5390  /* 2.4GHz */
 #define RT5392		0x5392  /* 2.4GHz */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RT5592		0x5592
+>>>>>>> refs/remotes/origin/master
 
 	u16 rf;
 	u16 rev;
@@ -234,6 +290,10 @@ struct channel_info {
 	short max_power;
 	short default_power1;
 	short default_power2;
+<<<<<<< HEAD
+=======
+	short default_power3;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -319,7 +379,11 @@ struct link_ant {
 	 * Similar to the avg_rssi in the link_qual structure
 	 * this value is updated by using the walking average.
 	 */
+<<<<<<< HEAD
 	struct avg_val rssi_ant;
+=======
+	struct ewma rssi_ant;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -348,7 +412,11 @@ struct link {
 	/*
 	 * Currently active average RSSI value
 	 */
+<<<<<<< HEAD
 	struct avg_val avg_rssi;
+=======
+	struct ewma avg_rssi;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Work structure for scheduling periodic link tuning.
@@ -370,13 +438,19 @@ struct link {
 	 */
 	struct delayed_work agc_work;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Work structure for scheduling periodic VCO calibration.
 	 */
 	struct delayed_work vco_work;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum rt2x00_delayed_flags {
@@ -413,11 +487,15 @@ struct rt2x00_intf {
 	 * sequence counting.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t seqlock;
 	u16 seqno;
 =======
 	atomic_t seqno;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_t seqno;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct rt2x00_intf* vif_to_intf(struct ieee80211_vif *vif)
@@ -505,10 +583,15 @@ struct rt2x00lib_crypto {
 	u8 tx_mic[8];
 	u8 rx_mic[8];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	int wcid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	int wcid;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -544,7 +627,10 @@ struct rt2x00intf_conf {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Private structure for storing STA details
  * wcid: Wireless Client ID
  */
@@ -558,7 +644,10 @@ static inline struct rt2x00_sta* sta_to_rt2x00_sta(struct ieee80211_sta *sta)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * rt2x00lib callback functions.
  */
 struct rt2x00lib_ops {
@@ -612,9 +701,13 @@ struct rt2x00lib_ops {
 			    struct link_qual *qual, const u32 count);
 	void (*gain_calibration) (struct rt2x00_dev *rt2x00dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void (*vco_calibration) (struct rt2x00_dev *rt2x00dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*vco_calibration) (struct rt2x00_dev *rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Data queue handlers.
@@ -672,13 +765,19 @@ struct rt2x00lib_ops {
 			struct rt2x00lib_conf *libconf,
 			const unsigned int changed_flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*sta_add) (struct rt2x00_dev *rt2x00dev,
 			struct ieee80211_vif *vif,
 			struct ieee80211_sta *sta);
 	int (*sta_remove) (struct rt2x00_dev *rt2x00dev,
 			   int wcid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -687,19 +786,27 @@ struct rt2x00lib_ops {
 struct rt2x00_ops {
 	const char *name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const unsigned int drv_data_size;
 >>>>>>> refs/remotes/origin/cm-10.0
 	const unsigned int max_sta_intf;
+=======
+	const unsigned int drv_data_size;
+>>>>>>> refs/remotes/origin/master
 	const unsigned int max_ap_intf;
 	const unsigned int eeprom_size;
 	const unsigned int rf_size;
 	const unsigned int tx_queues;
+<<<<<<< HEAD
 	const unsigned int extra_tx_headroom;
 	const struct data_queue_desc *rx;
 	const struct data_queue_desc *tx;
 	const struct data_queue_desc *bcn;
 	const struct data_queue_desc *atim;
+=======
+	void (*queue_init)(struct data_queue *queue);
+>>>>>>> refs/remotes/origin/master
 	const struct rt2x00lib_ops *lib;
 	const void *drv;
 	const struct ieee80211_ops *hw;
@@ -728,14 +835,22 @@ enum rt2x00_state_flags {
 	CONFIG_CHANNEL_HT40,
 	CONFIG_POWERSAVING,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+	CONFIG_HT_DISABLED,
+	CONFIG_QOS_DISABLED,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Mark we currently are sequentially reading TX_STA_FIFO register
 	 * FIXME: this is for only rt2800usb, should go to private data
 	 */
 	TX_STATUS_READING,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -774,9 +889,21 @@ enum rt2x00_capability_flags {
 	CAPABILITY_DOUBLE_ANTENNA,
 	CAPABILITY_BT_COEXIST,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	CAPABILITY_VCO_RECALIBRATION,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CAPABILITY_VCO_RECALIBRATION,
+};
+
+/*
+ * Interface combinations
+ */
+enum {
+	IF_COMB_AP = 0,
+	NUM_IF_COMB,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -799,13 +926,19 @@ struct rt2x00_dev {
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Driver data.
 	 */
 	void *drv_data;
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * IEEE80211 control structure.
 	 */
 	struct ieee80211_hw *hw;
@@ -909,6 +1042,15 @@ struct rt2x00_dev {
 	unsigned int intf_beaconing;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Interface combinations
+	 */
+	struct ieee80211_iface_limit if_limits_ap;
+	struct ieee80211_iface_combination if_combinations[NUM_IF_COMB];
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Link quality
 	 */
 	struct link link;
@@ -951,14 +1093,19 @@ struct rt2x00_dev {
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Frequency offset (for rt61pci & rt73usb).
 =======
 	 * Frequency offset.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Frequency offset.
+>>>>>>> refs/remotes/origin/master
 	 */
 	u8 freq_offset;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Calibration information (for rt2800usb & rt2800pci).
 	 * [0] -> BW20
@@ -969,6 +1116,8 @@ struct rt2x00_dev {
 	/*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Association id.
 	 */
 	u16 aid;
@@ -1039,10 +1188,14 @@ struct rt2x00_dev {
 	 * Timer to ensure tx status reports are read (rt2800usb).
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct timer_list txstatus_timer;
 =======
 	struct hrtimer txstatus_timer;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hrtimer txstatus_timer;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Tasklet for processing tx status reports (rt2800pci).
@@ -1055,16 +1208,48 @@ struct rt2x00_dev {
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Used for VCO periodic calibration.
 	 */
 	int rf_channel;
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	 * Protect the interrupt mask register.
 	 */
 	spinlock_t irqmask_lock;
+=======
+	 * Protect the interrupt mask register.
+	 */
+	spinlock_t irqmask_lock;
+
+	/*
+	 * List of BlockAckReq TX entries that need driver BlockAck processing.
+	 */
+	struct list_head bar_list;
+	spinlock_t bar_list_lock;
+
+	/* Extra TX headroom required for alignment purposes. */
+	unsigned int extra_tx_headroom;
+};
+
+struct rt2x00_bar_list_entry {
+	struct list_head list;
+	struct rcu_head head;
+
+	struct queue_entry *entry;
+	int block_acked;
+
+	/* Relevant parts of the IEEE80211 BAR header */
+	__u8 ra[6];
+	__u8 ta[6];
+	__le16 control;
+	__le16 start_seq_num;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1095,8 +1280,12 @@ static inline void rt2x00_rf_write(struct rt2x00_dev *rt2x00dev,
 }
 
 /*
+<<<<<<< HEAD
  *  Generic EEPROM access.
  * The EEPROM is being accessed by word index.
+=======
+ * Generic EEPROM access. The EEPROM is being accessed by word or byte index.
+>>>>>>> refs/remotes/origin/master
  */
 static inline void *rt2x00_eeprom_addr(struct rt2x00_dev *rt2x00dev,
 				       const unsigned int word)
@@ -1116,6 +1305,15 @@ static inline void rt2x00_eeprom_write(struct rt2x00_dev *rt2x00dev,
 	rt2x00dev->eeprom[word] = cpu_to_le16(data);
 }
 
+<<<<<<< HEAD
+=======
+static inline u8 rt2x00_eeprom_byte(struct rt2x00_dev *rt2x00dev,
+				    const unsigned int byte)
+{
+	return *(((u8 *)rt2x00dev->eeprom) + byte);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Chipset handlers
  */
@@ -1126,9 +1324,33 @@ static inline void rt2x00_set_chip(struct rt2x00_dev *rt2x00dev,
 	rt2x00dev->chip.rf = rf;
 	rt2x00dev->chip.rev = rev;
 
+<<<<<<< HEAD
 	INFO(rt2x00dev,
 	     "Chipset detected - rt: %04x, rf: %04x, rev: %04x.\n",
 	     rt2x00dev->chip.rt, rt2x00dev->chip.rf, rt2x00dev->chip.rev);
+=======
+	rt2x00_info(rt2x00dev, "Chipset detected - rt: %04x, rf: %04x, rev: %04x\n",
+		    rt2x00dev->chip.rt, rt2x00dev->chip.rf,
+		    rt2x00dev->chip.rev);
+}
+
+static inline void rt2x00_set_rt(struct rt2x00_dev *rt2x00dev,
+				 const u16 rt, const u16 rev)
+{
+	rt2x00dev->chip.rt = rt;
+	rt2x00dev->chip.rev = rev;
+
+	rt2x00_info(rt2x00dev, "RT chipset %04x, rev %04x detected\n",
+		    rt2x00dev->chip.rt, rt2x00dev->chip.rev);
+}
+
+static inline void rt2x00_set_rf(struct rt2x00_dev *rt2x00dev, const u16 rf)
+{
+	rt2x00dev->chip.rf = rf;
+
+	rt2x00_info(rt2x00dev, "RF chipset %04x detected\n",
+		    rt2x00dev->chip.rf);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline bool rt2x00_rt(struct rt2x00_dev *rt2x00dev, const u16 rt)
@@ -1197,11 +1419,108 @@ static inline bool rt2x00_is_soc(struct rt2x00_dev *rt2x00dev)
 	return rt2x00_intf(rt2x00dev, RT2X00_CHIP_INTF_SOC);
 }
 
+<<<<<<< HEAD
 /**
  * rt2x00queue_map_txskb - Map a skb into DMA for TX purposes.
  * @entry: Pointer to &struct queue_entry
  */
 void rt2x00queue_map_txskb(struct queue_entry *entry);
+=======
+/* Helpers for capability flags */
+
+static inline bool
+rt2x00_has_cap_flag(struct rt2x00_dev *rt2x00dev,
+		    enum rt2x00_capability_flags cap_flag)
+{
+	return test_bit(cap_flag, &rt2x00dev->cap_flags);
+}
+
+static inline bool
+rt2x00_has_cap_hw_crypto(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_HW_CRYPTO);
+}
+
+static inline bool
+rt2x00_has_cap_power_limit(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_POWER_LIMIT);
+}
+
+static inline bool
+rt2x00_has_cap_control_filters(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_CONTROL_FILTERS);
+}
+
+static inline bool
+rt2x00_has_cap_control_filter_pspoll(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_CONTROL_FILTER_PSPOLL);
+}
+
+static inline bool
+rt2x00_has_cap_pre_tbtt_interrupt(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_PRE_TBTT_INTERRUPT);
+}
+
+static inline bool
+rt2x00_has_cap_link_tuning(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_LINK_TUNING);
+}
+
+static inline bool
+rt2x00_has_cap_frame_type(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_FRAME_TYPE);
+}
+
+static inline bool
+rt2x00_has_cap_rf_sequence(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_RF_SEQUENCE);
+}
+
+static inline bool
+rt2x00_has_cap_external_lna_a(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_EXTERNAL_LNA_A);
+}
+
+static inline bool
+rt2x00_has_cap_external_lna_bg(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_EXTERNAL_LNA_BG);
+}
+
+static inline bool
+rt2x00_has_cap_double_antenna(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_DOUBLE_ANTENNA);
+}
+
+static inline bool
+rt2x00_has_cap_bt_coexist(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_BT_COEXIST);
+}
+
+static inline bool
+rt2x00_has_cap_vco_recalibration(struct rt2x00_dev *rt2x00dev)
+{
+	return rt2x00_has_cap_flag(rt2x00dev, CAPABILITY_VCO_RECALIBRATION);
+}
+
+/**
+ * rt2x00queue_map_txskb - Map a skb into DMA for TX purposes.
+ * @entry: Pointer to &struct queue_entry
+ *
+ * Returns -ENOMEM if mapping fail, 0 otherwise.
+ */
+int rt2x00queue_map_txskb(struct queue_entry *entry);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * rt2x00queue_unmap_skb - Unmap a skb from DMA.
@@ -1331,14 +1650,20 @@ static inline void rt2x00debug_dump_frame(struct rt2x00_dev *rt2x00dev,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Utility functions.
  */
 u32 rt2x00lib_get_bssidx(struct rt2x00_dev *rt2x00dev,
 			 struct ieee80211_vif *vif);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Interrupt context handlers.
  */
 void rt2x00lib_beacondone(struct rt2x00_dev *rt2x00dev);
@@ -1348,12 +1673,22 @@ void rt2x00lib_dmadone(struct queue_entry *entry);
 void rt2x00lib_txdone(struct queue_entry *entry,
 		      struct txdone_entry_desc *txdesc);
 void rt2x00lib_txdone_noinfo(struct queue_entry *entry, u32 status);
+<<<<<<< HEAD
 void rt2x00lib_rxdone(struct queue_entry *entry);
+=======
+void rt2x00lib_rxdone(struct queue_entry *entry, gfp_t gfp);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mac80211 handlers.
  */
+<<<<<<< HEAD
 void rt2x00mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb);
+=======
+void rt2x00mac_tx(struct ieee80211_hw *hw,
+		  struct ieee80211_tx_control *control,
+		  struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 int rt2x00mac_start(struct ieee80211_hw *hw);
 void rt2x00mac_stop(struct ieee80211_hw *hw);
 int rt2x00mac_add_interface(struct ieee80211_hw *hw,
@@ -1375,12 +1710,18 @@ int rt2x00mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 #define rt2x00mac_set_key	NULL
 #endif /* CONFIG_RT2X00_LIB_CRYPTO */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int rt2x00mac_sta_add(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		      struct ieee80211_sta *sta);
 int rt2x00mac_sta_remove(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			 struct ieee80211_sta *sta);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void rt2x00mac_sw_scan_start(struct ieee80211_hw *hw);
 void rt2x00mac_sw_scan_complete(struct ieee80211_hw *hw);
 int rt2x00mac_get_stats(struct ieee80211_hw *hw,
@@ -1390,6 +1731,7 @@ void rt2x00mac_bss_info_changed(struct ieee80211_hw *hw,
 				struct ieee80211_bss_conf *bss_conf,
 				u32 changes);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int rt2x00mac_conf_tx(struct ieee80211_hw *hw, u16 queue,
 =======
 int rt2x00mac_conf_tx(struct ieee80211_hw *hw,
@@ -1398,14 +1740,25 @@ int rt2x00mac_conf_tx(struct ieee80211_hw *hw,
 		      const struct ieee80211_tx_queue_params *params);
 void rt2x00mac_rfkill_poll(struct ieee80211_hw *hw);
 void rt2x00mac_flush(struct ieee80211_hw *hw, bool drop);
+=======
+int rt2x00mac_conf_tx(struct ieee80211_hw *hw,
+		      struct ieee80211_vif *vif, u16 queue,
+		      const struct ieee80211_tx_queue_params *params);
+void rt2x00mac_rfkill_poll(struct ieee80211_hw *hw);
+void rt2x00mac_flush(struct ieee80211_hw *hw, u32 queues, bool drop);
+>>>>>>> refs/remotes/origin/master
 int rt2x00mac_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant);
 int rt2x00mac_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant);
 void rt2x00mac_get_ringparam(struct ieee80211_hw *hw,
 			     u32 *tx, u32 *tx_max, u32 *rx, u32 *rx_max);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 bool rt2x00mac_tx_frames_pending(struct ieee80211_hw *hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool rt2x00mac_tx_frames_pending(struct ieee80211_hw *hw);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Driver allocation handlers.

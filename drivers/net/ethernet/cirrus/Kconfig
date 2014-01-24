@@ -44,7 +44,10 @@ config CS89x0_PLATFORM
 config EP93XX_ETH
 	tristate "EP93xx Ethernet support"
 	depends on ARM && ARCH_EP93XX
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	help
 	  This is a driver for the ethernet hardware included in EP93xx CPUs.

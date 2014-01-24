@@ -14,9 +14,13 @@
  *
  * Copyright SUSE Linux Products GmbH 2010
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright 2010-2011 Freescale Semiconductor, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2010-2011 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Authors: Alexander Graf <agraf@suse.de>
  */
@@ -27,6 +31,7 @@
 #include <asm/page.h>
 #include <asm/asm-offsets.h>
 
+<<<<<<< HEAD
 /* Hypercall entry point. Will be patched with device tree instructions. */
 
 .global kvm_hypercall_start
@@ -37,6 +42,8 @@ kvm_hypercall_start:
 	nop
 	blr
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define KVM_MAGIC_PAGE		(-4096)
 
 #ifdef CONFIG_64BIT
@@ -70,11 +77,17 @@ kvm_hypercall_start:
 	STL64(r2, KVM_MAGIC_PAGE + KVM_MAGIC_CRITICAL, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 .global kvm_template_start
 kvm_template_start:
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+.global kvm_template_start
+kvm_template_start:
+
+>>>>>>> refs/remotes/origin/master
 .global kvm_emulate_mtmsrd
 kvm_emulate_mtmsrd:
 
@@ -138,7 +151,11 @@ kvm_emulate_mtmsrd_len:
 	.long (kvm_emulate_mtmsrd_end - kvm_emulate_mtmsrd) / 4
 
 
+<<<<<<< HEAD
 #define MSR_SAFE_BITS (MSR_EE | MSR_CE | MSR_ME | MSR_RI)
+=======
+#define MSR_SAFE_BITS (MSR_EE | MSR_RI)
+>>>>>>> refs/remotes/origin/master
 #define MSR_CRITICAL_BITS ~MSR_SAFE_BITS
 
 .global kvm_emulate_mtmsr
@@ -178,11 +195,17 @@ kvm_emulate_mtmsr_reg2:
 	ori	r30, r0, 0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Put MSR into magic page because we don't call mtmsr */
 	STL64(r30, KVM_MAGIC_PAGE + KVM_MAGIC_MSR, 0)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Put MSR into magic page because we don't call mtmsr */
+	STL64(r30, KVM_MAGIC_PAGE + KVM_MAGIC_MSR, 0)
+
+>>>>>>> refs/remotes/origin/master
 	/* Check if we have to fetch an interrupt */
 	lwz	r31, (KVM_MAGIC_PAGE + KVM_MAGIC_INT)(0)
 	cmpwi	r31, 0
@@ -190,6 +213,7 @@ kvm_emulate_mtmsr_reg2:
 
 	/* Check if we may trigger an interrupt */
 	andi.	r31, r30, MSR_EE
+<<<<<<< HEAD
 <<<<<<< HEAD
 	beq	no_mtmsr
 
@@ -201,11 +225,16 @@ no_mtmsr:
 	STL64(r30, KVM_MAGIC_PAGE + KVM_MAGIC_MSR, 0)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bne	do_mtmsr
 
 no_mtmsr:
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SCRATCH_RESTORE
 
 	/* Go back to caller */
@@ -234,12 +263,15 @@ kvm_emulate_mtmsr_len:
 	.long (kvm_emulate_mtmsr_end - kvm_emulate_mtmsr) / 4
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 .global kvm_emulate_wrteei
 kvm_emulate_wrteei:
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* also used for wrteei 1 */
 .global kvm_emulate_wrtee
 kvm_emulate_wrtee:
@@ -307,13 +339,17 @@ kvm_emulate_wrtee_len:
 
 .global kvm_emulate_wrteei_0
 kvm_emulate_wrteei_0:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	SCRATCH_SAVE
 
 	/* Fetch old MSR in r31 */
 	LL64(r31, KVM_MAGIC_PAGE + KVM_MAGIC_MSR, 0)
 
 	/* Remove MSR_EE from old MSR */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	li	r30, 0
 	ori	r30, r30, MSR_EE
@@ -325,6 +361,9 @@ kvm_emulate_wrteei_ee:
 =======
 	rlwinm	r31, r31, 0, ~MSR_EE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rlwinm	r31, r31, 0, ~MSR_EE
+>>>>>>> refs/remotes/origin/master
 
 	/* Write new MSR value back */
 	STL64(r31, KVM_MAGIC_PAGE + KVM_MAGIC_MSR, 0)
@@ -332,6 +371,7 @@ kvm_emulate_wrteei_ee:
 	SCRATCH_RESTORE
 
 	/* Go back to caller */
+<<<<<<< HEAD
 <<<<<<< HEAD
 kvm_emulate_wrteei_branch:
 	b	.
@@ -350,6 +390,8 @@ kvm_emulate_wrteei_len:
 	.long (kvm_emulate_wrteei_end - kvm_emulate_wrteei) / 4
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 kvm_emulate_wrteei_0_branch:
 	b	.
 kvm_emulate_wrteei_0_end:
@@ -361,7 +403,10 @@ kvm_emulate_wrteei_0_branch_offs:
 .global kvm_emulate_wrteei_0_len
 kvm_emulate_wrteei_0_len:
 	.long (kvm_emulate_wrteei_0_end - kvm_emulate_wrteei_0) / 4
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 .global kvm_emulate_mtsrin
 kvm_emulate_mtsrin:
@@ -412,8 +457,14 @@ kvm_emulate_mtsrin_orig_ins_offs:
 kvm_emulate_mtsrin_len:
 	.long (kvm_emulate_mtsrin_end - kvm_emulate_mtsrin) / 4
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 .global kvm_template_end
 kvm_template_end:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+.global kvm_template_end
+kvm_template_end:
+>>>>>>> refs/remotes/origin/master

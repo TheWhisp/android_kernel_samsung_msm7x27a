@@ -65,7 +65,10 @@ static const unsigned char usb_kbd_keycode[256] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct usb_kbd - state of each attached keyboard
@@ -92,7 +95,10 @@ static const unsigned char usb_kbd_keycode[256] = {
  *		submitted and its completion handler has not returned yet
  *		without	resubmitting @led
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct usb_kbd {
 	struct input_dev *dev;
 	struct usb_device *usbdev;
@@ -108,12 +114,18 @@ struct usb_kbd {
 	dma_addr_t new_dma;
 	dma_addr_t leds_dma;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	
 	spinlock_t leds_lock;
 	bool led_urb_submitted;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void usb_kbd_irq(struct urb *urb)
@@ -173,22 +185,31 @@ static int usb_kbd_event(struct input_dev *dev, unsigned int type,
 			 unsigned int code, int value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	struct usb_kbd *kbd = input_get_drvdata(dev);
 
 	if (type != EV_LED)
 		return -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_irqsave(&kbd->leds_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&kbd->leds_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	kbd->newleds = (!!test_bit(LED_KANA,    dev->led) << 3) | (!!test_bit(LED_COMPOSE, dev->led) << 3) |
 		       (!!test_bit(LED_SCROLLL, dev->led) << 2) | (!!test_bit(LED_CAPSL,   dev->led) << 1) |
 		       (!!test_bit(LED_NUML,    dev->led));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (kbd->led->status == -EINPROGRESS)
 		return 0;
@@ -202,6 +223,8 @@ static int usb_kbd_event(struct input_dev *dev, unsigned int type,
 		pr_err("usb_submit_urb(leds) failed\n");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (kbd->led_urb_submitted){
 		spin_unlock_irqrestore(&kbd->leds_lock, flags);
 		return 0;
@@ -222,22 +245,30 @@ static int usb_kbd_event(struct input_dev *dev, unsigned int type,
 	
 	spin_unlock_irqrestore(&kbd->leds_lock, flags);
 	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void usb_kbd_led(struct urb *urb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long flags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	struct usb_kbd *kbd = urb->context;
 
 	if (urb->status)
 		hid_warn(urb->dev, "led urb status %d received\n",
 			 urb->status);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (*(kbd->leds) == kbd->newleds)
 		return;
@@ -247,6 +278,8 @@ static void usb_kbd_led(struct urb *urb)
 	if (usb_submit_urb(kbd->led, GFP_ATOMIC))
 		hid_err(urb->dev, "usb_submit_urb(leds) failed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&kbd->leds_lock, flags);
 
 	if (*(kbd->leds) == kbd->newleds){
@@ -264,7 +297,10 @@ static void usb_kbd_led(struct urb *urb)
 	}
 	spin_unlock_irqrestore(&kbd->leds_lock, flags);
 	
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usb_kbd_open(struct input_dev *dev)
@@ -344,9 +380,13 @@ static int usb_kbd_probe(struct usb_interface *iface,
 	kbd->usbdev = dev;
 	kbd->dev = input_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_init(&kbd->leds_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&kbd->leds_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->manufacturer)
 		strlcpy(kbd->name, dev->manufacturer, sizeof(kbd->name));
@@ -430,9 +470,13 @@ static void usb_kbd_disconnect(struct usb_interface *intf)
 		usb_kill_urb(kbd->irq);
 		input_unregister_device(kbd->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		usb_kill_urb(kbd->led);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_kill_urb(kbd->led);
+>>>>>>> refs/remotes/origin/master
 		usb_kbd_free_mem(interface_to_usbdev(intf), kbd);
 		kfree(kbd);
 	}
@@ -454,6 +498,7 @@ static struct usb_driver usb_kbd_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_kbd_init(void)
 {
 	int result = usb_register(&usb_kbd_driver);
@@ -473,3 +518,6 @@ module_exit(usb_kbd_exit);
 =======
 module_usb_driver(usb_kbd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(usb_kbd_driver);
+>>>>>>> refs/remotes/origin/master

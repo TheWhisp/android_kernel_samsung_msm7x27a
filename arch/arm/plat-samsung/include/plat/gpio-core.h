@@ -11,6 +11,12 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
+=======
+#ifndef __PLAT_SAMSUNG_GPIO_CORE_H
+#define __PLAT_SAMSUNG_GPIO_CORE_H
+
+>>>>>>> refs/remotes/origin/master
 #define GPIOCON_OFF	(0x00)
 #define GPIODAT_OFF	(0x04)
 
@@ -25,6 +31,7 @@
  * specific code.
 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct s3c_gpio_chip;
 
@@ -43,6 +50,8 @@ struct s3c_gpio_cfg;
 /**
  * struct s3c_gpio_chip - wrapper for specific implementation of gpio
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct samsung_gpio_chip;
 
 /**
@@ -59,7 +68,10 @@ struct samsung_gpio_cfg;
 
 /**
  * struct samsung_gpio_chip - wrapper for specific implementation of gpio
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @chip: The chip structure to be exported via gpiolib.
  * @base: The base pointer to the gpio configuration registers.
  * @group: The group register number for gpio interrupt support.
@@ -67,6 +79,10 @@ struct samsung_gpio_cfg;
  * @config: special function and pull-resistor control information.
  * @lock: Lock for exclusive access to this gpio bank.
  * @pm_save: Save information for suspend/resume support.
+<<<<<<< HEAD
+=======
+ * @bitmap_gpio_int: Bitmap for representing GPIO interrupt or not.
+>>>>>>> refs/remotes/origin/master
  *
  * This wrapper provides the necessary information for the Samsung
  * specific gpios being registered with gpiolib.
@@ -80,16 +96,22 @@ struct samsung_gpio_cfg;
  * bank of GPIO has its own register space and configuration registers.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct s3c_gpio_chip {
 	struct gpio_chip	chip;
 	struct s3c_gpio_cfg	*config;
 	struct s3c_gpio_pm	*pm;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct samsung_gpio_chip {
 	struct gpio_chip	chip;
 	struct samsung_gpio_cfg	*config;
 	struct samsung_gpio_pm	*pm;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*base;
 	int			irq_base;
 	int			group;
@@ -97,6 +119,7 @@ struct samsung_gpio_chip {
 #ifdef CONFIG_PM
 	u32			pm_save[4];
 #endif
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -153,12 +176,20 @@ extern void samsung_gpiolib_add_4bit2(struct s3c_gpio_chip *chip);
 
 
 =======
+=======
+	u32			bitmap_gpio_int;
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline struct samsung_gpio_chip *to_samsung_gpio(struct gpio_chip *gpc)
 {
 	return container_of(gpc, struct samsung_gpio_chip, chip);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * samsung_gpiolib_to_irq - convert gpio pin to irq number
  * @chip: The gpio chip that the pin belongs to.
@@ -171,6 +202,7 @@ extern int samsung_gpiolib_to_irq(struct gpio_chip *chip, unsigned int offset);
 
 /* exported for core SoC support to change */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct s3c_gpio_cfg s3c24xx_gpiocfg_default;
 
 #ifdef CONFIG_S3C_GPIO_TRACK
@@ -178,17 +210,23 @@ extern struct s3c_gpio_chip *s3c_gpios[S3C_GPIO_END];
 
 static inline struct s3c_gpio_chip *s3c_gpiolib_getchip(unsigned int chip)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct samsung_gpio_cfg s3c24xx_gpiocfg_default;
 
 #ifdef CONFIG_S3C_GPIO_TRACK
 extern struct samsung_gpio_chip *s3c_gpios[S3C_GPIO_END];
 
 static inline struct samsung_gpio_chip *samsung_gpiolib_getchip(unsigned int chip)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return (chip < S3C_GPIO_END) ? s3c_gpios[chip] : NULL;
 }
 #else
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* machine specific code should provide s3c_gpiolib_getchip */
 
@@ -210,6 +248,22 @@ extern struct s3c_gpio_pm s3c_gpio_pm_4bit;
 /* machine specific code should provide samsung_gpiolib_getchip */
 
 #include <mach/gpio-track.h>
+=======
+/* machine specific code should provide samsung_gpiolib_getchip */
+
+extern struct samsung_gpio_chip s3c24xx_gpios[];
+
+static inline struct samsung_gpio_chip *samsung_gpiolib_getchip(unsigned int pin)
+{
+	struct samsung_gpio_chip *chip;
+
+	if (pin > S3C_GPIO_END)
+		return NULL;
+
+	chip = &s3c24xx_gpios[pin/32];
+	return ((pin - chip->chip.base) < chip->chip.ngpio) ? chip : NULL;
+}
+>>>>>>> refs/remotes/origin/master
 
 static inline void s3c_gpiolib_track(struct samsung_gpio_chip *chip) { }
 #endif
@@ -223,12 +277,16 @@ extern struct samsung_gpio_pm samsung_gpio_pm_4bit;
 #define samsung_gpio_pm_1bit NULL
 #define samsung_gpio_pm_2bit NULL
 #define samsung_gpio_pm_4bit NULL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define __gpio_pm(x) NULL
 
 #endif /* CONFIG_PM */
 
 /* locking wrappers to deal with multiple access to the same gpio bank */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define s3c_gpio_lock(_oc, _fl) spin_lock_irqsave(&(_oc)->lock, _fl)
 #define s3c_gpio_unlock(_oc, _fl) spin_unlock_irqrestore(&(_oc)->lock, _fl)
@@ -236,3 +294,9 @@ extern struct samsung_gpio_pm samsung_gpio_pm_4bit;
 #define samsung_gpio_lock(_oc, _fl) spin_lock_irqsave(&(_oc)->lock, _fl)
 #define samsung_gpio_unlock(_oc, _fl) spin_unlock_irqrestore(&(_oc)->lock, _fl)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define samsung_gpio_lock(_oc, _fl) spin_lock_irqsave(&(_oc)->lock, _fl)
+#define samsung_gpio_unlock(_oc, _fl) spin_unlock_irqrestore(&(_oc)->lock, _fl)
+
+#endif /* __PLAT_SAMSUNG_GPIO_CORE_H */
+>>>>>>> refs/remotes/origin/master

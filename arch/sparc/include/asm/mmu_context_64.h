@@ -7,9 +7,12 @@
 
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/spitfire.h>
 #include <asm-generic/mm_hooks.h>
 
@@ -40,7 +43,11 @@ static inline void tsb_context_switch(struct mm_struct *mm)
 {
 	__tsb_context_switch(__pa(mm->pgd),
 			     &mm->context.tsb_block[0],
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 			     (mm->context.tsb_block[1].tsb ?
 			      &mm->context.tsb_block[1] :
 			      NULL)
@@ -72,7 +79,11 @@ extern void smp_tsb_sync(struct mm_struct *mm);
 
 extern void __flush_tlb_mm(unsigned long, unsigned long);
 
+<<<<<<< HEAD
 /* Switch the current MM context.  Interrupts are disabled.  */
+=======
+/* Switch the current MM context. */
+>>>>>>> refs/remotes/origin/master
 static inline void switch_mm(struct mm_struct *old_mm, struct mm_struct *mm, struct task_struct *tsk)
 {
 	unsigned long ctx_valid, flags;

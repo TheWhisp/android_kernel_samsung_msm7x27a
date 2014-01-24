@@ -27,11 +27,17 @@
  *
  */
 
+<<<<<<< HEAD
 
 #ifndef __RNDIS_H__
 #define __RNDIS_H__
 
 /*---------------------  Export Definitions -------------------------*/
+=======
+#ifndef __RNDIS_H__
+#define __RNDIS_H__
+
+>>>>>>> refs/remotes/origin/master
 #define MESSAGE_TYPE_READ               0x01
 #define MESSAGE_TYPE_WRITE              0x00
 #define MESSAGE_TYPE_LOCK_OR            0x02
@@ -66,6 +72,7 @@
 #define MESSAGE_REQUEST_RF_CH1          0x0C
 #define MESSAGE_REQUEST_RF_CH2          0x0D
 
+<<<<<<< HEAD
 
 #define VIAUSB20_PACKET_HEADER          0x04
 
@@ -75,10 +82,20 @@
 typedef struct _CMD_MESSAGE
 {
     BYTE        byData[256];
+=======
+#define VIAUSB20_PACKET_HEADER          0x04
+
+#define USB_REG4	0x604
+
+typedef struct _CMD_MESSAGE
+{
+    u8        byData[256];
+>>>>>>> refs/remotes/origin/master
 } CMD_MESSAGE, *PCMD_MESSAGE;
 
 typedef struct _CMD_WRITE_MASK
 {
+<<<<<<< HEAD
     BYTE        byData;
     BYTE        byMask;
 } CMD_WRITE_MASK, *PCMD_WRITE_MASK;
@@ -106,35 +123,86 @@ typedef struct _CMD_SET_KEY
     WORD        wKCTL;
     BYTE        abyMacAddr[6];
     BYTE        abyKey[16];
+=======
+    u8        byData;
+    u8        byMask;
+} CMD_WRITE_MASK, *PCMD_WRITE_MASK;
+
+struct vnt_cmd_card_init
+{
+	u8 init_class;
+	u8 exist_sw_net_addr;
+	u8 sw_net_addr[6];
+	u8 short_retry_limit;
+	u8 long_retry_limit;
+};
+
+struct vnt_rsp_card_init
+{
+	u8 status;
+	u8 net_addr[6];
+	u8 rf_type;
+	u8 min_channel;
+	u8 max_channel;
+};
+
+typedef struct _CMD_SET_KEY
+{
+    u16        wKCTL;
+    u8        abyMacAddr[6];
+    u8        abyKey[16];
+>>>>>>> refs/remotes/origin/master
 } CMD_SET_KEY, *PCMD_SET_KEY;
 
 typedef struct _CMD_CLRKEY_ENTRY
 {
+<<<<<<< HEAD
     BYTE        abyKeyEntry[11];
+=======
+    u8        abyKeyEntry[11];
+>>>>>>> refs/remotes/origin/master
 } CMD_CLRKEY_ENTRY, *PCMD_CLRKEY_ENTRY;
 
 typedef struct _CMD_WRITE_MISCFF
 {
+<<<<<<< HEAD
     DWORD       adwMiscFFData[22][4];  //a key entry has only 22 dwords
+=======
+    u32       adwMiscFFData[22][4];  //a key entry has only 22 dwords
+>>>>>>> refs/remotes/origin/master
 } CMD_WRITE_MISCFF, *PCMD_WRITE_MISCFF;
 
 typedef struct _CMD_SET_TSFTBTT
 {
+<<<<<<< HEAD
     BYTE        abyTSF_TBTT[8];
+=======
+    u8        abyTSF_TBTT[8];
+>>>>>>> refs/remotes/origin/master
 } CMD_SET_TSFTBTT, *PCMD_SET_TSFTBTT;
 
 typedef struct _CMD_SET_SSTIFS
 {
+<<<<<<< HEAD
     BYTE        bySIFS;
     BYTE        byDIFS;
     BYTE        byEIFS;
     BYTE        bySlotTime;
     BYTE        byCwMax_Min;
     BYTE        byBBCR10;
+=======
+    u8        bySIFS;
+    u8        byDIFS;
+    u8        byEIFS;
+    u8        bySlotTime;
+    u8        byCwMax_Min;
+    u8        byBBCR10;
+>>>>>>> refs/remotes/origin/master
 } CMD_SET_SSTIFS, *PCMD_SET_SSTIFS;
 
 typedef struct _CMD_CHANGE_BBTYPE
 {
+<<<<<<< HEAD
     BYTE        bySIFS;
     BYTE        byDIFS;
     BYTE        byEIFS;
@@ -157,5 +225,23 @@ typedef struct _CMD_CHANGE_BBTYPE
 /*---------------------  Export Variables  --------------------------*/
 
 /*---------------------  Export Functions  --------------------------*/
+=======
+    u8        bySIFS;
+    u8        byDIFS;
+    u8        byEIFS;
+    u8        bySlotTime;
+    u8        byCwMax_Min;
+    u8        byBBCR10;
+    u8        byBB_BBType;    //CR88
+    u8        byMAC_BBType;
+    u32       dwRSPINF_b_1;
+    u32       dwRSPINF_b_2;
+    u32       dwRSPINF_b_55;
+    u32       dwRSPINF_b_11;
+    u16        wRSPINF_a[9];
+} CMD_CHANGE_BBTYPE, *PCMD_CHANGE_BBTYPE;
+
+#define EXCH_WORD(w) ((u16)((u16)(w)<<8) | (u16)((u16)(w)>>8))
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _RNDIS_H_ */

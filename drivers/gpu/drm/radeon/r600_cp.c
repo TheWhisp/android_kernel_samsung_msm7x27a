@@ -24,6 +24,7 @@
  * Authors:
  *     Dave Airlie <airlied@redhat.com>
  *     Alex Deucher <alexander.deucher@amd.com>
+<<<<<<< HEAD
  */
 
 <<<<<<< HEAD
@@ -34,6 +35,16 @@
 #include "drmP.h"
 #include "drm.h"
 #include "radeon_drm.h"
+=======
+ *
+ * ------------------------ This file is DEPRECATED! -------------------------
+ */
+
+#include <linux/module.h>
+
+#include <drm/drmP.h>
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_drv.h"
 
 #define PFP_UCODE_SIZE 576
@@ -411,10 +422,14 @@ static void r600_cp_load_microcode(drm_radeon_private_t *dev_priv)
 	RADEON_WRITE(R600_GRBM_SOFT_RESET, R600_SOFT_RESET_CP);
 	RADEON_READ(R600_GRBM_SOFT_RESET);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DRM_UDELAY(15000);
 =======
 	mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdelay(15);
+>>>>>>> refs/remotes/origin/master
 	RADEON_WRITE(R600_GRBM_SOFT_RESET, 0);
 
 	fw_data = (const __be32 *)dev_priv->me_fw->data;
@@ -508,10 +523,14 @@ static void r700_cp_load_microcode(drm_radeon_private_t *dev_priv)
 	RADEON_WRITE(R600_GRBM_SOFT_RESET, R600_SOFT_RESET_CP);
 	RADEON_READ(R600_GRBM_SOFT_RESET);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DRM_UDELAY(15000);
 =======
 	mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdelay(15);
+>>>>>>> refs/remotes/origin/master
 	RADEON_WRITE(R600_GRBM_SOFT_RESET, 0);
 
 	fw_data = (const __be32 *)dev_priv->pfp_fw->data;
@@ -733,12 +752,16 @@ static u32 r600_get_tile_pipe_to_backend_map(u32 num_tile_pipes,
 
 static int r600_count_pipe_bits(uint32_t val)
 {
+<<<<<<< HEAD
 	int i, ret = 0;
 	for (i = 0; i < 32; i++) {
 		ret += val & 1;
 		val >>= 1;
 	}
 	return ret;
+=======
+	return hweight32(val);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void r600_gfx_init(struct drm_device *dev,
@@ -1809,10 +1832,14 @@ static void r600_cp_init_ring_buffer(struct drm_device *dev,
 	RADEON_WRITE(R600_GRBM_SOFT_RESET, R600_SOFT_RESET_CP);
 	RADEON_READ(R600_GRBM_SOFT_RESET);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DRM_UDELAY(15000);
 =======
 	mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mdelay(15);
+>>>>>>> refs/remotes/origin/master
 	RADEON_WRITE(R600_GRBM_SOFT_RESET, 0);
 
 
@@ -1820,12 +1847,17 @@ static void r600_cp_init_ring_buffer(struct drm_device *dev,
 #ifdef __BIG_ENDIAN
 	RADEON_WRITE(R600_CP_RB_CNTL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     RADEON_BUF_SWAP_32BIT |
 		     RADEON_RB_NO_UPDATE |
 =======
 		     R600_BUF_SWAP_32BIT |
 		     R600_RB_NO_UPDATE |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     R600_BUF_SWAP_32BIT |
+		     R600_RB_NO_UPDATE |
+>>>>>>> refs/remotes/origin/master
 		     (dev_priv->ring.rptr_update_l2qw << 8) |
 		     dev_priv->ring.size_l2qw);
 #else
@@ -1836,16 +1868,21 @@ static void r600_cp_init_ring_buffer(struct drm_device *dev,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RADEON_WRITE(R600_CP_SEM_WAIT_TIMER, 0x4);
 =======
 	RADEON_WRITE(R600_CP_SEM_WAIT_TIMER, 0x0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RADEON_WRITE(R600_CP_SEM_WAIT_TIMER, 0x0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set the write pointer delay */
 	RADEON_WRITE(R600_CP_RB_WPTR_DELAY, 0);
 
 #ifdef __BIG_ENDIAN
 	RADEON_WRITE(R600_CP_RB_CNTL,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		     RADEON_BUF_SWAP_32BIT |
 		     RADEON_RB_NO_UPDATE |
@@ -1855,10 +1892,16 @@ static void r600_cp_init_ring_buffer(struct drm_device *dev,
 		     R600_RB_NO_UPDATE |
 		     R600_RB_RPTR_WR_ENA |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     R600_BUF_SWAP_32BIT |
+		     R600_RB_NO_UPDATE |
+		     R600_RB_RPTR_WR_ENA |
+>>>>>>> refs/remotes/origin/master
 		     (dev_priv->ring.rptr_update_l2qw << 8) |
 		     dev_priv->ring.size_l2qw);
 #else
 	RADEON_WRITE(R600_CP_RB_CNTL,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		     RADEON_RB_NO_UPDATE |
 		     RADEON_RB_RPTR_WR_ENA |
@@ -1866,6 +1909,10 @@ static void r600_cp_init_ring_buffer(struct drm_device *dev,
 		     R600_RB_NO_UPDATE |
 		     R600_RB_RPTR_WR_ENA |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     R600_RB_NO_UPDATE |
+		     R600_RB_RPTR_WR_ENA |
+>>>>>>> refs/remotes/origin/master
 		     (dev_priv->ring.rptr_update_l2qw << 8) |
 		     dev_priv->ring.size_l2qw);
 #endif
@@ -1889,6 +1936,7 @@ static void r600_cp_init_ring_buffer(struct drm_device *dev,
 			+ dev_priv->gart_vm_start;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	RADEON_WRITE(R600_CP_RB_RPTR_ADDR,
 #ifdef __BIG_ENDIAN
 		     (2 << 0) |
@@ -1900,6 +1948,10 @@ static void r600_cp_init_ring_buffer(struct drm_device *dev,
 	RADEON_WRITE(R600_CP_RB_RPTR_ADDR, (rptr_addr & 0xfffffffc));
 	RADEON_WRITE(R600_CP_RB_RPTR_ADDR_HI, upper_32_bits(rptr_addr));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RADEON_WRITE(R600_CP_RB_RPTR_ADDR, (rptr_addr & 0xfffffffc));
+	RADEON_WRITE(R600_CP_RB_RPTR_ADDR_HI, upper_32_bits(rptr_addr));
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __BIG_ENDIAN
 	RADEON_WRITE(R600_CP_RB_CNTL,
@@ -2249,6 +2301,7 @@ int r600_do_init_cp(struct drm_device *dev, drm_radeon_init_t *init,
 	dev_priv->ring.end = ((u32 *) dev_priv->cp_ring->handle
 			      + init->ring_size / sizeof(u32));
 	dev_priv->ring.size = init->ring_size;
+<<<<<<< HEAD
 	dev_priv->ring.size_l2qw = drm_order(init->ring_size / 8);
 
 	dev_priv->ring.rptr_update = /* init->rptr_update */ 4096;
@@ -2256,6 +2309,15 @@ int r600_do_init_cp(struct drm_device *dev, drm_radeon_init_t *init,
 
 	dev_priv->ring.fetch_size = /* init->fetch_size */ 32;
 	dev_priv->ring.fetch_size_l2ow = drm_order(/* init->fetch_size */ 32 / 16);
+=======
+	dev_priv->ring.size_l2qw = order_base_2(init->ring_size / 8);
+
+	dev_priv->ring.rptr_update = /* init->rptr_update */ 4096;
+	dev_priv->ring.rptr_update_l2qw = order_base_2(/* init->rptr_update */ 4096 / 8);
+
+	dev_priv->ring.fetch_size = /* init->fetch_size */ 32;
+	dev_priv->ring.fetch_size_l2ow = order_base_2(/* init->fetch_size */ 32 / 16);
+>>>>>>> refs/remotes/origin/master
 
 	dev_priv->ring.tail_mask = (dev_priv->ring.size / sizeof(u32)) - 1;
 

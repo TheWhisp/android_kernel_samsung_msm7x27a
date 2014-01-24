@@ -13,10 +13,15 @@
 #include <linux/sort.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/jump_label.h>
 =======
 #include <linux/static_key.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/static_key.h>
+#include <linux/jump_label_ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef HAVE_JUMP_LABEL
 
@@ -34,6 +39,7 @@ void jump_label_unlock(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool jump_label_enabled(struct jump_label_key *key)
 {
 	return !!atomic_read(&key->enabled);
@@ -41,6 +47,8 @@ bool jump_label_enabled(struct jump_label_key *key)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int jump_label_cmp(const void *a, const void *b)
 {
 	const struct jump_entry *jea = a;
@@ -66,6 +74,7 @@ jump_label_sort_entries(struct jump_entry *start, struct jump_entry *stop)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void jump_label_update(struct jump_label_key *key, int enable);
 
 void jump_label_inc(struct jump_label_key *key)
@@ -75,10 +84,18 @@ static void jump_label_update(struct static_key *key, int enable);
 void static_key_slow_inc(struct static_key *key)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
+=======
+static void jump_label_update(struct static_key *key, int enable);
+
+void static_key_slow_inc(struct static_key *key)
+{
+	STATIC_KEY_CHECK_USE();
+>>>>>>> refs/remotes/origin/master
 	if (atomic_inc_not_zero(&key->enabled))
 		return;
 
 	jump_label_lock();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (atomic_read(&key->enabled) == 0)
 		jump_label_update(key, JUMP_LABEL_ENABLE);
@@ -96,6 +113,8 @@ void jump_label_dec(struct jump_label_key *key)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (atomic_read(&key->enabled) == 0) {
 		if (!jump_label_get_branch_default(key))
 			jump_label_update(key, JUMP_LABEL_ENABLE);
@@ -137,12 +156,20 @@ static void jump_label_update_timeout(struct work_struct *work)
 
 void static_key_slow_dec(struct static_key *key)
 {
+<<<<<<< HEAD
+=======
+	STATIC_KEY_CHECK_USE();
+>>>>>>> refs/remotes/origin/master
 	__static_key_slow_dec(key, 0, NULL);
 }
 EXPORT_SYMBOL_GPL(static_key_slow_dec);
 
 void static_key_slow_dec_deferred(struct static_key_deferred *key)
 {
+<<<<<<< HEAD
+=======
+	STATIC_KEY_CHECK_USE();
+>>>>>>> refs/remotes/origin/master
 	__static_key_slow_dec(&key->key, key->timeout, &key->work);
 }
 EXPORT_SYMBOL_GPL(static_key_slow_dec_deferred);
@@ -150,11 +177,20 @@ EXPORT_SYMBOL_GPL(static_key_slow_dec_deferred);
 void jump_label_rate_limit(struct static_key_deferred *key,
 		unsigned long rl)
 {
+<<<<<<< HEAD
 	key->timeout = rl;
 	INIT_DELAYED_WORK(&key->work, jump_label_update_timeout);
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	STATIC_KEY_CHECK_USE();
+	key->timeout = rl;
+	INIT_DELAYED_WORK(&key->work, jump_label_update_timeout);
+}
+EXPORT_SYMBOL_GPL(jump_label_rate_limit);
+
+>>>>>>> refs/remotes/origin/master
 static int addr_conflict(struct jump_entry *entry, void *start, void *end)
 {
 	if (entry->code <= (unsigned long)end &&
@@ -180,8 +216,11 @@ static int __jump_label_text_reserved(struct jump_entry *iter_start,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __jump_label_update(struct jump_label_key *key,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* 
  * Update code which is definitely not currently executing.
  * Architectures which need heavyweight synchronization to modify
@@ -195,7 +234,10 @@ void __weak __init_or_module arch_jump_label_transform_static(struct jump_entry 
 }
 
 static void __jump_label_update(struct static_key *key,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				struct jump_entry *entry,
 				struct jump_entry *stop, int enable)
 {
@@ -213,6 +255,7 @@ static void __jump_label_update(struct static_key *key,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Not all archs need this.
  */
@@ -226,6 +269,8 @@ static __init int jump_label_init(void)
 	struct jump_entry *iter_stop = __stop___jump_table;
 	struct jump_label_key *key = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static enum jump_label_type jump_label_type(struct static_key *key)
 {
 	bool true_branch = jump_label_get_branch_default(key);
@@ -242,13 +287,17 @@ void __init jump_label_init(void)
 	struct jump_entry *iter_start = __start___jump_table;
 	struct jump_entry *iter_stop = __stop___jump_table;
 	struct static_key *key = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct jump_entry *iter;
 
 	jump_label_lock();
 	jump_label_sort_entries(iter_start, iter_stop);
 
 	for (iter = iter_start; iter < iter_stop; iter++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		arch_jump_label_text_poke_early(iter->code);
 		if (iter->key == (jump_label_t)(unsigned long)key)
@@ -258,6 +307,8 @@ void __init jump_label_init(void)
 		atomic_set(&key->enabled, 0);
 		key->entries = iter;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct static_key *iterk;
 
 		iterk = (struct static_key *)(unsigned long)iter->key;
@@ -270,11 +321,15 @@ void __init jump_label_init(void)
 		 * Set key->entries to iter, but preserve JUMP_LABEL_TRUE_BRANCH.
 		 */
 		*((unsigned long *)&key->entries) += (unsigned long)iter;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MODULES
 		key->next = NULL;
 #endif
 	}
+<<<<<<< HEAD
 	jump_label_unlock();
 <<<<<<< HEAD
 
@@ -287,13 +342,20 @@ early_initcall(jump_label_init);
 struct jump_label_mod {
 	struct jump_label_mod *next;
 =======
+=======
+	static_key_initialized = true;
+	jump_label_unlock();
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_MODULES
 
 struct static_key_mod {
 	struct static_key_mod *next;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct jump_entry *entries;
 	struct module *mod;
 };
@@ -314,6 +376,7 @@ static int __jump_label_mod_text_reserved(void *start, void *end)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __jump_label_mod_update(struct jump_label_key *key, int enable)
 {
 	struct jump_label_mod *mod = key->next;
@@ -322,6 +385,11 @@ static void __jump_label_mod_update(struct static_key *key, int enable)
 {
 	struct static_key_mod *mod = key->next;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __jump_label_mod_update(struct static_key *key, int enable)
+{
+	struct static_key_mod *mod = key->next;
+>>>>>>> refs/remotes/origin/master
 
 	while (mod) {
 		struct module *m = mod->mod;
@@ -352,6 +420,7 @@ void jump_label_apply_nops(struct module *mod)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (iter = iter_start; iter < iter_stop; iter++)
 		arch_jump_label_text_poke_early(iter->code);
 =======
@@ -359,6 +428,11 @@ void jump_label_apply_nops(struct module *mod)
 		arch_jump_label_transform_static(iter, JUMP_LABEL_DISABLE);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (iter = iter_start; iter < iter_stop; iter++) {
+		arch_jump_label_transform_static(iter, JUMP_LABEL_DISABLE);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int jump_label_add_module(struct module *mod)
@@ -367,12 +441,17 @@ static int jump_label_add_module(struct module *mod)
 	struct jump_entry *iter_stop = iter_start + mod->num_jump_entries;
 	struct jump_entry *iter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct jump_label_key *key = NULL;
 	struct jump_label_mod *jlm;
 =======
 	struct static_key *key = NULL;
 	struct static_key_mod *jlm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct static_key *key = NULL;
+	struct static_key_mod *jlm;
+>>>>>>> refs/remotes/origin/master
 
 	/* if the module doesn't have jump label entries, just return */
 	if (iter_start == iter_stop)
@@ -381,6 +460,7 @@ static int jump_label_add_module(struct module *mod)
 	jump_label_sort_entries(iter_start, iter_stop);
 
 	for (iter = iter_start; iter < iter_stop; iter++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (iter->key == (jump_label_t)(unsigned long)key)
 			continue;
@@ -399,6 +479,8 @@ static int jump_label_add_module(struct module *mod)
 			return -ENOMEM;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct static_key *iterk;
 
 		iterk = (struct static_key *)(unsigned long)iter->key;
@@ -417,12 +499,16 @@ static int jump_label_add_module(struct module *mod)
 		jlm = kzalloc(sizeof(struct static_key_mod), GFP_KERNEL);
 		if (!jlm)
 			return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		jlm->mod = mod;
 		jlm->entries = iter;
 		jlm->next = key->next;
 		key->next = jlm;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (jump_label_enabled(key))
 			__jump_label_update(key, iter, iter_stop,
@@ -431,6 +517,10 @@ static int jump_label_add_module(struct module *mod)
 		if (jump_label_type(key) == JUMP_LABEL_ENABLE)
 			__jump_label_update(key, iter, iter_stop, JUMP_LABEL_ENABLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (jump_label_type(key) == JUMP_LABEL_ENABLE)
+			__jump_label_update(key, iter, iter_stop, JUMP_LABEL_ENABLE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -442,22 +532,31 @@ static void jump_label_del_module(struct module *mod)
 	struct jump_entry *iter_stop = iter_start + mod->num_jump_entries;
 	struct jump_entry *iter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct jump_label_key *key = NULL;
 	struct jump_label_mod *jlm, **prev;
 =======
 	struct static_key *key = NULL;
 	struct static_key_mod *jlm, **prev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct static_key *key = NULL;
+	struct static_key_mod *jlm, **prev;
+>>>>>>> refs/remotes/origin/master
 
 	for (iter = iter_start; iter < iter_stop; iter++) {
 		if (iter->key == (jump_label_t)(unsigned long)key)
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		key = (struct jump_label_key *)(unsigned long)iter->key;
 =======
 		key = (struct static_key *)(unsigned long)iter->key;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		key = (struct static_key *)(unsigned long)iter->key;
+>>>>>>> refs/remotes/origin/master
 
 		if (__module_address(iter->key) == mod)
 			continue;
@@ -560,6 +659,7 @@ int jump_label_text_reserved(void *start, void *end)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void jump_label_update(struct jump_label_key *key, int enable)
 {
 	struct jump_entry *entry = key->entries, *stop = __stop___jump_table;
@@ -567,6 +667,8 @@ static void jump_label_update(struct jump_label_key *key, int enable)
 #ifdef CONFIG_MODULES
 	struct module *mod = __module_address((jump_label_t)key);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void jump_label_update(struct static_key *key, int enable)
 {
 	struct jump_entry *stop = __stop___jump_table;
@@ -574,7 +676,10 @@ static void jump_label_update(struct static_key *key, int enable)
 
 #ifdef CONFIG_MODULES
 	struct module *mod = __module_address((unsigned long)key);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	__jump_label_mod_update(key, enable);
 

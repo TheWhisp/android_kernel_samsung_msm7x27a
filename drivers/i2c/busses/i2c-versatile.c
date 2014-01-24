@@ -17,9 +17,12 @@
 #include <linux/slab.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of_i2c.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define I2C_CONTROL	0x00
 #define I2C_CONTROLS	0x00
@@ -104,6 +107,7 @@ static int i2c_versatile_probe(struct platform_device *dev)
 	i2c->adap.algo_data = &i2c->algo;
 	i2c->adap.dev.parent = &dev->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	i2c->adap.dev.of_node = dev->dev.of_node;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -123,6 +127,16 @@ static int i2c_versatile_probe(struct platform_device *dev)
 =======
 		of_i2c_register_devices(&i2c->adap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i2c->adap.dev.of_node = dev->dev.of_node;
+	i2c->algo = i2c_versatile_algo;
+	i2c->algo.data = i2c;
+
+	i2c->adap.nr = dev->id;
+	ret = i2c_bit_add_numbered_bus(&i2c->adap);
+	if (ret >= 0) {
+		platform_set_drvdata(dev, i2c);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -139,21 +153,30 @@ static int i2c_versatile_remove(struct platform_device *dev)
 {
 	struct i2c_versatile *i2c = platform_get_drvdata(dev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	i2c_del_adapter(&i2c->adap);
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct of_device_id i2c_versatile_match[] = {
 	{ .compatible = "arm,versatile-i2c", },
 	{},
 };
 MODULE_DEVICE_TABLE(of, i2c_versatile_match);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver i2c_versatile_driver = {
 	.probe		= i2c_versatile_probe,
 	.remove		= i2c_versatile_remove,
@@ -161,9 +184,13 @@ static struct platform_driver i2c_versatile_driver = {
 		.name	= "versatile-i2c",
 		.owner	= THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.of_match_table = i2c_versatile_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table = i2c_versatile_match,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

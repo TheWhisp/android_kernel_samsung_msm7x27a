@@ -5,10 +5,14 @@ Patrick Mochel	<mochel@osdl.org>
 Mike Murphy <mamurph@cs.clemson.edu>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Revised:    15 July 2010
 =======
 Revised:    16 August 2011
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Revised:    16 August 2011
+>>>>>>> refs/remotes/origin/master
 Original:   10 January 2003
 
 
@@ -75,10 +79,14 @@ struct attribute {
         char                    * name;
         struct module		*owner;
 <<<<<<< HEAD
+<<<<<<< HEAD
         mode_t                  mode;
 =======
         umode_t                 mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        umode_t                 mode;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -379,7 +387,10 @@ void driver_remove_file(struct device_driver *, const struct driver_attribute *)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Documentation
 ~~~~~~~~~~~~~
 
@@ -388,4 +399,7 @@ ABI between the kernel and user space. As for any ABI, it is important that
 this ABI is stable and properly documented. All new sysfs attributes must be
 documented in Documentation/ABI. See also Documentation/ABI/README for more
 information.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

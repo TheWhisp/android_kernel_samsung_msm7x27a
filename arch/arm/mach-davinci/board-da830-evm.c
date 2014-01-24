@@ -17,15 +17,28 @@
 #include <linux/platform_device.h>
 #include <linux/i2c.h>
 #include <linux/i2c/pcf857x.h>
+<<<<<<< HEAD
 #include <linux/i2c/at24.h>
+=======
+#include <linux/platform_data/at24.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/spi/spi.h>
 #include <linux/spi/flash.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/gpio-davinci.h>
+#include <linux/platform_data/mtd-davinci.h>
+#include <linux/platform_data/mtd-davinci-aemif.h>
+#include <linux/platform_data/spi-davinci.h>
+#include <linux/platform_data/usb-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
 #include <mach/cp_intc.h>
 #include <mach/mux.h>
 #include <mach/nand.h>
@@ -33,6 +46,12 @@
 #include <mach/usb.h>
 #include <mach/aemif.h>
 #include <mach/spi.h>
+=======
+#include <mach/common.h>
+#include <mach/cp_intc.h>
+#include <mach/mux.h>
+#include <mach/da8xx.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DA830_EVM_PHY_ID		""
 /*
@@ -74,7 +93,11 @@ static int da830_evm_usb_ocic_notify(da8xx_ocic_handler_t handler)
 	if (handler != NULL) {
 		da830_evm_usb_ocic_handler = handler;
 
+<<<<<<< HEAD
 		error = request_irq(irq, da830_evm_usb_ocic_irq, IRQF_DISABLED |
+=======
+		error = request_irq(irq, da830_evm_usb_ocic_irq,
+>>>>>>> refs/remotes/origin/master
 				    IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
 				    "OHCI over-current indicator", NULL);
 		if (error)
@@ -185,10 +208,13 @@ static __init void da830_evm_usb_init(void)
 			   __func__, ret);
 }
 
+<<<<<<< HEAD
 static struct davinci_uart_config da830_evm_uart_config __initdata = {
 	.enabled_uarts = 0x7,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const short da830_evm_mcasp1_pins[] = {
 	DA830_AHCLKX1, DA830_ACLKX1, DA830_AFSX1, DA830_AHCLKR1, DA830_AFSR1,
 	DA830_AMUTE1, DA830_AXR1_0, DA830_AXR1_1, DA830_AXR1_2, DA830_AXR1_5,
@@ -246,7 +272,10 @@ static struct davinci_mmc_config da830_evm_mmc_config = {
 	.wires			= 8,
 	.max_freq		= 50000000,
 	.caps			= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
+<<<<<<< HEAD
 	.version		= MMC_CTLR_VERSION_2,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void da830_evm_init_mmc(void)
@@ -298,11 +327,15 @@ static const short da830_evm_emif25_pins[] = {
 	-1
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_MMC_DAVINCI) || defined(CONFIG_MMC_DAVINCI_MODULE)
 #define HAS_MMC	1
 #else
 #define HAS_MMC	0
 #endif
+=======
+#define HAS_MMC		IS_ENABLED(CONFIG_MMC_DAVINCI)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DA830_UI_NAND
 static struct mtd_partition da830_evm_nand_partitions[] = {
@@ -378,10 +411,14 @@ static struct davinci_nand_pdata da830_evm_nand_pdata = {
 	.ecc_mode	= NAND_ECC_HW,
 	.ecc_bits	= 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.options	= NAND_USE_FLASH_BBT,
 =======
 	.bbt_options	= NAND_BBT_USE_FLASH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.bbt_options	= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/master
 	.bbt_td		= &da830_evm_nand_bbt_main_descr,
 	.bbt_md		= &da830_evm_nand_bbt_mirror_descr,
 	.timing         = &da830_evm_nandflash_timing,
@@ -604,6 +641,13 @@ static __init void da830_evm_init(void)
 	struct davinci_soc_info *soc_info = &davinci_soc_info;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	ret = da830_register_gpio();
+	if (ret)
+		pr_warn("da830_evm_init: GPIO init failed: %d\n", ret);
+
+>>>>>>> refs/remotes/origin/master
 	ret = da830_register_edma(da830_edma_rsv);
 	if (ret)
 		pr_warning("da830_evm_init: edma registration failed: %d\n",
@@ -639,7 +683,11 @@ static __init void da830_evm_init(void)
 		pr_warning("da830_evm_init: watchdog registration failed: %d\n",
 				ret);
 
+<<<<<<< HEAD
 	davinci_serial_init(&da830_evm_uart_config);
+=======
+	davinci_serial_init(da8xx_serial_device);
+>>>>>>> refs/remotes/origin/master
 	i2c_register_board_info(1, da830_evm_i2c_devices,
 			ARRAY_SIZE(da830_evm_i2c_devices));
 
@@ -656,8 +704,18 @@ static __init void da830_evm_init(void)
 	if (ret)
 		pr_warning("da830_evm_init: rtc setup failed: %d\n", ret);
 
+<<<<<<< HEAD
 	ret = da8xx_register_spi(0, da830evm_spi_info,
 				 ARRAY_SIZE(da830evm_spi_info));
+=======
+	ret = spi_register_board_info(da830evm_spi_info,
+				      ARRAY_SIZE(da830evm_spi_info));
+	if (ret)
+		pr_warn("%s: spi info registration failed: %d\n", __func__,
+			ret);
+
+	ret = da8xx_register_spi_bus(0, ARRAY_SIZE(da830evm_spi_info));
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		pr_warning("da830_evm_init: spi 0 registration failed: %d\n",
 			   ret);
@@ -681,6 +739,7 @@ static void __init da830_evm_map_io(void)
 
 MACHINE_START(DAVINCI_DA830_EVM, "DaVinci DA830/OMAP-L137/AM17x EVM")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= (DA8XX_DDR_BASE + 0x100),
 =======
 	.atag_offset	= 0x100,
@@ -694,4 +753,14 @@ MACHINE_START(DAVINCI_DA830_EVM, "DaVinci DA830/OMAP-L137/AM17x EVM")
 	.dma_zone_size	= SZ_128M,
 	.restart	= da8xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= da830_evm_map_io,
+	.init_irq	= cp_intc_init,
+	.init_time	= davinci_timer_init,
+	.init_machine	= da830_evm_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= da8xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

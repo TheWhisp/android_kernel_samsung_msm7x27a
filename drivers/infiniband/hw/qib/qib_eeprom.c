@@ -1,5 +1,10 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2006, 2007, 2008, 2009 QLogic Corporation. All rights reserved.
+=======
+ * Copyright (c) 2012 Intel Corporation. All rights reserved.
+ * Copyright (c) 2006 - 2012 QLogic Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2003, 2004, 2005, 2006 PathScale, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -160,10 +165,16 @@ void qib_get_eeprom_info(struct qib_devdata *dd)
 		if (oguid > bguid[7]) {
 			if (bguid[6] == 0xff) {
 				if (bguid[5] == 0xff) {
+<<<<<<< HEAD
 					qib_dev_err(dd, "Can't set %s GUID"
 						    " from base, wraps to"
 						    " OUI!\n",
 						    qib_get_unit_name(t));
+=======
+					qib_dev_err(dd,
+						"Can't set %s GUID from base, wraps to OUI!\n",
+						qib_get_unit_name(t));
+>>>>>>> refs/remotes/origin/master
 					dd->base_guid = 0;
 					goto bail;
 				}
@@ -182,8 +193,14 @@ void qib_get_eeprom_info(struct qib_devdata *dd)
 	len = sizeof(struct qib_flash);
 	buf = vmalloc(len);
 	if (!buf) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Couldn't allocate memory to read %u "
 			    "bytes from eeprom for GUID\n", len);
+=======
+		qib_dev_err(dd,
+			"Couldn't allocate memory to read %u bytes from eeprom for GUID\n",
+			len);
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 
@@ -201,23 +218,41 @@ void qib_get_eeprom_info(struct qib_devdata *dd)
 
 	csum = flash_csum(ifp, 0);
 	if (csum != ifp->if_csum) {
+<<<<<<< HEAD
 		qib_devinfo(dd->pcidev, "Bad I2C flash checksum: "
 			 "0x%x, not 0x%x\n", csum, ifp->if_csum);
+=======
+		qib_devinfo(dd->pcidev,
+			"Bad I2C flash checksum: 0x%x, not 0x%x\n",
+			csum, ifp->if_csum);
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 	if (*(__be64 *) ifp->if_guid == cpu_to_be64(0) ||
 	    *(__be64 *) ifp->if_guid == ~cpu_to_be64(0)) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Invalid GUID %llx from flash; ignoring\n",
 			    *(unsigned long long *) ifp->if_guid);
+=======
+		qib_dev_err(dd,
+			"Invalid GUID %llx from flash; ignoring\n",
+			*(unsigned long long *) ifp->if_guid);
+>>>>>>> refs/remotes/origin/master
 		/* don't allow GUID if all 0 or all 1's */
 		goto done;
 	}
 
 	/* complain, but allow it */
 	if (*(u64 *) ifp->if_guid == 0x100007511000000ULL)
+<<<<<<< HEAD
 		qib_devinfo(dd->pcidev, "Warning, GUID %llx is "
 			 "default, probably not correct!\n",
 			 *(unsigned long long *) ifp->if_guid);
+=======
+		qib_devinfo(dd->pcidev,
+			"Warning, GUID %llx is default, probably not correct!\n",
+			*(unsigned long long *) ifp->if_guid);
+>>>>>>> refs/remotes/origin/master
 
 	bguid = ifp->if_guid;
 	if (!bguid[0] && !bguid[1] && !bguid[2]) {
@@ -260,8 +295,14 @@ void qib_get_eeprom_info(struct qib_devdata *dd)
 		memcpy(dd->serial, ifp->if_serial,
 		       sizeof ifp->if_serial);
 	if (!strstr(ifp->if_comment, "Tested successfully"))
+<<<<<<< HEAD
 		qib_dev_err(dd, "Board SN %s did not pass functional "
 			    "test: %s\n", dd->serial, ifp->if_comment);
+=======
+		qib_dev_err(dd,
+			"Board SN %s did not pass functional test: %s\n",
+			dd->serial, ifp->if_comment);
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(&dd->eep_st_errs, &ifp->if_errcntp, QIB_EEP_LOG_CNT);
 	/*
@@ -323,8 +364,14 @@ int qib_update_eeprom_log(struct qib_devdata *dd)
 	buf = vmalloc(len);
 	ret = 1;
 	if (!buf) {
+<<<<<<< HEAD
 		qib_dev_err(dd, "Couldn't allocate memory to read %u "
 			    "bytes from eeprom for logging\n", len);
+=======
+		qib_dev_err(dd,
+			"Couldn't allocate memory to read %u bytes from eeprom for logging\n",
+			len);
+>>>>>>> refs/remotes/origin/master
 		goto bail;
 	}
 

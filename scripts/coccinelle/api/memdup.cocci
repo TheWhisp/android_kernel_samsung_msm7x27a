@@ -2,6 +2,7 @@
 ///
 // Confidence: High
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Copyright: (C) 2010 Nicolas Palix, DIKU.  GPLv2.
 // Copyright: (C) 2010 Julia Lawall, DIKU.  GPLv2.
 // Copyright: (C) 2010 Gilles Muller, INRIA/LiP6.  GPLv2.
@@ -21,6 +22,19 @@ virtual context
 virtual org
 virtual report
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+// Copyright: (C) 2010-2012 Nicolas Palix.  GPLv2.
+// Copyright: (C) 2010-2012 Julia Lawall, INRIA/LIP6.  GPLv2.
+// Copyright: (C) 2010-2012 Gilles Muller, INRIA/LiP6.  GPLv2.
+// URL: http://coccinelle.lip6.fr/
+// Comments:
+// Options: --no-includes --include-headers
+
+virtual patch
+virtual context
+virtual org
+virtual report
+>>>>>>> refs/remotes/origin/master
 
 @r1@
 expression from,to;
@@ -41,10 +55,14 @@ position p;
     to = \(kmalloc@p\|kzalloc@p\)(x,flag);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 @@
 =======
 @depends on patch@
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+@depends on patch@
+>>>>>>> refs/remotes/origin/master
 expression from,to,size,flag;
 position p != {r1.p,r2.p};
 statement S;
@@ -55,7 +73,10 @@ statement S;
    if (to==NULL || ...) S
 -  memcpy(to, from, size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 @r depends on !patch@
 expression from,to,size,flag;
@@ -79,4 +100,7 @@ p << r.p;
 @@
 
 coccilib.report.print_report(p[0], "WARNING opportunity for kmemdep")
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

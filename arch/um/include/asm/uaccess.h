@@ -7,24 +7,33 @@
 #define __UM_UACCESS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/errno.h>
 #include <asm/processor.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* thread_info has a mm_segment_t in it, so put the definition up here */
 typedef struct {
 	unsigned long seg;
 } mm_segment_t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "linux/thread_info.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/thread_info.h>
 #include <linux/errno.h>
 #include <asm/processor.h>
 #include <asm/elf.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define VERIFY_READ 0
 #define VERIFY_WRITE 1
@@ -49,8 +58,11 @@ typedef struct {
 #define segment_eq(a, b) ((a).seg == (b).seg)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "um_uaccess.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define __under_task_size(addr, size) \
 	(((unsigned long) (addr) < TASK_SIZE) && \
 	 (((unsigned long) (addr) + (size)) < TASK_SIZE))
@@ -131,7 +143,10 @@ extern int clear_user(void __user *mem, int len);
  * If the string is too long, returns a value greater than @n.
  */
 extern int strnlen_user(const void __user *str, int len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define __copy_from_user(to, from, n) copy_from_user(to, from, n)
 

@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *Copyright (C) 2010 OKI SEMICONDUCTOR CO., LTD.
 =======
  *Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
+>>>>>>> refs/remotes/origin/master
  *
  *This program is free software; you can redistribute it and/or modify
  *it under the terms of the GNU General Public License as published by
@@ -19,13 +23,21 @@
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307, USA.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SERIAL_PCH_UART_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
+#define SUPPORT_SYSRQ
+#endif
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial_reg.h>
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/serial_core.h>
 <<<<<<< HEAD
 #include <linux/interrupt.h>
@@ -33,17 +45,27 @@
 #include <linux/dmi.h>
 
 =======
+=======
+#include <linux/console.h>
+#include <linux/serial_core.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/dmi.h>
+<<<<<<< HEAD
 #include <linux/console.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/nmi.h>
 #include <linux/delay.h>
 
 #include <linux/debugfs.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dmaengine.h>
 #include <linux/pch_dma.h>
 
@@ -53,6 +75,10 @@ enum {
 	PCH_UART_HANDLED_RX_ERR_INT_SHIFT,
 	PCH_UART_HANDLED_RX_TRG_INT_SHIFT,
 	PCH_UART_HANDLED_MS_INT_SHIFT,
+<<<<<<< HEAD
+=======
+	PCH_UART_HANDLED_LS_INT_SHIFT,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum {
@@ -65,11 +91,16 @@ enum {
 /* Set the max number of UART port
  * Intel EG20T PCH: 4 port
 <<<<<<< HEAD
+<<<<<<< HEAD
  * OKI SEMICONDUCTOR ML7213 IOH: 3 port
 =======
  * LAPIS Semiconductor ML7213 IOH: 3 port
  * LAPIS Semiconductor ML7223 IOH: 2 port
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * LAPIS Semiconductor ML7213 IOH: 3 port
+ * LAPIS Semiconductor ML7223 IOH: 2 port
+>>>>>>> refs/remotes/origin/master
 */
 #define PCH_UART_NR	4
 
@@ -81,6 +112,11 @@ enum {
 					PCH_UART_HANDLED_RX_TRG_INT_SHIFT)<<1))
 #define PCH_UART_HANDLED_MS_INT	(1<<((PCH_UART_HANDLED_MS_INT_SHIFT)<<1))
 
+<<<<<<< HEAD
+=======
+#define PCH_UART_HANDLED_LS_INT	(1<<((PCH_UART_HANDLED_LS_INT_SHIFT)<<1))
+
+>>>>>>> refs/remotes/origin/master
 #define PCH_UART_RBR		0x00
 #define PCH_UART_THR		0x00
 
@@ -164,10 +200,14 @@ enum {
 #define PCH_UART_DLM		0x01
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DIV_ROUND(a, b)	(((a) + ((b)/2)) / (b))
 =======
 #define PCH_UART_BRCSR		0x0E
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCH_UART_BRCSR		0x0E
+>>>>>>> refs/remotes/origin/master
 
 #define PCH_UART_IID_RLS	(PCH_UART_IIR_REI)
 #define PCH_UART_IID_RDR	(PCH_UART_IIR_RRI)
@@ -227,7 +267,10 @@ enum {
 #define PCI_VENDOR_ID_ROHM		0x10DB
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
 
 #define DEFAULT_UARTCLK   1843200 /*   1.8432 MHz */
@@ -235,8 +278,13 @@ enum {
 #define FRI2_64_UARTCLK  64000000 /*  64.0000 MHz */
 #define FRI2_48_UARTCLK  48000000 /*  48.0000 MHz */
 #define NTC1_UARTCLK     64000000 /*  64.0000 MHz */
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MINNOW_UARTCLK   50000000 /*  50.0000 MHz */
+
+>>>>>>> refs/remotes/origin/master
 struct pch_uart_buffer {
 	unsigned char *buf;
 	int size;
@@ -251,6 +299,7 @@ struct eg20t_port {
 	struct pci_dev *pdev;
 	int fifo_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int base_baud;
 =======
 	int uartclk;
@@ -259,6 +308,12 @@ struct eg20t_port {
 	int start_rx;
 	int tx_empty;
 	int int_dis_flag;
+=======
+	unsigned int uartclk;
+	int start_tx;
+	int start_rx;
+	int tx_empty;
+>>>>>>> refs/remotes/origin/master
 	int trigger;
 	int trigger_level;
 	struct pch_uart_buffer rxbuf;
@@ -266,7 +321,10 @@ struct eg20t_port {
 	unsigned int fcr;
 	unsigned int mcr;
 	unsigned int use_dma;
+<<<<<<< HEAD
 	unsigned int use_dma_flag;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dma_async_tx_descriptor	*desc_tx;
 	struct dma_async_tx_descriptor	*desc_rx;
 	struct pch_dma_slave		param_tx;
@@ -280,13 +338,19 @@ struct eg20t_port {
 	void				*rx_buf_virt;
 	dma_addr_t			rx_buf_dma;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct dentry	*debugfs;
 
 	/* protect the eg20t_port private structure and io access to membase */
 	spinlock_t lock;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -328,19 +392,26 @@ static struct pch_uart_driver_data drv_dat[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int default_baud = 9600;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SERIAL_PCH_UART_CONSOLE
 static struct eg20t_port *pch_uart_ports[PCH_UART_NR];
 #endif
 static unsigned int default_baud = 9600;
 static unsigned int user_uartclk = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const int trigger_level_256[4] = { 1, 64, 128, 224 };
 static const int trigger_level_64[4] = { 1, 16, 32, 56 };
 static const int trigger_level_16[4] = { 1, 4, 8, 14 };
 static const int trigger_level_1[4] = { 1, 1, 1, 1 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void pch_uart_hal_request(struct pci_dev *pdev, int fifosize,
 				 int base_baud)
@@ -358,6 +429,8 @@ static unsigned int get_msr(struct eg20t_port *priv, void __iomem *base)
 
 	return msr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEBUG_FS
 
 #define PCH_REGS_BUFSIZE	1024
@@ -421,14 +494,67 @@ static const struct file_operations port_regs_ops = {
 };
 #endif	/* CONFIG_DEBUG_FS */
 
+<<<<<<< HEAD
 /* Return UART clock, checking for board specific clocks. */
 static int pch_uart_get_uartclk(void)
 {
 	const char *cmp;
+=======
+static struct dmi_system_id pch_uart_dmi_table[] = {
+	{
+		.ident = "CM-iTC",
+		{
+			DMI_MATCH(DMI_BOARD_NAME, "CM-iTC"),
+		},
+		(void *)CMITC_UARTCLK,
+	},
+	{
+		.ident = "FRI2",
+		{
+			DMI_MATCH(DMI_BIOS_VERSION, "FRI2"),
+		},
+		(void *)FRI2_64_UARTCLK,
+	},
+	{
+		.ident = "Fish River Island II",
+		{
+			DMI_MATCH(DMI_PRODUCT_NAME, "Fish River Island II"),
+		},
+		(void *)FRI2_48_UARTCLK,
+	},
+	{
+		.ident = "COMe-mTT",
+		{
+			DMI_MATCH(DMI_BOARD_NAME, "COMe-mTT"),
+		},
+		(void *)NTC1_UARTCLK,
+	},
+	{
+		.ident = "nanoETXexpress-TT",
+		{
+			DMI_MATCH(DMI_BOARD_NAME, "nanoETXexpress-TT"),
+		},
+		(void *)NTC1_UARTCLK,
+	},
+	{
+		.ident = "MinnowBoard",
+		{
+			DMI_MATCH(DMI_BOARD_NAME, "MinnowBoard"),
+		},
+		(void *)MINNOW_UARTCLK,
+	},
+};
+
+/* Return UART clock, checking for board specific clocks. */
+static unsigned int pch_uart_get_uartclk(void)
+{
+	const struct dmi_system_id *d;
+>>>>>>> refs/remotes/origin/master
 
 	if (user_uartclk)
 		return user_uartclk;
 
+<<<<<<< HEAD
 	cmp = dmi_get_system_info(DMI_BOARD_NAME);
 	if (cmp && strstr(cmp, "CM-iTC"))
 		return CMITC_UARTCLK;
@@ -449,6 +575,13 @@ static int pch_uart_get_uartclk(void)
 
 	return DEFAULT_UARTCLK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	d = dmi_first_match(pch_uart_dmi_table);
+	if (d)
+		return (unsigned long)d->driver_data;
+
+	return DEFAULT_UARTCLK;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pch_uart_hal_enable_interrupt(struct eg20t_port *priv,
@@ -467,7 +600,11 @@ static void pch_uart_hal_disable_interrupt(struct eg20t_port *priv,
 	iowrite8(ier, priv->membase + UART_IER);
 }
 
+<<<<<<< HEAD
 static int pch_uart_hal_set_line(struct eg20t_port *priv, int baud,
+=======
+static int pch_uart_hal_set_line(struct eg20t_port *priv, unsigned int baud,
+>>>>>>> refs/remotes/origin/master
 				 unsigned int parity, unsigned int bits,
 				 unsigned int stb)
 {
@@ -475,10 +612,14 @@ static int pch_uart_hal_set_line(struct eg20t_port *priv, int baud,
 	int div;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	div = DIV_ROUND(priv->base_baud / 16, baud);
 =======
 	div = DIV_ROUND_CLOSEST(priv->uartclk / 16, baud);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	div = DIV_ROUND_CLOSEST(priv->uartclk / 16, baud);
+>>>>>>> refs/remotes/origin/master
 	if (div < 0 || USHRT_MAX <= div) {
 		dev_err(priv->port.dev, "Invalid Baud(div=0x%x)\n", div);
 		return -EINVAL;
@@ -506,7 +647,11 @@ static int pch_uart_hal_set_line(struct eg20t_port *priv, int baud,
 	lcr |= bits;
 	lcr |= stb;
 
+<<<<<<< HEAD
 	dev_dbg(priv->port.dev, "%s:baud = %d, div = %04x, lcr = %02x (%lu)\n",
+=======
+	dev_dbg(priv->port.dev, "%s:baud = %u, div = %04x, lcr = %02x (%lu)\n",
+>>>>>>> refs/remotes/origin/master
 		 __func__, baud, div, lcr, jiffies);
 	iowrite8(PCH_UART_LCR_DLAB, priv->membase + UART_LCR);
 	iowrite8(dll, priv->membase + PCH_UART_DLL);
@@ -589,6 +734,7 @@ static int pch_uart_hal_set_fifo(struct eg20t_port *priv,
 static u8 pch_uart_hal_get_modem(struct eg20t_port *priv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->dmsr = 0;
 	return get_msr(priv, priv->membase);
 =======
@@ -596,6 +742,11 @@ static u8 pch_uart_hal_get_modem(struct eg20t_port *priv)
 	priv->dmsr = msr & PCH_UART_MSR_DELTA;
 	return (u8)msr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int msr = ioread8(priv->membase + UART_MSR);
+	priv->dmsr = msr & PCH_UART_MSR_DELTA;
+	return (u8)msr;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pch_uart_hal_write(struct eg20t_port *priv,
@@ -615,17 +766,41 @@ static int pch_uart_hal_read(struct eg20t_port *priv, unsigned char *buf,
 {
 	int i;
 	u8 rbr, lsr;
+<<<<<<< HEAD
 
 	lsr = ioread8(priv->membase + UART_LSR);
 	for (i = 0, lsr = ioread8(priv->membase + UART_LSR);
 	     i < rx_size && lsr & UART_LSR_DR;
 	     lsr = ioread8(priv->membase + UART_LSR)) {
 		rbr = ioread8(priv->membase + PCH_UART_RBR);
+=======
+	struct uart_port *port = &priv->port;
+
+	lsr = ioread8(priv->membase + UART_LSR);
+	for (i = 0, lsr = ioread8(priv->membase + UART_LSR);
+	     i < rx_size && lsr & (UART_LSR_DR | UART_LSR_BI);
+	     lsr = ioread8(priv->membase + UART_LSR)) {
+		rbr = ioread8(priv->membase + PCH_UART_RBR);
+
+		if (lsr & UART_LSR_BI) {
+			port->icount.brk++;
+			if (uart_handle_break(port))
+				continue;
+		}
+#ifdef SUPPORT_SYSRQ
+		if (port->sysrq) {
+			if (uart_handle_sysrq_char(port, rbr))
+				continue;
+		}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 		buf[i++] = rbr;
 	}
 	return i;
 }
 
+<<<<<<< HEAD
 static unsigned int pch_uart_hal_get_iid(struct eg20t_port *priv)
 {
 	unsigned int iir;
@@ -634,6 +809,12 @@ static unsigned int pch_uart_hal_get_iid(struct eg20t_port *priv)
 	iir = ioread8(priv->membase + UART_IIR);
 	ret = (iir & (PCH_UART_IIR_IID | PCH_UART_IIR_TOI | PCH_UART_IIR_IP));
 	return ret;
+=======
+static unsigned char pch_uart_hal_get_iid(struct eg20t_port *priv)
+{
+	return ioread8(priv->membase + UART_IIR) &\
+		      (PCH_UART_IIR_IID | PCH_UART_IIR_TOI | PCH_UART_IIR_IP);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u8 pch_uart_hal_get_line_status(struct eg20t_port *priv)
@@ -657,6 +838,7 @@ static void pch_uart_hal_set_break(struct eg20t_port *priv, int on)
 static int push_rx(struct eg20t_port *priv, const unsigned char *buf,
 		   int size)
 {
+<<<<<<< HEAD
 	struct uart_port *port;
 	struct tty_struct *tty;
 
@@ -670,6 +852,13 @@ static int push_rx(struct eg20t_port *priv, const unsigned char *buf,
 	tty_insert_flip_string(tty, buf, size);
 	tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
+=======
+	struct uart_port *port = &priv->port;
+	struct tty_port *tport = &port->state->port;
+
+	tty_insert_flip_string(tport, buf, size);
+	tty_flip_buffer_push(tport);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -677,10 +866,14 @@ static int push_rx(struct eg20t_port *priv, const unsigned char *buf,
 static int pop_tx_x(struct eg20t_port *priv, unsigned char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	int ret = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 	struct uart_port *port = &priv->port;
 
 	if (port->x_char) {
@@ -690,10 +883,13 @@ static int pop_tx_x(struct eg20t_port *priv, unsigned char *buf)
 		port->x_char = 0;
 		ret = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		ret = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -701,6 +897,7 @@ static int pop_tx_x(struct eg20t_port *priv, unsigned char *buf)
 
 static int dma_push_rx(struct eg20t_port *priv, int size)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	int room;
 	struct uart_port *port = &priv->port;
@@ -713,17 +910,32 @@ static int dma_push_rx(struct eg20t_port *priv, int size)
 	}
 
 	room = tty_buffer_request_room(tty, size);
+=======
+	int room;
+	struct uart_port *port = &priv->port;
+	struct tty_port *tport = &port->state->port;
+
+	room = tty_buffer_request_room(tport, size);
+>>>>>>> refs/remotes/origin/master
 
 	if (room < size)
 		dev_warn(port->dev, "Rx overrun: dropping %u bytes\n",
 			 size - room);
 	if (!room)
+<<<<<<< HEAD
 		return room;
 
 	tty_insert_flip_string(tty, sg_virt(&priv->sg_rx), size);
 
 	port->icount.rx += room;
 	tty_kref_put(tty);
+=======
+		return 0;
+
+	tty_insert_flip_string(tport, sg_virt(&priv->sg_rx), size);
+
+	port->icount.rx += room;
+>>>>>>> refs/remotes/origin/master
 
 	return room;
 }
@@ -741,10 +953,20 @@ static void pch_free_dma(struct uart_port *port)
 		dma_release_channel(priv->chan_rx);
 		priv->chan_rx = NULL;
 	}
+<<<<<<< HEAD
 	if (sg_dma_address(&priv->sg_rx))
 		dma_free_coherent(port->dev, port->fifosize,
 				  sg_virt(&priv->sg_rx),
 				  sg_dma_address(&priv->sg_rx));
+=======
+
+	if (priv->rx_buf_dma) {
+		dma_free_coherent(port->dev, port->fifosize, priv->rx_buf_virt,
+				  priv->rx_buf_dma);
+		priv->rx_buf_virt = NULL;
+		priv->rx_buf_dma = 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }
@@ -815,6 +1037,7 @@ static void pch_dma_rx_complete(void *arg)
 {
 	struct eg20t_port *priv = arg;
 	struct uart_port *port = &priv->port;
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&port->state->port);
 	int count;
 
@@ -828,6 +1051,14 @@ static void pch_dma_rx_complete(void *arg)
 	if (count)
 		tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
+=======
+	int count;
+
+	dma_sync_sg_for_cpu(port->dev, &priv->sg_rx, 1, DMA_FROM_DEVICE);
+	count = dma_push_rx(priv, priv->trigger_level);
+	if (count)
+		tty_flip_buffer_push(&port->state->port);
+>>>>>>> refs/remotes/origin/master
 	async_tx_ack(priv->desc_rx);
 	pch_uart_hal_enable_interrupt(priv, PCH_UART_HAL_RX_INT |
 					    PCH_UART_HAL_RX_ERR_INT);
@@ -925,12 +1156,17 @@ static int dma_handle_rx(struct eg20t_port *priv)
 	sg_dma_address(sg) = priv->rx_buf_dma;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc = priv->chan_rx->device->device_prep_slave_sg(priv->chan_rx,
 			sg, 1, DMA_FROM_DEVICE,
 =======
 	desc = dmaengine_prep_slave_sg(priv->chan_rx,
 			sg, 1, DMA_DEV_TO_MEM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc = dmaengine_prep_slave_sg(priv->chan_rx,
+			sg, 1, DMA_DEV_TO_MEM,
+>>>>>>> refs/remotes/origin/master
 			DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 
 	if (!desc)
@@ -1056,6 +1292,13 @@ static unsigned int dma_handle_tx(struct eg20t_port *priv)
 	priv->tx_dma_use = 1;
 
 	priv->sg_tx_p = kzalloc(sizeof(struct scatterlist)*num, GFP_ATOMIC);
+<<<<<<< HEAD
+=======
+	if (!priv->sg_tx_p) {
+		dev_err(priv->port.dev, "%s:kzalloc Failed\n", __func__);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	sg_init_table(priv->sg_tx_p, num); /* Initialize SG table */
 	sg = priv->sg_tx_p;
@@ -1089,12 +1332,17 @@ static unsigned int dma_handle_tx(struct eg20t_port *priv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc = priv->chan_tx->device->device_prep_slave_sg(priv->chan_tx,
 					priv->sg_tx_p, nent, DMA_TO_DEVICE,
 =======
 	desc = dmaengine_prep_slave_sg(priv->chan_tx,
 					priv->sg_tx_p, nent, DMA_MEM_TO_DEV,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc = dmaengine_prep_slave_sg(priv->chan_tx,
+					priv->sg_tx_p, nent, DMA_MEM_TO_DEV,
+>>>>>>> refs/remotes/origin/master
 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 	if (!desc) {
 		dev_err(priv->port.dev, "%s:device_prep_slave_sg Failed\n",
@@ -1115,16 +1363,22 @@ static unsigned int dma_handle_tx(struct eg20t_port *priv)
 
 static void pch_uart_err_ir(struct eg20t_port *priv, unsigned int lsr)
 {
+<<<<<<< HEAD
 	u8 fcr = ioread8(priv->membase + UART_FCR);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct uart_port *port = &priv->port;
 	struct tty_struct *tty = tty_port_tty_get(&port->state->port);
 	char   *error_msg[5] = {};
 	int    i = 0;
 
+<<<<<<< HEAD
 	/* Reset FIFO */
 	fcr |= UART_FCR_CLEAR_RCVR;
 	iowrite8(fcr, priv->membase + UART_FCR);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lsr & PCH_UART_LSR_ERR)
 		error_msg[i++] = "Error data in FIFO\n";
 
@@ -1146,6 +1400,11 @@ static void pch_uart_err_ir(struct eg20t_port *priv, unsigned int lsr)
 	if (tty == NULL) {
 		for (i = 0; error_msg[i] != NULL; i++)
 			dev_err(&priv->pdev->dev, error_msg[i]);
+<<<<<<< HEAD
+=======
+	} else {
+		tty_kref_put(tty);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1155,6 +1414,7 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 	unsigned int handled;
 	u8 lsr;
 	int ret = 0;
+<<<<<<< HEAD
 	unsigned int iid;
 	unsigned long flags;
 
@@ -1165,6 +1425,19 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 >>>>>>> refs/remotes/origin/cm-10.0
 	handled = 0;
 	while ((iid = pch_uart_hal_get_iid(priv)) > 1) {
+=======
+	unsigned char iid;
+	unsigned long flags;
+	int next = 1;
+	u8 msr;
+
+	spin_lock_irqsave(&priv->lock, flags);
+	handled = 0;
+	while (next) {
+		iid = pch_uart_hal_get_iid(priv);
+		if (iid & PCH_UART_IIR_IP) /* No Interrupt */
+			break;
+>>>>>>> refs/remotes/origin/master
 		switch (iid) {
 		case PCH_UART_IID_RLS:	/* Receiver Line Status */
 			lsr = pch_uart_hal_get_line_status(priv);
@@ -1172,6 +1445,11 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 						UART_LSR_PE | UART_LSR_OE)) {
 				pch_uart_err_ir(priv, lsr);
 				ret = PCH_UART_HANDLED_RX_ERR_INT;
+<<<<<<< HEAD
+=======
+			} else {
+				ret = PCH_UART_HANDLED_LS_INT;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case PCH_UART_IID_RDR:	/* Received Data Ready */
@@ -1200,16 +1478,32 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 				ret = handle_tx(priv);
 			break;
 		case PCH_UART_IID_MS:	/* Modem Status */
+<<<<<<< HEAD
 			ret = PCH_UART_HANDLED_MS_INT;
 			break;
 		default:	/* Never junp to this label */
 			dev_err(priv->port.dev, "%s:iid=%d (%lu)\n", __func__,
 				iid, jiffies);
 			ret = -1;
+=======
+			msr = pch_uart_hal_get_modem(priv);
+			next = 0; /* MS ir prioirty is the lowest. So, MS ir
+				     means final interrupt */
+			if ((msr & UART_MSR_ANY_DELTA) == 0)
+				break;
+			ret |= PCH_UART_HANDLED_MS_INT;
+			break;
+		default:	/* Never junp to this label */
+			dev_err(priv->port.dev, "%s:iid=%02x (%lu)\n", __func__,
+				iid, jiffies);
+			ret = -1;
+			next = 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		handled |= (unsigned int)ret;
 	}
+<<<<<<< HEAD
 	if (handled == 0 && iid <= 1) {
 		if (priv->int_dis_flag)
 			priv->int_dis_flag = 0;
@@ -1220,6 +1514,10 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 =======
 	spin_unlock_irqrestore(&priv->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return IRQ_RETVAL(handled);
 }
 
@@ -1228,6 +1526,7 @@ static irqreturn_t pch_uart_interrupt(int irq, void *dev_id)
 static unsigned int pch_uart_tx_empty(struct uart_port *port)
 {
 	struct eg20t_port *priv;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret;
 	priv = container_of(port, struct eg20t_port, port);
@@ -1238,13 +1537,18 @@ static unsigned int pch_uart_tx_empty(struct uart_port *port)
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	priv = container_of(port, struct eg20t_port, port);
 	if (priv->tx_empty)
 		return TIOCSER_TEMT;
 	else
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Returns the current state of modem control inputs. */
@@ -1324,7 +1628,10 @@ static void pch_uart_stop_rx(struct uart_port *port)
 	priv->start_rx = 0;
 	pch_uart_hal_disable_interrupt(priv, PCH_UART_HAL_RX_INT |
 					     PCH_UART_HAL_RX_ERR_INT);
+<<<<<<< HEAD
 	priv->int_dis_flag = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Enable the modem status interrupts. */
@@ -1343,6 +1650,7 @@ static void pch_uart_break_ctl(struct uart_port *port, int ctl)
 
 	priv = container_of(port, struct eg20t_port, port);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->lock, flags);
 	pch_uart_hal_set_break(priv, ctl);
 	spin_unlock_irqrestore(&port->lock, flags);
@@ -1351,6 +1659,11 @@ static void pch_uart_break_ctl(struct uart_port *port, int ctl)
 	pch_uart_hal_set_break(priv, ctl);
 	spin_unlock_irqrestore(&priv->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&priv->lock, flags);
+	pch_uart_hal_set_break(priv, ctl);
+	spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Grab any interrupt resources and initialise any low level driver state. */
@@ -1366,6 +1679,7 @@ static int pch_uart_startup(struct uart_port *port)
 
 	if (port->uartclk)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		priv->base_baud = port->uartclk;
 	else
 		port->uartclk = priv->base_baud;
@@ -1374,6 +1688,11 @@ static int pch_uart_startup(struct uart_port *port)
 	else
 		port->uartclk = priv->uartclk;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		priv->uartclk = port->uartclk;
+	else
+		port->uartclk = priv->uartclk;
+>>>>>>> refs/remotes/origin/master
 
 	pch_uart_hal_disable_interrupt(priv, PCH_UART_HAL_ALL_INT);
 	ret = pch_uart_hal_set_line(priv, default_baud,
@@ -1461,9 +1780,14 @@ static void pch_uart_shutdown(struct uart_port *port)
 static void pch_uart_set_termios(struct uart_port *port,
 				 struct ktermios *termios, struct ktermios *old)
 {
+<<<<<<< HEAD
 	int baud;
 	int rtn;
 	unsigned int parity, bits, stb;
+=======
+	int rtn;
+	unsigned int baud, parity, bits, stb;
+>>>>>>> refs/remotes/origin/master
 	struct eg20t_port *priv;
 	unsigned long flags;
 
@@ -1494,6 +1818,7 @@ static void pch_uart_set_termios(struct uart_port *port,
 			parity = PCH_UART_HAL_PARITY_EVEN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		parity = PCH_UART_HAL_PARITY_NONE;
 	}
@@ -1501,6 +1826,10 @@ static void pch_uart_set_termios(struct uart_port *port,
 	} else
 		parity = PCH_UART_HAL_PARITY_NONE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else
+		parity = PCH_UART_HAL_PARITY_NONE;
+>>>>>>> refs/remotes/origin/master
 
 	/* Only UART0 has auto hardware flow function */
 	if ((termios->c_cflag & CRTSCTS) && (priv->fifo_size == 256))
@@ -1513,11 +1842,16 @@ static void pch_uart_set_termios(struct uart_port *port,
 	baud = uart_get_baud_rate(port, termios, old, 0, port->uartclk / 16);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&port->lock, flags);
 =======
 	spin_lock_irqsave(&priv->lock, flags);
 	spin_lock(&port->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irqsave(&priv->lock, flags);
+	spin_lock(&port->lock);
+>>>>>>> refs/remotes/origin/master
 
 	uart_update_timeout(port, termios->c_cflag, baud);
 	rtn = pch_uart_hal_set_line(priv, baud, parity, bits, stb);
@@ -1531,11 +1865,16 @@ static void pch_uart_set_termios(struct uart_port *port,
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&port->lock, flags);
 =======
 	spin_unlock(&port->lock);
 	spin_unlock_irqrestore(&priv->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&port->lock);
+	spin_unlock_irqrestore(&priv->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char *pch_uart_type(struct uart_port *port)
@@ -1601,7 +1940,10 @@ static int pch_uart_verify_port(struct uart_port *port,
 			__func__);
 		return -EOPNOTSUPP;
 #endif
+<<<<<<< HEAD
 		priv->use_dma_flag = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_info(priv->port.dev, "PCH UART : Use DMA Mode\n");
 		if (!priv->use_dma)
 			pch_request_dma(port);
@@ -1611,6 +1953,7 @@ static int pch_uart_verify_port(struct uart_port *port,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct uart_ops pch_uart_ops = {
 	.tx_empty = pch_uart_tx_empty,
 	.set_mctrl = pch_uart_set_mctrl,
@@ -1636,6 +1979,9 @@ static struct uart_ops pch_uart_ops = {
 =======
 #ifdef CONFIG_SERIAL_PCH_UART_CONSOLE
 
+=======
+#if defined(CONFIG_CONSOLE_POLL) || defined(CONFIG_SERIAL_PCH_UART_CONSOLE)
+>>>>>>> refs/remotes/origin/master
 /*
  *	Wait for transmitter & holding register to empty
  */
@@ -1666,6 +2012,87 @@ static void wait_for_xmitr(struct eg20t_port *up, int bits)
 		}
 	}
 }
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_CONSOLE_POLL || CONFIG_SERIAL_PCH_UART_CONSOLE */
+
+#ifdef CONFIG_CONSOLE_POLL
+/*
+ * Console polling routines for communicate via uart while
+ * in an interrupt or debug context.
+ */
+static int pch_uart_get_poll_char(struct uart_port *port)
+{
+	struct eg20t_port *priv =
+		container_of(port, struct eg20t_port, port);
+	u8 lsr = ioread8(priv->membase + UART_LSR);
+
+	if (!(lsr & UART_LSR_DR))
+		return NO_POLL_CHAR;
+
+	return ioread8(priv->membase + PCH_UART_RBR);
+}
+
+
+static void pch_uart_put_poll_char(struct uart_port *port,
+			 unsigned char c)
+{
+	unsigned int ier;
+	struct eg20t_port *priv =
+		container_of(port, struct eg20t_port, port);
+
+	/*
+	 * First save the IER then disable the interrupts
+	 */
+	ier = ioread8(priv->membase + UART_IER);
+	pch_uart_hal_disable_interrupt(priv, PCH_UART_HAL_ALL_INT);
+
+	wait_for_xmitr(priv, UART_LSR_THRE);
+	/*
+	 * Send the character out.
+	 * If a LF, also do CR...
+	 */
+	iowrite8(c, priv->membase + PCH_UART_THR);
+	if (c == 10) {
+		wait_for_xmitr(priv, UART_LSR_THRE);
+		iowrite8(13, priv->membase + PCH_UART_THR);
+	}
+
+	/*
+	 * Finally, wait for transmitter to become empty
+	 * and restore the IER
+	 */
+	wait_for_xmitr(priv, BOTH_EMPTY);
+	iowrite8(ier, priv->membase + UART_IER);
+}
+#endif /* CONFIG_CONSOLE_POLL */
+
+static struct uart_ops pch_uart_ops = {
+	.tx_empty = pch_uart_tx_empty,
+	.set_mctrl = pch_uart_set_mctrl,
+	.get_mctrl = pch_uart_get_mctrl,
+	.stop_tx = pch_uart_stop_tx,
+	.start_tx = pch_uart_start_tx,
+	.stop_rx = pch_uart_stop_rx,
+	.enable_ms = pch_uart_enable_ms,
+	.break_ctl = pch_uart_break_ctl,
+	.startup = pch_uart_startup,
+	.shutdown = pch_uart_shutdown,
+	.set_termios = pch_uart_set_termios,
+/*	.pm		= pch_uart_pm,		Not supported yet */
+	.type = pch_uart_type,
+	.release_port = pch_uart_release_port,
+	.request_port = pch_uart_request_port,
+	.config_port = pch_uart_config_port,
+	.verify_port = pch_uart_verify_port,
+#ifdef CONFIG_CONSOLE_POLL
+	.poll_get_char = pch_uart_get_poll_char,
+	.poll_put_char = pch_uart_put_poll_char,
+#endif
+};
+
+#ifdef CONFIG_SERIAL_PCH_UART_CONSOLE
+>>>>>>> refs/remotes/origin/master
 
 static void pch_console_putchar(struct uart_port *port, int ch)
 {
@@ -1697,7 +2124,12 @@ pch_console_write(struct console *co, const char *s, unsigned int count)
 
 	local_irq_save(flags);
 	if (priv->port.sysrq) {
+<<<<<<< HEAD
 		spin_lock(&priv->lock);
+=======
+		/* call to uart_handle_sysrq_char already took the priv lock */
+		priv_locked = 0;
+>>>>>>> refs/remotes/origin/master
 		/* serial8250_handle_port() already took the port lock */
 		port_locked = 0;
 	} else if (oops_in_progress) {
@@ -1774,9 +2206,14 @@ static struct console pch_console = {
 #define PCH_CONSOLE	(&pch_console)
 #else
 #define PCH_CONSOLE	NULL
+<<<<<<< HEAD
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif	/* CONFIG_SERIAL_PCH_UART_CONSOLE */
+
+>>>>>>> refs/remotes/origin/master
 static struct uart_driver pch_uart_driver = {
 	.owner = THIS_MODULE,
 	.driver_name = KBUILD_MODNAME,
@@ -1785,9 +2222,13 @@ static struct uart_driver pch_uart_driver = {
 	.minor = 0,
 	.nr = PCH_UART_NR,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.cons = PCH_CONSOLE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.cons = PCH_CONSOLE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
@@ -1799,16 +2240,22 @@ static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
 	unsigned int mapbase;
 	unsigned char *rxbuf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int fifosize, base_baud;
 	int port_type;
 	struct pch_uart_driver_data *board;
 	const char *board_name;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int fifosize;
 	int port_type;
 	struct pch_uart_driver_data *board;
 	char name[32];	/* for debugfs file name */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	board = &drv_dat[id->driver_data];
 	port_type = board->port_type;
@@ -1822,6 +2269,7 @@ static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
 		goto init_port_free_txbuf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	base_baud = 1843200; /* 1.8432MHz */
 
 	/* quirk for CM-iTC board */
@@ -1831,6 +2279,8 @@ static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (port_type) {
 	case PORT_UNKNOWN:
 		fifosize = 256; /* EG20T/ML7213: UART0 */
@@ -1844,13 +2294,19 @@ static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_enable_msi(pdev);
 	pci_set_master(pdev);
 
 	spin_lock_init(&priv->lock);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iobase = pci_resource_start(pdev, 0);
 	mapbase = pci_resource_start(pdev, 1);
 	priv->mapbase = mapbase;
@@ -1862,10 +2318,14 @@ static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
 
 	priv->fifo_size = fifosize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->base_baud = base_baud;
 =======
 	priv->uartclk = pch_uart_get_uartclk();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	priv->uartclk = pch_uart_get_uartclk();
+>>>>>>> refs/remotes/origin/master
 	priv->port_type = PORT_MAX_8250 + port_type + 1;
 	priv->port.dev = &pdev->dev;
 	priv->port.iobase = iobase;
@@ -1883,25 +2343,34 @@ static struct eg20t_port *pch_uart_init_port(struct pci_dev *pdev,
 
 	pci_set_drvdata(pdev, priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pch_uart_hal_request(pdev, fifosize, base_baud);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->trigger_level = 1;
 	priv->fcr = 0;
 
 #ifdef CONFIG_SERIAL_PCH_UART_CONSOLE
 	pch_uart_ports[board->line_no] = priv;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = uart_add_one_port(&pch_uart_driver, &priv->port);
 	if (ret < 0)
 		goto init_port_hal_free;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return priv;
 
 init_port_hal_free:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEBUG_FS
 	snprintf(name, sizeof(name), "uart%d_regs", board->line_no);
 	priv->debugfs = debugfs_create_file(name, S_IFREG | S_IRUGO,
@@ -1914,7 +2383,10 @@ init_port_hal_free:
 #ifdef CONFIG_SERIAL_PCH_UART_CONSOLE
 	pch_uart_ports[board->line_no] = NULL;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	free_page((unsigned long)rxbuf);
 init_port_free_txbuf:
 	kfree(priv);
@@ -1926,25 +2398,35 @@ init_port_alloc_err:
 static void pch_uart_exit_port(struct eg20t_port *priv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEBUG_FS
 	if (priv->debugfs)
 		debugfs_remove(priv->debugfs);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	uart_remove_one_port(&pch_uart_driver, &priv->port);
 	pci_set_drvdata(priv->pdev, NULL);
+=======
+	uart_remove_one_port(&pch_uart_driver, &priv->port);
+>>>>>>> refs/remotes/origin/master
 	free_page((unsigned long)priv->rxbuf.buf);
 }
 
 static void pch_uart_pci_remove(struct pci_dev *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct eg20t_port *priv;
 
 	priv = (struct eg20t_port *)pci_get_drvdata(pdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct eg20t_port *priv = pci_get_drvdata(pdev);
 
 	pci_disable_msi(pdev);
@@ -1952,7 +2434,10 @@ static void pch_uart_pci_remove(struct pci_dev *pdev)
 #ifdef CONFIG_SERIAL_PCH_UART_CONSOLE
 	pch_uart_ports[priv->port.line] = NULL;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pch_uart_exit_port(priv);
 	pci_disable_device(pdev);
 	kfree(priv);
@@ -1994,7 +2479,11 @@ static int pch_uart_pci_resume(struct pci_dev *pdev)
 #define pch_uart_pci_resume NULL
 #endif
 
+<<<<<<< HEAD
 static DEFINE_PCI_DEVICE_TABLE(pch_uart_pci_id) = {
+=======
+static const struct pci_device_id pch_uart_pci_id[] = {
+>>>>>>> refs/remotes/origin/master
 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x8811),
 	 .driver_data = pch_et20t_uart0},
 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x8812),
@@ -2020,7 +2509,11 @@ static DEFINE_PCI_DEVICE_TABLE(pch_uart_pci_id) = {
 	{0,},
 };
 
+<<<<<<< HEAD
 static int __devinit pch_uart_pci_probe(struct pci_dev *pdev,
+=======
+static int pch_uart_pci_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 					const struct pci_device_id *id)
 {
 	int ret;
@@ -2041,9 +2534,13 @@ static int __devinit pch_uart_pci_probe(struct pci_dev *pdev,
 
 probe_disable_device:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_disable_msi(pdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_disable_msi(pdev);
+>>>>>>> refs/remotes/origin/master
 	pci_disable_device(pdev);
 probe_error:
 	return ret;
@@ -2053,7 +2550,11 @@ static struct pci_driver pch_uart_pci_driver = {
 	.name = "pch_uart",
 	.id_table = pch_uart_pci_id,
 	.probe = pch_uart_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pch_uart_pci_remove),
+=======
+	.remove = pch_uart_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = pch_uart_pci_suspend,
 	.resume = pch_uart_pci_resume,
 };
@@ -2085,12 +2586,21 @@ module_exit(pch_uart_module_exit);
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("Intel EG20T PCH UART PCI Driver");
+<<<<<<< HEAD
 module_param(default_baud, uint, S_IRUGO);
 <<<<<<< HEAD
 =======
+=======
+MODULE_DEVICE_TABLE(pci, pch_uart_pci_id);
+
+module_param(default_baud, uint, S_IRUGO);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(default_baud,
                  "Default BAUD for initial driver state and console (default 9600)");
 module_param(user_uartclk, uint, S_IRUGO);
 MODULE_PARM_DESC(user_uartclk,
                  "Override UART default or board specific UART clock");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

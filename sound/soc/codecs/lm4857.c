@@ -4,10 +4,14 @@
  * Copyright 2007 Wolfson Microelectronics PLC.
  * Author: Graeme Gregory
 <<<<<<< HEAD
+<<<<<<< HEAD
  *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
 =======
  *         graeme.gregory@wolfsonmicro.com
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *         graeme.gregory@wolfsonmicro.com
+>>>>>>> refs/remotes/origin/master
  * Copyright 2011 Lars-Peter Clausen <lars@metafoo.de>
  *
  *  This program is free software; you can redistribute  it and/or modify it
@@ -20,6 +24,10 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 
 #include <sound/core.h>
@@ -27,12 +35,24 @@
 #include <sound/tlv.h>
 
 struct lm4857 {
+<<<<<<< HEAD
 	struct i2c_client *i2c;
 	uint8_t mode;
 };
 
 static const uint8_t lm4857_default_regs[] = {
 	0x00, 0x00, 0x00, 0x00,
+=======
+	struct regmap *regmap;
+	uint8_t mode;
+};
+
+static const struct reg_default lm4857_default_regs[] = {
+	{ 0x0, 0x00 },
+	{ 0x1, 0x00 },
+	{ 0x2, 0x00 },
+	{ 0x3, 0x00 },
+>>>>>>> refs/remotes/origin/master
 };
 
 /* The register offsets in the cache array */
@@ -46,6 +66,7 @@ static const uint8_t lm4857_default_regs[] = {
 #define LM4857_WAKEUP 5
 #define LM4857_EPGAIN 4
 
+<<<<<<< HEAD
 static int lm4857_write(struct snd_soc_codec *codec, unsigned int reg,
 		unsigned int value)
 {
@@ -79,6 +100,8 @@ static unsigned int lm4857_read(struct snd_soc_codec *codec,
 	return val;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int lm4857_get_mode(struct snd_kcontrol *kcontrol,
 	struct snd_ctl_elem_value *ucontrol)
 {
@@ -100,7 +123,11 @@ static int lm4857_set_mode(struct snd_kcontrol *kcontrol,
 	lm4857->mode = value;
 
 	if (codec->dapm.bias_level == SND_SOC_BIAS_ON)
+<<<<<<< HEAD
 		snd_soc_update_bits(codec, LM4857_CTRL, 0x0F, value + 6);
+=======
+		regmap_update_bits(lm4857->regmap, LM4857_CTRL, 0x0F, value + 6);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -112,10 +139,18 @@ static int lm4857_set_bias_level(struct snd_soc_codec *codec,
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
+<<<<<<< HEAD
 		snd_soc_update_bits(codec, LM4857_CTRL, 0x0F, lm4857->mode + 6);
 		break;
 	case SND_SOC_BIAS_STANDBY:
 		snd_soc_update_bits(codec, LM4857_CTRL, 0x0F, 0);
+=======
+		regmap_update_bits(lm4857->regmap, LM4857_CTRL, 0x0F,
+			lm4857->mode + 6);
+		break;
+	case SND_SOC_BIAS_STANDBY:
+		regmap_update_bits(lm4857->regmap, LM4857_CTRL, 0x0F, 0);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -175,6 +210,7 @@ static const struct snd_soc_dapm_route lm4857_routes[] = {
 	{"EP", NULL, "IN"},
 };
 
+<<<<<<< HEAD
 static int lm4857_probe(struct snd_soc_codec *codec)
 {
 	struct lm4857 *lm4857 = snd_soc_codec_get_drvdata(codec);
@@ -228,11 +264,42 @@ static int __devinit lm4857_i2c_probe(struct i2c_client *i2c,
 =======
 	lm4857 = devm_kzalloc(&i2c->dev, sizeof(*lm4857), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_codec_driver soc_codec_dev_lm4857 = {
+	.set_bias_level = lm4857_set_bias_level,
+
+	.controls = lm4857_controls,
+	.num_controls = ARRAY_SIZE(lm4857_controls),
+	.dapm_widgets = lm4857_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(lm4857_dapm_widgets),
+	.dapm_routes = lm4857_routes,
+	.num_dapm_routes = ARRAY_SIZE(lm4857_routes),
+};
+
+static const struct regmap_config lm4857_regmap_config = {
+	.val_bits = 6,
+	.reg_bits = 2,
+
+	.max_register = LM4857_CTRL,
+
+	.cache_type = REGCACHE_FLAT,
+	.reg_defaults = lm4857_default_regs,
+	.num_reg_defaults = ARRAY_SIZE(lm4857_default_regs),
+};
+
+static int lm4857_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct lm4857 *lm4857;
+
+	lm4857 = devm_kzalloc(&i2c->dev, sizeof(*lm4857), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!lm4857)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, lm4857);
 
+<<<<<<< HEAD
 	lm4857->i2c = i2c;
 
 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_lm4857, NULL, 0);
@@ -260,6 +327,18 @@ static int __devexit lm4857_i2c_remove(struct i2c_client *i2c)
 =======
 	snd_soc_unregister_codec(&i2c->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lm4857->regmap = devm_regmap_init_i2c(i2c, &lm4857_regmap_config);
+	if (IS_ERR(lm4857->regmap))
+		return PTR_ERR(lm4857->regmap);
+
+	return snd_soc_register_codec(&i2c->dev, &soc_codec_dev_lm4857, NULL, 0);
+}
+
+static int lm4857_i2c_remove(struct i2c_client *i2c)
+{
+	snd_soc_unregister_codec(&i2c->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -275,6 +354,7 @@ static struct i2c_driver lm4857_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = lm4857_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(lm4857_i2c_remove),
 	.id_table = lm4857_i2c_id,
 };
@@ -290,6 +370,13 @@ static void __exit lm4857_exit(void)
 	i2c_del_driver(&lm4857_i2c_driver);
 }
 module_exit(lm4857_exit);
+=======
+	.remove = lm4857_i2c_remove,
+	.id_table = lm4857_i2c_id,
+};
+
+module_i2c_driver(lm4857_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 MODULE_DESCRIPTION("LM4857 amplifier driver");

@@ -43,12 +43,15 @@ static int exofs_release_file(struct inode *inode, struct file *filp)
  *   The writeout is synchronous
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int exofs_file_fsync(struct file *filp, int datasync)
 {
 	int ret;
 
 	ret = sync_inode_metadata(filp->f_mapping->host, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int exofs_file_fsync(struct file *filp, loff_t start, loff_t end,
 			    int datasync)
 {
@@ -62,7 +65,10 @@ static int exofs_file_fsync(struct file *filp, loff_t start, loff_t end,
 	mutex_lock(&inode->i_mutex);
 	ret = sync_inode_metadata(filp->f_mapping->host, 1);
 	mutex_unlock(&inode->i_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 

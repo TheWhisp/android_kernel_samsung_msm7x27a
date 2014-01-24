@@ -30,14 +30,22 @@
 
 #define	WIDTH 640
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo hitfb_var __devinitdata = {
+=======
+static struct fb_var_screeninfo hitfb_var = {
+>>>>>>> refs/remotes/origin/master
 	.activate	= FB_ACTIVATE_NOW,
 	.height		= -1,
 	.width		= -1,
 	.vmode		= FB_VMODE_NONINTERLACED,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo hitfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo hitfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "Hitachi HD64461",
 	.type		= FB_TYPE_PACKED_PIXELS,
 	.accel		= FB_ACCEL_NONE,
@@ -324,7 +332,11 @@ static struct fb_ops hitfb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int __devinit hitfb_probe(struct platform_device *dev)
+=======
+static int hitfb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned short lcdclor, ldr3, ldvndr;
 	struct fb_info *info;
@@ -405,8 +417,12 @@ static int __devinit hitfb_probe(struct platform_device *dev)
 
 	platform_set_drvdata(dev, info);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 	       info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -417,7 +433,11 @@ err_fb:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit hitfb_remove(struct platform_device *dev)
+=======
+static int hitfb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(dev);
 
@@ -462,7 +482,11 @@ static const struct dev_pm_ops hitfb_dev_pm_ops = {
 
 static struct platform_driver hitfb_driver = {
 	.probe		= hitfb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(hitfb_remove),
+=======
+	.remove		= hitfb_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "hitfb",
 		.owner	= THIS_MODULE,

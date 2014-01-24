@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel 10 Gigabit PCI Express Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -62,6 +66,7 @@ struct ixgbe_fcoe_ddp {
 	struct scatterlist *sgl;
 	dma_addr_t udp;
 	u64 *udl;
+<<<<<<< HEAD
 	struct pci_pool *pool;
 };
 
@@ -75,6 +80,26 @@ struct ixgbe_fcoe {
 	unsigned long mode;
 	u64 __percpu *pcpu_noddp;
 	u64 __percpu *pcpu_noddp_ext_buff;
+=======
+	struct dma_pool *pool;
+};
+
+/* per cpu variables */
+struct ixgbe_fcoe_ddp_pool {
+	struct dma_pool *pool;
+	u64 noddp;
+	u64 noddp_ext_buff;
+};
+
+struct ixgbe_fcoe {
+	struct ixgbe_fcoe_ddp_pool __percpu *ddp_pool;
+	atomic_t refcnt;
+	spinlock_t lock;
+	struct ixgbe_fcoe_ddp ddp[IXGBE_FCOE_DDP_MAX];
+	void *extra_ddp_buffer;
+	dma_addr_t extra_ddp_buffer_dma;
+	unsigned long mode;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IXGBE_DCB
 	u8 up;
 #endif

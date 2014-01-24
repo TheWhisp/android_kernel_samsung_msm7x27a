@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 config XVMALLOC
 	bool
 	default n
@@ -15,6 +16,11 @@ config ZRAM
 	depends on BLOCK && SYSFS && X86
 	select ZSMALLOC
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config ZRAM
+	tristate "Compressed RAM block device support"
+	depends on BLOCK && SYSFS && ZSMALLOC
+>>>>>>> refs/remotes/origin/master
 	select LZO_COMPRESS
 	select LZO_DECOMPRESS
 	default n
@@ -28,7 +34,11 @@ config ZRAM
 	  disks and maybe many more.
 
 	  See zram.txt for more information.
+<<<<<<< HEAD
 	  Project home: http://compcache.googlecode.com/
+=======
+	  Project home: <https://compcache.googlecode.com/>
+>>>>>>> refs/remotes/origin/master
 
 config ZRAM_DEBUG
 	bool "Compressed RAM block device debug support"

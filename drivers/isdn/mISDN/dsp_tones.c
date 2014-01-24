@@ -240,6 +240,7 @@ static struct pattern {
 } pattern[] = {
 	{TONE_GERMAN_DIALTONE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{DATA_GA, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 	{SIZE_GA, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 	{1900, 0, 0, 0, 0, 0, 0, 0, 0, 0} },
@@ -355,6 +356,8 @@ static struct pattern {
 	{NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 {DATA_GA, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 	 {SIZE_GA, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 	 {1900, 0, 0, 0, 0, 0, 0, 0, 0, 0} },
@@ -469,7 +472,10 @@ static struct pattern {
 	 {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 	 {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /******************
@@ -504,10 +510,14 @@ void dsp_tone_copy(struct dsp *dsp, u8 *data, int len)
 	/* process pattern */
 	pat = (struct pattern *)tone->pattern;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* points to the current pattern */
 =======
 	/* points to the current pattern */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* points to the current pattern */
+>>>>>>> refs/remotes/origin/master
 	index = tone->index; /* gives current sequence index */
 	count = tone->count; /* gives current sample */
 
@@ -526,16 +536,21 @@ void dsp_tone_copy(struct dsp *dsp, u8 *data, int len)
 			if (dsp_debug & DEBUG_DSP_TONE)
 				printk(KERN_DEBUG "%s: reaching next sequence "
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"(index=%d)\n", __func__, index);
 =======
 				       "(index=%d)\n", __func__, index);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       "(index=%d)\n", __func__, index);
+>>>>>>> refs/remotes/origin/master
 			count -= pat->seq[index];
 			index++;
 		}
 		/* calculate start and number of samples */
 		start = count % (*(pat->siz[index]));
 		num = len;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (num+count > pat->seq[index])
 			num = pat->seq[index] - count;
@@ -544,13 +559,18 @@ void dsp_tone_copy(struct dsp *dsp, u8 *data, int len)
 		/* copy memory */
 		memcpy(data, pat->data[index]+start, num);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (num + count > pat->seq[index])
 			num = pat->seq[index] - count;
 		if (num + start > (*(pat->siz[index])))
 			num = (*(pat->siz[index])) - start;
 		/* copy memory */
 		memcpy(data, pat->data[index] + start, num);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* reduce length */
 		data += num;
 		count += num;
@@ -576,12 +596,17 @@ dsp_tone_hw_message(struct dsp *dsp, u8 *sample, int len)
 	/* unlocking is not required, because we don't expect a response */
 	nskb = _alloc_mISDN_skb(PH_CONTROL_REQ,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(len) ? HFC_SPL_LOOP_ON : HFC_SPL_LOOP_OFF, len, sample,
 		GFP_ATOMIC);
 =======
 				(len) ? HFC_SPL_LOOP_ON : HFC_SPL_LOOP_OFF, len, sample,
 				GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				(len) ? HFC_SPL_LOOP_ON : HFC_SPL_LOOP_OFF, len, sample,
+				GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (nskb) {
 		if (dsp->ch.peer) {
 			if (dsp->ch.recv(dsp->ch.peer, nskb))
@@ -668,10 +693,14 @@ dsp_tone(struct dsp *dsp, int tone)
 	if (dsp_debug & DEBUG_DSP_TONE)
 		printk(KERN_DEBUG "%s: now starting tone %d (index=%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, tone, 0);
 =======
 		       __func__, tone, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, tone, 0);
+>>>>>>> refs/remotes/origin/master
 	tonet->tone = tone;
 	tonet->pattern = pat;
 	tonet->index = 0;
@@ -694,6 +723,7 @@ dsp_tone(struct dsp *dsp, int tone)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
@@ -701,3 +731,5 @@ dsp_tone(struct dsp *dsp, int tone)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

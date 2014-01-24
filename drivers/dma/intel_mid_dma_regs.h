@@ -166,6 +166,7 @@ union intel_mid_dma_cfg_hi {
  * @ch_id: DMA channel id
  * @lock: channel spinlock
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @completed: DMA cookie
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -175,6 +176,14 @@ union intel_mid_dma_cfg_hi {
  * @slave: dma slave struture
  * @descs_allocated: total number of decsiptors allocated
  * @dma: dma device struture pointer
+=======
+ * @active_list: current active descriptors
+ * @queue: current queued up descriptors
+ * @free_list: current free descriptors
+ * @slave: dma slave structure
+ * @descs_allocated: total number of descriptors allocated
+ * @dma: dma device structure pointer
+>>>>>>> refs/remotes/origin/master
  * @busy: bool representing if ch is busy (active txn) or not
  * @in_use: bool representing if ch is in use or not
  * @raw_tfr: raw trf interrupt received
@@ -187,9 +196,12 @@ struct intel_mid_dma_chan {
 	int			ch_id;
 	spinlock_t		lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t		completed;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head	active_list;
 	struct list_head	queue;
 	struct list_head	free_list;
@@ -269,10 +281,14 @@ struct intel_mid_dma_desc {
 	unsigned int			current_lli;
 	dma_addr_t			next;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum dma_data_direction		dirn;
 =======
 	enum dma_transfer_direction		dirn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum dma_transfer_direction		dirn;
+>>>>>>> refs/remotes/origin/master
 	enum dma_status			status;
 	enum dma_slave_buswidth		width; /*width of DMA txn*/
 	enum intel_mid_dma_mode		cfg_mode; /*mode configuration*/
@@ -307,9 +323,13 @@ static inline struct intel_mid_dma_slave *to_intel_mid_dma_slave
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dma_resume(struct pci_dev *pci);
 =======
 int dma_resume(struct device *dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int dma_resume(struct device *dev);
+>>>>>>> refs/remotes/origin/master
 
 #endif /*__INTEL_MID_DMAC_REGS_H__*/

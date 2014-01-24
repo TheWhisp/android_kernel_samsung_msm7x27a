@@ -611,7 +611,20 @@ static
 int hwarc_reset(struct uwb_rc *uwb_rc)
 {
 	struct hwarc *hwarc = uwb_rc->priv;
+<<<<<<< HEAD
 	return usb_reset_device(hwarc->usb_dev);
+=======
+	int result;
+
+	/* device lock must be held when calling usb_reset_device. */
+	result = usb_lock_device_for_reset(hwarc->usb_dev, NULL);
+	if (result >= 0) {
+		result = usb_reset_device(hwarc->usb_dev);
+		usb_unlock_device(hwarc->usb_dev);
+	}
+
+	return result;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -709,8 +722,15 @@ static int hwarc_neep_init(struct uwb_rc *rc)
 
 error_neep_submit:
 	usb_free_urb(hwarc->neep_urb);
+<<<<<<< HEAD
 error_urb_alloc:
 	free_page((unsigned long)hwarc->rd_buffer);
+=======
+	hwarc->neep_urb = NULL;
+error_urb_alloc:
+	free_page((unsigned long)hwarc->rd_buffer);
+	hwarc->rd_buffer = NULL;
+>>>>>>> refs/remotes/origin/master
 error_rd_buffer:
 	return -ENOMEM;
 }
@@ -723,7 +743,14 @@ static void hwarc_neep_release(struct uwb_rc *rc)
 
 	usb_kill_urb(hwarc->neep_urb);
 	usb_free_urb(hwarc->neep_urb);
+<<<<<<< HEAD
 	free_page((unsigned long)hwarc->rd_buffer);
+=======
+	hwarc->neep_urb = NULL;
+
+	free_page((unsigned long)hwarc->rd_buffer);
+	hwarc->rd_buffer = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -900,6 +927,15 @@ static const struct usb_device_id hwarc_id_table[] = {
 	/* Intel i1480 (using firmware 1.3PA2-20070828) */
 	{ USB_DEVICE_AND_INTERFACE_INFO(0x8086, 0x0c3b, 0xe0, 0x01, 0x02),
 	  .driver_info = WUSB_QUIRK_WHCI_CMD_EVT },
+<<<<<<< HEAD
+=======
+	/* Alereon 5310 */
+	{ USB_DEVICE_AND_INTERFACE_INFO(0x13dc, 0x5310, 0xe0, 0x01, 0x02),
+	  .driver_info = WUSB_QUIRK_WHCI_CMD_EVT },
+	/* Alereon 5611 */
+	{ USB_DEVICE_AND_INTERFACE_INFO(0x13dc, 0x5611, 0xe0, 0x01, 0x02),
+	  .driver_info = WUSB_QUIRK_WHCI_CMD_EVT },
+>>>>>>> refs/remotes/origin/master
 	/* Generic match for the Radio Control interface */
 	{ USB_INTERFACE_INFO(0xe0, 0x01, 0x02), },
 	{ },
@@ -916,6 +952,7 @@ static struct usb_driver hwarc_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init hwarc_driver_init(void)
 {
 	return usb_register(&hwarc_driver);
@@ -930,6 +967,9 @@ module_exit(hwarc_driver_exit);
 =======
 module_usb_driver(hwarc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(hwarc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Inaky Perez-Gonzalez <inaky.perez-gonzalez@intel.com>");
 MODULE_DESCRIPTION("Host Wireless Adapter Radio Control Driver");

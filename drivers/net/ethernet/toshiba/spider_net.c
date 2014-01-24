@@ -114,7 +114,12 @@ spider_net_write_reg(struct spider_net_card *card, u32 reg, u32 value)
 	out_be32(card->regs + reg, value);
 }
 
+<<<<<<< HEAD
 /** spider_net_write_phy - write to phy register
+=======
+/**
+ * spider_net_write_phy - write to phy register
+>>>>>>> refs/remotes/origin/master
  * @netdev: adapter to be written to
  * @mii_id: id of MII
  * @reg: PHY register
@@ -137,7 +142,12 @@ spider_net_write_phy(struct net_device *netdev, int mii_id,
 	spider_net_write_reg(card, SPIDER_NET_GPCWOPCMD, writevalue);
 }
 
+<<<<<<< HEAD
 /** spider_net_read_phy - read from phy register
+=======
+/**
+ * spider_net_read_phy - read from phy register
+>>>>>>> refs/remotes/origin/master
  * @netdev: network device to be read from
  * @mii_id: id of MII
  * @reg: PHY register
@@ -350,8 +360,12 @@ spider_net_init_chain(struct spider_net_card *card,
 	alloc_size = chain->num_desc * sizeof(struct spider_net_hw_descr);
 
 	chain->hwring = dma_alloc_coherent(&card->pdev->dev, alloc_size,
+<<<<<<< HEAD
 		&chain->dma_addr, GFP_KERNEL);
 
+=======
+					   &chain->dma_addr, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!chain->hwring)
 		return -ENOMEM;
 
@@ -1989,7 +2003,12 @@ spider_net_open(struct net_device *netdev)
 		goto alloc_rx_failed;
 
 	/* Allocate rx skbs */
+<<<<<<< HEAD
 	if (spider_net_alloc_rx_skbs(card))
+=======
+	result = spider_net_alloc_rx_skbs(card);
+	if (result)
+>>>>>>> refs/remotes/origin/master
 		goto alloc_skbs_failed;
 
 	spider_net_set_multi(netdev);
@@ -2328,8 +2347,13 @@ spider_net_setup_netdev(struct spider_net_card *card)
 	if (SPIDER_NET_RX_CSUM_DEFAULT)
 		netdev->features |= NETIF_F_RXCSUM;
 	netdev->features |= NETIF_F_IP_CSUM | NETIF_F_LLTX;
+<<<<<<< HEAD
 	/* some time: NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX |
 	 *		NETIF_F_HW_VLAN_FILTER */
+=======
+	/* some time: NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX |
+	 *		NETIF_F_HW_VLAN_CTAG_FILTER */
+>>>>>>> refs/remotes/origin/master
 
 	netdev->irq = card->pdev->irq;
 	card->num_rx_ints = 0;
@@ -2476,7 +2500,10 @@ out_release_regions:
 	pci_release_regions(pdev);
 out_disable_dev:
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -2490,7 +2517,11 @@ out_disable_dev:
  * spider_net_probe initializes pdev and registers a net_device
  * structure for it. After that, the device can be ifconfig'ed up
  **/
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 spider_net_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	int err = -EIO;
@@ -2529,7 +2560,11 @@ out:
  * spider_net_remove is called to remove the device and unregisters the
  * net_device
  **/
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 spider_net_remove(struct pci_dev *pdev)
 {
 	struct net_device *netdev;
@@ -2557,7 +2592,11 @@ static struct pci_driver spider_net_driver = {
 	.name		= spider_net_driver_name,
 	.id_table	= spider_net_pci_tbl,
 	.probe		= spider_net_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(spider_net_remove)
+=======
+	.remove		= spider_net_remove
+>>>>>>> refs/remotes/origin/master
 };
 
 /**

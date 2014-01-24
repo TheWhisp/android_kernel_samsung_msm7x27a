@@ -97,9 +97,12 @@ struct node_createargs {
  *                      is not a stream to or from the host.
  *  Requires:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *      node_init(void) called.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *      Valid dir.
  *      chan_id != NULL.
  *  Ensures:

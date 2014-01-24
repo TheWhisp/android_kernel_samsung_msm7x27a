@@ -27,14 +27,41 @@
 #include <linux/pfn.h>
 #include <linux/kmemleak.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <linux/llist.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/tlbflush.h>
 #include <asm/shmparam.h>
 
+<<<<<<< HEAD
+=======
+struct vfree_deferred {
+	struct llist_head list;
+	struct work_struct wq;
+};
+static DEFINE_PER_CPU(struct vfree_deferred, vfree_deferred);
+
+static void __vunmap(const void *, int);
+
+static void free_work(struct work_struct *w)
+{
+	struct vfree_deferred *p = container_of(w, struct vfree_deferred, wq);
+	struct llist_node *llnode = llist_del_all(&p->list);
+	while (llnode) {
+		void *p = llnode;
+		llnode = llist_next(llnode);
+		__vunmap(p, 1);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*** Page table manipulation functions ***/
 
 static void vunmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end)
@@ -204,12 +231,21 @@ int is_vmalloc_or_module_addr(const void *x)
 }
 
 /*
+<<<<<<< HEAD
  * Walk a vmap address to the struct page it maps.
  */
 struct page *vmalloc_to_page(const void *vmalloc_addr)
 {
 	unsigned long addr = (unsigned long) vmalloc_addr;
 	struct page *page = NULL;
+=======
+ * Walk a vmap address to the physical pfn it maps to.
+ */
+unsigned long vmalloc_to_pfn(const void *vmalloc_addr)
+{
+	unsigned long addr = (unsigned long) vmalloc_addr;
+	unsigned long pfn = 0;
+>>>>>>> refs/remotes/origin/master
 	pgd_t *pgd = pgd_offset_k(addr);
 
 	/*
@@ -228,11 +264,16 @@ struct page *vmalloc_to_page(const void *vmalloc_addr)
 				ptep = pte_offset_map(pmd, addr);
 				pte = *ptep;
 				if (pte_present(pte))
+<<<<<<< HEAD
 					page = pte_page(pte);
+=======
+					pfn = pte_pfn(pte);
+>>>>>>> refs/remotes/origin/master
 				pte_unmap(ptep);
 			}
 		}
 	}
+<<<<<<< HEAD
 	return page;
 }
 EXPORT_SYMBOL(vmalloc_to_page);
@@ -245,6 +286,20 @@ unsigned long vmalloc_to_pfn(const void *vmalloc_addr)
 	return page_to_pfn(vmalloc_to_page(vmalloc_addr));
 }
 EXPORT_SYMBOL(vmalloc_to_pfn);
+=======
+	return pfn;
+}
+EXPORT_SYMBOL(vmalloc_to_pfn);
+
+/*
+ * Map a vmalloc()-space virtual address to the struct page.
+ */
+struct page *vmalloc_to_page(const void *vmalloc_addr)
+{
+	return pfn_to_page(vmalloc_to_pfn(vmalloc_addr));
+}
+EXPORT_SYMBOL(vmalloc_to_page);
+>>>>>>> refs/remotes/origin/master
 
 
 /*** Global kva allocator ***/
@@ -253,6 +308,7 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
 #define VM_LAZY_FREEING	0x02
 #define VM_VM_AREA	0x04
 
+<<<<<<< HEAD
 struct vmap_area {
 	unsigned long va_start;
 	unsigned long va_end;
@@ -266,6 +322,11 @@ struct vmap_area {
 
 static DEFINE_SPINLOCK(vmap_area_lock);
 static LIST_HEAD(vmap_area_list);
+=======
+static DEFINE_SPINLOCK(vmap_area_lock);
+/* Export for kexec only */
+LIST_HEAD(vmap_area_list);
+>>>>>>> refs/remotes/origin/master
 static struct rb_root vmap_area_root = RB_ROOT;
 
 /* The vmap cache globals are protected by vmap_area_lock */
@@ -286,7 +347,11 @@ static struct vmap_area *__find_vmap_area(unsigned long addr)
 		va = rb_entry(n, struct vmap_area, rb_node);
 		if (addr < va->va_start)
 			n = n->rb_left;
+<<<<<<< HEAD
 		else if (addr > va->va_start)
+=======
+		else if (addr >= va->va_end)
+>>>>>>> refs/remotes/origin/master
 			n = n->rb_right;
 		else
 			return va;
@@ -317,7 +382,11 @@ static void __insert_vmap_area(struct vmap_area *va)
 	rb_link_node(&va->rb_node, parent, p);
 	rb_insert_color(&va->rb_node, &vmap_area_root);
 
+<<<<<<< HEAD
 	/* address-sort this list so it is usable like the vmlist */
+=======
+	/* address-sort this list */
+>>>>>>> refs/remotes/origin/master
 	tmp = rb_prev(&va->rb_node);
 	if (tmp) {
 		struct vmap_area *prev;
@@ -353,6 +422,15 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
 	if (unlikely(!va))
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Only scan the relevant parts containing pointers to other objects
+	 * to avoid false negatives.
+	 */
+	kmemleak_scan_area(&va->rb_node, SIZE_MAX, gfp_mask & GFP_RECLAIM_MASK);
+
+>>>>>>> refs/remotes/origin/master
 retry:
 	spin_lock(&vmap_area_lock);
 	/*
@@ -382,12 +460,20 @@ nocache:
 		addr = ALIGN(first->va_end, align);
 		if (addr < vstart)
 			goto nocache;
+<<<<<<< HEAD
 		if (addr + size - 1 < addr)
+=======
+		if (addr + size < addr)
+>>>>>>> refs/remotes/origin/master
 			goto overflow;
 
 	} else {
 		addr = ALIGN(vstart, align);
+<<<<<<< HEAD
 		if (addr + size - 1 < addr)
+=======
+		if (addr + size < addr)
+>>>>>>> refs/remotes/origin/master
 			goto overflow;
 
 		n = vmap_area_root.rb_node;
@@ -414,6 +500,7 @@ nocache:
 		if (addr + cached_hole_size < first->va_start)
 			cached_hole_size = first->va_start - addr;
 		addr = ALIGN(first->va_end, align);
+<<<<<<< HEAD
 		if (addr + size - 1 < addr)
 			goto overflow;
 
@@ -422,6 +509,16 @@ nocache:
 			first = rb_entry(n, struct vmap_area, rb_node);
 		else
 			goto found;
+=======
+		if (addr + size < addr)
+			goto overflow;
+
+		if (list_is_last(&first->list, &vmap_area_list))
+			goto found;
+
+		first = list_entry(first->list.next,
+				struct vmap_area, list);
+>>>>>>> refs/remotes/origin/master
 	}
 
 found:
@@ -457,6 +554,7 @@ overflow:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void rcu_free_va(struct rcu_head *head)
 {
 	struct vmap_area *va = container_of(head, struct vmap_area, rcu_head);
@@ -466,6 +564,8 @@ static void rcu_free_va(struct rcu_head *head)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __free_vmap_area(struct vmap_area *va)
 {
 	BUG_ON(RB_EMPTY_NODE(&va->rb_node));
@@ -499,10 +599,14 @@ static void __free_vmap_area(struct vmap_area *va)
 		vmap_area_pcpu_hole = max(vmap_area_pcpu_hole, va->va_end);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	call_rcu(&va->rcu_head, rcu_free_va);
 =======
 	kfree_rcu(va, rcu_head);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree_rcu(va, rcu_head);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -760,9 +864,13 @@ struct vmap_block_queue {
 struct vmap_block {
 	spinlock_t lock;
 	struct vmap_area *va;
+<<<<<<< HEAD
 	struct vmap_block_queue *vbq;
 	unsigned long free, dirty;
 	DECLARE_BITMAP(alloc_map, VMAP_BBMAP_BITS);
+=======
+	unsigned long free, dirty;
+>>>>>>> refs/remotes/origin/master
 	DECLARE_BITMAP(dirty_map, VMAP_BBMAP_BITS);
 	struct list_head free_list;
 	struct rcu_head rcu_head;
@@ -828,7 +936,10 @@ static struct vmap_block *new_vmap_block(gfp_t gfp_mask)
 	vb->va = va;
 	vb->free = VMAP_BBMAP_BITS;
 	vb->dirty = 0;
+<<<<<<< HEAD
 	bitmap_zero(vb->alloc_map, VMAP_BBMAP_BITS);
+=======
+>>>>>>> refs/remotes/origin/master
 	bitmap_zero(vb->dirty_map, VMAP_BBMAP_BITS);
 	INIT_LIST_HEAD(&vb->free_list);
 
@@ -840,7 +951,10 @@ static struct vmap_block *new_vmap_block(gfp_t gfp_mask)
 	radix_tree_preload_end();
 
 	vbq = &get_cpu_var(vmap_block_queue);
+<<<<<<< HEAD
 	vb->vbq = vbq;
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&vbq->lock);
 	list_add_rcu(&vb->free_list, &vbq->free);
 	spin_unlock(&vbq->lock);
@@ -849,6 +963,7 @@ static struct vmap_block *new_vmap_block(gfp_t gfp_mask)
 	return vb;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void rcu_free_vb(struct rcu_head *head)
 {
@@ -859,6 +974,8 @@ static void rcu_free_vb(struct rcu_head *head)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void free_vmap_block(struct vmap_block *vb)
 {
 	struct vmap_block *tmp;
@@ -872,10 +989,14 @@ static void free_vmap_block(struct vmap_block *vb)
 
 	free_vmap_area_noflush(vb->va);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	call_rcu(&vb->rcu_head, rcu_free_vb);
 =======
 	kfree_rcu(vb, rcu_head);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree_rcu(vb, rcu_head);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void purge_fragmented_blocks(int cpu)
@@ -895,7 +1016,10 @@ static void purge_fragmented_blocks(int cpu)
 		if (vb->free + vb->dirty == VMAP_BBMAP_BITS && vb->dirty != VMAP_BBMAP_BITS) {
 			vb->free = 0; /* prevent further allocs after releasing lock */
 			vb->dirty = VMAP_BBMAP_BITS; /* prevent purging it again */
+<<<<<<< HEAD
 			bitmap_fill(vb->alloc_map, VMAP_BBMAP_BITS);
+=======
+>>>>>>> refs/remotes/origin/master
 			bitmap_fill(vb->dirty_map, VMAP_BBMAP_BITS);
 			spin_lock(&vbq->lock);
 			list_del_rcu(&vb->free_list);
@@ -913,11 +1037,14 @@ static void purge_fragmented_blocks(int cpu)
 	}
 }
 
+<<<<<<< HEAD
 static void purge_fragmented_blocks_thiscpu(void)
 {
 	purge_fragmented_blocks(smp_processor_id());
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void purge_fragmented_blocks_allcpus(void)
 {
 	int cpu;
@@ -932,10 +1059,24 @@ static void *vb_alloc(unsigned long size, gfp_t gfp_mask)
 	struct vmap_block *vb;
 	unsigned long addr = 0;
 	unsigned int order;
+<<<<<<< HEAD
 	int purge = 0;
 
 	BUG_ON(size & ~PAGE_MASK);
 	BUG_ON(size > PAGE_SIZE*VMAP_MAX_ALLOC);
+=======
+
+	BUG_ON(size & ~PAGE_MASK);
+	BUG_ON(size > PAGE_SIZE*VMAP_MAX_ALLOC);
+	if (WARN_ON(size == 0)) {
+		/*
+		 * Allocating 0 bytes isn't what caller wants since
+		 * get_order(0) returns funny result. Just warn and terminate
+		 * early.
+		 */
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	order = get_order(size);
 
 again:
@@ -948,6 +1089,7 @@ again:
 		if (vb->free < 1UL << order)
 			goto next;
 
+<<<<<<< HEAD
 		i = bitmap_find_free_region(vb->alloc_map,
 						VMAP_BBMAP_BITS, order);
 
@@ -959,6 +1101,9 @@ again:
 			}
 			goto next;
 		}
+=======
+		i = VMAP_BBMAP_BITS - vb->free;
+>>>>>>> refs/remotes/origin/master
 		addr = vb->va->va_start + (i << PAGE_SHIFT);
 		BUG_ON(addr_to_vb_idx(addr) !=
 				addr_to_vb_idx(vb->va->va_start));
@@ -974,9 +1119,12 @@ next:
 		spin_unlock(&vb->lock);
 	}
 
+<<<<<<< HEAD
 	if (purge)
 		purge_fragmented_blocks_thiscpu();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	put_cpu_var(vmap_block_queue);
 	rcu_read_unlock();
 
@@ -1054,6 +1202,7 @@ void vm_unmap_aliases(void)
 
 		rcu_read_lock();
 		list_for_each_entry_rcu(vb, &vbq->free, free_list) {
+<<<<<<< HEAD
 			int i;
 
 			spin_lock(&vb->lock);
@@ -1063,6 +1212,18 @@ void vm_unmap_aliases(void)
 				int j;
 				j = find_next_zero_bit(vb->dirty_map,
 					VMAP_BBMAP_BITS, i);
+=======
+			int i, j;
+
+			spin_lock(&vb->lock);
+			i = find_first_bit(vb->dirty_map, VMAP_BBMAP_BITS);
+			if (i < VMAP_BBMAP_BITS) {
+				unsigned long s, e;
+
+				j = find_last_bit(vb->dirty_map,
+							VMAP_BBMAP_BITS);
+				j = j + 1; /* need exclusive index */
+>>>>>>> refs/remotes/origin/master
 
 				s = vb->va->va_start + (i << PAGE_SHIFT);
 				e = vb->va->va_start + (j << PAGE_SHIFT);
@@ -1072,10 +1233,13 @@ void vm_unmap_aliases(void)
 					start = s;
 				if (e > end)
 					end = e;
+<<<<<<< HEAD
 
 				i = j;
 				i = find_next_bit(vb->dirty_map,
 							VMAP_BBMAP_BITS, i);
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			spin_unlock(&vb->lock);
 		}
@@ -1149,9 +1313,14 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node, pgprot_t pro
 }
 EXPORT_SYMBOL(vm_map_ram);
 
+<<<<<<< HEAD
 /**
 <<<<<<< HEAD
 =======
+=======
+static struct vm_struct *vmlist __initdata;
+/**
+>>>>>>> refs/remotes/origin/master
  * vm_area_add_early - add vmap area early during boot
  * @vm: vm_struct to add
  *
@@ -1178,7 +1347,10 @@ void __init vm_area_add_early(struct vm_struct *vm)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * vm_area_register_early - register vmap area early during boot
  * @vm: vm_struct to register
  * @align: requested alignment
@@ -1201,11 +1373,15 @@ void __init vm_area_register_early(struct vm_struct *vm, size_t align)
 	vm->addr = (void *)addr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vm->next = vmlist;
 	vmlist = vm;
 =======
 	vm_area_add_early(vm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vm_area_add_early(vm);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init vmalloc_init(void)
@@ -1216,10 +1392,20 @@ void __init vmalloc_init(void)
 
 	for_each_possible_cpu(i) {
 		struct vmap_block_queue *vbq;
+<<<<<<< HEAD
+=======
+		struct vfree_deferred *p;
+>>>>>>> refs/remotes/origin/master
 
 		vbq = &per_cpu(vmap_block_queue, i);
 		spin_lock_init(&vbq->lock);
 		INIT_LIST_HEAD(&vbq->free);
+<<<<<<< HEAD
+=======
+		p = &per_cpu(vfree_deferred, i);
+		init_llist_head(&p->list);
+		INIT_WORK(&p->wq, free_work);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Import existing vmlist entries. */
@@ -1302,7 +1488,11 @@ void unmap_kernel_range(unsigned long addr, unsigned long size)
 int map_vm_area(struct vm_struct *area, pgprot_t prot, struct page ***pages)
 {
 	unsigned long addr = (unsigned long)area->addr;
+<<<<<<< HEAD
 	unsigned long end = addr + area->size - PAGE_SIZE;
+=======
+	unsigned long end = addr + get_vm_area_size(area);
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	err = vmap_page_range(addr, end, prot, *pages);
@@ -1315,6 +1505,7 @@ int map_vm_area(struct vm_struct *area, pgprot_t prot, struct page ***pages)
 }
 EXPORT_SYMBOL_GPL(map_vm_area);
 
+<<<<<<< HEAD
 /*** Old vmalloc interfaces ***/
 DEFINE_RWLOCK(vmlist_lock);
 struct vm_struct *vmlist;
@@ -1322,12 +1513,19 @@ struct vm_struct *vmlist;
 static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
 			      unsigned long flags, void *caller)
 {
+=======
+static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+			      unsigned long flags, const void *caller)
+{
+	spin_lock(&vmap_area_lock);
+>>>>>>> refs/remotes/origin/master
 	vm->flags = flags;
 	vm->addr = (void *)va->va_start;
 	vm->size = va->va_end - va->va_start;
 	vm->caller = caller;
 	va->vm = vm;
 	va->flags |= VM_VM_AREA;
+<<<<<<< HEAD
 }
 
 static void insert_vmalloc_vmlist(struct vm_struct *vm)
@@ -1350,10 +1548,25 @@ static void insert_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
 {
 	setup_vmalloc_vm(vm, va, flags, caller);
 	insert_vmalloc_vmlist(vm);
+=======
+	spin_unlock(&vmap_area_lock);
+}
+
+static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+{
+	/*
+	 * Before removing VM_UNINITIALIZED,
+	 * we should make sure that vm has proper values.
+	 * Pair with smp_rmb() in show_numa_info().
+	 */
+	smp_wmb();
+	vm->flags &= ~VM_UNINITIALIZED;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct vm_struct *__get_vm_area_node(unsigned long size,
 		unsigned long align, unsigned long flags, unsigned long start,
+<<<<<<< HEAD
 		unsigned long end, int node, gfp_t gfp_mask, void *caller)
 {
 <<<<<<< HEAD
@@ -1374,6 +1587,16 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
 
 		align = 1ul << bit;
 	}
+=======
+		unsigned long end, int node, gfp_t gfp_mask, const void *caller)
+{
+	struct vmap_area *va;
+	struct vm_struct *area;
+
+	BUG_ON(in_interrupt());
+	if (flags & VM_IOREMAP)
+		align = 1ul << clamp(fls(size), PAGE_SHIFT, IOREMAP_MAX_ORDER);
+>>>>>>> refs/remotes/origin/master
 
 	size = PAGE_ALIGN(size);
 	if (unlikely(!size))
@@ -1394,6 +1617,7 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * When this function is called from __vmalloc_node_range,
 	 * we do not add vm_struct to vmlist here to avoid
@@ -1405,6 +1629,9 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
 		setup_vmalloc_vm(area, va, flags, caller);
 	else
 		insert_vmalloc_vm(area, va, flags, caller);
+=======
+	setup_vmalloc_vm(area, va, flags, caller);
+>>>>>>> refs/remotes/origin/master
 
 	return area;
 }
@@ -1412,17 +1639,29 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
 struct vm_struct *__get_vm_area(unsigned long size, unsigned long flags,
 				unsigned long start, unsigned long end)
 {
+<<<<<<< HEAD
 	return __get_vm_area_node(size, 1, flags, start, end, -1, GFP_KERNEL,
 						__builtin_return_address(0));
+=======
+	return __get_vm_area_node(size, 1, flags, start, end, NUMA_NO_NODE,
+				  GFP_KERNEL, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(__get_vm_area);
 
 struct vm_struct *__get_vm_area_caller(unsigned long size, unsigned long flags,
 				       unsigned long start, unsigned long end,
+<<<<<<< HEAD
 				       void *caller)
 {
 	return __get_vm_area_node(size, 1, flags, start, end, -1, GFP_KERNEL,
 				  caller);
+=======
+				       const void *caller)
+{
+	return __get_vm_area_node(size, 1, flags, start, end, NUMA_NO_NODE,
+				  GFP_KERNEL, caller);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1437,6 +1676,7 @@ struct vm_struct *__get_vm_area_caller(unsigned long size, unsigned long flags,
 struct vm_struct *get_vm_area(unsigned long size, unsigned long flags)
 {
 	return __get_vm_area_node(size, 1, flags, VMALLOC_START, VMALLOC_END,
+<<<<<<< HEAD
 				-1, GFP_KERNEL, __builtin_return_address(0));
 }
 
@@ -1448,6 +1688,28 @@ struct vm_struct *get_vm_area_caller(unsigned long size, unsigned long flags,
 }
 
 static struct vm_struct *find_vm_area(const void *addr)
+=======
+				  NUMA_NO_NODE, GFP_KERNEL,
+				  __builtin_return_address(0));
+}
+
+struct vm_struct *get_vm_area_caller(unsigned long size, unsigned long flags,
+				const void *caller)
+{
+	return __get_vm_area_node(size, 1, flags, VMALLOC_START, VMALLOC_END,
+				  NUMA_NO_NODE, GFP_KERNEL, caller);
+}
+
+/**
+ *	find_vm_area  -  find a continuous kernel virtual area
+ *	@addr:		base address
+ *
+ *	Search for the kernel VM area starting at @addr, and return it.
+ *	It is up to the caller to do all required locking to keep the returned
+ *	pointer valid.
+ */
+struct vm_struct *find_vm_area(const void *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vmap_area *va;
 
@@ -1474,6 +1736,7 @@ struct vm_struct *remove_vm_area(const void *addr)
 	if (va && va->flags & VM_VM_AREA) {
 		struct vm_struct *vm = va->vm;
 
+<<<<<<< HEAD
 		if (!(vm->flags & VM_UNLIST)) {
 			struct vm_struct *tmp, **p;
 			/*
@@ -1487,6 +1750,12 @@ struct vm_struct *remove_vm_area(const void *addr)
 			*p = tmp->next;
 			write_unlock(&vmlist_lock);
 		}
+=======
+		spin_lock(&vmap_area_lock);
+		va->vm = NULL;
+		va->flags &= ~VM_VM_AREA;
+		spin_unlock(&vmap_area_lock);
+>>>>>>> refs/remotes/origin/master
 
 		vmap_debug_free_range(va->va_start, va->va_end);
 		free_unmap_vmap_area(va);
@@ -1504,10 +1773,16 @@ static void __vunmap(const void *addr, int deallocate_pages)
 	if (!addr)
 		return;
 
+<<<<<<< HEAD
 	if ((PAGE_SIZE-1) & (unsigned long)addr) {
 		WARN(1, KERN_ERR "Trying to vfree() bad address (%p)\n", addr);
 		return;
 	}
+=======
+	if (WARN(!PAGE_ALIGNED(addr), "Trying to vfree() bad address (%p)\n",
+			addr))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	area = remove_vm_area(addr);
 	if (unlikely(!area)) {
@@ -1538,7 +1813,11 @@ static void __vunmap(const void *addr, int deallocate_pages)
 	kfree(area);
 	return;
 }
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> refs/remotes/origin/master
 /**
  *	vfree  -  release memory allocated by vmalloc()
  *	@addr:		memory base address
@@ -1547,6 +1826,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
  *	obtained from vmalloc(), vmalloc_32() or __vmalloc(). If @addr is
  *	NULL, no operation is performed.
  *
+<<<<<<< HEAD
  *	Must not be called in interrupt context.
  */
 void vfree(const void *addr)
@@ -1556,6 +1836,28 @@ void vfree(const void *addr)
 	kmemleak_free(addr);
 
 	__vunmap(addr, 1);
+=======
+ *	Must not be called in NMI context (strictly speaking, only if we don't
+ *	have CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG, but making the calling
+ *	conventions for vfree() arch-depenedent would be a really bad idea)
+ *
+ *	NOTE: assumes that the object at *addr has a size >= sizeof(llist_node)
+ */
+void vfree(const void *addr)
+{
+	BUG_ON(in_nmi());
+
+	kmemleak_free(addr);
+
+	if (!addr)
+		return;
+	if (unlikely(in_interrupt())) {
+		struct vfree_deferred *p = &__get_cpu_var(vfree_deferred);
+		if (llist_add((struct llist_node *)addr, &p->list))
+			schedule_work(&p->wq);
+	} else
+		__vunmap(addr, 1);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(vfree);
 
@@ -1572,7 +1874,12 @@ void vunmap(const void *addr)
 {
 	BUG_ON(in_interrupt());
 	might_sleep();
+<<<<<<< HEAD
 	__vunmap(addr, 0);
+=======
+	if (addr)
+		__vunmap(addr, 0);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(vunmap);
 
@@ -1612,29 +1919,46 @@ EXPORT_SYMBOL(vmap);
 
 static void *__vmalloc_node(unsigned long size, unsigned long align,
 			    gfp_t gfp_mask, pgprot_t prot,
+<<<<<<< HEAD
 			    int node, void *caller);
 static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 				 pgprot_t prot, int node, void *caller)
+=======
+			    int node, const void *caller);
+static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+				 pgprot_t prot, int node)
+>>>>>>> refs/remotes/origin/master
 {
 	const int order = 0;
 	struct page **pages;
 	unsigned int nr_pages, array_size, i;
 	gfp_t nested_gfp = (gfp_mask & GFP_RECLAIM_MASK) | __GFP_ZERO;
 
+<<<<<<< HEAD
 	nr_pages = (area->size - PAGE_SIZE) >> PAGE_SHIFT;
+=======
+	nr_pages = get_vm_area_size(area) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 	array_size = (nr_pages * sizeof(struct page *));
 
 	area->nr_pages = nr_pages;
 	/* Please note that the recursion is strictly bounded. */
 	if (array_size > PAGE_SIZE) {
 		pages = __vmalloc_node(array_size, 1, nested_gfp|__GFP_HIGHMEM,
+<<<<<<< HEAD
 				PAGE_KERNEL, node, caller);
+=======
+				PAGE_KERNEL, node, area->caller);
+>>>>>>> refs/remotes/origin/master
 		area->flags |= VM_VPAGES;
 	} else {
 		pages = kmalloc_node(array_size, nested_gfp, node);
 	}
 	area->pages = pages;
+<<<<<<< HEAD
 	area->caller = caller;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!area->pages) {
 		remove_vm_area(area->addr);
 		kfree(area);
@@ -1645,7 +1969,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 		struct page *page;
 		gfp_t tmp_mask = gfp_mask | __GFP_NOWARN;
 
+<<<<<<< HEAD
 		if (node < 0)
+=======
+		if (node == NUMA_NO_NODE)
+>>>>>>> refs/remotes/origin/master
 			page = alloc_page(tmp_mask);
 		else
 			page = alloc_pages_node(node, tmp_mask, order);
@@ -1664,12 +1992,17 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
 
 fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	warn_alloc_failed(gfp_mask, order, "vmalloc: allocation failure, "
 			  "allocated %ld of %ld bytes\n",
 =======
 	warn_alloc_failed(gfp_mask, order,
 			  "vmalloc: allocation failure, allocated %ld of %ld bytes\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	warn_alloc_failed(gfp_mask, order,
+			  "vmalloc: allocation failure, allocated %ld of %ld bytes\n",
+>>>>>>> refs/remotes/origin/master
 			  (area->nr_pages*PAGE_SIZE), area->size);
 	vfree(area->addr);
 	return NULL;
@@ -1683,7 +2016,11 @@ fail:
  *	@end:		vm area range end
  *	@gfp_mask:	flags for the page level allocator
  *	@prot:		protection mask for the allocated pages
+<<<<<<< HEAD
  *	@node:		node to use for allocation or -1
+=======
+ *	@node:		node to use for allocation or NUMA_NO_NODE
+>>>>>>> refs/remotes/origin/master
  *	@caller:	caller's return address
  *
  *	Allocate enough pages to cover @size from the page level
@@ -1692,11 +2029,16 @@ fail:
  */
 void *__vmalloc_node_range(unsigned long size, unsigned long align,
 			unsigned long start, unsigned long end, gfp_t gfp_mask,
+<<<<<<< HEAD
 			pgprot_t prot, int node, void *caller)
+=======
+			pgprot_t prot, int node, const void *caller)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vm_struct *area;
 	void *addr;
 	unsigned long real_size = size;
+<<<<<<< HEAD
 #ifdef CONFIG_FIX_MOVABLE_ZONE
 	unsigned long total_pages = total_unmovable_pages;
 #else
@@ -1723,10 +2065,24 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	addr = __vmalloc_area_node(area, gfp_mask, prot, node, caller);
+=======
+
+	size = PAGE_ALIGN(size);
+	if (!size || (size >> PAGE_SHIFT) > totalram_pages)
+		goto fail;
+
+	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED,
+				  start, end, node, gfp_mask, caller);
+	if (!area)
+		goto fail;
+
+	addr = __vmalloc_area_node(area, gfp_mask, prot, node);
+>>>>>>> refs/remotes/origin/master
 	if (!addr)
 		return NULL;
 
 	/*
+<<<<<<< HEAD
 	 * In this function, newly allocated vm_struct is not added
 	 * to vmlist at __get_vm_area_node(). so, it is added here.
 	 */
@@ -1742,13 +2098,32 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
 	return addr;
 <<<<<<< HEAD
 =======
+=======
+	 * In this function, newly allocated vm_struct has VM_UNINITIALIZED
+	 * flag. It means that vm_struct is not fully initialized.
+	 * Now, it is fully initialized, so remove this flag here.
+	 */
+	clear_vm_uninitialized_flag(area);
+
+	/*
+	 * A ref_count = 2 is needed because vm_struct allocated in
+	 * __get_vm_area_node() contains a reference to the virtual address of
+	 * the vmalloc'ed block.
+	 */
+	kmemleak_alloc(addr, real_size, 2, gfp_mask);
+
+	return addr;
+>>>>>>> refs/remotes/origin/master
 
 fail:
 	warn_alloc_failed(gfp_mask, 0,
 			  "vmalloc: allocation failure: %lu bytes\n",
 			  real_size);
 	return NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1757,7 +2132,11 @@ fail:
  *	@align:		desired alignment
  *	@gfp_mask:	flags for the page level allocator
  *	@prot:		protection mask for the allocated pages
+<<<<<<< HEAD
  *	@node:		node to use for allocation or -1
+=======
+ *	@node:		node to use for allocation or NUMA_NO_NODE
+>>>>>>> refs/remotes/origin/master
  *	@caller:	caller's return address
  *
  *	Allocate enough pages to cover @size from the page level
@@ -1766,7 +2145,11 @@ fail:
  */
 static void *__vmalloc_node(unsigned long size, unsigned long align,
 			    gfp_t gfp_mask, pgprot_t prot,
+<<<<<<< HEAD
 			    int node, void *caller)
+=======
+			    int node, const void *caller)
+>>>>>>> refs/remotes/origin/master
 {
 	return __vmalloc_node_range(size, align, VMALLOC_START, VMALLOC_END,
 				gfp_mask, prot, node, caller);
@@ -1774,7 +2157,11 @@ static void *__vmalloc_node(unsigned long size, unsigned long align,
 
 void *__vmalloc(unsigned long size, gfp_t gfp_mask, pgprot_t prot)
 {
+<<<<<<< HEAD
 	return __vmalloc_node(size, 1, gfp_mask, prot, -1,
+=======
+	return __vmalloc_node(size, 1, gfp_mask, prot, NUMA_NO_NODE,
+>>>>>>> refs/remotes/origin/master
 				__builtin_return_address(0));
 }
 EXPORT_SYMBOL(__vmalloc);
@@ -1797,7 +2184,12 @@ static inline void *__vmalloc_node_flags(unsigned long size,
  */
 void *vmalloc(unsigned long size)
 {
+<<<<<<< HEAD
 	return __vmalloc_node_flags(size, -1, GFP_KERNEL | __GFP_HIGHMEM);
+=======
+	return __vmalloc_node_flags(size, NUMA_NO_NODE,
+				    GFP_KERNEL | __GFP_HIGHMEM);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(vmalloc);
 
@@ -1813,7 +2205,11 @@ EXPORT_SYMBOL(vmalloc);
  */
 void *vzalloc(unsigned long size)
 {
+<<<<<<< HEAD
 	return __vmalloc_node_flags(size, -1,
+=======
+	return __vmalloc_node_flags(size, NUMA_NO_NODE,
+>>>>>>> refs/remotes/origin/master
 				GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO);
 }
 EXPORT_SYMBOL(vzalloc);
@@ -1832,7 +2228,12 @@ void *vmalloc_user(unsigned long size)
 
 	ret = __vmalloc_node(size, SHMLBA,
 			     GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO,
+<<<<<<< HEAD
 			     PAGE_KERNEL, -1, __builtin_return_address(0));
+=======
+			     PAGE_KERNEL, NUMA_NO_NODE,
+			     __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		area = find_vm_area(ret);
 		area->flags |= VM_USERMAP;
@@ -1897,7 +2298,11 @@ EXPORT_SYMBOL(vzalloc_node);
 void *vmalloc_exec(unsigned long size)
 {
 	return __vmalloc_node(size, 1, GFP_KERNEL | __GFP_HIGHMEM, PAGE_KERNEL_EXEC,
+<<<<<<< HEAD
 			      -1, __builtin_return_address(0));
+=======
+			      NUMA_NO_NODE, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 }
 
 #if defined(CONFIG_64BIT) && defined(CONFIG_ZONE_DMA32)
@@ -1918,7 +2323,11 @@ void *vmalloc_exec(unsigned long size)
 void *vmalloc_32(unsigned long size)
 {
 	return __vmalloc_node(size, 1, GFP_VMALLOC32, PAGE_KERNEL,
+<<<<<<< HEAD
 			      -1, __builtin_return_address(0));
+=======
+			      NUMA_NO_NODE, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(vmalloc_32);
 
@@ -1935,7 +2344,11 @@ void *vmalloc_32_user(unsigned long size)
 	void *ret;
 
 	ret = __vmalloc_node(size, 1, GFP_VMALLOC32 | __GFP_ZERO, PAGE_KERNEL,
+<<<<<<< HEAD
 			     -1, __builtin_return_address(0));
+=======
+			     NUMA_NO_NODE, __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		area = find_vm_area(ret);
 		area->flags |= VM_USERMAP;
@@ -1975,6 +2388,7 @@ static int aligned_vread(char *buf, char *addr, unsigned long count)
 			 * function description)
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			void *map = kmap_atomic(p, KM_USER0);
 			memcpy(buf, map + offset, length);
 			kunmap_atomic(map, KM_USER0);
@@ -1983,6 +2397,11 @@ static int aligned_vread(char *buf, char *addr, unsigned long count)
 			memcpy(buf, map + offset, length);
 			kunmap_atomic(map);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			void *map = kmap_atomic(p);
+			memcpy(buf, map + offset, length);
+			kunmap_atomic(map);
+>>>>>>> refs/remotes/origin/master
 		} else
 			memset(buf, 0, length);
 
@@ -2020,6 +2439,7 @@ static int aligned_vwrite(char *buf, char *addr, unsigned long count)
 			 * function description)
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			void *map = kmap_atomic(p, KM_USER0);
 			memcpy(map + offset, buf, length);
 			kunmap_atomic(map, KM_USER0);
@@ -2028,6 +2448,11 @@ static int aligned_vwrite(char *buf, char *addr, unsigned long count)
 			memcpy(map + offset, buf, length);
 			kunmap_atomic(map);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			void *map = kmap_atomic(p);
+			memcpy(map + offset, buf, length);
+			kunmap_atomic(map);
+>>>>>>> refs/remotes/origin/master
 		}
 		addr += length;
 		buf += length;
@@ -2054,9 +2479,13 @@ static int aligned_vwrite(char *buf, char *addr, unsigned long count)
  *	IOREMAP area is treated as memory hole and no copy is done.
  *
  *	If [addr...addr+count) doesn't includes any intersects with alive
+<<<<<<< HEAD
  *	vm_struct area, returns 0.
  *	@buf should be kernel's buffer. Because	this function uses KM_USER0,
  *	the caller should guarantee KM_USER0 is not used.
+=======
+ *	vm_struct area, returns 0. @buf should be kernel's buffer.
+>>>>>>> refs/remotes/origin/master
  *
  *	Note: In usual ops, vread() is never necessary because the caller
  *	should know vmalloc() area is valid and can use memcpy().
@@ -2067,7 +2496,12 @@ static int aligned_vwrite(char *buf, char *addr, unsigned long count)
 
 long vread(char *buf, char *addr, unsigned long count)
 {
+<<<<<<< HEAD
 	struct vm_struct *tmp;
+=======
+	struct vmap_area *va;
+	struct vm_struct *vm;
+>>>>>>> refs/remotes/origin/master
 	char *vaddr, *buf_start = buf;
 	unsigned long buflen = count;
 	unsigned long n;
@@ -2076,10 +2510,24 @@ long vread(char *buf, char *addr, unsigned long count)
 	if ((unsigned long) addr + count < count)
 		count = -(unsigned long) addr;
 
+<<<<<<< HEAD
 	read_lock(&vmlist_lock);
 	for (tmp = vmlist; count && tmp; tmp = tmp->next) {
 		vaddr = (char *) tmp->addr;
 		if (addr >= vaddr + tmp->size - PAGE_SIZE)
+=======
+	spin_lock(&vmap_area_lock);
+	list_for_each_entry(va, &vmap_area_list, list) {
+		if (!count)
+			break;
+
+		if (!(va->flags & VM_VM_AREA))
+			continue;
+
+		vm = va->vm;
+		vaddr = (char *) vm->addr;
+		if (addr >= vaddr + get_vm_area_size(vm))
+>>>>>>> refs/remotes/origin/master
 			continue;
 		while (addr < vaddr) {
 			if (count == 0)
@@ -2089,10 +2537,17 @@ long vread(char *buf, char *addr, unsigned long count)
 			addr++;
 			count--;
 		}
+<<<<<<< HEAD
 		n = vaddr + tmp->size - PAGE_SIZE - addr;
 		if (n > count)
 			n = count;
 		if (!(tmp->flags & VM_IOREMAP))
+=======
+		n = vaddr + get_vm_area_size(vm) - addr;
+		if (n > count)
+			n = count;
+		if (!(vm->flags & VM_IOREMAP))
+>>>>>>> refs/remotes/origin/master
 			aligned_vread(buf, addr, n);
 		else /* IOREMAP area is treated as memory hole */
 			memset(buf, 0, n);
@@ -2101,7 +2556,11 @@ long vread(char *buf, char *addr, unsigned long count)
 		count -= n;
 	}
 finished:
+<<<<<<< HEAD
 	read_unlock(&vmlist_lock);
+=======
+	spin_unlock(&vmap_area_lock);
+>>>>>>> refs/remotes/origin/master
 
 	if (buf == buf_start)
 		return 0;
@@ -2130,9 +2589,13 @@ finished:
  *	IOREMAP area is treated as memory hole and no copy is done.
  *
  *	If [addr...addr+count) doesn't includes any intersects with alive
+<<<<<<< HEAD
  *	vm_struct area, returns 0.
  *	@buf should be kernel's buffer. Because	this function uses KM_USER0,
  *	the caller should guarantee KM_USER0 is not used.
+=======
+ *	vm_struct area, returns 0. @buf should be kernel's buffer.
+>>>>>>> refs/remotes/origin/master
  *
  *	Note: In usual ops, vwrite() is never necessary because the caller
  *	should know vmalloc() area is valid and can use memcpy().
@@ -2142,7 +2605,12 @@ finished:
 
 long vwrite(char *buf, char *addr, unsigned long count)
 {
+<<<<<<< HEAD
 	struct vm_struct *tmp;
+=======
+	struct vmap_area *va;
+	struct vm_struct *vm;
+>>>>>>> refs/remotes/origin/master
 	char *vaddr;
 	unsigned long n, buflen;
 	int copied = 0;
@@ -2152,10 +2620,24 @@ long vwrite(char *buf, char *addr, unsigned long count)
 		count = -(unsigned long) addr;
 	buflen = count;
 
+<<<<<<< HEAD
 	read_lock(&vmlist_lock);
 	for (tmp = vmlist; count && tmp; tmp = tmp->next) {
 		vaddr = (char *) tmp->addr;
 		if (addr >= vaddr + tmp->size - PAGE_SIZE)
+=======
+	spin_lock(&vmap_area_lock);
+	list_for_each_entry(va, &vmap_area_list, list) {
+		if (!count)
+			break;
+
+		if (!(va->flags & VM_VM_AREA))
+			continue;
+
+		vm = va->vm;
+		vaddr = (char *) vm->addr;
+		if (addr >= vaddr + get_vm_area_size(vm))
+>>>>>>> refs/remotes/origin/master
 			continue;
 		while (addr < vaddr) {
 			if (count == 0)
@@ -2164,10 +2646,17 @@ long vwrite(char *buf, char *addr, unsigned long count)
 			addr++;
 			count--;
 		}
+<<<<<<< HEAD
 		n = vaddr + tmp->size - PAGE_SIZE - addr;
 		if (n > count)
 			n = count;
 		if (!(tmp->flags & VM_IOREMAP)) {
+=======
+		n = vaddr + get_vm_area_size(vm) - addr;
+		if (n > count)
+			n = count;
+		if (!(vm->flags & VM_IOREMAP)) {
+>>>>>>> refs/remotes/origin/master
 			aligned_vwrite(buf, addr, n);
 			copied++;
 		}
@@ -2176,13 +2665,18 @@ long vwrite(char *buf, char *addr, unsigned long count)
 		count -= n;
 	}
 finished:
+<<<<<<< HEAD
 	read_unlock(&vmlist_lock);
+=======
+	spin_unlock(&vmap_area_lock);
+>>>>>>> refs/remotes/origin/master
 	if (!copied)
 		return 0;
 	return buflen;
 }
 
 /**
+<<<<<<< HEAD
  *	remap_vmalloc_range  -  map vmalloc pages to userspace
  *	@vma:		vma to cover (map full range of vma)
  *	@addr:		vmalloc memory
@@ -2207,18 +2701,54 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
 		return -EINVAL;
 
 	area = find_vm_area(addr);
+=======
+ *	remap_vmalloc_range_partial  -  map vmalloc pages to userspace
+ *	@vma:		vma to cover
+ *	@uaddr:		target user address to start at
+ *	@kaddr:		virtual address of vmalloc kernel memory
+ *	@size:		size of map area
+ *
+ *	Returns:	0 for success, -Exxx on failure
+ *
+ *	This function checks that @kaddr is a valid vmalloc'ed area,
+ *	and that it is big enough to cover the range starting at
+ *	@uaddr in @vma. Will return failure if that criteria isn't
+ *	met.
+ *
+ *	Similar to remap_pfn_range() (see mm/memory.c)
+ */
+int remap_vmalloc_range_partial(struct vm_area_struct *vma, unsigned long uaddr,
+				void *kaddr, unsigned long size)
+{
+	struct vm_struct *area;
+
+	size = PAGE_ALIGN(size);
+
+	if (!PAGE_ALIGNED(uaddr) || !PAGE_ALIGNED(kaddr))
+		return -EINVAL;
+
+	area = find_vm_area(kaddr);
+>>>>>>> refs/remotes/origin/master
 	if (!area)
 		return -EINVAL;
 
 	if (!(area->flags & VM_USERMAP))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (usize + (pgoff << PAGE_SHIFT) > area->size - PAGE_SIZE)
 		return -EINVAL;
 
 	addr += pgoff << PAGE_SHIFT;
 	do {
 		struct page *page = vmalloc_to_page(addr);
+=======
+	if (kaddr + size > area->addr + area->size)
+		return -EINVAL;
+
+	do {
+		struct page *page = vmalloc_to_page(kaddr);
+>>>>>>> refs/remotes/origin/master
 		int ret;
 
 		ret = vm_insert_page(vma, uaddr, page);
@@ -2226,6 +2756,7 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
 			return ret;
 
 		uaddr += PAGE_SIZE;
+<<<<<<< HEAD
 		addr += PAGE_SIZE;
 		usize -= PAGE_SIZE;
 	} while (usize > 0);
@@ -2235,6 +2766,39 @@ int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
 
 	return 0;
 }
+=======
+		kaddr += PAGE_SIZE;
+		size -= PAGE_SIZE;
+	} while (size > 0);
+
+	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+
+	return 0;
+}
+EXPORT_SYMBOL(remap_vmalloc_range_partial);
+
+/**
+ *	remap_vmalloc_range  -  map vmalloc pages to userspace
+ *	@vma:		vma to cover (map full range of vma)
+ *	@addr:		vmalloc memory
+ *	@pgoff:		number of pages into addr before first page to map
+ *
+ *	Returns:	0 for success, -Exxx on failure
+ *
+ *	This function checks that addr is a valid vmalloc'ed area, and
+ *	that it is big enough to cover the vma. Will return failure if
+ *	that criteria isn't met.
+ *
+ *	Similar to remap_pfn_range() (see mm/memory.c)
+ */
+int remap_vmalloc_range(struct vm_area_struct *vma, void *addr,
+						unsigned long pgoff)
+{
+	return remap_vmalloc_range_partial(vma, vma->vm_start,
+					   addr + (pgoff << PAGE_SHIFT),
+					   vma->vm_end - vma->vm_start);
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(remap_vmalloc_range);
 
 /*
@@ -2249,15 +2813,21 @@ void  __attribute__((weak)) vmalloc_sync_all(void)
 static int f(pte_t *pte, pgtable_t table, unsigned long addr, void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* apply_to_page_range() does all the hard work. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pte_t ***p = data;
 
 	if (p) {
 		*(*p) = pte;
 		(*p)++;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2265,14 +2835,19 @@ static int f(pte_t *pte, pgtable_t table, unsigned long addr, void *data)
  *	alloc_vm_area - allocate a range of kernel address space
  *	@size:		size of the area
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *	@ptes:		returns the PTEs for the address space
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	@ptes:		returns the PTEs for the address space
+>>>>>>> refs/remotes/origin/master
  *
  *	Returns:	NULL on failure, vm_struct on success
  *
  *	This function reserves a range of kernel address space, and
  *	allocates pagetables to map that range.  No actual mappings
+<<<<<<< HEAD
 <<<<<<< HEAD
  *	are created.  If the kernel address space is not shared
  *	between processes, it syncs the pagetable across all
@@ -2280,13 +2855,18 @@ static int f(pte_t *pte, pgtable_t table, unsigned long addr, void *data)
  */
 struct vm_struct *alloc_vm_area(size_t size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	are created.
  *
  *	If @ptes is non-NULL, pointers to the PTEs (in init_mm)
  *	allocated for the VM area are returned.
  */
 struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct vm_struct *area;
 
@@ -2301,14 +2881,19 @@ struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
 	 */
 	if (apply_to_page_range(&init_mm, (unsigned long)area->addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				area->size, f, NULL)) {
 =======
 				size, f, ptes ? &ptes : NULL)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				size, f, ptes ? &ptes : NULL)) {
+>>>>>>> refs/remotes/origin/master
 		free_vm_area(area);
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * If the allocated address space is passed to a hypercall
 	 * before being used then we cannot rely on a page fault to
@@ -2317,6 +2902,8 @@ struct vm_struct *alloc_vm_area(size_t size, pte_t **ptes)
 	 */
 	vmalloc_sync_all();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return area;
 }
 EXPORT_SYMBOL_GPL(alloc_vm_area);
@@ -2482,6 +3069,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	vms = kzalloc(sizeof(vms[0]) * nr_vms, GFP_KERNEL);
 	vas = kzalloc(sizeof(vas[0]) * nr_vms, GFP_KERNEL);
 	if (!vas || !vms)
@@ -2490,6 +3078,12 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
 =======
 		goto err_free2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vms = kcalloc(nr_vms, sizeof(vms[0]), GFP_KERNEL);
+	vas = kcalloc(nr_vms, sizeof(vas[0]), GFP_KERNEL);
+	if (!vas || !vms)
+		goto err_free2;
+>>>>>>> refs/remotes/origin/master
 
 	for (area = 0; area < nr_vms; area++) {
 		vas[area] = kzalloc(sizeof(struct vmap_area), GFP_KERNEL);
@@ -2579,8 +3173,13 @@ found:
 
 	/* insert all vm's */
 	for (area = 0; area < nr_vms; area++)
+<<<<<<< HEAD
 		insert_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
 				  pcpu_get_vm_areas);
+=======
+		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+				 pcpu_get_vm_areas);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(vas);
 	return vms;
@@ -2588,17 +3187,23 @@ found:
 err_free:
 	for (area = 0; area < nr_vms; area++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (vas)
 			kfree(vas[area]);
 		if (vms)
 			kfree(vms[area]);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(vas[area]);
 		kfree(vms[area]);
 	}
 err_free2:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(vas);
 	kfree(vms);
 	return NULL;
@@ -2623,6 +3228,7 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
 
 #ifdef CONFIG_PROC_FS
 static void *s_start(struct seq_file *m, loff_t *pos)
+<<<<<<< HEAD
 	__acquires(&vmlist_lock)
 {
 	loff_t n = *pos;
@@ -2636,6 +3242,21 @@ static void *s_start(struct seq_file *m, loff_t *pos)
 	}
 	if (!n)
 		return v;
+=======
+	__acquires(&vmap_area_lock)
+{
+	loff_t n = *pos;
+	struct vmap_area *va;
+
+	spin_lock(&vmap_area_lock);
+	va = list_entry((&vmap_area_list)->next, typeof(*va), list);
+	while (n > 0 && &va->list != &vmap_area_list) {
+		n--;
+		va = list_entry(va->list.next, typeof(*va), list);
+	}
+	if (!n && &va->list != &vmap_area_list)
+		return va;
+>>>>>>> refs/remotes/origin/master
 
 	return NULL;
 
@@ -2643,6 +3264,7 @@ static void *s_start(struct seq_file *m, loff_t *pos)
 
 static void *s_next(struct seq_file *m, void *p, loff_t *pos)
 {
+<<<<<<< HEAD
 	struct vm_struct *v = p;
 
 	++*pos;
@@ -2653,16 +3275,44 @@ static void s_stop(struct seq_file *m, void *p)
 	__releases(&vmlist_lock)
 {
 	read_unlock(&vmlist_lock);
+=======
+	struct vmap_area *va = p, *next;
+
+	++*pos;
+	next = list_entry(va->list.next, typeof(*va), list);
+	if (&next->list != &vmap_area_list)
+		return next;
+
+	return NULL;
+}
+
+static void s_stop(struct seq_file *m, void *p)
+	__releases(&vmap_area_lock)
+{
+	spin_unlock(&vmap_area_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void show_numa_info(struct seq_file *m, struct vm_struct *v)
 {
+<<<<<<< HEAD
 	if (NUMA_BUILD) {
+=======
+	if (IS_ENABLED(CONFIG_NUMA)) {
+>>>>>>> refs/remotes/origin/master
 		unsigned int nr, *counters = m->private;
 
 		if (!counters)
 			return;
 
+<<<<<<< HEAD
+=======
+		/* Pair with smp_wmb() in clear_vm_uninitialized_flag() */
+		smp_rmb();
+		if (v->flags & VM_UNINITIALIZED)
+			return;
+
+>>>>>>> refs/remotes/origin/master
 		memset(counters, 0, nr_node_ids * sizeof(unsigned int));
 
 		for (nr = 0; nr < v->nr_pages; nr++)
@@ -2676,9 +3326,25 @@ static void show_numa_info(struct seq_file *m, struct vm_struct *v)
 
 static int s_show(struct seq_file *m, void *p)
 {
+<<<<<<< HEAD
 	struct vm_struct *v = p;
 
 	seq_printf(m, "0x%p-0x%p %7ld",
+=======
+	struct vmap_area *va = p;
+	struct vm_struct *v;
+
+	/*
+	 * s_show can encounter race with remove_vm_area, !VM_VM_AREA on
+	 * behalf of vmap area is being tear down or vm_map_ram allocation.
+	 */
+	if (!(va->flags & VM_VM_AREA))
+		return 0;
+
+	v = va->vm;
+
+	seq_printf(m, "0x%pK-0x%pK %7ld",
+>>>>>>> refs/remotes/origin/master
 		v->addr, v->addr + v->size, v->size);
 
 	if (v->caller)
@@ -2722,7 +3388,11 @@ static int vmalloc_open(struct inode *inode, struct file *file)
 	unsigned int *ptr = NULL;
 	int ret;
 
+<<<<<<< HEAD
 	if (NUMA_BUILD) {
+=======
+	if (IS_ENABLED(CONFIG_NUMA)) {
+>>>>>>> refs/remotes/origin/master
 		ptr = kmalloc(nr_node_ids * sizeof(unsigned int), GFP_KERNEL);
 		if (ptr == NULL)
 			return -ENOMEM;
@@ -2749,5 +3419,56 @@ static int __init proc_vmalloc_init(void)
 	return 0;
 }
 module_init(proc_vmalloc_init);
+<<<<<<< HEAD
+=======
+
+void get_vmalloc_info(struct vmalloc_info *vmi)
+{
+	struct vmap_area *va;
+	unsigned long free_area_size;
+	unsigned long prev_end;
+
+	vmi->used = 0;
+	vmi->largest_chunk = 0;
+
+	prev_end = VMALLOC_START;
+
+	spin_lock(&vmap_area_lock);
+
+	if (list_empty(&vmap_area_list)) {
+		vmi->largest_chunk = VMALLOC_TOTAL;
+		goto out;
+	}
+
+	list_for_each_entry(va, &vmap_area_list, list) {
+		unsigned long addr = va->va_start;
+
+		/*
+		 * Some archs keep another range for modules in vmalloc space
+		 */
+		if (addr < VMALLOC_START)
+			continue;
+		if (addr >= VMALLOC_END)
+			break;
+
+		if (va->flags & (VM_LAZY_FREE | VM_LAZY_FREEING))
+			continue;
+
+		vmi->used += (va->va_end - va->va_start);
+
+		free_area_size = addr - prev_end;
+		if (vmi->largest_chunk < free_area_size)
+			vmi->largest_chunk = free_area_size;
+
+		prev_end = va->va_end;
+	}
+
+	if (VMALLOC_END - prev_end > vmi->largest_chunk)
+		vmi->largest_chunk = VMALLOC_END - prev_end;
+
+out:
+	spin_unlock(&vmap_area_lock);
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 

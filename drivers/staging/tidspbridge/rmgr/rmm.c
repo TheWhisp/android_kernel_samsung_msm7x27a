@@ -47,11 +47,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- This */
 #include <dspbridge/rmm.h>
 
@@ -87,10 +90,13 @@ struct rmm_target_obj {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 refs;		/* module reference count */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static bool alloc_block(struct rmm_target_obj *target, u32 segid, u32 size,
 			u32 align, u32 *dsp_address);
 static bool free_block(struct rmm_target_obj *target, u32 segid, u32 addr,
@@ -108,6 +114,7 @@ int rmm_alloc(struct rmm_target_obj *target, u32 segid, u32 size,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(target);
 	DBC_REQUIRE(dsp_address != NULL);
 	DBC_REQUIRE(size > 0);
@@ -116,6 +123,8 @@ int rmm_alloc(struct rmm_target_obj *target, u32 segid, u32 size,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!reserve) {
 		if (!alloc_block(target, segid, size, align, dsp_address)) {
 			status = -ENOMEM;
@@ -180,11 +189,14 @@ int rmm_create(struct rmm_target_obj **target_obj,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(target_obj != NULL);
 	DBC_REQUIRE(num_segs == 0 || seg_tab != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Allocate DBL target object */
 	target = kzalloc(sizeof(struct rmm_target_obj), GFP_KERNEL);
 
@@ -248,11 +260,14 @@ func_cont:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((!status && *target_obj)
 		   || (status && *target_obj == NULL));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -267,10 +282,13 @@ void rmm_delete(struct rmm_target_obj *target)
 	u32 i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(target);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(target->seg_tab);
 
 	list_for_each_entry_safe(sect, tmp, &target->ovly_list, list_elem) {
@@ -296,6 +314,7 @@ void rmm_delete(struct rmm_target_obj *target)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== rmm_exit ========
  */
 void rmm_exit(void)
@@ -310,6 +329,8 @@ void rmm_exit(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== rmm_free ========
  */
 bool rmm_free(struct rmm_target_obj *target, u32 segid, u32 dsp_addr, u32 size,
@@ -318,6 +339,7 @@ bool rmm_free(struct rmm_target_obj *target, u32 segid, u32 dsp_addr, u32 size,
 	struct rmm_ovly_sect *sect, *tmp;
 	bool ret = false;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DBC_REQUIRE(target);
 
@@ -330,6 +352,8 @@ bool rmm_free(struct rmm_target_obj *target, u32 segid, u32 dsp_addr, u32 size,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *  Free or unreserve memory.
 	 */
@@ -344,9 +368,12 @@ bool rmm_free(struct rmm_target_obj *target, u32 segid, u32 dsp_addr, u32 size,
 				list_elem) {
 			if (dsp_addr == sect->addr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DBC_ASSERT(size == sect->size);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				/* Remove from list */
 				list_del(&sect->list_elem);
 				kfree(sect);
@@ -358,6 +385,7 @@ bool rmm_free(struct rmm_target_obj *target, u32 segid, u32 dsp_addr, u32 size,
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *  ======== rmm_init ========
  */
@@ -373,6 +401,8 @@ bool rmm_init(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== rmm_stat ========
  */
 bool rmm_stat(struct rmm_target_obj *target, enum dsp_memtype segid,
@@ -385,11 +415,14 @@ bool rmm_stat(struct rmm_target_obj *target, enum dsp_memtype segid,
 	u32 free_blocks = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(mem_stat_buf != NULL);
 	DBC_ASSERT(target != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((u32) segid < target->num_segs) {
 		head = target->free_list[segid];
 

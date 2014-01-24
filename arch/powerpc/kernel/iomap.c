@@ -7,9 +7,13 @@
 #include <linux/pci.h>
 #include <linux/mm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/pci-bridge.h>
 
@@ -122,6 +126,7 @@ EXPORT_SYMBOL(ioport_map);
 EXPORT_SYMBOL(ioport_unmap);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 {
 	resource_size_t start = pci_resource_start(dev, bar);
@@ -143,6 +148,9 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
 =======
 #ifdef CONFIG_PCI
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PCI
+>>>>>>> refs/remotes/origin/master
 void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 {
 	if (isa_vaddr_is_ioport(addr))
@@ -153,9 +161,14 @@ void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(pci_iomap);
 EXPORT_SYMBOL(pci_iounmap);
 =======
 EXPORT_SYMBOL(pci_iounmap);
 #endif /* CONFIG_PCI */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(pci_iounmap);
+#endif /* CONFIG_PCI */
+>>>>>>> refs/remotes/origin/master

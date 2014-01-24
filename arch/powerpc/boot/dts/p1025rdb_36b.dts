@@ -82,6 +82,14 @@
 				  0x0 0x100000>;
 		};
 	};
+<<<<<<< HEAD
+=======
+
+	qe: qe@fffe80000 {
+		status = "disabled"; /* no firmware loaded */
+	};
+
+>>>>>>> refs/remotes/origin/master
 };
 
 /include/ "p1025rdb.dtsi"

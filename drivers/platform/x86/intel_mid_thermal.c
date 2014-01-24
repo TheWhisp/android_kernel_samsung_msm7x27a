@@ -34,16 +34,21 @@
 #include <linux/pm.h>
 #include <linux/thermal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/intel_scu_ipc.h>
 =======
 #include <linux/mfd/intel_msic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mfd/intel_msic.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Number of thermal sensors */
 #define MSIC_THERMAL_SENSORS	4
 
 /* ADC1 - thermal registers */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MSIC_THERM_ADC1CNTL1	0x1C0
 #define MSIC_ADC_ENBL		0x10
@@ -55,6 +60,11 @@
 #define MSIC_ADC_START		0x08
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSIC_ADC_ENBL		0x10
+#define MSIC_ADC_START		0x08
+
+>>>>>>> refs/remotes/origin/master
 #define MSIC_ADCTHERM_ENBL	0x04
 #define MSIC_ADCRRDATA_ENBL	0x05
 #define MSIC_CHANL_MASK_VAL	0x0F
@@ -86,12 +96,17 @@
 
 /* ADC base addresses */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ADC_CHNL_START_ADDR	0x1C5	/* increments by 1 */
 #define ADC_DATA_START_ADDR	0x1D4	/* increments by 2 */
 =======
 #define ADC_CHNL_START_ADDR	INTEL_MSIC_ADC1ADDR0	/* increments by 1 */
 #define ADC_DATA_START_ADDR	INTEL_MSIC_ADC1SNS0H	/* increments by 2 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ADC_CHNL_START_ADDR	INTEL_MSIC_ADC1ADDR0	/* increments by 1 */
+#define ADC_DATA_START_ADDR	INTEL_MSIC_ADC1SNS0H	/* increments by 2 */
+>>>>>>> refs/remotes/origin/master
 
 /* MSIC die attributes */
 #define MSIC_DIE_ADC_MIN	488
@@ -205,28 +220,40 @@ static int mid_read_temp(struct thermal_zone_device *tzd, unsigned long *temp)
 
 	/* Enable the msic for conversion before reading */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_iowrite8(MSIC_THERM_ADC1CNTL3, MSIC_ADCRRDATA_ENBL);
 =======
 	ret = intel_msic_reg_write(INTEL_MSIC_ADC1CNTL3, MSIC_ADCRRDATA_ENBL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_write(INTEL_MSIC_ADC1CNTL3, MSIC_ADCRRDATA_ENBL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	/* Re-toggle the RRDATARD bit (temporary workaround) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_iowrite8(MSIC_THERM_ADC1CNTL3, MSIC_ADCTHERM_ENBL);
 =======
 	ret = intel_msic_reg_write(INTEL_MSIC_ADC1CNTL3, MSIC_ADCTHERM_ENBL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_write(INTEL_MSIC_ADC1CNTL3, MSIC_ADCTHERM_ENBL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	/* Read the higher bits of data */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_ioread8(addr, &data);
 =======
 	ret = intel_msic_reg_read(addr, &data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_read(addr, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -235,10 +262,14 @@ static int mid_read_temp(struct thermal_zone_device *tzd, unsigned long *temp)
 	addr++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_ioread8(addr, &data);/* Read lower bits */
 =======
 	ret = intel_msic_reg_read(addr, &data);/* Read lower bits */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_read(addr, &data);/* Read lower bits */
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -267,10 +298,14 @@ static int configure_adc(int val)
 	uint8_t data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_ioread8(MSIC_THERM_ADC1CNTL1, &data);
 =======
 	ret = intel_msic_reg_read(INTEL_MSIC_ADC1CNTL1, &data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_read(INTEL_MSIC_ADC1CNTL1, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -282,10 +317,14 @@ static int configure_adc(int val)
 		data &= (~MSIC_ADC_START);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return intel_scu_ipc_iowrite8(MSIC_THERM_ADC1CNTL1, data);
 =======
 	return intel_msic_reg_write(INTEL_MSIC_ADC1CNTL1, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return intel_msic_reg_write(INTEL_MSIC_ADC1CNTL1, data);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -302,6 +341,7 @@ static int set_up_therm_channel(u16 base_addr)
 
 	/* Enable all the sensor channels */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_iowrite8(base_addr, SKIN_SENSOR0_CODE);
 	if (ret)
 		return ret;
@@ -312,6 +352,8 @@ static int set_up_therm_channel(u16 base_addr)
 
 	ret = intel_scu_ipc_iowrite8(base_addr + 2, SYS_SENSOR_CODE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = intel_msic_reg_write(base_addr, SKIN_SENSOR0_CODE);
 	if (ret)
 		return ret;
@@ -321,17 +363,24 @@ static int set_up_therm_channel(u16 base_addr)
 		return ret;
 
 	ret = intel_msic_reg_write(base_addr + 2, SYS_SENSOR_CODE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	/* Since this is the last channel, set the stop bit
 	 * to 1 by ORing the DIE_SENSOR_CODE with 0x10 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_iowrite8(base_addr + 3,
 =======
 	ret = intel_msic_reg_write(base_addr + 3,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_write(base_addr + 3,
+>>>>>>> refs/remotes/origin/master
 			(MSIC_DIE_SENSOR_CODE | 0x10));
 	if (ret)
 		return ret;
@@ -351,18 +400,24 @@ static int reset_stopbit(uint16_t addr)
 	int ret;
 	uint8_t data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_ioread8(addr, &data);
 	if (ret)
 		return ret;
 	/* Set the stop bit to zero */
 	return intel_scu_ipc_iowrite8(addr, (data & 0xEF));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = intel_msic_reg_read(addr, &data);
 	if (ret)
 		return ret;
 	/* Set the stop bit to zero */
 	return intel_msic_reg_write(addr, (data & 0xEF));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -386,10 +441,14 @@ static int find_free_channel(void)
 
 	/* check whether ADC is enabled */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_ioread8(MSIC_THERM_ADC1CNTL1, &data);
 =======
 	ret = intel_msic_reg_read(INTEL_MSIC_ADC1CNTL1, &data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_read(INTEL_MSIC_ADC1CNTL1, &data);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -399,10 +458,14 @@ static int find_free_channel(void)
 	/* ADC is already enabled; Looking for an empty channel */
 	for (i = 0; i < ADC_CHANLS_MAX; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = intel_scu_ipc_ioread8(ADC_CHNL_START_ADDR + i, &data);
 =======
 		ret = intel_msic_reg_read(ADC_CHNL_START_ADDR + i, &data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = intel_msic_reg_read(ADC_CHNL_START_ADDR + i, &data);
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			return ret;
 
@@ -431,6 +494,7 @@ static int mid_initialize_adc(struct device *dev)
 	 * initialize the ADC
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_ioread8(MSIC_THERM_ADC1CNTL3, &data);
 	if (ret)
 		return ret;
@@ -438,6 +502,8 @@ static int mid_initialize_adc(struct device *dev)
 	if (data & MSIC_ADCTHERM_MASK)
 		dev_warn(dev, "ADCTHERM already set");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = intel_msic_reg_read(INTEL_MSIC_ADC1CNTL3, &data);
 	if (ret)
 		return ret;
@@ -446,7 +512,10 @@ static int mid_initialize_adc(struct device *dev)
 	ret = intel_msic_reg_write(INTEL_MSIC_ADC1CNTL3, data);
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Index of the first channel in which the stop bit is set */
 	channel_index = find_free_channel();
@@ -501,6 +570,7 @@ static struct thermal_device_info *initialize_sensor(int index)
 
 /**
  * mid_thermal_resume - resume routine
+<<<<<<< HEAD
  * @pdev: platform device structure
  *
  * mid thermal resume: re-initializes the adc. Can sleep.
@@ -508,16 +578,33 @@ static struct thermal_device_info *initialize_sensor(int index)
 static int mid_thermal_resume(struct platform_device *pdev)
 {
 	return mid_initialize_adc(&pdev->dev);
+=======
+ * @dev: device structure
+ *
+ * mid thermal resume: re-initializes the adc. Can sleep.
+ */
+static int mid_thermal_resume(struct device *dev)
+{
+	return mid_initialize_adc(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * mid_thermal_suspend - suspend routine
+<<<<<<< HEAD
  * @pdev: platform device structure
+=======
+ * @dev: device structure
+>>>>>>> refs/remotes/origin/master
  *
  * mid thermal suspend implements the suspend functionality
  * by stopping the ADC. Can sleep.
  */
+<<<<<<< HEAD
 static int mid_thermal_suspend(struct platform_device *pdev, pm_message_t mesg)
+=======
+static int mid_thermal_suspend(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * This just stops the ADC and does not disable it.
@@ -527,6 +614,12 @@ static int mid_thermal_suspend(struct platform_device *pdev, pm_message_t mesg)
 	return configure_adc(0);
 }
 
+<<<<<<< HEAD
+=======
+static SIMPLE_DEV_PM_OPS(mid_thermal_pm,
+			 mid_thermal_suspend, mid_thermal_resume);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * read_curr_temp - reads the current temperature and stores in temp
  * @temp: holds the current temperature value after reading
@@ -576,11 +669,14 @@ static int mid_thermal_probe(struct platform_device *pdev)
 	/* Register each sensor with the generic thermal framework*/
 	for (i = 0; i < MSIC_THERMAL_SENSORS; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pinfo->tzd[i] = thermal_zone_device_register(name[i],
 				0, initialize_sensor(i), &tzd_ops, 0, 0, 0, 0);
 		if (IS_ERR(pinfo->tzd[i]))
 			goto reg_fail;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct thermal_device_info *td_info = initialize_sensor(i);
 
 		if (!td_info) {
@@ -588,13 +684,20 @@ static int mid_thermal_probe(struct platform_device *pdev)
 			goto err;
 		}
 		pinfo->tzd[i] = thermal_zone_device_register(name[i],
+<<<<<<< HEAD
 				0, td_info, &tzd_ops, 0, 0, 0, 0);
+=======
+				0, 0, td_info, &tzd_ops, NULL, 0, 0);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(pinfo->tzd[i])) {
 			kfree(td_info);
 			ret = PTR_ERR(pinfo->tzd[i]);
 			goto err;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pinfo->pdev = pdev;
@@ -602,17 +705,23 @@ static int mid_thermal_probe(struct platform_device *pdev)
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 reg_fail:
 	ret = PTR_ERR(pinfo->tzd[i]);
 	while (--i >= 0)
 		thermal_zone_device_unregister(pinfo->tzd[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 err:
 	while (--i >= 0) {
 		kfree(pinfo->tzd[i]->devdata);
 		thermal_zone_device_unregister(pinfo->tzd[i]);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	configure_adc(0);
 	kfree(pinfo);
 	return ret;
@@ -631,34 +740,48 @@ static int mid_thermal_remove(struct platform_device *pdev)
 	struct platform_info *pinfo = platform_get_drvdata(pdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < MSIC_THERMAL_SENSORS; i++)
 		thermal_zone_device_unregister(pinfo->tzd[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < MSIC_THERMAL_SENSORS; i++) {
 		kfree(pinfo->tzd[i]->devdata);
 		thermal_zone_device_unregister(pinfo->tzd[i]);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(pinfo);
 	platform_set_drvdata(pdev, NULL);
+=======
+
+	kfree(pinfo);
+>>>>>>> refs/remotes/origin/master
 
 	/* Stop the ADC */
 	return configure_adc(0);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRIVER_NAME "msic_sensor"
 
 static const struct platform_device_id therm_id_table[] = {
 	{ DRIVER_NAME, 1 },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_NAME "msic_thermal"
 
 static const struct platform_device_id therm_id_table[] = {
 	{ DRIVER_NAME, 1 },
 	{ "msic_thermal", 1 },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -666,6 +789,7 @@ static struct platform_driver mid_thermal_driver = {
 	.driver = {
 		.name = DRIVER_NAME,
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe = mid_thermal_probe,
 	.suspend = mid_thermal_suspend,
@@ -690,6 +814,16 @@ module_exit(mid_thermal_module_exit);
 =======
 module_platform_driver(mid_thermal_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm = &mid_thermal_pm,
+	},
+	.probe = mid_thermal_probe,
+	.remove = mid_thermal_remove,
+	.id_table = therm_id_table,
+};
+
+module_platform_driver(mid_thermal_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Durgadoss R <durgadoss.r@intel.com>");
 MODULE_DESCRIPTION("Intel Medfield Platform Thermal Driver");

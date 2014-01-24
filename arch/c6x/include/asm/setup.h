@@ -11,11 +11,17 @@
 #ifndef _ASM_C6X_SETUP_H
 #define _ASM_C6X_SETUP_H
 
+<<<<<<< HEAD
 #define COMMAND_LINE_SIZE   1024
 
 #ifndef __ASSEMBLY__
 extern char c6x_command_line[COMMAND_LINE_SIZE];
 
+=======
+#include <uapi/asm/setup.h>
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 extern int c6x_add_memory(phys_addr_t start, unsigned long size);
 
 extern unsigned long ram_start;

@@ -27,14 +27,24 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/pm.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/spi/spi.h>
 #include <linux/spi/ads7846.h>
 #include <linux/regulator/consumer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 
 /*
@@ -239,7 +249,16 @@ static void __ads7846_disable(struct ads7846 *ts)
 /* Must be called with ts->lock held */
 static void __ads7846_enable(struct ads7846 *ts)
 {
+<<<<<<< HEAD
 	regulator_enable(ts->reg);
+=======
+	int error;
+
+	error = regulator_enable(ts->reg);
+	if (error != 0)
+		dev_err(&ts->spi->dev, "Failed to enable supply: %d\n", error);
+
+>>>>>>> refs/remotes/origin/master
 	ads7846_restart(ts);
 }
 
@@ -606,18 +625,24 @@ static ssize_t ads7846_disable_store(struct device *dev,
 {
 	struct ads7846 *ts = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long i;
 
 	if (strict_strtoul(buf, 10, &i))
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	int err;
 
 	err = kstrtouint(buf, 10, &i);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (i)
 		ads7846_disable(ts);
@@ -965,9 +990,16 @@ static int ads7846_resume(struct device *dev)
 
 static SIMPLE_DEV_PM_OPS(ads7846_pm, ads7846_suspend, ads7846_resume);
 
+<<<<<<< HEAD
 static int __devinit ads7846_setup_pendown(struct spi_device *spi, struct ads7846 *ts)
 {
 	struct ads7846_platform_data *pdata = spi->dev.platform_data;
+=======
+static int ads7846_setup_pendown(struct spi_device *spi,
+				 struct ads7846 *ts,
+				 const struct ads7846_platform_data *pdata)
+{
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	/*
@@ -981,6 +1013,7 @@ static int __devinit ads7846_setup_pendown(struct spi_device *spi, struct ads784
 	} else if (gpio_is_valid(pdata->gpio_pendown)) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = gpio_request(pdata->gpio_pendown, "ads7846_pendown");
 		if (err) {
 			dev_err(&spi->dev, "failed to request pendown GPIO%d\n",
@@ -993,18 +1026,29 @@ static int __devinit ads7846_setup_pendown(struct spi_device *spi, struct ads784
 				pdata->gpio_pendown);
 			gpio_free(pdata->gpio_pendown);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = gpio_request_one(pdata->gpio_pendown, GPIOF_IN,
 				       "ads7846_pendown");
 		if (err) {
 			dev_err(&spi->dev,
 				"failed to request/setup pendown GPIO%d: %d\n",
 				pdata->gpio_pendown, err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 
 		ts->gpio_pendown = pdata->gpio_pendown;
 
+<<<<<<< HEAD
+=======
+		if (pdata->gpio_pendown_debounce)
+			gpio_set_debounce(pdata->gpio_pendown,
+					  pdata->gpio_pendown_debounce);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_err(&spi->dev, "no get_pendown_state nor gpio_pendown?\n");
 		return -EINVAL;
@@ -1017,8 +1061,13 @@ static int __devinit ads7846_setup_pendown(struct spi_device *spi, struct ads784
  * Set up the transfers to read touchscreen state; this assumes we
  * use formula #2 for pressure, not #3.
  */
+<<<<<<< HEAD
 static void __devinit ads7846_setup_spi_msg(struct ads7846 *ts,
 				const struct ads7846_platform_data *pdata)
+=======
+static void ads7846_setup_spi_msg(struct ads7846 *ts,
+				  const struct ads7846_platform_data *pdata)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_message *m = &ts->msg[0];
 	struct spi_transfer *x = ts->xfer;
@@ -1216,33 +1265,133 @@ static void __devinit ads7846_setup_spi_msg(struct ads7846 *ts,
 	spi_message_add_tail(x, m);
 }
 
+<<<<<<< HEAD
 static int __devinit ads7846_probe(struct spi_device *spi)
 {
 	struct ads7846 *ts;
 	struct ads7846_packet *packet;
 	struct input_dev *input_dev;
 	struct ads7846_platform_data *pdata = spi->dev.platform_data;
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id ads7846_dt_ids[] = {
+	{ .compatible = "ti,tsc2046",	.data = (void *) 7846 },
+	{ .compatible = "ti,ads7843",	.data = (void *) 7843 },
+	{ .compatible = "ti,ads7845",	.data = (void *) 7845 },
+	{ .compatible = "ti,ads7846",	.data = (void *) 7846 },
+	{ .compatible = "ti,ads7873",	.data = (void *) 7873 },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, ads7846_dt_ids);
+
+static const struct ads7846_platform_data *ads7846_probe_dt(struct device *dev)
+{
+	struct ads7846_platform_data *pdata;
+	struct device_node *node = dev->of_node;
+	const struct of_device_id *match;
+
+	if (!node) {
+		dev_err(dev, "Device does not have associated DT data\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	match = of_match_device(ads7846_dt_ids, dev);
+	if (!match) {
+		dev_err(dev, "Unknown device model\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return ERR_PTR(-ENOMEM);
+
+	pdata->model = (unsigned long)match->data;
+
+	of_property_read_u16(node, "ti,vref-delay-usecs",
+			     &pdata->vref_delay_usecs);
+	of_property_read_u16(node, "ti,vref-mv", &pdata->vref_mv);
+	pdata->keep_vref_on = of_property_read_bool(node, "ti,keep-vref-on");
+
+	pdata->swap_xy = of_property_read_bool(node, "ti,swap-xy");
+
+	of_property_read_u16(node, "ti,settle-delay-usec",
+			     &pdata->settle_delay_usecs);
+	of_property_read_u16(node, "ti,penirq-recheck-delay-usecs",
+			     &pdata->penirq_recheck_delay_usecs);
+
+	of_property_read_u16(node, "ti,x-plate-ohms", &pdata->x_plate_ohms);
+	of_property_read_u16(node, "ti,y-plate-ohms", &pdata->y_plate_ohms);
+
+	of_property_read_u16(node, "ti,x-min", &pdata->x_min);
+	of_property_read_u16(node, "ti,y-min", &pdata->y_min);
+	of_property_read_u16(node, "ti,x-max", &pdata->x_max);
+	of_property_read_u16(node, "ti,y-max", &pdata->y_max);
+
+	of_property_read_u16(node, "ti,pressure-min", &pdata->pressure_min);
+	of_property_read_u16(node, "ti,pressure-max", &pdata->pressure_max);
+
+	of_property_read_u16(node, "ti,debounce-max", &pdata->debounce_max);
+	of_property_read_u16(node, "ti,debounce-tol", &pdata->debounce_tol);
+	of_property_read_u16(node, "ti,debounce-rep", &pdata->debounce_rep);
+
+	of_property_read_u32(node, "ti,pendown-gpio-debounce",
+			     &pdata->gpio_pendown_debounce);
+
+	pdata->wakeup = of_property_read_bool(node, "linux,wakeup");
+
+	pdata->gpio_pendown = of_get_named_gpio(dev->of_node, "pendown-gpio", 0);
+
+	return pdata;
+}
+#else
+static const struct ads7846_platform_data *ads7846_probe_dt(struct device *dev)
+{
+	dev_err(dev, "no platform data defined\n");
+	return ERR_PTR(-EINVAL);
+}
+#endif
+
+static int ads7846_probe(struct spi_device *spi)
+{
+	const struct ads7846_platform_data *pdata;
+	struct ads7846 *ts;
+	struct ads7846_packet *packet;
+	struct input_dev *input_dev;
+>>>>>>> refs/remotes/origin/master
 	unsigned long irq_flags;
 	int err;
 
 	if (!spi->irq) {
 		dev_dbg(&spi->dev, "no IRQ?\n");
+<<<<<<< HEAD
 		return -ENODEV;
 	}
 
 	if (!pdata) {
 		dev_dbg(&spi->dev, "no platform data?\n");
 		return -ENODEV;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* don't exceed max specified sample rate */
 	if (spi->max_speed_hz > (125000 * SAMPLE_BITS)) {
+<<<<<<< HEAD
 		dev_dbg(&spi->dev, "f(sample) %d KHz?\n",
+=======
+		dev_err(&spi->dev, "f(sample) %d KHz?\n",
+>>>>>>> refs/remotes/origin/master
 				(spi->max_speed_hz/SAMPLE_BITS)/1000);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* We'd set TX word size 8 bits and RX word size to 13 bits ... except
+=======
+	/*
+	 * We'd set TX word size 8 bits and RX word size to 13 bits ... except
+>>>>>>> refs/remotes/origin/master
 	 * that even if the hardware can do that, the SPI controller driver
 	 * may not.  So we stick to very-portable 8 bit words, both RX and TX.
 	 */
@@ -1260,22 +1409,45 @@ static int __devinit ads7846_probe(struct spi_device *spi)
 		goto err_free_mem;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, ts);
+=======
+	spi_set_drvdata(spi, ts);
+>>>>>>> refs/remotes/origin/master
 
 	ts->packet = packet;
 	ts->spi = spi;
 	ts->input = input_dev;
+<<<<<<< HEAD
 	ts->vref_mv = pdata->vref_mv;
 	ts->swap_xy = pdata->swap_xy;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&ts->lock);
 	init_waitqueue_head(&ts->wait);
 
+<<<<<<< HEAD
+=======
+	pdata = dev_get_platdata(&spi->dev);
+	if (!pdata) {
+		pdata = ads7846_probe_dt(&spi->dev);
+		if (IS_ERR(pdata))
+			return PTR_ERR(pdata);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ts->model = pdata->model ? : 7846;
 	ts->vref_delay_usecs = pdata->vref_delay_usecs ? : 100;
 	ts->x_plate_ohms = pdata->x_plate_ohms ? : 400;
 	ts->pressure_max = pdata->pressure_max ? : ~0;
 
+<<<<<<< HEAD
+=======
+	ts->vref_mv = pdata->vref_mv;
+	ts->swap_xy = pdata->swap_xy;
+
+>>>>>>> refs/remotes/origin/master
 	if (pdata->filter != NULL) {
 		if (pdata->filter_init != NULL) {
 			err = pdata->filter_init(pdata, &ts->filter_data);
@@ -1296,7 +1468,11 @@ static int __devinit ads7846_probe(struct spi_device *spi)
 		ts->filter = ads7846_no_filter;
 	}
 
+<<<<<<< HEAD
 	err = ads7846_setup_pendown(spi, ts);
+=======
+	err = ads7846_setup_pendown(spi, ts, pdata);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto err_cleanup_filter;
 
@@ -1385,6 +1561,16 @@ static int __devinit ads7846_probe(struct spi_device *spi)
 
 	device_init_wakeup(&spi->dev, pdata->wakeup);
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If device does not carry platform data we must have allocated it
+	 * when parsing DT data.
+	 */
+	if (!dev_get_platdata(&spi->dev))
+		devm_kfree(&spi->dev, (void *)pdata);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  err_remove_attr_group:
@@ -1410,9 +1596,15 @@ static int __devinit ads7846_probe(struct spi_device *spi)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ads7846_remove(struct spi_device *spi)
 {
 	struct ads7846 *ts = dev_get_drvdata(&spi->dev);
+=======
+static int ads7846_remove(struct spi_device *spi)
+{
+	struct ads7846 *ts = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	device_init_wakeup(&spi->dev, false);
 
@@ -1451,6 +1643,7 @@ static struct spi_driver ads7846_driver = {
 	.driver = {
 		.name	= "ads7846",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1476,6 +1669,17 @@ module_exit(ads7846_exit);
 =======
 module_spi_driver(ads7846_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner	= THIS_MODULE,
+		.pm	= &ads7846_pm,
+		.of_match_table = of_match_ptr(ads7846_dt_ids),
+	},
+	.probe		= ads7846_probe,
+	.remove		= ads7846_remove,
+};
+
+module_spi_driver(ads7846_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ADS7846 TouchScreen Driver");
 MODULE_LICENSE("GPL");

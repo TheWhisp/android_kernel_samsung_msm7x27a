@@ -1,6 +1,7 @@
 /*======================================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     An elsa_cs PCMCIA client driver
 
     This driver is for the Elsa PCM ISDN Cards, i.e. the MicroLink
@@ -36,6 +37,8 @@
 
 ======================================================================*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   An elsa_cs PCMCIA client driver
 
   This driver is for the Elsa PCM ISDN Cards, i.e. the MicroLink
@@ -70,7 +73,10 @@
   file under either the MPL or the GPL.
 
   ======================================================================*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -82,9 +88,12 @@
 #include <linux/ioport.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/cisreg.h>
@@ -103,6 +112,7 @@ MODULE_LICENSE("Dual MPL/GPL");
 static int protocol = 2;        /* EURO-ISDN Default */
 module_param(protocol, int, 0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int elsa_cs_config(struct pcmcia_device *link) __devinit ;
 =======
@@ -140,6 +150,20 @@ static int __devinit elsa_cs_probe(struct pcmcia_device *link)
 
     return elsa_cs_config(link);
 =======
+=======
+static int elsa_cs_config(struct pcmcia_device *link);
+static void elsa_cs_release(struct pcmcia_device *link);
+static void elsa_cs_detach(struct pcmcia_device *p_dev);
+
+typedef struct local_info_t {
+	struct pcmcia_device	*p_dev;
+	int                 busy;
+	int			cardnr;
+} local_info_t;
+
+static int elsa_cs_probe(struct pcmcia_device *link)
+{
+>>>>>>> refs/remotes/origin/master
 	local_info_t *local;
 
 	dev_dbg(&link->dev, "elsa_cs_attach()\n");
@@ -154,10 +178,16 @@ static int __devinit elsa_cs_probe(struct pcmcia_device *link)
 	local->cardnr = -1;
 
 	return elsa_cs_config(link);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 } /* elsa_cs_attach */
 
 static void __devexit elsa_cs_detach(struct pcmcia_device *link)
+=======
+} /* elsa_cs_attach */
+
+static void elsa_cs_detach(struct pcmcia_device *link)
+>>>>>>> refs/remotes/origin/master
 {
 	local_info_t *info = link->priv;
 
@@ -193,6 +223,7 @@ static int elsa_cs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devinit elsa_cs_config(struct pcmcia_device *link)
 {
 <<<<<<< HEAD
@@ -232,6 +263,10 @@ failed:
     elsa_cs_release(link);
     return -ENODEV;
 =======
+=======
+static int elsa_cs_config(struct pcmcia_device *link)
+{
+>>>>>>> refs/remotes/origin/master
 	int i;
 	IsdnCard_t icard;
 
@@ -267,11 +302,15 @@ failed:
 failed:
 	elsa_cs_release(link);
 	return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* elsa_cs_config */
 
 static void elsa_cs_release(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     local_info_t *local = link->priv;
 
@@ -286,6 +325,8 @@ static void elsa_cs_release(struct pcmcia_device *link)
 
     pcmcia_disable_device(link);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	local_info_t *local = link->priv;
 
 	dev_dbg(&link->dev, "elsa_cs_release(0x%p)\n", link);
@@ -298,7 +339,10 @@ static void elsa_cs_release(struct pcmcia_device *link)
 	}
 
 	pcmcia_disable_device(link);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* elsa_cs_release */
 
 static int elsa_suspend(struct pcmcia_device *link)
@@ -306,10 +350,14 @@ static int elsa_suspend(struct pcmcia_device *link)
 	local_info_t *dev = link->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         dev->busy = 1;
 =======
 	dev->busy = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->busy = 1;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -319,10 +367,14 @@ static int elsa_resume(struct pcmcia_device *link)
 	local_info_t *dev = link->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         dev->busy = 0;
 =======
 	dev->busy = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->busy = 0;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -338,11 +390,16 @@ static struct pcmcia_driver elsa_cs_driver = {
 	.owner		= THIS_MODULE,
 	.name		= "elsa_cs",
 	.probe		= elsa_cs_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(elsa_cs_detach),
+=======
+	.remove		= elsa_cs_detach,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= elsa_ids,
 	.suspend	= elsa_suspend,
 	.resume		= elsa_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_elsa_cs(void)
 {
@@ -356,3 +413,6 @@ static void __exit exit_elsa_cs(void)
 
 module_init(init_elsa_cs);
 module_exit(exit_elsa_cs);
+=======
+module_pcmcia_driver(elsa_cs_driver);
+>>>>>>> refs/remotes/origin/master

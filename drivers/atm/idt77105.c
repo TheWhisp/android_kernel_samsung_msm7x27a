@@ -17,9 +17,12 @@
 #include <linux/spinlock.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/param.h>
 #include <asm/uaccess.h>
 

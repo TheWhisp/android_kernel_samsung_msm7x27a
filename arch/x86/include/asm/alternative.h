@@ -5,6 +5,10 @@
 #include <linux/stddef.h>
 #include <linux/stringify.h>
 #include <asm/asm.h>
+<<<<<<< HEAD
+=======
+#include <asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Alternative inline assembly for SMP.
@@ -29,10 +33,17 @@
 
 #ifdef CONFIG_SMP
 #define LOCK_PREFIX_HERE \
+<<<<<<< HEAD
 		".section .smp_locks,\"a\"\n"	\
 		".balign 4\n"			\
 		".long 671f - .\n" /* offset */	\
 		".previous\n"			\
+=======
+		".pushsection .smp_locks,\"a\"\n"	\
+		".balign 4\n"				\
+		".long 671f - .\n" /* offset */		\
+		".popsection\n"				\
+>>>>>>> refs/remotes/origin/master
 		"671:"
 
 #define LOCK_PREFIX LOCK_PREFIX_HERE "\n\tlock; "
@@ -44,6 +55,7 @@
 
 struct alt_instr {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 *instr;		/* original instruction */
 	u8 *replacement;
 	u16 cpuid;		/* cpuid bit set for replacement */
@@ -53,12 +65,17 @@ struct alt_instr {
 	u32 pad2;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	s32 instr_offset;	/* original instruction */
 	s32 repl_offset;	/* offset to replacement instruction */
 	u16 cpuid;		/* cpuid bit set for replacement */
 	u8  instrlen;		/* length of original instruction */
 	u8  replacementlen;	/* length of new instruction, <= instrlen */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern void alternative_instructions(void);
@@ -71,7 +88,11 @@ extern void alternatives_smp_module_add(struct module *mod, char *name,
 					void *locks, void *locks_end,
 					void *text, void *text_end);
 extern void alternatives_smp_module_del(struct module *mod);
+<<<<<<< HEAD
 extern void alternatives_smp_switch(int smp);
+=======
+extern void alternatives_enable_smp(void);
+>>>>>>> refs/remotes/origin/master
 extern int alternatives_text_reserved(void *start, void *end);
 extern bool skip_smp_alternatives;
 #else
@@ -79,13 +100,18 @@ static inline void alternatives_smp_module_add(struct module *mod, char *name,
 					       void *locks, void *locks_end,
 					       void *text, void *text_end) {}
 static inline void alternatives_smp_module_del(struct module *mod) {}
+<<<<<<< HEAD
 static inline void alternatives_smp_switch(int smp) {}
+=======
+static inline void alternatives_enable_smp(void) {}
+>>>>>>> refs/remotes/origin/master
 static inline int alternatives_text_reserved(void *start, void *end)
 {
 	return 0;
 }
 #endif	/* CONFIG_SMP */
 
+<<<<<<< HEAD
 /* alternative assembly primitive: */
 #define ALTERNATIVE(oldinstr, newinstr, feature)			\
 									\
@@ -109,6 +135,56 @@ static inline int alternatives_text_reserved(void *start, void *end)
       ".section .altinstr_replacement, \"ax\"\n"			\
       "663:\n\t" newinstr "\n664:\n"		/* replacement     */	\
       ".previous"
+=======
+#define OLDINSTR(oldinstr)	"661:\n\t" oldinstr "\n662:\n"
+
+#define b_replacement(number)	"663"#number
+#define e_replacement(number)	"664"#number
+
+#define alt_slen "662b-661b"
+#define alt_rlen(number) e_replacement(number)"f-"b_replacement(number)"f"
+
+#define ALTINSTR_ENTRY(feature, number)					      \
+	" .long 661b - .\n"				/* label           */ \
+	" .long " b_replacement(number)"f - .\n"	/* new instruction */ \
+	" .word " __stringify(feature) "\n"		/* feature bit     */ \
+	" .byte " alt_slen "\n"				/* source len      */ \
+	" .byte " alt_rlen(number) "\n"			/* replacement len */
+
+#define DISCARD_ENTRY(number)				/* rlen <= slen */    \
+	" .byte 0xff + (" alt_rlen(number) ") - (" alt_slen ")\n"
+
+#define ALTINSTR_REPLACEMENT(newinstr, feature, number)	/* replacement */     \
+	b_replacement(number)":\n\t" newinstr "\n" e_replacement(number) ":\n\t"
+
+/* alternative assembly primitive: */
+#define ALTERNATIVE(oldinstr, newinstr, feature)			\
+	OLDINSTR(oldinstr)						\
+	".pushsection .altinstructions,\"a\"\n"				\
+	ALTINSTR_ENTRY(feature, 1)					\
+	".popsection\n"							\
+	".pushsection .discard,\"aw\",@progbits\n"			\
+	DISCARD_ENTRY(1)						\
+	".popsection\n"							\
+	".pushsection .altinstr_replacement, \"ax\"\n"			\
+	ALTINSTR_REPLACEMENT(newinstr, feature, 1)			\
+	".popsection"
+
+#define ALTERNATIVE_2(oldinstr, newinstr1, feature1, newinstr2, feature2)\
+	OLDINSTR(oldinstr)						\
+	".pushsection .altinstructions,\"a\"\n"				\
+	ALTINSTR_ENTRY(feature1, 1)					\
+	ALTINSTR_ENTRY(feature2, 2)					\
+	".popsection\n"							\
+	".pushsection .discard,\"aw\",@progbits\n"			\
+	DISCARD_ENTRY(1)						\
+	DISCARD_ENTRY(2)						\
+	".popsection\n"							\
+	".pushsection .altinstr_replacement, \"ax\"\n"			\
+	ALTINSTR_REPLACEMENT(newinstr1, feature1, 1)			\
+	ALTINSTR_REPLACEMENT(newinstr2, feature2, 2)			\
+	".popsection"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This must be included *after* the definition of ALTERNATIVE due to
@@ -157,20 +233,42 @@ static inline int alternatives_text_reserved(void *start, void *end)
 		: output : [old] "i" (oldfunc), [new] "i" (newfunc), ## input)
 
 /*
+<<<<<<< HEAD
+=======
+ * Like alternative_call, but there are two features and respective functions.
+ * If CPU has feature2, function2 is used.
+ * Otherwise, if CPU has feature1, function1 is used.
+ * Otherwise, old function is used.
+ */
+#define alternative_call_2(oldfunc, newfunc1, feature1, newfunc2, feature2,   \
+			   output, input...)				      \
+	asm volatile (ALTERNATIVE_2("call %P[old]", "call %P[new1]", feature1,\
+		"call %P[new2]", feature2)				      \
+		: output : [old] "i" (oldfunc), [new1] "i" (newfunc1),	      \
+		[new2] "i" (newfunc2), ## input)
+
+/*
+>>>>>>> refs/remotes/origin/master
  * use this macro(s) if you need more than one output parameter
  * in alternative_io
  */
 #define ASM_OUTPUT2(a...) a
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * use this macro if you need clobbers but no inputs in
  * alternative_{input,io,call}()
  */
 #define ASM_NO_INPUT_CLOBBER(clbr...) "i" (0) : clbr
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct paravirt_patch_site;
 #ifdef CONFIG_PARAVIRT
 void apply_paravirt(struct paravirt_patch_site *start,
@@ -196,6 +294,7 @@ extern void *text_poke_early(void *addr, const void *opcode, size_t len);
  * no thread can be preempted in the instructions being modified (no iret to an
  * invalid instruction possible) or if the instructions are changed from a
  * consistent state to another consistent state atomically.
+<<<<<<< HEAD
  * More care must be taken when modifying code in the SMP case because of
  * Intel's errata. text_poke_smp() takes care that errata, but still
  * doesn't support NMI/MCE handler code modifying.
@@ -211,5 +310,13 @@ struct text_poke_param {
 extern void *text_poke(void *addr, const void *opcode, size_t len);
 extern void *text_poke_smp(void *addr, const void *opcode, size_t len);
 extern void text_poke_smp_batch(struct text_poke_param *params, int n);
+=======
+ * On the local CPU you need to be protected again NMI or MCE handlers seeing an
+ * inconsistent instruction while you patch.
+ */
+extern void *text_poke(void *addr, const void *opcode, size_t len);
+extern int poke_int3_handler(struct pt_regs *regs);
+extern void *text_poke_bp(void *addr, const void *opcode, size_t len, void *handler);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_X86_ALTERNATIVE_H */

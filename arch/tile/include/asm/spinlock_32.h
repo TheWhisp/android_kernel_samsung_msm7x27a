@@ -18,6 +18,7 @@
 #define _ASM_TILE_SPINLOCK_32_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/page.h>
 #include <asm/system.h>
@@ -25,6 +26,10 @@
 #include <linux/atomic.h>
 #include <asm/page.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/compiler.h>
 
 /*

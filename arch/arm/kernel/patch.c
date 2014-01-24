@@ -5,7 +5,10 @@
 #include <asm/cacheflush.h>
 #include <asm/smp_plat.h>
 #include <asm/opcodes.h>
+<<<<<<< HEAD
 #include <asm/mmu_writeable.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "patch.h"
 
@@ -18,10 +21,13 @@ void __kprobes __patch_text(void *addr, unsigned int insn)
 {
 	bool thumb2 = IS_ENABLED(CONFIG_THUMB2_KERNEL);
 	int size;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	mem_text_writeable_spinlock(&flags);
 	mem_text_address_writeable((unsigned long)addr);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (thumb2 && __opcode_is_thumb16(insn)) {
 		*(u16 *)addr = __opcode_to_mem_thumb16(insn);
@@ -47,9 +53,12 @@ void __kprobes __patch_text(void *addr, unsigned int insn)
 
 	flush_icache_range((uintptr_t)(addr),
 			   (uintptr_t)(addr) + size);
+<<<<<<< HEAD
 
 	mem_text_address_restore();
 	mem_text_writeable_spinunlock(&flags);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __kprobes patch_text_stop_machine(void *data)

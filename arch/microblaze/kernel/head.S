@@ -64,12 +64,16 @@ real_start:
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfs	r1, rmsr
 	andi	r1, r1, ~2
 	mts	rmsr, r1
 =======
 	mts	rmsr, r0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mts	rmsr, r0
+>>>>>>> refs/remotes/origin/master
 /*
  * According to Xilinx, msrclr instruction behaves like 'mfs rX,rpc'
  * if the msrclr instruction is not enabled. We use this to detect
@@ -78,9 +82,13 @@ real_start:
  * r8 != 0 - msr instructions are not implemented
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mfs	r1, rmsr
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mfs	r1, rmsr
+>>>>>>> refs/remotes/origin/master
 	msrclr	r8, 0 /* clear nothing - just read msr for test */
 	cmpu	r8, r8, r1 /* r1 must contain msr reg content */
 
@@ -105,10 +113,14 @@ _prepare_copy_fdt:
 	or	r11, r0, r0 /* incremment */
 	ori	r4, r0, TOPHYS(_fdt_start)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ori	r3, r0, (0x4000 - 4)
 =======
 	ori	r3, r0, (0x8000 - 4)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ori	r3, r0, (0x8000 - 4)
+>>>>>>> refs/remotes/origin/master
 _copy_fdt:
 	lw	r12, r7, r11 /* r12 = r7 + r11 */
 	sw	r12, r4, r11 /* addr[r4 + r11] = r12 */
@@ -122,6 +134,7 @@ no_fdt_arg:
 #ifndef CONFIG_CMDLINE_BOOL
 /*
  * handling command line
+<<<<<<< HEAD
  * copy command line to __init_end. There is space for storing command line.
  */
 	or	r6, r0, r0		/* incremment */
@@ -136,10 +149,31 @@ _copy_command_line:
 	addik	r3, r3, -1		/* descrement loop */
 	addik	r5, r4, 0		/* add new space for command line */
 	tovirt(r5,r5)
+=======
+ * copy command line directly to cmd_line placed in data section.
+ */
+	beqid	r5, skip	/* Skip if NULL pointer */
+	or	r11, r0, r0		/* incremment */
+	ori	r4, r0, cmd_line	/* load address of command line */
+	tophys(r4,r4)			/* convert to phys address */
+	ori	r3, r0, COMMAND_LINE_SIZE - 1 /* number of loops */
+_copy_command_line:
+	/* r2=r5+r6 - r5 contain pointer to command line */
+	lbu	r2, r5, r11
+	beqid	r2, skip		/* Skip if no data */
+	sb	r2, r4, r11		/* addr[r4+r6]= r2 */
+	addik	r11, r11, 1		/* increment counting */
+	bgtid	r3, _copy_command_line	/* loop for all entries       */
+	addik	r3, r3, -1		/* decrement loop */
+	addik	r5, r4, 0		/* add new space for command line */
+	tovirt(r5,r5)
+skip:
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_CMDLINE_BOOL */
 
 #ifdef NOT_COMPILE
 /* save bram context */
+<<<<<<< HEAD
 	or	r6, r0, r0				/* incremment */
 	ori	r4, r0, TOPHYS(_bram_load_start)	/* save bram context */
 	ori	r3, r0, (LMB_SIZE - 4)
@@ -147,6 +181,15 @@ _copy_bram:
 	lw	r7, r0, r6		/* r7 = r0 + r6 */
 	sw	r7, r4, r6		/* addr[r4 + r6] = r7*/
 	addik	r6, r6, 4		/* increment counting */
+=======
+	or	r11, r0, r0				/* incremment */
+	ori	r4, r0, TOPHYS(_bram_load_start)	/* save bram context */
+	ori	r3, r0, (LMB_SIZE - 4)
+_copy_bram:
+	lw	r7, r0, r11		/* r7 = r0 + r6 */
+	sw	r7, r4, r11		/* addr[r4 + r6] = r7 */
+	addik	r11, r11, 4		/* increment counting */
+>>>>>>> refs/remotes/origin/master
 	bgtid	r3, _copy_bram		/* loop for all entries */
 	addik	r3, r3, -4		/* descrement loop */
 #endif
@@ -163,9 +206,13 @@ _invalidate:
 	mts	rtlbx, r3
 	mts	rtlbhi, r0			/* flush: ensure V is clear   */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mts	rtlblo, r0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mts	rtlblo, r0
+>>>>>>> refs/remotes/origin/master
 	bgtid	r3, _invalidate		/* loop for all entries       */
 	addik	r3, r3, -1
 	/* sync */
@@ -186,11 +233,18 @@ _invalidate:
 	tophys(r4,r3)			/* Load the kernel physical address */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* start to do TLB calculation */
 	addik	r12, r0, _end
 	rsub	r12, r3, r12
 	addik	r12, r12, CONFIG_KERNEL_PAD /* that's the pad */
+=======
+	/* start to do TLB calculation */
+	addik	r12, r0, _end
+	rsub	r12, r3, r12
+	addik	r12, r12, CONFIG_LOWMEM_SIZE >> PTE_SHIFT /* that's the pad */
+>>>>>>> refs/remotes/origin/master
 
 	or r9, r0, r0 /* TLB0 = 0 */
 	or r10, r0, r0 /* TLB1 = 0 */
@@ -234,7 +288,10 @@ GT20: /* TLB1 is 16MB - kernel size >20MB */
 	addik	r10, r0, 0x1000000 /* means TLB1 is 16MB */
 tlb_end:
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Configure and load two entries into TLB slots 0 and 1.
 	 * In case we are pinning TLBs, these are reserved in by the
@@ -245,11 +302,14 @@ tlb_end:
 	ori	r4,r4,(TLB_WR | TLB_EX)	/* Set the write and execute bits */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	andi	r3,r3,0xfffffc00	/* Mask off the effective page number */
 	ori	r3,r3,(TLB_VALID | TLB_PAGESZ(PAGESZ_16M))
 
 	mts     rtlbx,r0		/* TLB slow 0 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * TLB0 is always used - check if is not zero (r9 stores TLB0 value)
 	 * if is use TLB1 value and clear it (r10 stores TLB1 value)
@@ -278,11 +338,15 @@ tlb0_not_zero:
 	/* Load tlb_skip size value which is index to first unused TLB entry */
 	lwi	r11, r0, TOPHYS(tlb_skip)
 	mts     rtlbx,r11		/* TLB slow 0 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mts	rtlblo,r4		/* Load the data portion of the entry */
 	mts	rtlbhi,r3		/* Load the tag portion of the entry */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	addik	r4, r4, 0x01000000	/* Map next 16 M entries */
 	addik	r3, r3, 0x01000000
@@ -290,6 +354,8 @@ tlb0_not_zero:
 	ori	r6,r0,1			/* TLB slot 1 */
 	mts     rtlbx,r6
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Increase tlb_skip size */
 	addik	r11, r11, 1
 	swi	r11, r0, TOPHYS(tlb_skip)
@@ -318,23 +384,33 @@ tlb0_not_zero:
 
 	lwi	r11, r0, TOPHYS(tlb_skip)
 	mts     rtlbx, r11		/* r11 is used from TLB0 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mts	rtlblo,r4		/* Load the data portion of the entry */
 	mts	rtlbhi,r3		/* Load the tag portion of the entry */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Increase tlb_skip size */
 	addik	r11, r11, 1
 	swi	r11, r0, TOPHYS(tlb_skip)
 
 jump_over2:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Load a TLB entry for LMB, since we need access to
 	 * the exception vectors, using a 4k real==virtual mapping.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ori	r6,r0,3			/* TLB slot 3 */
 =======
@@ -342,6 +418,11 @@ jump_over2:
 	ori	r6, r0, MICROBLAZE_LMB_TLB_ID
 >>>>>>> refs/remotes/origin/cm-10.0
 	mts     rtlbx,r6
+=======
+	/* Use temporary TLB_ID for LMB - clear this temporary mapping later */
+	ori	r11, r0, MICROBLAZE_LMB_TLB_ID
+	mts     rtlbx,r11
+>>>>>>> refs/remotes/origin/master
 
 	ori	r4,r0,(TLB_WR | TLB_EX)
 	ori	r3,r0,(TLB_VALID | TLB_PAGESZ(PAGESZ_4K))
@@ -380,12 +461,17 @@ start_here:
 	 * the function.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addik	r9, r0, machine_early_init
 	brald	r15, r9
 =======
 	addik	r11, r0, machine_early_init
 	brald	r15, r11
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addik	r11, r0, machine_early_init
+	brald	r15, r11
+>>>>>>> refs/remotes/origin/master
 	nop
 
 #ifndef CONFIG_MMU
@@ -415,11 +501,15 @@ start_here:
 	/* Load up the kernel context */
 kernel_load_context:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	# Keep entry 0 and 1 valid. Entry 3 mapped to LMB can go away.
 	ori	r5,r0,3
 =======
 	ori	r5, r0, MICROBLAZE_LMB_TLB_ID
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ori	r5, r0, MICROBLAZE_LMB_TLB_ID
+>>>>>>> refs/remotes/origin/master
 	mts     rtlbx,r5
 	nop
 	mts	rtlbhi,r0

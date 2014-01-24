@@ -23,9 +23,13 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/ac97_codec.h>
 #include <sound/asoundef.h>
 #include <sound/core.h>
@@ -576,8 +580,13 @@ static void oxygen_card_free(struct snd_card *card)
 	oxygen_shutdown(chip);
 	if (chip->irq >= 0)
 		free_irq(chip->irq, chip);
+<<<<<<< HEAD
 	flush_work_sync(&chip->spdif_input_bits_work);
 	flush_work_sync(&chip->gpio_work);
+=======
+	flush_work(&chip->spdif_input_bits_work);
+	flush_work(&chip->gpio_work);
+>>>>>>> refs/remotes/origin/master
 	chip->model.cleanup(chip);
 	kfree(chip->model_data);
 	mutex_destroy(&chip->mutex);
@@ -660,10 +669,14 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
 
 	err = request_irq(pci->irq, oxygen_interrupt, IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  DRIVER, chip);
 =======
 			  KBUILD_MODNAME, chip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  KBUILD_MODNAME, chip);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		snd_printk(KERN_ERR "cannot grab interrupt %d\n", pci->irq);
 		goto err_card;
@@ -687,11 +700,16 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
 
 	if (chip->model.device_config & (MIDI_OUTPUT | MIDI_INPUT)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned int info_flags = MPU401_INFO_INTEGRATED;
 =======
 		unsigned int info_flags =
 				MPU401_INFO_INTEGRATED | MPU401_INFO_IRQ_HOOK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned int info_flags =
+				MPU401_INFO_INTEGRATED | MPU401_INFO_IRQ_HOOK;
+>>>>>>> refs/remotes/origin/master
 		if (chip->model.device_config & MIDI_OUTPUT)
 			info_flags |= MPU401_INFO_OUTPUT;
 		if (chip->model.device_config & MIDI_INPUT)
@@ -699,11 +717,15 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
 		err = snd_mpu401_uart_new(card, 0, MPU401_HW_CMIPCI,
 					  chip->addr + OXYGEN_MPU401,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					  info_flags, 0, 0,
 					  &chip->midi);
 =======
 					  info_flags, -1, &chip->midi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  info_flags, -1, &chip->midi);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			goto err_card;
 	}
@@ -738,6 +760,7 @@ EXPORT_SYMBOL(oxygen_pci_probe);
 void oxygen_pci_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
+<<<<<<< HEAD
 	pci_set_drvdata(pci, NULL);
 }
 EXPORT_SYMBOL(oxygen_pci_remove);
@@ -746,6 +769,16 @@ EXPORT_SYMBOL(oxygen_pci_remove);
 int oxygen_pci_suspend(struct pci_dev *pci, pm_message_t state)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+}
+EXPORT_SYMBOL(oxygen_pci_remove);
+
+#ifdef CONFIG_PM_SLEEP
+static int oxygen_pci_suspend(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct oxygen *chip = card->private_data;
 	unsigned int i, saved_interrupt_mask;
 
@@ -766,16 +799,27 @@ int oxygen_pci_suspend(struct pci_dev *pci, pm_message_t state)
 	spin_unlock_irq(&chip->reg_lock);
 
 	synchronize_irq(chip->irq);
+<<<<<<< HEAD
 	flush_work_sync(&chip->spdif_input_bits_work);
 	flush_work_sync(&chip->gpio_work);
+=======
+	flush_work(&chip->spdif_input_bits_work);
+	flush_work(&chip->gpio_work);
+>>>>>>> refs/remotes/origin/master
 	chip->interrupt_mask = saved_interrupt_mask;
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
 	return 0;
 }
 EXPORT_SYMBOL(oxygen_pci_suspend);
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static const u32 registers_to_restore[OXYGEN_IO_SIZE / 32] = {
 	0xffffffff, 0x00ff077f, 0x00011d08, 0x007f00ff,
@@ -803,9 +847,16 @@ static void oxygen_restore_ac97(struct oxygen *chip, unsigned int codec)
 					  chip->saved_ac97_registers[codec][i]);
 }
 
+<<<<<<< HEAD
 int oxygen_pci_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+static int oxygen_pci_resume(struct device *dev)
+{
+	struct pci_dev *pci = to_pci_dev(dev);
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct oxygen *chip = card->private_data;
 	unsigned int i;
 
@@ -836,8 +887,15 @@ int oxygen_pci_resume(struct pci_dev *pci)
 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(oxygen_pci_resume);
 #endif /* CONFIG_PM */
+=======
+
+SIMPLE_DEV_PM_OPS(oxygen_pci_pm, oxygen_pci_suspend, oxygen_pci_resume);
+EXPORT_SYMBOL(oxygen_pci_pm);
+#endif /* CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 void oxygen_pci_shutdown(struct pci_dev *pci)
 {

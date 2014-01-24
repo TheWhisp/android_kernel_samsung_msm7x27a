@@ -17,7 +17,12 @@
 #include <mach/map.h>
 #include <mach/regs-clock.h>
 #include <plat/gpio-cfg.h>
+<<<<<<< HEAD
 #include <plat/ata.h>
+=======
+#include <mach/gpio-samsung.h>
+#include <linux/platform_data/ata-samsung_cf.h>
+>>>>>>> refs/remotes/origin/master
 
 void s3c64xx_ide_setup_gpio(void)
 {

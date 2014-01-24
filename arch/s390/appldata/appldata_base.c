@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  * arch/s390/appldata/appldata_base.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * Base infrastructure for Linux-z/VM Monitor Stream, Stage 1.
  * Exports appldata_register_ops() and appldata_unregister_ops() for the
  * data gathering modules.
@@ -29,7 +32,11 @@
 #include <linux/suspend.h>
 #include <linux/platform_device.h>
 #include <asm/appldata.h>
+<<<<<<< HEAD
 #include <asm/timer.h>
+=======
+#include <asm/vtimer.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/io.h>
 #include <asm/smp.h>
@@ -50,9 +57,15 @@ static struct platform_device *appldata_pdev;
  * /proc entries (sysctl)
  */
 static const char appldata_proc_name[APPLDATA_PROC_NAME_LENGTH] = "appldata";
+<<<<<<< HEAD
 static int appldata_timer_handler(ctl_table *ctl, int write,
 				  void __user *buffer, size_t *lenp, loff_t *ppos);
 static int appldata_interval_handler(ctl_table *ctl, int write,
+=======
+static int appldata_timer_handler(struct ctl_table *ctl, int write,
+				  void __user *buffer, size_t *lenp, loff_t *ppos);
+static int appldata_interval_handler(struct ctl_table *ctl, int write,
+>>>>>>> refs/remotes/origin/master
 					 void __user *buffer,
 					 size_t *lenp, loff_t *ppos);
 
@@ -84,8 +97,12 @@ static struct ctl_table appldata_dir_table[] = {
 /*
  * Timer
  */
+<<<<<<< HEAD
 static DEFINE_PER_CPU(struct vtimer_list, appldata_timer);
 static atomic_t appldata_expire_count = ATOMIC_INIT(0);
+=======
+static struct vtimer_list appldata_timer;
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_SPINLOCK(appldata_timer_lock);
 static int appldata_interval = APPLDATA_CPU_INTERVAL;
@@ -115,10 +132,14 @@ static LIST_HEAD(appldata_ops_list);
  */
 static void appldata_timer_function(unsigned long data)
 {
+<<<<<<< HEAD
 	if (atomic_dec_and_test(&appldata_expire_count)) {
 		atomic_set(&appldata_expire_count, num_online_cpus());
 		queue_work(appldata_wq, (struct work_struct *) data);
 	}
+=======
+	queue_work(appldata_wq, (struct work_struct *) data);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -131,7 +152,10 @@ static void appldata_work_fn(struct work_struct *work)
 	struct list_head *lh;
 	struct appldata_ops *ops;
 
+<<<<<<< HEAD
 	get_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&appldata_ops_mutex);
 	list_for_each(lh, &appldata_ops_list) {
 		ops = list_entry(lh, struct appldata_ops, list);
@@ -140,7 +164,10 @@ static void appldata_work_fn(struct work_struct *work)
 		}
 	}
 	mutex_unlock(&appldata_ops_mutex);
+<<<<<<< HEAD
 	put_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -168,6 +195,7 @@ int appldata_diag(char record_nr, u16 function, unsigned long buffer,
 
 /****************************** /proc stuff **********************************/
 
+<<<<<<< HEAD
 /*
  * appldata_mod_vtimer_wrap()
  *
@@ -182,6 +210,8 @@ static void __appldata_mod_vtimer_wrap(void *p) {
 	mod_virt_timer_periodic(args->timer, args->expires);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define APPLDATA_ADD_TIMER	0
 #define APPLDATA_DEL_TIMER	1
 #define APPLDATA_MOD_TIMER	2
@@ -192,16 +222,23 @@ static void __appldata_mod_vtimer_wrap(void *p) {
  * Add, delete or modify virtual timers on all online cpus.
  * The caller needs to get the appldata_timer_lock spinlock.
  */
+<<<<<<< HEAD
 static void
 __appldata_vtimer_setup(int cmd)
 {
 	u64 per_cpu_interval;
 	int i;
+=======
+static void __appldata_vtimer_setup(int cmd)
+{
+	u64 timer_interval = (u64) appldata_interval * 1000 * TOD_MICRO;
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case APPLDATA_ADD_TIMER:
 		if (appldata_timer_active)
 			break;
+<<<<<<< HEAD
 		per_cpu_interval = (u64) (appldata_interval*1000 /
 					  num_online_cpus()) * TOD_MICRO;
 		for_each_online_cpu(i) {
@@ -235,6 +272,22 @@ __appldata_vtimer_setup(int cmd)
 			smp_call_function_single(i, __appldata_mod_vtimer_wrap,
 						 &args, 1);
 		}
+=======
+		appldata_timer.expires = timer_interval;
+		add_virt_timer_periodic(&appldata_timer);
+		appldata_timer_active = 1;
+		break;
+	case APPLDATA_DEL_TIMER:
+		del_virt_timer(&appldata_timer);
+		if (!appldata_timer_active)
+			break;
+		appldata_timer_active = 0;
+		break;
+	case APPLDATA_MOD_TIMER:
+		if (!appldata_timer_active)
+			break;
+		mod_virt_timer_periodic(&appldata_timer, timer_interval);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -244,10 +297,17 @@ __appldata_vtimer_setup(int cmd)
  * Start/Stop timer, show status of timer (0 = not active, 1 = active)
  */
 static int
+<<<<<<< HEAD
 appldata_timer_handler(ctl_table *ctl, int write,
 			   void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	int len;
+=======
+appldata_timer_handler(struct ctl_table *ctl, int write,
+			   void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	unsigned int len;
+>>>>>>> refs/remotes/origin/master
 	char buf[2];
 
 	if (!*lenp || *ppos) {
@@ -255,7 +315,13 @@ appldata_timer_handler(ctl_table *ctl, int write,
 		return 0;
 	}
 	if (!write) {
+<<<<<<< HEAD
 		len = sprintf(buf, appldata_timer_active ? "1\n" : "0\n");
+=======
+		strncpy(buf, appldata_timer_active ? "1\n" : "0\n",
+			ARRAY_SIZE(buf));
+		len = strnlen(buf, ARRAY_SIZE(buf));
+>>>>>>> refs/remotes/origin/master
 		if (len > *lenp)
 			len = *lenp;
 		if (copy_to_user(buffer, buf, len))
@@ -265,14 +331,20 @@ appldata_timer_handler(ctl_table *ctl, int write,
 	len = *lenp;
 	if (copy_from_user(buf, buffer, len > sizeof(buf) ? sizeof(buf) : len))
 		return -EFAULT;
+<<<<<<< HEAD
 	get_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&appldata_timer_lock);
 	if (buf[0] == '1')
 		__appldata_vtimer_setup(APPLDATA_ADD_TIMER);
 	else if (buf[0] == '0')
 		__appldata_vtimer_setup(APPLDATA_DEL_TIMER);
 	spin_unlock(&appldata_timer_lock);
+<<<<<<< HEAD
 	put_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	*lenp = len;
 	*ppos += len;
@@ -286,10 +358,18 @@ out:
  * current timer interval.
  */
 static int
+<<<<<<< HEAD
 appldata_interval_handler(ctl_table *ctl, int write,
 			   void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	int len, interval;
+=======
+appldata_interval_handler(struct ctl_table *ctl, int write,
+			   void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	unsigned int len;
+	int interval;
+>>>>>>> refs/remotes/origin/master
 	char buf[16];
 
 	if (!*lenp || *ppos) {
@@ -305,20 +385,31 @@ appldata_interval_handler(ctl_table *ctl, int write,
 		goto out;
 	}
 	len = *lenp;
+<<<<<<< HEAD
 	if (copy_from_user(buf, buffer, len > sizeof(buf) ? sizeof(buf) : len)) {
 		return -EFAULT;
 	}
+=======
+	if (copy_from_user(buf, buffer, len > sizeof(buf) ? sizeof(buf) : len))
+		return -EFAULT;
+>>>>>>> refs/remotes/origin/master
 	interval = 0;
 	sscanf(buf, "%i", &interval);
 	if (interval <= 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	get_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&appldata_timer_lock);
 	appldata_interval = interval;
 	__appldata_vtimer_setup(APPLDATA_MOD_TIMER);
 	spin_unlock(&appldata_timer_lock);
+<<<<<<< HEAD
 	put_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	*lenp = len;
 	*ppos += len;
@@ -332,11 +423,20 @@ out:
  * monitoring (0 = not in process, 1 = in process)
  */
 static int
+<<<<<<< HEAD
 appldata_generic_handler(ctl_table *ctl, int write,
 			   void __user *buffer, size_t *lenp, loff_t *ppos)
 {
 	struct appldata_ops *ops = NULL, *tmp_ops;
 	int rc, len, found;
+=======
+appldata_generic_handler(struct ctl_table *ctl, int write,
+			   void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	struct appldata_ops *ops = NULL, *tmp_ops;
+	unsigned int len;
+	int rc, found;
+>>>>>>> refs/remotes/origin/master
 	char buf[2];
 	struct list_head *lh;
 
@@ -365,7 +465,12 @@ appldata_generic_handler(ctl_table *ctl, int write,
 		return 0;
 	}
 	if (!write) {
+<<<<<<< HEAD
 		len = sprintf(buf, ops->active ? "1\n" : "0\n");
+=======
+		strncpy(buf, ops->active ? "1\n" : "0\n", ARRAY_SIZE(buf));
+		len = strnlen(buf, ARRAY_SIZE(buf));
+>>>>>>> refs/remotes/origin/master
 		if (len > *lenp)
 			len = *lenp;
 		if (copy_to_user(buffer, buf, len)) {
@@ -485,14 +590,20 @@ static int appldata_freeze(struct device *dev)
 	int rc;
 	struct list_head *lh;
 
+<<<<<<< HEAD
 	get_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&appldata_timer_lock);
 	if (appldata_timer_active) {
 		__appldata_vtimer_setup(APPLDATA_DEL_TIMER);
 		appldata_timer_suspended = 1;
 	}
 	spin_unlock(&appldata_timer_lock);
+<<<<<<< HEAD
 	put_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&appldata_ops_mutex);
 	list_for_each(lh, &appldata_ops_list) {
@@ -516,14 +627,20 @@ static int appldata_restore(struct device *dev)
 	int rc;
 	struct list_head *lh;
 
+<<<<<<< HEAD
 	get_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&appldata_timer_lock);
 	if (appldata_timer_suspended) {
 		__appldata_vtimer_setup(APPLDATA_ADD_TIMER);
 		appldata_timer_suspended = 0;
 	}
 	spin_unlock(&appldata_timer_lock);
+<<<<<<< HEAD
 	put_online_cpus();
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&appldata_ops_mutex);
 	list_for_each(lh, &appldata_ops_list) {
@@ -567,6 +684,7 @@ static struct platform_driver appldata_pdrv = {
 
 /******************************* init / exit *********************************/
 
+<<<<<<< HEAD
 static void __cpuinit appldata_online_cpu(int cpu)
 {
 	init_virt_timer(&per_cpu(appldata_timer, cpu));
@@ -614,6 +732,8 @@ static struct notifier_block __cpuinitdata appldata_nb = {
 	.notifier_call = appldata_cpu_notify,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * appldata_init()
  *
@@ -621,7 +741,14 @@ static struct notifier_block __cpuinitdata appldata_nb = {
  */
 static int __init appldata_init(void)
 {
+<<<<<<< HEAD
 	int i, rc;
+=======
+	int rc;
+
+	appldata_timer.function = appldata_timer_function;
+	appldata_timer.data = (unsigned long) &appldata_work;
+>>>>>>> refs/remotes/origin/master
 
 	rc = platform_driver_register(&appldata_pdrv);
 	if (rc)
@@ -639,6 +766,7 @@ static int __init appldata_init(void)
 		goto out_device;
 	}
 
+<<<<<<< HEAD
 	get_online_cpus();
 	for_each_online_cpu(i)
 		appldata_online_cpu(i);
@@ -647,6 +775,8 @@ static int __init appldata_init(void)
 	/* Register cpu hotplug notifier */
 	register_hotcpu_notifier(&appldata_nb);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	appldata_sysctl_header = register_sysctl_table(appldata_dir_table);
 	return 0;
 

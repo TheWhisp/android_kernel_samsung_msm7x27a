@@ -27,6 +27,10 @@
 #include <asm/lv1call.h>
 #include <asm/ps3fb.h>
 
+<<<<<<< HEAD
+=======
+#define PS3_VERBOSE_RESULT
+>>>>>>> refs/remotes/origin/master
 #include "platform.h"
 
 /**
@@ -43,9 +47,15 @@ enum ps3_lpar_vas_id {
 
 static DEFINE_SPINLOCK(ps3_htab_lock);
 
+<<<<<<< HEAD
 static long ps3_hpte_insert(unsigned long hpte_group, unsigned long va,
 	unsigned long pa, unsigned long rflags, unsigned long vflags,
 	int psize, int ssize)
+=======
+static long ps3_hpte_insert(unsigned long hpte_group, unsigned long vpn,
+	unsigned long pa, unsigned long rflags, unsigned long vflags,
+	int psize, int apsize, int ssize)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	u64 hpte_v, hpte_r;
@@ -61,8 +71,13 @@ static long ps3_hpte_insert(unsigned long hpte_group, unsigned long va,
 	 */
 	vflags &= ~HPTE_V_SECONDARY;
 
+<<<<<<< HEAD
 	hpte_v = hpte_encode_v(va, psize, ssize) | vflags | HPTE_V_VALID;
 	hpte_r = hpte_encode_r(ps3_mm_phys_to_lpar(pa), psize) | rflags;
+=======
+	hpte_v = hpte_encode_v(vpn, psize, apsize, ssize) | vflags | HPTE_V_VALID;
+	hpte_r = hpte_encode_r(ps3_mm_phys_to_lpar(pa), psize, apsize) | rflags;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&ps3_htab_lock, flags);
 
@@ -75,8 +90,14 @@ static long ps3_hpte_insert(unsigned long hpte_group, unsigned long va,
 
 	if (result) {
 		/* all entries bolted !*/
+<<<<<<< HEAD
 		pr_info("%s:result=%d va=%lx pa=%lx ix=%lx v=%llx r=%llx\n",
 			__func__, result, va, pa, hpte_group, hpte_v, hpte_r);
+=======
+		pr_info("%s:result=%s vpn=%lx pa=%lx ix=%lx v=%llx r=%llx\n",
+			__func__, ps3_result(result), vpn, pa, hpte_group,
+			hpte_v, hpte_r);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 	}
 
@@ -107,7 +128,12 @@ static long ps3_hpte_remove(unsigned long hpte_group)
 }
 
 static long ps3_hpte_updatepp(unsigned long slot, unsigned long newpp,
+<<<<<<< HEAD
 	unsigned long va, int psize, int ssize, int local)
+=======
+			      unsigned long vpn, int psize, int apsize,
+			      int ssize, int local)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	u64 hpte_v, want_v, hpte_rs;
@@ -115,7 +141,11 @@ static long ps3_hpte_updatepp(unsigned long slot, unsigned long newpp,
 	unsigned long flags;
 	long ret;
 
+<<<<<<< HEAD
 	want_v = hpte_encode_v(va, psize, ssize);
+=======
+	want_v = hpte_encode_avpn(vpn, psize, ssize);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&ps3_htab_lock, flags);
 
@@ -125,8 +155,13 @@ static long ps3_hpte_updatepp(unsigned long slot, unsigned long newpp,
 				       &hpte_rs);
 
 	if (result) {
+<<<<<<< HEAD
 		pr_info("%s: res=%d read va=%lx slot=%lx psize=%d\n",
 			__func__, result, va, slot, psize);
+=======
+		pr_info("%s: result=%s read vpn=%lx slot=%lx psize=%d\n",
+			__func__, ps3_result(result), vpn, slot, psize);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 	}
 
@@ -159,8 +194,13 @@ static void ps3_hpte_updateboltedpp(unsigned long newpp, unsigned long ea,
 	panic("ps3_hpte_updateboltedpp() not implemented");
 }
 
+<<<<<<< HEAD
 static void ps3_hpte_invalidate(unsigned long slot, unsigned long va,
 	int psize, int ssize, int local)
+=======
+static void ps3_hpte_invalidate(unsigned long slot, unsigned long vpn,
+				int psize, int apsize, int ssize, int local)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	int result;
@@ -170,8 +210,13 @@ static void ps3_hpte_invalidate(unsigned long slot, unsigned long va,
 	result = lv1_write_htab_entry(PS3_LPAR_VAS_ID_CURRENT, slot, 0, 0);
 
 	if (result) {
+<<<<<<< HEAD
 		pr_info("%s: res=%d va=%lx slot=%lx psize=%d\n",
 			__func__, result, va, slot, psize);
+=======
+		pr_info("%s: result=%s vpn=%lx slot=%lx psize=%d\n",
+			__func__, ps3_result(result), vpn, slot, psize);
+>>>>>>> refs/remotes/origin/master
 		BUG();
 	}
 

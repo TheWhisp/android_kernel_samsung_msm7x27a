@@ -11,9 +11,13 @@
 
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/tlv.h>
@@ -41,10 +45,15 @@ struct link_master {
 	int val;		/* the master value */
 	unsigned int tlv[4];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void (*hook)(void *private_data, int);
 	void *hook_private_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*hook)(void *private_data, int);
+	void *hook_private_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -61,9 +70,13 @@ struct link_slave {
 	int vals[2];		/* current values */
 	unsigned int flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_kcontrol *kctl; /* original kcontrol pointer */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_kcontrol *kctl; /* original kcontrol pointer */
+>>>>>>> refs/remotes/origin/master
 	struct snd_kcontrol slave; /* the copy of original control entry */
 };
 
@@ -138,12 +151,18 @@ static int master_init(struct link_master *master)
 		/* set full volume as default (= no attenuation) */
 		master->val = master->info.max_val;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return 0;
 =======
 		if (master->hook)
 			master->hook(master->hook_private_data, master->val);
 		return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (master->hook)
+			master->hook(master->hook_private_data, master->val);
+		return 1;
+>>>>>>> refs/remotes/origin/master
 	}
 	return -ENOENT;
 }
@@ -274,9 +293,13 @@ int _snd_ctl_add_slave(struct snd_kcontrol *master, struct snd_kcontrol *slave,
 	if (!srec)
 		return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	srec->kctl = slave;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	srec->kctl = slave;
+>>>>>>> refs/remotes/origin/master
 	srec->slave = *slave;
 	memcpy(srec->slave.vd, slave->vd, slave->count * sizeof(*slave->vd));
 	srec->master = master_link;
@@ -326,6 +349,7 @@ static int master_get(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int master_put(struct snd_kcontrol *kcontrol,
 		      struct snd_ctl_elem_value *ucontrol)
 {
@@ -340,6 +364,12 @@ static int master_put(struct snd_kcontrol *kcontrol,
 	old_val = master->val;
 	if (ucontrol->value.integer.value[0] == old_val)
 		return 0;
+=======
+static int sync_slaves(struct link_master *master, int old_val, int new_val)
+{
+	struct link_slave *slave;
+	struct snd_ctl_elem_value *uval;
+>>>>>>> refs/remotes/origin/master
 
 	uval = kmalloc(sizeof(*uval), GFP_KERNEL);
 	if (!uval)
@@ -348,6 +378,7 @@ static int master_put(struct snd_kcontrol *kcontrol,
 		master->val = old_val;
 		uval->id = slave->slave.id;
 		slave_get_val(slave, uval);
+<<<<<<< HEAD
 		master->val = ucontrol->value.integer.value[0];
 		slave_put_val(slave, uval);
 	}
@@ -357,6 +388,36 @@ static int master_put(struct snd_kcontrol *kcontrol,
 	if (master->hook && !err)
 		master->hook(master->hook_private_data, master->val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		master->val = new_val;
+		slave_put_val(slave, uval);
+	}
+	kfree(uval);
+	return 0;
+}
+
+static int master_put(struct snd_kcontrol *kcontrol,
+		      struct snd_ctl_elem_value *ucontrol)
+{
+	struct link_master *master = snd_kcontrol_chip(kcontrol);
+	int err, new_val, old_val;
+	bool first_init;
+
+	err = master_init(master);
+	if (err < 0)
+		return err;
+	first_init = err;
+	old_val = master->val;
+	new_val = ucontrol->value.integer.value[0];
+	if (new_val == old_val)
+		return 0;
+
+	err = sync_slaves(master, old_val, new_val);
+	if (err < 0)
+		return err;
+	if (master->hook && !first_init)
+		master->hook(master->hook_private_data, master->val);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -364,11 +425,14 @@ static void master_free(struct snd_kcontrol *kcontrol)
 {
 	struct link_master *master = snd_kcontrol_chip(kcontrol);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct link_slave *slave;
 
 	list_for_each_entry(slave, &master->slaves, list)
 		slave->master = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct link_slave *slave, *n;
 
 	/* free all slave links and retore the original slave kctls */
@@ -381,7 +445,10 @@ static void master_free(struct snd_kcontrol *kcontrol)
 		sctl->list = olist; /* keep the current linked-list */
 		kfree(slave);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(master);
 }
 
@@ -391,8 +458,12 @@ static void master_free(struct snd_kcontrol *kcontrol)
  * @name: name string of the control element to create
  * @tlv: optional TLV int array for dB information
  *
+<<<<<<< HEAD
  * Creates a virtual matster control with the given name string.
  * Returns the created control element, or NULL for errors (ENOMEM).
+=======
+ * Creates a virtual master control with the given name string.
+>>>>>>> refs/remotes/origin/master
  *
  * After creating a vmaster element, you can add the slave controls
  * via snd_ctl_add_slave() or snd_ctl_add_slave_uncached().
@@ -401,6 +472,11 @@ static void master_free(struct snd_kcontrol *kcontrol)
  * for dB scale of the master control.  It should be a single element
  * with #SNDRV_CTL_TLVT_DB_SCALE, #SNDRV_CTL_TLV_DB_MINMAX or
  * #SNDRV_CTL_TLVT_DB_MINMAX_MUTE type, and should be the max 0dB.
+<<<<<<< HEAD
+=======
+ *
+ * Return: The created control element, or %NULL for errors (ENOMEM).
+>>>>>>> refs/remotes/origin/master
  */
 struct snd_kcontrol *snd_ctl_make_virtual_master(char *name,
 						 const unsigned int *tlv)
@@ -444,7 +520,10 @@ struct snd_kcontrol *snd_ctl_make_virtual_master(char *name,
 }
 EXPORT_SYMBOL(snd_ctl_make_virtual_master);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * snd_ctl_add_vmaster_hook - Add a hook to a vmaster control
@@ -454,6 +533,11 @@ EXPORT_SYMBOL(snd_ctl_make_virtual_master);
  *
  * Adds the given hook to the vmaster control element so that it's called
  * at each time when the value is changed.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_add_vmaster_hook(struct snd_kcontrol *kcontrol,
 			     void (*hook)(void *private_data, int),
@@ -467,6 +551,7 @@ int snd_ctl_add_vmaster_hook(struct snd_kcontrol *kcontrol,
 EXPORT_SYMBOL_GPL(snd_ctl_add_vmaster_hook);
 
 /**
+<<<<<<< HEAD
  * snd_ctl_sync_vmaster_hook - Sync the vmaster hook
  * @kcontrol: vmaster kctl element
  *
@@ -485,3 +570,35 @@ void snd_ctl_sync_vmaster_hook(struct snd_kcontrol *kcontrol)
 }
 EXPORT_SYMBOL_GPL(snd_ctl_sync_vmaster_hook);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * snd_ctl_sync_vmaster - Sync the vmaster slaves and hook
+ * @kcontrol: vmaster kctl element
+ * @hook_only: sync only the hook
+ *
+ * Forcibly call the put callback of each slave and call the hook function
+ * to synchronize with the current value of the given vmaster element.
+ * NOP when NULL is passed to @kcontrol.
+ */
+void snd_ctl_sync_vmaster(struct snd_kcontrol *kcontrol, bool hook_only)
+{
+	struct link_master *master;
+	bool first_init = false;
+
+	if (!kcontrol)
+		return;
+	master = snd_kcontrol_chip(kcontrol);
+	if (!hook_only) {
+		int err = master_init(master);
+		if (err < 0)
+			return;
+		first_init = err;
+		err = sync_slaves(master, master->val, master->val);
+		if (err < 0)
+			return;
+	}
+
+	if (master->hook && !first_init)
+		master->hook(master->hook_private_data, master->val);
+}
+EXPORT_SYMBOL_GPL(snd_ctl_sync_vmaster);
+>>>>>>> refs/remotes/origin/master

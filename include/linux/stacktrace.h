@@ -15,12 +15,17 @@ struct stack_trace {
 
 extern void save_stack_trace(struct stack_trace *trace);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void save_stack_trace_regs(struct stack_trace *trace,
 				  struct pt_regs *regs);
 =======
 extern void save_stack_trace_regs(struct pt_regs *regs,
 				  struct stack_trace *trace);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void save_stack_trace_regs(struct pt_regs *regs,
+				  struct stack_trace *trace);
+>>>>>>> refs/remotes/origin/master
 extern void save_stack_trace_tsk(struct task_struct *tsk,
 				struct stack_trace *trace);
 

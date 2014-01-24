@@ -37,9 +37,16 @@
  * | ShareDesc Pointer |
  * | SEQ_OUT_PTR       |
  * | (output buffer)   |
+<<<<<<< HEAD
  * | SEQ_IN_PTR        |
  * | (input buffer)    |
  * | LOAD (to DECO)    |
+=======
+ * | (output length)   |
+ * | SEQ_IN_PTR        |
+ * | (input buffer)    |
+ * | (input length)    |
+>>>>>>> refs/remotes/origin/master
  * ---------------------
  */
 
@@ -50,6 +57,11 @@
 #include "desc_constr.h"
 #include "jr.h"
 #include "error.h"
+<<<<<<< HEAD
+=======
+#include "sg_sw_sec4.h"
+#include "key_gen.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * crypto alg
@@ -63,6 +75,7 @@
 
 /* length of descriptors text */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DESC_AEAD_SHARED_TEXT_LEN	4
 #define DESC_AEAD_ENCRYPT_TEXT_LEN 	21
 #define DESC_AEAD_DECRYPT_TEXT_LEN 	24
@@ -70,6 +83,8 @@
 =======
 #define DESC_JOB_IO_LEN			(CAAM_CMD_SZ * 3 + CAAM_PTR_SZ * 3)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DESC_AEAD_BASE			(4 * CAAM_CMD_SZ)
 #define DESC_AEAD_ENC_LEN		(DESC_AEAD_BASE + 16 * CAAM_CMD_SZ)
 #define DESC_AEAD_DEC_LEN		(DESC_AEAD_BASE + 21 * CAAM_CMD_SZ)
@@ -84,19 +99,30 @@
 #define DESC_MAX_USED_BYTES		(DESC_AEAD_GIVENC_LEN + \
 					 CAAM_MAX_KEY_SIZE)
 #define DESC_MAX_USED_LEN		(DESC_MAX_USED_BYTES / CAAM_CMD_SZ)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef DEBUG
 /* for print_hex_dumps with line references */
 #define xstr(s) str(s)
 #define str(s) #s
+=======
+
+#ifdef DEBUG
+/* for print_hex_dumps with line references */
+>>>>>>> refs/remotes/origin/master
 #define debug(format, arg...) printk(format, arg)
 #else
 #define debug(format, arg...)
 #endif
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
+=======
+static struct list_head alg_list;
+
+>>>>>>> refs/remotes/origin/master
 /* Set DK bit in class 1 operation if shared */
 static inline void append_dec_op1(u32 *desc, u32 type)
 {
@@ -152,11 +178,19 @@ static inline void aead_append_ld_iv(u32 *desc, int ivsize)
  */
 static inline void ablkcipher_append_src_dst(u32 *desc)
 {
+<<<<<<< HEAD
 	append_math_add(desc, VARSEQOUTLEN, SEQINLEN, REG0, CAAM_CMD_SZ); \
 	append_math_add(desc, VARSEQINLEN, SEQINLEN, REG0, CAAM_CMD_SZ); \
 	append_seq_fifo_load(desc, 0, FIFOLD_CLASS_CLASS1 | \
 			     KEY_VLF | FIFOLD_TYPE_MSG | FIFOLD_TYPE_LAST1); \
 	append_seq_fifo_store(desc, 0, FIFOST_TYPE_MESSAGE_DATA | KEY_VLF); \
+=======
+	append_math_add(desc, VARSEQOUTLEN, SEQINLEN, REG0, CAAM_CMD_SZ);
+	append_math_add(desc, VARSEQINLEN, SEQINLEN, REG0, CAAM_CMD_SZ);
+	append_seq_fifo_load(desc, 0, FIFOLD_CLASS_CLASS1 |
+			     KEY_VLF | FIFOLD_TYPE_MSG | FIFOLD_TYPE_LAST1);
+	append_seq_fifo_store(desc, 0, FIFOST_TYPE_MESSAGE_DATA | KEY_VLF);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -166,12 +200,16 @@ static inline void ablkcipher_append_src_dst(u32 *desc)
 #define GIV_SRC_CONTIG		1
 #define GIV_DST_CONTIG		(1 << 1)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * per-session context
  */
 struct caam_ctx {
 	struct device *jrdev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 *sh_desc;
 	dma_addr_t shared_desc_phys;
@@ -181,6 +219,8 @@ struct caam_ctx {
 	u8 *key;
 	dma_addr_t key_phys;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 sh_desc_enc[DESC_MAX_USED_LEN];
 	u32 sh_desc_dec[DESC_MAX_USED_LEN];
 	u32 sh_desc_givenc[DESC_MAX_USED_LEN];
@@ -192,7 +232,10 @@ struct caam_ctx {
 	u32 alg_op;
 	u8 key[CAAM_MAX_KEY_SIZE];
 	dma_addr_t key_dma;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int enckeylen;
 	unsigned int split_key_len;
 	unsigned int split_key_pad_len;
@@ -200,8 +243,11 @@ struct caam_ctx {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int aead_authenc_setauthsize(struct crypto_aead *authenc,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void append_key_aead(u32 *desc, struct caam_ctx *ctx,
 			    int keys_fit_inline)
 {
@@ -225,7 +271,11 @@ static void init_sh_desc_key_aead(u32 *desc, struct caam_ctx *ctx,
 {
 	u32 *key_jump_cmd;
 
+<<<<<<< HEAD
 	init_sh_desc(desc, HDR_SHARE_WAIT);
+=======
+	init_sh_desc(desc, HDR_SHARE_SERIAL);
+>>>>>>> refs/remotes/origin/master
 
 	/* Skip if already shared */
 	key_jump_cmd = append_jump(desc, JUMP_JSL | JUMP_TEST_ALL |
@@ -244,7 +294,11 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 	struct aead_tfm *tfm = &aead->base.crt_aead;
 	struct caam_ctx *ctx = crypto_aead_ctx(aead);
 	struct device *jrdev = ctx->jrdev;
+<<<<<<< HEAD
 	bool keys_fit_inline = 0;
+=======
+	bool keys_fit_inline = false;
+>>>>>>> refs/remotes/origin/master
 	u32 *key_jump_cmd, *jump_cmd;
 	u32 geniv, moveiv;
 	u32 *desc;
@@ -259,7 +313,11 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 	if (DESC_AEAD_ENC_LEN + DESC_JOB_IO_LEN +
 	    ctx->split_key_pad_len + ctx->enckeylen <=
 	    CAAM_DESC_BYTES_MAX)
+<<<<<<< HEAD
 		keys_fit_inline = 1;
+=======
+		keys_fit_inline = true;
+>>>>>>> refs/remotes/origin/master
 
 	/* aead_encrypt shared descriptor */
 	desc = ctx->sh_desc_enc;
@@ -305,7 +363,11 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 		return -ENOMEM;
 	}
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "aead enc shdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "aead enc shdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, desc,
 		       desc_bytes(desc), 1);
 #endif
@@ -317,12 +379,20 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 	if (DESC_AEAD_DEC_LEN + DESC_JOB_IO_LEN +
 	    ctx->split_key_pad_len + ctx->enckeylen <=
 	    CAAM_DESC_BYTES_MAX)
+<<<<<<< HEAD
 		keys_fit_inline = 1;
+=======
+		keys_fit_inline = true;
+>>>>>>> refs/remotes/origin/master
 
 	desc = ctx->sh_desc_dec;
 
 	/* aead_decrypt shared descriptor */
+<<<<<<< HEAD
 	init_sh_desc(desc, HDR_SHARE_WAIT);
+=======
+	init_sh_desc(desc, HDR_SHARE_SERIAL);
+>>>>>>> refs/remotes/origin/master
 
 	/* Skip if already shared */
 	key_jump_cmd = append_jump(desc, JUMP_JSL | JUMP_TEST_ALL |
@@ -373,7 +443,11 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 		return -ENOMEM;
 	}
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "aead dec shdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "aead dec shdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, desc,
 		       desc_bytes(desc), 1);
 #endif
@@ -385,7 +459,11 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 	if (DESC_AEAD_GIVENC_LEN + DESC_JOB_IO_LEN +
 	    ctx->split_key_pad_len + ctx->enckeylen <=
 	    CAAM_DESC_BYTES_MAX)
+<<<<<<< HEAD
 		keys_fit_inline = 1;
+=======
+		keys_fit_inline = true;
+>>>>>>> refs/remotes/origin/master
 
 	/* aead_givencrypt shared descriptor */
 	desc = ctx->sh_desc_givenc;
@@ -456,7 +534,11 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 		return -ENOMEM;
 	}
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "aead givenc shdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "aead givenc shdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, desc,
 		       desc_bytes(desc), 1);
 #endif
@@ -465,20 +547,28 @@ static int aead_set_sh_desc(struct crypto_aead *aead)
 }
 
 static int aead_setauthsize(struct crypto_aead *authenc,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				    unsigned int authsize)
 {
 	struct caam_ctx *ctx = crypto_aead_ctx(authenc);
 
 	ctx->authsize = authsize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	aead_set_sh_desc(authenc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	aead_set_sh_desc(authenc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 struct split_key_result {
 	struct completion completion;
 	int err;
@@ -670,6 +760,17 @@ static int aead_authenc_setkey(struct crypto_aead *aead,
 =======
 static int aead_setkey(struct crypto_aead *aead,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 gen_split_aead_key(struct caam_ctx *ctx, const u8 *key_in,
+			      u32 authkeylen)
+{
+	return gen_split_key(ctx->jrdev, ctx->key, ctx->split_key_len,
+			       ctx->split_key_pad_len, key_in, authkeylen,
+			       ctx->alg_op);
+}
+
+static int aead_setkey(struct crypto_aead *aead,
+>>>>>>> refs/remotes/origin/master
 			       const u8 *key, unsigned int keylen)
 {
 	/* Sizes for MDHA pads (*not* keys): MD5, SHA1, 224, 256, 384, 512 */
@@ -706,6 +807,7 @@ static int aead_setkey(struct crypto_aead *aead,
 	       keylen, enckeylen, authkeylen);
 	printk(KERN_ERR "split_key_len %d split_key_pad_len %d\n",
 	       ctx->split_key_len, ctx->split_key_pad_len);
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "key in @"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
 #endif
@@ -725,6 +827,14 @@ static int aead_setkey(struct crypto_aead *aead,
 	ret = gen_split_key(ctx, key, authkeylen);
 	if (ret) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	print_hex_dump(KERN_ERR, "key in @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
+#endif
+
+	ret = gen_split_aead_key(ctx, key, authkeylen);
+	if (ret) {
+>>>>>>> refs/remotes/origin/master
 		goto badkey;
 	}
 
@@ -732,21 +842,31 @@ static int aead_setkey(struct crypto_aead *aead,
 	memcpy(ctx->key + ctx->split_key_pad_len, key + authkeylen, enckeylen);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctx->key_phys = dma_map_single(jrdev, ctx->key, ctx->split_key_pad_len +
 				       enckeylen, DMA_TO_DEVICE);
 	if (dma_mapping_error(jrdev, ctx->key_phys)) {
 		dev_err(jrdev, "unable to map key i/o memory\n");
 		kfree(ctx->key);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ctx->key_dma = dma_map_single(jrdev, ctx->key, ctx->split_key_pad_len +
 				       enckeylen, DMA_TO_DEVICE);
 	if (dma_mapping_error(jrdev, ctx->key_dma)) {
 		dev_err(jrdev, "unable to map key i/o memory\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -ENOMEM;
 	}
 #ifdef DEBUG
 	print_hex_dump(KERN_ERR, "ctx.key@"xstr(__LINE__)": ",
+=======
+		return -ENOMEM;
+	}
+#ifdef DEBUG
+	print_hex_dump(KERN_ERR, "ctx.key@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, ctx->key,
 		       ctx->split_key_pad_len + enckeylen, 1);
 #endif
@@ -754,17 +874,23 @@ static int aead_setkey(struct crypto_aead *aead,
 	ctx->enckeylen = enckeylen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = build_sh_desc_ipsec(ctx);
 	if (ret) {
 		dma_unmap_single(jrdev, ctx->key_phys, ctx->split_key_pad_len +
 				 enckeylen, DMA_TO_DEVICE);
 		kfree(ctx->key);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = aead_set_sh_desc(aead);
 	if (ret) {
 		dma_unmap_single(jrdev, ctx->key_dma, ctx->split_key_pad_len +
 				 enckeylen, DMA_TO_DEVICE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -774,7 +900,10 @@ badkey:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ablkcipher_setkey(struct crypto_ablkcipher *ablkcipher,
 			     const u8 *key, unsigned int keylen)
 {
@@ -786,7 +915,11 @@ static int ablkcipher_setkey(struct crypto_ablkcipher *ablkcipher,
 	u32 *desc;
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "key in @"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "key in @"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
 #endif
 
@@ -801,7 +934,11 @@ static int ablkcipher_setkey(struct crypto_ablkcipher *ablkcipher,
 
 	/* ablkcipher_encrypt shared descriptor */
 	desc = ctx->sh_desc_enc;
+<<<<<<< HEAD
 	init_sh_desc(desc, HDR_SHARE_WAIT);
+=======
+	init_sh_desc(desc, HDR_SHARE_SERIAL);
+>>>>>>> refs/remotes/origin/master
 	/* Skip if already shared */
 	key_jump_cmd = append_jump(desc, JUMP_JSL | JUMP_TEST_ALL |
 				   JUMP_COND_SHRD);
@@ -835,14 +972,23 @@ static int ablkcipher_setkey(struct crypto_ablkcipher *ablkcipher,
 		return -ENOMEM;
 	}
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "ablkcipher enc shdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR,
+		       "ablkcipher enc shdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, desc,
 		       desc_bytes(desc), 1);
 #endif
 	/* ablkcipher_decrypt shared descriptor */
 	desc = ctx->sh_desc_dec;
 
+<<<<<<< HEAD
 	init_sh_desc(desc, HDR_SHARE_WAIT);
+=======
+	init_sh_desc(desc, HDR_SHARE_SERIAL);
+>>>>>>> refs/remotes/origin/master
 	/* Skip if already shared */
 	key_jump_cmd = append_jump(desc, JUMP_JSL | JUMP_TEST_ALL |
 				   JUMP_COND_SHRD);
@@ -880,7 +1026,12 @@ static int ablkcipher_setkey(struct crypto_ablkcipher *ablkcipher,
 	}
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "ablkcipher dec shdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR,
+		       "ablkcipher dec shdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, desc,
 		       desc_bytes(desc), 1);
 #endif
@@ -888,6 +1039,7 @@ static int ablkcipher_setkey(struct crypto_ablkcipher *ablkcipher,
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct link_tbl_entry {
 	u64 ptr;
@@ -982,19 +1134,70 @@ static void ipsec_esp_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
  * @desc: h/w descriptor (variable length; must not exceed MAX_CAAM_DESCSIZE)
  * @link_tbl_bytes: length of dma mapped link_tbl space
  * @link_tbl_dma: bus physical mapped address of h/w link table
+=======
+/*
+ * aead_edesc - s/w-extended aead descriptor
+ * @assoc_nents: number of segments in associated data (SPI+Seq) scatterlist
+ * @assoc_chained: if source is chained
+ * @src_nents: number of segments in input scatterlist
+ * @src_chained: if source is chained
+ * @dst_nents: number of segments in output scatterlist
+ * @dst_chained: if destination is chained
+ * @iv_dma: dma address of iv for checking continuity and link table
+ * @desc: h/w descriptor (variable length; must not exceed MAX_CAAM_DESCSIZE)
+ * @sec4_sg_bytes: length of dma mapped sec4_sg space
+ * @sec4_sg_dma: bus physical mapped address of h/w link table
+ * @hw_desc: the h/w job descriptor followed by any referenced link tables
+ */
+struct aead_edesc {
+	int assoc_nents;
+	bool assoc_chained;
+	int src_nents;
+	bool src_chained;
+	int dst_nents;
+	bool dst_chained;
+	dma_addr_t iv_dma;
+	int sec4_sg_bytes;
+	dma_addr_t sec4_sg_dma;
+	struct sec4_sg_entry *sec4_sg;
+	u32 hw_desc[0];
+};
+
+/*
+ * ablkcipher_edesc - s/w-extended ablkcipher descriptor
+ * @src_nents: number of segments in input scatterlist
+ * @src_chained: if source is chained
+ * @dst_nents: number of segments in output scatterlist
+ * @dst_chained: if destination is chained
+ * @iv_dma: dma address of iv for checking continuity and link table
+ * @desc: h/w descriptor (variable length; must not exceed MAX_CAAM_DESCSIZE)
+ * @sec4_sg_bytes: length of dma mapped sec4_sg space
+ * @sec4_sg_dma: bus physical mapped address of h/w link table
+>>>>>>> refs/remotes/origin/master
  * @hw_desc: the h/w job descriptor followed by any referenced link tables
  */
 struct ablkcipher_edesc {
 	int src_nents;
+<<<<<<< HEAD
 	int dst_nents;
 	dma_addr_t iv_dma;
 	int link_tbl_bytes;
 	dma_addr_t link_tbl_dma;
 	struct link_tbl_entry *link_tbl;
+=======
+	bool src_chained;
+	int dst_nents;
+	bool dst_chained;
+	dma_addr_t iv_dma;
+	int sec4_sg_bytes;
+	dma_addr_t sec4_sg_dma;
+	struct sec4_sg_entry *sec4_sg;
+>>>>>>> refs/remotes/origin/master
 	u32 hw_desc[0];
 };
 
 static void caam_unmap(struct device *dev, struct scatterlist *src,
+<<<<<<< HEAD
 		       struct scatterlist *dst, int src_nents, int dst_nents,
 		       dma_addr_t iv_dma, int ivsize, dma_addr_t link_tbl_dma,
 		       int link_tbl_bytes)
@@ -1004,12 +1207,32 @@ static void caam_unmap(struct device *dev, struct scatterlist *src,
 		dma_unmap_sg(dev, dst, dst_nents, DMA_FROM_DEVICE);
 	} else {
 		dma_unmap_sg(dev, src, src_nents, DMA_BIDIRECTIONAL);
+=======
+		       struct scatterlist *dst, int src_nents,
+		       bool src_chained, int dst_nents, bool dst_chained,
+		       dma_addr_t iv_dma, int ivsize, dma_addr_t sec4_sg_dma,
+		       int sec4_sg_bytes)
+{
+	if (dst != src) {
+		dma_unmap_sg_chained(dev, src, src_nents ? : 1, DMA_TO_DEVICE,
+				     src_chained);
+		dma_unmap_sg_chained(dev, dst, dst_nents ? : 1, DMA_FROM_DEVICE,
+				     dst_chained);
+	} else {
+		dma_unmap_sg_chained(dev, src, src_nents ? : 1,
+				     DMA_BIDIRECTIONAL, src_chained);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (iv_dma)
 		dma_unmap_single(dev, iv_dma, ivsize, DMA_TO_DEVICE);
+<<<<<<< HEAD
 	if (link_tbl_bytes)
 		dma_unmap_single(dev, link_tbl_dma, link_tbl_bytes,
+=======
+	if (sec4_sg_bytes)
+		dma_unmap_single(dev, sec4_sg_dma, sec4_sg_bytes,
+>>>>>>> refs/remotes/origin/master
 				 DMA_TO_DEVICE);
 }
 
@@ -1020,12 +1243,22 @@ static void aead_unmap(struct device *dev,
 	struct crypto_aead *aead = crypto_aead_reqtfm(req);
 	int ivsize = crypto_aead_ivsize(aead);
 
+<<<<<<< HEAD
 	dma_unmap_sg(dev, req->assoc, edesc->assoc_nents, DMA_TO_DEVICE);
 
 	caam_unmap(dev, req->src, req->dst,
 		   edesc->src_nents, edesc->dst_nents,
 		   edesc->iv_dma, ivsize, edesc->link_tbl_dma,
 		   edesc->link_tbl_bytes);
+=======
+	dma_unmap_sg_chained(dev, req->assoc, edesc->assoc_nents,
+			     DMA_TO_DEVICE, edesc->assoc_chained);
+
+	caam_unmap(dev, req->src, req->dst,
+		   edesc->src_nents, edesc->src_chained, edesc->dst_nents,
+		   edesc->dst_chained, edesc->iv_dma, ivsize,
+		   edesc->sec4_sg_dma, edesc->sec4_sg_bytes);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ablkcipher_unmap(struct device *dev,
@@ -1036,9 +1269,15 @@ static void ablkcipher_unmap(struct device *dev,
 	int ivsize = crypto_ablkcipher_ivsize(ablkcipher);
 
 	caam_unmap(dev, req->src, req->dst,
+<<<<<<< HEAD
 		   edesc->src_nents, edesc->dst_nents,
 		   edesc->iv_dma, ivsize, edesc->link_tbl_dma,
 		   edesc->link_tbl_bytes);
+=======
+		   edesc->src_nents, edesc->src_chained, edesc->dst_nents,
+		   edesc->dst_chained, edesc->iv_dma, ivsize,
+		   edesc->sec4_sg_dma, edesc->sec4_sg_bytes);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void aead_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
@@ -1056,7 +1295,10 @@ static void aead_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
 
 	edesc = (struct aead_edesc *)((char *)desc -
 		 offsetof(struct aead_edesc, hw_desc));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (err) {
 		char tmp[CAAM_ERROR_STR_MAX];
@@ -1064,6 +1306,7 @@ static void aead_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
 		dev_err(jrdev, "%08x: %s\n", err, caam_jr_strstatus(tmp, err));
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ipsec_esp_unmap(jrdev, edesc, areq);
 
@@ -1091,11 +1334,26 @@ static void aead_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
 		       edesc->src_nents ? 100 : req->cryptlen +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	aead_unmap(jrdev, edesc, req);
+
+#ifdef DEBUG
+	print_hex_dump(KERN_ERR, "assoc  @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->assoc),
+		       req->assoclen , 1);
+	print_hex_dump(KERN_ERR, "dstiv  @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src) - ivsize,
+		       edesc->src_nents ? 100 : ivsize, 1);
+	print_hex_dump(KERN_ERR, "dst    @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
+		       edesc->src_nents ? 100 : req->cryptlen +
+>>>>>>> refs/remotes/origin/master
 		       ctx->authsize + 4, 1);
 #endif
 
 	kfree(edesc);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	aead_request_complete(areq, err);
 }
@@ -1114,6 +1372,8 @@ static void ipsec_esp_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 	edesc = (struct ipsec_esp_edesc *)((char *)desc -
 		 offsetof(struct ipsec_esp_edesc, hw_desc));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	aead_request_complete(req, err);
 }
 
@@ -1134,6 +1394,7 @@ static void aead_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 		 offsetof(struct aead_edesc, hw_desc));
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "dstiv  @"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4, req->iv,
 		       ivsize, 1);
@@ -1142,6 +1403,15 @@ static void aead_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 		       req->cryptlen, 1);
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	print_hex_dump(KERN_ERR, "dstiv  @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, req->iv,
+		       ivsize, 1);
+	print_hex_dump(KERN_ERR, "dst    @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->dst),
+		       req->cryptlen - ctx->authsize, 1);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	if (err) {
 		char tmp[CAAM_ERROR_STR_MAX];
@@ -1150,10 +1420,14 @@ static void aead_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipsec_esp_unmap(jrdev, edesc, areq);
 =======
 	aead_unmap(jrdev, edesc, req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	aead_unmap(jrdev, edesc, req);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * verify hw auth check passed else return -EBADMSG
@@ -1162,6 +1436,7 @@ static void aead_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 		err = -EBADMSG;
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "iphdrout@"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4,
 <<<<<<< HEAD
@@ -1172,23 +1447,36 @@ static void aead_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 	if (!err && edesc->link_tbl_bytes) {
 		struct scatterlist *sg = sg_last(areq->src, edesc->src_nents);
 =======
+=======
+	print_hex_dump(KERN_ERR, "iphdrout@"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4,
+>>>>>>> refs/remotes/origin/master
 		       ((char *)sg_virt(req->assoc) - sizeof(struct iphdr)),
 		       sizeof(struct iphdr) + req->assoclen +
 		       ((req->cryptlen > 1500) ? 1500 : req->cryptlen) +
 		       ctx->authsize + 36, 1);
+<<<<<<< HEAD
 	if (!err && edesc->link_tbl_bytes) {
 		struct scatterlist *sg = sg_last(req->src, edesc->src_nents);
 >>>>>>> refs/remotes/origin/cm-10.0
 		print_hex_dump(KERN_ERR, "sglastout@"xstr(__LINE__)": ",
+=======
+	if (!err && edesc->sec4_sg_bytes) {
+		struct scatterlist *sg = sg_last(req->src, edesc->src_nents);
+		print_hex_dump(KERN_ERR, "sglastout@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 			       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(sg),
 			sg->length + ctx->authsize + 16, 1);
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(edesc);
 
 	aead_request_complete(areq, err);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	kfree(edesc);
 
@@ -1217,10 +1505,17 @@ static void ablkcipher_encrypt_done(struct device *jrdev, u32 *desc, u32 err,
 	}
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "dstiv  @"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4, req->info,
 		       edesc->src_nents > 1 ? 100 : ivsize, 1);
 	print_hex_dump(KERN_ERR, "dst    @"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "dstiv  @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, req->info,
+		       edesc->src_nents > 1 ? 100 : ivsize, 1);
+	print_hex_dump(KERN_ERR, "dst    @"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
 		       edesc->dst_nents > 1 ? 100 : req->nbytes, 1);
 #endif
@@ -1252,10 +1547,17 @@ static void ablkcipher_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 	}
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "dstiv  @"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4, req->info,
 		       ivsize, 1);
 	print_hex_dump(KERN_ERR, "dst    @"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "dstiv  @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, req->info,
+		       ivsize, 1);
+	print_hex_dump(KERN_ERR, "dst    @"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
 		       edesc->dst_nents > 1 ? 100 : req->nbytes, 1);
 #endif
@@ -1266,6 +1568,7 @@ static void ablkcipher_decrypt_done(struct device *jrdev, u32 *desc, u32 err,
 	ablkcipher_request_complete(req, err);
 }
 
+<<<<<<< HEAD
 static void sg_to_link_tbl_one(struct link_tbl_entry *link_tbl_ptr,
 			       dma_addr_t dma, u32 len, u32 offset)
 {
@@ -1363,6 +1666,9 @@ static int ipsec_esp(struct ipsec_esp_edesc *edesc, struct aead_request *areq,
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(areq->src),
 			edesc->src_nents ? 100 : areq->cryptlen + authsize, 1);
 =======
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Fill in aead job descriptor
  */
 static void init_aead_job(u32 *sh_desc, dma_addr_t ptr,
@@ -1377,11 +1683,16 @@ static void init_aead_job(u32 *sh_desc, dma_addr_t ptr,
 	u32 *desc = edesc->hw_desc;
 	u32 out_options = 0, in_options;
 	dma_addr_t dst_dma, src_dma;
+<<<<<<< HEAD
 	int len, link_tbl_index = 0;
+=======
+	int len, sec4_sg_index = 0;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 	debug("assoclen %d cryptlen %d authsize %d\n",
 	      req->assoclen, req->cryptlen, authsize);
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "assoc  @"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->assoc),
 		       req->assoclen , 1);
@@ -1509,6 +1820,21 @@ static void init_aead_job(u32 *sh_desc, dma_addr_t ptr,
 	else {
 		ipsec_esp_unmap(jrdev, edesc, areq);
 =======
+=======
+	print_hex_dump(KERN_ERR, "assoc  @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->assoc),
+		       req->assoclen , 1);
+	print_hex_dump(KERN_ERR, "presciv@"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, req->iv,
+		       edesc->src_nents ? 100 : ivsize, 1);
+	print_hex_dump(KERN_ERR, "src    @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
+			edesc->src_nents ? 100 : req->cryptlen, 1);
+	print_hex_dump(KERN_ERR, "shrdesc@"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sh_desc,
+		       desc_bytes(sh_desc), 1);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	len = desc_len(sh_desc);
 	init_job_desc_shared(desc, ptr, len, HDR_SHARE_DEFER | HDR_REVERSE);
@@ -1517,6 +1843,7 @@ static void init_aead_job(u32 *sh_desc, dma_addr_t ptr,
 		src_dma = sg_dma_address(req->assoc);
 		in_options = 0;
 	} else {
+<<<<<<< HEAD
 		src_dma = edesc->link_tbl_dma;
 		link_tbl_index += (edesc->assoc_nents ? : 1) + 1 +
 				  (edesc->src_nents ? : 1);
@@ -1528,12 +1855,26 @@ static void init_aead_job(u32 *sh_desc, dma_addr_t ptr,
 	else
 		append_seq_in_ptr(desc, src_dma, req->assoclen + ivsize +
 				  req->cryptlen, in_options);
+=======
+		src_dma = edesc->sec4_sg_dma;
+		sec4_sg_index += (edesc->assoc_nents ? : 1) + 1 +
+				 (edesc->src_nents ? : 1);
+		in_options = LDST_SGF;
+	}
+
+	append_seq_in_ptr(desc, src_dma, req->assoclen + ivsize + req->cryptlen,
+			  in_options);
+>>>>>>> refs/remotes/origin/master
 
 	if (likely(req->src == req->dst)) {
 		if (all_contig) {
 			dst_dma = sg_dma_address(req->src);
 		} else {
+<<<<<<< HEAD
 			dst_dma = src_dma + sizeof(struct link_tbl_entry) *
+=======
+			dst_dma = src_dma + sizeof(struct sec4_sg_entry) *
+>>>>>>> refs/remotes/origin/master
 				  ((edesc->assoc_nents ? : 1) + 1);
 			out_options = LDST_SGF;
 		}
@@ -1541,14 +1882,25 @@ static void init_aead_job(u32 *sh_desc, dma_addr_t ptr,
 		if (!edesc->dst_nents) {
 			dst_dma = sg_dma_address(req->dst);
 		} else {
+<<<<<<< HEAD
 			dst_dma = edesc->link_tbl_dma +
 				  link_tbl_index *
 				  sizeof(struct link_tbl_entry);
+=======
+			dst_dma = edesc->sec4_sg_dma +
+				  sec4_sg_index *
+				  sizeof(struct sec4_sg_entry);
+>>>>>>> refs/remotes/origin/master
 			out_options = LDST_SGF;
 		}
 	}
 	if (encrypt)
+<<<<<<< HEAD
 		append_seq_out_ptr(desc, dst_dma, req->cryptlen, out_options);
+=======
+		append_seq_out_ptr(desc, dst_dma, req->cryptlen + authsize,
+				   out_options);
+>>>>>>> refs/remotes/origin/master
 	else
 		append_seq_out_ptr(desc, dst_dma, req->cryptlen - authsize,
 				   out_options);
@@ -1569,11 +1921,16 @@ static void init_aead_giv_job(u32 *sh_desc, dma_addr_t ptr,
 	u32 *desc = edesc->hw_desc;
 	u32 out_options = 0, in_options;
 	dma_addr_t dst_dma, src_dma;
+<<<<<<< HEAD
 	int len, link_tbl_index = 0;
+=======
+	int len, sec4_sg_index = 0;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 	debug("assoclen %d cryptlen %d authsize %d\n",
 	      req->assoclen, req->cryptlen, authsize);
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "assoc  @"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->assoc),
 		       req->assoclen , 1);
@@ -1583,6 +1940,17 @@ static void init_aead_giv_job(u32 *sh_desc, dma_addr_t ptr,
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
 			edesc->src_nents > 1 ? 100 : req->cryptlen, 1);
 	print_hex_dump(KERN_ERR, "shrdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "assoc  @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->assoc),
+		       req->assoclen , 1);
+	print_hex_dump(KERN_ERR, "presciv@"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, req->iv, ivsize, 1);
+	print_hex_dump(KERN_ERR, "src    @"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
+			edesc->src_nents > 1 ? 100 : req->cryptlen, 1);
+	print_hex_dump(KERN_ERR, "shrdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, sh_desc,
 		       desc_bytes(sh_desc), 1);
 #endif
@@ -1594,17 +1962,27 @@ static void init_aead_giv_job(u32 *sh_desc, dma_addr_t ptr,
 		src_dma = sg_dma_address(req->assoc);
 		in_options = 0;
 	} else {
+<<<<<<< HEAD
 		src_dma = edesc->link_tbl_dma;
 		link_tbl_index += edesc->assoc_nents + 1 + edesc->src_nents;
 		in_options = LDST_SGF;
 	}
 	append_seq_in_ptr(desc, src_dma, req->assoclen + ivsize +
 			  req->cryptlen - authsize, in_options);
+=======
+		src_dma = edesc->sec4_sg_dma;
+		sec4_sg_index += edesc->assoc_nents + 1 + edesc->src_nents;
+		in_options = LDST_SGF;
+	}
+	append_seq_in_ptr(desc, src_dma, req->assoclen + ivsize + req->cryptlen,
+			  in_options);
+>>>>>>> refs/remotes/origin/master
 
 	if (contig & GIV_DST_CONTIG) {
 		dst_dma = edesc->iv_dma;
 	} else {
 		if (likely(req->src == req->dst)) {
+<<<<<<< HEAD
 			dst_dma = src_dma + sizeof(struct link_tbl_entry) *
 				  edesc->assoc_nents;
 			out_options = LDST_SGF;
@@ -1612,11 +1990,25 @@ static void init_aead_giv_job(u32 *sh_desc, dma_addr_t ptr,
 			dst_dma = edesc->link_tbl_dma +
 				  link_tbl_index *
 				  sizeof(struct link_tbl_entry);
+=======
+			dst_dma = src_dma + sizeof(struct sec4_sg_entry) *
+				  edesc->assoc_nents;
+			out_options = LDST_SGF;
+		} else {
+			dst_dma = edesc->sec4_sg_dma +
+				  sec4_sg_index *
+				  sizeof(struct sec4_sg_entry);
+>>>>>>> refs/remotes/origin/master
 			out_options = LDST_SGF;
 		}
 	}
 
+<<<<<<< HEAD
 	append_seq_out_ptr(desc, dst_dma, ivsize + req->cryptlen, out_options);
+=======
+	append_seq_out_ptr(desc, dst_dma, ivsize + req->cryptlen + authsize,
+			   out_options);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1632,6 +2024,7 @@ static void init_ablkcipher_job(u32 *sh_desc, dma_addr_t ptr,
 	u32 *desc = edesc->hw_desc;
 	u32 out_options = 0, in_options;
 	dma_addr_t dst_dma, src_dma;
+<<<<<<< HEAD
 	int len, link_tbl_index = 0;
 
 #ifdef DEBUG
@@ -1639,6 +2032,15 @@ static void init_ablkcipher_job(u32 *sh_desc, dma_addr_t ptr,
 		       DUMP_PREFIX_ADDRESS, 16, 4, req->info,
 		       ivsize, 1);
 	print_hex_dump(KERN_ERR, "src    @"xstr(__LINE__)": ",
+=======
+	int len, sec4_sg_index = 0;
+
+#ifdef DEBUG
+	print_hex_dump(KERN_ERR, "presciv@"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, req->info,
+		       ivsize, 1);
+	print_hex_dump(KERN_ERR, "src    @"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
 		       edesc->src_nents ? 100 : req->nbytes, 1);
 #endif
@@ -1650,8 +2052,13 @@ static void init_ablkcipher_job(u32 *sh_desc, dma_addr_t ptr,
 		src_dma = edesc->iv_dma;
 		in_options = 0;
 	} else {
+<<<<<<< HEAD
 		src_dma = edesc->link_tbl_dma;
 		link_tbl_index += (iv_contig ? 0 : 1) + edesc->src_nents;
+=======
+		src_dma = edesc->sec4_sg_dma;
+		sec4_sg_index += (iv_contig ? 0 : 1) + edesc->src_nents;
+>>>>>>> refs/remotes/origin/master
 		in_options = LDST_SGF;
 	}
 	append_seq_in_ptr(desc, src_dma, req->nbytes + ivsize, in_options);
@@ -1660,16 +2067,26 @@ static void init_ablkcipher_job(u32 *sh_desc, dma_addr_t ptr,
 		if (!edesc->src_nents && iv_contig) {
 			dst_dma = sg_dma_address(req->src);
 		} else {
+<<<<<<< HEAD
 			dst_dma = edesc->link_tbl_dma +
 				sizeof(struct link_tbl_entry);
+=======
+			dst_dma = edesc->sec4_sg_dma +
+				sizeof(struct sec4_sg_entry);
+>>>>>>> refs/remotes/origin/master
 			out_options = LDST_SGF;
 		}
 	} else {
 		if (!edesc->dst_nents) {
 			dst_dma = sg_dma_address(req->dst);
 		} else {
+<<<<<<< HEAD
 			dst_dma = edesc->link_tbl_dma +
 				link_tbl_index * sizeof(struct link_tbl_entry);
+=======
+			dst_dma = edesc->sec4_sg_dma +
+				sec4_sg_index * sizeof(struct sec4_sg_entry);
+>>>>>>> refs/remotes/origin/master
 			out_options = LDST_SGF;
 		}
 	}
@@ -1677,6 +2094,7 @@ static void init_ablkcipher_job(u32 *sh_desc, dma_addr_t ptr,
 }
 
 /*
+<<<<<<< HEAD
  * derive number of elements in scatterlist
  */
 static int sg_count(struct scatterlist *sg_list, int nbytes)
@@ -1703,6 +2121,13 @@ static int sg_count(struct scatterlist *sg_list, int nbytes)
  */
 static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
 					   int desc_bytes, bool *all_contig_ptr)
+=======
+ * allocate and map the aead extended descriptor
+ */
+static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
+					   int desc_bytes, bool *all_contig_ptr,
+					   bool encrypt)
+>>>>>>> refs/remotes/origin/master
 {
 	struct crypto_aead *aead = crypto_aead_reqtfm(req);
 	struct caam_ctx *ctx = crypto_aead_ctx(aead);
@@ -1714,6 +2139,7 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
 	dma_addr_t iv_dma = 0;
 	int sgc;
 	bool all_contig = true;
+<<<<<<< HEAD
 	int ivsize = crypto_aead_ivsize(aead);
 	int link_tbl_index, link_tbl_len = 0, link_tbl_bytes;
 
@@ -1733,6 +2159,38 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
 				 DMA_TO_DEVICE);
 		sgc = dma_map_sg(jrdev, req->dst, dst_nents ? : 1,
 				 DMA_FROM_DEVICE);
+=======
+	bool assoc_chained = false, src_chained = false, dst_chained = false;
+	int ivsize = crypto_aead_ivsize(aead);
+	int sec4_sg_index, sec4_sg_len = 0, sec4_sg_bytes;
+	unsigned int authsize = ctx->authsize;
+
+	assoc_nents = sg_count(req->assoc, req->assoclen, &assoc_chained);
+
+	if (unlikely(req->dst != req->src)) {
+		src_nents = sg_count(req->src, req->cryptlen, &src_chained);
+		dst_nents = sg_count(req->dst,
+				     req->cryptlen +
+					(encrypt ? authsize : (-authsize)),
+				     &dst_chained);
+	} else {
+		src_nents = sg_count(req->src,
+				     req->cryptlen +
+					(encrypt ? authsize : 0),
+				     &src_chained);
+	}
+
+	sgc = dma_map_sg_chained(jrdev, req->assoc, assoc_nents ? : 1,
+				 DMA_TO_DEVICE, assoc_chained);
+	if (likely(req->src == req->dst)) {
+		sgc = dma_map_sg_chained(jrdev, req->src, src_nents ? : 1,
+					 DMA_BIDIRECTIONAL, src_chained);
+	} else {
+		sgc = dma_map_sg_chained(jrdev, req->src, src_nents ? : 1,
+					 DMA_TO_DEVICE, src_chained);
+		sgc = dma_map_sg_chained(jrdev, req->dst, dst_nents ? : 1,
+					 DMA_FROM_DEVICE, dst_chained);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Check if data are contiguous */
@@ -1743,6 +2201,7 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
 		all_contig = false;
 		assoc_nents = assoc_nents ? : 1;
 		src_nents = src_nents ? : 1;
+<<<<<<< HEAD
 		link_tbl_len = assoc_nents + 1 + src_nents;
 	}
 	link_tbl_len += dst_nents;
@@ -1752,12 +2211,24 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
 	/* allocate space for base edesc and hw desc commands, link tables */
 	edesc = kmalloc(sizeof(struct aead_edesc) + desc_bytes +
 			link_tbl_bytes, GFP_DMA | flags);
+=======
+		sec4_sg_len = assoc_nents + 1 + src_nents;
+	}
+	sec4_sg_len += dst_nents;
+
+	sec4_sg_bytes = sec4_sg_len * sizeof(struct sec4_sg_entry);
+
+	/* allocate space for base edesc and hw desc commands, link tables */
+	edesc = kmalloc(sizeof(struct aead_edesc) + desc_bytes +
+			sec4_sg_bytes, GFP_DMA | flags);
+>>>>>>> refs/remotes/origin/master
 	if (!edesc) {
 		dev_err(jrdev, "could not allocate extended descriptor\n");
 		return ERR_PTR(-ENOMEM);
 	}
 
 	edesc->assoc_nents = assoc_nents;
+<<<<<<< HEAD
 	edesc->src_nents = src_nents;
 	edesc->dst_nents = dst_nents;
 	edesc->iv_dma = iv_dma;
@@ -1787,6 +2258,40 @@ static struct aead_edesc *aead_edesc_alloc(struct aead_request *req,
 	if (dst_nents) {
 		sg_to_link_tbl_last(req->dst, dst_nents,
 				    edesc->link_tbl + link_tbl_index, 0);
+=======
+	edesc->assoc_chained = assoc_chained;
+	edesc->src_nents = src_nents;
+	edesc->src_chained = src_chained;
+	edesc->dst_nents = dst_nents;
+	edesc->dst_chained = dst_chained;
+	edesc->iv_dma = iv_dma;
+	edesc->sec4_sg_bytes = sec4_sg_bytes;
+	edesc->sec4_sg = (void *)edesc + sizeof(struct aead_edesc) +
+			 desc_bytes;
+	edesc->sec4_sg_dma = dma_map_single(jrdev, edesc->sec4_sg,
+					    sec4_sg_bytes, DMA_TO_DEVICE);
+	*all_contig_ptr = all_contig;
+
+	sec4_sg_index = 0;
+	if (!all_contig) {
+		sg_to_sec4_sg(req->assoc,
+			      (assoc_nents ? : 1),
+			      edesc->sec4_sg +
+			      sec4_sg_index, 0);
+		sec4_sg_index += assoc_nents ? : 1;
+		dma_to_sec4_sg_one(edesc->sec4_sg + sec4_sg_index,
+				   iv_dma, ivsize, 0);
+		sec4_sg_index += 1;
+		sg_to_sec4_sg_last(req->src,
+				   (src_nents ? : 1),
+				   edesc->sec4_sg +
+				   sec4_sg_index, 0);
+		sec4_sg_index += src_nents ? : 1;
+	}
+	if (dst_nents) {
+		sg_to_sec4_sg_last(req->dst, dst_nents,
+				   edesc->sec4_sg + sec4_sg_index, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return edesc;
@@ -1802,11 +2307,17 @@ static int aead_encrypt(struct aead_request *req)
 	u32 *desc;
 	int ret = 0;
 
+<<<<<<< HEAD
 	req->cryptlen += ctx->authsize;
 
 	/* allocate extended descriptor */
 	edesc = aead_edesc_alloc(req, DESC_JOB_IO_LEN *
 				 CAAM_CMD_SZ, &all_contig);
+=======
+	/* allocate extended descriptor */
+	edesc = aead_edesc_alloc(req, DESC_JOB_IO_LEN *
+				 CAAM_CMD_SZ, &all_contig, true);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(edesc))
 		return PTR_ERR(edesc);
 
@@ -1814,7 +2325,11 @@ static int aead_encrypt(struct aead_request *req)
 	init_aead_job(ctx->sh_desc_enc, ctx->sh_desc_enc_dma, edesc, req,
 		      all_contig, true);
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "aead jobdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "aead jobdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, edesc->hw_desc,
 		       desc_bytes(edesc->hw_desc), 1);
 #endif
@@ -1825,13 +2340,17 @@ static int aead_encrypt(struct aead_request *req)
 		ret = -EINPROGRESS;
 	} else {
 		aead_unmap(jrdev, edesc, req);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(edesc);
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * derive number of elements in scatterlist
@@ -1893,6 +2412,8 @@ static struct ipsec_esp_edesc *ipsec_esp_edesc_alloc(struct aead_request *areq,
 	/* allocate space for base edesc and hw desc commands, link tables */
 	edesc = kmalloc(sizeof(struct ipsec_esp_edesc) + desc_bytes +
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int aead_decrypt(struct aead_request *req)
 {
 	struct aead_edesc *edesc;
@@ -1905,12 +2426,20 @@ static int aead_decrypt(struct aead_request *req)
 
 	/* allocate extended descriptor */
 	edesc = aead_edesc_alloc(req, DESC_JOB_IO_LEN *
+<<<<<<< HEAD
 				 CAAM_CMD_SZ, &all_contig);
+=======
+				 CAAM_CMD_SZ, &all_contig, false);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(edesc))
 		return PTR_ERR(edesc);
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "dec src@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "dec src@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
 		       req->cryptlen, 1);
 #endif
@@ -1919,7 +2448,11 @@ static int aead_decrypt(struct aead_request *req)
 	init_aead_job(ctx->sh_desc_dec,
 		      ctx->sh_desc_dec_dma, edesc, req, all_contig, false);
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "aead jobdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "aead jobdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, edesc->hw_desc,
 		       desc_bytes(edesc->hw_desc), 1);
 #endif
@@ -1955,6 +2488,7 @@ static struct aead_edesc *aead_giv_edesc_alloc(struct aead_givcrypt_request
 	int sgc;
 	u32 contig = GIV_SRC_CONTIG | GIV_DST_CONTIG;
 	int ivsize = crypto_aead_ivsize(aead);
+<<<<<<< HEAD
 	int link_tbl_index, link_tbl_len = 0, link_tbl_bytes;
 
 	assoc_nents = sg_count(req->assoc, req->assoclen);
@@ -1973,6 +2507,28 @@ static struct aead_edesc *aead_giv_edesc_alloc(struct aead_givcrypt_request
 				 DMA_TO_DEVICE);
 		sgc = dma_map_sg(jrdev, req->dst, dst_nents ? : 1,
 				 DMA_FROM_DEVICE);
+=======
+	bool assoc_chained = false, src_chained = false, dst_chained = false;
+	int sec4_sg_index, sec4_sg_len = 0, sec4_sg_bytes;
+
+	assoc_nents = sg_count(req->assoc, req->assoclen, &assoc_chained);
+	src_nents = sg_count(req->src, req->cryptlen, &src_chained);
+
+	if (unlikely(req->dst != req->src))
+		dst_nents = sg_count(req->dst, req->cryptlen + ctx->authsize,
+				     &dst_chained);
+
+	sgc = dma_map_sg_chained(jrdev, req->assoc, assoc_nents ? : 1,
+				 DMA_TO_DEVICE, assoc_chained);
+	if (likely(req->src == req->dst)) {
+		sgc = dma_map_sg_chained(jrdev, req->src, src_nents ? : 1,
+					 DMA_BIDIRECTIONAL, src_chained);
+	} else {
+		sgc = dma_map_sg_chained(jrdev, req->src, src_nents ? : 1,
+					 DMA_TO_DEVICE, src_chained);
+		sgc = dma_map_sg_chained(jrdev, req->dst, dst_nents ? : 1,
+					 DMA_FROM_DEVICE, dst_chained);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Check if data are contiguous */
@@ -1982,6 +2538,7 @@ static struct aead_edesc *aead_giv_edesc_alloc(struct aead_givcrypt_request
 		contig &= ~GIV_SRC_CONTIG;
 	if (dst_nents || iv_dma + ivsize != sg_dma_address(req->dst))
 		contig &= ~GIV_DST_CONTIG;
+<<<<<<< HEAD
 		if (unlikely(req->src != req->dst)) {
 			dst_nents = dst_nents ? : 1;
 			link_tbl_len += 1;
@@ -2001,12 +2558,33 @@ static struct aead_edesc *aead_giv_edesc_alloc(struct aead_givcrypt_request
 	edesc = kmalloc(sizeof(struct aead_edesc) + desc_bytes +
 >>>>>>> refs/remotes/origin/cm-10.0
 			link_tbl_bytes, GFP_DMA | flags);
+=======
+	if (unlikely(req->src != req->dst)) {
+		dst_nents = dst_nents ? : 1;
+		sec4_sg_len += 1;
+	}
+	if (!(contig & GIV_SRC_CONTIG)) {
+		assoc_nents = assoc_nents ? : 1;
+		src_nents = src_nents ? : 1;
+		sec4_sg_len += assoc_nents + 1 + src_nents;
+		if (likely(req->src == req->dst))
+			contig &= ~GIV_DST_CONTIG;
+	}
+	sec4_sg_len += dst_nents;
+
+	sec4_sg_bytes = sec4_sg_len * sizeof(struct sec4_sg_entry);
+
+	/* allocate space for base edesc and hw desc commands, link tables */
+	edesc = kmalloc(sizeof(struct aead_edesc) + desc_bytes +
+			sec4_sg_bytes, GFP_DMA | flags);
+>>>>>>> refs/remotes/origin/master
 	if (!edesc) {
 		dev_err(jrdev, "could not allocate extended descriptor\n");
 		return ERR_PTR(-ENOMEM);
 	}
 
 	edesc->assoc_nents = assoc_nents;
+<<<<<<< HEAD
 	edesc->src_nents = src_nents;
 	edesc->dst_nents = dst_nents;
 <<<<<<< HEAD
@@ -2046,10 +2624,47 @@ static struct aead_edesc *aead_giv_edesc_alloc(struct aead_givcrypt_request
 				    edesc->link_tbl + link_tbl_index, 0);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	edesc->assoc_chained = assoc_chained;
+	edesc->src_nents = src_nents;
+	edesc->src_chained = src_chained;
+	edesc->dst_nents = dst_nents;
+	edesc->dst_chained = dst_chained;
+	edesc->iv_dma = iv_dma;
+	edesc->sec4_sg_bytes = sec4_sg_bytes;
+	edesc->sec4_sg = (void *)edesc + sizeof(struct aead_edesc) +
+			 desc_bytes;
+	edesc->sec4_sg_dma = dma_map_single(jrdev, edesc->sec4_sg,
+					    sec4_sg_bytes, DMA_TO_DEVICE);
+	*contig_ptr = contig;
+
+	sec4_sg_index = 0;
+	if (!(contig & GIV_SRC_CONTIG)) {
+		sg_to_sec4_sg(req->assoc, assoc_nents,
+			      edesc->sec4_sg +
+			      sec4_sg_index, 0);
+		sec4_sg_index += assoc_nents;
+		dma_to_sec4_sg_one(edesc->sec4_sg + sec4_sg_index,
+				   iv_dma, ivsize, 0);
+		sec4_sg_index += 1;
+		sg_to_sec4_sg_last(req->src, src_nents,
+				   edesc->sec4_sg +
+				   sec4_sg_index, 0);
+		sec4_sg_index += src_nents;
+	}
+	if (unlikely(req->src != req->dst && !(contig & GIV_DST_CONTIG))) {
+		dma_to_sec4_sg_one(edesc->sec4_sg + sec4_sg_index,
+				   iv_dma, ivsize, 0);
+		sec4_sg_index += 1;
+		sg_to_sec4_sg_last(req->dst, dst_nents,
+				   edesc->sec4_sg + sec4_sg_index, 0);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return edesc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int aead_authenc_encrypt(struct aead_request *areq)
 {
@@ -2174,6 +2789,8 @@ static int aead_authenc_givencrypt(struct aead_givcrypt_request *req)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int aead_givencrypt(struct aead_givcrypt_request *areq)
 {
 	struct aead_request *req = &areq->areq;
@@ -2185,8 +2802,11 @@ static int aead_givencrypt(struct aead_givcrypt_request *areq)
 	u32 *desc;
 	int ret = 0;
 
+<<<<<<< HEAD
 	req->cryptlen += ctx->authsize;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* allocate extended descriptor */
 	edesc = aead_giv_edesc_alloc(areq, DESC_JOB_IO_LEN *
 				     CAAM_CMD_SZ, &contig);
@@ -2195,7 +2815,11 @@ static int aead_givencrypt(struct aead_givcrypt_request *areq)
 		return PTR_ERR(edesc);
 
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "giv src@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "giv src@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, sg_virt(req->src),
 		       req->cryptlen, 1);
 #endif
@@ -2204,7 +2828,11 @@ static int aead_givencrypt(struct aead_givcrypt_request *areq)
 	init_aead_giv_job(ctx->sh_desc_givenc,
 			  ctx->sh_desc_givenc_dma, edesc, req, contig);
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "aead jobdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "aead jobdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, edesc->hw_desc,
 		       desc_bytes(edesc->hw_desc), 1);
 #endif
@@ -2234,12 +2862,17 @@ static struct ablkcipher_edesc *ablkcipher_edesc_alloc(struct ablkcipher_request
 	gfp_t flags = (req->base.flags & (CRYPTO_TFM_REQ_MAY_BACKLOG |
 					  CRYPTO_TFM_REQ_MAY_SLEEP)) ?
 		       GFP_KERNEL : GFP_ATOMIC;
+<<<<<<< HEAD
 	int src_nents, dst_nents = 0, link_tbl_bytes;
+=======
+	int src_nents, dst_nents = 0, sec4_sg_bytes;
+>>>>>>> refs/remotes/origin/master
 	struct ablkcipher_edesc *edesc;
 	dma_addr_t iv_dma = 0;
 	bool iv_contig = false;
 	int sgc;
 	int ivsize = crypto_ablkcipher_ivsize(ablkcipher);
+<<<<<<< HEAD
 	int link_tbl_index;
 
 	src_nents = sg_count(req->src, req->nbytes);
@@ -2255,6 +2888,24 @@ static struct ablkcipher_edesc *ablkcipher_edesc_alloc(struct ablkcipher_request
 				 DMA_TO_DEVICE);
 		sgc = dma_map_sg(jrdev, req->dst, dst_nents ? : 1,
 				 DMA_FROM_DEVICE);
+=======
+	bool src_chained = false, dst_chained = false;
+	int sec4_sg_index;
+
+	src_nents = sg_count(req->src, req->nbytes, &src_chained);
+
+	if (req->dst != req->src)
+		dst_nents = sg_count(req->dst, req->nbytes, &dst_chained);
+
+	if (likely(req->src == req->dst)) {
+		sgc = dma_map_sg_chained(jrdev, req->src, src_nents ? : 1,
+					 DMA_BIDIRECTIONAL, src_chained);
+	} else {
+		sgc = dma_map_sg_chained(jrdev, req->src, src_nents ? : 1,
+					 DMA_TO_DEVICE, src_chained);
+		sgc = dma_map_sg_chained(jrdev, req->dst, dst_nents ? : 1,
+					 DMA_FROM_DEVICE, dst_chained);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -2266,18 +2917,28 @@ static struct ablkcipher_edesc *ablkcipher_edesc_alloc(struct ablkcipher_request
 		iv_contig = true;
 	else
 		src_nents = src_nents ? : 1;
+<<<<<<< HEAD
 	link_tbl_bytes = ((iv_contig ? 0 : 1) + src_nents + dst_nents) *
 			 sizeof(struct link_tbl_entry);
 
 	/* allocate space for base edesc and hw desc commands, link tables */
 	edesc = kmalloc(sizeof(struct ablkcipher_edesc) + desc_bytes +
 			link_tbl_bytes, GFP_DMA | flags);
+=======
+	sec4_sg_bytes = ((iv_contig ? 0 : 1) + src_nents + dst_nents) *
+			sizeof(struct sec4_sg_entry);
+
+	/* allocate space for base edesc and hw desc commands, link tables */
+	edesc = kmalloc(sizeof(struct ablkcipher_edesc) + desc_bytes +
+			sec4_sg_bytes, GFP_DMA | flags);
+>>>>>>> refs/remotes/origin/master
 	if (!edesc) {
 		dev_err(jrdev, "could not allocate extended descriptor\n");
 		return ERR_PTR(-ENOMEM);
 	}
 
 	edesc->src_nents = src_nents;
+<<<<<<< HEAD
 	edesc->dst_nents = dst_nents;
 	edesc->link_tbl_bytes = link_tbl_bytes;
 	edesc->link_tbl = (void *)edesc + sizeof(struct ablkcipher_edesc) +
@@ -2304,6 +2965,36 @@ static struct ablkcipher_edesc *ablkcipher_edesc_alloc(struct ablkcipher_request
 	print_hex_dump(KERN_ERR, "ablkcipher link_tbl@"xstr(__LINE__)": ",
 		       DUMP_PREFIX_ADDRESS, 16, 4, edesc->link_tbl,
 		       link_tbl_bytes, 1);
+=======
+	edesc->src_chained = src_chained;
+	edesc->dst_nents = dst_nents;
+	edesc->dst_chained = dst_chained;
+	edesc->sec4_sg_bytes = sec4_sg_bytes;
+	edesc->sec4_sg = (void *)edesc + sizeof(struct ablkcipher_edesc) +
+			 desc_bytes;
+
+	sec4_sg_index = 0;
+	if (!iv_contig) {
+		dma_to_sec4_sg_one(edesc->sec4_sg, iv_dma, ivsize, 0);
+		sg_to_sec4_sg_last(req->src, src_nents,
+				   edesc->sec4_sg + 1, 0);
+		sec4_sg_index += 1 + src_nents;
+	}
+
+	if (dst_nents) {
+		sg_to_sec4_sg_last(req->dst, dst_nents,
+			edesc->sec4_sg + sec4_sg_index, 0);
+	}
+
+	edesc->sec4_sg_dma = dma_map_single(jrdev, edesc->sec4_sg,
+					    sec4_sg_bytes, DMA_TO_DEVICE);
+	edesc->iv_dma = iv_dma;
+
+#ifdef DEBUG
+	print_hex_dump(KERN_ERR, "ablkcipher sec4_sg@"__stringify(__LINE__)": ",
+		       DUMP_PREFIX_ADDRESS, 16, 4, edesc->sec4_sg,
+		       sec4_sg_bytes, 1);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	*iv_contig_out = iv_contig;
@@ -2330,7 +3021,11 @@ static int ablkcipher_encrypt(struct ablkcipher_request *req)
 	init_ablkcipher_job(ctx->sh_desc_enc,
 		ctx->sh_desc_enc_dma, edesc, req, iv_contig);
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "ablkcipher jobdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "ablkcipher jobdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, edesc->hw_desc,
 		       desc_bytes(edesc->hw_desc), 1);
 #endif
@@ -2368,7 +3063,11 @@ static int ablkcipher_decrypt(struct ablkcipher_request *req)
 		ctx->sh_desc_dec_dma, edesc, req, iv_contig);
 	desc = edesc->hw_desc;
 #ifdef DEBUG
+<<<<<<< HEAD
 	print_hex_dump(KERN_ERR, "ablkcipher jobdesc@"xstr(__LINE__)": ",
+=======
+	print_hex_dump(KERN_ERR, "ablkcipher jobdesc@"__stringify(__LINE__)": ",
+>>>>>>> refs/remotes/origin/master
 		       DUMP_PREFIX_ADDRESS, 16, 4, edesc->hw_desc,
 		       desc_bytes(edesc->hw_desc), 1);
 #endif
@@ -2386,14 +3085,20 @@ static int ablkcipher_decrypt(struct ablkcipher_request *req)
 
 #define template_aead		template_u.aead
 #define template_ablkcipher	template_u.ablkcipher
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct caam_alg_template {
 	char name[CRYPTO_MAX_ALG_NAME];
 	char driver_name[CRYPTO_MAX_ALG_NAME];
 	unsigned int blocksize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct aead_alg aead;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 type;
 	union {
 		struct ablkcipher_alg ablkcipher;
@@ -2403,7 +3108,10 @@ struct caam_alg_template {
 		struct compress_alg compress;
 		struct rng_alg rng;
 	} template_u;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 class1_alg_type;
 	u32 class2_alg_type;
 	u32 alg_op;
@@ -2412,6 +3120,7 @@ struct caam_alg_template {
 static struct caam_alg_template driver_algs[] = {
 	/* single-pass ipsec_esp descriptor */
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "authenc(hmac(sha1),cbc(aes))",
 		.driver_name = "authenc-hmac-sha1-cbc-aes-caam",
@@ -2423,6 +3132,8 @@ static struct caam_alg_template driver_algs[] = {
 			.decrypt = aead_authenc_decrypt,
 			.givencrypt = aead_authenc_givencrypt,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "authenc(hmac(md5),cbc(aes))",
 		.driver_name = "authenc-hmac-md5-cbc-aes-caam",
 		.blocksize = AES_BLOCK_SIZE,
@@ -2452,7 +3163,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = AES_BLOCK_SIZE,
 			.maxauthsize = SHA1_DIGEST_SIZE,
@@ -2462,6 +3176,7 @@ static struct caam_alg_template driver_algs[] = {
 		.alg_op = OP_ALG_ALGSEL_SHA1 | OP_ALG_AAI_HMAC,
 	},
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "authenc(hmac(sha256),cbc(aes))",
 		.driver_name = "authenc-hmac-sha256-cbc-aes-caam",
@@ -2476,6 +3191,12 @@ static struct caam_alg_template driver_algs[] = {
 		.name = "authenc(hmac(sha224),cbc(aes))",
 		.driver_name = "authenc-hmac-sha224-cbc-aes-caam",
 		.blocksize = AES_BLOCK_SIZE,
+=======
+		.name = "authenc(hmac(sha224),cbc(aes))",
+		.driver_name = "authenc-hmac-sha224-cbc-aes-caam",
+		.blocksize = AES_BLOCK_SIZE,
+		.type = CRYPTO_ALG_TYPE_AEAD,
+>>>>>>> refs/remotes/origin/master
 		.template_aead = {
 			.setkey = aead_setkey,
 			.setauthsize = aead_setauthsize,
@@ -2502,7 +3223,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = AES_BLOCK_SIZE,
 			.maxauthsize = SHA256_DIGEST_SIZE,
@@ -2513,6 +3237,7 @@ static struct caam_alg_template driver_algs[] = {
 		.alg_op = OP_ALG_ALGSEL_SHA256 | OP_ALG_AAI_HMAC,
 	},
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "authenc(hmac(sha512),cbc(aes))",
 		.driver_name = "authenc-hmac-sha512-cbc-aes-caam",
@@ -2527,6 +3252,12 @@ static struct caam_alg_template driver_algs[] = {
 		.name = "authenc(hmac(sha384),cbc(aes))",
 		.driver_name = "authenc-hmac-sha384-cbc-aes-caam",
 		.blocksize = AES_BLOCK_SIZE,
+=======
+		.name = "authenc(hmac(sha384),cbc(aes))",
+		.driver_name = "authenc-hmac-sha384-cbc-aes-caam",
+		.blocksize = AES_BLOCK_SIZE,
+		.type = CRYPTO_ALG_TYPE_AEAD,
+>>>>>>> refs/remotes/origin/master
 		.template_aead = {
 			.setkey = aead_setkey,
 			.setauthsize = aead_setauthsize,
@@ -2554,7 +3285,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = AES_BLOCK_SIZE,
 			.maxauthsize = SHA512_DIGEST_SIZE,
@@ -2566,6 +3300,7 @@ static struct caam_alg_template driver_algs[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "authenc(hmac(sha1),cbc(des3_ede))",
 		.driver_name = "authenc-hmac-sha1-cbc-des3_ede-caam",
 		.blocksize = DES3_EDE_BLOCK_SIZE,
@@ -2576,6 +3311,8 @@ static struct caam_alg_template driver_algs[] = {
 			.decrypt = aead_authenc_decrypt,
 			.givencrypt = aead_authenc_givencrypt,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "authenc(hmac(md5),cbc(des3_ede))",
 		.driver_name = "authenc-hmac-md5-cbc-des3_ede-caam",
 		.blocksize = DES3_EDE_BLOCK_SIZE,
@@ -2605,7 +3342,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = DES3_EDE_BLOCK_SIZE,
 			.maxauthsize = SHA1_DIGEST_SIZE,
@@ -2615,6 +3355,7 @@ static struct caam_alg_template driver_algs[] = {
 		.alg_op = OP_ALG_ALGSEL_SHA1 | OP_ALG_AAI_HMAC,
 	},
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "authenc(hmac(sha256),cbc(des3_ede))",
 		.driver_name = "authenc-hmac-sha256-cbc-des3_ede-caam",
@@ -2629,6 +3370,12 @@ static struct caam_alg_template driver_algs[] = {
 		.name = "authenc(hmac(sha224),cbc(des3_ede))",
 		.driver_name = "authenc-hmac-sha224-cbc-des3_ede-caam",
 		.blocksize = DES3_EDE_BLOCK_SIZE,
+=======
+		.name = "authenc(hmac(sha224),cbc(des3_ede))",
+		.driver_name = "authenc-hmac-sha224-cbc-des3_ede-caam",
+		.blocksize = DES3_EDE_BLOCK_SIZE,
+		.type = CRYPTO_ALG_TYPE_AEAD,
+>>>>>>> refs/remotes/origin/master
 		.template_aead = {
 			.setkey = aead_setkey,
 			.setauthsize = aead_setauthsize,
@@ -2655,7 +3402,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = DES3_EDE_BLOCK_SIZE,
 			.maxauthsize = SHA256_DIGEST_SIZE,
@@ -2666,6 +3416,7 @@ static struct caam_alg_template driver_algs[] = {
 		.alg_op = OP_ALG_ALGSEL_SHA256 | OP_ALG_AAI_HMAC,
 	},
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "authenc(hmac(sha512),cbc(des3_ede))",
 		.driver_name = "authenc-hmac-sha512-cbc-des3_ede-caam",
@@ -2680,6 +3431,12 @@ static struct caam_alg_template driver_algs[] = {
 		.name = "authenc(hmac(sha384),cbc(des3_ede))",
 		.driver_name = "authenc-hmac-sha384-cbc-des3_ede-caam",
 		.blocksize = DES3_EDE_BLOCK_SIZE,
+=======
+		.name = "authenc(hmac(sha384),cbc(des3_ede))",
+		.driver_name = "authenc-hmac-sha384-cbc-des3_ede-caam",
+		.blocksize = DES3_EDE_BLOCK_SIZE,
+		.type = CRYPTO_ALG_TYPE_AEAD,
+>>>>>>> refs/remotes/origin/master
 		.template_aead = {
 			.setkey = aead_setkey,
 			.setauthsize = aead_setauthsize,
@@ -2706,7 +3463,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = DES3_EDE_BLOCK_SIZE,
 			.maxauthsize = SHA512_DIGEST_SIZE,
@@ -2718,6 +3478,7 @@ static struct caam_alg_template driver_algs[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "authenc(hmac(sha1),cbc(des))",
 		.driver_name = "authenc-hmac-sha1-cbc-des-caam",
 		.blocksize = DES_BLOCK_SIZE,
@@ -2728,6 +3489,8 @@ static struct caam_alg_template driver_algs[] = {
 			.decrypt = aead_authenc_decrypt,
 			.givencrypt = aead_authenc_givencrypt,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "authenc(hmac(md5),cbc(des))",
 		.driver_name = "authenc-hmac-md5-cbc-des-caam",
 		.blocksize = DES_BLOCK_SIZE,
@@ -2757,7 +3520,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = DES_BLOCK_SIZE,
 			.maxauthsize = SHA1_DIGEST_SIZE,
@@ -2767,6 +3533,7 @@ static struct caam_alg_template driver_algs[] = {
 		.alg_op = OP_ALG_ALGSEL_SHA1 | OP_ALG_AAI_HMAC,
 	},
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "authenc(hmac(sha256),cbc(des))",
 		.driver_name = "authenc-hmac-sha256-cbc-des-caam",
@@ -2781,6 +3548,12 @@ static struct caam_alg_template driver_algs[] = {
 		.name = "authenc(hmac(sha224),cbc(des))",
 		.driver_name = "authenc-hmac-sha224-cbc-des-caam",
 		.blocksize = DES_BLOCK_SIZE,
+=======
+		.name = "authenc(hmac(sha224),cbc(des))",
+		.driver_name = "authenc-hmac-sha224-cbc-des-caam",
+		.blocksize = DES_BLOCK_SIZE,
+		.type = CRYPTO_ALG_TYPE_AEAD,
+>>>>>>> refs/remotes/origin/master
 		.template_aead = {
 			.setkey = aead_setkey,
 			.setauthsize = aead_setauthsize,
@@ -2807,7 +3580,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = DES_BLOCK_SIZE,
 			.maxauthsize = SHA256_DIGEST_SIZE,
@@ -2818,6 +3594,7 @@ static struct caam_alg_template driver_algs[] = {
 		.alg_op = OP_ALG_ALGSEL_SHA256 | OP_ALG_AAI_HMAC,
 	},
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "authenc(hmac(sha512),cbc(des))",
 		.driver_name = "authenc-hmac-sha512-cbc-des-caam",
@@ -2832,6 +3609,12 @@ static struct caam_alg_template driver_algs[] = {
 		.name = "authenc(hmac(sha384),cbc(des))",
 		.driver_name = "authenc-hmac-sha384-cbc-des-caam",
 		.blocksize = DES_BLOCK_SIZE,
+=======
+		.name = "authenc(hmac(sha384),cbc(des))",
+		.driver_name = "authenc-hmac-sha384-cbc-des-caam",
+		.blocksize = DES_BLOCK_SIZE,
+		.type = CRYPTO_ALG_TYPE_AEAD,
+>>>>>>> refs/remotes/origin/master
 		.template_aead = {
 			.setkey = aead_setkey,
 			.setauthsize = aead_setauthsize,
@@ -2858,7 +3641,10 @@ static struct caam_alg_template driver_algs[] = {
 			.encrypt = aead_encrypt,
 			.decrypt = aead_decrypt,
 			.givencrypt = aead_givencrypt,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			.geniv = "<built-in>",
 			.ivsize = DES_BLOCK_SIZE,
 			.maxauthsize = SHA512_DIGEST_SIZE,
@@ -2869,7 +3655,10 @@ static struct caam_alg_template driver_algs[] = {
 		.alg_op = OP_ALG_ALGSEL_SHA512 | OP_ALG_AAI_HMAC,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ablkcipher descriptor */
 	{
 		.name = "cbc(aes)",
@@ -2919,12 +3708,18 @@ static struct caam_alg_template driver_algs[] = {
 			},
 		.class1_alg_type = OP_ALG_ALGSEL_DES | OP_ALG_AAI_CBC,
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct caam_crypto_alg {
 	struct list_head entry;
+<<<<<<< HEAD
 	struct device *ctrldev;
+=======
+>>>>>>> refs/remotes/origin/master
 	int class1_alg_type;
 	int class2_alg_type;
 	int alg_op;
@@ -2937,6 +3732,7 @@ static int caam_cra_init(struct crypto_tfm *tfm)
 	struct caam_crypto_alg *caam_alg =
 		 container_of(alg, struct caam_crypto_alg, crypto_alg);
 	struct caam_ctx *ctx = crypto_tfm_ctx(tfm);
+<<<<<<< HEAD
 	struct caam_drv_private *priv = dev_get_drvdata(caam_alg->ctrldev);
 	int tgt_jr = atomic_inc_return(&priv->tfm_count);
 
@@ -2945,6 +3741,14 @@ static int caam_cra_init(struct crypto_tfm *tfm)
 	 * crypto request processing per tfm
 	 */
 	ctx->jrdev = priv->algapi_jr[(tgt_jr / 2) % priv->num_jrs_for_algapi];
+=======
+
+	ctx->jrdev = caam_jr_alloc();
+	if (IS_ERR(ctx->jrdev)) {
+		pr_err("Job Ring Device allocation for transform failed\n");
+		return PTR_ERR(ctx->jrdev);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* copy descriptor header template value */
 	ctx->class1_alg_type = OP_TYPE_CLASS1_ALG | caam_alg->class1_alg_type;
@@ -2959,6 +3763,7 @@ static void caam_cra_exit(struct crypto_tfm *tfm)
 	struct caam_ctx *ctx = crypto_tfm_ctx(tfm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!dma_mapping_error(ctx->jrdev, ctx->shared_desc_phys))
 		dma_unmap_single(ctx->jrdev, ctx->shared_desc_phys,
 				 desc_bytes(ctx->sh_desc), DMA_TO_DEVICE);
@@ -2970,6 +3775,8 @@ static void caam_cra_exit(struct crypto_tfm *tfm)
 				 DMA_TO_DEVICE);
 	kfree(ctx->key);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ctx->sh_desc_enc_dma &&
 	    !dma_mapping_error(ctx->jrdev, ctx->sh_desc_enc_dma))
 		dma_unmap_single(ctx->jrdev, ctx->sh_desc_enc_dma,
@@ -2983,12 +3790,18 @@ static void caam_cra_exit(struct crypto_tfm *tfm)
 		dma_unmap_single(ctx->jrdev, ctx->sh_desc_givenc_dma,
 				 desc_bytes(ctx->sh_desc_givenc),
 				 DMA_TO_DEVICE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	caam_jr_free(ctx->jrdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit caam_algapi_exit(void)
 {
 
+<<<<<<< HEAD
 	struct device_node *dev_node;
 	struct platform_device *pdev;
 	struct device *ctrldev;
@@ -3012,10 +3825,19 @@ static void __exit caam_algapi_exit(void)
 		return;
 
 	list_for_each_entry_safe(t_alg, n, &priv->alg_list, entry) {
+=======
+	struct caam_crypto_alg *t_alg, *n;
+
+	if (!alg_list.next)
+		return;
+
+	list_for_each_entry_safe(t_alg, n, &alg_list, entry) {
+>>>>>>> refs/remotes/origin/master
 		crypto_unregister_alg(&t_alg->crypto_alg);
 		list_del(&t_alg->entry);
 		kfree(t_alg);
 	}
+<<<<<<< HEAD
 
 	for (i = 0; i < priv->total_jobrs; i++) {
 		err = caam_jr_deregister(priv->algapi_jr[i]);
@@ -3027,6 +3849,11 @@ static void __exit caam_algapi_exit(void)
 
 static struct caam_crypto_alg *caam_alg_alloc(struct device *ctrldev,
 					      struct caam_alg_template
+=======
+}
+
+static struct caam_crypto_alg *caam_alg_alloc(struct caam_alg_template
+>>>>>>> refs/remotes/origin/master
 					      *template)
 {
 	struct caam_crypto_alg *t_alg;
@@ -3034,7 +3861,11 @@ static struct caam_crypto_alg *caam_alg_alloc(struct device *ctrldev,
 
 	t_alg = kzalloc(sizeof(struct caam_crypto_alg), GFP_KERNEL);
 	if (!t_alg) {
+<<<<<<< HEAD
 		dev_err(ctrldev, "failed to allocate t_alg\n");
+=======
+		pr_err("failed to allocate t_alg\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOMEM);
 	}
 
@@ -3048,6 +3879,7 @@ static struct caam_crypto_alg *caam_alg_alloc(struct device *ctrldev,
 	alg->cra_exit = caam_cra_exit;
 	alg->cra_priority = CAAM_CRA_PRIORITY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	alg->cra_flags = CRYPTO_ALG_TYPE_AEAD | CRYPTO_ALG_ASYNC;
 	alg->cra_blocksize = template->blocksize;
 	alg->cra_alignmask = 0;
@@ -3055,6 +3887,8 @@ static struct caam_crypto_alg *caam_alg_alloc(struct device *ctrldev,
 	alg->cra_ctxsize = sizeof(struct caam_ctx);
 	alg->cra_u.aead = template->aead;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	alg->cra_blocksize = template->blocksize;
 	alg->cra_alignmask = 0;
 	alg->cra_ctxsize = sizeof(struct caam_ctx);
@@ -3070,18 +3904,25 @@ static struct caam_crypto_alg *caam_alg_alloc(struct device *ctrldev,
 		alg->cra_aead = template->template_aead;
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	t_alg->class1_alg_type = template->class1_alg_type;
 	t_alg->class2_alg_type = template->class2_alg_type;
 	t_alg->alg_op = template->alg_op;
+<<<<<<< HEAD
 	t_alg->ctrldev = ctrldev;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return t_alg;
 }
 
 static int __init caam_algapi_init(void)
 {
+<<<<<<< HEAD
 	struct device_node *dev_node;
 	struct platform_device *pdev;
 	struct device *ctrldev, **jrdev;
@@ -3121,22 +3962,36 @@ static int __init caam_algapi_init(void)
 	priv->num_jrs_for_algapi = i;
 	priv->algapi_jr = jrdev;
 	atomic_set(&priv->tfm_count, -1);
+=======
+	int i = 0, err = 0;
+
+	INIT_LIST_HEAD(&alg_list);
+>>>>>>> refs/remotes/origin/master
 
 	/* register crypto algorithms the device supports */
 	for (i = 0; i < ARRAY_SIZE(driver_algs); i++) {
 		/* TODO: check if h/w supports alg */
 		struct caam_crypto_alg *t_alg;
 
+<<<<<<< HEAD
 		t_alg = caam_alg_alloc(ctrldev, &driver_algs[i]);
 		if (IS_ERR(t_alg)) {
 			err = PTR_ERR(t_alg);
 			dev_warn(ctrldev, "%s alg allocation failed\n",
 				 driver_algs[i].driver_name);
+=======
+		t_alg = caam_alg_alloc(&driver_algs[i]);
+		if (IS_ERR(t_alg)) {
+			err = PTR_ERR(t_alg);
+			pr_warn("%s alg allocation failed\n",
+				driver_algs[i].driver_name);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
 		err = crypto_register_alg(&t_alg->crypto_alg);
 		if (err) {
+<<<<<<< HEAD
 			dev_warn(ctrldev, "%s alg registration failed\n",
 				t_alg->crypto_alg.cra_driver_name);
 			kfree(t_alg);
@@ -3155,6 +4010,16 @@ static int __init caam_algapi_init(void)
 		dev_info(ctrldev, "%s algorithms registered in /proc/crypto\n",
 			 (char *)of_get_property(dev_node, "compatible", NULL));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("%s alg registration failed\n",
+				t_alg->crypto_alg.cra_driver_name);
+			kfree(t_alg);
+		} else
+			list_add_tail(&t_alg->entry, &alg_list);
+	}
+	if (!list_empty(&alg_list))
+		pr_info("caam algorithms registered in /proc/crypto\n");
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

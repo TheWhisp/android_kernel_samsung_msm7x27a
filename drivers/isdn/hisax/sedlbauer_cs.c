@@ -1,6 +1,7 @@
 /*======================================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     A Sedlbauer PCMCIA client driver
 
     This driver is for the Sedlbauer Speed Star and Speed Star II, 
@@ -36,6 +37,8 @@
     
 ======================================================================*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   A Sedlbauer PCMCIA client driver
 
   This driver is for the Sedlbauer Speed Star and Speed Star II,
@@ -70,7 +73,10 @@
   file under either the MPL or the GPL.
 
   ======================================================================*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -82,9 +88,12 @@
 #include <linux/ioport.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/cisreg.h>
@@ -103,6 +112,7 @@ MODULE_LICENSE("Dual MPL/GPL");
 static int protocol = 2;        /* EURO-ISDN Default */
 module_param(protocol, int, 0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int sedlbauer_config(struct pcmcia_device *link) __devinit ;
 =======
@@ -140,6 +150,21 @@ static int __devinit sedlbauer_probe(struct pcmcia_device *link)
 
     return sedlbauer_config(link);
 =======
+=======
+static int sedlbauer_config(struct pcmcia_device *link);
+static void sedlbauer_release(struct pcmcia_device *link);
+
+static void sedlbauer_detach(struct pcmcia_device *p_dev);
+
+typedef struct local_info_t {
+	struct pcmcia_device	*p_dev;
+	int			stop;
+	int			cardnr;
+} local_info_t;
+
+static int sedlbauer_probe(struct pcmcia_device *link)
+{
+>>>>>>> refs/remotes/origin/master
 	local_info_t *local;
 
 	dev_dbg(&link->dev, "sedlbauer_attach()\n");
@@ -153,10 +178,16 @@ static int __devinit sedlbauer_probe(struct pcmcia_device *link)
 	link->priv = local;
 
 	return sedlbauer_config(link);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 } /* sedlbauer_attach */
 
 static void __devexit sedlbauer_detach(struct pcmcia_device *link)
+=======
+} /* sedlbauer_attach */
+
+static void sedlbauer_detach(struct pcmcia_device *link)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_dbg(&link->dev, "sedlbauer_detach(0x%p)\n", link);
 
@@ -176,6 +207,7 @@ static int sedlbauer_config_check(struct pcmcia_device *p_dev, void *priv_data)
 	return pcmcia_request_io(p_dev);
 }
 
+<<<<<<< HEAD
 static int __devinit sedlbauer_config(struct pcmcia_device *link)
 {
 <<<<<<< HEAD
@@ -216,6 +248,10 @@ failed:
     sedlbauer_release(link);
     return -ENODEV;
 =======
+=======
+static int sedlbauer_config(struct pcmcia_device *link)
+{
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	IsdnCard_t  icard;
 
@@ -252,12 +288,16 @@ failed:
 failed:
 	sedlbauer_release(link);
 	return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 } /* sedlbauer_config */
 
 static void sedlbauer_release(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     local_info_t *local = link->priv;
     dev_dbg(&link->dev, "sedlbauer_release(0x%p)\n", link);
@@ -271,6 +311,8 @@ static void sedlbauer_release(struct pcmcia_device *link)
 
     pcmcia_disable_device(link);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	local_info_t *local = link->priv;
 	dev_dbg(&link->dev, "sedlbauer_release(0x%p)\n", link);
 
@@ -282,7 +324,10 @@ static void sedlbauer_release(struct pcmcia_device *link)
 	}
 
 	pcmcia_disable_device(link);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* sedlbauer_release */
 
 static int sedlbauer_suspend(struct pcmcia_device *link)
@@ -320,11 +365,16 @@ static struct pcmcia_driver sedlbauer_driver = {
 	.owner		= THIS_MODULE,
 	.name		= "sedlbauer_cs",
 	.probe		= sedlbauer_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sedlbauer_detach),
+=======
+	.remove		= sedlbauer_detach,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= sedlbauer_ids,
 	.suspend	= sedlbauer_suspend,
 	.resume		= sedlbauer_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_sedlbauer_cs(void)
 {
@@ -338,3 +388,6 @@ static void __exit exit_sedlbauer_cs(void)
 
 module_init(init_sedlbauer_cs);
 module_exit(exit_sedlbauer_cs);
+=======
+module_pcmcia_driver(sedlbauer_driver);
+>>>>>>> refs/remotes/origin/master

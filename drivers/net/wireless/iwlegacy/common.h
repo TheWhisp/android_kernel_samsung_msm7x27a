@@ -541,10 +541,13 @@ struct il_frame {
 	struct list_head list;
 };
 
+<<<<<<< HEAD
 #define SEQ_TO_SN(seq) (((seq) & IEEE80211_SCTL_SEQ) >> 4)
 #define SN_TO_SEQ(ssn) (((ssn) << 4) & IEEE80211_SCTL_SEQ)
 #define MAX_SN ((IEEE80211_SCTL_SEQ) >> 4)
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum {
 	CMD_SYNC = 0,
 	CMD_SIZE_NORMAL = 0,
@@ -862,9 +865,15 @@ struct il_hw_params {
  * il4965_mac_     <-- mac80211 callback
  *
  ****************************************************************************/
+<<<<<<< HEAD
 extern void il4965_update_chain_flags(struct il_priv *il);
 extern const u8 il_bcast_addr[ETH_ALEN];
 extern int il_queue_space(const struct il_queue *q);
+=======
+void il4965_update_chain_flags(struct il_priv *il);
+extern const u8 il_bcast_addr[ETH_ALEN];
+int il_queue_space(const struct il_queue *q);
+>>>>>>> refs/remotes/origin/master
 static inline int
 il_queue_used(const struct il_queue *q, int i)
 {
@@ -1303,6 +1312,11 @@ struct il_priv {
 	/* queue refcounts */
 #define IL_MAX_HW_QUEUES	32
 	unsigned long queue_stopped[BITS_TO_LONGS(IL_MAX_HW_QUEUES)];
+<<<<<<< HEAD
+=======
+#define IL_STOP_REASON_PASSIVE	0
+	unsigned long stop_reason;
+>>>>>>> refs/remotes/origin/master
 	/* for each AC */
 	atomic_t queue_stop_count[4];
 
@@ -1356,6 +1370,10 @@ struct il_priv {
 		struct {
 			struct il_rx_phy_res last_phy_res;
 			bool last_phy_res_valid;
+<<<<<<< HEAD
+=======
+			u32 ampdu_ref;
+>>>>>>> refs/remotes/origin/master
 
 			struct completion firmware_loading_complete;
 
@@ -1723,11 +1741,19 @@ void il_mac_remove_interface(struct ieee80211_hw *hw,
 			     struct ieee80211_vif *vif);
 int il_mac_change_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			    enum nl80211_iftype newtype, bool newp2p);
+<<<<<<< HEAD
+=======
+void il_mac_flush(struct ieee80211_hw *hw, u32 queues, bool drop);
+>>>>>>> refs/remotes/origin/master
 int il_alloc_txq_mem(struct il_priv *il);
 void il_free_txq_mem(struct il_priv *il);
 
 #ifdef CONFIG_IWLEGACY_DEBUGFS
+<<<<<<< HEAD
 extern void il_update_stats(struct il_priv *il, bool is_tx, __le16 fc, u16 len);
+=======
+void il_update_stats(struct il_priv *il, bool is_tx, __le16 fc, u16 len);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void
 il_update_stats(struct il_priv *il, bool is_tx, __le16 fc, u16 len)
@@ -1760,12 +1786,21 @@ void il_chswitch_done(struct il_priv *il, bool is_success);
 /*****************************************************
 * TX
 ******************************************************/
+<<<<<<< HEAD
 extern void il_txq_update_write_ptr(struct il_priv *il, struct il_tx_queue *txq);
 extern int il_tx_queue_init(struct il_priv *il, u32 txq_id);
 extern void il_tx_queue_reset(struct il_priv *il, u32 txq_id);
 extern void il_tx_queue_unmap(struct il_priv *il, int txq_id);
 extern void il_tx_queue_free(struct il_priv *il, int txq_id);
 extern void il_setup_watchdog(struct il_priv *il);
+=======
+void il_txq_update_write_ptr(struct il_priv *il, struct il_tx_queue *txq);
+int il_tx_queue_init(struct il_priv *il, u32 txq_id);
+void il_tx_queue_reset(struct il_priv *il, u32 txq_id);
+void il_tx_queue_unmap(struct il_priv *il, int txq_id);
+void il_tx_queue_free(struct il_priv *il, int txq_id);
+void il_setup_watchdog(struct il_priv *il);
+>>>>>>> refs/remotes/origin/master
 /*****************************************************
  * TX power
  ****************************************************/
@@ -1829,6 +1864,7 @@ int il_enqueue_hcmd(struct il_priv *il, struct il_host_cmd *cmd);
  * PCI						     *
  *****************************************************/
 
+<<<<<<< HEAD
 static inline u16
 il_pcie_link_ctl(struct il_priv *il)
 {
@@ -1839,23 +1875,37 @@ il_pcie_link_ctl(struct il_priv *il)
 	return pci_lnk_ctl;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void il_bg_watchdog(unsigned long data);
 u32 il_usecs_to_beacons(struct il_priv *il, u32 usec, u32 beacon_interval);
 __le32 il_add_beacon_time(struct il_priv *il, u32 base, u32 addon,
 			  u32 beacon_interval);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 int il_pci_suspend(struct device *device);
 int il_pci_resume(struct device *device);
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 extern const struct dev_pm_ops il_pm_ops;
 
 #define IL_LEGACY_PM_OPS	(&il_pm_ops)
 
+<<<<<<< HEAD
 #else /* !CONFIG_PM */
 
 #define IL_LEGACY_PM_OPS	NULL
 
 #endif /* !CONFIG_PM */
+=======
+#else /* !CONFIG_PM_SLEEP */
+
+#define IL_LEGACY_PM_OPS	NULL
+
+#endif /* !CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 /*****************************************************
 *  Error Handling Debugging
@@ -1943,10 +1993,17 @@ il_is_ready_rf(struct il_priv *il)
 	return il_is_ready(il);
 }
 
+<<<<<<< HEAD
 extern void il_send_bt_config(struct il_priv *il);
 extern int il_send_stats_request(struct il_priv *il, u8 flags, bool clear);
 extern void il_apm_stop(struct il_priv *il);
 extern void _il_apm_stop(struct il_priv *il);
+=======
+void il_send_bt_config(struct il_priv *il);
+int il_send_stats_request(struct il_priv *il, u8 flags, bool clear);
+void il_apm_stop(struct il_priv *il);
+void _il_apm_stop(struct il_priv *il);
+>>>>>>> refs/remotes/origin/master
 
 int il_apm_init(struct il_priv *il);
 
@@ -1980,6 +2037,7 @@ void il_tx_cmd_protection(struct il_priv *il, struct ieee80211_tx_info *info,
 
 irqreturn_t il_isr(int irq, void *data);
 
+<<<<<<< HEAD
 extern void il_set_bit(struct il_priv *p, u32 r, u32 m);
 extern void il_clear_bit(struct il_priv *p, u32 r, u32 m);
 extern bool _il_grab_nic_access(struct il_priv *il);
@@ -1989,6 +2047,17 @@ extern u32 il_rd_prph(struct il_priv *il, u32 reg);
 extern void il_wr_prph(struct il_priv *il, u32 addr, u32 val);
 extern u32 il_read_targ_mem(struct il_priv *il, u32 addr);
 extern void il_write_targ_mem(struct il_priv *il, u32 addr, u32 val);
+=======
+void il_set_bit(struct il_priv *p, u32 r, u32 m);
+void il_clear_bit(struct il_priv *p, u32 r, u32 m);
+bool _il_grab_nic_access(struct il_priv *il);
+int _il_poll_bit(struct il_priv *il, u32 addr, u32 bits, u32 mask, int timeout);
+int il_poll_bit(struct il_priv *il, u32 addr, u32 mask, int timeout);
+u32 il_rd_prph(struct il_priv *il, u32 reg);
+void il_wr_prph(struct il_priv *il, u32 addr, u32 val);
+u32 il_read_targ_mem(struct il_priv *il, u32 addr);
+void il_write_targ_mem(struct il_priv *il, u32 addr, u32 val);
+>>>>>>> refs/remotes/origin/master
 
 static inline void
 _il_write8(struct il_priv *il, u32 ofs, u8 val)
@@ -2245,9 +2314,14 @@ il_alloc_fw_desc(struct pci_dev *pci_dev, struct fw_desc *desc)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	desc->v_addr =
 	    dma_alloc_coherent(&pci_dev->dev, desc->len, &desc->p_addr,
 			       GFP_KERNEL);
+=======
+	desc->v_addr = dma_alloc_coherent(&pci_dev->dev, desc->len,
+					  &desc->p_addr, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	return (desc->v_addr != NULL) ? 0 : -ENOMEM;
 }
 
@@ -2272,6 +2346,22 @@ il_set_swq_id(struct il_tx_queue *txq, u8 ac, u8 hwq)
 }
 
 static inline void
+<<<<<<< HEAD
+=======
+_il_wake_queue(struct il_priv *il, u8 ac)
+{
+	if (atomic_dec_return(&il->queue_stop_count[ac]) <= 0)
+		ieee80211_wake_queue(il->hw, ac);
+}
+
+static inline void
+_il_stop_queue(struct il_priv *il, u8 ac)
+{
+	if (atomic_inc_return(&il->queue_stop_count[ac]) > 0)
+		ieee80211_stop_queue(il->hw, ac);
+}
+static inline void
+>>>>>>> refs/remotes/origin/master
 il_wake_queue(struct il_priv *il, struct il_tx_queue *txq)
 {
 	u8 queue = txq->swq_id;
@@ -2279,8 +2369,12 @@ il_wake_queue(struct il_priv *il, struct il_tx_queue *txq)
 	u8 hwq = (queue >> 2) & 0x1f;
 
 	if (test_and_clear_bit(hwq, il->queue_stopped))
+<<<<<<< HEAD
 		if (atomic_dec_return(&il->queue_stop_count[ac]) <= 0)
 			ieee80211_wake_queue(il->hw, ac);
+=======
+		_il_wake_queue(il, ac);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -2291,8 +2385,32 @@ il_stop_queue(struct il_priv *il, struct il_tx_queue *txq)
 	u8 hwq = (queue >> 2) & 0x1f;
 
 	if (!test_and_set_bit(hwq, il->queue_stopped))
+<<<<<<< HEAD
 		if (atomic_inc_return(&il->queue_stop_count[ac]) > 0)
 			ieee80211_stop_queue(il->hw, ac);
+=======
+		_il_stop_queue(il, ac);
+}
+
+static inline void
+il_wake_queues_by_reason(struct il_priv *il, int reason)
+{
+	u8 ac;
+
+	if (test_and_clear_bit(reason, &il->stop_reason))
+		for (ac = 0; ac < 4; ac++)
+			_il_wake_queue(il, ac);
+}
+
+static inline void
+il_stop_queues_by_reason(struct il_priv *il, int reason)
+{
+	u8 ac;
+
+	if (!test_and_set_bit(reason, &il->stop_reason))
+		for (ac = 0; ac < 4; ac++)
+			_il_stop_queue(il, ac);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef ieee80211_stop_queue
@@ -2438,10 +2556,13 @@ struct il_tfd {
 /* PCI registers */
 #define PCI_CFG_RETRY_TIMEOUT	0x041
 
+<<<<<<< HEAD
 /* PCI register values */
 #define PCI_CFG_LINK_CTRL_VAL_L0S_EN	0x01
 #define PCI_CFG_LINK_CTRL_VAL_L1_EN	0x02
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct il_rate_info {
 	u8 plcp;		/* uCode API:  RATE_6M_PLCP, etc. */
 	u8 plcp_siso;		/* uCode API:  RATE_SISO_6M_PLCP, etc. */
@@ -2854,6 +2975,7 @@ il4965_first_antenna(u8 mask)
  * The specific throughput table used is based on the type of network
  * the associated with, including A, B, G, and G w/ TGG protection
  */
+<<<<<<< HEAD
 extern void il3945_rate_scale_init(struct ieee80211_hw *hw, s32 sta_id);
 
 /* Initialize station's rate scaling information after adding station */
@@ -2861,6 +2983,15 @@ extern void il4965_rs_rate_init(struct il_priv *il, struct ieee80211_sta *sta,
 				u8 sta_id);
 extern void il3945_rs_rate_init(struct il_priv *il, struct ieee80211_sta *sta,
 				u8 sta_id);
+=======
+void il3945_rate_scale_init(struct ieee80211_hw *hw, s32 sta_id);
+
+/* Initialize station's rate scaling information after adding station */
+void il4965_rs_rate_init(struct il_priv *il, struct ieee80211_sta *sta,
+			 u8 sta_id);
+void il3945_rs_rate_init(struct il_priv *il, struct ieee80211_sta *sta,
+			 u8 sta_id);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * il_rate_control_register - Register the rate control algorithm callbacks
@@ -2872,8 +3003,13 @@ extern void il3945_rs_rate_init(struct il_priv *il, struct ieee80211_sta *sta,
  * ieee80211_register_hw
  *
  */
+<<<<<<< HEAD
 extern int il4965_rate_control_register(void);
 extern int il3945_rate_control_register(void);
+=======
+int il4965_rate_control_register(void);
+int il3945_rate_control_register(void);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * il_rate_control_unregister - Unregister the rate control callbacks
@@ -2881,11 +3017,19 @@ extern int il3945_rate_control_register(void);
  * This should be called after calling ieee80211_unregister_hw, but before
  * the driver is unloaded.
  */
+<<<<<<< HEAD
 extern void il4965_rate_control_unregister(void);
 extern void il3945_rate_control_unregister(void);
 
 extern int il_power_update_mode(struct il_priv *il, bool force);
 extern void il_power_initialize(struct il_priv *il);
+=======
+void il4965_rate_control_unregister(void);
+void il3945_rate_control_unregister(void);
+
+int il_power_update_mode(struct il_priv *il, bool force);
+void il_power_initialize(struct il_priv *il);
+>>>>>>> refs/remotes/origin/master
 
 extern u32 il_debug_level;
 
@@ -2923,9 +3067,14 @@ do {									\
 #define IL_DBG(level, fmt, args...)					\
 do {									\
 	if (il_get_debug_level(il) & level)				\
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &il->hw->wiphy->dev,		\
 			 "%c %s " fmt, in_interrupt() ? 'I' : 'U',	\
 			__func__ , ## args);				\
+=======
+		dev_err(&il->hw->wiphy->dev, "%c %s " fmt,		\
+			in_interrupt() ? 'I' : 'U', __func__ , ##args); \
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 #define il_print_hex_dump(il, level, p, len)				\

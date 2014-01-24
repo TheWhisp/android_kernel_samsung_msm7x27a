@@ -11,7 +11,11 @@
 #include <topology.h>
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 #define smt_capable()   (smp_num_siblings > 1)
+=======
+#define smt_capable()	(smp_num_siblings > 1)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __ASM_TOPOLOGY_H */

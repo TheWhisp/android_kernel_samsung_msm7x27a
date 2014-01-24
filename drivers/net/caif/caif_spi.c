@@ -1,5 +1,6 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Contact: Sjur Brendeland / sjur.brandeland@stericsson.com
  * Author:  Daniel Martensson / Daniel.Martensson@stericsson.com
  * License terms: GNU General Public License (GPL) version 2.
@@ -9,6 +10,12 @@
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author:  Daniel Martensson
+ * License terms: GNU General Public License (GPL) version 2.
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/device.h>
@@ -33,17 +40,25 @@
 #endif /* CONFIG_CAIF_SPI_SYNC */
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_AUTHOR("Daniel Martensson<daniel.martensson@stericsson.com>");
+=======
+MODULE_AUTHOR("Daniel Martensson");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("CAIF SPI driver");
 
 /* Returns the number of padding bytes for alignment. */
 #define PAD_POW2(x, pow) ((((x)&((pow)-1))==0) ? 0 : (((pow)-((x)&((pow)-1)))))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int spi_loop;
 =======
 static bool spi_loop;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool spi_loop;
+>>>>>>> refs/remotes/origin/master
 module_param(spi_loop, bool, S_IRUGO);
 MODULE_PARM_DESC(spi_loop, "SPI running in loopback mode.");
 
@@ -136,6 +151,7 @@ static inline void dev_debugfs_rem(struct cfspi *cfspi)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dbgfs_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
@@ -144,6 +160,8 @@ static int dbgfs_open(struct inode *inode, struct file *file)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t dbgfs_state(struct file *file, char __user *user_buf,
 			   size_t count, loff_t *ppos)
 {
@@ -238,10 +256,14 @@ static ssize_t dbgfs_frame(struct file *file, char __user *user_buf,
 
 	len += print_frame((buf + len), (DEBUGFS_BUF_SIZE - len),
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   cfspi->xfer.va_tx,
 =======
 			   cfspi->xfer.va_tx[0],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   cfspi->xfer.va_tx[0],
+>>>>>>> refs/remotes/origin/master
 			   (cfspi->tx_cpck_len + SPI_CMD_SZ), 100);
 
 	len += snprintf((buf + len), (DEBUGFS_BUF_SIZE - len),
@@ -259,20 +281,28 @@ static ssize_t dbgfs_frame(struct file *file, char __user *user_buf,
 
 static const struct file_operations dbgfs_state_fops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = dbgfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/master
 	.read = dbgfs_state,
 	.owner = THIS_MODULE
 };
 
 static const struct file_operations dbgfs_frame_fops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = dbgfs_open,
 =======
 	.open = simple_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,
+>>>>>>> refs/remotes/origin/master
 	.read = dbgfs_frame,
 	.owner = THIS_MODULE
 };
@@ -623,6 +653,7 @@ static int cfspi_close(struct net_device *dev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct net_device_ops cfspi_ops = {
 	.ndo_open = cfspi_open,
 	.ndo_stop = cfspi_close,
@@ -666,12 +697,17 @@ int cfspi_spi_probe(struct platform_device *pdev)
 	cfspi->ndev = ndev;
 	cfspi->pdev = pdev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int cfspi_init(struct net_device *dev)
 {
 	int res = 0;
 	struct cfspi *cfspi = netdev_priv(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Set flow info. */
 	cfspi->flow_off_sent = 0;
@@ -688,6 +724,7 @@ static int cfspi_init(struct net_device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Assign the SPI device. */
 	cfspi->dev = dev;
 	/* Assign the device ifc to this SPI interface. */
@@ -701,22 +738,30 @@ static int cfspi_init(struct net_device *dev)
 		res = -ENODEV;
 		goto err_dma_alloc_tx;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Allocate DMA buffers. */
 	cfspi->xfer.va_tx[0] = dma_alloc(&cfspi->xfer.pa_tx[0]);
 	if (!cfspi->xfer.va_tx[0]) {
 		res = -ENODEV;
 		goto err_dma_alloc_tx_0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cfspi->xfer.va_rx = dma_alloc(&cfspi->xfer.pa_rx);
 
 	if (!cfspi->xfer.va_rx) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "CFSPI: failed to allocate dma TX buffer.\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		res = -ENODEV;
 		goto err_dma_alloc_rx;
 	}
@@ -761,7 +806,10 @@ static int cfspi_init(struct net_device *dev)
 	queue_work(cfspi->wq, &cfspi->work);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  err_create_wq:
@@ -843,7 +891,10 @@ int cfspi_spi_probe(struct platform_device *pdev)
 	/* Assign the device ifc to this SPI interface. */
 	dev->ifc = &cfspi->ifc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Register network device. */
 	res = register_netdev(ndev);
 	if (res) {
@@ -853,6 +904,7 @@ int cfspi_spi_probe(struct platform_device *pdev)
 	return res;
 
  err_net_reg:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_debugfs_rem(cfspi);
 	set_bit(SPI_TERMINATE, &cfspi->state);
@@ -865,6 +917,8 @@ int cfspi_spi_probe(struct platform_device *pdev)
  err_dma_alloc_tx:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(ndev);
 
 	return res;
@@ -872,6 +926,7 @@ int cfspi_spi_probe(struct platform_device *pdev)
 
 int cfspi_spi_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct list_head *list_node;
 	struct list_head *n;
@@ -905,6 +960,10 @@ int cfspi_spi_remove(struct platform_device *pdev)
 	/* Everything is done in cfspi_uninit(). */
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Everything is done in cfspi_uninit(). */
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit cfspi_exit_module(void)
@@ -916,10 +975,14 @@ static void __exit cfspi_exit_module(void)
 	list_for_each_safe(list_node, n, &cfspi_list) {
 		cfspi = list_entry(list_node, struct cfspi, list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		platform_device_unregister(cfspi->pdev);
 =======
 		unregister_netdev(cfspi->ndev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unregister_netdev(cfspi->ndev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Destroy sysfs files. */
@@ -1008,6 +1071,10 @@ static int __init cfspi_init_module(void)
 	driver_remove_file(&cfspi_spi_driver.driver,
 			   &driver_attr_up_head_align);
  err_create_up_head_align:
+<<<<<<< HEAD
+=======
+	platform_driver_unregister(&cfspi_spi_driver);
+>>>>>>> refs/remotes/origin/master
  err_dev_register:
 	return result;
 }

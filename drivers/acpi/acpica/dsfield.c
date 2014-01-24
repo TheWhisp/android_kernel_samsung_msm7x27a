@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,16 +61,94 @@
 ACPI_MODULE_NAME("dsfield")
 
 /* Local prototypes */
+<<<<<<< HEAD
+=======
+#ifdef ACPI_ASL_COMPILER
+#include "acdisasm.h"
+static acpi_status
+acpi_ds_create_external_region(acpi_status lookup_status,
+			       union acpi_parse_object *op,
+			       char *path,
+			       struct acpi_walk_state *walk_state,
+			       struct acpi_namespace_node **node);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static acpi_status
 acpi_ds_get_field_names(struct acpi_create_field_info *info,
 			struct acpi_walk_state *walk_state,
 			union acpi_parse_object *arg);
 
+<<<<<<< HEAD
+=======
+#ifdef ACPI_ASL_COMPILER
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_ds_create_external_region (iASL Disassembler only)
+ *
+ * PARAMETERS:  lookup_status   - Status from ns_lookup operation
+ *              op              - Op containing the Field definition and args
+ *              path            - Pathname of the region
+ *  `           walk_state      - Current method state
+ *              node            - Where the new region node is returned
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Add region to the external list if NOT_FOUND. Create a new
+ *              region node/object.
+ *
+ ******************************************************************************/
+
+static acpi_status
+acpi_ds_create_external_region(acpi_status lookup_status,
+			       union acpi_parse_object *op,
+			       char *path,
+			       struct acpi_walk_state *walk_state,
+			       struct acpi_namespace_node **node)
+{
+	acpi_status status;
+	union acpi_operand_object *obj_desc;
+
+	if (lookup_status != AE_NOT_FOUND) {
+		return (lookup_status);
+	}
+
+	/*
+	 * Table disassembly:
+	 * operation_region not found. Generate an External for it, and
+	 * insert the name into the namespace.
+	 */
+	acpi_dm_add_to_external_list(op, path, ACPI_TYPE_REGION, 0);
+	status = acpi_ns_lookup(walk_state->scope_info, path, ACPI_TYPE_REGION,
+				ACPI_IMODE_LOAD_PASS1, ACPI_NS_SEARCH_PARENT,
+				walk_state, node);
+	if (ACPI_FAILURE(status)) {
+		return (status);
+	}
+
+	/* Must create and install a region object for the new node */
+
+	obj_desc = acpi_ut_create_internal_object(ACPI_TYPE_REGION);
+	if (!obj_desc) {
+		return (AE_NO_MEMORY);
+	}
+
+	obj_desc->region.node = *node;
+	status = acpi_ns_attach_object(*node, obj_desc, ACPI_TYPE_REGION);
+	return (status);
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_ds_create_buffer_field
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op                  - Current parse op (create_xXField)
+=======
+ * PARAMETERS:  op                  - Current parse op (create_XXField)
+>>>>>>> refs/remotes/origin/master
  *              walk_state          - Current state
  *
  * RETURN:      Status
@@ -103,7 +185,11 @@ acpi_ds_create_buffer_field(union acpi_parse_object *op,
 
 		arg = acpi_ps_get_arg(op, 3);
 	} else {
+<<<<<<< HEAD
 		/* For all other create_xXXField operators, name is the 3rd argument */
+=======
+		/* For all other create_XXXField operators, name is the 3rd argument */
+>>>>>>> refs/remotes/origin/master
 
 		arg = acpi_ps_get_arg(op, 2);
 	}
@@ -195,7 +281,11 @@ acpi_ds_create_buffer_field(union acpi_parse_object *op,
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Remove local reference to the object */
 
@@ -207,6 +297,7 @@ acpi_ds_create_buffer_field(union acpi_parse_object *op,
  *
  * FUNCTION:    acpi_ds_get_field_names
  *
+<<<<<<< HEAD
  * PARAMETERS:  Info            - create_field info structure
  *  `           walk_state      - Current method state
  *              Arg             - First parser arg for the field name list
@@ -214,6 +305,15 @@ acpi_ds_create_buffer_field(union acpi_parse_object *op,
  * RETURN:      Status
  *
  * DESCRIPTION: Process all named fields in a field declaration.  Names are
+=======
+ * PARAMETERS:  info            - create_field info structure
+ *  `           walk_state      - Current method state
+ *              arg             - First parser arg for the field name list
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Process all named fields in a field declaration. Names are
+>>>>>>> refs/remotes/origin/master
  *              entered into the namespace.
  *
  ******************************************************************************/
@@ -226,9 +326,13 @@ acpi_ds_get_field_names(struct acpi_create_field_info *info,
 	acpi_status status;
 	u64 position;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	union acpi_parse_object *child;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	union acpi_parse_object *child;
+>>>>>>> refs/remotes/origin/master
 
 	ACPI_FUNCTION_TRACE_PTR(ds_get_field_names, info);
 
@@ -241,6 +345,7 @@ acpi_ds_get_field_names(struct acpi_create_field_info *info,
 	while (arg) {
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * Three types of field elements are handled:
 		 * 1) Offset - specifies a bit offset
 		 * 2) access_as - changes the access mode
@@ -252,6 +357,13 @@ acpi_ds_get_field_names(struct acpi_create_field_info *info,
 		 * 3) access_as - changes the access mode/attributes
 		 * 4) Connection - Associate a resource template with the field
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * Four types of field elements are handled:
+		 * 1) name - Enters a new named field into the namespace
+		 * 2) offset - specifies a bit offset
+		 * 3) access_as - changes the access mode/attributes
+		 * 4) connection - Associate a resource template with the field
+>>>>>>> refs/remotes/origin/master
 		 */
 		switch (arg->common.aml_opcode) {
 		case AML_INT_RESERVEDFIELD_OP:
@@ -270,6 +382,7 @@ acpi_ds_get_field_names(struct acpi_create_field_info *info,
 
 		case AML_INT_ACCESSFIELD_OP:
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			/*
 			 * Get a new access_type and access_attribute -- to be used for all
@@ -286,6 +399,8 @@ acpi_ds_get_field_names(struct acpi_create_field_info *info,
 
 			info->attribute = (u8) (arg->common.value.integer);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case AML_INT_EXTACCESSFIELD_OP:
 			/*
 			 * Get new access_type, access_attribute, and access_length fields
@@ -350,7 +465,10 @@ acpi_ds_get_field_names(struct acpi_create_field_info *info,
 					return_ACPI_STATUS(status);
 				}
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case AML_INT_NAMEDFIELD_OP:
@@ -421,7 +539,11 @@ acpi_ds_get_field_names(struct acpi_create_field_info *info,
  *
  * FUNCTION:    acpi_ds_create_field
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Op containing the Field definition and args
+=======
+ * PARAMETERS:  op              - Op containing the Field definition and args
+>>>>>>> refs/remotes/origin/master
  *              region_node     - Object for the containing Operation Region
  *  `           walk_state      - Current method state
  *
@@ -445,12 +567,25 @@ acpi_ds_create_field(union acpi_parse_object *op,
 	/* First arg is the name of the parent op_region (must already exist) */
 
 	arg = op->common.value.arg;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (!region_node) {
 		status =
 		    acpi_ns_lookup(walk_state->scope_info,
 				   arg->common.value.name, ACPI_TYPE_REGION,
 				   ACPI_IMODE_EXECUTE, ACPI_NS_SEARCH_PARENT,
 				   walk_state, &region_node);
+<<<<<<< HEAD
+=======
+#ifdef ACPI_ASL_COMPILER
+		status = acpi_ds_create_external_region(status, arg,
+							arg->common.value.name,
+							walk_state,
+							&region_node);
+#endif
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_FAILURE(status)) {
 			ACPI_ERROR_NAMESPACE(arg->common.value.name, status);
 			return_ACPI_STATUS(status);
@@ -458,10 +593,15 @@ acpi_ds_create_field(union acpi_parse_object *op,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ACPI_MEMSET(&info, 0, sizeof(struct acpi_create_field_info));
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ACPI_MEMSET(&info, 0, sizeof(struct acpi_create_field_info));
+
+>>>>>>> refs/remotes/origin/master
 	/* Second arg is the field flags */
 
 	arg = arg->common.next;
@@ -475,9 +615,12 @@ acpi_ds_create_field(union acpi_parse_object *op,
 
 	status = acpi_ds_get_field_names(&info, walk_state, arg->common.next);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -485,7 +628,11 @@ acpi_ds_create_field(union acpi_parse_object *op,
  *
  * FUNCTION:    acpi_ds_init_field_objects
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Op containing the Field definition and args
+=======
+ * PARAMETERS:  op              - Op containing the Field definition and args
+>>>>>>> refs/remotes/origin/master
  *  `           walk_state      - Current method state
  *
  * RETURN:      Status
@@ -527,21 +674,37 @@ acpi_ds_init_field_objects(union acpi_parse_object *op,
 	 */
 	switch (walk_state->opcode) {
 	case AML_FIELD_OP:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		arg = acpi_ps_get_arg(op, 2);
 		type = ACPI_TYPE_LOCAL_REGION_FIELD;
 		break;
 
 	case AML_BANK_FIELD_OP:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		arg = acpi_ps_get_arg(op, 4);
 		type = ACPI_TYPE_LOCAL_BANK_FIELD;
 		break;
 
 	case AML_INDEX_FIELD_OP:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		arg = acpi_ps_get_arg(op, 3);
 		type = ACPI_TYPE_LOCAL_INDEX_FIELD;
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_ACPI_STATUS(AE_BAD_PARAMETER);
 	}
 
@@ -566,12 +729,17 @@ acpi_ds_init_field_objects(union acpi_parse_object *op,
 	while (arg) {
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * Ignore OFFSET and ACCESSAS terms here; we are only interested in the
 		 * field names in order to enter them into the namespace.
 =======
 		 * Ignore OFFSET/ACCESSAS/CONNECTION terms here; we are only interested
 		 * in the field names in order to enter them into the namespace.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * Ignore OFFSET/ACCESSAS/CONNECTION terms here; we are only interested
+		 * in the field names in order to enter them into the namespace.
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (arg->common.aml_opcode == AML_INT_NAMEDFIELD_OP) {
 			status = acpi_ns_lookup(walk_state->scope_info,
@@ -605,7 +773,11 @@ acpi_ds_init_field_objects(union acpi_parse_object *op,
  *
  * FUNCTION:    acpi_ds_create_bank_field
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Op containing the Field definition and args
+=======
+ * PARAMETERS:  op              - Op containing the Field definition and args
+>>>>>>> refs/remotes/origin/master
  *              region_node     - Object for the containing Operation Region
  *              walk_state      - Current method state
  *
@@ -635,6 +807,15 @@ acpi_ds_create_bank_field(union acpi_parse_object *op,
 				   arg->common.value.name, ACPI_TYPE_REGION,
 				   ACPI_IMODE_EXECUTE, ACPI_NS_SEARCH_PARENT,
 				   walk_state, &region_node);
+<<<<<<< HEAD
+=======
+#ifdef ACPI_ASL_COMPILER
+		status = acpi_ds_create_external_region(status, arg,
+							arg->common.value.name,
+							walk_state,
+							&region_node);
+#endif
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_FAILURE(status)) {
 			ACPI_ERROR_NAMESPACE(arg->common.value.name, status);
 			return_ACPI_STATUS(status);
@@ -689,7 +870,11 @@ acpi_ds_create_bank_field(union acpi_parse_object *op,
  *
  * FUNCTION:    acpi_ds_create_index_field
  *
+<<<<<<< HEAD
  * PARAMETERS:  Op              - Op containing the Field definition and args
+=======
+ * PARAMETERS:  op              - Op containing the Field definition and args
+>>>>>>> refs/remotes/origin/master
  *              region_node     - Object for the containing Operation Region
  *  `           walk_state      - Current method state
  *
@@ -748,8 +933,11 @@ acpi_ds_create_index_field(union acpi_parse_object *op,
 
 	status = acpi_ds_get_field_names(&info, walk_state, arg->common.next);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }

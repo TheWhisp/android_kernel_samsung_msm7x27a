@@ -7,6 +7,10 @@
  * NFS namespace
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dcache.h>
 #include <linux/gfp.h>
 #include <linux/mount.h>
@@ -26,11 +30,14 @@ static LIST_HEAD(nfs_automount_list);
 static DECLARE_DELAYED_WORK(nfs_automount_task, nfs_expire_automounts);
 int nfs_mountpoint_expiry_timeout = 500 * HZ;
 
+<<<<<<< HEAD
 static struct vfsmount *nfs_do_submount(struct dentry *dentry,
 					struct nfs_fh *fh,
 					struct nfs_fattr *fattr,
 					rpc_authflavor_t authflavor);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * nfs_path - reconstruct the path given an arbitrary dentry
  * @base - used to return pointer to the end of devname part of path
@@ -126,6 +133,7 @@ Elong_unlock:
 Elong:
 	return ERR_PTR(-ENAMETOOLONG);
 }
+<<<<<<< HEAD
 
 #ifdef CONFIG_NFS_V4
 <<<<<<< HEAD
@@ -251,6 +259,9 @@ static inline struct rpc_clnt *nfs_lookup_mountpoint(struct inode *dir,
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 #endif /* CONFIG_NFS_V4 */
+=======
+EXPORT_SYMBOL_GPL(nfs_path);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * nfs_d_automount - Handle crossing a mountpoint on the server
@@ -268,6 +279,7 @@ struct vfsmount *nfs_d_automount(struct path *path)
 {
 	struct vfsmount *mnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs_server *server = NFS_SERVER(path->dentry->d_inode);
 	struct dentry *parent;
 	struct nfs_fh *fh = NULL;
@@ -280,6 +292,11 @@ struct vfsmount *nfs_d_automount(struct path *path)
 	struct nfs_fattr *fattr = NULL;
 	struct rpc_clnt *client;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct nfs_server *server = NFS_SERVER(path->dentry->d_inode);
+	struct nfs_fh *fh = NULL;
+	struct nfs_fattr *fattr = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	dprintk("--> nfs_d_automount()\n");
 
@@ -295,6 +312,7 @@ struct vfsmount *nfs_d_automount(struct path *path)
 
 	dprintk("%s: enter\n", __func__);
 
+<<<<<<< HEAD
 	/* Look it up again to get its attributes */
 	parent = dget_parent(path->dentry);
 <<<<<<< HEAD
@@ -327,6 +345,9 @@ struct vfsmount *nfs_d_automount(struct path *path)
 	rpc_shutdown_client(client);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mnt = server->nfs_client->rpc_ops->submount(server, path->dentry, fh, fattr);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(mnt))
 		goto out;
 
@@ -340,6 +361,7 @@ out:
 	nfs_free_fhandle(fh);
 out_nofree:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dprintk("<-- nfs_follow_mountpoint() = %p\n", mnt);
 	return mnt;
 }
@@ -350,6 +372,8 @@ const struct inode_operations nfs_mountpoint_inode_operations = {
 
 const struct inode_operations nfs_referral_inode_operations = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(mnt))
 		dprintk("<-- %s(): error %ld\n", __func__, PTR_ERR(mnt));
 	else
@@ -382,7 +406,10 @@ const struct inode_operations nfs_mountpoint_inode_operations = {
 const struct inode_operations nfs_referral_inode_operations = {
 	.getattr	= nfs_namespace_getattr,
 	.setattr	= nfs_namespace_setattr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void nfs_expire_automounts(struct work_struct *work)
@@ -407,6 +434,7 @@ static struct vfsmount *nfs_do_clone_mount(struct nfs_server *server,
 					   const char *devname,
 					   struct nfs_clone_mount *mountdata)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_NFS_V4
 	struct vfsmount *mnt = ERR_PTR(-EINVAL);
 	switch (server->nfs_client->rpc_ops->version) {
@@ -421,6 +449,9 @@ static struct vfsmount *nfs_do_clone_mount(struct nfs_server *server,
 #else
 	return vfs_kern_mount(&nfs_xdev_fs_type, 0, devname, mountdata);
 #endif
+=======
+	return vfs_kern_mount(&nfs_xdev_fs_type, 0, devname, mountdata);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -431,10 +462,15 @@ static struct vfsmount *nfs_do_clone_mount(struct nfs_server *server,
  * @authflavor - security flavor to use when performing the mount
  *
  */
+<<<<<<< HEAD
 static struct vfsmount *nfs_do_submount(struct dentry *dentry,
 					struct nfs_fh *fh,
 					struct nfs_fattr *fattr,
 					rpc_authflavor_t authflavor)
+=======
+struct vfsmount *nfs_do_submount(struct dentry *dentry, struct nfs_fh *fh,
+				 struct nfs_fattr *fattr, rpc_authflavor_t authflavor)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfs_clone_mount mountdata = {
 		.sb = dentry->d_sb,
@@ -449,9 +485,14 @@ static struct vfsmount *nfs_do_submount(struct dentry *dentry,
 
 	dprintk("--> nfs_do_submount()\n");
 
+<<<<<<< HEAD
 	dprintk("%s: submounting on %s/%s\n", __func__,
 			dentry->d_parent->d_name.name,
 			dentry->d_name.name);
+=======
+	dprintk("%s: submounting on %pd2\n", __func__,
+			dentry);
+>>>>>>> refs/remotes/origin/master
 	if (page == NULL)
 		goto out;
 	devname = nfs_devname(dentry, page, PAGE_SIZE);
@@ -467,3 +508,23 @@ out:
 	dprintk("<-- nfs_do_submount() = %p\n", mnt);
 	return mnt;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(nfs_do_submount);
+
+struct vfsmount *nfs_submount(struct nfs_server *server, struct dentry *dentry,
+			      struct nfs_fh *fh, struct nfs_fattr *fattr)
+{
+	int err;
+	struct dentry *parent = dget_parent(dentry);
+
+	/* Look it up again to get its attributes */
+	err = server->nfs_client->rpc_ops->lookup(parent->d_inode, &dentry->d_name, fh, fattr, NULL);
+	dput(parent);
+	if (err != 0)
+		return ERR_PTR(err);
+
+	return nfs_do_submount(dentry, fh, fattr, server->client->cl_auth->au_flavor);
+}
+EXPORT_SYMBOL_GPL(nfs_submount);
+>>>>>>> refs/remotes/origin/master

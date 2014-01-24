@@ -49,12 +49,15 @@ and actually register it with the class, which happens with the
 class's register_dev callback.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 NOTE: The device class structures and core routines to manipulate them
 are not in the mainline kernel, so the discussion is still a bit
 speculative. 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 Driver
 ~~~~~~

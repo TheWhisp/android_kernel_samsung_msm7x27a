@@ -5,10 +5,14 @@
  *  Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>
  *  Copyright (c) 2005-2008 Stefano Brivio <stefano.brivio@polimi.it>
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (c) 2005, 2006 Michael Buesch <mb@bu3sch.de>
 =======
  *  Copyright (c) 2005, 2006 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright (c) 2005, 2006 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  *  Copyright (c) 2005 Danny van Dyk <kugelfang@gentoo.org>
  *  Copyright (c) 2005 Andreas Jaggi <andreas.jaggi@waterwave.ch>
  *  Copyright (c) 2007 Larry Finger <Larry.Finger@lwfinger.net>
@@ -36,17 +40,23 @@
 #include <linux/delay.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 #include <linux/if_arp.h>
 #include <linux/etherdevice.h>
 #include <linux/firmware.h>
 #include <linux/wireless.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/if_arp.h>
 #include <linux/etherdevice.h>
 #include <linux/firmware.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/sched.h>
 #include <linux/skbuff.h>
@@ -73,9 +83,12 @@ MODULE_AUTHOR("Michael Buesch");
 MODULE_LICENSE("GPL");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_FIRMWARE(B43legacy_SUPPORTED_FIRMWARE_ID);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_FIRMWARE("b43legacy/ucode2.fw");
 MODULE_FIRMWARE("b43legacy/ucode4.fw");
 
@@ -739,6 +752,7 @@ void b43legacy_wireless_core_reset(struct b43legacy_wldev *dev, u32 flags)
 	if (flags & B43legacy_TMSLOW_GMODE) {
 		macctl |= B43legacy_MACCTL_GMODE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->phy.gmode = 1;
 	} else
 		dev->phy.gmode = 0;
@@ -747,6 +761,11 @@ void b43legacy_wireless_core_reset(struct b43legacy_wldev *dev, u32 flags)
 	} else
 		dev->phy.gmode = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->phy.gmode = true;
+	} else
+		dev->phy.gmode = false;
+>>>>>>> refs/remotes/origin/master
 	macctl |= B43legacy_MACCTL_IHR_ENABLED;
 	b43legacy_write32(dev, B43legacy_MMIO_MACCTL, macctl);
 }
@@ -834,10 +853,14 @@ static void b43legacy_calculate_link_quality(struct b43legacy_wldev *dev)
 		return;
 	dev->noisecalc.channel_at_start = dev->phy.channel;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->noisecalc.calculation_running = 1;
 =======
 	dev->noisecalc.calculation_running = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->noisecalc.calculation_running = true;
+>>>>>>> refs/remotes/origin/master
 	dev->noisecalc.nr_samples = 0;
 
 	b43legacy_generate_noise_sample(dev);
@@ -900,10 +923,14 @@ static void handle_irq_noise(struct b43legacy_wldev *dev)
 		dev->stats.link_noise = average;
 drop_calculation:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->noisecalc.calculation_running = 0;
 =======
 		dev->noisecalc.calculation_running = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->noisecalc.calculation_running = false;
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 generate_new:
@@ -920,10 +947,14 @@ static void handle_irq_tbtt_indication(struct b43legacy_wldev *dev)
 	}
 	if (b43legacy_is_mode(dev->wl, NL80211_IFTYPE_ADHOC))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->dfq_valid = 1;
 =======
 		dev->dfq_valid = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->dfq_valid = true;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void handle_irq_atim_end(struct b43legacy_wldev *dev)
@@ -933,10 +964,14 @@ static void handle_irq_atim_end(struct b43legacy_wldev *dev)
 				  b43legacy_read32(dev, B43legacy_MMIO_MACCMD)
 				  | B43legacy_MACCMD_DFQ_VALID);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->dfq_valid = 0;
 =======
 		dev->dfq_valid = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->dfq_valid = false;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1010,10 +1045,14 @@ static void b43legacy_write_beacon_template(struct b43legacy_wldev *dev,
 	const struct ieee80211_mgmt *bcn;
 	const u8 *ie;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool tim_found = 0;
 =======
 	bool tim_found = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool tim_found = false;
+>>>>>>> refs/remotes/origin/master
 	unsigned int rate;
 	u16 ctl;
 	int antenna;
@@ -1062,10 +1101,14 @@ static void b43legacy_write_beacon_template(struct b43legacy_wldev *dev,
 			if (ie_len < 4)
 				break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tim_found = 1;
 =======
 			tim_found = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tim_found = true;
+>>>>>>> refs/remotes/origin/master
 
 			tim_position = sizeof(struct b43legacy_plcp_hdr6);
 			tim_position += offsetof(struct ieee80211_mgmt,
@@ -1102,6 +1145,10 @@ static void b43legacy_write_probe_resp_plcp(struct b43legacy_wldev *dev,
 	b43legacy_generate_plcp_hdr(&plcp, size + FCS_LEN, rate->hw_value);
 	dur = ieee80211_generic_frame_duration(dev->wl->hw,
 					       dev->wl->vif,
+<<<<<<< HEAD
+=======
+					       IEEE80211_BAND_2GHZ,
+>>>>>>> refs/remotes/origin/master
 					       size,
 					       rate);
 	/* Write PLCP in two parts and timing for packet transfer */
@@ -1167,6 +1214,10 @@ static const u8 *b43legacy_generate_probe_resp(struct b43legacy_wldev *dev,
 					 IEEE80211_STYPE_PROBE_RESP);
 	dur = ieee80211_generic_frame_duration(dev->wl->hw,
 					       dev->wl->vif,
+<<<<<<< HEAD
+=======
+					       IEEE80211_BAND_2GHZ,
+>>>>>>> refs/remotes/origin/master
 					       *dest_size,
 					       rate);
 	hdr->duration_id = dur;
@@ -1219,10 +1270,14 @@ static void b43legacy_upload_beacon0(struct b43legacy_wldev *dev)
 	b43legacy_write_probe_resp_template(dev, 0x268, 0x4A,
 				      &__b43legacy_ratetable[3]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wl->beacon0_uploaded = 1;
 =======
 	wl->beacon0_uploaded = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wl->beacon0_uploaded = true;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void b43legacy_upload_beacon1(struct b43legacy_wldev *dev)
@@ -1233,10 +1288,14 @@ static void b43legacy_upload_beacon1(struct b43legacy_wldev *dev)
 		return;
 	b43legacy_write_beacon_template(dev, 0x468, 0x1A);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wl->beacon1_uploaded = 1;
 =======
 	wl->beacon1_uploaded = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wl->beacon1_uploaded = true;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void handle_irq_beacon(struct b43legacy_wldev *dev)
@@ -1267,10 +1326,14 @@ static void handle_irq_beacon(struct b43legacy_wldev *dev)
 		/* We never uploaded a beacon before.
 		 * Upload both templates now, but only mark one valid. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wl->beacon_templates_virgin = 0;
 =======
 		wl->beacon_templates_virgin = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wl->beacon_templates_virgin = false;
+>>>>>>> refs/remotes/origin/master
 		b43legacy_upload_beacon0(dev);
 		b43legacy_upload_beacon1(dev);
 		cmd = b43legacy_read32(dev, B43legacy_MMIO_MACCMD);
@@ -1334,12 +1397,17 @@ static void b43legacy_update_templates(struct b43legacy_wl *wl)
 		dev_kfree_skb_any(wl->current_beacon);
 	wl->current_beacon = beacon;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wl->beacon0_uploaded = 0;
 	wl->beacon1_uploaded = 0;
 =======
 	wl->beacon0_uploaded = false;
 	wl->beacon1_uploaded = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wl->beacon0_uploaded = false;
+	wl->beacon1_uploaded = false;
+>>>>>>> refs/remotes/origin/master
 	ieee80211_queue_work(wl->hw, &wl->beacon_update_trigger);
 }
 
@@ -1569,16 +1637,23 @@ static void b43legacy_release_firmware(struct b43legacy_wldev *dev)
 
 static void b43legacy_print_fw_helptext(struct b43legacy_wl *wl)
 {
+<<<<<<< HEAD
 	b43legacyerr(wl, "You must go to http://linuxwireless.org/en/users/"
+=======
+	b43legacyerr(wl, "You must go to http://wireless.kernel.org/en/users/"
+>>>>>>> refs/remotes/origin/master
 		     "Drivers/b43#devicefirmware "
 		     "and download the correct firmware (version 3).\n");
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_request_fw(struct b43legacy_wldev *dev,
 			 const char *name,
 			 const struct firmware **fw)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void b43legacy_fw_cb(const struct firmware *firmware, void *context)
 {
 	struct b43legacy_wldev *dev = context;
@@ -1590,7 +1665,10 @@ static void b43legacy_fw_cb(const struct firmware *firmware, void *context)
 static int do_request_fw(struct b43legacy_wldev *dev,
 			 const char *name,
 			 const struct firmware **fw, bool async)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	char path[sizeof(modparam_fwpostfix) + 32];
 	struct b43legacy_fw_header *hdr;
@@ -1604,8 +1682,11 @@ static int do_request_fw(struct b43legacy_wldev *dev,
 		 "b43legacy%s/%s.fw",
 		 modparam_fwpostfix, name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_firmware(fw, path, dev->dev->dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	b43legacyinfo(dev->wl, "Loading firmware %s\n", path);
 	if (async) {
 		init_completion(&dev->fw_load_complete);
@@ -1624,7 +1705,10 @@ static int do_request_fw(struct b43legacy_wldev *dev,
 	} else {
 		err = request_firmware(fw, path, dev->dev->dev);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		b43legacyerr(dev->wl, "Firmware file \"%s\" not found "
 		       "or load failed.\n", path);
@@ -1656,6 +1740,7 @@ err_format:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int b43legacy_request_firmware(struct b43legacy_wldev *dev)
 {
 	struct b43legacy_firmware *fw = &dev->fw;
@@ -1666,6 +1751,8 @@ static int b43legacy_request_firmware(struct b43legacy_wldev *dev)
 
 	tmshigh = ssb_read32(dev->dev, SSB_TMSHIGH);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int b43legacy_one_core_attach(struct ssb_device *dev,
 				     struct b43legacy_wl *wl);
 static void b43legacy_one_core_detach(struct ssb_device *dev);
@@ -1680,9 +1767,12 @@ static void b43legacy_request_firmware(struct work_struct *work)
 	const char *filename;
 	int err;
 
+<<<<<<< HEAD
 	/* do dummy read */
 	ssb_read32(dev->dev, SSB_TMSHIGH);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!fw->ucode) {
 		if (rev == 2)
 			filename = "ucode2";
@@ -1691,10 +1781,14 @@ static void b43legacy_request_firmware(struct work_struct *work)
 		else
 			filename = "ucode5";
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->ucode);
 =======
 		err = do_request_fw(dev, filename, &fw->ucode, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = do_request_fw(dev, filename, &fw->ucode, true);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto err_load;
 	}
@@ -1704,10 +1798,14 @@ static void b43legacy_request_firmware(struct work_struct *work)
 		else
 			filename = "pcm5";
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->pcm);
 =======
 		err = do_request_fw(dev, filename, &fw->pcm, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = do_request_fw(dev, filename, &fw->pcm, false);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto err_load;
 	}
@@ -1726,10 +1824,14 @@ static void b43legacy_request_firmware(struct work_struct *work)
 			goto err_no_initvals;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->initvals);
 =======
 		err = do_request_fw(dev, filename, &fw->initvals, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = do_request_fw(dev, filename, &fw->initvals, false);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto err_load;
 	}
@@ -1750,6 +1852,7 @@ static void b43legacy_request_firmware(struct work_struct *work)
 			goto err_no_initvals;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = do_request_fw(dev, filename, &fw->initvals_band);
 		if (err)
 			goto err_load;
@@ -1757,6 +1860,8 @@ static void b43legacy_request_firmware(struct work_struct *work)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = do_request_fw(dev, filename, &fw->initvals_band, false);
 		if (err)
 			goto err_load;
@@ -1769,7 +1874,10 @@ static void b43legacy_request_firmware(struct work_struct *work)
 err_one_core_detach:
 	b43legacy_one_core_detach(dev->dev);
 	goto error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 err_load:
 	b43legacy_print_fw_helptext(dev->wl);
@@ -1784,10 +1892,14 @@ err_no_initvals:
 error:
 	b43legacy_release_firmware(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return err;
 =======
 	return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int b43legacy_upload_microcode(struct b43legacy_wldev *dev)
@@ -2055,7 +2167,11 @@ static int b43legacy_gpio_init(struct b43legacy_wldev *dev)
 		return 0;
 	ssb_write32(gpiodev, B43legacy_GPIO_CONTROL,
 		    (ssb_read32(gpiodev, B43legacy_GPIO_CONTROL)
+<<<<<<< HEAD
 		     & mask) | set);
+=======
+		     & ~mask) | set);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2302,11 +2418,14 @@ static int b43legacy_chip_init(struct b43legacy_wldev *dev)
 	b43legacy_write32(dev, B43legacy_MMIO_MACCTL, macctl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = b43legacy_request_firmware(dev);
 	if (err)
 		goto out;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = b43legacy_upload_microcode(dev);
 	if (err)
 		goto out; /* firmware is released later */
@@ -2592,7 +2711,10 @@ static int b43legacy_rng_init(struct b43legacy_wl *wl)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void b43legacy_tx_work(struct work_struct *work)
 {
 	struct b43legacy_wl *wl = container_of(work, struct b43legacy_wl,
@@ -2634,6 +2756,7 @@ static void b43legacy_tx_work(struct work_struct *work)
 	mutex_unlock(&wl->mutex);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static void b43legacy_op_tx(struct ieee80211_hw *hw,
 			    struct sk_buff *skb)
@@ -2664,6 +2787,13 @@ out:
 
 static int b43legacy_op_conf_tx(struct ieee80211_hw *hw, u16 queue,
 =======
+=======
+static void b43legacy_op_tx(struct ieee80211_hw *hw,
+			    struct ieee80211_tx_control *control,
+			    struct sk_buff *skb)
+{
+	struct b43legacy_wl *wl = hw_to_b43legacy_wl(hw);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(skb->len < 2 + 2 + 6)) {
 		/* Too short, this can't be a valid frame. */
@@ -2681,7 +2811,10 @@ static int b43legacy_op_conf_tx(struct ieee80211_hw *hw, u16 queue,
 
 static int b43legacy_op_conf_tx(struct ieee80211_hw *hw,
 				struct ieee80211_vif *vif, u16 queue,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				const struct ieee80211_tx_queue_params *params)
 {
 	return 0;
@@ -2725,10 +2858,14 @@ static int find_wldev_for_phymode(struct b43legacy_wl *wl,
 			/* Ok, this device supports the PHY-mode.
 			 * Set the gmode bit. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*gmode = 1;
 =======
 			*gmode = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			*gmode = true;
+>>>>>>> refs/remotes/origin/master
 			*dev = d;
 
 			return 0;
@@ -2765,10 +2902,14 @@ static int b43legacy_switch_phymode(struct b43legacy_wl *wl,
 	struct b43legacy_wldev *down_dev;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool gmode = 0;
 =======
 	bool gmode = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool gmode = false;
+>>>>>>> refs/remotes/origin/master
 	int prev_status;
 
 	err = find_wldev_for_phymode(wl, new_mode, &up_dev, &gmode);
@@ -2811,7 +2952,11 @@ static int b43legacy_switch_phymode(struct b43legacy_wl *wl,
 	if (prev_status >= B43legacy_STAT_STARTED) {
 		err = b43legacy_wireless_core_start(up_dev);
 		if (err) {
+<<<<<<< HEAD
 			b43legacyerr(wl, "Fatal: Coult not start device for "
+=======
+			b43legacyerr(wl, "Fatal: Could not start device for "
+>>>>>>> refs/remotes/origin/master
 			       "newly selected %s-PHY mode\n",
 			       phymode_to_string(new_mode));
 			b43legacy_wireless_core_exit(up_dev);
@@ -2856,6 +3001,7 @@ static int b43legacy_op_dev_config(struct ieee80211_hw *hw,
 	unsigned int new_phymode = 0xFFFF;
 	int antenna_tx;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int antenna_rx;
 	int err = 0;
 
@@ -2866,6 +3012,11 @@ static int b43legacy_op_dev_config(struct ieee80211_hw *hw,
 
 	antenna_tx = B43legacy_ANTENNA_DEFAULT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err = 0;
+
+	antenna_tx = B43legacy_ANTENNA_DEFAULT;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&wl->mutex);
 	dev = wl->current_dev;
@@ -2880,7 +3031,11 @@ static int b43legacy_op_dev_config(struct ieee80211_hw *hw,
 		goto out_unlock_mutex;
 
 	/* Switch the PHY mode (if necessary). */
+<<<<<<< HEAD
 	switch (conf->channel->band) {
+=======
+	switch (conf->chandef.chan->band) {
+>>>>>>> refs/remotes/origin/master
 	case IEEE80211_BAND_2GHZ:
 		if (phy->type == B43legacy_PHYTYPE_B)
 			new_phymode = B43legacy_PHYMODE_B;
@@ -2908,8 +3063,14 @@ static int b43legacy_op_dev_config(struct ieee80211_hw *hw,
 
 	/* Switch to the requested channel.
 	 * The firmware takes care of races with the TX handler. */
+<<<<<<< HEAD
 	if (conf->channel->hw_value != phy->channel)
 		b43legacy_radio_selectchannel(dev, conf->channel->hw_value, 0);
+=======
+	if (conf->chandef.chan->hw_value != phy->channel)
+		b43legacy_radio_selectchannel(dev, conf->chandef.chan->hw_value,
+					      0);
+>>>>>>> refs/remotes/origin/master
 
 	dev->wl->radiotap_enabled = !!(conf->flags & IEEE80211_CONF_MONITOR);
 
@@ -3003,9 +3164,12 @@ static void b43legacy_op_bss_info_changed(struct ieee80211_hw *hw,
 	struct b43legacy_wl *wl = hw_to_b43legacy_wl(hw);
 	struct b43legacy_wldev *dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct b43legacy_phy *phy;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	mutex_lock(&wl->mutex);
@@ -3013,9 +3177,12 @@ static void b43legacy_op_bss_info_changed(struct ieee80211_hw *hw,
 
 	dev = wl->current_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	phy = &dev->phy;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable IRQs while reconfiguring the device.
 	 * This makes it possible to drop the spinlock throughout
@@ -3118,9 +3285,13 @@ static void b43legacy_wireless_core_stop(struct b43legacy_wldev *dev)
 	struct b43legacy_wl *wl = dev->wl;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int queue_num;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int queue_num;
+>>>>>>> refs/remotes/origin/master
 
 	if (b43legacy_status(dev) < B43legacy_STAT_STARTED)
 		return;
@@ -3141,12 +3312,15 @@ static void b43legacy_wireless_core_stop(struct b43legacy_wldev *dev)
 	 * Cancel the possibly running self-rearming periodic work. */
 	cancel_delayed_work_sync(&dev->periodic_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&wl->mutex);
 
 	ieee80211_stop_queues(wl->hw); /* FIXME this could cause a deadlock */
 
 	b43legacy_mac_suspend(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cancel_work_sync(&wl->tx_work);
 	mutex_lock(&wl->mutex);
 
@@ -3157,7 +3331,10 @@ static void b43legacy_wireless_core_stop(struct b43legacy_wldev *dev)
 	}
 
 b43legacy_mac_suspend(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(dev->dev->irq, dev);
 	b43legacydbg(wl, "Wireless interface stopped\n");
 }
@@ -3225,10 +3402,14 @@ static int b43legacy_phy_versioning(struct b43legacy_wldev *dev)
 	default:
 		unsupported = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	};
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	if (unsupported) {
 		b43legacyerr(dev->wl, "FOUND UNSUPPORTED PHY "
 		       "(Analog %u, Type %u, Revision %u)\n",
@@ -3304,6 +3485,7 @@ static void setup_struct_phy_for_init(struct b43legacy_wldev *dev,
 	/* Assume the radio is enabled. If it's not enabled, the state will
 	 * immediately get fixed on the first periodic work run. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->radio_hw_enable = 1;
 
 	phy->savedpctlreg = 0xFFFF;
@@ -3311,13 +3493,18 @@ static void setup_struct_phy_for_init(struct b43legacy_wldev *dev,
 	phy->aci_wlan_automatic = 0;
 	phy->aci_hw_rssi = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->radio_hw_enable = true;
 
 	phy->savedpctlreg = 0xFFFF;
 	phy->aci_enable = false;
 	phy->aci_wlan_automatic = false;
 	phy->aci_hw_rssi = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lo = phy->_lo_pairs;
 	if (lo)
@@ -3350,10 +3537,14 @@ static void setup_struct_wldev_for_init(struct b43legacy_wldev *dev)
 {
 	/* Flags */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->dfq_valid = 0;
 =======
 	dev->dfq_valid = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->dfq_valid = false;
+>>>>>>> refs/remotes/origin/master
 
 	/* Stats */
 	memset(&dev->stats, 0, sizeof(dev->stats));
@@ -3460,6 +3651,7 @@ static void prepare_phy_data_for_init(struct b43legacy_wldev *dev)
 	phy->initval = 0xFFFF;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	phy->aci_enable = 0;
 	phy->aci_wlan_automatic = 0;
 	phy->aci_hw_rssi = 0;
@@ -3468,6 +3660,11 @@ static void prepare_phy_data_for_init(struct b43legacy_wldev *dev)
 	phy->aci_wlan_automatic = false;
 	phy->aci_hw_rssi = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	phy->aci_enable = false;
+	phy->aci_wlan_automatic = false;
+	phy->aci_hw_rssi = false;
+>>>>>>> refs/remotes/origin/master
 
 	phy->antenna_diversity = 0xFFFF;
 	memset(phy->minlowsig, 0xFF, sizeof(phy->minlowsig));
@@ -3634,10 +3831,14 @@ static int b43legacy_op_add_interface(struct ieee80211_hw *hw,
 
 	dev = wl->current_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wl->operating = 1;
 =======
 	wl->operating = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wl->operating = true;
+>>>>>>> refs/remotes/origin/master
 	wl->vif = vif;
 	wl->if_type = vif->type;
 	memcpy(wl->mac_addr, vif->addr, ETH_ALEN);
@@ -3672,10 +3873,14 @@ static void b43legacy_op_remove_interface(struct ieee80211_hw *hw,
 	wl->vif = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wl->operating = 0;
 =======
 	wl->operating = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wl->operating = false;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&wl->irq_lock, flags);
 	b43legacy_adjust_opmode(dev);
@@ -3700,16 +3905,22 @@ static int b43legacy_op_start(struct ieee80211_hw *hw)
 	memset(wl->mac_addr, 0, ETH_ALEN);
 	wl->filter_flags = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wl->beacon0_uploaded = 0;
 	wl->beacon1_uploaded = 0;
 	wl->beacon_templates_virgin = 1;
 	wl->radio_enabled = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wl->beacon0_uploaded = false;
 	wl->beacon1_uploaded = false;
 	wl->beacon_templates_virgin = true;
 	wl->radio_enabled = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&wl->mutex);
 
@@ -3749,10 +3960,14 @@ static void b43legacy_op_stop(struct ieee80211_hw *hw)
 		b43legacy_wireless_core_stop(dev);
 	b43legacy_wireless_core_exit(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wl->radio_enabled = 0;
 =======
 	wl->radio_enabled = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wl->radio_enabled = false;
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&wl->mutex);
 }
 
@@ -3779,7 +3994,11 @@ static int b43legacy_op_get_survey(struct ieee80211_hw *hw, int idx,
 	if (idx != 0)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	survey->channel = conf->channel;
+=======
+	survey->channel = conf->chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	survey->filled = SURVEY_INFO_NOISE_DBM;
 	survey->noise = dev->stats.link_noise;
 
@@ -3912,10 +4131,14 @@ static int b43legacy_wireless_core_attach(struct b43legacy_wldev *dev)
 
 	dev->phy.gmode = (have_gphy || have_bphy);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->phy.radio_on = 1;
 =======
 	dev->phy.radio_on = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->phy.radio_on = true;
+>>>>>>> refs/remotes/origin/master
 	tmp = dev->phy.gmode ? B43legacy_TMSLOW_GMODE : 0;
 	b43legacy_wireless_core_reset(dev, tmp);
 
@@ -4007,10 +4230,14 @@ static int b43legacy_one_core_attach(struct ssb_device *dev,
 		     (unsigned long)wldev);
 	if (modparam_pio)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wldev->__using_pio = 1;
 =======
 		wldev->__using_pio = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wldev->__using_pio = true;
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&wldev->list);
 
 	err = b43legacy_wireless_core_attach(wldev);
@@ -4034,7 +4261,11 @@ static void b43legacy_sprom_fixup(struct ssb_bus *bus)
 	/* boardflags workarounds */
 	if (bus->boardinfo.vendor == PCI_VENDOR_ID_APPLE &&
 	    bus->boardinfo.type == 0x4E &&
+<<<<<<< HEAD
 	    bus->boardinfo.rev > 0x40)
+=======
+	    bus->sprom.board_rev > 0x40)
+>>>>>>> refs/remotes/origin/master
 		bus->sprom.boardflags_lo |= B43legacy_BFL_PACTRL;
 }
 
@@ -4054,9 +4285,13 @@ static int b43legacy_wireless_init(struct ssb_device *dev)
 	struct b43legacy_wl *wl;
 	int err = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int queue_num;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int queue_num;
+>>>>>>> refs/remotes/origin/master
 
 	b43legacy_sprom_fixup(dev->bus);
 
@@ -4092,10 +4327,13 @@ static int b43legacy_wireless_init(struct ssb_device *dev)
 	INIT_LIST_HEAD(&wl->devlist);
 	INIT_WORK(&wl->beacon_update_trigger, b43legacy_beacon_update_trigger_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ssb_set_devtypedata(dev, wl);
 	b43legacyinfo(wl, "Broadcom %04X WLAN found\n", dev->bus->chip_id);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_WORK(&wl->tx_work, b43legacy_tx_work);
 
 	/* Initialize queues and flags. */
@@ -4107,7 +4345,10 @@ static int b43legacy_wireless_init(struct ssb_device *dev)
 	ssb_set_devtypedata(dev, wl);
 	b43legacyinfo(wl, "Broadcom %04X WLAN found (core revision %u)\n",
 		      dev->bus->chip_id, dev->id.revision);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = 0;
 out:
 	return err;
@@ -4135,6 +4376,7 @@ static int b43legacy_probe(struct ssb_device *dev,
 		goto err_wireless_exit;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (first) {
 		err = ieee80211_register_hw(wl->hw);
 		if (err)
@@ -4145,15 +4387,23 @@ static int b43legacy_probe(struct ssb_device *dev,
 	INIT_WORK(&wl->firmware_load, b43legacy_request_firmware);
 	schedule_work(&wl->firmware_load);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* setup and start work to load firmware */
+	INIT_WORK(&wl->firmware_load, b43legacy_request_firmware);
+	schedule_work(&wl->firmware_load);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 err_one_core_detach:
 	b43legacy_one_core_detach(dev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_wireless_exit:
 	if (first)
 		b43legacy_wireless_exit(dev, wl);
@@ -4169,9 +4419,13 @@ static void b43legacy_remove(struct ssb_device *dev)
 	 * as the ieee80211 unreg will destroy the workqueue. */
 	cancel_work_sync(&wldev->restart_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cancel_work_sync(&wl->firmware_load);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cancel_work_sync(&wl->firmware_load);
+>>>>>>> refs/remotes/origin/master
 
 	B43legacy_WARN_ON(!wl);
 	if (!wldev->fw.ucode)
@@ -4285,11 +4539,15 @@ static void b43legacy_print_driverinfo(void)
 #endif
 	printk(KERN_INFO "Broadcom 43xx-legacy driver loaded "
 <<<<<<< HEAD
+<<<<<<< HEAD
 	       "[ Features: %s%s%s%s, Firmware-ID: "
 	       B43legacy_SUPPORTED_FIRMWARE_ID " ]\n",
 =======
 	       "[ Features: %s%s%s%s ]\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       "[ Features: %s%s%s%s ]\n",
+>>>>>>> refs/remotes/origin/master
 	       feat_pci, feat_leds, feat_pio, feat_dma);
 }
 

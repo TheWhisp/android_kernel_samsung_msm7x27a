@@ -6,11 +6,15 @@
 #include <linux/random.h>
 #include <linux/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 #include <linux/reiserfs_fs_sb.h>
 =======
 #include "reiserfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 
 // find where objectid map starts
 #define objectid_map(s,rs) (old_format_only (s) ? \

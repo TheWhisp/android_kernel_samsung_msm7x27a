@@ -445,7 +445,11 @@ static void ack_cobalt_irq(struct irq_data *data)
 
 	spin_lock_irqsave(&cobalt_lock, flags);
 	disable_cobalt_irq(data);
+<<<<<<< HEAD
 	apic_write(APIC_EOI, APIC_EIO_ACK);
+=======
+	apic_write(APIC_EOI, APIC_EOI_ACK);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&cobalt_lock, flags);
 }
 

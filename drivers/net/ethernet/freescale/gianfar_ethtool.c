@@ -26,6 +26,10 @@
 #include <linux/delay.h>
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/net_tstamp.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 #include <linux/spinlock.h>
 #include <linux/mm.h>
@@ -45,11 +49,17 @@
 #include "gianfar.h"
 
 extern void gfar_start(struct net_device *dev);
+<<<<<<< HEAD
 extern int gfar_clean_rx_ring(struct gfar_priv_rx_q *rx_queue, int rx_work_limit);
+=======
+extern int gfar_clean_rx_ring(struct gfar_priv_rx_q *rx_queue,
+			      int rx_work_limit);
+>>>>>>> refs/remotes/origin/master
 
 #define GFAR_MAX_COAL_USECS 0xffff
 #define GFAR_MAX_COAL_FRAMES 0xff
 static void gfar_fill_stats(struct net_device *dev, struct ethtool_stats *dummy,
+<<<<<<< HEAD
 		     u64 * buf);
 static void gfar_gstrings(struct net_device *dev, u32 stringset, u8 * buf);
 static int gfar_gcoalesce(struct net_device *dev, struct ethtool_coalesce *cvals);
@@ -60,6 +70,22 @@ static void gfar_gdrvinfo(struct net_device *dev, struct ethtool_drvinfo *drvinf
 
 static const char stat_gstrings[][ETH_GSTRING_LEN] = {
 	"rx-dropped-by-kernel",
+=======
+			    u64 *buf);
+static void gfar_gstrings(struct net_device *dev, u32 stringset, u8 * buf);
+static int gfar_gcoalesce(struct net_device *dev,
+			  struct ethtool_coalesce *cvals);
+static int gfar_scoalesce(struct net_device *dev,
+			  struct ethtool_coalesce *cvals);
+static void gfar_gringparam(struct net_device *dev,
+			    struct ethtool_ringparam *rvals);
+static int gfar_sringparam(struct net_device *dev,
+			   struct ethtool_ringparam *rvals);
+static void gfar_gdrvinfo(struct net_device *dev,
+			  struct ethtool_drvinfo *drvinfo);
+
+static const char stat_gstrings[][ETH_GSTRING_LEN] = {
+>>>>>>> refs/remotes/origin/master
 	"rx-large-frame-errors",
 	"rx-short-frame-errors",
 	"rx-non-octet-errors",
@@ -129,18 +155,28 @@ static void gfar_gstrings(struct net_device *dev, u32 stringset, u8 * buf)
 		memcpy(buf, stat_gstrings, GFAR_STATS_LEN * ETH_GSTRING_LEN);
 	else
 		memcpy(buf, stat_gstrings,
+<<<<<<< HEAD
 				GFAR_EXTRA_STATS_LEN * ETH_GSTRING_LEN);
+=======
+		       GFAR_EXTRA_STATS_LEN * ETH_GSTRING_LEN);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Fill in an array of 64-bit statistics from various sources.
  * This array will be appended to the end of the ethtool_stats
  * structure, and returned to user space
  */
+<<<<<<< HEAD
 static void gfar_fill_stats(struct net_device *dev, struct ethtool_stats *dummy, u64 * buf)
+=======
+static void gfar_fill_stats(struct net_device *dev, struct ethtool_stats *dummy,
+			    u64 *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct gfar_private *priv = netdev_priv(dev);
 	struct gfar __iomem *regs = priv->gfargrp[0].regs;
+<<<<<<< HEAD
 	u64 *extra = (u64 *) & priv->extra_stats;
 
 	if (priv->device_flags & FSL_GIANFAR_DEV_HAS_RMON) {
@@ -155,6 +191,19 @@ static void gfar_fill_stats(struct net_device *dev, struct ethtool_stats *dummy,
 	} else
 		for (i = 0; i < GFAR_EXTRA_STATS_LEN; i++)
 			buf[i] = extra[i];
+=======
+	atomic64_t *extra = (atomic64_t *)&priv->extra_stats;
+
+	for (i = 0; i < GFAR_EXTRA_STATS_LEN; i++)
+		buf[i] = atomic64_read(&extra[i]);
+
+	if (priv->device_flags & FSL_GIANFAR_DEV_HAS_RMON) {
+		u32 __iomem *rmon = (u32 __iomem *) &regs->rmon;
+
+		for (; i < GFAR_STATS_LEN; i++, rmon++)
+			buf[i] = (u64) gfar_read(rmon);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int gfar_sset_count(struct net_device *dev, int sset)
@@ -173,6 +222,7 @@ static int gfar_sset_count(struct net_device *dev, int sset)
 }
 
 /* Fills in the drvinfo structure with some basic info */
+<<<<<<< HEAD
 static void gfar_gdrvinfo(struct net_device *dev, struct
 	      ethtool_drvinfo *drvinfo)
 {
@@ -180,6 +230,16 @@ static void gfar_gdrvinfo(struct net_device *dev, struct
 	strncpy(drvinfo->version, gfar_driver_version, GFAR_INFOSTR_LEN);
 	strncpy(drvinfo->fw_version, "N/A", GFAR_INFOSTR_LEN);
 	strncpy(drvinfo->bus_info, "N/A", GFAR_INFOSTR_LEN);
+=======
+static void gfar_gdrvinfo(struct net_device *dev,
+			  struct ethtool_drvinfo *drvinfo)
+{
+	strlcpy(drvinfo->driver, DRV_NAME, sizeof(drvinfo->driver));
+	strlcpy(drvinfo->version, gfar_driver_version,
+		sizeof(drvinfo->version));
+	strlcpy(drvinfo->fw_version, "N/A", sizeof(drvinfo->fw_version));
+	strlcpy(drvinfo->bus_info, "N/A", sizeof(drvinfo->bus_info));
+>>>>>>> refs/remotes/origin/master
 	drvinfo->regdump_len = 0;
 	drvinfo->eedump_len = 0;
 }
@@ -225,7 +285,12 @@ static int gfar_reglen(struct net_device *dev)
 }
 
 /* Return a dump of the GFAR register space */
+<<<<<<< HEAD
 static void gfar_get_regs(struct net_device *dev, struct ethtool_regs *regs, void *regbuf)
+=======
+static void gfar_get_regs(struct net_device *dev, struct ethtool_regs *regs,
+			  void *regbuf)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct gfar_private *priv = netdev_priv(dev);
@@ -238,7 +303,12 @@ static void gfar_get_regs(struct net_device *dev, struct ethtool_regs *regs, voi
 
 /* Convert microseconds to ethernet clock ticks, which changes
  * depending on what speed the controller is running at */
+<<<<<<< HEAD
 static unsigned int gfar_usecs2ticks(struct gfar_private *priv, unsigned int usecs)
+=======
+static unsigned int gfar_usecs2ticks(struct gfar_private *priv,
+				     unsigned int usecs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int count;
 
@@ -262,7 +332,12 @@ static unsigned int gfar_usecs2ticks(struct gfar_private *priv, unsigned int use
 }
 
 /* Convert ethernet clock ticks to microseconds */
+<<<<<<< HEAD
 static unsigned int gfar_ticks2usecs(struct gfar_private *priv, unsigned int ticks)
+=======
+static unsigned int gfar_ticks2usecs(struct gfar_private *priv,
+				     unsigned int ticks)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int count;
 
@@ -287,7 +362,12 @@ static unsigned int gfar_ticks2usecs(struct gfar_private *priv, unsigned int tic
 
 /* Get the coalescing parameters, and put them in the cvals
  * structure.  */
+<<<<<<< HEAD
 static int gfar_gcoalesce(struct net_device *dev, struct ethtool_coalesce *cvals)
+=======
+static int gfar_gcoalesce(struct net_device *dev,
+			  struct ethtool_coalesce *cvals)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gfar_private *priv = netdev_priv(dev);
 	struct gfar_priv_rx_q *rx_queue = NULL;
@@ -352,7 +432,12 @@ static int gfar_gcoalesce(struct net_device *dev, struct ethtool_coalesce *cvals
  * Both cvals->*_usecs and cvals->*_frames have to be > 0
  * in order for coalescing to be active
  */
+<<<<<<< HEAD
 static int gfar_scoalesce(struct net_device *dev, struct ethtool_coalesce *cvals)
+=======
+static int gfar_scoalesce(struct net_device *dev,
+			  struct ethtool_coalesce *cvals)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gfar_private *priv = netdev_priv(dev);
 	int i = 0;
@@ -363,7 +448,12 @@ static int gfar_scoalesce(struct net_device *dev, struct ethtool_coalesce *cvals
 	/* Set up rx coalescing */
 	/* As of now, we will enable/disable coalescing for all
 	 * queues together in case of eTSEC2, this will be modified
+<<<<<<< HEAD
 	 * along with the ethtool interface */
+=======
+	 * along with the ethtool interface
+	 */
+>>>>>>> refs/remotes/origin/master
 	if ((cvals->rx_coalesce_usecs == 0) ||
 	    (cvals->rx_max_coalesced_frames == 0)) {
 		for (i = 0; i < priv->num_rx_queues; i++)
@@ -378,14 +468,24 @@ static int gfar_scoalesce(struct net_device *dev, struct ethtool_coalesce *cvals
 
 	/* Check the bounds of the values */
 	if (cvals->rx_coalesce_usecs > GFAR_MAX_COAL_USECS) {
+<<<<<<< HEAD
 		pr_info("Coalescing is limited to %d microseconds\n",
 			GFAR_MAX_COAL_USECS);
+=======
+		netdev_info(dev, "Coalescing is limited to %d microseconds\n",
+			    GFAR_MAX_COAL_USECS);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	if (cvals->rx_max_coalesced_frames > GFAR_MAX_COAL_FRAMES) {
+<<<<<<< HEAD
 		pr_info("Coalescing is limited to %d frames\n",
 			GFAR_MAX_COAL_FRAMES);
+=======
+		netdev_info(dev, "Coalescing is limited to %d frames\n",
+			    GFAR_MAX_COAL_FRAMES);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -407,14 +507,24 @@ static int gfar_scoalesce(struct net_device *dev, struct ethtool_coalesce *cvals
 
 	/* Check the bounds of the values */
 	if (cvals->tx_coalesce_usecs > GFAR_MAX_COAL_USECS) {
+<<<<<<< HEAD
 		pr_info("Coalescing is limited to %d microseconds\n",
 			GFAR_MAX_COAL_USECS);
+=======
+		netdev_info(dev, "Coalescing is limited to %d microseconds\n",
+			    GFAR_MAX_COAL_USECS);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	if (cvals->tx_max_coalesced_frames > GFAR_MAX_COAL_FRAMES) {
+<<<<<<< HEAD
 		pr_info("Coalescing is limited to %d frames\n",
 			GFAR_MAX_COAL_FRAMES);
+=======
+		netdev_info(dev, "Coalescing is limited to %d frames\n",
+			    GFAR_MAX_COAL_FRAMES);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -424,7 +534,11 @@ static int gfar_scoalesce(struct net_device *dev, struct ethtool_coalesce *cvals
 			gfar_usecs2ticks(priv, cvals->tx_coalesce_usecs));
 	}
 
+<<<<<<< HEAD
 	gfar_configure_coalescing(priv, 0xFF, 0xFF);
+=======
+	gfar_configure_coalescing_all(priv);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -432,7 +546,12 @@ static int gfar_scoalesce(struct net_device *dev, struct ethtool_coalesce *cvals
 /* Fills in rvals with the current ring parameters.  Currently,
  * rx, rx_mini, and rx_jumbo rings are the same size, as mini and
  * jumbo are ignored by the driver */
+<<<<<<< HEAD
 static void gfar_gringparam(struct net_device *dev, struct ethtool_ringparam *rvals)
+=======
+static void gfar_gringparam(struct net_device *dev,
+			    struct ethtool_ringparam *rvals)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gfar_private *priv = netdev_priv(dev);
 	struct gfar_priv_tx_q *tx_queue = NULL;
@@ -458,8 +577,15 @@ static void gfar_gringparam(struct net_device *dev, struct ethtool_ringparam *rv
 /* Change the current ring parameters, stopping the controller if
  * necessary so that we don't mess things up while we're in
  * motion.  We wait for the ring to be clean before reallocating
+<<<<<<< HEAD
  * the rings. */
 static int gfar_sringparam(struct net_device *dev, struct ethtool_ringparam *rvals)
+=======
+ * the rings.
+ */
+static int gfar_sringparam(struct net_device *dev,
+			   struct ethtool_ringparam *rvals)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gfar_private *priv = netdev_priv(dev);
 	int err = 0, i = 0;
@@ -485,7 +611,12 @@ static int gfar_sringparam(struct net_device *dev, struct ethtool_ringparam *rva
 		unsigned long flags;
 
 		/* Halt TX and RX, and process the frames which
+<<<<<<< HEAD
 		 * have already been received */
+=======
+		 * have already been received
+		 */
+>>>>>>> refs/remotes/origin/master
 		local_irq_save(flags);
 		lock_tx_qs(priv);
 		lock_rx_qs(priv);
@@ -498,7 +629,11 @@ static int gfar_sringparam(struct net_device *dev, struct ethtool_ringparam *rva
 
 		for (i = 0; i < priv->num_rx_queues; i++)
 			gfar_clean_rx_ring(priv->rx_queue[i],
+<<<<<<< HEAD
 					priv->rx_queue[i]->rx_ring_size);
+=======
+					   priv->rx_queue[i]->rx_ring_size);
+>>>>>>> refs/remotes/origin/master
 
 		/* Now we take down the rings to rebuild them */
 		stop_gfar(dev);
@@ -508,7 +643,12 @@ static int gfar_sringparam(struct net_device *dev, struct ethtool_ringparam *rva
 	for (i = 0; i < priv->num_rx_queues; i++) {
 		priv->rx_queue[i]->rx_ring_size = rvals->rx_pending;
 		priv->tx_queue[i]->tx_ring_size = rvals->tx_pending;
+<<<<<<< HEAD
 		priv->tx_queue[i]->num_txbdfree = priv->tx_queue[i]->tx_ring_size;
+=======
+		priv->tx_queue[i]->num_txbdfree =
+			priv->tx_queue[i]->tx_ring_size;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Rebuild the rings with the new size */
@@ -519,6 +659,81 @@ static int gfar_sringparam(struct net_device *dev, struct ethtool_ringparam *rva
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static void gfar_gpauseparam(struct net_device *dev,
+			     struct ethtool_pauseparam *epause)
+{
+	struct gfar_private *priv = netdev_priv(dev);
+
+	epause->autoneg = !!priv->pause_aneg_en;
+	epause->rx_pause = !!priv->rx_pause_en;
+	epause->tx_pause = !!priv->tx_pause_en;
+}
+
+static int gfar_spauseparam(struct net_device *dev,
+			    struct ethtool_pauseparam *epause)
+{
+	struct gfar_private *priv = netdev_priv(dev);
+	struct phy_device *phydev = priv->phydev;
+	struct gfar __iomem *regs = priv->gfargrp[0].regs;
+	u32 oldadv, newadv;
+
+	if (!(phydev->supported & SUPPORTED_Pause) ||
+	    (!(phydev->supported & SUPPORTED_Asym_Pause) &&
+	     (epause->rx_pause != epause->tx_pause)))
+		return -EINVAL;
+
+	priv->rx_pause_en = priv->tx_pause_en = 0;
+	if (epause->rx_pause) {
+		priv->rx_pause_en = 1;
+
+		if (epause->tx_pause) {
+			priv->tx_pause_en = 1;
+			/* FLOW_CTRL_RX & TX */
+			newadv = ADVERTISED_Pause;
+		} else  /* FLOW_CTLR_RX */
+			newadv = ADVERTISED_Pause | ADVERTISED_Asym_Pause;
+	} else if (epause->tx_pause) {
+		priv->tx_pause_en = 1;
+		/* FLOW_CTLR_TX */
+		newadv = ADVERTISED_Asym_Pause;
+	} else
+		newadv = 0;
+
+	if (epause->autoneg)
+		priv->pause_aneg_en = 1;
+	else
+		priv->pause_aneg_en = 0;
+
+	oldadv = phydev->advertising &
+		(ADVERTISED_Pause | ADVERTISED_Asym_Pause);
+	if (oldadv != newadv) {
+		phydev->advertising &=
+			~(ADVERTISED_Pause | ADVERTISED_Asym_Pause);
+		phydev->advertising |= newadv;
+		if (phydev->autoneg)
+			/* inform link partner of our
+			 * new flow ctrl settings
+			 */
+			return phy_start_aneg(phydev);
+
+		if (!epause->autoneg) {
+			u32 tempval;
+			tempval = gfar_read(&regs->maccfg1);
+			tempval &= ~(MACCFG1_TX_FLOW | MACCFG1_RX_FLOW);
+			if (priv->tx_pause_en)
+				tempval |= MACCFG1_TX_FLOW;
+			if (priv->rx_pause_en)
+				tempval |= MACCFG1_RX_FLOW;
+			gfar_write(&regs->maccfg1, tempval);
+		}
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 int gfar_set_features(struct net_device *dev, netdev_features_t features)
 {
 	struct gfar_private *priv = netdev_priv(dev);
@@ -526,7 +741,11 @@ int gfar_set_features(struct net_device *dev, netdev_features_t features)
 	int err = 0, i = 0;
 	netdev_features_t changed = dev->features ^ features;
 
+<<<<<<< HEAD
 	if (changed & (NETIF_F_HW_VLAN_TX|NETIF_F_HW_VLAN_RX))
+=======
+	if (changed & (NETIF_F_HW_VLAN_CTAG_TX|NETIF_F_HW_VLAN_CTAG_RX))
+>>>>>>> refs/remotes/origin/master
 		gfar_vlan_mode(dev, features);
 
 	if (!(changed & NETIF_F_RXCSUM))
@@ -534,7 +753,12 @@ int gfar_set_features(struct net_device *dev, netdev_features_t features)
 
 	if (dev->flags & IFF_UP) {
 		/* Halt TX and RX, and process the frames which
+<<<<<<< HEAD
 		 * have already been received */
+=======
+		 * have already been received
+		 */
+>>>>>>> refs/remotes/origin/master
 		local_irq_save(flags);
 		lock_tx_qs(priv);
 		lock_rx_qs(priv);
@@ -547,7 +771,11 @@ int gfar_set_features(struct net_device *dev, netdev_features_t features)
 
 		for (i = 0; i < priv->num_rx_queues; i++)
 			gfar_clean_rx_ring(priv->rx_queue[i],
+<<<<<<< HEAD
 					priv->rx_queue[i]->rx_ring_size);
+=======
+					   priv->rx_queue[i]->rx_ring_size);
+>>>>>>> refs/remotes/origin/master
 
 		/* Now we take down the rings to rebuild them */
 		stop_gfar(dev);
@@ -563,12 +791,20 @@ int gfar_set_features(struct net_device *dev, netdev_features_t features)
 static uint32_t gfar_get_msglevel(struct net_device *dev)
 {
 	struct gfar_private *priv = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return priv->msg_enable;
 }
 
 static void gfar_set_msglevel(struct net_device *dev, uint32_t data)
 {
 	struct gfar_private *priv = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	priv->msg_enable = data;
 }
 
@@ -613,14 +849,22 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 
 	if (ethflow & RXH_L2DA) {
 		fcr = RQFCR_PID_DAH |RQFCR_CMP_NOMATCH |
+<<<<<<< HEAD
 			RQFCR_HASH | RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_HASH | RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
 		priv->cur_filer_idx = priv->cur_filer_idx - 1;
 
 		fcr = RQFCR_PID_DAL | RQFCR_AND | RQFCR_CMP_NOMATCH |
+<<<<<<< HEAD
 				RQFCR_HASH | RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_HASH | RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
@@ -629,7 +873,11 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 
 	if (ethflow & RXH_VLAN) {
 		fcr = RQFCR_PID_VID | RQFCR_CMP_NOMATCH | RQFCR_HASH |
+<<<<<<< HEAD
 				RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
@@ -638,7 +886,11 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 
 	if (ethflow & RXH_IP_SRC) {
 		fcr = RQFCR_PID_SIA | RQFCR_CMP_NOMATCH | RQFCR_HASH |
+<<<<<<< HEAD
 			RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
@@ -647,7 +899,11 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 
 	if (ethflow & (RXH_IP_DST)) {
 		fcr = RQFCR_PID_DIA | RQFCR_CMP_NOMATCH | RQFCR_HASH |
+<<<<<<< HEAD
 			RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
@@ -656,7 +912,11 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 
 	if (ethflow & RXH_L3_PROTO) {
 		fcr = RQFCR_PID_L4P | RQFCR_CMP_NOMATCH | RQFCR_HASH |
+<<<<<<< HEAD
 			RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
@@ -665,7 +925,11 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 
 	if (ethflow & RXH_L4_B_0_1) {
 		fcr = RQFCR_PID_SPT | RQFCR_CMP_NOMATCH | RQFCR_HASH |
+<<<<<<< HEAD
 			RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
@@ -674,7 +938,11 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 
 	if (ethflow & RXH_L4_B_2_3) {
 		fcr = RQFCR_PID_DPT | RQFCR_CMP_NOMATCH | RQFCR_HASH |
+<<<<<<< HEAD
 			RQFCR_AND | RQFCR_HASHTBL_0;
+=======
+		      RQFCR_AND | RQFCR_HASHTBL_0;
+>>>>>>> refs/remotes/origin/master
 		priv->ftp_rqfpr[priv->cur_filer_idx] = fpr;
 		priv->ftp_rqfcr[priv->cur_filer_idx] = fcr;
 		gfar_write_filer(priv, priv->cur_filer_idx, fcr, fpr);
@@ -682,7 +950,12 @@ static void ethflow_to_filer_rules (struct gfar_private *priv, u64 ethflow)
 	}
 }
 
+<<<<<<< HEAD
 static int gfar_ethflow_to_filer_table(struct gfar_private *priv, u64 ethflow, u64 class)
+=======
+static int gfar_ethflow_to_filer_table(struct gfar_private *priv, u64 ethflow,
+				       u64 class)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int last_rule_idx = priv->cur_filer_idx;
 	unsigned int cmp_rqfpr;
@@ -692,12 +965,20 @@ static int gfar_ethflow_to_filer_table(struct gfar_private *priv, u64 ethflow, u
 	int j = MAX_FILER_IDX, l = 0x0;
 	int ret = 1;
 
+<<<<<<< HEAD
 	local_rqfpr = kmalloc(sizeof(unsigned int) * (MAX_FILER_IDX + 1),
 		GFP_KERNEL);
 	local_rqfcr = kmalloc(sizeof(unsigned int) * (MAX_FILER_IDX + 1),
 		GFP_KERNEL);
 	if (!local_rqfpr || !local_rqfcr) {
 		pr_err("Out of memory\n");
+=======
+	local_rqfpr = kmalloc_array(MAX_FILER_IDX + 1, sizeof(unsigned int),
+				    GFP_KERNEL);
+	local_rqfcr = kmalloc_array(MAX_FILER_IDX + 1, sizeof(unsigned int),
+				    GFP_KERNEL);
+	if (!local_rqfpr || !local_rqfcr) {
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		goto err;
 	}
@@ -716,7 +997,12 @@ static int gfar_ethflow_to_filer_table(struct gfar_private *priv, u64 ethflow, u
 		cmp_rqfpr = RQFPR_IPV6 |RQFPR_UDP;
 		break;
 	default:
+<<<<<<< HEAD
 		pr_err("Right now this class is not supported\n");
+=======
+		netdev_err(priv->ndev,
+			   "Right now this class is not supported\n");
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		goto err;
 	}
@@ -725,14 +1011,25 @@ static int gfar_ethflow_to_filer_table(struct gfar_private *priv, u64 ethflow, u
 		local_rqfpr[j] = priv->ftp_rqfpr[i];
 		local_rqfcr[j] = priv->ftp_rqfcr[i];
 		j--;
+<<<<<<< HEAD
 		if ((priv->ftp_rqfcr[i] == (RQFCR_PID_PARSE |
 			RQFCR_CLE |RQFCR_AND)) &&
 			(priv->ftp_rqfpr[i] == cmp_rqfpr))
+=======
+		if ((priv->ftp_rqfcr[i] ==
+		     (RQFCR_PID_PARSE | RQFCR_CLE | RQFCR_AND)) &&
+		    (priv->ftp_rqfpr[i] == cmp_rqfpr))
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 
 	if (i == MAX_FILER_IDX + 1) {
+<<<<<<< HEAD
 		pr_err("No parse rule found, can't create hash rules\n");
+=======
+		netdev_err(priv->ndev,
+			   "No parse rule found, can't create hash rules\n");
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		goto err;
 	}
@@ -742,12 +1039,21 @@ static int gfar_ethflow_to_filer_table(struct gfar_private *priv, u64 ethflow, u
 	 */
 	for (l = i+1; l < MAX_FILER_IDX; l++) {
 		if ((priv->ftp_rqfcr[l] & RQFCR_CLE) &&
+<<<<<<< HEAD
 			!(priv->ftp_rqfcr[l] & RQFCR_AND)) {
 			priv->ftp_rqfcr[l] = RQFCR_CLE | RQFCR_CMP_EXACT |
 				RQFCR_HASHTBL_0 | RQFCR_PID_MASK;
 			priv->ftp_rqfpr[l] = FPR_FILER_MASK;
 			gfar_write_filer(priv, l, priv->ftp_rqfcr[l],
 				priv->ftp_rqfpr[l]);
+=======
+		    !(priv->ftp_rqfcr[l] & RQFCR_AND)) {
+			priv->ftp_rqfcr[l] = RQFCR_CLE | RQFCR_CMP_EXACT |
+					     RQFCR_HASHTBL_0 | RQFCR_PID_MASK;
+			priv->ftp_rqfpr[l] = FPR_FILER_MASK;
+			gfar_write_filer(priv, l, priv->ftp_rqfcr[l],
+					 priv->ftp_rqfpr[l]);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -772,7 +1078,11 @@ static int gfar_ethflow_to_filer_table(struct gfar_private *priv, u64 ethflow, u
 		priv->ftp_rqfpr[priv->cur_filer_idx] = local_rqfpr[k];
 		priv->ftp_rqfcr[priv->cur_filer_idx] = local_rqfcr[k];
 		gfar_write_filer(priv, priv->cur_filer_idx,
+<<<<<<< HEAD
 				local_rqfcr[k], local_rqfpr[k]);
+=======
+				 local_rqfcr[k], local_rqfpr[k]);
+>>>>>>> refs/remotes/origin/master
 		if (!priv->cur_filer_idx)
 			break;
 		priv->cur_filer_idx = priv->cur_filer_idx - 1;
@@ -784,7 +1094,12 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int gfar_set_hash_opts(struct gfar_private *priv, struct ethtool_rxnfc *cmd)
+=======
+static int gfar_set_hash_opts(struct gfar_private *priv,
+			      struct ethtool_rxnfc *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	/* write the filer rules here */
 	if (!gfar_ethflow_to_filer_table(priv, cmd->data, cmd->flow_type))
@@ -809,10 +1124,17 @@ static int gfar_check_filer_hardware(struct gfar_private *priv)
 		i &= RCTRL_PRSDEP_MASK | RCTRL_PRSFM;
 		if (i == (RCTRL_PRSDEP_MASK | RCTRL_PRSFM)) {
 			netdev_info(priv->ndev,
+<<<<<<< HEAD
 					"Receive Queue Filtering enabled\n");
 		} else {
 			netdev_warn(priv->ndev,
 					"Receive Queue Filtering disabled\n");
+=======
+				    "Receive Queue Filtering enabled\n");
+		} else {
+			netdev_warn(priv->ndev,
+				    "Receive Queue Filtering disabled\n");
+>>>>>>> refs/remotes/origin/master
 			return -EOPNOTSUPP;
 		}
 	}
@@ -822,16 +1144,28 @@ static int gfar_check_filer_hardware(struct gfar_private *priv)
 		i &= RCTRL_PRSDEP_MASK;
 		if (i == RCTRL_PRSDEP_MASK) {
 			netdev_info(priv->ndev,
+<<<<<<< HEAD
 					"Receive Queue Filtering enabled\n");
 		} else {
 			netdev_warn(priv->ndev,
 					"Receive Queue Filtering disabled\n");
+=======
+				    "Receive Queue Filtering enabled\n");
+		} else {
+			netdev_warn(priv->ndev,
+				    "Receive Queue Filtering disabled\n");
+>>>>>>> refs/remotes/origin/master
 			return -EOPNOTSUPP;
 		}
 	}
 
 	/* Sets the properties for arbitrary filer rule
+<<<<<<< HEAD
 	 * to the first 4 Layer 4 Bytes */
+=======
+	 * to the first 4 Layer 4 Bytes
+	 */
+>>>>>>> refs/remotes/origin/master
 	regs->rbifx = 0xC0C1C2C3;
 	return 0;
 }
@@ -869,14 +1203,23 @@ static void gfar_set_mask(u32 mask, struct filer_table *tab)
 static void gfar_set_parse_bits(u32 value, u32 mask, struct filer_table *tab)
 {
 	gfar_set_mask(mask, tab);
+<<<<<<< HEAD
 	tab->fe[tab->index].ctrl = RQFCR_CMP_EXACT | RQFCR_PID_PARSE
 			| RQFCR_AND;
+=======
+	tab->fe[tab->index].ctrl = RQFCR_CMP_EXACT | RQFCR_PID_PARSE |
+				   RQFCR_AND;
+>>>>>>> refs/remotes/origin/master
 	tab->fe[tab->index].prop = value;
 	tab->index++;
 }
 
 static void gfar_set_general_attribute(u32 value, u32 mask, u32 flag,
+<<<<<<< HEAD
 		struct filer_table *tab)
+=======
+				       struct filer_table *tab)
+>>>>>>> refs/remotes/origin/master
 {
 	gfar_set_mask(mask, tab);
 	tab->fe[tab->index].ctrl = RQFCR_CMP_EXACT | RQFCR_AND | flag;
@@ -884,8 +1227,12 @@ static void gfar_set_general_attribute(u32 value, u32 mask, u32 flag,
 	tab->index++;
 }
 
+<<<<<<< HEAD
 /*
  * For setting a tuple of value and mask of type flag
+=======
+/* For setting a tuple of value and mask of type flag
+>>>>>>> refs/remotes/origin/master
  * Example:
  * IP-Src = 10.0.0.0/255.0.0.0
  * value: 0x0A000000 mask: FF000000 flag: RQFPR_IPV4
@@ -900,7 +1247,11 @@ static void gfar_set_general_attribute(u32 value, u32 mask, u32 flag,
  * Further the all masks are one-padded for better hardware efficiency.
  */
 static void gfar_set_attribute(u32 value, u32 mask, u32 flag,
+<<<<<<< HEAD
 		struct filer_table *tab)
+=======
+			       struct filer_table *tab)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (flag) {
 		/* 3bit */
@@ -958,7 +1309,12 @@ static void gfar_set_attribute(u32 value, u32 mask, u32 flag,
 
 /* Translates value and mask for UDP, TCP or SCTP */
 static void gfar_set_basic_ip(struct ethtool_tcpip4_spec *value,
+<<<<<<< HEAD
 		struct ethtool_tcpip4_spec *mask, struct filer_table *tab)
+=======
+			      struct ethtool_tcpip4_spec *mask,
+			      struct filer_table *tab)
+>>>>>>> refs/remotes/origin/master
 {
 	gfar_set_attribute(value->ip4src, mask->ip4src, RQFCR_PID_SIA, tab);
 	gfar_set_attribute(value->ip4dst, mask->ip4dst, RQFCR_PID_DIA, tab);
@@ -969,19 +1325,29 @@ static void gfar_set_basic_ip(struct ethtool_tcpip4_spec *value,
 
 /* Translates value and mask for RAW-IP4 */
 static void gfar_set_user_ip(struct ethtool_usrip4_spec *value,
+<<<<<<< HEAD
 		struct ethtool_usrip4_spec *mask, struct filer_table *tab)
+=======
+			     struct ethtool_usrip4_spec *mask,
+			     struct filer_table *tab)
+>>>>>>> refs/remotes/origin/master
 {
 	gfar_set_attribute(value->ip4src, mask->ip4src, RQFCR_PID_SIA, tab);
 	gfar_set_attribute(value->ip4dst, mask->ip4dst, RQFCR_PID_DIA, tab);
 	gfar_set_attribute(value->tos, mask->tos, RQFCR_PID_TOS, tab);
 	gfar_set_attribute(value->proto, mask->proto, RQFCR_PID_L4P, tab);
 	gfar_set_attribute(value->l4_4_bytes, mask->l4_4_bytes, RQFCR_PID_ARB,
+<<<<<<< HEAD
 			tab);
+=======
+			   tab);
+>>>>>>> refs/remotes/origin/master
 
 }
 
 /* Translates value and mask for ETHER spec */
 static void gfar_set_ether(struct ethhdr *value, struct ethhdr *mask,
+<<<<<<< HEAD
 		struct filer_table *tab)
 {
 	u32 upper_temp_mask = 0;
@@ -989,10 +1355,20 @@ static void gfar_set_ether(struct ethhdr *value, struct ethhdr *mask,
 	/* Source address */
 	if (!is_broadcast_ether_addr(mask->h_source)) {
 
+=======
+			   struct filer_table *tab)
+{
+	u32 upper_temp_mask = 0;
+	u32 lower_temp_mask = 0;
+
+	/* Source address */
+	if (!is_broadcast_ether_addr(mask->h_source)) {
+>>>>>>> refs/remotes/origin/master
 		if (is_zero_ether_addr(mask->h_source)) {
 			upper_temp_mask = 0xFFFFFFFF;
 			lower_temp_mask = 0xFFFFFFFF;
 		} else {
+<<<<<<< HEAD
 			upper_temp_mask = mask->h_source[0] << 16
 					| mask->h_source[1] << 8
 					| mask->h_source[2];
@@ -1020,10 +1396,38 @@ static void gfar_set_ether(struct ethhdr *value, struct ethhdr *mask,
 			gfar_set_parse_bits(RQFPR_EBC, RQFPR_EBC, tab);
 		} else {
 
+=======
+			upper_temp_mask = mask->h_source[0] << 16 |
+					  mask->h_source[1] << 8  |
+					  mask->h_source[2];
+			lower_temp_mask = mask->h_source[3] << 16 |
+					  mask->h_source[4] << 8  |
+					  mask->h_source[5];
+		}
+		/* Upper 24bit */
+		gfar_set_attribute(value->h_source[0] << 16 |
+				   value->h_source[1] << 8  |
+				   value->h_source[2],
+				   upper_temp_mask, RQFCR_PID_SAH, tab);
+		/* And the same for the lower part */
+		gfar_set_attribute(value->h_source[3] << 16 |
+				   value->h_source[4] << 8  |
+				   value->h_source[5],
+				   lower_temp_mask, RQFCR_PID_SAL, tab);
+	}
+	/* Destination address */
+	if (!is_broadcast_ether_addr(mask->h_dest)) {
+		/* Special for destination is limited broadcast */
+		if ((is_broadcast_ether_addr(value->h_dest) &&
+		    is_zero_ether_addr(mask->h_dest))) {
+			gfar_set_parse_bits(RQFPR_EBC, RQFPR_EBC, tab);
+		} else {
+>>>>>>> refs/remotes/origin/master
 			if (is_zero_ether_addr(mask->h_dest)) {
 				upper_temp_mask = 0xFFFFFFFF;
 				lower_temp_mask = 0xFFFFFFFF;
 			} else {
+<<<<<<< HEAD
 				upper_temp_mask = mask->h_dest[0] << 16
 						| mask->h_dest[1] << 8
 						| mask->h_dest[2];
@@ -1044,22 +1448,52 @@ static void gfar_set_ether(struct ethhdr *value, struct ethhdr *mask,
 							| value->h_dest[4] << 8
 							| value->h_dest[5],
 					lower_temp_mask, RQFCR_PID_DAL, tab);
+=======
+				upper_temp_mask = mask->h_dest[0] << 16 |
+						  mask->h_dest[1] << 8  |
+						  mask->h_dest[2];
+				lower_temp_mask = mask->h_dest[3] << 16 |
+						  mask->h_dest[4] << 8  |
+						  mask->h_dest[5];
+			}
+
+			/* Upper 24bit */
+			gfar_set_attribute(value->h_dest[0] << 16 |
+					   value->h_dest[1] << 8  |
+					   value->h_dest[2],
+					   upper_temp_mask, RQFCR_PID_DAH, tab);
+			/* And the same for the lower part */
+			gfar_set_attribute(value->h_dest[3] << 16 |
+					   value->h_dest[4] << 8  |
+					   value->h_dest[5],
+					   lower_temp_mask, RQFCR_PID_DAL, tab);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	gfar_set_attribute(value->h_proto, mask->h_proto, RQFCR_PID_ETY, tab);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Convert a rule to binary filter format of gianfar */
 static int gfar_convert_to_filer(struct ethtool_rx_flow_spec *rule,
+<<<<<<< HEAD
 		struct filer_table *tab)
+=======
+				 struct filer_table *tab)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 vlan = 0, vlan_mask = 0;
 	u32 id = 0, id_mask = 0;
 	u32 cfi = 0, cfi_mask = 0;
 	u32 prio = 0, prio_mask = 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 old_index = tab->index;
 
 	/* Check if vlan is wanted */
@@ -1075,13 +1509,25 @@ static int gfar_convert_to_filer(struct ethtool_rx_flow_spec *rule,
 		id_mask = rule->m_ext.vlan_tci & VLAN_VID_MASK;
 		cfi = rule->h_ext.vlan_tci & VLAN_CFI_MASK;
 		cfi_mask = rule->m_ext.vlan_tci & VLAN_CFI_MASK;
+<<<<<<< HEAD
 		prio = (rule->h_ext.vlan_tci & VLAN_PRIO_MASK) >> VLAN_PRIO_SHIFT;
 		prio_mask = (rule->m_ext.vlan_tci & VLAN_PRIO_MASK) >> VLAN_PRIO_SHIFT;
+=======
+		prio = (rule->h_ext.vlan_tci & VLAN_PRIO_MASK) >>
+		       VLAN_PRIO_SHIFT;
+		prio_mask = (rule->m_ext.vlan_tci & VLAN_PRIO_MASK) >>
+			    VLAN_PRIO_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 		if (cfi == VLAN_TAG_PRESENT && cfi_mask == VLAN_TAG_PRESENT) {
 			vlan |= RQFPR_CFI;
 			vlan_mask |= RQFPR_CFI;
+<<<<<<< HEAD
 		} else if (cfi != VLAN_TAG_PRESENT && cfi_mask == VLAN_TAG_PRESENT) {
+=======
+		} else if (cfi != VLAN_TAG_PRESENT &&
+			   cfi_mask == VLAN_TAG_PRESENT) {
+>>>>>>> refs/remotes/origin/master
 			vlan_mask |= RQFPR_CFI;
 		}
 	}
@@ -1089,6 +1535,7 @@ static int gfar_convert_to_filer(struct ethtool_rx_flow_spec *rule,
 	switch (rule->flow_type & ~FLOW_EXT) {
 	case TCP_V4_FLOW:
 		gfar_set_parse_bits(RQFPR_IPV4 | RQFPR_TCP | vlan,
+<<<<<<< HEAD
 				RQFPR_IPV4 | RQFPR_TCP | vlan_mask, tab);
 		gfar_set_basic_ip(&rule->h_u.tcp_ip4_spec,
 				&rule->m_u.tcp_ip4_spec, tab);
@@ -1111,12 +1558,42 @@ static int gfar_convert_to_filer(struct ethtool_rx_flow_spec *rule,
 				tab);
 		gfar_set_user_ip((struct ethtool_usrip4_spec *) &rule->h_u,
 				(struct ethtool_usrip4_spec *) &rule->m_u, tab);
+=======
+				    RQFPR_IPV4 | RQFPR_TCP | vlan_mask, tab);
+		gfar_set_basic_ip(&rule->h_u.tcp_ip4_spec,
+				  &rule->m_u.tcp_ip4_spec, tab);
+		break;
+	case UDP_V4_FLOW:
+		gfar_set_parse_bits(RQFPR_IPV4 | RQFPR_UDP | vlan,
+				    RQFPR_IPV4 | RQFPR_UDP | vlan_mask, tab);
+		gfar_set_basic_ip(&rule->h_u.udp_ip4_spec,
+				  &rule->m_u.udp_ip4_spec, tab);
+		break;
+	case SCTP_V4_FLOW:
+		gfar_set_parse_bits(RQFPR_IPV4 | vlan, RQFPR_IPV4 | vlan_mask,
+				    tab);
+		gfar_set_attribute(132, 0, RQFCR_PID_L4P, tab);
+		gfar_set_basic_ip((struct ethtool_tcpip4_spec *)&rule->h_u,
+				  (struct ethtool_tcpip4_spec *)&rule->m_u,
+				  tab);
+		break;
+	case IP_USER_FLOW:
+		gfar_set_parse_bits(RQFPR_IPV4 | vlan, RQFPR_IPV4 | vlan_mask,
+				    tab);
+		gfar_set_user_ip((struct ethtool_usrip4_spec *) &rule->h_u,
+				 (struct ethtool_usrip4_spec *) &rule->m_u,
+				 tab);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case ETHER_FLOW:
 		if (vlan)
 			gfar_set_parse_bits(vlan, vlan_mask, tab);
 		gfar_set_ether((struct ethhdr *) &rule->h_u,
+<<<<<<< HEAD
 				(struct ethhdr *) &rule->m_u, tab);
+=======
+			       (struct ethhdr *) &rule->m_u, tab);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -1;
@@ -1151,7 +1628,13 @@ static int gfar_convert_to_filer(struct ethtool_rx_flow_spec *rule,
 		tab->fe[tab->index - 1].ctrl |= RQFCR_CLE;
 	}
 
+<<<<<<< HEAD
 	/* In rare cases the cache can be full while there is free space in hw */
+=======
+	/* In rare cases the cache can be full while there is
+	 * free space in hw
+	 */
+>>>>>>> refs/remotes/origin/master
 	if (tab->index > MAX_FILER_CACHE_IDX - 1)
 		return -EBUSY;
 
@@ -1160,7 +1643,11 @@ static int gfar_convert_to_filer(struct ethtool_rx_flow_spec *rule,
 
 /* Copy size filer entries */
 static void gfar_copy_filer_entries(struct gfar_filer_entry dst[0],
+<<<<<<< HEAD
 		struct gfar_filer_entry src[0], s32 size)
+=======
+				    struct gfar_filer_entry src[0], s32 size)
+>>>>>>> refs/remotes/origin/master
 {
 	while (size > 0) {
 		size--;
@@ -1170,10 +1657,19 @@ static void gfar_copy_filer_entries(struct gfar_filer_entry dst[0],
 }
 
 /* Delete the contents of the filer-table between start and end
+<<<<<<< HEAD
  * and collapse them */
 static int gfar_trim_filer_entries(u32 begin, u32 end, struct filer_table *tab)
 {
 	int length;
+=======
+ * and collapse them
+ */
+static int gfar_trim_filer_entries(u32 begin, u32 end, struct filer_table *tab)
+{
+	int length;
+
+>>>>>>> refs/remotes/origin/master
 	if (end > MAX_FILER_CACHE_IDX || end < begin)
 		return -EINVAL;
 
@@ -1199,6 +1695,7 @@ static int gfar_trim_filer_entries(u32 begin, u32 end, struct filer_table *tab)
 
 /* Make space on the wanted location */
 static int gfar_expand_filer_entries(u32 begin, u32 length,
+<<<<<<< HEAD
 		struct filer_table *tab)
 {
 	if (length == 0 || length + tab->index > MAX_FILER_CACHE_IDX || begin
@@ -1207,6 +1704,16 @@ static int gfar_expand_filer_entries(u32 begin, u32 length,
 
 	gfar_copy_filer_entries(&(tab->fe[begin + length]), &(tab->fe[begin]),
 			tab->index - length + 1);
+=======
+				     struct filer_table *tab)
+{
+	if (length == 0 || length + tab->index > MAX_FILER_CACHE_IDX ||
+	    begin > MAX_FILER_CACHE_IDX)
+		return -EINVAL;
+
+	gfar_copy_filer_entries(&(tab->fe[begin + length]), &(tab->fe[begin]),
+				tab->index - length + 1);
+>>>>>>> refs/remotes/origin/master
 
 	tab->index += length;
 	return 0;
@@ -1214,9 +1721,16 @@ static int gfar_expand_filer_entries(u32 begin, u32 length,
 
 static int gfar_get_next_cluster_start(int start, struct filer_table *tab)
 {
+<<<<<<< HEAD
 	for (; (start < tab->index) && (start < MAX_FILER_CACHE_IDX - 1); start++) {
 		if ((tab->fe[start].ctrl & (RQFCR_AND | RQFCR_CLE))
 				== (RQFCR_AND | RQFCR_CLE))
+=======
+	for (; (start < tab->index) && (start < MAX_FILER_CACHE_IDX - 1);
+	     start++) {
+		if ((tab->fe[start].ctrl & (RQFCR_AND | RQFCR_CLE)) ==
+		    (RQFCR_AND | RQFCR_CLE))
+>>>>>>> refs/remotes/origin/master
 			return start;
 	}
 	return -1;
@@ -1224,16 +1738,27 @@ static int gfar_get_next_cluster_start(int start, struct filer_table *tab)
 
 static int gfar_get_next_cluster_end(int start, struct filer_table *tab)
 {
+<<<<<<< HEAD
 	for (; (start < tab->index) && (start < MAX_FILER_CACHE_IDX - 1); start++) {
 		if ((tab->fe[start].ctrl & (RQFCR_AND | RQFCR_CLE))
 				== (RQFCR_CLE))
+=======
+	for (; (start < tab->index) && (start < MAX_FILER_CACHE_IDX - 1);
+	     start++) {
+		if ((tab->fe[start].ctrl & (RQFCR_AND | RQFCR_CLE)) ==
+		    (RQFCR_CLE))
+>>>>>>> refs/remotes/origin/master
 			return start;
 	}
 	return -1;
 }
 
+<<<<<<< HEAD
 /*
  * Uses hardwares clustering option to reduce
+=======
+/* Uses hardwares clustering option to reduce
+>>>>>>> refs/remotes/origin/master
  * the number of filer table entries
  */
 static void gfar_cluster_filer(struct filer_table *tab)
@@ -1243,8 +1768,12 @@ static void gfar_cluster_filer(struct filer_table *tab)
 	while ((i = gfar_get_next_cluster_start(++i, tab)) != -1) {
 		j = i;
 		while ((j = gfar_get_next_cluster_start(++j, tab)) != -1) {
+<<<<<<< HEAD
 			/*
 			 * The cluster entries self and the previous one
+=======
+			/* The cluster entries self and the previous one
+>>>>>>> refs/remotes/origin/master
 			 * (a mask) must be identical!
 			 */
 			if (tab->fe[i].ctrl != tab->fe[j].ctrl)
@@ -1259,6 +1788,7 @@ static void gfar_cluster_filer(struct filer_table *tab)
 			jend = gfar_get_next_cluster_end(j, tab);
 			if (jend == -1 || iend == -1)
 				break;
+<<<<<<< HEAD
 			/*
 			 * First we make some free space, where our cluster
 			 * element should be. Then we copy it there and finally
@@ -1274,6 +1804,23 @@ static void gfar_cluster_filer(struct filer_table *tab)
 
 			if (gfar_trim_filer_entries(jend - 1,
 					jend + (jend - j), tab) == -EINVAL)
+=======
+
+			/* First we make some free space, where our cluster
+			 * element should be. Then we copy it there and finally
+			 * delete in from its old location.
+			 */
+			if (gfar_expand_filer_entries(iend, (jend - j), tab) ==
+			    -EINVAL)
+				break;
+
+			gfar_copy_filer_entries(&(tab->fe[iend + 1]),
+						&(tab->fe[jend + 1]), jend - j);
+
+			if (gfar_trim_filer_entries(jend - 1,
+						    jend + (jend - j),
+						    tab) == -EINVAL)
+>>>>>>> refs/remotes/origin/master
 				return;
 
 			/* Mask out cluster bit */
@@ -1284,8 +1831,14 @@ static void gfar_cluster_filer(struct filer_table *tab)
 
 /* Swaps the masked bits of a1<>a2 and b1<>b2 */
 static void gfar_swap_bits(struct gfar_filer_entry *a1,
+<<<<<<< HEAD
 		struct gfar_filer_entry *a2, struct gfar_filer_entry *b1,
 		struct gfar_filer_entry *b2, u32 mask)
+=======
+			   struct gfar_filer_entry *a2,
+			   struct gfar_filer_entry *b1,
+			   struct gfar_filer_entry *b2, u32 mask)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 temp[4];
 	temp[0] = a1->ctrl & mask;
@@ -1304,13 +1857,21 @@ static void gfar_swap_bits(struct gfar_filer_entry *a1,
 	b2->ctrl |= temp[2];
 }
 
+<<<<<<< HEAD
 /*
  * Generate a list consisting of masks values with their start and
+=======
+/* Generate a list consisting of masks values with their start and
+>>>>>>> refs/remotes/origin/master
  * end of validity and block as indicator for parts belonging
  * together (glued by ANDs) in mask_table
  */
 static u32 gfar_generate_mask_table(struct gfar_mask_entry *mask_table,
+<<<<<<< HEAD
 		struct filer_table *tab)
+=======
+				    struct filer_table *tab)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i, and_index = 0, block_index = 1;
 
@@ -1326,13 +1887,21 @@ static u32 gfar_generate_mask_table(struct gfar_mask_entry *mask_table,
 			and_index++;
 		}
 		/* cluster starts and ends will be separated because they should
+<<<<<<< HEAD
 		 * hold their position */
+=======
+		 * hold their position
+		 */
+>>>>>>> refs/remotes/origin/master
 		if (tab->fe[i].ctrl & RQFCR_CLE)
 			block_index++;
 		/* A not set AND indicates the end of a depended block */
 		if (!(tab->fe[i].ctrl & RQFCR_AND))
 			block_index++;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mask_table[and_index - 1].end = i - 1;
@@ -1340,14 +1909,22 @@ static u32 gfar_generate_mask_table(struct gfar_mask_entry *mask_table,
 	return and_index;
 }
 
+<<<<<<< HEAD
 /*
  * Sorts the entries of mask_table by the values of the masks.
+=======
+/* Sorts the entries of mask_table by the values of the masks.
+>>>>>>> refs/remotes/origin/master
  * Important: The 0xFF80 flags of the first and last entry of a
  * block must hold their position (which queue, CLusterEnable, ReJEct,
  * AND)
  */
 static void gfar_sort_mask_table(struct gfar_mask_entry *mask_table,
+<<<<<<< HEAD
 		struct filer_table *temp_table, u32 and_index)
+=======
+				 struct filer_table *temp_table, u32 and_index)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Pointer to compare function (_asc or _desc) */
 	int (*gfar_comp)(const void *, const void *);
@@ -1358,16 +1935,28 @@ static void gfar_sort_mask_table(struct gfar_mask_entry *mask_table,
 	gfar_comp = &gfar_comp_desc;
 
 	for (i = 0; i < and_index; i++) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (prev != mask_table[i].block) {
 			old_first = mask_table[start].start + 1;
 			old_last = mask_table[i - 1].end;
 			sort(mask_table + start, size,
+<<<<<<< HEAD
 					sizeof(struct gfar_mask_entry),
 					gfar_comp, &gfar_swap);
 
 			/* Toggle order for every block. This makes the
 			 * thing more efficient! */
+=======
+			     sizeof(struct gfar_mask_entry),
+			     gfar_comp, &gfar_swap);
+
+			/* Toggle order for every block. This makes the
+			 * thing more efficient!
+			 */
+>>>>>>> refs/remotes/origin/master
 			if (gfar_comp == gfar_comp_desc)
 				gfar_comp = &gfar_comp_asc;
 			else
@@ -1377,12 +1966,20 @@ static void gfar_sort_mask_table(struct gfar_mask_entry *mask_table,
 			new_last = mask_table[i - 1].end;
 
 			gfar_swap_bits(&temp_table->fe[new_first],
+<<<<<<< HEAD
 					&temp_table->fe[old_first],
 					&temp_table->fe[new_last],
 					&temp_table->fe[old_last],
 					RQFCR_QUEUE | RQFCR_CLE |
 						RQFCR_RJE | RQFCR_AND
 					);
+=======
+				       &temp_table->fe[old_first],
+				       &temp_table->fe[new_last],
+				       &temp_table->fe[old_last],
+				       RQFCR_QUEUE | RQFCR_CLE |
+				       RQFCR_RJE | RQFCR_AND);
+>>>>>>> refs/remotes/origin/master
 
 			start = i;
 			size = 0;
@@ -1390,11 +1987,17 @@ static void gfar_sort_mask_table(struct gfar_mask_entry *mask_table,
 		size++;
 		prev = mask_table[i].block;
 	}
+<<<<<<< HEAD
 
 }
 
 /*
  * Reduces the number of masks needed in the filer table to save entries
+=======
+}
+
+/* Reduces the number of masks needed in the filer table to save entries
+>>>>>>> refs/remotes/origin/master
  * This is done by sorting the masks of a depended block. A depended block is
  * identified by gluing ANDs or CLE. The sorting order toggles after every
  * block. Of course entries in scope of a mask must change their location with
@@ -1409,13 +2012,22 @@ static int gfar_optimize_filer_masks(struct filer_table *tab)
 	s32 ret = 0;
 
 	/* We need a copy of the filer table because
+<<<<<<< HEAD
 	 * we want to change its order */
+=======
+	 * we want to change its order
+	 */
+>>>>>>> refs/remotes/origin/master
 	temp_table = kmemdup(tab, sizeof(*temp_table), GFP_KERNEL);
 	if (temp_table == NULL)
 		return -ENOMEM;
 
 	mask_table = kcalloc(MAX_FILER_CACHE_IDX / 2 + 1,
+<<<<<<< HEAD
 			sizeof(struct gfar_mask_entry), GFP_KERNEL);
+=======
+			     sizeof(struct gfar_mask_entry), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	if (mask_table == NULL) {
 		ret = -ENOMEM;
@@ -1427,7 +2039,12 @@ static int gfar_optimize_filer_masks(struct filer_table *tab)
 	gfar_sort_mask_table(mask_table, temp_table, and_index);
 
 	/* Now we can copy the data from our duplicated filer table to
+<<<<<<< HEAD
 	 * the real one in the order the mask table says */
+=======
+	 * the real one in the order the mask table says
+	 */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < and_index; i++) {
 		size = mask_table[i].end - mask_table[i].start + 1;
 		gfar_copy_filer_entries(&(tab->fe[j]),
@@ -1436,7 +2053,12 @@ static int gfar_optimize_filer_masks(struct filer_table *tab)
 	}
 
 	/* And finally we just have to check for duplicated masks and drop the
+<<<<<<< HEAD
 	 * second ones */
+=======
+	 * second ones
+	 */
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < tab->index && i < MAX_FILER_CACHE_IDX; i++) {
 		if (tab->fe[i].ctrl == 0x80) {
 			previous_mask = i++;
@@ -1447,7 +2069,12 @@ static int gfar_optimize_filer_masks(struct filer_table *tab)
 		if (tab->fe[i].ctrl == 0x80) {
 			if (tab->fe[i].prop == tab->fe[previous_mask].prop) {
 				/* Two identical ones found!
+<<<<<<< HEAD
 				 * So drop the second one! */
+=======
+				 * So drop the second one!
+				 */
+>>>>>>> refs/remotes/origin/master
 				gfar_trim_filer_entries(i, i, tab);
 			} else
 				/* Not identical! */
@@ -1462,7 +2089,11 @@ end:	kfree(temp_table);
 
 /* Write the bit-pattern from software's buffer to hardware registers */
 static int gfar_write_filer_table(struct gfar_private *priv,
+<<<<<<< HEAD
 		struct filer_table *tab)
+=======
+				  struct filer_table *tab)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i = 0;
 	if (tab->index > MAX_FILER_IDX - 1)
@@ -1472,13 +2103,23 @@ static int gfar_write_filer_table(struct gfar_private *priv,
 	lock_rx_qs(priv);
 
 	/* Fill regular entries */
+<<<<<<< HEAD
 	for (; i < MAX_FILER_IDX - 1 && (tab->fe[i].ctrl | tab->fe[i].ctrl); i++)
+=======
+	for (; i < MAX_FILER_IDX - 1 && (tab->fe[i].ctrl | tab->fe[i].ctrl);
+	     i++)
+>>>>>>> refs/remotes/origin/master
 		gfar_write_filer(priv, i, tab->fe[i].ctrl, tab->fe[i].prop);
 	/* Fill the rest with fall-troughs */
 	for (; i < MAX_FILER_IDX - 1; i++)
 		gfar_write_filer(priv, i, 0x60, 0xFFFFFFFF);
 	/* Last entry must be default accept
+<<<<<<< HEAD
 	 * because that's what people expect */
+=======
+	 * because that's what people expect
+	 */
+>>>>>>> refs/remotes/origin/master
 	gfar_write_filer(priv, i, 0x20, 0x0);
 
 	unlock_rx_qs(priv);
@@ -1487,21 +2128,36 @@ static int gfar_write_filer_table(struct gfar_private *priv,
 }
 
 static int gfar_check_capability(struct ethtool_rx_flow_spec *flow,
+<<<<<<< HEAD
 		struct gfar_private *priv)
+=======
+				 struct gfar_private *priv)
+>>>>>>> refs/remotes/origin/master
 {
 
 	if (flow->flow_type & FLOW_EXT)	{
 		if (~flow->m_ext.data[0] || ~flow->m_ext.data[1])
 			netdev_warn(priv->ndev,
+<<<<<<< HEAD
 					"User-specific data not supported!\n");
 		if (~flow->m_ext.vlan_etype)
 			netdev_warn(priv->ndev,
 					"VLAN-etype not supported!\n");
+=======
+				    "User-specific data not supported!\n");
+		if (~flow->m_ext.vlan_etype)
+			netdev_warn(priv->ndev,
+				    "VLAN-etype not supported!\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	if (flow->flow_type == IP_USER_FLOW)
 		if (flow->h_u.usr_ip4_spec.ip_ver != ETH_RX_NFC_IP4)
 			netdev_warn(priv->ndev,
+<<<<<<< HEAD
 					"IP-Version differing from IPv4 not supported!\n");
+=======
+				    "IP-Version differing from IPv4 not supported!\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1519,6 +2175,7 @@ static int gfar_process_filer_changes(struct gfar_private *priv)
 		return -ENOMEM;
 
 	/* Now convert the existing filer data from flow_spec into
+<<<<<<< HEAD
 	 * filer tables binary format */
 	list_for_each_entry(j, &priv->rx_list.list, list) {
 		ret = gfar_convert_to_filer(&j->fs, tab);
@@ -1528,6 +2185,20 @@ static int gfar_process_filer_changes(struct gfar_private *priv)
 		}
 		if (ret == -1) {
 			netdev_err(priv->ndev, "Rule not added: Unsupported Flow-type!\n");
+=======
+	 * filer tables binary format
+	 */
+	list_for_each_entry(j, &priv->rx_list.list, list) {
+		ret = gfar_convert_to_filer(&j->fs, tab);
+		if (ret == -EBUSY) {
+			netdev_err(priv->ndev,
+				   "Rule not added: No free space!\n");
+			goto end;
+		}
+		if (ret == -1) {
+			netdev_err(priv->ndev,
+				   "Rule not added: Unsupported Flow-type!\n");
+>>>>>>> refs/remotes/origin/master
 			goto end;
 		}
 	}
@@ -1538,10 +2209,17 @@ static int gfar_process_filer_changes(struct gfar_private *priv)
 	gfar_cluster_filer(tab);
 	gfar_optimize_filer_masks(tab);
 
+<<<<<<< HEAD
 	pr_debug("\n\tSummary:\n"
 		"\tData on hardware: %d\n"
 		"\tCompression rate: %d%%\n",
 		tab->index, 100 - (100 * tab->index) / i);
+=======
+	pr_debug("\tSummary:\n"
+		 "\tData on hardware: %d\n"
+		 "\tCompression rate: %d%%\n",
+		 tab->index, 100 - (100 * tab->index) / i);
+>>>>>>> refs/remotes/origin/master
 
 	/* Write everything to hardware */
 	ret = gfar_write_filer_table(priv, tab);
@@ -1550,7 +2228,12 @@ static int gfar_process_filer_changes(struct gfar_private *priv)
 		goto end;
 	}
 
+<<<<<<< HEAD
 end:	kfree(tab);
+=======
+end:
+	kfree(tab);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1568,7 +2251,11 @@ static void gfar_invert_masks(struct ethtool_rx_flow_spec *flow)
 }
 
 static int gfar_add_cls(struct gfar_private *priv,
+<<<<<<< HEAD
 		struct ethtool_rx_flow_spec *flow)
+=======
+			struct ethtool_rx_flow_spec *flow)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ethtool_flow_spec_container *temp, *comp;
 	int ret = 0;
@@ -1590,7 +2277,10 @@ static int gfar_add_cls(struct gfar_private *priv,
 		list_add(&temp->list, &priv->rx_list.list);
 		goto process;
 	} else {
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		list_for_each_entry(comp, &priv->rx_list.list, list) {
 			if (comp->fs.location > flow->location) {
 				list_add_tail(&temp->list, &comp->list);
@@ -1598,8 +2288,13 @@ static int gfar_add_cls(struct gfar_private *priv,
 			}
 			if (comp->fs.location == flow->location) {
 				netdev_err(priv->ndev,
+<<<<<<< HEAD
 						"Rule not added: ID %d not free!\n",
 					flow->location);
+=======
+					   "Rule not added: ID %d not free!\n",
+					   flow->location);
+>>>>>>> refs/remotes/origin/master
 				ret = -EBUSY;
 				goto clean_mem;
 			}
@@ -1641,7 +2336,10 @@ static int gfar_del_cls(struct gfar_private *priv, u32 loc)
 	}
 
 	return ret;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int gfar_get_cls(struct gfar_private *priv, struct ethtool_rxnfc *cmd)
@@ -1662,7 +2360,11 @@ static int gfar_get_cls(struct gfar_private *priv, struct ethtool_rxnfc *cmd)
 }
 
 static int gfar_get_cls_all(struct gfar_private *priv,
+<<<<<<< HEAD
 		struct ethtool_rxnfc *cmd, u32 *rule_locs)
+=======
+			    struct ethtool_rxnfc *cmd, u32 *rule_locs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ethtool_flow_spec_container *comp;
 	u32 i = 0;
@@ -1713,7 +2415,11 @@ static int gfar_set_nfc(struct net_device *dev, struct ethtool_rxnfc *cmd)
 }
 
 static int gfar_get_nfc(struct net_device *dev, struct ethtool_rxnfc *cmd,
+<<<<<<< HEAD
 		u32 *rule_locs)
+=======
+			u32 *rule_locs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gfar_private *priv = netdev_priv(dev);
 	int ret = 0;
@@ -1739,6 +2445,34 @@ static int gfar_get_nfc(struct net_device *dev, struct ethtool_rxnfc *cmd,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+int gfar_phc_index = -1;
+EXPORT_SYMBOL(gfar_phc_index);
+
+static int gfar_get_ts_info(struct net_device *dev,
+			    struct ethtool_ts_info *info)
+{
+	struct gfar_private *priv = netdev_priv(dev);
+
+	if (!(priv->device_flags & FSL_GIANFAR_DEV_HAS_TIMER)) {
+		info->so_timestamping = SOF_TIMESTAMPING_RX_SOFTWARE |
+					SOF_TIMESTAMPING_SOFTWARE;
+		info->phc_index = -1;
+		return 0;
+	}
+	info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
+				SOF_TIMESTAMPING_RX_HARDWARE |
+				SOF_TIMESTAMPING_RAW_HARDWARE;
+	info->phc_index = gfar_phc_index;
+	info->tx_types = (1 << HWTSTAMP_TX_OFF) |
+			 (1 << HWTSTAMP_TX_ON);
+	info->rx_filters = (1 << HWTSTAMP_FILTER_NONE) |
+			   (1 << HWTSTAMP_FILTER_ALL);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 const struct ethtool_ops gfar_ethtool_ops = {
 	.get_settings = gfar_gsettings,
 	.set_settings = gfar_ssettings,
@@ -1750,6 +2484,11 @@ const struct ethtool_ops gfar_ethtool_ops = {
 	.set_coalesce = gfar_scoalesce,
 	.get_ringparam = gfar_gringparam,
 	.set_ringparam = gfar_sringparam,
+<<<<<<< HEAD
+=======
+	.get_pauseparam = gfar_gpauseparam,
+	.set_pauseparam = gfar_spauseparam,
+>>>>>>> refs/remotes/origin/master
 	.get_strings = gfar_gstrings,
 	.get_sset_count = gfar_sset_count,
 	.get_ethtool_stats = gfar_fill_stats,
@@ -1761,4 +2500,8 @@ const struct ethtool_ops gfar_ethtool_ops = {
 #endif
 	.set_rxnfc = gfar_set_nfc,
 	.get_rxnfc = gfar_get_nfc,
+<<<<<<< HEAD
+=======
+	.get_ts_info = gfar_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };

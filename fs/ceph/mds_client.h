@@ -12,9 +12,13 @@
 #include <linux/ceph/messenger.h>
 #include <linux/ceph/mdsmap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/ceph/auth.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ceph/auth.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Some lock dependencies:
@@ -25,10 +29,14 @@
  *         mdsc->snap_rwsem
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *         inode->i_lock
 =======
  *         ci->i_ceph_lock
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *         ci->i_ceph_lock
+>>>>>>> refs/remotes/origin/master
  *                 mdsc->snap_flush_lock
  *                 mdsc->cap_delay_lock
  *
@@ -81,6 +89,15 @@ struct ceph_mds_reply_info_parsed {
 			struct ceph_mds_reply_info_in *dir_in;
 			u8                            dir_complete, dir_end;
 		};
+<<<<<<< HEAD
+=======
+
+		/* for create results */
+		struct {
+			bool has_create_ino;
+			u64 ino;
+		};
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* encoded blob describing snapshot contexts for certain
@@ -122,6 +139,7 @@ struct ceph_mds_session {
 	struct ceph_connection s_con;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ceph_authorizer *s_authorizer;
 	void             *s_authorizer_buf, *s_authorizer_reply_buf;
 	size_t            s_authorizer_buf_len, s_authorizer_reply_buf_len;
@@ -131,6 +149,8 @@ struct ceph_mds_session {
 	u32               s_cap_gen;  /* inc each time we get mds stale msg */
 	unsigned long     s_cap_ttl;  /* when session caps expire */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ceph_auth_handshake s_auth;
 
 	/* protected by s_gen_ttl_lock */
@@ -140,10 +160,17 @@ struct ceph_mds_session {
 
 	/* protected by s_cap_lock */
 	spinlock_t        s_cap_lock;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct list_head  s_caps;     /* all caps issued by this session */
 	int               s_nr_caps, s_trim_caps;
 	int               s_num_cap_releases;
+=======
+	struct list_head  s_caps;     /* all caps issued by this session */
+	int               s_nr_caps, s_trim_caps;
+	int               s_num_cap_releases;
+	int		  s_cap_reconnect;
+>>>>>>> refs/remotes/origin/master
 	struct list_head  s_cap_releases; /* waiting cap_release messages */
 	struct list_head  s_cap_releases_done; /* ready to send */
 	struct ceph_cap  *s_cap_iterator;
@@ -192,9 +219,13 @@ struct ceph_mds_request {
 	struct dentry *r_dentry;            /* arg1 */
 	struct dentry *r_old_dentry;        /* arg2: rename from or link from */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct inode *r_old_dentry_dir;     /* arg2: old dentry's parent dir */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *r_old_dentry_dir;     /* arg2: old dentry's parent dir */
+>>>>>>> refs/remotes/origin/master
 	char *r_path1, *r_path2;
 	struct ceph_vino r_ino1, r_ino2;
 
@@ -205,8 +236,13 @@ struct ceph_mds_request {
 
 	union ceph_mds_request_args r_args;
 	int r_fmode;        /* file mode, if expecting cap */
+<<<<<<< HEAD
 	uid_t r_uid;
 	gid_t r_gid;
+=======
+	kuid_t r_uid;
+	kgid_t r_gid;
+>>>>>>> refs/remotes/origin/master
 
 	/* for choosing which mds to send this request to */
 	int r_direct_mode;
@@ -358,10 +394,14 @@ extern void ceph_mdsc_sync(struct ceph_mds_client *mdsc);
 extern void ceph_mdsc_lease_release(struct ceph_mds_client *mdsc,
 				    struct inode *inode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    struct dentry *dn, int mask);
 =======
 				    struct dentry *dn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    struct dentry *dn);
+>>>>>>> refs/remotes/origin/master
 
 extern void ceph_invalidate_dir_request(struct ceph_mds_request *req);
 

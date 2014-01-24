@@ -50,11 +50,48 @@ static char sclp_init_sccb[PAGE_SIZE] __attribute__((__aligned__(PAGE_SIZE)));
 /* Suspend request */
 static DECLARE_COMPLETION(sclp_request_queue_flushed);
 
+<<<<<<< HEAD
+=======
+/* Number of console pages to allocate, used by sclp_con.c and sclp_vt220.c */
+int sclp_console_pages = SCLP_CONSOLE_PAGES;
+/* Flag to indicate if buffer pages are dropped on buffer full condition */
+int sclp_console_drop = 0;
+/* Number of times the console dropped buffer pages */
+unsigned long sclp_console_full;
+
+>>>>>>> refs/remotes/origin/master
 static void sclp_suspend_req_cb(struct sclp_req *req, void *data)
 {
 	complete(&sclp_request_queue_flushed);
 }
 
+<<<<<<< HEAD
+=======
+static int __init sclp_setup_console_pages(char *str)
+{
+	int pages, rc;
+
+	rc = kstrtoint(str, 0, &pages);
+	if (!rc && pages >= SCLP_CONSOLE_PAGES)
+		sclp_console_pages = pages;
+	return 1;
+}
+
+__setup("sclp_con_pages=", sclp_setup_console_pages);
+
+static int __init sclp_setup_console_drop(char *str)
+{
+	int drop, rc;
+
+	rc = kstrtoint(str, 0, &drop);
+	if (!rc && drop)
+		sclp_console_drop = 1;
+	return 1;
+}
+
+__setup("sclp_con_drop=", sclp_setup_console_drop);
+
+>>>>>>> refs/remotes/origin/master
 static struct sclp_req sclp_suspend_req;
 
 /* Timer for request retries. */
@@ -117,6 +154,7 @@ static int sclp_init(void);
 int
 sclp_service_call(sclp_cmdw_t command, void *sccb)
 {
+<<<<<<< HEAD
 	int cc;
 
 	asm volatile(
@@ -125,6 +163,21 @@ sclp_service_call(sclp_cmdw_t command, void *sccb)
 		"	srl	%0,28"
 		: "=&d" (cc) : "d" (command), "a" (__pa(sccb))
 		: "cc", "memory");
+=======
+	int cc = 4; /* Initialize for program check handling */
+
+	asm volatile(
+		"0:	.insn	rre,0xb2200000,%1,%2\n"  /* servc %1,%2 */
+		"1:	ipm	%0\n"
+		"	srl	%0,28\n"
+		"2:\n"
+		EX_TABLE(0b, 2b)
+		EX_TABLE(1b, 2b)
+		: "+&d" (cc) : "d" (command), "a" (__pa(sccb))
+		: "cc", "memory");
+	if (cc == 4)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	if (cc == 3)
 		return -EIO;
 	if (cc == 2)
@@ -334,7 +387,11 @@ sclp_dispatch_evbufs(struct sccb_header *sccb)
 			reg->receiver_fn(evbuf);
 			spin_lock_irqsave(&sclp_lock, flags);
 		} else if (reg == NULL)
+<<<<<<< HEAD
 			rc = -ENOSYS;
+=======
+			rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&sclp_lock, flags);
 	return rc;
@@ -394,17 +451,25 @@ __sclp_find_req(u32 sccb)
  * Prepare read event data request if necessary. Start processing of next
  * request on queue. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void sclp_interrupt_handler(unsigned int ext_int_code,
 =======
 static void sclp_interrupt_handler(struct ext_code ext_code,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void sclp_interrupt_handler(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/master
 				   unsigned int param32, unsigned long param64)
 {
 	struct sclp_req *req;
 	u32 finished_sccb;
 	u32 evbuf_pending;
 
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_SCP]++;
+=======
+	inc_irq_stat(IRQEXT_SCP);
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&sclp_lock);
 	finished_sccb = param32 & 0xfffffff8;
 	evbuf_pending = param32 & 0x3;
@@ -454,7 +519,11 @@ sclp_sync_wait(void)
 	timeout = 0;
 	if (timer_pending(&sclp_request_timer)) {
 		/* Get timeout TOD value */
+<<<<<<< HEAD
 		timeout = get_clock() +
+=======
+		timeout = get_tod_clock_fast() +
+>>>>>>> refs/remotes/origin/master
 			  sclp_tod_from_jiffies(sclp_request_timer.expires -
 						jiffies);
 	}
@@ -476,7 +545,11 @@ sclp_sync_wait(void)
 	while (sclp_running_state != sclp_running_state_idle) {
 		/* Check for expired request timer */
 		if (timer_pending(&sclp_request_timer) &&
+<<<<<<< HEAD
 		    get_clock() > timeout &&
+=======
+		    get_tod_clock_fast() > timeout &&
+>>>>>>> refs/remotes/origin/master
 		    del_timer(&sclp_request_timer))
 			sclp_request_timer.function(sclp_request_timer.data);
 		cpu_relax();
@@ -658,6 +731,7 @@ sclp_remove_processed(struct sccb_header *sccb)
 
 EXPORT_SYMBOL(sclp_remove_processed);
 
+<<<<<<< HEAD
 struct init_sccb {
 	struct sccb_header header;
 	u16 _reserved;
@@ -668,6 +742,8 @@ struct init_sccb {
 	sccb_mask_t sclp_send_mask;
 } __attribute__((packed));
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Prepare init mask request. Called while sclp_lock is locked. */
 static inline void
 __sclp_make_init_req(u32 receive_mask, u32 send_mask)
@@ -823,15 +899,23 @@ EXPORT_SYMBOL(sclp_reactivate);
 /* Handler for external interruption used during initialization. Modify
  * request state to done. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void sclp_check_handler(unsigned int ext_int_code,
 =======
 static void sclp_check_handler(struct ext_code ext_code,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void sclp_check_handler(struct ext_code ext_code,
+>>>>>>> refs/remotes/origin/master
 			       unsigned int param32, unsigned long param64)
 {
 	u32 finished_sccb;
 
+<<<<<<< HEAD
 	kstat_cpu(smp_processor_id()).irqs[EXTINT_SCP]++;
+=======
+	inc_irq_stat(IRQEXT_SCP);
+>>>>>>> refs/remotes/origin/master
 	finished_sccb = param32 & 0xfffffff8;
 	/* Is this the interrupt we are waiting for? */
 	if (finished_sccb == 0)
@@ -892,12 +976,20 @@ sclp_check_interface(void)
 		spin_unlock_irqrestore(&sclp_lock, flags);
 		/* Enable service-signal interruption - needs to happen
 		 * with IRQs enabled. */
+<<<<<<< HEAD
 		service_subclass_irq_register();
+=======
+		irq_subclass_register(IRQ_SUBCLASS_SERVICE_SIGNAL);
+>>>>>>> refs/remotes/origin/master
 		/* Wait for signal from interrupt or timeout */
 		sclp_sync_wait();
 		/* Disable service-signal interruption - needs to happen
 		 * with IRQs enabled. */
+<<<<<<< HEAD
 		service_subclass_irq_unregister();
+=======
+		irq_subclass_unregister(IRQ_SUBCLASS_SERVICE_SIGNAL);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&sclp_lock, flags);
 		del_timer(&sclp_request_timer);
 		if (sclp_init_req.status == SCLP_REQ_DONE &&
@@ -1031,11 +1123,53 @@ static const struct dev_pm_ops sclp_pm_ops = {
 	.restore	= sclp_restore,
 };
 
+<<<<<<< HEAD
+=======
+static ssize_t sclp_show_console_pages(struct device_driver *dev, char *buf)
+{
+	return sprintf(buf, "%i\n", sclp_console_pages);
+}
+
+static DRIVER_ATTR(con_pages, S_IRUSR, sclp_show_console_pages, NULL);
+
+static ssize_t sclp_show_con_drop(struct device_driver *dev, char *buf)
+{
+	return sprintf(buf, "%i\n", sclp_console_drop);
+}
+
+static DRIVER_ATTR(con_drop, S_IRUSR, sclp_show_con_drop, NULL);
+
+static ssize_t sclp_show_console_full(struct device_driver *dev, char *buf)
+{
+	return sprintf(buf, "%lu\n", sclp_console_full);
+}
+
+static DRIVER_ATTR(con_full, S_IRUSR, sclp_show_console_full, NULL);
+
+static struct attribute *sclp_drv_attrs[] = {
+	&driver_attr_con_pages.attr,
+	&driver_attr_con_drop.attr,
+	&driver_attr_con_full.attr,
+	NULL,
+};
+static struct attribute_group sclp_drv_attr_group = {
+	.attrs = sclp_drv_attrs,
+};
+static const struct attribute_group *sclp_drv_attr_groups[] = {
+	&sclp_drv_attr_group,
+	NULL,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver sclp_pdrv = {
 	.driver = {
 		.name	= "sclp",
 		.owner	= THIS_MODULE,
 		.pm	= &sclp_pm_ops,
+<<<<<<< HEAD
+=======
+		.groups = sclp_drv_attr_groups,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -1077,7 +1211,11 @@ sclp_init(void)
 	spin_unlock_irqrestore(&sclp_lock, flags);
 	/* Enable service-signal external interruption - needs to happen with
 	 * IRQs enabled. */
+<<<<<<< HEAD
 	service_subclass_irq_register();
+=======
+	irq_subclass_register(IRQ_SUBCLASS_SERVICE_SIGNAL);
+>>>>>>> refs/remotes/origin/master
 	sclp_init_mask(1);
 	return 0;
 
@@ -1114,10 +1252,19 @@ static __init int sclp_initcall(void)
 	rc = platform_driver_register(&sclp_pdrv);
 	if (rc)
 		return rc;
+<<<<<<< HEAD
 	sclp_pdev = platform_device_register_simple("sclp", -1, NULL, 0);
 	rc = IS_ERR(sclp_pdev) ? PTR_ERR(sclp_pdev) : 0;
 	if (rc)
 		goto fail_platform_driver_unregister;
+=======
+
+	sclp_pdev = platform_device_register_simple("sclp", -1, NULL, 0);
+	rc = PTR_RET(sclp_pdev);
+	if (rc)
+		goto fail_platform_driver_unregister;
+
+>>>>>>> refs/remotes/origin/master
 	rc = atomic_notifier_chain_register(&panic_notifier_list,
 					    &sclp_on_panic_nb);
 	if (rc)

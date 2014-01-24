@@ -45,7 +45,11 @@
 #include <asm/mach-types.h>
 
 #include <plat/regs-serial.h>
+<<<<<<< HEAD
 #include <plat/iic.h>
+=======
+#include <linux/platform_data/i2c-s3c2410.h>
+>>>>>>> refs/remotes/origin/master
 #include <plat/devs.h>
 #include <plat/cpu.h>
 
@@ -53,6 +57,7 @@
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/map.h>
 #include <linux/mtd/physmap.h>
+<<<<<<< HEAD
 
 #include "common.h"
 
@@ -61,6 +66,14 @@ static struct resource tct_hammer_nor_resource = {
 		.end   = 0x01000000 - 1,
 		.flags = IORESOURCE_MEM,
 };
+=======
+#include <plat/samsung-time.h>
+
+#include "common.h"
+
+static struct resource tct_hammer_nor_resource =
+			DEFINE_RES_MEM(0x00000000, SZ_16M);
+>>>>>>> refs/remotes/origin/master
 
 static struct mtd_partition tct_hammer_mtd_partitions[] = {
 	{
@@ -139,6 +152,10 @@ static void __init tct_hammer_map_io(void)
 	s3c24xx_init_io(tct_hammer_iodesc, ARRAY_SIZE(tct_hammer_iodesc));
 	s3c24xx_init_clocks(0);
 	s3c24xx_init_uarts(tct_hammer_uartcfgs, ARRAY_SIZE(tct_hammer_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init tct_hammer_init(void)
@@ -150,8 +167,14 @@ static void __init tct_hammer_init(void)
 MACHINE_START(TCT_HAMMER, "TCT_HAMMER")
 	.atag_offset	= 0x100,
 	.map_io		= tct_hammer_map_io,
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.init_machine	= tct_hammer_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2410_init_irq,
+	.init_machine	= tct_hammer_init,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c2410_restart,
 MACHINE_END

@@ -5,10 +5,14 @@
  * OMAP2/3 PRCM base and module definitions
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2007-2009 Texas Instruments, Inc.
 =======
  * Copyright (C) 2007-2009, 2011 Texas Instruments, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2007-2009, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2007-2009 Nokia Corporation
  *
  * Written by Paul Walmsley
@@ -52,6 +56,21 @@
 #define OMAP3430_NEON_MOD				0xb00
 #define OMAP3430ES2_USBHOST_MOD				0xc00
 
+<<<<<<< HEAD
+=======
+/*
+ * TI81XX PRM module offsets
+ */
+#define TI81XX_PRM_DEVICE_MOD			0x0000
+#define TI816X_PRM_ACTIVE_MOD			0x0a00
+#define TI81XX_PRM_DEFAULT_MOD			0x0b00
+#define TI816X_PRM_IVAHD0_MOD			0x0c00
+#define TI816X_PRM_IVAHD1_MOD			0x0d00
+#define TI816X_PRM_IVAHD2_MOD			0x0e00
+#define TI816X_PRM_SGX_MOD				0x0f00
+#define TI81XX_PRM_ALWON_MOD			0x1800
+
+>>>>>>> refs/remotes/origin/master
 /* 24XX register bits shared between CM & PRM registers */
 
 /* CM_FCLKEN1_CORE, CM_ICLKEN1_CORE, PM_WKEN1_CORE shared bits */
@@ -113,6 +132,11 @@
 #define OMAP2430_EN_MDM_INTC_MASK			(1 << 11)
 #define OMAP2430_EN_USBHS_SHIFT				6
 #define OMAP2430_EN_USBHS_MASK				(1 << 6)
+<<<<<<< HEAD
+=======
+#define OMAP24XX_EN_GPMC_SHIFT				1
+#define OMAP24XX_EN_GPMC_MASK				(1 << 1)
+>>>>>>> refs/remotes/origin/master
 
 /* CM_IDLEST1_CORE, PM_WKST1_CORE shared bits */
 #define OMAP2420_ST_MMC_SHIFT				26
@@ -181,6 +205,11 @@
 /* PM_WKST_WKUP, CM_IDLEST_WKUP shared bits */
 #define OMAP24XX_ST_GPIOS_SHIFT				2
 #define OMAP24XX_ST_GPIOS_MASK				(1 << 2)
+<<<<<<< HEAD
+=======
+#define OMAP24XX_ST_32KSYNC_SHIFT			1
+#define OMAP24XX_ST_32KSYNC_MASK			(1 << 1)
+>>>>>>> refs/remotes/origin/master
 #define OMAP24XX_ST_GPT1_SHIFT				0
 #define OMAP24XX_ST_GPT1_MASK				(1 << 0)
 
@@ -206,10 +235,15 @@
 #define OMAP3430_EN_MMC1_MASK				(1 << 24)
 #define OMAP3430_EN_MMC1_SHIFT				24
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define OMAP3430_EN_UART4_MASK				(1 << 23)
 #define OMAP3430_EN_UART4_SHIFT				23
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AM35XX_EN_UART4_MASK				(1 << 23)
+#define AM35XX_EN_UART4_SHIFT				23
+>>>>>>> refs/remotes/origin/master
 #define OMAP3430_EN_MCSPI4_MASK				(1 << 21)
 #define OMAP3430_EN_MCSPI4_SHIFT			21
 #define OMAP3430_EN_MCSPI3_MASK				(1 << 20)
@@ -314,6 +348,11 @@
 #define OMAP3430_ST_SR1_MASK				(1 << 6)
 #define OMAP3430_ST_GPIO1_SHIFT				3
 #define OMAP3430_ST_GPIO1_MASK				(1 << 3)
+<<<<<<< HEAD
+=======
+#define OMAP3430_ST_32KSYNC_SHIFT			2
+#define OMAP3430_ST_32KSYNC_MASK			(1 << 2)
+>>>>>>> refs/remotes/origin/master
 #define OMAP3430_ST_GPT12_SHIFT				1
 #define OMAP3430_ST_GPT12_MASK				(1 << 1)
 #define OMAP3430_ST_GPT1_SHIFT				0
@@ -407,6 +446,7 @@
 #define OMAP3430_EN_CORE_MASK				(1 << 0)
 
 
+<<<<<<< HEAD
 /*
  * MAX_MODULE_HARDRESET_WAIT: Maximum microseconds to wait for an OMAP
  * submodule to exit hardreset
@@ -419,6 +459,17 @@ extern void __iomem *cm_base;
 extern void __iomem *cm2_base;
 <<<<<<< HEAD
 =======
+=======
+
+/*
+ * Maximum time(us) it takes to output the signal WUCLKOUT of the last
+ * pad of the I/O ring after asserting WUCLKIN high.  Tero measured
+ * the actual time at 7 to 8 microseconds on OMAP3 and 2 to 4
+ * microseconds on OMAP4, so this timeout may be too high.
+ */
+#define MAX_IOPAD_LATCH_TIME			100
+# ifndef __ASSEMBLER__
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct omap_prcm_irq - describes a PRCM interrupt bit
@@ -492,7 +543,10 @@ extern int omap_prcm_event_to_irq(const char *event);
 extern void omap_prcm_irq_prepare(void);
 extern void omap_prcm_irq_complete(void);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # endif
 
 #endif

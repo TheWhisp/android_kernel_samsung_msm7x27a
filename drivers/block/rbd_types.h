@@ -15,6 +15,7 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
 /*
  * rbd image 'foo' consists of objects
  *   foo.rbd      - image metadata
@@ -24,6 +25,32 @@
  */
 
 #define RBD_SUFFIX		".rbd"
+=======
+/* For format version 2, rbd image 'foo' consists of objects
+ *   rbd_id.foo		- id of image
+ *   rbd_header.<id>	- image metadata
+ *   rbd_data.<id>.0000000000000000
+ *   rbd_data.<id>.0000000000000001
+ *   ...		- data
+ * Clients do not access header data directly in rbd format 2.
+ */
+
+#define RBD_HEADER_PREFIX      "rbd_header."
+#define RBD_DATA_PREFIX        "rbd_data."
+#define RBD_ID_PREFIX          "rbd_id."
+
+/*
+ * For format version 1, rbd image 'foo' consists of objects
+ *   foo.rbd		- image metadata
+ *   rb.<idhi>.<idlo>.00000000
+ *   rb.<idhi>.<idlo>.00000001
+ *   ...		- data
+ * There is no notion of a persistent image id in rbd format 1.
+ */
+
+#define RBD_SUFFIX		".rbd"
+
+>>>>>>> refs/remotes/origin/master
 #define RBD_DIRECTORY           "rbd_directory"
 #define RBD_INFO                "rbd_info"
 
@@ -31,9 +58,12 @@
 #define RBD_MIN_OBJ_ORDER       16
 #define RBD_MAX_OBJ_ORDER       30
 
+<<<<<<< HEAD
 #define RBD_MAX_OBJ_NAME_LEN	96
 #define RBD_MAX_SEG_NAME_LEN	128
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define RBD_COMP_NONE		0
 #define RBD_CRYPT_NONE		0
 
@@ -42,12 +72,15 @@
 #define RBD_HEADER_VERSION	"001.005"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct rbd_info {
 	__le64 max_id;
 } __attribute__ ((packed));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct rbd_image_snap_ondisk {
 	__le64 id;
 	__le64 image_size;
@@ -55,7 +88,11 @@ struct rbd_image_snap_ondisk {
 
 struct rbd_image_header_ondisk {
 	char text[40];
+<<<<<<< HEAD
 	char block_name[24];
+=======
+	char object_prefix[24];
+>>>>>>> refs/remotes/origin/master
 	char signature[4];
 	char version[8];
 	struct {

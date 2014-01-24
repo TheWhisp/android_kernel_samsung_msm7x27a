@@ -31,6 +31,7 @@ struct physmap_flash_data {
 	char                    *probe_type;
 	struct mtd_partition	*parts;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 /*
@@ -55,4 +56,9 @@ void physmap_set_partitions(struct mtd_partition *parts, int num_parts);
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char * const	*part_probe_types;
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_MTD_PHYSMAP__ */

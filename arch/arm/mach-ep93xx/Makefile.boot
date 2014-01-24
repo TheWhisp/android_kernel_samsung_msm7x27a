@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
    zreladdr-$(CONFIG_EP93XX_SDCE3_SYNC_PHYS_OFFSET)	:= 0x00008000
 params_phys-$(CONFIG_EP93XX_SDCE3_SYNC_PHYS_OFFSET)	:= 0x00000100
 
@@ -13,6 +14,8 @@ params_phys-$(CONFIG_EP93XX_SDCE2_PHYS_OFFSET)		:= 0xe0000100
 
    zreladdr-$(CONFIG_EP93XX_SDCE3_ASYNC_PHYS_OFFSET)	:= 0xf0008000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    zreladdr-$(CONFIG_EP93XX_SDCE3_SYNC_PHYS_OFFSET)	+= 0x00008000
 params_phys-$(CONFIG_EP93XX_SDCE3_SYNC_PHYS_OFFSET)	:= 0x00000100
 
@@ -26,5 +29,8 @@ params_phys-$(CONFIG_EP93XX_SDCE1_PHYS_OFFSET)		:= 0xd0000100
 params_phys-$(CONFIG_EP93XX_SDCE2_PHYS_OFFSET)		:= 0xe0000100
 
    zreladdr-$(CONFIG_EP93XX_SDCE3_ASYNC_PHYS_OFFSET)	+= 0xf0008000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 params_phys-$(CONFIG_EP93XX_SDCE3_ASYNC_PHYS_OFFSET)	:= 0xf0000100

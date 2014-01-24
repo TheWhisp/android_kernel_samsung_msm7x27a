@@ -4,11 +4,16 @@
   IEEE 802.11n PHY data tables
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) 2008 Michael Buesch <mb@bu3sch.de>
 =======
   Copyright (c) 2008 Michael Buesch <m@bues.ch>
   Copyright (c) 2010 Rafał Miłecki <zajec5@gmail.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2008 Michael Buesch <m@bues.ch>
+  Copyright (c) 2010 Rafał Miłecki <zajec5@gmail.com>
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -2176,6 +2181,7 @@ static const u16 b43_ntab_loftlt1_r3[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* TX gain tables */
 const u32 b43_ntab_tx_gain_rev0_1_2[] = {
 =======
@@ -2183,6 +2189,12 @@ const u32 b43_ntab_tx_gain_rev0_1_2[] = {
 
 /* indexed by antswctl2g */
 static const u16 b43_ntab_antswctl2g_r3[4][32] = {
+=======
+/* volatile  tables, PHY revision >= 3 */
+
+/* indexed by antswctl2g */
+static const u16 b43_ntab_antswctl_r3[4][32] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		0x0082, 0x0082, 0x0211, 0x0222, 0x0328,
 		0x0000, 0x0000, 0x0000, 0x0144, 0x0000,
@@ -2223,7 +2235,10 @@ static const u16 b43_ntab_antswctl2g_r3[4][32] = {
 
 /* TX gain tables */
 static const u32 b43_ntab_tx_gain_rev0_1_2[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	0x03cc2b44, 0x03cc2b42, 0x03cc2a44, 0x03cc2a42,
 	0x03cc2944, 0x03c82b44, 0x03c82b42, 0x03c82a44,
 	0x03c82a42, 0x03c82944, 0x03c82942, 0x03c82844,
@@ -2259,10 +2274,14 @@ static const u32 b43_ntab_tx_gain_rev0_1_2[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 b43_ntab_tx_gain_rev3plus_2ghz[] = {
 =======
 static const u32 b43_ntab_tx_gain_rev3plus_2ghz[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 b43_ntab_tx_gain_rev3plus_2ghz[] = {
+>>>>>>> refs/remotes/origin/master
 	0x1f410044, 0x1f410042, 0x1f410040, 0x1f41003e,
 	0x1f41003c, 0x1f41003b, 0x1f410039, 0x1f410037,
 	0x1e410044, 0x1e410042, 0x1e410040, 0x1e41003e,
@@ -2298,10 +2317,14 @@ static const u32 b43_ntab_tx_gain_rev3plus_2ghz[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 b43_ntab_tx_gain_rev3_5ghz[] = {
 =======
 static const u32 b43_ntab_tx_gain_rev3_5ghz[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 b43_ntab_tx_gain_rev3_5ghz[] = {
+>>>>>>> refs/remotes/origin/master
 	0xcff70044, 0xcff70042, 0xcff70040, 0xcff7003e,
 	0xcff7003c, 0xcff7003b, 0xcff70039, 0xcff70037,
 	0xcef70044, 0xcef70042, 0xcef70040, 0xcef7003e,
@@ -2337,10 +2360,14 @@ static const u32 b43_ntab_tx_gain_rev3_5ghz[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 b43_ntab_tx_gain_rev4_5ghz[] = {
 =======
 static const u32 b43_ntab_tx_gain_rev4_5ghz[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 b43_ntab_tx_gain_rev4_5ghz[] = {
+>>>>>>> refs/remotes/origin/master
 	0x2ff20044, 0x2ff20042, 0x2ff20040, 0x2ff2003e,
 	0x2ff2003c, 0x2ff2003b, 0x2ff20039, 0x2ff20037,
 	0x2ef20044, 0x2ef20042, 0x2ef20040, 0x2ef2003e,
@@ -2376,10 +2403,14 @@ static const u32 b43_ntab_tx_gain_rev4_5ghz[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 b43_ntab_tx_gain_rev5plus_5ghz[] = {
 =======
 static const u32 b43_ntab_tx_gain_rev5plus_5ghz[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 b43_ntab_tx_gain_rev5plus_5ghz[] = {
+>>>>>>> refs/remotes/origin/master
 	0x0f62004a, 0x0f620048, 0x0f620046, 0x0f620044,
 	0x0f620042, 0x0f620040, 0x0f62003e, 0x0f62003c,
 	0x0e620044, 0x0e620042, 0x0e620040, 0x0e62003e,
@@ -2415,10 +2446,14 @@ static const u32 b43_ntab_tx_gain_rev5plus_5ghz[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 txpwrctrl_tx_gain_ipa[] = {
 =======
 static const u32 txpwrctrl_tx_gain_ipa[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 txpwrctrl_tx_gain_ipa[] = {
+>>>>>>> refs/remotes/origin/master
 	0x5ff7002d, 0x5ff7002b, 0x5ff7002a, 0x5ff70029,
 	0x5ff70028, 0x5ff70027, 0x5ff70026, 0x5ff70025,
 	0x5ef7002d, 0x5ef7002b, 0x5ef7002a, 0x5ef70029,
@@ -2454,10 +2489,14 @@ static const u32 txpwrctrl_tx_gain_ipa[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 txpwrctrl_tx_gain_ipa_rev5[] = {
 =======
 static const u32 txpwrctrl_tx_gain_ipa_rev5[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 txpwrctrl_tx_gain_ipa_rev5[] = {
+>>>>>>> refs/remotes/origin/master
 	0x1ff7002d, 0x1ff7002b, 0x1ff7002a, 0x1ff70029,
 	0x1ff70028, 0x1ff70027, 0x1ff70026, 0x1ff70025,
 	0x1ef7002d, 0x1ef7002b, 0x1ef7002a, 0x1ef70029,
@@ -2493,10 +2532,14 @@ static const u32 txpwrctrl_tx_gain_ipa_rev5[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 txpwrctrl_tx_gain_ipa_rev6[] = {
 =======
 static const u32 txpwrctrl_tx_gain_ipa_rev6[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 txpwrctrl_tx_gain_ipa_rev6[] = {
+>>>>>>> refs/remotes/origin/master
 	0x0ff7002d, 0x0ff7002b, 0x0ff7002a, 0x0ff70029,
 	0x0ff70028, 0x0ff70027, 0x0ff70026, 0x0ff70025,
 	0x0ef7002d, 0x0ef7002b, 0x0ef7002a, 0x0ef70029,
@@ -2532,10 +2575,14 @@ static const u32 txpwrctrl_tx_gain_ipa_rev6[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const u32 txpwrctrl_tx_gain_ipa_5g[] = {
 =======
 static const u32 txpwrctrl_tx_gain_ipa_5g[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const u32 txpwrctrl_tx_gain_ipa_5g[] = {
+>>>>>>> refs/remotes/origin/master
 	0x7ff70035, 0x7ff70033, 0x7ff70032, 0x7ff70031,
 	0x7ff7002f, 0x7ff7002e, 0x7ff7002d, 0x7ff7002b,
 	0x7ff7002a, 0x7ff70029, 0x7ff70028, 0x7ff70027,
@@ -2571,13 +2618,19 @@ static const u32 txpwrctrl_tx_gain_ipa_5g[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 const s8 b43_ntab_papd_pga_gain_delta_ipa_2g[] = {
 	-114, -108, -98, -91, -84, -78, -70, -62,
 	-54, -46, -39, -31, -23, -15, -8, 0
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 const u16 tbl_iqcal_gainparams[2][9][8] = {
 	{
 		{ 0x000, 0, 0, 2, 0x69, 0x69, 0x69, 0x69 },
@@ -2744,10 +2797,14 @@ const s16 tbl_tx_filter_coef_rev4[7][15] = {
 	{  -377,   137,  -407,   208, -1527,
 	    956,    93,   186,    93,   230,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    -44,   230,    20,  -191,   201 },
 =======
 	    -44,   230,   201,  -191,   201 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    -44,   230,   201,  -191,   201 },
+>>>>>>> refs/remotes/origin/master
 	{   -77,    20,   -98,    49,   -93,
 	     60,    56,   111,    56,    26,
 	     -5,    26,    34,   -32,    34 },
@@ -2793,18 +2850,24 @@ const struct nphy_rf_control_override_rev3 tbl_rf_control_override_rev3[] = {
 	{ 0x0002,  1, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0004 (fls 3) */
 	{ 0x0004,  2, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0008 (fls 4) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ 0x0016,  4, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0010 (fls 5) */
 	{ 0x0020,  5, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0020 (fls 6) */
 	{ 0x0040,  6, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0040 (fls 7) */
 	{ 0x0080,  6, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0080 (fls 8) */
 	{ 0x0100,  7, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0100 (fls 9) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0x0010,  4, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0010 (fls 5) */
 	{ 0x0020,  5, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0020 (fls 6) */
 	{ 0x0040,  6, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0040 (fls 7) */
 	{ 0x0080,  7, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0080 (fls 8) */
 	{ 0x0100,  8, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0100 (fls 9) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0x0007,  0, 0xE7, 0xF8, 0xEC, 0xFA }, /* field == 0x0200 (fls 10) */
 	{ 0x0070,  4, 0xE7, 0xF8, 0xEC, 0xFA }, /* field == 0x0400 (fls 11) */
 	{ 0xE000, 13, 0xE7, 0x7A, 0xEC, 0x7D }, /* field == 0x0800 (fls 12) */
@@ -2814,9 +2877,56 @@ const struct nphy_rf_control_override_rev3 tbl_rf_control_override_rev3[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][3] = {
 =======
 struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_wa_phy6_radio11_ghz2 = {
+=======
+/* field, val_addr_core0, val_addr_core1, val_mask, val_shift */
+static const struct nphy_rf_control_override_rev7
+			tbl_rf_control_override_rev7_over0[] = {
+	{ 0x0004, 0x07A, 0x07D, 0x0002, 1 },
+	{ 0x0008, 0x07A, 0x07D, 0x0004, 2 },
+	{ 0x0010, 0x07A, 0x07D, 0x0010, 4 },
+	{ 0x0020, 0x07A, 0x07D, 0x0020, 5 },
+	{ 0x0040, 0x07A, 0x07D, 0x0040, 6 },
+	{ 0x0080, 0x0F8, 0x0FA, 0x0080, 7 },
+	{ 0x0400, 0x0F8, 0x0FA, 0x0070, 4 },
+	{ 0x0800, 0x07B, 0x07E, 0xFFFF, 0 },
+	{ 0x1000, 0x07C, 0x07F, 0xFFFF, 0 },
+	{ 0x6000, 0x348, 0x349, 0xFFFF, 0 },
+	{ 0x2000, 0x348, 0x349, 0x000F, 0 },
+};
+
+/* field, val_addr_core0, val_addr_core1, val_mask, val_shift */
+static const struct nphy_rf_control_override_rev7
+			tbl_rf_control_override_rev7_over1[] = {
+	{ 0x0002, 0x340, 0x341, 0x0002, 1 },
+	{ 0x0008, 0x340, 0x341, 0x0008, 3 },
+	{ 0x0020, 0x340, 0x341, 0x0020, 5 },
+	{ 0x0010, 0x340, 0x341, 0x0010, 4 },
+	{ 0x0004, 0x340, 0x341, 0x0004, 2 },
+	{ 0x0080, 0x340, 0x341, 0x0700, 8 },
+	{ 0x0800, 0x340, 0x341, 0x4000, 14 },
+	{ 0x0400, 0x340, 0x341, 0x2000, 13 },
+	{ 0x0200, 0x340, 0x341, 0x0800, 12 },
+	{ 0x0100, 0x340, 0x341, 0x0100, 11 },
+	{ 0x0040, 0x340, 0x341, 0x0040, 6 },
+	{ 0x0001, 0x340, 0x341, 0x0001, 0 },
+};
+
+/* field, val_addr_core0, val_addr_core1, val_mask, val_shift */
+static const struct nphy_rf_control_override_rev7
+			tbl_rf_control_override_rev7_over2[] = {
+	{ 0x0008, 0x344, 0x345, 0x0008, 3 },
+	{ 0x0002, 0x344, 0x345, 0x0002, 1 },
+	{ 0x0001, 0x344, 0x345, 0x0001, 0 },
+	{ 0x0004, 0x344, 0x345, 0x0004, 2 },
+	{ 0x0010, 0x344, 0x345, 0x0010, 4 },
+};
+
+static struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_wa_phy6_radio11_ghz2 = {
+>>>>>>> refs/remotes/origin/master
 	{ 10, 14, 19, 27 },
 	{ -5, 6, 10, 15 },
 	{ 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA },
@@ -2827,8 +2937,12 @@ struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_wa_phy6_radio11_ghz2 = {
 	0x18, 0x18, 0x18,
 	0x01D0, 0x5,
 };
+<<<<<<< HEAD
 struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
+>>>>>>> refs/remotes/origin/master
 	{ /* 2GHz */
 		{ /* PHY rev 3 */
 			{ 7, 11, 16, 23 },
@@ -2853,10 +2967,14 @@ struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
 			0x01A1, 0x5,
 		},
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{ /* PHY rev 5+ */
 =======
 		{ /* PHY rev 5 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{ /* PHY rev 5 */
+>>>>>>> refs/remotes/origin/master
 			{ 9, 13, 18, 26 },
 			{ -3, 7, 11, 16 },
 			{ 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA },
@@ -2864,9 +2982,12 @@ struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
 			0x427E, /* invalid for external LNA! */
 			{ 0x413F, 0x413F, 0x413F, 0x413F }, /* invalid for external LNA! */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			0x1076, 0x0066, 0x106A,
 			0xC, 0xC, 0xC,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			0x1076, 0x0066, 0x0000, /* low is invalid (the last one) */
 			0x18, 0x18, 0x18,
 			0x01D0, 0x9,
@@ -2880,7 +3001,10 @@ struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
 			{ 0x513F, 0x513F, 0x513F, 0x513F }, /* invalid for external LNA! */
 			0x1076, 0x0066, 0x0000, /* low is invalid (the last one) */
 			0x18, 0x18, 0x18,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			0x01D0, 0x5,
 		},
 	},
@@ -2908,10 +3032,14 @@ struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
 			0x0107, 25,
 		},
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{ /* PHY rev 5+ */
 =======
 		{ /* PHY rev 5 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{ /* PHY rev 5 */
+>>>>>>> refs/remotes/origin/master
 			{ 6, 10, 16, 21 },
 			{ -7, 0, 4, 8 },
 			{ 0xD, 0xD, 0xD, 0xD, 0xD, 0xD, 0xD, 0xD, 0xD, 0xD },
@@ -2923,7 +3051,10 @@ struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
 			0x00A9, 25,
 		},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		{ /* PHY rev 6+ */
 			{ 6, 10, 16, 21 },
 			{ -7, 0, 4, 8 },
@@ -2935,7 +3066,10 @@ struct nphy_gain_ctl_workaround_entry nphy_gain_ctl_workaround[2][4] = {
 			0x24, 0x24, 0x24, /* low is invalid for radio rev 11! */
 			0x00F0, 25,
 		},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -2995,6 +3129,7 @@ u32 b43_ntab_read(struct b43_wldev *dev, u32 offset)
 	case B43_NTAB_32BIT:
 		b43_phy_write(dev, B43_NPHY_TABLE_ADDR, offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		value = b43_phy_read(dev, B43_NPHY_TABLE_DATAHI);
 		value <<= 16;
 		value |= b43_phy_read(dev, B43_NPHY_TABLE_DATALO);
@@ -3002,6 +3137,10 @@ u32 b43_ntab_read(struct b43_wldev *dev, u32 offset)
 		value = b43_phy_read(dev, B43_NPHY_TABLE_DATALO);
 		value |= b43_phy_read(dev, B43_NPHY_TABLE_DATAHI) << 16;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		value = b43_phy_read(dev, B43_NPHY_TABLE_DATALO);
+		value |= b43_phy_read(dev, B43_NPHY_TABLE_DATAHI) << 16;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		B43_WARN_ON(1);
@@ -3026,14 +3165,20 @@ void b43_ntab_read_bulk(struct b43_wldev *dev, u32 offset,
 
 	for (i = 0; i < nr_elements; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Auto increment broken + caching issue on BCM43224? */
 		if (dev->dev->chip_id == 43224 && dev->dev->chip_rev == 1) {
 			b43_phy_read(dev, B43_NPHY_TABLE_DATALO);
 			b43_phy_write(dev, B43_NPHY_TABLE_ADDR, offset + i);
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (type) {
 		case B43_NTAB_8BIT:
 			*data = b43_phy_read(dev, B43_NPHY_TABLE_DATALO) & 0xFF;
@@ -3045,15 +3190,21 @@ void b43_ntab_read_bulk(struct b43_wldev *dev, u32 offset,
 			break;
 		case B43_NTAB_32BIT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			*((u32 *)data) = b43_phy_read(dev, B43_NPHY_TABLE_DATAHI);
 			*((u32 *)data) <<= 16;
 			*((u32 *)data) |= b43_phy_read(dev, B43_NPHY_TABLE_DATALO);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			*((u32 *)data) =
 				b43_phy_read(dev, B43_NPHY_TABLE_DATALO);
 			*((u32 *)data) |=
 				b43_phy_read(dev, B43_NPHY_TABLE_DATAHI) << 16;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			data += 4;
 			break;
 		default:
@@ -3110,7 +3261,10 @@ void b43_ntab_write_bulk(struct b43_wldev *dev, u32 offset,
 
 	for (i = 0; i < nr_elements; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Auto increment broken + caching issue on BCM43224? */
 		if ((offset >> 10) == 9 && dev->dev->chip_id == 43224 &&
 		    dev->dev->chip_rev == 1) {
@@ -3118,7 +3272,10 @@ void b43_ntab_write_bulk(struct b43_wldev *dev, u32 offset,
 			b43_phy_write(dev, B43_NPHY_TABLE_ADDR, offset + i);
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (type) {
 		case B43_NTAB_8BIT:
 			value = *data;
@@ -3146,9 +3303,61 @@ void b43_ntab_write_bulk(struct b43_wldev *dev, u32 offset,
 }
 
 #define ntab_upload(dev, offset, data) do { \
+<<<<<<< HEAD
 		b43_ntab_write_bulk(dev, offset, offset##_SIZE, data);	\
 	} while (0)
 void b43_nphy_rev0_1_2_tables_init(struct b43_wldev *dev)
+=======
+		b43_ntab_write_bulk(dev, offset, ARRAY_SIZE(data), data); \
+	} while (0)
+
+static void b43_nphy_tables_init_rev3(struct b43_wldev *dev)
+{
+	struct ssb_sprom *sprom = dev->dev->bus_sprom;
+	u8 antswlut;
+
+	if (b43_current_band(dev->wl) == IEEE80211_BAND_5GHZ)
+		antswlut = sprom->fem.ghz5.antswlut;
+	else
+		antswlut = sprom->fem.ghz2.antswlut;
+
+	/* Static tables */
+	ntab_upload(dev, B43_NTAB_FRAMESTRUCT_R3, b43_ntab_framestruct_r3);
+	ntab_upload(dev, B43_NTAB_PILOT_R3, b43_ntab_pilot_r3);
+	ntab_upload(dev, B43_NTAB_TMAP_R3, b43_ntab_tmap_r3);
+	ntab_upload(dev, B43_NTAB_INTLEVEL_R3, b43_ntab_intlevel_r3);
+	ntab_upload(dev, B43_NTAB_TDTRN_R3, b43_ntab_tdtrn_r3);
+	ntab_upload(dev, B43_NTAB_NOISEVAR0_R3, b43_ntab_noisevar0_r3);
+	ntab_upload(dev, B43_NTAB_NOISEVAR1_R3, b43_ntab_noisevar1_r3);
+	ntab_upload(dev, B43_NTAB_MCS_R3, b43_ntab_mcs_r3);
+	ntab_upload(dev, B43_NTAB_TDI20A0_R3, b43_ntab_tdi20a0_r3);
+	ntab_upload(dev, B43_NTAB_TDI20A1_R3, b43_ntab_tdi20a1_r3);
+	ntab_upload(dev, B43_NTAB_TDI40A0_R3, b43_ntab_tdi40a0_r3);
+	ntab_upload(dev, B43_NTAB_TDI40A1_R3, b43_ntab_tdi40a1_r3);
+	ntab_upload(dev, B43_NTAB_PILOTLT_R3, b43_ntab_pilotlt_r3);
+	ntab_upload(dev, B43_NTAB_CHANEST_R3, b43_ntab_channelest_r3);
+	ntab_upload(dev, B43_NTAB_FRAMELT_R3, b43_ntab_framelookup_r3);
+	ntab_upload(dev, B43_NTAB_C0_ESTPLT_R3, b43_ntab_estimatepowerlt0_r3);
+	ntab_upload(dev, B43_NTAB_C1_ESTPLT_R3, b43_ntab_estimatepowerlt1_r3);
+	ntab_upload(dev, B43_NTAB_C0_ADJPLT_R3, b43_ntab_adjustpower0_r3);
+	ntab_upload(dev, B43_NTAB_C1_ADJPLT_R3, b43_ntab_adjustpower1_r3);
+	ntab_upload(dev, B43_NTAB_C0_GAINCTL_R3, b43_ntab_gainctl0_r3);
+	ntab_upload(dev, B43_NTAB_C1_GAINCTL_R3, b43_ntab_gainctl1_r3);
+	ntab_upload(dev, B43_NTAB_C0_IQLT_R3, b43_ntab_iqlt0_r3);
+	ntab_upload(dev, B43_NTAB_C1_IQLT_R3, b43_ntab_iqlt1_r3);
+	ntab_upload(dev, B43_NTAB_C0_LOFEEDTH_R3, b43_ntab_loftlt0_r3);
+	ntab_upload(dev, B43_NTAB_C1_LOFEEDTH_R3, b43_ntab_loftlt1_r3);
+
+	/* Volatile tables */
+	if (antswlut < ARRAY_SIZE(b43_ntab_antswctl_r3))
+		ntab_upload(dev, B43_NTAB_ANT_SW_CTL_R3,
+			    b43_ntab_antswctl_r3[antswlut]);
+	else
+		B43_WARN_ON(1);
+}
+
+static void b43_nphy_tables_init_rev0(struct b43_wldev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Static tables */
 	ntab_upload(dev, B43_NTAB_FRAMESTRUCT, b43_ntab_framestruct);
@@ -3181,6 +3390,7 @@ void b43_nphy_rev0_1_2_tables_init(struct b43_wldev *dev)
 	ntab_upload(dev, B43_NTAB_C1_LOFEEDTH, b43_ntab_loftlt1);
 }
 
+<<<<<<< HEAD
 #define ntab_upload_r3(dev, offset, data) do { \
 		b43_ntab_write_bulk(dev, offset, ARRAY_SIZE(data), data); \
 	} while (0)
@@ -3229,6 +3439,15 @@ void b43_nphy_rev3plus_tables_init(struct b43_wldev *dev)
 			       b43_ntab_antswctl2g_r3[sprom->fem.ghz2.antswlut]);
 	else
 		B43_WARN_ON(1);
+=======
+/* http://bcm-v4.sipsolutions.net/802.11/PHY/N/InitTables */
+void b43_nphy_tables_init(struct b43_wldev *dev)
+{
+	if (dev->phy.rev >= 3)
+		b43_nphy_tables_init_rev3(dev);
+	else
+		b43_nphy_tables_init_rev0(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* http://bcm-v4.sipsolutions.net/802.11/PHY/N/GetIpaGainTbl */
@@ -3276,7 +3495,10 @@ const u32 *b43_nphy_get_tx_gain_table(struct b43_wldev *dev)
 		else
 			return b43_ntab_tx_gain_rev3plus_2ghz;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
@@ -3285,12 +3507,15 @@ struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
 	struct nphy_gain_ctl_workaround_entry *e;
 	u8 phy_idx;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	B43_WARN_ON(dev->phy.rev < 3);
 	if (dev->phy.rev >= 5)
 =======
 	u8 tr_iso = ghz5 ? dev->dev->bus_sprom->fem.ghz5.tr_iso :
 			   dev->dev->bus_sprom->fem.ghz2.tr_iso;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!ghz5 && dev->phy.rev >= 6 && dev->phy.radio_rev == 11)
 		return &nphy_gain_ctl_wa_phy6_radio11_ghz2;
@@ -3299,12 +3524,16 @@ struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
 	if (dev->phy.rev >= 6)
 		phy_idx = 3;
 	else if (dev->phy.rev == 5)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		phy_idx = 2;
 	else if (dev->phy.rev == 4)
 		phy_idx = 1;
 	else
 		phy_idx = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	e = &nphy_gain_ctl_workaround[ghz5][phy_idx];
@@ -3319,6 +3548,8 @@ struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
 		e->rfseq_init[3] &= 0x0FFF;
 		e->init_gain &= 0x0FFF;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	e = &nphy_gain_ctl_workaround[ghz5][phy_idx];
 
 	/* Some workarounds to the workarounds... */
@@ -3327,6 +3558,13 @@ struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
 		    !b43_channel_type_is_40mhz(dev->phy.channel_type))
 			e->cliplo_gain = 0x2d;
 	} else if (!ghz5 && dev->phy.rev >= 5) {
+<<<<<<< HEAD
+=======
+		static const int gain_data[] = {0x0062, 0x0064, 0x006a, 0x106a,
+						0x106c, 0x1074, 0x107c, 0x207c};
+		u8 tr_iso = dev->dev->bus_sprom->fem.ghz2.tr_iso;
+
+>>>>>>> refs/remotes/origin/master
 		if (ext_lna) {
 			e->rfseq_init[0] &= ~0x4000;
 			e->rfseq_init[1] &= ~0x4000;
@@ -3334,6 +3572,7 @@ struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
 			e->rfseq_init[3] &= ~0x4000;
 			e->init_gain &= ~0x4000;
 		}
+<<<<<<< HEAD
 		switch (tr_iso) {
 		case 0:
 			e->cliplo_gain = 0x0062;
@@ -3354,6 +3593,12 @@ struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
 		default:
 			e->cliplo_gain = 0x106a;
 		}
+=======
+		if (tr_iso > 7)
+			tr_iso = 3;
+		e->cliplo_gain = gain_data[tr_iso];
+
+>>>>>>> refs/remotes/origin/master
 	} else if (ghz5 && dev->phy.rev == 4 && ext_lna) {
 		e->rfseq_init[0] &= ~0x4000;
 		e->rfseq_init[1] &= ~0x4000;
@@ -3365,8 +3610,46 @@ struct nphy_gain_ctl_workaround_entry *b43_nphy_get_gain_ctl_workaround_ent(
 		e->rfseq_init[2] |= 0x1000;
 		e->rfseq_init[3] |= 0x1000;
 		e->init_gain |= 0x1000;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return e;
 }
+<<<<<<< HEAD
+=======
+
+const struct nphy_rf_control_override_rev7 *b43_nphy_get_rf_ctl_over_rev7(
+	struct b43_wldev *dev, u16 field, u8 override)
+{
+	const struct nphy_rf_control_override_rev7 *e;
+	u8 size, i;
+
+	switch (override) {
+	case 0:
+		e = tbl_rf_control_override_rev7_over0;
+		size = ARRAY_SIZE(tbl_rf_control_override_rev7_over0);
+		break;
+	case 1:
+		e = tbl_rf_control_override_rev7_over1;
+		size = ARRAY_SIZE(tbl_rf_control_override_rev7_over1);
+		break;
+	case 2:
+		e = tbl_rf_control_override_rev7_over2;
+		size = ARRAY_SIZE(tbl_rf_control_override_rev7_over2);
+		break;
+	default:
+		b43err(dev->wl, "Invalid override value %d\n", override);
+		return NULL;
+	}
+
+	for (i = 0; i < size; i++) {
+		if (e[i].field == field)
+			return &e[i];
+	}
+
+	return NULL;
+}
+>>>>>>> refs/remotes/origin/master

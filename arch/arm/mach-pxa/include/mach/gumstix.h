@@ -25,10 +25,14 @@ has detected a cable insertion; driven low otherwise. */
 
 /* usb state change */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GUMSTIX_USB_INTR_IRQ		IRQ_GPIO(GPIO_GUMSTIX_USB_GPIOn)
 =======
 #define GUMSTIX_USB_INTR_IRQ		PXA_GPIO_TO_IRQ(GPIO_GUMSTIX_USB_GPIOn)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GUMSTIX_USB_INTR_IRQ		PXA_GPIO_TO_IRQ(GPIO_GUMSTIX_USB_GPIOn)
+>>>>>>> refs/remotes/origin/master
 
 #define GPIO_GUMSTIX_USB_GPIOn_MD	(GPIO_GUMSTIX_USB_GPIOn | GPIO_IN)
 #define GPIO_GUMSTIX_USB_GPIOx_CON_MD	(GPIO_GUMSTIX_USB_GPIOx | GPIO_OUT)
@@ -40,10 +44,14 @@ has detected a cable insertion; driven low otherwise. */
 #define GUMSTIX_GPIO_nSD_WP		22 /* SD Write Protect */
 #define GUMSTIX_GPIO_nSD_DETECT		11 /* MMC/SD Card Detect */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GUMSTIX_IRQ_GPIO_nSD_DETECT	IRQ_GPIO(GUMSTIX_GPIO_nSD_DETECT)
 =======
 #define GUMSTIX_IRQ_GPIO_nSD_DETECT	PXA_GPIO_TO_IRQ(GUMSTIX_GPIO_nSD_DETECT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GUMSTIX_IRQ_GPIO_nSD_DETECT	PXA_GPIO_TO_IRQ(GUMSTIX_GPIO_nSD_DETECT)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SMC Ethernet definitions
@@ -58,16 +66,22 @@ has detected a cable insertion; driven low otherwise. */
 #define GPIO_GUMSTIX_ETH0		36
 #define GPIO_GUMSTIX_ETH0_MD		(GPIO_GUMSTIX_ETH0 | GPIO_IN)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GUMSTIX_ETH0_IRQ		IRQ_GPIO(GPIO_GUMSTIX_ETH0)
 #define GPIO_GUMSTIX_ETH1		27
 #define GPIO_GUMSTIX_ETH1_MD		(GPIO_GUMSTIX_ETH1 | GPIO_IN)
 #define GUMSTIX_ETH1_IRQ		IRQ_GPIO(GPIO_GUMSTIX_ETH1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GUMSTIX_ETH0_IRQ		PXA_GPIO_TO_IRQ(GPIO_GUMSTIX_ETH0)
 #define GPIO_GUMSTIX_ETH1		27
 #define GPIO_GUMSTIX_ETH1_MD		(GPIO_GUMSTIX_ETH1 | GPIO_IN)
 #define GUMSTIX_ETH1_IRQ		PXA_GPIO_TO_IRQ(GPIO_GUMSTIX_ETH1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /* CF reset line */
@@ -79,6 +93,7 @@ has detected a cable insertion; driven low otherwise. */
 #define GPIO11_nCD			11
 #define GPIO26_PRDY_nBSY		26
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GUMSTIX_S0_nSTSCHG_IRQ		IRQ_GPIO(GPIO4_nSTSCHG)
 #define GUMSTIX_S0_nCD_IRQ		IRQ_GPIO(GPIO11_nCD)
 #define GUMSTIX_S0_PRDY_nBSY_IRQ	IRQ_GPIO(GPIO26_PRDY_nBSY)
@@ -87,12 +102,18 @@ has detected a cable insertion; driven low otherwise. */
 #define GUMSTIX_S0_nCD_IRQ		PXA_GPIO_TO_IRQ(GPIO11_nCD)
 #define GUMSTIX_S0_PRDY_nBSY_IRQ	PXA_GPIO_TO_IRQ(GPIO26_PRDY_nBSY)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GUMSTIX_S0_nSTSCHG_IRQ		PXA_GPIO_TO_IRQ(GPIO4_nSTSCHG)
+#define GUMSTIX_S0_nCD_IRQ		PXA_GPIO_TO_IRQ(GPIO11_nCD)
+#define GUMSTIX_S0_PRDY_nBSY_IRQ	PXA_GPIO_TO_IRQ(GPIO26_PRDY_nBSY)
+>>>>>>> refs/remotes/origin/master
 
 /* CF slot 1 */
 #define GPIO18_nBVD1			18
 #define GPIO18_nSTSCHG			GPIO18_nBVD1
 #define GPIO36_nCD			36
 #define GPIO27_PRDY_nBSY		27
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define GUMSTIX_S1_nSTSCHG_IRQ		IRQ_GPIO(GPIO18_nSTSCHG)
 #define GUMSTIX_S1_nCD_IRQ		IRQ_GPIO(GPIO36_nCD)
@@ -102,6 +123,11 @@ has detected a cable insertion; driven low otherwise. */
 #define GUMSTIX_S1_nCD_IRQ		PXA_GPIO_TO_IRQ(GPIO36_nCD)
 #define GUMSTIX_S1_PRDY_nBSY_IRQ	PXA_GPIO_TO_IRQ(GPIO27_PRDY_nBSY)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GUMSTIX_S1_nSTSCHG_IRQ		PXA_GPIO_TO_IRQ(GPIO18_nSTSCHG)
+#define GUMSTIX_S1_nCD_IRQ		PXA_GPIO_TO_IRQ(GPIO36_nCD)
+#define GUMSTIX_S1_PRDY_nBSY_IRQ	PXA_GPIO_TO_IRQ(GPIO27_PRDY_nBSY)
+>>>>>>> refs/remotes/origin/master
 
 /* CF GPIO line modes */
 #define GPIO4_nSTSCHG_MD		(GPIO4_nSTSCHG | GPIO_IN)

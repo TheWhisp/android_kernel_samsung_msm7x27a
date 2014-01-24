@@ -21,6 +21,11 @@
 #ifndef _PTP_CLOCK_KERNEL_H_
 #define _PTP_CLOCK_KERNEL_H_
 
+<<<<<<< HEAD
+=======
+#include <linux/device.h>
+#include <linux/pps_kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ptp_clock.h>
 
 
@@ -40,7 +45,13 @@ struct ptp_clock_request {
  * struct ptp_clock_info - decribes a PTP hardware clock
  *
  * @owner:     The clock driver should set to THIS_MODULE.
+<<<<<<< HEAD
  * @name:      A short name to identify the clock.
+=======
+ * @name:      A short "friendly name" to identify the clock and to
+ *             help distinguish PHY based devices from MAC based ones.
+ *             The string is not meant to be a unique id.
+>>>>>>> refs/remotes/origin/master
  * @max_adj:   The maximum possible frequency adjustment, in parts per billon.
  * @n_alarm:   The number of programmable alarms.
  * @n_ext_ts:  The number of external time stamp channels.
@@ -50,7 +61,12 @@ struct ptp_clock_request {
  * clock operations
  *
  * @adjfreq:  Adjusts the frequency of the hardware clock.
+<<<<<<< HEAD
  *            parameter delta: Desired period change in parts per billion.
+=======
+ *            parameter delta: Desired frequency offset from nominal frequency
+ *            in parts per billion
+>>>>>>> refs/remotes/origin/master
  *
  * @adjtime:  Shifts the time of the hardware clock.
  *            parameter delta: Desired change in nanoseconds.
@@ -92,10 +108,19 @@ struct ptp_clock;
 /**
  * ptp_clock_register() - register a PTP hardware clock driver
  *
+<<<<<<< HEAD
  * @info:  Structure describing the new clock.
  */
 
 extern struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info);
+=======
+ * @info:   Structure describing the new clock.
+ * @parent: Pointer to the parent device of the new clock.
+ */
+
+extern struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+					    struct device *parent);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * ptp_clock_unregister() - unregister a PTP hardware clock driver
@@ -110,6 +135,10 @@ enum ptp_clock_events {
 	PTP_CLOCK_ALARM,
 	PTP_CLOCK_EXTTS,
 	PTP_CLOCK_PPS,
+<<<<<<< HEAD
+=======
+	PTP_CLOCK_PPSUSR,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -117,13 +146,25 @@ enum ptp_clock_events {
  *
  * @type:  One of the ptp_clock_events enumeration values.
  * @index: Identifies the source of the event.
+<<<<<<< HEAD
  * @timestamp: When the event occured.
+=======
+ * @timestamp: When the event occurred (%PTP_CLOCK_EXTTS only).
+ * @pps_times: When the event occurred (%PTP_CLOCK_PPSUSR only).
+>>>>>>> refs/remotes/origin/master
  */
 
 struct ptp_clock_event {
 	int type;
 	int index;
+<<<<<<< HEAD
 	u64 timestamp;
+=======
+	union {
+		u64 timestamp;
+		struct pps_event_time pps_times;
+	};
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -136,4 +177,15 @@ struct ptp_clock_event {
 extern void ptp_clock_event(struct ptp_clock *ptp,
 			    struct ptp_clock_event *event);
 
+<<<<<<< HEAD
+=======
+/**
+ * ptp_clock_index() - obtain the device index of a PTP clock
+ *
+ * @ptp:    The clock obtained from ptp_clock_register().
+ */
+
+extern int ptp_clock_index(struct ptp_clock *ptp);
+
+>>>>>>> refs/remotes/origin/master
 #endif

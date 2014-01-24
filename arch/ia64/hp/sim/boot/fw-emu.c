@@ -14,9 +14,13 @@
 #include <asm/pal.h>
 #include <asm/sal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ssc.h"
 
@@ -165,6 +169,7 @@ sal_emulator (long index, unsigned long in1, unsigned long in2,
 	status = 0;
 	if (index == SAL_FREQ_BASE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch (in1) {
 		      case SAL_FREQ_BASE_PLATFORM:
 			r9 = 200000000;
@@ -176,12 +181,18 @@ sal_emulator (long index, unsigned long in1, unsigned long in2,
 			r9 = 200000000;
 		else if (in1 == SAL_FREQ_BASE_INTERVAL_TIMER) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (in1 == SAL_FREQ_BASE_PLATFORM)
+			r9 = 200000000;
+		else if (in1 == SAL_FREQ_BASE_INTERVAL_TIMER) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Is this supposed to be the cr.itc frequency
 			 * or something platform specific?  The SAL
 			 * doc ain't exactly clear on this...
 			 */
 			r9 = 700000000;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			break;
 
@@ -194,11 +205,16 @@ sal_emulator (long index, unsigned long in1, unsigned long in2,
 			break;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (in1 == SAL_FREQ_BASE_REALTIME_CLOCK)
 			r9 = 1;
 		else
 			status = -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (index == SAL_SET_VECTORS) {
 		;
 	} else if (index == SAL_GET_STATE_INFO) {
@@ -315,6 +331,7 @@ sys_fw_init (const char *args, int arglen)
 	efi_runtime->hdr.signature = EFI_RUNTIME_SERVICES_SIGNATURE;
 	efi_runtime->hdr.revision = EFI_RUNTIME_SERVICES_REVISION;
 	efi_runtime->hdr.headersize = sizeof(efi_runtime->hdr);
+<<<<<<< HEAD
 	efi_runtime->get_time = __pa(&fw_efi_get_time);
 	efi_runtime->set_time = __pa(&efi_unimplemented);
 	efi_runtime->get_wakeup_time = __pa(&efi_unimplemented);
@@ -325,6 +342,18 @@ sys_fw_init (const char *args, int arglen)
 	efi_runtime->set_variable = __pa(&efi_unimplemented);
 	efi_runtime->get_next_high_mono_count = __pa(&efi_unimplemented);
 	efi_runtime->reset_system = __pa(&efi_reset_system);
+=======
+	efi_runtime->get_time = (void *)__pa(&fw_efi_get_time);
+	efi_runtime->set_time = (void *)__pa(&efi_unimplemented);
+	efi_runtime->get_wakeup_time = (void *)__pa(&efi_unimplemented);
+	efi_runtime->set_wakeup_time = (void *)__pa(&efi_unimplemented);
+	efi_runtime->set_virtual_address_map = (void *)__pa(&efi_unimplemented);
+	efi_runtime->get_variable = (void *)__pa(&efi_unimplemented);
+	efi_runtime->get_next_variable = (void *)__pa(&efi_unimplemented);
+	efi_runtime->set_variable = (void *)__pa(&efi_unimplemented);
+	efi_runtime->get_next_high_mono_count = (void *)__pa(&efi_unimplemented);
+	efi_runtime->reset_system = (void *)__pa(&efi_reset_system);
+>>>>>>> refs/remotes/origin/master
 
 	efi_tables->guid = SAL_SYSTEM_TABLE_GUID;
 	efi_tables->table = __pa(sal_systab);

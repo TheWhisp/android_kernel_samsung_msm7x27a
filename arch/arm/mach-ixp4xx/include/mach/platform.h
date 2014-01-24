@@ -13,6 +13,11 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/types.h>
 
 #ifndef	__ARMEB__
@@ -89,8 +94,11 @@ struct ixp4xx_pata_data {
 	void __iomem	*cs1;
 };
 
+<<<<<<< HEAD
 struct sys_timer;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define IXP4XX_ETH_NPEA		0x00
 #define IXP4XX_ETH_NPEB		0x10
 #define IXP4XX_ETH_NPEC		0x20
@@ -121,6 +129,7 @@ extern unsigned long ixp4xx_timer_freq;
  * Functions used by platform-level setup code
  */
 extern void ixp4xx_map_io(void);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 extern void ixp4xx_init_early(void);
@@ -176,6 +185,17 @@ static inline void gpio_line_set(u8 line, int value)
 	else if (value == IXP4XX_GPIO_LOW)
 	    *IXP4XX_GPIO_GPOUTR &= ~(1 << line);
 }
+=======
+extern void ixp4xx_init_early(void);
+extern void ixp4xx_init_irq(void);
+extern void ixp4xx_sys_init(void);
+extern void ixp4xx_timer_init(void);
+extern void ixp4xx_restart(enum reboot_mode, const char *);
+extern void ixp4xx_pci_preinit(void);
+struct pci_sys_data;
+extern int ixp4xx_setup(int nr, struct pci_sys_data *sys);
+extern struct pci_ops ixp4xx_ops;
+>>>>>>> refs/remotes/origin/master
 
 #endif // __ASSEMBLY__
 

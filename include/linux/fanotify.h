@@ -1,6 +1,7 @@
 #ifndef _LINUX_FANOTIFY_H
 #define _LINUX_FANOTIFY_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /* the following events that user-space can register for */
@@ -117,4 +118,10 @@ struct fanotify_response {
 				(long)(meta)->event_len >= (long)FAN_EVENT_METADATA_LEN && \
 				(long)(meta)->event_len <= (long)(len))
 
+=======
+#include <uapi/linux/fanotify.h>
+
+/* not valid from userspace, only kernel internal */
+#define FAN_MARK_ONDIR		0x00000100
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_FANOTIFY_H */

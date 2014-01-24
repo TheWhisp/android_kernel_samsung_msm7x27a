@@ -8,12 +8,27 @@
 #ifndef DESC_H
 #define DESC_H
 
+<<<<<<< HEAD
 /* Max size of any CAAM descriptor in 32-bit words, inclusive of header */
 <<<<<<< HEAD
 #define MAX_CAAM_DESCSIZE       64
 =======
 #define MAX_CAAM_DESCSIZE	64
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sec4_sg_entry {
+	u64 ptr;
+#define SEC4_SG_LEN_FIN 0x40000000
+#define SEC4_SG_LEN_EXT 0x80000000
+	u32 len;
+	u8 reserved;
+	u8 buf_pool_id;
+	u16 offset;
+};
+
+/* Max size of any CAAM descriptor in 32-bit words, inclusive of header */
+#define MAX_CAAM_DESCSIZE	64
+>>>>>>> refs/remotes/origin/master
 
 /* Block size of any entity covered/uncovered with a KEK/TKEK */
 #define KEK_BLOCKSIZE		16
@@ -22,6 +37,7 @@
  * Supported descriptor command types as they show up
  * inside a descriptor command word.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define CMD_SHIFT               27
 #define CMD_MASK                0xf8000000
@@ -56,6 +72,8 @@
 #define CLASS_2                 (0x02 << CLASS_SHIFT)
 #define CLASS_BOTH              (0x03 << CLASS_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CMD_SHIFT		27
 #define CMD_MASK		0xf8000000
 
@@ -88,7 +106,10 @@
 #define CLASS_1			(0x01 << CLASS_SHIFT)
 #define CLASS_2			(0x02 << CLASS_SHIFT)
 #define CLASS_BOTH		(0x03 << CLASS_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Descriptor header command constructs
@@ -100,15 +121,20 @@
  * a preceding error somewhere
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HDR_DNR                 0x01000000
 =======
 #define HDR_DNR			0x01000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HDR_DNR			0x01000000
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ONE - should always be set. Combination of ONE (always
  * set) and ZRO (always clear) forms an endianness sanity check
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HDR_ONE                 0x00800000
 #define HDR_ZRO                 0x00008000
@@ -135,6 +161,8 @@
 /* Next item points to SharedDesc */
 #define HDR_SHARED              0x00001000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define HDR_ONE			0x00800000
 #define HDR_ZRO			0x00008000
 
@@ -159,12 +187,16 @@
 
 /* Next item points to SharedDesc */
 #define HDR_SHARED		0x00001000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Reverse Execution Order - execute JobDesc first, then
  * execute SharedDesc (normally SharedDesc goes first).
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HDR_REVERSE             0x00000800
 
@@ -187,6 +219,8 @@
 #define HDR_JD_LENGTH_MASK      0x7f
 #define HDR_SD_LENGTH_MASK      0x3f
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define HDR_REVERSE		0x00000800
 
 /* Propogate DNR property to SharedDesc */
@@ -207,12 +241,16 @@
 /* JobDesc/SharedDesc descriptor length */
 #define HDR_JD_LENGTH_MASK	0x7f
 #define HDR_SD_LENGTH_MASK	0x3f
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * KEY/SEQ_KEY Command Constructs
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Key Destination Class: 01 = Class 1, 02 - Class 2  */
 #define KEY_DEST_CLASS_SHIFT    25  /* use CLASS_1 or CLASS_2 */
@@ -225,6 +263,8 @@
 /* Immediate - Key follows command in the descriptor */
 #define KEY_IMM                 0x00800000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Key Destination Class: 01 = Class 1, 02 - Class 2 */
 #define KEY_DEST_CLASS_SHIFT	25	/* use CLASS_1 or CLASS_2 */
 #define KEY_DEST_CLASS_MASK	(0x03 << KEY_DEST_CLASS_SHIFT)
@@ -235,17 +275,24 @@
 
 /* Immediate - Key follows command in the descriptor */
 #define KEY_IMM			0x00800000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Encrypted - Key is encrypted either with the KEK, or
  * with the TDKEK if TK is set
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define KEY_ENC                 0x00400000
 =======
 #define KEY_ENC			0x00400000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KEY_ENC			0x00400000
+>>>>>>> refs/remotes/origin/master
 
 /*
  * No Write Back - Do not allow key to be FIFO STOREd
@@ -267,6 +314,7 @@
  * 1 - PKHA 'e', 2 - AFHA Sbox, 3 - MDHA split-key
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define KEY_DEST_SHIFT          16
 #define KEY_DEST_MASK           (0x03 << KEY_DEST_SHIFT)
 
@@ -278,6 +326,8 @@
 /* Length in bytes */
 #define KEY_LENGTH_MASK         0x000003ff
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define KEY_DEST_SHIFT		16
 #define KEY_DEST_MASK		(0x03 << KEY_DEST_SHIFT)
 
@@ -288,7 +338,10 @@
 
 /* Length in bytes */
 #define KEY_LENGTH_MASK		0x000003ff
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * LOAD/SEQ_LOAD/STORE/SEQ_STORE Command Constructs
@@ -298,6 +351,7 @@
  * Load/Store Destination: 0 = class independent CCB,
  * 1 = class 1 CCB, 2 = class 2 CCB, 3 = DECO
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LDST_CLASS_SHIFT        25
 #define LDST_CLASS_MASK         (0x03 << LDST_CLASS_SHIFT)
@@ -319,6 +373,8 @@
 #define LDST_SRCDST_SHIFT       16
 #define LDST_SRCDST_MASK        (0x7f << LDST_SRCDST_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LDST_CLASS_SHIFT	25
 #define LDST_CLASS_MASK		(0x03 << LDST_CLASS_SHIFT)
 #define LDST_CLASS_IND_CCB	(0x00 << LDST_CLASS_SHIFT)
@@ -338,7 +394,10 @@
 /* SRC/DST - Destination for LOAD, Source for STORE */
 #define LDST_SRCDST_SHIFT	16
 #define LDST_SRCDST_MASK	(0x7f << LDST_SRCDST_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define LDST_SRCDST_BYTE_CONTEXT	(0x20 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_BYTE_KEY		(0x40 << LDST_SRCDST_SHIFT)
@@ -350,6 +409,7 @@
 #define LDST_SRCDST_WORD_DATASZ_REG	(0x02 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_WORD_ICVSZ_REG	(0x03 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_WORD_CHACTRL	(0x06 << LDST_SRCDST_SHIFT)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LDST_SRCDST_WORD_DECOCTRL       (0x06 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_WORD_IRQCTRL	(0x07 << LDST_SRCDST_SHIFT)
@@ -410,6 +470,8 @@
 #define LDLEN_SET_OFIFO_OFFSET_SHIFT 0
 #define LDLEN_SET_OFIFO_OFFSET_MASK (3 << LDLEN_SET_OFIFO_OFFSET_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LDST_SRCDST_WORD_DECOCTRL	(0x06 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_WORD_IRQCTRL	(0x07 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_WORD_DECO_PCLOVRD	(0x07 << LDST_SRCDST_SHIFT)
@@ -426,7 +488,16 @@
 #define LDST_SRCDST_WORD_PKHA_B_SZ	(0x11 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_WORD_PKHA_N_SZ	(0x12 << LDST_SRCDST_SHIFT)
 #define LDST_SRCDST_WORD_PKHA_E_SZ	(0x13 << LDST_SRCDST_SHIFT)
+<<<<<<< HEAD
 #define LDST_SRCDST_WORD_DESCBUF	(0x40 << LDST_SRCDST_SHIFT)
+=======
+#define LDST_SRCDST_WORD_CLASS_CTX	(0x20 << LDST_SRCDST_SHIFT)
+#define LDST_SRCDST_WORD_DESCBUF	(0x40 << LDST_SRCDST_SHIFT)
+#define LDST_SRCDST_WORD_DESCBUF_JOB	(0x41 << LDST_SRCDST_SHIFT)
+#define LDST_SRCDST_WORD_DESCBUF_SHARED	(0x42 << LDST_SRCDST_SHIFT)
+#define LDST_SRCDST_WORD_DESCBUF_JOB_WE	(0x45 << LDST_SRCDST_SHIFT)
+#define LDST_SRCDST_WORD_DESCBUF_SHARED_WE (0x46 << LDST_SRCDST_SHIFT)
+>>>>>>> refs/remotes/origin/master
 #define LDST_SRCDST_WORD_INFO_FIFO	(0x7a << LDST_SRCDST_SHIFT)
 
 /* Offset in source/destination */
@@ -468,7 +539,10 @@
 #define LDLEN_SET_OFIFO_OFF_RSVD	(1 << 3)
 #define LDLEN_SET_OFIFO_OFFSET_SHIFT	0
 #define LDLEN_SET_OFIFO_OFFSET_MASK	(3 << LDLEN_SET_OFIFO_OFFSET_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * FIFO_LOAD/FIFO_STORE/SEQ_FIFO_LOAD/SEQ_FIFO_STORE
@@ -480,6 +554,7 @@
  * 1 = Load for Class1, 2 = Load for Class2, 3 = Load both
  * Store Source: 0 = normal, 1 = Class1key, 2 = Class2key
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define FIFOLD_CLASS_SHIFT      25
 #define FIFOLD_CLASS_MASK       (0x03 << FIFOLD_CLASS_SHIFT)
@@ -494,6 +569,8 @@
 #define FIFOST_CLASS_CLASS1KEY  (0x01 << FIFOST_CLASS_SHIFT)
 #define FIFOST_CLASS_CLASS2KEY  (0x02 << FIFOST_CLASS_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define FIFOLD_CLASS_SHIFT	25
 #define FIFOLD_CLASS_MASK	(0x03 << FIFOLD_CLASS_SHIFT)
 #define FIFOLD_CLASS_SKIP	(0x00 << FIFOLD_CLASS_SHIFT)
@@ -506,13 +583,17 @@
 #define FIFOST_CLASS_NORMAL	(0x00 << FIFOST_CLASS_SHIFT)
 #define FIFOST_CLASS_CLASS1KEY	(0x01 << FIFOST_CLASS_SHIFT)
 #define FIFOST_CLASS_CLASS2KEY	(0x02 << FIFOST_CLASS_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Scatter-Gather Table/Variable Length Field
  * If set for FIFO_LOAD, refers to a SG table. Within
  * SEQ_FIFO_LOAD, is variable input sequence
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define FIFOLDST_SGF_SHIFT      24
 #define FIFOLDST_SGF_MASK       (1 << FIFOLDST_SGF_SHIFT)
@@ -530,6 +611,8 @@
 #define FIFOST_CONT_MASK      (1 << FIFOST_CONT_SHIFT)
 #define FIFOST_CONT_MASK      (1 << FIFOST_CONT_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define FIFOLDST_SGF_SHIFT	24
 #define FIFOLDST_SGF_MASK	(1 << FIFOLDST_SGF_SHIFT)
 #define FIFOLDST_VLF_MASK	(1 << FIFOLDST_SGF_SHIFT)
@@ -545,12 +628,16 @@
 #define FIFOST_CONT_SHIFT	23
 #define FIFOST_CONT_MASK	(1 << FIFOST_CONT_SHIFT)
 #define FIFOST_CONT_MASK	(1 << FIFOST_CONT_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Extended Length - use 32-bit extended length that
  * follows the pointer field. Illegal with IMM set
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define FIFOLDST_EXT_SHIFT      22
 #define FIFOLDST_EXT_MASK       (1 << FIFOLDST_EXT_SHIFT)
@@ -630,6 +717,8 @@
 #define FIFOST_TYPE_RNGFIFO      (0x35 << FIFOST_TYPE_SHIFT)
 #define FIFOST_TYPE_SKIP         (0x3f << FIFOST_TYPE_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define FIFOLDST_EXT_SHIFT	22
 #define FIFOLDST_EXT_MASK	(1 << FIFOLDST_EXT_SHIFT)
 #define FIFOLDST_EXT		(1 << FIFOLDST_EXT_SHIFT)
@@ -674,6 +763,10 @@
 #define FIFOLD_TYPE_LAST2FLUSH1 (0x05 << FIFOLD_TYPE_SHIFT)
 #define FIFOLD_TYPE_LASTBOTH	(0x06 << FIFOLD_TYPE_SHIFT)
 #define FIFOLD_TYPE_LASTBOTHFL	(0x07 << FIFOLD_TYPE_SHIFT)
+<<<<<<< HEAD
+=======
+#define FIFOLD_TYPE_NOINFOFIFO	(0x0F << FIFOLD_TYPE_SHIFT)
+>>>>>>> refs/remotes/origin/master
 
 #define FIFOLDST_LEN_MASK	0xffff
 #define FIFOLDST_EXT_LEN_MASK	0xffffffff
@@ -707,13 +800,17 @@
 #define FIFOST_TYPE_RNGSTORE	 (0x34 << FIFOST_TYPE_SHIFT)
 #define FIFOST_TYPE_RNGFIFO	 (0x35 << FIFOST_TYPE_SHIFT)
 #define FIFOST_TYPE_SKIP	 (0x3f << FIFOST_TYPE_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * OPERATION Command Constructs
  */
 
 /* Operation type selectors - OP TYPE */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OP_TYPE_SHIFT           24
 #define OP_TYPE_MASK            (0x07 << OP_TYPE_SHIFT)
@@ -755,6 +852,8 @@
 #define OP_PCLID_TLS12          (0x0b << OP_PCLID_SHIFT)
 #define OP_PCLID_DTLS           (0x0c << OP_PCLID_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OP_TYPE_SHIFT		24
 #define OP_TYPE_MASK		(0x07 << OP_TYPE_SHIFT)
 
@@ -794,11 +893,15 @@
 #define OP_PCLID_TLS11		(0x0a << OP_PCLID_SHIFT)
 #define OP_PCLID_TLS12		(0x0b << OP_PCLID_SHIFT)
 #define OP_PCLID_DTLS		(0x0c << OP_PCLID_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ProtocolInfo selectors
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OP_PCLINFO_MASK                          0xffff
 
@@ -1059,6 +1162,8 @@
 #define OP_PCL_TLS10_AES_256_CBC_SHA384          0xff63
 #define OP_PCL_TLS10_AES_256_CBC_SHA512          0xff65
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OP_PCLINFO_MASK				 0xffff
 
 /* for OP_PCLID_IPSEC */
@@ -1317,11 +1422,15 @@
 #define OP_PCL_TLS10_AES_256_CBC_SHA256		 0xff66
 #define OP_PCL_TLS10_AES_256_CBC_SHA384		 0xff63
 #define OP_PCL_TLS10_AES_256_CBC_SHA512		 0xff65
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
 /* For TLS 1.1 - OP_PCLID_TLS11 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OP_PCL_TLS11_AES_128_CBC_SHA             0x002f
 #define OP_PCL_TLS11_AES_128_CBC_SHA_2           0x0030
@@ -1700,6 +1809,8 @@
 #define OP_PCL_PKPROT_ECC                        0x0002
 #define OP_PCL_PKPROT_F2M                        0x0001
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OP_PCL_TLS11_AES_128_CBC_SHA		 0x002f
 #define OP_PCL_TLS11_AES_128_CBC_SHA_2		 0x0030
 #define OP_PCL_TLS11_AES_128_CBC_SHA_3		 0x0031
@@ -2076,7 +2187,10 @@
 #define OP_PCL_PKPROT_DECRYPT			 0x0004
 #define OP_PCL_PKPROT_ECC			 0x0002
 #define OP_PCL_PKPROT_F2M			 0x0001
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* For non-protocol/alg-only op commands */
 #define OP_ALG_TYPE_SHIFT	24
@@ -2140,8 +2254,20 @@
 
 /* randomizer AAI set */
 #define OP_ALG_AAI_RNG		(0x00 << OP_ALG_AAI_SHIFT)
+<<<<<<< HEAD
 #define OP_ALG_AAI_RNG_NOZERO	(0x10 << OP_ALG_AAI_SHIFT)
 #define OP_ALG_AAI_RNG_ODD	(0x20 << OP_ALG_AAI_SHIFT)
+=======
+#define OP_ALG_AAI_RNG_NZB	(0x10 << OP_ALG_AAI_SHIFT)
+#define OP_ALG_AAI_RNG_OBP	(0x20 << OP_ALG_AAI_SHIFT)
+
+/* RNG4 AAI set */
+#define OP_ALG_AAI_RNG4_SH_0	(0x00 << OP_ALG_AAI_SHIFT)
+#define OP_ALG_AAI_RNG4_SH_1	(0x01 << OP_ALG_AAI_SHIFT)
+#define OP_ALG_AAI_RNG4_PS	(0x40 << OP_ALG_AAI_SHIFT)
+#define OP_ALG_AAI_RNG4_AI	(0x80 << OP_ALG_AAI_SHIFT)
+#define OP_ALG_AAI_RNG4_SK	(0x100 << OP_ALG_AAI_SHIFT)
+>>>>>>> refs/remotes/origin/master
 
 /* hmac/smac AAI set */
 #define OP_ALG_AAI_HASH		(0x00 << OP_ALG_AAI_SHIFT)
@@ -2163,7 +2289,10 @@
 #define OP_ALG_AAI_GSM		(0x10 << OP_ALG_AAI_SHIFT)
 #define OP_ALG_AAI_EDGE		(0x20 << OP_ALG_AAI_SHIFT)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define OP_ALG_AS_SHIFT		2
 #define OP_ALG_AS_MASK		(0x3 << OP_ALG_AS_SHIFT)
 #define OP_ALG_AS_UPDATE	(0 << OP_ALG_AS_SHIFT)
@@ -2182,6 +2311,7 @@
 #define OP_ALG_ENCRYPT		1
 
 /* PKHA algorithm type set */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OP_ALG_PK                    0x00800000
 #define OP_ALG_PK_FUN_MASK           0x3f /* clrmem, modmath, or cpymem */
@@ -2245,6 +2375,8 @@
 #define OP_ALG_PKMODE_CPYMEM_N_SZ    0x80
 #define OP_ALG_PKMODE_CPYMEM_SRC_SZ  0x81
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OP_ALG_PK		0x00800000
 #define OP_ALG_PK_FUN_MASK	0x3f /* clrmem, modmath, or cpymem */
 
@@ -2306,13 +2438,17 @@
 #define OP_ALG_PKMODE_DST_SEG_3		(3 << OP_ALG_PKMODE_DST_SEG_SHIFT)
 #define OP_ALG_PKMODE_CPYMEM_N_SZ	0x80
 #define OP_ALG_PKMODE_CPYMEM_SRC_SZ	0x81
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SEQ_IN_PTR Command Constructs
  */
 
 /* Release Buffers */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SQIN_RBS               0x04000000
 
@@ -2337,6 +2473,8 @@
 #define SQIN_LEN_SHIFT           0
 #define SQIN_LEN_MASK           (0xffff << SQIN_LEN_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SQIN_RBS	0x04000000
 
 /* Sequence pointer is really a descriptor */
@@ -2359,13 +2497,17 @@
 
 #define SQIN_LEN_SHIFT		 0
 #define SQIN_LEN_MASK		(0xffff << SQIN_LEN_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SEQ_OUT_PTR Command Constructs
  */
 
 /* Sequence pointer is a scatter-gather table */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SQOUT_SGF              0x01000000
 
@@ -2388,13 +2530,25 @@
 
 /* Restore sequence with pointer/length */
 #define SQOUT_RTO	0x00200000
+=======
+#define SQOUT_SGF	0x01000000
+
+/* Appends to a previous pointer */
+#define SQOUT_PRE	SQIN_PRE
+
+/* Restore sequence with pointer/length */
+#define SQOUT_RTO	 SQIN_RTO
+>>>>>>> refs/remotes/origin/master
 
 /* Use extended length following pointer */
 #define SQOUT_EXT	0x00400000
 
 #define SQOUT_LEN_SHIFT		0
 #define SQOUT_LEN_MASK		(0xffff << SQOUT_LEN_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -2402,6 +2556,7 @@
  */
 
 /* TYPE field is all that's relevant */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SIGN_TYPE_SHIFT         16
 #define SIGN_TYPE_MASK          (0x0f << SIGN_TYPE_SHIFT)
@@ -2413,6 +2568,8 @@
 #define SIGN_TYPE_IMM_3         (0x0b << SIGN_TYPE_SHIFT)
 #define SIGN_TYPE_IMM_4         (0x0c << SIGN_TYPE_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SIGN_TYPE_SHIFT		16
 #define SIGN_TYPE_MASK		(0x0f << SIGN_TYPE_SHIFT)
 
@@ -2422,12 +2579,16 @@
 #define SIGN_TYPE_IMM_2		(0x0a << SIGN_TYPE_SHIFT)
 #define SIGN_TYPE_IMM_3		(0x0b << SIGN_TYPE_SHIFT)
 #define SIGN_TYPE_IMM_4		(0x0c << SIGN_TYPE_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MOVE Command Constructs
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MOVE_AUX_SHIFT          25
 #define MOVE_AUX_MASK           (3 << MOVE_AUX_SHIFT)
@@ -2476,6 +2637,8 @@
 #define MOVELEN_MRSEL_SHIFT     0
 #define MOVELEN_MRSEL_MASK      (0x3 << MOVE_LEN_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MOVE_AUX_SHIFT		25
 #define MOVE_AUX_MASK		(3 << MOVE_AUX_SHIFT)
 #define MOVE_AUX_MS		(2 << MOVE_AUX_SHIFT)
@@ -2510,6 +2673,10 @@
 #define MOVE_DEST_MATH3		(0x07 << MOVE_DEST_SHIFT)
 #define MOVE_DEST_CLASS1INFIFO	(0x08 << MOVE_DEST_SHIFT)
 #define MOVE_DEST_CLASS2INFIFO	(0x09 << MOVE_DEST_SHIFT)
+<<<<<<< HEAD
+=======
+#define MOVE_DEST_INFIFO_NOINFO (0x0a << MOVE_DEST_SHIFT)
+>>>>>>> refs/remotes/origin/master
 #define MOVE_DEST_PK_A		(0x0c << MOVE_DEST_SHIFT)
 #define MOVE_DEST_CLASS1KEY	(0x0d << MOVE_DEST_SHIFT)
 #define MOVE_DEST_CLASS2KEY	(0x0e << MOVE_DEST_SHIFT)
@@ -2522,12 +2689,16 @@
 
 #define MOVELEN_MRSEL_SHIFT	0
 #define MOVELEN_MRSEL_MASK	(0x3 << MOVE_LEN_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MATH Command Constructs
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MATH_IFB_SHIFT          26
 #define MATH_IFB_MASK           (1 << MATH_IFB_SHIFT)
@@ -2603,6 +2774,8 @@
 #define MATH_LEN_4BYTE          0x04
 #define MATH_LEN_8BYTE          0x08
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MATH_IFB_SHIFT		26
 #define MATH_IFB_MASK		(1 << MATH_IFB_SHIFT)
 #define MATH_IFB		(1 << MATH_IFB_SHIFT)
@@ -2638,6 +2811,10 @@
 #define MATH_SRC0_REG2		(0x02 << MATH_SRC0_SHIFT)
 #define MATH_SRC0_REG3		(0x03 << MATH_SRC0_SHIFT)
 #define MATH_SRC0_IMM		(0x04 << MATH_SRC0_SHIFT)
+<<<<<<< HEAD
+=======
+#define MATH_SRC0_DPOVRD	(0x07 << MATH_SRC0_SHIFT)
+>>>>>>> refs/remotes/origin/master
 #define MATH_SRC0_SEQINLEN	(0x08 << MATH_SRC0_SHIFT)
 #define MATH_SRC0_SEQOUTLEN	(0x09 << MATH_SRC0_SHIFT)
 #define MATH_SRC0_VARSEQINLEN	(0x0a << MATH_SRC0_SHIFT)
@@ -2652,6 +2829,10 @@
 #define MATH_SRC1_REG2		(0x02 << MATH_SRC1_SHIFT)
 #define MATH_SRC1_REG3		(0x03 << MATH_SRC1_SHIFT)
 #define MATH_SRC1_IMM		(0x04 << MATH_SRC1_SHIFT)
+<<<<<<< HEAD
+=======
+#define MATH_SRC1_DPOVRD	(0x07 << MATH_SRC0_SHIFT)
+>>>>>>> refs/remotes/origin/master
 #define MATH_SRC1_INFIFO	(0x0a << MATH_SRC1_SHIFT)
 #define MATH_SRC1_OUTFIFO	(0x0b << MATH_SRC1_SHIFT)
 #define MATH_SRC1_ONE		(0x0c << MATH_SRC1_SHIFT)
@@ -2676,23 +2857,31 @@
 #define MATH_LEN_2BYTE		0x02
 #define MATH_LEN_4BYTE		0x04
 #define MATH_LEN_8BYTE		0x08
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * JUMP Command Constructs
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define JUMP_CLASS_SHIFT        25
 =======
 #define JUMP_CLASS_SHIFT	25
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define JUMP_CLASS_SHIFT	25
+>>>>>>> refs/remotes/origin/master
 #define JUMP_CLASS_MASK		(3 << JUMP_CLASS_SHIFT)
 #define JUMP_CLASS_NONE		0
 #define JUMP_CLASS_CLASS1	(1 << JUMP_CLASS_SHIFT)
 #define JUMP_CLASS_CLASS2	(2 << JUMP_CLASS_SHIFT)
 #define JUMP_CLASS_BOTH		(3 << JUMP_CLASS_SHIFT)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define JUMP_JSL_SHIFT          24
 #define JUMP_JSL_MASK           (1 << JUMP_JSL_SHIFT)
@@ -2735,6 +2924,8 @@
 #define JUMP_OFFSET_SHIFT       0
 #define JUMP_OFFSET_MASK        (0xff << JUMP_OFFSET_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define JUMP_JSL_SHIFT		24
 #define JUMP_JSL_MASK		(1 << JUMP_JSL_SHIFT)
 #define JUMP_JSL		(1 << JUMP_JSL_SHIFT)
@@ -2775,7 +2966,10 @@
 
 #define JUMP_OFFSET_SHIFT	0
 #define JUMP_OFFSET_MASK	(0xff << JUMP_OFFSET_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * NFIFO ENTRY
@@ -2790,6 +2984,7 @@
 #define NFIFOENTRY_DEST_BOTH	(3 << NFIFOENTRY_DEST_SHIFT)
 
 #define NFIFOENTRY_LC2_SHIFT	29
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define NFIFOENTRY_LC2_MASK		(1 << NFIFOENTRY_LC2_SHIFT)
 #define NFIFOENTRY_LC2			(1 << NFIFOENTRY_LC2_SHIFT)
@@ -2806,6 +3001,8 @@
 #define NFIFOENTRY_FC1_MASK		(1 << NFIFOENTRY_FC1_SHIFT)
 #define NFIFOENTRY_FC1			(1 << NFIFOENTRY_FC1_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define NFIFOENTRY_LC2_MASK	(1 << NFIFOENTRY_LC2_SHIFT)
 #define NFIFOENTRY_LC2		(1 << NFIFOENTRY_LC2_SHIFT)
 
@@ -2820,7 +3017,10 @@
 #define NFIFOENTRY_FC1_SHIFT	26
 #define NFIFOENTRY_FC1_MASK	(1 << NFIFOENTRY_FC1_SHIFT)
 #define NFIFOENTRY_FC1		(1 << NFIFOENTRY_FC1_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NFIFOENTRY_STYPE_SHIFT	24
 #define NFIFOENTRY_STYPE_MASK	(3 << NFIFOENTRY_STYPE_SHIFT)
@@ -2832,6 +3032,7 @@
 #define NFIFOENTRY_DTYPE_SHIFT	20
 #define NFIFOENTRY_DTYPE_MASK	(0xF << NFIFOENTRY_DTYPE_SHIFT)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define NFIFOENTRY_DTYPE_SBOX      (0x0  << NFIFOENTRY_DTYPE_SHIFT)
 #define NFIFOENTRY_DTYPE_AAD       (0x1  << NFIFOENTRY_DTYPE_SHIFT)
@@ -2859,6 +3060,8 @@
 #define NFIFOENTRY_BND_MASK		(1 << NFIFOENTRY_BND_SHIFT)
 #define NFIFOENTRY_BND			(1 << NFIFOENTRY_BND_SHIFT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define NFIFOENTRY_DTYPE_SBOX	(0x0 << NFIFOENTRY_DTYPE_SHIFT)
 #define NFIFOENTRY_DTYPE_AAD	(0x1 << NFIFOENTRY_DTYPE_SHIFT)
 #define NFIFOENTRY_DTYPE_IV	(0x2 << NFIFOENTRY_DTYPE_SHIFT)
@@ -2884,11 +3087,15 @@
 #define NFIFOENTRY_BND_SHIFT	19
 #define NFIFOENTRY_BND_MASK	(1 << NFIFOENTRY_BND_SHIFT)
 #define NFIFOENTRY_BND		(1 << NFIFOENTRY_BND_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NFIFOENTRY_PTYPE_SHIFT	16
 #define NFIFOENTRY_PTYPE_MASK	(0x7 << NFIFOENTRY_PTYPE_SHIFT)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define NFIFOENTRY_PTYPE_ZEROS         (0x0  << NFIFOENTRY_PTYPE_SHIFT)
 #define NFIFOENTRY_PTYPE_RND_NOZEROS   (0x1  << NFIFOENTRY_PTYPE_SHIFT)
@@ -2916,6 +3123,8 @@
 #define NFIFOENTRY_PS			(1 << NFIFOENTRY_PS_SHIFT)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define NFIFOENTRY_PTYPE_ZEROS		(0x0 << NFIFOENTRY_PTYPE_SHIFT)
 #define NFIFOENTRY_PTYPE_RND_NOZEROS	(0x1 << NFIFOENTRY_PTYPE_SHIFT)
 #define NFIFOENTRY_PTYPE_INCREMENT	(0x2 << NFIFOENTRY_PTYPE_SHIFT)
@@ -2940,7 +3149,10 @@
 #define NFIFOENTRY_PS_SHIFT	10
 #define NFIFOENTRY_PS_MASK	(1 << NFIFOENTRY_PS_SHIFT)
 #define NFIFOENTRY_PS		(1 << NFIFOENTRY_PS_SHIFT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NFIFOENTRY_DLEN_SHIFT	0
 #define NFIFOENTRY_DLEN_MASK	(0xFFF << NFIFOENTRY_DLEN_SHIFT)
@@ -2948,6 +3160,7 @@
 #define NFIFOENTRY_PLEN_SHIFT	0
 #define NFIFOENTRY_PLEN_MASK	(0xFF << NFIFOENTRY_PLEN_SHIFT)
 
+<<<<<<< HEAD
 /*
  * PDB internal definitions
  */
@@ -2976,5 +3189,15 @@
 #define PDBOPTS_ESPCBC_IPVSN	0x02	/* process IPv6 header */
 #define PDBOPTS_ESPCBC_TUNNEL	0x01	/* tunnel mode next-header byte */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Append Load Immediate Command */
+#define FD_CMD_APPEND_LOAD_IMMEDIATE			0x80000000
+
+/* Set SEQ LIODN equal to the Non-SEQ LIODN for the job */
+#define FD_CMD_SET_SEQ_LIODN_EQUAL_NONSEQ_LIODN		0x40000000
+
+/* Frame Descriptor Command for Replacement Job Descriptor */
+#define FD_CMD_REPLACE_JOB_DESC				0x20000000
+>>>>>>> refs/remotes/origin/master
 
 #endif /* DESC_H */

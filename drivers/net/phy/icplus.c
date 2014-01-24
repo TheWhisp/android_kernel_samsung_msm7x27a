@@ -31,17 +31,21 @@
 #include <asm/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_DESCRIPTION("ICPlus IP175C/IC1001 PHY drivers");
 MODULE_AUTHOR("Michael Barkowski");
 MODULE_LICENSE("GPL");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("ICPlus IP175C/IP101A/IP101G/IC1001 PHY drivers");
 MODULE_AUTHOR("Michael Barkowski");
 MODULE_LICENSE("GPL");
 
 /* IP101A/G - IP1001 */
 #define IP10XX_SPEC_CTRL_STATUS		16	/* Spec. Control Register */
+<<<<<<< HEAD
 #define IP1001_SPEC_CTRL_STATUS_2	20	/* IP1001 Spec. Control Reg 2 */
 #define IP1001_PHASE_SEL_MASK		3	/* IP1001 RX/TXPHASE_SEL */
 #define IP1001_APS_ON			11	/* IP1001 APS Mode  bit */
@@ -49,6 +53,17 @@ MODULE_LICENSE("GPL");
 #define IP101A_G_IRQ_CONF_STATUS	0x11	/* Conf Info IRQ & Status Reg */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IP1001_RXPHASE_SEL		(1<<0)	/* Add delay on RX_CLK */
+#define IP1001_TXPHASE_SEL		(1<<1)	/* Add delay on TX_CLK */
+#define IP1001_SPEC_CTRL_STATUS_2	20	/* IP1001 Spec. Control Reg 2 */
+#define IP1001_APS_ON			11	/* IP1001 APS Mode  bit */
+#define IP101A_G_APS_ON			2	/* IP101A/G APS Mode bit */
+#define IP101A_G_IRQ_CONF_STATUS	0x11	/* Conf Info IRQ & Status Reg */
+#define	IP101A_G_IRQ_PIN_USED		(1<<15) /* INTR pin used */
+#define	IP101A_G_IRQ_DEFAULT		IP101A_G_IRQ_PIN_USED
+
+>>>>>>> refs/remotes/origin/master
 static int ip175c_config_init(struct phy_device *phydev)
 {
 	int err, i;
@@ -58,43 +73,60 @@ static int ip175c_config_init(struct phy_device *phydev)
 
 		/* master reset */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = phydev->bus->write(phydev->bus, 30, 0, 0x175c);
 =======
 		err = mdiobus_write(phydev->bus, 30, 0, 0x175c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mdiobus_write(phydev->bus, 30, 0, 0x175c);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			return err;
 
 		/* ensure no bus delays overlap reset period */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = phydev->bus->read(phydev->bus, 30, 0);
 =======
 		err = mdiobus_read(phydev->bus, 30, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mdiobus_read(phydev->bus, 30, 0);
+>>>>>>> refs/remotes/origin/master
 
 		/* data sheet specifies reset period is 2 msec */
 		mdelay(2);
 
 		/* enable IP175C mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = phydev->bus->write(phydev->bus, 29, 31, 0x175c);
 =======
 		err = mdiobus_write(phydev->bus, 29, 31, 0x175c);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mdiobus_write(phydev->bus, 29, 31, 0x175c);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			return err;
 
 		/* Set MII0 speed and duplex (in PHY mode) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = phydev->bus->write(phydev->bus, 29, 22, 0x420);
 =======
 		err = mdiobus_write(phydev->bus, 29, 22, 0x420);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mdiobus_write(phydev->bus, 29, 22, 0x420);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			return err;
 
 		/* reset switch ports */
 		for (i = 0; i < 5; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			err = phydev->bus->write(phydev->bus, i,
 						 MII_BMCR, BMCR_RESET);
@@ -102,16 +134,24 @@ static int ip175c_config_init(struct phy_device *phydev)
 			err = mdiobus_write(phydev->bus, i,
 					    MII_BMCR, BMCR_RESET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = mdiobus_write(phydev->bus, i,
+					    MII_BMCR, BMCR_RESET);
+>>>>>>> refs/remotes/origin/master
 			if (err < 0)
 				return err;
 		}
 
 		for (i = 0; i < 5; i++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = phydev->bus->read(phydev->bus, i, MII_BMCR);
 =======
 			err = mdiobus_read(phydev->bus, i, MII_BMCR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = mdiobus_read(phydev->bus, i, MII_BMCR);
+>>>>>>> refs/remotes/origin/master
 
 		mdelay(2);
 
@@ -129,6 +169,7 @@ static int ip175c_config_init(struct phy_device *phydev)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ip1001_config_init(struct phy_device *phydev)
 {
@@ -156,6 +197,8 @@ static int ip1001_config_init(struct phy_device *phydev)
 
 	return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ip1xx_reset(struct phy_device *phydev)
 {
 	int bmcr;
@@ -195,14 +238,34 @@ static int ip1001_config_init(struct phy_device *phydev)
 	if (c < 0)
 		return c;
 
+<<<<<<< HEAD
 	if (phydev->interface == PHY_INTERFACE_MODE_RGMII) {
 		/* Additional delay (2ns) used to adjust RX clock phase
 		 * at RGMII interface */
+=======
+	if ((phydev->interface == PHY_INTERFACE_MODE_RGMII) ||
+	    (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID) ||
+	    (phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID) ||
+	    (phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID)) {
+
+>>>>>>> refs/remotes/origin/master
 		c = phy_read(phydev, IP10XX_SPEC_CTRL_STATUS);
 		if (c < 0)
 			return c;
 
+<<<<<<< HEAD
 		c |= IP1001_PHASE_SEL_MASK;
+=======
+		c &= ~(IP1001_RXPHASE_SEL | IP1001_TXPHASE_SEL);
+
+		if (phydev->interface == PHY_INTERFACE_MODE_RGMII_ID)
+			c |= (IP1001_RXPHASE_SEL | IP1001_TXPHASE_SEL);
+		else if (phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID)
+			c |= IP1001_RXPHASE_SEL;
+		else if (phydev->interface == PHY_INTERFACE_MODE_RGMII_TXID)
+			c |= IP1001_TXPHASE_SEL;
+
+>>>>>>> refs/remotes/origin/master
 		c = phy_write(phydev, IP10XX_SPEC_CTRL_STATUS, c);
 		if (c < 0)
 			return c;
@@ -219,12 +282,23 @@ static int ip101a_g_config_init(struct phy_device *phydev)
 	if (c < 0)
 		return c;
 
+<<<<<<< HEAD
+=======
+	/* INTR pin used: speed/link/duplex will cause an interrupt */
+	c = phy_write(phydev, IP101A_G_IRQ_CONF_STATUS, IP101A_G_IRQ_DEFAULT);
+	if (c < 0)
+		return c;
+
+>>>>>>> refs/remotes/origin/master
 	/* Enable Auto Power Saving mode */
 	c = phy_read(phydev, IP10XX_SPEC_CTRL_STATUS);
 	c |= IP101A_G_APS_ON;
 
 	return phy_write(phydev, IP10XX_SPEC_CTRL_STATUS, c);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ip175c_read_status(struct phy_device *phydev)
@@ -247,7 +321,10 @@ static int ip175c_config_aneg(struct phy_device *phydev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ip101a_g_ack_interrupt(struct phy_device *phydev)
 {
 	int err = phy_read(phydev, IP101A_G_IRQ_CONF_STATUS);
@@ -257,8 +334,13 @@ static int ip101a_g_ack_interrupt(struct phy_device *phydev)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct phy_driver ip175c_driver = {
+=======
+static struct phy_driver icplus_driver[] = {
+{
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x02430d80,
 	.name		= "ICPlus IP175C",
 	.phy_id_mask	= 0x0ffffff0,
@@ -269,9 +351,13 @@ static struct phy_driver ip175c_driver = {
 	.suspend	= genphy_suspend,
 	.resume		= genphy_resume,
 	.driver		= { .owner = THIS_MODULE,},
+<<<<<<< HEAD
 };
 
 static struct phy_driver ip1001_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x02430d90,
 	.name		= "ICPlus IP1001",
 	.phy_id_mask	= 0x0ffffff0,
@@ -283,11 +369,15 @@ static struct phy_driver ip1001_driver = {
 	.suspend	= genphy_suspend,
 	.resume		= genphy_resume,
 	.driver		= { .owner = THIS_MODULE,},
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
 =======
 static struct phy_driver ip101a_g_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x02430c54,
 	.name		= "ICPlus IP101A/G",
 	.phy_id_mask	= 0x0ffffff0,
@@ -301,6 +391,7 @@ static struct phy_driver ip101a_g_driver = {
 	.suspend	= genphy_suspend,
 	.resume		= genphy_resume,
 	.driver		= { .owner = THIS_MODULE,},
+<<<<<<< HEAD
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -320,16 +411,29 @@ static int __init icplus_init(void)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	return phy_driver_register(&ip175c_driver);
+=======
+} };
+
+static int __init icplus_init(void)
+{
+	return phy_drivers_register(icplus_driver,
+		ARRAY_SIZE(icplus_driver));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit icplus_exit(void)
 {
+<<<<<<< HEAD
 	phy_driver_unregister(&ip1001_driver);
 <<<<<<< HEAD
 =======
 	phy_driver_unregister(&ip101a_g_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
 	phy_driver_unregister(&ip175c_driver);
+=======
+	phy_drivers_unregister(icplus_driver,
+		ARRAY_SIZE(icplus_driver));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(icplus_init);
@@ -339,9 +443,13 @@ static struct mdio_device_id __maybe_unused icplus_tbl[] = {
 	{ 0x02430d80, 0x0ffffff0 },
 	{ 0x02430d90, 0x0ffffff0 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ 0x02430c54, 0x0ffffff0 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ 0x02430c54, 0x0ffffff0 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 

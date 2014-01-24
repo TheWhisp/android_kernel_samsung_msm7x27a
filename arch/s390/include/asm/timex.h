@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/timex.h
  *
  *  S390 version
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *
  *  Derived from "include/asm-i386/timex.h"
  *    Copyright (C) 1992, Linus Torvalds
@@ -17,7 +22,11 @@
 #define TOD_UNIX_EPOCH 0x7d91048bca000000ULL
 
 /* Inline functions for clock register access. */
+<<<<<<< HEAD
 static inline int set_clock(__u64 time)
+=======
+static inline int set_tod_clock(__u64 time)
+>>>>>>> refs/remotes/origin/master
 {
 	int cc;
 
@@ -29,7 +38,11 @@ static inline int set_clock(__u64 time)
 	return cc;
 }
 
+<<<<<<< HEAD
 static inline int store_clock(__u64 *time)
+=======
+static inline int store_tod_clock(__u64 *time)
+>>>>>>> refs/remotes/origin/master
 {
 	int cc;
 
@@ -73,6 +86,7 @@ static inline void local_tick_enable(unsigned long long comp)
 
 typedef unsigned long long cycles_t;
 
+<<<<<<< HEAD
 static inline unsigned long long get_clock (void)
 {
 	unsigned long long clk;
@@ -105,11 +119,41 @@ static inline unsigned long long get_clock_xt(void)
 	unsigned char clk[16];
 	get_clock_ext(clk);
 	return *((unsigned long long *)&clk[1]);
+=======
+static inline void get_tod_clock_ext(char clk[16])
+{
+	typedef struct { char _[sizeof(clk)]; } addrtype;
+
+	asm volatile("stcke %0" : "=Q" (*(addrtype *) clk) : : "cc");
+}
+
+static inline unsigned long long get_tod_clock(void)
+{
+	unsigned char clk[16];
+	get_tod_clock_ext(clk);
+	return *((unsigned long long *)&clk[1]);
+}
+
+static inline unsigned long long get_tod_clock_fast(void)
+{
+#ifdef CONFIG_HAVE_MARCH_Z9_109_FEATURES
+	unsigned long long clk;
+
+	asm volatile("stckf %0" : "=Q" (clk) : : "cc");
+	return clk;
+#else
+	return get_tod_clock();
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline cycles_t get_cycles(void)
 {
+<<<<<<< HEAD
 	return (cycles_t) get_clock() >> 2;
+=======
+	return (cycles_t) get_tod_clock() >> 2;
+>>>>>>> refs/remotes/origin/master
 }
 
 int get_sync_clock(unsigned long long *clock);
@@ -135,9 +179,15 @@ extern u64 sched_clock_base_cc;
  * function, otherwise the returned value is not guaranteed to
  * be monotonic.
  */
+<<<<<<< HEAD
 static inline unsigned long long get_clock_monotonic(void)
 {
 	return get_clock_xt() - sched_clock_base_cc;
+=======
+static inline unsigned long long get_tod_clock_monotonic(void)
+{
+	return get_tod_clock() - sched_clock_base_cc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**

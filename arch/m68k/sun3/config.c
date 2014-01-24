@@ -36,7 +36,11 @@
 
 char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
 
+<<<<<<< HEAD
 extern unsigned long sun3_gettimeoffset(void);
+=======
+extern u32 sun3_gettimeoffset(void);
+>>>>>>> refs/remotes/origin/master
 static void sun3_sched_init(irq_handler_t handler);
 extern void sun3_get_model (char* model);
 extern int sun3_hwclk(int set, struct rtc_time *t);
@@ -141,7 +145,11 @@ void __init config_sun3(void)
         mach_sched_init      =  sun3_sched_init;
         mach_init_IRQ        =  sun3_init_IRQ;
         mach_reset           =  sun3_reboot;
+<<<<<<< HEAD
 	mach_gettimeoffset   =  sun3_gettimeoffset;
+=======
+	arch_gettimeoffset   =  sun3_gettimeoffset;
+>>>>>>> refs/remotes/origin/master
 	mach_get_model	     =  sun3_get_model;
 	mach_hwclk           =  sun3_hwclk;
 	mach_halt	     =  sun3_halt;

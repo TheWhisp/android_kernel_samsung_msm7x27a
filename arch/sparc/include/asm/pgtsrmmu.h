@@ -139,6 +139,10 @@
 	 restore %g0, %g0, %g0;
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
+=======
+extern unsigned long last_valid_pfn;
+>>>>>>> refs/remotes/origin/master
 
 /* This makes sense. Honest it does - Anton */
 /* XXX Yes but it's ugly as sin.  FIXME. -KMW */
@@ -148,6 +152,7 @@ extern void *srmmu_nocache_pool;
 #define __nocache_fix(VADDR) __va(__nocache_pa(VADDR))
 
 /* Accessing the MMU control register. */
+<<<<<<< HEAD
 static inline unsigned int srmmu_get_mmureg(void)
 {
         unsigned int retval;
@@ -220,6 +225,15 @@ static inline unsigned int srmmu_get_faddr(void)
 			     "r" (SRMMU_FAULT_ADDR), "i" (ASI_M_MMUREGS));
 	return retval;
 }
+=======
+unsigned int srmmu_get_mmureg(void);
+void srmmu_set_mmureg(unsigned long regval);
+void srmmu_set_ctable_ptr(unsigned long paddr);
+void srmmu_set_context(int context);
+int srmmu_get_context(void);
+unsigned int srmmu_get_fstatus(void);
+unsigned int srmmu_get_faddr(void);
+>>>>>>> refs/remotes/origin/master
 
 /* This is guaranteed on all SRMMU's. */
 static inline void srmmu_flush_whole_tlb(void)
@@ -230,6 +244,7 @@ static inline void srmmu_flush_whole_tlb(void)
 
 }
 
+<<<<<<< HEAD
 /* These flush types are not available on all chips... */
 static inline void srmmu_flush_tlb_ctx(void)
 {
@@ -287,6 +302,8 @@ static inline unsigned long srmmu_hwprobe(unsigned long vaddr)
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 srmmu_get_pte (unsigned long addr)
 {
@@ -298,9 +315,12 @@ srmmu_get_pte (unsigned long addr)
 	return entry;
 }
 
+<<<<<<< HEAD
 extern unsigned long (*srmmu_read_physical)(unsigned long paddr);
 extern void (*srmmu_write_physical)(unsigned long paddr, unsigned long word);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__ASSEMBLY__) */
 
 #endif /* !(_SPARC_PGTSRMMU_H) */

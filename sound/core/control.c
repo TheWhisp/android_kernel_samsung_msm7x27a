@@ -22,9 +22,13 @@
 #include <linux/threads.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 #include <linux/time.h>
@@ -193,7 +197,11 @@ EXPORT_SYMBOL(snd_ctl_notify);
  * Allocates a new struct snd_kcontrol instance and copies the given template 
  * to the new instance. It does not copy volatile data (access).
  *
+<<<<<<< HEAD
  * Returns the pointer of the new instance, or NULL on failure.
+=======
+ * Return: The pointer of the new instance, or %NULL on failure.
+>>>>>>> refs/remotes/origin/master
  */
 static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
 					unsigned int access)
@@ -227,7 +235,11 @@ static struct snd_kcontrol *snd_ctl_new(struct snd_kcontrol *control,
  * template.  When the access field of ncontrol is 0, it's assumed as
  * READWRITE access. When the count field is 0, it's assumes as one.
  *
+<<<<<<< HEAD
  * Returns the pointer of the newly generated instance, or NULL on failure.
+=======
+ * Return: The pointer of the newly generated instance, or %NULL on failure.
+>>>>>>> refs/remotes/origin/master
  */
 struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
 				  void *private_data)
@@ -252,6 +264,10 @@ struct snd_kcontrol *snd_ctl_new1(const struct snd_kcontrol_new *ncontrol,
 	kctl.count = ncontrol->count ? ncontrol->count : 1;
 	access = ncontrol->access == 0 ? SNDRV_CTL_ELEM_ACCESS_READWRITE :
 		 (ncontrol->access & (SNDRV_CTL_ELEM_ACCESS_READWRITE|
+<<<<<<< HEAD
+=======
+				      SNDRV_CTL_ELEM_ACCESS_VOLATILE|
+>>>>>>> refs/remotes/origin/master
 				      SNDRV_CTL_ELEM_ACCESS_INACTIVE|
 				      SNDRV_CTL_ELEM_ACCESS_TLV_READWRITE|
 				      SNDRV_CTL_ELEM_ACCESS_TLV_COMMAND|
@@ -324,9 +340,16 @@ static int snd_ctl_find_hole(struct snd_card *card, unsigned int count)
  * snd_ctl_new1() to the given card. Assigns also an unique
  * numid used for fast search.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
  *
  * It frees automatically the control which cannot be added.
+=======
+ * It frees automatically the control which cannot be added.
+ *
+ * Return: Zero if successful, or a negative error code on failure.
+ *
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_add(struct snd_card *card, struct snd_kcontrol *kcontrol)
 {
@@ -382,9 +405,15 @@ EXPORT_SYMBOL(snd_ctl_add);
  * and the add_on_replace flag is set, the control is added.  If the
  * control exists, it is destroyed first.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
  *
  * It frees automatically the control which cannot be added or replaced.
+=======
+ * It frees automatically the control which cannot be added or replaced.
+ *
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol,
 		    bool add_on_replace)
@@ -444,8 +473,13 @@ EXPORT_SYMBOL(snd_ctl_replace);
  * Removes the control from the card and then releases the instance.
  * You don't need to call snd_ctl_free_one(). You must be in
  * the write lock - down_write(&card->controls_rwsem).
+<<<<<<< HEAD
  * 
  * Returns 0 if successful, or a negative error code on failure.
+=======
+ *
+ * Return: 0 if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_remove(struct snd_card *card, struct snd_kcontrol *kcontrol)
 {
@@ -472,8 +506,13 @@ EXPORT_SYMBOL(snd_ctl_remove);
  *
  * Finds the control instance with the given id, removes it from the
  * card list and releases it.
+<<<<<<< HEAD
  * 
  * Returns 0 if successful, or a negative error code on failure.
+=======
+ *
+ * Return: 0 if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_remove_id(struct snd_card *card, struct snd_ctl_elem_id *id)
 {
@@ -500,8 +539,13 @@ EXPORT_SYMBOL(snd_ctl_remove_id);
  *
  * Finds the control instance with the given id, removes it from the
  * card list and releases it.
+<<<<<<< HEAD
  * 
  * Returns 0 if successful, or a negative error code on failure.
+=======
+ *
+ * Return: 0 if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 static int snd_ctl_remove_user_ctl(struct snd_ctl_file * file,
 				   struct snd_ctl_elem_id *id)
@@ -543,7 +587,11 @@ error:
  * Finds the control instance with the given id, and activate or
  * inactivate the control together with notification, if changed.
  *
+<<<<<<< HEAD
  * Returns 0 if unchanged, 1 if changed, or a negative error code on failure.
+=======
+ * Return: 0 if unchanged, 1 if changed, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_activate_id(struct snd_card *card, struct snd_ctl_elem_id *id,
 			int active)
@@ -589,7 +637,11 @@ EXPORT_SYMBOL_GPL(snd_ctl_activate_id);
  * Finds the control with the old id from the card, and replaces the
  * id with the new one.
  *
+<<<<<<< HEAD
  * Returns zero if successful, or a negative error code on failure.
+=======
+ * Return: Zero if successful, or a negative error code on failure.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_rename_id(struct snd_card *card, struct snd_ctl_elem_id *src_id,
 		      struct snd_ctl_elem_id *dst_id)
@@ -618,10 +670,18 @@ EXPORT_SYMBOL(snd_ctl_rename_id);
  *
  * Finds the control instance with the given number-id from the card.
  *
+<<<<<<< HEAD
  * Returns the pointer of the instance if found, or NULL if not.
  *
  * The caller must down card->controls_rwsem before calling this function
  * (if the race condition can happen).
+=======
+ * The caller must down card->controls_rwsem before calling this function
+ * (if the race condition can happen).
+ *
+ * Return: The pointer of the instance if found, or %NULL if not.
+ *
+>>>>>>> refs/remotes/origin/master
  */
 struct snd_kcontrol *snd_ctl_find_numid(struct snd_card *card, unsigned int numid)
 {
@@ -645,10 +705,18 @@ EXPORT_SYMBOL(snd_ctl_find_numid);
  *
  * Finds the control instance with the given id from the card.
  *
+<<<<<<< HEAD
  * Returns the pointer of the instance if found, or NULL if not.
  *
  * The caller must down card->controls_rwsem before calling this function
  * (if the race condition can happen).
+=======
+ * The caller must down card->controls_rwsem before calling this function
+ * (if the race condition can happen).
+ *
+ * Return: The pointer of the instance if found, or %NULL if not.
+ *
+>>>>>>> refs/remotes/origin/master
  */
 struct snd_kcontrol *snd_ctl_find_id(struct snd_card *card,
 				     struct snd_ctl_elem_id *id)
@@ -997,9 +1065,12 @@ struct user_element {
 	unsigned long tlv_data_size;	/* TLV data size */
 	void *priv_data;		/* private data (like strings for enumerated type) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long priv_data_size;	/* size of private data in bytes */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int snd_ctl_elem_user_info(struct snd_kcontrol *kcontrol,
@@ -1012,7 +1083,10 @@ static int snd_ctl_elem_user_info(struct snd_kcontrol *kcontrol,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int snd_ctl_elem_user_enum_info(struct snd_kcontrol *kcontrol,
 				       struct snd_ctl_elem_info *uinfo)
 {
@@ -1035,7 +1109,10 @@ static int snd_ctl_elem_user_enum_info(struct snd_kcontrol *kcontrol,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int snd_ctl_elem_user_get(struct snd_kcontrol *kcontrol,
 				 struct snd_ctl_elem_value *ucontrol)
 {
@@ -1091,12 +1168,15 @@ static int snd_ctl_elem_user_tlv(struct snd_kcontrol *kcontrol,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void snd_ctl_elem_user_free(struct snd_kcontrol *kcontrol)
 {
 	struct user_element *ue = kcontrol->private_data;
 	if (ue->tlv_data)
 		kfree(ue->tlv_data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int snd_ctl_elem_init_enum_names(struct user_element *ue)
 {
 	char *names, *p;
@@ -1137,7 +1217,10 @@ static void snd_ctl_elem_user_free(struct snd_kcontrol *kcontrol)
 
 	kfree(ue->tlv_data);
 	kfree(ue->priv_data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(ue);
 }
 
@@ -1151,12 +1234,17 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
 	struct user_element *ue;
 	int idx, err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 	if (card->user_ctl_count >= MAX_USER_CONTROLS)
 =======
 
 	if (!replace && card->user_ctl_count >= MAX_USER_CONTROLS)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (!replace && card->user_ctl_count >= MAX_USER_CONTROLS)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	if (info->count < 1)
 		return -EINVAL;
@@ -1185,13 +1273,19 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
 	kctl.count = info->owner ? info->owner : 1;
 	access |= SNDRV_CTL_ELEM_ACCESS_USER;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kctl.info = snd_ctl_elem_user_info;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (info->type == SNDRV_CTL_ELEM_TYPE_ENUMERATED)
 		kctl.info = snd_ctl_elem_user_enum_info;
 	else
 		kctl.info = snd_ctl_elem_user_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (access & SNDRV_CTL_ELEM_ACCESS_READ)
 		kctl.get = snd_ctl_elem_user_get;
 	if (access & SNDRV_CTL_ELEM_ACCESS_WRITE)
@@ -1213,13 +1307,19 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
 			return -EINVAL;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_CTL_ELEM_TYPE_ENUMERATED:
 		private_size = sizeof(unsigned int);
 		if (info->count > 128 || info->value.enumerated.items == 0)
 			return -EINVAL;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNDRV_CTL_ELEM_TYPE_BYTES:
 		private_size = sizeof(unsigned char);
 		if (info->count > 512)
@@ -1242,10 +1342,13 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
 	ue->elem_data = (char *)ue + sizeof(*ue);
 	ue->elem_data_size = private_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kctl.private_free = snd_ctl_elem_user_free;
 	_kctl = snd_ctl_new(&kctl, access);
 	if (_kctl == NULL) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ue->info.type == SNDRV_CTL_ELEM_TYPE_ENUMERATED) {
 		err = snd_ctl_elem_init_enum_names(ue);
 		if (err < 0) {
@@ -1257,7 +1360,10 @@ static int snd_ctl_elem_add(struct snd_ctl_file *file,
 	_kctl = snd_ctl_new(&kctl, access);
 	if (_kctl == NULL) {
 		kfree(ue->priv_data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(ue);
 		return -ENOMEM;
 	}
@@ -1353,10 +1459,14 @@ static int snd_ctl_tlv_ioctl(struct snd_ctl_file *file,
 			goto __kctl_end;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = kctl->tlv.c(kctl, op_flag, tlv.length, _tlv->tlv); 
 =======
 		err = kctl->tlv.c(kctl, op_flag, tlv.length, _tlv->tlv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = kctl->tlv.c(kctl, op_flag, tlv.length, _tlv->tlv);
+>>>>>>> refs/remotes/origin/master
 		if (err > 0) {
 			up_read(&card->controls_rwsem);
 			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_TLV, &kctl->id);
@@ -1749,6 +1859,11 @@ EXPORT_SYMBOL(snd_ctl_boolean_stereo_info);
  * Sets all required fields in @info to their appropriate values.
  * If the control's accessibility is not the default (readable and writable),
  * the caller has to fill @info->access.
+<<<<<<< HEAD
+=======
+ *
+ * Return: Zero.
+>>>>>>> refs/remotes/origin/master
  */
 int snd_ctl_enum_info(struct snd_ctl_elem_info *info, unsigned int channels,
 		      unsigned int items, const char *const names[])

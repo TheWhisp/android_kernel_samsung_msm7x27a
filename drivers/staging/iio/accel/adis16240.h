@@ -3,9 +3,12 @@
 
 #define ADIS16240_STARTUP_DELAY	220 /* ms */
 
+<<<<<<< HEAD
 #define ADIS16240_READ_REG(a)    a
 #define ADIS16240_WRITE_REG(a) ((a) | 0x80)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Flash memory write count */
 #define ADIS16240_FLASH_CNT      0x00
 /* Output, power supply */
@@ -75,8 +78,11 @@
 /* System command */
 #define ADIS16240_GLOB_CMD       0x4A
 
+<<<<<<< HEAD
 #define ADIS16240_OUTPUTS        6
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MSC_CTRL */
 /* Enables sum-of-squares output (XYZPEAK_OUT) */
 #define ADIS16240_MSC_CTRL_XYZPEAK_OUT_EN	(1 << 15)
@@ -101,6 +107,7 @@
 /* Flash test, checksum flag: 1 = mismatch, 0 = match */
 #define ADIS16240_DIAG_STAT_CHKSUM      (1<<6)
 /* Power-on, self-test flag: 1 = failure, 0 = pass */
+<<<<<<< HEAD
 #define ADIS16240_DIAG_STAT_PWRON_FAIL  (1<<5)
 /* Power-on self-test: 1 = in-progress, 0 = complete */
 #define ADIS16240_DIAG_STAT_PWRON_BUSY  (1<<4)
@@ -112,6 +119,19 @@
 #define ADIS16240_DIAG_STAT_POWER_HIGH	(1<<1)
  /* Power supply below 3.15 V */
 #define ADIS16240_DIAG_STAT_POWER_LOW	(1<<0)
+=======
+#define ADIS16240_DIAG_STAT_PWRON_FAIL_BIT  5
+/* Power-on self-test: 1 = in-progress, 0 = complete */
+#define ADIS16240_DIAG_STAT_PWRON_BUSY  (1<<4)
+/* SPI communications failure */
+#define ADIS16240_DIAG_STAT_SPI_FAIL_BIT	3
+/* Flash update failure */
+#define ADIS16240_DIAG_STAT_FLASH_UPT_BIT	2
+/* Power supply above 3.625 V */
+#define ADIS16240_DIAG_STAT_POWER_HIGH_BIT	1
+ /* Power supply below 3.15 V */
+#define ADIS16240_DIAG_STAT_POWER_LOW_BIT	0
+>>>>>>> refs/remotes/origin/master
 
 /* GLOB_CMD */
 #define ADIS16240_GLOB_CMD_RESUME	(1<<8)
@@ -120,6 +140,7 @@
 
 #define ADIS16240_ERROR_ACTIVE          (1<<14)
 
+<<<<<<< HEAD
 #define ADIS16240_MAX_TX 24
 #define ADIS16240_MAX_RX 24
 
@@ -158,10 +179,13 @@ int adis16240_set_irq(struct iio_dev *indio_dev, bool enable);
 #ifdef CONFIG_IIO_RING_BUFFER
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* At the moment triggers are only used for ring buffer
  * filling. This may change!
  */
 
+<<<<<<< HEAD
 #define ADIS16240_SCAN_SUPPLY	0
 #define ADIS16240_SCAN_ACC_X	1
 #define ADIS16240_SCAN_ACC_Y	2
@@ -221,4 +245,13 @@ static inline void adis16240_unconfigure_ring(struct iio_dev *indio_dev)
 =======
 #endif /* CONFIG_IIO_BUFFER */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ADIS16240_SCAN_ACC_X	0
+#define ADIS16240_SCAN_ACC_Y	1
+#define ADIS16240_SCAN_ACC_Z	2
+#define ADIS16240_SCAN_SUPPLY	3
+#define ADIS16240_SCAN_AUX_ADC	4
+#define ADIS16240_SCAN_TEMP	5
+
+>>>>>>> refs/remotes/origin/master
 #endif /* SPI_ADIS16240_H_ */

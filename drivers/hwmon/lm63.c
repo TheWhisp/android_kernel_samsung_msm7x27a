@@ -48,11 +48,14 @@
 #include <linux/mutex.h>
 #include <linux/sysfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  * Addresses to scan
  * Address is fully defined internally and cannot be changed.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 
 /*
@@ -61,7 +64,10 @@
  * LM64 which has one pin dedicated to address selection.
  * LM63 and LM96163 have address 0x4c.
  * LM64 can have address 0x18 or 0x4e.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 static const unsigned short normal_i2c[] = { 0x18, 0x4c, 0x4e, I2C_CLIENT_END };
@@ -72,9 +78,13 @@ static const unsigned short normal_i2c[] = { 0x18, 0x4c, 0x4e, I2C_CLIENT_END };
 
 #define LM63_REG_CONFIG1		0x03
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LM63_REG_CONVRATE		0x04
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LM63_REG_CONVRATE		0x04
+>>>>>>> refs/remotes/origin/master
 #define LM63_REG_CONFIG2		0xBF
 #define LM63_REG_CONFIG_FAN		0x4A
 
@@ -86,11 +96,17 @@ static const unsigned short normal_i2c[] = { 0x18, 0x4c, 0x4e, I2C_CLIENT_END };
 #define LM63_REG_PWM_VALUE		0x4C
 #define LM63_REG_PWM_FREQ		0x4D
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define LM63_REG_LUT_TEMP_HYST		0x4F
 #define LM63_REG_LUT_TEMP(nr)		(0x50 + 2 * (nr))
 #define LM63_REG_LUT_PWM(nr)		(0x51 + 2 * (nr))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LM63_REG_LUT_TEMP_HYST		0x4F
+#define LM63_REG_LUT_TEMP(nr)		(0x50 + 2 * (nr))
+#define LM63_REG_LUT_PWM(nr)		(0x51 + 2 * (nr))
+>>>>>>> refs/remotes/origin/master
 
 #define LM63_REG_LOCAL_TEMP		0x00
 #define LM63_REG_LOCAL_HIGH		0x05
@@ -113,7 +129,10 @@ static const unsigned short normal_i2c[] = { 0x18, 0x4c, 0x4e, I2C_CLIENT_END };
 #define LM63_REG_CHIP_ID		0xFF
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LM96163_REG_TRUTHERM		0x30
 #define LM96163_REG_REMOTE_TEMP_U_MSB	0x31
 #define LM96163_REG_REMOTE_TEMP_U_LSB	0x32
@@ -124,7 +143,10 @@ static const unsigned short normal_i2c[] = { 0x18, 0x4c, 0x4e, I2C_CLIENT_END };
 #define LM63_MAX_CONVRATE_HZ		32
 #define LM96163_MAX_CONVRATE_HZ		26
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Conversions and various macros
  * For tachometer counts, the LM63 uses 16-bit values.
@@ -147,26 +169,39 @@ static const unsigned short normal_i2c[] = { 0x18, 0x4c, 0x4e, I2C_CLIENT_END };
 				 (val) < 0 ? ((val) - 500) / 1000 : \
 				 ((val) + 500) / 1000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TEMP8U_TO_REG(val)	((val) <= 0 ? 0 : \
 				 (val) >= 255000 ? 255 : \
 				 ((val) + 500) / 1000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TEMP8U_TO_REG(val)	((val) <= 0 ? 0 : \
+				 (val) >= 255000 ? 255 : \
+				 ((val) + 500) / 1000)
+>>>>>>> refs/remotes/origin/master
 #define TEMP11_FROM_REG(reg)	((reg) / 32 * 125)
 #define TEMP11_TO_REG(val)	((val) <= -128000 ? 0x8000 : \
 				 (val) >= 127875 ? 0x7FE0 : \
 				 (val) < 0 ? ((val) - 62) / 125 * 32 : \
 				 ((val) + 62) / 125 * 32)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TEMP11U_TO_REG(val)	((val) <= 0 ? 0 : \
 				 (val) >= 255875 ? 0xFFE0 : \
 				 ((val) + 62) / 125 * 32)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TEMP11U_TO_REG(val)	((val) <= 0 ? 0 : \
+				 (val) >= 255875 ? 0xFFE0 : \
+				 ((val) + 62) / 125 * 32)
+>>>>>>> refs/remotes/origin/master
 #define HYST_TO_REG(val)	((val) <= 0 ? 0 : \
 				 (val) >= 127000 ? 127 : \
 				 ((val) + 500) / 1000)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Functions declaration
@@ -206,11 +241,16 @@ static struct i2c_driver lm63_driver = {
 	.address_list	= normal_i2c,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define UPDATE_INTERVAL(max, rate) \
 			((1000 << (LM63_MAX_CONVRATE - (rate))) / (max))
 
 enum chips { lm63, lm64, lm96163 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Client data (each client gets its own)
@@ -221,11 +261,14 @@ struct lm63_data {
 	struct mutex update_lock;
 	char valid; /* zero until following fields are valid */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long last_updated; /* in jiffies */
 	int kind;
 	int temp2_offset;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char lut_valid; /* zero until lut fields are valid */
 	unsigned long last_updated; /* in jiffies */
 	unsigned long lut_last_updated; /* in jiffies */
@@ -236,12 +279,16 @@ struct lm63_data {
 	int max_convrate_hz;
 	int lut_size;		/* 8 or 12 */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* registers values */
 	u8 config, config_fan;
 	u16 fan[2];	/* 0: input
 			   1: low limit */
 	u8 pwm1_freq;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8 pwm1_value;
 	s8 temp8[3];	/* 0: local input
@@ -255,6 +302,8 @@ struct lm63_data {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 pwm1[13];	/* 0: current output
 			   1-12: lookup table */
 	s8 temp8[15];	/* 0: local input
@@ -291,9 +340,15 @@ static inline int lut_temp_to_reg(struct lm63_data *data, long val)
 {
 	val -= data->temp2_offset;
 	if (data->lut_temp_highres)
+<<<<<<< HEAD
 		return DIV_ROUND_CLOSEST(SENSORS_LIMIT(val, 0, 127500), 500);
 	else
 		return DIV_ROUND_CLOSEST(SENSORS_LIMIT(val, 0, 127000), 1000);
+=======
+		return DIV_ROUND_CLOSEST(clamp_val(val, 0, 127500), 500);
+	else
+		return DIV_ROUND_CLOSEST(clamp_val(val, 0, 127000), 1000);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -329,9 +384,14 @@ static struct lm63_data *lm63_update_device(struct device *dev)
 
 	mutex_lock(&data->update_lock);
 
+<<<<<<< HEAD
 	next_update = data->last_updated
 	  + msecs_to_jiffies(data->update_interval) + 1;
 
+=======
+	next_update = data->last_updated +
+		      msecs_to_jiffies(data->update_interval);
+>>>>>>> refs/remotes/origin/master
 	if (time_after(jiffies, next_update) || !data->valid) {
 		if (data->config & 0x04) { /* tachometer enabled  */
 			/* order matters for fan1_input */
@@ -426,7 +486,10 @@ static int lm63_lut_looks_bad(struct i2c_client *client)
 	return i == data->lut_size ? 0 : 1;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Sysfs callback functions and files
  */
@@ -445,15 +508,21 @@ static ssize_t set_fan(struct device *dev, struct device_attribute *dummy,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm63_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan[1] = FAN_TO_REG(val);
@@ -465,6 +534,7 @@ static ssize_t set_fan(struct device *dev, struct device_attribute *dummy,
 	return count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_pwm1(struct device *dev, struct device_attribute *dummy,
 			 char *buf)
@@ -492,6 +562,8 @@ static ssize_t set_pwm1(struct device *dev, struct device_attribute *dummy,
 			   (val * data->pwm1_freq * 2 + 127) / 255;
 	i2c_smbus_write_byte_data(client, LM63_REG_PWM_VALUE, data->pwm1_value);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_pwm1(struct device *dev, struct device_attribute *devattr,
 			 char *buf)
 {
@@ -529,17 +601,25 @@ static ssize_t set_pwm1(struct device *dev, struct device_attribute *devattr,
 		return err;
 
 	reg = nr ? LM63_REG_LUT_PWM(nr - 1) : LM63_REG_PWM_VALUE;
+<<<<<<< HEAD
 	val = SENSORS_LIMIT(val, 0, 255);
+=======
+	val = clamp_val(val, 0, 255);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->pwm1[nr] = data->pwm_highres ? val :
 			(val * data->pwm1_freq * 2 + 127) / 255;
 	i2c_smbus_write_byte_data(client, reg, data->pwm1[nr]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_pwm1_enable(struct device *dev, struct device_attribute *dummy,
 				char *buf)
@@ -547,13 +627,20 @@ static ssize_t show_pwm1_enable(struct device *dev, struct device_attribute *dum
 static ssize_t show_pwm1_enable(struct device *dev,
 				struct device_attribute *dummy, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_pwm1_enable(struct device *dev,
+				struct device_attribute *dummy, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm63_data *data = lm63_update_device(dev);
 	return sprintf(buf, "%d\n", data->config_fan & 0x20 ? 1 : 2);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_pwm1_enable(struct device *dev,
 			       struct device_attribute *dummy,
 			       const char *buf, size_t count)
@@ -589,7 +676,10 @@ static ssize_t set_pwm1_enable(struct device *dev,
 	return count;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * There are 8bit registers for both local(temp1) and remote(temp2) sensor.
  * For remote sensor registers temp2_offset has to be considered,
@@ -612,6 +702,7 @@ static ssize_t show_remote_temp8(struct device *dev,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct lm63_data *data = lm63_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", TEMP8_FROM_REG(data->temp8[attr->index])
 		       + data->temp2_offset);
 }
@@ -628,6 +719,8 @@ static ssize_t set_local_temp8(struct device *dev,
 	data->temp8[1] = TEMP8_TO_REG(val);
 	i2c_smbus_write_byte_data(client, LM63_REG_LOCAL_HIGH, data->temp8[1]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%d\n", temp8_from_reg(data, attr->index)
 		       + data->temp2_offset);
 }
@@ -677,7 +770,10 @@ static ssize_t set_temp8(struct device *dev, struct device_attribute *devattr,
 	}
 	data->temp8[nr] = temp;
 	i2c_smbus_write_byte_data(client, reg, temp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -688,9 +784,12 @@ static ssize_t show_temp11(struct device *dev, struct device_attribute *devattr,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct lm63_data *data = lm63_update_device(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", TEMP11_FROM_REG(data->temp11[attr->index])
 		       + data->temp2_offset);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int nr = attr->index;
 	int temp;
 
@@ -710,31 +809,44 @@ static ssize_t show_temp11(struct device *dev, struct device_attribute *devattr,
 			temp = TEMP11_FROM_REG(data->temp11[nr]);
 	}
 	return sprintf(buf, "%d\n", temp + data->temp2_offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t set_temp11(struct device *dev, struct device_attribute *devattr,
 			  const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const u8 reg[4] = {
 =======
 	static const u8 reg[6] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const u8 reg[6] = {
+>>>>>>> refs/remotes/origin/master
 		LM63_REG_REMOTE_LOW_MSB,
 		LM63_REG_REMOTE_LOW_LSB,
 		LM63_REG_REMOTE_HIGH_MSB,
 		LM63_REG_REMOTE_HIGH_LSB,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		LM63_REG_REMOTE_OFFSET_MSB,
 		LM63_REG_REMOTE_OFFSET_LSB,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		LM63_REG_REMOTE_OFFSET_MSB,
+		LM63_REG_REMOTE_OFFSET_LSB,
+>>>>>>> refs/remotes/origin/master
 	};
 
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm63_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 	int nr = attr->index;
@@ -742,6 +854,8 @@ static ssize_t set_temp11(struct device *dev, struct device_attribute *devattr,
 	mutex_lock(&data->update_lock);
 	data->temp11[nr] = TEMP11_TO_REG(val - data->temp2_offset);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 	int nr = attr->index;
@@ -756,7 +870,10 @@ static ssize_t set_temp11(struct device *dev, struct device_attribute *devattr,
 	else
 		data->temp11[nr] = TEMP11_TO_REG(val - data->temp2_offset);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	i2c_smbus_write_byte_data(client, reg[(nr - 1) * 2],
 				  data->temp11[nr] >> 8);
 	i2c_smbus_write_byte_data(client, reg[(nr - 1) * 2 + 1],
@@ -766,6 +883,7 @@ static ssize_t set_temp11(struct device *dev, struct device_attribute *devattr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Hysteresis register holds a relative value, while we want to present
    an absolute to user-space */
 static ssize_t show_temp2_crit_hyst(struct device *dev, struct device_attribute *dummy,
@@ -774,6 +892,8 @@ static ssize_t show_temp2_crit_hyst(struct device *dev, struct device_attribute 
 	struct lm63_data *data = lm63_update_device(dev);
 	return sprintf(buf, "%d\n", TEMP8_FROM_REG(data->temp8[2])
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Hysteresis register holds a relative value, while we want to present
  * an absolute to user-space
@@ -783,16 +903,22 @@ static ssize_t show_temp2_crit_hyst(struct device *dev,
 {
 	struct lm63_data *data = lm63_update_device(dev);
 	return sprintf(buf, "%d\n", temp8_from_reg(data, 2)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       + data->temp2_offset
 		       - TEMP8_FROM_REG(data->temp2_crit_hyst));
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* And now the other way around, user-space provides an absolute
    hysteresis value and we have to store a relative one */
 static ssize_t set_temp2_crit_hyst(struct device *dev, struct device_attribute *dummy,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_lut_temp_hyst(struct device *dev,
 				  struct device_attribute *devattr, char *buf)
 {
@@ -810,11 +936,15 @@ static ssize_t show_lut_temp_hyst(struct device *dev,
  */
 static ssize_t set_temp2_crit_hyst(struct device *dev,
 				   struct device_attribute *dummy,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				   const char *buf, size_t count)
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	struct lm63_data *data = i2c_get_clientdata(client);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 	long hyst;
@@ -822,6 +952,8 @@ static ssize_t set_temp2_crit_hyst(struct device *dev,
 	mutex_lock(&data->update_lock);
 	hyst = TEMP8_FROM_REG(data->temp8[2]) + data->temp2_offset - val;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 	long hyst;
@@ -832,7 +964,10 @@ static ssize_t set_temp2_crit_hyst(struct device *dev,
 
 	mutex_lock(&data->update_lock);
 	hyst = temp8_from_reg(data, 2) + data->temp2_offset - val;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	i2c_smbus_write_byte_data(client, LM63_REG_REMOTE_TCRIT_HYST,
 				  HYST_TO_REG(hyst));
 	mutex_unlock(&data->update_lock);
@@ -840,7 +975,10 @@ static ssize_t set_temp2_crit_hyst(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Set conversion rate.
  * client->update_lock must be held when calling this function.
@@ -887,7 +1025,11 @@ static ssize_t set_update_interval(struct device *dev,
 		return err;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	lm63_set_convrate(client, data, SENSORS_LIMIT(val, 0, 100000));
+=======
+	lm63_set_convrate(client, data, clamp_val(val, 0, 100000));
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 
 	return count;
@@ -928,7 +1070,10 @@ static ssize_t set_type(struct device *dev, struct device_attribute *attr,
 	return count;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_alarms(struct device *dev, struct device_attribute *dummy,
 			   char *buf)
 {
@@ -951,6 +1096,7 @@ static SENSOR_DEVICE_ATTR(fan1_min, S_IWUSR | S_IRUGO, show_fan,
 	set_fan, 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEVICE_ATTR(pwm1, S_IWUSR | S_IRUGO, show_pwm1, set_pwm1);
 static DEVICE_ATTR(pwm1_enable, S_IRUGO, show_pwm1_enable, NULL);
 
@@ -958,6 +1104,8 @@ static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_local_temp8, NULL, 0);
 static SENSOR_DEVICE_ATTR(temp1_max, S_IWUSR | S_IRUGO, show_local_temp8,
 	set_local_temp8, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(pwm1, S_IWUSR | S_IRUGO, show_pwm1, set_pwm1, 0);
 static DEVICE_ATTR(pwm1_enable, S_IWUSR | S_IRUGO,
 	show_pwm1_enable, set_pwm1_enable);
@@ -1037,13 +1185,17 @@ static SENSOR_DEVICE_ATTR(pwm1_auto_point12_temp_hyst, S_IRUGO,
 static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_local_temp8, NULL, 0);
 static SENSOR_DEVICE_ATTR(temp1_max, S_IWUSR | S_IRUGO, show_local_temp8,
 	set_temp8, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static SENSOR_DEVICE_ATTR(temp2_input, S_IRUGO, show_temp11, NULL, 0);
 static SENSOR_DEVICE_ATTR(temp2_min, S_IWUSR | S_IRUGO, show_temp11,
 	set_temp11, 1);
 static SENSOR_DEVICE_ATTR(temp2_max, S_IWUSR | S_IRUGO, show_temp11,
 	set_temp11, 2);
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * On LM63, temp2_crit can be set only once, which should be job
@@ -1055,6 +1207,8 @@ static DEVICE_ATTR(temp2_crit_hyst, S_IWUSR | S_IRUGO, show_temp2_crit_hyst,
 	set_temp2_crit_hyst);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(temp2_offset, S_IWUSR | S_IRUGO, show_temp11,
 	set_temp11, 3);
 static SENSOR_DEVICE_ATTR(temp2_crit, S_IRUGO, show_remote_temp8,
@@ -1064,7 +1218,10 @@ static DEVICE_ATTR(temp2_crit_hyst, S_IWUSR | S_IRUGO, show_temp2_crit_hyst,
 
 static DEVICE_ATTR(temp2_type, S_IWUSR | S_IRUGO, show_type, set_type);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Individual alarm files */
 static SENSOR_DEVICE_ATTR(fan1_min_alarm, S_IRUGO, show_alarm, NULL, 0);
 static SENSOR_DEVICE_ATTR(temp2_crit_alarm, S_IRUGO, show_alarm, NULL, 1);
@@ -1076,10 +1233,13 @@ static SENSOR_DEVICE_ATTR(temp1_max_alarm, S_IRUGO, show_alarm, NULL, 6);
 static DEVICE_ATTR(alarms, S_IRUGO, show_alarms, NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute *lm63_attributes[] = {
 	&dev_attr_pwm1.attr,
 	&dev_attr_pwm1_enable.attr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(update_interval, S_IRUGO | S_IWUSR, show_update_interval,
 		   set_update_interval);
 
@@ -1111,16 +1271,23 @@ static struct attribute *lm63_attributes[] = {
 	&sensor_dev_attr_pwm1_auto_point8_temp.dev_attr.attr,
 	&sensor_dev_attr_pwm1_auto_point8_temp_hyst.dev_attr.attr,
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_temp1_input.dev_attr.attr,
 	&sensor_dev_attr_temp2_input.dev_attr.attr,
 	&sensor_dev_attr_temp2_min.dev_attr.attr,
 	&sensor_dev_attr_temp1_max.dev_attr.attr,
 	&sensor_dev_attr_temp2_max.dev_attr.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&sensor_dev_attr_temp2_offset.dev_attr.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&sensor_dev_attr_temp2_offset.dev_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_temp2_crit.dev_attr.attr,
 	&dev_attr_temp2_crit_hyst.attr,
 
@@ -1131,11 +1298,14 @@ static struct attribute *lm63_attributes[] = {
 	&sensor_dev_attr_temp1_max_alarm.dev_attr.attr,
 	&dev_attr_alarms.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	NULL
 };
 
 static const struct attribute_group lm63_group = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_update_interval.attr,
 	NULL
 };
@@ -1184,7 +1354,10 @@ static umode_t lm63_attribute_mode(struct kobject *kobj,
 
 static const struct attribute_group lm63_group = {
 	.is_visible = lm63_attribute_mode,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.attrs = lm63_attributes,
 };
 
@@ -1206,6 +1379,7 @@ static const struct attribute_group lm63_group_fan1 = {
 
 /* Return 0 if detection is successful, -ENODEV otherwise */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int lm63_detect(struct i2c_client *new_client,
 		       struct i2c_board_info *info)
 {
@@ -1214,6 +1388,8 @@ static int lm63_detect(struct i2c_client *new_client,
 	u8 reg_alert_status, reg_alert_mask;
 	int address = new_client->addr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int lm63_detect(struct i2c_client *client,
 		       struct i2c_board_info *info)
 {
@@ -1221,11 +1397,15 @@ static int lm63_detect(struct i2c_client *client,
 	u8 man_id, chip_id, reg_config1, reg_config2;
 	u8 reg_alert_status, reg_alert_mask;
 	int address = client->addr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	man_id = i2c_smbus_read_byte_data(new_client, LM63_REG_MAN_ID);
 	chip_id = i2c_smbus_read_byte_data(new_client, LM63_REG_CHIP_ID);
@@ -1239,6 +1419,8 @@ static int lm63_detect(struct i2c_client *client,
 	reg_alert_mask = i2c_smbus_read_byte_data(new_client,
 			 LM63_REG_ALERT_MASK);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	man_id = i2c_smbus_read_byte_data(client, LM63_REG_MAN_ID);
 	chip_id = i2c_smbus_read_byte_data(client, LM63_REG_CHIP_ID);
 
@@ -1247,7 +1429,10 @@ static int lm63_detect(struct i2c_client *client,
 	reg_alert_status = i2c_smbus_read_byte_data(client,
 			   LM63_REG_ALERT_STATUS);
 	reg_alert_mask = i2c_smbus_read_byte_data(client, LM63_REG_ALERT_MASK);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (man_id != 0x01 /* National Semiconductor */
 	 || (reg_config1 & 0x18) != 0x00
@@ -1265,10 +1450,15 @@ static int lm63_detect(struct i2c_client *client,
 	else if (chip_id == 0x51 && (address == 0x18 || address == 0x4e))
 		strlcpy(info->type, "lm64", I2C_NAME_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (chip_id == 0x49 && address == 0x4c)
 		strlcpy(info->type, "lm96163", I2C_NAME_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (chip_id == 0x49 && address == 0x4c)
+		strlcpy(info->type, "lm96163", I2C_NAME_SIZE);
+>>>>>>> refs/remotes/origin/master
 	else
 		return -ENODEV;
 
@@ -1276,8 +1466,11 @@ static int lm63_detect(struct i2c_client *client,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int lm63_probe(struct i2c_client *new_client,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Ideally we shouldn't have to initialize anything, since the BIOS
  * should have taken care of everything
@@ -1358,12 +1551,16 @@ static void lm63_init_client(struct i2c_client *client)
 }
 
 static int lm63_probe(struct i2c_client *client,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		      const struct i2c_device_id *id)
 {
 	struct lm63_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct lm63_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
@@ -1375,6 +1572,13 @@ static int lm63_probe(struct i2c_client *client,
 =======
 	i2c_set_clientdata(client, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct lm63_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	i2c_set_clientdata(client, data);
+>>>>>>> refs/remotes/origin/master
 	data->valid = 0;
 	mutex_init(&data->update_lock);
 
@@ -1384,6 +1588,7 @@ static int lm63_probe(struct i2c_client *client,
 		data->temp2_offset = 16000;
 
 	/* Initialize chip */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	lm63_init_client(new_client);
 
@@ -1399,12 +1604,18 @@ static int lm63_probe(struct i2c_client *client,
 
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	lm63_init_client(client);
 
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&client->dev.kobj, &lm63_group);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 	if (data->config & 0x04) { /* tachometer enabled */
 		err = sysfs_create_group(&client->dev.kobj, &lm63_group_fan1);
 		if (err)
@@ -1422,7 +1633,10 @@ static int lm63_probe(struct i2c_client *client,
 	}
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(data->hwmon_dev)) {
 		err = PTR_ERR(data->hwmon_dev);
 		goto exit_remove_files;
@@ -1432,15 +1646,19 @@ static int lm63_probe(struct i2c_client *client,
 
 exit_remove_files:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sysfs_remove_group(&new_client->dev.kobj, &lm63_group);
 	sysfs_remove_group(&new_client->dev.kobj, &lm63_group_fan1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sysfs_remove_group(&client->dev.kobj, &lm63_group);
 	sysfs_remove_group(&client->dev.kobj, &lm63_group_fan1);
 	if (data->kind == lm96163) {
 		device_remove_file(&client->dev, &dev_attr_temp2_type);
 		sysfs_remove_group(&client->dev.kobj, &lm63_group_extra_lut);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 exit_free:
 	kfree(data);
@@ -1486,6 +1704,11 @@ static void lm63_init_client(struct i2c_client *client)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int lm63_remove(struct i2c_client *client)
 {
 	struct lm63_data *data = i2c_get_clientdata(client);
@@ -1494,11 +1717,15 @@ static int lm63_remove(struct i2c_client *client)
 	sysfs_remove_group(&client->dev.kobj, &lm63_group);
 	sysfs_remove_group(&client->dev.kobj, &lm63_group_fan1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (data->kind == lm96163) {
 		device_remove_file(&client->dev, &dev_attr_temp2_type);
 		sysfs_remove_group(&client->dev.kobj, &lm63_group_extra_lut);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	kfree(data);
@@ -1578,6 +1805,12 @@ static void __exit sensors_lm63_exit(void)
 	i2c_del_driver(&lm63_driver);
 }
 =======
+=======
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Driver data (common to all clients)
  */
@@ -1603,14 +1836,20 @@ static struct i2c_driver lm63_driver = {
 };
 
 module_i2c_driver(lm63_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jean Delvare <khali@linux-fr.org>");
 MODULE_DESCRIPTION("LM63 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(sensors_lm63_init);
 module_exit(sensors_lm63_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

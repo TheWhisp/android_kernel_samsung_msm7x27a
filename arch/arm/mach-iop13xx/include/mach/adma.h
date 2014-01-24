@@ -218,6 +218,7 @@ iop_chan_xor_slot_count(size_t len, int src_cnt, int *slots_per_op)
 #define iop_chan_pq_slot_count iop_chan_xor_slot_count
 #define iop_chan_pq_zero_sum_slot_count iop_chan_xor_slot_count
 
+<<<<<<< HEAD
 static inline u32 iop_desc_get_dest_addr(struct iop_adma_desc_slot *desc,
 					struct iop_adma_chan *chan)
 {
@@ -232,6 +233,8 @@ static inline u32 iop_desc_get_qdest_addr(struct iop_adma_desc_slot *desc,
 	return hw_desc->q_dest_addr;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 iop_desc_get_byte_count(struct iop_adma_desc_slot *desc,
 					struct iop_adma_chan *chan)
 {
@@ -350,6 +353,7 @@ iop_desc_init_pq(struct iop_adma_desc_slot *desc, int src_cnt,
 	hw_desc->desc_ctrl = u_desc_ctrl.value;
 }
 
+<<<<<<< HEAD
 static inline int iop_desc_is_pq(struct iop_adma_desc_slot *desc)
 {
 	struct iop13xx_adma_desc_hw *hw_desc = desc->hw_desc;
@@ -362,6 +366,8 @@ static inline int iop_desc_is_pq(struct iop_adma_desc_slot *desc)
 	return u_desc_ctrl.field.pq_xfer_en;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void
 iop_desc_init_pq_zero_sum(struct iop_adma_desc_slot *desc, int src_cnt,
 			  unsigned long flags)

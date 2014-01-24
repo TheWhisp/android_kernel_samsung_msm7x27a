@@ -33,9 +33,14 @@
 #include <asm/irqflags.h>
 #include <asm/ftrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/hw_irq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hw_irq.h>
+#include <asm/context_tracking.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * System calls.
@@ -65,6 +70,7 @@ system_call_common:
 	std	r12,_MSR(r1)
 	std	r0,GPR0(r1)
 	std	r10,GPR1(r1)
+<<<<<<< HEAD
 	ACCOUNT_CPU_USER_ENTRY(r10, r11)
 	/*
 	 * This "crclr so" clears CR0.SO, which is the error indication on
@@ -75,6 +81,13 @@ system_call_common:
 	crclr	so
 	std	r2,GPR2(r1)
 	std	r3,GPR3(r1)
+=======
+	beq	2f			/* if from kernel mode */
+	ACCOUNT_CPU_USER_ENTRY(r10, r11)
+2:	std	r2,GPR2(r1)
+	std	r3,GPR3(r1)
+	mfcr	r2
+>>>>>>> refs/remotes/origin/master
 	std	r4,GPR4(r1)
 	std	r5,GPR5(r1)
 	std	r6,GPR6(r1)
@@ -85,6 +98,7 @@ system_call_common:
 	std	r11,GPR10(r1)
 	std	r11,GPR11(r1)
 	std	r11,GPR12(r1)
+<<<<<<< HEAD
 	std	r9,GPR13(r1)
 	mfcr	r9
 	mflr	r10
@@ -97,17 +111,42 @@ system_call_common:
 	std	r9,_XER(r1)
 	std	r10,_CTR(r1)
 	std	r3,ORIG_GPR3(r1)
+=======
+	std	r11,_XER(r1)
+	std	r11,_CTR(r1)
+	std	r9,GPR13(r1)
+	mflr	r10
+	/*
+	 * This clears CR0.SO (bit 28), which is the error indication on
+	 * return from this system call.
+	 */
+	rldimi	r2,r11,28,(63-28)
+	li	r11,0xc01
+	std	r10,_LINK(r1)
+	std	r11,_TRAP(r1)
+	std	r3,ORIG_GPR3(r1)
+	std	r2,_CCR(r1)
+>>>>>>> refs/remotes/origin/master
 	ld	r2,PACATOC(r13)
 	addi	r9,r1,STACK_FRAME_OVERHEAD
 	ld	r11,exception_marker@toc(r2)
 	std	r11,-16(r9)		/* "regshere" marker */
+<<<<<<< HEAD
 #if defined(CONFIG_VIRT_CPU_ACCOUNTING) && defined(CONFIG_PPC_SPLPAR)
+=======
+#if defined(CONFIG_VIRT_CPU_ACCOUNTING_NATIVE) && defined(CONFIG_PPC_SPLPAR)
+>>>>>>> refs/remotes/origin/master
 BEGIN_FW_FTR_SECTION
 	beq	33f
 	/* if from user, see if there are any DTL entries to process */
 	ld	r10,PACALPPACAPTR(r13)	/* get ptr to VPA */
 	ld	r11,PACA_DTL_RIDX(r13)	/* get log read index */
+<<<<<<< HEAD
 	ld	r10,LPPACA_DTLIDX(r10)	/* get log write index */
+=======
+	addi	r10,r10,LPPACA_DTLIDX
+	LDX_BE	r10,0,r10		/* get log write index */
+>>>>>>> refs/remotes/origin/master
 	cmpd	cr1,r11,r10
 	beq+	cr1,33f
 	bl	.accumulate_stolen_time
@@ -117,6 +156,7 @@ BEGIN_FW_FTR_SECTION
 	addi	r9,r1,STACK_FRAME_OVERHEAD
 33:
 END_FW_FTR_SECTION_IFSET(FW_FEATURE_SPLPAR)
+<<<<<<< HEAD
 #endif /* CONFIG_VIRT_CPU_ACCOUNTING && CONFIG_PPC_SPLPAR */
 
 <<<<<<< HEAD
@@ -150,6 +190,10 @@ END_FW_FTR_SECTION_IFSET(FW_FEATURE_ISERIES)
 #else
 	mfmsr	r11
 =======
+=======
+#endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE && CONFIG_PPC_SPLPAR */
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * A syscall should always be called with interrupts enabled
 	 * so we just unconditionally hard-enable here. When some kind
@@ -167,20 +211,29 @@ END_FW_FTR_SECTION_IFSET(FW_FEATURE_ISERIES)
 	wrteei	1
 #else
 	ld	r11,PACAKMSR(r13)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ori	r11,r11,MSR_EE
 	mtmsrd	r11,1
 #endif /* CONFIG_PPC_BOOK3E */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We do need to set SOFTE in the stack frame or the return
 	 * from interrupt will be painful
 	 */
 	li	r10,1
 	std	r10,SOFTE(r1)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef SHOW_SYSCALLS
 	bl	.do_show_syscall
 	REST_GPR(0,r1)
@@ -188,11 +241,19 @@ END_FW_FTR_SECTION_IFSET(FW_FEATURE_ISERIES)
 	REST_2GPRS(7,r1)
 	addi	r9,r1,STACK_FRAME_OVERHEAD
 #endif
+<<<<<<< HEAD
 	clrrdi	r11,r1,THREAD_SHIFT
 	ld	r10,TI_FLAGS(r11)
 	andi.	r11,r10,_TIF_SYSCALL_T_OR_A
 	bne-	syscall_dotrace
 syscall_dotrace_cont:
+=======
+	CURRENT_THREAD_INFO(r11, r1)
+	ld	r10,TI_FLAGS(r11)
+	andi.	r11,r10,_TIF_SYSCALL_T_OR_A
+	bne	syscall_dotrace
+.Lsyscall_dotrace_cont:
+>>>>>>> refs/remotes/origin/master
 	cmpldi	0,r0,NR_syscalls
 	bge-	syscall_enosys
 
@@ -223,7 +284,11 @@ syscall_exit:
 	bl	.do_show_syscall_exit
 	ld	r3,RESULT(r1)
 #endif
+<<<<<<< HEAD
 	clrrdi	r12,r1,THREAD_SHIFT
+=======
+	CURRENT_THREAD_INFO(r12, r1)
+>>>>>>> refs/remotes/origin/master
 
 	ld	r8,_MSR(r1)
 #ifdef CONFIG_PPC_BOOK3S
@@ -232,17 +297,23 @@ syscall_exit:
 	beq-	unrecov_restore
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Disable interrupts so current_thread_info()->flags can't change,
 =======
 	/*
 	 * Disable interrupts so current_thread_info()->flags can't change,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Disable interrupts so current_thread_info()->flags can't change,
+>>>>>>> refs/remotes/origin/master
 	 * and so that we don't get interrupted after loading SRR0/1.
 	 */
 #ifdef CONFIG_PPC_BOOK3E
 	wrteei	0
 #else
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mfmsr	r10
 	rldicl	r10,r10,48,1
@@ -251,6 +322,19 @@ syscall_exit:
 	ld	r10,PACAKMSR(r13)
 >>>>>>> refs/remotes/origin/cm-10.0
 	mtmsrd	r10,1
+=======
+	ld	r10,PACAKMSR(r13)
+	/*
+	 * For performance reasons we clear RI the same time that we
+	 * clear EE. We only need to clear RI just before we restore r13
+	 * below, but batching it with EE saves us one expensive mtmsrd call.
+	 * We have to be careful to restore RI if we branch anywhere from
+	 * here (eg syscall_exit_work).
+	 */
+	li	r9,MSR_RI
+	andc	r11,r10,r9
+	mtmsrd	r11,1
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC_BOOK3E */
 
 	ld	r9,TI_FLAGS(r12)
@@ -260,13 +344,18 @@ syscall_exit:
 	cmpld	r3,r11
 	ld	r5,_CCR(r1)
 	bge-	syscall_error
+<<<<<<< HEAD
 syscall_error_cont:
+=======
+.Lsyscall_error_cont:
+>>>>>>> refs/remotes/origin/master
 	ld	r7,_NIP(r1)
 BEGIN_FTR_SECTION
 	stdcx.	r0,0,r1			/* to clear the reservation */
 END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 	andi.	r6,r8,MSR_PR
 	ld	r4,_LINK(r1)
+<<<<<<< HEAD
 	/*
 	 * Clear RI before restoring r13.  If we are returning to
 	 * userspace and we take an exception after restoring r13,
@@ -281,6 +370,12 @@ END_FTR_SECTION_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 
 	beq-	1f
 	ACCOUNT_CPU_USER_EXIT(r11, r12)
+=======
+
+	beq-	1f
+	ACCOUNT_CPU_USER_EXIT(r11, r12)
+	HMT_MEDIUM_LOW_HAS_PPR
+>>>>>>> refs/remotes/origin/master
 	ld	r13,GPR13(r1)	/* only restore r13 if returning to usermode */
 1:	ld	r2,GPR2(r1)
 	ld	r1,GPR1(r1)
@@ -295,7 +390,11 @@ syscall_error:
 	oris	r5,r5,0x1000	/* Set SO bit in CR */
 	neg	r3,r3
 	std	r5,_CCR(r1)
+<<<<<<< HEAD
 	b	syscall_error_cont
+=======
+	b	.Lsyscall_error_cont
+>>>>>>> refs/remotes/origin/master
 	
 /* Traced system call support */
 syscall_dotrace:
@@ -315,15 +414,27 @@ syscall_dotrace:
 	ld	r7,GPR7(r1)
 	ld	r8,GPR8(r1)
 	addi	r9,r1,STACK_FRAME_OVERHEAD
+<<<<<<< HEAD
 	clrrdi	r10,r1,THREAD_SHIFT
 	ld	r10,TI_FLAGS(r10)
 	b	syscall_dotrace_cont
+=======
+	CURRENT_THREAD_INFO(r10, r1)
+	ld	r10,TI_FLAGS(r10)
+	b	.Lsyscall_dotrace_cont
+>>>>>>> refs/remotes/origin/master
 
 syscall_enosys:
 	li	r3,-ENOSYS
 	b	syscall_exit
 	
 syscall_exit_work:
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_BOOK3S
+	mtmsrd	r10,1		/* Restore RI */
+#endif
+>>>>>>> refs/remotes/origin/master
 	/* If TIF_RESTOREALL is set, don't scribble on either r3 or ccr.
 	 If TIF_NOERROR is set, just save r3 as it is. */
 
@@ -354,6 +465,10 @@ syscall_exit_work:
 	subi	r12,r12,TI_FLAGS
 
 4:	/* Anything else left to do? */
+<<<<<<< HEAD
+=======
+	SET_DEFAULT_THREAD_PPR(r3, r10)		/* Set thread.ppr = 3 */
+>>>>>>> refs/remotes/origin/master
 	andi.	r0,r9,(_TIF_SYSCALL_T_OR_A|_TIF_SINGLESTEP)
 	beq	.ret_from_except_lite
 
@@ -362,10 +477,14 @@ syscall_exit_work:
 	wrteei	1
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfmsr	r10
 =======
 	ld	r10,PACAKMSR(r13)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ld	r10,PACAKMSR(r13)
+>>>>>>> refs/remotes/origin/master
 	ori	r10,r10,MSR_EE
 	mtmsrd	r10,1
 #endif /* CONFIG_PPC_BOOK3E */
@@ -426,6 +545,19 @@ _GLOBAL(ret_from_fork)
 	li	r3,0
 	b	syscall_exit
 
+<<<<<<< HEAD
+=======
+_GLOBAL(ret_from_kernel_thread)
+	bl	.schedule_tail
+	REST_NVGPRS(r1)
+	ld	r14, 0(r14)
+	mtlr	r14
+	mr	r3,r15
+	blrl
+	li	r3,0
+	b	syscall_exit
+
+>>>>>>> refs/remotes/origin/master
 	.section	".toc","aw"
 DSCR_DEFAULT:
 	.tc dscr_default[TC],dscr_default
@@ -489,6 +621,21 @@ END_FTR_SECTION_IFSET(CPU_FTR_DSCR)
 	std	r23,_CCR(r1)
 	std	r1,KSP(r3)	/* Set old stack pointer */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_BOOK3S_64
+BEGIN_FTR_SECTION
+	/* Event based branch registers */
+	mfspr	r0, SPRN_BESCR
+	std	r0, THREAD_BESCR(r3)
+	mfspr	r0, SPRN_EBBHR
+	std	r0, THREAD_EBBHR(r3)
+	mfspr	r0, SPRN_EBBRR
+	std	r0, THREAD_EBBRR(r3)
+END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 	/* We need a sync somewhere here to make sure that if the
 	 * previous task gets rescheduled on another CPU, it sees all
@@ -508,6 +655,16 @@ BEGIN_FTR_SECTION
 	ldarx	r6,0,r1
 END_FTR_SECTION_IFSET(CPU_FTR_STCX_CHECKS_ADDRESS)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_BOOK3S
+/* Cancel all explict user streams as they will have no use after context
+ * switch and will stop the HW from creating streams itself
+ */
+	DCBT_STOP_ALL_STREAM_IDS(r6)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	addi	r6,r4,-THREAD	/* Convert THREAD to 'current' */
 	std	r6,PACACURRENT(r13)	/* Set new 'current' */
 
@@ -545,9 +702,17 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
 	 */
 	ld	r9,PACA_SLBSHADOWPTR(r13)
 	li	r12,0
+<<<<<<< HEAD
 	std	r12,SLBSHADOW_STACKESID(r9) /* Clear ESID */
 	std	r7,SLBSHADOW_STACKVSID(r9)  /* Save VSID */
 	std	r0,SLBSHADOW_STACKESID(r9)  /* Save ESID */
+=======
+	std	r12,SLBSHADOW_STACKESID(r9)	/* Clear ESID */
+	li	r12,SLBSHADOW_STACKVSID
+	STDX_BE	r7,r12,r9			/* Save VSID */
+	li	r12,SLBSHADOW_STACKESID
+	STDX_BE	r0,r12,r9			/* Save ESID */
+>>>>>>> refs/remotes/origin/master
 
 	/* No need to check for MMU_FTR_NO_SLBIE_B here, since when
 	 * we have 1TB segments, the only CPUs known to have the errata
@@ -562,7 +727,11 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
 2:
 #endif /* !CONFIG_PPC_BOOK3S */
 
+<<<<<<< HEAD
 	clrrdi	r7,r8,THREAD_SHIFT	/* base of new stack */
+=======
+	CURRENT_THREAD_INFO(r7, r8)  /* base of new stack */
+>>>>>>> refs/remotes/origin/master
 	/* Note: this uses SWITCH_FRAME_SIZE rather than INT_FRAME_SIZE
 	   because we don't need to leave the 288-byte ABI gap at the
 	   top of the kernel stack. */
@@ -571,6 +740,24 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_1T_SEGMENT)
 	mr	r1,r8		/* start using new stack pointer */
 	std	r7,PACAKSAVE(r13)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_BOOK3S_64
+BEGIN_FTR_SECTION
+	/* Event based branch registers */
+	ld	r0, THREAD_BESCR(r4)
+	mtspr	SPRN_BESCR, r0
+	ld	r0, THREAD_EBBHR(r4)
+	mtspr	SPRN_EBBHR, r0
+	ld	r0, THREAD_EBBRR(r4)
+	mtspr	SPRN_EBBRR, r0
+
+	ld	r0,THREAD_TAR(r4)
+	mtspr	SPRN_TAR,r0
+END_FTR_SECTION_IFSET(CPU_FTR_ARCH_207S)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ALTIVEC
 BEGIN_FTR_SECTION
 	ld	r0,THREAD_VRSAVE(r4)
@@ -585,7 +772,17 @@ BEGIN_FTR_SECTION
 	cmpwi	r6,0
 	bne	1f
 	ld	r0,0(r7)
+<<<<<<< HEAD
 1:	cmpd	r0,r25
+=======
+1:
+BEGIN_FTR_SECTION_NESTED(70)
+	mfspr	r8, SPRN_FSCR
+	rldimi	r8, r6, FSCR_DSCR_LG, (63 - FSCR_DSCR_LG)
+	mtspr	SPRN_FSCR, r8
+END_FTR_SECTION_NESTED(CPU_FTR_ARCH_207S, CPU_FTR_ARCH_207S, 70)
+	cmpd	r0,r25
+>>>>>>> refs/remotes/origin/master
 	beq	2f
 	mtspr	SPRN_DSCR,r0
 2:
@@ -622,6 +819,7 @@ _GLOBAL(ret_from_except_lite)
 #ifdef CONFIG_PPC_BOOK3E
 	wrteei	0
 #else
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mfmsr	r10		/* Get current interrupt state */
 	rldicl	r9,r10,48,1	/* clear MSR_EE */
@@ -675,6 +873,128 @@ ALT_FW_FTR_SECTION_END_IFCLR(FW_FEATURE_ISERIES)
 #else
 =======
 #endif /* !CONFIG_PREEMPT */
+=======
+	ld	r10,PACAKMSR(r13) /* Get kernel MSR without EE */
+	mtmsrd	r10,1		  /* Update machine state */
+#endif /* CONFIG_PPC_BOOK3E */
+
+	CURRENT_THREAD_INFO(r9, r1)
+	ld	r3,_MSR(r1)
+#ifdef CONFIG_PPC_BOOK3E
+	ld	r10,PACACURRENT(r13)
+#endif /* CONFIG_PPC_BOOK3E */
+	ld	r4,TI_FLAGS(r9)
+	andi.	r3,r3,MSR_PR
+	beq	resume_kernel
+#ifdef CONFIG_PPC_BOOK3E
+	lwz	r3,(THREAD+THREAD_DBCR0)(r10)
+#endif /* CONFIG_PPC_BOOK3E */
+
+	/* Check current_thread_info()->flags */
+	andi.	r0,r4,_TIF_USER_WORK_MASK
+#ifdef CONFIG_PPC_BOOK3E
+	bne	1f
+	/*
+	 * Check to see if the dbcr0 register is set up to debug.
+	 * Use the internal debug mode bit to do this.
+	 */
+	andis.	r0,r3,DBCR0_IDM@h
+	beq	restore
+	mfmsr	r0
+	rlwinm	r0,r0,0,~MSR_DE	/* Clear MSR.DE */
+	mtmsr	r0
+	mtspr	SPRN_DBCR0,r3
+	li	r10, -1
+	mtspr	SPRN_DBSR,r10
+	b	restore
+#else
+	beq	restore
+#endif
+1:	andi.	r0,r4,_TIF_NEED_RESCHED
+	beq	2f
+	bl	.restore_interrupts
+	SCHEDULE_USER
+	b	.ret_from_except_lite
+
+2:	bl	.save_nvgprs
+	bl	.restore_interrupts
+	addi	r3,r1,STACK_FRAME_OVERHEAD
+	bl	.do_notify_resume
+	b	.ret_from_except
+
+resume_kernel:
+	/* check current_thread_info, _TIF_EMULATE_STACK_STORE */
+	andis.	r8,r4,_TIF_EMULATE_STACK_STORE@h
+	beq+	1f
+
+	addi	r8,r1,INT_FRAME_SIZE	/* Get the kprobed function entry */
+
+	lwz	r3,GPR1(r1)
+	subi	r3,r3,INT_FRAME_SIZE	/* dst: Allocate a trampoline exception frame */
+	mr	r4,r1			/* src:  current exception frame */
+	mr	r1,r3			/* Reroute the trampoline frame to r1 */
+
+	/* Copy from the original to the trampoline. */
+	li	r5,INT_FRAME_SIZE/8	/* size: INT_FRAME_SIZE */
+	li	r6,0			/* start offset: 0 */
+	mtctr	r5
+2:	ldx	r0,r6,r4
+	stdx	r0,r6,r3
+	addi	r6,r6,8
+	bdnz	2b
+
+	/* Do real store operation to complete stwu */
+	lwz	r5,GPR1(r1)
+	std	r8,0(r5)
+
+	/* Clear _TIF_EMULATE_STACK_STORE flag */
+	lis	r11,_TIF_EMULATE_STACK_STORE@h
+	addi	r5,r9,TI_FLAGS
+0:	ldarx	r4,0,r5
+	andc	r4,r4,r11
+	stdcx.	r4,0,r5
+	bne-	0b
+1:
+
+#ifdef CONFIG_PREEMPT
+	/* Check if we need to preempt */
+	andi.	r0,r4,_TIF_NEED_RESCHED
+	beq+	restore
+	/* Check that preempt_count() == 0 and interrupts are enabled */
+	lwz	r8,TI_PREEMPT(r9)
+	cmpwi	cr1,r8,0
+	ld	r0,SOFTE(r1)
+	cmpdi	r0,0
+	crandc	eq,cr1*4+eq,eq
+	bne	restore
+
+	/*
+	 * Here we are preempting the current task. We want to make
+	 * sure we are soft-disabled first and reconcile irq state.
+	 */
+	RECONCILE_IRQ_STATE(r3,r4)
+1:	bl	.preempt_schedule_irq
+
+	/* Re-test flags and eventually loop */
+	CURRENT_THREAD_INFO(r9, r1)
+	ld	r4,TI_FLAGS(r9)
+	andi.	r0,r4,_TIF_NEED_RESCHED
+	bne	1b
+
+	/*
+	 * arch_local_irq_restore() from preempt_schedule_irq above may
+	 * enable hard interrupt but we really should disable interrupts
+	 * when we return from the interrupt, and so that we don't get
+	 * interrupted after loading SRR0/1.
+	 */
+#ifdef CONFIG_PPC_BOOK3E
+	wrteei	0
+#else
+	ld	r10,PACAKMSR(r13) /* Get kernel MSR without EE */
+	mtmsrd	r10,1		  /* Update machine state */
+#endif /* CONFIG_PPC_BOOK3E */
+#endif /* CONFIG_PREEMPT */
+>>>>>>> refs/remotes/origin/master
 
 	.globl	fast_exc_return_irq
 fast_exc_return_irq:
@@ -738,7 +1058,10 @@ ALT_FTR_SECTION_END_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 	.globl	fast_exception_return
 fast_exception_return:
 	ld	r3,_MSR(r1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ld	r4,_CTR(r1)
 	ld	r0,_LINK(r1)
 	mtctr	r4
@@ -751,6 +1074,7 @@ fast_exception_return:
 	andi.	r0,r3,MSR_RI
 	beq-	unrecov_restore
 
+<<<<<<< HEAD
 	/*
 <<<<<<< HEAD
 	 * Clear the reservation. If we know the CPU tracks the address of
@@ -766,10 +1090,20 @@ ALT_FTR_SECTION_END_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 	/*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Load PPR from thread struct before we clear MSR:RI */
+BEGIN_FTR_SECTION
+	ld	r2,PACACURRENT(r13)
+	ld	r2,TASKTHREADPPR(r2)
+END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Clear RI before restoring r13.  If we are returning to
 	 * userspace and we take an exception after restoring r13,
 	 * we end up corrupting the userspace r13 value.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mfmsr	r4
 	andc	r4,r4,r0	/* r0 contains MSR_RI here */
@@ -790,6 +1124,26 @@ ALT_FTR_SECTION_END_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 	 */
 	andi.	r0,r3,MSR_PR
 	beq	1f
+=======
+	ld	r4,PACAKMSR(r13) /* Get kernel MSR without EE */
+	andc	r4,r4,r0	 /* r0 contains MSR_RI here */
+	mtmsrd	r4,1
+
+#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+	/* TM debug */
+	std	r3, PACATMSCRATCH(r13) /* Stash returned-to MSR */
+#endif
+	/*
+	 * r13 is our per cpu area, only restore it if we are returning to
+	 * userspace the value stored in the stack frame may belong to
+	 * another CPU.
+	 */
+	andi.	r0,r3,MSR_PR
+	beq	1f
+BEGIN_FTR_SECTION
+	mtspr	SPRN_PPR,r2	/* Restore PPR */
+END_FTR_SECTION_IFSET(CPU_FTR_HAS_PPR)
+>>>>>>> refs/remotes/origin/master
 	ACCOUNT_CPU_USER_EXIT(r2, r4)
 	REST_GPR(13, r1)
 1:
@@ -811,6 +1165,7 @@ ALT_FTR_SECTION_END_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 
 #endif /* CONFIG_PPC_BOOK3E */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 .Liseries_check_pending_irqs:
 #ifdef CONFIG_PPC_ISERIES
@@ -837,6 +1192,8 @@ ALT_FTR_SECTION_END_IFCLR(CPU_FTR_STCX_CHECKS_ADDRESS)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We are returning to a context with interrupts soft disabled.
 	 *
@@ -896,12 +1253,27 @@ restore_check_irq_replay:
 	addi	r3,r1,STACK_FRAME_OVERHEAD;
 	bl	.timer_interrupt
 	b	.ret_from_except
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_BOOK3E
 1:	cmpwi	cr0,r3,0x280
+=======
+#ifdef CONFIG_PPC_DOORBELL
+1:
+#ifdef CONFIG_PPC_BOOK3E
+	cmpwi	cr0,r3,0x280
+#else
+	BEGIN_FTR_SECTION
+		cmpwi	cr0,r3,0xe80
+	FTR_SECTION_ELSE
+		cmpwi	cr0,r3,0xa00
+	ALT_FTR_SECTION_END_IFSET(CPU_FTR_HVMODE)
+#endif /* CONFIG_PPC_BOOK3E */
+>>>>>>> refs/remotes/origin/master
 	bne	1f
 	addi	r3,r1,STACK_FRAME_OVERHEAD;
 	bl	.doorbell_exception
 	b	.ret_from_except
+<<<<<<< HEAD
 #endif /* CONFIG_PPC_BOOK3E */
 1:	b	.ret_from_except /* What else to do here ? */
  
@@ -997,6 +1369,11 @@ user_work:
 >>>>>>> refs/remotes/origin/cm-10.0
 	b	.ret_from_except
 
+=======
+#endif /* CONFIG_PPC_DOORBELL */
+1:	b	.ret_from_except /* What else to do here ? */
+ 
+>>>>>>> refs/remotes/origin/master
 unrecov_restore:
 	addi	r3,r1,STACK_FRAME_OVERHEAD
 	bl	.unrecoverable_exception
@@ -1075,7 +1452,11 @@ _GLOBAL(enter_rtas)
 	
         li      r9,1
         rldicr  r9,r9,MSR_SF_LG,(63-MSR_SF_LG)
+<<<<<<< HEAD
 	ori	r9,r9,MSR_IR|MSR_DR|MSR_FE0|MSR_FE1|MSR_FP|MSR_RI
+=======
+	ori	r9,r9,MSR_IR|MSR_DR|MSR_FE0|MSR_FE1|MSR_FP|MSR_RI|MSR_LE
+>>>>>>> refs/remotes/origin/master
 	andc	r6,r0,r9
 	sync				/* disable interrupts so SRR0/1 */
 	mtmsrd	r0			/* don't get trashed */
@@ -1090,6 +1471,11 @@ _GLOBAL(enter_rtas)
 	b	.	/* prevent speculative execution */
 
 _STATIC(rtas_return_loc)
+<<<<<<< HEAD
+=======
+	FIXUP_ENDIAN
+
+>>>>>>> refs/remotes/origin/master
 	/* relocation is off at this point */
 	GET_PACA(r4)
 	clrldi	r4,r4,2			/* convert to realmode address */
@@ -1161,6 +1547,7 @@ _GLOBAL(enter_prom)
 	std	r10,_CCR(r1)
 	std	r11,_MSR(r1)
 
+<<<<<<< HEAD
 	/* Get the PROM entrypoint */
 	mtlr	r4
 
@@ -1183,6 +1570,32 @@ _GLOBAL(enter_prom)
 
 	/* Enter PROM here... */
 	blrl
+=======
+	/* Put PROM address in SRR0 */
+	mtsrr0	r4
+
+	/* Setup our trampoline return addr in LR */
+	bcl	20,31,$+4
+0:	mflr	r4
+	addi	r4,r4,(1f - 0b)
+       	mtlr	r4
+
+	/* Prepare a 32-bit mode big endian MSR
+	 */
+#ifdef CONFIG_PPC_BOOK3E
+	rlwinm	r11,r11,0,1,31
+	mtsrr1	r11
+	rfi
+#else /* CONFIG_PPC_BOOK3E */
+	LOAD_REG_IMMEDIATE(r12, MSR_SF | MSR_ISF | MSR_LE)
+	andc	r11,r11,r12
+	mtsrr1	r11
+	rfid
+#endif /* CONFIG_PPC_BOOK3E */
+
+1:	/* Return from OF */
+	FIXUP_ENDIAN
+>>>>>>> refs/remotes/origin/master
 
 	/* Just make sure that r1 top 32 bits didn't get
 	 * corrupt by OF

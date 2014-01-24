@@ -269,10 +269,14 @@ union sil24_cmd_block {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sil24_cerr_info {
 =======
 static const struct sil24_cerr_info {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct sil24_cerr_info {
+>>>>>>> refs/remotes/origin/master
 	unsigned int err_mask, action;
 	const char *desc;
 } sil24_cerr_db[] = {
@@ -422,10 +426,14 @@ static struct ata_port_operations sil24_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sata_sil24_msi;    /* Disable MSI */
 =======
 static bool sata_sil24_msi;    /* Disable MSI */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool sata_sil24_msi;    /* Disable MSI */
+>>>>>>> refs/remotes/origin/master
 module_param_named(msi, sata_sil24_msi, bool, S_IRUGO);
 MODULE_PARM_DESC(msi, "Enable MSI (Default: false)");
 
@@ -514,8 +522,11 @@ static int sil24_scr_read(struct ata_link *link, unsigned sc_reg, u32 *val)
 	void __iomem *scr_addr = sil24_port_base(link->ap) + PORT_SCONTROL;
 
 	if (sc_reg < ARRAY_SIZE(sil24_scr_map)) {
+<<<<<<< HEAD
 		void __iomem *addr;
 		addr = scr_addr + sil24_scr_map[sc_reg] * 4;
+=======
+>>>>>>> refs/remotes/origin/master
 		*val = readl(scr_addr + sil24_scr_map[sc_reg] * 4);
 		return 0;
 	}
@@ -527,8 +538,11 @@ static int sil24_scr_write(struct ata_link *link, unsigned sc_reg, u32 val)
 	void __iomem *scr_addr = sil24_port_base(link->ap) + PORT_SCONTROL;
 
 	if (sc_reg < ARRAY_SIZE(sil24_scr_map)) {
+<<<<<<< HEAD
 		void __iomem *addr;
 		addr = scr_addr + sil24_scr_map[sc_reg] * 4;
+=======
+>>>>>>> refs/remotes/origin/master
 		writel(val, scr_addr + sil24_scr_map[sc_reg] * 4);
 		return 0;
 	}
@@ -703,10 +717,14 @@ static int sil24_softreset(struct ata_link *link, unsigned int *class,
 
  err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_link_printk(link, KERN_ERR, "softreset failed (%s)\n", reason);
 =======
 	ata_link_err(link, "softreset failed (%s)\n", reason);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_link_err(link, "softreset failed (%s)\n", reason);
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
@@ -727,12 +745,17 @@ static int sil24_hardreset(struct ata_link *link, unsigned int *class,
 	 */
 	if (pp->do_port_rst) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING, "controller in dubious "
 				"state, performing PORT_RST\n");
 =======
 		ata_port_warn(ap,
 			      "controller in dubious state, performing PORT_RST\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap,
+			      "controller in dubious state, performing PORT_RST\n");
+>>>>>>> refs/remotes/origin/master
 
 		writel(PORT_CS_PORT_RST, port + PORT_CTRL_STAT);
 		ata_msleep(ap, 10);
@@ -791,10 +814,14 @@ static int sil24_hardreset(struct ata_link *link, unsigned int *class,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_link_printk(link, KERN_ERR, "hardreset failed (%s)\n", reason);
 =======
 	ata_link_err(link, "hardreset failed (%s)\n", reason);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_link_err(link, "hardreset failed (%s)\n", reason);
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
@@ -947,10 +974,14 @@ static void sil24_pmp_attach(struct ata_port *ap)
 	if (sata_pmp_gscr_vendor(gscr) == 0x11ab &&
 	    sata_pmp_gscr_devid(gscr) == 0x4140) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_INFO,
 =======
 		ata_port_info(ap,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_info(ap,
+>>>>>>> refs/remotes/origin/master
 			"disabling NCQ support due to sil24-mv4140 quirk\n");
 		ap->flags &= ~ATA_FLAG_NCQ;
 	}
@@ -972,11 +1003,15 @@ static int sil24_pmp_hardreset(struct ata_link *link, unsigned int *class,
 	rc = sil24_init_port(link->ap);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR,
 				"hardreset failed (port not ready)\n");
 =======
 		ata_link_err(link, "hardreset failed (port not ready)\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_link_err(link, "hardreset failed (port not ready)\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -1050,10 +1085,14 @@ static void sil24_error_intr(struct ata_port *ap)
 	/* deal with command error */
 	if (irq_stat & PORT_IRQ_ERROR) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct sil24_cerr_info *ci = NULL;
 =======
 		const struct sil24_cerr_info *ci = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		const struct sil24_cerr_info *ci = NULL;
+>>>>>>> refs/remotes/origin/master
 		unsigned int err_mask = 0, action = 0;
 		u32 context, cerr;
 		int pmp;
@@ -1175,12 +1214,17 @@ static inline void sil24_host_intr(struct ata_port *ap)
 	/* spurious interrupts are expected if PCIX_IRQ_WOC */
 	if (!(ap->flags & SIL24_FLAG_PCIX_IRQ_WOC) && ata_ratelimit())
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_INFO, "spurious interrupt "
 			"(slot_stat 0x%x active_tag %d sactive 0x%x)\n",
 =======
 		ata_port_info(ap,
 			"spurious interrupt (slot_stat 0x%x active_tag %d sactive 0x%x)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_info(ap,
+			"spurious interrupt (slot_stat 0x%x active_tag %d sactive 0x%x)\n",
+>>>>>>> refs/remotes/origin/master
 			slot_stat, ap->link.active_tag, ap->link.sactive);
 }
 
@@ -1295,12 +1339,17 @@ static void sil24_init_controller(struct ata_host *host)
 						PORT_CS_PORT_RST, 10, 100);
 			if (tmp & PORT_CS_PORT_RST)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, host->dev,
 					   "failed to clear port RST\n");
 =======
 				dev_err(host->dev,
 					"failed to clear port RST\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev_err(host->dev,
+					"failed to clear port RST\n");
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* configure port */
@@ -1315,9 +1364,12 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	extern int __MARKER__sil24_cmd_block_is_sized_wrongly;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ata_port_info pi = sil24_port_info[ent->driver_data];
 	const struct ata_port_info *ppi[] = { &pi, NULL };
 	void __iomem * const *iomap;
@@ -1330,11 +1382,15 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		__MARKER__sil24_cmd_block_is_sized_wrongly = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* acquire resources */
 	rc = pcim_enable_device(pdev);
@@ -1353,6 +1409,7 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		tmp = readl(iomap[SIL24_HOST_BAR] + HOST_CTRL);
 		if (tmp & (HOST_CTRL_TRDY | HOST_CTRL_STOP | HOST_CTRL_DEVSEL))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_INFO, &pdev->dev,
 				   "Applying completion IRQ loss on PCI-X "
 				   "errata fix\n");
@@ -1360,6 +1417,10 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 			dev_info(&pdev->dev,
 				 "Applying completion IRQ loss on PCI-X errata fix\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_info(&pdev->dev,
+				 "Applying completion IRQ loss on PCI-X errata fix\n");
+>>>>>>> refs/remotes/origin/master
 		else
 			pi.flags &= ~SIL24_FLAG_PCIX_IRQ_WOC;
 	}
@@ -1378,12 +1439,17 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 			rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 			if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev_printk(KERN_ERR, &pdev->dev,
 					   "64-bit DMA enable failed\n");
 =======
 				dev_err(&pdev->dev,
 					"64-bit DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				dev_err(&pdev->dev,
+					"64-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 				return rc;
 			}
 		}
@@ -1391,15 +1457,20 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit DMA enable failed\n");
 =======
 			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev, "32-bit DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 		rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (rc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			dev_printk(KERN_ERR, &pdev->dev,
 				   "32-bit consistent DMA enable failed\n");
@@ -1407,6 +1478,10 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 			dev_err(&pdev->dev,
 				"32-bit consistent DMA enable failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dev_err(&pdev->dev,
+				"32-bit consistent DMA enable failed\n");
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 	}
@@ -1420,10 +1495,14 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	if (sata_sil24_msi && !pci_enable_msi(pdev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_INFO, &pdev->dev, "Using MSI\n");
 =======
 		dev_info(&pdev->dev, "Using MSI\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_info(&pdev->dev, "Using MSI\n");
+>>>>>>> refs/remotes/origin/master
 		pci_intx(pdev, 0);
 	}
 
@@ -1435,7 +1514,11 @@ static int sil24_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 #ifdef CONFIG_PM
 static int sil24_pci_device_resume(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	void __iomem *host_base = host->iomap[SIL24_HOST_BAR];
 	int rc;
 
@@ -1460,6 +1543,7 @@ static int sil24_port_resume(struct ata_port *ap)
 }
 #endif
 
+<<<<<<< HEAD
 static int __init sil24_init(void)
 {
 	return pci_register_driver(&sil24_pci_driver);
@@ -1469,11 +1553,17 @@ static void __exit sil24_exit(void)
 {
 	pci_unregister_driver(&sil24_pci_driver);
 }
+=======
+module_pci_driver(sil24_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Tejun Heo");
 MODULE_DESCRIPTION("Silicon Image 3124/3132 SATA low-level driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, sil24_pci_tbl);
+<<<<<<< HEAD
 
 module_init(sil24_init);
 module_exit(sil24_exit);
+=======
+>>>>>>> refs/remotes/origin/master

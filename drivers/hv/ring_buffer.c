@@ -29,6 +29,7 @@
 
 #include "hyperv_vmbus.h"
 
+<<<<<<< HEAD
 
 /* #defines */
 
@@ -59,6 +60,109 @@ hv_get_ringbuffer_availbytes(struct hv_ring_buffer_info *rbi,
 
 	*write = BYTES_AVAIL_TO_WRITE(read_loc, write_loc, rbi->ring_datasize);
 	*read = rbi->ring_datasize - *write;
+=======
+void hv_begin_read(struct hv_ring_buffer_info *rbi)
+{
+	rbi->ring_buffer->interrupt_mask = 1;
+	mb();
+}
+
+u32 hv_end_read(struct hv_ring_buffer_info *rbi)
+{
+	u32 read;
+	u32 write;
+
+	rbi->ring_buffer->interrupt_mask = 0;
+	mb();
+
+	/*
+	 * Now check to see if the ring buffer is still empty.
+	 * If it is not, we raced and we need to process new
+	 * incoming messages.
+	 */
+	hv_get_ringbuffer_availbytes(rbi, &read, &write);
+
+	return read;
+}
+
+/*
+ * When we write to the ring buffer, check if the host needs to
+ * be signaled. Here is the details of this protocol:
+ *
+ *	1. The host guarantees that while it is draining the
+ *	   ring buffer, it will set the interrupt_mask to
+ *	   indicate it does not need to be interrupted when
+ *	   new data is placed.
+ *
+ *	2. The host guarantees that it will completely drain
+ *	   the ring buffer before exiting the read loop. Further,
+ *	   once the ring buffer is empty, it will clear the
+ *	   interrupt_mask and re-check to see if new data has
+ *	   arrived.
+ */
+
+static bool hv_need_to_signal(u32 old_write, struct hv_ring_buffer_info *rbi)
+{
+	mb();
+	if (rbi->ring_buffer->interrupt_mask)
+		return false;
+
+	/* check interrupt_mask before read_index */
+	rmb();
+	/*
+	 * This is the only case we need to signal when the
+	 * ring transitions from being empty to non-empty.
+	 */
+	if (old_write == rbi->ring_buffer->read_index)
+		return true;
+
+	return false;
+}
+
+/*
+ * To optimize the flow management on the send-side,
+ * when the sender is blocked because of lack of
+ * sufficient space in the ring buffer, potential the
+ * consumer of the ring buffer can signal the producer.
+ * This is controlled by the following parameters:
+ *
+ * 1. pending_send_sz: This is the size in bytes that the
+ *    producer is trying to send.
+ * 2. The feature bit feat_pending_send_sz set to indicate if
+ *    the consumer of the ring will signal when the ring
+ *    state transitions from being full to a state where
+ *    there is room for the producer to send the pending packet.
+ */
+
+static bool hv_need_to_signal_on_read(u32 old_rd,
+					 struct hv_ring_buffer_info *rbi)
+{
+	u32 prev_write_sz;
+	u32 cur_write_sz;
+	u32 r_size;
+	u32 write_loc = rbi->ring_buffer->write_index;
+	u32 read_loc = rbi->ring_buffer->read_index;
+	u32 pending_sz = rbi->ring_buffer->pending_send_sz;
+
+	/*
+	 * If the other end is not blocked on write don't bother.
+	 */
+	if (pending_sz == 0)
+		return false;
+
+	r_size = rbi->ring_datasize;
+	cur_write_sz = write_loc >= read_loc ? r_size - (write_loc - read_loc) :
+			read_loc - write_loc;
+
+	prev_write_sz = write_loc >= old_rd ? r_size - (write_loc - old_rd) :
+			old_rd - write_loc;
+
+
+	if ((prev_write_sz < pending_sz) && (cur_write_sz >= pending_sz))
+		return true;
+
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -270,6 +374,7 @@ void hv_ringbuffer_get_debuginfo(struct hv_ring_buffer_info *ring_info,
 	}
 }
 
+<<<<<<< HEAD
 
 /*
  *
@@ -283,6 +388,8 @@ u32 hv_get_ringbuffer_interrupt_mask(struct hv_ring_buffer_info *rbi)
 	return rbi->ring_buffer->interrupt_mask;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *
  * hv_ringbuffer_init()
@@ -329,7 +436,11 @@ void hv_ringbuffer_cleanup(struct hv_ring_buffer_info *ring_info)
  *
  */
 int hv_ringbuffer_write(struct hv_ring_buffer_info *outring_info,
+<<<<<<< HEAD
 		    struct scatterlist *sglist, u32 sgcount)
+=======
+		    struct scatterlist *sglist, u32 sgcount, bool *signal)
+>>>>>>> refs/remotes/origin/master
 {
 	int i = 0;
 	u32 bytes_avail_towrite;
@@ -338,6 +449,10 @@ int hv_ringbuffer_write(struct hv_ring_buffer_info *outring_info,
 
 	struct scatterlist *sg;
 	u32 next_write_location;
+<<<<<<< HEAD
+=======
+	u32 old_write;
+>>>>>>> refs/remotes/origin/master
 	u64 prev_indices = 0;
 	unsigned long flags;
 
@@ -366,6 +481,11 @@ int hv_ringbuffer_write(struct hv_ring_buffer_info *outring_info,
 	/* Write to the ring buffer */
 	next_write_location = hv_get_next_write_location(outring_info);
 
+<<<<<<< HEAD
+=======
+	old_write = next_write_location;
+
+>>>>>>> refs/remotes/origin/master
 	for_each_sg(sglist, sg, sgcount, i)
 	{
 		next_write_location = hv_copyto_ringbuffer(outring_info,
@@ -382,14 +502,24 @@ int hv_ringbuffer_write(struct hv_ring_buffer_info *outring_info,
 					     &prev_indices,
 					     sizeof(u64));
 
+<<<<<<< HEAD
 	/* Make sure we flush all writes before updating the writeIndex */
 	smp_wmb();
+=======
+	/* Issue a full memory barrier before updating the write index */
+	mb();
+>>>>>>> refs/remotes/origin/master
 
 	/* Now, update the write location */
 	hv_set_next_write_location(outring_info, next_write_location);
 
 
 	spin_unlock_irqrestore(&outring_info->ring_lock, flags);
+<<<<<<< HEAD
+=======
+
+	*signal = hv_need_to_signal(old_write, outring_info);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -445,13 +575,21 @@ int hv_ringbuffer_peek(struct hv_ring_buffer_info *Inring_info,
  *
  */
 int hv_ringbuffer_read(struct hv_ring_buffer_info *inring_info, void *buffer,
+<<<<<<< HEAD
 		   u32 buflen, u32 offset)
+=======
+		   u32 buflen, u32 offset, bool *signal)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 bytes_avail_towrite;
 	u32 bytes_avail_toread;
 	u32 next_read_location = 0;
 	u64 prev_indices = 0;
 	unsigned long flags;
+<<<<<<< HEAD
+=======
+	u32 old_read;
+>>>>>>> refs/remotes/origin/master
 
 	if (buflen <= 0)
 		return -EINVAL;
@@ -462,6 +600,11 @@ int hv_ringbuffer_read(struct hv_ring_buffer_info *inring_info, void *buffer,
 				&bytes_avail_toread,
 				&bytes_avail_towrite);
 
+<<<<<<< HEAD
+=======
+	old_read = bytes_avail_toread;
+
+>>>>>>> refs/remotes/origin/master
 	/* Make sure there is something to read */
 	if (bytes_avail_toread < buflen) {
 		spin_unlock_irqrestore(&inring_info->ring_lock, flags);
@@ -485,12 +628,21 @@ int hv_ringbuffer_read(struct hv_ring_buffer_info *inring_info, void *buffer,
 	/* Make sure all reads are done before we update the read index since */
 	/* the writer may start writing to the read area once the read index */
 	/*is updated */
+<<<<<<< HEAD
 	smp_mb();
+=======
+	mb();
+>>>>>>> refs/remotes/origin/master
 
 	/* Update the read index */
 	hv_set_next_read_location(inring_info, next_read_location);
 
 	spin_unlock_irqrestore(&inring_info->ring_lock, flags);
 
+<<<<<<< HEAD
+=======
+	*signal = hv_need_to_signal_on_read(old_read, inring_info);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

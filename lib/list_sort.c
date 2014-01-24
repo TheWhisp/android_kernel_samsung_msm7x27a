@@ -229,7 +229,11 @@ static int __init list_sort_test(void)
 			goto exit;
 		}
 		 /* force some equivalencies */
+<<<<<<< HEAD
 		el->value = random32() % (TEST_LIST_LEN/3);
+=======
+		el->value = prandom_u32() % (TEST_LIST_LEN / 3);
+>>>>>>> refs/remotes/origin/master
 		el->serial = i;
 		el->poison1 = TEST_POISON1;
 		el->poison2 = TEST_POISON2;

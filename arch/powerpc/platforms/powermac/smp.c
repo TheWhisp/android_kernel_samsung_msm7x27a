@@ -36,10 +36,14 @@
 
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/code-patching.h>
 #include <asm/irq.h>
 #include <asm/page.h>
@@ -130,10 +134,14 @@ static int psurge_type = PSURGE_NONE;
 
 /* irq for secondary cpus to report */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host *psurge_host;
 =======
 static struct irq_domain *psurge_host;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *psurge_host;
+>>>>>>> refs/remotes/origin/master
 int psurge_secondary_virq;
 
 /*
@@ -185,10 +193,14 @@ static void smp_psurge_cause_ipi(int cpu, unsigned long data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int psurge_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int psurge_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int psurge_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			 irq_hw_number_t hw)
 {
 	irq_set_chip_and_handler(virq, &dummy_irq_chip, handle_percpu_irq);
@@ -197,10 +209,14 @@ static int psurge_host_map(struct irq_domain *h, unsigned int virq,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct irq_host_ops psurge_host_ops = {
 =======
 static const struct irq_domain_ops psurge_host_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct irq_domain_ops psurge_host_ops = {
+>>>>>>> refs/remotes/origin/master
 	.map	= psurge_host_map,
 };
 
@@ -209,11 +225,15 @@ static int psurge_secondary_ipi_init(void)
 	int rc = -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	psurge_host = irq_alloc_host(NULL, IRQ_HOST_MAP_NOMAP, 0,
 		&psurge_host_ops, 0);
 =======
 	psurge_host = irq_domain_add_nomap(NULL, 0, &psurge_host_ops, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psurge_host = irq_domain_add_nomap(NULL, ~0, &psurge_host_ops, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (psurge_host)
 		psurge_secondary_virq = irq_create_direct_mapping(psurge_host);
@@ -221,10 +241,14 @@ static int psurge_secondary_ipi_init(void)
 	if (psurge_secondary_virq)
 		rc = request_irq(psurge_secondary_virq, psurge_ipi_intr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED|IRQF_PERCPU, "IPI", NULL);
 =======
 			IRQF_PERCPU | IRQF_NO_THREAD, "IPI", NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_PERCPU | IRQF_NO_THREAD, "IPI", NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (rc)
 		pr_err("Failed to setup secondary cpu IPI\n");
@@ -433,10 +457,14 @@ static int __init smp_psurge_kick_cpu(int nr)
 static struct irqaction psurge_irqaction = {
 	.handler = psurge_ipi_intr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED|IRQF_PERCPU,
 =======
 	.flags = IRQF_PERCPU | IRQF_NO_THREAD,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = IRQF_PERCPU | IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 	.name = "primary IPI",
 };
 
@@ -476,10 +504,14 @@ void __init smp_psurge_give_timebase(void)
 /* PowerSurge-style Macs */
 struct smp_ops_t psurge_smp_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.message_pass	= smp_muxed_ipi_message_pass,
 =======
 	.message_pass	= NULL,	/* Use smp_muxed_ipi_message_pass */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.message_pass	= NULL,	/* Use smp_muxed_ipi_message_pass */
+>>>>>>> refs/remotes/origin/master
 	.cause_ipi	= smp_psurge_cause_ipi,
 	.probe		= smp_psurge_probe,
 	.kick_cpu	= smp_psurge_kick_cpu,
@@ -517,7 +549,11 @@ static void smp_core99_give_timebase(void)
 }
 
 
+<<<<<<< HEAD
 static void __devinit smp_core99_take_timebase(void)
+=======
+static void smp_core99_take_timebase(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -702,7 +738,11 @@ static void smp_core99_gpio_tb_freeze(int freeze)
 volatile static long int core99_l2_cache;
 volatile static long int core99_l3_cache;
 
+<<<<<<< HEAD
 static void __devinit core99_init_caches(int cpu)
+=======
+static void core99_init_caches(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 #ifndef CONFIG_PPC64
 	if (!cpu_has_feature(CPU_FTR_L2CR))
@@ -834,7 +874,11 @@ static int __init smp_core99_probe(void)
 	return ncpus;
 }
 
+<<<<<<< HEAD
 static int __devinit smp_core99_kick_cpu(int nr)
+=======
+static int smp_core99_kick_cpu(int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int save_vector;
 	unsigned long target, flags;
@@ -877,7 +921,11 @@ static int __devinit smp_core99_kick_cpu(int nr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit smp_core99_setup_cpu(int cpu_nr)
+=======
+static void smp_core99_setup_cpu(int cpu_nr)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Setup L2/L3 */
 	if (cpu_nr != 0)
@@ -918,7 +966,11 @@ static int smp_core99_cpu_notify(struct notifier_block *self,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata smp_core99_cpu_nb = {
+=======
+static struct notifier_block smp_core99_cpu_nb = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call	= smp_core99_cpu_notify,
 };
 #endif /* CONFIG_HOTPLUG_CPU */

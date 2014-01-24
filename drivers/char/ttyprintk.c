@@ -18,9 +18,13 @@
 #include <linux/serial.h>
 #include <linux/tty.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 struct ttyprintk_port {
 	struct tty_port port;
@@ -175,16 +179,21 @@ static const struct tty_operations ttyprintk_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct tty_port_operations null_ops = { };
 =======
 static struct tty_port_operations null_ops = { };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct tty_port_operations null_ops = { };
+>>>>>>> refs/remotes/origin/master
 
 static struct tty_driver *ttyprintk_driver;
 
 static int __init ttyprintk_init(void)
 {
 	int ret = -ENOMEM;
+<<<<<<< HEAD
 	void *rp;
 
 	ttyprintk_driver = alloc_tty_driver(1);
@@ -195,10 +204,26 @@ static int __init ttyprintk_init(void)
 	ttyprintk_driver->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	mutex_init(&tpk_port.port_write_mutex);
+
+	ttyprintk_driver = tty_alloc_driver(1,
+			TTY_DRIVER_RESET_TERMIOS |
+			TTY_DRIVER_REAL_RAW |
+			TTY_DRIVER_UNNUMBERED_NODE);
+	if (IS_ERR(ttyprintk_driver))
+		return PTR_ERR(ttyprintk_driver);
+
+	tty_port_init(&tpk_port.port);
+	tpk_port.port.ops = &null_ops;
+
+>>>>>>> refs/remotes/origin/master
 	ttyprintk_driver->driver_name = "ttyprintk";
 	ttyprintk_driver->name = "ttyprintk";
 	ttyprintk_driver->major = TTYAUX_MAJOR;
 	ttyprintk_driver->minor_start = 3;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ttyprintk_driver->num = 1;
 =======
@@ -209,6 +234,13 @@ static int __init ttyprintk_init(void)
 	ttyprintk_driver->flags = TTY_DRIVER_RESET_TERMIOS |
 		TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;
 	tty_set_operations(ttyprintk_driver, &ttyprintk_ops);
+=======
+	ttyprintk_driver->type = TTY_DRIVER_TYPE_CONSOLE;
+	ttyprintk_driver->init_termios = tty_std_termios;
+	ttyprintk_driver->init_termios.c_oflag = OPOST | OCRNL | ONOCR | ONLRET;
+	tty_set_operations(ttyprintk_driver, &ttyprintk_ops);
+	tty_port_link_device(&tpk_port.port, ttyprintk_driver, 0);
+>>>>>>> refs/remotes/origin/master
 
 	ret = tty_register_driver(ttyprintk_driver);
 	if (ret < 0) {
@@ -216,6 +248,7 @@ static int __init ttyprintk_init(void)
 		goto error;
 	}
 
+<<<<<<< HEAD
 	/* create our unnumbered device */
 	rp = device_create(tty_class, NULL, MKDEV(TTYAUX_MAJOR, 3), NULL,
 				ttyprintk_driver->name);
@@ -237,3 +270,15 @@ error:
 	return ret;
 }
 module_init(ttyprintk_init);
+=======
+	return 0;
+
+error:
+	tty_unregister_driver(ttyprintk_driver);
+	put_tty_driver(ttyprintk_driver);
+	tty_port_destroy(&tpk_port.port);
+	ttyprintk_driver = NULL;
+	return ret;
+}
+device_initcall(ttyprintk_init);
+>>>>>>> refs/remotes/origin/master

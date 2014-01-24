@@ -380,8 +380,13 @@ int prism2mgmt_scan_results(wlandevice_t *wlandev, void *msgp)
 	}
 
 	count = (hw->scanresults->framelen - 3) / 32;
+<<<<<<< HEAD
 	if (count > 32)
 		count = 32;
+=======
+	if (count > HFA384x_SCANRESULT_MAX)
+		count = HFA384x_SCANRESULT_MAX;
+>>>>>>> refs/remotes/origin/master
 
 	if (req->bssindex.data >= count) {
 		pr_debug("requested index (%d) out of range (%d)\n",
@@ -407,9 +412,13 @@ int prism2mgmt_scan_results(wlandevice_t *wlandev, void *msgp)
 	req->ssid.status = P80211ENUM_msgitem_status_data_ok;
 	req->ssid.data.len = le16_to_cpu(item->ssid.len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	req->ssid.data.len = min_t(u16, req->ssid.data.len, WLAN_SSID_MAXLEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	req->ssid.data.len = min_t(u16, req->ssid.data.len, WLAN_SSID_MAXLEN);
+>>>>>>> refs/remotes/origin/master
 	memcpy(req->ssid.data.data, item->ssid.data, req->ssid.data.len);
 
 	/* supported rates */
@@ -418,11 +427,22 @@ int prism2mgmt_scan_results(wlandevice_t *wlandev, void *msgp)
 			break;
 
 #define REQBASICRATE(N) \
+<<<<<<< HEAD
 	if ((count >= N) && DOT11_RATE5_ISBASIC_GET(item->supprates[(N)-1])) { \
 		req->basicrate ## N .data = item->supprates[(N)-1]; \
 		req->basicrate ## N .status = \
 			P80211ENUM_msgitem_status_data_ok; \
 	}
+=======
+	do { \
+		if ((count >= N) && DOT11_RATE5_ISBASIC_GET( \
+			item->supprates[(N)-1])) { \
+			req->basicrate ## N .data = item->supprates[(N)-1]; \
+			req->basicrate ## N .status = \
+				P80211ENUM_msgitem_status_data_ok; \
+		} \
+	} while (0)
+>>>>>>> refs/remotes/origin/master
 
 	REQBASICRATE(1);
 	REQBASICRATE(2);
@@ -434,11 +454,21 @@ int prism2mgmt_scan_results(wlandevice_t *wlandev, void *msgp)
 	REQBASICRATE(8);
 
 #define REQSUPPRATE(N) \
+<<<<<<< HEAD
 	if (count >= N) { \
 		req->supprate ## N .data = item->supprates[(N)-1]; \
 		req->supprate ## N .status = \
 			P80211ENUM_msgitem_status_data_ok; \
 	}
+=======
+	do { \
+		if (count >= N) { \
+			req->supprate ## N .data = item->supprates[(N)-1]; \
+			req->supprate ## N .status = \
+				P80211ENUM_msgitem_status_data_ok; \
+		} \
+	} while (0)
+>>>>>>> refs/remotes/origin/master
 
 	REQSUPPRATE(1);
 	REQSUPPRATE(2);
@@ -523,7 +553,11 @@ int prism2mgmt_start(wlandevice_t *wlandev, void *msgp)
 
 	p80211pstrd_t *pstr;
 	u8 bytebuf[80];
+<<<<<<< HEAD
 	hfa384x_bytestr_t *p2bytestr = (hfa384x_bytestr_t *) bytebuf;
+=======
+	struct hfa384x_bytestr *p2bytestr = (struct hfa384x_bytestr *) bytebuf;
+>>>>>>> refs/remotes/origin/master
 	u16 word;
 
 	wlandev->macmode = WLAN_MACMODE_NONE;
@@ -1017,7 +1051,11 @@ int prism2mgmt_autojoin(wlandevice_t *wlandev, void *msgp)
 	struct p80211msg_lnxreq_autojoin *msg = msgp;
 	p80211pstrd_t *pstr;
 	u8 bytebuf[256];
+<<<<<<< HEAD
 	hfa384x_bytestr_t *p2bytestr = (hfa384x_bytestr_t *) bytebuf;
+=======
+	struct hfa384x_bytestr *p2bytestr = (struct hfa384x_bytestr *) bytebuf;
+>>>>>>> refs/remotes/origin/master
 
 	wlandev->macmode = WLAN_MACMODE_NONE;
 
@@ -1142,9 +1180,14 @@ int prism2mgmt_wlansniff(wlandevice_t *wlandev, void *msgp)
 			/* Enable the port */
 			result = hfa384x_drvr_enable(hw, 0);
 			if (result) {
+<<<<<<< HEAD
 				pr_debug
 				("failed to enable port to presniff setting, result=%d\n",
 				     result);
+=======
+				pr_debug("failed to enable port to presniff setting, result=%d\n",
+					 result);
+>>>>>>> refs/remotes/origin/master
 				goto failed;
 			}
 		} else {
@@ -1184,18 +1227,28 @@ int prism2mgmt_wlansniff(wlandevice_t *wlandev, void *msgp)
 				hfa384x_drvr_stop(hw);
 				result = hfa384x_drvr_start(hw);
 				if (result) {
+<<<<<<< HEAD
 					pr_debug
 					    ("failed to restart the card for sniffing, result=%d\n",
 					     result);
+=======
+					pr_debug("failed to restart the card for sniffing, result=%d\n",
+						 result);
+>>>>>>> refs/remotes/origin/master
 					goto failed;
 				}
 			} else {
 				/* Disable the port */
 				result = hfa384x_drvr_disable(hw, 0);
 				if (result) {
+<<<<<<< HEAD
 					pr_debug
 					    ("failed to enable port for sniffing, result=%d\n",
 					     result);
+=======
+					pr_debug("failed to enable port for sniffing, result=%d\n",
+						 result);
+>>>>>>> refs/remotes/origin/master
 					goto failed;
 				}
 			}

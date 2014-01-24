@@ -1,9 +1,13 @@
 /*******************************************************************************
  * This file contains the iSCSI Target DataIN value generation functions.
  *
+<<<<<<< HEAD
  * \u00a9 Copyright 2007-2011 RisingTide Systems LLC.
  *
  * Licensed to the Linux Foundation under the General Public License (GPL) version 2.
+=======
+ * (c) Copyright 2007-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Nicholas A. Bellinger <nab@linux-iscsi.org>
  *
@@ -37,7 +41,11 @@ struct iscsi_datain_req *iscsit_allocate_datain_req(void)
 				" struct iscsi_datain_req\n");
 		return NULL;
 	}
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&dr->dr_list);
+=======
+	INIT_LIST_HEAD(&dr->cmd_datain_node);
+>>>>>>> refs/remotes/origin/master
 
 	return dr;
 }
@@ -45,14 +53,22 @@ struct iscsi_datain_req *iscsit_allocate_datain_req(void)
 void iscsit_attach_datain_req(struct iscsi_cmd *cmd, struct iscsi_datain_req *dr)
 {
 	spin_lock(&cmd->datain_lock);
+<<<<<<< HEAD
 	list_add_tail(&dr->dr_list, &cmd->datain_list);
+=======
+	list_add_tail(&dr->cmd_datain_node, &cmd->datain_list);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&cmd->datain_lock);
 }
 
 void iscsit_free_datain_req(struct iscsi_cmd *cmd, struct iscsi_datain_req *dr)
 {
 	spin_lock(&cmd->datain_lock);
+<<<<<<< HEAD
 	list_del(&dr->dr_list);
+=======
+	list_del(&dr->cmd_datain_node);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&cmd->datain_lock);
 
 	kmem_cache_free(lio_dr_cache, dr);
@@ -63,8 +79,13 @@ void iscsit_free_all_datain_reqs(struct iscsi_cmd *cmd)
 	struct iscsi_datain_req *dr, *dr_tmp;
 
 	spin_lock(&cmd->datain_lock);
+<<<<<<< HEAD
 	list_for_each_entry_safe(dr, dr_tmp, &cmd->datain_list, dr_list) {
 		list_del(&dr->dr_list);
+=======
+	list_for_each_entry_safe(dr, dr_tmp, &cmd->datain_list, cmd_datain_node) {
+		list_del(&dr->cmd_datain_node);
+>>>>>>> refs/remotes/origin/master
 		kmem_cache_free(lio_dr_cache, dr);
 	}
 	spin_unlock(&cmd->datain_lock);
@@ -72,17 +93,26 @@ void iscsit_free_all_datain_reqs(struct iscsi_cmd *cmd)
 
 struct iscsi_datain_req *iscsit_get_datain_req(struct iscsi_cmd *cmd)
 {
+<<<<<<< HEAD
 	struct iscsi_datain_req *dr;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (list_empty(&cmd->datain_list)) {
 		pr_err("cmd->datain_list is empty for ITT:"
 			" 0x%08x\n", cmd->init_task_tag);
 		return NULL;
 	}
+<<<<<<< HEAD
 	list_for_each_entry(dr, &cmd->datain_list, dr_list)
 		break;
 
 	return dr;
+=======
+
+	return list_first_entry(&cmd->datain_list, struct iscsi_datain_req,
+				cmd_datain_node);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -113,7 +143,11 @@ static struct iscsi_datain_req *iscsit_set_datain_values_yes_and_yes(
 	read_data_done = (!dr->recovery) ?
 			cmd->read_data_done : dr->read_data_done;
 
+<<<<<<< HEAD
 	read_data_left = (cmd->data_length - read_data_done);
+=======
+	read_data_left = (cmd->se_cmd.data_length - read_data_done);
+>>>>>>> refs/remotes/origin/master
 	if (!read_data_left) {
 		pr_err("ITT: 0x%08x read_data_left is zero!\n",
 				cmd->init_task_tag);
@@ -212,7 +246,11 @@ static struct iscsi_datain_req *iscsit_set_datain_values_no_and_yes(
 	seq_send_order = (!dr->recovery) ?
 			cmd->seq_send_order : dr->seq_send_order;
 
+<<<<<<< HEAD
 	read_data_left = (cmd->data_length - read_data_done);
+=======
+	read_data_left = (cmd->se_cmd.data_length - read_data_done);
+>>>>>>> refs/remotes/origin/master
 	if (!read_data_left) {
 		pr_err("ITT: 0x%08x read_data_left is zero!\n",
 				cmd->init_task_tag);
@@ -231,8 +269,13 @@ static struct iscsi_datain_req *iscsit_set_datain_values_no_and_yes(
 	offset = (seq->offset + seq->next_burst_len);
 
 	if ((offset + conn->conn_ops->MaxRecvDataSegmentLength) >=
+<<<<<<< HEAD
 	     cmd->data_length) {
 		datain->length = (cmd->data_length - offset);
+=======
+	     cmd->se_cmd.data_length) {
+		datain->length = (cmd->se_cmd.data_length - offset);
+>>>>>>> refs/remotes/origin/master
 		datain->offset = offset;
 
 		datain->flags |= ISCSI_FLAG_CMD_FINAL;
@@ -264,7 +307,11 @@ static struct iscsi_datain_req *iscsit_set_datain_values_no_and_yes(
 		}
 	}
 
+<<<<<<< HEAD
 	if ((read_data_done + datain->length) == cmd->data_length)
+=======
+	if ((read_data_done + datain->length) == cmd->se_cmd.data_length)
+>>>>>>> refs/remotes/origin/master
 		datain->flags |= ISCSI_FLAG_DATA_STATUS;
 
 	datain->data_sn = (!dr->recovery) ? cmd->data_sn++ : dr->data_sn++;
@@ -333,7 +380,11 @@ static struct iscsi_datain_req *iscsit_set_datain_values_yes_and_no(
 	read_data_done = (!dr->recovery) ?
 			cmd->read_data_done : dr->read_data_done;
 
+<<<<<<< HEAD
 	read_data_left = (cmd->data_length - read_data_done);
+=======
+	read_data_left = (cmd->se_cmd.data_length - read_data_done);
+>>>>>>> refs/remotes/origin/master
 	if (!read_data_left) {
 		pr_err("ITT: 0x%08x read_data_left is zero!\n",
 				cmd->init_task_tag);
@@ -344,7 +395,11 @@ static struct iscsi_datain_req *iscsit_set_datain_values_yes_and_no(
 	if (!pdu)
 		return dr;
 
+<<<<<<< HEAD
 	if ((read_data_done + pdu->length) == cmd->data_length) {
+=======
+	if ((read_data_done + pdu->length) == cmd->se_cmd.data_length) {
+>>>>>>> refs/remotes/origin/master
 		pdu->flags |= (ISCSI_FLAG_CMD_FINAL | ISCSI_FLAG_DATA_STATUS);
 		if (conn->sess->sess_ops->ErrorRecoveryLevel > 0)
 			pdu->flags |= ISCSI_FLAG_DATA_ACK;
@@ -433,7 +488,11 @@ static struct iscsi_datain_req *iscsit_set_datain_values_no_and_no(
 	seq_send_order = (!dr->recovery) ?
 			cmd->seq_send_order : dr->seq_send_order;
 
+<<<<<<< HEAD
 	read_data_left = (cmd->data_length - read_data_done);
+=======
+	read_data_left = (cmd->se_cmd.data_length - read_data_done);
+>>>>>>> refs/remotes/origin/master
 	if (!read_data_left) {
 		pr_err("ITT: 0x%08x read_data_left is zero!\n",
 				cmd->init_task_tag);
@@ -463,7 +522,11 @@ static struct iscsi_datain_req *iscsit_set_datain_values_no_and_no(
 	} else
 		seq->next_burst_len += pdu->length;
 
+<<<<<<< HEAD
 	if ((read_data_done + pdu->length) == cmd->data_length)
+=======
+	if ((read_data_done + pdu->length) == cmd->se_cmd.data_length)
+>>>>>>> refs/remotes/origin/master
 		pdu->flags |= ISCSI_FLAG_DATA_STATUS;
 
 	pdu->data_sn = (!dr->recovery) ? cmd->data_sn++ : dr->data_sn++;

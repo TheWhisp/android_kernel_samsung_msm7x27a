@@ -15,9 +15,13 @@
 #include <linux/delay.h>
 #include <linux/param.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <arch/system.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PROC_FS
 #define HAS_FPU		0x0001

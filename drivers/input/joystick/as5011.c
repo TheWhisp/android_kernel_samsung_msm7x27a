@@ -31,9 +31,13 @@
 #include <linux/input/as5011.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_DESC "Driver for Austria Microsystems AS5011 joystick"
 #define MODULE_DEVICE_ALIAS "as5011"
@@ -88,7 +92,14 @@ static int as5011_i2c_write(struct i2c_client *client,
 {
 	uint8_t data[2] = { aregaddr, avalue };
 	struct i2c_msg msg = {
+<<<<<<< HEAD
 		client->addr, I2C_M_IGNORE_NAK, 2, (uint8_t *)data
+=======
+		.addr = client->addr,
+		.flags = I2C_M_IGNORE_NAK,
+		.len = 2,
+		.buf = (uint8_t *)data
+>>>>>>> refs/remotes/origin/master
 	};
 	int error;
 
@@ -101,8 +112,23 @@ static int as5011_i2c_read(struct i2c_client *client,
 {
 	uint8_t data[2] = { aregaddr };
 	struct i2c_msg msg_set[2] = {
+<<<<<<< HEAD
 		{ client->addr, I2C_M_REV_DIR_ADDR, 1, (uint8_t *)data },
 		{ client->addr, I2C_M_RD | I2C_M_NOSTART, 1, (uint8_t *)data }
+=======
+		{
+			.addr = client->addr,
+			.flags = I2C_M_REV_DIR_ADDR,
+			.len = 1,
+			.buf = (uint8_t *)data
+		},
+		{
+			.addr = client->addr,
+			.flags = I2C_M_RD | I2C_M_NOSTART,
+			.len = 1,
+			.buf = (uint8_t *)data
+		}
+>>>>>>> refs/remotes/origin/master
 	};
 	int error;
 
@@ -147,7 +173,11 @@ out:
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit as5011_configure_chip(struct as5011_device *as5011,
+=======
+static int as5011_configure_chip(struct as5011_device *as5011,
+>>>>>>> refs/remotes/origin/master
 				const struct as5011_platform_data *plat_dat)
 {
 	struct i2c_client *client = as5011->i2c_client;
@@ -215,8 +245,13 @@ static int __devinit as5011_configure_chip(struct as5011_device *as5011,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit as5011_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
+=======
+static int as5011_probe(struct i2c_client *client,
+			 const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct as5011_platform_data *plat_data;
 	struct as5011_device *as5011;
@@ -224,7 +259,11 @@ static int __devinit as5011_probe(struct i2c_client *client,
 	int irq;
 	int error;
 
+<<<<<<< HEAD
 	plat_data = client->dev.platform_data;
+=======
+	plat_data = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!plat_data)
 		return -EINVAL;
 
@@ -234,6 +273,10 @@ static int __devinit as5011_probe(struct i2c_client *client,
 	}
 
 	if (!i2c_check_functionality(client->adapter,
+<<<<<<< HEAD
+=======
+				     I2C_FUNC_NOSTART |
+>>>>>>> refs/remotes/origin/master
 				     I2C_FUNC_PROTOCOL_MANGLING)) {
 		dev_err(&client->dev,
 			"need i2c bus that supports protocol mangling\n");
@@ -277,6 +320,10 @@ static int __devinit as5011_probe(struct i2c_client *client,
 	if (irq < 0) {
 		dev_err(&client->dev,
 			"Failed to get irq number for button gpio\n");
+<<<<<<< HEAD
+=======
+		error = irq;
+>>>>>>> refs/remotes/origin/master
 		goto err_free_button_gpio;
 	}
 
@@ -284,7 +331,12 @@ static int __devinit as5011_probe(struct i2c_client *client,
 
 	error = request_threaded_irq(as5011->button_irq,
 				     NULL, as5011_button_interrupt,
+<<<<<<< HEAD
 				     IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+=======
+				     IRQF_TRIGGER_RISING |
+					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				     "as5011_button", as5011);
 	if (error < 0) {
 		dev_err(&client->dev,
@@ -298,7 +350,11 @@ static int __devinit as5011_probe(struct i2c_client *client,
 
 	error = request_threaded_irq(as5011->axis_irq, NULL,
 				     as5011_axis_interrupt,
+<<<<<<< HEAD
 				     plat_data->axis_irqflags,
+=======
+				     plat_data->axis_irqflags | IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				     "as5011_joystick", as5011);
 	if (error) {
 		dev_err(&client->dev,
@@ -329,7 +385,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit as5011_remove(struct i2c_client *client)
+=======
+static int as5011_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct as5011_device *as5011 = i2c_get_clientdata(client);
 
@@ -354,6 +414,7 @@ static struct i2c_driver as5011_driver = {
 		.name = "as5011",
 	},
 	.probe		= as5011_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(as5011_remove),
 	.id_table	= as5011_id,
 };
@@ -373,3 +434,10 @@ module_exit(as5011_exit);
 =======
 module_i2c_driver(as5011_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= as5011_remove,
+	.id_table	= as5011_id,
+};
+
+module_i2c_driver(as5011_driver);
+>>>>>>> refs/remotes/origin/master

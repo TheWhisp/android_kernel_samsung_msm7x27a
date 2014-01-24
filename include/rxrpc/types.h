@@ -18,10 +18,14 @@
 #include <linux/in.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef uint32_t	rxrpc_seq_t;	/* Rx message sequence number */
 typedef uint32_t	rxrpc_serial_t;	/* Rx message serial number */

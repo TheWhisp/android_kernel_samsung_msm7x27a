@@ -4,7 +4,11 @@
  * Written by: Grant Likely <grant.likely@secretlab.ca>
  *
  * Copyright (C) Secret Lab Technologies Ltd. 2006. All rights reserved.
+<<<<<<< HEAD
  * Copyright (C) Freescale Semicondutor, Inc. 2006. All rights reserved.
+=======
+ * Copyright 2006 Freescale Semiconductor, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * Description:
  * This program is free software; you can redistribute  it and/or modify it
@@ -172,7 +176,11 @@ static void __init lite5200_setup_arch(void)
 	mpc52xx_setup_pci();
 }
 
+<<<<<<< HEAD
 static const char *board[] __initdata = {
+=======
+static const char * const board[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	"fsl,lite5200",
 	"fsl,lite5200b",
 	NULL,

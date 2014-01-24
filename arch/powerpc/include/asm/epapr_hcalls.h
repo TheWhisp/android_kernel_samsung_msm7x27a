@@ -50,10 +50,17 @@
 #ifndef _EPAPR_HCALLS_H
 #define _EPAPR_HCALLS_H
 
+<<<<<<< HEAD
+=======
+#include <uapi/asm/epapr_hcalls.h>
+
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/errno.h>
 #include <asm/byteorder.h>
 
+<<<<<<< HEAD
 #define EV_BYTE_CHANNEL_SEND		1
 #define EV_BYTE_CHANNEL_RECEIVE		2
 #define EV_BYTE_CHANNEL_POLL		3
@@ -108,6 +115,8 @@
 #define EV_UNIMPLEMENTED	12	/* Unimplemented hypercall */
 #define EV_BUFFER_OVERFLOW	13	/* Caller-supplied buffer too small */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Hypercall register clobber list
  *
@@ -153,6 +162,17 @@
 #define EV_HCALL_CLOBBERS2 EV_HCALL_CLOBBERS3, "r5"
 #define EV_HCALL_CLOBBERS1 EV_HCALL_CLOBBERS2, "r4"
 
+<<<<<<< HEAD
+=======
+extern bool epapr_paravirt_enabled;
+extern u32 epapr_hypercall_start[];
+
+#ifdef CONFIG_EPAPR_PARAVIRT
+int __init epapr_paravirt_early_init(void);
+#else
+static inline int epapr_paravirt_early_init(void) { return 0; }
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We use "uintptr_t" to define a register because it's guaranteed to be a
@@ -191,7 +211,11 @@ static inline unsigned int ev_int_set_config(unsigned int interrupt,
 	r5  = priority;
 	r6  = destination;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3), "+r" (r4), "+r" (r5), "+r" (r6)
 		: : EV_HCALL_CLOBBERS4
 	);
@@ -220,7 +244,11 @@ static inline unsigned int ev_int_get_config(unsigned int interrupt,
 	r11 = EV_HCALL_TOKEN(EV_INT_GET_CONFIG);
 	r3 = interrupt;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3), "=r" (r4), "=r" (r5), "=r" (r6)
 		: : EV_HCALL_CLOBBERS4
 	);
@@ -250,7 +278,11 @@ static inline unsigned int ev_int_set_mask(unsigned int interrupt,
 	r3 = interrupt;
 	r4 = mask;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3), "+r" (r4)
 		: : EV_HCALL_CLOBBERS2
 	);
@@ -275,7 +307,11 @@ static inline unsigned int ev_int_get_mask(unsigned int interrupt,
 	r11 = EV_HCALL_TOKEN(EV_INT_GET_MASK);
 	r3 = interrupt;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3), "=r" (r4)
 		: : EV_HCALL_CLOBBERS2
 	);
@@ -303,7 +339,11 @@ static inline unsigned int ev_int_eoi(unsigned int interrupt)
 	r11 = EV_HCALL_TOKEN(EV_INT_EOI);
 	r3 = interrupt;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3)
 		: : EV_HCALL_CLOBBERS1
 	);
@@ -342,7 +382,11 @@ static inline unsigned int ev_byte_channel_send(unsigned int handle,
 	r7 = be32_to_cpu(p[2]);
 	r8 = be32_to_cpu(p[3]);
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3),
 		  "+r" (r4), "+r" (r5), "+r" (r6), "+r" (r7), "+r" (r8)
 		: : EV_HCALL_CLOBBERS6
@@ -381,7 +425,11 @@ static inline unsigned int ev_byte_channel_receive(unsigned int handle,
 	r3 = handle;
 	r4 = *count;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3), "+r" (r4),
 		  "=r" (r5), "=r" (r6), "=r" (r7), "=r" (r8)
 		: : EV_HCALL_CLOBBERS6
@@ -419,7 +467,11 @@ static inline unsigned int ev_byte_channel_poll(unsigned int handle,
 	r11 = EV_HCALL_TOKEN(EV_BYTE_CHANNEL_POLL);
 	r3 = handle;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3), "=r" (r4), "=r" (r5)
 		: : EV_HCALL_CLOBBERS3
 	);
@@ -452,7 +504,11 @@ static inline unsigned int ev_int_iack(unsigned int handle,
 	r11 = EV_HCALL_TOKEN(EV_INT_IACK);
 	r3 = handle;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3), "=r" (r4)
 		: : EV_HCALL_CLOBBERS2
 	);
@@ -476,7 +532,11 @@ static inline unsigned int ev_doorbell_send(unsigned int handle)
 	r11 = EV_HCALL_TOKEN(EV_DOORBELL_SEND);
 	r3 = handle;
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "+r" (r3)
 		: : EV_HCALL_CLOBBERS1
 	);
@@ -496,12 +556,21 @@ static inline unsigned int ev_idle(void)
 
 	r11 = EV_HCALL_TOKEN(EV_IDLE);
 
+<<<<<<< HEAD
 	__asm__ __volatile__ ("sc 1"
+=======
+	asm volatile("bl	epapr_hypercall_start"
+>>>>>>> refs/remotes/origin/master
 		: "+r" (r11), "=r" (r3)
 		: : EV_HCALL_CLOBBERS1
 	);
 
 	return r3;
 }
+<<<<<<< HEAD
 
 #endif
+=======
+#endif /* !__ASSEMBLY__ */
+#endif /* _EPAPR_HCALLS_H */
+>>>>>>> refs/remotes/origin/master

@@ -9,6 +9,13 @@ Required properties:
   unused).
 - gpio-controller: Marks the device node as a GPIO controller.
 
+<<<<<<< HEAD
+=======
+optional properties:
+- #gpio-lines: Number of gpio if absent 32.
+
+
+>>>>>>> refs/remotes/origin/master
 Example:
 	pioA: gpio@fffff200 {
 		compatible = "atmel,at91rm9200-gpio";
@@ -16,5 +23,9 @@ Example:
 		interrupts = <2 4>;
 		#gpio-cells = <2>;
 		gpio-controller;
+<<<<<<< HEAD
+=======
+		#gpio-lines = <19>;
+>>>>>>> refs/remotes/origin/master
 	};
 

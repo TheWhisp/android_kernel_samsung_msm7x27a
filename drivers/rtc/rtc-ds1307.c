@@ -4,6 +4,10 @@
  *  Copyright (C) 2005 James Chapman (ds1337 core)
  *  Copyright (C) 2006 David Brownell
  *  Copyright (C) 2009 Matthias Fuchs (rx8025 support)
+<<<<<<< HEAD
+=======
+ *  Copyright (C) 2012 Bertrand Achard (nvram access fixes)
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -17,6 +21,7 @@
 #include <linux/string.h>
 #include <linux/rtc.h>
 #include <linux/bcd.h>
+<<<<<<< HEAD
 
 
 
@@ -26,6 +31,12 @@
 /*
  * We can't determine type by probing, but if we expect pre-Linux code
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rtc/ds1307.h>
+
+/*
+ * We can't determine type by probing, but if we expect pre-Linux code
+>>>>>>> refs/remotes/origin/master
  * to have set the chip up as a clock (turning on the oscillator and
  * setting the date and time), Linux can ignore the non-clock features.
  * That's a natural job for a factory or repair bench.
@@ -40,14 +51,20 @@ enum ds_type {
 	ds_3231,
 	m41t00,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rx_8025,
 	// rs5c372 too?  different address...
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mcp7941x,
 	rx_8025,
 	last_ds_type /* always last */
 	/* rs5c372 too?  different address... */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -56,9 +73,13 @@ enum ds_type {
 #	define DS1307_BIT_CH		0x80
 #	define DS1340_BIT_nEOSC		0x80
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #	define MCP7941X_BIT_ST		0x80
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#	define MCP7941X_BIT_ST		0x80
+>>>>>>> refs/remotes/origin/master
 #define DS1307_REG_MIN		0x01	/* 00-59 */
 #define DS1307_REG_HOUR		0x02	/* 00-23, or 1-12{am,pm} */
 #	define DS1307_BIT_12HR		0x40	/* in REG_HOUR */
@@ -67,20 +88,29 @@ enum ds_type {
 #	define DS1340_BIT_CENTURY	0x40	/* in REG_HOUR */
 #define DS1307_REG_WDAY		0x03	/* 01-07 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #	define MCP7941X_BIT_VBATEN	0x08
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#	define MCP7941X_BIT_VBATEN	0x08
+>>>>>>> refs/remotes/origin/master
 #define DS1307_REG_MDAY		0x04	/* 01-31 */
 #define DS1307_REG_MONTH	0x05	/* 01-12 */
 #	define DS1337_BIT_CENTURY	0x80	/* in REG_MONTH */
 #define DS1307_REG_YEAR		0x06	/* 00-99 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Other registers (control, status, alarms, trickle charge, NVRAM, etc)
 =======
 /*
  * Other registers (control, status, alarms, trickle charge, NVRAM, etc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Other registers (control, status, alarms, trickle charge, NVRAM, etc)
+>>>>>>> refs/remotes/origin/master
  * start at 7, and they differ a LOT. Only control and status matter for
  * basic RTC date and time functionality; be careful using them.
  */
@@ -111,7 +141,12 @@ enum ds_type {
 #	define DS1337_BIT_A2I		0x02
 #	define DS1337_BIT_A1I		0x01
 #define DS1339_REG_ALARM1_SECS	0x07
+<<<<<<< HEAD
 #define DS1339_REG_TRICKLE	0x10
+=======
+
+#define DS13XX_TRICKLE_CHARGER_MAGIC	0xa0
+>>>>>>> refs/remotes/origin/master
 
 #define RX8025_REG_CTRL1	0x0e
 #	define RX8025_BIT_2412		0x20
@@ -125,10 +160,15 @@ struct ds1307 {
 	u8			offset; /* register's offset */
 	u8			regs[11];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u16			nvram_offset;
 	struct bin_attribute	*nvram;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16			nvram_offset;
+	struct bin_attribute	*nvram;
+>>>>>>> refs/remotes/origin/master
 	enum ds_type		type;
 	unsigned long		flags;
 #define HAS_NVRAM	0		/* bit 0 == sysfs file active */
@@ -143,6 +183,7 @@ struct ds1307 {
 };
 
 struct chip_desc {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned		nvram56:1;
 	unsigned		alarm:1;
@@ -174,6 +215,12 @@ static const struct chip_desc chips[] = {
 	unsigned		alarm:1;
 	u16			nvram_offset;
 	u16			nvram_size;
+=======
+	unsigned		alarm:1;
+	u16			nvram_offset;
+	u16			nvram_size;
+	u16			trickle_charger_reg;
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct chip_desc chips[last_ds_type] = {
@@ -190,6 +237,16 @@ static const struct chip_desc chips[last_ds_type] = {
 	},
 	[ds_1339] = {
 		.alarm		= 1,
+<<<<<<< HEAD
+=======
+		.trickle_charger_reg = 0x10,
+	},
+	[ds_1340] = {
+		.trickle_charger_reg = 0x08,
+	},
+	[ds_1388] = {
+		.trickle_charger_reg = 0x0a,
+>>>>>>> refs/remotes/origin/master
 	},
 	[ds_3231] = {
 		.alarm		= 1,
@@ -200,7 +257,10 @@ static const struct chip_desc chips[last_ds_type] = {
 		.nvram_size	= 0x40,
 	},
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id ds1307_id[] = {
 	{ "ds1307", ds_1307 },
@@ -212,9 +272,13 @@ static const struct i2c_device_id ds1307_id[] = {
 	{ "ds3231", ds_3231 },
 	{ "m41t00", m41t00 },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "mcp7941x", mcp7941x },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "mcp7941x", mcp7941x },
+>>>>>>> refs/remotes/origin/master
 	{ "pt7c4338", ds_1307 },
 	{ "rx8025", rx_8025 },
 	{ }
@@ -242,7 +306,11 @@ static s32 ds1307_read_block_data_once(const struct i2c_client *client,
 static s32 ds1307_read_block_data(const struct i2c_client *client, u8 command,
 				  u8 length, u8 *values)
 {
+<<<<<<< HEAD
 	u8 oldvalues[I2C_SMBUS_BLOCK_MAX];
+=======
+	u8 oldvalues[255];
+>>>>>>> refs/remotes/origin/master
 	s32 ret;
 	int tries = 0;
 
@@ -268,7 +336,11 @@ static s32 ds1307_read_block_data(const struct i2c_client *client, u8 command,
 static s32 ds1307_write_block_data(const struct i2c_client *client, u8 command,
 				   u8 length, const u8 *values)
 {
+<<<<<<< HEAD
 	u8 currvalues[I2C_SMBUS_BLOCK_MAX];
+=======
+	u8 currvalues[255];
+>>>>>>> refs/remotes/origin/master
 	int tries = 0;
 
 	dev_dbg(&client->dev, "ds1307_write_block_data (length=%d)\n", length);
@@ -296,6 +368,60 @@ static s32 ds1307_write_block_data(const struct i2c_client *client, u8 command,
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+=======
+/* These RTC devices are not designed to be connected to a SMbus adapter.
+   SMbus limits block operations length to 32 bytes, whereas it's not
+   limited on I2C buses. As a result, accesses may exceed 32 bytes;
+   in that case, split them into smaller blocks */
+
+static s32 ds1307_native_smbus_write_block_data(const struct i2c_client *client,
+				u8 command, u8 length, const u8 *values)
+{
+	u8 suboffset = 0;
+
+	if (length <= I2C_SMBUS_BLOCK_MAX)
+		return i2c_smbus_write_i2c_block_data(client,
+					command, length, values);
+
+	while (suboffset < length) {
+		s32 retval = i2c_smbus_write_i2c_block_data(client,
+				command + suboffset,
+				min(I2C_SMBUS_BLOCK_MAX, length - suboffset),
+				values + suboffset);
+		if (retval < 0)
+			return retval;
+
+		suboffset += I2C_SMBUS_BLOCK_MAX;
+	}
+	return length;
+}
+
+static s32 ds1307_native_smbus_read_block_data(const struct i2c_client *client,
+				u8 command, u8 length, u8 *values)
+{
+	u8 suboffset = 0;
+
+	if (length <= I2C_SMBUS_BLOCK_MAX)
+		return i2c_smbus_read_i2c_block_data(client,
+					command, length, values);
+
+	while (suboffset < length) {
+		s32 retval = i2c_smbus_read_i2c_block_data(client,
+				command + suboffset,
+				min(I2C_SMBUS_BLOCK_MAX, length - suboffset),
+				values + suboffset);
+		if (retval < 0)
+			return retval;
+
+		suboffset += I2C_SMBUS_BLOCK_MAX;
+	}
+	return length;
+}
+
+/*----------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The IRQ logic includes a "real" handler running in IRQ context just
  * long enough to schedule this workqueue entry.   We need a task context
@@ -368,12 +494,16 @@ static int ds1307_get_time(struct device *dev, struct rtc_time *t)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	dev_dbg(dev, "%s: %02x %02x %02x %02x %02x %02x %02x\n",
 			"read",
 			ds1307->regs[0], ds1307->regs[1],
 			ds1307->regs[2], ds1307->regs[3],
 			ds1307->regs[4], ds1307->regs[5],
 			ds1307->regs[6]);
+=======
+	dev_dbg(dev, "%s: %7ph\n", "read", ds1307->regs);
+>>>>>>> refs/remotes/origin/master
 
 	t->tm_sec = bcd2bin(ds1307->regs[DS1307_REG_SECS] & 0x7f);
 	t->tm_min = bcd2bin(ds1307->regs[DS1307_REG_MIN] & 0x7f);
@@ -432,7 +562,10 @@ static int ds1307_set_time(struct device *dev, struct rtc_time *t)
 				| DS1340_BIT_CENTURY;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case mcp7941x:
 		/*
 		 * these bits were cleared when preparing the date/time
@@ -442,14 +575,21 @@ static int ds1307_set_time(struct device *dev, struct rtc_time *t)
 		buf[DS1307_REG_SECS] |= MCP7941X_BIT_ST;
 		buf[DS1307_REG_WDAY] |= MCP7941X_BIT_VBATEN;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		break;
 	}
 
+<<<<<<< HEAD
 	dev_dbg(dev, "%s: %02x %02x %02x %02x %02x %02x %02x\n",
 		"write", buf[0], buf[1], buf[2], buf[3],
 		buf[4], buf[5], buf[6]);
+=======
+	dev_dbg(dev, "%s: %7ph\n", "write", buf);
+>>>>>>> refs/remotes/origin/master
 
 	result = ds1307->write_block_data(ds1307->client,
 		ds1307->offset, 7, buf);
@@ -486,11 +626,16 @@ static int ds1337_read_alarm(struct device *dev, struct rtc_wkalrm *t)
 			ds1307->regs[8]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* report alarm time (ALARM1); assume 24 hour and day-of-month modes,
 =======
 	/*
 	 * report alarm time (ALARM1); assume 24 hour and day-of-month modes,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * report alarm time (ALARM1); assume 24 hour and day-of-month modes,
+>>>>>>> refs/remotes/origin/master
 	 * and that all four fields are checked matches
 	 */
 	t->time.tm_sec = bcd2bin(ds1307->regs[0] & 0x7f);
@@ -519,10 +664,14 @@ static int ds1337_read_alarm(struct device *dev, struct rtc_wkalrm *t)
 static int ds1337_set_alarm(struct device *dev, struct rtc_wkalrm *t)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct i2c_client       *client = to_i2c_client(dev);
 =======
 	struct i2c_client	*client = to_i2c_client(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct i2c_client	*client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ds1307		*ds1307 = i2c_get_clientdata(client);
 	unsigned char		*buf = ds1307->regs;
 	u8			control, status;
@@ -619,10 +768,13 @@ static const struct rtc_class_ops ds13xx_rtc_ops = {
 /*----------------------------------------------------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NVRAM_SIZE	56
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t
 ds1307_nvram_read(struct file *filp, struct kobject *kobj,
 		struct bin_attribute *attr,
@@ -636,6 +788,7 @@ ds1307_nvram_read(struct file *filp, struct kobject *kobj,
 	ds1307 = i2c_get_clientdata(client);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(off >= NVRAM_SIZE))
 		return 0;
 	if ((off + count) > NVRAM_SIZE)
@@ -645,6 +798,8 @@ ds1307_nvram_read(struct file *filp, struct kobject *kobj,
 
 	result = ds1307->read_block_data(client, 8 + off, count, buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(off >= ds1307->nvram->size))
 		return 0;
 	if ((off + count) > ds1307->nvram->size)
@@ -654,7 +809,10 @@ ds1307_nvram_read(struct file *filp, struct kobject *kobj,
 
 	result = ds1307->read_block_data(client, ds1307->nvram_offset + off,
 								count, buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (result < 0)
 		dev_err(&client->dev, "%s error %d\n", "nvram read", result);
 	return result;
@@ -673,6 +831,7 @@ ds1307_nvram_write(struct file *filp, struct kobject *kobj,
 	ds1307 = i2c_get_clientdata(client);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(off >= NVRAM_SIZE))
 		return -EFBIG;
 	if ((off + count) > NVRAM_SIZE)
@@ -682,6 +841,8 @@ ds1307_nvram_write(struct file *filp, struct kobject *kobj,
 
 	result = ds1307->write_block_data(client, 8 + off, count, buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(off >= ds1307->nvram->size))
 		return -EFBIG;
 	if ((off + count) > ds1307->nvram->size)
@@ -691,7 +852,10 @@ ds1307_nvram_write(struct file *filp, struct kobject *kobj,
 
 	result = ds1307->write_block_data(client, ds1307->nvram_offset + off,
 								count, buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (result < 0) {
 		dev_err(&client->dev, "%s error %d\n", "nvram write", result);
 		return result;
@@ -699,6 +863,7 @@ ds1307_nvram_write(struct file *filp, struct kobject *kobj,
 	return count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct bin_attribute nvram = {
 	.attr = {
@@ -721,14 +886,26 @@ static struct i2c_driver ds1307_driver;
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit ds1307_probe(struct i2c_client *client,
 				  const struct i2c_device_id *id)
+=======
+/*----------------------------------------------------------------------*/
+
+static int ds1307_probe(struct i2c_client *client,
+			const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ds1307		*ds1307;
 	int			err = -ENODEV;
 	int			tmp;
 	const struct chip_desc	*chip = &chips[id->driver_data];
 	struct i2c_adapter	*adapter = to_i2c_adapter(client->dev.parent);
+<<<<<<< HEAD
 	int			want_irq = false;
 	unsigned char		*buf;
+=======
+	bool			want_irq = false;
+	unsigned char		*buf;
+	struct ds1307_platform_data *pdata = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	static const int	bbsqi_bitpos[] = {
 		[ds_1337] = 0,
 		[ds_1339] = DS1339_BIT_BBSQI,
@@ -740,23 +917,40 @@ static int __devinit ds1307_probe(struct i2c_client *client,
 		return -EIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ds1307 = kzalloc(sizeof(struct ds1307), GFP_KERNEL)))
 =======
 	ds1307 = kzalloc(sizeof(struct ds1307), GFP_KERNEL);
 	if (!ds1307)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ds1307 = devm_kzalloc(&client->dev, sizeof(struct ds1307), GFP_KERNEL);
+	if (!ds1307)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	i2c_set_clientdata(client, ds1307);
 
 	ds1307->client	= client;
 	ds1307->type	= id->driver_data;
+<<<<<<< HEAD
 	ds1307->offset	= 0;
 
 	buf = ds1307->regs;
 	if (i2c_check_functionality(adapter, I2C_FUNC_SMBUS_I2C_BLOCK)) {
 		ds1307->read_block_data = i2c_smbus_read_i2c_block_data;
 		ds1307->write_block_data = i2c_smbus_write_i2c_block_data;
+=======
+
+	if (pdata && pdata->trickle_charger_setup && chip->trickle_charger_reg)
+		i2c_smbus_write_byte_data(client, chip->trickle_charger_reg,
+			DS13XX_TRICKLE_CHARGER_MAGIC | pdata->trickle_charger_setup);
+
+	buf = ds1307->regs;
+	if (i2c_check_functionality(adapter, I2C_FUNC_SMBUS_I2C_BLOCK)) {
+		ds1307->read_block_data = ds1307_native_smbus_read_block_data;
+		ds1307->write_block_data = ds1307_native_smbus_write_block_data;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		ds1307->read_block_data = ds1307_read_block_data;
 		ds1307->write_block_data = ds1307_write_block_data;
@@ -767,6 +961,7 @@ static int __devinit ds1307_probe(struct i2c_client *client,
 	case ds_1339:
 	case ds_3231:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* has IRQ? */
 		if (ds1307->client->irq > 0 && chip->alarm) {
 			INIT_WORK(&ds1307->work, ds1307_work);
@@ -774,19 +969,28 @@ static int __devinit ds1307_probe(struct i2c_client *client,
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* get registers that the "rtc" read below won't read... */
 		tmp = ds1307->read_block_data(ds1307->client,
 				DS1337_REG_CONTROL, 2, buf);
 		if (tmp != 2) {
+<<<<<<< HEAD
 			pr_debug("read error %d\n", tmp);
 			err = -EIO;
 			goto exit_free;
+=======
+			dev_dbg(&client->dev, "read error %d\n", tmp);
+			err = -EIO;
+			goto exit;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* oscillator off?  turn it on, so clock can tick. */
 		if (ds1307->regs[0] & DS1337_BIT_nEOSC)
 			ds1307->regs[0] &= ~DS1337_BIT_nEOSC;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Using IRQ?  Disable the square wave and both alarms.
 		 * For some variants, be sure alarms can trigger when we're
@@ -797,6 +1001,8 @@ static int __devinit ds1307_probe(struct i2c_client *client,
 					| bbsqi_bitpos[ds1307->type];
 			ds1307->regs[0] &= ~(DS1337_BIT_A2IE | DS1337_BIT_A1IE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Using IRQ?  Disable the square wave and both alarms.
 		 * For some variants, be sure alarms can trigger when we're
@@ -810,7 +1016,10 @@ static int __devinit ds1307_probe(struct i2c_client *client,
 			ds1307->regs[0] &= ~(DS1337_BIT_A2IE | DS1337_BIT_A1IE);
 
 			want_irq = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		i2c_smbus_write_byte_data(client, DS1337_REG_CONTROL,
@@ -828,9 +1037,15 @@ static int __devinit ds1307_probe(struct i2c_client *client,
 		tmp = i2c_smbus_read_i2c_block_data(ds1307->client,
 				RX8025_REG_CTRL1 << 4 | 0x08, 2, buf);
 		if (tmp != 2) {
+<<<<<<< HEAD
 			pr_debug("read error %d\n", tmp);
 			err = -EIO;
 			goto exit_free;
+=======
+			dev_dbg(&client->dev, "read error %d\n", tmp);
+			err = -EIO;
+			goto exit;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* oscillator off?  turn it on, so clock can tick. */
@@ -872,9 +1087,15 @@ static int __devinit ds1307_probe(struct i2c_client *client,
 			tmp = i2c_smbus_read_i2c_block_data(ds1307->client,
 					RX8025_REG_CTRL1 << 4 | 0x08, 2, buf);
 			if (tmp != 2) {
+<<<<<<< HEAD
 				pr_debug("read error %d\n", tmp);
 				err = -EIO;
 				goto exit_free;
+=======
+				dev_dbg(&client->dev, "read error %d\n", tmp);
+				err = -EIO;
+				goto exit;
+>>>>>>> refs/remotes/origin/master
 			}
 
 			/* correct hour */
@@ -900,6 +1121,7 @@ read_rtc:
 	/* read RTC registers */
 	tmp = ds1307->read_block_data(ds1307->client, ds1307->offset, 8, buf);
 	if (tmp != 8) {
+<<<<<<< HEAD
 		pr_debug("read error %d\n", tmp);
 		err = -EIO;
 		goto exit_free;
@@ -911,6 +1133,15 @@ read_rtc:
 	/*
 	 * minimal sanity checking; some chips (like DS1340) don't
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&client->dev, "read error %d\n", tmp);
+		err = -EIO;
+		goto exit;
+	}
+
+	/*
+	 * minimal sanity checking; some chips (like DS1340) don't
+>>>>>>> refs/remotes/origin/master
 	 * specify the extra bits as must-be-zero, but there are
 	 * still a few values that are clearly out-of-range.
 	 */
@@ -946,9 +1177,15 @@ read_rtc:
 
 		tmp = i2c_smbus_read_byte_data(client, DS1340_REG_FLAG);
 		if (tmp < 0) {
+<<<<<<< HEAD
 			pr_debug("read error %d\n", tmp);
 			err = -EIO;
 			goto exit_free;
+=======
+			dev_dbg(&client->dev, "read error %d\n", tmp);
+			err = -EIO;
+			goto exit;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* oscillator fault?  clear flag, and warn */
@@ -958,12 +1195,15 @@ read_rtc:
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case rx_8025:
 	case ds_1337:
 	case ds_1339:
 	case ds_1388:
 	case ds_3231:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case mcp7941x:
 		/* make sure that the backup battery is enabled */
 		if (!(ds1307->regs[DS1307_REG_WDAY] & MCP7941X_BIT_VBATEN)) {
@@ -982,7 +1222,10 @@ read_rtc:
 
 		break;
 	default:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -991,11 +1234,16 @@ read_rtc:
 	case ds_1340:
 	case m41t00:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* NOTE: ignores century bits; fix before deploying
 =======
 		/*
 		 * NOTE: ignores century bits; fix before deploying
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/*
+		 * NOTE: ignores century bits; fix before deploying
+>>>>>>> refs/remotes/origin/master
 		 * systems that will run through year 2100.
 		 */
 		break;
@@ -1006,11 +1254,16 @@ read_rtc:
 			break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Be sure we're in 24 hour mode.  Multi-master systems
 =======
 		/*
 		 * Be sure we're in 24 hour mode.  Multi-master systems
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/*
+		 * Be sure we're in 24 hour mode.  Multi-master systems
+>>>>>>> refs/remotes/origin/master
 		 * take note...
 		 */
 		tmp = bcd2bin(tmp & 0x1f);
@@ -1023,13 +1276,21 @@ read_rtc:
 				bin2bcd(tmp));
 	}
 
+<<<<<<< HEAD
 	ds1307->rtc = rtc_device_register(client->name, &client->dev,
+=======
+	ds1307->rtc = devm_rtc_device_register(&client->dev, client->name,
+>>>>>>> refs/remotes/origin/master
 				&ds13xx_rtc_ops, THIS_MODULE);
 	if (IS_ERR(ds1307->rtc)) {
 		err = PTR_ERR(ds1307->rtc);
 		dev_err(&client->dev,
 			"unable to register the class device\n");
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		goto exit;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (want_irq) {
@@ -1038,7 +1299,11 @@ read_rtc:
 		if (err) {
 			dev_err(&client->dev,
 				"unable to request IRQ!\n");
+<<<<<<< HEAD
 			goto exit_irq;
+=======
+			goto exit;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		device_set_wakeup_capable(&client->dev, 1);
@@ -1046,6 +1311,7 @@ read_rtc:
 		dev_dbg(&client->dev, "got IRQ %d\n", client->irq);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (chip->nvram56) {
 		err = sysfs_create_bin_file(&client->dev.kobj, &nvram);
@@ -1060,10 +1326,20 @@ read_rtc:
 		if (!ds1307->nvram) {
 			err = -ENOMEM;
 			goto exit_nvram;
+=======
+	if (chip->nvram_size) {
+		ds1307->nvram = devm_kzalloc(&client->dev,
+					sizeof(struct bin_attribute),
+					GFP_KERNEL);
+		if (!ds1307->nvram) {
+			err = -ENOMEM;
+			goto err_irq;
+>>>>>>> refs/remotes/origin/master
 		}
 		ds1307->nvram->attr.name = "nvram";
 		ds1307->nvram->attr.mode = S_IRUGO | S_IWUSR;
 		sysfs_bin_attr_init(ds1307->nvram);
+<<<<<<< HEAD
 		ds1307->nvram->read = ds1307_nvram_read,
 		ds1307->nvram->write = ds1307_nvram_write,
 		ds1307->nvram->size = chip->nvram_size;
@@ -1076,10 +1352,22 @@ read_rtc:
 		set_bit(HAS_NVRAM, &ds1307->flags);
 		dev_info(&client->dev, "%zu bytes nvram\n", ds1307->nvram->size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ds1307->nvram->read = ds1307_nvram_read;
+		ds1307->nvram->write = ds1307_nvram_write;
+		ds1307->nvram->size = chip->nvram_size;
+		ds1307->nvram_offset = chip->nvram_offset;
+		err = sysfs_create_bin_file(&client->dev.kobj, ds1307->nvram);
+		if (err)
+			goto err_irq;
+		set_bit(HAS_NVRAM, &ds1307->flags);
+		dev_info(&client->dev, "%zu bytes nvram\n", ds1307->nvram->size);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 exit_nvram:
@@ -1098,12 +1386,24 @@ static int __devexit ds1307_remove(struct i2c_client *client)
 =======
 	struct ds1307 *ds1307 = i2c_get_clientdata(client);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_irq:
+	free_irq(client->irq, client);
+exit:
+	return err;
+}
+
+static int ds1307_remove(struct i2c_client *client)
+{
+	struct ds1307 *ds1307 = i2c_get_clientdata(client);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_and_clear_bit(HAS_ALARM, &ds1307->flags)) {
 		free_irq(client->irq, client);
 		cancel_work_sync(&ds1307->work);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (test_and_clear_bit(HAS_NVRAM, &ds1307->flags))
 		sysfs_remove_bin_file(&client->dev.kobj, &nvram);
@@ -1116,6 +1416,11 @@ static int __devexit ds1307_remove(struct i2c_client *client)
 
 	rtc_device_unregister(ds1307->rtc);
 	kfree(ds1307);
+=======
+	if (test_and_clear_bit(HAS_NVRAM, &ds1307->flags))
+		sysfs_remove_bin_file(&client->dev.kobj, ds1307->nvram);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1125,6 +1430,7 @@ static struct i2c_driver ds1307_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ds1307_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ds1307_remove),
 	.id_table	= ds1307_id,
 };
@@ -1144,6 +1450,13 @@ module_exit(ds1307_exit);
 =======
 module_i2c_driver(ds1307_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= ds1307_remove,
+	.id_table	= ds1307_id,
+};
+
+module_i2c_driver(ds1307_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("RTC driver for DS1307 and similar chips");
 MODULE_LICENSE("GPL");

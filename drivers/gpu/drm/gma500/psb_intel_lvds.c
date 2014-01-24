@@ -267,10 +267,16 @@ static void psb_intel_lvds_save(struct drm_connector *connector)
 	struct drm_device *dev = connector->dev;
 	struct drm_psb_private *dev_priv =
 		(struct drm_psb_private *)dev->dev_private;
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 	struct psb_intel_lvds_priv *lvds_priv =
 		(struct psb_intel_lvds_priv *)psb_intel_encoder->dev_priv;
+=======
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+	struct psb_intel_lvds_priv *lvds_priv =
+		(struct psb_intel_lvds_priv *)gma_encoder->dev_priv;
+>>>>>>> refs/remotes/origin/master
 
 	lvds_priv->savePP_ON = REG_READ(LVDSPP_ON);
 	lvds_priv->savePP_OFF = REG_READ(LVDSPP_OFF);
@@ -307,10 +313,16 @@ static void psb_intel_lvds_restore(struct drm_connector *connector)
 {
 	struct drm_device *dev = connector->dev;
 	u32 pp_status;
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 	struct psb_intel_lvds_priv *lvds_priv =
 		(struct psb_intel_lvds_priv *)psb_intel_encoder->dev_priv;
+=======
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+	struct psb_intel_lvds_priv *lvds_priv =
+		(struct psb_intel_lvds_priv *)gma_encoder->dev_priv;
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(dev->dev, "(0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x)\n",
 			lvds_priv->savePP_ON,
@@ -349,12 +361,20 @@ int psb_intel_lvds_mode_valid(struct drm_connector *connector,
 				 struct drm_display_mode *mode)
 {
 	struct drm_psb_private *dev_priv = connector->dev->dev_private;
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 	struct drm_display_mode *fixed_mode =
 					dev_priv->mode_dev.panel_fixed_mode;
 
 	if (psb_intel_encoder->type == INTEL_OUTPUT_MIPI2)
+=======
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+	struct drm_display_mode *fixed_mode =
+					dev_priv->mode_dev.panel_fixed_mode;
+
+	if (gma_encoder->type == INTEL_OUTPUT_MIPI2)
+>>>>>>> refs/remotes/origin/master
 		fixed_mode = dev_priv->mode_dev.panel_fixed_mode2;
 
 	/* just in case */
@@ -375,12 +395,17 @@ int psb_intel_lvds_mode_valid(struct drm_connector *connector,
 }
 
 bool psb_intel_lvds_mode_fixup(struct drm_encoder *encoder,
+<<<<<<< HEAD
 				  struct drm_display_mode *mode,
+=======
+				  const struct drm_display_mode *mode,
+>>>>>>> refs/remotes/origin/master
 				  struct drm_display_mode *adjusted_mode)
 {
 	struct drm_device *dev = encoder->dev;
 	struct drm_psb_private *dev_priv = dev->dev_private;
 	struct psb_intel_mode_device *mode_dev = &dev_priv->mode_dev;
+<<<<<<< HEAD
 	struct psb_intel_crtc *psb_intel_crtc =
 				to_psb_intel_crtc(encoder->crtc);
 	struct drm_encoder *tmp_encoder;
@@ -397,6 +422,22 @@ bool psb_intel_lvds_mode_fixup(struct drm_encoder *encoder,
 		return false;
 	}
 	if (IS_MRST(dev) && psb_intel_crtc->pipe != 0) {
+=======
+	struct gma_crtc *gma_crtc = to_gma_crtc(encoder->crtc);
+	struct drm_encoder *tmp_encoder;
+	struct drm_display_mode *panel_fixed_mode = mode_dev->panel_fixed_mode;
+	struct gma_encoder *gma_encoder = to_gma_encoder(encoder);
+
+	if (gma_encoder->type == INTEL_OUTPUT_MIPI2)
+		panel_fixed_mode = mode_dev->panel_fixed_mode2;
+
+	/* PSB requires the LVDS is on pipe B, MRST has only one pipe anyway */
+	if (!IS_MRST(dev) && gma_crtc->pipe == 0) {
+		printk(KERN_ERR "Can't support LVDS on pipe A\n");
+		return false;
+	}
+	if (IS_MRST(dev) && gma_crtc->pipe != 0) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "Must use PIPE A\n");
 		return false;
 	}
@@ -525,9 +566,14 @@ static int psb_intel_lvds_get_modes(struct drm_connector *connector)
 	struct drm_device *dev = connector->dev;
 	struct drm_psb_private *dev_priv = dev->dev_private;
 	struct psb_intel_mode_device *mode_dev = &dev_priv->mode_dev;
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 	struct psb_intel_lvds_priv *lvds_priv = psb_intel_encoder->dev_priv;
+=======
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+	struct psb_intel_lvds_priv *lvds_priv = gma_encoder->dev_priv;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (!IS_MRST(dev))
@@ -564,9 +610,14 @@ static int psb_intel_lvds_get_modes(struct drm_connector *connector)
  */
 void psb_intel_lvds_destroy(struct drm_connector *connector)
 {
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 	struct psb_intel_lvds_priv *lvds_priv = psb_intel_encoder->dev_priv;
+=======
+	struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+	struct psb_intel_lvds_priv *lvds_priv = gma_encoder->dev_priv;
+>>>>>>> refs/remotes/origin/master
 
 	if (lvds_priv->ddc_bus)
 		psb_intel_i2c_destroy(lvds_priv->ddc_bus);
@@ -585,8 +636,12 @@ int psb_intel_lvds_set_property(struct drm_connector *connector,
 		return -1;
 
 	if (!strcmp(property->name, "scaling mode")) {
+<<<<<<< HEAD
 		struct psb_intel_crtc *crtc =
 					to_psb_intel_crtc(encoder->crtc);
+=======
+		struct gma_crtc *crtc = to_gma_crtc(encoder->crtc);
+>>>>>>> refs/remotes/origin/master
 		uint64_t curval;
 
 		if (!crtc)
@@ -603,7 +658,11 @@ int psb_intel_lvds_set_property(struct drm_connector *connector,
 			goto set_prop_error;
 		}
 
+<<<<<<< HEAD
 		if (drm_connector_property_get_value(connector,
+=======
+		if (drm_object_property_get_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 						     property,
 						     &curval))
 			goto set_prop_error;
@@ -611,7 +670,11 @@ int psb_intel_lvds_set_property(struct drm_connector *connector,
 		if (curval == value)
 			goto set_prop_done;
 
+<<<<<<< HEAD
 		if (drm_connector_property_set_value(connector,
+=======
+		if (drm_object_property_set_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 							property,
 							value))
 			goto set_prop_error;
@@ -626,6 +689,7 @@ int psb_intel_lvds_set_property(struct drm_connector *connector,
 				goto set_prop_error;
 		}
 	} else if (!strcmp(property->name, "backlight")) {
+<<<<<<< HEAD
 		if (drm_connector_property_set_value(connector,
 							property,
 							value))
@@ -641,6 +705,14 @@ int psb_intel_lvds_set_property(struct drm_connector *connector,
 			}
 #endif
 		}
+=======
+		if (drm_object_property_set_value(&connector->base,
+							property,
+							value))
+			goto set_prop_error;
+		else
+                        gma_backlight_set(encoder->dev, value);
+>>>>>>> refs/remotes/origin/master
 	} else if (!strcmp(property->name, "DPMS")) {
 		struct drm_encoder_helper_funcs *hfuncs
 						= encoder->helper_private;
@@ -665,7 +737,11 @@ const struct drm_connector_helper_funcs
 				psb_intel_lvds_connector_helper_funcs = {
 	.get_modes = psb_intel_lvds_get_modes,
 	.mode_valid = psb_intel_lvds_mode_valid,
+<<<<<<< HEAD
 	.best_encoder = psb_intel_best_encoder,
+=======
+	.best_encoder = gma_best_encoder,
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct drm_connector_funcs psb_intel_lvds_connector_funcs = {
@@ -700,8 +776,13 @@ const struct drm_encoder_funcs psb_intel_lvds_enc_funcs = {
 void psb_intel_lvds_init(struct drm_device *dev,
 			 struct psb_intel_mode_device *mode_dev)
 {
+<<<<<<< HEAD
 	struct psb_intel_encoder *psb_intel_encoder;
 	struct psb_intel_connector *psb_intel_connector;
+=======
+	struct gma_encoder *gma_encoder;
+	struct gma_connector *gma_connector;
+>>>>>>> refs/remotes/origin/master
 	struct psb_intel_lvds_priv *lvds_priv;
 	struct drm_connector *connector;
 	struct drm_encoder *encoder;
@@ -711,6 +792,7 @@ void psb_intel_lvds_init(struct drm_device *dev,
 	u32 lvds;
 	int pipe;
 
+<<<<<<< HEAD
 	psb_intel_encoder =
 			kzalloc(sizeof(struct psb_intel_encoder), GFP_KERNEL);
 	if (!psb_intel_encoder) {
@@ -722,6 +804,17 @@ void psb_intel_lvds_init(struct drm_device *dev,
 		kzalloc(sizeof(struct psb_intel_connector), GFP_KERNEL);
 	if (!psb_intel_connector) {
 		dev_err(dev->dev, "psb_intel_connector allocation error\n");
+=======
+	gma_encoder = kzalloc(sizeof(struct gma_encoder), GFP_KERNEL);
+	if (!gma_encoder) {
+		dev_err(dev->dev, "gma_encoder allocation error\n");
+		return;
+	}
+
+	gma_connector = kzalloc(sizeof(struct gma_connector), GFP_KERNEL);
+	if (!gma_connector) {
+		dev_err(dev->dev, "gma_connector allocation error\n");
+>>>>>>> refs/remotes/origin/master
 		goto failed_encoder;
 	}
 
@@ -731,10 +824,17 @@ void psb_intel_lvds_init(struct drm_device *dev,
 		goto failed_connector;
 	}
 
+<<<<<<< HEAD
 	psb_intel_encoder->dev_priv = lvds_priv;
 
 	connector = &psb_intel_connector->base;
 	encoder = &psb_intel_encoder->base;
+=======
+	gma_encoder->dev_priv = lvds_priv;
+
+	connector = &gma_connector->base;
+	encoder = &gma_encoder->base;
+>>>>>>> refs/remotes/origin/master
 	drm_connector_init(dev, connector,
 			   &psb_intel_lvds_connector_funcs,
 			   DRM_MODE_CONNECTOR_LVDS);
@@ -743,9 +843,14 @@ void psb_intel_lvds_init(struct drm_device *dev,
 			 &psb_intel_lvds_enc_funcs,
 			 DRM_MODE_ENCODER_LVDS);
 
+<<<<<<< HEAD
 	psb_intel_connector_attach_encoder(psb_intel_connector,
 					   psb_intel_encoder);
 	psb_intel_encoder->type = INTEL_OUTPUT_LVDS;
+=======
+	gma_connector_attach_encoder(gma_connector, gma_encoder);
+	gma_encoder->type = INTEL_OUTPUT_LVDS;
+>>>>>>> refs/remotes/origin/master
 
 	drm_encoder_helper_add(encoder, &psb_intel_lvds_helper_funcs);
 	drm_connector_helper_add(connector,
@@ -755,10 +860,17 @@ void psb_intel_lvds_init(struct drm_device *dev,
 	connector->doublescan_allowed = false;
 
 	/*Attach connector properties*/
+<<<<<<< HEAD
 	drm_connector_attach_property(connector,
 				      dev->mode_config.scaling_mode_property,
 				      DRM_MODE_SCALE_FULLSCREEN);
 	drm_connector_attach_property(connector,
+=======
+	drm_object_attach_property(&connector->base,
+				      dev->mode_config.scaling_mode_property,
+				      DRM_MODE_SCALE_FULLSCREEN);
+	drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 				      dev_priv->backlight_property,
 				      BRIGHTNESS_MAX_LEVEL);
 
@@ -860,8 +972,14 @@ failed_blc_i2c:
 	drm_encoder_cleanup(encoder);
 	drm_connector_cleanup(connector);
 failed_connector:
+<<<<<<< HEAD
 	kfree(psb_intel_connector);
 failed_encoder:
 	kfree(psb_intel_encoder);
+=======
+	kfree(gma_connector);
+failed_encoder:
+	kfree(gma_encoder);
+>>>>>>> refs/remotes/origin/master
 }
 

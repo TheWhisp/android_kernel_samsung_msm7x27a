@@ -99,7 +99,11 @@ static int xfer_read(struct i2c_adapter *adap, struct i2c_msg *pmsg)
 	i2c_dev->status = I2C_STAT_INIT;
 	i2c_dev->msg = pmsg;
 	i2c_dev->buf_offset = 0;
+<<<<<<< HEAD
 	INIT_COMPLETION(i2c_dev->complete);
+=======
+	reinit_completion(&i2c_dev->complete);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable I2C transaction */
 	temp = ((pmsg->len) << 20) | HI2C_EDID_READ | HI2C_ENABLE_TRANSACTION;
@@ -250,7 +254,11 @@ static irqreturn_t oaktrail_hdmi_i2c_handler(int this_irq, void *dev)
  */
 static void oaktrail_hdmi_i2c_gpio_fix(void)
 {
+<<<<<<< HEAD
 	void *base;
+=======
+	void __iomem *base;
+>>>>>>> refs/remotes/origin/master
 	unsigned int gpio_base = 0xff12c000;
 	int gpio_len = 0x1000;
 	u32 temp;
@@ -319,8 +327,12 @@ void oaktrail_hdmi_i2c_exit(struct pci_dev *dev)
 	struct hdmi_i2c_dev *i2c_dev;
 
 	hdmi_dev = pci_get_drvdata(dev);
+<<<<<<< HEAD
 	if (i2c_del_adapter(&oaktrail_hdmi_i2c_adapter))
 		DRM_DEBUG_DRIVER("Failed to delete hdmi-i2c adapter\n");
+=======
+	i2c_del_adapter(&oaktrail_hdmi_i2c_adapter);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_dev = hdmi_dev->i2c_dev;
 	kfree(i2c_dev);

@@ -1,7 +1,13 @@
 /****************************************************************************
+<<<<<<< HEAD
  * Driver for Solarflare Solarstorm network controllers and boards
  * Copyright 2005-2006 Fen Systems Ltd.
  * Copyright 2006-2010 Solarflare Communications Inc.
+=======
+ * Driver for Solarflare network controllers and boards
+ * Copyright 2005-2006 Fen Systems Ltd.
+ * Copyright 2006-2013 Solarflare Communications Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -19,6 +25,7 @@
 #include "filter.h"
 #include "nic.h"
 
+<<<<<<< HEAD
 struct ethtool_string {
 	char name[ETH_GSTRING_LEN];
 };
@@ -27,6 +34,11 @@ struct efx_ethtool_stat {
 	const char *name;
 	enum {
 		EFX_ETHTOOL_STAT_SOURCE_mac_stats,
+=======
+struct efx_sw_stat_desc {
+	const char *name;
+	enum {
+>>>>>>> refs/remotes/origin/master
 		EFX_ETHTOOL_STAT_SOURCE_nic,
 		EFX_ETHTOOL_STAT_SOURCE_channel,
 		EFX_ETHTOOL_STAT_SOURCE_tx_queue
@@ -35,7 +47,11 @@ struct efx_ethtool_stat {
 	u64(*get_stat) (void *field); /* Reader function */
 };
 
+<<<<<<< HEAD
 /* Initialiser for a struct #efx_ethtool_stat with type-checking */
+=======
+/* Initialiser for a struct efx_sw_stat_desc with type-checking */
+>>>>>>> refs/remotes/origin/master
 #define EFX_ETHTOOL_STAT(stat_name, source_name, field, field_type, \
 				get_stat_function) {			\
 	.name = #stat_name,						\
@@ -52,16 +68,20 @@ static u64 efx_get_uint_stat(void *field)
 	return *(unsigned int *)field;
 }
 
+<<<<<<< HEAD
 static u64 efx_get_u64_stat(void *field)
 {
 	return *(u64 *) field;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u64 efx_get_atomic_stat(void *field)
 {
 	return atomic_read((atomic_t *) field);
 }
 
+<<<<<<< HEAD
 #define EFX_ETHTOOL_U64_MAC_STAT(field)				\
 	EFX_ETHTOOL_STAT(field, mac_stats, field,		\
 			  u64, efx_get_u64_stat)
@@ -70,6 +90,8 @@ static u64 efx_get_atomic_stat(void *field)
 	EFX_ETHTOOL_STAT(name, nic, n_##name,			\
 			 unsigned int, efx_get_uint_stat)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define EFX_ETHTOOL_ATOMIC_NIC_ERROR_STAT(field)		\
 	EFX_ETHTOOL_STAT(field, nic, field,			\
 			 atomic_t, efx_get_atomic_stat)
@@ -82,6 +104,7 @@ static u64 efx_get_atomic_stat(void *field)
 	EFX_ETHTOOL_STAT(tx_##field, tx_queue, field,		\
 			 unsigned int, efx_get_uint_stat)
 
+<<<<<<< HEAD
 static const struct efx_ethtool_stat efx_ethtool_stats[] = {
 	EFX_ETHTOOL_U64_MAC_STAT(tx_bytes),
 	EFX_ETHTOOL_U64_MAC_STAT(tx_good_bytes),
@@ -112,10 +135,15 @@ static const struct efx_ethtool_stat efx_ethtool_stats[] = {
 	EFX_ETHTOOL_U64_MAC_STAT(tx_non_tcpudp),
 	EFX_ETHTOOL_U64_MAC_STAT(tx_mac_src_error),
 	EFX_ETHTOOL_U64_MAC_STAT(tx_ip_src_error),
+=======
+static const struct efx_sw_stat_desc efx_sw_stat_desc[] = {
+	EFX_ETHTOOL_UINT_TXQ_STAT(merge_events),
+>>>>>>> refs/remotes/origin/master
 	EFX_ETHTOOL_UINT_TXQ_STAT(tso_bursts),
 	EFX_ETHTOOL_UINT_TXQ_STAT(tso_long_headers),
 	EFX_ETHTOOL_UINT_TXQ_STAT(tso_packets),
 	EFX_ETHTOOL_UINT_TXQ_STAT(pushes),
+<<<<<<< HEAD
 	EFX_ETHTOOL_U64_MAC_STAT(rx_bytes),
 	EFX_ETHTOOL_U64_MAC_STAT(rx_good_bytes),
 	EFX_ETHTOOL_U64_MAC_STAT(rx_bad_bytes),
@@ -148,16 +176,28 @@ static const struct efx_ethtool_stat efx_ethtool_stats[] = {
 	EFX_ETHTOOL_U64_MAC_STAT(rx_length_error),
 	EFX_ETHTOOL_U64_MAC_STAT(rx_internal_error),
 	EFX_ETHTOOL_UINT_NIC_STAT(rx_nodesc_drop_cnt),
+=======
+	EFX_ETHTOOL_UINT_TXQ_STAT(pio_packets),
+>>>>>>> refs/remotes/origin/master
 	EFX_ETHTOOL_ATOMIC_NIC_ERROR_STAT(rx_reset),
 	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_tobe_disc),
 	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_ip_hdr_chksum_err),
 	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_tcp_udp_chksum_err),
 	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_mcast_mismatch),
 	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_frm_trunc),
+<<<<<<< HEAD
 };
 
 /* Number of ethtool statistics */
 #define EFX_ETHTOOL_NUM_STATS ARRAY_SIZE(efx_ethtool_stats)
+=======
+	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_nodesc_trunc),
+	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_merge_events),
+	EFX_ETHTOOL_UINT_CHANNEL_STAT(rx_merge_packets),
+};
+
+#define EFX_ETHTOOL_SW_STAT_COUNT ARRAY_SIZE(efx_sw_stat_desc)
+>>>>>>> refs/remotes/origin/master
 
 #define EFX_ETHTOOL_EEPROM_MAGIC 0xEFAB
 
@@ -204,8 +244,11 @@ static int efx_ethtool_get_settings(struct net_device *net_dev,
 	efx->phy_op->get_settings(efx, ecmd);
 	mutex_unlock(&efx->mac_lock);
 
+<<<<<<< HEAD
 	/* GMAC does not support 1000Mbps HD */
 	ecmd->supported &= ~SUPPORTED_1000baseT_Half;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Both MACs support pause frames (bidirectional and respond-only) */
 	ecmd->supported |= SUPPORTED_Pause | SUPPORTED_Asym_Pause;
 
@@ -290,12 +333,20 @@ static void efx_ethtool_set_msglevel(struct net_device *net_dev, u32 msg_enable)
  *
  * Fill in an individual self-test entry.
  */
+<<<<<<< HEAD
 static void efx_fill_test(unsigned int test_index,
 			  struct ethtool_string *strings, u64 *data,
 			  int *test, const char *unit_format, int unit_id,
 			  const char *test_format, const char *test_id)
 {
 	struct ethtool_string unit_str, test_str;
+=======
+static void efx_fill_test(unsigned int test_index, u8 *strings, u64 *data,
+			  int *test, const char *unit_format, int unit_id,
+			  const char *test_format, const char *test_id)
+{
+	char unit_str[ETH_GSTRING_LEN], test_str[ETH_GSTRING_LEN];
+>>>>>>> refs/remotes/origin/master
 
 	/* Fill data value, if applicable */
 	if (data)
@@ -304,6 +355,7 @@ static void efx_fill_test(unsigned int test_index,
 	/* Fill string, if applicable */
 	if (strings) {
 		if (strchr(unit_format, '%'))
+<<<<<<< HEAD
 			snprintf(unit_str.name, sizeof(unit_str.name),
 				 unit_format, unit_id);
 		else
@@ -313,6 +365,16 @@ static void efx_fill_test(unsigned int test_index,
 		snprintf(strings[test_index].name,
 			 sizeof(strings[test_index].name),
 			 "%-6s %-24s", unit_str.name, test_str.name);
+=======
+			snprintf(unit_str, sizeof(unit_str),
+				 unit_format, unit_id);
+		else
+			strcpy(unit_str, unit_format);
+		snprintf(test_str, sizeof(test_str), test_format, test_id);
+		snprintf(strings + test_index * ETH_GSTRING_LEN,
+			 ETH_GSTRING_LEN,
+			 "%-6s %-24s", unit_str, test_str);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -335,9 +397,16 @@ static int efx_fill_loopback_test(struct efx_nic *efx,
 				  struct efx_loopback_self_tests *lb_tests,
 				  enum efx_loopback_mode mode,
 				  unsigned int test_index,
+<<<<<<< HEAD
 				  struct ethtool_string *strings, u64 *data)
 {
 	struct efx_channel *channel = efx_get_channel(efx, 0);
+=======
+				  u8 *strings, u64 *data)
+{
+	struct efx_channel *channel =
+		efx_get_channel(efx, efx->tx_channel_offset);
+>>>>>>> refs/remotes/origin/master
 	struct efx_tx_queue *tx_queue;
 
 	efx_for_each_channel_tx_queue(tx_queue, channel) {
@@ -371,8 +440,12 @@ static int efx_fill_loopback_test(struct efx_nic *efx,
  */
 static int efx_ethtool_fill_self_tests(struct efx_nic *efx,
 				       struct efx_self_tests *tests,
+<<<<<<< HEAD
 				       struct ethtool_string *strings,
 				       u64 *data)
+=======
+				       u8 *strings, u64 *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct efx_channel *channel;
 	unsigned int n = 0, i;
@@ -431,12 +504,23 @@ static int efx_ethtool_fill_self_tests(struct efx_nic *efx,
 static int efx_ethtool_get_sset_count(struct net_device *net_dev,
 				      int string_set)
 {
+<<<<<<< HEAD
 	switch (string_set) {
 	case ETH_SS_STATS:
 		return EFX_ETHTOOL_NUM_STATS;
 	case ETH_SS_TEST:
 		return efx_ethtool_fill_self_tests(netdev_priv(net_dev),
 						   NULL, NULL, NULL);
+=======
+	struct efx_nic *efx = netdev_priv(net_dev);
+
+	switch (string_set) {
+	case ETH_SS_STATS:
+		return efx->type->describe_stats(efx, NULL) +
+			EFX_ETHTOOL_SW_STAT_COUNT;
+	case ETH_SS_TEST:
+		return efx_ethtool_fill_self_tests(efx, NULL, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EINVAL;
 	}
@@ -446,12 +530,16 @@ static void efx_ethtool_get_strings(struct net_device *net_dev,
 				    u32 string_set, u8 *strings)
 {
 	struct efx_nic *efx = netdev_priv(net_dev);
+<<<<<<< HEAD
 	struct ethtool_string *ethtool_strings =
 		(struct ethtool_string *)strings;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	switch (string_set) {
 	case ETH_SS_STATS:
+<<<<<<< HEAD
 		for (i = 0; i < EFX_ETHTOOL_NUM_STATS; i++)
 			strncpy(ethtool_strings[i].name,
 				efx_ethtool_stats[i].name,
@@ -460,6 +548,16 @@ static void efx_ethtool_get_strings(struct net_device *net_dev,
 	case ETH_SS_TEST:
 		efx_ethtool_fill_self_tests(efx, NULL,
 					    ethtool_strings, NULL);
+=======
+		strings += (efx->type->describe_stats(efx, strings) *
+			    ETH_GSTRING_LEN);
+		for (i = 0; i < EFX_ETHTOOL_SW_STAT_COUNT; i++)
+			strlcpy(strings + i * ETH_GSTRING_LEN,
+				efx_sw_stat_desc[i].name, ETH_GSTRING_LEN);
+		break;
+	case ETH_SS_TEST:
+		efx_ethtool_fill_self_tests(efx, NULL, strings, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		/* No other string sets */
@@ -472,12 +570,17 @@ static void efx_ethtool_get_stats(struct net_device *net_dev,
 				  u64 *data)
 {
 	struct efx_nic *efx = netdev_priv(net_dev);
+<<<<<<< HEAD
 	struct efx_mac_stats *mac_stats = &efx->mac_stats;
 	const struct efx_ethtool_stat *stat;
+=======
+	const struct efx_sw_stat_desc *stat;
+>>>>>>> refs/remotes/origin/master
 	struct efx_channel *channel;
 	struct efx_tx_queue *tx_queue;
 	int i;
 
+<<<<<<< HEAD
 	EFX_BUG_ON_PARANOID(stats->n_stats != EFX_ETHTOOL_NUM_STATS);
 
 	spin_lock_bh(&efx->stats_lock);
@@ -493,6 +596,17 @@ static void efx_ethtool_get_stats(struct net_device *net_dev,
 			data[i] = stat->get_stat((void *)mac_stats +
 						 stat->offset);
 			break;
+=======
+	spin_lock_bh(&efx->stats_lock);
+
+	/* Get NIC statistics */
+	data += efx->type->update_stats(efx, data, NULL);
+
+	/* Get software statistics */
+	for (i = 0; i < EFX_ETHTOOL_SW_STAT_COUNT; i++) {
+		stat = &efx_sw_stat_desc[i];
+		switch (stat->source) {
+>>>>>>> refs/remotes/origin/master
 		case EFX_ETHTOOL_STAT_SOURCE_nic:
 			data[i] = stat->get_stat((void *)efx + stat->offset);
 			break;
@@ -529,9 +643,13 @@ static void efx_ethtool_self_test(struct net_device *net_dev,
 	if (!efx_tests)
 		goto fail;
 
+<<<<<<< HEAD
 
 	ASSERT_RTNL();
 	if (efx->state != STATE_RUNNING) {
+=======
+	if (efx->state != STATE_READY) {
+>>>>>>> refs/remotes/origin/master
 		rc = -EIO;
 		goto fail1;
 	}
@@ -709,7 +827,10 @@ static int efx_ethtool_set_pauseparam(struct net_device *net_dev,
 	struct efx_nic *efx = netdev_priv(net_dev);
 	u8 wanted_fc, old_fc;
 	u32 old_adv;
+<<<<<<< HEAD
 	bool reset;
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	mutex_lock(&efx->mac_lock);
@@ -732,6 +853,7 @@ static int efx_ethtool_set_pauseparam(struct net_device *net_dev,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/* TX flow control may automatically turn itself off if the
 	 * link partner (intermittently) stops responding to pause
 	 * frames. There isn't any indication that this has happened,
@@ -750,6 +872,12 @@ static int efx_ethtool_set_pauseparam(struct net_device *net_dev,
 			efx_schedule_reset(efx, RESET_TYPE_INVISIBLE);
 		}
 	}
+=======
+	/* Hook for Falcon bug 11482 workaround */
+	if (efx->type->prepare_enable_fc_tx &&
+	    (wanted_fc & EFX_FC_TX) && !(efx->wanted_fc & EFX_FC_TX))
+		efx->type->prepare_enable_fc_tx(efx);
+>>>>>>> refs/remotes/origin/master
 
 	old_adv = efx->link_advertising;
 	old_fc = efx->wanted_fc;
@@ -814,8 +942,17 @@ static int efx_ethtool_reset(struct net_device *net_dev, u32 *flags)
 	return efx_reset(efx, rc);
 }
 
+<<<<<<< HEAD
 /* MAC address mask including only MC flag */
 static const u8 mac_addr_mc_mask[ETH_ALEN] = { 0x01, 0, 0, 0, 0, 0 };
+=======
+/* MAC address mask including only I/G bit */
+static const u8 mac_addr_ig_mask[ETH_ALEN] = { 0x01, 0, 0, 0, 0, 0 };
+
+#define IP4_ADDR_FULL_MASK	((__force __be32)~0)
+#define PORT_FULL_MASK		((__force __be16)~0)
+#define ETHER_TYPE_FULL_MASK	((__force __be16)~0)
+>>>>>>> refs/remotes/origin/master
 
 static int efx_ethtool_get_class_rule(struct efx_nic *efx,
 				      struct ethtool_rx_flow_spec *rule)
@@ -825,8 +962,11 @@ static int efx_ethtool_get_class_rule(struct efx_nic *efx,
 	struct ethhdr *mac_entry = &rule->h_u.ether_spec;
 	struct ethhdr *mac_mask = &rule->m_u.ether_spec;
 	struct efx_filter_spec spec;
+<<<<<<< HEAD
 	u16 vid;
 	u8 proto;
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = efx_filter_get_filter_safe(efx, EFX_FILTER_PRI_MANUAL,
@@ -834,11 +974,16 @@ static int efx_ethtool_get_class_rule(struct efx_nic *efx,
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 	if (spec.dmaq_id == 0xfff)
+=======
+	if (spec.dmaq_id == EFX_FILTER_RX_DMAQ_ID_DROP)
+>>>>>>> refs/remotes/origin/master
 		rule->ring_cookie = RX_CLS_FLOW_DISC;
 	else
 		rule->ring_cookie = spec.dmaq_id;
 
+<<<<<<< HEAD
 	if (spec.type == EFX_FILTER_MC_DEF || spec.type == EFX_FILTER_UC_DEF) {
 		rule->flow_type = ETHER_FLOW;
 		memcpy(mac_mask->h_dest, mac_addr_mc_mask, ETH_ALEN);
@@ -872,6 +1017,69 @@ static int efx_ethtool_get_class_rule(struct efx_nic *efx,
 	rule->flow_type = (proto == IPPROTO_TCP) ? TCP_V4_FLOW : UDP_V4_FLOW;
 	ip_mask->ip4dst = ~0;
 	ip_mask->pdst = ~0;
+=======
+	if ((spec.match_flags & EFX_FILTER_MATCH_ETHER_TYPE) &&
+	    spec.ether_type == htons(ETH_P_IP) &&
+	    (spec.match_flags & EFX_FILTER_MATCH_IP_PROTO) &&
+	    (spec.ip_proto == IPPROTO_TCP || spec.ip_proto == IPPROTO_UDP) &&
+	    !(spec.match_flags &
+	      ~(EFX_FILTER_MATCH_ETHER_TYPE | EFX_FILTER_MATCH_OUTER_VID |
+		EFX_FILTER_MATCH_LOC_HOST | EFX_FILTER_MATCH_REM_HOST |
+		EFX_FILTER_MATCH_IP_PROTO |
+		EFX_FILTER_MATCH_LOC_PORT | EFX_FILTER_MATCH_REM_PORT))) {
+		rule->flow_type = ((spec.ip_proto == IPPROTO_TCP) ?
+				   TCP_V4_FLOW : UDP_V4_FLOW);
+		if (spec.match_flags & EFX_FILTER_MATCH_LOC_HOST) {
+			ip_entry->ip4dst = spec.loc_host[0];
+			ip_mask->ip4dst = IP4_ADDR_FULL_MASK;
+		}
+		if (spec.match_flags & EFX_FILTER_MATCH_REM_HOST) {
+			ip_entry->ip4src = spec.rem_host[0];
+			ip_mask->ip4src = IP4_ADDR_FULL_MASK;
+		}
+		if (spec.match_flags & EFX_FILTER_MATCH_LOC_PORT) {
+			ip_entry->pdst = spec.loc_port;
+			ip_mask->pdst = PORT_FULL_MASK;
+		}
+		if (spec.match_flags & EFX_FILTER_MATCH_REM_PORT) {
+			ip_entry->psrc = spec.rem_port;
+			ip_mask->psrc = PORT_FULL_MASK;
+		}
+	} else if (!(spec.match_flags &
+		     ~(EFX_FILTER_MATCH_LOC_MAC | EFX_FILTER_MATCH_LOC_MAC_IG |
+		       EFX_FILTER_MATCH_REM_MAC | EFX_FILTER_MATCH_ETHER_TYPE |
+		       EFX_FILTER_MATCH_OUTER_VID))) {
+		rule->flow_type = ETHER_FLOW;
+		if (spec.match_flags &
+		    (EFX_FILTER_MATCH_LOC_MAC | EFX_FILTER_MATCH_LOC_MAC_IG)) {
+			memcpy(mac_entry->h_dest, spec.loc_mac, ETH_ALEN);
+			if (spec.match_flags & EFX_FILTER_MATCH_LOC_MAC)
+				memset(mac_mask->h_dest, ~0, ETH_ALEN);
+			else
+				memcpy(mac_mask->h_dest, mac_addr_ig_mask,
+				       ETH_ALEN);
+		}
+		if (spec.match_flags & EFX_FILTER_MATCH_REM_MAC) {
+			memcpy(mac_entry->h_source, spec.rem_mac, ETH_ALEN);
+			memset(mac_mask->h_source, ~0, ETH_ALEN);
+		}
+		if (spec.match_flags & EFX_FILTER_MATCH_ETHER_TYPE) {
+			mac_entry->h_proto = spec.ether_type;
+			mac_mask->h_proto = ETHER_TYPE_FULL_MASK;
+		}
+	} else {
+		/* The above should handle all filters that we insert */
+		WARN_ON(1);
+		return -EINVAL;
+	}
+
+	if (spec.match_flags & EFX_FILTER_MATCH_OUTER_VID) {
+		rule->flow_type |= FLOW_EXT;
+		rule->h_ext.vlan_tci = spec.outer_vid;
+		rule->m_ext.vlan_tci = htons(0xfff);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -962,9 +1170,13 @@ static int efx_ethtool_set_class_rule(struct efx_nic *efx,
 	int rc;
 
 	/* Check that user wants us to choose the location */
+<<<<<<< HEAD
 	if (rule->location != RX_CLS_LOC_ANY &&
 	    rule->location != RX_CLS_LOC_FIRST &&
 	    rule->location != RX_CLS_LOC_LAST)
+=======
+	if (rule->location != RX_CLS_LOC_ANY)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/* Range-check ring_cookie */
@@ -974,11 +1186,16 @@ static int efx_ethtool_set_class_rule(struct efx_nic *efx,
 
 	/* Check for unsupported extensions */
 	if ((rule->flow_type & FLOW_EXT) &&
+<<<<<<< HEAD
 	    (rule->m_ext.vlan_etype | rule->m_ext.data[0] |
+=======
+	    (rule->m_ext.vlan_etype || rule->m_ext.data[0] ||
+>>>>>>> refs/remotes/origin/master
 	     rule->m_ext.data[1]))
 		return -EINVAL;
 
 	efx_filter_init_rx(&spec, EFX_FILTER_PRI_MANUAL,
+<<<<<<< HEAD
 			   (rule->location == RX_CLS_LOC_FIRST) ?
 			   EFX_FILTER_FLAG_RX_OVERRIDE_IP : 0,
 			   (rule->ring_cookie == RX_CLS_FLOW_DISC) ?
@@ -1053,11 +1270,87 @@ static int efx_ethtool_set_class_rule(struct efx_nic *efx,
 			return rc;
 		break;
 	}
+=======
+			   efx->rx_scatter ? EFX_FILTER_FLAG_RX_SCATTER : 0,
+			   (rule->ring_cookie == RX_CLS_FLOW_DISC) ?
+			   EFX_FILTER_RX_DMAQ_ID_DROP : rule->ring_cookie);
+
+	switch (rule->flow_type & ~FLOW_EXT) {
+	case TCP_V4_FLOW:
+	case UDP_V4_FLOW:
+		spec.match_flags = (EFX_FILTER_MATCH_ETHER_TYPE |
+				    EFX_FILTER_MATCH_IP_PROTO);
+		spec.ether_type = htons(ETH_P_IP);
+		spec.ip_proto = ((rule->flow_type & ~FLOW_EXT) == TCP_V4_FLOW ?
+				 IPPROTO_TCP : IPPROTO_UDP);
+		if (ip_mask->ip4dst) {
+			if (ip_mask->ip4dst != IP4_ADDR_FULL_MASK)
+				return -EINVAL;
+			spec.match_flags |= EFX_FILTER_MATCH_LOC_HOST;
+			spec.loc_host[0] = ip_entry->ip4dst;
+		}
+		if (ip_mask->ip4src) {
+			if (ip_mask->ip4src != IP4_ADDR_FULL_MASK)
+				return -EINVAL;
+			spec.match_flags |= EFX_FILTER_MATCH_REM_HOST;
+			spec.rem_host[0] = ip_entry->ip4src;
+		}
+		if (ip_mask->pdst) {
+			if (ip_mask->pdst != PORT_FULL_MASK)
+				return -EINVAL;
+			spec.match_flags |= EFX_FILTER_MATCH_LOC_PORT;
+			spec.loc_port = ip_entry->pdst;
+		}
+		if (ip_mask->psrc) {
+			if (ip_mask->psrc != PORT_FULL_MASK)
+				return -EINVAL;
+			spec.match_flags |= EFX_FILTER_MATCH_REM_PORT;
+			spec.rem_port = ip_entry->psrc;
+		}
+		if (ip_mask->tos)
+			return -EINVAL;
+		break;
+
+	case ETHER_FLOW:
+		if (!is_zero_ether_addr(mac_mask->h_dest)) {
+			if (ether_addr_equal(mac_mask->h_dest,
+					     mac_addr_ig_mask))
+				spec.match_flags |= EFX_FILTER_MATCH_LOC_MAC_IG;
+			else if (is_broadcast_ether_addr(mac_mask->h_dest))
+				spec.match_flags |= EFX_FILTER_MATCH_LOC_MAC;
+			else
+				return -EINVAL;
+			memcpy(spec.loc_mac, mac_entry->h_dest, ETH_ALEN);
+		}
+		if (!is_zero_ether_addr(mac_mask->h_source)) {
+			if (!is_broadcast_ether_addr(mac_mask->h_source))
+				return -EINVAL;
+			spec.match_flags |= EFX_FILTER_MATCH_REM_MAC;
+			memcpy(spec.rem_mac, mac_entry->h_source, ETH_ALEN);
+		}
+		if (mac_mask->h_proto) {
+			if (mac_mask->h_proto != ETHER_TYPE_FULL_MASK)
+				return -EINVAL;
+			spec.match_flags |= EFX_FILTER_MATCH_ETHER_TYPE;
+			spec.ether_type = mac_entry->h_proto;
+		}
+		break;
+>>>>>>> refs/remotes/origin/master
 
 	default:
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
+=======
+	if ((rule->flow_type & FLOW_EXT) && rule->m_ext.vlan_tci) {
+		if (rule->m_ext.vlan_tci != htons(0xfff))
+			return -EINVAL;
+		spec.match_flags |= EFX_FILTER_MATCH_OUTER_VID;
+		spec.outer_vid = rule->h_ext.vlan_tci;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	rc = efx_filter_insert_filter(efx, &spec, true);
 	if (rc < 0)
 		return rc;
@@ -1114,6 +1407,56 @@ static int efx_ethtool_set_rxfh_indir(struct net_device *net_dev,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int efx_ethtool_get_ts_info(struct net_device *net_dev,
+				   struct ethtool_ts_info *ts_info)
+{
+	struct efx_nic *efx = netdev_priv(net_dev);
+
+	/* Software capabilities */
+	ts_info->so_timestamping = (SOF_TIMESTAMPING_RX_SOFTWARE |
+				    SOF_TIMESTAMPING_SOFTWARE);
+	ts_info->phc_index = -1;
+
+	efx_ptp_get_ts_info(efx, ts_info);
+	return 0;
+}
+
+static int efx_ethtool_get_module_eeprom(struct net_device *net_dev,
+					 struct ethtool_eeprom *ee,
+					 u8 *data)
+{
+	struct efx_nic *efx = netdev_priv(net_dev);
+	int ret;
+
+	if (!efx->phy_op || !efx->phy_op->get_module_eeprom)
+		return -EOPNOTSUPP;
+
+	mutex_lock(&efx->mac_lock);
+	ret = efx->phy_op->get_module_eeprom(efx, ee, data);
+	mutex_unlock(&efx->mac_lock);
+
+	return ret;
+}
+
+static int efx_ethtool_get_module_info(struct net_device *net_dev,
+				       struct ethtool_modinfo *modinfo)
+{
+	struct efx_nic *efx = netdev_priv(net_dev);
+	int ret;
+
+	if (!efx->phy_op || !efx->phy_op->get_module_info)
+		return -EOPNOTSUPP;
+
+	mutex_lock(&efx->mac_lock);
+	ret = efx->phy_op->get_module_info(efx, modinfo);
+	mutex_unlock(&efx->mac_lock);
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 const struct ethtool_ops efx_ethtool_ops = {
 	.get_settings		= efx_ethtool_get_settings,
 	.set_settings		= efx_ethtool_set_settings,
@@ -1143,4 +1486,10 @@ const struct ethtool_ops efx_ethtool_ops = {
 	.get_rxfh_indir_size	= efx_ethtool_get_rxfh_indir_size,
 	.get_rxfh_indir		= efx_ethtool_get_rxfh_indir,
 	.set_rxfh_indir		= efx_ethtool_set_rxfh_indir,
+<<<<<<< HEAD
+=======
+	.get_ts_info		= efx_ethtool_get_ts_info,
+	.get_module_info	= efx_ethtool_get_module_info,
+	.get_module_eeprom	= efx_ethtool_get_module_eeprom,
+>>>>>>> refs/remotes/origin/master
 };

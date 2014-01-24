@@ -2,10 +2,14 @@
 
     AudioScience HPI driver
 <<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
 =======
     Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -51,10 +55,14 @@ static void hpi_init_message(struct hpi_message *phm, u16 object,
 		phm->type = HPI_TYPE_SSX2BYPASS_MESSAGE;
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		phm->type = HPI_TYPE_MESSAGE;
 =======
 		phm->type = HPI_TYPE_REQUEST;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		phm->type = HPI_TYPE_REQUEST;
+>>>>>>> refs/remotes/origin/master
 	phm->object = object;
 	phm->function = function;
 	phm->version = 0;
@@ -98,10 +106,14 @@ static void hpi_init_messageV1(struct hpi_message_header *phm, u16 size,
 	if ((object > 0) && (object <= HPI_OBJ_MAXINDEX)) {
 		phm->size = size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		phm->type = HPI_TYPE_MESSAGE;
 =======
 		phm->type = HPI_TYPE_REQUEST;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		phm->type = HPI_TYPE_REQUEST;
+>>>>>>> refs/remotes/origin/master
 		phm->object = object;
 		phm->function = function;
 		phm->version = 1;

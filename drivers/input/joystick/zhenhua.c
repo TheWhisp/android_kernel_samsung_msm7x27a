@@ -225,6 +225,7 @@ static struct serio_driver zhenhua_drv = {
 	.disconnect	= zhenhua_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -241,3 +242,6 @@ static void __exit zhenhua_exit(void)
 
 module_init(zhenhua_init);
 module_exit(zhenhua_exit);
+=======
+module_serio_driver(zhenhua_drv);
+>>>>>>> refs/remotes/origin/master

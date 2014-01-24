@@ -2,10 +2,14 @@
  * OMAP3 powerdomain definitions
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2007-2008 Texas Instruments, Inc.
 =======
  * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2007-2011 Nokia Corporation
  *
  * Paul Walmsley, Jouni Högander
@@ -18,6 +22,7 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 
@@ -27,6 +32,13 @@
 #include "powerdomain.h"
 #include "powerdomains2xxx_3xxx_data.h"
 
+=======
+#include <linux/bug.h>
+
+#include "soc.h"
+#include "powerdomain.h"
+#include "powerdomains2xxx_3xxx_data.h"
+>>>>>>> refs/remotes/origin/master
 #include "prcm-common.h"
 #include "prm2xxx_3xxx.h"
 #include "prm-regbits-34xx.h"
@@ -38,10 +50,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_OMAP3
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Powerdomains
  */
@@ -50,9 +65,12 @@ static struct powerdomain iva2_pwrdm = {
 	.name		  = "iva2_pwrdm",
 	.prcm_offs	  = OMAP3430_IVA2_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_OFF_RET,
 	.banks		  = 4,
@@ -69,18 +87,25 @@ static struct powerdomain iva2_pwrdm = {
 		[3] = PWRSTS_ON,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "mpu_iva" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "mpu_iva" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain mpu_3xxx_pwrdm = {
 	.name		  = "mpu_pwrdm",
 	.prcm_offs	  = MPU_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_OFF_RET,
 	.flags		  = PWRDM_HAS_MPU_QUIRK,
@@ -92,9 +117,29 @@ static struct powerdomain mpu_3xxx_pwrdm = {
 		[0] = PWRSTS_OFF_ON,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "mpu_iva" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "mpu_iva" },
+};
+
+static struct powerdomain mpu_am35x_pwrdm = {
+	.name		  = "mpu_pwrdm",
+	.prcm_offs	  = MPU_MOD,
+	.pwrsts		  = PWRSTS_ON,
+	.pwrsts_logic_ret = PWRSTS_ON,
+	.flags		  = PWRDM_HAS_MPU_QUIRK,
+	.banks		  = 1,
+	.pwrsts_mem_ret	  = {
+		[0] = PWRSTS_ON,
+	},
+	.pwrsts_mem_on	  = {
+		[0] = PWRSTS_ON,
+	},
+	.voltdm		  = { .name = "mpu_iva" },
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -111,12 +156,15 @@ static struct powerdomain core_3xxx_pre_es3_1_pwrdm = {
 	.name		  = "core_pwrdm",
 	.prcm_offs	  = CORE_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430ES1 |
 					   CHIP_IS_OMAP3430ES2 |
 					   CHIP_IS_OMAP3430ES3_0 |
 					   CHIP_IS_OMAP3630ES1),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_OFF_RET,
 	.banks		  = 2,
@@ -129,19 +177,26 @@ static struct powerdomain core_3xxx_pre_es3_1_pwrdm = {
 		[1] = PWRSTS_OFF_RET_ON, /* MEM2ONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain core_3xxx_es3_1_pwrdm = {
 	.name		  = "core_pwrdm",
 	.prcm_offs	  = CORE_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430ES3_1 |
 					  CHIP_GE_OMAP3630ES1_1),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_OFF_RET,
 	/*
@@ -159,17 +214,41 @@ static struct powerdomain core_3xxx_es3_1_pwrdm = {
 		[1] = PWRSTS_OFF_RET_ON, /* MEM2ONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain core_am35x_pwrdm = {
+	.name		  = "core_pwrdm",
+	.prcm_offs	  = CORE_MOD,
+	.pwrsts		  = PWRSTS_ON,
+	.pwrsts_logic_ret = PWRSTS_ON,
+	.banks		  = 2,
+	.pwrsts_mem_ret	  = {
+		[0] = PWRSTS_ON,	 /* MEM1RETSTATE */
+		[1] = PWRSTS_ON,	 /* MEM2RETSTATE */
+	},
+	.pwrsts_mem_on	  = {
+		[0] = PWRSTS_ON, /* MEM1ONSTATE */
+		[1] = PWRSTS_ON, /* MEM2ONSTATE */
+	},
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain dss_pwrdm = {
 	.name		  = "dss_pwrdm",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.prcm_offs	  = OMAP3430_DSS_MOD,
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
@@ -181,9 +260,28 @@ static struct powerdomain dss_pwrdm = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain dss_am35x_pwrdm = {
+	.name		  = "dss_pwrdm",
+	.prcm_offs	  = OMAP3430_DSS_MOD,
+	.pwrsts		  = PWRSTS_ON,
+	.pwrsts_logic_ret = PWRSTS_ON,
+	.banks		  = 1,
+	.pwrsts_mem_ret	  = {
+		[0] = PWRSTS_ON, /* MEMRETSTATE */
+	},
+	.pwrsts_mem_on	  = {
+		[0] = PWRSTS_ON,  /* MEMONSTATE */
+	},
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -195,9 +293,12 @@ static struct powerdomain sgx_pwrdm = {
 	.name		  = "sgx_pwrdm",
 	.prcm_offs	  = OMAP3430ES2_SGX_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_GE_OMAP3430ES2),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* XXX This is accurate for 3430 SGX, but what about GFX? */
 	.pwrsts		  = PWRSTS_OFF_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
@@ -209,17 +310,39 @@ static struct powerdomain sgx_pwrdm = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain sgx_am35x_pwrdm = {
+	.name		  = "sgx_pwrdm",
+	.prcm_offs	  = OMAP3430ES2_SGX_MOD,
+	.pwrsts		  = PWRSTS_ON,
+	.pwrsts_logic_ret = PWRSTS_ON,
+	.banks		  = 1,
+	.pwrsts_mem_ret	  = {
+		[0] = PWRSTS_ON, /* MEMRETSTATE */
+	},
+	.pwrsts_mem_on	  = {
+		[0] = PWRSTS_ON,  /* MEMONSTATE */
+	},
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain cam_pwrdm = {
 	.name		  = "cam_pwrdm",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.prcm_offs	  = OMAP3430_CAM_MOD,
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
@@ -231,18 +354,25 @@ static struct powerdomain cam_pwrdm = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain per_pwrdm = {
 	.name		  = "per_pwrdm",
 	.prcm_offs	  = OMAP3430_PER_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_OFF_RET,
 	.banks		  = 1,
@@ -253,24 +383,48 @@ static struct powerdomain per_pwrdm = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain per_am35x_pwrdm = {
+	.name		  = "per_pwrdm",
+	.prcm_offs	  = OMAP3430_PER_MOD,
+	.pwrsts		  = PWRSTS_ON,
+	.pwrsts_logic_ret = PWRSTS_ON,
+	.banks		  = 1,
+	.pwrsts_mem_ret	  = {
+		[0] = PWRSTS_ON, /* MEMRETSTATE */
+	},
+	.pwrsts_mem_on	  = {
+		[0] = PWRSTS_ON,  /* MEMONSTATE */
+	},
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain emu_pwrdm = {
 	.name		= "emu_pwrdm",
 	.prcm_offs	= OMAP3430_EMU_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	= OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain neon_pwrdm = {
 	.name		  = "neon_pwrdm",
 	.prcm_offs	  = OMAP3430_NEON_MOD,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
@@ -280,15 +434,31 @@ static struct powerdomain neon_pwrdm = {
 	.pwrsts_logic_ret = PWRSTS_RET,
 	.voltdm           = { .name = "mpu_iva" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pwrsts		  = PWRSTS_OFF_RET_ON,
+	.pwrsts_logic_ret = PWRSTS_RET,
+	.voltdm		  = { .name = "mpu_iva" },
+};
+
+static struct powerdomain neon_am35x_pwrdm = {
+	.name		  = "neon_pwrdm",
+	.prcm_offs	  = OMAP3430_NEON_MOD,
+	.pwrsts		  = PWRSTS_ON,
+	.pwrsts_logic_ret = PWRSTS_ON,
+	.voltdm		  = { .name = "mpu_iva" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain usbhost_pwrdm = {
 	.name		  = "usbhost_pwrdm",
 	.prcm_offs	  = OMAP3430ES2_USBHOST_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_GE_OMAP3430ES2),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
 	/*
@@ -306,54 +476,75 @@ static struct powerdomain usbhost_pwrdm = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain dpll1_pwrdm = {
 	.name		= "dpll1_pwrdm",
 	.prcm_offs	= MPU_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	= OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 	.voltdm           = { .name = "mpu_iva" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "mpu_iva" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain dpll2_pwrdm = {
 	.name		= "dpll2_pwrdm",
 	.prcm_offs	= OMAP3430_IVA2_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	= OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 	.voltdm           = { .name = "mpu_iva" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "mpu_iva" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain dpll3_pwrdm = {
 	.name		= "dpll3_pwrdm",
 	.prcm_offs	= PLL_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	= OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain dpll4_pwrdm = {
 	.name		= "dpll4_pwrdm",
 	.prcm_offs	= PLL_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	= OMAP_CHIP_INIT(CHIP_IS_OMAP3430),
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain dpll5_pwrdm = {
 	.name		= "dpll5_pwrdm",
 	.prcm_offs	= PLL_MOD,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.omap_chip	= OMAP_CHIP_INIT(CHIP_GE_OMAP3430ES2),
 };
@@ -370,6 +561,64 @@ static struct powerdomain *powerdomains_omap3xxx[] __initdata = {
 	&core_3xxx_es3_1_pwrdm,
 =======
 	.voltdm           = { .name = "core" },
+=======
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain alwon_81xx_pwrdm = {
+	.name		  = "alwon_pwrdm",
+	.prcm_offs	  = TI81XX_PRM_ALWON_MOD,
+	.pwrsts		  = PWRSTS_OFF_ON,
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain device_81xx_pwrdm = {
+	.name		  = "device_pwrdm",
+	.prcm_offs	  = TI81XX_PRM_DEVICE_MOD,
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain active_816x_pwrdm = {
+	.name		  = "active_pwrdm",
+	.prcm_offs	  = TI816X_PRM_ACTIVE_MOD,
+	.pwrsts		  = PWRSTS_OFF_ON,
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain default_816x_pwrdm = {
+	.name		  = "default_pwrdm",
+	.prcm_offs	  = TI81XX_PRM_DEFAULT_MOD,
+	.pwrsts		  = PWRSTS_OFF_ON,
+	.voltdm		  = { .name = "core" },
+};
+
+static struct powerdomain ivahd0_816x_pwrdm = {
+	.name		  = "ivahd0_pwrdm",
+	.prcm_offs	  = TI816X_PRM_IVAHD0_MOD,
+	.pwrsts		  = PWRSTS_OFF_ON,
+	.voltdm		  = { .name = "mpu_iva" },
+};
+
+static struct powerdomain ivahd1_816x_pwrdm = {
+	.name		  = "ivahd1_pwrdm",
+	.prcm_offs	  = TI816X_PRM_IVAHD1_MOD,
+	.pwrsts		  = PWRSTS_OFF_ON,
+	.voltdm		  = { .name = "mpu_iva" },
+};
+
+static struct powerdomain ivahd2_816x_pwrdm = {
+	.name		  = "ivahd2_pwrdm",
+	.prcm_offs	  = TI816X_PRM_IVAHD2_MOD,
+	.pwrsts		  = PWRSTS_OFF_ON,
+	.voltdm		  = { .name = "mpu_iva" },
+};
+
+static struct powerdomain sgx_816x_pwrdm = {
+	.name		  = "sgx_pwrdm",
+	.prcm_offs	  = TI816X_PRM_SGX_MOD,
+	.pwrsts		  = PWRSTS_OFF_ON,
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 /* As powerdomains are added or removed above, this list must also be changed */
@@ -378,20 +627,27 @@ static struct powerdomain *powerdomains_omap3430_common[] __initdata = {
 	&iva2_pwrdm,
 	&mpu_3xxx_pwrdm,
 	&neon_pwrdm,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&cam_pwrdm,
 	&dss_pwrdm,
 	&per_pwrdm,
 	&emu_pwrdm,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&sgx_pwrdm,
 	&usbhost_pwrdm,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&dpll1_pwrdm,
 	&dpll2_pwrdm,
 	&dpll3_pwrdm,
 	&dpll4_pwrdm,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	&dpll5_pwrdm,
 #endif
@@ -403,6 +659,8 @@ void __init omap3xxx_powerdomains_init(void)
 {
 	pwrdm_init(powerdomains_omap3xxx, &omap3_pwrdm_operations);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
@@ -430,6 +688,37 @@ static struct powerdomain *powerdomains_omap3430es3_1plus[] __initdata = {
 	NULL
 };
 
+<<<<<<< HEAD
+=======
+static struct powerdomain *powerdomains_am35x[] __initdata = {
+	&wkup_omap2_pwrdm,
+	&mpu_am35x_pwrdm,
+	&neon_am35x_pwrdm,
+	&core_am35x_pwrdm,
+	&sgx_am35x_pwrdm,
+	&dss_am35x_pwrdm,
+	&per_am35x_pwrdm,
+	&emu_pwrdm,
+	&dpll1_pwrdm,
+	&dpll3_pwrdm,
+	&dpll4_pwrdm,
+	&dpll5_pwrdm,
+	NULL
+};
+
+static struct powerdomain *powerdomains_ti81xx[] __initdata = {
+	&alwon_81xx_pwrdm,
+	&device_81xx_pwrdm,
+	&active_816x_pwrdm,
+	&default_816x_pwrdm,
+	&ivahd0_816x_pwrdm,
+	&ivahd1_816x_pwrdm,
+	&ivahd2_816x_pwrdm,
+	&sgx_816x_pwrdm,
+	NULL
+};
+
+>>>>>>> refs/remotes/origin/master
 void __init omap3xxx_powerdomains_init(void)
 {
 	unsigned int rev;
@@ -438,6 +727,7 @@ void __init omap3xxx_powerdomains_init(void)
 		return;
 
 	pwrdm_register_platform_funcs(&omap3_pwrdm_operations);
+<<<<<<< HEAD
 	pwrdm_register_pwrdms(powerdomains_omap3430_common);
 
 	rev = omap_rev();
@@ -456,4 +746,39 @@ void __init omap3xxx_powerdomains_init(void)
 
 	pwrdm_complete_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	rev = omap_rev();
+
+	if (rev == AM35XX_REV_ES1_0 || rev == AM35XX_REV_ES1_1) {
+		pwrdm_register_pwrdms(powerdomains_am35x);
+	} else if (rev == TI8168_REV_ES1_0 || rev == TI8168_REV_ES1_1
+			|| rev == TI8168_REV_ES2_0 || rev == TI8168_REV_ES2_1) {
+		pwrdm_register_pwrdms(powerdomains_ti81xx);
+	} else {
+		pwrdm_register_pwrdms(powerdomains_omap3430_common);
+
+		switch (rev) {
+		case OMAP3430_REV_ES1_0:
+			pwrdm_register_pwrdms(powerdomains_omap3430es1);
+			break;
+		case OMAP3430_REV_ES2_0:
+		case OMAP3430_REV_ES2_1:
+		case OMAP3430_REV_ES3_0:
+		case OMAP3630_REV_ES1_0:
+			pwrdm_register_pwrdms(powerdomains_omap3430es2_es3_0);
+			break;
+		case OMAP3430_REV_ES3_1:
+		case OMAP3430_REV_ES3_1_2:
+		case OMAP3630_REV_ES1_1:
+		case OMAP3630_REV_ES1_2:
+			pwrdm_register_pwrdms(powerdomains_omap3430es3_1plus);
+			break;
+		default:
+			WARN(1, "OMAP3 powerdomain init: unknown chip type\n");
+		}
+	}
+
+	pwrdm_complete_init();
+>>>>>>> refs/remotes/origin/master
 }

@@ -38,8 +38,13 @@
 
 #include <asm-generic/rtc.h>
 #include <asm/intel_scu_ipc.h>
+<<<<<<< HEAD
 #include <asm/mrst.h>
 #include <asm/mrst-vrtc.h>
+=======
+#include <asm/intel-mid.h>
+#include <asm/intel_mid_vrtc.h>
+>>>>>>> refs/remotes/origin/master
 
 struct mrst_rtc {
 	struct rtc_device	*rtc;
@@ -77,6 +82,7 @@ static inline unsigned char vrtc_is_updating(void)
  * rtc_time's year contains the increment over 1900, but vRTC's YEAR
  * register can't be programmed to value larger than 0x64, so vRTC
 <<<<<<< HEAD
+<<<<<<< HEAD
  * driver chose to use 1960 (1970 is UNIX time start point) as the base,
  * and does the translation at read/write time.
  *
@@ -84,6 +90,8 @@ static inline unsigned char vrtc_is_updating(void)
  * make it consistent in leap year setting for both vrtc and low-level
  * physical rtc devices.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * driver chose to use 1972 (1970 is UNIX time start point) as the base,
  * and does the translation at read/write time.
  *
@@ -93,7 +101,10 @@ static inline unsigned char vrtc_is_updating(void)
  * 1960, for a device's first use, its YEAR register is 0 and the system
  * year will be parsed as 1960 which is not a valid UNIX time and will
  * cause many applications to fail mysteriously.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int mrst_read_time(struct device *dev, struct rtc_time *time)
 {
@@ -112,16 +123,22 @@ static int mrst_read_time(struct device *dev, struct rtc_time *time)
 	spin_unlock_irqrestore(&rtc_lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Adjust for the 1960/1900 */
 	time->tm_year += 60;
 	time->tm_mon--;
 	return RTC_24H;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Adjust for the 1972/1900 */
 	time->tm_year += 72;
 	time->tm_mon--;
 	return rtc_valid_tm(time);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mrst_set_time(struct device *dev, struct rtc_time *time)
@@ -139,6 +156,7 @@ static int mrst_set_time(struct device *dev, struct rtc_time *time)
 	sec = time->tm_sec;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (yrs < 70 || yrs > 138)
 		return -EINVAL;
 	yrs -= 60;
@@ -147,6 +165,11 @@ static int mrst_set_time(struct device *dev, struct rtc_time *time)
 		return -EINVAL;
 	yrs -= 72;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (yrs < 72 || yrs > 138)
+		return -EINVAL;
+	yrs -= 72;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&rtc_lock, flags);
 
@@ -344,8 +367,13 @@ static irqreturn_t mrst_rtc_irq(int irq, void *p)
 	return IRQ_NONE;
 }
 
+<<<<<<< HEAD
 static int __devinit
 vrtc_mrst_do_probe(struct device *dev, struct resource *iomem, int rtc_irq)
+=======
+static int vrtc_mrst_do_probe(struct device *dev, struct resource *iomem,
+			      int rtc_irq)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval = 0;
 	unsigned char rtc_control;
@@ -358,6 +386,7 @@ vrtc_mrst_do_probe(struct device *dev, struct resource *iomem, int rtc_irq)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iomem = request_mem_region(iomem->start,
 			iomem->end + 1 - iomem->start,
 			driver_name);
@@ -365,6 +394,10 @@ vrtc_mrst_do_probe(struct device *dev, struct resource *iomem, int rtc_irq)
 	iomem = request_mem_region(iomem->start, resource_size(iomem),
 				   driver_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iomem = request_mem_region(iomem->start, resource_size(iomem),
+				   driver_name);
+>>>>>>> refs/remotes/origin/master
 	if (!iomem) {
 		dev_dbg(dev, "i/o mem already in use.\n");
 		return -EBUSY;
@@ -395,10 +428,14 @@ vrtc_mrst_do_probe(struct device *dev, struct resource *iomem, int rtc_irq)
 	if (rtc_irq) {
 		retval = request_irq(rtc_irq, mrst_rtc_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				IRQF_DISABLED, dev_name(&mrst_rtc.rtc->dev),
 =======
 				0, dev_name(&mrst_rtc.rtc->dev),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				0, dev_name(&mrst_rtc.rtc->dev),
+>>>>>>> refs/remotes/origin/master
 				mrst_rtc.rtc);
 		if (retval < 0) {
 			dev_dbg(dev, "IRQ %d is already in use, err %d\n",
@@ -412,7 +449,10 @@ vrtc_mrst_do_probe(struct device *dev, struct resource *iomem, int rtc_irq)
 cleanup1:
 	rtc_device_unregister(mrst_rtc.rtc);
 cleanup0:
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	mrst_rtc.dev = NULL;
 	release_mem_region(iomem->start, resource_size(iomem));
 	dev_err(dev, "rtc-mrst: unable to initialise\n");
@@ -426,7 +466,11 @@ static void rtc_mrst_do_shutdown(void)
 	spin_unlock_irq(&rtc_lock);
 }
 
+<<<<<<< HEAD
 static void __devexit rtc_mrst_do_remove(struct device *dev)
+=======
+static void rtc_mrst_do_remove(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mrst_rtc	*mrst = dev_get_drvdata(dev);
 	struct resource *iomem;
@@ -444,7 +488,10 @@ static void __devexit rtc_mrst_do_remove(struct device *dev)
 	mrst->iomem = NULL;
 
 	mrst->dev = NULL;
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef	CONFIG_PM
@@ -535,14 +582,22 @@ static inline int mrst_poweroff(struct device *dev)
 
 #endif
 
+<<<<<<< HEAD
 static int __devinit vrtc_mrst_platform_probe(struct platform_device *pdev)
+=======
+static int vrtc_mrst_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return vrtc_mrst_do_probe(&pdev->dev,
 			platform_get_resource(pdev, IORESOURCE_MEM, 0),
 			platform_get_irq(pdev, 0));
 }
 
+<<<<<<< HEAD
 static int __devexit vrtc_mrst_platform_remove(struct platform_device *pdev)
+=======
+static int vrtc_mrst_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	rtc_mrst_do_remove(&pdev->dev);
 	return 0;
@@ -560,7 +615,11 @@ MODULE_ALIAS("platform:vrtc_mrst");
 
 static struct platform_driver vrtc_mrst_platform_driver = {
 	.probe		= vrtc_mrst_platform_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vrtc_mrst_platform_remove),
+=======
+	.remove		= vrtc_mrst_platform_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= vrtc_mrst_platform_shutdown,
 	.driver = {
 		.name		= (char *) driver_name,
@@ -569,6 +628,7 @@ static struct platform_driver vrtc_mrst_platform_driver = {
 	}
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init vrtc_mrst_init(void)
 {
@@ -585,6 +645,9 @@ module_exit(vrtc_mrst_exit);
 =======
 module_platform_driver(vrtc_mrst_platform_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(vrtc_mrst_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jacob Pan; Feng Tang");
 MODULE_DESCRIPTION("Driver for Moorestown virtual RTC");

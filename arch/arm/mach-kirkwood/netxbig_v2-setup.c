@@ -32,7 +32,11 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <mach/kirkwood.h>
+<<<<<<< HEAD
 #include <mach/leds-netxbig.h>
+=======
+#include <linux/platform_data/leds-kirkwood-netxbig.h>
+>>>>>>> refs/remotes/origin/master
 #include "common.h"
 #include "mpp.h"
 #include "lacie_v2-common.h"
@@ -400,37 +404,55 @@ static void __init netxbig_v2_init(void)
 #ifdef CONFIG_MACH_NET2BIG_V2
 MACHINE_START(NET2BIG_V2, "LaCie 2Big Network v2")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= netxbig_v2_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
 <<<<<<< HEAD
 =======
 	.restart	= kirkwood_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
 #ifdef CONFIG_MACH_NET5BIG_V2
 MACHINE_START(NET5BIG_V2, "LaCie 5Big Network v2")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= netxbig_v2_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
 <<<<<<< HEAD
 =======
 	.restart	= kirkwood_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

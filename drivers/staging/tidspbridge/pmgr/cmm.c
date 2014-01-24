@@ -36,11 +36,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/sync.h>
 
@@ -138,11 +141,14 @@ struct cmm_mnode {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Globals */
 static u32 refs;		/* module reference count */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- Function Prototypes */
 static void add_to_free_list(struct cmm_allocator *allocator,
 			     struct cmm_mnode *pnode);
@@ -251,11 +257,14 @@ int cmm_create(struct cmm_object **ph_cmm_mgr,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(ph_cmm_mgr != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*ph_cmm_mgr = NULL;
 	/* create, zero, and tag a cmm mgr object */
 	cmm_obj = kzalloc(sizeof(struct cmm_object), GFP_KERNEL);
@@ -266,10 +275,13 @@ int cmm_create(struct cmm_object **ph_cmm_mgr,
 		mgr_attrts = &cmm_dfltmgrattrs;	/* set defaults */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* 4 bytes minimum */
 	DBC_ASSERT(mgr_attrts->min_block_size >= 4);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* save away smallest block allocation for this cmm mgr */
 	cmm_obj->min_block_size = mgr_attrts->min_block_size;
 	cmm_obj->page_size = PAGE_SIZE;
@@ -296,9 +308,12 @@ int cmm_destroy(struct cmm_object *hcmm_mgr, bool force)
 	struct cmm_mnode *node, *tmp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hcmm_mgr) {
 		status = -EFAULT;
 		return status;
@@ -342,6 +357,7 @@ int cmm_destroy(struct cmm_object *hcmm_mgr, bool force)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== cmm_exit ========
  *  Purpose:
  *      Discontinue usage of module; free resources when reference count
@@ -357,6 +373,8 @@ void cmm_exit(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== cmm_free_buf ========
  *  Purpose:
  *      Free the given buffer.
@@ -370,11 +388,14 @@ int cmm_free_buf(struct cmm_object *hcmm_mgr, void *buf_pa, u32 ul_seg_id)
 	struct cmm_attrs *pattrs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(buf_pa != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ul_seg_id == 0) {
 		pattrs = &cmm_dfltalctattrs;
 		ul_seg_id = pattrs->seg_id;
@@ -408,16 +429,23 @@ int cmm_free_buf(struct cmm_object *hcmm_mgr, void *buf_pa, u32 ul_seg_id)
  *      Return the communication memory manager object for this device.
  *      This is typically called from the client process.
  */
+<<<<<<< HEAD
 int cmm_get_handle(void *hprocessor, struct cmm_object ** ph_cmm_mgr)
+=======
+int cmm_get_handle(void *hprocessor, struct cmm_object **ph_cmm_mgr)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 	struct dev_object *hdev_obj;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(ph_cmm_mgr != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hprocessor != NULL)
 		status = proc_get_dev_object(hprocessor, &hdev_obj);
 	else
@@ -444,10 +472,13 @@ int cmm_get_info(struct cmm_object *hcmm_mgr,
 	struct cmm_mnode *curr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(cmm_info_obj != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hcmm_mgr) {
 		status = -EFAULT;
 		return status;
@@ -492,6 +523,7 @@ int cmm_get_info(struct cmm_object *hcmm_mgr,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== cmm_init ========
  *  Purpose:
  *      Initializes private state of CMM module.
@@ -512,6 +544,8 @@ bool cmm_init(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== cmm_register_gppsm_seg ========
  *  Purpose:
  *      Register a block of SM with the CMM to be used for later GPP SM
@@ -530,6 +564,7 @@ int cmm_register_gppsm_seg(struct cmm_object *hcmm_mgr,
 	s32 slot_seg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(ul_size > 0);
 	DBC_REQUIRE(sgmt_id != NULL);
 	DBC_REQUIRE(dw_gpp_base_pa != 0);
@@ -541,6 +576,9 @@ int cmm_register_gppsm_seg(struct cmm_object *hcmm_mgr,
 >>>>>>> refs/remotes/origin/cm-10.0
 	dev_dbg(bridge, "%s: dw_gpp_base_pa %x ul_size %x dsp_addr_offset %x "
 			"dw_dsp_base %x ul_dsp_size %x gpp_base_va %x\n",
+=======
+	dev_dbg(bridge, "%s: dw_gpp_base_pa %x ul_size %x dsp_addr_offset %x dw_dsp_base %x ul_dsp_size %x gpp_base_va %x\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, dw_gpp_base_pa, ul_size, dsp_addr_offset,
 			dw_dsp_base, ul_dsp_size, gpp_base_va);
 
@@ -623,9 +661,12 @@ int cmm_un_register_gppsm_seg(struct cmm_object *hcmm_mgr,
 	u32 ul_id = ul_seg_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(ul_seg_id > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hcmm_mgr)
 		return -EFAULT;
 
@@ -672,10 +713,13 @@ static void un_register_gppsm_seg(struct cmm_allocator *psma)
 	struct cmm_mnode *curr, *tmp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(psma != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* free nodes on free list */
 	list_for_each_entry_safe(curr, tmp, &psma->free_list, link) {
 		list_del(&curr->link);
@@ -704,9 +748,12 @@ static s32 get_slot(struct cmm_object *cmm_mgr_obj)
 {
 	s32 slot_seg = -1;	/* neg on failure */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(cmm_mgr_obj != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* get first available slot in cmm mgr SMSegTab[] */
 	for (slot_seg = 0; slot_seg < CMM_MAXGPPSEGS; slot_seg++) {
 		if (cmm_mgr_obj->pa_gppsm_seg_tab[slot_seg] == NULL)
@@ -730,6 +777,7 @@ static struct cmm_mnode *get_node(struct cmm_object *cmm_mgr_obj, u32 dw_pa,
 	struct cmm_mnode *pnode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(cmm_mgr_obj != NULL);
 	DBC_REQUIRE(dw_pa != 0);
 	DBC_REQUIRE(dw_va != 0);
@@ -737,6 +785,8 @@ static struct cmm_mnode *get_node(struct cmm_object *cmm_mgr_obj, u32 dw_pa,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check cmm mgr's node freelist */
 	if (list_empty(&cmm_mgr_obj->node_free_list)) {
 		pnode = kzalloc(sizeof(struct cmm_mnode), GFP_KERNEL);
@@ -765,9 +815,12 @@ static struct cmm_mnode *get_node(struct cmm_object *cmm_mgr_obj, u32 dw_pa,
 static void delete_node(struct cmm_object *cmm_mgr_obj, struct cmm_mnode *pnode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(pnode != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_add_tail(&pnode->link, &cmm_mgr_obj->node_free_list);
 }
 
@@ -843,11 +896,14 @@ static struct cmm_allocator *get_allocator(struct cmm_object *cmm_mgr_obj,
 					   u32 ul_seg_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(cmm_mgr_obj != NULL);
 	DBC_REQUIRE((ul_seg_id > 0) && (ul_seg_id <= CMM_MAXGPPSEGS));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return cmm_mgr_obj->pa_gppsm_seg_tab[ul_seg_id - 1];
 }
 
@@ -870,12 +926,15 @@ int cmm_xlator_create(struct cmm_xlatorobject **xlator,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(xlator != NULL);
 	DBC_REQUIRE(hcmm_mgr != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*xlator = NULL;
 	if (xlator_attrs == NULL)
 		xlator_attrs = &cmm_dfltxlatorattrs;	/* set defaults */
@@ -906,6 +965,7 @@ void *cmm_xlator_alloc_buf(struct cmm_xlatorobject *xlator, void *va_buf,
 	struct cmm_attrs attrs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(xlator != NULL);
 	DBC_REQUIRE(xlator_obj->cmm_mgr != NULL);
@@ -915,6 +975,8 @@ void *cmm_xlator_alloc_buf(struct cmm_xlatorobject *xlator, void *va_buf,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (xlator_obj) {
 		attrs.seg_id = xlator_obj->seg_id;
 		__raw_writel(0, va_buf);
@@ -945,12 +1007,15 @@ int cmm_xlator_free_buf(struct cmm_xlatorobject *xlator, void *buf_va)
 	void *buf_pa = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(buf_va != NULL);
 	DBC_REQUIRE(xlator_obj->seg_id > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (xlator_obj) {
 		/* convert Va to Pa so we can free it. */
 		buf_pa = cmm_xlator_translate(xlator, buf_va, CMM_VA2PA);
@@ -961,11 +1026,16 @@ int cmm_xlator_free_buf(struct cmm_xlatorobject *xlator, void *buf_va)
 				/* Uh oh, this shouldn't happen. Descriptor
 				 * gone! */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DBC_ASSERT(false);	/* CMM is leaking mem */
 =======
 				pr_err("%s, line %d: Assertion failed\n",
 				       __FILE__, __LINE__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_err("%s, line %d: Assertion failed\n",
+				       __FILE__, __LINE__);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -977,12 +1047,17 @@ int cmm_xlator_free_buf(struct cmm_xlatorobject *xlator, void *buf_va)
  *  Purpose:
  *      Set/Get translator info.
  */
+<<<<<<< HEAD
 int cmm_xlator_info(struct cmm_xlatorobject *xlator, u8 ** paddr,
+=======
+int cmm_xlator_info(struct cmm_xlatorobject *xlator, u8 **paddr,
+>>>>>>> refs/remotes/origin/master
 			   u32 ul_size, u32 segm_id, bool set_info)
 {
 	struct cmm_xlator *xlator_obj = (struct cmm_xlator *)xlator;
 	int status = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(paddr != NULL);
@@ -990,6 +1065,8 @@ int cmm_xlator_info(struct cmm_xlatorobject *xlator, u8 ** paddr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (xlator_obj) {
 		if (set_info) {
 			/* set translators virtual address range */
@@ -1017,21 +1094,27 @@ void *cmm_xlator_translate(struct cmm_xlatorobject *xlator, void *paddr,
 	u32 dw_offset = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(paddr != NULL);
 	DBC_REQUIRE((xtype >= CMM_VA2PA) && (xtype <= CMM_DSPPA2PA));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!xlator_obj)
 		goto loop_cont;
 
 	cmm_mgr_obj = (struct cmm_object *)xlator_obj->cmm_mgr;
 	/* get this translator's default SM allocator */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ASSERT(xlator_obj->seg_id > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	allocator = cmm_mgr_obj->pa_gppsm_seg_tab[xlator_obj->seg_id - 1];
 	if (!allocator)
 		goto loop_cont;

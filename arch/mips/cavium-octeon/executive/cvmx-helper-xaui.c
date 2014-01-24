@@ -321,9 +321,15 @@ int __cvmx_helper_xaui_link_set(int ipd_port, cvmx_helper_link_info_t link_info)
  *
  * @ipd_port: IPD/PKO port to loopback.
  * @enable_internal:
+<<<<<<< HEAD
  *                 Non zero if you want internal loopback
  * @enable_external:
  *                 Non zero if you want external loopback
+=======
+ *		   Non zero if you want internal loopback
+ * @enable_external:
+ *		   Non zero if you want external loopback
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Zero on success, negative on failure.
  */

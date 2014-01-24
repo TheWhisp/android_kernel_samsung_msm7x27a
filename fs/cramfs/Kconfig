@@ -1,5 +1,9 @@
 config CRAMFS
+<<<<<<< HEAD
 	tristate "Compressed ROM file system support (cramfs)"
+=======
+	tristate "Compressed ROM file system support (cramfs) (OBSOLETE)"
+>>>>>>> refs/remotes/origin/master
 	depends on BLOCK
 	select ZLIB_INFLATE
 	help
@@ -16,4 +20,10 @@ config CRAMFS
 	  cramfs.  Note that the root file system (the one containing the
 	  directory /) cannot be compiled as a module.
 
+<<<<<<< HEAD
+=======
+	  This filesystem is obsoleted by SquashFS, which is much better
+	  in terms of performance and features.
+
+>>>>>>> refs/remotes/origin/master
 	  If unsure, say N.

@@ -29,9 +29,13 @@
 #include <linux/usb.h>
 #include <linux/workqueue.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/mac80211.h>
 #include <asm/unaligned.h>
 
@@ -116,11 +120,17 @@ MODULE_DEVICE_TABLE(usb, usb_ids);
 #define FW_ZD1211B_PREFIX	"zd1211/zd1211b_"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static bool check_read_regs(struct zd_usb *usb, struct usb_req_read_regs *req,
 			    unsigned int count);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool check_read_regs(struct zd_usb *usb, struct usb_req_read_regs *req,
+			    unsigned int count);
+
+>>>>>>> refs/remotes/origin/master
 /* USB device initialization */
 static void int_urb_complete(struct urb *urb);
 
@@ -161,7 +171,10 @@ static int upload_code(struct usb_device *udev,
 	 */
 	p = kmalloc(MAX_TRANSFER_SIZE, GFP_KERNEL);
 	if (!p) {
+<<<<<<< HEAD
 		dev_err(&udev->dev, "out of memory\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		r = -ENOMEM;
 		goto error;
 	}
@@ -376,7 +389,10 @@ exit:
 #define urb_dev(urb) (&(urb)->dev->dev)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void handle_regs_int_override(struct urb *urb)
 {
 	struct zd_usb *usb = urb->context;
@@ -391,7 +407,10 @@ static inline void handle_regs_int_override(struct urb *urb)
 	spin_unlock(&intr->lock);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void handle_regs_int(struct urb *urb)
 {
 	struct zd_usb *usb = urb->context;
@@ -411,6 +430,7 @@ static inline void handle_regs_int(struct urb *urb)
 		spin_unlock(&mac->lock);
 		schedule_work(&mac->process_intr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (intr->read_regs_enabled) {
 		intr->read_regs.length = len = urb->actual_length;
 
@@ -420,6 +440,8 @@ static inline void handle_regs_int(struct urb *urb)
 		intr->read_regs_enabled = 0;
 		complete(&intr->read_regs.completion);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (atomic_read(&intr->read_regs_enabled)) {
 		len = urb->actual_length;
 		intr->read_regs.length = urb->actual_length;
@@ -442,19 +464,28 @@ static inline void handle_regs_int(struct urb *urb)
 		intr->read_regs_int_overridden = 0;
 		complete(&intr->read_regs.completion);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 out:
 	spin_unlock(&intr->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* CR_INTERRUPT might override read_reg too. */
 	if (int_num == CR_INTERRUPT && atomic_read(&intr->read_regs_enabled))
 		handle_regs_int_override(urb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void int_urb_complete(struct urb *urb)
@@ -462,10 +493,15 @@ static void int_urb_complete(struct urb *urb)
 	int r;
 	struct usb_int_header *hdr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct zd_usb *usb;
 	struct zd_usb_interrupt *intr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct zd_usb *usb;
+	struct zd_usb_interrupt *intr;
+>>>>>>> refs/remotes/origin/master
 
 	switch (urb->status) {
 	case 0:
@@ -495,7 +531,10 @@ static void int_urb_complete(struct urb *urb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* USB_INT_ID_RETRY_FAILED triggered by tx-urb submit can override
 	 * pending USB_INT_ID_REGS causing read command timeout.
 	 */
@@ -504,7 +543,10 @@ static void int_urb_complete(struct urb *urb)
 	if (hdr->id != USB_INT_ID_REGS && atomic_read(&intr->read_regs_enabled))
 		handle_regs_int_override(urb);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (hdr->id) {
 	case USB_INT_ID_REGS:
 		handle_regs_int(urb);
@@ -655,12 +697,17 @@ static void handle_rx_packet(struct zd_usb *usb, const u8 *buffer,
 	if (length < sizeof(struct rx_length_info)) {
 		/* It's not a complete packet anyhow. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk("%s: invalid, small RX packet : %d\n",
 		       __func__, length);
 =======
 		dev_dbg_f(zd_usb_dev(usb), "invalid, small RX packet : %d\n",
 					   length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg_f(zd_usb_dev(usb), "invalid, small RX packet : %d\n",
+					   length);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	length_info = (struct rx_length_info *)
@@ -1139,10 +1186,14 @@ static void zd_tx_watchdog_handler(struct work_struct *work)
 
 	/* TX halted, try reset */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_warn(zd_usb_dev(usb), "TX-stall detected, reseting device...");
 =======
 	dev_warn(zd_usb_dev(usb), "TX-stall detected, resetting device...");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_warn(zd_usb_dev(usb), "TX-stall detected, resetting device...");
+>>>>>>> refs/remotes/origin/master
 
 	usb_queue_reset_device(usb->intf);
 
@@ -1202,8 +1253,12 @@ void zd_usb_reset_rx_idle_timer(struct zd_usb *usb)
 {
 	struct zd_usb_rx *rx = &usb->rx;
 
+<<<<<<< HEAD
 	cancel_delayed_work(&rx->idle_work);
 	queue_delayed_work(zd_workqueue, &rx->idle_work, ZD_RX_IDLE_INTERVAL);
+=======
+	mod_delayed_work(zd_workqueue, &rx->idle_work, ZD_RX_IDLE_INTERVAL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void init_usb_interrupt(struct zd_usb *usb)
@@ -1214,9 +1269,13 @@ static inline void init_usb_interrupt(struct zd_usb *usb)
 	intr->interval = int_urb_interval(zd_usb_to_usbdev(usb));
 	init_completion(&intr->read_regs.completion);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	atomic_set(&intr->read_regs_enabled, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&intr->read_regs_enabled, 0);
+>>>>>>> refs/remotes/origin/master
 	intr->read_regs.cr_int_addr = cpu_to_le16((u16)CR_INTERRUPT);
 }
 
@@ -1583,6 +1642,10 @@ static struct usb_driver driver = {
 	.disconnect	= disconnect,
 	.pre_reset	= pre_reset,
 	.post_reset	= post_reset,
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct workqueue_struct *zd_workqueue;
@@ -1652,16 +1715,23 @@ static int usb_int_regs_length(unsigned int count)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void prepare_read_regs_int(struct zd_usb *usb)
 =======
 static void prepare_read_regs_int(struct zd_usb *usb,
 				  struct usb_req_read_regs *req,
 				  unsigned int count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void prepare_read_regs_int(struct zd_usb *usb,
+				  struct usb_req_read_regs *req,
+				  unsigned int count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct zd_usb_interrupt *intr = &usb->intr;
 
 	spin_lock_irq(&intr->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	intr->read_regs_enabled = 1;
 =======
@@ -1670,6 +1740,12 @@ static void prepare_read_regs_int(struct zd_usb *usb,
 	intr->read_regs.req_count = count;
 >>>>>>> refs/remotes/origin/cm-10.0
 	INIT_COMPLETION(intr->read_regs.completion);
+=======
+	atomic_set(&intr->read_regs_enabled, 1);
+	intr->read_regs.req = req;
+	intr->read_regs.req_count = count;
+	reinit_completion(&intr->read_regs.completion);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&intr->lock);
 }
 
@@ -1678,6 +1754,7 @@ static void disable_read_regs_int(struct zd_usb *usb)
 	struct zd_usb_interrupt *intr = &usb->intr;
 
 	spin_lock_irq(&intr->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	intr->read_regs_enabled = 0;
 	spin_unlock_irq(&intr->lock);
@@ -1688,6 +1765,8 @@ static int get_results(struct zd_usb *usb, u16 *values,
 {
 	int r;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&intr->read_regs_enabled, 0);
 	spin_unlock_irq(&intr->lock);
 }
@@ -1695,18 +1774,24 @@ static int get_results(struct zd_usb *usb, u16 *values,
 static bool check_read_regs(struct zd_usb *usb, struct usb_req_read_regs *req,
 			    unsigned int count)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	struct zd_usb_interrupt *intr = &usb->intr;
 	struct read_regs_int *rr = &intr->read_regs;
 	struct usb_int_regs *regs = (struct usb_int_regs *)rr->buffer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irq(&intr->lock);
 
 	r = -EIO;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* The created block size seems to be larger than expected.
 	 * However results appear to be correct.
 	 */
@@ -1715,6 +1800,7 @@ static bool check_read_regs(struct zd_usb *usb, struct usb_req_read_regs *req,
 			 "error: actual length %d less than expected %d\n",
 			 rr->length, usb_int_regs_length(count));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto error_unlock;
 	}
 =======
@@ -1722,15 +1808,24 @@ static bool check_read_regs(struct zd_usb *usb, struct usb_req_read_regs *req,
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return false;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (rr->length > sizeof(rr->buffer)) {
 		dev_dbg_f(zd_usb_dev(usb),
 			 "error: actual length %d exceeds buffer size %zu\n",
 			 rr->length, sizeof(rr->buffer));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto error_unlock;
 =======
 		return false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < count; i++) {
@@ -1741,9 +1836,12 @@ static bool check_read_regs(struct zd_usb *usb, struct usb_req_read_regs *req,
 				 le16_to_cpu(rd->addr),
 				 le16_to_cpu(req->addr[i]));
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto error_unlock;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return false;
 		}
 	}
@@ -1777,7 +1875,10 @@ static int get_results(struct zd_usb *usb, u16 *values,
 
 	for (i = 0; i < count; i++) {
 		struct reg_data *rd = &regs->regs[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		values[i] = le16_to_cpu(rd->value);
 	}
 
@@ -1791,18 +1892,24 @@ int zd_usb_ioread16v(struct zd_usb *usb, u16 *values,
 	             const zd_addr_t *addresses, unsigned int count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int r;
 	int i, req_len, actual_req_len;
 	struct usb_device *udev;
 	struct usb_req_read_regs *req = NULL;
 	unsigned long timeout;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int r, i, req_len, actual_req_len, try_count = 0;
 	struct usb_device *udev;
 	struct usb_req_read_regs *req = NULL;
 	unsigned long timeout;
 	bool retry = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (count < 1) {
 		dev_dbg_f(zd_usb_dev(usb), "error: count is zero\n");
@@ -1839,14 +1946,20 @@ int zd_usb_ioread16v(struct zd_usb *usb, u16 *values,
 		req->addr[i] = cpu_to_le16((u16)addresses[i]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	udev = zd_usb_to_usbdev(usb);
 	prepare_read_regs_int(usb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 retry_read:
 	try_count++;
 	udev = zd_usb_to_usbdev(usb);
 	prepare_read_regs_int(usb, req, count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r = zd_ep_regs_out_msg(udev, req, req_len, &actual_req_len, 50 /*ms*/);
 	if (r) {
 		dev_dbg_f(zd_usb_dev(usb),
@@ -1871,15 +1984,21 @@ retry_read:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = get_results(usb, values, req, count);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	r = get_results(usb, values, req, count, &retry);
 	if (retry && try_count < 20) {
 		dev_dbg_f(zd_usb_dev(usb), "read retry, tries so far: %d\n",
 				try_count);
 		goto retry_read;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error:
 	return r;
 }

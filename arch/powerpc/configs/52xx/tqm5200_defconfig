@@ -1,17 +1,23 @@
 CONFIG_EXPERIMENTAL=y
 CONFIG_SYSVIPC=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_BLK_DEV_INITRD=y
 # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
 CONFIG_EXPERT=y
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_SPARSE_IRQ=y
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_BLK_DEV_INITRD=y
 # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
 CONFIG_EMBEDDED=y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_SYSCTL_SYSCALL is not set
 # CONFIG_KALLSYMS is not set
 # CONFIG_EPOLL is not set
@@ -24,11 +30,14 @@ CONFIG_PPC_MPC52xx=y
 CONFIG_PPC_MPC5200_SIMPLE=y
 CONFIG_PPC_MPC5200_BUGFIX=y
 # CONFIG_PPC_PMAC is not set
+<<<<<<< HEAD
 CONFIG_PPC_BESTCOMM=y
 <<<<<<< HEAD
 CONFIG_SPARSE_IRQ=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_PM=y
 # CONFIG_PCI is not set
 CONFIG_NET=y
@@ -50,9 +59,13 @@ CONFIG_MTD_CONCAT=y
 CONFIG_MTD_PARTITIONS=y
 CONFIG_MTD_CMDLINE_PARTS=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 CONFIG_MTD_OF_PARTS=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_MTD_OF_PARTS=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_MTD_CHAR=y
 CONFIG_MTD_BLOCK=y
 CONFIG_MTD_CFI=y
@@ -60,17 +73,24 @@ CONFIG_MTD_CFI_AMDSTD=y
 CONFIG_MTD_ROM=y
 CONFIG_MTD_PHYSMAP_OF=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 CONFIG_MTD_PLATRAM=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_MTD_PLATRAM=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_PROC_DEVICETREE=y
 CONFIG_BLK_DEV_LOOP=y
 CONFIG_BLK_DEV_RAM=y
 CONFIG_BLK_DEV_RAM_SIZE=32768
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CONFIG_MISC_DEVICES is not set
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_BLK_DEV_SD=y
 CONFIG_CHR_DEV_SG=y
 CONFIG_ATA=y
@@ -79,19 +99,26 @@ CONFIG_PATA_PLATFORM=y
 CONFIG_NETDEVICES=y
 CONFIG_LXT_PHY=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 CONFIG_FIXED_PHY=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_FIXED_PHY=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_NET_ETHERNET=y
 CONFIG_FEC_MPC52xx=y
 # CONFIG_NETDEV_1000 is not set
 # CONFIG_NETDEV_10000 is not set
+<<<<<<< HEAD
 <<<<<<< HEAD
 # CONFIG_INPUT is not set
 # CONFIG_SERIO is not set
 # CONFIG_VT is not set
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_SERIAL_MPC52xx=y
 CONFIG_SERIAL_MPC52xx_CONSOLE=y
 CONFIG_SERIAL_MPC52xx_CONSOLE_BAUD=115200
@@ -100,8 +127,11 @@ CONFIG_I2C=y
 CONFIG_I2C_CHARDEV=y
 CONFIG_I2C_MPC=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_WATCHDOG=y
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_SENSORS_LM80=y
 CONFIG_WATCHDOG=y
 CONFIG_MFD_SM501=y
@@ -109,7 +139,10 @@ CONFIG_FB=y
 CONFIG_FB_FOREIGN_ENDIAN=y
 CONFIG_FB_SM501=y
 CONFIG_FRAMEBUFFER_CONSOLE=y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_USB=y
 CONFIG_USB_DEVICEFS=y
 # CONFIG_USB_DEVICE_CLASS is not set
@@ -119,6 +152,7 @@ CONFIG_USB_OHCI_HCD_PPC_OF_BE=y
 CONFIG_USB_STORAGE=y
 CONFIG_RTC_CLASS=y
 CONFIG_RTC_DRV_DS1307=y
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_EXT2_FS=y
 CONFIG_EXT3_FS=y
@@ -130,6 +164,14 @@ CONFIG_EXT2_FS=y
 CONFIG_EXT3_FS=y
 # CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_RTC_DRV_DS1374=y
+CONFIG_DMADEVICES=y
+CONFIG_PPC_BESTCOMM=y
+CONFIG_EXT2_FS=y
+CONFIG_EXT3_FS=y
+# CONFIG_EXT3_DEFAULTS_TO_ORDERED is not set
+>>>>>>> refs/remotes/origin/master
 CONFIG_MSDOS_FS=y
 CONFIG_VFAT_FS=y
 CONFIG_PROC_KCORE=y
@@ -149,9 +191,12 @@ CONFIG_DETECT_HUNG_TASK=y
 # CONFIG_DEBUG_BUGVERBOSE is not set
 CONFIG_DEBUG_INFO=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CONFIG_RCU_CPU_STALL_DETECTOR is not set
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_CRYPTO_ECB=y
 CONFIG_CRYPTO_PCBC=y
 # CONFIG_CRYPTO_ANSI_CPRNG is not set

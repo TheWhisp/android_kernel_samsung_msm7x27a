@@ -6,6 +6,10 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 
 struct request_queue;
@@ -340,7 +344,12 @@ struct scsi_host_template {
 	 *
 	 * Status: OBSOLETE
 	 */
+<<<<<<< HEAD
 	int (*proc_info)(struct Scsi_Host *, char *, char **, off_t, int, int);
+=======
+	int (*show_info)(struct seq_file *, struct Scsi_Host *);
+	int (*write_info)(struct Scsi_Host *, char *, int);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This is an optional routine that allows the transport to become
@@ -356,7 +365,10 @@ struct scsi_host_template {
 	enum blk_eh_timer_return (*eh_timed_out)(struct scsi_cmnd *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* This is an optional routine that allows transport to initiate
 	 * LLD adapter or firmware reset using sysfs attribute.
 	 *
@@ -370,7 +382,10 @@ struct scsi_host_template {
 #define SCSI_FIRMWARE_RESET	2
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Name of proc directory
 	 */
@@ -378,7 +393,11 @@ struct scsi_host_template {
 
 	/*
 	 * Used to store the procfs directory if a driver implements the
+<<<<<<< HEAD
 	 * proc_info method.
+=======
+	 * show_info method.
+>>>>>>> refs/remotes/origin/master
 	 */
 	struct proc_dir_entry *proc_dir;
 
@@ -476,6 +495,12 @@ struct scsi_host_template {
 	 */
 	unsigned ordered_tag:1;
 
+<<<<<<< HEAD
+=======
+	/* True if the controller does not support WRITE SAME */
+	unsigned no_write_same:1;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Countdown for host blocking with no commands outstanding.
 	 */
@@ -599,9 +624,18 @@ struct Scsi_Host {
 	unsigned int host_eh_scheduled;    /* EH scheduled without command */
     
 	unsigned int host_no;  /* Used for IOCTL_GET_IDLUN, /proc/scsi et al. */
+<<<<<<< HEAD
 	int resetting; /* if set, it means that last_reset is a valid value */
 	unsigned long last_reset;
 
+=======
+
+	/* next two fields are used to bound the time spent in error handling */
+	int eh_deadline;
+	unsigned long last_reset;
+
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * These three parameters can be used to allow for wide scsi,
 	 * and for host adapters that support multiple busses
@@ -673,11 +707,20 @@ struct Scsi_Host {
 	unsigned async_scan:1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Don't resume host in EH */
 	unsigned eh_noresume:1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Don't resume host in EH */
+	unsigned eh_noresume:1;
+
+	/* The controller does not support WRITE SAME */
+	unsigned no_write_same:1;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Optional work queue to be utilized by the transport
 	 */
@@ -814,11 +857,16 @@ static inline struct device *scsi_get_device(struct Scsi_Host *shost)
 static inline int scsi_host_scan_allowed(struct Scsi_Host *shost)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return shost->shost_state == SHOST_RUNNING;
 =======
 	return shost->shost_state == SHOST_RUNNING ||
 	       shost->shost_state == SHOST_RECOVERY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return shost->shost_state == SHOST_RUNNING ||
+	       shost->shost_state == SHOST_RECOVERY;
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void scsi_unblock_requests(struct Scsi_Host *);
@@ -883,6 +931,12 @@ static inline unsigned int scsi_host_dif_capable(struct Scsi_Host *shost, unsign
 				       SHOST_DIF_TYPE2_PROTECTION,
 				       SHOST_DIF_TYPE3_PROTECTION };
 
+<<<<<<< HEAD
+=======
+	if (target_type >= ARRAY_SIZE(cap))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	return shost->prot_capabilities & cap[target_type] ? target_type : 0;
 }
 
@@ -894,6 +948,12 @@ static inline unsigned int scsi_host_dix_capable(struct Scsi_Host *shost, unsign
 				       SHOST_DIX_TYPE2_PROTECTION,
 				       SHOST_DIX_TYPE3_PROTECTION };
 
+<<<<<<< HEAD
+=======
+	if (target_type >= ARRAY_SIZE(cap))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	return shost->prot_capabilities & cap[target_type];
 #endif
 	return 0;

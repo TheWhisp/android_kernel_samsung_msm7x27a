@@ -2,10 +2,14 @@
  * OMAP44xx PRM instance offset macros
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009-2010 Texas Instruments, Inc.
 =======
  * Copyright (C) 2009-2011 Texas Instruments, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2009-2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2009-2010 Nokia Corporation
  *
  * Paul Walmsley (paul@pwsan.com)
@@ -29,6 +33,10 @@
 #ifndef __ARCH_ARM_MACH_OMAP2_PRM44XX_H
 #define __ARCH_ARM_MACH_OMAP2_PRM44XX_H
 
+<<<<<<< HEAD
+=======
+#include "prm44xx_54xx.h"
+>>>>>>> refs/remotes/origin/master
 #include "prcm-common.h"
 #include "prm.h"
 
@@ -36,10 +44,14 @@
 
 #define OMAP44XX_PRM_REGADDR(inst, reg)				\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	OMAP2_L4_IO_ADDRESS(OMAP4430_PRM_BASE +	(inst) + (reg))
 =======
 	OMAP2_L4_IO_ADDRESS(OMAP4430_PRM_BASE + (inst) + (reg))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	OMAP2_L4_IO_ADDRESS(OMAP4430_PRM_BASE + (inst) + (reg))
+>>>>>>> refs/remotes/origin/master
 
 
 /* PRM instances */
@@ -54,6 +66,7 @@
 #define OMAP4430_PRM_CAM_INST		0x1000
 #define OMAP4430_PRM_DSS_INST		0x1100
 #define OMAP4430_PRM_GFX_INST		0x1200
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OMAP4430_PRM_L3INIT_INST		0x1300
 #define OMAP4430_PRM_L4PER_INST		0x1400
@@ -80,6 +93,8 @@
 #define OMAP4430_PRM_WKUP_CM_WKUP_CDOFFS	0x0000
 #define OMAP4430_PRM_EMU_EMU_CDOFFS		0x0000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP4430_PRM_L3INIT_INST	0x1300
 #define OMAP4430_PRM_L4PER_INST		0x1400
 #define OMAP4430_PRM_CEFUSE_INST	0x1600
@@ -92,13 +107,21 @@
 
 /* PRM clockdomain register offsets (from instance start) */
 #define OMAP4430_PRM_WKUP_CM_WKUP_CDOFFS	0x0000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP4430_PRM_EMU_CM_EMU_CDOFFS		0x0000
 
 /* OMAP4 specific register offsets */
 #define OMAP4_RM_RSTCTRL				0x0000
+<<<<<<< HEAD
 #define OMAP4_RM_RSTTIME				0x0004
 #define OMAP4_RM_RSTST					0x0008
+=======
+#define OMAP4_RM_RSTST					0x0004
+#define OMAP4_RM_RSTTIME				0x0008
+>>>>>>> refs/remotes/origin/master
 #define OMAP4_PM_PWSTCTRL				0x0000
 #define OMAP4_PM_PWSTST					0x0004
 
@@ -271,12 +294,17 @@
 #define OMAP4_RM_D2D_SAD2D_CONTEXT_OFFSET		0x0524
 #define OMAP4430_RM_D2D_SAD2D_CONTEXT			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_CORE_INST, 0x0524)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OMAP4_RM_D2D_INSTEM_ICR_CONTEXT_OFFSET		0x052c
 #define OMAP4430_RM_D2D_INSTEM_ICR_CONTEXT		OMAP44XX_PRM_REGADDR(OMAP4430_PRM_CORE_INST, 0x052c)
 =======
 #define OMAP4_RM_D2D_MODEM_ICR_CONTEXT_OFFSET		0x052c
 #define OMAP4430_RM_D2D_MODEM_ICR_CONTEXT		OMAP44XX_PRM_REGADDR(OMAP4430_PRM_CORE_INST, 0x052c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define OMAP4_RM_D2D_MODEM_ICR_CONTEXT_OFFSET		0x052c
+#define OMAP4430_RM_D2D_MODEM_ICR_CONTEXT		OMAP44XX_PRM_REGADDR(OMAP4430_PRM_CORE_INST, 0x052c)
+>>>>>>> refs/remotes/origin/master
 #define OMAP4_RM_D2D_SAD2D_FW_CONTEXT_OFFSET		0x0534
 #define OMAP4430_RM_D2D_SAD2D_FW_CONTEXT		OMAP44XX_PRM_REGADDR(OMAP4430_PRM_CORE_INST, 0x0534)
 #define OMAP4_RM_L4CFG_L4_CFG_CONTEXT_OFFSET		0x0624
@@ -742,12 +770,17 @@
 #define OMAP4_PRM_VC_CFG_CHANNEL_OFFSET			0x00a4
 #define OMAP4430_PRM_VC_CFG_CHANNEL			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00a4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OMAP4_PRM_VC_CFG_I2C_INSTE_OFFSET		0x00a8
 #define OMAP4430_PRM_VC_CFG_I2C_INSTE			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00a8)
 =======
 #define OMAP4_PRM_VC_CFG_I2C_MODE_OFFSET		0x00a8
 #define OMAP4430_PRM_VC_CFG_I2C_MODE			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00a8)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define OMAP4_PRM_VC_CFG_I2C_MODE_OFFSET		0x00a8
+#define OMAP4430_PRM_VC_CFG_I2C_MODE			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00a8)
+>>>>>>> refs/remotes/origin/master
 #define OMAP4_PRM_VC_CFG_I2C_CLK_OFFSET			0x00ac
 #define OMAP4430_PRM_VC_CFG_I2C_CLK			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00ac)
 #define OMAP4_PRM_SRAM_COUNT_OFFSET			0x00b0
@@ -784,6 +817,7 @@
 #define OMAP4430_PRM_PHASE2A_CNDP			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00ec)
 #define OMAP4_PRM_PHASE2B_CNDP_OFFSET			0x00f0
 #define OMAP4430_PRM_PHASE2B_CNDP			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00f0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OMAP4_PRM_INSTEM_IF_CTRL_OFFSET			0x00f4
 #define OMAP4430_PRM_INSTEM_IF_CTRL			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00f4)
@@ -834,4 +868,11 @@ extern void omap44xx_prm_restore_irqen(u32 *saved_mask);
 
 # endif
 
+=======
+#define OMAP4_PRM_MODEM_IF_CTRL_OFFSET			0x00f4
+#define OMAP4430_PRM_MODEM_IF_CTRL			OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00f4)
+#define OMAP4_PRM_VC_ERRST_OFFSET			0x00f8
+#define OMAP4430_PRM_VC_ERRST				OMAP44XX_PRM_REGADDR(OMAP4430_PRM_DEVICE_INST, 0x00f8)
+
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -22,6 +22,7 @@
 #include <linux/delay.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/debugfs.h>
@@ -29,6 +30,8 @@
 
 #include <plat/common.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/export.h>
 #include <linux/debugfs.h>
@@ -36,7 +39,10 @@
 #include <linux/clk.h>
 
 #include "common.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "prm-regbits-34xx.h"
 #include "prm-regbits-44xx.h"
@@ -47,13 +53,18 @@
 
 #include "voltage.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "powerdomain.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "powerdomain.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "vc.h"
 #include "vp.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define VOLTAGE_DIR_SIZE	16
 
@@ -696,6 +707,8 @@ unsigned long omap_voltage_get_nom_volt(struct voltagedomain *voltdm)
 	struct omap_vdd_info *vdd;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static LIST_HEAD(voltdm_list);
 
 /* Public functions */
@@ -708,12 +721,16 @@ static LIST_HEAD(voltdm_list);
  */
 unsigned long voltdm_get_voltage(struct voltagedomain *voltdm)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!voltdm || IS_ERR(voltdm)) {
 		pr_warning("%s: VDD specified does not exist!\n", __func__);
 		return 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vdd = container_of(voltdm, struct omap_vdd_info, voltdm);
 
@@ -857,6 +874,8 @@ int omap_voltage_scale_vdd(struct voltagedomain *voltdm,
 {
 	struct omap_vdd_info *vdd;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return voltdm->nominal_volt;
 }
 
@@ -871,8 +890,13 @@ int omap_voltage_scale_vdd(struct voltagedomain *voltdm,
 int voltdm_scale(struct voltagedomain *voltdm,
 		 unsigned long target_volt)
 {
+<<<<<<< HEAD
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, i;
+	unsigned long volt = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!voltdm || IS_ERR(voltdm)) {
 		pr_warning("%s: VDD specified does not exist!\n", __func__);
@@ -880,17 +904,22 @@ int voltdm_scale(struct voltagedomain *voltdm,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vdd = container_of(voltdm, struct omap_vdd_info, voltdm);
 
 	if (!vdd->volt_scale) {
 =======
 	if (!voltdm->scale) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!voltdm->scale) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("%s: No voltage scale API registered for vdd_%s\n",
 			__func__, voltdm->name);
 		return -ENODATA;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return vdd->volt_scale(vdd, target_volt);
 }
@@ -903,6 +932,25 @@ int voltdm_scale(struct voltagedomain *voltdm,
 	ret = voltdm->scale(voltdm, target_volt);
 	if (!ret)
 		voltdm->nominal_volt = target_volt;
+=======
+	/* Adjust voltage to the exact voltage from the OPP table */
+	for (i = 0; voltdm->volt_data[i].volt_nominal != 0; i++) {
+		if (voltdm->volt_data[i].volt_nominal >= target_volt) {
+			volt = voltdm->volt_data[i].volt_nominal;
+			break;
+		}
+	}
+
+	if (!volt) {
+		pr_warning("%s: not scaling. OPP voltage for %lu, not found.\n",
+			   __func__, target_volt);
+		return -EINVAL;
+	}
+
+	ret = voltdm->scale(voltdm, volt);
+	if (!ret)
+		voltdm->nominal_volt = volt;
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -911,12 +959,16 @@ int voltdm_scale(struct voltagedomain *voltdm,
  * voltdm_reset() - Resets the voltage of a particular voltage domain
  *		    to that of the current OPP.
  * @voltdm: pointer to the voltage domain whose voltage is to be reset.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This API finds out the correct voltage the voltage domain is supposed
  * to be at and resets the voltage to that level. Should be used especially
  * while disabling any voltage compensation modules.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void omap_voltage_reset(struct voltagedomain *voltdm)
 {
@@ -926,6 +978,11 @@ void voltdm_reset(struct voltagedomain *voltdm)
 {
 	unsigned long target_volt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void voltdm_reset(struct voltagedomain *voltdm)
+{
+	unsigned long target_volt;
+>>>>>>> refs/remotes/origin/master
 
 	if (!voltdm || IS_ERR(voltdm)) {
 		pr_warning("%s: VDD specified does not exist!\n", __func__);
@@ -933,22 +990,31 @@ void voltdm_reset(struct voltagedomain *voltdm)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	target_uvdc = omap_voltage_get_nom_volt(voltdm);
 	if (!target_uvdc) {
 =======
 	target_volt = voltdm_get_voltage(voltdm);
 	if (!target_volt) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	target_volt = voltdm_get_voltage(voltdm);
+	if (!target_volt) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("%s: unable to find current voltage for vdd_%s\n",
 			__func__, voltdm->name);
 		return;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap_voltage_scale_vdd(voltdm, target_uvdc);
 =======
 	voltdm_scale(voltdm, target_volt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	voltdm_scale(voltdm, target_volt);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -965,6 +1031,7 @@ void voltdm_reset(struct voltagedomain *voltdm)
  */
 void omap_voltage_get_volttable(struct voltagedomain *voltdm,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct omap_volt_data **volt_data)
 {
 	struct omap_vdd_info *vdd;
@@ -973,11 +1040,16 @@ void omap_voltage_get_volttable(struct voltagedomain *voltdm,
 				struct omap_volt_data **volt_data)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct omap_volt_data **volt_data)
+{
+>>>>>>> refs/remotes/origin/master
 	if (!voltdm || IS_ERR(voltdm)) {
 		pr_warning("%s: VDD specified does not exist!\n", __func__);
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vdd = container_of(voltdm, struct omap_vdd_info, voltdm);
 
@@ -985,6 +1057,9 @@ void omap_voltage_get_volttable(struct voltagedomain *voltdm,
 =======
 	*volt_data = voltdm->volt_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*volt_data = voltdm->volt_data;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1004,6 +1079,7 @@ void omap_voltage_get_volttable(struct voltagedomain *voltdm,
  */
 struct omap_volt_data *omap_voltage_get_voltdata(struct voltagedomain *voltdm,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long volt)
 {
 	struct omap_vdd_info *vdd;
@@ -1011,6 +1087,10 @@ struct omap_volt_data *omap_voltage_get_voltdata(struct voltagedomain *voltdm,
 						 unsigned long volt)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 unsigned long volt)
+{
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (!voltdm || IS_ERR(voltdm)) {
@@ -1019,17 +1099,22 @@ struct omap_volt_data *omap_voltage_get_voltdata(struct voltagedomain *voltdm,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vdd = container_of(voltdm, struct omap_vdd_info, voltdm);
 
 	if (!vdd->volt_data) {
 =======
 	if (!voltdm->volt_data) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!voltdm->volt_data) {
+>>>>>>> refs/remotes/origin/master
 		pr_warning("%s: voltage table does not exist for vdd_%s\n",
 			__func__, voltdm->name);
 		return ERR_PTR(-ENODATA);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; vdd->volt_data[i].volt_nominal != 0; i++) {
 		if (vdd->volt_data[i].volt_nominal == volt)
@@ -1043,6 +1128,15 @@ struct omap_volt_data *omap_voltage_get_voltdata(struct voltagedomain *voltdm,
 
 	pr_notice("%s: Unable to match the current voltage with the voltage"
 		"table for vdd_%s\n", __func__, voltdm->name);
+=======
+	for (i = 0; voltdm->volt_data[i].volt_nominal != 0; i++) {
+		if (voltdm->volt_data[i].volt_nominal == volt)
+			return &voltdm->volt_data[i];
+	}
+
+	pr_notice("%s: Unable to match the current voltage with the voltage table for vdd_%s\n",
+		  __func__, voltdm->name);
+>>>>>>> refs/remotes/origin/master
 
 	return ERR_PTR(-ENODATA);
 }
@@ -1051,6 +1145,7 @@ struct omap_volt_data *omap_voltage_get_voltdata(struct voltagedomain *voltdm,
  * omap_voltage_register_pmic() - API to register PMIC specific data
  * @voltdm:	pointer to the VDD for which the PMIC specific data is
  *		to be registered
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @pmic_info:	the structure containing pmic info
  *
@@ -1063,6 +1158,8 @@ int omap_voltage_register_pmic(struct voltagedomain *voltdm,
 	struct omap_vdd_info *vdd;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @pmic:	the structure containing pmic info
  *
  * This API is to be called by the SOC/PMIC file to specify the
@@ -1071,12 +1168,16 @@ int omap_voltage_register_pmic(struct voltagedomain *voltdm,
 int omap_voltage_register_pmic(struct voltagedomain *voltdm,
 			       struct omap_voltdm_pmic *pmic)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!voltdm || IS_ERR(voltdm)) {
 		pr_warning("%s: VDD specified does not exist!\n", __func__);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vdd = container_of(voltdm, struct omap_vdd_info, voltdm);
 
@@ -1084,11 +1185,15 @@ int omap_voltage_register_pmic(struct voltagedomain *voltdm,
 =======
 	voltdm->pmic = pmic;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	voltdm->pmic = pmic;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * omap_voltage_get_dbgdir() - API to get pointer to the debugfs directory
  *				corresponding to a voltage domain.
@@ -1117,6 +1222,8 @@ struct dentry *omap_voltage_get_dbgdir(struct voltagedomain *voltdm)
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * omap_change_voltscale_method() - API to change the voltage scaling method.
  * @voltdm:	pointer to the VDD whose voltage scaling method
  *		has to be changed.
@@ -1128,6 +1235,7 @@ struct dentry *omap_voltage_get_dbgdir(struct voltagedomain *voltdm)
  */
 void omap_change_voltscale_method(struct voltagedomain *voltdm,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int voltscale_method)
 {
 	struct omap_vdd_info *vdd;
@@ -1136,11 +1244,16 @@ void omap_change_voltscale_method(struct voltagedomain *voltdm,
 				  int voltscale_method)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  int voltscale_method)
+{
+>>>>>>> refs/remotes/origin/master
 	if (!voltdm || IS_ERR(voltdm)) {
 		pr_warning("%s: VDD specified does not exist!\n", __func__);
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vdd = container_of(voltdm, struct omap_vdd_info, voltdm);
 
@@ -1151,12 +1264,15 @@ void omap_change_voltscale_method(struct voltagedomain *voltdm,
 	case VOLTSCALE_VCBYPASS:
 		vdd->volt_scale = vc_bypass_scale_voltage;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (voltscale_method) {
 	case VOLTSCALE_VPFORCEUPDATE:
 		voltdm->scale = omap_vp_forceupdate_scale;
 		return;
 	case VOLTSCALE_VCBYPASS:
 		voltdm->scale = omap_vc_bypass_scale;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return;
 	default:
@@ -1196,6 +1312,13 @@ struct voltagedomain *omap_voltage_domain_lookup(char *name)
 	}
 
 	return ERR_PTR(-EINVAL);
+=======
+		return;
+	default:
+		pr_warn("%s: Trying to change the method of voltage scaling to an unsupported one!\n",
+			__func__);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1207,6 +1330,7 @@ struct voltagedomain *omap_voltage_domain_lookup(char *name)
  */
 int __init omap_voltage_late_init(void)
 {
+<<<<<<< HEAD
 	int i;
 
 	if (!vdd_info) {
@@ -1250,6 +1374,8 @@ int __init omap_voltage_early_init(s16 prm_mod, s16 prm_irqst_ocp_mod,
  */
 int __init omap_voltage_late_init(void)
 {
+=======
+>>>>>>> refs/remotes/origin/master
 	struct voltagedomain *voltdm;
 
 	if (list_empty(&voltdm_list)) {
@@ -1318,8 +1444,13 @@ int voltdm_add_pwrdm(struct voltagedomain *voltdm, struct powerdomain *pwrdm)
 	if (!voltdm || !pwrdm)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	pr_debug("voltagedomain: associating powerdomain %s with voltagedomain "
 		 "%s\n", pwrdm->name, voltdm->name);
+=======
+	pr_debug("voltagedomain: %s: associating powerdomain %s\n",
+		 voltdm->name, pwrdm->name);
+>>>>>>> refs/remotes/origin/master
 
 	list_add(&pwrdm->voltdm_node, &voltdm->pwrdm_list);
 
@@ -1431,4 +1562,7 @@ void voltdm_init(struct voltagedomain **voltdms)
 			_voltdm_register(*v);
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

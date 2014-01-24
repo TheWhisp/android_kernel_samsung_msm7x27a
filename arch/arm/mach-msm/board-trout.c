@@ -20,24 +20,40 @@
 #include <linux/clkdev.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/system_info.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_info.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/setup.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <mach/msm_iomap.h>
 
 #include "devices.h"
 #include "board-trout.h"
+<<<<<<< HEAD
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 extern int trout_init_mmc(unsigned int);
 
 static struct platform_device *devices[] __initdata = {
+<<<<<<< HEAD
+=======
+	&msm_clock_7x01a,
+	&msm_device_gpio_7201,
+>>>>>>> refs/remotes/origin/master
 	&msm_device_uart3,
 	&msm_device_smd,
 	&msm_device_nand,
@@ -45,21 +61,28 @@ static struct platform_device *devices[] __initdata = {
 	&msm_device_i2c,
 };
 
+<<<<<<< HEAD
 extern struct sys_timer msm_timer;
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init trout_init_early(void)
 {
 	arch_ioremap_caller = __msm_ioremap_caller;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init trout_init_irq(void)
 {
 	msm_init_irq();
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init trout_fixup(struct machine_desc *desc, struct tag *tags,
 				char **cmdline, struct meminfo *mi)
@@ -67,6 +90,10 @@ static void __init trout_fixup(struct machine_desc *desc, struct tag *tags,
 static void __init trout_fixup(struct tag *tags, char **cmdline,
 			       struct meminfo *mi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init trout_fixup(struct tag *tags, char **cmdline,
+			       struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 	mi->nr_banks = 1;
 	mi->bank[0].start = PHYS_OFFSET;
@@ -105,6 +132,7 @@ static void __init trout_map_io(void)
 	/* route UART3 to the "H2W" extended usb connector */
 	writeb(0x80, TROUT_CPLD_BASE + 0x00);
 #endif
+<<<<<<< HEAD
 
 	msm_clock_init(msm_clocks_7x01a, msm_num_clocks_7x01a);
 }
@@ -115,12 +143,29 @@ MACHINE_START(TROUT, "HTC Dream")
 	.fixup		= trout_fixup,
 	.map_io		= trout_map_io,
 =======
+=======
+}
+
+static void __init trout_init_late(void)
+{
+	smd_debugfs_init();
+}
+
+MACHINE_START(TROUT, "HTC Dream")
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.fixup		= trout_fixup,
 	.map_io		= trout_map_io,
 	.init_early	= trout_init_early,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	.init_irq	= trout_init_irq,
 	.init_machine	= trout_init,
 	.timer		= &msm_timer,
+=======
+	.init_irq	= trout_init_irq,
+	.init_machine	= trout_init,
+	.init_late	= trout_init_late,
+	.init_time	= msm7x01_timer_init,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

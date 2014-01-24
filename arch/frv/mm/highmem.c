@@ -38,10 +38,14 @@ struct page *kmap_atomic_to_page(void *ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
 =======
 void *kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long paddr;
 	int type;
@@ -54,11 +58,19 @@ void *kmap_atomic(struct page *page)
 	/*
 	 * The first 4 primary maps are reserved for architecture code
 	 */
+<<<<<<< HEAD
 	case 0:		return __kmap_atomic_primary(4, paddr, 6);
 	case 1:		return __kmap_atomic_primary(5, paddr, 7);
 	case 2:		return __kmap_atomic_primary(6, paddr, 8);
 	case 3:		return __kmap_atomic_primary(7, paddr, 9);
 	case 4:		return __kmap_atomic_primary(8, paddr, 10);
+=======
+	case 0:		return __kmap_atomic_primary(0, paddr, 6);
+	case 1:		return __kmap_atomic_primary(0, paddr, 7);
+	case 2:		return __kmap_atomic_primary(0, paddr, 8);
+	case 3:		return __kmap_atomic_primary(0, paddr, 9);
+	case 4:		return __kmap_atomic_primary(0, paddr, 10);
+>>>>>>> refs/remotes/origin/master
 
 	case 5 ... 5 + NR_TLB_LINES - 1:
 		return __kmap_atomic_secondary(type - 5, paddr);
@@ -69,20 +81,32 @@ void *kmap_atomic(struct page *page)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
 =======
 EXPORT_SYMBOL(kmap_atomic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/master
 
 void __kunmap_atomic(void *kvaddr)
 {
 	int type = kmap_atomic_idx();
 	switch (type) {
+<<<<<<< HEAD
 	case 0:		__kunmap_atomic_primary(4, 6);	break;
 	case 1:		__kunmap_atomic_primary(5, 7);	break;
 	case 2:		__kunmap_atomic_primary(6, 8);	break;
 	case 3:		__kunmap_atomic_primary(7, 9);	break;
 	case 4:		__kunmap_atomic_primary(8, 10);	break;
+=======
+	case 0:		__kunmap_atomic_primary(0, 6);	break;
+	case 1:		__kunmap_atomic_primary(0, 7);	break;
+	case 2:		__kunmap_atomic_primary(0, 8);	break;
+	case 3:		__kunmap_atomic_primary(0, 9);	break;
+	case 4:		__kunmap_atomic_primary(0, 10);	break;
+>>>>>>> refs/remotes/origin/master
 
 	case 5 ... 5 + NR_TLB_LINES - 1:
 		__kunmap_atomic_secondary(type - 5, kvaddr);

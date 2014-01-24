@@ -21,11 +21,42 @@
 
 #define DM_KCOPYD_IGNORE_ERROR 1
 
+<<<<<<< HEAD
 /*
  * To use kcopyd you must first create a dm_kcopyd_client object.
  */
 struct dm_kcopyd_client;
 struct dm_kcopyd_client *dm_kcopyd_client_create(void);
+=======
+struct dm_kcopyd_throttle {
+	unsigned throttle;
+	unsigned num_io_jobs;
+	unsigned io_period;
+	unsigned total_period;
+	unsigned last_jiffies;
+};
+
+/*
+ * kcopyd clients that want to support throttling must pass an initialised
+ * dm_kcopyd_throttle struct into dm_kcopyd_client_create().
+ * Two or more clients may share the same instance of this struct between
+ * them if they wish to be throttled as a group.
+ *
+ * This macro also creates a corresponding module parameter to configure
+ * the amount of throttling.
+ */
+#define DECLARE_DM_KCOPYD_THROTTLE_WITH_MODULE_PARM(name, description)	\
+static struct dm_kcopyd_throttle dm_kcopyd_throttle = { 100, 0, 0, 0, 0 }; \
+module_param_named(name, dm_kcopyd_throttle.throttle, uint, 0644); \
+MODULE_PARM_DESC(name, description)
+
+/*
+ * To use kcopyd you must first create a dm_kcopyd_client object.
+ * throttle can be NULL if you don't want any throttling.
+ */
+struct dm_kcopyd_client;
+struct dm_kcopyd_client *dm_kcopyd_client_create(struct dm_kcopyd_throttle *throttle);
+>>>>>>> refs/remotes/origin/master
 void dm_kcopyd_client_destroy(struct dm_kcopyd_client *kc);
 
 /*
@@ -43,7 +74,10 @@ int dm_kcopyd_copy(struct dm_kcopyd_client *kc, struct dm_io_region *from,
 		   unsigned flags, dm_kcopyd_notify_fn fn, void *context);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Prepare a callback and submit it via the kcopyd thread.
  *
@@ -63,6 +97,9 @@ int dm_kcopyd_zero(struct dm_kcopyd_client *kc,
 		   unsigned num_dests, struct dm_io_region *dests,
 		   unsigned flags, dm_kcopyd_notify_fn fn, void *context);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __KERNEL__ */
 #endif	/* _LINUX_DM_KCOPYD_H */

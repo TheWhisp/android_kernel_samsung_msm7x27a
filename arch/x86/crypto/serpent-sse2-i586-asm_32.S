@@ -24,6 +24,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+
+>>>>>>> refs/remotes/origin/master
 .file "serpent-sse2-i586-asm_32.S"
 .text
 
@@ -510,11 +515,15 @@
 	pxor t0,		x3; \
 	movdqu x3,		(3*4*4)(out);
 
+<<<<<<< HEAD
 .align 8
 .global __serpent_enc_blk_4way
 .type   __serpent_enc_blk_4way,@function;
 
 __serpent_enc_blk_4way:
+=======
+ENTRY(__serpent_enc_blk_4way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	arg_ctx(%esp): ctx, CTX
 	 *	arg_dst(%esp): dst
@@ -566,12 +575,17 @@ __serpent_enc_blk_4way:
 	movl arg_dst(%esp), %eax;
 
 	cmpb $0, arg_xor(%esp);
+<<<<<<< HEAD
 	jnz __enc_xor4;
+=======
+	jnz .L__enc_xor4;
+>>>>>>> refs/remotes/origin/master
 
 	write_blocks(%eax, RA, RB, RC, RD, RT0, RT1, RE);
 
 	ret;
 
+<<<<<<< HEAD
 __enc_xor4:
 	xor_blocks(%eax, RA, RB, RC, RD, RT0, RT1, RE);
 
@@ -582,6 +596,15 @@ __enc_xor4:
 .type   serpent_dec_blk_4way,@function;
 
 serpent_dec_blk_4way:
+=======
+.L__enc_xor4:
+	xor_blocks(%eax, RA, RB, RC, RD, RT0, RT1, RE);
+
+	ret;
+ENDPROC(__serpent_enc_blk_4way)
+
+ENTRY(serpent_dec_blk_4way)
+>>>>>>> refs/remotes/origin/master
 	/* input:
 	 *	arg_ctx(%esp): ctx, CTX
 	 *	arg_dst(%esp): dst
@@ -633,3 +656,7 @@ serpent_dec_blk_4way:
 	write_blocks(%eax, RC, RD, RB, RE, RT0, RT1, RA);
 
 	ret;
+<<<<<<< HEAD
+=======
+ENDPROC(serpent_dec_blk_4way)
+>>>>>>> refs/remotes/origin/master

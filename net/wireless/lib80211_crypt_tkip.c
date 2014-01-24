@@ -102,9 +102,12 @@ static void *lib80211_tkip_init(int key_idx)
 						CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->tx_tfm_arc4)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API arc4\n"));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		priv->tx_tfm_arc4 = NULL;
 		goto fail;
 	}
@@ -113,9 +116,12 @@ static void *lib80211_tkip_init(int key_idx)
 						 CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->tx_tfm_michael)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API michael_mic\n"));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		priv->tx_tfm_michael = NULL;
 		goto fail;
 	}
@@ -124,9 +130,12 @@ static void *lib80211_tkip_init(int key_idx)
 						CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->rx_tfm_arc4)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API arc4\n"));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		priv->rx_tfm_arc4 = NULL;
 		goto fail;
 	}
@@ -135,9 +144,12 @@ static void *lib80211_tkip_init(int key_idx)
 						 CRYPTO_ALG_ASYNC);
 	if (IS_ERR(priv->rx_tfm_michael)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG pr_fmt("could not allocate crypto API michael_mic\n"));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		priv->rx_tfm_michael = NULL;
 		goto fail;
 	}
@@ -376,12 +388,18 @@ static int lib80211_tkip_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	struct scatterlist sg;
 
 	if (tkey->flags & IEEE80211_CRYPTO_TKIP_COUNTERMEASURES) {
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			struct ieee80211_hdr *hdr =
 			    (struct ieee80211_hdr *)skb->data;
 			printk(KERN_DEBUG ": TKIP countermeasures: dropped "
 			       "TX packet to %pM\n", hdr->addr1);
 		}
+=======
+		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+		net_dbg_ratelimited("TKIP countermeasures: dropped TX packet to %pM\n",
+				    hdr->addr1);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -436,10 +454,15 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	hdr = (struct ieee80211_hdr *)skb->data;
 
 	if (tkey->flags & IEEE80211_CRYPTO_TKIP_COUNTERMEASURES) {
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			printk(KERN_DEBUG ": TKIP countermeasures: dropped "
 			       "received packet from %pM\n", hdr->addr2);
 		}
+=======
+		net_dbg_ratelimited("TKIP countermeasures: dropped received packet from %pM\n",
+				    hdr->addr2);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -449,10 +472,15 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	pos = skb->data + hdr_len;
 	keyidx = pos[3];
 	if (!(keyidx & (1 << 5))) {
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			printk(KERN_DEBUG "TKIP: received packet without ExtIV"
 			       " flag from %pM\n", hdr->addr2);
 		}
+=======
+		net_dbg_ratelimited("TKIP: received packet without ExtIV flag from %pM\n",
+				    hdr->addr2);
+>>>>>>> refs/remotes/origin/master
 		return -2;
 	}
 	keyidx >>= 6;
@@ -462,11 +490,16 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 		return -6;
 	}
 	if (!tkey->key_set) {
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			printk(KERN_DEBUG "TKIP: received packet from %pM"
 			       " with keyid=%d that does not have a configured"
 			       " key\n", hdr->addr2, keyidx);
 		}
+=======
+		net_dbg_ratelimited("TKIP: received packet from %pM with keyid=%d that does not have a configured key\n",
+				    hdr->addr2, keyidx);
+>>>>>>> refs/remotes/origin/master
 		return -3;
 	}
 	iv16 = (pos[0] << 8) | pos[2];
@@ -475,12 +508,18 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 
 	if (tkip_replay_check(iv32, iv16, tkey->rx_iv32, tkey->rx_iv16)) {
 #ifdef CONFIG_LIB80211_DEBUG
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			printk(KERN_DEBUG "TKIP: replay detected: STA=%pM"
 			       " previous TSC %08x%04x received TSC "
 			       "%08x%04x\n", hdr->addr2,
 			       tkey->rx_iv32, tkey->rx_iv16, iv32, iv16);
 		}
+=======
+		net_dbg_ratelimited("TKIP: replay detected: STA=%pM previous TSC %08x%04x received TSC %08x%04x\n",
+				    hdr->addr2, tkey->rx_iv32, tkey->rx_iv16,
+				    iv32, iv16);
+>>>>>>> refs/remotes/origin/master
 #endif
 		tkey->dot11RSNAStatsTKIPReplays++;
 		return -4;
@@ -497,11 +536,16 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 	crypto_blkcipher_setkey(tkey->rx_tfm_arc4, rc4key, 16);
 	sg_init_one(&sg, pos, plen + 4);
 	if (crypto_blkcipher_decrypt(&desc, &sg, &sg, plen + 4)) {
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			printk(KERN_DEBUG ": TKIP: failed to decrypt "
 			       "received packet from %pM\n",
 			       hdr->addr2);
 		}
+=======
+		net_dbg_ratelimited("TKIP: failed to decrypt received packet from %pM\n",
+				    hdr->addr2);
+>>>>>>> refs/remotes/origin/master
 		return -7;
 	}
 
@@ -517,10 +561,15 @@ static int lib80211_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 			tkey->rx_phase1_done = 0;
 		}
 #ifdef CONFIG_LIB80211_DEBUG
+<<<<<<< HEAD
 		if (net_ratelimit()) {
 			printk(KERN_DEBUG "TKIP: ICV error detected: STA="
 			       "%pM\n", hdr->addr2);
 		}
+=======
+		net_dbg_ratelimited("TKIP: ICV error detected: STA=%pM\n",
+				    hdr->addr2);
+>>>>>>> refs/remotes/origin/master
 #endif
 		tkey->dot11RSNAStatsTKIPICVErrors++;
 		return -5;
@@ -737,6 +786,7 @@ static int lib80211_tkip_get_key(void *key, int len, u8 * seq, void *priv)
 	return TKIP_KEY_LEN;
 }
 
+<<<<<<< HEAD
 static char *lib80211_tkip_print_stats(char *p, void *priv)
 {
 	struct lib80211_tkip_data *tkip = priv;
@@ -761,6 +811,32 @@ static char *lib80211_tkip_print_stats(char *p, void *priv)
 		     tkip->dot11RSNAStatsTKIPICVErrors,
 		     tkip->dot11RSNAStatsTKIPLocalMICFailures);
 	return p;
+=======
+static void lib80211_tkip_print_stats(struct seq_file *m, void *priv)
+{
+	struct lib80211_tkip_data *tkip = priv;
+	seq_printf(m,
+		   "key[%d] alg=TKIP key_set=%d "
+		   "tx_pn=%02x%02x%02x%02x%02x%02x "
+		   "rx_pn=%02x%02x%02x%02x%02x%02x "
+		   "replays=%d icv_errors=%d local_mic_failures=%d\n",
+		   tkip->key_idx, tkip->key_set,
+		   (tkip->tx_iv32 >> 24) & 0xff,
+		   (tkip->tx_iv32 >> 16) & 0xff,
+		   (tkip->tx_iv32 >> 8) & 0xff,
+		   tkip->tx_iv32 & 0xff,
+		   (tkip->tx_iv16 >> 8) & 0xff,
+		   tkip->tx_iv16 & 0xff,
+		   (tkip->rx_iv32 >> 24) & 0xff,
+		   (tkip->rx_iv32 >> 16) & 0xff,
+		   (tkip->rx_iv32 >> 8) & 0xff,
+		   tkip->rx_iv32 & 0xff,
+		   (tkip->rx_iv16 >> 8) & 0xff,
+		   tkip->rx_iv16 & 0xff,
+		   tkip->dot11RSNAStatsTKIPReplays,
+		   tkip->dot11RSNAStatsTKIPICVErrors,
+		   tkip->dot11RSNAStatsTKIPLocalMICFailures);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct lib80211_crypto_ops lib80211_crypt_tkip = {

@@ -13,11 +13,24 @@
 
 /include/ "mpc5200b.dtsi"
 
+<<<<<<< HEAD
+=======
+&gpt0 { gpio-controller; };
+&gpt1 { gpio-controller; };
+&gpt2 { gpio-controller; };
+&gpt3 { gpio-controller; };
+&gpt4 { gpio-controller; };
+&gpt5 { gpio-controller; };
+&gpt6 { gpio-controller; };
+&gpt7 { gpio-controller; };
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "manroland,uc101";
 	compatible = "manroland,uc101";
 
 	soc5200@f0000000 {
+<<<<<<< HEAD
 		gpt0: timer@600 {	// General Purpose Timer in GPIO mode
 			gpio-controller;
 			#gpio-cells = <2>;
@@ -61,6 +74,8 @@
 			#gpio-cells = <2>;
 		};
 
+=======
+>>>>>>> refs/remotes/origin/master
 		rtc@800 {
 			status = "disabled";
 		};

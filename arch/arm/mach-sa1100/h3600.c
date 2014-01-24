@@ -15,19 +15,28 @@
 #include <linux/gpio.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <video/sa1100fb.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <video/sa1100fb.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/irda.h>
 
 #include <mach/h3xxx.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -66,12 +75,15 @@ err1:	return;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init h3600_map_io(void)
 {
 	h3xxx_map_io();
 
 	sa1100fb_lcd_power = h3600_lcd_power;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct sa1100fb_rgb h3600_rgb_16 = {
 	.red	= { .offset = 12, .length = 4, },
 	.green	= { .offset = 7,  .length = 4, },
@@ -101,7 +113,10 @@ static struct sa1100fb_mach_info h3600_lcd_info = {
 static void __init h3600_map_io(void)
 {
 	h3xxx_map_io();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -163,14 +178,20 @@ static void __init h3600_mach_init(void)
 	h3xxx_init_gpio(h3600_default_gpio, ARRAY_SIZE(h3600_default_gpio));
 	h3xxx_mach_init();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	sa11x0_register_lcd(&h3600_lcd_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	sa11x0_register_lcd(&h3600_lcd_info);
+>>>>>>> refs/remotes/origin/master
 	sa11x0_register_irda(&h3600_irda_data);
 }
 
 MACHINE_START(H3600, "Compaq iPAQ H3600")
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= 0xc0000100,
 	.map_io		= h3600_map_io,
@@ -178,13 +199,22 @@ MACHINE_START(H3600, "Compaq iPAQ H3600")
 	.timer		= &sa1100_timer,
 	.init_machine	= h3600_mach_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= h3600_map_io,
 	.nr_irqs	= SA1100_NR_IRQS,
 	.init_irq	= sa1100_init_irq,
+<<<<<<< HEAD
 	.timer		= &sa1100_timer,
 	.init_machine	= h3600_mach_init,
 	.restart	= sa11x0_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= sa1100_timer_init,
+	.init_machine	= h3600_mach_init,
+	.init_late	= sa11x0_init_late,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 

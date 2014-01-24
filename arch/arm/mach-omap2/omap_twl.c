@@ -18,6 +18,10 @@
 #include <linux/kernel.h>
 #include <linux/i2c/twl.h>
 
+<<<<<<< HEAD
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "voltage.h"
 
 #include "pm.h"
@@ -30,6 +34,7 @@
 #define OMAP3_VP_VSTEPMAX_VSTEPMAX	0x04
 #define OMAP3_VP_VLIMITTO_TIMEOUT_US	200
 
+<<<<<<< HEAD
 #define OMAP3430_VP1_VLIMITTO_VDDMIN	0x14
 #define OMAP3430_VP1_VLIMITTO_VDDMAX	0x42
 #define OMAP3430_VP2_VLIMITTO_VDDMIN	0x18
@@ -46,18 +51,26 @@
 #define OMAP4_VDD_IVA_SR_VOLT_REG	0x5B
 #define OMAP4_VDD_CORE_SR_VOLT_REG	0x61
 =======
+=======
+#define OMAP4_SRI2C_SLAVE_ADDR		0x12
+#define OMAP4_VDD_MPU_SR_VOLT_REG	0x55
+>>>>>>> refs/remotes/origin/master
 #define OMAP4_VDD_MPU_SR_CMD_REG	0x56
 #define OMAP4_VDD_IVA_SR_VOLT_REG	0x5B
 #define OMAP4_VDD_IVA_SR_CMD_REG	0x5C
 #define OMAP4_VDD_CORE_SR_VOLT_REG	0x61
 #define OMAP4_VDD_CORE_SR_CMD_REG	0x62
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define OMAP4_VP_CONFIG_ERROROFFSET	0x00
 #define OMAP4_VP_VSTEPMIN_VSTEPMIN	0x01
 #define OMAP4_VP_VSTEPMAX_VSTEPMAX	0x04
 #define OMAP4_VP_VLIMITTO_TIMEOUT_US	200
 
+<<<<<<< HEAD
 #define OMAP4_VP_MPU_VLIMITTO_VDDMIN	0xA
 #define OMAP4_VP_MPU_VLIMITTO_VDDMAX	0x39
 #define OMAP4_VP_IVA_VLIMITTO_VDDMIN	0xA
@@ -65,6 +78,8 @@
 #define OMAP4_VP_CORE_VLIMITTO_VDDMIN	0xA
 #define OMAP4_VP_CORE_VLIMITTO_VDDMAX	0x28
 
+=======
+>>>>>>> refs/remotes/origin/master
 static bool is_offset_valid;
 static u8 smps_offset;
 /*
@@ -104,10 +119,15 @@ static unsigned long twl6030_vsel_to_uv(const u8 vsel)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!vsel)
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!vsel)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * There is no specific formula for voltage to vsel
 	 * conversion above 1.3V. There are special hardcoded
@@ -120,6 +140,7 @@ static unsigned long twl6030_vsel_to_uv(const u8 vsel)
 
 	if (smps_offset & 0x8)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ((((vsel - 1) * 125) + 7000)) * 100;
 	else
 		return ((((vsel - 1) * 125) + 6000)) * 100;
@@ -128,6 +149,11 @@ static unsigned long twl6030_vsel_to_uv(const u8 vsel)
 	else
 		return ((((vsel - 1) * 1266) + 60770)) * 10;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ((((vsel - 1) * 1266) + 70900)) * 10;
+	else
+		return ((((vsel - 1) * 1266) + 60770)) * 10;
+>>>>>>> refs/remotes/origin/master
 }
 
 static u8 twl6030_uv_to_vsel(unsigned long uv)
@@ -147,10 +173,15 @@ static u8 twl6030_uv_to_vsel(unsigned long uv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!uv)
 		return 0x00;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!uv)
+		return 0x00;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * There is no specific formula for voltage to vsel
 	 * conversion above 1.3V. There are special hardcoded
@@ -158,6 +189,7 @@ static u8 twl6030_uv_to_vsel(unsigned long uv)
 	 * hardcoding only for 1.35 V which is used for 1GH OPP for
 	 * OMAP4430.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (uv == 1350000)
 		return 0x3A;
@@ -170,6 +202,8 @@ static u8 twl6030_uv_to_vsel(unsigned long uv)
 
 static struct omap_volt_pmic_info omap3_mpu_volt_info = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (uv > twl6030_vsel_to_uv(0x39)) {
 		if (uv == 1350000)
 			return 0x3A;
@@ -185,6 +219,7 @@ static struct omap_volt_pmic_info omap3_mpu_volt_info = {
 }
 
 static struct omap_voltdm_pmic omap3_mpu_pmic = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	.slew_rate		= 4000,
 	.step_size		= 12500,
@@ -206,10 +241,24 @@ static struct omap_voltdm_pmic omap3_mpu_pmic = {
 	.volt_reg_addr		= OMAP3_VDD_MPU_SR_CONTROL_REG,
 	.i2c_high_speed		= true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.slew_rate		= 4000,
+	.step_size		= 12500,
+	.vp_erroroffset		= OMAP3_VP_CONFIG_ERROROFFSET,
+	.vp_vstepmin		= OMAP3_VP_VSTEPMIN_VSTEPMIN,
+	.vp_vstepmax		= OMAP3_VP_VSTEPMAX_VSTEPMAX,
+	.vddmin			= 600000,
+	.vddmax			= 1450000,
+	.vp_timeout_us		= OMAP3_VP_VLIMITTO_TIMEOUT_US,
+	.i2c_slave_addr		= OMAP3_SRI2C_SLAVE_ADDR,
+	.volt_reg_addr		= OMAP3_VDD_MPU_SR_CONTROL_REG,
+	.i2c_high_speed		= true,
+>>>>>>> refs/remotes/origin/master
 	.vsel_to_uv		= twl4030_vsel_to_uv,
 	.uv_to_vsel		= twl4030_uv_to_vsel,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct omap_volt_pmic_info omap3_core_volt_info = {
 =======
@@ -235,10 +284,25 @@ static struct omap_voltdm_pmic omap3_core_pmic = {
 	.volt_reg_addr		= OMAP3_VDD_CORE_SR_CONTROL_REG,
 	.i2c_high_speed		= true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct omap_voltdm_pmic omap3_core_pmic = {
+	.slew_rate		= 4000,
+	.step_size		= 12500,
+	.vp_erroroffset		= OMAP3_VP_CONFIG_ERROROFFSET,
+	.vp_vstepmin		= OMAP3_VP_VSTEPMIN_VSTEPMIN,
+	.vp_vstepmax		= OMAP3_VP_VSTEPMAX_VSTEPMAX,
+	.vddmin			= 600000,
+	.vddmax			= 1450000,
+	.vp_timeout_us		= OMAP3_VP_VLIMITTO_TIMEOUT_US,
+	.i2c_slave_addr		= OMAP3_SRI2C_SLAVE_ADDR,
+	.volt_reg_addr		= OMAP3_VDD_CORE_SR_CONTROL_REG,
+	.i2c_high_speed		= true,
+>>>>>>> refs/remotes/origin/master
 	.vsel_to_uv		= twl4030_vsel_to_uv,
 	.uv_to_vsel		= twl4030_uv_to_vsel,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct omap_volt_pmic_info omap4_mpu_volt_info = {
 	.slew_rate		= 4000,
@@ -271,10 +335,27 @@ static struct omap_voltdm_pmic omap4_mpu_pmic = {
 	.cmd_reg_addr		= OMAP4_VDD_MPU_SR_CMD_REG,
 	.i2c_high_speed		= true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct omap_voltdm_pmic omap4_mpu_pmic = {
+	.slew_rate		= 4000,
+	.step_size		= 12660,
+	.vp_erroroffset		= OMAP4_VP_CONFIG_ERROROFFSET,
+	.vp_vstepmin		= OMAP4_VP_VSTEPMIN_VSTEPMIN,
+	.vp_vstepmax		= OMAP4_VP_VSTEPMAX_VSTEPMAX,
+	.vddmin			= 0,
+	.vddmax			= 2100000,
+	.vp_timeout_us		= OMAP4_VP_VLIMITTO_TIMEOUT_US,
+	.i2c_slave_addr		= OMAP4_SRI2C_SLAVE_ADDR,
+	.volt_reg_addr		= OMAP4_VDD_MPU_SR_VOLT_REG,
+	.cmd_reg_addr		= OMAP4_VDD_MPU_SR_CMD_REG,
+	.i2c_high_speed		= true,
+	.i2c_pad_load		= 3,
+>>>>>>> refs/remotes/origin/master
 	.vsel_to_uv		= twl6030_vsel_to_uv,
 	.uv_to_vsel		= twl6030_uv_to_vsel,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct omap_volt_pmic_info omap4_iva_volt_info = {
 	.slew_rate		= 4000,
@@ -307,10 +388,27 @@ static struct omap_voltdm_pmic omap4_iva_pmic = {
 	.cmd_reg_addr		= OMAP4_VDD_IVA_SR_CMD_REG,
 	.i2c_high_speed		= true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct omap_voltdm_pmic omap4_iva_pmic = {
+	.slew_rate		= 4000,
+	.step_size		= 12660,
+	.vp_erroroffset		= OMAP4_VP_CONFIG_ERROROFFSET,
+	.vp_vstepmin		= OMAP4_VP_VSTEPMIN_VSTEPMIN,
+	.vp_vstepmax		= OMAP4_VP_VSTEPMAX_VSTEPMAX,
+	.vddmin			= 0,
+	.vddmax			= 2100000,
+	.vp_timeout_us		= OMAP4_VP_VLIMITTO_TIMEOUT_US,
+	.i2c_slave_addr		= OMAP4_SRI2C_SLAVE_ADDR,
+	.volt_reg_addr		= OMAP4_VDD_IVA_SR_VOLT_REG,
+	.cmd_reg_addr		= OMAP4_VDD_IVA_SR_CMD_REG,
+	.i2c_high_speed		= true,
+	.i2c_pad_load		= 3,
+>>>>>>> refs/remotes/origin/master
 	.vsel_to_uv		= twl6030_vsel_to_uv,
 	.uv_to_vsel		= twl6030_uv_to_vsel,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct omap_volt_pmic_info omap4_core_volt_info = {
 	.slew_rate		= 4000,
@@ -342,6 +440,22 @@ static struct omap_voltdm_pmic omap4_core_pmic = {
 	.volt_reg_addr		= OMAP4_VDD_CORE_SR_VOLT_REG,
 	.cmd_reg_addr		= OMAP4_VDD_CORE_SR_CMD_REG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct omap_voltdm_pmic omap4_core_pmic = {
+	.slew_rate		= 4000,
+	.step_size		= 12660,
+	.vp_erroroffset		= OMAP4_VP_CONFIG_ERROROFFSET,
+	.vp_vstepmin		= OMAP4_VP_VSTEPMIN_VSTEPMIN,
+	.vp_vstepmax		= OMAP4_VP_VSTEPMAX_VSTEPMAX,
+	.vddmin			= 0,
+	.vddmax			= 2100000,
+	.vp_timeout_us		= OMAP4_VP_VLIMITTO_TIMEOUT_US,
+	.i2c_slave_addr		= OMAP4_SRI2C_SLAVE_ADDR,
+	.volt_reg_addr		= OMAP4_VDD_CORE_SR_VOLT_REG,
+	.cmd_reg_addr		= OMAP4_VDD_CORE_SR_CMD_REG,
+	.i2c_high_speed		= true,
+	.i2c_pad_load		= 3,
+>>>>>>> refs/remotes/origin/master
 	.vsel_to_uv		= twl6030_vsel_to_uv,
 	.uv_to_vsel		= twl6030_uv_to_vsel,
 };
@@ -354,6 +468,7 @@ int __init omap4_twl_init(void)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	voltdm = omap_voltage_domain_lookup("mpu");
 	omap_voltage_register_pmic(voltdm, &omap4_mpu_volt_info);
 
@@ -363,6 +478,8 @@ int __init omap4_twl_init(void)
 	voltdm = omap_voltage_domain_lookup("core");
 	omap_voltage_register_pmic(voltdm, &omap4_core_volt_info);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	voltdm = voltdm_lookup("mpu");
 	omap_voltage_register_pmic(voltdm, &omap4_mpu_pmic);
 
@@ -371,7 +488,10 @@ int __init omap4_twl_init(void)
 
 	voltdm = voltdm_lookup("core");
 	omap_voltage_register_pmic(voltdm, &omap4_core_pmic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -383,6 +503,7 @@ int __init omap3_twl_init(void)
 	if (!cpu_is_omap34xx())
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (cpu_is_omap3630()) {
 <<<<<<< HEAD
 		omap3_mpu_volt_info.vp_vddmin = OMAP3630_VP1_VLIMITTO_VDDMIN;
@@ -397,6 +518,8 @@ int __init omap3_twl_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The smartreflex bit on twl4030 specifies if the setting of voltage
 	 * is done over the I2C_SR path. Since this setting is independent of
@@ -410,18 +533,24 @@ int __init omap3_twl_init(void)
 		omap3_twl_set_sr_bit(true);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	voltdm = omap_voltage_domain_lookup("mpu");
 	omap_voltage_register_pmic(voltdm, &omap3_mpu_volt_info);
 
 	voltdm = omap_voltage_domain_lookup("core");
 	omap_voltage_register_pmic(voltdm, &omap3_core_volt_info);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	voltdm = voltdm_lookup("mpu_iva");
 	omap_voltage_register_pmic(voltdm, &omap3_mpu_pmic);
 
 	voltdm = voltdm_lookup("core");
 	omap_voltage_register_pmic(voltdm, &omap3_core_pmic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -446,8 +575,13 @@ int __init omap3_twl_set_sr_bit(bool enable)
 	if (twl_sr_enable_autoinit)
 		pr_warning("%s: unexpected multiple calls\n", __func__);
 
+<<<<<<< HEAD
 	ret = twl_i2c_read_u8(TWL4030_MODULE_PM_RECEIVER, &temp,
 					TWL4030_DCDC_GLOBAL_CFG);
+=======
+	ret = twl_i2c_read_u8(TWL_MODULE_PM_RECEIVER, &temp,
+			      TWL4030_DCDC_GLOBAL_CFG);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err;
 
@@ -456,8 +590,13 @@ int __init omap3_twl_set_sr_bit(bool enable)
 	else
 		temp &= ~SMARTREFLEX_ENABLE;
 
+<<<<<<< HEAD
 	ret = twl_i2c_write_u8(TWL4030_MODULE_PM_RECEIVER, temp,
 				TWL4030_DCDC_GLOBAL_CFG);
+=======
+	ret = twl_i2c_write_u8(TWL_MODULE_PM_RECEIVER, temp,
+			       TWL4030_DCDC_GLOBAL_CFG);
+>>>>>>> refs/remotes/origin/master
 	if (!ret) {
 		twl_sr_enable_autoinit = true;
 		return 0;

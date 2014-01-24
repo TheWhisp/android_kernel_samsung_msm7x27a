@@ -8,10 +8,13 @@
 extern struct tasklet_struct keyboard_tasklet;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int shift_state;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern char *func_table[MAX_NR_FUNC];
 extern char func_buf[];
 extern char *funcbufptr;
@@ -41,10 +44,16 @@ struct kbd_struct {
 #define VC_CTRLRLOCK	KG_CTRLR 	/* ctrlr lock mode */
 	unsigned char slockstate; 	/* for `sticky' Shift, Ctrl, etc. */
 
+<<<<<<< HEAD
 	unsigned char ledmode:2; 	/* one 2-bit value */
 #define LED_SHOW_FLAGS 0        /* traditional state */
 #define LED_SHOW_IOCTL 1        /* only change leds upon ioctl */
 #define LED_SHOW_MEM 2          /* `heartbeat': peek into memory */
+=======
+	unsigned char ledmode:1;
+#define LED_SHOW_FLAGS 0        /* traditional state */
+#define LED_SHOW_IOCTL 1        /* only change leds upon ioctl */
+>>>>>>> refs/remotes/origin/master
 
 	unsigned char ledflagstate:4;	/* flags, not lights */
 	unsigned char default_ledflagstate:4;
@@ -69,6 +78,7 @@ struct kbd_struct {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct kbd_struct kbd_table[];
 
 =======
@@ -76,6 +86,10 @@ extern struct kbd_struct kbd_table[];
 extern int kbd_init(void);
 
 extern unsigned char getledstate(void);
+=======
+extern int kbd_init(void);
+
+>>>>>>> refs/remotes/origin/master
 extern void setledstate(struct kbd_struct *kbd, unsigned int led);
 
 extern int do_poke_blanked_console;
@@ -86,9 +100,13 @@ extern int set_console(int nr);
 extern void schedule_console_callback(void);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* FIXME: review locking for vt.c callers */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* FIXME: review locking for vt.c callers */
+>>>>>>> refs/remotes/origin/master
 static inline void set_leds(void)
 {
 	tasklet_schedule(&keyboard_tasklet);
@@ -153,16 +171,20 @@ static inline void chg_vc_kbd_led(struct kbd_struct * kbd, int flag)
 struct console;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int getkeycode(unsigned int scancode);
 int setkeycode(unsigned int scancode, unsigned int keycode);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void compute_shiftstate(void);
 
 /* defkeymap.c */
 
 extern unsigned int keymap_count;
 
+<<<<<<< HEAD
 /* console.c */
 
 static inline void con_schedule_flip(struct tty_struct *t)
@@ -175,4 +197,6 @@ static inline void con_schedule_flip(struct tty_struct *t)
 	schedule_work(&t->buf.work);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

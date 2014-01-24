@@ -17,6 +17,7 @@
 #include <asm/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *module_alloc(unsigned long size)
 {
 	if (size == 0)
@@ -32,6 +33,8 @@ void module_free(struct module *mod, void *module_region)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Transfer the section to the L1 memory */
 int
 module_frob_arch_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
@@ -154,6 +157,7 @@ module_frob_arch_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int
 apply_relocate(Elf_Shdr * sechdrs, const char *strtab,
 	       unsigned int symindex, unsigned int relsec, struct module *mod)
@@ -164,6 +168,8 @@ apply_relocate(Elf_Shdr * sechdrs, const char *strtab,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*************************************************************************/
 /* FUNCTION : apply_relocate_add                                         */
 /* ABSTRACT : Blackfin specific relocation handling for the loadable     */

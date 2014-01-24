@@ -32,7 +32,10 @@
 #include <linux/hdreg.h>
 #include <linux/init.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/kthread.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include "mtdcore.h"
@@ -121,16 +124,26 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
 
 int mtd_blktrans_cease_background(struct mtd_blktrans_dev *dev)
 {
+<<<<<<< HEAD
 	if (kthread_should_stop())
 		return 1;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return dev->bg_stop;
 }
 EXPORT_SYMBOL_GPL(mtd_blktrans_cease_background);
 
+<<<<<<< HEAD
 static int mtd_blktrans_thread(void *arg)
 {
 	struct mtd_blktrans_dev *dev = arg;
+=======
+static void mtd_blktrans_work(struct work_struct *work)
+{
+	struct mtd_blktrans_dev *dev =
+		container_of(work, struct mtd_blktrans_dev, work);
+>>>>>>> refs/remotes/origin/master
 	struct mtd_blktrans_ops *tr = dev->tr;
 	struct request_queue *rq = dev->rq;
 	struct request *req = NULL;
@@ -138,7 +151,11 @@ static int mtd_blktrans_thread(void *arg)
 
 	spin_lock_irq(rq->queue_lock);
 
+<<<<<<< HEAD
 	while (!kthread_should_stop()) {
+=======
+	while (1) {
+>>>>>>> refs/remotes/origin/master
 		int res;
 
 		dev->bg_stop = false;
@@ -156,6 +173,7 @@ static int mtd_blktrans_thread(void *arg)
 				background_done = !dev->bg_stop;
 				continue;
 			}
+<<<<<<< HEAD
 			set_current_state(TASK_INTERRUPTIBLE);
 
 			if (kthread_should_stop())
@@ -165,6 +183,9 @@ static int mtd_blktrans_thread(void *arg)
 			schedule();
 			spin_lock_irq(rq->queue_lock);
 			continue;
+=======
+			break;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		spin_unlock_irq(rq->queue_lock);
@@ -185,8 +206,11 @@ static int mtd_blktrans_thread(void *arg)
 		__blk_end_request_all(req, -EIO);
 
 	spin_unlock_irq(rq->queue_lock);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mtd_blktrans_request(struct request_queue *rq)
@@ -199,10 +223,15 @@ static void mtd_blktrans_request(struct request_queue *rq)
 	if (!dev)
 		while ((req = blk_fetch_request(rq)) != NULL)
 			__blk_end_request_all(req, -ENODEV);
+<<<<<<< HEAD
 	else {
 		dev->bg_stop = true;
 		wake_up_process(dev->thread);
 	}
+=======
+	else
+		queue_work(dev->wq, &dev->work);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int blktrans_open(struct block_device *bdev, fmode_t mode)
@@ -234,9 +263,13 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
 	if (ret)
 		goto error_release;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->file_mode = mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->file_mode = mode;
+>>>>>>> refs/remotes/origin/master
 
 unlock:
 	dev->open++;
@@ -255,6 +288,7 @@ error_put:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int blktrans_release(struct gendisk *disk, fmode_t mode)
 {
 	struct mtd_blktrans_dev *dev = blktrans_dev_get(disk);
@@ -262,6 +296,14 @@ static int blktrans_release(struct gendisk *disk, fmode_t mode)
 
 	if (!dev)
 		return ret;
+=======
+static void blktrans_release(struct gendisk *disk, fmode_t mode)
+{
+	struct mtd_blktrans_dev *dev = blktrans_dev_get(disk);
+
+	if (!dev)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&dev->lock);
 
@@ -272,13 +314,21 @@ static int blktrans_release(struct gendisk *disk, fmode_t mode)
 	module_put(dev->tr->owner);
 
 	if (dev->mtd) {
+<<<<<<< HEAD
 		ret = dev->tr->release ? dev->tr->release(dev) : 0;
+=======
+		if (dev->tr->release)
+			dev->tr->release(dev);
+>>>>>>> refs/remotes/origin/master
 		__put_mtd_device(dev->mtd);
 	}
 unlock:
 	mutex_unlock(&dev->lock);
 	blktrans_dev_put(dev);
+<<<<<<< HEAD
 	return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
@@ -328,7 +378,11 @@ unlock:
 	return ret;
 }
 
+<<<<<<< HEAD
 static const struct block_device_operations mtd_blktrans_ops = {
+=======
+static const struct block_device_operations mtd_block_ops = {
+>>>>>>> refs/remotes/origin/master
 	.owner		= THIS_MODULE,
 	.open		= blktrans_open,
 	.release	= blktrans_release,
@@ -404,7 +458,11 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 	gd->private_data = new;
 	gd->major = tr->major;
 	gd->first_minor = (new->devnum) << tr->part_bits;
+<<<<<<< HEAD
 	gd->fops = &mtd_blktrans_ops;
+=======
+	gd->fops = &mtd_block_ops;
+>>>>>>> refs/remotes/origin/master
 
 	if (tr->part_bits)
 		if (new->devnum < 26)
@@ -429,6 +487,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 		goto error3;
 
 	new->rq->queuedata = new;
+<<<<<<< HEAD
 
 	/*
 	 * Empirical measurements revealed that read ahead values larger than
@@ -443,6 +502,12 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 	queue_flag_set_unlocked(QUEUE_FLAG_NONROT, new->rq);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	blk_queue_logical_block_size(new->rq, tr->blksize);
+
+	queue_flag_set_unlocked(QUEUE_FLAG_NONROT, new->rq);
+
+>>>>>>> refs/remotes/origin/master
 	if (tr->discard) {
 		queue_flag_set_unlocked(QUEUE_FLAG_DISCARD, new->rq);
 		new->rq->limits.max_discard_sectors = UINT_MAX;
@@ -450,6 +515,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 
 	gd->queue = new->rq;
 
+<<<<<<< HEAD
 	/* Create processing thread */
 	/* TODO: workqueue ? */
 	new->thread = kthread_run(mtd_blktrans_thread, new,
@@ -458,6 +524,15 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
 		ret = PTR_ERR(new->thread);
 		goto error4;
 	}
+=======
+	/* Create processing workqueue */
+	new->wq = alloc_workqueue("%s%d", 0, 0,
+				  tr->name, new->mtd->index);
+	if (!new->wq)
+		goto error4;
+	INIT_WORK(&new->work, mtd_blktrans_work);
+
+>>>>>>> refs/remotes/origin/master
 	gd->driverfs_dev = &new->mtd->dev;
 
 	if (new->readonly)
@@ -497,9 +572,14 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
 	/* Stop new requests to arrive */
 	del_gendisk(old->disk);
 
+<<<<<<< HEAD
 
 	/* Stop the thread */
 	kthread_stop(old->thread);
+=======
+	/* Stop workqueue. This will perform any pending request. */
+	destroy_workqueue(old->wq);
+>>>>>>> refs/remotes/origin/master
 
 	/* Kill current requests */
 	spin_lock_irqsave(&old->queue_lock, flags);

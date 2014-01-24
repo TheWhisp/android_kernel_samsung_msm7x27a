@@ -4,7 +4,11 @@
  */
 
 #include <sys/ptrace.h>
+<<<<<<< HEAD
 #include <linux/ptrace.h>
+=======
+#include <asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 int os_arch_prctl(int pid, int code, unsigned long *addr)
 {

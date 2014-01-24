@@ -16,9 +16,14 @@
 #include <linux/rtc.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_VERSION "0.1"
 
@@ -230,7 +235,11 @@ static int isl12022_set_datetime(struct i2c_client *client, struct rtc_time *tm)
 					 buf[ISL12022_REG_SC + i]);
 		if (ret)
 			return -EIO;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -255,12 +264,20 @@ static int isl12022_probe(struct i2c_client *client,
 {
 	struct isl12022 *isl12022;
 
+<<<<<<< HEAD
 	int ret = 0;
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
 		return -ENODEV;
 
 	isl12022 = kzalloc(sizeof(struct isl12022), GFP_KERNEL);
+=======
+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+		return -ENODEV;
+
+	isl12022 = devm_kzalloc(&client->dev, sizeof(struct isl12022),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!isl12022)
 		return -ENOMEM;
 
@@ -268,6 +285,7 @@ static int isl12022_probe(struct i2c_client *client,
 
 	i2c_set_clientdata(client, isl12022);
 
+<<<<<<< HEAD
 	isl12022->rtc = rtc_device_register(isl12022_driver.driver.name,
 					    &client->dev,
 					    &isl12022_rtc_ops,
@@ -294,11 +312,20 @@ static int isl12022_remove(struct i2c_client *client)
 	kfree(isl12022);
 
 	return 0;
+=======
+	isl12022->rtc = devm_rtc_device_register(&client->dev,
+					isl12022_driver.driver.name,
+					&isl12022_rtc_ops, THIS_MODULE);
+	return PTR_ERR_OR_ZERO(isl12022->rtc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_device_id isl12022_id[] = {
 	{ "isl12022", 0 },
+<<<<<<< HEAD
 	{ "rtc8564", 0 },
+=======
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, isl12022_id);
@@ -308,6 +335,7 @@ static struct i2c_driver isl12022_driver = {
 		.name	= "rtc-isl12022",
 	},
 	.probe		= isl12022_probe,
+<<<<<<< HEAD
 	.remove		= isl12022_remove,
 	.id_table	= isl12022_id,
 };
@@ -328,6 +356,12 @@ module_exit(isl12022_exit);
 =======
 module_i2c_driver(isl12022_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table	= isl12022_id,
+};
+
+module_i2c_driver(isl12022_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("roman.fietze@telemotive.de");
 MODULE_DESCRIPTION("ISL 12022 RTC driver");

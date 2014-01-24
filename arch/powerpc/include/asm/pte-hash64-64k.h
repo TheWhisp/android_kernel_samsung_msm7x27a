@@ -23,7 +23,11 @@
 
 /* Note the full page bits must be in the same location as for normal
  * 4k pages as the same assembly will be used to insert 64K pages
+<<<<<<< HEAD
  * wether the kernel has CONFIG_PPC_64K_PAGES or not
+=======
+ * whether the kernel has CONFIG_PPC_64K_PAGES or not
+>>>>>>> refs/remotes/origin/master
  */
 #define _PAGE_F_SECOND  0x00008000 /* full page: hidx bits */
 #define _PAGE_F_GIX     0x00007000 /* full page: hidx bits */
@@ -47,7 +51,11 @@
  * generic accessors and iterators here
  */
 #define __real_pte(e,p) 	((real_pte_t) { \
+<<<<<<< HEAD
 			(e), ((e) & _PAGE_COMBO) ? \
+=======
+			(e), (pte_val(e) & _PAGE_COMBO) ? \
+>>>>>>> refs/remotes/origin/master
 				(pte_val(*((p) + PTRS_PER_PTE))) : 0 })
 #define __rpte_to_hidx(r,index)	((pte_val((r).pte) & _PAGE_COMBO) ? \
         (((r).hidx >> ((index)<<2)) & 0xf) : ((pte_val((r).pte) >> 12) & 0xf))
@@ -58,6 +66,7 @@
 /* Trick: we set __end to va + 64k, which happens works for
  * a 16M page as well as we want only one iteration
  */
+<<<<<<< HEAD
 #define pte_iterate_hashed_subpages(rpte, psize, va, index, shift)	    \
         do {                                                                \
                 unsigned long __end = va + PAGE_SIZE;                       \
@@ -66,6 +75,18 @@
                 shift = mmu_psize_defs[psize].shift;                        \
 		for (index = 0; va < __end; index++, va += (1L << shift)) { \
 		        if (!__split || __rpte_sub_valid(rpte, index)) do { \
+=======
+#define pte_iterate_hashed_subpages(rpte, psize, vpn, index, shift)	\
+	do {								\
+		unsigned long __end = vpn + (1UL << (PAGE_SHIFT - VPN_SHIFT));	\
+		unsigned __split = (psize == MMU_PAGE_4K ||		\
+				    psize == MMU_PAGE_64K_AP);		\
+		shift = mmu_psize_defs[psize].shift;			\
+		for (index = 0; vpn < __end; index++,			\
+			     vpn += (1L << (shift - VPN_SHIFT))) {	\
+			if (!__split || __rpte_sub_valid(rpte, index))	\
+				do {
+>>>>>>> refs/remotes/origin/master
 
 #define pte_iterate_hashed_end() } while(0); } } while(0)
 

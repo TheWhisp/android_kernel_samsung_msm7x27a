@@ -33,10 +33,14 @@ enum bus_reset_handling {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __attribute__((format(printf, 2, 3)))
 =======
 static __printf(2, 3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __printf(2, 3)
+>>>>>>> refs/remotes/origin/master
 void cmp_error(struct cmp_connection *c, const char *fmt, ...)
 {
 	va_list va;
@@ -52,9 +56,12 @@ static int pcr_modify(struct cmp_connection *c,
 		      int (*check)(struct cmp_connection *c, __be32 pcr),
 		      enum bus_reset_handling bus_reset_handling)
 {
+<<<<<<< HEAD
 	struct fw_device *device = fw_parent_device(c->resources.unit);
 	int generation = c->resources.generation;
 	int rcode, errors = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	__be32 old_arg, buffer[2];
 	int err;
 
@@ -63,6 +70,7 @@ static int pcr_modify(struct cmp_connection *c,
 		old_arg = buffer[0];
 		buffer[1] = modify(c, buffer[0]);
 
+<<<<<<< HEAD
 		rcode = fw_run_transaction(
 				device->card, TCODE_LOCK_COMPARE_SWAP,
 				device->node_id, generation, device->max_speed,
@@ -82,10 +90,34 @@ static int pcr_modify(struct cmp_connection *c,
 			goto bus_reset;
 		else if (rcode_is_permanent_error(rcode) || ++errors >= 3)
 			goto io_error;
+=======
+		err = snd_fw_transaction(
+				c->resources.unit, TCODE_LOCK_COMPARE_SWAP,
+				CSR_REGISTER_BASE + CSR_IPCR(c->pcr_index),
+				buffer, 8,
+				FW_FIXED_GENERATION | c->resources.generation);
+
+		if (err < 0) {
+			if (err == -EAGAIN &&
+			    bus_reset_handling == SUCCEED_ON_BUS_RESET)
+				err = 0;
+			return err;
+		}
+
+		if (buffer[0] == old_arg) /* success? */
+			break;
+
+		if (check) {
+			err = check(c, buffer[0]);
+			if (err < 0)
+				return err;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	c->last_pcr_value = buffer[1];
 
 	return 0;
+<<<<<<< HEAD
 
 io_error:
 	cmp_error(c, "transaction failed: %s\n", rcode_string(rcode));
@@ -93,6 +125,8 @@ io_error:
 
 bus_reset:
 	return bus_reset_handling == ABORT_ON_BUS_RESET ? -EAGAIN : 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -112,7 +146,11 @@ int cmp_connection_init(struct cmp_connection *c,
 
 	err = snd_fw_transaction(unit, TCODE_READ_QUADLET_REQUEST,
 				 CSR_REGISTER_BASE + CSR_IMPR,
+<<<<<<< HEAD
 				 &impr_be, 4);
+=======
+				 &impr_be, 4, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 	impr = be32_to_cpu(impr_be);

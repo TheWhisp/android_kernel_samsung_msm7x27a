@@ -35,7 +35,10 @@
 #include <linux/timer.h>
 #include <linux/errno.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/firmware.h>
 #include <linux/mutex.h>
@@ -674,7 +677,11 @@ static int cxacru_cm(struct cxacru_data *instance, enum cxacru_cm_request cm,
 	}
 
 	ret = offd;
+<<<<<<< HEAD
 	dbg("cm %#x", cm);
+=======
+	usb_dbg(instance->usbatm, "cm %#x\n", cm);
+>>>>>>> refs/remotes/origin/master
 fail:
 	mutex_unlock(&instance->cm_serialize);
 err:
@@ -734,7 +741,11 @@ static int cxacru_card_status(struct cxacru_data *instance)
 {
 	int ret = cxacru_cm(instance, CM_REQUEST_CARD_GET_STATUS, NULL, 0, NULL, 0);
 	if (ret < 0) {		/* firmware not loaded */
+<<<<<<< HEAD
 		dbg("cxacru_adsl_start: CARD_GET_STATUS returned %d", ret);
+=======
+		usb_dbg(instance->usbatm, "cxacru_adsl_start: CARD_GET_STATUS returned %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	return 0;
@@ -759,7 +770,11 @@ static int cxacru_atm_start(struct usbatm_data *usbatm_instance,
 	int ret;
 	int start_polling = 1;
 
+<<<<<<< HEAD
 	dbg("cxacru_atm_start");
+=======
+	dev_dbg(&intf->dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* Read MAC address */
 	ret = cxacru_cm(instance, CM_REQUEST_CARD_GET_MAC_ADDRESS, NULL, 0,
@@ -963,13 +978,21 @@ static int cxacru_fw(struct usb_device *usb_dev, enum cxacru_fw_request fw,
 			ret = usb_bulk_msg(usb_dev, usb_sndbulkpipe(usb_dev, CXACRU_EP_CMD),
 					   buf, offb, NULL, CMD_TIMEOUT);
 			if (ret < 0) {
+<<<<<<< HEAD
 				dbg("sending fw %#x failed", fw);
+=======
+				dev_dbg(&usb_dev->dev, "sending fw %#x failed\n", fw);
+>>>>>>> refs/remotes/origin/master
 				goto cleanup;
 			}
 			offb = 0;
 		}
 	} while (offd < size);
+<<<<<<< HEAD
 	dbg("sent fw %#x", fw);
+=======
+	dev_dbg(&usb_dev->dev, "sent fw %#x\n", fw);
+>>>>>>> refs/remotes/origin/master
 
 	ret = 0;
 
@@ -989,7 +1012,11 @@ static void cxacru_upload_firmware(struct cxacru_data *instance,
 			       usb_dev->descriptor.idProduct };
 	__le32 val;
 
+<<<<<<< HEAD
 	dbg("cxacru_upload_firmware");
+=======
+	usb_dbg(usbatm, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* FirmwarePllFClkValue */
 	val = cpu_to_le32(instance->modem_type->pll_f_clk);
@@ -1075,7 +1102,11 @@ static int cxacru_find_firmware(struct cxacru_data *instance,
 	char buf[16];
 
 	sprintf(buf, "cxacru-%s.bin", phase);
+<<<<<<< HEAD
 	dbg("cxacru_find_firmware: looking for %s", buf);
+=======
+	usb_dbg(usbatm, "cxacru_find_firmware: looking for %s\n", buf);
+>>>>>>> refs/remotes/origin/master
 
 	if (request_firmware(fw_p, buf, dev)) {
 		usb_dbg(usbatm, "no stage %s firmware found\n", phase);
@@ -1116,9 +1147,15 @@ static int cxacru_heavy_init(struct usbatm_data *usbatm_instance,
 
 	ret = cxacru_card_status(instance);
 	if (ret)
+<<<<<<< HEAD
 		dbg("modem initialisation failed");
 	else
 		dbg("done setting up the modem");
+=======
+		usb_dbg(usbatm_instance, "modem initialisation failed\n");
+	else
+		usb_dbg(usbatm_instance, "done setting up the modem\n");
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -1134,7 +1171,11 @@ static int cxacru_bind(struct usbatm_data *usbatm_instance,
 	/* instance init */
 	instance = kzalloc(sizeof(*instance), GFP_KERNEL);
 	if (!instance) {
+<<<<<<< HEAD
 		dbg("cxacru_bind: no memory for instance data");
+=======
+		usb_dbg(usbatm_instance, "cxacru_bind: no memory for instance data\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -1150,31 +1191,51 @@ static int cxacru_bind(struct usbatm_data *usbatm_instance,
 
 	instance->rcv_buf = (u8 *) __get_free_page(GFP_KERNEL);
 	if (!instance->rcv_buf) {
+<<<<<<< HEAD
 		dbg("cxacru_bind: no memory for rcv_buf");
+=======
+		usb_dbg(usbatm_instance, "cxacru_bind: no memory for rcv_buf\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto fail;
 	}
 	instance->snd_buf = (u8 *) __get_free_page(GFP_KERNEL);
 	if (!instance->snd_buf) {
+<<<<<<< HEAD
 		dbg("cxacru_bind: no memory for snd_buf");
+=======
+		usb_dbg(usbatm_instance, "cxacru_bind: no memory for snd_buf\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto fail;
 	}
 	instance->rcv_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!instance->rcv_urb) {
+<<<<<<< HEAD
 		dbg("cxacru_bind: no memory for rcv_urb");
+=======
+		usb_dbg(usbatm_instance, "cxacru_bind: no memory for rcv_urb\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto fail;
 	}
 	instance->snd_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!instance->snd_urb) {
+<<<<<<< HEAD
 		dbg("cxacru_bind: no memory for snd_urb");
+=======
+		usb_dbg(usbatm_instance, "cxacru_bind: no memory for snd_urb\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto fail;
 	}
 
 	if (!cmd_ep) {
+<<<<<<< HEAD
 		dbg("cxacru_bind: no command endpoint");
+=======
+		usb_dbg(usbatm_instance, "cxacru_bind: no command endpoint\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		goto fail;
 	}
@@ -1228,10 +1289,17 @@ static void cxacru_unbind(struct usbatm_data *usbatm_instance,
 	struct cxacru_data *instance = usbatm_instance->driver_data;
 	int is_polling = 1;
 
+<<<<<<< HEAD
 	dbg("cxacru_unbind entered");
 
 	if (!instance) {
 		dbg("cxacru_unbind: NULL instance!");
+=======
+	usb_dbg(usbatm_instance, "cxacru_unbind entered\n");
+
+	if (!instance) {
+		usb_dbg(usbatm_instance, "cxacru_unbind: NULL instance!\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -1374,6 +1442,7 @@ static struct usb_driver cxacru_usb_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init cxacru_init(void)
 {
 	return usb_register(&cxacru_usb_driver);
@@ -1389,6 +1458,9 @@ module_exit(cxacru_cleanup);
 =======
 module_usb_driver(cxacru_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(cxacru_usb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

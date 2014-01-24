@@ -29,6 +29,7 @@
 /* CPLD's interrupt controller is connected to PCM-027 GPIO 9 */
 #define PCM990_CTRL_INT_IRQ_GPIO	9
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PCM990_CTRL_INT_IRQ		IRQ_GPIO(PCM990_CTRL_INT_IRQ_GPIO)
 =======
 #define PCM990_CTRL_INT_IRQ		PXA_GPIO_TO_IRQ(PCM990_CTRL_INT_IRQ_GPIO)
@@ -44,6 +45,15 @@
 =======
 #define PCM990_CTRL_PWR_IRQ		PXA_GPIO_TO_IRQ(PCM990_CTRL_PWR_IRQ_GPIO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCM990_CTRL_INT_IRQ		PXA_GPIO_TO_IRQ(PCM990_CTRL_INT_IRQ_GPIO)
+#define PCM990_CTRL_INT_IRQ_EDGE	IRQ_TYPE_EDGE_RISING
+#define PCM990_CTRL_PHYS		PXA_CS1_PHYS	/* 16-Bit */
+#define PCM990_CTRL_SIZE		(1*1024*1024)
+
+#define PCM990_CTRL_PWR_IRQ_GPIO	14
+#define PCM990_CTRL_PWR_IRQ		PXA_GPIO_TO_IRQ(PCM990_CTRL_PWR_IRQ_GPIO)
+>>>>>>> refs/remotes/origin/master
 #define PCM990_CTRL_PWR_IRQ_EDGE	IRQ_TYPE_EDGE_RISING
 
 /* visible CPLD (U7) registers */
@@ -77,13 +87,21 @@
 #define PCM990_CTRL_MMC2DE	0x0004	/* R MMC2 Card detect */
 #define PCM990_CTRL_MMC2WP	0x0008	/* R MMC2 Card write protect */
 
+<<<<<<< HEAD
 #define PCM990_CTRL_REG6	0x000C	/* Interrupt Clear REGISTER */
+=======
+#define PCM990_CTRL_INTSETCLR	0x000C	/* Interrupt Clear REGISTER */
+>>>>>>> refs/remotes/origin/master
 #define PCM990_CTRL_INTC0	0x0001	/* Clear Reg BT Detect */
 #define PCM990_CTRL_INTC1	0x0002	/* Clear Reg FR RI */
 #define PCM990_CTRL_INTC2	0x0004	/* Clear Reg MMC1 Detect */
 #define PCM990_CTRL_INTC3	0x0008	/* Clear Reg PM_5V off */
 
+<<<<<<< HEAD
 #define PCM990_CTRL_REG7	0x000E	/* Interrupt Enable REGISTER */
+=======
+#define PCM990_CTRL_INTMSKENA	0x000E	/* Interrupt Enable REGISTER */
+>>>>>>> refs/remotes/origin/master
 #define PCM990_CTRL_ENAINT0	0x0001	/* Enable Int BT Detect */
 #define PCM990_CTRL_ENAINT1	0x0002	/* Enable Int FR RI */
 #define PCM990_CTRL_ENAINT2	0x0004	/* Enable Int MMC1 Detect */
@@ -110,6 +128,7 @@
 #define PCM990_CTRL_ACPRES	0x0004	/* DC Present */
 #define PCM990_CTRL_ACALARM	0x0008	/* Error Akku */
 
+<<<<<<< HEAD
 #define PCM990_CTRL_P2V(x)	((x) - PCM990_CTRL_PHYS + PCM990_CTRL_BASE)
 #define PCM990_CTRL_V2P(x)	((x) - PCM990_CTRL_BASE + PCM990_CTRL_PHYS)
 
@@ -136,15 +155,21 @@
 #define PCM990_CTRL11	__PCM990_CTRL_REG(PCM990_CTRL_PHYS + PCM990_CTRL_REG11)
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IDE
  */
 #define PCM990_IDE_IRQ_GPIO	13
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PCM990_IDE_IRQ		IRQ_GPIO(PCM990_IDE_IRQ_GPIO)
 =======
 #define PCM990_IDE_IRQ		PXA_GPIO_TO_IRQ(PCM990_IDE_IRQ_GPIO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCM990_IDE_IRQ		PXA_GPIO_TO_IRQ(PCM990_IDE_IRQ_GPIO)
+>>>>>>> refs/remotes/origin/master
 #define PCM990_IDE_IRQ_EDGE	IRQ_TYPE_EDGE_RISING
 #define PCM990_IDE_PLD_PHYS	0x20000000	/* 16 bit wide */
 #define PCM990_IDE_PLD_BASE	0xee000000
@@ -178,6 +203,7 @@
 #define PCM990_IDE_PLD_P2V(x) ((x) - PCM990_IDE_PLD_PHYS + PCM990_IDE_PLD_BASE)
 #define PCM990_IDE_PLD_V2P(x) ((x) - PCM990_IDE_PLD_BASE + PCM990_IDE_PLD_PHYS)
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 # define  __PCM990_IDE_PLD_REG(x) \
 	(*((volatile unsigned char *)PCM990_IDE_PLD_P2V(x)))
@@ -196,10 +222,13 @@
 #define PCM990_IDE4 \
 	__PCM990_IDE_PLD_REG(PCM990_IDE_PLD_PHYS + PCM990_IDE_PLD_REG4)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Compact Flash
  */
 #define PCM990_CF_IRQ_GPIO	11
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define PCM990_CF_IRQ		IRQ_GPIO(PCM990_CF_IRQ_GPIO)
 #define PCM990_CF_IRQ_EDGE	IRQ_TYPE_EDGE_RISING
@@ -207,11 +236,14 @@
 #define PCM990_CF_CD_GPIO	12
 #define PCM990_CF_CD		IRQ_GPIO(PCM990_CF_CD_GPIO)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCM990_CF_IRQ		PXA_GPIO_TO_IRQ(PCM990_CF_IRQ_GPIO)
 #define PCM990_CF_IRQ_EDGE	IRQ_TYPE_EDGE_RISING
 
 #define PCM990_CF_CD_GPIO	12
 #define PCM990_CF_CD		PXA_GPIO_TO_IRQ(PCM990_CF_CD_GPIO)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define PCM990_CF_CD_EDGE	IRQ_TYPE_EDGE_RISING
 
@@ -220,6 +252,11 @@
 #define PCM990_CF_PLD_SIZE	(1*1024*1024)
 #define PCM990_CF_PLD_P2V(x)	((x) - PCM990_CF_PLD_PHYS + PCM990_CF_PLD_BASE)
 #define PCM990_CF_PLD_V2P(x)	((x) - PCM990_CF_PLD_BASE + PCM990_CF_PLD_PHYS)
+=======
+#define PCM990_CF_CD_EDGE	IRQ_TYPE_EDGE_RISING
+
+#define PCM990_CF_PLD_PHYS	0x30000000	/* 16 bit wide */
+>>>>>>> refs/remotes/origin/master
 
 /* visible CPLD (U6) registers */
 #define PCM990_CF_PLD_REG0	0x1000	/* OFFSET CF REGISTER 0 */
@@ -259,6 +296,7 @@
 #define PCM990_CF_REG6_CD1	0x0001	/* R CF Card_Detect1 */
 #define PCM990_CF_REG6_CD2	0x0002	/* R CF Card_Detect2 */
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 #  define  __PCM990_CF_PLD_REG(x) \
 	(*((volatile unsigned char *)PCM990_CF_PLD_P2V(x)))
@@ -274,15 +312,21 @@
 #define PCM990_CF5 __PCM990_CF_PLD_REG(PCM990_CF_PLD_PHYS + PCM990_CF_PLD_REG5)
 #define PCM990_CF6 __PCM990_CF_PLD_REG(PCM990_CF_PLD_PHYS + PCM990_CF_PLD_REG6)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Wolfson AC97 Touch
  */
 #define PCM990_AC97_IRQ_GPIO	10
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PCM990_AC97_IRQ		IRQ_GPIO(PCM990_AC97_IRQ_GPIO)
 =======
 #define PCM990_AC97_IRQ		PXA_GPIO_TO_IRQ(PCM990_AC97_IRQ_GPIO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCM990_AC97_IRQ		PXA_GPIO_TO_IRQ(PCM990_AC97_IRQ_GPIO)
+>>>>>>> refs/remotes/origin/master
 #define PCM990_AC97_IRQ_EDGE	IRQ_TYPE_EDGE_RISING
 
 /*
@@ -290,10 +334,14 @@
  */
 #define PCM990_MMC0_IRQ_GPIO	9
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PCM990_MMC0_IRQ		IRQ_GPIO(PCM990_MMC0_IRQ_GPIO)
 =======
 #define PCM990_MMC0_IRQ		PXA_GPIO_TO_IRQ(PCM990_MMC0_IRQ_GPIO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCM990_MMC0_IRQ		PXA_GPIO_TO_IRQ(PCM990_MMC0_IRQ_GPIO)
+>>>>>>> refs/remotes/origin/master
 #define PCM990_MMC0_IRQ_EDGE	IRQ_TYPE_EDGE_FALLING
 
 /*

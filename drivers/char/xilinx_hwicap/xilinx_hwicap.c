@@ -90,9 +90,12 @@
 #include <asm/io.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OF
 /* For open firmware. */
@@ -171,6 +174,10 @@ static const struct config_registers v4_config_registers = {
 	.BOOTSTS = UNIMPLEMENTED,
 	.CTL_1 = UNIMPLEMENTED,
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 static const struct config_registers v5_config_registers = {
 	.CRC = 0,
 	.FAR = 1,
@@ -196,6 +203,34 @@ static const struct config_registers v5_config_registers = {
 	.CTL_1 = 19,
 };
 
+<<<<<<< HEAD
+=======
+static const struct config_registers v6_config_registers = {
+	.CRC = 0,
+	.FAR = 1,
+	.FDRI = 2,
+	.FDRO = 3,
+	.CMD = 4,
+	.CTL = 5,
+	.MASK = 6,
+	.STAT = 7,
+	.LOUT = 8,
+	.COR = 9,
+	.MFWR = 10,
+	.FLR = UNIMPLEMENTED,
+	.KEY = UNIMPLEMENTED,
+	.CBC = 11,
+	.IDCODE = 12,
+	.AXSS = 13,
+	.C0R_1 = 14,
+	.CSOB = 15,
+	.WBSTAR = 16,
+	.TIMER = 17,
+	.BOOTSTS = 22,
+	.CTL_1 = 24,
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * hwicap_command_desync - Send a DESYNC command to the ICAP port.
  * @drvdata: a pointer to the drvdata.
@@ -573,7 +608,11 @@ static const struct file_operations hwicap_fops = {
 	.llseek = noop_llseek,
 };
 
+<<<<<<< HEAD
 static int __devinit hwicap_setup(struct device *dev, int id,
+=======
+static int hwicap_setup(struct device *dev, int id,
+>>>>>>> refs/remotes/origin/master
 		const struct resource *regs_res,
 		const struct hwicap_driver_config *config,
 		const struct config_registers *config_regs)
@@ -625,10 +664,14 @@ static int __devinit hwicap_setup(struct device *dev, int id,
 	drvdata->mem_start = regs_res->start;
 	drvdata->mem_end = regs_res->end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drvdata->mem_size = regs_res->end - regs_res->start + 1;
 =======
 	drvdata->mem_size = resource_size(regs_res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drvdata->mem_size = resource_size(regs_res);
+>>>>>>> refs/remotes/origin/master
 
 	if (!request_mem_region(drvdata->mem_start,
 					drvdata->mem_size, DRIVER_NAME)) {
@@ -699,11 +742,19 @@ static struct hwicap_driver_config fifo_icap_config = {
 	.reset = fifo_icap_reset,
 };
 
+<<<<<<< HEAD
 static int __devexit hwicap_remove(struct device *dev)
 {
 	struct hwicap_drvdata *drvdata;
 
 	drvdata = (struct hwicap_drvdata *)dev_get_drvdata(dev);
+=======
+static int hwicap_remove(struct device *dev)
+{
+	struct hwicap_drvdata *drvdata;
+
+	drvdata = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (!drvdata)
 		return 0;
@@ -713,7 +764,10 @@ static int __devexit hwicap_remove(struct device *dev)
 	iounmap(drvdata->base_address);
 	release_mem_region(drvdata->mem_start, drvdata->mem_size);
 	kfree(drvdata);
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&icap_sem);
 	probed_devices[MINOR(dev->devt)-XHWICAP_MINOR] = 0;
@@ -722,7 +776,11 @@ static int __devexit hwicap_remove(struct device *dev)
 }
 
 #ifdef CONFIG_OF
+<<<<<<< HEAD
 static int __devinit hwicap_of_probe(struct platform_device *op,
+=======
+static int hwicap_of_probe(struct platform_device *op,
+>>>>>>> refs/remotes/origin/master
 				     const struct hwicap_driver_config *config)
 {
 	struct resource res;
@@ -752,6 +810,11 @@ static int __devinit hwicap_of_probe(struct platform_device *op,
 			regs = &v4_config_registers;
 		} else if (!strcmp(family, "virtex5")) {
 			regs = &v5_config_registers;
+<<<<<<< HEAD
+=======
+		} else if (!strcmp(family, "virtex6")) {
+			regs = &v6_config_registers;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return hwicap_setup(&op->dev, id ? *id : -1, &res, config,
@@ -765,8 +828,13 @@ static inline int hwicap_of_probe(struct platform_device *op,
 }
 #endif /* CONFIG_OF */
 
+<<<<<<< HEAD
 static const struct of_device_id __devinitconst hwicap_of_match[];
 static int __devinit hwicap_drv_probe(struct platform_device *pdev)
+=======
+static const struct of_device_id hwicap_of_match[];
+static int hwicap_drv_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *match;
 	struct resource *res;
@@ -793,6 +861,11 @@ static int __devinit hwicap_drv_probe(struct platform_device *pdev)
 			regs = &v4_config_registers;
 		} else if (!strcmp(family, "virtex5")) {
 			regs = &v5_config_registers;
+<<<<<<< HEAD
+=======
+		} else if (!strcmp(family, "virtex6")) {
+			regs = &v6_config_registers;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -800,14 +873,22 @@ static int __devinit hwicap_drv_probe(struct platform_device *pdev)
 			&buffer_icap_config, regs);
 }
 
+<<<<<<< HEAD
 static int __devexit hwicap_drv_remove(struct platform_device *pdev)
+=======
+static int hwicap_drv_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return hwicap_remove(&pdev->dev);
 }
 
 #ifdef CONFIG_OF
 /* Match table for device tree binding */
+<<<<<<< HEAD
 static const struct of_device_id __devinitconst hwicap_of_match[] = {
+=======
+static const struct of_device_id hwicap_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "xlnx,opb-hwicap-1.00.b", .data = &buffer_icap_config},
 	{ .compatible = "xlnx,xps-hwicap-1.00.a", .data = &fifo_icap_config},
 	{},

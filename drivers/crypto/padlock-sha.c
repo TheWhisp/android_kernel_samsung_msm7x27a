@@ -23,9 +23,13 @@
 #include <linux/kernel.h>
 #include <linux/scatterlist.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cpu_device_id.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/i387.h>
 
 struct padlock_sha_desc {
@@ -531,14 +535,20 @@ static struct shash_alg sha256_alg_nano = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct x86_cpu_id padlock_sha_ids[] = {
 	X86_FEATURE_MATCH(X86_FEATURE_PHE),
 	{}
 };
 MODULE_DEVICE_TABLE(x86cpu, padlock_sha_ids);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init padlock_init(void)
 {
 	int rc = -ENODEV;
@@ -546,6 +556,7 @@ static int __init padlock_init(void)
 	struct shash_alg *sha1;
 	struct shash_alg *sha256;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!cpu_has_phe) {
 		printk(KERN_NOTICE PFX "VIA PadLock Hash Engine not detected.\n");
@@ -560,6 +571,10 @@ static int __init padlock_init(void)
 	if (!x86_match_cpu(padlock_sha_ids) || !cpu_has_phe_enabled)
 		return -ENODEV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(padlock_sha_ids) || !cpu_has_phe_enabled)
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	/* Register the newly added algorithm module if on *
 	* VIA Nano processor, or else just do as before */

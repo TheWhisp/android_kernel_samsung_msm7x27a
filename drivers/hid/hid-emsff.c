@@ -23,6 +23,7 @@
 
 #include <linux/hid.h>
 #include <linux/input.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 <<<<<<< HEAD
 =======
@@ -31,6 +32,11 @@
 
 #include "hid-ids.h"
 #include "usbhid/usbhid.h"
+=======
+#include <linux/module.h>
+
+#include "hid-ids.h"
+>>>>>>> refs/remotes/origin/master
 
 struct emsff_device {
 	struct hid_report *report;
@@ -55,7 +61,11 @@ static int emsff_play(struct input_dev *dev, void *data,
 	emsff->report->field[0]->value[2] = strong;
 
 	dbg_hid("running with 0x%02x 0x%02x\n", strong, weak);
+<<<<<<< HEAD
 	usbhid_submit_report(hid, emsff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, emsff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -107,7 +117,11 @@ static int emsff_init(struct hid_device *hid)
 	emsff->report->field[0]->value[4] = 0x00;
 	emsff->report->field[0]->value[5] = 0x00;
 	emsff->report->field[0]->value[6] = 0x00;
+<<<<<<< HEAD
 	usbhid_submit_report(hid, emsff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, emsff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	hid_info(hid, "force feedback for EMS based devices by Ignaz Forster <ignaz.forster@gmx.de>\n");
 
@@ -131,15 +145,21 @@ static int ems_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	emsff_init(hdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = emsff_init(hdev);
 	if (ret) {
 		dev_err(&hdev->dev, "force feedback init failed\n");
 		hid_hw_stop(hdev);
 		goto err;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 err:
@@ -148,10 +168,14 @@ err:
 
 static const struct hid_device_id ems_devices[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ HID_USB_DEVICE(USB_VENDOR_ID_EMS, 0x118) },
 =======
 	{ HID_USB_DEVICE(USB_VENDOR_ID_EMS, USB_DEVICE_ID_EMS_TRIO_LINKER_PLUS_II) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_EMS, USB_DEVICE_ID_EMS_TRIO_LINKER_PLUS_II) },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(hid, ems_devices);
@@ -161,6 +185,7 @@ static struct hid_driver ems_driver = {
 	.id_table = ems_devices,
 	.probe = ems_probe,
 };
+<<<<<<< HEAD
 
 static int ems_init(void)
 {
@@ -174,5 +199,9 @@ static void ems_exit(void)
 
 module_init(ems_init);
 module_exit(ems_exit);
+=======
+module_hid_driver(ems_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 

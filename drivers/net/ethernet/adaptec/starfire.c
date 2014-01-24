@@ -114,6 +114,7 @@ static int rx_copybreak /* = 0 */;
 #define DMA_BURST_SIZE 128
 #endif
 
+<<<<<<< HEAD
 /* Used to pass the media type, etc.
    Both 'options[]' and 'full_duplex[]' exist for driver interoperability.
    The media type is usually passed in 'options[]'.
@@ -123,6 +124,8 @@ static int rx_copybreak /* = 0 */;
 static int options[MAX_UNITS] = {0, };
 static int full_duplex[MAX_UNITS] = {0, };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Operational parameters that are set at compile time. */
 
 /* The "native" ring sizes are either 256 or 2048.
@@ -175,7 +178,11 @@ static int full_duplex[MAX_UNITS] = {0, };
 #define FIRMWARE_TX	"adaptec/starfire_tx.bin"
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 KERN_INFO "starfire.c:v1.03 7/26/2000  Written by Donald Becker <becker@scyld.com>\n"
 " (unofficial 2.2/2.4 kernel port, version " DRV_VERSION ", " DRV_RELDATE ")\n";
 
@@ -192,8 +199,11 @@ module_param(debug, int, 0);
 module_param(rx_copybreak, int, 0);
 module_param(intr_latency, int, 0);
 module_param(small_frames, int, 0);
+<<<<<<< HEAD
 module_param_array(options, int, NULL, 0);
 module_param_array(full_duplex, int, NULL, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(enable_hw_cksum, int, 0);
 MODULE_PARM_DESC(max_interrupt_work, "Maximum events handled per interrupt");
 MODULE_PARM_DESC(mtu, "MTU (all boards)");
@@ -201,8 +211,11 @@ MODULE_PARM_DESC(debug, "Debug level (0-6)");
 MODULE_PARM_DESC(rx_copybreak, "Copy breakpoint for copy-only-tiny-frames");
 MODULE_PARM_DESC(intr_latency, "Maximum interrupt latency, in microseconds");
 MODULE_PARM_DESC(small_frames, "Maximum size of receive frames that bypass interrupt latency (0,64,128,256,512)");
+<<<<<<< HEAD
 MODULE_PARM_DESC(options, "Deprecated: Bits 0-3: media type, bit 17: full duplex");
 MODULE_PARM_DESC(full_duplex, "Deprecated: Forced full-duplex setting (0/1)");
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(enable_hw_cksum, "Enable/disable hardware cksum support (0/1)");
 
 /*
@@ -308,7 +321,11 @@ MODULE_DEVICE_TABLE(pci, starfire_pci_tbl);
 static const struct chip_info {
 	const char *name;
 	int drv_flags;
+<<<<<<< HEAD
 } netdrv_tbl[] __devinitdata = {
+=======
+} netdrv_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "Adaptec Starfire 6915", CanHaveMII },
 };
 
@@ -607,7 +624,12 @@ static const struct ethtool_ops ethtool_ops;
 
 
 #ifdef VLAN_SUPPORT
+<<<<<<< HEAD
 static int netdev_vlan_rx_add_vid(struct net_device *dev, unsigned short vid)
+=======
+static int netdev_vlan_rx_add_vid(struct net_device *dev,
+				  __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netdev_private *np = netdev_priv(dev);
 
@@ -621,7 +643,12 @@ static int netdev_vlan_rx_add_vid(struct net_device *dev, unsigned short vid)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int netdev_vlan_rx_kill_vid(struct net_device *dev, unsigned short vid)
+=======
+static int netdev_vlan_rx_kill_vid(struct net_device *dev,
+				   __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netdev_private *np = netdev_priv(dev);
 
@@ -654,6 +681,7 @@ static const struct net_device_ops netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit starfire_init_one(struct pci_dev *pdev,
 				       const struct pci_device_id *ent)
 {
@@ -661,6 +689,15 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 	int i, irq, option, chip_idx = ent->driver_data;
 	struct net_device *dev;
 	static int card_idx = -1;
+=======
+static int starfire_init_one(struct pci_dev *pdev,
+			     const struct pci_device_id *ent)
+{
+	struct device *d = &pdev->dev;
+	struct netdev_private *np;
+	int i, irq, chip_idx = ent->driver_data;
+	struct net_device *dev;
+>>>>>>> refs/remotes/origin/master
 	long ioaddr;
 	void __iomem *base;
 	int drv_flags, io_size;
@@ -673,15 +710,22 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 		printk(version);
 #endif
 
+<<<<<<< HEAD
 	card_idx++;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pci_enable_device (pdev))
 		return -EIO;
 
 	ioaddr = pci_resource_start(pdev, 0);
 	io_size = pci_resource_len(pdev, 0);
 	if (!ioaddr || ((pci_resource_flags(pdev, 0) & IORESOURCE_MEM) == 0)) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRV_NAME " %d: no PCI MEM resources, aborting\n", card_idx);
+=======
+		dev_err(d, "no PCI MEM resources, aborting\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -694,14 +738,23 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 	irq = pdev->irq;
 
 	if (pci_request_regions (pdev, DRV_NAME)) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRV_NAME " %d: cannot reserve PCI resources, aborting\n", card_idx);
+=======
+		dev_err(d, "cannot reserve PCI resources, aborting\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out_free_netdev;
 	}
 
 	base = ioremap(ioaddr, io_size);
 	if (!base) {
+<<<<<<< HEAD
 		printk(KERN_ERR DRV_NAME " %d: cannot remap %#x @ %#lx, aborting\n",
 			card_idx, io_size, ioaddr);
+=======
+		dev_err(d, "cannot remap %#x @ %#lx, aborting\n",
+			io_size, ioaddr);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_free_res;
 	}
 
@@ -717,7 +770,11 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 #endif /* ZEROCOPY */
 
 #ifdef VLAN_SUPPORT
+<<<<<<< HEAD
 	dev->features |= NETIF_F_HW_VLAN_RX | NETIF_F_HW_VLAN_FILTER;
+=======
+	dev->features |= NETIF_F_HW_VLAN_CTAG_RX | NETIF_F_HW_VLAN_CTAG_FILTER;
+>>>>>>> refs/remotes/origin/master
 #endif /* VLAN_RX_KILL_VID */
 #ifdef ADDR_64BITS
 	dev->features |= NETIF_F_HIGHDMA;
@@ -753,9 +810,12 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 	/* wait a little longer */
 	udelay(1000);
 
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long)base;
 	dev->irq = irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	np = netdev_priv(dev);
 	np->dev = dev;
 	np->base = base;
@@ -772,6 +832,7 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 
 	drv_flags = netdrv_tbl[chip_idx].drv_flags;
 
+<<<<<<< HEAD
 	option = card_idx < MAX_UNITS ? options[card_idx] : 0;
 	if (dev->mem_start)
 		option = dev->mem_start;
@@ -787,6 +848,8 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 		np->mii_if.force_media = 1;
 	else
 		np->mii_if.force_media = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	np->speed100 = 1;
 
 	/* timer resolution is 128 * 0.8us */
@@ -866,7 +929,10 @@ static int __devinit starfire_init_one(struct pci_dev *pdev,
 	return 0;
 
 err_out_cleardev:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(base);
 err_out_free_res:
 	pci_release_regions (pdev);
@@ -909,13 +975,21 @@ static int netdev_open(struct net_device *dev)
 	const __be32 *fw_rx_data, *fw_tx_data;
 	struct netdev_private *np = netdev_priv(dev);
 	void __iomem *ioaddr = np->base;
+<<<<<<< HEAD
+=======
+	const int irq = np->pci_dev->irq;
+>>>>>>> refs/remotes/origin/master
 	int i, retval;
 	size_t tx_size, rx_size;
 	size_t tx_done_q_size, rx_done_q_size, tx_ring_size, rx_ring_size;
 
 	/* Do we ever need to reset the chip??? */
 
+<<<<<<< HEAD
 	retval = request_irq(dev->irq, intr_handler, IRQF_SHARED, dev->name, dev);
+=======
+	retval = request_irq(irq, intr_handler, IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -924,7 +998,11 @@ static int netdev_open(struct net_device *dev)
 	writel(1, ioaddr + PCIDeviceConfig);
 	if (debug > 1)
 		printk(KERN_DEBUG "%s: netdev_open() irq %d.\n",
+<<<<<<< HEAD
 		       dev->name, dev->irq);
+=======
+		       dev->name, irq);
+>>>>>>> refs/remotes/origin/master
 
 	/* Allocate the various queues. */
 	if (!np->queue_mem) {
@@ -935,7 +1013,11 @@ static int netdev_open(struct net_device *dev)
 		np->queue_mem_size = tx_done_q_size + rx_done_q_size + tx_ring_size + rx_ring_size;
 		np->queue_mem = pci_alloc_consistent(np->pci_dev, np->queue_mem_size, &np->queue_mem_dma);
 		if (np->queue_mem == NULL) {
+<<<<<<< HEAD
 			free_irq(dev->irq, dev);
+=======
+			free_irq(irq, dev);
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 
@@ -1528,7 +1610,11 @@ static int __netdev_rx(struct net_device *dev, int *quota)
 				printk(KERN_DEBUG "  netdev_rx() vlanid = %d\n",
 				       vlid);
 			}
+<<<<<<< HEAD
 			__vlan_hwaccel_put_tag(skb, vlid);
+=======
+			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlid);
+>>>>>>> refs/remotes/origin/master
 		}
 #endif /* VLAN_SUPPORT */
 		netif_receive_skb(skb);
@@ -1962,7 +2048,11 @@ static int netdev_close(struct net_device *dev)
 		}
 	}
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(np->pci_dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Free all the skbuffs in the Rx queue. */
 	for (i = 0; i < RX_RING_SIZE; i++) {
@@ -2022,7 +2112,11 @@ static int starfire_resume(struct pci_dev *pdev)
 #endif /* CONFIG_PM */
 
 
+<<<<<<< HEAD
 static void __devexit starfire_remove_one (struct pci_dev *pdev)
+=======
+static void starfire_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct netdev_private *np = netdev_priv(dev);
@@ -2042,7 +2136,10 @@ static void __devexit starfire_remove_one (struct pci_dev *pdev)
 	iounmap(np->base);
 	pci_release_regions(pdev);
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);			/* Will also free np!! */
 }
 
@@ -2050,7 +2147,11 @@ static void __devexit starfire_remove_one (struct pci_dev *pdev)
 static struct pci_driver starfire_driver = {
 	.name		= DRV_NAME,
 	.probe		= starfire_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(starfire_remove_one),
+=======
+	.remove		= starfire_remove_one,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= starfire_suspend,
 	.resume		= starfire_resume,

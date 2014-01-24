@@ -62,11 +62,14 @@
 #define I810_PTE_LOCAL		0x00000002
 #define I810_PTE_VALID		0x00000001
 #define I830_PTE_SYSTEM_CACHED  0x00000006
+<<<<<<< HEAD
 /* GT PTE cache control fields */
 #define GEN6_PTE_UNCACHED	0x00000002
 #define GEN6_PTE_LLC		0x00000004
 #define GEN6_PTE_LLC_MLC	0x00000006
 #define GEN6_PTE_GFDT		0x00000008
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define I810_SMRAM_MISCC	0x70
 #define I810_GFX_MEM_WIN_SIZE	0x00010000
@@ -146,6 +149,7 @@
 #define INTEL_I7505_AGPCTRL	0x70
 #define INTEL_I7505_MCHCFG	0x50
 
+<<<<<<< HEAD
 #define SNB_GMCH_CTRL	0x50
 #define SNB_GMCH_GMS_STOLEN_MASK	0xF8
 #define SNB_GMCH_GMS_STOLEN_32M		(1 << 3)
@@ -169,6 +173,8 @@
 #define SNB_GTT_SIZE_2M			(2 << 8)
 #define SNB_GTT_SIZE_MASK		(3 << 8)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* pci devices ids */
 #define PCI_DEVICE_ID_INTEL_E7221_HB	0x2588
 #define PCI_DEVICE_ID_INTEL_E7221_IG	0x258a
@@ -217,6 +223,7 @@
 #define PCI_DEVICE_ID_INTEL_IRONLAKE_MA_HB	    0x0062
 #define PCI_DEVICE_ID_INTEL_IRONLAKE_MC2_HB    0x006a
 #define PCI_DEVICE_ID_INTEL_IRONLAKE_M_IG	    0x0046
+<<<<<<< HEAD
 #define PCI_DEVICE_ID_INTEL_SANDYBRIDGE_HB		0x0100  /* Desktop */
 #define PCI_DEVICE_ID_INTEL_SANDYBRIDGE_GT1_IG		0x0102
 #define PCI_DEVICE_ID_INTEL_SANDYBRIDGE_GT2_IG		0x0112
@@ -243,4 +250,7 @@
 int intel_gmch_probe(struct pci_dev *pdev,
 			       struct agp_bridge_data *bridge);
 void intel_gmch_remove(struct pci_dev *pdev);
+=======
+
+>>>>>>> refs/remotes/origin/master
 #endif

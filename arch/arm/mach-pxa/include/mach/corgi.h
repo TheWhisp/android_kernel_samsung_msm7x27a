@@ -35,10 +35,14 @@
 #define CORGI_GPIO_MAX1111_CS		(20) /* MAX1111 Chip Select */
 #define CORGI_GPIO_ADC_TEMP_ON		(21) /* Select battery voltage or temperature */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CORGI_GPIO_IR_ON			(22) /* Enable IR Transciever */
 =======
 #define CORGI_GPIO_IR_ON			(22) /* Enable IR Transceiver */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CORGI_GPIO_IR_ON			(22) /* Enable IR Transceiver */
+>>>>>>> refs/remotes/origin/master
 #define CORGI_GPIO_ADS7846_CS		(24) /* ADS7846 Chip Select */
 #define CORGI_GPIO_SD_PWR			(33) /* MMC/SD Power */
 #define CORGI_GPIO_CHRG_ON			(38) /* Enable battery Charging */
@@ -71,6 +75,7 @@
  * Corgi Interrupts
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CORGI_IRQ_GPIO_KEY_INT		IRQ_GPIO(0)
 #define CORGI_IRQ_GPIO_AC_IN		IRQ_GPIO(1)
 #define CORGI_IRQ_GPIO_WAKEUP		IRQ_GPIO(3)
@@ -84,6 +89,8 @@
 #define CORGI_IRQ_GPIO_CF_IRQ		IRQ_GPIO(17)
 #define CORGI_IRQ_GPIO_KEY_SENSE(a)	IRQ_GPIO(58+(a))	/* Keyboard Sense lines */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CORGI_IRQ_GPIO_KEY_INT		PXA_GPIO_TO_IRQ(0)
 #define CORGI_IRQ_GPIO_AC_IN		PXA_GPIO_TO_IRQ(1)
 #define CORGI_IRQ_GPIO_WAKEUP		PXA_GPIO_TO_IRQ(3)
@@ -96,7 +103,10 @@
 #define CORGI_IRQ_GPIO_CHRG_FULL	PXA_GPIO_TO_IRQ(16)	/* Battery fully charged */
 #define CORGI_IRQ_GPIO_CF_IRQ		PXA_GPIO_TO_IRQ(17)
 #define CORGI_IRQ_GPIO_KEY_SENSE(a)	PXA_GPIO_TO_IRQ(58+(a))	/* Keyboard Sense lines */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -118,10 +128,14 @@
 #define CORGI_SCOOP_IO_OUT	( CORGI_SCP_MUTE_L | CORGI_SCP_MUTE_R )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CORGI_SCOOP_GPIO_BASE		(NR_BUILTIN_GPIO)
 =======
 #define CORGI_SCOOP_GPIO_BASE		(PXA_NR_BUILTIN_GPIO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CORGI_SCOOP_GPIO_BASE		(PXA_NR_BUILTIN_GPIO)
+>>>>>>> refs/remotes/origin/master
 #define CORGI_GPIO_LED_GREEN		(CORGI_SCOOP_GPIO_BASE + 0)
 #define CORGI_GPIO_SWA			(CORGI_SCOOP_GPIO_BASE + 1)  /* Hinge Switch A */
 #define CORGI_GPIO_SWB			(CORGI_SCOOP_GPIO_BASE + 2)  /* Hinge Switch B */

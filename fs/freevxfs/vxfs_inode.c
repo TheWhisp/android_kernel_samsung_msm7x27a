@@ -188,16 +188,22 @@ vxfs_stiget(struct super_block *sbp, ino_t ino)
  *  VxFS inode structure.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __inline__ mode_t
 vxfs_transmod(struct vxfs_inode_info *vip)
 {
 	mode_t			ret = vip->vii_mode & ~VXFS_TYPE_MASK;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static __inline__ umode_t
 vxfs_transmod(struct vxfs_inode_info *vip)
 {
 	umode_t			ret = vip->vii_mode & ~VXFS_TYPE_MASK;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (VXFS_ISFIFO(vip))
 		ret |= S_IFIFO;
@@ -231,6 +237,7 @@ vxfs_iinit(struct inode *ip, struct vxfs_inode_info *vip)
 {
 
 	ip->i_mode = vxfs_transmod(vip);
+<<<<<<< HEAD
 	ip->i_uid = (uid_t)vip->vii_uid;
 	ip->i_gid = (gid_t)vip->vii_gid;
 
@@ -239,6 +246,12 @@ vxfs_iinit(struct inode *ip, struct vxfs_inode_info *vip)
 =======
 	set_nlink(ip, vip->vii_nlink);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i_uid_write(ip, (uid_t)vip->vii_uid);
+	i_gid_write(ip, (gid_t)vip->vii_gid);
+
+	set_nlink(ip, vip->vii_nlink);
+>>>>>>> refs/remotes/origin/master
 	ip->i_size = vip->vii_size;
 
 	ip->i_atime.tv_sec = vip->vii_atime;
@@ -352,9 +365,12 @@ static void vxfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(vxfs_inode_cachep, inode->i_private);
 }
 
@@ -370,6 +386,10 @@ void
 vxfs_evict_inode(struct inode *ip)
 {
 	truncate_inode_pages(&ip->i_data, 0);
+<<<<<<< HEAD
 	end_writeback(ip);
+=======
+	clear_inode(ip);
+>>>>>>> refs/remotes/origin/master
 	call_rcu(&ip->i_rcu, vxfs_i_callback);
 }

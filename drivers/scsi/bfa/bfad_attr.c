@@ -219,11 +219,17 @@ bfad_im_get_host_speed(struct Scsi_Host *shost)
 		fc_host_speed(shost) = FC_PORTSPEED_10GBIT;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case BFA_PORT_SPEED_16GBPS:
 		fc_host_speed(shost) = FC_PORTSPEED_16GBIT;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case BFA_PORT_SPEED_16GBPS:
+		fc_host_speed(shost) = FC_PORTSPEED_16GBIT;
+		break;
+>>>>>>> refs/remotes/origin/master
 	case BFA_PORT_SPEED_8GBPS:
 		fc_host_speed(shost) = FC_PORTSPEED_8GBIT;
 		break;
@@ -338,6 +344,7 @@ bfad_im_reset_stats(struct Scsi_Host *shost)
 }
 
 /*
+<<<<<<< HEAD
  * FC transport template entry, get rport loss timeout.
  */
 static void
@@ -355,6 +362,12 @@ bfad_im_get_rport_loss_tmo(struct fc_rport *rport)
 
 /*
  * FC transport template entry, set rport loss timeout.
+=======
+ * FC transport template entry, set rport loss timeout.
+ * Update dev_loss_tmo based on the value pushed down by the stack
+ * In case it is lesser than path_tov of driver, set it to path_tov + 1
+ * to ensure that the driver times out before the application
+>>>>>>> refs/remotes/origin/master
  */
 static void
 bfad_im_set_rport_loss_tmo(struct fc_rport *rport, u32 timeout)
@@ -362,6 +375,7 @@ bfad_im_set_rport_loss_tmo(struct fc_rport *rport, u32 timeout)
 	struct bfad_itnim_data_s *itnim_data = rport->dd_data;
 	struct bfad_itnim_s   *itnim = itnim_data->itnim;
 	struct bfad_s         *bfad = itnim->im->bfad;
+<<<<<<< HEAD
 	unsigned long   flags;
 
 	if (timeout > 0) {
@@ -371,6 +385,13 @@ bfad_im_set_rport_loss_tmo(struct fc_rport *rport, u32 timeout)
 		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
 	}
 
+=======
+	uint16_t path_tov = bfa_fcpim_path_tov_get(&bfad->bfa);
+
+	rport->dev_loss_tmo = timeout;
+	if (timeout < path_tov)
+		rport->dev_loss_tmo = path_tov + 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -429,6 +450,26 @@ bfad_im_vport_create(struct fc_vport *fc_vport, bool disable)
 		vshost = vport->drv_port.im_port->shost;
 		fc_host_node_name(vshost) = wwn_to_u64((u8 *)&port_cfg.nwwn);
 		fc_host_port_name(vshost) = wwn_to_u64((u8 *)&port_cfg.pwwn);
+<<<<<<< HEAD
+=======
+		fc_host_supported_classes(vshost) = FC_COS_CLASS3;
+
+		memset(fc_host_supported_fc4s(vshost), 0,
+			sizeof(fc_host_supported_fc4s(vshost)));
+
+		/* For FCP type 0x08 */
+		if (supported_fc4s & BFA_LPORT_ROLE_FCP_IM)
+			fc_host_supported_fc4s(vshost)[2] = 1;
+
+		/* For fibre channel services type 0x20 */
+		fc_host_supported_fc4s(vshost)[7] = 1;
+
+		fc_host_supported_speeds(vshost) =
+				bfad_im_supported_speeds(&bfad->bfa);
+		fc_host_maxframe_size(vshost) =
+				bfa_fcport_get_maxfrsize(&bfad->bfa);
+
+>>>>>>> refs/remotes/origin/master
 		fc_vport->dd_data = vport;
 		vport->drv_port.im_port->fc_vport = fc_vport;
 	} else if (rc == BFA_STATUS_INVALID_WWN)
@@ -446,7 +487,10 @@ bfad_im_vport_create(struct fc_vport *fc_vport, bool disable)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int
 bfad_im_issue_fc_host_lip(struct Scsi_Host *shost)
 {
@@ -484,7 +528,10 @@ bfad_im_issue_fc_host_lip(struct Scsi_Host *shost)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 bfad_im_vport_delete(struct fc_vport *fc_vport)
 {
@@ -501,6 +548,7 @@ bfad_im_vport_delete(struct fc_vport *fc_vport)
 	struct completion fcomp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (im_port->flags & BFAD_PORT_DELETE)
 		goto free_scsi_host;
 =======
@@ -510,6 +558,14 @@ bfad_im_vport_delete(struct fc_vport *fc_vport)
 		return 0;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (im_port->flags & BFAD_PORT_DELETE) {
+		bfad_scsi_host_free(bfad, im_port);
+		list_del(&vport->list_entry);
+		kfree(vport);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	port = im_port->port;
 
@@ -541,6 +597,7 @@ bfad_im_vport_delete(struct fc_vport *fc_vport)
 	wait_for_completion(vport->comp_del);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 free_scsi_host:
 	bfad_scsi_host_free(bfad, im_port);
 
@@ -548,6 +605,10 @@ free_scsi_host:
 	bfad_scsi_host_free(bfad, im_port);
 	list_del(&vport->list_entry);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfad_scsi_host_free(bfad, im_port);
+	list_del(&vport->list_entry);
+>>>>>>> refs/remotes/origin/master
 	kfree(vport);
 
 	return 0;
@@ -586,6 +647,37 @@ bfad_im_vport_disable(struct fc_vport *fc_vport, bool disable)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+void
+bfad_im_vport_set_symbolic_name(struct fc_vport *fc_vport)
+{
+	struct bfad_vport_s *vport = (struct bfad_vport_s *)fc_vport->dd_data;
+	struct bfad_im_port_s *im_port =
+			(struct bfad_im_port_s *)vport->drv_port.im_port;
+	struct bfad_s *bfad = im_port->bfad;
+	struct Scsi_Host *vshost = vport->drv_port.im_port->shost;
+	char *sym_name = fc_vport->symbolic_name;
+	struct bfa_fcs_vport_s *fcs_vport;
+	wwn_t	pwwn;
+	unsigned long flags;
+
+	u64_to_wwn(fc_host_port_name(vshost), (u8 *)&pwwn);
+
+	spin_lock_irqsave(&bfad->bfad_lock, flags);
+	fcs_vport = bfa_fcs_vport_lookup(&bfad->bfa_fcs, 0, pwwn);
+	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+
+	if (fcs_vport == NULL)
+		return;
+
+	spin_lock_irqsave(&bfad->bfad_lock, flags);
+	if (strlen(sym_name) > 0)
+		bfa_fcs_lport_set_symname(&fcs_vport->lport, sym_name);
+	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 struct fc_function_template bfad_im_fc_function_template = {
 
 	/* Target dynamic attributes */
@@ -633,6 +725,7 @@ struct fc_function_template bfad_im_fc_function_template = {
 	.show_rport_maxframe_size = 1,
 	.show_rport_supported_classes = 1,
 	.show_rport_dev_loss_tmo = 1,
+<<<<<<< HEAD
 	.get_rport_dev_loss_tmo = bfad_im_get_rport_loss_tmo,
 	.set_rport_dev_loss_tmo = bfad_im_set_rport_loss_tmo,
 <<<<<<< HEAD
@@ -641,13 +734,22 @@ struct fc_function_template bfad_im_fc_function_template = {
 	.vport_delete = bfad_im_vport_delete,
 	.vport_disable = bfad_im_vport_disable,
 =======
+=======
+	.set_rport_dev_loss_tmo = bfad_im_set_rport_loss_tmo,
+>>>>>>> refs/remotes/origin/master
 	.issue_fc_host_lip = bfad_im_issue_fc_host_lip,
 	.vport_create = bfad_im_vport_create,
 	.vport_delete = bfad_im_vport_delete,
 	.vport_disable = bfad_im_vport_disable,
+<<<<<<< HEAD
 	.bsg_request = bfad_im_bsg_request,
 	.bsg_timeout = bfad_im_bsg_timeout,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_vport_symbolic_name = bfad_im_vport_set_symbolic_name,
+	.bsg_request = bfad_im_bsg_request,
+	.bsg_timeout = bfad_im_bsg_timeout,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct fc_function_template bfad_im_vport_fc_function_template = {
@@ -697,7 +799,10 @@ struct fc_function_template bfad_im_vport_fc_function_template = {
 	.show_rport_maxframe_size = 1,
 	.show_rport_supported_classes = 1,
 	.show_rport_dev_loss_tmo = 1,
+<<<<<<< HEAD
 	.get_rport_dev_loss_tmo = bfad_im_get_rport_loss_tmo,
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_rport_dev_loss_tmo = bfad_im_set_rport_loss_tmo,
 };
 
@@ -743,14 +848,20 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 	char model[BFA_ADAPTER_MODEL_NAME_LEN];
 	char model_descr[BFA_ADAPTER_MODEL_DESCR_LEN];
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	bfa_get_adapter_model(&bfad->bfa, model);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int nports = 0;
 
 	bfa_get_adapter_model(&bfad->bfa, model);
 	nports = bfa_get_nports(&bfad->bfa);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!strcmp(model, "Brocade-425"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 			"Brocade 4Gbps PCIe dual port FC HBA");
@@ -760,16 +871,22 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 	else if (!strcmp(model, "Brocade-42B"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"HP 4Gbps PCIe dual port FC HBA");
 	else if (!strcmp(model, "Brocade-82B"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 			"HP 8Gbps PCIe dual port FC HBA");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			"Brocade 4Gbps PCIe dual port FC HBA for HP");
 	else if (!strcmp(model, "Brocade-82B"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 			"Brocade 8Gbps PCIe dual port FC HBA for HP");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else if (!strcmp(model, "Brocade-1010"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 			"Brocade 10Gbps single port CNA");
@@ -779,10 +896,14 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 	else if (!strcmp(model, "Brocade-1007"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"Brocade 10Gbps CNA");
 =======
 			"Brocade 10Gbps CNA for IBM Blade Center");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"Brocade 10Gbps CNA for IBM Blade Center");
+>>>>>>> refs/remotes/origin/master
 	else if (!strcmp(model, "Brocade-415"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 			"Brocade 4Gbps PCIe single port FC HBA");
@@ -791,6 +912,7 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 			"Brocade 8Gbps PCIe single port FC HBA");
 	else if (!strcmp(model, "Brocade-41B"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			"HP 4Gbps PCIe single port FC HBA");
 	else if (!strcmp(model, "Brocade-81B"))
@@ -804,6 +926,8 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 			"Brocade 10Gbps CNA");
 	else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			"Brocade 4Gbps PCIe single port FC HBA for HP");
 	else if (!strcmp(model, "Brocade-81B"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
@@ -811,6 +935,7 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 	else if (!strcmp(model, "Brocade-804"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 			"Brocade 8Gbps FC HBA for HP Bladesystem C-class");
+<<<<<<< HEAD
 	else if (!strcmp(model, "Brocade-902") ||
 		 !strcmp(model, "Brocade-1741"))
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
@@ -830,6 +955,12 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 			snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 				"Brocade 10Gbps dual port CNA");
 	} else if (strstr(model, "Brocade-1860")) {
+=======
+	else if (!strcmp(model, "Brocade-1741"))
+		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
+			"Brocade 10Gbps CNA for Dell M-Series Blade Servers");
+	else if (strstr(model, "Brocade-1860")) {
+>>>>>>> refs/remotes/origin/master
 		if (nports == 1 && bfa_ioc_is_cna(&bfad->bfa.ioc))
 			snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 				"Brocade 10Gbps single port CNA");
@@ -842,8 +973,19 @@ bfad_im_model_desc_show(struct device *dev, struct device_attribute *attr,
 		else if (nports == 2 && !bfa_ioc_is_cna(&bfad->bfa.ioc))
 			snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 				"Brocade 16Gbps PCIe dual port FC HBA");
+<<<<<<< HEAD
 	} else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!strcmp(model, "Brocade-1867")) {
+		if (nports == 1 && !bfa_ioc_is_cna(&bfad->bfa.ioc))
+			snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
+				"Brocade 16Gbps PCIe single port FC HBA for IBM");
+		else if (nports == 2 && !bfa_ioc_is_cna(&bfad->bfa.ioc))
+			snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
+				"Brocade 16Gbps PCIe dual port FC HBA for IBM");
+	} else
+>>>>>>> refs/remotes/origin/master
 		snprintf(model_descr, BFA_ADAPTER_MODEL_DESCR_LEN,
 			"Invalid Model");
 
@@ -960,15 +1102,27 @@ bfad_im_num_of_discovered_ports_show(struct device *dev,
 	struct bfad_port_s    *port = im_port->port;
 	struct bfad_s         *bfad = im_port->bfad;
 	int        nrports = 2048;
+<<<<<<< HEAD
 	wwn_t          *rports = NULL;
 	unsigned long   flags;
 
 	rports = kzalloc(sizeof(wwn_t) * nrports , GFP_ATOMIC);
+=======
+	struct bfa_rport_qualifier_s *rports = NULL;
+	unsigned long   flags;
+
+	rports = kzalloc(sizeof(struct bfa_rport_qualifier_s) * nrports,
+			 GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (rports == NULL)
 		return snprintf(buf, PAGE_SIZE, "Failed\n");
 
 	spin_lock_irqsave(&bfad->bfad_lock, flags);
+<<<<<<< HEAD
 	bfa_fcs_lport_get_rports(port->fcs_port, rports, &nrports);
+=======
+	bfa_fcs_lport_get_rport_quals(port->fcs_port, rports, &nrports);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&bfad->bfad_lock, flags);
 	kfree(rports);
 

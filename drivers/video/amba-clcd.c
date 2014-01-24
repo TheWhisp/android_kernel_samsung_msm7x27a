@@ -10,6 +10,10 @@
  *
  *  ARM PrimeCell PL110 Color LCD Controller
  */
+<<<<<<< HEAD
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/errno.h>
@@ -448,12 +452,18 @@ static int clcdfb_register(struct clcd_fb *fb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = clk_prepare(fb->clk);
 	if (ret)
 		goto free_clk;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fb->fb.device		= &fb->dev->dev;
 
 	fb->fb.fix.mmio_start	= fb->dev->res.start;
@@ -464,10 +474,14 @@ static int clcdfb_register(struct clcd_fb *fb)
 		printk(KERN_ERR "CLCD: unable to remap registers\n");
 		ret = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto free_clk;
 =======
 		goto clk_unprep;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto clk_unprep;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fb->fb.fbops		= &clcdfb_ops;
@@ -542,10 +556,15 @@ static int clcdfb_register(struct clcd_fb *fb)
  unmap:
 	iounmap(fb->regs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  clk_unprep:
 	clk_unprepare(fb->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ clk_unprep:
+	clk_unprepare(fb->clk);
+>>>>>>> refs/remotes/origin/master
  free_clk:
 	clk_put(fb->clk);
  out:
@@ -554,13 +573,24 @@ static int clcdfb_register(struct clcd_fb *fb)
 
 static int clcdfb_probe(struct amba_device *dev, const struct amba_id *id)
 {
+<<<<<<< HEAD
 	struct clcd_board *board = dev->dev.platform_data;
+=======
+	struct clcd_board *board = dev_get_platdata(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct clcd_fb *fb;
 	int ret;
 
 	if (!board)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	ret = dma_set_mask_and_coherent(&dev->dev, DMA_BIT_MASK(32));
+	if (ret)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	ret = amba_request_regions(dev, NULL);
 	if (ret) {
 		printk(KERN_ERR "CLCD: unable to reserve regs region\n");
@@ -604,17 +634,24 @@ static int clcdfb_remove(struct amba_device *dev)
 {
 	struct clcd_fb *fb = amba_get_drvdata(dev);
 
+<<<<<<< HEAD
 	amba_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	clcdfb_disable(fb);
 	unregister_framebuffer(&fb->fb);
 	if (fb->fb.cmap.len)
 		fb_dealloc_cmap(&fb->fb.cmap);
 	iounmap(fb->regs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	clk_unprepare(fb->clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_unprepare(fb->clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(fb->clk);
 
 	fb->board->remove(fb);
@@ -635,10 +672,15 @@ static struct amba_id clcdfb_id_table[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(amba, clcdfb_id_table);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(amba, clcdfb_id_table);
+
+>>>>>>> refs/remotes/origin/master
 static struct amba_driver clcd_driver = {
 	.drv 		= {
 		.name	= "clcd-pl11x",

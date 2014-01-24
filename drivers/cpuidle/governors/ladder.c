@@ -15,12 +15,17 @@
 #include <linux/kernel.h>
 #include <linux/cpuidle.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_qos_params.h>
 #include <linux/moduleparam.h>
 =======
 #include <linux/pm_qos.h>
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_qos.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/jiffies.h>
 
 #include <asm/io.h>
@@ -66,16 +71,22 @@ static inline void ladder_do_selection(struct ladder_device *ldev,
 /**
  * ladder_select_state - selects the next state to enter
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @dev: the CPU
  */
 static int ladder_select_state(struct cpuidle_device *dev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @drv: cpuidle driver
  * @dev: the CPU
  */
 static int ladder_select_state(struct cpuidle_driver *drv,
 				struct cpuidle_device *dev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ladder_device *ldev = &__get_cpu_var(ladder_devices);
 	struct ladder_device_state *last_state;
@@ -91,18 +102,25 @@ static int ladder_select_state(struct cpuidle_driver *drv,
 	last_state = &ldev->states[last_idx];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->states[last_idx].flags & CPUIDLE_FLAG_TIME_VALID)
 		last_residency = cpuidle_get_last_residency(dev) - dev->states[last_idx].exit_latency;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (drv->states[last_idx].flags & CPUIDLE_FLAG_TIME_VALID) {
 		last_residency = cpuidle_get_last_residency(dev) - \
 					 drv->states[last_idx].exit_latency;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		last_residency = last_state->threshold.promotion_time + 1;
 
 	/* consider promotion */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (last_idx < dev->state_count - 1 &&
 	    last_residency > last_state->threshold.promotion_time &&
@@ -112,6 +130,13 @@ static int ladder_select_state(struct cpuidle_driver *drv,
 	    last_residency > last_state->threshold.promotion_time &&
 	    drv->states[last_idx + 1].exit_latency <= latency_req) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (last_idx < drv->state_count - 1 &&
+	    !drv->states[last_idx + 1].disabled &&
+	    !dev->states_usage[last_idx + 1].disable &&
+	    last_residency > last_state->threshold.promotion_time &&
+	    drv->states[last_idx + 1].exit_latency <= latency_req) {
+>>>>>>> refs/remotes/origin/master
 		last_state->stats.promotion_count++;
 		last_state->stats.demotion_count = 0;
 		if (last_state->stats.promotion_count >= last_state->threshold.promotion_count) {
@@ -123,6 +148,7 @@ static int ladder_select_state(struct cpuidle_driver *drv,
 	/* consider demotion */
 	if (last_idx > CPUIDLE_DRIVER_STATE_START &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    dev->states[last_idx].exit_latency > latency_req) {
 		int i;
 
@@ -130,11 +156,19 @@ static int ladder_select_state(struct cpuidle_driver *drv,
 			if (dev->states[i].exit_latency <= latency_req)
 =======
 	    drv->states[last_idx].exit_latency > latency_req) {
+=======
+	    (drv->states[last_idx].disabled ||
+	    dev->states_usage[last_idx].disable ||
+	    drv->states[last_idx].exit_latency > latency_req)) {
+>>>>>>> refs/remotes/origin/master
 		int i;
 
 		for (i = last_idx - 1; i > CPUIDLE_DRIVER_STATE_START; i--) {
 			if (drv->states[i].exit_latency <= latency_req)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				break;
 		}
 		ladder_do_selection(ldev, last_idx, i);
@@ -158,16 +192,22 @@ static int ladder_select_state(struct cpuidle_driver *drv,
 /**
  * ladder_enable_device - setup for the governor
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @dev: the CPU
  */
 static int ladder_enable_device(struct cpuidle_device *dev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @drv: cpuidle driver
  * @dev: the CPU
  */
 static int ladder_enable_device(struct cpuidle_driver *drv,
 				struct cpuidle_device *dev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct ladder_device *ldev = &per_cpu(ladder_devices, dev->cpu);
@@ -177,12 +217,17 @@ static int ladder_enable_device(struct cpuidle_driver *drv,
 	ldev->last_state_idx = CPUIDLE_DRIVER_STATE_START;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < dev->state_count; i++) {
 		state = &dev->states[i];
 =======
 	for (i = 0; i < drv->state_count; i++) {
 		state = &drv->states[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < drv->state_count; i++) {
+		state = &drv->states[i];
+>>>>>>> refs/remotes/origin/master
 		lstate = &ldev->states[i];
 
 		lstate->stats.promotion_count = 0;
@@ -192,10 +237,14 @@ static int ladder_enable_device(struct cpuidle_driver *drv,
 		lstate->threshold.demotion_count = DEMOTION_COUNT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (i < dev->state_count - 1)
 =======
 		if (i < drv->state_count - 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (i < drv->state_count - 1)
+>>>>>>> refs/remotes/origin/master
 			lstate->threshold.promotion_time = state->exit_latency;
 		if (i > 0)
 			lstate->threshold.demotion_time = state->exit_latency;
@@ -205,7 +254,10 @@ static int ladder_enable_device(struct cpuidle_driver *drv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ladder_reflect - update the correct last_state_idx
  * @dev: the CPU
@@ -218,16 +270,23 @@ static void ladder_reflect(struct cpuidle_device *dev, int index)
 		ldev->last_state_idx = index;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct cpuidle_governor ladder_governor = {
 	.name =		"ladder",
 	.rating =	10,
 	.enable =	ladder_enable_device,
 	.select =	ladder_select_state,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.reflect =	ladder_reflect,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.reflect =	ladder_reflect,
+>>>>>>> refs/remotes/origin/master
 	.owner =	THIS_MODULE,
 };
 
@@ -239,6 +298,7 @@ static int __init init_ladder(void)
 	return cpuidle_register_governor(&ladder_governor);
 }
 
+<<<<<<< HEAD
 /**
  * exit_ladder - exits the governor
  */
@@ -250,3 +310,6 @@ static void __exit exit_ladder(void)
 MODULE_LICENSE("GPL");
 module_init(init_ladder);
 module_exit(exit_ladder);
+=======
+postcore_initcall(init_ladder);
+>>>>>>> refs/remotes/origin/master

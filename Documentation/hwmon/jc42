@@ -4,6 +4,7 @@ Kernel driver jc42
 Supported chips:
   * Analog Devices ADT7408
 <<<<<<< HEAD
+<<<<<<< HEAD
     Prefix: 'adt7408'
     Addresses scanned: I2C 0x18 - 0x1f
     Datasheets:
@@ -17,19 +18,25 @@ Supported chips:
     Prefix: 'tse2002', 'ts3000'
     Addresses scanned: I2C 0x18 - 0x1f
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     Datasheets:
 	http://www.analog.com/static/imported-files/data_sheets/ADT7408.pdf
   * Atmel AT30TS00
     Datasheets:
 	http://www.atmel.com/Images/doc8585.pdf
   * IDT TSE2002B3, TSE2002GB2, TS3000B3, TS3000GB2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     Datasheets:
 	http://www.idt.com/sites/default/files/documents/IDT_TSE2002B3C_DST_20100512_120303152056.pdf
 	http://www.idt.com/sites/default/files/documents/IDT_TSE2002GB2A1_DST_20111107_120303145914.pdf
 	http://www.idt.com/sites/default/files/documents/IDT_TS3000B3A_DST_20101129_120303152013.pdf
 	http://www.idt.com/sites/default/files/documents/IDT_TS3000GB2A1_DST_20111104_120303151012.pdf
   * Maxim MAX6604
+<<<<<<< HEAD
 <<<<<<< HEAD
     Prefix: 'max6604'
     Addresses scanned: I2C 0x18 - 0x1f
@@ -43,11 +50,17 @@ Supported chips:
 	http://datasheets.maxim-ic.com/en/ds/MAX6604.pdf
   * Microchip MCP9804, MCP9805, MCP98242, MCP98243, MCP9843
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Datasheets:
+	http://datasheets.maxim-ic.com/en/ds/MAX6604.pdf
+  * Microchip MCP9804, MCP9805, MCP98242, MCP98243, MCP98244, MCP9843
+>>>>>>> refs/remotes/origin/master
     Datasheets:
 	http://ww1.microchip.com/downloads/en/DeviceDoc/22203C.pdf
 	http://ww1.microchip.com/downloads/en/DeviceDoc/21977b.pdf
 	http://ww1.microchip.com/downloads/en/DeviceDoc/21996a.pdf
 	http://ww1.microchip.com/downloads/en/DeviceDoc/22153c.pdf
+<<<<<<< HEAD
 <<<<<<< HEAD
   * NXP Semiconductors SE97, SE97B
     Prefix: 'se97'
@@ -85,6 +98,9 @@ Supported chips:
 	http://www.jedec.org/sites/default/files/docs/4_01_04R19.pdf
 
 =======
+=======
+	http://ww1.microchip.com/downloads/en/DeviceDoc/22327A.pdf
+>>>>>>> refs/remotes/origin/master
   * NXP Semiconductors SE97, SE97B, SE98, SE98A
     Datasheets:
 	http://www.nxp.com/documents/data_sheet/SE97.pdf
@@ -109,9 +125,14 @@ Supported chips:
     Prefix: 'jc42'
     Addresses scanned: I2C 0x18 - 0x1f
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 Author:
 	Guenter Roeck <guenter.roeck@ericsson.com>
+=======
+Author:
+	Guenter Roeck <linux@roeck-us.net>
+>>>>>>> refs/remotes/origin/master
 
 
 Description

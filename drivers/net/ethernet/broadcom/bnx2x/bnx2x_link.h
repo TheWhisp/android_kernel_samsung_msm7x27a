@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright 2008-2012 Broadcom Corporation
+=======
+/* Copyright 2008-2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
@@ -41,6 +45,13 @@
 #define SPEED_AUTO_NEG		0
 #define SPEED_20000		20000
 
+<<<<<<< HEAD
+=======
+#define I2C_DEV_ADDR_A0			0xa0
+#define I2C_DEV_ADDR_A2			0xa2
+
+#define SFP_EEPROM_PAGE_SIZE			16
+>>>>>>> refs/remotes/origin/master
 #define SFP_EEPROM_VENDOR_NAME_ADDR		0x14
 #define SFP_EEPROM_VENDOR_NAME_SIZE		16
 #define SFP_EEPROM_VENDOR_OUI_ADDR		0x25
@@ -53,6 +64,18 @@
 #define SFP_EEPROM_SERIAL_SIZE			16
 #define SFP_EEPROM_DATE_ADDR			0x54 /* ASCII YYMMDD */
 #define SFP_EEPROM_DATE_SIZE			6
+<<<<<<< HEAD
+=======
+#define SFP_EEPROM_DIAG_TYPE_ADDR		0x5c
+#define SFP_EEPROM_DIAG_TYPE_SIZE		1
+#define SFP_EEPROM_DIAG_ADDR_CHANGE_REQ		(1<<2)
+#define SFP_EEPROM_SFF_8472_COMP_ADDR		0x5e
+#define SFP_EEPROM_SFF_8472_COMP_SIZE		1
+
+#define SFP_EEPROM_A2_CHECKSUM_RANGE		0x5e
+#define SFP_EEPROM_A2_CC_DMI_ADDR		0x5f
+
+>>>>>>> refs/remotes/origin/master
 #define PWR_FLT_ERR_MSG_LEN			250
 
 #define XGXS_EXT_PHY_TYPE(ext_phy_config) \
@@ -125,6 +148,14 @@ typedef void (*set_link_led_t)(struct bnx2x_phy *phy,
 			       struct link_params *params, u8 mode);
 typedef void (*phy_specific_func_t)(struct bnx2x_phy *phy,
 				    struct link_params *params, u32 action);
+<<<<<<< HEAD
+=======
+struct bnx2x_reg_set {
+	u8  devad;
+	u16 reg;
+	u16 val;
+};
+>>>>>>> refs/remotes/origin/master
 
 struct bnx2x_phy {
 	u32 type;
@@ -133,8 +164,11 @@ struct bnx2x_phy {
 	u8 addr;
 	u8 def_md_devad;
 	u16 flags;
+<<<<<<< HEAD
 	/* Require HW lock */
 #define FLAGS_HW_LOCK_REQUIRED		(1<<0)
+=======
+>>>>>>> refs/remotes/origin/master
 	/* No Over-Current detection */
 #define FLAGS_NOC			(1<<1)
 	/* Fan failure detection required */
@@ -149,6 +183,11 @@ struct bnx2x_phy {
 #define FLAGS_DUMMY_READ		(1<<9)
 #define FLAGS_MDC_MDIO_WA_B0		(1<<10)
 #define FLAGS_TX_ERROR_CHECK		(1<<12)
+<<<<<<< HEAD
+=======
+#define FLAGS_EEE			(1<<13)
+#define FLAGS_MDC_MDIO_WA_G		(1<<15)
+>>>>>>> refs/remotes/origin/master
 
 	/* preemphasis values for the rx side */
 	u16 rx_preemphasis[4];
@@ -162,6 +201,7 @@ struct bnx2x_phy {
 	u32 supported;
 
 	u32 media_type;
+<<<<<<< HEAD
 #define	ETH_PHY_UNSPECIFIED 0x0
 #define	ETH_PHY_SFP_FIBER   0x1
 #define	ETH_PHY_XFP_FIBER   0x2
@@ -170,6 +210,17 @@ struct bnx2x_phy {
 #define	ETH_PHY_KR          0xf0
 #define	ETH_PHY_CX4         0xf1
 #define	ETH_PHY_NOT_PRESENT 0xff
+=======
+#define	ETH_PHY_UNSPECIFIED	0x0
+#define	ETH_PHY_SFPP_10G_FIBER	0x1
+#define	ETH_PHY_XFP_FIBER		0x2
+#define	ETH_PHY_DA_TWINAX		0x3
+#define	ETH_PHY_BASE_T		0x4
+#define	ETH_PHY_SFP_1G_FIBER	0x5
+#define	ETH_PHY_KR		0xf0
+#define	ETH_PHY_CX4		0xf1
+#define	ETH_PHY_NOT_PRESENT	0xff
+>>>>>>> refs/remotes/origin/master
 
 	/* The address in which version is located*/
 	u32 ver_addr;
@@ -208,6 +259,10 @@ struct bnx2x_phy {
 	phy_specific_func_t phy_specific_func;
 #define DISABLE_TX	1
 #define ENABLE_TX	2
+<<<<<<< HEAD
+=======
+#define PHY_INIT	3
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Inputs parameters to the CLC */
@@ -254,8 +309,18 @@ struct link_params {
 #define FEATURE_CONFIG_PFC_ENABLED			(1<<1)
 #define FEATURE_CONFIG_BC_SUPPORTS_OPT_MDL_VRFY		(1<<2)
 #define FEATURE_CONFIG_BC_SUPPORTS_DUAL_PHY_OPT_MDL_VRFY	(1<<3)
+<<<<<<< HEAD
 #define FEATURE_CONFIG_AUTOGREEEN_ENABLED			(1<<9)
 #define FEATURE_CONFIG_BC_SUPPORTS_SFP_TX_DISABLED		(1<<10)
+=======
+#define FEATURE_CONFIG_BC_SUPPORTS_AFEX			(1<<8)
+#define FEATURE_CONFIG_AUTOGREEEN_ENABLED			(1<<9)
+#define FEATURE_CONFIG_BC_SUPPORTS_SFP_TX_DISABLED		(1<<10)
+#define FEATURE_CONFIG_DISABLE_REMOTE_FAULT_DET		(1<<11)
+#define FEATURE_CONFIG_MT_SUPPORT			(1<<13)
+#define FEATURE_CONFIG_BOOT_FROM_SAN			(1<<14)
+
+>>>>>>> refs/remotes/origin/master
 	/* Will be populated during common init */
 	struct bnx2x_phy phy[MAX_PHYS];
 
@@ -263,6 +328,33 @@ struct link_params {
 	u8 num_phys;
 
 	u8 rsrv;
+<<<<<<< HEAD
+=======
+
+	/* Used to configure the EEE Tx LPI timer, has several modes of
+	 * operation, according to bits 29:28 -
+	 * 2'b00: Timer will be configured by nvram, output will be the value
+	 *        from nvram.
+	 * 2'b01: Timer will be configured by nvram, output will be in
+	 *        microseconds.
+	 * 2'b10: bits 1:0 contain an nvram value which will be used instead
+	 *        of the one located in the nvram. Output will be that value.
+	 * 2'b11: bits 19:0 contain the idle timer in microseconds; output
+	 *        will be in microseconds.
+	 * Bits 31:30 should be 2'b11 in order for EEE to be enabled.
+	 */
+	u32 eee_mode;
+#define EEE_MODE_NVRAM_BALANCED_TIME		(0xa00)
+#define EEE_MODE_NVRAM_AGGRESSIVE_TIME		(0x100)
+#define EEE_MODE_NVRAM_LATENCY_TIME		(0x6000)
+#define EEE_MODE_NVRAM_MASK		(0x3)
+#define EEE_MODE_TIMER_MASK		(0xfffff)
+#define EEE_MODE_OUTPUT_TIME		(1<<28)
+#define EEE_MODE_OVERRIDE_NVRAM		(1<<29)
+#define EEE_MODE_ENABLE_LPI		(1<<30)
+#define EEE_MODE_ADV_LPI			(1<<31)
+
+>>>>>>> refs/remotes/origin/master
 	u16 hw_led_mode; /* part of the hw_config read from the shmem */
 	u32 multi_phy_config;
 
@@ -270,6 +362,13 @@ struct link_params {
 	struct bnx2x *bp;
 	u16 req_fc_auto_adv; /* Should be set to TX / BOTH when
 				req_flow_ctrl is set to AUTO */
+<<<<<<< HEAD
+=======
+	u16 link_flags;
+#define LINK_FLAGS_INT_DISABLED		(1<<0)
+#define PHY_INITIALIZED		(1<<1)
+	u32 lfa_base;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Output parameters */
@@ -280,6 +379,10 @@ struct link_vars {
 #define PHY_PHYSICAL_LINK_FLAG		(1<<2)
 #define PHY_HALF_OPEN_CONN_FLAG		(1<<3)
 #define PHY_OVER_CURRENT_FLAG		(1<<4)
+<<<<<<< HEAD
+=======
+#define PHY_SFP_TX_FAULT_FLAG		(1<<5)
+>>>>>>> refs/remotes/origin/master
 
 	u8 mac_type;
 #define MAC_TYPE_NONE		0
@@ -299,8 +402,15 @@ struct link_vars {
 
 	/* The same definitions as the shmem parameter */
 	u32 link_status;
+<<<<<<< HEAD
 	u8 fault_detected;
 	u8 rsrv1;
+=======
+	u32 eee_status;
+	u8 fault_detected;
+	u8 check_kr2_recovery_cnt;
+#define CHECK_KR2_RECOVERY_CNT	5
+>>>>>>> refs/remotes/origin/master
 	u16 periodic_flags;
 #define PERIODIC_FLAGS_LINK_EVENT	0x0001
 
@@ -308,6 +418,11 @@ struct link_vars {
 	u8 rx_tx_asic_rst;
 	u8 turn_to_run_wc_rt;
 	u16 rsrv2;
+<<<<<<< HEAD
+=======
+	/* The same definitions as the shmem2 parameter */
+	u32 link_attr_sync;
+>>>>>>> refs/remotes/origin/master
 };
 
 /***********************************************************/
@@ -320,7 +435,11 @@ int bnx2x_phy_init(struct link_params *params, struct link_vars *vars);
    to 0 */
 int bnx2x_link_reset(struct link_params *params, struct link_vars *vars,
 		     u8 reset_ext_phy);
+<<<<<<< HEAD
 
+=======
+int bnx2x_lfa_reset(struct link_params *params, struct link_vars *vars);
+>>>>>>> refs/remotes/origin/master
 /* bnx2x_link_update should be called upon link interrupt */
 int bnx2x_link_update(struct link_params *params, struct link_vars *vars);
 
@@ -374,6 +493,7 @@ void bnx2x_sfx7101_sp_sw_reset(struct bnx2x *bp, struct bnx2x_phy *phy);
 
 /* Read "byte_cnt" bytes from address "addr" from the SFP+ EEPROM */
 int bnx2x_read_sfp_module_eeprom(struct bnx2x_phy *phy,
+<<<<<<< HEAD
 				 struct link_params *params, u16 addr,
 				 u8 byte_cnt, u8 *o_buf);
 
@@ -383,6 +503,13 @@ void bnx2x_hw_reset_phy(struct link_params *params);
 u8 bnx2x_hw_lock_required(struct bnx2x *bp, u32 shmem_base,
 			  u32 shmem2_base);
 
+=======
+				 struct link_params *params, u8 dev_addr,
+				 u16 addr, u16 byte_cnt, u8 *o_buf);
+
+void bnx2x_hw_reset_phy(struct link_params *params);
+
+>>>>>>> refs/remotes/origin/master
 /* Check swap bit and adjust PHY order */
 u32 bnx2x_phy_selection(struct link_params *params);
 
@@ -393,7 +520,12 @@ int bnx2x_phy_probe(struct link_params *params);
 u8 bnx2x_fan_failure_det_req(struct bnx2x *bp, u32 shmem_base,
 			     u32 shmem2_base, u8 port);
 
+<<<<<<< HEAD
 
+=======
+/* Open / close the gate between the NIG and the BRB */
+void bnx2x_set_rx_filter(struct link_params *params, u8 en);
+>>>>>>> refs/remotes/origin/master
 
 /* DCBX structs */
 
@@ -420,9 +552,12 @@ struct bnx2x_nig_brb_pfc_port_params {
 	u32 rx_cos_priority_mask[DCBX_MAX_NUM_COS];
 	u32 llfc_high_priority_classes;
 	u32 llfc_low_priority_classes;
+<<<<<<< HEAD
 	/* BRB */
 	u32 cos0_pauseable;
 	u32 cos1_pauseable;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -457,8 +592,12 @@ struct bnx2x_ets_params {
 	struct bnx2x_ets_cos_params cos[DCBX_MAX_NUM_COS];
 };
 
+<<<<<<< HEAD
 /**
  * Used to update the PFC attributes in EMAC, BMAC, NIG and BRB
+=======
+/* Used to update the PFC attributes in EMAC, BMAC, NIG and BRB
+>>>>>>> refs/remotes/origin/master
  * when link is already up
  */
 int bnx2x_update_pfc(struct link_params *params,
@@ -495,4 +634,9 @@ int bnx2x_sfp_module_detection(struct bnx2x_phy *phy,
 
 void bnx2x_period_func(struct link_params *params, struct link_vars *vars);
 
+<<<<<<< HEAD
+=======
+int bnx2x_check_half_open_conn(struct link_params *params,
+			       struct link_vars *vars, u8 notify);
+>>>>>>> refs/remotes/origin/master
 #endif /* BNX2X_LINK_H */

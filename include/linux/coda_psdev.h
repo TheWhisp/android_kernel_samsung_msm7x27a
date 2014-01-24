@@ -1,6 +1,7 @@
 #ifndef __CODA_PSDEV_H
 #define __CODA_PSDEV_H
 
+<<<<<<< HEAD
 #include <linux/magic.h>
 
 #define CODA_PSDEV_MAJOR 67
@@ -9,6 +10,11 @@
 #ifdef __KERNEL__
 #include <linux/backing-dev.h>
 #include <linux/mutex.h>
+=======
+#include <linux/backing-dev.h>
+#include <linux/mutex.h>
+#include <uapi/linux/coda_psdev.h>
+>>>>>>> refs/remotes/origin/master
 
 struct kstatfs;
 
@@ -39,7 +45,11 @@ int venus_lookup(struct super_block *sb, struct CodaFid *fid,
 		 const char *name, int length, int *type, 
 		 struct CodaFid *resfid);
 int venus_close(struct super_block *sb, struct CodaFid *fid, int flags,
+<<<<<<< HEAD
 		vuid_t uid);
+=======
+		kuid_t uid);
+>>>>>>> refs/remotes/origin/master
 int venus_open(struct super_block *sb, struct CodaFid *fid, int flags,
 	       struct file **f);
 int venus_mkdir(struct super_block *sb, struct CodaFid *dirfid, 
@@ -74,6 +84,7 @@ int venus_statfs(struct dentry *dentry, struct kstatfs *sfs);
  */
 
 extern struct venus_comm coda_comms[];
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /* messages between coda filesystem in kernel and Venus */
@@ -93,4 +104,6 @@ struct upc_req {
 #define CODA_REQ_WRITE  0x4
 #define CODA_REQ_ABORT  0x8
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

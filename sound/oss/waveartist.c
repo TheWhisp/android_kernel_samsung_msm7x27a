@@ -43,9 +43,12 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "sound_config.h"
 #include "waveartist.h"
@@ -1486,9 +1489,15 @@ vnc_mute_spkr(wavnc_info *devc)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&nw_gpio_lock, flags);
 	nw_cpld_modify(CPLD_UNMUTE, devc->spkr_mute_state ? 0 : CPLD_UNMUTE);
 	spin_unlock_irqrestore(&nw_gpio_lock, flags);
+=======
+	raw_spin_lock_irqsave(&nw_gpio_lock, flags);
+	nw_cpld_modify(CPLD_UNMUTE, devc->spkr_mute_state ? 0 : CPLD_UNMUTE);
+	raw_spin_unlock_irqrestore(&nw_gpio_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void

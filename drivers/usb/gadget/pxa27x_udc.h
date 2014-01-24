@@ -10,6 +10,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +22,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307	 USA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __LINUX_USB_GADGET_PXA27X_H
@@ -92,6 +95,7 @@
 
 #define UDCOTGICR_IESF	(1 << 24)	/* OTG SET_FEATURE command recvd */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UDCOTGICR_IEXR	(1 << 17)	/* Extra Transciever Interrupt
 					   Rising Edge Interrupt Enable */
 #define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transciever Interrupt
@@ -100,6 +104,11 @@
 					   Rising Edge Interrupt Enable */
 #define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transceiver Interrupt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UDCOTGICR_IEXR	(1 << 17)	/* Extra Transceiver Interrupt
+					   Rising Edge Interrupt Enable */
+#define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transceiver Interrupt
+>>>>>>> refs/remotes/origin/master
 					   Falling Edge Interrupt Enable */
 #define UDCOTGICR_IEVV40R (1 << 9)	/* OTG Vbus Valid 4.0V Rising Edge
 					   Interrupt Enable */
@@ -436,7 +445,11 @@ struct udc_stats {
  * @irq: udc irq
  * @clk: udc clock
  * @usb_gadget: udc gadget structure
+<<<<<<< HEAD
  * @driver: bound gadget (zero, g_ether, g_file_storage, ...)
+=======
+ * @driver: bound gadget (zero, g_ether, g_mass_storage, ...)
+>>>>>>> refs/remotes/origin/master
  * @dev: device
  * @mach: machine info, used to activate specific GPIO
  * @transceiver: external transceiver to handle vbus sense and D+ pullup
@@ -466,10 +479,14 @@ struct pxa_udc {
 	struct device				*dev;
 	struct pxa2xx_udc_mach_info		*mach;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver			*transceiver;
 =======
 	struct usb_phy				*transceiver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_phy				*transceiver;
+>>>>>>> refs/remotes/origin/master
 
 	enum ep0_state				ep0state;
 	struct udc_stats			stats;
@@ -495,6 +512,10 @@ struct pxa_udc {
 	struct dentry				*debugfs_eps;
 #endif
 };
+<<<<<<< HEAD
+=======
+#define to_pxa(g)	(container_of((g), struct pxa_udc, gadget))
+>>>>>>> refs/remotes/origin/master
 
 static inline struct pxa_udc *to_gadget_udc(struct usb_gadget *gadget)
 {

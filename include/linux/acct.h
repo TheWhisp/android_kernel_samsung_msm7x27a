@@ -11,6 +11,7 @@
  *  Copyright (C) 1995 - 1997 Marco van Wieringen - ELM Consultancy B.V.
  *
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_ACCT_H
 #define _LINUX_ACCT_H
@@ -114,6 +115,13 @@ struct acct_v3
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_ACCT_H
+#define _LINUX_ACCT_H
+
+#include <uapi/linux/acct.h>
+
+>>>>>>> refs/remotes/origin/master
 
 
 #ifdef CONFIG_BSD_PROCESS_ACCT
@@ -147,11 +155,17 @@ extern void acct_exit_ns(struct pid_namespace *);
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #undef ACCT_VERSION
 #undef AHZ
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#undef ACCT_VERSION
+#undef AHZ
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BSD_PROCESS_ACCT_V3
 #define ACCT_VERSION	3
 #define AHZ		100
@@ -166,12 +180,15 @@ typedef struct acct_v3 acct_t;
 typedef struct acct acct_t;
 #endif
 
+<<<<<<< HEAD
 #else
 #define ACCT_VERSION	2
 #define AHZ		(HZ)
 #endif	/* __KERNEL */
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/jiffies.h>
 /*
  * Yet another set of HZ to *HZ helper functions.
@@ -213,6 +230,9 @@ static inline u64 nsec_to_AHZ(u64 x)
 	return x;
 }
 
+<<<<<<< HEAD
 #endif  /* __KERNEL */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_ACCT_H */

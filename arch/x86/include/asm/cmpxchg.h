@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef ASM_X86_CMPXCHG_H
 #define ASM_X86_CMPXCHG_H
 
@@ -37,7 +40,11 @@ extern void __add_wrong_size(void)
 
 /* 
  * An exchange-type operation, which takes a value and a pointer, and
+<<<<<<< HEAD
  * returns a the old value.
+=======
+ * returns the old value.
+>>>>>>> refs/remotes/origin/master
  */
 #define __xchg_op(ptr, arg, op, lock)					\
 	({								\
@@ -139,6 +146,7 @@ extern void __add_wrong_size(void)
 #define __cmpxchg_local(ptr, old, new, size)				\
 	__raw_cmpxchg((ptr), (old), (new), (size), "")
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_X86_32
 # include "cmpxchg_32.h"
@@ -147,6 +155,13 @@ extern void __add_wrong_size(void)
 #endif
 <<<<<<< HEAD
 =======
+=======
+#ifdef CONFIG_X86_32
+# include <asm/cmpxchg_32.h>
+#else
+# include <asm/cmpxchg_64.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __HAVE_ARCH_CMPXCHG
 #define cmpxchg(ptr, old, new)						\
@@ -236,4 +251,7 @@ extern void __add_wrong_size(void)
 	__cmpxchg_double(, p1, p2, o1, o2, n1, n2)
 
 #endif	/* ASM_X86_CMPXCHG_H */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

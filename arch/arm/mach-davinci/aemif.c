@@ -15,7 +15,11 @@
 #include <linux/module.h>
 #include <linux/time.h>
 
+<<<<<<< HEAD
 #include <mach/aemif.h>
+=======
+#include <linux/platform_data/mtd-davinci-aemif.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Timing value configuration */
 

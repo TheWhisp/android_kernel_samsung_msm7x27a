@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 #include "process_mm.c"
 #else
 #include "process_no.c"
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  linux/arch/m68k/kernel/process.c
  *
@@ -42,6 +45,10 @@
 
 
 asmlinkage void ret_from_fork(void);
+<<<<<<< HEAD
+=======
+asmlinkage void ret_from_kernel_thread(void);
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -57,6 +64,7 @@ unsigned long thread_saved_pc(struct task_struct *tsk)
 		return sw->retpc;
 }
 
+<<<<<<< HEAD
 /*
  * The idle loop on an m68k..
  */
@@ -91,6 +99,18 @@ void cpu_idle(void)
 	}
 }
 
+=======
+void arch_cpu_idle(void)
+{
+#if defined(MACH_ATARI_ONLY)
+	/* block out HSYNC on the atari (falcon) */
+	__asm__("stop #0x2200" : : : "cc");
+#else
+	__asm__("stop #0x2000" : : : "cc");
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 void machine_restart(char * __unused)
 {
 	if (mach_reset)
@@ -130,6 +150,7 @@ void show_regs(struct pt_regs * regs)
 		printk("USP: %08lx\n", rdusp());
 }
 
+<<<<<<< HEAD
 /*
  * Create a kernel thread
  */
@@ -175,6 +196,8 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 }
 EXPORT_SYMBOL(kernel_thread);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void flush_thread(void)
 {
 	current->thread.fs = __USER_DS;
@@ -187,6 +210,7 @@ void flush_thread(void)
 }
 
 /*
+<<<<<<< HEAD
  * "m68k_fork()".. By the time we get here, the
  * non-volatile registers have also been saved on the
  * stack. We do some ugly pointer stuff here.. (see
@@ -250,6 +274,37 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 
 	if (clone_flags & CLONE_SETTLS)
 		task_thread_info(p)->tp_value = regs->d5;
+=======
+ * Why not generic sys_clone, you ask?  m68k passes all arguments on stack.
+ * And we need all registers saved, which means a bunch of stuff pushed
+ * on top of pt_regs, which means that sys_clone() arguments would be
+ * buried.  We could, of course, copy them, but it's too costly for no
+ * good reason - generic clone() would have to copy them *again* for
+ * do_fork() anyway.  So in this case it's actually better to pass pt_regs *
+ * and extract arguments for do_fork() from there.  Eventually we might
+ * go for calling do_fork() directly from the wrapper, but only after we
+ * are finished with do_fork() prototype conversion.
+ */
+asmlinkage int m68k_clone(struct pt_regs *regs)
+{
+	/* regs will be equal to current_pt_regs() */
+	return do_fork(regs->d1, regs->d2, 0,
+		       (int __user *)regs->d3, (int __user *)regs->d4);
+}
+
+int copy_thread(unsigned long clone_flags, unsigned long usp,
+		 unsigned long arg, struct task_struct *p)
+{
+	struct fork_frame {
+		struct switch_stack sw;
+		struct pt_regs regs;
+	} *frame;
+
+	frame = (struct fork_frame *) (task_stack_page(p) + THREAD_SIZE) - 1;
+
+	p->thread.ksp = (unsigned long)frame;
+	p->thread.esp0 = (unsigned long)&frame->regs;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Must save the current SFC/DFC value, NOT the value when
@@ -257,6 +312,28 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	 */
 	p->thread.fs = get_fs().seg;
 
+<<<<<<< HEAD
+=======
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		/* kernel thread */
+		memset(frame, 0, sizeof(struct fork_frame));
+		frame->regs.sr = PS_S;
+		frame->sw.a3 = usp; /* function */
+		frame->sw.d7 = arg;
+		frame->sw.retpc = (unsigned long)ret_from_kernel_thread;
+		p->thread.usp = 0;
+		return 0;
+	}
+	memcpy(frame, container_of(current_pt_regs(), struct fork_frame, regs),
+		sizeof(struct fork_frame));
+	frame->regs.d0 = 0;
+	frame->sw.retpc = (unsigned long)ret_from_fork;
+	p->thread.usp = usp ?: rdusp();
+
+	if (clone_flags & CLONE_SETTLS)
+		task_thread_info(p)->tp_value = frame->regs.d5;
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FPU
 	if (!FPU_IS_EMU) {
 		/* Copy the current fpu state */
@@ -344,6 +421,7 @@ int dump_fpu (struct pt_regs *regs, struct user_m68kfp_struct *fpu)
 EXPORT_SYMBOL(dump_fpu);
 #endif /* CONFIG_FPU */
 
+<<<<<<< HEAD
 /*
  * sys_execve() executes a new program.
  */
@@ -364,6 +442,8 @@ asmlinkage int sys_execve(const char __user *name,
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *p)
 {
 	unsigned long fp, pc;
@@ -385,4 +465,7 @@ unsigned long get_wchan(struct task_struct *p)
 	} while (count++ < 16);
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

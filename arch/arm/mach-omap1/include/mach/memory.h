@@ -3,8 +3,11 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/memory.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASM_ARCH_MEMORY_H
 #define __ASM_ARCH_MEMORY_H
 
@@ -22,7 +25,11 @@
  * because of the strncmp().
  */
 #if defined(CONFIG_ARCH_OMAP15XX) && !defined(__ASSEMBLER__)
+<<<<<<< HEAD
 #include <plat/cpu.h>
+=======
+#include <mach/soc.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * OMAP-1510 Local Bus address offset
@@ -58,4 +65,7 @@
 #endif	/* CONFIG_ARCH_OMAP15XX */
 
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

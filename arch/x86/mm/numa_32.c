@@ -42,10 +42,14 @@
  *     physnode_map[32- ] = -1;
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 s8 physnode_map[MAX_ELEMENTS] __read_mostly = { [0 ... (MAX_ELEMENTS - 1)] = -1};
 =======
 s8 physnode_map[MAX_SECTIONS] __read_mostly = { [0 ... (MAX_SECTIONS - 1)] = -1};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+s8 physnode_map[MAX_SECTIONS] __read_mostly = { [0 ... (MAX_SECTIONS - 1)] = -1};
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(physnode_map);
 
 void memory_present(int nid, unsigned long start, unsigned long end)
@@ -57,12 +61,17 @@ void memory_present(int nid, unsigned long start, unsigned long end)
 	printk(KERN_DEBUG "  Setting physnode_map array to node %d for pfns:\n", nid);
 	printk(KERN_DEBUG "  ");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (pfn = start; pfn < end; pfn += PAGES_PER_ELEMENT) {
 		physnode_map[pfn / PAGES_PER_ELEMENT] = nid;
 =======
 	for (pfn = start; pfn < end; pfn += PAGES_PER_SECTION) {
 		physnode_map[pfn / PAGES_PER_SECTION] = nid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (pfn = start; pfn < end; pfn += PAGES_PER_SECTION) {
+		physnode_map[pfn / PAGES_PER_SECTION] = nid;
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_CONT "%lx ", pfn);
 	}
 	printk(KERN_CONT "\n");
@@ -92,10 +101,15 @@ void __init initmem_init(void)
 		highstart_pfn = max_low_pfn;
 	printk(KERN_NOTICE "%ldMB HIGHMEM available.\n",
 	       pages_to_mb(highend_pfn - highstart_pfn));
+<<<<<<< HEAD
 	num_physpages = highend_pfn;
 	high_memory = (void *) __va(highstart_pfn * PAGE_SIZE - 1) + 1;
 #else
 	num_physpages = max_low_pfn;
+=======
+	high_memory = (void *) __va(highstart_pfn * PAGE_SIZE - 1) + 1;
+#else
+>>>>>>> refs/remotes/origin/master
 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE - 1) + 1;
 #endif
 	printk(KERN_NOTICE "%ldMB LOWMEM available.\n",

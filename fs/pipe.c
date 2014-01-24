@@ -14,9 +14,13 @@
 #include <linux/log2.h>
 #include <linux/mount.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/magic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/magic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pipe_fs_i.h>
 #include <linux/uio.h>
 #include <linux/highmem.h>
@@ -24,10 +28,19 @@
 #include <linux/audit.h>
 #include <linux/syscalls.h>
 #include <linux/fcntl.h>
+<<<<<<< HEAD
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/uaccess.h>
 #include <asm/ioctls.h>
 
+<<<<<<< HEAD
+=======
+#include "internal.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The max size that a non-root user is allowed to grow the pipe. Can
  * be set by root in /proc/sys/fs/pipe-max-size
@@ -56,8 +69,13 @@ unsigned int pipe_min_size = PAGE_SIZE;
 
 static void pipe_lock_nested(struct pipe_inode_info *pipe, int subclass)
 {
+<<<<<<< HEAD
 	if (pipe->inode)
 		mutex_lock_nested(&pipe->inode->i_mutex, subclass);
+=======
+	if (pipe->files)
+		mutex_lock_nested(&pipe->mutex, subclass);
+>>>>>>> refs/remotes/origin/master
 }
 
 void pipe_lock(struct pipe_inode_info *pipe)
@@ -71,11 +89,29 @@ EXPORT_SYMBOL(pipe_lock);
 
 void pipe_unlock(struct pipe_inode_info *pipe)
 {
+<<<<<<< HEAD
 	if (pipe->inode)
 		mutex_unlock(&pipe->inode->i_mutex);
 }
 EXPORT_SYMBOL(pipe_unlock);
 
+=======
+	if (pipe->files)
+		mutex_unlock(&pipe->mutex);
+}
+EXPORT_SYMBOL(pipe_unlock);
+
+static inline void __pipe_lock(struct pipe_inode_info *pipe)
+{
+	mutex_lock_nested(&pipe->mutex, I_MUTEX_PARENT);
+}
+
+static inline void __pipe_unlock(struct pipe_inode_info *pipe)
+{
+	mutex_unlock(&pipe->mutex);
+}
+
+>>>>>>> refs/remotes/origin/master
 void pipe_double_lock(struct pipe_inode_info *pipe1,
 		      struct pipe_inode_info *pipe2)
 {
@@ -227,7 +263,11 @@ static void anon_pipe_buf_release(struct pipe_inode_info *pipe,
  *	and the caller has to be careful not to fault before calling
  *	the unmap function.
  *
+<<<<<<< HEAD
  *	Note that this function occupies KM_USER0 if @atomic != 0.
+=======
+ *	Note that this function calls kmap_atomic() if @atomic != 0.
+>>>>>>> refs/remotes/origin/master
  */
 void *generic_pipe_buf_map(struct pipe_inode_info *pipe,
 			   struct pipe_buffer *buf, int atomic)
@@ -235,10 +275,14 @@ void *generic_pipe_buf_map(struct pipe_inode_info *pipe,
 	if (atomic) {
 		buf->flags |= PIPE_BUF_FLAG_ATOMIC;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return kmap_atomic(buf->page, KM_USER0);
 =======
 		return kmap_atomic(buf->page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return kmap_atomic(buf->page);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return kmap(buf->page);
@@ -260,10 +304,14 @@ void generic_pipe_buf_unmap(struct pipe_inode_info *pipe,
 	if (buf->flags & PIPE_BUF_FLAG_ATOMIC) {
 		buf->flags &= ~PIPE_BUF_FLAG_ATOMIC;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(map_data, KM_USER0);
 =======
 		kunmap_atomic(map_data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(map_data);
+>>>>>>> refs/remotes/origin/master
 	} else
 		kunmap(buf->page);
 }
@@ -372,8 +420,12 @@ pipe_read(struct kiocb *iocb, const struct iovec *_iov,
 	   unsigned long nr_segs, loff_t pos)
 {
 	struct file *filp = iocb->ki_filp;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 	struct pipe_inode_info *pipe;
+=======
+	struct pipe_inode_info *pipe = filp->private_data;
+>>>>>>> refs/remotes/origin/master
 	int do_wakeup;
 	ssize_t ret;
 	struct iovec *iov = (struct iovec *)_iov;
@@ -386,8 +438,12 @@ pipe_read(struct kiocb *iocb, const struct iovec *_iov,
 
 	do_wakeup = 0;
 	ret = 0;
+<<<<<<< HEAD
 	mutex_lock(&inode->i_mutex);
 	pipe = inode->i_pipe;
+=======
+	__pipe_lock(pipe);
+>>>>>>> refs/remotes/origin/master
 	for (;;) {
 		int bufs = pipe->nrbufs;
 		if (bufs) {
@@ -475,7 +531,11 @@ redo:
 		}
 		pipe_wait(pipe);
 	}
+<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
+=======
+	__pipe_unlock(pipe);
+>>>>>>> refs/remotes/origin/master
 
 	/* Signal writers asynchronously that there is more room. */
 	if (do_wakeup) {
@@ -497,8 +557,12 @@ pipe_write(struct kiocb *iocb, const struct iovec *_iov,
 	    unsigned long nr_segs, loff_t ppos)
 {
 	struct file *filp = iocb->ki_filp;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 	struct pipe_inode_info *pipe;
+=======
+	struct pipe_inode_info *pipe = filp->private_data;
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 	int do_wakeup;
 	struct iovec *iov = (struct iovec *)_iov;
@@ -512,8 +576,12 @@ pipe_write(struct kiocb *iocb, const struct iovec *_iov,
 
 	do_wakeup = 0;
 	ret = 0;
+<<<<<<< HEAD
 	mutex_lock(&inode->i_mutex);
 	pipe = inode->i_pipe;
+=======
+	__pipe_lock(pipe);
+>>>>>>> refs/remotes/origin/master
 
 	if (!pipe->readers) {
 		send_sig(SIGPIPE, current, 0);
@@ -600,10 +668,14 @@ redo1:
 redo2:
 			if (atomic)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				src = kmap_atomic(page, KM_USER0);
 =======
 				src = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				src = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 			else
 				src = kmap(page);
 
@@ -611,10 +683,14 @@ redo2:
 							atomic);
 			if (atomic)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				kunmap_atomic(src, KM_USER0);
 =======
 				kunmap_atomic(src);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				kunmap_atomic(src);
+>>>>>>> refs/remotes/origin/master
 			else
 				kunmap(page);
 
@@ -668,11 +744,16 @@ redo2:
 		pipe->waiting_writers--;
 	}
 out:
+<<<<<<< HEAD
 	mutex_unlock(&inode->i_mutex);
+=======
+	__pipe_unlock(pipe);
+>>>>>>> refs/remotes/origin/master
 	if (do_wakeup) {
 		wake_up_interruptible_sync_poll(&pipe->wait, POLLIN | POLLRDNORM);
 		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
 	}
+<<<<<<< HEAD
 	if (ret > 0)
 		file_update_time(filp);
 	return ret;
@@ -695,12 +776,29 @@ static long pipe_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	struct inode *inode = filp->f_path.dentry->d_inode;
 	struct pipe_inode_info *pipe;
+=======
+	if (ret > 0) {
+		int err = file_update_time(filp);
+		if (err)
+			ret = err;
+	}
+	return ret;
+}
+
+static long pipe_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+	struct pipe_inode_info *pipe = filp->private_data;
+>>>>>>> refs/remotes/origin/master
 	int count, buf, nrbufs;
 
 	switch (cmd) {
 		case FIONREAD:
+<<<<<<< HEAD
 			mutex_lock(&inode->i_mutex);
 			pipe = inode->i_pipe;
+=======
+			__pipe_lock(pipe);
+>>>>>>> refs/remotes/origin/master
 			count = 0;
 			buf = pipe->curbuf;
 			nrbufs = pipe->nrbufs;
@@ -708,11 +806,19 @@ static long pipe_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 				count += pipe->bufs[buf].len;
 				buf = (buf+1) & (pipe->buffers - 1);
 			}
+<<<<<<< HEAD
 			mutex_unlock(&inode->i_mutex);
 
 			return put_user(count, (int __user *)arg);
 		default:
 			return -EINVAL;
+=======
+			__pipe_unlock(pipe);
+
+			return put_user(count, (int __user *)arg);
+		default:
+			return -ENOIOCTLCMD;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -721,8 +827,12 @@ static unsigned int
 pipe_poll(struct file *filp, poll_table *wait)
 {
 	unsigned int mask;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 	struct pipe_inode_info *pipe = inode->i_pipe;
+=======
+	struct pipe_inode_info *pipe = filp->private_data;
+>>>>>>> refs/remotes/origin/master
 	int nrbufs;
 
 	poll_wait(filp, &pipe->wait, wait);
@@ -749,6 +859,7 @@ pipe_poll(struct file *filp, poll_table *wait)
 	return mask;
 }
 
+<<<<<<< HEAD
 static int
 pipe_release(struct inode *inode, int decr, int decw)
 {
@@ -941,6 +1052,65 @@ const struct file_operations rdwr_pipefifo_fops = {
 };
 
 struct pipe_inode_info * alloc_pipe_info(struct inode *inode)
+=======
+static void put_pipe_info(struct inode *inode, struct pipe_inode_info *pipe)
+{
+	int kill = 0;
+
+	spin_lock(&inode->i_lock);
+	if (!--pipe->files) {
+		inode->i_pipe = NULL;
+		kill = 1;
+	}
+	spin_unlock(&inode->i_lock);
+
+	if (kill)
+		free_pipe_info(pipe);
+}
+
+static int
+pipe_release(struct inode *inode, struct file *file)
+{
+	struct pipe_inode_info *pipe = file->private_data;
+
+	__pipe_lock(pipe);
+	if (file->f_mode & FMODE_READ)
+		pipe->readers--;
+	if (file->f_mode & FMODE_WRITE)
+		pipe->writers--;
+
+	if (pipe->readers || pipe->writers) {
+		wake_up_interruptible_sync_poll(&pipe->wait, POLLIN | POLLOUT | POLLRDNORM | POLLWRNORM | POLLERR | POLLHUP);
+		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+		kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+	}
+	__pipe_unlock(pipe);
+
+	put_pipe_info(inode, pipe);
+	return 0;
+}
+
+static int
+pipe_fasync(int fd, struct file *filp, int on)
+{
+	struct pipe_inode_info *pipe = filp->private_data;
+	int retval = 0;
+
+	__pipe_lock(pipe);
+	if (filp->f_mode & FMODE_READ)
+		retval = fasync_helper(fd, filp, on, &pipe->fasync_readers);
+	if ((filp->f_mode & FMODE_WRITE) && retval >= 0) {
+		retval = fasync_helper(fd, filp, on, &pipe->fasync_writers);
+		if (retval < 0 && (filp->f_mode & FMODE_READ))
+			/* this can happen only if on == T */
+			fasync_helper(-1, filp, 0, &pipe->fasync_readers);
+	}
+	__pipe_unlock(pipe);
+	return retval;
+}
+
+struct pipe_inode_info *alloc_pipe_info(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pipe_inode_info *pipe;
 
@@ -950,8 +1120,13 @@ struct pipe_inode_info * alloc_pipe_info(struct inode *inode)
 		if (pipe->bufs) {
 			init_waitqueue_head(&pipe->wait);
 			pipe->r_counter = pipe->w_counter = 1;
+<<<<<<< HEAD
 			pipe->inode = inode;
 			pipe->buffers = PIPE_DEF_BUFFERS;
+=======
+			pipe->buffers = PIPE_DEF_BUFFERS;
+			mutex_init(&pipe->mutex);
+>>>>>>> refs/remotes/origin/master
 			return pipe;
 		}
 		kfree(pipe);
@@ -960,7 +1135,11 @@ struct pipe_inode_info * alloc_pipe_info(struct inode *inode)
 	return NULL;
 }
 
+<<<<<<< HEAD
 void __free_pipe_info(struct pipe_inode_info *pipe)
+=======
+void free_pipe_info(struct pipe_inode_info *pipe)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -975,12 +1154,15 @@ void __free_pipe_info(struct pipe_inode_info *pipe)
 	kfree(pipe);
 }
 
+<<<<<<< HEAD
 void free_pipe_info(struct inode *inode)
 {
 	__free_pipe_info(inode->i_pipe);
 	inode->i_pipe = NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct vfsmount *pipe_mnt __read_mostly;
 
 /*
@@ -1006,6 +1188,7 @@ static struct inode * get_pipe_inode(void)
 
 	inode->i_ino = get_next_ino();
 
+<<<<<<< HEAD
 	pipe = alloc_pipe_info(inode);
 	if (!pipe)
 		goto fail_iput;
@@ -1013,6 +1196,16 @@ static struct inode * get_pipe_inode(void)
 
 	pipe->readers = pipe->writers = 1;
 	inode->i_fop = &rdwr_pipefifo_fops;
+=======
+	pipe = alloc_pipe_info();
+	if (!pipe)
+		goto fail_iput;
+
+	inode->i_pipe = pipe;
+	pipe->files = 2;
+	pipe->readers = pipe->writers = 1;
+	inode->i_fop = &pipefifo_fops;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Mark the inode dirty from the very beginning,
@@ -1035,6 +1228,7 @@ fail_inode:
 	return NULL;
 }
 
+<<<<<<< HEAD
 struct file *create_write_pipe(int flags)
 {
 	int err;
@@ -1047,6 +1241,18 @@ struct file *create_write_pipe(int flags)
 	inode = get_pipe_inode();
 	if (!inode)
 		goto err;
+=======
+int create_pipe_files(struct file **res, int flags)
+{
+	int err;
+	struct inode *inode = get_pipe_inode();
+	struct file *f;
+	struct path path;
+	static struct qstr name = { .name = "" };
+
+	if (!inode)
+		return -ENFILE;
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENOMEM;
 	path.dentry = d_alloc_pseudo(pipe_mnt->mnt_sb, &name);
@@ -1057,6 +1263,7 @@ struct file *create_write_pipe(int flags)
 	d_instantiate(path.dentry, inode);
 
 	err = -ENFILE;
+<<<<<<< HEAD
 	f = alloc_file(&path, FMODE_WRITE, &write_pipefifo_fops);
 	if (!f)
 		goto err_dentry;
@@ -1103,12 +1310,47 @@ struct file *create_read_pipe(struct file *wrf, int flags)
 int do_pipe_flags(int *fd, int flags)
 {
 	struct file *fw, *fr;
+=======
+	f = alloc_file(&path, FMODE_WRITE, &pipefifo_fops);
+	if (IS_ERR(f))
+		goto err_dentry;
+
+	f->f_flags = O_WRONLY | (flags & (O_NONBLOCK | O_DIRECT));
+	f->private_data = inode->i_pipe;
+
+	res[0] = alloc_file(&path, FMODE_READ, &pipefifo_fops);
+	if (IS_ERR(res[0]))
+		goto err_file;
+
+	path_get(&path);
+	res[0]->private_data = inode->i_pipe;
+	res[0]->f_flags = O_RDONLY | (flags & O_NONBLOCK);
+	res[1] = f;
+	return 0;
+
+err_file:
+	put_filp(f);
+err_dentry:
+	free_pipe_info(inode->i_pipe);
+	path_put(&path);
+	return err;
+
+err_inode:
+	free_pipe_info(inode->i_pipe);
+	iput(inode);
+	return err;
+}
+
+static int __do_pipe_flags(int *fd, struct file **files, int flags)
+{
+>>>>>>> refs/remotes/origin/master
 	int error;
 	int fdw, fdr;
 
 	if (flags & ~(O_CLOEXEC | O_NONBLOCK | O_DIRECT))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	fw = create_write_pipe(flags);
 	if (IS_ERR(fw))
 		return PTR_ERR(fw);
@@ -1116,6 +1358,11 @@ int do_pipe_flags(int *fd, int flags)
 	error = PTR_ERR(fr);
 	if (IS_ERR(fr))
 		goto err_write_pipe;
+=======
+	error = create_pipe_files(files, flags);
+	if (error)
+		return error;
+>>>>>>> refs/remotes/origin/master
 
 	error = get_unused_fd_flags(flags);
 	if (error < 0)
@@ -1128,20 +1375,41 @@ int do_pipe_flags(int *fd, int flags)
 	fdw = error;
 
 	audit_fd_pair(fdr, fdw);
+<<<<<<< HEAD
 	fd_install(fdr, fr);
 	fd_install(fdw, fw);
 	fd[0] = fdr;
 	fd[1] = fdw;
 
+=======
+	fd[0] = fdr;
+	fd[1] = fdw;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
  err_fdr:
 	put_unused_fd(fdr);
  err_read_pipe:
+<<<<<<< HEAD
 	path_put(&fr->f_path);
 	put_filp(fr);
  err_write_pipe:
 	free_write_pipe(fw);
+=======
+	fput(files[0]);
+	fput(files[1]);
+	return error;
+}
+
+int do_pipe_flags(int *fd, int flags)
+{
+	struct file *files[2];
+	int error = __do_pipe_flags(fd, files, flags);
+	if (!error) {
+		fd_install(fd[0], files[0]);
+		fd_install(fd[1], files[1]);
+	}
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -1151,6 +1419,7 @@ int do_pipe_flags(int *fd, int flags)
  */
 SYSCALL_DEFINE2(pipe2, int __user *, fildes, int, flags)
 {
+<<<<<<< HEAD
 	int fd[2];
 	int error;
 
@@ -1160,6 +1429,23 @@ SYSCALL_DEFINE2(pipe2, int __user *, fildes, int, flags)
 			sys_close(fd[0]);
 			sys_close(fd[1]);
 			error = -EFAULT;
+=======
+	struct file *files[2];
+	int fd[2];
+	int error;
+
+	error = __do_pipe_flags(fd, files, flags);
+	if (!error) {
+		if (unlikely(copy_to_user(fildes, fd, sizeof(fd)))) {
+			fput(files[0]);
+			fput(files[1]);
+			put_unused_fd(fd[0]);
+			put_unused_fd(fd[1]);
+			error = -EFAULT;
+		} else {
+			fd_install(fd[0], files[0]);
+			fd_install(fd[1], files[1]);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return error;
@@ -1170,6 +1456,164 @@ SYSCALL_DEFINE1(pipe, int __user *, fildes)
 	return sys_pipe2(fildes, 0);
 }
 
+<<<<<<< HEAD
+=======
+static int wait_for_partner(struct pipe_inode_info *pipe, unsigned int *cnt)
+{
+	int cur = *cnt;	
+
+	while (cur == *cnt) {
+		pipe_wait(pipe);
+		if (signal_pending(current))
+			break;
+	}
+	return cur == *cnt ? -ERESTARTSYS : 0;
+}
+
+static void wake_up_partner(struct pipe_inode_info *pipe)
+{
+	wake_up_interruptible(&pipe->wait);
+}
+
+static int fifo_open(struct inode *inode, struct file *filp)
+{
+	struct pipe_inode_info *pipe;
+	bool is_pipe = inode->i_sb->s_magic == PIPEFS_MAGIC;
+	int ret;
+
+	filp->f_version = 0;
+
+	spin_lock(&inode->i_lock);
+	if (inode->i_pipe) {
+		pipe = inode->i_pipe;
+		pipe->files++;
+		spin_unlock(&inode->i_lock);
+	} else {
+		spin_unlock(&inode->i_lock);
+		pipe = alloc_pipe_info();
+		if (!pipe)
+			return -ENOMEM;
+		pipe->files = 1;
+		spin_lock(&inode->i_lock);
+		if (unlikely(inode->i_pipe)) {
+			inode->i_pipe->files++;
+			spin_unlock(&inode->i_lock);
+			free_pipe_info(pipe);
+			pipe = inode->i_pipe;
+		} else {
+			inode->i_pipe = pipe;
+			spin_unlock(&inode->i_lock);
+		}
+	}
+	filp->private_data = pipe;
+	/* OK, we have a pipe and it's pinned down */
+
+	__pipe_lock(pipe);
+
+	/* We can only do regular read/write on fifos */
+	filp->f_mode &= (FMODE_READ | FMODE_WRITE);
+
+	switch (filp->f_mode) {
+	case FMODE_READ:
+	/*
+	 *  O_RDONLY
+	 *  POSIX.1 says that O_NONBLOCK means return with the FIFO
+	 *  opened, even when there is no process writing the FIFO.
+	 */
+		pipe->r_counter++;
+		if (pipe->readers++ == 0)
+			wake_up_partner(pipe);
+
+		if (!is_pipe && !pipe->writers) {
+			if ((filp->f_flags & O_NONBLOCK)) {
+				/* suppress POLLHUP until we have
+				 * seen a writer */
+				filp->f_version = pipe->w_counter;
+			} else {
+				if (wait_for_partner(pipe, &pipe->w_counter))
+					goto err_rd;
+			}
+		}
+		break;
+	
+	case FMODE_WRITE:
+	/*
+	 *  O_WRONLY
+	 *  POSIX.1 says that O_NONBLOCK means return -1 with
+	 *  errno=ENXIO when there is no process reading the FIFO.
+	 */
+		ret = -ENXIO;
+		if (!is_pipe && (filp->f_flags & O_NONBLOCK) && !pipe->readers)
+			goto err;
+
+		pipe->w_counter++;
+		if (!pipe->writers++)
+			wake_up_partner(pipe);
+
+		if (!is_pipe && !pipe->readers) {
+			if (wait_for_partner(pipe, &pipe->r_counter))
+				goto err_wr;
+		}
+		break;
+	
+	case FMODE_READ | FMODE_WRITE:
+	/*
+	 *  O_RDWR
+	 *  POSIX.1 leaves this case "undefined" when O_NONBLOCK is set.
+	 *  This implementation will NEVER block on a O_RDWR open, since
+	 *  the process can at least talk to itself.
+	 */
+
+		pipe->readers++;
+		pipe->writers++;
+		pipe->r_counter++;
+		pipe->w_counter++;
+		if (pipe->readers == 1 || pipe->writers == 1)
+			wake_up_partner(pipe);
+		break;
+
+	default:
+		ret = -EINVAL;
+		goto err;
+	}
+
+	/* Ok! */
+	__pipe_unlock(pipe);
+	return 0;
+
+err_rd:
+	if (!--pipe->readers)
+		wake_up_interruptible(&pipe->wait);
+	ret = -ERESTARTSYS;
+	goto err;
+
+err_wr:
+	if (!--pipe->writers)
+		wake_up_interruptible(&pipe->wait);
+	ret = -ERESTARTSYS;
+	goto err;
+
+err:
+	__pipe_unlock(pipe);
+
+	put_pipe_info(inode, pipe);
+	return ret;
+}
+
+const struct file_operations pipefifo_fops = {
+	.open		= fifo_open,
+	.llseek		= no_llseek,
+	.read		= do_sync_read,
+	.aio_read	= pipe_read,
+	.write		= do_sync_write,
+	.aio_write	= pipe_write,
+	.poll		= pipe_poll,
+	.unlocked_ioctl	= pipe_ioctl,
+	.release	= pipe_release,
+	.fasync		= pipe_fasync,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Allocate a new array of pipe buffers and copy the info over. Returns the
  * pipe size if successful, or return -ERROR on error.
@@ -1188,10 +1632,14 @@ static long pipe_set_size(struct pipe_inode_info *pipe, unsigned long nr_pages)
 		return -EBUSY;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bufs = kcalloc(nr_pages, sizeof(struct pipe_buffer), GFP_KERNEL);
 =======
 	bufs = kcalloc(nr_pages, sizeof(*bufs), GFP_KERNEL | __GFP_NOWARN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bufs = kcalloc(nr_pages, sizeof(*bufs), GFP_KERNEL | __GFP_NOWARN);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!bufs))
 		return -ENOMEM;
 
@@ -1259,9 +1707,13 @@ int pipe_proc_fn(struct ctl_table *table, int write, void __user *buf,
  */
 struct pipe_inode_info *get_pipe_info(struct file *file)
 {
+<<<<<<< HEAD
 	struct inode *i = file->f_path.dentry->d_inode;
 
 	return S_ISFIFO(i->i_mode) ? i->i_pipe : NULL;
+=======
+	return file->f_op == &pipefifo_fops ? file->private_data : NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 long pipe_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
@@ -1273,7 +1725,11 @@ long pipe_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
 	if (!pipe)
 		return -EBADF;
 
+<<<<<<< HEAD
 	mutex_lock(&pipe->inode->i_mutex);
+=======
+	__pipe_lock(pipe);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case F_SETPIPE_SZ: {
@@ -1302,16 +1758,24 @@ long pipe_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
 	}
 
 out:
+<<<<<<< HEAD
 	mutex_unlock(&pipe->inode->i_mutex);
+=======
+	__pipe_unlock(pipe);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static const struct super_operations pipefs_ops = {
 	.destroy_inode = free_inode_nonrcu,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.statfs = simple_statfs,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.statfs = simple_statfs,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -1348,6 +1812,7 @@ static int __init init_pipe_fs(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __exit exit_pipe_fs(void)
 {
 	kern_unmount(pipe_mnt);
@@ -1359,3 +1824,6 @@ module_exit(exit_pipe_fs);
 =======
 fs_initcall(init_pipe_fs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fs_initcall(init_pipe_fs);
+>>>>>>> refs/remotes/origin/master

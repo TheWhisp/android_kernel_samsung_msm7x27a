@@ -13,9 +13,13 @@
 
 #include <xen/interface/xen.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <xen/grant_table.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <xen/grant_table.h>
+>>>>>>> refs/remotes/origin/master
 #include <xen/features.h>
 
 /* Xen machine address */
@@ -47,11 +51,16 @@ extern unsigned long  machine_to_phys_nr;
 
 extern unsigned long get_phys_to_machine(unsigned long pfn);
 extern bool set_phys_to_machine(unsigned long pfn, unsigned long mfn);
+<<<<<<< HEAD
+=======
+extern bool __init early_set_phys_to_machine(unsigned long pfn, unsigned long mfn);
+>>>>>>> refs/remotes/origin/master
 extern bool __set_phys_to_machine(unsigned long pfn, unsigned long mfn);
 extern unsigned long set_phys_range_identity(unsigned long pfn_s,
 					     unsigned long pfn_e);
 
 extern int m2p_add_override(unsigned long mfn, struct page *page,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			    bool clear_pte);
 extern int m2p_remove_override(struct page *page, bool clear_pte);
@@ -62,13 +71,18 @@ extern unsigned long m2p_find_override_pfn(unsigned long mfn, unsigned long pfn)
 extern int p2m_dump_show(struct seq_file *m, void *v);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			    struct gnttab_map_grant_ref *kmap_op);
 extern int m2p_remove_override(struct page *page,
 				struct gnttab_map_grant_ref *kmap_op);
 extern struct page *m2p_find_override(unsigned long mfn);
 extern unsigned long m2p_find_override_pfn(unsigned long mfn, unsigned long pfn);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long pfn_to_mfn(unsigned long pfn)
 {
 	unsigned long mfn;
@@ -92,30 +106,61 @@ static inline int phys_to_machine_mapping_valid(unsigned long pfn)
 	return get_phys_to_machine(pfn) != INVALID_P2M_ENTRY;
 }
 
+<<<<<<< HEAD
 static inline unsigned long mfn_to_pfn(unsigned long mfn)
 {
 	unsigned long pfn;
 	int ret = 0;
+=======
+static inline unsigned long mfn_to_pfn_no_overrides(unsigned long mfn)
+{
+	unsigned long pfn;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (xen_feature(XENFEAT_auto_translated_physmap))
 		return mfn;
 
+<<<<<<< HEAD
 	if (unlikely(mfn >= machine_to_phys_nr)) {
 		pfn = ~0;
 		goto try_override;
 	}
 	pfn = 0;
+=======
+	if (unlikely(mfn >= machine_to_phys_nr))
+		return ~0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The array access can fail (e.g., device space beyond end of RAM).
 	 * In such cases it doesn't matter what we return (we return garbage),
 	 * but we must handle the fault without crashing!
 	 */
 	ret = __get_user(pfn, &machine_to_phys_mapping[mfn]);
+<<<<<<< HEAD
 try_override:
 	/* ret might be < 0 if there are no entries in the m2p for mfn */
 	if (ret < 0)
 		pfn = ~0;
 	else if (get_phys_to_machine(pfn) != mfn)
+=======
+	if (ret < 0)
+		return ~0;
+
+	return pfn;
+}
+
+static inline unsigned long mfn_to_pfn(unsigned long mfn)
+{
+	unsigned long pfn;
+
+	if (xen_feature(XENFEAT_auto_translated_physmap))
+		return mfn;
+
+	pfn = mfn_to_pfn_no_overrides(mfn);
+	if (get_phys_to_machine(pfn) != mfn) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If this appears to be a foreign mfn (because the pfn
 		 * doesn't map back to the mfn), then check the local override
@@ -124,6 +169,10 @@ try_override:
 		 * m2p_find_override_pfn returns ~0 if it doesn't find anything.
 		 */
 		pfn = m2p_find_override_pfn(mfn, ~0);
+<<<<<<< HEAD
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* 
 	 * pfn is ~0 if there are no entries in the m2p for mfn or if the
@@ -225,4 +274,9 @@ unsigned long arbitrary_virt_to_mfn(void *vaddr);
 void make_lowmem_page_readonly(void *vaddr);
 void make_lowmem_page_readwrite(void *vaddr);
 
+<<<<<<< HEAD
+=======
+#define xen_remap(cookie, size) ioremap((cookie), (size));
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_XEN_PAGE_H */

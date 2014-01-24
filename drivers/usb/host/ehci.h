@@ -38,11 +38,22 @@ typedef __u16 __bitwise __hc16;
 #endif
 
 /* statistics can be kept for tuning/monitoring */
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_DYNAMIC_DEBUG
+#define EHCI_STATS
+#endif
+
+>>>>>>> refs/remotes/origin/master
 struct ehci_stats {
 	/* irq usage */
 	unsigned long		normal;
 	unsigned long		error;
+<<<<<<< HEAD
 	unsigned long		reclaim;
+=======
+	unsigned long		iaa;
+>>>>>>> refs/remotes/origin/master
 	unsigned long		lost_iaa;
 
 	/* termination of urbs from core */
@@ -50,8 +61,35 @@ struct ehci_stats {
 	unsigned long		unlink;
 };
 
+<<<<<<< HEAD
 /* ehci_hcd->lock guards shared data against other CPUs:
  *   ehci_hcd:	async, reclaim, periodic (and shadow), ...
+=======
+/*
+ * Scheduling and budgeting information for periodic transfers, for both
+ * high-speed devices and full/low-speed devices lying behind a TT.
+ */
+struct ehci_per_sched {
+	struct usb_device	*udev;		/* access to the TT */
+	struct usb_host_endpoint *ep;
+	struct list_head	ps_list;	/* node on ehci_tt's ps_list */
+	u16			tt_usecs;	/* time on the FS/LS bus */
+	u16			cs_mask;	/* C-mask and S-mask bytes */
+	u16			period;		/* actual period in frames */
+	u16			phase;		/* actual phase, frame part */
+	u8			bw_phase;	/* same, for bandwidth
+						   reservation */
+	u8			phase_uf;	/* uframe part of the phase */
+	u8			usecs, c_usecs;	/* times on the HS bus */
+	u8			bw_uperiod;	/* period in microframes, for
+						   bandwidth reservation */
+	u8			bw_period;	/* same, in frames */
+};
+#define NO_FRAME	29999			/* frame not assigned yet */
+
+/* ehci_hcd->lock guards shared data against other CPUs:
+ *   ehci_hcd:	async, unlink, periodic (and shadow), ...
+>>>>>>> refs/remotes/origin/master
  *   usb_host_endpoint: hcpriv
  *   ehci_qh:	qh_next, qtd_list
  *   ehci_qtd:	qtd_list
@@ -63,6 +101,7 @@ struct ehci_stats {
 #define	EHCI_MAX_ROOT_PORTS	15		/* see HCS_N_PORTS */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 enum ehci_rh_state {
 	EHCI_RH_HALTED,
@@ -72,6 +111,51 @@ enum ehci_rh_state {
 
 >>>>>>> refs/remotes/origin/cm-10.0
 struct ehci_hcd {			/* one per controller */
+=======
+/*
+ * ehci_rh_state values of EHCI_RH_RUNNING or above mean that the
+ * controller may be doing DMA.  Lower values mean there's no DMA.
+ */
+enum ehci_rh_state {
+	EHCI_RH_HALTED,
+	EHCI_RH_SUSPENDED,
+	EHCI_RH_RUNNING,
+	EHCI_RH_STOPPING
+};
+
+/*
+ * Timer events, ordered by increasing delay length.
+ * Always update event_delays_ns[] and event_handlers[] (defined in
+ * ehci-timer.c) in parallel with this list.
+ */
+enum ehci_hrtimer_event {
+	EHCI_HRTIMER_POLL_ASS,		/* Poll for async schedule off */
+	EHCI_HRTIMER_POLL_PSS,		/* Poll for periodic schedule off */
+	EHCI_HRTIMER_POLL_DEAD,		/* Wait for dead controller to stop */
+	EHCI_HRTIMER_UNLINK_INTR,	/* Wait for interrupt QH unlink */
+	EHCI_HRTIMER_FREE_ITDS,		/* Wait for unused iTDs and siTDs */
+	EHCI_HRTIMER_START_UNLINK_INTR, /* Unlink empty interrupt QHs */
+	EHCI_HRTIMER_ASYNC_UNLINKS,	/* Unlink empty async QHs */
+	EHCI_HRTIMER_IAA_WATCHDOG,	/* Handle lost IAA interrupts */
+	EHCI_HRTIMER_DISABLE_PERIODIC,	/* Wait to disable periodic sched */
+	EHCI_HRTIMER_DISABLE_ASYNC,	/* Wait to disable async sched */
+	EHCI_HRTIMER_IO_WATCHDOG,	/* Check for missing IRQs */
+	EHCI_HRTIMER_NUM_EVENTS		/* Must come last */
+};
+#define EHCI_HRTIMER_NO_EVENT	99
+
+struct ehci_hcd {			/* one per controller */
+	/* timing support */
+	enum ehci_hrtimer_event	next_hrtimer_event;
+	unsigned		enabled_hrtimer_events;
+	ktime_t			hr_timeouts[EHCI_HRTIMER_NUM_EVENTS];
+	struct hrtimer		hrtimer;
+
+	int			PSS_poll_count;
+	int			ASS_poll_count;
+	int			died_poll_count;
+
+>>>>>>> refs/remotes/origin/master
 	/* glue to PCI and HCD framework */
 	struct ehci_caps __iomem *caps;
 	struct ehci_regs __iomem *regs;
@@ -80,22 +164,43 @@ struct ehci_hcd {			/* one per controller */
 	__u32			hcs_params;	/* cached register copy */
 	spinlock_t		lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	enum ehci_rh_state	rh_state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum ehci_rh_state	rh_state;
+
+	/* general schedule support */
+	bool			scanning:1;
+	bool			need_rescan:1;
+	bool			intr_unlinking:1;
+	bool			iaa_in_progress:1;
+	bool			async_unlinking:1;
+	bool			shutdown:1;
+	struct ehci_qh		*qh_scan_next;
+>>>>>>> refs/remotes/origin/master
 
 	/* async schedule support */
 	struct ehci_qh		*async;
 	struct ehci_qh		*dummy;		/* For AMD quirk use */
+<<<<<<< HEAD
 	struct ehci_qh		*reclaim;
 	struct ehci_qh		*qh_scan_next;
 	unsigned		scanning : 1;
+=======
+	struct list_head	async_unlink;
+	struct list_head	async_idle;
+	unsigned		async_unlink_cycle;
+	unsigned		async_count;	/* async activity count */
+>>>>>>> refs/remotes/origin/master
 
 	/* periodic schedule support */
 #define	DEFAULT_I_TDPS		1024		/* some HCs can do less */
 	unsigned		periodic_size;
 	__hc32			*periodic;	/* hw periodic table */
 	dma_addr_t		periodic_dma;
+<<<<<<< HEAD
 	unsigned		i_thresh;	/* uframes HC might cache */
 
 	union ehci_shadow	*pshadow;	/* mirror hw periodic table */
@@ -111,6 +216,29 @@ struct ehci_hcd {			/* one per controller */
 	struct list_head	cached_itd_list;
 	struct list_head	cached_sitd_list;
 	unsigned		clock_frame;
+=======
+	struct list_head	intr_qh_list;
+	unsigned		i_thresh;	/* uframes HC might cache */
+
+	union ehci_shadow	*pshadow;	/* mirror hw periodic table */
+	struct list_head	intr_unlink_wait;
+	struct list_head	intr_unlink;
+	unsigned		intr_unlink_wait_cycle;
+	unsigned		intr_unlink_cycle;
+	unsigned		now_frame;	/* frame from HC hardware */
+	unsigned		last_iso_frame;	/* last frame scanned for iso */
+	unsigned		intr_count;	/* intr activity count */
+	unsigned		isoc_count;	/* isoc activity count */
+	unsigned		periodic_count;	/* periodic activity count */
+	unsigned		uframe_periodic_max; /* max periodic time per uframe */
+
+
+	/* list of itds & sitds completed while now_frame was still active */
+	struct list_head	cached_itd_list;
+	struct ehci_itd		*last_itd_to_free;
+	struct list_head	cached_sitd_list;
+	struct ehci_sitd	*last_sitd_to_free;
+>>>>>>> refs/remotes/origin/master
 
 	/* per root hub port */
 	unsigned long		reset_done [EHCI_MAX_ROOT_PORTS];
@@ -127,10 +255,15 @@ struct ehci_hcd {			/* one per controller */
 	unsigned long		suspended_ports;	/* which ports are
 			suspended */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long		resuming_ports;		/* which ports have
 			started to resume */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long		resuming_ports;		/* which ports have
+			started to resume */
+>>>>>>> refs/remotes/origin/master
 
 	/* per-HC memory pools (could be per-bus, but ...) */
 	struct dma_pool		*qh_pool;	/* qh per active urb */
@@ -138,21 +271,27 @@ struct ehci_hcd {			/* one per controller */
 	struct dma_pool		*itd_pool;	/* itd per iso urb */
 	struct dma_pool		*sitd_pool;	/* sitd per split iso urb */
 
+<<<<<<< HEAD
 	struct timer_list	iaa_watchdog;
 	struct timer_list	watchdog;
 	unsigned long		actions;
 	unsigned		periodic_stamp;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned		random_frame;
 	unsigned long		next_statechange;
 	ktime_t			last_periodic_enable;
 	u32			command;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void (*start_hnp)(struct ehci_hcd *ehci);
 =======
 	unsigned		log2_irq_thresh;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* SILICON QUIRKS */
 	unsigned		no_selective_suspend:1;
 	unsigned		has_fsl_port_bug:1; /* FreeScale */
@@ -161,6 +300,7 @@ struct ehci_hcd {			/* one per controller */
 	unsigned		big_endian_capbase:1;
 	unsigned		has_amcc_usb23:1;
 	unsigned		need_io_watchdog:1;
+<<<<<<< HEAD
 	unsigned		broken_periodic:1;
 	unsigned		amd_pll_fix:1;
 	unsigned		fs_i_thresh:1;	/* Intel iso scheduling */
@@ -173,6 +313,14 @@ struct ehci_hcd {			/* one per controller */
 	unsigned		resume_sof_bug:1;/*Chip Idea HC*/
 	unsigned		reset_sof_bug:1; /*Chip Idea HC*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned		amd_pll_fix:1;
+	unsigned		use_dummy_qh:1;	/* AMD Frame List table quirk*/
+	unsigned		has_synopsys_hc_bug:1; /* Synopsys HC */
+	unsigned		frame_index_bug:1; /* MosChip (AKA NetMos) */
+	unsigned		need_oc_pp_cycle:1; /* MPC834X port power */
+	unsigned		imx28_write_fix:1; /* For Freescale i.MX28 */
+>>>>>>> refs/remotes/origin/master
 
 	/* required for usb32 quirk */
 	#define OHCI_CTRL_HCFS          (3 << 6)
@@ -183,7 +331,11 @@ struct ehci_hcd {			/* one per controller */
 	#define OHCI_HCCTRL_LEN         0x4
 	__hc32			*ohci_hcctrl_reg;
 	unsigned		has_hostpc:1;
+<<<<<<< HEAD
 	unsigned		has_lpm:1;  /* support link power management */
+=======
+	unsigned		has_tdi_phy_lpm:1;
+>>>>>>> refs/remotes/origin/master
 	unsigned		has_ppcd:1; /* support per-port change bits */
 	u8			sbrn;		/* packed release number */
 
@@ -196,6 +348,7 @@ struct ehci_hcd {			/* one per controller */
 #endif
 
 	/* debug files */
+<<<<<<< HEAD
 #ifdef DEBUG
 	struct dentry		*debug_dir;
 #endif
@@ -207,6 +360,23 @@ struct ehci_hcd {			/* one per controller */
 =======
 	struct usb_phy	*transceiver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_DYNAMIC_DEBUG
+	struct dentry		*debug_dir;
+#endif
+
+	/* bandwidth usage */
+#define EHCI_BANDWIDTH_SIZE	64
+#define EHCI_BANDWIDTH_FRAMES	(EHCI_BANDWIDTH_SIZE >> 3)
+	u8			bandwidth[EHCI_BANDWIDTH_SIZE];
+						/* us allocated per uframe */
+	u8			tt_budget[EHCI_BANDWIDTH_SIZE];
+						/* us budgeted per uframe */
+	struct list_head	tt_list;
+
+	/* platform-specific data -- must come last */
+	unsigned long		priv[0] __aligned(sizeof(s64));
+>>>>>>> refs/remotes/origin/master
 };
 
 /* convert between an HCD pointer and the corresponding EHCI_HCD */
@@ -219,6 +389,7 @@ static inline struct usb_hcd *ehci_to_hcd (struct ehci_hcd *ehci)
 	return container_of ((void *) ehci, struct usb_hcd, hcd_priv);
 }
 
+<<<<<<< HEAD
 
 static inline void
 iaa_watchdog_start(struct ehci_hcd *ehci)
@@ -247,6 +418,8 @@ timer_action_done (struct ehci_hcd *ehci, enum ehci_timer_action action)
 
 static void free_cached_lists(struct ehci_hcd *ehci);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 #include <linux/usb/ehci_def.h>
@@ -356,7 +529,17 @@ union ehci_shadow {
 struct ehci_qh_hw {
 	__hc32			hw_next;	/* see EHCI 3.6.1 */
 	__hc32			hw_info1;       /* see EHCI 3.6.2 */
+<<<<<<< HEAD
 #define	QH_HEAD		0x00008000
+=======
+#define	QH_CONTROL_EP	(1 << 27)	/* FS/LS control endpoint */
+#define	QH_HEAD		(1 << 15)	/* Head of async reclamation list */
+#define	QH_TOGGLE_CTL	(1 << 14)	/* Data toggle control */
+#define	QH_HIGH_SPEED	(2 << 12)	/* Endpoint speed */
+#define	QH_LOW_SPEED	(1 << 12)
+#define	QH_FULL_SPEED	(0 << 12)
+#define	QH_INACTIVATE	(1 << 7)	/* Inactivate on next transaction */
+>>>>>>> refs/remotes/origin/master
 	__hc32			hw_info2;        /* see EHCI 3.6.2 */
 #define	QH_SMASK	0x000000ff
 #define	QH_CMASK	0x0000ff00
@@ -374,11 +557,16 @@ struct ehci_qh_hw {
 } __attribute__ ((aligned(32)));
 
 struct ehci_qh {
+<<<<<<< HEAD
 	struct ehci_qh_hw	*hw;
+=======
+	struct ehci_qh_hw	*hw;		/* Must come first */
+>>>>>>> refs/remotes/origin/master
 	/* the rest is HCD-private */
 	dma_addr_t		qh_dma;		/* address of qh */
 	union ehci_shadow	qh_next;	/* ptr to qh; or periodic */
 	struct list_head	qtd_list;	/* sw qtd list */
+<<<<<<< HEAD
 	struct ehci_qtd		*dummy;
 	struct ehci_qh		*reclaim;	/* next to reclaim */
 
@@ -395,16 +583,30 @@ struct ehci_qh {
 	unsigned		stamp;
 
 	u8			needs_rescan;	/* Dequeue during giveback */
+=======
+	struct list_head	intr_node;	/* list of intr QHs */
+	struct ehci_qtd		*dummy;
+	struct list_head	unlink_node;
+	struct ehci_per_sched	ps;		/* scheduling info */
+
+	unsigned		unlink_cycle;
+
+>>>>>>> refs/remotes/origin/master
 	u8			qh_state;
 #define	QH_STATE_LINKED		1		/* HC sees this */
 #define	QH_STATE_UNLINK		2		/* HC may still see this */
 #define	QH_STATE_IDLE		3		/* HC doesn't see this */
+<<<<<<< HEAD
 #define	QH_STATE_UNLINK_WAIT	4		/* LINKED and on reclaim q */
+=======
+#define	QH_STATE_UNLINK_WAIT	4		/* LINKED and on unlink q */
+>>>>>>> refs/remotes/origin/master
 #define	QH_STATE_COMPLETING	5		/* don't touch token.HALT */
 
 	u8			xacterrs;	/* XactErr retry counter */
 #define	QH_XACTERR_MAX		32		/* XactErr retry limit */
 
+<<<<<<< HEAD
 	/* periodic schedule info */
 	u8			usecs;		/* intr bandwidth */
 	u8			gap_uf;		/* uframes split/csplit gap */
@@ -417,6 +619,15 @@ struct ehci_qh {
 	struct usb_device	*dev;		/* access to TT */
 	unsigned		is_out:1;	/* bulk or intr OUT */
 	unsigned		clearing_tt:1;	/* Clear-TT-Buf in progress */
+=======
+	u8			gap_uf;		/* uframes split/csplit gap */
+
+	unsigned		is_out:1;	/* bulk or intr OUT */
+	unsigned		clearing_tt:1;	/* Clear-TT-Buf in progress */
+	unsigned		dequeue_during_giveback:1;
+	unsigned		exception:1;	/* got a fault, or an unlink
+						   was requested */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -438,6 +649,10 @@ struct ehci_iso_packet {
 struct ehci_iso_sched {
 	struct list_head	td_list;
 	unsigned		span;
+<<<<<<< HEAD
+=======
+	unsigned		first_packet;
+>>>>>>> refs/remotes/origin/master
 	struct ehci_iso_packet	packet [0];
 };
 
@@ -449,11 +664,15 @@ struct ehci_iso_stream {
 	/* first field matches ehci_hq, but is NULL */
 	struct ehci_qh_hw	*hw;
 
+<<<<<<< HEAD
 	u32			refcount;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8			bEndpointAddress;
 	u8			highspeed;
 	struct list_head	td_list;	/* queued itds/sitds */
 	struct list_head	free_list;	/* list of unused itds/sitds */
+<<<<<<< HEAD
 	struct usb_device	*udev;
 	struct usb_host_endpoint *ep;
 
@@ -470,6 +689,19 @@ struct ehci_iso_stream {
 	u16			tt_usecs;
 	u16			maxp;
 	u16			raw_mask;
+=======
+
+	/* output of (re)scheduling */
+	struct ehci_per_sched	ps;		/* scheduling info */
+	unsigned		next_uframe;
+	__hc32			splits;
+
+	/* the rest is derived from the endpoint descriptor,
+	 * including the extra info for hw_bufp[0..2]
+	 */
+	u16			uperiod;	/* period in uframes */
+	u16			maxp;
+>>>>>>> refs/remotes/origin/master
 	unsigned		bandwidth;
 
 	/* This is used to initialize iTD's hw_bufp fields */
@@ -584,6 +816,38 @@ struct ehci_fstn {
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
+=======
+/*
+ * USB-2.0 Specification Sections 11.14 and 11.18
+ * Scheduling and budgeting split transactions using TTs
+ *
+ * A hub can have a single TT for all its ports, or multiple TTs (one for each
+ * port).  The bandwidth and budgeting information for the full/low-speed bus
+ * below each TT is self-contained and independent of the other TTs or the
+ * high-speed bus.
+ *
+ * "Bandwidth" refers to the number of microseconds on the FS/LS bus allocated
+ * to an interrupt or isochronous endpoint for each frame.  "Budget" refers to
+ * the best-case estimate of the number of full-speed bytes allocated to an
+ * endpoint for each microframe within an allocated frame.
+ *
+ * Removal of an endpoint invalidates a TT's budget.  Instead of trying to
+ * keep an up-to-date record, we recompute the budget when it is needed.
+ */
+
+struct ehci_tt {
+	u16			bandwidth[EHCI_BANDWIDTH_FRAMES];
+
+	struct list_head	tt_list;	/* List of all ehci_tt's */
+	struct list_head	ps_list;	/* Items using this TT */
+	struct usb_tt		*usb_tt;
+	int			tt_port;	/* TT port number */
+};
+
+/*-------------------------------------------------------------------------*/
+
+>>>>>>> refs/remotes/origin/master
 /* Prepare the PORTSC wakeup flags during controller suspend/resume */
 
 #define ehci_prepare_ports_for_controller_suspend(ehci, do_wakeup)	\
@@ -684,6 +948,21 @@ static inline unsigned int ehci_readl(const struct ehci_hcd *ehci,
 #endif
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SOC_IMX28
+static inline void imx28_ehci_writel(const unsigned int val,
+		volatile __u32 __iomem *addr)
+{
+	__asm__ ("swp %0, %0, [%1]" : : "r"(val), "r"(addr));
+}
+#else
+static inline void imx28_ehci_writel(const unsigned int val,
+		volatile __u32 __iomem *addr)
+{
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 static inline void ehci_writel(const struct ehci_hcd *ehci,
 		const unsigned int val, __u32 __iomem *regs)
 {
@@ -692,7 +971,14 @@ static inline void ehci_writel(const struct ehci_hcd *ehci,
 		writel_be(val, regs) :
 		writel(val, regs);
 #else
+<<<<<<< HEAD
 	writel(val, regs);
+=======
+	if (ehci->imx28_write_fix)
+		imx28_ehci_writel(val, regs);
+	else
+		writel(val, regs);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -776,6 +1062,7 @@ static inline u32 hc32_to_cpup (const struct ehci_hcd *ehci, const __hc32 *x)
 
 #endif
 
+<<<<<<< HEAD
 /*
  * Writing to dma coherent memory on ARM may be delayed via L2
  * writing buffer, so introduce the helper which can flush L2 writing
@@ -807,14 +1094,50 @@ static inline unsigned ehci_read_frame_index(struct ehci_hcd *ehci)
 	return ehci_readl(ehci, &ehci->regs->frame_index);
 }
 
+=======
+/*-------------------------------------------------------------------------*/
+
+#define ehci_dbg(ehci, fmt, args...) \
+	dev_dbg(ehci_to_hcd(ehci)->self.controller , fmt , ## args)
+#define ehci_err(ehci, fmt, args...) \
+	dev_err(ehci_to_hcd(ehci)->self.controller , fmt , ## args)
+#define ehci_info(ehci, fmt, args...) \
+	dev_info(ehci_to_hcd(ehci)->self.controller , fmt , ## args)
+#define ehci_warn(ehci, fmt, args...) \
+	dev_warn(ehci_to_hcd(ehci)->self.controller , fmt , ## args)
+
+
+#ifndef CONFIG_DYNAMIC_DEBUG
+#define STUB_DEBUG_FILES
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 #ifndef DEBUG
 #define STUB_DEBUG_FILES
 #endif	/* DEBUG */
 
 /*-------------------------------------------------------------------------*/
+=======
+/* Declarations of things exported for use by ehci platform drivers */
+
+struct ehci_driver_overrides {
+	size_t		extra_priv_size;
+	int		(*reset)(struct usb_hcd *hcd);
+};
+
+extern void	ehci_init_driver(struct hc_driver *drv,
+				const struct ehci_driver_overrides *over);
+extern int	ehci_setup(struct usb_hcd *hcd);
+extern int	ehci_handshake(struct ehci_hcd *ehci, void __iomem *ptr,
+				u32 mask, u32 done, int usec);
+
+#ifdef CONFIG_PM
+extern int	ehci_suspend(struct usb_hcd *hcd, bool do_wakeup);
+extern int	ehci_resume(struct usb_hcd *hcd, bool hibernated);
+#endif	/* CONFIG_PM */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __LINUX_EHCI_HCD_H */

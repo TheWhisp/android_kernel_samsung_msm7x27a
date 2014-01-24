@@ -3,7 +3,11 @@
  *
  * Copyright (C) 2000, 2001  Paolo Alberelli
  * Copyright (C) 2003  Richard Curnow (/proc/tlb, bug fixes)
+<<<<<<< HEAD
  * Copyright (C) 2003 - 2009 Paul Mundt
+=======
+ * Copyright (C) 2003 - 2012 Paul Mundt
+>>>>>>> refs/remotes/origin/master
  *
  * This file is subject to the terms and conditions of the GNU General Public
  * License.  See the file "COPYING" in the main directory of this archive
@@ -23,15 +27,19 @@
 #include <linux/perf_event.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/tlb.h>
 #include <asm/uaccess.h>
 #include <asm/pgalloc.h>
 #include <asm/mmu_context.h>
 
+<<<<<<< HEAD
 extern void die(const char *,struct pt_regs *,long);
 
 #define PFLAG(val,flag)   (( (val) & (flag) ) ? #flag : "" )
@@ -332,6 +340,8 @@ do_sigbus:
 		goto no_context;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void local_flush_tlb_one(unsigned long asid, unsigned long page)
 {
 	unsigned long long match, pteh=0, lpage;
@@ -474,7 +484,10 @@ void __flush_tlb_global(void)
 {
 	flush_tlb_all();
 }
+<<<<<<< HEAD
 
 void __update_tlb(struct vm_area_struct *vma, unsigned long address, pte_t pte)
 {
 }
+=======
+>>>>>>> refs/remotes/origin/master

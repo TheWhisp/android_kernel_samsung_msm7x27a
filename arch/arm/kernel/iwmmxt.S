@@ -196,16 +196,22 @@ ENTRY(iwmmxt_task_disable)
 	@ enable access to CP0 and CP1
 	XSC(mrc	p15, 0, r4, c15, c1, 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	XSC(orr	r4, r4, #0xf)
 	XSC(mcr	p15, 0, r4, c15, c1, 0)
 	PJ4(mrc p15, 0, r4, c1, c0, 2)
 	PJ4(orr	r4, r4, #0x3)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	XSC(orr	r4, r4, #0x3)
 	XSC(mcr	p15, 0, r4, c15, c1, 0)
 	PJ4(mrc p15, 0, r4, c1, c0, 2)
 	PJ4(orr	r4, r4, #0xf)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	PJ4(mcr	p15, 0, r4, c1, c0, 2)
 
 	mov	r0, #0				@ nothing to load
@@ -321,10 +327,14 @@ ENTRY(iwmmxt_task_switch)
 	movne	pc, lr				@ no: leave Concan disabled
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 1:	@ flip Conan access
 =======
 1:	@ flip Concan access
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+1:	@ flip Concan access
+>>>>>>> refs/remotes/origin/master
 	XSC(eor	r1, r1, #0x3)
 	XSC(mcr	p15, 0, r1, c15, c1, 0)
 	PJ4(eor r1, r1, #0xf)

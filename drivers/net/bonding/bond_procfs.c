@@ -1,8 +1,12 @@
 #include <linux/proc_fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/netns/generic.h>
 #include "bonding.h"
@@ -13,9 +17,15 @@ static void *bond_info_seq_start(struct seq_file *seq, loff_t *pos)
 	__acquires(&bond->lock)
 {
 	struct bonding *bond = seq->private;
+<<<<<<< HEAD
 	loff_t off = 0;
 	struct slave *slave;
 	int i;
+=======
+	struct list_head *iter;
+	struct slave *slave;
+	loff_t off = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* make sure the bond won't be taken away */
 	rcu_read_lock();
@@ -24,10 +34,16 @@ static void *bond_info_seq_start(struct seq_file *seq, loff_t *pos)
 	if (*pos == 0)
 		return SEQ_START_TOKEN;
 
+<<<<<<< HEAD
 	bond_for_each_slave(bond, slave, i) {
 		if (++off == *pos)
 			return slave;
 	}
+=======
+	bond_for_each_slave(bond, slave, iter)
+		if (++off == *pos)
+			return slave;
+>>>>>>> refs/remotes/origin/master
 
 	return NULL;
 }
@@ -35,6 +51,7 @@ static void *bond_info_seq_start(struct seq_file *seq, loff_t *pos)
 static void *bond_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 {
 	struct bonding *bond = seq->private;
+<<<<<<< HEAD
 	struct slave *slave = v;
 
 	++*pos;
@@ -44,6 +61,27 @@ static void *bond_info_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 	slave = slave->next;
 
 	return (slave == bond->first_slave) ? NULL : slave;
+=======
+	struct list_head *iter;
+	struct slave *slave;
+	bool found = false;
+
+	++*pos;
+	if (v == SEQ_START_TOKEN)
+		return bond_first_slave(bond);
+
+	if (bond_is_last_slave(bond, v))
+		return NULL;
+
+	bond_for_each_slave(bond, slave, iter) {
+		if (found)
+			return slave;
+		if (slave == v)
+			found = true;
+	}
+
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bond_info_seq_stop(struct seq_file *seq, void *v)
@@ -130,6 +168,7 @@ static void bond_info_show_master(struct seq_file *seq)
 		seq_printf(seq, "LACP rate: %s\n",
 			   (bond->params.lacp_fast) ? "fast" : "slow");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		seq_printf(seq, "Min links: %d\n", bond->params.min_links);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -137,6 +176,13 @@ static void bond_info_show_master(struct seq_file *seq)
 			   ad_select_tbl[bond->params.ad_select].modename);
 
 		if (bond_3ad_get_active_agg_info(bond, &ad_info)) {
+=======
+		seq_printf(seq, "Min links: %d\n", bond->params.min_links);
+		seq_printf(seq, "Aggregator selection policy (ad_select): %s\n",
+			   ad_select_tbl[bond->params.ad_select].modename);
+
+		if (__bond_3ad_get_active_agg_info(bond, &ad_info)) {
+>>>>>>> refs/remotes/origin/master
 			seq_printf(seq, "bond %s has no active aggregator\n",
 				   bond->dev->name);
 		} else {
@@ -156,18 +202,37 @@ static void bond_info_show_master(struct seq_file *seq)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static const char *bond_slave_link_status(s8 link)
+{
+	static const char * const status[] = {
+		[BOND_LINK_UP] = "up",
+		[BOND_LINK_FAIL] = "going down",
+		[BOND_LINK_DOWN] = "down",
+		[BOND_LINK_BACK] = "going back",
+	};
+
+	return status[link];
+}
+
+>>>>>>> refs/remotes/origin/master
 static void bond_info_show_slave(struct seq_file *seq,
 				 const struct slave *slave)
 {
 	struct bonding *bond = seq->private;
 
 	seq_printf(seq, "\nSlave Interface: %s\n", slave->dev->name);
+<<<<<<< HEAD
 	seq_printf(seq, "MII Status: %s\n",
 		   (slave->link == BOND_LINK_UP) ?  "up" : "down");
 <<<<<<< HEAD
 	seq_printf(seq, "Speed: %d Mbps\n", slave->speed);
 	seq_printf(seq, "Duplex: %s\n", slave->duplex ? "full" : "half");
 =======
+=======
+	seq_printf(seq, "MII Status: %s\n", bond_slave_link_status(slave->link));
+>>>>>>> refs/remotes/origin/master
 	if (slave->speed == SPEED_UNKNOWN)
 		seq_printf(seq, "Speed: %s\n", "Unknown");
 	else
@@ -178,7 +243,10 @@ static void bond_info_show_slave(struct seq_file *seq,
 	else
 		seq_printf(seq, "Duplex: %s\n", slave->duplex ? "full" : "half");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	seq_printf(seq, "Link Failure Count: %u\n",
 		   slave->link_failure_count);
 
@@ -218,15 +286,22 @@ static const struct seq_operations bond_info_seq_ops = {
 static int bond_info_open(struct inode *inode, struct file *file)
 {
 	struct seq_file *seq;
+<<<<<<< HEAD
 	struct proc_dir_entry *proc;
+=======
+>>>>>>> refs/remotes/origin/master
 	int res;
 
 	res = seq_open(file, &bond_info_seq_ops);
 	if (!res) {
 		/* recover the pointer buried in proc_dir_entry data */
 		seq = file->private_data;
+<<<<<<< HEAD
 		proc = PDE(inode);
 		seq->private = proc->data;
+=======
+		seq->private = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return res;

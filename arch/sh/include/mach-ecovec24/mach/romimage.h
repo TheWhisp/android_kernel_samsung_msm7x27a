@@ -6,7 +6,11 @@
  */
 
 #include <asm/romimage-macros.h>
+<<<<<<< HEAD
 #include "partner-jet-setup.txt"
+=======
+#include <mach/partner-jet-setup.txt>
+>>>>>>> refs/remotes/origin/master
 
 	/* execute icbi after enabling cache */
 	mov.l	1f, r0

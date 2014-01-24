@@ -4,10 +4,14 @@
  * Author: Scott Wood <scottwood@freescale.com>
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2007 Freescale Semiconductor, Inc.
 =======
  * Copyright 2007-2008,2010 Freescale Semiconductor, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2007-2008,2010 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Some parts derived from commproc.c/cpm2_common.c, which is:
  * Copyright (c) 1997 Dan error_act (dmalek@jlc.net)
@@ -25,18 +29,27 @@
 #include <linux/of_device.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/of.h>
+=======
+#include <linux/export.h>
+#include <linux/of.h>
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 
 #include <asm/udbg.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/rheap.h>
 #include <asm/cpm.h>
 
@@ -127,10 +140,14 @@ int cpm_muram_init(void)
 
 		rh_attach_region(&cpm_muram_info, r.start - muram_pbase,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		                 r.end - r.start + 1);
 =======
 				 resource_size(&r));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 resource_size(&r));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	muram_vbase = ioremap(muram_pbase, max - muram_pbase + 1);
@@ -162,9 +179,13 @@ unsigned long cpm_muram_alloc(unsigned long size, unsigned long align)
 	cpm_muram_info.alignment = align;
 	start = rh_alloc(&cpm_muram_info, size, "commproc");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	memset(cpm_muram_addr(start), 0, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(cpm_muram_addr(start), 0, size);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&cpm_muram_lock, flags);
 
 	return start;

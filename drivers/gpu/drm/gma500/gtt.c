@@ -39,6 +39,13 @@ static inline uint32_t psb_gtt_mask_pte(uint32_t pfn, int type)
 {
 	uint32_t mask = PSB_PTE_VALID;
 
+<<<<<<< HEAD
+=======
+	/* Ensure we explode rather than put an invalid low mapping of
+	   a high mapping page into the gtt */
+	BUG_ON(pfn & ~(0xFFFFFFFF >> PAGE_SHIFT));
+
+>>>>>>> refs/remotes/origin/master
 	if (type & PSB_MMU_CACHED_MEMORY)
 		mask |= PSB_PTE_CACHED;
 	if (type & PSB_MMU_RO_MEMORY)
@@ -57,7 +64,11 @@ static inline uint32_t psb_gtt_mask_pte(uint32_t pfn, int type)
  *	Given a gtt_range object return the GTT offset of the page table
  *	entries for this gtt_range
  */
+<<<<<<< HEAD
 static u32 *psb_gtt_entry(struct drm_device *dev, struct gtt_range *r)
+=======
+static u32 __iomem *psb_gtt_entry(struct drm_device *dev, struct gtt_range *r)
+>>>>>>> refs/remotes/origin/master
 {
 	struct drm_psb_private *dev_priv = dev->dev_private;
 	unsigned long offset;
@@ -76,9 +87,17 @@ static u32 *psb_gtt_entry(struct drm_device *dev, struct gtt_range *r)
  *	the GTT. This is protected via the gtt mutex which the caller
  *	must hold.
  */
+<<<<<<< HEAD
 static int psb_gtt_insert(struct drm_device *dev, struct gtt_range *r)
 {
 	u32 *gtt_slot, pte;
+=======
+static int psb_gtt_insert(struct drm_device *dev, struct gtt_range *r,
+			  int resume)
+{
+	u32 __iomem *gtt_slot;
+	u32 pte;
+>>>>>>> refs/remotes/origin/master
 	struct page **pages;
 	int i;
 
@@ -92,8 +111,15 @@ static int psb_gtt_insert(struct drm_device *dev, struct gtt_range *r)
 	gtt_slot = psb_gtt_entry(dev, r);
 	pages = r->pages;
 
+<<<<<<< HEAD
 	/* Make sure changes are visible to the GPU */
 	set_pages_array_uc(pages, r->npage);
+=======
+	if (!resume) {
+		/* Make sure changes are visible to the GPU */
+		set_pages_array_wc(pages, r->npage);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Write our page entries into the GTT itself */
 	for (i = r->roll; i < r->npage; i++) {
@@ -122,7 +148,12 @@ static int psb_gtt_insert(struct drm_device *dev, struct gtt_range *r)
 static void psb_gtt_remove(struct drm_device *dev, struct gtt_range *r)
 {
 	struct drm_psb_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	u32 *gtt_slot, pte;
+=======
+	u32 __iomem *gtt_slot;
+	u32 pte;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	WARN_ON(r->stolen);
@@ -148,7 +179,12 @@ static void psb_gtt_remove(struct drm_device *dev, struct gtt_range *r)
  */
 void psb_gtt_roll(struct drm_device *dev, struct gtt_range *r, int roll)
 {
+<<<<<<< HEAD
 	u32 *gtt_slot, pte;
+=======
+	u32 __iomem *gtt_slot;
+	u32 pte;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (roll >= r->npage) {
@@ -186,6 +222,7 @@ void psb_gtt_roll(struct drm_device *dev, struct gtt_range *r, int roll)
  */
 static int psb_gtt_attach_pages(struct gtt_range *gt)
 {
+<<<<<<< HEAD
 	struct inode *inode;
 	struct address_space *mapping;
 	int i;
@@ -217,6 +254,20 @@ err:
 	kfree(gt->pages);
 	gt->pages = NULL;
 	return PTR_ERR(p);
+=======
+	struct page **pages;
+
+	WARN_ON(gt->pages);
+
+	pages = drm_gem_get_pages(&gt->gem, 0);
+	if (IS_ERR(pages))
+		return PTR_ERR(pages);
+
+	gt->npage = gt->gem.size / PAGE_SIZE;
+	gt->pages = pages;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -230,6 +281,7 @@ err:
  */
 static void psb_gtt_detach_pages(struct gtt_range *gt)
 {
+<<<<<<< HEAD
 	int i;
 	for (i = 0; i < gt->npage; i++) {
 		/* FIXME: do we need to force dirty */
@@ -237,6 +289,9 @@ static void psb_gtt_detach_pages(struct gtt_range *gt)
 		page_cache_release(gt->pages[i]);
 	}
 	kfree(gt->pages);
+=======
+	drm_gem_put_pages(&gt->gem, gt->pages, true, false);
+>>>>>>> refs/remotes/origin/master
 	gt->pages = NULL;
 }
 
@@ -262,7 +317,11 @@ int psb_gtt_pin(struct gtt_range *gt)
 		ret = psb_gtt_attach_pages(gt);
 		if (ret < 0)
 			goto out;
+<<<<<<< HEAD
 		ret = psb_gtt_insert(dev, gt);
+=======
+		ret = psb_gtt_insert(dev, gt, 0);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0) {
 			psb_gtt_detach_pages(gt);
 			goto out;
@@ -409,16 +468,27 @@ int psb_gtt_init(struct drm_device *dev, int resume)
 	unsigned long stolen_size, vram_stolen_size;
 	unsigned i, num_pages;
 	unsigned pfn_base;
+<<<<<<< HEAD
 	uint32_t vram_pages;
 	uint32_t dvmt_mode = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct psb_gtt *pg;
 
 	int ret = 0;
 	uint32_t pte;
 
+<<<<<<< HEAD
 	mutex_init(&dev_priv->gtt_mutex);
 
 	psb_gtt_alloc(dev);
+=======
+	if (!resume) {
+		mutex_init(&dev_priv->gtt_mutex);
+		psb_gtt_alloc(dev);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	pg = &dev_priv->gtt;
 
 	/* Enable the GTT */
@@ -483,6 +553,7 @@ int psb_gtt_init(struct drm_device *dev, int resume)
 
 	stolen_size = vram_stolen_size;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "Stolen memory information\n");
 	printk(KERN_INFO "       base in RAM: 0x%x\n", dev_priv->stolen_base);
 	printk(KERN_INFO "       size: %luK, calculated by (GTT RAM base) - (Stolen base), seems wrong\n",
@@ -490,6 +561,10 @@ int psb_gtt_init(struct drm_device *dev, int resume)
 	dvmt_mode = (dev_priv->gmch_ctrl >> 4) & 0x7;
 	printk(KERN_INFO "      the correct size should be: %dM(dvmt mode=%d)\n",
 		(dvmt_mode == 1) ? 1 : (2 << (dvmt_mode - 1)), dvmt_mode);
+=======
+	dev_dbg(dev->dev, "Stolen memory base 0x%x, size %luK\n",
+			dev_priv->stolen_base, vram_stolen_size / 1024);
+>>>>>>> refs/remotes/origin/master
 
 	if (resume && (gtt_pages != pg->gtt_pages) &&
 	    (stolen_size != pg->stolen_size)) {
@@ -505,7 +580,12 @@ int psb_gtt_init(struct drm_device *dev, int resume)
 	/*
 	 *	Map the GTT and the stolen memory area
 	 */
+<<<<<<< HEAD
 	dev_priv->gtt_map = ioremap_nocache(pg->gtt_phys_start,
+=======
+	if (!resume)
+		dev_priv->gtt_map = ioremap_nocache(pg->gtt_phys_start,
+>>>>>>> refs/remotes/origin/master
 						gtt_pages << PAGE_SHIFT);
 	if (!dev_priv->gtt_map) {
 		dev_err(dev->dev, "Failure to map gtt.\n");
@@ -513,7 +593,13 @@ int psb_gtt_init(struct drm_device *dev, int resume)
 		goto out_err;
 	}
 
+<<<<<<< HEAD
 	dev_priv->vram_addr = ioremap_wc(dev_priv->stolen_base, stolen_size);
+=======
+	if (!resume)
+		dev_priv->vram_addr = ioremap_wc(dev_priv->stolen_base,
+						 stolen_size);
+>>>>>>> refs/remotes/origin/master
 	if (!dev_priv->vram_addr) {
 		dev_err(dev->dev, "Failure to map stolen base.\n");
 		ret = -ENOMEM;
@@ -525,8 +611,13 @@ int psb_gtt_init(struct drm_device *dev, int resume)
 	 */
 
 	pfn_base = dev_priv->stolen_base >> PAGE_SHIFT;
+<<<<<<< HEAD
 	vram_pages = num_pages = vram_stolen_size >> PAGE_SHIFT;
 	printk(KERN_INFO"Set up %d stolen pages starting at 0x%08x, GTT offset %dK\n",
+=======
+	num_pages = vram_stolen_size >> PAGE_SHIFT;
+	dev_dbg(dev->dev, "Set up %d stolen pages starting at 0x%08x, GTT offset %dK\n",
+>>>>>>> refs/remotes/origin/master
 		num_pages, pfn_base << PAGE_SHIFT, 0);
 	for (i = 0; i < num_pages; ++i) {
 		pte = psb_gtt_mask_pte(pfn_base + i, 0);
@@ -549,3 +640,34 @@ out_err:
 	psb_gtt_takedown(dev);
 	return ret;
 }
+<<<<<<< HEAD
+=======
+
+int psb_gtt_restore(struct drm_device *dev)
+{
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	struct resource *r = dev_priv->gtt_mem->child;
+	struct gtt_range *range;
+	unsigned int restored = 0, total = 0, size = 0;
+
+	/* On resume, the gtt_mutex is already initialized */
+	mutex_lock(&dev_priv->gtt_mutex);
+	psb_gtt_init(dev, 1);
+
+	while (r != NULL) {
+		range = container_of(r, struct gtt_range, resource);
+		if (range->pages) {
+			psb_gtt_insert(dev, range, 1);
+			size += range->resource.end - range->resource.start;
+			restored++;
+		}
+		r = r->sibling;
+		total++;
+	}
+	mutex_unlock(&dev_priv->gtt_mutex);
+	DRM_DEBUG_DRIVER("Restored %u of %u gtt ranges (%u KB)", restored,
+			 total, (size / 1024));
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master

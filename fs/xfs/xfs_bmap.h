@@ -63,6 +63,7 @@ typedef	struct xfs_bmap_free
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Flags for xfs_bmapi
  */
 #define	XFS_BMAPI_WRITE		0x001	/* write operation: allocate space */
@@ -75,6 +76,8 @@ typedef	struct xfs_bmap_free
 					/* combine contig. space */
 #define	XFS_BMAPI_CONTIG	0x100	/* must allocate only one extent */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Flags for xfs_bmapi_*
  */
 #define XFS_BMAPI_ENTIRE	0x001	/* return entire extent, not trimmed */
@@ -84,12 +87,16 @@ typedef	struct xfs_bmap_free
 #define XFS_BMAPI_IGSTATE	0x010	/* Ignore state - */
 					/* combine contig. space */
 #define XFS_BMAPI_CONTIG	0x020	/* must allocate only one extent */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * unwritten extent conversion - this needs write cache flushing and no additional
  * allocation alignments. When specified with XFS_BMAPI_PREALLOC it converts
  * from written to unwritten, otherwise convert from unwritten to written.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define XFS_BMAPI_CONVERT	0x200
 
@@ -101,13 +108,24 @@ typedef	struct xfs_bmap_free
 
 #define XFS_BMAPI_FLAGS \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define XFS_BMAPI_CONVERT	0x040
+#define XFS_BMAPI_STACK_SWITCH	0x080
+
+#define XFS_BMAPI_FLAGS \
+>>>>>>> refs/remotes/origin/master
 	{ XFS_BMAPI_ENTIRE,	"ENTIRE" }, \
 	{ XFS_BMAPI_METADATA,	"METADATA" }, \
 	{ XFS_BMAPI_ATTRFORK,	"ATTRFORK" }, \
 	{ XFS_BMAPI_PREALLOC,	"PREALLOC" }, \
 	{ XFS_BMAPI_IGSTATE,	"IGSTATE" }, \
 	{ XFS_BMAPI_CONTIG,	"CONTIG" }, \
+<<<<<<< HEAD
 	{ XFS_BMAPI_CONVERT,	"CONVERT" }
+=======
+	{ XFS_BMAPI_CONVERT,	"CONVERT" }, \
+	{ XFS_BMAPI_STACK_SWITCH, "STACK_SWITCH" }
+>>>>>>> refs/remotes/origin/master
 
 
 static inline int xfs_bmapi_aflag(int w)
@@ -128,6 +146,7 @@ static inline void xfs_bmap_init(xfs_bmap_free_t *flp, xfs_fsblock_t *fbp)
 }
 
 /*
+<<<<<<< HEAD
  * Argument structure for xfs_bmap_alloc.
  */
 typedef struct xfs_bmalloca {
@@ -173,6 +192,8 @@ typedef struct xfs_bmalloca {
 } xfs_bmalloca_t;
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Flags for xfs_bmap_add_extent*.
  */
 #define BMAP_LEFT_CONTIG	(1 << 0)
@@ -193,6 +214,7 @@ typedef struct xfs_bmalloca {
 	{ BMAP_ATTRFORK,	"ATTR" }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Add bmap trace insert entries for all the contents of the extent list.
  *
@@ -210,12 +232,18 @@ xfs_bmap_trace_exlist(
 void	xfs_bmap_trace_exlist(struct xfs_inode *ip, xfs_extnum_t cnt,
 		int whichfork, unsigned long caller_ip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef DEBUG
+void	xfs_bmap_trace_exlist(struct xfs_inode *ip, xfs_extnum_t cnt,
+		int whichfork, unsigned long caller_ip);
+>>>>>>> refs/remotes/origin/master
 #define	XFS_BMAP_TRACE_EXLIST(ip,c,w)	\
 	xfs_bmap_trace_exlist(ip,c,w, _THIS_IP_)
 #else
 #define	XFS_BMAP_TRACE_EXLIST(ip,c,w)
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Convert inode from non-attributed to attributed.
@@ -446,6 +474,10 @@ xfs_bmap_punch_delalloc_range(
 	xfs_fileoff_t		length);
 =======
 int	xfs_bmap_add_attrfork(struct xfs_inode *ip, int size, int rsvd);
+=======
+int	xfs_bmap_add_attrfork(struct xfs_inode *ip, int size, int rsvd);
+void	xfs_bmap_local_to_extents_empty(struct xfs_inode *ip, int whichfork);
+>>>>>>> refs/remotes/origin/master
 void	xfs_bmap_add_free(xfs_fsblock_t bno, xfs_filblks_t len,
 		struct xfs_bmap_free *flist, struct xfs_mount *mp);
 void	xfs_bmap_cancel(struct xfs_bmap_free *flist);
@@ -478,6 +510,7 @@ int	xfs_check_nostate_extents(struct xfs_ifork *ifp, xfs_extnum_t idx,
 		xfs_extnum_t num);
 uint	xfs_default_attroffset(struct xfs_inode *ip);
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 /* bmap to userspace formatter - copy to user & advance pointer */
 typedef int (*xfs_bmap_format_t)(void **, struct getbmapx *, int *);
@@ -495,4 +528,6 @@ int	xfs_bmap_punch_delalloc_range(struct xfs_inode *ip,
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_BMAP_H__ */

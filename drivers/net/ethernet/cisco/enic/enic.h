@@ -32,12 +32,21 @@
 
 #define DRV_NAME		"enic"
 #define DRV_DESCRIPTION		"Cisco VIC Ethernet NIC Driver"
+<<<<<<< HEAD
 #define DRV_VERSION		"2.1.1.39"
 #define DRV_COPYRIGHT		"Copyright 2008-2011 Cisco Systems, Inc"
 
 #define ENIC_BARS_MAX		6
 
 #define ENIC_WQ_MAX		1
+=======
+#define DRV_VERSION		"2.1.1.50"
+#define DRV_COPYRIGHT		"Copyright 2008-2013 Cisco Systems, Inc"
+
+#define ENIC_BARS_MAX		6
+
+#define ENIC_WQ_MAX		8
+>>>>>>> refs/remotes/origin/master
 #define ENIC_RQ_MAX		8
 #define ENIC_CQ_MAX		(ENIC_WQ_MAX + ENIC_RQ_MAX)
 #define ENIC_INTR_MAX		(ENIC_CQ_MAX + 2)
@@ -96,6 +105,10 @@ struct enic {
 #ifdef CONFIG_PCI_IOV
 	u16 num_vfs;
 #endif
+<<<<<<< HEAD
+=======
+	spinlock_t enic_api_lock;
+>>>>>>> refs/remotes/origin/master
 	struct enic_port_profile *pp;
 
 	/* work queue cache line section */
@@ -127,9 +140,63 @@ static inline struct device *enic_get_dev(struct enic *enic)
 	return &(enic->pdev->dev);
 }
 
+<<<<<<< HEAD
+=======
+static inline unsigned int enic_cq_rq(struct enic *enic, unsigned int rq)
+{
+	return rq;
+}
+
+static inline unsigned int enic_cq_wq(struct enic *enic, unsigned int wq)
+{
+	return enic->rq_count + wq;
+}
+
+static inline unsigned int enic_legacy_io_intr(void)
+{
+	return 0;
+}
+
+static inline unsigned int enic_legacy_err_intr(void)
+{
+	return 1;
+}
+
+static inline unsigned int enic_legacy_notify_intr(void)
+{
+	return 2;
+}
+
+static inline unsigned int enic_msix_rq_intr(struct enic *enic,
+	unsigned int rq)
+{
+	return enic->cq[enic_cq_rq(enic, rq)].interrupt_offset;
+}
+
+static inline unsigned int enic_msix_wq_intr(struct enic *enic,
+	unsigned int wq)
+{
+	return enic->cq[enic_cq_wq(enic, wq)].interrupt_offset;
+}
+
+static inline unsigned int enic_msix_err_intr(struct enic *enic)
+{
+	return enic->rq_count + enic->wq_count;
+}
+
+static inline unsigned int enic_msix_notify_intr(struct enic *enic)
+{
+	return enic->rq_count + enic->wq_count + 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 void enic_reset_addr_lists(struct enic *enic);
 int enic_sriov_enabled(struct enic *enic);
 int enic_is_valid_vf(struct enic *enic, int vf);
 int enic_is_dynamic(struct enic *enic);
+<<<<<<< HEAD
+=======
+void enic_set_ethtool_ops(struct net_device *netdev);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ENIC_H_ */

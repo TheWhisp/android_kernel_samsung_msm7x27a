@@ -29,9 +29,14 @@
 
 #include <asm/bootinfo.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/bootinfo-vme.h>
+#include <asm/byteorder.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 #include <asm/setup.h>
 #include <asm/irq.h>
@@ -42,7 +47,11 @@
 
 static void bvme6000_get_model(char *model);
 extern void bvme6000_sched_init(irq_handler_t handler);
+<<<<<<< HEAD
 extern unsigned long bvme6000_gettimeoffset (void);
+=======
+extern u32 bvme6000_gettimeoffset(void);
+>>>>>>> refs/remotes/origin/master
 extern int bvme6000_hwclk (int, struct rtc_time *);
 extern int bvme6000_set_clock_mmss (unsigned long);
 extern void bvme6000_reset (void);
@@ -54,9 +63,15 @@ void bvme6000_set_vectors (void);
 static irq_handler_t tick_handler;
 
 
+<<<<<<< HEAD
 int bvme6000_parse_bootinfo(const struct bi_record *bi)
 {
 	if (bi->tag == BI_VME_TYPE)
+=======
+int __init bvme6000_parse_bootinfo(const struct bi_record *bi)
+{
+	if (be16_to_cpu(bi->tag) == BI_VME_TYPE)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	else
 		return 1;
@@ -90,10 +105,14 @@ static void bvme6000_get_model(char *model)
 static void __init bvme6000_init_IRQ(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	m68k_setup_user_interrupt(VEC_USER, 192, NULL);
 =======
 	m68k_setup_user_interrupt(VEC_USER, 192);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m68k_setup_user_interrupt(VEC_USER, 192);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init config_bvme6000(void)
@@ -118,7 +137,11 @@ void __init config_bvme6000(void)
     mach_max_dma_address = 0xffffffff;
     mach_sched_init      = bvme6000_sched_init;
     mach_init_IRQ        = bvme6000_init_IRQ;
+<<<<<<< HEAD
     mach_gettimeoffset   = bvme6000_gettimeoffset;
+=======
+    arch_gettimeoffset   = bvme6000_gettimeoffset;
+>>>>>>> refs/remotes/origin/master
     mach_hwclk           = bvme6000_hwclk;
     mach_set_clock_mmss	 = bvme6000_set_clock_mmss;
     mach_reset		 = bvme6000_reset;
@@ -224,13 +247,21 @@ void bvme6000_sched_init (irq_handler_t timer_routine)
  * results...
  */
 
+<<<<<<< HEAD
 unsigned long bvme6000_gettimeoffset (void)
+=======
+u32 bvme6000_gettimeoffset(void)
+>>>>>>> refs/remotes/origin/master
 {
     volatile RtcPtr_t rtc = (RtcPtr_t)BVME_RTC_BASE;
     volatile PitRegsPtr pit = (PitRegsPtr)BVME_PIT_BASE;
     unsigned char msr = rtc->msr & 0xc0;
     unsigned char t1int, t1op;
+<<<<<<< HEAD
     unsigned long v = 800000, ov;
+=======
+    u32 v = 800000, ov;
+>>>>>>> refs/remotes/origin/master
 
     rtc->msr = 0;	/* Ensure timer registers accessible */
 
@@ -254,7 +285,11 @@ unsigned long bvme6000_gettimeoffset (void)
 	v += 10000;			/* Int pending, + 10ms */
     rtc->msr = msr;
 
+<<<<<<< HEAD
     return v;
+=======
+    return v * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

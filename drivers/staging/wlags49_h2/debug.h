@@ -44,10 +44,14 @@
  * Disclaimer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
 =======
  * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -87,7 +91,12 @@
    the types of messages displayed */
 #ifndef DBG_LVL
 #define DBG_LVL 5			/* yields nothing via init_module,
+<<<<<<< HEAD
 							   original value of 5 yields DBG_TRACE_ON and DBG_VERBOSE_ON */
+=======
+					   original value of 5 yields
+					   DBG_TRACE_ON and DBG_VERBOSE_ON */
+>>>>>>> refs/remotes/origin/master
 #endif  /*  DBG_LVL*/
 
 
@@ -109,6 +118,7 @@
 #define DBG_LEVEL(A)        ((A)->dbgLevel)
 
 
+<<<<<<< HEAD
 #ifndef PRINTK
 #   define PRINTK(S...)     printk(S)
 #endif /* PRINTK */
@@ -116,10 +126,15 @@
 
 #ifndef DBG_PRINT
 #   define DBG_PRINT(S...)  PRINTK(KERN_DEBUG S)
+=======
+#ifndef DBG_PRINT
+#   define DBG_PRINT(S...)  printk(KERN_DEBUG S)
+>>>>>>> refs/remotes/origin/master
 #endif /* DBG_PRINT */
 
 
 #ifndef DBG_PRINTC
+<<<<<<< HEAD
 #   define DBG_PRINTC(S...) PRINTK(S)
 #endif /* DBG_PRINTC */
 
@@ -157,10 +172,17 @@
 #define DBG_LEAVE(A)        {if (DBG_FLAGS(A) & DBG_TRACE_ON) \
 				 _DBG_LEAVE(A); }
 
+=======
+#   define DBG_PRINTC(S...) printk(S)
+#endif /* DBG_PRINTC */
+
+
+>>>>>>> refs/remotes/origin/master
 #define DBG_PARAM(A, N, F, S...)   {if (DBG_FLAGS(A) & DBG_PARAM_ON) \
 				DBG_PRINT("  %s -- "F"\n", N, S); }
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DBG_ERROR(A, S...)   {if (DBG_FLAGS(A) & DBG_ERROR_ON) {\
 				DBG_PRINT("%s:ERROR:%s ", DBG_NAME(A), __FUNC__);\
@@ -186,11 +208,16 @@
 				DBG_PRINT("%s:%s ", DBG_NAME(A), __FUNC__);\
 				DBG_PRINTC(S); } } while (0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DBG_ERROR(A, S...) do {						\
 		if (DBG_FLAGS(A) & DBG_ERROR_ON) {			\
 			DBG_PRINT("%s:ERROR:%s ", DBG_NAME(A), __func__); \
 			DBG_PRINTC(S);					\
+<<<<<<< HEAD
 			DBG_TRAP;					\
+=======
+>>>>>>> refs/remotes/origin/master
 		} } while (0)
 
 
@@ -213,7 +240,10 @@
 			DBG_PRINT("%s:%s ", DBG_NAME(A), __func__);	\
 			DBG_PRINTC(S);					\
 		} } while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 #define DBG_RX(A, S...)      {if (DBG_FLAGS(A) & DBG_RX_ON) {\
@@ -228,6 +258,7 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DBG_ASSERT(C)		{ \
 				if (!(C)) {\
 					DBG_PRINT("ASSERT(%s) -- %s#%d (%s)\n", \
@@ -236,10 +267,13 @@
 					} \
 					}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DBG_ASSERT(C) do { \
 		if (!(C)) {						\
 			DBG_PRINT("ASSERT(%s) -- %s#%d (%s)\n",		\
 				  #C, __FILE__, __LINE__, __func__);	\
+<<<<<<< HEAD
 			DBG_TRAP;					\
 		} } while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -249,18 +283,33 @@ typedef struct {
     int             dbgLevel;
     unsigned long   DebugFlag;
 } dbg_info_t;
+=======
+		} } while (0)
+
+struct dbg_info {
+	char		*dbgName;
+	int		dbgLevel;
+	unsigned long	DebugFlag;
+};
+
+extern struct dbg_info *DbgInfo;
+>>>>>>> refs/remotes/origin/master
 
 
 /****************************************************************************/
 #else /* DBG */
 /****************************************************************************/
 
+<<<<<<< HEAD
 #define DBG_DEFN
 #define DBG_TRAP
 #define DBG_FUNC(F)
 #define DBG_PRINT(S...)
 #define DBG_ENTER(A)
 #define DBG_LEAVE(A)
+=======
+#define DBG_PRINT(S...)
+>>>>>>> refs/remotes/origin/master
 #define DBG_PARAM(A, N, F, S...)
 #define DBG_ERROR(A, S...)
 #define DBG_WARNING(A, S...)

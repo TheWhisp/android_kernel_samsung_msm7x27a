@@ -1,5 +1,6 @@
 #ifndef _LINUX_PTRACE_H
 #define _LINUX_PTRACE_H
+<<<<<<< HEAD
 /* ptrace.h */
 /* structs and defines to help the user use the ptrace system call. */
 
@@ -92,6 +93,16 @@
 
 #ifdef __KERNEL__
 /*
+=======
+
+#include <linux/compiler.h>		/* For unlikely.  */
+#include <linux/sched.h>		/* For struct task_struct.  */
+#include <linux/err.h>			/* for IS_ERR_VALUE */
+#include <linux/bug.h>			/* For BUG_ON.  */
+#include <uapi/linux/ptrace.h>
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Ptrace flags
  *
  * The owner ship rules for task->ptrace which holds the ptrace
@@ -99,6 +110,7 @@
  * flags.  When the a task is stopped the ptracer owns task->ptrace.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define PT_PTRACED	0x00000001
 #define PT_DTRACE	0x00000002	/* delayed trace (used on m68k, i386) */
@@ -113,6 +125,8 @@
 
 #define PT_TRACE_MASK	0x000003f4
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PT_SEIZED	0x00010000	/* SEIZE used, enable new behavior */
 #define PT_PTRACED	0x00000001
 #define PT_DTRACE	0x00000002	/* delayed trace (used on m68k, i386) */
@@ -128,7 +142,13 @@
 #define PT_TRACE_EXEC		PT_EVENT_FLAG(PTRACE_EVENT_EXEC)
 #define PT_TRACE_VFORK_DONE	PT_EVENT_FLAG(PTRACE_EVENT_VFORK_DONE)
 #define PT_TRACE_EXIT		PT_EVENT_FLAG(PTRACE_EVENT_EXIT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PT_TRACE_SECCOMP	PT_EVENT_FLAG(PTRACE_EVENT_SECCOMP)
+
+#define PT_EXITKILL		(PTRACE_O_EXITKILL << PT_OPT_FLAG_SHIFT)
+>>>>>>> refs/remotes/origin/master
 
 /* single stepping state bits (used on ARM and PA-RISC) */
 #define PT_SINGLESTEP_BIT	31
@@ -136,6 +156,7 @@
 #define PT_BLOCKSTEP_BIT	30
 #define PT_BLOCKSTEP		(1<<PT_BLOCKSTEP_BIT)
 
+<<<<<<< HEAD
 #include <linux/compiler.h>		/* For unlikely.  */
 #include <linux/sched.h>		/* For struct task_struct.  */
 <<<<<<< HEAD
@@ -145,16 +166,21 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern long arch_ptrace(struct task_struct *child, long request,
 			unsigned long addr, unsigned long data);
 extern int ptrace_readdata(struct task_struct *tsk, unsigned long src, char __user *dst, int len);
 extern int ptrace_writedata(struct task_struct *tsk, char __user *src, unsigned long dst, int len);
 extern void ptrace_disable(struct task_struct *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int ptrace_check_attach(struct task_struct *task, int kill);
 =======
 extern int ptrace_check_attach(struct task_struct *task, bool ignore_state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int ptrace_request(struct task_struct *child, long request,
 			  unsigned long addr, unsigned long data);
 extern void ptrace_notify(int exit_code);
@@ -162,6 +188,7 @@ extern void __ptrace_link(struct task_struct *child,
 			  struct task_struct *new_parent);
 extern void __ptrace_unlink(struct task_struct *child);
 extern void exit_ptrace(struct task_struct *tracer);
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define PTRACE_MODE_READ   1
 #define PTRACE_MODE_ATTACH 2
@@ -172,16 +199,25 @@ extern void exit_ptrace(struct task_struct *tracer);
 >>>>>>> refs/remotes/origin/cm-10.0
 /* Returns 0 on success, -errno on denial. */
 extern int __ptrace_may_access(struct task_struct *task, unsigned int mode);
+=======
+#define PTRACE_MODE_READ	0x01
+#define PTRACE_MODE_ATTACH	0x02
+#define PTRACE_MODE_NOAUDIT	0x04
+>>>>>>> refs/remotes/origin/master
 /* Returns true on success, false on denial. */
 extern bool ptrace_may_access(struct task_struct *task, unsigned int mode);
 
 static inline int ptrace_reparented(struct task_struct *child)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return child->real_parent != child->parent;
 =======
 	return !same_thread_group(child->real_parent, child->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return !same_thread_group(child->real_parent, child->parent);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void ptrace_unlink(struct task_struct *child)
@@ -197,6 +233,7 @@ int generic_ptrace_pokedata(struct task_struct *tsk, unsigned long addr,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * task_ptrace - return %PT_* flags that apply to a task
  * @task:	pointer to &task_struct in question
  *
@@ -206,6 +243,8 @@ static inline int task_ptrace(struct task_struct *task)
 {
 	return task->ptrace;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ptrace_parent - return the task that is tracing the given task
  * @task: task to consider
  *
@@ -235,11 +274,15 @@ static inline struct task_struct *ptrace_parent(struct task_struct *task)
 static inline bool ptrace_event_enabled(struct task_struct *task, int event)
 {
 	return task->ptrace & PT_EVENT_FLAG(event);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * ptrace_event - possibly stop for a ptrace event notification
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @mask:	%PT_* bit to check in @current->ptrace
  * @event:	%PTRACE_EVENT_* value to report if @mask is set
@@ -260,6 +303,8 @@ static inline int ptrace_event(int mask, int event, unsigned long message)
 	ptrace_notify((event << 8) | SIGTRAP);
 	return 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @event:	%PTRACE_EVENT_* value to report
  * @message:	value for %PTRACE_GETEVENTMSG to return
  *
@@ -278,7 +323,10 @@ static inline void ptrace_event(int event, unsigned long message)
 		if ((current->ptrace & (PT_PTRACED|PT_SEIZED)) == PT_PTRACED)
 			send_sig(SIGTRAP, current, 0);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -296,6 +344,7 @@ static inline void ptrace_init_task(struct task_struct *child, bool ptrace)
 	INIT_LIST_HEAD(&child->ptrace_entry);
 	INIT_LIST_HEAD(&child->ptraced);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	child->parent = child->real_parent;
 	child->ptrace = 0;
 	if (unlikely(ptrace) && (current->ptrace & PT_PTRACED)) {
@@ -310,6 +359,8 @@ static inline void ptrace_init_task(struct task_struct *child, bool ptrace)
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 	atomic_set(&child->ptrace_bp_refcnt, 1);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	child->jobctl = 0;
 	child->ptrace = 0;
 	child->parent = child->real_parent;
@@ -325,7 +376,10 @@ static inline void ptrace_init_task(struct task_struct *child, bool ptrace)
 
 		set_tsk_thread_flag(child, TIF_SIGPENDING);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -357,7 +411,10 @@ static inline void ptrace_release_task(struct task_struct *task)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef is_syscall_success
 /*
  * On most systems we can tell if a syscall is a success based on if the retval
@@ -367,7 +424,10 @@ static inline void ptrace_release_task(struct task_struct *task)
 #define is_syscall_success(regs) (!IS_ERR_VALUE((unsigned long)(regs_return_value(regs))))
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * <asm/ptrace.h> should define the following things inside #ifdef __KERNEL__.
  *
@@ -495,10 +555,35 @@ static inline void user_single_step_siginfo(struct task_struct *tsk,
 #define arch_ptrace_stop(code, info)		do { } while (0)
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef current_pt_regs
+#define current_pt_regs() task_pt_regs(current)
+#endif
+
+#ifndef ptrace_signal_deliver
+#define ptrace_signal_deliver() ((void)0)
+#endif
+
+/*
+ * unlike current_pt_regs(), this one is equal to task_pt_regs(current)
+ * on *all* architectures; the only reason to have a per-arch definition
+ * is optimisation.
+ */
+#ifndef signal_pt_regs
+#define signal_pt_regs() task_pt_regs(current)
+#endif
+
+#ifndef current_user_stack_pointer
+#define current_user_stack_pointer() user_stack_pointer(current_pt_regs())
+#endif
+
+>>>>>>> refs/remotes/origin/master
 extern int task_current_syscall(struct task_struct *target, long *callno,
 				unsigned long args[6], unsigned int maxargs,
 				unsigned long *sp, unsigned long *pc);
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 extern int ptrace_get_breakpoints(struct task_struct *tsk);
 extern void ptrace_put_breakpoints(struct task_struct *tsk);
@@ -508,4 +593,6 @@ static inline void ptrace_put_breakpoints(struct task_struct *tsk) { }
 
 #endif /* __KERNEL */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

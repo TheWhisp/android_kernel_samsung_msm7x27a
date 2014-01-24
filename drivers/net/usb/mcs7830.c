@@ -123,6 +123,7 @@ static const char driver_name[] = "MOSCHIP usb-ethernet driver";
 
 static int mcs7830_get_reg(struct usbnet *dev, u16 index, u16 size, void *data)
 {
+<<<<<<< HEAD
 	struct usb_device *xdev = dev->udev;
 	int ret;
 	void *buffer;
@@ -138,10 +139,15 @@ static int mcs7830_get_reg(struct usbnet *dev, u16 index, u16 size, void *data)
 	kfree(buffer);
 
 	return ret;
+=======
+	return usbnet_read_cmd(dev, MCS7830_RD_BREQ, MCS7830_RD_BMREQ,
+				0x0000, index, data, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mcs7830_set_reg(struct usbnet *dev, u16 index, u16 size, const void *data)
 {
+<<<<<<< HEAD
 	struct usb_device *xdev = dev->udev;
 	int ret;
 	void *buffer;
@@ -168,10 +174,15 @@ static void mcs7830_async_cmd_callback(struct urb *urb)
 
 	kfree(req);
 	usb_free_urb(urb);
+=======
+	return usbnet_write_cmd(dev, MCS7830_WR_BREQ, MCS7830_WR_BMREQ,
+				0x0000, index, data, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mcs7830_set_reg_async(struct usbnet *dev, u16 index, u16 size, void *data)
 {
+<<<<<<< HEAD
 	struct usb_ctrlrequest *req;
 	int ret;
 	struct urb *urb;
@@ -210,6 +221,10 @@ static void mcs7830_set_reg_async(struct usbnet *dev, u16 index, u16 size, void 
 out:
 	kfree(req);
 	usb_free_urb(urb);
+=======
+	usbnet_write_cmd_async(dev, MCS7830_WR_BREQ, MCS7830_WR_BMREQ,
+				0x0000, index, data, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int mcs7830_hif_get_mac_address(struct usbnet *dev, unsigned char *addr)
@@ -240,10 +255,14 @@ static int mcs7830_set_mac_address(struct net_device *netdev, void *p)
 
 	if (!is_valid_ether_addr(addr->sa_data))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -EINVAL;
 =======
 		return -EADDRNOTAVAIL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EADDRNOTAVAIL;
+>>>>>>> refs/remotes/origin/master
 
 	ret = mcs7830_hif_set_mac_address(dev, addr->sa_data);
 
@@ -558,10 +577,14 @@ static const struct net_device_ops mcs7830_netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 	.ndo_do_ioctl 		= mcs7830_ioctl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = mcs7830_set_multicast,
 =======
 	.ndo_set_rx_mode	= mcs7830_set_multicast,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= mcs7830_set_multicast,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= mcs7830_set_mac_address,
 };
 
@@ -637,11 +660,35 @@ static int mcs7830_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 	return skb->len > 0;
 }
 
+<<<<<<< HEAD
+=======
+static void mcs7830_status(struct usbnet *dev, struct urb *urb)
+{
+	u8 *buf = urb->transfer_buffer;
+	bool link, link_changed;
+
+	if (urb->actual_length < 16)
+		return;
+
+	link = !(buf[1] == 0x20);
+	link_changed = netif_carrier_ok(dev->net) != link;
+	if (link_changed) {
+		usbnet_link_change(dev, link, 0);
+		netdev_dbg(dev->net, "Link Status is: %d\n", link);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct driver_info moschip_info = {
 	.description	= "MOSCHIP 7830/7832/7730 usb-NET adapter",
 	.bind		= mcs7830_bind,
 	.rx_fixup	= mcs7830_rx_fixup,
+<<<<<<< HEAD
 	.flags		= FLAG_ETHER,
+=======
+	.flags		= FLAG_ETHER | FLAG_LINK_INTR,
+	.status		= mcs7830_status,
+>>>>>>> refs/remotes/origin/master
 	.in		= 1,
 	.out		= 2,
 };
@@ -650,7 +697,12 @@ static const struct driver_info sitecom_info = {
 	.description    = "Sitecom LN-30 usb-NET adapter",
 	.bind		= mcs7830_bind,
 	.rx_fixup	= mcs7830_rx_fixup,
+<<<<<<< HEAD
 	.flags		= FLAG_ETHER,
+=======
+	.flags		= FLAG_ETHER | FLAG_LINK_INTR,
+	.status		= mcs7830_status,
+>>>>>>> refs/remotes/origin/master
 	.in		= 1,
 	.out		= 2,
 };
@@ -698,6 +750,7 @@ static struct usb_driver mcs7830_driver = {
 	.suspend = usbnet_suspend,
 	.resume = usbnet_resume,
 	.reset_resume = mcs7830_reset_resume,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -715,6 +768,12 @@ module_exit(mcs7830_exit);
 =======
 module_usb_driver(mcs7830_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(mcs7830_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("USB to network adapter MCS7830)");
 MODULE_LICENSE("GPL");

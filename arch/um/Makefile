@@ -6,6 +6,20 @@
 # Licensed under the GPL
 #
 
+<<<<<<< HEAD
+=======
+# select defconfig based on actual architecture
+ifeq ($(SUBARCH),x86)
+  ifeq ($(shell uname -m),x86_64)
+        KBUILD_DEFCONFIG := x86_64_defconfig
+  else
+        KBUILD_DEFCONFIG := i386_defconfig
+  endif
+else
+        KBUILD_DEFCONFIG := $(SUBARCH)_defconfig
+endif
+
+>>>>>>> refs/remotes/origin/master
 ARCH_DIR := arch/um
 OS := $(shell uname -s)
 # We require bash because the vmlinux link and loader script cpp use bash
@@ -20,6 +34,7 @@ core-y			+= $(ARCH_DIR)/kernel/		\
 
 MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 include $(srctree)/$(ARCH_DIR)/Makefile-skas
 
@@ -39,6 +54,15 @@ ifeq ($(SUBARCH),i386)
 endif
 ifeq ($(SUBARCH),x86_64)
         HEADER_ARCH := x86
+=======
+HEADER_ARCH 	:= $(SUBARCH)
+
+ifneq ($(filter $(SUBARCH),x86 x86_64 i386),)
+	HEADER_ARCH := x86
+endif
+
+ifdef CONFIG_64BIT
+>>>>>>> refs/remotes/origin/master
 	KBUILD_CFLAGS += -mcmodel=large
 endif
 
@@ -53,7 +77,10 @@ SHARED_HEADERS	:= $(ARCH_DIR)/include/shared
 ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
 ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
 KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
 # named - it's a common symbol in libpcap, so we get a binary which crashes.
@@ -64,21 +91,28 @@ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
 # These apply to USER_CFLAGS to.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ -DSUBARCH=\"$(SUBARCH)\" \
 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
 	-Din6addr_loopback=kernel_in6addr_loopback \
 	-Din6addr_any=kernel_in6addr_any
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
 	-Din6addr_loopback=kernel_in6addr_loopback \
 	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 KBUILD_AFLAGS += $(ARCH_INCLUDE)
 
 USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -D__KERNEL__,,\
 	$(patsubst -I%,,$(KBUILD_CFLAGS)))) $(ARCH_INCLUDE) $(MODE_INCLUDE) \
+<<<<<<< HEAD
 <<<<<<< HEAD
 	$(filter -I%,$(CFLAGS)) -D_FILE_OFFSET_BITS=64
 
@@ -86,16 +120,26 @@ include $(srctree)/$(ARCH_DIR)/Makefile-$(SUBARCH)
 =======
 	$(filter -I%,$(CFLAGS)) -D_FILE_OFFSET_BITS=64 -idirafter include
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	$(filter -I%,$(CFLAGS)) -D_FILE_OFFSET_BITS=64 -idirafter include
+>>>>>>> refs/remotes/origin/master
 
 #This will adjust *FLAGS accordingly to the platform.
 include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 KBUILD_CPPFLAGS += -I$(srctree)/arch/$(HEADER_ARCH)/include
 =======
 KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
 		   -I$(HOST_DIR)/include/generated
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
+		   -I$(srctree)/$(HOST_DIR)/include/uapi \
+		   -I$(HOST_DIR)/include/generated \
+		   -I$(HOST_DIR)/include/generated/uapi
+>>>>>>> refs/remotes/origin/master
 
 # -Derrno=kernel_errno - This turns all kernel references to errno into
 # kernel_errno to separate them from the libc errno.  This allows -fno-common
@@ -126,11 +170,14 @@ define archhelp
 endef
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 KBUILD_KCONFIG := arch/um/Kconfig.$(HEADER_ARCH)
 
 archprepare: $(SHARED_HEADERS)/user_constants.h
 archprepare: $(SHARED_HEADERS)/kern_constants.h
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 KBUILD_KCONFIG := $(HOST_DIR)/um/Kconfig
 
 archheaders:
@@ -138,7 +185,10 @@ archheaders:
 		ARCH=$(HEADER_ARCH) O='$(objtree)' archheaders
 
 archprepare: include/generated/user_constants.h
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 LINK-$(CONFIG_LD_SCRIPT_STATIC) += -static
 LINK-$(CONFIG_LD_SCRIPT_DYN) += -Wl,-rpath,/lib
@@ -157,6 +207,7 @@ LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
 
 LD_FLAGS_CMDLINE = $(foreach opt,$(LDFLAGS),-Wl,$(opt))
 
+<<<<<<< HEAD
 CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
 define cmd_vmlinux__
 	$(CC) $(CFLAGS_vmlinux) -o $@ \
@@ -176,6 +227,14 @@ CLEAN_FILES += linux x.i gmon.out \
 =======
 CLEAN_FILES += linux x.i gmon.out
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# Used by link-vmlinux.sh which has special support for um link
+export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
+
+# When cleaning we don't include .config, so we don't include
+# TT or skas makefiles and don't clean skas_ptregs.h.
+CLEAN_FILES += linux x.i gmon.out
+>>>>>>> refs/remotes/origin/master
 
 archclean:
 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
@@ -184,12 +243,17 @@ archclean:
 # Generated files
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s: FORCE
 	$(Q)$(MAKE) $(build)=$(ARCH_DIR)/sys-$(SUBARCH) $@
 =======
 $(HOST_DIR)/um/user-offsets.s: __headers FORCE
 	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+$(HOST_DIR)/um/user-offsets.s: __headers FORCE
+	$(Q)$(MAKE) $(build)=$(HOST_DIR)/um $@
+>>>>>>> refs/remotes/origin/master
 
 define filechk_gen-asm-offsets
         (set -e; \
@@ -205,6 +269,7 @@ define filechk_gen-asm-offsets
 endef
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 $(SHARED_HEADERS)/user_constants.h: $(ARCH_DIR)/sys-$(SUBARCH)/user-offsets.s
 	$(call filechk,gen-asm-offsets)
 
@@ -214,8 +279,13 @@ $(SHARED_HEADERS)/kern_constants.h:
 
 export SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS HEADER_ARCH DEV_NULL_PATH
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 include/generated/user_constants.h: $(HOST_DIR)/um/user-offsets.s
 	$(call filechk,gen-asm-offsets)
 
 export SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS DEV_NULL_PATH
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

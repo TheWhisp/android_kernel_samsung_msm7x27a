@@ -29,17 +29,29 @@
 #include <asm/mach/irq.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
+=======
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 
 #include <plat/devs.h>
 #include <plat/cpu.h>
+<<<<<<< HEAD
 #include <plat/s3c244x.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/pm.h>
 
 #include <plat/gpio-core.h>
 #include <plat/gpio-cfg.h>
 #include <plat/gpio-cfg-helpers.h>
 
+<<<<<<< HEAD
+=======
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 static struct device s3c2440_dev = {
 	.bus		= &s3c2440_subsys,
 };
@@ -57,9 +69,15 @@ int __init s3c2440_init(void)
 
 #ifdef CONFIG_PM
 	register_syscore_ops(&s3c2410_pm_syscore_ops);
+<<<<<<< HEAD
 #endif
 	register_syscore_ops(&s3c244x_pm_syscore_ops);
 	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+=======
+	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+#endif
+	register_syscore_ops(&s3c244x_pm_syscore_ops);
+>>>>>>> refs/remotes/origin/master
 
 	/* register our system device for everything else */
 

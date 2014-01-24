@@ -19,6 +19,10 @@
 #include <linux/errno.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 
 #include <asm/dcr.h>
@@ -116,10 +120,14 @@ static int __init ppc4xx_l2c_probe(void)
 
 	/* Install error handler */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(irq, l2c_error_handler, IRQF_DISABLED, "L2C", 0) < 0) {
 =======
 	if (request_irq(irq, l2c_error_handler, 0, "L2C", 0) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(irq, l2c_error_handler, 0, "L2C", 0) < 0) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "Cannot install L2C error handler"
 		       ", cache is not enabled\n");
 		of_node_put(np);

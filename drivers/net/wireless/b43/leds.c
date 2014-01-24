@@ -6,10 +6,14 @@
   Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>,
   Copyright (c) 2005 Stefano Brivio <stefano.brivio@polimi.it>
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) 2005-2007 Michael Buesch <mb@bu3sch.de>
 =======
   Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
   Copyright (c) 2005 Danny van Dyk <kugelfang@gentoo.org>
   Copyright (c) 2005 Andreas Jaggi <andreas.jaggi@waterwave.ch>
 
@@ -79,10 +83,14 @@ static void b43_led_update(struct b43_wldev *dev,
 		turn_on = atomic_read(&led->state) != LED_OFF;
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		turn_on = 0;
 =======
 		turn_on = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		turn_on = false;
+>>>>>>> refs/remotes/origin/master
 	if (turn_on == led->hw_state)
 		return;
 	led->hw_state = turn_on;
@@ -147,10 +155,14 @@ static int b43_register_led(struct b43_wldev *dev, struct b43_led *led,
 	led->led_dev.brightness_set = b43_led_brightness_set;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = led_classdev_register(dev->sdev->dev, &led->led_dev);
 =======
 	err = led_classdev_register(dev->dev->dev, &led->led_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = led_classdev_register(dev->dev->dev, &led->led_dev);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		b43warn(dev->wl, "LEDs: Failed to register %s\n", name);
 		led->wl = NULL;
@@ -228,6 +240,7 @@ static void b43_led_get_sprominfo(struct b43_wldev *dev,
 				  bool *activelow)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ssb_bus *bus = dev->sdev->bus;
 	u8 sprom[4];
 
@@ -236,17 +249,23 @@ static void b43_led_get_sprominfo(struct b43_wldev *dev,
 	sprom[2] = bus->sprom.gpio2;
 	sprom[3] = bus->sprom.gpio3;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 sprom[4];
 
 	sprom[0] = dev->dev->bus_sprom->gpio0;
 	sprom[1] = dev->dev->bus_sprom->gpio1;
 	sprom[2] = dev->dev->bus_sprom->gpio2;
 	sprom[3] = dev->dev->bus_sprom->gpio3;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (sprom[led_index] == 0xFF) {
 		/* There is no LED information in the SPROM
 		 * for this LED. Hardcode it here. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		*activelow = 0;
 		switch (led_index) {
@@ -255,22 +274,31 @@ static void b43_led_get_sprominfo(struct b43_wldev *dev,
 			*activelow = 1;
 			if (bus->boardinfo.vendor == PCI_VENDOR_ID_COMPAQ)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		*activelow = false;
 		switch (led_index) {
 		case 0:
 			*behaviour = B43_LED_ACTIVITY;
 			*activelow = true;
 			if (dev->dev->board_vendor == PCI_VENDOR_ID_COMPAQ)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				*behaviour = B43_LED_RADIO_ALL;
 			break;
 		case 1:
 			*behaviour = B43_LED_RADIO_B;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (bus->boardinfo.vendor == PCI_VENDOR_ID_ASUSTEK)
 =======
 			if (dev->dev->board_vendor == PCI_VENDOR_ID_ASUSTEK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (dev->dev->board_vendor == PCI_VENDOR_ID_ASUSTEK)
+>>>>>>> refs/remotes/origin/master
 				*behaviour = B43_LED_ASSOC;
 			break;
 		case 2:
@@ -303,18 +331,24 @@ void b43_leds_init(struct b43_wldev *dev)
 		if (dev->phy.radio_on && b43_is_hw_radio_enabled(dev)) {
 			b43_led_turn_on(dev, led->index, led->activelow);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			led->hw_state = 1;
 			atomic_set(&led->state, 1);
 		} else {
 			b43_led_turn_off(dev, led->index, led->activelow);
 			led->hw_state = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			led->hw_state = true;
 			atomic_set(&led->state, 1);
 		} else {
 			b43_led_turn_off(dev, led->index, led->activelow);
 			led->hw_state = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			atomic_set(&led->state, 0);
 		}
 	}
@@ -324,30 +358,42 @@ void b43_leds_init(struct b43_wldev *dev)
 	if (led->wl) {
 		b43_led_turn_off(dev, led->index, led->activelow);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		led->hw_state = 0;
 =======
 		led->hw_state = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		led->hw_state = false;
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&led->state, 0);
 	}
 	led = &dev->wl->leds.led_rx;
 	if (led->wl) {
 		b43_led_turn_off(dev, led->index, led->activelow);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		led->hw_state = 0;
 =======
 		led->hw_state = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		led->hw_state = false;
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&led->state, 0);
 	}
 	led = &dev->wl->leds.led_assoc;
 	if (led->wl) {
 		b43_led_turn_off(dev, led->index, led->activelow);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		led->hw_state = 0;
 =======
 		led->hw_state = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		led->hw_state = false;
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&led->state, 0);
 	}
 

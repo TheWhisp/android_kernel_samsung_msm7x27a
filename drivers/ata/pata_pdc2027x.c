@@ -64,9 +64,15 @@ enum {
 
 static int pdc2027x_init_one(struct pci_dev *pdev, const struct pci_device_id *ent);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int pdc2027x_reinit_one(struct pci_dev *pdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM
+static int pdc2027x_reinit_one(struct pci_dev *pdev);
+#endif
+>>>>>>> refs/remotes/origin/master
 static int pdc2027x_prereset(struct ata_link *link, unsigned long deadline);
 static void pdc2027x_set_piomode(struct ata_port *ap, struct ata_device *adev);
 static void pdc2027x_set_dmamode(struct ata_port *ap, struct ata_device *adev);
@@ -131,12 +137,18 @@ static struct pci_driver pdc2027x_pci_driver = {
 	.probe			= pdc2027x_init_one,
 	.remove			= ata_pci_remove_one,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend		= ata_pci_device_suspend,
 	.resume			= pdc2027x_reinit_one,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct scsi_host_template pdc2027x_sht = {
@@ -667,10 +679,14 @@ static int pdc_hardware_init(struct ata_host *host, unsigned int board_idx)
 	pll_clock = pdc_detect_pll_input_clock(host);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_printk(KERN_INFO, host->dev, "PLL input clock %ld kHz\n", pll_clock/1000);
 =======
 	dev_info(host->dev, "PLL input clock %ld kHz\n", pll_clock/1000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_info(host->dev, "PLL input clock %ld kHz\n", pll_clock/1000);
+>>>>>>> refs/remotes/origin/master
 
 	/* Adjust PLL control register */
 	pdc_adjust_pll(host, pll_clock, board_idx);
@@ -710,12 +726,18 @@ static void pdc_ata_setup_port(struct ata_ioports *port, void __iomem *base)
  * @pdev: instance of pci_dev found
  * @ent:  matching entry in the id_tbl[]
  */
+<<<<<<< HEAD
 static int __devinit pdc2027x_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pdc2027x_init_one(struct pci_dev *pdev,
+			     const struct pci_device_id *ent)
+{
+>>>>>>> refs/remotes/origin/master
 	static const unsigned long cmd_offset[] = { 0x17c0, 0x15c0 };
 	static const unsigned long bmdma_offset[] = { 0x1000, 0x1008 };
 	unsigned int board_idx = (unsigned int) ent->driver_data;
@@ -726,11 +748,15 @@ static int __devinit pdc2027x_init_one(struct pci_dev *pdev, const struct pci_de
 	int i, rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* alloc host */
 	host = ata_host_alloc_pinfo(&pdev->dev, ppi, 2);
@@ -779,11 +805,18 @@ static int __devinit pdc2027x_init_one(struct pci_dev *pdev, const struct pci_de
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_PM
 static int pdc2027x_reinit_one(struct pci_dev *pdev)
 {
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+#ifdef CONFIG_PM
+static int pdc2027x_reinit_one(struct pci_dev *pdev)
+{
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	unsigned int board_idx;
 	int rc;
 
@@ -805,6 +838,7 @@ static int pdc2027x_reinit_one(struct pci_dev *pdev)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /**
  * pdc2027x_init - Called after this module is loaded into the kernel.
@@ -824,3 +858,6 @@ static void __exit pdc2027x_exit(void)
 
 module_init(pdc2027x_init);
 module_exit(pdc2027x_exit);
+=======
+module_pci_driver(pdc2027x_pci_driver);
+>>>>>>> refs/remotes/origin/master

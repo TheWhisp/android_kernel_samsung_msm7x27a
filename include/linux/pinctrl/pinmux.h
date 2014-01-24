@@ -14,7 +14,11 @@
 
 #include <linux/list.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
 #include "pinctrl.h"
+=======
+#include <linux/pinctrl/pinctrl.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PINMUX
 
@@ -23,15 +27,24 @@ struct pinctrl_dev;
 /**
  * struct pinmux_ops - pinmux operations, to be implemented by pin controller
  * drivers that support pinmuxing
+<<<<<<< HEAD
  * @request: called by the core to see if a certain pin can be made available
+=======
+ * @request: called by the core to see if a certain pin can be made
+>>>>>>> refs/remotes/origin/master
  *	available for muxing. This is called by the core to acquire the pins
  *	before selecting any actual mux setting across a function. The driver
  *	is allowed to answer "no" by returning a negative error code
  * @free: the reverse function of the request() callback, frees a pin after
  *	being requested
+<<<<<<< HEAD
  * @list_functions: list the number of selectable named functions available
  *	in this pinmux driver, the core will begin on 0 and call this
  *	repeatedly as long as it returns >= 0 to enumerate mux settings
+=======
+ * @get_functions_count: returns number of selectable named functions available
+ *	in this pinmux driver
+>>>>>>> refs/remotes/origin/master
  * @get_function_name: return the function name of the muxing selector,
  *	called by the core to figure out which mux setting it shall map a
  *	certain device to
@@ -62,7 +75,11 @@ struct pinctrl_dev;
 struct pinmux_ops {
 	int (*request) (struct pinctrl_dev *pctldev, unsigned offset);
 	int (*free) (struct pinctrl_dev *pctldev, unsigned offset);
+<<<<<<< HEAD
 	int (*list_functions) (struct pinctrl_dev *pctldev, unsigned selector);
+=======
+	int (*get_functions_count) (struct pinctrl_dev *pctldev);
+>>>>>>> refs/remotes/origin/master
 	const char *(*get_function_name) (struct pinctrl_dev *pctldev,
 					  unsigned selector);
 	int (*get_function_groups) (struct pinctrl_dev *pctldev,

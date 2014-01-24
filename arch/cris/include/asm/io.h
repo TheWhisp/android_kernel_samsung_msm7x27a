@@ -3,6 +3,10 @@
 
 #include <asm/page.h>   /* for __va, __pa */
 #include <arch/io.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/iomap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 
 struct cris_io_operations
@@ -167,6 +171,12 @@ static inline void outsl(unsigned int port, const void *addr,
 		cris_iops->write_io(port, (void *)addr, 4, count);
 }
 
+<<<<<<< HEAD
+=======
+#define inb_p(port)             inb(port)
+#define outb_p(val, port)       outb((val), (port))
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Convert a physical pointer to a virtual kernel pointer for /dev/mem
  * access

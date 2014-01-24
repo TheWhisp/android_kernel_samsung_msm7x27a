@@ -109,16 +109,22 @@ static int fd_request_irq(void)
 	if (can_use_virtual_dma)
 		return request_irq(FLOPPY_IRQ, floppy_hardint,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   IRQF_DISABLED, "floppy", NULL);
 	else
 		return request_irq(FLOPPY_IRQ, floppy_interrupt,
 				   IRQF_DISABLED, "floppy", NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				   0, "floppy", NULL);
 	else
 		return request_irq(FLOPPY_IRQ, floppy_interrupt,
 				   0, "floppy", NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vdma_dma_setup(char *addr, unsigned long size, int mode, int io)

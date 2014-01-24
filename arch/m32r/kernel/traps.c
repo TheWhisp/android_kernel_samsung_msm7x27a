@@ -19,6 +19,7 @@
 #include <asm/processor.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
@@ -28,6 +29,11 @@
 #include <asm/io.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/uaccess.h>
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/smp.h>
 
@@ -139,10 +145,15 @@ static void show_trace(struct task_struct *task, unsigned long *stack)
 	printk("Call Trace: ");
 	while (!kstack_end(stack)) {
 		addr = *stack++;
+<<<<<<< HEAD
 		if (__kernel_text_address(addr)) {
 			printk("[<%08lx>] ", addr);
 			print_symbol("%s\n", addr);
 		}
+=======
+		if (__kernel_text_address(addr))
+			printk("[<%08lx>] %pSR\n", addr, (void *)addr);
+>>>>>>> refs/remotes/origin/master
 	}
 	printk("\n");
 }
@@ -176,6 +187,7 @@ void show_stack(struct task_struct *task, unsigned long *sp)
 	show_trace(task, sp);
 }
 
+<<<<<<< HEAD
 void dump_stack(void)
 {
 	unsigned long stack;
@@ -185,6 +197,8 @@ void dump_stack(void)
 
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void show_registers(struct pt_regs *regs)
 {
 	int i = 0;

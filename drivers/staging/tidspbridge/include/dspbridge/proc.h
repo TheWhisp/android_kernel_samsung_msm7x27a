@@ -23,8 +23,11 @@
 #include <dspbridge/devdefs.h>
 #include <dspbridge/drv.h>
 
+<<<<<<< HEAD
 extern char *iva_img;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  ======== proc_attach ========
  *  Purpose:
@@ -190,6 +193,7 @@ extern int proc_get_resource_info(void *hprocessor,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== proc_exit ========
  *  Purpose:
  *      Decrement reference count, and free resources when reference count is
@@ -206,6 +210,8 @@ extern void proc_exit(void);
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ======== proc_get_dev_object =========
  *  Purpose:
  *      Returns the DEV Hanlde for a given Processor handle
@@ -227,6 +233,7 @@ extern int proc_get_dev_object(void *hprocessor,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== proc_init ========
  *  Purpose:
  *      Initialize PROC's private state, keeping a reference count on each
@@ -243,6 +250,8 @@ extern bool proc_init(void);
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== proc_get_state ========
  *  Purpose:
  *      Report the state of the specified DSP processor.
@@ -297,7 +306,11 @@ extern int proc_get_processor_id(void *proc, u32 * proc_id);
  *  Returns:
  *      0     :   Success.
  *      -EFAULT :   Invalid processor handle.
+<<<<<<< HEAD
  *      -EPERM   :   General failure while retireving processor trace
+=======
+ *      -EPERM   :   General failure while retrieving processor trace
+>>>>>>> refs/remotes/origin/master
  *		      Buffer.
  *  Requires:
  *      pbuf is not NULL
@@ -320,7 +333,11 @@ extern int proc_get_trace(void *hprocessor, u8 * pbuf, u32 max_size);
  *      user_envp:       An Array of Environment settings(Unicode Strings)
  *  Returns:
  *      0:       Success.
+<<<<<<< HEAD
  *      -ENOENT:       The DSP Execuetable was not found.
+=======
+ *      -ENOENT:       The DSP Executable was not found.
+>>>>>>> refs/remotes/origin/master
  *      -EFAULT:       Invalid processor handle.
  *      -EPERM   :       Unable to Load the Processor
  *  Requires:

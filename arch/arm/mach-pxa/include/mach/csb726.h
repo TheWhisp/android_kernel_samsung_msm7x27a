@@ -20,12 +20,17 @@
 #define CSB726_FLASH_uMON	(8 * 1024 * 1024)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CSB726_IRQ_LAN		gpio_to_irq(CSB726_GPIO_IRQ_LAN)
 #define CSB726_IRQ_SM501	gpio_to_irq(CSB726_GPIO_IRQ_SM501)
 =======
 #define CSB726_IRQ_LAN		PXA_GPIO_TO_IRQ(CSB726_GPIO_IRQ_LAN)
 #define CSB726_IRQ_SM501	PXA_GPIO_TO_IRQ(CSB726_GPIO_IRQ_SM501)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CSB726_IRQ_LAN		PXA_GPIO_TO_IRQ(CSB726_GPIO_IRQ_LAN)
+#define CSB726_IRQ_SM501	PXA_GPIO_TO_IRQ(CSB726_GPIO_IRQ_SM501)
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

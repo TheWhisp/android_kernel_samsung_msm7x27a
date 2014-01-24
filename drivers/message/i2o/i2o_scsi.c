@@ -58,6 +58,7 @@
 
 #include <asm/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/io.h>
 #include <asm/atomic.h>
@@ -65,6 +66,10 @@
 #include <asm/io.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/io.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <scsi/scsi.h>
 #include <scsi/scsi_host.h>

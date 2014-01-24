@@ -1,12 +1,22 @@
 /*
+<<<<<<< HEAD
  * acpi_container.c  - ACPI Generic Container Driver
  * ($Revision: )
+=======
+ * container.c  - ACPI Generic Container Driver
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2004 Anil S Keshavamurthy (anil.s.keshavamurthy@intel.com)
  * Copyright (C) 2004 Keiichiro Tokunaga (tokunaga.keiich@jp.fujitsu.com)
  * Copyright (C) 2004 Motoyuki Ito (motoyuki@soft.fujitsu.com)
+<<<<<<< HEAD
  * Copyright (C) 2004 Intel Corp.
  * Copyright (C) 2004 FUJITSU LIMITED
+=======
+ * Copyright (C) 2004 FUJITSU LIMITED
+ * Copyright (C) 2004, 2013 Intel Corp.
+ * Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>>>>>> refs/remotes/origin/master
  *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
@@ -26,6 +36,7 @@
  *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -43,10 +54,20 @@
 
 #define INSTALL_NOTIFY_HANDLER		1
 #define UNINSTALL_NOTIFY_HANDLER	2
+=======
+#include <linux/acpi.h>
+
+#include "internal.h"
+
+#include "internal.h"
+
+#define PREFIX "ACPI: "
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT			ACPI_CONTAINER_COMPONENT
 ACPI_MODULE_NAME("container");
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Anil S Keshavamurthy");
 MODULE_DESCRIPTION("ACPI container driver");
 MODULE_LICENSE("GPL");
@@ -54,12 +75,15 @@ MODULE_LICENSE("GPL");
 static int acpi_container_add(struct acpi_device *device);
 static int acpi_container_remove(struct acpi_device *device, int type);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct acpi_device_id container_device_ids[] = {
 	{"ACPI0004", 0},
 	{"PNP0A05", 0},
 	{"PNP0A06", 0},
 	{"", 0},
 };
+<<<<<<< HEAD
 MODULE_DEVICE_TABLE(acpi, container_device_ids);
 
 static struct acpi_driver acpi_container_driver = {
@@ -281,3 +305,26 @@ static void __exit acpi_container_exit(void)
 
 module_init(acpi_container_init);
 module_exit(acpi_container_exit);
+=======
+
+static int container_device_attach(struct acpi_device *device,
+				   const struct acpi_device_id *not_used)
+{
+	/* This is necessary for container hotplug to work. */
+	return 1;
+}
+
+static struct acpi_scan_handler container_handler = {
+	.ids = container_device_ids,
+	.attach = container_device_attach,
+	.hotplug = {
+		.enabled = true,
+		.mode = AHM_CONTAINER,
+	},
+};
+
+void __init acpi_container_init(void)
+{
+	acpi_scan_add_handler_with_hotplug(&container_handler, "container");
+}
+>>>>>>> refs/remotes/origin/master

@@ -10,7 +10,13 @@
 #define __HAVE_ARCH_STRNCMP
 #define __HAVE_ARCH_STRCAT
 #define __HAVE_ARCH_MEMSET
+<<<<<<< HEAD
 #define __HAVE_ARCH_MEMCPY
+=======
+#ifdef __BIG_ENDIAN__
+#define __HAVE_ARCH_MEMCPY
+#endif
+>>>>>>> refs/remotes/origin/master
 #define __HAVE_ARCH_MEMMOVE
 #define __HAVE_ARCH_MEMCMP
 #define __HAVE_ARCH_MEMCHR
@@ -22,7 +28,13 @@ extern int strcmp(const char *,const char *);
 extern int strncmp(const char *, const char *, __kernel_size_t);
 extern char * strcat(char *, const char *);
 extern void * memset(void *,int,__kernel_size_t);
+<<<<<<< HEAD
 extern void * memcpy(void *,const void *,__kernel_size_t);
+=======
+#ifdef __BIG_ENDIAN__
+extern void * memcpy(void *,const void *,__kernel_size_t);
+#endif
+>>>>>>> refs/remotes/origin/master
 extern void * memmove(void *,const void *,__kernel_size_t);
 extern int memcmp(const void *,const void *,__kernel_size_t);
 extern void * memchr(const void *,int,__kernel_size_t);

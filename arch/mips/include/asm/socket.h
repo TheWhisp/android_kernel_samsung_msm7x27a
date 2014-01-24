@@ -9,6 +9,7 @@
 #ifndef _ASM_SOCKET_H
 #define _ASM_SOCKET_H
 
+<<<<<<< HEAD
 #include <asm/sockios.h>
 
 /*
@@ -93,6 +94,10 @@ To add: #define SO_REUSEPORT 0x0200	/* Allow local address and port reuse.  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/socket.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /** sock_type - Socket types
  *
@@ -129,6 +134,9 @@ enum sock_type {
 
 #define ARCH_HAS_SOCKET_TYPES 1
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SOCKET_H */

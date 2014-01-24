@@ -15,6 +15,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar5416Modes_9100[][6] = {
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160, 0x000001e0},
 	{0x00001070, 0x00000168, 0x000002d0, 0x00000318, 0x0000018c, 0x000001e0},
@@ -83,6 +84,8 @@ static const u32 ar5416Modes_9100[][6] = {
 	{0x0000a330, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a334, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar5416Modes_9100[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160},
@@ -151,7 +154,10 @@ static const u32 ar5416Modes_9100[][5] = {
 	{0x0000a32c, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a330, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a334, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar5416Common_9100[][2] = {
@@ -530,6 +536,7 @@ static const u32 ar5416Common_9100[][2] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar5416Bank0_9100[][2] = {
 	/* Addr      allmodes  */
 	{0x000098b0, 0x1e5795e5},
@@ -625,6 +632,10 @@ static const u32 ar5416Bank3_9100[][3] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 static const u32 ar5416Bank6_9100[][3] = {
 	/* Addr      5G_HT20     5G_HT40   */
+=======
+static const u32 ar5416Bank6_9100[][3] = {
+	/* Addr      5G          2G        */
+>>>>>>> refs/remotes/origin/master
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
@@ -661,7 +672,11 @@ static const u32 ar5416Bank6_9100[][3] = {
 };
 
 static const u32 ar5416Bank6TPC_9100[][3] = {
+<<<<<<< HEAD
 	/* Addr      5G_HT20     5G_HT40   */
+=======
+	/* Addr      5G          2G        */
+>>>>>>> refs/remotes/origin/master
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
 	{0x0000989c, 0x00000000, 0x00000000},
@@ -698,6 +713,7 @@ static const u32 ar5416Bank6TPC_9100[][3] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar5416Bank7_9100[][2] = {
 	/* Addr      allmodes  */
 	{0x0000989c, 0x00000500},
@@ -707,6 +723,8 @@ static const u32 ar5416Bank7_9100[][2] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar5416Addac_9100[][2] = {
 	/* Addr      allmodes  */
 	{0x0000989c, 0x00000000},
@@ -743,6 +761,7 @@ static const u32 ar5416Addac_9100[][2] = {
 	{0x000098cc, 0x00000000},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const u32 ar5416Modes_9160[][6] = {
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160, 0x000001e0},
@@ -810,6 +829,8 @@ static const u32 ar5416Modes_9160[][6] = {
 	{0x0000a330, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a334, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar5416Modes_9160[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160},
@@ -876,7 +897,10 @@ static const u32 ar5416Modes_9160[][5] = {
 	{0x0000a32c, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a330, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 	{0x0000a334, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const u32 ar5416Common_9160[][2] = {
@@ -1258,6 +1282,7 @@ static const u32 ar5416Common_9160[][2] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u32 ar5416Bank0_9160[][2] = {
 	/* Addr      allmodes  */
 	{0x000098b0, 0x1e5795e5},
@@ -1432,6 +1457,8 @@ static const u32 ar5416Bank7_9160[][2] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar5416Addac_9160[][2] = {
 	/* Addr      allmodes  */
 	{0x0000989c, 0x00000000},

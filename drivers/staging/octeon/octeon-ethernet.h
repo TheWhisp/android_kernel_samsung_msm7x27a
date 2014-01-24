@@ -31,6 +31,11 @@
 #ifndef OCTEON_ETHERNET_H
 #define OCTEON_ETHERNET_H
 
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+
+>>>>>>> refs/remotes/origin/master
 /**
  * This is the definition of the Ethernet driver's private
  * driver state stored in netdev_priv(dev).
@@ -59,6 +64,10 @@ struct octeon_ethernet {
 	void (*poll) (struct net_device *dev);
 	struct delayed_work	port_periodic_work;
 	struct work_struct	port_work;	/* may be unused. */
+<<<<<<< HEAD
+=======
+	struct device_node	*of_node;
+>>>>>>> refs/remotes/origin/master
 };
 
 int cvm_oct_free_work(void *work_queue_entry);

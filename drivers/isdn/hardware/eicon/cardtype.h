@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef _CARDTYPE_H_
@@ -118,10 +124,14 @@
 #define CARD_UNKNOWN                      0
 #define CARD_NONE                         0
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* DIVA cards */
 =======
 /* DIVA cards */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* DIVA cards */
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_DIVA_MCA                 0
 #define CARDTYPE_DIVA_ISA                 1
 #define CARDTYPE_DIVA_PCM                 2
@@ -130,16 +140,22 @@
 #define CARDTYPE_DIVAPICO_ISA             5
 #define CARDTYPE_DIVAPICO_PCM             6
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* DIVA 2.0 cards */
 #define CARDTYPE_DIVAPRO20_PCI            7
 #define CARDTYPE_DIVA20_PCI               8
   /* S cards */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* DIVA 2.0 cards */
 #define CARDTYPE_DIVAPRO20_PCI            7
 #define CARDTYPE_DIVA20_PCI               8
 /* S cards */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_QUADRO_ISA               9
 #define CARDTYPE_S_ISA                    10
 #define CARDTYPE_S_MCA                    11
@@ -152,31 +168,42 @@
 #define CARDTYPE_PR_ISA                   18
 #define CARDTYPE_PR_MCA                   19
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* Diva Server cards (formerly called Maestra, later Amadeo) */
 #define CARDTYPE_MAESTRA_ISA              20
 #define CARDTYPE_MAESTRA_PCI              21
   /* Diva Server cards to be developed (Quadro, Primary rate) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Diva Server cards (formerly called Maestra, later Amadeo) */
 #define CARDTYPE_MAESTRA_ISA              20
 #define CARDTYPE_MAESTRA_PCI              21
 /* Diva Server cards to be developed (Quadro, Primary rate) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_DIVASRV_Q_8M_PCI         22
 #define CARDTYPE_DIVASRV_P_30M_PCI        23
 #define CARDTYPE_DIVASRV_P_2M_PCI         24
 #define CARDTYPE_DIVASRV_P_9M_PCI         25
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* DIVA 2.0 cards */
 =======
 /* DIVA 2.0 cards */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* DIVA 2.0 cards */
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_DIVA20_ISA               26
 #define CARDTYPE_DIVA20U_ISA              27
 #define CARDTYPE_DIVA20U_PCI              28
 #define CARDTYPE_DIVAPRO20_ISA            29
 #define CARDTYPE_DIVAPRO20U_ISA           30
 #define CARDTYPE_DIVAPRO20U_PCI           31
+<<<<<<< HEAD
 <<<<<<< HEAD
   /* DIVA combi cards (piccola ISDN + rockwell V.34 modem) */
 #define CARDTYPE_DIVAMOBILE_PCM           32
@@ -188,6 +215,8 @@
 #define CARDTYPE_BT_EXLANE_ISA            36
   /* DIVA low cost cards, 1st name DIVA 3.0, 2nd DIVA 2.01, 3rd ??? */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* DIVA combi cards (piccola ISDN + rockwell V.34 modem) */
 #define CARDTYPE_DIVAMOBILE_PCM           32
 #define CARDTYPE_TDKGLOBALPRO_PCM         33
@@ -197,29 +226,41 @@
 #define CARDTYPE_BT_EXLANE_PCI            35
 #define CARDTYPE_BT_EXLANE_ISA            36
 /* DIVA low cost cards, 1st name DIVA 3.0, 2nd DIVA 2.01, 3rd ??? */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_DIVALOW_ISA              37
 #define CARDTYPE_DIVALOWU_ISA             38
 #define CARDTYPE_DIVALOW_PCI              39
 #define CARDTYPE_DIVALOWU_PCI             40
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* DIVA combi cards (piccola ISDN + rockwell V.90 modem) */
 =======
 /* DIVA combi cards (piccola ISDN + rockwell V.90 modem) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* DIVA combi cards (piccola ISDN + rockwell V.90 modem) */
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_DIVAMOBILE_V90_PCM       41
 #define CARDTYPE_TDKGLOBPRO_V90_PCM       42
 #define CARDTYPE_DIVASRV_P_23M_PCI        43
 #define CARDTYPE_DIVALOW_USB              44
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* DIVA Audio (CT) family */
 =======
 /* DIVA Audio (CT) family */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* DIVA Audio (CT) family */
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_DIVA_CT_ST               45
 #define CARDTYPE_DIVA_CT_U                46
 #define CARDTYPE_DIVA_CTLITE_ST           47
 #define CARDTYPE_DIVA_CTLITE_U            48
+<<<<<<< HEAD
 <<<<<<< HEAD
   /* DIVA ISDN plus V.90 series */
 #define CARDTYPE_DIVAISDN_V90_PCM         49
@@ -235,6 +276,8 @@
 #define CARDTYPE_DIVASRV_VOICE_P_30M_V2_PCI 56
     /* Diva LAN */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* DIVA ISDN plus V.90 series */
 #define CARDTYPE_DIVAISDN_V90_PCM         49
 #define CARDTYPE_DIVAISDN_V90_PCI         50
@@ -248,7 +291,10 @@
 #define CARDTYPE_DIVASRV_VOICE_Q_8M_V2_PCI 55
 #define CARDTYPE_DIVASRV_VOICE_P_30M_V2_PCI 56
 /* Diva LAN */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_DIVAISDN_LAN             57
 #define CARDTYPE_DIVA_202_PCI_ST          58
 #define CARDTYPE_DIVA_202_PCI_U           59
@@ -264,10 +310,14 @@
 /* Re-badged Diva Pro PC Card */
 #define CARDTYPE_DIVA_PC_CARD             68
 <<<<<<< HEAD
+<<<<<<< HEAD
   /* next free card type identifier */
 =======
 /* next free card type identifier */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* next free card type identifier */
+>>>>>>> refs/remotes/origin/master
 #define CARDTYPE_MAX                      69
 /*
  * The card families
@@ -332,6 +382,7 @@
 typedef struct CARD_PROPERTIES
 {   char     *Name;  /* official marketing name     */
 <<<<<<< HEAD
+<<<<<<< HEAD
  unsigned short PnPId;  /* plug and play ID (for non PCMIA cards) */
  unsigned short Version; /* major and minor version no of the card */
  unsigned char DescType; /* card type to set in the IDI descriptor */
@@ -374,6 +425,8 @@ typedef struct CARD_RESOURCE
 /* extract IDI Descriptor info for card type 't' (p == DescType/Features) */
 #define IDI_PROP(t,p) (CardProperties[t].p)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned short PnPId;  /* plug and play ID (for non PCMIA cards) */
 	unsigned short Version; /* major and minor version no of the card */
 	unsigned char DescType; /* card type to set in the IDI descriptor */
@@ -415,7 +468,10 @@ typedef struct CARD_RESOURCE
 		)
 /* extract IDI Descriptor info for card type 't' (p == DescType/Features) */
 #define IDI_PROP(t, p) (CardProperties[t].p)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if CARDTYPE_H_WANT_DATA
 #if CARDTYPE_H_WANT_IDI_DATA
 /* include "di_defs.h" for IDI adapter type and feature flag definitions */
@@ -457,6 +513,7 @@ typedef struct CARD_RESOURCE
 #define DI_SOFT_V110  0
 #endif
 /*--- CardProperties [Index=CARDTYPE_....] ---------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 CARD_PROPERTIES CardProperties [ ] =
 {
@@ -955,6 +1012,8 @@ CARD_RESOURCE CardResource [ ] =  {
 extern CARD_PROPERTIES  CardProperties [] ;
 extern CARD_RESOURCE  CardResource [] ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CARD_PROPERTIES CardProperties[] =
 {
 	{ /*  0  */
@@ -1451,7 +1510,10 @@ CARD_RESOURCE CardResource[] = {
 #else /*!CARDTYPE_H_WANT_DATA*/
 extern CARD_PROPERTIES  CardProperties[];
 extern CARD_RESOURCE  CardResource[];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /*CARDTYPE_H_WANT_DATA*/
 /*
  * all existing download files
@@ -1530,6 +1592,7 @@ extern CARD_RESOURCE  CardResource[];
 #define CARD_D_NEW_DSP_COMBIFILE 63
 typedef struct CARD_FILES_DATA
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  char *    Name;
  unsigned char  Type;
@@ -1724,6 +1787,8 @@ CARD_FILES CardFiles [] =
 extern CARD_FILES_DATA  CardFData [] ;
 extern CARD_FILES   CardFiles [] ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	char *Name;
 	unsigned char  Type;
 }
@@ -1916,6 +1981,9 @@ CARD_FILES CardFiles[] =
 #else /*!CARDTYPE_H_WANT_DATA*/
 extern CARD_FILES_DATA  CardFData[];
 extern CARD_FILES   CardFiles[];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /*CARDTYPE_H_WANT_DATA*/
 #endif /* _CARDTYPE_H_ */

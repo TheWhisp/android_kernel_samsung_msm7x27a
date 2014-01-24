@@ -14,11 +14,23 @@
 
 /include/ "mpc5200b.dtsi"
 
+<<<<<<< HEAD
+=======
+&gpt0 { fsl,has-wdt; };
+&gpt2 { gpio-controller; };
+&gpt3 { gpio-controller; };
+&gpt4 { gpio-controller; };
+&gpt5 { gpio-controller; };
+&gpt6 { gpio-controller; };
+&gpt7 { gpio-controller; };
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "phytec,pcm030";
 	compatible = "phytec,pcm030";
 
 	soc5200@f0000000 {
+<<<<<<< HEAD
 		timer@600 {		// General Purpose Timer
 			fsl,has-wdt;
 		};
@@ -60,6 +72,9 @@
 		};
 
 		psc@2000 { /* PSC1 in ac97 mode */
+=======
+		audioplatform: psc@2000 { /* PSC1 in ac97 mode */
+>>>>>>> refs/remotes/origin/master
 			compatible = "mpc5200b-psc-ac97","fsl,mpc5200b-psc-ac97";
 			cell-index = <0>;
 		};
@@ -134,4 +149,12 @@
 	localbus {
 		status = "disabled";
 	};
+<<<<<<< HEAD
+=======
+
+	sound {
+		compatible = "phytec,pcm030-audio-fabric";
+		asoc-platform = <&audioplatform>;
+	};
+>>>>>>> refs/remotes/origin/master
 };

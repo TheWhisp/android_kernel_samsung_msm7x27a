@@ -18,7 +18,10 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/delay.h>
 #include <linux/sched.h>
@@ -221,8 +224,11 @@ static int go7007_snd_free(struct snd_device *device)
 
 	kfree(go->snd_context);
 	go->snd_context = NULL;
+<<<<<<< HEAD
 	if (--go->ref_count == 0)
 		kfree(go);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -267,9 +273,15 @@ int go7007_snd_init(struct go7007 *go)
 		kfree(gosnd);
 		return ret;
 	}
+<<<<<<< HEAD
 	strncpy(gosnd->card->driver, "go7007", sizeof(gosnd->card->driver));
 	strncpy(gosnd->card->shortname, go->name, sizeof(gosnd->card->driver));
 	strncpy(gosnd->card->longname, gosnd->card->shortname,
+=======
+	strlcpy(gosnd->card->driver, "go7007", sizeof(gosnd->card->driver));
+	strlcpy(gosnd->card->shortname, go->name, sizeof(gosnd->card->driver));
+	strlcpy(gosnd->card->longname, gosnd->card->shortname,
+>>>>>>> refs/remotes/origin/master
 			sizeof(gosnd->card->longname));
 
 	gosnd->pcm->private_data = go;
@@ -285,8 +297,13 @@ int go7007_snd_init(struct go7007 *go)
 
 	gosnd->substream = NULL;
 	go->snd_context = gosnd;
+<<<<<<< HEAD
 	++dev;
 	++go->ref_count;
+=======
+	v4l2_device_get(&go->v4l2_dev);
+	++dev;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -298,6 +315,10 @@ int go7007_snd_remove(struct go7007 *go)
 
 	snd_card_disconnect(gosnd->card);
 	snd_card_free_when_closed(gosnd->card);
+<<<<<<< HEAD
+=======
+	v4l2_device_put(&go->v4l2_dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(go7007_snd_remove);

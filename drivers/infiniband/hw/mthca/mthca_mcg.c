@@ -69,9 +69,12 @@ static int find_mgm(struct mthca_dev *dev,
 	u8 *mgid;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
 	if (IS_ERR(mailbox))
@@ -80,6 +83,7 @@ static int find_mgm(struct mthca_dev *dev,
 
 	memcpy(mgid, gid, 16);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = mthca_MGID_HASH(dev, mailbox, hash, &status);
 	if (err)
@@ -92,6 +96,11 @@ static int find_mgm(struct mthca_dev *dev,
 	if (err) {
 		mthca_err(dev, "MGID_HASH failed (%d)\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_MGID_HASH(dev, mailbox, hash);
+	if (err) {
+		mthca_err(dev, "MGID_HASH failed (%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -102,6 +111,7 @@ static int find_mgm(struct mthca_dev *dev,
 	*prev  = -1;
 
 	do {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = mthca_READ_MGM(dev, *index, mgm_mailbox, &status);
 		if (err)
@@ -114,6 +124,11 @@ static int find_mgm(struct mthca_dev *dev,
 		if (err) {
 			mthca_err(dev, "READ_MGM failed (%d)\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mthca_READ_MGM(dev, *index, mgm_mailbox);
+		if (err) {
+			mthca_err(dev, "READ_MGM failed (%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 
@@ -150,9 +165,12 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	int i;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
 	if (IS_ERR(mailbox))
@@ -179,6 +197,7 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mthca_READ_MGM(dev, index, mailbox, &status);
 		if (err)
 			goto out;
@@ -190,6 +209,11 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 		if (err) {
 			mthca_err(dev, "READ_MGM failed (%d)\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mthca_READ_MGM(dev, index, mailbox);
+		if (err) {
+			mthca_err(dev, "READ_MGM failed (%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		memset(mgm, 0, sizeof *mgm);
@@ -214,6 +238,7 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_WRITE_MGM(dev, index, mailbox, &status);
 	if (err)
 		goto out;
@@ -224,6 +249,11 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	if (err) {
 		mthca_err(dev, "WRITE_MGM failed %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_WRITE_MGM(dev, index, mailbox);
+	if (err) {
+		mthca_err(dev, "WRITE_MGM failed %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 		goto out;
 	}
@@ -231,6 +261,7 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	if (!link)
 		goto out;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = mthca_READ_MGM(dev, prev, mailbox, &status);
 	if (err)
@@ -243,11 +274,17 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	if (err) {
 		mthca_err(dev, "READ_MGM failed %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_READ_MGM(dev, prev, mailbox);
+	if (err) {
+		mthca_err(dev, "READ_MGM failed %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	mgm->next_gid_index = cpu_to_be32(index << 6);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = mthca_WRITE_MGM(dev, prev, mailbox, &status);
 	if (err)
@@ -261,6 +298,11 @@ int mthca_multicast_attach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	if (err)
 		mthca_err(dev, "WRITE_MGM returned %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_WRITE_MGM(dev, prev, mailbox);
+	if (err)
+		mthca_err(dev, "WRITE_MGM returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 
  out:
 	if (err && link && index != -1) {
@@ -283,9 +325,12 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	int i, loc;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
 	if (IS_ERR(mailbox))
@@ -321,6 +366,7 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	mgm->qp[i - 1] = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_WRITE_MGM(dev, index, mailbox, &status);
 	if (err)
 		goto out;
@@ -332,6 +378,11 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	if (err) {
 		mthca_err(dev, "WRITE_MGM returned %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_WRITE_MGM(dev, index, mailbox);
+	if (err) {
+		mthca_err(dev, "WRITE_MGM returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -343,6 +394,7 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 		int amgm_index_to_free = be32_to_cpu(mgm->next_gid_index) >> 6;
 		if (amgm_index_to_free) {
 			err = mthca_READ_MGM(dev, amgm_index_to_free,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					     mailbox, &status);
 			if (err)
@@ -356,11 +408,17 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 			if (err) {
 				mthca_err(dev, "READ_MGM returned %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					     mailbox);
+			if (err) {
+				mthca_err(dev, "READ_MGM returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 				goto out;
 			}
 		} else
 			memset(mgm->gid, 0, 16);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = mthca_WRITE_MGM(dev, index, mailbox, &status);
 		if (err)
@@ -373,6 +431,11 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 		if (err) {
 			mthca_err(dev, "WRITE_MGM returned %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mthca_WRITE_MGM(dev, index, mailbox);
+		if (err) {
+			mthca_err(dev, "WRITE_MGM returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		if (amgm_index_to_free) {
@@ -382,6 +445,7 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 	} else {
 		/* Remove entry from AMGM */
 		int curr_next_index = be32_to_cpu(mgm->next_gid_index) >> 6;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = mthca_READ_MGM(dev, prev, mailbox, &status);
 		if (err)
@@ -394,11 +458,17 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 		if (err) {
 			mthca_err(dev, "READ_MGM returned %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mthca_READ_MGM(dev, prev, mailbox);
+		if (err) {
+			mthca_err(dev, "READ_MGM returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 
 		mgm->next_gid_index = cpu_to_be32(curr_next_index << 6);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = mthca_WRITE_MGM(dev, prev, mailbox, &status);
 		if (err)
@@ -411,6 +481,11 @@ int mthca_multicast_detach(struct ib_qp *ibqp, union ib_gid *gid, u16 lid)
 		if (err) {
 			mthca_err(dev, "WRITE_MGM returned %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mthca_WRITE_MGM(dev, prev, mailbox);
+		if (err) {
+			mthca_err(dev, "WRITE_MGM returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		BUG_ON(index < dev->limits.num_mgms);

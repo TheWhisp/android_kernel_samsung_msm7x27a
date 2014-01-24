@@ -54,9 +54,12 @@
 #include <asm/io.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "wl3501.h"
 
@@ -1524,13 +1527,20 @@ static int wl3501_set_wap(struct net_device *dev, struct iw_request_info *info,
 			  union iwreq_data *wrqu, char *extra)
 {
 	struct wl3501_card *this = netdev_priv(dev);
+<<<<<<< HEAD
 	static const u8 bcast[ETH_ALEN] = { 255, 255, 255, 255, 255, 255 };
+=======
+>>>>>>> refs/remotes/origin/master
 	int rc = -EINVAL;
 
 	/* FIXME: we support other ARPHRDs...*/
 	if (wrqu->ap_addr.sa_family != ARPHRD_ETHER)
 		goto out;
+<<<<<<< HEAD
 	if (!memcmp(bcast, wrqu->ap_addr.sa_data, ETH_ALEN)) {
+=======
+	if (is_broadcast_ether_addr(wrqu->ap_addr.sa_data)) {
+>>>>>>> refs/remotes/origin/master
 		/* FIXME: rescan? */
 	} else
 		memcpy(this->bssid, wrqu->ap_addr.sa_data, ETH_ALEN);
@@ -1785,10 +1795,14 @@ static int wl3501_get_encode(struct net_device *dev,
 	if (rc)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tocopy = min_t(u8, len_keys, wrqu->encoding.length);
 =======
 	tocopy = min_t(u16, len_keys, wrqu->encoding.length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tocopy = min_t(u16, len_keys, wrqu->encoding.length);
+>>>>>>> refs/remotes/origin/master
 	tocopy = min_t(u8, tocopy, 100);
 	wrqu->encoding.length = tocopy;
 	memcpy(extra, keys, tocopy);
@@ -2022,6 +2036,7 @@ static struct pcmcia_driver wl3501_driver = {
 	.suspend	= wl3501_suspend,
 	.resume		= wl3501_resume,
 };
+<<<<<<< HEAD
 
 static int __init wl3501_init_module(void)
 {
@@ -2035,6 +2050,9 @@ static void __exit wl3501_exit_module(void)
 
 module_init(wl3501_init_module);
 module_exit(wl3501_exit_module);
+=======
+module_pcmcia_driver(wl3501_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Fox Chen <mhchen@golf.ccl.itri.org.tw>, "
 	      "Arnaldo Carvalho de Melo <acme@conectiva.com.br>,"

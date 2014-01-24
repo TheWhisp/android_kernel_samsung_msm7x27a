@@ -44,11 +44,17 @@ MODULE_SUPPORTED_DEVICE("Adlink PCI-7841/cPCI-7841, "
 			"esd CAN-PCI/CPCI/PCI104/200, "
 			"esd CAN-PCI/PMC/266, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"esd CAN-PCIe/2000")
 =======
 			"esd CAN-PCIe/2000, "
 			"IXXAT PC-I 04/PCI")
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"esd CAN-PCIe/2000, "
+			"Connect Tech Inc. CANpro/104-Plus Opto (CRG001), "
+			"IXXAT PC-I 04/PCI")
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL v2");
 
 #define PLX_PCI_MAX_CHAN 2
@@ -127,17 +133,29 @@ struct plx_pci_card {
 #define ESD_PCI_SUB_SYS_ID_PCI104200	0x0501
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define IXXAT_PCI_VENDOR_ID		0x10b5
 #define IXXAT_PCI_DEVICE_ID		0x9050
 #define IXXAT_PCI_SUB_SYS_ID		0x2540
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MARATHON_PCI_DEVICE_ID		0x2715
 
 #define TEWS_PCI_VENDOR_ID		0x1498
 #define TEWS_PCI_DEVICE_ID_TMPC810	0x032A
 
+<<<<<<< HEAD
+=======
+#define CTI_PCI_VENDOR_ID		0x12c4
+#define CTI_PCI_DEVICE_ID_CRG001	0x0900
+
+>>>>>>> refs/remotes/origin/master
 static void plx_pci_reset_common(struct pci_dev *pdev);
 static void plx_pci_reset_marathon(struct pci_dev *pdev);
 static void plx9056_pci_reset_common(struct pci_dev *pdev);
@@ -165,7 +183,11 @@ struct plx_pci_card_info {
 	void (*reset_func)(struct pci_dev *pdev);
 };
 
+<<<<<<< HEAD
 static struct plx_pci_card_info plx_pci_card_info_adlink __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_adlink = {
+>>>>>>> refs/remotes/origin/master
 	"Adlink PCI-7841/cPCI-7841", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{1, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x80, 0x80} },
@@ -173,7 +195,11 @@ static struct plx_pci_card_info plx_pci_card_info_adlink __devinitdata = {
 	/* based on PLX9052 */
 };
 
+<<<<<<< HEAD
 static struct plx_pci_card_info plx_pci_card_info_adlink_se __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_adlink_se = {
+>>>>>>> refs/remotes/origin/master
 	"Adlink PCI-7841/cPCI-7841 SE", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x80, 0x80} },
@@ -181,7 +207,11 @@ static struct plx_pci_card_info plx_pci_card_info_adlink_se __devinitdata = {
 	/* based on PLX9052 */
 };
 
+<<<<<<< HEAD
 static struct plx_pci_card_info plx_pci_card_info_esd200 __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_esd200 = {
+>>>>>>> refs/remotes/origin/master
 	"esd CAN-PCI/CPCI/PCI104/200", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
@@ -189,7 +219,11 @@ static struct plx_pci_card_info plx_pci_card_info_esd200 __devinitdata = {
 	/* based on PLX9030/9050 */
 };
 
+<<<<<<< HEAD
 static struct plx_pci_card_info plx_pci_card_info_esd266 __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_esd266 = {
+>>>>>>> refs/remotes/origin/master
 	"esd CAN-PCI/PMC/266", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
@@ -197,7 +231,11 @@ static struct plx_pci_card_info plx_pci_card_info_esd266 __devinitdata = {
 	/* based on PLX9056 */
 };
 
+<<<<<<< HEAD
 static struct plx_pci_card_info plx_pci_card_info_esd2000 __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_esd2000 = {
+>>>>>>> refs/remotes/origin/master
 	"esd CAN-PCIe/2000", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x100, 0x80} },
@@ -206,8 +244,12 @@ static struct plx_pci_card_info plx_pci_card_info_esd2000 __devinitdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct plx_pci_card_info plx_pci_card_info_ixxat __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_ixxat = {
+>>>>>>> refs/remotes/origin/master
 	"IXXAT PC-I 04/PCI", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{0, 0x00, 0x00}, { {2, 0x00, 0x80}, {2, 0x200, 0x80} },
@@ -215,8 +257,12 @@ static struct plx_pci_card_info plx_pci_card_info_ixxat __devinitdata = {
 	/* based on PLX9050 */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct plx_pci_card_info plx_pci_card_info_marathon __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_marathon = {
+>>>>>>> refs/remotes/origin/master
 	"Marathon CAN-bus-PCI", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{0, 0x00, 0x00}, { {2, 0x00, 0x00}, {4, 0x00, 0x00} },
@@ -224,7 +270,11 @@ static struct plx_pci_card_info plx_pci_card_info_marathon __devinitdata = {
 	/* based on PLX9052 */
 };
 
+<<<<<<< HEAD
 static struct plx_pci_card_info plx_pci_card_info_tews __devinitdata = {
+=======
+static struct plx_pci_card_info plx_pci_card_info_tews = {
+>>>>>>> refs/remotes/origin/master
 	"TEWS TECHNOLOGIES TPMC810", 2,
 	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
 	{0, 0x00, 0x00}, { {2, 0x000, 0x80}, {2, 0x100, 0x80} },
@@ -232,6 +282,17 @@ static struct plx_pci_card_info plx_pci_card_info_tews __devinitdata = {
 	/* based on PLX9030 */
 };
 
+<<<<<<< HEAD
+=======
+static struct plx_pci_card_info plx_pci_card_info_cti = {
+	"Connect Tech Inc. CANpro/104-Plus Opto (CRG001)", 2,
+	PLX_PCI_CAN_CLOCK, PLX_PCI_OCR, PLX_PCI_CDR,
+	{0, 0x00, 0x00}, { {2, 0x000, 0x80}, {2, 0x100, 0x80} },
+	&plx_pci_reset_common
+	/* based on PLX9030 */
+};
+
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
 	{
 		/* Adlink PCI-7841/cPCI-7841 */
@@ -291,7 +352,10 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* IXXAT PC-I 04/PCI card */
 		IXXAT_PCI_VENDOR_ID, IXXAT_PCI_DEVICE_ID,
 		PCI_ANY_ID, IXXAT_PCI_SUB_SYS_ID,
@@ -299,7 +363,10 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
 		(kernel_ulong_t)&plx_pci_card_info_ixxat
 	},
 	{
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Marathon CAN-bus-PCI card */
 		PCI_VENDOR_ID_PLX, MARATHON_PCI_DEVICE_ID,
 		PCI_ANY_ID, PCI_ANY_ID,
@@ -313,6 +380,16 @@ static DEFINE_PCI_DEVICE_TABLE(plx_pci_tbl) = {
 		0, 0,
 		(kernel_ulong_t)&plx_pci_card_info_tews
 	},
+<<<<<<< HEAD
+=======
+	{
+		/* Connect Tech Inc. CANpro/104-Plus Opto (CRG001) card */
+		PCI_VENDOR_ID_PLX, PCI_DEVICE_ID_PLX_9030,
+		CTI_PCI_VENDOR_ID, CTI_PCI_DEVICE_ID_CRG001,
+		0, 0,
+		(kernel_ulong_t)&plx_pci_card_info_cti
+	},
+>>>>>>> refs/remotes/origin/master
 	{ 0,}
 };
 MODULE_DEVICE_TABLE(pci, plx_pci_tbl);
@@ -343,6 +420,7 @@ static inline int plx_pci_check_sja1000(const struct sja1000_priv *priv)
 	if ((priv->read_reg(priv, REG_CR) & REG_CR_BASICCAN_INITIAL_MASK) ==
 	    REG_CR_BASICCAN_INITIAL &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (priv->read_reg(priv, REG_SR) == REG_SR_BASICCAN_INITIAL) &&
 =======
 	    (priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_BASICCAN_INITIAL) &&
@@ -352,11 +430,20 @@ static inline int plx_pci_check_sja1000(const struct sja1000_priv *priv)
 
 	/* Bring the SJA1000 into the PeliCAN mode*/
 	priv->write_reg(priv, REG_CDR, CDR_PELICAN);
+=======
+	    (priv->read_reg(priv, SJA1000_SR) == REG_SR_BASICCAN_INITIAL) &&
+	    (priv->read_reg(priv, SJA1000_IR) == REG_IR_BASICCAN_INITIAL))
+		flag = 1;
+
+	/* Bring the SJA1000 into the PeliCAN mode*/
+	priv->write_reg(priv, SJA1000_CDR, CDR_PELICAN);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check registers after reset in the PeliCAN mode.
 	 * See states on p. 23 of the Datasheet.
 	 */
+<<<<<<< HEAD
 	if (priv->read_reg(priv, REG_MOD) == REG_MOD_PELICAN_INITIAL &&
 <<<<<<< HEAD
 	    priv->read_reg(priv, REG_SR) == REG_SR_PELICAN_INITIAL &&
@@ -364,6 +451,11 @@ static inline int plx_pci_check_sja1000(const struct sja1000_priv *priv)
 	    priv->read_reg(priv, SJA1000_REG_SR) == REG_SR_PELICAN_INITIAL &&
 >>>>>>> refs/remotes/origin/cm-10.0
 	    priv->read_reg(priv, REG_IR) == REG_IR_PELICAN_INITIAL)
+=======
+	if (priv->read_reg(priv, SJA1000_MOD) == REG_MOD_PELICAN_INITIAL &&
+	    priv->read_reg(priv, SJA1000_SR) == REG_SR_PELICAN_INITIAL &&
+	    priv->read_reg(priv, SJA1000_IR) == REG_IR_PELICAN_INITIAL)
+>>>>>>> refs/remotes/origin/master
 		return flag;
 
 	return 0;
@@ -450,10 +542,14 @@ static void plx_pci_del_card(struct pci_dev *pdev)
 	int i = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < card->channels; i++) {
 =======
 	for (i = 0; i < PLX_PCI_MAX_CHAN; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < PLX_PCI_MAX_CHAN; i++) {
+>>>>>>> refs/remotes/origin/master
 		dev = card->net_dev[i];
 		if (!dev)
 			continue;
@@ -483,15 +579,23 @@ static void plx_pci_del_card(struct pci_dev *pdev)
 	kfree(card);
 
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Probe PLX90xx based device for the SJA1000 chips and register each
  * available CAN channel to SJA1000 Socket-CAN subsystem.
  */
+<<<<<<< HEAD
 static int __devinit plx_pci_add_card(struct pci_dev *pdev,
 				      const struct pci_device_id *ent)
+=======
+static int plx_pci_add_card(struct pci_dev *pdev,
+			    const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sja1000_priv *priv;
 	struct net_device *dev;
@@ -514,7 +618,10 @@ static int __devinit plx_pci_add_card(struct pci_dev *pdev,
 	/* Allocate card structures to hold addresses, ... */
 	card = kzalloc(sizeof(*card), GFP_KERNEL);
 	if (!card) {
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "Unable to allocate memory\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		pci_disable_device(pdev);
 		return -ENOMEM;
 	}
@@ -582,9 +689,12 @@ static int __devinit plx_pci_add_card(struct pci_dev *pdev,
 				dev_err(&pdev->dev, "Registering device failed "
 					"(err=%d)\n", err);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				free_sja1000dev(dev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				goto failure_cleanup;
 			}
 
@@ -598,9 +708,13 @@ static int __devinit plx_pci_add_card(struct pci_dev *pdev,
 				i + 1);
 			free_sja1000dev(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			card->net_dev[i] = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			card->net_dev[i] = NULL;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -641,6 +755,7 @@ static struct pci_driver plx_pci_driver = {
 	.remove = plx_pci_del_card,
 };
 
+<<<<<<< HEAD
 static int __init plx_pci_init(void)
 {
 	return pci_register_driver(&plx_pci_driver);
@@ -653,3 +768,6 @@ static void __exit plx_pci_exit(void)
 
 module_init(plx_pci_init);
 module_exit(plx_pci_exit);
+=======
+module_pci_driver(plx_pci_driver);
+>>>>>>> refs/remotes/origin/master

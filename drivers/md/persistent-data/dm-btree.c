@@ -161,6 +161,10 @@ struct frame {
 };
 
 struct del_stack {
+<<<<<<< HEAD
+=======
+	struct dm_btree_info *info;
+>>>>>>> refs/remotes/origin/master
 	struct dm_transaction_manager *tm;
 	int top;
 	struct frame spine[MAX_SPINE_DEPTH];
@@ -183,6 +187,23 @@ static int unprocessed_frames(struct del_stack *s)
 	return s->top >= 0;
 }
 
+<<<<<<< HEAD
+=======
+static void prefetch_children(struct del_stack *s, struct frame *f)
+{
+	unsigned i;
+	struct dm_block_manager *bm = dm_tm_get_bm(s->tm);
+
+	for (i = 0; i < f->nr_children; i++)
+		dm_bm_prefetch(bm, value64(f->n, i));
+}
+
+static bool is_internal_level(struct dm_btree_info *info, struct frame *f)
+{
+	return f->level < (info->levels - 1);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int push_frame(struct del_stack *s, dm_block_t b, unsigned level)
 {
 	int r;
@@ -205,6 +226,10 @@ static int push_frame(struct del_stack *s, dm_block_t b, unsigned level)
 		dm_tm_dec(s->tm, b);
 
 	else {
+<<<<<<< HEAD
+=======
+		uint32_t flags;
+>>>>>>> refs/remotes/origin/master
 		struct frame *f = s->spine + ++s->top;
 
 		r = dm_tm_read_lock(s->tm, b, &btree_node_validator, &f->b);
@@ -217,6 +242,13 @@ static int push_frame(struct del_stack *s, dm_block_t b, unsigned level)
 		f->level = level;
 		f->nr_children = le32_to_cpu(f->n->header.nr_entries);
 		f->current_child = 0;
+<<<<<<< HEAD
+=======
+
+		flags = le32_to_cpu(f->n->header.flags);
+		if (flags & INTERNAL_NODE || is_internal_level(s->info, f))
+			prefetch_children(s, f);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -238,10 +270,18 @@ int dm_btree_del(struct dm_btree_info *info, dm_block_t root)
 	s = kmalloc(sizeof(*s), GFP_KERNEL);
 	if (!s)
 		return -ENOMEM;
+<<<<<<< HEAD
 	s->tm = info->tm;
 	s->top = -1;
 
 	r = push_frame(s, root, 1);
+=======
+	s->info = info;
+	s->tm = info->tm;
+	s->top = -1;
+
+	r = push_frame(s, root, 0);
+>>>>>>> refs/remotes/origin/master
 	if (r)
 		goto out;
 
@@ -267,7 +307,11 @@ int dm_btree_del(struct dm_btree_info *info, dm_block_t root)
 			if (r)
 				goto out;
 
+<<<<<<< HEAD
 		} else if (f->level != (info->levels - 1)) {
+=======
+		} else if (is_internal_level(info, f)) {
+>>>>>>> refs/remotes/origin/master
 			b = value64(f->n, f->current_child);
 			f->current_child++;
 			r = push_frame(s, b, f->level + 1);
@@ -282,7 +326,11 @@ int dm_btree_del(struct dm_btree_info *info, dm_block_t root)
 					info->value_type.dec(info->value_type.context,
 							     value_ptr(f->n, i));
 			}
+<<<<<<< HEAD
 			f->current_child = f->nr_children;
+=======
+			pop_frame(s);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -802,3 +850,58 @@ int dm_btree_find_highest_key(struct dm_btree_info *info, dm_block_t root,
 	return r ? r : count;
 }
 EXPORT_SYMBOL_GPL(dm_btree_find_highest_key);
+<<<<<<< HEAD
+=======
+
+/*
+ * FIXME: We shouldn't use a recursive algorithm when we have limited stack
+ * space.  Also this only works for single level trees.
+ */
+static int walk_node(struct ro_spine *s, dm_block_t block,
+		     int (*fn)(void *context, uint64_t *keys, void *leaf),
+		     void *context)
+{
+	int r;
+	unsigned i, nr;
+	struct btree_node *n;
+	uint64_t keys;
+
+	r = ro_step(s, block);
+	n = ro_node(s);
+
+	nr = le32_to_cpu(n->header.nr_entries);
+	for (i = 0; i < nr; i++) {
+		if (le32_to_cpu(n->header.flags) & INTERNAL_NODE) {
+			r = walk_node(s, value64(n, i), fn, context);
+			if (r)
+				goto out;
+		} else {
+			keys = le64_to_cpu(*key_ptr(n, i));
+			r = fn(context, &keys, value_ptr(n, i));
+			if (r)
+				goto out;
+		}
+	}
+
+out:
+	ro_pop(s);
+	return r;
+}
+
+int dm_btree_walk(struct dm_btree_info *info, dm_block_t root,
+		  int (*fn)(void *context, uint64_t *keys, void *leaf),
+		  void *context)
+{
+	int r;
+	struct ro_spine spine;
+
+	BUG_ON(info->levels > 1);
+
+	init_ro_spine(&spine, info);
+	r = walk_node(&spine, root, fn, context);
+	exit_ro_spine(&spine);
+
+	return r;
+}
+EXPORT_SYMBOL_GPL(dm_btree_walk);
+>>>>>>> refs/remotes/origin/master

@@ -21,10 +21,14 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/err.h>
 #include <linux/slab.h>
@@ -520,11 +524,16 @@ core_initcall(ps3_system_bus_init);
  */
 static void * ps3_alloc_coherent(struct device *_dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      dma_addr_t *dma_handle, gfp_t flag)
 =======
 				 dma_addr_t *dma_handle, gfp_t flag,
 				 struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 dma_addr_t *dma_handle, gfp_t flag,
+				 struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	struct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);
@@ -562,10 +571,14 @@ clean_none:
 
 static void ps3_free_coherent(struct device *_dev, size_t size, void *vaddr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t dma_handle)
 =======
 			      dma_addr_t dma_handle, struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      dma_addr_t dma_handle, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ps3_system_bus_device *dev = ps3_dev_to_system_bus_dev(_dev);
 
@@ -709,6 +722,7 @@ static int ps3_dma_supported(struct device *_dev, u64 mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct dma_map_ops ps3_sb_dma_ops = {
 	.alloc_coherent = ps3_alloc_coherent,
 	.free_coherent = ps3_free_coherent,
@@ -716,6 +730,8 @@ static struct dma_map_ops ps3_sb_dma_ops = {
 	.unmap_sg = ps3_sb_unmap_sg,
 	.dma_supported = ps3_dma_supported,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u64 ps3_dma_get_required_mask(struct device *_dev)
 {
 	return DMA_BIT_MASK(32);
@@ -728,12 +744,16 @@ static struct dma_map_ops ps3_sb_dma_ops = {
 	.unmap_sg = ps3_sb_unmap_sg,
 	.dma_supported = ps3_dma_supported,
 	.get_required_mask = ps3_dma_get_required_mask,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.map_page = ps3_sb_map_page,
 	.unmap_page = ps3_unmap_page,
 };
 
 static struct dma_map_ops ps3_ioc0_dma_ops = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.alloc_coherent = ps3_alloc_coherent,
 	.free_coherent = ps3_free_coherent,
@@ -741,13 +761,18 @@ static struct dma_map_ops ps3_ioc0_dma_ops = {
 	.unmap_sg = ps3_ioc0_unmap_sg,
 	.dma_supported = ps3_dma_supported,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.alloc = ps3_alloc_coherent,
 	.free = ps3_free_coherent,
 	.map_sg = ps3_ioc0_map_sg,
 	.unmap_sg = ps3_ioc0_unmap_sg,
 	.dma_supported = ps3_dma_supported,
 	.get_required_mask = ps3_dma_get_required_mask,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.map_page = ps3_ioc0_map_page,
 	.unmap_page = ps3_unmap_page,
 };

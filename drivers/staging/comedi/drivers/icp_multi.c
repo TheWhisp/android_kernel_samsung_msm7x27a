@@ -13,11 +13,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 /*
@@ -44,6 +47,7 @@ There are 4 x 12-bit Analogue Outputs.  Ranges : 5V, 10V, +/-5V, +/-10V
 
 4 x 16-bit counters
 
+<<<<<<< HEAD
 Options:
  [0] - PCI bus number - if bus number and slot number are 0,
 			then driver search for first unused card
@@ -66,6 +70,19 @@ Options:
 #define TYPE_ICP_MULTI	0
 
 #define IORANGE_ICP_MULTI 	32
+=======
+Configuration options: not applicable, uses PCI auto config
+*/
+
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/delay.h>
+#include <linux/interrupt.h>
+
+#include "../comedidev.h"
+
+#define PCI_DEVICE_ID_ICP_MULTI	0x8000
+>>>>>>> refs/remotes/origin/master
 
 #define ICP_MULTI_ADC_CSR	0	/* R/W: ADC command/status register */
 #define ICP_MULTI_AI		2	/* R:   Analogue input data */
@@ -80,8 +97,11 @@ Options:
 #define ICP_MULTI_CNTR2		0x14	/* R/W: Counter 2 */
 #define ICP_MULTI_CNTR3		0x16	/* R/W: Counter 3 */
 
+<<<<<<< HEAD
 #define ICP_MULTI_SIZE		0x20	/* 32 bytes */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*  Define bits from ADC command/status register */
 #define	ADC_ST		0x0001	/* Start ADC */
 #define	ADC_BSY		0x0001	/* ADC busy */
@@ -109,18 +129,29 @@ Options:
 #define	Status_IRQ	0x00ff	/*  All interrupts */
 
 /*  Define analogue range */
+<<<<<<< HEAD
 static const struct comedi_lrange range_analog = { 4, {
 						       UNI_RANGE(5),
 						       UNI_RANGE(10),
 						       BIP_RANGE(5),
 						       BIP_RANGE(10)
 						       }
+=======
+static const struct comedi_lrange range_analog = {
+	4, {
+		UNI_RANGE(5),
+		UNI_RANGE(10),
+		BIP_RANGE(5),
+		BIP_RANGE(10)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static const char range_codes_analog[] = { 0x00, 0x20, 0x10, 0x30 };
 
 /*
 ==============================================================================
+<<<<<<< HEAD
 	Forward declarations
 ==============================================================================
 */
@@ -203,10 +234,20 @@ struct icp_multi_private {
 	char valid;		/*  card is usable */
 	void *io_addr;		/*  Pointer to mapped io address */
 	resource_size_t phys_iobase;	/*  Physical io address */
+=======
+	Data & Structure declarations
+==============================================================================
+*/
+
+struct icp_multi_private {
+	char valid;		/*  card is usable */
+	void __iomem *io_addr;		/*  Pointer to mapped io address */
+>>>>>>> refs/remotes/origin/master
 	unsigned int AdcCmdStatus;	/*  ADC Command/Status register */
 	unsigned int DacCmdStatus;	/*  DAC Command/Status register */
 	unsigned int IntEnable;	/*  Interrupt Enable register */
 	unsigned int IntStatus;	/*  Interrupt Status register */
+<<<<<<< HEAD
 	unsigned int act_chanlist[32];	/*  list of scaned channel */
 	unsigned char act_chanlist_len;	/*  len of scanlist */
 	unsigned char act_chanlist_pos;	/*  actual position in MUX list */
@@ -260,15 +301,79 @@ Returns:int			Nmuber of instructions executed
 
 ==============================================================================
 */
+=======
+	unsigned int act_chanlist[32];	/*  list of scanned channel */
+	unsigned char act_chanlist_len;	/*  len of scanlist */
+	unsigned char act_chanlist_pos;	/*  actual position in MUX list */
+	unsigned int *ai_chanlist;	/*  actaul chanlist */
+	unsigned short ao_data[4];	/*  data output buffer */
+	unsigned int do_data;	/*  Remember digital output data */
+};
+
+static void setup_channel_list(struct comedi_device *dev,
+			       struct comedi_subdevice *s,
+			       unsigned int *chanlist, unsigned int n_chan)
+{
+	struct icp_multi_private *devpriv = dev->private;
+	unsigned int i, range, chanprog;
+	unsigned int diff;
+
+	devpriv->act_chanlist_len = n_chan;
+	devpriv->act_chanlist_pos = 0;
+
+	for (i = 0; i < n_chan; i++) {
+		/*  Get channel */
+		chanprog = CR_CHAN(chanlist[i]);
+
+		/*  Determine if it is a differential channel (Bit 15  = 1) */
+		if (CR_AREF(chanlist[i]) == AREF_DIFF) {
+			diff = 1;
+			chanprog &= 0x0007;
+		} else {
+			diff = 0;
+			chanprog &= 0x000f;
+		}
+
+		/*  Clear channel, range and input mode bits
+		 *  in A/D command/status register */
+		devpriv->AdcCmdStatus &= 0xf00f;
+
+		/*  Set channel number and differential mode status bit */
+		if (diff) {
+			/*  Set channel number, bits 9-11 & mode, bit 6 */
+			devpriv->AdcCmdStatus |= (chanprog << 9);
+			devpriv->AdcCmdStatus |= ADC_DI;
+		} else
+			/*  Set channel number, bits 8-11 */
+			devpriv->AdcCmdStatus |= (chanprog << 8);
+
+		/*  Get range for current channel */
+		range = range_codes_analog[CR_RANGE(chanlist[i])];
+		/*  Set range. bits 4-5 */
+		devpriv->AdcCmdStatus |= range;
+
+		/* Output channel, range, mode to ICP Multi */
+		writew(devpriv->AdcCmdStatus,
+		       devpriv->io_addr + ICP_MULTI_ADC_CSR);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int icp_multi_insn_read_ai(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int n, timeout;
 
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG "icp multi EDBG: BGN: icp_multi_insn_read_ai(...)\n");
 #endif
+=======
+	struct icp_multi_private *devpriv = dev->private;
+	int n, timeout;
+
+>>>>>>> refs/remotes/origin/master
 	/*  Disable A/D conversion ready interrupt */
 	devpriv->IntEnable &= ~ADC_READY;
 	writew(devpriv->IntEnable, devpriv->io_addr + ICP_MULTI_INT_EN);
@@ -280,12 +385,15 @@ static int icp_multi_insn_read_ai(struct comedi_device *dev,
 	/*  Set up appropriate channel, mode and range data, for specified ch */
 	setup_channel_list(dev, s, &insn->chanspec, 1);
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG "icp_multi A ST=%4x IO=%p\n",
 	       readw(devpriv->io_addr + ICP_MULTI_ADC_CSR),
 	       devpriv->io_addr + ICP_MULTI_ADC_CSR);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (n = 0; n < insn->n; n++) {
 		/*  Set start ADC bit */
 		devpriv->AdcCmdStatus |= ADC_ST;
@@ -293,6 +401,7 @@ static int icp_multi_insn_read_ai(struct comedi_device *dev,
 		       devpriv->io_addr + ICP_MULTI_ADC_CSR);
 		devpriv->AdcCmdStatus &= ~ADC_ST;
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 		printk(KERN_DEBUG "icp multi B n=%d ST=%4x\n", n,
 		       readw(devpriv->io_addr + ICP_MULTI_ADC_CSR));
@@ -305,6 +414,10 @@ static int icp_multi_insn_read_ai(struct comedi_device *dev,
 		       readw(devpriv->io_addr + ICP_MULTI_ADC_CSR));
 #endif
 
+=======
+		udelay(1);
+
+>>>>>>> refs/remotes/origin/master
 		/*  Wait for conversion to complete, or get fed up waiting */
 		timeout = 100;
 		while (timeout--) {
@@ -312,6 +425,7 @@ static int icp_multi_insn_read_ai(struct comedi_device *dev,
 				    ICP_MULTI_ADC_CSR) & ADC_BSY))
 				goto conv_finish;
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 			if (!(timeout % 10))
 				printk(KERN_DEBUG
@@ -321,6 +435,8 @@ static int icp_multi_insn_read_ai(struct comedi_device *dev,
 					     ICP_MULTI_ADC_CSR));
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 			udelay(1);
 		}
 
@@ -339,11 +455,14 @@ static int icp_multi_insn_read_ai(struct comedi_device *dev,
 		/*  Clear data received */
 		data[n] = 0;
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 		printk(KERN_DEBUG
 		      "icp multi EDBG: END: icp_multi_insn_read_ai(...) n=%d\n",
 		      n);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ETIME;
 
 conv_finish:
@@ -359,6 +478,7 @@ conv_finish:
 	devpriv->IntStatus |= ADC_READY;
 	writew(devpriv->IntStatus, devpriv->io_addr + ICP_MULTI_INT_STAT);
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG
 	       "icp multi EDBG: END: icp_multi_insn_read_ai(...) n=%d\n", n);
@@ -384,16 +504,27 @@ Returns:int			Nmuber of instructions executed
 
 ==============================================================================
 */
+=======
+	return n;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int icp_multi_insn_write_ao(struct comedi_device *dev,
 				   struct comedi_subdevice *s,
 				   struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	int n, chan, range, timeout;
 
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG
 	       "icp multi EDBG: BGN: icp_multi_insn_write_ao(...)\n");
 #endif
+=======
+	struct icp_multi_private *devpriv = dev->private;
+	int n, chan, range, timeout;
+
+>>>>>>> refs/remotes/origin/master
 	/*  Disable D/A conversion ready interrupt */
 	devpriv->IntEnable &= ~DAC_READY;
 	writew(devpriv->IntEnable, devpriv->io_addr + ICP_MULTI_INT_EN);
@@ -412,7 +543,11 @@ static int icp_multi_insn_write_ao(struct comedi_device *dev,
 	/*  Bit 5 = 1 : 10V */
 	/*  Bits 8-9 : Channel number */
 	devpriv->DacCmdStatus &= 0xfccf;
+<<<<<<< HEAD
 	devpriv->DacCmdStatus |= this_board->rangecode[range];
+=======
+	devpriv->DacCmdStatus |= range_codes_analog[range];
+>>>>>>> refs/remotes/origin/master
 	devpriv->DacCmdStatus |= (chan << 8);
 
 	writew(devpriv->DacCmdStatus, devpriv->io_addr + ICP_MULTI_DAC_CSR);
@@ -426,6 +561,7 @@ static int icp_multi_insn_write_ao(struct comedi_device *dev,
 				    ICP_MULTI_DAC_CSR) & DAC_BSY))
 				goto dac_ready;
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 			if (!(timeout % 10))
 				printk(KERN_DEBUG
@@ -435,6 +571,8 @@ static int icp_multi_insn_write_ao(struct comedi_device *dev,
 					     ICP_MULTI_DAC_CSR));
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 			udelay(1);
 		}
 
@@ -453,11 +591,14 @@ static int icp_multi_insn_write_ao(struct comedi_device *dev,
 		/*  Clear data received */
 		devpriv->ao_data[chan] = 0;
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 		printk(KERN_DEBUG
 		     "icp multi EDBG: END: icp_multi_insn_write_ao(...) n=%d\n",
 		     n);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ETIME;
 
 dac_ready:
@@ -474,6 +615,7 @@ dac_ready:
 		devpriv->ao_data[chan] = data[n];
 	}
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG
 	       "icp multi EDBG: END: icp_multi_insn_write_ao(...) n=%d\n", n);
@@ -499,10 +641,19 @@ Returns:int			Nmuber of instructions executed
 
 ==============================================================================
 */
+=======
+	return n;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int icp_multi_insn_read_ao(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct icp_multi_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n, chan;
 
 	/*  Get channel number */
@@ -515,6 +666,7 @@ static int icp_multi_insn_read_ao(struct comedi_device *dev,
 	return n;
 }
 
+<<<<<<< HEAD
 /*
 ==============================================================================
 
@@ -533,10 +685,13 @@ Returns:int			Nmuber of instructions executed
 
 ==============================================================================
 */
+=======
+>>>>>>> refs/remotes/origin/master
 static int icp_multi_insn_bits_di(struct comedi_device *dev,
 				  struct comedi_subdevice *s,
 				  struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	data[1] = readw(devpriv->io_addr + ICP_MULTI_DI);
 
 	return 2;
@@ -603,6 +758,30 @@ Returns:int			Nmuber of instructions executed
 
 ==============================================================================
 */
+=======
+	struct icp_multi_private *devpriv = dev->private;
+
+	data[1] = readw(devpriv->io_addr + ICP_MULTI_DI);
+
+	return insn->n;
+}
+
+static int icp_multi_insn_bits_do(struct comedi_device *dev,
+				  struct comedi_subdevice *s,
+				  struct comedi_insn *insn,
+				  unsigned int *data)
+{
+	struct icp_multi_private *devpriv = dev->private;
+
+	if (comedi_dio_update_state(s, data))
+		writew(s->state, devpriv->io_addr + ICP_MULTI_DO);
+
+	data[1] = readw(devpriv->io_addr + ICP_MULTI_DI);
+
+	return insn->n;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int icp_multi_insn_read_ctr(struct comedi_device *dev,
 				   struct comedi_subdevice *s,
 				   struct comedi_insn *insn, unsigned int *data)
@@ -610,6 +789,7 @@ static int icp_multi_insn_read_ctr(struct comedi_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
 ==============================================================================
 
@@ -628,6 +808,8 @@ Returns:int			Nmuber of instructions executed
 
 ==============================================================================
 */
+=======
+>>>>>>> refs/remotes/origin/master
 static int icp_multi_insn_write_ctr(struct comedi_device *dev,
 				    struct comedi_subdevice *s,
 				    struct comedi_insn *insn,
@@ -636,6 +818,7 @@ static int icp_multi_insn_write_ctr(struct comedi_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
 ==============================================================================
 
@@ -662,18 +845,29 @@ static irqreturn_t interrupt_service_icp_multi(int irq, void *d)
 	       irq);
 #endif
 
+=======
+static irqreturn_t interrupt_service_icp_multi(int irq, void *d)
+{
+	struct comedi_device *dev = d;
+	struct icp_multi_private *devpriv = dev->private;
+	int int_no;
+
+>>>>>>> refs/remotes/origin/master
 	/*  Is this interrupt from our board? */
 	int_no = readw(devpriv->io_addr + ICP_MULTI_INT_STAT) & Status_IRQ;
 	if (!int_no)
 		/*  No, exit */
 		return IRQ_NONE;
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG
 	       "icp multi EDBG: interrupt_service_icp_multi() ST: %4x\n",
 	       readw(devpriv->io_addr + ICP_MULTI_INT_STAT));
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*  Determine which interrupt is active & handle it */
 	switch (int_no) {
 	case ADC_READY:
@@ -697,14 +891,18 @@ static irqreturn_t interrupt_service_icp_multi(int irq, void *d)
 
 	}
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG
 	       "icp multi EDBG: END: interrupt_service_icp_multi(...)\n");
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
 #if 0
+<<<<<<< HEAD
 /*
 ==============================================================================
 
@@ -725,16 +923,21 @@ Returns:int 0 = failure
 
 ==============================================================================
 */
+=======
+>>>>>>> refs/remotes/origin/master
 static int check_channel_list(struct comedi_device *dev,
 			      struct comedi_subdevice *s,
 			      unsigned int *chanlist, unsigned int n_chan)
 {
 	unsigned int i;
 
+<<<<<<< HEAD
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG
 	       "icp multi EDBG:  check_channel_list(...,%d)\n", n_chan);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	/*  Check that we at least have one channel to check */
 	if (n_chan < 1) {
 		comedi_error(dev, "range/channel list is empty!");
@@ -744,13 +947,21 @@ static int check_channel_list(struct comedi_device *dev,
 	for (i = 0; i < n_chan; i++) {
 		/*  Check that channel number is < maximum */
 		if (CR_AREF(chanlist[i]) == AREF_DIFF) {
+<<<<<<< HEAD
 			if (CR_CHAN(chanlist[i]) > this_board->n_aichand) {
+=======
+			if (CR_CHAN(chanlist[i]) > (s->nchan / 2)) {
+>>>>>>> refs/remotes/origin/master
 				comedi_error(dev,
 					     "Incorrect differential ai ch-nr");
 				return 0;
 			}
 		} else {
+<<<<<<< HEAD
 			if (CR_CHAN(chanlist[i]) > this_board->n_aichan) {
+=======
+			if (CR_CHAN(chanlist[i]) > s->n_chan) {
+>>>>>>> refs/remotes/origin/master
 				comedi_error(dev,
 					     "Incorrect ai channel number");
 				return 0;
@@ -761,6 +972,7 @@ static int check_channel_list(struct comedi_device *dev,
 }
 #endif
 
+<<<<<<< HEAD
 /*
 ==============================================================================
 
@@ -862,10 +1074,18 @@ static int icp_multi_reset(struct comedi_device *dev)
 	printk(KERN_DEBUG
 	       "icp_multi EDBG: BGN: icp_multi_reset(...)\n");
 #endif
+=======
+static int icp_multi_reset(struct comedi_device *dev)
+{
+	struct icp_multi_private *devpriv = dev->private;
+	unsigned int i;
+
+>>>>>>> refs/remotes/origin/master
 	/*  Clear INT enables and requests */
 	writew(0, devpriv->io_addr + ICP_MULTI_INT_EN);
 	writew(0x00ff, devpriv->io_addr + ICP_MULTI_INT_STAT);
 
+<<<<<<< HEAD
 	if (this_board->n_aochan)
 		/*  Set DACs to 0..5V range and 0V output */
 		for (i = 0; i < this_board->n_aochan; i++) {
@@ -997,10 +1217,62 @@ static int icp_multi_attach(struct comedi_device *dev,
 
 	ret = alloc_subdevices(dev, n_subdevices);
 	if (ret < 0)
+=======
+	/* Set DACs to 0..5V range and 0V output */
+	for (i = 0; i < 4; i++) {
+		devpriv->DacCmdStatus &= 0xfcce;
+
+		/*  Set channel number */
+		devpriv->DacCmdStatus |= (i << 8);
+
+		/*  Output 0V */
+		writew(0, devpriv->io_addr + ICP_MULTI_AO);
+
+		/*  Set start conversion bit */
+		devpriv->DacCmdStatus |= DAC_ST;
+
+		/*  Output to command / status register */
+		writew(devpriv->DacCmdStatus,
+			devpriv->io_addr + ICP_MULTI_DAC_CSR);
+
+		/*  Delay to allow DAC time to recover */
+		udelay(1);
+	}
+
+	/* Digital outputs to 0 */
+	writew(0, devpriv->io_addr + ICP_MULTI_DO);
+
+	return 0;
+}
+
+static int icp_multi_auto_attach(struct comedi_device *dev,
+					   unsigned long context_unused)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	struct icp_multi_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+
+	devpriv->io_addr = pci_ioremap_bar(pcidev, 2);
+	if (!devpriv->io_addr)
+		return -ENOMEM;
+
+	ret = comedi_alloc_subdevices(dev, 5);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
 		return ret;
 
 	icp_multi_reset(dev);
 
+<<<<<<< HEAD
 	if (this_board->have_irq) {
 		if (irq) {
 			if (request_irq(irq, interrupt_service_icp_multi,
@@ -1095,10 +1367,72 @@ static int icp_multi_attach(struct comedi_device *dev,
 #ifdef ICP_MULTI_EXTDEBUG
 	printk(KERN_DEBUG "icp multi EDBG: END: icp_multi_attach(...)\n");
 #endif
+=======
+	if (pcidev->irq) {
+		ret = request_irq(pcidev->irq, interrupt_service_icp_multi,
+				  IRQF_SHARED, dev->board_name, dev);
+		if (ret == 0)
+			dev->irq = pcidev->irq;
+	}
+
+	s = &dev->subdevices[0];
+	dev->read_subdev = s;
+	s->type = COMEDI_SUBD_AI;
+	s->subdev_flags = SDF_READABLE | SDF_COMMON | SDF_GROUND | SDF_DIFF;
+	s->n_chan = 16;
+	s->maxdata = 0x0fff;
+	s->len_chanlist = 16;
+	s->range_table = &range_analog;
+	s->insn_read = icp_multi_insn_read_ai;
+
+	s = &dev->subdevices[1];
+	s->type = COMEDI_SUBD_AO;
+	s->subdev_flags = SDF_WRITABLE | SDF_GROUND | SDF_COMMON;
+	s->n_chan = 4;
+	s->maxdata = 0x0fff;
+	s->len_chanlist = 4;
+	s->range_table = &range_analog;
+	s->insn_write = icp_multi_insn_write_ao;
+	s->insn_read = icp_multi_insn_read_ao;
+
+	s = &dev->subdevices[2];
+	s->type = COMEDI_SUBD_DI;
+	s->subdev_flags = SDF_READABLE;
+	s->n_chan = 16;
+	s->maxdata = 1;
+	s->len_chanlist = 16;
+	s->range_table = &range_digital;
+	s->insn_bits = icp_multi_insn_bits_di;
+
+	s = &dev->subdevices[3];
+	s->type = COMEDI_SUBD_DO;
+	s->subdev_flags = SDF_WRITABLE | SDF_READABLE;
+	s->n_chan = 8;
+	s->maxdata = 1;
+	s->len_chanlist = 8;
+	s->range_table = &range_digital;
+	s->insn_bits = icp_multi_insn_bits_do;
+
+	s = &dev->subdevices[4];
+	s->type = COMEDI_SUBD_COUNTER;
+	s->subdev_flags = SDF_WRITABLE | SDF_GROUND | SDF_COMMON;
+	s->n_chan = 4;
+	s->maxdata = 0xffff;
+	s->len_chanlist = 4;
+	s->state = 0;
+	s->insn_read = icp_multi_insn_read_ctr;
+	s->insn_write = icp_multi_insn_write_ctr;
+
+	devpriv->valid = 1;
+
+	dev_info(dev->class_dev, "%s attached, irq %sabled\n",
+		dev->board_name, dev->irq ? "en" : "dis");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
 ==============================================================================
 
@@ -1137,6 +1471,49 @@ static int icp_multi_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+static void icp_multi_detach(struct comedi_device *dev)
+{
+	struct icp_multi_private *devpriv = dev->private;
+
+	if (devpriv)
+		if (devpriv->valid)
+			icp_multi_reset(dev);
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+	if (devpriv && devpriv->io_addr)
+		iounmap(devpriv->io_addr);
+	comedi_pci_disable(dev);
+}
+
+static struct comedi_driver icp_multi_driver = {
+	.driver_name	= "icp_multi",
+	.module		= THIS_MODULE,
+	.auto_attach	= icp_multi_auto_attach,
+	.detach		= icp_multi_detach,
+};
+
+static int icp_multi_pci_probe(struct pci_dev *dev,
+			       const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &icp_multi_driver, id->driver_data);
+}
+
+static const struct pci_device_id icp_multi_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_ICP, PCI_DEVICE_ID_ICP_MULTI) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, icp_multi_pci_table);
+
+static struct pci_driver icp_multi_pci_driver = {
+	.name		= "icp_multi",
+	.id_table	= icp_multi_pci_table,
+	.probe		= icp_multi_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(icp_multi_driver, icp_multi_pci_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");
 MODULE_LICENSE("GPL");

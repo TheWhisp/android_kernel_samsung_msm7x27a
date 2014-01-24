@@ -16,6 +16,10 @@
 #define SI4713_I2C_H
 
 #include <media/v4l2-subdev.h>
+<<<<<<< HEAD
+=======
+#include <media/v4l2-ctrls.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/si4713.h>
 
 #define SI4713_PRODUCT_NUMBER		0x0D
@@ -160,24 +164,35 @@
 #define POWER_UP			0x01
 #define POWER_DOWN			0x00
 
+<<<<<<< HEAD
 struct rds_info {
 	u32 pi;
 #define MAX_RDS_PTY			31
 	u32 pty;
 #define MAX_RDS_DEVIATION		90000
 	u32 deviation;
+=======
+#define MAX_RDS_PTY			31
+#define MAX_RDS_DEVIATION		90000
+
+>>>>>>> refs/remotes/origin/master
 /*
  * PSNAME is known to be defined as 8 character sized (RDS Spec).
  * However, there is receivers which scroll PSNAME 8xN sized.
  */
 #define MAX_RDS_PS_NAME			96
+<<<<<<< HEAD
 	u8 ps_name[MAX_RDS_PS_NAME + 1];
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*
  * MAX_RDS_RADIO_TEXT is known to be defined as 32 (2A group) or 64 (2B group)
  * character sized (RDS Spec).
  * However, there is receivers which scroll them as well.
  */
 #define MAX_RDS_RADIO_TEXT		384
+<<<<<<< HEAD
 	u8 radio_text[MAX_RDS_RADIO_TEXT + 1];
 	u32 enabled;
 };
@@ -210,6 +225,20 @@ struct acomp_info {
 	u32 gain;
 	u32 enabled;
 };
+=======
+
+#define MAX_LIMITER_RELEASE_TIME	102390
+#define MAX_LIMITER_DEVIATION		90000
+
+#define MAX_PILOT_DEVIATION		90000
+#define MAX_PILOT_FREQUENCY		19000
+
+#define MAX_ACOMP_RELEASE_TIME		1000000
+#define MAX_ACOMP_ATTACK_TIME		5000
+#define MAX_ACOMP_THRESHOLD		0
+#define MIN_ACOMP_THRESHOLD		(-40)
+#define MAX_ACOMP_GAIN			20
+>>>>>>> refs/remotes/origin/master
 
 #define SI4713_NUM_SUPPLIES		2
 
@@ -219,6 +248,7 @@ struct acomp_info {
 struct si4713_device {
 	/* v4l2_subdev and i2c reference (v4l2_subdev priv data) */
 	struct v4l2_subdev sd;
+<<<<<<< HEAD
 	/* private data structures */
 	struct mutex mutex;
 	struct completion work;
@@ -234,6 +264,43 @@ struct si4713_device {
 	u32 power_level;
 	u32 power_state;
 	u32 antenna_capacitor;
+=======
+	struct v4l2_ctrl_handler ctrl_handler;
+	/* private data structures */
+	struct { /* si4713 control cluster */
+		/* This is one big cluster since the mute control
+		 * powers off the device and after unmuting again all
+		 * controls need to be set at once. The only way of doing
+		 * that is by making it one big cluster. */
+		struct v4l2_ctrl *mute;
+		struct v4l2_ctrl *rds_ps_name;
+		struct v4l2_ctrl *rds_radio_text;
+		struct v4l2_ctrl *rds_pi;
+		struct v4l2_ctrl *rds_deviation;
+		struct v4l2_ctrl *rds_pty;
+		struct v4l2_ctrl *compression_enabled;
+		struct v4l2_ctrl *compression_threshold;
+		struct v4l2_ctrl *compression_gain;
+		struct v4l2_ctrl *compression_attack_time;
+		struct v4l2_ctrl *compression_release_time;
+		struct v4l2_ctrl *pilot_tone_enabled;
+		struct v4l2_ctrl *pilot_tone_freq;
+		struct v4l2_ctrl *pilot_tone_deviation;
+		struct v4l2_ctrl *limiter_enabled;
+		struct v4l2_ctrl *limiter_deviation;
+		struct v4l2_ctrl *limiter_release_time;
+		struct v4l2_ctrl *tune_preemphasis;
+		struct v4l2_ctrl *tune_pwr_level;
+		struct v4l2_ctrl *tune_ant_cap;
+	};
+	struct completion work;
+	struct regulator_bulk_data supplies[SI4713_NUM_SUPPLIES];
+	int gpio_reset;
+	u32 power_state;
+	u32 rds_enabled;
+	u32 frequency;
+	u32 preemphasis;
+>>>>>>> refs/remotes/origin/master
 	u32 stereo;
 	u32 tune_rnl;
 };

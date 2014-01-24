@@ -465,7 +465,10 @@
 #define PECFG_POM2LAH		0x394
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* 460sx only */
 #define PECFG_460SX_DLLSTA     0x3f8
 
@@ -485,7 +488,10 @@
 #define PECFG_TLDLP_PRESENT		0x00000010
 #define DCRO_PEGPL_476FPE_OMR1MSKL_UOT	 0x00000004
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* SDR Bit Mappings */
 #define PESDRx_RCSSET_HLDPLB	0x10000000
 #define PESDRx_RCSSET_RSTGU	0x01000000

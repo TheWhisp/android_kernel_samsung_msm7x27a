@@ -30,6 +30,7 @@
 #ifndef __TKIP_H__
 #define __TKIP_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "tether.h"
 
@@ -52,6 +53,18 @@ void TKIPvMixKey(
     WORD    wTSC15_0,
     DWORD   dwTSC47_16,
     PBYTE   pbyRC4Key
+=======
+#include "tether.h"
+
+#define TKIP_KEY_LEN        16
+
+void TKIPvMixKey(
+    u8 *   pbyTKey,
+    u8 *   pbyTA,
+    u16    wTSC15_0,
+    u32   dwTSC47_16,
+    u8 *   pbyRC4Key
+>>>>>>> refs/remotes/origin/master
     );
 
 #endif /* __TKIP_H__ */

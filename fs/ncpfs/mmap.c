@@ -20,9 +20,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "ncp_fs.h"
 
@@ -93,7 +96,11 @@ static int ncp_file_mmap_fault(struct vm_area_struct *area,
 	/*
 	 * If I understand ncp_read_kernel() properly, the above always
 	 * fetches from the network, here the analogue of disk.
+<<<<<<< HEAD
 	 * -- wli
+=======
+	 * -- nyc
+>>>>>>> refs/remotes/origin/master
 	 */
 	count_vm_event(PGMAJFAULT);
 	mem_cgroup_count_vm_event(area->vm_mm, PGMAJFAULT);
@@ -109,7 +116,11 @@ static const struct vm_operations_struct ncp_file_mmap =
 /* This is used for a general mmap of a ncp file */
 int ncp_mmap(struct file *file, struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	
 	DPRINTK("ncp_mmap: called\n");
 
@@ -121,7 +132,11 @@ int ncp_mmap(struct file *file, struct vm_area_struct *vma)
 		return -EINVAL;
 	/* we do not support files bigger than 4GB... We eventually 
 	   supports just 4GB... */
+<<<<<<< HEAD
 	if (((vma->vm_end - vma->vm_start) >> PAGE_SHIFT) + vma->vm_pgoff 
+=======
+	if (vma_pages(vma) + vma->vm_pgoff
+>>>>>>> refs/remotes/origin/master
 	   > (1U << (32 - PAGE_SHIFT)))
 		return -EFBIG;
 

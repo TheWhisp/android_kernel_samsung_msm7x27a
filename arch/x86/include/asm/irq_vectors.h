@@ -18,10 +18,14 @@
  *  Vectors  32 ... 127 : device interrupts
  *  Vector  128         : legacy int80 syscall interface
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Vectors 129 ... INVALIDATE_TLB_VECTOR_START-1 : device interrupts
 =======
  *  Vectors 129 ... INVALIDATE_TLB_VECTOR_START-1 except 204 : device interrupts
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Vectors 129 ... INVALIDATE_TLB_VECTOR_START-1 except 204 : device interrupts
+>>>>>>> refs/remotes/origin/master
  *  Vectors INVALIDATE_TLB_VECTOR_START ... 255 : special interrupts
  *
  * 64-bit x86 has per CPU IDT tables, 32-bit has one shared IDT table.
@@ -106,6 +110,14 @@
  */
 #define X86_PLATFORM_IPI_VECTOR		0xf7
 
+<<<<<<< HEAD
+=======
+/* Vector for KVM to deliver posted interrupt IPI */
+#ifdef CONFIG_HAVE_KVM
+#define POSTED_INTR_VECTOR		0xf2
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * IRQ work vector:
  */
@@ -113,6 +125,7 @@
 
 #define UV_BAU_MESSAGE			0xf5
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Self IPI vector for machine checks
@@ -123,6 +136,10 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 /* Xen vector callback to receive events in a HVM domain */
 #define XEN_HVM_EVTCHN_CALLBACK		0xf3
+=======
+/* Vector on which hypervisor callbacks will be delivered */
+#define HYPERVISOR_CALLBACK_VECTOR	0xf3
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Local APIC timer IRQ vector is on a different priority level,
@@ -131,6 +148,7 @@
  */
 #define LOCAL_TIMER_VECTOR		0xef
 
+<<<<<<< HEAD
 /* up to 32 vectors used for spreading out TLB flushes: */
 #if NR_CPUS <= 32
 # define NUM_INVALIDATE_TLB_VECTORS	(NR_CPUS)
@@ -142,6 +160,8 @@
 #define INVALIDATE_TLB_VECTOR_START	\
 	(INVALIDATE_TLB_VECTOR_END-NUM_INVALIDATE_TLB_VECTORS+1)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define NR_VECTORS			 256
 
 #define FPU_IRQ				  13
@@ -173,6 +193,7 @@ static inline int invalid_vm86_irq(int irq)
 
 #ifdef CONFIG_X86_IO_APIC
 <<<<<<< HEAD
+<<<<<<< HEAD
 # ifdef CONFIG_SPARSE_IRQ
 #  define CPU_VECTOR_LIMIT		(64 * NR_CPUS)
 #  define NR_IRQS					\
@@ -187,12 +208,17 @@ static inline int invalid_vm86_irq(int irq)
 		(NR_VECTORS + IO_APIC_VECTOR_LIMIT))
 # endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # define CPU_VECTOR_LIMIT		(64 * NR_CPUS)
 # define NR_IRQS					\
 	(CPU_VECTOR_LIMIT > IO_APIC_VECTOR_LIMIT ?	\
 		(NR_VECTORS + CPU_VECTOR_LIMIT)  :	\
 		(NR_VECTORS + IO_APIC_VECTOR_LIMIT))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_X86_IO_APIC: */
 # define NR_IRQS			NR_IRQS_LEGACY
 #endif

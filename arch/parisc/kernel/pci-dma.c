@@ -3,10 +3,14 @@
 ** This implementation is for PA-RISC platforms that do not support
 ** I/O TLBs (aka DMA address translation hardware).
 <<<<<<< HEAD
+<<<<<<< HEAD
 ** See Documentation/PCI/PCI-DMA-mapping.txt for interface definitions.
 =======
 ** See Documentation/DMA-API-HOWTO.txt for interface definitions.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+** See Documentation/DMA-API-HOWTO.txt for interface definitions.
+>>>>>>> refs/remotes/origin/master
 **
 **      (c) Copyright 1999,2000 Hewlett-Packard Company
 **      (c) Copyright 2000 Grant Grundler
@@ -31,9 +35,13 @@
 #include <linux/types.h>
 #include <linux/scatterlist.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/cacheflush.h>
 #include <asm/dma.h>    /* for DMA_CHUNK_SIZE */

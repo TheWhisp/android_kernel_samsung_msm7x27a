@@ -584,9 +584,13 @@ typedef struct _MSG_CONFIG_REPLY
 #define MPI_MANUFACTPAGE_DEVID_SAS1068              (0x0054)
 #define MPI_MANUFACTPAGE_DEVID_SAS1068E             (0x0058)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MPI_MANUFACTPAGE_DEVID_SAS1068_820XELP      (0x0059)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MPI_MANUFACTPAGE_DEVID_SAS1068_820XELP      (0x0059)
+>>>>>>> refs/remotes/origin/master
 #define MPI_MANUFACTPAGE_DEVID_SAS1078              (0x0062)
 
 

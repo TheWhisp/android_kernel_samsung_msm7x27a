@@ -27,6 +27,7 @@
 
 /*  Special registers.  */
 
+<<<<<<< HEAD
 #define LBEG		0
 #define LEND		1
 #define LCOUNT		2
@@ -73,6 +74,17 @@
 #define INTREAD		226
 #define INTSET		226
 #define INTCLEAR	227
+=======
+#define SREG_MR			32
+#define SREG_IBREAKA		128
+#define SREG_DBREAKA		144
+#define SREG_DBREAKC		160
+#define SREG_EPC		176
+#define SREG_EPS		192
+#define SREG_EXCSAVE		208
+#define SREG_CCOMPARE		240
+#define SREG_MISC		244
+>>>>>>> refs/remotes/origin/master
 
 /*  EXCCAUSE register fields  */
 
@@ -89,6 +101,13 @@
 #define EXCCAUSE_SPECULATION			7
 #define EXCCAUSE_PRIVILEGED			8
 #define EXCCAUSE_UNALIGNED			9
+<<<<<<< HEAD
+=======
+#define EXCCAUSE_INSTR_DATA_ERROR		12
+#define EXCCAUSE_LOAD_STORE_DATA_ERROR		13
+#define EXCCAUSE_INSTR_ADDR_ERROR		14
+#define EXCCAUSE_LOAD_STORE_ADDR_ERROR		15
+>>>>>>> refs/remotes/origin/master
 #define EXCCAUSE_ITLB_MISS			16
 #define EXCCAUSE_ITLB_MULTIHIT			17
 #define EXCCAUSE_ITLB_PRIVILEGE			18
@@ -115,12 +134,20 @@
 #define PS_CALLINC_SHIFT	16
 #define PS_CALLINC_MASK		0x00030000
 #define PS_OWB_SHIFT		8
+<<<<<<< HEAD
+=======
+#define PS_OWB_WIDTH		4
+>>>>>>> refs/remotes/origin/master
 #define PS_OWB_MASK		0x00000F00
 #define PS_RING_SHIFT		6
 #define PS_RING_MASK		0x000000C0
 #define PS_UM_BIT		5
 #define PS_EXCM_BIT		4
 #define PS_INTLEVEL_SHIFT	0
+<<<<<<< HEAD
+=======
+#define PS_INTLEVEL_WIDTH	4
+>>>>>>> refs/remotes/origin/master
 #define PS_INTLEVEL_MASK	0x0000000F
 
 /*  DBREAKCn register fields.  */
@@ -142,4 +169,7 @@
 #define DEBUGCAUSE_ICOUNT_BIT		0	/* ICOUNT would incr. to zero */
 
 #endif /* _XTENSA_SPECREG_H */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

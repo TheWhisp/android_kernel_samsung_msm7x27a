@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Data Technology Inc. ESPT-GIGA board suport
+=======
+ * Data Technology Inc. ESPT-GIGA board support
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2008, 2009 Renesas Solutions Corp.
  * Copyright (C) 2008, 2009 Nobuhiro Iwamatsu <iwamatsu.nobuhiro@renesas.com>
@@ -14,6 +18,7 @@
 #include <linux/mtd/physmap.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/machvec.h>
 #include <asm/sizes.h>
 #include <asm/sh_eth.h>
@@ -22,6 +27,12 @@
 #include <asm/machvec.h>
 #include <asm/sizes.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sh_eth.h>
+#include <linux/sh_intc.h>
+#include <asm/machvec.h>
+#include <asm/sizes.h>
+>>>>>>> refs/remotes/origin/master
 
 /* NOR Flash */
 static struct mtd_partition espt_nor_flash_partitions[] = {
@@ -77,7 +88,11 @@ static struct resource sh_eth_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	}, {
 
+<<<<<<< HEAD
 		.start  = 57,   /* irq number */
+=======
+		.start  = evt2irq(0x920),   /* irq number */
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -85,12 +100,19 @@ static struct resource sh_eth_resources[] = {
 static struct sh_eth_plat_data sh7763_eth_pdata = {
 	.phy = 0,
 	.edmac_endian = EDMAC_LITTLE_ENDIAN,
+<<<<<<< HEAD
 	.register_type = SH_ETH_REG_GIGABIT,
+=======
+>>>>>>> refs/remotes/origin/master
 	.phy_interface = PHY_INTERFACE_MODE_MII,
 };
 
 static struct platform_device espt_eth_device = {
+<<<<<<< HEAD
 	.name       = "sh-eth",
+=======
+	.name       = "sh7763-gether",
+>>>>>>> refs/remotes/origin/master
 	.resource   = sh_eth_resources,
 	.num_resources  = ARRAY_SIZE(sh_eth_resources),
 	.dev        = {

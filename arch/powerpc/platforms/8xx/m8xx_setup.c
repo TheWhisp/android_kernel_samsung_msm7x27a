@@ -43,6 +43,10 @@ static irqreturn_t timebase_interrupt(int irq, void *dev)
 
 static struct irqaction tbint_irqaction = {
 	.handler = timebase_interrupt,
+<<<<<<< HEAD
+=======
+	.flags = IRQF_NO_THREAD,
+>>>>>>> refs/remotes/origin/master
 	.name = "tbint",
 };
 
@@ -218,6 +222,7 @@ void mpc8xx_restart(char *cmd)
 
 static void cpm_cascade(unsigned int irq, struct irq_desc *desc)
 {
+<<<<<<< HEAD
 	struct irq_chip *chip;
 	int cascade_irq;
 
@@ -231,6 +236,14 @@ static void cpm_cascade(unsigned int irq, struct irq_desc *desc)
 	}
 
 	chip = irq_desc_get_chip(desc);
+=======
+	struct irq_chip *chip = irq_desc_get_chip(desc);
+	int cascade_irq = cpm_get_irq();
+
+	if (cascade_irq >= 0)
+		generic_handle_irq(cascade_irq);
+
+>>>>>>> refs/remotes/origin/master
 	chip->irq_eoi(&desc->irq_data);
 }
 

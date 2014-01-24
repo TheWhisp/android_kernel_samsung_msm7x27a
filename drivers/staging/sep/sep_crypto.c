@@ -32,7 +32,10 @@
  */
 
 /* #define DEBUG */
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
@@ -44,7 +47,10 @@
 #include <linux/poll.h>
 #include <linux/wait.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/pci.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm_runtime.h>
 #include <linux/err.h>
 #include <linux/device.h>
@@ -85,6 +91,7 @@ static void sep_dequeuer(void *data);
 
 /* TESTING */
 /**
+<<<<<<< HEAD
  * crypto_sep_dump_message - dump the message that is pending
  * @sep: SEP device
  * This will only print dump if DEBUG is set; it does
@@ -107,6 +114,8 @@ static void crypto_sep_dump_message(struct sep_device *sep, void *msg)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  *	sep_do_callback
  *	@work: pointer to work_struct
  *	This is what is called by the queue; it is generic so that it
@@ -201,11 +210,17 @@ static struct scatterlist *sep_alloc_sg_buf(
 		nbr_pages += 1;
 	}
 
+<<<<<<< HEAD
 	sg = kmalloc((sizeof(struct scatterlist) * nbr_pages), GFP_ATOMIC);
 	if (!sg) {
 		dev_warn(&sep->pdev->dev, "Cannot allocate page for new sg\n");
 		return NULL;
 	}
+=======
+	sg = kmalloc_array(nbr_pages, sizeof(struct scatterlist), GFP_ATOMIC);
+	if (!sg)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	sg_init_table(sg, nbr_pages);
 
@@ -487,6 +502,7 @@ static int partial_overlap(void *src_ptr, void *dst_ptr, u32 nbytes)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Debug - prints only if DEBUG is defined; follows kernel debug model */
 static void sep_dump(struct sep_device *sep, char *stg, void *start, int len)
 {
@@ -536,6 +552,8 @@ static void sep_dump_sg(struct sep_device *sep, char *stg,
 #endif
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Debug - prints only if DEBUG is defined */
 static void sep_dump_ivs(struct ablkcipher_request *req, char *reason)
 
@@ -807,7 +825,11 @@ end_function:
  *	@size: size of parameter to copy (in bytes)
  *	@max_size: size to move up offset; SEP mesg is in word sizes
  *	@msg_offset: pointer to current offset (is updated)
+<<<<<<< HEAD
  *	@byte_array: flag ti indicate wheter endian must be changed
+=======
+ *	@byte_array: flag ti indicate whether endian must be changed
+>>>>>>> refs/remotes/origin/master
  *	Copies data into the message area from caller
  */
 static void sep_write_msg(struct this_task_ctx *ta_ctx, void *in_addr,
@@ -855,7 +877,11 @@ static void sep_make_header(struct this_task_ctx *ta_ctx, u32 *msg_offset,
  *	@size: size of parameter to copy (in bytes)
  *	@max_size: size to move up offset; SEP mesg is in word sizes
  *	@msg_offset: pointer to current offset (is updated)
+<<<<<<< HEAD
  *	@byte_array: flag ti indicate wheter endian must be changed
+=======
+ *	@byte_array: flag ti indicate whether endian must be changed
+>>>>>>> refs/remotes/origin/master
  *	Copies data out of the message area to caller
  */
 static void sep_read_msg(struct this_task_ctx *ta_ctx, void *in_addr,
@@ -990,7 +1016,11 @@ static void sep_clear_out(struct this_task_ctx *ta_ctx)
 		/**
 		 * The following unlocks the sep and makes it available
 		 * to any other application
+<<<<<<< HEAD
 		 * First, null out crypto entries in sep before relesing it
+=======
+		 * First, null out crypto entries in sep before releasing it
+>>>>>>> refs/remotes/origin/master
 		 */
 		ta_ctx->sep_used->current_hash_req = NULL;
 		ta_ctx->sep_used->current_cypher_req = NULL;
@@ -1001,7 +1031,11 @@ static void sep_clear_out(struct this_task_ctx *ta_ctx)
 
 		ta_ctx->call_status.status = 0;
 
+<<<<<<< HEAD
 		/* Remove anything confidentail */
+=======
+		/* Remove anything confidential */
+>>>>>>> refs/remotes/origin/master
 		memset(ta_ctx->sep_used->shared_addr, 0,
 			SEP_DRIVER_MESSAGE_SHARED_AREA_SIZE_IN_BYTES);
 
@@ -1095,8 +1129,13 @@ static int sep_crypto_take_sep(struct this_task_ctx *ta_ctx)
 		current->comm, sizeof(current->comm));
 
 	if (!ta_ctx->queue_elem) {
+<<<<<<< HEAD
 		dev_dbg(&sep->pdev->dev, "[PID%d] updating queue"
 			" status error\n", current->pid);
+=======
+		dev_dbg(&sep->pdev->dev,
+			"[PID%d] updating queue status error\n", current->pid);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -1207,8 +1246,13 @@ static int sep_crypto_block_data(struct ablkcipher_request *req)
 		req->nbytes, ta_ctx->walk.blocksize, &new_sg, 1);
 
 	if (int_error < 0) {
+<<<<<<< HEAD
 		dev_warn(&ta_ctx->sep_used->pdev->dev, "oddball page eerror\n");
 		return -ENOMEM;
+=======
+		dev_warn(&ta_ctx->sep_used->pdev->dev, "oddball page error\n");
+		return int_error;
+>>>>>>> refs/remotes/origin/master
 	} else if (int_error == 1) {
 		ta_ctx->src_sg = new_sg;
 		ta_ctx->src_sg_hold = new_sg;
@@ -1223,7 +1267,11 @@ static int sep_crypto_block_data(struct ablkcipher_request *req)
 	if (int_error < 0) {
 		dev_warn(&ta_ctx->sep_used->pdev->dev, "walk phys error %x\n",
 			int_error);
+<<<<<<< HEAD
 		return -ENOMEM;
+=======
+		return int_error;
+>>>>>>> refs/remotes/origin/master
 	} else if (int_error == 1) {
 		ta_ctx->dst_sg = new_sg;
 		ta_ctx->dst_sg_hold = new_sg;
@@ -1238,9 +1286,12 @@ static int sep_crypto_block_data(struct ablkcipher_request *req)
 	/* Key already done; this is for data */
 	dev_dbg(&ta_ctx->sep_used->pdev->dev, "sending data\n");
 
+<<<<<<< HEAD
 	sep_dump_sg(ta_ctx->sep_used,
 		"block sg in", ta_ctx->src_sg);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* check for valid data and proper spacing */
 	src_ptr = sg_virt(ta_ctx->src_sg);
 	dst_ptr = sg_virt(ta_ctx->dst_sg);
@@ -1283,7 +1334,11 @@ static int sep_crypto_block_data(struct ablkcipher_request *req)
 
 		if (copy_result != crypto_ablkcipher_blocksize(tfm)) {
 			dev_warn(&ta_ctx->sep_used->pdev->dev,
+<<<<<<< HEAD
 				"des block copy faild\n");
+=======
+				"des block copy failed\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENOMEM;
 		}
 
@@ -1362,14 +1417,20 @@ static int sep_crypto_block_data(struct ablkcipher_request *req)
 		sep_write_context(ta_ctx, &msg_offset,
 			&sctx->des_private_ctx,
 			sizeof(struct sep_des_private_context));
+<<<<<<< HEAD
 		sep_dump(ta_ctx->sep_used, "ctx to block des",
 			&sctx->des_private_ctx, 40);
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		sep_write_context(ta_ctx, &msg_offset,
 			&sctx->aes_private_ctx,
 			sizeof(struct sep_aes_private_context));
+<<<<<<< HEAD
 		sep_dump(ta_ctx->sep_used, "ctx to block aes",
 			&sctx->aes_private_ctx, 20);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* conclude message */
@@ -1426,8 +1487,11 @@ static int sep_crypto_send_key(struct ablkcipher_request *req)
 		}
 
 		memcpy(ta_ctx->iv, ta_ctx->walk.iv, SEP_DES_IV_SIZE_BYTES);
+<<<<<<< HEAD
 		sep_dump(ta_ctx->sep_used, "iv",
 			ta_ctx->iv, SEP_DES_IV_SIZE_BYTES);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ((ta_ctx->current_request == AES_CBC) &&
@@ -1438,8 +1502,11 @@ static int sep_crypto_send_key(struct ablkcipher_request *req)
 		}
 
 		memcpy(ta_ctx->iv, ta_ctx->walk.iv, SEP_AES_IV_SIZE_BYTES);
+<<<<<<< HEAD
 		sep_dump(ta_ctx->sep_used, "iv",
 			ta_ctx->iv, SEP_AES_IV_SIZE_BYTES);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* put together message to SEP */
@@ -1452,8 +1519,11 @@ static int sep_crypto_send_key(struct ablkcipher_request *req)
 			sep_write_msg(ta_ctx, ta_ctx->iv,
 				SEP_DES_IV_SIZE_BYTES, sizeof(u32) * 4,
 				&msg_offset, 1);
+<<<<<<< HEAD
 			sep_dump(ta_ctx->sep_used, "initial IV",
 				ta_ctx->walk.iv, SEP_DES_IV_SIZE_BYTES);
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* Skip if ECB */
 			msg_offset += 4 * sizeof(u32);
@@ -1465,8 +1535,11 @@ static int sep_crypto_send_key(struct ablkcipher_request *req)
 			sep_write_msg(ta_ctx, ta_ctx->iv,
 				SEP_AES_IV_SIZE_BYTES, max_length,
 				&msg_offset, 1);
+<<<<<<< HEAD
 			sep_dump(ta_ctx->sep_used, "initial IV",
 				ta_ctx->walk.iv, SEP_AES_IV_SIZE_BYTES);
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 				/* Skip if ECB */
 				msg_offset += max_length;
@@ -1646,7 +1719,10 @@ static u32 crypto_post_op(struct sep_device *sep)
 
 	dev_dbg(&ta_ctx->sep_used->pdev->dev, "crypto post_op\n");
 	dev_dbg(&ta_ctx->sep_used->pdev->dev, "crypto post_op message dump\n");
+<<<<<<< HEAD
 	crypto_sep_dump_message(ta_ctx->sep_used, ta_ctx->msg);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* first bring msg from shared area to local area */
 	memcpy(ta_ctx->msg, sep->shared_addr,
@@ -1670,16 +1746,22 @@ static u32 crypto_post_op(struct sep_device *sep)
 			sep_read_context(ta_ctx, &msg_offset,
 			&sctx->des_private_ctx,
 			sizeof(struct sep_des_private_context));
+<<<<<<< HEAD
 
 			sep_dump(ta_ctx->sep_used, "ctx init des",
 				&sctx->des_private_ctx, 40);
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			sep_read_context(ta_ctx, &msg_offset,
 			&sctx->aes_private_ctx,
 			sizeof(struct sep_aes_private_context));
+<<<<<<< HEAD
 
 			sep_dump(ta_ctx->sep_used, "ctx init aes",
 				&sctx->aes_private_ctx, 20);
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		sep_dump_ivs(req, "after sending key to sep\n");
@@ -1733,7 +1815,11 @@ static u32 crypto_post_op(struct sep_device *sep)
 					crypto_ablkcipher_blocksize(tfm)) {
 
 					dev_warn(&ta_ctx->sep_used->pdev->dev,
+<<<<<<< HEAD
 						"des block copy faild\n");
+=======
+						"des block copy failed\n");
+>>>>>>> refs/remotes/origin/master
 					sep_crypto_release(sctx, ta_ctx,
 						-ENOMEM);
 					return -ENOMEM;
@@ -1758,9 +1844,12 @@ static u32 crypto_post_op(struct sep_device *sep)
 				sizeof(struct sep_aes_private_context));
 		}
 
+<<<<<<< HEAD
 		sep_dump_sg(ta_ctx->sep_used,
 			"block sg out", ta_ctx->dst_sg);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Copy to correct sg if this block had oddball pages */
 		if (ta_ctx->dst_sg_hold)
 			sep_copy_sg(ta_ctx->sep_used,
@@ -1870,7 +1959,11 @@ static u32 hash_update_post_op(struct sep_device *sep)
 		sizeof(struct sep_hash_private_context));
 
 	/**
+<<<<<<< HEAD
 	 * Following is only for finup; if we just completd the
+=======
+	 * Following is only for finup; if we just completed the
+>>>>>>> refs/remotes/origin/master
 	 * data portion of finup, we now need to kick off the
 	 * finish portion of finup.
 	 */
@@ -2011,7 +2104,11 @@ static u32 hash_digest_post_op(struct sep_device *sep)
 }
 
 /**
+<<<<<<< HEAD
  * The sep_finish function is the function that is schedule (via tasket)
+=======
+ * The sep_finish function is the function that is scheduled (via tasklet)
+>>>>>>> refs/remotes/origin/master
  * by the interrupt service routine when the SEP sends and interrupt
  * This is only called by the interrupt handler as a tasklet.
  */
@@ -2249,7 +2346,11 @@ static void sep_hash_update(void *data)
 	head_len = (block_size - int_ctx->prev_update_bytes) % block_size;
 	tail_len = (req->nbytes - head_len) % block_size;
 
+<<<<<<< HEAD
 	/* Make sure all pages are even block */
+=======
+	/* Make sure all pages are an even block */
+>>>>>>> refs/remotes/origin/master
 	int_error = sep_oddball_pages(ta_ctx->sep_used, req->src,
 		req->nbytes,
 		block_size, &new_sg, 1);
@@ -2274,8 +2375,11 @@ static void sep_hash_update(void *data)
 		src_ptr = NULL;
 	}
 
+<<<<<<< HEAD
 	sep_dump_sg(ta_ctx->sep_used, "hash block sg in", ta_ctx->src_sg);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ta_ctx->dcb_input_data.app_in_address = src_ptr;
 	ta_ctx->dcb_input_data.data_in_size =
 		req->nbytes - (head_len + tail_len);
@@ -2482,7 +2586,11 @@ static void sep_hash_digest(void *data)
 	dev_dbg(&ta_ctx->sep_used->pdev->dev, "block_size is %x\n", block_size);
 	dev_dbg(&ta_ctx->sep_used->pdev->dev, "tail len is %x\n", tail_len);
 
+<<<<<<< HEAD
 	/* Make sure all pages are even block */
+=======
+	/* Make sure all pages are an even block */
+>>>>>>> refs/remotes/origin/master
 	int_error = sep_oddball_pages(ta_ctx->sep_used, req->src,
 		req->nbytes,
 		block_size, &new_sg, 1);
@@ -2507,8 +2615,11 @@ static void sep_hash_digest(void *data)
 		src_ptr = NULL;
 	}
 
+<<<<<<< HEAD
 	sep_dump_sg(ta_ctx->sep_used, "hash block sg in", ta_ctx->src_sg);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ta_ctx->dcb_input_data.app_in_address = src_ptr;
 	ta_ctx->dcb_input_data.data_in_size = req->nbytes - tail_len;
 	ta_ctx->dcb_input_data.app_out_address = NULL;
@@ -4009,6 +4120,7 @@ int sep_crypto_setup(void)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	i = 0;
 	j = 0;
 
@@ -4016,6 +4128,11 @@ int sep_crypto_setup(void)
 
 	err = 0;
 
+=======
+	spin_lock_init(&queue_lock);
+
+	err = 0;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(hash_algs); i++) {
 		err = crypto_register_ahash(&hash_algs[i]);
 		if (err)
@@ -4034,6 +4151,10 @@ int sep_crypto_setup(void)
 err_algs:
 	for (k = 0; k < i; k++)
 		crypto_unregister_ahash(&hash_algs[k]);
+<<<<<<< HEAD
+=======
+	destroy_workqueue(sep_dev->workqueue);
+>>>>>>> refs/remotes/origin/master
 	return err;
 
 err_crypto_algs:
@@ -4052,6 +4173,10 @@ void sep_crypto_takedown(void)
 	for (i = 0; i < ARRAY_SIZE(crypto_algs); i++)
 		crypto_unregister_alg(&crypto_algs[i]);
 
+<<<<<<< HEAD
+=======
+	destroy_workqueue(sep_dev->workqueue);
+>>>>>>> refs/remotes/origin/master
 	tasklet_kill(&sep_dev->finish_tasklet);
 }
 

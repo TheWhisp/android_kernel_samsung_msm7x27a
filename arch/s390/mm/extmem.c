@@ -1,10 +1,17 @@
 /*
+<<<<<<< HEAD
  * File...........: arch/s390/mm/extmem.c
+=======
+>>>>>>> refs/remotes/origin/master
  * Author(s)......: Carsten Otte <cotte@de.ibm.com>
  * 		    Rob M van der Heij <rvdheij@nl.ibm.com>
  * 		    Steven Shultz <shultzss@us.ibm.com>
  * Bugreports.to..: <Linux390@de.ibm.com>
+<<<<<<< HEAD
  * (C) IBM Corporation 2002-2004
+=======
+ * Copyright IBM Corp. 2002, 2004
+>>>>>>> refs/remotes/origin/master
  */
 
 #define KMSG_COMPONENT "extmem"

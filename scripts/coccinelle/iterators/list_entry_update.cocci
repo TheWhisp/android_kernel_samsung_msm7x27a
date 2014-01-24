@@ -9,7 +9,11 @@
 // Copyright: (C) 2010 Gilles Muller, INRIA/LiP6.  GPLv2.
 // URL: http://coccinelle.lip6.fr/
 // Comments:
+<<<<<<< HEAD
 // Options: -no_includes -include_headers
+=======
+// Options: --no-includes --include-headers
+>>>>>>> refs/remotes/origin/master
 
 virtual context
 virtual org

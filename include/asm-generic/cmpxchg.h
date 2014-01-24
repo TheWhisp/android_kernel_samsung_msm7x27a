@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef __ASM_GENERIC_CMPXCHG_H
 #define __ASM_GENERIC_CMPXCHG_H
 
@@ -8,6 +9,8 @@
  * Uses the local cmpxchg. Does not support SMP.
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Generic UP xchg and cmpxchg using interrupt disablement.  Does not
  * support SMP.
@@ -16,13 +19,19 @@
 #ifndef __ASM_GENERIC_CMPXCHG_H
 #define __ASM_GENERIC_CMPXCHG_H
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 #error "Cannot use generic cmpxchg on SMP"
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/irqflags.h>
 
@@ -97,7 +106,10 @@ unsigned long __xchg(unsigned long x, volatile void *ptr, int size)
 
 #endif /* xchg */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Atomic compare and exchange.
  *
@@ -105,15 +117,32 @@ unsigned long __xchg(unsigned long x, volatile void *ptr, int size)
  * a cmpxchg primitive faster than repeated local irq save/restore exists.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define cmpxchg(ptr, o, n)	cmpxchg_local((ptr), (o), (n))
 #define cmpxchg64(ptr, o, n)	cmpxchg64_local((ptr), (o), (n))
 
 #endif
 =======
 #include <asm-generic/cmpxchg-local.h>
+=======
+#include <asm-generic/cmpxchg-local.h>
+
+#ifndef cmpxchg_local
+#define cmpxchg_local(ptr, o, n)				  	       \
+	((__typeof__(*(ptr)))__cmpxchg_local_generic((ptr), (unsigned long)(o),\
+			(unsigned long)(n), sizeof(*(ptr))))
+#endif
+
+#ifndef cmpxchg64_local
+#define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define cmpxchg(ptr, o, n)	cmpxchg_local((ptr), (o), (n))
 #define cmpxchg64(ptr, o, n)	cmpxchg64_local((ptr), (o), (n))
 
 #endif /* __ASM_GENERIC_CMPXCHG_H */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

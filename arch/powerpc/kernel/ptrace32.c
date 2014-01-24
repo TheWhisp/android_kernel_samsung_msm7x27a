@@ -33,16 +33,21 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/switch_to.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/switch_to.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * does not yet catch signals sent when the child dies.
  * in exit.c or in signal.c.
  */
 
+<<<<<<< HEAD
 /*
  * Here are the old "legacy" powerpc specific getregs/setregs ptrace calls,
  * we mark them as obsolete now, they will be removed in a future version
@@ -67,11 +72,16 @@ static long compat_ptrace_old(struct task_struct *child, long request,
 	return -EPERM;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Macros to workout the correct index for the FPR in the thread struct */
 #define FPRNUMBER(i) (((i) - PT_FPR0) >> 1)
 #define FPRHALF(i) (((i) - PT_FPR0) & 1)
 #define FPRINDEX(i) TS_FPRWIDTH * FPRNUMBER(i) * 2 + FPRHALF(i)
+<<<<<<< HEAD
 #define FPRINDEX_3264(i) (TS_FPRWIDTH * ((i) - PT_FPR0))
+=======
+>>>>>>> refs/remotes/origin/master
 
 long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 			compat_ulong_t caddr, compat_ulong_t cdata)
@@ -123,7 +133,13 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 
 		CHECK_FULL_REGS(child->thread.regs);
 		if (index < PT_FPR0) {
+<<<<<<< HEAD
 			tmp = ptrace_get_reg(child, index);
+=======
+			ret = ptrace_get_reg(child, index, &tmp);
+			if (ret)
+				break;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			flush_fp_to_thread(child);
 			/*
@@ -131,7 +147,11 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 			 * to be an array of unsigned int (32 bits) - the
 			 * index passed in is based on this assumption.
 			 */
+<<<<<<< HEAD
 			tmp = ((unsigned int *)child->thread.fpr)
+=======
+			tmp = ((unsigned int *)child->thread.fp_state.fpr)
+>>>>>>> refs/remotes/origin/master
 				[FPRINDEX(index)];
 		}
 		ret = put_user((unsigned int)tmp, (u32 __user *)data);
@@ -173,10 +193,20 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 		if (numReg >= PT_FPR0) {
 			flush_fp_to_thread(child);
 			/* get 64 bit FPR */
+<<<<<<< HEAD
 			tmp = ((u64 *)child->thread.fpr)
 				[FPRINDEX_3264(numReg)];
 		} else { /* register within PT_REGS struct */
 			tmp = ptrace_get_reg(child, numReg);
+=======
+			tmp = child->thread.fp_state.fpr[numReg - PT_FPR0][0];
+		} else { /* register within PT_REGS struct */
+			unsigned long tmp2;
+			ret = ptrace_get_reg(child, numReg, &tmp2);
+			if (ret)
+				break;
+			tmp = tmp2;
+>>>>>>> refs/remotes/origin/master
 		} 
 		reg32bits = ((u32*)&tmp)[part];
 		ret = put_user(reg32bits, (u32 __user *)data);
@@ -229,7 +259,11 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 			 * to be an array of unsigned int (32 bits) - the
 			 * index passed in is based on this assumption.
 			 */
+<<<<<<< HEAD
 			((unsigned int *)child->thread.fpr)
+=======
+			((unsigned int *)child->thread.fp_state.fpr)
+>>>>>>> refs/remotes/origin/master
 				[FPRINDEX(index)] = data;
 			ret = 0;
 		}
@@ -260,7 +294,14 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 			break;
 		CHECK_FULL_REGS(child->thread.regs);
 		if (numReg < PT_FPR0) {
+<<<<<<< HEAD
 			unsigned long freg = ptrace_get_reg(child, numReg);
+=======
+			unsigned long freg;
+			ret = ptrace_get_reg(child, numReg, &freg);
+			if (ret)
+				break;
+>>>>>>> refs/remotes/origin/master
 			if (index % 2)
 				freg = (freg & ~0xfffffffful) | (data & 0xfffffffful);
 			else
@@ -270,8 +311,12 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 			u64 *tmp;
 			flush_fp_to_thread(child);
 			/* get 64 bit FPR ... */
+<<<<<<< HEAD
 			tmp = &(((u64 *)child->thread.fpr)
 				[FPRINDEX_3264(numReg)]);
+=======
+			tmp = &child->thread.fp_state.fpr[numReg - PT_FPR0][0];
+>>>>>>> refs/remotes/origin/master
 			/* ... write the 32 bit part we want */
 			((u32 *)tmp)[index % 2] = data;
 			ret = 0;
@@ -280,14 +325,29 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 	}
 
 	case PTRACE_GET_DEBUGREG: {
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_PPC_ADV_DEBUG_REGS
+		unsigned long dabr_fake;
+#endif
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		/* We only support one DABR and no IABRS at the moment */
 		if (addr > 0)
 			break;
 #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+<<<<<<< HEAD
 		ret = put_user(child->thread.dac1, (u32 __user *)data);
 #else
 		ret = put_user(child->thread.dabr, (u32 __user *)data);
+=======
+		ret = put_user(child->thread.debug.dac1, (u32 __user *)data);
+#else
+		dabr_fake = (
+			(child->thread.hw_brk.address & (~HW_BRK_TYPE_DABR)) |
+			(child->thread.hw_brk.type & HW_BRK_TYPE_DABR));
+		ret = put_user(dabr_fake, (u32 __user *)data);
+>>>>>>> refs/remotes/origin/master
 #endif
 		break;
 	}
@@ -312,8 +372,11 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 	case PTRACE_SETVSRREGS:
 	case PTRACE_GETREGS64:
 	case PTRACE_SETREGS64:
+<<<<<<< HEAD
 	case PPC_PTRACE_GETFPREGS:
 	case PPC_PTRACE_SETFPREGS:
+=======
+>>>>>>> refs/remotes/origin/master
 	case PTRACE_KILL:
 	case PTRACE_SINGLESTEP:
 	case PTRACE_DETACH:
@@ -326,12 +389,15 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 		ret = arch_ptrace(child, request, addr, data);
 		break;
 
+<<<<<<< HEAD
 	/* Old reverse args ptrace callss */
 	case PPC_PTRACE_GETREGS: /* Get GPRs 0 - 31. */
 	case PPC_PTRACE_SETREGS: /* Set GPRs 0 - 31. */
 		ret = compat_ptrace_old(child, request, addr, data);
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		ret = compat_ptrace_request(child, request, addr, data);
 		break;

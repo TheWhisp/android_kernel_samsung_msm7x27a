@@ -76,10 +76,14 @@ afs_read_footer(struct mtd_info *mtd, u_int *img_start, u_int *iis_start,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->read(mtd, ptr, sizeof(fs), &sz, (u_char *) &fs);
 =======
 	ret = mtd_read(mtd, ptr, sizeof(fs), &sz, (u_char *)&fs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_read(mtd, ptr, sizeof(fs), &sz, (u_char *)&fs);
+>>>>>>> refs/remotes/origin/master
 	if (ret >= 0 && sz != sizeof(fs))
 		ret = -EINVAL;
 
@@ -137,10 +141,14 @@ afs_read_iis(struct mtd_info *mtd, struct image_info_struct *iis, u_int ptr)
 
 	memset(iis, 0, sizeof(*iis));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->read(mtd, ptr, sizeof(*iis), &sz, (u_char *) iis);
 =======
 	ret = mtd_read(mtd, ptr, sizeof(*iis), &sz, (u_char *)iis);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_read(mtd, ptr, sizeof(*iis), &sz, (u_char *)iis);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto failed;
 
@@ -171,12 +179,17 @@ afs_read_iis(struct mtd_info *mtd, struct image_info_struct *iis, u_int ptr)
 
 static int parse_afs_partitions(struct mtd_info *mtd,
 <<<<<<< HEAD
+<<<<<<< HEAD
                          struct mtd_partition **pparts,
                          unsigned long origin)
 =======
 				struct mtd_partition **pparts,
 				struct mtd_part_parser_data *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				struct mtd_partition **pparts,
+				struct mtd_part_parser_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mtd_partition *parts;
 	u_int mask, off, idx, sz;

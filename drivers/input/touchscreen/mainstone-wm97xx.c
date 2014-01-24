@@ -158,6 +158,7 @@ static int wm97xx_acc_pen_down(struct wm97xx *wm)
 
 		/* are samples valid */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((x & WM97XX_ADCSRC_MASK) != WM97XX_ADCSEL_X ||
 		    (y & WM97XX_ADCSRC_MASK) != WM97XX_ADCSEL_Y ||
 		    (p & WM97XX_ADCSRC_MASK) != WM97XX_ADCSEL_PRES)
@@ -166,6 +167,11 @@ static int wm97xx_acc_pen_down(struct wm97xx *wm)
 		    (y & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_Y ||
 		    (p & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_PRES)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((x & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_X ||
+		    (y & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_Y ||
+		    (p & WM97XX_ADCSEL_MASK) != WM97XX_ADCSEL_PRES)
+>>>>>>> refs/remotes/origin/master
 			goto up;
 
 		/* coordinate is good */
@@ -309,6 +315,7 @@ static struct platform_driver mainstone_wm97xx_driver = {
 	},
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static int __init mainstone_wm97xx_init(void)
 {
@@ -325,6 +332,9 @@ module_exit(mainstone_wm97xx_exit);
 =======
 module_platform_driver(mainstone_wm97xx_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(mainstone_wm97xx_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Liam Girdwood <lrg@slimlogic.co.uk>");

@@ -442,7 +442,11 @@ static int sb201_audio_set_speed(int dev, int speed)
 {
 	sb_devc *devc = audio_devs[dev]->devc;
 	int tmp;
+<<<<<<< HEAD
 	int s = speed * devc->channels;
+=======
+	int s;
+>>>>>>> refs/remotes/origin/master
 
 	if (speed > 0)
 	{
@@ -452,6 +456,10 @@ static int sb201_audio_set_speed(int dev, int speed)
 			speed = 44100;
 		if (devc->opened & OPEN_READ && speed > 15000)
 			speed = 15000;
+<<<<<<< HEAD
+=======
+		s = speed * devc->channels;
+>>>>>>> refs/remotes/origin/master
 		devc->tconst = (256 - ((1000000 + s / 2) / s)) & 0xff;
 		tmp = 256 - devc->tconst;
 		speed = ((1000000 + tmp / 2) / tmp) / devc->channels;
@@ -575,13 +583,22 @@ static int jazz16_audio_set_speed(int dev, int speed)
 	if (speed > 0)
 	{
 		int tmp;
+<<<<<<< HEAD
 		int s = speed * devc->channels;
+=======
+		int s;
+>>>>>>> refs/remotes/origin/master
 
 		if (speed < 5000)
 			speed = 5000;
 		if (speed > 44100)
 			speed = 44100;
 
+<<<<<<< HEAD
+=======
+		s = speed * devc->channels;
+
+>>>>>>> refs/remotes/origin/master
 		devc->tconst = (256 - ((1000000 + s / 2) / s)) & 0xff;
 
 		tmp = 256 - devc->tconst;

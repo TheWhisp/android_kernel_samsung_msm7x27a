@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/debug.h
  *   S/390 debug facility
  *
@@ -34,10 +35,23 @@ struct __debug_entry{
 #define __DEBUG_FEATURE_VERSION      2  /* version of debug feature */
 
 #ifdef __KERNEL__
+=======
+ *   S/390 debug facility
+ *
+ *    Copyright IBM Corp. 1999, 2000
+ */
+#ifndef DEBUG_H
+#define DEBUG_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/spinlock.h>
 #include <linux/kernel.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <uapi/asm/debug.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DEBUG_MAX_LEVEL            6  /* debug levels range from 0 to 6 */
 #define DEBUG_OFF_LEVEL            -1 /* level where debug is switched off */
@@ -74,10 +88,14 @@ typedef struct debug_info {
 	struct debug_view* views[DEBUG_MAX_VIEWS];	
 	char name[DEBUG_MAX_NAME_LEN];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 } debug_info_t;
 
 typedef int (debug_header_proc_t) (debug_info_t* id,
@@ -129,10 +147,14 @@ debug_info_t *debug_register(const char *name, int pages, int nr_areas,
 
 debug_info_t *debug_register_mode(const char *name, int pages, int nr_areas,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  int buf_size, mode_t mode, uid_t uid,
 =======
 				  int buf_size, umode_t mode, uid_t uid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  int buf_size, umode_t mode, uid_t uid,
+>>>>>>> refs/remotes/origin/master
 				  gid_t gid);
 
 void debug_unregister(debug_info_t* id);
@@ -140,11 +162,22 @@ void debug_unregister(debug_info_t* id);
 void debug_set_level(debug_info_t* id, int new_level);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void debug_set_critical(void);
 >>>>>>> refs/remotes/origin/cm-10.0
 void debug_stop_all(void);
 
+=======
+void debug_set_critical(void);
+void debug_stop_all(void);
+
+static inline bool debug_level_enabled(debug_info_t* id, int level)
+{
+	return level <= id->level;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline debug_entry_t*
 debug_event(debug_info_t* id, int level, void* data, int length)
 {
@@ -267,5 +300,8 @@ int debug_unregister_view(debug_info_t* id, struct debug_view* view);
 #define PRINT_FATAL(x...) printk ( KERN_DEBUG PRINTK_HEADER x )
 #endif				/* DASD_DEBUG */
 
+<<<<<<< HEAD
 #endif				/* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* DEBUG_H */

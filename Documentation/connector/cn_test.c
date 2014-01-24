@@ -69,9 +69,19 @@ static int cn_test_want_notify(void)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	nlh = NLMSG_PUT(skb, 0, 0x123, NLMSG_DONE, size - sizeof(*nlh));
 
 	msg = (struct cn_msg *)NLMSG_DATA(nlh);
+=======
+	nlh = nlmsg_put(skb, 0, 0x123, NLMSG_DONE, size - sizeof(*nlh), 0);
+	if (!nlh) {
+		kfree_skb(skb);
+		return -EMSGSIZE;
+	}
+
+	msg = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 
 	memset(msg, 0, size0);
 
@@ -117,11 +127,14 @@ static int cn_test_want_notify(void)
 	pr_info("request was sent: group=0x%x\n", ctl->group);
 
 	return 0;
+<<<<<<< HEAD
 
 nlmsg_failure:
 	pr_err("failed to send %u.%u\n", msg->seq, msg->ack);
 	kfree_skb(skb);
 	return -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

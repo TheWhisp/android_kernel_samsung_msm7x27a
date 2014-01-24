@@ -1,6 +1,7 @@
 #ifndef __IP_SET_HASH_H
 #define __IP_SET_HASH_H
 
+<<<<<<< HEAD
 /* Hash type specific error codes */
 enum {
 	/* Hash is full */
@@ -21,6 +22,10 @@ enum {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/netfilter/ipset/ip_set_hash.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define IPSET_DEFAULT_HASHSIZE		1024
 #define IPSET_MIMINAL_HASHSIZE		64
@@ -28,6 +33,9 @@ enum {
 #define IPSET_DEFAULT_PROBES		4
 #define IPSET_DEFAULT_RESIZE		100
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __IP_SET_HASH_H */

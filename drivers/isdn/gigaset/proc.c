@@ -36,10 +36,14 @@ static ssize_t set_cidmode(struct device *dev, struct device_attribute *attr,
 			return -EINVAL;
 	if (value < 0 || value > 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -EINVAL;
 =======
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (mutex_lock_interruptible(&cs->mutex))
 		return -ERESTARTSYS;
@@ -61,10 +65,14 @@ static ssize_t set_cidmode(struct device *dev, struct device_attribute *attr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEVICE_ATTR(cidmode, S_IRUGO|S_IWUSR, show_cidmode, set_cidmode);
 =======
 static DEVICE_ATTR(cidmode, S_IRUGO | S_IWUSR, show_cidmode, set_cidmode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(cidmode, S_IRUGO | S_IWUSR, show_cidmode, set_cidmode);
+>>>>>>> refs/remotes/origin/master
 
 /* free sysfs for device */
 void gigaset_free_dev_sysfs(struct cardstate *cs)

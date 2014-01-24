@@ -17,17 +17,21 @@
 #include <linux/cpuidle.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/proc-fns.h>
 
 #include <mach/cpuidle.h>
 #include <mach/memory.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <asm/proc-fns.h>
 #include <asm/cpuidle.h>
 
 #include <mach/cpuidle.h>
 #include <mach/ddr2.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define DAVINCI_CPUIDLE_MAX_STATES	2
@@ -87,6 +91,13 @@ static struct cpuidle_driver davinci_idle_driver = {
 
 static DEFINE_PER_CPU(struct cpuidle_device, davinci_cpuidle_device);
 static void __iomem *ddr2_reg_base;
+=======
+
+#define DAVINCI_CPUIDLE_MAX_STATES	2
+
+static void __iomem *ddr2_reg_base;
+static bool ddr2_pdown;
+>>>>>>> refs/remotes/origin/master
 
 static void davinci_save_ddr_power(int enter, bool pdown)
 {
@@ -107,6 +118,7 @@ static void davinci_save_ddr_power(int enter, bool pdown)
 	__raw_writel(val, ddr2_reg_base + DDR2_SDRCR_OFFSET);
 }
 
+<<<<<<< HEAD
 static void davinci_c2state_enter(u32 flags)
 {
 	davinci_save_ddr_power(1, !!(flags & DAVINCI_CPUIDLE_FLAGS_DDR2_PWDN));
@@ -160,6 +172,38 @@ static int __init davinci_cpuidle_probe(struct platform_device *pdev)
 
 	device = &per_cpu(davinci_cpuidle_device, smp_processor_id());
 
+=======
+/* Actual code that puts the SoC in different idle states */
+static int davinci_enter_idle(struct cpuidle_device *dev,
+			      struct cpuidle_driver *drv, int index)
+{
+	davinci_save_ddr_power(1, ddr2_pdown);
+	cpu_do_idle();
+	davinci_save_ddr_power(0, ddr2_pdown);
+
+	return index;
+}
+
+static struct cpuidle_driver davinci_idle_driver = {
+	.name			= "cpuidle-davinci",
+	.owner			= THIS_MODULE,
+	.states[0]		= ARM_CPUIDLE_WFI_STATE,
+	.states[1]		= {
+		.enter			= davinci_enter_idle,
+		.exit_latency		= 10,
+		.target_residency	= 10000,
+		.flags			= CPUIDLE_FLAG_TIME_VALID,
+		.name			= "DDR SR",
+		.desc			= "WFI and DDR Self Refresh",
+	},
+	.state_count = DAVINCI_CPUIDLE_MAX_STATES,
+};
+
+static int __init davinci_cpuidle_probe(struct platform_device *pdev)
+{
+	struct davinci_cpuidle_config *pdata = pdev->dev.platform_data;
+
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "cannot get platform data\n");
 		return -ENOENT;
@@ -167,6 +211,7 @@ static int __init davinci_cpuidle_probe(struct platform_device *pdev)
 
 	ddr2_reg_base = pdata->ddr2_ctlr_base;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (pdata->ddr2_pdown)
@@ -214,6 +259,11 @@ static int __init davinci_cpuidle_probe(struct platform_device *pdev)
 	}
 
 	return 0;
+=======
+	ddr2_pdown = pdata->ddr2_pdown;
+
+	return cpuidle_register(&davinci_idle_driver, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver davinci_cpuidle_driver = {

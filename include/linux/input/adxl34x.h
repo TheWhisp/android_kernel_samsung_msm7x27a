@@ -13,6 +13,11 @@
 #ifndef __LINUX_INPUT_ADXL34X_H__
 #define __LINUX_INPUT_ADXL34X_H__
 
+<<<<<<< HEAD
+=======
+#include <linux/input.h>
+
+>>>>>>> refs/remotes/origin/master
 struct adxl34x_platform_data {
 
 	/*
@@ -31,6 +36,7 @@ struct adxl34x_platform_data {
 	 * selected axis from participation in Tap detection.
 	 * Setting the SUPPRESS bit suppresses Double Tap detection if
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * acceleration greater than tap_threshold is present between
 	 * taps.
 =======
@@ -38,6 +44,11 @@ struct adxl34x_platform_data {
 	 * tap_latency period, i.e. after the first tap but before the
 	 * opening of the second tap window.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * acceleration greater than tap_threshold is present during the
+	 * tap_latency period, i.e. after the first tap but before the
+	 * opening of the second tap window.
+>>>>>>> refs/remotes/origin/master
 	 */
 
 #define ADXL_SUPPRESS	(1 << 3)
@@ -233,6 +244,7 @@ struct adxl34x_platform_data {
 	 * bit serially links the activity and inactivity functions. When '0'
 	 * the inactivity and activity functions are concurrent. Additional
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * information can be found in the Application section under Link
 	 * Mode.
 	 * AUTO_SLEEP: A '1' sets the ADXL34x to switch to Sleep Mode
@@ -241,6 +253,8 @@ struct adxl34x_platform_data {
 	 * A '0' disables automatic switching to Sleep Mode. See SLEEP
 	 * for further description.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * information can be found in the ADXL34x datasheet's Application
 	 * section under Link Mode.
 	 * AUTO_SLEEP: A '1' sets the ADXL34x to switch to Sleep Mode
@@ -248,7 +262,10 @@ struct adxl34x_platform_data {
 	 * for at least inactivity_time) is detected and the LINK bit is set.
 	 * A '0' disables automatic switching to Sleep Mode. See the
 	 * Sleep Bit section of the ADXL34x datasheet for more information.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 
 #define ADXL_LINK	(1 << 5)
@@ -283,14 +300,20 @@ struct adxl34x_platform_data {
 	u8 watermark;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * When acceleration measurements are received from the ADXL34x
 	 * events are sent to the event subsystem. The following settings
 	 * select the event type and event code for new x, y and z axis data
 	 * respectively.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 ev_type;	/* EV_ABS or EV_REL */
 
 	u32 ev_code_x;	/* ABS_X,Y,Z or REL_X,Y,Z */
@@ -315,10 +338,14 @@ struct adxl34x_platform_data {
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Use ADXL34x INT2 instead of INT1
 =======
 	 * Use ADXL34x INT2 pin instead of INT1 pin for interrupt output
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Use ADXL34x INT2 pin instead of INT1 pin for interrupt output
+>>>>>>> refs/remotes/origin/master
 	 */
 	u8 use_int2;
 

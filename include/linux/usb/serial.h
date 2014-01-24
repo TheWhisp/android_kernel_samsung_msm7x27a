@@ -1,7 +1,11 @@
 /*
  * USB Serial Converter stuff
  *
+<<<<<<< HEAD
  *	Copyright (C) 1999 - 2005
+=======
+ *	Copyright (C) 1999 - 2012
+>>>>>>> refs/remotes/origin/master
  *	    Greg Kroah-Hartman (greg@kroah.com)
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -15,6 +19,7 @@
 
 #include <linux/kref.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 #include <linux/sysrq.h>
 #include <linux/kfifo.h>
 
@@ -22,12 +27,19 @@
 #define SERIAL_TTY_MINORS	254	/* loads of devices :) */
 #define SERIAL_TTY_NO_MINOR	255	/* No minor was assigned */
 
+=======
+#include <linux/serial.h>
+#include <linux/sysrq.h>
+#include <linux/kfifo.h>
+
+>>>>>>> refs/remotes/origin/master
 /* The maximum number of ports one device can grab at once */
 #define MAX_NUM_PORTS		8
 
 /* parity check flag */
 #define RELEVANT_IFLAG(iflag)	(iflag & (IGNBRK|BRKINT|IGNPAR|PARMRK|INPCK))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum port_dev_state {
 	PORT_UNREGISTERED,
@@ -38,6 +50,8 @@ enum port_dev_state {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* USB serial flags */
 #define USB_SERIAL_WRITE_BUSY	0
 
@@ -46,7 +60,12 @@ enum port_dev_state {
  * @serial: pointer back to the struct usb_serial owner of this port.
  * @port: pointer to the corresponding tty_port for this port.
  * @lock: spinlock to grab when updating portions of this structure.
+<<<<<<< HEAD
  * @number: the number of the port (the minor number).
+=======
+ * @minor: the minor number of the port
+ * @port_number: the struct usb_serial port number of this port (starts at 0)
+>>>>>>> refs/remotes/origin/master
  * @interrupt_in_buffer: pointer to the interrupt in buffer for this port.
  * @interrupt_in_urb: pointer to the interrupt in struct urb for this port.
  * @interrupt_in_endpointAddress: endpoint address for the interrupt in pipe
@@ -62,15 +81,22 @@ enum port_dev_state {
  * @bulk_in_endpointAddress: endpoint address for the bulk in pipe for this
  *	port.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @bulk_in_buffers: pointers to the bulk in buffers for this port
  * @read_urbs: pointers to the bulk in urbs for this port
  * @read_urbs_free: status bitmap the for bulk in urbs
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @bulk_in_buffers: pointers to the bulk in buffers for this port
+ * @read_urbs: pointers to the bulk in urbs for this port
+ * @read_urbs_free: status bitmap the for bulk in urbs
+>>>>>>> refs/remotes/origin/master
  * @bulk_out_buffer: pointer to the bulk out buffer for this port.
  * @bulk_out_size: the size of the bulk_out_buffer, in bytes.
  * @write_urb: pointer to the bulk out struct urb for this port.
  * @write_fifo: kfifo used to buffer outgoing data
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @write_urb_busy: port`s writing status
 =======
@@ -78,6 +104,12 @@ enum port_dev_state {
  * @bulk_out_buffers: pointers to the bulk out buffers for this port
  * @write_urbs: pointers to the bulk out urbs for this port
  * @write_urbs_free: status bitmap the for bulk out urbs
+=======
+ * @bulk_out_buffers: pointers to the bulk out buffers for this port
+ * @write_urbs: pointers to the bulk out urbs for this port
+ * @write_urbs_free: status bitmap the for bulk out urbs
+ * @icount: interrupt counters
+>>>>>>> refs/remotes/origin/master
  * @tx_bytes: number of bytes currently in host stack queues
  * @bulk_out_endpointAddress: endpoint address for the bulk out pipe for this
  *	port.
@@ -95,7 +127,12 @@ struct usb_serial_port {
 	struct usb_serial	*serial;
 	struct tty_port		port;
 	spinlock_t		lock;
+<<<<<<< HEAD
 	unsigned char		number;
+=======
+	u32			minor;
+	u8			port_number;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned char		*interrupt_in_buffer;
 	struct urb		*interrupt_in_urb;
@@ -112,26 +149,39 @@ struct usb_serial_port {
 	__u8			bulk_in_endpointAddress;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char		*bulk_in_buffers[2];
 	struct urb		*read_urbs[2];
 	unsigned long		read_urbs_free;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char		*bulk_out_buffer;
 	int			bulk_out_size;
 	struct urb		*write_urb;
 	struct kfifo		write_fifo;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			write_urb_busy;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	unsigned char		*bulk_out_buffers[2];
 	struct urb		*write_urbs[2];
 	unsigned long		write_urbs_free;
 	__u8			bulk_out_endpointAddress;
 
+<<<<<<< HEAD
+=======
+	struct async_icount	icount;
+>>>>>>> refs/remotes/origin/master
 	int			tx_bytes;
 
 	unsigned long		flags;
@@ -142,9 +192,12 @@ struct usb_serial_port {
 	unsigned long		sysrq; /* sysrq timeout */
 	struct device		dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum port_dev_state	dev_state;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #define to_usb_serial_port(d) container_of(d, struct usb_serial_port, dev)
 
@@ -165,7 +218,10 @@ static inline void usb_set_serial_port_data(struct usb_serial_port *port,
  * @dev: pointer to the struct usb_device for this device
  * @type: pointer to the struct usb_serial_driver for this device
  * @interface: pointer to the struct usb_interface for this device
+<<<<<<< HEAD
  * @minor: the starting minor number for this device
+=======
+>>>>>>> refs/remotes/origin/master
  * @num_ports: the number of ports this device has
  * @num_interrupt_in: number of interrupt in endpoints we have
  * @num_interrupt_out: number of interrupt out endpoints we have
@@ -184,7 +240,11 @@ struct usb_serial {
 	unsigned char			disconnected:1;
 	unsigned char			suspending:1;
 	unsigned char			attached:1;
+<<<<<<< HEAD
 	unsigned char			minor;
+=======
+	unsigned char			minors_reserved:1;
+>>>>>>> refs/remotes/origin/master
 	unsigned char			num_ports;
 	unsigned char			num_port_pointers;
 	char				num_interrupt_in;
@@ -277,6 +337,10 @@ struct usb_serial_driver {
 
 	int (*suspend)(struct usb_serial *serial, pm_message_t message);
 	int (*resume)(struct usb_serial *serial);
+<<<<<<< HEAD
+=======
+	int (*reset_resume)(struct usb_serial *serial);
+>>>>>>> refs/remotes/origin/master
 
 	/* serial function calls */
 	/* Called by console and by the tty layer */
@@ -292,11 +356,20 @@ struct usb_serial_driver {
 			struct usb_serial_port *port, struct ktermios *old);
 	void (*break_ctl)(struct tty_struct *tty, int break_state);
 	int  (*chars_in_buffer)(struct tty_struct *tty);
+<<<<<<< HEAD
+=======
+	void (*wait_until_sent)(struct tty_struct *tty, long timeout);
+	bool (*tx_empty)(struct usb_serial_port *port);
+>>>>>>> refs/remotes/origin/master
 	void (*throttle)(struct tty_struct *tty);
 	void (*unthrottle)(struct tty_struct *tty);
 	int  (*tiocmget)(struct tty_struct *tty);
 	int  (*tiocmset)(struct tty_struct *tty,
 			 unsigned int set, unsigned int clear);
+<<<<<<< HEAD
+=======
+	int  (*tiocmiwait)(struct tty_struct *tty, unsigned long arg);
+>>>>>>> refs/remotes/origin/master
 	int  (*get_icount)(struct tty_struct *tty,
 			struct serial_icounter_struct *icount);
 	/* Called by the tty layer for port level work. There may or may not
@@ -320,6 +393,7 @@ struct usb_serial_driver {
 #define to_usb_serial_driver(d) \
 	container_of(d, struct usb_serial_driver, driver)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int  usb_serial_register(struct usb_serial_driver *driver);
 extern void usb_serial_deregister(struct usb_serial_driver *driver);
@@ -349,25 +423,57 @@ extern void usb_serial_console_exit(void);
 extern void usb_serial_console_disconnect(struct usb_serial *serial);
 #else
 static inline void usb_serial_console_init(int debug, int minor) { }
+=======
+extern int usb_serial_register_drivers(struct usb_serial_driver *const serial_drivers[],
+		const char *name, const struct usb_device_id *id_table);
+extern void usb_serial_deregister_drivers(struct usb_serial_driver *const serial_drivers[]);
+extern void usb_serial_port_softint(struct usb_serial_port *port);
+
+extern int usb_serial_suspend(struct usb_interface *intf, pm_message_t message);
+extern int usb_serial_resume(struct usb_interface *intf);
+
+/* USB Serial console functions */
+#ifdef CONFIG_USB_SERIAL_CONSOLE
+extern void usb_serial_console_init(int minor);
+extern void usb_serial_console_exit(void);
+extern void usb_serial_console_disconnect(struct usb_serial *serial);
+#else
+static inline void usb_serial_console_init(int minor) { }
+>>>>>>> refs/remotes/origin/master
 static inline void usb_serial_console_exit(void) { }
 static inline void usb_serial_console_disconnect(struct usb_serial *serial) {}
 #endif
 
 /* Functions needed by other parts of the usbserial core */
+<<<<<<< HEAD
 extern struct usb_serial *usb_serial_get_by_index(unsigned int minor);
 extern void usb_serial_put(struct usb_serial *serial);
 extern int usb_serial_generic_open(struct tty_struct *tty,
 	struct usb_serial_port *port);
+=======
+extern struct usb_serial_port *usb_serial_port_get_by_minor(unsigned int minor);
+extern void usb_serial_put(struct usb_serial *serial);
+extern int usb_serial_generic_open(struct tty_struct *tty,
+	struct usb_serial_port *port);
+extern int usb_serial_generic_write_start(struct usb_serial_port *port,
+							gfp_t mem_flags);
+>>>>>>> refs/remotes/origin/master
 extern int usb_serial_generic_write(struct tty_struct *tty,
 	struct usb_serial_port *port, const unsigned char *buf, int count);
 extern void usb_serial_generic_close(struct usb_serial_port *port);
 extern int usb_serial_generic_resume(struct usb_serial *serial);
 extern int usb_serial_generic_write_room(struct tty_struct *tty);
 extern int usb_serial_generic_chars_in_buffer(struct tty_struct *tty);
+<<<<<<< HEAD
+=======
+extern void usb_serial_generic_wait_until_sent(struct tty_struct *tty,
+								long timeout);
+>>>>>>> refs/remotes/origin/master
 extern void usb_serial_generic_read_bulk_callback(struct urb *urb);
 extern void usb_serial_generic_write_bulk_callback(struct urb *urb);
 extern void usb_serial_generic_throttle(struct tty_struct *tty);
 extern void usb_serial_generic_unthrottle(struct tty_struct *tty);
+<<<<<<< HEAD
 extern void usb_serial_generic_disconnect(struct usb_serial *serial);
 extern void usb_serial_generic_release(struct usb_serial *serial);
 extern int usb_serial_generic_register(int debug);
@@ -377,6 +483,15 @@ extern int usb_serial_generic_submit_read_urb(struct usb_serial_port *port,
 =======
 extern int usb_serial_generic_submit_read_urbs(struct usb_serial_port *port,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int usb_serial_generic_tiocmiwait(struct tty_struct *tty,
+							unsigned long arg);
+extern int usb_serial_generic_get_icount(struct tty_struct *tty,
+					struct serial_icounter_struct *icount);
+extern int usb_serial_generic_register(void);
+extern void usb_serial_generic_deregister(void);
+extern int usb_serial_generic_submit_read_urbs(struct usb_serial_port *port,
+>>>>>>> refs/remotes/origin/master
 						 gfp_t mem_flags);
 extern void usb_serial_generic_process_read_urb(struct urb *urb);
 extern int usb_serial_generic_prepare_write_buffer(struct usb_serial_port *port,
@@ -396,6 +511,7 @@ extern struct usb_serial_driver usb_serial_generic_device;
 extern struct bus_type usb_serial_bus_type;
 extern struct tty_driver *usb_serial_tty_driver;
 
+<<<<<<< HEAD
 static inline void usb_serial_debug_data(int debug,
 					 struct device *dev,
 					 const char *function, int size,
@@ -422,6 +538,16 @@ do {									\
 
 <<<<<<< HEAD
 =======
+=======
+static inline void usb_serial_debug_data(struct device *dev,
+					 const char *function, int size,
+					 const unsigned char *data)
+{
+	dev_dbg(dev, "%s - length = %d, data = %*ph\n",
+		function, size, size, data);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Macro for reporting errors in write path to avoid inifinite loop
  * when port is used as a console.
@@ -439,8 +565,13 @@ do {									\
 
 /*
  * module_usb_serial_driver() - Helper macro for registering a USB Serial driver
+<<<<<<< HEAD
  * @__usb_driver: usb_driver struct to register
  * @__serial_drivers: list of usb_serial drivers to register
+=======
+ * @__serial_drivers: list of usb_serial drivers to register
+ * @__ids: all device ids that @__serial_drivers bind to
+>>>>>>> refs/remotes/origin/master
  *
  * Helper macro for USB serial drivers which do not do anything special
  * in module init/exit. This eliminates a lot of boilerplate. Each
@@ -448,10 +579,29 @@ do {									\
  * module_init() and module_exit()
  *
  */
+<<<<<<< HEAD
 #define module_usb_serial_driver(__usb_driver, __serial_drivers)	\
 	module_driver(__usb_driver, usb_serial_register_drivers,	\
 		       usb_serial_deregister_drivers, __serial_drivers)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define usb_serial_module_driver(__name, __serial_drivers, __ids)	\
+static int __init usb_serial_module_init(void)				\
+{									\
+	return usb_serial_register_drivers(__serial_drivers,		\
+					   __name, __ids);		\
+}									\
+module_init(usb_serial_module_init);					\
+static void __exit usb_serial_module_exit(void)				\
+{									\
+	usb_serial_deregister_drivers(__serial_drivers);		\
+}									\
+module_exit(usb_serial_module_exit);
+
+#define module_usb_serial_driver(__serial_drivers, __ids)		\
+	usb_serial_module_driver(KBUILD_MODNAME, __serial_drivers, __ids)
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_USB_SERIAL_H */
 

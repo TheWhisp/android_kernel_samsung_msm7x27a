@@ -31,20 +31,31 @@
 #define PAGE_SHIFT	16
 #endif
 #define PAGE_SIZE	(_AC(1,UL) << PAGE_SHIFT)
+<<<<<<< HEAD
 #define PAGE_MASK       (~((1 << PAGE_SHIFT) - 1))
 
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#define PAGE_MASK	(~((1 << PAGE_SHIFT) - 1))
+
+#ifdef CONFIG_MIPS_HUGE_TLB_SUPPORT
+>>>>>>> refs/remotes/origin/master
 #define HPAGE_SHIFT	(PAGE_SHIFT + PAGE_SHIFT - 3)
 #define HPAGE_SIZE	(_AC(1,UL) << HPAGE_SHIFT)
 #define HPAGE_MASK	(~(HPAGE_SIZE - 1))
 #define HUGETLB_PAGE_ORDER	(HPAGE_SHIFT - PAGE_SHIFT)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #else /* !CONFIG_HUGETLB_PAGE */
+=======
+#else /* !CONFIG_MIPS_HUGE_TLB_SUPPORT */
+>>>>>>> refs/remotes/origin/master
 #define HPAGE_SHIFT	({BUILD_BUG(); 0; })
 #define HPAGE_SIZE	({BUILD_BUG(); 0; })
 #define HPAGE_MASK	({BUILD_BUG(); 0; })
 #define HUGETLB_PAGE_ORDER	({BUILD_BUG(); 0; })
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_HUGETLB_PAGE */
 
@@ -52,6 +63,11 @@
 
 #include <linux/pfn.h>
 #include <asm/io.h>
+=======
+#endif /* CONFIG_MIPS_HUGE_TLB_SUPPORT */
+
+#include <linux/pfn.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void build_clear_page(void);
 extern void build_copy_page(void);
@@ -100,11 +116,19 @@ extern void copy_user_highpage(struct page *to, struct page *from,
 #ifdef CONFIG_64BIT_PHYS_ADDR
   #ifdef CONFIG_CPU_MIPS32
     typedef struct { unsigned long pte_low, pte_high; } pte_t;
+<<<<<<< HEAD
     #define pte_val(x)    ((x).pte_low | ((unsigned long long)(x).pte_high << 32))
     #define __pte(x)      ({ pte_t __pte = {(x), ((unsigned long long)(x)) >> 32}; __pte; })
   #else
      typedef struct { unsigned long long pte; } pte_t;
      #define pte_val(x)	((x).pte)
+=======
+    #define pte_val(x)	  ((x).pte_low | ((unsigned long long)(x).pte_high << 32))
+    #define __pte(x)	  ({ pte_t __pte = {(x), ((unsigned long long)(x)) >> 32}; __pte; })
+  #else
+     typedef struct { unsigned long long pte; } pte_t;
+     #define pte_val(x) ((x).pte)
+>>>>>>> refs/remotes/origin/master
      #define __pte(x)	((pte_t) { (x) } )
   #endif
 #else
@@ -142,8 +166,11 @@ typedef struct { unsigned long pgprot; } pgprot_t;
  */
 #define ptep_buddy(x)	((pte_t *)((unsigned long)(x) ^ sizeof(pte_t)))
 
+<<<<<<< HEAD
 #endif /* !__ASSEMBLY__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * __pa()/__va() should be used only during mem init.
  */
@@ -158,6 +185,10 @@ typedef struct { unsigned long pgprot; } pgprot_t;
     ((unsigned long)(x) - PAGE_OFFSET + PHYS_OFFSET)
 #endif
 #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OFFSET))
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * RELOC_HIDE was originally added by 6007b903dfe5f1d13e0c711ac2894bdd4a61b1ad
@@ -179,6 +210,7 @@ typedef struct { unsigned long pgprot; } pgprot_t;
 #ifdef CONFIG_FLATMEM
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pfn_valid(pfn)							\
 ({									\
 	unsigned long __pfn = (pfn);					\
@@ -189,6 +221,8 @@ typedef struct { unsigned long pgprot; } pgprot_t;
 })
 =======
 #ifndef __ASSEMBLY__
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int pfn_valid(unsigned long pfn)
 {
 	/* avoid <linux/mm.h> include hell */
@@ -196,8 +230,11 @@ static inline int pfn_valid(unsigned long pfn)
 
 	return pfn >= ARCH_PFN_OFFSET && pfn < max_mapnr;
 }
+<<<<<<< HEAD
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #elif defined(CONFIG_SPARSEMEM)
 
@@ -210,22 +247,39 @@ static inline int pfn_valid(unsigned long pfn)
 	unsigned long __pfn = (pfn);					\
 	int __n = pfn_to_nid(__pfn);					\
 	((__n >= 0) ? (__pfn < NODE_DATA(__n)->node_start_pfn +		\
+<<<<<<< HEAD
 	                       NODE_DATA(__n)->node_spanned_pages)	\
 	            : 0);						\
+=======
+			       NODE_DATA(__n)->node_spanned_pages)	\
+		    : 0);						\
+>>>>>>> refs/remotes/origin/master
 })
 
 #endif
 
 #define virt_to_page(kaddr)	pfn_to_page(PFN_DOWN(virt_to_phys(kaddr)))
+<<<<<<< HEAD
 #define virt_addr_valid(kaddr)	pfn_valid(PFN_DOWN(virt_to_phys(kaddr)))
+=======
+
+extern int __virt_addr_valid(const volatile void *kaddr);
+#define virt_addr_valid(kaddr)						\
+	__virt_addr_valid((const volatile void *) (kaddr))
+>>>>>>> refs/remotes/origin/master
 
 #define VM_DATA_DEFAULT_FLAGS	(VM_READ | VM_WRITE | VM_EXEC | \
 				 VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC)
 
+<<<<<<< HEAD
 #define UNCAC_ADDR(addr)	((addr) - PAGE_OFFSET + UNCAC_BASE + 	\
 								PHYS_OFFSET)
 #define CAC_ADDR(addr)		((addr) - UNCAC_BASE + PAGE_OFFSET -	\
 								PHYS_OFFSET)
+=======
+#define UNCAC_ADDR(addr)	((addr) - PAGE_OFFSET + UNCAC_BASE)
+#define CAC_ADDR(addr)		((addr) - UNCAC_BASE + PAGE_OFFSET)
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/memory_model.h>
 #include <asm-generic/getorder.h>

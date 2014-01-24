@@ -4,10 +4,14 @@
  * Author       Carsten Paeth
  * Copyright    1998-2001 by Carsten Paeth <calle@calle.in-berlin.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -23,9 +27,12 @@
 #include <linux/string.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/ds.h>
@@ -47,6 +54,7 @@ module_param(isdnprot, int, 0);
 /*====================================================================*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int avma1cs_config(struct pcmcia_device *link) __devinit ;
 static void avma1cs_release(struct pcmcia_device *link);
 static void avma1cs_detach(struct pcmcia_device *p_dev) __devexit ;
@@ -67,6 +75,13 @@ static void avma1cs_release(struct pcmcia_device *link);
 static void avma1cs_detach(struct pcmcia_device *p_dev) __devexit;
 
 static int __devinit avma1cs_probe(struct pcmcia_device *p_dev)
+=======
+static int avma1cs_config(struct pcmcia_device *link);
+static void avma1cs_release(struct pcmcia_device *link);
+static void avma1cs_detach(struct pcmcia_device *p_dev);
+
+static int avma1cs_probe(struct pcmcia_device *p_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_dbg(&p_dev->dev, "avma1cs_attach()\n");
 
@@ -76,10 +91,16 @@ static int __devinit avma1cs_probe(struct pcmcia_device *p_dev)
 	p_dev->config_regs = PRESENT_OPTION;
 
 	return avma1cs_config(p_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 } /* avma1cs_attach */
 
 static void __devexit avma1cs_detach(struct pcmcia_device *link)
+=======
+} /* avma1cs_attach */
+
+static void avma1cs_detach(struct pcmcia_device *link)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_dbg(&link->dev, "avma1cs_detach(0x%p)\n", link);
 	avma1cs_release(link);
@@ -97,6 +118,7 @@ static int avma1cs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
 }
 
 
+<<<<<<< HEAD
 static int __devinit avma1cs_config(struct pcmcia_device *link)
 {
 <<<<<<< HEAD
@@ -158,6 +180,10 @@ static int __devinit avma1cs_config(struct pcmcia_device *link)
 
     return 0;
 =======
+=======
+static int avma1cs_config(struct pcmcia_device *link)
+{
+>>>>>>> refs/remotes/origin/master
 	int i = -1;
 	char devname[128];
 	IsdnCard_t	icard;
@@ -215,7 +241,10 @@ static int __devinit avma1cs_config(struct pcmcia_device *link)
 	link->priv = (void *) (unsigned long) i;
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* avma1cs_config */
 
 static void avma1cs_release(struct pcmcia_device *link)
@@ -241,6 +270,7 @@ static struct pcmcia_driver avma1cs_driver = {
 	.owner		= THIS_MODULE,
 	.name		= "avma1_cs",
 	.probe		= avma1cs_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(avma1cs_detach),
 	.id_table	= avma1cs_ids,
 };
@@ -257,3 +287,9 @@ static void __exit exit_avma1_cs(void)
 
 module_init(init_avma1_cs);
 module_exit(exit_avma1_cs);
+=======
+	.remove		= avma1cs_detach,
+	.id_table	= avma1cs_ids,
+};
+module_pcmcia_driver(avma1cs_driver);
+>>>>>>> refs/remotes/origin/master

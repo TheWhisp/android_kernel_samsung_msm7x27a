@@ -8,9 +8,13 @@
 
 #include <linux/bootmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <asm/sn/types.h>
 #include <asm/sn/addrs.h>
@@ -232,7 +236,10 @@ void sn_pci_fixup_slot(struct pci_dev *dev, struct pcidev_info *pcidev_info,
 {
 	int segment = pci_domain_nr(dev->bus);
 	struct pcibus_bussoft *bs;
+<<<<<<< HEAD
 	struct pci_bus *host_pci_bus;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *host_pci_dev;
 	unsigned int bus_no, devfn;
 
@@ -248,8 +255,12 @@ void sn_pci_fixup_slot(struct pci_dev *dev, struct pcidev_info *pcidev_info,
 
 	bus_no = (pcidev_info->pdi_slot_host_handle >> 32) & 0xff;
 	devfn = pcidev_info->pdi_slot_host_handle & 0xffffffff;
+<<<<<<< HEAD
  	host_pci_bus = pci_find_bus(segment, bus_no);
  	host_pci_dev = pci_get_slot(host_pci_bus, devfn);
+=======
+	host_pci_dev = pci_get_domain_bus_and_slot(segment, bus_no, devfn);
+>>>>>>> refs/remotes/origin/master
 
 	pcidev_info->host_pci_dev = host_pci_dev;
 	pcidev_info->pdi_linux_pcidev = dev;
@@ -440,8 +451,12 @@ void sn_generate_path(struct pci_bus *pci_bus, char *address)
 						geo_slot(geoid));
 }
 
+<<<<<<< HEAD
 void __devinit
 sn_pci_fixup_bus(struct pci_bus *bus)
+=======
+void sn_pci_fixup_bus(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 
 	if (SN_ACPI_BASE_SUPPORT())

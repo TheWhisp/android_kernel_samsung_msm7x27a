@@ -70,6 +70,7 @@ static unsigned char mincore_page(struct address_space *mapping, pgoff_t pgoff)
 	 * any other file mapping (ie. marked !present and faulted in with
 	 * tmpfs's .fault). So swapped out tmpfs mappings are tested here.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 *
 	 * However when tmpfs moves the page from pagecache and into swapcache,
 	 * it is still in core, but the find_get_page below won't find it.
@@ -77,16 +78,24 @@ static unsigned char mincore_page(struct address_space *mapping, pgoff_t pgoff)
 	 */
 	page = find_get_page(mapping, pgoff);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 	page = find_get_page(mapping, pgoff);
 #ifdef CONFIG_SWAP
 	/* shmem/tmpfs may return swap: account for swapcache page too. */
 	if (radix_tree_exceptional_entry(page)) {
 		swp_entry_t swap = radix_to_swp_entry(page);
+<<<<<<< HEAD
 		page = find_get_page(&swapper_space, swap.val);
 	}
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		page = find_get_page(swap_address_space(swap), swap.val);
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	if (page) {
 		present = PageUptodate(page);
 		page_cache_release(page);
@@ -144,7 +153,12 @@ static void mincore_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
 			} else {
 #ifdef CONFIG_SWAP
 				pgoff = entry.val;
+<<<<<<< HEAD
 				*vec = mincore_page(&swapper_space, pgoff);
+=======
+				*vec = mincore_page(swap_address_space(entry),
+					pgoff);
+>>>>>>> refs/remotes/origin/master
 #else
 				WARN_ON(1);
 				*vec = 1;

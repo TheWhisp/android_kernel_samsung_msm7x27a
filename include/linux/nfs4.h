@@ -9,6 +9,7 @@
  *  Kendrick Smith <kmsmith@umich.edu>
  *  Andy Adamson   <andros@umich.edu>
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_NFS4_H
 #define _LINUX_NFS4_H
@@ -167,13 +168,28 @@ enum nfs4_acl_whotype {
 
 #ifdef __KERNEL__
 #include <linux/list.h>
+=======
+#ifndef _LINUX_NFS4_H
+#define _LINUX_NFS4_H
+
+#include <linux/list.h>
+#include <linux/uidgid.h>
+#include <uapi/linux/nfs4.h>
+>>>>>>> refs/remotes/origin/master
 
 struct nfs4_ace {
 	uint32_t	type;
 	uint32_t	flag;
 	uint32_t	access_mask;
 	int		whotype;
+<<<<<<< HEAD
 	uid_t		who;
+=======
+	union {
+		kuid_t	who_uid;
+		kgid_t	who_gid;
+	};
+>>>>>>> refs/remotes/origin/master
 };
 
 struct nfs4_acl {
@@ -181,6 +197,7 @@ struct nfs4_acl {
 	struct nfs4_ace	aces[0];
 };
 
+<<<<<<< HEAD
 typedef struct { char data[NFS4_VERIFIER_SIZE]; } nfs4_verifier;
 
 <<<<<<< HEAD
@@ -188,10 +205,25 @@ struct nfs41_stateid {
 =======
 struct nfs_stateid4 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NFS4_MAXLABELLEN	2048
+
+struct nfs4_label {
+	uint32_t	lfs;
+	uint32_t	pi;
+	u32		len;
+	char	*label;
+};
+
+typedef struct { char data[NFS4_VERIFIER_SIZE]; } nfs4_verifier;
+
+struct nfs_stateid4 {
+>>>>>>> refs/remotes/origin/master
 	__be32 seqid;
 	char other[NFS4_STATEID_OTHER_SIZE];
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef union {
 	char data[NFS4_STATEID_SIZE];
@@ -200,6 +232,9 @@ typedef union {
 =======
 typedef struct nfs_stateid4 nfs4_stateid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef struct nfs_stateid4 nfs4_stateid;
+>>>>>>> refs/remotes/origin/master
 
 enum nfs_opnum4 {
 	OP_ACCESS = 3,
@@ -269,6 +304,12 @@ Needs to be updated if more operations are defined in future.*/
 
 #define FIRST_NFS4_OP	OP_ACCESS
 #define LAST_NFS4_OP 	OP_RECLAIM_COMPLETE
+<<<<<<< HEAD
+=======
+#define LAST_NFS40_OP	OP_RELEASE_LOCKOWNER
+#define LAST_NFS41_OP	OP_RECLAIM_COMPLETE
+#define LAST_NFS42_OP	OP_RECLAIM_COMPLETE
+>>>>>>> refs/remotes/origin/master
 
 enum nfsstat4 {
 	NFS4_OK = 0,
@@ -379,10 +420,23 @@ enum nfsstat4 {
 	NFS4ERR_REJECT_DELEG	= 10085,	/* on callback */
 	NFS4ERR_RETURNCONFLICT	= 10086,	/* outstanding layoutreturn */
 	NFS4ERR_DELEG_REVOKED	= 10087,	/* deleg./layout revoked */
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
 =======
+=======
+
+	/* nfs42 */
+	NFS4ERR_PARTNER_NOTSUPP	= 10088,
+	NFS4ERR_PARTNER_NO_AUTH	= 10089,
+	NFS4ERR_METADATA_NOTSUPP = 10090,
+	NFS4ERR_OFFLOAD_DENIED = 10091,
+	NFS4ERR_WRONG_LFS = 10092,
+	NFS4ERR_BADLABEL = 10093,
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline bool seqid_mutating_err(u32 err)
 {
 	/* rfc 3530 section 8.1.5: */
@@ -399,7 +453,10 @@ static inline bool seqid_mutating_err(u32 err)
 	return true;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: NF4BAD is not actually part of the protocol; it is just used
  * internally by nfsd.
@@ -422,13 +479,19 @@ enum open_claim_type4 {
 	NFS4_OPEN_CLAIM_PREVIOUS = 1,
 	NFS4_OPEN_CLAIM_DELEGATE_CUR = 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	NFS4_OPEN_CLAIM_DELEGATE_PREV = 3
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	NFS4_OPEN_CLAIM_DELEGATE_PREV = 3,
 	NFS4_OPEN_CLAIM_FH = 4, /* 4.1 */
 	NFS4_OPEN_CLAIM_DELEG_CUR_FH = 5, /* 4.1 */
 	NFS4_OPEN_CLAIM_DELEG_PREV_FH = 6, /* 4.1 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum opentype4 {
@@ -457,8 +520,11 @@ enum open_delegation_type4 {
 	NFS4_OPEN_DELEGATE_NONE = 0,
 	NFS4_OPEN_DELEGATE_READ = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	NFS4_OPEN_DELEGATE_WRITE = 2
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	NFS4_OPEN_DELEGATE_WRITE = 2,
 	NFS4_OPEN_DELEGATE_NONE_EXT = 3, /* 4.1 */
 };
@@ -473,7 +539,10 @@ enum why_no_delegation4 { /* new to v4.1 */
 	WND4_NOT_SUPP_DOWNGRADE = 6,
 	WND4_CANCELLED = 7,
 	WND4_IS_DIR = 8,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum lock_type4 {
@@ -548,18 +617,34 @@ enum lock_type4 {
 #define FATTR4_WORD1_MOUNTED_ON_FILEID  (1UL << 23)
 #define FATTR4_WORD1_FS_LAYOUT_TYPES    (1UL << 30)
 #define FATTR4_WORD2_LAYOUT_BLKSIZE     (1UL << 1)
+<<<<<<< HEAD
+=======
+#define FATTR4_WORD2_MDSTHRESHOLD       (1UL << 4)
+#define FATTR4_WORD2_SECURITY_LABEL     (1UL << 16)
+#define FATTR4_WORD2_CHANGE_SECURITY_LABEL \
+					(1UL << 17)
+
+/* MDS threshold bitmap bits */
+#define THRESHOLD_RD                    (1UL << 0)
+#define THRESHOLD_WR                    (1UL << 1)
+#define THRESHOLD_RD_IO                 (1UL << 2)
+#define THRESHOLD_WR_IO                 (1UL << 3)
+>>>>>>> refs/remotes/origin/master
 
 #define NFSPROC4_NULL 0
 #define NFSPROC4_COMPOUND 1
 #define NFS4_VERSION 4
 #define NFS4_MINOR_VERSION 0
 
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
 #define NFS4_MAX_MINOR_VERSION 1
 #else
 #define NFS4_MAX_MINOR_VERSION 0
 #endif /* CONFIG_NFS_V4_1 */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define NFS4_DEBUG 1
 
 /* Index of predefined Linux client operations */
@@ -602,6 +687,10 @@ enum {
 	NFSPROC4_CLNT_FS_LOCATIONS,
 	NFSPROC4_CLNT_RELEASE_LOCKOWNER,
 	NFSPROC4_CLNT_SECINFO,
+<<<<<<< HEAD
+=======
+	NFSPROC4_CLNT_FSID_PRESENT,
+>>>>>>> refs/remotes/origin/master
 
 	/* nfs41 */
 	NFSPROC4_CLNT_EXCHANGE_ID,
@@ -615,12 +704,20 @@ enum {
 	NFSPROC4_CLNT_LAYOUTCOMMIT,
 	NFSPROC4_CLNT_LAYOUTRETURN,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	NFSPROC4_CLNT_SECINFO_NO_NAME,
 	NFSPROC4_CLNT_TEST_STATEID,
 	NFSPROC4_CLNT_FREE_STATEID,
 	NFSPROC4_CLNT_GETDEVICELIST,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NFSPROC4_CLNT_BIND_CONN_TO_SESSION,
+	NFSPROC4_CLNT_DESTROY_CLIENTID,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* nfs41 types */
@@ -685,6 +782,7 @@ struct nfs4_deviceid {
 };
 
 #endif
+<<<<<<< HEAD
 #endif
 
 /*
@@ -692,3 +790,5 @@ struct nfs4_deviceid {
  *  c-basic-offset: 8
  * End:
  */
+=======
+>>>>>>> refs/remotes/origin/master

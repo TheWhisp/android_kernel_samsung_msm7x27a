@@ -1,6 +1,7 @@
 #include "headers.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int BcmFileDownload(PMINI_ADAPTER Adapter, const char *path,
                         unsigned int loc);
 static VOID doPowerAutoCorrection(PMINI_ADAPTER psAdapter);
@@ -99,6 +100,17 @@ static void beceem_protocol_reset(PMINI_ADAPTER Adapter);
 static VOID default_wimax_protocol_initialize(PMINI_ADAPTER Adapter)
 {
 	UINT uiLoopIndex;
+=======
+static int BcmFileDownload(struct bcm_mini_adapter *Adapter, const char *path, unsigned int loc);
+static void doPowerAutoCorrection(struct bcm_mini_adapter *psAdapter);
+static void HandleShutDownModeRequest(struct bcm_mini_adapter *Adapter, PUCHAR pucBuffer);
+static int bcm_parse_target_params(struct bcm_mini_adapter *Adapter);
+static void beceem_protocol_reset(struct bcm_mini_adapter *Adapter);
+
+static void default_wimax_protocol_initialize(struct bcm_mini_adapter *Adapter)
+{
+	unsigned int uiLoopIndex;
+>>>>>>> refs/remotes/origin/master
 
 	for (uiLoopIndex = 0; uiLoopIndex < NO_OF_QUEUES-1; uiLoopIndex++) {
 		Adapter->PackInfo[uiLoopIndex].uiThreshold = TX_PACKET_THRESHOLD;
@@ -114,10 +126,17 @@ static VOID default_wimax_protocol_initialize(PMINI_ADAPTER Adapter)
 	return;
 }
 
+<<<<<<< HEAD
 INT InitAdapter(PMINI_ADAPTER psAdapter)
 {
 	int i = 0;
 	INT Status = STATUS_SUCCESS;
+=======
+int InitAdapter(struct bcm_mini_adapter *psAdapter)
+{
+	int i = 0;
+	int Status = STATUS_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Initialising Adapter = %p", psAdapter);
 
 	if (psAdapter == NULL) {
@@ -143,7 +162,11 @@ INT InitAdapter(PMINI_ADAPTER psAdapter)
 	init_waitqueue_head(&psAdapter->ioctl_fw_dnld_wait_queue);
 	init_waitqueue_head(&psAdapter->lowpower_mode_wait_queue);
 	psAdapter->waiting_to_fw_download_done = TRUE;
+<<<<<<< HEAD
 	psAdapter->fw_download_done = FALSE;
+=======
+	psAdapter->fw_download_done = false;
+>>>>>>> refs/remotes/origin/master
 
 	default_wimax_protocol_initialize(psAdapter);
 	for (i = 0; i < MAX_CNTRL_PKTS; i++) {
@@ -162,11 +185,15 @@ INT InitAdapter(PMINI_ADAPTER psAdapter)
 	/* Initialize PHS interface */
 	if (phs_init(&psAdapter->stBCMPhsContext, psAdapter) != 0) {
 		BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "%s:%s:%d:Error PHS Init Failed=====>\n", __FILE__, __func__, __LINE__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
 	Status = BcmAllocFlashCSStructure(psAdapter);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(Status)
 	{
@@ -177,10 +204,16 @@ INT InitAdapter(PMINI_ADAPTER psAdapter)
 		BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Memory Allocation for Flash structure failed");
 		return Status;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (Status) {
+		BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Memory Allocation for Flash structure failed");
+		return Status;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	Status = vendorextnInit(psAdapter);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(STATUS_SUCCESS != Status)
 	{
@@ -191,17 +224,23 @@ INT InitAdapter(PMINI_ADAPTER psAdapter)
 	BCM_DEBUG_PRINT(psAdapter,DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL,  "Adapter initialised");
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (STATUS_SUCCESS != Status) {
 		BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Vendor Init Failed");
 		return Status;
 	}
 
 	BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Adapter initialised");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 VOID AdapterFree(PMINI_ADAPTER Adapter)
 {
 	int count;
@@ -222,6 +261,11 @@ VOID AdapterFree(PMINI_ADAPTER Adapter)
 	if(Adapter->LEDInfo.led_thread_running & (BCM_LED_THREAD_RUNNING_ACTIVELY | BCM_LED_THREAD_RUNNING_INACTIVELY))
 		kthread_stop (Adapter->LEDInfo.led_cntrl_threadid);
 =======
+=======
+void AdapterFree(struct bcm_mini_adapter *Adapter)
+{
+	int count;
+>>>>>>> refs/remotes/origin/master
 	beceem_protocol_reset(Adapter);
 	vendorextnExit(Adapter);
 
@@ -235,11 +279,15 @@ VOID AdapterFree(PMINI_ADAPTER Adapter)
 
 	if (Adapter->LEDInfo.led_thread_running & (BCM_LED_THREAD_RUNNING_ACTIVELY | BCM_LED_THREAD_RUNNING_INACTIVELY))
 		kthread_stop(Adapter->LEDInfo.led_cntrl_threadid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	unregister_networkdev(Adapter);
 
 	/* FIXME: use proper wait_event and refcounting */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while(atomic_read(&Adapter->ApplicationRunning))
 	{
@@ -259,6 +307,8 @@ VOID AdapterFree(PMINI_ADAPTER Adapter)
 
 	//Free the PHS Interface
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (atomic_read(&Adapter->ApplicationRunning)) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Waiting for Application to close.. %d\n", atomic_read(&Adapter->ApplicationRunning));
 		msleep(100);
@@ -273,7 +323,10 @@ VOID AdapterFree(PMINI_ADAPTER Adapter)
 	kfree(Adapter->pvInterfaceAdapter);
 
 	/* Free the PHS Interface */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	PhsCleanup(&Adapter->stBCMPhsContext);
 
 	BcmDeAllocFlashCSStructure(Adapter);
@@ -281,6 +334,7 @@ VOID AdapterFree(PMINI_ADAPTER Adapter)
 	free_netdev(Adapter->dev);
 }
 
+<<<<<<< HEAD
 static int create_worker_threads(PMINI_ADAPTER psAdapter)
 {
 <<<<<<< HEAD
@@ -290,15 +344,23 @@ static int create_worker_threads(PMINI_ADAPTER psAdapter)
 	if(IS_ERR(psAdapter->control_packet_handler))
 	{
 =======
+=======
+static int create_worker_threads(struct bcm_mini_adapter *psAdapter)
+{
+>>>>>>> refs/remotes/origin/master
 	/* Rx Control Packets Processing */
 	psAdapter->control_packet_handler = kthread_run((int (*)(void *))
 							control_packet_handler, psAdapter, "%s-rx", DRV_NAME);
 	if (IS_ERR(psAdapter->control_packet_handler)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_notice(DRV_NAME ": could not create control thread\n");
 		return PTR_ERR(psAdapter->control_packet_handler);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	// Tx Thread
 	psAdapter->transmit_packet_thread = kthread_run((int (*)(void *))
@@ -306,11 +368,16 @@ static int create_worker_threads(PMINI_ADAPTER psAdapter)
 	if(IS_ERR (psAdapter->transmit_packet_thread))
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Tx Thread */
 	psAdapter->transmit_packet_thread = kthread_run((int (*)(void *))
 							tx_pkt_handler, psAdapter, "%s-tx", DRV_NAME);
 	if (IS_ERR(psAdapter->transmit_packet_thread)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_notice(DRV_NAME ": could not creat transmit thread\n");
 		kthread_stop(psAdapter->control_packet_handler);
 		return PTR_ERR(psAdapter->transmit_packet_thread);
@@ -318,6 +385,7 @@ static int create_worker_threads(PMINI_ADAPTER psAdapter)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct file *open_firmware_file(PMINI_ADAPTER Adapter, const char *path)
 {
 <<<<<<< HEAD
@@ -419,6 +487,11 @@ INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter,/**<Logical Adapter*/
 	set_fs(get_ds());
 	flp = filp_open(path, O_RDONLY, S_IRWXU);
 	set_fs(oldfs);
+=======
+static struct file *open_firmware_file(struct bcm_mini_adapter *Adapter, const char *path)
+{
+	struct file *flp = filp_open(path, O_RDONLY, S_IRWXU);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(flp)) {
 		pr_err(DRV_NAME "Unable To Open File %s, err %ld", path, PTR_ERR(flp));
 		flp = NULL;
@@ -435,20 +508,34 @@ INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter,/**<Logical Adapter*/
  * Path to image file
  * Download Address on the chip
  */
+<<<<<<< HEAD
 static int BcmFileDownload(PMINI_ADAPTER Adapter, const char *path, unsigned int loc)
 {
 	int errorno = 0;
 	struct file *flp = NULL;
 	mm_segment_t oldfs;
+=======
+static int BcmFileDownload(struct bcm_mini_adapter *Adapter, const char *path, unsigned int loc)
+{
+	int errorno = 0;
+	struct file *flp = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct timeval tv = {0};
 
 	flp = open_firmware_file(Adapter, path);
 	if (!flp) {
+<<<<<<< HEAD
 		errorno = -ENOENT;
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Unable to Open %s\n", path);
 		goto exit_download;
 	}
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Opened file is = %s and length =0x%lx to be downloaded at =0x%x", path, (unsigned long)flp->f_dentry->d_inode->i_size, loc);
+=======
+		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Unable to Open %s\n", path);
+		return -ENOENT;
+	}
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Opened file is = %s and length =0x%lx to be downloaded at =0x%x", path, (unsigned long)file_inode(flp)->i_size, loc);
+>>>>>>> refs/remotes/origin/master
 	do_gettimeofday(&tv);
 
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "download start %lx", ((tv.tv_sec * 1000) + (tv.tv_usec / 1000)));
@@ -457,10 +544,14 @@ static int BcmFileDownload(PMINI_ADAPTER Adapter, const char *path, unsigned int
 		errorno = -EIO;
 		goto exit_download;
 	}
+<<<<<<< HEAD
 	oldfs = get_fs();
 	set_fs(get_ds());
 	vfs_llseek(flp, 0, 0);
 	set_fs(oldfs);
+=======
+	vfs_llseek(flp, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (Adapter->bcm_file_readback_from_chip(Adapter->pvInterfaceAdapter, flp, loc)) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Failed to read back firmware!");
 		errorno = -EIO;
@@ -468,12 +559,16 @@ static int BcmFileDownload(PMINI_ADAPTER Adapter, const char *path, unsigned int
 	}
 
 exit_download:
+<<<<<<< HEAD
 	oldfs = get_fs();
 	set_fs(get_ds());
 	if (flp && !(IS_ERR(flp)))
 		filp_close(flp, current->files);
 	set_fs(oldfs);
 
+=======
+	filp_close(flp, NULL);
+>>>>>>> refs/remotes/origin/master
 	return errorno;
 }
 
@@ -481,12 +576,17 @@ exit_download:
  * @ingroup ctrl_pkt_functions
  * This function copies the contents of given buffer
  * to the control packet and queues it for transmission.
+<<<<<<< HEAD
  * @note Do not acquire the spinock, as it it already acquired.
+=======
+ * @note Do not acquire the spinlock, as it it already acquired.
+>>>>>>> refs/remotes/origin/master
  * @return  SUCCESS/FAILURE.
  * Arguments:
  * Logical Adapter
  * Control Packet Buffer
  */
+<<<<<<< HEAD
 INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter, PVOID ioBuffer)
 {
 	PLEADER	pLeader = NULL;
@@ -494,11 +594,21 @@ INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter, PVOID ioBuffer)
 	unsigned char *ctrl_buff = NULL;
 	UINT pktlen = 0;
 	PLINK_REQUEST pLinkReq = NULL;
+=======
+int CopyBufferToControlPacket(struct bcm_mini_adapter *Adapter, void *ioBuffer)
+{
+	struct bcm_leader *pLeader = NULL;
+	int Status = 0;
+	unsigned char *ctrl_buff;
+	unsigned int pktlen = 0;
+	struct bcm_link_request *pLinkReq = NULL;
+>>>>>>> refs/remotes/origin/master
 	PUCHAR pucAddIndication = NULL;
 
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "======>");
 	if (!ioBuffer) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "Got Null Buffer\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -EINVAL;
 	}
@@ -614,6 +724,13 @@ INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter, PVOID ioBuffer)
 	pLeader->Vcid = VCID_CONTROL_PACKET;//VCID for control packet.
 =======
 	pLeader = (PLEADER)ioBuffer; /* ioBuffer Contains sw_Status and Payload */
+=======
+		return -EINVAL;
+	}
+
+	pLinkReq = (struct bcm_link_request *)ioBuffer;
+	pLeader = (struct bcm_leader *)ioBuffer; /* ioBuffer Contains sw_Status and Payload */
+>>>>>>> refs/remotes/origin/master
 
 	if (Adapter->bShutStatus == TRUE &&
 		pLinkReq->szData[0] == LINK_DOWN_REQ_PAYLOAD &&
@@ -634,9 +751,15 @@ INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter, PVOID ioBuffer)
 			return STATUS_FAILURE;
 		}
 
+<<<<<<< HEAD
 		if (TRUE == Adapter->bShutStatus) {
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "SYNC UP IN SHUTDOWN..Device WakeUp\n");
 			if (Adapter->bTriedToWakeUpFromlowPowerMode == FALSE) {
+=======
+		if (Adapter->bShutStatus == TRUE) {
+			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "SYNC UP IN SHUTDOWN..Device WakeUp\n");
+			if (Adapter->bTriedToWakeUpFromlowPowerMode == false) {
+>>>>>>> refs/remotes/origin/master
 				BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "Waking up for the First Time..\n");
 				Adapter->usIdleModePattern = ABORT_SHUTDOWN_MODE; /* change it to 1 for current support. */
 				Adapter->bWakeUpDevice = TRUE;
@@ -656,7 +779,11 @@ INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter, PVOID ioBuffer)
 		}
 	}
 
+<<<<<<< HEAD
 	if (TRUE == Adapter->IdleMode) {
+=======
+	if (Adapter->IdleMode == TRUE) {
+>>>>>>> refs/remotes/origin/master
 		/* BCM_DEBUG_PRINT(Adapter,DBG_TYPE_PRINTK, 0, 0,"Device is in Idle mode ... hence\n"); */
 		if (pLeader->Status == LINK_UP_CONTROL_REQ || pLeader->Status == 0x80 ||
 			pLeader->Status == CM_CONTROL_NEWDSX_MULTICLASSIFIER_REQ) {
@@ -701,12 +828,16 @@ INT CopyBufferToControlPacket(PMINI_ADAPTER Adapter, PVOID ioBuffer)
 
 	/* The Driver has to send control messages with a particular VCID */
 	pLeader->Vcid = VCID_CONTROL_PACKET; /* VCID for control packet. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Allocate skb for Control Packet */
 	pktlen = pLeader->PLength;
 	ctrl_buff = (char *)Adapter->txctlpacket[atomic_read(&Adapter->index_wr_txcntrlpkt)%MAX_CNTRL_PKTS];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	BCM_DEBUG_PRINT(Adapter,DBG_TYPE_TX, TX_CONTROL,DBG_LVL_ALL, "Control packet to be taken =%d and address is =%pincoming address is =%p and packet len=%x",
 								atomic_read(&Adapter->index_wr_txcntrlpkt), ctrl_buff, ioBuffer, pktlen);
@@ -882,20 +1013,91 @@ static VOID SendStatisticsPointerRequest(PMINI_ADAPTER Adapter, PLINK_REQUEST ps
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ctrl_buff) {
+		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "mem allocation Failed");
+		return -ENOMEM;
+	}
+
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "Control packet to be taken =%d and address is =%pincoming address is =%p and packet len=%x",
+			atomic_read(&Adapter->index_wr_txcntrlpkt), ctrl_buff, ioBuffer, pktlen);
+
+	if (pLeader) {
+		if ((pLeader->Status == 0x80) ||
+			(pLeader->Status == CM_CONTROL_NEWDSX_MULTICLASSIFIER_REQ)) {
+			/*
+			 * Restructure the DSX message to handle Multiple classifier Support
+			 * Write the Service Flow param Structures directly to the target
+			 * and embed the pointers in the DSX messages sent to target.
+			 */
+			/* Lets store the current length of the control packet we are transmitting */
+			pucAddIndication = (PUCHAR)ioBuffer + LEADER_SIZE;
+			pktlen = pLeader->PLength;
+			Status = StoreCmControlResponseMessage(Adapter, pucAddIndication, &pktlen);
+			if (Status != 1) {
+				ClearTargetDSXBuffer(Adapter, ((struct bcm_add_indication_alt *)pucAddIndication)->u16TID, false);
+				BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, " Error Restoring The DSX Control Packet. Dsx Buffers on Target may not be Setup Properly ");
+				return STATUS_FAILURE;
+			}
+			/*
+			 * update the leader to use the new length
+			 * The length of the control packet is length of message being sent + Leader length
+			 */
+			pLeader->PLength = pktlen;
+		}
+	}
+
+	if (pktlen + LEADER_SIZE > MAX_CNTL_PKT_SIZE)
+		return -EINVAL;
+
+	memset(ctrl_buff, 0, pktlen+LEADER_SIZE);
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "Copying the Control Packet Buffer with length=%d\n", pLeader->PLength);
+	*(struct bcm_leader *)ctrl_buff = *pLeader;
+	memcpy(ctrl_buff + LEADER_SIZE, ((PUCHAR)ioBuffer + LEADER_SIZE), pLeader->PLength);
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "Enqueuing the Control Packet");
+
+	/* Update the statistics counters */
+	spin_lock_bh(&Adapter->PackInfo[HiPriority].SFQueueLock);
+	Adapter->PackInfo[HiPriority].uiCurrentBytesOnHost += pLeader->PLength;
+	Adapter->PackInfo[HiPriority].uiCurrentPacketsOnHost++;
+	atomic_inc(&Adapter->TotalPacketCount);
+	spin_unlock_bh(&Adapter->PackInfo[HiPriority].SFQueueLock);
+	Adapter->PackInfo[HiPriority].bValid = TRUE;
+
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "CurrBytesOnHost: %x bValid: %x",
+			Adapter->PackInfo[HiPriority].uiCurrentBytesOnHost,
+			Adapter->PackInfo[HiPriority].bValid);
+	Status = STATUS_SUCCESS;
+	/*Queue the packet for transmission */
+	atomic_inc(&Adapter->index_wr_txcntrlpkt);
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "Calling transmit_packets");
+	atomic_set(&Adapter->TxPktAvail, 1);
+	wake_up(&Adapter->tx_packet_wait_queue);
+
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_TX, TX_CONTROL, DBG_LVL_ALL, "<====");
+	return Status;
+}
+
+>>>>>>> refs/remotes/origin/master
 /******************************************************************
 * Function    - LinkMessage()
 *
 * Description - This function builds the Sync-up and Link-up request
 <<<<<<< HEAD
+<<<<<<< HEAD
 *				packet messages depending on the device Link status.
 =======
 * packet messages depending on the device Link status.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+* packet messages depending on the device Link status.
+>>>>>>> refs/remotes/origin/master
 *
 * Parameters  - Adapter:	Pointer to the Adapter structure.
 *
 * Returns     - None.
 *******************************************************************/
+<<<<<<< HEAD
 VOID LinkMessage(PMINI_ADAPTER Adapter)
 {
 <<<<<<< HEAD
@@ -949,6 +1151,14 @@ VOID LinkMessage(PMINI_ADAPTER Adapter)
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LINK_UP_MSG, DBG_LVL_ALL, "=====>");
 	if (Adapter->LinkStatus == SYNC_UP_REQUEST && Adapter->AutoSyncup) {
 		pstLinkRequest = kzalloc(sizeof(LINK_REQUEST), GFP_ATOMIC);
+=======
+void LinkMessage(struct bcm_mini_adapter *Adapter)
+{
+	struct bcm_link_request *pstLinkRequest = NULL;
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LINK_UP_MSG, DBG_LVL_ALL, "=====>");
+	if (Adapter->LinkStatus == SYNC_UP_REQUEST && Adapter->AutoSyncup) {
+		pstLinkRequest = kzalloc(sizeof(struct bcm_link_request), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (!pstLinkRequest) {
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LINK_UP_MSG, DBG_LVL_ALL, "Can not allocate memory for Link request!");
 			return;
@@ -963,7 +1173,11 @@ VOID LinkMessage(PMINI_ADAPTER Adapter)
 		Adapter->bSyncUpRequestSent = TRUE;
 
 	} else if (Adapter->LinkStatus == PHY_SYNC_ACHIVED && Adapter->AutoLinkUp) {
+<<<<<<< HEAD
 		pstLinkRequest = kzalloc(sizeof(LINK_REQUEST), GFP_ATOMIC);
+=======
+		pstLinkRequest = kzalloc(sizeof(struct bcm_link_request), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (!pstLinkRequest) {
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, LINK_UP_MSG, DBG_LVL_ALL, "Can not allocate memory for Link request!");
 			return;
@@ -984,13 +1198,17 @@ VOID LinkMessage(PMINI_ADAPTER Adapter)
 	return;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**********************************************************************
 * Function    - StatisticsResponse()
 *
 * Description - This function handles the Statistics response packet.
 *
 * Parameters  - Adapter	: Pointer to the Adapter structure.
+<<<<<<< HEAD
 <<<<<<< HEAD
 * 			  - pvBuffer: Starting address of Statistic response data.
 *
@@ -1007,26 +1225,40 @@ VOID StatisticsResponse(PMINI_ADAPTER Adapter,PVOID pvBuffer)
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 * - pvBuffer: Starting address of Statistic response data.
 *
 * Returns     - None.
 ************************************************************************/
+<<<<<<< HEAD
 VOID StatisticsResponse(PMINI_ADAPTER Adapter, PVOID pvBuffer)
 {
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "%s====>", __func__);
 	Adapter->StatisticsPointer = ntohl(*(__be32 *)pvBuffer);
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "Stats at %x", (UINT)Adapter->StatisticsPointer);
+=======
+void StatisticsResponse(struct bcm_mini_adapter *Adapter, void *pvBuffer)
+{
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "%s====>", __func__);
+	Adapter->StatisticsPointer = ntohl(*(__be32 *)pvBuffer);
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "Stats at %x", (unsigned int)Adapter->StatisticsPointer);
+>>>>>>> refs/remotes/origin/master
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "%s <====", __func__);
 	return;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**********************************************************************
 * Function    - LinkControlResponseMessage()
 *
 * Description - This function handles the Link response packets.
 *
 * Parameters  - Adapter	 : Pointer to the Adapter structure.
+<<<<<<< HEAD
 <<<<<<< HEAD
 * 			  - pucBuffer: Starting address of Link response data.
 *
@@ -1054,11 +1286,17 @@ VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter,PUCHAR pucBuffer)
 				if(Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY)
 				{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 * - pucBuffer: Starting address of Link response data.
 *
 * Returns     - None.
 ***********************************************************************/
+<<<<<<< HEAD
 VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
+=======
+void LinkControlResponseMessage(struct bcm_mini_adapter *Adapter, PUCHAR pucBuffer)
+>>>>>>> refs/remotes/origin/master
 {
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "=====>");
 
@@ -1074,7 +1312,10 @@ VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 				Adapter->LinkStatus = PHY_SYNC_ACHIVED;
 
 				if (Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					Adapter->DriverState = NO_NETWORK_ENTRY;
 					wake_up(&Adapter->LEDInfo.notify_led_event);
 				}
@@ -1082,6 +1323,7 @@ VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 				LinkMessage(Adapter);
 				break;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case LINKUP_DONE:
 				BCM_DEBUG_PRINT(Adapter,DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "LINKUP_DONE");
@@ -1136,6 +1378,8 @@ VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 	}
 	BCM_DEBUG_PRINT(Adapter,DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "%s <=====",__FUNCTION__);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case LINKUP_DONE:
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "LINKUP_DONE");
 			Adapter->LinkStatus = LINKUP_DONE;
@@ -1143,7 +1387,11 @@ VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 			Adapter->bETHCSEnabled = *(pucBuffer+4) & ETH_CS_MASK;
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "PHS Support Status Received In LinkUp Ack : %x\n", Adapter->bPHSEnabled);
 
+<<<<<<< HEAD
 			if ((FALSE == Adapter->bShutStatus) && (FALSE == Adapter->IdleMode)) {
+=======
+			if ((false == Adapter->bShutStatus) && (false == Adapter->IdleMode)) {
+>>>>>>> refs/remotes/origin/master
 				if (Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
 					Adapter->DriverState = NORMAL_OPERATION;
 					wake_up(&Adapter->LEDInfo.notify_led_event);
@@ -1161,8 +1409,13 @@ VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 			Adapter->LinkUpStatus = 0;
 			Adapter->LinkStatus = 0;
 			Adapter->usBestEffortQueueIndex = INVALID_QUEUE_INDEX;
+<<<<<<< HEAD
 			Adapter->bTriedToWakeUpFromlowPowerMode = FALSE;
 			Adapter->IdleMode = FALSE;
+=======
+			Adapter->bTriedToWakeUpFromlowPowerMode = false;
+			Adapter->IdleMode = false;
+>>>>>>> refs/remotes/origin/master
 			beceem_protocol_reset(Adapter);
 
 			break;
@@ -1184,6 +1437,7 @@ VOID LinkControlResponseMessage(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 		memcpy(Adapter->dev->dev_addr, puMacAddr, MAC_ADDRESS_SIZE);
 	}
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "%s <=====", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return;
 }
@@ -1239,6 +1493,16 @@ void SendIdleModeResponse(PMINI_ADAPTER Adapter)
 	INT status = 0, NVMAccess = 0, lowPwrAbortMsg = 0;
 	struct timeval tv;
 	CONTROL_MESSAGE stIdleResponse = {{0} };
+=======
+	return;
+}
+
+void SendIdleModeResponse(struct bcm_mini_adapter *Adapter)
+{
+	int status = 0, NVMAccess = 0, lowPwrAbortMsg = 0;
+	struct timeval tv;
+	struct bcm_link_request stIdleResponse = {{0} };
+>>>>>>> refs/remotes/origin/master
 	memset(&tv, 0, sizeof(tv));
 	stIdleResponse.Leader.Status = IDLE_MESSAGE;
 	stIdleResponse.Leader.PLength = IDLE_MODE_PAYLOAD_LENGTH;
@@ -1269,13 +1533,18 @@ void SendIdleModeResponse(PMINI_ADAPTER Adapter)
 
 		stIdleResponse.szData[1] = TARGET_CAN_NOT_GO_TO_IDLE_MODE; /* NACK- device access is going on. */
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "HOST IS NACKING Idle mode To F/W!!!!!!!!");
+<<<<<<< HEAD
 		Adapter->bPreparingForLowPowerMode = FALSE;
+=======
+		Adapter->bPreparingForLowPowerMode = false;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		stIdleResponse.szData[1] = TARGET_CAN_GO_TO_IDLE_MODE; /* 2; Idle ACK */
 		Adapter->StatisticsPointer = 0;
 
 		/* Wait for the LED to TURN OFF before sending ACK response */
 		if (Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			INT iRetVal = 0;
 
@@ -1336,6 +1605,21 @@ void SendIdleModeResponse(PMINI_ADAPTER Adapter)
 			/* If Timed Out to Sync IDLE MODE Enter, do IDLE mode Exit and Send NACK to device */
 			if (iRetVal <= 0) {
 				stIdleResponse.szData[1] = TARGET_CAN_NOT_GO_TO_IDLE_MODE; /* NACK- device access is going on. */
+=======
+			int iRetVal = 0;
+
+			/* Wake the LED Thread with IDLEMODE_ENTER State */
+			Adapter->DriverState = LOWPOWER_MODE_ENTER;
+			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "LED Thread is Running..Hence Setting LED Event as IDLEMODE_ENTER jiffies:%ld", jiffies);
+			wake_up(&Adapter->LEDInfo.notify_led_event);
+
+			/* Wait for 1 SEC for LED to OFF */
+			iRetVal = wait_event_timeout(Adapter->LEDInfo.idleModeSyncEvent, Adapter->LEDInfo.bIdle_led_off, msecs_to_jiffies(1000));
+
+			/* If Timed Out to Sync IDLE MODE Enter, do IDLE mode Exit and Send NACK to device */
+			if (iRetVal <= 0) {
+				stIdleResponse.szData[1] = TARGET_CAN_NOT_GO_TO_IDLE_MODE; /* NACK- device access is going on. */
+>>>>>>> refs/remotes/origin/master
 				Adapter->DriverState = NORMAL_OPERATION;
 				wake_up(&Adapter->LEDInfo.notify_led_event);
 				BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "NACKING Idle mode as time out happen from LED side!!!!!!!!");
@@ -1349,9 +1633,15 @@ void SendIdleModeResponse(PMINI_ADAPTER Adapter)
 			up(&Adapter->rdmwrmsync);
 			/* Killing all URBS. */
 			if (Adapter->bDoSuspend == TRUE)
+<<<<<<< HEAD
 				Bcm_kill_all_URBs((PS_INTERFACE_ADAPTER)(Adapter->pvInterfaceAdapter));
 		} else {
 			Adapter->bPreparingForLowPowerMode = FALSE;
+=======
+				Bcm_kill_all_URBs((struct bcm_interface_adapter *)(Adapter->pvInterfaceAdapter));
+		} else {
+			Adapter->bPreparingForLowPowerMode = false;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!NVMAccess)
@@ -1364,6 +1654,7 @@ void SendIdleModeResponse(PMINI_ADAPTER Adapter)
 	status = CopyBufferToControlPacket(Adapter, &stIdleResponse);
 	if ((status != STATUS_SUCCESS)) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "fail to send the Idle mode Request\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		Adapter->bPreparingForLowPowerMode = FALSE;
 		StartInterruptUrb((PS_INTERFACE_ADAPTER)(Adapter->pvInterfaceAdapter));
@@ -1375,6 +1666,13 @@ void SendIdleModeResponse(PMINI_ADAPTER Adapter)
 =======
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "IdleMode Msg submitter to Q :%ld ms", tv.tv_sec * 1000 + tv.tv_usec / 1000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		Adapter->bPreparingForLowPowerMode = false;
+		StartInterruptUrb((struct bcm_interface_adapter *)(Adapter->pvInterfaceAdapter));
+	}
+	do_gettimeofday(&tv);
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_RX, RX_DPC, DBG_LVL_ALL, "IdleMode Msg submitter to Q :%ld ms", tv.tv_sec * 1000 + tv.tv_usec / 1000);
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************************************
@@ -1386,6 +1684,7 @@ void SendIdleModeResponse(PMINI_ADAPTER Adapter)
 *
 * Returns     - None.
 *******************************************************************/
+<<<<<<< HEAD
 VOID DumpPackInfo(PMINI_ADAPTER Adapter)
 {
 <<<<<<< HEAD
@@ -1545,6 +1844,19 @@ VOID DumpPackInfo(PMINI_ADAPTER Adapter)
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "*********** Showing Details Of Queue %d***** ******", uiLoopIndex);
 		if (FALSE == Adapter->PackInfo[uiLoopIndex].bValid) {
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "bValid is FALSE for %X index\n", uiLoopIndex);
+=======
+void DumpPackInfo(struct bcm_mini_adapter *Adapter)
+{
+	unsigned int uiLoopIndex = 0;
+	unsigned int uiIndex = 0;
+	unsigned int uiClsfrIndex = 0;
+	struct bcm_classifier_rule *pstClassifierEntry = NULL;
+
+	for (uiLoopIndex = 0; uiLoopIndex < NO_OF_QUEUES; uiLoopIndex++) {
+		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "*********** Showing Details Of Queue %d***** ******", uiLoopIndex);
+		if (false == Adapter->PackInfo[uiLoopIndex].bValid) {
+			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "bValid is false for %X index\n", uiLoopIndex);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -1646,7 +1958,14 @@ VOID DumpPackInfo(PMINI_ADAPTER Adapter)
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "AuthzSet: %x\n", Adapter->PackInfo[uiLoopIndex].bAuthorizedSet);
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "ClassifyPrority: %x\n", Adapter->PackInfo[uiLoopIndex].bClassifierPriority);
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "uiMaxLatency: %x\n", Adapter->PackInfo[uiLoopIndex].uiMaxLatency);
+<<<<<<< HEAD
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "ServiceClassName: %x %x %x %x\n", Adapter->PackInfo[uiLoopIndex].ucServiceClassName[0], Adapter->PackInfo[uiLoopIndex].ucServiceClassName[1], Adapter->PackInfo[uiLoopIndex].ucServiceClassName[2], Adapter->PackInfo[uiLoopIndex].ucServiceClassName[3]);
+=======
+		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO,
+				DBG_LVL_ALL, "ServiceClassName: %*ph\n",
+				4, Adapter->PackInfo[uiLoopIndex].
+					    ucServiceClassName);
+>>>>>>> refs/remotes/origin/master
 /* BCM_DEBUG_PRINT (Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "bHeaderSuppressionEnabled :%X\n", Adapter->PackInfo[uiLoopIndex].bHeaderSuppressionEnabled);
  * BCM_DEBUG_PRINT (Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "uiTotalTxBytes:%X\n", Adapter->PackInfo[uiLoopIndex].uiTotalTxBytes);
  * BCM_DEBUG_PRINT (Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "uiTotalRxBytes:%X\n", Adapter->PackInfo[uiLoopIndex].uiTotalRxBytes);
@@ -1661,6 +1980,7 @@ VOID DumpPackInfo(PMINI_ADAPTER Adapter)
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, DUMP_INFO, DBG_LVL_ALL, "Adapter->aTxPktSizeHist[%x] = %x\n", uiLoopIndex, Adapter->aTxPktSizeHist[uiLoopIndex]);
 
 	return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -1760,6 +2080,20 @@ int reset_card_proc(PMINI_ADAPTER ps_adapter)
 
 	psIntfAdapter = ((PS_INTERFACE_ADAPTER)(ps_adapter->pvInterfaceAdapter));
 	ps_adapter->bDDRInitDone = FALSE;
+=======
+}
+
+int reset_card_proc(struct bcm_mini_adapter *ps_adapter)
+{
+	int retval = STATUS_SUCCESS;
+	struct bcm_mini_adapter *Adapter = GET_BCM_ADAPTER(gblpnetdev);
+	struct bcm_interface_adapter *psIntfAdapter = NULL;
+	unsigned int value = 0, uiResetValue = 0;
+	int bytes;
+
+	psIntfAdapter = ((struct bcm_interface_adapter *)(ps_adapter->pvInterfaceAdapter));
+	ps_adapter->bDDRInitDone = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (ps_adapter->chip_id >= T3LPB) {
 		/* SYS_CFG register is write protected hence for modifying this reg value, it should be read twice before */
@@ -1777,9 +2111,15 @@ int reset_card_proc(PMINI_ADAPTER ps_adapter)
 	Bcm_kill_all_URBs(psIntfAdapter);
 	/* Reset the UMA-B Device */
 	if (ps_adapter->chip_id >= T3LPB) {
+<<<<<<< HEAD
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "Reseting UMA-B\n");
 		retval = usb_reset_device(psIntfAdapter->udev);
 		psIntfAdapter->psAdapter->StopAllXaction = FALSE;
+=======
+		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "Resetting UMA-B\n");
+		retval = usb_reset_device(psIntfAdapter->udev);
+		psIntfAdapter->psAdapter->StopAllXaction = false;
+>>>>>>> refs/remotes/origin/master
 
 		if (retval != STATUS_SUCCESS) {
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "Reset failed with ret value :%d", retval);
@@ -1830,12 +2170,16 @@ int reset_card_proc(PMINI_ADAPTER ps_adapter)
 		retval = wrmalt(ps_adapter, GPIO_MODE_REGISTER, &value, sizeof(value));
 		if (retval < 0) {
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "write failed with status :%d", retval);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto err_exit;
 		}
 		mdelay(50);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	//ps_adapter->downloadDDR = false;
 
@@ -1867,6 +2211,8 @@ int reset_card_proc(PMINI_ADAPTER ps_adapter)
 		}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ps_adapter->downloadDDR = false; */
 	if (ps_adapter->bFlashBoot) {
 		/* In flash boot mode MIPS state register has reverse polarity.
@@ -1891,11 +2237,15 @@ int reset_card_proc(PMINI_ADAPTER ps_adapter)
 			uiResetValue &= (~(1<<4));
 			wrmalt(ps_adapter, SYS_CFG, &uiResetValue, sizeof(uiResetValue));
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	uiResetValue = 0;
 	wrmalt(ps_adapter, 0x0f01186c, &uiResetValue, sizeof(uiResetValue));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 err_exit :
 	psIntfAdapter->psAdapter->StopAllXaction = FALSE ;
@@ -1935,6 +2285,14 @@ err_exit:
 }
 
 int run_card_proc(PMINI_ADAPTER ps_adapter)
+=======
+err_exit:
+	psIntfAdapter->psAdapter->StopAllXaction = false;
+	return retval;
+}
+
+int run_card_proc(struct bcm_mini_adapter *ps_adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = STATUS_SUCCESS;
 	int bytes;
@@ -1959,6 +2317,7 @@ int run_card_proc(PMINI_ADAPTER ps_adapter)
 		}
 	}
 	return status;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -1996,6 +2355,14 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 =======
 	int status;
 	UINT value = 0;
+=======
+}
+
+int InitCardAndDownloadFirmware(struct bcm_mini_adapter *ps_adapter)
+{
+	int status;
+	unsigned int value = 0;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Create the threads first and then download the
 	 * Firm/DDR Settings..
@@ -2014,11 +2381,15 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 
 		if ((value & 0x60) == 0)
 			ps_adapter->bFlashBoot = TRUE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	reset_card_proc(ps_adapter);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	//Initializing the NVM.
 	BcmInitNVM(ps_adapter);
@@ -2026,17 +2397,23 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 	if(status)
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initializing the NVM. */
 	BcmInitNVM(ps_adapter);
 	status = ddr_init(ps_adapter);
 	if (status) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err(DRV_NAME "ddr_init Failed\n");
 		return status;
 	}
 
 	/* Download cfg file */
 	status = buffDnldVerify(ps_adapter,
+<<<<<<< HEAD
 <<<<<<< HEAD
 							 (PUCHAR)ps_adapter->pstargetparams,
 							 sizeof(STARGETPARAMS),
@@ -2067,6 +2444,10 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 =======
 				(PUCHAR)ps_adapter->pstargetparams,
 				sizeof(STARGETPARAMS),
+=======
+				(PUCHAR)ps_adapter->pstargetparams,
+				sizeof(struct bcm_target_params),
+>>>>>>> refs/remotes/origin/master
 				CONFIG_BEGIN_ADDR);
 	if (status) {
 		BCM_DEBUG_PRINT(ps_adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Error downloading CFG file");
@@ -2078,7 +2459,11 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	if (FALSE == ps_adapter->AutoFirmDld) {
+=======
+	if (false == ps_adapter->AutoFirmDld) {
+>>>>>>> refs/remotes/origin/master
 		BCM_DEBUG_PRINT(ps_adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "AutoFirmDld Disabled in CFG File..\n");
 		/* If Auto f/w download is disable, register the control interface, */
 		/* register the control interface after the mailbox. */
@@ -2086,11 +2471,15 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 			BCM_DEBUG_PRINT(ps_adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Register Control Device failed. Cleanup needs to be performed.");
 			return -EIO;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return STATUS_SUCCESS;
 	}
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
      * Do the LED Settings here. It will be used by the Firmware Download
      * Thread.
@@ -2112,6 +2501,8 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 	if(ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY)
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Do the LED Settings here. It will be used by the Firmware Download
 	 * Thread.
 	 */
@@ -2129,17 +2520,24 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 	}
 
 	if (ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ps_adapter->DriverState = DRIVER_INIT;
 		wake_up(&ps_adapter->LEDInfo.notify_led_event);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY)
 	{
 =======
 	if (ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
+>>>>>>> refs/remotes/origin/master
 		ps_adapter->DriverState = FW_DOWNLOAD;
 		wake_up(&ps_adapter->LEDInfo.notify_led_event);
 	}
@@ -2149,6 +2547,7 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 	wrmalt(ps_adapter, EEPROM_CAL_DATA_INTERNAL_LOC - 8, &value, sizeof(value));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(ps_adapter->eNVMType == NVM_FLASH)
 	{
 		status = PropagateCalParamsFromFlashToMemory(ps_adapter);
@@ -2156,16 +2555,22 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 		{
 			BCM_DEBUG_PRINT(ps_adapter,DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL," Propagation of Cal param failed .." );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ps_adapter->eNVMType == NVM_FLASH) {
 		status = PropagateCalParamsFromFlashToMemory(ps_adapter);
 		if (status) {
 			BCM_DEBUG_PRINT(ps_adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Propagation of Cal param failed ..");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto OUT;
 		}
 	}
 
 	/* Download Firmare */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((status = BcmFileDownload( ps_adapter, BIN_FILE, FIRMWARE_BEGIN_ADDR)))
 	{
@@ -2175,10 +2580,16 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 	if (status != 0) {
 		BCM_DEBUG_PRINT(ps_adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "No Firmware File is present...\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = BcmFileDownload(ps_adapter, BIN_FILE, FIRMWARE_BEGIN_ADDR);
+	if (status != 0) {
+		BCM_DEBUG_PRINT(ps_adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "No Firmware File is present...\n");
+>>>>>>> refs/remotes/origin/master
 		goto OUT;
 	}
 
 	status = run_card_proc(ps_adapter);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(status)
 	{
@@ -2188,22 +2599,31 @@ int InitCardAndDownloadFirmware(PMINI_ADAPTER ps_adapter)
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (status) {
 		BCM_DEBUG_PRINT(ps_adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "run_card_proc Failed\n");
 		goto OUT;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ps_adapter->fw_download_done = TRUE;
 	mdelay(10);
 
 OUT:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY)
 	{
 =======
 	if (ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ps_adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
+>>>>>>> refs/remotes/origin/master
 		ps_adapter->DriverState = FW_DOWNLOAD_DONE;
 		wake_up(&ps_adapter->LEDInfo.notify_led_event);
 	}
@@ -2211,6 +2631,7 @@ OUT:
 	return status;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int bcm_parse_target_params(PMINI_ADAPTER Adapter)
@@ -2243,12 +2664,23 @@ static int bcm_parse_target_params(PMINI_ADAPTER Adapter)
 	char *buff;
 	int len = 0;
 	loff_t pos = 0;
+=======
+static int bcm_parse_target_params(struct bcm_mini_adapter *Adapter)
+{
+	struct file *flp = NULL;
+	char *buff;
+	int len = 0;
+>>>>>>> refs/remotes/origin/master
 
 	buff = kmalloc(BUFFER_1K, GFP_KERNEL);
 	if (!buff)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	Adapter->pstargetparams = kmalloc(sizeof(STARGETPARAMS), GFP_KERNEL);
+=======
+	Adapter->pstargetparams = kmalloc(sizeof(struct bcm_target_params), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (Adapter->pstargetparams == NULL) {
 		kfree(buff);
 		return -ENOMEM;
@@ -2257,12 +2689,16 @@ static int bcm_parse_target_params(PMINI_ADAPTER Adapter)
 	flp = open_firmware_file(Adapter, CFG_FILE);
 	if (!flp) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "NOT ABLE TO OPEN THE %s FILE\n", CFG_FILE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(buff);
 		kfree(Adapter->pstargetparams);
 		Adapter->pstargetparams = NULL;
 		return -ENOENT;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	oldfs=get_fs();	set_fs(get_ds());
 	len=vfs_read(flp, (void __user __force *)buff, BUFFER_1K, &pos);
@@ -2287,21 +2723,39 @@ static int bcm_parse_target_params(PMINI_ADAPTER Adapter)
 		return -ENOENT;
 	}
 	filp_close(flp, current->files);
+=======
+	len = kernel_read(flp, 0, buff, BUFFER_1K);
+	filp_close(flp, NULL);
+
+	if (len != sizeof(struct bcm_target_params)) {
+		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Mismatch in Target Param Structure!\n");
+		kfree(buff);
+		kfree(Adapter->pstargetparams);
+		Adapter->pstargetparams = NULL;
+		return -ENOENT;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Check for autolink in config params */
 	/*
 	 * Values in Adapter->pstargetparams are in network byte order
 	 */
+<<<<<<< HEAD
 	memcpy(Adapter->pstargetparams, buff, sizeof(STARGETPARAMS));
 <<<<<<< HEAD
 	kfree (buff);
 =======
 	kfree(buff);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(Adapter->pstargetparams, buff, sizeof(struct bcm_target_params));
+	kfree(buff);
+>>>>>>> refs/remotes/origin/master
 	beceem_parse_target_struct(Adapter);
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 void beceem_parse_target_struct(PMINI_ADAPTER Adapter)
 {
 <<<<<<< HEAD
@@ -2383,6 +2837,15 @@ void beceem_parse_target_struct(PMINI_ADAPTER Adapter)
 	if (ntohl(Adapter->pstargetparams->m_u32PhyParameter2) & AUTO_SYNC_DISABLE) {
 		pr_info(DRV_NAME ": AutoSyncup is Disabled\n");
 		Adapter->AutoSyncup = FALSE;
+=======
+void beceem_parse_target_struct(struct bcm_mini_adapter *Adapter)
+{
+	unsigned int uiHostDrvrCfg6 = 0, uiEEPROMFlag = 0;
+
+	if (ntohl(Adapter->pstargetparams->m_u32PhyParameter2) & AUTO_SYNC_DISABLE) {
+		pr_info(DRV_NAME ": AutoSyncup is Disabled\n");
+		Adapter->AutoSyncup = false;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		pr_info(DRV_NAME ": AutoSyncup is Enabled\n");
 		Adapter->AutoSyncup = TRUE;
@@ -2393,7 +2856,11 @@ void beceem_parse_target_struct(PMINI_ADAPTER Adapter)
 		Adapter->AutoLinkUp = TRUE;
 	} else {
 		pr_info(DRV_NAME ": Disabling autolink up");
+<<<<<<< HEAD
 		Adapter->AutoLinkUp = FALSE;
+=======
+		Adapter->AutoLinkUp = false;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Setting the DDR Setting.. */
 	Adapter->DDRSetting = (ntohl(Adapter->pstargetparams->HostDrvrConfig6) >> 8)&0x0F;
@@ -2405,7 +2872,11 @@ void beceem_parse_target_struct(PMINI_ADAPTER Adapter)
 		Adapter->AutoFirmDld = TRUE;
 	} else {
 		pr_info(DRV_NAME ": Disabling Auto Firmware Download\n");
+<<<<<<< HEAD
 		Adapter->AutoFirmDld = FALSE;
+=======
+		Adapter->AutoFirmDld = false;
+>>>>>>> refs/remotes/origin/master
 	}
 	uiHostDrvrCfg6 = ntohl(Adapter->pstargetparams->HostDrvrConfig6);
 	Adapter->bMipsConfig = (uiHostDrvrCfg6>>20)&0x01;
@@ -2422,7 +2893,11 @@ void beceem_parse_target_struct(PMINI_ADAPTER Adapter)
 
 	uiEEPROMFlag = ntohl(Adapter->pstargetparams->m_u32EEPROMFlag);
 	pr_info(DRV_NAME ": uiEEPROMFlag  : 0x%X\n", uiEEPROMFlag);
+<<<<<<< HEAD
 	Adapter->eNVMType = (NVM_TYPE)((uiEEPROMFlag>>4)&0x3);
+=======
+	Adapter->eNVMType = (enum bcm_nvm_type)((uiEEPROMFlag>>4)&0x3);
+>>>>>>> refs/remotes/origin/master
 	Adapter->bStatusWrite = (uiEEPROMFlag>>6)&0x1;
 	Adapter->uiSectorSizeInCFG = 1024*(0xFFFF & ntohl(Adapter->pstargetparams->HostDrvrConfig4));
 	Adapter->bSectorSizeOverride = (bool) ((ntohl(Adapter->pstargetparams->HostDrvrConfig4))>>16)&0x1;
@@ -2432,6 +2907,7 @@ void beceem_parse_target_struct(PMINI_ADAPTER Adapter)
 
 	if (Adapter->ulPowerSaveMode != DEVICE_POWERSAVE_MODE_AS_PROTOCOL_IDLE_MODE)
 		doPowerAutoCorrection(Adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -2472,30 +2948,51 @@ static VOID doPowerAutoCorrection(PMINI_ADAPTER psAdapter)
 		psAdapter->pstargetparams->HostDrvrConfig6 &= ~(htonl(1 << 15));
 		BCM_DEBUG_PRINT(psAdapter,DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL,"Using Forced User Choice: %lx\n", psAdapter->ulPowerSaveMode);
 =======
+=======
+}
+
+static void doPowerAutoCorrection(struct bcm_mini_adapter *psAdapter)
+{
+	unsigned int reporting_mode;
+
+>>>>>>> refs/remotes/origin/master
 	reporting_mode = ntohl(psAdapter->pstargetparams->m_u32PowerSavingModeOptions) & 0x02;
 	psAdapter->bIsAutoCorrectEnabled = !((char)(psAdapter->ulPowerSaveMode >> 3) & 0x1);
 
 	if (reporting_mode == TRUE) {
 		BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "can't do suspen/resume as reporting mode is enable");
+<<<<<<< HEAD
 		psAdapter->bDoSuspend = FALSE;
+=======
+		psAdapter->bDoSuspend = false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (psAdapter->bIsAutoCorrectEnabled && (psAdapter->chip_id >= T3LPB)) {
 		/* If reporting mode is enable, switch PMU to PMC */
 		{
 			psAdapter->ulPowerSaveMode = DEVICE_POWERSAVE_MODE_AS_PMU_CLOCK_GATING;
+<<<<<<< HEAD
 			psAdapter->bDoSuspend = FALSE;
+=======
+			psAdapter->bDoSuspend = false;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* clearing space bit[15..12] */
 		psAdapter->pstargetparams->HostDrvrConfig6 &= ~(htonl((0xF << 12)));
 		/* placing the power save mode option */
 		psAdapter->pstargetparams->HostDrvrConfig6 |= htonl((psAdapter->ulPowerSaveMode << 12));
+<<<<<<< HEAD
 	} else if (psAdapter->bIsAutoCorrectEnabled == FALSE) {
+=======
+	} else if (psAdapter->bIsAutoCorrectEnabled == false) {
+>>>>>>> refs/remotes/origin/master
 		/* remove the autocorrect disable bit set before dumping. */
 		psAdapter->ulPowerSaveMode &= ~(1 << 3);
 		psAdapter->pstargetparams->HostDrvrConfig6 &= ~(htonl(1 << 15));
 		BCM_DEBUG_PRINT(psAdapter, DBG_TYPE_INITEXIT, MP_INIT, DBG_LVL_ALL, "Using Forced User Choice: %lx\n", psAdapter->ulPowerSaveMode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
@@ -2608,25 +3105,48 @@ int rdm(PMINI_ADAPTER Adapter, UINT uiAddress, PCHAR pucBuff, size_t sSize)
 			puiBuffer[uiIndex] = htonl(puiBuffer[uiIndex]);
 	} else {
 		for (uiIndex = 0; uiIndex < (uiByteCount/sizeof(UINT)); uiIndex++)
+=======
+	}
+}
+
+static void convertEndian(unsigned char rwFlag, unsigned int *puiBuffer, unsigned int uiByteCount)
+{
+	unsigned int uiIndex = 0;
+
+	if (RWM_WRITE == rwFlag) {
+		for (uiIndex = 0; uiIndex < (uiByteCount/sizeof(unsigned int)); uiIndex++)
+			puiBuffer[uiIndex] = htonl(puiBuffer[uiIndex]);
+	} else {
+		for (uiIndex = 0; uiIndex < (uiByteCount/sizeof(unsigned int)); uiIndex++)
+>>>>>>> refs/remotes/origin/master
 			puiBuffer[uiIndex] = ntohl(puiBuffer[uiIndex]);
 	}
 }
 
+<<<<<<< HEAD
 #define CACHE_ADDRESS_MASK 0x80000000
 #define UNCACHE_ADDRESS_MASK 0xa0000000
 
 int rdm(PMINI_ADAPTER Adapter, UINT uiAddress, PCHAR pucBuff, size_t sSize)
+=======
+int rdm(struct bcm_mini_adapter *Adapter, unsigned int uiAddress, PCHAR pucBuff, size_t sSize)
+>>>>>>> refs/remotes/origin/master
 {
 	return Adapter->interface_rdm(Adapter->pvInterfaceAdapter,
 				uiAddress, pucBuff, sSize);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 int wrm(PMINI_ADAPTER Adapter, UINT uiAddress, PCHAR pucBuff, size_t sSize)
+=======
+int wrm(struct bcm_mini_adapter *Adapter, unsigned int uiAddress, PCHAR pucBuff, size_t sSize)
+>>>>>>> refs/remotes/origin/master
 {
 	int iRetVal;
 
 	iRetVal = Adapter->interface_wrm(Adapter->pvInterfaceAdapter,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			uiAddress, pucBuff, sSize);
 
@@ -2636,17 +3156,24 @@ int wrm(PMINI_ADAPTER Adapter, UINT uiAddress, PCHAR pucBuff, size_t sSize)
 
 int wrmalt (PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					uiAddress, pucBuff, sSize);
 	return iRetVal;
 }
 
+<<<<<<< HEAD
 int wrmalt(PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int wrmalt(struct bcm_mini_adapter *Adapter, unsigned int uiAddress, unsigned int *pucBuff, size_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	convertEndian(RWM_WRITE, pucBuff, size);
 	return wrm(Adapter, uiAddress, (PUCHAR)pucBuff, size);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int rdmalt (PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 {
@@ -2661,10 +3188,19 @@ int rdmalt(PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 	uiRetVal = rdm(Adapter, uiAddress, (PUCHAR)pucBuff, size);
 >>>>>>> refs/remotes/origin/cm-10.0
 	convertEndian(RWM_READ, (PUINT)pucBuff, size);
+=======
+int rdmalt(struct bcm_mini_adapter *Adapter, unsigned int uiAddress, unsigned int *pucBuff, size_t size)
+{
+	int uiRetVal = 0;
+
+	uiRetVal = rdm(Adapter, uiAddress, (PUCHAR)pucBuff, size);
+	convertEndian(RWM_READ, (unsigned int *)pucBuff, size);
+>>>>>>> refs/remotes/origin/master
 
 	return uiRetVal;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 int wrmWithLock(PMINI_ADAPTER Adapter, UINT uiAddress, PCHAR pucBuff, size_t sSize)
@@ -2680,17 +3216,26 @@ int wrmWithLock(PMINI_ADAPTER Adapter, UINT uiAddress, PCHAR pucBuff, size_t sSi
 int wrmWithLock(PMINI_ADAPTER Adapter, UINT uiAddress, PCHAR pucBuff, size_t sSize)
 {
 	INT status = STATUS_SUCCESS;
+=======
+int wrmWithLock(struct bcm_mini_adapter *Adapter, unsigned int uiAddress, PCHAR pucBuff, size_t sSize)
+{
+	int status = STATUS_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 	down(&Adapter->rdmwrmsync);
 
 	if ((Adapter->IdleMode == TRUE) ||
 		(Adapter->bShutStatus == TRUE) ||
 		(Adapter->bPreparingForLowPowerMode == TRUE)) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		status = -EACCES;
 		goto exit;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	status =wrm(Adapter, uiAddress, pucBuff, sSize);
 
@@ -2701,45 +3246,62 @@ exit:
 
 int wrmaltWithLock (PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	status = wrm(Adapter, uiAddress, pucBuff, sSize);
 exit:
 	up(&Adapter->rdmwrmsync);
 	return status;
 }
 
+<<<<<<< HEAD
 int wrmaltWithLock(PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int wrmaltWithLock(struct bcm_mini_adapter *Adapter, unsigned int uiAddress, unsigned int *pucBuff, size_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	int iRetVal = STATUS_SUCCESS;
 
 	down(&Adapter->rdmwrmsync);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if((Adapter->IdleMode == TRUE) ||
 		(Adapter->bShutStatus ==TRUE) ||
 		(Adapter->bPreparingForLowPowerMode ==TRUE))
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((Adapter->IdleMode == TRUE) ||
 		(Adapter->bShutStatus == TRUE) ||
 		(Adapter->bPreparingForLowPowerMode == TRUE)) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		iRetVal = -EACCES;
 		goto exit;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	iRetVal = wrmalt(Adapter,uiAddress,pucBuff,size);
 
 =======
 	iRetVal = wrmalt(Adapter, uiAddress, pucBuff, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iRetVal = wrmalt(Adapter, uiAddress, pucBuff, size);
+>>>>>>> refs/remotes/origin/master
 exit:
 	up(&Adapter->rdmwrmsync);
 	return iRetVal;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int rdmaltWithLock (PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 {
@@ -2755,28 +3317,41 @@ int rdmaltWithLock (PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t
 int rdmaltWithLock(PMINI_ADAPTER Adapter, UINT uiAddress, PUINT pucBuff, size_t size)
 {
 	INT uiRetVal = STATUS_SUCCESS;
+=======
+int rdmaltWithLock(struct bcm_mini_adapter *Adapter, unsigned int uiAddress, unsigned int *pucBuff, size_t size)
+{
+	int uiRetVal = STATUS_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 
 	down(&Adapter->rdmwrmsync);
 	if ((Adapter->IdleMode == TRUE) ||
 		(Adapter->bShutStatus == TRUE) ||
 		(Adapter->bPreparingForLowPowerMode == TRUE)) {
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		uiRetVal = -EACCES;
 		goto exit;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uiRetVal = rdmalt(Adapter,uiAddress, pucBuff, size);
 
 =======
 	uiRetVal = rdmalt(Adapter, uiAddress, pucBuff, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uiRetVal = rdmalt(Adapter, uiAddress, pucBuff, size);
+>>>>>>> refs/remotes/origin/master
 exit:
 	up(&Adapter->rdmwrmsync);
 	return uiRetVal;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static VOID HandleShutDownModeWakeup(PMINI_ADAPTER Adapter)
@@ -2795,23 +3370,34 @@ static VOID HandleShutDownModeWakeup(PMINI_ADAPTER Adapter)
 	{
 =======
 static VOID HandleShutDownModeWakeup(PMINI_ADAPTER Adapter)
+=======
+static void HandleShutDownModeWakeup(struct bcm_mini_adapter *Adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	int clear_abort_pattern = 0, Status = 0;
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "====>\n");
 	/* target has woken up From Shut Down */
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "Clearing Shut Down Software abort pattern\n");
+<<<<<<< HEAD
 	Status = wrmalt(Adapter, SW_ABORT_IDLEMODE_LOC, (PUINT)&clear_abort_pattern, sizeof(clear_abort_pattern));
+=======
+	Status = wrmalt(Adapter, SW_ABORT_IDLEMODE_LOC, (unsigned int *)&clear_abort_pattern, sizeof(clear_abort_pattern));
+>>>>>>> refs/remotes/origin/master
 	if (Status) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "WRM to SW_ABORT_IDLEMODE_LOC failed with err:%d", Status);
 		return;
 	}
 
 	if (Adapter->ulPowerSaveMode != DEVICE_POWERSAVE_MODE_AS_PROTOCOL_IDLE_MODE) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		msleep(100);
 		InterfaceHandleShutdownModeWakeup(Adapter);
 		msleep(100);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY)
 	{
@@ -2819,10 +3405,15 @@ static VOID HandleShutDownModeWakeup(PMINI_ADAPTER Adapter)
 
 	if (Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
+>>>>>>> refs/remotes/origin/master
 		Adapter->DriverState = NO_NETWORK_ENTRY;
 		wake_up(&Adapter->LEDInfo.notify_led_event);
 	}
 
+<<<<<<< HEAD
 	Adapter->bTriedToWakeUpFromlowPowerMode = FALSE;
 	Adapter->bShutStatus = FALSE;
 	wake_up(&Adapter->lowpower_mode_wait_queue);
@@ -2852,10 +3443,28 @@ static VOID SendShutModeResponse(PMINI_ADAPTER Adapter)
 	stShutdownResponse.Leader.Status  = LINK_UP_CONTROL_REQ;
 	stShutdownResponse.Leader.PLength = 8; /* 8 bytes; */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Adapter->bTriedToWakeUpFromlowPowerMode = false;
+	Adapter->bShutStatus = false;
+	wake_up(&Adapter->lowpower_mode_wait_queue);
+	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "<====\n");
+}
+
+static void SendShutModeResponse(struct bcm_mini_adapter *Adapter)
+{
+	struct bcm_link_request stShutdownResponse;
+	unsigned int NVMAccess = 0, lowPwrAbortMsg = 0;
+	unsigned int Status = 0;
+
+	memset(&stShutdownResponse, 0, sizeof(struct bcm_link_request));
+	stShutdownResponse.Leader.Status  = LINK_UP_CONTROL_REQ;
+	stShutdownResponse.Leader.PLength = 8; /* 8 bytes; */
+>>>>>>> refs/remotes/origin/master
 	stShutdownResponse.szData[0] = LINK_UP_ACK;
 	stShutdownResponse.szData[1] = LINK_SHUTDOWN_REQ_FROM_FIRMWARE;
 
 	/*********************************
+<<<<<<< HEAD
 <<<<<<< HEAD
 	**down_trylock -
 	** if [ semaphore is available ]
@@ -2891,6 +3500,8 @@ static VOID SendShutModeResponse(PMINI_ADAPTER Adapter)
 		if(Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY)
 		{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * down_trylock -
 	 * if [ semaphore is available ]
 	 *		 acquire semaphone and return value 0 ;
@@ -2911,21 +3522,30 @@ static VOID SendShutModeResponse(PMINI_ADAPTER Adapter)
 
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "Device Access is going on NACK the Shut Down MODE\n");
 		stShutdownResponse.szData[2] = SHUTDOWN_NACK_FROM_DRIVER; /* NACK- device access is going on. */
+<<<<<<< HEAD
 		Adapter->bPreparingForLowPowerMode = FALSE;
+=======
+		Adapter->bPreparingForLowPowerMode = false;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "Sending SHUTDOWN MODE ACK\n");
 		stShutdownResponse.szData[2] = SHUTDOWN_ACK_FROM_DRIVER; /* ShutDown ACK */
 
 		/* Wait for the LED to TURN OFF before sending ACK response */
 		if (Adapter->LEDInfo.led_thread_running & BCM_LED_THREAD_RUNNING_ACTIVELY) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			INT iRetVal = 0;
+=======
+			int iRetVal = 0;
+>>>>>>> refs/remotes/origin/master
 
 			/* Wake the LED Thread with LOWPOWER_MODE_ENTER State */
 			Adapter->DriverState = LOWPOWER_MODE_ENTER;
 			wake_up(&Adapter->LEDInfo.notify_led_event);
 
 			/* Wait for 1 SEC for LED to OFF */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			iRetVal = wait_event_timeout(Adapter->LEDInfo.idleModeSyncEvent,\
 				Adapter->LEDInfo.bIdle_led_off, msecs_to_jiffies(1000));
@@ -2936,17 +3556,23 @@ static VOID SendShutModeResponse(PMINI_ADAPTER Adapter)
 				stShutdownResponse.szData[1] = SHUTDOWN_NACK_FROM_DRIVER;//NACK- device access is going on.
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			iRetVal = wait_event_timeout(Adapter->LEDInfo.idleModeSyncEvent, Adapter->LEDInfo.bIdle_led_off, msecs_to_jiffies(1000));
 
 			/* If Timed Out to Sync IDLE MODE Enter, do IDLE mode Exit and Send NACK to device */
 			if (iRetVal <= 0) {
 				stShutdownResponse.szData[1] = SHUTDOWN_NACK_FROM_DRIVER; /* NACK- device access is going on. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				Adapter->DriverState = NO_NETWORK_ENTRY;
 				wake_up(&Adapter->LEDInfo.notify_led_event);
 			}
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if(stShutdownResponse.szData[2] == SHUTDOWN_ACK_FROM_DRIVER)
 		{
@@ -2976,6 +3602,8 @@ static VOID SendShutModeResponse(PMINI_ADAPTER Adapter)
 		Adapter->bPreparingForLowPowerMode = FALSE;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (stShutdownResponse.szData[2] == SHUTDOWN_ACK_FROM_DRIVER) {
 			BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "ACKING SHUTDOWN MODE !!!!!!!!!");
 			down(&Adapter->rdmwrmsync);
@@ -2983,9 +3611,15 @@ static VOID SendShutModeResponse(PMINI_ADAPTER Adapter)
 			up(&Adapter->rdmwrmsync);
 			/* Killing all URBS. */
 			if (Adapter->bDoSuspend == TRUE)
+<<<<<<< HEAD
 				Bcm_kill_all_URBs((PS_INTERFACE_ADAPTER)(Adapter->pvInterfaceAdapter));
 		} else {
 			Adapter->bPreparingForLowPowerMode = FALSE;
+=======
+				Bcm_kill_all_URBs((struct bcm_interface_adapter *)(Adapter->pvInterfaceAdapter));
+		} else {
+			Adapter->bPreparingForLowPowerMode = false;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!NVMAccess)
@@ -2998,6 +3632,7 @@ static VOID SendShutModeResponse(PMINI_ADAPTER Adapter)
 	Status = CopyBufferToControlPacket(Adapter, &stShutdownResponse);
 	if ((Status != STATUS_SUCCESS)) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "fail to send the Idle mode Request\n");
+<<<<<<< HEAD
 		Adapter->bPreparingForLowPowerMode = FALSE;
 >>>>>>> refs/remotes/origin/cm-10.0
 		StartInterruptUrb((PS_INTERFACE_ADAPTER)(Adapter->pvInterfaceAdapter));
@@ -3030,6 +3665,16 @@ static void HandleShutDownModeRequest(PMINI_ADAPTER Adapter,PUCHAR pucBuffer)
 static void HandleShutDownModeRequest(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 {
 	B_UINT32 uiResetValue = 0;
+=======
+		Adapter->bPreparingForLowPowerMode = false;
+		StartInterruptUrb((struct bcm_interface_adapter *)(Adapter->pvInterfaceAdapter));
+	}
+}
+
+static void HandleShutDownModeRequest(struct bcm_mini_adapter *Adapter, PUCHAR pucBuffer)
+{
+	unsigned int uiResetValue = 0;
+>>>>>>> refs/remotes/origin/master
 
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "====>\n");
 
@@ -3044,12 +3689,16 @@ static void HandleShutDownModeRequest(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 			Adapter->chip_id == BCS220_3) {
 
 			rdmalt(Adapter, HPM_CONFIG_MSW, &uiResetValue, 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			uiResetValue |= (1<<17);
 			wrmalt(Adapter, HPM_CONFIG_MSW, &uiResetValue, 4);
 		}
 
 		SendShutModeResponse(Adapter);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		BCM_DEBUG_PRINT (Adapter,DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL,"ShutDownModeResponse:Notification received: Sending the response(Ack/Nack)\n");
 	}
@@ -3059,10 +3708,14 @@ static void HandleShutDownModeRequest(PMINI_ADAPTER Adapter, PUCHAR pucBuffer)
 
 =======
 		BCM_DEBUG_PRINT (Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "ShutDownModeResponse:Notification received: Sending the response(Ack/Nack)\n");
+=======
+		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "ShutDownModeResponse:Notification received: Sending the response(Ack/Nack)\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	BCM_DEBUG_PRINT(Adapter, DBG_TYPE_OTHERS, MP_SHUTDOWN, DBG_LVL_ALL, "<====\n");
 	return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -3095,6 +3748,12 @@ S_CLASSIFIER_RULE *GetFragIPClsEntry(PMINI_ADAPTER Adapter,USHORT usIpIdentifica
 			(Adapter->astFragmentedPktClassifierTable[uiIndex].ulSrcIpAddress== SrcIP)&&
 			!Adapter->astFragmentedPktClassifierTable[uiIndex].bOutOfOrderFragment)
 =======
+=======
+}
+
+void ResetCounters(struct bcm_mini_adapter *Adapter)
+{
+>>>>>>> refs/remotes/origin/master
 	beceem_protocol_reset(Adapter);
 	Adapter->CurrNumRecvDescs = 0;
 	Adapter->PrevNumRecvDescs = 0;
@@ -3102,6 +3761,7 @@ S_CLASSIFIER_RULE *GetFragIPClsEntry(PMINI_ADAPTER Adapter,USHORT usIpIdentifica
 	Adapter->LinkStatus = 0;
 	atomic_set(&Adapter->cntrlpktCnt, 0);
 	atomic_set(&Adapter->TotalPacketCount, 0);
+<<<<<<< HEAD
 	Adapter->fw_download_done = FALSE;
 	Adapter->LinkStatus = 0;
 	Adapter->AutoLinkUp = FALSE;
@@ -3112,18 +3772,34 @@ S_CLASSIFIER_RULE *GetFragIPClsEntry(PMINI_ADAPTER Adapter,USHORT usIpIdentifica
 S_CLASSIFIER_RULE *GetFragIPClsEntry(PMINI_ADAPTER Adapter, USHORT usIpIdentification, ULONG SrcIP)
 {
 	UINT uiIndex = 0;
+=======
+	Adapter->fw_download_done = false;
+	Adapter->LinkStatus = 0;
+	Adapter->AutoLinkUp = false;
+	Adapter->IdleMode = false;
+	Adapter->bShutStatus = false;
+}
+
+struct bcm_classifier_rule *GetFragIPClsEntry(struct bcm_mini_adapter *Adapter, USHORT usIpIdentification, ULONG SrcIP)
+{
+	unsigned int uiIndex = 0;
+>>>>>>> refs/remotes/origin/master
 	for (uiIndex = 0; uiIndex < MAX_FRAGMENTEDIP_CLASSIFICATION_ENTRIES; uiIndex++) {
 		if ((Adapter->astFragmentedPktClassifierTable[uiIndex].bUsed) &&
 			(Adapter->astFragmentedPktClassifierTable[uiIndex].usIpIdentification == usIpIdentification) &&
 			(Adapter->astFragmentedPktClassifierTable[uiIndex].ulSrcIpAddress == SrcIP) &&
 			!Adapter->astFragmentedPktClassifierTable[uiIndex].bOutOfOrderFragment)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return Adapter->astFragmentedPktClassifierTable[uiIndex].pstMatchedClassifierEntry;
 	}
 	return NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void AddFragIPClsEntry(PMINI_ADAPTER Adapter,PS_FRAGMENTED_PACKET_INFO psFragPktInfo)
 {
@@ -3215,19 +3891,34 @@ void AddFragIPClsEntry(PMINI_ADAPTER Adapter, PS_FRAGMENTED_PACKET_INFO psFragPk
 	for (uiIndex = 0; uiIndex < MAX_FRAGMENTEDIP_CLASSIFICATION_ENTRIES; uiIndex++) {
 		if (!Adapter->astFragmentedPktClassifierTable[uiIndex].bUsed) {
 			memcpy(&Adapter->astFragmentedPktClassifierTable[uiIndex], psFragPktInfo, sizeof(S_FRAGMENTED_PACKET_INFO));
+=======
+void AddFragIPClsEntry(struct bcm_mini_adapter *Adapter, struct bcm_fragmented_packet_info *psFragPktInfo)
+{
+	unsigned int uiIndex = 0;
+	for (uiIndex = 0; uiIndex < MAX_FRAGMENTEDIP_CLASSIFICATION_ENTRIES; uiIndex++) {
+		if (!Adapter->astFragmentedPktClassifierTable[uiIndex].bUsed) {
+			memcpy(&Adapter->astFragmentedPktClassifierTable[uiIndex], psFragPktInfo, sizeof(struct bcm_fragmented_packet_info));
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
 }
 
+<<<<<<< HEAD
 void DelFragIPClsEntry(PMINI_ADAPTER Adapter, USHORT usIpIdentification, ULONG SrcIp)
 {
 	UINT uiIndex = 0;
+=======
+void DelFragIPClsEntry(struct bcm_mini_adapter *Adapter, USHORT usIpIdentification, ULONG SrcIp)
+{
+	unsigned int uiIndex = 0;
+>>>>>>> refs/remotes/origin/master
 	for (uiIndex = 0; uiIndex < MAX_FRAGMENTEDIP_CLASSIFICATION_ENTRIES; uiIndex++) {
 		if ((Adapter->astFragmentedPktClassifierTable[uiIndex].bUsed) &&
 			(Adapter->astFragmentedPktClassifierTable[uiIndex].usIpIdentification == usIpIdentification) &&
 			(Adapter->astFragmentedPktClassifierTable[uiIndex].ulSrcIpAddress == SrcIp))
 
+<<<<<<< HEAD
 			memset(&Adapter->astFragmentedPktClassifierTable[uiIndex], 0, sizeof(S_FRAGMENTED_PACKET_INFO));
 	}
 }
@@ -3235,6 +3926,15 @@ void DelFragIPClsEntry(PMINI_ADAPTER Adapter, USHORT usIpIdentification, ULONG S
 void update_per_cid_rx(PMINI_ADAPTER Adapter)
 {
 	UINT qindex = 0;
+=======
+			memset(&Adapter->astFragmentedPktClassifierTable[uiIndex], 0, sizeof(struct bcm_fragmented_packet_info));
+	}
+}
+
+void update_per_cid_rx(struct bcm_mini_adapter *Adapter)
+{
+	unsigned int qindex = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if ((jiffies - Adapter->liDrainCalculated) < XSECONDS)
 		return;
@@ -3256,16 +3956,26 @@ void update_per_cid_rx(PMINI_ADAPTER Adapter)
 	Adapter->liDrainCalculated = jiffies;
 }
 
+<<<<<<< HEAD
 void update_per_sf_desc_cnts(PMINI_ADAPTER Adapter)
 {
 	INT iIndex = 0;
+=======
+void update_per_sf_desc_cnts(struct bcm_mini_adapter *Adapter)
+{
+	int iIndex = 0;
+>>>>>>> refs/remotes/origin/master
 	u32 uibuff[MAX_TARGET_DSX_BUFFERS];
 	int bytes;
 
 	if (!atomic_read(&Adapter->uiMBupdate))
 		return;
 
+<<<<<<< HEAD
 	bytes = rdmaltWithLock(Adapter, TARGET_SFID_TXDESC_MAP_LOC, (PUINT)uibuff, sizeof(UINT) * MAX_TARGET_DSX_BUFFERS);
+=======
+	bytes = rdmaltWithLock(Adapter, TARGET_SFID_TXDESC_MAP_LOC, (unsigned int *)uibuff, sizeof(unsigned int) * MAX_TARGET_DSX_BUFFERS);
+>>>>>>> refs/remotes/origin/master
 	if (bytes < 0) {
 		BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "rdm failed\n");
 		return;
@@ -3279,6 +3989,7 @@ void update_per_sf_desc_cnts(PMINI_ADAPTER Adapter)
 				BCM_DEBUG_PRINT(Adapter, DBG_TYPE_PRINTK, 0, 0, "Invalid VCID : %x\n", Adapter->PackInfo[iIndex].usVCID_Value);
 		}
 	}
+<<<<<<< HEAD
 	atomic_set(&Adapter->uiMBupdate, FALSE);
 >>>>>>> refs/remotes/origin/cm-10.0
 }
@@ -3309,6 +4020,13 @@ void flush_queue(PMINI_ADAPTER Adapter, UINT iQIndex)
 			Adapter->PackInfo[iQIndex].uiDroppedCountPackets++;
 
 =======
+=======
+	atomic_set(&Adapter->uiMBupdate, false);
+}
+
+void flush_queue(struct bcm_mini_adapter *Adapter, unsigned int iQIndex)
+{
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *PacketToDrop = NULL;
 	struct net_device_stats *netstats = &Adapter->dev->stats;
 	spin_lock_bh(&Adapter->PackInfo[iQIndex].SFQueueLock);
@@ -3324,12 +4042,16 @@ void flush_queue(PMINI_ADAPTER Adapter, UINT iQIndex)
 			/* Adding dropped statistics */
 			Adapter->PackInfo[iQIndex].uiDroppedCountBytes += PacketToDrop->len;
 			Adapter->PackInfo[iQIndex].uiDroppedCountPackets++;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			dev_kfree_skb(PacketToDrop);
 			atomic_dec(&Adapter->TotalPacketCount);
 		}
 	}
 	spin_unlock_bh(&Adapter->PackInfo[iQIndex].SFQueueLock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 }
@@ -3345,12 +4067,20 @@ static void beceem_protocol_reset(PMINI_ADAPTER Adapter)
 {
 	int i;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static void beceem_protocol_reset(struct bcm_mini_adapter *Adapter)
+{
+	int i;
+>>>>>>> refs/remotes/origin/master
 	if (netif_msg_link(Adapter))
 		pr_notice(PFX "%s: protocol reset\n", Adapter->dev->name);
 
 	netif_carrier_off(Adapter->dev);
 	netif_stop_queue(Adapter->dev);
 
+<<<<<<< HEAD
 	Adapter->IdleMode = FALSE;
 	Adapter->LinkUpStatus = FALSE;
 <<<<<<< HEAD
@@ -3384,6 +4114,10 @@ static void beceem_protocol_reset(PMINI_ADAPTER Adapter)
 
 
 =======
+=======
+	Adapter->IdleMode = false;
+	Adapter->LinkUpStatus = false;
+>>>>>>> refs/remotes/origin/master
 	ClearTargetDSXBuffer(Adapter, 0, TRUE);
 	/* Delete All Classifier Rules */
 
@@ -3393,14 +4127,26 @@ static void beceem_protocol_reset(PMINI_ADAPTER Adapter)
 	flush_all_queues(Adapter);
 
 	if (Adapter->TimerActive == TRUE)
+<<<<<<< HEAD
 		Adapter->TimerActive = FALSE;
 
 	memset(Adapter->astFragmentedPktClassifierTable, 0, sizeof(S_FRAGMENTED_PACKET_INFO) * MAX_FRAGMENTEDIP_CLASSIFICATION_ENTRIES);
+=======
+		Adapter->TimerActive = false;
+
+	memset(Adapter->astFragmentedPktClassifierTable, 0, sizeof(struct bcm_fragmented_packet_info) * MAX_FRAGMENTEDIP_CLASSIFICATION_ENTRIES);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < HiPriority; i++) {
 		/* resetting only the first size (S_MIBS_SERVICEFLOW_TABLE) for the SF. */
 		/* It is same between MIBs and SF. */
+<<<<<<< HEAD
 		memset(&Adapter->PackInfo[i].stMibsExtServiceFlowTable, 0, sizeof(S_MIBS_EXTSERVICEFLOW_PARAMETERS));
 	}
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memset(&Adapter->PackInfo[i].stMibsExtServiceFlowTable, 0, sizeof(struct bcm_mibs_parameters));
+	}
+}
+>>>>>>> refs/remotes/origin/master

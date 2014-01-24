@@ -16,7 +16,11 @@
 #include <asm/mipsregs.h>
 
 #define DSP_DEFAULT	0x00000000
+<<<<<<< HEAD
 #define DSP_MASK	0x3ff
+=======
+#define DSP_MASK	0x3f
+>>>>>>> refs/remotes/origin/master
 
 #define __enable_dsp_hazard()						\
 do {									\

@@ -15,10 +15,15 @@
 #ifndef __APPARMOR_H
 #define __APPARMOR_H
 
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 
 #include "match.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Control parameters settable through module/boot flags */
 extern enum audit_mode aa_g_audit;
@@ -28,6 +33,8 @@ extern int aa_g_lock_policy;
 extern int aa_g_logsyscall;
 extern int aa_g_paranoid_load;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Class of mediation types in the AppArmor policy db
  */
@@ -48,7 +55,10 @@ extern bool aa_g_debug;
 extern bool aa_g_lock_policy;
 extern bool aa_g_logsyscall;
 extern bool aa_g_paranoid_load;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned int aa_g_path_max;
 
 /*
@@ -74,9 +84,30 @@ extern int apparmor_initialized __initdata;
 /* fn's in lib */
 char *aa_split_fqname(char *args, char **ns_name);
 void aa_info_message(const char *str);
+<<<<<<< HEAD
 void *kvmalloc(size_t size);
 void kvfree(void *buffer);
 
+=======
+void *__aa_kvmalloc(size_t size, gfp_t flags);
+void kvfree(void *buffer);
+
+static inline void *kvmalloc(size_t size)
+{
+	return __aa_kvmalloc(size, 0);
+}
+
+static inline void *kvzalloc(size_t size)
+{
+	return __aa_kvmalloc(size, __GFP_ZERO);
+}
+
+/* returns 0 if kref not incremented */
+static inline int kref_get_not0(struct kref *kref)
+{
+	return atomic_inc_not_zero(&kref->refcount);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * aa_strneq - compare null terminated @str to a non null terminated substring
@@ -105,10 +136,14 @@ static inline unsigned int aa_dfa_null_transition(struct aa_dfa *dfa,
 {
 	/* the null transition only needs the string's null terminator byte */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return aa_dfa_match_len(dfa, start, "", 1);
 =======
 	return aa_dfa_next(dfa, start, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return aa_dfa_next(dfa, start, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline bool mediated_filesystem(struct inode *inode)

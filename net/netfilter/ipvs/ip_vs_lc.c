@@ -26,7 +26,12 @@
  *	Least Connection scheduling
  */
 static struct ip_vs_dest *
+<<<<<<< HEAD
 ip_vs_lc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
+=======
+ip_vs_lc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+		  struct ip_vs_iphdr *iph)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ip_vs_dest *dest, *least = NULL;
 	unsigned int loh = 0, doh;
@@ -42,7 +47,11 @@ ip_vs_lc_schedule(struct ip_vs_service *svc, const struct sk_buff *skb)
 	 * served, but no new connection is assigned to the server.
 	 */
 
+<<<<<<< HEAD
 	list_for_each_entry(dest, &svc->destinations, n_list) {
+=======
+	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
+>>>>>>> refs/remotes/origin/master
 		if ((dest->flags & IP_VS_DEST_F_OVERLOAD) ||
 		    atomic_read(&dest->weight) == 0)
 			continue;
@@ -84,6 +93,10 @@ static int __init ip_vs_lc_init(void)
 static void __exit ip_vs_lc_cleanup(void)
 {
 	unregister_ip_vs_scheduler(&ip_vs_lc_scheduler);
+<<<<<<< HEAD
+=======
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ip_vs_lc_init);

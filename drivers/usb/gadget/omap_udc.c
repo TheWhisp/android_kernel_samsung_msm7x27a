@@ -11,6 +11,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,6 +23,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #undef	DEBUG
@@ -34,7 +37,10 @@
 #include <linux/errno.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/list.h>
 #include <linux/interrupt.h>
@@ -47,6 +53,7 @@
 #include <linux/usb/otg.h>
 #include <linux/dma-mapping.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/prefetch.h>
 
 #include <asm/byteorder.h>
@@ -61,6 +68,20 @@
 
 #include <plat/dma.h>
 #include <plat/usb.h>
+=======
+#include <linux/err.h>
+#include <linux/prefetch.h>
+#include <linux/io.h>
+
+#include <asm/byteorder.h>
+#include <asm/irq.h>
+#include <asm/unaligned.h>
+#include <asm/mach-types.h>
+
+#include <linux/omap-dma.h>
+
+#include <mach/usb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "omap_udc.h"
 
@@ -75,10 +96,15 @@
 #define	DRIVER_DESC	"OMAP UDC driver"
 #define	DRIVER_VERSION	"4 October 2004"
 
+<<<<<<< HEAD
 #define	DMA_ADDR_INVALID	(~(dma_addr_t)0)
 
 #define OMAP2_DMA_CH(ch)	(((ch) - 1) << 1)
 #define OMAP24XX_DMA(name, ch)	(OMAP24XX_DMA_##name + OMAP2_DMA_CH(ch))
+=======
+#define OMAP_DMA_USB_W2FC_TX0		29
+#define OMAP_DMA_USB_W2FC_RX0		26
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The OMAP UDC needs _very_ early endpoint setup:  before enabling the
@@ -103,12 +129,17 @@
 #ifdef	USE_ISO
 static unsigned fifo_mode = 3;
 #else
+<<<<<<< HEAD
 static unsigned fifo_mode = 0;
+=======
+static unsigned fifo_mode;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* "modprobe omap_udc fifo_mode=42", or else as a kernel
  * boot parameter "omap_udc:fifo_mode=42"
  */
+<<<<<<< HEAD
 module_param (fifo_mode, uint, 0);
 MODULE_PARM_DESC (fifo_mode, "endpoint configuration");
 
@@ -118,12 +149,24 @@ static unsigned use_dma = 1;
 =======
 static bool use_dma = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(fifo_mode, uint, 0);
+MODULE_PARM_DESC(fifo_mode, "endpoint configuration");
+
+#ifdef	USE_DMA
+static bool use_dma = 1;
+>>>>>>> refs/remotes/origin/master
 
 /* "modprobe omap_udc use_dma=y", or else as a kernel
  * boot parameter "omap_udc:use_dma=y"
  */
+<<<<<<< HEAD
 module_param (use_dma, bool, 0);
 MODULE_PARM_DESC (use_dma, "enable/disable DMA");
+=======
+module_param(use_dma, bool, 0);
+MODULE_PARM_DESC(use_dma, "enable/disable DMA");
+>>>>>>> refs/remotes/origin/master
 #else	/* !USE_DMA */
 
 /* save a bit of code */
@@ -131,8 +174,13 @@ MODULE_PARM_DESC (use_dma, "enable/disable DMA");
 #endif	/* !USE_DMA */
 
 
+<<<<<<< HEAD
 static const char driver_name [] = "omap_udc";
 static const char driver_desc [] = DRIVER_DESC;
+=======
+static const char driver_name[] = "omap_udc";
+static const char driver_desc[] = DRIVER_DESC;
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -173,6 +221,7 @@ static int omap_ep_enable(struct usb_ep *_ep,
 	u16		maxp;
 
 	/* catch various bogus parameters */
+<<<<<<< HEAD
 	if (!_ep || !desc || ep->desc
 			|| desc->bDescriptorType != USB_DT_ENDPOINT
 			|| ep->bEndpointAddress != desc->bEndpointAddress
@@ -187,6 +236,11 @@ static int omap_ep_enable(struct usb_ep *_ep,
 				&& maxp != ep->maxpacket)
 			|| le16_to_cpu(desc->wMaxPacketSize) > ep->maxpacket
 =======
+=======
+	if (!_ep || !desc
+			|| desc->bDescriptorType != USB_DT_ENDPOINT
+			|| ep->bEndpointAddress != desc->bEndpointAddress
+>>>>>>> refs/remotes/origin/master
 			|| ep->maxpacket < usb_endpoint_maxp(desc)) {
 		DBG("%s, bad ep or descriptor\n", __func__);
 		return -EINVAL;
@@ -195,7 +249,10 @@ static int omap_ep_enable(struct usb_ep *_ep,
 	if ((desc->bmAttributes == USB_ENDPOINT_XFER_BULK
 				&& maxp != ep->maxpacket)
 			|| usb_endpoint_maxp(desc) > ep->maxpacket
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			|| !desc->wMaxPacketSize) {
 		DBG("%s, bad %s maxpacket\n", __func__, _ep->name);
 		return -ERANGE;
@@ -232,7 +289,11 @@ static int omap_ep_enable(struct usb_ep *_ep,
 
 	spin_lock_irqsave(&udc->lock, flags);
 
+<<<<<<< HEAD
 	ep->desc = desc;
+=======
+	ep->ep.desc = desc;
+>>>>>>> refs/remotes/origin/master
 	ep->irqs = 0;
 	ep->stopped = 0;
 	ep->ep.maxpacket = maxp;
@@ -274,19 +335,28 @@ static int omap_ep_disable(struct usb_ep *_ep)
 	struct omap_ep	*ep = container_of(_ep, struct omap_ep, ep);
 	unsigned long	flags;
 
+<<<<<<< HEAD
 	if (!_ep || !ep->desc) {
+=======
+	if (!_ep || !ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		DBG("%s, %s not enabled\n", __func__,
 			_ep ? ep->ep.name : NULL);
 		return -EINVAL;
 	}
 
 	spin_lock_irqsave(&ep->udc->lock, flags);
+<<<<<<< HEAD
 	ep->desc = NULL;
 <<<<<<< HEAD
 =======
 	ep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
 	nuke (ep, -ESHUTDOWN);
+=======
+	ep->ep.desc = NULL;
+	nuke(ep, -ESHUTDOWN);
+>>>>>>> refs/remotes/origin/master
 	ep->ep.maxpacket = ep->maxpacket;
 	ep->has_dma = 0;
 	omap_writew(UDC_SET_HALT, UDC_CTRL);
@@ -307,10 +377,18 @@ omap_alloc_request(struct usb_ep *ep, gfp_t gfp_flags)
 	struct omap_req	*req;
 
 	req = kzalloc(sizeof(*req), gfp_flags);
+<<<<<<< HEAD
 	if (req) {
 		req->req.dma = DMA_ADDR_INVALID;
 		INIT_LIST_HEAD (&req->queue);
 	}
+=======
+	if (!req)
+		return NULL;
+
+	INIT_LIST_HEAD(&req->queue);
+
+>>>>>>> refs/remotes/origin/master
 	return &req->req;
 }
 
@@ -319,8 +397,12 @@ omap_free_request(struct usb_ep *ep, struct usb_request *_req)
 {
 	struct omap_req	*req = container_of(_req, struct omap_req, req);
 
+<<<<<<< HEAD
 	if (_req)
 		kfree (req);
+=======
+	kfree(req);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*-------------------------------------------------------------------------*/
@@ -328,6 +410,10 @@ omap_free_request(struct usb_ep *ep, struct usb_request *_req)
 static void
 done(struct omap_ep *ep, struct omap_req *req, int status)
 {
+<<<<<<< HEAD
+=======
+	struct omap_udc		*udc = ep->udc;
+>>>>>>> refs/remotes/origin/master
 	unsigned		stopped = ep->stopped;
 
 	list_del_init(&req->queue);
@@ -337,6 +423,7 @@ done(struct omap_ep *ep, struct omap_req *req, int status)
 	else
 		status = req->req.status;
 
+<<<<<<< HEAD
 	if (use_dma && ep->has_dma) {
 		if (req->mapped) {
 			dma_unmap_single(ep->udc->gadget.dev.parent,
@@ -353,6 +440,11 @@ done(struct omap_ep *ep, struct omap_req *req, int status)
 					? DMA_TO_DEVICE
 					: DMA_FROM_DEVICE);
 	}
+=======
+	if (use_dma && ep->has_dma)
+		usb_gadget_unmap_request(&udc->gadget, &req->req,
+				(ep->bEndpointAddress & USB_DIR_IN));
+>>>>>>> refs/remotes/origin/master
 
 #ifndef	USB_TRACE
 	if (status && status != -ESHUTDOWN)
@@ -400,10 +492,17 @@ write_packet(u8 *buf, struct omap_req *req, unsigned max)
 	return len;
 }
 
+<<<<<<< HEAD
 // FIXME change r/w fifo calling convention
 
 
 // return:  0 = still running, 1 = completed, negative = errno
+=======
+/* FIXME change r/w fifo calling convention */
+
+
+/* return:  0 = still running, 1 = completed, negative = errno */
+>>>>>>> refs/remotes/origin/master
 static int write_fifo(struct omap_ep *ep, struct omap_req *req)
 {
 	u8		*buf;
@@ -465,7 +564,11 @@ read_packet(u8 *buf, struct omap_req *req, unsigned avail)
 	return len;
 }
 
+<<<<<<< HEAD
 // return:  0 = still running, 1 = queue empty, negative = errno
+=======
+/* return:  0 = still running, 1 = queue empty, negative = errno */
+>>>>>>> refs/remotes/origin/master
 static int read_fifo(struct omap_ep *ep, struct omap_req *req)
 {
 	u8		*buf;
@@ -572,12 +675,17 @@ static void next_in_dma(struct omap_ep *ep, struct omap_req *req)
 				: OMAP_DMA_SYNC_ELEMENT;
 	int		dma_trigger = 0;
 
+<<<<<<< HEAD
 	if (cpu_is_omap24xx())
 		dma_trigger = OMAP24XX_DMA(USB_W2FC_TX0, ep->dma_channel);
 
 	/* measure length in either bytes or packets */
 	if ((cpu_is_omap16xx() && length <= UDC_TXN_TSC)
 			|| (cpu_is_omap24xx() && length < ep->maxpacket)
+=======
+	/* measure length in either bytes or packets */
+	if ((cpu_is_omap16xx() && length <= UDC_TXN_TSC)
+>>>>>>> refs/remotes/origin/master
 			|| (cpu_is_omap15xx() && length < ep->maxpacket)) {
 		txdma_ctrl = UDC_TXN_EOT | length;
 		omap_set_dma_transfer_params(ep->lch, OMAP_DMA_DATA_TYPE_S8,
@@ -636,6 +744,7 @@ static void next_out_dma(struct omap_ep *ep, struct omap_req *req)
 	int dma_trigger = 0;
 	u16 w;
 
+<<<<<<< HEAD
 	if (cpu_is_omap24xx())
 		dma_trigger = OMAP24XX_DMA(USB_W2FC_RX0, ep->dma_channel);
 
@@ -658,6 +767,16 @@ static void next_out_dma(struct omap_ep *ep, struct omap_req *req)
 				OMAP_DMA_SYNC_ELEMENT,
 				dma_trigger, 0);
 	}
+=======
+	/* set up this DMA transfer, enable the fifo, start */
+	packets /= ep->ep.maxpacket;
+	packets = min(packets, (unsigned)UDC_RXN_TC + 1);
+	req->dma_bytes = packets * ep->ep.maxpacket;
+	omap_set_dma_transfer_params(ep->lch, OMAP_DMA_DATA_TYPE_S16,
+			ep->ep.maxpacket >> 1, packets,
+			OMAP_DMA_SYNC_ELEMENT,
+			dma_trigger, 0);
+>>>>>>> refs/remotes/origin/master
 	omap_set_dma_dest_params(ep->lch, OMAP_DMA_PORT_EMIFF,
 		OMAP_DMA_AMODE_POST_INC, req->req.dma + req->req.actual,
 		0, 0);
@@ -719,7 +838,11 @@ static void dma_irq(struct omap_udc *udc, u16 irq_src)
 		}
 		omap_writew(UDC_TXN_DONE, UDC_IRQ_SRC);
 
+<<<<<<< HEAD
 		if (!list_empty (&ep->queue)) {
+=======
+		if (!list_empty(&ep->queue)) {
+>>>>>>> refs/remotes/origin/master
 			req = container_of(ep->queue.next,
 					struct omap_req, queue);
 			next_in_dma(ep, req);
@@ -738,7 +861,11 @@ static void dma_irq(struct omap_udc *udc, u16 irq_src)
 		}
 		omap_writew(UDC_RXN_EOT, UDC_IRQ_SRC);
 
+<<<<<<< HEAD
 		if (!list_empty (&ep->queue)) {
+=======
+		if (!list_empty(&ep->queue)) {
+>>>>>>> refs/remotes/origin/master
 			req = container_of(ep->queue.next,
 					struct omap_req, queue);
 			next_out_dma(ep, req);
@@ -796,10 +923,14 @@ static void dma_channel_claim(struct omap_ep *ep, unsigned channel)
 	ep->dma_channel = channel;
 
 	if (is_in) {
+<<<<<<< HEAD
 		if (cpu_is_omap24xx())
 			dma_channel = OMAP24XX_DMA(USB_W2FC_TX0, channel);
 		else
 			dma_channel = OMAP_DMA_USB_W2FC_TX0 - 1 + channel;
+=======
+		dma_channel = OMAP_DMA_USB_W2FC_TX0 - 1 + channel;
+>>>>>>> refs/remotes/origin/master
 		status = omap_request_dma(dma_channel,
 			ep->ep.name, dma_error, ep, &ep->lch);
 		if (status == 0) {
@@ -816,11 +947,15 @@ static void dma_channel_claim(struct omap_ep *ep, unsigned channel)
 				0, 0);
 		}
 	} else {
+<<<<<<< HEAD
 		if (cpu_is_omap24xx())
 			dma_channel = OMAP24XX_DMA(USB_W2FC_RX0, channel);
 		else
 			dma_channel = OMAP_DMA_USB_W2FC_RX0 - 1 + channel;
 
+=======
+		dma_channel = OMAP_DMA_USB_W2FC_RX0 - 1 + channel;
+>>>>>>> refs/remotes/origin/master
 		status = omap_request_dma(dma_channel,
 			ep->ep.name, dma_error, ep, &ep->lch);
 		if (status == 0) {
@@ -844,7 +979,11 @@ static void dma_channel_claim(struct omap_ep *ep, unsigned channel)
 		omap_disable_dma_irq(ep->lch, OMAP_DMA_BLOCK_IRQ);
 
 		/* channel type P: hw synch (fifo) */
+<<<<<<< HEAD
 		if (cpu_class_is_omap1() && !cpu_is_omap15xx())
+=======
+		if (!cpu_is_omap15xx())
+>>>>>>> refs/remotes/origin/master
 			omap_set_dma_channel_mode(ep->lch, OMAP_DMA_LCH_P);
 	}
 
@@ -952,7 +1091,11 @@ omap_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 		DBG("%s, bad params\n", __func__);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	if (!_ep || (!ep->desc && ep->bEndpointAddress)) {
+=======
+	if (!_ep || (!ep->ep.desc && ep->bEndpointAddress)) {
+>>>>>>> refs/remotes/origin/master
 		DBG("%s, bad ep\n", __func__);
 		return -EINVAL;
 	}
@@ -964,13 +1107,19 @@ omap_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 
 	/* this isn't bogus, but OMAP DMA isn't the only hardware to
 	 * have a hard time with partial packet reads...  reject it.
+<<<<<<< HEAD
 	 * Except OMAP2 can handle the small packets.
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (use_dma
 			&& ep->has_dma
 			&& ep->bEndpointAddress != 0
 			&& (ep->bEndpointAddress & USB_DIR_IN) == 0
+<<<<<<< HEAD
 			&& !cpu_class_is_omap2()
+=======
+>>>>>>> refs/remotes/origin/master
 			&& (req->req.length % ep->ep.maxpacket) != 0) {
 		DBG("%s, no partial packet OUT reads\n", __func__);
 		return -EMSGSIZE;
@@ -980,6 +1129,7 @@ omap_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN)
 		return -ESHUTDOWN;
 
+<<<<<<< HEAD
 	if (use_dma && ep->has_dma) {
 		if (req->req.dma == DMA_ADDR_INVALID) {
 			req->req.dma = dma_map_single(
@@ -1000,6 +1150,11 @@ omap_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 			req->mapped = 0;
 		}
 	}
+=======
+	if (use_dma && ep->has_dma)
+		usb_gadget_map_request(&udc->gadget, &req->req,
+				(ep->bEndpointAddress & USB_DIR_IN));
+>>>>>>> refs/remotes/origin/master
 
 	VDBG("%s queue req %p, len %d buf %p\n",
 		ep->ep.name, _req, _req->length, _req->buf);
@@ -1020,7 +1175,11 @@ omap_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 		int	is_in;
 
 		if (ep->bEndpointAddress == 0) {
+<<<<<<< HEAD
 			if (!udc->ep0_pending || !list_empty (&ep->queue)) {
+=======
+			if (!udc->ep0_pending || !list_empty(&ep->queue)) {
+>>>>>>> refs/remotes/origin/master
 				spin_unlock_irqrestore(&udc->lock, flags);
 				return -EL2HLT;
 			}
@@ -1047,7 +1206,12 @@ omap_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 				 * always an IN ... even for IN transfers,
 				 * a weird case which seem to stall OMAP.
 				 */
+<<<<<<< HEAD
 				omap_writew(UDC_EP_SEL | UDC_EP_DIR, UDC_EP_NUM);
+=======
+				omap_writew(UDC_EP_SEL | UDC_EP_DIR,
+						UDC_EP_NUM);
+>>>>>>> refs/remotes/origin/master
 				omap_writew(UDC_CLR_EP, UDC_CTRL);
 				omap_writew(UDC_SET_FIFO_EN, UDC_CTRL);
 				omap_writew(UDC_EP_DIR, UDC_EP_NUM);
@@ -1059,7 +1223,12 @@ omap_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 
 			/* non-empty DATA stage */
 			} else if (is_in) {
+<<<<<<< HEAD
 				omap_writew(UDC_EP_SEL | UDC_EP_DIR, UDC_EP_NUM);
+=======
+				omap_writew(UDC_EP_SEL | UDC_EP_DIR,
+						UDC_EP_NUM);
+>>>>>>> refs/remotes/origin/master
 			} else {
 				if (udc->ep0_setup)
 					goto irq_wait;
@@ -1107,7 +1276,11 @@ static int omap_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 	spin_lock_irqsave(&ep->udc->lock, flags);
 
 	/* make sure it's actually queued on this endpoint */
+<<<<<<< HEAD
 	list_for_each_entry (req, &ep->queue, queue) {
+=======
+	list_for_each_entry(req, &ep->queue, queue) {
+>>>>>>> refs/remotes/origin/master
 		if (&req->req == _req)
 			break;
 	}
@@ -1156,7 +1329,11 @@ static int omap_ep_set_halt(struct usb_ep *_ep, int value)
 			status = 0;
 
 	/* otherwise, all active non-ISO endpoints can halt */
+<<<<<<< HEAD
 	} else if (ep->bmAttributes != USB_ENDPOINT_XFER_ISOC && ep->desc) {
+=======
+	} else if (ep->bmAttributes != USB_ENDPOINT_XFER_ISOC && ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 
 		/* IN endpoints must already be idle */
 		if ((ep->bEndpointAddress & USB_DIR_IN)
@@ -1214,8 +1391,13 @@ static struct usb_ep_ops omap_ep_ops = {
 	.dequeue	= omap_ep_dequeue,
 
 	.set_halt	= omap_ep_set_halt,
+<<<<<<< HEAD
 	// fifo_status ... report bytes in fifo
 	// fifo_flush ... flush fifo
+=======
+	/* fifo_status ... report bytes in fifo */
+	/* fifo_flush ... flush fifo */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -1247,12 +1429,17 @@ static int omap_wakeup(struct usb_gadget *gadget)
 
 	/* NOTE:  non-OTG systems may use SRP TOO... */
 	} else if (!(udc->devstat & UDC_ATT)) {
+<<<<<<< HEAD
 		if (udc->transceiver)
 <<<<<<< HEAD
 			retval = otg_start_srp(udc->transceiver);
 =======
 			retval = otg_start_srp(udc->transceiver->otg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!IS_ERR_OR_NULL(udc->transceiver))
+			retval = otg_start_srp(udc->transceiver->otg);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&udc->lock, flags);
 
@@ -1383,12 +1570,17 @@ static int omap_vbus_draw(struct usb_gadget *gadget, unsigned mA)
 	struct omap_udc	*udc;
 
 	udc = container_of(gadget, struct omap_udc, gadget);
+<<<<<<< HEAD
 	if (udc->transceiver)
 <<<<<<< HEAD
 		return otg_set_power(udc->transceiver, mA);
 =======
 		return usb_phy_set_power(udc->transceiver, mA);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(udc->transceiver))
+		return usb_phy_set_power(udc->transceiver, mA);
+>>>>>>> refs/remotes/origin/master
 	return -EOPNOTSUPP;
 }
 
@@ -1409,6 +1601,7 @@ static int omap_pullup(struct usb_gadget *gadget, int is_on)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int omap_udc_start(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *));
@@ -1416,6 +1609,14 @@ static int omap_udc_stop(struct usb_gadget_driver *driver);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct usb_gadget_ops omap_gadget_ops = {
+=======
+static int omap_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+static int omap_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+
+static const struct usb_gadget_ops omap_gadget_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_frame		= omap_get_frame,
 	.wakeup			= omap_wakeup,
 	.set_selfpowered	= omap_set_selfpowered,
@@ -1423,10 +1624,15 @@ static struct usb_gadget_ops omap_gadget_ops = {
 	.vbus_draw		= omap_vbus_draw,
 	.pullup			= omap_pullup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.start			= omap_udc_start,
 	.stop			= omap_udc_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start		= omap_udc_start,
+	.udc_stop		= omap_udc_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -1459,7 +1665,11 @@ static void udc_quiesce(struct omap_udc *udc)
 
 	udc->gadget.speed = USB_SPEED_UNKNOWN;
 	nuke(&udc->ep[0], -ESHUTDOWN);
+<<<<<<< HEAD
 	list_for_each_entry (ep, &udc->gadget.ep_list, ep.ep_list)
+=======
+	list_for_each_entry(ep, &udc->gadget.ep_list, ep.ep_list)
+>>>>>>> refs/remotes/origin/master
 		nuke(ep, -ESHUTDOWN);
 }
 
@@ -1575,7 +1785,12 @@ static void ep0_irq(struct omap_udc *udc, u16 irq_src)
 				/* read next OUT packet of request, maybe
 				 * reactiviting the fifo; stall on errors.
 				 */
+<<<<<<< HEAD
 				if (!req || (stat = read_fifo(ep0, req)) < 0) {
+=======
+				stat = read_fifo(ep0, req);
+				if (!req || stat < 0) {
+>>>>>>> refs/remotes/origin/master
 					omap_writew(UDC_STALL_CMD, UDC_SYSCON2);
 					udc->ep0_pending = 0;
 					stat = 0;
@@ -1674,7 +1889,11 @@ static void ep0_irq(struct omap_udc *udc, u16 irq_src)
 				if (w_index & USB_DIR_IN)
 					ep += 16;
 				if (ep->bmAttributes == USB_ENDPOINT_XFER_ISOC
+<<<<<<< HEAD
 						|| !ep->desc)
+=======
+						|| !ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 					goto do_stall;
 				use_ep(ep, 0);
 				omap_writew(udc->clr_halt, UDC_CTRL);
@@ -1702,13 +1921,21 @@ static void ep0_irq(struct omap_udc *udc, u16 irq_src)
 			if (w_index & USB_DIR_IN)
 				ep += 16;
 			if (ep->bmAttributes == USB_ENDPOINT_XFER_ISOC
+<<<<<<< HEAD
 					|| ep == ep0 || !ep->desc)
+=======
+					|| ep == ep0 || !ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 				goto do_stall;
 			if (use_dma && ep->has_dma) {
 				/* this has rude side-effects (aborts) and
 				 * can't really work if DMA-IN is active
 				 */
+<<<<<<< HEAD
 				DBG("%s host set_halt, NYET \n", ep->name);
+=======
+				DBG("%s host set_halt, NYET\n", ep->name);
+>>>>>>> refs/remotes/origin/master
 				goto do_stall;
 			}
 			use_ep(ep, 0);
@@ -1737,7 +1964,11 @@ ep0out_status_stage:
 			ep = &udc->ep[w_index & 0xf];
 			if (w_index & USB_DIR_IN)
 				ep += 16;
+<<<<<<< HEAD
 			if (!ep->desc)
+=======
+			if (!ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 				goto do_stall;
 
 			/* iso never stalls */
@@ -1799,7 +2030,11 @@ delegate:
 			 */
 			udc->ep0_setup = 1;
 			spin_unlock(&udc->lock);
+<<<<<<< HEAD
 			status = udc->driver->setup (&udc->gadget, &u.r);
+=======
+			status = udc->driver->setup(&udc->gadget, &u.r);
+>>>>>>> refs/remotes/origin/master
 			spin_lock(&udc->lock);
 			udc->ep0_setup = 0;
 		}
@@ -1842,12 +2077,21 @@ static void devstate_irq(struct omap_udc *udc, u16 irq_src)
 			if (devstat & UDC_ATT) {
 				udc->gadget.speed = USB_SPEED_FULL;
 				VDBG("connect\n");
+<<<<<<< HEAD
 				if (!udc->transceiver)
 					pullup_enable(udc);
 				// if (driver->connect) call it
 			} else if (udc->gadget.speed != USB_SPEED_UNKNOWN) {
 				udc->gadget.speed = USB_SPEED_UNKNOWN;
 				if (!udc->transceiver)
+=======
+				if (IS_ERR_OR_NULL(udc->transceiver))
+					pullup_enable(udc);
+				/* if (driver->connect) call it */
+			} else if (udc->gadget.speed != USB_SPEED_UNKNOWN) {
+				udc->gadget.speed = USB_SPEED_UNKNOWN;
+				if (IS_ERR_OR_NULL(udc->transceiver))
+>>>>>>> refs/remotes/origin/master
 					pullup_disable(udc);
 				DBG("disconnect, gadget %s\n",
 					udc->driver->driver.name);
@@ -1876,7 +2120,11 @@ static void devstate_irq(struct omap_udc *udc, u16 irq_src)
 	}
 	if (change & UDC_SUS) {
 		if (udc->gadget.speed != USB_SPEED_UNKNOWN) {
+<<<<<<< HEAD
 			// FIXME tell isp1301 to suspend/resume (?)
+=======
+			/* FIXME tell isp1301 to suspend/resume (?) */
+>>>>>>> refs/remotes/origin/master
 			if (devstat & UDC_SUS) {
 				VDBG("suspend\n");
 				update_otg(udc);
@@ -1887,6 +2135,7 @@ static void devstate_irq(struct omap_udc *udc, u16 irq_src)
 					udc->driver->suspend(&udc->gadget);
 					spin_lock(&udc->lock);
 				}
+<<<<<<< HEAD
 				if (udc->transceiver)
 <<<<<<< HEAD
 					otg_set_suspend(udc->transceiver, 1);
@@ -1895,14 +2144,23 @@ static void devstate_irq(struct omap_udc *udc, u16 irq_src)
 				if (udc->transceiver)
 					otg_set_suspend(udc->transceiver, 0);
 =======
+=======
+				if (!IS_ERR_OR_NULL(udc->transceiver))
+>>>>>>> refs/remotes/origin/master
 					usb_phy_set_suspend(
 							udc->transceiver, 1);
 			} else {
 				VDBG("resume\n");
+<<<<<<< HEAD
 				if (udc->transceiver)
 					usb_phy_set_suspend(
 							udc->transceiver, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (!IS_ERR_OR_NULL(udc->transceiver))
+					usb_phy_set_suspend(
+							udc->transceiver, 0);
+>>>>>>> refs/remotes/origin/master
 				if (udc->gadget.speed == USB_SPEED_FULL
 						&& udc->driver->resume) {
 					spin_unlock(&udc->lock);
@@ -2087,7 +2345,11 @@ static irqreturn_t omap_udc_iso_irq(int irq, void *_dev)
 	spin_lock_irqsave(&udc->lock, flags);
 
 	/* handle all non-DMA ISO transfers */
+<<<<<<< HEAD
 	list_for_each_entry (ep, &udc->iso, iso) {
+=======
+	list_for_each_entry(ep, &udc->iso, iso) {
+>>>>>>> refs/remotes/origin/master
 		u16		stat;
 		struct omap_req	*req;
 
@@ -2146,6 +2408,7 @@ static irqreturn_t omap_udc_iso_irq(int irq, void *_dev)
 
 static inline int machine_without_vbus_sense(void)
 {
+<<<<<<< HEAD
 	return (machine_is_omap_innovator()
 		|| machine_is_omap_osk()
 		|| machine_is_omap_apollon()
@@ -2163,11 +2426,23 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 static int omap_udc_start(struct usb_gadget_driver *driver,
 >>>>>>> refs/remotes/origin/cm-10.0
 		int (*bind)(struct usb_gadget *))
+=======
+	return machine_is_omap_innovator()
+		|| machine_is_omap_osk()
+		|| machine_is_sx1()
+		/* No known omap7xx boards with vbus sense */
+		|| cpu_is_omap7xx();
+}
+
+static int omap_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+>>>>>>> refs/remotes/origin/master
 {
 	int		status = -ENODEV;
 	struct omap_ep	*ep;
 	unsigned long	flags;
 
+<<<<<<< HEAD
 	/* basic sanity tests */
 	if (!udc)
 		return -ENODEV;
@@ -2189,6 +2464,12 @@ static int omap_udc_start(struct usb_gadget_driver *driver,
 
 	/* reset state */
 	list_for_each_entry (ep, &udc->gadget.ep_list, ep.ep_list) {
+=======
+
+	spin_lock_irqsave(&udc->lock, flags);
+	/* reset state */
+	list_for_each_entry(ep, &udc->gadget.ep_list, ep.ep_list) {
+>>>>>>> refs/remotes/origin/master
 		ep->irqs = 0;
 		if (ep->bmAttributes == USB_ENDPOINT_XFER_ISOC)
 			continue;
@@ -2202,12 +2483,16 @@ static int omap_udc_start(struct usb_gadget_driver *driver,
 	/* hook up the driver */
 	driver->driver.bus = NULL;
 	udc->driver = driver;
+<<<<<<< HEAD
 	udc->gadget.dev.driver = &driver->driver;
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&udc->lock, flags);
 
 	if (udc->dc_clk != NULL)
 		omap_udc_enable_clock(1);
 
+<<<<<<< HEAD
 	status = bind(&udc->gadget);
 	if (status) {
 		DBG("bind to %s --> %d\n", driver->driver.name, status);
@@ -2232,15 +2517,33 @@ static int omap_udc_start(struct usb_gadget_driver *driver,
 			if (driver->unbind) {
 				driver->unbind (&udc->gadget);
 				udc->gadget.dev.driver = NULL;
+=======
+	omap_writew(UDC_IRQ_SRC_MASK, UDC_IRQ_SRC);
+
+	/* connect to bus through transceiver */
+	if (!IS_ERR_OR_NULL(udc->transceiver)) {
+		status = otg_set_peripheral(udc->transceiver->otg,
+						&udc->gadget);
+		if (status < 0) {
+			ERR("can't bind to transceiver\n");
+			if (driver->unbind) {
+				driver->unbind(&udc->gadget);
+>>>>>>> refs/remotes/origin/master
 				udc->driver = NULL;
 			}
 			goto done;
 		}
 	} else {
 		if (can_pullup(udc))
+<<<<<<< HEAD
 			pullup_enable (udc);
 		else
 			pullup_disable (udc);
+=======
+			pullup_enable(udc);
+		else
+			pullup_disable(udc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* boards that don't have VBUS sensing can't autogate 48MHz;
@@ -2252,6 +2555,7 @@ static int omap_udc_start(struct usb_gadget_driver *driver,
 done:
 	if (udc->dc_clk != NULL)
 		omap_udc_enable_clock(0);
+<<<<<<< HEAD
 	return status;
 }
 <<<<<<< HEAD
@@ -2262,27 +2566,43 @@ int usb_gadget_unregister_driver (struct usb_gadget_driver *driver)
 
 static int omap_udc_stop(struct usb_gadget_driver *driver)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return status;
+}
+
+static int omap_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long	flags;
 	int		status = -ENODEV;
 
+<<<<<<< HEAD
 	if (!udc)
 		return -ENODEV;
 	if (!driver || driver != udc->driver || !driver->unbind)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (udc->dc_clk != NULL)
 		omap_udc_enable_clock(1);
 
 	if (machine_without_vbus_sense())
 		omap_vbus_session(&udc->gadget, 0);
 
+<<<<<<< HEAD
 	if (udc->transceiver)
 <<<<<<< HEAD
 		(void) otg_set_peripheral(udc->transceiver, NULL);
 =======
 		(void) otg_set_peripheral(udc->transceiver->otg, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(udc->transceiver))
+		(void) otg_set_peripheral(udc->transceiver->otg, NULL);
+>>>>>>> refs/remotes/origin/master
 	else
 		pullup_disable(udc);
 
@@ -2290,12 +2610,16 @@ static int omap_udc_stop(struct usb_gadget_driver *driver)
 	udc_quiesce(udc);
 	spin_unlock_irqrestore(&udc->lock, flags);
 
+<<<<<<< HEAD
 	driver->unbind(&udc->gadget);
 	udc->gadget.dev.driver = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	udc->driver = NULL;
 
 	if (udc->dc_clk != NULL)
 		omap_udc_enable_clock(0);
+<<<<<<< HEAD
 	DBG("unregistered driver '%s'\n", driver->driver.name);
 	return status;
 }
@@ -2304,6 +2628,11 @@ EXPORT_SYMBOL(usb_gadget_unregister_driver);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return status;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -2314,7 +2643,11 @@ EXPORT_SYMBOL(usb_gadget_unregister_driver);
 static const char proc_filename[] = "driver/udc";
 
 #define FOURBITS "%s%s%s%s"
+<<<<<<< HEAD
 #define EIGHTBITS FOURBITS FOURBITS
+=======
+#define EIGHTBITS "%s%s%s%s%s%s%s%s"
+>>>>>>> refs/remotes/origin/master
 
 static void proc_ep_show(struct seq_file *s, struct omap_ep *ep)
 {
@@ -2336,12 +2669,30 @@ static void proc_ep_show(struct seq_file *s, struct omap_ep *ep)
 		"\n%s %s%s%sirqs %ld stat %04x " EIGHTBITS FOURBITS "%s\n",
 		ep->name, buf,
 		ep->double_buf ? "dbuf " : "",
+<<<<<<< HEAD
 		({char *s; switch(ep->ackwait){
 		case 0: s = ""; break;
 		case 1: s = "(ackw) "; break;
 		case 2: s = "(ackw2) "; break;
 		default: s = "(?) "; break;
 		} s;}),
+=======
+		({ char *s;
+		switch (ep->ackwait) {
+		case 0:
+			s = "";
+			break;
+		case 1:
+			s = "(ackw) ";
+			break;
+		case 2:
+			s = "(ackw2) ";
+			break;
+		default:
+			s = "(?) ";
+			break;
+		} s; }),
+>>>>>>> refs/remotes/origin/master
 		ep->irqs, stat_flg,
 		(stat_flg & UDC_NO_RXPACKET) ? "no_rxpacket " : "",
 		(stat_flg & UDC_MISS_IN) ? "miss_in " : "",
@@ -2357,10 +2708,17 @@ static void proc_ep_show(struct seq_file *s, struct omap_ep *ep)
 		(stat_flg & UDC_NON_ISO_FIFO_EMPTY) ? "fifo_empty " : "",
 		(stat_flg & UDC_NON_ISO_FIFO_FULL) ? "fifo_full " : "");
 
+<<<<<<< HEAD
 	if (list_empty (&ep->queue))
 		seq_printf(s, "\t(queue empty)\n");
 	else
 		list_for_each_entry (req, &ep->queue, queue) {
+=======
+	if (list_empty(&ep->queue))
+		seq_printf(s, "\t(queue empty)\n");
+	else
+		list_for_each_entry(req, &ep->queue, queue) {
+>>>>>>> refs/remotes/origin/master
 			unsigned	length = req->req.actual;
 
 			if (use_dma && buf[0]) {
@@ -2378,11 +2736,24 @@ static void proc_ep_show(struct seq_file *s, struct omap_ep *ep)
 static char *trx_mode(unsigned m, int enabled)
 {
 	switch (m) {
+<<<<<<< HEAD
 	case 0:		return enabled ? "*6wire" : "unused";
 	case 1:		return "4wire";
 	case 2:		return "3wire";
 	case 3:		return "6wire";
 	default:	return "unknown";
+=======
+	case 0:
+		return enabled ? "*6wire" : "unused";
+	case 1:
+		return "4wire";
+	case 2:
+		return "3wire";
+	case 3:
+		return "6wire";
+	default:
+		return "unknown";
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2392,12 +2763,18 @@ static int proc_otg_show(struct seq_file *s)
 	u32		trans = 0;
 	char		*ctrl_name = "(UNKNOWN)";
 
+<<<<<<< HEAD
 	/* XXX This needs major revision for OMAP2+ */
 	tmp = omap_readl(OTG_REV);
 	if (cpu_class_is_omap1()) {
 		ctrl_name = "tranceiver_ctrl";
 		trans = omap_readw(USB_TRANSCEIVER_CTRL);
 	}
+=======
+	tmp = omap_readl(OTG_REV);
+	ctrl_name = "tranceiver_ctrl";
+	trans = omap_readw(USB_TRANSCEIVER_CTRL);
+>>>>>>> refs/remotes/origin/master
 	seq_printf(s, "\nOTG rev %d.%d, %s %05x\n",
 		tmp >> 4, tmp & 0xf, ctrl_name, trans);
 	tmp = omap_readw(OTG_SYSCON_1);
@@ -2417,7 +2794,11 @@ static int proc_otg_show(struct seq_file *s)
 			" b_ase_brst=%d hmc=%d\n", tmp,
 		(tmp & OTG_EN) ? " otg_en" : "",
 		(tmp & USBX_SYNCHRO) ? " synchro" : "",
+<<<<<<< HEAD
 		// much more SRP stuff
+=======
+		/* much more SRP stuff */
+>>>>>>> refs/remotes/origin/master
 		(tmp & SRP_DATA) ? " srp_data" : "",
 		(tmp & SRP_VBUS) ? " srp_vbus" : "",
 		(tmp & OTG_PADEN) ? " otg_paden" : "",
@@ -2484,6 +2865,7 @@ static int proc_udc_show(struct seq_file *s, void *_)
 		HMC,
 		udc->transceiver
 			? udc->transceiver->label
+<<<<<<< HEAD
 			: ((cpu_is_omap1710() || cpu_is_omap24xx())
 				? "external" : "(none)"));
 	if (cpu_class_is_omap1()) {
@@ -2492,6 +2874,14 @@ static int proc_udc_show(struct seq_file *s, void *_)
 			omap_readw(ULPD_SOFT_REQ),
 			omap_readw(ULPD_STATUS_REQ));
 	}
+=======
+			: (cpu_is_omap1710()
+				? "external" : "(none)"));
+	seq_printf(s, "ULPD control %04x req %04x status %04x\n",
+		omap_readw(ULPD_CLOCK_CTRL),
+		omap_readw(ULPD_SOFT_REQ),
+		omap_readw(ULPD_STATUS_REQ));
+>>>>>>> refs/remotes/origin/master
 
 	/* OTG controller registers */
 	if (!cpu_is_omap15xx())
@@ -2507,7 +2897,11 @@ static int proc_udc_show(struct seq_file *s, void *_)
 		(tmp & UDC_SELF_PWR) ? " self_pwr" : "",
 		(tmp & UDC_SOFF_DIS) ? " soff_dis" : "",
 		(tmp & UDC_PULLUP_EN) ? " PULLUP" : "");
+<<<<<<< HEAD
 	// syscon2 is write-only
+=======
+	/* syscon2 is write-only */
+>>>>>>> refs/remotes/origin/master
 
 	/* UDC controller registers */
 	if (!(tmp & UDC_PULLUP_EN)) {
@@ -2591,9 +2985,15 @@ static int proc_udc_show(struct seq_file *s, void *_)
 	if (tmp & UDC_ATT) {
 		proc_ep_show(s, &udc->ep[0]);
 		if (tmp & UDC_ADD) {
+<<<<<<< HEAD
 			list_for_each_entry (ep, &udc->gadget.ep_list,
 					ep.ep_list) {
 				if (ep->desc)
+=======
+			list_for_each_entry(ep, &udc->gadget.ep_list,
+					ep.ep_list) {
+				if (ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 					proc_ep_show(s, ep);
 			}
 		}
@@ -2642,7 +3042,11 @@ static inline void remove_proc_file(void) {}
  * UDC_SYSCON_1.CFG_LOCK is set can now work.  We won't use that
  * capability yet though.
  */
+<<<<<<< HEAD
 static unsigned __init
+=======
+static unsigned
+>>>>>>> refs/remotes/origin/master
 omap_ep_setup(char *name, u8 addr, u8 type,
 		unsigned buf, unsigned maxp, int dbuf)
 {
@@ -2660,6 +3064,7 @@ omap_ep_setup(char *name, u8 addr, u8 type,
 	/* chip setup ... bit values are same for IN, OUT */
 	if (type == USB_ENDPOINT_XFER_ISOC) {
 		switch (maxp) {
+<<<<<<< HEAD
 		case 8:		epn_rxtx = 0 << 12; break;
 		case 16:	epn_rxtx = 1 << 12; break;
 		case 32:	epn_rxtx = 2 << 12; break;
@@ -2668,6 +3073,31 @@ omap_ep_setup(char *name, u8 addr, u8 type,
 		case 256:	epn_rxtx = 5 << 12; break;
 		case 512:	epn_rxtx = 6 << 12; break;
 		default:	BUG();
+=======
+		case 8:
+			epn_rxtx = 0 << 12;
+			break;
+		case 16:
+			epn_rxtx = 1 << 12;
+			break;
+		case 32:
+			epn_rxtx = 2 << 12;
+			break;
+		case 64:
+			epn_rxtx = 3 << 12;
+			break;
+		case 128:
+			epn_rxtx = 4 << 12;
+			break;
+		case 256:
+			epn_rxtx = 5 << 12;
+			break;
+		case 512:
+			epn_rxtx = 6 << 12;
+			break;
+		default:
+			BUG();
+>>>>>>> refs/remotes/origin/master
 		}
 		epn_rxtx |= UDC_EPN_RX_ISO;
 		dbuf = 1;
@@ -2676,6 +3106,7 @@ omap_ep_setup(char *name, u8 addr, u8 type,
 		 * and ignored for PIO-IN on newer chips
 		 * (for more reliable behavior)
 		 */
+<<<<<<< HEAD
 		if (!use_dma || cpu_is_omap15xx() || cpu_is_omap24xx())
 			dbuf = 0;
 
@@ -2685,6 +3116,26 @@ omap_ep_setup(char *name, u8 addr, u8 type,
 		case 32:	epn_rxtx = 2 << 12; break;
 		case 64:	epn_rxtx = 3 << 12; break;
 		default:	BUG();
+=======
+		if (!use_dma || cpu_is_omap15xx())
+			dbuf = 0;
+
+		switch (maxp) {
+		case 8:
+			epn_rxtx = 0 << 12;
+			break;
+		case 16:
+			epn_rxtx = 1 << 12;
+			break;
+		case 32:
+			epn_rxtx = 2 << 12;
+			break;
+		case 64:
+			epn_rxtx = 3 << 12;
+			break;
+		default:
+			BUG();
+>>>>>>> refs/remotes/origin/master
 		}
 		if (dbuf && addr)
 			epn_rxtx |= UDC_EPN_RX_DB;
@@ -2723,8 +3174,14 @@ omap_ep_setup(char *name, u8 addr, u8 type,
 
 	ep->ep.name = ep->name;
 	ep->ep.ops = &omap_ep_ops;
+<<<<<<< HEAD
 	ep->ep.maxpacket = ep->maxpacket = maxp;
 	list_add_tail (&ep->ep.ep_list, &udc->gadget.ep_list);
+=======
+	ep->maxpacket = maxp;
+	usb_ep_set_maxpacket_limit(&ep->ep, ep->maxpacket);
+	list_add_tail(&ep->ep.ep_list, &udc->gadget.ep_list);
+>>>>>>> refs/remotes/origin/master
 
 	return buf;
 }
@@ -2732,6 +3189,7 @@ omap_ep_setup(char *name, u8 addr, u8 type,
 static void omap_udc_release(struct device *dev)
 {
 	complete(udc->done);
+<<<<<<< HEAD
 	kfree (udc);
 	udc = NULL;
 }
@@ -2742,6 +3200,14 @@ omap_udc_setup(struct platform_device *odev, struct otg_transceiver *xceiv)
 =======
 omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(udc);
+	udc = NULL;
+}
+
+static int
+omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned	tmp, buf;
 
@@ -2754,19 +3220,28 @@ omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
 	omap_writew(0, UDC_TXDMA_CFG);
 
 	/* UDC_PULLUP_EN gates the chip clock */
+<<<<<<< HEAD
 	// OTG_SYSCON_1 |= DEV_IDLE_EN;
+=======
+	/* OTG_SYSCON_1 |= DEV_IDLE_EN; */
+>>>>>>> refs/remotes/origin/master
 
 	udc = kzalloc(sizeof(*udc), GFP_KERNEL);
 	if (!udc)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	spin_lock_init (&udc->lock);
+=======
+	spin_lock_init(&udc->lock);
+>>>>>>> refs/remotes/origin/master
 
 	udc->gadget.ops = &omap_gadget_ops;
 	udc->gadget.ep0 = &udc->ep[0].ep;
 	INIT_LIST_HEAD(&udc->gadget.ep_list);
 	INIT_LIST_HEAD(&udc->iso);
 	udc->gadget.speed = USB_SPEED_UNKNOWN;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	udc->gadget.max_speed = USB_SPEED_FULL;
@@ -2780,6 +3255,10 @@ omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
 	if (use_dma)
 		udc->gadget.dev.dma_mask = odev->dev.dma_mask;
 
+=======
+	udc->gadget.max_speed = USB_SPEED_FULL;
+	udc->gadget.name = driver_name;
+>>>>>>> refs/remotes/origin/master
 	udc->transceiver = xceiv;
 
 	/* ep0 is special; put it right after the SETUP buffer */
@@ -2793,6 +3272,7 @@ omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
 		omap_writew(0, UDC_EP_TX(tmp));
 	}
 
+<<<<<<< HEAD
 #define OMAP_BULK_EP(name,addr) \
 	buf = omap_ep_setup(name "-bulk", addr, \
 			USB_ENDPOINT_XFER_BULK, buf, 64, 1);
@@ -2800,6 +3280,15 @@ omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
 	buf = omap_ep_setup(name "-int", addr, \
 			USB_ENDPOINT_XFER_INT, buf, maxp, 0);
 #define OMAP_ISO_EP(name,addr, maxp) \
+=======
+#define OMAP_BULK_EP(name, addr) \
+	buf = omap_ep_setup(name "-bulk", addr, \
+			USB_ENDPOINT_XFER_BULK, buf, 64, 1);
+#define OMAP_INT_EP(name, addr, maxp) \
+	buf = omap_ep_setup(name "-int", addr, \
+			USB_ENDPOINT_XFER_INT, buf, maxp, 0);
+#define OMAP_ISO_EP(name, addr, maxp) \
+>>>>>>> refs/remotes/origin/master
 	buf = omap_ep_setup(name "-iso", addr, \
 			USB_ENDPOINT_XFER_ISOC, buf, maxp, 1);
 
@@ -2880,6 +3369,7 @@ omap_udc_setup(struct platform_device *odev, struct usb_phy *xceiv)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init omap_udc_probe(struct platform_device *pdev)
 {
 	int			status = -ENODEV;
@@ -2893,6 +3383,20 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 	struct omap_usb_config	*config = pdev->dev.platform_data;
 	struct clk		*dc_clk;
 	struct clk		*hhc_clk;
+=======
+static int omap_udc_probe(struct platform_device *pdev)
+{
+	int			status = -ENODEV;
+	int			hmc;
+	struct usb_phy		*xceiv = NULL;
+	const char		*type = NULL;
+	struct omap_usb_config	*config = dev_get_platdata(&pdev->dev);
+	struct clk		*dc_clk = NULL;
+	struct clk		*hhc_clk = NULL;
+
+	if (cpu_is_omap7xx())
+		use_dma = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* NOTE:  "knows" the order of the resources! */
 	if (!request_mem_region(pdev->resource[0].start,
@@ -2912,6 +3416,7 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 		udelay(100);
 	}
 
+<<<<<<< HEAD
 	if (cpu_is_omap24xx()) {
 		dc_clk = clk_get(&pdev->dev, "usb_fck");
 		hhc_clk = clk_get(&pdev->dev, "usb_l4_ick");
@@ -2922,6 +3427,8 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 		udelay(100);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cpu_is_omap7xx()) {
 		dc_clk = clk_get(&pdev->dev, "usb_dc_ck");
 		hhc_clk = clk_get(&pdev->dev, "l3_ocpi_ck");
@@ -2962,11 +3469,16 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 		 * but not having one probably means no VBUS detection.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		xceiv = otg_get_transceiver();
 =======
 		xceiv = usb_get_transceiver();
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (xceiv)
+=======
+		xceiv = usb_get_phy(USB_PHY_TYPE_USB2);
+		if (!IS_ERR_OR_NULL(xceiv))
+>>>>>>> refs/remotes/origin/master
 			type = xceiv->label;
 		else if (config->otg) {
 			DBG("OTG requires external transceiver!\n");
@@ -2975,6 +3487,7 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 
 		hmc = HMC_1610;
 
+<<<<<<< HEAD
 		if (cpu_is_omap24xx()) {
 			/* this could be transceiverless in one of the
 			 * "we don't need to know" modes.
@@ -2983,6 +3496,8 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 			goto known;
 		}
 
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (hmc) {
 		case 0:			/* POWERUP DEFAULT == 0 */
 		case 4:
@@ -2998,7 +3513,11 @@ static int __init omap_udc_probe(struct platform_device *pdev)
 		case 16:
 		case 19:
 		case 25:
+<<<<<<< HEAD
 			if (!xceiv) {
+=======
+			if (IS_ERR_OR_NULL(xceiv)) {
+>>>>>>> refs/remotes/origin/master
 				DBG("external transceiver not registered!\n");
 				type = "unknown";
 			}
@@ -3021,16 +3540,28 @@ bad_on_1710:
 			goto cleanup0;
 		}
 	}
+<<<<<<< HEAD
 known:
+=======
+
+>>>>>>> refs/remotes/origin/master
 	INFO("hmc mode %d, %s transceiver\n", hmc, type);
 
 	/* a "gadget" abstracts/virtualizes the controller */
 	status = omap_udc_setup(pdev, xceiv);
+<<<<<<< HEAD
 	if (status) {
 		goto cleanup0;
 	}
 	xceiv = NULL;
 	// "udc" is now valid
+=======
+	if (status)
+		goto cleanup0;
+
+	xceiv = NULL;
+	/* "udc" is now valid */
+>>>>>>> refs/remotes/origin/master
 	pullup_disable(udc);
 #if	defined(CONFIG_USB_OHCI_HCD) || defined(CONFIG_USB_OHCI_HCD_MODULE)
 	udc->gadget.is_otg = (config->otg != 0);
@@ -3044,7 +3575,11 @@ known:
 
 	/* USB general purpose IRQ:  ep0, state changes, dma, etc */
 	status = request_irq(pdev->resource[1].start, omap_udc_irq,
+<<<<<<< HEAD
 			IRQF_SAMPLE_RANDOM, driver_name, udc);
+=======
+			0, driver_name, udc);
+>>>>>>> refs/remotes/origin/master
 	if (status != 0) {
 		ERR("can't get irq %d, err %d\n",
 			(int) pdev->resource[1].start, status);
@@ -3053,7 +3588,11 @@ known:
 
 	/* USB "non-iso" IRQ (PIO for all but ep0) */
 	status = request_irq(pdev->resource[2].start, omap_udc_pio_irq,
+<<<<<<< HEAD
 			IRQF_SAMPLE_RANDOM, "omap_udc pio", udc);
+=======
+			0, "omap_udc pio", udc);
+>>>>>>> refs/remotes/origin/master
 	if (status != 0) {
 		ERR("can't get irq %d, err %d\n",
 			(int) pdev->resource[2].start, status);
@@ -3062,10 +3601,14 @@ known:
 #ifdef	USE_ISO
 	status = request_irq(pdev->resource[3].start, omap_udc_iso_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, "omap_udc iso", udc);
 =======
 			0, "omap_udc iso", udc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, "omap_udc iso", udc);
+>>>>>>> refs/remotes/origin/master
 	if (status != 0) {
 		ERR("can't get irq %d, err %d\n",
 			(int) pdev->resource[3].start, status);
@@ -3079,6 +3622,7 @@ known:
 		clk_disable(dc_clk);
 	}
 
+<<<<<<< HEAD
 	if (cpu_is_omap24xx()) {
 		udc->dc_clk = dc_clk;
 		udc->hhc_clk = hhc_clk;
@@ -3107,6 +3651,19 @@ cleanup4:
 	remove_proc_file();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	create_proc_file();
+	status = usb_add_gadget_udc_release(&pdev->dev, &udc->gadget,
+			omap_udc_release);
+	if (status)
+		goto cleanup4;
+
+	return 0;
+
+cleanup4:
+	remove_proc_file();
+
+>>>>>>> refs/remotes/origin/master
 #ifdef	USE_ISO
 cleanup3:
 	free_irq(pdev->resource[2].start, udc);
@@ -3116,6 +3673,7 @@ cleanup2:
 	free_irq(pdev->resource[1].start, udc);
 
 cleanup1:
+<<<<<<< HEAD
 	kfree (udc);
 	udc = NULL;
 
@@ -3128,6 +3686,16 @@ cleanup0:
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (cpu_is_omap16xx() || cpu_is_omap24xx() || cpu_is_omap7xx()) {
+=======
+	kfree(udc);
+	udc = NULL;
+
+cleanup0:
+	if (!IS_ERR_OR_NULL(xceiv))
+		usb_put_phy(xceiv);
+
+	if (cpu_is_omap16xx() || cpu_is_omap7xx()) {
+>>>>>>> refs/remotes/origin/master
 		clk_disable(hhc_clk);
 		clk_disable(dc_clk);
 		clk_put(hhc_clk);
@@ -3140,29 +3708,43 @@ cleanup0:
 	return status;
 }
 
+<<<<<<< HEAD
 static int __exit omap_udc_remove(struct platform_device *pdev)
+=======
+static int omap_udc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	DECLARE_COMPLETION_ONSTACK(done);
 
 	if (!udc)
 		return -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	usb_del_gadget_udc(&udc->gadget);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	usb_del_gadget_udc(&udc->gadget);
+>>>>>>> refs/remotes/origin/master
 	if (udc->driver)
 		return -EBUSY;
 
 	udc->done = &done;
 
 	pullup_disable(udc);
+<<<<<<< HEAD
 	if (udc->transceiver) {
 <<<<<<< HEAD
 		otg_put_transceiver(udc->transceiver);
 =======
 		usb_put_transceiver(udc->transceiver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(udc->transceiver)) {
+		usb_put_phy(udc->transceiver);
+>>>>>>> refs/remotes/origin/master
 		udc->transceiver = NULL;
 	}
 	omap_writew(0, UDC_SYSCON1);
@@ -3185,7 +3767,10 @@ static int __exit omap_udc_remove(struct platform_device *pdev)
 	release_mem_region(pdev->resource[0].start,
 			pdev->resource[0].end - pdev->resource[0].start + 1);
 
+<<<<<<< HEAD
 	device_unregister(&udc->gadget.dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	wait_for_completion(&done);
 
 	return 0;
@@ -3232,7 +3817,12 @@ static int omap_udc_resume(struct platform_device *dev)
 /*-------------------------------------------------------------------------*/
 
 static struct platform_driver udc_driver = {
+<<<<<<< HEAD
 	.remove		= __exit_p(omap_udc_remove),
+=======
+	.probe		= omap_udc_probe,
+	.remove		= omap_udc_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= omap_udc_suspend,
 	.resume		= omap_udc_resume,
 	.driver		= {
@@ -3241,6 +3831,7 @@ static struct platform_driver udc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init udc_init(void)
 {
 	/* Disable DMA for omap7xx -- it doesn't work right. */
@@ -3262,6 +3853,9 @@ static void __exit udc_exit(void)
 	platform_driver_unregister(&udc_driver);
 }
 module_exit(udc_exit);
+=======
+module_platform_driver(udc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");

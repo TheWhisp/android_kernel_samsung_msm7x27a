@@ -3,11 +3,21 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/sched.h"
 #include "linux/slab.h"
 #include "kern_util.h"
 #include "os.h"
 #include "skas.h"
+=======
+#include <linux/sched.h>
+#include <linux/spinlock.h>
+#include <linux/slab.h>
+#include <linux/oom.h>
+#include <kern_util.h>
+#include <os.h>
+#include <skas.h>
+>>>>>>> refs/remotes/origin/master
 
 void (*pm_power_off)(void);
 
@@ -20,6 +30,7 @@ static void kill_off_processes(void)
 		os_kill_ptraced_process(userspace_pid[0], 1);
 	else {
 		struct task_struct *p;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		int pid, me;
 
@@ -35,6 +46,22 @@ static void kill_off_processes(void)
 			pid = p->mm->context.id.u.pid;
 			os_kill_ptraced_process(pid, 1);
 		}
+=======
+		int pid;
+
+		read_lock(&tasklist_lock);
+		for_each_process(p) {
+			struct task_struct *t;
+
+			t = find_lock_task_mm(p);
+			if (!t)
+				continue;
+			pid = t->mm->context.id.u.pid;
+			task_unlock(t);
+			os_kill_ptraced_process(pid, 1);
+		}
+		read_unlock(&tasklist_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

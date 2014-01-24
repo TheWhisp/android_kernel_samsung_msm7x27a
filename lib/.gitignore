@@ -3,4 +3,8 @@
 #
 gen_crc32table
 crc32table.h
+<<<<<<< HEAD
 
+=======
+oid_registry_data.c
+>>>>>>> refs/remotes/origin/master

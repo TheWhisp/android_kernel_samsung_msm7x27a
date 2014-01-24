@@ -5,7 +5,10 @@
  *  Copyright (c) 2000-2005 Vojtech Pavlik <vojtech@suse.cz>
  *  Copyright (c) 2005 Michael Haboustak <mike-@cinci.rr.com> for Concept2, Inc
  *  Copyright (c) 2006-2007 Jiri Kosina
+<<<<<<< HEAD
  *  Copyright (c) 2007 Paul Walmsley
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright (c) 2008 Jiri Slaby
  */
 
@@ -104,6 +107,7 @@ static struct hid_driver pl_driver = {
 	.input_mapping = pl_input_mapping,
 	.probe = pl_probe,
 };
+<<<<<<< HEAD
 
 static int __init pl_init(void)
 {
@@ -117,4 +121,8 @@ static void __exit pl_exit(void)
 
 module_init(pl_init);
 module_exit(pl_exit);
+=======
+module_hid_driver(pl_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

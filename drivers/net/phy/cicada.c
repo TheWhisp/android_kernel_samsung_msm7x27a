@@ -30,9 +30,15 @@
 #include <linux/ethtool.h>
 #include <linux/phy.h>
 
+<<<<<<< HEAD
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/uaccess.h>
+=======
+#include <linux/io.h>
+#include <asm/irq.h>
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Cicada Extended Control Register 1 */
 #define MII_CIS8201_EXT_CON1           0x17
@@ -102,7 +108,12 @@ static int cis820x_config_intr(struct phy_device *phydev)
 }
 
 /* Cicada 8201, a.k.a Vitesse VSC8201 */
+<<<<<<< HEAD
 static struct phy_driver cis8201_driver = {
+=======
+static struct phy_driver cis820x_driver[] = {
+{
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x000fc410,
 	.name		= "Cicada Cis8201",
 	.phy_id_mask	= 0x000ffff0,
@@ -113,11 +124,16 @@ static struct phy_driver cis8201_driver = {
 	.read_status	= &genphy_read_status,
 	.ack_interrupt	= &cis820x_ack_interrupt,
 	.config_intr	= &cis820x_config_intr,
+<<<<<<< HEAD
 	.driver 	= { .owner = THIS_MODULE,},
 };
 
 /* Cicada 8204 */
 static struct phy_driver cis8204_driver = {
+=======
+	.driver		= { .owner = THIS_MODULE,},
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x000fc440,
 	.name		= "Cicada Cis8204",
 	.phy_id_mask	= 0x000fffc0,
@@ -128,6 +144,7 @@ static struct phy_driver cis8204_driver = {
 	.read_status	= &genphy_read_status,
 	.ack_interrupt	= &cis820x_ack_interrupt,
 	.config_intr	= &cis820x_config_intr,
+<<<<<<< HEAD
 	.driver 	= { .owner = THIS_MODULE,},
 };
 
@@ -148,12 +165,26 @@ err2:
 	phy_driver_unregister(&cis8204_driver);
 err1:
 	return ret;
+=======
+	.driver		= { .owner = THIS_MODULE,},
+} };
+
+static int __init cicada_init(void)
+{
+	return phy_drivers_register(cis820x_driver,
+		ARRAY_SIZE(cis820x_driver));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit cicada_exit(void)
 {
+<<<<<<< HEAD
 	phy_driver_unregister(&cis8204_driver);
 	phy_driver_unregister(&cis8201_driver);
+=======
+	phy_drivers_unregister(cis820x_driver,
+		ARRAY_SIZE(cis820x_driver));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(cicada_init);

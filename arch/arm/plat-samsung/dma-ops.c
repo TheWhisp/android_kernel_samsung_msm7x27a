@@ -18,6 +18,7 @@
 
 #include <mach/dma.h>
 
+<<<<<<< HEAD
 static unsigned samsung_dmadev_request(enum dma_ch dma_ch,
 				struct samsung_dma_info *info)
 {
@@ -61,16 +62,77 @@ static int samsung_dmadev_release(unsigned ch,
 {
 	dma_release_channel((struct dma_chan *)ch);
 
+=======
+#if defined(CONFIG_PL330_DMA)
+#define dma_filter pl330_filter
+#elif defined(CONFIG_S3C64XX_PL080)
+#define dma_filter pl08x_filter_id
+#endif
+
+static unsigned samsung_dmadev_request(enum dma_ch dma_ch,
+				struct samsung_dma_req *param,
+				struct device *dev, char *ch_name)
+{
+	dma_cap_mask_t mask;
+
+	dma_cap_zero(mask);
+	dma_cap_set(param->cap, mask);
+
+	if (dev->of_node)
+		return (unsigned)dma_request_slave_channel(dev, ch_name);
+	else
+		return (unsigned)dma_request_channel(mask, dma_filter,
+							(void *)dma_ch);
+}
+
+static int samsung_dmadev_release(unsigned ch, void *param)
+{
+	dma_release_channel((struct dma_chan *)ch);
+
+	return 0;
+}
+
+static int samsung_dmadev_config(unsigned ch,
+				struct samsung_dma_config *param)
+{
+	struct dma_chan *chan = (struct dma_chan *)ch;
+	struct dma_slave_config slave_config;
+
+	if (param->direction == DMA_DEV_TO_MEM) {
+		memset(&slave_config, 0, sizeof(struct dma_slave_config));
+		slave_config.direction = param->direction;
+		slave_config.src_addr = param->fifo;
+		slave_config.src_addr_width = param->width;
+		slave_config.src_maxburst = 1;
+		dmaengine_slave_config(chan, &slave_config);
+	} else if (param->direction == DMA_MEM_TO_DEV) {
+		memset(&slave_config, 0, sizeof(struct dma_slave_config));
+		slave_config.direction = param->direction;
+		slave_config.dst_addr = param->fifo;
+		slave_config.dst_addr_width = param->width;
+		slave_config.dst_maxburst = 1;
+		dmaengine_slave_config(chan, &slave_config);
+	} else {
+		pr_warn("unsupported direction\n");
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int samsung_dmadev_prepare(unsigned ch,
+<<<<<<< HEAD
 			struct samsung_dma_prep_info *info)
+=======
+			struct samsung_dma_prep *param)
+>>>>>>> refs/remotes/origin/master
 {
 	struct scatterlist sg;
 	struct dma_chan *chan = (struct dma_chan *)ch;
 	struct dma_async_tx_descriptor *desc;
 
+<<<<<<< HEAD
 	switch (info->cap) {
 	case DMA_SLAVE:
 		sg_init_table(&sg, 1);
@@ -85,6 +147,23 @@ static int samsung_dmadev_prepare(unsigned ch,
 	case DMA_CYCLIC:
 		desc = dmaengine_prep_dma_cyclic(chan,
 			info->buf, info->len, info->period, info->direction);
+=======
+	switch (param->cap) {
+	case DMA_SLAVE:
+		sg_init_table(&sg, 1);
+		sg_dma_len(&sg) = param->len;
+		sg_set_page(&sg, pfn_to_page(PFN_DOWN(param->buf)),
+			    param->len, offset_in_page(param->buf));
+		sg_dma_address(&sg) = param->buf;
+
+		desc = dmaengine_prep_slave_sg(chan,
+			&sg, 1, param->direction, DMA_PREP_INTERRUPT);
+		break;
+	case DMA_CYCLIC:
+		desc = dmaengine_prep_dma_cyclic(chan, param->buf,
+			param->len, param->period, param->direction,
+			DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		dev_err(&chan->dev->device, "unsupported format\n");
@@ -96,8 +175,13 @@ static int samsung_dmadev_prepare(unsigned ch,
 		return -EFAULT;
 	}
 
+<<<<<<< HEAD
 	desc->callback = info->fp;
 	desc->callback_param = info->fp_param;
+=======
+	desc->callback = param->fp;
+	desc->callback_param = param->fp_param;
+>>>>>>> refs/remotes/origin/master
 
 	dmaengine_submit((struct dma_async_tx_descriptor *)desc);
 
@@ -119,6 +203,10 @@ static inline int samsung_dmadev_flush(unsigned ch)
 static struct samsung_dma_ops dmadev_ops = {
 	.request	= samsung_dmadev_request,
 	.release	= samsung_dmadev_release,
+<<<<<<< HEAD
+=======
+	.config		= samsung_dmadev_config,
+>>>>>>> refs/remotes/origin/master
 	.prepare	= samsung_dmadev_prepare,
 	.trigger	= samsung_dmadev_trigger,
 	.started	= NULL,

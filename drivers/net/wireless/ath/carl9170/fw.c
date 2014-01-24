@@ -24,18 +24,25 @@
 #include <linux/firmware.h>
 #include <linux/crc32.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "carl9170.h"
 #include "fwcmd.h"
 #include "version.h"
 
+<<<<<<< HEAD
 #define MAKE_STR(symbol) #symbol
 #define TO_STR(symbol) MAKE_STR(symbol)
 #define CARL9170FW_API_VER_STR TO_STR(CARL9170FW_API_MAX_VER)
 MODULE_VERSION(CARL9170FW_API_VER_STR ":" CARL9170FW_VERSION_GIT);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const u8 otus_magic[4] = { OTUS_MAGIC };
 
 static const void *carl9170_fw_find_desc(struct ar9170 *ar, const u8 descid[4],
@@ -150,6 +157,7 @@ static bool valid_cpu_addr(const u32 address)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 {
 	const struct carl9170fw_otus_desc *otus_desc;
@@ -158,6 +166,8 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 	const struct carl9170fw_txsq_desc *txsq_desc;
 	u16 if_comb_types;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int carl9170_fw_checksum(struct ar9170 *ar, const __u8 *data,
 				size_t len)
 {
@@ -167,7 +177,10 @@ static int carl9170_fw_checksum(struct ar9170 *ar, const __u8 *data,
 	unsigned long fin, diff;
 	unsigned int dsc_len;
 	u32 crc32;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	last_desc = carl9170_fw_find_desc(ar, LAST_MAGIC,
 		sizeof(*last_desc), CARL9170FW_LAST_DESC_CUR_VER);
@@ -185,6 +198,7 @@ static int carl9170_fw_checksum(struct ar9170 *ar, const __u8 *data,
 	chk_desc = carl9170_fw_find_desc(ar, CHK_MAGIC,
 		sizeof(*chk_desc), CARL9170FW_CHK_DESC_CUR_VER);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (chk_desc) {
 		unsigned long fin, diff;
@@ -217,6 +231,8 @@ static int carl9170_fw_checksum(struct ar9170 *ar, const __u8 *data,
 	} else {
 		dev_warn(&ar->udev->dev, "Unprotected firmware image.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!chk_desc) {
 		dev_warn(&ar->udev->dev, "Unprotected firmware image.\n");
 		return 0;
@@ -265,6 +281,27 @@ static int carl9170_fw_tx_sequence(struct ar9170 *ar)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void carl9170_fw_set_if_combinations(struct ar9170 *ar,
+					    u16 if_comb_types)
+{
+	if (ar->fw.vif_num < 2)
+		return;
+
+	ar->if_comb_limits[0].max = ar->fw.vif_num;
+	ar->if_comb_limits[0].types = if_comb_types;
+
+	ar->if_combs[0].num_different_channels = 1;
+	ar->if_combs[0].max_interfaces = ar->fw.vif_num;
+	ar->if_combs[0].limits = ar->if_comb_limits;
+	ar->if_combs[0].n_limits = ARRAY_SIZE(ar->if_comb_limits);
+
+	ar->hw->wiphy->iface_combinations = ar->if_combs;
+	ar->hw->wiphy->n_iface_combinations = ARRAY_SIZE(ar->if_combs);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 {
 	const struct carl9170fw_otus_desc *otus_desc;
@@ -279,7 +316,10 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 		sizeof(*otus_desc), CARL9170FW_OTUS_DESC_CUR_VER);
 	if (!otus_desc) {
 		return -ENODATA;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 #define SUPP(feat)						\
@@ -315,6 +355,7 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 	if (!SUPP(CARL9170FW_COMMAND_CAM)) {
 		dev_info(&ar->udev->dev, "crypto offloading is disabled "
 			 "by firmware.\n");
+<<<<<<< HEAD
 		ar->disable_offload = true;
 	}
 
@@ -323,6 +364,12 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 =======
 	if (SUPP(CARL9170FW_PSM) && SUPP(CARL9170FW_FIXED_5GHZ_PSM))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ar->fw.disable_offload_fw = true;
+	}
+
+	if (SUPP(CARL9170FW_PSM) && SUPP(CARL9170FW_FIXED_5GHZ_PSM))
+>>>>>>> refs/remotes/origin/master
 		ar->hw->flags |= IEEE80211_HW_SUPPORTS_PS;
 
 	if (!SUPP(CARL9170FW_USB_INIT_FIRMWARE)) {
@@ -352,6 +399,7 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (SUPP(CARL9170FW_HW_COUNTERS))
 		ar->fw.hw_counters = true;
@@ -360,6 +408,17 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 	if (SUPP(CARL9170FW_WOL))
 		device_set_wakeup_enable(&ar->udev->dev, true);
 
+=======
+	if (SUPP(CARL9170FW_HW_COUNTERS))
+		ar->fw.hw_counters = true;
+
+	if (SUPP(CARL9170FW_WOL))
+		device_set_wakeup_enable(&ar->udev->dev, true);
+
+	if (SUPP(CARL9170FW_RX_BA_FILTER))
+		ar->fw.ba_filter = true;
+
+>>>>>>> refs/remotes/origin/master
 	if_comb_types = BIT(NL80211_IFTYPE_STATION) |
 			BIT(NL80211_IFTYPE_P2P_CLIENT);
 
@@ -392,6 +451,7 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 			if_comb_types |=
 				BIT(NL80211_IFTYPE_AP) |
 				BIT(NL80211_IFTYPE_P2P_GO);
+<<<<<<< HEAD
 		}
 	}
 
@@ -426,6 +486,28 @@ static int carl9170_fw(struct ar9170 *ar, const __u8 *data, size_t len)
 #undef SUPPORTED
 	return carl9170_fw_tx_sequence(ar);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_MAC80211_MESH
+			if_comb_types |=
+				BIT(NL80211_IFTYPE_MESH_POINT);
+#endif /* CONFIG_MAC80211_MESH */
+		}
+	}
+
+	carl9170_fw_set_if_combinations(ar, if_comb_types);
+
+	ar->hw->wiphy->interface_modes |= if_comb_types;
+
+	ar->hw->wiphy->flags &= ~WIPHY_FLAG_PS_ON_BY_DEFAULT;
+
+	/* As IBSS Encryption is software-based, IBSS RSN is supported. */
+	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL |
+		 WIPHY_FLAG_IBSS_RSN | WIPHY_FLAG_SUPPORTS_TDLS;
+
+#undef SUPPORTED
+	return carl9170_fw_tx_sequence(ar);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct carl9170fw_desc_head *
@@ -458,6 +540,7 @@ carl9170_find_fw_desc(struct ar9170 *ar, const __u8 *fw_data, const size_t len)
 	return (void *)&fw_data[scan - found];
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int carl9170_fw_fix_eeprom(struct ar9170 *ar)
 {
@@ -494,6 +577,8 @@ int carl9170_fw_fix_eeprom(struct ar9170 *ar)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int carl9170_parse_firmware(struct ar9170 *ar)
 {
 	const struct carl9170fw_desc_head *fw_desc = NULL;

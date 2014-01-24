@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation. All rights reserved.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -92,6 +96,7 @@ void rtl92c_set_data_filter(struct ieee80211_hw *hw, u16 filter);
 u32 rtl92c_get_txdma_status(struct ieee80211_hw *hw);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RX_HAL_IS_CCK_RATE(_pdesc)\
 	(GET_RX_DESC_RX_MCS(_pdesc) == DESC92C_RATE1M ||\
 	 GET_RX_DESC_RX_MCS(_pdesc) == DESC92C_RATE2M ||\
@@ -100,6 +105,8 @@ u32 rtl92c_get_txdma_status(struct ieee80211_hw *hw);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct rx_fwinfo_92c {
 	u8 gain_trsw[4];
 	u8 pwdb_all;

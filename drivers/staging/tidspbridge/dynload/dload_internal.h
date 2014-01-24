@@ -313,6 +313,7 @@ extern uint32_t dload_reverse_checksum16(void *data, unsigned siz);
 /*
  * exported by reloc.c
  */
+<<<<<<< HEAD
 extern void dload_relocate(struct dload_state *dlthis, tgt_au_t * data,
 			   struct reloc_record_t *rp, bool * tramps_generated,
 			   bool second_pass);
@@ -321,6 +322,16 @@ extern rvalue dload_unpack(struct dload_state *dlthis, tgt_au_t * data,
 			   int fieldsz, int offset, unsigned sgn);
 
 extern int dload_repack(struct dload_state *dlthis, rvalue val, tgt_au_t * data,
+=======
+extern void dload_relocate(struct dload_state *dlthis, tgt_au_t *data,
+			   struct reloc_record_t *rp, bool *tramps_generated,
+			   bool second_pass);
+
+extern rvalue dload_unpack(struct dload_state *dlthis, tgt_au_t *data,
+			   int fieldsz, int offset, unsigned sgn);
+
+extern int dload_repack(struct dload_state *dlthis, rvalue val, tgt_au_t *data,
+>>>>>>> refs/remotes/origin/master
 			int fieldsz, int offset, unsigned sgn);
 
 /*

@@ -26,6 +26,11 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
 #include <linux/hyperv.h>
+<<<<<<< HEAD
+=======
+#include <linux/version.h>
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/hyperv.h>
 #include "hyperv_vmbus.h"
 
@@ -33,6 +38,7 @@
 struct hv_context hv_context = {
 	.synic_initialized	= false,
 	.hypercall_page		= NULL,
+<<<<<<< HEAD
 	.signal_event_param	= NULL,
 	.signal_event_buffer	= NULL,
 };
@@ -62,6 +68,18 @@ static int query_hypervisor_presence(void)
 /*
  * query_hypervisor_info - Get version info of the windows hypervisor
  */
+=======
+};
+
+/*
+ * query_hypervisor_info - Get version info of the windows hypervisor
+ */
+unsigned int host_info_eax;
+unsigned int host_info_ebx;
+unsigned int host_info_ecx;
+unsigned int host_info_edx;
+
+>>>>>>> refs/remotes/origin/master
 static int query_hypervisor_info(void)
 {
 	unsigned int eax;
@@ -91,6 +109,7 @@ static int query_hypervisor_info(void)
 		edx = 0;
 		op = HVCPUID_VERSION;
 		cpuid(op, &eax, &ebx, &ecx, &edx);
+<<<<<<< HEAD
 		pr_info("Hyper-V Host OS Build:%d-%d.%d-%d-%d.%d\n",
 			    eax,
 			    ebx >> 16,
@@ -98,6 +117,12 @@ static int query_hypervisor_info(void)
 			    ecx,
 			    edx >> 24,
 			    edx & 0xFFFFFF);
+=======
+		host_info_eax = eax;
+		host_info_ebx = ebx;
+		host_info_ecx = ecx;
+		host_info_edx = edx;
+>>>>>>> refs/remotes/origin/master
 	}
 	return max_leaf;
 }
@@ -158,6 +183,7 @@ int hv_init(void)
 	memset(hv_context.synic_event_page, 0, sizeof(void *) * NR_CPUS);
 	memset(hv_context.synic_message_page, 0,
 	       sizeof(void *) * NR_CPUS);
+<<<<<<< HEAD
 
 	if (!query_hypervisor_presence())
 		goto cleanup;
@@ -167,6 +193,20 @@ int hv_init(void)
 	/* Write our OS info */
 	wrmsrl(HV_X64_MSR_GUEST_OS_ID, HV_LINUX_GUEST_ID);
 	hv_context.guestid = HV_LINUX_GUEST_ID;
+=======
+	memset(hv_context.vp_index, 0,
+	       sizeof(int) * NR_CPUS);
+	memset(hv_context.event_dpc, 0,
+	       sizeof(void *) * NR_CPUS);
+
+	max_leaf = query_hypervisor_info();
+
+	/*
+	 * Write our OS ID.
+	 */
+	hv_context.guestid = generate_guest_id(0, LINUX_VERSION_CODE, 0);
+	wrmsrl(HV_X64_MSR_GUEST_OS_ID, hv_context.guestid);
+>>>>>>> refs/remotes/origin/master
 
 	/* See if the hypercall page is already set */
 	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
@@ -190,6 +230,7 @@ int hv_init(void)
 
 	hv_context.hypercall_page = virtaddr;
 
+<<<<<<< HEAD
 	/* Setup the global signal event param for the signal event hypercall */
 	hv_context.signal_event_buffer =
 			kmalloc(sizeof(struct hv_input_signal_event_buffer),
@@ -208,6 +249,8 @@ int hv_init(void)
 	hv_context.signal_event_param->flag_number = 0;
 	hv_context.signal_event_param->rsvdz = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 cleanup:
@@ -235,10 +278,13 @@ void hv_cleanup(void)
 	/* Reset our OS id */
 	wrmsrl(HV_X64_MSR_GUEST_OS_ID, 0);
 
+<<<<<<< HEAD
 	kfree(hv_context.signal_event_buffer);
 	hv_context.signal_event_buffer = NULL;
 	hv_context.signal_event_param = NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hv_context.hypercall_page) {
 		hypercall_msr.as_uint64 = 0;
 		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
@@ -252,7 +298,11 @@ void hv_cleanup(void)
  *
  * This involves a hypercall.
  */
+<<<<<<< HEAD
 u16 hv_post_message(union hv_connection_id connection_id,
+=======
+int hv_post_message(union hv_connection_id connection_id,
+>>>>>>> refs/remotes/origin/master
 		  enum hv_message_type message_type,
 		  void *payload, size_t payload_size)
 {
@@ -295,6 +345,7 @@ u16 hv_post_message(union hv_connection_id connection_id,
  *
  * This involves a hypercall.
  */
+<<<<<<< HEAD
 u16 hv_signal_event(void)
 {
 	u16 status;
@@ -305,6 +356,70 @@ u16 hv_signal_event(void)
 	return status;
 }
 
+=======
+u16 hv_signal_event(void *con_id)
+{
+	u16 status;
+
+	status = (do_hypercall(HVCALL_SIGNAL_EVENT, con_id, NULL) & 0xFFFF);
+
+	return status;
+}
+
+
+int hv_synic_alloc(void)
+{
+	size_t size = sizeof(struct tasklet_struct);
+	int cpu;
+
+	for_each_online_cpu(cpu) {
+		hv_context.event_dpc[cpu] = kmalloc(size, GFP_ATOMIC);
+		if (hv_context.event_dpc[cpu] == NULL) {
+			pr_err("Unable to allocate event dpc\n");
+			goto err;
+		}
+		tasklet_init(hv_context.event_dpc[cpu], vmbus_on_event, cpu);
+
+		hv_context.synic_message_page[cpu] =
+			(void *)get_zeroed_page(GFP_ATOMIC);
+
+		if (hv_context.synic_message_page[cpu] == NULL) {
+			pr_err("Unable to allocate SYNIC message page\n");
+			goto err;
+		}
+
+		hv_context.synic_event_page[cpu] =
+			(void *)get_zeroed_page(GFP_ATOMIC);
+
+		if (hv_context.synic_event_page[cpu] == NULL) {
+			pr_err("Unable to allocate SYNIC event page\n");
+			goto err;
+		}
+	}
+
+	return 0;
+err:
+	return -ENOMEM;
+}
+
+static void hv_synic_free_cpu(int cpu)
+{
+	kfree(hv_context.event_dpc[cpu]);
+	if (hv_context.synic_event_page[cpu])
+		free_page((unsigned long)hv_context.synic_event_page[cpu]);
+	if (hv_context.synic_message_page[cpu])
+		free_page((unsigned long)hv_context.synic_message_page[cpu]);
+}
+
+void hv_synic_free(void)
+{
+	int cpu;
+
+	for_each_online_cpu(cpu)
+		hv_synic_free_cpu(cpu);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * hv_synic_init - Initialize the Synthethic Interrupt Controller.
  *
@@ -312,15 +427,24 @@ u16 hv_signal_event(void)
  * retrieve the initialized message and event pages.  Otherwise, we create and
  * initialize the message and event pages.
  */
+<<<<<<< HEAD
 void hv_synic_init(void *irqarg)
+=======
+void hv_synic_init(void *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 version;
 	union hv_synic_simp simp;
 	union hv_synic_siefp siefp;
 	union hv_synic_sint shared_sint;
 	union hv_synic_scontrol sctrl;
+<<<<<<< HEAD
 
 	u32 irq_vector = *((u32 *)(irqarg));
+=======
+	u64 vp_index;
+
+>>>>>>> refs/remotes/origin/master
 	int cpu = smp_processor_id();
 
 	if (!hv_context.hypercall_page)
@@ -329,6 +453,7 @@ void hv_synic_init(void *irqarg)
 	/* Check the version */
 	rdmsrl(HV_X64_MSR_SVERSION, version);
 
+<<<<<<< HEAD
 	hv_context.synic_message_page[cpu] =
 		(void *)get_zeroed_page(GFP_ATOMIC);
 
@@ -345,6 +470,8 @@ void hv_synic_init(void *irqarg)
 		goto cleanup;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Setup the Synic's message page */
 	rdmsrl(HV_X64_MSR_SIMP, simp.as_uint64);
 	simp.simp_enabled = 1;
@@ -365,9 +492,15 @@ void hv_synic_init(void *irqarg)
 	rdmsrl(HV_X64_MSR_SINT0 + VMBUS_MESSAGE_SINT, shared_sint.as_uint64);
 
 	shared_sint.as_uint64 = 0;
+<<<<<<< HEAD
 	shared_sint.vector = irq_vector; /* HV_SHARED_SINT_IDT_VECTOR + 0x20; */
 	shared_sint.masked = false;
 	shared_sint.auto_eoi = false;
+=======
+	shared_sint.vector = HYPERVISOR_CALLBACK_VECTOR;
+	shared_sint.masked = false;
+	shared_sint.auto_eoi = true;
+>>>>>>> refs/remotes/origin/master
 
 	wrmsrl(HV_X64_MSR_SINT0 + VMBUS_MESSAGE_SINT, shared_sint.as_uint64);
 
@@ -378,6 +511,7 @@ void hv_synic_init(void *irqarg)
 	wrmsrl(HV_X64_MSR_SCONTROL, sctrl.as_uint64);
 
 	hv_context.synic_initialized = true;
+<<<<<<< HEAD
 	return;
 
 cleanup:
@@ -386,6 +520,16 @@ cleanup:
 
 	if (hv_context.synic_message_page[cpu])
 		free_page((unsigned long)hv_context.synic_message_page[cpu]);
+=======
+
+	/*
+	 * Setup the mapping between Hyper-V's notion
+	 * of cpuid and Linux' notion of cpuid.
+	 * This array will be indexed using Linux cpuid.
+	 */
+	rdmsrl(HV_X64_MSR_VP_INDEX, vp_index);
+	hv_context.vp_index[cpu] = (u32)vp_index;
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 

@@ -72,6 +72,10 @@ Code  Seq#(hex)	Include File		Comments
 0x06	all	linux/lp.h
 0x09	all	linux/raid/md_u.h
 0x10	00-0F	drivers/char/s390/vmcp.h
+<<<<<<< HEAD
+=======
+0x10	10-1F	arch/s390/include/uapi/sclp_ctl.h
+>>>>>>> refs/remotes/origin/master
 0x12	all	linux/fs.h
 		linux/blkpg.h
 0x1b	all	InfiniBand Subsystem	<http://infiniband.sourceforge.net/>
@@ -88,6 +92,10 @@ Code  Seq#(hex)	Include File		Comments
 		and kernel/power/user.c
 '8'	all				SNP8023 advanced NIC card
 					<mailto:mcr@solidum.com>
+<<<<<<< HEAD
+=======
+';'	64-7F	linux/vfio.h
+>>>>>>> refs/remotes/origin/master
 '@'	00-0F	linux/radeonfb.h	conflict!
 '@'	00-0F	drivers/video/aty/aty128fb.c	conflict!
 'A'	00-1F	linux/apm_bios.h	conflict!
@@ -120,6 +128,10 @@ Code  Seq#(hex)	Include File		Comments
 'G'	00-0F	linux/gigaset_dev.h	conflict!
 'H'	00-7F	linux/hiddev.h		conflict!
 'H'	00-0F	linux/hidraw.h		conflict!
+<<<<<<< HEAD
+=======
+'H'	01	linux/mei.h		conflict!
+>>>>>>> refs/remotes/origin/master
 'H'	00-0F	sound/asound.h		conflict!
 'H'	20-40	sound/asound_fm.h	conflict!
 'H'	80-8F	sound/sfnt_info.h	conflict!
@@ -129,11 +141,19 @@ Code  Seq#(hex)	Include File		Comments
 'H'	40-4F	sound/hdspm.h		conflict!
 'H'	40-4F	sound/hdsp.h		conflict!
 'H'	90	sound/usb/usx2y/usb_stream.h
+<<<<<<< HEAD
+=======
+'H'	A0	uapi/linux/usb/cdc-wdm.h
+>>>>>>> refs/remotes/origin/master
 'H'	C0-F0	net/bluetooth/hci.h	conflict!
 'H'	C0-DF	net/bluetooth/hidp/hidp.h	conflict!
 'H'	C0-DF	net/bluetooth/cmtp/cmtp.h	conflict!
 'H'	C0-DF	net/bluetooth/bnep/bnep.h	conflict!
 'H'	F1	linux/hid-roccat.h	<mailto:erazor_de@users.sourceforge.net>
+<<<<<<< HEAD
+=======
+'H'	F8-FA	sound/firewire.h
+>>>>>>> refs/remotes/origin/master
 'I'	all	linux/isdn.h		conflict!
 'I'	00-0F	drivers/isdn/divert/isdn_divert.h	conflict!
 'I'	40-4F	linux/mISDNif.h		conflict!
@@ -150,9 +170,13 @@ Code  Seq#(hex)	Include File		Comments
 'M'	00-0F	drivers/video/fsl-diu-fb.h	conflict!
 'N'	00-1F	drivers/usb/scanner.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 'N'	40-7F	drivers/block/nvme.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+'N'	40-7F	drivers/block/nvme.c
+>>>>>>> refs/remotes/origin/master
 'O'     00-06   mtd/ubi-user.h		UBI
 'P'	all	linux/soundcard.h	conflict!
 'P'	60-6F	sound/sscape_ioctl.h	conflict!
@@ -179,9 +203,14 @@ Code  Seq#(hex)	Include File		Comments
 'V'	C0	linux/ivtv.h		conflict!
 'V'	C0	media/davinci/vpfe_capture.h	conflict!
 'V'	C0	media/si4713.h		conflict!
+<<<<<<< HEAD
 'V'	C0-CF	drivers/media/video/mxb.h	conflict!
 'W'	00-1F	linux/watchdog.h	conflict!
 'W'	00-1F	linux/wanrouter.h	conflict!
+=======
+'W'	00-1F	linux/watchdog.h	conflict!
+'W'	00-1F	linux/wanrouter.h	conflict!		(pre 3.9)
+>>>>>>> refs/remotes/origin/master
 'W'	00-3F	sound/asound.h		conflict!
 'X'	all	fs/xfs/xfs_fs.h		conflict!
 		and fs/xfs/linux-2.6/xfs_ioctl32.h
@@ -193,10 +222,14 @@ Code  Seq#(hex)	Include File		Comments
 'Z'	14-15	drivers/message/fusion/mptctl.h
 '['	00-07	linux/usb/tmc.h		USB Test and Measurement Devices
 <<<<<<< HEAD
+<<<<<<< HEAD
 					<mailto:gregkh@suse.de>
 =======
 					<mailto:gregkh@linuxfoundation.org>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					<mailto:gregkh@linuxfoundation.org>
+>>>>>>> refs/remotes/origin/master
 'a'	all	linux/atm*.h, linux/sonet.h	ATM on linux
 					<http://lrcwww.epfl.ch/>
 'b'	00-FF				conflict! bit3 vme host bridge
@@ -209,8 +242,11 @@ Code  Seq#(hex)	Include File		Comments
 'c'	A0-AF   arch/x86/include/asm/msr.h	conflict!
 'd'	00-FF	linux/char/drm/drm/h	conflict!
 'd'	02-40	pcmcia/ds.h		conflict!
+<<<<<<< HEAD
 'd'	10-3F	drivers/media/video/dabusb.h	conflict!
 'd'	C0-CF	drivers/media/video/saa7191.h	conflict!
+=======
+>>>>>>> refs/remotes/origin/master
 'd'	F0-FF	linux/digi1.h
 'e'	all	linux/digi1.h		conflict!
 'e'	00-1F	drivers/net/irda/irtty-sir.h	conflict!
@@ -226,9 +262,13 @@ Code  Seq#(hex)	Include File		Comments
 					<mailto:zapman@interlan.net>
 'h'	00-1F	linux/hpet.h		conflict!
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 'h'	80-8F	fs/hfsplus/ioctl.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+'h'	80-8F	fs/hfsplus/ioctl.c
+>>>>>>> refs/remotes/origin/master
 'i'	00-3F	linux/i2o-dev.h		conflict!
 'i'	0B-1F	linux/ipmi.h		conflict!
 'i'	80-8F	linux/i8k.h
@@ -236,9 +276,13 @@ Code  Seq#(hex)	Include File		Comments
 'k'	00-0F	linux/spi/spidev.h	conflict!
 'k'	00-05	video/kyro.h		conflict!
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 'k'	10-17	linux/hsi/hsi_char.h	HSI character device
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+'k'	10-17	linux/hsi/hsi_char.h	HSI character device
+>>>>>>> refs/remotes/origin/master
 'l'	00-3F	linux/tcfs_fs.h		transparent cryptographic file system
 					<http://web.archive.org/web/*/http://mikonos.dia.unisa.it/tcfs>
 'l'	40-7F	linux/udf_fs_i.h	in development:
@@ -271,10 +315,14 @@ Code  Seq#(hex)	Include File		Comments
 'r'	00-1F	linux/msdos_fs.h and fs/fat/dir.c
 's'	all	linux/cdk.h
 <<<<<<< HEAD
+<<<<<<< HEAD
 't'	00-7F	linux/if_ppp.h
 =======
 't'	00-7F	linux/ppp-ioctl.h
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+'t'	00-7F	linux/ppp-ioctl.h
+>>>>>>> refs/remotes/origin/master
 't'	80-8F	linux/isdn_ppp.h
 't'	90	linux/toshiba.h
 'u'	00-1F	linux/smb_fs.h		gone
@@ -282,9 +330,13 @@ Code  Seq#(hex)	Include File		Comments
 'v'	00-1F	linux/ext2_fs.h		conflict!
 'v'	00-1F	linux/fs.h		conflict!
 'v'	00-0F	linux/sonypi.h		conflict!
+<<<<<<< HEAD
 'v'	C0-DF	media/pwc-ioctl.h	conflict!
 'v'	C0-FF	linux/meye.h		conflict!
 'v'	D0-DF	drivers/media/video/cpia2/cpia2dev.h	conflict!
+=======
+'v'	C0-FF	linux/meye.h		conflict!
+>>>>>>> refs/remotes/origin/master
 'w'	all				CERN SCI driver
 'y'	00-1F				packet based user level communications
 					<mailto:zapman@interlan.net>
@@ -313,9 +365,13 @@ Code  Seq#(hex)	Include File		Comments
 0xA0	all	linux/sdp/sdp.h		Industrial Device Project
 					<mailto:kenji@bitgate.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 0xA2	00-0F	arch/tile/include/asm/hardwall.h
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+0xA2	00-0F	arch/tile/include/asm/hardwall.h
+>>>>>>> refs/remotes/origin/master
 0xA3	80-8F	Port ACL		in development:
 					<mailto:tlewis@mindspring.com>
 0xA3	90-9F	linux/dtlk.h
@@ -326,9 +382,13 @@ Code  Seq#(hex)	Include File		Comments
 0xAE	all	linux/kvm.h		Kernel-based Virtual Machine
 					<mailto:kvm@vger.kernel.org>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 0xAF	00-1F	linux/fsl_hypervisor.h	Freescale hypervisor
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+0xAF	00-1F	linux/fsl_hypervisor.h	Freescale hypervisor
+>>>>>>> refs/remotes/origin/master
 0xB0	all	RATIO devices		in development:
 					<mailto:vgo@ratio.de>
 0xB1	00-1F	PPPoX			<mailto:mostrows@styx.uwaterloo.ca>
@@ -346,8 +406,13 @@ Code  Seq#(hex)	Include File		Comments
 0xF4	00-1F	video/mbxfb.h		mbxfb
 					<mailto:raph@8d.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 0xF6	all	LTTng			Linux Trace Toolkit Next Generation
 					<mailto:mathieu.desnoyers@efficios.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+0xF6	all	LTTng			Linux Trace Toolkit Next Generation
+					<mailto:mathieu.desnoyers@efficios.com>
+>>>>>>> refs/remotes/origin/master
 0xFD	all	linux/dm-ioctl.h

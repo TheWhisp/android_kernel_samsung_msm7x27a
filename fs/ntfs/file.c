@@ -27,6 +27,10 @@
 #include <linux/swap.h>
 #include <linux/uio.h>
 #include <linux/writeback.h>
+<<<<<<< HEAD
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/uaccess.h>
@@ -705,10 +709,14 @@ map_buffer_cached:
 				unsigned pofs;
 					
 <<<<<<< HEAD
+<<<<<<< HEAD
 				kaddr = kmap_atomic(page, KM_USER0);
 =======
 				kaddr = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 				if (bh_pos < pos) {
 					pofs = bh_pos & ~PAGE_CACHE_MASK;
 					memset(kaddr + pofs, 0, pos - bh_pos);
@@ -718,10 +726,14 @@ map_buffer_cached:
 					memset(kaddr + pofs, 0, bh_end - end);
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 				kunmap_atomic(kaddr, KM_USER0);
 =======
 				kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 				flush_dcache_page(page);
 			}
 			continue;
@@ -1296,6 +1308,7 @@ static inline size_t ntfs_copy_from_user(struct page **pages,
 		if (len > bytes)
 			len = bytes;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr = kmap_atomic(*pages, KM_USER0);
 		left = __copy_from_user_inatomic(addr + ofs, buf, len);
 		kunmap_atomic(addr, KM_USER0);
@@ -1304,6 +1317,11 @@ static inline size_t ntfs_copy_from_user(struct page **pages,
 		left = __copy_from_user_inatomic(addr + ofs, buf, len);
 		kunmap_atomic(addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		addr = kmap_atomic(*pages);
+		left = __copy_from_user_inatomic(addr + ofs, buf, len);
+		kunmap_atomic(addr);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(left)) {
 			/* Do it the slow way. */
 			addr = kmap(*pages);
@@ -1416,16 +1434,22 @@ static inline size_t ntfs_copy_from_user_iovec(struct page **pages,
 		if (len > bytes)
 			len = bytes;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr = kmap_atomic(*pages, KM_USER0);
 		copied = __ntfs_copy_from_user_iovec_inatomic(addr + ofs,
 				*iov, *iov_ofs, len);
 		kunmap_atomic(addr, KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		addr = kmap_atomic(*pages);
 		copied = __ntfs_copy_from_user_iovec_inatomic(addr + ofs,
 				*iov, *iov_ofs, len);
 		kunmap_atomic(addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(copied != len)) {
 			/* Do it the slow way. */
 			addr = kmap(*pages);
@@ -1713,10 +1737,14 @@ static int ntfs_commit_pages_after_write(struct page **pages,
 			le16_to_cpu(a->data.resident.value_offset));
 	kattr = (u8*)a + le16_to_cpu(a->data.resident.value_offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kaddr = kmap_atomic(page, KM_USER0);
 =======
 	kaddr = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kaddr = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 	/* Copy the received data from the page to the mft record. */
 	memcpy(kattr + pos, kaddr + pos, bytes);
 	/* Update the attribute length if necessary. */
@@ -1739,10 +1767,14 @@ static int ntfs_commit_pages_after_write(struct page **pages,
 		SetPageUptodate(page);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(kaddr, KM_USER0);
 =======
 	kunmap_atomic(kaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kunmap_atomic(kaddr);
+>>>>>>> refs/remotes/origin/master
 	/* Update initialized_size/i_size if necessary. */
 	read_lock_irqsave(&ni->size_lock, flags);
 	initialized_size = ni->initialized_size;
@@ -1791,6 +1823,19 @@ err_out:
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static void ntfs_write_failed(struct address_space *mapping, loff_t to)
+{
+	struct inode *inode = mapping->host;
+
+	if (to > inode->i_size) {
+		truncate_pagecache(inode, inode->i_size);
+		ntfs_truncate_vfs(inode);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ntfs_file_buffered_write -
  *
@@ -1862,6 +1907,7 @@ static ssize_t ntfs_file_buffered_write(struct kiocb *iocb,
 	 */
 	if (unlikely(NInoTruncateFailed(ni))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		down_write(&vi->i_alloc_sem);
 		err = ntfs_truncate(vi);
 		up_write(&vi->i_alloc_sem);
@@ -1869,6 +1915,10 @@ static ssize_t ntfs_file_buffered_write(struct kiocb *iocb,
 		inode_dio_wait(vi);
 		err = ntfs_truncate(vi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode_dio_wait(vi);
+		err = ntfs_truncate(vi);
+>>>>>>> refs/remotes/origin/master
 		if (err || NInoTruncateFailed(ni)) {
 			if (!err)
 				err = -EIO;
@@ -2057,8 +2107,14 @@ static ssize_t ntfs_file_buffered_write(struct kiocb *iocb,
 				 * allocated space, which is not a disaster.
 				 */
 				i_size = i_size_read(vi);
+<<<<<<< HEAD
 				if (pos + bytes > i_size)
 					vmtruncate(vi, i_size);
+=======
+				if (pos + bytes > i_size) {
+					ntfs_write_failed(mapping, pos + bytes);
+				}
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 		}
@@ -2119,7 +2175,10 @@ static ssize_t ntfs_file_aio_write_nolock(struct kiocb *iocb,
 	if (err)
 		return err;
 	pos = *ppos;
+<<<<<<< HEAD
 	vfs_check_frozen(inode->i_sb, SB_FREEZE_WRITE);
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We can write back this queue in page reclaim. */
 	current->backing_dev_info = mapping->backing_dev_info;
 	written = 0;
@@ -2131,7 +2190,13 @@ static ssize_t ntfs_file_aio_write_nolock(struct kiocb *iocb,
 	err = file_remove_suid(file);
 	if (err)
 		goto out;
+<<<<<<< HEAD
 	file_update_time(file);
+=======
+	err = file_update_time(file);
+	if (err)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	written = ntfs_file_buffered_write(iocb, iov, nr_segs, pos, ppos,
 			count);
 out:
@@ -2188,25 +2253,36 @@ static ssize_t ntfs_file_aio_write(struct kiocb *iocb, const struct iovec *iov,
  * this problem for now.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ntfs_file_fsync(struct file *filp, int datasync)
 =======
 static int ntfs_file_fsync(struct file *filp, loff_t start, loff_t end,
 			   int datasync)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ntfs_file_fsync(struct file *filp, loff_t start, loff_t end,
+			   int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *vi = filp->f_mapping->host;
 	int err, ret = 0;
 
 	ntfs_debug("Entering for inode 0x%lx.", vi->i_ino);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = filemap_write_and_wait_range(vi->i_mapping, start, end);
 	if (err)
 		return err;
 	mutex_lock(&vi->i_mutex);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(S_ISDIR(vi->i_mode));
 	if (!datasync || !NInoNonResident(NTFS_I(vi)))
 		ret = __ntfs_write_inode(vi, 1);
@@ -2225,9 +2301,13 @@ static int ntfs_file_fsync(struct file *filp, loff_t start, loff_t end,
 		ntfs_warning(vi->i_sb, "Failed to f%ssync inode 0x%lx.  Error "
 				"%u.", datasync ? "data" : "", vi->i_ino, -ret);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&vi->i_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&vi->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2269,7 +2349,10 @@ const struct file_operations ntfs_file_ops = {
 
 const struct inode_operations ntfs_file_inode_ops = {
 #ifdef NTFS_RW
+<<<<<<< HEAD
 	.truncate	= ntfs_truncate_vfs,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setattr	= ntfs_setattr,
 #endif /* NTFS_RW */
 };

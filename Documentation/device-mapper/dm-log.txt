@@ -49,10 +49,14 @@ communication.
 
 There are currently two userspace log implementations that leverage this
 <<<<<<< HEAD
+<<<<<<< HEAD
 framework - "clustered_disk" and "clustered_core".  These implementations
 =======
 framework - "clustered-disk" and "clustered-core".  These implementations
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+framework - "clustered-disk" and "clustered-core".  These implementations
+>>>>>>> refs/remotes/origin/master
 provide a cluster-coherent log for shared-storage.  Device-mapper mirroring
 can be used in a shared-storage environment when the cluster log implementations
 are employed.

@@ -21,6 +21,7 @@
 #include <linux/signal.h>
 #include <linux/perf_event.h>
 #include <linux/hw_breakpoint.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 
 #include <asm/uaccess.h>
@@ -34,6 +35,17 @@
 #include <asm/i387.h>
 #include <asm/fpu-internal.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+#include <linux/export.h>
+#include <linux/context_tracking.h>
+
+#include <asm/uaccess.h>
+#include <asm/pgtable.h>
+#include <asm/processor.h>
+#include <asm/i387.h>
+#include <asm/fpu-internal.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/debugreg.h>
 #include <asm/ldt.h>
 #include <asm/desc.h>
@@ -41,9 +53,13 @@
 #include <asm/proto.h>
 #include <asm/hw_breakpoint.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/traps.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "tls.h"
 
@@ -569,10 +585,14 @@ static int genregs_set(struct task_struct *target,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ptrace_triggered(struct perf_event *bp, int nmi,
 =======
 static void ptrace_triggered(struct perf_event *bp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ptrace_triggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/master
 			     struct perf_sample_data *data,
 			     struct pt_regs *regs)
 {
@@ -612,6 +632,7 @@ static unsigned long ptrace_get_dr7(struct perf_event *bp[])
 	return dr7;
 }
 
+<<<<<<< HEAD
 static int
 ptrace_modify_breakpoint(struct perf_event *bp, int len, int type,
 			 struct task_struct *tsk, int disabled)
@@ -636,6 +657,50 @@ ptrace_modify_breakpoint(struct perf_event *bp, int len, int type,
 	attr.bp_len = gen_len;
 	attr.bp_type = gen_type;
 	attr.disabled = disabled;
+=======
+static int ptrace_fill_bp_fields(struct perf_event_attr *attr,
+					int len, int type, bool disabled)
+{
+	int err, bp_len, bp_type;
+
+	err = arch_bp_generic_fields(len, type, &bp_len, &bp_type);
+	if (!err) {
+		attr->bp_len = bp_len;
+		attr->bp_type = bp_type;
+		attr->disabled = disabled;
+	}
+
+	return err;
+}
+
+static struct perf_event *
+ptrace_register_breakpoint(struct task_struct *tsk, int len, int type,
+				unsigned long addr, bool disabled)
+{
+	struct perf_event_attr attr;
+	int err;
+
+	ptrace_breakpoint_init(&attr);
+	attr.bp_addr = addr;
+
+	err = ptrace_fill_bp_fields(&attr, len, type, disabled);
+	if (err)
+		return ERR_PTR(err);
+
+	return register_user_hw_breakpoint(&attr, ptrace_triggered,
+						 NULL, tsk);
+}
+
+static int ptrace_modify_breakpoint(struct perf_event *bp, int len, int type,
+					int disabled)
+{
+	struct perf_event_attr attr = bp->attr;
+	int err;
+
+	err = ptrace_fill_bp_fields(&attr, len, type, disabled);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	return modify_user_hw_breakpoint(bp, &attr);
 }
@@ -645,6 +710,7 @@ ptrace_modify_breakpoint(struct perf_event *bp, int len, int type,
  */
 static int ptrace_write_dr7(struct task_struct *tsk, unsigned long data)
 {
+<<<<<<< HEAD
 	struct thread_struct *thread = &(tsk->thread);
 	unsigned long old_dr7;
 	int i, orig_ret = 0, rc = 0;
@@ -706,6 +772,52 @@ restore:
 	ptrace_put_breakpoints(tsk);
 
 	return ((orig_ret < 0) ? orig_ret : rc);
+=======
+	struct thread_struct *thread = &tsk->thread;
+	unsigned long old_dr7;
+	bool second_pass = false;
+	int i, rc, ret = 0;
+
+	data &= ~DR_CONTROL_RESERVED;
+	old_dr7 = ptrace_get_dr7(thread->ptrace_bps);
+
+restore:
+	rc = 0;
+	for (i = 0; i < HBP_NUM; i++) {
+		unsigned len, type;
+		bool disabled = !decode_dr7(data, i, &len, &type);
+		struct perf_event *bp = thread->ptrace_bps[i];
+
+		if (!bp) {
+			if (disabled)
+				continue;
+
+			bp = ptrace_register_breakpoint(tsk,
+					len, type, 0, disabled);
+			if (IS_ERR(bp)) {
+				rc = PTR_ERR(bp);
+				break;
+			}
+
+			thread->ptrace_bps[i] = bp;
+			continue;
+		}
+
+		rc = ptrace_modify_breakpoint(bp, len, type, disabled);
+		if (rc)
+			break;
+	}
+
+	/* Restore if the first pass failed, second_pass shouldn't fail. */
+	if (rc && !WARN_ON(second_pass)) {
+		ret = rc;
+		data = old_dr7;
+		second_pass = true;
+		goto restore;
+	}
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -713,6 +825,7 @@ restore:
  */
 static unsigned long ptrace_get_debugreg(struct task_struct *tsk, int n)
 {
+<<<<<<< HEAD
 	struct thread_struct *thread = &(tsk->thread);
 	unsigned long val = 0;
 
@@ -732,6 +845,19 @@ static unsigned long ptrace_get_debugreg(struct task_struct *tsk, int n)
 	} else if (n == 6) {
 		val = thread->debugreg6;
 	 } else if (n == 7) {
+=======
+	struct thread_struct *thread = &tsk->thread;
+	unsigned long val = 0;
+
+	if (n < HBP_NUM) {
+		struct perf_event *bp = thread->ptrace_bps[n];
+
+		if (bp)
+			val = bp->hw.info.address;
+	} else if (n == 6) {
+		val = thread->debugreg6;
+	} else if (n == 7) {
+>>>>>>> refs/remotes/origin/master
 		val = thread->ptrace_dr7;
 	}
 	return val;
@@ -740,6 +866,7 @@ static unsigned long ptrace_get_debugreg(struct task_struct *tsk, int n)
 static int ptrace_set_breakpoint_addr(struct task_struct *tsk, int nr,
 				      unsigned long addr)
 {
+<<<<<<< HEAD
 	struct perf_event *bp;
 	struct thread_struct *t = &tsk->thread;
 	struct perf_event_attr attr;
@@ -767,6 +894,16 @@ static int ptrace_set_breakpoint_addr(struct task_struct *tsk, int nr,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		/*
+=======
+	struct thread_struct *t = &tsk->thread;
+	struct perf_event *bp = t->ptrace_bps[nr];
+	int err = 0;
+
+	if (!bp) {
+		/*
+		 * Put stub len and type to create an inactive but correct bp.
+		 *
+>>>>>>> refs/remotes/origin/master
 		 * CHECKME: the previous code returned -EIO if the addr wasn't
 		 * a valid task virtual addr. The new one will return -EINVAL in
 		 *  this case.
@@ -775,6 +912,7 @@ static int ptrace_set_breakpoint_addr(struct task_struct *tsk, int nr,
 		 * writing for the user. And anyway this is the previous
 		 * behaviour.
 		 */
+<<<<<<< HEAD
 		if (IS_ERR(bp)) {
 			err = PTR_ERR(bp);
 			goto put;
@@ -785,18 +923,34 @@ static int ptrace_set_breakpoint_addr(struct task_struct *tsk, int nr,
 		bp = t->ptrace_bps[nr];
 
 		attr = bp->attr;
+=======
+		bp = ptrace_register_breakpoint(tsk,
+				X86_BREAKPOINT_LEN_1, X86_BREAKPOINT_WRITE,
+				addr, true);
+		if (IS_ERR(bp))
+			err = PTR_ERR(bp);
+		else
+			t->ptrace_bps[nr] = bp;
+	} else {
+		struct perf_event_attr attr = bp->attr;
+
+>>>>>>> refs/remotes/origin/master
 		attr.bp_addr = addr;
 		err = modify_user_hw_breakpoint(bp, &attr);
 	}
 
+<<<<<<< HEAD
 put:
 	ptrace_put_breakpoints(tsk);
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 /*
  * Handle PTRACE_POKEUSR calls for the debug register area.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int ptrace_set_debugreg(struct task_struct *tsk, int n, unsigned long val)
 =======
@@ -822,12 +976,30 @@ static int ptrace_set_debugreg(struct task_struct *tsk, int n,
 	}
 	/* All that's left is DR7 */
 	if (n == 7) {
+=======
+static int ptrace_set_debugreg(struct task_struct *tsk, int n,
+			       unsigned long val)
+{
+	struct thread_struct *thread = &tsk->thread;
+	/* There are no DR4 or DR5 registers */
+	int rc = -EIO;
+
+	if (n < HBP_NUM) {
+		rc = ptrace_set_breakpoint_addr(tsk, n, val);
+	} else if (n == 6) {
+		thread->debugreg6 = val;
+		rc = 0;
+	} else if (n == 7) {
+>>>>>>> refs/remotes/origin/master
 		rc = ptrace_write_dr7(tsk, val);
 		if (!rc)
 			thread->ptrace_dr7 = val;
 	}
+<<<<<<< HEAD
 
 ret_path:
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -1183,7 +1355,10 @@ static int genregs32_set(struct task_struct *target,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_X32_ABI
 static long x32_arch_ptrace(struct task_struct *child,
 			    compat_long_t request, compat_ulong_t caddr,
@@ -1272,7 +1447,10 @@ static long x32_arch_ptrace(struct task_struct *child,
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 			compat_ulong_t caddr, compat_ulong_t cdata)
 {
@@ -1283,13 +1461,19 @@ long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
 	__u32 val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_X32_ABI
 	if (!is_ia32_task())
 		return x32_arch_ptrace(child, request, caddr, cdata);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (request) {
 	case PTRACE_PEEKUSR:
 		ret = getreg32(child, addr, &val);
@@ -1389,9 +1573,12 @@ static const struct user_regset_view user_x86_64_view = {
 #define genregs32_get		genregs_get
 #define genregs32_set		genregs_set
 
+<<<<<<< HEAD
 #define user_i387_ia32_struct	user_i387_struct
 #define user32_fxsr_struct	user_fxsr_struct
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_X86_64 */
 
 #if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
@@ -1478,10 +1665,14 @@ static void fill_sigtrap_info(struct task_struct *tsk,
 				struct siginfo *info)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tsk->thread.trap_no = 1;
 =======
 	tsk->thread.trap_nr = X86_TRAP_DB;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tsk->thread.trap_nr = X86_TRAP_DB;
+>>>>>>> refs/remotes/origin/master
 	tsk->thread.error_code = error_code;
 
 	memset(info, 0, sizeof(*info));
@@ -1524,6 +1715,11 @@ long syscall_trace_enter(struct pt_regs *regs)
 {
 	long ret = 0;
 
+<<<<<<< HEAD
+=======
+	user_exit();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If we stepped into a sysenter/syscall insn, it trapped in
 	 * kernel mode; do_debug() cleared TF and set TIF_SINGLESTEP.
@@ -1535,7 +1731,15 @@ long syscall_trace_enter(struct pt_regs *regs)
 		regs->flags |= X86_EFLAGS_TF;
 
 	/* do the secure computing check first */
+<<<<<<< HEAD
 	secure_computing(regs->orig_ax);
+=======
+	if (secure_computing(regs->orig_ax)) {
+		/* seccomp failures shouldn't expose any additional code. */
+		ret = -1L;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(test_thread_flag(TIF_SYSCALL_EMU)))
 		ret = -1L;
@@ -1547,6 +1751,7 @@ long syscall_trace_enter(struct pt_regs *regs)
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_enter(regs, regs->orig_ax);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (unlikely(current->audit_context)) {
 		if (IS_IA32)
@@ -1563,6 +1768,8 @@ long syscall_trace_enter(struct pt_regs *regs)
 #endif
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (IS_IA32)
 		audit_syscall_entry(AUDIT_ARCH_I386,
 				    regs->orig_ax,
@@ -1575,8 +1782,13 @@ long syscall_trace_enter(struct pt_regs *regs)
 				    regs->di, regs->si,
 				    regs->dx, regs->r10);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+out:
+>>>>>>> refs/remotes/origin/master
 	return ret ?: regs->orig_ax;
 }
 
@@ -1585,11 +1797,22 @@ void syscall_trace_leave(struct pt_regs *regs)
 	bool step;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit(AUDITSC_RESULT(regs->ax), regs->ax);
 =======
 	audit_syscall_exit(regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * We may come here right after calling schedule_user()
+	 * or do_notify_resume(), in which case we can be in RCU
+	 * user mode.
+	 */
+	user_exit();
+
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_exit(regs, regs->ax);
@@ -1604,4 +1827,9 @@ void syscall_trace_leave(struct pt_regs *regs)
 			!test_thread_flag(TIF_SYSCALL_EMU);
 	if (step || test_thread_flag(TIF_SYSCALL_TRACE))
 		tracehook_report_syscall_exit(regs, step);
+<<<<<<< HEAD
+=======
+
+	user_enter();
+>>>>>>> refs/remotes/origin/master
 }

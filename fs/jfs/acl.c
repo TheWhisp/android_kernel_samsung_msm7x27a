@@ -28,10 +28,14 @@
 #include "jfs_acl.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct posix_acl *jfs_get_acl(struct inode *inode, int type)
 =======
 struct posix_acl *jfs_get_acl(struct inode *inode, int type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct posix_acl *jfs_get_acl(struct inode *inode, int type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct posix_acl *acl;
 	char *ea_name;
@@ -68,7 +72,11 @@ struct posix_acl *jfs_get_acl(struct inode *inode, int type)
 		else
 			acl = ERR_PTR(size);
 	} else {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, size);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 	}
 	kfree(value);
 	if (!IS_ERR(acl))
@@ -104,7 +112,11 @@ static int jfs_set_acl(tid_t tid, struct inode *inode, int type,
 		value = kmalloc(size, GFP_KERNEL);
 		if (!value)
 			return -ENOMEM;
+<<<<<<< HEAD
 		rc = posix_acl_to_xattr(acl, value, size);
+=======
+		rc = posix_acl_to_xattr(&init_user_ns, acl, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (rc < 0)
 			goto out;
 	}
@@ -118,6 +130,7 @@ out:
 	return rc;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int jfs_check_acl(struct inode *inode, int mask, unsigned int flags)
 {
@@ -148,6 +161,11 @@ int jfs_init_acl(tid_t tid, struct inode *inode, struct inode *dir)
 {
 	struct posix_acl *acl = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int jfs_init_acl(tid_t tid, struct inode *inode, struct inode *dir)
+{
+	struct posix_acl *acl = NULL;
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	if (S_ISLNK(inode->i_mode))
@@ -164,6 +182,7 @@ int jfs_init_acl(tid_t tid, struct inode *inode, struct inode *dir)
 				goto cleanup;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_KERNEL);
 		if (!clone) {
 			rc = -ENOMEM;
@@ -179,12 +198,17 @@ int jfs_init_acl(tid_t tid, struct inode *inode, struct inode *dir)
 		}
 		posix_acl_release(clone);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = posix_acl_create(&acl, GFP_KERNEL, &inode->i_mode);
 		if (rc < 0)
 			goto cleanup; /* posix_acl_release(NULL) is no-op */
 		if (rc > 0)
 			rc = jfs_set_acl(tid, inode, ACL_TYPE_ACCESS, acl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 cleanup:
 		posix_acl_release(acl);
 	} else
@@ -199,6 +223,7 @@ cleanup:
 int jfs_acl_chmod(struct inode *inode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
 	int rc;
 =======
@@ -206,6 +231,11 @@ int jfs_acl_chmod(struct inode *inode)
 	int rc;
 	tid_t tid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct posix_acl *acl;
+	int rc;
+	tid_t tid;
+>>>>>>> refs/remotes/origin/master
 
 	if (S_ISLNK(inode->i_mode))
 		return -EOPNOTSUPP;
@@ -214,6 +244,7 @@ int jfs_acl_chmod(struct inode *inode)
 	if (IS_ERR(acl) || !acl)
 		return PTR_ERR(acl);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_KERNEL);
 	posix_acl_release(acl);
@@ -233,6 +264,8 @@ int jfs_acl_chmod(struct inode *inode)
 
 	posix_acl_release(clone);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
 	if (rc)
 		return rc;
@@ -246,6 +279,9 @@ int jfs_acl_chmod(struct inode *inode)
 	mutex_unlock(&JFS_IP(inode)->commit_mutex);
 
 	posix_acl_release(acl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }

@@ -23,6 +23,7 @@
 #include <linux/atm_suni.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/param.h>
 #include <asm/uaccess.h>
@@ -32,6 +33,11 @@
 #include <asm/uaccess.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/param.h>
+#include <asm/uaccess.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "suni.h"
 

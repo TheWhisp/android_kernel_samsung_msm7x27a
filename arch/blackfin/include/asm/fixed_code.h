@@ -6,11 +6,19 @@
  *
  * Licensed under the GPL-2 or later.
  */
+<<<<<<< HEAD
 
 #ifndef __BFIN_ASM_FIXED_CODE_H__
 #define __BFIN_ASM_FIXED_CODE_H__
 
 #ifdef __KERNEL__
+=======
+#ifndef __BFIN_ASM_FIXED_CODE_H__
+#define __BFIN_ASM_FIXED_CODE_H__
+
+#include <uapi/asm/fixed_code.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 #include <linux/linkage.h>
 #include <linux/ptrace.h>
@@ -28,6 +36,7 @@ extern void safe_user_instruction(void);
 extern void sigreturn_stub(void);
 #endif
 #endif
+<<<<<<< HEAD
 
 #define FIXED_CODE_START	0x400
 
@@ -50,3 +59,5 @@ extern void sigreturn_stub(void);
 #define FIXED_CODE_END		0x490
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

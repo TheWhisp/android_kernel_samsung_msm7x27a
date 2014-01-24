@@ -24,17 +24,23 @@ static struct platform_device uart8250_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init uart8250_init(void)
 {
 	int i;
 	struct ssb_mipscore *mcore = &(ssb_bcm47xx.mipscore);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BCM47XX_SSB
 static int __init uart8250_init_ssb(void)
 {
 	int i;
 	struct ssb_mipscore *mcore = &(bcm47xx_bus.ssb.mipscore);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	memset(&uart8250_data, 0,  sizeof(uart8250_data));
 
@@ -53,7 +59,10 @@ static int __init uart8250_init_ssb(void)
 	return platform_device_register(&uart8250_device);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_BCM47XX_BCMA
@@ -71,7 +80,11 @@ static int __init uart8250_init_bcma(void)
 
 		p->mapbase = (unsigned int) bcma_port->regs;
 		p->membase = (void *) bcma_port->regs;
+<<<<<<< HEAD
 		p->irq = bcma_port->irq + 2;
+=======
+		p->irq = bcma_port->irq;
+>>>>>>> refs/remotes/origin/master
 		p->uartclk = bcma_port->baud_base;
 		p->regshift = bcma_port->reg_shift;
 		p->iotype = UPIO_MEM;
@@ -95,7 +108,10 @@ static int __init uart8250_init(void)
 	}
 	return -EINVAL;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_init(uart8250_init);
 

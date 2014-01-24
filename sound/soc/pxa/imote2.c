@@ -31,6 +31,7 @@ static int imote2_asoc_hw_params(struct snd_pcm_substream *substream,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
 				  | SND_SOC_DAIFMT_NB_NF
@@ -47,6 +48,8 @@ static int imote2_asoc_hw_params(struct snd_pcm_substream *substream,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk,
 				     SND_SOC_CLOCK_IN);
 	if (ret < 0)
@@ -71,12 +74,15 @@ static struct snd_soc_dai_link imote2_dai = {
 	.platform_name = "pxa-pcm-audio",
 	.codec_name = "wm8940-codec.0-0034",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ops = &imote2_asoc_ops,
 };
 
 static struct snd_soc_card snd_soc_imote2 = {
 	.name = "Imote2",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 		   SND_SOC_DAIFMT_CBS_CFS,
 	.ops = &imote2_asoc_ops,
@@ -85,11 +91,15 @@ static struct snd_soc_card snd_soc_imote2 = {
 static struct snd_soc_card imote2 = {
 	.name = "Imote2",
 	.owner = THIS_MODULE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.dai_link = &imote2_dai,
 	.num_links = 1,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_device *imote2_snd_device;
 
@@ -119,6 +129,9 @@ static void __exit imote2_asoc_exit(void)
 module_exit(imote2_asoc_exit);
 =======
 static int __devinit imote2_probe(struct platform_device *pdev)
+=======
+static int imote2_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &imote2;
 	int ret;
@@ -132,7 +145,11 @@ static int __devinit imote2_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit imote2_remove(struct platform_device *pdev)
+=======
+static int imote2_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -144,6 +161,7 @@ static struct platform_driver imote2_driver = {
 	.driver		= {
 		.name	= "imote2-audio",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= imote2_probe,
 	.remove		= __devexit_p(imote2_remove),
@@ -151,11 +169,24 @@ static struct platform_driver imote2_driver = {
 
 module_platform_driver(imote2_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm     = &snd_soc_pm_ops,
+	},
+	.probe		= imote2_probe,
+	.remove		= imote2_remove,
+};
+
+module_platform_driver(imote2_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jonathan Cameron");
 MODULE_DESCRIPTION("ALSA SoC Imote 2");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:imote2-audio");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:imote2-audio");
+>>>>>>> refs/remotes/origin/master

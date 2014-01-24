@@ -18,16 +18,22 @@
 
 /* Memory Controller */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MC_RCR		(AT91_MC + 0x00)	/* MC Remap Control Register */
 #define		AT91_MC_RCB		(1 <<  0)		/* Remap Command Bit */
 
 #define AT91_MC_ASR		(AT91_MC + 0x04)	/* MC Abort Status Register */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AT91_MC_RCR		0x00			/* MC Remap Control Register */
 #define		AT91_MC_RCB		(1 <<  0)		/* Remap Command Bit */
 
 #define AT91_MC_ASR		0x04			/* MC Abort Status Register */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MC_UNADD		(1 <<  0)		/* Undefined Address Abort Status */
 #define		AT91_MC_MISADD		(1 <<  1)		/* Misaligned Address Abort Status */
 #define		AT91_MC_ABTSZ		(3 <<  8)		/* Abort Size Status */
@@ -48,6 +54,7 @@
 #define		AT91_MC_SVMST3		(1 << 27)		/* Saved EMAC Abort Source */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_MC_AASR		(AT91_MC + 0x08)	/* MC Abort Address Status Register */
 
 #define AT91_MC_MPR		(AT91_MC + 0x0c)	/* MC Master Priority Register */
@@ -56,6 +63,11 @@
 
 #define AT91_MC_MPR		0x0c			/* MC Master Priority Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_MC_AASR		0x08			/* MC Abort Address Status Register */
+
+#define AT91_MC_MPR		0x0c			/* MC Master Priority Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_MPR_MSTP0		(7 <<  0)		/* ARM920T Priority */
 #define		AT91_MPR_MSTP1		(7 <<  4)		/* PDC Priority */
 #define		AT91_MPR_MSTP2		(7 <<  8)		/* UHP Priority */
@@ -63,10 +75,14 @@
 
 /* External Bus Interface (EBI) registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_EBI_CSA		(AT91_MC + 0x60)	/* Chip Select Assignment Register */
 =======
 #define AT91_EBI_CSA		0x60			/* Chip Select Assignment Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AT91_EBI_CSA		0x60			/* Chip Select Assignment Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_EBI_CS0A		(1 << 0)		/* Chip Select 0 Assignment */
 #define			AT91_EBI_CS0A_SMC		(0 << 0)
 #define			AT91_EBI_CS0A_BFC		(1 << 0)
@@ -84,10 +100,14 @@
 
 /* Static Memory Controller (SMC) registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	AT91_SMC_CSR(n)		(AT91_MC + 0x70 + ((n) * 4))/* SMC Chip Select Register */
 =======
 #define	AT91_SMC_CSR(n)		(0x70 + ((n) * 4))	/* SMC Chip Select Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	AT91_SMC_CSR(n)		(0x70 + ((n) * 4))	/* SMC Chip Select Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_SMC_NWS		(0x7f <<  0)		/* Number of Wait States */
 #define			AT91_SMC_NWS_(x)	((x) << 0)
 #define		AT91_SMC_WSEN		(1    <<  7)		/* Wait State Enable */
@@ -108,6 +128,7 @@
 #define		AT91_SMC_RWHOLD		(7 << 28)		/* Read & Write Signal Hold Time */
 #define			AT91_SMC_RWHOLD_(x)	((x) << 28)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* SDRAM Controller registers */
 #define AT91_SDRAMC_MR		(AT91_MC + 0x90)	/* Mode Register */
@@ -159,6 +180,10 @@
 /* Burst Flash Controller register */
 #define AT91_BFC_MR		0xc0			/* Mode Register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Burst Flash Controller register */
+#define AT91_BFC_MR		0xc0			/* Mode Register */
+>>>>>>> refs/remotes/origin/master
 #define		AT91_BFC_BFCOM		(3   <<  0)		/* Burst Flash Controller Operating Mode */
 #define			AT91_BFC_BFCOM_DISABLED	(0 << 0)
 #define			AT91_BFC_BFCOM_ASYNC	(1 << 0)

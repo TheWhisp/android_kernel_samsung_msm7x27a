@@ -41,9 +41,12 @@
 
 #include <asm/pal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/fpu.h>
 
 extern spinlock_t sal_lock;

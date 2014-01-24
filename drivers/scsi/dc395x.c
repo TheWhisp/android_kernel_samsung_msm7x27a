@@ -308,6 +308,11 @@ struct AdapterCtlBlk {
 	struct timer_list waiting_timer;
 	struct timer_list selto_timer;
 
+<<<<<<< HEAD
+=======
+	unsigned long last_reset;
+
+>>>>>>> refs/remotes/origin/master
 	u16 srb_count;
 
 	u8 sel_timeout;
@@ -489,7 +494,11 @@ struct ParameterData {
 	int def;		/* default value */
 	int safe;		/* safe value */
 };
+<<<<<<< HEAD
 static struct ParameterData __devinitdata cfg_data[] = {
+=======
+static struct ParameterData cfg_data[] = {
+>>>>>>> refs/remotes/origin/master
 	{ /* adapter id */
 		CFG_PARAM_UNSET,
 		0,
@@ -547,10 +556,14 @@ static struct ParameterData __devinitdata cfg_data[] = {
  * slow settings will be used.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int use_safe_settings = 0;
 =======
 static bool use_safe_settings = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool use_safe_settings = 0;
+>>>>>>> refs/remotes/origin/master
 module_param_named(safe, use_safe_settings, bool, 0);
 MODULE_PARM_DESC(safe, "Use safe and slow settings only. Default: false");
 
@@ -578,7 +591,11 @@ MODULE_PARM_DESC(reset_delay, "Reset delay in seconds. Default 1 (0-180)");
  * set_safe_settings - if the use_safe_settings option is set then
  * set all values to the safe and slow values.
  **/
+<<<<<<< HEAD
 static void __devinit set_safe_settings(void)
+=======
+static void set_safe_settings(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (use_safe_settings)
 	{
@@ -597,7 +614,11 @@ static void __devinit set_safe_settings(void)
  * fix_settings - reset any boot parameters which are out of range
  * back to the default values.
  **/
+<<<<<<< HEAD
 static void __devinit fix_settings(void)
+=======
+static void fix_settings(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -624,7 +645,11 @@ static void __devinit fix_settings(void)
  * Mapping from the eeprom delay index value (index into this array)
  * to the number of actual seconds that the delay should be for.
  */
+<<<<<<< HEAD
 static char __devinitdata eeprom_index_to_delay_map[] = 
+=======
+static char eeprom_index_to_delay_map[] =
+>>>>>>> refs/remotes/origin/master
 	{ 1, 3, 5, 10, 16, 30, 60, 120 };
 
 
@@ -634,7 +659,11 @@ static char __devinitdata eeprom_index_to_delay_map[] =
  *
  * @eeprom: The eeprom structure in which we find the delay index to map.
  **/
+<<<<<<< HEAD
 static void __devinit eeprom_index_to_delay(struct NvRamType *eeprom)
+=======
+static void eeprom_index_to_delay(struct NvRamType *eeprom)
+>>>>>>> refs/remotes/origin/master
 {
 	eeprom->delay_time = eeprom_index_to_delay_map[eeprom->delay_time];
 }
@@ -647,7 +676,11 @@ static void __devinit eeprom_index_to_delay(struct NvRamType *eeprom)
  *
  * @delay: The delay, in seconds, to find the eeprom index for.
  **/
+<<<<<<< HEAD
 static int __devinit delay_to_eeprom_index(int delay)
+=======
+static int delay_to_eeprom_index(int delay)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 idx = 0;
 	while (idx < 7 && eeprom_index_to_delay_map[idx] < delay)
@@ -663,7 +696,11 @@ static int __devinit delay_to_eeprom_index(int delay)
  *
  * @eeprom: The eeprom data to override with command line options.
  **/
+<<<<<<< HEAD
 static void __devinit eeprom_override(struct NvRamType *eeprom)
+=======
+static void eeprom_override(struct NvRamType *eeprom)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 id;
 
@@ -864,9 +901,15 @@ static void waiting_set_timer(struct AdapterCtlBlk *acb, unsigned long to)
 	init_timer(&acb->waiting_timer);
 	acb->waiting_timer.function = waiting_timeout;
 	acb->waiting_timer.data = (unsigned long) acb;
+<<<<<<< HEAD
 	if (time_before(jiffies + to, acb->scsi_host->last_reset - HZ / 2))
 		acb->waiting_timer.expires =
 		    acb->scsi_host->last_reset - HZ / 2 + 1;
+=======
+	if (time_before(jiffies + to, acb->last_reset - HZ / 2))
+		acb->waiting_timer.expires =
+		    acb->last_reset - HZ / 2 + 1;
+>>>>>>> refs/remotes/origin/master
 	else
 		acb->waiting_timer.expires = jiffies + to + 1;
 	add_timer(&acb->waiting_timer);
@@ -1323,7 +1366,11 @@ static int __dc395x_eh_bus_reset(struct scsi_cmnd *cmd)
 	udelay(500);
 
 	/* We may be in serious trouble. Wait some seconds */
+<<<<<<< HEAD
 	acb->scsi_host->last_reset =
+=======
+	acb->last_reset =
+>>>>>>> refs/remotes/origin/master
 	    jiffies + 3 * HZ / 2 +
 	    HZ * acb->eeprom.delay_time;
 
@@ -1466,9 +1513,15 @@ static void selto_timer(struct AdapterCtlBlk *acb)
 	acb->selto_timer.function = selection_timeout_missed;
 	acb->selto_timer.data = (unsigned long) acb;
 	if (time_before
+<<<<<<< HEAD
 	    (jiffies + HZ, acb->scsi_host->last_reset + HZ / 2))
 		acb->selto_timer.expires =
 		    acb->scsi_host->last_reset + HZ / 2 + 1;
+=======
+	    (jiffies + HZ, acb->last_reset + HZ / 2))
+		acb->selto_timer.expires =
+		    acb->last_reset + HZ / 2 + 1;
+>>>>>>> refs/remotes/origin/master
 	else
 		acb->selto_timer.expires = jiffies + HZ + 1;
 	add_timer(&acb->selto_timer);
@@ -1539,7 +1592,11 @@ static u8 start_scsi(struct AdapterCtlBlk* acb, struct DeviceCtlBlk* dcb,
 	}
 	/* Allow starting of SCSI commands half a second before we allow the mid-level
 	 * to queue them again after a reset */
+<<<<<<< HEAD
 	if (time_before(jiffies, acb->scsi_host->last_reset - HZ / 2)) {
+=======
+	if (time_before(jiffies, acb->last_reset - HZ / 2)) {
+>>>>>>> refs/remotes/origin/master
 		dprintkdbg(DBG_KG, "start_scsi: Refuse cmds (reset wait)\n");
 		return 1;
 	}
@@ -3035,7 +3092,11 @@ static void disconnect(struct AdapterCtlBlk *acb)
 		dprintkl(KERN_ERR, "disconnect: No such device\n");
 		udelay(500);
 		/* Suspend queue for a while */
+<<<<<<< HEAD
 		acb->scsi_host->last_reset =
+=======
+		acb->last_reset =
+>>>>>>> refs/remotes/origin/master
 		    jiffies + HZ / 2 +
 		    HZ * acb->eeprom.delay_time;
 		clear_fifo(acb, "disconnectEx");
@@ -3057,7 +3118,11 @@ static void disconnect(struct AdapterCtlBlk *acb)
 		waiting_process_next(acb);
 	} else if (srb->state & SRB_ABORT_SENT) {
 		dcb->flag &= ~ABORT_DEV_;
+<<<<<<< HEAD
 		acb->scsi_host->last_reset = jiffies + HZ / 2 + 1;
+=======
+		acb->last_reset = jiffies + HZ / 2 + 1;
+>>>>>>> refs/remotes/origin/master
 		dprintkl(KERN_ERR, "disconnect: SRB_ABORT_SENT\n");
 		doing_srb_done(acb, DID_ABORT, srb->cmd, 1);
 		waiting_process_next(acb);
@@ -3653,7 +3718,11 @@ static void scsi_reset_detect(struct AdapterCtlBlk *acb)
 	/*DC395x_write8(acb, TRM_S1040_DMA_CONTROL,STOPDMAXFER); */
 	udelay(500);
 	/* Maybe we locked up the bus? Then lets wait even longer ... */
+<<<<<<< HEAD
 	acb->scsi_host->last_reset =
+=======
+	acb->last_reset =
+>>>>>>> refs/remotes/origin/master
 	    jiffies + 5 * HZ / 2 +
 	    HZ * acb->eeprom.delay_time;
 
@@ -3942,7 +4011,11 @@ static void dc395x_slave_destroy(struct scsi_device *scsi_device)
  *
  * @io_port: base I/O address
  **/
+<<<<<<< HEAD
 static void __devinit trms1040_wait_30us(unsigned long io_port)
+=======
+static void trms1040_wait_30us(unsigned long io_port)
+>>>>>>> refs/remotes/origin/master
 {
 	/* ScsiPortStallExecution(30); wait 30 us */
 	outb(5, io_port + TRM_S1040_GEN_TIMER);
@@ -3959,7 +4032,11 @@ static void __devinit trms1040_wait_30us(unsigned long io_port)
  * @cmd:	SB + op code (command) to send
  * @addr:	address to send
  **/
+<<<<<<< HEAD
 static void __devinit trms1040_write_cmd(unsigned long io_port, u8 cmd, u8 addr)
+=======
+static void trms1040_write_cmd(unsigned long io_port, u8 cmd, u8 addr)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	u8 send_data;
@@ -4004,7 +4081,11 @@ static void __devinit trms1040_write_cmd(unsigned long io_port, u8 cmd, u8 addr)
  * @addr:	offset into EEPROM
  * @byte:	bytes to write
  **/
+<<<<<<< HEAD
 static void __devinit trms1040_set_data(unsigned long io_port, u8 addr, u8 byte)
+=======
+static void trms1040_set_data(unsigned long io_port, u8 addr, u8 byte)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	u8 send_data;
@@ -4058,7 +4139,11 @@ static void __devinit trms1040_set_data(unsigned long io_port, u8 addr, u8 byte)
  * @eeprom:	the data to write
  * @io_port:	the base io port
  **/
+<<<<<<< HEAD
 static void __devinit trms1040_write_all(struct NvRamType *eeprom, unsigned long io_port)
+=======
+static void trms1040_write_all(struct NvRamType *eeprom, unsigned long io_port)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *b_eeprom = (u8 *)eeprom;
 	u8 addr;
@@ -4098,7 +4183,11 @@ static void __devinit trms1040_write_all(struct NvRamType *eeprom, unsigned long
  *
  * Returns the byte read.
  **/
+<<<<<<< HEAD
 static u8 __devinit trms1040_get_data(unsigned long io_port, u8 addr)
+=======
+static u8 trms1040_get_data(unsigned long io_port, u8 addr)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	u8 read_byte;
@@ -4136,7 +4225,11 @@ static u8 __devinit trms1040_get_data(unsigned long io_port, u8 addr)
  * @eeprom:	where to store the data
  * @io_port:	the base io port
  **/
+<<<<<<< HEAD
 static void __devinit trms1040_read_all(struct NvRamType *eeprom, unsigned long io_port)
+=======
+static void trms1040_read_all(struct NvRamType *eeprom, unsigned long io_port)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *b_eeprom = (u8 *)eeprom;
 	u8 addr;
@@ -4166,7 +4259,11 @@ static void __devinit trms1040_read_all(struct NvRamType *eeprom, unsigned long 
  * @eeprom:	caller allocated strcuture to read the eeprom data into
  * @io_port:	io port to read from
  **/
+<<<<<<< HEAD
 static void __devinit check_eeprom(struct NvRamType *eeprom, unsigned long io_port)
+=======
+static void check_eeprom(struct NvRamType *eeprom, unsigned long io_port)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 *w_eeprom = (u16 *)eeprom;
 	u16 w_addr;
@@ -4236,7 +4333,11 @@ static void __devinit check_eeprom(struct NvRamType *eeprom, unsigned long io_po
  *
  * @eeprom: The eeprom data strucutre to show details for.
  **/
+<<<<<<< HEAD
 static void __devinit print_eeprom_settings(struct NvRamType *eeprom)
+=======
+static void print_eeprom_settings(struct NvRamType *eeprom)
+>>>>>>> refs/remotes/origin/master
 {
 	dprintkl(KERN_INFO, "Used settings: AdapterID=%02i, Speed=%i(%02i.%01iMHz), dev_mode=0x%02x\n",
 		eeprom->scsi_id,
@@ -4264,7 +4365,11 @@ static void adapter_sg_tables_free(struct AdapterCtlBlk *acb)
 /*
  * Allocate SG tables; as we have to pci_map them, an SG list (struct SGentry*)
  * should never cross a page boundary */
+<<<<<<< HEAD
 static int __devinit adapter_sg_tables_alloc(struct AdapterCtlBlk *acb)
+=======
+static int adapter_sg_tables_alloc(struct AdapterCtlBlk *acb)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned mem_needed = (DC395x_MAX_SRB_CNT+1)
 	                            *SEGMENTX_LEN;
@@ -4310,7 +4415,11 @@ static int __devinit adapter_sg_tables_alloc(struct AdapterCtlBlk *acb)
  *
  * @acb: The adapter to print the information for.
  **/
+<<<<<<< HEAD
 static void __devinit adapter_print_config(struct AdapterCtlBlk *acb)
+=======
+static void adapter_print_config(struct AdapterCtlBlk *acb)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 bval;
 
@@ -4354,7 +4463,11 @@ static void __devinit adapter_print_config(struct AdapterCtlBlk *acb)
  *
  * @acb: The adapter to initialize.
  **/
+<<<<<<< HEAD
 static void __devinit adapter_init_params(struct AdapterCtlBlk *acb)
+=======
+static void adapter_init_params(struct AdapterCtlBlk *acb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct NvRamType *eeprom = &acb->eeprom;
 	int i;
@@ -4416,7 +4529,11 @@ static void __devinit adapter_init_params(struct AdapterCtlBlk *acb)
  *
  * @host: The scsi host instance to fill in the values for.
  **/
+<<<<<<< HEAD
 static void __devinit adapter_init_scsi_host(struct Scsi_Host *host)
+=======
+static void adapter_init_scsi_host(struct Scsi_Host *host)
+>>>>>>> refs/remotes/origin/master
 {
         struct AdapterCtlBlk *acb = (struct AdapterCtlBlk *)host->hostdata;
 	struct NvRamType *eeprom = &acb->eeprom;
@@ -4430,7 +4547,11 @@ static void __devinit adapter_init_scsi_host(struct Scsi_Host *host)
 	host->dma_channel = -1;
 	host->unique_id = acb->io_port_base;
 	host->irq = acb->irq_level;
+<<<<<<< HEAD
 	host->last_reset = jiffies;
+=======
+	acb->last_reset = jiffies;
+>>>>>>> refs/remotes/origin/master
 
 	host->max_id = 16;
 	if (host->max_id - 1 == eeprom->scsi_id)
@@ -4457,7 +4578,11 @@ static void __devinit adapter_init_scsi_host(struct Scsi_Host *host)
  *
  * @acb: The adapter which we are to init.
  **/
+<<<<<<< HEAD
 static void __devinit adapter_init_chip(struct AdapterCtlBlk *acb)
+=======
+static void adapter_init_chip(struct AdapterCtlBlk *acb)
+>>>>>>> refs/remotes/origin/master
 {
         struct NvRamType *eeprom = &acb->eeprom;
         
@@ -4488,7 +4613,11 @@ static void __devinit adapter_init_chip(struct AdapterCtlBlk *acb)
 		/*spin_unlock_irq (&io_request_lock); */
 		udelay(500);
 
+<<<<<<< HEAD
 		acb->scsi_host->last_reset =
+=======
+		acb->last_reset =
+>>>>>>> refs/remotes/origin/master
 		    jiffies + HZ / 2 +
 		    HZ * acb->eeprom.delay_time;
 
@@ -4510,8 +4639,13 @@ static void __devinit adapter_init_chip(struct AdapterCtlBlk *acb)
  * Returns 0 if the initialization succeeds, any other value on
  * failure.
  **/
+<<<<<<< HEAD
 static int __devinit adapter_init(struct AdapterCtlBlk *acb,
 	unsigned long io_port, u32 io_port_len, unsigned int irq)
+=======
+static int adapter_init(struct AdapterCtlBlk *acb, unsigned long io_port,
+			u32 io_port_len, unsigned int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!request_region(io_port, io_port_len, DC395X_NAME)) {
 		dprintkl(KERN_ERR, "Failed to reserve IO region 0x%lx\n", io_port);
@@ -4620,26 +4754,40 @@ static void adapter_uninit(struct AdapterCtlBlk *acb)
 
 
 #undef SPRINTF
+<<<<<<< HEAD
 #define SPRINTF(args...) pos += sprintf(pos, args)
+=======
+#define SPRINTF(args...) seq_printf(m,##args)
+>>>>>>> refs/remotes/origin/master
 
 #undef YESNO
 #define YESNO(YN) \
  if (YN) SPRINTF(" Yes ");\
  else SPRINTF(" No  ")
 
+<<<<<<< HEAD
 static int dc395x_proc_info(struct Scsi_Host *host, char *buffer,
 		char **start, off_t offset, int length, int inout)
 {
 	struct AdapterCtlBlk *acb = (struct AdapterCtlBlk *)host->hostdata;
 	int spd, spd1;
 	char *pos = buffer;
+=======
+static int dc395x_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	struct AdapterCtlBlk *acb = (struct AdapterCtlBlk *)host->hostdata;
+	int spd, spd1;
+>>>>>>> refs/remotes/origin/master
 	struct DeviceCtlBlk *dcb;
 	unsigned long flags;
 	int dev;
 
+<<<<<<< HEAD
 	if (inout)		/* Has data been written to the file ? */
 		return -EPERM;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	SPRINTF(DC395X_BANNER " PCI SCSI Host Adapter\n");
 	SPRINTF(" Driver Version " DC395X_VERSION "\n");
 
@@ -4739,6 +4887,7 @@ static int dc395x_proc_info(struct Scsi_Host *host, char *buffer,
 		SPRINTF("END\n");
 	}
 
+<<<<<<< HEAD
 	*start = buffer + offset;
 	DC395x_UNLOCK_IO(acb->scsi_host, flags);
 
@@ -4748,13 +4897,21 @@ static int dc395x_proc_info(struct Scsi_Host *host, char *buffer,
 		return pos - buffer - offset;
 	else
 		return length;
+=======
+	DC395x_UNLOCK_IO(acb->scsi_host, flags);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static struct scsi_host_template dc395x_driver_template = {
 	.module                 = THIS_MODULE,
 	.proc_name              = DC395X_NAME,
+<<<<<<< HEAD
 	.proc_info              = dc395x_proc_info,
+=======
+	.show_info              = dc395x_show_info,
+>>>>>>> refs/remotes/origin/master
 	.name                   = DC395X_BANNER " " DC395X_VERSION,
 	.queuecommand           = dc395x_queue_command,
 	.bios_param             = dc395x_bios_param,
@@ -4798,8 +4955,12 @@ static void banner_display(void)
  *
  * Returns 0 on success, or an error code (-ve) on failure.
  **/
+<<<<<<< HEAD
 static int __devinit dc395x_init_one(struct pci_dev *dev,
 		const struct pci_device_id *id)
+=======
+static int dc395x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *scsi_host = NULL;
 	struct AdapterCtlBlk *acb = NULL;
@@ -4865,7 +5026,11 @@ fail:
  *
  * @dev: The PCI device to initialize.
  **/
+<<<<<<< HEAD
 static void __devexit dc395x_remove_one(struct pci_dev *dev)
+=======
+static void dc395x_remove_one(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *scsi_host = pci_get_drvdata(dev);
 	struct AdapterCtlBlk *acb = (struct AdapterCtlBlk *)(scsi_host->hostdata);
@@ -4876,7 +5041,10 @@ static void __devexit dc395x_remove_one(struct pci_dev *dev)
 	adapter_uninit(acb);
 	pci_disable_device(dev);
 	scsi_host_put(scsi_host);
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -4896,7 +5064,11 @@ static struct pci_driver dc395x_driver = {
 	.name           = DC395X_NAME,
 	.id_table       = dc395x_pci_table,
 	.probe          = dc395x_init_one,
+<<<<<<< HEAD
 	.remove         = __devexit_p(dc395x_remove_one),
+=======
+	.remove         = dc395x_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 

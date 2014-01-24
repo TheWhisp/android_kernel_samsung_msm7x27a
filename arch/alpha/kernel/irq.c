@@ -27,9 +27,12 @@
 #include <linux/bitops.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/uaccess.h>
 
@@ -121,6 +124,7 @@ handle_irq(int irq)
 		return;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * From here we must proceed with IPL_MAX. Note that we do not
 	 * explicitly enable interrupts afterwards - some MILO PALcode
@@ -128,6 +132,8 @@ handle_irq(int irq)
 	 * at IPL 0.
 	 */
 	local_irq_disable();
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_enter();
 	generic_handle_irq_desc(irq, desc);
 	irq_exit();

@@ -27,8 +27,13 @@
 
 #define SB1250_NR_IRQS 64
 
+<<<<<<< HEAD
 #define BCM1480_NR_IRQS                 128
 #define BCM1480_NR_IRQS_HALF            64
+=======
+#define BCM1480_NR_IRQS			128
+#define BCM1480_NR_IRQS_HALF		64
+>>>>>>> refs/remotes/origin/master
 
 #define SB1250_DUART_MINOR_BASE		64
 

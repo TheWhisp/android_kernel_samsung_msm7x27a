@@ -64,7 +64,11 @@ static int rpmsg_sample_probe(struct rpmsg_channel *rpdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit rpmsg_sample_remove(struct rpmsg_channel *rpdev)
+=======
+static void rpmsg_sample_remove(struct rpmsg_channel *rpdev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_info(&rpdev->dev, "rpmsg sample client driver is removed\n");
 }
@@ -81,7 +85,11 @@ static struct rpmsg_driver rpmsg_sample_client = {
 	.id_table	= rpmsg_driver_sample_id_table,
 	.probe		= rpmsg_sample_probe,
 	.callback	= rpmsg_sample_cb,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rpmsg_sample_remove),
+=======
+	.remove		= rpmsg_sample_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init rpmsg_client_sample_init(void)

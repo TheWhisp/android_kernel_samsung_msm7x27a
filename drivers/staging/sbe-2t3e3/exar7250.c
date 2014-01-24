@@ -78,16 +78,23 @@ void exar7250_start_intr(struct channel *sc, u32 type)
 	case SBE_2T3E3_FRAME_TYPE_E3_G751:
 	case SBE_2T3E3_FRAME_TYPE_E3_G832:
 		val = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_E3_RX_CONFIGURATION_STATUS_2);
+<<<<<<< HEAD
 #if 0
 		sc->s.LOS = val & SBE_2T3E3_FRAMER_VAL_E3_RX_LOS ? 1 : 0;
 #else
 		cpld_LOS_update(sc);
 #endif
+=======
+
+		cpld_LOS_update(sc);
+
+>>>>>>> refs/remotes/origin/master
 		sc->s.OOF = val & SBE_2T3E3_FRAMER_VAL_E3_RX_OOF ? 1 : 0;
 		exar7250_read(sc, SBE_2T3E3_FRAMER_REG_E3_RX_INTERRUPT_STATUS_1);
 		exar7250_write(sc, SBE_2T3E3_FRAMER_REG_E3_RX_INTERRUPT_ENABLE_1,
 			       SBE_2T3E3_FRAMER_VAL_E3_RX_OOF_INTERRUPT_ENABLE |
 			       SBE_2T3E3_FRAMER_VAL_E3_RX_LOS_INTERRUPT_ENABLE);
+<<<<<<< HEAD
 #if 0
 		/*SBE_2T3E3_FRAMER_VAL_E3_RX_COFA_INTERRUPT_ENABLE |
 		  SBE_2T3E3_FRAMER_VAL_E3_RX_OOF_INTERRUPT_ENABLE |
@@ -103,22 +110,33 @@ void exar7250_start_intr(struct channel *sc, u32 type)
 			       SBE_2T3E3_FRAMER_VAL_E3_RX_FERF_INTERRUPT_ENABLE |
 			       SBE_2T3E3_FRAMER_VAL_E3_RX_FRAMING_BYTE_ERROR_INTERRUPT_ENABLE);
 #endif
+=======
+
+		exar7250_read(sc, SBE_2T3E3_FRAMER_REG_E3_RX_INTERRUPT_STATUS_2);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SBE_2T3E3_FRAME_TYPE_T3_CBIT:
 	case SBE_2T3E3_FRAME_TYPE_T3_M13:
 		val = exar7250_read(sc, SBE_2T3E3_FRAMER_REG_T3_RX_CONFIGURATION_STATUS);
+<<<<<<< HEAD
 #if 0
 		sc->s.LOS = val & SBE_2T3E3_FRAMER_VAL_T3_RX_LOS ? 1 : 0;
 #else
 		cpld_LOS_update(sc);
 #endif
+=======
+
+		cpld_LOS_update(sc);
+
+>>>>>>> refs/remotes/origin/master
 		sc->s.OOF = val & SBE_2T3E3_FRAMER_VAL_T3_RX_OOF ? 1 : 0;
 
 		exar7250_read(sc, SBE_2T3E3_FRAMER_REG_T3_RX_INTERRUPT_STATUS);
 		exar7250_write(sc, SBE_2T3E3_FRAMER_REG_T3_RX_INTERRUPT_ENABLE,
 			       SBE_2T3E3_FRAMER_VAL_T3_RX_LOS_INTERRUPT_ENABLE |
 			       SBE_2T3E3_FRAMER_VAL_T3_RX_OOF_INTERRUPT_ENABLE);
+<<<<<<< HEAD
 #if 0
 		/* SBE_2T3E3_FRAMER_VAL_T3_RX_CP_BIT_ERROR_INTERRUPT_ENABLE |
 		   SBE_2T3E3_FRAMER_VAL_T3_RX_LOS_INTERRUPT_ENABLE |
@@ -136,6 +154,10 @@ void exar7250_start_intr(struct channel *sc, u32 type)
 			       SBE_2T3E3_FRAMER_VAL_T3_RX_FEAC_REMOVE_INTERRUPT_ENABLE |
 			       SBE_2T3E3_FRAMER_VAL_T3_RX_FEAC_VALID_INTERRUPT_ENABLE);
 #endif
+=======
+
+		exar7250_read(sc, SBE_2T3E3_FRAMER_REG_T3_RX_FEAC_INTERRUPT_ENABLE_STATUS);
+>>>>>>> refs/remotes/origin/master
 
 		exar7250_write(sc, SBE_2T3E3_FRAMER_REG_T3_RX_LAPD_CONTROL, 0);
 		break;

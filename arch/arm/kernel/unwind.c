@@ -40,10 +40,14 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
@@ -72,10 +76,14 @@ EXPORT_SYMBOL(__aeabi_unwind_cpp_pr2);
 struct unwind_ctrl_block {
 	unsigned long vrs[16];		/* virtual register set */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long *insn;		/* pointer to the current instructions word */
 =======
 	const unsigned long *insn;	/* pointer to the current instructions word */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const unsigned long *insn;	/* pointer to the current instructions word */
+>>>>>>> refs/remotes/origin/master
 	int entries;			/* number of entries left to interpret */
 	int byte;			/* current byte number in the instructions word */
 };
@@ -92,6 +100,7 @@ enum regs {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct unwind_idx __start_unwind_idx[];
 extern struct unwind_idx __stop_unwind_idx[];
 =======
@@ -99,6 +108,11 @@ extern const struct unwind_idx __start_unwind_idx[];
 static const struct unwind_idx *__origin_unwind_idx;
 extern const struct unwind_idx __stop_unwind_idx[];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern const struct unwind_idx __start_unwind_idx[];
+static const struct unwind_idx *__origin_unwind_idx;
+extern const struct unwind_idx __stop_unwind_idx[];
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_SPINLOCK(unwind_lock);
 static LIST_HEAD(unwind_tables);
@@ -112,6 +126,7 @@ static LIST_HEAD(unwind_tables);
 })
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Binary search in the unwind index. The entries entries are
  * guaranteed to be sorted in ascending order by the linker.
@@ -144,6 +159,8 @@ static struct unwind_idx *unwind_find_idx(unsigned long addr)
 {
 	struct unwind_idx *idx = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Binary search in the unwind index. The entries are
  * guaranteed to be sorted in ascending order by the linker.
  *
@@ -222,11 +239,15 @@ static const struct unwind_idx *unwind_find_origin(
 static const struct unwind_idx *unwind_find_idx(unsigned long addr)
 {
 	const struct unwind_idx *idx = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	pr_debug("%s(%08lx)\n", __func__, addr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (core_kernel_text(addr))
 		/* main unwind table */
@@ -234,6 +255,8 @@ static const struct unwind_idx *unwind_find_idx(unsigned long addr)
 				   __stop_unwind_idx - 1);
 	else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (core_kernel_text(addr)) {
 		if (unlikely(!__origin_unwind_idx))
 			__origin_unwind_idx =
@@ -245,7 +268,10 @@ static const struct unwind_idx *unwind_find_idx(unsigned long addr)
 				   __origin_unwind_idx,
 				   __stop_unwind_idx);
 	} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* module unwind tables */
 		struct unwind_table *table;
 
@@ -255,11 +281,16 @@ static const struct unwind_idx *unwind_find_idx(unsigned long addr)
 			    addr < table->end_addr) {
 				idx = search_index(addr, table->start,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						   table->stop - 1);
 =======
 						   table->origin,
 						   table->stop);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						   table->origin,
+						   table->stop);
+>>>>>>> refs/remotes/origin/master
 				/* Move-to-front to exploit common traces */
 				list_move(&table->list, &unwind_tables);
 				break;
@@ -389,10 +420,14 @@ int unwind_frame(struct stackframe *frame)
 {
 	unsigned long high, low;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct unwind_idx *idx;
 =======
 	const struct unwind_idx *idx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct unwind_idx *idx;
+>>>>>>> refs/remotes/origin/master
 	struct unwind_ctrl_block ctrl;
 
 	/* only go to a higher address on the stack */
@@ -518,9 +553,12 @@ struct unwind_table *unwind_table_add(unsigned long start, unsigned long size,
 {
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct unwind_idx *idx;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct unwind_table *tab = kmalloc(sizeof(*tab), GFP_KERNEL);
 
 	pr_debug("%s(%08lx, %08lx, %08lx, %08lx)\n", __func__, start, size,
@@ -529,6 +567,7 @@ struct unwind_table *unwind_table_add(unsigned long start, unsigned long size,
 	if (!tab)
 		return tab;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tab->start = (struct unwind_idx *)start;
 	tab->stop = (struct unwind_idx *)(start + size);
@@ -540,13 +579,18 @@ struct unwind_table *unwind_table_add(unsigned long start, unsigned long size,
 		idx->addr = prel31_to_addr(&idx->addr);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tab->start = (const struct unwind_idx *)start;
 	tab->stop = (const struct unwind_idx *)(start + size);
 	tab->origin = unwind_find_origin(tab->start, tab->stop);
 	tab->begin_addr = text_addr;
 	tab->end_addr = text_addr + text_size;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&unwind_lock, flags);
 	list_add_tail(&tab->list, &unwind_tables);
 	spin_unlock_irqrestore(&unwind_lock, flags);
@@ -568,6 +612,7 @@ void unwind_table_del(struct unwind_table *tab)
 	kfree(tab);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 int __init unwind_init(void)
 {
@@ -583,3 +628,5 @@ int __init unwind_init(void)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

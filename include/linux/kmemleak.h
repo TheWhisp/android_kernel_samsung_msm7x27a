@@ -27,14 +27,20 @@ extern void kmemleak_init(void) __ref;
 extern void kmemleak_alloc(const void *ptr, size_t size, int min_count,
 			   gfp_t gfp) __ref;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void kmemleak_free(const void *ptr) __ref;
 extern void kmemleak_free_part(const void *ptr, size_t size) __ref;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void kmemleak_alloc_percpu(const void __percpu *ptr, size_t size) __ref;
 extern void kmemleak_free(const void *ptr) __ref;
 extern void kmemleak_free_part(const void *ptr, size_t size) __ref;
 extern void kmemleak_free_percpu(const void __percpu *ptr) __ref;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void kmemleak_padding(const void *ptr, unsigned long offset,
 			     size_t size) __ref;
 extern void kmemleak_not_leak(const void *ptr) __ref;
@@ -76,11 +82,17 @@ static inline void kmemleak_alloc_recursive(const void *ptr, size_t size,
 {
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline void kmemleak_alloc_percpu(const void __percpu *ptr, size_t size)
 {
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void kmemleak_alloc_percpu(const void __percpu *ptr, size_t size)
+{
+}
+>>>>>>> refs/remotes/origin/master
 static inline void kmemleak_free(const void *ptr)
 {
 }
@@ -91,11 +103,17 @@ static inline void kmemleak_free_recursive(const void *ptr, unsigned long flags)
 {
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline void kmemleak_free_percpu(const void __percpu *ptr)
 {
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void kmemleak_free_percpu(const void __percpu *ptr)
+{
+}
+>>>>>>> refs/remotes/origin/master
 static inline void kmemleak_not_leak(const void *ptr)
 {
 }

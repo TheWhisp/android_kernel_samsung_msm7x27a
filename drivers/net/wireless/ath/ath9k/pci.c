@@ -14,14 +14,23 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/nl80211.h>
 #include <linux/pci.h>
 #include <linux/pci-aspm.h>
 #include <linux/ath9k_platform.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "ath9k.h"
 
 static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
@@ -30,11 +39,69 @@ static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 	{ PCI_VDEVICE(ATHEROS, 0x0027) }, /* PCI   */
 	{ PCI_VDEVICE(ATHEROS, 0x0029) }, /* PCI   */
 	{ PCI_VDEVICE(ATHEROS, 0x002A) }, /* PCI-E */
+<<<<<<< HEAD
+=======
+
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x1C71),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 PCI_VENDOR_ID_FOXCONN,
+			 0xE01F),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 0x11AD, /* LITEON */
+			 0x6632),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 0x11AD, /* LITEON */
+			 0x6642),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 PCI_VENDOR_ID_QMI,
+			 0x0306),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 0x185F, /* WNC */
+			 0x309D),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 0x10CF, /* Fujitsu */
+			 0x147C),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 0x10CF, /* Fujitsu */
+			 0x147D),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002A,
+			 0x10CF, /* Fujitsu */
+			 0x1536),
+	  .driver_data = ATH9K_PCI_D3_L1_WAR },
+
+	/* AR9285 card for Asus */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x002B,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2C37),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VDEVICE(ATHEROS, 0x002B) }, /* PCI-E */
 	{ PCI_VDEVICE(ATHEROS, 0x002C) }, /* PCI-E 802.11n bonded out */
 	{ PCI_VDEVICE(ATHEROS, 0x002D) }, /* PCI   */
 	{ PCI_VDEVICE(ATHEROS, 0x002E) }, /* PCI-E */
 	{ PCI_VDEVICE(ATHEROS, 0x0030) }, /* PCI-E  AR9300 */
+<<<<<<< HEAD
 	{ PCI_VDEVICE(ATHEROS, 0x0032) }, /* PCI-E  AR9485 */
 <<<<<<< HEAD
 	{ 0 }
@@ -44,11 +111,478 @@ static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 	{ PCI_VDEVICE(ATHEROS, 0x0033) }, /* PCI-E  AR9580 */
 	{ PCI_VDEVICE(ATHEROS, 0x0034) }, /* PCI-E  AR9462 */
 	{ PCI_VDEVICE(ATHEROS, 0x0037) }, /* PCI-E  AR1111/AR9485 */
+=======
+
+	/* PCI-E CUS198 */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2086),
+	  .driver_data = ATH9K_PCI_CUS198 | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x1237),
+	  .driver_data = ATH9K_PCI_CUS198 | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2126),
+	  .driver_data = ATH9K_PCI_CUS198 | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x126A),
+	  .driver_data = ATH9K_PCI_CUS198 | ATH9K_PCI_BT_ANT_DIV },
+
+	/* PCI-E CUS230 */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2152),
+	  .driver_data = ATH9K_PCI_CUS230 | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_FOXCONN,
+			 0xE075),
+	  .driver_data = ATH9K_PCI_CUS230 | ATH9K_PCI_BT_ANT_DIV },
+
+	/* WB225 */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x3119),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x3122),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x185F, /* WNC */
+			 0x3119),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x185F, /* WNC */
+			 0x3027),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x4105),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x4106),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x410D),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x410E),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x410F),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0xC706),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0xC680),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0xC708),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_LENOVO,
+			 0x3218),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_LENOVO,
+			 0x3219),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+
+	/* AR9485 cards with PLL power-save disabled by default. */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2C97),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2100),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x1C56, /* ASKEY */
+			 0x4001),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x11AD, /* LITEON */
+			 0x6627),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x11AD, /* LITEON */
+			 0x6628),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_FOXCONN,
+			 0xE04E),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_FOXCONN,
+			 0xE04F),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x144F, /* ASKEY */
+			 0x7197),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x1B9A, /* XAVI */
+			 0x2000),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x1B9A, /* XAVI */
+			 0x2001),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x1186),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x1F86),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x1195),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x1F95),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x1B9A, /* XAVI */
+			 0x1C00),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 0x1B9A, /* XAVI */
+			 0x1C01),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0032,
+			 PCI_VENDOR_ID_ASUSTEK,
+			 0x850D),
+	  .driver_data = ATH9K_PCI_NO_PLL_PWRSAVE },
+
+	{ PCI_VDEVICE(ATHEROS, 0x0032) }, /* PCI-E  AR9485 */
+	{ PCI_VDEVICE(ATHEROS, 0x0033) }, /* PCI-E  AR9580 */
+
+	/* PCI-E CUS217 */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2116),
+	  .driver_data = ATH9K_PCI_CUS217 },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 0x11AD, /* LITEON */
+			 0x6661),
+	  .driver_data = ATH9K_PCI_CUS217 },
+
+	/* AR9462 with WoW support */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x3117),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 PCI_VENDOR_ID_LENOVO,
+			 0x3214),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 PCI_VENDOR_ID_ATTANSIC,
+			 0x0091),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2110),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 PCI_VENDOR_ID_ASUSTEK,
+			 0x850E),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 0x11AD, /* LITEON */
+			 0x6631),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 0x11AD, /* LITEON */
+			 0x6641),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 PCI_VENDOR_ID_HP,
+			 0x1864),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 0x14CD, /* USI */
+			 0x0063),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 0x14CD, /* USI */
+			 0x0064),
+	  .driver_data = ATH9K_PCI_WOW },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0034,
+			 0x10CF, /* Fujitsu */
+			 0x1783),
+	  .driver_data = ATH9K_PCI_WOW },
+
+	{ PCI_VDEVICE(ATHEROS, 0x0034) }, /* PCI-E  AR9462 */
+	{ PCI_VDEVICE(ATHEROS, 0x0037) }, /* PCI-E  AR1111/AR9485 */
+
+	/* CUS252 */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x3028),
+	  .driver_data = ATH9K_PCI_CUS252 |
+			 ATH9K_PCI_AR9565_2ANT |
+			 ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2176),
+	  .driver_data = ATH9K_PCI_CUS252 |
+			 ATH9K_PCI_AR9565_2ANT |
+			 ATH9K_PCI_BT_ANT_DIV },
+
+	/* WB335 1-ANT */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_FOXCONN,
+			 0xE068),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x185F, /* WNC */
+			 0xA119),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x0632),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x6671),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x1B9A, /* XAVI */
+			 0x2811),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x1B9A, /* XAVI */
+			 0x2812),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT },
+
+	/* WB335 1-ANT / Antenna Diversity */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x3025),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x3026),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x302B),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_FOXCONN,
+			 0xE069),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x185F, /* WNC */
+			 0x3028),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x0622),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x0672),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x0662),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x213A),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_LENOVO,
+			 0x3026),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_HP,
+			 0x18E3),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_HP,
+			 0x217F),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_DELL,
+			 0x020E),
+	  .driver_data = ATH9K_PCI_AR9565_1ANT | ATH9K_PCI_BT_ANT_DIV },
+
+	/* WB335 2-ANT */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x411A),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x411B),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x411C),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x411D),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_SAMSUNG,
+			 0x411E),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT },
+
+	/* WB335 2-ANT / Antenna-Diversity */
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x3027),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_ATHEROS,
+			 0x302C),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x0642),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x0652),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x11AD, /* LITEON */
+			 0x0612),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 PCI_VENDOR_ID_AZWAVE,
+			 0x2130),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x144F, /* ASKEY */
+			 0x7202),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x1B9A, /* XAVI */
+			 0x2810),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_ATHEROS,
+			 0x0036,
+			 0x185F, /* WNC */
+			 0x3027),
+	  .driver_data = ATH9K_PCI_AR9565_2ANT | ATH9K_PCI_BT_ANT_DIV },
+
+	/* PCI-E AR9565 (WB335) */
+	{ PCI_VDEVICE(ATHEROS, 0x0036),
+	  .driver_data = ATH9K_PCI_BT_ANT_DIV },
+
+>>>>>>> refs/remotes/origin/master
 	{ 0 }
 };
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* return bus cachesize in 4B word units */
 static void ath_pci_read_cachesize(struct ath_common *common, int *csz)
 {
@@ -103,6 +637,7 @@ static bool ath_pci_eeprom_read(struct ath_common *common, u32 off, u16 *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Bluetooth coexistance requires disabling ASPM.
  */
@@ -141,6 +676,8 @@ static void ath_pci_extn_synch_enable(struct ath_common *common)
 	pci_write_config_byte(pdev, sc->sc_ah->caps.pcie_lcr_offset, lnkctl);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Need to be called after we discover btcoex capabilities */
 static void ath_pci_aspm_init(struct ath_common *common)
 {
@@ -148,11 +685,17 @@ static void ath_pci_aspm_init(struct ath_common *common)
 	struct ath_hw *ah = sc->sc_ah;
 	struct pci_dev *pdev = to_pci_dev(sc->dev);
 	struct pci_dev *parent;
+<<<<<<< HEAD
 	int pos;
 	u8 aspm;
 
 	pos = pci_pcie_cap(pdev);
 	if (!pos)
+=======
+	u16 aspm;
+
+	if (!ah->is_pciexpress)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	parent = pdev->bus->self;
@@ -161,15 +704,22 @@ static void ath_pci_aspm_init(struct ath_common *common)
 
 	if ((ath9k_hw_get_btcoex_scheme(ah) != ATH_BTCOEX_CFG_NONE) &&
 	    (AR_SREV_9285(ah))) {
+<<<<<<< HEAD
 		/* Bluetooth coexistance requires disabling ASPM for AR9285. */
 		pci_read_config_byte(pdev, pos + PCI_EXP_LNKCTL, &aspm);
 		aspm &= ~(PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
 		pci_write_config_byte(pdev, pos + PCI_EXP_LNKCTL, aspm);
+=======
+		/* Bluetooth coexistence requires disabling ASPM. */
+		pcie_capability_clear_word(pdev, PCI_EXP_LNKCTL,
+			PCI_EXP_LNKCTL_ASPM_L0S | PCI_EXP_LNKCTL_ASPM_L1);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Both upstream and downstream PCIe components should
 		 * have the same ASPM settings.
 		 */
+<<<<<<< HEAD
 		pos = pci_pcie_cap(parent);
 		pci_read_config_byte(parent, pos + PCI_EXP_LNKCTL, &aspm);
 		aspm &= ~(PCIE_LINK_STATE_L0S | PCIE_LINK_STATE_L1);
@@ -210,6 +760,37 @@ static void ath_pci_aspm_init(struct ath_common *common)
 		ah->aspm_enabled = true;
 		/* Initialize PCIe PM and SERDES registers. */
 		ath9k_hw_configpcipowersave(ah, 0, 0);
+=======
+		pcie_capability_clear_word(parent, PCI_EXP_LNKCTL,
+			PCI_EXP_LNKCTL_ASPM_L0S | PCI_EXP_LNKCTL_ASPM_L1);
+
+		ath_info(common, "Disabling ASPM since BTCOEX is enabled\n");
+		return;
+	}
+
+	/*
+	 * 0x70c - Ack Frequency Register.
+	 *
+	 * Bits 27:29 - DEFAULT_L1_ENTRANCE_LATENCY.
+	 *
+	 * 000 : 1 us
+	 * 001 : 2 us
+	 * 010 : 4 us
+	 * 011 : 8 us
+	 * 100 : 16 us
+	 * 101 : 32 us
+	 * 110/111 : 64 us
+	 */
+	if (AR_SREV_9462(ah))
+		pci_read_config_dword(pdev, 0x70c, &ah->config.aspm_l1_fix);
+
+	pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &aspm);
+	if (aspm & (PCI_EXP_LNKCTL_ASPM_L0S | PCI_EXP_LNKCTL_ASPM_L1)) {
+		ah->aspm_enabled = true;
+		/* Initialize PCIe PM and SERDES registers. */
+		ath9k_hw_configpcipowersave(ah, false);
+		ath_info(common, "ASPM enabled: 0x%x\n", aspm);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -218,15 +799,19 @@ static const struct ath_bus_ops ath_pci_bus_ops = {
 	.read_cachesize = ath_pci_read_cachesize,
 	.eeprom_read = ath_pci_eeprom_read,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bt_coex_prep = ath_pci_bt_coex_prep,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	.extn_synch_en = ath_pci_extn_synch_enable,
+=======
+>>>>>>> refs/remotes/origin/master
 	.aspm_init = ath_pci_aspm_init,
 };
 
 static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
+<<<<<<< HEAD
 	void __iomem *mem;
 	struct ath_softc *sc;
 	struct ieee80211_hw *hw;
@@ -235,24 +820,43 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	u16 subsysid;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ath_softc *sc;
+	struct ieee80211_hw *hw;
+	u8 csz;
+>>>>>>> refs/remotes/origin/master
 	u32 val;
 	int ret = 0;
 	char hw_name[64];
 
+<<<<<<< HEAD
 	if (pci_enable_device(pdev))
+=======
+	if (pcim_enable_device(pdev))
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	ret =  pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "ath9k: 32-bit DMA not available\n");
 		goto err_dma;
+=======
+		pr_err("32-bit DMA not available\n");
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "ath9k: 32-bit DMA consistent "
 			"DMA enable failed\n");
 		goto err_dma;
+=======
+		pr_err("32-bit DMA consistent DMA enable failed\n");
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -288,6 +892,7 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	if ((val & 0x0000ff00) != 0)
 		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
 
+<<<<<<< HEAD
 	ret = pci_request_region(pdev, 0, "ath9k");
 	if (ret) {
 		dev_err(&pdev->dev, "PCI memory region reserve error\n");
@@ -300,13 +905,23 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		printk(KERN_ERR "PCI memory map error\n") ;
 		ret = -EIO;
 		goto err_iomap;
+=======
+	ret = pcim_iomap_regions(pdev, BIT(0), "ath9k");
+	if (ret) {
+		dev_err(&pdev->dev, "PCI memory region reserve error\n");
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	hw = ieee80211_alloc_hw(sizeof(struct ath_softc), &ath9k_ops);
 	if (!hw) {
 		dev_err(&pdev->dev, "No memory for ieee80211_hw\n");
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		goto err_alloc_hw;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	SET_IEEE80211_DEV(hw, &pdev->dev);
@@ -315,10 +930,18 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	sc = hw->priv;
 	sc->hw = hw;
 	sc->dev = &pdev->dev;
+<<<<<<< HEAD
 	sc->mem = mem;
 
 	/* Will be cleared in ath9k_start() */
 	sc->sc_flags |= SC_OP_INVALID;
+=======
+	sc->mem = pcim_iomap_table(pdev)[0];
+	sc->driver_data = id->driver_data;
+
+	/* Will be cleared in ath9k_start() */
+	set_bit(SC_OP_INVALID, &sc->sc_flags);
+>>>>>>> refs/remotes/origin/master
 
 	ret = request_irq(pdev->irq, ath_isr, IRQF_SHARED, "ath9k", sc);
 	if (ret) {
@@ -329,11 +952,15 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	sc->irq = pdev->irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_read_config_word(pdev, PCI_SUBSYSTEM_ID, &subsysid);
 	ret = ath9k_init_device(id->device, sc, subsysid, &ath_pci_bus_ops);
 =======
 	ret = ath9k_init_device(id->device, sc, &ath_pci_bus_ops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ath9k_init_device(id->device, sc, &ath_pci_bus_ops);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to initialize device\n");
 		goto err_init;
@@ -341,7 +968,11 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 	ath9k_hw_name(sc->sc_ah, hw_name, sizeof(hw_name));
 	wiphy_info(hw->wiphy, "%s mem=0x%lx, irq=%d\n",
+<<<<<<< HEAD
 		   hw_name, (unsigned long)mem, pdev->irq);
+=======
+		   hw_name, (unsigned long)sc->mem, pdev->irq);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -349,6 +980,7 @@ err_init:
 	free_irq(sc->irq, sc);
 err_irq:
 	ieee80211_free_hw(hw);
+<<<<<<< HEAD
 err_alloc_hw:
 	pci_iounmap(pdev, mem);
 err_iomap:
@@ -357,6 +989,8 @@ err_region:
 	/* Nothing */
 err_dma:
 	pci_disable_device(pdev);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -364,13 +998,17 @@ static void ath_pci_remove(struct pci_dev *pdev)
 {
 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
 	struct ath_softc *sc = hw->priv;
+<<<<<<< HEAD
 	void __iomem *mem = sc->mem;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!is_ath9k_unloaded)
 		sc->sc_ah->ah_flags |= AH_UNPLUGGED;
 	ath9k_deinit_device(sc);
 	free_irq(sc->irq, sc);
 	ieee80211_free_hw(sc->hw);
+<<<<<<< HEAD
 
 	pci_iounmap(pdev, mem);
 	pci_disable_device(pdev);
@@ -378,6 +1016,11 @@ static void ath_pci_remove(struct pci_dev *pdev)
 }
 
 #ifdef CONFIG_PM
+=======
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 
 static int ath_pci_suspend(struct device *device)
 {
@@ -386,18 +1029,29 @@ static int ath_pci_suspend(struct device *device)
 	struct ath_softc *sc = hw->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath9k_hw_set_gpio(sc->sc_ah, sc->sc_ah->led_pin, 1);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sc->wow_enabled)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* The device has to be moved to FULLSLEEP forcibly.
 	 * Otherwise the chip never moved to full sleep,
 	 * when no interface is up.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ath9k_hw_disable(sc->sc_ah);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath9k_stop_btcoex(sc);
+	ath9k_hw_disable(sc->sc_ah);
+>>>>>>> refs/remotes/origin/master
 	ath9k_hw_setpower(sc->sc_ah, ATH9K_PM_FULL_SLEEP);
 
 	return 0;
@@ -407,10 +1061,17 @@ static int ath_pci_resume(struct device *device)
 {
 	struct pci_dev *pdev = to_pci_dev(device);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
 	struct ath_softc *sc = hw->priv;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+	struct ath_softc *sc = hw->priv;
+	struct ath_hw *ah = sc->sc_ah;
+	struct ath_common *common = ath9k_hw_common(ah);
+>>>>>>> refs/remotes/origin/master
 	u32 val;
 
 	/*
@@ -422,6 +1083,7 @@ static int ath_pci_resume(struct device *device)
 	if ((val & 0x0000ff00) != 0)
 		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Enable LED */
 	ath9k_hw_cfg_output(sc->sc_ah, sc->sc_ah->led_pin,
@@ -460,6 +1122,23 @@ static const struct dev_pm_ops ath9k_pm_ops = {
 #define ATH9K_PM_OPS	NULL
 
 #endif /* !CONFIG_PM */
+=======
+	ath_pci_aspm_init(common);
+	ah->reset_power_on = false;
+
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(ath9k_pm_ops, ath_pci_suspend, ath_pci_resume);
+
+#define ATH9K_PM_OPS	(&ath9k_pm_ops)
+
+#else /* !CONFIG_PM_SLEEP */
+
+#define ATH9K_PM_OPS	NULL
+
+#endif /* !CONFIG_PM_SLEEP */
+>>>>>>> refs/remotes/origin/master
 
 
 MODULE_DEVICE_TABLE(pci, ath_pci_id_table);

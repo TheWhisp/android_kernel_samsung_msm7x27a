@@ -26,7 +26,11 @@
 #include <linux/spi/spi.h>
 #include <linux/spi/spi_bitbang.h>
 
+<<<<<<< HEAD
 #include <mach/nuc900_spi.h>
+=======
+#include <linux/platform_data/spi-nuc900.h>
+>>>>>>> refs/remotes/origin/master
 
 /* usi registers offset */
 #define USI_CNT		0x00
@@ -174,6 +178,7 @@ static void nuc900_spi_gobusy(struct nuc900_spi *hw)
 	spin_unlock_irqrestore(&hw->lock, flags);
 }
 
+<<<<<<< HEAD
 static int nuc900_spi_setupxfer(struct spi_device *spi,
 				 struct spi_transfer *t)
 {
@@ -185,6 +190,8 @@ static int nuc900_spi_setup(struct spi_device *spi)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned int hw_txbyte(struct nuc900_spi *hw, int count)
 {
 	return hw->tx ? hw->tx[count] : 0;
@@ -346,7 +353,11 @@ static void nuc900_init_spi(struct nuc900_spi *hw)
 	nuc900_enable_int(hw);
 }
 
+<<<<<<< HEAD
 static int __devinit nuc900_spi_probe(struct platform_device *pdev)
+=======
+static int nuc900_spi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900_spi *hw;
 	struct spi_master *master;
@@ -360,8 +371,13 @@ static int __devinit nuc900_spi_probe(struct platform_device *pdev)
 	}
 
 	hw = spi_master_get_devdata(master);
+<<<<<<< HEAD
 	hw->master = spi_master_get(master);
 	hw->pdata  = pdev->dev.platform_data;
+=======
+	hw->master = master;
+	hw->pdata  = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	hw->dev = &pdev->dev;
 
 	if (hw->pdata == NULL) {
@@ -373,6 +389,7 @@ static int __devinit nuc900_spi_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, hw);
 	init_completion(&hw->done);
 
+<<<<<<< HEAD
 	master->mode_bits          = SPI_MODE_0;
 	master->num_chipselect     = hw->pdata->num_cs;
 	master->bus_num            = hw->pdata->bus_num;
@@ -381,6 +398,14 @@ static int __devinit nuc900_spi_probe(struct platform_device *pdev)
 	hw->bitbang.chipselect     = nuc900_spi_chipsel;
 	hw->bitbang.txrx_bufs      = nuc900_spi_txrx;
 	hw->bitbang.master->setup  = nuc900_spi_setup;
+=======
+	master->mode_bits          = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH;
+	master->num_chipselect     = hw->pdata->num_cs;
+	master->bus_num            = hw->pdata->bus_num;
+	hw->bitbang.master         = hw->master;
+	hw->bitbang.chipselect     = nuc900_spi_chipsel;
+	hw->bitbang.txrx_bufs      = nuc900_spi_txrx;
+>>>>>>> refs/remotes/origin/master
 
 	hw->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (hw->res == NULL) {
@@ -448,19 +473,29 @@ err_iomap:
 	kfree(hw->ioarea);
 err_pdata:
 	spi_master_put(hw->master);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 err_nomem:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit nuc900_spi_remove(struct platform_device *dev)
+=======
+static int nuc900_spi_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900_spi *hw = platform_get_drvdata(dev);
 
 	free_irq(hw->irq, hw);
 
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_bitbang_stop(&hw->bitbang);
 
 	clk_disable(hw->clk);
@@ -477,7 +512,11 @@ static int __devexit nuc900_spi_remove(struct platform_device *dev)
 
 static struct platform_driver nuc900_spi_driver = {
 	.probe		= nuc900_spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(nuc900_spi_remove),
+=======
+	.remove		= nuc900_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "nuc900-spi",
 		.owner	= THIS_MODULE,

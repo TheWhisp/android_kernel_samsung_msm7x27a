@@ -46,7 +46,10 @@
  * pcibios_fixups
  * pcibios_align_resource
  * pcibios_fixup_bus
+<<<<<<< HEAD
  * pcibios_setup
+=======
+>>>>>>> refs/remotes/origin/master
  * pci_bus_add_device
  * pci_mmap_page_range
  */
@@ -78,9 +81,15 @@ pcibios_align_resource(void *data, const struct resource *res,
 
 	if (res->flags & IORESOURCE_IO) {
 		if (size > 0x100) {
+<<<<<<< HEAD
 			printk(KERN_ERR "PCI: I/O Region %s/%d too large"
 			       " (%ld bytes)\n", pci_name(dev),
 			       dev->resource - res, size);
+=======
+			pr_err("PCI: I/O Region %s/%d too large (%u bytes)\n",
+					pci_name(dev), dev->resource - res,
+					size);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (start & 0x300)
@@ -135,10 +144,13 @@ struct pci_controller * __init pcibios_alloc_controller(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pcibios_init(void)
 {
 	struct pci_controller *pci_ctrl;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init pci_controller_apertures(struct pci_controller *pci_ctrl,
 					    struct list_head *resources)
 {
@@ -179,15 +191,21 @@ static int __init pcibios_init(void)
 {
 	struct pci_controller *pci_ctrl;
 	struct list_head resources;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct pci_bus *bus;
 	int next_busno = 0, i;
+=======
+	struct pci_bus *bus;
+	int next_busno = 0;
+>>>>>>> refs/remotes/origin/master
 
 	printk("PCI: Probing PCI hardware\n");
 
 	/* Scan all of the recorded PCI controllers.  */
 	for (pci_ctrl = pci_ctrl_head; pci_ctrl; pci_ctrl = pci_ctrl->next) {
 		pci_ctrl->last_busno = 0xff;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		bus = pci_scan_bus(pci_ctrl->first_busno, pci_ctrl->ops,
 				   pci_ctrl);
@@ -203,13 +221,20 @@ static int __init pcibios_init(void)
 			if (pci_ctrl->mem_resources[i].flags)
 				bus->resource[i+1] =&pci_ctrl->mem_resources[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		INIT_LIST_HEAD(&resources);
 		pci_controller_apertures(pci_ctrl, &resources);
 		bus = pci_scan_root_bus(NULL, pci_ctrl->first_busno,
 					pci_ctrl->ops, pci_ctrl, &resources);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		pci_ctrl->bus = bus;
 		pci_ctrl->last_busno = bus->subordinate;
+=======
+		pci_ctrl->bus = bus;
+		pci_ctrl->last_busno = bus->busn_res.end;
+>>>>>>> refs/remotes/origin/master
 		if (next_busno <= pci_ctrl->last_busno)
 			next_busno = pci_ctrl->last_busno+1;
 	}
@@ -220,6 +245,7 @@ static int __init pcibios_init(void)
 
 subsys_initcall(pcibios_init);
 
+<<<<<<< HEAD
 void __init pcibios_fixup_bus(struct pci_bus *bus)
 {
 <<<<<<< HEAD
@@ -285,11 +311,22 @@ char __init *pcibios_setup(char *str)
 
 <<<<<<< HEAD
 =======
+=======
+void pcibios_fixup_bus(struct pci_bus *bus)
+{
+	if (bus->parent) {
+		/* This is a subordinate bridge */
+		pci_read_bridge_bases(bus);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 void pcibios_set_master(struct pci_dev *dev)
 {
 	/* No special bus mastering setup handling */
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* the next one is stolen from the alpha port... */
 
@@ -299,6 +336,8 @@ pcibios_update_irq(struct pci_dev *dev, int irq)
 	pci_write_config_byte(dev, PCI_INTERRUPT_LINE, irq);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int pcibios_enable_device(struct pci_dev *dev, int mask)
 {
 	u16 cmd, old_cmd;
@@ -422,7 +461,11 @@ __pci_mmap_set_pgprot(struct pci_dev *dev, struct vm_area_struct *vma,
 	int prot = pgprot_val(vma->vm_page_prot);
 
 	/* Set to write-through */
+<<<<<<< HEAD
 	prot &= ~_PAGE_NO_CACHE;
+=======
+	prot = (prot & _PAGE_CA_MASK) | _PAGE_CA_WT;
+>>>>>>> refs/remotes/origin/master
 #if 0
 	if (!write_combine)
 		prot |= _PAGE_WRITETHRU;

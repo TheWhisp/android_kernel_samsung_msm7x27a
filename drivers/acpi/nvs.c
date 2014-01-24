@@ -13,10 +13,14 @@
 #include <linux/slab.h>
 #include <linux/acpi.h>
 #include <linux/acpi_io.h>
+<<<<<<< HEAD
 #include <acpi/acpiosxf.h>
 
 <<<<<<< HEAD
 =======
+=======
+
+>>>>>>> refs/remotes/origin/master
 /* ACPI NVS regions, APEI may use it */
 
 struct nvs_region {
@@ -67,7 +71,10 @@ int acpi_nvs_for_each_region(int (*func)(__u64 start, __u64 size, void *data),
 
 
 #ifdef CONFIG_ACPI_SLEEP
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Platforms, like ACPI, may want us to save some memory used by them during
  * suspend and to restore the contents of this memory during the subsequent
@@ -95,6 +102,7 @@ static LIST_HEAD(nvs_list);
  *	be copied into separate RAM pages.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int suspend_nvs_register(unsigned long start, unsigned long size)
 {
 	struct nvs_page *entry, *next;
@@ -102,13 +110,18 @@ int suspend_nvs_register(unsigned long start, unsigned long size)
 	pr_info("PM: Registering ACPI NVS region at %lx (%ld bytes)\n",
 		start, size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int suspend_nvs_register(unsigned long start, unsigned long size)
 {
 	struct nvs_page *entry, *next;
 
 	pr_info("PM: Registering ACPI NVS region [mem %#010lx-%#010lx] (%ld bytes)\n",
 		start, start + size - 1, size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	while (size > 0) {
 		unsigned int nr_bytes;
@@ -222,6 +235,10 @@ void suspend_nvs_restore(void)
 			memcpy(entry->kaddr, entry->data, entry->size);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master

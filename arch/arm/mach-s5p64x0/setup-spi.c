@@ -9,6 +9,7 @@
  */
 
 #include <linux/gpio.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/io.h>
 
@@ -24,6 +25,12 @@ struct s3c64xx_spi_info s3c64xx_spi0_pdata __initdata = {
 };
 
 int s3c64xx_spi0_cfg_gpio(struct platform_device *dev)
+=======
+#include <plat/gpio-cfg.h>
+
+#ifdef CONFIG_S3C64XX_DEV_SPI0
+int s3c64xx_spi0_cfg_gpio(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (soc_is_s5p6450())
 		s3c_gpio_cfgall_range(S5P6450_GPC(0), 3,
@@ -36,6 +43,7 @@ int s3c64xx_spi0_cfg_gpio(struct platform_device *dev)
 #endif
 
 #ifdef CONFIG_S3C64XX_DEV_SPI1
+<<<<<<< HEAD
 struct s3c64xx_spi_info s3c64xx_spi1_pdata __initdata = {
 	.fifo_lvl_mask	= 0x7f,
 	.rx_lvl_offset	= 15,
@@ -43,6 +51,9 @@ struct s3c64xx_spi_info s3c64xx_spi1_pdata __initdata = {
 };
 
 int s3c64xx_spi1_cfg_gpio(struct platform_device *dev)
+=======
+int s3c64xx_spi1_cfg_gpio(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (soc_is_s5p6450())
 		s3c_gpio_cfgall_range(S5P6450_GPC(4), 3,

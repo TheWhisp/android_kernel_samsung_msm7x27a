@@ -1,5 +1,9 @@
 /*
  * Copyright 2010 ARM Ltd.
+<<<<<<< HEAD
+=======
+ * Copyright 2012 Advanced Micro Devices, Inc., Robert Richter
+>>>>>>> refs/remotes/origin/master
  *
  * Perf-events backend for OProfile.
  */
@@ -25,24 +29,36 @@ static int oprofile_perf_enabled;
 static DEFINE_MUTEX(oprofile_perf_mutex);
 
 static struct op_counter_config *counter_config;
+<<<<<<< HEAD
 static struct perf_event **perf_events[NR_CPUS];
+=======
+static DEFINE_PER_CPU(struct perf_event **, perf_events);
+>>>>>>> refs/remotes/origin/master
 static int num_counters;
 
 /*
  * Overflow callback for oprofile.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void op_overflow_handler(struct perf_event *event, int unused,
 =======
 static void op_overflow_handler(struct perf_event *event,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void op_overflow_handler(struct perf_event *event,
+>>>>>>> refs/remotes/origin/master
 			struct perf_sample_data *data, struct pt_regs *regs)
 {
 	int id;
 	u32 cpu = smp_processor_id();
 
 	for (id = 0; id < num_counters; ++id)
+<<<<<<< HEAD
 		if (perf_events[cpu][id] == event)
+=======
+		if (per_cpu(perf_events, cpu)[id] == event)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 	if (id != num_counters)
@@ -78,16 +94,24 @@ static int op_create_counter(int cpu, int event)
 {
 	struct perf_event *pevent;
 
+<<<<<<< HEAD
 	if (!counter_config[event].enabled || perf_events[cpu][event])
+=======
+	if (!counter_config[event].enabled || per_cpu(perf_events, cpu)[event])
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	pevent = perf_event_create_kernel_counter(&counter_config[event].attr,
 						  cpu, NULL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						  op_overflow_handler);
 =======
 						  op_overflow_handler, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						  op_overflow_handler, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(pevent))
 		return PTR_ERR(pevent);
@@ -99,18 +123,30 @@ static int op_create_counter(int cpu, int event)
 		return -EBUSY;
 	}
 
+<<<<<<< HEAD
 	perf_events[cpu][event] = pevent;
+=======
+	per_cpu(perf_events, cpu)[event] = pevent;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static void op_destroy_counter(int cpu, int event)
 {
+<<<<<<< HEAD
 	struct perf_event *pevent = perf_events[cpu][event];
 
 	if (pevent) {
 		perf_event_release_kernel(pevent);
 		perf_events[cpu][event] = NULL;
+=======
+	struct perf_event *pevent = per_cpu(perf_events, cpu)[event];
+
+	if (pevent) {
+		perf_event_release_kernel(pevent);
+		per_cpu(perf_events, cpu)[event] = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -145,7 +181,11 @@ static void op_perf_stop(void)
 			op_destroy_counter(cpu, event);
 }
 
+<<<<<<< HEAD
 static int oprofile_perf_create_files(struct super_block *sb, struct dentry *root)
+=======
+static int oprofile_perf_create_files(struct dentry *root)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
@@ -154,6 +194,7 @@ static int oprofile_perf_create_files(struct super_block *sb, struct dentry *roo
 		char buf[4];
 
 		snprintf(buf, sizeof buf, "%d", i);
+<<<<<<< HEAD
 		dir = oprofilefs_mkdir(sb, root, buf);
 		oprofilefs_create_ulong(sb, dir, "enabled", &counter_config[i].enabled);
 		oprofilefs_create_ulong(sb, dir, "event", &counter_config[i].event);
@@ -161,6 +202,15 @@ static int oprofile_perf_create_files(struct super_block *sb, struct dentry *roo
 		oprofilefs_create_ulong(sb, dir, "unit_mask", &counter_config[i].unit_mask);
 		oprofilefs_create_ulong(sb, dir, "kernel", &counter_config[i].kernel);
 		oprofilefs_create_ulong(sb, dir, "user", &counter_config[i].user);
+=======
+		dir = oprofilefs_mkdir(root, buf);
+		oprofilefs_create_ulong(dir, "enabled", &counter_config[i].enabled);
+		oprofilefs_create_ulong(dir, "event", &counter_config[i].event);
+		oprofilefs_create_ulong(dir, "count", &counter_config[i].count);
+		oprofilefs_create_ulong(dir, "unit_mask", &counter_config[i].unit_mask);
+		oprofilefs_create_ulong(dir, "kernel", &counter_config[i].kernel);
+		oprofilefs_create_ulong(dir, "user", &counter_config[i].user);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -168,6 +218,7 @@ static int oprofile_perf_create_files(struct super_block *sb, struct dentry *roo
 
 static int oprofile_perf_setup(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock(&oprofilefs_lock);
 	op_perf_setup();
@@ -177,6 +228,11 @@ static int oprofile_perf_setup(void)
 	op_perf_setup();
 	raw_spin_unlock(&oprofilefs_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock(&oprofilefs_lock);
+	op_perf_setup();
+	raw_spin_unlock(&oprofilefs_lock);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -271,12 +327,20 @@ void oprofile_perf_exit(void)
 
 	for_each_possible_cpu(cpu) {
 		for (id = 0; id < num_counters; ++id) {
+<<<<<<< HEAD
 			event = perf_events[cpu][id];
+=======
+			event = per_cpu(perf_events, cpu)[id];
+>>>>>>> refs/remotes/origin/master
 			if (event)
 				perf_event_release_kernel(event);
 		}
 
+<<<<<<< HEAD
 		kfree(perf_events[cpu]);
+=======
+		kfree(per_cpu(perf_events, cpu));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree(counter_config);
@@ -291,8 +355,11 @@ int __init oprofile_perf_init(struct oprofile_operations *ops)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	memset(&perf_events, 0, sizeof(perf_events));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	num_counters = perf_num_counters();
 	if (num_counters <= 0) {
 		pr_info("oprofile: no performance counters\n");
@@ -312,9 +379,15 @@ int __init oprofile_perf_init(struct oprofile_operations *ops)
 	}
 
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 		perf_events[cpu] = kcalloc(num_counters,
 				sizeof(struct perf_event *), GFP_KERNEL);
 		if (!perf_events[cpu]) {
+=======
+		per_cpu(perf_events, cpu) = kcalloc(num_counters,
+				sizeof(struct perf_event *), GFP_KERNEL);
+		if (!per_cpu(perf_events, cpu)) {
+>>>>>>> refs/remotes/origin/master
 			pr_info("oprofile: failed to allocate %d perf events "
 					"for cpu %d\n", num_counters, cpu);
 			ret = -ENOMEM;

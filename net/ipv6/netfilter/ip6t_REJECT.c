@@ -7,6 +7,11 @@
  * Authors:
  *	Yasuyuki Kozakai	<yasuyuki.kozakai@toshiba.co.jp>
  *
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2005-2007 Patrick McHardy <kaber@trash.net>
+ *
+>>>>>>> refs/remotes/origin/master
  * Based on net/ipv4/netfilter/ipt_REJECT.c
  *
  * This program is free software; you can redistribute it and/or
@@ -37,7 +42,11 @@ MODULE_DESCRIPTION("Xtables: packet \"rejection\" target for IPv6");
 MODULE_LICENSE("GPL");
 
 /* Send RST reply */
+<<<<<<< HEAD
 static void send_reset(struct net *net, struct sk_buff *oldskb)
+=======
+static void send_reset(struct net *net, struct sk_buff *oldskb, int hook)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *nskb;
 	struct tcphdr otcph, *tcph;
@@ -50,9 +59,13 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 	struct dst_entry *dst = NULL;
 	u8 proto;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	__be16 frag_off;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__be16 frag_off;
+>>>>>>> refs/remotes/origin/master
 	struct flowi6 fl6;
 
 	if ((!(ipv6_addr_type(&oip6h->saddr) & IPV6_ADDR_UNICAST)) ||
@@ -63,10 +76,14 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 
 	proto = oip6h->nexthdr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tcphoff = ipv6_skip_exthdr(oldskb, ((u8*)(oip6h+1) - oldskb->data), &proto);
 =======
 	tcphoff = ipv6_skip_exthdr(oldskb, ((u8*)(oip6h+1) - oldskb->data), &proto, &frag_off);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tcphoff = ipv6_skip_exthdr(oldskb, ((u8*)(oip6h+1) - oldskb->data), &proto, &frag_off);
+>>>>>>> refs/remotes/origin/master
 
 	if ((tcphoff < 0) || (tcphoff > oldskb->len)) {
 		pr_debug("Cannot get TCP header.\n");
@@ -93,8 +110,12 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 	}
 
 	/* Check checksum. */
+<<<<<<< HEAD
 	if (csum_ipv6_magic(&oip6h->saddr, &oip6h->daddr, otcplen, IPPROTO_TCP,
 			    skb_checksum(oldskb, tcphoff, otcplen, 0))) {
+=======
+	if (nf_ip6_checksum(oldskb, hook, tcphoff, IPPROTO_TCP)) {
+>>>>>>> refs/remotes/origin/master
 		pr_debug("TCP checksum is invalid\n");
 		return;
 	}
@@ -102,12 +123,17 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 	memset(&fl6, 0, sizeof(fl6));
 	fl6.flowi6_proto = IPPROTO_TCP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.saddr, &oip6h->daddr);
 	ipv6_addr_copy(&fl6.daddr, &oip6h->saddr);
 =======
 	fl6.saddr = oip6h->daddr;
 	fl6.daddr = oip6h->saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fl6.saddr = oip6h->daddr;
+	fl6.daddr = oip6h->saddr;
+>>>>>>> refs/remotes/origin/master
 	fl6.fl6_sport = otcph.dest;
 	fl6.fl6_dport = otcph.source;
 	security_skb_classify_flow(oldskb, flowi6_to_flowi(&fl6));
@@ -126,8 +152,12 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 			 GFP_ATOMIC);
 
 	if (!nskb) {
+<<<<<<< HEAD
 		if (net_ratelimit())
 			pr_debug("cannot alloc skb\n");
+=======
+		net_dbg_ratelimited("cannot alloc skb\n");
+>>>>>>> refs/remotes/origin/master
 		dst_release(dst);
 		return;
 	}
@@ -139,6 +169,7 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 	skb_put(nskb, sizeof(struct ipv6hdr));
 	skb_reset_network_header(nskb);
 	ip6h = ipv6_hdr(nskb);
+<<<<<<< HEAD
 	*(__be32 *)ip6h =  htonl(0x60000000 | (tclass << 20));
 	ip6h->hop_limit = ip6_dst_hoplimit(dst);
 	ip6h->nexthdr = IPPROTO_TCP;
@@ -150,6 +181,15 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 	ip6h->daddr = oip6h->saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	ip6_flow_hdr(ip6h, tclass, 0);
+	ip6h->hop_limit = ip6_dst_hoplimit(dst);
+	ip6h->nexthdr = IPPROTO_TCP;
+	ip6h->saddr = oip6h->daddr;
+	ip6h->daddr = oip6h->saddr;
+
+	skb_reset_transport_header(nskb);
+>>>>>>> refs/remotes/origin/master
 	tcph = (struct tcphdr *)skb_put(nskb, sizeof(struct tcphdr));
 	/* Truncate to length (no data) */
 	tcph->doff = sizeof(struct tcphdr)/4;
@@ -184,7 +224,29 @@ static void send_reset(struct net *net, struct sk_buff *oldskb)
 
 	nf_ct_attach(nskb, oldskb);
 
+<<<<<<< HEAD
 	ip6_local_out(nskb);
+=======
+#ifdef CONFIG_BRIDGE_NETFILTER
+	/* If we use ip6_local_out for bridged traffic, the MAC source on
+	 * the RST will be ours, instead of the destination's.  This confuses
+	 * some routers/firewalls, and they drop the packet.  So we need to
+	 * build the eth header using the original destination's MAC as the
+	 * source, and send the RST packet directly.
+	 */
+	if (oldskb->nf_bridge) {
+		struct ethhdr *oeth = eth_hdr(oldskb);
+		nskb->dev = oldskb->nf_bridge->physindev;
+		nskb->protocol = htons(ETH_P_IPV6);
+		ip6h->payload_len = htons(sizeof(struct tcphdr));
+		if (dev_hard_header(nskb, nskb->dev, ntohs(nskb->protocol),
+				    oeth->h_source, oeth->h_dest, nskb->len) < 0)
+			return;
+		dev_queue_xmit(nskb);
+	} else
+#endif
+		ip6_local_out(nskb);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -195,6 +257,7 @@ send_unreach(struct net *net, struct sk_buff *skb_in, unsigned char code,
 		skb_in->dev = net->loopback_dev;
 
 	icmpv6_send(skb_in, ICMPV6_DEST_UNREACH, code, 0);
+<<<<<<< HEAD
 #ifdef CONFIG_IP6_NF_TARGET_REJECT_SKERR
 	if (skb_in->sk) {
 		icmpv6_err_convert(ICMPV6_DEST_UNREACH, code,
@@ -204,6 +267,8 @@ send_unreach(struct net *net, struct sk_buff *skb_in, unsigned char code,
 			skb_in->sk->sk_err, skb_in, skb_in->sk);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int
@@ -233,11 +298,18 @@ reject_tg6(struct sk_buff *skb, const struct xt_action_param *par)
 		/* Do nothing */
 		break;
 	case IP6T_TCP_RESET:
+<<<<<<< HEAD
 		send_reset(net, skb);
 		break;
 	default:
 		if (net_ratelimit())
 			pr_info("case %u not handled yet\n", reject->with);
+=======
+		send_reset(net, skb, par->hooknum);
+		break;
+	default:
+		net_info_ratelimited("case %u not handled yet\n", reject->with);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 

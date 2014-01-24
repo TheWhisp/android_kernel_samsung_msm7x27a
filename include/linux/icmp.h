@@ -17,6 +17,7 @@
 #ifndef _LINUX_ICMP_H
 #define	_LINUX_ICMP_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define ICMP_ECHOREPLY		0	/* Echo Reply			*/
@@ -84,11 +85,16 @@ struct icmphdr {
 
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
+=======
+#include <linux/skbuff.h>
+#include <uapi/linux/icmp.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct icmphdr *icmp_hdr(const struct sk_buff *skb)
 {
 	return (struct icmphdr *)skb_transport_header(skb);
 }
+<<<<<<< HEAD
 #endif
 
 /*
@@ -102,4 +108,6 @@ struct icmp_filter {
 };
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_ICMP_H */

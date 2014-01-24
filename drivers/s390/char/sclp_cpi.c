@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/sclp_cpi.c
+=======
+>>>>>>> refs/remotes/origin/master
  *    SCLP control programm identification
  *
  *    Copyright IBM Corp. 2001, 2007

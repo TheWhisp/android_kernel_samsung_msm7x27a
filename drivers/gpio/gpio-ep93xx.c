@@ -51,6 +51,7 @@ static void ep93xx_gpio_update_int_params(unsigned port)
 {
 	BUG_ON(port > 2);
 
+<<<<<<< HEAD
 	__raw_writeb(0, EP93XX_GPIO_REG(int_en_register_offset[port]));
 
 	__raw_writeb(gpio_int_type2[port],
@@ -60,6 +61,17 @@ static void ep93xx_gpio_update_int_params(unsigned port)
 		EP93XX_GPIO_REG(int_type1_register_offset[port]));
 
 	__raw_writeb(gpio_int_unmasked[port] & gpio_int_enabled[port],
+=======
+	writeb_relaxed(0, EP93XX_GPIO_REG(int_en_register_offset[port]));
+
+	writeb_relaxed(gpio_int_type2[port],
+		EP93XX_GPIO_REG(int_type2_register_offset[port]));
+
+	writeb_relaxed(gpio_int_type1[port],
+		EP93XX_GPIO_REG(int_type1_register_offset[port]));
+
+	writeb(gpio_int_unmasked[port] & gpio_int_enabled[port],
+>>>>>>> refs/remotes/origin/master
 		EP93XX_GPIO_REG(int_en_register_offset[port]));
 }
 
@@ -74,7 +86,11 @@ static void ep93xx_gpio_int_debounce(unsigned int irq, bool enable)
 	else
 		gpio_int_debounce[port] &= ~port_mask;
 
+<<<<<<< HEAD
 	__raw_writeb(gpio_int_debounce[port],
+=======
+	writeb(gpio_int_debounce[port],
+>>>>>>> refs/remotes/origin/master
 		EP93XX_GPIO_REG(int_debounce_register_offset[port]));
 }
 
@@ -83,7 +99,11 @@ static void ep93xx_gpio_ab_irq_handler(unsigned int irq, struct irq_desc *desc)
 	unsigned char status;
 	int i;
 
+<<<<<<< HEAD
 	status = __raw_readb(EP93XX_GPIO_A_INT_STATUS);
+=======
+	status = readb(EP93XX_GPIO_A_INT_STATUS);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 8; i++) {
 		if (status & (1 << i)) {
 			int gpio_irq = gpio_to_irq(EP93XX_GPIO_LINE_A(0)) + i;
@@ -91,7 +111,11 @@ static void ep93xx_gpio_ab_irq_handler(unsigned int irq, struct irq_desc *desc)
 		}
 	}
 
+<<<<<<< HEAD
 	status = __raw_readb(EP93XX_GPIO_B_INT_STATUS);
+=======
+	status = readb(EP93XX_GPIO_B_INT_STATUS);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 8; i++) {
 		if (status & (1 << i)) {
 			int gpio_irq = gpio_to_irq(EP93XX_GPIO_LINE_B(0)) + i;
@@ -124,7 +148,11 @@ static void ep93xx_gpio_irq_ack(struct irq_data *d)
 		ep93xx_gpio_update_int_params(port);
 	}
 
+<<<<<<< HEAD
 	__raw_writeb(port_mask, EP93XX_GPIO_REG(eoi_register_offset[port]));
+=======
+	writeb(port_mask, EP93XX_GPIO_REG(eoi_register_offset[port]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ep93xx_gpio_irq_mask_ack(struct irq_data *d)
@@ -139,7 +167,11 @@ static void ep93xx_gpio_irq_mask_ack(struct irq_data *d)
 	gpio_int_unmasked[port] &= ~port_mask;
 	ep93xx_gpio_update_int_params(port);
 
+<<<<<<< HEAD
 	__raw_writeb(port_mask, EP93XX_GPIO_REG(eoi_register_offset[port]));
+=======
+	writeb(port_mask, EP93XX_GPIO_REG(eoi_register_offset[port]));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ep93xx_gpio_irq_mask(struct irq_data *d)
@@ -325,7 +357,11 @@ static int ep93xx_gpio_add_bank(struct bgpio_chip *bgc, struct device *dev,
 	void __iomem *dir =  mmio_base + bank->dir;
 	int err;
 
+<<<<<<< HEAD
 	err = bgpio_init(bgc, dev, 1, data, NULL, NULL, dir, NULL, false);
+=======
+	err = bgpio_init(bgc, dev, 1, data, NULL, NULL, dir, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -340,7 +376,11 @@ static int ep93xx_gpio_add_bank(struct bgpio_chip *bgc, struct device *dev,
 	return gpiochip_add(&bgc->gc);
 }
 
+<<<<<<< HEAD
 static int __devinit ep93xx_gpio_probe(struct platform_device *pdev)
+=======
+static int ep93xx_gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ep93xx_gpio *ep93xx_gpio;
 	struct resource *res;

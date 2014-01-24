@@ -1,9 +1,12 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * drivers/input/touchscreen/tps6507x_ts.c
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Touchscreen driver for the tps6507x chip.
  *
  * Copyright (c) 2009 RidgeRun (todd.fischer@ridgerun.com)
@@ -22,6 +25,10 @@
 #include <linux/workqueue.h>
 #include <linux/slab.h>
 #include <linux/input.h>
+<<<<<<< HEAD
+=======
+#include <linux/input-polldev.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/mfd/tps6507x.h>
 #include <linux/input/tps6507x-ts.h>
@@ -43,6 +50,7 @@ struct ts_event {
 };
 
 struct tps6507x_ts {
+<<<<<<< HEAD
 	struct input_dev	*input_dev;
 	struct device		*dev;
 	char			phys[32];
@@ -57,6 +65,15 @@ struct tps6507x_ts {
 	unsigned long		poll_period;	/* ms */
 	u16			min_pressure;
 	int			vref;		/* non-zero to leave vref on */
+=======
+	struct device		*dev;
+	struct input_polled_dev	*poll_dev;
+	struct tps6507x_dev	*mfd;
+	char			phys[32];
+	struct ts_event		tc;
+	u16			min_pressure;
+	bool			pendown;
+>>>>>>> refs/remotes/origin/master
 };
 
 static int tps6507x_read_u8(struct tps6507x_ts *tsc, u8 reg, u8 *data)
@@ -166,6 +183,7 @@ static s32 tps6507x_adc_standby(struct tps6507x_ts *tsc)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void tps6507x_ts_handler(struct work_struct *work)
 {
 	struct tps6507x_ts *tsc =  container_of(work,
@@ -178,6 +196,17 @@ static void tps6507x_ts_handler(struct work_struct *work)
 
 	ret =  tps6507x_adc_conversion(tsc, TPS6507X_TSCMODE_PRESSURE,
 				       &tsc->tc.pressure);
+=======
+static void tps6507x_ts_poll(struct input_polled_dev *poll_dev)
+{
+	struct tps6507x_ts *tsc = poll_dev->private;
+	struct input_dev *input_dev = poll_dev->input;
+	bool pendown;
+	s32 ret;
+
+	ret = tps6507x_adc_conversion(tsc, TPS6507X_TSCMODE_PRESSURE,
+				      &tsc->tc.pressure);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto done;
 
@@ -188,7 +217,11 @@ static void tps6507x_ts_handler(struct work_struct *work)
 		input_report_key(input_dev, BTN_TOUCH, 0);
 		input_report_abs(input_dev, ABS_PRESSURE, 0);
 		input_sync(input_dev);
+<<<<<<< HEAD
 		tsc->pendown = 0;
+=======
+		tsc->pendown = false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (pendown) {
@@ -213,6 +246,7 @@ static void tps6507x_ts_handler(struct work_struct *work)
 		input_report_abs(input_dev, ABS_Y, tsc->tc.y);
 		input_report_abs(input_dev, ABS_PRESSURE, tsc->tc.pressure);
 		input_sync(input_dev);
+<<<<<<< HEAD
 		tsc->pendown = 1;
 		poll = 1;
 	}
@@ -234,10 +268,18 @@ done:
 		tsc->polling = 0;
 
 	ret = tps6507x_adc_standby(tsc);
+=======
+		tsc->pendown = true;
+	}
+
+done:
+	tps6507x_adc_standby(tsc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int tps6507x_ts_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	int error;
 	struct tps6507x_ts *tsc;
 	struct tps6507x_dev *tps6507x_dev = dev_get_drvdata(pdev->dev.parent);
@@ -264,11 +306,37 @@ static int tps6507x_ts_probe(struct platform_device *pdev)
 	 * coming from the board-evm file.
 	 */
 
+=======
+	struct tps6507x_dev *tps6507x_dev = dev_get_drvdata(pdev->dev.parent);
+	const struct tps6507x_board *tps_board;
+	const struct touchscreen_init_data *init_data;
+	struct tps6507x_ts *tsc;
+	struct input_polled_dev *poll_dev;
+	struct input_dev *input_dev;
+	int error;
+
+	/*
+	 * tps_board points to pmic related constants
+	 * coming from the board-evm file.
+	 */
+	tps_board = dev_get_platdata(tps6507x_dev->dev);
+	if (!tps_board) {
+		dev_err(tps6507x_dev->dev,
+			"Could not find tps6507x platform data\n");
+		return -ENODEV;
+	}
+
+	/*
+	 * init_data points to array of regulator_init structures
+	 * coming from the board-evm file.
+	 */
+>>>>>>> refs/remotes/origin/master
 	init_data = tps_board->tps6507x_ts_init_data;
 
 	tsc = kzalloc(sizeof(struct tps6507x_ts), GFP_KERNEL);
 	if (!tsc) {
 		dev_err(tps6507x_dev->dev, "failed to allocate driver data\n");
+<<<<<<< HEAD
 		error = -ENOMEM;
 		goto err0;
 	}
@@ -283,6 +351,34 @@ static int tps6507x_ts_probe(struct platform_device *pdev)
 		goto err1;
 	}
 
+=======
+		return -ENOMEM;
+	}
+
+	tsc->mfd = tps6507x_dev;
+	tsc->dev = tps6507x_dev->dev;
+	tsc->min_pressure = init_data ?
+			init_data->min_pressure : TPS_DEFAULT_MIN_PRESSURE;
+
+	snprintf(tsc->phys, sizeof(tsc->phys),
+		 "%s/input0", dev_name(tsc->dev));
+
+	poll_dev = input_allocate_polled_device();
+	if (!poll_dev) {
+		dev_err(tsc->dev, "Failed to allocate polled input device.\n");
+		error = -ENOMEM;
+		goto err_free_mem;
+	}
+
+	tsc->poll_dev = poll_dev;
+
+	poll_dev->private = tsc;
+	poll_dev->poll = tps6507x_ts_poll;
+	poll_dev->poll_interval = init_data ?
+			init_data->poll_period : TSC_DEFAULT_POLL_PERIOD;
+
+	input_dev = poll_dev->input;
+>>>>>>> refs/remotes/origin/master
 	input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
 	input_dev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
 
@@ -291,6 +387,7 @@ static int tps6507x_ts_probe(struct platform_device *pdev)
 	input_set_abs_params(input_dev, ABS_PRESSURE, 0, MAX_10BIT, 0, 0);
 
 	input_dev->name = "TPS6507x Touchscreen";
+<<<<<<< HEAD
 	input_dev->id.bustype = BUS_I2C;
 	input_dev->dev.parent = tsc->dev;
 
@@ -316,10 +413,20 @@ static int tps6507x_ts_probe(struct platform_device *pdev)
 	} else {
 		tsc->poll_period = TSC_DEFAULT_POLL_PERIOD;
 		tsc->min_pressure = TPS_DEFAULT_MIN_PRESSURE;
+=======
+	input_dev->phys = tsc->phys;
+	input_dev->dev.parent = tsc->dev;
+	input_dev->id.bustype = BUS_I2C;
+	if (init_data) {
+		input_dev->id.vendor = init_data->vendor;
+		input_dev->id.product = init_data->product;
+		input_dev->id.version = init_data->version;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = tps6507x_adc_standby(tsc);
 	if (error)
+<<<<<<< HEAD
 		goto err2;
 
 	error = input_register_device(input_dev);
@@ -361,6 +468,33 @@ static int __devexit tps6507x_ts_remove(struct platform_device *pdev)
 	input_unregister_device(input_dev);
 
 	tps6507x_dev->ts = NULL;
+=======
+		goto err_free_polled_dev;
+
+	error = input_register_polled_device(poll_dev);
+	if (error)
+		goto err_free_polled_dev;
+
+	platform_set_drvdata(pdev, tsc);
+
+	return 0;
+
+err_free_polled_dev:
+	input_free_polled_device(poll_dev);
+err_free_mem:
+	kfree(tsc);
+	return error;
+}
+
+static int tps6507x_ts_remove(struct platform_device *pdev)
+{
+	struct tps6507x_ts *tsc = platform_get_drvdata(pdev);
+	struct input_polled_dev *poll_dev = tsc->poll_dev;
+
+	input_unregister_polled_device(poll_dev);
+	input_free_polled_device(poll_dev);
+
+>>>>>>> refs/remotes/origin/master
 	kfree(tsc);
 
 	return 0;
@@ -372,6 +506,7 @@ static struct platform_driver tps6507x_ts_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = tps6507x_ts_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tps6507x_ts_remove),
 };
 <<<<<<< HEAD
@@ -390,12 +525,21 @@ module_exit(tps6507x_ts_exit);
 =======
 module_platform_driver(tps6507x_ts_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = tps6507x_ts_remove,
+};
+module_platform_driver(tps6507x_ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Todd Fischer <todd.fischer@ridgerun.com>");
 MODULE_DESCRIPTION("TPS6507x - TouchScreen driver");
 MODULE_LICENSE("GPL v2");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("platform:tps6507x-tsc");
 =======
 MODULE_ALIAS("platform:tps6507x-ts");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:tps6507x-ts");
+>>>>>>> refs/remotes/origin/master

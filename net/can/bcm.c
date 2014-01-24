@@ -38,18 +38,25 @@
  * DAMAGE.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/hrtimer.h>
 #include <linux/list.h>
 #include <linux/proc_fs.h>
@@ -62,6 +69,10 @@
 #include <linux/skbuff.h>
 #include <linux/can.h>
 #include <linux/can/core.h>
+<<<<<<< HEAD
+=======
+#include <linux/can/skb.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/can/bcm.h>
 #include <linux/slab.h>
 #include <net/sock.h>
@@ -85,7 +96,11 @@
 		     (CAN_SFF_MASK | CAN_EFF_FLAG | CAN_RTR_FLAG))
 
 #define CAN_BCM_VERSION CAN_VERSION
+<<<<<<< HEAD
 static __initdata const char banner[] = KERN_INFO
+=======
+static __initconst const char banner[] = KERN_INFO
+>>>>>>> refs/remotes/origin/master
 	"can: broadcast manager protocol (rev " CAN_BCM_VERSION " t)\n";
 
 MODULE_DESCRIPTION("PF_CAN broadcast manager protocol");
@@ -233,7 +248,11 @@ static int bcm_proc_show(struct seq_file *m, void *v)
 
 static int bcm_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, bcm_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, bcm_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations bcm_proc_fops = {
@@ -264,10 +283,20 @@ static void bcm_can_tx(struct bcm_op *op)
 		return;
 	}
 
+<<<<<<< HEAD
 	skb = alloc_skb(CFSIZ, gfp_any());
 	if (!skb)
 		goto out;
 
+=======
+	skb = alloc_skb(CFSIZ + sizeof(struct can_skb_priv), gfp_any());
+	if (!skb)
+		goto out;
+
+	can_skb_reserve(skb);
+	can_skb_prv(skb)->ifindex = dev->ifindex;
+
+>>>>>>> refs/remotes/origin/master
 	memcpy(skb_put(skb, CFSIZ), cf, CFSIZ);
 
 	/* send with loopback */
@@ -1207,11 +1236,20 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
 	if (!ifindex)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	skb = alloc_skb(CFSIZ, GFP_KERNEL);
 
 	if (!skb)
 		return -ENOMEM;
 
+=======
+	skb = alloc_skb(CFSIZ + sizeof(struct can_skb_priv), GFP_KERNEL);
+	if (!skb)
+		return -ENOMEM;
+
+	can_skb_reserve(skb);
+
+>>>>>>> refs/remotes/origin/master
 	err = memcpy_fromiovec(skb_put(skb, CFSIZ), msg->msg_iov, CFSIZ);
 	if (err < 0) {
 		kfree_skb(skb);
@@ -1224,6 +1262,10 @@ static int bcm_tx_send(struct msghdr *msg, int ifindex, struct sock *sk)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+=======
+	can_skb_prv(skb)->ifindex = dev->ifindex;
+>>>>>>> refs/remotes/origin/master
 	skb->dev = dev;
 	skb->sk  = sk;
 	err = can_send(skb, 1); /* send with loopback */
@@ -1352,9 +1394,15 @@ static int bcm_sendmsg(struct kiocb *iocb, struct socket *sock,
  * notification handler for netdevice status changes
  */
 static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
+<<<<<<< HEAD
 			void *data)
 {
 	struct net_device *dev = (struct net_device *)data;
+=======
+			void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct bcm_sock *bo = container_of(nb, struct bcm_sock, notifier);
 	struct sock *sk = &bo->sk;
 	struct bcm_op *op;
@@ -1635,7 +1683,11 @@ static void __exit bcm_module_exit(void)
 	can_proto_unregister(&bcm_can_proto);
 
 	if (proc_dir)
+<<<<<<< HEAD
 		proc_net_remove(&init_net, "can-bcm");
+=======
+		remove_proc_entry("can-bcm", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(bcm_module_init);

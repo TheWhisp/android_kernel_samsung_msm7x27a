@@ -17,6 +17,10 @@
 #include <linux/power_supply.h>
 #include <linux/jiffies.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/olpc-ec.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/olpc.h>
 
 
@@ -231,11 +235,17 @@ static int olpc_bat_get_charge_full_design(union power_supply_propval *val)
 
 	case POWER_SUPPLY_TECHNOLOGY_LiFe:
 		switch (mfr) {
+<<<<<<< HEAD
 		case 1: /* Gold Peak */
 			val->intval = 2800000;
 			break;
 		case 2: /* BYD */
 			val->intval = 3100000;
+=======
+		case 1: /* Gold Peak, fall through */
+		case 2: /* BYD */
+			val->intval = 2800000;
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			return -EIO;
@@ -267,6 +277,58 @@ static int olpc_bat_get_charge_now(union power_supply_propval *val)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int olpc_bat_get_voltage_max_design(union power_supply_propval *val)
+{
+	uint8_t ec_byte;
+	union power_supply_propval tech;
+	int mfr;
+	int ret;
+
+	ret = olpc_bat_get_tech(&tech);
+	if (ret)
+		return ret;
+
+	ec_byte = BAT_ADDR_MFR_TYPE;
+	ret = olpc_ec_cmd(EC_BAT_EEPROM, &ec_byte, 1, &ec_byte, 1);
+	if (ret)
+		return ret;
+
+	mfr = ec_byte >> 4;
+
+	switch (tech.intval) {
+	case POWER_SUPPLY_TECHNOLOGY_NiMH:
+		switch (mfr) {
+		case 1: /* Gold Peak */
+			val->intval = 6000000;
+			break;
+		default:
+			return -EIO;
+		}
+		break;
+
+	case POWER_SUPPLY_TECHNOLOGY_LiFe:
+		switch (mfr) {
+		case 1: /* Gold Peak */
+			val->intval = 6400000;
+			break;
+		case 2: /* BYD */
+			val->intval = 6500000;
+			break;
+		default:
+			return -EIO;
+		}
+		break;
+
+	default:
+		return -EIO;
+	}
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*********************************************************************
  *		Battery properties
  *********************************************************************/
@@ -401,6 +463,14 @@ static int olpc_bat_get_property(struct power_supply *psy,
 		sprintf(bat_serial, "%016llx", (long long)be64_to_cpu(ser_buf));
 		val->strval = bat_serial;
 		break;
+<<<<<<< HEAD
+=======
+	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
+		ret = olpc_bat_get_voltage_max_design(val);
+		if (ret)
+			return ret;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		ret = -EINVAL;
 		break;
@@ -428,6 +498,10 @@ static enum power_supply_property olpc_xo1_bat_props[] = {
 	POWER_SUPPLY_PROP_MANUFACTURER,
 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
 	POWER_SUPPLY_PROP_CHARGE_COUNTER,
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* XO-1.5 does not have ambient temperature property */
@@ -449,6 +523,10 @@ static enum power_supply_property olpc_xo15_bat_props[] = {
 	POWER_SUPPLY_PROP_MANUFACTURER,
 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
 	POWER_SUPPLY_PROP_CHARGE_COUNTER,
+<<<<<<< HEAD
+=======
+	POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* EEPROM reading goes completely around the power_supply API, sadly */
@@ -520,6 +598,7 @@ static struct device_attribute olpc_bat_error = {
  *********************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device *bat_pdev;
 
 static struct power_supply olpc_bat = {
@@ -527,10 +606,15 @@ static struct power_supply olpc_bat = {
 static struct power_supply olpc_bat = {
 	.name = "olpc-battery",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct power_supply olpc_bat = {
+	.name = "olpc-battery",
+>>>>>>> refs/remotes/origin/master
 	.get_property = olpc_bat_get_property,
 	.use_for_apm = 1,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void olpc_battery_trigger_uevent(unsigned long cause)
 {
@@ -549,6 +633,8 @@ static int __init olpc_bat_init(void)
 		return -ENXIO;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int olpc_battery_suspend(struct platform_device *pdev,
 				pm_message_t state)
 {
@@ -567,12 +653,19 @@ static int olpc_battery_suspend(struct platform_device *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit olpc_battery_probe(struct platform_device *pdev)
+=======
+static int olpc_battery_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	uint8_t status;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We've seen a number of EC protocol changes; this driver requires
 	 * the latest EC protocol, supported by 0x44 and above.
@@ -590,6 +683,7 @@ static int __devinit olpc_battery_probe(struct platform_device *pdev)
 	/* Ignore the status. It doesn't actually matter */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bat_pdev = platform_device_register_simple("olpc-battery", 0, NULL, 0);
 	if (IS_ERR(bat_pdev))
 		return PTR_ERR(bat_pdev);
@@ -600,11 +694,16 @@ static int __devinit olpc_battery_probe(struct platform_device *pdev)
 
 	olpc_bat.name = bat_pdev->name;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = power_supply_register(&pdev->dev, &olpc_ac);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (olpc_board_at_least(olpc_board_pre(0xd0))) { /* XO-1.5 */
 		olpc_bat.properties = olpc_xo15_bat_props;
 		olpc_bat.num_properties = ARRAY_SIZE(olpc_xo15_bat_props);
@@ -614,10 +713,14 @@ static int __devinit olpc_battery_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = power_supply_register(&bat_pdev->dev, &olpc_bat);
 =======
 	ret = power_supply_register(&pdev->dev, &olpc_bat);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = power_supply_register(&pdev->dev, &olpc_bat);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto battery_failed;
 
@@ -630,15 +733,21 @@ static int __devinit olpc_battery_probe(struct platform_device *pdev)
 		goto error_failed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	goto success;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (olpc_ec_wakeup_available()) {
 		device_set_wakeup_capable(olpc_ac.dev, true);
 		device_set_wakeup_capable(olpc_bat.dev, true);
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 error_failed:
 	device_remove_bin_file(olpc_bat.dev, &olpc_bat_eeprom);
@@ -646,6 +755,7 @@ eeprom_failed:
 	power_supply_unregister(&olpc_bat);
 battery_failed:
 	power_supply_unregister(&olpc_ac);
+<<<<<<< HEAD
 <<<<<<< HEAD
 ac_failed:
 	platform_device_unregister(bat_pdev);
@@ -660,11 +770,18 @@ static void __exit olpc_bat_exit(void)
 
 static int __devexit olpc_battery_remove(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+static int olpc_battery_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	device_remove_file(olpc_bat.dev, &olpc_bat_error);
 	device_remove_bin_file(olpc_bat.dev, &olpc_bat_eeprom);
 	power_supply_unregister(&olpc_bat);
 	power_supply_unregister(&olpc_ac);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	platform_device_unregister(bat_pdev);
 }
@@ -676,6 +793,12 @@ module_exit(olpc_bat_exit);
 }
 
 static const struct of_device_id olpc_battery_ids[] __devinitconst = {
+=======
+	return 0;
+}
+
+static const struct of_device_id olpc_battery_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "olpc,xo1-battery" },
 	{}
 };
@@ -688,12 +811,19 @@ static struct platform_driver olpc_battery_driver = {
 		.of_match_table = olpc_battery_ids,
 	},
 	.probe = olpc_battery_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(olpc_battery_remove),
+=======
+	.remove = olpc_battery_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = olpc_battery_suspend,
 };
 
 module_platform_driver(olpc_battery_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
 MODULE_LICENSE("GPL");

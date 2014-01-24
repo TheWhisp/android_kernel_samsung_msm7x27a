@@ -36,16 +36,21 @@
  * 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/sched.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/hardware.h>
 #include <asm/irq.h>
@@ -62,6 +67,17 @@
 #include <mach/hardware.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/irq.h>
+#include <asm/mach/irq.h>
+
+#include "soc.h"
+
+#include <mach/hardware.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 #define IRQ_BANK(irq) ((irq) >> 5)
 #define IRQ_BIT(irq)  ((irq) & 0x1f)
 
@@ -190,10 +206,14 @@ static struct irq_chip omap_irq_chip = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init omap_init_irq(void)
 =======
 void __init omap1_init_irq(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init omap1_init_irq(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, j;
 

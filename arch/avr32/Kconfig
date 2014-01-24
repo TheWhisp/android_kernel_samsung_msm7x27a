@@ -6,15 +6,28 @@ config AVR32
 	select HAVE_CLK
 	select HAVE_OPROFILE
 	select HAVE_KPROBES
+<<<<<<< HEAD
 	select HAVE_GENERIC_HARDIRQS
+=======
+	select VIRT_TO_BUS
+>>>>>>> refs/remotes/origin/master
 	select GENERIC_IRQ_PROBE
 	select GENERIC_ATOMIC64
 	select HARDIRQS_SW_RESEND
 	select GENERIC_IRQ_SHOW
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_HAVE_CUSTOM_GPIO_H
+	select ARCH_WANT_IPC_PARSE_VERSION
+	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+	select GENERIC_CLOCKEVENTS
+	select HAVE_MOD_ARCH_SPECIFIC
+	select MODULES_USE_ELF_RELA
+>>>>>>> refs/remotes/origin/master
 	help
 	  AVR32 is a high-performance 32-bit RISC microprocessor core,
 	  designed for cost-sensitive embedded applications, with particular
@@ -23,9 +36,12 @@ config AVR32
 	  There is an AVR32 Linux project with a web page at
 	  http://avr32linux.org/.
 
+<<<<<<< HEAD
 config GENERIC_GPIO
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config STACKTRACE_SUPPORT
 	def_bool y
 
@@ -38,9 +54,12 @@ config TRACE_IRQFLAGS_SUPPORT
 config RWSEM_GENERIC_SPINLOCK
 	def_bool y
 
+<<<<<<< HEAD
 config GENERIC_CLOCKEVENTS
 	def_bool y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config RWSEM_XCHGADD_ALGORITHM
 	def_bool n
 
@@ -66,8 +85,11 @@ source "kernel/Kconfig.freezer"
 
 menu "System Type and features"
 
+<<<<<<< HEAD
 source "kernel/time/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SUBARCH_AVR32B
 	bool
 config MMU
@@ -83,7 +105,10 @@ config PLATFORM_AT32AP
 	select ARCH_REQUIRE_GPIOLIB
 	select GENERIC_ALLOCATOR
 	select HAVE_FB_ATMEL
+<<<<<<< HEAD
 	select HAVE_NET_MACB
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # CPU types
@@ -196,9 +221,12 @@ source "kernel/Kconfig.preempt"
 config QUICKLIST
 	def_bool y
 
+<<<<<<< HEAD
 config HAVE_ARCH_BOOTMEM
 	def_bool n
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_HAVE_MEMORY_PRESENT
 	def_bool n
 
@@ -214,6 +242,14 @@ config ARCH_DISCONTIGMEM_ENABLE
 config ARCH_SPARSEMEM_ENABLE
 	def_bool n
 
+<<<<<<< HEAD
+=======
+config NODES_SHIFT
+	int
+	default "2"
+	depends on NEED_MULTIPLE_NODES
+
+>>>>>>> refs/remotes/origin/master
 source "mm/Kconfig"
 
 config OWNERSHIP_TRACE
@@ -256,6 +292,7 @@ config ARCH_SUSPEND_POSSIBLE
 	def_bool y
 
 menu "CPU Frequency scaling"
+<<<<<<< HEAD
 
 source "drivers/cpufreq/Kconfig"
 
@@ -270,6 +307,9 @@ config CPU_FREQ_AT32AP
 
 	  If in doubt, say N.
 
+=======
+source "drivers/cpufreq/Kconfig"
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 endmenu

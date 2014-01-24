@@ -4,9 +4,13 @@
 #include <linux/dn.h>
 #include <net/sock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/flow.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/flow.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 #include <asm/unaligned.h>
 
@@ -202,13 +206,18 @@ static inline void dn_sk_ports_copy(struct flowidn *fld, struct dn_scp *scp)
 	fld->fld_dport = scp->addrrem;
 }
 
+<<<<<<< HEAD
 extern unsigned dn_mss_from_pmtu(struct net_device *dev, int mtu);
+=======
+unsigned int dn_mss_from_pmtu(struct net_device *dev, int mtu);
+>>>>>>> refs/remotes/origin/master
 
 #define DN_MENUVER_ACC 0x01
 #define DN_MENUVER_USR 0x02
 #define DN_MENUVER_PRX 0x04
 #define DN_MENUVER_UIC 0x08
 
+<<<<<<< HEAD
 extern struct sock *dn_sklist_find_listener(struct sockaddr_dn *addr);
 extern struct sock *dn_find_by_skb(struct sk_buff *skb);
 #define DN_ASCBUF_LEN 9
@@ -220,6 +229,21 @@ extern int dn_username2sockaddr(unsigned char *data, int len, struct sockaddr_dn
 
 extern void dn_start_slow_timer(struct sock *sk);
 extern void dn_stop_slow_timer(struct sock *sk);
+=======
+struct sock *dn_sklist_find_listener(struct sockaddr_dn *addr);
+struct sock *dn_find_by_skb(struct sk_buff *skb);
+#define DN_ASCBUF_LEN 9
+char *dn_addr2asc(__u16, char *);
+int dn_destroy_timer(struct sock *sk);
+
+int dn_sockaddr2username(struct sockaddr_dn *addr, unsigned char *buf,
+			 unsigned char type);
+int dn_username2sockaddr(unsigned char *data, int len, struct sockaddr_dn *addr,
+			 unsigned char *type);
+
+void dn_start_slow_timer(struct sock *sk);
+void dn_stop_slow_timer(struct sock *sk);
+>>>>>>> refs/remotes/origin/master
 
 extern __le16 decnet_address;
 extern int decnet_debug_level;

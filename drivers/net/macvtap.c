@@ -1,9 +1,13 @@
 #include <linux/etherdevice.h>
 #include <linux/if_macvlan.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/if_vlan.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/if_vlan.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/nsproxy.h>
 #include <linux/compat.h>
@@ -18,9 +22,13 @@
 #include <linux/wait.h>
 #include <linux/cdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/idr.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/idr.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 
 #include <net/net_namespace.h>
@@ -37,10 +45,13 @@
  * macvtap_proto is used to allocate queues through the sock allocation
  * mechanism.
  *
+<<<<<<< HEAD
  * TODO: multiqueue support is currently not implemented, even though
  * macvtap is basically prepared for that. We will need to add this
  * here as well as in virtio-net and qemu to get line rate on 10gbit
  * adapters from a guest.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct macvtap_queue {
 	struct sock sk;
@@ -50,6 +61,12 @@ struct macvtap_queue {
 	struct macvlan_dev __rcu *vlan;
 	struct file *file;
 	unsigned int flags;
+<<<<<<< HEAD
+=======
+	u16 queue_index;
+	bool enabled;
+	struct list_head next;
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct proto macvtap_proto = {
@@ -59,6 +76,7 @@ static struct proto macvtap_proto = {
 };
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Minor number matches netdev->ifindex, so need a potentially
  * large value. This also makes it possible to split the
@@ -70,6 +88,8 @@ static struct proto macvtap_proto = {
 static dev_t macvtap_major;
 #define MACVTAP_NUM_DEVS 65536
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Variables for dealing with macvtaps device numbers.
  */
 static dev_t macvtap_major;
@@ -78,17 +98,32 @@ static DEFINE_MUTEX(minor_lock);
 static DEFINE_IDR(minor_idr);
 
 #define GOODCOPY_LEN 128
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct class *macvtap_class;
 static struct cdev macvtap_cdev;
 
 static const struct proto_ops macvtap_socket_ops;
 
+<<<<<<< HEAD
+=======
+#define TUN_OFFLOADS (NETIF_F_HW_CSUM | NETIF_F_TSO_ECN | NETIF_F_TSO | \
+		      NETIF_F_TSO6 | NETIF_F_UFO)
+#define RX_OFFLOADS (NETIF_F_GRO | NETIF_F_LRO)
+#define TAP_FEATURES (NETIF_F_GSO | NETIF_F_SG)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * RCU usage:
  * The macvtap_queue and the macvlan_dev are loosely coupled, the
  * pointers from one to the other can only be read while rcu_read_lock
+<<<<<<< HEAD
  * or macvtap_lock is held.
+=======
+ * or rtnl is held.
+>>>>>>> refs/remotes/origin/master
  *
  * Both the file and the macvlan_dev hold a reference on the macvtap_queue
  * through sock_hold(&q->sk). When the macvlan_dev goes away first,
@@ -100,6 +135,7 @@ static const struct proto_ops macvtap_socket_ops;
  * file or the dev. The data structure is freed through __sk_free
  * when both our references and any pending SKBs are gone.
  */
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(macvtap_lock);
 
 /*
@@ -147,6 +183,86 @@ out:
 	return err;
 }
 
+=======
+
+static int macvtap_enable_queue(struct net_device *dev, struct file *file,
+				struct macvtap_queue *q)
+{
+	struct macvlan_dev *vlan = netdev_priv(dev);
+	int err = -EINVAL;
+
+	ASSERT_RTNL();
+
+	if (q->enabled)
+		goto out;
+
+	err = 0;
+	rcu_assign_pointer(vlan->taps[vlan->numvtaps], q);
+	q->queue_index = vlan->numvtaps;
+	q->enabled = true;
+
+	vlan->numvtaps++;
+out:
+	return err;
+}
+
+static int macvtap_set_queue(struct net_device *dev, struct file *file,
+			     struct macvtap_queue *q)
+{
+	struct macvlan_dev *vlan = netdev_priv(dev);
+	int err = -EBUSY;
+
+	rtnl_lock();
+	if (vlan->numqueues == MAX_MACVTAP_QUEUES)
+		goto out;
+
+	err = 0;
+	rcu_assign_pointer(q->vlan, vlan);
+	rcu_assign_pointer(vlan->taps[vlan->numvtaps], q);
+	sock_hold(&q->sk);
+
+	q->file = file;
+	q->queue_index = vlan->numvtaps;
+	q->enabled = true;
+	file->private_data = q;
+	list_add_tail(&q->next, &vlan->queue_list);
+
+	vlan->numvtaps++;
+	vlan->numqueues++;
+
+out:
+	rtnl_unlock();
+	return err;
+}
+
+static int macvtap_disable_queue(struct macvtap_queue *q)
+{
+	struct macvlan_dev *vlan;
+	struct macvtap_queue *nq;
+
+	ASSERT_RTNL();
+	if (!q->enabled)
+		return -EINVAL;
+
+	vlan = rtnl_dereference(q->vlan);
+
+	if (vlan) {
+		int index = q->queue_index;
+		BUG_ON(index >= vlan->numvtaps);
+		nq = rtnl_dereference(vlan->taps[vlan->numvtaps - 1]);
+		nq->queue_index = index;
+
+		rcu_assign_pointer(vlan->taps[index], nq);
+		RCU_INIT_POINTER(vlan->taps[vlan->numvtaps - 1], NULL);
+		q->enabled = false;
+
+		vlan->numvtaps--;
+	}
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The file owning the queue got closed, give up both
  * the reference that the files holds as well as the
@@ -159,6 +275,7 @@ static void macvtap_put_queue(struct macvtap_queue *q)
 {
 	struct macvlan_dev *vlan;
 
+<<<<<<< HEAD
 	spin_lock(&macvtap_lock);
 	vlan = rcu_dereference_protected(q->vlan,
 					 lockdep_is_held(&macvtap_lock));
@@ -177,6 +294,22 @@ static void macvtap_put_queue(struct macvtap_queue *q)
 	}
 
 	spin_unlock(&macvtap_lock);
+=======
+	rtnl_lock();
+	vlan = rtnl_dereference(q->vlan);
+
+	if (vlan) {
+		if (q->enabled)
+			BUG_ON(macvtap_disable_queue(q));
+
+		vlan->numqueues--;
+		RCU_INIT_POINTER(q->vlan, NULL);
+		sock_put(&q->sk);
+		list_del_init(&q->next);
+	}
+
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	synchronize_rcu();
 	sock_put(&q->sk);
@@ -194,23 +327,41 @@ static struct macvtap_queue *macvtap_get_queue(struct net_device *dev,
 {
 	struct macvlan_dev *vlan = netdev_priv(dev);
 	struct macvtap_queue *tap = NULL;
+<<<<<<< HEAD
 	int numvtaps = vlan->numvtaps;
+=======
+	/* Access to taps array is protected by rcu, but access to numvtaps
+	 * isn't. Below we use it to lookup a queue, but treat it as a hint
+	 * and validate that the result isn't NULL - in case we are
+	 * racing against queue removal.
+	 */
+	int numvtaps = ACCESS_ONCE(vlan->numvtaps);
+>>>>>>> refs/remotes/origin/master
 	__u32 rxq;
 
 	if (!numvtaps)
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Check if we can use flow to select a queue */
 	rxq = skb_get_rxhash(skb);
 	if (rxq) {
 		tap = rcu_dereference(vlan->taps[rxq % numvtaps]);
+<<<<<<< HEAD
 		if (tap)
 			goto out;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (likely(skb_rx_queue_recorded(skb))) {
 		rxq = skb_get_rx_queue(skb);
 
@@ -218,6 +369,7 @@ static struct macvtap_queue *macvtap_get_queue(struct net_device *dev,
 			rxq -= numvtaps;
 
 		tap = rcu_dereference(vlan->taps[rxq]);
+<<<<<<< HEAD
 		if (tap)
 			goto out;
 	}
@@ -240,6 +392,12 @@ static struct macvtap_queue *macvtap_get_queue(struct net_device *dev,
 			break;
 	}
 
+=======
+		goto out;
+	}
+
+	tap = rcu_dereference(vlan->taps[0]);
+>>>>>>> refs/remotes/origin/master
 out:
 	return tap;
 }
@@ -252,6 +410,7 @@ out:
 static void macvtap_del_queues(struct net_device *dev)
 {
 	struct macvlan_dev *vlan = netdev_priv(dev);
+<<<<<<< HEAD
 	struct macvtap_queue *q, *qlist[MAX_MACVTAP_QUEUES];
 	int i, j = 0;
 
@@ -281,6 +440,26 @@ static void macvtap_del_queues(struct net_device *dev)
 	spin_unlock(&macvtap_lock);
 
 	synchronize_rcu();
+=======
+	struct macvtap_queue *q, *tmp, *qlist[MAX_MACVTAP_QUEUES];
+	int i, j = 0;
+
+	ASSERT_RTNL();
+	list_for_each_entry_safe(q, tmp, &vlan->queue_list, next) {
+		list_del_init(&q->next);
+		qlist[j++] = q;
+		RCU_INIT_POINTER(q->vlan, NULL);
+		if (q->enabled)
+			vlan->numvtaps--;
+		vlan->numqueues--;
+	}
+	for (i = 0; i < vlan->numvtaps; i++)
+		RCU_INIT_POINTER(vlan->taps[i], NULL);
+	BUG_ON(vlan->numvtaps);
+	BUG_ON(vlan->numqueues);
+	/* guarantee that any future macvtap_set_queue will fail */
+	vlan->numvtaps = MAX_MACVTAP_QUEUES;
+>>>>>>> refs/remotes/origin/master
 
 	for (--j; j >= 0; j--)
 		sock_put(&qlist[j]->sk);
@@ -293,14 +472,55 @@ static void macvtap_del_queues(struct net_device *dev)
  */
 static int macvtap_forward(struct net_device *dev, struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	struct macvtap_queue *q = macvtap_get_queue(dev, skb);
+=======
+	struct macvlan_dev *vlan = netdev_priv(dev);
+	struct macvtap_queue *q = macvtap_get_queue(dev, skb);
+	netdev_features_t features = TAP_FEATURES;
+
+>>>>>>> refs/remotes/origin/master
 	if (!q)
 		goto drop;
 
 	if (skb_queue_len(&q->sk.sk_receive_queue) >= dev->tx_queue_len)
 		goto drop;
 
+<<<<<<< HEAD
 	skb_queue_tail(&q->sk.sk_receive_queue, skb);
+=======
+	skb->dev = dev;
+	/* Apply the forward feature mask so that we perform segmentation
+	 * according to users wishes.  This only works if VNET_HDR is
+	 * enabled.
+	 */
+	if (q->flags & IFF_VNET_HDR)
+		features |= vlan->tap_features;
+	if (netif_needs_gso(skb, features)) {
+		struct sk_buff *segs = __skb_gso_segment(skb, features, false);
+
+		if (IS_ERR(segs))
+			goto drop;
+
+		if (!segs) {
+			skb_queue_tail(&q->sk.sk_receive_queue, skb);
+			goto wake_up;
+		}
+
+		kfree_skb(skb);
+		while (segs) {
+			struct sk_buff *nskb = segs->next;
+
+			segs->next = NULL;
+			skb_queue_tail(&q->sk.sk_receive_queue, segs);
+			segs = nskb;
+		}
+	} else {
+		skb_queue_tail(&q->sk.sk_receive_queue, skb);
+	}
+
+wake_up:
+>>>>>>> refs/remotes/origin/master
 	wake_up_interruptible_poll(sk_sleep(&q->sk), POLLIN | POLLRDNORM | POLLRDBAND);
 	return NET_RX_SUCCESS;
 
@@ -320,6 +540,7 @@ static int macvtap_receive(struct sk_buff *skb)
 	return macvtap_forward(skb->dev, skb);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int macvtap_newlink(struct net *src_net,
 			   struct net_device *dev,
@@ -372,6 +593,22 @@ static int macvtap_get_minor(struct macvlan_dev *vlan)
 exit:
 	mutex_unlock(&minor_lock);
 	return retval;
+=======
+static int macvtap_get_minor(struct macvlan_dev *vlan)
+{
+	int retval = -ENOMEM;
+
+	mutex_lock(&minor_lock);
+	retval = idr_alloc(&minor_idr, vlan, 1, MACVTAP_NUM_DEVS, GFP_KERNEL);
+	if (retval >= 0) {
+		vlan->minor = retval;
+	} else if (retval == -ENOSPC) {
+		printk(KERN_ERR "too many macvtap devices\n");
+		retval = -EINVAL;
+	}
+	mutex_unlock(&minor_lock);
+	return retval < 0 ? retval : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void macvtap_free_minor(struct macvlan_dev *vlan)
@@ -404,23 +641,40 @@ static int macvtap_newlink(struct net *src_net,
 			   struct nlattr *tb[],
 			   struct nlattr *data[])
 {
+<<<<<<< HEAD
+=======
+	struct macvlan_dev *vlan = netdev_priv(dev);
+	INIT_LIST_HEAD(&vlan->queue_list);
+
+	/* Since macvlan supports all offloads by default, make
+	 * tap support all offloads also.
+	 */
+	vlan->tap_features = TUN_OFFLOADS;
+
+>>>>>>> refs/remotes/origin/master
 	/* Don't put anything that may fail after macvlan_common_newlink
 	 * because we can't undo what it does.
 	 */
 	return macvlan_common_newlink(src_net, dev, tb, data,
 				      macvtap_receive, macvtap_forward);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void macvtap_dellink(struct net_device *dev,
 			    struct list_head *head)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	device_destroy(macvtap_class,
 		       MKDEV(MAJOR(macvtap_major), dev->ifindex));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	macvtap_del_queues(dev);
 	macvlan_dellink(dev, head);
 }
@@ -453,11 +707,14 @@ static void macvtap_sock_write_space(struct sock *sk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int macvtap_open(struct inode *inode, struct file *file)
 {
 	struct net *net = current->nsproxy->net_ns;
 	struct net_device *dev = dev_get_by_index(net, iminor(inode));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void macvtap_sock_destruct(struct sock *sk)
 {
 	skb_queue_purge(&sk->sk_receive_queue);
@@ -467,7 +724,10 @@ static int macvtap_open(struct inode *inode, struct file *file)
 {
 	struct net *net = current->nsproxy->net_ns;
 	struct net_device *dev = dev_get_by_macvtap_minor(iminor(inode));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct macvtap_queue *q;
 	int err;
 
@@ -476,6 +736,7 @@ static int macvtap_open(struct inode *inode, struct file *file)
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* check if this is a macvtap device */
 	err = -EINVAL;
 	if (dev->rtnl_link_ops != &macvtap_link_ops)
@@ -483,13 +744,19 @@ static int macvtap_open(struct inode *inode, struct file *file)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = -ENOMEM;
 	q = (struct macvtap_queue *)sk_alloc(net, AF_UNSPEC, GFP_KERNEL,
 					     &macvtap_proto);
 	if (!q)
 		goto out;
 
+<<<<<<< HEAD
 	q->sock.wq = &q->wq;
+=======
+	RCU_INIT_POINTER(q->sock.wq, &q->wq);
+>>>>>>> refs/remotes/origin/master
 	init_waitqueue_head(&q->wq.wait);
 	q->sock.type = SOCK_RAW;
 	q->sock.state = SS_CONNECTED;
@@ -498,10 +765,13 @@ static int macvtap_open(struct inode *inode, struct file *file)
 	sock_init_data(&q->sock, &q->sk);
 	q->sk.sk_write_space = macvtap_sock_write_space;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q->flags = IFF_VNET_HDR | IFF_NO_PI | IFF_TAP;
 	q->vnet_hdr_sz = sizeof(struct virtio_net_hdr);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	q->sk.sk_destruct = macvtap_sock_destruct;
 	q->flags = IFF_VNET_HDR | IFF_NO_PI | IFF_TAP;
 	q->vnet_hdr_sz = sizeof(struct virtio_net_hdr);
@@ -516,7 +786,10 @@ static int macvtap_open(struct inode *inode, struct file *file)
 	if ((dev->features & NETIF_F_HIGHDMA) && (dev->features & NETIF_F_SG))
 		sock_set_flag(&q->sk, SOCK_ZEROCOPY);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = macvtap_set_queue(dev, file, q);
 	if (err)
 		sock_put(&q->sk);
@@ -569,7 +842,11 @@ static inline struct sk_buff *macvtap_alloc_skb(struct sock *sk, size_t prepad,
 		linear = len;
 
 	skb = sock_alloc_send_pskb(sk, prepad + linear, len - linear, noblock,
+<<<<<<< HEAD
 				   err);
+=======
+				   err, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!skb)
 		return NULL;
 
@@ -581,6 +858,7 @@ static inline struct sk_buff *macvtap_alloc_skb(struct sock *sk, size_t prepad,
 	return skb;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 /* set skb frags from iovec, this can move to core network code for reuse */
@@ -663,6 +941,8 @@ static int zerocopy_sg_from_iovec(struct sk_buff *skb, const struct iovec *from,
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * macvtap_skb_from_vnet_hdr and macvtap_skb_to_vnet_hdr should
  * be shared with the tun/tap driver.
@@ -739,15 +1019,21 @@ static int macvtap_skb_to_vnet_hdr(const struct sk_buff *skb,
 		vnet_hdr->csum_start = skb_checksum_start_offset(skb);
 		vnet_hdr->csum_offset = skb->csum_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	} else if (skb->ip_summed == CHECKSUM_UNNECESSARY) {
 		vnet_hdr->flags = VIRTIO_NET_HDR_F_DATA_VALID;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (skb->ip_summed == CHECKSUM_UNNECESSARY) {
+		vnet_hdr->flags = VIRTIO_NET_HDR_F_DATA_VALID;
+>>>>>>> refs/remotes/origin/master
 	} /* else everything is zero */
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* Get packet from user space buffer */
@@ -785,11 +1071,17 @@ static unsigned long iov_pages(const struct iovec *iv, int offset,
 	return pages;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Get packet from user space buffer */
 static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 				const struct iovec *iv, unsigned long total_len,
 				size_t count, int noblock)
 {
+<<<<<<< HEAD
+=======
+	int good_linear = SKB_MAX_HEAD(NET_IP_ALIGN);
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 	struct macvlan_dev *vlan;
 	unsigned long len = total_len;
@@ -799,7 +1091,10 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 	int copylen = 0;
 	bool zerocopy = false;
 	size_t linear;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (q->flags & IFF_VNET_HDR) {
 		vnet_hdr_len = q->vnet_hdr_sz;
@@ -832,6 +1127,7 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 		goto err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = macvtap_alloc_skb(&q->sk, NET_IP_ALIGN, len, vnet_hdr.hdr_len,
 				noblock, &err);
 	if (!skb)
@@ -841,6 +1137,12 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 =======
 	if (m && m->msg_control && sock_flag(&q->sk, SOCK_ZEROCOPY)) {
 		copylen = vnet_hdr.hdr_len ? vnet_hdr.hdr_len : GOODCOPY_LEN;
+=======
+	if (m && m->msg_control && sock_flag(&q->sk, SOCK_ZEROCOPY)) {
+		copylen = vnet_hdr.hdr_len ? vnet_hdr.hdr_len : GOODCOPY_LEN;
+		if (copylen > good_linear)
+			copylen = good_linear;
+>>>>>>> refs/remotes/origin/master
 		linear = copylen;
 		if (iov_pages(iv, vnet_hdr_len + copylen, count)
 		    <= MAX_SKB_FRAGS)
@@ -849,7 +1151,14 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 
 	if (!zerocopy) {
 		copylen = len;
+<<<<<<< HEAD
 		linear = vnet_hdr.hdr_len;
+=======
+		if (vnet_hdr.hdr_len > good_linear)
+			linear = good_linear;
+		else
+			linear = vnet_hdr.hdr_len;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	skb = macvtap_alloc_skb(&q->sk, NET_IP_ALIGN, copylen,
@@ -864,11 +1173,18 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 						   len);
 		if (!err && m && m->msg_control) {
 			struct ubuf_info *uarg = m->msg_control;
+<<<<<<< HEAD
 			uarg->callback(uarg);
 		}
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			uarg->callback(uarg, false);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto err_kfree;
 
@@ -882,14 +1198,22 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 			goto err_kfree;
 	}
 
+<<<<<<< HEAD
 	rcu_read_lock_bh();
 	vlan = rcu_dereference_bh(q->vlan);
 <<<<<<< HEAD
 =======
+=======
+	skb_probe_transport_header(skb, ETH_HLEN);
+
+	rcu_read_lock();
+	vlan = rcu_dereference(q->vlan);
+>>>>>>> refs/remotes/origin/master
 	/* copy skb_ubuf_info for callback when skb has no error */
 	if (zerocopy) {
 		skb_shinfo(skb)->destructor_arg = m->msg_control;
 		skb_shinfo(skb)->tx_flags |= SKBTX_DEV_ZEROCOPY;
+<<<<<<< HEAD
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (vlan)
@@ -903,16 +1227,38 @@ static ssize_t macvtap_get_user(struct macvtap_queue *q, struct msghdr *m,
 =======
 	return total_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		skb_shinfo(skb)->tx_flags |= SKBTX_SHARED_FRAG;
+	}
+	if (vlan) {
+		local_bh_disable();
+		macvlan_start_xmit(skb, vlan->dev);
+		local_bh_enable();
+	} else {
+		kfree_skb(skb);
+	}
+	rcu_read_unlock();
+
+	return total_len;
+>>>>>>> refs/remotes/origin/master
 
 err_kfree:
 	kfree_skb(skb);
 
 err:
+<<<<<<< HEAD
 	rcu_read_lock_bh();
 	vlan = rcu_dereference_bh(q->vlan);
 	if (vlan)
 		vlan->dev->stats.tx_dropped++;
 	rcu_read_unlock_bh();
+=======
+	rcu_read_lock();
+	vlan = rcu_dereference(q->vlan);
+	if (vlan)
+		this_cpu_inc(vlan->pcpu_stats->tx_dropped);
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -925,12 +1271,17 @@ static ssize_t macvtap_aio_write(struct kiocb *iocb, const struct iovec *iv,
 	struct macvtap_queue *q = file->private_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	result = macvtap_get_user(q, iv, iov_length(iv, count),
 			      file->f_flags & O_NONBLOCK);
 =======
 	result = macvtap_get_user(q, NULL, iv, iov_length(iv, count), count,
 				  file->f_flags & O_NONBLOCK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	result = macvtap_get_user(q, NULL, iv, iov_length(iv, count), count,
+				  file->f_flags & O_NONBLOCK);
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -939,6 +1290,7 @@ static ssize_t macvtap_put_user(struct macvtap_queue *q,
 				const struct sk_buff *skb,
 				const struct iovec *iv, int len)
 {
+<<<<<<< HEAD
 	struct macvlan_dev *vlan;
 	int ret;
 	int vnet_hdr_len = 0;
@@ -947,6 +1299,12 @@ static ssize_t macvtap_put_user(struct macvtap_queue *q,
 	int vlan_offset = 0;
 	int copied;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+	int vnet_hdr_len = 0;
+	int vlan_offset = 0;
+	int copied, total;
+>>>>>>> refs/remotes/origin/master
 
 	if (q->flags & IFF_VNET_HDR) {
 		struct virtio_net_hdr vnet_hdr;
@@ -962,6 +1320,7 @@ static ssize_t macvtap_put_user(struct macvtap_queue *q,
 			return -EFAULT;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	len = min_t(int, skb->len, len);
 
@@ -976,6 +1335,10 @@ static ssize_t macvtap_put_user(struct macvtap_queue *q,
 	return ret ? ret : (len + vnet_hdr_len);
 =======
 	copied = vnet_hdr_len;
+=======
+	total = copied = vnet_hdr_len;
+	total += skb->len;
+>>>>>>> refs/remotes/origin/master
 
 	if (!vlan_tx_tag_present(skb))
 		len = min_t(int, skb->len, len);
@@ -985,11 +1348,19 @@ static ssize_t macvtap_put_user(struct macvtap_queue *q,
 			__be16 h_vlan_proto;
 			__be16 h_vlan_TCI;
 		} veth;
+<<<<<<< HEAD
 		veth.h_vlan_proto = htons(ETH_P_8021Q);
+=======
+		veth.h_vlan_proto = skb->vlan_proto;
+>>>>>>> refs/remotes/origin/master
 		veth.h_vlan_TCI = htons(vlan_tx_tag_get(skb));
 
 		vlan_offset = offsetof(struct vlan_ethhdr, h_vlan_proto);
 		len = min_t(int, skb->len + VLAN_HLEN, len);
+<<<<<<< HEAD
+=======
+		total += VLAN_HLEN;
+>>>>>>> refs/remotes/origin/master
 
 		copy = min_t(int, vlan_offset, len);
 		ret = skb_copy_datagram_const_iovec(skb, 0, iv, copied, copy);
@@ -1007,6 +1378,7 @@ static ssize_t macvtap_put_user(struct macvtap_queue *q,
 	}
 
 	ret = skb_copy_datagram_const_iovec(skb, vlan_offset, iv, copied, len);
+<<<<<<< HEAD
 	copied += len;
 
 done:
@@ -1018,12 +1390,18 @@ done:
 
 	return ret ? ret : copied;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+done:
+	return ret ? ret : total;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t macvtap_do_read(struct macvtap_queue *q, struct kiocb *iocb,
 			       const struct iovec *iv, unsigned long len,
 			       int noblock)
 {
+<<<<<<< HEAD
 	DECLARE_WAITQUEUE(wait, current);
 	struct sk_buff *skb;
 	ssize_t ret = 0;
@@ -1031,6 +1409,16 @@ static ssize_t macvtap_do_read(struct macvtap_queue *q, struct kiocb *iocb,
 	add_wait_queue(sk_sleep(&q->sk), &wait);
 	while (len) {
 		current->state = TASK_INTERRUPTIBLE;
+=======
+	DEFINE_WAIT(wait);
+	struct sk_buff *skb;
+	ssize_t ret = 0;
+
+	while (len) {
+		if (!noblock)
+			prepare_to_wait(sk_sleep(&q->sk), &wait,
+					TASK_INTERRUPTIBLE);
+>>>>>>> refs/remotes/origin/master
 
 		/* Read frames from the queue */
 		skb = skb_dequeue(&q->sk.sk_receive_queue);
@@ -1052,8 +1440,13 @@ static ssize_t macvtap_do_read(struct macvtap_queue *q, struct kiocb *iocb,
 		break;
 	}
 
+<<<<<<< HEAD
 	current->state = TASK_RUNNING;
 	remove_wait_queue(sk_sleep(&q->sk), &wait);
+=======
+	if (!noblock)
+		finish_wait(sk_sleep(&q->sk), &wait);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1071,11 +1464,109 @@ static ssize_t macvtap_aio_read(struct kiocb *iocb, const struct iovec *iv,
 	}
 
 	ret = macvtap_do_read(q, iocb, iv, len, file->f_flags & O_NONBLOCK);
+<<<<<<< HEAD
 	ret = min_t(ssize_t, ret, len); /* XXX copied from tun.c. Why? */
+=======
+	ret = min_t(ssize_t, ret, len);
+	if (ret > 0)
+		iocb->ki_pos = ret;
+>>>>>>> refs/remotes/origin/master
 out:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static struct macvlan_dev *macvtap_get_vlan(struct macvtap_queue *q)
+{
+	struct macvlan_dev *vlan;
+
+	ASSERT_RTNL();
+	vlan = rtnl_dereference(q->vlan);
+	if (vlan)
+		dev_hold(vlan->dev);
+
+	return vlan;
+}
+
+static void macvtap_put_vlan(struct macvlan_dev *vlan)
+{
+	dev_put(vlan->dev);
+}
+
+static int macvtap_ioctl_set_queue(struct file *file, unsigned int flags)
+{
+	struct macvtap_queue *q = file->private_data;
+	struct macvlan_dev *vlan;
+	int ret;
+
+	vlan = macvtap_get_vlan(q);
+	if (!vlan)
+		return -EINVAL;
+
+	if (flags & IFF_ATTACH_QUEUE)
+		ret = macvtap_enable_queue(vlan->dev, file, q);
+	else if (flags & IFF_DETACH_QUEUE)
+		ret = macvtap_disable_queue(q);
+	else
+		ret = -EINVAL;
+
+	macvtap_put_vlan(vlan);
+	return ret;
+}
+
+static int set_offload(struct macvtap_queue *q, unsigned long arg)
+{
+	struct macvlan_dev *vlan;
+	netdev_features_t features;
+	netdev_features_t feature_mask = 0;
+
+	vlan = rtnl_dereference(q->vlan);
+	if (!vlan)
+		return -ENOLINK;
+
+	features = vlan->dev->features;
+
+	if (arg & TUN_F_CSUM) {
+		feature_mask = NETIF_F_HW_CSUM;
+
+		if (arg & (TUN_F_TSO4 | TUN_F_TSO6)) {
+			if (arg & TUN_F_TSO_ECN)
+				feature_mask |= NETIF_F_TSO_ECN;
+			if (arg & TUN_F_TSO4)
+				feature_mask |= NETIF_F_TSO;
+			if (arg & TUN_F_TSO6)
+				feature_mask |= NETIF_F_TSO6;
+		}
+
+		if (arg & TUN_F_UFO)
+			feature_mask |= NETIF_F_UFO;
+	}
+
+	/* tun/tap driver inverts the usage for TSO offloads, where
+	 * setting the TSO bit means that the userspace wants to
+	 * accept TSO frames and turning it off means that user space
+	 * does not support TSO.
+	 * For macvtap, we have to invert it to mean the same thing.
+	 * When user space turns off TSO, we turn off GSO/LRO so that
+	 * user-space will not receive TSO frames.
+	 */
+	if (feature_mask & (NETIF_F_TSO | NETIF_F_TSO6 | NETIF_F_UFO))
+		features |= RX_OFFLOADS;
+	else
+		features &= ~RX_OFFLOADS;
+
+	/* tap_features are the same as features on tun/tap and
+	 * reflect user expectations.
+	 */
+	vlan->tap_features = feature_mask;
+	vlan->set_features = features;
+	netdev_update_features(vlan->dev);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * provide compatibility with generic tun/tap interface
  */
@@ -1099,7 +1590,12 @@ static long macvtap_ioctl(struct file *file, unsigned int cmd,
 			return -EFAULT;
 
 		ret = 0;
+<<<<<<< HEAD
 		if ((u & ~IFF_VNET_HDR) != (IFF_NO_PI | IFF_TAP))
+=======
+		if ((u & ~(IFF_VNET_HDR | IFF_MULTI_QUEUE)) !=
+		    (IFF_NO_PI | IFF_TAP))
+>>>>>>> refs/remotes/origin/master
 			ret = -EINVAL;
 		else
 			q->flags = u;
@@ -1107,6 +1603,7 @@ static long macvtap_ioctl(struct file *file, unsigned int cmd,
 		return ret;
 
 	case TUNGETIFF:
+<<<<<<< HEAD
 		rcu_read_lock_bh();
 		vlan = rcu_dereference_bh(q->vlan);
 		if (vlan)
@@ -1115,16 +1612,42 @@ static long macvtap_ioctl(struct file *file, unsigned int cmd,
 
 		if (!vlan)
 			return -ENOLINK;
+=======
+		rtnl_lock();
+		vlan = macvtap_get_vlan(q);
+		if (!vlan) {
+			rtnl_unlock();
+			return -ENOLINK;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		ret = 0;
 		if (copy_to_user(&ifr->ifr_name, vlan->dev->name, IFNAMSIZ) ||
 		    put_user(q->flags, &ifr->ifr_flags))
 			ret = -EFAULT;
+<<<<<<< HEAD
 		dev_put(vlan->dev);
 		return ret;
 
 	case TUNGETFEATURES:
 		if (put_user(IFF_TAP | IFF_NO_PI | IFF_VNET_HDR, up))
+=======
+		macvtap_put_vlan(vlan);
+		rtnl_unlock();
+		return ret;
+
+	case TUNSETQUEUE:
+		if (get_user(u, &ifr->ifr_flags))
+			return -EFAULT;
+		rtnl_lock();
+		ret = macvtap_ioctl_set_queue(file, u);
+		rtnl_unlock();
+		return ret;
+
+	case TUNGETFEATURES:
+		if (put_user(IFF_TAP | IFF_NO_PI | IFF_VNET_HDR |
+			     IFF_MULTI_QUEUE, up))
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 		return 0;
 
@@ -1156,11 +1679,18 @@ static long macvtap_ioctl(struct file *file, unsigned int cmd,
 			    TUN_F_TSO_ECN | TUN_F_UFO))
 			return -EINVAL;
 
+<<<<<<< HEAD
 		/* TODO: only accept frames with the features that
 			 got enabled for forwarded frames */
 		if (!(q->flags & IFF_VNET_HDR))
 			return  -EINVAL;
 		return 0;
+=======
+		rtnl_lock();
+		ret = set_offload(q, arg);
+		rtnl_unlock();
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	default:
 		return -EINVAL;
@@ -1194,10 +1724,14 @@ static int macvtap_sendmsg(struct kiocb *iocb, struct socket *sock,
 {
 	struct macvtap_queue *q = container_of(sock, struct macvtap_queue, sock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return macvtap_get_user(q, m->msg_iov, total_len,
 =======
 	return macvtap_get_user(q, m, m->msg_iov, total_len, m->msg_iovlen,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return macvtap_get_user(q, m, m->msg_iov, total_len, m->msg_iovlen,
+>>>>>>> refs/remotes/origin/master
 			    m->msg_flags & MSG_DONTWAIT);
 }
 
@@ -1241,11 +1775,18 @@ struct socket *macvtap_get_socket(struct file *file)
 EXPORT_SYMBOL_GPL(macvtap_get_socket);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int macvtap_device_event(struct notifier_block *unused,
 				unsigned long event, void *ptr)
 {
 	struct net_device *dev = ptr;
+=======
+static int macvtap_device_event(struct notifier_block *unused,
+				unsigned long event, void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct macvlan_dev *vlan;
 	struct device *classdev;
 	dev_t devt;
@@ -1288,7 +1829,10 @@ static struct notifier_block macvtap_notifier_block __read_mostly = {
 	.notifier_call	= macvtap_device_event,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int macvtap_init(void)
 {
 	int err;
@@ -1310,6 +1854,7 @@ static int macvtap_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = macvlan_link_register(&macvtap_link_ops);
 	if (err)
 		goto out4;
@@ -1317,6 +1862,8 @@ static int macvtap_init(void)
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = register_netdevice_notifier(&macvtap_notifier_block);
 	if (err)
 		goto out4;
@@ -1329,7 +1876,10 @@ static int macvtap_init(void)
 
 out5:
 	unregister_netdevice_notifier(&macvtap_notifier_block);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out4:
 	class_unregister(macvtap_class);
 out3:
@@ -1345,9 +1895,13 @@ static void macvtap_exit(void)
 {
 	rtnl_link_unregister(&macvtap_link_ops);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unregister_netdevice_notifier(&macvtap_notifier_block);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unregister_netdevice_notifier(&macvtap_notifier_block);
+>>>>>>> refs/remotes/origin/master
 	class_unregister(macvtap_class);
 	cdev_del(&macvtap_cdev);
 	unregister_chrdev_region(macvtap_major, MACVTAP_NUM_DEVS);

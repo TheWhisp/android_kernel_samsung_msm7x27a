@@ -87,9 +87,12 @@
 #include <linux/synclink.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/dma.h>
@@ -295,8 +298,12 @@ struct mgsl_struct {
 	bool lcr_mem_requested;
 
 	u32 misc_ctrl_value;
+<<<<<<< HEAD
 	char flag_buf[MAX_ASYNC_BUFFER_SIZE];
 	char char_buf[MAX_ASYNC_BUFFER_SIZE];	
+=======
+	char *flag_buf;
+>>>>>>> refs/remotes/origin/master
 	bool drop_rts_on_tx_done;
 
 	bool loopmode_insert_requested;
@@ -582,6 +589,7 @@ struct mgsl_struct {
 
 #define SICR_RXC_ACTIVE			BIT15
 #define SICR_RXC_INACTIVE		BIT14
+<<<<<<< HEAD
 #define SICR_RXC			(BIT15+BIT14)
 #define SICR_TXC_ACTIVE			BIT13
 #define SICR_TXC_INACTIVE		BIT12
@@ -598,6 +606,24 @@ struct mgsl_struct {
 #define SICR_CTS_ACTIVE			BIT5
 #define SICR_CTS_INACTIVE		BIT4
 #define SICR_CTS			(BIT5+BIT4)
+=======
+#define SICR_RXC			(BIT15|BIT14)
+#define SICR_TXC_ACTIVE			BIT13
+#define SICR_TXC_INACTIVE		BIT12
+#define SICR_TXC			(BIT13|BIT12)
+#define SICR_RI_ACTIVE			BIT11
+#define SICR_RI_INACTIVE		BIT10
+#define SICR_RI				(BIT11|BIT10)
+#define SICR_DSR_ACTIVE			BIT9
+#define SICR_DSR_INACTIVE		BIT8
+#define SICR_DSR			(BIT9|BIT8)
+#define SICR_DCD_ACTIVE			BIT7
+#define SICR_DCD_INACTIVE		BIT6
+#define SICR_DCD			(BIT7|BIT6)
+#define SICR_CTS_ACTIVE			BIT5
+#define SICR_CTS_INACTIVE		BIT4
+#define SICR_CTS			(BIT5|BIT4)
+>>>>>>> refs/remotes/origin/master
 #define SICR_RCC_UNDERFLOW		BIT3
 #define SICR_DPLL_NO_SYNC		BIT2
 #define SICR_BRG1_ZERO			BIT1
@@ -854,10 +880,14 @@ static int mgsl_device_count;
  * This is useful for use with gdb and add-symbol-file command.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int break_on_load;
 =======
 static bool break_on_load;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool break_on_load;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Driver major number, defaults to zero to get auto
@@ -906,7 +936,11 @@ static struct pci_driver synclink_pci_driver = {
 	.name		= "synclink",
 	.id_table	= synclink_pci_tbl,
 	.probe		= synclink_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(synclink_remove_one),
+=======
+	.remove		= synclink_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct tty_driver *serial_driver;
@@ -1067,9 +1101,12 @@ static void mgsl_bh_handler(struct work_struct *work)
 		container_of(work, struct mgsl_struct, task);
 	int action;
 
+<<<<<<< HEAD
 	if (!info)
 		return;
 		
+=======
+>>>>>>> refs/remotes/origin/master
 	if ( debug_level >= DEBUG_LEVEL_BH )
 		printk( "%s(%d):mgsl_bh_handler(%s) entry\n",
 			__FILE__,__LINE__,info->device_name);
@@ -1173,7 +1210,11 @@ static void mgsl_isr_receive_status( struct mgsl_struct *info )
 {
 	u16 status = usc_InReg( info, RCSR );
 
+<<<<<<< HEAD
 	if ( debug_level >= DEBUG_LEVEL_ISR )	
+=======
+	if ( debug_level >= DEBUG_LEVEL_ISR )
+>>>>>>> refs/remotes/origin/master
 		printk("%s(%d):mgsl_isr_receive_status status=%04X\n",
 			__FILE__,__LINE__,status);
 			
@@ -1193,7 +1234,11 @@ static void mgsl_isr_receive_status( struct mgsl_struct *info )
  			(usc_InReg(info, RICR) & ~RXSTATUS_ABORT_RECEIVED));
  	}
 
+<<<<<<< HEAD
 	if (status & (RXSTATUS_EXITED_HUNT + RXSTATUS_IDLE_RECEIVED)) {
+=======
+	if (status & (RXSTATUS_EXITED_HUNT | RXSTATUS_IDLE_RECEIVED)) {
+>>>>>>> refs/remotes/origin/master
 		if (status & RXSTATUS_EXITED_HUNT)
 			info->icount.exithunt++;
 		if (status & RXSTATUS_IDLE_RECEIVED)
@@ -1367,7 +1412,11 @@ static void mgsl_isr_io_pin( struct mgsl_struct *info )
 			}
 		}
 	
+<<<<<<< HEAD
 		if ( (info->port.flags & ASYNC_CTS_FLOW) && 
+=======
+		if (tty_port_cts_enabled(&info->port) &&
+>>>>>>> refs/remotes/origin/master
 		     (status & MISCSTATUS_CTS_LATCHED) ) {
 			if (info->port.tty->hw_stopped) {
 				if (status & MISCSTATUS_CTS) {
@@ -1448,7 +1497,10 @@ static void mgsl_isr_receive_data( struct mgsl_struct *info )
 	u16 status;
 	int work = 0;
 	unsigned char DataByte;
+<<<<<<< HEAD
  	struct tty_struct *tty = info->port.tty;
+=======
+>>>>>>> refs/remotes/origin/master
  	struct	mgsl_icount *icount = &info->icount;
 	
 	if ( debug_level >= DEBUG_LEVEL_ISR )	
@@ -1476,13 +1528,19 @@ static void mgsl_isr_receive_data( struct mgsl_struct *info )
 
 		/* get the status of the received byte */
 		status = usc_InReg(info, RCSR);
+<<<<<<< HEAD
 		if ( status & (RXSTATUS_FRAMING_ERROR + RXSTATUS_PARITY_ERROR +
 				RXSTATUS_OVERRUN + RXSTATUS_BREAK_RECEIVED) )
+=======
+		if ( status & (RXSTATUS_FRAMING_ERROR | RXSTATUS_PARITY_ERROR |
+				RXSTATUS_OVERRUN | RXSTATUS_BREAK_RECEIVED) )
+>>>>>>> refs/remotes/origin/master
 			usc_UnlatchRxstatusBits(info,RXSTATUS_ALL);
 		
 		icount->rx++;
 		
 		flag = 0;
+<<<<<<< HEAD
 		if ( status & (RXSTATUS_FRAMING_ERROR + RXSTATUS_PARITY_ERROR +
 				RXSTATUS_OVERRUN + RXSTATUS_BREAK_RECEIVED) ) {
 			printk("rxerr=%04X\n",status);					
@@ -1491,6 +1549,16 @@ static void mgsl_isr_receive_data( struct mgsl_struct *info )
 				status &= ~(RXSTATUS_FRAMING_ERROR + RXSTATUS_PARITY_ERROR);
 				icount->brk++;
 			} else if (status & RXSTATUS_PARITY_ERROR) 
+=======
+		if ( status & (RXSTATUS_FRAMING_ERROR | RXSTATUS_PARITY_ERROR |
+				RXSTATUS_OVERRUN | RXSTATUS_BREAK_RECEIVED) ) {
+			printk("rxerr=%04X\n",status);
+			/* update error statistics */
+			if ( status & RXSTATUS_BREAK_RECEIVED ) {
+				status &= ~(RXSTATUS_FRAMING_ERROR | RXSTATUS_PARITY_ERROR);
+				icount->brk++;
+			} else if (status & RXSTATUS_PARITY_ERROR)
+>>>>>>> refs/remotes/origin/master
 				icount->parity++;
 			else if (status & RXSTATUS_FRAMING_ERROR)
 				icount->frame++;
@@ -1501,7 +1569,11 @@ static void mgsl_isr_receive_data( struct mgsl_struct *info )
 				icount->overrun++;
 			}
 
+<<<<<<< HEAD
 			/* discard char if tty control flags say so */					
+=======
+			/* discard char if tty control flags say so */
+>>>>>>> refs/remotes/origin/master
 			if (status & info->ignore_status_mask)
 				continue;
 				
@@ -1510,19 +1582,31 @@ static void mgsl_isr_receive_data( struct mgsl_struct *info )
 			if (status & RXSTATUS_BREAK_RECEIVED) {
 				flag = TTY_BREAK;
 				if (info->port.flags & ASYNC_SAK)
+<<<<<<< HEAD
 					do_SAK(tty);
+=======
+					do_SAK(info->port.tty);
+>>>>>>> refs/remotes/origin/master
 			} else if (status & RXSTATUS_PARITY_ERROR)
 				flag = TTY_PARITY;
 			else if (status & RXSTATUS_FRAMING_ERROR)
 				flag = TTY_FRAME;
 		}	/* end of if (error) */
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, DataByte, flag);
+=======
+		tty_insert_flip_char(&info->port, DataByte, flag);
+>>>>>>> refs/remotes/origin/master
 		if (status & RXSTATUS_OVERRUN) {
 			/* Overrun is special, since it's
 			 * reported immediately, and doesn't
 			 * affect the current character
 			 */
+<<<<<<< HEAD
 			work += tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+			work += tty_insert_flip_char(&info->port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1533,7 +1617,11 @@ static void mgsl_isr_receive_data( struct mgsl_struct *info )
 	}
 			
 	if(work)
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
+=======
+		tty_flip_buffer_push(&info->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* mgsl_isr_misc()
@@ -1558,8 +1646,13 @@ static void mgsl_isr_misc( struct mgsl_struct *info )
 		usc_EnableReceiver(info,DISABLE_UNCONDITIONAL);
 		usc_DmaCmd(info, DmaCmd_ResetRxChannel);
 		usc_UnlatchRxstatusBits(info, RXSTATUS_ALL);
+<<<<<<< HEAD
 		usc_ClearIrqPendingBits(info, RECEIVE_DATA + RECEIVE_STATUS);
 		usc_DisableInterrupts(info, RECEIVE_DATA + RECEIVE_STATUS);
+=======
+		usc_ClearIrqPendingBits(info, RECEIVE_DATA | RECEIVE_STATUS);
+		usc_DisableInterrupts(info, RECEIVE_DATA | RECEIVE_STATUS);
+>>>>>>> refs/remotes/origin/master
 
 		/* schedule BH handler to restart receiver */
 		info->pending_bh |= BH_RECEIVE;
@@ -1608,7 +1701,11 @@ static void mgsl_isr_receive_dma( struct mgsl_struct *info )
 	u16 status;
 	
 	/* clear interrupt pending and IUS bit for Rx DMA IRQ */
+<<<<<<< HEAD
 	usc_OutDmaReg( info, CDIR, BIT9+BIT1 );
+=======
+	usc_OutDmaReg( info, CDIR, BIT9 | BIT1 );
+>>>>>>> refs/remotes/origin/master
 
 	/* Read the receive DMA status to identify interrupt type. */
 	/* This also clears the status bits. */
@@ -1652,7 +1749,11 @@ static void mgsl_isr_transmit_dma( struct mgsl_struct *info )
 	u16 status;
 
 	/* clear interrupt pending and IUS bit for Tx DMA IRQ */
+<<<<<<< HEAD
 	usc_OutDmaReg(info, CDIR, BIT8+BIT0 );
+=======
+	usc_OutDmaReg(info, CDIR, BIT8 | BIT0 );
+>>>>>>> refs/remotes/origin/master
 
 	/* Read the transmit DMA status to identify interrupt type. */
 	/* This also clears the status bits. */
@@ -1845,25 +1946,45 @@ static void shutdown(struct mgsl_struct * info)
 	usc_DisableMasterIrqBit(info);
 	usc_stop_receiver(info);
 	usc_stop_transmitter(info);
+<<<<<<< HEAD
 	usc_DisableInterrupts(info,RECEIVE_DATA + RECEIVE_STATUS +
 		TRANSMIT_DATA + TRANSMIT_STATUS + IO_PIN + MISC );
 	usc_DisableDmaInterrupts(info,DICR_MASTER + DICR_TRANSMIT + DICR_RECEIVE);
 	
+=======
+	usc_DisableInterrupts(info,RECEIVE_DATA | RECEIVE_STATUS |
+		TRANSMIT_DATA | TRANSMIT_STATUS | IO_PIN | MISC );
+	usc_DisableDmaInterrupts(info,DICR_MASTER + DICR_TRANSMIT + DICR_RECEIVE);
+
+>>>>>>> refs/remotes/origin/master
 	/* Disable DMAEN (Port 7, Bit 14) */
 	/* This disconnects the DMA request signal from the ISA bus */
 	/* on the ISA adapter. This has no effect for the PCI adapter */
 	usc_OutReg(info, PCR, (u16)((usc_InReg(info, PCR) | BIT15) | BIT14));
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* Disable INTEN (Port 6, Bit12) */
 	/* This disconnects the IRQ request signal to the ISA bus */
 	/* on the ISA adapter. This has no effect for the PCI adapter */
 	usc_OutReg(info, PCR, (u16)((usc_InReg(info, PCR) | BIT13) | BIT12));
+<<<<<<< HEAD
 	
  	if (!info->port.tty || info->port.tty->termios->c_cflag & HUPCL) {
  		info->serial_signals &= ~(SerialSignal_DTR + SerialSignal_RTS);
 		usc_set_serial_signals(info);
 	}
 	
+=======
+
+	if (!info->port.tty || info->port.tty->termios.c_cflag & HUPCL) {
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+		usc_set_serial_signals(info);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&info->irq_spinlock,flags);
 
 	mgsl_release_resources(info);	
@@ -1899,11 +2020,19 @@ static void mgsl_program_hw(struct mgsl_struct *info)
 	info->ri_chkcount = 0;
 	info->dsr_chkcount = 0;
 
+<<<<<<< HEAD
 	usc_EnableStatusIrqs(info,SICR_CTS+SICR_DSR+SICR_DCD+SICR_RI);		
 	usc_EnableInterrupts(info, IO_PIN);
 	usc_get_serial_signals(info);
 		
 	if (info->netcount || info->port.tty->termios->c_cflag & CREAD)
+=======
+	usc_EnableStatusIrqs(info,SICR_CTS+SICR_DSR+SICR_DCD+SICR_RI);
+	usc_EnableInterrupts(info, IO_PIN);
+	usc_get_serial_signals(info);
+		
+	if (info->netcount || info->port.tty->termios.c_cflag & CREAD)
+>>>>>>> refs/remotes/origin/master
 		usc_start_receiver(info);
 		
 	spin_unlock_irqrestore(&info->irq_spinlock,flags);
@@ -1916,13 +2045,18 @@ static void mgsl_change_params(struct mgsl_struct *info)
 	unsigned cflag;
 	int bits_per_char;
 
+<<<<<<< HEAD
 	if (!info->port.tty || !info->port.tty->termios)
+=======
+	if (!info->port.tty)
+>>>>>>> refs/remotes/origin/master
 		return;
 		
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):mgsl_change_params(%s)\n",
 			 __FILE__,__LINE__, info->device_name );
 			 
+<<<<<<< HEAD
 	cflag = info->port.tty->termios->c_cflag;
 
 	/* if B0 rate (hangup) specified then negate DTR and RTS */
@@ -1931,6 +2065,16 @@ static void mgsl_change_params(struct mgsl_struct *info)
 		info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
 	else
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
+=======
+	cflag = info->port.tty->termios.c_cflag;
+
+	/* if B0 rate (hangup) specified then negate RTS and DTR */
+	/* otherwise assert RTS and DTR */
+ 	if (cflag & CBAUD)
+		info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+	else
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
 	
 	/* byte size and parity */
 	
@@ -2132,9 +2276,12 @@ static int mgsl_write(struct tty_struct * tty,
 			info->params.mode == MGSL_MODE_RAW ) {
 		/* operating in synchronous (frame oriented) mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* operating in synchronous (frame oriented) mode */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (info->tx_active) {
 
 			if ( info->params.mode == MGSL_MODE_HDLC ) {
@@ -2379,8 +2526,13 @@ static void mgsl_throttle(struct tty_struct * tty)
 	
 	if (I_IXOFF(tty))
 		mgsl_send_xchar(tty, STOP_CHAR(tty));
+<<<<<<< HEAD
  
  	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+
+	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&info->irq_spinlock,flags);
 		info->serial_signals &= ~SerialSignal_RTS;
 	 	usc_set_serial_signals(info);
@@ -2413,8 +2565,13 @@ static void mgsl_unthrottle(struct tty_struct * tty)
 		else
 			mgsl_send_xchar(tty, START_CHAR(tty));
 	}
+<<<<<<< HEAD
 	
  	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+
+	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&info->irq_spinlock,flags);
 		info->serial_signals |= SerialSignal_RTS;
 	 	usc_set_serial_signals(info);
@@ -2790,7 +2947,11 @@ static int mgsl_wait_event(struct mgsl_struct * info, int __user * mask_ptr)
 		if (!waitqueue_active(&info->event_wait_q)) {
 			/* disable enable exit hunt mode/idle rcvd IRQs */
 			usc_OutReg(info, RICR, usc_InReg(info,RICR) &
+<<<<<<< HEAD
 				~(RXSTATUS_EXITED_HUNT + RXSTATUS_IDLE_RECEIVED));
+=======
+				~(RXSTATUS_EXITED_HUNT | RXSTATUS_IDLE_RECEIVED));
+>>>>>>> refs/remotes/origin/master
 		}
 		spin_unlock_irqrestore(&info->irq_spinlock,flags);
 	}
@@ -3057,8 +3218,13 @@ static void mgsl_set_termios(struct tty_struct *tty, struct ktermios *old_termio
 
 	/* Handle transition to B0 status */
 	if (old_termios->c_cflag & CBAUD &&
+<<<<<<< HEAD
 	    !(tty->termios->c_cflag & CBAUD)) {
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
+=======
+	    !(tty->termios.c_cflag & CBAUD)) {
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&info->irq_spinlock,flags);
 	 	usc_set_serial_signals(info);
 		spin_unlock_irqrestore(&info->irq_spinlock,flags);
@@ -3066,9 +3232,15 @@ static void mgsl_set_termios(struct tty_struct *tty, struct ktermios *old_termio
 	
 	/* Handle transition away from B0 status */
 	if (!(old_termios->c_cflag & CBAUD) &&
+<<<<<<< HEAD
 	    tty->termios->c_cflag & CBAUD) {
 		info->serial_signals |= SerialSignal_DTR;
  		if (!(tty->termios->c_cflag & CRTSCTS) || 
+=======
+	    tty->termios.c_cflag & CBAUD) {
+		info->serial_signals |= SerialSignal_DTR;
+ 		if (!(tty->termios.c_cflag & CRTSCTS) || 
+>>>>>>> refs/remotes/origin/master
  		    !test_bit(TTY_THROTTLED, &tty->flags)) {
 			info->serial_signals |= SerialSignal_RTS;
  		}
@@ -3079,7 +3251,11 @@ static void mgsl_set_termios(struct tty_struct *tty, struct ktermios *old_termio
 	
 	/* Handle turning off CRTSCTS */
 	if (old_termios->c_cflag & CRTSCTS &&
+<<<<<<< HEAD
 	    !(tty->termios->c_cflag & CRTSCTS)) {
+=======
+	    !(tty->termios.c_cflag & CRTSCTS)) {
+>>>>>>> refs/remotes/origin/master
 		tty->hw_stopped = 0;
 		mgsl_start(tty);
 	}
@@ -3109,7 +3285,11 @@ static void mgsl_close(struct tty_struct *tty, struct file * filp)
 		printk("%s(%d):mgsl_close(%s) entry, count=%d\n",
 			 __FILE__,__LINE__, info->device_name, info->port.count);
 
+<<<<<<< HEAD
 	if (tty_port_close_start(&info->port, tty, filp) == 0)			 
+=======
+	if (tty_port_close_start(&info->port, tty, filp) == 0)
+>>>>>>> refs/remotes/origin/master
 		goto cleanup;
 
 	mutex_lock(&info->port.mutex);
@@ -3257,9 +3437,15 @@ static void dtr_rts(struct tty_port *port, int on)
 
 	spin_lock_irqsave(&info->irq_spinlock,flags);
 	if (on)
+<<<<<<< HEAD
 		info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
 	else
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
+=======
+		info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+	else
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
  	usc_set_serial_signals(info);
 	spin_unlock_irqrestore(&info->irq_spinlock,flags);
 }
@@ -3299,7 +3485,11 @@ static int block_til_ready(struct tty_struct *tty, struct file * filp,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CLOCAL)
+=======
+	if (tty->termios.c_cflag & CLOCAL)
+>>>>>>> refs/remotes/origin/master
 		do_clocal = true;
 
 	/* Wait for carrier detect and the line to become
@@ -3325,7 +3515,11 @@ static int block_til_ready(struct tty_struct *tty, struct file * filp,
 	port->blocked_open++;
 	
 	while (1) {
+<<<<<<< HEAD
 		if (tty->termios->c_cflag & CBAUD)
+=======
+		if (C_BAUD(tty) && test_bit(ASYNCB_INITIALIZED, &port->flags))
+>>>>>>> refs/remotes/origin/master
 			tty_port_raise_dtr_rts(port);
 		
 		set_current_state(TASK_INTERRUPTIBLE);
@@ -3350,9 +3544,15 @@ static int block_til_ready(struct tty_struct *tty, struct file * filp,
 			printk("%s(%d):block_til_ready blocking on %s count=%d\n",
 				 __FILE__,__LINE__, tty->driver->name, port->count );
 				 
+<<<<<<< HEAD
 		tty_unlock();
 		schedule();
 		tty_lock();
+=======
+		tty_unlock(tty);
+		schedule();
+		tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
 	}
 	
 	set_current_state(TASK_RUNNING);
@@ -3374,6 +3574,32 @@ static int block_til_ready(struct tty_struct *tty, struct file * filp,
 	
 }	/* end of block_til_ready() */
 
+<<<<<<< HEAD
+=======
+static int mgsl_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	struct mgsl_struct *info;
+	int line = tty->index;
+
+	/* verify range of specified line number */
+	if (line >= mgsl_device_count) {
+		printk("%s(%d):mgsl_open with invalid line #%d.\n",
+			__FILE__, __LINE__, line);
+		return -ENODEV;
+	}
+
+	/* find the info structure for the specified line */
+	info = mgsl_device_list;
+	while (info && info->line != line)
+		info = info->next_device;
+	if (mgsl_paranoia_check(info, tty->name, "mgsl_open"))
+		return -ENODEV;
+	tty->driver_data = info;
+
+	return tty_port_install(&info->port, driver, tty);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* mgsl_open()
  *
  *	Called when a port is opened.  Init and enable port.
@@ -3386,6 +3612,7 @@ static int block_til_ready(struct tty_struct *tty, struct file * filp,
  */
 static int mgsl_open(struct tty_struct *tty, struct file * filp)
 {
+<<<<<<< HEAD
 	struct mgsl_struct	*info;
 	int 			retval, line;
 	unsigned long flags;
@@ -3410,6 +3637,12 @@ static int mgsl_open(struct tty_struct *tty, struct file * filp)
 		return -ENODEV;
 	
 	tty->driver_data = info;
+=======
+	struct mgsl_struct *info = tty->driver_data;
+	unsigned long flags;
+	int retval;
+
+>>>>>>> refs/remotes/origin/master
 	info->port.tty = tty;
 		
 	if (debug_level >= DEBUG_LEVEL_INFO)
@@ -3418,14 +3651,23 @@ static int mgsl_open(struct tty_struct *tty, struct file * filp)
 
 	/* If port is closing, signal caller to try again */
 	if (tty_hung_up_p(filp) || info->port.flags & ASYNC_CLOSING){
+<<<<<<< HEAD
 		if (info->port.flags & ASYNC_CLOSING)
 			interruptible_sleep_on(&info->port.close_wait);
+=======
+		wait_event_interruptible_tty(tty, info->port.close_wait,
+				     !(info->port.flags & ASYNC_CLOSING));
+>>>>>>> refs/remotes/origin/master
 		retval = ((info->port.flags & ASYNC_HUP_NOTIFY) ?
 			-EAGAIN : -ERESTARTSYS);
 		goto cleanup;
 	}
 	
+<<<<<<< HEAD
 	info->port.tty->low_latency = (info->port.flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+=======
+	info->port.low_latency = (info->port.flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&info->netlock, flags);
 	if (info->netcount) {
@@ -3907,7 +4149,17 @@ static int mgsl_alloc_intermediate_rxbuffer_memory(struct mgsl_struct *info)
 	info->intermediate_rxbuffer = kmalloc(info->max_frame_size, GFP_KERNEL | GFP_DMA);
 	if ( info->intermediate_rxbuffer == NULL )
 		return -ENOMEM;
+<<<<<<< HEAD
 
+=======
+	/* unused flag buffer to satisfy receive_buf calling interface */
+	info->flag_buf = kzalloc(info->max_frame_size, GFP_KERNEL);
+	if (!info->flag_buf) {
+		kfree(info->intermediate_rxbuffer);
+		info->intermediate_rxbuffer = NULL;
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 }	/* end of mgsl_alloc_intermediate_rxbuffer_memory() */
@@ -3926,6 +4178,11 @@ static void mgsl_free_intermediate_rxbuffer_memory(struct mgsl_struct *info)
 {
 	kfree(info->intermediate_rxbuffer);
 	info->intermediate_rxbuffer = NULL;
+<<<<<<< HEAD
+=======
+	kfree(info->flag_buf);
+	info->flag_buf = NULL;
+>>>>>>> refs/remotes/origin/master
 
 }	/* end of mgsl_free_intermediate_rxbuffer_memory() */
 
@@ -4303,7 +4560,11 @@ static struct mgsl_struct* mgsl_allocate_device(void)
 		spin_lock_init(&info->irq_spinlock);
 		spin_lock_init(&info->netlock);
 		memcpy(&info->params,&default_params,sizeof(MGSL_PARAMS));
+<<<<<<< HEAD
 		info->idle_mode = HDLC_TXIDLE_FLAGS;		
+=======
+		info->idle_mode = HDLC_TXIDLE_FLAGS;
+>>>>>>> refs/remotes/origin/master
 		info->num_tx_dma_buffers = 1;
 		info->num_tx_holding_buffers = 0;
 	}
@@ -4313,6 +4574,10 @@ static struct mgsl_struct* mgsl_allocate_device(void)
 }	/* end of mgsl_allocate_device()*/
 
 static const struct tty_operations mgsl_ops = {
+<<<<<<< HEAD
+=======
+	.install = mgsl_install,
+>>>>>>> refs/remotes/origin/master
 	.open = mgsl_open,
 	.close = mgsl_close,
 	.write = mgsl_write,
@@ -4349,9 +4614,12 @@ static int mgsl_init_tty(void)
 		return -ENOMEM;
 	
 <<<<<<< HEAD
+<<<<<<< HEAD
 	serial_driver->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	serial_driver->driver_name = "synclink";
 	serial_driver->name = "ttySL";
 	serial_driver->major = ttymajor;
@@ -4437,6 +4705,10 @@ static void synclink_cleanup(void)
 		mgsl_release_resources(info);
 		tmp = info;
 		info = info->next_device;
+<<<<<<< HEAD
+=======
+		tty_port_destroy(&tmp->port);
+>>>>>>> refs/remotes/origin/master
 		kfree(tmp);
 	}
 	
@@ -4730,7 +5002,11 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 		else if ( info->params.flags & HDLC_FLAG_UNDERRUN_FLAG )
 			RegValue |= BIT15;
 		else if ( info->params.flags & HDLC_FLAG_UNDERRUN_CRC )
+<<<<<<< HEAD
 			RegValue |= BIT15 + BIT14;
+=======
+			RegValue |= BIT15 | BIT14;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if ( info->params.preamble != HDLC_PREAMBLE_PATTERN_NONE )
@@ -4771,11 +5047,19 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 	switch ( info->params.encoding ) {
 	case HDLC_ENCODING_NRZB:               RegValue |= BIT13; break;
 	case HDLC_ENCODING_NRZI_MARK:          RegValue |= BIT14; break;
+<<<<<<< HEAD
 	case HDLC_ENCODING_NRZI_SPACE:	       RegValue |= BIT14 + BIT13; break;
 	case HDLC_ENCODING_BIPHASE_MARK:       RegValue |= BIT15; break;
 	case HDLC_ENCODING_BIPHASE_SPACE:      RegValue |= BIT15 + BIT13; break;
 	case HDLC_ENCODING_BIPHASE_LEVEL:      RegValue |= BIT15 + BIT14; break;
 	case HDLC_ENCODING_DIFF_BIPHASE_LEVEL: RegValue |= BIT15 + BIT14 + BIT13; break;
+=======
+	case HDLC_ENCODING_NRZI_SPACE:	       RegValue |= BIT14 | BIT13; break;
+	case HDLC_ENCODING_BIPHASE_MARK:       RegValue |= BIT15; break;
+	case HDLC_ENCODING_BIPHASE_SPACE:      RegValue |= BIT15 | BIT13; break;
+	case HDLC_ENCODING_BIPHASE_LEVEL:      RegValue |= BIT15 | BIT14; break;
+	case HDLC_ENCODING_DIFF_BIPHASE_LEVEL: RegValue |= BIT15 | BIT14 | BIT13; break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ( (info->params.crc_type & HDLC_CRC_MASK) == HDLC_CRC_16_CCITT )
@@ -4846,6 +5130,7 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 	switch ( info->params.encoding ) {
 	case HDLC_ENCODING_NRZB:               RegValue |= BIT13; break;
 	case HDLC_ENCODING_NRZI_MARK:          RegValue |= BIT14; break;
+<<<<<<< HEAD
 	case HDLC_ENCODING_NRZI_SPACE:         RegValue |= BIT14 + BIT13; break;
 	case HDLC_ENCODING_BIPHASE_MARK:       RegValue |= BIT15; break;
 	case HDLC_ENCODING_BIPHASE_SPACE:      RegValue |= BIT15 + BIT13; break;
@@ -4855,6 +5140,17 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 
 	if ( (info->params.crc_type & HDLC_CRC_MASK) == HDLC_CRC_16_CCITT )
 		RegValue |= BIT9 + BIT8;
+=======
+	case HDLC_ENCODING_NRZI_SPACE:         RegValue |= BIT14 | BIT13; break;
+	case HDLC_ENCODING_BIPHASE_MARK:       RegValue |= BIT15; break;
+	case HDLC_ENCODING_BIPHASE_SPACE:      RegValue |= BIT15 | BIT13; break;
+	case HDLC_ENCODING_BIPHASE_LEVEL:      RegValue |= BIT15 | BIT14; break;
+	case HDLC_ENCODING_DIFF_BIPHASE_LEVEL: RegValue |= BIT15 | BIT14 | BIT13; break;
+	}
+
+	if ( (info->params.crc_type & HDLC_CRC_MASK) == HDLC_CRC_16_CCITT )
+		RegValue |= BIT9 | BIT8;
+>>>>>>> refs/remotes/origin/master
 	else if ( (info->params.crc_type & HDLC_CRC_MASK) == HDLC_CRC_32_CCITT )
 		RegValue |= ( BIT12 | BIT10 | BIT9 | BIT8);
 
@@ -4965,7 +5261,11 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 
 	RegValue = 0x0000;
 
+<<<<<<< HEAD
 	if ( info->params.flags & (HDLC_FLAG_RXC_DPLL + HDLC_FLAG_TXC_DPLL) ) {
+=======
+	if ( info->params.flags & (HDLC_FLAG_RXC_DPLL | HDLC_FLAG_TXC_DPLL) ) {
+>>>>>>> refs/remotes/origin/master
 		u32 XtalSpeed;
 		u32 DpllDivisor;
 		u16 Tc;
@@ -5027,7 +5327,11 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 		case HDLC_ENCODING_BIPHASE_MARK:
 		case HDLC_ENCODING_BIPHASE_SPACE: RegValue |= BIT9; break;
 		case HDLC_ENCODING_BIPHASE_LEVEL:
+<<<<<<< HEAD
 		case HDLC_ENCODING_DIFF_BIPHASE_LEVEL: RegValue |= BIT9 + BIT8; break;
+=======
+		case HDLC_ENCODING_DIFF_BIPHASE_LEVEL: RegValue |= BIT9 | BIT8; break;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -5064,8 +5368,13 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 	/* enable Master Interrupt Enable bit (MIE) */
 	usc_EnableMasterIrqBit( info );
 
+<<<<<<< HEAD
 	usc_ClearIrqPendingBits( info, RECEIVE_STATUS + RECEIVE_DATA +
 				TRANSMIT_STATUS + TRANSMIT_DATA + MISC);
+=======
+	usc_ClearIrqPendingBits( info, RECEIVE_STATUS | RECEIVE_DATA |
+				TRANSMIT_STATUS | TRANSMIT_DATA | MISC);
+>>>>>>> refs/remotes/origin/master
 
 	/* arm RCC underflow interrupt */
 	usc_OutReg(info, SICR, (u16)(usc_InReg(info,SICR) | BIT3));
@@ -5183,6 +5492,7 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 	switch ( info->params.preamble_length ) {
 	case HDLC_PREAMBLE_LENGTH_16BITS: RegValue |= BIT10; break;
 	case HDLC_PREAMBLE_LENGTH_32BITS: RegValue |= BIT11; break;
+<<<<<<< HEAD
 	case HDLC_PREAMBLE_LENGTH_64BITS: RegValue |= BIT11 + BIT10; break;
 	}
 
@@ -5191,6 +5501,16 @@ static void usc_set_sdlc_mode( struct mgsl_struct *info )
 	case HDLC_PREAMBLE_PATTERN_ONES:  RegValue |= BIT8; break;
 	case HDLC_PREAMBLE_PATTERN_10:    RegValue |= BIT9; break;
 	case HDLC_PREAMBLE_PATTERN_01:    RegValue |= BIT9 + BIT8; break;
+=======
+	case HDLC_PREAMBLE_LENGTH_64BITS: RegValue |= BIT11 | BIT10; break;
+	}
+
+	switch ( info->params.preamble ) {
+	case HDLC_PREAMBLE_PATTERN_FLAGS: RegValue |= BIT8 | BIT12; break;
+	case HDLC_PREAMBLE_PATTERN_ONES:  RegValue |= BIT8; break;
+	case HDLC_PREAMBLE_PATTERN_10:    RegValue |= BIT9; break;
+	case HDLC_PREAMBLE_PATTERN_01:    RegValue |= BIT9 | BIT8; break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	usc_OutReg( info, CCR, RegValue );
@@ -5229,7 +5549,11 @@ static void usc_enable_loopback(struct mgsl_struct *info, int enable)
 {
 	if (enable) {
 		/* blank external TXD output */
+<<<<<<< HEAD
 		usc_OutReg(info,IOCR,usc_InReg(info,IOCR) | (BIT7+BIT6));
+=======
+		usc_OutReg(info,IOCR,usc_InReg(info,IOCR) | (BIT7 | BIT6));
+>>>>>>> refs/remotes/origin/master
 	
 		/* Clock mode Control Register (CMCR)
 		 *
@@ -5268,7 +5592,11 @@ static void usc_enable_loopback(struct mgsl_struct *info, int enable)
 		outw( 0x0300, info->io_base + CCAR );
 	} else {
 		/* enable external TXD output */
+<<<<<<< HEAD
 		usc_OutReg(info,IOCR,usc_InReg(info,IOCR) & ~(BIT7+BIT6));
+=======
+		usc_OutReg(info,IOCR,usc_InReg(info,IOCR) & ~(BIT7 | BIT6));
+>>>>>>> refs/remotes/origin/master
 	
 		/* clear Internal Data loopback mode */
 		info->loopback_bits = 0;
@@ -5455,13 +5783,21 @@ static void usc_process_rxoverrun_sync( struct mgsl_struct *info )
 		usc_OutDmaReg( info, NRARU, (u16)(phys_addr >> 16) );
 
 		usc_UnlatchRxstatusBits( info, RXSTATUS_ALL );
+<<<<<<< HEAD
 		usc_ClearIrqPendingBits( info, RECEIVE_DATA + RECEIVE_STATUS );
+=======
+		usc_ClearIrqPendingBits( info, RECEIVE_DATA | RECEIVE_STATUS );
+>>>>>>> refs/remotes/origin/master
 		usc_EnableInterrupts( info, RECEIVE_STATUS );
 
 		/* 1. Arm End of Buffer (EOB) Receive DMA Interrupt (BIT2 of RDIAR) */
 		/* 2. Enable Receive DMA Interrupts (BIT1 of DICR) */
 
+<<<<<<< HEAD
 		usc_OutDmaReg( info, RDIAR, BIT3 + BIT2 );
+=======
+		usc_OutDmaReg( info, RDIAR, BIT3 | BIT2 );
+>>>>>>> refs/remotes/origin/master
 		usc_OutDmaReg( info, DICR, (u16)(usc_InDmaReg(info,DICR) | BIT1) );
 		usc_DmaCmd( info, DmaCmd_InitRxChannel );
 		if ( info->params.flags & HDLC_FLAG_AUTO_DCD )
@@ -5496,8 +5832,13 @@ static void usc_stop_receiver( struct mgsl_struct *info )
 	usc_DmaCmd( info, DmaCmd_ResetRxChannel );
 
 	usc_UnlatchRxstatusBits( info, RXSTATUS_ALL );
+<<<<<<< HEAD
 	usc_ClearIrqPendingBits( info, RECEIVE_DATA + RECEIVE_STATUS );
 	usc_DisableInterrupts( info, RECEIVE_DATA + RECEIVE_STATUS );
+=======
+	usc_ClearIrqPendingBits( info, RECEIVE_DATA | RECEIVE_STATUS );
+	usc_DisableInterrupts( info, RECEIVE_DATA | RECEIVE_STATUS );
+>>>>>>> refs/remotes/origin/master
 
 	usc_EnableReceiver(info,DISABLE_UNCONDITIONAL);
 
@@ -5544,13 +5885,21 @@ static void usc_start_receiver( struct mgsl_struct *info )
 		usc_OutDmaReg( info, NRARU, (u16)(phys_addr >> 16) );
 
 		usc_UnlatchRxstatusBits( info, RXSTATUS_ALL );
+<<<<<<< HEAD
 		usc_ClearIrqPendingBits( info, RECEIVE_DATA + RECEIVE_STATUS );
+=======
+		usc_ClearIrqPendingBits( info, RECEIVE_DATA | RECEIVE_STATUS );
+>>>>>>> refs/remotes/origin/master
 		usc_EnableInterrupts( info, RECEIVE_STATUS );
 
 		/* 1. Arm End of Buffer (EOB) Receive DMA Interrupt (BIT2 of RDIAR) */
 		/* 2. Enable Receive DMA Interrupts (BIT1 of DICR) */
 
+<<<<<<< HEAD
 		usc_OutDmaReg( info, RDIAR, BIT3 + BIT2 );
+=======
+		usc_OutDmaReg( info, RDIAR, BIT3 | BIT2 );
+>>>>>>> refs/remotes/origin/master
 		usc_OutDmaReg( info, DICR, (u16)(usc_InDmaReg(info,DICR) | BIT1) );
 		usc_DmaCmd( info, DmaCmd_InitRxChannel );
 		if ( info->params.flags & HDLC_FLAG_AUTO_DCD )
@@ -5559,7 +5908,11 @@ static void usc_start_receiver( struct mgsl_struct *info )
 			usc_EnableReceiver(info,ENABLE_UNCONDITIONAL);
 	} else {
 		usc_UnlatchRxstatusBits(info, RXSTATUS_ALL);
+<<<<<<< HEAD
 		usc_ClearIrqPendingBits(info, RECEIVE_DATA + RECEIVE_STATUS);
+=======
+		usc_ClearIrqPendingBits(info, RECEIVE_DATA | RECEIVE_STATUS);
+>>>>>>> refs/remotes/origin/master
 		usc_EnableInterrupts(info, RECEIVE_DATA);
 
 		usc_RTCmd( info, RTCmd_PurgeRxFifo );
@@ -5933,7 +6286,11 @@ static void usc_set_async_mode( struct mgsl_struct *info )
 	RegValue = 0;
 
 	if ( info->params.data_bits != 8 )
+<<<<<<< HEAD
 		RegValue |= BIT4+BIT3+BIT2;
+=======
+		RegValue |= BIT4 | BIT3 | BIT2;
+>>>>>>> refs/remotes/origin/master
 
 	if ( info->params.parity != ASYNC_PARITY_NONE ) {
 		RegValue |= BIT5;
@@ -5990,7 +6347,11 @@ static void usc_set_async_mode( struct mgsl_struct *info )
 	RegValue = 0;
 
 	if ( info->params.data_bits != 8 )
+<<<<<<< HEAD
 		RegValue |= BIT4+BIT3+BIT2;
+=======
+		RegValue |= BIT4 | BIT3 | BIT2;
+>>>>>>> refs/remotes/origin/master
 
 	if ( info->params.parity != ASYNC_PARITY_NONE ) {
 		RegValue |= BIT5;
@@ -6137,7 +6498,11 @@ static void usc_loopback_frame( struct mgsl_struct *info )
 							
 	/* WAIT FOR RECEIVE COMPLETE */
 	for (i=0 ; i<1000 ; i++)
+<<<<<<< HEAD
 		if (usc_InReg( info, RCSR ) & (BIT8 + BIT4 + BIT3 + BIT1))
+=======
+		if (usc_InReg( info, RCSR ) & (BIT8 | BIT4 | BIT3 | BIT1))
+>>>>>>> refs/remotes/origin/master
 			break;
 
 	/* clear Internal Data loopback mode */
@@ -6244,8 +6609,13 @@ static void usc_get_serial_signals( struct mgsl_struct *info )
 {
 	u16 status;
 
+<<<<<<< HEAD
 	/* clear all serial signals except DTR and RTS */
 	info->serial_signals &= SerialSignal_DTR + SerialSignal_RTS;
+=======
+	/* clear all serial signals except RTS and DTR */
+	info->serial_signals &= SerialSignal_RTS | SerialSignal_DTR;
+>>>>>>> refs/remotes/origin/master
 
 	/* Read the Misc Interrupt status Register (MISR) to get */
 	/* the V24 status signals. */
@@ -6270,7 +6640,11 @@ static void usc_get_serial_signals( struct mgsl_struct *info )
 
 /* usc_set_serial_signals()
  *
+<<<<<<< HEAD
  *	Set the state of DTR and RTS based on contents of
+=======
+ *	Set the state of RTS and DTR based on contents of
+>>>>>>> refs/remotes/origin/master
  *	serial_signals member of device extension.
  *	
  * Arguments:		info	pointer to device instance data
@@ -6587,8 +6961,13 @@ static bool mgsl_get_rx_frame(struct mgsl_struct *info)
 	
 	status = info->rx_buffer_list[EndIndex].status;
 
+<<<<<<< HEAD
 	if ( status & (RXSTATUS_SHORT_FRAME + RXSTATUS_OVERRUN +
 			RXSTATUS_CRC_ERROR + RXSTATUS_ABORT) ) {
+=======
+	if ( status & (RXSTATUS_SHORT_FRAME | RXSTATUS_OVERRUN |
+			RXSTATUS_CRC_ERROR | RXSTATUS_ABORT) ) {
+>>>>>>> refs/remotes/origin/master
 		if ( status & RXSTATUS_SHORT_FRAME )
 			info->icount.rxshort++;
 		else if ( status & RXSTATUS_ABORT )
@@ -6770,8 +7149,13 @@ static bool mgsl_get_raw_rx_frame(struct mgsl_struct *info)
 
 		status = info->rx_buffer_list[CurrentIndex].status;
 
+<<<<<<< HEAD
 		if ( status & (RXSTATUS_SHORT_FRAME + RXSTATUS_OVERRUN +
 				RXSTATUS_CRC_ERROR + RXSTATUS_ABORT) ) {
+=======
+		if ( status & (RXSTATUS_SHORT_FRAME | RXSTATUS_OVERRUN |
+				RXSTATUS_CRC_ERROR | RXSTATUS_ABORT) ) {
+>>>>>>> refs/remotes/origin/master
 			if ( status & RXSTATUS_SHORT_FRAME )
 				info->icount.rxshort++;
 			else if ( status & RXSTATUS_ABORT )
@@ -6907,7 +7291,11 @@ static void mgsl_load_tx_dma_buffer(struct mgsl_struct *info,
 		/* set CMR:13 to start transmit when
 		 * next GoAhead (abort) is received
 		 */
+<<<<<<< HEAD
 	 	info->cmr_value |= BIT13;			  
+=======
+	 	info->cmr_value |= BIT13;
+>>>>>>> refs/remotes/origin/master
 	}
 		
 	/* begin loading the frame in the next available tx dma
@@ -7286,7 +7674,11 @@ static bool mgsl_dma_test( struct mgsl_struct *info )
 		
 		spin_unlock_irqrestore(&info->irq_spinlock,flags);
 
+<<<<<<< HEAD
 						
+=======
+
+>>>>>>> refs/remotes/origin/master
 		/******************************/
 		/* WAIT FOR TRANSMIT COMPLETE */
 		/******************************/
@@ -7300,7 +7692,11 @@ static bool mgsl_dma_test( struct mgsl_struct *info )
 		status = usc_InReg( info, TCSR );
 		spin_unlock_irqrestore(&info->irq_spinlock,flags);
 
+<<<<<<< HEAD
 		while ( !(status & (BIT6+BIT5+BIT4+BIT2+BIT1)) ) {
+=======
+		while ( !(status & (BIT6 | BIT5 | BIT4 | BIT2 | BIT1)) ) {
+>>>>>>> refs/remotes/origin/master
 			if (time_after(jiffies, EndTime)) {
 				rc = false;
 				break;
@@ -7315,7 +7711,11 @@ static bool mgsl_dma_test( struct mgsl_struct *info )
 
 	if ( rc ){
 		/* CHECK FOR TRANSMIT ERRORS */
+<<<<<<< HEAD
 		if ( status & (BIT5 + BIT1) ) 
+=======
+		if ( status & (BIT5 | BIT1) )
+>>>>>>> refs/remotes/origin/master
 			rc = false;
 	}
 
@@ -7341,7 +7741,11 @@ static bool mgsl_dma_test( struct mgsl_struct *info )
 		/* CHECK FOR RECEIVE ERRORS */
 		status = info->rx_buffer_list[0].status;
 
+<<<<<<< HEAD
 		if ( status & (BIT8 + BIT3 + BIT1) ) {
+=======
+		if ( status & (BIT8 | BIT3 | BIT1) ) {
+>>>>>>> refs/remotes/origin/master
 			/* receive error has occurred */
 			rc = false;
 		} else {
@@ -7613,7 +8017,11 @@ static void usc_loopmode_send_done( struct mgsl_struct * info )
 {
  	info->loopmode_send_done_requested = false;
  	/* clear CMR:13 to 0 to start echoing RxData to TxData */
+<<<<<<< HEAD
  	info->cmr_value &= ~BIT13;			  
+=======
+ 	info->cmr_value &= ~BIT13;
+>>>>>>> refs/remotes/origin/master
  	usc_OutReg(info, CMR, info->cmr_value);
 }
 
@@ -7784,8 +8192,13 @@ static int hdlcdev_open(struct net_device *dev)
 		return rc;
 	}
 
+<<<<<<< HEAD
 	/* assert DTR and RTS, apply hardware settings */
 	info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
+=======
+	/* assert RTS and DTR, apply hardware settings */
+	info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+>>>>>>> refs/remotes/origin/master
 	mgsl_program_hw(info);
 
 	/* enable network layer transmit */
@@ -8076,7 +8489,11 @@ static void hdlcdev_exit(struct mgsl_struct *info)
 #endif /* CONFIG_HDLC */
 
 
+<<<<<<< HEAD
 static int __devinit synclink_init_one (struct pci_dev *dev,
+=======
+static int synclink_init_one (struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 					const struct pci_device_id *ent)
 {
 	struct mgsl_struct *info;
@@ -8128,7 +8545,11 @@ static int __devinit synclink_init_one (struct pci_dev *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit synclink_remove_one (struct pci_dev *dev)
+=======
+static void synclink_remove_one (struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 }
 

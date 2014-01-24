@@ -601,9 +601,12 @@
 #define AR_D_GBL_IFS_SIFS         0x1030
 #define AR_D_GBL_IFS_SIFS_M       0x0000FFFF
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_D_GBL_IFS_SIFS_ASYNC_FIFO_DUR 0x000003AB
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR_D_GBL_IFS_SIFS_RESV0   0xFFFFFFFF
 
 #define AR_D_TXBLK_BASE            0x1038
@@ -620,18 +623,25 @@
 #define AR_D_GBL_IFS_SLOT_M       0x0000FFFF
 #define AR_D_GBL_IFS_SLOT_RESV0   0xFFFF0000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_D_GBL_IFS_SLOT_ASYNC_FIFO_DUR   0x00000420
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AR_D_GBL_IFS_EIFS         0x10b0
 #define AR_D_GBL_IFS_EIFS_M       0x0000FFFF
 #define AR_D_GBL_IFS_EIFS_RESV0   0xFFFF0000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_D_GBL_IFS_EIFS_ASYNC_FIFO_DUR   0x0000A5EB
 =======
 #define AR_D_GBL_IFS_EIFS_ASYNC_FIFO 363
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_D_GBL_IFS_EIFS_ASYNC_FIFO 363
+>>>>>>> refs/remotes/origin/master
 
 #define AR_D_GBL_IFS_MISC        0x10f0
 #define AR_D_GBL_IFS_MISC_LFSR_SLICE_SEL        0x00000007
@@ -708,9 +718,18 @@
 #define AR_WA_BIT7			(1 << 7)
 #define AR_WA_BIT23			(1 << 23)
 #define AR_WA_D3_L1_DISABLE		(1 << 14)
+<<<<<<< HEAD
 #define AR_WA_D3_TO_L1_DISABLE_REAL     (1 << 16)
 #define AR_WA_ASPM_TIMER_BASED_DISABLE  (1 << 17)
 #define AR_WA_RESET_EN                  (1 << 18) /* Sw Control to enable PCI-Reset to POR (bit 15) */
+=======
+#define AR_WA_UNTIE_RESET_EN		(1 << 15) /* Enable PCI Reset
+						     to POR (power-on-reset) */
+#define AR_WA_D3_TO_L1_DISABLE_REAL     (1 << 16)
+#define AR_WA_ASPM_TIMER_BASED_DISABLE  (1 << 17)
+#define AR_WA_RESET_EN                  (1 << 18) /* Enable PCI-Reset to
+						     POR (bit 15) */
+>>>>>>> refs/remotes/origin/master
 #define AR_WA_ANALOG_SHIFT              (1 << 20)
 #define AR_WA_POR_SHORT                 (1 << 21) /* PCI-E Phy reset control */
 #define AR_WA_BIT22			(1 << 22)
@@ -799,27 +818,49 @@
 #define AR_SREV_VERSION_9300		0x1c0
 #define AR_SREV_REVISION_9300_20	2 /* 2.0 and 2.1 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+#define AR_SREV_REVISION_9300_22	3
+>>>>>>> refs/remotes/origin/master
 #define AR_SREV_VERSION_9330		0x200
 #define AR_SREV_REVISION_9330_10	0
 #define AR_SREV_REVISION_9330_11	1
 #define AR_SREV_REVISION_9330_12	2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR_SREV_VERSION_9485		0x240
 #define AR_SREV_REVISION_9485_10	0
 #define AR_SREV_REVISION_9485_11        1
 #define AR_SREV_VERSION_9340		0x300
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+#define AR_SREV_REVISION_9340_10	0
+#define AR_SREV_REVISION_9340_11	1
+#define AR_SREV_REVISION_9340_12	2
+#define AR_SREV_REVISION_9340_13	3
+>>>>>>> refs/remotes/origin/master
 #define AR_SREV_VERSION_9580		0x1C0
 #define AR_SREV_REVISION_9580_10	4 /* AR9580 1.0 */
 #define AR_SREV_VERSION_9462		0x280
 #define AR_SREV_REVISION_9462_20	2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_SREV_REVISION_9462_21	3
+#define AR_SREV_VERSION_9565            0x2C0
+#define AR_SREV_REVISION_9565_10        0
+#define AR_SREV_VERSION_9550		0x400
+>>>>>>> refs/remotes/origin/master
 
 #define AR_SREV_5416(_ah) \
 	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_5416_PCI) || \
 	 ((_ah)->hw_version.macVersion == AR_SREV_VERSION_5416_PCIE))
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define AR_SREV_5416_20_OR_LATER(_ah) \
 	(((AR_SREV_5416(_ah)) && \
@@ -827,6 +868,8 @@
 	 ((_ah)->hw_version.macVersion >= AR_SREV_VERSION_9100))
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR_SREV_5416_22_OR_LATER(_ah) \
 	(((AR_SREV_5416(_ah)) && \
 	 ((_ah)->hw_version.macRev >= AR_SREV_REVISION_5416_22)) || \
@@ -888,9 +931,16 @@
 	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9300))
 #define AR_SREV_9300_20_OR_LATER(_ah) \
 	((_ah)->hw_version.macVersion >= AR_SREV_VERSION_9300)
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
+=======
+#define AR_SREV_9300_22(_ah) \
+	(AR_SREV_9300(ah) && \
+	 ((_ah)->hw_version.macRev == AR_SREV_REVISION_9300_22))
+
+>>>>>>> refs/remotes/origin/master
 #define AR_SREV_9330(_ah) \
 	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9330))
 #define AR_SREV_9330_10(_ah) \
@@ -903,6 +953,7 @@
 	(AR_SREV_9330((_ah)) && \
 	 ((_ah)->hw_version.macRev == AR_SREV_REVISION_9330_12))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define AR_SREV_9485(_ah) \
 	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9485))
@@ -912,16 +963,31 @@
 #define AR_SREV_9485_11(_ah) \
 	(AR_SREV_9485(_ah) && \
 	 ((_ah)->hw_version.macRev == AR_SREV_REVISION_9485_11))
+=======
+#define AR_SREV_9485(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9485))
+#define AR_SREV_9485_11_OR_LATER(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9485) && \
+	 ((_ah)->hw_version.macRev >= AR_SREV_REVISION_9485_11))
+>>>>>>> refs/remotes/origin/master
 #define AR_SREV_9485_OR_LATER(_ah) \
 	(((_ah)->hw_version.macVersion >= AR_SREV_VERSION_9485))
 
 #define AR_SREV_9340(_ah) \
 	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9340))
 
+<<<<<<< HEAD
+=======
+#define AR_SREV_9340_13_OR_LATER(_ah) \
+	(AR_SREV_9340((_ah)) && \
+	 ((_ah)->hw_version.macRev >= AR_SREV_REVISION_9340_13))
+
+>>>>>>> refs/remotes/origin/master
 #define AR_SREV_9285E_20(_ah) \
     (AR_SREV_9285_12_OR_LATER(_ah) && \
      ((REG_READ(_ah, AR_AN_SYNTH9) & 0x7) == 0x1))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #define AR_SREV_9462(_ah) \
@@ -934,6 +1000,32 @@
 #define AR_SREV_9462_20_OR_LATER(_ah) \
 	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9462) && \
 	((_ah)->hw_version.macRev >= AR_SREV_REVISION_9462_20))
+=======
+#define AR_SREV_9462(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9462))
+#define AR_SREV_9462_20(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9462) && \
+	 ((_ah)->hw_version.macRev == AR_SREV_REVISION_9462_20))
+#define AR_SREV_9462_21(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9462) && \
+	 ((_ah)->hw_version.macRev == AR_SREV_REVISION_9462_21))
+#define AR_SREV_9462_20_OR_LATER(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9462) && \
+	 ((_ah)->hw_version.macRev >= AR_SREV_REVISION_9462_20))
+#define AR_SREV_9462_21_OR_LATER(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9462) && \
+	 ((_ah)->hw_version.macRev >= AR_SREV_REVISION_9462_21))
+
+#define AR_SREV_9565(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9565))
+
+#define AR_SREV_9565_10(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9565) && \
+	 ((_ah)->hw_version.macRev == AR_SREV_REVISION_9565_10))
+
+#define AR_SREV_9550(_ah) \
+	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9550))
+>>>>>>> refs/remotes/origin/master
 
 #define AR_SREV_9580(_ah) \
 	(((_ah)->hw_version.macVersion == AR_SREV_VERSION_9580) && \
@@ -947,7 +1039,10 @@
 #define AR_SREV_9580_10_OR_LATER(_ah) \
 	(AR_SREV_9580(_ah))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum ath_usb_dev {
 	AR9280_USB = 1, /* AR7010 + AR9280, UB94 */
 	AR9287_USB = 2, /* AR7010 + AR9287, UB95 */
@@ -1025,6 +1120,11 @@ enum {
 				AR_INTR_SYNC_LOCAL_TIMEOUT |
 				AR_INTR_SYNC_MAC_SLEEP_ACCESS),
 
+<<<<<<< HEAD
+=======
+	AR9340_INTR_SYNC_LOCAL_TIMEOUT = 0x00000010,
+
+>>>>>>> refs/remotes/origin/master
 	AR_INTR_SYNC_SPURIOUS = 0xFFFFFFFF,
 
 };
@@ -1033,10 +1133,15 @@ enum {
 #define AR_INTR_ASYNC_MASK_GPIO                  0xFFFC0000
 #define AR_INTR_ASYNC_MASK_GPIO_S                18
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AR_INTR_ASYNC_MASK_MCI                   0x00000080
 #define AR_INTR_ASYNC_MASK_MCI_S                 7
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_INTR_ASYNC_MASK_MCI                   0x00000080
+#define AR_INTR_ASYNC_MASK_MCI_S                 7
+>>>>>>> refs/remotes/origin/master
 
 #define AR_INTR_SYNC_MASK                        (AR_SREV_9340(ah) ? 0x401c : 0x4034)
 #define AR_INTR_SYNC_MASK_GPIO                   0xFFFC0000
@@ -1045,7 +1150,10 @@ enum {
 #define AR_INTR_ASYNC_CAUSE_CLR                  (AR_SREV_9340(ah) ? 0x4020 : 0x4038)
 #define AR_INTR_ASYNC_CAUSE                      (AR_SREV_9340(ah) ? 0x4020 : 0x4038)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR_INTR_ASYNC_CAUSE_MCI			 0x00000080
 #define AR_INTR_ASYNC_USED			 (AR_INTR_MAC_IRQ | \
 						  AR_INTR_ASYNC_CAUSE_MCI)
@@ -1054,7 +1162,10 @@ enum {
 #define AR_INTR_ASYNC_ENABLE_MCI         0x00000080
 #define AR_INTR_ASYNC_ENABLE_MCI_S       7
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AR_INTR_ASYNC_ENABLE                     (AR_SREV_9340(ah) ? 0x4024 : 0x403c)
 #define AR_INTR_ASYNC_ENABLE_GPIO                0xFFFC0000
@@ -1065,6 +1176,11 @@ enum {
 #define AR_PCIE_PM_CTRL                          (AR_SREV_9340(ah) ? 0x4004 : 0x4014)
 #define AR_PCIE_PM_CTRL_ENA                      0x00080000
 
+<<<<<<< HEAD
+=======
+#define AR_PCIE_PHY_REG3			 0x18c08
+
+>>>>>>> refs/remotes/origin/master
 #define AR_NUM_GPIO                              14
 #define AR928X_NUM_GPIO                          10
 #define AR9285_NUM_GPIO                          12
@@ -1189,11 +1305,16 @@ enum {
 #define AR_ENT_OTP		  0x40d8
 #define AR_ENT_OTP_CHAIN2_DISABLE               0x00020000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_ENT_OTP_MPSD		0x00800000
 =======
 #define AR_ENT_OTP_49GHZ_DISABLE		0x00100000
 #define AR_ENT_OTP_MIN_PKT_SIZE_DISABLE		0x00800000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_ENT_OTP_49GHZ_DISABLE		0x00100000
+#define AR_ENT_OTP_MIN_PKT_SIZE_DISABLE		0x00800000
+>>>>>>> refs/remotes/origin/master
 
 #define AR_CH0_BB_DPLL1		 0x16180
 #define AR_CH0_BB_DPLL1_REFDIV	 0xF8000000
@@ -1272,6 +1393,11 @@ enum {
 #define AR_RTC_PLL_CLKSEL       0x00000300
 #define AR_RTC_PLL_CLKSEL_S     8
 #define AR_RTC_PLL_BYPASS	0x00010000
+<<<<<<< HEAD
+=======
+#define AR_RTC_PLL_NOPWD	0x00040000
+#define AR_RTC_PLL_NOPWD_S	18
+>>>>>>> refs/remotes/origin/master
 
 #define PLL3 0x16188
 #define PLL3_DO_MEAS_MASK 0x40000000
@@ -1317,10 +1443,15 @@ enum {
 	((AR_SREV_9100(ah)) ? (AR_RTC_BASE + 0x0058) : 0x7058)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AR_RTC_KEEP_AWAKE	0x7034
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_RTC_KEEP_AWAKE	0x7034
+
+>>>>>>> refs/remotes/origin/master
 /* RTC_DERIVED_* - only for AR9100 */
 
 #define AR_RTC_DERIVED_CLK \
@@ -1520,9 +1651,12 @@ enum {
 #define AR9271_RADIO_RF_RST			0x20
 #define AR9271_GATE_MAC_CTL			0x4000
 
+<<<<<<< HEAD
 #define AR_STA_ID0                 0x8000
 #define AR_STA_ID1                 0x8004
 #define AR_STA_ID1_SADH_MASK       0x0000FFFF
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR_STA_ID1_STA_AP          0x00010000
 #define AR_STA_ID1_ADHOC           0x00020000
 #define AR_STA_ID1_PWR_SAV         0x00040000
@@ -1556,9 +1690,12 @@ enum {
 #define AR_TIME_OUT_CTS      0x3FFF0000
 #define AR_TIME_OUT_CTS_S    16
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_TIME_OUT_ACK_CTS_ASYNC_FIFO_DUR    0x16001D56
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AR_RSSI_THR          0x8018
 #define AR_RSSI_THR_MASK     0x000000FF
@@ -1575,10 +1712,14 @@ enum {
 #define AR_USEC_RX_LAT       0x1F800000
 #define AR_USEC_RX_LAT_S     23
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_USEC_ASYNC_FIFO_DUR    0x12e00074
 =======
 #define AR_USEC_ASYNC_FIFO   0x12E00074
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_USEC_ASYNC_FIFO   0x12E00074
+>>>>>>> refs/remotes/origin/master
 
 #define AR_RESET_TSF        0x8020
 #define AR_RESET_TSF_ONCE   0x01000000
@@ -1616,10 +1757,15 @@ enum {
 #define AR_DIAG_OBS_PT_SEL1         0x000C0000
 #define AR_DIAG_OBS_PT_SEL1_S       18
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AR_DIAG_OBS_PT_SEL2         0x08000000
 #define AR_DIAG_OBS_PT_SEL2_S       27
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_DIAG_OBS_PT_SEL2         0x08000000
+#define AR_DIAG_OBS_PT_SEL2_S       27
+>>>>>>> refs/remotes/origin/master
 #define AR_DIAG_FORCE_RX_CLEAR      0x00100000 /* force rx_clear high */
 #define AR_DIAG_IGNORE_VIRT_CS      0x00200000
 #define AR_DIAG_FORCE_CH_IDLE_HIGH  0x00400000
@@ -1698,11 +1844,19 @@ enum {
 
 #define AR_TPC                 0x80e8
 #define AR_TPC_ACK             0x0000003f
+<<<<<<< HEAD
 #define AR_TPC_ACK_S           0x00
 #define AR_TPC_CTS             0x00003f00
 #define AR_TPC_CTS_S           0x08
 #define AR_TPC_CHIRP           0x003f0000
 #define AR_TPC_CHIRP_S         0x16
+=======
+#define AR_TPC_ACK_S           0
+#define AR_TPC_CTS             0x00003f00
+#define AR_TPC_CTS_S           8
+#define AR_TPC_CHIRP           0x003f0000
+#define AR_TPC_CHIRP_S         16
+>>>>>>> refs/remotes/origin/master
 
 #define AR_QUIET1          0x80fc
 #define AR_QUIET1_NEXT_QUIET_S         0
@@ -1818,6 +1972,7 @@ enum {
 #define AR_BT_COEX_WL_WEIGHTS0     0x8174
 #define AR_BT_COEX_WL_WEIGHTS1     0x81c4
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define AR_BT_COEX_BT_WEIGHTS0     0x83ac
 #define AR_BT_COEX_BT_WEIGHTS1     0x83b0
@@ -1832,11 +1987,16 @@ enum {
 #define AR9300_STOMP_NONE_WLAN_WGHT0       0x00000000
 #define AR9300_STOMP_NONE_WLAN_WGHT1       0x00000000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR_MCI_COEX_WL_WEIGHTS(_i) (0x18b0 + (_i << 2))
 #define AR_BT_COEX_BT_WEIGHTS(_i)  (0x83ac + (_i << 2))
 
 #define AR9300_BT_WGHT             0xcccc4444
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AR_BT_COEX_MODE2           0x817c
 #define AR_BT_BCN_MISS_THRESH      0x000000ff
@@ -1866,9 +2026,13 @@ enum {
 
 #define AR_NEXT_NDP2_TIMER                  0x8180
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AR_GEN_TIMER_BANK_1_LEN			8
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_GEN_TIMER_BANK_1_LEN			8
+>>>>>>> refs/remotes/origin/master
 #define AR_FIRST_NDP_TIMER                  7
 #define AR_NDP2_PERIOD                      0x81a0
 #define AR_NDP2_TIMER_MODE                  0x81c0
@@ -1941,6 +2105,10 @@ enum {
 #define AR_PCU_TXBUF_CTRL_SIZE_MASK     0x7FF
 #define AR_PCU_TXBUF_CTRL_USABLE_SIZE   0x700
 #define AR_9285_PCU_TXBUF_CTRL_USABLE_SIZE   0x380
+<<<<<<< HEAD
+=======
+#define AR_9340_PCU_TXBUF_CTRL_USABLE_SIZE   0x500
+>>>>>>> refs/remotes/origin/master
 
 #define AR_PCU_MISC_MODE2               0x8344
 #define AR_PCU_MISC_MODE2_MGMT_CRYPTO_ENABLE           0x00000002
@@ -1958,15 +2126,23 @@ enum {
 #define AR_PCU_MISC_MODE2_RESERVED2                    0xFFFE0000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_MAC_PCU_ASYNC_FIFO_REG3                     0x8358
 #define AR_MAC_PCU_ASYNC_FIFO_REG3_DATAPATH_SEL        0x00000400
 #define AR_MAC_PCU_ASYNC_FIFO_REG3_SOFT_RESET          0x80000000
 =======
+=======
+#define AR_PCU_MISC_MODE3			       0x83d0
+
+>>>>>>> refs/remotes/origin/master
 #define AR_MAC_PCU_ASYNC_FIFO_REG3			0x8358
 #define AR_MAC_PCU_ASYNC_FIFO_REG3_DATAPATH_SEL		0x00000400
 #define AR_MAC_PCU_ASYNC_FIFO_REG3_SOFT_RESET		0x80000000
 #define AR_MAC_PCU_GEN_TIMER_TSF_SEL			0x83d8
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 #define AR_AES_MUTE_MASK0       0x805c
@@ -1985,6 +2161,7 @@ enum {
 #define AR_RATE_DURATION_32     0x8780
 #define AR_RATE_DURATION(_n)    (AR_RATE_DURATION_0 + ((_n)<<2))
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #define AR_KEYTABLE_0           0x8800
@@ -2012,6 +2189,143 @@ enum {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* WoW - Wake On Wireless */
+
+#define AR_PMCTRL_AUX_PWR_DET		0x10000000 /* Puts Chip in L2 state */
+#define AR_PMCTRL_D3COLD_VAUX		0x00800000
+#define AR_PMCTRL_HOST_PME_EN		0x00400000 /* Send OOB WAKE_L on WoW
+						      event */
+#define AR_PMCTRL_WOW_PME_CLR		0x00200000 /* Clear WoW event */
+#define AR_PMCTRL_PWR_STATE_MASK	0x0f000000 /* Power State Mask */
+#define AR_PMCTRL_PWR_STATE_D1D3	0x0f000000 /* Activate D1 and D3 */
+#define AR_PMCTRL_PWR_STATE_D1D3_REAL	0x0f000000 /* Activate D1 and D3 */
+#define AR_PMCTRL_PWR_STATE_D0		0x08000000 /* Activate D0 */
+#define AR_PMCTRL_PWR_PM_CTRL_ENA	0x00008000 /* Enable power mgmt */
+
+#define AR_WOW_BEACON_TIMO_MAX		0xffffffff
+
+/*
+ * MAC WoW Registers
+ */
+
+#define AR_WOW_PATTERN			0x825C
+#define AR_WOW_COUNT			0x8260
+#define AR_WOW_BCN_EN			0x8270
+#define AR_WOW_BCN_TIMO			0x8274
+#define AR_WOW_KEEP_ALIVE_TIMO		0x8278
+#define AR_WOW_KEEP_ALIVE		0x827c
+#define AR_WOW_US_SCALAR		0x8284
+#define AR_WOW_KEEP_ALIVE_DELAY		0x8288
+#define AR_WOW_PATTERN_MATCH		0x828c
+#define AR_WOW_PATTERN_OFF1		0x8290	/* pattern bytes 0 -> 3 */
+#define AR_WOW_PATTERN_OFF2		0x8294	/* pattern bytes 4 -> 7 */
+
+/* for AR9285 or later version of chips */
+#define AR_WOW_EXACT			0x829c
+#define AR_WOW_LENGTH1			0x8360
+#define AR_WOW_LENGTH2			0X8364
+/* register to enable match for less than 256 bytes packets */
+#define AR_WOW_PATTERN_MATCH_LT_256B	0x8368
+
+#define AR_SW_WOW_CONTROL		0x20018
+#define AR_SW_WOW_ENABLE		0x1
+#define AR_SWITCH_TO_REFCLK		0x2
+#define AR_RESET_CONTROL		0x4
+#define AR_RESET_VALUE_MASK		0x8
+#define AR_HW_WOW_DISABLE		0x10
+#define AR_CLR_MAC_INTERRUPT		0x20
+#define AR_CLR_KA_INTERRUPT		0x40
+
+/* AR_WOW_PATTERN register values */
+#define AR_WOW_BACK_OFF_SHIFT(x)	((x & 0xf) << 28) /* in usecs */
+#define AR_WOW_MAC_INTR_EN		0x00040000
+#define AR_WOW_MAGIC_EN			0x00010000
+#define AR_WOW_PATTERN_EN(x)		(x & 0xff)
+#define AR_WOW_PAT_FOUND_SHIFT	8
+#define AR_WOW_PATTERN_FOUND(x)		(x & (0xff << AR_WOW_PAT_FOUND_SHIFT))
+#define AR_WOW_PATTERN_FOUND_MASK	((0xff) << AR_WOW_PAT_FOUND_SHIFT)
+#define AR_WOW_MAGIC_PAT_FOUND		0x00020000
+#define AR_WOW_MAC_INTR			0x00080000
+#define AR_WOW_KEEP_ALIVE_FAIL		0x00100000
+#define AR_WOW_BEACON_FAIL		0x00200000
+
+#define AR_WOW_STATUS(x)		(x & (AR_WOW_PATTERN_FOUND_MASK | \
+					      AR_WOW_MAGIC_PAT_FOUND	| \
+					      AR_WOW_KEEP_ALIVE_FAIL	| \
+					      AR_WOW_BEACON_FAIL))
+#define AR_WOW_CLEAR_EVENTS(x)		(x & ~(AR_WOW_PATTERN_EN(0xff) | \
+					       AR_WOW_MAGIC_EN | \
+					       AR_WOW_MAC_INTR_EN | \
+					       AR_WOW_BEACON_FAIL | \
+					       AR_WOW_KEEP_ALIVE_FAIL))
+
+/* AR_WOW_COUNT register values */
+#define AR_WOW_AIFS_CNT(x)		(x & 0xff)
+#define AR_WOW_SLOT_CNT(x)		((x & 0xff) << 8)
+#define AR_WOW_KEEP_ALIVE_CNT(x)	((x & 0xff) << 16)
+
+/* AR_WOW_BCN_EN register */
+#define AR_WOW_BEACON_FAIL_EN		0x00000001
+
+/* AR_WOW_BCN_TIMO rgister */
+#define AR_WOW_BEACON_TIMO		0x40000000 /* valid if BCN_EN is set */
+
+/* AR_WOW_KEEP_ALIVE_TIMO register */
+#define AR_WOW_KEEP_ALIVE_TIMO_VALUE
+#define AR_WOW_KEEP_ALIVE_NEVER		0xffffffff
+
+/* AR_WOW_KEEP_ALIVE register  */
+#define AR_WOW_KEEP_ALIVE_AUTO_DIS	0x00000001
+#define AR_WOW_KEEP_ALIVE_FAIL_DIS	0x00000002
+
+/* AR_WOW_KEEP_ALIVE_DELAY register */
+#define AR_WOW_KEEP_ALIVE_DELAY_VALUE	0x000003e8 /* 1 msec */
+
+
+/*
+ * keep it long for beacon workaround - ensure no false alarm
+ */
+#define AR_WOW_BMISSTHRESHOLD		0x20
+
+/* AR_WOW_PATTERN_MATCH register */
+#define AR_WOW_PAT_END_OF_PKT(x)	(x & 0xf)
+#define AR_WOW_PAT_OFF_MATCH(x)		((x & 0xf) << 8)
+
+/*
+ * default values for Wow Configuration for backoff, aifs, slot, keep-alive
+ * to be programmed into various registers.
+ */
+#define AR_WOW_PAT_BACKOFF	0x00000004 /* AR_WOW_PATTERN_REG */
+#define AR_WOW_CNT_AIFS_CNT	0x00000022 /* AR_WOW_COUNT_REG */
+#define AR_WOW_CNT_SLOT_CNT	0x00000009 /* AR_WOW_COUNT_REG */
+/*
+ * Keepalive count applicable for AR9280 2.0 and above.
+ */
+#define AR_WOW_CNT_KA_CNT 0x00000008    /* AR_WOW_COUNT register */
+
+/* WoW - Transmit buffer for keep alive frames */
+#define AR_WOW_TRANSMIT_BUFFER	0xe000 /* E000 - EFFC */
+
+#define AR_WOW_TXBUF(i)		(AR_WOW_TRANSMIT_BUFFER + ((i) << 2))
+
+#define AR_WOW_KA_DESC_WORD2	0xe000
+
+#define AR_WOW_KA_DATA_WORD0	0xe030
+
+/* WoW Transmit Buffer for patterns */
+#define AR_WOW_TB_PATTERN(i)	(0xe100 + (i << 8))
+#define AR_WOW_TB_MASK(i)	(0xec00 + (i << 5))
+
+/* Currently Pattern 0-7 are supported - so bit 0-7 are set */
+#define AR_WOW_PATTERN_SUPPORTED	0xff
+#define AR_WOW_LENGTH_MAX		0xff
+#define AR_WOW_LEN1_SHIFT(_i)	((0x3 - ((_i) & 0x3)) << 0x3)
+#define AR_WOW_LENGTH1_MASK(_i)	(AR_WOW_LENGTH_MAX << AR_WOW_LEN1_SHIFT(_i))
+#define AR_WOW_LEN2_SHIFT(_i)	((0x7 - ((_i) & 0x7)) << 0x3)
+#define AR_WOW_LENGTH2_MASK(_i)	(AR_WOW_LENGTH_MAX << AR_WOW_LEN2_SHIFT(_i))
+
+>>>>>>> refs/remotes/origin/master
 #define AR9271_CORE_CLOCK	117   /* clock to 117Mhz */
 #define AR9271_TARGET_BAUD_RATE	19200 /* 115200 */
 
@@ -2041,10 +2355,13 @@ enum {
 #define AR_PHY_AGC_CONTROL_EXT_NF_PWR_MEAS	0x00040000  /* extend noise floor power measurement */
 #define AR_PHY_AGC_CONTROL_CLC_SUCCESS		0x00080000  /* carrier leak calibration done */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AR_PHY_AGC_CONTROL_YCOK_MAX		0x000003c0
 #define AR_PHY_AGC_CONTROL_YCOK_MAX_S		6
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR_PHY_AGC_CONTROL_PKDET_CAL		0x00100000
 #define AR_PHY_AGC_CONTROL_YCOK_MAX		0x000003c0
 #define AR_PHY_AGC_CONTROL_YCOK_MAX_S		6
@@ -2188,12 +2505,15 @@ enum {
 					 AR_MCI_INTERRUPT_RX_MSG_REMOTE_RESET| \
 					 AR_MCI_INTERRUPT_RX_MSG_SYS_WAKING  | \
 					 AR_MCI_INTERRUPT_RX_MSG_SYS_SLEEPING| \
+<<<<<<< HEAD
 					 AR_MCI_INTERRUPT_RX_MSG_SCHD_INFO   | \
 					 AR_MCI_INTERRUPT_RX_MSG_LNA_CONTROL | \
 					 AR_MCI_INTERRUPT_RX_MSG_LNA_INFO    | \
 					 AR_MCI_INTERRUPT_RX_MSG_CONT_NACK   | \
 					 AR_MCI_INTERRUPT_RX_MSG_CONT_INFO   | \
 					 AR_MCI_INTERRUPT_RX_MSG_CONT_RST    | \
+=======
+>>>>>>> refs/remotes/origin/master
 					 AR_MCI_INTERRUPT_RX_MSG_REQ_WAKE)
 
 #define AR_MCI_CPU_INT					0x1840
@@ -2209,8 +2529,13 @@ enum {
 #define AR_MCI_CONT_STATUS			0x1848
 #define AR_MCI_CONT_RSSI_POWER			0x000000FF
 #define AR_MCI_CONT_RSSI_POWER_S		0
+<<<<<<< HEAD
 #define AR_MCI_CONT_RRIORITY			0x0000FF00
 #define AR_MCI_CONT_RRIORITY_S			8
+=======
+#define AR_MCI_CONT_PRIORITY			0x0000FF00
+#define AR_MCI_CONT_PRIORITY_S			8
+>>>>>>> refs/remotes/origin/master
 #define AR_MCI_CONT_TXRX			0x00010000
 #define AR_MCI_CONT_TXRX_S			16
 
@@ -2273,6 +2598,7 @@ enum {
 #define AR_BTCOEX_CTRL_SPDT_POLARITY			0x80000000
 #define AR_BTCOEX_CTRL_SPDT_POLARITY_S			31
 
+<<<<<<< HEAD
 #define AR_BTCOEX_WL_WEIGHTS0				0x18b0
 #define AR_BTCOEX_WL_WEIGHTS1				0x18b4
 #define AR_BTCOEX_WL_WEIGHTS2				0x18b8
@@ -2280,6 +2606,13 @@ enum {
 #define AR_BTCOEX_MAX_TXPWR(_x)				(0x18c0 + ((_x) << 2))
 #define AR_BTCOEX_WL_LNA				0x1940
 #define AR_BTCOEX_RFGAIN_CTRL				0x1944
+=======
+#define AR_BTCOEX_MAX_TXPWR(_x)				(0x18c0 + ((_x) << 2))
+#define AR_BTCOEX_WL_LNA				0x1940
+#define AR_BTCOEX_RFGAIN_CTRL				0x1944
+#define AR_BTCOEX_WL_LNA_TIMEOUT			0x003FFFFF
+#define AR_BTCOEX_WL_LNA_TIMEOUT_S			0
+>>>>>>> refs/remotes/origin/master
 
 #define AR_BTCOEX_CTRL2					0x1948
 #define AR_BTCOEX_CTRL2_TXPWR_THRESH			0x0007F800
@@ -2322,6 +2655,19 @@ enum {
 #define AR_BTCOEX_CTRL3_CONT_INFO_TIMEOUT	0x00000fff
 #define AR_BTCOEX_CTRL3_CONT_INFO_TIMEOUT_S	0
 
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AR_GLB_SWREG_DISCONT_MODE         0x2002c
+#define AR_GLB_SWREG_DISCONT_EN_BT_WLAN   0x3
+
+#define AR_MCI_MISC                    0x1a74
+#define AR_MCI_MISC_HW_FIX_EN          0x00000001
+#define AR_MCI_MISC_HW_FIX_EN_S        0
+#define AR_MCI_DBG_CNT_CTRL            0x1a78
+#define AR_MCI_DBG_CNT_CTRL_ENABLE     0x00000001
+#define AR_MCI_DBG_CNT_CTRL_ENABLE_S   0
+
+>>>>>>> refs/remotes/origin/master
 #endif

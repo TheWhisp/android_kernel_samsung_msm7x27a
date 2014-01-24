@@ -12,7 +12,11 @@
 
 #include <asm/io.h>
 
+<<<<<<< HEAD
 /* XXX This device has a 'dev-comm' property which aparently is
+=======
+/* XXX This device has a 'dev-comm' property which apparently is
+>>>>>>> refs/remotes/origin/master
  * XXX a pointer into the openfirmware's address space which is
  * XXX a shared area the kernel driver can use to keep OBP
  * XXX informed about the current resolution setting.  The idea
@@ -51,7 +55,11 @@ struct e3d_info {
 	u32			pseudo_palette[16];
 };
 
+<<<<<<< HEAD
 static int __devinit e3d_get_props(struct e3d_info *ep)
+=======
+static int e3d_get_props(struct e3d_info *ep)
+>>>>>>> refs/remotes/origin/master
 {
 	ep->width = of_getintprop_default(ep->of_node, "width", 0);
 	ep->height = of_getintprop_default(ep->of_node, "height", 0);
@@ -193,7 +201,11 @@ static struct fb_ops e3d_ops = {
 	.fb_imageblit		= e3d_imageblit,
 };
 
+<<<<<<< HEAD
 static int __devinit e3d_set_fbinfo(struct e3d_info *ep)
+=======
+static int e3d_set_fbinfo(struct e3d_info *ep)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = ep->info;
 	struct fb_var_screeninfo *var = &info->var;
@@ -238,8 +250,13 @@ static int __devinit e3d_set_fbinfo(struct e3d_info *ep)
         return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit e3d_pci_register(struct pci_dev *pdev,
 				      const struct pci_device_id *ent)
+=======
+static int e3d_pci_register(struct pci_dev *pdev,
+			    const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *of_node;
 	const char *device_type;
@@ -298,8 +315,15 @@ static int __devinit e3d_pci_register(struct pci_dev *pdev,
 		goto err_release_fb;
 	}
 	ep->ramdac = ioremap(ep->regs_base_phys + 0x8000, 0x1000);
+<<<<<<< HEAD
 	if (!ep->ramdac)
 		goto err_release_pci1;
+=======
+	if (!ep->ramdac) {
+		err = -ENOMEM;
+		goto err_release_pci1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ep->fb8_0_off = readl(ep->ramdac + RAMDAC_VID_8FB_0);
 	ep->fb8_0_off -= ep->fb_base_reg;
@@ -343,8 +367,15 @@ static int __devinit e3d_pci_register(struct pci_dev *pdev,
 	ep->fb_size = info->fix.line_length * ep->height;
 
 	ep->fb_base = ioremap(ep->fb_base_phys, ep->fb_size);
+<<<<<<< HEAD
 	if (!ep->fb_base)
 		goto err_release_pci0;
+=======
+	if (!ep->fb_base) {
+		err = -ENOMEM;
+		goto err_release_pci0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	err = e3d_set_fbinfo(ep);
 	if (err)
@@ -388,7 +419,11 @@ err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit e3d_pci_unregister(struct pci_dev *pdev)
+=======
+static void e3d_pci_unregister(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pdev);
 	struct e3d_info *ep = info->par;
@@ -433,7 +468,11 @@ static struct pci_driver e3d_driver = {
 	.name		= "e3d",
 	.id_table	= e3d_pci_table,
 	.probe		= e3d_pci_register,
+<<<<<<< HEAD
 	.remove		= __devexit_p(e3d_pci_unregister),
+=======
+	.remove		= e3d_pci_unregister,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init e3d_init(void)

@@ -78,9 +78,13 @@ ENTRY(cpu_arm926_proc_fin)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pushsection	.idmap.text, "ax"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm926_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -94,10 +98,15 @@ ENTRY(cpu_arm926_reset)
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(cpu_arm926_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm926_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_arm926_do_idle()
@@ -227,6 +236,10 @@ ENTRY(arm926_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, r0, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -345,6 +358,7 @@ ENTRY(arm926_dma_unmap_area)
 ENDPROC(arm926_dma_unmap_area)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm926_cache_fns)
 	.long	arm926_flush_icache_all
 	.long	arm926_flush_kern_cache_all
@@ -360,6 +374,13 @@ ENTRY(arm926_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions arm926
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm926_flush_kern_cache_louis
+	.equ	arm926_flush_kern_cache_louis, arm926_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm926
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(cpu_arm926_dcache_clean_area)
 #ifndef CONFIG_CPU_DCACHE_WRITETHROUGH
@@ -419,6 +440,7 @@ ENTRY(cpu_arm926_set_pte_ext)
 .globl	cpu_arm926_suspend_size
 .equ	cpu_arm926_suspend_size, 4 * 3
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM_SLEEP
 ENTRY(cpu_arm926_do_suspend)
 	stmfd	sp!, {r4 - r7, lr}
@@ -429,6 +451,8 @@ ENTRY(cpu_arm926_do_suspend)
 	stmia	r0, {r4 - r7}
 	ldmfd	sp!, {r4 - r7, pc}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_CPU_SUSPEND
 ENTRY(cpu_arm926_do_suspend)
 	stmfd	sp!, {r4 - r6, lr}
@@ -437,13 +461,17 @@ ENTRY(cpu_arm926_do_suspend)
 	mrc	p15, 0, r6, c1, c0, 0	@ Control register
 	stmia	r0, {r4 - r6}
 	ldmfd	sp!, {r4 - r6, pc}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENDPROC(cpu_arm926_do_suspend)
 
 ENTRY(cpu_arm926_do_resume)
 	mov	ip, #0
 	mcr	p15, 0, ip, c8, c7, 0	@ invalidate I+D TLBs
 	mcr	p15, 0, ip, c7, c7, 0	@ invalidate I+D caches
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ldmia	r0, {r4 - r7}
 	mcr	p15, 0, r4, c13, c0, 0	@ PID
@@ -460,6 +488,8 @@ ENDPROC(cpu_arm926_do_resume)
 #define cpu_arm926_do_suspend	0
 #define cpu_arm926_do_resume	0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ldmia	r0, {r4 - r6}
 	mcr	p15, 0, r4, c13, c0, 0	@ PID
 	mcr	p15, 0, r5, c3, c0, 0	@ Domain ID
@@ -467,11 +497,16 @@ ENDPROC(cpu_arm926_do_resume)
 	mov	r0, r6			@ control register
 	b	cpu_resume_mmu
 ENDPROC(cpu_arm926_do_resume)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 	__CPUINIT
 
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	.type	__arm926_setup, #function
 __arm926_setup:
 	mov	r0, #0
@@ -511,6 +546,7 @@ arm926_crval:
 	__INITDATA
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Purpose : Function pointers used to access above functions - all calls
  *	     come through these
@@ -548,6 +584,8 @@ cpu_arm926_name:
 	.asciz	"ARM926EJ-S"
 	.size	cpu_arm926_name, . - cpu_arm926_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions arm926, dabort=v5tj_early_abort, pabort=legacy_pabort, suspend=1
 
@@ -556,7 +594,10 @@ cpu_arm926_name:
 	string	cpu_arch_name, "armv5tej"
 	string	cpu_elf_name, "v5"
 	string	cpu_arm926_name, "ARM926EJ-S"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 

@@ -1,10 +1,14 @@
 /* bnx2i.c: Broadcom NetXtreme II iSCSI driver.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2010 Broadcom Corporation
 =======
  * Copyright (c) 2006 - 2011 Broadcom Corporation
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2007, 2008 Red Hat, Inc.  All rights reserved.
  * Copyright (c) 2007, 2008 Mike Christie
  *
@@ -23,6 +27,7 @@ static u32 adapter_count;
 
 #define DRV_MODULE_NAME		"bnx2i"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_MODULE_VERSION	"2.6.2.3"
 #define DRV_MODULE_RELDATE	"Dec 31, 2010"
 =======
@@ -31,6 +36,12 @@ static u32 adapter_count;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static char version[] __devinitdata =
+=======
+#define DRV_MODULE_VERSION	"2.7.6.2"
+#define DRV_MODULE_RELDATE	"Jun 06, 2013"
+
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 		"Broadcom NetXtreme II iSCSI Driver " DRV_MODULE_NAME \
 		" v" DRV_MODULE_VERSION " (" DRV_MODULE_RELDATE ")\n";
 
@@ -40,10 +51,14 @@ MODULE_AUTHOR("Anil Veerabhadrappa <anilgv@broadcom.com> and "
 
 MODULE_DESCRIPTION("Broadcom NetXtreme II BCM5706/5708/5709/57710/57711/57712"
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   " iSCSI Driver");
 =======
 		   "/57800/57810/57840 iSCSI Driver");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   "/57800/57810/57840 iSCSI Driver");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_MODULE_VERSION);
 
@@ -54,10 +69,14 @@ module_param(event_coal_min, int, 0664);
 MODULE_PARM_DESC(event_coal_min, "Event Coalescing Minimum Commands");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int event_coal_div = 1;
 =======
 unsigned int event_coal_div = 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int event_coal_div = 2;
+>>>>>>> refs/remotes/origin/master
 module_param(event_coal_div, int, 0664);
 MODULE_PARM_DESC(event_coal_div, "Event Coalescing Divide Factor");
 
@@ -67,18 +86,24 @@ MODULE_PARM_DESC(en_tcp_dack, "Enable TCP Delayed ACK");
 
 unsigned int error_mask1 = 0x00;
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(error_mask1, int, 0664);
 MODULE_PARM_DESC(error_mask1, "Config FW iSCSI Error Mask #1");
 
 unsigned int error_mask2 = 0x00;
 module_param(error_mask2, int, 0664);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(error_mask1, uint, 0664);
 MODULE_PARM_DESC(error_mask1, "Config FW iSCSI Error Mask #1");
 
 unsigned int error_mask2 = 0x00;
 module_param(error_mask2, uint, 0664);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(error_mask2, "Config FW iSCSI Error Mask #2");
 
 unsigned int sq_size;
@@ -92,7 +117,10 @@ MODULE_PARM_DESC(rq_size, "Configure RQ size");
 u64 iscsi_error_mask = 0x00;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 DEFINE_PER_CPU(struct bnx2i_percpu_s, bnx2i_percpu);
 
 static int bnx2i_cpu_callback(struct notifier_block *nfb,
@@ -102,16 +130,24 @@ static struct notifier_block bnx2i_cpu_notifier = {
 	.notifier_call = bnx2i_cpu_callback,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * bnx2i_identify_device - identifies NetXtreme II device type
  * @hba: 		Adapter structure pointer
+<<<<<<< HEAD
+=======
+ * @cnic:		Corresponding cnic device
+>>>>>>> refs/remotes/origin/master
  *
  * This function identifies the NX2 device type and sets appropriate
  *	queue mailbox register access method, 5709 requires driver to
  *	access MBOX regs using *bin* mode
  */
+<<<<<<< HEAD
 void bnx2i_identify_device(struct bnx2i_hba *hba)
 {
 	hba->cnic_dev_type = 0;
@@ -151,6 +187,29 @@ void bnx2i_identify_device(struct bnx2i_hba *hba)
 	else
 		printk(KERN_ALERT "bnx2i: unknown device, 0x%x\n",
 				  hba->pci_did);
+=======
+void bnx2i_identify_device(struct bnx2i_hba *hba, struct cnic_dev *dev)
+{
+	hba->cnic_dev_type = 0;
+	if (test_bit(CNIC_F_BNX2_CLASS, &dev->flags)) {
+		if (hba->pci_did == PCI_DEVICE_ID_NX2_5706 ||
+		    hba->pci_did == PCI_DEVICE_ID_NX2_5706S) {
+			set_bit(BNX2I_NX2_DEV_5706, &hba->cnic_dev_type);
+		} else if (hba->pci_did == PCI_DEVICE_ID_NX2_5708 ||
+		    hba->pci_did == PCI_DEVICE_ID_NX2_5708S) {
+			set_bit(BNX2I_NX2_DEV_5708, &hba->cnic_dev_type);
+		} else if (hba->pci_did == PCI_DEVICE_ID_NX2_5709 ||
+		    hba->pci_did == PCI_DEVICE_ID_NX2_5709S) {
+			set_bit(BNX2I_NX2_DEV_5709, &hba->cnic_dev_type);
+			hba->mail_queue_access = BNX2I_MQ_BIN_MODE;
+		}
+	} else if (test_bit(CNIC_F_BNX2X_CLASS, &dev->flags)) {
+		set_bit(BNX2I_NX2_DEV_57710, &hba->cnic_dev_type);
+	} else {
+		printk(KERN_ALERT "bnx2i: unknown device, 0x%x\n",
+				  hba->pci_did);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -218,6 +277,7 @@ void bnx2i_start(void *handle)
 	int i = HZ;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!hba->cnic->max_iscsi_conn) {
 		printk(KERN_ALERT "bnx2i: dev %s does not support "
 			"iSCSI\n", hba->netdev->name);
@@ -245,6 +305,16 @@ void bnx2i_start(void *handle)
 >>>>>>> refs/remotes/origin/cm-10.0
 	bnx2i_send_fw_iscsi_init_msg(hba);
 	while (!test_bit(ADAPTER_STATE_UP, &hba->adapter_state) && i--)
+=======
+	/* On some bnx2x devices, it is possible that iSCSI is no
+	 * longer supported after firmware is downloaded.  In that
+	 * case, the iscsi_init_msg will return failure.
+	 */
+
+	bnx2i_send_fw_iscsi_init_msg(hba);
+	while (!test_bit(ADAPTER_STATE_UP, &hba->adapter_state) &&
+	       !test_bit(ADAPTER_STATE_INIT_FAILED, &hba->adapter_state) && i--)
+>>>>>>> refs/remotes/origin/master
 		msleep(BNX2I_INIT_POLL_TIME);
 }
 
@@ -347,7 +417,10 @@ static int bnx2i_init_one(struct bnx2i_hba *hba, struct cnic_dev *cnic)
 
 	mutex_lock(&bnx2i_dev_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!cnic->max_iscsi_conn) {
 		printk(KERN_ALERT "bnx2i: dev %s does not support "
 			"iSCSI\n", hba->netdev->name);
@@ -355,7 +428,10 @@ static int bnx2i_init_one(struct bnx2i_hba *hba, struct cnic_dev *cnic)
 		goto out;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hba->cnic = cnic;
 	rc = cnic->register_device(cnic, CNIC_ULP_ISCSI, hba);
 	if (!rc) {
@@ -374,9 +450,13 @@ static int bnx2i_init_one(struct bnx2i_hba *hba, struct cnic_dev *cnic)
 		printk(KERN_ERR "bnx2i dev reg, unknown error, %d\n", rc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&bnx2i_dev_lock);
 
 	return rc;
@@ -442,7 +522,50 @@ void bnx2i_ulp_exit(struct cnic_dev *dev)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+ * bnx2i_get_stats - Retrieve various statistic from iSCSI offload
+ * @handle:	bnx2i_hba
+ *
+ * function callback exported via bnx2i - cnic driver interface to
+ *      retrieve various iSCSI offload related statistics.
+ */
+int bnx2i_get_stats(void *handle)
+{
+	struct bnx2i_hba *hba = handle;
+	struct iscsi_stats_info *stats;
+
+	if (!hba)
+		return -EINVAL;
+
+	stats = (struct iscsi_stats_info *)hba->cnic->stats_addr;
+
+	if (!stats)
+		return -ENOMEM;
+
+	strlcpy(stats->version, DRV_MODULE_VERSION, sizeof(stats->version));
+	memcpy(stats->mac_add1 + 2, hba->cnic->mac_addr, ETH_ALEN);
+
+	stats->max_frame_size = hba->netdev->mtu;
+	stats->txq_size = hba->max_sqes;
+	stats->rxq_size = hba->max_cqes;
+
+	stats->txq_avg_depth = 0;
+	stats->rxq_avg_depth = 0;
+
+	GET_STATS_64(hba, stats, rx_pdus);
+	GET_STATS_64(hba, stats, rx_bytes);
+
+	GET_STATS_64(hba, stats, tx_pdus);
+	GET_STATS_64(hba, stats, tx_bytes);
+
+	return 0;
+}
+
+
+/**
+>>>>>>> refs/remotes/origin/master
  * bnx2i_percpu_thread_create - Create a receive thread for an
  *				online CPU
  *
@@ -529,7 +652,10 @@ static int bnx2i_cpu_callback(struct notifier_block *nfb,
 
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * bnx2i_mod_init - module init entry point
  *
  * initialize any driver wide global data structures such as endpoint pool,
@@ -540,10 +666,15 @@ static int __init bnx2i_mod_init(void)
 {
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned cpu = 0;
 	struct bnx2i_percpu_s *p;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned cpu = 0;
+	struct bnx2i_percpu_s *p;
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "%s", version);
 
@@ -567,7 +698,10 @@ static int __init bnx2i_mod_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Create percpu kernel threads to handle iSCSI I/O completions */
 	for_each_possible_cpu(cpu) {
 		p = &per_cpu(bnx2i_percpu, cpu);
@@ -582,7 +716,10 @@ static int __init bnx2i_mod_init(void)
 	/* Initialize per CPU interrupt thread */
 	register_hotcpu_notifier(&bnx2i_cpu_notifier);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 unreg_xport:
@@ -604,9 +741,13 @@ static void __exit bnx2i_mod_exit(void)
 {
 	struct bnx2i_hba *hba;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned cpu = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned cpu = 0;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&bnx2i_dev_lock);
 	while (!list_empty(&adapter_list)) {
@@ -625,13 +766,19 @@ static void __exit bnx2i_mod_exit(void)
 	mutex_unlock(&bnx2i_dev_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unregister_hotcpu_notifier(&bnx2i_cpu_notifier);
 
 	for_each_online_cpu(cpu)
 		bnx2i_percpu_thread_destroy(cpu);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	iscsi_unregister_transport(&bnx2i_iscsi_transport);
 	cnic_unregister_driver(CNIC_ULP_ISCSI);
 }

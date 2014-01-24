@@ -15,6 +15,7 @@
 
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <plat/io.h>
 =======
@@ -30,6 +31,17 @@
 #include "iomap.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/assembler.h>
+
+#include <mach/board-ams-delta.h>
+
+#include <mach/irqs.h>
+#include <mach/ams-delta-fiq.h>
+
+#include "iomap.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * GPIO related definitions, copied from arch/arm/plat-omap/gpio.c.
  * Unfortunately, those were not placed in a separate header file.

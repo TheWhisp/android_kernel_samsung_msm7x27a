@@ -92,8 +92,11 @@ struct iscsi_boot_kobj {
 	 * properties.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t (*is_visible) (void *data, int type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	umode_t (*is_visible) (void *data, int type);
 
 	/*
@@ -102,7 +105,10 @@ struct iscsi_boot_kobj {
 	 * The function should free the data passed in.
 	 */
 	void (*release) (void *data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iscsi_boot_kset {
@@ -115,32 +121,47 @@ iscsi_boot_create_initiator(struct iscsi_boot_kset *boot_kset, int index,
 			    void *data,
 			    ssize_t (*show) (void *data, int type, char *buf),
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    mode_t (*is_visible) (void *data, int type));
 =======
 			    umode_t (*is_visible) (void *data, int type),
 			    void (*release) (void *data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    umode_t (*is_visible) (void *data, int type),
+			    void (*release) (void *data));
+>>>>>>> refs/remotes/origin/master
 
 struct iscsi_boot_kobj *
 iscsi_boot_create_ethernet(struct iscsi_boot_kset *boot_kset, int index,
 			   void *data,
 			   ssize_t (*show) (void *data, int type, char *buf),
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   mode_t (*is_visible) (void *data, int type));
 =======
 			   umode_t (*is_visible) (void *data, int type),
 			   void (*release) (void *data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   umode_t (*is_visible) (void *data, int type),
+			   void (*release) (void *data));
+>>>>>>> refs/remotes/origin/master
 struct iscsi_boot_kobj *
 iscsi_boot_create_target(struct iscsi_boot_kset *boot_kset, int index,
 			 void *data,
 			 ssize_t (*show) (void *data, int type, char *buf),
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 mode_t (*is_visible) (void *data, int type));
 =======
 			 umode_t (*is_visible) (void *data, int type),
 			 void (*release) (void *data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 umode_t (*is_visible) (void *data, int type),
+			 void (*release) (void *data));
+>>>>>>> refs/remotes/origin/master
 
 struct iscsi_boot_kset *iscsi_boot_create_kset(const char *set_name);
 struct iscsi_boot_kset *iscsi_boot_create_host_kset(unsigned int hostno);

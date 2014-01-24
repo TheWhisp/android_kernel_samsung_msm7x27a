@@ -1274,7 +1274,11 @@ void ql_mpi_reset_work(struct work_struct *work)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (!ql_core_dump(qdev, qdev->mpi_coredump)) {
+=======
+	if (qdev->mpi_coredump && !ql_core_dump(qdev, qdev->mpi_coredump)) {
+>>>>>>> refs/remotes/origin/master
 		netif_err(qdev, drv, qdev->ndev, "Core is dumped!\n");
 		qdev->core_is_dumped = 1;
 		queue_delayed_work(qdev->workqueue,

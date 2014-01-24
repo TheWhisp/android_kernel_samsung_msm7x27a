@@ -109,13 +109,20 @@ int cachefiles_set_object_xattr(struct cachefiles_object *object,
 	struct dentry *dentry = object->dentry;
 	int ret;
 
+<<<<<<< HEAD
 	ASSERT(object->fscache.cookie);
+=======
+>>>>>>> refs/remotes/origin/master
 	ASSERT(dentry);
 
 	_enter("%p,#%d", object, auxdata->len);
 
 	/* attempt to install the cache metadata directly */
+<<<<<<< HEAD
 	_debug("SET %s #%u", object->fscache.cookie->def->name, auxdata->len);
+=======
+	_debug("SET #%u", auxdata->len);
+>>>>>>> refs/remotes/origin/master
 
 	ret = vfs_setxattr(dentry, cachefiles_xattr_cache,
 			   &auxdata->type, auxdata->len,
@@ -138,13 +145,20 @@ int cachefiles_update_object_xattr(struct cachefiles_object *object,
 	struct dentry *dentry = object->dentry;
 	int ret;
 
+<<<<<<< HEAD
 	ASSERT(object->fscache.cookie);
+=======
+>>>>>>> refs/remotes/origin/master
 	ASSERT(dentry);
 
 	_enter("%p,#%d", object, auxdata->len);
 
 	/* attempt to install the cache metadata directly */
+<<<<<<< HEAD
 	_debug("SET %s #%u", object->fscache.cookie->def->name, auxdata->len);
+=======
+	_debug("SET #%u", auxdata->len);
+>>>>>>> refs/remotes/origin/master
 
 	ret = vfs_setxattr(dentry, cachefiles_xattr_cache,
 			   &auxdata->type, auxdata->len,
@@ -159,6 +173,46 @@ int cachefiles_update_object_xattr(struct cachefiles_object *object,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * check the consistency between the backing cache and the FS-Cache cookie
+ */
+int cachefiles_check_auxdata(struct cachefiles_object *object)
+{
+	struct cachefiles_xattr *auxbuf;
+	enum fscache_checkaux validity;
+	struct dentry *dentry = object->dentry;
+	ssize_t xlen;
+	int ret;
+
+	ASSERT(dentry);
+	ASSERT(dentry->d_inode);
+	ASSERT(object->fscache.cookie->def->check_aux);
+
+	auxbuf = kmalloc(sizeof(struct cachefiles_xattr) + 512, GFP_KERNEL);
+	if (!auxbuf)
+		return -ENOMEM;
+
+	xlen = vfs_getxattr(dentry, cachefiles_xattr_cache,
+			    &auxbuf->type, 512 + 1);
+	ret = -ESTALE;
+	if (xlen < 1 ||
+	    auxbuf->type != object->fscache.cookie->def->type)
+		goto error;
+
+	xlen--;
+	validity = fscache_check_aux(&object->fscache, &auxbuf->data, xlen);
+	if (validity != FSCACHE_CHECKAUX_OKAY)
+		goto error;
+
+	ret = 0;
+error:
+	kfree(auxbuf);
+	return ret;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * check the state xattr on a cache file
  * - return -ESTALE if the object should be deleted
  */
@@ -174,7 +228,11 @@ int cachefiles_check_object_xattr(struct cachefiles_object *object,
 	ASSERT(dentry);
 	ASSERT(dentry->d_inode);
 
+<<<<<<< HEAD
 	auxbuf = kmalloc(sizeof(struct cachefiles_xattr) + 512, GFP_KERNEL);
+=======
+	auxbuf = kmalloc(sizeof(struct cachefiles_xattr) + 512, cachefiles_gfp);
+>>>>>>> refs/remotes/origin/master
 	if (!auxbuf) {
 		_leave(" = -ENOMEM");
 		return -ENOMEM;

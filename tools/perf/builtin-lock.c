@@ -1,6 +1,11 @@
 #include "builtin.h"
 #include "perf.h"
 
+<<<<<<< HEAD
+=======
+#include "util/evlist.h"
+#include "util/evsel.h"
+>>>>>>> refs/remotes/origin/master
 #include "util/util.h"
 #include "util/cache.h"
 #include "util/symbol.h"
@@ -13,9 +18,14 @@
 #include "util/debug.h"
 #include "util/session.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "util/tool.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "util/tool.h"
+#include "util/data.h"
+>>>>>>> refs/remotes/origin/master
 
 #include <sys/types.h>
 #include <sys/prctl.h>
@@ -43,7 +53,11 @@ struct lock_stat {
 	struct rb_node		rb;		/* used for sorting */
 
 	/*
+<<<<<<< HEAD
 	 * FIXME: raw_field_value() returns unsigned long long,
+=======
+	 * FIXME: perf_evsel__intval() returns u64,
+>>>>>>> refs/remotes/origin/master
 	 * so address of lockdep_map should be dealed as 64bit.
 	 * Is there more better solution?
 	 */
@@ -57,7 +71,13 @@ struct lock_stat {
 
 	unsigned int		nr_readlock;
 	unsigned int		nr_trylock;
+<<<<<<< HEAD
 	/* these times are in nano sec. */
+=======
+
+	/* these times are in nano sec. */
+	u64                     avg_wait_time;
+>>>>>>> refs/remotes/origin/master
 	u64			wait_time_total;
 	u64			wait_time_min;
 	u64			wait_time_max;
@@ -163,8 +183,15 @@ static struct thread_stat *thread_stat_findnew_after_first(u32 tid)
 		return st;
 
 	st = zalloc(sizeof(struct thread_stat));
+<<<<<<< HEAD
 	if (!st)
 		die("memory allocation failed\n");
+=======
+	if (!st) {
+		pr_err("memory allocation failed\n");
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	st->tid = tid;
 	INIT_LIST_HEAD(&st->seq_list);
@@ -183,8 +210,15 @@ static struct thread_stat *thread_stat_findnew_first(u32 tid)
 	struct thread_stat *st;
 
 	st = zalloc(sizeof(struct thread_stat));
+<<<<<<< HEAD
 	if (!st)
 		die("memory allocation failed\n");
+=======
+	if (!st) {
+		pr_err("memory allocation failed\n");
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	st->tid = tid;
 	INIT_LIST_HEAD(&st->seq_list);
 
@@ -205,6 +239,10 @@ static struct thread_stat *thread_stat_findnew_first(u32 tid)
 
 SINGLE_KEY(nr_acquired)
 SINGLE_KEY(nr_contended)
+<<<<<<< HEAD
+=======
+SINGLE_KEY(avg_wait_time)
+>>>>>>> refs/remotes/origin/master
 SINGLE_KEY(wait_time_total)
 SINGLE_KEY(wait_time_max)
 
@@ -241,6 +279,10 @@ static struct rb_root		result;	/* place to store sorted data */
 struct lock_key keys[] = {
 	DEF_KEY_LOCK(acquired, nr_acquired),
 	DEF_KEY_LOCK(contended, nr_contended),
+<<<<<<< HEAD
+=======
+	DEF_KEY_LOCK(avg_wait, avg_wait_time),
+>>>>>>> refs/remotes/origin/master
 	DEF_KEY_LOCK(wait_total, wait_time_total),
 	DEF_KEY_LOCK(wait_min, wait_time_min),
 	DEF_KEY_LOCK(wait_max, wait_time_max),
@@ -250,18 +292,32 @@ struct lock_key keys[] = {
 	{ NULL, NULL }
 };
 
+<<<<<<< HEAD
 static void select_key(void)
+=======
+static int select_key(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	for (i = 0; keys[i].name; i++) {
 		if (!strcmp(keys[i].name, sort_key)) {
 			compare = keys[i].key;
+<<<<<<< HEAD
 			return;
 		}
 	}
 
 	die("Unknown compare key:%s\n", sort_key);
+=======
+			return 0;
+		}
+	}
+
+	pr_err("Unknown compare key: %s\n", sort_key);
+
+	return -1;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void insert_to_result(struct lock_stat *st,
@@ -316,16 +372,26 @@ static struct lock_stat *lock_stat_findnew(void *addr, const char *name)
 
 	new->addr = addr;
 	new->name = zalloc(sizeof(char) * strlen(name) + 1);
+<<<<<<< HEAD
 	if (!new->name)
 		goto alloc_failed;
 	strcpy(new->name, name);
 
+=======
+	if (!new->name) {
+		free(new);
+		goto alloc_failed;
+	}
+
+	strcpy(new->name, name);
+>>>>>>> refs/remotes/origin/master
 	new->wait_time_min = ULLONG_MAX;
 
 	list_add(&new->hash_entry, entry);
 	return new;
 
 alloc_failed:
+<<<<<<< HEAD
 	die("memory allocation failed\n");
 }
 
@@ -385,6 +451,24 @@ struct trace_lock_handler {
 			      int cpu,
 			      u64 timestamp,
 			      struct thread *thread);
+=======
+	pr_err("memory allocation failed\n");
+	return NULL;
+}
+
+struct trace_lock_handler {
+	int (*acquire_event)(struct perf_evsel *evsel,
+			     struct perf_sample *sample);
+
+	int (*acquired_event)(struct perf_evsel *evsel,
+			      struct perf_sample *sample);
+
+	int (*contended_event)(struct perf_evsel *evsel,
+			       struct perf_sample *sample);
+
+	int (*release_event)(struct perf_evsel *evsel,
+			     struct perf_sample *sample);
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct lock_seq_stat *get_seq(struct thread_stat *ts, void *addr)
@@ -397,8 +481,15 @@ static struct lock_seq_stat *get_seq(struct thread_stat *ts, void *addr)
 	}
 
 	seq = zalloc(sizeof(struct lock_seq_stat));
+<<<<<<< HEAD
 	if (!seq)
 		die("Not enough memory\n");
+=======
+	if (!seq) {
+		pr_err("memory allocation failed\n");
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 	seq->state = SEQ_STATE_UNINITIALIZED;
 	seq->addr = addr;
 
@@ -421,6 +512,7 @@ enum acquire_flags {
 	READ_LOCK = 2,
 };
 
+<<<<<<< HEAD
 static void
 report_lock_acquire_event(struct trace_acquire_event *acquire_event,
 			struct event *__event __used,
@@ -438,16 +530,53 @@ report_lock_acquire_event(struct trace_acquire_event *acquire_event,
 
 	ts = thread_stat_findnew(thread->pid);
 	seq = get_seq(ts, acquire_event->addr);
+=======
+static int report_lock_acquire_event(struct perf_evsel *evsel,
+				     struct perf_sample *sample)
+{
+	void *addr;
+	struct lock_stat *ls;
+	struct thread_stat *ts;
+	struct lock_seq_stat *seq;
+	const char *name = perf_evsel__strval(evsel, sample, "name");
+	u64 tmp = perf_evsel__intval(evsel, sample, "lockdep_addr");
+	int flag = perf_evsel__intval(evsel, sample, "flag");
+
+	memcpy(&addr, &tmp, sizeof(void *));
+
+	ls = lock_stat_findnew(addr, name);
+	if (!ls)
+		return -ENOMEM;
+	if (ls->discard)
+		return 0;
+
+	ts = thread_stat_findnew(sample->tid);
+	if (!ts)
+		return -ENOMEM;
+
+	seq = get_seq(ts, addr);
+	if (!seq)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	switch (seq->state) {
 	case SEQ_STATE_UNINITIALIZED:
 	case SEQ_STATE_RELEASED:
+<<<<<<< HEAD
 		if (!acquire_event->flag) {
 			seq->state = SEQ_STATE_ACQUIRING;
 		} else {
 			if (acquire_event->flag & TRY_LOCK)
 				ls->nr_trylock++;
 			if (acquire_event->flag & READ_LOCK)
+=======
+		if (!flag) {
+			seq->state = SEQ_STATE_ACQUIRING;
+		} else {
+			if (flag & TRY_LOCK)
+				ls->nr_trylock++;
+			if (flag & READ_LOCK)
+>>>>>>> refs/remotes/origin/master
 				ls->nr_readlock++;
 			seq->state = SEQ_STATE_READ_ACQUIRED;
 			seq->read_count = 1;
@@ -455,7 +584,11 @@ report_lock_acquire_event(struct trace_acquire_event *acquire_event,
 		}
 		break;
 	case SEQ_STATE_READ_ACQUIRED:
+<<<<<<< HEAD
 		if (acquire_event->flag & READ_LOCK) {
+=======
+		if (flag & READ_LOCK) {
+>>>>>>> refs/remotes/origin/master
 			seq->read_count++;
 			ls->nr_acquired++;
 			goto end;
@@ -473,13 +606,17 @@ broken:
 		list_del(&seq->list);
 		free(seq);
 		goto end;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG_ON("Unknown state of lock sequence found!\n");
 		break;
 	}
 
 	ls->nr_acquire++;
+<<<<<<< HEAD
 	seq->prev_event_time = timestamp;
 end:
 	return;
@@ -492,10 +629,22 @@ report_lock_acquired_event(struct trace_acquired_event *acquired_event,
 			 u64 timestamp __used,
 			 struct thread *thread __used)
 {
+=======
+	seq->prev_event_time = sample->time;
+end:
+	return 0;
+}
+
+static int report_lock_acquired_event(struct perf_evsel *evsel,
+				      struct perf_sample *sample)
+{
+	void *addr;
+>>>>>>> refs/remotes/origin/master
 	struct lock_stat *ls;
 	struct thread_stat *ts;
 	struct lock_seq_stat *seq;
 	u64 contended_term;
+<<<<<<< HEAD
 
 	ls = lock_stat_findnew(acquired_event->addr, acquired_event->name);
 	if (ls->discard)
@@ -503,15 +652,43 @@ report_lock_acquired_event(struct trace_acquired_event *acquired_event,
 
 	ts = thread_stat_findnew(thread->pid);
 	seq = get_seq(ts, acquired_event->addr);
+=======
+	const char *name = perf_evsel__strval(evsel, sample, "name");
+	u64 tmp = perf_evsel__intval(evsel, sample, "lockdep_addr");
+
+	memcpy(&addr, &tmp, sizeof(void *));
+
+	ls = lock_stat_findnew(addr, name);
+	if (!ls)
+		return -ENOMEM;
+	if (ls->discard)
+		return 0;
+
+	ts = thread_stat_findnew(sample->tid);
+	if (!ts)
+		return -ENOMEM;
+
+	seq = get_seq(ts, addr);
+	if (!seq)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	switch (seq->state) {
 	case SEQ_STATE_UNINITIALIZED:
 		/* orphan event, do nothing */
+<<<<<<< HEAD
 		return;
 	case SEQ_STATE_ACQUIRING:
 		break;
 	case SEQ_STATE_CONTENDED:
 		contended_term = timestamp - seq->prev_event_time;
+=======
+		return 0;
+	case SEQ_STATE_ACQUIRING:
+		break;
+	case SEQ_STATE_CONTENDED:
+		contended_term = sample->time - seq->prev_event_time;
+>>>>>>> refs/remotes/origin/master
 		ls->wait_time_total += contended_term;
 		if (contended_term < ls->wait_time_min)
 			ls->wait_time_min = contended_term;
@@ -527,8 +704,11 @@ report_lock_acquired_event(struct trace_acquired_event *acquired_event,
 		list_del(&seq->list);
 		free(seq);
 		goto end;
+<<<<<<< HEAD
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG_ON("Unknown state of lock sequence found!\n");
 		break;
@@ -536,6 +716,7 @@ report_lock_acquired_event(struct trace_acquired_event *acquired_event,
 
 	seq->state = SEQ_STATE_ACQUIRED;
 	ls->nr_acquired++;
+<<<<<<< HEAD
 	seq->prev_event_time = timestamp;
 end:
 	return;
@@ -558,11 +739,48 @@ report_lock_contended_event(struct trace_contended_event *contended_event,
 
 	ts = thread_stat_findnew(thread->pid);
 	seq = get_seq(ts, contended_event->addr);
+=======
+	ls->avg_wait_time = ls->nr_contended ? ls->wait_time_total/ls->nr_contended : 0;
+	seq->prev_event_time = sample->time;
+end:
+	return 0;
+}
+
+static int report_lock_contended_event(struct perf_evsel *evsel,
+				       struct perf_sample *sample)
+{
+	void *addr;
+	struct lock_stat *ls;
+	struct thread_stat *ts;
+	struct lock_seq_stat *seq;
+	const char *name = perf_evsel__strval(evsel, sample, "name");
+	u64 tmp = perf_evsel__intval(evsel, sample, "lockdep_addr");
+
+	memcpy(&addr, &tmp, sizeof(void *));
+
+	ls = lock_stat_findnew(addr, name);
+	if (!ls)
+		return -ENOMEM;
+	if (ls->discard)
+		return 0;
+
+	ts = thread_stat_findnew(sample->tid);
+	if (!ts)
+		return -ENOMEM;
+
+	seq = get_seq(ts, addr);
+	if (!seq)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	switch (seq->state) {
 	case SEQ_STATE_UNINITIALIZED:
 		/* orphan event, do nothing */
+<<<<<<< HEAD
 		return;
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	case SEQ_STATE_ACQUIRING:
 		break;
 	case SEQ_STATE_RELEASED:
@@ -575,7 +793,10 @@ report_lock_contended_event(struct trace_contended_event *contended_event,
 		list_del(&seq->list);
 		free(seq);
 		goto end;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG_ON("Unknown state of lock sequence found!\n");
 		break;
@@ -583,6 +804,7 @@ report_lock_contended_event(struct trace_contended_event *contended_event,
 
 	seq->state = SEQ_STATE_CONTENDED;
 	ls->nr_contended++;
+<<<<<<< HEAD
 	seq->prev_event_time = timestamp;
 end:
 	return;
@@ -605,11 +827,47 @@ report_lock_release_event(struct trace_release_event *release_event,
 
 	ts = thread_stat_findnew(thread->pid);
 	seq = get_seq(ts, release_event->addr);
+=======
+	ls->avg_wait_time = ls->wait_time_total/ls->nr_contended;
+	seq->prev_event_time = sample->time;
+end:
+	return 0;
+}
+
+static int report_lock_release_event(struct perf_evsel *evsel,
+				     struct perf_sample *sample)
+{
+	void *addr;
+	struct lock_stat *ls;
+	struct thread_stat *ts;
+	struct lock_seq_stat *seq;
+	const char *name = perf_evsel__strval(evsel, sample, "name");
+	u64 tmp = perf_evsel__intval(evsel, sample, "lockdep_addr");
+
+	memcpy(&addr, &tmp, sizeof(void *));
+
+	ls = lock_stat_findnew(addr, name);
+	if (!ls)
+		return -ENOMEM;
+	if (ls->discard)
+		return 0;
+
+	ts = thread_stat_findnew(sample->tid);
+	if (!ts)
+		return -ENOMEM;
+
+	seq = get_seq(ts, addr);
+	if (!seq)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	switch (seq->state) {
 	case SEQ_STATE_UNINITIALIZED:
 		goto end;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case SEQ_STATE_ACQUIRED:
 		break;
 	case SEQ_STATE_READ_ACQUIRED:
@@ -627,7 +885,10 @@ report_lock_release_event(struct trace_release_event *release_event,
 		ls->discard = 1;
 		bad_hist[BROKEN_RELEASE]++;
 		goto free_seq;
+<<<<<<< HEAD
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG_ON("Unknown state of lock sequence found!\n");
 		break;
@@ -638,7 +899,11 @@ free_seq:
 	list_del(&seq->list);
 	free(seq);
 end:
+<<<<<<< HEAD
 	return;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* lock oriented handlers */
@@ -652,6 +917,7 @@ static struct trace_lock_handler report_lock_ops  = {
 
 static struct trace_lock_handler *trace_handler;
 
+<<<<<<< HEAD
 static void
 process_lock_acquire_event(void *data,
 			   struct event *event __used,
@@ -742,6 +1008,38 @@ process_raw_event(void *data, int cpu, u64 timestamp, struct thread *thread)
 		process_lock_contended_event(data, event, cpu, timestamp, thread);
 	if (!strcmp(event->name, "lock_release"))
 		process_lock_release_event(data, event, cpu, timestamp, thread);
+=======
+static int perf_evsel__process_lock_acquire(struct perf_evsel *evsel,
+					     struct perf_sample *sample)
+{
+	if (trace_handler->acquire_event)
+		return trace_handler->acquire_event(evsel, sample);
+	return 0;
+}
+
+static int perf_evsel__process_lock_acquired(struct perf_evsel *evsel,
+					      struct perf_sample *sample)
+{
+	if (trace_handler->acquired_event)
+		return trace_handler->acquired_event(evsel, sample);
+	return 0;
+}
+
+static int perf_evsel__process_lock_contended(struct perf_evsel *evsel,
+					      struct perf_sample *sample)
+{
+	if (trace_handler->contended_event)
+		return trace_handler->contended_event(evsel, sample);
+	return 0;
+}
+
+static int perf_evsel__process_lock_release(struct perf_evsel *evsel,
+					    struct perf_sample *sample)
+{
+	if (trace_handler->release_event)
+		return trace_handler->release_event(evsel, sample);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void print_bad_events(int bad, int total)
@@ -753,7 +1051,11 @@ static void print_bad_events(int bad, int total)
 
 	pr_info("\n=== output for debug===\n\n");
 	pr_info("bad: %d, total: %d\n", bad, total);
+<<<<<<< HEAD
 	pr_info("bad rate: %f %%\n", (double)bad / (double)total * 100);
+=======
+	pr_info("bad rate: %.2f %%\n", (double)bad / (double)total * 100);
+>>>>>>> refs/remotes/origin/master
 	pr_info("histogram of events caused bad sequence\n");
 	for (i = 0; i < BROKEN_MAX; i++)
 		pr_info(" %10s: %d\n", name[i], bad_hist[i]);
@@ -770,6 +1072,10 @@ static void print_result(void)
 	pr_info("%10s ", "acquired");
 	pr_info("%10s ", "contended");
 
+<<<<<<< HEAD
+=======
+	pr_info("%15s ", "avg wait (ns)");
+>>>>>>> refs/remotes/origin/master
 	pr_info("%15s ", "total wait (ns)");
 	pr_info("%15s ", "max wait (ns)");
 	pr_info("%15s ", "min wait (ns)");
@@ -801,6 +1107,10 @@ static void print_result(void)
 		pr_info("%10u ", st->nr_acquired);
 		pr_info("%10u ", st->nr_contended);
 
+<<<<<<< HEAD
+=======
+		pr_info("%15" PRIu64 " ", st->avg_wait_time);
+>>>>>>> refs/remotes/origin/master
 		pr_info("%15" PRIu64 " ", st->wait_time_total);
 		pr_info("%15" PRIu64 " ", st->wait_time_max);
 		pr_info("%15" PRIu64 " ", st->wait_time_min == ULLONG_MAX ?
@@ -825,7 +1135,11 @@ static void dump_threads(void)
 	while (node) {
 		st = container_of(node, struct thread_stat, rb);
 		t = perf_session__findnew(session, st->tid);
+<<<<<<< HEAD
 		pr_info("%10d: %s\n", st->tid, t->comm);
+=======
+		pr_info("%10d: %s\n", st->tid, thread__comm_str(t));
+>>>>>>> refs/remotes/origin/master
 		node = rb_next(node);
 	};
 }
@@ -843,12 +1157,20 @@ static void dump_map(void)
 	}
 }
 
+<<<<<<< HEAD
 static void dump_info(void)
 {
+=======
+static int dump_info(void)
+{
+	int rc = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (info_threads)
 		dump_threads();
 	else if (info_map)
 		dump_map();
+<<<<<<< HEAD
 	else
 		die("Unknown type of information\n");
 }
@@ -869,6 +1191,27 @@ static int process_sample_event(struct perf_tool *tool __used,
 {
 	struct thread *thread = machine__findnew_thread(machine, sample->tid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else {
+		rc = -1;
+		pr_err("Unknown type of information\n");
+	}
+
+	return rc;
+}
+
+typedef int (*tracepoint_handler)(struct perf_evsel *evsel,
+				  struct perf_sample *sample);
+
+static int process_sample_event(struct perf_tool *tool __maybe_unused,
+				union perf_event *event,
+				struct perf_sample *sample,
+				struct perf_evsel *evsel,
+				struct machine *machine)
+{
+	struct thread *thread = machine__findnew_thread(machine, sample->pid,
+							sample->tid);
+>>>>>>> refs/remotes/origin/master
 
 	if (thread == NULL) {
 		pr_debug("problem processing %d event, skipping it.\n",
@@ -876,11 +1219,19 @@ static int process_sample_event(struct perf_tool *tool __used,
 		return -1;
 	}
 
+<<<<<<< HEAD
 	process_raw_event(sample->raw_data, sample->cpu, sample->time, thread);
+=======
+	if (evsel->handler != NULL) {
+		tracepoint_handler f = evsel->handler;
+		return f(evsel, sample);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct perf_event_ops eops = {
 =======
@@ -900,6 +1251,8 @@ static int read_events(void)
 	return perf_session__process_events(session, &eops);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void sort_result(void)
 {
 	unsigned int i;
@@ -912,6 +1265,7 @@ static void sort_result(void)
 	}
 }
 
+<<<<<<< HEAD
 static void __cmd_report(void)
 {
 	setup_pager();
@@ -994,22 +1348,152 @@ static int __cmd_record(int argc, const char **argv)
 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
 
 	if (rec_argv == NULL)
+=======
+static const struct perf_evsel_str_handler lock_tracepoints[] = {
+	{ "lock:lock_acquire",	 perf_evsel__process_lock_acquire,   }, /* CONFIG_LOCKDEP */
+	{ "lock:lock_acquired",	 perf_evsel__process_lock_acquired,  }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
+	{ "lock:lock_contended", perf_evsel__process_lock_contended, }, /* CONFIG_LOCKDEP, CONFIG_LOCK_STAT */
+	{ "lock:lock_release",	 perf_evsel__process_lock_release,   }, /* CONFIG_LOCKDEP */
+};
+
+static int __cmd_report(bool display_info)
+{
+	int err = -EINVAL;
+	struct perf_tool eops = {
+		.sample		 = process_sample_event,
+		.comm		 = perf_event__process_comm,
+		.ordered_samples = true,
+	};
+	struct perf_data_file file = {
+		.path = input_name,
+		.mode = PERF_DATA_MODE_READ,
+	};
+
+	session = perf_session__new(&file, false, &eops);
+	if (!session) {
+		pr_err("Initializing perf session failed\n");
+		return -ENOMEM;
+	}
+
+	if (!perf_session__has_traces(session, "lock record"))
+		goto out_delete;
+
+	if (perf_session__set_tracepoints_handlers(session, lock_tracepoints)) {
+		pr_err("Initializing perf session tracepoint handlers failed\n");
+		goto out_delete;
+	}
+
+	if (select_key())
+		goto out_delete;
+
+	err = perf_session__process_events(session, &eops);
+	if (err)
+		goto out_delete;
+
+	setup_pager();
+	if (display_info) /* used for info subcommand */
+		err = dump_info();
+	else {
+		sort_result();
+		print_result();
+	}
+
+out_delete:
+	perf_session__delete(session);
+	return err;
+}
+
+static int __cmd_record(int argc, const char **argv)
+{
+	const char *record_args[] = {
+		"record", "-R", "-m", "1024", "-c", "1",
+	};
+	unsigned int rec_argc, i, j, ret;
+	const char **rec_argv;
+
+	for (i = 0; i < ARRAY_SIZE(lock_tracepoints); i++) {
+		if (!is_valid_tracepoint(lock_tracepoints[i].name)) {
+				pr_err("tracepoint %s is not enabled. "
+				       "Are CONFIG_LOCKDEP and CONFIG_LOCK_STAT enabled?\n",
+				       lock_tracepoints[i].name);
+				return 1;
+		}
+	}
+
+	rec_argc = ARRAY_SIZE(record_args) + argc - 1;
+	/* factor of 2 is for -e in front of each tracepoint */
+	rec_argc += 2 * ARRAY_SIZE(lock_tracepoints);
+
+	rec_argv = calloc(rec_argc + 1, sizeof(char *));
+	if (!rec_argv)
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	for (i = 0; i < ARRAY_SIZE(record_args); i++)
 		rec_argv[i] = strdup(record_args[i]);
 
+<<<<<<< HEAD
+=======
+	for (j = 0; j < ARRAY_SIZE(lock_tracepoints); j++) {
+		rec_argv[i++] = "-e";
+		rec_argv[i++] = strdup(lock_tracepoints[j].name);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	for (j = 1; j < (unsigned int)argc; j++, i++)
 		rec_argv[i] = argv[j];
 
 	BUG_ON(i != rec_argc);
 
+<<<<<<< HEAD
 	return cmd_record(i, rec_argv, NULL);
 }
 
 int cmd_lock(int argc, const char **argv, const char *prefix __used)
 {
 	unsigned int i;
+=======
+	ret = cmd_record(i, rec_argv, NULL);
+	free(rec_argv);
+	return ret;
+}
+
+int cmd_lock(int argc, const char **argv, const char *prefix __maybe_unused)
+{
+	const struct option info_options[] = {
+	OPT_BOOLEAN('t', "threads", &info_threads,
+		    "dump thread list in perf.data"),
+	OPT_BOOLEAN('m', "map", &info_map,
+		    "map of lock instances (address:name table)"),
+	OPT_END()
+	};
+	const struct option lock_options[] = {
+	OPT_STRING('i', "input", &input_name, "file", "input file name"),
+	OPT_INCR('v', "verbose", &verbose, "be more verbose (show symbol address, etc)"),
+	OPT_BOOLEAN('D', "dump-raw-trace", &dump_trace, "dump raw trace in ASCII"),
+	OPT_END()
+	};
+	const struct option report_options[] = {
+	OPT_STRING('k', "key", &sort_key, "acquired",
+		    "key for sorting (acquired / contended / avg_wait / wait_total / wait_max / wait_min)"),
+	/* TODO: type */
+	OPT_END()
+	};
+	const char * const info_usage[] = {
+		"perf lock info [<options>]",
+		NULL
+	};
+	const char * const lock_usage[] = {
+		"perf lock [<options>] {record|report|script|info}",
+		NULL
+	};
+	const char * const report_usage[] = {
+		"perf lock report [<options>]",
+		NULL
+	};
+	unsigned int i;
+	int rc = 0;
+>>>>>>> refs/remotes/origin/master
 
 	symbol__init();
 	for (i = 0; i < LOCKHASH_SIZE; i++)
@@ -1030,7 +1514,11 @@ int cmd_lock(int argc, const char **argv, const char *prefix __used)
 			if (argc)
 				usage_with_options(report_usage, report_options);
 		}
+<<<<<<< HEAD
 		__cmd_report();
+=======
+		rc = __cmd_report(false);
+>>>>>>> refs/remotes/origin/master
 	} else if (!strcmp(argv[0], "script")) {
 		/* Aliased to 'perf script' */
 		return cmd_script(argc, argv, prefix);
@@ -1043,12 +1531,20 @@ int cmd_lock(int argc, const char **argv, const char *prefix __used)
 		}
 		/* recycling report_lock_ops */
 		trace_handler = &report_lock_ops;
+<<<<<<< HEAD
 		setup_pager();
 		read_events();
 		dump_info();
+=======
+		rc = __cmd_report(true);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		usage_with_options(lock_usage, lock_options);
 	}
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }

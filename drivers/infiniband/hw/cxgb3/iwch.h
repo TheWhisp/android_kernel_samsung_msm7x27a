@@ -153,6 +153,7 @@ static inline int insert_handle(struct iwch_dev *rhp, struct idr *idr,
 				void *handle, u32 id)
 {
 	int ret;
+<<<<<<< HEAD
 	int newid;
 
 	do {
@@ -166,6 +167,19 @@ static inline int insert_handle(struct iwch_dev *rhp, struct idr *idr,
 	} while (ret == -EAGAIN);
 
 	return ret;
+=======
+
+	idr_preload(GFP_KERNEL);
+	spin_lock_irq(&rhp->lock);
+
+	ret = idr_alloc(idr, handle, id, id + 1, GFP_NOWAIT);
+
+	spin_unlock_irq(&rhp->lock);
+	idr_preload_end();
+
+	BUG_ON(ret == -ENOSPC);
+	return ret < 0 ? ret : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void remove_handle(struct iwch_dev *rhp, struct idr *idr, u32 id)

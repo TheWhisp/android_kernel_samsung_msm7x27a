@@ -585,8 +585,12 @@ static int scc_ide_setup_pci_device(struct pci_dev *dev,
  *	Perform the initial set up for this device.
  */
 
+<<<<<<< HEAD
 static int __devinit init_setup_scc(struct pci_dev *dev,
 				    const struct ide_port_info *d)
+=======
+static int init_setup_scc(struct pci_dev *dev, const struct ide_port_info *d)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long ctl_base;
 	unsigned long dma_base;
@@ -718,7 +722,11 @@ static void scc_output_data(ide_drive_t *drive,  struct ide_cmd *cmd,
  *
  */
 
+<<<<<<< HEAD
 static void __devinit init_mmio_iops_scc(ide_hwif_t *hwif)
+=======
+static void init_mmio_iops_scc(ide_hwif_t *hwif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = to_pci_dev(hwif->dev);
 	struct scc_ports *ports = pci_get_drvdata(dev);
@@ -738,7 +746,11 @@ static void __devinit init_mmio_iops_scc(ide_hwif_t *hwif)
  *	and then do the MMIO setup.
  */
 
+<<<<<<< HEAD
 static void __devinit init_iops_scc(ide_hwif_t *hwif)
+=======
+static void init_iops_scc(ide_hwif_t *hwif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = to_pci_dev(hwif->dev);
 
@@ -748,8 +760,12 @@ static void __devinit init_iops_scc(ide_hwif_t *hwif)
 	init_mmio_iops_scc(hwif);
 }
 
+<<<<<<< HEAD
 static int __devinit scc_init_dma(ide_hwif_t *hwif,
 				  const struct ide_port_info *d)
+=======
+static int scc_init_dma(ide_hwif_t *hwif, const struct ide_port_info *d)
+>>>>>>> refs/remotes/origin/master
 {
 	return ide_allocate_dma_engine(hwif);
 }
@@ -768,7 +784,11 @@ static u8 scc_cable_detect(ide_hwif_t *hwif)
  *	ide DMA handlers appropriately.
  */
 
+<<<<<<< HEAD
 static void __devinit init_hwif_scc(ide_hwif_t *hwif)
+=======
+static void init_hwif_scc(ide_hwif_t *hwif)
+>>>>>>> refs/remotes/origin/master
 {
 	/* PTERADD */
 	out_be32((void __iomem *)(hwif->dma_base + 0x018), hwif->dmatable_dma);
@@ -811,7 +831,11 @@ static const struct ide_dma_ops scc_dma_ops = {
 	.dma_sff_read_status	= scc_dma_sff_read_status,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info scc_chipset __devinitdata = {
+=======
+static const struct ide_port_info scc_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "sccIDE",
 	.init_iops	= init_iops_scc,
 	.init_dma	= scc_init_dma,
@@ -834,7 +858,11 @@ static const struct ide_port_info scc_chipset __devinitdata = {
  *	We then use the IDE PCI generic helper to do most of the work.
  */
 
+<<<<<<< HEAD
 static int __devinit scc_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int scc_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	return init_setup_scc(dev, &scc_chipset);
 }
@@ -846,7 +874,11 @@ static int __devinit scc_init_one(struct pci_dev *dev, const struct pci_device_i
  *	Called by the PCI code when it removes an SCC PATA controller.
  */
 
+<<<<<<< HEAD
 static void __devexit scc_remove(struct pci_dev *dev)
+=======
+static void scc_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct scc_ports *ports = pci_get_drvdata(dev);
 	struct ide_host *host = ports->host;
@@ -869,7 +901,11 @@ static struct pci_driver scc_pci_driver = {
 	.name = "SCC IDE",
 	.id_table = scc_pci_tbl,
 	.probe = scc_init_one,
+<<<<<<< HEAD
 	.remove = __devexit_p(scc_remove),
+=======
+	.remove = scc_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init scc_ide_init(void)

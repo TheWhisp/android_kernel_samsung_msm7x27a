@@ -5,9 +5,13 @@
 #include <linux/atmel_pwm.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 struct pwmled {
@@ -39,21 +43,34 @@ static void pwmled_brightness(struct led_classdev *cdev, enum led_brightness b)
  * but repurpose its "gpio" number as a PWM channel number.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init pwmled_probe(struct platform_device *pdev)
 =======
 static int __devinit pwmled_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pwmled_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct gpio_led_platform_data	*pdata;
 	struct pwmled				*leds;
 	int					i;
 	int					status;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
 	if (!pdata || pdata->num_leds < 1)
 		return -ENODEV;
 
 	leds = kcalloc(pdata->num_leds, sizeof(*leds), GFP_KERNEL);
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+	if (!pdata || pdata->num_leds < 1)
+		return -ENODEV;
+
+	leds = devm_kzalloc(&pdev->dev, pdata->num_leds * sizeof(*leds),
+			GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!leds)
 		return -ENOMEM;
 
@@ -115,18 +132,29 @@ err:
 			pwm_channel_free(&leds[i].pwmc);
 		}
 	}
+<<<<<<< HEAD
 	kfree(leds);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
 
+<<<<<<< HEAD
 static int __exit pwmled_remove(struct platform_device *pdev)
+=======
+static int pwmled_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct gpio_led_platform_data	*pdata;
 	struct pwmled				*leds;
 	unsigned				i;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	leds = platform_get_drvdata(pdev);
 
 	for (i = 0; i < pdata->num_leds; i++) {
@@ -136,6 +164,7 @@ static int __exit pwmled_remove(struct platform_device *pdev)
 		pwm_channel_free(&led->pwmc);
 	}
 
+<<<<<<< HEAD
 	kfree(leds);
 	platform_set_drvdata(pdev, NULL);
 	return 0;
@@ -147,12 +176,18 @@ MODULE_ALIAS("platform:leds-atmel-pwm");
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver pwmled_driver = {
 	.driver = {
 		.name =		"leds-atmel-pwm",
 		.owner =	THIS_MODULE,
 	},
 	/* REVISIT add suspend() and resume() methods */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.remove =	__exit_p(pwmled_remove),
 };
@@ -174,6 +209,10 @@ MODULE_LICENSE("GPL");
 =======
 	.probe =	pwmled_probe,
 	.remove =	__exit_p(pwmled_remove),
+=======
+	.probe =	pwmled_probe,
+	.remove =	pwmled_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(pwmled_driver);
@@ -181,4 +220,7 @@ module_platform_driver(pwmled_driver);
 MODULE_DESCRIPTION("Driver for LEDs with PWM-controlled brightness");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:leds-atmel-pwm");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

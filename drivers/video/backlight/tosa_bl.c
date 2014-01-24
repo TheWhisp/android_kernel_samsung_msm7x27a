@@ -38,7 +38,11 @@ struct tosa_bl_data {
 
 static void tosa_bl_set_backlight(struct tosa_bl_data *data, int brightness)
 {
+<<<<<<< HEAD
 	struct spi_device *spi = data->i2c->dev.platform_data;
+=======
+	struct spi_device *spi = dev_get_platdata(&data->i2c->dev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_smbus_write_byte_data(data->i2c, DAC_CH1, data->comadj);
 
@@ -54,7 +58,11 @@ static void tosa_bl_set_backlight(struct tosa_bl_data *data, int brightness)
 static int tosa_bl_update_status(struct backlight_device *dev)
 {
 	struct backlight_properties *props = &dev->props;
+<<<<<<< HEAD
 	struct tosa_bl_data *data = dev_get_drvdata(&dev->dev);
+=======
+	struct tosa_bl_data *data = bl_get_data(dev);
+>>>>>>> refs/remotes/origin/master
 	int power = max(props->power, props->fb_blank);
 	int brightness = props->brightness;
 
@@ -78,17 +86,30 @@ static const struct backlight_ops bl_ops = {
 	.update_status		= tosa_bl_update_status,
 };
 
+<<<<<<< HEAD
 static int __devinit tosa_bl_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
 	struct backlight_properties props;
 	struct tosa_bl_data *data = kzalloc(sizeof(struct tosa_bl_data), GFP_KERNEL);
 	int ret = 0;
+=======
+static int tosa_bl_probe(struct i2c_client *client,
+		const struct i2c_device_id *id)
+{
+	struct backlight_properties props;
+	struct tosa_bl_data *data;
+	int ret = 0;
+
+	data = devm_kzalloc(&client->dev, sizeof(struct tosa_bl_data),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!data)
 		return -ENOMEM;
 
 	data->comadj = sharpsl_param.comadj == -1 ? COMADJ_DEFAULT : sharpsl_param.comadj;
 
+<<<<<<< HEAD
 	ret = gpio_request(TOSA_GPIO_BL_C20MA, "backlight");
 	if (ret) {
 		dev_dbg(&data->bl->dev, "Unable to request gpio!\n");
@@ -97,6 +118,14 @@ static int __devinit tosa_bl_probe(struct i2c_client *client,
 	ret = gpio_direction_output(TOSA_GPIO_BL_C20MA, 0);
 	if (ret)
 		goto err_gpio_dir;
+=======
+	ret = devm_gpio_request_one(&client->dev, TOSA_GPIO_BL_C20MA,
+				GPIOF_OUT_INIT_LOW, "backlight");
+	if (ret) {
+		dev_dbg(&data->bl->dev, "Unable to request gpio!\n");
+		return ret;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	data->i2c = client;
@@ -120,6 +149,7 @@ static int __devinit tosa_bl_probe(struct i2c_client *client,
 
 err_reg:
 	data->bl = NULL;
+<<<<<<< HEAD
 err_gpio_dir:
 	gpio_free(TOSA_GPIO_BL_C20MA);
 err_gpio_bl:
@@ -128,12 +158,19 @@ err_gpio_bl:
 }
 
 static int __devexit tosa_bl_remove(struct i2c_client *client)
+=======
+	return ret;
+}
+
+static int tosa_bl_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tosa_bl_data *data = i2c_get_clientdata(client);
 
 	backlight_device_unregister(data->bl);
 	data->bl = NULL;
 
+<<<<<<< HEAD
 	gpio_free(TOSA_GPIO_BL_C20MA);
 
 	kfree(data);
@@ -145,34 +182,60 @@ static int __devexit tosa_bl_remove(struct i2c_client *client)
 static int tosa_bl_suspend(struct i2c_client *client, pm_message_t pm)
 {
 	struct tosa_bl_data *data = i2c_get_clientdata(client);
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int tosa_bl_suspend(struct device *dev)
+{
+	struct tosa_bl_data *data = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	tosa_bl_set_backlight(data, 0);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tosa_bl_resume(struct i2c_client *client)
 {
 	struct tosa_bl_data *data = i2c_get_clientdata(client);
+=======
+static int tosa_bl_resume(struct device *dev)
+{
+	struct tosa_bl_data *data = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	backlight_update_status(data->bl);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define tosa_bl_suspend NULL
 #define tosa_bl_resume NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(tosa_bl_pm_ops, tosa_bl_suspend, tosa_bl_resume);
+
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id tosa_bl_id[] = {
 	{ "tosa-bl", 0 },
 	{ },
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver tosa_bl_driver = {
 	.driver = {
 		.name		= "tosa-bl",
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= tosa_bl_probe,
 	.remove		= __devexit_p(tosa_bl_remove),
@@ -197,6 +260,16 @@ module_exit(tosa_bl_exit);
 =======
 module_i2c_driver(tosa_bl_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm		= &tosa_bl_pm_ops,
+	},
+	.probe		= tosa_bl_probe,
+	.remove		= tosa_bl_remove,
+	.id_table	= tosa_bl_id,
+};
+
+module_i2c_driver(tosa_bl_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Dmitry Baryshkov");
 MODULE_LICENSE("GPL v2");

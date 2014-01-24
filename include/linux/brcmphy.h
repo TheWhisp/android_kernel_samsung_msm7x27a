@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+#ifndef _LINUX_BRCMPHY_H
+#define _LINUX_BRCMPHY_H
+
+>>>>>>> refs/remotes/origin/master
 #define PHY_ID_BCM50610			0x0143bd60
 #define PHY_ID_BCM50610M		0x0143bd70
 #define PHY_ID_BCM5241			0x0143bc30
@@ -29,3 +35,8 @@
 #define PHY_BRCM_CLEAR_RGMII_MODE	0x00004000
 #define PHY_BRCM_DIS_TXCRXC_NOENRGY	0x00008000
 #define PHY_BCM_FLAGS_VALID		0x80000000
+<<<<<<< HEAD
+=======
+
+#endif /* _LINUX_BRCMPHY_H */
+>>>>>>> refs/remotes/origin/master

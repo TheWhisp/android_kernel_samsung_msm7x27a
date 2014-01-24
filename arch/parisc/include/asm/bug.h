@@ -1,6 +1,11 @@
 #ifndef _PARISC_BUG_H
 #define _PARISC_BUG_H
 
+<<<<<<< HEAD
+=======
+#include <linux/kernel.h>	/* for BUGFLAG_TAINT */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Tell the user there is some problem.
  * The offending file and line are encoded in the __bug_table section.

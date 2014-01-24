@@ -30,9 +30,12 @@
 /* driver definitions */
 #define DRIVER_AUTHOR "Tobias Lorenz <tobias.lorenz@gmx.net>"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRIVER_KERNEL_VERSION KERNEL_VERSION(1, 0, 10)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_CARD "Silicon Labs Si470x FM Radio Receiver"
 #define DRIVER_DESC "USB radio driver for Si470x FM Radio Receivers"
 #define DRIVER_VERSION "1.0.10"
@@ -55,6 +58,11 @@ static struct usb_device_id si470x_usb_driver_id_table[] = {
 	{ USB_DEVICE_AND_INTERFACE_INFO(0x1b80, 0xd700, USB_CLASS_HID, 0, 0) },
 	/* Sanei Electric, Inc. FM USB Radio (sold as DealExtreme.com PCear) */
 	{ USB_DEVICE_AND_INTERFACE_INFO(0x10c5, 0x819a, USB_CLASS_HID, 0, 0) },
+<<<<<<< HEAD
+=======
+	/* Axentia ALERT FM USB Receiver */
+	{ USB_DEVICE_AND_INTERFACE_INFO(0x12cf, 0x7111, USB_CLASS_HID, 0, 0) },
+>>>>>>> refs/remotes/origin/master
 	/* Terminating entry */
 	{ }
 };
@@ -144,8 +152,11 @@ MODULE_PARM_DESC(max_rds_errors, "RDS maximum block errors: *1*");
 /**************************************************************************
  * Software/Hardware Versions from Scratch Page
  **************************************************************************/
+<<<<<<< HEAD
 #define RADIO_SW_VERSION_NOT_BOOTLOADABLE	6
 #define RADIO_SW_VERSION			7
+=======
+>>>>>>> refs/remotes/origin/master
 #define RADIO_HW_VERSION			1
 
 
@@ -371,6 +382,7 @@ static int si470x_get_scratch_page_versions(struct si470x_device *radio)
 
 
 /**************************************************************************
+<<<<<<< HEAD
  * General Driver Functions - DISCONNECT_CHECK
  **************************************************************************/
 
@@ -388,6 +400,8 @@ int si470x_disconnect_check(struct si470x_device *radio)
 
 
 /**************************************************************************
+=======
+>>>>>>> refs/remotes/origin/master
  * RDS Driver Functions
  **************************************************************************/
 
@@ -400,9 +414,12 @@ static void si470x_int_in_callback(struct urb *urb)
 {
 	struct si470x_device *radio = urb->context;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char buf[RDS_REPORT_SIZE];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int retval;
 	unsigned char regnr;
 	unsigned char blocknum;
@@ -422,6 +439,7 @@ static void si470x_int_in_callback(struct urb *urb)
 		}
 	}
 
+<<<<<<< HEAD
 	/* safety checks */
 	if (radio->disconnected)
 		return;
@@ -435,6 +453,21 @@ static void si470x_int_in_callback(struct urb *urb)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 		for (regnr = 0; regnr < RDS_REGISTER_NUM; regnr++)
+=======
+	/* Sometimes the device returns len 0 packets */
+	if (urb->actual_length != RDS_REPORT_SIZE)
+		goto resubmit;
+
+	radio->registers[STATUSRSSI] =
+		get_unaligned_be16(&radio->int_in_buffer[1]);
+
+	if (radio->registers[STATUSRSSI] & STATUSRSSI_STC)
+		complete(&radio->completion);
+
+	if ((radio->registers[SYSCONFIG1] & SYSCONFIG1_RDS)) {
+		/* Update RDS registers with URB data */
+		for (regnr = 1; regnr < RDS_REGISTER_NUM; regnr++)
+>>>>>>> refs/remotes/origin/master
 			radio->registers[STATUSRSSI + regnr] =
 			    get_unaligned_be16(&radio->int_in_buffer[
 				regnr * RADIO_REGISTER_SIZE + 1]);
@@ -469,7 +502,11 @@ static void si470x_int_in_callback(struct urb *urb)
 						READCHAN_BLERD) >> 10;
 				rds = radio->registers[RDSD];
 				break;
+<<<<<<< HEAD
 			};
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 
 			/* Fill the V4L2 RDS buffer */
 			put_unaligned_le16(rds, &tmpbuf);
@@ -510,6 +547,7 @@ resubmit:
 			radio->int_in_running = 0;
 		}
 	}
+<<<<<<< HEAD
 }
 
 
@@ -619,6 +657,36 @@ done:
 
 
 
+=======
+	radio->status_rssi_auto_update = radio->int_in_running;
+}
+
+
+int si470x_fops_open(struct file *file)
+{
+	return v4l2_fh_open(file);
+}
+
+int si470x_fops_release(struct file *file)
+{
+	return v4l2_fh_release(file);
+}
+
+static void si470x_usb_release(struct v4l2_device *v4l2_dev)
+{
+	struct si470x_device *radio =
+		container_of(v4l2_dev, struct si470x_device, v4l2_dev);
+
+	usb_free_urb(radio->int_in_urb);
+	v4l2_ctrl_handler_free(&radio->hdl);
+	v4l2_device_unregister(&radio->v4l2_dev);
+	kfree(radio->int_in_buffer);
+	kfree(radio->buffer);
+	kfree(radio);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 /**************************************************************************
  * Video4Linux Interface
  **************************************************************************/
@@ -636,16 +704,59 @@ int si470x_vidioc_querycap(struct file *file, void *priv,
 	usb_make_path(radio->usbdev, capability->bus_info,
 			sizeof(capability->bus_info));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	capability->version = DRIVER_KERNEL_VERSION;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	capability->capabilities = V4L2_CAP_HW_FREQ_SEEK |
 		V4L2_CAP_TUNER | V4L2_CAP_RADIO | V4L2_CAP_RDS_CAPTURE;
 
+=======
+	capability->device_caps = V4L2_CAP_HW_FREQ_SEEK | V4L2_CAP_READWRITE |
+		V4L2_CAP_TUNER | V4L2_CAP_RADIO | V4L2_CAP_RDS_CAPTURE;
+	capability->capabilities = capability->device_caps | V4L2_CAP_DEVICE_CAPS;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 
+<<<<<<< HEAD
+=======
+static int si470x_start_usb(struct si470x_device *radio)
+{
+	int retval;
+
+	/* initialize interrupt urb */
+	usb_fill_int_urb(radio->int_in_urb, radio->usbdev,
+			usb_rcvintpipe(radio->usbdev,
+				radio->int_in_endpoint->bEndpointAddress),
+			radio->int_in_buffer,
+			le16_to_cpu(radio->int_in_endpoint->wMaxPacketSize),
+			si470x_int_in_callback,
+			radio,
+			radio->int_in_endpoint->bInterval);
+
+	radio->int_in_running = 1;
+	mb();
+
+	retval = usb_submit_urb(radio->int_in_urb, GFP_KERNEL);
+	if (retval) {
+		dev_info(&radio->intf->dev,
+				"submitting int urb failed (%d)\n", retval);
+		radio->int_in_running = 0;
+	}
+	radio->status_rssi_auto_update = radio->int_in_running;
+
+	/* start radio */
+	retval = si470x_start(radio);
+	if (retval < 0)
+		return retval;
+
+	v4l2_ctrl_handler_setup(&radio->hdl);
+
+	return retval;
+}
+>>>>>>> refs/remotes/origin/master
 
 /**************************************************************************
  * USB Interface
@@ -669,11 +780,19 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 		retval = -ENOMEM;
 		goto err_initial;
 	}
+<<<<<<< HEAD
 	radio->users = 0;
 	radio->disconnected = 0;
 	radio->usbdev = interface_to_usbdev(intf);
 	radio->intf = intf;
 	mutex_init(&radio->lock);
+=======
+	radio->usbdev = interface_to_usbdev(intf);
+	radio->intf = intf;
+	radio->band = 1; /* Default to 76 - 108 MHz */
+	mutex_init(&radio->lock);
+	init_completion(&radio->completion);
+>>>>>>> refs/remotes/origin/master
 
 	iface_desc = intf->cur_altsetting;
 
@@ -707,6 +826,7 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 		goto err_intbuffer;
 	}
 
+<<<<<<< HEAD
 	/* video device allocation and initialization */
 	radio->videodev = video_device_alloc();
 	if (!radio->videodev) {
@@ -720,11 +840,41 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 	memcpy(radio->videodev, &si470x_viddev_template,
 			sizeof(si470x_viddev_template));
 	video_set_drvdata(radio->videodev, radio);
+=======
+	radio->v4l2_dev.release = si470x_usb_release;
+	retval = v4l2_device_register(&intf->dev, &radio->v4l2_dev);
+	if (retval < 0) {
+		dev_err(&intf->dev, "couldn't register v4l2_device\n");
+		goto err_urb;
+	}
+
+	v4l2_ctrl_handler_init(&radio->hdl, 2);
+	v4l2_ctrl_new_std(&radio->hdl, &si470x_ctrl_ops,
+			  V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
+	v4l2_ctrl_new_std(&radio->hdl, &si470x_ctrl_ops,
+			  V4L2_CID_AUDIO_VOLUME, 0, 15, 1, 15);
+	if (radio->hdl.error) {
+		retval = radio->hdl.error;
+		dev_err(&intf->dev, "couldn't register control\n");
+		goto err_dev;
+	}
+	radio->videodev = si470x_viddev_template;
+	radio->videodev.ctrl_handler = &radio->hdl;
+	radio->videodev.lock = &radio->lock;
+	radio->videodev.v4l2_dev = &radio->v4l2_dev;
+	radio->videodev.release = video_device_release_empty;
+	set_bit(V4L2_FL_USE_FH_PRIO, &radio->videodev.flags);
+	video_set_drvdata(&radio->videodev, radio);
+>>>>>>> refs/remotes/origin/master
 
 	/* get device and chip versions */
 	if (si470x_get_all_registers(radio) < 0) {
 		retval = -EIO;
+<<<<<<< HEAD
 		goto err_video;
+=======
+		goto err_ctrl;
+>>>>>>> refs/remotes/origin/master
 	}
 	dev_info(&intf->dev, "DeviceID=0x%4.4hx ChipID=0x%4.4hx\n",
 			radio->registers[DEVICEID], radio->registers[CHIPID]);
@@ -741,6 +891,7 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 	/* get software and hardware versions */
 	if (si470x_get_scratch_page_versions(radio) < 0) {
 		retval = -EIO;
+<<<<<<< HEAD
 		goto err_video;
 	}
 	dev_info(&intf->dev, "software version %d, hardware version %d\n",
@@ -754,6 +905,12 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 			radio->software_version);
 		version_warning = 1;
 	}
+=======
+		goto err_ctrl;
+	}
+	dev_info(&intf->dev, "software version %d, hardware version %d\n",
+			radio->software_version, radio->hardware_version);
+>>>>>>> refs/remotes/origin/master
 	if (radio->hardware_version < RADIO_HW_VERSION) {
 		dev_warn(&intf->dev,
 			"This driver is known to work with "
@@ -773,9 +930,12 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 			"linux-media@vger.kernel.org\n");
 	}
 
+<<<<<<< HEAD
 	/* set initial frequency */
 	si470x_set_freq(radio, 87.5 * FREQ_MUL); /* available in all regions */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set led to connect state */
 	si470x_set_led_state(radio, BLINK_GREEN_LED);
 
@@ -784,13 +944,18 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 	radio->buffer = kmalloc(radio->buf_size, GFP_KERNEL);
 	if (!radio->buffer) {
 		retval = -EIO;
+<<<<<<< HEAD
 		goto err_video;
+=======
+		goto err_ctrl;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* rds buffer configuration */
 	radio->wr_index = 0;
 	radio->rd_index = 0;
 	init_waitqueue_head(&radio->read_queue);
+<<<<<<< HEAD
 
 	/* register video device */
 	retval = video_register_device(radio->videodev, VFL_TYPE_RADIO,
@@ -800,10 +965,30 @@ static int si470x_usb_driver_probe(struct usb_interface *intf,
 		goto err_all;
 	}
 	usb_set_intfdata(intf, radio);
+=======
+	usb_set_intfdata(intf, radio);
+
+	/* start radio */
+	retval = si470x_start_usb(radio);
+	if (retval < 0)
+		goto err_all;
+
+	/* set initial frequency */
+	si470x_set_freq(radio, 87.5 * FREQ_MUL); /* available in all regions */
+
+	/* register video device */
+	retval = video_register_device(&radio->videodev, VFL_TYPE_RADIO,
+			radio_nr);
+	if (retval) {
+		dev_err(&intf->dev, "Could not register video device\n");
+		goto err_all;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 err_all:
 	kfree(radio->buffer);
+<<<<<<< HEAD
 err_video:
 	video_device_release(radio->videodev);
 <<<<<<< HEAD
@@ -811,6 +996,14 @@ err_video:
 err_urb:
 	usb_free_urb(radio->int_in_urb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_ctrl:
+	v4l2_ctrl_handler_free(&radio->hdl);
+err_dev:
+	v4l2_device_unregister(&radio->v4l2_dev);
+err_urb:
+	usb_free_urb(radio->int_in_urb);
+>>>>>>> refs/remotes/origin/master
 err_intbuffer:
 	kfree(radio->int_in_buffer);
 err_radio:
@@ -826,8 +1019,27 @@ err_initial:
 static int si470x_usb_driver_suspend(struct usb_interface *intf,
 		pm_message_t message)
 {
+<<<<<<< HEAD
 	dev_info(&intf->dev, "suspending now...\n");
 
+=======
+	struct si470x_device *radio = usb_get_intfdata(intf);
+
+	dev_info(&intf->dev, "suspending now...\n");
+
+	/* shutdown interrupt handler */
+	if (radio->int_in_running) {
+		radio->int_in_running = 0;
+		if (radio->int_in_urb)
+			usb_kill_urb(radio->int_in_urb);
+	}
+
+	/* cancel read processes */
+	wake_up_interruptible(&radio->read_queue);
+
+	/* stop radio */
+	si470x_stop(radio);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -837,9 +1049,23 @@ static int si470x_usb_driver_suspend(struct usb_interface *intf,
  */
 static int si470x_usb_driver_resume(struct usb_interface *intf)
 {
+<<<<<<< HEAD
 	dev_info(&intf->dev, "resuming now...\n");
 
 	return 0;
+=======
+	struct si470x_device *radio = usb_get_intfdata(intf);
+	int ret;
+
+	dev_info(&intf->dev, "resuming now...\n");
+
+	/* start radio */
+	ret = si470x_start_usb(radio);
+	if (ret == 0)
+		v4l2_ctrl_handler_setup(&radio->hdl);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -851,6 +1077,7 @@ static void si470x_usb_driver_disconnect(struct usb_interface *intf)
 	struct si470x_device *radio = usb_get_intfdata(intf);
 
 	mutex_lock(&radio->lock);
+<<<<<<< HEAD
 	radio->disconnected = 1;
 	usb_set_intfdata(intf, NULL);
 	if (radio->users == 0) {
@@ -868,11 +1095,27 @@ static void si470x_usb_driver_disconnect(struct usb_interface *intf)
 	} else {
 		mutex_unlock(&radio->lock);
 	}
+=======
+	v4l2_device_disconnect(&radio->v4l2_dev);
+	video_unregister_device(&radio->videodev);
+	usb_set_intfdata(intf, NULL);
+	mutex_unlock(&radio->lock);
+	v4l2_device_put(&radio->v4l2_dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*
  * si470x_usb_driver - usb driver interface
+<<<<<<< HEAD
+=======
+ *
+ * A note on suspend/resume: this driver had only empty suspend/resume
+ * functions, and when I tried to test suspend/resume it always disconnected
+ * instead of resuming (using my ADS InstantFM stick). So I've decided to
+ * remove these callbacks until someone else with better hardware can
+ * implement and test this.
+>>>>>>> refs/remotes/origin/master
  */
 static struct usb_driver si470x_usb_driver = {
 	.name			= DRIVER_NAME,
@@ -880,6 +1123,7 @@ static struct usb_driver si470x_usb_driver = {
 	.disconnect		= si470x_usb_driver_disconnect,
 	.suspend		= si470x_usb_driver_suspend,
 	.resume			= si470x_usb_driver_resume,
+<<<<<<< HEAD
 	.id_table		= si470x_usb_driver_id_table,
 	.supports_autosuspend	= 1,
 };
@@ -915,6 +1159,13 @@ module_exit(si470x_module_exit);
 =======
 module_usb_driver(si470x_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.reset_resume		= si470x_usb_driver_resume,
+	.id_table		= si470x_usb_driver_id_table,
+};
+
+module_usb_driver(si470x_usb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR(DRIVER_AUTHOR);

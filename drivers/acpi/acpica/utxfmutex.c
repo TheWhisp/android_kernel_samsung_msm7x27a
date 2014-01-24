@@ -5,7 +5,11 @@
  ******************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2012, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,8 +62,13 @@ acpi_ut_get_mutex_object(acpi_handle handle,
  *
  * FUNCTION:    acpi_ut_get_mutex_object
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle              - Mutex or prefix handle (optional)
  *              Pathname            - Mutex pathname (optional)
+=======
+ * PARAMETERS:  handle              - Mutex or prefix handle (optional)
+ *              pathname            - Mutex pathname (optional)
+>>>>>>> refs/remotes/origin/master
  *              ret_obj             - Where the mutex object is returned
  *
  * RETURN:      Status
@@ -118,9 +127,15 @@ acpi_ut_get_mutex_object(acpi_handle handle,
  *
  * FUNCTION:    acpi_acquire_mutex
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle              - Mutex or prefix handle (optional)
  *              Pathname            - Mutex pathname (optional)
  *              Timeout             - Max time to wait for the lock (millisec)
+=======
+ * PARAMETERS:  handle              - Mutex or prefix handle (optional)
+ *              pathname            - Mutex pathname (optional)
+ *              timeout             - Max time to wait for the lock (millisec)
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -155,8 +170,13 @@ acpi_acquire_mutex(acpi_handle handle, acpi_string pathname, u16 timeout)
  *
  * FUNCTION:    acpi_release_mutex
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handle              - Mutex or prefix handle (optional)
  *              Pathname            - Mutex pathname (optional)
+=======
+ * PARAMETERS:  handle              - Mutex or prefix handle (optional)
+ *              pathname            - Mutex pathname (optional)
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *

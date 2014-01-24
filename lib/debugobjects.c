@@ -79,30 +79,48 @@ static const char *obj_states[ODEBUG_STATE_MAX] = {
 	[ODEBUG_STATE_NOTAVAILABLE]	= "not available",
 };
 
+<<<<<<< HEAD
 static int fill_pool(void)
+=======
+static void fill_pool(void)
+>>>>>>> refs/remotes/origin/master
 {
 	gfp_t gfp = GFP_ATOMIC | __GFP_NORETRY | __GFP_NOWARN;
 	struct debug_obj *new;
 	unsigned long flags;
 
 	if (likely(obj_pool_free >= ODEBUG_POOL_MIN_LEVEL))
+<<<<<<< HEAD
 		return obj_pool_free;
 
 	if (unlikely(!obj_cache))
 		return obj_pool_free;
+=======
+		return;
+
+	if (unlikely(!obj_cache))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	while (obj_pool_free < ODEBUG_POOL_MIN_LEVEL) {
 
 		new = kmem_cache_zalloc(obj_cache, gfp);
 		if (!new)
+<<<<<<< HEAD
 			return obj_pool_free;
+=======
+			return;
+>>>>>>> refs/remotes/origin/master
 
 		raw_spin_lock_irqsave(&pool_lock, flags);
 		hlist_add_head(&new->node, &obj_pool);
 		obj_pool_free++;
 		raw_spin_unlock_irqrestore(&pool_lock, flags);
 	}
+<<<<<<< HEAD
 	return obj_pool_free;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -110,11 +128,18 @@ static int fill_pool(void)
  */
 static struct debug_obj *lookup_object(void *addr, struct debug_bucket *b)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct debug_obj *obj;
 	int cnt = 0;
 
 	hlist_for_each_entry(obj, node, &b->list, node) {
+=======
+	struct debug_obj *obj;
+	int cnt = 0;
+
+	hlist_for_each_entry(obj, &b->list, node) {
+>>>>>>> refs/remotes/origin/master
 		cnt++;
 		if (obj->object == addr)
 			return obj;
@@ -198,7 +223,11 @@ static void free_object(struct debug_obj *obj)
 	 * initialized:
 	 */
 	if (obj_pool_free > ODEBUG_POOL_SIZE && obj_cache)
+<<<<<<< HEAD
 		sched = keventd_up() && !work_pending(&debug_obj_work);
+=======
+		sched = keventd_up();
+>>>>>>> refs/remotes/origin/master
 	hlist_add_head(&obj->node, &obj_pool);
 	obj_pool_free++;
 	obj_pool_used--;
@@ -214,7 +243,11 @@ static void free_object(struct debug_obj *obj)
 static void debug_objects_oom(void)
 {
 	struct debug_bucket *db = obj_hash;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	HLIST_HEAD(freelist);
 	struct debug_obj *obj;
 	unsigned long flags;
@@ -228,7 +261,11 @@ static void debug_objects_oom(void)
 		raw_spin_unlock_irqrestore(&db->lock, flags);
 
 		/* Now free them */
+<<<<<<< HEAD
 		hlist_for_each_entry_safe(obj, node, tmp, &freelist, node) {
+=======
+		hlist_for_each_entry_safe(obj, tmp, &freelist, node) {
+>>>>>>> refs/remotes/origin/master
 			hlist_del(&obj->node);
 			free_object(obj);
 		}
@@ -269,6 +306,7 @@ static void debug_print_object(struct debug_obj *obj, char *msg)
  * debug output.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void
 debug_object_fixup(int (*fixup)(void *addr, enum debug_obj_state state),
 		   void * addr, enum debug_obj_state state)
@@ -276,6 +314,8 @@ debug_object_fixup(int (*fixup)(void *addr, enum debug_obj_state state),
 	if (fixup)
 		debug_objects_fixups += fixup(addr, state);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 debug_object_fixup(int (*fixup)(void *addr, enum debug_obj_state state),
 		   void * addr, enum debug_obj_state state)
@@ -286,7 +326,10 @@ debug_object_fixup(int (*fixup)(void *addr, enum debug_obj_state state),
 		fixed = fixup(addr, state);
 	debug_objects_fixups += fixed;
 	return fixed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void debug_object_is_on_stack(void *addr, int onstack)
@@ -392,13 +435,20 @@ void debug_object_init_on_stack(void *addr, struct debug_obj_descr *descr)
  * debug_object_activate - debug checks when an object is activated
  * @addr:	address of the object
  * @descr:	pointer to an object specific debug description structure
+<<<<<<< HEAD
  */
 void debug_object_activate(void *addr, struct debug_obj_descr *descr)
+=======
+ * Returns 0 for success, -EINVAL for check failed.
+ */
+int debug_object_activate(void *addr, struct debug_obj_descr *descr)
+>>>>>>> refs/remotes/origin/master
 {
 	enum debug_obj_state state;
 	struct debug_bucket *db;
 	struct debug_obj *obj;
 	unsigned long flags;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	struct debug_obj o = { .object = addr,
@@ -408,6 +458,15 @@ void debug_object_activate(void *addr, struct debug_obj_descr *descr)
 
 	if (!debug_objects_enabled)
 		return;
+=======
+	int ret;
+	struct debug_obj o = { .object = addr,
+			       .state = ODEBUG_STATE_NOTAVAILABLE,
+			       .descr = descr };
+
+	if (!debug_objects_enabled)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	db = get_bucket((unsigned long) addr);
 
@@ -419,12 +478,17 @@ void debug_object_activate(void *addr, struct debug_obj_descr *descr)
 		case ODEBUG_STATE_INIT:
 		case ODEBUG_STATE_INACTIVE:
 			obj->state = ODEBUG_STATE_ACTIVE;
+<<<<<<< HEAD
+=======
+			ret = 0;
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case ODEBUG_STATE_ACTIVE:
 			debug_print_object(obj, "activate");
 			state = obj->state;
 			raw_spin_unlock_irqrestore(&db->lock, flags);
+<<<<<<< HEAD
 			debug_object_fixup(descr->fixup_activate, addr, state);
 			return;
 
@@ -436,6 +500,21 @@ void debug_object_activate(void *addr, struct debug_obj_descr *descr)
 		}
 		raw_spin_unlock_irqrestore(&db->lock, flags);
 		return;
+=======
+			ret = debug_object_fixup(descr->fixup_activate, addr, state);
+			return ret ? -EINVAL : 0;
+
+		case ODEBUG_STATE_DESTROYED:
+			debug_print_object(obj, "activate");
+			ret = -EINVAL;
+			break;
+		default:
+			ret = 0;
+			break;
+		}
+		raw_spin_unlock_irqrestore(&db->lock, flags);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	raw_spin_unlock_irqrestore(&db->lock, flags);
@@ -445,6 +524,7 @@ void debug_object_activate(void *addr, struct debug_obj_descr *descr)
 	 * true or not.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	debug_object_fixup(descr->fixup_activate, addr,
 			   ODEBUG_STATE_NOTAVAILABLE);
 =======
@@ -452,6 +532,14 @@ void debug_object_activate(void *addr, struct debug_obj_descr *descr)
 			   ODEBUG_STATE_NOTAVAILABLE))
 		debug_print_object(&o, "activate");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (debug_object_fixup(descr->fixup_activate, addr,
+			   ODEBUG_STATE_NOTAVAILABLE)) {
+		debug_print_object(&o, "activate");
+		return -EINVAL;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -608,17 +696,24 @@ void debug_object_assert_init(void *addr, struct debug_obj_descr *descr)
 	obj = lookup_object(addr, db);
 	if (!obj) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct debug_obj o = { .object = addr,
 				       .state = ODEBUG_STATE_NOTAVAILABLE,
 				       .descr = descr };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		raw_spin_unlock_irqrestore(&db->lock, flags);
 		/*
 		 * Maybe the object is static.  Let the type specific
 		 * code decide what to do.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		debug_object_fixup(descr->fixup_assert_init, addr,
 				   ODEBUG_STATE_NOTAVAILABLE);
@@ -627,6 +722,11 @@ void debug_object_assert_init(void *addr, struct debug_obj_descr *descr)
 				       ODEBUG_STATE_NOTAVAILABLE))
 			debug_print_object(&o, "assert_init");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (debug_object_fixup(descr->fixup_assert_init, addr,
+				       ODEBUG_STATE_NOTAVAILABLE))
+			debug_print_object(&o, "assert_init");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -684,7 +784,11 @@ debug_object_active_state(void *addr, struct debug_obj_descr *descr,
 static void __debug_check_no_obj_freed(const void *address, unsigned long size)
 {
 	unsigned long flags, oaddr, saddr, eaddr, paddr, chunks;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	HLIST_HEAD(freelist);
 	struct debug_obj_descr *descr;
 	enum debug_obj_state state;
@@ -704,7 +808,11 @@ static void __debug_check_no_obj_freed(const void *address, unsigned long size)
 repeat:
 		cnt = 0;
 		raw_spin_lock_irqsave(&db->lock, flags);
+<<<<<<< HEAD
 		hlist_for_each_entry_safe(obj, node, tmp, &db->list, node) {
+=======
+		hlist_for_each_entry_safe(obj, tmp, &db->list, node) {
+>>>>>>> refs/remotes/origin/master
 			cnt++;
 			oaddr = (unsigned long) obj->object;
 			if (oaddr < saddr || oaddr >= eaddr)
@@ -728,7 +836,11 @@ repeat:
 		raw_spin_unlock_irqrestore(&db->lock, flags);
 
 		/* Now free them */
+<<<<<<< HEAD
 		hlist_for_each_entry_safe(obj, node, tmp, &freelist, node) {
+=======
+		hlist_for_each_entry_safe(obj, tmp, &freelist, node) {
+>>>>>>> refs/remotes/origin/master
 			hlist_del(&obj->node);
 			free_object(obj);
 		}
@@ -844,6 +956,7 @@ static int __init fixup_activate(void *addr, enum debug_obj_state state)
 			debug_object_init(obj, &descr_type_test);
 			debug_object_activate(obj, &descr_type_test);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/*
 			 * Real code should return 0 here ! This is
 			 * not a fixup of some bad behaviour. We
@@ -860,6 +973,11 @@ static int __init fixup_activate(void *addr, enum debug_obj_state state)
 		}
 		return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return 0;
+		}
+		return 1;
+>>>>>>> refs/remotes/origin/master
 
 	case ODEBUG_STATE_ACTIVE:
 		debug_object_deactivate(obj, &descr_type_test);
@@ -999,10 +1117,14 @@ static void __init debug_objects_selftest(void)
 	obj.static_init = 1;
 	debug_object_activate(&obj, &descr_type_test);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (check_results(&obj, ODEBUG_STATE_ACTIVE, ++fixups, warnings))
 =======
 	if (check_results(&obj, ODEBUG_STATE_ACTIVE, fixups, warnings))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (check_results(&obj, ODEBUG_STATE_ACTIVE, fixups, warnings))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	debug_object_init(&obj, &descr_type_test);
 	if (check_results(&obj, ODEBUG_STATE_INIT, ++fixups, ++warnings))
@@ -1057,7 +1179,11 @@ void __init debug_objects_early_init(void)
 static int __init debug_objects_replace_static_objects(void)
 {
 	struct debug_bucket *db = obj_hash;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	struct debug_obj *obj, *new;
 	HLIST_HEAD(objects);
 	int i, cnt = 0;
@@ -1077,7 +1203,11 @@ static int __init debug_objects_replace_static_objects(void)
 	local_irq_disable();
 
 	/* Remove the statically allocated objects from the pool */
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(obj, node, tmp, &obj_pool, node)
+=======
+	hlist_for_each_entry_safe(obj, tmp, &obj_pool, node)
+>>>>>>> refs/remotes/origin/master
 		hlist_del(&obj->node);
 	/* Move the allocated objects to the pool */
 	hlist_move_list(&objects, &obj_pool);
@@ -1086,7 +1216,11 @@ static int __init debug_objects_replace_static_objects(void)
 	for (i = 0; i < ODEBUG_HASH_SIZE; i++, db++) {
 		hlist_move_list(&db->list, &objects);
 
+<<<<<<< HEAD
 		hlist_for_each_entry(obj, node, &objects, node) {
+=======
+		hlist_for_each_entry(obj, &objects, node) {
+>>>>>>> refs/remotes/origin/master
 			new = hlist_entry(obj_pool.first, typeof(*obj), node);
 			hlist_del(&new->node);
 			/* copy object data */
@@ -1095,6 +1229,7 @@ static int __init debug_objects_replace_static_objects(void)
 			cnt++;
 		}
 	}
+<<<<<<< HEAD
 
 	printk(KERN_DEBUG "ODEBUG: %d of %d active objects replaced\n", cnt,
 	       obj_pool_used);
@@ -1102,6 +1237,15 @@ static int __init debug_objects_replace_static_objects(void)
 	return 0;
 free:
 	hlist_for_each_entry_safe(obj, node, tmp, &objects, node) {
+=======
+	local_irq_enable();
+
+	printk(KERN_DEBUG "ODEBUG: %d of %d active objects replaced\n", cnt,
+	       obj_pool_used);
+	return 0;
+free:
+	hlist_for_each_entry_safe(obj, tmp, &objects, node) {
+>>>>>>> refs/remotes/origin/master
 		hlist_del(&obj->node);
 		kmem_cache_free(obj_cache, obj);
 	}

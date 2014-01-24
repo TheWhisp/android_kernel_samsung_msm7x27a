@@ -7,7 +7,11 @@
  * Derived from:
  *
  *  Based on the max1619 driver.
+<<<<<<< HEAD
  *  Copyright (C) 2003-2004 Alexey Fisher <fishor@mail.ru>
+=======
+ *  Copyright (C) 2003-2004 Oleksij Rempel <bug-track@fisher-privat.net>
+>>>>>>> refs/remotes/origin/master
  *                          Jean Delvare <khali@linux-fr.org>
  *
  * The MAX6642 is a sensor chip made by Maxim.
@@ -87,7 +91,11 @@ static int temp_to_reg(int val)
  */
 
 struct max6642_data {
+<<<<<<< HEAD
 	struct device *hwmon_dev;
+=======
+	struct i2c_client *client;
+>>>>>>> refs/remotes/origin/master
 	struct mutex update_lock;
 	bool valid; /* zero until following fields are valid */
 	unsigned long last_updated; /* in jiffies */
@@ -102,10 +110,17 @@ struct max6642_data {
  * Real code
  */
 
+<<<<<<< HEAD
 static void max6642_init_client(struct i2c_client *client)
 {
 	u8 config;
 	struct max6642_data *data = i2c_get_clientdata(client);
+=======
+static void max6642_init_client(struct max6642_data *data,
+				struct i2c_client *client)
+{
+	u8 config;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Start the conversions.
@@ -168,14 +183,23 @@ static int max6642_detect(struct i2c_client *client,
 
 static struct max6642_data *max6642_update_device(struct device *dev)
 {
+<<<<<<< HEAD
 	struct i2c_client *client = to_i2c_client(dev);
 	struct max6642_data *data = i2c_get_clientdata(client);
+=======
+	struct max6642_data *data = dev_get_drvdata(dev);
+	struct i2c_client *client = data->client;
+>>>>>>> refs/remotes/origin/master
 	u16 val, tmp;
 
 	mutex_lock(&data->update_lock);
 
 	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
+<<<<<<< HEAD
 		dev_dbg(&client->dev, "Updating max6642 data.\n");
+=======
+		dev_dbg(dev, "Updating max6642 data.\n");
+>>>>>>> refs/remotes/origin/master
 		val = i2c_smbus_read_byte_data(client,
 					MAX6642_REG_R_LOCAL_TEMPL);
 		tmp = (val >> 6) & 3;
@@ -209,8 +233,13 @@ static struct max6642_data *max6642_update_device(struct device *dev)
 static ssize_t show_temp_max10(struct device *dev,
 			       struct device_attribute *dev_attr, char *buf)
 {
+<<<<<<< HEAD
 	struct max6642_data *data = max6642_update_device(dev);
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(dev_attr);
+=======
+	struct sensor_device_attribute *attr = to_sensor_dev_attr(dev_attr);
+	struct max6642_data *data = max6642_update_device(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n",
 		       temp_from_reg10(data->temp_input[attr->index]));
@@ -219,8 +248,13 @@ static ssize_t show_temp_max10(struct device *dev,
 static ssize_t show_temp_max(struct device *dev, struct device_attribute *attr,
 			     char *buf)
 {
+<<<<<<< HEAD
 	struct max6642_data *data = max6642_update_device(dev);
 	struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(attr);
+=======
+	struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(attr);
+	struct max6642_data *data = max6642_update_device(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return sprintf(buf, "%d\n", temp_from_reg(data->temp_high[attr2->nr]));
 }
@@ -228,6 +262,7 @@ static ssize_t show_temp_max(struct device *dev, struct device_attribute *attr,
 static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 			    const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	unsigned long val;
 	int err;
 	struct i2c_client *client = to_i2c_client(dev);
@@ -239,12 +274,25 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute *attr,
 =======
 	err = kstrtoul(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sensor_device_attribute_2 *attr2 = to_sensor_dev_attr_2(attr);
+	struct max6642_data *data = dev_get_drvdata(dev);
+	unsigned long val;
+	int err;
+
+	err = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
 	mutex_lock(&data->update_lock);
+<<<<<<< HEAD
 	data->temp_high[attr2->nr] = SENSORS_LIMIT(temp_to_reg(val), 0, 255);
 	i2c_smbus_write_byte_data(client, attr2->index,
+=======
+	data->temp_high[attr2->nr] = clamp_val(temp_to_reg(val), 0, 255);
+	i2c_smbus_write_byte_data(data->client, attr2->index,
+>>>>>>> refs/remotes/origin/master
 				  data->temp_high[attr2->nr]);
 	mutex_unlock(&data->update_lock);
 	return count;
@@ -268,7 +316,11 @@ static SENSOR_DEVICE_ATTR(temp2_fault, S_IRUGO, show_alarm, NULL, 2);
 static SENSOR_DEVICE_ATTR(temp1_max_alarm, S_IRUGO, show_alarm, NULL, 6);
 static SENSOR_DEVICE_ATTR(temp2_max_alarm, S_IRUGO, show_alarm, NULL, 4);
 
+<<<<<<< HEAD
 static struct attribute *max6642_attributes[] = {
+=======
+static struct attribute *max6642_attrs[] = {
+>>>>>>> refs/remotes/origin/master
 	&sensor_dev_attr_temp1_input.dev_attr.attr,
 	&sensor_dev_attr_temp2_input.dev_attr.attr,
 	&sensor_dev_attr_temp1_max.dev_attr.attr,
@@ -279,6 +331,7 @@ static struct attribute *max6642_attributes[] = {
 	&sensor_dev_attr_temp2_max_alarm.dev_attr.attr,
 	NULL
 };
+<<<<<<< HEAD
 
 static const struct attribute_group max6642_group = {
 	.attrs = max6642_attributes,
@@ -332,6 +385,31 @@ static int max6642_remove(struct i2c_client *client)
 
 	kfree(data);
 	return 0;
+=======
+ATTRIBUTE_GROUPS(max6642);
+
+static int max6642_probe(struct i2c_client *client,
+			 const struct i2c_device_id *id)
+{
+	struct device *dev = &client->dev;
+	struct max6642_data *data;
+	struct device *hwmon_dev;
+
+	data = devm_kzalloc(dev, sizeof(struct max6642_data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+
+	data->client = client;
+	mutex_init(&data->update_lock);
+
+	/* Initialize the MAX6642 chip */
+	max6642_init_client(data, client);
+
+	hwmon_dev = devm_hwmon_device_register_with_groups(&client->dev,
+							   client->name, data,
+							   max6642_groups);
+	return PTR_ERR_OR_ZERO(hwmon_dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -350,12 +428,16 @@ static struct i2c_driver max6642_driver = {
 		.name	= "max6642",
 	},
 	.probe		= max6642_probe,
+<<<<<<< HEAD
 	.remove		= max6642_remove,
+=======
+>>>>>>> refs/remotes/origin/master
 	.id_table	= max6642_id,
 	.detect		= max6642_detect,
 	.address_list	= normal_i2c,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init max6642_init(void)
 {
@@ -369,13 +451,19 @@ static void __exit max6642_exit(void)
 =======
 module_i2c_driver(max6642_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(max6642_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Per Dalen <per.dalen@appeartv.com>");
 MODULE_DESCRIPTION("MAX6642 sensor driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(max6642_init);
 module_exit(max6642_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

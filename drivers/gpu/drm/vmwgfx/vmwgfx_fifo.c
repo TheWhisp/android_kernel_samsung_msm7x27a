@@ -26,17 +26,26 @@
  **************************************************************************/
 
 #include "vmwgfx_drv.h"
+<<<<<<< HEAD
 #include "drmP.h"
 #include "ttm/ttm_placement.h"
+=======
+#include <drm/drmP.h>
+#include <drm/ttm/ttm_placement.h>
+>>>>>>> refs/remotes/origin/master
 
 bool vmw_fifo_have_3d(struct vmw_private *dev_priv)
 {
 	__le32 __iomem *fifo_mem = dev_priv->mmio_virt;
 	uint32_t fifo_min, hwversion;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const struct vmw_fifo_state *fifo = &dev_priv->fifo;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct vmw_fifo_state *fifo = &dev_priv->fifo;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(dev_priv->capabilities & SVGA_CAP_EXTENDED_FIFO))
 		return false;
@@ -46,12 +55,15 @@ bool vmw_fifo_have_3d(struct vmw_private *dev_priv)
 		return false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hwversion = ioread32(fifo_mem + SVGA_FIFO_3D_HWVERSION);
 	if (hwversion == 0)
 		return false;
 
 	if (hwversion < SVGA3D_HWVERSION_WS65_B1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hwversion = ioread32(fifo_mem +
 			     ((fifo->capabilities &
 			       SVGA_FIFO_CAP_3D_HWVERSION_REVISED) ?
@@ -66,7 +78,10 @@ bool vmw_fifo_have_3d(struct vmw_private *dev_priv)
 
 	/* Non-Screen Object path does not support surfaces */
 	if (!dev_priv->sou_priv)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return false;
 
 	return true;
@@ -94,15 +109,19 @@ int vmw_fifo_init(struct vmw_private *dev_priv, struct vmw_fifo_state *fifo)
 	uint32_t min;
 	uint32_t dummy;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fifo->static_buffer_size = VMWGFX_FIFO_STATIC_SIZE;
 	fifo->static_buffer = vmalloc(fifo->static_buffer_size);
 	if (unlikely(fifo->static_buffer == NULL))
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fifo->last_buffer_size = VMWGFX_FIFO_STATIC_SIZE;
 	fifo->last_data_size = 0;
@@ -115,6 +134,8 @@ int vmw_fifo_init(struct vmw_private *dev_priv, struct vmw_fifo_state *fifo)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fifo->dynamic_buffer = NULL;
 	fifo->reserved_size = 0;
 	fifo->using_bounce_buffer = false;
@@ -165,6 +186,7 @@ int vmw_fifo_init(struct vmw_private *dev_priv, struct vmw_fifo_state *fifo)
 		 (unsigned int) fifo->capabilities);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atomic_set(&dev_priv->fence_seq, dev_priv->last_read_sequence);
 	iowrite32(dev_priv->last_read_sequence, fifo_mem + SVGA_FIFO_FENCE);
 	vmw_fence_queue_init(&fifo->fence_queue);
@@ -174,11 +196,16 @@ out_err:
 	fifo->static_buffer = NULL;
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&dev_priv->marker_seq, dev_priv->last_read_seqno);
 	iowrite32(dev_priv->last_read_seqno, fifo_mem + SVGA_FIFO_FENCE);
 	vmw_marker_queue_init(&fifo->marker_queue);
 	return vmw_fifo_send_fence(dev_priv, &dummy);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void vmw_fifo_ping_host(struct vmw_private *dev_priv, uint32_t reason)
@@ -205,10 +232,14 @@ void vmw_fifo_release(struct vmw_private *dev_priv, struct vmw_fifo_state *fifo)
 		vmw_write(dev_priv, SVGA_REG_SYNC, SVGA_SYNC_GENERIC);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_priv->last_read_sequence = ioread32(fifo_mem + SVGA_FIFO_FENCE);
 =======
 	dev_priv->last_read_seqno = ioread32(fifo_mem + SVGA_FIFO_FENCE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_priv->last_read_seqno = ioread32(fifo_mem + SVGA_FIFO_FENCE);
+>>>>>>> refs/remotes/origin/master
 
 	vmw_write(dev_priv, SVGA_REG_CONFIG_DONE,
 		  dev_priv->config_done_state);
@@ -219,6 +250,7 @@ void vmw_fifo_release(struct vmw_private *dev_priv, struct vmw_fifo_state *fifo)
 
 	mutex_unlock(&dev_priv->hw_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vmw_fence_queue_takedown(&fifo->fence_queue);
 
 	if (likely(fifo->last_buffer != NULL)) {
@@ -228,6 +260,9 @@ void vmw_fifo_release(struct vmw_private *dev_priv, struct vmw_fifo_state *fifo)
 =======
 	vmw_marker_queue_takedown(&fifo->marker_queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vmw_marker_queue_takedown(&fifo->marker_queue);
+>>>>>>> refs/remotes/origin/master
 
 	if (likely(fifo->static_buffer != NULL)) {
 		vfree(fifo->static_buffer);
@@ -305,6 +340,7 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
 		outl(SVGA_IRQFLAG_FIFO_PROGRESS,
 		     dev_priv->io_start + VMWGFX_IRQSTATUS_PORT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vmw_write(dev_priv, SVGA_REG_IRQMASK,
 			  vmw_read(dev_priv, SVGA_REG_IRQMASK) |
 			  SVGA_IRQFLAG_FIFO_PROGRESS);
@@ -312,6 +348,10 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
 		dev_priv->irq_mask |= SVGA_IRQFLAG_FIFO_PROGRESS;
 		vmw_write(dev_priv, SVGA_REG_IRQMASK, dev_priv->irq_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_priv->irq_mask |= SVGA_IRQFLAG_FIFO_PROGRESS;
+		vmw_write(dev_priv, SVGA_REG_IRQMASK, dev_priv->irq_mask);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&dev_priv->irq_lock, irq_flags);
 	}
 	mutex_unlock(&dev_priv->hw_mutex);
@@ -334,6 +374,7 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
 	if (atomic_dec_and_test(&dev_priv->fifo_queue_waiters)) {
 		spin_lock_irqsave(&dev_priv->irq_lock, irq_flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vmw_write(dev_priv, SVGA_REG_IRQMASK,
 			  vmw_read(dev_priv, SVGA_REG_IRQMASK) &
 			  ~SVGA_IRQFLAG_FIFO_PROGRESS);
@@ -341,6 +382,10 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
 		dev_priv->irq_mask &= ~SVGA_IRQFLAG_FIFO_PROGRESS;
 		vmw_write(dev_priv, SVGA_REG_IRQMASK, dev_priv->irq_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_priv->irq_mask &= ~SVGA_IRQFLAG_FIFO_PROGRESS;
+		vmw_write(dev_priv, SVGA_REG_IRQMASK, dev_priv->irq_mask);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&dev_priv->irq_lock, irq_flags);
 	}
 	mutex_unlock(&dev_priv->hw_mutex);
@@ -349,7 +394,10 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Reserve @bytes number of bytes in the fifo.
  *
@@ -360,7 +408,10 @@ static int vmw_fifo_wait(struct vmw_private *dev_priv,
  * Returns:
  *   Pointer to the fifo, or null on error (possible hardware hang).
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void *vmw_fifo_reserve(struct vmw_private *dev_priv, uint32_t bytes)
 {
 	struct vmw_fifo_state *fifo_state = &dev_priv->fifo;
@@ -532,10 +583,14 @@ void vmw_fifo_commit(struct vmw_private *dev_priv, uint32_t bytes)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *sequence)
 =======
 int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *seqno)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *seqno)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vmw_fifo_state *fifo_state = &dev_priv->fifo;
 	struct svga_fifo_cmd_fence *cmd_fence;
@@ -546,6 +601,7 @@ int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *seqno)
 	fm = vmw_fifo_reserve(dev_priv, bytes);
 	if (unlikely(fm == NULL)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*sequence = atomic_read(&dev_priv->fence_seq);
 		ret = -ENOMEM;
 		(void)vmw_fallback_wait(dev_priv, false, true, *sequence,
@@ -554,11 +610,17 @@ int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *seqno)
 		ret = -ENOMEM;
 		(void)vmw_fallback_wait(dev_priv, false, true, *seqno,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*seqno = atomic_read(&dev_priv->marker_seq);
+		ret = -ENOMEM;
+		(void)vmw_fallback_wait(dev_priv, false, true, *seqno,
+>>>>>>> refs/remotes/origin/master
 					false, 3*HZ);
 		goto out_err;
 	}
 
 	do {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		*sequence = atomic_add_return(1, &dev_priv->fence_seq);
 	} while (*sequence == 0);
@@ -566,6 +628,10 @@ int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *seqno)
 		*seqno = atomic_add_return(1, &dev_priv->marker_seq);
 	} while (*seqno == 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*seqno = atomic_add_return(1, &dev_priv->marker_seq);
+	} while (*seqno == 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(fifo_state->capabilities & SVGA_FIFO_CAP_FENCE)) {
 
@@ -583,6 +649,7 @@ int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *seqno)
 	    ((unsigned long)fm + sizeof(__le32));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iowrite32(*sequence, &cmd_fence->fence);
 	fifo_state->last_buffer_add = true;
 	vmw_fifo_commit(dev_priv, bytes);
@@ -590,17 +657,23 @@ int vmw_fifo_send_fence(struct vmw_private *dev_priv, uint32_t *seqno)
 	(void) vmw_fence_push(&fifo_state->fence_queue, *sequence);
 	vmw_update_sequence(dev_priv, fifo_state);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	iowrite32(*seqno, &cmd_fence->fence);
 	vmw_fifo_commit(dev_priv, bytes);
 	(void) vmw_marker_push(&fifo_state->marker_queue, *seqno);
 	vmw_update_seqno(dev_priv, fifo_state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 out_err:
 	return ret;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Map the first page of the FIFO read-only to user-space.
  */
@@ -647,6 +720,8 @@ int vmw_fifo_mmap(struct file *filp, struct vm_area_struct *vma)
 					vma->vm_page_prot);
 	vma->vm_ops = &vmw_fifo_vm_ops;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * vmw_fifo_emit_dummy_query - emits a dummy query to the fifo.
  *
  * @dev_priv: The device private structure.
@@ -700,6 +775,9 @@ int vmw_fifo_emit_dummy_query(struct vmw_private *dev_priv,
 
 	vmw_fifo_commit(dev_priv, sizeof(*cmd));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

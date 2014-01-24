@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _GAMEPORT_H
 #define _GAMEPORT_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  Copyright (c) 1999-2002 Vojtech Pavlik
  *
@@ -8,8 +11,14 @@
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  */
+<<<<<<< HEAD
 
 #ifdef __KERNEL__
+=======
+#ifndef _GAMEPORT_H
+#define _GAMEPORT_H
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <linux/types.h>
 #include <linux/list.h>
@@ -17,6 +26,10 @@
 #include <linux/device.h>
 #include <linux/timer.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/gameport.h>
+>>>>>>> refs/remotes/origin/master
 
 struct gameport {
 
@@ -72,6 +85,7 @@ void gameport_close(struct gameport *gameport);
 
 void __gameport_register_port(struct gameport *gameport, struct module *owner);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void gameport_register_port(struct gameport *gameport)
 {
 	__gameport_register_port(gameport, THIS_MODULE);
@@ -82,6 +96,8 @@ void gameport_unregister_port(struct gameport *gameport);
 void gameport_set_phys(struct gameport *gameport, const char *fmt, ...)
 	__attribute__ ((format (printf, 2, 3)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* use a define to avoid include chaining to get THIS_MODULE */
 #define gameport_register_port(gameport) \
 	__gameport_register_port(gameport, THIS_MODULE)
@@ -90,7 +106,10 @@ void gameport_unregister_port(struct gameport *gameport);
 
 __printf(2, 3)
 void gameport_set_phys(struct gameport *gameport, const char *fmt, ...);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #else
 
@@ -105,12 +124,17 @@ static inline void gameport_unregister_port(struct gameport *gameport)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void gameport_set_phys(struct gameport *gameport,
 				     const char *fmt, ...)
 =======
 static inline __printf(2, 3)
 void gameport_set_phys(struct gameport *gameport, const char *fmt, ...)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline __printf(2, 3)
+void gameport_set_phys(struct gameport *gameport, const char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	return;
 }
@@ -162,6 +186,7 @@ static inline void gameport_unpin_driver(struct gameport *gameport)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __gameport_register_driver(struct gameport_driver *drv,
 				struct module *owner, const char *mod_name);
 static inline int __must_check gameport_register_driver(struct gameport_driver *drv)
@@ -169,12 +194,15 @@ static inline int __must_check gameport_register_driver(struct gameport_driver *
 	return __gameport_register_driver(drv, THIS_MODULE, KBUILD_MODNAME);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int __must_check __gameport_register_driver(struct gameport_driver *drv,
 				struct module *owner, const char *mod_name);
 
 /* use a define to avoid include chaining to get THIS_MODULE & friends */
 #define gameport_register_driver(drv) \
 	__gameport_register_driver(drv, THIS_MODULE, KBUILD_MODNAME)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 void gameport_unregister_driver(struct gameport_driver *drv);
@@ -197,6 +225,24 @@ void gameport_unregister_driver(struct gameport_driver *drv);
 #define GAMEPORT_ID_VENDOR_GUILLEMOT	0x000a
 
 #ifdef __KERNEL__
+=======
+
+void gameport_unregister_driver(struct gameport_driver *drv);
+
+/**
+ * module_gameport_driver() - Helper macro for registering a gameport driver
+ * @__gameport_driver: gameport_driver struct
+ *
+ * Helper macro for gameport drivers which do not do anything special in
+ * module init/exit. This eliminates a lot of boilerplate. Each module may
+ * only use this macro once, and calling it replaces module_init() and
+ * module_exit().
+ */
+#define module_gameport_driver(__gameport_driver) \
+	module_driver(__gameport_driver, gameport_register_driver, \
+		       gameport_unregister_driver)
+
+>>>>>>> refs/remotes/origin/master
 
 static inline void gameport_trigger(struct gameport *gameport)
 {
@@ -248,5 +294,8 @@ static inline void gameport_set_poll_interval(struct gameport *gameport, unsigne
 void gameport_start_polling(struct gameport *gameport);
 void gameport_stop_polling(struct gameport *gameport);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -1,6 +1,7 @@
 #ifndef _LINUX_SWAB_H
 #define _LINUX_SWAB_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/compiler.h>
 #include <asm/swab.h>
@@ -279,6 +280,10 @@ static inline void __swahb32s(__u32 *p)
 }
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/swab.h>
+
+>>>>>>> refs/remotes/origin/master
 # define swab16 __swab16
 # define swab32 __swab32
 # define swab64 __swab64
@@ -294,6 +299,9 @@ static inline void __swahb32s(__u32 *p)
 # define swab64s __swab64s
 # define swahw32s __swahw32s
 # define swahb32s __swahb32s
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_SWAB_H */

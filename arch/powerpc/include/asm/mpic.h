@@ -63,6 +63,10 @@
  */
 #define MPIC_TIMER_BASE			0x01100
 #define MPIC_TIMER_STRIDE		0x40
+<<<<<<< HEAD
+=======
+#define MPIC_TIMER_GROUP_STRIDE		0x1000
+>>>>>>> refs/remotes/origin/master
 
 #define MPIC_TIMER_CURRENT_CNT		0x00000
 #define MPIC_TIMER_BASE_CNT		0x00010
@@ -110,10 +114,22 @@
 #define 	MPIC_VECPRI_SENSE_MASK			0x00400000
 #define MPIC_IRQ_DESTINATION		0x00010
 
+<<<<<<< HEAD
+=======
+#define MPIC_FSL_BRR1			0x00000
+#define 	MPIC_FSL_BRR1_VER			0x0000ffff
+
+>>>>>>> refs/remotes/origin/master
 #define MPIC_MAX_IRQ_SOURCES	2048
 #define MPIC_MAX_CPUS		32
 #define MPIC_MAX_ISU		32
 
+<<<<<<< HEAD
+=======
+#define MPIC_MAX_ERR      32
+#define MPIC_FSL_ERR_INT  16
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Tsi108 implementation of MPIC has many differences from the original one
  */
@@ -252,15 +268,21 @@ struct mpic_irq_save {
 struct mpic
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* The remapper for this MPIC */
 	struct irq_host		*irqhost;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* The OpenFirmware dt node for this MPIC */
 	struct device_node *node;
 
 	/* The remapper for this MPIC */
 	struct irq_domain	*irqhost;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* The "linux" controller struct */
 	struct irq_chip		hc_irq;
@@ -271,6 +293,10 @@ struct mpic
 	struct irq_chip		hc_ipi;
 #endif
 	struct irq_chip		hc_tm;
+<<<<<<< HEAD
+=======
+	struct irq_chip		hc_err;
+>>>>>>> refs/remotes/origin/master
 	const char		*name;
 	/* Flags */
 	unsigned int		flags;
@@ -278,6 +304,7 @@ struct mpic
 	unsigned int		isu_size;
 	unsigned int		isu_shift;
 	unsigned int		isu_mask;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int		irq_count;
 	/* Number of sources */
@@ -291,10 +318,19 @@ struct mpic
 	/* Number of sources */
 	unsigned int		num_sources;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Number of sources */
+	unsigned int		num_sources;
+>>>>>>> refs/remotes/origin/master
 
 	/* vector numbers used for internal sources (ipi/timers) */
 	unsigned int		ipi_vecs[4];
 	unsigned int		timer_vecs[8];
+<<<<<<< HEAD
+=======
+	/* vector numbers used for FSL MPIC error interrupts */
+	unsigned int		err_int_vecs[MPIC_MAX_ERR];
+>>>>>>> refs/remotes/origin/master
 
 	/* Spurious vector to program into unused sources */
 	unsigned int		spurious_vec;
@@ -309,17 +345,31 @@ struct mpic
 	enum mpic_reg_type	reg_type;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* The physical base address of the MPIC */
 	phys_addr_t paddr;
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* The various ioremap'ed bases */
+=======
+	/* The physical base address of the MPIC */
+	phys_addr_t paddr;
+
+	/* The various ioremap'ed bases */
+	struct mpic_reg_bank	thiscpuregs;
+>>>>>>> refs/remotes/origin/master
 	struct mpic_reg_bank	gregs;
 	struct mpic_reg_bank	tmregs;
 	struct mpic_reg_bank	cpuregs[MPIC_MAX_CPUS];
 	struct mpic_reg_bank	isus[MPIC_MAX_ISU];
 
+<<<<<<< HEAD
+=======
+	/* ioremap'ed base for error interrupt registers */
+	u32 __iomem	*err_regs;
+
+>>>>>>> refs/remotes/origin/master
 	/* Protected sources */
 	unsigned long		*protected;
 
@@ -344,6 +394,11 @@ struct mpic
 #endif
 };
 
+<<<<<<< HEAD
+=======
+extern struct bus_type mpic_subsys;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * MPIC flags (passed to mpic_alloc)
  *
@@ -353,18 +408,24 @@ struct mpic
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* This is the primary controller, only that one has IPIs and
  * has afinity control. A non-primary MPIC always uses CPU0
  * registers only
  */
 #define MPIC_PRIMARY			0x00000001
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is a secondary ("chained") controller; it only uses the CPU0
  * registers.  Primary controllers have IPIs and affinity control.
  */
 #define MPIC_SECONDARY			0x00000001
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Set this for a big-endian MPIC */
 #define MPIC_BIG_ENDIAN			0x00000002
@@ -373,10 +434,13 @@ struct mpic
 /* Broken IPI registers (autodetected) */
 #define MPIC_BROKEN_IPI			0x00000008
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* MPIC wants a reset */
 #define MPIC_WANTS_RESET		0x00000010
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Spurious vector requires EOI */
 #define MPIC_SPV_EOI			0x00000020
 /* No passthrough disable */
@@ -390,14 +454,18 @@ struct mpic
 /* Disable bias among target selection, spread interrupts evenly */
 #define MPIC_NO_BIAS			0x00000400
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Ignore NIRQS as reported by FRR */
 #define MPIC_BROKEN_FRR_NIRQS		0x00000800
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Destination only supports a single CPU at a time */
 #define MPIC_SINGLE_DEST_CPU		0x00001000
 /* Enable CoreInt delivery of interrupts */
 #define MPIC_ENABLE_COREINT		0x00002000
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Disable resetting of the MPIC.
  * NOTE: This flag trumps MPIC_WANTS_RESET.
@@ -408,6 +476,17 @@ struct mpic
 #define MPIC_NO_RESET			0x00004000
 /* Freescale MPIC (compatible includes "fsl,mpic") */
 #define MPIC_FSL			0x00008000
+=======
+/* Do not reset the MPIC during initialization */
+#define MPIC_NO_RESET			0x00004000
+/* Freescale MPIC (compatible includes "fsl,mpic") */
+#define MPIC_FSL			0x00008000
+/* Freescale MPIC supports EIMR (error interrupt mask register).
+ * This flag is set for MPIC version >= 4.1 (version determined
+ * from the BRR1 register).
+*/
+#define MPIC_FSL_HAS_EIMR		0x00010000
+>>>>>>> refs/remotes/origin/master
 
 /* MPIC HW modification ID */
 #define MPIC_REGSET_MASK		0xf0000000
@@ -417,6 +496,19 @@ struct mpic
 #define	MPIC_REGSET_STANDARD		MPIC_REGSET(0)	/* Original MPIC */
 #define	MPIC_REGSET_TSI108		MPIC_REGSET(1)	/* Tsi108/109 PIC */
 
+<<<<<<< HEAD
+=======
+/* Get the version of primary MPIC */
+#ifdef CONFIG_MPIC
+extern u32 fsl_mpic_primary_get_version(void);
+#else
+static inline u32 fsl_mpic_primary_get_version(void)
+{
+	return 0;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* Allocate the controller structure and setup the linux irq descs
  * for the range if interrupts passed in. No HW initialization is
  * actually performed.
@@ -456,6 +548,7 @@ extern void mpic_assign_isu(struct mpic *mpic, unsigned int isu_num,
 			    phys_addr_t phys_addr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Set default sense codes
  *
  * @mpic:	controller
@@ -473,6 +566,8 @@ extern void mpic_set_default_senses(struct mpic *mpic, u8 *senses, int count);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Initialize the controller. After this has been called, none of the above
  * should be called again for this mpic

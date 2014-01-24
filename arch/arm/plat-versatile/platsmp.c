@@ -17,6 +17,7 @@
 
 #include <asm/cacheflush.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/smp_plat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -27,13 +28,20 @@
  * boot "holding pen"
  */
 volatile int __cpuinitdata pen_release = -1;
+=======
+#include <asm/smp_plat.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Write pen_release in a way that is guaranteed to be visible to all
  * observers, irrespective of whether they're taking part in coherency
  * or not.  This is necessary for the hotplug code to work reliably.
  */
+<<<<<<< HEAD
 static void __cpuinit write_pen_release(int val)
+=======
+static void write_pen_release(int val)
+>>>>>>> refs/remotes/origin/master
 {
 	pen_release = val;
 	smp_wmb();
@@ -43,6 +51,7 @@ static void __cpuinit write_pen_release(int val)
 
 static DEFINE_SPINLOCK(boot_lock);
 
+<<<<<<< HEAD
 void __cpuinit platform_secondary_init(unsigned int cpu)
 {
 	/*
@@ -53,6 +62,11 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 	gic_secondary_init(0);
 
 	/*
+=======
+void versatile_secondary_init(unsigned int cpu)
+{
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * let the primary processor know we're out of the
 	 * pen, then head off into the C entry point
 	 */
@@ -65,7 +79,11 @@ void __cpuinit platform_secondary_init(unsigned int cpu)
 	spin_unlock(&boot_lock);
 }
 
+<<<<<<< HEAD
 int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
+=======
+int versatile_boot_secondary(unsigned int cpu, struct task_struct *idle)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long timeout;
 
@@ -82,17 +100,25 @@ int __cpuinit boot_secondary(unsigned int cpu, struct task_struct *idle)
 	 * be there.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_pen_release(cpu);
 =======
 	write_pen_release(cpu_logical_map(cpu));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	write_pen_release(cpu_logical_map(cpu));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Send the secondary CPU a soft interrupt, thereby causing
 	 * the boot monitor to read the system wide flags register,
 	 * and branch to the address found there.
 	 */
+<<<<<<< HEAD
 	gic_raise_softirq(cpumask_of(cpu), 1);
+=======
+	arch_send_wakeup_ipi_mask(cpumask_of(cpu));
+>>>>>>> refs/remotes/origin/master
 
 	timeout = jiffies + (1 * HZ);
 	while (time_before(jiffies, timeout)) {

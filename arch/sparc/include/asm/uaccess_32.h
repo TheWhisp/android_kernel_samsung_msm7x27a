@@ -12,11 +12,19 @@
 #include <linux/sched.h>
 #include <linux/string.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <asm/vac-ops.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+=======
+#include <asm/processor.h>
+
+>>>>>>> refs/remotes/origin/master
 #define ARCH_HAS_SORT_EXTABLE
 #define ARCH_HAS_SEARCH_EXTABLE
 
@@ -305,6 +313,7 @@ static inline unsigned long clear_user(void __user *addr, unsigned long n)
 		return n;
 }
 
+<<<<<<< HEAD
 extern long __strncpy_from_user(char *dest, const char __user *src, long count);
 
 static inline long strncpy_from_user(char *dest, const char __user *src, long count)
@@ -333,6 +342,10 @@ static inline long strnlen_user(const char __user *str, long len)
 	else
 		return __strnlen_user(str, len);
 }
+=======
+extern __must_check long strlen_user(const char __user *str);
+extern __must_check long strnlen_user(const char __user *str, long n);
+>>>>>>> refs/remotes/origin/master
 
 #endif  /* __ASSEMBLY__ */
 

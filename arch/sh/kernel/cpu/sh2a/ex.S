@@ -67,9 +67,13 @@ vector	=	0
 vector	=	vector + 1
 	.endr
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 vector	=	0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+vector	=	0
+>>>>>>> refs/remotes/origin/master
 	.rept	256
 	.long	exception_entry1 + vector * 6
 vector	=	vector + 1

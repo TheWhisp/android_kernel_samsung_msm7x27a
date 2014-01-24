@@ -9,9 +9,12 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -20,6 +23,7 @@
 #include <linux/slab.h>
 #include <linux/sysfs.h>
 #include <linux/list.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include "../iio.h"
@@ -32,6 +36,13 @@
 #include "../sysfs.h"
 #include "../buffer.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/buffer.h>
+>>>>>>> refs/remotes/origin/master
 #include "meter.h"
 #include "ade7758.h"
 
@@ -40,7 +51,11 @@ int ade7758_spi_write_reg_8(struct device *dev,
 		u8 val)
 {
 	int ret;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ade7758_state *st = iio_priv(indio_dev);
 
 	mutex_lock(&st->buf_lock);
@@ -58,8 +73,12 @@ static int ade7758_spi_write_reg_16(struct device *dev,
 		u16 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ade7758_state *st = iio_priv(indio_dev);
 	struct spi_transfer xfers[] = {
 		{
@@ -74,9 +93,13 @@ static int ade7758_spi_write_reg_16(struct device *dev,
 	st->tx[1] = (value >> 8) & 0xFF;
 	st->tx[2] = value & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(xfers, &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&st->buf_lock);
 
 	return ret;
@@ -87,8 +110,12 @@ static int ade7758_spi_write_reg_24(struct device *dev,
 		u32 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ade7758_state *st = iio_priv(indio_dev);
 	struct spi_transfer xfers[] = {
 		{
@@ -104,9 +131,13 @@ static int ade7758_spi_write_reg_24(struct device *dev,
 	st->tx[2] = (value >> 8) & 0xFF;
 	st->tx[3] = value & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(xfers, &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&st->buf_lock);
 
 	return ret;
@@ -116,8 +147,12 @@ int ade7758_spi_read_reg_8(struct device *dev,
 		u8 reg_address,
 		u8 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ade7758_state *st = iio_priv(indio_dev);
 	int ret;
 	struct spi_transfer xfers[] = {
@@ -139,10 +174,14 @@ int ade7758_spi_read_reg_8(struct device *dev,
 	st->tx[0] = ADE7758_READ_REG(reg_address);
 	st->tx[1] = 0;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->us->dev, "problem when reading 8 bit register 0x%02X",
 				reg_address);
@@ -159,8 +198,12 @@ static int ade7758_spi_read_reg_16(struct device *dev,
 		u8 reg_address,
 		u16 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ade7758_state *st = iio_priv(indio_dev);
 	int ret;
 	struct spi_transfer xfers[] = {
@@ -184,10 +227,14 @@ static int ade7758_spi_read_reg_16(struct device *dev,
 	st->tx[1] = 0;
 	st->tx[2] = 0;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->us->dev, "problem when reading 16 bit register 0x%02X",
 				reg_address);
@@ -205,8 +252,12 @@ static int ade7758_spi_read_reg_24(struct device *dev,
 		u8 reg_address,
 		u32 *val)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ade7758_state *st = iio_priv(indio_dev);
 	int ret;
 	struct spi_transfer xfers[] = {
@@ -230,10 +281,14 @@ static int ade7758_spi_read_reg_24(struct device *dev,
 	st->tx[2] = 0;
 	st->tx[3] = 0;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->us->dev, "problem when reading 24 bit register 0x%02X",
 				reg_address);
@@ -298,9 +353,15 @@ static ssize_t ade7758_write_8bit(struct device *dev,
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
+<<<<<<< HEAD
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	u8 val;
+
+	ret = kstrtou8(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = ade7758_spi_write_reg_8(dev, this_attr->address, val);
@@ -316,9 +377,15 @@ static ssize_t ade7758_write_16bit(struct device *dev,
 {
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
+<<<<<<< HEAD
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	u16 val;
+
+	ret = kstrtou16(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 	ret = ade7758_spi_write_reg_16(dev, this_attr->address, val);
@@ -342,6 +409,7 @@ static int ade7758_reset(struct device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static ssize_t ade7758_write_reset(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t len)
@@ -357,6 +425,8 @@ static ssize_t ade7758_write_reset(struct device *dev,
 	return len;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static IIO_DEV_ATTR_VPEAK(S_IWUSR | S_IRUGO,
 		ade7758_read_8bit,
 		ade7758_write_8bit,
@@ -545,12 +615,21 @@ static ssize_t ade7758_write_frequency(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	unsigned long val;
 	int ret;
 	u8 reg, t;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	u16 val;
+	int ret;
+	u8 reg, t;
+
+	ret = kstrtou16(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -595,12 +674,17 @@ out:
 
 static IIO_DEV_ATTR_TEMP_RAW(ade7758_read_8bit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static IIO_CONST_ATTR(temp_offset, "129 C");
 static IIO_CONST_ATTR(temp_scale, "4 C");
 =======
 static IIO_CONST_ATTR(in_temp_offset, "129 C");
 static IIO_CONST_ATTR(in_temp_scale, "4 C");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static IIO_CONST_ATTR(in_temp_offset, "129 C");
+static IIO_CONST_ATTR(in_temp_scale, "4 C");
+>>>>>>> refs/remotes/origin/master
 
 static IIO_DEV_ATTR_AWATTHR(ade7758_read_16bit,
 		ADE7758_AWATTHR);
@@ -625,6 +709,7 @@ static IIO_DEV_ATTR_SAMP_FREQ(S_IWUSR | S_IRUGO,
 		ade7758_read_frequency,
 		ade7758_write_frequency);
 
+<<<<<<< HEAD
 static IIO_DEV_ATTR_RESET(ade7758_write_reset);
 
 static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("26040 13020 6510 3255");
@@ -642,6 +727,16 @@ static struct attribute *ade7758_attributes[] = {
 	&iio_dev_attr_sampling_frequency.dev_attr.attr,
 	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
 	&iio_dev_attr_reset.dev_attr.attr,
+=======
+static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("26040 13020 6510 3255");
+
+static struct attribute *ade7758_attributes[] = {
+	&iio_dev_attr_in_temp_raw.dev_attr.attr,
+	&iio_const_attr_in_temp_offset.dev_attr.attr,
+	&iio_const_attr_in_temp_scale.dev_attr.attr,
+	&iio_dev_attr_sampling_frequency.dev_attr.attr,
+	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_awatthr.dev_attr.attr,
 	&iio_dev_attr_bwatthr.dev_attr.attr,
 	&iio_dev_attr_cwatthr.dev_attr.attr,
@@ -683,6 +778,7 @@ static const struct attribute_group ade7758_attribute_group = {
 	.attrs = ade7758_attributes,
 };
 
+<<<<<<< HEAD
 static struct iio_chan_spec ade7758_channels[] = {
 <<<<<<< HEAD
 	IIO_CHAN(IIO_IN, 0, 1, 0, "raw", 0, 0,
@@ -805,6 +901,220 @@ static struct iio_chan_spec ade7758_channels[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		AD7758_WT(AD7758_PHASE_C, AD7758_REACT_PWR),
 		14, IIO_ST('s', 24, 32, 0), 0),
+=======
+static const struct iio_chan_spec ade7758_channels[] = {
+	{
+		.type = IIO_VOLTAGE,
+		.indexed = 1,
+		.channel = 0,
+		.extend_name = "raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_A, AD7758_VOLTAGE),
+		.scan_index = 0,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_CURRENT,
+		.indexed = 1,
+		.channel = 0,
+		.extend_name = "raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_A, AD7758_CURRENT),
+		.scan_index = 1,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 0,
+		.extend_name = "apparent_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_A, AD7758_APP_PWR),
+		.scan_index = 2,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 0,
+		.extend_name = "active_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_A, AD7758_ACT_PWR),
+		.scan_index = 3,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 0,
+		.extend_name = "reactive_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_A, AD7758_REACT_PWR),
+		.scan_index = 4,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_VOLTAGE,
+		.indexed = 1,
+		.channel = 1,
+		.extend_name = "raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_B, AD7758_VOLTAGE),
+		.scan_index = 5,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_CURRENT,
+		.indexed = 1,
+		.channel = 1,
+		.extend_name = "raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_B, AD7758_CURRENT),
+		.scan_index = 6,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 1,
+		.extend_name = "apparent_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_B, AD7758_APP_PWR),
+		.scan_index = 7,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 1,
+		.extend_name = "active_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_B, AD7758_ACT_PWR),
+		.scan_index = 8,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 1,
+		.extend_name = "reactive_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_B, AD7758_REACT_PWR),
+		.scan_index = 9,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_VOLTAGE,
+		.indexed = 1,
+		.channel = 2,
+		.extend_name = "raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_C, AD7758_VOLTAGE),
+		.scan_index = 10,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_CURRENT,
+		.indexed = 1,
+		.channel = 2,
+		.extend_name = "raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_C, AD7758_CURRENT),
+		.scan_index = 11,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 2,
+		.extend_name = "apparent_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_C, AD7758_APP_PWR),
+		.scan_index = 12,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 2,
+		.extend_name = "active_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_C, AD7758_ACT_PWR),
+		.scan_index = 13,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	}, {
+		.type = IIO_POWER,
+		.indexed = 1,
+		.channel = 2,
+		.extend_name = "reactive_raw",
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),
+		.address = AD7758_WT(AD7758_PHASE_C, AD7758_REACT_PWR),
+		.scan_index = 14,
+		.scan_type = {
+			.sign = 's',
+			.realbits = 24,
+			.storagebits = 32,
+		},
+	},
+>>>>>>> refs/remotes/origin/master
 	IIO_CHAN_SOFT_TIMESTAMP(15),
 };
 
@@ -813,6 +1123,7 @@ static const struct iio_info ade7758_info = {
 	.driver_module = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static int __devinit ade7758_probe(struct spi_device *spi)
 {
 <<<<<<< HEAD
@@ -827,12 +1138,24 @@ static int __devinit ade7758_probe(struct spi_device *spi)
 		ret = -ENOMEM;
 		goto error_ret;
 	}
+=======
+static int ade7758_probe(struct spi_device *spi)
+{
+	int ret;
+	struct ade7758_state *st;
+	struct iio_dev *indio_dev;
+
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	st = iio_priv(indio_dev);
 	/* this is only used for removal purposes */
 	spi_set_drvdata(spi, indio_dev);
 
 	/* Allocate the comms buffers */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	st->rx = kzalloc(sizeof(*st->rx)*ADE7758_MAX_RX, GFP_KERNEL);
 =======
@@ -847,6 +1170,12 @@ static int __devinit ade7758_probe(struct spi_device *spi)
 =======
 	st->tx = kcalloc(ADE7758_MAX_TX, sizeof(*st->tx), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	st->rx = kcalloc(ADE7758_MAX_RX, sizeof(*st->rx), GFP_KERNEL);
+	if (!st->rx)
+		return -ENOMEM;
+	st->tx = kcalloc(ADE7758_MAX_TX, sizeof(*st->tx), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (st->tx == NULL) {
 		ret = -ENOMEM;
 		goto error_free_rx;
@@ -860,6 +1189,7 @@ static int __devinit ade7758_probe(struct spi_device *spi)
 	indio_dev->info = &ade7758_info;
 	indio_dev->modes = INDIO_DIRECT_MODE;
 
+<<<<<<< HEAD
 	for (i = 0; i < AD7758_NUM_WAVESRC; i++)
 <<<<<<< HEAD
 		st->available_scan_masks[i] = 1 << i;
@@ -869,10 +1199,13 @@ static int __devinit ade7758_probe(struct spi_device *spi)
 
 	indio_dev->available_scan_masks = st->available_scan_masks;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ade7758_configure_ring(indio_dev);
 	if (ret)
 		goto error_free_tx;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = iio_device_register(indio_dev);
 	if (ret)
@@ -887,6 +1220,11 @@ static int __devinit ade7758_probe(struct spi_device *spi)
 				  &ade7758_channels[0],
 				  ARRAY_SIZE(ade7758_channels));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = iio_buffer_register(indio_dev,
+				  &ade7758_channels[0],
+				  ARRAY_SIZE(ade7758_channels));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&spi->dev, "failed to initialize the ring\n");
 		goto error_unreg_ring_funcs;
@@ -901,6 +1239,7 @@ static int __devinit ade7758_probe(struct spi_device *spi)
 		ret = ade7758_probe_trigger(indio_dev);
 		if (ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto error_remove_trigger;
 	}
 
@@ -912,6 +1251,8 @@ error_remove_trigger:
 error_uninitialize_ring:
 	ade7758_uninitialize_ring(indio_dev->ring);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			goto error_uninitialize_ring;
 	}
 
@@ -922,17 +1263,25 @@ error_uninitialize_ring:
 	return 0;
 
 error_remove_trigger:
+<<<<<<< HEAD
 	if (indio_dev->modes & INDIO_BUFFER_TRIGGERED)
 		ade7758_remove_trigger(indio_dev);
 error_uninitialize_ring:
 	ade7758_uninitialize_ring(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (spi->irq)
+		ade7758_remove_trigger(indio_dev);
+error_uninitialize_ring:
+	ade7758_uninitialize_ring(indio_dev);
+>>>>>>> refs/remotes/origin/master
 error_unreg_ring_funcs:
 	ade7758_unconfigure_ring(indio_dev);
 error_free_tx:
 	kfree(st->tx);
 error_free_rx:
 	kfree(st->rx);
+<<<<<<< HEAD
 error_free_dev:
 <<<<<<< HEAD
 	if (regdone)
@@ -943,6 +1292,8 @@ error_free_dev:
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -950,6 +1301,7 @@ static int ade7758_remove(struct spi_device *spi)
 {
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 	struct ade7758_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
 	int ret;
 
 <<<<<<< HEAD
@@ -970,16 +1322,26 @@ static int ade7758_remove(struct spi_device *spi)
 
 	return 0;
 =======
+=======
+
+	iio_device_unregister(indio_dev);
+	ade7758_stop_device(&indio_dev->dev);
+	ade7758_remove_trigger(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	ade7758_uninitialize_ring(indio_dev);
 	ade7758_unconfigure_ring(indio_dev);
 	kfree(st->tx);
 	kfree(st->rx);
 
+<<<<<<< HEAD
 	iio_free_device(indio_dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 err_ret:
 	return ret;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct spi_device_id ade7758_id[] = {
@@ -987,9 +1349,13 @@ static const struct spi_device_id ade7758_id[] = {
 	{}
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(spi, ade7758_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(spi, ade7758_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct spi_driver ade7758_driver = {
 	.driver = {
@@ -997,6 +1363,7 @@ static struct spi_driver ade7758_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = ade7758_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ade7758_remove),
 	.id_table = ade7758_id,
 };
@@ -1016,6 +1383,12 @@ module_exit(ade7758_exit);
 =======
 module_spi_driver(ade7758_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ade7758_remove,
+	.id_table = ade7758_id,
+};
+module_spi_driver(ade7758_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Barry Song <21cnbao@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices ADE7758 Polyphase Multifunction Energy Metering IC Driver");

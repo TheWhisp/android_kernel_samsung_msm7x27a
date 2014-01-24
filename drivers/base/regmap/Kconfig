@@ -3,9 +3,16 @@
 # subsystems should select the appropriate symbols.
 
 config REGMAP
+<<<<<<< HEAD
 	default y if (REGMAP_I2C || REGMAP_SPI)
 	select LZO_COMPRESS
 	select LZO_DECOMPRESS
+=======
+	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_MMIO || REGMAP_IRQ)
+	select LZO_COMPRESS
+	select LZO_DECOMPRESS
+	select IRQ_DOMAIN if REGMAP_IRQ
+>>>>>>> refs/remotes/origin/master
 	bool
 
 config REGMAP_I2C
@@ -14,5 +21,14 @@ config REGMAP_I2C
 config REGMAP_SPI
 	tristate
 
+<<<<<<< HEAD
+=======
+config REGMAP_SPMI
+	tristate
+
+config REGMAP_MMIO
+	tristate
+
+>>>>>>> refs/remotes/origin/master
 config REGMAP_IRQ
 	bool

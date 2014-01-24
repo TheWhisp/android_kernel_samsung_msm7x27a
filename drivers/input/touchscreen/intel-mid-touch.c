@@ -427,7 +427,11 @@ out:
 }
 
 /* Utility to read PMIC ID */
+<<<<<<< HEAD
 static int __devinit mrstouch_read_pmic_id(uint *vendor, uint *rev)
+=======
+static int mrstouch_read_pmic_id(uint *vendor, uint *rev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	u8 r;
@@ -446,6 +450,7 @@ static int __devinit mrstouch_read_pmic_id(uint *vendor, uint *rev)
  * Parse ADC channels to find end of the channel configured by other ADC user
  * NEC and MAXIM requires 4 channels and FreeScale needs 18 channels
  */
+<<<<<<< HEAD
 static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 {
 <<<<<<< HEAD
@@ -459,12 +464,19 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 			break;
 
 =======
+=======
+static int mrstouch_chan_parse(struct mrstouch_dev *tsdev)
+{
+>>>>>>> refs/remotes/origin/master
 	int found = 0;
 	int err, i;
 	u8 r8;
 
 	for (i = 0; i < MRSTOUCH_MAX_CHANNELS; i++) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		err = intel_scu_ipc_ioread8(PMICADDR0 + i, &r8);
 		if (err)
 			return err;
@@ -474,6 +486,7 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 			break;
 		}
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (found < 0)
 		return 0;
@@ -486,6 +499,8 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 			return -ENOSPC;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (tsdev->vendor == PMIC_VENDOR_FS) {
 		if (found > MRSTOUCH_MAX_CHANNELS - 18)
@@ -495,7 +510,10 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 			return -ENOSPC;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return found;
 }
 
@@ -503,7 +521,11 @@ static int __devinit mrstouch_chan_parse(struct mrstouch_dev *tsdev)
 /*
  * Writes touch screen channels to ADC address selection registers
  */
+<<<<<<< HEAD
 static int __devinit mrstouch_ts_chan_set(uint offset)
+=======
+static int mrstouch_ts_chan_set(uint offset)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 chan;
 
@@ -519,7 +541,11 @@ static int __devinit mrstouch_ts_chan_set(uint offset)
 }
 
 /* Initialize ADC */
+<<<<<<< HEAD
 static int __devinit mrstouch_adc_init(struct mrstouch_dev *tsdev)
+=======
+static int mrstouch_adc_init(struct mrstouch_dev *tsdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, start;
 	u8 ra, rm;
@@ -593,7 +619,11 @@ static int __devinit mrstouch_adc_init(struct mrstouch_dev *tsdev)
 
 
 /* Probe function for touch screen driver */
+<<<<<<< HEAD
 static int __devinit mrstouch_probe(struct platform_device *pdev)
+=======
+static int mrstouch_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mrstouch_dev *tsdev;
 	struct input_dev *input;
@@ -645,7 +675,11 @@ static int __devinit mrstouch_probe(struct platform_device *pdev)
 			     MRST_PRESSURE_MIN, MRST_PRESSURE_MAX, 0, 0);
 
 	err = request_threaded_irq(tsdev->irq, NULL, mrstouch_pendet_irq,
+<<<<<<< HEAD
 				   0, "mrstouch", tsdev);
+=======
+				   IRQF_ONESHOT, "mrstouch", tsdev);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		dev_err(tsdev->dev, "unable to allocate irq\n");
 		goto err_free_mem;
@@ -668,7 +702,11 @@ err_free_mem:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit mrstouch_remove(struct platform_device *pdev)
+=======
+static int mrstouch_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mrstouch_dev *tsdev = platform_get_drvdata(pdev);
 
@@ -676,8 +714,11 @@ static int __devexit mrstouch_remove(struct platform_device *pdev)
 	input_unregister_device(tsdev->input);
 	kfree(tsdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -687,6 +728,7 @@ static struct platform_driver mrstouch_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= mrstouch_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mrstouch_remove),
 };
 <<<<<<< HEAD
@@ -705,6 +747,11 @@ module_exit(mrstouch_exit);
 =======
 module_platform_driver(mrstouch_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= mrstouch_remove,
+};
+module_platform_driver(mrstouch_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sreedhara Murthy. D.S, sreedhara.ds@intel.com");
 MODULE_DESCRIPTION("Intel Moorestown Resistive Touch Screen Driver");

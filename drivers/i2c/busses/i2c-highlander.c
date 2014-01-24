@@ -53,10 +53,14 @@ struct highlander_i2c_dev {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int iic_force_poll, iic_force_normal;
 =======
 static bool iic_force_poll, iic_force_normal;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool iic_force_poll, iic_force_normal;
+>>>>>>> refs/remotes/origin/master
 static int iic_timeout = 1000, iic_read_delay;
 
 static inline void highlander_i2c_irq_enable(struct highlander_i2c_dev *dev)
@@ -232,10 +236,14 @@ static int highlander_i2c_read(struct highlander_i2c_dev *dev)
 	/*
 	 * The R0P7780LC0011RL FPGA needs a significant delay between
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * data read cycles, otherwise the transciever gets confused and
 =======
 	 * data read cycles, otherwise the transceiver gets confused and
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * data read cycles, otherwise the transceiver gets confused and
+>>>>>>> refs/remotes/origin/master
 	 * garbage is returned when the read is subsequently aborted.
 	 *
 	 * It is not sufficient to wait for BBSY.
@@ -364,7 +372,11 @@ static const struct i2c_algorithm highlander_i2c_algo = {
 	.functionality	= highlander_i2c_func,
 };
 
+<<<<<<< HEAD
 static int __devinit highlander_i2c_probe(struct platform_device *pdev)
+=======
+static int highlander_i2c_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct highlander_i2c_dev *dev;
 	struct i2c_adapter *adap;
@@ -396,10 +408,14 @@ static int __devinit highlander_i2c_probe(struct platform_device *pdev)
 
 	if (dev->irq) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = request_irq(dev->irq, highlander_i2c_irq, IRQF_DISABLED,
 =======
 		ret = request_irq(dev->irq, highlander_i2c_irq, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = request_irq(dev->irq, highlander_i2c_irq, 0,
+>>>>>>> refs/remotes/origin/master
 				  pdev->name, dev);
 		if (unlikely(ret))
 			goto err_unmap;
@@ -448,12 +464,19 @@ err_unmap:
 err:
 	kfree(dev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	return ret;
 }
 
 static int __devexit highlander_i2c_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int highlander_i2c_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct highlander_i2c_dev *dev = platform_get_drvdata(pdev);
 
@@ -465,8 +488,11 @@ static int __devexit highlander_i2c_remove(struct platform_device *pdev)
 	iounmap(dev->base);
 	kfree(dev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -477,6 +503,7 @@ static struct platform_driver highlander_i2c_driver = {
 	},
 
 	.probe		= highlander_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(highlander_i2c_remove),
 };
 
@@ -496,6 +523,12 @@ module_exit(highlander_i2c_exit);
 =======
 module_platform_driver(highlander_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= highlander_i2c_remove,
+};
+
+module_platform_driver(highlander_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Paul Mundt");
 MODULE_DESCRIPTION("Renesas Highlander FPGA I2C/SMBus adapter");

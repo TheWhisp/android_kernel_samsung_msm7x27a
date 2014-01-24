@@ -14,21 +14,30 @@
 
 #include "rc-core-priv.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This decoder currently supports:
  * RC6-0-16	(standard toggle bit in header)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * RC6-6A-20	(no toggle bit)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * RC6-6A-20	(no toggle bit)
+>>>>>>> refs/remotes/origin/master
  * RC6-6A-24	(no toggle bit)
  * RC6-6A-32	(MCE version with toggle bit in body)
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define RC6_UNIT		444444	/* us */
 #define RC6_HEADER_NBITS	4	/* not including toggle bit */
@@ -36,12 +45,17 @@
 #define RC6_6A_SMALL_NBITS	24
 #define RC6_6A_LARGE_NBITS	32
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define RC6_UNIT		444444	/* nanosecs */
 #define RC6_HEADER_NBITS	4	/* not including toggle bit */
 #define RC6_0_NBITS		16
 #define RC6_6A_32_NBITS		32
 #define RC6_6A_NBITS		128	/* Variable 8..128 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define RC6_PREFIX_PULSE	(6 * RC6_UNIT)
 #define RC6_PREFIX_SPACE	(2 * RC6_UNIT)
 #define RC6_BIT_START		(1 * RC6_UNIT)
@@ -49,10 +63,13 @@
 #define RC6_TOGGLE_START	(2 * RC6_UNIT)
 #define RC6_TOGGLE_END		(2 * RC6_UNIT)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RC6_MODE_MASK		0x07	/* for the header bits */
 #define RC6_STARTBIT_MASK	0x08	/* for the header bits */
 #define RC6_6A_MCE_TOGGLE_MASK	0x8000	/* for the body bits */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define RC6_SUFFIX_SPACE	(6 * RC6_UNIT)
 #define RC6_MODE_MASK		0x07	/* for the header bits */
 #define RC6_STARTBIT_MASK	0x08	/* for the header bits */
@@ -62,7 +79,10 @@
 #ifndef CHAR_BIT
 #define CHAR_BIT 8	/* Normally in <limits.h> */
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum rc6_mode {
 	RC6_MODE_0,
@@ -109,7 +129,13 @@ static int ir_rc6_decode(struct rc_dev *dev, struct ir_raw_event ev)
 	u32 scancode;
 	u8 toggle;
 
+<<<<<<< HEAD
 	if (!(dev->raw->enabled_protocols & RC_TYPE_RC6))
+=======
+	if (!(dev->enabled_protocols &
+	      (RC_BIT_RC6_0 | RC_BIT_RC6_6A_20 | RC_BIT_RC6_6A_24 |
+	       RC_BIT_RC6_6A_32 | RC_BIT_RC6_MCE)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!is_timing_event(ev)) {
@@ -153,9 +179,13 @@ again:
 
 		data->state = STATE_HEADER_BIT_START;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		data->header = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->header = 0;
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	case STATE_HEADER_BIT_START:
@@ -203,15 +233,20 @@ again:
 		decrease_duration(&ev, RC6_TOGGLE_END);
 		data->count = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		data->body = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		data->body = 0;
+>>>>>>> refs/remotes/origin/master
 
 		switch (rc6_mode(data)) {
 		case RC6_MODE_0:
 			data->wanted_bits = RC6_0_NBITS;
 			break;
 		case RC6_MODE_6A:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			/* This might look weird, but we basically
 			   check the value of the first body bit to
@@ -224,6 +259,9 @@ again:
 =======
 			data->wanted_bits = RC6_6A_NBITS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			data->wanted_bits = RC6_6A_NBITS;
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			IR_dprintk(1, "RC6 unknown mode\n");
@@ -232,6 +270,7 @@ again:
 		goto again;
 
 	case STATE_BODY_BIT_START:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!eq_margin(ev.duration, RC6_BIT_START, RC6_UNIT / 2))
 			break;
@@ -243,6 +282,8 @@ again:
 		data->state = STATE_BODY_BIT_END;
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (eq_margin(ev.duration, RC6_BIT_START, RC6_UNIT / 2)) {
 			/* Discard LSB's that won't fit in data->body */
 			if (data->count++ < CHAR_BIT * sizeof data->body) {
@@ -258,7 +299,10 @@ again:
 			goto again;
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case STATE_BODY_BIT_END:
 		if (!is_transition(&ev, &dev->raw->prev_ev))
@@ -279,15 +323,20 @@ again:
 		switch (rc6_mode(data)) {
 		case RC6_MODE_0:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			scancode = data->body & 0xffff;
 =======
 			scancode = data->body;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			scancode = data->body;
+>>>>>>> refs/remotes/origin/master
 			toggle = data->toggle;
 			IR_dprintk(1, "RC6(0) scancode 0x%04x (toggle: %u)\n",
 				   scancode, toggle);
 			break;
 		case RC6_MODE_6A:
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (data->wanted_bits == RC6_6A_LARGE_NBITS) {
 				toggle = data->body & RC6_6A_MCE_TOGGLE_MASK ? 1 : 0;
@@ -298,6 +347,8 @@ again:
 			}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (data->count > CHAR_BIT * sizeof data->body) {
 				IR_dprintk(1, "RC6 too many (%u) data bits\n",
 					data->count);
@@ -313,7 +364,10 @@ again:
 			} else {
 				toggle = 0;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			IR_dprintk(1, "RC6(6A) scancode 0x%08x (toggle: %u)\n",
 				   scancode, toggle);
 			break;
@@ -335,7 +389,13 @@ out:
 }
 
 static struct ir_raw_handler rc6_handler = {
+<<<<<<< HEAD
 	.protocols	= RC_TYPE_RC6,
+=======
+	.protocols	= RC_BIT_RC6_0 | RC_BIT_RC6_6A_20 |
+			  RC_BIT_RC6_6A_24 | RC_BIT_RC6_6A_32 |
+			  RC_BIT_RC6_MCE,
+>>>>>>> refs/remotes/origin/master
 	.decode		= ir_rc6_decode,
 };
 

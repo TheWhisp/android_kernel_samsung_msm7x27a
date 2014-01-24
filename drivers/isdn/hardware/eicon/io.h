@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,12 +46,16 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_XDI_COMMON_IO_H_INC__ /* { */
 #define __DIVA_XDI_COMMON_IO_H_INC__
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  maximum = 16 adapters
  */
@@ -273,6 +280,8 @@ struct s_load {
  byte fill[224];
  byte b[256];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   maximum = 16 adapters
 */
 #define DI_MAX_LINKS    MAX_ADAPTER
@@ -495,11 +504,15 @@ struct s_load {
 	word signature;
 	byte fill[224];
 	byte b[256];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #define PR_RAM  ((struct pr_ram *)0)
 #define RAM ((struct dual *)0)
 /* ---------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
   platform specific conversions
    --------------------------------------------------------------------- */
@@ -554,6 +567,8 @@ typedef struct {
 extern void     dump_trap_frame  (PISDN_ADAPTER IoAdapter, byte __iomem *exception) ;
 extern void     dump_xlog_buffer (PISDN_ADAPTER IoAdapter, Xdesc *xlogDesc) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    platform specific conversions
    --------------------------------------------------------------------- */
 extern void *PTR_P(ADAPTER *a, ENTITY *e, void *P);
@@ -606,6 +621,9 @@ typedef struct {
 } Xdesc;
 extern void dump_trap_frame(PISDN_ADAPTER IoAdapter, byte __iomem *exception);
 extern void dump_xlog_buffer(PISDN_ADAPTER IoAdapter, Xdesc *xlogDesc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* --------------------------------------------------------------------- */
 #endif  /* } __DIVA_XDI_COMMON_IO_H_INC__ */

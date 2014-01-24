@@ -10,6 +10,7 @@ struct scsi_transport_template;
 struct sas_rphy;
 struct request;
 
+<<<<<<< HEAD
 enum sas_device_type {
 	SAS_PHY_UNUSED = 0,
 	SAS_END_DEVICE = 1,
@@ -17,6 +18,8 @@ enum sas_device_type {
 	SAS_FANOUT_EXPANDER_DEVICE = 3,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int sas_protocol_ata(enum sas_protocol proto)
 {
 	return ((proto & SAS_PROTOCOL_SATA) ||
@@ -36,6 +39,10 @@ enum sas_linkrate {
 	SAS_LINK_RATE_3_0_GBPS = 9,
 	SAS_LINK_RATE_G2 = SAS_LINK_RATE_3_0_GBPS,
 	SAS_LINK_RATE_6_0_GBPS = 10,
+<<<<<<< HEAD
+=======
+	SAS_LINK_RATE_12_0_GBPS = 11,
+>>>>>>> refs/remotes/origin/master
 	/* These are virtual to the transport class and may never
 	 * be signalled normally since the standard defined field
 	 * is only 4 bits */
@@ -76,11 +83,16 @@ struct sas_phy {
 	struct list_head	port_siblings;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct work_struct      reset_work;
 =======
 	/* available to the lldd */
 	void			*hostdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* available to the lldd */
+	void			*hostdata;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define dev_to_phy(d) \
@@ -175,10 +187,15 @@ struct sas_function_template {
 	int (*phy_reset)(struct sas_phy *, int);
 	int (*phy_enable)(struct sas_phy *, int);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*phy_setup)(struct sas_phy *);
 	void (*phy_release)(struct sas_phy *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*phy_setup)(struct sas_phy *);
+	void (*phy_release)(struct sas_phy *);
+>>>>>>> refs/remotes/origin/master
 	int (*set_phy_speed)(struct sas_phy *, struct sas_phy_linkrates *);
 	int (*smp_handler)(struct Scsi_Host *, struct sas_rphy *, struct request *);
 };
@@ -205,9 +222,13 @@ extern int sas_rphy_add(struct sas_rphy *);
 extern void sas_rphy_remove(struct sas_rphy *);
 extern void sas_rphy_delete(struct sas_rphy *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void sas_rphy_unlink(struct sas_rphy *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void sas_rphy_unlink(struct sas_rphy *);
+>>>>>>> refs/remotes/origin/master
 extern int scsi_is_sas_rphy(const struct device *);
 
 struct sas_port *sas_port_alloc(struct device *, int);
@@ -220,14 +241,20 @@ void sas_port_delete_phy(struct sas_port *, struct sas_phy *);
 void sas_port_mark_backlink(struct sas_port *);
 int scsi_is_sas_port(const struct device *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct sas_phy *sas_port_get_phy(struct sas_port *port);
 static inline void sas_port_put_phy(struct sas_phy *phy)
 {
 	if (phy)
 		put_device(&phy->dev);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern struct scsi_transport_template *
 sas_attach_transport(struct sas_function_template *);

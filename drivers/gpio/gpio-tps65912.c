@@ -70,7 +70,10 @@ static int tps65912_gpio_input(struct gpio_chip *gc, unsigned offset)
 
 	return tps65912_clear_bits(tps65912, TPS65912_GPIO1 + offset,
 								GPIO_CFG_MASK);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct gpio_chip template_chip = {
@@ -80,11 +83,16 @@ static struct gpio_chip template_chip = {
 	.direction_output	= tps65912_gpio_output,
 	.get			= tps65912_gpio_get,
 	.set			= tps65912_gpio_set,
+<<<<<<< HEAD
 	.can_sleep		= 1,
+=======
+	.can_sleep		= true,
+>>>>>>> refs/remotes/origin/master
 	.ngpio			= 5,
 	.base			= -1,
 };
 
+<<<<<<< HEAD
 static int __devinit tps65912_gpio_probe(struct platform_device *pdev)
 {
 	struct tps65912 *tps65912 = dev_get_drvdata(pdev->dev.parent);
@@ -93,6 +101,17 @@ static int __devinit tps65912_gpio_probe(struct platform_device *pdev)
 	int ret;
 
 	tps65912_gpio = kzalloc(sizeof(*tps65912_gpio), GFP_KERNEL);
+=======
+static int tps65912_gpio_probe(struct platform_device *pdev)
+{
+	struct tps65912 *tps65912 = dev_get_drvdata(pdev->dev.parent);
+	struct tps65912_board *pdata = dev_get_platdata(tps65912->dev);
+	struct tps65912_gpio_data *tps65912_gpio;
+	int ret;
+
+	tps65912_gpio = devm_kzalloc(&pdev->dev, sizeof(*tps65912_gpio),
+				     GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (tps65912_gpio == NULL)
 		return -ENOMEM;
 
@@ -105,12 +124,17 @@ static int __devinit tps65912_gpio_probe(struct platform_device *pdev)
 	ret = gpiochip_add(&tps65912_gpio->gpio_chip);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "Failed to register gpiochip, %d\n", ret);
+<<<<<<< HEAD
 		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, tps65912_gpio);
 
 	return ret;
+<<<<<<< HEAD
 
 err:
 	kfree(tps65912_gpio);
@@ -127,6 +151,15 @@ static int __devexit tps65912_gpio_remove(struct platform_device *pdev)
 		kfree(tps65912_gpio);
 
 	return ret;
+=======
+}
+
+static int tps65912_gpio_remove(struct platform_device *pdev)
+{
+	struct tps65912_gpio_data  *tps65912_gpio = platform_get_drvdata(pdev);
+
+	return gpiochip_remove(&tps65912_gpio->gpio_chip);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver tps65912_gpio_driver = {
@@ -135,7 +168,11 @@ static struct platform_driver tps65912_gpio_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = tps65912_gpio_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tps65912_gpio_remove),
+=======
+	.remove = tps65912_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init tps65912_gpio_init(void)

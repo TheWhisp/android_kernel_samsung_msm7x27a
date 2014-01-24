@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -41,6 +45,7 @@
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef __ASSEMBLY__
 #define IOMEM(x)	x
@@ -185,5 +190,19 @@
 #endif
 
 #endif
+=======
+#if defined(CONFIG_ARCH_MSM7X30)
+#include "msm_iomap-7x30.h"
+#elif defined(CONFIG_ARCH_QSD8X50)
+#include "msm_iomap-8x50.h"
+#else
+#include "msm_iomap-7x00.h"
+#endif
+
+/* Virtual addresses shared across all MSM targets. */
+#define MSM_CSR_BASE		IOMEM(0xE0001000)
+#define MSM_GPIO1_BASE		IOMEM(0xE0003000)
+#define MSM_GPIO2_BASE		IOMEM(0xE0004000)
+>>>>>>> refs/remotes/origin/master
 
 #endif

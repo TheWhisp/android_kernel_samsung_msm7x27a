@@ -3,7 +3,11 @@
  *
  * Copyright 2003 José Fonseca.
  * Copyright 2003 Leif Delgass.
+<<<<<<< HEAD
  * Copyright (c) 2009, The Linux Foundation.
+=======
+ * Copyright (c) 2009, Code Aurora Forum.
+>>>>>>> refs/remotes/origin/master
  * All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -26,12 +30,19 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 
 /**
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Register.
  *
  * \param platdev - Platform device struture
@@ -42,19 +53,29 @@
  * Try and register, if we fail to register, backout previous work.
  */
 
+<<<<<<< HEAD
 int drm_get_platform_dev(struct platform_device *platdev,
 			 struct drm_driver *driver)
+=======
+static int drm_get_platform_dev(struct platform_device *platdev,
+				struct drm_driver *driver)
+>>>>>>> refs/remotes/origin/master
 {
 	struct drm_device *dev;
 	int ret;
 
 	DRM_DEBUG("\n");
 
+<<<<<<< HEAD
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+=======
+	dev = drm_dev_alloc(driver, &platdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return -ENOMEM;
 
 	dev->platformdev = platdev;
+<<<<<<< HEAD
 	dev->dev = &platdev->dev;
 
 	mutex_lock(&drm_global_mutex);
@@ -94,6 +115,12 @@ int drm_get_platform_dev(struct platform_device *platdev,
 	list_add_tail(&dev->driver_item, &driver->device_list);
 
 	mutex_unlock(&drm_global_mutex);
+=======
+
+	ret = drm_dev_register(dev, 0);
+	if (ret)
+		goto err_free;
+>>>>>>> refs/remotes/origin/master
 
 	DRM_INFO("Initialized %s %d.%d.%d %s on minor %d\n",
 		 driver->name, driver->major, driver->minor, driver->patchlevel,
@@ -101,6 +128,7 @@ int drm_get_platform_dev(struct platform_device *platdev,
 
 	return 0;
 
+<<<<<<< HEAD
 err_g3:
 	drm_put_minor(&dev->primary);
 err_g2:
@@ -112,6 +140,12 @@ err_g1:
 	return ret;
 }
 EXPORT_SYMBOL(drm_get_platform_dev);
+=======
+err_free:
+	drm_dev_free(dev);
+	return ret;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int drm_platform_get_irq(struct drm_device *dev)
 {
@@ -126,24 +160,33 @@ static const char *drm_platform_get_name(struct drm_device *dev)
 static int drm_platform_set_busid(struct drm_device *dev, struct drm_master *master)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int len, ret;
 
 	master->unique_len = 10 + strlen(dev->platformdev->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int len, ret, id;
 
 	master->unique_len = 13 + strlen(dev->platformdev->name);
 	master->unique_size = master->unique_len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	master->unique = kmalloc(master->unique_len + 1, GFP_KERNEL);
 
 	if (master->unique == NULL)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	len = snprintf(master->unique, master->unique_len,
 		       "platform:%s", dev->platformdev->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	id = dev->platformdev->id;
 
 	/* if only a single instance of the platform device, id will be
@@ -154,7 +197,10 @@ static int drm_platform_set_busid(struct drm_device *dev, struct drm_master *mas
 
 	len = snprintf(master->unique, master->unique_len,
 			"platform:%s:%02d", dev->platformdev->name, id);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (len > master->unique_len) {
 		DRM_ERROR("Unique buffer overflowed\n");

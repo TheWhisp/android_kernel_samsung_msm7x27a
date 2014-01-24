@@ -2,9 +2,13 @@
  * This file contains main functions related to iSCSI DataSequenceInOrder=No
  * and DataPDUInOrder=No.
  *
+<<<<<<< HEAD
  \u00a9 Copyright 2007-2011 RisingTide Systems LLC.
  *
  * Licensed to the Linux Foundation under the General Public License (GPL) version 2.
+=======
+ * (c) Copyright 2007-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Nicholas A. Bellinger <nab@linux-iscsi.org>
  *
@@ -24,11 +28,20 @@
 
 #include "iscsi_target_core.h"
 #include "iscsi_target_util.h"
+<<<<<<< HEAD
+=======
+#include "iscsi_target_tpg.h"
+>>>>>>> refs/remotes/origin/master
 #include "iscsi_target_seq_pdu_list.h"
 
 #define OFFLOAD_BUF_SIZE	32768
 
+<<<<<<< HEAD
 void iscsit_dump_seq_list(struct iscsi_cmd *cmd)
+=======
+#ifdef DEBUG
+static void iscsit_dump_seq_list(struct iscsi_cmd *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct iscsi_seq *seq;
@@ -46,7 +59,11 @@ void iscsit_dump_seq_list(struct iscsi_cmd *cmd)
 	}
 }
 
+<<<<<<< HEAD
 void iscsit_dump_pdu_list(struct iscsi_cmd *cmd)
+=======
+static void iscsit_dump_pdu_list(struct iscsi_cmd *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct iscsi_pdu *pdu;
@@ -61,6 +78,13 @@ void iscsit_dump_pdu_list(struct iscsi_cmd *cmd)
 			pdu->length, pdu->pdu_send_order, pdu->seq_no);
 	}
 }
+<<<<<<< HEAD
+=======
+#else
+static void iscsit_dump_seq_list(struct iscsi_cmd *cmd) {}
+static void iscsit_dump_pdu_list(struct iscsi_cmd *cmd) {}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static void iscsit_ordered_seq_lists(
 	struct iscsi_cmd *cmd,
@@ -135,11 +159,19 @@ redo:
 			seq_count++;
 			continue;
 		}
+<<<<<<< HEAD
 		array = kzalloc(seq_count * sizeof(u32), GFP_KERNEL);
 		if (!array) {
 			pr_err("Unable to allocate memory"
 				" for random array.\n");
 			return -1;
+=======
+		array = kcalloc(seq_count, sizeof(u32), GFP_KERNEL);
+		if (!array) {
+			pr_err("Unable to allocate memory"
+				" for random array.\n");
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		}
 		iscsit_create_random_array(array, seq_count);
 
@@ -155,11 +187,19 @@ redo:
 	}
 
 	if (seq_count) {
+<<<<<<< HEAD
 		array = kzalloc(seq_count * sizeof(u32), GFP_KERNEL);
 		if (!array) {
 			pr_err("Unable to allocate memory for"
 				" random array.\n");
 			return -1;
+=======
+		array = kcalloc(seq_count, sizeof(u32), GFP_KERNEL);
+		if (!array) {
+			pr_err("Unable to allocate memory for"
+				" random array.\n");
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		}
 		iscsit_create_random_array(array, seq_count);
 
@@ -187,10 +227,17 @@ static int iscsit_randomize_seq_lists(
 	if (!seq_count)
 		return 0;
 
+<<<<<<< HEAD
 	array = kzalloc(seq_count * sizeof(u32), GFP_KERNEL);
 	if (!array) {
 		pr_err("Unable to allocate memory for random array.\n");
 		return -1;
+=======
+	array = kcalloc(seq_count, sizeof(u32), GFP_KERNEL);
+	if (!array) {
+		pr_err("Unable to allocate memory for random array.\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	iscsit_create_random_array(array, seq_count);
 
@@ -213,19 +260,37 @@ static void iscsit_determine_counts_for_list(
 	int check_immediate = 0;
 	u32 burstlength = 0, offset = 0;
 	u32 unsolicited_data_length = 0;
+<<<<<<< HEAD
 	struct iscsi_conn *conn = cmd->conn;
 
+=======
+	u32 mdsl;
+	struct iscsi_conn *conn = cmd->conn;
+
+	if (cmd->se_cmd.data_direction == DMA_TO_DEVICE)
+		mdsl = cmd->conn->conn_ops->MaxXmitDataSegmentLength;
+	else
+		mdsl = cmd->conn->conn_ops->MaxRecvDataSegmentLength;
+
+>>>>>>> refs/remotes/origin/master
 	if ((bl->type == PDULIST_IMMEDIATE) ||
 	    (bl->type == PDULIST_IMMEDIATE_AND_UNSOLICITED))
 		check_immediate = 1;
 
 	if ((bl->type == PDULIST_UNSOLICITED) ||
 	    (bl->type == PDULIST_IMMEDIATE_AND_UNSOLICITED))
+<<<<<<< HEAD
 		unsolicited_data_length = (cmd->data_length >
 			conn->sess->sess_ops->FirstBurstLength) ?
 			conn->sess->sess_ops->FirstBurstLength : cmd->data_length;
 
 	while (offset < cmd->data_length) {
+=======
+		unsolicited_data_length = min(cmd->se_cmd.data_length,
+			conn->sess->sess_ops->FirstBurstLength);
+
+	while (offset < cmd->se_cmd.data_length) {
+>>>>>>> refs/remotes/origin/master
 		*pdu_count += 1;
 
 		if (check_immediate) {
@@ -238,6 +303,7 @@ static void iscsit_determine_counts_for_list(
 			continue;
 		}
 		if (unsolicited_data_length > 0) {
+<<<<<<< HEAD
 			if ((offset + conn->conn_ops->MaxRecvDataSegmentLength)
 					>= cmd->data_length) {
 				unsolicited_data_length -=
@@ -246,6 +312,15 @@ static void iscsit_determine_counts_for_list(
 				continue;
 			}
 			if ((offset + conn->conn_ops->MaxRecvDataSegmentLength)
+=======
+			if ((offset + mdsl) >= cmd->se_cmd.data_length) {
+				unsolicited_data_length -=
+					(cmd->se_cmd.data_length - offset);
+				offset += (cmd->se_cmd.data_length - offset);
+				continue;
+			}
+			if ((offset + mdsl)
+>>>>>>> refs/remotes/origin/master
 					>= conn->sess->sess_ops->FirstBurstLength) {
 				unsolicited_data_length -=
 					(conn->sess->sess_ops->FirstBurstLength -
@@ -257,6 +332,7 @@ static void iscsit_determine_counts_for_list(
 				continue;
 			}
 
+<<<<<<< HEAD
 			offset += conn->conn_ops->MaxRecvDataSegmentLength;
 			unsolicited_data_length -=
 				conn->conn_ops->MaxRecvDataSegmentLength;
@@ -268,6 +344,17 @@ static void iscsit_determine_counts_for_list(
 			continue;
 		}
 		if ((burstlength + conn->conn_ops->MaxRecvDataSegmentLength) >=
+=======
+			offset += mdsl;
+			unsolicited_data_length -= mdsl;
+			continue;
+		}
+		if ((offset + mdsl) >= cmd->se_cmd.data_length) {
+			offset += (cmd->se_cmd.data_length - offset);
+			continue;
+		}
+		if ((burstlength + mdsl) >=
+>>>>>>> refs/remotes/origin/master
 		     conn->sess->sess_ops->MaxBurstLength) {
 			offset += (conn->sess->sess_ops->MaxBurstLength -
 					burstlength);
@@ -276,27 +363,51 @@ static void iscsit_determine_counts_for_list(
 			continue;
 		}
 
+<<<<<<< HEAD
 		burstlength += conn->conn_ops->MaxRecvDataSegmentLength;
 		offset += conn->conn_ops->MaxRecvDataSegmentLength;
+=======
+		burstlength += mdsl;
+		offset += mdsl;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 
 /*
+<<<<<<< HEAD
  *	Builds PDU and/or Sequence list,  called while DataSequenceInOrder=No
  *	and DataPDUInOrder=No.
  */
 static int iscsit_build_pdu_and_seq_list(
+=======
+ *	Builds PDU and/or Sequence list, called while DataSequenceInOrder=No
+ *	or DataPDUInOrder=No.
+ */
+static int iscsit_do_build_pdu_and_seq_lists(
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_cmd *cmd,
 	struct iscsi_build_list *bl)
 {
 	int check_immediate = 0, datapduinorder, datasequenceinorder;
+<<<<<<< HEAD
 	u32 burstlength = 0, offset = 0, i = 0;
+=======
+	u32 burstlength = 0, offset = 0, i = 0, mdsl;
+>>>>>>> refs/remotes/origin/master
 	u32 pdu_count = 0, seq_no = 0, unsolicited_data_length = 0;
 	struct iscsi_conn *conn = cmd->conn;
 	struct iscsi_pdu *pdu = cmd->pdu_list;
 	struct iscsi_seq *seq = cmd->seq_list;
 
+<<<<<<< HEAD
+=======
+	if (cmd->se_cmd.data_direction == DMA_TO_DEVICE)
+		mdsl = cmd->conn->conn_ops->MaxXmitDataSegmentLength;
+	else
+		mdsl = cmd->conn->conn_ops->MaxRecvDataSegmentLength;
+
+>>>>>>> refs/remotes/origin/master
 	datapduinorder = conn->sess->sess_ops->DataPDUInOrder;
 	datasequenceinorder = conn->sess->sess_ops->DataSequenceInOrder;
 
@@ -306,11 +417,18 @@ static int iscsit_build_pdu_and_seq_list(
 
 	if ((bl->type == PDULIST_UNSOLICITED) ||
 	    (bl->type == PDULIST_IMMEDIATE_AND_UNSOLICITED))
+<<<<<<< HEAD
 		unsolicited_data_length = (cmd->data_length >
 			conn->sess->sess_ops->FirstBurstLength) ?
 			conn->sess->sess_ops->FirstBurstLength : cmd->data_length;
 
 	while (offset < cmd->data_length) {
+=======
+		unsolicited_data_length = min(cmd->se_cmd.data_length,
+			conn->sess->sess_ops->FirstBurstLength);
+
+	while (offset < cmd->se_cmd.data_length) {
+>>>>>>> refs/remotes/origin/master
 		pdu_count++;
 		if (!datapduinorder) {
 			pdu[i].offset = offset;
@@ -344,6 +462,7 @@ static int iscsit_build_pdu_and_seq_list(
 			continue;
 		}
 		if (unsolicited_data_length > 0) {
+<<<<<<< HEAD
 			if ((offset +
 			     conn->conn_ops->MaxRecvDataSegmentLength) >=
 			     cmd->data_length) {
@@ -351,11 +470,19 @@ static int iscsit_build_pdu_and_seq_list(
 					pdu[i].type = PDUTYPE_UNSOLICITED;
 					pdu[i].length =
 						(cmd->data_length - offset);
+=======
+			if ((offset + mdsl) >= cmd->se_cmd.data_length) {
+				if (!datapduinorder) {
+					pdu[i].type = PDUTYPE_UNSOLICITED;
+					pdu[i].length =
+						(cmd->se_cmd.data_length - offset);
+>>>>>>> refs/remotes/origin/master
 				}
 				if (!datasequenceinorder) {
 					seq[seq_no].type = SEQTYPE_UNSOLICITED;
 					seq[seq_no].pdu_count = pdu_count;
 					seq[seq_no].xfer_len = (burstlength +
+<<<<<<< HEAD
 						(cmd->data_length - offset));
 				}
 				unsolicited_data_length -=
@@ -365,6 +492,16 @@ static int iscsit_build_pdu_and_seq_list(
 			}
 			if ((offset +
 			     conn->conn_ops->MaxRecvDataSegmentLength) >=
+=======
+						(cmd->se_cmd.data_length - offset));
+				}
+				unsolicited_data_length -=
+						(cmd->se_cmd.data_length - offset);
+				offset += (cmd->se_cmd.data_length - offset);
+				continue;
+			}
+			if ((offset + mdsl) >=
+>>>>>>> refs/remotes/origin/master
 					conn->sess->sess_ops->FirstBurstLength) {
 				if (!datapduinorder) {
 					pdu[i].type = PDUTYPE_UNSOLICITED;
@@ -392,6 +529,7 @@ static int iscsit_build_pdu_and_seq_list(
 
 			if (!datapduinorder) {
 				pdu[i].type = PDUTYPE_UNSOLICITED;
+<<<<<<< HEAD
 				pdu[i++].length =
 				     conn->conn_ops->MaxRecvDataSegmentLength;
 			}
@@ -406,17 +544,39 @@ static int iscsit_build_pdu_and_seq_list(
 			if (!datapduinorder) {
 				pdu[i].type = PDUTYPE_NORMAL;
 				pdu[i].length = (cmd->data_length - offset);
+=======
+				pdu[i++].length = mdsl;
+			}
+			burstlength += mdsl;
+			offset += mdsl;
+			unsolicited_data_length -= mdsl;
+			continue;
+		}
+		if ((offset + mdsl) >= cmd->se_cmd.data_length) {
+			if (!datapduinorder) {
+				pdu[i].type = PDUTYPE_NORMAL;
+				pdu[i].length = (cmd->se_cmd.data_length - offset);
+>>>>>>> refs/remotes/origin/master
 			}
 			if (!datasequenceinorder) {
 				seq[seq_no].type = SEQTYPE_NORMAL;
 				seq[seq_no].pdu_count = pdu_count;
 				seq[seq_no].xfer_len = (burstlength +
+<<<<<<< HEAD
 					(cmd->data_length - offset));
 			}
 			offset += (cmd->data_length - offset);
 			continue;
 		}
 		if ((burstlength + conn->conn_ops->MaxRecvDataSegmentLength) >=
+=======
+					(cmd->se_cmd.data_length - offset));
+			}
+			offset += (cmd->se_cmd.data_length - offset);
+			continue;
+		}
+		if ((burstlength + mdsl) >=
+>>>>>>> refs/remotes/origin/master
 		     conn->sess->sess_ops->MaxBurstLength) {
 			if (!datapduinorder) {
 				pdu[i].type = PDUTYPE_NORMAL;
@@ -441,11 +601,18 @@ static int iscsit_build_pdu_and_seq_list(
 
 		if (!datapduinorder) {
 			pdu[i].type = PDUTYPE_NORMAL;
+<<<<<<< HEAD
 			pdu[i++].length =
 				conn->conn_ops->MaxRecvDataSegmentLength;
 		}
 		burstlength += conn->conn_ops->MaxRecvDataSegmentLength;
 		offset += conn->conn_ops->MaxRecvDataSegmentLength;
+=======
+			pdu[i++].length = mdsl;
+		}
+		burstlength += mdsl;
+		offset += mdsl;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!datasequenceinorder) {
@@ -464,9 +631,14 @@ static int iscsit_build_pdu_and_seq_list(
 			} else
 				iscsit_ordered_seq_lists(cmd, bl->type);
 		}
+<<<<<<< HEAD
 #if 0
 		iscsit_dump_seq_list(cmd);
 #endif
+=======
+
+		iscsit_dump_seq_list(cmd);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!datapduinorder) {
 		if (bl->data_direction & ISCSI_PDU_WRITE) {
@@ -484,14 +656,20 @@ static int iscsit_build_pdu_and_seq_list(
 			} else
 				iscsit_ordered_pdu_lists(cmd, bl->type);
 		}
+<<<<<<< HEAD
 #if 0
 		iscsit_dump_pdu_list(cmd);
 #endif
+=======
+
+		iscsit_dump_pdu_list(cmd);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  *	Only called while DataSequenceInOrder=No or DataPDUInOrder=No.
  */
@@ -499,11 +677,19 @@ int iscsit_do_build_list(
 	struct iscsi_cmd *cmd,
 	struct iscsi_build_list *bl)
 {
+=======
+int iscsit_build_pdu_and_seq_lists(
+	struct iscsi_cmd *cmd,
+	u32 immediate_data_length)
+{
+	struct iscsi_build_list bl;
+>>>>>>> refs/remotes/origin/master
 	u32 pdu_count = 0, seq_count = 1;
 	struct iscsi_conn *conn = cmd->conn;
 	struct iscsi_pdu *pdu = NULL;
 	struct iscsi_seq *seq = NULL;
 
+<<<<<<< HEAD
 	iscsit_determine_counts_for_list(cmd, bl, &seq_count, &pdu_count);
 
 	if (!conn->sess->sess_ops->DataSequenceInOrder) {
@@ -511,23 +697,83 @@ int iscsit_do_build_list(
 		if (!seq) {
 			pr_err("Unable to allocate struct iscsi_seq list\n");
 			return -1;
+=======
+	struct iscsi_session *sess = conn->sess;
+	struct iscsi_node_attrib *na;
+
+	/*
+	 * Do nothing if no OOO shenanigans
+	 */
+	if (sess->sess_ops->DataSequenceInOrder &&
+	    sess->sess_ops->DataPDUInOrder)
+		return 0;
+
+	if (cmd->data_direction == DMA_NONE)
+		return 0;
+
+	na = iscsit_tpg_get_node_attrib(sess);
+	memset(&bl, 0, sizeof(struct iscsi_build_list));
+
+	if (cmd->data_direction == DMA_FROM_DEVICE) {
+		bl.data_direction = ISCSI_PDU_READ;
+		bl.type = PDULIST_NORMAL;
+		if (na->random_datain_pdu_offsets)
+			bl.randomize |= RANDOM_DATAIN_PDU_OFFSETS;
+		if (na->random_datain_seq_offsets)
+			bl.randomize |= RANDOM_DATAIN_SEQ_OFFSETS;
+	} else {
+		bl.data_direction = ISCSI_PDU_WRITE;
+		bl.immediate_data_length = immediate_data_length;
+		if (na->random_r2t_offsets)
+			bl.randomize |= RANDOM_R2T_OFFSETS;
+
+		if (!cmd->immediate_data && !cmd->unsolicited_data)
+			bl.type = PDULIST_NORMAL;
+		else if (cmd->immediate_data && !cmd->unsolicited_data)
+			bl.type = PDULIST_IMMEDIATE;
+		else if (!cmd->immediate_data && cmd->unsolicited_data)
+			bl.type = PDULIST_UNSOLICITED;
+		else if (cmd->immediate_data && cmd->unsolicited_data)
+			bl.type = PDULIST_IMMEDIATE_AND_UNSOLICITED;
+	}
+
+	iscsit_determine_counts_for_list(cmd, &bl, &seq_count, &pdu_count);
+
+	if (!conn->sess->sess_ops->DataSequenceInOrder) {
+		seq = kcalloc(seq_count, sizeof(struct iscsi_seq), GFP_ATOMIC);
+		if (!seq) {
+			pr_err("Unable to allocate struct iscsi_seq list\n");
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		}
 		cmd->seq_list = seq;
 		cmd->seq_count = seq_count;
 	}
 
 	if (!conn->sess->sess_ops->DataPDUInOrder) {
+<<<<<<< HEAD
 		pdu = kzalloc(pdu_count * sizeof(struct iscsi_pdu), GFP_ATOMIC);
 		if (!pdu) {
 			pr_err("Unable to allocate struct iscsi_pdu list.\n");
 			kfree(seq);
 			return -1;
+=======
+		pdu = kcalloc(pdu_count, sizeof(struct iscsi_pdu), GFP_ATOMIC);
+		if (!pdu) {
+			pr_err("Unable to allocate struct iscsi_pdu list.\n");
+			kfree(seq);
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		}
 		cmd->pdu_list = pdu;
 		cmd->pdu_count = pdu_count;
 	}
 
+<<<<<<< HEAD
 	return iscsit_build_pdu_and_seq_list(cmd, bl);
+=======
+	return iscsit_do_build_pdu_and_seq_lists(cmd, &bl);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct iscsi_pdu *iscsit_get_pdu_holder(
@@ -572,13 +818,20 @@ redo:
 		pdu = &cmd->pdu_list[cmd->pdu_start];
 
 		for (i = 0; pdu[i].seq_no != cmd->seq_no; i++) {
+<<<<<<< HEAD
 #if 0
+=======
+>>>>>>> refs/remotes/origin/master
 			pr_debug("pdu[i].seq_no: %d, pdu[i].pdu"
 				"_send_order: %d, pdu[i].offset: %d,"
 				" pdu[i].length: %d\n", pdu[i].seq_no,
 				pdu[i].pdu_send_order, pdu[i].offset,
 				pdu[i].length);
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/master
 			if (pdu[i].pdu_send_order == cmd->pdu_send_order) {
 				cmd->pdu_send_order++;
 				return &pdu[i];
@@ -601,11 +854,19 @@ redo:
 			pr_err("struct iscsi_seq is NULL!\n");
 			return NULL;
 		}
+<<<<<<< HEAD
 #if 0
 		pr_debug("seq->pdu_start: %d, seq->pdu_count: %d,"
 			" seq->seq_no: %d\n", seq->pdu_start, seq->pdu_count,
 			seq->seq_no);
 #endif
+=======
+
+		pr_debug("seq->pdu_start: %d, seq->pdu_count: %d,"
+			" seq->seq_no: %d\n", seq->pdu_start, seq->pdu_count,
+			seq->seq_no);
+
+>>>>>>> refs/remotes/origin/master
 		pdu = &cmd->pdu_list[seq->pdu_start];
 
 		if (seq->pdu_send_order == seq->pdu_count) {
@@ -645,12 +906,19 @@ struct iscsi_seq *iscsit_get_seq_holder(
 	}
 
 	for (i = 0; i < cmd->seq_count; i++) {
+<<<<<<< HEAD
 #if 0
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("seq_list[i].orig_offset: %d, seq_list[i]."
 			"xfer_len: %d, seq_list[i].seq_no %u\n",
 			cmd->seq_list[i].orig_offset, cmd->seq_list[i].xfer_len,
 			cmd->seq_list[i].seq_no);
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/master
 		if ((cmd->seq_list[i].orig_offset +
 				cmd->seq_list[i].xfer_len) >=
 				(offset + length))

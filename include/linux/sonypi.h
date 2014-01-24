@@ -32,6 +32,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
+<<<<<<< HEAD
 
 #ifndef _SONYPI_H_
 #define _SONYPI_H_
@@ -143,6 +144,13 @@
 #define SONYPI_IOCGTEMP		_IOR('v', 12, __u8)
 
 #ifdef __KERNEL__
+=======
+#ifndef _SONYPI_H_
+#define _SONYPI_H_
+
+#include <uapi/linux/sonypi.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* used only for communication between v4l and sonypi */
 
@@ -166,6 +174,9 @@
 #define SONYPI_COMMAND_GETCAMERAROMVERSION	18	/* obsolete */
 #define SONYPI_COMMAND_GETCAMERAREVISION	19	/* obsolete */
 
+<<<<<<< HEAD
 #endif				/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* _SONYPI_H_ */

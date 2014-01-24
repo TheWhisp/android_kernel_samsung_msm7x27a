@@ -28,9 +28,12 @@ static int tmio_mmc_suspend(struct platform_device *dev, pm_message_t state)
 {
 	const struct mfd_cell *cell = mfd_get_cell(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mmc_host *mmc = platform_get_drvdata(dev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = tmio_mmc_host_suspend(&dev->dev);
@@ -46,9 +49,12 @@ static int tmio_mmc_resume(struct platform_device *dev)
 {
 	const struct mfd_cell *cell = mfd_get_cell(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mmc_host *mmc = platform_get_drvdata(dev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	/* Tell the MFD core we are ready to be enabled */
@@ -65,7 +71,11 @@ static int tmio_mmc_resume(struct platform_device *dev)
 #define tmio_mmc_resume NULL
 #endif
 
+<<<<<<< HEAD
 static int __devinit tmio_mmc_probe(struct platform_device *pdev)
+=======
+static int tmio_mmc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct mfd_cell *cell = mfd_get_cell(pdev);
 	struct tmio_mmc_data *pdata;
@@ -97,12 +107,17 @@ static int __devinit tmio_mmc_probe(struct platform_device *pdev)
 		goto cell_disable;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(irq, tmio_mmc_irq, IRQF_DISABLED |
 			  IRQF_TRIGGER_FALLING, dev_name(&pdev->dev), host);
 =======
 	ret = request_irq(irq, tmio_mmc_irq, IRQF_TRIGGER_FALLING,
 				dev_name(&pdev->dev), host);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(irq, tmio_mmc_irq, IRQF_TRIGGER_FALLING,
+				dev_name(&pdev->dev), host);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto host_remove;
 
@@ -120,13 +135,20 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit tmio_mmc_remove(struct platform_device *pdev)
+=======
+static int tmio_mmc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct mfd_cell *cell = mfd_get_cell(pdev);
 	struct mmc_host *mmc = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (mmc) {
 		struct tmio_mmc_host *host = mmc_priv(mmc);
 		free_irq(platform_get_irq(pdev, 0), host);
@@ -146,11 +168,16 @@ static struct platform_driver tmio_mmc_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = tmio_mmc_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tmio_mmc_remove),
+=======
+	.remove = tmio_mmc_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = tmio_mmc_suspend,
 	.resume = tmio_mmc_resume,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init tmio_mmc_init(void)
@@ -168,6 +195,9 @@ module_exit(tmio_mmc_exit);
 =======
 module_platform_driver(tmio_mmc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(tmio_mmc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Toshiba TMIO SD/MMC driver");
 MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");

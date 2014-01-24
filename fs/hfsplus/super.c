@@ -20,6 +20,10 @@ static struct inode *hfsplus_alloc_inode(struct super_block *sb);
 static void hfsplus_destroy_inode(struct inode *inode);
 
 #include "hfsplus_fs.h"
+<<<<<<< HEAD
+=======
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/master
 
 static int hfsplus_system_read_inode(struct inode *inode)
 {
@@ -74,12 +78,15 @@ struct inode *hfsplus_iget(struct super_block *sb, unsigned long ino)
 	if (inode->i_ino >= HFSPLUS_FIRSTUSER_CNID ||
 	    inode->i_ino == HFSPLUS_ROOT_CNID) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		hfs_find_init(HFSPLUS_SB(inode->i_sb)->cat_tree, &fd);
 		err = hfsplus_find_cat(inode->i_sb, inode->i_ino, &fd);
 		if (!err)
 			err = hfsplus_cat_read_inode(inode, &fd);
 		hfs_find_exit(&fd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = hfs_find_init(HFSPLUS_SB(inode->i_sb)->cat_tree, &fd);
 		if (!err) {
 			err = hfsplus_find_cat(inode->i_sb, inode->i_ino, &fd);
@@ -87,7 +94,10 @@ struct inode *hfsplus_iget(struct super_block *sb, unsigned long ino)
 				err = hfsplus_cat_read_inode(inode, &fd);
 			hfs_find_exit(&fd);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		err = hfsplus_system_read_inode(inode);
 	}
@@ -126,23 +136,42 @@ static int hfsplus_system_write_inode(struct inode *inode)
 	case HFSPLUS_ATTR_CNID:
 		fork = &vhdr->attr_file;
 		tree = sbi->attr_tree;
+<<<<<<< HEAD
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EIO;
 	}
 
 	if (fork->total_size != cpu_to_be64(inode->i_size)) {
 		set_bit(HFSPLUS_SB_WRITEBACKUP, &sbi->flags);
+<<<<<<< HEAD
 		inode->i_sb->s_dirt = 1;
 	}
 	hfsplus_inode_write_fork(inode, fork);
 	if (tree)
 		hfs_btree_write(tree);
+=======
+		hfsplus_mark_mdb_dirty(inode->i_sb);
+	}
+	hfsplus_inode_write_fork(inode, fork);
+	if (tree) {
+		int err = hfs_btree_write(tree);
+		if (err) {
+			pr_err("b-tree write err: %d, ino %lu\n",
+					err, inode->i_ino);
+			return err;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int hfsplus_write_inode(struct inode *inode,
 		struct writeback_control *wbc)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dprint(DBG_INODE, "hfsplus_write_inode: %lu\n", inode->i_ino);
 
@@ -151,11 +180,19 @@ static int hfsplus_write_inode(struct inode *inode,
 	int err;
 
 	dprint(DBG_INODE, "hfsplus_write_inode: %lu\n", inode->i_ino);
+=======
+	int err;
+
+	hfs_dbg(INODE, "hfsplus_write_inode: %lu\n", inode->i_ino);
+>>>>>>> refs/remotes/origin/master
 
 	err = hfsplus_ext_write_extent(inode);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (inode->i_ino >= HFSPLUS_FIRSTUSER_CNID ||
 	    inode->i_ino == HFSPLUS_ROOT_CNID)
@@ -166,16 +203,26 @@ static int hfsplus_write_inode(struct inode *inode,
 
 static void hfsplus_evict_inode(struct inode *inode)
 {
+<<<<<<< HEAD
 	dprint(DBG_INODE, "hfsplus_evict_inode: %lu\n", inode->i_ino);
 	truncate_inode_pages(&inode->i_data, 0);
 	end_writeback(inode);
+=======
+	hfs_dbg(INODE, "hfsplus_evict_inode: %lu\n", inode->i_ino);
+	truncate_inode_pages(&inode->i_data, 0);
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	if (HFSPLUS_IS_RSRC(inode)) {
 		HFSPLUS_I(HFSPLUS_I(inode)->rsrc_inode)->rsrc_inode = NULL;
 		iput(HFSPLUS_I(inode)->rsrc_inode);
 	}
 }
 
+<<<<<<< HEAD
 int hfsplus_sync_fs(struct super_block *sb, int wait)
+=======
+static int hfsplus_sync_fs(struct super_block *sb, int wait)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hfsplus_sb_info *sbi = HFSPLUS_SB(sb);
 	struct hfsplus_vh *vhdr = sbi->s_vhdr;
@@ -185,9 +232,13 @@ int hfsplus_sync_fs(struct super_block *sb, int wait)
 	if (!wait)
 		return 0;
 
+<<<<<<< HEAD
 	dprint(DBG_SUPER, "hfsplus_write_super\n");
 
 	sb->s_dirt = 0;
+=======
+	hfs_dbg(SUPER, "hfsplus_sync_fs\n");
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Explicitly write out the special metadata inodes.
@@ -201,6 +252,15 @@ int hfsplus_sync_fs(struct super_block *sb, int wait)
 	error2 = filemap_write_and_wait(sbi->ext_tree->inode->i_mapping);
 	if (!error)
 		error = error2;
+<<<<<<< HEAD
+=======
+	if (sbi->attr_tree) {
+		error2 =
+		    filemap_write_and_wait(sbi->attr_tree->inode->i_mapping);
+		if (!error)
+			error = error2;
+	}
+>>>>>>> refs/remotes/origin/master
 	error2 = filemap_write_and_wait(sbi->alloc_file->i_mapping);
 	if (!error)
 		error = error2;
@@ -240,22 +300,62 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
 static void hfsplus_write_super(struct super_block *sb)
 {
 	if (!(sb->s_flags & MS_RDONLY))
 		hfsplus_sync_fs(sb, 1);
 	else
 		sb->s_dirt = 0;
+=======
+static void delayed_sync_fs(struct work_struct *work)
+{
+	int err;
+	struct hfsplus_sb_info *sbi;
+
+	sbi = container_of(work, struct hfsplus_sb_info, sync_work.work);
+
+	spin_lock(&sbi->work_lock);
+	sbi->work_queued = 0;
+	spin_unlock(&sbi->work_lock);
+
+	err = hfsplus_sync_fs(sbi->alloc_file->i_sb, 1);
+	if (err)
+		pr_err("delayed sync fs err %d\n", err);
+}
+
+void hfsplus_mark_mdb_dirty(struct super_block *sb)
+{
+	struct hfsplus_sb_info *sbi = HFSPLUS_SB(sb);
+	unsigned long delay;
+
+	if (sb->s_flags & MS_RDONLY)
+		return;
+
+	spin_lock(&sbi->work_lock);
+	if (!sbi->work_queued) {
+		delay = msecs_to_jiffies(dirty_writeback_interval * 10);
+		queue_delayed_work(system_long_wq, &sbi->sync_work, delay);
+		sbi->work_queued = 1;
+	}
+	spin_unlock(&sbi->work_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hfsplus_put_super(struct super_block *sb)
 {
 	struct hfsplus_sb_info *sbi = HFSPLUS_SB(sb);
 
+<<<<<<< HEAD
 	dprint(DBG_SUPER, "hfsplus_put_super\n");
 
 	if (!sb->s_fs_info)
 		return;
+=======
+	hfs_dbg(SUPER, "hfsplus_put_super\n");
+
+	cancel_delayed_work_sync(&sbi->sync_work);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(sb->s_flags & MS_RDONLY) && sbi->s_vhdr) {
 		struct hfsplus_vh *vhdr = sbi->s_vhdr;
@@ -267,6 +367,10 @@ static void hfsplus_put_super(struct super_block *sb)
 		hfsplus_sync_fs(sb, 1);
 	}
 
+<<<<<<< HEAD
+=======
+	hfs_btree_close(sbi->attr_tree);
+>>>>>>> refs/remotes/origin/master
 	hfs_btree_close(sbi->cat_tree);
 	hfs_btree_close(sbi->ext_tree);
 	iput(sbi->alloc_file);
@@ -310,25 +414,37 @@ static int hfsplus_remount(struct super_block *sb, int *flags, char *data)
 			return -EINVAL;
 
 		if (!(vhdr->attributes & cpu_to_be32(HFSPLUS_VOL_UNMNT))) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "hfs: filesystem was "
 					"not cleanly unmounted, "
 					"running fsck.hfsplus is recommended.  "
 					"leaving read-only.\n");
+=======
+			pr_warn("filesystem was not cleanly unmounted, running fsck.hfsplus is recommended.  leaving read-only.\n");
+>>>>>>> refs/remotes/origin/master
 			sb->s_flags |= MS_RDONLY;
 			*flags |= MS_RDONLY;
 		} else if (force) {
 			/* nothing */
 		} else if (vhdr->attributes &
 				cpu_to_be32(HFSPLUS_VOL_SOFTLOCK)) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "hfs: filesystem is marked locked, "
 					"leaving read-only.\n");
+=======
+			pr_warn("filesystem is marked locked, leaving read-only.\n");
+>>>>>>> refs/remotes/origin/master
 			sb->s_flags |= MS_RDONLY;
 			*flags |= MS_RDONLY;
 		} else if (vhdr->attributes &
 				cpu_to_be32(HFSPLUS_VOL_JOURNALED)) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "hfs: filesystem is "
 					"marked journaled, "
 					"leaving read-only.\n");
+=======
+			pr_warn("filesystem is marked journaled, leaving read-only.\n");
+>>>>>>> refs/remotes/origin/master
 			sb->s_flags |= MS_RDONLY;
 			*flags |= MS_RDONLY;
 		}
@@ -342,7 +458,10 @@ static const struct super_operations hfsplus_sops = {
 	.write_inode	= hfsplus_write_inode,
 	.evict_inode	= hfsplus_evict_inode,
 	.put_super	= hfsplus_put_super,
+<<<<<<< HEAD
 	.write_super	= hfsplus_write_super,
+=======
+>>>>>>> refs/remotes/origin/master
 	.sync_fs	= hfsplus_sync_fs,
 	.statfs		= hfsplus_statfs,
 	.remount_fs	= hfsplus_remount,
@@ -359,12 +478,19 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 	struct qstr str;
 	struct nls_table *nls = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u64 last_fs_block, last_fs_page;
 >>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 
 	err = -EINVAL;
+=======
+	u64 last_fs_block, last_fs_page;
+	int err;
+
+	err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
 	if (!sbi)
 		goto out;
@@ -372,11 +498,20 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_fs_info = sbi;
 	mutex_init(&sbi->alloc_mutex);
 	mutex_init(&sbi->vh_mutex);
+<<<<<<< HEAD
+=======
+	spin_lock_init(&sbi->work_lock);
+	INIT_DELAYED_WORK(&sbi->sync_work, delayed_sync_fs);
+>>>>>>> refs/remotes/origin/master
 	hfsplus_fill_defaults(sbi);
 
 	err = -EINVAL;
 	if (!hfsplus_parse_options(data, sbi)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: unable to parse mount options\n");
+=======
+		pr_err("unable to parse mount options\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_unload_nls;
 	}
 
@@ -384,14 +519,22 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 	nls = sbi->nls;
 	sbi->nls = load_nls("utf8");
 	if (!sbi->nls) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: unable to load nls for utf8\n");
+=======
+		pr_err("unable to load nls for utf8\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_unload_nls;
 	}
 
 	/* Grab the volume header */
 	if (hfsplus_read_wrapper(sb)) {
 		if (!silent)
+<<<<<<< HEAD
 			printk(KERN_WARNING "hfs: unable to find HFS+ superblock\n");
+=======
+			pr_warn("unable to find HFS+ superblock\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_unload_nls;
 	}
 	vhdr = sbi->s_vhdr;
@@ -400,7 +543,11 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_magic = HFSPLUS_VOLHEAD_SIG;
 	if (be16_to_cpu(vhdr->version) < HFSPLUS_MIN_VERSION ||
 	    be16_to_cpu(vhdr->version) > HFSPLUS_CURRENT_VERSION) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: wrong filesystem version\n");
+=======
+		pr_err("wrong filesystem version\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free_vhdr;
 	}
 	sbi->total_blocks = be32_to_cpu(vhdr->total_blocks);
@@ -418,7 +565,10 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 		sbi->rsrc_clump_blocks = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = -EFBIG;
 	last_fs_block = sbi->total_blocks - 1;
 	last_fs_page = (last_fs_block << sbi->alloc_blksz_shift) >>
@@ -426,24 +576,36 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 
 	if ((last_fs_block > (sector_t)(~0ULL) >> (sbi->alloc_blksz_shift - 9)) ||
 	    (last_fs_page > (pgoff_t)(~0ULL))) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: filesystem size too large.\n");
 		goto out_free_vhdr;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("filesystem size too large\n");
+		goto out_free_vhdr;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Set up operations so we can load metadata */
 	sb->s_op = &hfsplus_sops;
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 
 	if (!(vhdr->attributes & cpu_to_be32(HFSPLUS_VOL_UNMNT))) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "hfs: Filesystem was "
 				"not cleanly unmounted, "
 				"running fsck.hfsplus is recommended.  "
 				"mounting read-only.\n");
+=======
+		pr_warn("Filesystem was not cleanly unmounted, running fsck.hfsplus is recommended.  mounting read-only.\n");
+>>>>>>> refs/remotes/origin/master
 		sb->s_flags |= MS_RDONLY;
 	} else if (test_and_clear_bit(HFSPLUS_SB_FORCE, &sbi->flags)) {
 		/* nothing */
 	} else if (vhdr->attributes & cpu_to_be32(HFSPLUS_VOL_SOFTLOCK)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "hfs: Filesystem is marked locked, mounting read-only.\n");
 		sb->s_flags |= MS_RDONLY;
 	} else if ((vhdr->attributes & cpu_to_be32(HFSPLUS_VOL_JOURNALED)) &&
@@ -464,10 +626,27 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 	sbi->ext_tree = hfs_btree_open(sb, HFSPLUS_EXT_CNID);
 	if (!sbi->ext_tree) {
 		printk(KERN_ERR "hfs: failed to load extents file\n");
+=======
+		pr_warn("Filesystem is marked locked, mounting read-only.\n");
+		sb->s_flags |= MS_RDONLY;
+	} else if ((vhdr->attributes & cpu_to_be32(HFSPLUS_VOL_JOURNALED)) &&
+			!(sb->s_flags & MS_RDONLY)) {
+		pr_warn("write access to a journaled filesystem is not supported, use the force option at your own risk, mounting read-only.\n");
+		sb->s_flags |= MS_RDONLY;
+	}
+
+	err = -EINVAL;
+
+	/* Load metadata objects (B*Trees) */
+	sbi->ext_tree = hfs_btree_open(sb, HFSPLUS_EXT_CNID);
+	if (!sbi->ext_tree) {
+		pr_err("failed to load extents file\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free_vhdr;
 	}
 	sbi->cat_tree = hfs_btree_open(sb, HFSPLUS_CAT_CNID);
 	if (!sbi->cat_tree) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: failed to load catalog file\n");
 		goto out_close_ext_tree;
 	}
@@ -477,22 +656,50 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 		printk(KERN_ERR "hfs: failed to load allocation file\n");
 		err = PTR_ERR(inode);
 		goto out_close_cat_tree;
+=======
+		pr_err("failed to load catalog file\n");
+		goto out_close_ext_tree;
+	}
+	atomic_set(&sbi->attr_tree_state, HFSPLUS_EMPTY_ATTR_TREE);
+	if (vhdr->attr_file.total_blocks != 0) {
+		sbi->attr_tree = hfs_btree_open(sb, HFSPLUS_ATTR_CNID);
+		if (!sbi->attr_tree) {
+			pr_err("failed to load attributes file\n");
+			goto out_close_cat_tree;
+		}
+		atomic_set(&sbi->attr_tree_state, HFSPLUS_VALID_ATTR_TREE);
+	}
+	sb->s_xattr = hfsplus_xattr_handlers;
+
+	inode = hfsplus_iget(sb, HFSPLUS_ALLOC_CNID);
+	if (IS_ERR(inode)) {
+		pr_err("failed to load allocation file\n");
+		err = PTR_ERR(inode);
+		goto out_close_attr_tree;
+>>>>>>> refs/remotes/origin/master
 	}
 	sbi->alloc_file = inode;
 
 	/* Load the root directory */
 	root = hfsplus_iget(sb, HFSPLUS_ROOT_CNID);
 	if (IS_ERR(root)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: failed to load root directory\n");
+=======
+		pr_err("failed to load root directory\n");
+>>>>>>> refs/remotes/origin/master
 		err = PTR_ERR(root);
 		goto out_put_alloc_file;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	str.len = sizeof(HFSP_HIDDENDIR_NAME) - 1;
 	str.name = HFSP_HIDDENDIR_NAME;
 	hfs_find_init(sbi->cat_tree, &fd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sb->s_d_op = &hfsplus_dentry_operations;
 	sb->s_root = d_make_root(root);
 	if (!sb->s_root) {
@@ -505,7 +712,10 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 	err = hfs_find_init(sbi->cat_tree, &fd);
 	if (err)
 		goto out_put_root;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hfsplus_cat_build_key(sb, fd.search_key, HFSPLUS_ROOT_CNID, &str);
 	if (!hfs_brec_read(&fd, &entry, sizeof(entry))) {
 		hfs_find_exit(&fd);
@@ -536,10 +746,13 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 			mutex_lock(&sbi->vh_mutex);
 			sbi->hidden_dir = hfsplus_new_inode(sb, S_IFDIR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			hfsplus_create_cat(sbi->hidden_dir->i_ino, root, &str,
 					   sbi->hidden_dir);
 			mutex_unlock(&sbi->vh_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!sbi->hidden_dir) {
 				mutex_unlock(&sbi->vh_mutex);
 				err = -ENOMEM;
@@ -547,16 +760,41 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 			}
 			err = hfsplus_create_cat(sbi->hidden_dir->i_ino, root,
 						 &str, sbi->hidden_dir);
+<<<<<<< HEAD
 			mutex_unlock(&sbi->vh_mutex);
 			if (err)
 				goto out_put_hidden_dir;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+			if (err) {
+				mutex_unlock(&sbi->vh_mutex);
+				goto out_put_hidden_dir;
+			}
+
+			err = hfsplus_init_inode_security(sbi->hidden_dir,
+								root, &str);
+			if (err == -EOPNOTSUPP)
+				err = 0; /* Operation is not supported. */
+			else if (err) {
+				/*
+				 * Try to delete anyway without
+				 * error analysis.
+				 */
+				hfsplus_delete_cat(sbi->hidden_dir->i_ino,
+							root, &str);
+				mutex_unlock(&sbi->vh_mutex);
+				goto out_put_hidden_dir;
+			}
+
+			mutex_unlock(&sbi->vh_mutex);
+>>>>>>> refs/remotes/origin/master
 			hfsplus_mark_inode_dirty(sbi->hidden_dir,
 						 HFSPLUS_I_CAT_DIRTY);
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sb->s_d_op = &hfsplus_dentry_operations;
 	sb->s_root = d_alloc_root(root);
@@ -567,6 +805,8 @@ static int hfsplus_fill_super(struct super_block *sb, void *data, int silent)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unload_nls(sbi->nls);
 	sbi->nls = nls;
 	return 0;
@@ -575,6 +815,7 @@ out_put_hidden_dir:
 	iput(sbi->hidden_dir);
 out_put_root:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iput(root);
 =======
 	dput(sb->s_root);
@@ -582,6 +823,14 @@ out_put_root:
 >>>>>>> refs/remotes/origin/cm-10.0
 out_put_alloc_file:
 	iput(sbi->alloc_file);
+=======
+	dput(sb->s_root);
+	sb->s_root = NULL;
+out_put_alloc_file:
+	iput(sbi->alloc_file);
+out_close_attr_tree:
+	hfs_btree_close(sbi->attr_tree);
+>>>>>>> refs/remotes/origin/master
 out_close_cat_tree:
 	hfs_btree_close(sbi->cat_tree);
 out_close_ext_tree:
@@ -616,9 +865,12 @@ static void hfsplus_i_callback(struct rcu_head *head)
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(hfsplus_inode_cachep, HFSPLUS_I(inode));
 }
 
@@ -642,6 +894,10 @@ static struct file_system_type hfsplus_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("hfsplus");
+>>>>>>> refs/remotes/origin/master
 
 static void hfsplus_init_once(void *p)
 {
@@ -659,15 +915,42 @@ static int __init init_hfsplus_fs(void)
 		hfsplus_init_once);
 	if (!hfsplus_inode_cachep)
 		return -ENOMEM;
+<<<<<<< HEAD
 	err = register_filesystem(&hfsplus_fs_type);
 	if (err)
 		kmem_cache_destroy(hfsplus_inode_cachep);
+=======
+	err = hfsplus_create_attr_tree_cache();
+	if (err)
+		goto destroy_inode_cache;
+	err = register_filesystem(&hfsplus_fs_type);
+	if (err)
+		goto destroy_attr_tree_cache;
+	return 0;
+
+destroy_attr_tree_cache:
+	hfsplus_destroy_attr_tree_cache();
+
+destroy_inode_cache:
+	kmem_cache_destroy(hfsplus_inode_cachep);
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 static void __exit exit_hfsplus_fs(void)
 {
 	unregister_filesystem(&hfsplus_fs_type);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+	hfsplus_destroy_attr_tree_cache();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(hfsplus_inode_cachep);
 }
 

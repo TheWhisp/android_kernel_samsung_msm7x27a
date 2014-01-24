@@ -29,6 +29,7 @@
  *     someone that the two other points are non-issues for that
  *     particular descriptor type.
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_USB_CH9_H
 #define __LINUX_USB_CH9_H
@@ -958,6 +959,13 @@ enum usb_device_speed {
 <<<<<<< HEAD
 =======
 #ifdef __KERNEL__
+=======
+#ifndef __LINUX_USB_CH9_H
+#define __LINUX_USB_CH9_H
+
+#include <uapi/linux/usb/ch9.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_speed_string() - Returns human readable-name of the speed.
@@ -967,6 +975,7 @@ enum usb_device_speed {
  */
 extern const char *usb_speed_string(enum usb_device_speed speed);
 
+<<<<<<< HEAD
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1004,5 +1013,15 @@ enum usb_device_state {
  * http://compliance.usb.org/index.asp?UpdateFile=Electrical&Format=Standard#34
  */
 #define USB_SELF_POWER_VBUS_MAX_DRAW		100
+=======
+
+/**
+ * usb_state_string - Returns human readable name for the state.
+ * @state: The state to return a human-readable name for. If it's not
+ *	any of the states devices in usb_device_state_string enum,
+ *	the string UNKNOWN will be returned.
+ */
+extern const char *usb_state_string(enum usb_device_state state);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __LINUX_USB_CH9_H */

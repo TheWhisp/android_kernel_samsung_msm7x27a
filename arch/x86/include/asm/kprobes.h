@@ -27,6 +27,10 @@
 #include <asm/insn.h>
 
 #define  __ARCH_WANT_KPROBES_INSN_SLOT
+<<<<<<< HEAD
+=======
+#define  ARCH_SUPPORTS_KPROBES_ON_FTRACE
+>>>>>>> refs/remotes/origin/master
 
 struct pt_regs;
 struct kprobe;
@@ -48,10 +52,17 @@ typedef u8 kprobe_opcode_t;
 #define flush_insn_slot(p)	do { } while (0)
 
 /* optinsn template addresses */
+<<<<<<< HEAD
 extern kprobe_opcode_t optprobe_template_entry;
 extern kprobe_opcode_t optprobe_template_val;
 extern kprobe_opcode_t optprobe_template_call;
 extern kprobe_opcode_t optprobe_template_end;
+=======
+extern __visible kprobe_opcode_t optprobe_template_entry;
+extern __visible kprobe_opcode_t optprobe_template_val;
+extern __visible kprobe_opcode_t optprobe_template_call;
+extern __visible kprobe_opcode_t optprobe_template_end;
+>>>>>>> refs/remotes/origin/master
 #define MAX_OPTIMIZED_LENGTH (MAX_INSN_SIZE + RELATIVE_ADDR_SIZE)
 #define MAX_OPTINSN_SIZE 				\
 	(((unsigned long)&optprobe_template_end -	\
@@ -61,7 +72,11 @@ extern kprobe_opcode_t optprobe_template_end;
 extern const int kretprobe_blacklist_size;
 
 void arch_remove_kprobe(struct kprobe *p);
+<<<<<<< HEAD
 void kretprobe_trampoline(void);
+=======
+asmlinkage void kretprobe_trampoline(void);
+>>>>>>> refs/remotes/origin/master
 
 /* Architecture specific copy of original instruction*/
 struct arch_specific_insn {
@@ -76,6 +91,10 @@ struct arch_specific_insn {
 	 * a post_handler or break_handler).
 	 */
 	int boostable;
+<<<<<<< HEAD
+=======
+	bool if_modifier;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct arch_optimized_insn {

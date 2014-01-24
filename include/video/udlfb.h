@@ -42,9 +42,13 @@ struct dlfb_data {
 	int fb_count;
 	bool virtualized; /* true when physical usb device not present */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct delayed_work init_framebuffer_work;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct delayed_work init_framebuffer_work;
+>>>>>>> refs/remotes/origin/master
 	struct delayed_work free_framebuffer_work;
 	atomic_t usb_active; /* 0 = update virtual buffer, but no usb traffic */
 	atomic_t lost_pixels; /* 1 = a render op failed. Need screen refresh */
@@ -55,9 +59,13 @@ struct dlfb_data {
 	int base8;
 	u32 pseudo_palette[256];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int blank_mode; /*one of FB_BLANK_ */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int blank_mode; /*one of FB_BLANK_ */
+>>>>>>> refs/remotes/origin/master
 	/* blit-only rendering path metrics, exposed through sysfs */
 	atomic_t bytes_rendered; /* raw pixel-bytes driver asked to render */
 	atomic_t bytes_identical; /* saved effort with backbuffer comparison */

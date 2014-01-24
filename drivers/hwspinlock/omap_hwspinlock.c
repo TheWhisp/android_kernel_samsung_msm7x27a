@@ -42,6 +42,7 @@
 #define SPINLOCK_TAKEN			(1)	/* locked */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define to_omap_hwspinlock(lock)	\
 	container_of(lock, struct omap_hwspinlock, lock)
 
@@ -62,28 +63,39 @@ static int omap_hwspinlock_trylock(struct hwspinlock *lock)
 	/* attempt to acquire the lock by reading its value */
 	return (SPINLOCK_NOTTAKEN == readl(omap_lock->addr));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int omap_hwspinlock_trylock(struct hwspinlock *lock)
 {
 	void __iomem *lock_addr = lock->priv;
 
 	/* attempt to acquire the lock by reading its value */
 	return (SPINLOCK_NOTTAKEN == readl(lock_addr));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void omap_hwspinlock_unlock(struct hwspinlock *lock)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct omap_hwspinlock *omap_lock = to_omap_hwspinlock(lock);
 
 	/* release the lock by writing 0 to it */
 	writel(SPINLOCK_NOTTAKEN, omap_lock->addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem *lock_addr = lock->priv;
 
 	/* release the lock by writing 0 to it */
 	writel(SPINLOCK_NOTTAKEN, lock_addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -107,6 +119,7 @@ static const struct hwspinlock_ops omap_hwspinlock_ops = {
 	.relax = omap_hwspinlock_relax,
 };
 
+<<<<<<< HEAD
 static int __devinit omap_hwspinlock_probe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -117,6 +130,10 @@ static int __devinit omap_hwspinlock_probe(struct platform_device *pdev)
 	void __iomem *io_base;
 	int i, ret;
 =======
+=======
+static int omap_hwspinlock_probe(struct platform_device *pdev)
+{
+>>>>>>> refs/remotes/origin/master
 	struct hwspinlock_pdata *pdata = pdev->dev.platform_data;
 	struct hwspinlock_device *bank;
 	struct hwspinlock *hwlock;
@@ -126,12 +143,16 @@ static int __devinit omap_hwspinlock_probe(struct platform_device *pdev)
 
 	if (!pdata)
 		return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res)
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	state = kzalloc(sizeof(*state), GFP_KERNEL);
 	if (!state)
@@ -147,6 +168,11 @@ static int __devinit omap_hwspinlock_probe(struct platform_device *pdev)
 	if (!io_base)
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	io_base = ioremap(res->start, resource_size(res));
+	if (!io_base)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* Determine number of locks */
 	i = readl(io_base + SYSSTATUS_OFFSET);
@@ -159,11 +185,14 @@ static int __devinit omap_hwspinlock_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	state->num_locks = i * 32;
 	state->io_base = io_base;
 
 	platform_set_drvdata(pdev, state);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	num_locks = i * 32; /* actual number of locks in this device */
 
 	bank = kzalloc(sizeof(*bank) + num_locks * sizeof(*hwlock), GFP_KERNEL);
@@ -176,7 +205,10 @@ static int __devinit omap_hwspinlock_probe(struct platform_device *pdev)
 
 	for (i = 0, hwlock = &bank->lock[0]; i < num_locks; i++, hwlock++)
 		hwlock->priv = io_base + LOCK_BASE_OFFSET + sizeof(u32) * i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * runtime PM will make sure the clock of this module is
@@ -184,6 +216,7 @@ static int __devinit omap_hwspinlock_probe(struct platform_device *pdev)
 	 */
 	pm_runtime_enable(&pdev->dev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < state->num_locks; i++) {
 		omap_lock = kzalloc(sizeof(*omap_lock), GFP_KERNEL);
@@ -250,6 +283,8 @@ static int omap_hwspinlock_remove(struct platform_device *pdev)
 	iounmap(state->io_base);
 	kfree(state);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = hwspin_lock_register(bank, &pdev->dev, &omap_hwspinlock_ops,
 						pdata->base_id, num_locks);
 	if (ret)
@@ -265,7 +300,11 @@ iounmap_base:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit omap_hwspinlock_remove(struct platform_device *pdev)
+=======
+static int omap_hwspinlock_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hwspinlock_device *bank = platform_get_drvdata(pdev);
 	void __iomem *io_base = bank->lock[0].priv - LOCK_BASE_OFFSET;
@@ -280,13 +319,17 @@ static int __devexit omap_hwspinlock_remove(struct platform_device *pdev)
 	pm_runtime_disable(&pdev->dev);
 	iounmap(io_base);
 	kfree(bank);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver omap_hwspinlock_driver = {
 	.probe		= omap_hwspinlock_probe,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.remove		= omap_hwspinlock_remove,
 	.driver		= {
@@ -297,6 +340,12 @@ static struct platform_driver omap_hwspinlock_driver = {
 		.name	= "omap_hwspinlock",
 		.owner	= THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= omap_hwspinlock_remove,
+	.driver		= {
+		.name	= "omap_hwspinlock",
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

@@ -26,6 +26,10 @@
 #include <linux/module.h>
 #include <linux/jiffies.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/i2c/twl.h>
 #include <linux/mfd/twl4030-audio.h>
@@ -42,7 +46,10 @@ struct vibra_info {
 	struct device		*dev;
 	struct input_dev	*input_dev;
 
+<<<<<<< HEAD
 	struct workqueue_struct *workqueue;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct work_struct	play_work;
 
 	bool			enabled;
@@ -142,6 +149,7 @@ static int vibra_play(struct input_dev *input, void *data,
 	if (!info->speed)
 		info->speed = effect->u.rumble.weak_magnitude >> 9;
 	info->direction = effect->direction < EFFECT_DIR_180_DEG ? 0 : 1;
+<<<<<<< HEAD
 	queue_work(info->workqueue, &info->play_work);
 	return 0;
 }
@@ -155,6 +163,9 @@ static int twl4030_vibra_open(struct input_dev *input)
 		dev_err(&input->dev, "couldn't create workqueue\n");
 		return -ENOMEM;
 	}
+=======
+	schedule_work(&info->play_work);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -163,9 +174,12 @@ static void twl4030_vibra_close(struct input_dev *input)
 	struct vibra_info *info = input_get_drvdata(input);
 
 	cancel_work_sync(&info->play_work);
+<<<<<<< HEAD
 	INIT_WORK(&info->play_work, vibra_play_work); /* cleanup */
 	destroy_workqueue(info->workqueue);
 	info->workqueue = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (info->enabled)
 		vibra_disable(info);
@@ -173,10 +187,14 @@ static void twl4030_vibra_close(struct input_dev *input)
 
 /*** Module ***/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if CONFIG_PM
 =======
 #ifdef CONFIG_PM_SLEEP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int twl4030_vibra_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -194,15 +212,19 @@ static int twl4030_vibra_resume(struct device *dev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static SIMPLE_DEV_PM_OPS(twl4030_vibra_pm_ops,
 			 twl4030_vibra_suspend, twl4030_vibra_resume);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static SIMPLE_DEV_PM_OPS(twl4030_vibra_pm_ops,
 			 twl4030_vibra_suspend, twl4030_vibra_resume);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
@@ -212,15 +234,43 @@ static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
 	int ret;
 
 	if (!pdata) {
+=======
+
+static bool twl4030_vibra_check_coexist(struct twl4030_vibra_data *pdata,
+			      struct device_node *node)
+{
+	if (pdata && pdata->coexist)
+		return true;
+
+	if (of_find_node_by_name(node, "codec"))
+		return true;
+
+	return false;
+}
+
+static int twl4030_vibra_probe(struct platform_device *pdev)
+{
+	struct twl4030_vibra_data *pdata = pdev->dev.platform_data;
+	struct device_node *twl4030_core_node = pdev->dev.parent->of_node;
+	struct vibra_info *info;
+	int ret;
+
+	if (!pdata && !twl4030_core_node) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&pdev->dev, "platform_data not available\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info)
 		return -ENOMEM;
 
 	info->dev = &pdev->dev;
+<<<<<<< HEAD
 	info->coexist = pdata->coexist;
 	INIT_WORK(&info->play_work, vibra_play_work);
 
@@ -229,6 +279,15 @@ static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "couldn't allocate input device\n");
 		ret = -ENOMEM;
 		goto err_kzalloc;
+=======
+	info->coexist = twl4030_vibra_check_coexist(pdata, twl4030_core_node);
+	INIT_WORK(&info->play_work, vibra_play_work);
+
+	info->input_dev = devm_input_allocate_device(&pdev->dev);
+	if (info->input_dev == NULL) {
+		dev_err(&pdev->dev, "couldn't allocate input device\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	input_set_drvdata(info->input_dev, info);
@@ -236,14 +295,21 @@ static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
 	info->input_dev->name = "twl4030:vibrator";
 	info->input_dev->id.version = 1;
 	info->input_dev->dev.parent = pdev->dev.parent;
+<<<<<<< HEAD
 	info->input_dev->open = twl4030_vibra_open;
+=======
+>>>>>>> refs/remotes/origin/master
 	info->input_dev->close = twl4030_vibra_close;
 	__set_bit(FF_RUMBLE, info->input_dev->ffbit);
 
 	ret = input_ff_create_memless(info->input_dev, NULL, vibra_play);
 	if (ret < 0) {
 		dev_dbg(&pdev->dev, "couldn't register vibrator to FF\n");
+<<<<<<< HEAD
 		goto err_ialloc;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = input_register_device(info->input_dev);
@@ -259,6 +325,7 @@ static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
 
 err_iff:
 	input_ff_destroy(info->input_dev);
+<<<<<<< HEAD
 err_ialloc:
 	input_free_device(info->input_dev);
 err_kzalloc:
@@ -306,13 +373,26 @@ module_exit(twl4030_vibra_exit);
 MODULE_ALIAS("platform:twl4030-vibra");
 
 =======
+=======
+	return ret;
+}
+
+static struct platform_driver twl4030_vibra_driver = {
+	.probe		= twl4030_vibra_probe,
+	.driver		= {
+		.name	= "twl4030-vibra",
+		.owner	= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 		.pm	= &twl4030_vibra_pm_ops,
 	},
 };
 module_platform_driver(twl4030_vibra_driver);
 
 MODULE_ALIAS("platform:twl4030-vibra");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("TWL4030 Vibra driver");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Nokia Corporation");

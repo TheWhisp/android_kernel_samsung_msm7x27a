@@ -28,9 +28,13 @@
 #include <linux/delay.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/pcm.h>
@@ -115,6 +119,7 @@ struct aw2 {
 /*********************************
  * FUNCTION DECLARATIONS
  ********************************/
+<<<<<<< HEAD
 static int __init alsa_card_aw2_init(void);
 static void __exit alsa_card_aw2_exit(void);
 static int snd_aw2_dev_free(struct snd_device *device);
@@ -123,6 +128,14 @@ static int __devinit snd_aw2_create(struct snd_card *card,
 static int __devinit snd_aw2_probe(struct pci_dev *pci,
 				   const struct pci_device_id *pci_id);
 static void __devexit snd_aw2_remove(struct pci_dev *pci);
+=======
+static int snd_aw2_dev_free(struct snd_device *device);
+static int snd_aw2_create(struct snd_card *card,
+			  struct pci_dev *pci, struct aw2 **rchip);
+static int snd_aw2_probe(struct pci_dev *pci,
+			 const struct pci_device_id *pci_id);
+static void snd_aw2_remove(struct pci_dev *pci);
+>>>>>>> refs/remotes/origin/master
 static int snd_aw2_pcm_playback_open(struct snd_pcm_substream *substream);
 static int snd_aw2_pcm_playback_close(struct snd_pcm_substream *substream);
 static int snd_aw2_pcm_capture_open(struct snd_pcm_substream *substream);
@@ -140,7 +153,11 @@ static snd_pcm_uframes_t snd_aw2_pcm_pointer_playback(struct snd_pcm_substream
 						      *substream);
 static snd_pcm_uframes_t snd_aw2_pcm_pointer_capture(struct snd_pcm_substream
 						     *substream);
+<<<<<<< HEAD
 static int __devinit snd_aw2_new_pcm(struct aw2 *chip);
+=======
+static int snd_aw2_new_pcm(struct aw2 *chip);
+>>>>>>> refs/remotes/origin/master
 
 static int snd_aw2_control_switch_capture_info(struct snd_kcontrol *kcontrol,
 					       struct snd_ctl_elem_info *uinfo);
@@ -157,10 +174,14 @@ static int snd_aw2_control_switch_capture_put(struct snd_kcontrol *kcontrol,
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for Audiowerk2 soundcard.");
@@ -178,6 +199,7 @@ static DEFINE_PCI_DEVICE_TABLE(snd_aw2_ids) = {
 MODULE_DEVICE_TABLE(pci, snd_aw2_ids);
 
 /* pci_driver definition */
+<<<<<<< HEAD
 static struct pci_driver driver = {
 <<<<<<< HEAD
 	.name = "Emagic Audiowerk 2",
@@ -189,6 +211,17 @@ static struct pci_driver driver = {
 	.remove = __devexit_p(snd_aw2_remove),
 };
 
+=======
+static struct pci_driver aw2_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_aw2_ids,
+	.probe = snd_aw2_probe,
+	.remove = snd_aw2_remove,
+};
+
+module_pci_driver(aw2_driver);
+
+>>>>>>> refs/remotes/origin/master
 /* operators for playback PCM alsa interface */
 static struct snd_pcm_ops snd_aw2_playback_ops = {
 	.open = snd_aw2_pcm_playback_open,
@@ -213,7 +246,11 @@ static struct snd_pcm_ops snd_aw2_capture_ops = {
 	.pointer = snd_aw2_pcm_pointer_capture,
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new aw2_control __devinitdata = {
+=======
+static struct snd_kcontrol_new aw2_control = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "PCM Capture Route",
 	.index = 0,
@@ -228,6 +265,7 @@ static struct snd_kcontrol_new aw2_control __devinitdata = {
  * FUNCTION IMPLEMENTATIONS
  ********************************/
 
+<<<<<<< HEAD
 /* initialization of the module */
 static int __init alsa_card_aw2_init(void)
 {
@@ -245,6 +283,8 @@ static void __exit alsa_card_aw2_exit(void)
 module_init(alsa_card_aw2_init);
 module_exit(alsa_card_aw2_exit);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* component-destructor */
 static int snd_aw2_dev_free(struct snd_device *device)
 {
@@ -270,8 +310,13 @@ static int snd_aw2_dev_free(struct snd_device *device)
 }
 
 /* chip-specific constructor */
+<<<<<<< HEAD
 static int __devinit snd_aw2_create(struct snd_card *card,
 				    struct pci_dev *pci, struct aw2 **rchip)
+=======
+static int snd_aw2_create(struct snd_card *card,
+			  struct pci_dev *pci, struct aw2 **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aw2 *chip;
 	int err;
@@ -330,10 +375,14 @@ static int __devinit snd_aw2_create(struct snd_card *card,
 
 	if (request_irq(pci->irq, snd_aw2_saa7146_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED, "Audiowerk2", chip)) {
 =======
 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "aw2: Cannot grab irq %d\n", pci->irq);
 
 		iounmap(chip->iobase_virt);
@@ -364,8 +413,13 @@ static int __devinit snd_aw2_create(struct snd_card *card,
 }
 
 /* constructor */
+<<<<<<< HEAD
 static int __devinit snd_aw2_probe(struct pci_dev *pci,
 				   const struct pci_device_id *pci_id)
+=======
+static int snd_aw2_probe(struct pci_dev *pci,
+			 const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -421,10 +475,16 @@ static int __devinit snd_aw2_probe(struct pci_dev *pci,
 }
 
 /* destructor */
+<<<<<<< HEAD
 static void __devexit snd_aw2_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
 	pci_set_drvdata(pci, NULL);
+=======
+static void snd_aw2_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+>>>>>>> refs/remotes/origin/master
 }
 
 /* open callback */
@@ -623,7 +683,11 @@ static snd_pcm_uframes_t snd_aw2_pcm_pointer_capture(struct snd_pcm_substream
 }
 
 /* create a pcm device */
+<<<<<<< HEAD
 static int __devinit snd_aw2_new_pcm(struct aw2 *chip)
+=======
+static int snd_aw2_new_pcm(struct aw2 *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm *pcm_playback_ana;
 	struct snd_pcm *pcm_playback_num;

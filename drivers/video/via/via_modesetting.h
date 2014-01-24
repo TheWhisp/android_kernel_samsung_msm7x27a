@@ -34,8 +34,12 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct display_timing {
+=======
+struct via_display_timing {
+>>>>>>> refs/remotes/origin/master
 	u16 hor_total;
 	u16 hor_addr;
 	u16 hor_blank_start;
@@ -51,9 +55,14 @@ struct display_timing {
 };
 
 
+<<<<<<< HEAD
 void via_set_primary_timing(const struct display_timing *timing);
 void via_set_secondary_timing(const struct display_timing *timing);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void via_set_primary_timing(const struct via_display_timing *timing);
+void via_set_secondary_timing(const struct via_display_timing *timing);
+>>>>>>> refs/remotes/origin/master
 void via_set_primary_address(u32 addr);
 void via_set_secondary_address(u32 addr);
 void via_set_primary_pitch(u32 pitch);

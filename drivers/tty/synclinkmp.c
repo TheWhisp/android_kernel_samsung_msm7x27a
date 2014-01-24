@@ -59,9 +59,12 @@
 #include <linux/ioctl.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/dma.h>
@@ -266,8 +269,12 @@ typedef struct _synclinkmp_info {
 	bool sca_statctrl_requested;
 
 	u32 misc_ctrl_value;
+<<<<<<< HEAD
 	char flag_buf[MAX_ASYNC_BUFFER_SIZE];
 	char char_buf[MAX_ASYNC_BUFFER_SIZE];
+=======
+	char *flag_buf;
+>>>>>>> refs/remotes/origin/master
 	bool drop_rts_on_tx_done;
 
 	struct	_input_signal_events	input_signal_events;
@@ -460,10 +467,14 @@ static int synclinkmp_device_count = 0;
  * This is useful for use with gdb and add-symbol-file command.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int break_on_load = 0;
 =======
 static bool break_on_load = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool break_on_load = 0;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Driver major number, defaults to zero to get auto
@@ -500,7 +511,11 @@ static struct pci_driver synclinkmp_pci_driver = {
 	.name		= "synclinkmp",
 	.id_table	= synclinkmp_pci_tbl,
 	.probe		= synclinkmp_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(synclinkmp_remove_one),
+=======
+	.remove		= synclinkmp_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -719,6 +734,7 @@ static void ldisc_receive_buf(struct tty_struct *tty,
 
 /* tty callbacks */
 
+<<<<<<< HEAD
 /* Called when a port is opened.  Init and enable port.
  */
 static int open(struct tty_struct *tty, struct file *filp)
@@ -733,12 +749,21 @@ static int open(struct tty_struct *tty, struct file *filp)
 =======
 	if (line >= synclinkmp_device_count) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	SLMP_INFO *info;
+	int line = tty->index;
+
+	if (line >= synclinkmp_device_count) {
+>>>>>>> refs/remotes/origin/master
 		printk("%s(%d): open with invalid line #%d.\n",
 			__FILE__,__LINE__,line);
 		return -ENODEV;
 	}
 
 	info = synclinkmp_device_list;
+<<<<<<< HEAD
 	while(info && info->line != line)
 		info = info->next_device;
 	if (sanity_check(info, tty->name, "open"))
@@ -746,10 +771,35 @@ static int open(struct tty_struct *tty, struct file *filp)
 	if ( info->init_error ) {
 		printk("%s(%d):%s device is not allocated, init error=%d\n",
 			__FILE__,__LINE__,info->device_name,info->init_error);
+=======
+	while (info && info->line != line)
+		info = info->next_device;
+	if (sanity_check(info, tty->name, "open"))
+		return -ENODEV;
+	if (info->init_error) {
+		printk("%s(%d):%s device is not allocated, init error=%d\n",
+			__FILE__, __LINE__, info->device_name,
+			info->init_error);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	tty->driver_data = info;
+<<<<<<< HEAD
+=======
+
+	return tty_port_install(&info->port, driver, tty);
+}
+
+/* Called when a port is opened.  Init and enable port.
+ */
+static int open(struct tty_struct *tty, struct file *filp)
+{
+	SLMP_INFO *info = tty->driver_data;
+	unsigned long flags;
+	int retval;
+
+>>>>>>> refs/remotes/origin/master
 	info->port.tty = tty;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
@@ -758,14 +808,23 @@ static int open(struct tty_struct *tty, struct file *filp)
 
 	/* If port is closing, signal caller to try again */
 	if (tty_hung_up_p(filp) || info->port.flags & ASYNC_CLOSING){
+<<<<<<< HEAD
 		if (info->port.flags & ASYNC_CLOSING)
 			interruptible_sleep_on(&info->port.close_wait);
+=======
+		wait_event_interruptible_tty(tty, info->port.close_wait,
+					     !(info->port.flags & ASYNC_CLOSING));
+>>>>>>> refs/remotes/origin/master
 		retval = ((info->port.flags & ASYNC_HUP_NOTIFY) ?
 			-EAGAIN : -ERESTARTSYS);
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
 	info->port.tty->low_latency = (info->port.flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+=======
+	info->port.low_latency = (info->port.flags & ASYNC_LOW_LATENCY) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&info->netlock, flags);
 	if (info->netcount) {
@@ -885,8 +944,13 @@ static void set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 
 	/* Handle transition to B0 status */
 	if (old_termios->c_cflag & CBAUD &&
+<<<<<<< HEAD
 	    !(tty->termios->c_cflag & CBAUD)) {
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
+=======
+	    !(tty->termios.c_cflag & CBAUD)) {
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&info->lock,flags);
 	 	set_signals(info);
 		spin_unlock_irqrestore(&info->lock,flags);
@@ -894,9 +958,15 @@ static void set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 
 	/* Handle transition away from B0 status */
 	if (!(old_termios->c_cflag & CBAUD) &&
+<<<<<<< HEAD
 	    tty->termios->c_cflag & CBAUD) {
 		info->serial_signals |= SerialSignal_DTR;
  		if (!(tty->termios->c_cflag & CRTSCTS) ||
+=======
+	    tty->termios.c_cflag & CBAUD) {
+		info->serial_signals |= SerialSignal_DTR;
+ 		if (!(tty->termios.c_cflag & CRTSCTS) ||
+>>>>>>> refs/remotes/origin/master
  		    !test_bit(TTY_THROTTLED, &tty->flags)) {
 			info->serial_signals |= SerialSignal_RTS;
  		}
@@ -907,7 +977,11 @@ static void set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 
 	/* Handle turning off CRTSCTS */
 	if (old_termios->c_cflag & CRTSCTS &&
+<<<<<<< HEAD
 	    !(tty->termios->c_cflag & CRTSCTS)) {
+=======
+	    !(tty->termios.c_cflag & CRTSCTS)) {
+>>>>>>> refs/remotes/origin/master
 		tty->hw_stopped = 0;
 		tx_release(tty);
 	}
@@ -1485,7 +1559,11 @@ static void throttle(struct tty_struct * tty)
 	if (I_IXOFF(tty))
 		send_xchar(tty, STOP_CHAR(tty));
 
+<<<<<<< HEAD
  	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+ 	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&info->lock,flags);
 		info->serial_signals &= ~SerialSignal_RTS;
 	 	set_signals(info);
@@ -1514,7 +1592,11 @@ static void unthrottle(struct tty_struct * tty)
 			send_xchar(tty, START_CHAR(tty));
 	}
 
+<<<<<<< HEAD
  	if (tty->termios->c_cflag & CRTSCTS) {
+=======
+ 	if (tty->termios.c_cflag & CRTSCTS) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&info->lock,flags);
 		info->serial_signals |= SerialSignal_RTS;
 	 	set_signals(info);
@@ -1680,8 +1762,13 @@ static int hdlcdev_open(struct net_device *dev)
 		return rc;
 	}
 
+<<<<<<< HEAD
 	/* assert DTR and RTS, apply hardware settings */
 	info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
+=======
+	/* assert RTS and DTR, apply hardware settings */
+	info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+>>>>>>> refs/remotes/origin/master
 	program_hw(info);
 
 	/* enable network layer transmit */
@@ -2011,9 +2098,12 @@ static void bh_handler(struct work_struct *work)
 	SLMP_INFO *info = container_of(work, SLMP_INFO, task);
 	int action;
 
+<<<<<<< HEAD
 	if (!info)
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if ( debug_level >= DEBUG_LEVEL_BH )
 		printk( "%s(%d):%s bh_handler() entry\n",
 			__FILE__,__LINE__,info->device_name);
@@ -2135,6 +2225,7 @@ static void isr_rxint(SLMP_INFO * info)
 			/* process break detection if tty control
 			 * is not set to ignore it
 			 */
+<<<<<<< HEAD
 			if ( tty ) {
 				if (!(status & info->ignore_status_mask1)) {
 					if (info->read_status_mask1 & BRKD) {
@@ -2142,6 +2233,13 @@ static void isr_rxint(SLMP_INFO * info)
 						if (info->port.flags & ASYNC_SAK)
 							do_SAK(tty);
 					}
+=======
+			if (!(status & info->ignore_status_mask1)) {
+				if (info->read_status_mask1 & BRKD) {
+					tty_insert_flip_char(&info->port, 0, TTY_BREAK);
+					if (tty && (info->port.flags & ASYNC_SAK))
+						do_SAK(tty);
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		}
@@ -2173,7 +2271,10 @@ static void isr_rxrdy(SLMP_INFO * info)
 {
 	u16 status;
 	unsigned char DataByte;
+<<<<<<< HEAD
  	struct tty_struct *tty = info->port.tty;
+=======
+>>>>>>> refs/remotes/origin/master
  	struct	mgsl_icount *icount = &info->icount;
 
 	if ( debug_level >= DEBUG_LEVEL_ISR )
@@ -2206,6 +2307,7 @@ static void isr_rxrdy(SLMP_INFO * info)
 
 			status &= info->read_status_mask2;
 
+<<<<<<< HEAD
 			if ( tty ) {
 				if (status & PE)
 					flag = TTY_PARITY;
@@ -2226,6 +2328,24 @@ static void isr_rxrdy(SLMP_INFO * info)
 			if (over)
 				tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 		}
+=======
+			if (status & PE)
+				flag = TTY_PARITY;
+			else if (status & FRME)
+				flag = TTY_FRAME;
+			if (status & OVRN) {
+				/* Overrun is special, since it's
+				 * reported immediately, and doesn't
+				 * affect the current character
+				 */
+				over = true;
+			}
+		}	/* end of if (error) */
+
+		tty_insert_flip_char(&info->port, DataByte, flag);
+		if (over)
+			tty_insert_flip_char(&info->port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ( debug_level >= DEBUG_LEVEL_ISR ) {
@@ -2235,8 +2355,12 @@ static void isr_rxrdy(SLMP_INFO * info)
 			icount->frame,icount->overrun);
 	}
 
+<<<<<<< HEAD
 	if ( tty )
 		tty_flip_buffer_push(tty);
+=======
+	tty_flip_buffer_push(&info->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void isr_txeom(SLMP_INFO * info, unsigned char status)
@@ -2503,7 +2627,11 @@ static void isr_io_pin( SLMP_INFO *info, u16 status )
 			}
 		}
 
+<<<<<<< HEAD
 		if ( (info->port.flags & ASYNC_CTS_FLOW) &&
+=======
+		if (tty_port_cts_enabled(&info->port) &&
+>>>>>>> refs/remotes/origin/master
 		     (status & MISCSTATUS_CTS_LATCHED) ) {
 			if ( info->port.tty ) {
 				if (info->port.tty->hw_stopped) {
@@ -2720,8 +2848,13 @@ static void shutdown(SLMP_INFO * info)
 
 	reset_port(info);
 
+<<<<<<< HEAD
  	if (!info->port.tty || info->port.tty->termios->c_cflag & HUPCL) {
  		info->serial_signals &= ~(SerialSignal_DTR + SerialSignal_RTS);
+=======
+ 	if (!info->port.tty || info->port.tty->termios.c_cflag & HUPCL) {
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
 		set_signals(info);
 	}
 
@@ -2761,7 +2894,11 @@ static void program_hw(SLMP_INFO *info)
 
 	get_signals(info);
 
+<<<<<<< HEAD
 	if (info->netcount || (info->port.tty && info->port.tty->termios->c_cflag & CREAD) )
+=======
+	if (info->netcount || (info->port.tty && info->port.tty->termios.c_cflag & CREAD) )
+>>>>>>> refs/remotes/origin/master
 		rx_start(info);
 
 	spin_unlock_irqrestore(&info->lock,flags);
@@ -2774,13 +2911,18 @@ static void change_params(SLMP_INFO *info)
 	unsigned cflag;
 	int bits_per_char;
 
+<<<<<<< HEAD
 	if (!info->port.tty || !info->port.tty->termios)
+=======
+	if (!info->port.tty)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):%s change_params()\n",
 			 __FILE__,__LINE__, info->device_name );
 
+<<<<<<< HEAD
 	cflag = info->port.tty->termios->c_cflag;
 
 	/* if B0 rate (hangup) specified then negate DTR and RTS */
@@ -2789,6 +2931,16 @@ static void change_params(SLMP_INFO *info)
 		info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
 	else
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
+=======
+	cflag = info->port.tty->termios.c_cflag;
+
+	/* if B0 rate (hangup) specified then negate RTS and DTR */
+	/* otherwise assert RTS and DTR */
+ 	if (cflag & CBAUD)
+		info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+	else
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
 
 	/* byte size and parity */
 
@@ -3227,12 +3379,21 @@ static int tiocmget(struct tty_struct *tty)
  	get_signals(info);
 	spin_unlock_irqrestore(&info->lock,flags);
 
+<<<<<<< HEAD
 	result = ((info->serial_signals & SerialSignal_RTS) ? TIOCM_RTS:0) +
 		((info->serial_signals & SerialSignal_DTR) ? TIOCM_DTR:0) +
 		((info->serial_signals & SerialSignal_DCD) ? TIOCM_CAR:0) +
 		((info->serial_signals & SerialSignal_RI)  ? TIOCM_RNG:0) +
 		((info->serial_signals & SerialSignal_DSR) ? TIOCM_DSR:0) +
 		((info->serial_signals & SerialSignal_CTS) ? TIOCM_CTS:0);
+=======
+	result = ((info->serial_signals & SerialSignal_RTS) ? TIOCM_RTS : 0) |
+		 ((info->serial_signals & SerialSignal_DTR) ? TIOCM_DTR : 0) |
+		 ((info->serial_signals & SerialSignal_DCD) ? TIOCM_CAR : 0) |
+		 ((info->serial_signals & SerialSignal_RI)  ? TIOCM_RNG : 0) |
+		 ((info->serial_signals & SerialSignal_DSR) ? TIOCM_DSR : 0) |
+		 ((info->serial_signals & SerialSignal_CTS) ? TIOCM_CTS : 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (debug_level >= DEBUG_LEVEL_INFO)
 		printk("%s(%d):%s tiocmget() value=%08X\n",
@@ -3287,9 +3448,15 @@ static void dtr_rts(struct tty_port *port, int on)
 
 	spin_lock_irqsave(&info->lock,flags);
 	if (on)
+<<<<<<< HEAD
 		info->serial_signals |= SerialSignal_RTS + SerialSignal_DTR;
 	else
 		info->serial_signals &= ~(SerialSignal_RTS + SerialSignal_DTR);
+=======
+		info->serial_signals |= SerialSignal_RTS | SerialSignal_DTR;
+	else
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
  	set_signals(info);
 	spin_unlock_irqrestore(&info->lock,flags);
 }
@@ -3318,7 +3485,11 @@ static int block_til_ready(struct tty_struct *tty, struct file *filp,
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (tty->termios->c_cflag & CLOCAL)
+=======
+	if (tty->termios.c_cflag & CLOCAL)
+>>>>>>> refs/remotes/origin/master
 		do_clocal = true;
 
 	/* Wait for carrier detect and the line to become
@@ -3344,7 +3515,11 @@ static int block_til_ready(struct tty_struct *tty, struct file *filp,
 	port->blocked_open++;
 
 	while (1) {
+<<<<<<< HEAD
 		if (tty->termios->c_cflag & CBAUD)
+=======
+		if (C_BAUD(tty) && test_bit(ASYNCB_INITIALIZED, &port->flags))
+>>>>>>> refs/remotes/origin/master
 			tty_port_raise_dtr_rts(port);
 
 		set_current_state(TASK_INTERRUPTIBLE);
@@ -3369,9 +3544,15 @@ static int block_til_ready(struct tty_struct *tty, struct file *filp,
 			printk("%s(%d):%s block_til_ready() count=%d\n",
 				 __FILE__,__LINE__, tty->driver->name, port->count );
 
+<<<<<<< HEAD
 		tty_unlock();
 		schedule();
 		tty_lock();
+=======
+		tty_unlock(tty);
+		schedule();
+		tty_lock(tty);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	set_current_state(TASK_RUNNING);
@@ -3493,7 +3674,11 @@ static int alloc_buf_list(SLMP_INFO *info)
 	for ( i = 0; i < info->rx_buf_count; i++ ) {
 		/* calculate and store physical address of this buffer entry */
 		info->rx_buf_list_ex[i].phys_entry =
+<<<<<<< HEAD
 			info->buffer_list_phys + (i * sizeof(SCABUFSIZE));
+=======
+			info->buffer_list_phys + (i * SCABUFSIZE);
+>>>>>>> refs/remotes/origin/master
 
 		/* calculate and store physical address of */
 		/* next entry in cirular list of entries */
@@ -3556,6 +3741,16 @@ static int alloc_tmp_rx_buf(SLMP_INFO *info)
 	info->tmp_rx_buf = kmalloc(info->max_frame_size, GFP_KERNEL);
 	if (info->tmp_rx_buf == NULL)
 		return -ENOMEM;
+<<<<<<< HEAD
+=======
+	/* unused flag buffer to satisfy receive_buf calling interface */
+	info->flag_buf = kzalloc(info->max_frame_size, GFP_KERNEL);
+	if (!info->flag_buf) {
+		kfree(info->tmp_rx_buf);
+		info->tmp_rx_buf = NULL;
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -3563,6 +3758,11 @@ static void free_tmp_rx_buf(SLMP_INFO *info)
 {
 	kfree(info->tmp_rx_buf);
 	info->tmp_rx_buf = NULL;
+<<<<<<< HEAD
+=======
+	kfree(info->flag_buf);
+	info->flag_buf = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int claim_resources(SLMP_INFO *info)
@@ -3846,8 +4046,15 @@ static void device_init(int adapter_num, struct pci_dev *pdev)
 	for ( port = 0; port < SCA_MAX_PORTS; ++port ) {
 		port_array[port] = alloc_dev(adapter_num,port,pdev);
 		if( port_array[port] == NULL ) {
+<<<<<<< HEAD
 			for ( --port; port >= 0; --port )
 				kfree(port_array[port]);
+=======
+			for (--port; port >= 0; --port) {
+				tty_port_destroy(&port_array[port]->port);
+				kfree(port_array[port]);
+			}
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
@@ -3893,6 +4100,10 @@ static void device_init(int adapter_num, struct pci_dev *pdev)
 }
 
 static const struct tty_operations ops = {
+<<<<<<< HEAD
+=======
+	.install = install,
+>>>>>>> refs/remotes/origin/master
 	.open = open,
 	.close = close,
 	.write = write,
@@ -3955,6 +4166,10 @@ static void synclinkmp_cleanup(void)
 		}
 		tmp = info;
 		info = info->next_device;
+<<<<<<< HEAD
+=======
+		tty_port_destroy(&tmp->port);
+>>>>>>> refs/remotes/origin/master
 		kfree(tmp);
 	}
 
@@ -3989,9 +4204,12 @@ static int __init synclinkmp_init(void)
 	/* Initialize the tty_driver structure */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	serial_driver->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	serial_driver->driver_name = "synclinkmp";
 	serial_driver->name = "ttySLM";
 	serial_driver->major = ttymajor;
@@ -4360,7 +4578,11 @@ static void reset_port(SLMP_INFO *info)
 		tx_stop(info);
 		rx_stop(info);
 
+<<<<<<< HEAD
 		info->serial_signals &= ~(SerialSignal_DTR + SerialSignal_RTS);
+=======
+		info->serial_signals &= ~(SerialSignal_RTS | SerialSignal_DTR);
+>>>>>>> refs/remotes/origin/master
 		set_signals(info);
 
 		/* disable all port interrupts */
@@ -4756,8 +4978,13 @@ static void get_signals(SLMP_INFO *info)
 	u16 gpstatus = read_status_reg(info);
 	u16 testbit;
 
+<<<<<<< HEAD
 	/* clear all serial signals except DTR and RTS */
 	info->serial_signals &= SerialSignal_DTR + SerialSignal_RTS;
+=======
+	/* clear all serial signals except RTS and DTR */
+	info->serial_signals &= SerialSignal_RTS | SerialSignal_DTR;
+>>>>>>> refs/remotes/origin/master
 
 	/* set serial signal bits to reflect MISR */
 
@@ -4776,7 +5003,11 @@ static void get_signals(SLMP_INFO *info)
 		info->serial_signals |= SerialSignal_DSR;
 }
 
+<<<<<<< HEAD
 /* Set the state of DTR and RTS based on contents of
+=======
+/* Set the state of RTS and DTR based on contents of
+>>>>>>> refs/remotes/origin/master
  * serial_signals member of device context.
  */
 static void set_signals(SLMP_INFO *info)
@@ -4965,10 +5196,14 @@ CheckAgain:
 	if ( debug_level >= DEBUG_LEVEL_DATA )
 		trace_block(info,info->rx_buf_list_ex[StartIndex].virt_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			min_t(int, framesize,SCABUFSIZE),0);
 =======
 			min_t(unsigned int, framesize, SCABUFSIZE), 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			min_t(unsigned int, framesize, SCABUFSIZE), 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (framesize) {
 		if (framesize > info->max_frame_size)
@@ -5034,10 +5269,14 @@ static void tx_load_dma_buffer(SLMP_INFO *info, const char *buf, unsigned int co
 
 	if ( debug_level >= DEBUG_LEVEL_DATA )
 <<<<<<< HEAD
+<<<<<<< HEAD
 		trace_block(info,buf, min_t(int, count,SCABUFSIZE), 1);
 =======
 		trace_block(info, buf, min_t(unsigned int, count, SCABUFSIZE), 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		trace_block(info, buf, min_t(unsigned int, count, SCABUFSIZE), 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Copy source buffer to one or more DMA buffers, starting with
 	 * the first transmit dma buffer.
@@ -5045,10 +5284,14 @@ static void tx_load_dma_buffer(SLMP_INFO *info, const char *buf, unsigned int co
 	for(i=0;;)
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		copy_count = min_t(unsigned short,count,SCABUFSIZE);
 =======
 		copy_count = min_t(unsigned int, count, SCABUFSIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		copy_count = min_t(unsigned int, count, SCABUFSIZE);
+>>>>>>> refs/remotes/origin/master
 
 		desc = &info->tx_buf_list[i];
 		desc_ex = &info->tx_buf_list_ex[i];
@@ -5610,7 +5853,11 @@ static void write_control_reg(SLMP_INFO * info)
 }
 
 
+<<<<<<< HEAD
 static int __devinit synclinkmp_init_one (struct pci_dev *dev,
+=======
+static int synclinkmp_init_one (struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 					  const struct pci_device_id *ent)
 {
 	if (pci_enable_device(dev)) {
@@ -5621,6 +5868,10 @@ static int __devinit synclinkmp_init_one (struct pci_dev *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit synclinkmp_remove_one (struct pci_dev *dev)
+=======
+static void synclinkmp_remove_one (struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 }

@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * arch/arm/plat-omap/include/mach/dmtimer.h
 =======
  * arch/arm/plat-omap/include/plat/dmtimer.h
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * arch/arm/plat-omap/include/plat/dmtimer.h
+>>>>>>> refs/remotes/origin/master
  *
  * OMAP Dual-Mode Timers
  *
@@ -37,13 +41,19 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/clk.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/io.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASM_ARCH_DMTIMER_H
 #define __ASM_ARCH_DMTIMER_H
 
@@ -62,6 +72,7 @@
 #define OMAP_TIMER_TRIGGER_OVERFLOW		0x01
 #define OMAP_TIMER_TRIGGER_OVERFLOW_AND_COMPARE	0x02
 
+<<<<<<< HEAD
 /*
  * IP revision identifier so that Highlander IP
  * in OMAP4 can be distinguished.
@@ -79,16 +90,37 @@ struct omap_dm_timer *omap_dm_timer_request(void);
 struct omap_dm_timer *omap_dm_timer_request_specific(int timer_id);
 void omap_dm_timer_free(struct omap_dm_timer *timer);
 =======
+=======
+/* posted mode types */
+#define OMAP_TIMER_NONPOSTED			0x00
+#define OMAP_TIMER_POSTED			0x01
+>>>>>>> refs/remotes/origin/master
 
 /* timer capabilities used in hwmod database */
 #define OMAP_TIMER_SECURE				0x80000000
 #define OMAP_TIMER_ALWON				0x40000000
 #define OMAP_TIMER_HAS_PWM				0x20000000
+<<<<<<< HEAD
+=======
+#define OMAP_TIMER_NEEDS_RESET				0x10000000
+#define OMAP_TIMER_HAS_DSP_IRQ				0x08000000
+
+/*
+ * timer errata flags
+ *
+ * Errata i103/i767 impacts all OMAP3/4/5 devices including AM33xx. This
+ * errata prevents us from using posted mode on these devices, unless the
+ * timer counter register is never read. For more details please refer to
+ * the OMAP3/4/5 errata documents.
+ */
+#define OMAP_TIMER_ERRATA_I103_I767			0x80000000
+>>>>>>> refs/remotes/origin/master
 
 struct omap_timer_capability_dev_attr {
 	u32 timer_capability;
 };
 
+<<<<<<< HEAD
 struct omap_dm_timer;
 struct clk;
 
@@ -97,6 +129,10 @@ struct timer_regs {
 	u32 tiocp_cfg;
 	u32 tistat;
 	u32 tisr;
+=======
+struct timer_regs {
+	u32 tidr;
+>>>>>>> refs/remotes/origin/master
 	u32 tier;
 	u32 twer;
 	u32 tclr;
@@ -115,6 +151,7 @@ struct timer_regs {
 	u32 towr;
 };
 
+<<<<<<< HEAD
 struct dmtimer_platform_data {
 	int (*set_timer_src)(struct platform_device *pdev, int source);
 	int timer_ip_version;
@@ -130,6 +167,39 @@ struct omap_dm_timer *omap_dm_timer_request(void);
 struct omap_dm_timer *omap_dm_timer_request_specific(int timer_id);
 int omap_dm_timer_free(struct omap_dm_timer *timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct omap_dm_timer {
+	int id;
+	int irq;
+	struct clk *fclk;
+
+	void __iomem	*io_base;
+	void __iomem	*irq_stat;	/* TISR/IRQSTATUS interrupt status */
+	void __iomem	*irq_ena;	/* irq enable */
+	void __iomem	*irq_dis;	/* irq disable, only on v2 ip */
+	void __iomem	*pend;		/* write pending */
+	void __iomem	*func_base;	/* function register base */
+
+	unsigned long rate;
+	unsigned reserved:1;
+	unsigned posted:1;
+	struct timer_regs context;
+	int (*get_context_loss_count)(struct device *);
+	int ctx_loss_count;
+	int revision;
+	u32 capability;
+	u32 errata;
+	struct platform_device *pdev;
+	struct list_head node;
+};
+
+int omap_dm_timer_reserve_systimer(int id);
+struct omap_dm_timer *omap_dm_timer_request(void);
+struct omap_dm_timer *omap_dm_timer_request_specific(int timer_id);
+struct omap_dm_timer *omap_dm_timer_request_by_cap(u32 cap);
+struct omap_dm_timer *omap_dm_timer_request_by_node(struct device_node *np);
+int omap_dm_timer_free(struct omap_dm_timer *timer);
+>>>>>>> refs/remotes/origin/master
 void omap_dm_timer_enable(struct omap_dm_timer *timer);
 void omap_dm_timer_disable(struct omap_dm_timer *timer);
 
@@ -138,6 +208,7 @@ int omap_dm_timer_get_irq(struct omap_dm_timer *timer);
 u32 omap_dm_timer_modify_idlect_mask(u32 inputmask);
 struct clk *omap_dm_timer_get_fclk(struct omap_dm_timer *timer);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void omap_dm_timer_trigger(struct omap_dm_timer *timer);
 void omap_dm_timer_start(struct omap_dm_timer *timer);
@@ -160,6 +231,8 @@ void omap_dm_timer_write_counter(struct omap_dm_timer *timer, unsigned int value
 int omap_dm_timers_active(void);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int omap_dm_timer_trigger(struct omap_dm_timer *timer);
 int omap_dm_timer_start(struct omap_dm_timer *timer);
 int omap_dm_timer_stop(struct omap_dm_timer *timer);
@@ -172,6 +245,10 @@ int omap_dm_timer_set_pwm(struct omap_dm_timer *timer, int def_on, int toggle, i
 int omap_dm_timer_set_prescaler(struct omap_dm_timer *timer, int prescaler);
 
 int omap_dm_timer_set_int_enable(struct omap_dm_timer *timer, unsigned int value);
+<<<<<<< HEAD
+=======
+int omap_dm_timer_set_int_disable(struct omap_dm_timer *timer, u32 mask);
+>>>>>>> refs/remotes/origin/master
 
 unsigned int omap_dm_timer_read_status(struct omap_dm_timer *timer);
 int omap_dm_timer_write_status(struct omap_dm_timer *timer, unsigned int value);
@@ -297,6 +374,7 @@ int omap_dm_timers_active(void);
 #define OMAP_TIMER_TICK_INT_MASK_COUNT_REG				\
 		(_OMAP_TIMER_TICK_INT_MASK_COUNT_OFFSET | (WP_TOWR << WPSHIFT))
 
+<<<<<<< HEAD
 struct omap_dm_timer {
 	unsigned long phys_base;
 	int id;
@@ -326,6 +404,8 @@ struct omap_dm_timer {
 
 int omap_dm_timer_prepare(struct omap_dm_timer *timer);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 __omap_dm_timer_read(struct omap_dm_timer *timer, u32 reg,
 						int posted)
 {
@@ -354,16 +434,25 @@ static inline void __omap_dm_timer_init_regs(struct omap_dm_timer *timer)
 	tidr = __raw_readl(timer->io_base);
 	if (!(tidr >> 16)) {
 		timer->revision = 1;
+<<<<<<< HEAD
 		timer->sys_stat = timer->io_base +
 				OMAP_TIMER_V1_SYS_STAT_OFFSET;
 		timer->irq_stat = timer->io_base + OMAP_TIMER_V1_STAT_OFFSET;
 		timer->irq_ena = timer->io_base + OMAP_TIMER_V1_INT_EN_OFFSET;
 		timer->irq_dis = 0;
+=======
+		timer->irq_stat = timer->io_base + OMAP_TIMER_V1_STAT_OFFSET;
+		timer->irq_ena = timer->io_base + OMAP_TIMER_V1_INT_EN_OFFSET;
+		timer->irq_dis = timer->io_base + OMAP_TIMER_V1_INT_EN_OFFSET;
+>>>>>>> refs/remotes/origin/master
 		timer->pend = timer->io_base + _OMAP_TIMER_WRITE_PEND_OFFSET;
 		timer->func_base = timer->io_base;
 	} else {
 		timer->revision = 2;
+<<<<<<< HEAD
 		timer->sys_stat = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 		timer->irq_stat = timer->io_base + OMAP_TIMER_V2_IRQSTATUS;
 		timer->irq_ena = timer->io_base + OMAP_TIMER_V2_IRQENABLE_SET;
 		timer->irq_dis = timer->io_base + OMAP_TIMER_V2_IRQENABLE_CLR;
@@ -374,6 +463,7 @@ static inline void __omap_dm_timer_init_regs(struct omap_dm_timer *timer)
 	}
 }
 
+<<<<<<< HEAD
 /* Assumes the source clock has been set by caller */
 static inline void __omap_dm_timer_reset(struct omap_dm_timer *timer,
 					int autoidle, int wakeup)
@@ -413,6 +503,49 @@ static inline int __omap_dm_timer_set_source(struct clk *timer_fck,
 	__delay(300000);
 
 	return ret;
+=======
+/*
+ * __omap_dm_timer_enable_posted - enables write posted mode
+ * @timer:      pointer to timer instance handle
+ *
+ * Enables the write posted mode for the timer. When posted mode is enabled
+ * writes to certain timer registers are immediately acknowledged by the
+ * internal bus and hence prevents stalling the CPU waiting for the write to
+ * complete. Enabling this feature can improve performance for writing to the
+ * timer registers.
+ */
+static inline void __omap_dm_timer_enable_posted(struct omap_dm_timer *timer)
+{
+	if (timer->posted)
+		return;
+
+	if (timer->errata & OMAP_TIMER_ERRATA_I103_I767) {
+		timer->posted = OMAP_TIMER_NONPOSTED;
+		__omap_dm_timer_write(timer, OMAP_TIMER_IF_CTRL_REG, 0, 0);
+		return;
+	}
+
+	__omap_dm_timer_write(timer, OMAP_TIMER_IF_CTRL_REG,
+			      OMAP_TIMER_CTRL_POSTED, 0);
+	timer->context.tsicr = OMAP_TIMER_CTRL_POSTED;
+	timer->posted = OMAP_TIMER_POSTED;
+}
+
+/**
+ * __omap_dm_timer_override_errata - override errata flags for a timer
+ * @timer:      pointer to timer handle
+ * @errata:	errata flags to be ignored
+ *
+ * For a given timer, override a timer errata by clearing the flags
+ * specified by the errata argument. A specific erratum should only be
+ * overridden for a timer if the timer is used in such a way the erratum
+ * has no impact.
+ */
+static inline void __omap_dm_timer_override_errata(struct omap_dm_timer *timer,
+						   u32 errata)
+{
+	timer->errata &= ~errata;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void __omap_dm_timer_stop(struct omap_dm_timer *timer,
@@ -465,6 +598,9 @@ static inline void __omap_dm_timer_write_status(struct omap_dm_timer *timer,
 {
 	__raw_writel(value, timer->irq_stat);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_ARCH_DMTIMER_H */

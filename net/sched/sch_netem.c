@@ -14,9 +14,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/mm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/types.h>
@@ -26,12 +30,21 @@
 #include <linux/vmalloc.h>
 #include <linux/rtnetlink.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/reciprocal_div.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <net/netlink.h>
 #include <net/pkt_sched.h>
+=======
+#include <linux/reciprocal_div.h>
+#include <linux/rbtree.h>
+
+#include <net/netlink.h>
+#include <net/pkt_sched.h>
+#include <net/inet_ecn.h>
+>>>>>>> refs/remotes/origin/master
 
 #define VERSION "1.3"
 
@@ -74,20 +87,32 @@
 
 struct netem_sched_data {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct Qdisc	*qdisc;
 =======
 	/* internal t(ime)fifo qdisc uses sch->q and sch->limit */
+=======
+	/* internal t(ime)fifo qdisc uses t_root and sch->limit */
+	struct rb_root t_root;
+>>>>>>> refs/remotes/origin/master
 
 	/* optional qdisc for classful handling (NULL at netem init) */
 	struct Qdisc	*qdisc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct qdisc_watchdog watchdog;
 
 	psched_tdiff_t latency;
 	psched_tdiff_t jitter;
 
 	u32 loss;
+<<<<<<< HEAD
+=======
+	u32 ecn;
+>>>>>>> refs/remotes/origin/master
 	u32 limit;
 	u32 counter;
 	u32 gap;
@@ -95,13 +120,19 @@ struct netem_sched_data {
 	u32 reorder;
 	u32 corrupt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 rate;
 	s32 packet_overhead;
 	u32 cell_size;
 	u32 cell_size_reciprocal;
 	s32 cell_overhead;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct crndstate {
 		u32 last;
@@ -135,6 +166,7 @@ struct netem_sched_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Time stamp put into socket buffer control block */
 =======
 /* Time stamp put into socket buffer control block
@@ -147,6 +179,42 @@ struct netem_skb_cb {
 
 static inline struct netem_skb_cb *netem_skb_cb(struct sk_buff *skb)
 {
+=======
+/* Time stamp put into socket buffer control block
+ * Only valid when skbs are in our internal t(ime)fifo queue.
+ */
+struct netem_skb_cb {
+	psched_time_t	time_to_send;
+	ktime_t		tstamp_save;
+};
+
+/* Because space in skb->cb[] is tight, netem overloads skb->next/prev/tstamp
+ * to hold a rb_node structure.
+ *
+ * If struct sk_buff layout is changed, the following checks will complain.
+ */
+static struct rb_node *netem_rb_node(struct sk_buff *skb)
+{
+	BUILD_BUG_ON(offsetof(struct sk_buff, next) != 0);
+	BUILD_BUG_ON(offsetof(struct sk_buff, prev) !=
+		     offsetof(struct sk_buff, next) + sizeof(skb->next));
+	BUILD_BUG_ON(offsetof(struct sk_buff, tstamp) !=
+		     offsetof(struct sk_buff, prev) + sizeof(skb->prev));
+	BUILD_BUG_ON(sizeof(struct rb_node) > sizeof(skb->next) +
+					      sizeof(skb->prev) +
+					      sizeof(skb->tstamp));
+	return (struct rb_node *)&skb->next;
+}
+
+static struct sk_buff *netem_rb_to_skb(struct rb_node *rb)
+{
+	return (struct sk_buff *)rb;
+}
+
+static inline struct netem_skb_cb *netem_skb_cb(struct sk_buff *skb)
+{
+	/* we assume we can use skb next/prev/tstamp as storage for rb_node */
+>>>>>>> refs/remotes/origin/master
 	qdisc_cb_private_validate(skb, sizeof(struct netem_skb_cb));
 	return (struct netem_skb_cb *)qdisc_skb_cb(skb)->data;
 }
@@ -203,10 +271,17 @@ static bool loss_4state(struct netem_sched_data *q)
 		if (rnd < clg->a4) {
 			clg->state = 4;
 			return true;
+<<<<<<< HEAD
 		} else if (clg->a4 < rnd && rnd < clg->a1) {
 			clg->state = 3;
 			return true;
 		} else if (clg->a1 < rnd)
+=======
+		} else if (clg->a4 < rnd && rnd < clg->a1 + clg->a4) {
+			clg->state = 3;
+			return true;
+		} else if (clg->a1 + clg->a4 < rnd)
+>>>>>>> refs/remotes/origin/master
 			clg->state = 1;
 
 		break;
@@ -223,7 +298,10 @@ static bool loss_4state(struct netem_sched_data *q)
 			clg->state = 2;
 		else if (clg->a3 < rnd && rnd < clg->a2 + clg->a3) {
 			clg->state = 1;
+<<<<<<< HEAD
 			return true;
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (clg->a2 + clg->a3 < rnd) {
 			clg->state = 3;
 			return true;
@@ -257,10 +335,18 @@ static bool loss_gilb_ell(struct netem_sched_data *q)
 			clg->state = 2;
 		if (net_random() < clg->a4)
 			return true;
+<<<<<<< HEAD
 	case 2:
 		if (net_random() < clg->a2)
 			clg->state = 1;
 		if (clg->a3 > net_random())
+=======
+		break;
+	case 2:
+		if (net_random() < clg->a2)
+			clg->state = 1;
+		if (net_random() > clg->a3)
+>>>>>>> refs/remotes/origin/master
 			return true;
 	}
 
@@ -327,7 +413,10 @@ static psched_tdiff_t tabledist(psched_tdiff_t mu, psched_tdiff_t sigma,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static psched_time_t packet_len_2_sched_time(unsigned int len, struct netem_sched_data *q)
 {
 	u64 ticks;
@@ -348,6 +437,7 @@ static psched_time_t packet_len_2_sched_time(unsigned int len, struct netem_sche
 	return PSCHED_NS2TICKS(ticks);
 }
 
+<<<<<<< HEAD
 static void tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
 {
 	struct sk_buff_head *list = &sch->q;
@@ -367,6 +457,44 @@ static void tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void tfifo_reset(struct Qdisc *sch)
+{
+	struct netem_sched_data *q = qdisc_priv(sch);
+	struct rb_node *p;
+
+	while ((p = rb_first(&q->t_root))) {
+		struct sk_buff *skb = netem_rb_to_skb(p);
+
+		rb_erase(p, &q->t_root);
+		skb->next = NULL;
+		skb->prev = NULL;
+		kfree_skb(skb);
+	}
+}
+
+static void tfifo_enqueue(struct sk_buff *nskb, struct Qdisc *sch)
+{
+	struct netem_sched_data *q = qdisc_priv(sch);
+	psched_time_t tnext = netem_skb_cb(nskb)->time_to_send;
+	struct rb_node **p = &q->t_root.rb_node, *parent = NULL;
+
+	while (*p) {
+		struct sk_buff *skb;
+
+		parent = *p;
+		skb = netem_rb_to_skb(parent);
+		if (tnext >= netem_skb_cb(skb)->time_to_send)
+			p = &parent->rb_right;
+		else
+			p = &parent->rb_left;
+	}
+	rb_link_node(netem_rb_node(nskb), parent, p);
+	rb_insert_color(netem_rb_node(nskb), &q->t_root);
+	sch->q.qlen++;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Insert one skb into qdisc.
  * Note: parent depends on return value to account for queue length.
@@ -380,9 +508,12 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	struct netem_skb_cb *cb;
 	struct sk_buff *skb2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int count = 1;
 
 	/* Random duplication */
@@ -390,16 +521,33 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		++count;
 
 	/* Drop packet? */
+<<<<<<< HEAD
 	if (loss_event(q))
 		--count;
 
+=======
+	if (loss_event(q)) {
+		if (q->ecn && INET_ECN_set_ce(skb))
+			sch->qstats.drops++; /* mark packet */
+		else
+			--count;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (count == 0) {
 		sch->qstats.drops++;
 		kfree_skb(skb);
 		return NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
 	}
 
+<<<<<<< HEAD
 	skb_orphan(skb);
+=======
+	/* If a delay is expected, orphan the skb. (orphaning usually takes
+	 * place at TX completion time, so _before_ the link transit delay)
+	 */
+	if (q->latency || q->jitter)
+		skb_orphan_partial(skb);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If we need to duplicate packet, then re-insert at top of the
@@ -431,10 +579,13 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cb = netem_skb_cb(skb);
 	if (q->gap == 0 ||		/* not doing reordering */
 	    q->counter < q->gap ||	/* inside last reordering gap */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(skb_queue_len(&sch->q) >= sch->limit))
 		return qdisc_reshape_fail(skb, sch);
 
@@ -443,7 +594,10 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	cb = netem_skb_cb(skb);
 	if (q->gap == 0 ||		/* not doing reordering */
 	    q->counter < q->gap - 1 ||	/* inside last reordering gap */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	    q->reorder < get_crandom(&q->reorder_cor)) {
 		psched_time_t now;
 		psched_tdiff_t delay;
@@ -452,6 +606,7 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 				  &q->delay_cor, q->delay_dist);
 
 		now = psched_get_time();
+<<<<<<< HEAD
 <<<<<<< HEAD
 		cb->time_to_send = now + delay;
 		++q->counter;
@@ -479,6 +634,34 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		++q->counter;
 		tfifo_enqueue(skb, sch);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		if (q->rate) {
+			struct sk_buff *last;
+
+			if (!skb_queue_empty(&sch->q))
+				last = skb_peek_tail(&sch->q);
+			else
+				last = netem_rb_to_skb(rb_last(&q->t_root));
+			if (last) {
+				/*
+				 * Last packet in queue is reference point (now),
+				 * calculate this time bonus and subtract
+				 * from delay.
+				 */
+				delay -= netem_skb_cb(last)->time_to_send - now;
+				delay = max_t(psched_tdiff_t, 0, delay);
+				now = netem_skb_cb(last)->time_to_send;
+			}
+
+			delay += packet_len_2_sched_time(skb->len, q);
+		}
+
+		cb->time_to_send = now + delay;
+		cb->tstamp_save = skb->tstamp;
+		++q->counter;
+		tfifo_enqueue(skb, sch);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/*
 		 * Do re-ordering by putting one out of N packets at the front
@@ -487,6 +670,7 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		cb->time_to_send = psched_get_time();
 		q->counter = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		__skb_queue_head(&q->qdisc->q, skb);
 		sch->qstats.backlog += qdisc_pkt_len(skb);
@@ -503,17 +687,23 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 
 	sch->q.qlen++;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		__skb_queue_head(&sch->q, skb);
 		sch->qstats.requeues++;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return NET_XMIT_SUCCESS;
 }
 
 static unsigned int netem_drop(struct Qdisc *sch)
 {
 	struct netem_sched_data *q = qdisc_priv(sch);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int len = 0;
 
@@ -525,12 +715,36 @@ static unsigned int netem_drop(struct Qdisc *sch)
 	unsigned int len;
 
 	len = qdisc_queue_drop(sch);
+=======
+	unsigned int len;
+
+	len = qdisc_queue_drop(sch);
+
+	if (!len) {
+		struct rb_node *p = rb_first(&q->t_root);
+
+		if (p) {
+			struct sk_buff *skb = netem_rb_to_skb(p);
+
+			rb_erase(p, &q->t_root);
+			sch->q.qlen--;
+			skb->next = NULL;
+			skb->prev = NULL;
+			len = qdisc_pkt_len(skb);
+			sch->qstats.backlog -= len;
+			kfree_skb(skb);
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	if (!len && q->qdisc && q->qdisc->ops->drop)
 	    len = q->qdisc->ops->drop(q->qdisc);
 	if (len)
 		sch->qstats.drops++;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return len;
 }
 
@@ -538,10 +752,15 @@ static struct sk_buff *netem_dequeue(struct Qdisc *sch)
 {
 	struct netem_sched_data *q = qdisc_priv(sch);
 	struct sk_buff *skb;
+<<<<<<< HEAD
+=======
+	struct rb_node *p;
+>>>>>>> refs/remotes/origin/master
 
 	if (qdisc_is_throttled(sch))
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	skb = q->qdisc->ops->peek(q->qdisc);
 	if (skb) {
@@ -564,6 +783,32 @@ tfifo_dequeue:
 			__skb_unlink(skb, &sch->q);
 			sch->qstats.backlog -= qdisc_pkt_len(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+tfifo_dequeue:
+	skb = __skb_dequeue(&sch->q);
+	if (skb) {
+deliver:
+		sch->qstats.backlog -= qdisc_pkt_len(skb);
+		qdisc_unthrottled(sch);
+		qdisc_bstats_update(sch, skb);
+		return skb;
+	}
+	p = rb_first(&q->t_root);
+	if (p) {
+		psched_time_t time_to_send;
+
+		skb = netem_rb_to_skb(p);
+
+		/* if more time remaining? */
+		time_to_send = netem_skb_cb(skb)->time_to_send;
+		if (time_to_send <= psched_get_time()) {
+			rb_erase(p, &q->t_root);
+
+			sch->q.qlen--;
+			skb->next = NULL;
+			skb->prev = NULL;
+			skb->tstamp = netem_skb_cb(skb)->tstamp_save;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NET_CLS_ACT
 			/*
@@ -575,8 +820,11 @@ tfifo_dequeue:
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sch->q.qlen--;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (q->qdisc) {
 				int err = qdisc_enqueue(skb, q->qdisc);
 
@@ -588,6 +836,7 @@ tfifo_dequeue:
 				}
 				goto tfifo_dequeue;
 			}
+<<<<<<< HEAD
 deliver:
 >>>>>>> refs/remotes/origin/cm-10.0
 			qdisc_unthrottled(sch);
@@ -600,12 +849,21 @@ deliver:
 	}
 
 =======
+=======
+			goto deliver;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (q->qdisc) {
 			skb = q->qdisc->ops->dequeue(q->qdisc);
 			if (skb)
 				goto deliver;
 		}
+<<<<<<< HEAD
 		qdisc_watchdog_schedule(&q->watchdog, cb->time_to_send);
+=======
+		qdisc_watchdog_schedule(&q->watchdog, time_to_send);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (q->qdisc) {
@@ -613,7 +871,10 @@ deliver:
 		if (skb)
 			goto deliver;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -622,6 +883,7 @@ static void netem_reset(struct Qdisc *sch)
 	struct netem_sched_data *q = qdisc_priv(sch);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	qdisc_reset(q->qdisc);
 	sch->q.qlen = 0;
 =======
@@ -629,6 +891,12 @@ static void netem_reset(struct Qdisc *sch)
 	if (q->qdisc)
 		qdisc_reset(q->qdisc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	qdisc_reset_queue(sch);
+	tfifo_reset(sch);
+	if (q->qdisc)
+		qdisc_reset(q->qdisc);
+>>>>>>> refs/remotes/origin/master
 	qdisc_watchdog_cancel(&q->watchdog);
 }
 
@@ -661,10 +929,14 @@ static int get_dist_table(struct Qdisc *sch, const struct nlattr *attr)
 
 	s = sizeof(struct disttable) + n * sizeof(s16);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	d = kmalloc(s, GFP_KERNEL);
 =======
 	d = kmalloc(s, GFP_KERNEL | __GFP_NOWARN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	d = kmalloc(s, GFP_KERNEL | __GFP_NOWARN);
+>>>>>>> refs/remotes/origin/master
 	if (!d)
 		d = vmalloc(s);
 	if (!d)
@@ -678,15 +950,21 @@ static int get_dist_table(struct Qdisc *sch, const struct nlattr *attr)
 
 	spin_lock_bh(root_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dist_free(q->delay_dist);
 	q->delay_dist = d;
 	spin_unlock_bh(root_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	swap(q->delay_dist, d);
 	spin_unlock_bh(root_lock);
 
 	dist_free(d);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -719,7 +997,10 @@ static void get_corrupt(struct Qdisc *sch, const struct nlattr *attr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void get_rate(struct Qdisc *sch, const struct nlattr *attr)
 {
 	struct netem_sched_data *q = qdisc_priv(sch);
@@ -733,7 +1014,10 @@ static void get_rate(struct Qdisc *sch, const struct nlattr *attr)
 	q->cell_overhead = r->cell_overhead;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int get_loss_clg(struct Qdisc *sch, const struct nlattr *attr)
 {
 	struct netem_sched_data *q = qdisc_priv(sch);
@@ -748,10 +1032,14 @@ static int get_loss_clg(struct Qdisc *sch, const struct nlattr *attr)
 			const struct tc_netem_gimodel *gi = nla_data(la);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (nla_len(la) != sizeof(struct tc_netem_gimodel)) {
 =======
 			if (nla_len(la) < sizeof(struct tc_netem_gimodel)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (nla_len(la) < sizeof(struct tc_netem_gimodel)) {
+>>>>>>> refs/remotes/origin/master
 				pr_info("netem: incorrect gi model size\n");
 				return -EINVAL;
 			}
@@ -771,12 +1059,17 @@ static int get_loss_clg(struct Qdisc *sch, const struct nlattr *attr)
 			const struct tc_netem_gemodel *ge = nla_data(la);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (nla_len(la) != sizeof(struct tc_netem_gemodel)) {
 				pr_info("netem: incorrect gi model size\n");
 =======
 			if (nla_len(la) < sizeof(struct tc_netem_gemodel)) {
 				pr_info("netem: incorrect ge model size\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (nla_len(la) < sizeof(struct tc_netem_gemodel)) {
+				pr_info("netem: incorrect ge model size\n");
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 
@@ -803,10 +1096,16 @@ static const struct nla_policy netem_policy[TCA_NETEM_MAX + 1] = {
 	[TCA_NETEM_REORDER]	= { .len = sizeof(struct tc_netem_reorder) },
 	[TCA_NETEM_CORRUPT]	= { .len = sizeof(struct tc_netem_corrupt) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[TCA_NETEM_RATE]	= { .len = sizeof(struct tc_netem_rate) },
 >>>>>>> refs/remotes/origin/cm-10.0
 	[TCA_NETEM_LOSS]	= { .type = NLA_NESTED },
+=======
+	[TCA_NETEM_RATE]	= { .len = sizeof(struct tc_netem_rate) },
+	[TCA_NETEM_LOSS]	= { .type = NLA_NESTED },
+	[TCA_NETEM_ECN]		= { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/master
 };
 
 static int parse_attr(struct nlattr *tb[], int maxtype, struct nlattr *nla,
@@ -844,6 +1143,7 @@ static int netem_change(struct Qdisc *sch, struct nlattr *opt)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = fifo_set_limit(q->qdisc, qopt->limit);
 	if (ret) {
 		pr_info("netem: can't set fifo limit\n");
@@ -852,6 +1152,9 @@ static int netem_change(struct Qdisc *sch, struct nlattr *opt)
 =======
 	sch->limit = qopt->limit;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sch->limit = qopt->limit;
+>>>>>>> refs/remotes/origin/master
 
 	q->latency = qopt->latency;
 	q->jitter = qopt->jitter;
@@ -883,11 +1186,20 @@ static int netem_change(struct Qdisc *sch, struct nlattr *opt)
 		get_corrupt(sch, tb[TCA_NETEM_CORRUPT]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (tb[TCA_NETEM_RATE])
 		get_rate(sch, tb[TCA_NETEM_RATE]);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tb[TCA_NETEM_RATE])
+		get_rate(sch, tb[TCA_NETEM_RATE]);
+
+	if (tb[TCA_NETEM_ECN])
+		q->ecn = nla_get_u32(tb[TCA_NETEM_ECN]);
+
+>>>>>>> refs/remotes/origin/master
 	q->loss_model = CLG_RANDOM;
 	if (tb[TCA_NETEM_LOSS])
 		ret = get_loss_clg(sch, tb[TCA_NETEM_LOSS]);
@@ -895,6 +1207,7 @@ static int netem_change(struct Qdisc *sch, struct nlattr *opt)
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Special case version of FIFO queue for use by netem.
@@ -980,6 +1293,8 @@ static struct Qdisc_ops tfifo_qdisc_ops __read_mostly = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int netem_init(struct Qdisc *sch, struct nlattr *opt)
 {
 	struct netem_sched_data *q = qdisc_priv(sch);
@@ -991,6 +1306,7 @@ static int netem_init(struct Qdisc *sch, struct nlattr *opt)
 	qdisc_watchdog_init(&q->watchdog, sch);
 
 	q->loss_model = CLG_RANDOM;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	q->qdisc = qdisc_create_dflt(sch->dev_queue, &tfifo_qdisc_ops,
 				     TC_H_MAKE(sch->handle, 1));
@@ -1009,6 +1325,11 @@ static int netem_init(struct Qdisc *sch, struct nlattr *opt)
 	if (ret)
 		pr_info("netem: change failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = netem_change(sch, opt);
+	if (ret)
+		pr_info("netem: change failed\n");
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1018,11 +1339,16 @@ static void netem_destroy(struct Qdisc *sch)
 
 	qdisc_watchdog_cancel(&q->watchdog);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	qdisc_destroy(q->qdisc);
 =======
 	if (q->qdisc)
 		qdisc_destroy(q->qdisc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (q->qdisc)
+		qdisc_destroy(q->qdisc);
+>>>>>>> refs/remotes/origin/master
 	dist_free(q->delay_dist);
 }
 
@@ -1050,7 +1376,12 @@ static int dump_loss_model(const struct netem_sched_data *q,
 			.p23 = q->clg.a5,
 		};
 
+<<<<<<< HEAD
 		NLA_PUT(skb, NETEM_LOSS_GI, sizeof(gi), &gi);
+=======
+		if (nla_put(skb, NETEM_LOSS_GI, sizeof(gi), &gi))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	case CLG_GILB_ELL: {
@@ -1061,7 +1392,12 @@ static int dump_loss_model(const struct netem_sched_data *q,
 			.k1 = q->clg.a4,
 		};
 
+<<<<<<< HEAD
 		NLA_PUT(skb, NETEM_LOSS_GE, sizeof(ge), &ge);
+=======
+		if (nla_put(skb, NETEM_LOSS_GE, sizeof(ge), &ge))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	}
@@ -1083,9 +1419,13 @@ static int netem_dump(struct Qdisc *sch, struct sk_buff *skb)
 	struct tc_netem_reorder reorder;
 	struct tc_netem_corrupt corrupt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct tc_netem_rate rate;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tc_netem_rate rate;
+>>>>>>> refs/remotes/origin/master
 
 	qopt.latency = q->latency;
 	qopt.jitter = q->jitter;
@@ -1093,11 +1433,17 @@ static int netem_dump(struct Qdisc *sch, struct sk_buff *skb)
 	qopt.loss = q->loss;
 	qopt.gap = q->gap;
 	qopt.duplicate = q->duplicate;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_OPTIONS, sizeof(qopt), &qopt);
+=======
+	if (nla_put(skb, TCA_OPTIONS, sizeof(qopt), &qopt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	cor.delay_corr = q->delay_cor.rho;
 	cor.loss_corr = q->loss_cor.rho;
 	cor.dup_corr = q->dup_cor.rho;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_NETEM_CORR, sizeof(cor), &cor);
 
 	reorder.probability = q->reorder;
@@ -1110,13 +1456,37 @@ static int netem_dump(struct Qdisc *sch, struct sk_buff *skb)
 
 <<<<<<< HEAD
 =======
+=======
+	if (nla_put(skb, TCA_NETEM_CORR, sizeof(cor), &cor))
+		goto nla_put_failure;
+
+	reorder.probability = q->reorder;
+	reorder.correlation = q->reorder_cor.rho;
+	if (nla_put(skb, TCA_NETEM_REORDER, sizeof(reorder), &reorder))
+		goto nla_put_failure;
+
+	corrupt.probability = q->corrupt;
+	corrupt.correlation = q->corrupt_cor.rho;
+	if (nla_put(skb, TCA_NETEM_CORRUPT, sizeof(corrupt), &corrupt))
+		goto nla_put_failure;
+
+>>>>>>> refs/remotes/origin/master
 	rate.rate = q->rate;
 	rate.packet_overhead = q->packet_overhead;
 	rate.cell_size = q->cell_size;
 	rate.cell_overhead = q->cell_overhead;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_NETEM_RATE, sizeof(rate), &rate);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nla_put(skb, TCA_NETEM_RATE, sizeof(rate), &rate))
+		goto nla_put_failure;
+
+	if (q->ecn && nla_put_u32(skb, TCA_NETEM_ECN, q->ecn))
+		goto nla_put_failure;
+
+>>>>>>> refs/remotes/origin/master
 	if (dump_loss_model(q, skb) != 0)
 		goto nla_put_failure;
 
@@ -1133,10 +1503,14 @@ static int netem_dump_class(struct Qdisc *sch, unsigned long cl,
 	struct netem_sched_data *q = qdisc_priv(sch);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cl != 1) 	/* only one class */
 =======
 	if (cl != 1 || !q->qdisc) 	/* only one class */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cl != 1 || !q->qdisc) 	/* only one class */
+>>>>>>> refs/remotes/origin/master
 		return -ENOENT;
 
 	tcm->tcm_handle |= TC_H_MIN(1);
@@ -1151,6 +1525,7 @@ static int netem_graft(struct Qdisc *sch, unsigned long arg, struct Qdisc *new,
 	struct netem_sched_data *q = qdisc_priv(sch);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (new == NULL)
 		new = &noop_qdisc;
 
@@ -1160,6 +1535,8 @@ static int netem_graft(struct Qdisc *sch, unsigned long arg, struct Qdisc *new,
 	qdisc_tree_decrease_qlen(*old, (*old)->q.qlen);
 	qdisc_reset(*old);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sch_tree_lock(sch);
 	*old = q->qdisc;
 	q->qdisc = new;
@@ -1167,7 +1544,10 @@ static int netem_graft(struct Qdisc *sch, unsigned long arg, struct Qdisc *new,
 		qdisc_tree_decrease_qlen(*old, (*old)->q.qlen);
 		qdisc_reset(*old);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sch_tree_unlock(sch);
 
 	return 0;

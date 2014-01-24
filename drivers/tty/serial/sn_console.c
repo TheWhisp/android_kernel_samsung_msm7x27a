@@ -40,9 +40,13 @@
 #include <linux/interrupt.h>
 #include <linux/tty.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/tty_flip.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/serial.h>
 #include <linux/console.h>
 #include <linux/module.h>
@@ -460,6 +464,7 @@ static int sn_debug_printf(const char *fmt, ...)
 static void
 sn_receive_chars(struct sn_cons_port *port, unsigned long flags)
 {
+<<<<<<< HEAD
 	int ch;
 	struct tty_struct *tty;
 
@@ -469,25 +474,40 @@ sn_receive_chars(struct sn_cons_port *port, unsigned long flags)
 =======
 		printk(KERN_ERR "sn_receive_chars - port NULL so can't receive\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct tty_port *tport = NULL;
+	int ch;
+
+	if (!port) {
+		printk(KERN_ERR "sn_receive_chars - port NULL so can't receive\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (!port->sc_ops) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "sn_receive_chars - port->sc_ops  NULL so can't receieve\n");
 =======
 		printk(KERN_ERR "sn_receive_chars - port->sc_ops  NULL so can't receive\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR "sn_receive_chars - port->sc_ops  NULL so can't receive\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (port->sc_port.state) {
 		/* The serial_core stuffs are initialized, use them */
+<<<<<<< HEAD
 		tty = port->sc_port.state->port.tty;
 	}
 	else {
 		/* Not registered yet - can't pass to tty layer.  */
 		tty = NULL;
+=======
+		tport = &port->sc_port.state->port;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	while (port->sc_ops->sal_input_pending()) {
@@ -527,15 +547,25 @@ sn_receive_chars(struct sn_cons_port *port, unsigned long flags)
 #endif /* CONFIG_MAGIC_SYSRQ */
 
 		/* record the character to pass up to the tty layer */
+<<<<<<< HEAD
 		if (tty) {
 			if(tty_insert_flip_char(tty, ch, TTY_NORMAL) == 0)
+=======
+		if (tport) {
+			if (tty_insert_flip_char(tport, ch, TTY_NORMAL) == 0)
+>>>>>>> refs/remotes/origin/master
 				break;
 		}
 		port->sc_port.icount.rx++;
 	}
 
+<<<<<<< HEAD
 	if (tty)
 		tty_flip_buffer_push(tty);
+=======
+	if (tport)
+		tty_flip_buffer_push(tport);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -750,18 +780,26 @@ static void __init sn_sal_switch_to_interrupts(struct sn_cons_port *port)
 
 		if (request_irq(SGI_UART_VECTOR, sn_sal_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				IRQF_DISABLED | IRQF_SHARED,
 =======
 				IRQF_SHARED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 				"SAL console driver", port) >= 0) {
 			spin_lock_irqsave(&port->sc_port.lock, flags);
 			port->sc_port.irq = SGI_UART_VECTOR;
 			port->sc_ops = &intr_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			irq_set_handler(port->sc_port.irq, handle_level_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			irq_set_handler(port->sc_port.irq, handle_level_irq);
+>>>>>>> refs/remotes/origin/master
 
 			/* turn on receive interrupts */
 			ia64_sn_console_intr_enable(SAL_CONSOLE_INTR_RECV);

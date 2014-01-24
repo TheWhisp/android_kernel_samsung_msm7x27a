@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _ASM_IA64_PTRACE_H
 #define _ASM_IA64_PTRACE_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright (C) 1998-2004 Hewlett-Packard Co
  *	David Mosberger-Tang <davidm@hpl.hp.com>
@@ -15,6 +18,7 @@
  *  6/17/99	D. Mosberger	added second unat member to "struct switch_stack"
  *
  */
+<<<<<<< HEAD
 /*
  * When a user process is blocked, its state looks as follows:
  *
@@ -61,6 +65,15 @@
 #ifndef ASM_OFFSETS_C
 #include <asm/asm-offsets.h>
 #endif
+=======
+#ifndef _ASM_IA64_PTRACE_H
+#define _ASM_IA64_PTRACE_H
+
+#ifndef ASM_OFFSETS_C
+#include <asm/asm-offsets.h>
+#endif
+#include <uapi/asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Base-2 logarithm of number of pages to allocate per task structure
@@ -81,6 +94,7 @@
 
 #define KERNEL_STACK_SIZE		IA64_STK_OFFSET
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #ifndef __ASSEMBLY__
@@ -230,6 +244,10 @@ struct switch_stack {
 
 #ifdef __KERNEL__
 
+=======
+#ifndef __ASSEMBLY__
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/current.h>
 #include <asm/page.h>
 
@@ -247,8 +265,11 @@ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define regs_return_value(regs) ((regs)->r8)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int is_syscall_success(struct pt_regs *regs)
 {
 	return regs->r10 != -1;
@@ -261,7 +282,10 @@ static inline long regs_return_value(struct pt_regs *regs)
 	else
 		return -regs->r8;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Conserve space in histogram by encoding slot bits in address
  * bits 2 and 3 rather than bits 0 and 1.
@@ -271,6 +295,14 @@ static inline long regs_return_value(struct pt_regs *regs)
 	unsigned long __ip = instruction_pointer(regs);			\
 	(__ip & ~3UL) + ((__ip & 3UL) << 2);				\
 })
+<<<<<<< HEAD
+=======
+/*
+ * Why not default?  Because user_stack_pointer() on ia64 gives register
+ * stack backing store instead...
+ */
+#define current_user_stack_pointer() (current_pt_regs()->r12)
+>>>>>>> refs/remotes/origin/master
 
   /* given a pointer to a task_struct, return the user's pt_regs */
 # define task_pt_regs(t)		(((struct pt_regs *) ((char *) (t) + IA64_STK_OFFSET)) - 1)
@@ -302,9 +334,12 @@ static inline long regs_return_value(struct pt_regs *regs)
   struct unw_frame_info;		/* forward decl */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   extern void show_regs (struct pt_regs *);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   extern void ia64_do_show_stack (struct unw_frame_info *, void *);
   extern unsigned long ia64_get_user_rbs_end (struct task_struct *, struct pt_regs *,
 					      unsigned long *);
@@ -339,6 +374,7 @@ static inline long regs_return_value(struct pt_regs *regs)
   #define arch_has_single_step()  (1)
   #define arch_has_block_step()   (1)
 
+<<<<<<< HEAD
 #endif /* !__KERNEL__ */
 
 /* pt_all_user_regs is used for PTRACE_GETREGS PTRACE_SETREGS */
@@ -381,4 +417,7 @@ struct pt_all_user_regs {
 
 #define PTRACE_OLDSETOPTIONS	21
 
+=======
+#endif /* !__ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IA64_PTRACE_H */

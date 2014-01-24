@@ -10,6 +10,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /dts-v1/;
 / {
 	model = "MPC8544DS";
@@ -290,6 +291,8 @@
 		compatible = "fsl,mpc8540-pci";
 		device_type = "pci";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /include/ "fsl/mpc8544si-pre.dtsi"
 
 / {
@@ -301,8 +304,15 @@
 		reg = <0 0 0 0>;	// Filled by U-Boot
 	};
 
+<<<<<<< HEAD
 	lbc: localbus@e0005000 {
 		reg = <0 0xe0005000 0 0x1000>;
+=======
+	board_lbc: lbc: localbus@e0005000 {
+		reg = <0 0xe0005000 0 0x1000>;
+
+		ranges = <0x0 0x0 0x0 0xff800000 0x800000>;
+>>>>>>> refs/remotes/origin/master
 	};
 
 	board_soc: soc: soc8544@e0000000 {
@@ -314,11 +324,15 @@
 		ranges = <0x2000000 0x0 0xc0000000 0 0xc0000000 0x0 0x20000000
 			  0x1000000 0x0 0x00000000 0 0xe1000000 0x0 0x10000>;
 		clock-frequency = <66666666>;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
 		interrupt-map = <
 
 			/* IDSEL 0x11 J17 Slot 1 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			0x8800 0x0 0x0 0x1 &mpic 0x2 0x1
 			0x8800 0x0 0x0 0x2 &mpic 0x3 0x1
@@ -371,6 +385,8 @@
 			#address-cells = <3>;
 			device_type = "pci";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			0x8800 0x0 0x0 0x1 &mpic 0x2 0x1 0 0
 			0x8800 0x0 0x0 0x2 &mpic 0x3 0x1 0 0
 			0x8800 0x0 0x0 0x3 &mpic 0x4 0x1 0 0
@@ -389,7 +405,10 @@
 		ranges = <0x2000000 0x0 0x80000000 0 0x80000000 0x0 0x20000000
 			  0x1000000 0x0 0x00000000 0 0xe1010000 0x0 0x10000>;
 		pcie@0 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x2000000 0x0 0x80000000
 				  0x2000000 0x0 0x80000000
 				  0x0 0x20000000
@@ -401,6 +420,7 @@
 	};
 
 	pci2: pcie@e000a000 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
@@ -428,11 +448,16 @@
 			#address-cells = <3>;
 			device_type = "pci";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		reg = <0x0 0xe000a000 0x0 0x1000>;
 		ranges = <0x2000000 0x0 0xa0000000 0 0xa0000000 0x0 0x10000000
 			  0x1000000 0x0 0x00000000 0 0xe1020000 0x0 0x10000>;
 		pcie@0 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x2000000 0x0 0xa0000000
 				  0x2000000 0x0 0xa0000000
 				  0x0 0x10000000
@@ -443,6 +468,7 @@
 		};
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pci3: pcie@e000b000 {
 		compatible = "fsl,mpc8548-pcie";
@@ -483,12 +509,17 @@
 			#address-cells = <3>;
 			device_type = "pci";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	board_pci3: pci3: pcie@e000b000 {
 		reg = <0x0 0xe000b000 0x0 0x1000>;
 		ranges = <0x2000000 0x0 0xb0000000 0 0xb0000000 0x0 0x100000
 			  0x1000000 0x0 0x00000000 0 0xb0100000 0x0 0x100000>;
 		pcie@0 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ranges = <0x2000000 0x0 0xb0000000
 				  0x2000000 0x0 0xb0000000
 				  0x0 0x100000
@@ -496,6 +527,7 @@
 				  0x1000000 0x0 0x0
 				  0x1000000 0x0 0x0
 				  0x0 0x100000>;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			uli1575@0 {
@@ -565,6 +597,8 @@
 	};
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 };
@@ -576,4 +610,7 @@
 
 /include/ "fsl/mpc8544si-post.dtsi"
 /include/ "mpc8544ds.dtsi"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

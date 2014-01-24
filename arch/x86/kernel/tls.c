@@ -3,6 +3,7 @@
 #include <linux/sched.h>
 #include <linux/user.h>
 #include <linux/regset.h>
+<<<<<<< HEAD
 
 #include <asm/uaccess.h>
 #include <asm/desc.h>
@@ -14,6 +15,15 @@
 #include <asm/processor.h>
 #include <asm/proto.h>
 #include <asm/syscalls.h>
+=======
+#include <linux/syscalls.h>
+
+#include <asm/uaccess.h>
+#include <asm/desc.h>
+#include <asm/ldt.h>
+#include <asm/processor.h>
+#include <asm/proto.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "tls.h"
 
@@ -93,11 +103,17 @@ int do_set_thread_area(struct task_struct *p, int idx,
 	return 0;
 }
 
+<<<<<<< HEAD
 asmlinkage int sys_set_thread_area(struct user_desc __user *u_info)
 {
 	int ret = do_set_thread_area(current, -1, u_info, 1);
 	asmlinkage_protect(1, ret, u_info);
 	return ret;
+=======
+SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, u_info)
+{
+	return do_set_thread_area(current, -1, u_info, 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -143,11 +159,17 @@ int do_get_thread_area(struct task_struct *p, int idx,
 	return 0;
 }
 
+<<<<<<< HEAD
 asmlinkage int sys_get_thread_area(struct user_desc __user *u_info)
 {
 	int ret = do_get_thread_area(current, -1, u_info);
 	asmlinkage_protect(1, ret, u_info);
 	return ret;
+=======
+SYSCALL_DEFINE1(get_thread_area, struct user_desc __user *, u_info)
+{
+	return do_get_thread_area(current, -1, u_info);
+>>>>>>> refs/remotes/origin/master
 }
 
 int regset_tls_active(struct task_struct *target,

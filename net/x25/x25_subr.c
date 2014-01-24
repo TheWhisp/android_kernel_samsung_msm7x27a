@@ -127,6 +127,7 @@ void x25_write_internal(struct sock *sk, int frametype)
 	 */
 	switch (frametype) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case X25_CALL_REQUEST:
 			len += 1 + X25_ADDR_LEN + X25_MAX_FAC_LEN +
 			       X25_MAX_CUD_LEN;
@@ -154,6 +155,8 @@ void x25_write_internal(struct sock *sk, int frametype)
 			       frametype);
 			return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case X25_CALL_REQUEST:
 		len += 1 + X25_ADDR_LEN + X25_MAX_FAC_LEN + X25_MAX_CUD_LEN;
 		break;
@@ -178,7 +181,10 @@ void x25_write_internal(struct sock *sk, int frametype)
 	default:
 		printk(KERN_ERR "X.25: invalid frame type %02X\n", frametype);
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ((skb = alloc_skb(len, GFP_ATOMIC)) == NULL)
@@ -308,6 +314,7 @@ int x25_decode(struct sock *sk, struct sk_buff *skb, int *ns, int *nr, int *q,
 
 	switch (frame[2]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case X25_CALL_REQUEST:
 		case X25_CALL_ACCEPTED:
 		case X25_CLEAR_REQUEST:
@@ -323,6 +330,8 @@ int x25_decode(struct sock *sk, struct sk_buff *skb, int *ns, int *nr, int *q,
 		case X25_DIAGNOSTIC:
 			return frame[2];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case X25_CALL_REQUEST:
 	case X25_CALL_ACCEPTED:
 	case X25_CLEAR_REQUEST:
@@ -337,7 +346,10 @@ int x25_decode(struct sock *sk, struct sk_buff *skb, int *ns, int *nr, int *q,
 	case X25_REGISTRATION_CONFIRMATION:
 	case X25_DIAGNOSTIC:
 		return frame[2];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (x25->neighbour->extended) {

@@ -113,9 +113,12 @@ struct switch_stack {
 #define instruction_pointer(regs) ((regs)->irp)
 #define profile_pc(regs) instruction_pointer(regs)
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif  /*  __KERNEL__  */
 

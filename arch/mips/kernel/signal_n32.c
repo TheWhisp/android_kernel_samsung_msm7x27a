@@ -36,9 +36,12 @@
 #include <asm/uaccess.h>
 #include <asm/ucontext.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/fpu.h>
 #include <asm/cpu-features.h>
 #include <asm/war.h>
@@ -54,6 +57,7 @@
 extern int setup_sigcontext(struct pt_regs *, struct sigcontext __user *);
 extern int restore_sigcontext(struct pt_regs *, struct sigcontext __user *);
 
+<<<<<<< HEAD
 
 /* IRIX compatible stack_t  */
 typedef struct sigaltstack32 {
@@ -68,6 +72,14 @@ struct ucontextn32 {
 	stack32_t           uc_stack;
 	struct sigcontext   uc_mcontext;
 	compat_sigset_t     uc_sigmask;   /* mask last for extensibility */
+=======
+struct ucontextn32 {
+	u32		    uc_flags;
+	s32		    uc_link;
+	compat_stack_t      uc_stack;
+	struct sigcontext   uc_mcontext;
+	compat_sigset_t	    uc_sigmask;	  /* mask last for extensibility */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct rt_sigframe_n32 {
@@ -77,6 +89,7 @@ struct rt_sigframe_n32 {
 	struct ucontextn32 rs_uc;
 };
 
+<<<<<<< HEAD
 extern void sigset_from_compat(sigset_t *set, compat_sigset_t *compat);
 
 asmlinkage int sysn32_rt_sigsuspend(nabi_no_regargs struct pt_regs regs)
@@ -121,6 +134,12 @@ asmlinkage void sysn32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 	sigset_t set;
 	stack_t st;
 	s32 sp;
+=======
+asmlinkage void sysn32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
+{
+	struct rt_sigframe_n32 __user *frame;
+	sigset_t set;
+>>>>>>> refs/remotes/origin/master
 	int sig;
 
 	frame = (struct rt_sigframe_n32 __user *) regs.regs[29];
@@ -129,6 +148,7 @@ asmlinkage void sysn32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 	if (__copy_conv_sigset_from_user(&set, &frame->rs_uc.uc_sigmask))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 <<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
@@ -138,6 +158,9 @@ asmlinkage void sysn32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 =======
 	set_current_blocked(&set);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	sig = restore_sigcontext(&regs, &frame->rs_uc.uc_mcontext);
 	if (sig < 0)
@@ -145,6 +168,7 @@ asmlinkage void sysn32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 	else if (sig)
 		force_sig(sig, current);
 
+<<<<<<< HEAD
 	/* The ucontext contains a stack32_t, so we must convert!  */
 	if (__get_user(sp, &frame->rs_uc.uc_stack.ss_sp))
 		goto badframe;
@@ -162,6 +186,11 @@ asmlinkage void sysn32_rt_sigreturn(nabi_no_regargs struct pt_regs regs)
 	set_fs(old_fs);
 
 
+=======
+	if (compat_restore_altstack(&frame->rs_uc.uc_stack))
+		goto badframe;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Don't let your children do this ...
 	 */
@@ -181,7 +210,10 @@ static int setup_rt_frame_n32(void *sig_return, struct k_sigaction *ka,
 {
 	struct rt_sigframe_n32 __user *frame;
 	int err = 0;
+<<<<<<< HEAD
 	s32 sp;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	frame = get_sigframe(ka, regs, sizeof(*frame));
 	if (!access_ok(VERIFY_WRITE, frame, sizeof (*frame)))
@@ -190,6 +222,7 @@ static int setup_rt_frame_n32(void *sig_return, struct k_sigaction *ka,
 	/* Create siginfo.  */
 	err |= copy_siginfo_to_user32(&frame->rs_info, info);
 
+<<<<<<< HEAD
 	/* Create the ucontext.  */
 	err |= __put_user(0, &frame->rs_uc.uc_flags);
 	err |= __put_user(0, &frame->rs_uc.uc_link);
@@ -200,6 +233,12 @@ static int setup_rt_frame_n32(void *sig_return, struct k_sigaction *ka,
 	                  &frame->rs_uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size,
 	                  &frame->rs_uc.uc_stack.ss_size);
+=======
+	/* Create the ucontext.	 */
+	err |= __put_user(0, &frame->rs_uc.uc_flags);
+	err |= __put_user(0, &frame->rs_uc.uc_link);
+	err |= __compat_save_altstack(&frame->rs_uc.uc_stack, regs->regs[29]);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext(regs, &frame->rs_uc.uc_mcontext);
 	err |= __copy_conv_sigset_to_user(&frame->rs_uc.uc_sigmask, set);
 
@@ -235,7 +274,11 @@ give_sigsegv:
 }
 
 struct mips_abi mips_abi_n32 = {
+<<<<<<< HEAD
 	.setup_rt_frame	= setup_rt_frame_n32,
+=======
+	.setup_rt_frame = setup_rt_frame_n32,
+>>>>>>> refs/remotes/origin/master
 	.rt_signal_return_offset =
 		offsetof(struct mips_vdso, n32_rt_signal_trampoline),
 	.restart	= __NR_N32_restart_syscall

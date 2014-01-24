@@ -18,10 +18,14 @@
 #include <asm/memory.h>
 #include <asm/thread_info.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/hwdef-copro.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hwdef-copro.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable-hwdef.h>
 
 #if (PHYS_OFFSET & 0x003fffff)

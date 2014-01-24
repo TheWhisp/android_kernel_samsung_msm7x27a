@@ -15,14 +15,18 @@
 #include <linux/string.h>
 #include <net/mac80211.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "ieee80211_i.h"
 #include "mesh.h"
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "wme.h"
 #include "ieee80211_i.h"
 #include "mesh.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_VERBOSE_MPATH_DEBUG
 #define mpath_dbg(fmt, args...)	printk(KERN_DEBUG fmt, ##args)
 #else
@@ -30,15 +34,26 @@
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* There will be initially 2^INIT_PATHS_SIZE_ORDER buckets */
 #define INIT_PATHS_SIZE_ORDER	2
 
 /* Keep the mean chain length below this constant */
 #define MEAN_CHAIN_LEN		2
 
+<<<<<<< HEAD
 #define MPATH_EXPIRED(mpath) ((mpath->flags & MESH_PATH_ACTIVE) && \
 				time_after(jiffies, mpath->exp_time) && \
 				!(mpath->flags & MESH_PATH_FIXED))
+=======
+static inline bool mpath_expired(struct mesh_path *mpath)
+{
+	return (mpath->flags & MESH_PATH_ACTIVE) &&
+	       time_after(jiffies, mpath->exp_time) &&
+	       !(mpath->flags & MESH_PATH_FIXED);
+}
+>>>>>>> refs/remotes/origin/master
 
 struct mpath_node {
 	struct hlist_node list;
@@ -56,14 +71,20 @@ int mesh_paths_generation;
 
 /* This lock will have the grow table function as writer and add / delete nodes
 <<<<<<< HEAD
+<<<<<<< HEAD
  * as readers. When reading the table (i.e. doing lookups) we are well protected
  * by RCU
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * as readers. RCU provides sufficient protection only when reading the table
  * (i.e. doing lookups).  Adding or adding or removing nodes requires we take
  * the read lock or we risk operating on an old table.  The write lock is only
  * needed when modifying the number of buckets a table.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static DEFINE_RWLOCK(pathtbl_resize_lock);
 
@@ -86,9 +107,15 @@ static inline struct mesh_table *resize_dereference_mpp_paths(void)
  * it's used twice. So it is illegal to do
  *	for_each_mesh_entry(rcu_dereference(...), ...)
  */
+<<<<<<< HEAD
 #define for_each_mesh_entry(tbl, p, node, i) \
 	for (i = 0; i <= tbl->hash_mask; i++) \
 		hlist_for_each_entry_rcu(node, p, &tbl->hash_buckets[i], list)
+=======
+#define for_each_mesh_entry(tbl, node, i) \
+	for (i = 0; i <= tbl->hash_mask; i++) \
+		hlist_for_each_entry_rcu(node, &tbl->hash_buckets[i], list)
+>>>>>>> refs/remotes/origin/master
 
 
 static struct mesh_table *mesh_table_alloc(int size_order)
@@ -124,9 +151,13 @@ static struct mesh_table *mesh_table_alloc(int size_order)
 	for (i = 0; i <= newtbl->hash_mask; i++)
 		spin_lock_init(&newtbl->hashwlock[i]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	spin_lock_init(&newtbl->gates_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_init(&newtbl->gates_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return newtbl;
 }
@@ -143,9 +174,13 @@ static void mesh_table_free(struct mesh_table *tbl, bool free_leafs)
 	struct hlist_head *mesh_hash;
 	struct hlist_node *p, *q;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct mpath_node *gate;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpath_node *gate;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	mesh_hash = tbl->hash_buckets;
@@ -158,10 +193,16 @@ static void mesh_table_free(struct mesh_table *tbl, bool free_leafs)
 		spin_unlock_bh(&tbl->hashwlock[i]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (free_leafs) {
 		spin_lock_bh(&tbl->gates_lock);
 		hlist_for_each_entry_safe(gate, p, q,
+=======
+	if (free_leafs) {
+		spin_lock_bh(&tbl->gates_lock);
+		hlist_for_each_entry_safe(gate, q,
+>>>>>>> refs/remotes/origin/master
 					 tbl->known_gates, list) {
 			hlist_del(&gate->list);
 			kfree(gate);
@@ -170,7 +211,10 @@ static void mesh_table_free(struct mesh_table *tbl, bool free_leafs)
 		spin_unlock_bh(&tbl->gates_lock);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__mesh_table_free(tbl);
 }
 
@@ -189,9 +233,13 @@ static int mesh_table_grow(struct mesh_table *oldtbl,
 	newtbl->mean_chain_len = oldtbl->mean_chain_len;
 	newtbl->copy_node = oldtbl->copy_node;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	newtbl->known_gates = oldtbl->known_gates;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	newtbl->known_gates = oldtbl->known_gates;
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&newtbl->entries, atomic_read(&oldtbl->entries));
 
 	oldhash = oldtbl->hash_buckets;
@@ -210,12 +258,21 @@ errcopy:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static u32 mesh_table_hash(u8 *addr, struct ieee80211_sub_if_data *sdata,
 			   struct mesh_table *tbl)
 {
 	/* Use last four bytes of hw addr and interface index as hash index */
 	return jhash_2words(*(u32 *)(addr+2), sdata->dev->ifindex, tbl->hash_rnd)
 		& tbl->hash_mask;
+=======
+static u32 mesh_table_hash(const u8 *addr, struct ieee80211_sub_if_data *sdata,
+			   struct mesh_table *tbl)
+{
+	/* Use last four bytes of hw addr and interface index as hash index */
+	return jhash_2words(*(u32 *)(addr+2), sdata->dev->ifindex,
+			    tbl->hash_rnd) & tbl->hash_mask;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -232,11 +289,15 @@ void mesh_path_assign_nexthop(struct mesh_path *mpath, struct sta_info *sta)
 {
 	struct sk_buff *skb;
 	struct ieee80211_hdr *hdr;
+<<<<<<< HEAD
 	struct sk_buff_head tmpq;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	rcu_assign_pointer(mpath->next_hop, sta);
 
+<<<<<<< HEAD
 	__skb_queue_head_init(&tmpq);
 
 	spin_lock_irqsave(&mpath->frame_queue.lock, flags);
@@ -295,6 +356,19 @@ struct mesh_path *mesh_path_lookup(u8 *dst, struct ieee80211_sub_if_data *sdata)
 
 struct mesh_path *mpp_path_lookup(u8 *dst, struct ieee80211_sub_if_data *sdata)
 =======
+=======
+	spin_lock_irqsave(&mpath->frame_queue.lock, flags);
+	skb_queue_walk(&mpath->frame_queue, skb) {
+		hdr = (struct ieee80211_hdr *) skb->data;
+		memcpy(hdr->addr1, sta->sta.addr, ETH_ALEN);
+		memcpy(hdr->addr2, mpath->sdata->vif.addr, ETH_ALEN);
+		ieee80211_mps_set_frame_flags(sta->sdata, sta, hdr);
+	}
+
+	spin_unlock_irqrestore(&mpath->frame_queue.lock, flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void prepare_for_gate(struct sk_buff *skb, char *dst_addr,
 			     struct mesh_path *gate_mpath)
 {
@@ -357,21 +431,31 @@ static void mesh_path_move_to_queue(struct mesh_path *gate_mpath,
 				    struct mesh_path *from_mpath,
 				    bool copy)
 {
+<<<<<<< HEAD
 	struct sk_buff *skb, *cp_skb = NULL;
 	struct sk_buff_head gateq, failq;
 	unsigned long flags;
 	int num_skbs;
+=======
+	struct sk_buff *skb, *fskb, *tmp;
+	struct sk_buff_head failq;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(gate_mpath == from_mpath);
 	BUG_ON(!gate_mpath->next_hop);
 
+<<<<<<< HEAD
 	__skb_queue_head_init(&gateq);
+=======
+>>>>>>> refs/remotes/origin/master
 	__skb_queue_head_init(&failq);
 
 	spin_lock_irqsave(&from_mpath->frame_queue.lock, flags);
 	skb_queue_splice_init(&from_mpath->frame_queue, &failq);
 	spin_unlock_irqrestore(&from_mpath->frame_queue.lock, flags);
 
+<<<<<<< HEAD
 	num_skbs = skb_queue_len(&failq);
 
 	while (num_skbs--) {
@@ -392,6 +476,31 @@ static void mesh_path_move_to_queue(struct mesh_path *gate_mpath,
 			gate_mpath->dst,
 			skb_queue_len(&gate_mpath->frame_queue));
 	spin_unlock_irqrestore(&gate_mpath->frame_queue.lock, flags);
+=======
+	skb_queue_walk_safe(&failq, fskb, tmp) {
+		if (skb_queue_len(&gate_mpath->frame_queue) >=
+				  MESH_FRAME_QUEUE_LEN) {
+			mpath_dbg(gate_mpath->sdata, "mpath queue full!\n");
+			break;
+		}
+
+		skb = skb_copy(fskb, GFP_ATOMIC);
+		if (WARN_ON(!skb))
+			break;
+
+		prepare_for_gate(skb, gate_mpath->dst, gate_mpath);
+		skb_queue_tail(&gate_mpath->frame_queue, skb);
+
+		if (copy)
+			continue;
+
+		__skb_unlink(fskb, &failq);
+		kfree_skb(fskb);
+	}
+
+	mpath_dbg(gate_mpath->sdata, "Mpath queue for gate %pM has %d frames\n",
+		  gate_mpath->dst, skb_queue_len(&gate_mpath->frame_queue));
+>>>>>>> refs/remotes/origin/master
 
 	if (!copy)
 		return;
@@ -402,6 +511,7 @@ static void mesh_path_move_to_queue(struct mesh_path *gate_mpath,
 }
 
 
+<<<<<<< HEAD
 static struct mesh_path *mpath_lookup(struct mesh_table *tbl, u8 *dst,
 					  struct ieee80211_sub_if_data *sdata)
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -435,6 +545,23 @@ static struct mesh_path *mpath_lookup(struct mesh_table *tbl, u8 *dst,
 				spin_lock_bh(&mpath->state_lock);
 				mpath->flags &= ~MESH_PATH_ACTIVE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct mesh_path *mpath_lookup(struct mesh_table *tbl, const u8 *dst,
+				      struct ieee80211_sub_if_data *sdata)
+{
+	struct mesh_path *mpath;
+	struct hlist_head *bucket;
+	struct mpath_node *node;
+
+	bucket = &tbl->hash_buckets[mesh_table_hash(dst, sdata, tbl)];
+	hlist_for_each_entry_rcu(node, bucket, list) {
+		mpath = node->mpath;
+		if (mpath->sdata == sdata &&
+		    ether_addr_equal(dst, mpath->dst)) {
+			if (mpath_expired(mpath)) {
+				spin_lock_bh(&mpath->state_lock);
+				mpath->flags &= ~MESH_PATH_ACTIVE;
+>>>>>>> refs/remotes/origin/master
 				spin_unlock_bh(&mpath->state_lock);
 			}
 			return mpath;
@@ -444,27 +571,47 @@ static struct mesh_path *mpath_lookup(struct mesh_table *tbl, u8 *dst,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * mesh_path_lookup - look up a path in the mesh path table
  * @dst: hardware address (ETH_ALEN length) of destination
  * @sdata: local subif
+=======
+/**
+ * mesh_path_lookup - look up a path in the mesh path table
+ * @sdata: local subif
+ * @dst: hardware address (ETH_ALEN length) of destination
+>>>>>>> refs/remotes/origin/master
  *
  * Returns: pointer to the mesh path structure, or NULL if not found
  *
  * Locking: must be called within a read rcu section.
  */
+<<<<<<< HEAD
 struct mesh_path *mesh_path_lookup(u8 *dst, struct ieee80211_sub_if_data *sdata)
+=======
+struct mesh_path *
+mesh_path_lookup(struct ieee80211_sub_if_data *sdata, const u8 *dst)
+>>>>>>> refs/remotes/origin/master
 {
 	return mpath_lookup(rcu_dereference(mesh_paths), dst, sdata);
 }
 
+<<<<<<< HEAD
 struct mesh_path *mpp_path_lookup(u8 *dst, struct ieee80211_sub_if_data *sdata)
+=======
+struct mesh_path *
+mpp_path_lookup(struct ieee80211_sub_if_data *sdata, const u8 *dst)
+>>>>>>> refs/remotes/origin/master
 {
 	return mpath_lookup(rcu_dereference(mpp_paths), dst, sdata);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * mesh_path_lookup_by_idx - look up a path in the mesh path table by its index
@@ -475,6 +622,7 @@ struct mesh_path *mpp_path_lookup(u8 *dst, struct ieee80211_sub_if_data *sdata)
  *
  * Locking: must be called within a read rcu section.
  */
+<<<<<<< HEAD
 struct mesh_path *mesh_path_lookup_by_idx(int idx, struct ieee80211_sub_if_data *sdata)
 {
 	struct mesh_table *tbl = rcu_dereference(mesh_paths);
@@ -495,6 +643,23 @@ struct mesh_path *mesh_path_lookup_by_idx(int idx, struct ieee80211_sub_if_data 
 =======
 				node->mpath->flags &= ~MESH_PATH_ACTIVE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct mesh_path *
+mesh_path_lookup_by_idx(struct ieee80211_sub_if_data *sdata, int idx)
+{
+	struct mesh_table *tbl = rcu_dereference(mesh_paths);
+	struct mpath_node *node;
+	int i;
+	int j = 0;
+
+	for_each_mesh_entry(tbl, node, i) {
+		if (sdata && node->mpath->sdata != sdata)
+			continue;
+		if (j++ == idx) {
+			if (mpath_expired(node->mpath)) {
+				spin_lock_bh(&node->mpath->state_lock);
+				node->mpath->flags &= ~MESH_PATH_ACTIVE;
+>>>>>>> refs/remotes/origin/master
 				spin_unlock_bh(&node->mpath->state_lock);
 			}
 			return node->mpath;
@@ -506,7 +671,10 @@ struct mesh_path *mesh_path_lookup_by_idx(int idx, struct ieee80211_sub_if_data 
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * mesh_path_add_gate - add the given mpath to a mesh gate to our path table
  * @mpath: gate path to add to table
  */
@@ -514,13 +682,20 @@ int mesh_path_add_gate(struct mesh_path *mpath)
 {
 	struct mesh_table *tbl;
 	struct mpath_node *gate, *new_gate;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	rcu_read_lock();
 	tbl = rcu_dereference(mesh_paths);
 
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(gate, n, tbl->known_gates, list)
+=======
+	hlist_for_each_entry_rcu(gate, tbl->known_gates, list)
+>>>>>>> refs/remotes/origin/master
 		if (gate->mpath == mpath) {
 			err = -EEXIST;
 			goto err_rcu;
@@ -538,11 +713,18 @@ int mesh_path_add_gate(struct mesh_path *mpath)
 	spin_lock_bh(&tbl->gates_lock);
 	hlist_add_head_rcu(&new_gate->list, tbl->known_gates);
 	spin_unlock_bh(&tbl->gates_lock);
+<<<<<<< HEAD
 	rcu_read_unlock();
 	mpath_dbg("Mesh path (%s): Recorded new gate: %pM. %d known gates\n",
 		  mpath->sdata->name, mpath->dst,
 		  mpath->sdata->u.mesh.num_gates);
 	return 0;
+=======
+	mpath_dbg(mpath->sdata,
+		  "Mesh path: Recorded new gate: %pM. %d known gates\n",
+		  mpath->dst, mpath->sdata->u.mesh.num_gates);
+	err = 0;
+>>>>>>> refs/remotes/origin/master
 err_rcu:
 	rcu_read_unlock();
 	return err;
@@ -553,6 +735,7 @@ err_rcu:
  * @tbl: table which holds our list of known gates
  * @mpath: gate mpath
  *
+<<<<<<< HEAD
  * Returns: 0 on success
  *
  * Locking: must be called inside rcu_read_lock() section
@@ -577,6 +760,29 @@ static int mesh_gate_del(struct mesh_table *tbl, struct mesh_path *mpath)
 		}
 
 	return 0;
+=======
+ * Locking: must be called inside rcu_read_lock() section
+ */
+static void mesh_gate_del(struct mesh_table *tbl, struct mesh_path *mpath)
+{
+	struct mpath_node *gate;
+	struct hlist_node *q;
+
+	hlist_for_each_entry_safe(gate, q, tbl->known_gates, list) {
+		if (gate->mpath != mpath)
+			continue;
+		spin_lock_bh(&tbl->gates_lock);
+		hlist_del_rcu(&gate->list);
+		kfree_rcu(gate, rcu);
+		spin_unlock_bh(&tbl->gates_lock);
+		mpath->sdata->u.mesh.num_gates--;
+		mpath->is_gate = false;
+		mpath_dbg(mpath->sdata,
+			  "Mesh path: Deleted gate: %pM. %d known gates\n",
+			  mpath->dst, mpath->sdata->u.mesh.num_gates);
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -589,16 +795,26 @@ int mesh_gate_num(struct ieee80211_sub_if_data *sdata)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  * mesh_path_add - allocate and add a new path to the mesh path table
  * @addr: destination address of the path (ETH_ALEN length)
+=======
+ * mesh_path_add - allocate and add a new path to the mesh path table
+ * @dst: destination address of the path (ETH_ALEN length)
+>>>>>>> refs/remotes/origin/master
  * @sdata: local subif
  *
  * Returns: 0 on success
  *
  * State: the initial state of the new path is set to 0
  */
+<<<<<<< HEAD
 int mesh_path_add(u8 *dst, struct ieee80211_sub_if_data *sdata)
+=======
+struct mesh_path *mesh_path_add(struct ieee80211_sub_if_data *sdata,
+				const u8 *dst)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_if_mesh *ifmsh = &sdata->u.mesh;
 	struct ieee80211_local *local = sdata->local;
@@ -606,6 +822,7 @@ int mesh_path_add(u8 *dst, struct ieee80211_sub_if_data *sdata)
 	struct mesh_path *mpath, *new_mpath;
 	struct mpath_node *node, *new_node;
 	struct hlist_head *bucket;
+<<<<<<< HEAD
 	struct hlist_node *n;
 	int grow = 0;
 	int err = 0;
@@ -624,6 +841,36 @@ int mesh_path_add(u8 *dst, struct ieee80211_sub_if_data *sdata)
 
 	if (atomic_add_unless(&sdata->u.mesh.mpaths, 1, MESH_MAX_MPATHS) == 0)
 		return -ENOSPC;
+=======
+	int grow = 0;
+	int err;
+	u32 hash_idx;
+
+	if (ether_addr_equal(dst, sdata->vif.addr))
+		/* never add ourselves as neighbours */
+		return ERR_PTR(-ENOTSUPP);
+
+	if (is_multicast_ether_addr(dst))
+		return ERR_PTR(-ENOTSUPP);
+
+	if (atomic_add_unless(&sdata->u.mesh.mpaths, 1, MESH_MAX_MPATHS) == 0)
+		return ERR_PTR(-ENOSPC);
+
+	read_lock_bh(&pathtbl_resize_lock);
+	tbl = resize_dereference_mesh_paths();
+
+	hash_idx = mesh_table_hash(dst, sdata, tbl);
+	bucket = &tbl->hash_buckets[hash_idx];
+
+	spin_lock(&tbl->hashwlock[hash_idx]);
+
+	hlist_for_each_entry(node, bucket, list) {
+		mpath = node->mpath;
+		if (mpath->sdata == sdata &&
+		    ether_addr_equal(dst, mpath->dst))
+			goto found;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENOMEM;
 	new_mpath = kzalloc(sizeof(struct mesh_path), GFP_ATOMIC);
@@ -634,8 +881,14 @@ int mesh_path_add(u8 *dst, struct ieee80211_sub_if_data *sdata)
 	if (!new_node)
 		goto err_node_alloc;
 
+<<<<<<< HEAD
 	read_lock_bh(&pathtbl_resize_lock);
 	memcpy(new_mpath->dst, dst, ETH_ALEN);
+=======
+	memcpy(new_mpath->dst, dst, ETH_ALEN);
+	eth_broadcast_addr(new_mpath->rann_snd_addr);
+	new_mpath->is_root = false;
+>>>>>>> refs/remotes/origin/master
 	new_mpath->sdata = sdata;
 	new_mpath->flags = 0;
 	skb_queue_head_init(&new_mpath->frame_queue);
@@ -646,6 +899,7 @@ int mesh_path_add(u8 *dst, struct ieee80211_sub_if_data *sdata)
 	spin_lock_init(&new_mpath->state_lock);
 	init_timer(&new_mpath->timer);
 
+<<<<<<< HEAD
 	tbl = resize_dereference_mesh_paths();
 
 	hash_idx = mesh_table_hash(dst, sdata, tbl);
@@ -669,6 +923,8 @@ int mesh_path_add(u8 *dst, struct ieee80211_sub_if_data *sdata)
 			goto err_exists;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	hlist_add_head_rcu(&new_node->list, bucket);
 	if (atomic_inc_return(&tbl->entries) >=
 	    tbl->mean_chain_len * (tbl->hash_mask + 1))
@@ -677,15 +933,19 @@ int mesh_path_add(u8 *dst, struct ieee80211_sub_if_data *sdata)
 	mesh_paths_generation++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&tbl->hashwlock[hash_idx]);
 =======
 	spin_unlock(&tbl->hashwlock[hash_idx]);
 >>>>>>> refs/remotes/origin/cm-10.0
 	read_unlock_bh(&pathtbl_resize_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (grow) {
 		set_bit(MESH_WORK_GROW_MPATH_TABLE,  &ifmsh->wrkq_flags);
 		ieee80211_queue_work(&local->hw, &sdata->work);
 	}
+<<<<<<< HEAD
 	return 0;
 
 err_exists:
@@ -696,11 +956,25 @@ err_exists:
 >>>>>>> refs/remotes/origin/cm-10.0
 	read_unlock_bh(&pathtbl_resize_lock);
 	kfree(new_node);
+=======
+	mpath = new_mpath;
+found:
+	spin_unlock(&tbl->hashwlock[hash_idx]);
+	read_unlock_bh(&pathtbl_resize_lock);
+	return mpath;
+
+>>>>>>> refs/remotes/origin/master
 err_node_alloc:
 	kfree(new_mpath);
 err_path_alloc:
 	atomic_dec(&sdata->u.mesh.mpaths);
+<<<<<<< HEAD
 	return err;
+=======
+	spin_unlock(&tbl->hashwlock[hash_idx]);
+	read_unlock_bh(&pathtbl_resize_lock);
+	return ERR_PTR(err);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mesh_table_free_rcu(struct rcu_head *rcu)
@@ -751,7 +1025,12 @@ void mesh_mpp_table_grow(void)
 	write_unlock_bh(&pathtbl_resize_lock);
 }
 
+<<<<<<< HEAD
 int mpp_path_add(u8 *dst, u8 *mpp, struct ieee80211_sub_if_data *sdata)
+=======
+int mpp_path_add(struct ieee80211_sub_if_data *sdata,
+		 const u8 *dst, const u8 *mpp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_if_mesh *ifmsh = &sdata->u.mesh;
 	struct ieee80211_local *local = sdata->local;
@@ -759,16 +1038,23 @@ int mpp_path_add(u8 *dst, u8 *mpp, struct ieee80211_sub_if_data *sdata)
 	struct mesh_path *mpath, *new_mpath;
 	struct mpath_node *node, *new_node;
 	struct hlist_head *bucket;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	int grow = 0;
 	int err = 0;
 	u32 hash_idx;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (memcmp(dst, sdata->vif.addr, ETH_ALEN) == 0)
 =======
 	if (compare_ether_addr(dst, sdata->vif.addr) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ether_addr_equal(dst, sdata->vif.addr))
+>>>>>>> refs/remotes/origin/master
 		/* never add ourselves as neighbours */
 		return -ENOTSUPP;
 
@@ -792,9 +1078,13 @@ int mpp_path_add(u8 *dst, u8 *mpp, struct ieee80211_sub_if_data *sdata)
 	skb_queue_head_init(&new_mpath->frame_queue);
 	new_node->mpath = new_mpath;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	init_timer(&new_mpath->timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_timer(&new_mpath->timer);
+>>>>>>> refs/remotes/origin/master
 	new_mpath->exp_time = jiffies;
 	spin_lock_init(&new_mpath->state_lock);
 
@@ -803,6 +1093,7 @@ int mpp_path_add(u8 *dst, u8 *mpp, struct ieee80211_sub_if_data *sdata)
 	hash_idx = mesh_table_hash(dst, sdata, tbl);
 	bucket = &tbl->hash_buckets[hash_idx];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_bh(&tbl->hashwlock[hash_idx]);
 =======
@@ -818,6 +1109,15 @@ int mpp_path_add(u8 *dst, u8 *mpp, struct ieee80211_sub_if_data *sdata)
 		if (mpath->sdata == sdata &&
 		    compare_ether_addr(dst, mpath->dst) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&tbl->hashwlock[hash_idx]);
+
+	err = -EEXIST;
+	hlist_for_each_entry(node, bucket, list) {
+		mpath = node->mpath;
+		if (mpath->sdata == sdata &&
+		    ether_addr_equal(dst, mpath->dst))
+>>>>>>> refs/remotes/origin/master
 			goto err_exists;
 	}
 
@@ -827,10 +1127,14 @@ int mpp_path_add(u8 *dst, u8 *mpp, struct ieee80211_sub_if_data *sdata)
 		grow = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&tbl->hashwlock[hash_idx]);
 =======
 	spin_unlock(&tbl->hashwlock[hash_idx]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&tbl->hashwlock[hash_idx]);
+>>>>>>> refs/remotes/origin/master
 	read_unlock_bh(&pathtbl_resize_lock);
 	if (grow) {
 		set_bit(MESH_WORK_GROW_MPP_TABLE,  &ifmsh->wrkq_flags);
@@ -840,10 +1144,14 @@ int mpp_path_add(u8 *dst, u8 *mpp, struct ieee80211_sub_if_data *sdata)
 
 err_exists:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&tbl->hashwlock[hash_idx]);
 =======
 	spin_unlock(&tbl->hashwlock[hash_idx]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&tbl->hashwlock[hash_idx]);
+>>>>>>> refs/remotes/origin/master
 	read_unlock_bh(&pathtbl_resize_lock);
 	kfree(new_node);
 err_node_alloc:
@@ -867,6 +1175,7 @@ void mesh_plink_broken(struct sta_info *sta)
 	static const u8 bcast[ETH_ALEN] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 	struct mesh_path *mpath;
 	struct mpath_node *node;
+<<<<<<< HEAD
 	struct hlist_node *p;
 	struct ieee80211_sub_if_data *sdata = sta->sdata;
 	int i;
@@ -885,10 +1194,21 @@ void mesh_plink_broken(struct sta_info *sta)
 		    mpath->flags & MESH_PATH_ACTIVE &&
 		    !(mpath->flags & MESH_PATH_FIXED)) {
 =======
+=======
+	struct ieee80211_sub_if_data *sdata = sta->sdata;
+	int i;
+	__le16 reason = cpu_to_le16(WLAN_REASON_MESH_PATH_DEST_UNREACHABLE);
+
+	rcu_read_lock();
+	tbl = rcu_dereference(mesh_paths);
+	for_each_mesh_entry(tbl, node, i) {
+		mpath = node->mpath;
+>>>>>>> refs/remotes/origin/master
 		if (rcu_dereference(mpath->next_hop) == sta &&
 		    mpath->flags & MESH_PATH_ACTIVE &&
 		    !(mpath->flags & MESH_PATH_FIXED)) {
 			spin_lock_bh(&mpath->state_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			mpath->flags &= ~MESH_PATH_ACTIVE;
 			++mpath->sn;
@@ -904,12 +1224,25 @@ void mesh_plink_broken(struct sta_info *sta)
 					reason, bcast, sdata);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mpath->flags &= ~MESH_PATH_ACTIVE;
+			++mpath->sn;
+			spin_unlock_bh(&mpath->state_lock);
+			mesh_path_error_tx(sdata,
+					   sdata->u.mesh.mshcfg.element_ttl,
+					   mpath->dst, cpu_to_le32(mpath->sn),
+					   reason, bcast);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	rcu_read_unlock();
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void mesh_path_node_reclaim(struct rcu_head *rp)
 {
 	struct mpath_node *node = container_of(rp, struct mpath_node, rcu);
@@ -936,11 +1269,18 @@ static void __mesh_path_del(struct mesh_table *tbl, struct mpath_node *node)
 	atomic_dec(&tbl->entries);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /**
  * mesh_path_flush_by_nexthop - Deletes mesh paths if their next hop matches
  *
  * @sta - mesh peer to match
+=======
+/**
+ * mesh_path_flush_by_nexthop - Deletes mesh paths if their next hop matches
+ *
+ * @sta: mesh peer to match
+>>>>>>> refs/remotes/origin/master
  *
  * RCU notes: this function is called when a mesh plink transitions from
  * PLINK_ESTAB to any other state, since PLINK_ESTAB state is the only one that
@@ -953,6 +1293,7 @@ void mesh_path_flush_by_nexthop(struct sta_info *sta)
 	struct mesh_table *tbl;
 	struct mesh_path *mpath;
 	struct mpath_node *node;
+<<<<<<< HEAD
 	struct hlist_node *p;
 	int i;
 
@@ -974,6 +1315,14 @@ void mesh_path_flush(struct ieee80211_sub_if_data *sdata)
 	read_lock_bh(&pathtbl_resize_lock);
 	tbl = resize_dereference_mesh_paths();
 	for_each_mesh_entry(tbl, p, node, i) {
+=======
+	int i;
+
+	rcu_read_lock();
+	read_lock_bh(&pathtbl_resize_lock);
+	tbl = resize_dereference_mesh_paths();
+	for_each_mesh_entry(tbl, node, i) {
+>>>>>>> refs/remotes/origin/master
 		mpath = node->mpath;
 		if (rcu_dereference(mpath->next_hop) == sta) {
 			spin_lock(&tbl->hashwlock[i]);
@@ -988,6 +1337,7 @@ void mesh_path_flush(struct ieee80211_sub_if_data *sdata)
 static void table_flush_by_iface(struct mesh_table *tbl,
 				 struct ieee80211_sub_if_data *sdata)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct mesh_path *mpath;
 	struct mpath_node *node;
@@ -1017,6 +1367,14 @@ static void mesh_path_node_reclaim(struct rcu_head *rp)
 =======
 	WARN_ON(!rcu_read_lock_held());
 	for_each_mesh_entry(tbl, p, node, i) {
+=======
+	struct mesh_path *mpath;
+	struct mpath_node *node;
+	int i;
+
+	WARN_ON(!rcu_read_lock_held());
+	for_each_mesh_entry(tbl, node, i) {
+>>>>>>> refs/remotes/origin/master
 		mpath = node->mpath;
 		if (mpath->sdata != sdata)
 			continue;
@@ -1031,7 +1389,11 @@ static void mesh_path_node_reclaim(struct rcu_head *rp)
  *
  * This function deletes both mesh paths as well as mesh portal paths.
  *
+<<<<<<< HEAD
  * @sdata - interface data to match
+=======
+ * @sdata: interface data to match
+>>>>>>> refs/remotes/origin/master
  *
  */
 void mesh_path_flush_by_iface(struct ieee80211_sub_if_data *sdata)
@@ -1046,7 +1408,10 @@ void mesh_path_flush_by_iface(struct ieee80211_sub_if_data *sdata)
 	table_flush_by_iface(tbl, sdata);
 	read_unlock_bh(&pathtbl_resize_lock);
 	rcu_read_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1057,13 +1422,20 @@ void mesh_path_flush_by_iface(struct ieee80211_sub_if_data *sdata)
  *
  * Returns: 0 if successful
  */
+<<<<<<< HEAD
 int mesh_path_del(u8 *addr, struct ieee80211_sub_if_data *sdata)
+=======
+int mesh_path_del(struct ieee80211_sub_if_data *sdata, const u8 *addr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mesh_table *tbl;
 	struct mesh_path *mpath;
 	struct mpath_node *node;
 	struct hlist_head *bucket;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	int hash_idx;
 	int err = 0;
 
@@ -1072,6 +1444,7 @@ int mesh_path_del(u8 *addr, struct ieee80211_sub_if_data *sdata)
 	hash_idx = mesh_table_hash(addr, sdata, tbl);
 	bucket = &tbl->hash_buckets[hash_idx];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_bh(&tbl->hashwlock[hash_idx]);
 	hlist_for_each_entry(node, n, bucket, list) {
@@ -1092,6 +1465,14 @@ int mesh_path_del(u8 *addr, struct ieee80211_sub_if_data *sdata)
 		    compare_ether_addr(addr, mpath->dst) == 0) {
 			__mesh_path_del(tbl, node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock(&tbl->hashwlock[hash_idx]);
+	hlist_for_each_entry(node, bucket, list) {
+		mpath = node->mpath;
+		if (mpath->sdata == sdata &&
+		    ether_addr_equal(addr, mpath->dst)) {
+			__mesh_path_del(tbl, node);
+>>>>>>> refs/remotes/origin/master
 			goto enddel;
 		}
 	}
@@ -1100,10 +1481,14 @@ int mesh_path_del(u8 *addr, struct ieee80211_sub_if_data *sdata)
 enddel:
 	mesh_paths_generation++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_bh(&tbl->hashwlock[hash_idx]);
 =======
 	spin_unlock(&tbl->hashwlock[hash_idx]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock(&tbl->hashwlock[hash_idx]);
+>>>>>>> refs/remotes/origin/master
 	read_unlock_bh(&pathtbl_resize_lock);
 	return err;
 }
@@ -1125,7 +1510,10 @@ void mesh_path_tx_pending(struct mesh_path *mpath)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * mesh_path_send_to_gates - sends pending frames to all known mesh gates
  *
  * @mpath: mesh path whose queue will be emptied
@@ -1138,7 +1526,10 @@ void mesh_path_tx_pending(struct mesh_path *mpath)
 int mesh_path_send_to_gates(struct mesh_path *mpath)
 {
 	struct ieee80211_sub_if_data *sdata = mpath->sdata;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mesh_table *tbl;
 	struct mesh_path *from_mpath = mpath;
 	struct mpath_node *gate = NULL;
@@ -1153,16 +1544,25 @@ int mesh_path_send_to_gates(struct mesh_path *mpath)
 	if (!known_gates)
 		return -EHOSTUNREACH;
 
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(gate, n, known_gates, list) {
+=======
+	hlist_for_each_entry_rcu(gate, known_gates, list) {
+>>>>>>> refs/remotes/origin/master
 		if (gate->mpath->sdata != sdata)
 			continue;
 
 		if (gate->mpath->flags & MESH_PATH_ACTIVE) {
+<<<<<<< HEAD
 			mpath_dbg("Forwarding to %pM\n", gate->mpath->dst);
+=======
+			mpath_dbg(sdata, "Forwarding to %pM\n", gate->mpath->dst);
+>>>>>>> refs/remotes/origin/master
 			mesh_path_move_to_queue(gate->mpath, from_mpath, copy);
 			from_mpath = gate->mpath;
 			copy = true;
 		} else {
+<<<<<<< HEAD
 			mpath_dbg("Not forwarding %p\n", gate->mpath);
 			mpath_dbg("flags %x\n", gate->mpath->flags);
 		}
@@ -1171,6 +1571,17 @@ int mesh_path_send_to_gates(struct mesh_path *mpath)
 	hlist_for_each_entry_rcu(gate, n, known_gates, list)
 		if (gate->mpath->sdata == sdata) {
 			mpath_dbg("Sending to %pM\n", gate->mpath->dst);
+=======
+			mpath_dbg(sdata,
+				  "Not forwarding %p (flags %#x)\n",
+				  gate->mpath, gate->mpath->flags);
+		}
+	}
+
+	hlist_for_each_entry_rcu(gate, known_gates, list)
+		if (gate->mpath->sdata == sdata) {
+			mpath_dbg(sdata, "Sending to %pM\n", gate->mpath->dst);
+>>>>>>> refs/remotes/origin/master
 			mesh_path_tx_pending(gate->mpath);
 		}
 
@@ -1178,12 +1589,16 @@ int mesh_path_send_to_gates(struct mesh_path *mpath)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * mesh_path_discard_frame - discard a frame whose path could not be resolved
  *
  * @skb: frame to discard
  * @sdata: network subif the frame was to be sent through
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * If the frame was being forwarded from another MP, a PERR frame will be sent
  * to the precursor.  The precursor's address (i.e. the previous hop) was saved
@@ -1217,6 +1632,13 @@ void mesh_path_discard_frame(struct sk_buff *skb,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Locking: the function must me called within a rcu_read_lock region
+ */
+void mesh_path_discard_frame(struct ieee80211_sub_if_data *sdata,
+			     struct sk_buff *skb)
+{
+>>>>>>> refs/remotes/origin/master
 	kfree_skb(skb);
 	sdata->u.mesh.mshstats.dropped_frames_no_route++;
 }
@@ -1233,12 +1655,17 @@ void mesh_path_flush_pending(struct mesh_path *mpath)
 	struct sk_buff *skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while ((skb = skb_dequeue(&mpath->frame_queue)) &&
 			(mpath->flags & MESH_PATH_ACTIVE))
 =======
 	while ((skb = skb_dequeue(&mpath->frame_queue)) != NULL)
 >>>>>>> refs/remotes/origin/cm-10.0
 		mesh_path_discard_frame(skb, mpath->sdata);
+=======
+	while ((skb = skb_dequeue(&mpath->frame_queue)) != NULL)
+		mesh_path_discard_frame(mpath->sdata, skb);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1299,9 +1726,13 @@ int mesh_pathtbl_init(void)
 {
 	struct mesh_table *tbl_path, *tbl_mpp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	tbl_path = mesh_table_alloc(INIT_PATHS_SIZE_ORDER);
 	if (!tbl_path)
@@ -1310,12 +1741,15 @@ int mesh_pathtbl_init(void)
 	tbl_path->copy_node = &mesh_path_node_copy;
 	tbl_path->mean_chain_len = MEAN_CHAIN_LEN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	tbl_mpp = mesh_table_alloc(INIT_PATHS_SIZE_ORDER);
 	if (!tbl_mpp) {
 		mesh_table_free(tbl_path, true);
 		return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tbl_path->known_gates = kzalloc(sizeof(struct hlist_head), GFP_ATOMIC);
 	if (!tbl_path->known_gates) {
 		ret = -ENOMEM;
@@ -1328,20 +1762,29 @@ int mesh_pathtbl_init(void)
 	if (!tbl_mpp) {
 		ret = -ENOMEM;
 		goto free_path;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	tbl_mpp->free_node = &mesh_path_node_free;
 	tbl_mpp->copy_node = &mesh_path_node_copy;
 	tbl_mpp->mean_chain_len = MEAN_CHAIN_LEN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tbl_mpp->known_gates = kzalloc(sizeof(struct hlist_head), GFP_ATOMIC);
 	if (!tbl_mpp->known_gates) {
 		ret = -ENOMEM;
 		goto free_mpp;
 	}
 	INIT_HLIST_HEAD(tbl_mpp->known_gates);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Need no locking since this is during init */
 	RCU_INIT_POINTER(mesh_paths, tbl_path);
@@ -1349,14 +1792,20 @@ int mesh_pathtbl_init(void)
 
 	return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 free_mpp:
 	mesh_table_free(tbl_mpp, true);
 free_path:
 	mesh_table_free(tbl_path, true);
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void mesh_path_expire(struct ieee80211_sub_if_data *sdata)
@@ -1364,11 +1813,15 @@ void mesh_path_expire(struct ieee80211_sub_if_data *sdata)
 	struct mesh_table *tbl;
 	struct mesh_path *mpath;
 	struct mpath_node *node;
+<<<<<<< HEAD
 	struct hlist_node *p;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	rcu_read_lock();
 	tbl = rcu_dereference(mesh_paths);
+<<<<<<< HEAD
 	for_each_mesh_entry(tbl, p, node, i) {
 		if (node->mpath->sdata != sdata)
 			continue;
@@ -1388,6 +1841,16 @@ void mesh_path_expire(struct ieee80211_sub_if_data *sdata)
 		     time_after(jiffies, mpath->exp_time + MESH_PATH_EXPIRE))
 			mesh_path_del(mpath->dst, mpath->sdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for_each_mesh_entry(tbl, node, i) {
+		if (node->mpath->sdata != sdata)
+			continue;
+		mpath = node->mpath;
+		if ((!(mpath->flags & MESH_PATH_RESOLVING)) &&
+		    (!(mpath->flags & MESH_PATH_FIXED)) &&
+		     time_after(jiffies, mpath->exp_time + MESH_PATH_EXPIRE))
+			mesh_path_del(mpath->sdata, mpath->dst);
+>>>>>>> refs/remotes/origin/master
 	}
 	rcu_read_unlock();
 }
@@ -1396,10 +1859,15 @@ void mesh_pathtbl_unregister(void)
 {
 	/* no need for locking during exit path */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mesh_table_free(rcu_dereference_raw(mesh_paths), true);
 	mesh_table_free(rcu_dereference_raw(mpp_paths), true);
 =======
 	mesh_table_free(rcu_dereference_protected(mesh_paths, 1), true);
 	mesh_table_free(rcu_dereference_protected(mpp_paths, 1), true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mesh_table_free(rcu_dereference_protected(mesh_paths, 1), true);
+	mesh_table_free(rcu_dereference_protected(mpp_paths, 1), true);
+>>>>>>> refs/remotes/origin/master
 }

@@ -1,7 +1,11 @@
 /*
  *  GT641xx IRQ routines.
  *
+<<<<<<< HEAD
  *  Copyright (C) 2007  Yoichi Yuasa <yuasa@linux-mips.org>
+=======
+ *  Copyright (C) 2007	Yoichi Yuasa <yuasa@linux-mips.org>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +29,11 @@
 
 #include <asm/gt64120.h>
 
+<<<<<<< HEAD
 #define GT641XX_IRQ_TO_BIT(irq)	(1U << (irq - GT641XX_IRQ_BASE))
+=======
+#define GT641XX_IRQ_TO_BIT(irq) (1U << (irq - GT641XX_IRQ_BASE))
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_RAW_SPINLOCK(gt641xx_irq_lock);
 

@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /* linux/arch/arm/mach-s3c2440/mach-rx1950.c
  *
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2006-2009 Victor Chukhantsev, Denis Grigoriev,
  * Copyright (c) 2007-2010 Vasily Khoruzhick
  *
@@ -37,6 +41,7 @@
 
 #include <linux/mmc/host.h>
 
+<<<<<<< HEAD
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach-types.h>
@@ -63,6 +68,35 @@
 #include <sound/uda1380.h>
 
 #include "common.h"
+=======
+#include <asm/mach-types.h>
+#include <asm/mach/arch.h>
+#include <asm/mach/map.h>
+
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <linux/platform_data/mmc-s3cmci.h>
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+#include <linux/platform_data/touchscreen-s3c2410.h>
+#include <linux/platform_data/usb-s3c2410_udc.h>
+
+#include <sound/uda1380.h>
+
+#include <mach/fb.h>
+#include <mach/regs-gpio.h>
+#include <mach/regs-lcd.h>
+#include <mach/gpio-samsung.h>
+
+#include <plat/clock.h>
+#include <plat/cpu.h>
+#include <plat/devs.h>
+#include <plat/pm.h>
+#include <plat/regs-serial.h>
+#include <plat/samsung-time.h>
+#include <plat/gpio-cfg.h>
+
+#include "common.h"
+#include "h1940.h"
+>>>>>>> refs/remotes/origin/master
 
 #define LCD_PWM_PERIOD 192960
 #define LCD_PWM_DUTY 127353
@@ -152,6 +186,7 @@ static struct pda_power_pdata power_supply_info = {
 };
 
 static struct resource power_supply_resources[] = {
+<<<<<<< HEAD
 	[0] = {
 			.name	= "ac",
 			.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE |
@@ -159,6 +194,10 @@ static struct resource power_supply_resources[] = {
 			.start	= IRQ_EINT2,
 			.end	= IRQ_EINT2,
 	},
+=======
+	[0] = DEFINE_RES_NAMED(IRQ_EINT2, 1, "ac", IORESOURCE_IRQ \
+			| IORESOURCE_IRQ_LOWEDGE | IORESOURCE_IRQ_HIGHEDGE),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device power_supply = {
@@ -529,6 +568,10 @@ static struct platform_pwm_backlight_data rx1950_backlight_data = {
 	.max_brightness = 24,
 	.dft_brightness = 4,
 	.pwm_period_ns = 48000,
+<<<<<<< HEAD
+=======
+	.enable_gpio = -1,
+>>>>>>> refs/remotes/origin/master
 	.init = rx1950_backlight_init,
 	.notify = rx1950_backlight_notify,
 	.exit = rx1950_backlight_exit,
@@ -537,7 +580,11 @@ static struct platform_pwm_backlight_data rx1950_backlight_data = {
 static struct platform_device rx1950_backlight = {
 	.name = "pwm-backlight",
 	.dev = {
+<<<<<<< HEAD
 		.parent = &s3c_device_timer[0].dev,
+=======
+		.parent = &samsung_device_pwm.dev,
+>>>>>>> refs/remotes/origin/master
 		.platform_data = &rx1950_backlight_data,
 	},
 };
@@ -718,15 +765,22 @@ static struct platform_device *rx1950_devices[] __initdata = {
 	&s3c_device_wdt,
 	&s3c_device_i2c0,
 	&s3c_device_iis,
+<<<<<<< HEAD
 	&samsung_asoc_dma,
+=======
+>>>>>>> refs/remotes/origin/master
 	&s3c_device_usbgadget,
 	&s3c_device_rtc,
 	&s3c_device_nand,
 	&s3c_device_sdi,
 	&s3c_device_adc,
 	&s3c_device_ts,
+<<<<<<< HEAD
 	&s3c_device_timer[0],
 	&s3c_device_timer[1],
+=======
+	&samsung_device_pwm,
+>>>>>>> refs/remotes/origin/master
 	&rx1950_backlight,
 	&rx1950_device_gpiokeys,
 	&power_supply,
@@ -749,6 +803,10 @@ static void __init rx1950_map_io(void)
 	s3c24xx_init_io(rx1950_iodesc, ARRAY_SIZE(rx1950_iodesc));
 	s3c24xx_init_clocks(16934000);
 	s3c24xx_init_uarts(rx1950_uartcfgs, ARRAY_SIZE(rx1950_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 
 	/* setup PM */
 
@@ -819,8 +877,14 @@ MACHINE_START(RX1950, "HP iPAQ RX1950")
 	.atag_offset = 0x100,
 	.map_io = rx1950_map_io,
 	.reserve	= rx1950_reserve,
+<<<<<<< HEAD
 	.init_irq = s3c24xx_init_irq,
 	.init_machine = rx1950_init_machine,
 	.timer = &s3c24xx_timer,
+=======
+	.init_irq	= s3c2442_init_irq,
+	.init_machine = rx1950_init_machine,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c244x_restart,
 MACHINE_END

@@ -77,11 +77,16 @@ EXPORT_SYMBOL(sn_dma_set_mask);
  */
 static void *sn_dma_alloc_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   dma_addr_t * dma_handle, gfp_t flags)
 =======
 				   dma_addr_t * dma_handle, gfp_t flags,
 				   struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   dma_addr_t * dma_handle, gfp_t flags,
+				   struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *cpuaddr;
 	unsigned long phys_addr;
@@ -143,10 +148,14 @@ static void *sn_dma_alloc_coherent(struct device *dev, size_t size,
  */
 static void sn_dma_free_coherent(struct device *dev, size_t size, void *cpu_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 dma_addr_t dma_handle)
 =======
 				 dma_addr_t dma_handle, struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 dma_addr_t dma_handle, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev = to_pci_dev(dev);
 	struct sn_pcibus_provider *provider = SN_PCIDEV_BUSPROVIDER(pdev);
@@ -476,12 +485,17 @@ int sn_pci_legacy_write(struct pci_bus *bus, u16 port, u32 val, u8 size)
 
 static struct dma_map_ops sn_dma_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.alloc_coherent		= sn_dma_alloc_coherent,
 	.free_coherent		= sn_dma_free_coherent,
 =======
 	.alloc			= sn_dma_alloc_coherent,
 	.free			= sn_dma_free_coherent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc			= sn_dma_alloc_coherent,
+	.free			= sn_dma_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_page		= sn_dma_map_page,
 	.unmap_page		= sn_dma_unmap_page,
 	.map_sg			= sn_dma_map_sg,

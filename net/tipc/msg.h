@@ -44,7 +44,10 @@
  *
  * Note: Some items are also used with TIPC internal message headers
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIPC_VERSION              2
 
 /*
@@ -58,7 +61,10 @@
 /*
  * Payload message types
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIPC_CONN_MSG		0
 #define TIPC_MCAST_MSG		1
 #define TIPC_NAMED_MSG		2
@@ -67,6 +73,7 @@
 /*
  * Message header sizes
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #define SHORT_H_SIZE              24	/* Connected, in-cluster messages */
@@ -74,11 +81,16 @@
 #define LONG_H_SIZE               40	/* Named messages */
 #define MCAST_H_SIZE              44	/* Multicast messages */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SHORT_H_SIZE              24	/* In-cluster basic payload message */
 #define BASIC_H_SIZE              32	/* Basic payload message */
 #define NAMED_H_SIZE              40	/* Named payload message */
 #define MCAST_H_SIZE              44	/* Multicast payload message */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define INT_H_SIZE                40	/* Internal messages */
 #define MIN_H_SIZE                24	/* Smallest legal TIPC header size */
 #define MAX_H_SIZE                60	/* Largest possible TIPC header size */
@@ -86,10 +98,15 @@
 #define MAX_MSG_SIZE (MAX_H_SIZE + TIPC_MAX_USER_MSG_SIZE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TIPC_MEDIA_ADDR_OFFSET	5
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TIPC_MEDIA_ADDR_OFFSET	5
+
+>>>>>>> refs/remotes/origin/master
 
 struct tipc_msg {
 	__be32 hdr[15];
@@ -131,7 +148,10 @@ static inline void msg_swap_words(struct tipc_msg *msg, u32 a, u32 b)
 /*
  * Word 0
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_version(struct tipc_msg *m)
 {
 	return msg_bits(m, 0, 29, 7);
@@ -226,7 +246,10 @@ static inline void msg_set_size(struct tipc_msg *m, u32 sz)
 /*
  * Word 1
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_type(struct tipc_msg *m)
 {
 	return msg_bits(m, 1, 29, 0x7);
@@ -301,7 +324,10 @@ static inline void msg_set_bcast_ack(struct tipc_msg *m, u32 n)
 /*
  * Word 2
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_ack(struct tipc_msg *m)
 {
 	return msg_bits(m, 2, 16, 0xffff);
@@ -323,6 +349,7 @@ static inline void msg_set_seqno(struct tipc_msg *m, u32 n)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * TIPC may utilize the "link ack #" and "link seq #" fields of a short
  * message header to hold the destination node for the message, since the
@@ -350,6 +377,10 @@ static inline void msg_set_destnode_cache(struct tipc_msg *m, u32 dnode)
  */
 
 
+=======
+ * Words 3-10
+ */
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_prevnode(struct tipc_msg *m)
 {
 	return msg_word(m, 3);
@@ -393,10 +424,14 @@ static inline void msg_set_mc_netid(struct tipc_msg *m, u32 p)
 static inline int msg_short(struct tipc_msg *m)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return msg_hdr_sz(m) == 24;
 =======
 	return msg_hdr_sz(m) == SHORT_H_SIZE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return msg_hdr_sz(m) == SHORT_H_SIZE;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u32 msg_orignode(struct tipc_msg *m)
@@ -422,6 +457,7 @@ static inline void msg_set_destnode(struct tipc_msg *m, u32 a)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int msg_is_dest(struct tipc_msg *m, u32 d)
 {
 	return msg_short(m) || (msg_destnode(m) == d);
@@ -429,6 +465,8 @@ static inline int msg_is_dest(struct tipc_msg *m, u32 d)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_nametype(struct tipc_msg *m)
 {
 	return msg_word(m, 8);
@@ -479,7 +517,10 @@ static inline struct tipc_msg *msg_get_wrapped(struct tipc_msg *m)
 	return (struct tipc_msg *)msg_data(m);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Constants and routines used to read and write TIPC internal message headers
  */
@@ -487,7 +528,10 @@ static inline struct tipc_msg *msg_get_wrapped(struct tipc_msg *m)
 /*
  * Internal message users
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define  BCAST_PROTOCOL       5
 #define  MSG_BUNDLER          6
 #define  LINK_PROTOCOL        7
@@ -501,7 +545,10 @@ static inline struct tipc_msg *msg_get_wrapped(struct tipc_msg *m)
 /*
  *  Connection management protocol message types
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define CONN_PROBE        0
 #define CONN_PROBE_REPLY  1
 #define CONN_ACK          2
@@ -509,14 +556,20 @@ static inline struct tipc_msg *msg_get_wrapped(struct tipc_msg *m)
 /*
  * Name distributor message types
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PUBLICATION       0
 #define WITHDRAWAL        1
 
 /*
  * Segmentation message types
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define FIRST_FRAGMENT		0
 #define FRAGMENT		1
 #define LAST_FRAGMENT		2
@@ -524,7 +577,10 @@ static inline struct tipc_msg *msg_get_wrapped(struct tipc_msg *m)
 /*
  * Link management protocol message types
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define STATE_MSG		0
 #define RESET_MSG		1
 #define ACTIVATE_MSG		2
@@ -538,7 +594,10 @@ static inline struct tipc_msg *msg_get_wrapped(struct tipc_msg *m)
 /*
  * Config protocol message types
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DSC_REQ_MSG		0
 #define DSC_RESP_MSG		1
 
@@ -546,7 +605,10 @@ static inline struct tipc_msg *msg_get_wrapped(struct tipc_msg *m)
 /*
  * Word 1
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_seq_gap(struct tipc_msg *m)
 {
 	return msg_bits(m, 1, 16, 0x1fff);
@@ -558,7 +620,10 @@ static inline void msg_set_seq_gap(struct tipc_msg *m, u32 n)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_node_sig(struct tipc_msg *m)
 {
 	return msg_bits(m, 1, 0, 0xffff);
@@ -569,12 +634,18 @@ static inline void msg_set_node_sig(struct tipc_msg *m, u32 n)
 	msg_set_bits(m, 1, 0, 0xffff, n);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Word 2
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_dest_domain(struct tipc_msg *m)
 {
 	return msg_word(m, 2);
@@ -609,7 +680,10 @@ static inline void msg_set_bcgap_to(struct tipc_msg *m, u32 n)
 /*
  * Word 4
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_last_bcast(struct tipc_msg *m)
 {
 	return msg_bits(m, 4, 16, 0xffff);
@@ -620,12 +694,15 @@ static inline void msg_set_last_bcast(struct tipc_msg *m, u32 n)
 	msg_set_bits(m, 4, 16, 0xffff, n);
 }
 
+<<<<<<< HEAD
 
 static inline u32 msg_fragm_no(struct tipc_msg *m)
 {
 	return msg_bits(m, 4, 16, 0xffff);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void msg_set_fragm_no(struct tipc_msg *m, u32 n)
 {
 	msg_set_bits(m, 4, 16, 0xffff, n);
@@ -642,12 +719,15 @@ static inline void msg_set_next_sent(struct tipc_msg *m, u32 n)
 	msg_set_bits(m, 4, 0, 0xffff, n);
 }
 
+<<<<<<< HEAD
 
 static inline u32 msg_long_msgno(struct tipc_msg *m)
 {
 	return msg_bits(m, 4, 0, 0xffff);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void msg_set_long_msgno(struct tipc_msg *m, u32 n)
 {
 	msg_set_bits(m, 4, 0, 0xffff, n);
@@ -671,16 +751,23 @@ static inline u32 msg_link_selector(struct tipc_msg *m)
 static inline void msg_set_link_selector(struct tipc_msg *m, u32 n)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg_set_bits(m, 4, 0, 1, (n & 1));
 =======
 	msg_set_bits(m, 4, 0, 1, n);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg_set_bits(m, 4, 0, 1, n);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Word 5
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_session(struct tipc_msg *m)
 {
 	return msg_bits(m, 5, 16, 0xffff);
@@ -699,10 +786,14 @@ static inline u32 msg_probe(struct tipc_msg *m)
 static inline void msg_set_probe(struct tipc_msg *m, u32 val)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msg_set_bits(m, 5, 0, 1, (val & 1));
 =======
 	msg_set_bits(m, 5, 0, 1, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg_set_bits(m, 5, 0, 1, val);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline char msg_net_plane(struct tipc_msg *m)
@@ -746,17 +837,26 @@ static inline void msg_set_redundant_link(struct tipc_msg *m, u32 r)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline char *msg_media_addr(struct tipc_msg *m)
 {
 	return (char *)&m->hdr[TIPC_MEDIA_ADDR_OFFSET];
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Word 9
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u32 msg_msgcnt(struct tipc_msg *m)
 {
 	return msg_bits(m, 9, 16, 0xffff);
@@ -798,6 +898,7 @@ static inline void msg_set_link_tolerance(struct tipc_msg *m, u32 n)
 }
 
 u32 tipc_msg_tot_importance(struct tipc_msg *m);
+<<<<<<< HEAD
 void tipc_msg_init(struct tipc_msg *m, u32 user, u32 type,
 			    u32 hsize, u32 destnode);
 int tipc_msg_build(struct tipc_msg *hdr, struct iovec const *msg_sect,
@@ -817,4 +918,10 @@ static inline void msg_get_media_addr(struct tipc_msg *m, struct tipc_media_addr
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_msg_init(struct tipc_msg *m, u32 user, u32 type, u32 hsize,
+		   u32 destnode);
+int tipc_msg_build(struct tipc_msg *hdr, struct iovec const *msg_sect,
+		   unsigned int len, int max_size, struct sk_buff **buf);
+>>>>>>> refs/remotes/origin/master
 #endif

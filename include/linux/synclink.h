@@ -8,6 +8,7 @@
  * Redistribution of this file is permitted under
  * the terms of the GNU Public License (GPL)
  */
+<<<<<<< HEAD
 
 #ifndef _SYNCLINK_H_
 #define _SYNCLINK_H_
@@ -297,6 +298,13 @@ struct gpio_desc {
 #define MGSL_IOCGXCTRL		_IO(MGSL_MAGIC_IOC, 22)
 
 #ifdef __KERNEL__
+=======
+#ifndef _SYNCLINK_H_
+#define _SYNCLINK_H_
+
+#include <uapi/linux/synclink.h>
+
+>>>>>>> refs/remotes/origin/master
 /* provide 32 bit ioctl compatibility on 64 bit systems */
 #ifdef CONFIG_COMPAT
 #include <linux/compat.h>
@@ -318,6 +326,9 @@ struct MGSL_PARAMS32 {
 #define MGSL_IOCSPARAMS32 _IOW(MGSL_MAGIC_IOC,0,struct MGSL_PARAMS32)
 #define MGSL_IOCGPARAMS32 _IOR(MGSL_MAGIC_IOC,1,struct MGSL_PARAMS32)
 #endif
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _SYNCLINK_H_ */

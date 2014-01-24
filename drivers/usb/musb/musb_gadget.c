@@ -41,16 +41,20 @@
 #include <linux/spinlock.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 #include <linux/stat.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
 
 #include "musb_core.h"
 
 
+<<<<<<< HEAD
 /* MUSB PERIPHERAL status 3-mar-2006:
  *
  * - EP0 seems solid.  It passes both USBCV and usbtest control cases.
@@ -93,6 +97,8 @@
  *     + TUSB 6010, platform-specific dma in the works
  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* ----------------------------------------------------------------------- */
 
 #define is_buffer_mapped(req) (is_dma_capable() && \
@@ -123,13 +129,28 @@ static inline void map_dma_buffer(struct musb_request *request,
 		return;
 
 	if (request->request.dma == DMA_ADDR_INVALID) {
+<<<<<<< HEAD
 		request->request.dma = dma_map_single(
+=======
+		dma_addr_t dma_addr;
+		int ret;
+
+		dma_addr = dma_map_single(
+>>>>>>> refs/remotes/origin/master
 				musb->controller,
 				request->request.buf,
 				request->request.length,
 				request->tx
 					? DMA_TO_DEVICE
 					: DMA_FROM_DEVICE);
+<<<<<<< HEAD
+=======
+		ret = dma_mapping_error(musb->controller, dma_addr);
+		if (ret)
+			return;
+
+		request->request.dma = dma_addr;
+>>>>>>> refs/remotes/origin/master
 		request->map_state = MUSB_MAPPED;
 	} else {
 		dma_sync_single_for_device(musb->controller,
@@ -146,7 +167,13 @@ static inline void map_dma_buffer(struct musb_request *request,
 static inline void unmap_dma_buffer(struct musb_request *request,
 				struct musb *musb)
 {
+<<<<<<< HEAD
 	if (!is_buffer_mapped(request))
+=======
+	struct musb_ep *musb_ep = request->ep;
+
+	if (!is_buffer_mapped(request) || !musb_ep->dma)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (request->request.dma == DMA_ADDR_INVALID) {
@@ -200,7 +227,14 @@ __acquires(ep->musb->lock)
 
 	ep->busy = 1;
 	spin_unlock(&musb->lock);
+<<<<<<< HEAD
 	unmap_dma_buffer(req, musb);
+=======
+
+	if (!dma_mapping_error(&musb->g.dev, request->dma))
+		unmap_dma_buffer(req, musb);
+
+>>>>>>> refs/remotes/origin/master
 	if (request->status == 0)
 		dev_dbg(musb->controller, "%s done request %p,  %d/%d\n",
 				ep->end_point.name, request,
@@ -280,6 +314,7 @@ static inline int max_ep_writesize(struct musb *musb, struct musb_ep *ep)
 		return ep->packet_sz;
 }
 
+<<<<<<< HEAD
 
 #ifdef CONFIG_USB_INVENTRA_DMA
 
@@ -315,6 +350,8 @@ static inline int max_ep_writesize(struct musb *musb, struct musb_ep *ep)
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * An endpoint is transmitting data. This can be called either from
  * the IRQ routine or from ep.queue() to kickstart a request on an
@@ -333,6 +370,16 @@ static void txstate(struct musb *musb, struct musb_request *req)
 
 	musb_ep = req->ep;
 
+<<<<<<< HEAD
+=======
+	/* Check if EP is disabled */
+	if (!musb_ep->desc) {
+		dev_dbg(musb->controller, "ep:%s disabled - ignore request\n",
+						musb_ep->end_point.name);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* we shouldn't get here while DMA is active ... but we do ... */
 	if (dma_channel_status(musb_ep->dma) == MUSB_DMA_STATUS_BUSY) {
 		dev_dbg(musb->controller, "dma pending...\n");
@@ -371,7 +418,11 @@ static void txstate(struct musb *musb, struct musb_request *req)
 		request_size = min_t(size_t, request->length - request->actual,
 					musb_ep->dma->max_len);
 
+<<<<<<< HEAD
 		use_dma = (request->dma != DMA_ADDR_INVALID);
+=======
+		use_dma = (request->dma != DMA_ADDR_INVALID && request_size);
+>>>>>>> refs/remotes/origin/master
 
 		/* MUSB_TXCSR_P_ISO is still set correctly */
 
@@ -406,7 +457,23 @@ static void txstate(struct musb *musb, struct musb_request *req)
 					csr |= (MUSB_TXCSR_DMAENAB
 							| MUSB_TXCSR_DMAMODE
 							| MUSB_TXCSR_MODE);
+<<<<<<< HEAD
 					if (!musb_ep->hb_mult)
+=======
+					/*
+					 * Enable Autoset according to table
+					 * below
+					 * bulk_split hb_mult	Autoset_Enable
+					 *	0	0	Yes(Normal)
+					 *	0	>0	No(High BW ISO)
+					 *	1	0	Yes(HS bulk)
+					 *	1	>0	Yes(FS bulk)
+					 */
+					if (!musb_ep->hb_mult ||
+						(musb_ep->hb_mult &&
+						 can_bulk_split(musb,
+						    musb_ep->type)))
+>>>>>>> refs/remotes/origin/master
 						csr |= MUSB_TXCSR_AUTOSET;
 				}
 				csr &= ~MUSB_TXCSR_P_UNDERRUN;
@@ -415,6 +482,7 @@ static void txstate(struct musb *musb, struct musb_request *req)
 			}
 		}
 
+<<<<<<< HEAD
 #elif defined(CONFIG_USB_TI_CPPI_DMA)
 		/* program endpoint CSR first, then setup DMA */
 		csr &= ~(MUSB_TXCSR_P_UNDERRUN | MUSB_TXCSR_TXPKTRDY);
@@ -456,6 +524,51 @@ static void txstate(struct musb *musb, struct musb_request *req)
 				request->dma + request->actual,
 				request_size);
 #endif
+=======
+#endif
+		if (is_cppi_enabled()) {
+			/* program endpoint CSR first, then setup DMA */
+			csr &= ~(MUSB_TXCSR_P_UNDERRUN | MUSB_TXCSR_TXPKTRDY);
+			csr |= MUSB_TXCSR_DMAENAB | MUSB_TXCSR_DMAMODE |
+				MUSB_TXCSR_MODE;
+			musb_writew(epio, MUSB_TXCSR, (MUSB_TXCSR_P_WZC_BITS &
+						~MUSB_TXCSR_P_UNDERRUN) | csr);
+
+			/* ensure writebuffer is empty */
+			csr = musb_readw(epio, MUSB_TXCSR);
+
+			/*
+			 * NOTE host side sets DMAENAB later than this; both are
+			 * OK since the transfer dma glue (between CPPI and
+			 * Mentor fifos) just tells CPPI it could start. Data
+			 * only moves to the USB TX fifo when both fifos are
+			 * ready.
+			 */
+			/*
+			 * "mode" is irrelevant here; handle terminating ZLPs
+			 * like PIO does, since the hardware RNDIS mode seems
+			 * unreliable except for the
+			 * last-packet-is-already-short case.
+			 */
+			use_dma = use_dma && c->channel_program(
+					musb_ep->dma, musb_ep->packet_sz,
+					0,
+					request->dma + request->actual,
+					request_size);
+			if (!use_dma) {
+				c->channel_release(musb_ep->dma);
+				musb_ep->dma = NULL;
+				csr &= ~MUSB_TXCSR_DMAENAB;
+				musb_writew(epio, MUSB_TXCSR, csr);
+				/* invariant: prequest->buf is non-null */
+			}
+		} else if (tusb_dma_omap())
+			use_dma = use_dma && c->channel_program(
+					musb_ep->dma, musb_ep->packet_sz,
+					request->zero,
+					request->dma + request->actual,
+					request_size);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 
@@ -602,6 +715,7 @@ void musb_g_tx(struct musb *musb, u8 epnum)
 
 /* ------------------------------------------------------------ */
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_INVENTRA_DMA
 
 /* Peripheral rx (OUT) using Mentor DMA works as follows:
@@ -633,6 +747,8 @@ void musb_g_tx(struct musb *musb, u8 epnum)
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Context: controller locked, IRQs blocked, endpoint selected
  */
@@ -642,6 +758,7 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 	struct usb_request	*request = &req->request;
 	struct musb_ep		*musb_ep;
 	void __iomem		*epio = musb->endpoints[epnum].regs;
+<<<<<<< HEAD
 	unsigned		fifo_count = 0;
 	u16			len;
 	u16			csr = musb_readw(epio, MUSB_RXCSR);
@@ -650,13 +767,31 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 =======
 	u8			use_mode_1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned		len = 0;
+	u16			fifo_count;
+	u16			csr = musb_readw(epio, MUSB_RXCSR);
+	struct musb_hw_ep	*hw_ep = &musb->endpoints[epnum];
+	u8			use_mode_1;
+>>>>>>> refs/remotes/origin/master
 
 	if (hw_ep->is_shared_fifo)
 		musb_ep = &hw_ep->ep_in;
 	else
 		musb_ep = &hw_ep->ep_out;
 
+<<<<<<< HEAD
 	len = musb_ep->packet_sz;
+=======
+	fifo_count = musb_ep->packet_sz;
+
+	/* Check if EP is disabled */
+	if (!musb_ep->desc) {
+		dev_dbg(musb->controller, "ep:%s disabled - ignore request\n",
+						musb_ep->end_point.name);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* We shouldn't get here while DMA is active, but we do... */
 	if (dma_channel_status(musb_ep->dma) == MUSB_DMA_STATUS_BUSY) {
@@ -698,9 +833,13 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 	}
 
 	if (csr & MUSB_RXCSR_RXPKTRDY) {
+<<<<<<< HEAD
 		len = musb_readw(epio, MUSB_RXCOUNT);
 <<<<<<< HEAD
 =======
+=======
+		fifo_count = musb_readw(epio, MUSB_RXCOUNT);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Enable Mode 1 on RX transfers only when short_not_ok flag
@@ -708,18 +847,29 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 		 * file_storage and f_mass_storage drivers
 		 */
 
+<<<<<<< HEAD
 		if (request->short_not_ok && len == musb_ep->packet_sz)
+=======
+		if (request->short_not_ok && fifo_count == musb_ep->packet_sz)
+>>>>>>> refs/remotes/origin/master
 			use_mode_1 = 1;
 		else
 			use_mode_1 = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (request->actual < request->length) {
 #ifdef CONFIG_USB_INVENTRA_DMA
 			if (is_buffer_mapped(req)) {
 				struct dma_controller	*c;
 				struct dma_channel	*channel;
 				int			use_dma = 0;
+<<<<<<< HEAD
+=======
+				unsigned int transfer_size;
+>>>>>>> refs/remotes/origin/master
 
 				c = musb->dma_controller;
 				channel = musb_ep->dma;
@@ -736,10 +886,14 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 	 * or filling the last byte of the buffer.  (Sending extra data in
 	 * that last pckate should trigger an overflow fault.)  But in mode 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * we don't get DMA completion interrrupt for short packets.
 =======
 	 * we don't get DMA completion interrupt for short packets.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * we don't get DMA completion interrupt for short packets.
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * Theoretically, we could enable DMAReq irq (MUSB_RXCSR_DMAMODE = 1),
 	 * to get endpoint interrupt on every DMA req, but that didn't seem
@@ -749,6 +903,7 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 	 * then becomes usable as a runtime "use mode 1" hint...
 	 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 				csr |= MUSB_RXCSR_DMAENAB;
 #ifdef USE_MODE1
@@ -782,6 +937,8 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 					else
 						musb_ep->dma->desired_mode = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				/* Experimental: Mode1 works with mass storage use cases */
 				if (use_mode_1) {
 					csr |= MUSB_RXCSR_AUTOCLEAR;
@@ -798,12 +955,21 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 						csr | MUSB_RXCSR_DMAMODE);
 					musb_writew(epio, MUSB_RXCSR, csr);
 
+<<<<<<< HEAD
+=======
+					transfer_size = min_t(unsigned int,
+							request->length -
+							request->actual,
+							channel->max_len);
+					musb_ep->dma->desired_mode = 1;
+>>>>>>> refs/remotes/origin/master
 				} else {
 					if (!musb_ep->hb_mult &&
 						musb_ep->hw_ep->rx_double_buffered)
 						csr |= MUSB_RXCSR_AUTOCLEAR;
 					csr |= MUSB_RXCSR_DMAENAB;
 					musb_writew(epio, MUSB_RXCSR, csr);
+<<<<<<< HEAD
 				}
 
 				if (request->actual < request->length) {
@@ -828,6 +994,22 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 							transfer_size);
 				}
 
+=======
+
+					transfer_size = min(request->length - request->actual,
+							(unsigned)fifo_count);
+					musb_ep->dma->desired_mode = 0;
+				}
+
+				use_dma = c->channel_program(
+						channel,
+						musb_ep->packet_sz,
+						channel->desired_mode,
+						request->dma
+						+ request->actual,
+						transfer_size);
+
+>>>>>>> refs/remotes/origin/master
 				if (use_dma)
 					return;
 			}
@@ -837,12 +1019,17 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 
 				struct dma_controller *c;
 				struct dma_channel *channel;
+<<<<<<< HEAD
 				int transfer_size = 0;
+=======
+				unsigned int transfer_size = 0;
+>>>>>>> refs/remotes/origin/master
 
 				c = musb->dma_controller;
 				channel = musb_ep->dma;
 
 				/* In case first packet is short */
+<<<<<<< HEAD
 				if (len < musb_ep->packet_sz)
 					transfer_size = len;
 				else if (request->short_not_ok)
@@ -853,6 +1040,20 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 					transfer_size = min(request->length -
 							request->actual,
 							(unsigned)len);
+=======
+				if (fifo_count < musb_ep->packet_sz)
+					transfer_size = fifo_count;
+				else if (request->short_not_ok)
+					transfer_size =	min_t(unsigned int,
+							request->length -
+							request->actual,
+							channel->max_len);
+				else
+					transfer_size = min_t(unsigned int,
+							request->length -
+							request->actual,
+							(unsigned)fifo_count);
+>>>>>>> refs/remotes/origin/master
 
 				csr &= ~MUSB_RXCSR_DMAMODE;
 				csr |= (MUSB_RXCSR_DMAENAB |
@@ -880,10 +1081,17 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 			}
 #endif	/* Mentor's DMA */
 
+<<<<<<< HEAD
 			fifo_count = request->length - request->actual;
 			dev_dbg(musb->controller, "%s OUT/RX pio fifo %d/%d, maxpacket %d\n",
 					musb_ep->end_point.name,
 					len, fifo_count,
+=======
+			len = request->length - request->actual;
+			dev_dbg(musb->controller, "%s OUT/RX pio fifo %d/%d, maxpacket %d\n",
+					musb_ep->end_point.name,
+					fifo_count, len,
+>>>>>>> refs/remotes/origin/master
 					musb_ep->packet_sz);
 
 			fifo_count = min_t(unsigned, len, fifo_count);
@@ -936,7 +1144,12 @@ static void rxstate(struct musb *musb, struct musb_request *req)
 	}
 
 	/* reach the end or short packet detected */
+<<<<<<< HEAD
 	if (request->actual == request->length || len < musb_ep->packet_sz)
+=======
+	if (request->actual == request->length ||
+	    fifo_count < musb_ep->packet_sz)
+>>>>>>> refs/remotes/origin/master
 		musb_g_giveback(musb_ep, request, 0);
 }
 
@@ -1103,10 +1316,14 @@ static int musb_gadget_enable(struct usb_ep *ep,
 
 	/* REVISIT this rules out high bandwidth periodic transfers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tmp = le16_to_cpu(desc->wMaxPacketSize);
 =======
 	tmp = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmp = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 	if (tmp & ~0x07ff) {
 		int ok;
 
@@ -1132,7 +1349,10 @@ static int musb_gadget_enable(struct usb_ep *ep,
 	 */
 	musb_ep_select(mbase, epnum);
 	if (usb_endpoint_dir_in(desc)) {
+<<<<<<< HEAD
 		u16 int_txe = musb_readw(mbase, MUSB_INTRTXE);
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (hw_ep->is_shared_fifo)
 			musb_ep->is_in = 1;
@@ -1144,8 +1364,13 @@ static int musb_gadget_enable(struct usb_ep *ep,
 			goto fail;
 		}
 
+<<<<<<< HEAD
 		int_txe |= (1 << epnum);
 		musb_writew(mbase, MUSB_INTRTXE, int_txe);
+=======
+		musb->intrtxe |= (1 << epnum);
+		musb_writew(mbase, MUSB_INTRTXE, musb->intrtxe);
+>>>>>>> refs/remotes/origin/master
 
 		/* REVISIT if can_bulk_split(), use by updating "tmp";
 		 * likewise high bandwidth periodic tx
@@ -1153,11 +1378,23 @@ static int musb_gadget_enable(struct usb_ep *ep,
 		/* Set TXMAXP with the FIFO size of the endpoint
 		 * to disable double buffering mode.
 		 */
+<<<<<<< HEAD
 		if (musb->double_buffer_not_ok)
 			musb_writew(regs, MUSB_TXMAXP, hw_ep->max_packet_sz_tx);
 		else
 			musb_writew(regs, MUSB_TXMAXP, musb_ep->packet_sz
 					| (musb_ep->hb_mult << 11));
+=======
+		if (musb->double_buffer_not_ok) {
+			musb_writew(regs, MUSB_TXMAXP, hw_ep->max_packet_sz_tx);
+		} else {
+			if (can_bulk_split(musb, musb_ep->type))
+				musb_ep->hb_mult = (hw_ep->max_packet_sz_tx /
+							musb_ep->packet_sz) - 1;
+			musb_writew(regs, MUSB_TXMAXP, musb_ep->packet_sz
+					| (musb_ep->hb_mult << 11));
+		}
+>>>>>>> refs/remotes/origin/master
 
 		csr = MUSB_TXCSR_MODE | MUSB_TXCSR_CLRDATATOG;
 		if (musb_readw(regs, MUSB_TXCSR)
@@ -1172,7 +1409,10 @@ static int musb_gadget_enable(struct usb_ep *ep,
 		musb_writew(regs, MUSB_TXCSR, csr);
 
 	} else {
+<<<<<<< HEAD
 		u16 int_rxe = musb_readw(mbase, MUSB_INTRRXE);
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (hw_ep->is_shared_fifo)
 			musb_ep->is_in = 0;
@@ -1184,8 +1424,13 @@ static int musb_gadget_enable(struct usb_ep *ep,
 			goto fail;
 		}
 
+<<<<<<< HEAD
 		int_rxe |= (1 << epnum);
 		musb_writew(mbase, MUSB_INTRRXE, int_rxe);
+=======
+		musb->intrrxe |= (1 << epnum);
+		musb_writew(mbase, MUSB_INTRRXE, musb->intrrxe);
+>>>>>>> refs/remotes/origin/master
 
 		/* REVISIT if can_bulk_combine() use by updating "tmp"
 		 * likewise high bandwidth periodic rx
@@ -1239,7 +1484,11 @@ static int musb_gadget_enable(struct usb_ep *ep,
 			case USB_ENDPOINT_XFER_BULK:	s = "bulk"; break;
 			case USB_ENDPOINT_XFER_INT:	s = "int"; break;
 			default:			s = "iso"; break;
+<<<<<<< HEAD
 			}; s; }),
+=======
+			} s; }),
+>>>>>>> refs/remotes/origin/master
 			musb_ep->is_in ? "IN" : "OUT",
 			musb_ep->dma ? "dma, " : "",
 			musb_ep->packet_sz);
@@ -1273,6 +1522,7 @@ static int musb_gadget_disable(struct usb_ep *ep)
 
 	/* zero the endpoint sizes */
 	if (musb_ep->is_in) {
+<<<<<<< HEAD
 		u16 int_txe = musb_readw(musb->mregs, MUSB_INTRTXE);
 		int_txe &= ~(1 << epnum);
 		musb_writew(musb->mregs, MUSB_INTRTXE, int_txe);
@@ -1281,14 +1531,26 @@ static int musb_gadget_disable(struct usb_ep *ep)
 		u16 int_rxe = musb_readw(musb->mregs, MUSB_INTRRXE);
 		int_rxe &= ~(1 << epnum);
 		musb_writew(musb->mregs, MUSB_INTRRXE, int_rxe);
+=======
+		musb->intrtxe &= ~(1 << epnum);
+		musb_writew(musb->mregs, MUSB_INTRTXE, musb->intrtxe);
+		musb_writew(epio, MUSB_TXMAXP, 0);
+	} else {
+		musb->intrrxe &= ~(1 << epnum);
+		musb_writew(musb->mregs, MUSB_INTRRXE, musb->intrrxe);
+>>>>>>> refs/remotes/origin/master
 		musb_writew(epio, MUSB_RXMAXP, 0);
 	}
 
 	musb_ep->desc = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	musb_ep->end_point.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	musb_ep->end_point.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	/* abort all pending DMA and requests */
 	nuke(musb_ep, -ESHUTDOWN);
@@ -1399,7 +1661,12 @@ static int musb_gadget_queue(struct usb_ep *ep, struct usb_request *req,
 		dev_dbg(musb->controller, "req %p queued to %s while ep %s\n",
 				req, ep->name, "disabled");
 		status = -ESHUTDOWN;
+<<<<<<< HEAD
 		goto cleanup;
+=======
+		unmap_dma_buffer(request, musb);
+		goto unlock;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* add request to the list */
@@ -1409,7 +1676,11 @@ static int musb_gadget_queue(struct usb_ep *ep, struct usb_request *req,
 	if (!musb_ep->busy && &request->list == musb_ep->req_list.next)
 		musb_ep_restart(musb, request);
 
+<<<<<<< HEAD
 cleanup:
+=======
+unlock:
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&musb->lock, lockflags);
 	return status;
 }
@@ -1599,7 +1870,11 @@ static void musb_gadget_fifo_flush(struct usb_ep *ep)
 	void __iomem	*epio = musb->endpoints[epnum].regs;
 	void __iomem	*mbase;
 	unsigned long	flags;
+<<<<<<< HEAD
 	u16		csr, int_txe;
+=======
+	u16		csr;
+>>>>>>> refs/remotes/origin/master
 
 	mbase = musb->mregs;
 
@@ -1607,8 +1882,12 @@ static void musb_gadget_fifo_flush(struct usb_ep *ep)
 	musb_ep_select(mbase, (u8) epnum);
 
 	/* disable interrupts */
+<<<<<<< HEAD
 	int_txe = musb_readw(mbase, MUSB_INTRTXE);
 	musb_writew(mbase, MUSB_INTRTXE, int_txe & ~(1 << epnum));
+=======
+	musb_writew(mbase, MUSB_INTRTXE, musb->intrtxe & ~(1 << epnum));
+>>>>>>> refs/remotes/origin/master
 
 	if (musb_ep->is_in) {
 		csr = musb_readw(epio, MUSB_TXCSR);
@@ -1632,7 +1911,11 @@ static void musb_gadget_fifo_flush(struct usb_ep *ep)
 	}
 
 	/* re-enable interrupt */
+<<<<<<< HEAD
 	musb_writew(mbase, MUSB_INTRTXE, int_txe);
+=======
+	musb_writew(mbase, MUSB_INTRTXE, musb->intrtxe);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&musb->lock, flags);
 }
 
@@ -1700,10 +1983,14 @@ static int musb_gadget_wakeup(struct usb_gadget *gadget)
 
 		spin_unlock_irqrestore(&musb->lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		otg_start_srp(musb->xceiv);
 =======
 		otg_start_srp(musb->xceiv->otg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		otg_start_srp(musb->xceiv->otg);
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&musb->lock, flags);
 
 		/* Block idling for at least 1s */
@@ -1714,7 +2001,11 @@ static int musb_gadget_wakeup(struct usb_gadget *gadget)
 		goto done;
 	default:
 		dev_dbg(musb->controller, "Unhandled wake: %s\n",
+<<<<<<< HEAD
 			otg_state_string(musb->xceiv->state));
+=======
+			usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 
@@ -1758,12 +2049,17 @@ static void musb_pullup(struct musb *musb, int is_on)
 	/* FIXME if on, HdrcStart; if off, HdrcStop */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(musb->controller, "gadget %s D+ pullup %s\n",
 		musb->gadget_driver->function, is_on ? "on" : "off");
 =======
 	dev_dbg(musb->controller, "gadget D+ pullup %s\n",
 		is_on ? "on" : "off");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(musb->controller, "gadget D+ pullup %s\n",
+		is_on ? "on" : "off");
+>>>>>>> refs/remotes/origin/master
 	musb_writeb(musb->mregs, MUSB_POWER, power);
 }
 
@@ -1788,10 +2084,14 @@ static int musb_gadget_vbus_draw(struct usb_gadget *gadget, unsigned mA)
 	if (!musb->xceiv->set_power)
 		return -EOPNOTSUPP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return otg_set_power(musb->xceiv, mA);
 =======
 	return usb_phy_set_power(musb->xceiv, mA);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return usb_phy_set_power(musb->xceiv, mA);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int musb_gadget_pullup(struct usb_gadget *gadget, int is_on)
@@ -1819,13 +2119,19 @@ static int musb_gadget_pullup(struct usb_gadget *gadget, int is_on)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int musb_gadget_start(struct usb_gadget *g,
 		struct usb_gadget_driver *driver);
 static int musb_gadget_stop(struct usb_gadget *g,
 		struct usb_gadget_driver *driver);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct usb_gadget_ops musb_gadget_operations = {
 	.get_frame		= musb_gadget_get_frame,
 	.wakeup			= musb_gadget_wakeup,
@@ -1834,10 +2140,15 @@ static const struct usb_gadget_ops musb_gadget_operations = {
 	.vbus_draw		= musb_gadget_vbus_draw,
 	.pullup			= musb_gadget_pullup,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.udc_start		= musb_gadget_start,
 	.udc_stop		= musb_gadget_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start		= musb_gadget_start,
+	.udc_stop		= musb_gadget_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ----------------------------------------------------------------------- */
@@ -1848,6 +2159,7 @@ static const struct usb_gadget_ops musb_gadget_operations = {
  * about there being only one external upstream port.  It assumes
  * all peripheral ports are external...
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct musb *the_gadget;
 =======
@@ -1865,6 +2177,10 @@ static void __init
 =======
 static void __devinit
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static void
+>>>>>>> refs/remotes/origin/master
 init_peripheral_ep(struct musb *musb, struct musb_ep *ep, u8 epnum, int is_in)
 {
 	struct musb_hw_ep	*hw_ep = musb->endpoints + epnum;
@@ -1884,14 +2200,24 @@ init_peripheral_ep(struct musb *musb, struct musb_ep *ep, u8 epnum, int is_in)
 	ep->end_point.name = ep->name;
 	INIT_LIST_HEAD(&ep->end_point.ep_list);
 	if (!epnum) {
+<<<<<<< HEAD
 		ep->end_point.maxpacket = 64;
+=======
+		usb_ep_set_maxpacket_limit(&ep->end_point, 64);
+>>>>>>> refs/remotes/origin/master
 		ep->end_point.ops = &musb_g_ep0_ops;
 		musb->g.ep0 = &ep->end_point;
 	} else {
 		if (is_in)
+<<<<<<< HEAD
 			ep->end_point.maxpacket = hw_ep->max_packet_sz_tx;
 		else
 			ep->end_point.maxpacket = hw_ep->max_packet_sz_rx;
+=======
+			usb_ep_set_maxpacket_limit(&ep->end_point, hw_ep->max_packet_sz_tx);
+		else
+			usb_ep_set_maxpacket_limit(&ep->end_point, hw_ep->max_packet_sz_rx);
+>>>>>>> refs/remotes/origin/master
 		ep->end_point.ops = &musb_ep_ops;
 		list_add_tail(&ep->end_point.ep_list, &musb->g.ep_list);
 	}
@@ -1902,10 +2228,14 @@ init_peripheral_ep(struct musb *musb, struct musb_ep *ep, u8 epnum, int is_in)
  * to the rest of the driver state.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __init musb_g_init_endpoints(struct musb *musb)
 =======
 static inline void __devinit musb_g_init_endpoints(struct musb *musb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void musb_g_init_endpoints(struct musb *musb)
+>>>>>>> refs/remotes/origin/master
 {
 	u8			epnum;
 	struct musb_hw_ep	*hw_ep;
@@ -1939,10 +2269,14 @@ static inline void __devinit musb_g_init_endpoints(struct musb *musb)
  * the driver model; memory is zeroed.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init musb_gadget_setup(struct musb *musb)
 =======
 int __devinit musb_gadget_setup(struct musb *musb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int musb_gadget_setup(struct musb *musb)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 
@@ -1950,6 +2284,7 @@ int __devinit musb_gadget_setup(struct musb *musb)
 	 * musb peripherals at the same time, only the bus lock
 	 * is probably held.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (the_gadget)
 		return -EBUSY;
@@ -1973,12 +2308,31 @@ int __devinit musb_gadget_setup(struct musb *musb)
 
 	if (is_otg_enabled(musb))
 		musb->g.is_otg = 1;
+=======
+
+	musb->g.ops = &musb_gadget_operations;
+	musb->g.max_speed = USB_SPEED_HIGH;
+	musb->g.speed = USB_SPEED_UNKNOWN;
+
+	MUSB_DEV_MODE(musb);
+	musb->xceiv->otg->default_a = 0;
+	musb->xceiv->state = OTG_STATE_B_IDLE;
+
+	/* this "gadget" abstracts/virtualizes the controller */
+	musb->g.name = musb_driver_name;
+#if IS_ENABLED(CONFIG_USB_MUSB_DUAL_ROLE)
+	musb->g.is_otg = 1;
+#elif IS_ENABLED(CONFIG_USB_MUSB_GADGET)
+	musb->g.is_otg = 0;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	musb_g_init_endpoints(musb);
 
 	musb->is_active = 0;
 	musb_platform_try_idle(musb, 0);
 
+<<<<<<< HEAD
 	status = device_register(&musb->g.dev);
 	if (status != 0) {
 		put_device(&musb->g.dev);
@@ -1988,6 +2342,8 @@ int __devinit musb_gadget_setup(struct musb *musb)
 =======
 		return status;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	status = usb_add_gadget_udc(musb->controller, &musb->g);
 	if (status)
 		goto err;
@@ -1996,12 +2352,16 @@ int __devinit musb_gadget_setup(struct musb *musb)
 err:
 	musb->g.dev.parent = NULL;
 	device_unregister(&musb->g.dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
 void musb_gadget_cleanup(struct musb *musb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (musb != the_gadget)
 		return;
@@ -2013,6 +2373,11 @@ void musb_gadget_cleanup(struct musb *musb)
 	if (musb->g.dev.parent)
 		device_unregister(&musb->g.dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (musb->port_mode == MUSB_PORT_MODE_HOST)
+		return;
+	usb_del_gadget_udc(&musb->g);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2024,6 +2389,7 @@ void musb_gadget_cleanup(struct musb *musb)
  * -ENOMEM no memory to perform the operation
  *
  * @param driver the gadget driver
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @param bind the driver's bind function
  * @return <0 if error, 0 if everything is fine
@@ -2047,6 +2413,8 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		goto err0;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @return <0 if error, 0 if everything is fine
  */
 static int musb_gadget_start(struct usb_gadget *g,
@@ -2055,16 +2423,26 @@ static int musb_gadget_start(struct usb_gadget *g,
 	struct musb		*musb = gadget_to_musb(g);
 	struct usb_otg		*otg = musb->xceiv->otg;
 	unsigned long		flags;
+<<<<<<< HEAD
 	int			retval = -EINVAL;
 
 	if (driver->max_speed < USB_SPEED_HIGH)
 		goto err0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			retval = 0;
+
+	if (driver->max_speed < USB_SPEED_HIGH) {
+		retval = -EINVAL;
+		goto err;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	pm_runtime_get_sync(musb->controller);
 
 	dev_dbg(musb->controller, "registering driver %s\n", driver->function);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (musb->gadget_driver) {
 		dev_dbg(musb->controller, "%s is already bound to %s\n",
@@ -2094,6 +2472,8 @@ static int musb_gadget_start(struct usb_gadget *g,
 	musb->xceiv->state = OTG_STATE_B_IDLE;
 	musb->is_active = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	musb->softconnect = 0;
 	musb->gadget_driver = driver;
 
@@ -2102,6 +2482,7 @@ static int musb_gadget_start(struct usb_gadget *g,
 
 	otg_set_peripheral(otg, &musb->g);
 	musb->xceiv->state = OTG_STATE_B_IDLE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
@@ -2151,11 +2532,25 @@ static int musb_gadget_start(struct usb_gadget *g,
 
 		hcd->self.uses_pio_for_control = 1;
 	}
+=======
+	spin_unlock_irqrestore(&musb->lock, flags);
+
+	musb_start(musb);
+
+	/* REVISIT:  funcall to other code, which also
+	 * handles power budgeting ... this way also
+	 * ensures HdrcStart is indirectly called.
+	 */
+	if (musb->xceiv->last_event == USB_EVENT_ID)
+		musb_platform_set_vbus(musb, 1);
+
+>>>>>>> refs/remotes/origin/master
 	if (musb->xceiv->last_event == USB_EVENT_NONE)
 		pm_runtime_put(musb->controller);
 
 	return 0;
 
+<<<<<<< HEAD
 err2:
 	if (!is_otg_enabled(musb))
 		musb_stop(musb);
@@ -2174,6 +2569,11 @@ err0:
 	return retval;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err:
+	return retval;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void stop_activity(struct musb *musb, struct usb_gadget_driver *driver)
 {
@@ -2211,12 +2611,15 @@ static void stop_activity(struct musb *musb, struct usb_gadget_driver *driver)
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		spin_unlock(&musb->lock);
 		driver->disconnect(&musb->g);
 		spin_lock(&musb->lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2226,6 +2629,7 @@ static void stop_activity(struct musb *musb, struct usb_gadget_driver *driver)
  *
  * @param driver the gadget driver to unregister
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 {
@@ -2239,13 +2643,18 @@ int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 		return -EINVAL;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int musb_gadget_stop(struct usb_gadget *g,
 		struct usb_gadget_driver *driver)
 {
 	struct musb	*musb = gadget_to_musb(g);
 	unsigned long	flags;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (musb->xceiv->last_event == USB_EVENT_NONE)
 		pm_runtime_get_sync(musb->controller);
 
@@ -2257,17 +2666,22 @@ static int musb_gadget_stop(struct usb_gadget *g,
 	spin_lock_irqsave(&musb->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_MUSB_OTG
 	musb_hnp_stop(musb);
 #endif
 =======
 	musb_hnp_stop(musb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	musb_hnp_stop(musb);
+>>>>>>> refs/remotes/origin/master
 
 	(void) musb_gadget_vbus_draw(&musb->g, 0);
 
 	musb->xceiv->state = OTG_STATE_UNDEFINED;
 	stop_activity(musb, driver);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	otg_set_peripheral(musb->xceiv, NULL);
 
@@ -2300,16 +2714,36 @@ static int musb_gadget_stop(struct usb_gadget *g,
 
 	if (!is_otg_enabled(musb))
 		musb_stop(musb);
+=======
+	otg_set_peripheral(musb->xceiv->otg, NULL);
+
+	dev_dbg(musb->controller, "unregistering driver %s\n",
+				  driver ? driver->function : "(removed)");
+
+	musb->is_active = 0;
+	musb->gadget_driver = NULL;
+	musb_platform_try_idle(musb, 0);
+	spin_unlock_irqrestore(&musb->lock, flags);
+
+	/*
+	 * FIXME we need to be able to register another
+	 * gadget driver here and have everything work;
+	 * that currently misbehaves.
+	 */
+>>>>>>> refs/remotes/origin/master
 
 	pm_runtime_put(musb->controller);
 
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* ----------------------------------------------------------------------- */
 
@@ -2332,7 +2766,11 @@ void musb_g_resume(struct musb *musb)
 		break;
 	default:
 		WARNING("unhandled RESUME transition (%s)\n",
+<<<<<<< HEAD
 				otg_state_string(musb->xceiv->state));
+=======
+				usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2362,7 +2800,11 @@ void musb_g_suspend(struct musb *musb)
 		 * A_PERIPHERAL may need care too
 		 */
 		WARNING("unhandled SUSPEND transition (%s)\n",
+<<<<<<< HEAD
 				otg_state_string(musb->xceiv->state));
+=======
+				usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2396,11 +2838,16 @@ void musb_g_disconnect(struct musb *musb)
 	switch (musb->xceiv->state) {
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef	CONFIG_USB_MUSB_OTG
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 		dev_dbg(musb->controller, "Unhandled disconnect %s, setting a_idle\n",
 			otg_state_string(musb->xceiv->state));
+=======
+		dev_dbg(musb->controller, "Unhandled disconnect %s, setting a_idle\n",
+			usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 		musb->xceiv->state = OTG_STATE_A_IDLE;
 		MUSB_HST_MODE(musb);
 		break;
@@ -2411,9 +2858,12 @@ void musb_g_disconnect(struct musb *musb)
 	case OTG_STATE_B_WAIT_ACON:
 	case OTG_STATE_B_HOST:
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case OTG_STATE_B_PERIPHERAL:
 	case OTG_STATE_B_IDLE:
 		musb->xceiv->state = OTG_STATE_B_IDLE;
@@ -2433,10 +2883,16 @@ __acquires(musb->lock)
 	u8		devctl = musb_readb(mbase, MUSB_DEVCTL);
 	u8		power;
 
+<<<<<<< HEAD
 	dev_dbg(musb->controller, "<== %s addr=%x driver '%s'\n",
 			(devctl & MUSB_DEVCTL_BDEVICE)
 				? "B-Device" : "A-Device",
 			musb_readb(mbase, MUSB_FADDR),
+=======
+	dev_dbg(musb->controller, "<== %s driver '%s'\n",
+			(devctl & MUSB_DEVCTL_BDEVICE)
+				? "B-Device" : "A-Device",
+>>>>>>> refs/remotes/origin/master
 			musb->gadget_driver
 				? musb->gadget_driver->driver.name
 				: NULL
@@ -2471,6 +2927,7 @@ __acquires(musb->lock)
 	/* Normal reset, as B-Device;
 	 * or else after HNP, as A-Device
 	 */
+<<<<<<< HEAD
 	if (devctl & MUSB_DEVCTL_BDEVICE) {
 		musb->xceiv->state = OTG_STATE_B_PERIPHERAL;
 		musb->g.is_a_peripheral = 0;
@@ -2483,4 +2940,24 @@ __acquires(musb->lock)
 	/* start with default limits on VBUS power draw */
 	(void) musb_gadget_vbus_draw(&musb->g,
 			is_otg_enabled(musb) ? 8 : 100);
+=======
+	if (!musb->g.is_otg) {
+		/* USB device controllers that are not OTG compatible
+		 * may not have DEVCTL register in silicon.
+		 * In that case, do not rely on devctl for setting
+		 * peripheral mode.
+		 */
+		musb->xceiv->state = OTG_STATE_B_PERIPHERAL;
+		musb->g.is_a_peripheral = 0;
+	} else if (devctl & MUSB_DEVCTL_BDEVICE) {
+		musb->xceiv->state = OTG_STATE_B_PERIPHERAL;
+		musb->g.is_a_peripheral = 0;
+	} else {
+		musb->xceiv->state = OTG_STATE_A_PERIPHERAL;
+		musb->g.is_a_peripheral = 1;
+	}
+
+	/* start with default limits on VBUS power draw */
+	(void) musb_gadget_vbus_draw(&musb->g, 8);
+>>>>>>> refs/remotes/origin/master
 }

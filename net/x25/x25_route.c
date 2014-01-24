@@ -66,7 +66,11 @@ out:
 
 /**
  * __x25_remove_route - remove route from x25_route_list
+<<<<<<< HEAD
  * @rt - route to remove
+=======
+ * @rt: route to remove
+>>>>>>> refs/remotes/origin/master
  *
  * Remove route from x25_route_list. If it was there.
  * Caller must hold x25_route_list_lock.
@@ -135,10 +139,14 @@ struct net_device *x25_dev_get(char *devname)
 	if (dev &&
 	    (!(dev->flags & IFF_UP) || (dev->type != ARPHRD_X25
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_LLC) || defined(CONFIG_LLC_MODULE)
 =======
 #if IS_ENABLED(CONFIG_LLC)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_LLC)
+>>>>>>> refs/remotes/origin/master
 					&& dev->type != ARPHRD_ETHER
 #endif
 					))){

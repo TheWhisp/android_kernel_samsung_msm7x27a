@@ -28,9 +28,13 @@
 #include <linux/delay.h>
 #include <linux/timex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/i8253.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/dmar.h>
 #include <linux/init.h>
 #include <linux/cpu.h>
@@ -38,6 +42,7 @@
 #include <linux/smp.h>
 #include <linux/mm.h>
 
+<<<<<<< HEAD
 #include <asm/perf_event.h>
 #include <asm/x86_init.h>
 #include <asm/pgalloc.h>
@@ -49,6 +54,15 @@
 #include <linux/atomic.h>
 #include <asm/mpspec.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/trace/irq_vectors.h>
+#include <asm/irq_remapping.h>
+#include <asm/perf_event.h>
+#include <asm/x86_init.h>
+#include <asm/pgalloc.h>
+#include <linux/atomic.h>
+#include <asm/mpspec.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/i8259.h>
 #include <asm/proto.h>
 #include <asm/apic.h>
@@ -58,9 +72,13 @@
 #include <asm/idle.h>
 #include <asm/mtrr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/time.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/time.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/smp.h>
 #include <asm/mce.h>
 #include <asm/tsc.h>
@@ -68,10 +86,18 @@
 
 unsigned int num_processors;
 
+<<<<<<< HEAD
 unsigned disabled_cpus __cpuinitdata;
 
 /* Processor that is doing the boot up */
 unsigned int boot_cpu_physical_apicid = -1U;
+=======
+unsigned disabled_cpus;
+
+/* Processor that is doing the boot up */
+unsigned int boot_cpu_physical_apicid = -1U;
+EXPORT_SYMBOL_GPL(boot_cpu_physical_apicid);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The highest APIC ID seen during enumeration.
@@ -84,10 +110,24 @@ unsigned int max_physical_apicid;
 physid_mask_t phys_cpu_present_map;
 
 /*
+<<<<<<< HEAD
  * Map cpu index to physical APIC ID
  */
 DEFINE_EARLY_PER_CPU(u16, x86_cpu_to_apicid, BAD_APICID);
 DEFINE_EARLY_PER_CPU(u16, x86_bios_cpu_apicid, BAD_APICID);
+=======
+ * Processor to be disabled specified by kernel parameter
+ * disable_cpu_apicid=<int>, mostly used for the kdump 2nd kernel to
+ * avoid undefined behaviour caused by sending INIT from AP to BSP.
+ */
+static unsigned int disabled_cpu_apicid __read_mostly = BAD_APICID;
+
+/*
+ * Map cpu index to physical APIC ID
+ */
+DEFINE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_cpu_to_apicid, BAD_APICID);
+DEFINE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_bios_cpu_apicid, BAD_APICID);
+>>>>>>> refs/remotes/origin/master
 EXPORT_EARLY_PER_CPU_SYMBOL(x86_cpu_to_apicid);
 EXPORT_EARLY_PER_CPU_SYMBOL(x86_bios_cpu_apicid);
 
@@ -99,6 +139,7 @@ EXPORT_EARLY_PER_CPU_SYMBOL(x86_bios_cpu_apicid);
  * used for the mapping.  This is where the behaviors of x86_64 and 32
  * actually diverge.  Let's keep it ugly for now.
  */
+<<<<<<< HEAD
 DEFINE_EARLY_PER_CPU(int, x86_cpu_to_logical_apicid, BAD_APICID);
 
 /*
@@ -116,6 +157,10 @@ static int __init parse_lapic(char *arg)
 	return 0;
 }
 early_param("lapic", parse_lapic);
+=======
+DEFINE_EARLY_PER_CPU_READ_MOSTLY(int, x86_cpu_to_logical_apicid, BAD_APICID);
+
+>>>>>>> refs/remotes/origin/master
 /* Local APIC was disabled by the BIOS and enabled by the kernel */
 static int enabled_via_apicbase;
 
@@ -144,6 +189,28 @@ static inline void imcr_apic_to_pic(void)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+/*
+ * Knob to control our willingness to enable the local APIC.
+ *
+ * +1=force-enable
+ */
+static int force_enable_local_apic __initdata;
+/*
+ * APIC command line parameters
+ */
+static int __init parse_lapic(char *arg)
+{
+	if (config_enabled(CONFIG_X86_32) && !arg)
+		force_enable_local_apic = 1;
+	else if (arg && !strncmp(arg, "notscdeadline", 13))
+		setup_clear_cpu_cap(X86_FEATURE_TSC_DEADLINE_TIMER);
+	return 0;
+}
+early_param("lapic", parse_lapic);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_64
 static int apic_calibrate_pmtmr __initdata;
 static __init int setup_apicpmtimer(char *s)
@@ -159,6 +226,7 @@ int x2apic_mode;
 #ifdef CONFIG_X86_X2APIC
 /* x2apic enabled before OS handover */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int x2apic_preenabled;
 static __init int setup_nox2apic(char *str)
 {
@@ -170,6 +238,8 @@ static __init int setup_nox2apic(char *str)
 
 	setup_clear_cpu_cap(X86_FEATURE_X2APIC);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int x2apic_preenabled;
 static int x2apic_disabled;
 static int nox2apic;
@@ -190,7 +260,10 @@ static __init int setup_nox2apic(char *str)
 
 	nox2apic = 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 early_param("nox2apic", setup_nox2apic);
@@ -222,10 +295,14 @@ static struct resource lapic_resource = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int calibration_result;
 =======
 unsigned int lapic_timer_frequency = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int lapic_timer_frequency = 0;
+>>>>>>> refs/remotes/origin/master
 
 static void apic_pm_activate(void);
 
@@ -290,9 +367,13 @@ u32 native_safe_apic_wait_icr_idle(void)
 		if (!send_status)
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		inc_irq_stat(icr_read_retry_count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inc_irq_stat(icr_read_retry_count);
+>>>>>>> refs/remotes/origin/master
 		udelay(100);
 	} while (timeout++ < 1000);
 
@@ -346,6 +427,10 @@ int lapic_get_maxlvt(void)
 
 /* Clock divisor */
 #define APIC_DIVISOR 16
+<<<<<<< HEAD
+=======
+#define TSC_DIVISOR  32
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This function sets up the local APIC timer, with a timeout of
@@ -364,6 +449,12 @@ static void __setup_APIC_LVTT(unsigned int clocks, int oneshot, int irqen)
 	lvtt_value = LOCAL_TIMER_VECTOR;
 	if (!oneshot)
 		lvtt_value |= APIC_LVT_TIMER_PERIODIC;
+<<<<<<< HEAD
+=======
+	else if (boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER))
+		lvtt_value |= APIC_LVT_TIMER_TSCDEADLINE;
+
+>>>>>>> refs/remotes/origin/master
 	if (!lapic_is_integrated())
 		lvtt_value |= SET_APIC_TIMER_BASE(APIC_TIMER_BASE_DIV);
 
@@ -372,6 +463,14 @@ static void __setup_APIC_LVTT(unsigned int clocks, int oneshot, int irqen)
 
 	apic_write(APIC_LVTT, lvtt_value);
 
+<<<<<<< HEAD
+=======
+	if (lvtt_value & APIC_LVT_TIMER_TSCDEADLINE) {
+		printk_once(KERN_DEBUG "TSC deadline timer enabled\n");
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Divide PICLK by 16
 	 */
@@ -416,38 +515,54 @@ static inline int eilvt_entry_is_changeable(unsigned int old, unsigned int new)
 static unsigned int reserve_eilvt_offset(int offset, unsigned int new)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int rsvd;			/* 0: uninitialized */
 =======
 	unsigned int rsvd, vector;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int rsvd, vector;
+>>>>>>> refs/remotes/origin/master
 
 	if (offset >= APIC_EILVT_NR_MAX)
 		return ~0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rsvd = atomic_read(&eilvt_offsets[offset]) & ~APIC_EILVT_MASKED;
 	do {
 		if (rsvd &&
 		    !eilvt_entry_is_changeable(rsvd, new))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rsvd = atomic_read(&eilvt_offsets[offset]);
 	do {
 		vector = rsvd & ~APIC_EILVT_MASKED;	/* 0: unassigned */
 		if (vector && !eilvt_entry_is_changeable(vector, new))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* may not change if vectors are different */
 			return rsvd;
 		rsvd = atomic_cmpxchg(&eilvt_offsets[offset], rsvd, new);
 	} while (rsvd != new);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rsvd &= ~APIC_EILVT_MASKED;
 	if (rsvd && rsvd != vector)
 		pr_info("LVT offset %d assigned for vector 0x%02x\n",
 			offset, rsvd);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return new;
 }
 
@@ -498,6 +613,19 @@ static int lapic_next_event(unsigned long delta,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int lapic_next_deadline(unsigned long delta,
+			       struct clock_event_device *evt)
+{
+	u64 tsc;
+
+	rdtscll(tsc);
+	wrmsrl(MSR_IA32_TSC_DEADLINE, tsc + (((u64) delta) * TSC_DIVISOR));
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Setup the lapic timer in periodic or oneshot mode
  */
@@ -517,10 +645,14 @@ static void lapic_timer_setup(enum clock_event_mode mode,
 	case CLOCK_EVT_MODE_PERIODIC:
 	case CLOCK_EVT_MODE_ONESHOT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__setup_APIC_LVTT(calibration_result,
 =======
 		__setup_APIC_LVTT(lapic_timer_frequency,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__setup_APIC_LVTT(lapic_timer_frequency,
+>>>>>>> refs/remotes/origin/master
 				  mode != CLOCK_EVT_MODE_PERIODIC, 1);
 		break;
 	case CLOCK_EVT_MODE_UNUSED:
@@ -569,7 +701,11 @@ static DEFINE_PER_CPU(struct clock_event_device, lapic_events);
  * Setup the local APIC timer for this CPU. Copy the initialized values
  * of the boot CPU and register the clock event in the framework.
  */
+<<<<<<< HEAD
 static void __cpuinit setup_APIC_timer(void)
+=======
+static void setup_APIC_timer(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct clock_event_device *levt = &__get_cpu_var(lapic_events);
 
@@ -582,7 +718,19 @@ static void __cpuinit setup_APIC_timer(void)
 	memcpy(levt, &lapic_clockevent, sizeof(*levt));
 	levt->cpumask = cpumask_of(smp_processor_id());
 
+<<<<<<< HEAD
 	clockevents_register_device(levt);
+=======
+	if (this_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER)) {
+		levt->features &= ~(CLOCK_EVT_FEAT_PERIODIC |
+				    CLOCK_EVT_FEAT_DUMMY);
+		levt->set_next_event = lapic_next_deadline;
+		clockevents_config_and_register(levt,
+						(tsc_khz / TSC_DIVISOR) * 1000,
+						0xF, ~0UL);
+	} else
+		clockevents_register_device(levt);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -705,14 +853,23 @@ static int __init calibrate_APIC_clock(void)
 	int pm_referenced = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * check if lapic timer has already been calibrated by platform
 	 * specific routine, such as tsc calibration code. if so, we just fill
 	 * in the clockevent structure and return.
 	 */
 
+<<<<<<< HEAD
 	if (lapic_timer_frequency) {
+=======
+	if (boot_cpu_has(X86_FEATURE_TSC_DEADLINE_TIMER)) {
+		return 0;
+	} else if (lapic_timer_frequency) {
+>>>>>>> refs/remotes/origin/master
 		apic_printk(APIC_VERBOSE, "lapic timer already calibrated %d\n",
 				lapic_timer_frequency);
 		lapic_clockevent.mult = div_sc(lapic_timer_frequency/APIC_DIVISOR,
@@ -725,7 +882,13 @@ static int __init calibrate_APIC_clock(void)
 		return 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	apic_printk(APIC_VERBOSE, "Using local APIC timer interrupts.\n"
+		    "calibrating APIC timer ...\n");
+
+>>>>>>> refs/remotes/origin/master
 	local_irq_disable();
 
 	/* Replace the global interrupt handler */
@@ -768,19 +931,27 @@ static int __init calibrate_APIC_clock(void)
 		clockevent_delta2ns(0xF, &lapic_clockevent);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	calibration_result = (delta * APIC_DIVISOR) / LAPIC_CAL_LOOPS;
 =======
 	lapic_timer_frequency = (delta * APIC_DIVISOR) / LAPIC_CAL_LOOPS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lapic_timer_frequency = (delta * APIC_DIVISOR) / LAPIC_CAL_LOOPS;
+>>>>>>> refs/remotes/origin/master
 
 	apic_printk(APIC_VERBOSE, "..... delta %ld\n", delta);
 	apic_printk(APIC_VERBOSE, "..... mult: %u\n", lapic_clockevent.mult);
 	apic_printk(APIC_VERBOSE, "..... calibration result: %u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    calibration_result);
 =======
 		    lapic_timer_frequency);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    lapic_timer_frequency);
+>>>>>>> refs/remotes/origin/master
 
 	if (cpu_has_tsc) {
 		apic_printk(APIC_VERBOSE, "..... CPU clock speed is "
@@ -792,21 +963,30 @@ static int __init calibrate_APIC_clock(void)
 	apic_printk(APIC_VERBOSE, "..... host bus clock speed is "
 		    "%u.%04u MHz.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    calibration_result / (1000000 / HZ),
 		    calibration_result % (1000000 / HZ));
 =======
 		    lapic_timer_frequency / (1000000 / HZ),
 		    lapic_timer_frequency % (1000000 / HZ));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    lapic_timer_frequency / (1000000 / HZ),
+		    lapic_timer_frequency % (1000000 / HZ));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Do a sanity check on the APIC calibration result
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (calibration_result < (1000000 / HZ)) {
 =======
 	if (lapic_timer_frequency < (1000000 / HZ)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (lapic_timer_frequency < (1000000 / HZ)) {
+>>>>>>> refs/remotes/origin/master
 		local_irq_enable();
 		pr_warning("APIC frequency too slow, disabling apic timer\n");
 		return -1;
@@ -880,9 +1060,12 @@ void __init setup_boot_APIC_clock(void)
 		return;
 	}
 
+<<<<<<< HEAD
 	apic_printk(APIC_VERBOSE, "Using local APIC timer interrupts.\n"
 		    "calibrating APIC timer ...\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (calibrate_APIC_clock()) {
 		/* No broadcast on UP ! */
 		if (num_possible_cpus() > 1)
@@ -901,7 +1084,11 @@ void __init setup_boot_APIC_clock(void)
 	setup_APIC_timer();
 }
 
+<<<<<<< HEAD
 void __cpuinit setup_secondary_APIC_clock(void)
+=======
+void setup_secondary_APIC_clock(void)
+>>>>>>> refs/remotes/origin/master
 {
 	setup_APIC_timer();
 }
@@ -948,20 +1135,48 @@ static void local_apic_timer_interrupt(void)
  * [ if a single-CPU system runs an SMP kernel then we call the local
  *   interrupt as well. Thus we cannot inline the local irq ... ]
  */
+<<<<<<< HEAD
 void __irq_entry smp_apic_timer_interrupt(struct pt_regs *regs)
+=======
+__visible void __irq_entry smp_apic_timer_interrupt(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
 	/*
 	 * NOTE! We'd better ACK the irq immediately,
 	 * because timer handling can be slow.
+<<<<<<< HEAD
 	 */
 	ack_APIC_irq();
 	/*
+=======
+	 *
 	 * update_process_times() expects us to have done irq_enter().
 	 * Besides, if we don't timer interrupts ignore the global
 	 * interrupt lock, which is the WrongThing (tm) to do.
 	 */
+	entering_ack_irq();
+	local_apic_timer_interrupt();
+	exiting_irq();
+
+	set_irq_regs(old_regs);
+}
+
+__visible void __irq_entry smp_trace_apic_timer_interrupt(struct pt_regs *regs)
+{
+	struct pt_regs *old_regs = set_irq_regs(regs);
+
+	/*
+	 * NOTE! We'd better ACK the irq immediately,
+	 * because timer handling can be slow.
+	 *
+>>>>>>> refs/remotes/origin/master
+	 * update_process_times() expects us to have done irq_enter().
+	 * Besides, if we don't timer interrupts ignore the global
+	 * interrupt lock, which is the WrongThing (tm) to do.
+	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	exit_idle();
 	irq_enter();
@@ -971,6 +1186,13 @@ void __irq_entry smp_apic_timer_interrupt(struct pt_regs *regs)
 >>>>>>> refs/remotes/origin/cm-10.0
 	local_apic_timer_interrupt();
 	irq_exit();
+=======
+	entering_ack_irq();
+	trace_local_timer_entry(LOCAL_TIMER_VECTOR);
+	local_apic_timer_interrupt();
+	trace_local_timer_exit(LOCAL_TIMER_VECTOR);
+	exiting_irq();
+>>>>>>> refs/remotes/origin/master
 
 	set_irq_regs(old_regs);
 }
@@ -1251,7 +1473,11 @@ void __init init_bsp_APIC(void)
 	apic_write(APIC_LVT1, value);
 }
 
+<<<<<<< HEAD
 static void __cpuinit lapic_setup_esr(void)
+=======
+static void lapic_setup_esr(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int oldvalue, value, maxlvt;
 
@@ -1298,7 +1524,11 @@ static void __cpuinit lapic_setup_esr(void)
  * Used to setup local APIC while initializing BSP or bringin up APs.
  * Always called with preemption disabled.
  */
+<<<<<<< HEAD
 void __cpuinit setup_local_APIC(void)
+=======
+void setup_local_APIC(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu = smp_processor_id();
 	unsigned int value, queued;
@@ -1400,11 +1630,21 @@ void __cpuinit setup_local_APIC(void)
 			       acked);
 			break;
 		}
+<<<<<<< HEAD
 		if (cpu_has_tsc) {
 			rdtscll(ntsc);
 			max_loops = (cpu_khz << 10) - (ntsc - tsc);
 		} else
 			max_loops--;
+=======
+		if (queued) {
+			if (cpu_has_tsc) {
+				rdtscll(ntsc);
+				max_loops = (cpu_khz << 10) - (ntsc - tsc);
+			} else
+				max_loops--;
+		}
+>>>>>>> refs/remotes/origin/master
 	} while (queued && max_loops > 0);
 	WARN_ON(max_loops <= 0);
 
@@ -1491,7 +1731,11 @@ void __cpuinit setup_local_APIC(void)
 #endif
 }
 
+<<<<<<< HEAD
 void __cpuinit end_local_APIC_setup(void)
+=======
+void end_local_APIC_setup(void)
+>>>>>>> refs/remotes/origin/master
 {
 	lapic_setup_esr();
 
@@ -1516,14 +1760,21 @@ void __init bsp_end_local_APIC_setup(void)
 	 * Now that local APIC setup is completed for BP, configure the fault
 	 * handling for interrupt remapping.
 	 */
+<<<<<<< HEAD
 	if (intr_remapping_enabled)
 		enable_drhd_fault_handling();
+=======
+	irq_remap_enable_fault_handling();
+>>>>>>> refs/remotes/origin/master
 
 }
 
 #ifdef CONFIG_X86_X2APIC
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Need to disable xapic and x2apic at the same time and then enable xapic mode
  */
@@ -1563,7 +1814,10 @@ static __init void disable_x2apic(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void check_x2apic(void)
 {
 	if (x2apic_enabled()) {
@@ -1575,8 +1829,11 @@ void check_x2apic(void)
 void enable_x2apic(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int msr, msr2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u64 msr;
 
 	rdmsrl(MSR_IA32_APICBASE, msr);
@@ -1584,11 +1841,15 @@ void enable_x2apic(void)
 		__disable_x2apic(msr);
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!x2apic_mode)
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rdmsr(MSR_IA32_APICBASE, msr, msr2);
 	if (!(msr & X2APIC_ENABLE)) {
@@ -1599,12 +1860,18 @@ void enable_x2apic(void)
 		printk_once(KERN_INFO "Enabling x2apic\n");
 		wrmsrl(MSR_IA32_APICBASE, msr | X2APIC_ENABLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(msr & X2APIC_ENABLE)) {
+		printk_once(KERN_INFO "Enabling x2apic\n");
+		wrmsrl(MSR_IA32_APICBASE, msr | X2APIC_ENABLE);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 #endif /* CONFIG_X86_X2APIC */
 
 int __init enable_IR(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_INTR_REMAP
 	if (!intr_remapping_supported()) {
@@ -1616,11 +1883,18 @@ int __init enable_IR(void)
 		pr_debug("intr-remapping not supported\n");
 		return -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_IRQ_REMAP
+	if (!irq_remapping_supported()) {
+		pr_debug("intr-remapping not supported\n");
+		return -1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!x2apic_preenabled && skip_ioapic_setup) {
 		pr_info("Skipped enabling intr-remap because of skipping "
 			"io-apic setup\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return 0;
 	}
@@ -1642,32 +1916,55 @@ int __init enable_IR(void)
 #endif
 	return -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -1;
+	}
+
+	return irq_remapping_enable();
+#endif
+	return -1;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init enable_IR_x2apic(void)
 {
 	unsigned long flags;
 	int ret, x2apic_enabled = 0;
+<<<<<<< HEAD
 	int dmar_table_init_ret;
 
 	dmar_table_init_ret = dmar_table_init();
 	if (dmar_table_init_ret && !x2apic_supported())
+=======
+	int hardware_init_ret;
+
+	/* Make sure irq_remap_ops are initialized */
+	setup_irq_remapping_ops();
+
+	hardware_init_ret = irq_remapping_prepare();
+	if (hardware_init_ret && !x2apic_supported())
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	ret = save_ioapic_entries();
 	if (ret) {
 		pr_info("Saving IO-APIC state failed: %d\n", ret);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out;
 =======
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	local_irq_save(flags);
 	legacy_pic->mask_all();
 	mask_ioapic_entries();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (dmar_table_init_ret)
 		ret = 0;
@@ -1680,6 +1977,12 @@ void __init enable_IR_x2apic(void)
 		disable_x2apic();
 
 	if (dmar_table_init_ret)
+=======
+	if (x2apic_preenabled && nox2apic)
+		disable_x2apic();
+
+	if (hardware_init_ret)
+>>>>>>> refs/remotes/origin/master
 		ret = -1;
 	else
 		ret = enable_IR();
@@ -1688,21 +1991,30 @@ void __init enable_IR_x2apic(void)
 		goto skip_x2apic;
 
 	if (ret < 0) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* IR is required if there is APIC ID > 255 even when running
 		 * under KVM
 		 */
 		if (max_physical_apicid > 255 ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    !hypervisor_x2apic_available())
 			goto nox2apic;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    !hypervisor_x2apic_available()) {
 			if (x2apic_preenabled)
 				disable_x2apic();
 			goto skip_x2apic;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * without IR all CPUs can be addressed by IOAPIC/MSI
 		 * only in physical mode
@@ -1711,13 +2023,19 @@ void __init enable_IR_x2apic(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret == IRQ_REMAP_XAPIC_MODE) {
 		pr_info("x2apic not enabled, IRQ remapping is in xapic mode\n");
 		goto skip_x2apic;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	x2apic_enabled = 1;
 
 	if (x2apic_supported() && !x2apic_mode) {
@@ -1726,6 +2044,7 @@ void __init enable_IR_x2apic(void)
 		pr_info("Enabled x2apic\n");
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 nox2apic:
 	if (!ret) /* IR enabling failed */
@@ -1742,12 +2061,17 @@ out:
 	else if (cpu_has_x2apic)
 		pr_info("Not enabling x2apic, Intr-remapping init failed.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 skip_x2apic:
 	if (ret < 0) /* IR enabling failed */
 		restore_ioapic_entries();
 	legacy_pic->restore_mask();
 	local_irq_restore(flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_X86_64
@@ -2018,6 +2342,7 @@ int __init APIC_init_uniprocessor(void)
 /*
  * This interrupt should _never_ happen with our APIC/SMP architecture
  */
+<<<<<<< HEAD
 void smp_spurious_interrupt(struct pt_regs *regs)
 {
 	u32 v;
@@ -2029,6 +2354,12 @@ void smp_spurious_interrupt(struct pt_regs *regs)
 	irq_enter();
 	exit_idle();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void __smp_spurious_interrupt(void)
+{
+	u32 v;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Check if this really is a spurious interrupt and ACK it
 	 * if it is a vectored one.  Just in case...
@@ -2043,15 +2374,40 @@ void smp_spurious_interrupt(struct pt_regs *regs)
 	/* see sw-dev-man vol 3, chapter 7.4.13.5 */
 	pr_info("spurious APIC interrupt on CPU#%d, "
 		"should never happen.\n", smp_processor_id());
+<<<<<<< HEAD
 	irq_exit();
+=======
+}
+
+__visible void smp_spurious_interrupt(struct pt_regs *regs)
+{
+	entering_irq();
+	__smp_spurious_interrupt();
+	exiting_irq();
+}
+
+__visible void smp_trace_spurious_interrupt(struct pt_regs *regs)
+{
+	entering_irq();
+	trace_spurious_apic_entry(SPURIOUS_APIC_VECTOR);
+	__smp_spurious_interrupt();
+	trace_spurious_apic_exit(SPURIOUS_APIC_VECTOR);
+	exiting_irq();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * This interrupt should never happen with our APIC/SMP architecture
  */
+<<<<<<< HEAD
 void smp_error_interrupt(struct pt_regs *regs)
 {
 	u32 v0, v1;
+=======
+static inline void __smp_error_interrupt(struct pt_regs *regs)
+{
+	u32 v;
+>>>>>>> refs/remotes/origin/master
 	u32 i = 0;
 	static const char * const error_interrupt_reason[] = {
 		"Send CS error",		/* APIC Error Bit 0 */
@@ -2064,6 +2420,7 @@ void smp_error_interrupt(struct pt_regs *regs)
 		"Illegal register address",	/* APIC Error Bit 7 */
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	exit_idle();
 	irq_enter();
@@ -2092,6 +2449,43 @@ void smp_error_interrupt(struct pt_regs *regs)
 	apic_printk(APIC_DEBUG, KERN_CONT "\n");
 
 	irq_exit();
+=======
+	/* First tickle the hardware, only then report what went on. -- REW */
+	apic_write(APIC_ESR, 0);
+	v = apic_read(APIC_ESR);
+	ack_APIC_irq();
+	atomic_inc(&irq_err_count);
+
+	apic_printk(APIC_DEBUG, KERN_DEBUG "APIC error on CPU%d: %02x",
+		    smp_processor_id(), v);
+
+	v &= 0xff;
+	while (v) {
+		if (v & 0x1)
+			apic_printk(APIC_DEBUG, KERN_CONT " : %s", error_interrupt_reason[i]);
+		i++;
+		v >>= 1;
+	}
+
+	apic_printk(APIC_DEBUG, KERN_CONT "\n");
+
+}
+
+__visible void smp_error_interrupt(struct pt_regs *regs)
+{
+	entering_irq();
+	__smp_error_interrupt(regs);
+	exiting_irq();
+}
+
+__visible void smp_trace_error_interrupt(struct pt_regs *regs)
+{
+	entering_irq();
+	trace_error_apic_entry(ERROR_APIC_VECTOR);
+	__smp_error_interrupt(regs);
+	trace_error_apic_exit(ERROR_APIC_VECTOR);
+	exiting_irq();
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2183,6 +2577,7 @@ void disconnect_bsp_APIC(int virt_wire_setup)
 	apic_write(APIC_LVT1, value);
 }
 
+<<<<<<< HEAD
 void __cpuinit generic_processor_info(int apicid, int version)
 {
 <<<<<<< HEAD
@@ -2191,11 +2586,51 @@ void __cpuinit generic_processor_info(int apicid, int version)
 	if (num_processors >= nr_cpu_ids) {
 		int max = nr_cpu_ids;
 =======
+=======
+int generic_processor_info(int apicid, int version)
+{
+>>>>>>> refs/remotes/origin/master
 	int cpu, max = nr_cpu_ids;
 	bool boot_cpu_detected = physid_isset(boot_cpu_physical_apicid,
 				phys_cpu_present_map);
 
 	/*
+<<<<<<< HEAD
+=======
+	 * boot_cpu_physical_apicid is designed to have the apicid
+	 * returned by read_apic_id(), i.e, the apicid of the
+	 * currently booting-up processor. However, on some platforms,
+	 * it is temporarily modified by the apicid reported as BSP
+	 * through MP table. Concretely:
+	 *
+	 * - arch/x86/kernel/mpparse.c: MP_processor_info()
+	 * - arch/x86/mm/amdtopology.c: amd_numa_init()
+	 * - arch/x86/platform/visws/visws_quirks.c: MP_processor_info()
+	 *
+	 * This function is executed with the modified
+	 * boot_cpu_physical_apicid. So, disabled_cpu_apicid kernel
+	 * parameter doesn't work to disable APs on kdump 2nd kernel.
+	 *
+	 * Since fixing handling of boot_cpu_physical_apicid requires
+	 * another discussion and tests on each platform, we leave it
+	 * for now and here we use read_apic_id() directly in this
+	 * function, generic_processor_info().
+	 */
+	if (disabled_cpu_apicid != BAD_APICID &&
+	    disabled_cpu_apicid != read_apic_id() &&
+	    disabled_cpu_apicid == apicid) {
+		int thiscpu = num_processors + disabled_cpus;
+
+		pr_warning("APIC: Disabling requested cpu."
+			   " Processor %d/0x%x ignored.\n",
+			   thiscpu, apicid);
+
+		disabled_cpus++;
+		return -ENODEV;
+	}
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * If boot cpu has not been detected yet, then only allow upto
 	 * nr_cpu_ids - 1 processors and keep one slot free for boot cpu
 	 */
@@ -2209,11 +2644,18 @@ void __cpuinit generic_processor_info(int apicid, int version)
 			"  Processor %d/0x%x ignored.\n", max, thiscpu, apicid);
 
 		disabled_cpus++;
+<<<<<<< HEAD
 		return;
 	}
 
 	if (num_processors >= nr_cpu_ids) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENODEV;
+	}
+
+	if (num_processors >= nr_cpu_ids) {
+>>>>>>> refs/remotes/origin/master
 		int thiscpu = max + disabled_cpus;
 
 		pr_warning(
@@ -2221,7 +2663,11 @@ void __cpuinit generic_processor_info(int apicid, int version)
 			"  Processor %d/0x%x ignored.\n", max, thiscpu, apicid);
 
 		disabled_cpus++;
+<<<<<<< HEAD
 		return;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	num_processors++;
@@ -2266,6 +2712,11 @@ void __cpuinit generic_processor_info(int apicid, int version)
 #endif
 	set_cpu_possible(cpu, true);
 	set_cpu_present(cpu, true);
+<<<<<<< HEAD
+=======
+
+	return cpu;
+>>>>>>> refs/remotes/origin/master
 }
 
 int hard_smp_processor_id(void)
@@ -2283,6 +2734,45 @@ void default_init_apic_ldr(void)
 	apic_write(APIC_LDR, val);
 }
 
+<<<<<<< HEAD
+=======
+int default_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
+				   const struct cpumask *andmask,
+				   unsigned int *apicid)
+{
+	unsigned int cpu;
+
+	for_each_cpu_and(cpu, cpumask, andmask) {
+		if (cpumask_test_cpu(cpu, cpu_online_mask))
+			break;
+	}
+
+	if (likely(cpu < nr_cpu_ids)) {
+		*apicid = per_cpu(x86_cpu_to_apicid, cpu);
+		return 0;
+	}
+
+	return -EINVAL;
+}
+
+/*
+ * Override the generic EOI implementation with an optimized version.
+ * Only called during early boot when only one CPU is active and with
+ * interrupts disabled, so we know this does not race with actual APIC driver
+ * use.
+ */
+void __init apic_set_eoi_write(void (*eoi_write)(u32 reg, u32 v))
+{
+	struct apic **drv;
+
+	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++) {
+		/* Should happen once for each apic */
+		WARN_ON((*drv)->eoi_write == eoi_write);
+		(*drv)->eoi_write = eoi_write;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Power management
  */
@@ -2342,8 +2832,12 @@ static int lapic_suspend(void)
 	local_irq_save(flags);
 	disable_local_APIC();
 
+<<<<<<< HEAD
 	if (intr_remapping_enabled)
 		disable_intr_remapping();
+=======
+	irq_remapping_disable();
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_restore(flags);
 	return 0;
@@ -2359,6 +2853,7 @@ static void lapic_resume(void)
 		return;
 
 	local_irq_save(flags);
+<<<<<<< HEAD
 	if (intr_remapping_enabled) {
 		/*
 		 * IO-APIC and PIC have their own resume routines.
@@ -2369,6 +2864,17 @@ static void lapic_resume(void)
 		mask_ioapic_entries();
 		legacy_pic->mask_all();
 	}
+=======
+
+	/*
+	 * IO-APIC and PIC have their own resume routines.
+	 * We just mask them here to make sure the interrupt
+	 * subsystem is completely quiet while we enable x2apic
+	 * and interrupt-remapping.
+	 */
+	mask_ioapic_entries();
+	legacy_pic->mask_all();
+>>>>>>> refs/remotes/origin/master
 
 	if (x2apic_mode)
 		enable_x2apic();
@@ -2396,7 +2902,11 @@ static void lapic_resume(void)
 	apic_write(APIC_SPIV, apic_pm_state.apic_spiv);
 	apic_write(APIC_LVT0, apic_pm_state.apic_lvt0);
 	apic_write(APIC_LVT1, apic_pm_state.apic_lvt1);
+<<<<<<< HEAD
 #if defined(CONFIG_X86_MCE_P4THERMAL) || defined(CONFIG_X86_MCE_INTEL)
+=======
+#if defined(CONFIG_X86_MCE_INTEL)
+>>>>>>> refs/remotes/origin/master
 	if (maxlvt >= 5)
 		apic_write(APIC_LVTTHMR, apic_pm_state.apic_thmr);
 #endif
@@ -2411,8 +2921,12 @@ static void lapic_resume(void)
 	apic_write(APIC_ESR, 0);
 	apic_read(APIC_ESR);
 
+<<<<<<< HEAD
 	if (intr_remapping_enabled)
 		reenable_intr_remapping(x2apic_mode);
+=======
+	irq_remapping_reenable(x2apic_mode);
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_restore(flags);
 }
@@ -2427,7 +2941,11 @@ static struct syscore_ops lapic_syscore_ops = {
 	.suspend	= lapic_suspend,
 };
 
+<<<<<<< HEAD
 static void __cpuinit apic_pm_activate(void)
+=======
+static void apic_pm_activate(void)
+>>>>>>> refs/remotes/origin/master
 {
 	apic_pm_state.active = 1;
 }
@@ -2452,7 +2970,11 @@ static void apic_pm_activate(void) { }
 
 #ifdef CONFIG_X86_64
 
+<<<<<<< HEAD
 static int __cpuinit apic_cluster_num(void)
+=======
+static int apic_cluster_num(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, clusters, zeros;
 	unsigned id;
@@ -2497,10 +3019,17 @@ static int __cpuinit apic_cluster_num(void)
 	return clusters;
 }
 
+<<<<<<< HEAD
 static int __cpuinitdata multi_checked;
 static int __cpuinitdata multi;
 
 static int __cpuinit set_multi(const struct dmi_system_id *d)
+=======
+static int multi_checked;
+static int multi;
+
+static int set_multi(const struct dmi_system_id *d)
+>>>>>>> refs/remotes/origin/master
 {
 	if (multi)
 		return 0;
@@ -2509,7 +3038,11 @@ static int __cpuinit set_multi(const struct dmi_system_id *d)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const __cpuinitconst struct dmi_system_id multi_dmi_table[] = {
+=======
+static const struct dmi_system_id multi_dmi_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.callback = set_multi,
 		.ident = "IBM System Summit2",
@@ -2521,7 +3054,11 @@ static const __cpuinitconst struct dmi_system_id multi_dmi_table[] = {
 	{}
 };
 
+<<<<<<< HEAD
 static void __cpuinit dmi_check_multi(void)
+=======
+static void dmi_check_multi(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (multi_checked)
 		return;
@@ -2538,7 +3075,11 @@ static void __cpuinit dmi_check_multi(void)
  * multi-chassis.
  * Use DMI to check them
  */
+<<<<<<< HEAD
 __cpuinit int apic_is_clustered_box(void)
+=======
+int apic_is_clustered_box(void)
+>>>>>>> refs/remotes/origin/master
 {
 	dmi_check_multi();
 	if (multi)
@@ -2639,3 +3180,15 @@ static int __init lapic_insert_resource(void)
  * that is using request_resource
  */
 late_initcall(lapic_insert_resource);
+<<<<<<< HEAD
+=======
+
+static int __init apic_set_disabled_cpu_apicid(char *arg)
+{
+	if (!arg || !get_option(&arg, &disabled_cpu_apicid))
+		return -EINVAL;
+
+	return 0;
+}
+early_param("disable_cpu_apicid", apic_set_disabled_cpu_apicid);
+>>>>>>> refs/remotes/origin/master

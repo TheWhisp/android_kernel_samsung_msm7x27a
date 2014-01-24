@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/mman.h>
+<<<<<<< HEAD
 #include "longjmp.h"
+=======
+#include <longjmp.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __i386__
 

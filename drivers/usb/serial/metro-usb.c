@@ -7,7 +7,10 @@
 */
 
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/module.h>
 #include <linux/usb.h>
@@ -17,12 +20,18 @@
 #include <linux/tty_flip.h>
 #include <linux/moduleparam.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/errno.h>
 #include <linux/uaccess.h>
 #include <linux/usb/serial.h>
 
 /* Version Information */
 #define DRIVER_VERSION "v1.2.0.0"
+=======
+#include <linux/uaccess.h>
+#include <linux/usb/serial.h>
+
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_DESC "Metrologic Instruments Inc. - USB-POS driver"
 
 /* Product information. */
@@ -46,21 +55,71 @@ struct metrousb_private {
 };
 
 /* Device table list. */
+<<<<<<< HEAD
 static struct usb_device_id id_table[] = {
+=======
+static const struct usb_device_id id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(FOCUS_VENDOR_ID, FOCUS_PRODUCT_ID_BI) },
 	{ USB_DEVICE(FOCUS_VENDOR_ID, FOCUS_PRODUCT_ID_UNI) },
 	{ }, /* Terminating entry. */
 };
 MODULE_DEVICE_TABLE(usb, id_table);
 
+<<<<<<< HEAD
 /* Input parameter constants. */
 static bool debug;
+=======
+/* UNI-Directional mode commands for device configure */
+#define UNI_CMD_OPEN	0x80
+#define UNI_CMD_CLOSE	0xFF
+
+static inline int metrousb_is_unidirectional_mode(struct usb_serial_port *port)
+{
+	__u16 product_id = le16_to_cpu(
+		port->serial->dev->descriptor.idProduct);
+
+	return product_id == FOCUS_PRODUCT_ID_UNI;
+}
+
+static int metrousb_send_unidirectional_cmd(u8 cmd, struct usb_serial_port *port)
+{
+	int ret;
+	int actual_len;
+	u8 *buffer_cmd = NULL;
+
+	if (!metrousb_is_unidirectional_mode(port))
+		return 0;
+
+	buffer_cmd = kzalloc(sizeof(cmd), GFP_KERNEL);
+	if (!buffer_cmd)
+		return -ENOMEM;
+
+	*buffer_cmd = cmd;
+
+	ret = usb_interrupt_msg(port->serial->dev,
+		usb_sndintpipe(port->serial->dev, port->interrupt_out_endpointAddress),
+		buffer_cmd, sizeof(cmd),
+		&actual_len, USB_CTRL_SET_TIMEOUT);
+
+	kfree(buffer_cmd);
+
+	if (ret < 0)
+		return ret;
+	else if (actual_len != sizeof(cmd))
+		return -EIO;
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void metrousb_read_int_callback(struct urb *urb)
 {
 	struct usb_serial_port *port = urb->context;
 	struct metrousb_private *metro_priv = usb_get_serial_port_data(port);
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char *data = urb->transfer_buffer;
 	int throttled = 0;
 	int result = 0;
@@ -78,17 +137,26 @@ static void metrousb_read_int_callback(struct urb *urb)
 		/* urb has been terminated. */
 		dev_dbg(&port->dev,
 			"%s - urb shutting down, error code=%d\n",
+<<<<<<< HEAD
 			__func__, result);
+=======
+			__func__, urb->status);
+>>>>>>> refs/remotes/origin/master
 		return;
 	default:
 		dev_dbg(&port->dev,
 			"%s - non-zero urb received, error code=%d\n",
+<<<<<<< HEAD
 			__func__, result);
+=======
+			__func__, urb->status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
 
 	/* Set the data read from the usb port into the serial port buffer. */
+<<<<<<< HEAD
 	tty = tty_port_tty_get(&port->port);
 	if (!tty) {
 		dev_dbg(&port->dev, "%s - bad tty pointer - exiting\n",
@@ -104,6 +172,15 @@ static void metrousb_read_int_callback(struct urb *urb)
 		tty_flip_buffer_push(tty);
 	}
 	tty_kref_put(tty);
+=======
+	if (urb->actual_length) {
+		/* Loop through the data copying each byte to the tty layer. */
+		tty_insert_flip_string(&port->port, data, urb->actual_length);
+
+		/* Force the data to the tty layer. */
+		tty_flip_buffer_push(&port->port);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Set any port variables. */
 	spin_lock_irqsave(&metro_priv->lock, flags);
@@ -121,7 +198,11 @@ static void metrousb_read_int_callback(struct urb *urb)
 		result = usb_submit_urb(port->interrupt_in_urb, GFP_ATOMIC);
 
 		if (result)
+<<<<<<< HEAD
 			dev_dbg(&port->dev,
+=======
+			dev_err(&port->dev,
+>>>>>>> refs/remotes/origin/master
 				"%s - failed submitting interrupt in urb, error code=%d\n",
 				__func__, result);
 	}
@@ -131,15 +212,31 @@ exit:
 	/* Try to resubmit the urb. */
 	result = usb_submit_urb(urb, GFP_ATOMIC);
 	if (result)
+<<<<<<< HEAD
 		dev_dbg(&port->dev,
+=======
+		dev_err(&port->dev,
+>>>>>>> refs/remotes/origin/master
 			"%s - failed submitting interrupt in urb, error code=%d\n",
 			__func__, result);
 }
 
+<<<<<<< HEAD
+=======
+static void metrousb_write_int_callback(struct urb *urb)
+{
+	struct usb_serial_port *port = urb->context;
+
+	dev_warn(&port->dev, "%s not implemented yet.\n",
+		__func__);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void metrousb_cleanup(struct usb_serial_port *port)
 {
 	dev_dbg(&port->dev, "%s\n", __func__);
 
+<<<<<<< HEAD
 	if (port->serial->dev) {
 		/* Shutdown any interrupt in urbs. */
 		if (port->interrupt_in_urb) {
@@ -147,6 +244,12 @@ static void metrousb_cleanup(struct usb_serial_port *port)
 			usb_kill_urb(port->interrupt_in_urb);
 		}
 	}
+=======
+	usb_unlink_urb(port->interrupt_in_urb);
+	usb_kill_urb(port->interrupt_in_urb);
+
+	metrousb_send_unidirectional_cmd(UNI_CMD_CLOSE, port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int metrousb_open(struct tty_struct *tty, struct usb_serial_port *port)
@@ -160,7 +263,11 @@ static int metrousb_open(struct tty_struct *tty, struct usb_serial_port *port)
 
 	/* Make sure the urb is initialized. */
 	if (!port->interrupt_in_urb) {
+<<<<<<< HEAD
 		dev_dbg(&port->dev, "%s - interrupt urb not initialized\n",
+=======
+		dev_err(&port->dev, "%s - interrupt urb not initialized\n",
+>>>>>>> refs/remotes/origin/master
 			__func__);
 		return -ENODEV;
 	}
@@ -183,12 +290,28 @@ static int metrousb_open(struct tty_struct *tty, struct usb_serial_port *port)
 	result = usb_submit_urb(port->interrupt_in_urb, GFP_KERNEL);
 
 	if (result) {
+<<<<<<< HEAD
 		dev_dbg(&port->dev,
+=======
+		dev_err(&port->dev,
+>>>>>>> refs/remotes/origin/master
 			"%s - failed submitting interrupt in urb, error code=%d\n",
 			__func__, result);
 		goto exit;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Send activate cmd to device */
+	result = metrousb_send_unidirectional_cmd(UNI_CMD_OPEN, port);
+	if (result) {
+		dev_err(&port->dev,
+			"%s - failed to configure device, error code=%d\n",
+			__func__, result);
+		goto exit;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(&port->dev, "%s - port open\n", __func__);
 exit:
 	return result;
@@ -213,13 +336,18 @@ static int metrousb_set_modem_ctrl(struct usb_serial *serial, unsigned int contr
 				METROUSB_SET_REQUEST_TYPE, METROUSB_SET_MODEM_CTRL_REQUEST,
 				control_state, 0, NULL, 0, WDR_TIMEOUT);
 	if (retval < 0)
+<<<<<<< HEAD
 		dev_dbg(&serial->dev->dev,
+=======
+		dev_err(&serial->dev->dev,
+>>>>>>> refs/remotes/origin/master
 			"%s - set modem ctrl=0x%x failed, error code=%d\n",
 			__func__, mcr, retval);
 
 	return retval;
 }
 
+<<<<<<< HEAD
 static void metrousb_shutdown(struct usb_serial *serial)
 {
 	int i = 0;
@@ -265,6 +393,29 @@ static int metrousb_startup(struct usb_serial *serial)
 		dev_dbg(&serial->dev->dev, "%s - port number=%d\n ",
 			__func__, port->number);
 	}
+=======
+static int metrousb_port_probe(struct usb_serial_port *port)
+{
+	struct metrousb_private *metro_priv;
+
+	metro_priv = kzalloc(sizeof(*metro_priv), GFP_KERNEL);
+	if (!metro_priv)
+		return -ENOMEM;
+
+	spin_lock_init(&metro_priv->lock);
+
+	usb_set_serial_port_data(port, metro_priv);
+
+	return 0;
+}
+
+static int metrousb_port_remove(struct usb_serial_port *port)
+{
+	struct metrousb_private *metro_priv;
+
+	metro_priv = usb_get_serial_port_data(port);
+	kfree(metro_priv);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -346,11 +497,16 @@ static void metrousb_unthrottle(struct tty_struct *tty)
 	port->interrupt_in_urb->dev = port->serial->dev;
 	result = usb_submit_urb(port->interrupt_in_urb, GFP_ATOMIC);
 	if (result)
+<<<<<<< HEAD
 		dev_dbg(tty->dev,
+=======
+		dev_err(tty->dev,
+>>>>>>> refs/remotes/origin/master
 			"failed submitting interrupt in urb error code=%d\n",
 			result);
 }
 
+<<<<<<< HEAD
 static struct usb_driver metrousb_driver = {
 	.name =		"metro-usb",
 	.probe =	usb_serial_probe,
@@ -358,19 +514,31 @@ static struct usb_driver metrousb_driver = {
 	.id_table =	id_table
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_serial_driver metrousb_device = {
 	.driver = {
 		.owner =	THIS_MODULE,
 		.name =		"metro-usb",
 	},
+<<<<<<< HEAD
 	.description		= "Metrologic USB to serial converter.",
+=======
+	.description		= "Metrologic USB to Serial",
+>>>>>>> refs/remotes/origin/master
 	.id_table		= id_table,
 	.num_ports		= 1,
 	.open			= metrousb_open,
 	.close			= metrousb_cleanup,
 	.read_int_callback	= metrousb_read_int_callback,
+<<<<<<< HEAD
 	.attach			= metrousb_startup,
 	.release		= metrousb_shutdown,
+=======
+	.write_int_callback	= metrousb_write_int_callback,
+	.port_probe		= metrousb_port_probe,
+	.port_remove		= metrousb_port_remove,
+>>>>>>> refs/remotes/origin/master
 	.throttle		= metrousb_throttle,
 	.unthrottle		= metrousb_unthrottle,
 	.tiocmget		= metrousb_tiocmget,
@@ -382,13 +550,20 @@ static struct usb_serial_driver * const serial_drivers[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 module_usb_serial_driver(metrousb_driver, serial_drivers);
+=======
+module_usb_serial_driver(serial_drivers, id_table);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Philip Nicastro");
 MODULE_AUTHOR("Aleksey Babahin <tamerlan311@gmail.com>");
 MODULE_DESCRIPTION(DRIVER_DESC);
+<<<<<<< HEAD
 
 /* Module input parameters */
 module_param(debug, bool, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(debug, "Print debug info (bool 1=on, 0=off)");
+=======
+>>>>>>> refs/remotes/origin/master

@@ -99,6 +99,7 @@ Using an existing pool device
 		 $data_block_size $low_water_mark"
 
 $data_block_size gives the smallest unit of disk space that can be
+<<<<<<< HEAD
 allocated at a time expressed in units of 512-byte sectors.  People
 primarily interested in thin provisioning may want to use a value such
 as 1024 (512KB).  People doing lots of snapshotting may want a smaller value
@@ -106,6 +107,16 @@ such as 128 (64KB).  If you are not zeroing newly-allocated data,
 a larger $data_block_size in the region of 256000 (128MB) is suggested.
 $data_block_size must be the same for the lifetime of the
 metadata device.
+=======
+allocated at a time expressed in units of 512-byte sectors.
+$data_block_size must be between 128 (64KB) and 2097152 (1GB) and a
+multiple of 128 (64KB).  $data_block_size cannot be changed after the
+thin-pool is created.  People primarily interested in thin provisioning
+may want to use a value such as 1024 (512KB).  People doing lots of
+snapshotting may want a smaller value such as 128 (64KB).  If you are
+not zeroing newly-allocated data, a larger $data_block_size in the
+region of 256000 (128MB) is suggested.
+>>>>>>> refs/remotes/origin/master
 
 $low_water_mark is expressed in blocks of size $data_block_size.  If
 free space on the data device drops below this level then a dm event
@@ -231,6 +242,12 @@ i) Constructor
       no_discard_passdown: Don't pass discards down to the underlying
 			   data device, but just remove the mapping.
 
+<<<<<<< HEAD
+=======
+      read_only: Don't allow any changes to be made to the pool
+		 metadata.
+
+>>>>>>> refs/remotes/origin/master
     Data block size must be between 64KB (128 sectors) and 1GB
     (2097152 sectors) inclusive.
 
@@ -239,7 +256,11 @@ ii) Status
 
     <transaction id> <used metadata blocks>/<total metadata blocks>
     <used data blocks>/<total data blocks> <held metadata root>
+<<<<<<< HEAD
 
+=======
+    [no_]discard_passdown ro|rw
+>>>>>>> refs/remotes/origin/master
 
     transaction id:
 	A 64-bit number used by userspace to help synchronise with metadata
@@ -257,6 +278,24 @@ ii) Status
 	held root.  This feature is not yet implemented so '-' is
 	always returned.
 
+<<<<<<< HEAD
+=======
+    discard_passdown|no_discard_passdown
+	Whether or not discards are actually being passed down to the
+	underlying device.  When this is enabled when loading the table,
+	it can get disabled if the underlying device doesn't support it.
+
+    ro|rw
+	If the pool encounters certain types of device failures it will
+	drop into a read-only metadata mode in which no changes to
+	the pool metadata (like allocating new blocks) are permitted.
+
+	In serious cases where even a read-only mode is deemed unsafe
+	no further I/O will be permitted and the status will just
+	contain the string 'Fail'.  The userspace recovery tools
+	should then be used.
+
+>>>>>>> refs/remotes/origin/master
 iii) Messages
 
     create_thin <dev id>
@@ -287,6 +326,20 @@ iii) Messages
 	the current transaction id is when you change it with this
 	compare-and-swap message.
 
+<<<<<<< HEAD
+=======
+    reserve_metadata_snap
+
+        Reserve a copy of the data mapping btree for use by userland.
+        This allows userland to inspect the mappings as they were when
+        this message was executed.  Use the pool's status command to
+        get the root block associated with the metadata snapshot.
+
+    release_metadata_snap
+
+        Release a previously reserved copy of the data mapping btree.
+
+>>>>>>> refs/remotes/origin/master
 'thin' target
 -------------
 
@@ -318,3 +371,10 @@ regain some space then send the 'trim' message to the pool.
 ii) Status
 
      <nr mapped sectors> <highest mapped sector>
+<<<<<<< HEAD
+=======
+
+	If the pool has encountered device errors and failed, the status
+	will just contain the string 'Fail'.  The userspace recovery
+	tools should then be used.
+>>>>>>> refs/remotes/origin/master

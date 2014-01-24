@@ -1134,8 +1134,14 @@ struct il_wep_cmd {
 #define RX_RES_PHY_FLAGS_MOD_CCK_MSK		cpu_to_le16(1 << 1)
 #define RX_RES_PHY_FLAGS_SHORT_PREAMBLE_MSK	cpu_to_le16(1 << 2)
 #define RX_RES_PHY_FLAGS_NARROW_BAND_MSK	cpu_to_le16(1 << 3)
+<<<<<<< HEAD
 #define RX_RES_PHY_FLAGS_ANTENNA_MSK		0xf0
 #define RX_RES_PHY_FLAGS_ANTENNA_POS		4
+=======
+#define RX_RES_PHY_FLAGS_ANTENNA_MSK		0x70
+#define RX_RES_PHY_FLAGS_ANTENNA_POS		4
+#define RX_RES_PHY_FLAGS_AGG_MSK	cpu_to_le16(1 << 7)
+>>>>>>> refs/remotes/origin/master
 
 #define RX_RES_STATUS_SEC_TYPE_MSK	(0x7 << 8)
 #define RX_RES_STATUS_SEC_TYPE_NONE	(0x0 << 8)
@@ -1347,6 +1353,7 @@ struct il_rx_mpdu_res_start {
 #define TX_CMD_SEC_KEY128	0x08
 
 /*
+<<<<<<< HEAD
  * security overhead sizes
  */
 #define WEP_IV_LEN 4
@@ -1355,6 +1362,8 @@ struct il_rx_mpdu_res_start {
 #define TKIP_ICV_LEN 4
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * C_TX = 0x1c (command)
  */
 

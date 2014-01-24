@@ -74,6 +74,7 @@
  * PMU<rev>_PLL<num>_XX where <rev> is PMU corerev and <num> is an arbitrary
  * number to differentiate different PLLs controlled by the same PMU rev.
  */
+<<<<<<< HEAD
 /* pllcontrol registers:
  * ndiv_pwrdn, pwrdn_ch<x>, refcomp_pwrdn, dly_ch<x>,
  * p1div, p2div, _bypass_sdmod
@@ -84,6 +85,8 @@
 #define PMU1_PLL0_PLLCTL3		3
 #define PMU1_PLL0_PLLCTL4		4
 #define PMU1_PLL0_PLLCTL5		5
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* pmu XtalFreqRatio */
 #define	PMU_XTALFREQ_REG_ILPCTR_MASK	0x00001FFF
@@ -108,6 +111,7 @@
 #define	RES4313_HT_AVAIL_RSRC		14
 #define	RES4313_MACPHY_CLK_AVAIL_RSRC	15
 
+<<<<<<< HEAD
 /* Determine min/max rsrc masks. Value 0 leaves hardware at default. */
 static void si_pmu_res_masks(struct si_pub *sih, u32 * pmin, u32 * pmax)
 {
@@ -212,14 +216,22 @@ void si_pmu_spuravoid_pllupdate(struct si_pub *sih, u8 spuravoid)
 	bcma_set32(core, CHIPCREGOFFS(pmucontrol), tmp);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 u16 si_pmu_fast_pwrup_delay(struct si_pub *sih)
 {
 	uint delay = PMU_MAX_TRANSITION_DLY;
 
 	switch (ai_get_chip_id(sih)) {
+<<<<<<< HEAD
 	case BCM43224_CHIP_ID:
 	case BCM43225_CHIP_ID:
 	case BCM4313_CHIP_ID:
+=======
+	case BCMA_CHIP_ID_BCM43224:
+	case BCMA_CHIP_ID_BCM43225:
+	case BCMA_CHIP_ID_BCM4313:
+>>>>>>> refs/remotes/origin/master
 		delay = 3700;
 		break;
 	default:
@@ -229,6 +241,7 @@ u16 si_pmu_fast_pwrup_delay(struct si_pub *sih)
 	return (u16) delay;
 }
 
+<<<<<<< HEAD
 /* Read/write a chipcontrol reg */
 u32 si_pmu_chipcontrol(struct si_pub *sih, uint reg, u32 mask, u32 val)
 {
@@ -328,6 +341,11 @@ void si_pmu_res_init(struct si_pub *sih)
 
 u32 si_pmu_measure_alpclk(struct si_pub *sih)
 {
+=======
+u32 si_pmu_measure_alpclk(struct si_pub *sih)
+{
+	struct si_info *sii = container_of(sih, struct si_info, pub);
+>>>>>>> refs/remotes/origin/master
 	struct bcma_device *core;
 	u32 alp_khz;
 
@@ -335,7 +353,11 @@ u32 si_pmu_measure_alpclk(struct si_pub *sih)
 		return 0;
 
 	/* Remember original core before switch to chipc */
+<<<<<<< HEAD
 	core = ai_findcore(sih, BCMA_CORE_CHIPCOMMON, 0);
+=======
+	core = sii->icbus->drv_cc.core;
+>>>>>>> refs/remotes/origin/master
 
 	if (bcma_read32(core, CHIPCREGOFFS(pmustatus)) & PST_EXTLPOAVAIL) {
 		u32 ilp_ctr, alp_hz;

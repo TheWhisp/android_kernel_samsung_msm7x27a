@@ -32,6 +32,7 @@
 #include <asm/mach/irq.h>
 
 #include <plat/regs-serial.h>
+<<<<<<< HEAD
 #include <plat/nand.h>
 #include <plat/iic.h>
 
@@ -40,6 +41,15 @@
 #include <mach/regs-mem.h>
 #include <mach/regs-lcd.h>
 #include <mach/fb.h>
+=======
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+
+#include <mach/regs-gpio.h>
+#include <mach/regs-lcd.h>
+#include <mach/fb.h>
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 
@@ -48,13 +58,24 @@
 #include <linux/mtd/nand_ecc.h>
 #include <linux/mtd/partitions.h>
 
+<<<<<<< HEAD
 #include <plat/s3c2412.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/gpio-cfg.h>
 #include <plat/clock.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
 #include <plat/pm.h>
+<<<<<<< HEAD
 #include <plat/udc.h>
+=======
+#include <linux/platform_data/usb-s3c2410_udc.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+#include "s3c2412-power.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc jive_iodesc[] __initdata = {
 };
@@ -465,6 +486,10 @@ static struct platform_device *jive_devices[] __initdata = {
 	&jive_device_wm8750,
 	&s3c_device_nand,
 	&s3c_device_usbgadget,
+<<<<<<< HEAD
+=======
+	&s3c2412_device_dma,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c2410_udc_mach_info jive_udc_cfg __initdata = {
@@ -506,14 +531,23 @@ static void __init jive_map_io(void)
 	s3c24xx_init_io(jive_iodesc, ARRAY_SIZE(jive_iodesc));
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(jive_uartcfgs, ARRAY_SIZE(jive_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void jive_power_off(void)
 {
 	printk(KERN_INFO "powering system down...\n");
 
+<<<<<<< HEAD
 	s3c2410_gpio_setpin(S3C2410_GPC(5), 1);
 	s3c_gpio_cfgpin(S3C2410_GPC(5), S3C2410_GPIO_OUTPUT);
+=======
+	gpio_request_one(S3C2410_GPC(5), GPIOF_OUT_INIT_HIGH, NULL);
+	gpio_free(S3C2410_GPC(5));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init jive_machine_init(void)
@@ -623,11 +657,19 @@ static void __init jive_machine_init(void)
 	gpio_request(S3C2410_GPB(7), "jive spi");
 	gpio_direction_output(S3C2410_GPB(7), 1);
 
+<<<<<<< HEAD
 	s3c2410_gpio_setpin(S3C2410_GPB(6), 0);
 	s3c_gpio_cfgpin(S3C2410_GPB(6), S3C2410_GPIO_OUTPUT);
 
 	s3c2410_gpio_setpin(S3C2410_GPG(8), 1);
 	s3c_gpio_cfgpin(S3C2410_GPG(8), S3C2410_GPIO_OUTPUT);
+=======
+	gpio_request_one(S3C2410_GPB(6), GPIOF_OUT_INIT_LOW, NULL);
+	gpio_free(S3C2410_GPB(6));
+
+	gpio_request_one(S3C2410_GPG(8), GPIOF_OUT_INIT_HIGH, NULL);
+	gpio_free(S3C2410_GPG(8));
+>>>>>>> refs/remotes/origin/master
 
 	/* initialise the WM8750 spi */
 
@@ -658,9 +700,16 @@ MACHINE_START(JIVE, "JIVE")
 	/* Maintainer: Ben Dooks <ben-linux@fluff.org> */
 	.atag_offset	= 0x100,
 
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.map_io		= jive_map_io,
 	.init_machine	= jive_machine_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2412_init_irq,
+	.map_io		= jive_map_io,
+	.init_machine	= jive_machine_init,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c2412_restart,
 MACHINE_END

@@ -1,9 +1,13 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/suspend.h>
 #include <linux/bcd.h>
 #include <asm/uaccess.h>
@@ -11,22 +15,29 @@
 #include <acpi/acpi_bus.h>
 #include <acpi/acpi_drivers.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86
 #include <linux/mc146818rtc.h>
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "sleep.h"
 
 #define _COMPONENT		ACPI_SYSTEM_COMPONENT
 
 /*
  * this file provides support for:
+<<<<<<< HEAD
  * /proc/acpi/alarm
+=======
+>>>>>>> refs/remotes/origin/master
  * /proc/acpi/wakeup
  */
 
 ACPI_MODULE_NAME("sleep")
 
+<<<<<<< HEAD
 #if defined(CONFIG_RTC_DRV_CMOS) || defined(CONFIG_RTC_DRV_CMOS_MODULE) || !defined(CONFIG_X86)
 /* use /sys/class/rtc/rtcX/wakealarm instead; it's not ACPI-specific */
 #else
@@ -294,6 +305,8 @@ acpi_system_write_alarm(struct file *file,
 }
 #endif				/* HAVE_ACPI_LEGACY_ALARM */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 acpi_system_wakeup_device_seq_show(struct seq_file *seq, void *offset)
 {
@@ -305,11 +318,16 @@ acpi_system_wakeup_device_seq_show(struct seq_file *seq, void *offset)
 	list_for_each_safe(node, next, &acpi_wakeup_device_list) {
 		struct acpi_device *dev =
 		    container_of(node, struct acpi_device, wakeup_list);
+<<<<<<< HEAD
 		struct device *ldev;
+=======
+		struct acpi_device_physical_node *entry;
+>>>>>>> refs/remotes/origin/master
 
 		if (!dev->wakeup.flags.valid)
 			continue;
 
+<<<<<<< HEAD
 		ldev = acpi_get_physical_device(dev->handle);
 		seq_printf(seq, "%s\t  S%d\t%c%-8s  ",
 			   dev->pnp.bus_id,
@@ -325,6 +343,43 @@ acpi_system_wakeup_device_seq_show(struct seq_file *seq, void *offset)
 		seq_printf(seq, "\n");
 		put_device(ldev);
 
+=======
+		seq_printf(seq, "%s\t  S%d\t",
+			   dev->pnp.bus_id,
+			   (u32) dev->wakeup.sleep_state);
+
+		mutex_lock(&dev->physical_node_lock);
+
+		if (!dev->physical_node_count) {
+			seq_printf(seq, "%c%-8s\n",
+				dev->wakeup.flags.run_wake ? '*' : ' ',
+				device_may_wakeup(&dev->dev) ?
+					"enabled" : "disabled");
+		} else {
+			struct device *ldev;
+			list_for_each_entry(entry, &dev->physical_node_list,
+					node) {
+				ldev = get_device(entry->dev);
+				if (!ldev)
+					continue;
+
+				if (&entry->node !=
+						dev->physical_node_list.next)
+					seq_printf(seq, "\t\t");
+
+				seq_printf(seq, "%c%-8s  %s:%s\n",
+					dev->wakeup.flags.run_wake ? '*' : ' ',
+					(device_may_wakeup(&dev->dev) ||
+					(ldev && device_may_wakeup(ldev))) ?
+					"enabled" : "disabled",
+					ldev->bus ? ldev->bus->name :
+					"no-bus", dev_name(ldev));
+				put_device(ldev);
+			}
+		}
+
+		mutex_unlock(&dev->physical_node_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&acpi_device_lock);
 	return 0;
@@ -332,12 +387,27 @@ acpi_system_wakeup_device_seq_show(struct seq_file *seq, void *offset)
 
 static void physical_device_enable_wakeup(struct acpi_device *adev)
 {
+<<<<<<< HEAD
 	struct device *dev = acpi_get_physical_device(adev->handle);
 
 	if (dev && device_can_wakeup(dev)) {
 		bool enable = !device_may_wakeup(dev);
 		device_set_wakeup_enable(dev, enable);
 	}
+=======
+	struct acpi_device_physical_node *entry;
+
+	mutex_lock(&adev->physical_node_lock);
+
+	list_for_each_entry(entry,
+		&adev->physical_node_list, node)
+		if (entry->dev && device_can_wakeup(entry->dev)) {
+			bool enable = !device_may_wakeup(entry->dev);
+			device_set_wakeup_enable(entry->dev, enable);
+		}
+
+	mutex_unlock(&adev->physical_node_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t
@@ -348,6 +418,7 @@ acpi_system_write_wakeup_device(struct file *file,
 	struct list_head *node, *next;
 	char strbuf[5];
 	char str[5] = "";
+<<<<<<< HEAD
 	unsigned int len = count;
 
 	if (len > 4)
@@ -358,6 +429,15 @@ acpi_system_write_wakeup_device(struct file *file,
 	if (copy_from_user(strbuf, buffer, len))
 		return -EFAULT;
 	strbuf[len] = '\0';
+=======
+
+	if (count > 4)
+		count = 4;
+
+	if (copy_from_user(strbuf, buffer, count))
+		return -EFAULT;
+	strbuf[count] = '\0';
+>>>>>>> refs/remotes/origin/master
 	sscanf(strbuf, "%s", str);
 
 	mutex_lock(&acpi_device_lock);
@@ -385,7 +465,11 @@ static int
 acpi_system_wakeup_device_open_fs(struct inode *inode, struct file *file)
 {
 	return single_open(file, acpi_system_wakeup_device_seq_show,
+<<<<<<< HEAD
 			   PDE(inode)->data);
+=======
+			   PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations acpi_system_wakeup_device_fops = {
@@ -397,6 +481,7 @@ static const struct file_operations acpi_system_wakeup_device_fops = {
 	.release = single_release,
 };
 
+<<<<<<< HEAD
 #ifdef	HAVE_ACPI_LEGACY_ALARM
 static const struct file_operations acpi_system_alarm_fops = {
 	.owner = THIS_MODULE,
@@ -432,6 +517,10 @@ int __init acpi_sleep_proc_init(void)
 	acpi_disable_event(ACPI_EVENT_RTC, 0);
 #endif				/* HAVE_ACPI_LEGACY_ALARM */
 
+=======
+int __init acpi_sleep_proc_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 	/* 'wakeup device' [R/W] */
 	proc_create("wakeup", S_IFREG | S_IRUGO | S_IWUSR,
 		    acpi_root_dir, &acpi_system_wakeup_device_fops);

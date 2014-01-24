@@ -17,16 +17,22 @@
 #include <asm/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef NORET_TYPE void (*relocate_new_kernel_t)(
 				unsigned long indirection_page,
 				unsigned long reboot_code_buffer,
 				unsigned long start_address) ATTRIB_NORET;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef void (*relocate_new_kernel_t)(
 				unsigned long indirection_page,
 				unsigned long reboot_code_buffer,
 				unsigned long start_address) __noreturn;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is a generic machine_kexec function suitable at least for

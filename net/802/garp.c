@@ -16,9 +16,13 @@
 #include <linux/llc.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/llc.h>
 #include <net/llc_pdu.h>
 #include <net/garp.h>
@@ -160,9 +164,15 @@ static struct garp_attr *garp_attr_lookup(const struct garp_applicant *app,
 	while (parent) {
 		attr = rb_entry(parent, struct garp_attr, node);
 		d = garp_attr_cmp(attr, data, len, type);
+<<<<<<< HEAD
 		if (d < 0)
 			parent = parent->rb_left;
 		else if (d > 0)
+=======
+		if (d > 0)
+			parent = parent->rb_left;
+		else if (d < 0)
+>>>>>>> refs/remotes/origin/master
 			parent = parent->rb_right;
 		else
 			return attr;
@@ -171,11 +181,16 @@ static struct garp_attr *garp_attr_lookup(const struct garp_applicant *app,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void garp_attr_insert(struct garp_applicant *app, struct garp_attr *new)
 =======
 static struct garp_attr *garp_attr_create(struct garp_applicant *app,
 					  const void *data, u8 len, u8 type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct garp_attr *garp_attr_create(struct garp_applicant *app,
+					  const void *data, u8 len, u8 type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rb_node *parent = NULL, **p = &app->gid.rb_node;
 	struct garp_attr *attr;
@@ -184,6 +199,7 @@ static struct garp_attr *garp_attr_create(struct garp_applicant *app,
 	while (*p) {
 		parent = *p;
 		attr = rb_entry(parent, struct garp_attr, node);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		d = garp_attr_cmp(attr, new->data, new->dlen, new->type);
 =======
@@ -205,12 +221,22 @@ static struct garp_attr *garp_attr_create(struct garp_applicant *app,
 	struct garp_attr *attr;
 
 =======
+=======
+		d = garp_attr_cmp(attr, data, len, type);
+		if (d > 0)
+			p = &parent->rb_left;
+		else if (d < 0)
+			p = &parent->rb_right;
+>>>>>>> refs/remotes/origin/master
 		else {
 			/* The attribute already exists; re-use it. */
 			return attr;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	attr = kmalloc(sizeof(*attr) + len, GFP_ATOMIC);
 	if (!attr)
 		return attr;
@@ -219,12 +245,18 @@ static struct garp_attr *garp_attr_create(struct garp_applicant *app,
 	attr->dlen  = len;
 	memcpy(attr->data, data, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	garp_attr_insert(app, attr);
 =======
 
 	rb_link_node(&attr->node, parent, p);
 	rb_insert_color(&attr->node, &app->gid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	rb_link_node(&attr->node, parent, p);
+	rb_insert_color(&attr->node, &app->gid);
+>>>>>>> refs/remotes/origin/master
 	return attr;
 }
 
@@ -581,10 +613,14 @@ static void garp_release_port(struct net_device *dev)
 			return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(dev->garp_port, NULL);
 =======
 	RCU_INIT_POINTER(dev->garp_port, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(dev->garp_port, NULL);
+>>>>>>> refs/remotes/origin/master
 	kfree_rcu(port, rcu);
 }
 
@@ -637,16 +673,29 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
 	ASSERT_RTNL();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(port->applicants[appl->type], NULL);
 =======
 	RCU_INIT_POINTER(port->applicants[appl->type], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(port->applicants[appl->type], NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* Delete timer and generate a final TRANSMIT_PDU event to flush out
 	 * all pending messages before the applicant is gone. */
 	del_timer_sync(&app->join_timer);
+<<<<<<< HEAD
 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
 	garp_pdu_queue(app);
+=======
+
+	spin_lock_bh(&app->lock);
+	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
+	garp_pdu_queue(app);
+	spin_unlock_bh(&app->lock);
+
+>>>>>>> refs/remotes/origin/master
 	garp_queue_xmit(app);
 
 	dev_mc_del(dev, appl->proto.group_address);

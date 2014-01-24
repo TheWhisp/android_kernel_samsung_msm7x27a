@@ -543,7 +543,11 @@
 #define	IMR_TIMEOUT1			BIT(16)
 #define	IMR_TXFOVW			BIT(15)
 #define	IMR_PSTIMEOUT			BIT(14)
+<<<<<<< HEAD
 #define	IMR_BcnInt			BIT(13)
+=======
+#define	IMR_BCNINT			BIT(13)
+>>>>>>> refs/remotes/origin/master
 #define	IMR_RXFOVW			BIT(12)
 #define	IMR_RDU				BIT(11)
 #define	IMR_ATIMEND			BIT(10)

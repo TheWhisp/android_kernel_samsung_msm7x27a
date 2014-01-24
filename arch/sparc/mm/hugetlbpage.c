@@ -6,9 +6,12 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/mm.h>
 #include <linux/hugetlb.h>
@@ -25,8 +28,11 @@
 /* Slightly simplified from the non-hugepage variant because by
  * definition we don't have to worry about any page coloring stuff
  */
+<<<<<<< HEAD
 #define VA_EXCLUDE_START (0x0000080000000000UL - (1UL << 32UL))
 #define VA_EXCLUDE_END   (0xfffff80000000000UL + (1UL << 32UL))
+=======
+>>>>>>> refs/remotes/origin/master
 
 static unsigned long hugetlb_get_unmapped_area_bottomup(struct file *filp,
 							unsigned long addr,
@@ -34,6 +40,7 @@ static unsigned long hugetlb_get_unmapped_area_bottomup(struct file *filp,
 							unsigned long pgoff,
 							unsigned long flags)
 {
+<<<<<<< HEAD
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct * vma;
 	unsigned long task_size = TASK_SIZE;
@@ -83,6 +90,30 @@ full_search:
 
 		addr = ALIGN(vma->vm_end, HPAGE_SIZE);
 	}
+=======
+	unsigned long task_size = TASK_SIZE;
+	struct vm_unmapped_area_info info;
+
+	if (test_thread_flag(TIF_32BIT))
+		task_size = STACK_TOP32;
+
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = TASK_UNMAPPED_BASE;
+	info.high_limit = min(task_size, VA_EXCLUDE_START);
+	info.align_mask = PAGE_MASK & ~HPAGE_MASK;
+	info.align_offset = 0;
+	addr = vm_unmapped_area(&info);
+
+	if ((addr & ~PAGE_MASK) && task_size > VA_EXCLUDE_END) {
+		VM_BUG_ON(addr != -ENOMEM);
+		info.low_limit = VA_EXCLUDE_END;
+		info.high_limit = task_size;
+		addr = vm_unmapped_area(&info);
+	}
+
+	return addr;
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned long
@@ -91,13 +122,20 @@ hugetlb_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 				  const unsigned long pgoff,
 				  const unsigned long flags)
 {
+<<<<<<< HEAD
 	struct vm_area_struct *vma;
 	struct mm_struct *mm = current->mm;
 	unsigned long addr = addr0;
+=======
+	struct mm_struct *mm = current->mm;
+	unsigned long addr = addr0;
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	/* This should only ever run for 32-bit processes.  */
 	BUG_ON(!test_thread_flag(TIF_32BIT));
 
+<<<<<<< HEAD
 	/* check if free_area_cache is useful for us */
 	if (len <= mm->cached_hole_size) {
  	        mm->cached_hole_size = 0;
@@ -142,12 +180,23 @@ hugetlb_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	} while (likely(len < vma->vm_start));
 
 bottomup:
+=======
+	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+	info.length = len;
+	info.low_limit = PAGE_SIZE;
+	info.high_limit = mm->mmap_base;
+	info.align_mask = PAGE_MASK & ~HPAGE_MASK;
+	info.align_offset = 0;
+	addr = vm_unmapped_area(&info);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * A failed mmap() very likely causes application failure,
 	 * so fall back to the bottom-up function here. This scenario
 	 * can happen with large stack limits and large mmap()
 	 * allocations.
 	 */
+<<<<<<< HEAD
 	mm->cached_hole_size = ~0UL;
   	mm->free_area_cache = TASK_UNMAPPED_BASE;
 	addr = arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
@@ -156,6 +205,15 @@ bottomup:
 	 */
 	mm->free_area_cache = mm->mmap_base;
 	mm->cached_hole_size = ~0UL;
+=======
+	if (addr & ~PAGE_MASK) {
+		VM_BUG_ON(addr != -ENOMEM);
+		info.flags = 0;
+		info.low_limit = TASK_UNMAPPED_BASE;
+		info.high_limit = STACK_TOP32;
+		addr = vm_unmapped_area(&info);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return addr;
 }
@@ -302,6 +360,7 @@ int pud_huge(pud_t pud)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct page *follow_huge_pmd(struct mm_struct *mm, unsigned long address,
 			     pmd_t *pmd, int write)
 {
@@ -356,4 +415,15 @@ void hugetlb_prefault_arch_hook(struct mm_struct *mm)
 		}
 		spin_unlock(&ctx_alloc_lock);
 	}
+=======
+int pmd_huge_support(void)
+{
+	return 0;
+}
+
+struct page *follow_huge_pmd(struct mm_struct *mm, unsigned long address,
+			     pmd_t *pmd, int write)
+{
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }

@@ -17,10 +17,14 @@
 #define GFS2_ACL_MAX_ENTRIES		25
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int gfs2_check_acl(struct inode *inode, int mask, unsigned int);
 =======
 extern struct posix_acl *gfs2_get_acl(struct inode *inode, int type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct posix_acl *gfs2_get_acl(struct inode *inode, int type);
+>>>>>>> refs/remotes/origin/master
 extern int gfs2_acl_create(struct gfs2_inode *dip, struct inode *inode);
 extern int gfs2_acl_chmod(struct gfs2_inode *ip, struct iattr *attr);
 extern const struct xattr_handler gfs2_xattr_system_handler;

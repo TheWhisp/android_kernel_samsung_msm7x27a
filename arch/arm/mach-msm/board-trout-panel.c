@@ -2,15 +2,20 @@
 ** Author: Brian Swetland <swetland@google.com>
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/delay.h>
 #include <linux/leds.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/err.h>
 
@@ -34,6 +39,20 @@
 
 #include "board-trout.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/err.h>
+
+#include <asm/io.h>
+#include <asm/mach-types.h>
+#include <asm/system_info.h>
+
+#include <linux/platform_data/video-msm_fb.h>
+#include <mach/vreg.h>
+
+#include "board-trout.h"
+#include "proc_comm.h"
+#include "clock-pcom.h"
+>>>>>>> refs/remotes/origin/master
 #include "devices.h"
 
 #define TROUT_DEFAULT_BACKLIGHT_BRIGHTNESS 255
@@ -185,7 +204,10 @@ static struct mddi_table mddi_toshiba_init_table[] = {
 #define INTMASK_VWAKEOUT (1U << 0)
 
 
+<<<<<<< HEAD
 static struct clk *gp_clk;
+=======
+>>>>>>> refs/remotes/origin/master
 static int trout_new_backlight = 1;
 static struct vreg *vreg_mddi_1v5;
 static struct vreg *vreg_lcm_2v85;
@@ -288,6 +310,7 @@ int __init trout_init_panel(void)
 	} else {
 		uint32_t config = PCOM_GPIO_CFG(27, 1, GPIO_OUTPUT,
 						GPIO_NO_PULL, GPIO_8MA);
+<<<<<<< HEAD
 		msm_proc_comm(PCOM_RPC_GPIO_TLMM_CONFIG_EX, &config, 0);
 
 		gp_clk = clk_get(NULL, "gp_clk");
@@ -300,6 +323,16 @@ int __init trout_init_panel(void)
 		if (rc)
 			printk(KERN_ERR "trout_init_panel: set clock rate "
 			       "failed\n");
+=======
+		uint32_t id = P_GP_CLK;
+		uint32_t rate = 19200000;
+
+		msm_proc_comm(PCOM_RPC_GPIO_TLMM_CONFIG_EX, &config, 0);
+
+		msm_proc_comm(PCOM_CLKCTL_RPC_SET_RATE, &id, &rate);
+		if (id < 0)
+			pr_err("trout_init_panel: set clock rate failed\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = platform_device_register(&msm_device_mdp);

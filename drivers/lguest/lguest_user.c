@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*P:200 This contains all the /dev/lguest code, whereby the userspace launcher
  * controls and communicates with the Guest.  For example, the first write will
  * tell us the Guest's memory layout and entry point.  A read will run the
  * Guest until something happens, such as a signal or the Guest doing a NOTIFY
  * out to the Launcher.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*P:200 This contains all the /dev/lguest code, whereby the userspace
  * launcher controls and communicates with the Guest.  For example,
  * the first write will tell us the Guest's memory layout and entry
@@ -12,7 +15,10 @@
  * a signal or the Guest doing a NOTIFY out to the Launcher.  There is
  * also a way for the Launcher to attach eventfds to particular NOTIFY
  * values instead of returning from the read() call.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 :*/
 #include <linux/uaccess.h>
 #include <linux/miscdevice.h>
@@ -22,9 +28,13 @@
 #include <linux/file.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "lg.h"
 
 /*L:056
@@ -261,13 +271,21 @@ static ssize_t read(struct file *file, char __user *user, size_t size,loff_t*o)
  */
 static int lg_cpu_start(struct lg_cpu *cpu, unsigned id, unsigned long start_ip)
 {
+<<<<<<< HEAD
 	/* We have a limited number the number of CPUs in the lguest struct. */
+=======
+	/* We have a limited number of CPUs in the lguest struct. */
+>>>>>>> refs/remotes/origin/master
 	if (id >= ARRAY_SIZE(cpu->lg->cpus))
 		return -EINVAL;
 
 	/* Set up this CPU's id, and pointer back to the lguest struct. */
 	cpu->id = id;
+<<<<<<< HEAD
 	cpu->lg = container_of((cpu - id), struct lguest, cpus[0]);
+=======
+	cpu->lg = container_of(cpu, struct lguest, cpus[id]);
+>>>>>>> refs/remotes/origin/master
 	cpu->lg->nr_cpus++;
 
 	/* Each CPU has a timer it can set. */
@@ -281,7 +299,11 @@ static int lg_cpu_start(struct lg_cpu *cpu, unsigned id, unsigned long start_ip)
 	if (!cpu->regs_page)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	/* We actually put the registers at the bottom of the page. */
+=======
+	/* We actually put the registers at the end of the page. */
+>>>>>>> refs/remotes/origin/master
 	cpu->regs = (void *)cpu->regs_page + PAGE_SIZE - sizeof(*cpu->regs);
 
 	/*
@@ -372,12 +394,17 @@ static int initialize(struct file *file, const unsigned long __user *input)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Initialize the Guest's shadow page tables, using the toplevel
 	 * address the Launcher gave us.  This allocates memory, so can fail.
 =======
 	 * Initialize the Guest's shadow page tables.  This allocates
 	 * memory, so can fail.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Initialize the Guest's shadow page tables.  This allocates
+	 * memory, so can fail.
+>>>>>>> refs/remotes/origin/master
 	 */
 	err = init_guest_pagetable(lg);
 	if (err)
@@ -536,9 +563,13 @@ static const struct file_operations lguest_fops = {
 	.llseek  = default_llseek,
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*:*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*:*/
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is a textbook example of a "misc" character device.  Populate a "struct

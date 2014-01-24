@@ -1,6 +1,7 @@
 #ifndef _ASMAXP_PTRACE_H
 #define _ASMAXP_PTRACE_H
 
+<<<<<<< HEAD
 
 /*
  * This struct defines the way the registers are stored on the
@@ -67,21 +68,37 @@ struct switch_stack {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/ptrace.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define arch_has_single_step()		(1)
 #define user_mode(regs) (((regs)->ps & 8) != 0)
 #define instruction_pointer(regs) ((regs)->pc)
 #define profile_pc(regs) instruction_pointer(regs)
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define current_user_stack_pointer() rdusp()
+>>>>>>> refs/remotes/origin/master
 
 #define task_pt_regs(task) \
   ((struct pt_regs *) (task_stack_page(task) + 2*PAGE_SIZE) - 1)
 
+<<<<<<< HEAD
 #define force_successful_syscall_return() (task_pt_regs(current)->r0 = 0)
 
 #endif
+=======
+#define current_pt_regs() \
+  ((struct pt_regs *) ((char *)current_thread_info() + 2*PAGE_SIZE) - 1)
+#define signal_pt_regs current_pt_regs
+
+#define force_successful_syscall_return() (current_pt_regs()->r0 = 0)
+>>>>>>> refs/remotes/origin/master
 
 #endif

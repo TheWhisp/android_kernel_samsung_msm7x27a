@@ -6,15 +6,22 @@
 #include <linux/sched.h>
 #include <linux/mm.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/cpu-type.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mipsregs.h>
 #include <asm/bcache.h>
 #include <asm/cacheops.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmu_context.h>
 #include <asm/r4kcache.h>
 
@@ -75,7 +82,11 @@ static inline int mips_sc_is_activated(struct cpuinfo_mips *c)
 	unsigned int tmp;
 
 	/* Check the bypass bit (L2B) */
+<<<<<<< HEAD
 	switch (c->cputype) {
+=======
+	switch (current_cpu_type()) {
+>>>>>>> refs/remotes/origin/master
 	case CPU_34K:
 	case CPU_74K:
 	case CPU_1004K:
@@ -102,10 +113,15 @@ static inline int __init mips_sc_probe(void)
 	c->scache.flags |= MIPS_CACHE_NOT_PRESENT;
 
 	/* Ignore anything but MIPSxx processors */
+<<<<<<< HEAD
 	if (c->isa_level != MIPS_CPU_ISA_M32R1 &&
 	    c->isa_level != MIPS_CPU_ISA_M32R2 &&
 	    c->isa_level != MIPS_CPU_ISA_M64R1 &&
 	    c->isa_level != MIPS_CPU_ISA_M64R2)
+=======
+	if (!(c->isa_level & (MIPS_CPU_ISA_M32R1 | MIPS_CPU_ISA_M32R2 |
+			      MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/* Does this MIPS32/MIPS64 CPU have a config2 register? */
@@ -138,7 +154,11 @@ static inline int __init mips_sc_probe(void)
 	return 1;
 }
 
+<<<<<<< HEAD
 int __cpuinit mips_sc_init(void)
+=======
+int mips_sc_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int found = mips_sc_probe();
 	if (found) {

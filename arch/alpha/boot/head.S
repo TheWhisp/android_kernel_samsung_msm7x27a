@@ -5,9 +5,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pal.h>
+>>>>>>> refs/remotes/origin/master
 
 	.set noreorder
 	.globl	__start

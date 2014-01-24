@@ -16,10 +16,14 @@
 
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/firmware.h>
 #include <linux/netdevice.h>
 #include <linux/slab.h>
@@ -158,6 +162,7 @@ static int if_usb_probe(struct usb_interface *intf,
 
 	cardp = kzalloc(sizeof(struct if_usb_card), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cardp) {
 		pr_err("Out of memory allocating private data.\n");
 		goto error;
@@ -166,6 +171,10 @@ static int if_usb_probe(struct usb_interface *intf,
 	if (!cardp)
 		goto error;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cardp)
+		goto error;
+>>>>>>> refs/remotes/origin/master
 
 	setup_timer(&cardp->fw_timeout, if_usb_fw_timeo, (unsigned long)cardp);
 	init_waitqueue_head(&cardp->fw_wq);
@@ -264,7 +273,11 @@ lbtf_deb_leave(LBTF_DEB_MAIN);
 static void if_usb_disconnect(struct usb_interface *intf)
 {
 	struct if_usb_card *cardp = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	struct lbtf_private *priv = (struct lbtf_private *) cardp->priv;
+=======
+	struct lbtf_private *priv = cardp->priv;
+>>>>>>> refs/remotes/origin/master
 
 	lbtf_deb_enter(LBTF_DEB_MAIN);
 
@@ -931,6 +944,7 @@ static struct usb_driver if_usb_driver = {
 	.id_table = if_usb_table,
 	.suspend = if_usb_suspend,
 	.resume = if_usb_resume,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -958,6 +972,12 @@ module_exit(if_usb_exit_module);
 =======
 module_usb_driver(if_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(if_usb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("8388 USB WLAN Thinfirm Driver");
 MODULE_AUTHOR("Cozybit Inc.");

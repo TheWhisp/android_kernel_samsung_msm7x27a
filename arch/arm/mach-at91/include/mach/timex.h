@@ -24,6 +24,7 @@
 #include <mach/hardware.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_ARCH_AT91RM9200)
 
 #define CLOCK_TICK_RATE		(AT91_SLOW_CLOCK)
@@ -87,6 +88,8 @@
 
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARCH_AT91X40
 
 #define AT91X40_MASTER_CLOCK	40000000
@@ -99,4 +102,7 @@
 #endif
 
 #endif /* __ASM_ARCH_TIMEX_H */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

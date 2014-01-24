@@ -44,6 +44,10 @@ static void drop_slab(void)
 		.gfp_mask = GFP_KERNEL,
 	};
 
+<<<<<<< HEAD
+=======
+	nodes_setall(shrink.nodes_to_scan);
+>>>>>>> refs/remotes/origin/master
 	do {
 		nr_objects = shrink_slab(&shrink, 1000, 1000);
 	} while (nr_objects > 10);

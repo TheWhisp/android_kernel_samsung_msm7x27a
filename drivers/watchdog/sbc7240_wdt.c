@@ -17,10 +17,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/init.h>
 #include <linux/ioport.h>
@@ -35,6 +40,7 @@
 #include <linux/io.h>
 #include <linux/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
 
@@ -42,6 +48,9 @@
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SBC7240_ENABLE_PORT		0x443
 #define SBC7240_DISABLE_PORT		0x043
@@ -57,12 +66,17 @@ MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds. (1<=timeout<="
 		 __MODULE_STRING(SBC7240_TIMEOUT) ")");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Disable watchdog when closing device file");
 
 #define SBC7240_OPEN_STATUS_BIT		0
@@ -80,11 +94,15 @@ static void wdt_disable(void)
 	if (test_and_clear_bit(SBC7240_ENABLED_STATUS_BIT, &wdt_status)) {
 		inb_p(SBC7240_DISABLE_PORT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO SBC7240_PREFIX
 		       "Watchdog timer is now disabled.\n");
 =======
 		pr_info("Watchdog timer is now disabled\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Watchdog timer is now disabled\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -94,11 +112,15 @@ static void wdt_enable(void)
 	if (!test_and_set_bit(SBC7240_ENABLED_STATUS_BIT, &wdt_status)) {
 		inb_p(SBC7240_ENABLE_PORT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO SBC7240_PREFIX
 		       "Watchdog timer is now enabled.\n");
 =======
 		pr_info("Watchdog timer is now enabled\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Watchdog timer is now enabled\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -106,22 +128,30 @@ static int wdt_set_timeout(int t)
 {
 	if (t < 1 || t > SBC7240_MAX_TIMEOUT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR SBC7240_PREFIX
 		       "timeout value must be 1<=x<=%d\n",
 		       SBC7240_MAX_TIMEOUT);
 =======
 		pr_err("timeout value must be 1<=x<=%d\n", SBC7240_MAX_TIMEOUT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("timeout value must be 1<=x<=%d\n", SBC7240_MAX_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	/* set the timeout */
 	outb_p((unsigned)t, SBC7240_SET_TIMEOUT_PORT);
 	timeout = t;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO SBC7240_PREFIX "timeout set to %d seconds\n", t);
 =======
 	pr_info("timeout set to %d seconds\n", t);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("timeout set to %d seconds\n", t);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -181,11 +211,15 @@ static int fop_close(struct inode *inode, struct file *file)
 		wdt_disable();
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT SBC7240_PREFIX
 		       "Unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("Unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		wdt_keepalive();
 	}
 
@@ -287,10 +321,14 @@ static struct notifier_block wdt_notifier = {
 static void __exit sbc7240_wdt_unload(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO SBC7240_PREFIX "Removing watchdog\n");
 =======
 	pr_info("Removing watchdog\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Removing watchdog\n");
+>>>>>>> refs/remotes/origin/master
 	misc_deregister(&wdt_miscdev);
 
 	unregister_reboot_notifier(&wdt_notifier);
@@ -303,11 +341,15 @@ static int __init sbc7240_wdt_init(void)
 
 	if (!request_region(SBC7240_ENABLE_PORT, 1, "SBC7240 WDT")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR SBC7240_PREFIX
 		       "I/O address 0x%04x already in use\n",
 =======
 		pr_err("I/O address 0x%04x already in use\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("I/O address 0x%04x already in use\n",
+>>>>>>> refs/remotes/origin/master
 		       SBC7240_ENABLE_PORT);
 		rc = -EIO;
 		goto err_out;
@@ -320,6 +362,7 @@ static int __init sbc7240_wdt_init(void)
 	if (timeout < 1 || timeout > SBC7240_MAX_TIMEOUT) {
 		timeout = SBC7240_TIMEOUT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO SBC7240_PREFIX
 		       "timeout value must be 1<=x<=%d, using %d\n",
 		       SBC7240_MAX_TIMEOUT, timeout);
@@ -327,6 +370,10 @@ static int __init sbc7240_wdt_init(void)
 		pr_info("timeout value must be 1<=x<=%d, using %d\n",
 			SBC7240_MAX_TIMEOUT, timeout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("timeout value must be 1<=x<=%d, using %d\n",
+			SBC7240_MAX_TIMEOUT, timeout);
+>>>>>>> refs/remotes/origin/master
 	}
 	wdt_set_timeout(timeout);
 	wdt_disable();
@@ -334,26 +381,35 @@ static int __init sbc7240_wdt_init(void)
 	rc = register_reboot_notifier(&wdt_notifier);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR SBC7240_PREFIX
 		       "cannot register reboot notifier (err=%d)\n", rc);
 =======
 		pr_err("cannot register reboot notifier (err=%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_region;
 	}
 
 	rc = misc_register(&wdt_miscdev);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR SBC7240_PREFIX
 		       "cannot register miscdev on minor=%d (err=%d)\n",
 =======
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+>>>>>>> refs/remotes/origin/master
 		       wdt_miscdev.minor, rc);
 		goto err_out_reboot_notifier;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printk(KERN_INFO SBC7240_PREFIX
 	       "Watchdog driver for SBC7240 initialised (nowayout=%d)\n",
@@ -362,6 +418,10 @@ static int __init sbc7240_wdt_init(void)
 	pr_info("Watchdog driver for SBC7240 initialised (nowayout=%d)\n",
 		nowayout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog driver for SBC7240 initialised (nowayout=%d)\n",
+		nowayout);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -380,5 +440,8 @@ MODULE_AUTHOR("Gilles Gigan");
 MODULE_DESCRIPTION("Watchdog device driver for single board"
 		   " computers EPIC Nano 7240 from iEi");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 
+=======
+>>>>>>> refs/remotes/origin/master

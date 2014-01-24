@@ -19,6 +19,7 @@
 
 /* MID device specific descriptors */
 
+<<<<<<< HEAD
 struct oaktrail_vbt {
 	s8 signature[4];	/*4 bytes,"$GCT" */
 	u8 revision;
@@ -27,6 +28,8 @@ struct oaktrail_vbt {
 	void *oaktrail_gct;
 } __packed;
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct oaktrail_timing_info {
 	u16 pixel_clock;
 	u8 hactive_lo;
@@ -161,7 +164,11 @@ union oaktrail_panel_rx {
 	u16 panel_receiver;
 } __packed;
 
+<<<<<<< HEAD
 struct oaktrail_gct_v1 {
+=======
+struct gct_r0 {
+>>>>>>> refs/remotes/origin/master
 	union { /*8 bits,Defined as follows: */
 		struct {
 			u8 PanelType:4; /*4 bits, Bit field for panels*/
@@ -178,7 +185,11 @@ struct oaktrail_gct_v1 {
 	union oaktrail_panel_rx panelrx[4]; /* panel receivers*/
 } __packed;
 
+<<<<<<< HEAD
 struct oaktrail_gct_v2 {
+=======
+struct gct_r1 {
+>>>>>>> refs/remotes/origin/master
 	union { /*8 bits,Defined as follows: */
 		struct {
 			u8 PanelType:4; /*4 bits, Bit field for panels*/
@@ -195,6 +206,19 @@ struct oaktrail_gct_v2 {
 	union oaktrail_panel_rx panelrx[4]; /* panel receivers*/
 } __packed;
 
+<<<<<<< HEAD
+=======
+struct gct_r10 {
+	struct gct_r10_timing_info DTD;
+	u16 Panel_MIPI_Display_Descriptor;
+	u16 Panel_MIPI_Receiver_Descriptor;
+	u16 Panel_Backlight_Inverter_Descriptor;
+	u8 Panel_Initial_Brightness;
+	u32 MIPI_Ctlr_Init_ptr;
+	u32 MIPI_Panel_Init_ptr;
+} __packed;
+
+>>>>>>> refs/remotes/origin/master
 struct oaktrail_gct_data {
 	u8 bpi; /* boot panel index, number of panel used during boot */
 	u8 pt; /* panel type, 4 bit field, 0=lvds, 1=mipi */
@@ -213,9 +237,12 @@ struct oaktrail_gct_data {
 #define MODE_SETTING_IN_DSR		0x4
 #define MODE_SETTING_ENCODER_DONE	0x8
 
+<<<<<<< HEAD
 #define GCT_R10_HEADER_SIZE		16
 #define GCT_R10_DISPLAY_DESC_SIZE	28
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Moorestown HDMI interfaces
  */
@@ -250,3 +277,12 @@ extern void oaktrail_hdmi_i2c_exit(struct pci_dev *dev);
 extern void oaktrail_hdmi_save(struct drm_device *dev);
 extern void oaktrail_hdmi_restore(struct drm_device *dev);
 extern void oaktrail_hdmi_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev);
+<<<<<<< HEAD
+=======
+extern int oaktrail_crtc_hdmi_mode_set(struct drm_crtc *crtc, struct drm_display_mode *mode,
+						struct drm_display_mode *adjusted_mode, int x, int y,
+						struct drm_framebuffer *old_fb);
+extern void oaktrail_crtc_hdmi_dpms(struct drm_crtc *crtc, int mode);
+
+
+>>>>>>> refs/remotes/origin/master

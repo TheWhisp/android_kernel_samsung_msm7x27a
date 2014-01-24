@@ -3084,7 +3084,11 @@ static int sisusb_probe(struct usb_interface *intf,
 
 	/* Allocate memory for our private */
 	if (!(sisusb = kzalloc(sizeof(*sisusb), GFP_KERNEL))) {
+<<<<<<< HEAD
 		dev_err(&sisusb->sisusb_dev->dev, "Failed to allocate memory for private data\n");
+=======
+		dev_err(&dev->dev, "Failed to allocate memory for private data\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	kref_init(&sisusb->kref);

@@ -28,11 +28,15 @@
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -52,6 +56,7 @@
  */
 static void __init sbc834x_setup_arch(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
@@ -100,6 +105,8 @@ static int __init sbc834x_declare_of_platform_devices(void)
 }
 machine_device_initcall(sbc834x, sbc834x_declare_of_platform_devices);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.progress)
 		ppc_md.progress("sbc834x_setup_arch()", 0);
 
@@ -107,7 +114,10 @@ machine_device_initcall(sbc834x, sbc834x_declare_of_platform_devices);
 }
 
 machine_device_initcall(sbc834x, mpc83xx_declare_of_platform_devices);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, MMU is off, device-tree isn't unflattened
@@ -116,6 +126,7 @@ static int __init sbc834x_probe(void)
 {
 	unsigned long root = of_get_flat_dt_root();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return of_flat_dt_is_compatible(root, "SBC834x");
 }
@@ -126,6 +137,8 @@ define_machine(sbc834x) {
 	.setup_arch		= sbc834x_setup_arch,
 	.init_IRQ		= sbc834x_init_IRQ,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return of_flat_dt_is_compatible(root, "SBC834xE");
 }
 
@@ -134,7 +147,10 @@ define_machine(sbc834x) {
 	.probe			= sbc834x_probe,
 	.setup_arch		= sbc834x_setup_arch,
 	.init_IRQ		= mpc83xx_ipic_init_IRQ,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.get_irq		= ipic_get_irq,
 	.restart		= mpc83xx_restart,
 	.time_init		= mpc83xx_time_init,

@@ -177,18 +177,26 @@ static struct plat_sci_port scif0_platform_data = {
 	.mapbase	= 0xfffe8000,
 	.flags		= UPF_BOOT_AUTOCONF,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
 	.irqs		=  { 192, 192, 192, 192 },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.scscr		= SCSCR_RIE | SCSCR_TIE | SCSCR_RE | SCSCR_TE |
 			  SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		=  { 192, 192, 192, 192 },
 	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(192),
+	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif0_device = {
@@ -203,18 +211,26 @@ static struct plat_sci_port scif1_platform_data = {
 	.mapbase	= 0xfffe8800,
 	.flags		= UPF_BOOT_AUTOCONF,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
 	.irqs		=  { 196, 196, 196, 196 },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.scscr		= SCSCR_RIE | SCSCR_TIE | SCSCR_RE | SCSCR_TE |
 			  SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		=  { 196, 196, 196, 196 },
 	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(196),
+	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif1_device = {
@@ -229,18 +245,26 @@ static struct plat_sci_port scif2_platform_data = {
 	.mapbase	= 0xfffe9000,
 	.flags		= UPF_BOOT_AUTOCONF,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
 	.irqs		=  { 200, 200, 200, 200 },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.scscr		= SCSCR_RIE | SCSCR_TIE | SCSCR_RE | SCSCR_TE |
 			  SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		=  { 200, 200, 200, 200 },
 	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(200),
+	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif2_device = {
@@ -255,18 +279,26 @@ static struct plat_sci_port scif3_platform_data = {
 	.mapbase	= 0xfffe9800,
 	.flags		= UPF_BOOT_AUTOCONF,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.scscr		= SCSCR_RE | SCSCR_TE | SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
 	.irqs		=  { 204, 204, 204, 204 },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.scscr		= SCSCR_RIE | SCSCR_TIE | SCSCR_RE | SCSCR_TE |
 			  SCSCR_REIE,
 	.scbrr_algo_id	= SCBRR_ALGO_2,
 	.type		= PORT_SCIF,
+<<<<<<< HEAD
 	.irqs		=  { 204, 204, 204, 204 },
 	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irqs		= SCIx_IRQ_MUXED(204),
+	.regtype	= SCIx_SH2_SCIF_FIFODATA_REGTYPE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device scif3_device = {

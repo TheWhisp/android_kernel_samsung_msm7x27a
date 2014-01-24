@@ -12,6 +12,7 @@
 #include <asm/asm-offsets.h>
 #include <asm/sigcontext.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/unistd.h>
 =======
@@ -19,6 +20,11 @@
 #include <asm/kregs.h>
 #include <asm/page.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/unistd.h>
+#include <asm/kregs.h>
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/master
 #include "paravirt_inst.h"
 
 /*

@@ -84,7 +84,11 @@ struct mpc_bus {
 #define BUSTYPE_EISA	"EISA"
 #define BUSTYPE_ISA	"ISA"
 #define BUSTYPE_INTERN	"INTERN"	/* Internal BUS */
+<<<<<<< HEAD
 #define BUSTYPE_MCA	"MCA"
+=======
+#define BUSTYPE_MCA	"MCA"		/* Obsolete */
+>>>>>>> refs/remotes/origin/master
 #define BUSTYPE_VL	"VL"		/* Local bus */
 #define BUSTYPE_PCI	"PCI"
 #define BUSTYPE_PCMCIA	"PCMCIA"
@@ -169,6 +173,9 @@ enum mp_bustype {
 	MP_BUS_ISA = 1,
 	MP_BUS_EISA,
 	MP_BUS_PCI,
+<<<<<<< HEAD
 	MP_BUS_MCA,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* _ASM_X86_MPSPEC_DEF_H */

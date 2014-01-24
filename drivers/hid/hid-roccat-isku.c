@@ -36,6 +36,7 @@ static void isku_profile_activated(struct isku_device *isku, uint new_profile)
 static int isku_receive(struct usb_device *usb_dev, uint command,
 		void *buf, uint size)
 {
+<<<<<<< HEAD
 	return roccat_common_receive(usb_dev, command, buf, size);
 }
 
@@ -81,6 +82,9 @@ static int isku_send(struct usb_device *usb_dev, uint command,
 		return retval;
 
 	return isku_receive_control_status(usb_dev);
+=======
+	return roccat_common2_receive(usb_dev, command, buf, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int isku_get_actual_profile(struct usb_device *usb_dev)
@@ -100,7 +104,12 @@ static int isku_set_actual_profile(struct usb_device *usb_dev, int new_profile)
 	buf.command = ISKU_COMMAND_ACTUAL_PROFILE;
 	buf.size = sizeof(struct isku_actual_profile);
 	buf.actual_profile = new_profile;
+<<<<<<< HEAD
 	return isku_send(usb_dev, ISKU_COMMAND_ACTUAL_PROFILE, &buf,
+=======
+	return roccat_common2_send_with_status(usb_dev,
+			ISKU_COMMAND_ACTUAL_PROFILE, &buf,
+>>>>>>> refs/remotes/origin/master
 			sizeof(struct isku_actual_profile));
 }
 
@@ -125,7 +134,11 @@ static ssize_t isku_sysfs_set_actual_profile(struct device *dev,
 	isku = hid_get_drvdata(dev_get_drvdata(dev));
 	usb_dev = interface_to_usbdev(to_usb_interface(dev));
 
+<<<<<<< HEAD
 	retval = strict_strtoul(buf, 10, &profile);
+=======
+	retval = kstrtoul(buf, 10, &profile);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -152,12 +165,21 @@ static ssize_t isku_sysfs_set_actual_profile(struct device *dev,
 
 	return size;
 }
+<<<<<<< HEAD
 
 static struct device_attribute isku_attributes[] = {
 	__ATTR(actual_profile, 0660,
 			isku_sysfs_show_actual_profile,
 			isku_sysfs_set_actual_profile),
 	__ATTR_NULL
+=======
+static DEVICE_ATTR(actual_profile, 0660, isku_sysfs_show_actual_profile,
+		   isku_sysfs_set_actual_profile);
+
+static struct attribute *isku_attrs[] = {
+	&dev_attr_actual_profile.attr,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static ssize_t isku_sysfs_read(struct file *fp, struct kobject *kobj,
@@ -173,6 +195,7 @@ static ssize_t isku_sysfs_read(struct file *fp, struct kobject *kobj,
 	if (off >= real_size)
 		return 0;
 
+<<<<<<< HEAD
 	if (off != 0 || count != real_size)
 		return -EINVAL;
 
@@ -181,6 +204,16 @@ static ssize_t isku_sysfs_read(struct file *fp, struct kobject *kobj,
 	mutex_unlock(&isku->isku_lock);
 
 	return retval ? retval : real_size;
+=======
+	if (off != 0 || count > real_size)
+		return -EINVAL;
+
+	mutex_lock(&isku->isku_lock);
+	retval = isku_receive(usb_dev, command, buf, count);
+	mutex_unlock(&isku->isku_lock);
+
+	return retval ? retval : count;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t isku_sysfs_write(struct file *fp, struct kobject *kobj,
@@ -193,6 +226,7 @@ static ssize_t isku_sysfs_write(struct file *fp, struct kobject *kobj,
 	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
 	int retval;
 
+<<<<<<< HEAD
 	if (off != 0 || count != real_size)
 		return -EINVAL;
 
@@ -201,6 +235,17 @@ static ssize_t isku_sysfs_write(struct file *fp, struct kobject *kobj,
 	mutex_unlock(&isku->isku_lock);
 
 	return retval ? retval : real_size;
+=======
+	if (off != 0 || count > real_size)
+		return -EINVAL;
+
+	mutex_lock(&isku->isku_lock);
+	retval = roccat_common2_send_with_status(usb_dev, command,
+			(void *)buf, count);
+	mutex_unlock(&isku->isku_lock);
+
+	return retval ? retval : count;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define ISKU_SYSFS_W(thingy, THINGY) \
@@ -209,7 +254,11 @@ static ssize_t isku_sysfs_write_ ## thingy(struct file *fp, struct kobject *kobj
 		loff_t off, size_t count) \
 { \
 	return isku_sysfs_write(fp, kobj, buf, off, count, \
+<<<<<<< HEAD
 			sizeof(struct isku_ ## thingy), ISKU_COMMAND_ ## THINGY); \
+=======
+			ISKU_SIZE_ ## THINGY, ISKU_COMMAND_ ## THINGY); \
+>>>>>>> refs/remotes/origin/master
 }
 
 #define ISKU_SYSFS_R(thingy, THINGY) \
@@ -218,21 +267,34 @@ static ssize_t isku_sysfs_read_ ## thingy(struct file *fp, struct kobject *kobj,
 		loff_t off, size_t count) \
 { \
 	return isku_sysfs_read(fp, kobj, buf, off, count, \
+<<<<<<< HEAD
 			sizeof(struct isku_ ## thingy), ISKU_COMMAND_ ## THINGY); \
+=======
+			ISKU_SIZE_ ## THINGY, ISKU_COMMAND_ ## THINGY); \
+>>>>>>> refs/remotes/origin/master
 }
 
 #define ISKU_SYSFS_RW(thingy, THINGY) \
 ISKU_SYSFS_R(thingy, THINGY) \
 ISKU_SYSFS_W(thingy, THINGY)
 
+<<<<<<< HEAD
 #define ISKU_BIN_ATTR_RW(thingy) \
 { \
 	.attr = { .name = #thingy, .mode = 0660 }, \
 	.size = sizeof(struct isku_ ## thingy), \
+=======
+#define ISKU_BIN_ATTR_RW(thingy, THINGY) \
+ISKU_SYSFS_RW(thingy, THINGY); \
+static struct bin_attribute bin_attr_##thingy = { \
+	.attr = { .name = #thingy, .mode = 0660 }, \
+	.size = ISKU_SIZE_ ## THINGY, \
+>>>>>>> refs/remotes/origin/master
 	.read = isku_sysfs_read_ ## thingy, \
 	.write = isku_sysfs_write_ ## thingy \
 }
 
+<<<<<<< HEAD
 #define ISKU_BIN_ATTR_R(thingy) \
 { \
 	.attr = { .name = #thingy, .mode = 0440 }, \
@@ -276,6 +338,67 @@ static struct bin_attribute isku_bin_attributes[] = {
 	ISKU_BIN_ATTR_R(info),
 	ISKU_BIN_ATTR_W(control),
 	__ATTR_NULL
+=======
+#define ISKU_BIN_ATTR_R(thingy, THINGY) \
+ISKU_SYSFS_R(thingy, THINGY); \
+static struct bin_attribute bin_attr_##thingy = { \
+	.attr = { .name = #thingy, .mode = 0440 }, \
+	.size = ISKU_SIZE_ ## THINGY, \
+	.read = isku_sysfs_read_ ## thingy, \
+}
+
+#define ISKU_BIN_ATTR_W(thingy, THINGY) \
+ISKU_SYSFS_W(thingy, THINGY); \
+static struct bin_attribute bin_attr_##thingy = { \
+	.attr = { .name = #thingy, .mode = 0220 }, \
+	.size = ISKU_SIZE_ ## THINGY, \
+	.write = isku_sysfs_write_ ## thingy \
+}
+
+ISKU_BIN_ATTR_RW(macro, MACRO);
+ISKU_BIN_ATTR_RW(keys_function, KEYS_FUNCTION);
+ISKU_BIN_ATTR_RW(keys_easyzone, KEYS_EASYZONE);
+ISKU_BIN_ATTR_RW(keys_media, KEYS_MEDIA);
+ISKU_BIN_ATTR_RW(keys_thumbster, KEYS_THUMBSTER);
+ISKU_BIN_ATTR_RW(keys_macro, KEYS_MACRO);
+ISKU_BIN_ATTR_RW(keys_capslock, KEYS_CAPSLOCK);
+ISKU_BIN_ATTR_RW(light, LIGHT);
+ISKU_BIN_ATTR_RW(key_mask, KEY_MASK);
+ISKU_BIN_ATTR_RW(last_set, LAST_SET);
+ISKU_BIN_ATTR_W(talk, TALK);
+ISKU_BIN_ATTR_W(talkfx, TALKFX);
+ISKU_BIN_ATTR_W(control, CONTROL);
+ISKU_BIN_ATTR_W(reset, RESET);
+ISKU_BIN_ATTR_R(info, INFO);
+
+static struct bin_attribute *isku_bin_attributes[] = {
+	&bin_attr_macro,
+	&bin_attr_keys_function,
+	&bin_attr_keys_easyzone,
+	&bin_attr_keys_media,
+	&bin_attr_keys_thumbster,
+	&bin_attr_keys_macro,
+	&bin_attr_keys_capslock,
+	&bin_attr_light,
+	&bin_attr_key_mask,
+	&bin_attr_last_set,
+	&bin_attr_talk,
+	&bin_attr_talkfx,
+	&bin_attr_control,
+	&bin_attr_reset,
+	&bin_attr_info,
+	NULL,
+};
+
+static const struct attribute_group isku_group = {
+	.attrs = isku_attrs,
+	.bin_attrs = isku_bin_attributes,
+};
+
+static const struct attribute_group *isku_groups[] = {
+	&isku_group,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int isku_init_isku_device_struct(struct usb_device *usb_dev,
@@ -445,6 +568,10 @@ static int isku_raw_event(struct hid_device *hdev,
 
 static const struct hid_device_id isku_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_ROCCAT, USB_DEVICE_ID_ROCCAT_ISKU) },
+<<<<<<< HEAD
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_ROCCAT, USB_DEVICE_ID_ROCCAT_ISKUFX) },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -464,8 +591,12 @@ static int __init isku_init(void)
 	isku_class = class_create(THIS_MODULE, "isku");
 	if (IS_ERR(isku_class))
 		return PTR_ERR(isku_class);
+<<<<<<< HEAD
 	isku_class->dev_attrs = isku_attributes;
 	isku_class->dev_bin_attrs = isku_bin_attributes;
+=======
+	isku_class->dev_groups = isku_groups;
+>>>>>>> refs/remotes/origin/master
 
 	retval = hid_register_driver(&isku_driver);
 	if (retval)
@@ -483,5 +614,9 @@ module_init(isku_init);
 module_exit(isku_exit);
 
 MODULE_AUTHOR("Stefan Achatz");
+<<<<<<< HEAD
 MODULE_DESCRIPTION("USB Roccat Isku driver");
+=======
+MODULE_DESCRIPTION("USB Roccat Isku/FX driver");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL v2");

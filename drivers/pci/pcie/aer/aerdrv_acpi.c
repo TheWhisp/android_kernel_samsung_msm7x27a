@@ -29,6 +29,25 @@ static inline int hest_match_pci(struct acpi_hest_aer_common *p,
 		 p->function == PCI_FUNC(pci->devfn));
 }
 
+<<<<<<< HEAD
+=======
+static inline bool hest_match_type(struct acpi_hest_header *hest_hdr,
+				struct pci_dev *dev)
+{
+	u16 hest_type = hest_hdr->type;
+	u8 pcie_type = pci_pcie_type(dev);
+
+	if ((hest_type == ACPI_HEST_TYPE_AER_ROOT_PORT &&
+		pcie_type == PCI_EXP_TYPE_ROOT_PORT) ||
+	    (hest_type == ACPI_HEST_TYPE_AER_ENDPOINT &&
+		pcie_type == PCI_EXP_TYPE_ENDPOINT) ||
+	    (hest_type == ACPI_HEST_TYPE_AER_BRIDGE &&
+		(dev->class >> 16) == PCI_BASE_CLASS_BRIDGE))
+		return true;
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct aer_hest_parse_info {
 	struct pci_dev *pci_dev;
 	int firmware_first;
@@ -38,6 +57,7 @@ static int aer_hest_parse(struct acpi_hest_header *hest_hdr, void *data)
 {
 	struct aer_hest_parse_info *info = data;
 	struct acpi_hest_aer_common *p;
+<<<<<<< HEAD
 	u8 pcie_type = 0;
 	u8 bridge = 0;
 	int ff = 0;
@@ -66,6 +86,18 @@ static int aer_hest_parse(struct acpi_hest_header *hest_hdr, void *data)
 		if (hest_match_pci(p, info->pci_dev))
 			ff = !!(p->flags & ACPI_HEST_FIRMWARE_FIRST);
 	info->firmware_first = ff;
+=======
+	int ff;
+
+	p = (struct acpi_hest_aer_common *)(hest_hdr + 1);
+	ff = !!(p->flags & ACPI_HEST_FIRMWARE_FIRST);
+	if (p->flags & ACPI_HEST_GLOBAL) {
+		if (hest_match_type(hest_hdr, info->pci_dev))
+			info->firmware_first = ff;
+	} else
+		if (hest_match_pci(p, info->pci_dev))
+			info->firmware_first = ff;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -89,6 +121,12 @@ static void aer_set_firmware_first(struct pci_dev *pci_dev)
 
 int pcie_aer_get_firmware_first(struct pci_dev *dev)
 {
+<<<<<<< HEAD
+=======
+	if (!pci_is_pcie(dev))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (!dev->__aer_firmware_first_valid)
 		aer_set_firmware_first(dev);
 	return dev->__aer_firmware_first;

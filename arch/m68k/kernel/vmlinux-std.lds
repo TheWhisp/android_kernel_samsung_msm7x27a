@@ -32,12 +32,16 @@ SECTIONS
   RW_DATA_SECTION(16, PAGE_SIZE, THREAD_SIZE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   BSS_SECTION(0, 0, 0)
 =======
   _sbss = .;
   BSS_SECTION(0, 0, 0)
   _ebss = .;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  BSS_SECTION(0, 0, 0)
+>>>>>>> refs/remotes/origin/master
 
   _edata = .;			/* End of data section */
 

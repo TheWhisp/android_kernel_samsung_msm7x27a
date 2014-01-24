@@ -22,9 +22,13 @@
 #include <linux/blkdev.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/lv1call.h>
 #include <asm/ps3stor.h>
@@ -404,7 +408,11 @@ static unsigned long ps3disk_mask;
 
 static DEFINE_MUTEX(ps3disk_mask_mutex);
 
+<<<<<<< HEAD
 static int __devinit ps3disk_probe(struct ps3_system_bus_device *_dev)
+=======
+static int ps3disk_probe(struct ps3_system_bus_device *_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ps3_storage_device *dev = to_ps3_storage_device(&_dev->core);
 	struct ps3disk_private *priv;

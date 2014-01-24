@@ -3,10 +3,14 @@
  * Please keep numerically sorted within individual areas, thanks!
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Philipp G�hring - pg@futureware.at - added the Device ID of the USB relais
 =======
  * Philipp Gühring - pg@futureware.at - added the Device ID of the USB relais
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Philipp Gühring - pg@futureware.at - added the Device ID of the USB relais
+>>>>>>> refs/remotes/origin/master
  * from Rudolf Gugler
  *
  */
@@ -97,10 +101,14 @@
 #define FTDI_ASK_RDR400_PID	0xC991	/* ASK RDR 400 series card reader */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* www.starting-point-systems.com �Chameleon device */
 =======
 /* www.starting-point-systems.com µChameleon device */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* www.starting-point-systems.com µChameleon device */
+>>>>>>> refs/remotes/origin/master
 #define FTDI_MICRO_CHAMELEON_PID	0xCAA0	/* Product Id */
 
 /*
@@ -323,10 +331,14 @@
 /*
  * Teratronik product ids.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Submitted by O. W�lfelschneider.
 =======
  * Submitted by O. Wölfelschneider.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Submitted by O. Wölfelschneider.
+>>>>>>> refs/remotes/origin/master
  */
 #define FTDI_TERATRONIK_VCP_PID	 0xEC88	/* Teratronik device (preferring VCP driver on windows) */
 #define FTDI_TERATRONIK_D2XX_PID 0xEC89	/* Teratronik device (preferring D2XX driver on windows) */
@@ -892,6 +904,7 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Kondo Kagaku Co.Ltd.
  * http://www.kondo-robot.com/EN
  */
@@ -901,6 +914,8 @@
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Bayer Ascensia Contour blood glucose meter USB-converter cable.
  * http://winglucofacts.com/cables/
  */
@@ -1330,11 +1345,17 @@
  */
 #define FTDI_CT_COMET_PID	0x8e08
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Product: Z3X Box
  * Manufacturer: Smart GSM Team
  */
 #define FTDI_Z3X_PID		0x0011
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

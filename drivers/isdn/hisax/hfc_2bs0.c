@@ -5,10 +5,14 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -186,6 +190,7 @@ hfc_empty_fifo(struct BCState *bcs, int count)
 	}
 	if (bcs->mode == L1_MODE_TRANS)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  count -= 1;
 	else
 	  count -= 3;
@@ -194,6 +199,11 @@ hfc_empty_fifo(struct BCState *bcs, int count)
 	else
 		count -= 3;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		count -= 1;
+	else
+		count -= 3;
+>>>>>>> refs/remotes/origin/master
 	if (!(skb = dev_alloc_skb(count)))
 		printk(KERN_WARNING "HFC: receive out of memory\n");
 	else {
@@ -210,20 +220,27 @@ hfc_empty_fifo(struct BCState *bcs, int count)
 			dev_kfree_skb_any(skb);
 			if (bcs->mode != L1_MODE_TRANS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  WaitNoBusy(cs);
 			  stat = cs->BC_Read_Reg(cs, HFC_DATA, HFC_CIP | HFC_F2_INC | HFC_REC |
 						 HFC_CHANNEL(bcs->channel));
 			  WaitForBusy(cs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				WaitNoBusy(cs);
 				stat = cs->BC_Read_Reg(cs, HFC_DATA, HFC_CIP | HFC_F2_INC | HFC_REC |
 						       HFC_CHANNEL(bcs->channel));
 				WaitForBusy(cs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			return (NULL);
 		}
 		if (bcs->mode != L1_MODE_TRANS) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		  WaitNoBusy(cs);
 		  chksum = (cs->BC_Read_Reg(cs, HFC_DATA, cip) << 8);
@@ -247,6 +264,8 @@ hfc_empty_fifo(struct BCState *bcs, int count)
 					 HFC_CHANNEL(bcs->channel));
 		  WaitForBusy(cs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			WaitNoBusy(cs);
 			chksum = (cs->BC_Read_Reg(cs, HFC_DATA, cip) << 8);
 			WaitNoBusy(cs);
@@ -268,7 +287,10 @@ hfc_empty_fifo(struct BCState *bcs, int count)
 			stat = cs->BC_Read_Reg(cs, HFC_DATA, HFC_CIP | HFC_F2_INC | HFC_REC |
 					       HFC_CHANNEL(bcs->channel));
 			WaitForBusy(cs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return (skb);
@@ -290,6 +312,7 @@ hfc_fill_fifo(struct BCState *bcs)
 
 	cip = HFC_CIP | HFC_F1 | HFC_SEND | HFC_CHANNEL(bcs->channel);
 	if ((cip & 0xc3) != (cs->hw.hfc.cip & 0xc3)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  cs->BC_Write_Reg(cs, HFC_STATUS, cip, cip);
 	  WaitForBusy(cs);
@@ -323,6 +346,8 @@ hfc_fill_fifo(struct BCState *bcs)
 	  if (count < 0)
 	    count += cs->hw.hfc.fifosize; 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		cs->BC_Write_Reg(cs, HFC_STATUS, cip, cip);
 		WaitForBusy(cs);
 	}
@@ -354,7 +379,10 @@ hfc_fill_fifo(struct BCState *bcs)
 		count = z1 - z2;
 		if (count < 0)
 			count += cs->hw.hfc.fifosize;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} /* L1_MODE_TRANS */
 	if (cs->debug & L1_DEB_HSCX)
 		debugl1(cs, "hfc_fill_fifo %d count(%u/%d)",
@@ -381,6 +409,7 @@ hfc_fill_fifo(struct BCState *bcs)
 		bcs->tx_skb = NULL;
 		if (bcs->mode != L1_MODE_TRANS) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		  WaitForBusy(cs);
 		  WaitNoBusy(cs);
 		  cs->BC_Read_Reg(cs, HFC_DATA, HFC_CIP | HFC_F1_INC | HFC_SEND | HFC_CHANNEL(bcs->channel));
@@ -388,13 +417,18 @@ hfc_fill_fifo(struct BCState *bcs)
 		if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 			(count >= 0)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			WaitForBusy(cs);
 			WaitNoBusy(cs);
 			cs->BC_Read_Reg(cs, HFC_DATA, HFC_CIP | HFC_F1_INC | HFC_SEND | HFC_CHANNEL(bcs->channel));
 		}
 		if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
 		    (count >= 0)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			u_long	flags;
 			spin_lock_irqsave(&bcs->aclock, flags);
 			bcs->ackcnt += count;
@@ -416,10 +450,14 @@ main_irq_hfc(struct BCState *bcs)
 	struct sk_buff *skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       Begin:
 =======
 Begin:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Begin:
+>>>>>>> refs/remotes/origin/master
 	count--;
 	cip = HFC_CIP | HFC_F1 | HFC_REC | HFC_CHANNEL(bcs->channel);
 	if ((cip & 0xc3) != (cs->hw.hfc.cip & 0xc3)) {
@@ -438,10 +476,14 @@ Begin:
 				debugl1(cs, "hfc rec %d f1(%d) f2(%d)",
 					bcs->channel, f1, f2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			receive = 1; 
 =======
 			receive = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			receive = 1;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (receive || (bcs->mode == L1_MODE_TRANS)) {
@@ -500,6 +542,7 @@ mode_hfc(struct BCState *bcs, int mode, int bc)
 
 	switch (mode) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case (L1_MODE_NULL):
 		        if (bc) {
 				cs->hw.hfc.ctmt &= ~1;
@@ -536,6 +579,8 @@ mode_hfc(struct BCState *bcs, int mode, int bc)
 			}
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (L1_MODE_NULL):
 		if (bc) {
 			cs->hw.hfc.ctmt &= ~1;
@@ -571,7 +616,10 @@ mode_hfc(struct BCState *bcs, int mode, int bc)
 			cs->hw.hfc.isac_spcr |= 0x08;
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	cs->BC_Write_Reg(cs, HFC_STATUS, cs->hw.hfc.ctmt, cs->hw.hfc.ctmt);
 	cs->writeisac(cs, ISAC_SPCR, cs->hw.hfc.isac_spcr);
@@ -587,6 +635,7 @@ hfc_l2l1(struct PStack *st, int pr, void *arg)
 	u_long		flags;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA | REQUEST):
 			spin_lock_irqsave(&bcs->cs->lock, flags);
@@ -636,6 +685,8 @@ hfc_l2l1(struct PStack *st, int pr, void *arg)
 			st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		spin_lock_irqsave(&bcs->cs->lock, flags);
 		if (bcs->tx_skb) {
@@ -683,7 +734,10 @@ hfc_l2l1(struct PStack *st, int pr, void *arg)
 		spin_unlock_irqrestore(&bcs->cs->lock, flags);
 		st->l1.l1l2(st, PH_DEACTIVATE | CONFIRM, NULL);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

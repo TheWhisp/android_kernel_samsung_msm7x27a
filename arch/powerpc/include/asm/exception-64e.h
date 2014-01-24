@@ -37,6 +37,10 @@
  * critical data
  */
 
+<<<<<<< HEAD
+=======
+#define PACA_EXGDBELL PACA_EXGEN
+>>>>>>> refs/remotes/origin/master
 
 /* We are out of SPRGs so we save some things in the PACA. The normal
  * exception frame is smaller than the CRIT or MC one though
@@ -45,6 +49,7 @@
 #define EX_CR		(1 * 8)
 #define EX_R10		(2 * 8)
 #define EX_R11		(3 * 8)
+<<<<<<< HEAD
 #define EX_R14		(4 * 8)
 #define EX_R15		(5 * 8)
 
@@ -60,6 +65,12 @@
 #define EX_TLB_R16	( 6 * 8)
 #define EX_TLB_CR	( 7 * 8)
 =======
+=======
+#define EX_R13		(4 * 8)
+#define EX_R14		(5 * 8)
+#define EX_R15		(6 * 8)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The TLB miss exception uses different slots.
  *
@@ -76,11 +87,15 @@
 #define EX_TLB_CR	( 5 * 8)
 #define EX_TLB_R12	( 6 * 8)
 #define EX_TLB_R13	( 7 * 8)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define EX_TLB_DEAR	( 8 * 8) /* Level 0 and 2 only */
 #define EX_TLB_ESR	( 9 * 8) /* Level 0 and 2 only */
 #define EX_TLB_SRR0	(10 * 8)
 #define EX_TLB_SRR1	(11 * 8)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define EX_TLB_MMUCR0	(12 * 8) /* Level 0 */
 #define EX_TLB_MAS1	(12 * 8) /* Level 0 */
@@ -93,6 +108,8 @@
 #else
 #define EX_TLB_SIZE	(14 * 8)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BOOK3E_MMU_TLB_STATS
 #define EX_TLB_R8	(12 * 8)
 #define EX_TLB_R9	(13 * 8)
@@ -100,7 +117,10 @@
 #define EX_TLB_SIZE	(15 * 8)
 #else
 #define EX_TLB_SIZE	(12 * 8)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define	START_EXCEPTION(label)						\
@@ -198,7 +218,10 @@ exc_##label##_book3e:
 	ld	r8,EX_TLB_R8(r12);					    \
 	mtlr	r16;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TLB_MISS_PROLOG_STATS_BOLTED						    \
 	mflr	r10;							    \
 	std	r8,PACA_EXTLB+EX_TLB_R8(r13);				    \
@@ -209,7 +232,10 @@ exc_##label##_book3e:
 	ld	r9,PACA_EXTLB+EX_TLB_R9(r13);				    \
 	ld	r8,PACA_EXTLB+EX_TLB_R8(r13);				    \
 	mtlr	r16;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TLB_MISS_STATS_D(name)						    \
 	addi	r9,r13,MMSTAT_DSTATS+name;				    \
 	bl	.tlb_stat_inc;
@@ -226,6 +252,7 @@ exc_##label##_book3e:
 62:	bl	.tlb_stat_inc;
 #define TLB_MISS_STATS_SAVE_INFO					    \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	std	r14,EX_TLB_ESR(r12);	/* save ESR */			    \
 
 
@@ -233,6 +260,8 @@ exc_##label##_book3e:
 #define TLB_MISS_PROLOG_STATS
 #define TLB_MISS_RESTORE_STATS
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	std	r14,EX_TLB_ESR(r12);	/* save ESR */
 #define TLB_MISS_STATS_SAVE_INFO_BOLTED					    \
 	std	r14,PACA_EXTLB+EX_TLB_ESR(r13);	/* save ESR */
@@ -241,16 +270,23 @@ exc_##label##_book3e:
 #define TLB_MISS_RESTORE_STATS
 #define TLB_MISS_PROLOG_STATS_BOLTED
 #define TLB_MISS_RESTORE_STATS_BOLTED
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TLB_MISS_STATS_D(name)
 #define TLB_MISS_STATS_I(name)
 #define TLB_MISS_STATS_X(name)
 #define TLB_MISS_STATS_Y(name)
 #define TLB_MISS_STATS_SAVE_INFO
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define TLB_MISS_STATS_SAVE_INFO_BOLTED
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TLB_MISS_STATS_SAVE_INFO_BOLTED
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define SET_IVOR(vector_number, vector_offset)	\

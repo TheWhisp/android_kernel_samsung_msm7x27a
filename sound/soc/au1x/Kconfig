@@ -1,5 +1,6 @@
 ##
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Au1200/Au1550 PSC + DBDMA
 ##
 config SND_SOC_AU1XPSC
@@ -10,6 +11,8 @@ config SND_SOC_AU1XPSC
 	  Controllers in AC97 and I2S mode, and the Descriptor-Based DMA
 	  Controller (DBDMA) as found on the Au1200/Au1250/Au1550 SoC.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ## Au1200/Au1550/Au1300 PSC + DBDMA
 ##
 config SND_SOC_AU1XPSC
@@ -19,7 +22,10 @@ config SND_SOC_AU1XPSC
 	  This option enables support for the Programmable Serial
 	  Controllers in AC97 and I2S mode, and the Descriptor-Based DMA
 	  Controller (DBDMA) as found on the Au12xx/Au13xx/Au1550 SoC.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config SND_SOC_AU1XPSC_I2S
 	tristate
@@ -31,7 +37,10 @@ config SND_SOC_AU1XPSC_AC97
 	select SND_SOC_AC97_BUS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ##
 ## Au1000/1500/1100 DMA + AC97C/I2SC
 ##
@@ -51,11 +60,15 @@ config SND_SOC_AU1XAC97C
 config SND_SOC_AU1XI2SC
 	tristate
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 ##
 ## Boards
 ##
+<<<<<<< HEAD
 <<<<<<< HEAD
 config SND_SOC_DB1200
 	tristate "DB1200 AC97+I2S audio support"
@@ -68,6 +81,8 @@ config SND_SOC_DB1200
 	  Select this option to enable audio (AC97 or I2S) on the
 	  Alchemy/AMD/RMI DB1200 demoboard.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config SND_SOC_DB1000
 	tristate "DB1000 Audio support"
 	depends on SND_SOC_AU1XAUDIO
@@ -89,4 +104,7 @@ config SND_SOC_DB1200
 	  Select this option to enable audio (AC97 and I2S) on the
 	  Alchemy/AMD/RMI/NetLogic Db1200, Db1550 and Db1300 evaluation boards.
 	  If you need Db1300 touchscreen support, you definitely want to say Y.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -14,10 +14,14 @@
 #include "hardware.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.macro	addruart, rp, rv
 =======
 		.macro	addruart, rp, rv, tmp
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.macro	addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/master
 		mov	\rp, #0x00000a00
 		orr	\rv, \rp, #io_p2v(0x00100000)	@ virtual
 		orr	\rp, \rp, #0x00100000		@ physical

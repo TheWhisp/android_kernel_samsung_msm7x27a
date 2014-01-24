@@ -2,10 +2,13 @@
  *
  * Copyright (C) 2007-2008 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2009-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2009-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -23,6 +26,7 @@
 #include <linux/errno.h>
 #include <linux/io.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <mach/msm_iomap.h>
 #include <mach/system.h>
@@ -52,6 +56,26 @@ static inline void notify_other_proc_comm(void)
 #endif
 }
 
+=======
+#include <mach/msm_iomap.h>
+
+#include "proc_comm.h"
+
+static inline void msm_a2m_int(uint32_t irq)
+{
+#if defined(CONFIG_ARCH_MSM7X30)
+	writel(1 << irq, MSM_GCC_BASE + 0x8);
+#else
+	writel(1, MSM_CSR_BASE + 0x400 + (irq * 4));
+#endif
+}
+
+static inline void notify_other_proc_comm(void)
+{
+	msm_a2m_int(6);
+}
+
+>>>>>>> refs/remotes/origin/master
 #define APP_COMMAND 0x00
 #define APP_STATUS  0x04
 #define APP_DATA1   0x08
@@ -63,16 +87,29 @@ static inline void notify_other_proc_comm(void)
 #define MDM_DATA2   0x1C
 
 static DEFINE_SPINLOCK(proc_comm_lock);
+<<<<<<< HEAD
 static int msm_proc_comm_disable;
 
 /* Poll for a state change, checking for possible
  * modem crashes along the way (so we don't wait
  * forever while the ARM9 is blowing up.
+=======
+
+/* The higher level SMD support will install this to
+ * provide a way to check for and handle modem restart.
+ */
+int (*msm_check_for_modem_crash)(void);
+
+/* Poll for a state change, checking for possible
+ * modem crashes along the way (so we don't wait
+ * forever while the ARM9 is blowing up).
+>>>>>>> refs/remotes/origin/master
  *
  * Return an error in the event of a modem crash and
  * restart so the msm_proc_comm() routine can restart
  * the operation from the beginning.
  */
+<<<<<<< HEAD
 static int proc_comm_wait_for(unsigned addr, unsigned value)
 {
 	while (1) {
@@ -116,11 +153,29 @@ EXPORT_SYMBOL(msm_proc_comm_reset_modem_now);
 int msm_proc_comm(unsigned cmd, unsigned *data1, unsigned *data2)
 {
 	unsigned base = (unsigned)MSM_SHARED_RAM_BASE;
+=======
+static int proc_comm_wait_for(void __iomem *addr, unsigned value)
+{
+	for (;;) {
+		if (readl(addr) == value)
+			return 0;
+
+		if (msm_check_for_modem_crash)
+			if (msm_check_for_modem_crash())
+				return -EAGAIN;
+	}
+}
+
+int msm_proc_comm(unsigned cmd, unsigned *data1, unsigned *data2)
+{
+	void __iomem *base = MSM_SHARED_RAM_BASE;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int ret;
 
 	spin_lock_irqsave(&proc_comm_lock, flags);
 
+<<<<<<< HEAD
 	if (msm_proc_comm_disable) {
 		ret = -EIO;
 		goto end;
@@ -169,3 +224,51 @@ end:
 	return ret;
 }
 EXPORT_SYMBOL(msm_proc_comm);
+=======
+	for (;;) {
+		if (proc_comm_wait_for(base + MDM_STATUS, PCOM_READY))
+			continue;
+
+		writel(cmd, base + APP_COMMAND);
+		writel(data1 ? *data1 : 0, base + APP_DATA1);
+		writel(data2 ? *data2 : 0, base + APP_DATA2);
+
+		notify_other_proc_comm();
+
+		if (proc_comm_wait_for(base + APP_COMMAND, PCOM_CMD_DONE))
+			continue;
+
+		if (readl(base + APP_STATUS) != PCOM_CMD_FAIL) {
+			if (data1)
+				*data1 = readl(base + APP_DATA1);
+			if (data2)
+				*data2 = readl(base + APP_DATA2);
+			ret = 0;
+		} else {
+			ret = -EIO;
+		}
+		break;
+	}
+
+	writel(PCOM_CMD_IDLE, base + APP_COMMAND);
+
+	spin_unlock_irqrestore(&proc_comm_lock, flags);
+
+	return ret;
+}
+
+/*
+ * We need to wait for the ARM9 to at least partially boot
+ * up before we can continue. Since the ARM9 does resource
+ * allocation, if we dont' wait we could end up crashing or in
+ * and unknown state. This function should be called early to
+ * wait on the ARM9.
+ */
+void proc_comm_boot_wait(void)
+{
+	void __iomem *base = MSM_SHARED_RAM_BASE;
+ 
+	proc_comm_wait_for(base + MDM_STATUS, PCOM_READY);
+ 
+}
+>>>>>>> refs/remotes/origin/master

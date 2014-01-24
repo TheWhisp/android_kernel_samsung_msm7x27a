@@ -9,10 +9,14 @@
  *
  * @Brief
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This file contains the implementation of hardware access methord for 20k2.
 =======
  * This file contains the implementation of hardware access method for 20k2.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This file contains the implementation of hardware access method for 20k2.
+>>>>>>> refs/remotes/origin/master
  *
  * @Author	Liu Chun
  * @Date 	May 14 2008
@@ -43,10 +47,15 @@ struct hw20k2 {
 	unsigned char addr_size;
 	unsigned char data_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	int mic_source;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	int mic_source;
+>>>>>>> refs/remotes/origin/master
 };
 
 static u32 hw_read_20kx(struct hw *hw, u32 reg);
@@ -1173,15 +1182,21 @@ static int hw_daio_init(struct hw *hw, const struct daio_conf *info)
 		hw_write_20kx(hw, AUDIO_IO_RX_BLRCLK, 0);
 	} else if (2 == info->msr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		hw_write_20kx(hw, AUDIO_IO_MCLK, 0x11111111);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (hw->model != CTSB1270) {
 			hw_write_20kx(hw, AUDIO_IO_MCLK, 0x11111111);
 		} else {
 			/* PCM4220 on Titanium HD is different. */
 			hw_write_20kx(hw, AUDIO_IO_MCLK, 0x11011111);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Specify all playing 96khz
 		 * EA [0]	- Enabled
 		 * RTA [4:5]	- 96kHz
@@ -1194,12 +1209,18 @@ static int hw_daio_init(struct hw *hw, const struct daio_conf *info)
 		hw_write_20kx(hw, AUDIO_IO_TX_BLRCLK, 0x11111111);
 		hw_write_20kx(hw, AUDIO_IO_RX_BLRCLK, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if ((4 == info->msr) && (hw->model == CTSB1270)) {
 		hw_write_20kx(hw, AUDIO_IO_MCLK, 0x21011111);
 		hw_write_20kx(hw, AUDIO_IO_TX_BLRCLK, 0x21212121);
 		hw_write_20kx(hw, AUDIO_IO_RX_BLRCLK, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		printk(KERN_ALERT "ctxfi: ERROR!!! Invalid sampling rate!!!\n");
 		return -EINVAL;
@@ -1208,10 +1229,15 @@ static int hw_daio_init(struct hw *hw, const struct daio_conf *info)
 	for (i = 0; i < 8; i++) {
 		if (i <= 3) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* This comment looks wrong since loop is over 4  */
 			/* channels and emu20k2 supports 4 spdif IOs.     */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* This comment looks wrong since loop is over 4  */
+			/* channels and emu20k2 supports 4 spdif IOs.     */
+>>>>>>> refs/remotes/origin/master
 			/* 1st 3 channels are SPDIFs (SB0960) */
 			if (i == 3)
 				data = 0x1001001;
@@ -1237,9 +1263,13 @@ static int hw_daio_init(struct hw *hw, const struct daio_conf *info)
 			hw_write_20kx(hw, AUDIO_IO_TX_CSTAT_H+(0x40*i), 0x0B);
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* Again, loop is over 4 channels not 5. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* Again, loop is over 4 channels not 5. */
+>>>>>>> refs/remotes/origin/master
 			/* Next 5 channels are I2S (SB0960) */
 			data = 0x11;
 			hw_write_20kx(hw, AUDIO_IO_RX_CTL+(0x40*i), data);
@@ -1247,11 +1277,17 @@ static int hw_daio_init(struct hw *hw, const struct daio_conf *info)
 				/* Four channels per sample period */
 				data |= 0x1000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			} else if (4 == info->msr) {
 				/* FIXME: check this against the chip spec */
 				data |= 0x2000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else if (4 == info->msr) {
+				/* FIXME: check this against the chip spec */
+				data |= 0x2000;
+>>>>>>> refs/remotes/origin/master
 			}
 			hw_write_20kx(hw, AUDIO_IO_TX_CTL+(0x40*i), data);
 		}
@@ -1340,6 +1376,7 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
 	pllenb = 0xB;
 	hw_write_20kx(hw, PLL_ENB, pllenb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pllctl = 0x20D00000;
 	set_field(&pllctl, PLLCTL_FD, 16 - 4);
 	hw_write_20kx(hw, PLL_CTL, pllctl);
@@ -1356,6 +1393,8 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
 	hw_write_20kx(hw, PLL_CTL, pllctl);
 	mdelay(40);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pllctl = 0x20C00000;
 	set_field(&pllctl, PLLCTL_B, 0);
 	set_field(&pllctl, PLLCTL_FD, 48000 == rsr ? 16 - 4 : 147 - 4);
@@ -1368,7 +1407,10 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
 	hw_write_20kx(hw, PLL_CTL, pllctl);
 	mdelay(40);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 1000; i++) {
 		pllstat = hw_read_20kx(hw, PLL_STAT);
 		if (get_field(pllstat, PLLSTAT_PD))
@@ -1613,10 +1655,14 @@ static int hw20k2_i2c_write(struct hw *hw, u16 addr, u32 data)
 	hw_write_20kx(hw, I2C_IF_STATUS, i2c_status);
 	hw20k2_i2c_wait_data_ready(hw);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Dummy write to trigger the write oprtation */
 =======
 	/* Dummy write to trigger the write operation */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Dummy write to trigger the write operation */
+>>>>>>> refs/remotes/origin/master
 	hw_write_20kx(hw, I2C_IF_WDATA, 0);
 	hw20k2_i2c_wait_data_ready(hw);
 
@@ -1628,7 +1674,10 @@ static int hw20k2_i2c_write(struct hw *hw, u16 addr, u32 data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void hw_dac_stop(struct hw *hw)
 {
 	u32 data;
@@ -1653,7 +1702,10 @@ static void hw_dac_reset(struct hw *hw)
 	hw_dac_start(hw);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int hw_dac_init(struct hw *hw, const struct dac_conf *info)
 {
 	int err;
@@ -1681,7 +1733,10 @@ static int hw_dac_init(struct hw *hw, const struct dac_conf *info)
 				 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hw->model == CTSB1270) {
 		hw_dac_stop(hw);
 		data = hw_read_20kx(hw, GPIO_DATA);
@@ -1697,7 +1752,10 @@ static int hw_dac_init(struct hw *hw, const struct dac_conf *info)
 		return 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set DAC reset bit as output */
 	data = hw_read_20kx(hw, GPIO_CTRL);
 	data |= 0x02;
@@ -1710,6 +1768,7 @@ static int hw_dac_init(struct hw *hw, const struct dac_conf *info)
 	for (i = 0; i < 2; i++) {
 		/* Reset DAC twice just in-case the chip
 		 * didn't initialized properly */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		data = hw_read_20kx(hw, GPIO_DATA);
 		/* GPIO data bit 1 */
@@ -1731,6 +1790,10 @@ static int hw_dac_init(struct hw *hw, const struct dac_conf *info)
 		hw_dac_reset(hw);
 		hw_dac_reset(hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hw_dac_reset(hw);
+		hw_dac_reset(hw);
+>>>>>>> refs/remotes/origin/master
 
 		if (hw20k2_i2c_read(hw, CS4382_MC1,  &cs_read.mode_control_1))
 			continue;
@@ -1835,14 +1898,20 @@ static int hw_is_adc_input_selected(struct hw *hw, enum ADCSRC type)
 {
 	u32 data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hw->model == CTSB1270) {
 		/* Titanium HD has two ADC chips, one for line in and one */
 		/* for MIC. We don't need to switch the ADC input. */
 		return 1;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data = hw_read_20kx(hw, GPIO_DATA);
 	switch (type) {
 	case ADC_MICIN:
@@ -1860,8 +1929,11 @@ static int hw_is_adc_input_selected(struct hw *hw, enum ADCSRC type)
 #define MIC_BOOST_0DB 0xCF
 #define MIC_BOOST_STEPS_PER_DB 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MIC_BOOST_20DB (MIC_BOOST_0DB + 20 * MIC_BOOST_STEPS_PER_DB)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void hw_wm8775_input_select(struct hw *hw, u8 input, s8 gain_in_db)
 {
@@ -1888,20 +1960,27 @@ static void hw_wm8775_input_select(struct hw *hw, u8 input, s8 gain_in_db)
 	hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_AADCR, gain),
 				MAKE_WM8775_DATA(gain));
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int hw_adc_input_select(struct hw *hw, enum ADCSRC type)
 {
 	u32 data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data = hw_read_20kx(hw, GPIO_DATA);
 	switch (type) {
 	case ADC_MICIN:
 		data |= (0x1 << 14);
 		hw_write_20kx(hw, GPIO_DATA, data);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_ADCMC, 0x101),
 				MAKE_WM8775_DATA(0x101)); /* Mic-in */
@@ -1914,10 +1993,14 @@ static int hw_adc_input_select(struct hw *hw, enum ADCSRC type)
 =======
 		hw_wm8775_input_select(hw, 0, 20); /* Mic, 20dB */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hw_wm8775_input_select(hw, 0, 20); /* Mic, 20dB */
+>>>>>>> refs/remotes/origin/master
 		break;
 	case ADC_LINEIN:
 		data &= ~(0x1 << 14);
 		hw_write_20kx(hw, GPIO_DATA, data);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_ADCMC, 0x102),
 				MAKE_WM8775_DATA(0x102)); /* Line-in */
@@ -1928,6 +2011,9 @@ static int hw_adc_input_select(struct hw *hw, enum ADCSRC type)
 =======
 		hw_wm8775_input_select(hw, 1, 0); /* Line-in, 0dB */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hw_wm8775_input_select(hw, 1, 0); /* Line-in, 0dB */
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -1940,10 +2026,14 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 {
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 mux = 2, data, ctl;
 =======
 	u32 data, ctl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 data, ctl;
+>>>>>>> refs/remotes/origin/master
 
 	/*  Set ADC reset bit as output */
 	data = hw_read_20kx(hw, GPIO_CTRL);
@@ -1958,11 +2048,14 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Make ADC in normal operation */
 	data = hw_read_20kx(hw, GPIO_DATA);
 	data &= ~(0x1 << 15);
 	mdelay(10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Reset the ADC (reset is active low). */
 	data = hw_read_20kx(hw, GPIO_DATA);
 	data &= ~(0x1 << 15);
@@ -1982,11 +2075,15 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 
 	mdelay(10);
 	/* Return the ADC to normal operation. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data |= (0x1 << 15);
 	hw_write_20kx(hw, GPIO_DATA, data);
 	mdelay(50);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Set the master mode (256fs) */
 	if (1 == info->msr) {
@@ -1994,6 +2091,8 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 						MAKE_WM8775_DATA(0x02));
 	} else if (2 == info->msr) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* I2C write to register offset 0x0B to set ADC LRCLK polarity */
 	/* invert bit, interface format to I2S, word length to 24-bit, */
 	/* enable ADC high pass filter. Fixes bug 5323?		*/
@@ -2007,7 +2106,10 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 						MAKE_WM8775_DATA(0x02));
 	} else if ((2 == info->msr) || (4 == info->msr)) {
 		/* slave mode, 64x oversampling, 256fs */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		hw20k2_i2c_write(hw, MAKE_WM8775_ADDR(WM8775_MMC, 0x0A),
 						MAKE_WM8775_DATA(0x0A));
 	} else {
@@ -2017,6 +2119,7 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 		goto error;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Configure GPIO bit 14 change to line-in/mic-in */
 	ctl = hw_read_20kx(hw, GPIO_CTRL);
@@ -2060,6 +2163,8 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hw->model != CTSB1270) {
 		/* Configure GPIO bit 14 change to line-in/mic-in */
 		ctl = hw_read_20kx(hw, GPIO_CTRL);
@@ -2071,17 +2176,23 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error:
 	hw20k2_i2c_uninit(hw);
 	return err;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int hw_have_digit_io_switch(struct hw *hw)
 {
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct capabilities hw_capabilities(struct hw *hw)
 {
 	struct capabilities cap;
@@ -2173,7 +2284,10 @@ static int hw_mic_source_switch_put(struct hw *hw, int position)
 	hw20k2->mic_source = position;
 
 	return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t ct_20k2_interrupt(int irq, void *dev_id)
@@ -2233,10 +2347,14 @@ static int hw_card_start(struct hw *hw)
 	if (hw->irq < 0) {
 		err = request_irq(pci->irq, ct_20k2_interrupt, IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  "ctxfi", hw);
 =======
 				  KBUILD_MODNAME, hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  KBUILD_MODNAME, hw);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0) {
 			printk(KERN_ERR "XFi: Cannot get irq %d\n", pci->irq);
 			goto error2;
@@ -2335,6 +2453,7 @@ static int hw_card_init(struct hw *hw, struct card_conf *info)
 	hw_write_20kx(hw, SRC_IP, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* TODO: detect the card ID and configure GPIO accordingly. */
 	/* Configures GPIO (0xD802 0x98028) */
 	/*hw_write_20kx(hw, GPIO_CTRL, 0x7F07);*/
@@ -2343,6 +2462,8 @@ static int hw_card_init(struct hw *hw, struct card_conf *info)
 	hw_write_20kx(hw, GPIO_CTRL, 0xD802);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hw->model != CTSB1270) {
 		/* TODO: detect the card ID and configure GPIO accordingly. */
 		/* Configures GPIO (0xD802 0x98028) */
@@ -2353,7 +2474,10 @@ static int hw_card_init(struct hw *hw, struct card_conf *info)
 	} else {
 		hw_write_20kx(hw, GPIO_CTRL, 0x9E5F);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable audio ring */
 	hw_write_20kx(hw, MIXER_AR_ENABLE, 0x01);
 
@@ -2386,8 +2510,13 @@ static int hw_card_init(struct hw *hw, struct card_conf *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int hw_suspend(struct hw *hw, pm_message_t state)
+=======
+#ifdef CONFIG_PM_SLEEP
+static int hw_suspend(struct hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pci = hw->pci;
 
@@ -2395,7 +2524,11 @@ static int hw_suspend(struct hw *hw, pm_message_t state)
 
 	pci_disable_device(pci);
 	pci_save_state(pci);
+<<<<<<< HEAD
 	pci_set_power_state(pci, pci_choose_state(pci, state));
+=======
+	pci_set_power_state(pci, PCI_D3hot);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2422,7 +2555,11 @@ static void hw_write_20kx(struct hw *hw, u32 reg, u32 data)
 	writel(data, (void *)(hw->mem_base + reg));
 }
 
+<<<<<<< HEAD
 static struct hw ct20k2_preset __devinitdata = {
+=======
+static struct hw ct20k2_preset = {
+>>>>>>> refs/remotes/origin/master
 	.irq = -1,
 
 	.card_init = hw_card_init,
@@ -2431,15 +2568,22 @@ static struct hw ct20k2_preset __devinitdata = {
 	.is_adc_source_selected = hw_is_adc_input_selected,
 	.select_adc_source = hw_adc_input_select,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.have_digit_io_switch = hw_have_digit_io_switch,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.capabilities = hw_capabilities,
 	.output_switch_get = hw_output_switch_get,
 	.output_switch_put = hw_output_switch_put,
 	.mic_source_switch_get = hw_mic_source_switch_get,
 	.mic_source_switch_put = hw_mic_source_switch_put,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	.suspend = hw_suspend,
 	.resume = hw_resume,
 #endif
@@ -2534,7 +2678,11 @@ static struct hw ct20k2_preset __devinitdata = {
 	.get_wc = get_wc,
 };
 
+<<<<<<< HEAD
 int __devinit create_20k2_hw_obj(struct hw **rhw)
+=======
+int create_20k2_hw_obj(struct hw **rhw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hw20k2 *hw20k2;
 

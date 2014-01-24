@@ -94,10 +94,14 @@ int omfs_make_empty(struct inode *inode, struct super_block *sb)
 	memset(bh->b_data, 0, sizeof(struct omfs_inode));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (inode->i_mode & S_IFDIR) {
 =======
 	if (S_ISDIR(inode->i_mode)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (S_ISDIR(inode->i_mode)) {
+>>>>>>> refs/remotes/origin/master
 		memset(&bh->b_data[OMFS_DIR_START], 0xff,
 			sbi->s_sys_blocksize - OMFS_DIR_START);
 	} else
@@ -260,10 +264,14 @@ static int omfs_remove(struct inode *dir, struct dentry *dentry)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int omfs_add_node(struct inode *dir, struct dentry *dentry, int mode)
 =======
 static int omfs_add_node(struct inode *dir, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int omfs_add_node(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct inode *inode = omfs_new_inode(dir, mode);
@@ -288,26 +296,39 @@ out_free_inode:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int omfs_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 =======
 static int omfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int omfs_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return omfs_add_node(dir, dentry, mode | S_IFDIR);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int omfs_create(struct inode *dir, struct dentry *dentry, int mode,
 =======
 static int omfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 		struct nameidata *nd)
+=======
+static int omfs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	return omfs_add_node(dir, dentry, mode | S_IFREG);
 }
 
 static struct dentry *omfs_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				  struct nameidata *nd)
+=======
+				  unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct buffer_head *bh;
 	struct inode *inode = NULL;
@@ -343,6 +364,7 @@ int omfs_is_bad(struct omfs_sb_info *sbi, struct omfs_header *header,
 	return is_bad;
 }
 
+<<<<<<< HEAD
 static int omfs_fill_chain(struct file *filp, void *dirent, filldir_t filldir,
 		u64 fsblock, int hindex)
 {
@@ -358,11 +380,29 @@ static int omfs_fill_chain(struct file *filp, void *dirent, filldir_t filldir,
 		bh = omfs_bread(dir->i_sb, fsblock);
 		if (!bh)
 			goto out;
+=======
+static bool omfs_fill_chain(struct inode *dir, struct dir_context *ctx,
+		u64 fsblock, int hindex)
+{
+	/* follow chain in this bucket */
+	while (fsblock != ~0) {
+		struct buffer_head *bh = omfs_bread(dir->i_sb, fsblock);
+		struct omfs_inode *oi;
+		u64 self;
+		unsigned char d_type;
+
+		if (!bh)
+			return true;
+>>>>>>> refs/remotes/origin/master
 
 		oi = (struct omfs_inode *) bh->b_data;
 		if (omfs_is_bad(OMFS_SB(dir->i_sb), &oi->i_head, fsblock)) {
 			brelse(bh);
+<<<<<<< HEAD
 			goto out;
+=======
+			return true;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		self = fsblock;
@@ -377,6 +417,7 @@ static int omfs_fill_chain(struct file *filp, void *dirent, filldir_t filldir,
 
 		d_type = (oi->i_type == OMFS_DIR) ? DT_DIR : DT_REG;
 
+<<<<<<< HEAD
 		res = filldir(dirent, oi->i_name, strnlen(oi->i_name,
 			OMFS_NAMELEN), filp->f_pos, self, d_type);
 		brelse(bh);
@@ -386,6 +427,18 @@ static int omfs_fill_chain(struct file *filp, void *dirent, filldir_t filldir,
 	}
 out:
 	return res;
+=======
+		if (!dir_emit(ctx, oi->i_name,
+			      strnlen(oi->i_name, OMFS_NAMELEN),
+			      self, d_type)) {
+			brelse(bh);
+			return false;
+		}
+		brelse(bh);
+		ctx->pos++;
+	}
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int omfs_rename(struct inode *old_dir, struct dentry *old_dentry,
@@ -419,6 +472,7 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int omfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct inode *dir = filp->f_dentry->d_inode;
@@ -444,11 +498,29 @@ static int omfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 			goto success;
 		filp->f_pos = 1 << 20;
 		/* fall through */
+=======
+static int omfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *dir = file_inode(file);
+	struct buffer_head *bh;
+	__be64 *p;
+	unsigned int hchain, hindex;
+	int nbuckets;
+
+	if (ctx->pos >> 32)
+		return -EINVAL;
+
+	if (ctx->pos < 1 << 20) {
+		if (!dir_emit_dots(file, ctx))
+			return 0;
+		ctx->pos = 1 << 20;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	nbuckets = (dir->i_size - OMFS_DIR_START) / 8;
 
 	/* high 12 bits store bucket + 1 and low 20 bits store hash index */
+<<<<<<< HEAD
 	hchain = (filp->f_pos >> 20) - 1;
 	hindex = filp->f_pos & 0xfffff;
 
@@ -473,6 +545,26 @@ success:
 	ret = 0;
 out:
 	return ret;
+=======
+	hchain = (ctx->pos >> 20) - 1;
+	hindex = ctx->pos & 0xfffff;
+
+	bh = omfs_bread(dir->i_sb, dir->i_ino);
+	if (!bh)
+		return -EINVAL;
+
+	p = (__be64 *)(bh->b_data + OMFS_DIR_START) + hchain;
+
+	for (; hchain < nbuckets; hchain++) {
+		__u64 fsblock = be64_to_cpu(*p++);
+		if (!omfs_fill_chain(dir, ctx, fsblock, hindex))
+			break;
+		hindex = 0;
+		ctx->pos = (hchain+2) << 20;
+	}
+	brelse(bh);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 const struct inode_operations omfs_dir_inops = {
@@ -486,6 +578,10 @@ const struct inode_operations omfs_dir_inops = {
 
 const struct file_operations omfs_dir_operations = {
 	.read = generic_read_dir,
+<<<<<<< HEAD
 	.readdir = omfs_readdir,
+=======
+	.iterate = omfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.llseek = generic_file_llseek,
 };

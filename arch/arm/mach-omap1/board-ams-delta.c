@@ -12,11 +12,16 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/basic_mmio_gpio.h>
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/basic_mmio_gpio.h>
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/input.h>
@@ -24,8 +29,11 @@
 #include <linux/leds.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/serial_8250.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/fixed.h>
 #include <linux/regulator/machine.h>
@@ -33,19 +41,27 @@
 #include <linux/export.h>
 #include <linux/omapfb.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/gpio-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <media/soc_camera.h>
 
 #include <asm/serial.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <plat/io.h>
 #include <plat/board-ams-delta.h>
@@ -66,14 +82,26 @@
 static u8 ams_delta_latch1_reg;
 static u16 ams_delta_latch2_reg;
 =======
+=======
+#include <mach/board-ams-delta.h>
+#include <linux/platform_data/keypad-omap.h>
+#include <mach/mux.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <mach/ams-delta-fiq.h>
 #include <mach/camera.h>
+<<<<<<< HEAD
 
 #include "iomap.h"
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/usb.h>
+
+#include "iomap.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 static const unsigned int ams_delta_keymap[] = {
 	KEY(0, 0, KEY_F1),		/* Advert    */
@@ -154,6 +182,7 @@ static const unsigned int ams_delta_keymap[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ams_delta_latch1_write(u8 mask, u8 value)
 {
 	ams_delta_latch1_reg &= ~mask;
@@ -174,17 +203,23 @@ static void __init ams_delta_init_irq(void)
 	omap_init_irq();
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LATCH1_PHYS	0x01000000
 #define LATCH1_VIRT	0xEA000000
 #define MODEM_PHYS	0x04000000
 #define MODEM_VIRT	0xEB000000
 #define LATCH2_PHYS	0x08000000
 #define LATCH2_VIRT	0xEC000000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc ams_delta_io_desc[] __initdata = {
 	/* AMS_DELTA_LATCH1 */
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.virtual	= AMS_DELTA_LATCH1_VIRT,
 		.pfn		= __phys_to_pfn(AMS_DELTA_LATCH1_PHYS),
@@ -192,11 +227,16 @@ static struct map_desc ams_delta_io_desc[] __initdata = {
 		.virtual	= LATCH1_VIRT,
 		.pfn		= __phys_to_pfn(LATCH1_PHYS),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= LATCH1_VIRT,
+		.pfn		= __phys_to_pfn(LATCH1_PHYS),
+>>>>>>> refs/remotes/origin/master
 		.length		= 0x01000000,
 		.type		= MT_DEVICE
 	},
 	/* AMS_DELTA_LATCH2 */
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.virtual	= AMS_DELTA_LATCH2_VIRT,
 		.pfn		= __phys_to_pfn(AMS_DELTA_LATCH2_PHYS),
@@ -204,11 +244,16 @@ static struct map_desc ams_delta_io_desc[] __initdata = {
 		.virtual	= LATCH2_VIRT,
 		.pfn		= __phys_to_pfn(LATCH2_PHYS),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= LATCH2_VIRT,
+		.pfn		= __phys_to_pfn(LATCH2_PHYS),
+>>>>>>> refs/remotes/origin/master
 		.length		= 0x01000000,
 		.type		= MT_DEVICE
 	},
 	/* AMS_DELTA_MODEM */
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.virtual	= AMS_DELTA_MODEM_VIRT,
 		.pfn		= __phys_to_pfn(AMS_DELTA_MODEM_PHYS),
@@ -216,11 +261,16 @@ static struct map_desc ams_delta_io_desc[] __initdata = {
 		.virtual	= MODEM_VIRT,
 		.pfn		= __phys_to_pfn(MODEM_PHYS),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= MODEM_VIRT,
+		.pfn		= __phys_to_pfn(MODEM_PHYS),
+>>>>>>> refs/remotes/origin/master
 		.length		= 0x01000000,
 		.type		= MT_DEVICE
 	}
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct omap_lcd_config ams_delta_lcd_config = {
 	.ctrl_name	= "internal",
@@ -228,23 +278,32 @@ static struct omap_lcd_config ams_delta_lcd_config = {
 
 static struct omap_usb_config ams_delta_usb_config __initdata = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct omap_lcd_config ams_delta_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
 
+<<<<<<< HEAD
 static struct omap_usb_config ams_delta_usb_config = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct omap_usb_config ams_delta_usb_config __initdata = {
+>>>>>>> refs/remotes/origin/master
 	.register_host	= 1,
 	.hmc_mode	= 16,
 	.pins[0]	= 2,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct omap_board_config_kernel ams_delta_config[] __initdata = {
 	{ OMAP_TAG_LCD,		&ams_delta_lcd_config },
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define LATCH1_GPIO_BASE	232
 #define LATCH1_NGPIO		8
 
@@ -386,7 +445,10 @@ void ams_delta_latch_write(int base, int ngpio, u16 mask, u16 value)
 }
 EXPORT_SYMBOL(ams_delta_latch_write);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource ams_delta_nand_resources[] = {
 	[0] = {
 		.start	= OMAP1_MPUIO_BASE,
@@ -417,10 +479,14 @@ static const struct matrix_keymap_data ams_delta_keymap_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct omap_kp_platform_data ams_delta_kp_data __initdata = {
 =======
 static struct omap_kp_platform_data ams_delta_kp_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct omap_kp_platform_data ams_delta_kp_data = {
+>>>>>>> refs/remotes/origin/master
 	.rows		= 8,
 	.cols		= 8,
 	.keymap_data	= &ams_delta_keymap_data,
@@ -443,10 +509,13 @@ static struct platform_device ams_delta_lcd_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device ams_delta_led_device = {
 	.name	= "ams-delta-led",
 	.id	= -1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct gpio_led gpio_leds[] __initconst = {
 	{
 		.name		 = "camera",
@@ -486,7 +555,10 @@ static const struct gpio_led gpio_leds[] __initconst = {
 static const struct gpio_led_platform_data leds_pdata __initconst = {
 	.leds		= gpio_leds,
 	.num_leds	= ARRAY_SIZE(gpio_leds),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct i2c_board_info ams_delta_camera_board_info[] = {
@@ -534,6 +606,7 @@ static struct omap1_cam_platform_data ams_delta_camera_platform_data = {
 	.lclk_khz_max	= 1334,		/* results in 5fps CIF, 10fps QCIF */
 };
 
+<<<<<<< HEAD
 static struct platform_device *ams_delta_devices[] __initdata = {
 <<<<<<< HEAD
 	&ams_delta_nand_device,
@@ -544,18 +617,41 @@ static struct platform_device *ams_delta_devices[] __initdata = {
 };
 
 =======
+=======
+static struct platform_device ams_delta_audio_device = {
+	.name   = "ams-delta-audio",
+	.id     = -1,
+};
+
+static struct platform_device cx20442_codec_device = {
+	.name   = "cx20442-codec",
+	.id     = -1,
+};
+
+static struct platform_device *ams_delta_devices[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	&latch1_gpio_device,
 	&latch2_gpio_device,
 	&ams_delta_kp_device,
 	&ams_delta_camera_device,
+<<<<<<< HEAD
+=======
+	&ams_delta_audio_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *late_devices[] __initdata = {
 	&ams_delta_nand_device,
 	&ams_delta_lcd_device,
+<<<<<<< HEAD
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&cx20442_codec_device,
+};
+
+>>>>>>> refs/remotes/origin/master
 static void __init ams_delta_init(void)
 {
 	/* mux pins for uarts */
@@ -577,6 +673,7 @@ static void __init ams_delta_init(void)
 	omap_cfg_reg(J18_1610_CAM_D7);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iotable_init(ams_delta_io_desc, ARRAY_SIZE(ams_delta_io_desc));
 
 	omap_board_config = ams_delta_config;
@@ -592,6 +689,11 @@ static void __init ams_delta_init(void)
 	omap_register_i2c_bus(1, 100, NULL, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_serial_init();
+	omap_register_i2c_bus(1, 100, NULL, 0);
+
+>>>>>>> refs/remotes/origin/master
 	omap1_usb_init(&ams_delta_usb_config);
 	omap1_set_camera_info(&ams_delta_camera_platform_data);
 #ifdef CONFIG_LEDS_TRIGGERS
@@ -599,16 +701,23 @@ static void __init ams_delta_init(void)
 			&ams_delta_camera_led_trigger);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	gpio_led_register_device(-1, &leds_pdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_led_register_device(-1, &leds_pdata);
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(ams_delta_devices, ARRAY_SIZE(ams_delta_devices));
 
 	ams_delta_init_fiq();
 
 	omap_writew(omap_readw(ARM_RSTCT1) | 0x0004, ARM_RSTCT1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	omapfb_set_lcd_config(&ams_delta_lcd_config);
 }
@@ -627,11 +736,15 @@ static void modem_pm(struct uart_port *port, unsigned int state, unsigned old)
 		regulator_enable(priv->regulator);
 	else if (old == 0)
 		regulator_disable(priv->regulator);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct plat_serial8250_port ams_delta_modem_ports[] = {
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.membase	= IOMEM(AMS_DELTA_MODEM_VIRT),
 		.mapbase	= AMS_DELTA_MODEM_PHYS,
@@ -639,6 +752,10 @@ static struct plat_serial8250_port ams_delta_modem_ports[] = {
 		.membase	= IOMEM(MODEM_VIRT),
 		.mapbase	= MODEM_PHYS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.membase	= IOMEM(MODEM_VIRT),
+		.mapbase	= MODEM_PHYS,
+>>>>>>> refs/remotes/origin/master
 		.irq		= -EINVAL, /* changed later */
 		.flags		= UPF_BOOT_AUTOCONF,
 		.irqflags	= IRQF_TRIGGER_RISING,
@@ -646,10 +763,15 @@ static struct plat_serial8250_port ams_delta_modem_ports[] = {
 		.regshift	= 1,
 		.uartclk	= BASE_BAUD * 16,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.pm		= modem_pm,
 		.private_data	= &modem_priv,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm		= modem_pm,
+		.private_data	= &modem_priv,
+>>>>>>> refs/remotes/origin/master
 	},
 	{ },
 };
@@ -663,10 +785,14 @@ static struct platform_device ams_delta_modem_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ams_delta_modem_init(void)
 =======
 static int __init late_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init late_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -674,7 +800,10 @@ static int __init late_init(void)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = gpio_request_array(latch_gpios, ARRAY_SIZE(latch_gpios));
 	if (err) {
 		pr_err("Couldn't take over latch1/latch2 GPIO pins\n");
@@ -689,7 +818,10 @@ static int __init late_init(void)
 		return err;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	omap_cfg_reg(M14_1510_GPIO2);
 	ams_delta_modem_ports[0].irq =
 			gpio_to_irq(AMS_DELTA_GPIO_PIN_MODEM_IRQ);
@@ -701,6 +833,7 @@ static int __init late_init(void)
 	}
 	gpio_direction_input(AMS_DELTA_GPIO_PIN_MODEM_IRQ);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ams_delta_latch2_write(
 		AMS_DELTA_LATCH2_MODEM_NRESET | AMS_DELTA_LATCH2_MODEM_CODEC,
@@ -714,6 +847,8 @@ static void __init ams_delta_map_io(void)
 {
 	omap1_map_common_io();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize the modem_nreset regulator consumer before use */
 	modem_priv.regulator = ERR_PTR(-ENODEV);
 
@@ -742,17 +877,30 @@ gpio_free:
 	gpio_free(AMS_DELTA_GPIO_PIN_MODEM_IRQ);
 	return err;
 }
+<<<<<<< HEAD
 late_initcall(late_init);
+=======
+
+static void __init ams_delta_init_late(void)
+{
+	omap1_init_late();
+	late_init();
+}
+>>>>>>> refs/remotes/origin/master
 
 static void __init ams_delta_map_io(void)
 {
 	omap15xx_map_io();
 	iotable_init(ams_delta_io_desc, ARRAY_SIZE(ams_delta_io_desc));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(AMS_DELTA, "Amstrad E3 (Delta)")
 	/* Maintainer: Jonathan McDowell <noodles@earth.li> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= 0x10000100,
 	.map_io		= ams_delta_map_io,
@@ -775,3 +923,14 @@ EXPORT_SYMBOL(ams_delta_latch2_write);
 	.restart	= omap1_restart,
 MACHINE_END
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= ams_delta_map_io,
+	.init_early	= omap1_init_early,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= ams_delta_init,
+	.init_late	= ams_delta_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= omap1_restart,
+MACHINE_END
+>>>>>>> refs/remotes/origin/master

@@ -118,7 +118,11 @@ void sysv_free_inode(struct inode * inode)
 		       "%s\n", inode->i_sb->s_id);
 		return;
 	}
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	count = fs16_to_cpu(sbi, *sbi->s_sb_fic_count);
 	if (count < sbi->s_fic_size) {
 		*sv_sb_fic_inode(sb,count++) = cpu_to_fs16(sbi, ino);
@@ -128,6 +132,7 @@ void sysv_free_inode(struct inode * inode)
 	dirty_sb(sb);
 	memset(raw_inode, 0, sizeof(struct sysv_inode));
 	mark_buffer_dirty(bh);
+<<<<<<< HEAD
 	unlock_super(sb);
 	brelse(bh);
 }
@@ -137,6 +142,13 @@ struct inode * sysv_new_inode(const struct inode * dir, mode_t mode)
 =======
 struct inode * sysv_new_inode(const struct inode * dir, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&sbi->s_lock);
+	brelse(bh);
+}
+
+struct inode * sysv_new_inode(const struct inode * dir, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dir->i_sb;
 	struct sysv_sb_info *sbi = SYSV_SB(sb);
@@ -151,13 +163,21 @@ struct inode * sysv_new_inode(const struct inode * dir, umode_t mode)
 	if (!inode)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	count = fs16_to_cpu(sbi, *sbi->s_sb_fic_count);
 	if (count == 0 || (*sv_sb_fic_inode(sb,count-1) == 0)) {
 		count = refill_free_cache(sb);
 		if (count == 0) {
 			iput(inode);
+<<<<<<< HEAD
 			unlock_super(sb);
+=======
+			mutex_unlock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 			return ERR_PTR(-ENOSPC);
 		}
 	}
@@ -178,7 +198,11 @@ struct inode * sysv_new_inode(const struct inode * dir, umode_t mode)
 	sysv_write_inode(inode, &wbc);	/* ensure inode not allocated again */
 	mark_inode_dirty(inode);	/* cleared by sysv_write_inode() */
 	/* That's it. */
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	return inode;
 }
 
@@ -189,7 +213,11 @@ unsigned long sysv_count_free_inodes(struct super_block * sb)
 	struct sysv_inode * raw_inode;
 	int ino, count, sb_count;
 
+<<<<<<< HEAD
 	lock_super(sb);
+=======
+	mutex_lock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	sb_count = fs16_to_cpu(sbi, *sbi->s_sb_total_free_inodes);
 
@@ -217,7 +245,11 @@ unsigned long sysv_count_free_inodes(struct super_block * sb)
 	if (count != sb_count)
 		goto Einval;
 out:
+<<<<<<< HEAD
 	unlock_super(sb);
+=======
+	mutex_unlock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	return count;
 
 Einval:

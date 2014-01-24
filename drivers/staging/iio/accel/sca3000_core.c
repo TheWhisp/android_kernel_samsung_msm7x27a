@@ -5,22 +5,30 @@
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  *
+<<<<<<< HEAD
  * Copyright (c) 2009 Jonathan Cameron <jic23@cam.ac.uk>
+=======
+ * Copyright (c) 2009 Jonathan Cameron <jic23@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * See industrialio/accels/sca3000.h for comments.
  */
 
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/device.h>
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/spi/spi.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include "../iio.h"
 #include "../sysfs.h"
@@ -35,6 +43,14 @@
 #include "../buffer.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/events.h>
+#include <linux/iio/buffer.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "sca3000.h"
 
 enum sca3000_variant {
@@ -102,7 +118,10 @@ int sca3000_read_data_short(struct sca3000_state *st,
 			    uint8_t reg_address_high,
 			    int len)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct spi_transfer xfer[2] = {
 		{
 			.len = 1,
@@ -113,11 +132,16 @@ int sca3000_read_data_short(struct sca3000_state *st,
 		}
 	};
 	st->tx[0] = SCA3000_READ_REG(reg_address_high);
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer[0], &msg);
 	spi_message_add_tail(&xfer[1], &msg);
 
 	return spi_sync(st->us, &msg);
+=======
+
+	return spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -145,7 +169,10 @@ static int sca3000_reg_lock_on(struct sca3000_state *st)
  **/
 static int __sca3000_unlock_reg_lock(struct sca3000_state *st)
 {
+<<<<<<< HEAD
 	struct spi_message msg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct spi_transfer xfer[3] = {
 		{
 			.len = 2,
@@ -166,12 +193,17 @@ static int __sca3000_unlock_reg_lock(struct sca3000_state *st)
 	st->tx[3] = 0x50;
 	st->tx[4] = SCA3000_WRITE_REG(SCA3000_REG_ADDR_UNLOCK);
 	st->tx[5] = 0xA0;
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer[0], &msg);
 	spi_message_add_tail(&xfer[1], &msg);
 	spi_message_add_tail(&xfer[2], &msg);
 
 	return spi_sync(st->us, &msg);
+=======
+
+	return spi_sync_transfer(st->us, xfer, ARRAY_SIZE(xfer));
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -253,12 +285,17 @@ error_ret:
 static int sca3000_check_status(struct device *dev)
 {
 	int ret;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
 =======
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->lock);
 	ret = sca3000_read_data_short(st, SCA3000_REG_ADDR_STATUS, 1);
@@ -285,12 +322,17 @@ static ssize_t sca3000_show_rev(struct device *dev,
 {
 	int len = 0, ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 	struct sca3000_state *st = dev_info->dev_data;
 =======
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->lock);
 	ret = sca3000_read_data_short(st, SCA3000_REG_ADDR_REVID, 1);
@@ -318,12 +360,17 @@ sca3000_show_available_measurement_modes(struct device *dev,
 					 char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 	struct sca3000_state *st = dev_info->dev_data;
 =======
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int len = 0;
 
 	len += sprintf(buf + len, "0 - normal mode");
@@ -355,12 +402,17 @@ sca3000_show_measurement_mode(struct device *dev,
 			      char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 	struct sca3000_state *st = dev_info->dev_data;
 =======
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int len = 0, ret;
 
 	mutex_lock(&st->lock);
@@ -411,6 +463,7 @@ sca3000_store_measurement_mode(struct device *dev,
 			       size_t len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 	struct sca3000_state *st = dev_info->dev_data;
 	int ret;
@@ -423,6 +476,9 @@ sca3000_store_measurement_mode(struct device *dev,
 		goto error_ret;
 =======
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct sca3000_state *st = iio_priv(indio_dev);
 	int ret;
 	u8 mask = 0x03;
@@ -436,7 +492,10 @@ sca3000_store_measurement_mode(struct device *dev,
 		ret = -EINVAL;
 		goto error_ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = sca3000_read_data_short(st, SCA3000_REG_ADDR_MODE, 1);
 	if (ret)
 		goto error_ret;
@@ -471,6 +530,7 @@ static IIO_DEVICE_ATTR(measurement_mode, S_IRUGO | S_IWUSR,
 /* More standard attributes */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static IIO_DEV_ATTR_REV(sca3000_show_rev);
 
 #define SCA3000_INFO_MASK			\
@@ -491,6 +551,39 @@ static struct iio_chan_spec sca3000_channels[] = {
 		 1, 1, IIO_ST('s', 11, 16, 5), SCA3000_EVENT_MASK),
 	IIO_CHAN(IIO_ACCEL, 1, 0, 0, NULL, 0, IIO_MOD_Z, SCA3000_INFO_MASK,
 		 2, 2, IIO_ST('s', 11, 16, 5), SCA3000_EVENT_MASK),
+=======
+static IIO_DEVICE_ATTR(revision, S_IRUGO, sca3000_show_rev, NULL, 0);
+
+static const struct iio_event_spec sca3000_event = {
+	.type = IIO_EV_TYPE_MAG,
+	.dir = IIO_EV_DIR_RISING,
+	.mask_separate = BIT(IIO_EV_INFO_VALUE) | BIT(IIO_EV_INFO_ENABLE),
+};
+
+#define SCA3000_CHAN(index, mod)				\
+	{							\
+		.type = IIO_ACCEL,				\
+		.modified = 1,					\
+		.channel2 = mod,				\
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),	\
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),\
+		.address = index,				\
+		.scan_index = index,				\
+		.scan_type = {					\
+			.sign = 's',				\
+			.realbits = 11,				\
+			.storagebits = 16,			\
+			.shift = 5,				\
+		},						\
+		.event_spec = &sca3000_event,			\
+		.num_event_specs = 1,				\
+	 }
+
+static const struct iio_chan_spec sca3000_channels[] = {
+	SCA3000_CHAN(0, IIO_MOD_X),
+	SCA3000_CHAN(1, IIO_MOD_Y),
+	SCA3000_CHAN(2, IIO_MOD_Z),
+>>>>>>> refs/remotes/origin/master
 };
 
 static u8 sca3000_addresses[3][3] = {
@@ -509,15 +602,23 @@ static int sca3000_read_raw(struct iio_dev *indio_dev,
 			    long mask)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
 =======
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u8 address;
 
 	switch (mask) {
+<<<<<<< HEAD
 	case 0:
+=======
+	case IIO_CHAN_INFO_RAW:
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&st->lock);
 		if (st->mo_det_use_count) {
 			mutex_unlock(&st->lock);
@@ -535,10 +636,14 @@ static int sca3000_read_raw(struct iio_dev *indio_dev,
 		mutex_unlock(&st->lock);
 		return IIO_VAL_INT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_SCALE_SHARED):
 =======
 	case IIO_CHAN_INFO_SCALE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case IIO_CHAN_INFO_SCALE:
+>>>>>>> refs/remotes/origin/master
 		*val = 0;
 		if (chan->type == IIO_ACCEL)
 			*val2 = st->info->scale;
@@ -562,12 +667,17 @@ static ssize_t sca3000_read_av_freq(struct device *dev,
 			     struct device_attribute *attr,
 			     char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
 =======
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int len = 0, ret, val;
 
 	mutex_lock(&st->lock);
@@ -637,12 +747,17 @@ static ssize_t sca3000_read_frequency(struct device *dev,
 			       struct device_attribute *attr,
 			       char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
 =======
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret, len = 0, base_freq = 0, val;
 
 	mutex_lock(&st->lock);
@@ -683,6 +798,7 @@ static ssize_t sca3000_set_frequency(struct device *dev,
 			      const char *buf,
 			      size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
@@ -694,6 +810,15 @@ static ssize_t sca3000_set_frequency(struct device *dev,
 	long val;
 
 	ret = strict_strtol(buf, 10, &val);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+	int ret, base_freq = 0;
+	int ctrlval;
+	int val;
+
+	ret = kstrtoint(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -747,12 +872,17 @@ static ssize_t sca3000_read_temp(struct device *dev,
 				 struct device_attribute *attr,
 				 char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
 =======
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	int val;
 	ret = sca3000_read_data_short(st, SCA3000_REG_ADDR_TEMP_MSB, 2);
@@ -775,6 +905,7 @@ static IIO_CONST_ATTR_TEMP_OFFSET("-214.6");
  **/
 static int sca3000_read_thresh(struct iio_dev *indio_dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       int e,
 			       int *val)
 {
@@ -788,6 +919,17 @@ static int sca3000_read_thresh(struct iio_dev *indio_dev,
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 	int num = IIO_EVENT_CODE_EXTRACT_MODIFIER(e);
+=======
+			       const struct iio_chan_spec *chan,
+			       enum iio_event_type type,
+			       enum iio_event_direction dir,
+			       enum iio_event_info info,
+			       int *val, int *val2)
+{
+	int ret, i;
+	struct sca3000_state *st = iio_priv(indio_dev);
+	int num = chan->channel2;
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&st->lock);
 	ret = sca3000_read_ctrl_reg(st, sca3000_addresses[num][1]);
 	mutex_unlock(&st->lock);
@@ -803,13 +945,18 @@ static int sca3000_read_thresh(struct iio_dev *indio_dev,
 				 ARRAY_SIZE(st->info->mot_det_mult_xz))
 			*val += st->info->mot_det_mult_xz[i];
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return IIO_VAL_INT;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * sca3000_write_thresh() control of threshold
  **/
 static int sca3000_write_thresh(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				    int e,
 				    int val)
@@ -822,6 +969,16 @@ static int sca3000_write_thresh(struct iio_dev *indio_dev,
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 	int num = IIO_EVENT_CODE_EXTRACT_MODIFIER(e);
+=======
+				const struct iio_chan_spec *chan,
+				enum iio_event_type type,
+				enum iio_event_direction dir,
+				enum iio_event_info info,
+				int val, int val2)
+{
+	struct sca3000_state *st = iio_priv(indio_dev);
+	int num = chan->channel2;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	int i;
 	u8 nonlinear = 0;
@@ -866,6 +1023,7 @@ static struct attribute *sca3000_attributes_with_temp[] = {
 	&iio_dev_attr_sampling_frequency.dev_attr.attr,
 	/* Only present if temp sensor is */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&iio_dev_attr_temp_raw.dev_attr.attr,
 	&iio_const_attr_temp_offset.dev_attr.attr,
 	&iio_const_attr_temp_scale.dev_attr.attr,
@@ -874,6 +1032,11 @@ static struct attribute *sca3000_attributes_with_temp[] = {
 	&iio_const_attr_in_temp_offset.dev_attr.attr,
 	&iio_const_attr_in_temp_scale.dev_attr.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&iio_dev_attr_in_temp_raw.dev_attr.attr,
+	&iio_const_attr_in_temp_offset.dev_attr.attr,
+	&iio_const_attr_in_temp_scale.dev_attr.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -899,17 +1062,23 @@ static irqreturn_t sca3000_event_handler(int irq, void *private)
 {
 	struct iio_dev *indio_dev = private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sca3000_state *st;
 	int ret, val;
 	s64 last_timestamp = iio_get_time_ns();
 
 	st = indio_dev->dev_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sca3000_state *st = iio_priv(indio_dev);
 	int ret, val;
 	s64 last_timestamp = iio_get_time_ns();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Could lead if badly timed to an extra read of status reg,
 	 * but ensures no interrupt is missed.
 	 */
@@ -921,6 +1090,7 @@ static irqreturn_t sca3000_event_handler(int irq, void *private)
 		goto done;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sca3000_ring_int_process(val, st->indio_dev->ring);
 
 	if (val & SCA3000_INT_STATUS_FREE_FALL)
@@ -929,6 +1099,8 @@ static irqreturn_t sca3000_event_handler(int irq, void *private)
 						  0,
 						  IIO_EV_MOD_X_AND_Y_AND_Z,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sca3000_ring_int_process(val, indio_dev->buffer);
 
 	if (val & SCA3000_INT_STATUS_FREE_FALL)
@@ -936,55 +1108,76 @@ static irqreturn_t sca3000_event_handler(int irq, void *private)
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_X_AND_Y_AND_Z,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_MAG,
 						  IIO_EV_DIR_FALLING),
 			       last_timestamp);
 
 	if (val & SCA3000_INT_STATUS_Y_TRIGGER)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iio_push_event(st->indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_Y,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_Y,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_MAG,
 						  IIO_EV_DIR_RISING),
 			       last_timestamp);
 
 	if (val & SCA3000_INT_STATUS_X_TRIGGER)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iio_push_event(st->indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_X,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_X,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_MAG,
 						  IIO_EV_DIR_RISING),
 			       last_timestamp);
 
 	if (val & SCA3000_INT_STATUS_Z_TRIGGER)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iio_push_event(st->indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_Z,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_Z,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_MAG,
 						  IIO_EV_DIR_RISING),
 			       last_timestamp);
@@ -998,6 +1191,7 @@ done:
  **/
 static int sca3000_read_event_config(struct iio_dev *indio_dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				     int e)
 {
 	struct sca3000_state *st = indio_dev->dev_data;
@@ -1009,6 +1203,16 @@ static int sca3000_read_event_config(struct iio_dev *indio_dev,
 	int ret;
 	u8 protect_mask = 0x03;
 	int num = IIO_EVENT_CODE_EXTRACT_MODIFIER(e);
+=======
+				     const struct iio_chan_spec *chan,
+				     enum iio_event_type type,
+				     enum iio_event_direction dir)
+{
+	struct sca3000_state *st = iio_priv(indio_dev);
+	int ret;
+	u8 protect_mask = 0x03;
+	int num = chan->channel2;
+>>>>>>> refs/remotes/origin/master
 
 	/* read current value of mode register */
 	mutex_lock(&st->lock);
@@ -1038,12 +1242,17 @@ static ssize_t sca3000_query_free_fall_mode(struct device *dev,
 					    char *buf)
 {
 	int ret, len;
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
 =======
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+>>>>>>> refs/remotes/origin/master
 	int val;
 
 	mutex_lock(&st->lock);
@@ -1070,6 +1279,7 @@ static ssize_t sca3000_set_free_fall_mode(struct device *dev,
 					  const char *buf,
 					  size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	struct sca3000_state *st = indio_dev->dev_data;
@@ -1077,11 +1287,20 @@ static ssize_t sca3000_set_free_fall_mode(struct device *dev,
 	struct sca3000_state *st = iio_priv(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 	long val;
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct sca3000_state *st = iio_priv(indio_dev);
+	u8 val;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	u8 protect_mask = SCA3000_FREE_FALL_DETECT;
 
 	mutex_lock(&st->lock);
+<<<<<<< HEAD
 	ret = strict_strtol(buf, 10, &val);
+=======
+	ret = kstrtou8(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto error_ret;
 
@@ -1115,6 +1334,7 @@ error_ret:
  **/
 static int sca3000_write_event_config(struct iio_dev *indio_dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      int e,
 				      int state)
 {
@@ -1128,6 +1348,17 @@ static int sca3000_write_event_config(struct iio_dev *indio_dev,
 	int ret, ctrlval;
 	u8 protect_mask = 0x03;
 	int num = IIO_EVENT_CODE_EXTRACT_MODIFIER(e);
+=======
+				      const struct iio_chan_spec *chan,
+				      enum iio_event_type type,
+				      enum iio_event_direction dir,
+				      int state)
+{
+	struct sca3000_state *st = iio_priv(indio_dev);
+	int ret, ctrlval;
+	u8 protect_mask = 0x03;
+	int num = chan->channel2;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->lock);
 	/* First read the motion detector config to find out if
@@ -1179,10 +1410,14 @@ exit_point:
 /* Free fall detector related event attribute */
 static IIO_DEVICE_ATTR_NAMED(accel_xayaz_mag_falling_en,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     accel_x&y&z_mag_falling_en,
 =======
 			     in_accel_x&y&z_mag_falling_en,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     in_accel_x&y&z_mag_falling_en,
+>>>>>>> refs/remotes/origin/master
 			     S_IRUGO | S_IWUSR,
 			     sca3000_query_free_fall_mode,
 			     sca3000_set_free_fall_mode,
@@ -1190,10 +1425,14 @@ static IIO_DEVICE_ATTR_NAMED(accel_xayaz_mag_falling_en,
 
 static IIO_CONST_ATTR_NAMED(accel_xayaz_mag_falling_period,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    accel_x&y&z_mag_falling_period,
 =======
 			    in_accel_x&y&z_mag_falling_period,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    in_accel_x&y&z_mag_falling_period,
+>>>>>>> refs/remotes/origin/master
 			    "0.226");
 
 static struct attribute *sca3000_event_attributes[] = {
@@ -1205,9 +1444,13 @@ static struct attribute *sca3000_event_attributes[] = {
 static struct attribute_group sca3000_event_attribute_group = {
 	.attrs = sca3000_event_attributes,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.name = "events",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name = "events",
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -1275,9 +1518,12 @@ static const struct iio_info sca3000_info = {
 	.attrs = &sca3000_attribute_group,
 	.read_raw = &sca3000_read_raw,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_interrupt_lines = 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.event_attrs = &sca3000_event_attribute_group,
 	.read_event_value = &sca3000_read_thresh,
 	.write_event_value = &sca3000_write_thresh,
@@ -1296,6 +1542,7 @@ static const struct iio_info sca3000_info_with_temp = {
 	.driver_module = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static int __devinit sca3000_probe(struct spi_device *spi)
 {
 <<<<<<< HEAD
@@ -1310,10 +1557,15 @@ static int __devinit sca3000_probe(struct spi_device *spi)
 	spi_set_drvdata(spi, st);
 
 =======
+=======
+static int sca3000_probe(struct spi_device *spi)
+{
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct sca3000_state *st;
 	struct iio_dev *indio_dev;
 
+<<<<<<< HEAD
 	indio_dev = iio_allocate_device(sizeof(*st));
 	if (indio_dev == NULL) {
 		ret = -ENOMEM;
@@ -1323,11 +1575,20 @@ static int __devinit sca3000_probe(struct spi_device *spi)
 	st = iio_priv(indio_dev);
 	spi_set_drvdata(spi, indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+
+	st = iio_priv(indio_dev);
+	spi_set_drvdata(spi, indio_dev);
+>>>>>>> refs/remotes/origin/master
 	st->us = spi;
 	mutex_init(&st->lock);
 	st->info = &sca3000_spi_chip_info_tbl[spi_get_device_id(spi)
 					      ->driver_data];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	st->indio_dev = iio_allocate_device(0);
 	if (st->indio_dev == NULL) {
@@ -1358,6 +1619,8 @@ static int __devinit sca3000_probe(struct spi_device *spi)
 		goto error_unregister_dev;
 	if (spi->irq && gpio_is_valid(irq_to_gpio(spi->irq)) > 0) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	indio_dev->dev.parent = &spi->dev;
 	indio_dev->name = spi_get_device_id(spi)->name;
 	if (st->info->temp_output)
@@ -1372,7 +1635,11 @@ static int __devinit sca3000_probe(struct spi_device *spi)
 	sca3000_configure_ring(indio_dev);
 	ret = iio_device_register(indio_dev);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto error_free_dev;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	ret = iio_buffer_register(indio_dev,
 				  sca3000_channels,
@@ -1386,6 +1653,7 @@ static int __devinit sca3000_probe(struct spi_device *spi)
 	}
 
 	if (spi->irq) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		ret = request_threaded_irq(spi->irq,
 					   NULL,
@@ -1399,18 +1667,29 @@ static int __devinit sca3000_probe(struct spi_device *spi)
 	}
 	sca3000_register_ring_funcs(st->indio_dev);
 =======
+=======
+		ret = request_threaded_irq(spi->irq,
+					   NULL,
+					   &sca3000_event_handler,
+					   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+					   "sca3000",
+>>>>>>> refs/remotes/origin/master
 					   indio_dev);
 		if (ret)
 			goto error_unregister_ring;
 	}
 	sca3000_register_ring_funcs(indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = sca3000_clean_setup(st);
 	if (ret)
 		goto error_free_irq;
 	return 0;
 
 error_free_irq:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (spi->irq && gpio_is_valid(irq_to_gpio(spi->irq)) > 0)
 		free_irq(spi->irq, st->indio_dev);
@@ -1425,17 +1704,22 @@ error_free_dev:
 error_clear_st:
 	kfree(st);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (spi->irq)
 		free_irq(spi->irq, indio_dev);
 error_unregister_ring:
 	iio_buffer_unregister(indio_dev);
 error_unregister_dev:
 	iio_device_unregister(indio_dev);
+<<<<<<< HEAD
 error_free_dev:
 	iio_free_device(indio_dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1460,6 +1744,7 @@ error_ret:
 static int sca3000_remove(struct spi_device *spi)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sca3000_state *st =  spi_get_drvdata(spi);
 	struct iio_dev *indio_dev = st->indio_dev;
 =======
@@ -1480,13 +1765,23 @@ static int sca3000_remove(struct spi_device *spi)
 
 	kfree(st);
 =======
+=======
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+	struct sca3000_state *st = iio_priv(indio_dev);
+
+	/* Must ensure no interrupts can be generated after this!*/
+	sca3000_stop_all_interrupts(st);
+>>>>>>> refs/remotes/origin/master
 	if (spi->irq)
 		free_irq(spi->irq, indio_dev);
 	iio_device_unregister(indio_dev);
 	iio_buffer_unregister(indio_dev);
 	sca3000_unconfigure_ring(indio_dev);
+<<<<<<< HEAD
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1499,9 +1794,13 @@ static const struct spi_device_id sca3000_id[] = {
 	{}
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(spi, sca3000_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(spi, sca3000_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct spi_driver sca3000_driver = {
 	.driver = {
@@ -1509,6 +1808,7 @@ static struct spi_driver sca3000_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = sca3000_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(sca3000_remove),
 	.id_table = sca3000_id,
 };
@@ -1530,5 +1830,13 @@ module_spi_driver(sca3000_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 MODULE_AUTHOR("Jonathan Cameron <jic23@cam.ac.uk>");
+=======
+	.remove = sca3000_remove,
+	.id_table = sca3000_id,
+};
+module_spi_driver(sca3000_driver);
+
+MODULE_AUTHOR("Jonathan Cameron <jic23@kernel.org>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("VTI SCA3000 Series Accelerometers SPI driver");
 MODULE_LICENSE("GPL v2");

@@ -11,7 +11,11 @@
 
 typedef union {
 	/*
+<<<<<<< HEAD
 	 * bits  0..15 : serving_now
+=======
+	 * bits	 0..15 : serving_now
+>>>>>>> refs/remotes/origin/master
 	 * bits 16..31 : ticket
 	 */
 	u32 lock;

@@ -29,10 +29,14 @@ static int counter_width = 32;
 #define MSR_PPRO_EVENTSEL_RESERVED	((0xFFFFFFFFULL<<32)|(1ULL<<21))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u64 *reset_value;
 =======
 static u64 reset_value[OP_MAX_COUNTER];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 reset_value[OP_MAX_COUNTER];
+>>>>>>> refs/remotes/origin/master
 
 static void ppro_shutdown(struct op_msrs const * const msrs)
 {
@@ -45,12 +49,15 @@ static void ppro_shutdown(struct op_msrs const * const msrs)
 		release_evntsel_nmi(MSR_P6_EVNTSEL0 + i);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (reset_value) {
 		kfree(reset_value);
 		reset_value = NULL;
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ppro_fill_in_addresses(struct op_msrs * const msrs)
@@ -87,6 +94,7 @@ static void ppro_setup_ctrs(struct op_x86_model_spec const *model,
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!reset_value) {
 		reset_value = kzalloc(sizeof(reset_value[0]) * num_counters,
 					GFP_ATOMIC);
@@ -96,6 +104,8 @@ static void ppro_setup_ctrs(struct op_x86_model_spec const *model,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cpu_has_arch_perfmon) {
 		union cpuid10_eax eax;
 		eax.full = cpuid_eax(0xa);
@@ -152,6 +162,7 @@ static int ppro_check_ctrs(struct pt_regs * const regs,
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * This can happen if perf counters are in use when
 	 * we steal the die notifier NMI.
@@ -161,6 +172,8 @@ static int ppro_check_ctrs(struct pt_regs * const regs,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_counters; ++i) {
 		if (!reset_value[i])
 			continue;
@@ -172,9 +185,12 @@ static int ppro_check_ctrs(struct pt_regs * const regs,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 out:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Only P6 based Pentium M need to re-unmask the apic vector but it
 	 * doesn't hurt other P6 variant */
 	apic_write(APIC_LVTPC, apic_read(APIC_LVTPC) & ~APIC_LVT_MASKED);
@@ -196,10 +212,13 @@ static void ppro_start(struct op_msrs const * const msrs)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!reset_value)
 		return;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_counters; ++i) {
 		if (reset_value[i]) {
 			rdmsrl(msrs->controls[i].addr, val);
@@ -216,10 +235,13 @@ static void ppro_stop(struct op_msrs const * const msrs)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!reset_value)
 		return;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_counters; ++i) {
 		if (!reset_value[i])
 			continue;
@@ -265,10 +287,14 @@ static void arch_perfmon_setup_counters(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	num_counters = eax.split.num_counters;
 =======
 	num_counters = min((int)eax.split.num_counters, OP_MAX_COUNTER);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	num_counters = min((int)eax.split.num_counters, OP_MAX_COUNTER);
+>>>>>>> refs/remotes/origin/master
 
 	op_arch_perfmon_spec.num_counters = num_counters;
 	op_arch_perfmon_spec.num_controls = num_counters;

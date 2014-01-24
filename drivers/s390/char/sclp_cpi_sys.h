@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/char/sclp_cpi_sys.h
+=======
+>>>>>>> refs/remotes/origin/master
  *    SCLP control program identification sysfs interface
  *
  *    Copyright IBM Corp. 2007

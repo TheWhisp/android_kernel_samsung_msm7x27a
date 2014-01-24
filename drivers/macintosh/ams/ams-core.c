@@ -32,10 +32,14 @@
 struct ams ams_info;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int verbose;
 =======
 static bool verbose;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool verbose;
+>>>>>>> refs/remotes/origin/master
 module_param(verbose, bool, 0644);
 MODULE_PARM_DESC(verbose, "Show free falls and shocks in kernel output");
 
@@ -230,7 +234,11 @@ void ams_sensor_detach(void)
 	 * We do this after ams_info.exit(), because an interrupt might
 	 * have arrived before disabling them.
 	 */
+<<<<<<< HEAD
 	flush_work_sync(&ams_info.worker);
+=======
+	flush_work(&ams_info.worker);
+>>>>>>> refs/remotes/origin/master
 
 	/* Remove device */
 	of_device_unregister(ams_info.of_dev);

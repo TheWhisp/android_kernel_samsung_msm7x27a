@@ -25,6 +25,7 @@
 #include <net/llc_s_st.h>
 #include <net/llc_pdu.h>
 
+<<<<<<< HEAD
 /**
  * struct llc_station - LLC station component
  *
@@ -154,11 +155,19 @@ static int llc_stat_ev_rx_null_dsap_xid_c(struct sk_buff *skb)
 
 	return ev->type == LLC_STATION_EV_TYPE_PDU &&
 	       LLC_PDU_IS_CMD(pdu) &&			/* command PDU */
+=======
+static int llc_stat_ev_rx_null_dsap_xid_c(struct sk_buff *skb)
+{
+	struct llc_pdu_un *pdu = llc_pdu_un_hdr(skb);
+
+	return LLC_PDU_IS_CMD(pdu) &&			/* command PDU */
+>>>>>>> refs/remotes/origin/master
 	       LLC_PDU_TYPE_IS_U(pdu) &&		/* U type PDU */
 	       LLC_U_PDU_CMD(pdu) == LLC_1_PDU_CMD_XID &&
 	       !pdu->dsap ? 0 : 1;			/* NULL DSAP value */
 }
 
+<<<<<<< HEAD
 static int llc_stat_ev_rx_null_dsap_0_xid_r_xid_r_cnt_eq(struct sk_buff *skb)
 {
 	struct llc_station_state_ev *ev = llc_station_ev(skb);
@@ -192,11 +201,19 @@ static int llc_stat_ev_rx_null_dsap_test_c(struct sk_buff *skb)
 
 	return ev->type == LLC_STATION_EV_TYPE_PDU &&
 	       LLC_PDU_IS_CMD(pdu) &&			/* command PDU */
+=======
+static int llc_stat_ev_rx_null_dsap_test_c(struct sk_buff *skb)
+{
+	struct llc_pdu_un *pdu = llc_pdu_un_hdr(skb);
+
+	return LLC_PDU_IS_CMD(pdu) &&			/* command PDU */
+>>>>>>> refs/remotes/origin/master
 	       LLC_PDU_TYPE_IS_U(pdu) &&		/* U type PDU */
 	       LLC_U_PDU_CMD(pdu) == LLC_1_PDU_CMD_TEST &&
 	       !pdu->dsap ? 0 : 1;			/* NULL DSAP */
 }
 
+<<<<<<< HEAD
 static int llc_stat_ev_disable_req(struct sk_buff *skb)
 {
 	struct llc_station_state_ev *ev = llc_station_ev(skb);
@@ -272,6 +289,8 @@ free:
 	goto out;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int llc_station_ac_send_xid_r(struct sk_buff *skb)
 {
 	u8 mac_da[ETH_ALEN], dsap;
@@ -289,11 +308,19 @@ static int llc_station_ac_send_xid_r(struct sk_buff *skb)
 	rc = llc_mac_hdr_init(nskb, skb->dev->dev_addr, mac_da);
 	if (unlikely(rc))
 		goto free;
+<<<<<<< HEAD
 	llc_station_send_pdu(nskb);
 out:
 	return rc;
 free:
 	kfree_skb(skb);
+=======
+	dev_queue_xmit(nskb);
+out:
+	return rc;
+free:
+	kfree_skb(nskb);
+>>>>>>> refs/remotes/origin/master
 	goto out;
 }
 
@@ -318,6 +345,7 @@ static int llc_station_ac_send_test_r(struct sk_buff *skb)
 	rc = llc_mac_hdr_init(nskb, skb->dev->dev_addr, mac_da);
 	if (unlikely(rc))
 		goto free;
+<<<<<<< HEAD
 	llc_station_send_pdu(nskb);
 out:
 	return rc;
@@ -673,6 +701,17 @@ static void llc_station_ack_tmr_cb(unsigned long timeout_data)
 }
 
 /*
+=======
+	dev_queue_xmit(nskb);
+out:
+	return rc;
+free:
+	kfree_skb(nskb);
+	goto out;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  *	llc_station_rcv - send received pdu to the station state machine
  *	@skb: received frame.
  *
@@ -680,6 +719,7 @@ static void llc_station_ack_tmr_cb(unsigned long timeout_data)
  */
 static void llc_station_rcv(struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	struct llc_station_state_ev *ev = llc_station_ev(skb);
 
 	ev->type   = LLC_STATION_EV_TYPE_PDU;
@@ -717,6 +757,21 @@ out:
 }
 
 void __exit llc_station_exit(void)
+=======
+	if (llc_stat_ev_rx_null_dsap_xid_c(skb))
+		llc_station_ac_send_xid_r(skb);
+	else if (llc_stat_ev_rx_null_dsap_test_c(skb))
+		llc_station_ac_send_test_r(skb);
+	kfree_skb(skb);
+}
+
+void __init llc_station_init(void)
+{
+	llc_set_station_handler(llc_station_rcv);
+}
+
+void llc_station_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	llc_set_station_handler(NULL);
 }

@@ -29,11 +29,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/sync.h>
 
@@ -58,10 +61,13 @@ struct dmm_object {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Globals */
 static u32 refs;		/* module reference count */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct map_page {
 	u32 region_size:15;
 	u32 mapped_size:15;
@@ -130,10 +136,13 @@ int dmm_create(struct dmm_object **dmm_manager,
 	struct dmm_object *dmm_obj = NULL;
 	int status = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(dmm_manager != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*dmm_manager = NULL;
 	/* create, zero, and tag a cmm mgr object */
@@ -159,9 +168,12 @@ int dmm_destroy(struct dmm_object *dmm_mgr)
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dmm_mgr) {
 		status = dmm_delete_tables(dmm_obj);
 		if (!status)
@@ -182,9 +194,12 @@ int dmm_delete_tables(struct dmm_object *dmm_mgr)
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Delete all DMM tables */
 	if (dmm_mgr)
 		vfree(virtual_mapping_table);
@@ -194,6 +209,7 @@ int dmm_delete_tables(struct dmm_object *dmm_mgr)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *  ======== dmm_exit ========
  *  Purpose:
@@ -210,6 +226,8 @@ void dmm_exit(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== dmm_get_handle ========
  *  Purpose:
  *      Return the dynamic memory manager object for this device.
@@ -221,10 +239,13 @@ int dmm_get_handle(void *hprocessor, struct dmm_object **dmm_manager)
 	struct dev_object *hdev_obj;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(dmm_manager != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hprocessor != NULL)
 		status = proc_get_dev_object(hprocessor, &hdev_obj);
 	else
@@ -237,6 +258,7 @@ int dmm_get_handle(void *hprocessor, struct dmm_object **dmm_manager)
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *  ======== dmm_init ========
  *  Purpose:
@@ -262,6 +284,8 @@ bool dmm_init(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== dmm_map_memory ========
  *  Purpose:
  *      Add a mapping block to the reserved chunk. DMM assumes that this block
@@ -287,8 +311,13 @@ int dmm_map_memory(struct dmm_object *dmm_mgr, u32 addr, u32 size)
 		status = -ENOENT;
 	spin_unlock(&dmm_obj->dmm_lock);
 
+<<<<<<< HEAD
 	dev_dbg(bridge, "%s dmm_mgr %p, addr %x, size %x\n\tstatus %x, "
 		"chunk %p", __func__, dmm_mgr, addr, size, status, chunk);
+=======
+	dev_dbg(bridge, "%s dmm_mgr %p, addr %x, size %x\n\tstatus %x, chunk %p",
+			__func__, dmm_mgr, addr, size, status, chunk);
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
@@ -338,9 +367,15 @@ int dmm_reserve_memory(struct dmm_object *dmm_mgr, u32 size,
 
 	spin_unlock(&dmm_obj->dmm_lock);
 
+<<<<<<< HEAD
 	dev_dbg(bridge, "%s dmm_mgr %p, size %x, prsv_addr %p\n\tstatus %x, "
 		"rsv_addr %x, rsv_size %x\n", __func__, dmm_mgr, size,
 		prsv_addr, status, rsv_addr, rsv_size);
+=======
+	dev_dbg(bridge, "%s dmm_mgr %p, size %x, prsv_addr %p\n\tstatus %x, rsv_addr %x, rsv_size %x\n",
+			__func__, dmm_mgr, size,
+			prsv_addr, status, rsv_addr, rsv_size);
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
@@ -369,8 +404,13 @@ int dmm_un_map_memory(struct dmm_object *dmm_mgr, u32 addr, u32 *psize)
 	}
 	spin_unlock(&dmm_obj->dmm_lock);
 
+<<<<<<< HEAD
 	dev_dbg(bridge, "%s: dmm_mgr %p, addr %x, psize %p\n\tstatus %x, "
 		"chunk %p\n", __func__, dmm_mgr, addr, psize, status, chunk);
+=======
+	dev_dbg(bridge, "%s: dmm_mgr %p, addr %x, psize %p\n\tstatus %x, chunk %p\n",
+			__func__, dmm_mgr, addr, psize, status, chunk);
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
@@ -545,11 +585,19 @@ u32 dmm_mem_map_dump(struct dmm_object *dmm_mgr)
 		}
 	}
 	spin_unlock(&dmm_mgr->dmm_lock);
+<<<<<<< HEAD
 	printk(KERN_INFO "Total DSP VA FREE memory = %d Mbytes\n",
 	       freemem / (1024 * 1024));
 	printk(KERN_INFO "Total DSP VA USED memory= %d Mbytes \n",
 	       (((table_size * PG_SIZE4K) - freemem)) / (1024 * 1024));
 	printk(KERN_INFO "DSP VA - Biggest FREE block = %d Mbytes \n\n",
+=======
+	dev_info(bridge, "Total DSP VA FREE memory = %d Mbytes\n",
+	       freemem / (1024 * 1024));
+	dev_info(bridge, "Total DSP VA USED memory= %d Mbytes\n",
+	       (((table_size * PG_SIZE4K) - freemem)) / (1024 * 1024));
+	dev_info(bridge, "DSP VA - Biggest FREE block = %d Mbytes\n",
+>>>>>>> refs/remotes/origin/master
 	       (bigsize * PG_SIZE4K / (1024 * 1024)));
 
 	return 0;

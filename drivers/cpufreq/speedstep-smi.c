@@ -21,9 +21,13 @@
 #include <linux/io.h>
 #include <asm/ist.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cpu_device_id.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "speedstep-lib.h"
 
@@ -238,6 +242,7 @@ static void speedstep_set_state(unsigned int state)
 /**
  * speedstep_target - set a new CPUFreq policy
  * @policy: new policy
+<<<<<<< HEAD
  * @target_freq: new freq
  * @relation:
  *
@@ -263,11 +268,21 @@ static int speedstep_target(struct cpufreq_policy *policy,
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 	speedstep_set_state(newstate);
 	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
+=======
+ * @index: index of new freq
+ *
+ * Sets a new CPUFreq policy/freq.
+ */
+static int speedstep_target(struct cpufreq_policy *policy, unsigned int index)
+{
+	speedstep_set_state(index);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 
+<<<<<<< HEAD
 /**
  * speedstep_verify - verifies a new CPUFreq policy
  * @policy: new policy
@@ -285,6 +300,11 @@ static int speedstep_cpu_init(struct cpufreq_policy *policy)
 {
 	int result;
 	unsigned int speed, state;
+=======
+static int speedstep_cpu_init(struct cpufreq_policy *policy)
+{
+	int result;
+>>>>>>> refs/remotes/origin/master
 	unsigned int *low, *high;
 
 	/* capability check */
@@ -320,6 +340,7 @@ static int speedstep_cpu_init(struct cpufreq_policy *policy)
 			pr_debug("workaround worked.\n");
 	}
 
+<<<<<<< HEAD
 	/* get current speed setting */
 	state = speedstep_get_state();
 	speed = speedstep_freqs[state].frequency;
@@ -346,6 +367,10 @@ static int speedstep_cpu_exit(struct cpufreq_policy *policy)
 {
 	cpufreq_frequency_table_put_attr(policy->cpu);
 	return 0;
+=======
+	policy->cpuinfo.transition_latency = CPUFREQ_ETERNAL;
+	return cpufreq_table_validate_and_show(policy, speedstep_freqs);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int speedstep_get(unsigned int cpu)
@@ -366,6 +391,7 @@ static int speedstep_resume(struct cpufreq_policy *policy)
 	return result;
 }
 
+<<<<<<< HEAD
 static struct freq_attr *speedstep_attr[] = {
 	&cpufreq_freq_attr_scaling_available_freqs,
 	NULL,
@@ -385,6 +411,19 @@ static struct cpufreq_driver speedstep_driver = {
 
 <<<<<<< HEAD
 =======
+=======
+static struct cpufreq_driver speedstep_driver = {
+	.name		= "speedstep-smi",
+	.verify		= cpufreq_generic_frequency_table_verify,
+	.target_index	= speedstep_target,
+	.init		= speedstep_cpu_init,
+	.exit		= cpufreq_generic_exit,
+	.get		= speedstep_get,
+	.resume		= speedstep_resume,
+	.attr		= cpufreq_generic_attr,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct x86_cpu_id ss_smi_ids[] = {
 	{ X86_VENDOR_INTEL, 6, 0xb, },
 	{ X86_VENDOR_INTEL, 6, 0x8, },
@@ -396,7 +435,10 @@ static const struct x86_cpu_id ss_smi_ids[] = {
 MODULE_DEVICE_TABLE(x86cpu, ss_smi_ids);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * speedstep_init - initializes the SpeedStep CPUFreq driver
  *
@@ -407,11 +449,17 @@ MODULE_DEVICE_TABLE(x86cpu, ss_smi_ids);
 static int __init speedstep_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!x86_match_cpu(ss_smi_ids))
 		return -ENODEV;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(ss_smi_ids))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	speedstep_processor = speedstep_detect_processor();
 
 	switch (speedstep_processor) {

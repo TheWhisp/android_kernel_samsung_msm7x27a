@@ -41,10 +41,14 @@ enum xscale_perf_types {
 
 enum xscale_counters {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	XSCALE_CYCLE_COUNTER	= 1,
 =======
 	XSCALE_CYCLE_COUNTER	= 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	XSCALE_CYCLE_COUNTER	= 0,
+>>>>>>> refs/remotes/origin/master
 	XSCALE_COUNTER0,
 	XSCALE_COUNTER1,
 	XSCALE_COUNTER2,
@@ -52,6 +56,7 @@ enum xscale_counters {
 };
 
 static const unsigned xscale_perf_map[PERF_COUNT_HW_MAX] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	[PERF_COUNT_HW_CPU_CYCLES]	    = XSCALE_PERFCTR_CCNT,
 	[PERF_COUNT_HW_INSTRUCTIONS]	    = XSCALE_PERFCTR_INSTRUCTION,
@@ -61,6 +66,8 @@ static const unsigned xscale_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_BRANCH_MISSES]	    = XSCALE_PERFCTR_BRANCH_MISS,
 	[PERF_COUNT_HW_BUS_CYCLES]	    = HW_OP_UNSUPPORTED,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	[PERF_COUNT_HW_CPU_CYCLES]		= XSCALE_PERFCTR_CCNT,
 	[PERF_COUNT_HW_INSTRUCTIONS]		= XSCALE_PERFCTR_INSTRUCTION,
 	[PERF_COUNT_HW_CACHE_REFERENCES]	= HW_OP_UNSUPPORTED,
@@ -70,10 +77,16 @@ static const unsigned xscale_perf_map[PERF_COUNT_HW_MAX] = {
 	[PERF_COUNT_HW_BUS_CYCLES]		= HW_OP_UNSUPPORTED,
 	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND]	= XSCALE_PERFCTR_ICACHE_NO_DELIVER,
 	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND]	= HW_OP_UNSUPPORTED,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 static unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+=======
+};
+
+static const unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
+>>>>>>> refs/remotes/origin/master
 					   [PERF_COUNT_HW_CACHE_OP_MAX]
 					   [PERF_COUNT_HW_CACHE_RESULT_MAX] = {
 	[C(L1D)] = {
@@ -97,7 +110,11 @@ static unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		},
 		[C(OP_WRITE)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
+<<<<<<< HEAD
 			[C(RESULT_MISS)]	= XSCALE_PERFCTR_ICACHE_MISS,
+=======
+			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
+>>>>>>> refs/remotes/origin/master
 		},
 		[C(OP_PREFETCH)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -161,7 +178,10 @@ static unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	[C(NODE)] = {
 		[C(OP_READ)] = {
 			[C(RESULT_ACCESS)]	= CACHE_OP_UNSUPPORTED,
@@ -176,7 +196,10 @@ static unsigned xscale_perf_cache_map[PERF_COUNT_HW_CACHE_MAX]
 			[C(RESULT_MISS)]	= CACHE_OP_UNSUPPORTED,
 		},
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define	XSCALE_PMU_ENABLE	0x001
@@ -242,10 +265,15 @@ xscale1pmu_handle_irq(int irq_num, void *dev)
 	unsigned long pmnc;
 	struct perf_sample_data data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cpu_hw_events *cpuc;
 =======
 	struct pmu_hw_events *cpuc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct arm_pmu *cpu_pmu = (struct arm_pmu *)dev;
+	struct pmu_hw_events *cpuc = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/master
 	struct pt_regs *regs;
 	int idx;
 
@@ -269,6 +297,7 @@ xscale1pmu_handle_irq(int irq_num, void *dev)
 
 	regs = get_irq_regs();
 
+<<<<<<< HEAD
 	perf_sample_data_init(&data, 0);
 
 	cpuc = &__get_cpu_var(cpu_hw_events);
@@ -279,18 +308,24 @@ xscale1pmu_handle_irq(int irq_num, void *dev)
 
 		if (!test_bit(idx, cpuc->active_mask))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (idx = 0; idx < cpu_pmu->num_events; ++idx) {
 		struct perf_event *event = cpuc->events[idx];
 		struct hw_perf_event *hwc;
 
 		if (!event)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		if (!xscale1_pmnc_counter_has_overflowed(pmnc, idx))
 			continue;
 
 		hwc = &event->hw;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		armpmu_event_update(event, hwc, idx, 1);
 =======
@@ -307,6 +342,15 @@ xscale1pmu_handle_irq(int irq_num, void *dev)
 		if (perf_event_overflow(event, &data, regs))
 			cpu_pmu->disable(hwc, idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		armpmu_event_update(event);
+		perf_sample_data_init(&data, 0, hwc->last_period);
+		if (!armpmu_event_set_period(event))
+			continue;
+
+		if (perf_event_overflow(event, &data, regs))
+			cpu_pmu->disable(event);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	irq_work_run();
@@ -320,6 +364,7 @@ xscale1pmu_handle_irq(int irq_num, void *dev)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static void
 xscale1pmu_enable_event(struct hw_perf_event *hwc, int idx)
 {
@@ -328,6 +373,15 @@ xscale1pmu_enable_event(struct hw_perf_event *hwc, int idx)
 =======
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void xscale1pmu_enable_event(struct perf_event *event)
+{
+	unsigned long val, mask, evt, flags;
+	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+	int idx = hwc->idx;
+>>>>>>> refs/remotes/origin/master
 
 	switch (idx) {
 	case XSCALE_CYCLE_COUNTER:
@@ -350,14 +404,19 @@ xscale1pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 =======
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	val = xscale1pmu_read_pmnc();
 	val &= ~mask;
 	val |= evt;
 	xscale1pmu_write_pmnc(val);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 =======
@@ -373,6 +432,18 @@ xscale1pmu_disable_event(struct hw_perf_event *hwc, int idx)
 =======
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+}
+
+static void xscale1pmu_disable_event(struct perf_event *event)
+{
+	unsigned long val, mask, evt, flags;
+	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+	int idx = hwc->idx;
+>>>>>>> refs/remotes/origin/master
 
 	switch (idx) {
 	case XSCALE_CYCLE_COUNTER:
@@ -393,14 +464,19 @@ xscale1pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 =======
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	val = xscale1pmu_read_pmnc();
 	val &= ~mask;
 	val |= evt;
 	xscale1pmu_write_pmnc(val);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 }
@@ -408,15 +484,24 @@ xscale1pmu_disable_event(struct hw_perf_event *hwc, int idx)
 static int
 xscale1pmu_get_event_idx(struct cpu_hw_events *cpuc,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
 }
 
 static int
 xscale1pmu_get_event_idx(struct pmu_hw_events *cpuc,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			struct hw_perf_event *event)
 {
 	if (XSCALE_PERFCTR_CCNT == event->config_base) {
+=======
+				struct perf_event *event)
+{
+	struct hw_perf_event *hwc = &event->hw;
+	if (XSCALE_PERFCTR_CCNT == hwc->config_base) {
+>>>>>>> refs/remotes/origin/master
 		if (test_and_set_bit(XSCALE_CYCLE_COUNTER, cpuc->used_mask))
 			return -EAGAIN;
 
@@ -432,6 +517,7 @@ xscale1pmu_get_event_idx(struct pmu_hw_events *cpuc,
 	}
 }
 
+<<<<<<< HEAD
 static void
 xscale1pmu_start(void)
 {
@@ -444,6 +530,11 @@ xscale1pmu_start(void)
 	xscale1pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 =======
+=======
+static void xscale1pmu_start(struct arm_pmu *cpu_pmu)
+{
+	unsigned long flags, val;
+>>>>>>> refs/remotes/origin/master
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
@@ -451,6 +542,7 @@ xscale1pmu_start(void)
 	val |= XSCALE_PMU_ENABLE;
 	xscale1pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -466,6 +558,13 @@ xscale1pmu_stop(void)
 	xscale1pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 =======
+=======
+}
+
+static void xscale1pmu_stop(struct arm_pmu *cpu_pmu)
+{
+	unsigned long flags, val;
+>>>>>>> refs/remotes/origin/master
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
@@ -473,12 +572,21 @@ xscale1pmu_stop(void)
 	val &= ~XSCALE_PMU_ENABLE;
 	xscale1pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline u32
 xscale1pmu_read_counter(int counter)
 {
+=======
+}
+
+static inline u32 xscale1pmu_read_counter(struct perf_event *event)
+{
+	struct hw_perf_event *hwc = &event->hw;
+	int counter = hwc->idx;
+>>>>>>> refs/remotes/origin/master
 	u32 val = 0;
 
 	switch (counter) {
@@ -496,9 +604,17 @@ xscale1pmu_read_counter(int counter)
 	return val;
 }
 
+<<<<<<< HEAD
 static inline void
 xscale1pmu_write_counter(int counter, u32 val)
 {
+=======
+static inline void xscale1pmu_write_counter(struct perf_event *event, u32 val)
+{
+	struct hw_perf_event *hwc = &event->hw;
+	int counter = hwc->idx;
+
+>>>>>>> refs/remotes/origin/master
 	switch (counter) {
 	case XSCALE_CYCLE_COUNTER:
 		asm volatile("mcr p14, 0, %0, c1, c0, 0" : : "r" (val));
@@ -512,6 +628,7 @@ xscale1pmu_write_counter(int counter, u32 val)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct arm_pmu xscale1pmu = {
 =======
@@ -551,6 +668,30 @@ static struct arm_pmu *__init xscale1pmu_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	return &xscale1pmu;
+=======
+static int xscale_map_event(struct perf_event *event)
+{
+	return armpmu_map_event(event, &xscale_perf_map,
+				&xscale_perf_cache_map, 0xFF);
+}
+
+static int xscale1pmu_init(struct arm_pmu *cpu_pmu)
+{
+	cpu_pmu->name		= "xscale1";
+	cpu_pmu->handle_irq	= xscale1pmu_handle_irq;
+	cpu_pmu->enable		= xscale1pmu_enable_event;
+	cpu_pmu->disable	= xscale1pmu_disable_event;
+	cpu_pmu->read_counter	= xscale1pmu_read_counter;
+	cpu_pmu->write_counter	= xscale1pmu_write_counter;
+	cpu_pmu->get_event_idx	= xscale1pmu_get_event_idx;
+	cpu_pmu->start		= xscale1pmu_start;
+	cpu_pmu->stop		= xscale1pmu_stop;
+	cpu_pmu->map_event	= xscale_map_event;
+	cpu_pmu->num_events	= 3;
+	cpu_pmu->max_period	= (1LLU << 32) - 1;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define XSCALE2_OVERFLOWED_MASK	0x01f
@@ -667,10 +808,15 @@ xscale2pmu_handle_irq(int irq_num, void *dev)
 	unsigned long pmnc, of_flags;
 	struct perf_sample_data data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cpu_hw_events *cpuc;
 =======
 	struct pmu_hw_events *cpuc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct arm_pmu *cpu_pmu = (struct arm_pmu *)dev;
+	struct pmu_hw_events *cpuc = cpu_pmu->get_hw_events();
+>>>>>>> refs/remotes/origin/master
 	struct pt_regs *regs;
 	int idx;
 
@@ -688,6 +834,7 @@ xscale2pmu_handle_irq(int irq_num, void *dev)
 
 	regs = get_irq_regs();
 
+<<<<<<< HEAD
 	perf_sample_data_init(&data, 0);
 
 	cpuc = &__get_cpu_var(cpu_hw_events);
@@ -705,6 +852,8 @@ xscale2pmu_handle_irq(int irq_num, void *dev)
 		hwc = &event->hw;
 		armpmu_event_update(event, hwc, idx, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (idx = 0; idx < cpu_pmu->num_events; ++idx) {
 		struct perf_event *event = cpuc->events[idx];
 		struct hw_perf_event *hwc;
@@ -716,6 +865,7 @@ xscale2pmu_handle_irq(int irq_num, void *dev)
 			continue;
 
 		hwc = &event->hw;
+<<<<<<< HEAD
 		armpmu_event_update(event, hwc, idx);
 >>>>>>> refs/remotes/origin/cm-10.0
 		data.period = event->hw.last_period;
@@ -729,6 +879,15 @@ xscale2pmu_handle_irq(int irq_num, void *dev)
 		if (perf_event_overflow(event, &data, regs))
 			cpu_pmu->disable(hwc, idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		armpmu_event_update(event);
+		perf_sample_data_init(&data, 0, hwc->last_period);
+		if (!armpmu_event_set_period(event))
+			continue;
+
+		if (perf_event_overflow(event, &data, regs))
+			cpu_pmu->disable(event);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	irq_work_run();
@@ -742,6 +901,7 @@ xscale2pmu_handle_irq(int irq_num, void *dev)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static void
 xscale2pmu_enable_event(struct hw_perf_event *hwc, int idx)
 {
@@ -750,6 +910,15 @@ xscale2pmu_enable_event(struct hw_perf_event *hwc, int idx)
 =======
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void xscale2pmu_enable_event(struct perf_event *event)
+{
+	unsigned long flags, ien, evtsel;
+	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+	int idx = hwc->idx;
+>>>>>>> refs/remotes/origin/master
 
 	ien = xscale2pmu_read_int_enable();
 	evtsel = xscale2pmu_read_event_select();
@@ -784,15 +953,19 @@ xscale2pmu_enable_event(struct hw_perf_event *hwc, int idx)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 	xscale2pmu_write_event_select(evtsel);
 	xscale2pmu_write_int_enable(ien);
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
 	xscale2pmu_write_event_select(evtsel);
 	xscale2pmu_write_int_enable(ien);
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -805,6 +978,17 @@ xscale2pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	unsigned long flags, ien, evtsel, of_flags;
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static void xscale2pmu_disable_event(struct perf_event *event)
+{
+	unsigned long flags, ien, evtsel, of_flags;
+	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+	struct hw_perf_event *hwc = &event->hw;
+	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
+	int idx = hwc->idx;
+>>>>>>> refs/remotes/origin/master
 
 	ien = xscale2pmu_read_int_enable();
 	evtsel = xscale2pmu_read_event_select();
@@ -813,51 +997,72 @@ xscale2pmu_disable_event(struct hw_perf_event *hwc, int idx)
 	case XSCALE_CYCLE_COUNTER:
 		ien &= ~XSCALE2_CCOUNT_INT_EN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		of_flags = XSCALE2_CCOUNT_OVERFLOW;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		of_flags = XSCALE2_CCOUNT_OVERFLOW;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case XSCALE_COUNTER0:
 		ien &= ~XSCALE2_COUNT0_INT_EN;
 		evtsel &= ~XSCALE2_COUNT0_EVT_MASK;
 		evtsel |= XSCALE_PERFCTR_UNUSED << XSCALE2_COUNT0_EVT_SHFT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		of_flags = XSCALE2_COUNT0_OVERFLOW;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		of_flags = XSCALE2_COUNT0_OVERFLOW;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case XSCALE_COUNTER1:
 		ien &= ~XSCALE2_COUNT1_INT_EN;
 		evtsel &= ~XSCALE2_COUNT1_EVT_MASK;
 		evtsel |= XSCALE_PERFCTR_UNUSED << XSCALE2_COUNT1_EVT_SHFT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		of_flags = XSCALE2_COUNT1_OVERFLOW;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		of_flags = XSCALE2_COUNT1_OVERFLOW;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case XSCALE_COUNTER2:
 		ien &= ~XSCALE2_COUNT2_INT_EN;
 		evtsel &= ~XSCALE2_COUNT2_EVT_MASK;
 		evtsel |= XSCALE_PERFCTR_UNUSED << XSCALE2_COUNT2_EVT_SHFT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		of_flags = XSCALE2_COUNT2_OVERFLOW;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		of_flags = XSCALE2_COUNT2_OVERFLOW;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case XSCALE_COUNTER3:
 		ien &= ~XSCALE2_COUNT3_INT_EN;
 		evtsel &= ~XSCALE2_COUNT3_EVT_MASK;
 		evtsel |= XSCALE_PERFCTR_UNUSED << XSCALE2_COUNT3_EVT_SHFT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		of_flags = XSCALE2_COUNT3_OVERFLOW;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		of_flags = XSCALE2_COUNT3_OVERFLOW;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		WARN_ONCE(1, "invalid counter number (%d)\n", idx);
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	raw_spin_lock_irqsave(&pmu_lock, flags);
 	xscale2pmu_write_event_select(evtsel);
@@ -868,6 +1073,8 @@ xscale2pmu_disable_event(struct hw_perf_event *hwc, int idx)
 static int
 xscale2pmu_get_event_idx(struct cpu_hw_events *cpuc,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
 	xscale2pmu_write_event_select(evtsel);
 	xscale2pmu_write_int_enable(ien);
@@ -877,8 +1084,12 @@ xscale2pmu_get_event_idx(struct cpu_hw_events *cpuc,
 
 static int
 xscale2pmu_get_event_idx(struct pmu_hw_events *cpuc,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			struct hw_perf_event *event)
+=======
+				struct perf_event *event)
+>>>>>>> refs/remotes/origin/master
 {
 	int idx = xscale1pmu_get_event_idx(cpuc, event);
 	if (idx >= 0)
@@ -892,6 +1103,7 @@ out:
 	return idx;
 }
 
+<<<<<<< HEAD
 static void
 xscale2pmu_start(void)
 {
@@ -904,6 +1116,11 @@ xscale2pmu_start(void)
 	xscale2pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 =======
+=======
+static void xscale2pmu_start(struct arm_pmu *cpu_pmu)
+{
+	unsigned long flags, val;
+>>>>>>> refs/remotes/origin/master
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
@@ -911,6 +1128,7 @@ xscale2pmu_start(void)
 	val |= XSCALE_PMU_ENABLE;
 	xscale2pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -926,6 +1144,13 @@ xscale2pmu_stop(void)
 	xscale2pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&pmu_lock, flags);
 =======
+=======
+}
+
+static void xscale2pmu_stop(struct arm_pmu *cpu_pmu)
+{
+	unsigned long flags, val;
+>>>>>>> refs/remotes/origin/master
 	struct pmu_hw_events *events = cpu_pmu->get_hw_events();
 
 	raw_spin_lock_irqsave(&events->pmu_lock, flags);
@@ -933,12 +1158,21 @@ xscale2pmu_stop(void)
 	val &= ~XSCALE_PMU_ENABLE;
 	xscale2pmu_write_pmnc(val);
 	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static inline u32
 xscale2pmu_read_counter(int counter)
 {
+=======
+}
+
+static inline u32 xscale2pmu_read_counter(struct perf_event *event)
+{
+	struct hw_perf_event *hwc = &event->hw;
+	int counter = hwc->idx;
+>>>>>>> refs/remotes/origin/master
 	u32 val = 0;
 
 	switch (counter) {
@@ -962,9 +1196,17 @@ xscale2pmu_read_counter(int counter)
 	return val;
 }
 
+<<<<<<< HEAD
 static inline void
 xscale2pmu_write_counter(int counter, u32 val)
 {
+=======
+static inline void xscale2pmu_write_counter(struct perf_event *event, u32 val)
+{
+	struct hw_perf_event *hwc = &event->hw;
+	int counter = hwc->idx;
+
+>>>>>>> refs/remotes/origin/master
 	switch (counter) {
 	case XSCALE_CYCLE_COUNTER:
 		asm volatile("mcr p14, 0, %0, c1, c1, 0" : : "r" (val));
@@ -984,6 +1226,7 @@ xscale2pmu_write_counter(int counter, u32 val)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct arm_pmu xscale2pmu = {
 =======
@@ -1037,5 +1280,33 @@ static struct arm_pmu *__init xscale2pmu_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	return NULL;
+=======
+static int xscale2pmu_init(struct arm_pmu *cpu_pmu)
+{
+	cpu_pmu->name		= "xscale2";
+	cpu_pmu->handle_irq	= xscale2pmu_handle_irq;
+	cpu_pmu->enable		= xscale2pmu_enable_event;
+	cpu_pmu->disable	= xscale2pmu_disable_event;
+	cpu_pmu->read_counter	= xscale2pmu_read_counter;
+	cpu_pmu->write_counter	= xscale2pmu_write_counter;
+	cpu_pmu->get_event_idx	= xscale2pmu_get_event_idx;
+	cpu_pmu->start		= xscale2pmu_start;
+	cpu_pmu->stop		= xscale2pmu_stop;
+	cpu_pmu->map_event	= xscale_map_event;
+	cpu_pmu->num_events	= 5;
+	cpu_pmu->max_period	= (1LLU << 32) - 1;
+
+	return 0;
+}
+#else
+static inline int xscale1pmu_init(struct arm_pmu *cpu_pmu)
+{
+	return -ENODEV;
+}
+
+static inline int xscale2pmu_init(struct arm_pmu *cpu_pmu)
+{
+	return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 }
 #endif	/* CONFIG_CPU_XSCALE */

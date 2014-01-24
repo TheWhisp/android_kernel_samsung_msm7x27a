@@ -62,16 +62,25 @@ mwifiex_11n_form_amsdu_pkt(struct sk_buff *skb_aggr,
 	};
 	struct tx_packet_hdr *tx_header;
 
+<<<<<<< HEAD
 	skb_put(skb_aggr, sizeof(*tx_header));
 
 	tx_header = (struct tx_packet_hdr *) skb_aggr->data;
+=======
+	tx_header = (void *)skb_put(skb_aggr, sizeof(*tx_header));
+>>>>>>> refs/remotes/origin/master
 
 	/* Copy DA and SA */
 	dt_offset = 2 * ETH_ALEN;
 	memcpy(&tx_header->eth803_hdr, skb_src->data, dt_offset);
 
 	/* Copy SNAP header */
+<<<<<<< HEAD
 	snap.snap_type = *(u16 *) ((u8 *)skb_src->data + dt_offset);
+=======
+	snap.snap_type =
+		le16_to_cpu(*(__le16 *) ((u8 *)skb_src->data + dt_offset));
+>>>>>>> refs/remotes/origin/master
 	dt_offset += sizeof(u16);
 
 	memcpy(&tx_header->rfc1042_hdr, &snap, sizeof(struct rfc_1042_hdr));
@@ -82,6 +91,7 @@ mwifiex_11n_form_amsdu_pkt(struct sk_buff *skb_aggr,
 	tx_header->eth803_hdr.h_proto = htons(skb_src->len + LLC_SNAP_LEN);
 
 	/* Add payload */
+<<<<<<< HEAD
 	skb_put(skb_aggr, skb_src->len);
 	memcpy(skb_aggr->data + sizeof(*tx_header), skb_src->data,
 <<<<<<< HEAD
@@ -92,6 +102,12 @@ mwifiex_11n_form_amsdu_pkt(struct sk_buff *skb_aggr,
 	*pad = (((skb_src->len + LLC_SNAP_LEN) & 3)) ? (4 - (((skb_src->len +
 						      LLC_SNAP_LEN)) & 3)) : 0;
 	skb_put(skb_aggr, *pad);
+=======
+	memcpy(skb_put(skb_aggr, skb_src->len), skb_src->data, skb_src->len);
+
+	/* Add padding for new MSDU to start from 4 byte boundary */
+	*pad = (4 - ((unsigned long)skb_aggr->tail & 0x3)) % 4;
+>>>>>>> refs/remotes/origin/master
 
 	return skb_aggr->len + *pad;
 }
@@ -124,15 +140,20 @@ mwifiex_11n_form_amsdu_txpd(struct mwifiex_private *priv,
 	local_tx_pd->tx_pkt_type = cpu_to_le16(PKT_TYPE_AMSDU);
 	local_tx_pd->tx_pkt_length = cpu_to_le16(skb->len -
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sizeof(*local_tx_pd));
 =======
 						 sizeof(*local_tx_pd));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 sizeof(*local_tx_pd));
+>>>>>>> refs/remotes/origin/master
 
 	if (local_tx_pd->tx_control == 0)
 		/* TxCtrl set by user or default */
 		local_tx_pd->tx_control = cpu_to_le32(priv->pkt_tx_ctrl);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA) &&
 		(priv->adapter->pps_uapsd_mode)) {
@@ -140,6 +161,10 @@ mwifiex_11n_form_amsdu_txpd(struct mwifiex_private *priv,
 	if (GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA &&
 	    priv->adapter->pps_uapsd_mode) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA &&
+	    priv->adapter->pps_uapsd_mode) {
+>>>>>>> refs/remotes/origin/master
 		if (true == mwifiex_check_last_packet_indication(priv)) {
 			priv->adapter->tx_lock_flag = true;
 			local_tx_pd->flags =
@@ -166,7 +191,11 @@ mwifiex_11n_form_amsdu_txpd(struct mwifiex_private *priv,
  */
 int
 mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
+<<<<<<< HEAD
 			  struct mwifiex_ra_list_tbl *pra_list, int headroom,
+=======
+			  struct mwifiex_ra_list_tbl *pra_list,
+>>>>>>> refs/remotes/origin/master
 			  int ptrindex, unsigned long ra_list_flags)
 			  __releases(&priv->wmm.ra_list_spinlock)
 {
@@ -176,6 +205,7 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 	int pad = 0, ret;
 	struct mwifiex_tx_param tx_param;
 	struct txpd *ptx_pd = NULL;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	if (skb_queue_empty(&pra_list->skb_head)) {
@@ -183,15 +213,25 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 	skb_src = skb_peek(&pra_list->skb_head);
 	if (!skb_src) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int headroom = adapter->iface_type == MWIFIEX_USB ? 0 : INTF_HEADER_LEN;
+
+	skb_src = skb_peek(&pra_list->skb_head);
+	if (!skb_src) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&priv->wmm.ra_list_spinlock,
 				       ra_list_flags);
 		return 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb_src = skb_peek(&pra_list->skb_head);
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	tx_info_src = MWIFIEX_SKB_TXCB(skb_src);
 	skb_aggr = dev_alloc_skb(adapter->tx_buf_size);
 	if (!skb_aggr) {
@@ -203,6 +243,7 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 	skb_reserve(skb_aggr, headroom + sizeof(struct txpd));
 	tx_info_aggr =  MWIFIEX_SKB_TXCB(skb_aggr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tx_info_aggr->bss_index = tx_info_src->bss_index;
 	skb_aggr->priority = skb_src->priority;
@@ -219,6 +260,8 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 		if (skb_src)
 			pra_list->total_pkts_size -= skb_src->len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tx_info_aggr->bss_type = tx_info_src->bss_type;
 	tx_info_aggr->bss_num = tx_info_src->bss_num;
 	skb_aggr->priority = skb_src->priority;
@@ -230,8 +273,12 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 
 		skb_src = skb_dequeue(&pra_list->skb_head);
 
+<<<<<<< HEAD
 		pra_list->total_pkts_size -= skb_src->len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pra_list->total_pkt_count--;
+>>>>>>> refs/remotes/origin/master
 
 		atomic_dec(&priv->wmm.tx_pkts_queued);
 
@@ -239,7 +286,11 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 				       ra_list_flags);
 		mwifiex_11n_form_amsdu_pkt(skb_aggr, skb_src, &pad);
 
+<<<<<<< HEAD
 		mwifiex_write_data_complete(adapter, skb_src, 0);
+=======
+		mwifiex_write_data_complete(adapter, skb_src, 0, 0);
+>>>>>>> refs/remotes/origin/master
 
 		spin_lock_irqsave(&priv->wmm.ra_list_spinlock, ra_list_flags);
 
@@ -250,12 +301,15 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!skb_queue_empty(&pra_list->skb_head))
 			skb_src = skb_peek(&pra_list->skb_head);
 		else
 			skb_src = NULL;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (skb_tailroom(skb_aggr) < pad) {
 			pad = 0;
 			break;
@@ -265,7 +319,10 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 		skb_src = skb_peek(&pra_list->skb_head);
 
 	} while (skb_src);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&priv->wmm.ra_list_spinlock, ra_list_flags);
 
@@ -279,6 +336,7 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 
 	skb_push(skb_aggr, headroom);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tx_param.next_pkt_len = ((pra_list->total_pkts_size) ?
 				 (((pra_list->total_pkts_size) >
@@ -305,12 +363,36 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 	ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_DATA,
 					   skb_aggr, &tx_param);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (adapter->iface_type == MWIFIEX_USB) {
+		adapter->data_sent = true;
+		ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_USB_EP_DATA,
+						   skb_aggr, NULL);
+	} else {
+		/*
+		 * Padding per MSDU will affect the length of next
+		 * packet and hence the exact length of next packet
+		 * is uncertain here.
+		 *
+		 * Also, aggregation of transmission buffer, while
+		 * downloading the data to the card, wont gain much
+		 * on the AMSDU packets as the AMSDU packets utilizes
+		 * the transmission buffer space to the maximum
+		 * (adapter->tx_buf_size).
+		 */
+		tx_param.next_pkt_len = 0;
+
+		ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_DATA,
+						   skb_aggr, &tx_param);
+	}
+>>>>>>> refs/remotes/origin/master
 	switch (ret) {
 	case -EBUSY:
 		spin_lock_irqsave(&priv->wmm.ra_list_spinlock, ra_list_flags);
 		if (!mwifiex_is_ralist_valid(priv, pra_list, ptrindex)) {
 			spin_unlock_irqrestore(&priv->wmm.ra_list_spinlock,
 					       ra_list_flags);
+<<<<<<< HEAD
 			mwifiex_write_data_complete(adapter, skb_aggr, -1);
 			return -1;
 		}
@@ -322,6 +404,13 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 		if (GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA &&
 		    adapter->pps_uapsd_mode && adapter->tx_lock_flag) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mwifiex_write_data_complete(adapter, skb_aggr, 1, -1);
+			return -1;
+		}
+		if (GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA &&
+		    adapter->pps_uapsd_mode && adapter->tx_lock_flag) {
+>>>>>>> refs/remotes/origin/master
 				priv->adapter->tx_lock_flag = false;
 				if (ptx_pd)
 					ptx_pd->flags = 0;
@@ -329,7 +418,11 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 
 		skb_queue_tail(&pra_list->skb_head, skb_aggr);
 
+<<<<<<< HEAD
 		pra_list->total_pkts_size += skb_aggr->len;
+=======
+		pra_list->total_pkt_count++;
+>>>>>>> refs/remotes/origin/master
 
 		atomic_inc(&priv->wmm.tx_pkts_queued);
 
@@ -339,6 +432,7 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 		dev_dbg(adapter->dev, "data: -EBUSY is returned\n");
 		break;
 	case -1:
+<<<<<<< HEAD
 		adapter->data_sent = false;
 		dev_err(adapter->dev, "%s: host_to_card failed: %#x\n",
 <<<<<<< HEAD
@@ -354,11 +448,27 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 		break;
 	case 0:
 		mwifiex_write_data_complete(adapter, skb_aggr, ret);
+=======
+		if (adapter->iface_type != MWIFIEX_PCIE)
+			adapter->data_sent = false;
+		dev_err(adapter->dev, "%s: host_to_card failed: %#x\n",
+			__func__, ret);
+		adapter->dbg.num_tx_host_to_card_failure++;
+		mwifiex_write_data_complete(adapter, skb_aggr, 1, ret);
+		return 0;
+	case -EINPROGRESS:
+		if (adapter->iface_type != MWIFIEX_PCIE)
+			adapter->data_sent = false;
+		break;
+	case 0:
+		mwifiex_write_data_complete(adapter, skb_aggr, 1, ret);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
 	}
 	if (ret != -EBUSY) {
+<<<<<<< HEAD
 		spin_lock_irqsave(&priv->wmm.ra_list_spinlock, ra_list_flags);
 		if (mwifiex_is_ralist_valid(priv, pra_list, ptrindex)) {
 			priv->wmm.packets_out[ptrindex]++;
@@ -372,6 +482,9 @@ mwifiex_11n_aggregate_pkt(struct mwifiex_private *priv,
 				struct mwifiex_bss_prio_node, list);
 		spin_unlock_irqrestore(&priv->wmm.ra_list_spinlock,
 				       ra_list_flags);
+=======
+		mwifiex_rotate_priolists(priv, pra_list, ptrindex);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;

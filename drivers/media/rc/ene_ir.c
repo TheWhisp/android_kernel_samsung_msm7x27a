@@ -31,10 +31,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/pnp.h>
@@ -124,6 +129,7 @@ static int ene_hw_detect(struct ene_device *dev)
 
 	if (hw_revision == 0xFF) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ene_warn("device seems to be disabled");
 		ene_warn("send a mail to lirc-list@lists.sourceforge.net");
 		ene_warn("please attach output of acpidump and dmidecode");
@@ -138,6 +144,8 @@ static int ene_hw_detect(struct ene_device *dev)
 	if (chip_major == 0x33) {
 		ene_warn("chips 0x33xx aren't supported");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_warn("device seems to be disabled\n");
 		pr_warn("send a mail to lirc-list@lists.sourceforge.net\n");
 		pr_warn("please attach output of acpidump and dmidecode\n");
@@ -151,12 +159,16 @@ static int ene_hw_detect(struct ene_device *dev)
 
 	if (chip_major == 0x33) {
 		pr_warn("chips 0x33xx aren't supported\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	if (chip_major == 0x39 && chip_minor == 0x26 && hw_revision == 0xC0) {
 		dev->hw_revision = ENE_HW_C;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ene_notice("KB3926C detected");
 	} else if (old_ver == 0x24 && hw_revision == 0xC0) {
@@ -166,6 +178,8 @@ static int ene_hw_detect(struct ene_device *dev)
 		dev->hw_revision = ENE_HW_D;
 		ene_notice("KB3926D or higher detected");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_notice("KB3926C detected\n");
 	} else if (old_ver == 0x24 && hw_revision == 0xC0) {
 		dev->hw_revision = ENE_HW_B;
@@ -173,7 +187,10 @@ static int ene_hw_detect(struct ene_device *dev)
 	} else {
 		dev->hw_revision = ENE_HW_D;
 		pr_notice("KB3926D or higher detected\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* detect features hardware supports */
@@ -184,10 +201,14 @@ static int ene_hw_detect(struct ene_device *dev)
 	fw_reg2 = ene_read_reg(dev, ENE_FW2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ene_notice("Firmware regs: %02x %02x", fw_reg1, fw_reg2);
 =======
 	pr_notice("Firmware regs: %02x %02x\n", fw_reg1, fw_reg2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_notice("Firmware regs: %02x %02x\n", fw_reg1, fw_reg2);
+>>>>>>> refs/remotes/origin/master
 
 	dev->hw_use_gpio_0a = !!(fw_reg2 & ENE_FW2_GP0A);
 	dev->hw_learning_and_tx_capable = !!(fw_reg2 & ENE_FW2_LEARNING);
@@ -196,6 +217,7 @@ static int ene_hw_detect(struct ene_device *dev)
 	if (dev->hw_learning_and_tx_capable)
 		dev->hw_fan_input = !!(fw_reg2 & ENE_FW2_FAN_INPUT);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ene_notice("Hardware features:");
 
@@ -222,6 +244,8 @@ static int ene_hw_detect(struct ene_device *dev)
 	if (dev->hw_extra_buffer)
 		ene_notice("* Uses new style input buffer");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_notice("Hardware features:\n");
 
 	if (dev->hw_learning_and_tx_capable) {
@@ -245,7 +269,10 @@ static int ene_hw_detect(struct ene_device *dev)
 
 	if (dev->hw_extra_buffer)
 		pr_notice("* Uses new style input buffer\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -277,6 +304,7 @@ static void ene_rx_setup_hw_buffer(struct ene_device *dev)
 	dev->buffer_len = dev->extra_buf1_len + dev->extra_buf2_len + 8;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ene_notice("Hardware uses 2 extended buffers:");
 	ene_notice("  0x%04x - len : %d", dev->extra_buf1_address,
 						dev->extra_buf1_len);
@@ -285,6 +313,8 @@ static void ene_rx_setup_hw_buffer(struct ene_device *dev)
 
 	ene_notice("Total buffer len = %d", dev->buffer_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_notice("Hardware uses 2 extended buffers:\n");
 	pr_notice("  0x%04x - len : %d\n",
 		  dev->extra_buf1_address, dev->extra_buf1_len);
@@ -292,7 +322,10 @@ static void ene_rx_setup_hw_buffer(struct ene_device *dev)
 		  dev->extra_buf2_address, dev->extra_buf2_len);
 
 	pr_notice("Total buffer len = %d\n", dev->buffer_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->buffer_len > 64 || dev->buffer_len < 16)
 		goto error;
@@ -312,10 +345,14 @@ static void ene_rx_setup_hw_buffer(struct ene_device *dev)
 	return;
 error:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ene_warn("Error validating extra buffers, device probably won't work");
 =======
 	pr_warn("Error validating extra buffers, device probably won't work\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_warn("Error validating extra buffers, device probably won't work\n");
+>>>>>>> refs/remotes/origin/master
 	dev->hw_extra_buffer = false;
 	ene_clear_reg_mask(dev, ENE_FW1, ENE_FW1_EXTRA_BUF_HND);
 }
@@ -399,15 +436,23 @@ static int ene_rx_get_sample_reg(struct ene_device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg("attempt to read beyong ring bufer end");
 =======
 	dbg("attempt to read beyond ring buffer end");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg("attempt to read beyond ring buffer end");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /* Sense current received carrier */
+<<<<<<< HEAD
 void ene_rx_sense_carrier(struct ene_device *dev)
+=======
+static void ene_rx_sense_carrier(struct ene_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	DEFINE_IR_RAW_EVENT(ev);
 
@@ -554,7 +599,11 @@ select_timeout:
 }
 
 /* Enable the device for receive */
+<<<<<<< HEAD
 static void ene_rx_enable(struct ene_device *dev)
+=======
+static void ene_rx_enable_hw(struct ene_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 reg_value;
 
@@ -582,11 +631,24 @@ static void ene_rx_enable(struct ene_device *dev)
 
 	/* enter idle mode */
 	ir_raw_event_set_idle(dev->rdev, true);
+<<<<<<< HEAD
+=======
+}
+
+/* Enable the device for receive - wrapper to track the state*/
+static void ene_rx_enable(struct ene_device *dev)
+{
+	ene_rx_enable_hw(dev);
+>>>>>>> refs/remotes/origin/master
 	dev->rx_enabled = true;
 }
 
 /* Disable the device receiver */
+<<<<<<< HEAD
 static void ene_rx_disable(struct ene_device *dev)
+=======
+static void ene_rx_disable_hw(struct ene_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* disable inputs */
 	ene_rx_enable_cir_engine(dev, false);
@@ -594,8 +656,18 @@ static void ene_rx_disable(struct ene_device *dev)
 
 	/* disable hardware IRQ and firmware flag */
 	ene_clear_reg_mask(dev, ENE_FW1, ENE_FW1_ENABLE | ENE_FW1_IRQ);
+<<<<<<< HEAD
 
 	ir_raw_event_set_idle(dev->rdev, true);
+=======
+	ir_raw_event_set_idle(dev->rdev, true);
+}
+
+/* Disable the device receiver - wrapper to track the state */
+static void ene_rx_disable(struct ene_device *dev)
+{
+	ene_rx_disable_hw(dev);
+>>>>>>> refs/remotes/origin/master
 	dev->rx_enabled = false;
 }
 
@@ -668,10 +740,14 @@ static void ene_tx_enable(struct ene_device *dev)
 
 	if (!(fwreg2 & (ENE_FW2_EMMITER1_CONN | ENE_FW2_EMMITER2_CONN)))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ene_warn("TX: transmitter cable isn't connected!");
 =======
 		pr_warn("TX: transmitter cable isn't connected!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("TX: transmitter cable isn't connected!\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* disable receive on revc */
 	if (dev->hw_revision == ENE_HW_C)
@@ -699,10 +775,14 @@ static void ene_tx_sample(struct ene_device *dev)
 
 	if (!dev->tx_buffer) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ene_warn("TX: BUG: attempt to transmit NULL buffer");
 =======
 		pr_warn("TX: BUG: attempt to transmit NULL buffer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("TX: BUG: attempt to transmit NULL buffer\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -967,10 +1047,20 @@ static int ene_set_tx_mask(struct rc_dev *rdev, u32 tx_mask)
 static int ene_set_tx_carrier(struct rc_dev *rdev, u32 carrier)
 {
 	struct ene_device *dev = rdev->priv;
+<<<<<<< HEAD
 	u32 period = 2000000 / carrier;
 
 	dbg("TX: attempt to set tx carrier to %d kHz", carrier);
 
+=======
+	u32 period;
+
+	dbg("TX: attempt to set tx carrier to %d kHz", carrier);
+	if (carrier == 0)
+		return -EINVAL;
+
+	period = 2000000 / carrier;
+>>>>>>> refs/remotes/origin/master
 	if (period && (period > ENE_CIRMOD_PRD_MAX ||
 			period < ENE_CIRMOD_PRD_MIN)) {
 
@@ -1041,20 +1131,28 @@ static void ene_set_idle(struct rc_dev *rdev, bool idle)
 
 /* outside interface: transmit */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ene_transmit(struct rc_dev *rdev, int *buf, u32 n)
 =======
 static int ene_transmit(struct rc_dev *rdev, unsigned *buf, unsigned n)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ene_transmit(struct rc_dev *rdev, unsigned *buf, unsigned n)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ene_device *dev = rdev->priv;
 	unsigned long flags;
 
 	dev->tx_buffer = buf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->tx_len = n / sizeof(int);
 =======
 	dev->tx_len = n;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->tx_len = n;
+>>>>>>> refs/remotes/origin/master
 	dev->tx_pos = 0;
 	dev->tx_reg = 0;
 	dev->tx_done = 0;
@@ -1094,7 +1192,11 @@ static int ene_probe(struct pnp_dev *pnp_dev, const struct pnp_device_id *id)
 	dev = kzalloc(sizeof(struct ene_device), GFP_KERNEL);
 	rdev = rc_allocate_device();
 	if (!dev || !rdev)
+<<<<<<< HEAD
 		goto error1;
+=======
+		goto exit_free_dev_rdev;
+>>>>>>> refs/remotes/origin/master
 
 	/* validate resources */
 	error = -ENODEV;
@@ -1105,14 +1207,26 @@ static int ene_probe(struct pnp_dev *pnp_dev, const struct pnp_device_id *id)
 
 	if (!pnp_port_valid(pnp_dev, 0) ||
 	    pnp_port_len(pnp_dev, 0) < ENE_IO_SIZE)
+<<<<<<< HEAD
 		goto error;
 
 	if (!pnp_irq_valid(pnp_dev, 0))
 		goto error;
+=======
+		goto exit_free_dev_rdev;
+
+	if (!pnp_irq_valid(pnp_dev, 0))
+		goto exit_free_dev_rdev;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&dev->hw_lock);
 
 	dev->hw_io = pnp_port_start(pnp_dev, 0);
+<<<<<<< HEAD
+=======
+	dev->irq = pnp_irq(pnp_dev, 0);
+
+>>>>>>> refs/remotes/origin/master
 
 	pnp_set_drvdata(pnp_dev, dev);
 	dev->pnp_dev = pnp_dev;
@@ -1124,24 +1238,36 @@ static int ene_probe(struct pnp_dev *pnp_dev, const struct pnp_device_id *id)
 	/* detect hardware version and features */
 	error = ene_hw_detect(dev);
 	if (error)
+<<<<<<< HEAD
 		goto error;
+=======
+		goto exit_free_dev_rdev;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev->hw_learning_and_tx_capable && txsim) {
 		dev->hw_learning_and_tx_capable = true;
 		setup_timer(&dev->tx_sim_timer, ene_tx_irqsim,
 						(long unsigned int)dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ene_warn("Simulation of TX activated");
 =======
 		pr_warn("Simulation of TX activated\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Simulation of TX activated\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!dev->hw_learning_and_tx_capable)
 		learning_mode_force = false;
 
 	rdev->driver_type = RC_DRIVER_IR_RAW;
+<<<<<<< HEAD
 	rdev->allowed_protos = RC_TYPE_ALL;
+=======
+	rdev->allowed_protos = RC_BIT_ALL;
+>>>>>>> refs/remotes/origin/master
 	rdev->priv = dev;
 	rdev->open = ene_open;
 	rdev->close = ene_close;
@@ -1170,6 +1296,7 @@ static int ene_probe(struct pnp_dev *pnp_dev, const struct pnp_device_id *id)
 	device_set_wakeup_capable(&pnp_dev->dev, true);
 	device_set_wakeup_enable(&pnp_dev->dev, true);
 
+<<<<<<< HEAD
 	/* claim the resources */
 	error = -EBUSY;
 	if (!request_region(dev->hw_io, ENE_IO_SIZE, ENE_DRIVER_NAME)) {
@@ -1201,6 +1328,32 @@ error:
 	if (dev && dev->hw_io >= 0)
 		release_region(dev->hw_io, ENE_IO_SIZE);
 error1:
+=======
+	error = rc_register_device(rdev);
+	if (error < 0)
+		goto exit_free_dev_rdev;
+
+	/* claim the resources */
+	error = -EBUSY;
+	if (!request_region(dev->hw_io, ENE_IO_SIZE, ENE_DRIVER_NAME)) {
+		goto exit_unregister_device;
+	}
+
+	if (request_irq(dev->irq, ene_isr,
+			IRQF_SHARED, ENE_DRIVER_NAME, (void *)dev)) {
+		goto exit_release_hw_io;
+	}
+
+	pr_notice("driver has been successfully loaded\n");
+	return 0;
+
+exit_release_hw_io:
+	release_region(dev->hw_io, ENE_IO_SIZE);
+exit_unregister_device:
+	rc_unregister_device(rdev);
+	rdev = NULL;
+exit_free_dev_rdev:
+>>>>>>> refs/remotes/origin/master
 	rc_free_device(rdev);
 	kfree(dev);
 	return error;
@@ -1224,9 +1377,14 @@ static void ene_remove(struct pnp_dev *pnp_dev)
 }
 
 /* enable wake on IR (wakes on specific button on original remote) */
+<<<<<<< HEAD
 static void ene_enable_wake(struct ene_device *dev, int enable)
 {
 	enable = enable && device_may_wakeup(&dev->pnp_dev->dev);
+=======
+static void ene_enable_wake(struct ene_device *dev, bool enable)
+{
+>>>>>>> refs/remotes/origin/master
 	dbg("wake on IR %s", enable ? "enabled" : "disabled");
 	ene_set_clear_reg_mask(dev, ENE_FW1, ENE_FW1_WAKE, enable);
 }
@@ -1235,9 +1393,18 @@ static void ene_enable_wake(struct ene_device *dev, int enable)
 static int ene_suspend(struct pnp_dev *pnp_dev, pm_message_t state)
 {
 	struct ene_device *dev = pnp_get_drvdata(pnp_dev);
+<<<<<<< HEAD
 	ene_enable_wake(dev, true);
 
 	/* TODO: add support for wake pattern */
+=======
+	bool wake = device_may_wakeup(&dev->pnp_dev->dev);
+
+	if (!wake && dev->rx_enabled)
+		ene_rx_disable_hw(dev);
+
+	ene_enable_wake(dev, wake);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1274,7 +1441,11 @@ static struct pnp_driver ene_driver = {
 	.flags = PNP_DRIVER_RES_DO_NOT_CHANGE,
 
 	.probe = ene_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ene_remove),
+=======
+	.remove = ene_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend = ene_suspend,
 	.resume = ene_resume,

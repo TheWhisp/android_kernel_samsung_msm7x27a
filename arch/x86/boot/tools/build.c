@@ -5,6 +5,7 @@
  */
 
 /*
+<<<<<<< HEAD
  * This file builds a disk-image from two different files:
  *
  * - setup: 8086 machine code, sets up system parm
@@ -13,6 +14,17 @@
  * It does some checking that all files are of the correct type, and
  * just writes the result to stdout, removing headers and padding to
  * the right amount. It also writes some system data to stderr.
+=======
+ * This file builds a disk-image from three different files:
+ *
+ * - setup: 8086 machine code, sets up system parm
+ * - system: 80386 code for actual system
+ * - zoffset.h: header with ZO_* defines
+ *
+ * It does some checking that all files are of the correct type, and writes
+ * the result to the specified destination, removing headers and padding to
+ * the right amount. It also writes some system data to stdout.
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -30,6 +42,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <sys/sysmacros.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -43,6 +56,8 @@ typedef unsigned long  u32;
 #define DEFAULT_MAJOR_ROOT 0
 #define DEFAULT_MINOR_ROOT 0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -55,7 +70,10 @@ typedef unsigned int   u32;
 #define DEFAULT_MAJOR_ROOT 0
 #define DEFAULT_MINOR_ROOT 0
 #define DEFAULT_ROOT_DEV (DEFAULT_MAJOR_ROOT << 8 | DEFAULT_MINOR_ROOT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Minimal number of setup sectors */
 #define SETUP_SECT_MIN 5
@@ -65,6 +83,15 @@ typedef unsigned int   u32;
 u8 buf[SETUP_SECT_MAX*512];
 int is_big_kernel;
 
+<<<<<<< HEAD
+=======
+#define PECOFF_RELOC_RESERVE 0x20
+
+unsigned long efi_stub_entry;
+unsigned long efi_pe_entry;
+unsigned long startup_64;
+
+>>>>>>> refs/remotes/origin/master
 /*----------------------------------------------------------------------*/
 
 static const u32 crctab32[] = {
@@ -146,6 +173,7 @@ static void die(const char * str, ...)
 static void usage(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	die("Usage: build setup system [rootdev] [> image]");
 =======
 	die("Usage: build setup system [> image]");
@@ -169,10 +197,143 @@ int main(int argc, char ** argv)
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct stat sb;
 	FILE *file;
+=======
+	die("Usage: build setup system zoffset.h image");
+}
+
+#ifdef CONFIG_EFI_STUB
+
+static void update_pecoff_section_header(char *section_name, u32 offset, u32 size)
+{
+	unsigned int pe_header;
+	unsigned short num_sections;
+	u8 *section;
+
+	pe_header = get_unaligned_le32(&buf[0x3c]);
+	num_sections = get_unaligned_le16(&buf[pe_header + 6]);
+
+#ifdef CONFIG_X86_32
+	section = &buf[pe_header + 0xa8];
+#else
+	section = &buf[pe_header + 0xb8];
+#endif
+
+	while (num_sections > 0) {
+		if (strncmp((char*)section, section_name, 8) == 0) {
+			/* section header size field */
+			put_unaligned_le32(size, section + 0x8);
+
+			/* section header vma field */
+			put_unaligned_le32(offset, section + 0xc);
+
+			/* section header 'size of initialised data' field */
+			put_unaligned_le32(size, section + 0x10);
+
+			/* section header 'file offset' field */
+			put_unaligned_le32(offset, section + 0x14);
+
+			break;
+		}
+		section += 0x28;
+		num_sections--;
+	}
+}
+
+static void update_pecoff_setup_and_reloc(unsigned int size)
+{
+	u32 setup_offset = 0x200;
+	u32 reloc_offset = size - PECOFF_RELOC_RESERVE;
+	u32 setup_size = reloc_offset - setup_offset;
+
+	update_pecoff_section_header(".setup", setup_offset, setup_size);
+	update_pecoff_section_header(".reloc", reloc_offset, PECOFF_RELOC_RESERVE);
+
+	/*
+	 * Modify .reloc section contents with a single entry. The
+	 * relocation is applied to offset 10 of the relocation section.
+	 */
+	put_unaligned_le32(reloc_offset + 10, &buf[reloc_offset]);
+	put_unaligned_le32(10, &buf[reloc_offset + 4]);
+}
+
+static void update_pecoff_text(unsigned int text_start, unsigned int file_sz)
+{
+	unsigned int pe_header;
+	unsigned int text_sz = file_sz - text_start;
+
+	pe_header = get_unaligned_le32(&buf[0x3c]);
+
+	/* Size of image */
+	put_unaligned_le32(file_sz, &buf[pe_header + 0x50]);
+
+	/*
+	 * Size of code: Subtract the size of the first sector (512 bytes)
+	 * which includes the header.
+	 */
+	put_unaligned_le32(file_sz - 512, &buf[pe_header + 0x1c]);
+
+	/*
+	 * Address of entry point for PE/COFF executable
+	 */
+	put_unaligned_le32(text_start + efi_pe_entry, &buf[pe_header + 0x28]);
+
+	update_pecoff_section_header(".text", text_start, text_sz);
+}
+
+#endif /* CONFIG_EFI_STUB */
+
+
+/*
+ * Parse zoffset.h and find the entry points. We could just #include zoffset.h
+ * but that would mean tools/build would have to be rebuilt every time. It's
+ * not as if parsing it is hard...
+ */
+#define PARSE_ZOFS(p, sym) do { \
+	if (!strncmp(p, "#define ZO_" #sym " ", 11+sizeof(#sym)))	\
+		sym = strtoul(p + 11 + sizeof(#sym), NULL, 16);		\
+} while (0)
+
+static void parse_zoffset(char *fname)
+{
+	FILE *file;
+	char *p;
+	int c;
+
+	file = fopen(fname, "r");
+	if (!file)
+		die("Unable to open `%s': %m", fname);
+	c = fread(buf, 1, sizeof(buf) - 1, file);
+	if (ferror(file))
+		die("read-error on `zoffset.h'");
+	fclose(file);
+	buf[c] = 0;
+
+	p = (char *)buf;
+
+	while (p && *p) {
+		PARSE_ZOFS(p, efi_stub_entry);
+		PARSE_ZOFS(p, efi_pe_entry);
+		PARSE_ZOFS(p, startup_64);
+
+		p = strchr(p, '\n');
+		while (p && (*p == '\r' || *p == '\n'))
+			p++;
+	}
+}
+
+int main(int argc, char ** argv)
+{
+	unsigned int i, sz, setup_sectors;
+	int c;
+	u32 sys_size;
+	struct stat sb;
+	FILE *file, *dest;
+>>>>>>> refs/remotes/origin/master
 	int fd;
 	void *kernel;
 	u32 crc = 0xffffffffUL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((argc < 3) || (argc > 4))
 		usage();
@@ -204,6 +365,25 @@ int main(int argc, char ** argv)
 	if (argc != 3)
 		usage();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Defaults for old kernel */
+#ifdef CONFIG_X86_32
+	efi_pe_entry = 0x10;
+	efi_stub_entry = 0x30;
+#else
+	efi_pe_entry = 0x210;
+	efi_stub_entry = 0x230;
+	startup_64 = 0x200;
+#endif
+
+	if (argc != 5)
+		usage();
+	parse_zoffset(argv[3]);
+
+	dest = fopen(argv[4], "w");
+	if (!dest)
+		die("Unable to write `%s': %m", argv[4]);
+>>>>>>> refs/remotes/origin/master
 
 	/* Copy the setup code */
 	file = fopen(argv[1], "r");
@@ -215,6 +395,7 @@ int main(int argc, char ** argv)
 	if (c < 1024)
 		die("The setup must be at least 1024 bytes");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (buf[510] != 0x55 || buf[511] != 0xaa)
 =======
 	if (get_unaligned_le16(&buf[510]) != 0xAA55)
@@ -222,6 +403,18 @@ int main(int argc, char ** argv)
 		die("Boot block hasn't got boot flag (0xAA55)");
 	fclose(file);
 
+=======
+	if (get_unaligned_le16(&buf[510]) != 0xAA55)
+		die("Boot block hasn't got boot flag (0xAA55)");
+	fclose(file);
+
+#ifdef CONFIG_EFI_STUB
+	/* Reserve 0x20 bytes for .reloc section */
+	memset(buf+c, 0, PECOFF_RELOC_RESERVE);
+	c += PECOFF_RELOC_RESERVE;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/* Pad unused space with zeros */
 	setup_sectors = (c + 511) / 512;
 	if (setup_sectors < SETUP_SECT_MIN)
@@ -229,6 +422,7 @@ int main(int argc, char ** argv)
 	i = setup_sectors*512;
 	memset(buf+c, 0, i-c);
 
+<<<<<<< HEAD
 	/* Set the default root device */
 <<<<<<< HEAD
 	buf[508] = minor_root;
@@ -238,6 +432,16 @@ int main(int argc, char ** argv)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	fprintf(stderr, "Setup is %d bytes (padded to %d bytes).\n", c, i);
+=======
+#ifdef CONFIG_EFI_STUB
+	update_pecoff_setup_and_reloc(i);
+#endif
+
+	/* Set the default root device */
+	put_unaligned_le16(DEFAULT_ROOT_DEV, &buf[508]);
+
+	printf("Setup is %d bytes (padded to %d bytes).\n", c, i);
+>>>>>>> refs/remotes/origin/master
 
 	/* Open and stat the kernel file */
 	fd = open(argv[2], O_RDONLY);
@@ -246,7 +450,11 @@ int main(int argc, char ** argv)
 	if (fstat(fd, &sb))
 		die("Unable to stat `%s': %m", argv[2]);
 	sz = sb.st_size;
+<<<<<<< HEAD
 	fprintf (stderr, "System is %d kB\n", (sz+1023)/1024);
+=======
+	printf("System is %d kB\n", (sz+1023)/1024);
+>>>>>>> refs/remotes/origin/master
 	kernel = mmap(NULL, sz, PROT_READ, MAP_SHARED, fd, 0);
 	if (kernel == MAP_FAILED)
 		die("Unable to mmap '%s': %m", argv[2]);
@@ -255,6 +463,7 @@ int main(int argc, char ** argv)
 
 	/* Patch the setup code with the appropriate size parameters */
 	buf[0x1f1] = setup_sectors-1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	buf[0x1f4] = sys_size;
 	buf[0x1f5] = sys_size >> 8;
@@ -310,21 +519,45 @@ int main(int argc, char ** argv)
 
 	crc = partial_crc32(buf, i, crc);
 	if (fwrite(buf, 1, i, stdout) != i)
+=======
+	put_unaligned_le32(sys_size, &buf[0x1f4]);
+
+#ifdef CONFIG_EFI_STUB
+	update_pecoff_text(setup_sectors * 512, sz + i + ((sys_size * 16) - sz));
+
+#ifdef CONFIG_X86_64 /* Yes, this is really how we defined it :( */
+	efi_stub_entry -= 0x200;
+#endif
+	put_unaligned_le32(efi_stub_entry, &buf[0x264]);
+#endif
+
+	crc = partial_crc32(buf, i, crc);
+	if (fwrite(buf, 1, i, dest) != i)
+>>>>>>> refs/remotes/origin/master
 		die("Writing setup failed");
 
 	/* Copy the kernel code */
 	crc = partial_crc32(kernel, sz, crc);
+<<<<<<< HEAD
 	if (fwrite(kernel, 1, sz, stdout) != sz)
+=======
+	if (fwrite(kernel, 1, sz, dest) != sz)
+>>>>>>> refs/remotes/origin/master
 		die("Writing kernel failed");
 
 	/* Add padding leaving 4 bytes for the checksum */
 	while (sz++ < (sys_size*16) - 4) {
 		crc = partial_crc32_one('\0', crc);
+<<<<<<< HEAD
 		if (fwrite("\0", 1, 1, stdout) != 1)
+=======
+		if (fwrite("\0", 1, 1, dest) != 1)
+>>>>>>> refs/remotes/origin/master
 			die("Writing padding failed");
 	}
 
 	/* Write the CRC */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fprintf(stderr, "CRC %lx\n", crc);
 	if (fwrite(&crc, 1, 4, stdout) != 4)
@@ -335,6 +568,17 @@ int main(int argc, char ** argv)
 >>>>>>> refs/remotes/origin/cm-10.0
 		die("Writing CRC failed");
 
+=======
+	printf("CRC %x\n", crc);
+	put_unaligned_le32(crc, buf);
+	if (fwrite(buf, 1, 4, dest) != 4)
+		die("Writing CRC failed");
+
+	/* Catch any delayed write failures */
+	if (fclose(dest))
+		die("Writing image failed");
+
+>>>>>>> refs/remotes/origin/master
 	close(fd);
 
 	/* Everything is OK */

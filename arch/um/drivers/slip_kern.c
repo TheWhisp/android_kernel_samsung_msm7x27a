@@ -6,7 +6,11 @@
 #include <linux/if_arp.h>
 #include <linux/init.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 #include "net_kern.h"
+=======
+#include <net_kern.h>
+>>>>>>> refs/remotes/origin/master
 #include "slip.h"
 
 struct slip_init {

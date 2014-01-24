@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 1999 - 2010 Intel Corporation.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 OKI SEMICONDUCTOR CO., LTD.
 =======
  * Copyright (C) 2010 LAPIS SEMICONDUCTOR CO., LTD.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2010 LAPIS SEMICONDUCTOR CO., LTD.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,9 +75,13 @@
 
 #define PCH_STATUS_INT		0x8000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PCH_RP			0x00008000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCH_RP			0x00008000
+>>>>>>> refs/remotes/origin/master
 #define PCH_REC			0x00007f00
 #define PCH_TEC			0x000000ff
 
@@ -191,7 +199,11 @@ struct pch_can_priv {
 	int use_msi;
 };
 
+<<<<<<< HEAD
 static struct can_bittiming_const pch_can_bittiming_const = {
+=======
+static const struct can_bittiming_const pch_can_bittiming_const = {
+>>>>>>> refs/remotes/origin/master
 	.name = KBUILD_MODNAME,
 	.tseg1_min = 2,
 	.tseg1_max = 16,
@@ -536,10 +548,14 @@ static void pch_can_error(struct net_device *ndev, u32 status)
 		state = CAN_STATE_ERROR_PASSIVE;
 		cf->can_id |= CAN_ERR_CRTL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (((errc & PCH_REC) >> 8) > 127)
 =======
 		if (errc & PCH_RP)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (errc & PCH_RP)
+>>>>>>> refs/remotes/origin/master
 			cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
 		if ((errc & PCH_TEC) > 127)
 			cf->data[1] |= CAN_ERR_CRTL_TX_PASSIVE;
@@ -965,7 +981,11 @@ static const struct net_device_ops pch_can_netdev_ops = {
 	.ndo_start_xmit		= pch_xmit,
 };
 
+<<<<<<< HEAD
 static void __devexit pch_can_remove(struct pci_dev *pdev)
+=======
+static void pch_can_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev = pci_get_drvdata(pdev);
 	struct pch_can_priv *priv = netdev_priv(ndev);
@@ -975,7 +995,10 @@ static void __devexit pch_can_remove(struct pci_dev *pdev)
 		pci_disable_msi(priv->dev);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pch_can_reset(priv);
 	pci_iounmap(pdev, priv->regs);
 	free_candev(priv->ndev);
@@ -1189,7 +1212,11 @@ static int pch_can_get_berr_counter(const struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pch_can_probe(struct pci_dev *pdev,
+=======
+static int pch_can_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				   const struct pci_device_id *id)
 {
 	struct net_device *ndev;
@@ -1280,11 +1307,16 @@ static struct pci_driver pch_can_pci_driver = {
 	.name = "pch_can",
 	.id_table = pch_pci_tbl,
 	.probe = pch_can_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pch_can_remove),
+=======
+	.remove = pch_can_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = pch_can_suspend,
 	.resume = pch_can_resume,
 };
 
+<<<<<<< HEAD
 static int __init pch_can_pci_init(void)
 {
 	return pci_register_driver(&pch_can_pci_driver);
@@ -1296,6 +1328,9 @@ static void __exit pch_can_pci_exit(void)
 	pci_unregister_driver(&pch_can_pci_driver);
 }
 module_exit(pch_can_pci_exit);
+=======
+module_pci_driver(pch_can_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Intel EG20T PCH CAN(Controller Area Network) Driver");
 MODULE_LICENSE("GPL v2");

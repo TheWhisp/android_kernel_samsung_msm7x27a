@@ -7,6 +7,7 @@
 OBJS		=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Ensure that mmcif loader code appears early in the image
 # to minimise that number of bocks that have to be read in
 # order to load it.
@@ -15,6 +16,8 @@ ifeq ($(CONFIG_ARCH_SH7372),y)
 OBJS		+= mmcif-sh7372.o
 endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # Ensure that MMCIF loader code appears early in the image
 # to minimise that number of bocks that have to be read in
 # order to load it.
@@ -28,18 +31,35 @@ endif
 ifeq ($(CONFIG_ZBOOT_ROM_SH_MOBILE_SDHI),y)
 OBJS		+= sdhi-shmobile.o
 OBJS		+= sdhi-sh7372.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endif
 
 AFLAGS_head.o += -DTEXT_OFFSET=$(TEXT_OFFSET)
 HEAD	= head.o
 OBJS	+= misc.o decompress.o
+<<<<<<< HEAD
 FONTC	= $(srctree)/drivers/video/console/font_acorn_8x8.c
+=======
+ifeq ($(CONFIG_DEBUG_UNCOMPRESS),y)
+OBJS	+= debug.o
+endif
+FONTC	= $(srctree)/lib/fonts/font_acorn_8x8.c
+>>>>>>> refs/remotes/origin/master
 
 # string library code (-Os is enforced to keep it much smaller)
 OBJS		+= string.o
 CFLAGS_string.o	:= -Os
 
+<<<<<<< HEAD
+=======
+ifeq ($(CONFIG_ARM_VIRT_EXT),y)
+OBJS		+= hyp-stub.o
+endif
+
+>>>>>>> refs/remotes/origin/master
 #
 # Architecture dependencies
 #
@@ -47,6 +67,7 @@ ifeq ($(CONFIG_ARCH_ACORN),y)
 OBJS		+= ll_char_wr.o font.o
 endif
 
+<<<<<<< HEAD
 ifeq ($(CONFIG_ARCH_SHARK),y)
 OBJS		+= head-shark.o ofw-shark.o
 endif
@@ -56,14 +77,19 @@ ifeq ($(CONFIG_ARCH_P720T),y)
 OBJS		+= head-sa1100.o
 endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 ifeq ($(CONFIG_ARCH_SA1100),y)
 OBJS		+= head-sa1100.o
 endif
 
+<<<<<<< HEAD
 ifeq ($(CONFIG_ARCH_VT8500),y)
 OBJS		+= head-vt8500.o
 endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 ifeq ($(CONFIG_CPU_XSCALE),y)
 OBJS		+= head-xscale.o
 endif
@@ -103,9 +129,14 @@ suffix_$(CONFIG_KERNEL_GZIP) = gzip
 suffix_$(CONFIG_KERNEL_LZO)  = lzo
 suffix_$(CONFIG_KERNEL_LZMA) = lzma
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 suffix_$(CONFIG_KERNEL_XZ)   = xzkern
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+suffix_$(CONFIG_KERNEL_XZ)   = xzkern
+suffix_$(CONFIG_KERNEL_LZ4)  = lz4
+>>>>>>> refs/remotes/origin/master
 
 # Borrowed libfdt files for the ATAG compatibility mode
 
@@ -127,24 +158,34 @@ endif
 targets       := vmlinux vmlinux.lds \
 		 piggy.$(suffix_y) piggy.$(suffix_y).o \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 lib1funcs.o lib1funcs.S font.o font.c head.o misc.o $(OBJS)
 
 # Make sure files are removed during clean
 extra-y       += piggy.gzip piggy.lzo piggy.lzma lib1funcs.S $(libfdt) $(libfdt_hdrs)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 lib1funcs.o lib1funcs.S ashldi3.o ashldi3.S \
 		 font.o font.c head.o misc.o $(OBJS)
 
 # Make sure files are removed during clean
+<<<<<<< HEAD
 extra-y       += piggy.gzip piggy.lzo piggy.lzma piggy.xzkern \
 		 lib1funcs.S ashldi3.S $(libfdt) $(libfdt_hdrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extra-y       += piggy.gzip piggy.lzo piggy.lzma piggy.xzkern piggy.lz4 \
+		 lib1funcs.S ashldi3.S $(libfdt) $(libfdt_hdrs) \
+		 hyp-stub.S
+>>>>>>> refs/remotes/origin/master
 
 ifeq ($(CONFIG_FUNCTION_TRACER),y)
 ORIG_CFLAGS := $(KBUILD_CFLAGS)
 KBUILD_CFLAGS = $(subst -pg, , $(ORIG_CFLAGS))
 endif
 
+<<<<<<< HEAD
 ccflags-y := -fpic -fno-builtin -I$(obj)
 asflags-y := -Wa,-march=all
 
@@ -156,6 +197,14 @@ KBSS_SZ = $(shell $(SIZEBIN) $(obj)/../../../../vmlinux | awk 'END{print $$3}')
 KBSS_SZ = $(shell $(CROSS_COMPILE)size $(obj)/../../../../vmlinux | \
 		awk 'END{print $$3}')
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ccflags-y := -fpic -mno-single-pic-base -fno-builtin -I$(obj)
+asflags-y := -DZIMAGE
+
+# Supply kernel BSS size to the decompressor via a linker symbol.
+KBSS_SZ = $(shell $(CROSS_COMPILE)size $(obj)/../../../../vmlinux | \
+		awk 'END{print $$3}')
+>>>>>>> refs/remotes/origin/master
 LDFLAGS_vmlinux = --defsym _kernel_bss_size=$(KBSS_SZ)
 # Supply ZRELADDR to the decompressor via a linker symbol.
 ifneq ($(CONFIG_AUTO_ZRELADDR),y)
@@ -180,14 +229,20 @@ $(obj)/lib1funcs.S: $(srctree)/arch/$(SRCARCH)/lib/lib1funcs.S
 	$(call cmd,shipped)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # For __aeabi_llsl
 ashldi3 = $(obj)/ashldi3.o
 
 $(obj)/ashldi3.S: $(srctree)/arch/$(SRCARCH)/lib/ashldi3.S
 	$(call cmd,shipped)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # We need to prevent any GOTOFF relocs being used with references
 # to symbols in the .bss section since we cannot relocate them
 # independently from the rest at run time.  This can be achieved by
@@ -202,9 +257,12 @@ bad_syms=$$($(CROSS_COMPILE)nm $@ | sed -n 's/^.\{8\} [bc] \(.*\)/\1/p') && \
     echo "$$bad_syms" >&2; rm -f $@; false )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 $(obj)/vmlinux: $(obj)/vmlinux.lds $(obj)/$(HEAD) $(obj)/piggy.$(suffix_y).o \
 	 	$(addprefix $(obj)/, $(OBJS)) $(lib1funcs) FORCE
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 check_for_multiple_zreladdr = \
 if [ $(words $(ZRELADDR)) -gt 1 -a "$(CONFIG_AUTO_ZRELADDR)" = "" ]; then \
 	echo 'multiple zreladdrs: $(ZRELADDR)'; \
@@ -215,7 +273,10 @@ fi
 $(obj)/vmlinux: $(obj)/vmlinux.lds $(obj)/$(HEAD) $(obj)/piggy.$(suffix_y).o \
 		$(addprefix $(obj)/, $(OBJS)) $(lib1funcs) $(ashldi3) FORCE
 	@$(check_for_multiple_zreladdr)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	$(call if_changed,ld)
 	@$(check_for_bad_syms)
 
@@ -231,3 +292,9 @@ $(obj)/font.c: $(FONTC)
 
 $(obj)/vmlinux.lds: $(obj)/vmlinux.lds.in arch/arm/boot/Makefile $(KCONFIG_CONFIG)
 	@sed "$(SEDFLAGS)" < $< > $@
+<<<<<<< HEAD
+=======
+
+$(obj)/hyp-stub.S: $(srctree)/arch/$(SRCARCH)/kernel/hyp-stub.S
+	$(call cmd,shipped)
+>>>>>>> refs/remotes/origin/master

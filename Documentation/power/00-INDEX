@@ -27,10 +27,15 @@ s2ram.txt
 states.txt
 	- System power management states
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 suspend-and-cpuhotplug.txt
 	- Explains the interaction between Suspend-to-RAM (S3) and CPU hotplug
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+suspend-and-cpuhotplug.txt
+	- Explains the interaction between Suspend-to-RAM (S3) and CPU hotplug
+>>>>>>> refs/remotes/origin/master
 swsusp-and-swap-files.txt
 	- Using swap files with software suspend (to disk)
 swsusp-dmcrypt.txt

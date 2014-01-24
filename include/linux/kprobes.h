@@ -29,18 +29,30 @@
  *		<jkenisto@us.ibm.com>  and Prasanna S Panchamukhi
  *		<prasanna@in.ibm.com> added function-return probes.
  */
+<<<<<<< HEAD
+=======
+#include <linux/compiler.h>	/* for __kprobes */
+>>>>>>> refs/remotes/origin/master
 #include <linux/linkage.h>
 #include <linux/list.h>
 #include <linux/notifier.h>
 #include <linux/smp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/percpu.h>
 #include <linux/spinlock.h>
 #include <linux/rcupdate.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/ftrace.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KPROBES
 #include <asm/kprobes.h>
@@ -51,14 +63,20 @@
 #define KPROBE_REENTER		0x00000004
 #define KPROBE_HIT_SSDONE	0x00000008
 
+<<<<<<< HEAD
 /* Attach to insert probes on any functions which should be ignored*/
 #define __kprobes	__attribute__((__section__(".kprobes.text")))
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* CONFIG_KPROBES */
 typedef int kprobe_opcode_t;
 struct arch_specific_insn {
 	int dummy;
 };
+<<<<<<< HEAD
 #define __kprobes
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_KPROBES */
 
 struct kprobe;
@@ -131,6 +149,10 @@ struct kprobe {
 				   * NOTE:
 				   * this flag is only for optimized_kprobe.
 				   */
+<<<<<<< HEAD
+=======
+#define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
+>>>>>>> refs/remotes/origin/master
 
 /* Has this kprobe gone ? */
 static inline int kprobe_gone(struct kprobe *p)
@@ -149,6 +171,16 @@ static inline int kprobe_optimized(struct kprobe *p)
 {
 	return p->flags & KPROBE_FLAG_OPTIMIZED;
 }
+<<<<<<< HEAD
+=======
+
+/* Is this kprobe uses ftrace ? */
+static inline int kprobe_ftrace(struct kprobe *p)
+{
+	return p->flags & KPROBE_FLAG_FTRACE;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Special probe type that uses setjmp-longjmp type tricks to resume
  * execution at a specified entry with a matching prototype corresponding
@@ -186,10 +218,14 @@ struct kretprobe {
 	size_t data_size;
 	struct hlist_head free_instances;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;
 =======
 	raw_spinlock_t lock;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spinlock_t lock;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct kretprobe_instance {
@@ -264,10 +300,43 @@ extern void arch_arm_kprobe(struct kprobe *p);
 extern void arch_disarm_kprobe(struct kprobe *p);
 extern int arch_init_kprobes(void);
 extern void show_registers(struct pt_regs *regs);
+<<<<<<< HEAD
 extern kprobe_opcode_t *get_insn_slot(void);
 extern void free_insn_slot(kprobe_opcode_t *slot, int dirty);
 extern void kprobes_inc_nmissed_count(struct kprobe *p);
 
+=======
+extern void kprobes_inc_nmissed_count(struct kprobe *p);
+
+struct kprobe_insn_cache {
+	struct mutex mutex;
+	void *(*alloc)(void);	/* allocate insn page */
+	void (*free)(void *);	/* free insn page */
+	struct list_head pages; /* list of kprobe_insn_page */
+	size_t insn_size;	/* size of instruction slot */
+	int nr_garbage;
+};
+
+extern kprobe_opcode_t *__get_insn_slot(struct kprobe_insn_cache *c);
+extern void __free_insn_slot(struct kprobe_insn_cache *c,
+			     kprobe_opcode_t *slot, int dirty);
+
+#define DEFINE_INSN_CACHE_OPS(__name)					\
+extern struct kprobe_insn_cache kprobe_##__name##_slots;		\
+									\
+static inline kprobe_opcode_t *get_##__name##_slot(void)		\
+{									\
+	return __get_insn_slot(&kprobe_##__name##_slots);		\
+}									\
+									\
+static inline void free_##__name##_slot(kprobe_opcode_t *slot, int dirty)\
+{									\
+	__free_insn_slot(&kprobe_##__name##_slots, slot, dirty);	\
+}									\
+
+DEFINE_INSN_CACHE_OPS(insn);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_OPTPROBES
 /*
  * Internal structure for direct jump optimized probe
@@ -287,13 +356,21 @@ extern void arch_optimize_kprobes(struct list_head *oplist);
 extern void arch_unoptimize_kprobes(struct list_head *oplist,
 				    struct list_head *done_list);
 extern void arch_unoptimize_kprobe(struct optimized_kprobe *op);
+<<<<<<< HEAD
 extern kprobe_opcode_t *get_optinsn_slot(void);
 extern void free_optinsn_slot(kprobe_opcode_t *slot, int dirty);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int arch_within_optimized_kprobe(struct optimized_kprobe *op,
 					unsigned long addr);
 
 extern void opt_pre_handler(struct kprobe *p, struct pt_regs *regs);
 
+<<<<<<< HEAD
+=======
+DEFINE_INSN_CACHE_OPS(optinsn);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SYSCTL
 extern int sysctl_kprobes_optimization;
 extern int proc_kprobes_optimization_handler(struct ctl_table *table,
@@ -302,6 +379,15 @@ extern int proc_kprobes_optimization_handler(struct ctl_table *table,
 #endif
 
 #endif /* CONFIG_OPTPROBES */
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_KPROBES_ON_FTRACE
+extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+				  struct ftrace_ops *ops, struct pt_regs *regs);
+extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 
 /* Get the kprobe at this addr (if any) - called with preemption disabled */
 struct kprobe *get_kprobe(void *addr);

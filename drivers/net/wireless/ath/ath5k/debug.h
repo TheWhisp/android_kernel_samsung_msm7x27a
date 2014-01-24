@@ -62,9 +62,12 @@
 #define _ATH5K_DEBUG_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ath5k_softc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct ath5k_hw;
 struct sk_buff;
 struct ath5k_buf;
@@ -131,6 +134,7 @@ enum ath5k_debug_level {
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 ath5k_debug_init_device(struct ath5k_softc *sc);
 
 void
@@ -142,6 +146,8 @@ ath5k_debug_dump_bands(struct ath5k_softc *sc);
 void
 ath5k_debug_printtxbuf(struct ath5k_softc *sc, struct ath5k_buf *bf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ath5k_debug_init_device(struct ath5k_hw *ah);
 
 void
@@ -152,12 +158,16 @@ ath5k_debug_dump_bands(struct ath5k_hw *ah);
 
 void
 ath5k_debug_printtxbuf(struct ath5k_hw *ah, struct ath5k_buf *bf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #else /* no debugging */
 
 #include <linux/compiler.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void __attribute__ ((format (printf, 3, 4)))
 ATH5K_DBG(struct ath5k_softc *sc, unsigned int m, const char *fmt, ...) {}
@@ -178,6 +188,8 @@ ath5k_debug_dump_bands(struct ath5k_softc *sc) {}
 static inline void
 ath5k_debug_printtxbuf(struct ath5k_softc *sc, struct ath5k_buf *bf) {}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline __printf(3, 4) void
 ATH5K_DBG(struct ath5k_hw *ah, unsigned int m, const char *fmt, ...) {}
 
@@ -196,7 +208,10 @@ ath5k_debug_dump_bands(struct ath5k_hw *ah) {}
 
 static inline void
 ath5k_debug_printtxbuf(struct ath5k_hw *ah, struct ath5k_buf *bf) {}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* ifdef CONFIG_ATH5K_DEBUG */
 

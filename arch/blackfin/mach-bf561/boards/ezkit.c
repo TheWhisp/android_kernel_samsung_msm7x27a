@@ -109,11 +109,17 @@ static struct resource net2272_bfin_resources[] = {
 		.flags = IORESOURCE_MEM,
 	}, {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.start = 1,
 		.flags = IORESOURCE_BUS,
 	}, {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start = 1,
+		.flags = IORESOURCE_BUS,
+	}, {
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_PF10,
 		.end = IRQ_PF10,
 		.flags = IORESOURCE_IRQ | IORESOURCE_IRQ_LOWLEVEL,
@@ -176,9 +182,12 @@ static struct resource bfin_uart0_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART_RX,
 		.end = IRQ_UART_RX+1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART_TX,
 		.end = IRQ_UART_TX,
 		.flags = IORESOURCE_IRQ,
@@ -186,7 +195,10 @@ static struct resource bfin_uart0_resources[] = {
 	{
 		.start = IRQ_UART_RX,
 		.end = IRQ_UART_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -300,6 +312,7 @@ static struct platform_device ezkit_flash_device = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_SOC_AD183X) \
 	|| defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
 static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
@@ -319,6 +332,9 @@ static struct bfin5xx_spi_chip spidev_chip_info = {
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 /* SPI (0) */
 static struct resource bfin_spi0_resource[] = {
 	[0] = {
@@ -366,9 +382,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.chip_select = 4,
 		.platform_data = "ad1836", /* only includes chip name for the moment */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &ad1836_spi_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.mode = SPI_MODE_3,
 	},
 #endif
@@ -379,9 +398,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &spidev_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 };
@@ -419,10 +441,14 @@ static struct i2c_gpio_platform_data i2c_gpio_data = {
 	.sda_is_open_drain	= 0,
 	.scl_is_open_drain	= 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.udelay			= 40,
 =======
 	.udelay			= 10,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udelay			= 10,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device i2c_gpio_device = {
@@ -462,7 +488,10 @@ static struct platform_device bfin_dpmc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_VIDEO_BLACKFIN_CAPTURE) \
 	|| defined(CONFIG_VIDEO_BLACKFIN_CAPTURE_MODULE)
 #include <linux/videodev2.h>
@@ -493,18 +522,30 @@ static struct v4l2_input adv7183_inputs[] = {
 		.name = "Composite",
 		.type = V4L2_INPUT_TYPE_CAMERA,
 		.std = V4L2_STD_ALL,
+<<<<<<< HEAD
+=======
+		.capabilities = V4L2_IN_CAP_STD,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.index = 1,
 		.name = "S-Video",
 		.type = V4L2_INPUT_TYPE_CAMERA,
 		.std = V4L2_STD_ALL,
+<<<<<<< HEAD
+=======
+		.capabilities = V4L2_IN_CAP_STD,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.index = 2,
 		.name = "Component",
 		.type = V4L2_INPUT_TYPE_CAMERA,
 		.std = V4L2_STD_ALL,
+<<<<<<< HEAD
+=======
+		.capabilities = V4L2_IN_CAP_STD,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -553,7 +594,10 @@ static struct platform_device bfin_capture_device = {
 };
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
 static struct platform_device bfin_i2s = {
 	.name = "bfin-i2s",
@@ -562,6 +606,7 @@ static struct platform_device bfin_i2s = {
 };
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
 static struct platform_device bfin_tdm = {
 	.name = "bfin-tdm",
@@ -570,6 +615,8 @@ static struct platform_device bfin_tdm = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
 static struct platform_device bfin_ac97 = {
 	.name = "bfin-ac97",
@@ -578,6 +625,24 @@ static struct platform_device bfin_ac97 = {
 };
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) \
+	        || defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
+static const char * const ad1836_link[] = {
+	"bfin-i2s.0",
+	"spi0.4",
+};
+static struct platform_device bfin_ad1836_machine = {
+	.name = "bfin-snd-ad1836",
+	.id = -1,
+	.dev = {
+		.platform_data = (void *)ad1836_link,
+	},
+};
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *ezkit_devices[] __initdata = {
 
 	&bfin_dpmc,
@@ -595,10 +660,14 @@ static struct platform_device *ezkit_devices[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 	&bfin_spi0_device,
 #endif
 
@@ -631,17 +700,24 @@ static struct platform_device *ezkit_devices[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_VIDEO_BLACKFIN_CAPTURE) \
 	|| defined(CONFIG_VIDEO_BLACKFIN_CAPTURE_MODULE)
 	&bfin_capture_device,
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_I2S) || defined(CONFIG_SND_BF5XX_I2S_MODULE)
 	&bfin_i2s,
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_SND_BF5XX_TDM) || defined(CONFIG_SND_BF5XX_TDM_MODULE)
 	&bfin_tdm,
 #endif
@@ -653,6 +729,18 @@ static struct platform_device *ezkit_devices[] __initdata = {
 
 <<<<<<< HEAD
 =======
+=======
+#if defined(CONFIG_SND_BF5XX_AC97) || defined(CONFIG_SND_BF5XX_AC97_MODULE)
+	&bfin_ac97,
+#endif
+
+#if defined(CONFIG_SND_BF5XX_SOC_AD1836) || \
+	defined(CONFIG_SND_BF5XX_SOC_AD1836_MODULE)
+	&bfin_ad1836_machine,
+#endif
+};
+
+>>>>>>> refs/remotes/origin/master
 static int __init net2272_init(void)
 {
 #if defined(CONFIG_USB_NET2272) || defined(CONFIG_USB_NET2272_MODULE)
@@ -671,7 +759,10 @@ static int __init net2272_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init ezkit_init(void)
 {
 	int ret;
@@ -699,11 +790,17 @@ static int __init ezkit_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (net2272_init())
 		pr_warning("unable to configure net2272; it probably won't work\n");
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (net2272_init())
+		pr_warning("unable to configure net2272; it probably won't work\n");
+
+>>>>>>> refs/remotes/origin/master
 	spi_register_board_info(bfin_spi_board_info, ARRAY_SIZE(bfin_spi_board_info));
 	return 0;
 }

@@ -191,10 +191,14 @@ prop_adjust_shift(int *pl_shift, unsigned long *pl_period, int new_shift)
 int prop_local_init_percpu(struct prop_local_percpu *pl)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&pl->lock);
 =======
 	raw_spin_lock_init(&pl->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_init(&pl->lock);
+>>>>>>> refs/remotes/origin/master
 	pl->shift = 0;
 	pl->period = 0;
 	return percpu_counter_init(&pl->events, 0);
@@ -231,10 +235,14 @@ void prop_norm_percpu(struct prop_global *pg, struct prop_local_percpu *pl)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&pl->lock, flags);
 =======
 	raw_spin_lock_irqsave(&pl->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&pl->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	prop_adjust_shift(&pl->shift, &pl->period, pg->shift);
 
 	/*
@@ -256,10 +264,14 @@ void prop_norm_percpu(struct prop_global *pg, struct prop_local_percpu *pl)
 
 	pl->period = global_period;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&pl->lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&pl->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&pl->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -337,10 +349,14 @@ void prop_fraction_percpu(struct prop_descriptor *pd,
 int prop_local_init_single(struct prop_local_single *pl)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&pl->lock);
 =======
 	raw_spin_lock_init(&pl->lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_init(&pl->lock);
+>>>>>>> refs/remotes/origin/master
 	pl->shift = 0;
 	pl->period = 0;
 	pl->events = 0;
@@ -373,10 +389,14 @@ void prop_norm_single(struct prop_global *pg, struct prop_local_single *pl)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&pl->lock, flags);
 =======
 	raw_spin_lock_irqsave(&pl->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&pl->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	prop_adjust_shift(&pl->shift, &pl->period, pg->shift);
 	/*
 	 * For each missed period, we half the local counter.
@@ -388,10 +408,14 @@ void prop_norm_single(struct prop_global *pg, struct prop_local_single *pl)
 		pl->events = 0;
 	pl->period = global_period;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&pl->lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&pl->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&pl->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

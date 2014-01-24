@@ -10,7 +10,13 @@
 
 #ifdef __KERNEL__
 
+<<<<<<< HEAD
 #include <asm/mipsregs.h>
+=======
+#include <asm/cpu-features.h>
+#include <asm/mipsregs.h>
+#include <asm/cpu-type.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is the clock rate of the i8253 PIT.  A MIPS system may not have
@@ -33,9 +39,44 @@
 
 typedef unsigned int cycles_t;
 
+<<<<<<< HEAD
 static inline cycles_t get_cycles(void)
 {
 	return 0;
+=======
+/*
+ * On R4000/R4400 before version 5.0 an erratum exists such that if the
+ * cycle counter is read in the exact moment that it is matching the
+ * compare register, no interrupt will be generated.
+ *
+ * There is a suggested workaround and also the erratum can't strike if
+ * the compare interrupt isn't being used as the clock source device.
+ * However for now the implementaton of this function doesn't get these
+ * fine details right.
+ */
+static inline cycles_t get_cycles(void)
+{
+	switch (boot_cpu_type()) {
+	case CPU_R4400PC:
+	case CPU_R4400SC:
+	case CPU_R4400MC:
+		if ((read_c0_prid() & 0xff) >= 0x0050)
+			return read_c0_count();
+		break;
+
+        case CPU_R4000PC:
+        case CPU_R4000SC:
+        case CPU_R4000MC:
+		break;
+
+	default:
+		if (cpu_has_counter)
+			return read_c0_count();
+		break;
+	}
+
+	return 0;	/* no usable counter */
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __KERNEL__ */

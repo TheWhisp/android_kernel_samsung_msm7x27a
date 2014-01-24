@@ -31,7 +31,10 @@
 #define MAX_LINK_RATE		SAS_LINK_RATE_6_0_GBPS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum VANIR_REVISION_ID {
 	VANIR_A0_REV		= 0xA0,
 	VANIR_B0_REV		= 0x01,
@@ -40,7 +43,10 @@ enum VANIR_REVISION_ID {
 	VANIR_C2_REV		= 0xC2,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum hw_registers {
 	MVS_GBL_CTL		= 0x04,  /* global control */
 	MVS_GBL_INT_STAT	= 0x00,  /* global irq status */
@@ -113,9 +119,13 @@ enum hw_registers {
 	MVS_PA_VSR_ADDR		= 0x290, /* All port VSR addr */
 	MVS_PA_VSR_PORT		= 0x294, /* All port VSR data */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	MVS_COMMAND_ACTIVE	= 0x300,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MVS_COMMAND_ACTIVE	= 0x300,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum pci_cfg_registers {
@@ -127,6 +137,7 @@ enum pci_cfg_registers {
 
 /*  SAS/SATA Vendor Specific Port Registers */
 enum sas_sata_vsp_regs {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	VSR_PHY_STAT		= 0x00 * 4, /* Phy Status */
 	VSR_PHY_MODE1		= 0x01 * 4, /* phy tx */
@@ -143,6 +154,8 @@ enum sas_sata_vsp_regs {
 	VSR_PHY_VS0		= 0x0C * 4, /* Vednor Specific 0 */
 	VSR_PHY_VS1		= 0x0D * 4, /* Vednor Specific 1 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	VSR_PHY_STAT		= 0x00 * 4, /* Phy Interrupt Status */
 	VSR_PHY_MODE1		= 0x01 * 4, /* phy Interrupt Enable */
 	VSR_PHY_MODE2		= 0x02 * 4, /* Phy Configuration */
@@ -160,11 +173,15 @@ enum sas_sata_vsp_regs {
 	VSR_PHY_FFE_CONTROL	= 0x10C,
 	VSR_PHY_DFE_UPDATE_CRTL	= 0x110,
 	VSR_REF_CLOCK_CRTL	= 0x1A0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum chip_register_bits {
 	PHY_MIN_SPP_PHYS_LINK_RATE_MASK = (0x7 << 8),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	PHY_MAX_SPP_PHYS_LINK_RATE_MASK = (0x7 << 8),
 	PHY_NEG_SPP_PHYS_LINK_RATE_MASK_OFFSET = (12),
@@ -172,6 +189,10 @@ enum chip_register_bits {
 	PHY_MAX_SPP_PHYS_LINK_RATE_MASK = (0x7 << 12),
 	PHY_NEG_SPP_PHYS_LINK_RATE_MASK_OFFSET = (16),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PHY_MAX_SPP_PHYS_LINK_RATE_MASK = (0x7 << 12),
+	PHY_NEG_SPP_PHYS_LINK_RATE_MASK_OFFSET = (16),
+>>>>>>> refs/remotes/origin/master
 	PHY_NEG_SPP_PHYS_LINK_RATE_MASK =
 			(0x3 << PHY_NEG_SPP_PHYS_LINK_RATE_MASK_OFFSET),
 };
@@ -210,10 +231,13 @@ enum pci_interrupt_cause {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_SG_ENTRY		255
 
 struct mvs_prd_imt {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 union reg_phy_cfg {
 	u32 v;
 	struct {
@@ -253,20 +277,29 @@ union reg_phy_cfg {
 
 struct mvs_prd_imt {
 #ifndef __BIG_ENDIAN
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__le32			len:22;
 	u8			_r_a:2;
 	u8			misc_ctl:4;
 	u8			inter_sel:4;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 	u32			inter_sel:4;
 	u32			misc_ctl:4;
 	u32			_r_a:2;
 	u32			len:22;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mvs_prd {
@@ -274,10 +307,13 @@ struct mvs_prd {
 	__le64			addr;
 	/* 22-bit length */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mvs_prd_imt	im_len;
 } __attribute__ ((packed));
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__le32			im_len;
 } __attribute__ ((packed));
 
@@ -292,7 +328,10 @@ enum sas_sata_phy_regs {
 	GENERATION_3_4_SETTING		= 0x124,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SPI_CTRL_REG_94XX           	0xc800
 #define SPI_ADDR_REG_94XX            	0xc804
 #define SPI_WR_DATA_REG_94XX         0xc808

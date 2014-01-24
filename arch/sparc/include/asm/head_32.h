@@ -2,6 +2,7 @@
 #define __SPARC_HEAD_H
 
 #define KERNBASE        0xf0000000  /* First address the kernel will eventually be */
+<<<<<<< HEAD
 #define LOAD_ADDR       0x4000      /* prom jumps to us here unless this is elf /boot */
 #define SUN4C_SEGSZ     (1 << 18)
 #define SRMMU_L1_KBASE_OFFSET ((KERNBASE>>24)<<2)  /* Used in boot remapping. */
@@ -11,6 +12,10 @@
 
 #define WRITE_PAUSE      nop; nop; nop; /* Have to do this after %wim/%psr chg */
 #define NOP_INSN         0x01000000     /* Used to patch sparc_save_state */
+=======
+
+#define WRITE_PAUSE      nop; nop; nop; /* Have to do this after %wim/%psr chg */
+>>>>>>> refs/remotes/origin/master
 
 /* Here are some trap goodies */
 
@@ -18,9 +23,13 @@
 #define TRAP_ENTRY(type, label) \
 	rd %psr, %l0; b label; rd %wim, %l3; nop;
 
+<<<<<<< HEAD
 /* Data/text faults. Defaults to sun4c version at boot time. */
 #define SPARC_TFAULT rd %psr, %l0; rd %wim, %l3; b sun4c_fault; mov 1, %l7;
 #define SPARC_DFAULT rd %psr, %l0; rd %wim, %l3; b sun4c_fault; mov 0, %l7;
+=======
+/* Data/text faults */
+>>>>>>> refs/remotes/origin/master
 #define SRMMU_TFAULT rd %psr, %l0; rd %wim, %l3; b srmmu_fault; mov 1, %l7;
 #define SRMMU_DFAULT rd %psr, %l0; rd %wim, %l3; b srmmu_fault; mov 0, %l7;
 
@@ -64,6 +73,7 @@
 
 /* The Get Condition Codes software trap for userland. */
 #define GETCC_TRAP \
+<<<<<<< HEAD
         b getcc_trap_handler; mov %psr, %l0; nop; nop;
 
 /* The Set Condition Codes software trap for userland. */
@@ -73,6 +83,17 @@
 /* The Get PSR software trap for userland. */
 #define GETPSR_TRAP \
 	mov %psr, %i0; jmp %l2; rett %l2 + 4; nop;
+=======
+        b getcc_trap_handler; rd %psr, %l0; nop; nop;
+
+/* The Set Condition Codes software trap for userland. */
+#define SETCC_TRAP \
+        b setcc_trap_handler; rd %psr, %l0; nop; nop;
+
+/* The Get PSR software trap for userland. */
+#define GETPSR_TRAP \
+	rd %psr, %i0; jmp %l2; rett %l2 + 4; nop;
+>>>>>>> refs/remotes/origin/master
 
 /* This is for hard interrupts from level 1-14, 15 is non-maskable (nmi) and
  * gets handled with another macro.
@@ -80,6 +101,7 @@
 #define TRAP_ENTRY_INTERRUPT(int_level) \
         mov int_level, %l7; rd %psr, %l0; b real_irq_entry; rd %wim, %l3;
 
+<<<<<<< HEAD
 /* NMI's (Non Maskable Interrupts) are special, you can't keep them
  * from coming in, and basically if you get one, the shows over. ;(
  * On the sun4c they are usually asynchronous memory errors, on the
@@ -90,6 +112,8 @@
 #define NMI_TRAP \
         rd %wim, %l3; b linux_trap_nmi_sun4c; mov %psr, %l0; nop;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Window overflows/underflows are special and we need to try to be as
  * efficient as possible here....
  */

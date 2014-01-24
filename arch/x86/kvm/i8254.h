@@ -1,6 +1,11 @@
 #ifndef __I8254_H
 #define __I8254_H
 
+<<<<<<< HEAD
+=======
+#include <linux/kthread.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "iodev.h"
 
 struct kvm_kpit_channel_state {
@@ -22,8 +27,17 @@ struct kvm_kpit_channel_state {
 struct kvm_kpit_state {
 	struct kvm_kpit_channel_state channels[3];
 	u32 flags;
+<<<<<<< HEAD
 	struct kvm_timer pit_timer;
 	bool is_periodic;
+=======
+	bool is_periodic;
+	s64 period; 				/* unit: ns */
+	struct hrtimer timer;
+	atomic_t pending;			/* accumulated triggered timers */
+	bool reinject;
+	struct kvm *kvm;
+>>>>>>> refs/remotes/origin/master
 	u32    speaker_data_on;
 	struct mutex lock;
 	struct kvm_pit *pit;
@@ -39,8 +53,14 @@ struct kvm_pit {
 	struct kvm_kpit_state pit_state;
 	int irq_source_id;
 	struct kvm_irq_mask_notifier mask_notifier;
+<<<<<<< HEAD
 	struct workqueue_struct *wq;
 	struct work_struct expired;
+=======
+	struct kthread_worker worker;
+	struct task_struct *worker_task;
+	struct kthread_work expired;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define KVM_PIT_BASE_ADDRESS	    0x40

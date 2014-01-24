@@ -83,6 +83,7 @@
 #define			AT91_SDRAMC_MD_LOW_POWER_SDRAM	1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Register access macros */
 #define at91_ramc_read(num, reg) \
 	at91_sys_read(AT91_SDRAMC##num + reg)
@@ -91,4 +92,6 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

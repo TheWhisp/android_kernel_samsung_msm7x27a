@@ -352,10 +352,14 @@
 0892  Apollo
 	0100  A1200 [FPU and RAM Expansion]
 <<<<<<< HEAD
+<<<<<<< HEAD
 0893  Ingenieurb�ro Helfrich
 =======
 0893  Ingenieurbüro Helfrich
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+0893  Ingenieurbüro Helfrich
+>>>>>>> refs/remotes/origin/master
 	0500  Piccolo RAM [Graphics Card]
 	0600  Piccolo [Graphics Card]
 	0700  PeggyPlus MPEG [Video Card]

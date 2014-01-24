@@ -4,6 +4,12 @@
 
 #include <stdbool.h>
 #include "event.h"
+<<<<<<< HEAD
+=======
+#include "../ui/helpline.h"
+#include "../ui/progress.h"
+#include "../ui/util.h"
+>>>>>>> refs/remotes/origin/master
 
 extern int verbose;
 extern bool quiet, dump_trace;
@@ -11,6 +17,7 @@ extern bool quiet, dump_trace;
 int dump_printf(const char *fmt, ...) __attribute__((format(printf, 1, 2)));
 void trace_event(union perf_event *event);
 
+<<<<<<< HEAD
 struct ui_progress;
 
 #ifdef NO_NEWT_SUPPORT
@@ -52,5 +59,11 @@ int ui__error(const char *format, ...) __attribute__((format(printf, 1, 2)));
 int ui__warning(const char *format, ...) __attribute__((format(printf, 1, 2)));
 int ui__error_paranoid(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ui__error(const char *format, ...) __attribute__((format(printf, 1, 2)));
+int ui__warning(const char *format, ...) __attribute__((format(printf, 1, 2)));
+
+void pr_stat(const char *fmt, ...);
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __PERF_DEBUG_H */

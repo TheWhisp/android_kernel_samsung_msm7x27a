@@ -37,6 +37,7 @@
 #include "musb_core.h"
 #include "musbhsdma.h"
 
+<<<<<<< HEAD
 static int dma_controller_start(struct dma_controller *c)
 {
 	/* nothing to do */
@@ -49,6 +50,12 @@ static int dma_controller_stop(struct dma_controller *c)
 {
 	struct musb_dma_controller *controller = container_of(c,
 			struct musb_dma_controller, controller);
+=======
+static void dma_channel_release(struct dma_channel *channel);
+
+static void dma_controller_stop(struct musb_dma_controller *controller)
+{
+>>>>>>> refs/remotes/origin/master
 	struct musb *musb = controller->private_data;
 	struct dma_channel *channel;
 	u8 bit;
@@ -67,8 +74,11 @@ static int dma_controller_stop(struct dma_controller *c)
 			}
 		}
 	}
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dma_channel *dma_channel_allocate(struct dma_controller *c,
@@ -371,8 +381,12 @@ void dma_controller_destroy(struct dma_controller *c)
 	struct musb_dma_controller *controller = container_of(c,
 			struct musb_dma_controller, controller);
 
+<<<<<<< HEAD
 	if (!controller)
 		return;
+=======
+	dma_controller_stop(controller);
+>>>>>>> refs/remotes/origin/master
 
 	if (controller->irq)
 		free_irq(controller->irq, c);
@@ -380,15 +394,23 @@ void dma_controller_destroy(struct dma_controller *c)
 	kfree(controller);
 }
 
+<<<<<<< HEAD
 struct dma_controller *__init
 dma_controller_create(struct musb *musb, void __iomem *base)
+=======
+struct dma_controller *dma_controller_create(struct musb *musb, void __iomem *base)
+>>>>>>> refs/remotes/origin/master
 {
 	struct musb_dma_controller *controller;
 	struct device *dev = musb->controller;
 	struct platform_device *pdev = to_platform_device(dev);
 	int irq = platform_get_irq_byname(pdev, "dma");
 
+<<<<<<< HEAD
 	if (irq == 0) {
+=======
+	if (irq <= 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "No DMA interrupt line!\n");
 		return NULL;
 	}
@@ -401,18 +423,25 @@ dma_controller_create(struct musb *musb, void __iomem *base)
 	controller->private_data = musb;
 	controller->base = base;
 
+<<<<<<< HEAD
 	controller->controller.start = dma_controller_start;
 	controller->controller.stop = dma_controller_stop;
+=======
+>>>>>>> refs/remotes/origin/master
 	controller->controller.channel_alloc = dma_channel_allocate;
 	controller->controller.channel_release = dma_channel_release;
 	controller->controller.channel_program = dma_channel_program;
 	controller->controller.channel_abort = dma_channel_abort;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (request_irq(irq, dma_controller_irq, IRQF_DISABLED,
 =======
 	if (request_irq(irq, dma_controller_irq, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(irq, dma_controller_irq, 0,
+>>>>>>> refs/remotes/origin/master
 			dev_name(musb->controller), &controller->controller)) {
 		dev_err(dev, "request_irq %d failed!\n", irq);
 		dma_controller_destroy(&controller->controller);

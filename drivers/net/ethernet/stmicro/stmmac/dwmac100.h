@@ -22,6 +22,12 @@
   Author: Giuseppe Cavallaro <peppe.cavallaro@st.com>
 *******************************************************************************/
 
+<<<<<<< HEAD
+=======
+#ifndef __DWMAC100_H__
+#define __DWMAC100_H__
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/phy.h>
 #include "common.h"
 
@@ -119,3 +125,8 @@ enum ttc_control {
 #define DMA_MISSED_FRAME_M_CNTR	0x0000ffff	/* Missed Frame Couinter */
 
 extern const struct stmmac_dma_ops dwmac100_dma_ops;
+<<<<<<< HEAD
+=======
+
+#endif /* __DWMAC100_H__ */
+>>>>>>> refs/remotes/origin/master

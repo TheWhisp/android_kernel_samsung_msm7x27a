@@ -1308,6 +1308,7 @@ static int tsi108_open(struct net_device *dev)
 		       data->id, dev->irq, dev->name);
 	}
 
+<<<<<<< HEAD
 	data->rxring = dma_alloc_coherent(NULL, rxring_size,
 			&data->rxdma, GFP_KERNEL);
 
@@ -1329,6 +1330,18 @@ static int tsi108_open(struct net_device *dev)
 		return -ENOMEM;
 	} else {
 		memset(data->txring, 0, txring_size);
+=======
+	data->rxring = dma_zalloc_coherent(NULL, rxring_size, &data->rxdma,
+					   GFP_KERNEL);
+	if (!data->rxring)
+		return -ENOMEM;
+
+	data->txring = dma_zalloc_coherent(NULL, txring_size, &data->txdma,
+					   GFP_KERNEL);
+	if (!data->txring) {
+		pci_free_consistent(0, rxring_size, data->rxring, data->rxdma);
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < TSI108_RXRING_LEN; i++) {
@@ -1359,7 +1372,10 @@ static int tsi108_open(struct net_device *dev)
 		}
 
 		data->rxskbs[i] = skb;
+<<<<<<< HEAD
 		data->rxskbs[i] = skb;
+=======
+>>>>>>> refs/remotes/origin/master
 		data->rxring[i].buf0 = virt_to_phys(data->rxskbs[i]->data);
 		data->rxring[i].misc = TSI108_RX_OWN | TSI108_RX_INT;
 	}
@@ -1570,7 +1586,11 @@ tsi108_init_one(struct platform_device *pdev)
 	hw_info *einfo;
 	int err = 0;
 
+<<<<<<< HEAD
 	einfo = pdev->dev.platform_data;
+=======
+	einfo = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (NULL == einfo) {
 		printk(KERN_ERR "tsi-eth %d: Missing additional data!\n",
@@ -1694,7 +1714,10 @@ static int tsi108_ether_remove(struct platform_device *pdev)
 
 	unregister_netdev(dev);
 	tsi108_stop_ethernet(dev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(priv->regs);
 	iounmap(priv->phyregs);
 	free_netdev(dev);

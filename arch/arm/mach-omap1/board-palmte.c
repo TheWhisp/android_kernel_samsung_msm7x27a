@@ -17,10 +17,14 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/input.h>
@@ -32,16 +36,23 @@
 #include <linux/interrupt.h>
 #include <linux/apm-emulation.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 =======
 #include <linux/omapfb.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/omapfb.h>
+#include <linux/platform_data/omap1_bl.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/gpio.h>
 =======
@@ -62,6 +73,18 @@
 
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/flash.h>
+#include <mach/mux.h>
+#include <mach/tc.h>
+#include <linux/omap-dma.h>
+#include <linux/platform_data/keypad-omap.h>
+
+#include <mach/hardware.h>
+#include <mach/usb.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 #define PALMTE_USBDETECT_GPIO	0
 #define PALMTE_USB_OR_DC_GPIO	1
@@ -79,6 +102,7 @@
 #define PALMTE_MMC3_GPIO	OMAP_MPUIO(11)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init omap_palmte_init_irq(void)
 {
 	omap1_init_common_hw();
@@ -87,6 +111,8 @@ static void __init omap_palmte_init_irq(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const unsigned int palmte_keymap[] = {
 	KEY(0, 0, KEY_F1),		/* Calendar */
 	KEY(1, 0, KEY_F2),		/* Contacts */
@@ -192,6 +218,7 @@ static struct platform_device palmte_backlight_device = {
 	},
 };
 
+<<<<<<< HEAD
 static struct omap_irda_config palmte_irda_config = {
 	.transceiver_cap	= IR_SIRMODE,
 	.rx_channel		= OMAP_DMA_UART3_RX,
@@ -220,12 +247,17 @@ static struct platform_device palmte_irda_device = {
 	.resource	= palmte_irda_resources,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *palmte_devices[] __initdata = {
 	&palmte_rom_device,
 	&palmte_kp_device,
 	&palmte_lcd_device,
 	&palmte_backlight_device,
+<<<<<<< HEAD
 	&palmte_irda_device,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct omap_usb_config palmte_usb_config __initdata = {
@@ -239,21 +271,27 @@ static struct omap_lcd_config palmte_lcd_config __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct omap_board_config_kernel palmte_config[] __initdata = {
 	{ OMAP_TAG_LCD,		&palmte_lcd_config },
 };
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct spi_board_info palmte_spi_info[] __initdata = {
 	{
 		.modalias	= "tsc2102",
 		.bus_num	= 2,	/* uWire (officially) */
 		.chip_select	= 0,	/* As opposed to 3 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(PALMTE_PINTDAV_GPIO),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.max_speed_hz	= 8000000,
 	},
 };
@@ -286,6 +324,7 @@ static void __init omap_palmte_init(void)
 	omap_cfg_reg(UART3_RX);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap_board_config = palmte_config;
 	omap_board_config_size = ARRAY_SIZE(palmte_config);
 
@@ -296,11 +335,17 @@ static void __init omap_palmte_init(void)
 
 	palmte_spi_info[0].irq = gpio_to_irq(PALMTE_PINTDAV_GPIO);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_add_devices(palmte_devices, ARRAY_SIZE(palmte_devices));
+
+	palmte_spi_info[0].irq = gpio_to_irq(PALMTE_PINTDAV_GPIO);
+>>>>>>> refs/remotes/origin/master
 	spi_register_board_info(palmte_spi_info, ARRAY_SIZE(palmte_spi_info));
 	palmte_misc_gpio_setup();
 	omap_serial_init();
 	omap1_usb_init(&palmte_usb_config);
 	omap_register_i2c_bus(1, 100, NULL, 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -317,6 +362,8 @@ MACHINE_START(OMAP_PALMTE, "OMAP310 based Palm Tungsten E")
 	.init_machine	= omap_palmte_init,
 	.timer		= &omap_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	omapfb_set_lcd_config(&palmte_lcd_config);
 }
@@ -325,10 +372,18 @@ MACHINE_START(OMAP_PALMTE, "OMAP310 based Palm Tungsten E")
 	.atag_offset	= 0x100,
 	.map_io		= omap15xx_map_io,
 	.init_early     = omap1_init_early,
+<<<<<<< HEAD
 	.reserve	= omap_reserve,
 	.init_irq	= omap1_init_irq,
 	.init_machine	= omap_palmte_init,
 	.timer		= &omap1_timer,
 	.restart	= omap1_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_irq	= omap1_init_irq,
+	.init_machine	= omap_palmte_init,
+	.init_late	= omap1_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

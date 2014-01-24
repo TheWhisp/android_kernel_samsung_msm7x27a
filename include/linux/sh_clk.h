@@ -19,11 +19,15 @@ struct clk_mapping {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct clk_ops {
 =======
 
 struct sh_clk_ops {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sh_clk_ops {
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SH_CLK_CPG_LEGACY
 	void (*init)(struct clk *clk);
 #endif
@@ -35,6 +39,13 @@ struct sh_clk_ops {
 	long (*round_rate)(struct clk *clk, unsigned long rate);
 };
 
+<<<<<<< HEAD
+=======
+#define SH_CLK_DIV_MSK(div)	((1 << (div)) - 1)
+#define SH_CLK_DIV4_MSK		SH_CLK_DIV_MSK(4)
+#define SH_CLK_DIV6_MSK		SH_CLK_DIV_MSK(6)
+
+>>>>>>> refs/remotes/origin/master
 struct clk {
 	struct list_head	node;
 	struct clk		*parent;
@@ -43,10 +54,14 @@ struct clk {
 	unsigned char		src_shift;	/* source clock field in the */
 	unsigned char		src_width;	/* configuration register */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk_ops		*ops;
 =======
 	struct sh_clk_ops	*ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sh_clk_ops	*ops;
+>>>>>>> refs/remotes/origin/master
 
 	struct list_head	children;
 	struct list_head	sibling;	/* node for children */
@@ -59,6 +74,7 @@ struct clk {
 	void __iomem		*enable_reg;
 	unsigned int		enable_bit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	unsigned long		arch_flags;
 	void			*priv;
@@ -69,12 +85,33 @@ struct clk {
 	unsigned long		arch_flags;
 	void			*priv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem		*mapped_reg;
+
+	unsigned int		div_mask;
+	unsigned long		arch_flags;
+	void			*priv;
+>>>>>>> refs/remotes/origin/master
 	struct clk_mapping	*mapping;
 	struct cpufreq_frequency_table *freq_table;
 	unsigned int		nr_freqs;
 };
 
+<<<<<<< HEAD
 #define CLK_ENABLE_ON_INIT	(1 << 0)
+=======
+#define CLK_ENABLE_ON_INIT	BIT(0)
+
+#define CLK_ENABLE_REG_32BIT	BIT(1)	/* default access size */
+#define CLK_ENABLE_REG_16BIT	BIT(2)
+#define CLK_ENABLE_REG_8BIT	BIT(3)
+
+#define CLK_MASK_DIV_ON_DISABLE	BIT(4)
+
+#define CLK_ENABLE_REG_MASK	(CLK_ENABLE_REG_32BIT | \
+				 CLK_ENABLE_REG_16BIT | \
+				 CLK_ENABLE_REG_8BIT)
+>>>>>>> refs/remotes/origin/master
 
 /* drivers/sh/clk.c */
 unsigned long followparent_recalc(struct clk *);
@@ -111,16 +148,26 @@ long clk_rate_div_range_round(struct clk *clk, unsigned int div_min,
 			      unsigned int div_max, unsigned long rate);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 long clk_rate_mult_range_round(struct clk *clk, unsigned int mult_min,
 			       unsigned int mult_max, unsigned long rate);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+long clk_rate_mult_range_round(struct clk *clk, unsigned int mult_min,
+			       unsigned int mult_max, unsigned long rate);
+
+>>>>>>> refs/remotes/origin/master
 long clk_round_parent(struct clk *clk, unsigned long target,
 		      unsigned long *best_freq, unsigned long *parent_freq,
 		      unsigned int div_min, unsigned int div_max);
 
+<<<<<<< HEAD
 #define SH_CLK_MSTP32(_parent, _enable_reg, _enable_bit, _flags)	\
+=======
+#define SH_CLK_MSTP(_parent, _enable_reg, _enable_bit, _flags)		\
+>>>>>>> refs/remotes/origin/master
 {									\
 	.parent		= _parent,					\
 	.enable_reg	= (void __iomem *)_enable_reg,			\
@@ -128,7 +175,31 @@ long clk_round_parent(struct clk *clk, unsigned long target,
 	.flags		= _flags,					\
 }
 
+<<<<<<< HEAD
 int sh_clk_mstp32_register(struct clk *clks, int nr);
+=======
+#define SH_CLK_MSTP32(_p, _r, _b, _f)					\
+	SH_CLK_MSTP(_p, _r, _b, _f | CLK_ENABLE_REG_32BIT)
+
+#define SH_CLK_MSTP16(_p, _r, _b, _f)					\
+	SH_CLK_MSTP(_p, _r, _b, _f | CLK_ENABLE_REG_16BIT)
+
+#define SH_CLK_MSTP8(_p, _r, _b, _f)					\
+	SH_CLK_MSTP(_p, _r, _b, _f | CLK_ENABLE_REG_8BIT)
+
+int sh_clk_mstp_register(struct clk *clks, int nr);
+
+/*
+ * MSTP registration never really cared about access size, despite the
+ * original enable/disable pairs assuming a 32-bit access. Clocks are
+ * responsible for defining their access sizes either directly or via the
+ * clock definition wrappers.
+ */
+static inline int __deprecated sh_clk_mstp32_register(struct clk *clks, int nr)
+{
+	return sh_clk_mstp_register(clks, nr);
+}
+>>>>>>> refs/remotes/origin/master
 
 #define SH_CLK_DIV4(_parent, _reg, _shift, _div_bitmap, _flags)	\
 {								\
@@ -136,14 +207,27 @@ int sh_clk_mstp32_register(struct clk *clks, int nr);
 	.enable_reg = (void __iomem *)_reg,			\
 	.enable_bit = _shift,					\
 	.arch_flags = _div_bitmap,				\
+<<<<<<< HEAD
 	.flags = _flags,					\
 }
 
 struct clk_div4_table {
+=======
+	.div_mask = SH_CLK_DIV4_MSK,				\
+	.flags = _flags,					\
+}
+
+struct clk_div_table {
+>>>>>>> refs/remotes/origin/master
 	struct clk_div_mult_table *div_mult_table;
 	void (*kick)(struct clk *clk);
 };
 
+<<<<<<< HEAD
+=======
+#define clk_div4_table clk_div_table
+
+>>>>>>> refs/remotes/origin/master
 int sh_clk_div4_register(struct clk *clks, int nr,
 			 struct clk_div4_table *table);
 int sh_clk_div4_enable_register(struct clk *clks, int nr,
@@ -151,6 +235,7 @@ int sh_clk_div4_enable_register(struct clk *clks, int nr,
 int sh_clk_div4_reparent_register(struct clk *clks, int nr,
 			 struct clk_div4_table *table);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SH_CLK_DIV6_EXT(_parent, _reg, _flags, _parents,	\
 			_num_parents, _src_shift, _src_width)	\
@@ -163,6 +248,15 @@ int sh_clk_div4_reparent_register(struct clk *clks, int nr,
 >>>>>>> refs/remotes/origin/cm-10.0
 	.enable_reg = (void __iomem *)_reg,			\
 	.flags = _flags,					\
+=======
+#define SH_CLK_DIV6_EXT(_reg, _flags, _parents,			\
+			_num_parents, _src_shift, _src_width)	\
+{								\
+	.enable_reg = (void __iomem *)_reg,			\
+	.enable_bit = 0, /* unused */				\
+	.flags = _flags | CLK_MASK_DIV_ON_DISABLE,		\
+	.div_mask = SH_CLK_DIV6_MSK,				\
+>>>>>>> refs/remotes/origin/master
 	.parent_table = _parents,				\
 	.parent_num = _num_parents,				\
 	.src_shift = _src_shift,				\
@@ -170,6 +264,7 @@ int sh_clk_div4_reparent_register(struct clk *clks, int nr,
 }
 
 #define SH_CLK_DIV6(_parent, _reg, _flags)			\
+<<<<<<< HEAD
 <<<<<<< HEAD
 	SH_CLK_DIV6_EXT(_parent, _reg, _flags, NULL, 0, 0, 0)
 =======
@@ -179,15 +274,39 @@ int sh_clk_div4_reparent_register(struct clk *clks, int nr,
 	.flags		= _flags,				\
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{								\
+	.parent		= _parent,				\
+	.enable_reg	= (void __iomem *)_reg,			\
+	.enable_bit	= 0,	/* unused */			\
+	.div_mask	= SH_CLK_DIV6_MSK,			\
+	.flags		= _flags | CLK_MASK_DIV_ON_DISABLE,	\
+}
+>>>>>>> refs/remotes/origin/master
 
 int sh_clk_div6_register(struct clk *clks, int nr);
 int sh_clk_div6_reparent_register(struct clk *clks, int nr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CLKDEV_CON_ID(_id, _clk) { .con_id = _id, .clk = _clk }
 #define CLKDEV_DEV_ID(_id, _clk) { .dev_id = _id, .clk = _clk }
 #define CLKDEV_ICK_ID(_cid, _did, _clk) { .con_id = _cid, .dev_id = _did, .clk = _clk }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* .enable_reg will be updated to .mapping on sh_clk_fsidiv_register() */
+#define SH_CLK_FSIDIV(_reg, _parent)		\
+{						\
+	.enable_reg = (void __iomem *)_reg,	\
+	.parent		= _parent,		\
+}
+
+int sh_clk_fsidiv_register(struct clk *clks, int nr);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __SH_CLOCK_H */

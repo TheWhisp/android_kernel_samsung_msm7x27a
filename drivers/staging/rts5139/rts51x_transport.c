@@ -120,7 +120,11 @@ unsigned int rts51x_access_sglist(unsigned char *buffer,
 	return cnt;
 }
 
+<<<<<<< HEAD
 unsigned int rts51x_access_xfer_buf(unsigned char *buffer,
+=======
+static unsigned int rts51x_access_xfer_buf(unsigned char *buffer,
+>>>>>>> refs/remotes/origin/master
 				    unsigned int buflen, struct scsi_cmnd *srb,
 				    struct scatterlist **sgptr,
 				    unsigned int *offset, enum xfer_buf_dir dir)
@@ -252,6 +256,11 @@ static int rts51x_msg_common(struct rts51x_chip *chip, struct urb *urb,
 	return status;
 }
 
+<<<<<<< HEAD
+=======
+static int rts51x_clear_halt(struct rts51x_chip *chip, unsigned int pipe);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Interpret the results of a URB transfer
  */
@@ -359,7 +368,11 @@ int rts51x_ctrl_transfer(struct rts51x_chip *chip, unsigned int pipe,
 				    rts51x->current_urb->actual_length);
 }
 
+<<<<<<< HEAD
 int rts51x_clear_halt(struct rts51x_chip *chip, unsigned int pipe)
+=======
+static int rts51x_clear_halt(struct rts51x_chip *chip, unsigned int pipe)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	int endp = usb_pipeendpoint(pipe);
@@ -378,11 +391,14 @@ int rts51x_clear_halt(struct rts51x_chip *chip, unsigned int pipe)
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int rts51x_reset_pipe(struct rts51x_chip *chip, char pipe)
 {
 	return rts51x_clear_halt(chip, pipe);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void rts51x_sg_clean(struct usb_sg_request *io)
 {
 	if (io->urbs) {
@@ -391,6 +407,7 @@ static void rts51x_sg_clean(struct usb_sg_request *io)
 		kfree(io->urbs);
 		io->urbs = NULL;
 	}
+<<<<<<< HEAD
 #if 0 /* LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 35) */
 	if (io->dev->dev.dma_mask != NULL)
 		usb_buffer_unmap_sg(io->dev, usb_pipein(io->pipe),
@@ -604,13 +621,23 @@ nomem:
 }
 #endif
 int rts51x_sg_init(struct usb_sg_request *io, struct usb_device *dev,
+=======
+	io->dev = NULL;
+}
+
+static int rts51x_sg_init(struct usb_sg_request *io, struct usb_device *dev,
+>>>>>>> refs/remotes/origin/master
 		   unsigned pipe, unsigned period, struct scatterlist *sg,
 		   int nents, size_t length, gfp_t mem_flags)
 {
 	return usb_sg_init(io, dev, pipe, period, sg, nents, length, mem_flags);
 }
 
+<<<<<<< HEAD
 int rts51x_sg_wait(struct usb_sg_request *io, int timeout)
+=======
+static int rts51x_sg_wait(struct usb_sg_request *io, int timeout)
+>>>>>>> refs/remotes/origin/master
 {
 	long timeleft;
 	int i;
@@ -630,7 +657,11 @@ int rts51x_sg_wait(struct usb_sg_request *io, int timeout)
 		 */
 		spin_unlock_irq(&io->lock);
 		switch (retval) {
+<<<<<<< HEAD
 			/* maybe we retrying will recover */
+=======
+			/* maybe the retry will recover */
+>>>>>>> refs/remotes/origin/master
 		case -ENXIO:	/* hc didn't queue this one */
 		case -EAGAIN:
 		case -ENOMEM:
@@ -740,6 +771,7 @@ static int rts51x_bulk_transfer_sglist(struct rts51x_chip *chip,
 	return interpret_urb_result(chip, pipe, length, result,
 				    chip->usb->current_sg.bytes);
 }
+<<<<<<< HEAD
 #if 0
 static int rts51x_bulk_transfer_sglist_partial(struct rts51x_chip *chip,
 		unsigned int pipe, void *buf, struct scatterlist **sgptr,
@@ -790,6 +822,11 @@ static int rts51x_bulk_transfer_sglist_partial(struct rts51x_chip *chip,
 }
 #endif
 int rts51x_bulk_transfer_buf(struct rts51x_chip *chip, unsigned int pipe,
+=======
+
+static int rts51x_bulk_transfer_buf(struct rts51x_chip *chip,
+			     unsigned int pipe,
+>>>>>>> refs/remotes/origin/master
 			     void *buf, unsigned int length,
 			     unsigned int *act_len, int timeout)
 {
@@ -860,11 +897,14 @@ int rts51x_transfer_data_partial(struct rts51x_chip *chip, unsigned int pipe,
 		}
 
 		kfree(tmp_buf);
+<<<<<<< HEAD
 #if 0
 		result = rts51x_bulk_transfer_sglist_partial(chip, pipe, buf,
 					(struct scatterlist **)ptr, offset,
 					use_sg, len, act_len, timeout);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		unsigned int step = 0;
 		if (offset)
@@ -899,12 +939,21 @@ int rts51x_get_epc_status(struct rts51x_chip *chip, u16 *status)
 	ep = chip->usb->pusb_dev->ep_in[usb_pipeendpoint(pipe)];
 
 	/* fill and submit the URB */
+<<<<<<< HEAD
 	/* We set interval to 1 here, so the polling interval is controlled
 	 * by our polling thread */
 	usb_fill_int_urb(chip->usb->intr_urb, chip->usb->pusb_dev, pipe,
 			 status, 2, urb_done_completion, &urb_done, 1);
 
 	result = rts51x_msg_common(chip, chip->usb->intr_urb, 50);
+=======
+	/* Set interval to 10 here to match the endpoint descriptor,
+	 * the polling interval is controlled by the polling thread */
+	usb_fill_int_urb(chip->usb->intr_urb, chip->usb->pusb_dev, pipe,
+			 status, 2, urb_done_completion, &urb_done, 10);
+
+	result = rts51x_msg_common(chip, chip->usb->intr_urb, 100);
+>>>>>>> refs/remotes/origin/master
 
 	return interpret_urb_result(chip, pipe, 2, result,
 				    chip->usb->intr_urb->actual_length);

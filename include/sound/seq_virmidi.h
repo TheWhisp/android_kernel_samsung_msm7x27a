@@ -22,8 +22,13 @@
  *
  */
 
+<<<<<<< HEAD
 #include "rawmidi.h"
 #include "seq_midi_event.h"
+=======
+#include <sound/rawmidi.h>
+#include <sound/seq_midi_event.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * device file instance:

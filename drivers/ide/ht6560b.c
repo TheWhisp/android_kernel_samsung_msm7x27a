@@ -318,10 +318,14 @@ static void __init ht6560b_init_dev(ide_drive_t *drive)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int probe_ht6560b;
 =======
 static bool probe_ht6560b;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool probe_ht6560b;
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(probe, probe_ht6560b, bool, 0);
 MODULE_PARM_DESC(probe, "probe for HT6560B chipset");
@@ -345,7 +349,11 @@ static const struct ide_port_ops ht6560b_port_ops = {
 	.set_pio_mode		= ht6560b_set_pio_mode,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info ht6560b_port_info __initdata = {
+=======
+static const struct ide_port_info ht6560b_port_info __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.name			= DRV_NAME,
 	.chipset		= ide_ht6560b,
 	.tp_ops 		= &ht6560b_tp_ops,

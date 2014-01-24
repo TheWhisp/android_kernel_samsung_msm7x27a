@@ -18,10 +18,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
@@ -300,8 +305,13 @@ static const struct net_device_ops pc300_ops = {
 	.ndo_do_ioctl   = pc300_ioctl,
 };
 
+<<<<<<< HEAD
 static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 					const struct pci_device_id *ent)
+=======
+static int pc300_pci_init_one(struct pci_dev *pdev,
+			      const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	card_t *card;
 	u32 __iomem *p;
@@ -324,9 +334,12 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 	card = kzalloc(sizeof(card_t), GFP_KERNEL);
 	if (card == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "pc300: unable to allocate memory\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pci_release_regions(pdev);
 		pci_disable_device(pdev);
 		return -ENOBUFS;
@@ -337,10 +350,14 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 	    pci_resource_len(pdev, 2) != PC300_SCA_SIZE ||
 	    pci_resource_len(pdev, 3) < 16384) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "pc300: invalid card EEPROM parameters\n");
 =======
 		pr_err("invalid card EEPROM parameters\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("invalid card EEPROM parameters\n");
+>>>>>>> refs/remotes/origin/master
 		pc300_pci_remove_one(pdev);
 		return -EFAULT;
 	}
@@ -358,10 +375,14 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 	    card->scabase == NULL ||
 	    card->rambase == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "pc300: ioremap() failed\n");
 =======
 		pr_err("ioremap() failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("ioremap() failed\n");
+>>>>>>> refs/remotes/origin/master
 		pc300_pci_remove_one(pdev);
 	}
 
@@ -387,10 +408,14 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 	for (i = 0; i < card->n_ports; i++)
 		if (!(card->ports[i].netdev = alloc_hdlcdev(&card->ports[i]))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "pc300: unable to allocate memory\n");
 =======
 			pr_err("unable to allocate memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("unable to allocate memory\n");
+>>>>>>> refs/remotes/origin/master
 			pc300_pci_remove_one(pdev);
 			return -ENOMEM;
 		}
@@ -432,6 +457,7 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 		(card->tx_ring_buffers + card->rx_ring_buffers);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "pc300: PC300/%s, %u KB RAM at 0x%x, IRQ%u, "
 	       "using %u TX + %u RX packets rings\n",
 	       card->type == PC300_X21 ? "X21" :
@@ -442,6 +468,8 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 	if (card->tx_ring_buffers < 1) {
 		printk(KERN_ERR "pc300: RAM test failed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("PC300/%s, %u KB RAM at 0x%x, IRQ%u, using %u TX + %u RX packets rings\n",
 		card->type == PC300_X21 ? "X21" :
 		card->type == PC300_TE ? "TE" : "RSV",
@@ -450,7 +478,10 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 
 	if (card->tx_ring_buffers < 1) {
 		pr_err("RAM test failed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pc300_pci_remove_one(pdev);
 		return -EFAULT;
 	}
@@ -461,11 +492,15 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 	/* Allocate IRQ */
 	if (request_irq(pdev->irq, sca_intr, IRQF_SHARED, "pc300", card)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "pc300: could not allocate IRQ%d.\n",
 		       pdev->irq);
 =======
 		pr_warn("could not allocate IRQ%d\n", pdev->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("could not allocate IRQ%d\n", pdev->irq);
+>>>>>>> refs/remotes/origin/master
 		pc300_pci_remove_one(pdev);
 		return -EBUSY;
 	}
@@ -502,22 +537,30 @@ static int __devinit pc300_pci_init_one(struct pci_dev *pdev,
 		sca_init_port(port);
 		if (register_hdlc_device(dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "pc300: unable to register hdlc "
 			       "device\n");
 =======
 			pr_err("unable to register hdlc device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("unable to register hdlc device\n");
+>>>>>>> refs/remotes/origin/master
 			port->card = NULL;
 			pc300_pci_remove_one(pdev);
 			return -ENOBUFS;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: PC300 channel %d\n",
 		       dev->name, port->chan);
 =======
 		netdev_info(dev, "PC300 channel %d\n", port->chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "PC300 channel %d\n", port->chan);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -549,18 +592,24 @@ static int __init pc300_init_module(void)
 {
 	if (pci_clock_freq < 1000000 || pci_clock_freq > 80000000) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "pc300: Invalid PCI clock frequency\n");
 		return -EINVAL;
 	}
 	if (use_crystal_clock != 0 && use_crystal_clock != 1) {
 		printk(KERN_ERR "pc300: Invalid 'use_crystal_clock' value\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("Invalid PCI clock frequency\n");
 		return -EINVAL;
 	}
 	if (use_crystal_clock != 0 && use_crystal_clock != 1) {
 		pr_err("Invalid 'use_crystal_clock' value\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 

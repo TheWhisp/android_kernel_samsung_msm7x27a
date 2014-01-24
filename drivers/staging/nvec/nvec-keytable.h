@@ -23,11 +23,16 @@
 
 static unsigned short code_tab_102us[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	KEY_GRAVE,	// 0x00
 =======
 	/* 0x00 */
 	KEY_GRAVE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0x00 */
+	KEY_GRAVE,
+>>>>>>> refs/remotes/origin/master
 	KEY_ESC,
 	KEY_1,
 	KEY_2,
@@ -44,11 +49,16 @@ static unsigned short code_tab_102us[] = {
 	KEY_BACKSPACE,
 	KEY_TAB,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	KEY_Q,		// 0x10
 =======
 	/* 0x10 */
 	KEY_Q,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0x10 */
+	KEY_Q,
+>>>>>>> refs/remotes/origin/master
 	KEY_W,
 	KEY_E,
 	KEY_R,
@@ -65,11 +75,16 @@ static unsigned short code_tab_102us[] = {
 	KEY_A,
 	KEY_S,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	KEY_D,		// 0x20
 =======
 	/* 0x20 */
 	KEY_D,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0x20 */
+	KEY_D,
+>>>>>>> refs/remotes/origin/master
 	KEY_F,
 	KEY_G,
 	KEY_H,
@@ -86,11 +101,16 @@ static unsigned short code_tab_102us[] = {
 	KEY_C,
 	KEY_V,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	KEY_B,		// 0x30
 =======
 	/* 0x30 */
 	KEY_B,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0x30 */
+	KEY_B,
+>>>>>>> refs/remotes/origin/master
 	KEY_N,
 	KEY_M,
 	KEY_COMMA,
@@ -107,22 +127,32 @@ static unsigned short code_tab_102us[] = {
 	KEY_F4,
 	KEY_F5,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	KEY_F6,		// 0x40
 =======
 	/* 0x40 */
 	KEY_F6,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0x40 */
+	KEY_F6,
+>>>>>>> refs/remotes/origin/master
 	KEY_F7,
 	KEY_F8,
 	KEY_F9,
 	KEY_F10,
 	KEY_FN,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	0,		//VK_SCROLL
 =======
 	/* VK_SCROLL */
 	0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* VK_SCROLL */
+	0,
+>>>>>>> refs/remotes/origin/master
 	KEY_KP7,
 	KEY_KP8,
 	KEY_KP9,
@@ -132,6 +162,7 @@ static unsigned short code_tab_102us[] = {
 	KEY_KP6,
 	KEY_KPPLUS,
 	KEY_KP1,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	KEY_KP2,	// 0x50
 	KEY_KP3,
@@ -180,6 +211,8 @@ static unsigned short code_tab_102us[] = {
 	0, 
 	KEY_KP9, //7d  for JP keyboard '|' key, report 0x49
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 0x50 */
 	KEY_KP2,
 	KEY_KP3,
@@ -231,7 +264,10 @@ static unsigned short code_tab_102us[] = {
 	0,
 	0,
 	KEY_KP9,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static unsigned short extcode_tab_us102[] = {
@@ -251,6 +287,7 @@ static unsigned short extcode_tab_us102[] = {
 	0,
 	0,
 	0,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	0,		// 0xE0 0x10
 	0,
@@ -274,6 +311,8 @@ static unsigned short extcode_tab_us102[] = {
 	0,
 	0,		//VK_MEDIA_STOP
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 0x10 */
 	0,
 	0,
@@ -303,10 +342,13 @@ static unsigned short extcode_tab_us102[] = {
 	/* VK_MEDIA_STOP */
 	0,
 	0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	0,
 	0,
 	0,
+=======
+>>>>>>> refs/remotes/origin/master
 	0,
 	0,
 	0,
@@ -314,6 +356,7 @@ static unsigned short extcode_tab_us102[] = {
 	0,
 	0,
 	0,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	0,
 	KEY_VOLUMEUP,	// 0xE0 0x30
@@ -343,6 +386,11 @@ static unsigned short extcode_tab_us102[] = {
 	KEY_UP,
 	KEY_PAGEUP,		//VK_PRIOR
 =======
+=======
+	0,
+	0,
+	0,
+>>>>>>> refs/remotes/origin/master
 	/* 0x30 */
 	KEY_VOLUMEUP,
 	0,
@@ -382,13 +430,17 @@ static unsigned short extcode_tab_us102[] = {
 	KEY_HOME,
 	KEY_UP,
 	KEY_PAGEUP,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	0,
 	KEY_LEFT,
 	0,
 	KEY_RIGHT,
 	0,
 	KEY_END,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	KEY_DOWN,	// 0xE0 0x50
 	KEY_PAGEDOWN,		//VK_NEXT
@@ -397,6 +449,11 @@ static unsigned short extcode_tab_us102[] = {
 	KEY_DOWN,
 	KEY_PAGEDOWN,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* 0x50 */
+	KEY_DOWN,
+	KEY_PAGEDOWN,
+>>>>>>> refs/remotes/origin/master
 	KEY_INSERT,
 	KEY_DELETE,
 	0,
@@ -406,6 +463,7 @@ static unsigned short extcode_tab_us102[] = {
 	0,
 	0,
 	0,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	KEY_LEFTMETA,	//VK_LWIN
 	0,		//VK_RWIN
@@ -430,6 +488,8 @@ static unsigned short extcode_tab_us102[] = {
 
 static unsigned short* code_tabs[] = {code_tab_102us, extcode_tab_us102 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	KEY_LEFTMETA,
 	0,
 	KEY_ESC,
@@ -461,4 +521,7 @@ static unsigned short* code_tabs[] = {code_tab_102us, extcode_tab_us102 };
 };
 
 static unsigned short *code_tabs[] = { code_tab_102us, extcode_tab_us102 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

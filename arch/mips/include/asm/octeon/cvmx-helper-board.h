@@ -34,7 +34,11 @@
 #ifndef __CVMX_HELPER_BOARD_H__
 #define __CVMX_HELPER_BOARD_H__
 
+<<<<<<< HEAD
 #include "cvmx-helper.h"
+=======
+#include <asm/octeon/cvmx-helper.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef enum {
 	set_phy_link_flags_autoneg = 0x1,
@@ -48,7 +52,11 @@ typedef enum {
  * Fake IPD port, the RGMII/MII interface may use different PHY, use
  * this macro to return appropriate MIX address to read the PHY.
  */
+<<<<<<< HEAD
 #define CVMX_HELPER_BOARD_MGMT_IPD_PORT     -10
+=======
+#define CVMX_HELPER_BOARD_MGMT_IPD_PORT	    -10
+>>>>>>> refs/remotes/origin/master
 
 /**
  * cvmx_override_board_link_get(int ipd_port) is a function
@@ -86,10 +94,17 @@ extern int cvmx_helper_board_get_mii_address(int ipd_port);
  *
  * @phy_addr:  The address of the PHY to program
  * @link_flags:
+<<<<<<< HEAD
  *                  Flags to control autonegotiation.  Bit 0 is autonegotiation
  *                  enable/disable to maintain backware compatibility.
  * @link_info: Link speed to program. If the speed is zero and autonegotiation
  *                  is enabled, all possible negotiation speeds are advertised.
+=======
+ *		    Flags to control autonegotiation.  Bit 0 is autonegotiation
+ *		    enable/disable to maintain backware compatibility.
+ * @link_info: Link speed to program. If the speed is zero and autonegotiation
+ *		    is enabled, all possible negotiation speeds are advertised.
+>>>>>>> refs/remotes/origin/master
  *
  * Returns Zero on success, negative on failure
  */
@@ -111,10 +126,17 @@ int cvmx_helper_board_link_set_phy(int phy_addr,
  * enumeration from the bootloader.
  *
  * @ipd_port: IPD input port associated with the port we want to get link
+<<<<<<< HEAD
  *                 status for.
  *
  * Returns The ports link status. If the link isn't fully resolved, this must
  *         return zero.
+=======
+ *		   status for.
+ *
+ * Returns The ports link status. If the link isn't fully resolved, this must
+ *	   return zero.
+>>>>>>> refs/remotes/origin/master
  */
 extern cvmx_helper_link_info_t __cvmx_helper_board_link_get(int ipd_port);
 
@@ -134,10 +156,17 @@ extern cvmx_helper_link_info_t __cvmx_helper_board_link_get(int ipd_port);
  *
  * @interface: Interface to probe
  * @supported_ports:
+<<<<<<< HEAD
  *                  Number of ports Octeon supports.
  *
  * Returns Number of ports the actual board supports. Many times this will
  *         simple be "support_ports".
+=======
+ *		    Number of ports Octeon supports.
+ *
+ * Returns Number of ports the actual board supports. Many times this will
+ *	   simple be "support_ports".
+>>>>>>> refs/remotes/origin/master
  */
 extern int __cvmx_helper_board_interface_probe(int interface,
 					       int supported_ports);

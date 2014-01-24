@@ -23,7 +23,11 @@ BA session stop & deauth/disassoc frames
 end note
 end
 
+<<<<<<< HEAD
 mac80211->driver: config(channel, non-HT)
+=======
+mac80211->driver: config(channel, channel type)
+>>>>>>> refs/remotes/origin/master
 mac80211->driver: bss_info_changed(set BSSID, basic rate bitmap)
 mac80211->driver: sta_state(AP, exists)
 
@@ -51,7 +55,11 @@ note over mac80211,driver: cleanup like for authenticate
 end
 
 alt not previously authenticated (FT)
+<<<<<<< HEAD
 mac80211->driver: config(channel, non-HT)
+=======
+mac80211->driver: config(channel, channel type)
+>>>>>>> refs/remotes/origin/master
 mac80211->driver: bss_info_changed(set BSSID, basic rate bitmap)
 mac80211->driver: sta_state(AP, exists)
 mac80211->driver: sta_state(AP, authenticated)
@@ -67,10 +75,13 @@ end
 
 mac80211->driver: set up QoS parameters
 
+<<<<<<< HEAD
 alt is HT channel
 mac80211->driver: config(channel, HT params)
 end
 
+=======
+>>>>>>> refs/remotes/origin/master
 mac80211->driver: bss_info_changed(QoS, HT, associated with AID)
 mac80211->userspace: associated
 
@@ -95,5 +106,9 @@ mac80211->driver: sta_state(AP,exists)
 mac80211->driver: sta_state(AP,not-exists)
 mac80211->driver: turn off powersave
 mac80211->driver: bss_info_changed(clear BSSID, not associated, no QoS, ...)
+<<<<<<< HEAD
 mac80211->driver: config(non-HT channel type)
+=======
+mac80211->driver: config(channel type to non-HT)
+>>>>>>> refs/remotes/origin/master
 mac80211->userspace: disconnected

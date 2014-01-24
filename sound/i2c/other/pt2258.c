@@ -25,9 +25,13 @@
 #include <sound/i2c.h>
 #include <sound/pt2258.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jochen Voss <voss@seehuhn.de>");
 MODULE_DESCRIPTION("PT2258 volume controller (Princeton Technology Corp.)");

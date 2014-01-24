@@ -46,7 +46,11 @@
  * returning a value other than all 1's).  Return an error if it doesn't
  * become ready ...
  */
+<<<<<<< HEAD
 int __devinit t4vf_wait_dev_ready(struct adapter *adapter)
+=======
+int t4vf_wait_dev_ready(struct adapter *adapter)
+>>>>>>> refs/remotes/origin/master
 {
 	const u32 whoami = T4VF_PL_BASE_ADDR + PL_VF_WHOAMI;
 	const u32 notready1 = 0xffffffff;
@@ -253,8 +257,12 @@ static int hash_mac_addr(const u8 *addr)
  *	Initializes the SW state maintained for each link, including the link's
  *	capabilities and default speed/flow-control/autonegotiation settings.
  */
+<<<<<<< HEAD
 static void __devinit init_link_config(struct link_config *lc,
 				       unsigned int caps)
+=======
+static void init_link_config(struct link_config *lc, unsigned int caps)
+>>>>>>> refs/remotes/origin/master
 {
 	lc->supported = caps;
 	lc->requested_speed = 0;
@@ -275,7 +283,11 @@ static void __devinit init_link_config(struct link_config *lc,
  *	@adapter: the adapter
  *	@pidx: the adapter port index
  */
+<<<<<<< HEAD
 int __devinit t4vf_port_init(struct adapter *adapter, int pidx)
+=======
+int t4vf_port_init(struct adapter *adapter, int pidx)
+>>>>>>> refs/remotes/origin/master
 {
 	struct port_info *pi = adap2pinfo(adapter, pidx);
 	struct fw_vi_cmd vi_cmd, vi_rpl;
@@ -1028,8 +1040,16 @@ int t4vf_alloc_mac_filt(struct adapter *adapter, unsigned int viid, bool free,
 	unsigned nfilters = 0;
 	unsigned int rem = naddr;
 	struct fw_vi_mac_cmd cmd, rpl;
+<<<<<<< HEAD
 
 	if (naddr > FW_CLS_TCAM_NUM_ENTRIES)
+=======
+	unsigned int max_naddr = is_t4(adapter->params.chip) ?
+				 NUM_MPS_CLS_SRAM_L_INSTANCES :
+				 NUM_MPS_T5_CLS_SRAM_L_INSTANCES;
+
+	if (naddr > max_naddr)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	for (offset = 0; offset < naddr; /**/) {
@@ -1070,10 +1090,17 @@ int t4vf_alloc_mac_filt(struct adapter *adapter, unsigned int viid, bool free,
 
 			if (idx)
 				idx[offset+i] =
+<<<<<<< HEAD
 					(index >= FW_CLS_TCAM_NUM_ENTRIES
 					 ? 0xffff
 					 : index);
 			if (index < FW_CLS_TCAM_NUM_ENTRIES)
+=======
+					(index >= max_naddr
+					 ? 0xffff
+					 : index);
+			if (index < max_naddr)
+>>>>>>> refs/remotes/origin/master
 				nfilters++;
 			else if (hash)
 				*hash |= (1ULL << hash_mac_addr(addr[offset+i]));
@@ -1119,6 +1146,12 @@ int t4vf_change_mac(struct adapter *adapter, unsigned int viid,
 	struct fw_vi_mac_exact *p = &cmd.u.exact[0];
 	size_t len16 = DIV_ROUND_UP(offsetof(struct fw_vi_mac_cmd,
 					     u.exact[1]), 16);
+<<<<<<< HEAD
+=======
+	unsigned int max_naddr = is_t4(adapter->params.chip) ?
+				 NUM_MPS_CLS_SRAM_L_INSTANCES :
+				 NUM_MPS_T5_CLS_SRAM_L_INSTANCES;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If this is a new allocation, determine whether it should be
@@ -1141,7 +1174,11 @@ int t4vf_change_mac(struct adapter *adapter, unsigned int viid,
 	if (ret == 0) {
 		p = &rpl.u.exact[0];
 		ret = FW_VI_MAC_CMD_IDX_GET(be16_to_cpu(p->valid_to_idx));
+<<<<<<< HEAD
 		if (ret >= FW_CLS_TCAM_NUM_ENTRIES)
+=======
+		if (ret >= max_naddr)
+>>>>>>> refs/remotes/origin/master
 			ret = -ENOMEM;
 	}
 	return ret;

@@ -2,10 +2,14 @@
  * OMAP2XXX powerdomain definitions
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2007-2008 Texas Instruments, Inc.
 =======
  * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2007-2008, 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2007-2011 Nokia Corporation
  *
  * Paul Walmsley, Jouni Högander
@@ -18,6 +22,10 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 
+<<<<<<< HEAD
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "powerdomain.h"
 #include "powerdomains2xxx_3xxx_data.h"
 
@@ -33,9 +41,12 @@ static struct powerdomain dsp_pwrdm = {
 	.name		  = "dsp_pwrdm",
 	.prcm_offs	  = OMAP24XX_DSP_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP24XX),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
 	.banks		  = 1,
@@ -46,18 +57,25 @@ static struct powerdomain dsp_pwrdm = {
 		[0] = PWRSTS_ON,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain mpu_24xx_pwrdm = {
 	.name		  = "mpu_pwrdm",
 	.prcm_offs	  = MPU_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP24XX),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_OFF_RET,
 	.banks		  = 1,
@@ -68,19 +86,28 @@ static struct powerdomain mpu_24xx_pwrdm = {
 		[0] = PWRSTS_ON,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct powerdomain core_24xx_pwrdm = {
 	.name		  = "core_pwrdm",
 	.prcm_offs	  = CORE_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP24XX),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
+=======
+	.pwrsts		  = PWRSTS_OFF_RET_ON,
+	.pwrsts_logic_ret = PWRSTS_RET,
+>>>>>>> refs/remotes/origin/master
 	.banks		  = 3,
 	.pwrsts_mem_ret	  = {
 		[0] = PWRSTS_OFF_RET,	 /* MEM1RETSTATE */
@@ -93,9 +120,13 @@ static struct powerdomain core_24xx_pwrdm = {
 		[2] = PWRSTS_OFF_RET_ON, /* MEM3ONSTATE */
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.voltdm           = { .name = "core" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -104,19 +135,25 @@ static struct powerdomain core_24xx_pwrdm = {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_OMAP2430
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* XXX 2430 KILLDOMAINWKUP bit?  No current users apparently */
 
 static struct powerdomain mdm_pwrdm = {
 	.name		  = "mdm_pwrdm",
 	.prcm_offs	  = OMAP2430_MDM_MOD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.omap_chip	  = OMAP_CHIP_INIT(CHIP_IS_OMAP2430),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pwrsts		  = PWRSTS_OFF_RET_ON,
 	.pwrsts_logic_ret = PWRSTS_RET,
 	.banks		  = 1,
@@ -126,6 +163,7 @@ static struct powerdomain mdm_pwrdm = {
 	.pwrsts_mem_on	  = {
 		[0] = PWRSTS_ON,  /* MEMONSTATE */
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -154,6 +192,9 @@ void __init omap2xxx_powerdomains_init(void)
 	pwrdm_init(powerdomains_omap2xxx, &omap2_pwrdm_operations);
 =======
 	.voltdm           = { .name = "core" },
+=======
+	.voltdm		  = { .name = "core" },
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -193,5 +234,8 @@ void __init omap243x_powerdomains_init(void)
 	pwrdm_register_pwrdms(powerdomains_omap24xx);
 	pwrdm_register_pwrdms(powerdomains_omap2430);
 	pwrdm_complete_init();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

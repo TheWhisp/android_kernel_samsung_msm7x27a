@@ -12,11 +12,14 @@ struct Sun_Machine_Models {
 	unsigned char id_machtype;
 };
 
+<<<<<<< HEAD
 /* Current number of machines we know about that has an IDPROM
  * machtype entry including one entry for the 0x80 OBP machines.
  */
 #define NUM_SUN_MACHINES   16
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* The machine type in the idprom area looks like this:
  *
  * ---------------
@@ -24,27 +27,39 @@ struct Sun_Machine_Models {
  * ---------------
  *  7    4 3    0
  *
+<<<<<<< HEAD
  * The ARCH field determines the architecture line (sun4, sun4c, etc).
+=======
+ * The ARCH field determines the architecture line (sun4m, etc).
+>>>>>>> refs/remotes/origin/master
  * The MACH field determines the machine make within that architecture.
  */
 
 #define SM_ARCH_MASK  0xf0
+<<<<<<< HEAD
 #define SM_SUN4       0x20
 #define  M_LEON       0x30
 #define SM_SUN4C      0x50
+=======
+#define  M_LEON       0x30
+>>>>>>> refs/remotes/origin/master
 #define SM_SUN4M      0x70
 #define SM_SUN4M_OBP  0x80
 
 #define SM_TYP_MASK   0x0f
+<<<<<<< HEAD
 /* Sun4 machines */
 #define SM_4_260      0x01    /* Sun 4/200 series */
 #define SM_4_110      0x02    /* Sun 4/100 series */
 #define SM_4_330      0x03    /* Sun 4/300 series */
 #define SM_4_470      0x04    /* Sun 4/400 series */
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Leon machines */
 #define M_LEON3_SOC   0x02    /* Leon3 SoC */
 
+<<<<<<< HEAD
 /* Sun4c machines                Full Name              - PROM NAME */
 #define SM_4C_SS1     0x01    /* Sun4c SparcStation 1   - Sun 4/60  */
 #define SM_4C_IPC     0x02    /* Sun4c SparcStation IPC - Sun 4/40  */
@@ -54,6 +69,8 @@ struct Sun_Machine_Models {
 #define SM_4C_ELC     0x06    /* Sun4c SparcStation ELC - Sun 4/25  */
 #define SM_4C_IPX     0x07    /* Sun4c SparcStation IPX - Sun 4/50  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Sun4m machines, these predate the OpenBoot.  These values only mean
  * something if the value in the ARCH field is SM_SUN4M, if it is
  * SM_SUN4M_OBP then you have the following situation:

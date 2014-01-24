@@ -82,7 +82,11 @@ static irqreturn_t pcf8574_kp_irq_handler(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit pcf8574_kp_probe(struct i2c_client *client, const struct i2c_device_id *id)
+=======
+static int pcf8574_kp_probe(struct i2c_client *client, const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ret;
 	struct input_dev *idev;
@@ -113,9 +117,18 @@ static int __devinit pcf8574_kp_probe(struct i2c_client *client, const struct i2
 	idev->keycodemax = ARRAY_SIZE(lp->btncode);
 
 	for (i = 0; i < ARRAY_SIZE(pcf8574_kp_btncode); i++) {
+<<<<<<< HEAD
 		lp->btncode[i] = pcf8574_kp_btncode[i];
 		__set_bit(lp->btncode[i] & KEY_MAX, idev->keybit);
 	}
+=======
+		if (lp->btncode[i] <= KEY_MAX) {
+			lp->btncode[i] = pcf8574_kp_btncode[i];
+			__set_bit(lp->btncode[i], idev->keybit);
+		}
+	}
+	__clear_bit(KEY_RESERVED, idev->keybit);
+>>>>>>> refs/remotes/origin/master
 
 	sprintf(lp->name, DRV_NAME);
 	sprintf(lp->phys, "kp_data/input0");
@@ -156,7 +169,11 @@ static int __devinit pcf8574_kp_probe(struct i2c_client *client, const struct i2
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit pcf8574_kp_remove(struct i2c_client *client)
+=======
+static int pcf8574_kp_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct kp_data *lp = i2c_get_clientdata(client);
 
@@ -212,6 +229,7 @@ static struct i2c_driver pcf8574_kp_driver = {
 #endif
 	},
 	.probe    = pcf8574_kp_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(pcf8574_kp_remove),
 	.id_table = pcf8574_kp_id,
 };
@@ -231,6 +249,13 @@ module_exit(pcf8574_kp_exit);
 =======
 module_i2c_driver(pcf8574_kp_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove   = pcf8574_kp_remove,
+	.id_table = pcf8574_kp_id,
+};
+
+module_i2c_driver(pcf8574_kp_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich");
 MODULE_DESCRIPTION("Keypad input driver for 16 keys connected to PCF8574");

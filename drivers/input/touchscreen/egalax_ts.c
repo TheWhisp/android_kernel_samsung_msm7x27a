@@ -28,6 +28,10 @@
 #include <linux/slab.h>
 #include <linux/bitops.h>
 #include <linux/input/mt.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Mouse Mode: some panel may configure the controller to mouse mode,
@@ -122,9 +126,23 @@ static irqreturn_t egalax_ts_interrupt(int irq, void *dev_id)
 /* wake up controller by an falling edge of interrupt gpio.  */
 static int egalax_wake_up_device(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	int gpio = irq_to_gpio(client->irq);
 	int ret;
 
+=======
+	struct device_node *np = client->dev.of_node;
+	int gpio;
+	int ret;
+
+	if (!np)
+		return -ENODEV;
+
+	gpio = of_get_named_gpio(np, "wakeup-gpios", 0);
+	if (!gpio_is_valid(gpio))
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	ret = gpio_request(gpio, "egalax_irq");
 	if (ret < 0) {
 		dev_err(&client->dev,
@@ -144,7 +162,11 @@ static int egalax_wake_up_device(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit egalax_firmware_version(struct i2c_client *client)
+=======
+static int egalax_firmware_version(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	static const u8 cmd[MAX_I2C_DATA_LEN] = { 0x03, 0x03, 0xa, 0x01, 0x41 };
 	int ret;
@@ -156,6 +178,7 @@ static int __devinit egalax_firmware_version(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit egalax_ts_probe(struct i2c_client *client,
 				       const struct i2c_device_id *id)
 {
@@ -165,22 +188,40 @@ static int __devinit egalax_ts_probe(struct i2c_client *client,
 	int error;
 
 	ts = kzalloc(sizeof(struct egalax_ts), GFP_KERNEL);
+=======
+static int egalax_ts_probe(struct i2c_client *client,
+			   const struct i2c_device_id *id)
+{
+	struct egalax_ts *ts;
+	struct input_dev *input_dev;
+	int error;
+
+	ts = devm_kzalloc(&client->dev, sizeof(struct egalax_ts), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ts) {
 		dev_err(&client->dev, "Failed to allocate memory\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	input_dev = input_allocate_device();
 	if (!input_dev) {
 		dev_err(&client->dev, "Failed to allocate memory\n");
 		error = -ENOMEM;
 		goto err_free_ts;
+=======
+	input_dev = devm_input_allocate_device(&client->dev);
+	if (!input_dev) {
+		dev_err(&client->dev, "Failed to allocate memory\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ts->client = client;
 	ts->input_dev = input_dev;
 
 	/* controller may be in sleep, wake it up. */
+<<<<<<< HEAD
 	egalax_wake_up_device(client);
 
 	ret = egalax_firmware_version(client);
@@ -188,11 +229,26 @@ static int __devinit egalax_ts_probe(struct i2c_client *client,
 		dev_err(&client->dev, "Failed to read firmware version\n");
 		error = -EIO;
 		goto err_free_dev;
+=======
+	error = egalax_wake_up_device(client);
+	if (error) {
+		dev_err(&client->dev, "Failed to wake up the controller\n");
+		return error;
+	}
+
+	error = egalax_firmware_version(client);
+	if (error < 0) {
+		dev_err(&client->dev, "Failed to read firmware version\n");
+		return error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	input_dev->name = "EETI eGalax Touch Screen";
 	input_dev->id.bustype = BUS_I2C;
+<<<<<<< HEAD
 	input_dev->dev.parent = &client->dev;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	__set_bit(EV_ABS, input_dev->evbit);
 	__set_bit(EV_KEY, input_dev->evbit);
@@ -203,6 +259,7 @@ static int __devinit egalax_ts_probe(struct i2c_client *client,
 	input_set_abs_params(input_dev,
 			     ABS_MT_POSITION_X, 0, EGALAX_MAX_X, 0, 0);
 	input_set_abs_params(input_dev,
+<<<<<<< HEAD
 			     ABS_MT_POSITION_X, 0, EGALAX_MAX_Y, 0, 0);
 	input_mt_init_slots(input_dev, MAX_SUPPORT_POINTS);
 
@@ -214,10 +271,25 @@ static int __devinit egalax_ts_probe(struct i2c_client *client,
 	if (error < 0) {
 		dev_err(&client->dev, "Failed to register interrupt\n");
 		goto err_free_dev;
+=======
+			     ABS_MT_POSITION_Y, 0, EGALAX_MAX_Y, 0, 0);
+	input_mt_init_slots(input_dev, MAX_SUPPORT_POINTS, 0);
+
+	input_set_drvdata(input_dev, ts);
+
+	error = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+					  egalax_ts_interrupt,
+					  IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+					  "egalax_ts", ts);
+	if (error < 0) {
+		dev_err(&client->dev, "Failed to register interrupt\n");
+		return error;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = input_register_device(ts->input_dev);
 	if (error)
+<<<<<<< HEAD
 		goto err_free_irq;
 
 	i2c_set_clientdata(client, ts);
@@ -243,6 +315,12 @@ static __devexit int egalax_ts_remove(struct i2c_client *client)
 	kfree(ts);
 
 	return 0;
+=======
+		return error;
+
+	i2c_set_clientdata(client, ts);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_device_id egalax_ts_id[] = {
@@ -274,15 +352,30 @@ static int egalax_ts_resume(struct device *dev)
 
 static SIMPLE_DEV_PM_OPS(egalax_ts_pm_ops, egalax_ts_suspend, egalax_ts_resume);
 
+<<<<<<< HEAD
+=======
+static struct of_device_id egalax_ts_dt_ids[] = {
+	{ .compatible = "eeti,egalax_ts" },
+	{ /* sentinel */ }
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver egalax_ts_driver = {
 	.driver = {
 		.name	= "egalax_ts",
 		.owner	= THIS_MODULE,
 		.pm	= &egalax_ts_pm_ops,
+<<<<<<< HEAD
 	},
 	.id_table	= egalax_ts_id,
 	.probe		= egalax_ts_probe,
 	.remove		= __devexit_p(egalax_ts_remove),
+=======
+		.of_match_table	= egalax_ts_dt_ids,
+	},
+	.id_table	= egalax_ts_id,
+	.probe		= egalax_ts_probe,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_i2c_driver(egalax_ts_driver);

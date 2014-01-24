@@ -16,17 +16,25 @@
 
 #include <linux/kernel.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
+=======
+#include <linux/clk-provider.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <asm/div64.h>
 
+<<<<<<< HEAD
 #include <plat/clock.h>
 <<<<<<< HEAD
 =======
 #include <plat/cpu.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "clock.h"
 #include "cm-regbits-24xx.h"
 #include "cm-regbits-34xx.h"
@@ -51,11 +59,14 @@
 
 /* DPLL valid Fint frequency band limits - from 34xx TRM Section 4.7.6.2 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DPLL_FINT_BAND1_MIN		750000
 #define DPLL_FINT_BAND1_MAX		2100000
 #define DPLL_FINT_BAND2_MIN		7500000
 #define DPLL_FINT_BAND2_MAX		21000000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP3430_DPLL_FINT_BAND1_MIN	750000
 #define OMAP3430_DPLL_FINT_BAND1_MAX	2100000
 #define OMAP3430_DPLL_FINT_BAND2_MIN	7500000
@@ -69,7 +80,10 @@
 #define OMAP3PLUS_DPLL_FINT_JTYPE_MAX	2500000
 #define OMAP3PLUS_DPLL_FINT_MIN		32000
 #define OMAP3PLUS_DPLL_FINT_MAX		52000000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* _dpll_test_fint() return codes */
 #define DPLL_FINT_UNDERFLOW		-1
@@ -88,6 +102,7 @@
  * (assuming that it is counting N upwards), or -2 if the enclosing loop
  * should skip to the next iteration (again assuming N is increasing).
  */
+<<<<<<< HEAD
 static int _dpll_test_fint(struct clk *clk, u8 n)
 {
 	struct dpll_data *dd;
@@ -96,16 +111,26 @@ static int _dpll_test_fint(struct clk *clk, u8 n)
 =======
 	long fint, fint_min, fint_max;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int _dpll_test_fint(struct clk_hw_omap *clk, u8 n)
+{
+	struct dpll_data *dd;
+	long fint, fint_min, fint_max;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	dd = clk->dpll_data;
 
 	/* DPLL divider must result in a valid jitter correction val */
+<<<<<<< HEAD
 	fint = clk->parent->rate / n;
 <<<<<<< HEAD
 	if (fint < DPLL_FINT_BAND1_MIN) {
 
 =======
+=======
+	fint = __clk_get_rate(__clk_get_parent(clk->hw.clk)) / n;
+>>>>>>> refs/remotes/origin/master
 
 	if (cpu_is_omap24xx()) {
 		/* Should not be called for OMAP2, so warn if it is called */
@@ -123,6 +148,7 @@ static int _dpll_test_fint(struct clk *clk, u8 n)
 	}
 
 	if (fint < fint_min) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		pr_debug("rejecting n=%d due to Fint failure, "
 			 "lowering max_divider\n", n);
@@ -148,11 +174,25 @@ static int _dpll_test_fint(struct clk *clk, u8 n)
 <<<<<<< HEAD
 
 =======
+=======
+		pr_debug("rejecting n=%d due to Fint failure, lowering max_divider\n",
+			 n);
+		dd->max_divider = n;
+		ret = DPLL_FINT_UNDERFLOW;
+	} else if (fint > fint_max) {
+		pr_debug("rejecting n=%d due to Fint failure, boosting min_divider\n",
+			 n);
+		dd->min_divider = n;
+		ret = DPLL_FINT_INVALID;
+>>>>>>> refs/remotes/origin/master
 	} else if (cpu_is_omap3430() && fint > OMAP3430_DPLL_FINT_BAND1_MAX &&
 		   fint < OMAP3430_DPLL_FINT_BAND2_MIN) {
 		pr_debug("rejecting n=%d due to Fint failure\n", n);
 		ret = DPLL_FINT_INVALID;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -223,15 +263,25 @@ static int _dpll_test_mult(int *m, int n, unsigned long *new_rate,
 }
 
 /* Public functions */
+<<<<<<< HEAD
 
 void omap2_init_dpll_parent(struct clk *clk)
 {
+=======
+u8 omap2_init_dpll_parent(struct clk_hw *hw)
+{
+	struct clk_hw_omap *clk = to_clk_hw_omap(hw);
+>>>>>>> refs/remotes/origin/master
 	u32 v;
 	struct dpll_data *dd;
 
 	dd = clk->dpll_data;
 	if (!dd)
+<<<<<<< HEAD
 		return;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	v = __raw_readl(dd->control_reg);
 	v &= dd->enable_mask;
@@ -241,6 +291,7 @@ void omap2_init_dpll_parent(struct clk *clk)
 	if (cpu_is_omap24xx()) {
 		if (v == OMAP2XXX_EN_DPLL_LPBYPASS ||
 		    v == OMAP2XXX_EN_DPLL_FRBYPASS)
+<<<<<<< HEAD
 			clk_reparent(clk, dd->clk_bypass);
 	} else if (cpu_is_omap34xx()) {
 		if (v == OMAP3XXX_EN_DPLL_LPBYPASS ||
@@ -253,6 +304,20 @@ void omap2_init_dpll_parent(struct clk *clk)
 			clk_reparent(clk, dd->clk_bypass);
 	}
 	return;
+=======
+			return 1;
+	} else if (cpu_is_omap34xx()) {
+		if (v == OMAP3XXX_EN_DPLL_LPBYPASS ||
+		    v == OMAP3XXX_EN_DPLL_FRBYPASS)
+			return 1;
+	} else if (soc_is_am33xx() || cpu_is_omap44xx()) {
+		if (v == OMAP4XXX_EN_DPLL_LPBYPASS ||
+		    v == OMAP4XXX_EN_DPLL_FRBYPASS ||
+		    v == OMAP4XXX_EN_DPLL_MNBYPASS)
+			return 1;
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -269,7 +334,11 @@ void omap2_init_dpll_parent(struct clk *clk)
  * locked, or the appropriate bypass rate if the DPLL is bypassed, or 0
  * if the clock @clk is not a DPLL.
  */
+<<<<<<< HEAD
 u32 omap2_get_dpll_rate(struct clk *clk)
+=======
+unsigned long omap2_get_dpll_rate(struct clk_hw_omap *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	long long dpll_clk;
 	u32 dpll_mult, dpll_div, v;
@@ -287,6 +356,7 @@ u32 omap2_get_dpll_rate(struct clk *clk)
 	if (cpu_is_omap24xx()) {
 		if (v == OMAP2XXX_EN_DPLL_LPBYPASS ||
 		    v == OMAP2XXX_EN_DPLL_FRBYPASS)
+<<<<<<< HEAD
 			return dd->clk_bypass->rate;
 	} else if (cpu_is_omap34xx()) {
 		if (v == OMAP3XXX_EN_DPLL_LPBYPASS ||
@@ -297,6 +367,18 @@ u32 omap2_get_dpll_rate(struct clk *clk)
 		    v == OMAP4XXX_EN_DPLL_FRBYPASS ||
 		    v == OMAP4XXX_EN_DPLL_MNBYPASS)
 			return dd->clk_bypass->rate;
+=======
+			return __clk_get_rate(dd->clk_bypass);
+	} else if (cpu_is_omap34xx()) {
+		if (v == OMAP3XXX_EN_DPLL_LPBYPASS ||
+		    v == OMAP3XXX_EN_DPLL_FRBYPASS)
+			return __clk_get_rate(dd->clk_bypass);
+	} else if (soc_is_am33xx() || cpu_is_omap44xx()) {
+		if (v == OMAP4XXX_EN_DPLL_LPBYPASS ||
+		    v == OMAP4XXX_EN_DPLL_FRBYPASS ||
+		    v == OMAP4XXX_EN_DPLL_MNBYPASS)
+			return __clk_get_rate(dd->clk_bypass);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	v = __raw_readl(dd->mult_div1_reg);
@@ -305,7 +387,11 @@ u32 omap2_get_dpll_rate(struct clk *clk)
 	dpll_div = v & dd->div1_mask;
 	dpll_div >>= __ffs(dd->div1_mask);
 
+<<<<<<< HEAD
 	dpll_clk = (long long)dd->clk_ref->rate * dpll_mult;
+=======
+	dpll_clk = (long long) __clk_get_rate(dd->clk_ref) * dpll_mult;
+>>>>>>> refs/remotes/origin/master
 	do_div(dpll_clk, dpll_div + 1);
 
 	return dpll_clk;
@@ -325,22 +411,43 @@ u32 omap2_get_dpll_rate(struct clk *clk)
  * (expensive) function again.  Returns ~0 if the target rate cannot
  * be rounded, or the rounded rate upon success.
  */
+<<<<<<< HEAD
 long omap2_dpll_round_rate(struct clk *clk, unsigned long target_rate)
 {
+=======
+long omap2_dpll_round_rate(struct clk_hw *hw, unsigned long target_rate,
+		unsigned long *parent_rate)
+{
+	struct clk_hw_omap *clk = to_clk_hw_omap(hw);
+>>>>>>> refs/remotes/origin/master
 	int m, n, r, scaled_max_m;
 	unsigned long scaled_rt_rp;
 	unsigned long new_rate = 0;
 	struct dpll_data *dd;
+<<<<<<< HEAD
+=======
+	unsigned long ref_rate;
+	const char *clk_name;
+>>>>>>> refs/remotes/origin/master
 
 	if (!clk || !clk->dpll_data)
 		return ~0;
 
 	dd = clk->dpll_data;
 
+<<<<<<< HEAD
 	pr_debug("clock: %s: starting DPLL round_rate, target rate %ld\n",
 		 clk->name, target_rate);
 
 	scaled_rt_rp = target_rate / (dd->clk_ref->rate / DPLL_SCALE_FACTOR);
+=======
+	ref_rate = __clk_get_rate(dd->clk_ref);
+	clk_name = __clk_get_name(hw->clk);
+	pr_debug("clock: %s: starting DPLL round_rate, target rate %ld\n",
+		 clk_name, target_rate);
+
+	scaled_rt_rp = target_rate / (ref_rate / DPLL_SCALE_FACTOR);
+>>>>>>> refs/remotes/origin/master
 	scaled_max_m = dd->max_multiplier * DPLL_SCALE_FACTOR;
 
 	dd->last_rounded_rate = 0;
@@ -367,14 +474,22 @@ long omap2_dpll_round_rate(struct clk *clk, unsigned long target_rate)
 			break;
 
 		r = _dpll_test_mult(&m, n, &new_rate, target_rate,
+<<<<<<< HEAD
 				    dd->clk_ref->rate);
+=======
+				    ref_rate);
+>>>>>>> refs/remotes/origin/master
 
 		/* m can't be set low enough for this n - try with a larger n */
 		if (r == DPLL_MULT_UNDERFLOW)
 			continue;
 
 		pr_debug("clock: %s: m = %d: n = %d: new_rate = %ld\n",
+<<<<<<< HEAD
 			 clk->name, m, n, new_rate);
+=======
+			 clk_name, m, n, new_rate);
+>>>>>>> refs/remotes/origin/master
 
 		if (target_rate == new_rate) {
 			dd->last_rounded_m = m;
@@ -385,8 +500,13 @@ long omap2_dpll_round_rate(struct clk *clk, unsigned long target_rate)
 	}
 
 	if (target_rate != new_rate) {
+<<<<<<< HEAD
 		pr_debug("clock: %s: cannot round to rate %ld\n", clk->name,
 			 target_rate);
+=======
+		pr_debug("clock: %s: cannot round to rate %ld\n",
+			 clk_name, target_rate);
+>>>>>>> refs/remotes/origin/master
 		return ~0;
 	}
 

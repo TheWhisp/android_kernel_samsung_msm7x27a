@@ -4,6 +4,7 @@
  * Function: v7_early_abort
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Params  : r2 = address of aborted instruction
  *         : r3 = saved SPSR
  *
@@ -13,12 +14,17 @@
  *	   : r9 = preserved
  *	   : sp = pointer to registers
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Params  : r2 = pt_regs
  *	   : r4 = aborted context pc
  *	   : r5 = aborted context psr
  *
  * Returns : r4 - r11, r13 preserved
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Purpose : obtain information about current aborted instruction.
  */
@@ -46,6 +52,7 @@ ENTRY(v7_early_abort)
 	and	r3, r1, r3
 	cmp	r3, #0x0d
 <<<<<<< HEAD
+<<<<<<< HEAD
 	movne	pc, lr
 
 	mcr	p15, 0, r0, c7, c8, 0   	@ Retranslate FAR
@@ -61,6 +68,8 @@ ENTRY(v7_early_abort)
 
 	mov	pc, lr
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bne	do_DataAbort
 
 	mcr	p15, 0, r0, c7, c8, 0   	@ Retranslate FAR
@@ -75,5 +84,8 @@ ENTRY(v7_early_abort)
 #endif
 
 	b	do_DataAbort
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENDPROC(v7_early_abort)

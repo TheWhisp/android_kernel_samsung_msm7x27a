@@ -2,7 +2,10 @@
 #define __REGDB_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright 2009 John W. Linville <linville@tuxdriver.com>
  *
@@ -19,7 +22,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern const struct ieee80211_regdomain *reg_regdb[];
 extern int reg_regdb_size;
 

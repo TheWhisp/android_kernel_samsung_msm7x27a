@@ -15,11 +15,19 @@
 #include <linux/io.h>
 #include <linux/platform_device.h>
 #include <mach/map.h>
+<<<<<<< HEAD
 #include <mach/regs-sys.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/cpu.h>
 #include <plat/regs-usb-hsotg-phy.h>
 #include <plat/usb-phy.h>
 
+<<<<<<< HEAD
+=======
+#include "regs-sys.h"
+
+>>>>>>> refs/remotes/origin/master
 static int s3c_usb_otgphy_init(struct platform_device *pdev)
 {
 	struct clk *xusbxti;
@@ -75,7 +83,11 @@ static int s3c_usb_otgphy_exit(struct platform_device *pdev)
 
 int s5p_usb_phy_init(struct platform_device *pdev, int type)
 {
+<<<<<<< HEAD
 	if (type == S5P_USB_PHY_DEVICE)
+=======
+	if (type == USB_PHY_TYPE_DEVICE)
+>>>>>>> refs/remotes/origin/master
 		return s3c_usb_otgphy_init(pdev);
 
 	return -EINVAL;
@@ -83,7 +95,11 @@ int s5p_usb_phy_init(struct platform_device *pdev, int type)
 
 int s5p_usb_phy_exit(struct platform_device *pdev, int type)
 {
+<<<<<<< HEAD
 	if (type == S5P_USB_PHY_DEVICE)
+=======
+	if (type == USB_PHY_TYPE_DEVICE)
+>>>>>>> refs/remotes/origin/master
 		return s3c_usb_otgphy_exit(pdev);
 
 	return -EINVAL;

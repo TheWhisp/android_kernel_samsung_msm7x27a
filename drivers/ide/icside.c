@@ -236,7 +236,11 @@ static const struct ide_port_ops icside_v6_no_dma_port_ops = {
  */
 static void icside_set_dma_mode(ide_hwif_t *hwif, ide_drive_t *drive)
 {
+<<<<<<< HEAD
 	unsigned long cycle_time;
+=======
+	unsigned long cycle_time = 0;
+>>>>>>> refs/remotes/origin/master
 	int use_dma_info = 0;
 	const u8 xfer_mode = drive->dma_mode;
 
@@ -271,9 +275,15 @@ static void icside_set_dma_mode(ide_hwif_t *hwif, ide_drive_t *drive)
 
 	ide_set_drivedata(drive, (void *)cycle_time);
 
+<<<<<<< HEAD
 	printk("%s: %s selected (peak %dMB/s)\n", drive->name,
 		ide_xfer_verbose(xfer_mode),
 		2000 / (unsigned long)ide_get_drivedata(drive));
+=======
+	printk(KERN_INFO "%s: %s selected (peak %luMB/s)\n",
+	       drive->name, ide_xfer_verbose(xfer_mode),
+	       2000 / (cycle_time ? cycle_time : (unsigned long) -1));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ide_port_ops icside_v6_port_ops = {
@@ -375,8 +385,11 @@ static const struct ide_dma_ops icside_v6_dma_ops = {
 	.dma_test_irq		= icside_dma_test_irq,
 	.dma_lost_irq		= ide_dma_lost_irq,
 };
+<<<<<<< HEAD
 #else
 #define icside_v6_dma_ops NULL
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int icside_dma_off_init(ide_hwif_t *hwif, const struct ide_port_info *d)
@@ -408,8 +421,13 @@ static const struct ide_port_info icside_v5_port_info = {
 	.chipset		= ide_acorn,
 };
 
+<<<<<<< HEAD
 static int __devinit
 icside_register_v5(struct icside_state *state, struct expansion_card *ec)
+=======
+static int icside_register_v5(struct icside_state *state,
+			      struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *base;
 	struct ide_host *host;
@@ -453,18 +471,29 @@ err_free:
 	return ret;
 }
 
+<<<<<<< HEAD
 static const struct ide_port_info icside_v6_port_info __initdata = {
 	.init_dma		= icside_dma_off_init,
 	.port_ops		= &icside_v6_no_dma_port_ops,
 	.dma_ops		= &icside_v6_dma_ops,
+=======
+static const struct ide_port_info icside_v6_port_info __initconst = {
+	.init_dma		= icside_dma_off_init,
+	.port_ops		= &icside_v6_no_dma_port_ops,
+>>>>>>> refs/remotes/origin/master
 	.host_flags		= IDE_HFLAG_SERIALIZE | IDE_HFLAG_MMIO,
 	.mwdma_mask		= ATA_MWDMA2,
 	.swdma_mask		= ATA_SWDMA2,
 	.chipset		= ide_acorn,
 };
 
+<<<<<<< HEAD
 static int __devinit
 icside_register_v6(struct icside_state *state, struct expansion_card *ec)
+=======
+static int icside_register_v6(struct icside_state *state,
+			      struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *ioc_base, *easi_base;
 	struct ide_host *host;
@@ -518,6 +547,7 @@ icside_register_v6(struct icside_state *state, struct expansion_card *ec)
 
 	ecard_set_drvdata(ec, state);
 
+<<<<<<< HEAD
 	if (ec->dma != NO_DMA && !request_dma(ec->dma, DRV_NAME)) {
 		d.init_dma = icside_dma_init;
 		d.port_ops = &icside_v6_port_ops;
@@ -528,6 +558,15 @@ icside_register_v6(struct icside_state *state, struct expansion_card *ec)
 	} else
 		d.dma_ops = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_BLK_DEV_IDEDMA_ICS
+	if (ec->dma != NO_DMA && !request_dma(ec->dma, DRV_NAME)) {
+		d.init_dma = icside_dma_init;
+		d.port_ops = &icside_v6_port_ops;
+		d.dma_ops  = &icside_v6_dma_ops;
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	ret = ide_host_register(host, &d, hws);
 	if (ret)
@@ -543,8 +582,12 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit
 icside_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int icside_probe(struct expansion_card *ec, const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct icside_state *state;
 	void __iomem *idmem;
@@ -610,7 +653,11 @@ icside_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit icside_remove(struct expansion_card *ec)
+=======
+static void icside_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct icside_state *state = ecard_get_drvdata(ec);
 
@@ -672,7 +719,11 @@ static const struct ecard_id icside_ids[] = {
 
 static struct ecard_driver icside_driver = {
 	.probe		= icside_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(icside_remove),
+=======
+	.remove		= icside_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= icside_shutdown,
 	.id_table	= icside_ids,
 	.drv = {

@@ -1,6 +1,7 @@
 NIC_SELECT = RTL8192U
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 KVER  := $(shell uname -r)
 MODDESTDIR := /lib/modules/$(KVER)/kernel/drivers/net/wireless/$(NIC_SELECT)
 
@@ -8,10 +9,13 @@ CC = gcc
 ifneq ($(shell uname -r|cut -d. -f1,2), 2.4)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ccflags-y := -I$(TOPDIR)/drivers/net/wireless
 ccflags-y += -O2
 ccflags-y += -DJACKSON_NEW_8187 -DJACKSON_NEW_RX
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #it will fail to compile in suse linux enterprise 10 sp2. This flag is to solve this problem.
 ifeq ($(shell uname -r | cut -d. -f1,2,3,4), 2.6.16.60-0)
@@ -26,6 +30,8 @@ endif
 #flags to enable or disble 80211D feature
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ieee80211-rsl-objs := ieee80211_rx.o \
 		      ieee80211_softmac.o \
 		      ieee80211_tx.o \
@@ -47,6 +53,7 @@ obj-m +=ieee80211_crypt-rsl.o
 obj-m +=ieee80211_crypt_wep-rsl.o
 obj-m +=ieee80211_crypt_tkip-rsl.o
 obj-m +=ieee80211_crypt_ccmp-rsl.o
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 KSRC := /lib/modules/$(KVER)/build
@@ -144,3 +151,5 @@ clean:
 	rm -rf Module.symvers
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

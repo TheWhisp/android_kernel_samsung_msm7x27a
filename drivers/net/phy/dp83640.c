@@ -17,6 +17,12 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/ethtool.h>
 #include <linux/kernel.h>
 #include <linux/list.h>
@@ -36,15 +42,20 @@
 #define LAYER2		0x01
 #define MAX_RXTS	64
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define N_EXT_TS	1
 =======
 #define N_EXT_TS	6
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define N_EXT_TS	6
+>>>>>>> refs/remotes/origin/master
 #define PSF_PTPVER	2
 #define PSF_EVNT	0x4000
 #define PSF_RX		0x2000
 #define PSF_TX		0x1000
 #define EXT_EVENT	1
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define EXT_GPIO	1
 #define CAL_EVENT	2
@@ -55,6 +66,26 @@
 #define CAL_TRIGGER	7
 #define PER_TRIGGER	6
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CAL_EVENT	7
+#define CAL_TRIGGER	7
+#define PER_TRIGGER	6
+
+#define MII_DP83640_MICR 0x11
+#define MII_DP83640_MISR 0x12
+
+#define MII_DP83640_MICR_OE 0x1
+#define MII_DP83640_MICR_IE 0x2
+
+#define MII_DP83640_MISR_RHF_INT_EN 0x01
+#define MII_DP83640_MISR_FHF_INT_EN 0x02
+#define MII_DP83640_MISR_ANC_INT_EN 0x04
+#define MII_DP83640_MISR_DUP_INT_EN 0x08
+#define MII_DP83640_MISR_SPD_INT_EN 0x10
+#define MII_DP83640_MISR_LINK_INT_EN 0x20
+#define MII_DP83640_MISR_ED_INT_EN 0x40
+#define MII_DP83640_MISR_LQ_INT_EN 0x80
+>>>>>>> refs/remotes/origin/master
 
 /* phyter seems to miss the mark by 16 ns */
 #define ADJTIME_FIX	16
@@ -142,6 +173,7 @@ struct dp83640_clock {
 /* globals */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int chosen_phy = -1;
 static ushort cal_gpio = 4;
 
@@ -153,6 +185,8 @@ MODULE_PARM_DESC(chosen_phy, \
 MODULE_PARM_DESC(cal_gpio, \
 	"Which GPIO line to use for synchronizing multiple PHYs");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum {
 	CALIBRATE_GPIO,
 	PEROUT_GPIO,
@@ -177,7 +211,10 @@ MODULE_PARM_DESC(chosen_phy, \
 	"The address of the PHY to use for the ancillary clock features");
 MODULE_PARM_DESC(gpio_tab, \
 	"Which GPIO line to use for which purpose: cal,perout,extts1,...,extts6");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* a list of clocks and a mutex to protect it */
 static LIST_HEAD(phyter_clocks);
@@ -273,7 +310,10 @@ static u64 phy2txts(struct phy_txts *p)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void periodic_output(struct dp83640_clock *clock,
 			    struct ptp_clock_request *clkreq, bool on)
 {
@@ -329,7 +369,10 @@ static void periodic_output(struct dp83640_clock *clock,
 	mutex_unlock(&clock->extreg_lock);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* ptp clock methods */
 
 static int ptp_dp83640_adjfreq(struct ptp_clock_info *ptp, s32 ppb)
@@ -434,6 +477,7 @@ static int ptp_dp83640_enable(struct ptp_clock_info *ptp,
 		container_of(ptp, struct dp83640_clock, caps);
 	struct phy_device *phydev = clock->chosen->phydev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 evnt;
 
 	switch (rq->type) {
@@ -444,6 +488,8 @@ static int ptp_dp83640_enable(struct ptp_clock_info *ptp,
 		if (on) {
 			evnt |= (EXT_GPIO & EVNT_GPIO_MASK) << EVNT_GPIO_SHIFT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int index;
 	u16 evnt, event_num, gpio_num;
 
@@ -457,13 +503,19 @@ static int ptp_dp83640_enable(struct ptp_clock_info *ptp,
 		if (on) {
 			gpio_num = gpio_tab[EXTTS0_GPIO + index];
 			evnt |= (gpio_num & EVNT_GPIO_MASK) << EVNT_GPIO_SHIFT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			evnt |= EVNT_RISE;
 		}
 		ext_write(0, phydev, PAGE5, PTP_EVNT, evnt);
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case PTP_CLK_REQ_PEROUT:
 		if (rq->perout.index != 0)
@@ -471,7 +523,10 @@ static int ptp_dp83640_enable(struct ptp_clock_info *ptp,
 		periodic_output(clock, rq, on);
 		return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		break;
 	}
@@ -495,16 +550,27 @@ static void enable_status_frames(struct phy_device *phydev, bool on)
 	ext_write(0, phydev, PAGE6, PSF_CFG1, ver);
 
 	if (!phydev->attached_dev) {
+<<<<<<< HEAD
 		pr_warning("dp83640: expected to find an attached netdevice\n");
+=======
+		pr_warn("expected to find an attached netdevice\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (on) {
 		if (dev_mc_add(phydev->attached_dev, status_frame_dst))
+<<<<<<< HEAD
 			pr_warning("dp83640: failed to add mc address\n");
 	} else {
 		if (dev_mc_del(phydev->attached_dev, status_frame_dst))
 			pr_warning("dp83640: failed to delete mc address\n");
+=======
+			pr_warn("failed to add mc address\n");
+	} else {
+		if (dev_mc_del(phydev->attached_dev, status_frame_dst))
+			pr_warn("failed to delete mc address\n");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -563,15 +629,21 @@ static void recalibrate(struct dp83640_clock *clock)
 	struct dp83640_private *tmp;
 	struct phy_device *master = clock->chosen->phydev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 cfg0, evnt, ptp_trig, trigger, val;
 
 	trigger = CAL_TRIGGER;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 cal_gpio, cfg0, evnt, ptp_trig, trigger, val;
 
 	trigger = CAL_TRIGGER;
 	cal_gpio = gpio_tab[CALIBRATE_GPIO];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&clock->extreg_lock);
 
@@ -630,9 +702,15 @@ static void recalibrate(struct dp83640_clock *clock)
 	 * read out and correct offsets
 	 */
 	val = ext_read(master, PAGE4, PTP_STS);
+<<<<<<< HEAD
 	pr_info("master PTP_STS  0x%04hx", val);
 	val = ext_read(master, PAGE4, PTP_ESTS);
 	pr_info("master PTP_ESTS 0x%04hx", val);
+=======
+	pr_info("master PTP_STS  0x%04hx\n", val);
+	val = ext_read(master, PAGE4, PTP_ESTS);
+	pr_info("master PTP_ESTS 0x%04hx\n", val);
+>>>>>>> refs/remotes/origin/master
 	event_ts.ns_lo  = ext_read(master, PAGE4, PTP_EDATA);
 	event_ts.ns_hi  = ext_read(master, PAGE4, PTP_EDATA);
 	event_ts.sec_lo = ext_read(master, PAGE4, PTP_EDATA);
@@ -642,9 +720,15 @@ static void recalibrate(struct dp83640_clock *clock)
 	list_for_each(this, &clock->phylist) {
 		tmp = list_entry(this, struct dp83640_private, list);
 		val = ext_read(tmp->phydev, PAGE4, PTP_STS);
+<<<<<<< HEAD
 		pr_info("slave  PTP_STS  0x%04hx", val);
 		val = ext_read(tmp->phydev, PAGE4, PTP_ESTS);
 		pr_info("slave  PTP_ESTS 0x%04hx", val);
+=======
+		pr_info("slave  PTP_STS  0x%04hx\n", val);
+		val = ext_read(tmp->phydev, PAGE4, PTP_ESTS);
+		pr_info("slave  PTP_ESTS 0x%04hx\n", val);
+>>>>>>> refs/remotes/origin/master
 		event_ts.ns_lo  = ext_read(tmp->phydev, PAGE4, PTP_EDATA);
 		event_ts.ns_hi  = ext_read(tmp->phydev, PAGE4, PTP_EDATA);
 		event_ts.sec_lo = ext_read(tmp->phydev, PAGE4, PTP_EDATA);
@@ -671,22 +755,32 @@ static void recalibrate(struct dp83640_clock *clock)
 /* time stamping methods */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline u16 exts_chan_to_edata(int ch)
 {
 	return 1 << ((ch + EXT_EVENT) * 2);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int decode_evnt(struct dp83640_private *dp83640,
 		       void *data, u16 ests)
 {
 	struct phy_txts *phy_txts;
 	struct ptp_clock_event event;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int i, parsed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, parsed;
+>>>>>>> refs/remotes/origin/master
 	int words = (ests >> EVNT_TS_LEN_SHIFT) & EVNT_TS_LEN_MASK;
 	u16 ext_status = 0;
 
@@ -709,6 +803,7 @@ static int decode_evnt(struct dp83640_private *dp83640,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	event.type = PTP_CLOCK_EXTTS;
 	event.index = 0;
 	event.timestamp = phy2txts(&dp83640->edata);
@@ -718,6 +813,8 @@ static int decode_evnt(struct dp83640_private *dp83640,
 	words = ext_status ? words + 2 : words + 1;
 	return words * sizeof(u16);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ext_status) {
 		parsed = words + 2;
 	} else {
@@ -737,7 +834,10 @@ static int decode_evnt(struct dp83640_private *dp83640,
 	}
 
 	return parsed * sizeof(u16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void decode_rxts(struct dp83640_private *dp83640,
@@ -752,10 +852,14 @@ static void decode_rxts(struct dp83640_private *dp83640,
 
 	if (list_empty(&dp83640->rxpool)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_warning("dp83640: rx timestamp pool is empty\n");
 =======
 		pr_debug("dp83640: rx timestamp pool is empty\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("rx timestamp pool is empty\n");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	rxts = list_first_entry(&dp83640->rxpool, struct rxts, list);
@@ -779,10 +883,14 @@ static void decode_txts(struct dp83640_private *dp83640,
 
 	if (!skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_warning("dp83640: have timestamp but tx_queue empty\n");
 =======
 		pr_debug("dp83640: have timestamp but tx_queue empty\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_debug("have timestamp but tx_queue empty\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	ns = phy2txts(phy_txts);
@@ -835,7 +943,10 @@ static void decode_status_frame(struct dp83640_private *dp83640,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int is_sync(struct sk_buff *skb, int type)
 {
 	u8 *data = skb->data, *msgtype;
@@ -871,7 +982,10 @@ static int is_sync(struct sk_buff *skb, int type)
 	return (*msgtype & 0xf) == 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int match(struct sk_buff *skb, unsigned int type, struct rxts *rxts)
 {
 	u16 *seqid;
@@ -923,7 +1037,11 @@ static void dp83640_free_clocks(void)
 	list_for_each_safe(this, next, &phyter_clocks) {
 		clock = list_entry(this, struct dp83640_clock, list);
 		if (!list_empty(&clock->phylist)) {
+<<<<<<< HEAD
 			pr_warning("phy list non-empty while unloading");
+=======
+			pr_warn("phy list non-empty while unloading\n");
+>>>>>>> refs/remotes/origin/master
 			BUG();
 		}
 		list_del(&clock->list);
@@ -949,10 +1067,14 @@ static void dp83640_clock_init(struct dp83640_clock *clock, struct mii_bus *bus)
 	clock->caps.n_alarm	= 0;
 	clock->caps.n_ext_ts	= N_EXT_TS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clock->caps.n_per_out	= 0;
 =======
 	clock->caps.n_per_out	= 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clock->caps.n_per_out	= 1;
+>>>>>>> refs/remotes/origin/master
 	clock->caps.pps		= 0;
 	clock->caps.adjfreq	= ptp_dp83640_adjfreq;
 	clock->caps.adjtime	= ptp_dp83640_adjtime;
@@ -1057,7 +1179,11 @@ static int dp83640_probe(struct phy_device *phydev)
 
 	if (choose_this_phy(clock, phydev)) {
 		clock->chosen = dp83640;
+<<<<<<< HEAD
 		clock->ptp_clock = ptp_clock_register(&clock->caps);
+=======
+		clock->ptp_clock = ptp_clock_register(&clock->caps, &phydev->dev);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(clock->ptp_clock)) {
 			err = PTR_ERR(clock->ptp_clock);
 			goto no_register;
@@ -1120,6 +1246,68 @@ static void dp83640_remove(struct phy_device *phydev)
 	kfree(dp83640);
 }
 
+<<<<<<< HEAD
+=======
+static int dp83640_ack_interrupt(struct phy_device *phydev)
+{
+	int err = phy_read(phydev, MII_DP83640_MISR);
+
+	if (err < 0)
+		return err;
+
+	return 0;
+}
+
+static int dp83640_config_intr(struct phy_device *phydev)
+{
+	int micr;
+	int misr;
+	int err;
+
+	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
+		misr = phy_read(phydev, MII_DP83640_MISR);
+		if (misr < 0)
+			return misr;
+		misr |=
+			(MII_DP83640_MISR_ANC_INT_EN |
+			MII_DP83640_MISR_DUP_INT_EN |
+			MII_DP83640_MISR_SPD_INT_EN |
+			MII_DP83640_MISR_LINK_INT_EN);
+		err = phy_write(phydev, MII_DP83640_MISR, misr);
+		if (err < 0)
+			return err;
+
+		micr = phy_read(phydev, MII_DP83640_MICR);
+		if (micr < 0)
+			return micr;
+		micr |=
+			(MII_DP83640_MICR_OE |
+			MII_DP83640_MICR_IE);
+		return phy_write(phydev, MII_DP83640_MICR, micr);
+	} else {
+		micr = phy_read(phydev, MII_DP83640_MICR);
+		if (micr < 0)
+			return micr;
+		micr &=
+			~(MII_DP83640_MICR_OE |
+			MII_DP83640_MICR_IE);
+		err = phy_write(phydev, MII_DP83640_MICR, micr);
+		if (err < 0)
+			return err;
+
+		misr = phy_read(phydev, MII_DP83640_MISR);
+		if (misr < 0)
+			return misr;
+		misr &=
+			~(MII_DP83640_MISR_ANC_INT_EN |
+			MII_DP83640_MISR_DUP_INT_EN |
+			MII_DP83640_MISR_SPD_INT_EN |
+			MII_DP83640_MISR_LINK_INT_EN);
+		return phy_write(phydev, MII_DP83640_MISR, misr);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
 {
 	struct dp83640_private *dp83640 = phydev->priv;
@@ -1133,6 +1321,7 @@ static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch (cfg.tx_type) {
 	case HWTSTAMP_TX_OFF:
 		dp83640->hwts_tx_en = 0;
@@ -1144,11 +1333,16 @@ static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
 		return -ERANGE;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cfg.tx_type < 0 || cfg.tx_type > HWTSTAMP_TX_ONESTEP_SYNC)
 		return -ERANGE;
 
 	dp83640->hwts_tx_en = cfg.tx_type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (cfg.rx_filter) {
 	case HWTSTAMP_FILTER_NONE:
@@ -1204,11 +1398,17 @@ static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
 		txcfg0 |= TX_TS_EN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dp83640->hwts_tx_en == HWTSTAMP_TX_ONESTEP_SYNC)
 		txcfg0 |= SYNC_1STEP | CHK_1STEP;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dp83640->hwts_tx_en == HWTSTAMP_TX_ONESTEP_SYNC)
+		txcfg0 |= SYNC_1STEP | CHK_1STEP;
+
+>>>>>>> refs/remotes/origin/master
 	if (dp83640->hwts_rx_en)
 		rxcfg0 |= RX_TS_EN;
 
@@ -1256,10 +1456,14 @@ static void rx_timestamp_work(struct work_struct *work)
 		}
 		spin_unlock_irqrestore(&dp83640->rx_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		netif_rx(skb);
 =======
 		netif_rx_ni(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netif_rx_ni(skb);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Clear out expired time stamps. */
@@ -1296,6 +1500,7 @@ static void dp83640_txtstamp(struct phy_device *phydev,
 	struct dp83640_private *dp83640 = phydev->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!dp83640->hwts_tx_en) {
 		skb_complete_tx_timestamp(skb, NULL);
 		return;
@@ -1303,6 +1508,8 @@ static void dp83640_txtstamp(struct phy_device *phydev,
 	skb_queue_tail(&dp83640->tx_queue, skb);
 	schedule_work(&dp83640->ts_work);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (dp83640->hwts_tx_en) {
 
 	case HWTSTAMP_TX_ONESTEP_SYNC:
@@ -1321,7 +1528,40 @@ static void dp83640_txtstamp(struct phy_device *phydev,
 		skb_complete_tx_timestamp(skb, NULL);
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static int dp83640_ts_info(struct phy_device *dev, struct ethtool_ts_info *info)
+{
+	struct dp83640_private *dp83640 = dev->priv;
+
+	info->so_timestamping =
+		SOF_TIMESTAMPING_TX_HARDWARE |
+		SOF_TIMESTAMPING_RX_HARDWARE |
+		SOF_TIMESTAMPING_RAW_HARDWARE;
+	info->phc_index = ptp_clock_index(dp83640->clock->ptp_clock);
+	info->tx_types =
+		(1 << HWTSTAMP_TX_OFF) |
+		(1 << HWTSTAMP_TX_ON) |
+		(1 << HWTSTAMP_TX_ONESTEP_SYNC);
+	info->rx_filters =
+		(1 << HWTSTAMP_FILTER_NONE) |
+		(1 << HWTSTAMP_FILTER_PTP_V1_L4_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V1_L4_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_DELAY_REQ);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct phy_driver dp83640_driver = {
@@ -1329,11 +1569,21 @@ static struct phy_driver dp83640_driver = {
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "NatSemi DP83640",
 	.features	= PHY_BASIC_FEATURES,
+<<<<<<< HEAD
 	.flags		= 0,
+=======
+	.flags		= PHY_HAS_INTERRUPT,
+>>>>>>> refs/remotes/origin/master
 	.probe		= dp83640_probe,
 	.remove		= dp83640_remove,
 	.config_aneg	= genphy_config_aneg,
 	.read_status	= genphy_read_status,
+<<<<<<< HEAD
+=======
+	.ack_interrupt  = dp83640_ack_interrupt,
+	.config_intr    = dp83640_config_intr,
+	.ts_info	= dp83640_ts_info,
+>>>>>>> refs/remotes/origin/master
 	.hwtstamp	= dp83640_hwtstamp,
 	.rxtstamp	= dp83640_rxtstamp,
 	.txtstamp	= dp83640_txtstamp,
@@ -1353,10 +1603,14 @@ static void __exit dp83640_exit(void)
 
 MODULE_DESCRIPTION("National Semiconductor DP83640 PHY driver");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Richard Cochran <richard.cochran@omicron.at>");
 =======
 MODULE_AUTHOR("Richard Cochran <richardcochran@gmail.at>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_AUTHOR("Richard Cochran <richardcochran@gmail.at>");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 
 module_init(dp83640_init);

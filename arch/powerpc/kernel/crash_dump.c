@@ -29,10 +29,14 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_RELOCATABLE
 =======
 #ifndef CONFIG_NONSTATIC_KERNEL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef CONFIG_NONSTATIC_KERNEL
+>>>>>>> refs/remotes/origin/master
 void __init reserve_kdump_trampoline(void)
 {
 	memblock_reserve(0, KDUMP_RESERVE_LIMIT);
@@ -72,6 +76,7 @@ void __init setup_kdump_trampoline(void)
 	DBG(" <- setup_kdump_trampoline()\n");
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_RELOCATABLE */
 =======
 #endif /* CONFIG_NONSTATIC_KERNEL */
@@ -86,6 +91,9 @@ static int __init parse_savemaxmem(char *p)
 }
 __setup("savemaxmem=", parse_savemaxmem);
 
+=======
+#endif /* CONFIG_NONSTATIC_KERNEL */
+>>>>>>> refs/remotes/origin/master
 
 static size_t copy_oldmem_vaddr(void *vaddr, char *buf, size_t csize,
                                unsigned long offset, int userbuf)
@@ -142,15 +150,24 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
 void crash_free_reserved_phys_range(unsigned long begin, unsigned long end)
 {
 	unsigned long addr;
+<<<<<<< HEAD
 	const u32 *basep, *sizep;
+=======
+	const __be32 *basep, *sizep;
+>>>>>>> refs/remotes/origin/master
 	unsigned int rtas_start = 0, rtas_end = 0;
 
 	basep = of_get_property(rtas.dev, "linux,rtas-base", NULL);
 	sizep = of_get_property(rtas.dev, "rtas-size", NULL);
 
 	if (basep && sizep) {
+<<<<<<< HEAD
 		rtas_start = *basep;
 		rtas_end = *basep + *sizep;
+=======
+		rtas_start = be32_to_cpup(basep);
+		rtas_end = rtas_start + be32_to_cpup(sizep);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (addr = begin; addr < end; addr += PAGE_SIZE) {
@@ -158,10 +175,14 @@ void crash_free_reserved_phys_range(unsigned long begin, unsigned long end)
 		if (addr <= rtas_end && ((addr + PAGE_SIZE) > rtas_start))
 			continue;
 
+<<<<<<< HEAD
 		ClearPageReserved(pfn_to_page(addr >> PAGE_SHIFT));
 		init_page_count(pfn_to_page(addr >> PAGE_SHIFT));
 		free_page((unsigned long)__va(addr));
 		totalram_pages++;
+=======
+		free_reserved_page(pfn_to_page(addr >> PAGE_SHIFT));
+>>>>>>> refs/remotes/origin/master
 	}
 }
 #endif

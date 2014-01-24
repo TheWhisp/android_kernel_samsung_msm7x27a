@@ -8,10 +8,14 @@
 # asflags-y := -DDEBUG
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=softvfp+vfp)
 =======
 KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=softvfp+vfp -mfloat-abi=soft)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+KBUILD_AFLAGS	:=$(KBUILD_AFLAGS:-msoft-float=-Wa,-mfpu=softvfp+vfp -mfloat-abi=soft)
+>>>>>>> refs/remotes/origin/master
 LDFLAGS		+=--no-warn-mismatch
 
 obj-y			+= vfp.o

@@ -18,10 +18,14 @@
 #include <linux/reboot.h>
 #include <linux/acpi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 #include <linux/pm_runtime.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 
@@ -31,6 +35,7 @@
 #include "internal.h"
 #include "sleep.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 u8 wake_sleep_flags = ACPI_NO_OPTIONAL_METHODS;
@@ -62,16 +67,24 @@ MODULE_PARM_DESC(gts, "Enable evaluation of _GTS on suspend.");
 MODULE_PARM_DESC(bfs, "Enable evaluation of _BFS on resume".);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 sleep_states[ACPI_S_STATE_COUNT];
 
 static void acpi_sleep_tts_switch(u32 acpi_state)
 {
+<<<<<<< HEAD
 	union acpi_object in_arg = { ACPI_TYPE_INTEGER };
 	struct acpi_object_list arg_list = { 1, &in_arg };
 	acpi_status status = AE_OK;
 
 	in_arg.integer.value = acpi_state;
 	status = acpi_evaluate_object(NULL, "\\_TTS", &arg_list, NULL);
+=======
+	acpi_status status;
+
+	status = acpi_execute_simple_method(NULL, "\\_TTS", acpi_state);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status) && status != AE_NOT_FOUND) {
 		/*
 		 * OS can't evaluate the _TTS object correctly. Some warning
@@ -99,11 +112,17 @@ static int acpi_sleep_prepare(u32 acpi_state)
 #ifdef CONFIG_ACPI_SLEEP
 	/* do we have a wakeup address for S2 and S3? */
 	if (acpi_state == ACPI_STATE_S3) {
+<<<<<<< HEAD
 		if (!acpi_wakeup_address) {
 			return -EFAULT;
 		}
 		acpi_set_firmware_waking_vector(
 				(acpi_physical_address)acpi_wakeup_address);
+=======
+		if (!acpi_wakeup_address)
+			return -EFAULT;
+		acpi_set_firmware_waking_vector(acpi_wakeup_address);
+>>>>>>> refs/remotes/origin/master
 
 	}
 	ACPI_FLUSH_CPU_CACHE();
@@ -118,6 +137,16 @@ static int acpi_sleep_prepare(u32 acpi_state)
 #ifdef CONFIG_ACPI_SLEEP
 static u32 acpi_target_sleep_state = ACPI_STATE_S0;
 
+<<<<<<< HEAD
+=======
+u32 acpi_target_system_state(void)
+{
+	return acpi_target_sleep_state;
+}
+
+static bool pwr_btn_event_pending;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The ACPI specification wants us to save NVS memory regions during hibernation
  * and to restore them during the subsequent resume.  Windows does that also for
@@ -133,6 +162,24 @@ void __init acpi_nvs_nosave(void)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * The ACPI specification wants us to save NVS memory regions during hibernation
+ * but says nothing about saving NVS during S3.  Not all versions of Windows
+ * save NVS on S3 suspend either, and it is clear that not all systems need
+ * NVS to be saved at S3 time.  To improve suspend/resume time, allow the
+ * user to disable saving NVS on S3 if their system does not require it, but
+ * continue to save/restore NVS for S4 as specified.
+ */
+static bool nvs_nosave_s3;
+
+void __init acpi_nvs_nosave_s3(void)
+{
+	nvs_nosave_s3 = true;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * ACPI 1.0 wants us to execute _PTS before suspending devices, so we allow the
  * user to request that behavior by using the 'acpi_old_suspend_ordering'
  * kernel command line option that causes the following variable to be set.
@@ -145,7 +192,10 @@ void __init acpi_old_suspend_ordering(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init init_old_suspend_ordering(const struct dmi_system_id *d)
 {
 	acpi_old_suspend_ordering();
@@ -158,7 +208,11 @@ static int __init init_nvs_nosave(const struct dmi_system_id *d)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct dmi_system_id __initdata acpisleep_dmi_table[] = {
+=======
+static struct dmi_system_id acpisleep_dmi_table[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{
 	.callback = init_old_suspend_ordering,
 	.ident = "Abit KN9 (nForce4 variant)",
@@ -210,6 +264,17 @@ static struct dmi_system_id __initdata acpisleep_dmi_table[] = {
 	},
 	{
 	.callback = init_nvs_nosave,
+<<<<<<< HEAD
+=======
+	.ident = "Sony Vaio VGN-FW21M",
+	.matches = {
+		DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
+		DMI_MATCH(DMI_PRODUCT_NAME, "VGN-FW21M"),
+		},
+	},
+	{
+	.callback = init_nvs_nosave,
+>>>>>>> refs/remotes/origin/master
 	.ident = "Sony Vaio VPCEB17FX",
 	.matches = {
 		DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
@@ -328,14 +393,21 @@ static void acpi_sleep_dmi_check(void)
 	dmi_check_system(acpisleep_dmi_table);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * acpi_pm_freeze - Disable the GPEs and suspend EC transactions.
  */
 static int acpi_pm_freeze(void)
 {
 	acpi_disable_all_gpes();
+<<<<<<< HEAD
 	acpi_os_wait_events_complete(NULL);
+=======
+	acpi_os_wait_events_complete();
+>>>>>>> refs/remotes/origin/master
 	acpi_ec_block_transactions();
 	return 0;
 }
@@ -377,6 +449,17 @@ static int acpi_pm_prepare(void)
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+static int find_powerf_dev(struct device *dev, void *data)
+{
+	struct acpi_device *device = to_acpi_device(dev);
+	const char *hid = acpi_device_hid(device);
+
+	return !strcmp(hid, ACPI_BUTTON_HID_POWERF);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	acpi_pm_finish - Instruct the platform to leave a sleep state.
  *
@@ -385,6 +468,10 @@ static int acpi_pm_prepare(void)
  */
 static void acpi_pm_finish(void)
 {
+<<<<<<< HEAD
+=======
+	struct device *pwr_btn_dev;
+>>>>>>> refs/remotes/origin/master
 	u32 acpi_state = acpi_target_sleep_state;
 
 	acpi_ec_unblock_transactions();
@@ -402,6 +489,7 @@ static void acpi_pm_finish(void)
 	acpi_set_firmware_waking_vector((acpi_physical_address) 0);
 
 	acpi_target_sleep_state = ACPI_STATE_S0;
+<<<<<<< HEAD
 }
 
 /**
@@ -409,6 +497,45 @@ static void acpi_pm_finish(void)
  */
 static void acpi_pm_end(void)
 {
+=======
+
+	acpi_resume_power_resources();
+
+	/* If we were woken with the fixed power button, provide a small
+	 * hint to userspace in the form of a wakeup event on the fixed power
+	 * button device (if it can be found).
+	 *
+	 * We delay the event generation til now, as the PM layer requires
+	 * timekeeping to be running before we generate events. */
+	if (!pwr_btn_event_pending)
+		return;
+
+	pwr_btn_event_pending = false;
+	pwr_btn_dev = bus_find_device(&acpi_bus_type, NULL, NULL,
+				      find_powerf_dev);
+	if (pwr_btn_dev) {
+		pm_wakeup_event(pwr_btn_dev, 0);
+		put_device(pwr_btn_dev);
+	}
+}
+
+/**
+ * acpi_pm_start - Start system PM transition.
+ */
+static void acpi_pm_start(u32 acpi_state)
+{
+	acpi_target_sleep_state = acpi_state;
+	acpi_sleep_tts_switch(acpi_target_sleep_state);
+	acpi_scan_lock_acquire();
+}
+
+/**
+ * acpi_pm_end - Finish up system PM transition.
+ */
+static void acpi_pm_end(void)
+{
+	acpi_scan_lock_release();
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This is necessary in case acpi_pm_finish() is not called during a
 	 * failing transition to a sleep state.
@@ -419,9 +546,13 @@ static void acpi_pm_end(void)
 #else /* !CONFIG_ACPI_SLEEP */
 #define acpi_target_sleep_state	ACPI_STATE_S0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static inline void acpi_sleep_dmi_check(void) {}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void acpi_sleep_dmi_check(void) {}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_ACPI_SLEEP */
 
 #ifdef CONFIG_SUSPEND
@@ -439,6 +570,7 @@ static u32 acpi_suspend_states[] = {
 static int acpi_suspend_begin(suspend_state_t pm_state)
 {
 	u32 acpi_state = acpi_suspend_states[pm_state];
+<<<<<<< HEAD
 	int error = 0;
 
 	error = nvs_nosave ? 0 : suspend_nvs_alloc();
@@ -454,6 +586,21 @@ static int acpi_suspend_begin(suspend_state_t pm_state)
 		error = -ENOSYS;
 	}
 	return error;
+=======
+	int error;
+
+	error = (nvs_nosave || nvs_nosave_s3) ? 0 : suspend_nvs_alloc();
+	if (error)
+		return error;
+
+	if (!sleep_states[acpi_state]) {
+		pr_err("ACPI does not support sleep state S%u\n", acpi_state);
+		return -ENOSYS;
+	}
+
+	acpi_pm_start(acpi_state);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -476,6 +623,7 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
 	case ACPI_STATE_S1:
 		barrier();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = acpi_enter_sleep_state(acpi_state);
 =======
 		status = acpi_enter_sleep_state(acpi_state, wake_sleep_flags);
@@ -483,6 +631,14 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
 		break;
 
 	case ACPI_STATE_S3:
+=======
+		status = acpi_enter_sleep_state(acpi_state);
+		break;
+
+	case ACPI_STATE_S3:
+		if (!acpi_suspend_lowlevel)
+			return -ENOSYS;
+>>>>>>> refs/remotes/origin/master
 		error = acpi_suspend_lowlevel();
 		if (error)
 			return error;
@@ -493,19 +649,44 @@ static int acpi_suspend_enter(suspend_state_t pm_state)
 	/* This violates the spec but is required for bug compatibility. */
 	acpi_write_bit_register(ACPI_BITREG_SCI_ENABLE, 1);
 
+<<<<<<< HEAD
 	/* Reprogram control registers and execute _BFS */
 <<<<<<< HEAD
 	acpi_leave_sleep_state_prep(acpi_state);
 =======
 	acpi_leave_sleep_state_prep(acpi_state, wake_sleep_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Reprogram control registers */
+	acpi_leave_sleep_state_prep(acpi_state);
+>>>>>>> refs/remotes/origin/master
 
 	/* ACPI 3.0 specs (P62) says that it's the responsibility
 	 * of the OSPM to clear the status bit [ implying that the
 	 * POWER_BUTTON event should not reach userspace ]
+<<<<<<< HEAD
 	 */
 	if (ACPI_SUCCESS(status) && (acpi_state == ACPI_STATE_S3))
 		acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+=======
+	 *
+	 * However, we do generate a small hint for userspace in the form of
+	 * a wakeup event. We flag this condition for now and generate the
+	 * event later, as we're currently too early in resume to be able to
+	 * generate wakeup events.
+	 */
+	if (ACPI_SUCCESS(status) && (acpi_state == ACPI_STATE_S3)) {
+		acpi_event_status pwr_btn_status = ACPI_EVENT_FLAG_DISABLED;
+
+		acpi_get_event_status(ACPI_EVENT_POWER_BUTTON, &pwr_btn_status);
+
+		if (pwr_btn_status & ACPI_EVENT_FLAG_SET) {
+			acpi_clear_event(ACPI_EVENT_POWER_BUTTON);
+			/* Flag for later */
+			pwr_btn_event_pending = true;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Disable and clear GPE status before interrupt is enabled. Some GPEs
@@ -574,6 +755,7 @@ static const struct platform_suspend_ops acpi_suspend_ops_old = {
 	.end = acpi_pm_end,
 	.recover = acpi_pm_finish,
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init init_old_suspend_ordering(const struct dmi_system_id *d)
@@ -691,6 +873,29 @@ static struct dmi_system_id __initdata acpisleep_dmi_table[] = {
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_SUSPEND */
+=======
+
+static void acpi_sleep_suspend_setup(void)
+{
+	int i;
+
+	for (i = ACPI_STATE_S1; i < ACPI_STATE_S4; i++) {
+		acpi_status status;
+		u8 type_a, type_b;
+
+		status = acpi_get_sleep_type_data(i, &type_a, &type_b);
+		if (ACPI_SUCCESS(status)) {
+			sleep_states[i] = 1;
+		}
+	}
+
+	suspend_set_ops(old_suspend_ordering ?
+		&acpi_suspend_ops_old : &acpi_suspend_ops);
+}
+#else /* !CONFIG_SUSPEND */
+static inline void acpi_sleep_suspend_setup(void) {}
+#endif /* !CONFIG_SUSPEND */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HIBERNATION
 static unsigned long s4_hardware_signature;
@@ -707,10 +912,15 @@ static int acpi_hibernation_begin(void)
 	int error;
 
 	error = nvs_nosave ? 0 : suspend_nvs_alloc();
+<<<<<<< HEAD
 	if (!error) {
 		acpi_target_sleep_state = ACPI_STATE_S4;
 		acpi_sleep_tts_switch(acpi_target_sleep_state);
 	}
+=======
+	if (!error)
+		acpi_pm_start(ACPI_STATE_S4);
+>>>>>>> refs/remotes/origin/master
 
 	return error;
 }
@@ -723,6 +933,7 @@ static int acpi_hibernation_enter(void)
 
 	/* This shouldn't return.  If it returns, we have a problem */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	status = acpi_enter_sleep_state(ACPI_STATE_S4);
 	/* Reprogram control registers and execute _BFS */
 	acpi_leave_sleep_state_prep(ACPI_STATE_S4);
@@ -731,6 +942,11 @@ static int acpi_hibernation_enter(void)
 	/* Reprogram control registers and execute _BFS */
 	acpi_leave_sleep_state_prep(ACPI_STATE_S4, wake_sleep_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = acpi_enter_sleep_state(ACPI_STATE_S4);
+	/* Reprogram control registers */
+	acpi_leave_sleep_state_prep(ACPI_STATE_S4);
+>>>>>>> refs/remotes/origin/master
 
 	return ACPI_SUCCESS(status) ? 0 : -EFAULT;
 }
@@ -742,12 +958,17 @@ static void acpi_hibernation_leave(void)
 	 * enable it here.
 	 */
 	acpi_enable();
+<<<<<<< HEAD
 	/* Reprogram control registers and execute _BFS */
 <<<<<<< HEAD
 	acpi_leave_sleep_state_prep(ACPI_STATE_S4);
 =======
 	acpi_leave_sleep_state_prep(ACPI_STATE_S4, wake_sleep_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Reprogram control registers */
+	acpi_leave_sleep_state_prep(ACPI_STATE_S4);
+>>>>>>> refs/remotes/origin/master
 	/* Check the hardware signature */
 	if (facs && s4_hardware_signature != facs->hardware_signature) {
 		printk(KERN_EMERG "ACPI: Hardware changed while hibernated, "
@@ -799,8 +1020,15 @@ static int acpi_hibernation_begin_old(void)
 	if (!error) {
 		if (!nvs_nosave)
 			error = suspend_nvs_alloc();
+<<<<<<< HEAD
 		if (!error)
 			acpi_target_sleep_state = ACPI_STATE_S4;
+=======
+		if (!error) {
+			acpi_target_sleep_state = ACPI_STATE_S4;
+			acpi_scan_lock_acquire();
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	return error;
 }
@@ -821,7 +1049,33 @@ static const struct platform_hibernation_ops acpi_hibernation_ops_old = {
 	.restore_cleanup = acpi_pm_thaw,
 	.recover = acpi_pm_finish,
 };
+<<<<<<< HEAD
 #endif /* CONFIG_HIBERNATION */
+=======
+
+static void acpi_sleep_hibernate_setup(void)
+{
+	acpi_status status;
+	u8 type_a, type_b;
+
+	status = acpi_get_sleep_type_data(ACPI_STATE_S4, &type_a, &type_b);
+	if (ACPI_FAILURE(status))
+		return;
+
+	hibernation_set_ops(old_suspend_ordering ?
+			&acpi_hibernation_ops_old : &acpi_hibernation_ops);
+	sleep_states[ACPI_STATE_S4] = 1;
+	if (nosigcheck)
+		return;
+
+	acpi_get_table(ACPI_SIG_FACS, 1, (struct acpi_table_header **)&facs);
+	if (facs)
+		s4_hardware_signature = facs->hardware_signature;
+}
+#else /* !CONFIG_HIBERNATION */
+static inline void acpi_sleep_hibernate_setup(void) {}
+#endif /* !CONFIG_HIBERNATION */
+>>>>>>> refs/remotes/origin/master
 
 int acpi_suspend(u32 acpi_state)
 {
@@ -838,6 +1092,7 @@ int acpi_suspend(u32 acpi_state)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 /**
  *	acpi_pm_device_sleep_state - return preferred power state of ACPI device
@@ -1001,6 +1256,8 @@ int acpi_pm_device_sleep_wake(struct device *dev, bool enable)
 }
 #endif  /* CONFIG_PM_SLEEP */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void acpi_power_off_prepare(void)
 {
 	/* Prepare to power off the system */
@@ -1013,6 +1270,7 @@ static void acpi_power_off(void)
 	/* acpi_sleep_prepare(ACPI_STATE_S5) should have already been called */
 	printk(KERN_DEBUG "%s called\n", __func__);
 	local_irq_disable();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	acpi_enter_sleep_state(ACPI_STATE_S5);
 =======
@@ -1052,12 +1310,16 @@ static void __init acpi_gts_bfs_check(void)
 		printk(KERN_NOTICE PREFIX "If \"acpi.bfs=1\" improves resume, "
 			"please notify linux-acpi@vger.kernel.org\n");
 	}
+=======
+	acpi_enter_sleep_state(ACPI_STATE_S5);
+>>>>>>> refs/remotes/origin/master
 }
 
 int __init acpi_sleep_init(void)
 {
 	acpi_status status;
 	u8 type_a, type_b;
+<<<<<<< HEAD
 #ifdef CONFIG_SUSPEND
 	int i = 0;
 <<<<<<< HEAD
@@ -1066,10 +1328,16 @@ int __init acpi_sleep_init(void)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+	char supported[ACPI_S_STATE_COUNT * 3 + 1];
+	char *pos = supported;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	if (acpi_disabled)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	acpi_sleep_dmi_check();
@@ -1115,11 +1383,37 @@ int __init acpi_sleep_init(void)
 		pm_power_off = acpi_power_off;
 	}
 	printk(")\n");
+=======
+	acpi_sleep_dmi_check();
+
+	sleep_states[ACPI_STATE_S0] = 1;
+
+	acpi_sleep_suspend_setup();
+	acpi_sleep_hibernate_setup();
+
+	status = acpi_get_sleep_type_data(ACPI_STATE_S5, &type_a, &type_b);
+	if (ACPI_SUCCESS(status)) {
+		sleep_states[ACPI_STATE_S5] = 1;
+		pm_power_off_prepare = acpi_power_off_prepare;
+		pm_power_off = acpi_power_off;
+	}
+
+	supported[0] = 0;
+	for (i = 0; i < ACPI_S_STATE_COUNT; i++) {
+		if (sleep_states[i])
+			pos += sprintf(pos, " S%d", i);
+	}
+	pr_info(PREFIX "(supports%s)\n", supported);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Register the tts_notifier to reboot notifier list so that the _TTS
 	 * object can also be evaluated when the system enters S5.
 	 */
 	register_reboot_notifier(&tts_notifier);
+<<<<<<< HEAD
 	acpi_gts_bfs_check();
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

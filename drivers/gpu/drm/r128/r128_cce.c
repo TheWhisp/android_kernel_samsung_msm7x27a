@@ -33,6 +33,7 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -40,6 +41,12 @@
 #include "drmP.h"
 #include "drm.h"
 #include "r128_drm.h"
+=======
+#include <linux/module.h>
+
+#include <drm/drmP.h>
+#include <drm/r128_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "r128_drv.h"
 
 #define R128_FIFO_DEBUG		0
@@ -544,7 +551,11 @@ static int r128_do_init_cce(struct drm_device *dev, drm_r128_init_t *init)
 	dev_priv->ring.end = ((u32 *) dev_priv->cce_ring->handle
 			      + init->ring_size / sizeof(u32));
 	dev_priv->ring.size = init->ring_size;
+<<<<<<< HEAD
 	dev_priv->ring.size_l2qw = drm_order(init->ring_size / 8);
+=======
+	dev_priv->ring.size_l2qw = order_base_2(init->ring_size / 8);
+>>>>>>> refs/remotes/origin/master
 
 	dev_priv->ring.tail_mask = (dev_priv->ring.size / sizeof(u32)) - 1;
 

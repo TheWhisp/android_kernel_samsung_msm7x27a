@@ -3,14 +3,23 @@
  *
  *   Author: Ryan Wilson <hap9@epoch.ncsc.mil>
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/wait.h>
 #include <linux/bitops.h>
 #include <xen/events.h>
 #include <linux/sched.h>
 #include "pciback.h"
+<<<<<<< HEAD
 #include <linux/ratelimit.h>
 #include <linux/printk.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 int verbose_request;
 module_param(verbose_request, int, 0644);
@@ -146,7 +155,11 @@ int xen_pcibk_enable_msi(struct xen_pcibk_device *pdev,
 	status = pci_enable_msi(dev);
 
 	if (status) {
+<<<<<<< HEAD
 		pr_warn_ratelimited(DRV_NAME ": %s: error enabling MSI for guest %u: err %d\n",
+=======
+		pr_warn_ratelimited("%s: error enabling MSI for guest %u: err %d\n",
+>>>>>>> refs/remotes/origin/master
 				    pci_name(dev), pdev->xdev->otherend_id,
 				    status);
 		op->value = 0;
@@ -227,7 +240,11 @@ int xen_pcibk_enable_msix(struct xen_pcibk_device *pdev,
 						op->msix_entries[i].vector);
 		}
 	} else
+<<<<<<< HEAD
 		pr_warn_ratelimited(DRV_NAME ": %s: error enabling MSI-X for guest %u: err %d!\n",
+=======
+		pr_warn_ratelimited("%s: error enabling MSI-X for guest %u: err %d!\n",
+>>>>>>> refs/remotes/origin/master
 				    pci_name(dev), pdev->xdev->otherend_id,
 				    result);
 	kfree(entries);
@@ -374,7 +391,11 @@ static irqreturn_t xen_pcibk_guest_interrupt(int irq, void *dev_id)
 		dev_data->handled++;
 		if ((dev_data->handled % 1000) == 0) {
 			if (xen_test_irq_shared(irq)) {
+<<<<<<< HEAD
 				printk(KERN_INFO "%s IRQ line is not shared "
+=======
+				pr_info("%s IRQ line is not shared "
+>>>>>>> refs/remotes/origin/master
 					"with other domains. Turning ISR off\n",
 					 dev_data->irq_name);
 				dev_data->ack_intr = 0;

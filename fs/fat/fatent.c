@@ -186,9 +186,12 @@ static void fat16_ent_put(struct fat_entry *fatent, int new)
 
 static void fat32_ent_put(struct fat_entry *fatent, int new)
 {
+<<<<<<< HEAD
 	if (new == FAT_ENT_EOF)
 		new = EOF_FAT32;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(new & 0xf0000000);
 	new |= le32_to_cpu(*fatent->u.ent32_p) & ~0x0fffffff;
 	*fatent->u.ent32_p = cpu_to_le32(new);
@@ -203,15 +206,27 @@ static int fat12_ent_next(struct fat_entry *fatent)
 
 	fatent->entry++;
 	if (fatent->nr_bhs == 1) {
+<<<<<<< HEAD
 		WARN_ON(ent12_p[0] > (u8 *)(bhs[0]->b_data + (bhs[0]->b_size - 2)));
 		WARN_ON(ent12_p[1] > (u8 *)(bhs[0]->b_data + (bhs[0]->b_size - 1)));
+=======
+		WARN_ON(ent12_p[0] > (u8 *)(bhs[0]->b_data +
+							(bhs[0]->b_size - 2)));
+		WARN_ON(ent12_p[1] > (u8 *)(bhs[0]->b_data +
+							(bhs[0]->b_size - 1)));
+>>>>>>> refs/remotes/origin/master
 		if (nextp < (u8 *)(bhs[0]->b_data + (bhs[0]->b_size - 1))) {
 			ent12_p[0] = nextp - 1;
 			ent12_p[1] = nextp;
 			return 1;
 		}
 	} else {
+<<<<<<< HEAD
 		WARN_ON(ent12_p[0] != (u8 *)(bhs[0]->b_data + (bhs[0]->b_size - 1)));
+=======
+		WARN_ON(ent12_p[0] != (u8 *)(bhs[0]->b_data +
+							(bhs[0]->b_size - 1)));
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(ent12_p[1] != (u8 *)bhs[1]->b_data);
 		ent12_p[0] = nextp - 1;
 		ent12_p[1] = nextp;
@@ -308,6 +323,19 @@ void fat_ent_access_init(struct super_block *sb)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void mark_fsinfo_dirty(struct super_block *sb)
+{
+	struct msdos_sb_info *sbi = MSDOS_SB(sb);
+
+	if (sb->s_flags & MS_RDONLY || sbi->fat_bits != 32)
+		return;
+
+	__mark_inode_dirty(sbi->fsinfo_inode, I_DIRTY_SYNC);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int fat_ent_update_ptr(struct super_block *sb,
 				     struct fat_entry *fatent,
 				     int offset, sector_t blocknr)
@@ -498,7 +526,10 @@ int fat_alloc_clusters(struct inode *inode, int *cluster, int nr_cluster)
 				sbi->prev_free = entry;
 				if (sbi->free_clusters != -1)
 					sbi->free_clusters--;
+<<<<<<< HEAD
 				sb->s_dirt = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 
 				cluster[idx_clus] = entry;
 				idx_clus++;
@@ -520,11 +551,18 @@ int fat_alloc_clusters(struct inode *inode, int *cluster, int nr_cluster)
 	/* Couldn't allocate the free entries */
 	sbi->free_clusters = 0;
 	sbi->free_clus_valid = 1;
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 	err = -ENOSPC;
 
 out:
 	unlock_fat(sbi);
+<<<<<<< HEAD
+=======
+	mark_fsinfo_dirty(sb);
+>>>>>>> refs/remotes/origin/master
 	fatent_brelse(&fatent);
 	if (!err) {
 		if (inode_needs_sync(inode))
@@ -549,7 +587,11 @@ int fat_free_clusters(struct inode *inode, int cluster)
 	struct fat_entry fatent;
 	struct buffer_head *bhs[MAX_BUF_PER_PAGE];
 	int i, err, nr_bhs;
+<<<<<<< HEAD
 	int first_cl = cluster;
+=======
+	int first_cl = cluster, dirty_fsinfo = 0;
+>>>>>>> refs/remotes/origin/master
 
 	nr_bhs = 0;
 	fatent_init(&fatent);
@@ -587,7 +629,11 @@ int fat_free_clusters(struct inode *inode, int cluster)
 		ops->ent_put(&fatent, FAT_ENT_FREE);
 		if (sbi->free_clusters != -1) {
 			sbi->free_clusters++;
+<<<<<<< HEAD
 			sb->s_dirt = 1;
+=======
+			dirty_fsinfo = 1;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (nr_bhs + fatent.nr_bhs > MAX_BUF_PER_PAGE) {
@@ -617,10 +663,18 @@ error:
 	for (i = 0; i < nr_bhs; i++)
 		brelse(bhs[i]);
 	unlock_fat(sbi);
+<<<<<<< HEAD
 
 	return err;
 }
 
+=======
+	if (dirty_fsinfo)
+		mark_fsinfo_dirty(sb);
+
+	return err;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(fat_free_clusters);
 
 /* 128kb is the whole sectors for FAT12 and FAT16 */
@@ -677,7 +731,11 @@ int fat_count_free_clusters(struct super_block *sb)
 	}
 	sbi->free_clusters = free;
 	sbi->free_clus_valid = 1;
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+	mark_fsinfo_dirty(sb);
+>>>>>>> refs/remotes/origin/master
 	fatent_brelse(&fatent);
 out:
 	unlock_fat(sbi);

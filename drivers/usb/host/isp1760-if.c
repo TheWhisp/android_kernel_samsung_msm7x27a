@@ -12,9 +12,13 @@
 #include <linux/usb.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/usb/isp1760.h>
 #include <linux/usb/hcd.h>
@@ -22,10 +26,13 @@
 #include "isp1760-hcd.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_OF
 #include <linux/of.h>
 #include <linux/of_platform.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
 #include <linux/slab.h>
 #include <linux/of.h>
@@ -33,7 +40,10 @@
 #include <linux/of_address.h>
 #include <linux/of_irq.h>
 #include <linux/of_gpio.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_PCI
@@ -41,11 +51,14 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_OF
 static int of_isp1760_probe(struct platform_device *dev)
 {
 	struct usb_hcd *hcd;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
 struct isp1760 {
 	struct usb_hcd *hcd;
@@ -55,6 +68,7 @@ struct isp1760 {
 static int of_isp1760_probe(struct platform_device *dev)
 {
 	struct isp1760 *drvdata;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct device_node *dp = dev->dev.of_node;
 	struct resource *res;
@@ -71,6 +85,14 @@ static int of_isp1760_probe(struct platform_device *dev)
 	if (ret)
 		return -ENXIO;
 =======
+=======
+	struct device_node *dp = dev->dev.of_node;
+	struct resource *res;
+	struct resource memory;
+	int virq;
+	resource_size_t res_len;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	unsigned int devflags = 0;
 	enum of_gpio_flags gpio_flags;
 	u32 bus_width = 0;
@@ -84,33 +106,49 @@ static int of_isp1760_probe(struct platform_device *dev)
 		ret = -ENXIO;
 		goto free_data;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	res_len = resource_size(&memory);
 
 	res = request_mem_region(memory.start, res_len, dev_name(&dev->dev));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!res)
 		return -EBUSY;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!res) {
 		ret = -EBUSY;
 		goto free_data;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if (of_irq_map_one(dp, 0, &oirq)) {
+=======
+
+	virq = irq_of_parse_and_map(dp, 0);
+	if (!virq) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		goto release_reg;
 	}
 
+<<<<<<< HEAD
 	virq = irq_create_of_mapping(oirq.controller, oirq.specifier,
 			oirq.size);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (of_device_is_compatible(dp, "nxp,usb-isp1761"))
 		devflags |= ISP1760_FLAG_ISP1761;
 
 	/* Some systems wire up only 16 of the 32 data lines */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	prop = of_get_property(dp, "bus-width", NULL);
 	if (prop && *prop == 16)
@@ -118,6 +156,10 @@ static int of_isp1760_probe(struct platform_device *dev)
 	of_property_read_u32(dp, "bus-width", &bus_width);
 	if (bus_width == 16)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	of_property_read_u32(dp, "bus-width", &bus_width);
+	if (bus_width == 16)
+>>>>>>> refs/remotes/origin/master
 		devflags |= ISP1760_FLAG_BUS_WIDTH_16;
 
 	if (of_get_property(dp, "port1-otg", NULL) != NULL)
@@ -133,6 +175,7 @@ static int of_isp1760_probe(struct platform_device *dev)
 		devflags |= ISP1760_FLAG_DREQ_POL_HIGH;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hcd = isp1760_register(memory.start, res_len, virq,
 		IRQF_SHARED | IRQF_DISABLED, &dev->dev, dev_name(&dev->dev),
 		devflags);
@@ -147,6 +190,8 @@ static int of_isp1760_probe(struct platform_device *dev)
 release_reg:
 	release_mem_region(memory.start, res_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	drvdata->rst_gpio = of_get_gpio_flags(dp, 0, &gpio_flags);
 	if (gpio_is_valid(drvdata->rst_gpio)) {
 		ret = gpio_request(drvdata->rst_gpio, dev_name(&dev->dev));
@@ -171,7 +216,11 @@ release_reg:
 		goto free_gpio;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&dev->dev, drvdata);
+=======
+	platform_set_drvdata(dev, drvdata);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 
 free_gpio:
@@ -181,12 +230,16 @@ release_reg:
 	release_mem_region(memory.start, res_len);
 free_data:
 	kfree(drvdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int of_isp1760_remove(struct platform_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct usb_hcd *hcd = dev_get_drvdata(&dev->dev);
 
@@ -200,6 +253,9 @@ static int of_isp1760_remove(struct platform_device *dev)
 	struct isp1760 *drvdata = dev_get_drvdata(&dev->dev);
 
 	dev_set_drvdata(&dev->dev, NULL);
+=======
+	struct isp1760 *drvdata = platform_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	usb_remove_hcd(drvdata->hcd);
 	iounmap(drvdata->hcd->regs);
@@ -210,7 +266,10 @@ static int of_isp1760_remove(struct platform_device *dev)
 		gpio_free(drvdata->rst_gpio);
 
 	kfree(drvdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -237,7 +296,11 @@ static struct platform_driver isp1760_of_driver = {
 #endif
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinit isp1761_pci_probe(struct pci_dev *dev,
+=======
+static int isp1761_pci_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 		const struct pci_device_id *id)
 {
 	u8 latency, limit;
@@ -348,10 +411,14 @@ static int __devinit isp1761_pci_probe(struct pci_dev *dev,
 	dev->dev.dma_mask = NULL;
 	hcd = isp1760_register(pci_mem_phy0, memlength, dev->irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_SHARED | IRQF_DISABLED, &dev->dev, dev_name(&dev->dev),
 =======
 		IRQF_SHARED, -ENOENT, &dev->dev, dev_name(&dev->dev),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IRQF_SHARED, -ENOENT, &dev->dev, dev_name(&dev->dev),
+>>>>>>> refs/remotes/origin/master
 		devflags);
 	if (IS_ERR(hcd)) {
 		ret_status = -ENODEV;
@@ -415,13 +482,18 @@ static struct pci_driver isp1761_pci_driver = {
 };
 #endif
 
+<<<<<<< HEAD
 static int __devinit isp1760_plat_probe(struct platform_device *pdev)
+=======
+static int isp1760_plat_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	struct usb_hcd *hcd;
 	struct resource *mem_res;
 	struct resource *irq_res;
 	resource_size_t mem_size;
+<<<<<<< HEAD
 	struct isp1760_platform_data *priv = pdev->dev.platform_data;
 	unsigned int devflags = 0;
 <<<<<<< HEAD
@@ -429,6 +501,11 @@ static int __devinit isp1760_plat_probe(struct platform_device *pdev)
 =======
 	unsigned long irqflags = IRQF_SHARED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct isp1760_platform_data *priv = dev_get_platdata(&pdev->dev);
+	unsigned int devflags = 0;
+	unsigned long irqflags = IRQF_SHARED;
+>>>>>>> refs/remotes/origin/master
 
 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!mem_res) {
@@ -446,8 +523,15 @@ static int __devinit isp1760_plat_probe(struct platform_device *pdev)
 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!irq_res) {
 		pr_warning("isp1760: IRQ resource not available\n");
+<<<<<<< HEAD
 		return -ENODEV;
 	}
+=======
+		ret = -ENODEV;
+		goto cleanup;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	irqflags |= irq_res->flags & IRQF_TRIGGER_MASK;
 
 	if (priv) {
@@ -467,11 +551,19 @@ static int __devinit isp1760_plat_probe(struct platform_device *pdev)
 
 	hcd = isp1760_register(mem_res->start, mem_size, irq_res->start,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       irqflags, &pdev->dev, dev_name(&pdev->dev), devflags);
 =======
 			       irqflags, -ENOENT,
 			       &pdev->dev, dev_name(&pdev->dev), devflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       irqflags, -ENOENT,
+			       &pdev->dev, dev_name(&pdev->dev), devflags);
+
+	platform_set_drvdata(pdev, hcd);
+
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(hcd)) {
 		pr_warning("isp1760: Failed to register the HCD device\n");
 		ret = -ENODEV;
@@ -487,21 +579,40 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit isp1760_plat_remove(struct platform_device *pdev)
 {
 	struct resource *mem_res;
 	resource_size_t mem_size;
+=======
+static int isp1760_plat_remove(struct platform_device *pdev)
+{
+	struct resource *mem_res;
+	resource_size_t mem_size;
+	struct usb_hcd *hcd = platform_get_drvdata(pdev);
+
+	usb_remove_hcd(hcd);
+>>>>>>> refs/remotes/origin/master
 
 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	mem_size = resource_size(mem_res);
 	release_mem_region(mem_res->start, mem_size);
 
+<<<<<<< HEAD
+=======
+	usb_put_hcd(hcd);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver isp1760_plat_driver = {
 	.probe	= isp1760_plat_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(isp1760_plat_remove),
+=======
+	.remove	= isp1760_plat_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "isp1760",
 	},
@@ -517,10 +628,14 @@ static int __init isp1760_init(void)
 	if (!ret)
 		any_ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_OF
 =======
 #if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
+>>>>>>> refs/remotes/origin/master
 	ret = platform_driver_register(&isp1760_of_driver);
 	if (!ret)
 		any_ret = 0;
@@ -541,10 +656,14 @@ static void __exit isp1760_exit(void)
 {
 	platform_driver_unregister(&isp1760_plat_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_OF
 =======
 #if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_OF) && defined(CONFIG_OF_IRQ)
+>>>>>>> refs/remotes/origin/master
 	platform_driver_unregister(&isp1760_of_driver);
 #endif
 #ifdef CONFIG_PCI

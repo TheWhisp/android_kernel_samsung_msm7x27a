@@ -48,7 +48,10 @@ typedef void (*net_ev_handler) (void *usr_handle);
  * @usr_handle: argument to pass to routine when node fails
  * @nodesub_list: adjacent entries in list of subscriptions for the node
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct tipc_node_subscr {
 	struct tipc_node *node;
 	net_ev_handler handle_node_down;

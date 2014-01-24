@@ -5,7 +5,10 @@
  *  Copyright (c) 2000-2005 Vojtech Pavlik <vojtech@suse.cz>
  *  Copyright (c) 2005 Michael Haboustak <mike-@cinci.rr.com> for Concept2, Inc
  *  Copyright (c) 2006-2007 Jiri Kosina
+<<<<<<< HEAD
  *  Copyright (c) 2007 Paul Walmsley
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright (c) 2008 Jiri Slaby
  */
 
@@ -70,6 +73,7 @@ static struct hid_driver ch_driver = {
 	.report_fixup = ch_report_fixup,
 	.input_mapping = ch_input_mapping,
 };
+<<<<<<< HEAD
 
 static int __init ch_init(void)
 {
@@ -83,4 +87,8 @@ static void __exit ch_exit(void)
 
 module_init(ch_init);
 module_exit(ch_exit);
+=======
+module_hid_driver(ch_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

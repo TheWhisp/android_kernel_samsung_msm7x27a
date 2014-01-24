@@ -16,9 +16,13 @@
 #include "gigaset.h"
 #include <linux/isdnif.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SBUFSIZE	4096	/* sk_buff payload size */
 #define TRANSBUFSIZE	768	/* bytes per skb for transparent receive */
@@ -232,7 +236,11 @@ static int command_from_LL(isdn_ctrl *cntrl)
 			return -EINVAL;
 		}
 		bcs = cs->bcs + ch;
+<<<<<<< HEAD
 		if (!gigaset_get_channel(bcs)) {
+=======
+		if (gigaset_get_channel(bcs) < 0) {
+>>>>>>> refs/remotes/origin/master
 			dev_err(cs->dev, "ISDN_CMD_DIAL: channel not free\n");
 			return -EBUSY;
 		}
@@ -247,10 +255,14 @@ static int command_from_LL(isdn_ctrl *cntrl)
 		gigaset_new_rx_skb(bcs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		commands = kzalloc(AT_NUM*(sizeof *commands), GFP_ATOMIC);
 =======
 		commands = kzalloc(AT_NUM * (sizeof *commands), GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		commands = kzalloc(AT_NUM * (sizeof *commands), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (!commands) {
 			gigaset_free_channel(bcs);
 			dev_err(cs->dev, "ISDN_CMD_DIAL: out of memory\n");
@@ -269,10 +281,14 @@ static int command_from_LL(isdn_ctrl *cntrl)
 				goto oom;
 			snprintf(commands[AT_DIAL], l,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 "D%s\r", cntrl->parm.setup.phone+2);
 =======
 				 "D%s\r", cntrl->parm.setup.phone + 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "D%s\r", cntrl->parm.setup.phone + 2);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			commands[AT_TYPE] = kstrdup("^SCTP=1\r", GFP_ATOMIC);
 			if (!commands[AT_TYPE])
@@ -494,10 +510,14 @@ int gigaset_isdn_icall(struct at_state_t *at_state)
 	} else {
 		dev_warn(cs->dev, "RING ignored - unsupported BC %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     at_state->str_var[STR_ZBC]);
 =======
 			 at_state->str_var[STR_ZBC]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 at_state->str_var[STR_ZBC]);
+>>>>>>> refs/remotes/origin/master
 		return ICALL_IGNORE;
 	}
 	if (at_state->str_var[STR_NMBR]) {
@@ -534,10 +554,14 @@ int gigaset_isdn_icall(struct at_state_t *at_state)
 	case 3:	/* incomplete */
 		dev_warn(cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       "LL requested unsupported feature: Incomplete Number\n");
 =======
 			 "LL requested unsupported feature: Incomplete Number\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "LL requested unsupported feature: Incomplete Number\n");
+>>>>>>> refs/remotes/origin/master
 		return ICALL_IGNORE;
 	case 4:	/* proceeding */
 		/* Gigaset will send ALERTING anyway.
@@ -637,12 +661,17 @@ void gigaset_isdn_stop(struct cardstate *cs)
  * @cs:		device descriptor structure.
  * @isdnid:	device name.
  *
+<<<<<<< HEAD
  * Return value: 1 for success, 0 for failure
+=======
+ * Return value: 0 on success, error code < 0 on failure
+>>>>>>> refs/remotes/origin/master
  */
 int gigaset_isdn_regdev(struct cardstate *cs, const char *isdnid)
 {
 	isdn_if *iif;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pr_info("ISDN4Linux interface\n");
 
@@ -652,13 +681,23 @@ int gigaset_isdn_regdev(struct cardstate *cs, const char *isdnid)
 	if (!iif) {
 		pr_err("out of memory\n");
 		return 0;
+=======
+	iif = kmalloc(sizeof *iif, GFP_KERNEL);
+	if (!iif) {
+		pr_err("out of memory\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (snprintf(iif->id, sizeof iif->id, "%s_%u", isdnid, cs->minor_index)
 	    >= sizeof iif->id) {
 		pr_err("ID too long: %s\n", isdnid);
 		kfree(iif);
+<<<<<<< HEAD
 		return 0;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	iif->owner = THIS_MODULE;
@@ -680,13 +719,21 @@ int gigaset_isdn_regdev(struct cardstate *cs, const char *isdnid)
 	if (!register_isdn(iif)) {
 		pr_err("register_isdn failed\n");
 		kfree(iif);
+<<<<<<< HEAD
 		return 0;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cs->iif = iif;
 	cs->myid = iif->channels;		/* Set my device id */
 	cs->hw_hdr_len = HW_HDR_LEN;
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -707,9 +754,13 @@ void gigaset_isdn_unregdev(struct cardstate *cs)
 void gigaset_isdn_regdrv(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pr_info("ISDN4Linux interface\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("ISDN4Linux interface\n");
+>>>>>>> refs/remotes/origin/master
 	/* nothing to do */
 }
 

@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/ptrace.h
  *
  *  S390 version
@@ -349,6 +350,24 @@ typedef struct
 } s390_compat_regs_high;
 
 #ifdef __KERNEL__
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999, 2000
+ *    Author(s): Denis Joseph Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com)
+ */
+#ifndef _S390_PTRACE_H
+#define _S390_PTRACE_H
+
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+
+#define PSW_KERNEL_BITS	(PSW_DEFAULT_KEY | PSW_MASK_BASE | PSW_ASC_HOME | \
+			 PSW_MASK_EA | PSW_MASK_BA)
+#define PSW_USER_BITS	(PSW_MASK_DAT | PSW_MASK_IO | PSW_MASK_EXT | \
+			 PSW_DEFAULT_KEY | PSW_MASK_BASE | PSW_MASK_MCHECK | \
+			 PSW_MASK_PSTATE | PSW_ASC_PRIMARY)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The pt_regs struct defines the way the registers are stored on
@@ -361,12 +380,18 @@ struct pt_regs
 	unsigned long gprs[NUM_GPRS];
 	unsigned long orig_gpr2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned short ilc;
 	unsigned short svcnr;
 =======
 	unsigned int int_code;
 	unsigned long int_parm_long;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int int_code;
+	unsigned int int_parm;
+	unsigned long int_parm_long;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -402,12 +427,17 @@ struct per_struct_kernel {
 	unsigned char access_id;	/* PER trap access identification */
 };
 
+<<<<<<< HEAD
 #define PER_EVENT_MASK			0xE9000000UL
+=======
+#define PER_EVENT_MASK			0xEB000000UL
+>>>>>>> refs/remotes/origin/master
 
 #define PER_EVENT_BRANCH		0x80000000UL
 #define PER_EVENT_IFETCH		0x40000000UL
 #define PER_EVENT_STORE			0x20000000UL
 #define PER_EVENT_STORE_REAL		0x08000000UL
+<<<<<<< HEAD
 #define PER_EVENT_NULLIFICATION		0x01000000UL
 
 #define PER_CONTROL_MASK		0x00a00000UL
@@ -577,23 +607,40 @@ struct user_regs_struct
 };
 
 #ifdef __KERNEL__
+=======
+#define PER_EVENT_TRANSACTION_END	0x02000000UL
+#define PER_EVENT_NULLIFICATION		0x01000000UL
+
+#define PER_CONTROL_MASK		0x00e00000UL
+
+#define PER_CONTROL_BRANCH_ADDRESS	0x00800000UL
+#define PER_CONTROL_SUSPENSION		0x00400000UL
+#define PER_CONTROL_ALTERATION		0x00200000UL
+
+>>>>>>> refs/remotes/origin/master
 /*
  * These are defined as per linux/ptrace.h, which see.
  */
 #define arch_has_single_step()	(1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs * regs);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define user_mode(regs) (((regs)->psw.mask & PSW_MASK_PSTATE) != 0)
 #define instruction_pointer(regs) ((regs)->psw.addr & PSW_ADDR_INSN)
 #define user_stack_pointer(regs)((regs)->gprs[15])
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define regs_return_value(regs)((regs)->gprs[2])
 #define profile_pc(regs) instruction_pointer(regs)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define profile_pc(regs) instruction_pointer(regs)
 
 static inline long regs_return_value(struct pt_regs *regs)
@@ -601,7 +648,10 @@ static inline long regs_return_value(struct pt_regs *regs)
 	return regs->gprs[2];
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int regs_query_register_offset(const char *name);
 const char *regs_query_register_name(unsigned int offset);
 unsigned long regs_get_register(struct pt_regs *regs, unsigned int offset);
@@ -612,7 +662,11 @@ static inline unsigned long kernel_stack_pointer(struct pt_regs *regs)
 	return regs->gprs[15] & PSW_ADDR_INSN;
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 #endif /* __ASSEMBLY__ */
 
+=======
+#endif /* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _S390_PTRACE_H */

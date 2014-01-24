@@ -10,6 +10,7 @@
 #define _WM2000_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct wm2000_setup_data {
 	unsigned short i2c_address;
 	int mclk_div;   /* Set to a non-zero value if MCLK_DIV_2 required */
@@ -20,6 +21,12 @@ extern int wm2000_add_controls(struct snd_soc_codec *codec);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #define WM2000_REG_SYS_START	    0x8000
+=======
+#define WM2000_REG_SYS_START	    0x8000
+#define WM2000_REG_ANC_GAIN_CTRL    0x8fa2
+#define WM2000_REG_MSE_TH2          0x8fdf
+#define WM2000_REG_MSE_TH1          0x8fe0
+>>>>>>> refs/remotes/origin/master
 #define WM2000_REG_SPEECH_CLARITY   0x8fef
 #define WM2000_REG_SYS_WATCHDOG     0x8ff6
 #define WM2000_REG_ANA_VMID_PD_TIME 0x8ff7
@@ -37,6 +44,11 @@ extern int wm2000_add_controls(struct snd_soc_codec *codec);
 #define WM2000_REG_SYS_CTL2         0xf004
 #define WM2000_REG_ANC_STAT         0xf005
 #define WM2000_REG_IF_CTL           0xf006
+<<<<<<< HEAD
+=======
+#define WM2000_REG_ANA_MIC_CTL      0xf028
+#define WM2000_REG_SPK_CTL          0xf034
+>>>>>>> refs/remotes/origin/master
 
 /* SPEECH_CLARITY */
 #define WM2000_SPEECH_CLARITY   0x01

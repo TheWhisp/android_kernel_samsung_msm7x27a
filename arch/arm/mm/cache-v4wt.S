@@ -125,6 +125,10 @@ ENTRY(v4wt_coherent_user_range)
 	add	r0, r0, #CACHE_DLINESIZE
 	cmp	r0, r1
 	blo	1b
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -154,15 +158,20 @@ ENTRY(v4wt_flush_kern_dcache_area)
  *	- end	 - virtual end address
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(v4wt_dma_inv_range)
 =======
 v4wt_dma_inv_range:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+v4wt_dma_inv_range:
+>>>>>>> refs/remotes/origin/master
 	bic	r0, r0, #CACHE_DLINESIZE - 1
 1:	mcr	p15, 0, r0, c7, c6, 1		@ invalidate D entry
 	add	r0, r0, #CACHE_DLINESIZE
 	cmp	r0, r1
 	blo	1b
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* FALLTHROUGH */
 
@@ -177,6 +186,8 @@ v4wt_dma_inv_range:
 ENTRY(v4wt_dma_clean_range)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -213,6 +224,7 @@ ENTRY(v4wt_dma_map_area)
 ENDPROC(v4wt_dma_unmap_area)
 ENDPROC(v4wt_dma_map_area)
 
+<<<<<<< HEAD
 	__INITDATA
 
 <<<<<<< HEAD
@@ -235,3 +247,12 @@ ENTRY(v4wt_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions v4wt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	v4wt_flush_kern_cache_louis
+	.equ	v4wt_flush_kern_cache_louis, v4wt_flush_kern_cache_all
+
+	__INITDATA
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions v4wt
+>>>>>>> refs/remotes/origin/master

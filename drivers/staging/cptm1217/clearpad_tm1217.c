@@ -396,8 +396,13 @@ static int cp_tm1217_setup_gpio_irq(struct cp_tm1217_device *ts)
 
 	retval = gpio_to_irq(ts->gpio);
 	if (retval < 0) {
+<<<<<<< HEAD
 		dev_err(ts->dev, "cp_tm1217: GPIO to IRQ failedi,"
 		" error %d\n", retval);
+=======
+		dev_err(ts->dev,
+			"cp_tm1217: GPIO to IRQ failed, error %d\n", retval);
+>>>>>>> refs/remotes/origin/master
 		gpio_free(ts->gpio);
 	}
 	dev_dbg(ts->dev,
@@ -421,11 +426,16 @@ static int cp_tm1217_probe(struct i2c_client *client,
 	pdata = client->dev.platform_data;
 
 	ts = kzalloc(sizeof(struct cp_tm1217_device), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!ts) {
 		dev_err(&client->dev,
 			"cp_tm1217: Private Device Struct alloc failed\n");
 		return -ENOMEM;
 	}
+=======
+	if (!ts)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	ts->client = client;
 	ts->dev = &client->dev;
@@ -460,8 +470,11 @@ static int cp_tm1217_probe(struct i2c_client *client,
 	for (i = 0; i < TOUCH_SUPPORTED; i++) {
 		input_dev = input_allocate_device();
 		if (input_dev == NULL) {
+<<<<<<< HEAD
 			dev_err(ts->dev,
 				"cp_tm1217:Input Device Struct alloc failed\n");
+=======
+>>>>>>> refs/remotes/origin/master
 			retval = -ENOMEM;
 			goto fail;
 		}
@@ -550,22 +563,38 @@ fail_gpio:
 fail:
 	/* Clean up before returning failure */
 	for (i = 0; i < TOUCH_SUPPORTED; i++) {
+<<<<<<< HEAD
 		if (ts->cp_input_info[i].input) {
 			input_unregister_device(ts->cp_input_info[i].input);
 			input_free_device(ts->cp_input_info[i].input);
 		}
+=======
+		if (ts->cp_input_info[i].input)
+			input_unregister_device(ts->cp_input_info[i].input);
+>>>>>>> refs/remotes/origin/master
 	}
 	kfree(ts);
 	return retval;
 
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+
+>>>>>>> refs/remotes/origin/master
 /*
  * cp_tm1217 suspend
  *
  */
+<<<<<<< HEAD
 static int cp_tm1217_suspend(struct i2c_client *client, pm_message_t mesg)
 {
+=======
+static int cp_tm1217_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/master
 	struct cp_tm1217_device *ts = i2c_get_clientdata(client);
 	u8 req[2];
 	int retval;
@@ -586,8 +615,14 @@ static int cp_tm1217_suspend(struct i2c_client *client, pm_message_t mesg)
  * cp_tm1217_resume
  *
  */
+<<<<<<< HEAD
 static int cp_tm1217_resume(struct i2c_client *client)
 {
+=======
+static int cp_tm1217_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/master
 	struct cp_tm1217_device *ts = i2c_get_clientdata(client);
 	u8 req[2];
 	int retval;
@@ -621,6 +656,14 @@ static int cp_tm1217_resume(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(cp_tm1217_pm_ops, cp_tm1217_suspend,
+	cp_tm1217_resume);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * cp_tm1217_remove
  *
@@ -650,10 +693,15 @@ static struct i2c_driver cp_tm1217_driver = {
 	.driver = {
 		.owner	= THIS_MODULE,
 		.name	= CPTM1217_DRIVER_NAME,
+<<<<<<< HEAD
+=======
+		.pm	= &cp_tm1217_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 	.id_table	= cp_tm1217_idtable,
 	.probe		= cp_tm1217_probe,
 	.remove		= cp_tm1217_remove,
+<<<<<<< HEAD
 	.suspend    = cp_tm1217_suspend,
 	.resume     = cp_tm1217_resume,
 };
@@ -670,6 +718,11 @@ static void __exit clearpad_tm1217_exit(void)
 
 module_init(clearpad_tm1217_init);
 module_exit(clearpad_tm1217_exit);
+=======
+};
+
+module_i2c_driver(cp_tm1217_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ramesh Agarwal <ramesh.agarwal@intel.com>");
 MODULE_DESCRIPTION("Synaptics TM1217 TouchScreen Driver");

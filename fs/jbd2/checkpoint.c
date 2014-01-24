@@ -89,9 +89,12 @@ static inline void __buffer_relink_io(struct journal_head *jh)
  *
  * Requires j_list_lock
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Called under jbd_lock_bh_state(jh2bh(jh)), and drops it
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int __try_to_free_cp_buf(struct journal_head *jh)
 {
@@ -99,10 +102,14 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
 	struct buffer_head *bh = jh2bh(jh);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (jh->b_jlist == BJ_None && !buffer_locked(bh) &&
 =======
 	if (jh->b_transaction == NULL && !buffer_locked(bh) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (jh->b_transaction == NULL && !buffer_locked(bh) &&
+>>>>>>> refs/remotes/origin/master
 	    !buffer_dirty(bh) && !buffer_write_io_error(bh)) {
 		/*
 		 * Get our reference so that bh cannot be freed before
@@ -111,6 +118,7 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
 		get_bh(bh);
 		JBUFFER_TRACE(jh, "remove from checkpoint list");
 		ret = __jbd2_journal_remove_checkpoint(jh) + 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		jbd_unlock_bh_state(bh);
 		BUFFER_TRACE(bh, "release");
@@ -121,6 +129,10 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
 		BUFFER_TRACE(bh, "release");
 		__brelse(bh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BUFFER_TRACE(bh, "release");
+		__brelse(bh);
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -136,8 +148,13 @@ void __jbd2_log_wait_for_space(journal_t *journal)
 	int nblocks, space_left;
 	/* assert_spin_locked(&journal->j_state_lock); */
 
+<<<<<<< HEAD
 	nblocks = jbd_space_needed(journal);
 	while (__jbd2_log_space_left(journal) < nblocks) {
+=======
+	nblocks = jbd2_space_needed(journal);
+	while (jbd2_log_space_left(journal) < nblocks) {
+>>>>>>> refs/remotes/origin/master
 		if (journal->j_flags & JBD2_ABORT)
 			return;
 		write_unlock(&journal->j_state_lock);
@@ -156,8 +173,13 @@ void __jbd2_log_wait_for_space(journal_t *journal)
 		 */
 		write_lock(&journal->j_state_lock);
 		spin_lock(&journal->j_list_lock);
+<<<<<<< HEAD
 		nblocks = jbd_space_needed(journal);
 		space_left = __jbd2_log_space_left(journal);
+=======
+		nblocks = jbd2_space_needed(journal);
+		space_left = jbd2_log_space_left(journal);
+>>>>>>> refs/remotes/origin/master
 		if (space_left < nblocks) {
 			int chkpt = journal->j_checkpoint_transactions != NULL;
 			tid_t tid = 0;
@@ -172,7 +194,19 @@ void __jbd2_log_wait_for_space(journal_t *journal)
 				/* We were able to recover space; yay! */
 				;
 			} else if (tid) {
+<<<<<<< HEAD
 				jbd2_log_wait_commit(journal, tid);
+=======
+				/*
+				 * jbd2_journal_commit_transaction() may want
+				 * to take the checkpoint_mutex if JBD2_FLUSHED
+				 * is set.  So we need to temporarily drop it.
+				 */
+				mutex_unlock(&journal->j_checkpoint_mutex);
+				jbd2_log_wait_commit(journal, tid);
+				write_lock(&journal->j_state_lock);
+				continue;
+>>>>>>> refs/remotes/origin/master
 			} else {
 				printk(KERN_ERR "%s: needed %d blocks and "
 				       "only had %d space available\n",
@@ -193,6 +227,7 @@ void __jbd2_log_wait_for_space(journal_t *journal)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * We were unable to perform jbd_trylock_bh_state() inside j_list_lock.
  * The caller must restart a list walk.  Wait for someone else to run
  * jbd_unlock_bh_state().
@@ -210,6 +245,8 @@ static void jbd_sync_bh(journal_t *journal, struct buffer_head *bh)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Clean up transaction's list of buffers submitted for io.
  * We wait for any pending IO to complete and remove any clean
  * buffers. Note that we take the buffers in the opposite ordering
@@ -238,6 +275,7 @@ restart:
 		jh = transaction->t_checkpoint_io_list;
 		bh = jh2bh(jh);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!jbd_trylock_bh_state(bh)) {
 			jbd_sync_bh(journal, bh);
 			spin_lock(&journal->j_list_lock);
@@ -252,6 +290,11 @@ restart:
 		if (buffer_locked(bh)) {
 			spin_unlock(&journal->j_list_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		get_bh(bh);
+		if (buffer_locked(bh)) {
+			spin_unlock(&journal->j_list_lock);
+>>>>>>> refs/remotes/origin/master
 			wait_on_buffer(bh);
 			/* the journal_head may have gone by now */
 			BUFFER_TRACE(bh, "brelse");
@@ -268,9 +311,12 @@ restart:
 		 */
 		released = __jbd2_journal_remove_checkpoint(jh);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		jbd_unlock_bh_state(bh);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__brelse(bh);
 	}
 
@@ -282,6 +328,7 @@ __flush_batch(journal_t *journal, int *batch_count)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	for (i = 0; i < *batch_count; i++)
 		write_dirty_buffer(journal->j_chkpt_bhs[i], WRITE);
@@ -290,6 +337,8 @@ __flush_batch(journal_t *journal, int *batch_count)
 		struct buffer_head *bh = journal->j_chkpt_bhs[i];
 		clear_buffer_jwrite(bh);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct blk_plug plug;
 
 	blk_start_plug(&plug);
@@ -299,7 +348,10 @@ __flush_batch(journal_t *journal, int *batch_count)
 
 	for (i = 0; i < *batch_count; i++) {
 		struct buffer_head *bh = journal->j_chkpt_bhs[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		BUFFER_TRACE(bh, "brelse");
 		__brelse(bh);
 	}
@@ -315,9 +367,12 @@ __flush_batch(journal_t *journal, int *batch_count)
  *
  * Called with j_list_lock held and drops it if 1 is returned
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Called under jbd_lock_bh_state(jh2bh(jh)), and drops it
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int __process_buffer(journal_t *journal, struct journal_head *jh,
 			    int *batch_count, transaction_t *transaction)
@@ -329,9 +384,12 @@ static int __process_buffer(journal_t *journal, struct journal_head *jh,
 		get_bh(bh);
 		spin_unlock(&journal->j_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		jbd_unlock_bh_state(bh);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		wait_on_buffer(bh);
 		/* the journal_head may have gone by now */
 		BUFFER_TRACE(bh, "brelse");
@@ -344,9 +402,12 @@ static int __process_buffer(journal_t *journal, struct journal_head *jh,
 		transaction->t_chp_stats.cs_forced_to_close++;
 		spin_unlock(&journal->j_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		jbd_unlock_bh_state(bh);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(journal->j_flags & JBD2_UNMOUNT))
 			/*
 			 * The journal thread is dead; so starting and
@@ -366,6 +427,7 @@ static int __process_buffer(journal_t *journal, struct journal_head *jh,
 			ret = -EIO;
 		get_bh(bh);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		J_ASSERT_JH(jh, !buffer_jbddirty(bh));
 		BUFFER_TRACE(bh, "remove from checkpoint");
 		__jbd2_journal_remove_checkpoint(jh);
@@ -376,6 +438,11 @@ static int __process_buffer(journal_t *journal, struct journal_head *jh,
 		__jbd2_journal_remove_checkpoint(jh);
 		spin_unlock(&journal->j_list_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BUFFER_TRACE(bh, "remove from checkpoint");
+		__jbd2_journal_remove_checkpoint(jh);
+		spin_unlock(&journal->j_list_lock);
+>>>>>>> refs/remotes/origin/master
 		__brelse(bh);
 	} else {
 		/*
@@ -389,6 +456,7 @@ static int __process_buffer(journal_t *journal, struct journal_head *jh,
 		get_bh(bh);
 		J_ASSERT_BH(bh, !buffer_jwrite(bh));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		set_buffer_jwrite(bh);
 		journal->j_chkpt_bhs[*batch_count] = bh;
 		__buffer_relink_io(jh);
@@ -397,6 +465,10 @@ static int __process_buffer(journal_t *journal, struct journal_head *jh,
 		journal->j_chkpt_bhs[*batch_count] = bh;
 		__buffer_relink_io(jh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		journal->j_chkpt_bhs[*batch_count] = bh;
+		__buffer_relink_io(jh);
+>>>>>>> refs/remotes/origin/master
 		transaction->t_chp_stats.cs_written++;
 		(*batch_count)++;
 		if (*batch_count == JBD2_NR_BATCH) {
@@ -461,6 +533,7 @@ restart:
 
 		while (!retry && transaction->t_checkpoint_list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct buffer_head *bh;
 
 			jh = transaction->t_checkpoint_list;
@@ -473,6 +546,9 @@ restart:
 =======
 			jh = transaction->t_checkpoint_list;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			jh = transaction->t_checkpoint_list;
+>>>>>>> refs/remotes/origin/master
 			retry = __process_buffer(journal, jh, &batch_count,
 						 transaction);
 			if (retry < 0 && !result)
@@ -536,6 +612,7 @@ out:
 int jbd2_cleanup_journal_tail(journal_t *journal)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	transaction_t * transaction;
 	tid_t		first_tid;
 	unsigned long	blocknr, freed;
@@ -543,10 +620,15 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
 	tid_t		first_tid;
 	unsigned long	blocknr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tid_t		first_tid;
+	unsigned long	blocknr;
+>>>>>>> refs/remotes/origin/master
 
 	if (is_journal_aborted(journal))
 		return 1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* OK, work out the oldest transaction remaining in the log, and
 	 * the log block it starts at.
@@ -615,6 +697,8 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
 	if (!(journal->j_flags & JBD2_ABORT))
 		jbd2_journal_update_superblock(journal, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!jbd2_journal_get_log_tail(journal, &first_tid, &blocknr))
 		return 1;
 	J_ASSERT(blocknr != 0);
@@ -631,7 +715,10 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
 		blkdev_issue_flush(journal->j_fs_dev, GFP_KERNEL, NULL);
 
 	__jbd2_update_log_tail(journal, first_tid, blocknr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -647,10 +734,14 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
  * Called with the journal locked.
  * Called with j_list_lock held.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Returns number of bufers reaped (for debug)
 =======
  * Returns number of buffers reaped (for debug)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns number of buffers reaped (for debug)
+>>>>>>> refs/remotes/origin/master
  */
 
 static int journal_clean_one_cp_list(struct journal_head *jh, int *released)
@@ -668,6 +759,7 @@ static int journal_clean_one_cp_list(struct journal_head *jh, int *released)
 		jh = next_jh;
 		next_jh = jh->b_cpnext;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Use trylock because of the ranking */
 		if (jbd_trylock_bh_state(jh2bh(jh))) {
 			ret = __try_to_free_cp_buf(jh);
@@ -678,13 +770,18 @@ static int journal_clean_one_cp_list(struct journal_head *jh, int *released)
 					return freed;
 				}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = __try_to_free_cp_buf(jh);
 		if (ret) {
 			freed++;
 			if (ret == 2) {
 				*released = 1;
 				return freed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		/*
@@ -768,12 +865,16 @@ out:
  *
  * This function is called with j_list_lock held.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This function is called with jbd_lock_bh_state(jh2bh(jh))
  */
 
 =======
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+>>>>>>> refs/remotes/origin/master
 int __jbd2_journal_remove_checkpoint(struct journal_head *jh)
 {
 	struct transaction_chp_stats_s *stats;
@@ -821,6 +922,7 @@ int __jbd2_journal_remove_checkpoint(struct journal_head *jh)
 
 	__jbd2_journal_drop_transaction(journal, transaction);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(transaction);
 =======
 	jbd2_journal_free_transaction(transaction);
@@ -829,6 +931,9 @@ int __jbd2_journal_remove_checkpoint(struct journal_head *jh)
 	/* Just in case anybody was waiting for more transactions to be
            checkpointed... */
 	wake_up(&journal->j_wait_logspace);
+=======
+	jbd2_journal_free_transaction(transaction);
+>>>>>>> refs/remotes/origin/master
 	ret = 1;
 out:
 	return ret;
@@ -890,9 +995,13 @@ void __jbd2_journal_drop_transaction(journal_t *journal, transaction_t *transact
 	J_ASSERT(transaction->t_state == T_FINISHED);
 	J_ASSERT(transaction->t_buffers == NULL);
 	J_ASSERT(transaction->t_forget == NULL);
+<<<<<<< HEAD
 	J_ASSERT(transaction->t_iobuf_list == NULL);
 	J_ASSERT(transaction->t_shadow_list == NULL);
 	J_ASSERT(transaction->t_log_list == NULL);
+=======
+	J_ASSERT(transaction->t_shadow_list == NULL);
+>>>>>>> refs/remotes/origin/master
 	J_ASSERT(transaction->t_checkpoint_list == NULL);
 	J_ASSERT(transaction->t_checkpoint_io_list == NULL);
 	J_ASSERT(atomic_read(&transaction->t_updates) == 0);
@@ -900,9 +1009,14 @@ void __jbd2_journal_drop_transaction(journal_t *journal, transaction_t *transact
 	J_ASSERT(journal->j_running_transaction != transaction);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_jbd2_drop_transaction(journal, transaction);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_jbd2_drop_transaction(journal, transaction);
+
+>>>>>>> refs/remotes/origin/master
 	jbd_debug(1, "Dropping transaction %d, all done\n", transaction->t_tid);
 }

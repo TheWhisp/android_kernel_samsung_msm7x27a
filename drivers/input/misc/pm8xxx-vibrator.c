@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -178,7 +182,11 @@ static int pm8xxx_vib_play_effect(struct input_dev *dev, void *data,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pm8xxx_vib_probe(struct platform_device *pdev)
+=======
+static int pm8xxx_vib_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 
 {
 	struct pm8xxx_vib *vib;
@@ -242,15 +250,22 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit pm8xxx_vib_remove(struct platform_device *pdev)
+=======
+static int pm8xxx_vib_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pm8xxx_vib *vib = platform_get_drvdata(pdev);
 
 	input_unregister_device(vib->vib_input_dev);
 	kfree(vib);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -270,7 +285,11 @@ static SIMPLE_DEV_PM_OPS(pm8xxx_vib_pm_ops, pm8xxx_vib_suspend, NULL);
 
 static struct platform_driver pm8xxx_vib_driver = {
 	.probe		= pm8xxx_vib_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pm8xxx_vib_remove),
+=======
+	.remove		= pm8xxx_vib_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "pm8xxx-vib",
 		.owner	= THIS_MODULE,

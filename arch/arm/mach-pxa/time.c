@@ -17,19 +17,28 @@
 #include <linux/interrupt.h>
 #include <linux/clockchips.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sched.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched_clock.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/div64.h>
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
+<<<<<<< HEAD
 #include <asm/sched_clock.h>
 #include <mach/regs-ost.h>
 <<<<<<< HEAD
 =======
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/regs-ost.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is PXA's sched_clock implementation. This has a resolution
@@ -39,6 +48,7 @@
  * long as there is always less than 582 seconds between successive
  * calls to sched_clock() which should always be the case in practice.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static DEFINE_CLOCK_DATA(cd);
 
@@ -58,6 +68,12 @@ static u32 notrace pxa_read_sched_clock(void)
 {
 	return OSCR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static u32 notrace pxa_read_sched_clock(void)
+{
+	return readl_relaxed(OSCR);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -69,8 +85,13 @@ pxa_ost0_interrupt(int irq, void *dev_id)
 	struct clock_event_device *c = dev_id;
 
 	/* Disarm the compare/match, signal the event. */
+<<<<<<< HEAD
 	OIER &= ~OIER_E0;
 	OSSR = OSSR_M0;
+=======
+	writel_relaxed(readl_relaxed(OIER) & ~OIER_E0, OIER);
+	writel_relaxed(OSSR_M0, OSSR);
+>>>>>>> refs/remotes/origin/master
 	c->event_handler(c);
 
 	return IRQ_HANDLED;
@@ -81,10 +102,17 @@ pxa_osmr0_set_next_event(unsigned long delta, struct clock_event_device *dev)
 {
 	unsigned long next, oscr;
 
+<<<<<<< HEAD
 	OIER |= OIER_E0;
 	next = OSCR + delta;
 	OSMR0 = next;
 	oscr = OSCR;
+=======
+	writel_relaxed(readl_relaxed(OIER) | OIER_E0, OIER);
+	next = readl_relaxed(OSCR) + delta;
+	writel_relaxed(next, OSMR0);
+	oscr = readl_relaxed(OSCR);
+>>>>>>> refs/remotes/origin/master
 
 	return (signed)(next - oscr) <= MIN_OSCR_DELTA ? -ETIME : 0;
 }
@@ -94,15 +122,25 @@ pxa_osmr0_set_mode(enum clock_event_mode mode, struct clock_event_device *dev)
 {
 	switch (mode) {
 	case CLOCK_EVT_MODE_ONESHOT:
+<<<<<<< HEAD
 		OIER &= ~OIER_E0;
 		OSSR = OSSR_M0;
+=======
+		writel_relaxed(readl_relaxed(OIER) & ~OIER_E0, OIER);
+		writel_relaxed(OSSR_M0, OSSR);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case CLOCK_EVT_MODE_UNUSED:
 	case CLOCK_EVT_MODE_SHUTDOWN:
 		/* initializing, released, or preparing for suspend */
+<<<<<<< HEAD
 		OIER &= ~OIER_E0;
 		OSSR = OSSR_M0;
+=======
+		writel_relaxed(readl_relaxed(OIER) & ~OIER_E0, OIER);
+		writel_relaxed(OSSR_M0, OSSR);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case CLOCK_EVT_MODE_RESUME:
@@ -111,12 +149,56 @@ pxa_osmr0_set_mode(enum clock_event_mode mode, struct clock_event_device *dev)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+static unsigned long osmr[4], oier, oscr;
+
+static void pxa_timer_suspend(struct clock_event_device *cedev)
+{
+	osmr[0] = readl_relaxed(OSMR0);
+	osmr[1] = readl_relaxed(OSMR1);
+	osmr[2] = readl_relaxed(OSMR2);
+	osmr[3] = readl_relaxed(OSMR3);
+	oier = readl_relaxed(OIER);
+	oscr = readl_relaxed(OSCR);
+}
+
+static void pxa_timer_resume(struct clock_event_device *cedev)
+{
+	/*
+	 * Ensure that we have at least MIN_OSCR_DELTA between match
+	 * register 0 and the OSCR, to guarantee that we will receive
+	 * the one-shot timer interrupt.  We adjust OSMR0 in preference
+	 * to OSCR to guarantee that OSCR is monotonically incrementing.
+	 */
+	if (osmr[0] - oscr < MIN_OSCR_DELTA)
+		osmr[0] += MIN_OSCR_DELTA;
+
+	writel_relaxed(osmr[0], OSMR0);
+	writel_relaxed(osmr[1], OSMR1);
+	writel_relaxed(osmr[2], OSMR2);
+	writel_relaxed(osmr[3], OSMR3);
+	writel_relaxed(oier, OIER);
+	writel_relaxed(oscr, OSCR);
+}
+#else
+#define pxa_timer_suspend NULL
+#define pxa_timer_resume NULL
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct clock_event_device ckevt_pxa_osmr0 = {
 	.name		= "osmr0",
 	.features	= CLOCK_EVT_FEAT_ONESHOT,
 	.rating		= 200,
 	.set_next_event	= pxa_osmr0_set_next_event,
 	.set_mode	= pxa_osmr0_set_mode,
+<<<<<<< HEAD
+=======
+	.suspend	= pxa_timer_suspend,
+	.resume		= pxa_timer_resume,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct irqaction pxa_ost0_irq = {
@@ -126,6 +208,7 @@ static struct irqaction pxa_ost0_irq = {
 	.dev_id		= &ckevt_pxa_osmr0,
 };
 
+<<<<<<< HEAD
 static void __init pxa_timer_init(void)
 {
 	unsigned long clock_tick_rate = get_clock_tick_rate();
@@ -144,10 +227,22 @@ static void __init pxa_timer_init(void)
 		clockevent_delta2ns(0x7fffffff, &ckevt_pxa_osmr0);
 	ckevt_pxa_osmr0.min_delta_ns =
 		clockevent_delta2ns(MIN_OSCR_DELTA * 2, &ckevt_pxa_osmr0) + 1;
+=======
+void __init pxa_timer_init(void)
+{
+	unsigned long clock_tick_rate = get_clock_tick_rate();
+
+	writel_relaxed(0, OIER);
+	writel_relaxed(OSSR_M0 | OSSR_M1 | OSSR_M2 | OSSR_M3, OSSR);
+
+	setup_sched_clock(pxa_read_sched_clock, 32, clock_tick_rate);
+
+>>>>>>> refs/remotes/origin/master
 	ckevt_pxa_osmr0.cpumask = cpumask_of(0);
 
 	setup_irq(IRQ_OST0, &pxa_ost0_irq);
 
+<<<<<<< HEAD
 	clocksource_mmio_init(&OSCR, "oscr0", clock_tick_rate, 200, 32,
 		clocksource_mmio_readl_up);
 	clockevents_register_device(&ckevt_pxa_osmr0);
@@ -194,3 +289,10 @@ struct sys_timer pxa_timer = {
 	.suspend	= pxa_timer_suspend,
 	.resume		= pxa_timer_resume,
 };
+=======
+	clocksource_mmio_init(OSCR, "oscr0", clock_tick_rate, 200, 32,
+		clocksource_mmio_readl_up);
+	clockevents_config_and_register(&ckevt_pxa_osmr0, clock_tick_rate,
+		MIN_OSCR_DELTA * 2, 0x7fffffff);
+}
+>>>>>>> refs/remotes/origin/master

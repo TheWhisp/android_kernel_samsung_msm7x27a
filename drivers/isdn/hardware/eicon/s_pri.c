@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #include "platform.h"
@@ -61,6 +67,7 @@
 /*****************************************************************************/
 #define MAX_XLOG_SIZE  (64 * 1024)
 /* -------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
   Does return offset between ADAPTER->ram and real begin of memory
   ------------------------------------------------------------------------- */
@@ -226,6 +233,8 @@ void prepare_pri2_functions (PISDN_ADAPTER IoAdapter) {
  prepare_common_pri_functions (IoAdapter) ;
  diva_os_prepare_pri2_functions (IoAdapter);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Does return offset between ADAPTER->ram and real begin of memory
    ------------------------------------------------------------------------- */
 static dword pri_ram_offset(ADAPTER *a) {
@@ -389,6 +398,9 @@ void prepare_pri2_functions(PISDN_ADAPTER IoAdapter) {
 	IoAdapter->MemorySize = MP2_MEMORY_SIZE;
 	prepare_common_pri_functions(IoAdapter);
 	diva_os_prepare_pri2_functions(IoAdapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /* ------------------------------------------------------------------------- */

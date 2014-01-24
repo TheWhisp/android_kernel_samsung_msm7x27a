@@ -1,6 +1,12 @@
 /*
  * Connection tracking protocol helper module for SCTP.
  *
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2004 Kiran Kumar Immidi <immidi_kiran@yahoo.com>
+ * Copyright (c) 2004-2012 Patrick McHardy <kaber@trash.net>
+ *
+>>>>>>> refs/remotes/origin/master
  * SCTP is defined in RFC 2960. References to various sections in this code
  * are to this RFC.
  *
@@ -127,6 +133,20 @@ static const u8 sctp_conntracks[2][9][SCTP_CONNTRACK_MAX] = {
 	}
 };
 
+<<<<<<< HEAD
+=======
+static int sctp_net_id	__read_mostly;
+struct sctp_net {
+	struct nf_proto_net pn;
+	unsigned int timeouts[SCTP_CONNTRACK_MAX];
+};
+
+static inline struct sctp_net *sctp_pernet(struct net *net)
+{
+	return net_generic(net, sctp_net_id);
+}
+
+>>>>>>> refs/remotes/origin/master
 static bool sctp_pkt_to_tuple(const struct sk_buff *skb, unsigned int dataoff,
 			      struct nf_conntrack_tuple *tuple)
 {
@@ -280,6 +300,7 @@ static int sctp_new_state(enum ip_conntrack_dir dir,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static unsigned int *sctp_get_timeouts(struct net *net)
 {
@@ -287,6 +308,13 @@ static unsigned int *sctp_get_timeouts(struct net *net)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int *sctp_get_timeouts(struct net *net)
+{
+	return sctp_pernet(net)->timeouts;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Returns verdict for packet, or -NF_ACCEPT for invalid. */
 static int sctp_packet(struct nf_conn *ct,
 		       const struct sk_buff *skb,
@@ -294,11 +322,16 @@ static int sctp_packet(struct nf_conn *ct,
 		       enum ip_conntrack_info ctinfo,
 		       u_int8_t pf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       unsigned int hooknum)
 =======
 		       unsigned int hooknum,
 		       unsigned int *timeouts)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       unsigned int hooknum,
+		       unsigned int *timeouts)
+>>>>>>> refs/remotes/origin/master
 {
 	enum sctp_conntrack new_state, old_state;
 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
@@ -384,10 +417,14 @@ static int sctp_packet(struct nf_conn *ct,
 	spin_unlock_bh(&ct->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nf_ct_refresh_acct(ct, ctinfo, skb, sctp_timeouts[new_state]);
 =======
 	nf_ct_refresh_acct(ct, ctinfo, skb, timeouts[new_state]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nf_ct_refresh_acct(ct, ctinfo, skb, timeouts[new_state]);
+>>>>>>> refs/remotes/origin/master
 
 	if (old_state == SCTP_CONNTRACK_COOKIE_ECHOED &&
 	    dir == IP_CT_DIR_REPLY &&
@@ -408,10 +445,14 @@ out:
 /* Called when a new connection for this protocol found. */
 static bool sctp_new(struct nf_conn *ct, const struct sk_buff *skb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     unsigned int dataoff)
 =======
 		     unsigned int dataoff, unsigned int *timeouts)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     unsigned int dataoff, unsigned int *timeouts)
+>>>>>>> refs/remotes/origin/master
 {
 	enum sctp_conntrack new_state;
 	const struct sctphdr *sh;
@@ -483,10 +524,14 @@ static bool sctp_new(struct nf_conn *ct, const struct sk_buff *skb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
 =======
 #if IS_ENABLED(CONFIG_NF_CT_NETLINK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK)
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/nfnetlink_conntrack.h>
@@ -501,6 +546,7 @@ static int sctp_to_nlattr(struct sk_buff *skb, struct nlattr *nla,
 	if (!nest_parms)
 		goto nla_put_failure;
 
+<<<<<<< HEAD
 	NLA_PUT_U8(skb, CTA_PROTOINFO_SCTP_STATE, ct->proto.sctp.state);
 
 	NLA_PUT_BE32(skb,
@@ -510,6 +556,14 @@ static int sctp_to_nlattr(struct sk_buff *skb, struct nlattr *nla,
 	NLA_PUT_BE32(skb,
 		     CTA_PROTOINFO_SCTP_VTAG_REPLY,
 		     ct->proto.sctp.vtag[IP_CT_DIR_REPLY]);
+=======
+	if (nla_put_u8(skb, CTA_PROTOINFO_SCTP_STATE, ct->proto.sctp.state) ||
+	    nla_put_be32(skb, CTA_PROTOINFO_SCTP_VTAG_ORIGINAL,
+			 ct->proto.sctp.vtag[IP_CT_DIR_ORIGINAL]) ||
+	    nla_put_be32(skb, CTA_PROTOINFO_SCTP_VTAG_REPLY,
+			 ct->proto.sctp.vtag[IP_CT_DIR_REPLY]))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_bh(&ct->lock);
 
@@ -569,20 +623,35 @@ static int sctp_nlattr_size(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
 
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/nfnetlink_cttimeout.h>
 
+<<<<<<< HEAD
 static int sctp_timeout_nlattr_to_obj(struct nlattr *tb[], void *data)
 {
 	unsigned int *timeouts = data;
+=======
+static int sctp_timeout_nlattr_to_obj(struct nlattr *tb[],
+				      struct net *net, void *data)
+{
+	unsigned int *timeouts = data;
+	struct sctp_net *sn = sctp_pernet(net);
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/* set default SCTP timeouts. */
 	for (i=0; i<SCTP_CONNTRACK_MAX; i++)
+<<<<<<< HEAD
 		timeouts[i] = sctp_timeouts[i];
+=======
+		timeouts[i] = sn->timeouts[i];
+>>>>>>> refs/remotes/origin/master
 
 	/* there's a 1:1 mapping between attributes and protocol states. */
 	for (i=CTA_TIMEOUT_SCTP_UNSPEC+1; i<CTA_TIMEOUT_SCTP_MAX+1; i++) {
@@ -599,9 +668,16 @@ sctp_timeout_obj_to_nlattr(struct sk_buff *skb, const void *data)
         const unsigned int *timeouts = data;
 	int i;
 
+<<<<<<< HEAD
 	for (i=CTA_TIMEOUT_SCTP_UNSPEC+1; i<CTA_TIMEOUT_SCTP_MAX+1; i++)
 	        NLA_PUT_BE32(skb, i, htonl(timeouts[i] / HZ));
 
+=======
+	for (i=CTA_TIMEOUT_SCTP_UNSPEC+1; i<CTA_TIMEOUT_SCTP_MAX+1; i++) {
+	        if (nla_put_be32(skb, i, htonl(timeouts[i] / HZ)))
+			goto nla_put_failure;
+	}
+>>>>>>> refs/remotes/origin/master
         return 0;
 
 nla_put_failure:
@@ -621,6 +697,7 @@ sctp_timeout_nla_policy[CTA_TIMEOUT_SCTP_MAX+1] = {
 #endif /* CONFIG_NF_CT_NETLINK_TIMEOUT */
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSCTL
 static unsigned int sctp_sysctl_table_users;
@@ -629,48 +706,72 @@ static struct ctl_table sctp_sysctl_table[] = {
 	{
 		.procname	= "nf_conntrack_sctp_timeout_closed",
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_CLOSED],
+=======
+#ifdef CONFIG_SYSCTL
+static struct ctl_table sctp_sysctl_table[] = {
+	{
+		.procname	= "nf_conntrack_sctp_timeout_closed",
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_sctp_timeout_cookie_wait",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_COOKIE_WAIT],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_sctp_timeout_cookie_echoed",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_COOKIE_ECHOED],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_sctp_timeout_established",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_ESTABLISHED],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_sctp_timeout_shutdown_sent",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_SHUTDOWN_SENT],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_sctp_timeout_shutdown_recd",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_SHUTDOWN_RECD],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "nf_conntrack_sctp_timeout_shutdown_ack_sent",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_SHUTDOWN_ACK_SENT],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
@@ -682,49 +783,70 @@ static struct ctl_table sctp_sysctl_table[] = {
 static struct ctl_table sctp_compat_sysctl_table[] = {
 	{
 		.procname	= "ip_conntrack_sctp_timeout_closed",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_CLOSED],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "ip_conntrack_sctp_timeout_cookie_wait",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_COOKIE_WAIT],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "ip_conntrack_sctp_timeout_cookie_echoed",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_COOKIE_ECHOED],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "ip_conntrack_sctp_timeout_established",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_ESTABLISHED],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "ip_conntrack_sctp_timeout_shutdown_sent",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_SHUTDOWN_SENT],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "ip_conntrack_sctp_timeout_shutdown_recd",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_SHUTDOWN_RECD],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
 	},
 	{
 		.procname	= "ip_conntrack_sctp_timeout_shutdown_ack_sent",
+<<<<<<< HEAD
 		.data		= &sctp_timeouts[SCTP_CONNTRACK_SHUTDOWN_ACK_SENT],
+=======
+>>>>>>> refs/remotes/origin/master
 		.maxlen		= sizeof(unsigned int),
 		.mode		= 0644,
 		.proc_handler	= proc_dointvec_jiffies,
@@ -734,6 +856,83 @@ static struct ctl_table sctp_compat_sysctl_table[] = {
 #endif /* CONFIG_NF_CONNTRACK_PROC_COMPAT */
 #endif
 
+<<<<<<< HEAD
+=======
+static int sctp_kmemdup_sysctl_table(struct nf_proto_net *pn,
+				     struct sctp_net *sn)
+{
+#ifdef CONFIG_SYSCTL
+	if (pn->ctl_table)
+		return 0;
+
+	pn->ctl_table = kmemdup(sctp_sysctl_table,
+				sizeof(sctp_sysctl_table),
+				GFP_KERNEL);
+	if (!pn->ctl_table)
+		return -ENOMEM;
+
+	pn->ctl_table[0].data = &sn->timeouts[SCTP_CONNTRACK_CLOSED];
+	pn->ctl_table[1].data = &sn->timeouts[SCTP_CONNTRACK_COOKIE_WAIT];
+	pn->ctl_table[2].data = &sn->timeouts[SCTP_CONNTRACK_COOKIE_ECHOED];
+	pn->ctl_table[3].data = &sn->timeouts[SCTP_CONNTRACK_ESTABLISHED];
+	pn->ctl_table[4].data = &sn->timeouts[SCTP_CONNTRACK_SHUTDOWN_SENT];
+	pn->ctl_table[5].data = &sn->timeouts[SCTP_CONNTRACK_SHUTDOWN_RECD];
+	pn->ctl_table[6].data = &sn->timeouts[SCTP_CONNTRACK_SHUTDOWN_ACK_SENT];
+#endif
+	return 0;
+}
+
+static int sctp_kmemdup_compat_sysctl_table(struct nf_proto_net *pn,
+					    struct sctp_net *sn)
+{
+#ifdef CONFIG_SYSCTL
+#ifdef CONFIG_NF_CONNTRACK_PROC_COMPAT
+	pn->ctl_compat_table = kmemdup(sctp_compat_sysctl_table,
+				       sizeof(sctp_compat_sysctl_table),
+				       GFP_KERNEL);
+	if (!pn->ctl_compat_table)
+		return -ENOMEM;
+
+	pn->ctl_compat_table[0].data = &sn->timeouts[SCTP_CONNTRACK_CLOSED];
+	pn->ctl_compat_table[1].data = &sn->timeouts[SCTP_CONNTRACK_COOKIE_WAIT];
+	pn->ctl_compat_table[2].data = &sn->timeouts[SCTP_CONNTRACK_COOKIE_ECHOED];
+	pn->ctl_compat_table[3].data = &sn->timeouts[SCTP_CONNTRACK_ESTABLISHED];
+	pn->ctl_compat_table[4].data = &sn->timeouts[SCTP_CONNTRACK_SHUTDOWN_SENT];
+	pn->ctl_compat_table[5].data = &sn->timeouts[SCTP_CONNTRACK_SHUTDOWN_RECD];
+	pn->ctl_compat_table[6].data = &sn->timeouts[SCTP_CONNTRACK_SHUTDOWN_ACK_SENT];
+#endif
+#endif
+	return 0;
+}
+
+static int sctp_init_net(struct net *net, u_int16_t proto)
+{
+	int ret;
+	struct sctp_net *sn = sctp_pernet(net);
+	struct nf_proto_net *pn = &sn->pn;
+
+	if (!pn->users) {
+		int i;
+
+		for (i = 0; i < SCTP_CONNTRACK_MAX; i++)
+			sn->timeouts[i] = sctp_timeouts[i];
+	}
+
+	if (proto == AF_INET) {
+		ret = sctp_kmemdup_compat_sysctl_table(pn, sn);
+		if (ret < 0)
+			return ret;
+
+		ret = sctp_kmemdup_sysctl_table(pn, sn);
+		if (ret < 0)
+			nf_ct_kfree_compat_sysctl_table(pn);
+	} else
+		ret = sctp_kmemdup_sysctl_table(pn, sn);
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp4 __read_mostly = {
 	.l3proto		= PF_INET,
 	.l4proto 		= IPPROTO_SCTP,
@@ -744,15 +943,21 @@ static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp4 __read_mostly = {
 	.print_conntrack	= sctp_print_conntrack,
 	.packet 		= sctp_packet,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.new 			= sctp_new,
 	.me 			= THIS_MODULE,
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.get_timeouts		= sctp_get_timeouts,
 	.new 			= sctp_new,
 	.me 			= THIS_MODULE,
 #if IS_ENABLED(CONFIG_NF_CT_NETLINK)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.to_nlattr		= sctp_to_nlattr,
 	.nlattr_size		= sctp_nlattr_size,
 	.from_nlattr		= nlattr_to_sctp,
@@ -762,7 +967,10 @@ static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp4 __read_mostly = {
 	.nla_policy		= nf_ct_port_nla_policy,
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
 	.ctnl_timeout		= {
 		.nlattr_to_obj	= sctp_timeout_nlattr_to_obj,
@@ -772,6 +980,7 @@ static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp4 __read_mostly = {
 		.nla_policy	= sctp_timeout_nla_policy,
 	},
 #endif /* CONFIG_NF_CT_NETLINK_TIMEOUT */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_SYSCTL
 	.ctl_table_users	= &sctp_sysctl_table_users,
@@ -781,6 +990,10 @@ static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp4 __read_mostly = {
 	.ctl_compat_table	= sctp_compat_sysctl_table,
 #endif
 #endif
+=======
+	.net_id			= &sctp_net_id,
+	.init_net		= sctp_init_net,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp6 __read_mostly = {
@@ -793,15 +1006,21 @@ static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp6 __read_mostly = {
 	.print_conntrack	= sctp_print_conntrack,
 	.packet 		= sctp_packet,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.new 			= sctp_new,
 	.me 			= THIS_MODULE,
 #if defined(CONFIG_NF_CT_NETLINK) || defined(CONFIG_NF_CT_NETLINK_MODULE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.get_timeouts		= sctp_get_timeouts,
 	.new 			= sctp_new,
 	.me 			= THIS_MODULE,
 #if IS_ENABLED(CONFIG_NF_CT_NETLINK)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.to_nlattr		= sctp_to_nlattr,
 	.nlattr_size		= sctp_nlattr_size,
 	.from_nlattr		= nlattr_to_sctp,
@@ -810,7 +1029,10 @@ static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp6 __read_mostly = {
 	.nlattr_to_tuple	= nf_ct_port_nlattr_to_tuple,
 	.nla_policy		= nf_ct_port_nla_policy,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
 	.ctnl_timeout		= {
 		.nlattr_to_obj	= sctp_timeout_nlattr_to_obj,
@@ -820,6 +1042,7 @@ static struct nf_conntrack_l4proto nf_conntrack_l4proto_sctp6 __read_mostly = {
 		.nla_policy	= sctp_timeout_nla_policy,
 	},
 #endif /* CONFIG_NF_CT_NETLINK_TIMEOUT */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 #ifdef CONFIG_SYSCTL
@@ -849,13 +1072,83 @@ static int __init nf_conntrack_proto_sctp_init(void)
  cleanup_sctp4:
 	nf_conntrack_l4proto_unregister(&nf_conntrack_l4proto_sctp4);
  out:
+=======
+#endif
+	.net_id			= &sctp_net_id,
+	.init_net		= sctp_init_net,
+};
+
+static int sctp_net_init(struct net *net)
+{
+	int ret = 0;
+
+	ret = nf_ct_l4proto_pernet_register(net, &nf_conntrack_l4proto_sctp4);
+	if (ret < 0) {
+		pr_err("nf_conntrack_sctp4: pernet registration failed.\n");
+		goto out;
+	}
+	ret = nf_ct_l4proto_pernet_register(net, &nf_conntrack_l4proto_sctp6);
+	if (ret < 0) {
+		pr_err("nf_conntrack_sctp6: pernet registration failed.\n");
+		goto cleanup_sctp4;
+	}
+	return 0;
+
+cleanup_sctp4:
+	nf_ct_l4proto_pernet_unregister(net, &nf_conntrack_l4proto_sctp4);
+out:
+	return ret;
+}
+
+static void sctp_net_exit(struct net *net)
+{
+	nf_ct_l4proto_pernet_unregister(net, &nf_conntrack_l4proto_sctp6);
+	nf_ct_l4proto_pernet_unregister(net, &nf_conntrack_l4proto_sctp4);
+}
+
+static struct pernet_operations sctp_net_ops = {
+	.init = sctp_net_init,
+	.exit = sctp_net_exit,
+	.id   = &sctp_net_id,
+	.size = sizeof(struct sctp_net),
+};
+
+static int __init nf_conntrack_proto_sctp_init(void)
+{
+	int ret;
+
+	ret = register_pernet_subsys(&sctp_net_ops);
+	if (ret < 0)
+		goto out_pernet;
+
+	ret = nf_ct_l4proto_register(&nf_conntrack_l4proto_sctp4);
+	if (ret < 0)
+		goto out_sctp4;
+
+	ret = nf_ct_l4proto_register(&nf_conntrack_l4proto_sctp6);
+	if (ret < 0)
+		goto out_sctp6;
+
+	return 0;
+out_sctp6:
+	nf_ct_l4proto_unregister(&nf_conntrack_l4proto_sctp4);
+out_sctp4:
+	unregister_pernet_subsys(&sctp_net_ops);
+out_pernet:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static void __exit nf_conntrack_proto_sctp_fini(void)
 {
+<<<<<<< HEAD
 	nf_conntrack_l4proto_unregister(&nf_conntrack_l4proto_sctp6);
 	nf_conntrack_l4proto_unregister(&nf_conntrack_l4proto_sctp4);
+=======
+	nf_ct_l4proto_unregister(&nf_conntrack_l4proto_sctp6);
+	nf_ct_l4proto_unregister(&nf_conntrack_l4proto_sctp4);
+	unregister_pernet_subsys(&sctp_net_ops);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(nf_conntrack_proto_sctp_init);

@@ -19,11 +19,17 @@
 #include <linux/slab.h>
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/ske.h>
+=======
+#include <linux/module.h>
+
+#include <linux/platform_data/keypad-nomadik-ske.h>
+>>>>>>> refs/remotes/origin/master
 
 /* SKE_CR bits */
 #define SKE_KPMLT	(0x1 << 6)
@@ -42,7 +48,12 @@
 #define SKE_KPRISA	(0x1 << 2)
 
 #define SKE_KEYPAD_ROW_SHIFT	3
+<<<<<<< HEAD
 #define SKE_KPD_KEYMAP_SIZE	(8 * 8)
+=======
+#define SKE_KPD_NUM_ROWS	8
+#define SKE_KPD_NUM_COLS	8
+>>>>>>> refs/remotes/origin/master
 
 /* keypad auto scan registers */
 #define SKE_ASR0	0x20
@@ -51,6 +62,10 @@
 #define SKE_ASR3	0x2C
 
 #define SKE_NUM_ASRX_REGISTERS	(4)
+<<<<<<< HEAD
+=======
+#define	KEY_PRESSED_DELAY	10
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct ske_keypad  - data structure used by keypad driver
@@ -66,8 +81,14 @@ struct ske_keypad {
 	void __iomem *reg_base;
 	struct input_dev *input;
 	const struct ske_keypad_platform_data *board;
+<<<<<<< HEAD
 	unsigned short keymap[SKE_KPD_KEYMAP_SIZE];
 	struct clk *clk;
+=======
+	unsigned short keymap[SKE_KPD_NUM_ROWS * SKE_KPD_NUM_COLS];
+	struct clk *clk;
+	struct clk *pclk;
+>>>>>>> refs/remotes/origin/master
 	spinlock_t ske_keypad_lock;
 };
 
@@ -92,6 +113,7 @@ static void ske_keypad_set_bits(struct ske_keypad *keypad, u16 addr,
  * Enable Multi key press detection, auto scan mode
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit ske_keypad_chip_init(struct ske_keypad *keypad)
 =======
 static int __init ske_keypad_chip_init(struct ske_keypad *keypad)
@@ -99,6 +121,12 @@ static int __init ske_keypad_chip_init(struct ske_keypad *keypad)
 {
 	u32 value;
 	int timeout = 50;
+=======
+static int __init ske_keypad_chip_init(struct ske_keypad *keypad)
+{
+	u32 value;
+	int timeout = keypad->board->debounce_ms;
+>>>>>>> refs/remotes/origin/master
 
 	/* check SKE_RIS to be 0 */
 	while ((readl(keypad->reg_base + SKE_RIS) != 0x00000000) && timeout--)
@@ -141,12 +169,46 @@ static int __init ske_keypad_chip_init(struct ske_keypad *keypad)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ske_keypad_read_data(struct ske_keypad *keypad)
 {
 	struct input_dev *input = keypad->input;
 	u16 status;
 	int col = 0, row = 0, code;
 	int ske_asr, ske_ris, key_pressed, i;
+=======
+static void ske_keypad_report(struct ske_keypad *keypad, u8 status, int col)
+{
+	int row = 0, code, pos;
+	struct input_dev *input = keypad->input;
+	u32 ske_ris;
+	int key_pressed;
+	int num_of_rows;
+
+	/* find out the row */
+	num_of_rows = hweight8(status);
+	do {
+		pos = __ffs(status);
+		row = pos;
+		status &= ~(1 << pos);
+
+		code = MATRIX_SCAN_CODE(row, col, SKE_KEYPAD_ROW_SHIFT);
+		ske_ris = readl(keypad->reg_base + SKE_RIS);
+		key_pressed = ske_ris & SKE_KPRISA;
+
+		input_event(input, EV_MSC, MSC_SCAN, code);
+		input_report_key(input, keypad->keymap[code], key_pressed);
+		input_sync(input);
+		num_of_rows--;
+	} while (num_of_rows);
+}
+
+static void ske_keypad_read_data(struct ske_keypad *keypad)
+{
+	u8 status;
+	int col = 0;
+	int ske_asr, i;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Read the auto scan registers
@@ -160,6 +222,7 @@ static void ske_keypad_read_data(struct ske_keypad *keypad)
 		if (!ske_asr)
 			continue;
 
+<<<<<<< HEAD
 		/* now that ASRx is zero, find out the column x and row y*/
 		if (ske_asr & 0xff) {
 			col = i * 2;
@@ -179,18 +242,36 @@ static void ske_keypad_read_data(struct ske_keypad *keypad)
 		input_event(input, EV_MSC, MSC_SCAN, code);
 		input_report_key(input, keypad->keymap[code], key_pressed);
 		input_sync(input);
+=======
+		/* now that ASRx is zero, find out the coloumn x and row y */
+		status = ske_asr & 0xff;
+		if (status) {
+			col = i * 2;
+			ske_keypad_report(keypad, status, col);
+		}
+		status = (ske_asr & 0xff00) >> 8;
+		if (status) {
+			col = (i * 2) + 1;
+			ske_keypad_report(keypad, status, col);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static irqreturn_t ske_keypad_irq(int irq, void *dev_id)
 {
 	struct ske_keypad *keypad = dev_id;
+<<<<<<< HEAD
 	int retries = 20;
+=======
+	int timeout = keypad->board->debounce_ms;
+>>>>>>> refs/remotes/origin/master
 
 	/* disable auto scan interrupt; mask the interrupt generated */
 	ske_keypad_set_bits(keypad, SKE_IMSC, ~SKE_KPIMA, 0x0);
 	ske_keypad_set_bits(keypad, SKE_ICR, 0x0, SKE_KPICA);
 
+<<<<<<< HEAD
 	while ((readl(keypad->reg_base + SKE_CR) & SKE_KPASON) && --retries)
 		msleep(5);
 
@@ -198,6 +279,17 @@ static irqreturn_t ske_keypad_irq(int irq, void *dev_id)
 		/* SKEx registers are stable and can be read */
 		ske_keypad_read_data(keypad);
 	}
+=======
+	while ((readl(keypad->reg_base + SKE_CR) & SKE_KPASON) && --timeout)
+		cpu_relax();
+
+	/* SKEx registers are stable and can be read */
+	ske_keypad_read_data(keypad);
+
+	/* wait until raw interrupt is clear */
+	while ((readl(keypad->reg_base + SKE_RIS)) && --timeout)
+		msleep(KEY_PRESSED_DELAY);
+>>>>>>> refs/remotes/origin/master
 
 	/* enable auto scan interrupts */
 	ske_keypad_set_bits(keypad, SKE_IMSC, 0x0, SKE_KPIMA);
@@ -206,10 +298,14 @@ static irqreturn_t ske_keypad_irq(int irq, void *dev_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit ske_keypad_probe(struct platform_device *pdev)
 =======
 static int __init ske_keypad_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init ske_keypad_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ske_keypad_platform_data *plat = pdev->dev.platform_data;
 	struct ske_keypad *keypad;
@@ -261,17 +357,32 @@ static int __init ske_keypad_probe(struct platform_device *pdev)
 		goto err_free_mem_region;
 	}
 
+<<<<<<< HEAD
+=======
+	keypad->pclk = clk_get(&pdev->dev, "apb_pclk");
+	if (IS_ERR(keypad->pclk)) {
+		dev_err(&pdev->dev, "failed to get pclk\n");
+		error = PTR_ERR(keypad->pclk);
+		goto err_iounmap;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	keypad->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(keypad->clk)) {
 		dev_err(&pdev->dev, "failed to get clk\n");
 		error = PTR_ERR(keypad->clk);
+<<<<<<< HEAD
 		goto err_iounmap;
+=======
+		goto err_pclk;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	input->id.bustype = BUS_HOST;
 	input->name = "ux500-ske-keypad";
 	input->dev.parent = &pdev->dev;
 
+<<<<<<< HEAD
 	input->keycode = keypad->keymap;
 	input->keycodesize = sizeof(keypad->keymap[0]);
 	input->keycodemax = ARRAY_SIZE(keypad->keymap);
@@ -286,6 +397,32 @@ static int __init ske_keypad_probe(struct platform_device *pdev)
 			input->keycode, input->keybit);
 
 	clk_enable(keypad->clk);
+=======
+	error = matrix_keypad_build_keymap(plat->keymap_data, NULL,
+					   SKE_KPD_NUM_ROWS, SKE_KPD_NUM_COLS,
+					   keypad->keymap, input);
+	if (error) {
+		dev_err(&pdev->dev, "Failed to build keymap\n");
+		goto err_clk;
+	}
+
+	input_set_capability(input, EV_MSC, MSC_SCAN);
+	if (!plat->no_autorepeat)
+		__set_bit(EV_REP, input->evbit);
+
+	error = clk_prepare_enable(keypad->pclk);
+	if (error) {
+		dev_err(&pdev->dev, "Failed to prepare/enable pclk\n");
+		goto err_clk;
+	}
+
+	error = clk_prepare_enable(keypad->clk);
+	if (error) {
+		dev_err(&pdev->dev, "Failed to prepare/enable clk\n");
+		goto err_pclk_disable;
+	}
+
+>>>>>>> refs/remotes/origin/master
 
 	/* go through board initialization helpers */
 	if (keypad->board->init)
@@ -321,8 +458,18 @@ static int __init ske_keypad_probe(struct platform_device *pdev)
 err_free_irq:
 	free_irq(keypad->irq, keypad);
 err_clk_disable:
+<<<<<<< HEAD
 	clk_disable(keypad->clk);
 	clk_put(keypad->clk);
+=======
+	clk_disable_unprepare(keypad->clk);
+err_pclk_disable:
+	clk_disable_unprepare(keypad->pclk);
+err_clk:
+	clk_put(keypad->clk);
+err_pclk:
+	clk_put(keypad->pclk);
+>>>>>>> refs/remotes/origin/master
 err_iounmap:
 	iounmap(keypad->reg_base);
 err_free_mem_region:
@@ -333,7 +480,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit ske_keypad_remove(struct platform_device *pdev)
+=======
+static int ske_keypad_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ske_keypad *keypad = platform_get_drvdata(pdev);
 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -342,7 +493,11 @@ static int __devexit ske_keypad_remove(struct platform_device *pdev)
 
 	input_unregister_device(keypad->input);
 
+<<<<<<< HEAD
 	clk_disable(keypad->clk);
+=======
+	clk_disable_unprepare(keypad->clk);
+>>>>>>> refs/remotes/origin/master
 	clk_put(keypad->clk);
 
 	if (keypad->board->exit)
@@ -356,10 +511,14 @@ static int __devexit ske_keypad_remove(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 =======
 #ifdef CONFIG_PM_SLEEP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int ske_keypad_suspend(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
@@ -388,6 +547,7 @@ static int ske_keypad_resume(struct device *dev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static const struct dev_pm_ops ske_keypad_dev_pm_ops = {
 	.suspend = ske_keypad_suspend,
@@ -405,6 +565,8 @@ struct platform_driver ske_keypad_driver = {
 	},
 	.probe = ske_keypad_probe,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static SIMPLE_DEV_PM_OPS(ske_keypad_dev_pm_ops,
@@ -416,6 +578,7 @@ static struct platform_driver ske_keypad_driver = {
 		.owner  = THIS_MODULE,
 		.pm = &ske_keypad_dev_pm_ops,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	.remove = __devexit_p(ske_keypad_remove),
 };
@@ -431,6 +594,12 @@ static void __exit ske_keypad_exit(void)
 	platform_driver_unregister(&ske_keypad_driver);
 }
 module_exit(ske_keypad_exit);
+=======
+	.remove = ske_keypad_remove,
+};
+
+module_platform_driver_probe(ske_keypad_driver, ske_keypad_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Naveen Kumar <naveen.gaddipati@stericsson.com> / Sundar Iyer <sundar.iyer@stericsson.com>");

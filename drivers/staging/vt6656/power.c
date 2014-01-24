@@ -19,7 +19,11 @@
  *
  * File: power.c
  *
+<<<<<<< HEAD
  * Purpose: Handles 802.11 power management  functions
+=======
+ * Purpose: Handles 802.11 power management functions
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Lyndon Chen
  *
@@ -37,7 +41,10 @@
  *
  */
 
+<<<<<<< HEAD
 #include "ttype.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "mac.h"
 #include "device.h"
 #include "wmgr.h"
@@ -48,6 +55,7 @@
 #include "control.h"
 #include "rndis.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 /*---------------------  Static Classes  ----------------------------*/
@@ -59,6 +67,9 @@ static int msglevel = MSG_LEVEL_INFO;
 /*---------------------  Export Variables  --------------------------*/
 
 /*---------------------  Export Functions  --------------------------*/
+=======
+static int msglevel = MSG_LEVEL_INFO;
+>>>>>>> refs/remotes/origin/master
 
 /*
  *
@@ -70,12 +81,19 @@ static int msglevel = MSG_LEVEL_INFO;
  *
  */
 
+<<<<<<< HEAD
 void PSvEnablePowerSaving(void *hDeviceContext,
 			  WORD wListenInterval)
 {
 	PSDevice pDevice = (PSDevice)hDeviceContext;
 	PSMgmtObject pMgmt = &(pDevice->sMgmtObj);
 	WORD wAID = pMgmt->wCurrAID | BIT14 | BIT15;
+=======
+void PSvEnablePowerSaving(struct vnt_private *pDevice, u16 wListenInterval)
+{
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	u16 wAID = pMgmt->wCurrAID | BIT14 | BIT15;
+>>>>>>> refs/remotes/origin/master
 
 	/* set period of power up before TBTT */
 	MACvWriteWord(pDevice, MAC_REG_PWBT, C_PWBT);
@@ -116,13 +134,21 @@ void PSvEnablePowerSaving(void *hDeviceContext,
 		pMgmt->wCountToWakeUp = 0;
 	}
 
+<<<<<<< HEAD
 	pDevice->bEnablePSMode = TRUE;
+=======
+	pDevice->bEnablePSMode = true;
+>>>>>>> refs/remotes/origin/master
 
 	/* We don't send null pkt in ad hoc mode since beacon will handle this. */
 	if (pDevice->eOPMode == OP_MODE_INFRASTRUCTURE)
 		PSbSendNullPacket(pDevice);
 
+<<<<<<< HEAD
 	pDevice->bPWBitOn = TRUE;
+=======
+	pDevice->bPWBitOn = true;
+>>>>>>> refs/remotes/origin/master
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "PS:Power Saving Mode Enable...\n");
 }
 
@@ -136,10 +162,15 @@ void PSvEnablePowerSaving(void *hDeviceContext,
  *
  */
 
+<<<<<<< HEAD
 void PSvDisablePowerSaving(void *hDeviceContext)
 {
 	PSDevice pDevice = (PSDevice)hDeviceContext;
 	/* PSMgmtObject pMgmt = &(pDevice->sMgmtObj); */
+=======
+void PSvDisablePowerSaving(struct vnt_private *pDevice)
+{
+>>>>>>> refs/remotes/origin/master
 
 	/* disable power saving hw function */
 	CONTROLnsRequestOut(pDevice, MESSAGE_TYPE_DISABLE_PS, 0,
@@ -150,12 +181,20 @@ void PSvDisablePowerSaving(void *hDeviceContext)
 
 	/* set always listen beacon */
 	MACvRegBitsOn(pDevice, MAC_REG_PSCTL, PSCTL_ALBCN);
+<<<<<<< HEAD
 	pDevice->bEnablePSMode = FALSE;
+=======
+	pDevice->bEnablePSMode = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (pDevice->eOPMode == OP_MODE_INFRASTRUCTURE)
 		PSbSendNullPacket(pDevice);
 
+<<<<<<< HEAD
 	pDevice->bPWBitOn = FALSE;
+=======
+	pDevice->bPWBitOn = false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -164,6 +203,7 @@ void PSvDisablePowerSaving(void *hDeviceContext)
  * Consider to power down when no more packets to tx or rx.
  *
  * Return Value:
+<<<<<<< HEAD
  *    TRUE, if power down success
  *    FALSE, if fail
  */
@@ -175,27 +215,54 @@ BOOL PSbConsiderPowerDown(void *hDeviceContext,
 	PSDevice pDevice = (PSDevice)hDeviceContext;
 	PSMgmtObject pMgmt = &(pDevice->sMgmtObj);
 	BYTE byData;
+=======
+ *    true, if power down success
+ *    false, if fail
+ */
+
+int PSbConsiderPowerDown(struct vnt_private *pDevice, int bCheckRxDMA,
+	int bCheckCountToWakeUp)
+{
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	u8 byData;
+>>>>>>> refs/remotes/origin/master
 
 	/* check if already in Doze mode */
 	ControlvReadByte(pDevice, MESSAGE_REQUEST_MACREG,
 					MAC_REG_PSCTL, &byData);
 
 	if ((byData & PSCTL_PS) != 0)
+<<<<<<< HEAD
 		return TRUE;
+=======
+		return true;
+>>>>>>> refs/remotes/origin/master
 
 	if (pMgmt->eCurrMode != WMAC_MODE_IBSS_STA) {
 		/* check if in TIM wake period */
 		if (pMgmt->bInTIMWake)
+<<<<<<< HEAD
 			return FALSE;
+=======
+			return false;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* check scan state */
 	if (pDevice->bCmdRunning)
+<<<<<<< HEAD
 		return FALSE;
 
 	/* Tx Burst */
 	if (pDevice->bPSModeTxBurst)
 		return FALSE;
+=======
+		return false;
+
+	/* Tx Burst */
+	if (pDevice->bPSModeTxBurst)
+		return false;
+>>>>>>> refs/remotes/origin/master
 
 	/* Froce PSEN on */
 	MACvRegBitsOn(pDevice, MAC_REG_PSCTL, PSCTL_PSEN);
@@ -203,16 +270,28 @@ BOOL PSbConsiderPowerDown(void *hDeviceContext,
 	if (pMgmt->eCurrMode != WMAC_MODE_IBSS_STA) {
 		if (bCheckCountToWakeUp && (pMgmt->wCountToWakeUp == 0
 			|| pMgmt->wCountToWakeUp == 1)) {
+<<<<<<< HEAD
 				return FALSE;
 		}
 	}
 
 	pDevice->bPSRxBeacon = TRUE;
+=======
+				return false;
+		}
+	}
+
+	pDevice->bPSRxBeacon = true;
+>>>>>>> refs/remotes/origin/master
 
 	/* no Tx, no Rx isr, now go to Doze */
 	MACvRegBitsOn(pDevice, MAC_REG_PSCTL, PSCTL_GO2DOZE);
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Go to Doze ZZZZZZZZZZZZZZZ\n");
+<<<<<<< HEAD
 	return TRUE;
+=======
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -225,6 +304,7 @@ BOOL PSbConsiderPowerDown(void *hDeviceContext,
  *
  */
 
+<<<<<<< HEAD
 void PSvSendPSPOLL(void *hDeviceContext)
 {
 	PSDevice pDevice = (PSDevice)hDeviceContext;
@@ -234,6 +314,19 @@ void PSvSendPSPOLL(void *hDeviceContext)
 	memset(pMgmt->pbyPSPacketPool, 0, sizeof(STxMgmtPacket) + WLAN_HDR_ADDR2_LEN);
 	pTxPacket = (PSTxMgmtPacket)pMgmt->pbyPSPacketPool;
 	pTxPacket->p80211Header = (PUWLAN_80211HDR)((PBYTE)pTxPacket + sizeof(STxMgmtPacket));
+=======
+void PSvSendPSPOLL(struct vnt_private *pDevice)
+{
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	struct vnt_tx_mgmt *pTxPacket = NULL;
+
+	memset(pMgmt->pbyPSPacketPool, 0, sizeof(struct vnt_tx_mgmt)
+		+ WLAN_HDR_ADDR2_LEN);
+	pTxPacket = (struct vnt_tx_mgmt *)pMgmt->pbyPSPacketPool;
+	pTxPacket->p80211Header = (PUWLAN_80211HDR)((u8 *)pTxPacket
+		+ sizeof(struct vnt_tx_mgmt));
+
+>>>>>>> refs/remotes/origin/master
 	pTxPacket->p80211Header->sA2.wFrameCtl = cpu_to_le16(
 		(
 			WLAN_SET_FC_FTYPE(WLAN_TYPE_CTL) |
@@ -248,9 +341,14 @@ void PSvSendPSPOLL(void *hDeviceContext)
 	pTxPacket->cbPayloadLen = 0;
 
 	/* log failure if sending failed */
+<<<<<<< HEAD
 	if (csMgmt_xmit(pDevice, pTxPacket) != CMD_STATUS_PENDING) {
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Send PS-Poll packet failed..\n");
 	}
+=======
+	if (csMgmt_xmit(pDevice, pTxPacket) != CMD_STATUS_PENDING)
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Send PS-Poll packet failed..\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -263,6 +361,7 @@ void PSvSendPSPOLL(void *hDeviceContext)
  *
  */
 
+<<<<<<< HEAD
 BOOL PSbSendNullPacket(void *hDeviceContext)
 {
 	PSDevice pDevice = (PSDevice)hDeviceContext;
@@ -284,6 +383,28 @@ BOOL PSbSendNullPacket(void *hDeviceContext)
 
 	flags = WLAN_SET_FC_FTYPE(WLAN_TYPE_DATA) |
                         WLAN_SET_FC_FSTYPE(WLAN_FSTYPE_NULL);
+=======
+int PSbSendNullPacket(struct vnt_private *pDevice)
+{
+	struct vnt_tx_mgmt *pTxPacket = NULL;
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	u16 flags = 0;
+
+	if (pDevice->bLinkPass == false)
+		return false;
+
+	if (pDevice->bEnablePSMode == false && pDevice->tx_trigger == false)
+		return false;
+
+	memset(pMgmt->pbyPSPacketPool, 0, sizeof(struct vnt_tx_mgmt)
+		+ WLAN_NULLDATA_FR_MAXLEN);
+	pTxPacket = (struct vnt_tx_mgmt *)pMgmt->pbyPSPacketPool;
+	pTxPacket->p80211Header = (PUWLAN_80211HDR)((u8 *)pTxPacket
+		+ sizeof(struct vnt_tx_mgmt));
+
+	flags = WLAN_SET_FC_FTYPE(WLAN_TYPE_DATA) |
+			WLAN_SET_FC_FSTYPE(WLAN_FSTYPE_NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (pDevice->bEnablePSMode)
 		flags |= WLAN_SET_FC_PWRMGT(1);
@@ -293,7 +414,11 @@ BOOL PSbSendNullPacket(void *hDeviceContext)
 	pTxPacket->p80211Header->sA3.wFrameCtl = cpu_to_le16(flags);
 
 	if (pMgmt->eCurrMode != WMAC_MODE_IBSS_STA)
+<<<<<<< HEAD
 		pTxPacket->p80211Header->sA3.wFrameCtl |= cpu_to_le16((WORD)WLAN_SET_FC_TODS(1));
+=======
+		pTxPacket->p80211Header->sA3.wFrameCtl |= cpu_to_le16((u16)WLAN_SET_FC_TODS(1));
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(pTxPacket->p80211Header->sA3.abyAddr1, pMgmt->abyCurrBSSID, WLAN_ADDR_LEN);
 	memcpy(pTxPacket->p80211Header->sA3.abyAddr2, pMgmt->abyMACAddr, WLAN_ADDR_LEN);
@@ -303,9 +428,15 @@ BOOL PSbSendNullPacket(void *hDeviceContext)
 	/* log error if sending failed */
 	if (csMgmt_xmit(pDevice, pTxPacket) != CMD_STATUS_PENDING) {
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Send Null Packet failed !\n");
+<<<<<<< HEAD
 		return FALSE;
 	}
 	return TRUE;
+=======
+		return false;
+	}
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -318,11 +449,18 @@ BOOL PSbSendNullPacket(void *hDeviceContext)
  *
  */
 
+<<<<<<< HEAD
 BOOL PSbIsNextTBTTWakeUp(void *hDeviceContext)
 {
 	PSDevice pDevice = (PSDevice)hDeviceContext;
 	PSMgmtObject pMgmt = &(pDevice->sMgmtObj);
 	BOOL bWakeUp = FALSE;
+=======
+int PSbIsNextTBTTWakeUp(struct vnt_private *pDevice)
+{
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	int bWakeUp = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (pMgmt->wListenInterval >= 2) {
 		if (pMgmt->wCountToWakeUp == 0)
@@ -333,8 +471,13 @@ BOOL PSbIsNextTBTTWakeUp(void *hDeviceContext)
 		if (pMgmt->wCountToWakeUp == 1) {
 			/* Turn on wake up to listen next beacon */
 			MACvRegBitsOn(pDevice, MAC_REG_PSCTL, PSCTL_LNBCN);
+<<<<<<< HEAD
 			pDevice->bPSRxBeacon = FALSE;
 			bWakeUp = TRUE;
+=======
+			pDevice->bPSRxBeacon = false;
+			bWakeUp = true;
+>>>>>>> refs/remotes/origin/master
 		} else if (!pDevice->bPSRxBeacon) {
 			/* Listen until RxBeacon */
 			MACvRegBitsOn(pDevice, MAC_REG_PSCTL, PSCTL_LNBCN);

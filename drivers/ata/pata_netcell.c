@@ -58,9 +58,12 @@ static struct ata_port_operations netcell_ops = {
 static int netcell_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	static const struct ata_port_info info = {
 		.flags		= ATA_FLAG_SLAVE_POSS,
 		/* Actually we don't really care about these as the
@@ -74,12 +77,16 @@ static int netcell_init_one (struct pci_dev *pdev, const struct pci_device_id *e
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev,
 			   "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -109,6 +116,7 @@ static struct pci_driver netcell_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init netcell_init(void)
 {
 	return pci_register_driver(&netcell_pci_driver);
@@ -121,10 +129,16 @@ static void __exit netcell_exit(void)
 
 module_init(netcell_init);
 module_exit(netcell_exit);
+=======
+module_pci_driver(netcell_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("SCSI low-level driver for Netcell PATA RAID");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, netcell_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

@@ -17,9 +17,13 @@
 
 #include <plat/map-base.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <plat/map-s3c.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <plat/map-s3c.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Post-mux Chip Select Regions Xm0CSn_
@@ -88,9 +92,12 @@
 
 #define S3C64XX_PA_GPIO		(0x7F008000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define S3C64XX_VA_GPIO		S3C_ADDR_CPU(0x00000000)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define S3C64XX_SZ_GPIO		SZ_4K
 
 #define S3C64XX_PA_SDRAM	(0x50000000)
@@ -102,13 +109,17 @@
 
 #define S3C64XX_PA_MODEM	(0x74108000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define S3C64XX_VA_MODEM	S3C_ADDR_CPU(0x00100000)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define S3C64XX_PA_USBHOST	(0x74300000)
 
 #define S3C64XX_PA_USB_HSPHY	(0x7C100000)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define S3C64XX_VA_USB_HSPHY	S3C_ADDR_CPU(0x00200000)
 
@@ -117,6 +128,8 @@
 #define VA_VIC1			(S3C_VA_IRQ + 0x10000)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* compatibiltiy defines. */
 #define S3C_PA_TIMER		S3C64XX_PA_TIMER
@@ -133,18 +146,28 @@
 #define S3C_PA_USBHOST		S3C64XX_PA_USBHOST
 #define S3C_PA_USB_HSOTG	S3C64XX_PA_USB_HSOTG
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define S3C_VA_USB_HSPHY	S3C64XX_VA_USB_HSPHY
 #define S3C_PA_RTC		S3C64XX_PA_RTC
 #define S3C_PA_WDT		S3C64XX_PA_WATCHDOG
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define S3C_PA_RTC		S3C64XX_PA_RTC
 #define S3C_PA_WDT		S3C64XX_PA_WATCHDOG
 #define S3C_PA_SPI0		S3C64XX_PA_SPI0
 #define S3C_PA_SPI1		S3C64XX_PA_SPI1
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SAMSUNG_PA_ADC		S3C64XX_PA_ADC
 #define SAMSUNG_PA_CFCON	S3C64XX_PA_CFCON
 #define SAMSUNG_PA_KEYPAD	S3C64XX_PA_KEYPAD
+<<<<<<< HEAD
+=======
+#define SAMSUNG_PA_TIMER	S3C64XX_PA_TIMER
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_ARCH_6400_MAP_H */

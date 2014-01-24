@@ -40,7 +40,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * SVGA_REG_ENABLE bit definitions.
  */
 #define SVGA_REG_ENABLE_DISABLE     0
@@ -50,7 +53,10 @@
 				     SVGA_REG_ENABLE_HIDE)
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Legal values for the SVGA_REG_CURSOR_ON register in old-fashioned
  * cursor bypass mode. This is still supported, but no new guest
  * drivers should use it.
@@ -171,12 +177,18 @@ enum {
 
    SVGA_REG_TRACES = 45,            /* Enable trace-based updates even when FIFO is on */
 <<<<<<< HEAD
+<<<<<<< HEAD
    SVGA_REG_TOP = 46,               /* Must be 1 more than the last register */
 =======
    SVGA_REG_GMRS_MAX_PAGES = 46,    /* Maximum number of 4KB pages for all GMRs */
    SVGA_REG_MEMORY_SIZE = 47,       /* Total dedicated device memory excluding FIFO */
    SVGA_REG_TOP = 48,               /* Must be 1 more than the last register */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   SVGA_REG_GMRS_MAX_PAGES = 46,    /* Maximum number of 4KB pages for all GMRs */
+   SVGA_REG_MEMORY_SIZE = 47,       /* Total dedicated device memory excluding FIFO */
+   SVGA_REG_TOP = 48,               /* Must be 1 more than the last register */
+>>>>>>> refs/remotes/origin/master
 
    SVGA_PALETTE_BASE = 1024,        /* Base of SVGA color map */
    /* Next 768 (== 256*3) registers exist for colormap */
@@ -284,10 +296,14 @@ enum {
  */
 #define SVGA_GMR_NULL         ((uint32) -1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SVGA_GMR_FRAMEBUFFER  ((uint32) -2)  // Guest Framebuffer (GFB)
 =======
 #define SVGA_GMR_FRAMEBUFFER  ((uint32) -2)  /* Guest Framebuffer (GFB) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SVGA_GMR_FRAMEBUFFER  ((uint32) -2)  /* Guest Framebuffer (GFB) */
+>>>>>>> refs/remotes/origin/master
 
 typedef
 struct SVGAGuestMemDescriptor {
@@ -329,10 +345,14 @@ struct SVGAGMRImageFormat {
          uint32 bitsPerPixel : 8;
          uint32 colorDepth   : 8;
 <<<<<<< HEAD
+<<<<<<< HEAD
          uint32 reserved     : 16;  // Must be zero
 =======
          uint32 reserved     : 16;  /* Must be zero */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+         uint32 reserved     : 16;  /* Must be zero */
+>>>>>>> refs/remotes/origin/master
       };
 
       uint32 value;
@@ -340,7 +360,10 @@ struct SVGAGMRImageFormat {
 } SVGAGMRImageFormat;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef
 struct SVGAGuestImage {
    SVGAGuestPtr         ptr;
@@ -363,7 +386,10 @@ struct SVGAGuestImage {
    uint32 pitch;
 } SVGAGuestImage;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * SVGAColorBGRX --
  *
@@ -380,10 +406,14 @@ struct SVGAColorBGRX {
          uint32 g : 8;
          uint32 r : 8;
 <<<<<<< HEAD
+<<<<<<< HEAD
          uint32 x : 8;  // Unused
 =======
          uint32 x : 8;  /* Unused */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+         uint32 x : 8;  /* Unused */
+>>>>>>> refs/remotes/origin/master
       };
 
       uint32 value;
@@ -426,7 +456,10 @@ struct SVGASignedPoint {
  *  and must not be reused. Those capabilities will never be reported
  *  by new versions of the SVGA device.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * SVGA_CAP_GMR2 --
  *    Provides asynchronous commands to define and remap guest memory
@@ -436,12 +469,16 @@ struct SVGASignedPoint {
  * SVGA_CAP_SCREEN_OBJECT_2 --
  *    Allow screen object support, and require backing stores from the
  *    guest for each screen object.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #define SVGA_CAP_NONE               0x00000000
 #define SVGA_CAP_RECT_COPY          0x00000002
 #define SVGA_CAP_CURSOR             0x00000020
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SVGA_CAP_CURSOR_BYPASS      0x00000040   // Legacy (Use Cursor Bypass 3 instead)
 #define SVGA_CAP_CURSOR_BYPASS_2    0x00000080   // Legacy (Use Cursor Bypass 3 instead)
@@ -449,10 +486,15 @@ struct SVGASignedPoint {
 #define SVGA_CAP_CURSOR_BYPASS      0x00000040   /* Legacy (Use Cursor Bypass 3 instead) */
 #define SVGA_CAP_CURSOR_BYPASS_2    0x00000080   /* Legacy (Use Cursor Bypass 3 instead) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SVGA_CAP_CURSOR_BYPASS      0x00000040   /* Legacy (Use Cursor Bypass 3 instead) */
+#define SVGA_CAP_CURSOR_BYPASS_2    0x00000080   /* Legacy (Use Cursor Bypass 3 instead) */
+>>>>>>> refs/remotes/origin/master
 #define SVGA_CAP_8BIT_EMULATION     0x00000100
 #define SVGA_CAP_ALPHA_CURSOR       0x00000200
 #define SVGA_CAP_3D                 0x00004000
 #define SVGA_CAP_EXTENDED_FIFO      0x00008000
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SVGA_CAP_MULTIMON           0x00010000   // Legacy multi-monitor support
 #define SVGA_CAP_PITCHLOCK          0x00020000
@@ -461,6 +503,8 @@ struct SVGASignedPoint {
 #define SVGA_CAP_GMR                0x00100000
 #define SVGA_CAP_TRACES             0x00200000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SVGA_CAP_MULTIMON           0x00010000   /* Legacy multi-monitor support */
 #define SVGA_CAP_PITCHLOCK          0x00020000
 #define SVGA_CAP_IRQMASK            0x00040000
@@ -469,7 +513,10 @@ struct SVGASignedPoint {
 #define SVGA_CAP_TRACES             0x00200000
 #define SVGA_CAP_GMR2               0x00400000
 #define SVGA_CAP_SCREEN_OBJECT_2    0x00800000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -515,10 +562,14 @@ enum {
    SVGA_FIFO_CAPABILITIES = 4,
    SVGA_FIFO_FLAGS,
 <<<<<<< HEAD
+<<<<<<< HEAD
    // Valid with SVGA_FIFO_CAP_FENCE:
 =======
    /* Valid with SVGA_FIFO_CAP_FENCE: */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   /* Valid with SVGA_FIFO_CAP_FENCE: */
+>>>>>>> refs/remotes/origin/master
    SVGA_FIFO_FENCE,
 
    /*
@@ -532,6 +583,7 @@ enum {
     */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    // Valid if exists (i.e. if extended FIFO enabled):
    SVGA_FIFO_3D_HWVERSION,       /* See SVGA3dHardwareVersion in svga3d_reg.h */
    // Valid with SVGA_FIFO_CAP_PITCHLOCK:
@@ -539,13 +591,18 @@ enum {
 
    // Valid with SVGA_FIFO_CAP_CURSOR_BYPASS_3:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    /* Valid if exists (i.e. if extended FIFO enabled): */
    SVGA_FIFO_3D_HWVERSION,       /* See SVGA3dHardwareVersion in svga3d_reg.h */
    /* Valid with SVGA_FIFO_CAP_PITCHLOCK: */
    SVGA_FIFO_PITCHLOCK,
 
    /* Valid with SVGA_FIFO_CAP_CURSOR_BYPASS_3: */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    SVGA_FIFO_CURSOR_ON,          /* Cursor bypass 3 show/hide register */
    SVGA_FIFO_CURSOR_X,           /* Cursor bypass 3 x register */
    SVGA_FIFO_CURSOR_Y,           /* Cursor bypass 3 y register */
@@ -553,34 +610,47 @@ enum {
    SVGA_FIFO_CURSOR_LAST_UPDATED,/* Last time the host updated the cursor */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    // Valid with SVGA_FIFO_CAP_RESERVE:
    SVGA_FIFO_RESERVED,           /* Bytes past NEXT_CMD with real contents */
 
    /*
     * Valid with SVGA_FIFO_CAP_SCREEN_OBJECT:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    /* Valid with SVGA_FIFO_CAP_RESERVE: */
    SVGA_FIFO_RESERVED,           /* Bytes past NEXT_CMD with real contents */
 
    /*
     * Valid with SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     *
     * By default this is SVGA_ID_INVALID, to indicate that the cursor
     * coordinates are specified relative to the virtual root. If this
     * is set to a specific screen ID, cursor position is reinterpreted
+<<<<<<< HEAD
 <<<<<<< HEAD
     * as a signed offset relative to that screen's origin. This is the
     * only way to place the cursor on a non-rooted screen.
 =======
     * as a signed offset relative to that screen's origin.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    * as a signed offset relative to that screen's origin.
+>>>>>>> refs/remotes/origin/master
     */
    SVGA_FIFO_CURSOR_SCREEN_ID,
 
    /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     * Valid with SVGA_FIFO_CAP_DEAD
     *
     * An arbitrary value written by the host, drivers should not use it.
@@ -596,7 +666,10 @@ enum {
    SVGA_FIFO_3D_HWVERSION_REVISED,
 
    /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     * XXX: The gap here, up until SVGA_FIFO_3D_CAPS, can be used for new
     * registers, but this must be done carefully and with judicious use of
     * capability bits, since comparisons based on SVGA_FIFO_MIN aren't
@@ -635,10 +708,14 @@ enum {
     */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    // Valid if register exists:
 =======
    /* Valid if register exists: */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   /* Valid if register exists: */
+>>>>>>> refs/remotes/origin/master
    SVGA_FIFO_GUEST_3D_HWVERSION, /* Guest driver's 3D version */
    SVGA_FIFO_FENCE_GOAL,         /* Matching target for SVGA_IRQFLAG_FENCE_GOAL */
    SVGA_FIFO_BUSY,               /* See "FIFO Synchronization Registers" */
@@ -840,7 +917,10 @@ enum {
  *       - When a screen is resized, either using Screen Object commands or
  *         legacy multimon registers, its contents are preserved.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * SVGA_FIFO_CAP_GMR2 --
  *
@@ -872,7 +952,10 @@ enum {
  *
  *    Drivers should not use this cap bit.  This cap bit can not be
  *    reused since some hosts already expose it.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #define SVGA_FIFO_CAP_NONE                  0
@@ -885,12 +968,18 @@ enum {
 #define SVGA_FIFO_CAP_RESERVE           (1<<6)
 #define SVGA_FIFO_CAP_SCREEN_OBJECT     (1<<7)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SVGA_FIFO_CAP_GMR2              (1<<8)
 #define SVGA_FIFO_CAP_3D_HWVERSION_REVISED  SVGA_FIFO_CAP_GMR2
 #define SVGA_FIFO_CAP_SCREEN_OBJECT_2   (1<<9)
 #define SVGA_FIFO_CAP_DEAD              (1<<10)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -902,10 +991,14 @@ enum {
 #define SVGA_FIFO_FLAG_NONE                 0
 #define SVGA_FIFO_FLAG_ACCELFRONT       (1<<0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SVGA_FIFO_FLAG_RESERVED        (1<<31) // Internal use only
 =======
 #define SVGA_FIFO_FLAG_RESERVED        (1<<31) /* Internal use only */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SVGA_FIFO_FLAG_RESERVED        (1<<31) /* Internal use only */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * FIFO reservation sentinel value
@@ -939,10 +1032,14 @@ enum {
    SVGA_VIDEO_FORMAT,
    SVGA_VIDEO_COLORKEY,
 <<<<<<< HEAD
+<<<<<<< HEAD
    SVGA_VIDEO_SIZE,          // Deprecated
 =======
    SVGA_VIDEO_SIZE,          /* Deprecated */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   SVGA_VIDEO_SIZE,          /* Deprecated */
+>>>>>>> refs/remotes/origin/master
    SVGA_VIDEO_WIDTH,
    SVGA_VIDEO_HEIGHT,
    SVGA_VIDEO_SRC_X,
@@ -950,17 +1047,23 @@ enum {
    SVGA_VIDEO_SRC_WIDTH,
    SVGA_VIDEO_SRC_HEIGHT,
 <<<<<<< HEAD
+<<<<<<< HEAD
    SVGA_VIDEO_DST_X,         // Signed int32
    SVGA_VIDEO_DST_Y,         // Signed int32
 =======
    SVGA_VIDEO_DST_X,         /* Signed int32 */
    SVGA_VIDEO_DST_Y,         /* Signed int32 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   SVGA_VIDEO_DST_X,         /* Signed int32 */
+   SVGA_VIDEO_DST_Y,         /* Signed int32 */
+>>>>>>> refs/remotes/origin/master
    SVGA_VIDEO_DST_WIDTH,
    SVGA_VIDEO_DST_HEIGHT,
    SVGA_VIDEO_PITCH_1,
    SVGA_VIDEO_PITCH_2,
    SVGA_VIDEO_PITCH_3,
+<<<<<<< HEAD
 <<<<<<< HEAD
    SVGA_VIDEO_DATA_GMRID,    // Optional, defaults to SVGA_GMR_FRAMEBUFFER
    SVGA_VIDEO_DST_SCREEN_ID, // Optional, defaults to virtual coords (SVGA_ID_INVALID)
@@ -968,6 +1071,10 @@ enum {
    SVGA_VIDEO_DATA_GMRID,    /* Optional, defaults to SVGA_GMR_FRAMEBUFFER */
    SVGA_VIDEO_DST_SCREEN_ID, /* Optional, defaults to virtual coords (SVGA_ID_INVALID) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   SVGA_VIDEO_DATA_GMRID,    /* Optional, defaults to SVGA_GMR_FRAMEBUFFER */
+   SVGA_VIDEO_DST_SCREEN_ID, /* Optional, defaults to virtual coords (SVGA_ID_INVALID) */
+>>>>>>> refs/remotes/origin/master
    SVGA_VIDEO_NUM_REGS
 };
 
@@ -1019,6 +1126,7 @@ typedef struct SVGAOverlayUnit {
  *    but existing fields must retain their meaning.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 
 #define SVGA_SCREEN_HAS_ROOT    (1 << 0)  // Screen is present in the virtual coord space
@@ -1029,6 +1137,8 @@ typedef
 struct SVGAScreenObject {
    uint32 structSize;   // sizeof(SVGAScreenObject)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *    Added with SVGA_FIFO_CAP_SCREEN_OBJECT_2 are required fields of
  *    a SVGAGuestPtr that is used to back the screen contents.  This
  *    memory must come from the GFB.  The guest is not allowed to
@@ -1074,7 +1184,10 @@ struct SVGAScreenObject {
 typedef
 struct SVGAScreenObject {
    uint32 structSize;   /* sizeof(SVGAScreenObject) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    uint32 id;
    uint32 flags;
    struct {
@@ -1085,8 +1198,11 @@ struct SVGAScreenObject {
       int32 x;
       int32 y;
 <<<<<<< HEAD
+<<<<<<< HEAD
    } root;              // Only used if SVGA_SCREEN_HAS_ROOT is set.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    } root;
 
    /*
@@ -1095,7 +1211,10 @@ struct SVGAScreenObject {
     */
    SVGAGuestImage backingStore;
    uint32 cloneCount;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } SVGAScreenObject;
 
 
@@ -1134,10 +1253,15 @@ typedef enum {
    SVGA_CMD_ANNOTATION_FILL       = 39,
    SVGA_CMD_ANNOTATION_COPY       = 40,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
    SVGA_CMD_DEFINE_GMR2           = 41,
    SVGA_CMD_REMAP_GMR2            = 42,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   SVGA_CMD_DEFINE_GMR2           = 41,
+   SVGA_CMD_REMAP_GMR2            = 42,
+>>>>>>> refs/remotes/origin/master
    SVGA_CMD_MAX
 } SVGAFifoCmdId;
 
@@ -1174,10 +1298,14 @@ typedef enum {
 
 typedef
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct {
 =======
 struct SVGAFifoCmdUpdate {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct SVGAFifoCmdUpdate {
+>>>>>>> refs/remotes/origin/master
    uint32 x;
    uint32 y;
    uint32 width;
@@ -1197,10 +1325,14 @@ struct SVGAFifoCmdUpdate {
 
 typedef
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct {
 =======
 struct SVGAFifoCmdRectCopy {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct SVGAFifoCmdRectCopy {
+>>>>>>> refs/remotes/origin/master
    uint32 srcX;
    uint32 srcY;
    uint32 destX;
@@ -1225,16 +1357,22 @@ struct SVGAFifoCmdRectCopy {
 
 typedef
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct {
    uint32 id;             // Reserved, must be zero.
 =======
 struct SVGAFifoCmdDefineCursor {
    uint32 id;             /* Reserved, must be zero. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct SVGAFifoCmdDefineCursor {
+   uint32 id;             /* Reserved, must be zero. */
+>>>>>>> refs/remotes/origin/master
    uint32 hotspotX;
    uint32 hotspotY;
    uint32 width;
    uint32 height;
+<<<<<<< HEAD
 <<<<<<< HEAD
    uint32 andMaskDepth;   // Value must be 1 or equal to BITS_PER_PIXEL
    uint32 xorMaskDepth;   // Value must be 1 or equal to BITS_PER_PIXEL
@@ -1242,6 +1380,10 @@ struct SVGAFifoCmdDefineCursor {
    uint32 andMaskDepth;   /* Value must be 1 or equal to BITS_PER_PIXEL */
    uint32 xorMaskDepth;   /* Value must be 1 or equal to BITS_PER_PIXEL */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   uint32 andMaskDepth;   /* Value must be 1 or equal to BITS_PER_PIXEL */
+   uint32 xorMaskDepth;   /* Value must be 1 or equal to BITS_PER_PIXEL */
+>>>>>>> refs/remotes/origin/master
    /*
     * Followed by scanline data for AND mask, then XOR mask.
     * Each scanline is padded to a 32-bit boundary.
@@ -1264,12 +1406,17 @@ struct SVGAFifoCmdDefineCursor {
 
 typedef
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct {
    uint32 id;             // Reserved, must be zero.
 =======
 struct SVGAFifoCmdDefineAlphaCursor {
    uint32 id;             /* Reserved, must be zero. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct SVGAFifoCmdDefineAlphaCursor {
+   uint32 id;             /* Reserved, must be zero. */
+>>>>>>> refs/remotes/origin/master
    uint32 hotspotX;
    uint32 hotspotY;
    uint32 width;
@@ -1292,10 +1439,14 @@ struct SVGAFifoCmdDefineAlphaCursor {
 
 typedef
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct {
 =======
 struct SVGAFifoCmdUpdateVerbose {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct SVGAFifoCmdUpdateVerbose {
+>>>>>>> refs/remotes/origin/master
    uint32 x;
    uint32 y;
    uint32 width;
@@ -1321,21 +1472,30 @@ struct SVGAFifoCmdUpdateVerbose {
 
 typedef
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct {
    uint32 color;     // In the same format as the GFB
 =======
 struct SVGAFifoCmdFrontRopFill {
    uint32 color;     /* In the same format as the GFB */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct SVGAFifoCmdFrontRopFill {
+   uint32 color;     /* In the same format as the GFB */
+>>>>>>> refs/remotes/origin/master
    uint32 x;
    uint32 y;
    uint32 width;
    uint32 height;
 <<<<<<< HEAD
+<<<<<<< HEAD
    uint32 rop;       // Must be SVGA_ROP_COPY
 =======
    uint32 rop;       /* Must be SVGA_ROP_COPY */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   uint32 rop;       /* Must be SVGA_ROP_COPY */
+>>>>>>> refs/remotes/origin/master
 } SVGAFifoCmdFrontRopFill;
 
 
@@ -1373,10 +1533,14 @@ struct {
 
 typedef
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct {
 =======
 struct SVGAFifoCmdEscape {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct SVGAFifoCmdEscape {
+>>>>>>> refs/remotes/origin/master
    uint32 nsid;
    uint32 size;
    /* followed by 'size' bytes of data */
@@ -1407,19 +1571,27 @@ struct SVGAFifoCmdEscape {
  *
  * Availability:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    SVGA_FIFO_CAP_SCREEN_OBJECT
 =======
  *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
+>>>>>>> refs/remotes/origin/master
  */
 
 typedef
 struct {
 <<<<<<< HEAD
+<<<<<<< HEAD
    SVGAScreenObject screen;   // Variable-length according to version
 =======
    SVGAScreenObject screen;   /* Variable-length according to version */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   SVGAScreenObject screen;   /* Variable-length according to version */
+>>>>>>> refs/remotes/origin/master
 } SVGAFifoCmdDefineScreen;
 
 
@@ -1431,10 +1603,14 @@ struct {
  *
  * Availability:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    SVGA_FIFO_CAP_SCREEN_OBJECT
 =======
  *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
+>>>>>>> refs/remotes/origin/master
  */
 
 typedef
@@ -1488,10 +1664,14 @@ struct {
  *
  * Availability:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    SVGA_FIFO_CAP_SCREEN_OBJECT
 =======
  *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
+>>>>>>> refs/remotes/origin/master
  */
 
 typedef
@@ -1529,10 +1709,14 @@ struct {
  *
  * Availability:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    SVGA_FIFO_CAP_SCREEN_OBJECT
 =======
  *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
+>>>>>>> refs/remotes/origin/master
  */
 
 typedef
@@ -1581,10 +1765,14 @@ struct {
  *
  * Availability:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    SVGA_FIFO_CAP_SCREEN_OBJECT
 =======
  *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
+>>>>>>> refs/remotes/origin/master
  */
 
 typedef
@@ -1620,10 +1808,14 @@ struct {
  *
  * Availability:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    SVGA_FIFO_CAP_SCREEN_OBJECT
 =======
  *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
+>>>>>>> refs/remotes/origin/master
  */
 
 typedef
@@ -1656,10 +1848,14 @@ struct {
  *
  * Availability:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *    SVGA_FIFO_CAP_SCREEN_OBJECT
 =======
  *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    SVGA_FIFO_CAP_SCREEN_OBJECT or SVGA_FIFO_CAP_SCREEN_OBJECT_2
+>>>>>>> refs/remotes/origin/master
  */
 
 typedef
@@ -1669,7 +1865,10 @@ struct {
 } SVGAFifoCmdAnnotationCopy;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SVGA_CMD_DEFINE_GMR2 --
@@ -1738,5 +1937,8 @@ struct {
     */
 } SVGAFifoCmdRemapGMR2;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

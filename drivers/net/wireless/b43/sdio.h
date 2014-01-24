@@ -25,12 +25,20 @@ void b43_sdio_exit(void);
 #else /* CONFIG_B43_SDIO */
 
 
+<<<<<<< HEAD
 int b43_sdio_request_irq(struct b43_wldev *dev,
+=======
+static inline int b43_sdio_request_irq(struct b43_wldev *dev,
+>>>>>>> refs/remotes/origin/master
 			 void (*handler)(struct b43_wldev *dev))
 {
 	return -ENODEV;
 }
+<<<<<<< HEAD
 void b43_sdio_free_irq(struct b43_wldev *dev)
+=======
+static inline void b43_sdio_free_irq(struct b43_wldev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 }
 static inline int b43_sdio_init(void)

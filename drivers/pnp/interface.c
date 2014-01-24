@@ -203,8 +203,13 @@ static void pnp_print_option(pnp_info_buffer_t * buffer, char *space,
 	}
 }
 
+<<<<<<< HEAD
 static ssize_t pnp_show_options(struct device *dmdev,
 				struct device_attribute *attr, char *buf)
+=======
+static ssize_t options_show(struct device *dmdev, struct device_attribute *attr,
+			    char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *dev = to_pnp_dev(dmdev);
 	pnp_info_buffer_t *buffer;
@@ -241,10 +246,17 @@ static ssize_t pnp_show_options(struct device *dmdev,
 	kfree(buffer);
 	return ret;
 }
+<<<<<<< HEAD
 
 static ssize_t pnp_show_current_resources(struct device *dmdev,
 					  struct device_attribute *attr,
 					  char *buf)
+=======
+static DEVICE_ATTR_RO(options);
+
+static ssize_t resources_show(struct device *dmdev,
+			      struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *dev = to_pnp_dev(dmdev);
 	pnp_info_buffer_t *buffer;
@@ -298,14 +310,56 @@ static ssize_t pnp_show_current_resources(struct device *dmdev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static ssize_t pnp_set_current_resources(struct device *dmdev,
 					 struct device_attribute *attr,
 					 const char *ubuf, size_t count)
+=======
+static char *pnp_get_resource_value(char *buf,
+				    unsigned long type,
+				    resource_size_t *start,
+				    resource_size_t *end,
+				    unsigned long *flags)
+{
+	if (start)
+		*start = 0;
+	if (end)
+		*end = 0;
+	if (flags)
+		*flags = 0;
+
+	/* TBD: allow for disabled resources */
+
+	buf = skip_spaces(buf);
+	if (start) {
+		*start = simple_strtoull(buf, &buf, 0);
+		if (end) {
+			buf = skip_spaces(buf);
+			if (*buf == '-') {
+				buf = skip_spaces(buf + 1);
+				*end = simple_strtoull(buf, &buf, 0);
+			} else
+				*end = *start;
+		}
+	}
+
+	/* TBD: allow for additional flags, e.g., IORESOURCE_WINDOW */
+
+	return buf;
+}
+
+static ssize_t resources_store(struct device *dmdev,
+			       struct device_attribute *attr, const char *ubuf,
+			       size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *dev = to_pnp_dev(dmdev);
 	char *buf = (void *)ubuf;
 	int retval = 0;
+<<<<<<< HEAD
 	resource_size_t start, end;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->status & PNP_ATTACHED) {
 		retval = -EBUSY;
@@ -349,6 +403,13 @@ static ssize_t pnp_set_current_resources(struct device *dmdev,
 		goto done;
 	}
 	if (!strnicmp(buf, "set", 3)) {
+<<<<<<< HEAD
+=======
+		resource_size_t start;
+		resource_size_t end;
+		unsigned long flags;
+
+>>>>>>> refs/remotes/origin/master
 		if (dev->active)
 			goto done;
 		buf += 3;
@@ -357,6 +418,7 @@ static ssize_t pnp_set_current_resources(struct device *dmdev,
 		while (1) {
 			buf = skip_spaces(buf);
 			if (!strnicmp(buf, "io", 2)) {
+<<<<<<< HEAD
 				buf = skip_spaces(buf + 2);
 				start = simple_strtoul(buf, &buf, 0);
 				buf = skip_spaces(buf);
@@ -393,6 +455,39 @@ static ssize_t pnp_set_current_resources(struct device *dmdev,
 				continue;
 			}
 			break;
+=======
+				buf = pnp_get_resource_value(buf + 2,
+							     IORESOURCE_IO,
+							     &start, &end,
+							     &flags);
+				pnp_add_io_resource(dev, start, end, flags);
+			} else if (!strnicmp(buf, "mem", 3)) {
+				buf = pnp_get_resource_value(buf + 3,
+							     IORESOURCE_MEM,
+							     &start, &end,
+							     &flags);
+				pnp_add_mem_resource(dev, start, end, flags);
+			} else if (!strnicmp(buf, "irq", 3)) {
+				buf = pnp_get_resource_value(buf + 3,
+							     IORESOURCE_IRQ,
+							     &start, NULL,
+							     &flags);
+				pnp_add_irq_resource(dev, start, flags);
+			} else if (!strnicmp(buf, "dma", 3)) {
+				buf = pnp_get_resource_value(buf + 3,
+							     IORESOURCE_DMA,
+							     &start, NULL,
+							     &flags);
+				pnp_add_dma_resource(dev, start, flags);
+			} else if (!strnicmp(buf, "bus", 3)) {
+				buf = pnp_get_resource_value(buf + 3,
+							     IORESOURCE_BUS,
+							     &start, &end,
+							     NULL);
+				pnp_add_bus_resource(dev, start, end);
+			} else
+				break;
+>>>>>>> refs/remotes/origin/master
 		}
 		mutex_unlock(&pnp_res_mutex);
 		goto done;
@@ -403,9 +498,16 @@ done:
 		return retval;
 	return count;
 }
+<<<<<<< HEAD
 
 static ssize_t pnp_show_current_ids(struct device *dmdev,
 				    struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RW(resources);
+
+static ssize_t id_show(struct device *dmdev, struct device_attribute *attr,
+		       char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	char *str = buf;
 	struct pnp_dev *dev = to_pnp_dev(dmdev);
@@ -417,6 +519,7 @@ static ssize_t pnp_show_current_ids(struct device *dmdev,
 	}
 	return (str - buf);
 }
+<<<<<<< HEAD
 
 struct device_attribute pnp_interface_attrs[] = {
 	__ATTR(resources, S_IRUGO | S_IWUSR,
@@ -425,4 +528,22 @@ struct device_attribute pnp_interface_attrs[] = {
 	__ATTR(options, S_IRUGO, pnp_show_options, NULL),
 	__ATTR(id, S_IRUGO, pnp_show_current_ids, NULL),
 	__ATTR_NULL,
+=======
+static DEVICE_ATTR_RO(id);
+
+static struct attribute *pnp_dev_attrs[] = {
+	&dev_attr_resources.attr,
+	&dev_attr_options.attr,
+	&dev_attr_id.attr,
+	NULL,
+};
+
+static const struct attribute_group pnp_dev_group = {
+	.attrs = pnp_dev_attrs,
+};
+
+const struct attribute_group *pnp_dev_groups[] = {
+	&pnp_dev_group,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };

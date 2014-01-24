@@ -30,15 +30,22 @@
 #include <linux/spi/spi.h>
 #include <linux/regulator/machine.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/spi/l4f00242t03.h>
 
 #include <media/soc_camera.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/spi/l4f00242t03.h>
+
+#include <media/soc_camera.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/common.h>
 #include <mach/iomux-mx27.h>
@@ -58,6 +65,19 @@
 #define OTG_PHY_RESET_GPIO	IMX_GPIO_NR(2, 23)
 #define SPI2_SS0		IMX_GPIO_NR(4, 21)
 #define EXPIO_PARENT_INT	gpio_to_irq(IMX_GPIO_NR(3, 28))
+=======
+
+#include "3ds_debugboard.h"
+#include "common.h"
+#include "devices-imx27.h"
+#include "hardware.h"
+#include "iomux-mx27.h"
+#include "ulpi.h"
+
+#define SD1_EN_GPIO		IMX_GPIO_NR(2, 25)
+#define OTG_PHY_RESET_GPIO	IMX_GPIO_NR(2, 23)
+#define SPI2_SS0		IMX_GPIO_NR(4, 21)
+>>>>>>> refs/remotes/origin/master
 #define PMIC_INT		IMX_GPIO_NR(3, 14)
 #define SPI1_SS0		IMX_GPIO_NR(4, 28)
 #define SD1_CD			IMX_GPIO_NR(2, 26)
@@ -65,7 +85,10 @@
 #define LCD_ENABLE		IMX_GPIO_NR(1, 31)
 #define CSI_PWRDWN		IMX_GPIO_NR(4, 19)
 #define CSI_RESET		IMX_GPIO_NR(3, 6)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const int mx27pdk_pins[] __initconst = {
 	/* UART1 */
@@ -115,23 +138,32 @@ static const int mx27pdk_pins[] __initconst = {
 	PE24_PF_USBOTG_CLK,
 	PE25_PF_USBOTG_DATA7,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* CSPI1 */
 	PD31_PF_CSPI1_MOSI,
 	PD30_PF_CSPI1_MISO,
 	PD29_PF_CSPI1_SCLK,
 	PD25_PF_CSPI1_RDY,
 	SPI1_SS0 | GPIO_GPIO | GPIO_OUT,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* CSPI2 */
 	PD22_PF_CSPI2_SCLK,
 	PD23_PF_CSPI2_MISO,
 	PD24_PF_CSPI2_MOSI,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* I2C1 */
 	PD17_PF_I2C_DATA,
 	PD18_PF_I2C_CLK,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	SPI2_SS0 | GPIO_GPIO | GPIO_OUT,
 	/* I2C1 */
 	PD17_PF_I2C_DATA,
@@ -178,12 +210,23 @@ static const int mx27pdk_pins[] __initconst = {
 	PB21_PF_CSI_HSYNC,
 	CSI_PWRDWN | GPIO_GPIO | GPIO_OUT,
 	CSI_RESET | GPIO_GPIO | GPIO_OUT,
+<<<<<<< HEAD
+=======
+	/* SSI4 */
+	PC16_PF_SSI4_FS,
+	PC17_PF_SSI4_RXD,
+	PC18_PF_SSI4_TXD,
+	PC19_PF_SSI4_CLK,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct gpio mx27_3ds_camera_gpios[] = {
 	{ CSI_PWRDWN, GPIOF_OUT_INIT_HIGH, "camera-power" },
 	{ CSI_RESET, GPIOF_OUT_INIT_HIGH, "camera-reset" },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct imxuart_platform_data uart_pdata __initconst = {
@@ -215,21 +258,30 @@ static int mx27_3ds_sdhc1_init(struct device *dev, irq_handler_t detect_irq,
 				void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return request_irq(IRQ_GPIOB(26), detect_irq, IRQF_TRIGGER_FALLING |
 			IRQF_TRIGGER_RISING, "sdhc1-card-detect", data);
 =======
 	return request_irq(gpio_to_irq(SD1_CD), detect_irq,
 	IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, "sdhc1-card-detect", data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return request_irq(gpio_to_irq(SD1_CD), detect_irq,
+	IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING, "sdhc1-card-detect", data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mx27_3ds_sdhc1_exit(struct device *dev, void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(IRQ_GPIOB(26), data);
 =======
 	free_irq(gpio_to_irq(SD1_CD), data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(gpio_to_irq(SD1_CD), data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct imxmmc_platform_data sdhc1_pdata __initconst = {
@@ -269,11 +321,16 @@ static const struct fsl_usb2_platform_data otg_device_pdata __initconst = {
 	.phy_mode       = FSL_USB2_PHY_ULPI,
 };
 
+<<<<<<< HEAD
 static int otg_mode_host;
+=======
+static bool otg_mode_host __initdata;
+>>>>>>> refs/remotes/origin/master
 
 static int __init mx27_3ds_otg_mode(char *options)
 {
 	if (!strcmp(options, "host"))
+<<<<<<< HEAD
 		otg_mode_host = 1;
 	else if (!strcmp(options, "device"))
 		otg_mode_host = 0;
@@ -281,14 +338,26 @@ static int __init mx27_3ds_otg_mode(char *options)
 		pr_info("otg_mode neither \"host\" nor \"device\". "
 			"Defaulting to device\n");
 	return 0;
+=======
+		otg_mode_host = true;
+	else if (!strcmp(options, "device"))
+		otg_mode_host = false;
+	else
+		pr_info("otg_mode neither \"host\" nor \"device\". "
+			"Defaulting to device\n");
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 __setup("otg_mode=", mx27_3ds_otg_mode);
 
 /* Regulators */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct regulator_consumer_supply vmmc1_consumers[] = {
 	REGULATOR_SUPPLY("lcd_2v8", NULL),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct regulator_init_data gpo_init = {
 	.constraints = {
 		.boot_on = 1,
@@ -299,7 +368,10 @@ static struct regulator_init_data gpo_init = {
 static struct regulator_consumer_supply vmmc1_consumers[] = {
 	REGULATOR_SUPPLY("vcore", "spi0.0"),
 	REGULATOR_SUPPLY("cmos_2v8", "soc-camera-pdrv.0"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data vmmc1_init = {
@@ -307,12 +379,18 @@ static struct regulator_init_data vmmc1_init = {
 		.min_uV	= 2800000,
 		.max_uV = 2800000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE,
 =======
 		.apply_uV = 1,
 		.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE |
 				  REGULATOR_CHANGE_STATUS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.apply_uV = 1,
+		.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE |
+				  REGULATOR_CHANGE_STATUS,
+>>>>>>> refs/remotes/origin/master
 	},
 	.num_consumer_supplies = ARRAY_SIZE(vmmc1_consumers),
 	.consumer_supplies = vmmc1_consumers,
@@ -320,10 +398,14 @@ static struct regulator_init_data vmmc1_init = {
 
 static struct regulator_consumer_supply vgen_consumers[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("vdd_lcdio", NULL),
 =======
 	REGULATOR_SUPPLY("vdd", "spi0.0"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("vdd", "spi0.0"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data vgen_init = {
@@ -337,7 +419,10 @@ static struct regulator_init_data vgen_init = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct regulator_consumer_supply vvib_consumers[] = {
 	REGULATOR_SUPPLY("cmos_vcore", "soc-camera-pdrv.0"),
 };
@@ -354,7 +439,10 @@ static struct regulator_init_data vvib_init = {
 	.consumer_supplies = vvib_consumers,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mc13xxx_regulator_init_data mx27_3ds_regulators[] = {
 	{
 		.id = MC13783_REG_VMMC1,
@@ -363,7 +451,10 @@ static struct mc13xxx_regulator_init_data mx27_3ds_regulators[] = {
 		.id = MC13783_REG_VGEN,
 		.init_data = &vgen_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.id = MC13783_REG_GPO1, /* Turn on 1.8V */
 		.init_data = &gpo_init,
@@ -373,17 +464,29 @@ static struct mc13xxx_regulator_init_data mx27_3ds_regulators[] = {
 	}, {
 		.id = MC13783_REG_VVIB,  /* Power OV2640 */
 		.init_data = &vvib_init,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 /* MC13783 */
+<<<<<<< HEAD
+=======
+static struct mc13xxx_codec_platform_data mx27_3ds_codec = {
+	.dac_ssi_port = MC13783_SSI1_PORT,
+	.adc_ssi_port = MC13783_SSI1_PORT,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct mc13xxx_platform_data mc13783_pdata = {
 	.regulators = {
 		.regulators = mx27_3ds_regulators,
 		.num_regulators = ARRAY_SIZE(mx27_3ds_regulators),
 
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.flags  = MC13783_USE_REGULATOR,
 };
@@ -396,6 +499,15 @@ static const struct spi_imx_master spi2_pdata __initconst = {
 	.num_chipselect	= ARRAY_SIZE(spi2_internal_chipselect),
 =======
 	.flags  = MC13XXX_USE_TOUCHSCREEN | MC13XXX_USE_RTC,
+=======
+	.flags  = MC13XXX_USE_TOUCHSCREEN | MC13XXX_USE_RTC |
+						MC13XXX_USE_CODEC,
+	.codec = &mx27_3ds_codec,
+};
+
+static struct imx_ssi_platform_data mx27_3ds_ssi_pdata = {
+	.flags = IMX_SSI_DMA | IMX_SSI_NET,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* SPI */
@@ -494,7 +606,10 @@ static const struct imx_fb_platform_data mx27_3ds_fb_data __initconst = {
 static struct l4f00242t03_pdata mx27_3ds_lcd_pdata = {
 	.reset_gpio		= LCD_RESET,
 	.data_enable_gpio	= LCD_ENABLE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct spi_board_info mx27_3ds_spi_devs[] __initdata = {
@@ -505,6 +620,7 @@ static struct spi_board_info mx27_3ds_spi_devs[] __initdata = {
 		.chip_select	= 0, /* SS0 */
 		.platform_data	= &mc13783_pdata,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq = IRQ_GPIOC(14),
 		.mode = SPI_CS_HIGH,
 	},
@@ -512,6 +628,9 @@ static struct spi_board_info mx27_3ds_spi_devs[] __initdata = {
 
 =======
 		.irq = IMX_GPIO_TO_IRQ(PMIC_INT),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.mode = SPI_CS_HIGH,
 	}, {
 		.modalias	= "l4f00242t03",
@@ -530,7 +649,10 @@ static const struct mx2_camera_platform_data mx27_3ds_cam_pdata __initconst = {
 	.clk = 26000000,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct imxi2c_platform_data mx27_3ds_i2c0_data __initconst = {
 	.bitrate = 100000,
 };
@@ -538,11 +660,17 @@ static const struct imxi2c_platform_data mx27_3ds_i2c0_data __initconst = {
 static void __init mx27pdk_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 	imx27_soc_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+	imx27_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_gpio_setup_multiple_pins(mx27pdk_pins, ARRAY_SIZE(mx27pdk_pins),
 		"mx27pdk");
 	mx27_3ds_sdhc1_enable_level_translator();
@@ -550,7 +678,11 @@ static void __init mx27pdk_init(void)
 	imx27_add_fec(NULL);
 	imx27_add_imx_keypad(&mx27_3ds_keymap_data);
 	imx27_add_mxc_mmc(0, &sdhc1_pdata);
+<<<<<<< HEAD
 	imx27_add_imx2_wdt(NULL);
+=======
+	imx27_add_imx2_wdt();
+>>>>>>> refs/remotes/origin/master
 	otg_phy_init();
 
 	if (otg_mode_host) {
@@ -566,6 +698,7 @@ static void __init mx27pdk_init(void)
 
 	imx27_add_spi_imx1(&spi2_pdata);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	imx27_add_spi_imx0(&spi1_pdata);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -577,6 +710,16 @@ static void __init mx27pdk_init(void)
 	imx27_add_imx_i2c(0, &mx27_3ds_i2c0_data);
 <<<<<<< HEAD
 =======
+=======
+	imx27_add_spi_imx0(&spi1_pdata);
+	mx27_3ds_spi_devs[0].irq = gpio_to_irq(PMIC_INT);
+	spi_register_board_info(mx27_3ds_spi_devs,
+						ARRAY_SIZE(mx27_3ds_spi_devs));
+
+	if (mxc_expio_init(MX27_CS5_BASE_ADDR, IMX_GPIO_NR(3, 28)))
+		pr_warn("Init of the debugboard failed, all devices on the debugboard are unusable.\n");
+	imx27_add_imx_i2c(0, &mx27_3ds_i2c0_data);
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 	imx27_add_imx_fb(&mx27_3ds_fb_data);
 
@@ -588,7 +731,13 @@ static void __init mx27pdk_init(void)
 	}
 
 	imx27_add_mx2_camera(&mx27_3ds_cam_pdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx27_add_imx_ssi(0, &mx27_3ds_ssi_pdata);
+
+	imx_add_platform_device("imx_mc13783", 0, NULL, 0, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init mx27pdk_timer_init(void)
@@ -596,6 +745,7 @@ static void __init mx27pdk_timer_init(void)
 	mx27_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer mx27pdk_timer = {
 	.init	= mx27pdk_timer_init,
 };
@@ -610,13 +760,23 @@ MACHINE_START(MX27_3DS, "Freescale MX27PDK")
 	.timer = &mx27pdk_timer,
 	.init_machine = mx27pdk_init,
 =======
+=======
+MACHINE_START(MX27_3DS, "Freescale MX27PDK")
+	/* maintainer: Freescale Semiconductor, Inc. */
+>>>>>>> refs/remotes/origin/master
 	.atag_offset = 0x100,
 	.map_io = mx27_map_io,
 	.init_early = imx27_init_early,
 	.init_irq = mx27_init_irq,
 	.handle_irq = imx27_handle_irq,
+<<<<<<< HEAD
 	.timer = &mx27pdk_timer,
 	.init_machine = mx27pdk_init,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mx27pdk_timer_init,
+	.init_machine = mx27pdk_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

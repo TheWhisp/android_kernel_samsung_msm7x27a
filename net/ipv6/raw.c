@@ -50,7 +50,11 @@
 #include <net/udp.h>
 #include <net/inet_common.h>
 #include <net/tcp_states.h>
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 #include <net/mip6.h>
 #endif
 #include <linux/mroute6.h>
@@ -62,9 +66,15 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+
+#define	ICMPV6_HDRLEN	4	/* ICMPv6 header, RFC 4443 Section 2.1 */
+>>>>>>> refs/remotes/origin/master
 
 static struct raw_hashinfo raw_v6_hashinfo = {
 	.lock = __RW_LOCK_UNLOCKED(raw_v6_hashinfo.lock),
@@ -74,25 +84,42 @@ static struct sock *__raw_v6_lookup(struct net *net, struct sock *sk,
 		unsigned short num, const struct in6_addr *loc_addr,
 		const struct in6_addr *rmt_addr, int dif)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
 	int is_multicast = ipv6_addr_is_multicast(loc_addr);
 
 	sk_for_each_from(sk, node)
 		if (inet_sk(sk)->inet_num == num) {
 			struct ipv6_pinfo *np = inet6_sk(sk);
+=======
+	bool is_multicast = ipv6_addr_is_multicast(loc_addr);
+
+	sk_for_each_from(sk)
+		if (inet_sk(sk)->inet_num == num) {
+>>>>>>> refs/remotes/origin/master
 
 			if (!net_eq(sock_net(sk), net))
 				continue;
 
+<<<<<<< HEAD
 			if (!ipv6_addr_any(&np->daddr) &&
 			    !ipv6_addr_equal(&np->daddr, rmt_addr))
+=======
+			if (!ipv6_addr_any(&sk->sk_v6_daddr) &&
+			    !ipv6_addr_equal(&sk->sk_v6_daddr, rmt_addr))
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			if (sk->sk_bound_dev_if && sk->sk_bound_dev_if != dif)
 				continue;
 
+<<<<<<< HEAD
 			if (!ipv6_addr_any(&np->rcv_saddr)) {
 				if (ipv6_addr_equal(&np->rcv_saddr, loc_addr))
+=======
+			if (!ipv6_addr_any(&sk->sk_v6_rcv_saddr)) {
+				if (ipv6_addr_equal(&sk->sk_v6_rcv_saddr, loc_addr))
+>>>>>>> refs/remotes/origin/master
 					goto found;
 				if (is_multicast &&
 				    inet6_mc_check(sk, loc_addr, rmt_addr))
@@ -112,11 +139,22 @@ found:
  */
 static int icmpv6_filter(const struct sock *sk, const struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	struct icmp6hdr *_hdr;
 	const struct icmp6hdr *hdr;
 
 	hdr = skb_header_pointer(skb, skb_transport_offset(skb),
 				 sizeof(_hdr), &_hdr);
+=======
+	struct icmp6hdr _hdr;
+	const struct icmp6hdr *hdr;
+
+	/* We require only the four bytes of the ICMPv6 header, not any
+	 * additional bytes of message body in "struct icmp6hdr".
+	 */
+	hdr = skb_header_pointer(skb, skb_transport_offset(skb),
+				 ICMPV6_HDRLEN, &_hdr);
+>>>>>>> refs/remotes/origin/master
 	if (hdr) {
 		const __u32 *data = &raw6_sk(sk)->filter.data[0];
 		unsigned int type = hdr->icmp6_type;
@@ -126,7 +164,11 @@ static int icmpv6_filter(const struct sock *sk, const struct sk_buff *skb)
 	return 1;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 typedef int mh_filter_t(struct sock *sock, struct sk_buff *skb);
 
 static mh_filter_t __rcu *mh_filter __read_mostly;
@@ -141,10 +183,14 @@ EXPORT_SYMBOL(rawv6_mh_filter_register);
 int rawv6_mh_filter_unregister(mh_filter_t filter)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(mh_filter, NULL);
 =======
 	RCU_INIT_POINTER(mh_filter, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(mh_filter, NULL);
+>>>>>>> refs/remotes/origin/master
 	synchronize_rcu();
 	return 0;
 }
@@ -159,19 +205,31 @@ EXPORT_SYMBOL(rawv6_mh_filter_unregister);
  *
  *	Caller owns SKB so we must make clones.
  */
+<<<<<<< HEAD
 static int ipv6_raw_deliver(struct sk_buff *skb, int nexthdr)
+=======
+static bool ipv6_raw_deliver(struct sk_buff *skb, int nexthdr)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct in6_addr *saddr;
 	const struct in6_addr *daddr;
 	struct sock *sk;
+<<<<<<< HEAD
 	int delivered = 0;
+=======
+	bool delivered = false;
+>>>>>>> refs/remotes/origin/master
 	__u8 hash;
 	struct net *net;
 
 	saddr = &ipv6_hdr(skb)->saddr;
 	daddr = saddr + 1;
 
+<<<<<<< HEAD
 	hash = nexthdr & (MAX_INET_PROTOS - 1);
+=======
+	hash = nexthdr & (RAW_HTABLE_SIZE - 1);
+>>>>>>> refs/remotes/origin/master
 
 	read_lock(&raw_v6_hashinfo.lock);
 	sk = sk_head(&raw_v6_hashinfo.ht[hash]);
@@ -185,13 +243,21 @@ static int ipv6_raw_deliver(struct sk_buff *skb, int nexthdr)
 	while (sk) {
 		int filtered;
 
+<<<<<<< HEAD
 		delivered = 1;
+=======
+		delivered = true;
+>>>>>>> refs/remotes/origin/master
 		switch (nexthdr) {
 		case IPPROTO_ICMPV6:
 			filtered = icmpv6_filter(sk, skb);
 			break;
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 		case IPPROTO_MH:
 		{
 			/* XXX: To validate MH only once for each packet,
@@ -231,11 +297,19 @@ out:
 	return delivered;
 }
 
+<<<<<<< HEAD
 int raw6_local_deliver(struct sk_buff *skb, int nexthdr)
 {
 	struct sock *raw_sk;
 
 	raw_sk = sk_head(&raw_v6_hashinfo.ht[nexthdr & (MAX_INET_PROTOS - 1)]);
+=======
+bool raw6_local_deliver(struct sk_buff *skb, int nexthdr)
+{
+	struct sock *raw_sk;
+
+	raw_sk = sk_head(&raw_v6_hashinfo.ht[nexthdr & (RAW_HTABLE_SIZE - 1)]);
+>>>>>>> refs/remotes/origin/master
 	if (raw_sk && !ipv6_raw_deliver(skb, nexthdr))
 		raw_sk = NULL;
 
@@ -271,7 +345,11 @@ static int rawv6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	if (addr_type != IPV6_ADDR_ANY) {
 		struct net_device *dev = NULL;
 
+<<<<<<< HEAD
 		if (addr_type & IPV6_ADDR_LINKLOCAL) {
+=======
+		if (__ipv6_addr_needs_scope_id(addr_type)) {
+>>>>>>> refs/remotes/origin/master
 			if (addr_len >= sizeof(struct sockaddr_in6) &&
 			    addr->sin6_scope_id) {
 				/* Override any existing binding, if another
@@ -306,6 +384,7 @@ static int rawv6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 
 	inet->inet_rcv_saddr = inet->inet_saddr = v4addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&np->rcv_saddr, &addr->sin6_addr);
 	if (!(addr_type & IPV6_ADDR_MULTICAST))
 		ipv6_addr_copy(&np->saddr, &addr->sin6_addr);
@@ -314,6 +393,11 @@ static int rawv6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 	if (!(addr_type & IPV6_ADDR_MULTICAST))
 		np->saddr = addr->sin6_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sk->sk_v6_rcv_saddr = addr->sin6_addr;
+	if (!(addr_type & IPV6_ADDR_MULTICAST))
+		np->saddr = addr->sin6_addr;
+>>>>>>> refs/remotes/origin/master
 	err = 0;
 out_unlock:
 	rcu_read_unlock();
@@ -340,9 +424,20 @@ static void rawv6_err(struct sock *sk, struct sk_buff *skb,
 		return;
 
 	harderr = icmpv6_err_convert(type, code, &err);
+<<<<<<< HEAD
 	if (type == ICMPV6_PKT_TOOBIG)
 		harderr = (np->pmtudisc == IPV6_PMTUDISC_DO);
 
+=======
+	if (type == ICMPV6_PKT_TOOBIG) {
+		ip6_sk_update_pmtu(skb, sk, info);
+		harderr = (np->pmtudisc == IPV6_PMTUDISC_DO);
+	}
+	if (type == NDISC_REDIRECT) {
+		ip6_sk_redirect(skb, sk);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (np->recverr) {
 		u8 *payload = skb->data;
 		if (!inet->hdrincl)
@@ -386,6 +481,7 @@ void raw6_icmp_error(struct sk_buff *skb, int nexthdr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int rawv6_rcv_skb(struct sock * sk, struct sk_buff * skb)
 {
 	if ((raw6_sk(sk)->checksum || rcu_dereference_raw(sk->sk_filter)) &&
@@ -394,6 +490,11 @@ static inline int rawv6_rcv_skb(struct sock *sk, struct sk_buff *skb)
 {
 	if ((raw6_sk(sk)->checksum || rcu_access_pointer(sk->sk_filter)) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int rawv6_rcv_skb(struct sock *sk, struct sk_buff *skb)
+{
+	if ((raw6_sk(sk)->checksum || rcu_access_pointer(sk->sk_filter)) &&
+>>>>>>> refs/remotes/origin/master
 	    skb_checksum_complete(skb)) {
 		atomic_inc(&sk->sk_drops);
 		kfree_skb(skb);
@@ -402,11 +503,16 @@ static inline int rawv6_rcv_skb(struct sock *sk, struct sk_buff *skb)
 
 	/* Charge it to the socket. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ip_queue_rcv_skb(sk, skb) < 0) {
 =======
 	skb_dst_drop(skb);
 	if (sock_queue_rcv_skb(sk, skb) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb_dst_drop(skb);
+	if (sock_queue_rcv_skb(sk, skb) < 0) {
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return NET_RX_DROP;
 	}
@@ -480,6 +586,7 @@ static int rawv6_recvmsg(struct kiocb *iocb, struct sock *sk,
 	if (flags & MSG_OOB)
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 	if (addr_len)
 		*addr_len=sizeof(*sin6);
 
@@ -488,6 +595,13 @@ static int rawv6_recvmsg(struct kiocb *iocb, struct sock *sk,
 
 	if (np->rxpmtu && np->rxopt.bits.rxpmtu)
 		return ipv6_recv_rxpmtu(sk, msg, len);
+=======
+	if (flags & MSG_ERRQUEUE)
+		return ipv6_recv_error(sk, msg, len, addr_len);
+
+	if (np->rxpmtu && np->rxopt.bits.rxpmtu)
+		return ipv6_recv_rxpmtu(sk, msg, len, addr_len);
+>>>>>>> refs/remotes/origin/master
 
 	skb = skb_recv_datagram(sk, flags, noblock, &err);
 	if (!skb)
@@ -518,6 +632,7 @@ static int rawv6_recvmsg(struct kiocb *iocb, struct sock *sk,
 		sin6->sin6_family = AF_INET6;
 		sin6->sin6_port = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&sin6->sin6_addr, &ipv6_hdr(skb)->saddr);
 =======
 		sin6->sin6_addr = ipv6_hdr(skb)->saddr;
@@ -526,12 +641,23 @@ static int rawv6_recvmsg(struct kiocb *iocb, struct sock *sk,
 		sin6->sin6_scope_id = 0;
 		if (ipv6_addr_type(&sin6->sin6_addr) & IPV6_ADDR_LINKLOCAL)
 			sin6->sin6_scope_id = IP6CB(skb)->iif;
+=======
+		sin6->sin6_addr = ipv6_hdr(skb)->saddr;
+		sin6->sin6_flowinfo = 0;
+		sin6->sin6_scope_id = ipv6_iface_scope_id(&sin6->sin6_addr,
+							  IP6CB(skb)->iif);
+		*addr_len = sizeof(*sin6);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sock_recv_ts_and_drops(msg, sk, skb);
 
 	if (np->rxopt.all)
+<<<<<<< HEAD
 		datagram_recv_ctl(sk, msg, skb);
+=======
+		ip6_datagram_recv_ctl(sk, msg, skb);
+>>>>>>> refs/remotes/origin/master
 
 	err = copied;
 	if (flags & MSG_TRUNC)
@@ -571,11 +697,15 @@ static int rawv6_push_pending_frames(struct sock *sk, struct flowi6 *fl6,
 
 	offset = rp->offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	total_len = inet_sk(sk)->cork.base.length - (skb_network_header(skb) -
 						     skb->data);
 =======
 	total_len = inet_sk(sk)->cork.base.length;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	total_len = inet_sk(sk)->cork.base.length;
+>>>>>>> refs/remotes/origin/master
 	if (offset >= total_len - 1) {
 		err = -EINVAL;
 		ip6_flush_pending_frames(sk);
@@ -643,10 +773,15 @@ static int rawv6_send_hdrinc(struct sock *sk, void *from, int length,
 	int err;
 	struct rt6_info *rt = (struct rt6_info *)*dstp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int hlen = LL_RESERVED_SPACE(rt->dst.dev);
 	int tlen = rt->dst.dev->needed_tailroom;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int hlen = LL_RESERVED_SPACE(rt->dst.dev);
+	int tlen = rt->dst.dev->needed_tailroom;
+>>>>>>> refs/remotes/origin/master
 
 	if (length > rt->dst.dev->mtu) {
 		ipv6_local_error(sk, EMSGSIZE, fl6, rt->dst.dev->mtu);
@@ -657,19 +792,27 @@ static int rawv6_send_hdrinc(struct sock *sk, void *from, int length,
 
 	skb = sock_alloc_send_skb(sk,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  length + LL_ALLOCATED_SPACE(rt->dst.dev) + 15,
 				  flags & MSG_DONTWAIT, &err);
 	if (skb == NULL)
 		goto error;
 	skb_reserve(skb, LL_RESERVED_SPACE(rt->dst.dev));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  length + hlen + tlen + 15,
 				  flags & MSG_DONTWAIT, &err);
 	if (skb == NULL)
 		goto error;
 	skb_reserve(skb, hlen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+	skb->protocol = htons(ETH_P_IPV6);
+>>>>>>> refs/remotes/origin/master
 	skb->priority = sk->sk_priority;
 	skb->mark = sk->sk_mark;
 	skb_dst_set(skb, &rt->dst);
@@ -829,7 +972,10 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 				flowlabel = fl6_sock_lookup(sk, fl6.flowlabel);
 				if (flowlabel == NULL)
 					return -EINVAL;
+<<<<<<< HEAD
 				daddr = &flowlabel->dst;
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -838,19 +984,32 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 		 * sk->sk_dst_cache.
 		 */
 		if (sk->sk_state == TCP_ESTABLISHED &&
+<<<<<<< HEAD
 		    ipv6_addr_equal(daddr, &np->daddr))
 			daddr = &np->daddr;
 
 		if (addr_len >= sizeof(struct sockaddr_in6) &&
 		    sin6->sin6_scope_id &&
 		    ipv6_addr_type(daddr)&IPV6_ADDR_LINKLOCAL)
+=======
+		    ipv6_addr_equal(daddr, &sk->sk_v6_daddr))
+			daddr = &sk->sk_v6_daddr;
+
+		if (addr_len >= sizeof(struct sockaddr_in6) &&
+		    sin6->sin6_scope_id &&
+		    __ipv6_addr_needs_scope_id(__ipv6_addr_type(daddr)))
+>>>>>>> refs/remotes/origin/master
 			fl6.flowi6_oif = sin6->sin6_scope_id;
 	} else {
 		if (sk->sk_state != TCP_ESTABLISHED)
 			return -EDESTADDRREQ;
 
 		proto = inet->inet_num;
+<<<<<<< HEAD
 		daddr = &np->daddr;
+=======
+		daddr = &sk->sk_v6_daddr;
+>>>>>>> refs/remotes/origin/master
 		fl6.flowlabel = np->flow_label;
 	}
 
@@ -863,12 +1022,17 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 		opt->tot_len = sizeof(struct ipv6_txoptions);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = datagram_send_ctl(sock_net(sk), msg, &fl6, opt, &hlimit,
 					&tclass, &dontfrag);
 =======
 		err = datagram_send_ctl(sock_net(sk), sk, msg, &fl6, opt,
 					&hlimit, &tclass, &dontfrag);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ip6_datagram_send_ctl(sock_net(sk), sk, msg, &fl6, opt,
+					    &hlimit, &tclass, &dontfrag);
+>>>>>>> refs/remotes/origin/master
 		if (err < 0) {
 			fl6_sock_release(flowlabel);
 			return err;
@@ -894,28 +1058,39 @@ static int rawv6_sendmsg(struct kiocb *iocb, struct sock *sk,
 
 	if (!ipv6_addr_any(daddr))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&fl6.daddr, daddr);
 	else
 		fl6.daddr.s6_addr[15] = 0x1; /* :: means loopback (BSD'ism) */
 	if (ipv6_addr_any(&fl6.saddr) && !ipv6_addr_any(&np->saddr))
 		ipv6_addr_copy(&fl6.saddr, &np->saddr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		fl6.daddr = *daddr;
 	else
 		fl6.daddr.s6_addr[15] = 0x1; /* :: means loopback (BSD'ism) */
 	if (ipv6_addr_any(&fl6.saddr) && !ipv6_addr_any(&np->saddr))
 		fl6.saddr = np->saddr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	final_p = fl6_update_dst(&fl6, opt, &final);
 
 	if (!fl6.flowi6_oif && ipv6_addr_is_multicast(&fl6.daddr))
 		fl6.flowi6_oif = np->mcast_oif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (!fl6.flowi6_oif)
 		fl6.flowi6_oif = np->ucast_oif;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (!fl6.flowi6_oif)
+		fl6.flowi6_oif = np->ucast_oif;
+>>>>>>> refs/remotes/origin/master
 	security_sk_classify_flow(sk, flowi6_to_flowi(&fl6));
 
 	dst = ip6_dst_lookup_flow(sk, &fl6, final_p, true);
@@ -1023,6 +1198,7 @@ static int do_rawv6_setsockopt(struct sock *sk, int level, int optname,
 
 	switch (optname) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case IPV6_CHECKSUM:
 			if (inet_sk(sk)->inet_num == IPPROTO_ICMPV6 &&
 			    level == IPPROTO_IPV6) {
@@ -1054,6 +1230,8 @@ static int do_rawv6_setsockopt(struct sock *sk, int level, int optname,
 		default:
 			return -ENOPROTOOPT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case IPV6_CHECKSUM:
 		if (inet_sk(sk)->inet_num == IPPROTO_ICMPV6 &&
 		    level == IPPROTO_IPV6) {
@@ -1083,13 +1261,17 @@ static int do_rawv6_setsockopt(struct sock *sk, int level, int optname,
 
 	default:
 		return -ENOPROTOOPT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static int rawv6_setsockopt(struct sock *sk, int level, int optname,
 			  char __user *optval, unsigned int optlen)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch(level) {
 		case SOL_RAW:
@@ -1107,6 +1289,8 @@ static int rawv6_setsockopt(struct sock *sk, int level, int optname,
 			return ipv6_setsockopt(sk, level, optname, optval,
 					       optlen);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (level) {
 	case SOL_RAW:
 		break;
@@ -1120,7 +1304,10 @@ static int rawv6_setsockopt(struct sock *sk, int level, int optname,
 			break;
 	default:
 		return ipv6_setsockopt(sk, level, optname, optval, optlen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return do_rawv6_setsockopt(sk, level, optname, optval, optlen);
@@ -1187,6 +1374,7 @@ static int rawv6_getsockopt(struct sock *sk, int level, int optname,
 			  char __user *optval, int __user *optlen)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(level) {
 		case SOL_RAW:
 			break;
@@ -1203,6 +1391,8 @@ static int rawv6_getsockopt(struct sock *sk, int level, int optname,
 			return ipv6_getsockopt(sk, level, optname, optval,
 					       optlen);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (level) {
 	case SOL_RAW:
 		break;
@@ -1216,7 +1406,10 @@ static int rawv6_getsockopt(struct sock *sk, int level, int optname,
 			break;
 	default:
 		return ipv6_getsockopt(sk, level, optname, optval, optlen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return do_rawv6_getsockopt(sk, level, optname, optval, optlen);
@@ -1247,6 +1440,7 @@ static int compat_rawv6_getsockopt(struct sock *sk, int level, int optname,
 static int rawv6_ioctl(struct sock *sk, int cmd, unsigned long arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(cmd) {
 		case SIOCOUTQ:
 		{
@@ -1273,6 +1467,8 @@ static int rawv6_ioctl(struct sock *sk, int cmd, unsigned long arg)
 #else
 			return -ENOIOCTLCMD;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (cmd) {
 	case SIOCOUTQ: {
 		int amount = sk_wmem_alloc_get(sk);
@@ -1286,7 +1482,12 @@ static int rawv6_ioctl(struct sock *sk, int cmd, unsigned long arg)
 		spin_lock_bh(&sk->sk_receive_queue.lock);
 		skb = skb_peek(&sk->sk_receive_queue);
 		if (skb != NULL)
+<<<<<<< HEAD
 			amount = skb->tail - skb->transport_header;
+=======
+			amount = skb_tail_pointer(skb) -
+				skb_transport_header(skb);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_bh(&sk->sk_receive_queue.lock);
 		return put_user(amount, (int __user *)arg);
 	}
@@ -1296,7 +1497,10 @@ static int rawv6_ioctl(struct sock *sk, int cmd, unsigned long arg)
 		return ip6mr_ioctl(sk, cmd, (void __user *)arg);
 #else
 		return -ENOIOCTLCMD;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 }
@@ -1381,6 +1585,7 @@ struct proto rawv6_prot = {
 };
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 static void raw6_sock_seq_show(struct seq_file *seq, struct sock *sp, int i)
 {
 	struct ipv6_pinfo *np = inet6_sk(sp);
@@ -1419,6 +1624,18 @@ static int raw6_seq_show(struct seq_file *seq, void *v)
 			   "   uid  timeout inode ref pointer drops\n");
 	else
 		raw6_sock_seq_show(seq, v, raw_seq_private(seq)->bucket);
+=======
+static int raw6_seq_show(struct seq_file *seq, void *v)
+{
+	if (v == SEQ_START_TOKEN) {
+		seq_puts(seq, IPV6_SEQ_DGRAM_HEADER);
+	} else {
+		struct sock *sp = v;
+		__u16 srcp  = inet_sk(sp)->inet_num;
+		ip6_dgram_sock_seq_show(seq, v, srcp, 0,
+					raw_seq_private(seq)->bucket);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1444,7 +1661,11 @@ static const struct file_operations raw6_seq_fops = {
 
 static int __net_init raw6_init_net(struct net *net)
 {
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "raw6", S_IRUGO, &raw6_seq_fops))
+=======
+	if (!proc_create("raw6", S_IRUGO, net->proc_net, &raw6_seq_fops))
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 
 	return 0;
@@ -1452,7 +1673,11 @@ static int __net_init raw6_init_net(struct net *net)
 
 static void __net_exit raw6_exit_net(struct net *net)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, "raw6");
+=======
+	remove_proc_entry("raw6", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pernet_operations raw6_net_ops = {

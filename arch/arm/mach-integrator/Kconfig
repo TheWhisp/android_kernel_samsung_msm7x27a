@@ -7,10 +7,16 @@ config ARCH_INTEGRATOR_AP
 	select CLKSRC_MMIO
 	select MIGHT_HAVE_PCI
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select SERIAL_AMBA_PL010
 	select SERIAL_AMBA_PL010_CONSOLE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select SERIAL_AMBA_PL010
+	select SERIAL_AMBA_PL010_CONSOLE
+	select SOC_BUS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Include support for the ARM(R) Integrator/AP and
 	  Integrator/PP2 platforms.
@@ -21,10 +27,16 @@ config ARCH_INTEGRATOR_CP
 	select ARM_TIMER_SP804
 	select PLAT_VERSATILE_CLCD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select SERIAL_AMBA_PL011
 	select SERIAL_AMBA_PL011_CONSOLE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select SERIAL_AMBA_PL011
+	select SERIAL_AMBA_PL011_CONSOLE
+	select SOC_BUS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Include support for the ARM(R) Integrator CP platform.
 

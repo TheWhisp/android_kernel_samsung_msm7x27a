@@ -66,7 +66,11 @@ static void chrp_nvram_write(int addr, unsigned char val)
 void __init chrp_nvram_init(void)
 {
 	struct device_node *nvram;
+<<<<<<< HEAD
 	const unsigned int *nbytes_p;
+=======
+	const __be32 *nbytes_p;
+>>>>>>> refs/remotes/origin/master
 	unsigned int proplen;
 
 	nvram = of_find_node_by_type(NULL, "nvram");
@@ -79,7 +83,11 @@ void __init chrp_nvram_init(void)
 		return;
 	}
 
+<<<<<<< HEAD
 	nvram_size = *nbytes_p;
+=======
+	nvram_size = be32_to_cpup(nbytes_p);
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "CHRP nvram contains %u bytes\n", nvram_size);
 	of_node_put(nvram);

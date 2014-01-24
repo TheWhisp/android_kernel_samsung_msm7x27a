@@ -30,6 +30,11 @@
  * IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #define DPRINTK(fmt, args...)				\
 	pr_debug("xenbus_probe (%s:%d) " fmt ".\n",	\
 		 __func__, __LINE__, ##args)
@@ -47,9 +52,13 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -72,6 +81,12 @@ EXPORT_SYMBOL_GPL(xen_store_evtchn);
 struct xenstore_domain_interface *xen_store_interface;
 EXPORT_SYMBOL_GPL(xen_store_interface);
 
+<<<<<<< HEAD
+=======
+enum xenstore_init xen_store_domain_type;
+EXPORT_SYMBOL_GPL(xen_store_domain_type);
+
+>>>>>>> refs/remotes/origin/master
 static unsigned long xen_store_mfn;
 
 static BLOCKING_NOTIFIER_HEAD(xenstore_chain);
@@ -261,18 +276,26 @@ int xenbus_dev_remove(struct device *_dev)
 
 	free_otherend_watch(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_otherend_details(dev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (drv->remove)
 		drv->remove(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	free_otherend_details(dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_otherend_details(dev);
+
+>>>>>>> refs/remotes/origin/master
 	xenbus_switch_state(dev, XenbusStateClosed);
 	return 0;
 }
@@ -287,21 +310,32 @@ void xenbus_dev_shutdown(struct device *_dev)
 
 	get_device(&dev->dev);
 	if (dev->state != XenbusStateConnected) {
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: %s: %s != Connected, skipping\n", __func__,
 		       dev->nodename, xenbus_strstate(dev->state));
+=======
+		pr_info("%s: %s: %s != Connected, skipping\n",
+			__func__, dev->nodename, xenbus_strstate(dev->state));
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	xenbus_switch_state(dev, XenbusStateClosing);
 	timeout = wait_for_completion_timeout(&dev->down, timeout);
 	if (!timeout)
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: %s timeout closing device\n",
 		       __func__, dev->nodename);
+=======
+		pr_info("%s: %s timeout closing device\n",
+			__func__, dev->nodename);
+>>>>>>> refs/remotes/origin/master
  out:
 	put_device(&dev->dev);
 }
 EXPORT_SYMBOL_GPL(xenbus_dev_shutdown);
 
 int xenbus_register_driver_common(struct xenbus_driver *drv,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				  struct xen_bus_type *bus,
 				  struct module *owner,
@@ -316,6 +350,11 @@ int xenbus_register_driver_common(struct xenbus_driver *drv,
 {
 	drv->driver.bus = &bus->bus;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  struct xen_bus_type *bus)
+{
+	drv->driver.bus = &bus->bus;
+>>>>>>> refs/remotes/origin/master
 
 	return driver_register(&drv->driver);
 }
@@ -328,11 +367,15 @@ void xenbus_unregister_driver(struct xenbus_driver *drv)
 EXPORT_SYMBOL_GPL(xenbus_unregister_driver);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct xb_find_info
 {
 =======
 struct xb_find_info {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct xb_find_info {
+>>>>>>> refs/remotes/origin/master
 	struct xenbus_device *dev;
 	const char *nodename;
 };
@@ -350,8 +393,13 @@ static int cmp_dev(struct device *dev, void *data)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct xenbus_device *xenbus_device_find(const char *nodename,
 					 struct bus_type *bus)
+=======
+static struct xenbus_device *xenbus_device_find(const char *nodename,
+						struct bus_type *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xb_find_info info = { .dev = NULL, .nodename = nodename };
 
@@ -401,6 +449,7 @@ static void xenbus_dev_release(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t xendev_show_nodename(struct device *dev,
 				    struct device_attribute *attr, char *buf)
 {
@@ -422,17 +471,27 @@ static ssize_t xendev_show_modalias(struct device *dev,
 }
 static DEVICE_ATTR(modalias, S_IRUSR | S_IRGRP | S_IROTH, xendev_show_modalias, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t nodename_show(struct device *dev,
 			     struct device_attribute *attr, char *buf)
 {
 	return sprintf(buf, "%s\n", to_xenbus_device(dev)->nodename);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(nodename);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t devtype_show(struct device *dev,
 			    struct device_attribute *attr, char *buf)
 {
 	return sprintf(buf, "%s\n", to_xenbus_device(dev)->devicetype);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(devtype);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t modalias_show(struct device *dev,
 			     struct device_attribute *attr, char *buf)
@@ -440,6 +499,7 @@ static ssize_t modalias_show(struct device *dev,
 	return sprintf(buf, "%s:%s\n", dev->bus->name,
 		       to_xenbus_device(dev)->devicetype);
 }
+<<<<<<< HEAD
 
 struct device_attribute xenbus_dev_attrs[] = {
 	__ATTR_RO(nodename),
@@ -449,6 +509,26 @@ struct device_attribute xenbus_dev_attrs[] = {
 };
 EXPORT_SYMBOL_GPL(xenbus_dev_attrs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR_RO(modalias);
+
+static struct attribute *xenbus_dev_attrs[] = {
+	&dev_attr_nodename.attr,
+	&dev_attr_devtype.attr,
+	&dev_attr_modalias.attr,
+	NULL,
+};
+
+static const struct attribute_group xenbus_dev_group = {
+	.attrs = xenbus_dev_attrs,
+};
+
+const struct attribute_group *xenbus_dev_groups[] = {
+	&xenbus_dev_group,
+	NULL,
+};
+EXPORT_SYMBOL_GPL(xenbus_dev_groups);
+>>>>>>> refs/remotes/origin/master
 
 int xenbus_probe_node(struct xen_bus_type *bus,
 		      const char *type,
@@ -493,13 +573,18 @@ int xenbus_probe_node(struct xen_bus_type *bus,
 	if (err)
 		goto fail;
 
+<<<<<<< HEAD
 	dev_set_name(&xendev->dev, devname);
+=======
+	dev_set_name(&xendev->dev, "%s", devname);
+>>>>>>> refs/remotes/origin/master
 
 	/* Register with generic device framework. */
 	err = device_register(&xendev->dev);
 	if (err)
 		goto fail;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = device_create_file(&xendev->dev, &dev_attr_nodename);
 	if (err)
@@ -523,6 +608,9 @@ fail_unregister:
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 fail:
 	kfree(xendev);
 	return err;
@@ -647,8 +735,12 @@ int xenbus_dev_suspend(struct device *dev)
 	if (drv->suspend)
 		err = drv->suspend(xdev);
 	if (err)
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "xenbus: suspend %s failed: %i\n", dev_name(dev), err);
+=======
+		pr_warn("suspend %s failed: %i\n", dev_name(dev), err);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(xenbus_dev_suspend);
@@ -667,9 +759,14 @@ int xenbus_dev_resume(struct device *dev)
 	drv = to_xenbus_driver(dev->driver);
 	err = talk_to_otherend(xdev);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "xenbus: resume (talk_to_otherend) %s failed: %i\n",
 		       dev_name(dev), err);
+=======
+		pr_warn("resume (talk_to_otherend) %s failed: %i\n",
+			dev_name(dev), err);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -678,18 +775,27 @@ int xenbus_dev_resume(struct device *dev)
 	if (drv->resume) {
 		err = drv->resume(xdev);
 		if (err) {
+<<<<<<< HEAD
 			printk(KERN_WARNING
 			       "xenbus: resume %s failed: %i\n",
 			       dev_name(dev), err);
+=======
+			pr_warn("resume %s failed: %i\n", dev_name(dev), err);
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 	}
 
 	err = watch_otherend(xdev);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "xenbus_probe: resume (watch_otherend) %s failed: "
 		       "%d.\n", dev_name(dev), err);
+=======
+		pr_warn("resume (watch_otherend) %s failed: %d.\n",
+			dev_name(dev), err);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -707,10 +813,14 @@ EXPORT_SYMBOL_GPL(xenbus_dev_cancel);
 
 /* A flag to determine if xenstored is 'ready' (i.e. has started) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int xenstored_ready = 0;
 =======
 int xenstored_ready;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int xenstored_ready;
+>>>>>>> refs/remotes/origin/master
 
 
 int register_xenstore_notifier(struct notifier_block *nb)
@@ -755,6 +865,7 @@ static int __init xenbus_probe_initcall(void)
 
 device_initcall(xenbus_probe_initcall);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init xenbus_init(void)
 {
@@ -815,6 +926,8 @@ static int __init xenbus_init(void)
 			xenstored_ready = 1;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Set up event channel for xenstored which is run as a local process
  * (this is normally used only in dom0)
  */
@@ -857,14 +970,46 @@ static int __init xenstored_local_init(void)
 static int __init xenbus_init(void)
 {
 	int err = 0;
+<<<<<<< HEAD
+=======
+	uint64_t v = 0;
+	xen_store_domain_type = XS_UNKNOWN;
+>>>>>>> refs/remotes/origin/master
 
 	if (!xen_domain())
 		return -ENODEV;
 
 	xenbus_ring_ops_init();
 
+<<<<<<< HEAD
 	if (xen_hvm_domain()) {
 		uint64_t v = 0;
+=======
+	if (xen_pv_domain())
+		xen_store_domain_type = XS_PV;
+	if (xen_hvm_domain())
+		xen_store_domain_type = XS_HVM;
+	if (xen_hvm_domain() && xen_initial_domain())
+		xen_store_domain_type = XS_LOCAL;
+	if (xen_pv_domain() && !xen_start_info->store_evtchn)
+		xen_store_domain_type = XS_LOCAL;
+	if (xen_pv_domain() && xen_start_info->store_evtchn)
+		xenstored_ready = 1;
+
+	switch (xen_store_domain_type) {
+	case XS_LOCAL:
+		err = xenstored_local_init();
+		if (err)
+			goto out_error;
+		xen_store_interface = mfn_to_virt(xen_store_mfn);
+		break;
+	case XS_PV:
+		xen_store_evtchn = xen_start_info->store_evtchn;
+		xen_store_mfn = xen_start_info->store_mfn;
+		xen_store_interface = mfn_to_virt(xen_store_mfn);
+		break;
+	case XS_HVM:
+>>>>>>> refs/remotes/origin/master
 		err = hvm_get_parameter(HVM_PARAM_STORE_EVTCHN, &v);
 		if (err)
 			goto out_error;
@@ -873,6 +1018,7 @@ static int __init xenbus_init(void)
 		if (err)
 			goto out_error;
 		xen_store_mfn = (unsigned long)v;
+<<<<<<< HEAD
 		xen_store_interface = ioremap(xen_store_mfn << PAGE_SHIFT, PAGE_SIZE);
 	} else {
 		xen_store_evtchn = xen_start_info->store_evtchn;
@@ -886,13 +1032,25 @@ static int __init xenbus_init(void)
 		}
 		xen_store_interface = mfn_to_virt(xen_store_mfn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xen_store_interface =
+			xen_remap(xen_store_mfn << PAGE_SHIFT, PAGE_SIZE);
+		break;
+	default:
+		pr_warn("Xenstore state unknown\n");
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Initialize the interface to xenstore. */
 	err = xs_init();
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_WARNING
 		       "XENBUS: Error initializing xenstore comms: %i\n", err);
+=======
+		pr_warn("Error initializing xenstore comms: %i\n", err);
+>>>>>>> refs/remotes/origin/master
 		goto out_error;
 	}
 
@@ -905,6 +1063,7 @@ static int __init xenbus_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
   out_error:
@@ -914,6 +1073,9 @@ static int __init xenbus_init(void)
 =======
 out_error:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_error:
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 

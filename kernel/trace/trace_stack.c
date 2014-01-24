@@ -14,11 +14,17 @@
 #include <linux/init.h>
 #include <linux/fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #include <asm/setup.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <asm/setup.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "trace.h"
 
 #define STACK_TRACE_ENTRIES 500
@@ -47,7 +53,10 @@ static unsigned long max_stack_size;
 static arch_spinlock_t max_stack_lock =
 	(arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;
 
+<<<<<<< HEAD
 static int stack_trace_disabled __read_mostly;
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PER_CPU(int, trace_active);
 static DEFINE_MUTEX(stack_sysctl_mutex);
 
@@ -154,14 +163,22 @@ check_stack(unsigned long ip, unsigned long *stack)
 }
 
 static void
+<<<<<<< HEAD
 stack_trace_call(unsigned long ip, unsigned long parent_ip)
+=======
+stack_trace_call(unsigned long ip, unsigned long parent_ip,
+		 struct ftrace_ops *op, struct pt_regs *pt_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long stack;
 	int cpu;
 
+<<<<<<< HEAD
 	if (unlikely(!ftrace_enabled || stack_trace_disabled))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	preempt_disable_notrace();
 
 	cpu = raw_smp_processor_id();
@@ -200,9 +217,13 @@ static struct ftrace_ops trace_ops __read_mostly =
 {
 	.func = stack_trace_call,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = FTRACE_OPS_FL_GLOBAL,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = FTRACE_OPS_FL_RECURSION_SAFE,
+>>>>>>> refs/remotes/origin/master
 };
 
 static ssize_t
@@ -226,6 +247,7 @@ stack_max_size_write(struct file *filp, const char __user *ubuf,
 	long *ptr = filp->private_data;
 	unsigned long val, flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char buf[64];
 	int ret;
 	int cpu;
@@ -241,12 +263,17 @@ stack_max_size_write(struct file *filp, const char __user *ubuf,
 	ret = strict_strtoul(buf, 10, &val);
 	if (ret < 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	int cpu;
 
 	ret = kstrtoul_from_user(ubuf, count, 10, &val);
 	if (ret)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 
 	local_irq_save(flags);
@@ -398,7 +425,10 @@ static const struct file_operations stack_trace_fops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 stack_trace_filter_open(struct inode *inode, struct file *file)
 {
@@ -414,7 +444,10 @@ static const struct file_operations stack_trace_filter_fops = {
 	.release = ftrace_regex_release,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int
 stack_trace_sysctl(struct ctl_table *table, int write,
 		   void __user *buffer, size_t *lenp,
@@ -443,9 +476,12 @@ stack_trace_sysctl(struct ctl_table *table, int write,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __init int enable_stacktrace(char *str)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static char stack_trace_filter_buf[COMMAND_LINE_SIZE+1] __initdata;
 
 static __init int enable_stacktrace(char *str)
@@ -453,7 +489,10 @@ static __init int enable_stacktrace(char *str)
 	if (strncmp(str, "_filter=", 8) == 0)
 		strncpy(stack_trace_filter_buf, str+8, COMMAND_LINE_SIZE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	stack_tracer_enabled = 1;
 	last_stack_tracer_enabled = 1;
 	return 1;
@@ -475,14 +514,20 @@ static __init int stack_trace_init(void)
 			NULL, &stack_trace_fops);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	trace_create_file("stack_trace_filter", 0444, d_tracer,
 			NULL, &stack_trace_filter_fops);
 
 	if (stack_trace_filter_buf[0])
 		ftrace_set_early_filter(&trace_ops, stack_trace_filter_buf, 1);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (stack_tracer_enabled)
 		register_ftrace_function(&trace_ops);
 

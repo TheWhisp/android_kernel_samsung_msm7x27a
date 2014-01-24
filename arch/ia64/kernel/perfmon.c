@@ -42,6 +42,10 @@
 #include <linux/completion.h>
 #include <linux/tracehook.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/errno.h>
 #include <asm/intrinsics.h>
@@ -50,9 +54,12 @@
 #include <asm/processor.h>
 #include <asm/signal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/delay.h>
 
@@ -609,6 +616,7 @@ pfm_unprotect_ctx_ctxsw(pfm_context_t *x, unsigned long f)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int
 pfm_do_munmap(struct mm_struct *mm, unsigned long addr, size_t len, int acct)
 {
@@ -623,6 +631,8 @@ pfm_get_unmapped_area(struct file *file, unsigned long addr, unsigned long len, 
 	return get_unmapped_area(file, addr, len, pgoff, flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* forward declaration */
 static const struct dentry_operations pfmfs_dentry_operations;
 
@@ -638,6 +648,10 @@ static struct file_system_type pfm_fs_type = {
 	.mount    = pfmfs_mount,
 	.kill_sb  = kill_anon_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("pfmfs");
+>>>>>>> refs/remotes/origin/master
 
 DEFINE_PER_CPU(unsigned long, pfm_syst_info);
 DEFINE_PER_CPU(struct task_struct *, pmu_owner);
@@ -1340,8 +1354,11 @@ out:
 }
 EXPORT_SYMBOL(pfm_unregister_buffer_fmt);
 
+<<<<<<< HEAD
 extern void update_pal_halt_status(int);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 pfm_reserve_session(struct task_struct *task, int is_syswide, unsigned int cpu)
 {
@@ -1389,9 +1406,15 @@ pfm_reserve_session(struct task_struct *task, int is_syswide, unsigned int cpu)
 		cpu));
 
 	/*
+<<<<<<< HEAD
 	 * disable default_idle() to go to PAL_HALT
 	 */
 	update_pal_halt_status(0);
+=======
+	 * Force idle() into poll mode
+	 */
+	cpu_idle_poll_ctrl(true);
+>>>>>>> refs/remotes/origin/master
 
 	UNLOCK_PFS(flags);
 
@@ -1448,11 +1471,16 @@ pfm_unreserve_session(pfm_context_t *ctx, int is_syswide, unsigned int cpu)
 		is_syswide,
 		cpu));
 
+<<<<<<< HEAD
 	/*
 	 * if possible, enable default_idle() to go into PAL_HALT
 	 */
 	if (pfm_sessions.pfs_task_sessions == 0 && pfm_sessions.pfs_sys_sessions == 0)
 		update_pal_halt_status(1);
+=======
+	/* Undo forced polling. Last session reenables pal_halt */
+	cpu_idle_poll_ctrl(false);
+>>>>>>> refs/remotes/origin/master
 
 	UNLOCK_PFS(flags);
 
@@ -1466,6 +1494,7 @@ pfm_unreserve_session(pfm_context_t *ctx, int is_syswide, unsigned int cpu)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 pfm_remove_smpl_mapping(struct task_struct *task, void *vaddr, unsigned long size)
 {
 =======
@@ -1473,6 +1502,11 @@ pfm_remove_smpl_mapping(void *vaddr, unsigned long size)
 {
 	struct task_struct *task = current;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+pfm_remove_smpl_mapping(void *vaddr, unsigned long size)
+{
+	struct task_struct *task = current;
+>>>>>>> refs/remotes/origin/master
 	int r;
 
 	/* sanity checks */
@@ -1487,6 +1521,7 @@ pfm_remove_smpl_mapping(void *vaddr, unsigned long size)
 	 * does the actual unmapping
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	down_write(&task->mm->mmap_sem);
 
 	DPRINT(("down_write done smpl_vaddr=%p size=%lu\n", vaddr, size));
@@ -1498,6 +1533,10 @@ pfm_remove_smpl_mapping(void *vaddr, unsigned long size)
 	r = vm_munmap((unsigned long)vaddr, size);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r = vm_munmap((unsigned long)vaddr, size);
+
+>>>>>>> refs/remotes/origin/master
 	if (r !=0) {
 		printk(KERN_ERR "perfmon: [%d] unable to unmap sampling buffer @%p size=%lu\n", task_pid_nr(task), vaddr, size);
 	}
@@ -1964,10 +2003,14 @@ pfm_flush(struct file *filp, fl_owner_t id)
 	 *
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (smpl_buf_vaddr) pfm_remove_smpl_mapping(current, smpl_buf_vaddr, smpl_buf_size);
 =======
 	if (smpl_buf_vaddr) pfm_remove_smpl_mapping(smpl_buf_vaddr, smpl_buf_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (smpl_buf_vaddr) pfm_remove_smpl_mapping(smpl_buf_vaddr, smpl_buf_size);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2207,12 +2250,15 @@ static const struct file_operations pfm_file_ops = {
 	.flush		= pfm_flush
 };
 
+<<<<<<< HEAD
 static int
 pfmfs_delete_dentry(const struct dentry *dentry)
 {
 	return 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static char *pfmfs_dname(struct dentry *dentry, char *buffer, int buflen)
 {
 	return dynamic_dname(dentry, buffer, buflen, "pfm:[%lu]",
@@ -2220,7 +2266,11 @@ static char *pfmfs_dname(struct dentry *dentry, char *buffer, int buflen)
 }
 
 static const struct dentry_operations pfmfs_dentry_operations = {
+<<<<<<< HEAD
 	.d_delete = pfmfs_delete_dentry,
+=======
+	.d_delete = always_delete_dentry,
+>>>>>>> refs/remotes/origin/master
 	.d_dname = pfmfs_dname,
 };
 
@@ -2250,10 +2300,14 @@ pfm_alloc_file(pfm_context_t *ctx)
 	 * allocate a new dcache entry
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	path.dentry = d_alloc(pfmfs_mnt->mnt_sb->s_root, &this);
 =======
 	path.dentry = d_alloc(pfmfs_mnt->mnt_root, &this);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	path.dentry = d_alloc(pfmfs_mnt->mnt_root, &this);
+>>>>>>> refs/remotes/origin/master
 	if (!path.dentry) {
 		iput(inode);
 		return ERR_PTR(-ENOMEM);
@@ -2263,9 +2317,15 @@ pfm_alloc_file(pfm_context_t *ctx)
 	d_add(path.dentry, inode);
 
 	file = alloc_file(&path, FMODE_READ, &pfm_file_ops);
+<<<<<<< HEAD
 	if (!file) {
 		path_put(&path);
 		return ERR_PTR(-ENFILE);
+=======
+	if (IS_ERR(file)) {
+		path_put(&path);
+		return file;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	file->f_flags = O_RDONLY;
@@ -2348,8 +2408,13 @@ pfm_smpl_buffer_alloc(struct task_struct *task, struct file *filp, pfm_context_t
 	 * partially initialize the vma for the sampling buffer
 	 */
 	vma->vm_mm	     = mm;
+<<<<<<< HEAD
 	vma->vm_file	     = filp;
 	vma->vm_flags	     = VM_READ| VM_MAYREAD |VM_RESERVED;
+=======
+	vma->vm_file	     = get_file(filp);
+	vma->vm_flags	     = VM_READ|VM_MAYREAD|VM_DONTEXPAND|VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	vma->vm_page_prot    = PAGE_READONLY; /* XXX may need to change */
 
 	/*
@@ -2369,8 +2434,13 @@ pfm_smpl_buffer_alloc(struct task_struct *task, struct file *filp, pfm_context_t
 	down_write(&task->mm->mmap_sem);
 
 	/* find some free area in address space, must have mmap sem held */
+<<<<<<< HEAD
 	vma->vm_start = pfm_get_unmapped_area(NULL, 0, size, 0, MAP_PRIVATE|MAP_ANONYMOUS, 0);
 	if (vma->vm_start == 0UL) {
+=======
+	vma->vm_start = get_unmapped_area(NULL, 0, size, 0, MAP_PRIVATE|MAP_ANONYMOUS);
+	if (IS_ERR_VALUE(vma->vm_start)) {
+>>>>>>> refs/remotes/origin/master
 		DPRINT(("Cannot find unmapped area for size %ld\n", size));
 		up_write(&task->mm->mmap_sem);
 		goto error;
@@ -2387,15 +2457,21 @@ pfm_smpl_buffer_alloc(struct task_struct *task, struct file *filp, pfm_context_t
 		goto error;
 	}
 
+<<<<<<< HEAD
 	get_file(filp);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * now insert the vma in the vm list for the process, must be
 	 * done with mmap lock held
 	 */
 	insert_vm_struct(mm, vma);
 
+<<<<<<< HEAD
 	mm->total_vm  += size >> PAGE_SHIFT;
+=======
+>>>>>>> refs/remotes/origin/master
 	vm_stat_account(vma->vm_mm, vma->vm_flags, vma->vm_file,
 							vma_pages(vma));
 	up_write(&task->mm->mmap_sem);
@@ -2423,8 +2499,13 @@ static int
 pfm_bad_permissions(struct task_struct *task)
 {
 	const struct cred *tcred;
+<<<<<<< HEAD
 	uid_t uid = current_uid();
 	gid_t gid = current_gid();
+=======
+	kuid_t uid = current_uid();
+	kgid_t gid = current_gid();
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	rcu_read_lock();
@@ -2432,6 +2513,7 @@ pfm_bad_permissions(struct task_struct *task)
 
 	/* inspired by ptrace_attach() */
 	DPRINT(("cur: uid=%d gid=%d task: euid=%d suid=%d uid=%d egid=%d sgid=%d\n",
+<<<<<<< HEAD
 		uid,
 		gid,
 		tcred->euid,
@@ -2446,6 +2528,22 @@ pfm_bad_permissions(struct task_struct *task)
 	       || (gid != tcred->egid)
 	       || (gid != tcred->sgid)
 	       || (gid != tcred->gid)) && !capable(CAP_SYS_PTRACE);
+=======
+		from_kuid(&init_user_ns, uid),
+		from_kgid(&init_user_ns, gid),
+		from_kuid(&init_user_ns, tcred->euid),
+		from_kuid(&init_user_ns, tcred->suid),
+		from_kuid(&init_user_ns, tcred->uid),
+		from_kgid(&init_user_ns, tcred->egid),
+		from_kgid(&init_user_ns, tcred->sgid)));
+
+	ret = ((!uid_eq(uid, tcred->euid))
+	       || (!uid_eq(uid, tcred->suid))
+	       || (!uid_eq(uid, tcred->uid))
+	       || (!gid_eq(gid, tcred->egid))
+	       || (!gid_eq(gid, tcred->sgid))
+	       || (!gid_eq(gid, tcred->gid))) && !capable(CAP_SYS_PTRACE);
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_unlock();
 	return ret;
@@ -4825,7 +4923,11 @@ recheck:
 asmlinkage long
 sys_perfmonctl (int fd, int cmd, void __user *arg, int count)
 {
+<<<<<<< HEAD
 	struct file *file = NULL;
+=======
+	struct fd f = {NULL, 0};
+>>>>>>> refs/remotes/origin/master
 	pfm_context_t *ctx = NULL;
 	unsigned long flags = 0UL;
 	void *args_k = NULL;
@@ -4922,17 +5024,30 @@ restart_args:
 
 	ret = -EBADF;
 
+<<<<<<< HEAD
 	file = fget(fd);
 	if (unlikely(file == NULL)) {
 		DPRINT(("invalid fd %d\n", fd));
 		goto error_args;
 	}
 	if (unlikely(PFM_IS_FILE(file) == 0)) {
+=======
+	f = fdget(fd);
+	if (unlikely(f.file == NULL)) {
+		DPRINT(("invalid fd %d\n", fd));
+		goto error_args;
+	}
+	if (unlikely(PFM_IS_FILE(f.file) == 0)) {
+>>>>>>> refs/remotes/origin/master
 		DPRINT(("fd %d not related to perfmon\n", fd));
 		goto error_args;
 	}
 
+<<<<<<< HEAD
 	ctx = file->private_data;
+=======
+	ctx = f.file->private_data;
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ctx == NULL)) {
 		DPRINT(("no context for fd %d\n", fd));
 		goto error_args;
@@ -4962,8 +5077,13 @@ abort_locked:
 	if (call_made && PFM_CMD_RW_ARG(cmd) && copy_to_user(arg, args_k, base_sz*count)) ret = -EFAULT;
 
 error_args:
+<<<<<<< HEAD
 	if (file)
 		fput(file);
+=======
+	if (f.file)
+		fdput(f);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(args_k);
 
@@ -5695,6 +5815,7 @@ pfm_proc_show_header(struct seq_file *m)
 
 	list_for_each(pos, &pfm_buffer_fmt_list) {
 		entry = list_entry(pos, pfm_buffer_fmt_t, fmt_list);
+<<<<<<< HEAD
 		seq_printf(m, "format                    : %02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x-%02x %s\n",
 			entry->fmt_uuid[0],
 			entry->fmt_uuid[1],
@@ -5713,6 +5834,10 @@ pfm_proc_show_header(struct seq_file *m)
 			entry->fmt_uuid[14],
 			entry->fmt_uuid[15],
 			entry->fmt_name);
+=======
+		seq_printf(m, "format                    : %16phD %s\n",
+			   entry->fmt_uuid, entry->fmt_name);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&pfm_buffer_fmt_lock);
 

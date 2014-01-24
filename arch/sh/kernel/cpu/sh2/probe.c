@@ -13,7 +13,11 @@
 #include <asm/processor.h>
 #include <asm/cache.h>
 
+<<<<<<< HEAD
 void __cpuinit cpu_probe(void)
+=======
+void cpu_probe(void)
+>>>>>>> refs/remotes/origin/master
 {
 #if defined(CONFIG_CPU_SUBTYPE_SH7619)
 	boot_cpu_data.type			= CPU_SH7619;

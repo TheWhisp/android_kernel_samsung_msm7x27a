@@ -27,11 +27,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/memdefs.h>
 #include <dspbridge/proc.h>
@@ -166,9 +169,12 @@ struct node_mgr {
 	struct nldr_object *nldr_obj;	/* Handle to loader */
 	struct node_ldr_fxns nldr_fxns;	/* Handle to loader functions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool loader_init;	/* Loader Init function succeeded? */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -271,15 +277,19 @@ static u32 mem_write(void *priv_ref, u32 dsp_add, void *pbuf,
 		     u32 ul_num_bytes, u32 mem_space);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 refs;		/* module reference count */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Dynamic loader functions. */
 static struct node_ldr_fxns nldr_fxns = {
 	nldr_allocate,
 	nldr_create,
 	nldr_delete,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nldr_exit,
 	nldr_get_fxn_addr,
@@ -287,6 +297,9 @@ static struct node_ldr_fxns nldr_fxns = {
 =======
 	nldr_get_fxn_addr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nldr_get_fxn_addr,
+>>>>>>> refs/remotes/origin/master
 	nldr_load,
 	nldr_unload,
 };
@@ -325,8 +338,12 @@ int node_allocate(struct proc_object *hprocessor,
 	u32 pul_value;
 	u32 dynext_base;
 	u32 off_set = 0;
+<<<<<<< HEAD
 	u32 ul_stack_seg_addr, ul_stack_seg_val;
 	u32 ul_gpp_mem_base;
+=======
+	u32 ul_stack_seg_val;
+>>>>>>> refs/remotes/origin/master
 	struct cfg_hostres *host_res;
 	struct bridge_dev_context *pbridge_context;
 	u32 mapped_addr = 0;
@@ -340,6 +357,7 @@ int node_allocate(struct proc_object *hprocessor,
 	void *node_res;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hprocessor != NULL);
 	DBC_REQUIRE(noderes != NULL);
@@ -347,6 +365,8 @@ int node_allocate(struct proc_object *hprocessor,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*noderes = NULL;
 
 	status = proc_get_processor_id(hprocessor, &proc_id);
@@ -610,6 +630,12 @@ func_cont:
 		if (strcmp((char *)
 			   pnode->dcd_props.obj_data.node_obj.ndb_props.
 			   stack_seg_name, STACKSEGLABEL) == 0) {
+<<<<<<< HEAD
+=======
+			void __iomem *stack_seg;
+			u32 stack_seg_pa;
+
+>>>>>>> refs/remotes/origin/master
 			status =
 			    hnode_mgr->nldr_fxns.
 			    get_fxn_addr(pnode->nldr_node_obj, "DYNEXT_BEG",
@@ -637,6 +663,7 @@ func_cont:
 				goto func_end;
 			}
 
+<<<<<<< HEAD
 			ul_gpp_mem_base = (u32) host_res->mem_base[1];
 			off_set = pul_value - dynext_base;
 			ul_stack_seg_addr = ul_gpp_mem_base + off_set;
@@ -645,6 +672,23 @@ func_cont:
 			dev_dbg(bridge, "%s: StackSegVal = 0x%x, StackSegAddr ="
 				" 0x%x\n", __func__, ul_stack_seg_val,
 				ul_stack_seg_addr);
+=======
+			off_set = pul_value - dynext_base;
+			stack_seg_pa = host_res->mem_phys[1] + off_set;
+			stack_seg = ioremap(stack_seg_pa, SZ_32);
+			if (!stack_seg) {
+				status = -ENOMEM;
+				goto func_end;
+			}
+
+			ul_stack_seg_val = readl(stack_seg);
+
+			iounmap(stack_seg);
+
+			dev_dbg(bridge, "%s: StackSegVal = 0x%x, StackSegAddr ="
+				" 0x%x\n", __func__, ul_stack_seg_val,
+				host_res->mem_base[1] + off_set);
+>>>>>>> refs/remotes/origin/master
 
 			pnode->create_args.asa.task_arg_obj.stack_seg =
 			    ul_stack_seg_val;
@@ -690,9 +734,12 @@ func_cont:
 		drv_proc_node_update_status(node_res, true);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((status && *noderes == NULL) || (!status && *noderes));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 func_end:
 	dev_dbg(bridge, "%s: hprocessor: %p pNodeId: %p pargs: %p attr_in: %p "
 		"node_res: %p status: 0x%x\n", __func__, hprocessor,
@@ -716,6 +763,7 @@ DBAPI node_alloc_msg_buf(struct node_object *hnode, u32 usize,
 	u32 proc_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(pbuffer != NULL);
 
@@ -723,6 +771,8 @@ DBAPI node_alloc_msg_buf(struct node_object *hnode, u32 usize,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pnode)
 		status = -EFAULT;
 	else if (node_get_type(pnode) == NODE_DEVICE)
@@ -737,9 +787,12 @@ DBAPI node_alloc_msg_buf(struct node_object *hnode, u32 usize,
 	status = proc_get_processor_id(pnode->processor, &proc_id);
 	if (proc_id != DSP_UNIT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto func_end;
 	}
 	/*  If segment ID includes MEM_SETVIRTUALSEGID then pbuffer is a
@@ -772,7 +825,11 @@ DBAPI node_alloc_msg_buf(struct node_object *hnode, u32 usize,
 		case 4:
 			break;
 		default:
+<<<<<<< HEAD
 			/* alignment value not suportted */
+=======
+			/* alignment value not supportted */
+>>>>>>> refs/remotes/origin/master
 			status = -EPERM;
 			break;
 		}
@@ -808,10 +865,13 @@ int node_change_priority(struct node_object *hnode, s32 prio)
 	u32 proc_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode || !hnode->node_mgr) {
 		status = -EFAULT;
 	} else {
@@ -883,9 +943,12 @@ int node_connect(struct node_object *node1, u32 stream1,
 	u32 dw_length;
 	int status = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!node1 || !node2)
 		return -EFAULT;
@@ -935,9 +998,12 @@ int node_connect(struct node_object *node1, u32 stream1,
 		hnode_mgr = node1->node_mgr;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(node2 != (struct node_object *)DSP_HGPPNODE);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		hnode_mgr = node2->node_mgr;
 	}
 
@@ -1017,11 +1083,14 @@ int node_connect(struct node_object *node1, u32 stream1,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT((node1_type == NODE_GPP) ||
 				(node2_type == NODE_GPP));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		chnl_mode = (node1_type == NODE_GPP) ?
 			CHNL_MODETODSP : CHNL_MODEFROMDSP;
 
@@ -1177,9 +1246,12 @@ int node_create(struct node_object *hnode)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pnode) {
 		status = -EFAULT;
 		goto func_end;
@@ -1332,12 +1404,15 @@ int node_create_mgr(struct node_mgr **node_man,
 	u8 dev_type;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(node_man != NULL);
 	DBC_REQUIRE(hdev_obj != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*node_man = NULL;
 	/* Allocate Node manager object */
 	node_mgr_obj = kzalloc(sizeof(struct node_mgr), GFP_KERNEL);
@@ -1410,9 +1485,12 @@ int node_create_mgr(struct node_mgr **node_man,
 	nldr_attrs_obj.dsp_word_size = node_mgr_obj->dsp_word_size;
 	nldr_attrs_obj.dsp_mau_size = node_mgr_obj->dsp_mau_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	node_mgr_obj->loader_init = node_mgr_obj->nldr_fxns.init();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	status = node_mgr_obj->nldr_fxns.create(&node_mgr_obj->nldr_obj,
 			hdev_obj,
 			&nldr_attrs_obj);
@@ -1422,10 +1500,13 @@ int node_create_mgr(struct node_mgr **node_man,
 	*node_man = node_mgr_obj;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE((status && *node_man == NULL) || (!status && *node_man));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 out_err:
 	delete_node_mgr(node_mgr_obj);
@@ -1459,9 +1540,12 @@ int node_delete(struct node_res_object *noderes,
 
 	struct dsp_processorstate proc_state;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!pnode) {
 		status = -EFAULT;
@@ -1607,10 +1691,13 @@ func_end:
 int node_delete_mgr(struct node_mgr *hnode_mgr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode_mgr)
 		return -EFAULT;
 
@@ -1632,12 +1719,15 @@ int node_enum_nodes(struct node_mgr *hnode_mgr, void **node_tab,
 	u32 i = 0;
 	int status = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(node_tab != NULL || node_tab_size == 0);
 	DBC_REQUIRE(pu_num_nodes != NULL);
 	DBC_REQUIRE(pu_allocated != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!hnode_mgr) {
 		status = -EFAULT;
@@ -1664,6 +1754,7 @@ func_end:
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== node_exit ========
  *  Purpose:
  *      Discontinue usage of NODE module.
@@ -1680,6 +1771,8 @@ void node_exit(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== node_free_msg_buf ========
  *  Purpose:
  *      Frees the message buffer.
@@ -1691,12 +1784,15 @@ int node_free_msg_buf(struct node_object *hnode, u8 * pbuffer,
 	int status = 0;
 	u32 proc_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(pbuffer != NULL);
 	DBC_REQUIRE(pnode != NULL);
 	DBC_REQUIRE(pnode->xlator != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!hnode) {
 		status = -EFAULT;
@@ -1718,9 +1814,12 @@ int node_free_msg_buf(struct node_object *hnode, u8 * pbuffer,
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(NULL);	/* BUG */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 func_end:
 	return status;
@@ -1737,17 +1836,24 @@ int node_get_attr(struct node_object *hnode,
 {
 	struct node_mgr *hnode_mgr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(pattr != NULL);
 	DBC_REQUIRE(attr_size >= sizeof(struct dsp_nodeattr));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!hnode)
 		return -EFAULT;
 
 	hnode_mgr = hnode->node_mgr;
+<<<<<<< HEAD
 	/* Enter hnode_mgr critical section (since we're accessing
+=======
+	/* Enter hnode_mgr critical section since we're accessing
+>>>>>>> refs/remotes/origin/master
 	 * data that could be changed by node_change_priority() and
 	 * node_connect(). */
 	mutex_lock(&hnode_mgr->node_mgr_lock);
@@ -1784,11 +1890,14 @@ int node_get_channel_id(struct node_object *hnode, u32 dir, u32 index,
 	enum node_type node_type;
 	int status = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(dir == DSP_TONODE || dir == DSP_FROMNODE);
 	DBC_REQUIRE(chan_id != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!hnode) {
 		status = -EFAULT;
@@ -1808,9 +1917,12 @@ int node_get_channel_id(struct node_object *hnode, u32 dir, u32 index,
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(dir == DSP_FROMNODE);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (index < MAX_OUTPUTS(hnode)) {
 			if (hnode->outputs[index].type == HOSTCONNECT) {
 				*chan_id = hnode->outputs[index].dev_id;
@@ -1838,11 +1950,14 @@ int node_get_message(struct node_object *hnode,
 	struct proc_object *hprocessor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(message != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode) {
 		status = -EFAULT;
 		goto func_end;
@@ -1911,9 +2026,12 @@ int node_get_nldr_obj(struct node_mgr *hnode_mgr,
 	int status = 0;
 	struct node_mgr *node_mgr_obj = hnode_mgr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(nldr_ovlyobj != NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!hnode_mgr)
 		status = -EFAULT;
@@ -1921,9 +2039,12 @@ int node_get_nldr_obj(struct node_mgr *hnode_mgr,
 		*nldr_ovlyobj = node_mgr_obj->nldr_obj;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE(!status || (nldr_ovlyobj != NULL && *nldr_ovlyobj == NULL));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -1938,10 +2059,13 @@ int node_get_strm_mgr(struct node_object *hnode,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode)
 		status = -EFAULT;
 	else
@@ -1956,10 +2080,13 @@ int node_get_strm_mgr(struct node_object *hnode,
 enum nldr_loadtype node_get_load_type(struct node_object *hnode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hnode);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode) {
 		dev_dbg(bridge, "%s: Failed. hnode: %p\n", __func__, hnode);
 		return -1;
@@ -1976,10 +2103,13 @@ enum nldr_loadtype node_get_load_type(struct node_object *hnode)
 u32 node_get_timeout(struct node_object *hnode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hnode);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode) {
 		dev_dbg(bridge, "%s: failed. hnode: %p\n", __func__, hnode);
 		return 0;
@@ -2010,6 +2140,7 @@ enum node_type node_get_type(struct node_object *hnode)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  ======== node_init ========
  *  Purpose:
  *      Initialize the NODE module.
@@ -2026,6 +2157,8 @@ bool node_init(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *  ======== node_on_exit ========
  *  Purpose:
  *      Gets called when RMS_EXIT is received for a node.
@@ -2068,10 +2201,13 @@ int node_pause(struct node_object *hnode)
 	struct proc_object *hprocessor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode) {
 		status = -EFAULT;
 	} else {
@@ -2155,11 +2291,14 @@ int node_put_message(struct node_object *hnode,
 	struct proc_object *hprocessor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(pmsg != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode) {
 		status = -EFAULT;
 		goto func_end;
@@ -2250,11 +2389,14 @@ int node_register_notify(struct node_object *hnode, u32 event_mask,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hnotification != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode) {
 		status = -EFAULT;
 	} else {
@@ -2314,10 +2456,13 @@ int node_run(struct node_object *hnode)
 	struct proc_object *hprocessor;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode) {
 		status = -EFAULT;
 		goto func_end;
@@ -2397,9 +2542,12 @@ int node_run(struct node_object *hnode)
 	} else {
 		/* We should never get here */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(false);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 func_cont1:
 	/* Update node state. */
@@ -2439,11 +2587,14 @@ int node_terminate(struct node_object *hnode, int *pstatus)
 	struct dsp_processorstate proc_state;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(pstatus != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hnode || !hnode->node_mgr) {
 		status = -EFAULT;
 		goto func_end;
@@ -2726,11 +2877,14 @@ static void delete_node_mgr(struct node_mgr *hnode_mgr)
 			hnode_mgr->nldr_fxns.delete(hnode_mgr->nldr_obj);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (hnode_mgr->loader_init)
 			hnode_mgr->nldr_fxns.exit();
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(hnode_mgr);
 	}
 }
@@ -2787,9 +2941,12 @@ static void fill_stream_connect(struct node_object *node1,
 	} else {
 		/* GPP == > NODE */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(node2 != (struct node_object *)DSP_HGPPNODE);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		strm_index = node2->num_inputs + node2->num_outputs - 1;
 		strm2 = &(node2->stream_connect[strm_index]);
 		strm2->cb_struct = sizeof(struct dsp_streamconnect);
@@ -2870,11 +3027,14 @@ static int get_fxn_address(struct node_object *hnode, u32 * fxn_addr,
 	struct node_mgr *hnode_mgr = hnode->node_mgr;
 	int status = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(node_get_type(hnode) == NODE_TASK ||
 		    node_get_type(hnode) == NODE_DAISSOCKET ||
 		    node_get_type(hnode) == NODE_MESSAGE);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (phase) {
 	case CREATEPHASE:
@@ -2892,9 +3052,12 @@ static int get_fxn_address(struct node_object *hnode, u32 * fxn_addr,
 	default:
 		/* Should never get here */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBC_ASSERT(false);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -2915,11 +3078,14 @@ void get_node_info(struct node_object *hnode, struct dsp_nodeinfo *node_info)
 	u32 i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(hnode);
 	DBC_REQUIRE(node_info != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	node_info->cb_struct = sizeof(struct dsp_nodeinfo);
 	node_info->nb_node_database_props =
 	    hnode->dcd_props.obj_data.node_obj.ndb_props;
@@ -2962,8 +3128,12 @@ static int get_node_props(struct dcd_manager *hdcd_mgr,
 		hnode->ntype = node_type = pndb_props->ntype;
 
 		/* Create UUID value to set in registry. */
+<<<<<<< HEAD
 		uuid_uuid_to_string((struct dsp_uuid *)node_uuid, sz_uuid,
 				    MAXUUIDLEN);
+=======
+		snprintf(sz_uuid, MAXUUIDLEN, "%pUL", node_uuid);
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(bridge, "(node) UUID: %s\n", sz_uuid);
 
 		/* Fill in message args that come from NDB */
@@ -2979,12 +3149,16 @@ static int get_node_props(struct dcd_manager *hdcd_mgr,
 		} else {
 			/* Copy device name */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DBC_REQUIRE(pndb_props->ac_name);
 			len = strlen(pndb_props->ac_name);
 			DBC_ASSERT(len < MAXDEVNAMELEN);
 =======
 			len = strlen(pndb_props->ac_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			len = strlen(pndb_props->ac_name);
+>>>>>>> refs/remotes/origin/master
 			hnode->str_dev_name = kzalloc(len + 1, GFP_KERNEL);
 			if (hnode->str_dev_name == NULL) {
 				status = -ENOMEM;
@@ -3073,12 +3247,15 @@ int node_get_uuid_props(void *hprocessor,
 	struct dsp_processorstate proc_state;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(hprocessor != NULL);
 	DBC_REQUIRE(node_uuid != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (hprocessor == NULL || node_uuid == NULL) {
 		status = -EFAULT;
 		goto func_end;
@@ -3201,10 +3378,13 @@ static u32 ovly(void *priv_ref, u32 dsp_run_addr, u32 dsp_load_addr,
 	struct bridge_drv_interface *intf_fxns;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(hnode);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hnode_mgr = hnode->node_mgr;
 
 	ul_size = ul_num_bytes / hnode_mgr->dsp_word_size;
@@ -3247,11 +3427,14 @@ static u32 mem_write(void *priv_ref, u32 dsp_add, void *pbuf,
 	struct bridge_drv_interface *intf_fxns;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(hnode);
 	DBC_REQUIRE(mem_space & DBLL_CODE || mem_space & DBLL_DATA);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hnode_mgr = hnode->node_mgr;
 
 	ul_timeout = hnode->timeout;
@@ -3276,6 +3459,7 @@ int node_find_addr(struct node_mgr *node_mgr, u32 sym_addr,
 	struct node_object *node_obj;
 	int status = -ENOENT;
 
+<<<<<<< HEAD
 	pr_debug("%s(0x%x, 0x%x, 0x%x, 0x%x,  %s)\n", __func__,
 			(unsigned int) node_mgr,
 			sym_addr, offset_range,
@@ -3286,6 +3470,18 @@ int node_find_addr(struct node_mgr *node_mgr, u32 sym_addr,
 			offset_range, sym_addr_output, sym_name);
 		if (!status)
 			break;
+=======
+	list_for_each_entry(node_obj, &node_mgr->node_list, list_elem) {
+		status = nldr_find_addr(node_obj->nldr_node_obj, sym_addr,
+			offset_range, sym_addr_output, sym_name);
+		if (!status) {
+			pr_debug("%s(0x%x, 0x%x, 0x%x, 0x%x, %s)\n", __func__,
+				 (unsigned int) node_mgr,
+				 sym_addr, offset_range,
+				 (unsigned int) sym_addr_output, sym_name);
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return status;

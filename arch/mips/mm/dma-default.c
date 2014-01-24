@@ -4,7 +4,11 @@
  * for more details.
  *
  * Copyright (C) 2000  Ani Joshi <ajoshi@unixbox.com>
+<<<<<<< HEAD
  * Copyright (C) 2000, 2001, 06  Ralf Baechle <ralf@linux-mips.org>
+=======
+ * Copyright (C) 2000, 2001, 06	 Ralf Baechle <ralf@linux-mips.org>
+>>>>>>> refs/remotes/origin/master
  * swiped from i386, and cloned for MIPS by Geert, polished by Ralf.
  */
 
@@ -16,15 +20,23 @@
 #include <linux/string.h>
 #include <linux/gfp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/highmem.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/cache.h>
+=======
+#include <linux/highmem.h>
+
+#include <asm/cache.h>
+#include <asm/cpu-type.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include <dma-coherence.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline unsigned long dma_addr_to_virt(struct device *dev,
 	dma_addr_t dma_addr)
@@ -40,6 +52,28 @@ static inline unsigned long dma_addr_to_virt(struct device *dev,
  * requiring an extra flush post-DMA.
  *
 =======
+=======
+int coherentio = 0;	/* User defined DMA coherency from command line. */
+EXPORT_SYMBOL_GPL(coherentio);
+int hw_coherentio = 0;	/* Actual hardware supported DMA coherency setting. */
+
+static int __init setcoherentio(char *str)
+{
+	coherentio = 1;
+	pr_info("Hardware DMA cache coherency (command line)\n");
+	return 0;
+}
+early_param("coherentio", setcoherentio);
+
+static int __init setnocoherentio(char *str)
+{
+	coherentio = 0;
+	pr_info("Software DMA cache coherency (command line)\n");
+	return 0;
+}
+early_param("nocoherentio", setnocoherentio);
+
+>>>>>>> refs/remotes/origin/master
 static inline struct page *dma_addr_to_page(struct device *dev,
 	dma_addr_t dma_addr)
 {
@@ -48,11 +82,19 @@ static inline struct page *dma_addr_to_page(struct device *dev,
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * The affected CPUs below in 'cpu_needs_post_dma_flush()' can
+ * speculatively fill random cachelines with stale data at any time,
+ * requiring an extra flush post-DMA.
+ *
+>>>>>>> refs/remotes/origin/master
  * Warning on the terminology - Linux calls an uncached area coherent;
  * MIPS terminology calls memory areas with hardware maintained coherency
  * coherent.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int cpu_needs_post_dma_flush(struct device *dev)
 {
@@ -68,6 +110,14 @@ static inline int cpu_is_noncoherent_r10000(struct device *dev)
 	       (current_cpu_type() == CPU_R10000 ||
 	       current_cpu_type() == CPU_R12000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int cpu_needs_post_dma_flush(struct device *dev)
+{
+	return !plat_device_is_coherent(dev) &&
+	       (boot_cpu_type() == CPU_R10000 ||
+		boot_cpu_type() == CPU_R12000 ||
+		boot_cpu_type() == CPU_BMIPS5000);
+>>>>>>> refs/remotes/origin/master
 }
 
 static gfp_t massage_gfp_flags(const struct device *dev, gfp_t gfp)
@@ -127,10 +177,14 @@ EXPORT_SYMBOL(dma_alloc_noncoherent);
 
 static void *mips_dma_alloc_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t * dma_handle, gfp_t gfp)
 =======
 	dma_addr_t * dma_handle, gfp_t gfp, struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_addr_t * dma_handle, gfp_t gfp, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret;
 
@@ -147,7 +201,12 @@ static void *mips_dma_alloc_coherent(struct device *dev, size_t size,
 
 		if (!plat_device_is_coherent(dev)) {
 			dma_cache_wback_inv((unsigned long) ret, size);
+<<<<<<< HEAD
 			ret = UNCAC_ADDR(ret);
+=======
+			if (!hw_coherentio)
+				ret = UNCAC_ADDR(ret);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -165,10 +224,14 @@ EXPORT_SYMBOL(dma_free_noncoherent);
 
 static void mips_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t dma_handle)
 =======
 	dma_addr_t dma_handle, struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_addr_t dma_handle, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long addr = (unsigned long) vaddr;
 	int order = get_order(size);
@@ -178,21 +241,30 @@ static void mips_dma_free_coherent(struct device *dev, size_t size, void *vaddr,
 
 	plat_unmap_dma_mem(dev, dma_handle, size, DMA_BIDIRECTIONAL);
 
+<<<<<<< HEAD
 	if (!plat_device_is_coherent(dev))
+=======
+	if (!plat_device_is_coherent(dev) && !hw_coherentio)
+>>>>>>> refs/remotes/origin/master
 		addr = CAC_ADDR(addr);
 
 	free_pages(addr, get_order(size));
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __dma_sync(unsigned long addr, size_t size,
 =======
 static inline void __dma_sync_virtual(void *addr, size_t size,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void __dma_sync_virtual(void *addr, size_t size,
+>>>>>>> refs/remotes/origin/master
 	enum dma_data_direction direction)
 {
 	switch (direction) {
 	case DMA_TO_DEVICE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		dma_cache_wback(addr, size);
 		break;
@@ -204,6 +276,8 @@ static inline void __dma_sync_virtual(void *addr, size_t size,
 	case DMA_BIDIRECTIONAL:
 		dma_cache_wback_inv(addr, size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dma_cache_wback((unsigned long)addr, size);
 		break;
 
@@ -213,7 +287,10 @@ static inline void __dma_sync_virtual(void *addr, size_t size,
 
 	case DMA_BIDIRECTIONAL:
 		dma_cache_wback_inv((unsigned long)addr, size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -221,6 +298,7 @@ static inline void __dma_sync_virtual(void *addr, size_t size,
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
 	size_t size, enum dma_data_direction direction, struct dma_attrs *attrs)
@@ -235,6 +313,8 @@ static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
 			   dma_addr & ~PAGE_MASK, size, direction);
 >>>>>>> 15c6df1... Squashed update of kernel from 3.4.74 to 3.4.75
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * A single sg entry may refer to multiple physically contiguous
  * pages. But we still need to process highmem pages individually.
@@ -275,10 +355,16 @@ static inline void __dma_sync(struct page *page,
 static void mips_dma_unmap_page(struct device *dev, dma_addr_t dma_addr,
 	size_t size, enum dma_data_direction direction, struct dma_attrs *attrs)
 {
+<<<<<<< HEAD
 	if (cpu_is_noncoherent_r10000(dev))
 		__dma_sync(dma_addr_to_page(dev, dma_addr),
 			   dma_addr & ~PAGE_MASK, size, direction);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_needs_post_dma_flush(dev))
+		__dma_sync(dma_addr_to_page(dev, dma_addr),
+			   dma_addr & ~PAGE_MASK, size, direction);
+>>>>>>> refs/remotes/origin/master
 
 	plat_unmap_dma_mem(dev, dma_addr, size, direction);
 }
@@ -289,6 +375,7 @@ static int mips_dma_map_sg(struct device *dev, struct scatterlist *sg,
 	int i;
 
 	for (i = 0; i < nents; i++, sg++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		unsigned long addr;
 
@@ -304,6 +391,16 @@ static int mips_dma_map_sg(struct device *dev, struct scatterlist *sg,
 		sg->dma_address = plat_map_dma_mem_page(dev, sg_page(sg)) +
 				  sg->offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!plat_device_is_coherent(dev))
+			__dma_sync(sg_page(sg), sg->offset, sg->length,
+				   direction);
+#ifdef CONFIG_NEED_SG_DMA_LENGTH
+		sg->dma_length = sg->length;
+#endif
+		sg->dma_address = plat_map_dma_mem_page(dev, sg_page(sg)) +
+				  sg->offset;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return nents;
@@ -314,6 +411,7 @@ static dma_addr_t mips_dma_map_page(struct device *dev, struct page *page,
 	struct dma_attrs *attrs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long addr;
 
 	addr = (unsigned long) page_address(page) + offset;
@@ -323,11 +421,16 @@ static dma_addr_t mips_dma_map_page(struct device *dev, struct page *page,
 
 	return plat_map_dma_mem(dev, (void *)addr, size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!plat_device_is_coherent(dev))
 		__dma_sync(page, offset, size, direction);
 
 	return plat_map_dma_mem_page(dev, page) + offset;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
@@ -335,13 +438,17 @@ static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
 	struct dma_attrs *attrs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long addr;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < nhwentries; i++, sg++) {
 		if (!plat_device_is_coherent(dev) &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 		    direction != DMA_TO_DEVICE) {
 			addr = (unsigned long) sg_virt(sg);
@@ -353,6 +460,11 @@ static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
 			__dma_sync(sg_page(sg), sg->offset, sg->length,
 				   direction);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    direction != DMA_TO_DEVICE)
+			__dma_sync(sg_page(sg), sg->offset, sg->length,
+				   direction);
+>>>>>>> refs/remotes/origin/master
 		plat_unmap_dma_mem(dev, sg->dma_address, sg->length, direction);
 	}
 }
@@ -360,6 +472,7 @@ static void mips_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
 static void mips_dma_sync_single_for_cpu(struct device *dev,
 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 	if (cpu_is_noncoherent_r10000(dev)) {
@@ -378,11 +491,17 @@ static void mips_dma_sync_single_for_cpu(struct device *dev,
 		__dma_sync(dma_addr_to_page(dev, dma_handle),
 			   dma_handle & ~PAGE_MASK, size, direction);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_needs_post_dma_flush(dev))
+		__dma_sync(dma_addr_to_page(dev, dma_handle),
+			   dma_handle & ~PAGE_MASK, size, direction);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mips_dma_sync_single_for_device(struct device *dev,
 	dma_addr_t dma_handle, size_t size, enum dma_data_direction direction)
 {
+<<<<<<< HEAD
 	plat_extra_sync_for_device(dev);
 <<<<<<< HEAD
 	if (!plat_device_is_coherent(dev)) {
@@ -396,6 +515,11 @@ static void mips_dma_sync_single_for_device(struct device *dev,
 		__dma_sync(dma_addr_to_page(dev, dma_handle),
 			   dma_handle & ~PAGE_MASK, size, direction);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!plat_device_is_coherent(dev))
+		__dma_sync(dma_addr_to_page(dev, dma_handle),
+			   dma_handle & ~PAGE_MASK, size, direction);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mips_dma_sync_sg_for_cpu(struct device *dev,
@@ -403,6 +527,7 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
 {
 	int i;
 
+<<<<<<< HEAD
 	/* Make sure that gcc doesn't leave the empty loop body.  */
 	for (i = 0; i < nelems; i++, sg++) {
 <<<<<<< HEAD
@@ -421,6 +546,12 @@ static void mips_dma_sync_sg_for_cpu(struct device *dev,
 				   direction);
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	if (cpu_needs_post_dma_flush(dev))
+		for (i = 0; i < nelems; i++, sg++)
+			__dma_sync(sg_page(sg), sg->offset, sg->length,
+				   direction);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mips_dma_sync_sg_for_device(struct device *dev,
@@ -428,6 +559,7 @@ static void mips_dma_sync_sg_for_device(struct device *dev,
 {
 	int i;
 
+<<<<<<< HEAD
 	/* Make sure that gcc doesn't leave the empty loop body.  */
 	for (i = 0; i < nelems; i++, sg++) {
 		if (!plat_device_is_coherent(dev))
@@ -439,11 +571,21 @@ static void mips_dma_sync_sg_for_device(struct device *dev,
 				   direction);
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	if (!plat_device_is_coherent(dev))
+		for (i = 0; i < nelems; i++, sg++)
+			__dma_sync(sg_page(sg), sg->offset, sg->length,
+				   direction);
+>>>>>>> refs/remotes/origin/master
 }
 
 int mips_dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 {
+<<<<<<< HEAD
 	return plat_dma_mapping_error(dev, dma_addr);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 int mips_dma_supported(struct device *dev, u64 mask)
@@ -456,6 +598,7 @@ void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
 {
 	BUG_ON(direction == DMA_NONE);
 
+<<<<<<< HEAD
 	plat_extra_sync_for_device(dev);
 	if (!plat_device_is_coherent(dev))
 <<<<<<< HEAD
@@ -463,11 +606,16 @@ void dma_cache_sync(struct device *dev, void *vaddr, size_t size,
 =======
 		__dma_sync_virtual(vaddr, size, direction);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!plat_device_is_coherent(dev))
+		__dma_sync_virtual(vaddr, size, direction);
+>>>>>>> refs/remotes/origin/master
 }
 
 EXPORT_SYMBOL(dma_cache_sync);
 
 static struct dma_map_ops mips_default_dma_map_ops = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.alloc_coherent = mips_dma_alloc_coherent,
 	.free_coherent = mips_dma_free_coherent,
@@ -475,6 +623,10 @@ static struct dma_map_ops mips_default_dma_map_ops = {
 	.alloc = mips_dma_alloc_coherent,
 	.free = mips_dma_free_coherent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc = mips_dma_alloc_coherent,
+	.free = mips_dma_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_page = mips_dma_map_page,
 	.unmap_page = mips_dma_unmap_page,
 	.map_sg = mips_dma_map_sg,

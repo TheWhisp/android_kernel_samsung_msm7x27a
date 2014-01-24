@@ -13,9 +13,13 @@
 #include <linux/moduleparam.h>
 #include <linux/pci_ids.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include "ctatc.h"
@@ -36,10 +40,14 @@ module_param(multiple, uint, S_IRUGO);
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 static unsigned int subsystem[SNDRV_CARDS];
 
 module_param_array(index, int, NULL, 0444);
@@ -63,7 +71,11 @@ static DEFINE_PCI_DEVICE_TABLE(ct_pci_dev_ids) = {
 };
 MODULE_DEVICE_TABLE(pci, ct_pci_dev_ids);
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ct_card_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 {
 	static int dev;
@@ -89,18 +101,24 @@ ct_card_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 		reference_rate = 48000;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((multiple != 1) && (multiple != 2)) {
 		printk(KERN_ERR "ctxfi: Invalid multiple value %u!!!\n",
 		       multiple);
 		printk(KERN_ERR "ctxfi: The valid values for multiple are "
 		       "1 and 2, Value 2 is assumed.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((multiple != 1) && (multiple != 2) && (multiple != 4)) {
 		printk(KERN_ERR "ctxfi: Invalid multiple value %u!!!\n",
 		       multiple);
 		printk(KERN_ERR "ctxfi: The valid values for multiple are "
 		       "1, 2 and 4, Value 2 is assumed.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		multiple = 2;
 	}
 	err = ct_atc_create(card, pci, reference_rate, multiple,
@@ -134,6 +152,7 @@ error:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit ct_card_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -152,10 +171,30 @@ static int ct_card_suspend(struct pci_dev *pci, pm_message_t state)
 static int ct_card_resume(struct pci_dev *pci)
 {
 	struct snd_card *card = pci_get_drvdata(pci);
+=======
+static void ct_card_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int ct_card_suspend(struct device *dev)
+{
+	struct snd_card *card = dev_get_drvdata(dev);
+	struct ct_atc *atc = card->private_data;
+
+	return atc->suspend(atc);
+}
+
+static int ct_card_resume(struct device *dev)
+{
+	struct snd_card *card = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ct_atc *atc = card->private_data;
 
 	return atc->resume(atc);
 }
+<<<<<<< HEAD
 #endif
 
 static struct pci_driver ct_driver = {
@@ -185,3 +224,23 @@ static void __exit ct_card_exit(void)
 
 module_init(ct_card_init)
 module_exit(ct_card_exit)
+=======
+
+static SIMPLE_DEV_PM_OPS(ct_card_pm, ct_card_suspend, ct_card_resume);
+#define CT_CARD_PM_OPS	&ct_card_pm
+#else
+#define CT_CARD_PM_OPS	NULL
+#endif
+
+static struct pci_driver ct_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = ct_pci_dev_ids,
+	.probe = ct_card_probe,
+	.remove = ct_card_remove,
+	.driver = {
+		.pm = CT_CARD_PM_OPS,
+	},
+};
+
+module_pci_driver(ct_driver);
+>>>>>>> refs/remotes/origin/master

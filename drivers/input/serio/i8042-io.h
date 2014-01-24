@@ -76,7 +76,11 @@ static inline int i8042_platform_init(void)
 	if (check_legacy_ioport(I8042_DATA_REG))
 		return -ENODEV;
 #endif
+<<<<<<< HEAD
 #if !defined(__sh__) && !defined(__alpha__) && !defined(__mips__)
+=======
+#if !defined(__sh__) && !defined(__alpha__)
+>>>>>>> refs/remotes/origin/master
 	if (!request_region(I8042_DATA_REG, 16, "i8042"))
 		return -EBUSY;
 #endif

@@ -1,5 +1,6 @@
 #ifndef _ASM_X86_PROCESSOR_FLAGS_H
 #define _ASM_X86_PROCESSOR_FLAGS_H
+<<<<<<< HEAD
 /* Various flags defined: can be included from assembler. */
 
 /*
@@ -99,11 +100,19 @@
 #define CX86_RCR_BASE	0xdc
 
 #ifdef __KERNEL__
+=======
+
+#include <uapi/asm/processor-flags.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_VM86
 #define X86_VM_MASK	X86_EFLAGS_VM
 #else
 #define X86_VM_MASK	0 /* No VM86 support */
 #endif
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_PROCESSOR_FLAGS_H */

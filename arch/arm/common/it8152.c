@@ -26,9 +26,13 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/pci.h>
 #include <asm/hardware/it8152.h>
@@ -149,10 +153,14 @@ void it8152_irq_demux(unsigned int irq, struct irq_desc *desc)
 
 /* mapping for on-chip devices */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init it8152_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 int __init it8152_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init it8152_pci_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((dev->vendor == PCI_VENDOR_ID_ITE) &&
 	    (dev->device == PCI_DEVICE_ID_ITE_8152)) {
@@ -229,7 +237,11 @@ static int it8152_pci_write_config(struct pci_bus *bus,
 	return PCIBIOS_SUCCESSFUL;
 }
 
+<<<<<<< HEAD
 static struct pci_ops it8152_ops = {
+=======
+struct pci_ops it8152_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read = it8152_pci_read_config,
 	.write = it8152_pci_write_config,
 };
@@ -252,14 +264,20 @@ static struct resource it8152_mem = {
  * connected to ITE8152 (PCI and USB) should have limited DMA window
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int it8152_needs_bounce(struct device *dev, dma_addr_t dma_addr, size_t size)
 {
 	dev_dbg(dev, "%s: dma_addr %08x, size %08x\n",
 		__func__, dma_addr, size);
 	return (dma_addr + size - PHYS_OFFSET) >= SZ_64M;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Setup DMA mask to 64MB on devices connected to ITE8152. Ignore all
@@ -272,10 +290,14 @@ static int it8152_pci_platform_notify(struct device *dev)
 			*dev->dma_mask = (SZ_64M - 1) | PHYS_OFFSET;
 		dev->coherent_dma_mask = (SZ_64M - 1) | PHYS_OFFSET;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dmabounce_register_dev(dev, 2048, 4096);
 =======
 		dmabounce_register_dev(dev, 2048, 4096, it8152_needs_bounce);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dmabounce_register_dev(dev, 2048, 4096, it8152_needs_bounce);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -289,6 +311,7 @@ static int it8152_pci_platform_notify_remove(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dma_needs_bounce(struct device *dev, dma_addr_t dma_addr, size_t size)
 {
 	dev_dbg(dev, "%s: dma_addr %08x, size %08x\n",
@@ -299,6 +322,8 @@ int dma_needs_bounce(struct device *dev, dma_addr_t dma_addr, size_t size)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int dma_set_coherent_mask(struct device *dev, u64 mask)
 {
 	if (mask >= PHYS_OFFSET + SZ_64M - 1)
@@ -309,11 +334,25 @@ int dma_set_coherent_mask(struct device *dev, u64 mask)
 
 int __init it8152_pci_setup(int nr, struct pci_sys_data *sys)
 {
+<<<<<<< HEAD
 	it8152_io.start = IT8152_IO_BASE + 0x12000;
 	it8152_io.end	= IT8152_IO_BASE + 0x12000 + 0x100000;
 
 	sys->mem_offset = 0x10000000;
 	sys->io_offset  = IT8152_IO_BASE;
+=======
+	/*
+	 * FIXME: use pci_ioremap_io to remap the IO space here and
+	 * move over to the generic io.h implementation.
+	 * This requires solving the same problem for PXA PCMCIA
+	 * support.
+	 */
+	it8152_io.start = (unsigned long)IT8152_IO_BASE + 0x12000;
+	it8152_io.end	= (unsigned long)IT8152_IO_BASE + 0x12000 + 0x100000;
+
+	sys->mem_offset = 0x10000000;
+	sys->io_offset  = (unsigned long)IT8152_IO_BASE;
+>>>>>>> refs/remotes/origin/master
 
 	if (request_resource(&ioport_resource, &it8152_io)) {
 		printk(KERN_ERR "PCI: unable to allocate IO region\n");
@@ -325,12 +364,17 @@ int __init it8152_pci_setup(int nr, struct pci_sys_data *sys)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sys->resource[0] = &it8152_io;
 	sys->resource[1] = &it8152_mem;
 =======
 	pci_add_resource_offset(&sys->resources, &it8152_io, sys->io_offset);
 	pci_add_resource_offset(&sys->resources, &it8152_mem, sys->mem_offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_add_resource_offset(&sys->resources, &it8152_io, sys->io_offset);
+	pci_add_resource_offset(&sys->resources, &it8152_mem, sys->mem_offset);
+>>>>>>> refs/remotes/origin/master
 
 	if (platform_notify || platform_notify_remove) {
 		printk(KERN_ERR "PCI: Can't use platform_notify\n");
@@ -351,6 +395,7 @@ err0:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * If we set up a device for bus mastering, we need to check the latency
  * timer as we don't have even crappy BIOSes to set it properly.
@@ -363,6 +408,11 @@ unsigned int pcibios_max_latency = 255;
    termination by PCI bus master devices
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ITE bridge requires setting latency timer to avoid early bus access
+   termination by PCI bus master devices
+*/
+>>>>>>> refs/remotes/origin/master
 void pcibios_set_master(struct pci_dev *dev)
 {
 	u8 lat;
@@ -386,6 +436,7 @@ void pcibios_set_master(struct pci_dev *dev)
 }
 
 
+<<<<<<< HEAD
 struct pci_bus * __init it8152_pci_scan_bus(int nr, struct pci_sys_data *sys)
 {
 <<<<<<< HEAD
@@ -395,4 +446,6 @@ struct pci_bus * __init it8152_pci_scan_bus(int nr, struct pci_sys_data *sys)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(dma_set_coherent_mask);

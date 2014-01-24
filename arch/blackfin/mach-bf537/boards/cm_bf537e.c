@@ -9,9 +9,13 @@
 
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/etherdevice.h>
 #include <linux/platform_device.h>
 #include <linux/mtd/mtd.h>
@@ -28,6 +32,10 @@
 #include <asm/bfin5xx_spi.h>
 #include <asm/portmux.h>
 #include <asm/dpmc.h>
+<<<<<<< HEAD
+=======
+#include <asm/bfin_sport.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Name the Board for the /proc/cpuinfo
@@ -35,10 +43,14 @@
 const char bfin_board_name[] = "Bluetechnix CM BF537E";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 /* all SPI peripherals info goes here */
 
 #if defined(CONFIG_MTD_M25P80) || defined(CONFIG_MTD_M25P80_MODULE)
@@ -70,6 +82,7 @@ static struct flash_platform_data bfin_spi_flash_data = {
 static struct bfin5xx_spi_chip spi_flash_chip_info = {
 	.enable_dma = 0,         /* use dma transfer with this chip*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -88,6 +101,8 @@ static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
 	.bits_per_word = 16,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -95,9 +110,12 @@ static struct bfin5xx_spi_chip ad1836_spi_chip_info = {
 static struct bfin5xx_spi_chip  mmc_spi_chip_info = {
 	.enable_dma = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bits_per_word = 8,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
@@ -116,6 +134,7 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_BFIN_SPI_ADC) || defined(CONFIG_BFIN_SPI_ADC_MODULE)
 	{
 		.modalias = "bfin_spi_adc", /* Name of spi_driver for this device */
@@ -129,6 +148,8 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SND_BF5XX_SOC_AD183X) || defined(CONFIG_SND_BF5XX_SOC_AD183X_MODULE)
 	{
 		.modalias = "ad183x",
@@ -136,9 +157,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 		.bus_num = 0,
 		.chip_select = 4,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.controller_data = &ad1836_spi_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 #endif
 
@@ -191,6 +215,74 @@ static struct platform_device bfin_spi0_device = {
 };
 #endif  /* spi master and devices */
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_SPI_BFIN_SPORT) || defined(CONFIG_SPI_BFIN_SPORT_MODULE)
+
+/* SPORT SPI controller data */
+static struct bfin5xx_spi_master bfin_sport_spi0_info = {
+	.num_chipselect = MAX_BLACKFIN_GPIOS,
+	.enable_dma = 0,  /* master don't support DMA */
+	.pin_req = {P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_DRPRI,
+		P_SPORT0_RSCLK, P_SPORT0_TFS, P_SPORT0_RFS, 0},
+};
+
+static struct resource bfin_sport_spi0_resource[] = {
+	[0] = {
+		.start = SPORT0_TCR1,
+		.end   = SPORT0_TCR1 + 0xFF,
+		.flags = IORESOURCE_MEM,
+		},
+	[1] = {
+		.start = IRQ_SPORT0_ERROR,
+		.end   = IRQ_SPORT0_ERROR,
+		.flags = IORESOURCE_IRQ,
+		},
+};
+
+static struct platform_device bfin_sport_spi0_device = {
+	.name = "bfin-sport-spi",
+	.id = 1, /* Bus number */
+	.num_resources = ARRAY_SIZE(bfin_sport_spi0_resource),
+	.resource = bfin_sport_spi0_resource,
+	.dev = {
+		.platform_data = &bfin_sport_spi0_info, /* Passed to driver */
+	},
+};
+
+static struct bfin5xx_spi_master bfin_sport_spi1_info = {
+	.num_chipselect = MAX_BLACKFIN_GPIOS,
+	.enable_dma = 0,  /* master don't support DMA */
+	.pin_req = {P_SPORT1_DTPRI, P_SPORT1_TSCLK, P_SPORT1_DRPRI,
+		P_SPORT1_RSCLK, P_SPORT1_TFS, P_SPORT1_RFS, 0},
+};
+
+static struct resource bfin_sport_spi1_resource[] = {
+	[0] = {
+		.start = SPORT1_TCR1,
+		.end   = SPORT1_TCR1 + 0xFF,
+		.flags = IORESOURCE_MEM,
+		},
+	[1] = {
+		.start = IRQ_SPORT1_ERROR,
+		.end   = IRQ_SPORT1_ERROR,
+		.flags = IORESOURCE_IRQ,
+		},
+};
+
+static struct platform_device bfin_sport_spi1_device = {
+	.name = "bfin-sport-spi",
+	.id = 2, /* Bus number */
+	.num_resources = ARRAY_SIZE(bfin_sport_spi1_resource),
+	.resource = bfin_sport_spi1_resource,
+	.dev = {
+		.platform_data = &bfin_sport_spi1_info, /* Passed to driver */
+	},
+};
+
+#endif  /* sport spi master and devices */
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_RTC_DRV_BFIN) || defined(CONFIG_RTC_DRV_BFIN_MODULE)
 static struct platform_device rtc_device = {
 	.name = "rtc-bfin",
@@ -355,9 +447,12 @@ static struct resource bfin_uart0_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX+1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART0_TX,
 		.end = IRQ_UART0_TX,
 		.flags = IORESOURCE_IRQ,
@@ -365,7 +460,10 @@ static struct resource bfin_uart0_resources[] = {
 	{
 		.start = IRQ_UART0_RX,
 		.end = IRQ_UART0_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -426,9 +524,12 @@ static struct resource bfin_uart1_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX+1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.start = IRQ_UART1_TX,
 		.end = IRQ_UART1_TX,
 		.flags = IORESOURCE_IRQ,
@@ -436,7 +537,10 @@ static struct resource bfin_uart1_resources[] = {
 	{
 		.start = IRQ_UART1_RX,
 		.end = IRQ_UART1_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 	{
@@ -544,6 +648,11 @@ static struct platform_device bfin_sir1_device = {
 #endif
 
 #if defined(CONFIG_I2C_BLACKFIN_TWI) || defined(CONFIG_I2C_BLACKFIN_TWI_MODULE)
+<<<<<<< HEAD
+=======
+static const u16 bfin_twi0_pins[] = {P_TWI0_SCL, P_TWI0_SDA, 0};
+
+>>>>>>> refs/remotes/origin/master
 static struct resource bfin_twi0_resource[] = {
 	[0] = {
 		.start = TWI0_REGBASE,
@@ -562,9 +671,25 @@ static struct platform_device i2c_bfin_twi_device = {
 	.id = 0,
 	.num_resources = ARRAY_SIZE(bfin_twi0_resource),
 	.resource = bfin_twi0_resource,
+<<<<<<< HEAD
 };
 #endif
 
+=======
+	.dev = {
+		.platform_data = &bfin_twi0_pins,
+	},
+};
+#endif
+
+#if defined(CONFIG_SERIAL_BFIN_SPORT) || defined(CONFIG_SERIAL_BFIN_SPORT_MODULE) \
+|| defined(CONFIG_BFIN_SPORT) || defined(CONFIG_BFIN_SPORT_MODULE)
+unsigned short bfin_sport0_peripherals[] = {
+	P_SPORT0_TFS, P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
+	P_SPORT0_DRPRI, P_SPORT0_RSCLK, P_SPORT0_DRSEC, P_SPORT0_DTSEC, 0
+};
+#endif
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SERIAL_BFIN_SPORT) || defined(CONFIG_SERIAL_BFIN_SPORT_MODULE)
 #ifdef CONFIG_SERIAL_BFIN_SPORT0_UART
 static struct resource bfin_sport0_uart_resources[] = {
@@ -585,11 +710,14 @@ static struct resource bfin_sport0_uart_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static unsigned short bfin_sport0_peripherals[] = {
 	P_SPORT0_TFS, P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
 	P_SPORT0_DRPRI, P_SPORT0_RSCLK, 0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device bfin_sport0_uart_device = {
 	.name = "bfin-sport-uart",
 	.id = 0,
@@ -635,6 +763,52 @@ static struct platform_device bfin_sport1_uart_device = {
 };
 #endif
 #endif
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_BFIN_SPORT) || defined(CONFIG_BFIN_SPORT_MODULE)
+static struct resource bfin_sport0_resources[] = {
+	{
+		.start = SPORT0_TCR1,
+		.end = SPORT0_MRCS3+4,
+		.flags = IORESOURCE_MEM,
+	},
+	{
+		.start = IRQ_SPORT0_RX,
+		.end = IRQ_SPORT0_RX+1,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = IRQ_SPORT0_TX,
+		.end = IRQ_SPORT0_TX+1,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = IRQ_SPORT0_ERROR,
+		.end = IRQ_SPORT0_ERROR,
+		.flags = IORESOURCE_IRQ,
+	},
+	{
+		.start = CH_SPORT0_TX,
+		.end = CH_SPORT0_TX,
+		.flags = IORESOURCE_DMA,
+	},
+	{
+		.start = CH_SPORT0_RX,
+		.end = CH_SPORT0_RX,
+		.flags = IORESOURCE_DMA,
+	},
+};
+static struct platform_device bfin_sport0_device = {
+	.name = "bfin_sport_raw",
+	.id = 0,
+	.num_resources = ARRAY_SIZE(bfin_sport0_resources),
+	.resource = bfin_sport0_resources,
+	.dev = {
+		.platform_data = &bfin_sport0_peripherals, /* Passed to driver */
+	},
+};
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_BFIN_MAC) || defined(CONFIG_BFIN_MAC_MODULE)
 #include <linux/bfin_mac.h>
@@ -675,10 +849,14 @@ static struct platform_device bfin_mac_device = {
 static struct pata_platform_info bfin_pata_platform_data = {
 	.ioport_shift = 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.irq_type = IRQF_TRIGGER_HIGH | IRQF_DISABLED,
 =======
 	.irq_type = IRQF_TRIGGER_HIGH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irq_type = IRQF_TRIGGER_HIGH,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource bfin_pata_resources[] = {
@@ -741,6 +919,13 @@ static struct platform_device *cm_bf537e_devices[] __initdata = {
 
 	&bfin_dpmc,
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_BFIN_SPORT) || defined(CONFIG_BFIN_SPORT_MODULE)
+	&bfin_sport0_device,
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_FB_HITACHI_TX09) || defined(CONFIG_FB_HITACHI_TX09_MODULE)
 	&hitachi_fb_device,
 #endif
@@ -798,6 +983,7 @@ static struct platform_device *cm_bf537e_devices[] __initdata = {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
@@ -805,6 +991,17 @@ static struct platform_device *cm_bf537e_devices[] __initdata = {
 	&bfin_spi0_device,
 #endif
 
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+	&bfin_spi0_device,
+#endif
+
+#if defined(CONFIG_SPI_BFIN_SPORT) || defined(CONFIG_SPI_BFIN_SPORT_MODULE)
+	&bfin_sport_spi0_device,
+	&bfin_sport_spi1_device,
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_PATA_PLATFORM) || defined(CONFIG_PATA_PLATFORM_MODULE)
 	&bfin_pata_device,
 #endif
@@ -815,7 +1012,10 @@ static struct platform_device *cm_bf537e_devices[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init net2272_init(void)
 {
 #if defined(CONFIG_USB_NET2272) || defined(CONFIG_USB_NET2272_MODULE)
@@ -834,16 +1034,23 @@ static int __init net2272_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init cm_bf537e_init(void)
 {
 	printk(KERN_INFO "%s(): registering device resources\n", __func__);
 	platform_add_devices(cm_bf537e_devices, ARRAY_SIZE(cm_bf537e_devices));
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 	spi_register_board_info(bfin_spi_board_info, ARRAY_SIZE(bfin_spi_board_info));
 #endif
 
@@ -851,12 +1058,18 @@ static int __init cm_bf537e_init(void)
 	irq_set_status_flags(PATA_INT, IRQ_NOAUTOEN);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (net2272_init())
 		pr_warning("unable to configure net2272; it probably won't work\n");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -890,6 +1103,7 @@ void __init native_machine_early_platform_add_devices(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void bfin_get_ether_addr(char *addr)
 {
 	random_ether_addr(addr);
@@ -899,5 +1113,10 @@ int bfin_get_ether_addr(char *addr)
 {
 	return 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int bfin_get_ether_addr(char *addr)
+{
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(bfin_get_ether_addr);

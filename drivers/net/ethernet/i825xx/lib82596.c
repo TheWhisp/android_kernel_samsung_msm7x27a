@@ -607,7 +607,11 @@ static int init_i596_mem(struct net_device *dev)
 	i596_add_cmd(dev, &dma->cf_cmd.cmd);
 
 	DEB(DEB_INIT, printk(KERN_DEBUG "%s: queuing CmdSASetup\n", dev->name));
+<<<<<<< HEAD
 	memcpy(dma->sa_cmd.eth_addr, dev->dev_addr, 6);
+=======
+	memcpy(dma->sa_cmd.eth_addr, dev->dev_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	dma->sa_cmd.cmd.command = SWAP16(CmdSASetup);
 	DMA_WBACK(dev, &(dma->sa_cmd), sizeof(struct sa_cmd));
 	i596_add_cmd(dev, &dma->sa_cmd.cmd);
@@ -715,6 +719,7 @@ static inline int i596_rx(struct net_device *dev)
 				rbd->v_data = newskb->data;
 				rbd->b_data = SWAP32(dma_addr);
 				DMA_WBACK_INV(dev, rbd, sizeof(struct i596_rbd));
+<<<<<<< HEAD
 			} else
 				skb = netdev_alloc_skb_ip_align(dev, pkt_len);
 memory_squeeze:
@@ -723,6 +728,14 @@ memory_squeeze:
 				printk(KERN_ERR
 				       "%s: i596_rx Memory squeeze, dropping packet.\n",
 				       dev->name);
+=======
+			} else {
+				skb = netdev_alloc_skb_ip_align(dev, pkt_len);
+			}
+memory_squeeze:
+			if (skb == NULL) {
+				/* XXX tulip.c can defer packets here!! */
+>>>>>>> refs/remotes/origin/master
 				dev->stats.rx_dropped++;
 			} else {
 				if (!rx_in_place) {
@@ -1048,7 +1061,11 @@ static const struct net_device_ops i596_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit i82596_probe(struct net_device *dev)
+=======
+static int i82596_probe(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct i596_private *lp = netdev_priv(dev);
@@ -1398,13 +1415,21 @@ static void set_multicast_list(struct net_device *dev)
 		netdev_for_each_mc_addr(ha, dev) {
 			if (!cnt--)
 				break;
+<<<<<<< HEAD
 			memcpy(cp, ha->addr, 6);
+=======
+			memcpy(cp, ha->addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 			if (i596_debug > 1)
 				DEB(DEB_MULTI,
 				    printk(KERN_DEBUG
 					   "%s: Adding address %pM\n",
 					   dev->name, cp));
+<<<<<<< HEAD
 			cp += 6;
+=======
+			cp += ETH_ALEN;
+>>>>>>> refs/remotes/origin/master
 		}
 		DMA_WBACK_INV(dev, &dma->mc_cmd, sizeof(struct mc_cmd));
 		i596_add_cmd(dev, &cmd->cmd);

@@ -11,14 +11,18 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
+<<<<<<< HEAD
 
 #define FSI_PORT_A	0
 #define FSI_PORT_B	1
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/clk.h>
 #include <sound/soc.h>
 
 /*
+<<<<<<< HEAD
  * flags format
  *
  * 0x000000BA
@@ -78,11 +82,22 @@ struct sh_fsi_platform_info {
 	unsigned long portb_flags;
 	int (*set_rate)(struct device *dev, int is_porta, int rate, int enable);
 =======
+=======
+ * flags
+ */
+#define SH_FSI_FMT_SPDIF		(1 << 0) /* spdif for HDMI */
+#define SH_FSI_ENABLE_STREAM_MODE	(1 << 1) /* for 16bit data */
+#define SH_FSI_CLK_CPG			(1 << 2) /* FSIxCK + FSI-DIV */
+
+>>>>>>> refs/remotes/origin/master
 struct sh_fsi_port_info {
 	unsigned long flags;
 	int tx_id;
 	int rx_id;
+<<<<<<< HEAD
 	int (*set_rate)(struct device *dev, int rate, int enable);
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sh_fsi_platform_info {
@@ -90,6 +105,7 @@ struct sh_fsi_platform_info {
 	struct sh_fsi_port_info port_b;
 };
 
+<<<<<<< HEAD
 /*
  * for fsi-ak4642
  */
@@ -103,4 +119,6 @@ struct fsi_ak4642_info {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __SOUND_FSI_H */

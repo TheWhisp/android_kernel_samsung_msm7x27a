@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MSM7x01A
    zreladdr-$(CONFIG_ARCH_MSM7X01A)	:= 0x10008000
 params_phys-$(CONFIG_ARCH_MSM7X01A)	:= 0x10000100
@@ -69,3 +70,8 @@ endif
    zreladdr-$(CONFIG_ARCH_FSM9XXX)	:= 0x10008000
 params_phys-$(CONFIG_ARCH_FSM9XXX)	:= 0x10000100
 initrd_phys-$(CONFIG_ARCH_FSM9XXX)	:= 0x12000000
+=======
+  zreladdr-y		+= 0x10008000
+params_phys-y		:= 0x10000100
+initrd_phys-y		:= 0x10800000
+>>>>>>> refs/remotes/origin/master

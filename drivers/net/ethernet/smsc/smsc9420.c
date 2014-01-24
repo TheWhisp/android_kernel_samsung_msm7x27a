@@ -19,6 +19,11 @@
  ***************************************************************************
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
@@ -33,7 +38,10 @@
 #include "smsc9420.h"
 
 #define DRV_NAME		"smsc9420"
+<<<<<<< HEAD
 #define PFX			DRV_NAME ": "
+=======
+>>>>>>> refs/remotes/origin/master
 #define DRV_MDIONAME		"smsc9420-mdio"
 #define DRV_DESCRIPTION		"SMSC LAN9420 driver"
 #define DRV_VERSION		"1.01"
@@ -54,7 +62,11 @@ struct smsc9420_ring_info {
 };
 
 struct smsc9420_pdata {
+<<<<<<< HEAD
 	void __iomem *base_addr;
+=======
+	void __iomem *ioaddr;
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pdev;
 	struct net_device *dev;
 
@@ -97,6 +109,7 @@ static uint debug = -1;
 module_param(debug, uint, 0);
 MODULE_PARM_DESC(debug, "debug level");
 
+<<<<<<< HEAD
 #define smsc_dbg(TYPE, f, a...) \
 do {	if ((pd)->msg_enable & NETIF_MSG_##TYPE) \
 		printk(KERN_DEBUG PFX f "\n", ## a); \
@@ -115,12 +128,21 @@ do {	if ((pd)->msg_enable & NETIF_MSG_##TYPE) \
 static inline u32 smsc9420_reg_read(struct smsc9420_pdata *pd, u32 offset)
 {
 	return ioread32(pd->base_addr + offset);
+=======
+static inline u32 smsc9420_reg_read(struct smsc9420_pdata *pd, u32 offset)
+{
+	return ioread32(pd->ioaddr + offset);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
 smsc9420_reg_write(struct smsc9420_pdata *pd, u32 offset, u32 value)
 {
+<<<<<<< HEAD
 	iowrite32(value, pd->base_addr + offset);
+=======
+	iowrite32(value, pd->ioaddr + offset);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void smsc9420_pci_flush_write(struct smsc9420_pdata *pd)
@@ -140,7 +162,11 @@ static int smsc9420_mii_read(struct mii_bus *bus, int phyaddr, int regidx)
 
 	/*  confirm MII not busy */
 	if ((smsc9420_reg_read(pd, MII_ACCESS) & MII_ACCESS_MII_BUSY_)) {
+<<<<<<< HEAD
 		smsc_warn(DRV, "MII is busy???");
+=======
+		netif_warn(pd, drv, pd->dev, "MII is busy???\n");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -159,7 +185,11 @@ static int smsc9420_mii_read(struct mii_bus *bus, int phyaddr, int regidx)
 		udelay(10);
 	}
 
+<<<<<<< HEAD
 	smsc_warn(DRV, "MII busy timeout!");
+=======
+	netif_warn(pd, drv, pd->dev, "MII busy timeout!\n");
+>>>>>>> refs/remotes/origin/master
 
 out:
 	spin_unlock_irqrestore(&pd->phy_lock, flags);
@@ -178,7 +208,11 @@ static int smsc9420_mii_write(struct mii_bus *bus, int phyaddr, int regidx,
 
 	/* confirm MII not busy */
 	if ((smsc9420_reg_read(pd, MII_ACCESS) & MII_ACCESS_MII_BUSY_)) {
+<<<<<<< HEAD
 		smsc_warn(DRV, "MII is busy???");
+=======
+		netif_warn(pd, drv, pd->dev, "MII is busy???\n");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -200,7 +234,11 @@ static int smsc9420_mii_write(struct mii_bus *bus, int phyaddr, int regidx,
 		udelay(10);
 	}
 
+<<<<<<< HEAD
 	smsc_warn(DRV, "MII busy timeout!");
+=======
+	netif_warn(pd, drv, pd->dev, "MII busy timeout!\n");
+>>>>>>> refs/remotes/origin/master
 
 out:
 	spin_unlock_irqrestore(&pd->phy_lock, flags);
@@ -222,7 +260,11 @@ static int smsc9420_eeprom_reload(struct smsc9420_pdata *pd)
 	BUG_ON(!pd);
 
 	if (smsc9420_reg_read(pd, E2P_CMD) & E2P_CMD_EPC_BUSY_) {
+<<<<<<< HEAD
 		smsc_dbg(DRV, "smsc9420_eeprom_reload: Eeprom busy");
+=======
+		netif_dbg(pd, drv, pd->dev, "%s: Eeprom busy\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -235,7 +277,11 @@ static int smsc9420_eeprom_reload(struct smsc9420_pdata *pd)
 			return 0;
 	} while (timeout--);
 
+<<<<<<< HEAD
 	smsc_warn(DRV, "smsc9420_eeprom_reload: Eeprom timed out");
+=======
+	netif_warn(pd, drv, pd->dev, "%s: Eeprom timed out\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
@@ -347,9 +393,15 @@ static int smsc9420_eeprom_send_cmd(struct smsc9420_pdata *pd, u32 op)
 	int timeout = 100;
 	u32 e2cmd;
 
+<<<<<<< HEAD
 	smsc_dbg(HW, "op 0x%08x", op);
 	if (smsc9420_reg_read(pd, E2P_CMD) & E2P_CMD_EPC_BUSY_) {
 		smsc_warn(HW, "Busy at start");
+=======
+	netif_dbg(pd, hw, pd->dev, "op 0x%08x\n", op);
+	if (smsc9420_reg_read(pd, E2P_CMD) & E2P_CMD_EPC_BUSY_) {
+		netif_warn(pd, hw, pd->dev, "Busy at start\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -362,12 +414,21 @@ static int smsc9420_eeprom_send_cmd(struct smsc9420_pdata *pd, u32 op)
 	} while ((e2cmd & E2P_CMD_EPC_BUSY_) && (--timeout));
 
 	if (!timeout) {
+<<<<<<< HEAD
 		smsc_info(HW, "TIMED OUT");
+=======
+		netif_info(pd, hw, pd->dev, "TIMED OUT\n");
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	}
 
 	if (e2cmd & E2P_CMD_EPC_TIMEOUT_) {
+<<<<<<< HEAD
 		smsc_info(HW, "Error occurred during eeprom operation");
+=======
+		netif_info(pd, hw, pd->dev,
+			   "Error occurred during eeprom operation\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -380,7 +441,11 @@ static int smsc9420_eeprom_read_location(struct smsc9420_pdata *pd,
 	u32 op = E2P_CMD_EPC_CMD_READ_ | address;
 	int ret;
 
+<<<<<<< HEAD
 	smsc_dbg(HW, "address 0x%x", address);
+=======
+	netif_dbg(pd, hw, pd->dev, "address 0x%x\n", address);
+>>>>>>> refs/remotes/origin/master
 	ret = smsc9420_eeprom_send_cmd(pd, op);
 
 	if (!ret)
@@ -395,7 +460,11 @@ static int smsc9420_eeprom_write_location(struct smsc9420_pdata *pd,
 	u32 op = E2P_CMD_EPC_CMD_ERASE_ | address;
 	int ret;
 
+<<<<<<< HEAD
 	smsc_dbg(HW, "address 0x%x, data 0x%x", address, data);
+=======
+	netif_dbg(pd, hw, pd->dev, "address 0x%x, data 0x%x\n", address, data);
+>>>>>>> refs/remotes/origin/master
 	ret = smsc9420_eeprom_send_cmd(pd, op);
 
 	if (!ret) {
@@ -469,6 +538,10 @@ static const struct ethtool_ops smsc9420_ethtool_ops = {
 	.set_eeprom = smsc9420_ethtool_set_eeprom,
 	.get_regs_len = smsc9420_ethtool_getregslen,
 	.get_regs = smsc9420_ethtool_getregs,
+<<<<<<< HEAD
+=======
+	.get_ts_info = ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Sets the device MAC address to dev_addr */
@@ -491,7 +564,12 @@ static void smsc9420_check_mac_address(struct net_device *dev)
 	/* Check if mac address has been specified when bringing interface up */
 	if (is_valid_ether_addr(dev->dev_addr)) {
 		smsc9420_set_mac_address(dev);
+<<<<<<< HEAD
 		smsc_dbg(PROBE, "MAC Address is specified by configuration");
+=======
+		netif_dbg(pd, probe, pd->dev,
+			  "MAC Address is specified by configuration\n");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* Try reading mac address from device. if EEPROM is present
 		 * it will already have been set */
@@ -506,12 +584,22 @@ static void smsc9420_check_mac_address(struct net_device *dev)
 
 		if (is_valid_ether_addr(dev->dev_addr)) {
 			/* eeprom values are valid  so use them */
+<<<<<<< HEAD
 			smsc_dbg(PROBE, "Mac Address is read from EEPROM");
+=======
+			netif_dbg(pd, probe, pd->dev,
+				  "Mac Address is read from EEPROM\n");
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/* eeprom values are invalid, generate random MAC */
 			eth_hw_addr_random(dev);
 			smsc9420_set_mac_address(dev);
+<<<<<<< HEAD
 			smsc_dbg(PROBE, "MAC Address is set to random");
+=======
+			netif_dbg(pd, probe, pd->dev,
+				  "MAC Address is set to random\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -534,7 +622,11 @@ static void smsc9420_stop_tx(struct smsc9420_pdata *pd)
 	}
 
 	if (!timeout)
+<<<<<<< HEAD
 		smsc_warn(IFDOWN, "TX DMAC failed to stop");
+=======
+		netif_warn(pd, ifdown, pd->dev, "TX DMAC failed to stop\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* ACK Tx DMAC stop bit */
 	smsc9420_reg_write(pd, DMAC_STATUS, DMAC_STS_TXPS_);
@@ -645,7 +737,12 @@ static void smsc9420_stop_rx(struct smsc9420_pdata *pd)
 	}
 
 	if (!timeout)
+<<<<<<< HEAD
 		smsc_warn(IFDOWN, "RX DMAC did not stop! timeout.");
+=======
+		netif_warn(pd, ifdown, pd->dev,
+			   "RX DMAC did not stop! timeout\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* ACK the Rx DMAC stop bit */
 	smsc9420_reg_write(pd, DMAC_STATUS, DMAC_STS_RXPS_);
@@ -659,7 +756,11 @@ static irqreturn_t smsc9420_isr(int irq, void *dev_id)
 	ulong flags;
 
 	BUG_ON(!pd);
+<<<<<<< HEAD
 	BUG_ON(!pd->base_addr);
+=======
+	BUG_ON(!pd->ioaddr);
+>>>>>>> refs/remotes/origin/master
 
 	int_cfg = smsc9420_reg_read(pd, INT_CFG);
 
@@ -720,9 +821,18 @@ static irqreturn_t smsc9420_isr(int irq, void *dev_id)
 #ifdef CONFIG_NET_POLL_CONTROLLER
 static void smsc9420_poll_controller(struct net_device *dev)
 {
+<<<<<<< HEAD
 	disable_irq(dev->irq);
 	smsc9420_isr(0, dev);
 	enable_irq(dev->irq);
+=======
+	struct smsc9420_pdata *pd = netdev_priv(dev);
+	const int irq = pd->pdev->irq;
+
+	disable_irq(irq);
+	smsc9420_isr(0, dev);
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_NET_POLL_CONTROLLER */
 
@@ -732,7 +842,11 @@ static void smsc9420_dmac_soft_reset(struct smsc9420_pdata *pd)
 	smsc9420_reg_read(pd, BUS_MODE);
 	udelay(2);
 	if (smsc9420_reg_read(pd, BUS_MODE) & BUS_MODE_SWR_)
+<<<<<<< HEAD
 		smsc_warn(DRV, "Software reset not cleared");
+=======
+		netif_warn(pd, drv, pd->dev, "Software reset not cleared\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static int smsc9420_stop(struct net_device *dev)
@@ -759,7 +873,11 @@ static int smsc9420_stop(struct net_device *dev)
 	smsc9420_stop_rx(pd);
 	smsc9420_free_rx_ring(pd);
 
+<<<<<<< HEAD
 	free_irq(dev->irq, pd);
+=======
+	free_irq(pd->pdev->irq, pd);
+>>>>>>> refs/remotes/origin/master
 
 	smsc9420_dmac_soft_reset(pd);
 
@@ -844,16 +962,25 @@ static int smsc9420_alloc_rx_buffer(struct smsc9420_pdata *pd, int index)
 	BUG_ON(pd->rx_buffers[index].skb);
 	BUG_ON(pd->rx_buffers[index].mapping);
 
+<<<<<<< HEAD
 	if (unlikely(!skb)) {
 		smsc_warn(RX_ERR, "Failed to allocate new skb!");
 		return -ENOMEM;
 	}
+=======
+	if (unlikely(!skb))
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	mapping = pci_map_single(pd->pdev, skb_tail_pointer(skb),
 				 PKT_BUF_SZ, PCI_DMA_FROMDEVICE);
 	if (pci_dma_mapping_error(pd->pdev, mapping)) {
 		dev_kfree_skb_any(skb);
+<<<<<<< HEAD
 		smsc_warn(RX_ERR, "pci_map_single failed!");
+=======
+		netif_warn(pd, rx_err, pd->dev, "pci_map_single failed!\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -1002,7 +1129,12 @@ static netdev_tx_t smsc9420_hard_start_xmit(struct sk_buff *skb,
 	mapping = pci_map_single(pd->pdev, skb->data,
 				 skb->len, PCI_DMA_TODEVICE);
 	if (pci_dma_mapping_error(pd->pdev, mapping)) {
+<<<<<<< HEAD
 		smsc_warn(TX_ERR, "pci_map_single failed, dropping packet");
+=======
+		netif_warn(pd, tx_err, pd->dev,
+			   "pci_map_single failed, dropping packet\n");
+>>>>>>> refs/remotes/origin/master
 		return NETDEV_TX_BUSY;
 	}
 
@@ -1054,12 +1186,20 @@ static void smsc9420_set_multicast_list(struct net_device *dev)
 	u32 mac_cr = smsc9420_reg_read(pd, MAC_CR);
 
 	if (dev->flags & IFF_PROMISC) {
+<<<<<<< HEAD
 		smsc_dbg(HW, "Promiscuous Mode Enabled");
+=======
+		netif_dbg(pd, hw, pd->dev, "Promiscuous Mode Enabled\n");
+>>>>>>> refs/remotes/origin/master
 		mac_cr |= MAC_CR_PRMS_;
 		mac_cr &= (~MAC_CR_MCPAS_);
 		mac_cr &= (~MAC_CR_HPFILT_);
 	} else if (dev->flags & IFF_ALLMULTI) {
+<<<<<<< HEAD
 		smsc_dbg(HW, "Receive all Multicast Enabled");
+=======
+		netif_dbg(pd, hw, pd->dev, "Receive all Multicast Enabled\n");
+>>>>>>> refs/remotes/origin/master
 		mac_cr &= (~MAC_CR_PRMS_);
 		mac_cr |= MAC_CR_MCPAS_;
 		mac_cr &= (~MAC_CR_HPFILT_);
@@ -1067,7 +1207,11 @@ static void smsc9420_set_multicast_list(struct net_device *dev)
 		struct netdev_hw_addr *ha;
 		u32 hash_lo = 0, hash_hi = 0;
 
+<<<<<<< HEAD
 		smsc_dbg(HW, "Multicast filter enabled");
+=======
+		netif_dbg(pd, hw, pd->dev, "Multicast filter enabled\n");
+>>>>>>> refs/remotes/origin/master
 		netdev_for_each_mc_addr(ha, dev) {
 			u32 bit_num = smsc9420_hash(ha->addr);
 			u32 mask = 1 << (bit_num & 0x1F);
@@ -1085,7 +1229,11 @@ static void smsc9420_set_multicast_list(struct net_device *dev)
 		mac_cr &= (~MAC_CR_MCPAS_);
 		mac_cr |= MAC_CR_HPFILT_;
 	} else {
+<<<<<<< HEAD
 		smsc_dbg(HW, "Receive own packets only.");
+=======
+		netif_dbg(pd, hw, pd->dev, "Receive own packets only\n");
+>>>>>>> refs/remotes/origin/master
 		smsc9420_reg_write(pd, HASHH, 0);
 		smsc9420_reg_write(pd, HASHL, 0);
 
@@ -1113,11 +1261,19 @@ static void smsc9420_phy_update_flowcontrol(struct smsc9420_pdata *pd)
 		else
 			flow = 0;
 
+<<<<<<< HEAD
 		smsc_info(LINK, "rx pause %s, tx pause %s",
 			(cap & FLOW_CTRL_RX ? "enabled" : "disabled"),
 			(cap & FLOW_CTRL_TX ? "enabled" : "disabled"));
 	} else {
 		smsc_info(LINK, "half duplex");
+=======
+		netif_info(pd, link, pd->dev, "rx pause %s, tx pause %s\n",
+			   cap & FLOW_CTRL_RX ? "enabled" : "disabled",
+			   cap & FLOW_CTRL_TX ? "enabled" : "disabled");
+	} else {
+		netif_info(pd, link, pd->dev, "half duplex\n");
+>>>>>>> refs/remotes/origin/master
 		flow = 0;
 	}
 
@@ -1135,10 +1291,17 @@ static void smsc9420_phy_adjust_link(struct net_device *dev)
 	if (phy_dev->duplex != pd->last_duplex) {
 		u32 mac_cr = smsc9420_reg_read(pd, MAC_CR);
 		if (phy_dev->duplex) {
+<<<<<<< HEAD
 			smsc_dbg(LINK, "full duplex mode");
 			mac_cr |= MAC_CR_FDPX_;
 		} else {
 			smsc_dbg(LINK, "half duplex mode");
+=======
+			netif_dbg(pd, link, pd->dev, "full duplex mode\n");
+			mac_cr |= MAC_CR_FDPX_;
+		} else {
+			netif_dbg(pd, link, pd->dev, "half duplex mode\n");
+>>>>>>> refs/remotes/origin/master
 			mac_cr &= ~MAC_CR_FDPX_;
 		}
 		smsc9420_reg_write(pd, MAC_CR, mac_cr);
@@ -1150,9 +1313,15 @@ static void smsc9420_phy_adjust_link(struct net_device *dev)
 	carrier = netif_carrier_ok(dev);
 	if (carrier != pd->last_carrier) {
 		if (carrier)
+<<<<<<< HEAD
 			smsc_dbg(LINK, "carrier OK");
 		else
 			smsc_dbg(LINK, "no carrier");
+=======
+			netif_dbg(pd, link, pd->dev, "carrier OK\n");
+		else
+			netif_dbg(pd, link, pd->dev, "no carrier\n");
+>>>>>>> refs/remotes/origin/master
 		pd->last_carrier = carrier;
 	}
 }
@@ -1166,11 +1335,16 @@ static int smsc9420_mii_probe(struct net_device *dev)
 
 	/* Device only supports internal PHY at address 1 */
 	if (!pd->mii_bus->phy_map[1]) {
+<<<<<<< HEAD
 		pr_err("%s: no PHY found at address 1\n", dev->name);
+=======
+		netdev_err(dev, "no PHY found at address 1\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
 	phydev = pd->mii_bus->phy_map[1];
+<<<<<<< HEAD
 	smsc_info(PROBE, "PHY addr %d, phy_id 0x%08X", phydev->addr,
 		phydev->phy_id);
 
@@ -1184,6 +1358,21 @@ static int smsc9420_mii_probe(struct net_device *dev)
 
 	pr_info("%s: attached PHY driver [%s] (mii_bus:phy_addr=%s, irq=%d)\n",
 		dev->name, phydev->drv->name, dev_name(&phydev->dev), phydev->irq);
+=======
+	netif_info(pd, probe, pd->dev, "PHY addr %d, phy_id 0x%08X\n",
+		   phydev->addr, phydev->phy_id);
+
+	phydev = phy_connect(dev, dev_name(&phydev->dev),
+			     smsc9420_phy_adjust_link, PHY_INTERFACE_MODE_MII);
+
+	if (IS_ERR(phydev)) {
+		netdev_err(dev, "Could not attach to PHY\n");
+		return PTR_ERR(phydev);
+	}
+
+	netdev_info(dev, "attached PHY driver [%s] (mii_bus:phy_addr=%s, irq=%d)\n",
+		    phydev->drv->name, dev_name(&phydev->dev), phydev->irq);
+>>>>>>> refs/remotes/origin/master
 
 	/* mask with MAC supported features */
 	phydev->supported &= (PHY_BASIC_FEATURES | SUPPORTED_Pause |
@@ -1221,12 +1410,20 @@ static int smsc9420_mii_init(struct net_device *dev)
 	pd->mii_bus->phy_mask = ~(1 << 1);
 
 	if (mdiobus_register(pd->mii_bus)) {
+<<<<<<< HEAD
 		smsc_warn(PROBE, "Error registering mii bus");
+=======
+		netif_warn(pd, probe, pd->dev, "Error registering mii bus\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out_free_bus_2;
 	}
 
 	if (smsc9420_mii_probe(dev) < 0) {
+<<<<<<< HEAD
 		smsc_warn(PROBE, "Error probing mii bus");
+=======
+		netif_warn(pd, probe, pd->dev, "Error probing mii bus\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out_unregister_bus_3;
 	}
 
@@ -1246,12 +1443,20 @@ static int smsc9420_alloc_tx_ring(struct smsc9420_pdata *pd)
 
 	BUG_ON(!pd->tx_ring);
 
+<<<<<<< HEAD
 	pd->tx_buffers = kmalloc((sizeof(struct smsc9420_ring_info) *
 		TX_RING_SIZE), GFP_KERNEL);
 	if (!pd->tx_buffers) {
 		smsc_warn(IFUP, "Failed to allocated tx_buffers");
 		return -ENOMEM;
 	}
+=======
+	pd->tx_buffers = kmalloc_array(TX_RING_SIZE,
+				       sizeof(struct smsc9420_ring_info),
+				       GFP_KERNEL);
+	if (!pd->tx_buffers)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the TX Ring */
 	for (i = 0; i < TX_RING_SIZE; i++) {
@@ -1280,12 +1485,20 @@ static int smsc9420_alloc_rx_ring(struct smsc9420_pdata *pd)
 
 	BUG_ON(!pd->rx_ring);
 
+<<<<<<< HEAD
 	pd->rx_buffers = kmalloc((sizeof(struct smsc9420_ring_info) *
 		RX_RING_SIZE), GFP_KERNEL);
 	if (pd->rx_buffers == NULL) {
 		smsc_warn(IFUP, "Failed to allocated rx_buffers");
 		goto out;
 	}
+=======
+	pd->rx_buffers = kmalloc_array(RX_RING_SIZE,
+				       sizeof(struct smsc9420_ring_info),
+				       GFP_KERNEL);
+	if (pd->rx_buffers == NULL)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* initialize the rx ring */
 	for (i = 0; i < RX_RING_SIZE; i++) {
@@ -1300,7 +1513,12 @@ static int smsc9420_alloc_rx_ring(struct smsc9420_pdata *pd)
 	/* now allocate the entire ring of skbs */
 	for (i = 0; i < RX_RING_SIZE; i++) {
 		if (smsc9420_alloc_rx_buffer(pd, i)) {
+<<<<<<< HEAD
 			smsc_warn(IFUP, "failed to allocate rx skb %d", i);
+=======
+			netif_warn(pd, ifup, pd->dev,
+				   "failed to allocate rx skb %d\n", i);
+>>>>>>> refs/remotes/origin/master
 			goto out_free_rx_skbs;
 		}
 	}
@@ -1309,13 +1527,22 @@ static int smsc9420_alloc_rx_ring(struct smsc9420_pdata *pd)
 	pd->rx_ring_tail = 0;
 
 	smsc9420_reg_write(pd, VLAN1, ETH_P_8021Q);
+<<<<<<< HEAD
 	smsc_dbg(IFUP, "VLAN1 = 0x%08x", smsc9420_reg_read(pd, VLAN1));
+=======
+	netif_dbg(pd, ifup, pd->dev, "VLAN1 = 0x%08x\n",
+		  smsc9420_reg_read(pd, VLAN1));
+>>>>>>> refs/remotes/origin/master
 
 	if (pd->rx_csum) {
 		/* Enable RX COE */
 		u32 coe = smsc9420_reg_read(pd, COE_CR) | RX_COE_EN;
 		smsc9420_reg_write(pd, COE_CR, coe);
+<<<<<<< HEAD
 		smsc_dbg(IFUP, "COE_CR = 0x%08x", coe);
+=======
+		netif_dbg(pd, ifup, pd->dev, "COE_CR = 0x%08x\n", coe);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	smsc9420_reg_write(pd, RX_BASE_ADDR, pd->rx_dma_addr);
@@ -1331,6 +1558,7 @@ out:
 
 static int smsc9420_open(struct net_device *dev)
 {
+<<<<<<< HEAD
 	struct smsc9420_pdata *pd;
 	u32 bus_mode, mac_cr, dmac_control, int_cfg, dma_intr_ena, int_ctl;
 	unsigned long flags;
@@ -1342,6 +1570,17 @@ static int smsc9420_open(struct net_device *dev)
 
 	if (!is_valid_ether_addr(dev->dev_addr)) {
 		smsc_warn(IFUP, "dev_addr is not a valid MAC address");
+=======
+	struct smsc9420_pdata *pd = netdev_priv(dev);
+	u32 bus_mode, mac_cr, dmac_control, int_cfg, dma_intr_ena, int_ctl;
+	const int irq = pd->pdev->irq;
+	unsigned long flags;
+	int result = 0, timeout;
+
+	if (!is_valid_ether_addr(dev->dev_addr)) {
+		netif_warn(pd, ifup, pd->dev,
+			   "dev_addr is not a valid MAC address\n");
+>>>>>>> refs/remotes/origin/master
 		result = -EADDRNOTAVAIL;
 		goto out_0;
 	}
@@ -1358,9 +1597,15 @@ static int smsc9420_open(struct net_device *dev)
 	smsc9420_reg_write(pd, INT_STAT, 0xFFFFFFFF);
 	smsc9420_pci_flush_write(pd);
 
+<<<<<<< HEAD
 	if (request_irq(dev->irq, smsc9420_isr, IRQF_SHARED | IRQF_DISABLED,
 			DRV_NAME, pd)) {
 		smsc_warn(IFUP, "Unable to use IRQ = %d", dev->irq);
+=======
+	result = request_irq(irq, smsc9420_isr, IRQF_SHARED, DRV_NAME, pd);
+	if (result) {
+		netif_warn(pd, ifup, pd->dev, "Unable to use IRQ = %d\n", irq);
+>>>>>>> refs/remotes/origin/master
 		result = -ENODEV;
 		goto out_0;
 	}
@@ -1395,7 +1640,11 @@ static int smsc9420_open(struct net_device *dev)
 	smsc9420_pci_flush_write(pd);
 
 	/* test the IRQ connection to the ISR */
+<<<<<<< HEAD
 	smsc_dbg(IFUP, "Testing ISR using IRQ %d", dev->irq);
+=======
+	netif_dbg(pd, ifup, pd->dev, "Testing ISR using IRQ %d\n", irq);
+>>>>>>> refs/remotes/origin/master
 	pd->software_irq_signal = false;
 
 	spin_lock_irqsave(&pd->int_lock, flags);
@@ -1425,30 +1674,52 @@ static int smsc9420_open(struct net_device *dev)
 	spin_unlock_irqrestore(&pd->int_lock, flags);
 
 	if (!pd->software_irq_signal) {
+<<<<<<< HEAD
 		smsc_warn(IFUP, "ISR failed signaling test");
+=======
+		netif_warn(pd, ifup, pd->dev, "ISR failed signaling test\n");
+>>>>>>> refs/remotes/origin/master
 		result = -ENODEV;
 		goto out_free_irq_1;
 	}
 
+<<<<<<< HEAD
 	smsc_dbg(IFUP, "ISR passed test using IRQ %d", dev->irq);
 
 	result = smsc9420_alloc_tx_ring(pd);
 	if (result) {
 		smsc_warn(IFUP, "Failed to Initialize tx dma ring");
+=======
+	netif_dbg(pd, ifup, pd->dev, "ISR passed test using IRQ %d\n", irq);
+
+	result = smsc9420_alloc_tx_ring(pd);
+	if (result) {
+		netif_warn(pd, ifup, pd->dev,
+			   "Failed to Initialize tx dma ring\n");
+>>>>>>> refs/remotes/origin/master
 		result = -ENOMEM;
 		goto out_free_irq_1;
 	}
 
 	result = smsc9420_alloc_rx_ring(pd);
 	if (result) {
+<<<<<<< HEAD
 		smsc_warn(IFUP, "Failed to Initialize rx dma ring");
+=======
+		netif_warn(pd, ifup, pd->dev,
+			   "Failed to Initialize rx dma ring\n");
+>>>>>>> refs/remotes/origin/master
 		result = -ENOMEM;
 		goto out_free_tx_ring_2;
 	}
 
 	result = smsc9420_mii_init(dev);
 	if (result) {
+<<<<<<< HEAD
 		smsc_warn(IFUP, "Failed to initialize Phy");
+=======
+		netif_warn(pd, ifup, pd->dev, "Failed to initialize Phy\n");
+>>>>>>> refs/remotes/origin/master
 		result = -ENODEV;
 		goto out_free_rx_ring_3;
 	}
@@ -1490,7 +1761,11 @@ out_free_rx_ring_3:
 out_free_tx_ring_2:
 	smsc9420_free_tx_ring(pd);
 out_free_irq_1:
+<<<<<<< HEAD
 	free_irq(dev->irq, pd);
+=======
+	free_irq(irq, pd);
+>>>>>>> refs/remotes/origin/master
 out_0:
 	return result;
 }
@@ -1519,7 +1794,11 @@ static int smsc9420_suspend(struct pci_dev *pdev, pm_message_t state)
 		smsc9420_stop_rx(pd);
 		smsc9420_free_rx_ring(pd);
 
+<<<<<<< HEAD
 		free_irq(dev->irq, pd);
+=======
+		free_irq(pd->pdev->irq, pd);
+>>>>>>> refs/remotes/origin/master
 
 		netif_device_detach(dev);
 	}
@@ -1549,9 +1828,17 @@ static int smsc9420_resume(struct pci_dev *pdev)
 
 	err = pci_enable_wake(pdev, 0, 0);
 	if (err)
+<<<<<<< HEAD
 		smsc_warn(IFUP, "pci_enable_wake failed: %d", err);
 
 	if (netif_running(dev)) {
+=======
+		netif_warn(pd, ifup, pd->dev, "pci_enable_wake failed: %d\n",
+			   err);
+
+	if (netif_running(dev)) {
+		/* FIXME: gross. It looks like ancient PM relic.*/
+>>>>>>> refs/remotes/origin/master
 		err = smsc9420_open(dev);
 		netif_device_attach(dev);
 	}
@@ -1574,7 +1861,11 @@ static const struct net_device_ops smsc9420_netdev_ops = {
 #endif /* CONFIG_NET_POLL_CONTROLLER */
 };
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	struct net_device *dev;
@@ -1583,12 +1874,20 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	int result = 0;
 	u32 id_rev;
 
+<<<<<<< HEAD
 	printk(KERN_INFO DRV_DESCRIPTION " version " DRV_VERSION "\n");
+=======
+	pr_info("%s version %s\n", DRV_DESCRIPTION, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* First do the PCI initialisation */
 	result = pci_enable_device(pdev);
 	if (unlikely(result)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Cannot enable smsc9420\n");
+=======
+		pr_err("Cannot enable smsc9420\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_0;
 	}
 
@@ -1601,32 +1900,51 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	SET_NETDEV_DEV(dev, &pdev->dev);
 
 	if (!(pci_resource_flags(pdev, SMSC_BAR) & IORESOURCE_MEM)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Cannot find PCI device base address\n");
+=======
+		netdev_err(dev, "Cannot find PCI device base address\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free_netdev_2;
 	}
 
 	if ((pci_request_regions(pdev, DRV_NAME))) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Cannot obtain PCI resources, aborting.\n");
+=======
+		netdev_err(dev, "Cannot obtain PCI resources, aborting\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free_netdev_2;
 	}
 
 	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
+<<<<<<< HEAD
 		printk(KERN_ERR "No usable DMA configuration, aborting.\n");
+=======
+		netdev_err(dev, "No usable DMA configuration, aborting\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free_regions_3;
 	}
 
 	virt_addr = ioremap(pci_resource_start(pdev, SMSC_BAR),
 		pci_resource_len(pdev, SMSC_BAR));
 	if (!virt_addr) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Cannot map device registers, aborting.\n");
+=======
+		netdev_err(dev, "Cannot map device registers, aborting\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_free_regions_3;
 	}
 
 	/* registers are double mapped with 0 offset for LE and 0x200 for BE */
 	virt_addr += LAN9420_CPSR_ENDIAN_OFFSET;
 
+<<<<<<< HEAD
 	dev->base_addr = (ulong)virt_addr;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pd = netdev_priv(dev);
 
 	/* pci descriptors are created in the PCI consistent area */
@@ -1639,27 +1957,48 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		goto out_free_io_4;
 
 	/* descriptors are aligned due to the nature of pci_alloc_consistent */
+<<<<<<< HEAD
 	pd->tx_ring = (struct smsc9420_dma_desc *)
 	    (pd->rx_ring + RX_RING_SIZE);
+=======
+	pd->tx_ring = (pd->rx_ring + RX_RING_SIZE);
+>>>>>>> refs/remotes/origin/master
 	pd->tx_dma_addr = pd->rx_dma_addr +
 	    sizeof(struct smsc9420_dma_desc) * RX_RING_SIZE;
 
 	pd->pdev = pdev;
 	pd->dev = dev;
+<<<<<<< HEAD
 	pd->base_addr = virt_addr;
 	pd->msg_enable = smsc_debug;
 	pd->rx_csum = true;
 
 	smsc_dbg(PROBE, "lan_base=0x%08lx", (ulong)virt_addr);
+=======
+	pd->ioaddr = virt_addr;
+	pd->msg_enable = smsc_debug;
+	pd->rx_csum = true;
+
+	netif_dbg(pd, probe, pd->dev, "lan_base=0x%08lx\n", (ulong)virt_addr);
+>>>>>>> refs/remotes/origin/master
 
 	id_rev = smsc9420_reg_read(pd, ID_REV);
 	switch (id_rev & 0xFFFF0000) {
 	case 0x94200000:
+<<<<<<< HEAD
 		smsc_info(PROBE, "LAN9420 identified, ID_REV=0x%08X", id_rev);
 		break;
 	default:
 		smsc_warn(PROBE, "LAN9420 NOT identified");
 		smsc_warn(PROBE, "ID_REV=0x%08X", id_rev);
+=======
+		netif_info(pd, probe, pd->dev,
+			   "LAN9420 identified, ID_REV=0x%08X\n", id_rev);
+		break;
+	default:
+		netif_warn(pd, probe, pd->dev, "LAN9420 NOT identified\n");
+		netif_warn(pd, probe, pd->dev, "ID_REV=0x%08X\n", id_rev);
+>>>>>>> refs/remotes/origin/master
 		goto out_free_dmadesc_5;
 	}
 
@@ -1669,13 +2008,21 @@ smsc9420_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 	dev->netdev_ops = &smsc9420_netdev_ops;
 	dev->ethtool_ops = &smsc9420_ethtool_ops;
+<<<<<<< HEAD
 	dev->irq = pdev->irq;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	netif_napi_add(dev, &pd->napi, smsc9420_rx_poll, NAPI_WEIGHT);
 
 	result = register_netdev(dev);
 	if (result) {
+<<<<<<< HEAD
 		smsc_warn(PROBE, "error %i registering device", result);
+=======
+		netif_warn(pd, probe, pd->dev, "error %i registering device\n",
+			   result);
+>>>>>>> refs/remotes/origin/master
 		goto out_free_dmadesc_5;
 	}
 
@@ -1703,7 +2050,11 @@ out_0:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void __devexit smsc9420_remove(struct pci_dev *pdev)
+=======
+static void smsc9420_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct smsc9420_pdata *pd;
@@ -1712,8 +2063,11 @@ static void __devexit smsc9420_remove(struct pci_dev *pdev)
 	if (!dev)
 		return;
 
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pd = netdev_priv(dev);
 	unregister_netdev(dev);
 
@@ -1727,7 +2081,11 @@ static void __devexit smsc9420_remove(struct pci_dev *pdev)
 	pci_free_consistent(pdev, sizeof(struct smsc9420_dma_desc) *
 		(RX_RING_SIZE + TX_RING_SIZE), pd->rx_ring, pd->rx_dma_addr);
 
+<<<<<<< HEAD
 	iounmap(pd->base_addr - LAN9420_CPSR_ENDIAN_OFFSET);
+=======
+	iounmap(pd->ioaddr - LAN9420_CPSR_ENDIAN_OFFSET);
+>>>>>>> refs/remotes/origin/master
 	pci_release_regions(pdev);
 	free_netdev(dev);
 	pci_disable_device(pdev);
@@ -1737,7 +2095,11 @@ static struct pci_driver smsc9420_driver = {
 	.name = DRV_NAME,
 	.id_table = smsc9420_id_table,
 	.probe = smsc9420_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(smsc9420_remove),
+=======
+	.remove = smsc9420_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend = smsc9420_suspend,
 	.resume = smsc9420_resume,

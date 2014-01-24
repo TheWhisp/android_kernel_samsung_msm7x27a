@@ -280,7 +280,11 @@ static inline u32 ack_bit(unsigned int irq)
  * so the caller does not need to do anything more than start the transfer
  * as normal, since the IRQ will have been re-routed to the FIQ handler.
 */
+<<<<<<< HEAD
 void s3c24xx_spi_tryfiq(struct s3c24xx_spi *hw)
+=======
+static void s3c24xx_spi_tryfiq(struct s3c24xx_spi *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pt_regs regs;
 	enum spi_fiq_mode mode;
@@ -506,7 +510,11 @@ static void s3c24xx_spi_initialsetup(struct s3c24xx_spi *hw)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit s3c24xx_spi_probe(struct platform_device *pdev)
+=======
+static int s3c24xx_spi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c2410_spi_info *pdata;
 	struct s3c24xx_spi *hw;
@@ -524,8 +532,13 @@ static int __devinit s3c24xx_spi_probe(struct platform_device *pdev)
 	hw = spi_master_get_devdata(master);
 	memset(hw, 0, sizeof(struct s3c24xx_spi));
 
+<<<<<<< HEAD
 	hw->master = spi_master_get(master);
 	hw->pdata = pdata = pdev->dev.platform_data;
+=======
+	hw->master = master;
+	hw->pdata = pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	hw->dev = &pdev->dev;
 
 	if (pdata == NULL) {
@@ -611,6 +624,10 @@ static int __devinit s3c24xx_spi_probe(struct platform_device *pdev)
 	if (!pdata->set_cs) {
 		if (pdata->pin_cs < 0) {
 			dev_err(&pdev->dev, "No chipselect pin\n");
+<<<<<<< HEAD
+=======
+			err = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 			goto err_register;
 		}
 
@@ -662,12 +679,19 @@ static int __devinit s3c24xx_spi_probe(struct platform_device *pdev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit s3c24xx_spi_remove(struct platform_device *dev)
 {
 	struct s3c24xx_spi *hw = platform_get_drvdata(dev);
 
 	platform_set_drvdata(dev, NULL);
 
+=======
+static int s3c24xx_spi_remove(struct platform_device *dev)
+{
+	struct s3c24xx_spi *hw = platform_get_drvdata(dev);
+
+>>>>>>> refs/remotes/origin/master
 	spi_bitbang_stop(&hw->bitbang);
 
 	clk_disable(hw->clk);
@@ -691,7 +715,11 @@ static int __devexit s3c24xx_spi_remove(struct platform_device *dev)
 
 static int s3c24xx_spi_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	struct s3c24xx_spi *hw = platform_get_drvdata(to_platform_device(dev));
+=======
+	struct s3c24xx_spi *hw = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (hw->pdata && hw->pdata->gpio_setup)
 		hw->pdata->gpio_setup(hw->pdata, 0);
@@ -702,7 +730,11 @@ static int s3c24xx_spi_suspend(struct device *dev)
 
 static int s3c24xx_spi_resume(struct device *dev)
 {
+<<<<<<< HEAD
 	struct s3c24xx_spi *hw = platform_get_drvdata(to_platform_device(dev));
+=======
+	struct s3c24xx_spi *hw = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	s3c24xx_spi_initialsetup(hw);
 	return 0;
@@ -721,7 +753,11 @@ static const struct dev_pm_ops s3c24xx_spi_pmops = {
 MODULE_ALIAS("platform:s3c2410-spi");
 static struct platform_driver s3c24xx_spi_driver = {
 	.probe		= s3c24xx_spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(s3c24xx_spi_remove),
+=======
+	.remove		= s3c24xx_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "s3c2410-spi",
 		.owner	= THIS_MODULE,

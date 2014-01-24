@@ -17,9 +17,13 @@
 #include <asm/uaccess.h>
 #include <asm/cacheflush.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/bl_bit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/bl_bit.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Notifier lists for pre/post sleep notification
@@ -153,8 +157,12 @@ static const struct platform_suspend_ops sh_pm_ops = {
 static int __init sh_pm_init(void)
 {
 	suspend_set_ops(&sh_pm_ops);
+<<<<<<< HEAD
 	sh_mobile_setup_cpuidle();
 	return 0;
+=======
+	return sh_mobile_setup_cpuidle();
+>>>>>>> refs/remotes/origin/master
 }
 
 late_initcall(sh_pm_init);

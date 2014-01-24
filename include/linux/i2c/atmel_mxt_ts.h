@@ -4,10 +4,13 @@
  * Copyright (C) 2010 Samsung Electronics Co.Ltd
  * Author: Joonyoung Shim <jy0922.shim@samsung.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -20,6 +23,12 @@
 
 #include <linux/types.h>
 
+<<<<<<< HEAD
+=======
+/* For key_map array */
+#define MXT_NUM_GPIO		4
+
+>>>>>>> refs/remotes/origin/master
 /* Orient */
 #define MXT_NORMAL		0x0
 #define MXT_DIAGONAL		0x1
@@ -31,11 +40,15 @@
 #define MXT_DIAGONAL_COUNTER	0x7
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 /* The platform data for the Atmel maXTouch touchscreen driver */
 struct mxt_platform_data {
 	const u8 *config;
 	size_t config_length;
 
+<<<<<<< HEAD
 	unsigned int x_size;
 	unsigned int y_size;
 =======
@@ -96,6 +109,19 @@ struct mxt_platform_data {
 	u8(*read_chg) (void);
 	int (*init_hw) (bool);
 	int (*power_on) (bool);
+=======
+	unsigned int x_line;
+	unsigned int y_line;
+	unsigned int x_size;
+	unsigned int y_size;
+	unsigned int blen;
+	unsigned int threshold;
+	unsigned int voltage;
+	unsigned char orient;
+	unsigned long irqflags;
+	bool is_tp;
+	const unsigned int key_map[MXT_NUM_GPIO];
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* __LINUX_ATMEL_MXT_TS_H */

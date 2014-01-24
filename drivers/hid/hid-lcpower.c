@@ -24,7 +24,11 @@ static int ts_input_mapping(struct hid_device *hdev, struct hid_input *hi,
 		struct hid_field *field, struct hid_usage *usage,
 		unsigned long **bit, int *max)
 {
+<<<<<<< HEAD
 	if ((usage->hid & HID_USAGE_PAGE) != 0x0ffbc0000)
+=======
+	if ((usage->hid & HID_USAGE_PAGE) != HID_UP_LOGIVENDOR)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	switch (usage->hid & HID_USAGE) {
@@ -54,6 +58,7 @@ static struct hid_driver ts_driver = {
 	.id_table = ts_devices,
 	.input_mapping = ts_input_mapping,
 };
+<<<<<<< HEAD
 
 static int __init ts_init(void)
 {
@@ -67,4 +72,8 @@ static void __exit ts_exit(void)
 
 module_init(ts_init);
 module_exit(ts_exit);
+=======
+module_hid_driver(ts_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

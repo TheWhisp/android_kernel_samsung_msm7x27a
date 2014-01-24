@@ -74,7 +74,11 @@ static const struct rfkill_ops amilo_m7440_rfkill_ops = {
 	.set_block = amilo_m7440_rfkill_set_block
 };
 
+<<<<<<< HEAD
 static const struct dmi_system_id __devinitdata amilo_rfkill_id_table[] = {
+=======
+static const struct dmi_system_id amilo_rfkill_id_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.matches = {
 			DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU SIEMENS"),
@@ -85,6 +89,16 @@ static const struct dmi_system_id __devinitdata amilo_rfkill_id_table[] = {
 	{
 		.matches = {
 			DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU SIEMENS"),
+<<<<<<< HEAD
+=======
+			DMI_MATCH(DMI_BOARD_NAME, "AMILO L1310"),
+		},
+		.driver_data = (void *)&amilo_a1655_rfkill_ops
+	},
+	{
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "FUJITSU SIEMENS"),
+>>>>>>> refs/remotes/origin/master
 			DMI_MATCH(DMI_BOARD_NAME, "AMILO M7440"),
 		},
 		.driver_data = (void *)&amilo_m7440_rfkill_ops
@@ -95,7 +109,11 @@ static const struct dmi_system_id __devinitdata amilo_rfkill_id_table[] = {
 static struct platform_device *amilo_rfkill_pdev;
 static struct rfkill *amilo_rfkill_dev;
 
+<<<<<<< HEAD
 static int __devinit amilo_rfkill_probe(struct platform_device *device)
+=======
+static int amilo_rfkill_probe(struct platform_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	const struct dmi_system_id *system_id =

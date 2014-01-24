@@ -246,10 +246,14 @@ static int hsmc_probe(struct platform_device *pdev)
 	hsmc->pclk = pclk;
 	hsmc->mck = mck;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hsmc->regs = ioremap(regs->start, regs->end - regs->start + 1);
 =======
 	hsmc->regs = ioremap(regs->start, resource_size(regs));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hsmc->regs = ioremap(regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/master
 	if (!hsmc->regs)
 		goto out_disable_clocks;
 

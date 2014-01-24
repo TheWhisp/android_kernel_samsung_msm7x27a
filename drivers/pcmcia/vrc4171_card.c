@@ -565,7 +565,11 @@ static inline void reserve_using_irq(int slot)
 	vrc4171_irq_mask &= ~(1 << irq);
 }
 
+<<<<<<< HEAD
 static int __devinit vrc4171_add_sockets(void)
+=======
+static int vrc4171_add_sockets(void)
+>>>>>>> refs/remotes/origin/master
 {
 	vrc4171_socket_t *socket;
 	int slot, retval;
@@ -632,7 +636,11 @@ static void vrc4171_remove_sockets(void)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit vrc4171_card_setup(char *options)
+=======
+static int vrc4171_card_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	if (options == NULL || *options == '\0')
 		return 1;
@@ -713,7 +721,11 @@ static struct platform_driver vrc4171_card_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit vrc4171_card_init(void)
+=======
+static int vrc4171_card_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 
@@ -747,7 +759,11 @@ static int __devinit vrc4171_card_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit vrc4171_card_exit(void)
+=======
+static void vrc4171_card_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	free_irq(vrc4171_irq, vrc4171_sockets);
 	vrc4171_remove_sockets();

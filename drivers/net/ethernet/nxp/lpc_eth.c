@@ -40,10 +40,17 @@
 #include <linux/skbuff.h>
 #include <linux/phy.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
 #include <linux/of_net.h>
 #include <linux/types.h>
 
 #include <linux/delay.h>
+=======
+#include <linux/of.h>
+#include <linux/of_net.h>
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <mach/board.h>
 #include <mach/platform.h>
@@ -51,7 +58,10 @@
 
 #define MODNAME "lpc-eth"
 #define DRV_VERSION "1.00"
+<<<<<<< HEAD
 #define PHYDEF_ADDR 0x00
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define ENET_MAXF_SIZE 1536
 #define ENET_RX_DESC 48
@@ -340,6 +350,7 @@
  */
 #define LPC_POWERDOWN_MACAHB			(1 << 31)
 
+<<<<<<< HEAD
 /* Upon the upcoming introduction of device tree usage in LPC32xx,
  * lpc_phy_interface_mode() and use_iram_for_net() will be extended with a
  * device parameter for access to device tree information at runtime, instead
@@ -361,6 +372,24 @@ static inline int use_iram_for_net(void)
 #else
 	return 0;
 #endif
+=======
+static phy_interface_t lpc_phy_interface_mode(struct device *dev)
+{
+	if (dev && dev->of_node) {
+		const char *mode = of_get_property(dev->of_node,
+						   "phy-mode", NULL);
+		if (mode && !strcmp(mode, "mii"))
+			return PHY_INTERFACE_MODE_MII;
+	}
+	return PHY_INTERFACE_MODE_RMII;
+}
+
+static bool use_iram_for_net(struct device *dev)
+{
+	if (dev && dev->of_node)
+		return of_property_read_bool(dev->of_node, "use-iram");
+	return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Receive Status information word */
@@ -407,9 +436,12 @@ static inline int use_iram_for_net(void)
 #define TXDESC_CONTROL_LAST		(1 << 30)
 #define TXDESC_CONTROL_INT		(1 << 31)
 
+<<<<<<< HEAD
 static int lpc_eth_hard_start_xmit(struct sk_buff *skb,
 				   struct net_device *ndev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Structure of a TX/RX descriptors and RX status
  */
@@ -431,7 +463,11 @@ struct netdata_local {
 	spinlock_t		lock;
 	void __iomem		*net_base;
 	u32			msg_enable;
+<<<<<<< HEAD
 	struct sk_buff		*skb[ENET_TX_DESC];
+=======
+	unsigned int		skblen[ENET_TX_DESC];
+>>>>>>> refs/remotes/origin/master
 	unsigned int		last_tx_idx;
 	unsigned int		num_used_tx_buffs;
 	struct mii_bus		*mii_bus;
@@ -664,7 +700,11 @@ static void __lpc_eth_init(struct netdata_local *pldat)
 	       LPC_ENET_CLRT(pldat->net_base));
 	writel(LPC_IPGR_LOAD_PART2(0x12), LPC_ENET_IPGR(pldat->net_base));
 
+<<<<<<< HEAD
 	if (lpc_phy_interface_mode() == PHY_INTERFACE_MODE_MII)
+=======
+	if (lpc_phy_interface_mode(&pldat->pdev->dev) == PHY_INTERFACE_MODE_MII)
+>>>>>>> refs/remotes/origin/master
 		writel(LPC_COMMAND_PASSRUNTFRAME,
 		       LPC_ENET_COMMAND(pldat->net_base));
 	else {
@@ -804,12 +844,21 @@ static int lpc_mii_probe(struct net_device *ndev)
 	}
 
 	/* Attach to the PHY */
+<<<<<<< HEAD
 	if (lpc_phy_interface_mode() == PHY_INTERFACE_MODE_MII)
+=======
+	if (lpc_phy_interface_mode(&pldat->pdev->dev) == PHY_INTERFACE_MODE_MII)
+>>>>>>> refs/remotes/origin/master
 		netdev_info(ndev, "using MII interface\n");
 	else
 		netdev_info(ndev, "using RMII interface\n");
 	phydev = phy_connect(ndev, dev_name(&phydev->dev),
+<<<<<<< HEAD
 		&lpc_handle_link_change, 0, lpc_phy_interface_mode());
+=======
+			     &lpc_handle_link_change,
+			     lpc_phy_interface_mode(&pldat->pdev->dev));
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(phydev)) {
 		netdev_err(ndev, "Could not attach to PHY\n");
@@ -843,7 +892,11 @@ static int lpc_mii_init(struct netdata_local *pldat)
 	}
 
 	/* Setup MII mode */
+<<<<<<< HEAD
 	if (lpc_phy_interface_mode() == PHY_INTERFACE_MODE_MII)
+=======
+	if (lpc_phy_interface_mode(&pldat->pdev->dev) == PHY_INTERFACE_MODE_MII)
+>>>>>>> refs/remotes/origin/master
 		writel(LPC_COMMAND_PASSRUNTFRAME,
 		       LPC_ENET_COMMAND(pldat->net_base));
 	else {
@@ -893,12 +946,19 @@ err_out:
 static void __lpc_handle_xmit(struct net_device *ndev)
 {
 	struct netdata_local *pldat = netdev_priv(ndev);
+<<<<<<< HEAD
 	struct sk_buff *skb;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 txcidx, *ptxstat, txstat;
 
 	txcidx = readl(LPC_ENET_TXCONSUMEINDEX(pldat->net_base));
 	while (pldat->last_tx_idx != txcidx) {
+<<<<<<< HEAD
 		skb = pldat->skb[pldat->last_tx_idx];
+=======
+		unsigned int skblen = pldat->skblen[pldat->last_tx_idx];
+>>>>>>> refs/remotes/origin/master
 
 		/* A buffer is available, get buffer status */
 		ptxstat = &pldat->tx_stat_v[pldat->last_tx_idx];
@@ -935,9 +995,14 @@ static void __lpc_handle_xmit(struct net_device *ndev)
 		} else {
 			/* Update stats */
 			ndev->stats.tx_packets++;
+<<<<<<< HEAD
 			ndev->stats.tx_bytes += skb->len;
 		}
 		dev_kfree_skb_irq(skb);
+=======
+			ndev->stats.tx_bytes += skblen;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		txcidx = readl(LPC_ENET_TXCONSUMEINDEX(pldat->net_base));
 	}
@@ -990,10 +1055,17 @@ static int __lpc_handle_recv(struct net_device *ndev, int budget)
 			ndev->stats.rx_errors++;
 		} else {
 			/* Packet is good */
+<<<<<<< HEAD
 			skb = dev_alloc_skb(len + 8);
 			if (!skb)
 				ndev->stats.rx_dropped++;
 			else {
+=======
+			skb = dev_alloc_skb(len);
+			if (!skb) {
+				ndev->stats.rx_dropped++;
+			} else {
+>>>>>>> refs/remotes/origin/master
 				prdbuf = skb_put(skb, len);
 
 				/* Copy packet from buffer */
@@ -1122,7 +1194,11 @@ static int lpc_eth_hard_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 	memcpy(pldat->tx_buff_v + txidx * ENET_MAXF_SIZE, skb->data, len);
 
 	/* Save the buffer and increment the buffer counter */
+<<<<<<< HEAD
 	pldat->skb[txidx] = skb;
+=======
+	pldat->skblen[txidx] = len;
+>>>>>>> refs/remotes/origin/master
 	pldat->num_used_tx_buffs++;
 
 	/* Start transmit */
@@ -1137,6 +1213,10 @@ static int lpc_eth_hard_start_xmit(struct sk_buff *skb, struct net_device *ndev)
 
 	spin_unlock_irq(&pldat->lock);
 
+<<<<<<< HEAD
+=======
+	dev_kfree_skb(skb);
+>>>>>>> refs/remotes/origin/master
 	return NETDEV_TX_OK;
 }
 
@@ -1228,9 +1308,12 @@ static int lpc_eth_open(struct net_device *ndev)
 	if (netif_msg_ifup(pldat))
 		dev_dbg(&pldat->pdev->dev, "enabling %s\n", ndev->name);
 
+<<<<<<< HEAD
 	if (!is_valid_ether_addr(ndev->dev_addr))
 		return -EADDRNOTAVAIL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	__lpc_eth_clock_enable(pldat, true);
 
 	/* Reset and initialize */
@@ -1251,9 +1334,16 @@ static int lpc_eth_open(struct net_device *ndev)
 static void lpc_eth_ethtool_getdrvinfo(struct net_device *ndev,
 	struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, MODNAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->bus_info, dev_name(ndev->dev.parent));
+=======
+	strlcpy(info->driver, MODNAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, dev_name(ndev->dev.parent),
+		sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 lpc_eth_ethtool_getmsglevel(struct net_device *ndev)
@@ -1310,24 +1400,49 @@ static const struct net_device_ops lpc_netdev_ops = {
 	.ndo_set_rx_mode	= lpc_eth_set_multicast_list,
 	.ndo_do_ioctl		= lpc_eth_ioctl,
 	.ndo_set_mac_address	= lpc_set_mac_address,
+<<<<<<< HEAD
+=======
+	.ndo_validate_addr	= eth_validate_addr,
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_mtu		= eth_change_mtu,
 };
 
 static int lpc_eth_drv_probe(struct platform_device *pdev)
 {
 	struct resource *res;
+<<<<<<< HEAD
 	struct resource *dma_res;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct net_device *ndev;
 	struct netdata_local *pldat;
 	struct phy_device *phydev;
 	dma_addr_t dma_handle;
 	int irq, ret;
+<<<<<<< HEAD
 
 	/* Get platform resources */
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	dma_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 	irq = platform_get_irq(pdev, 0);
 	if ((!res) || (!dma_res) || (irq < 0) || (irq >= NR_IRQS)) {
+=======
+	u32 tmp;
+
+	/* Setup network interface for RMII or MII mode */
+	tmp = __raw_readl(LPC32XX_CLKPWR_MACCLK_CTRL);
+	tmp &= ~LPC32XX_CLKPWR_MACCTRL_PINS_MSK;
+	if (lpc_phy_interface_mode(&pdev->dev) == PHY_INTERFACE_MODE_MII)
+		tmp |= LPC32XX_CLKPWR_MACCTRL_USE_MII_PINS;
+	else
+		tmp |= LPC32XX_CLKPWR_MACCTRL_USE_RMII_PINS;
+	__raw_writel(tmp, LPC32XX_CLKPWR_MACCLK_CTRL);
+
+	/* Get platform resources */
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	irq = platform_get_irq(pdev, 0);
+	if ((!res) || (irq < 0) || (irq >= NR_IRQS)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "error getting resources.\n");
 		ret = -ENXIO;
 		goto err_exit;
@@ -1390,17 +1505,32 @@ static int lpc_eth_drv_probe(struct platform_device *pdev)
 		sizeof(struct txrx_desc_t) + sizeof(struct rx_status_t));
 	pldat->dma_buff_base_v = 0;
 
+<<<<<<< HEAD
 	if (use_iram_for_net()) {
 		dma_handle = dma_res->start;
 		if (pldat->dma_buff_size <= lpc32xx_return_iram_size())
 			pldat->dma_buff_base_v =
 				io_p2v(dma_res->start);
+=======
+	if (use_iram_for_net(&pldat->pdev->dev)) {
+		dma_handle = LPC32XX_IRAM_BASE;
+		if (pldat->dma_buff_size <= lpc32xx_return_iram_size())
+			pldat->dma_buff_base_v =
+				io_p2v(LPC32XX_IRAM_BASE);
+>>>>>>> refs/remotes/origin/master
 		else
 			netdev_err(ndev,
 				"IRAM not big enough for net buffers, using SDRAM instead.\n");
 	}
 
 	if (pldat->dma_buff_base_v == 0) {
+<<<<<<< HEAD
+=======
+		ret = dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+		if (ret)
+			goto err_out_free_irq;
+
+>>>>>>> refs/remotes/origin/master
 		pldat->dma_buff_size = PAGE_ALIGN(pldat->dma_buff_size);
 
 		/* Allocate a chunk of memory for the DMA ethernet buffers
@@ -1409,9 +1539,13 @@ static int lpc_eth_drv_probe(struct platform_device *pdev)
 			dma_alloc_coherent(&pldat->pdev->dev,
 					   pldat->dma_buff_size, &dma_handle,
 					   GFP_KERNEL);
+<<<<<<< HEAD
 
 		if (pldat->dma_buff_base_v == NULL) {
 			dev_err(&pdev->dev, "error getting DMA region.\n");
+=======
+		if (pldat->dma_buff_base_v == NULL) {
+>>>>>>> refs/remotes/origin/master
 			ret = -ENOMEM;
 			goto err_out_free_irq;
 		}
@@ -1422,7 +1556,11 @@ static int lpc_eth_drv_probe(struct platform_device *pdev)
 			res->start);
 	netdev_dbg(ndev, "IO address size      :%d\n",
 			res->end - res->start + 1);
+<<<<<<< HEAD
 	netdev_err(ndev, "IO address (mapped)  :0x%p\n",
+=======
+	netdev_dbg(ndev, "IO address (mapped)  :0x%p\n",
+>>>>>>> refs/remotes/origin/master
 			pldat->net_base);
 	netdev_dbg(ndev, "IRQ number           :%d\n", ndev->irq);
 	netdev_dbg(ndev, "DMA buffer size      :%d\n", pldat->dma_buff_size);
@@ -1434,13 +1572,19 @@ static int lpc_eth_drv_probe(struct platform_device *pdev)
 	/* Get MAC address from current HW setting (POR state is all zeros) */
 	__lpc_get_mac(pldat, ndev->dev_addr);
 
+<<<<<<< HEAD
 #ifdef CONFIG_OF_NET
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!is_valid_ether_addr(ndev->dev_addr)) {
 		const char *macaddr = of_get_mac_address(pdev->dev.of_node);
 		if (macaddr)
 			memcpy(ndev->dev_addr, macaddr, ETH_ALEN);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!is_valid_ether_addr(ndev->dev_addr))
 		eth_hw_addr_random(ndev);
 
@@ -1472,7 +1616,12 @@ static int lpc_eth_drv_probe(struct platform_device *pdev)
 	}
 	platform_set_drvdata(pdev, ndev);
 
+<<<<<<< HEAD
 	if (lpc_mii_init(pldat) != 0)
+=======
+	ret = lpc_mii_init(pldat);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
 		goto err_out_unregister_netdev;
 
 	netdev_info(ndev, "LPC mac at 0x%08x irq %d\n",
@@ -1486,10 +1635,16 @@ static int lpc_eth_drv_probe(struct platform_device *pdev)
 	return 0;
 
 err_out_unregister_netdev:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	unregister_netdev(ndev);
 err_out_dma_unmap:
 	if (!use_iram_for_net() ||
+=======
+	unregister_netdev(ndev);
+err_out_dma_unmap:
+	if (!use_iram_for_net(&pldat->pdev->dev) ||
+>>>>>>> refs/remotes/origin/master
 	    pldat->dma_buff_size > lpc32xx_return_iram_size())
 		dma_free_coherent(&pldat->pdev->dev, pldat->dma_buff_size,
 				  pldat->dma_buff_base_v,
@@ -1514,9 +1669,14 @@ static int lpc_eth_drv_remove(struct platform_device *pdev)
 	struct netdata_local *pldat = netdev_priv(ndev);
 
 	unregister_netdev(ndev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	if (!use_iram_for_net() ||
+=======
+
+	if (!use_iram_for_net(&pldat->pdev->dev) ||
+>>>>>>> refs/remotes/origin/master
 	    pldat->dma_buff_size > lpc32xx_return_iram_size())
 		dma_free_coherent(&pldat->pdev->dev, pldat->dma_buff_size,
 				  pldat->dma_buff_base_v,
@@ -1586,15 +1746,33 @@ static int lpc_eth_drv_resume(struct platform_device *pdev)
 }
 #endif
 
+<<<<<<< HEAD
 static struct platform_driver lpc_eth_driver = {
 	.probe		= lpc_eth_drv_probe,
 	.remove		= __devexit_p(lpc_eth_drv_remove),
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id lpc_eth_match[] = {
+	{ .compatible = "nxp,lpc-eth" },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, lpc_eth_match);
+#endif
+
+static struct platform_driver lpc_eth_driver = {
+	.probe		= lpc_eth_drv_probe,
+	.remove		= lpc_eth_drv_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= lpc_eth_drv_suspend,
 	.resume		= lpc_eth_drv_resume,
 #endif
 	.driver		= {
 		.name	= MODNAME,
+<<<<<<< HEAD
+=======
+		.of_match_table = of_match_ptr(lpc_eth_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

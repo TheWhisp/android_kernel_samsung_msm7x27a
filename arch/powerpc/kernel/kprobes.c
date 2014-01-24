@@ -36,6 +36,7 @@
 #include <asm/sstep.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -45,6 +46,8 @@
 #else
 #define MSR_SINGLESTEP	(MSR_SE)
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 DEFINE_PER_CPU(struct kprobe *, current_kprobe) = NULL;
 DEFINE_PER_CPU(struct kprobe_ctlblk, kprobe_ctlblk);
@@ -108,6 +111,7 @@ void __kprobes arch_remove_kprobe(struct kprobe *p)
 
 static void __kprobes prepare_singlestep(struct kprobe *p, struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	/* We turn off async exceptions to ensure that the single step will
 	 * be for the instruction we have the kprobe on, if we dont its
 	 * possible we'd get the single step reported for an exception handler
@@ -121,6 +125,9 @@ static void __kprobes prepare_singlestep(struct kprobe *p, struct pt_regs *regs)
 	isync();
 #endif
 #endif
+=======
+	enable_single_step(regs);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * On powerpc we should single step on the original
@@ -314,7 +321,11 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
 {
 	struct kretprobe_instance *ri = NULL;
 	struct hlist_head *head, empty_rp;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags, orig_ret_address = 0;
 	unsigned long trampoline_address =(unsigned long)&kretprobe_trampoline;
 
@@ -334,7 +345,11 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
 	 *       real return address, and all the rest will point to
 	 *       kretprobe_trampoline
 	 */
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, head, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (ri->task != current)
 			/* another task is sharing our hash bucket */
 			continue;
@@ -361,7 +376,11 @@ static int __kprobes trampoline_probe_handler(struct kprobe *p,
 	kretprobe_hash_unlock(current, &flags);
 	preempt_enable_no_resched();
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, &empty_rp, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+>>>>>>> refs/remotes/origin/master
 		hlist_del(&ri->hlist);
 		kfree(ri);
 	}
@@ -451,7 +470,11 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, int trapnr)
 	case KPROBE_HIT_SSDONE:
 		/*
 		 * We increment the nmissed count for accounting,
+<<<<<<< HEAD
 		 * we can also use npre/npostfault count for accouting
+=======
+		 * we can also use npre/npostfault count for accounting
+>>>>>>> refs/remotes/origin/master
 		 * these specific fault cases.
 		 */
 		kprobes_inc_nmissed_count(cur);

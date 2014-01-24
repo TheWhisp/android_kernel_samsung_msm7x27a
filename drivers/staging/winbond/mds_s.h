@@ -4,10 +4,14 @@
 #include <linux/timer.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "localpara.h"
 #include "mac_structures.h"
@@ -44,7 +48,11 @@ enum {
 
 /*
  * ================================================================
+<<<<<<< HEAD
  * Configration default value
+=======
+ * Configuration default value
+>>>>>>> refs/remotes/origin/master
  * ================================================================
  */
 #define DEFAULT_MULTICASTLISTMAX	32	/* standard */

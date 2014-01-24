@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +54,10 @@
 #include "acnamesp.h"
 #include "acdispat.h"
 #include "acinterp.h"
+<<<<<<< HEAD
 #include <linux/nmi.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT          ACPI_NAMESPACE
 ACPI_MODULE_NAME("nsinit")
@@ -91,7 +98,11 @@ acpi_status acpi_ns_initialize_objects(void)
 	ACPI_DEBUG_PRINT((ACPI_DB_DISPATCH,
 			  "**** Starting initialization of namespace objects ****\n"));
 	ACPI_DEBUG_PRINT_RAW((ACPI_DB_INIT,
+<<<<<<< HEAD
 			      "Completing Region/Field/Buffer/Package initialization:"));
+=======
+			      "Completing Region/Field/Buffer/Package initialization:\n"));
+>>>>>>> refs/remotes/origin/master
 
 	/* Set all init info to zero */
 
@@ -100,14 +111,23 @@ acpi_status acpi_ns_initialize_objects(void)
 	/* Walk entire namespace from the supplied root */
 
 	status = acpi_walk_namespace(ACPI_TYPE_ANY, ACPI_ROOT_OBJECT,
+<<<<<<< HEAD
 				     ACPI_UINT32_MAX, acpi_ns_init_one_object, NULL,
 				     &info, NULL);
+=======
+				     ACPI_UINT32_MAX, acpi_ns_init_one_object,
+				     NULL, &info, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		ACPI_EXCEPTION((AE_INFO, status, "During WalkNamespace"));
 	}
 
 	ACPI_DEBUG_PRINT_RAW((ACPI_DB_INIT,
+<<<<<<< HEAD
 			      "\nInitialized %u/%u Regions %u/%u Fields %u/%u "
+=======
+			      "    Initialized %u/%u Regions %u/%u Fields %u/%u "
+>>>>>>> refs/remotes/origin/master
 			      "Buffers %u/%u Packages (%u nodes)\n",
 			      info.op_region_init, info.op_region_count,
 			      info.field_init, info.field_count,
@@ -154,7 +174,11 @@ acpi_status acpi_ns_initialize_devices(void)
 
 	ACPI_DEBUG_PRINT_RAW((ACPI_DB_INIT,
 			      "Initializing Device/Processor/Thermal objects "
+<<<<<<< HEAD
 			      "by executing _INI methods:"));
+=======
+			      "and executing _INI/_STA methods:\n"));
+>>>>>>> refs/remotes/origin/master
 
 	/* Tree analysis: find all subtrees that contain _INI methods */
 
@@ -181,7 +205,11 @@ acpi_status acpi_ns_initialize_devices(void)
 	 * part of the ACPI specification.
 	 */
 	info.evaluate_info->prefix_node = acpi_gbl_root_node;
+<<<<<<< HEAD
 	info.evaluate_info->pathname = METHOD_NAME__INI;
+=======
+	info.evaluate_info->relative_pathname = METHOD_NAME__INI;
+>>>>>>> refs/remotes/origin/master
 	info.evaluate_info->parameters = NULL;
 	info.evaluate_info->flags = ACPI_IGNORE_RETURN_VALUE;
 
@@ -212,13 +240,21 @@ acpi_status acpi_ns_initialize_devices(void)
 	}
 
 	ACPI_DEBUG_PRINT_RAW((ACPI_DB_INIT,
+<<<<<<< HEAD
 			      "\nExecuted %u _INI methods requiring %u _STA executions "
+=======
+			      "    Executed %u _INI methods requiring %u _STA executions "
+>>>>>>> refs/remotes/origin/master
 			      "(examined %u objects)\n",
 			      info.num_INI, info.num_STA, info.device_count));
 
 	return_ACPI_STATUS(status);
 
+<<<<<<< HEAD
       error_exit:
+=======
+error_exit:
+>>>>>>> refs/remotes/origin/master
 	ACPI_EXCEPTION((AE_INFO, status, "During device initialization"));
 	return_ACPI_STATUS(status);
 }
@@ -228,8 +264,13 @@ acpi_status acpi_ns_initialize_devices(void)
  * FUNCTION:    acpi_ns_init_one_object
  *
  * PARAMETERS:  obj_handle      - Node
+<<<<<<< HEAD
  *              Level           - Current nesting level
  *              Context         - Points to a init info struct
+=======
+ *              level           - Current nesting level
+ *              context         - Points to a init info struct
+>>>>>>> refs/remotes/origin/master
  *              return_value    - Not used
  *
  * RETURN:      Status
@@ -271,28 +312,52 @@ acpi_ns_init_one_object(acpi_handle obj_handle,
 
 	switch (type) {
 	case ACPI_TYPE_REGION:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		info->op_region_count++;
 		break;
 
 	case ACPI_TYPE_BUFFER_FIELD:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		info->field_count++;
 		break;
 
 	case ACPI_TYPE_LOCAL_BANK_FIELD:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		info->field_count++;
 		break;
 
 	case ACPI_TYPE_BUFFER:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		info->buffer_count++;
 		break;
 
 	case ACPI_TYPE_PACKAGE:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		info->package_count++;
 		break;
 
 	default:
 
 		/* No init required, just exit now */
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return (AE_OK);
 	}
 
@@ -342,7 +407,13 @@ acpi_ns_init_one_object(acpi_handle obj_handle,
 		break;
 
 	default:
+<<<<<<< HEAD
 		/* No other types can get here */
+=======
+
+		/* No other types can get here */
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -354,6 +425,7 @@ acpi_ns_init_one_object(acpi_handle obj_handle,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Print a dot for each object unless we are going to print the entire
 	 * pathname
 	 */
@@ -362,6 +434,8 @@ acpi_ns_init_one_object(acpi_handle obj_handle,
 	}
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * We ignore errors from above, and always return OK, since we don't want
 	 * to abort the walk on any single error.
 	 */
@@ -429,6 +503,10 @@ acpi_ns_find_ini_methods(acpi_handle obj_handle,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -534,7 +612,11 @@ acpi_ns_init_one_device(acpi_handle obj_handle,
 			 * we will not run _INI, but we continue to examine the children
 			 * of this device.
 			 *
+<<<<<<< HEAD
 			 * From the ACPI spec, description of _STA: (Note - no mention
+=======
+			 * From the ACPI spec, description of _STA: (note - no mention
+>>>>>>> refs/remotes/origin/master
 			 * of whether to run _INI or not on the device in question)
 			 *
 			 * "_STA may return bit 0 clear (not present) with bit 3 set
@@ -571,6 +653,7 @@ acpi_ns_init_one_device(acpi_handle obj_handle,
 	ACPI_DEBUG_EXEC(acpi_ut_display_init_pathname
 			(ACPI_TYPE_METHOD, device_node, METHOD_NAME__INI));
 
+<<<<<<< HEAD
 	info->prefix_node = device_node;
 	info->pathname = METHOD_NAME__INI;
 	info->parameters = NULL;
@@ -581,23 +664,38 @@ acpi_ns_init_one_device(acpi_handle obj_handle,
 	 * as possible (without an NMI being received in the middle of
 	 * this) - so disable NMIs and initialize the device:
 	 */
+=======
+	ACPI_MEMSET(info, 0, sizeof(struct acpi_evaluate_info));
+	info->prefix_node = device_node;
+	info->relative_pathname = METHOD_NAME__INI;
+	info->parameters = NULL;
+	info->flags = ACPI_IGNORE_RETURN_VALUE;
+
+>>>>>>> refs/remotes/origin/master
 	status = acpi_ns_evaluate(info);
 
 	if (ACPI_SUCCESS(status)) {
 		walk_info->num_INI++;
+<<<<<<< HEAD
 
 		if ((acpi_dbg_level <= ACPI_LV_ALL_EXCEPTIONS) &&
 		    (!(acpi_dbg_level & ACPI_LV_INFO))) {
 			ACPI_DEBUG_PRINT_RAW((ACPI_DB_INIT, "."));
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 #ifdef ACPI_DEBUG_OUTPUT
 	else if (status != AE_NOT_FOUND) {
 
 		/* Ignore error and move on to next device */
 
+<<<<<<< HEAD
 		char *scope_name =
 		    acpi_ns_get_external_pathname(info->resolved_node);
+=======
+		char *scope_name = acpi_ns_get_external_pathname(info->node);
+>>>>>>> refs/remotes/origin/master
 
 		ACPI_EXCEPTION((AE_INFO, status, "during %s._INI execution",
 				scope_name));

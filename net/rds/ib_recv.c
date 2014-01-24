@@ -339,8 +339,13 @@ static int rds_ib_recv_refill_one(struct rds_connection *conn,
 	sge->length = sizeof(struct rds_header);
 
 	sge = &recv->r_sge[1];
+<<<<<<< HEAD
 	sge->addr = sg_dma_address(&recv->r_frag->f_sg);
 	sge->length = sg_dma_len(&recv->r_frag->f_sg);
+=======
+	sge->addr = ib_sg_dma_address(ic->i_cm_id->device, &recv->r_frag->f_sg);
+	sge->length = ib_sg_dma_len(ic->i_cm_id->device, &recv->r_frag->f_sg);
+>>>>>>> refs/remotes/origin/master
 
 	ret = 0;
 out:
@@ -381,7 +386,14 @@ void rds_ib_recv_refill(struct rds_connection *conn, int prefill)
 		ret = ib_post_recv(ic->i_cm_id->qp, &recv->r_wr, &failed_wr);
 		rdsdebug("recv %p ibinc %p page %p addr %lu ret %d\n", recv,
 			 recv->r_ibinc, sg_page(&recv->r_frag->f_sg),
+<<<<<<< HEAD
 			 (long) sg_dma_address(&recv->r_frag->f_sg), ret);
+=======
+			 (long) ib_sg_dma_address(
+				ic->i_cm_id->device,
+				&recv->r_frag->f_sg),
+			ret);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			rds_ib_conn_error(conn, "recv post on "
 			       "%pI4 returned %d, disconnecting and "
@@ -418,6 +430,7 @@ static void rds_ib_recv_cache_put(struct list_head *new_item,
 				 struct rds_ib_refill_cache *cache)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	struct rds_ib_cache_head *chp;
 	struct list_head *old;
 
@@ -432,6 +445,22 @@ static void rds_ib_recv_cache_put(struct list_head *new_item,
 	chp->count++;
 
 	if (chp->count < RDS_IB_RECYCLE_BATCH_COUNT)
+=======
+	struct list_head *old, *chpfirst;
+
+	local_irq_save(flags);
+
+	chpfirst = __this_cpu_read(cache->percpu->first);
+	if (!chpfirst)
+		INIT_LIST_HEAD(new_item);
+	else /* put on front */
+		list_add_tail(new_item, chpfirst);
+
+	__this_cpu_write(cache->percpu->first, new_item);
+	__this_cpu_inc(cache->percpu->count);
+
+	if (__this_cpu_read(cache->percpu->count) < RDS_IB_RECYCLE_BATCH_COUNT)
+>>>>>>> refs/remotes/origin/master
 		goto end;
 
 	/*
@@ -443,12 +472,22 @@ static void rds_ib_recv_cache_put(struct list_head *new_item,
 	do {
 		old = xchg(&cache->xfer, NULL);
 		if (old)
+<<<<<<< HEAD
 			list_splice_entire_tail(old, chp->first);
 		old = cmpxchg(&cache->xfer, NULL, chp->first);
 	} while (old);
 
 	chp->first = NULL;
 	chp->count = 0;
+=======
+			list_splice_entire_tail(old, chpfirst);
+		old = cmpxchg(&cache->xfer, NULL, chpfirst);
+	} while (old);
+
+
+	__this_cpu_write(cache->percpu->first, NULL);
+	__this_cpu_write(cache->percpu->count, 0);
+>>>>>>> refs/remotes/origin/master
 end:
 	local_irq_restore(flags);
 }
@@ -764,10 +803,14 @@ static void rds_ib_cong_recv(struct rds_connection *conn,
 		BUG_ON(to_copy & 7); /* Must be 64bit aligned. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr = kmap_atomic(sg_page(&frag->f_sg), KM_SOFTIRQ0);
 =======
 		addr = kmap_atomic(sg_page(&frag->f_sg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		addr = kmap_atomic(sg_page(&frag->f_sg));
+>>>>>>> refs/remotes/origin/master
 
 		src = addr + frag_off;
 		dst = (void *)map->m_page_addrs[map_page] + map_off;
@@ -778,10 +821,14 @@ static void rds_ib_cong_recv(struct rds_connection *conn,
 			*dst++ = *src++;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(addr, KM_SOFTIRQ0);
 =======
 		kunmap_atomic(addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(addr);
+>>>>>>> refs/remotes/origin/master
 
 		copied += to_copy;
 
@@ -835,10 +882,14 @@ static void rds_ib_process_recv(struct rds_connection *conn,
 	if (data_len < sizeof(struct rds_header)) {
 		rds_ib_conn_error(conn, "incoming message "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       "from %pI4 didn't inclue a "
 =======
 		       "from %pI4 didn't include a "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "from %pI4 didn't include a "
+>>>>>>> refs/remotes/origin/master
 		       "header, disconnecting and "
 		       "reconnecting\n",
 		       &conn->c_faddr);
@@ -932,11 +983,15 @@ static void rds_ib_process_recv(struct rds_connection *conn,
 		else {
 			rds_recv_incoming(conn, conn->c_faddr, conn->c_laddr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					  &ibinc->ii_inc, GFP_ATOMIC,
 					  KM_SOFTIRQ0);
 =======
 					  &ibinc->ii_inc, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  &ibinc->ii_inc, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 			state->ack_next = be64_to_cpu(hdr->h_sequence);
 			state->ack_next_valid = 1;
 		}

@@ -9,9 +9,12 @@
  * Copyright (C) 2008 Wolfgang Grandegger <wg@grandegger.com>
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Send feedback to <socketcan-users@lists.berlios.de>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef CAN_DEV_H
@@ -20,6 +23,10 @@
 #include <linux/can.h>
 #include <linux/can/netlink.h>
 #include <linux/can/error.h>
+<<<<<<< HEAD
+=======
+#include <linux/can/led.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * CAN mode
@@ -37,7 +44,11 @@ struct can_priv {
 	struct can_device_stats can_stats;
 
 	struct can_bittiming bittiming;
+<<<<<<< HEAD
 	struct can_bittiming_const *bittiming_const;
+=======
+	const struct can_bittiming_const *bittiming_const;
+>>>>>>> refs/remotes/origin/master
 	struct can_clock clock;
 
 	enum can_state state;
@@ -56,6 +67,16 @@ struct can_priv {
 
 	unsigned int echo_skb_max;
 	struct sk_buff **echo_skb;
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_CAN_LEDS
+	struct led_trigger *tx_led_trig;
+	char tx_led_trig_name[CAN_LED_NAME_SZ];
+	struct led_trigger *rx_led_trig;
+	char rx_led_trig_name[CAN_LED_NAME_SZ];
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -65,12 +86,18 @@ struct can_priv {
  * To be used in the CAN netdriver receive path to ensure conformance with
  * ISO 11898-1 Chapter 8.4.2.3 (DLC field)
  */
+<<<<<<< HEAD
 #define get_can_dlc(i)	(min_t(__u8, (i), 8))
+=======
+#define get_can_dlc(i)		(min_t(__u8, (i), CAN_MAX_DLC))
+#define get_canfd_dlc(i)	(min_t(__u8, (i), CANFD_MAX_DLC))
+>>>>>>> refs/remotes/origin/master
 
 /* Drop a given socketbuffer if it does not contain a valid CAN frame. */
 static inline int can_dropped_invalid_skb(struct net_device *dev,
 					  struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	const struct can_frame *cf = (struct can_frame *)skb->data;
 
 	if (unlikely(skb->len != sizeof(*cf) || cf->can_dlc > 8)) {
@@ -85,6 +112,41 @@ static inline int can_dropped_invalid_skb(struct net_device *dev,
 struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
 void free_candev(struct net_device *dev);
 
+=======
+	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+
+	if (skb->protocol == htons(ETH_P_CAN)) {
+		if (unlikely(skb->len != CAN_MTU ||
+			     cfd->len > CAN_MAX_DLEN))
+			goto inval_skb;
+	} else if (skb->protocol == htons(ETH_P_CANFD)) {
+		if (unlikely(skb->len != CANFD_MTU ||
+			     cfd->len > CANFD_MAX_DLEN))
+			goto inval_skb;
+	} else
+		goto inval_skb;
+
+	return 0;
+
+inval_skb:
+	kfree_skb(skb);
+	dev->stats.tx_dropped++;
+	return 1;
+}
+
+/* get data length from can_dlc with sanitized can_dlc */
+u8 can_dlc2len(u8 can_dlc);
+
+/* map the sanitized data length to an appropriate data length code */
+u8 can_len2dlc(u8 len);
+
+struct net_device *alloc_candev(int sizeof_priv, unsigned int echo_skb_max);
+void free_candev(struct net_device *dev);
+
+/* a candev safe wrapper around netdev_priv */
+struct can_priv *safe_candev_priv(struct net_device *dev);
+
+>>>>>>> refs/remotes/origin/master
 int open_candev(struct net_device *dev);
 void close_candev(struct net_device *dev);
 
@@ -97,10 +159,14 @@ void can_bus_off(struct net_device *dev);
 void can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
 		      unsigned int idx);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void can_get_echo_skb(struct net_device *dev, unsigned int idx);
 =======
 unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx);
+>>>>>>> refs/remotes/origin/master
 void can_free_echo_skb(struct net_device *dev, unsigned int idx);
 
 struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf);

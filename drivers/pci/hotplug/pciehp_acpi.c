@@ -28,9 +28,13 @@
 #include <linux/pci_hotplug.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "pciehp.h"
 
 #define PCIEHP_DETECT_PCIE	(0)
@@ -57,7 +61,11 @@ int pciehp_acpi_slot_detection_check(struct pci_dev *dev)
 {
 	if (slot_detection_mode != PCIEHP_DETECT_ACPI)
 		return 0;
+<<<<<<< HEAD
 	if (acpi_pci_detect_ejectable(DEVICE_ACPI_HANDLE(&dev->dev)))
+=======
+	if (acpi_pci_detect_ejectable(ACPI_HANDLE(&dev->dev)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	return -ENODEV;
 }
@@ -81,15 +89,22 @@ static int __initdata dup_slot_id;
 static int __initdata acpi_slot_detected;
 static struct list_head __initdata dummy_slots = LIST_HEAD_INIT(dummy_slots);
 
+<<<<<<< HEAD
 /* Dummy driver for dumplicate name detection */
 static int __init dummy_probe(struct pcie_device *dev)
 {
 	int pos;
+=======
+/* Dummy driver for duplicate name detection */
+static int __init dummy_probe(struct pcie_device *dev)
+{
+>>>>>>> refs/remotes/origin/master
 	u32 slot_cap;
 	acpi_handle handle;
 	struct dummy_slot *slot, *tmp;
 	struct pci_dev *pdev = dev->port;
 
+<<<<<<< HEAD
 	pos = pci_pcie_cap(pdev);
 	if (!pos)
 		return -ENODEV;
@@ -98,12 +113,23 @@ static int __init dummy_probe(struct pcie_device *dev)
 	if (!slot)
 		return -ENOMEM;
 	slot->number = slot_cap >> 19;
+=======
+	pcie_capability_read_dword(pdev, PCI_EXP_SLTCAP, &slot_cap);
+	slot = kzalloc(sizeof(*slot), GFP_KERNEL);
+	if (!slot)
+		return -ENOMEM;
+	slot->number = (slot_cap & PCI_EXP_SLTCAP_PSN) >> 19;
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(tmp, &dummy_slots, list) {
 		if (tmp->number == slot->number)
 			dup_slot_id++;
 	}
 	list_add_tail(&slot->list, &dummy_slots);
+<<<<<<< HEAD
 	handle = DEVICE_ACPI_HANDLE(&pdev->dev);
+=======
+	handle = ACPI_HANDLE(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!acpi_slot_detected && acpi_pci_detect_ejectable(handle))
 		acpi_slot_detected = 1;
 	return -ENODEV;         /* dummy driver always returns error */

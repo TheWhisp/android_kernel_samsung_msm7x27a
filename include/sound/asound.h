@@ -19,6 +19,7 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
+<<<<<<< HEAD
 
 #ifndef __SOUND_ASOUND_H
 #define __SOUND_ASOUND_H
@@ -26,6 +27,11 @@
 #include <linux/types.h>
 
 #ifdef __KERNEL__
+=======
+#ifndef __SOUND_ASOUND_H
+#define __SOUND_ASOUND_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioctl.h>
 #include <linux/time.h>
 #include <asm/byteorder.h>
@@ -40,6 +46,7 @@
 #endif
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ **/
 
 /*
@@ -924,4 +931,7 @@ struct snd_ctl_event {
 #define SNDRV_CTL_NAME_IEC958_PCM_STREAM		"PCM Stream"
 #define SNDRV_CTL_NAME_IEC958(expl,direction,what)	"IEC958 " expl SNDRV_CTL_NAME_##direction SNDRV_CTL_NAME_IEC958_##what
 
+=======
+#include <uapi/sound/asound.h>
+>>>>>>> refs/remotes/origin/master
 #endif /* __SOUND_ASOUND_H */

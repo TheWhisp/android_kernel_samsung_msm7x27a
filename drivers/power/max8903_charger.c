@@ -23,9 +23,13 @@
 #include <linux/gpio.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/power_supply.h>
 #include <linux/platform_device.h>
@@ -33,10 +37,14 @@
 
 struct max8903_data {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct max8903_pdata *pdata;
 =======
 	struct max8903_pdata pdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct max8903_pdata pdata;
+>>>>>>> refs/remotes/origin/master
 	struct device *dev;
 	struct power_supply psy;
 	bool fault;
@@ -61,12 +69,17 @@ static int max8903_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_STATUS:
 		val->intval = POWER_SUPPLY_STATUS_UNKNOWN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (data->pdata->chg) {
 			if (gpio_get_value(data->pdata->chg) == 0)
 =======
 		if (data->pdata.chg) {
 			if (gpio_get_value(data->pdata.chg) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (data->pdata.chg) {
+			if (gpio_get_value(data->pdata.chg) == 0)
+>>>>>>> refs/remotes/origin/master
 				val->intval = POWER_SUPPLY_STATUS_CHARGING;
 			else if (data->usb_in || data->ta_in)
 				val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
@@ -94,10 +107,14 @@ static irqreturn_t max8903_dcin(int irq, void *_data)
 {
 	struct max8903_data *data = _data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct max8903_pdata *pdata = data->pdata;
 =======
 	struct max8903_pdata *pdata = &data->pdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/master
 	bool ta_in;
 	enum power_supply_type old_type;
 
@@ -139,10 +156,14 @@ static irqreturn_t max8903_usbin(int irq, void *_data)
 {
 	struct max8903_data *data = _data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct max8903_pdata *pdata = data->pdata;
 =======
 	struct max8903_pdata *pdata = &data->pdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/master
 	bool usb_in;
 	enum power_supply_type old_type;
 
@@ -182,10 +203,14 @@ static irqreturn_t max8903_fault(int irq, void *_data)
 {
 	struct max8903_data *data = _data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct max8903_pdata *pdata = data->pdata;
 =======
 	struct max8903_pdata *pdata = &data->pdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/master
 	bool fault;
 
 	fault = gpio_get_value(pdata->flt) ? false : true;
@@ -203,7 +228,11 @@ static irqreturn_t max8903_fault(int irq, void *_data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static __devinit int max8903_probe(struct platform_device *pdev)
+=======
+static int max8903_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max8903_data *data;
 	struct device *dev = &pdev->dev;
@@ -213,16 +242,24 @@ static __devinit int max8903_probe(struct platform_device *pdev)
 	int ta_in = 0;
 	int usb_in = 0;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct max8903_data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(dev, sizeof(struct max8903_data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL) {
 		dev_err(dev, "Cannot allocate memory.\n");
 		return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->pdata = pdata;
 =======
 	memcpy(&data->pdata, pdata, sizeof(struct max8903_pdata));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(&data->pdata, pdata, sizeof(struct max8903_pdata));
+>>>>>>> refs/remotes/origin/master
 	data->dev = dev;
 	platform_set_drvdata(pdev, data);
 
@@ -369,20 +406,31 @@ err_dc_irq:
 err_psy:
 	power_supply_unregister(&data->psy);
 err:
+<<<<<<< HEAD
 	kfree(data);
 	return ret;
 }
 
 static __devexit int max8903_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int max8903_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max8903_data *data = platform_get_drvdata(pdev);
 
 	if (data) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct max8903_pdata *pdata = data->pdata;
 =======
 		struct max8903_pdata *pdata = &data->pdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct max8903_pdata *pdata = &data->pdata;
+>>>>>>> refs/remotes/origin/master
 
 		if (pdata->flt)
 			free_irq(gpio_to_irq(pdata->flt), data);
@@ -391,7 +439,10 @@ static __devexit int max8903_remove(struct platform_device *pdev)
 		if (pdata->dc_valid)
 			free_irq(gpio_to_irq(pdata->dok), data);
 		power_supply_unregister(&data->psy);
+<<<<<<< HEAD
 		kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -399,13 +450,18 @@ static __devexit int max8903_remove(struct platform_device *pdev)
 
 static struct platform_driver max8903_driver = {
 	.probe	= max8903_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(max8903_remove),
+=======
+	.remove	= max8903_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name	= "max8903-charger",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init max8903_init(void)
 {
@@ -421,12 +477,19 @@ module_exit(max8903_exit);
 =======
 module_platform_driver(max8903_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(max8903_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("MAX8903 Charger Driver");
 MODULE_AUTHOR("MyungJoo Ham <myungjoo.ham@samsung.com>");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("max8903-charger");
 =======
 MODULE_ALIAS("platform:max8903-charger");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:max8903-charger");
+>>>>>>> refs/remotes/origin/master

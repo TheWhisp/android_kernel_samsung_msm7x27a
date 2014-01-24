@@ -72,12 +72,19 @@ void __init prom_setup_cmdline(void)
 	static char cmd_line[COMMAND_LINE_SIZE] __initdata;
 	char *cp, *board;
 	int prom_argc;
+<<<<<<< HEAD
 	char **prom_argv, **prom_envp;
+=======
+	char **prom_argv;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	prom_argc = fw_arg0;
 	prom_argv = (char **) fw_arg1;
+<<<<<<< HEAD
 	prom_envp = (char **) fw_arg2;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cp = cmd_line;
 		/* Note: it is common that parameters start

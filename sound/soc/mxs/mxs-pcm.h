@@ -19,9 +19,13 @@
 #ifndef _MXS_PCM_H
 #define _MXS_PCM_H
 
+<<<<<<< HEAD
 struct mxs_pcm_dma_params {
 	int chan_irq;
 	int chan_num;
 };
+=======
+int mxs_pcm_platform_register(struct device *dev);
+>>>>>>> refs/remotes/origin/master
 
 #endif

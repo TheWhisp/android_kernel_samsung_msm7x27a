@@ -33,10 +33,14 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/kthread.h>
 #include "cpci_hotplug.h"
@@ -50,7 +54,11 @@
 	do {							\
 		if (cpci_debug)					\
 			printk (KERN_DEBUG "%s: " format "\n",	\
+<<<<<<< HEAD
 				MY_NAME , ## arg); 		\
+=======
+				MY_NAME , ## arg);		\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 #define err(format, arg...) printk(KERN_ERR "%s: " format "\n", MY_NAME , ## arg)
 #define info(format, arg...) printk(KERN_INFO "%s: " format "\n", MY_NAME , ## arg)
@@ -229,7 +237,11 @@ cpci_hp_register_bus(struct pci_bus *bus, u8 first, u8 last)
 	struct hotplug_slot *hotplug_slot;
 	struct hotplug_slot_info *info;
 	char name[SLOT_NAME_SIZE];
+<<<<<<< HEAD
 	int status = -ENOMEM;
+=======
+	int status;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (!(controller && bus))
@@ -241,6 +253,7 @@ cpci_hp_register_bus(struct pci_bus *bus, u8 first, u8 last)
 	 */
 	for (i = first; i <= last; ++i) {
 		slot = kzalloc(sizeof (struct slot), GFP_KERNEL);
+<<<<<<< HEAD
 		if (!slot)
 			goto error;
 
@@ -253,6 +266,26 @@ cpci_hp_register_bus(struct pci_bus *bus, u8 first, u8 last)
 		info = kzalloc(sizeof (struct hotplug_slot_info), GFP_KERNEL);
 		if (!info)
 			goto error_hpslot;
+=======
+		if (!slot) {
+			status = -ENOMEM;
+			goto error;
+		}
+
+		hotplug_slot =
+			kzalloc(sizeof (struct hotplug_slot), GFP_KERNEL);
+		if (!hotplug_slot) {
+			status = -ENOMEM;
+			goto error_slot;
+		}
+		slot->hotplug_slot = hotplug_slot;
+
+		info = kzalloc(sizeof (struct hotplug_slot_info), GFP_KERNEL);
+		if (!info) {
+			status = -ENOMEM;
+			goto error_hpslot;
+		}
+>>>>>>> refs/remotes/origin/master
 		hotplug_slot->info = info;
 
 		slot->bus = bus;

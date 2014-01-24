@@ -367,6 +367,7 @@ void t1_sched_set_drain_bits_per_us(struct sge *sge, unsigned int port,
 
 #endif  /*  0  */
 
+<<<<<<< HEAD
 
 /*
  * get_clock() implements a ns clock (see ktime_get)
@@ -379,6 +380,8 @@ static inline ktime_t get_clock(void)
 	return timespec_to_ktime(ts);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * tx_sched_init() allocates resources and does basic initialization.
  */
@@ -411,7 +414,11 @@ static int tx_sched_init(struct sge *sge)
 static inline int sched_update_avail(struct sge *sge)
 {
 	struct sched *s = sge->tx_sched;
+<<<<<<< HEAD
 	ktime_t now = get_clock();
+=======
+	ktime_t now = ktime_get();
+>>>>>>> refs/remotes/origin/master
 	unsigned int i;
 	long long delta_time_ns;
 
@@ -746,7 +753,11 @@ void t1_vlan_mode(struct adapter *adapter, netdev_features_t features)
 {
 	struct sge *sge = adapter->sge;
 
+<<<<<<< HEAD
 	if (features & NETIF_F_HW_VLAN_RX)
+=======
+	if (features & NETIF_F_HW_VLAN_CTAG_RX)
+>>>>>>> refs/remotes/origin/master
 		sge->sge_control |= F_VLAN_XTRACT;
 	else
 		sge->sge_control &= ~F_VLAN_XTRACT;
@@ -847,7 +858,11 @@ static void refill_free_list(struct sge *sge, struct freelQ *q)
 		struct sk_buff *skb;
 		dma_addr_t mapping;
 
+<<<<<<< HEAD
 		skb = alloc_skb(q->rx_buffer_size, GFP_ATOMIC);
+=======
+		skb = dev_alloc_skb(q->rx_buffer_size);
+>>>>>>> refs/remotes/origin/master
 		if (!skb)
 			break;
 
@@ -1058,11 +1073,18 @@ static inline struct sk_buff *get_packet(struct pci_dev *pdev,
 	const struct freelQ_ce *ce = &fl->centries[fl->cidx];
 
 	if (len < copybreak) {
+<<<<<<< HEAD
 		skb = alloc_skb(len + 2, GFP_ATOMIC);
 		if (!skb)
 			goto use_orig_buf;
 
 		skb_reserve(skb, 2);	/* align IP header */
+=======
+		skb = netdev_alloc_skb_ip_align(NULL, len);
+		if (!skb)
+			goto use_orig_buf;
+
+>>>>>>> refs/remotes/origin/master
 		skb_put(skb, len);
 		pci_dma_sync_single_for_cpu(pdev,
 					    dma_unmap_addr(ce, dma_addr),
@@ -1399,7 +1421,11 @@ static void sge_rx(struct sge *sge, struct freelQ *fl, unsigned int len)
 
 	if (p->vlan_valid) {
 		st->vlan_xtract++;
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, ntohs(p->vlan));
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), ntohs(p->vlan));
+>>>>>>> refs/remotes/origin/master
 	}
 	netif_receive_skb(skb);
 }
@@ -1834,8 +1860,13 @@ netdev_tx_t t1_start_xmit(struct sk_buff *skb, struct net_device *dev)
 		 */
 		if (unlikely(skb->len < ETH_HLEN ||
 			     skb->len > dev->mtu + eth_hdr_len(skb->data))) {
+<<<<<<< HEAD
 			pr_debug("%s: packet size %d hdr %d mtu%d\n", dev->name,
 				 skb->len, eth_hdr_len(skb->data), dev->mtu);
+=======
+			netdev_dbg(dev, "packet size %d hdr %d mtu%d\n",
+				   skb->len, eth_hdr_len(skb->data), dev->mtu);
+>>>>>>> refs/remotes/origin/master
 			dev_kfree_skb_any(skb);
 			return NETDEV_TX_OK;
 		}
@@ -1843,7 +1874,11 @@ netdev_tx_t t1_start_xmit(struct sk_buff *skb, struct net_device *dev)
 		if (skb->ip_summed == CHECKSUM_PARTIAL &&
 		    ip_hdr(skb)->protocol == IPPROTO_UDP) {
 			if (unlikely(skb_checksum_help(skb))) {
+<<<<<<< HEAD
 				pr_debug("%s: unable to do udp checksum\n", dev->name);
+=======
+				netdev_dbg(dev, "unable to do udp checksum\n");
+>>>>>>> refs/remotes/origin/master
 				dev_kfree_skb_any(skb);
 				return NETDEV_TX_OK;
 			}
@@ -2071,8 +2106,12 @@ static void espibug_workaround(unsigned long data)
 /*
  * Creates a t1_sge structure and returns suggested resource parameters.
  */
+<<<<<<< HEAD
 struct sge * __devinit t1_sge_create(struct adapter *adapter,
 				     struct sge_params *p)
+=======
+struct sge *t1_sge_create(struct adapter *adapter, struct sge_params *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sge *sge = kzalloc(sizeof(*sge), GFP_KERNEL);
 	int i;

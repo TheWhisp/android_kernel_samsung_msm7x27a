@@ -31,6 +31,10 @@
 #include <linux/errno.h>
 
 #include <net/nfc/nci.h>
+<<<<<<< HEAD
+=======
+#include <net/nfc/nci_core.h>
+>>>>>>> refs/remotes/origin/master
 
 /* NCI status codes to Unix errno mapping */
 int nci_to_errno(__u8 code)

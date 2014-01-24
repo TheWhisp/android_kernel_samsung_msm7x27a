@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,12 +50,19 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
+=======
+#define EXPORT_ACPI_INTERFACES
+
+#include <acpi/acpi.h>
+#include "accommon.h"
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT          ACPI_UTILITIES
 ACPI_MODULE_NAME("utxferror")
@@ -59,6 +70,7 @@ ACPI_MODULE_NAME("utxferror")
 /*
  * This module is used for the in-kernel ACPICA as well as the ACPICA
  * tools/applications.
+<<<<<<< HEAD
  *
  * For the i_aSL compiler case, the output is redirected to stderr so that
  * any of the various ACPI errors and warnings do not appear in the output
@@ -94,13 +106,20 @@ extern FILE *acpi_gbl_output_file;
  */
 #define ACPI_MSG_SUFFIX \
 	acpi_os_printf (" (%8.8X/%s-%u)\n", ACPI_CA_VERSION, module_name, line_number)
+=======
+ */
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_error
  *
  * PARAMETERS:  module_name         - Caller's module name (for error output)
  *              line_number         - Caller's line number (for error output)
+<<<<<<< HEAD
  *              Format              - Printf format string + additional args
+=======
+ *              format              - Printf format string + additional args
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -131,8 +150,13 @@ ACPI_EXPORT_SYMBOL(acpi_error)
  *
  * PARAMETERS:  module_name         - Caller's module name (for error output)
  *              line_number         - Caller's line number (for error output)
+<<<<<<< HEAD
  *              Status              - Status to be formatted
  *              Format              - Printf format string + additional args
+=======
+ *              status              - Status to be formatted
+ *              format              - Printf format string + additional args
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -166,7 +190,11 @@ ACPI_EXPORT_SYMBOL(acpi_exception)
  *
  * PARAMETERS:  module_name         - Caller's module name (for error output)
  *              line_number         - Caller's line number (for error output)
+<<<<<<< HEAD
  *              Format              - Printf format string + additional args
+=======
+ *              format              - Printf format string + additional args
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -197,7 +225,11 @@ ACPI_EXPORT_SYMBOL(acpi_warning)
  *
  * PARAMETERS:  module_name         - Caller's module name (for error output)
  *              line_number         - Caller's line number (for error output)
+<<<<<<< HEAD
  *              Format              - Printf format string + additional args
+=======
+ *              format              - Printf format string + additional args
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -225,6 +257,7 @@ acpi_info(const char *module_name, u32 line_number, const char *format, ...)
 
 ACPI_EXPORT_SYMBOL(acpi_info)
 
+<<<<<<< HEAD
 /*
  * The remainder of this module contains internal error functions that may
  * be configured out.
@@ -265,11 +298,36 @@ acpi_ut_predefined_warning(const char *module_name,
 	}
 
 	acpi_os_printf(ACPI_MSG_WARNING "For %s: ", pathname);
+=======
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_bios_error
+ *
+ * PARAMETERS:  module_name         - Caller's module name (for error output)
+ *              line_number         - Caller's line number (for error output)
+ *              format              - Printf format string + additional args
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Print "ACPI Firmware Error" message with module/line/version
+ *              info
+ *
+ ******************************************************************************/
+void ACPI_INTERNAL_VAR_XFACE
+acpi_bios_error(const char *module_name,
+		u32 line_number, const char *format, ...)
+{
+	va_list arg_list;
+
+	ACPI_MSG_REDIRECT_BEGIN;
+	acpi_os_printf(ACPI_MSG_BIOS_ERROR);
+>>>>>>> refs/remotes/origin/master
 
 	va_start(arg_list, format);
 	acpi_os_vprintf(format, arg_list);
 	ACPI_MSG_SUFFIX;
 	va_end(arg_list);
+<<<<<<< HEAD
 }
 
 /*******************************************************************************
@@ -307,11 +365,42 @@ acpi_ut_predefined_info(const char *module_name,
 	}
 
 	acpi_os_printf(ACPI_MSG_INFO "For %s: ", pathname);
+=======
+
+	ACPI_MSG_REDIRECT_END;
+}
+
+ACPI_EXPORT_SYMBOL(acpi_bios_error)
+
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_bios_warning
+ *
+ * PARAMETERS:  module_name         - Caller's module name (for error output)
+ *              line_number         - Caller's line number (for error output)
+ *              format              - Printf format string + additional args
+ *
+ * RETURN:      None
+ *
+ * DESCRIPTION: Print "ACPI Firmware Warning" message with module/line/version
+ *              info
+ *
+ ******************************************************************************/
+void ACPI_INTERNAL_VAR_XFACE
+acpi_bios_warning(const char *module_name,
+		  u32 line_number, const char *format, ...)
+{
+	va_list arg_list;
+
+	ACPI_MSG_REDIRECT_BEGIN;
+	acpi_os_printf(ACPI_MSG_BIOS_WARNING);
+>>>>>>> refs/remotes/origin/master
 
 	va_start(arg_list, format);
 	acpi_os_vprintf(format, arg_list);
 	ACPI_MSG_SUFFIX;
 	va_end(arg_list);
+<<<<<<< HEAD
 }
 
 /*******************************************************************************
@@ -421,3 +510,10 @@ acpi_ut_method_error(const char *module_name,
 }
 
 #endif				/* ACPI_NO_ERROR_MESSAGES */
+=======
+
+	ACPI_MSG_REDIRECT_END;
+}
+
+ACPI_EXPORT_SYMBOL(acpi_bios_warning)
+>>>>>>> refs/remotes/origin/master

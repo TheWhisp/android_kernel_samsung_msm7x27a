@@ -42,14 +42,19 @@
 
 /*---------------------  Static Definitions -------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int          msglevel                =MSG_LEVEL_INFO;
 =======
 static int          msglevel                = MSG_LEVEL_INFO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int          msglevel                = MSG_LEVEL_INFO;
+>>>>>>> refs/remotes/origin/master
 
 #pragma pack(1)
 
 typedef struct _WLAN_FRAME_ACTION {
+<<<<<<< HEAD
 <<<<<<< HEAD
     WLAN_80211HDR_A3    Header;
     unsigned char byCategory;
@@ -88,6 +93,8 @@ typedef struct _WLAN_FRAME_TPCREP {
     unsigned char byDialogToken;
     WLAN_IE_TPC_REP     sTPCRepEIDs;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WLAN_80211HDR_A3    Header;
 	unsigned char byCategory;
 	unsigned char byAction;
@@ -124,16 +131,23 @@ typedef struct _WLAN_FRAME_TPCREP {
 	unsigned char byAction;
 	unsigned char byDialogToken;
 	WLAN_IE_TPC_REP     sTPCRepEIDs;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } WLAN_FRAME_TPCREP, *PWLAN_FRAME_TPCREP;
 
 #pragma pack()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // action field reference ieee 802.11h Table 20e
 =======
 /* action field reference ieee 802.11h Table 20e */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* action field reference ieee 802.11h Table 20e */
+>>>>>>> refs/remotes/origin/master
 #define ACTION_MSRREQ       0
 #define ACTION_MSRREP       1
 #define ACTION_TPCREQ       2
@@ -146,6 +160,7 @@ typedef struct _WLAN_FRAME_TPCREP {
 
 /*---------------------  Static Functions  --------------------------*/
 static bool s_bRxMSRReq(PSMgmtObject pMgmt, PWLAN_FRAME_MSRREQ pMSRReq,
+<<<<<<< HEAD
 		unsigned int uLength)
 {
 <<<<<<< HEAD
@@ -228,12 +243,17 @@ static bool s_bRxTPCReq(PSMgmtObject pMgmt, PWLAN_FRAME_TPCREQ pTPCReq, unsigned
     return (true);
 //    return (CARDbSendPacket(pMgmt->pAdapter, pFrame, PKT_TYPE_802_11_MNG, sizeof(WLAN_FRAME_TPCREP)));
 =======
+=======
+			unsigned int uLength)
+{
+>>>>>>> refs/remotes/origin/master
 	size_t    uNumOfEIDs = 0;
 	bool bResult = true;
 
 	if (uLength <= WLAN_A3FR_MAXLEN)
 		memcpy(pMgmt->abyCurrentMSRReq, pMSRReq, uLength);
 	uNumOfEIDs = ((uLength - offsetof(WLAN_FRAME_MSRREQ,
+<<<<<<< HEAD
 			sMSRReqEIDs))/
 			(sizeof(WLAN_IE_MEASURE_REQ)));
 	pMgmt->pCurrMeasureEIDRep = &(((PWLAN_FRAME_MSRREP)
@@ -248,6 +268,21 @@ static bool s_bRxTPCReq(PSMgmtObject pMgmt, PWLAN_FRAME_TPCREQ pTPCReq, unsigned
 }
 
 
+=======
+					  sMSRReqEIDs))/
+		      (sizeof(WLAN_IE_MEASURE_REQ)));
+	pMgmt->pCurrMeasureEIDRep = &(((PWLAN_FRAME_MSRREP)
+				       (pMgmt->abyCurrentMSRRep))->sMSRRepEIDs[0]);
+	pMgmt->uLengthOfRepEIDs = 0;
+	bResult = CARDbStartMeasure(pMgmt->pAdapter,
+				    ((PWLAN_FRAME_MSRREQ)
+				     (pMgmt->abyCurrentMSRReq))->sMSRReqEIDs,
+				    uNumOfEIDs
+);
+	return bResult;
+}
+
+>>>>>>> refs/remotes/origin/master
 static bool s_bRxTPCReq(PSMgmtObject pMgmt,
 			PWLAN_FRAME_TPCREQ pTPCReq,
 			unsigned char byRate,
@@ -259,6 +294,7 @@ static bool s_bRxTPCReq(PSMgmtObject pMgmt,
 	pTxPacket = (PSTxMgmtPacket)pMgmt->pbyMgmtPacketPool;
 	memset(pTxPacket, 0, sizeof(STxMgmtPacket) + WLAN_A3FR_MAXLEN);
 	pTxPacket->p80211Header = (PUWLAN_80211HDR)((unsigned char *)pTxPacket +
+<<<<<<< HEAD
 sizeof(STxMgmtPacket));
 
 	pFrame = (PWLAN_FRAME_TPCREP)((unsigned char *)pTxPacket +
@@ -277,11 +313,35 @@ sizeof(STxMgmtPacket));
 	memcpy(pFrame->Header.abyAddr3,
 		pMgmt->abyCurrBSSID,
 		WLAN_BSSID_LEN);
+=======
+						    sizeof(STxMgmtPacket));
+
+	pFrame = (PWLAN_FRAME_TPCREP)((unsigned char *)pTxPacket +
+				      sizeof(STxMgmtPacket));
+
+	pFrame->Header.wFrameCtl = (WLAN_SET_FC_FTYPE(WLAN_FTYPE_MGMT) |
+				    WLAN_SET_FC_FSTYPE(WLAN_FSTYPE_ACTION)
+);
+
+	memcpy(pFrame->Header.abyAddr1,
+	       pTPCReq->Header.abyAddr2,
+	       WLAN_ADDR_LEN);
+	memcpy(pFrame->Header.abyAddr2,
+	       CARDpGetCurrentAddress(pMgmt->pAdapter),
+	       WLAN_ADDR_LEN);
+	memcpy(pFrame->Header.abyAddr3,
+	       pMgmt->abyCurrBSSID,
+	       WLAN_BSSID_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	pFrame->byCategory = 0;
 	pFrame->byAction = 3;
 	pFrame->byDialogToken = ((PWLAN_FRAME_MSRREQ)
+<<<<<<< HEAD
 (pMgmt->abyCurrentMSRReq))->byDialogToken;
+=======
+				 (pMgmt->abyCurrentMSRReq))->byDialogToken;
+>>>>>>> refs/remotes/origin/master
 
 	pFrame->sTPCRepEIDs.byElementID = WLAN_EID_TPC_REP;
 	pFrame->sTPCRepEIDs.len = 2;
@@ -312,6 +372,7 @@ sizeof(STxMgmtPacket));
 	default:
 		pFrame->sTPCRepEIDs.byLinkMargin = 82 - byRSSI;
 		break;
+<<<<<<< HEAD
 }
 
 	pTxPacket->cbMPDULen = sizeof(WLAN_FRAME_TPCREP);
@@ -327,11 +388,28 @@ sizeof(WLAN_FRAME_TPCREP))); */
 }
 
 
+=======
+	}
+
+	pTxPacket->cbMPDULen = sizeof(WLAN_FRAME_TPCREP);
+	pTxPacket->cbPayloadLen = sizeof(WLAN_FRAME_TPCREP) -
+		WLAN_HDR_ADDR3_LEN;
+	if (csMgmt_xmit(pMgmt->pAdapter, pTxPacket) != CMD_STATUS_PENDING)
+		return false;
+	return true;
+/*    return CARDbSendPacket(pMgmt->pAdapter, pFrame, PKT_TYPE_802_11_MNG,
+      sizeof(WLAN_FRAME_TPCREP)); */
+}
+
+>>>>>>> refs/remotes/origin/master
 /*---------------------  Export Variables  --------------------------*/
 
 /*---------------------  Export Functions  --------------------------*/
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -346,6 +424,7 @@ sizeof(WLAN_FRAME_TPCREP))); */
  *
  * Return Value: None.
  *
+<<<<<<< HEAD
 -*/
 bool
 <<<<<<< HEAD
@@ -446,6 +525,10 @@ bool IEEE11hbMSRRepTx (
     return (true);
 //    return (CARDbSendPacket(pMgmt->pAdapter, pMSRRep, PKT_TYPE_802_11_MNG, uLength));
 =======
+=======
+ -*/
+bool
+>>>>>>> refs/remotes/origin/master
 IEEE11hbMgrRxAction(void *pMgmtHandle, void *pRxPacket)
 {
 	PSMgmtObject            pMgmt = (PSMgmtObject) pMgmtHandle;
@@ -459,30 +542,48 @@ IEEE11hbMgrRxAction(void *pMgmtHandle, void *pRxPacket)
 		return false;
 
 	pAction = (PWLAN_FRAME_ACTION)
+<<<<<<< HEAD
 (((PSRxMgmtPacket)pRxPacket)->p80211Header);
+=======
+		(((PSRxMgmtPacket)pRxPacket)->p80211Header);
+>>>>>>> refs/remotes/origin/master
 
 	if (pAction->byCategory == 0) {
 		switch (pAction->byAction) {
 		case ACTION_MSRREQ:
 			return s_bRxMSRReq(pMgmt,
+<<<<<<< HEAD
 					(PWLAN_FRAME_MSRREQ)
 					pAction,
 					uLength);
+=======
+					   (PWLAN_FRAME_MSRREQ)
+					   pAction,
+					   uLength);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case ACTION_MSRREP:
 			break;
 		case ACTION_TPCREQ:
 			return s_bRxTPCReq(pMgmt,
+<<<<<<< HEAD
 				(PWLAN_FRAME_TPCREQ) pAction,
 				((PSRxMgmtPacket)pRxPacket)->byRxRate,
 				(unsigned char)
 				((PSRxMgmtPacket)pRxPacket)->uRSSI);
+=======
+					   (PWLAN_FRAME_TPCREQ) pAction,
+					   ((PSRxMgmtPacket)pRxPacket)->byRxRate,
+					   (unsigned char)
+					   ((PSRxMgmtPacket)pRxPacket)->uRSSI);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case ACTION_TPCREP:
 			break;
 		case ACTION_CHSW:
 			pChannelSwitch = (PWLAN_IE_CH_SW) (pAction->abyVars);
 			if ((pChannelSwitch->byElementID == WLAN_EID_CH_SWITCH)
+<<<<<<< HEAD
 			&& (pChannelSwitch->len == 3)) {
 				/* valid element id */
 				CARDbChannelSwitch(pMgmt->pAdapter,
@@ -491,15 +592,30 @@ IEEE11hbMgrRxAction(void *pMgmtHandle, void *pRxPacket)
 				pChannelSwitch->byChannel,
 				pMgmt->eCurrentPHYMode),
 				pChannelSwitch->byCount);
+=======
+			    && (pChannelSwitch->len == 3)) {
+				/* valid element id */
+				CARDbChannelSwitch(pMgmt->pAdapter,
+						   pChannelSwitch->byMode,
+						   get_channel_mapping(pMgmt->pAdapter,
+								       pChannelSwitch->byChannel,
+								       pMgmt->eCurrentPHYMode),
+						   pChannelSwitch->byCount);
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		default:
 			DBG_PRT(MSG_LEVEL_DEBUG,
+<<<<<<< HEAD
 				KERN_INFO"Unknown Action = %d\n",
+=======
+				KERN_INFO "Unknown Action = %d\n",
+>>>>>>> refs/remotes/origin/master
 				pAction->byAction);
 			break;
 		}
 	} else {
+<<<<<<< HEAD
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Unknown Category = %d\n",
 pAction->byCategory);
 	pAction->byCategory |= 0x80;
@@ -507,22 +623,39 @@ pAction->byCategory);
 	/*return (CARDbSendPacket(pMgmt->pAdapter, pAction, PKT_TYPE_802_11_MNG,
 uLength));*/
 	return true;
+=======
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Unknown Category = %d\n",
+			pAction->byCategory);
+		pAction->byCategory |= 0x80;
+
+		/*return CARDbSendPacket(pMgmt->pAdapter, pAction, PKT_TYPE_802_11_MNG,
+		  uLength);*/
+		return true;
+>>>>>>> refs/remotes/origin/master
 	}
 	return true;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 bool IEEE11hbMSRRepTx(void *pMgmtHandle)
 {
 	PSMgmtObject            pMgmt = (PSMgmtObject) pMgmtHandle;
 	PWLAN_FRAME_MSRREP      pMSRRep = (PWLAN_FRAME_MSRREP)
+<<<<<<< HEAD
 (pMgmt->abyCurrentMSRRep + sizeof(STxMgmtPacket));
+=======
+		(pMgmt->abyCurrentMSRRep + sizeof(STxMgmtPacket));
+>>>>>>> refs/remotes/origin/master
 	size_t                    uLength = 0;
 	PSTxMgmtPacket          pTxPacket = NULL;
 
 	pTxPacket = (PSTxMgmtPacket)pMgmt->abyCurrentMSRRep;
 	memset(pTxPacket, 0, sizeof(STxMgmtPacket) + WLAN_A3FR_MAXLEN);
 	pTxPacket->p80211Header = (PUWLAN_80211HDR)((unsigned char *)pTxPacket +
+<<<<<<< HEAD
 sizeof(STxMgmtPacket));
 
 	pMSRRep->Header.wFrameCtl = (WLAN_SET_FC_FTYPE(WLAN_FTYPE_MGMT) |
@@ -533,12 +666,28 @@ sizeof(STxMgmtPacket));
 		(pMgmt->abyCurrentMSRReq))->Header.abyAddr2, WLAN_ADDR_LEN);
 	memcpy(pMSRRep->Header.abyAddr2,
 		CARDpGetCurrentAddress(pMgmt->pAdapter), WLAN_ADDR_LEN);
+=======
+						    sizeof(STxMgmtPacket));
+
+	pMSRRep->Header.wFrameCtl = (WLAN_SET_FC_FTYPE(WLAN_FTYPE_MGMT) |
+				     WLAN_SET_FC_FSTYPE(WLAN_FSTYPE_ACTION)
+);
+
+	memcpy(pMSRRep->Header.abyAddr1, ((PWLAN_FRAME_MSRREQ)
+					  (pMgmt->abyCurrentMSRReq))->Header.abyAddr2, WLAN_ADDR_LEN);
+	memcpy(pMSRRep->Header.abyAddr2,
+	       CARDpGetCurrentAddress(pMgmt->pAdapter), WLAN_ADDR_LEN);
+>>>>>>> refs/remotes/origin/master
 	memcpy(pMSRRep->Header.abyAddr3, pMgmt->abyCurrBSSID, WLAN_BSSID_LEN);
 
 	pMSRRep->byCategory = 0;
 	pMSRRep->byAction = 1;
 	pMSRRep->byDialogToken = ((PWLAN_FRAME_MSRREQ)
+<<<<<<< HEAD
 		(pMgmt->abyCurrentMSRReq))->byDialogToken;
+=======
+				  (pMgmt->abyCurrentMSRReq))->byDialogToken;
+>>>>>>> refs/remotes/origin/master
 
 	uLength = pMgmt->uLengthOfRepEIDs + offsetof(WLAN_FRAME_MSRREP,
 						     sMSRRepEIDs);
@@ -548,9 +697,15 @@ sizeof(STxMgmtPacket));
 	if (csMgmt_xmit(pMgmt->pAdapter, pTxPacket) != CMD_STATUS_PENDING)
 		return false;
 	return true;
+<<<<<<< HEAD
 /*    return (CARDbSendPacket(pMgmt->pAdapter, pMSRRep, PKT_TYPE_802_11_MNG,
 uLength)); */
 >>>>>>> refs/remotes/origin/cm-10.0
 
 }
 
+=======
+/*    return CARDbSendPacket(pMgmt->pAdapter, pMSRRep, PKT_TYPE_802_11_MNG,
+      uLength); */
+}
+>>>>>>> refs/remotes/origin/master

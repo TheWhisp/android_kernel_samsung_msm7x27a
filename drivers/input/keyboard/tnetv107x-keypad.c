@@ -25,9 +25,13 @@
 #include <linux/clk.h>
 #include <linux/input/matrix_keypad.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define BITS(x)			(BIT(x) - 1)
 
@@ -63,8 +67,13 @@ struct keypad_data {
 	struct clk			*clk;
 	struct device			*dev;
 	spinlock_t			lock;
+<<<<<<< HEAD
 	u32				irq_press;
 	u32				irq_release;
+=======
+	int				irq_press;
+	int				irq_release;
+>>>>>>> refs/remotes/origin/master
 	int				rows, cols, row_shift;
 	int				debounce_ms, active_low;
 	u32				prev_keys[3];
@@ -156,7 +165,11 @@ static void keypad_stop(struct input_dev *dev)
 	clk_disable(kp->clk);
 }
 
+<<<<<<< HEAD
 static int __devinit keypad_probe(struct platform_device *pdev)
+=======
+static int keypad_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct matrix_keypad_platform_data *pdata;
 	const struct matrix_keymap_data *keymap_data;
@@ -230,15 +243,25 @@ static int __devinit keypad_probe(struct platform_device *pdev)
 		goto error_clk;
 	}
 
+<<<<<<< HEAD
 	error = request_threaded_irq(kp->irq_press, NULL, keypad_irq, 0,
 				     dev_name(dev), kp);
+=======
+	error = request_threaded_irq(kp->irq_press, NULL, keypad_irq,
+				     IRQF_ONESHOT, dev_name(dev), kp);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0) {
 		dev_err(kp->dev, "Could not allocate keypad press key irq\n");
 		goto error_irq_press;
 	}
 
+<<<<<<< HEAD
 	error = request_threaded_irq(kp->irq_release, NULL, keypad_irq, 0,
 				     dev_name(dev), kp);
+=======
+	error = request_threaded_irq(kp->irq_release, NULL, keypad_irq,
+				     IRQF_ONESHOT, dev_name(dev), kp);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0) {
 		dev_err(kp->dev, "Could not allocate keypad release key irq\n");
 		goto error_irq_release;
@@ -250,15 +273,21 @@ static int __devinit keypad_probe(struct platform_device *pdev)
 		error = -ENOMEM;
 		goto error_input;
 	}
+<<<<<<< HEAD
 	input_set_drvdata(kp->input_dev, kp);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	kp->input_dev->name	  = pdev->name;
 	kp->input_dev->dev.parent = &pdev->dev;
 	kp->input_dev->open	  = keypad_start;
 	kp->input_dev->close	  = keypad_stop;
+<<<<<<< HEAD
 	kp->input_dev->evbit[0]	  = BIT_MASK(EV_KEY);
 	if (!pdata->no_autorepeat)
 		kp->input_dev->evbit[0] |= BIT_MASK(EV_REP);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	clk_enable(kp->clk);
 	rev = keypad_read(kp, rev);
@@ -267,6 +296,7 @@ static int __devinit keypad_probe(struct platform_device *pdev)
 	kp->input_dev->id.version = ((rev >> 16) & 0xfff);
 	clk_disable(kp->clk);
 
+<<<<<<< HEAD
 	kp->input_dev->keycode     = kp->keycodes;
 	kp->input_dev->keycodesize = sizeof(kp->keycodes[0]);
 	kp->input_dev->keycodemax  = kp->rows << kp->row_shift;
@@ -276,6 +306,22 @@ static int __devinit keypad_probe(struct platform_device *pdev)
 
 	input_set_capability(kp->input_dev, EV_MSC, MSC_SCAN);
 
+=======
+	error = matrix_keypad_build_keymap(keymap_data, NULL,
+					   kp->rows, kp->cols,
+					   kp->keycodes, kp->input_dev);
+	if (error) {
+		dev_err(dev, "Failed to build keymap\n");
+		goto error_reg;
+	}
+
+	if (!pdata->no_autorepeat)
+		kp->input_dev->evbit[0] |= BIT_MASK(EV_REP);
+	input_set_capability(kp->input_dev, EV_MSC, MSC_SCAN);
+
+	input_set_drvdata(kp->input_dev, kp);
+
+>>>>>>> refs/remotes/origin/master
 	error = input_register_device(kp->input_dev);
 	if (error < 0) {
 		dev_err(dev, "Could not register input device\n");
@@ -298,12 +344,19 @@ error_clk:
 error_map:
 	release_mem_region(kp->res->start, resource_size(kp->res));
 error_res:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(kp);
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit keypad_remove(struct platform_device *pdev)
+=======
+static int keypad_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct keypad_data *kp = platform_get_drvdata(pdev);
 
@@ -313,7 +366,10 @@ static int __devexit keypad_remove(struct platform_device *pdev)
 	clk_put(kp->clk);
 	iounmap(kp->regs);
 	release_mem_region(kp->res->start, resource_size(kp->res));
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(kp);
 
 	return 0;
@@ -321,6 +377,7 @@ static int __devexit keypad_remove(struct platform_device *pdev)
 
 static struct platform_driver keypad_driver = {
 	.probe		= keypad_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(keypad_remove),
 	.driver.name	= "tnetv107x-keypad",
 	.driver.owner	= THIS_MODULE,
@@ -344,10 +401,19 @@ MODULE_AUTHOR("Cyril Chemparathy");
 MODULE_DESCRIPTION("TNETV107X Keypad Driver");
 MODULE_ALIAS("platform: tnetv107x-keypad");
 =======
+=======
+	.remove		= keypad_remove,
+	.driver.name	= "tnetv107x-keypad",
+	.driver.owner	= THIS_MODULE,
+};
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(keypad_driver);
 
 MODULE_AUTHOR("Cyril Chemparathy");
 MODULE_DESCRIPTION("TNETV107X Keypad Driver");
 MODULE_ALIAS("platform:tnetv107x-keypad");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

@@ -41,8 +41,13 @@ void dsa_slave_mii_bus_init(struct dsa_switch *ds)
 	ds->slave_mii_bus->name = "dsa slave smi";
 	ds->slave_mii_bus->read = dsa_slave_phy_read;
 	ds->slave_mii_bus->write = dsa_slave_phy_write;
+<<<<<<< HEAD
 	snprintf(ds->slave_mii_bus->id, MII_BUS_ID_SIZE, "%s:%.2x",
 			ds->master_mii_bus->id, ds->pd->sw_addr);
+=======
+	snprintf(ds->slave_mii_bus->id, MII_BUS_ID_SIZE, "dsa-%d:%.2x",
+			ds->index, ds->pd->sw_addr);
+>>>>>>> refs/remotes/origin/master
 	ds->slave_mii_bus->parent = &ds->master_mii_bus->dev;
 }
 
@@ -66,7 +71,11 @@ static int dsa_slave_open(struct net_device *dev)
 	if (!(master->flags & IFF_UP))
 		return -ENETDOWN;
 
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, master->dev_addr)) {
+=======
+	if (!ether_addr_equal(dev->dev_addr, master->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		err = dev_uc_add(master, dev->dev_addr);
 		if (err < 0)
 			goto out;
@@ -89,7 +98,11 @@ clear_allmulti:
 	if (dev->flags & IFF_ALLMULTI)
 		dev_set_allmulti(master, -1);
 del_unicast:
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, master->dev_addr))
+=======
+	if (!ether_addr_equal(dev->dev_addr, master->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		dev_uc_del(master, dev->dev_addr);
 out:
 	return err;
@@ -107,7 +120,11 @@ static int dsa_slave_close(struct net_device *dev)
 	if (dev->flags & IFF_PROMISC)
 		dev_set_promiscuity(master, -1);
 
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, master->dev_addr))
+=======
+	if (!ether_addr_equal(dev->dev_addr, master->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		dev_uc_del(master, dev->dev_addr);
 
 	return 0;
@@ -146,13 +163,21 @@ static int dsa_slave_set_mac_address(struct net_device *dev, void *a)
 	if (!(dev->flags & IFF_UP))
 		goto out;
 
+<<<<<<< HEAD
 	if (compare_ether_addr(addr->sa_data, master->dev_addr)) {
+=======
+	if (!ether_addr_equal(addr->sa_data, master->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		err = dev_uc_add(master, addr->sa_data);
 		if (err < 0)
 			return err;
 	}
 
+<<<<<<< HEAD
 	if (compare_ether_addr(dev->dev_addr, master->dev_addr))
+=======
+	if (!ether_addr_equal(dev->dev_addr, master->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		dev_uc_del(master, dev->dev_addr);
 
 out:
@@ -203,10 +228,17 @@ dsa_slave_set_settings(struct net_device *dev, struct ethtool_cmd *cmd)
 static void dsa_slave_get_drvinfo(struct net_device *dev,
 				  struct ethtool_drvinfo *drvinfo)
 {
+<<<<<<< HEAD
 	strncpy(drvinfo->driver, "dsa", 32);
 	strncpy(drvinfo->version, dsa_driver_version, 32);
 	strncpy(drvinfo->fw_version, "N/A", 32);
 	strncpy(drvinfo->bus_info, "platform", 32);
+=======
+	strlcpy(drvinfo->driver, "dsa", sizeof(drvinfo->driver));
+	strlcpy(drvinfo->version, dsa_driver_version, sizeof(drvinfo->version));
+	strlcpy(drvinfo->fw_version, "N/A", sizeof(drvinfo->fw_version));
+	strlcpy(drvinfo->bus_info, "platform", sizeof(drvinfo->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dsa_slave_nway_reset(struct net_device *dev)
@@ -302,9 +334,12 @@ static const struct net_device_ops dsa_netdev_ops = {
 	.ndo_change_rx_flags	= dsa_slave_change_rx_flags,
 	.ndo_set_rx_mode	= dsa_slave_set_rx_mode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = dsa_slave_set_rx_mode,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= dsa_slave_set_mac_address,
 	.ndo_do_ioctl		= dsa_slave_ioctl,
 };
@@ -318,9 +353,12 @@ static const struct net_device_ops edsa_netdev_ops = {
 	.ndo_change_rx_flags	= dsa_slave_change_rx_flags,
 	.ndo_set_rx_mode	= dsa_slave_set_rx_mode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = dsa_slave_set_rx_mode,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= dsa_slave_set_mac_address,
 	.ndo_do_ioctl		= dsa_slave_ioctl,
 };
@@ -334,9 +372,12 @@ static const struct net_device_ops trailer_netdev_ops = {
 	.ndo_change_rx_flags	= dsa_slave_change_rx_flags,
 	.ndo_set_rx_mode	= dsa_slave_set_rx_mode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = dsa_slave_set_rx_mode,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= dsa_slave_set_mac_address,
 	.ndo_do_ioctl		= dsa_slave_ioctl,
 };
@@ -359,7 +400,11 @@ dsa_slave_create(struct dsa_switch *ds, struct device *parent,
 
 	slave_dev->features = master->vlan_features;
 	SET_ETHTOOL_OPS(slave_dev, &dsa_slave_ethtool_ops);
+<<<<<<< HEAD
 	memcpy(slave_dev->dev_addr, master->dev_addr, ETH_ALEN);
+=======
+	eth_hw_addr_inherit(slave_dev, master);
+>>>>>>> refs/remotes/origin/master
 	slave_dev->tx_queue_len = 0;
 
 	switch (ds->dst->tag_protocol) {
@@ -403,7 +448,11 @@ dsa_slave_create(struct dsa_switch *ds, struct device *parent,
 
 	if (p->phy != NULL) {
 		phy_attach(slave_dev, dev_name(&p->phy->dev),
+<<<<<<< HEAD
 			   0, PHY_INTERFACE_MODE_GMII);
+=======
+			   PHY_INTERFACE_MODE_GMII);
+>>>>>>> refs/remotes/origin/master
 
 		p->phy->autoneg = AUTONEG_ENABLE;
 		p->phy->speed = 0;

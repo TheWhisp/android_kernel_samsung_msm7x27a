@@ -6,6 +6,7 @@ menu "Character devices"
 
 source "drivers/tty/Kconfig"
 
+<<<<<<< HEAD
 config DEVMEM
 	bool "Memory device driver"
 	default y
@@ -19,6 +20,8 @@ config DEVMEM
 	  system and most users should say Y here. You might say N if very
 	  security conscience or memory is tight.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config DEVKMEM
 	bool "/dev/kmem virtual device support"
 	default y
@@ -28,6 +31,7 @@ config DEVKMEM
 	  kind of kernel debugging operations.
 	  When in doubt, say "N".
 
+<<<<<<< HEAD
 config STALDRV
 	bool "Stallion multiport serial support"
 	depends on SERIAL_NONSTANDARD
@@ -40,6 +44,8 @@ config STALDRV
 	  in this case.  If you have never heard about all this, it's safe to
 	  say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SGI_SNSC
 	bool "SGI Altix system controller communication support"
 	depends on (IA64_SGI_SN2 || IA64_GENERIC)
@@ -64,11 +70,17 @@ config SGI_MBCS
 
 source "drivers/tty/serial/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/char/diag/Kconfig"
 
 config TTY_PRINTK
 	bool "TTY driver to output user messages via printk"
 	depends on EXPERT
+=======
+config TTY_PRINTK
+	bool "TTY driver to output user messages via printk"
+	depends on EXPERT && TTY
+>>>>>>> refs/remotes/origin/master
 	default n
 	---help---
 	  If you say Y here, the support for writing user messages (i.e.
@@ -81,6 +93,7 @@ config TTY_PRINTK
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config BRIQ_PANEL
 	tristate 'Total Impact briQ front panel driver'
@@ -99,6 +112,8 @@ config BRIQ_PANEL
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config BFIN_OTP
 	tristate "Blackfin On-Chip OTP Memory Support"
 	depends on BLACKFIN && (BF51x || BF52x || BF54x)
@@ -192,7 +207,11 @@ source "drivers/tty/hvc/Kconfig"
 
 config VIRTIO_CONSOLE
 	tristate "Virtio console"
+<<<<<<< HEAD
 	depends on VIRTIO
+=======
+	depends on VIRTIO && TTY
+>>>>>>> refs/remotes/origin/master
 	select HVC_DRIVER
 	help
 	  Virtio console for use with lguest and other hypervisors.
@@ -317,10 +336,14 @@ config RTC
 	tristate "Enhanced Real Time Clock Support (legacy PC RTC driver)"
 	depends on !PPC && !PARISC && !IA64 && !M68K && !SPARC && !FRV \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			&& !ARM && !SUPERH && !S390 && !AVR32 && !BLACKFIN
 =======
 			&& !ARM && !SUPERH && !S390 && !AVR32 && !BLACKFIN && !UML
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			&& !ARM && !SUPERH && !S390 && !AVR32 && !BLACKFIN && !UML
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you say Y here and create a character special file /dev/rtc with
 	  major number 10 and minor number 135 using mknod ("man mknod"), you
@@ -369,10 +392,14 @@ config JS_RTC
 config GEN_RTC
 	tristate "Generic /dev/rtc emulation"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on RTC!=y && !IA64 && !ARM && !M32R && !MIPS && !SPARC && !FRV && !S390 && !SUPERH && !AVR32 && !BLACKFIN
 =======
 	depends on RTC!=y && !IA64 && !ARM && !M32R && !MIPS && !SPARC && !FRV && !S390 && !SUPERH && !AVR32 && !BLACKFIN && !UML
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on RTC!=y && !IA64 && !ARM && !M32R && !MIPS && !SPARC && !FRV && !S390 && !SUPERH && !AVR32 && !BLACKFIN && !UML
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you say Y here and create a character special file /dev/rtc with
 	  major number 10 and minor number 135 using mknod ("man mknod"), you
@@ -433,6 +460,10 @@ config XILINX_HWICAP
 
 config R3964
 	tristate "Siemens R3964 line discipline"
+<<<<<<< HEAD
+=======
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This driver allows synchronous communication with devices using the
 	  Siemens R3964 packet protocol. Unless you are dealing with special
@@ -459,8 +490,13 @@ config APPLICOM
 	  If unsure, say N.
 
 config SONYPI
+<<<<<<< HEAD
 	tristate "Sony Vaio Programmable I/O Control Device support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && X86 && PCI && INPUT && !64BIT
+=======
+	tristate "Sony Vaio Programmable I/O Control Device support"
+	depends on X86 && PCI && INPUT && !64BIT
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This driver enables access to the Sony Programmable I/O Control
 	  Device which can be found in many (all ?) Sony Vaio laptops.
@@ -480,7 +516,11 @@ source "drivers/char/pcmcia/Kconfig"
 
 config MWAVE
 	tristate "ACP Modem (Mwave) support"
+<<<<<<< HEAD
 	depends on X86
+=======
+	depends on X86 && TTY
+>>>>>>> refs/remotes/origin/master
 	select SERIAL_8250
 	---help---
 	  The ACP modem (Mwave) for Linux is a WinModem. It is composed of a
@@ -517,10 +557,14 @@ config SCx200_GPIO
 config PC8736x_GPIO
 	tristate "NatSemi PC8736x GPIO Support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on X86_32
 =======
 	depends on X86_32 && !UML
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on X86_32 && !UML
+>>>>>>> refs/remotes/origin/master
 	default SCx200_GPIO	# mostly N
 	select NSC_GPIO		# needed for support routines
 	help
@@ -578,10 +622,23 @@ config HPET_MMAP
 	  If you say Y here, user applications will be able to mmap
 	  the HPET registers.
 
+<<<<<<< HEAD
 	  In some hardware implementations, the page containing HPET
 	  registers may also contain other things that shouldn't be
 	  exposed to the user.  If this applies to your hardware,
 	  say N here.
+=======
+config HPET_MMAP_DEFAULT
+	bool "Enable HPET MMAP access by default"
+	default y
+	depends on HPET_MMAP
+	help
+	  In some hardware implementations, the page containing HPET
+	  registers may also contain other things that shouldn't be
+	  exposed to the user.  This option selects the default (if
+	  kernel parameter hpet_mmap is not set) user access to the
+	  registers for applications that require it.
+>>>>>>> refs/remotes/origin/master
 
 config HANGCHECK_TIMER
 	tristate "Hangcheck timer"
@@ -611,7 +668,11 @@ source "drivers/char/tpm/Kconfig"
 
 config TELCLOCK
 	tristate "Telecom clock driver for ATCA SBC"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL && X86
+=======
+	depends on X86
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  The telecom clock device is specific to the MPCBL0010 and MPCBL0050
@@ -628,6 +689,7 @@ config DEVPORT
 	depends on ISA || PCI
 	default y
 
+<<<<<<< HEAD
 config DCC_TTY
 	tristate "DCC tty driver"
 	depends on ARM
@@ -642,6 +704,10 @@ config RAMOOPS
 	  This enables panic and oops messages to be logged to a circular
 	  buffer in RAM where it can be read back at some later point.
 
+=======
+source "drivers/s390/char/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 config MSM_SMD_PKT
 	bool "Enable device interface for some SMD packet ports"
 	default n
@@ -651,7 +717,10 @@ config MSM_SMD_PKT
 	  ports via device interface for MSM chipset.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config TILE_SROM
 	bool "Character-device access via hypervisor to the Tilera SPI ROM"
 	depends on TILE
@@ -663,6 +732,7 @@ config TILE_SROM
 	  device appear much like a simple EEPROM, and knows
 	  how to partition a single ROM for multiple purposes.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config MSM_ROTATOR
         tristate "MSM Offline Image Rotator Driver"
@@ -705,5 +775,7 @@ config CSDIO_DEVICE_ID
 	  Enter device id for targeted sdio device, this may be overwritten by
 	  module parameters.
 .
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu
 

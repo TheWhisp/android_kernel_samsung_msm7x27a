@@ -12,10 +12,14 @@
  */
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Updated: Hewlett-Packard <paul.moore@hp.com>
 =======
  * Updated: Hewlett-Packard <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Updated: Hewlett-Packard <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  *	Added support to import/export the MLS label from NetLabel
  *

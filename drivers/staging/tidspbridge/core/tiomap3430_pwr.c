@@ -19,7 +19,11 @@
 /*  ----------------------------------- Host OS */
 #include <dspbridge/host_os.h>
 
+<<<<<<< HEAD
 #include <plat/dsp.h>
+=======
+#include <linux/platform_data/dsp-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
@@ -51,7 +55,11 @@
 
 /*
  *  ======== handle_constraints_set ========
+<<<<<<< HEAD
  *  	Sets new DSP constraint
+=======
+ *	Sets new DSP constraint
+>>>>>>> refs/remotes/origin/master
  */
 int handle_constraints_set(struct bridge_dev_context *dev_context,
 				  void *pargs)
@@ -75,7 +83,11 @@ int handle_constraints_set(struct bridge_dev_context *dev_context,
 
 /*
  *  ======== handle_hibernation_from_dsp ========
+<<<<<<< HEAD
  *  	Handle Hibernation requested from DSP
+=======
+ *	Handle Hibernation requested from DSP
+>>>>>>> refs/remotes/origin/master
  */
 int handle_hibernation_from_dsp(struct bridge_dev_context *dev_context)
 {
@@ -144,7 +156,11 @@ int handle_hibernation_from_dsp(struct bridge_dev_context *dev_context)
 
 /*
  *  ======== sleep_dsp ========
+<<<<<<< HEAD
  *  	Put DSP in low power consuming state.
+=======
+ *	Put DSP in low power consuming state.
+>>>>>>> refs/remotes/origin/master
  */
 int sleep_dsp(struct bridge_dev_context *dev_context, u32 dw_cmd,
 		     void *pargs)
@@ -250,7 +266,11 @@ int sleep_dsp(struct bridge_dev_context *dev_context, u32 dw_cmd,
 
 /*
  *  ======== wake_dsp ========
+<<<<<<< HEAD
  *  	Wake up DSP from sleep.
+=======
+ *	Wake up DSP from sleep.
+>>>>>>> refs/remotes/origin/master
  */
 int wake_dsp(struct bridge_dev_context *dev_context, void *pargs)
 {
@@ -276,7 +296,11 @@ int wake_dsp(struct bridge_dev_context *dev_context, void *pargs)
 
 /*
  *  ======== dsp_peripheral_clk_ctrl ========
+<<<<<<< HEAD
  *  	Enable/Disable the DSP peripheral clocks as needed..
+=======
+ *	Enable/Disable the DSP peripheral clocks as needed..
+>>>>>>> refs/remotes/origin/master
  */
 int dsp_peripheral_clk_ctrl(struct bridge_dev_context *dev_context,
 				   void *pargs)
@@ -304,9 +328,12 @@ int dsp_peripheral_clk_ctrl(struct bridge_dev_context *dev_context,
 	/* TODO -- Assert may be a too hard restriction here.. May be we should
 	 * just return with failure when the CLK ID does not match */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* DBC_ASSERT(clk_id_index < MBX_PM_MAX_RESOURCES); */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (clk_id_index == MBX_PM_MAX_RESOURCES) {
 		/* return with a more meaningfull error code */
 		return -EPERM;
@@ -360,7 +387,11 @@ int pre_scale_dsp(struct bridge_dev_context *dev_context, void *pargs)
 		dev_dbg(bridge, "OPP: %s IVA in sleep. No message to DSP\n");
 		return 0;
 	} else if ((dev_context->brd_state == BRD_RUNNING)) {
+<<<<<<< HEAD
 		/* Send a prenotificatio to DSP */
+=======
+		/* Send a prenotification to DSP */
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(bridge, "OPP: %s sent notification to DSP\n", __func__);
 		sm_interrupt_dsp(dev_context, MBX_PM_SETPOINT_PRENOTIFY);
 		return 0;

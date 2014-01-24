@@ -14,6 +14,9 @@
 
 void ack_bad_irq(unsigned int irq);
 
+<<<<<<< HEAD
 #define HARDIRQ_BITS	8
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__SPARC64_HARDIRQ_H) */

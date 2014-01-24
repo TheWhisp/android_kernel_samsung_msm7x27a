@@ -46,10 +46,14 @@
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * struct link_req - information about an ongoing link setup request
 =======
  * struct tipc_link_req - information about an ongoing link setup request
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * struct tipc_link_req - information about an ongoing link setup request
+>>>>>>> refs/remotes/origin/master
  * @bearer: bearer issuing requests
  * @dest: destination address for request messages
  * @domain: network domain to which links can be established
@@ -59,10 +63,14 @@
  * @timer_intv: current interval between requests (in ms)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct link_req {
 =======
 struct tipc_link_req {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct tipc_link_req {
+>>>>>>> refs/remotes/origin/master
 	struct tipc_bearer *bearer;
 	struct tipc_media_addr dest;
 	u32 domain;
@@ -78,9 +86,13 @@ struct tipc_link_req {
  * @dest_domain: network domain of node(s) which should respond to message
  * @b_ptr: ptr to bearer issuing message
  */
+<<<<<<< HEAD
 
 static struct sk_buff *tipc_disc_init_msg(u32 type,
 					  u32 dest_domain,
+=======
+static struct sk_buff *tipc_disc_init_msg(u32 type, u32 dest_domain,
+>>>>>>> refs/remotes/origin/master
 					  struct tipc_bearer *b_ptr)
 {
 	struct sk_buff *buf = tipc_buf_acquire(INT_H_SIZE);
@@ -91,15 +103,21 @@ static struct sk_buff *tipc_disc_init_msg(u32 type,
 		tipc_msg_init(msg, LINK_CONFIG, type, INT_H_SIZE, dest_domain);
 		msg_set_non_seq(msg, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		msg_set_dest_domain(msg, dest_domain);
 		msg_set_bc_netid(msg, tipc_net_id);
 		msg_set_media_addr(msg, &b_ptr->addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		msg_set_node_sig(msg, tipc_random);
 		msg_set_dest_domain(msg, dest_domain);
 		msg_set_bc_netid(msg, tipc_net_id);
 		b_ptr->media->addr2msg(&b_ptr->addr, msg_media_addr(msg));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return buf;
 }
@@ -110,12 +128,16 @@ static struct sk_buff *tipc_disc_init_msg(u32 type,
  * @node_addr: duplicated node address
  * @media_addr: media address advertised by duplicated node
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void disc_dupl_alert(struct tipc_bearer *b_ptr, u32 node_addr,
 			    struct tipc_media_addr *media_addr)
 {
 	char node_addr_str[16];
 	char media_addr_str[64];
+<<<<<<< HEAD
 	struct print_buf pb;
 
 	tipc_addr_string_fill(node_addr_str, node_addr);
@@ -124,6 +146,14 @@ static void disc_dupl_alert(struct tipc_bearer *b_ptr, u32 node_addr,
 	tipc_printbuf_validate(&pb);
 	warn("Duplicate %s using %s seen on <%s>\n",
 	     node_addr_str, media_addr_str, b_ptr->name);
+=======
+
+	tipc_addr_string_fill(node_addr_str, node_addr);
+	tipc_media_addr_printf(media_addr_str, sizeof(media_addr_str),
+			       media_addr);
+	pr_warn("Duplicate %s using %s seen on <%s>\n", node_addr_str,
+		media_addr_str, b_ptr->name);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -131,6 +161,7 @@ static void disc_dupl_alert(struct tipc_bearer *b_ptr, u32 node_addr,
  * @buf: buffer containing message
  * @b_ptr: bearer that message arrived on
  */
+<<<<<<< HEAD
 
 void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 {
@@ -142,12 +173,20 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 	struct tipc_link *link;
 	struct tipc_media_addr media_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
+{
+	struct tipc_node *n_ptr;
+	struct tipc_link *link;
+	struct tipc_media_addr media_addr;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *rbuf;
 	struct tipc_msg *msg = buf_msg(buf);
 	u32 dest = msg_dest_domain(msg);
 	u32 orig = msg_prevnode(msg);
 	u32 net_id = msg_bc_netid(msg);
 	u32 type = msg_type(msg);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int link_fully_up;
 
@@ -158,12 +197,18 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 	if (net_id != tipc_net_id)
 		return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 signature = msg_node_sig(msg);
 	int addr_mismatch;
 	int link_fully_up;
 
 	media_addr.broadcast = 1;
+<<<<<<< HEAD
 	b_ptr->media->msg2addr(&media_addr, msg_media_addr(msg));
+=======
+	b_ptr->media->msg2addr(b_ptr, &media_addr, msg_media_addr(msg));
+>>>>>>> refs/remotes/origin/master
 	kfree_skb(buf);
 
 	/* Ensure message from node is valid and communication is permitted */
@@ -171,7 +216,10 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 		return;
 	if (media_addr.broadcast)
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!tipc_addr_domain_valid(dest))
 		return;
 	if (!tipc_addr_node_valid(orig))
@@ -196,6 +244,7 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 	tipc_node_lock(n_ptr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Don't talk to neighbor during cleanup after last session */
 	if (n_ptr->cleanup_required) {
 		tipc_node_unlock(n_ptr);
@@ -212,6 +261,8 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 			return;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Prepare to validate requesting node's signature and media address */
 	link = n_ptr->links[b_ptr->identity];
 	addr_mismatch = (link != NULL) &&
@@ -256,7 +307,10 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 			return;
 		}
 		n_ptr->signature = signature;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -269,6 +323,7 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 	 * the new media address and reset the link to ensure it starts up
 	 * cleanly.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	addr = &link->media_addr;
 	if (memcmp(addr, &media_addr, sizeof(*addr))) {
@@ -283,6 +338,8 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 		tipc_link_reset(link);
 =======
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (addr_mismatch) {
 		if (tipc_link_is_up(link)) {
 			disc_dupl_alert(b_ptr, orig, &media_addr);
@@ -302,7 +359,10 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 			tipc_node_unlock(n_ptr);
 			return;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Accept discovery message & send response, if necessary */
@@ -311,12 +371,17 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
 	if ((type == DSC_REQ_MSG) && !link_fully_up && !b_ptr->blocked) {
 		rbuf = tipc_disc_init_msg(DSC_RESP_MSG, orig, b_ptr);
 		if (rbuf) {
+<<<<<<< HEAD
 			b_ptr->media->send_msg(rbuf, b_ptr, &media_addr);
 <<<<<<< HEAD
 			buf_discard(rbuf);
 =======
 			kfree_skb(rbuf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tipc_bearer_send(b_ptr, rbuf, &media_addr);
+			kfree_skb(rbuf);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -330,12 +395,16 @@ void tipc_disc_recv_msg(struct sk_buff *buf, struct tipc_bearer *b_ptr)
  * Reinitiates discovery process if discovery object has no associated nodes
  * and is either not currently searching or is searching at a slow rate
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void disc_update(struct link_req *req)
 =======
 static void disc_update(struct tipc_link_req *req)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void disc_update(struct tipc_link_req *req)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!req->num_nodes) {
 		if ((req->timer_intv == TIPC_LINK_REQ_INACTIVE) ||
@@ -350,12 +419,16 @@ static void disc_update(struct tipc_link_req *req)
  * tipc_disc_add_dest - increment set of discovered nodes
  * @req: ptr to link request structure
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_disc_add_dest(struct link_req *req)
 =======
 void tipc_disc_add_dest(struct tipc_link_req *req)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_disc_add_dest(struct tipc_link_req *req)
+>>>>>>> refs/remotes/origin/master
 {
 	req->num_nodes++;
 }
@@ -364,12 +437,16 @@ void tipc_disc_add_dest(struct tipc_link_req *req)
  * tipc_disc_remove_dest - decrement set of discovered nodes
  * @req: ptr to link request structure
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_disc_remove_dest(struct link_req *req)
 =======
 void tipc_disc_remove_dest(struct tipc_link_req *req)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void tipc_disc_remove_dest(struct tipc_link_req *req)
+>>>>>>> refs/remotes/origin/master
 {
 	req->num_nodes--;
 	disc_update(req);
@@ -379,12 +456,16 @@ void tipc_disc_remove_dest(struct tipc_link_req *req)
  * disc_send_msg - send link setup request message
  * @req: ptr to link request structure
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void disc_send_msg(struct link_req *req)
 =======
 static void disc_send_msg(struct tipc_link_req *req)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void disc_send_msg(struct tipc_link_req *req)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!req->bearer->blocked)
 		tipc_bearer_send(req->bearer, req->buf, &req->dest);
@@ -396,19 +477,26 @@ static void disc_send_msg(struct tipc_link_req *req)
  *
  * Called whenever a link setup request timer associated with a bearer expires.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void disc_timeout(struct link_req *req)
 =======
 static void disc_timeout(struct tipc_link_req *req)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void disc_timeout(struct tipc_link_req *req)
+>>>>>>> refs/remotes/origin/master
 {
 	int max_delay;
 
 	spin_lock_bh(&req->bearer->lock);
 
 	/* Stop searching if only desired node has been found */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tipc_node(req->domain) && req->num_nodes) {
 		req->timer_intv = TIPC_LINK_REQ_INACTIVE;
 		goto exit;
@@ -421,7 +509,10 @@ static void disc_timeout(struct tipc_link_req *req)
 	 * hold at fast polling rate if don't have any associated nodes,
 	 * otherwise hold at slow polling rate
 	 */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	disc_send_msg(req);
 
 	req->timer_intv *= 2;
@@ -445,6 +536,7 @@ exit:
  *
  * Returns 0 if successful, otherwise -errno.
  */
+<<<<<<< HEAD
 
 int tipc_disc_create(struct tipc_bearer *b_ptr,
 		     struct tipc_media_addr *dest, u32 dest_domain)
@@ -454,6 +546,12 @@ int tipc_disc_create(struct tipc_bearer *b_ptr,
 =======
 	struct tipc_link_req *req;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int tipc_disc_create(struct tipc_bearer *b_ptr, struct tipc_media_addr *dest,
+		     u32 dest_domain)
+{
+	struct tipc_link_req *req;
+>>>>>>> refs/remotes/origin/master
 
 	req = kmalloc(sizeof(*req), GFP_ATOMIC);
 	if (!req)
@@ -481,6 +579,7 @@ int tipc_disc_create(struct tipc_bearer *b_ptr,
  * tipc_disc_delete - destroy object sending periodic link setup requests
  * @req: ptr to link request structure
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 void tipc_disc_delete(struct link_req *req)
@@ -489,12 +588,19 @@ void tipc_disc_delete(struct link_req *req)
 	k_term_timer(&req->timer);
 	buf_discard(req->buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void tipc_disc_delete(struct tipc_link_req *req)
 {
 	k_cancel_timer(&req->timer);
 	k_term_timer(&req->timer);
 	kfree_skb(req->buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(req);
 }
 
+=======
+	kfree(req);
+}
+>>>>>>> refs/remotes/origin/master

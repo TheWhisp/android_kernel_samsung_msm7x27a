@@ -10,6 +10,7 @@
 /*
   LOCALS
 <<<<<<< HEAD
+<<<<<<< HEAD
   */
 #define DBG_MAGIC (0x47114711L)
 
@@ -31,6 +32,8 @@ static dword MaxDumpSize = 256 ;
 static dword MaxXlogSize = 2 + 128 ;
 static char  TraceFilter[DIVA_MAX_SELECTIVE_FILTER_LENGTH+1];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 #define DBG_MAGIC (0x47114711L)
 
@@ -51,11 +54,15 @@ void diva_mnt_internal_dprintf(dword drv_id, dword type, char *p, ...);
 static dword MaxDumpSize = 256;
 static dword MaxXlogSize = 2 + 128;
 static char  TraceFilter[DIVA_MAX_SELECTIVE_FILTER_LENGTH + 1];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int TraceFilterIdent   = -1;
 static int TraceFilterChannel = -1;
 
 typedef struct _diva_maint_client {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dword       sec;
   dword       usec;
@@ -95,6 +102,8 @@ static void diva_maint_trace_notify (void* user_context,
                                      void* xlog_buffer,
                                      int length);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword       sec;
 	dword       usec;
 	pDbgHandle  hDbg;
@@ -132,7 +141,10 @@ static void diva_maint_trace_notify(void *user_context,
 				    int Adapter,
 				    void *xlog_buffer,
 				    int length);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -143,15 +155,20 @@ typedef struct MSG_QUEUE {
 	byte	*Head;		/* first message in queue (if any)	*/
 	byte	*Tail;		/* first free position			*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	byte	*Wrap;		/* current wraparound position 		*/
 =======
 	byte	*Wrap;		/* current wraparound position		*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	byte	*Wrap;		/* current wraparound position		*/
+>>>>>>> refs/remotes/origin/master
 	dword	Count;		/* current no of bytes in queue		*/
 } MSG_QUEUE;
 
 typedef struct MSG_HEAD {
 	volatile dword	Size;		/* size of data following MSG_HEAD	*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	MSG_INCOMPLETE	0x8000	/* ored to Size until queueCompleteMsg 	*/
 } MSG_HEAD;
@@ -163,6 +180,8 @@ typedef struct MSG_HEAD {
 
 static void queueInit (MSG_QUEUE *Q, byte *Buffer, dword sizeBuffer) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	MSG_INCOMPLETE	0x8000	/* ored to Size until queueCompleteMsg	*/
 } MSG_HEAD;
 
@@ -172,11 +191,15 @@ static void queueInit (MSG_QUEUE *Q, byte *Buffer, dword sizeBuffer) {
 	((sizeof(MSG_HEAD) + size + sizeof(dword) - 1) & ~(sizeof(dword) - 1))
 
 static void queueInit(MSG_QUEUE *Q, byte *Buffer, dword sizeBuffer) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	Q->Size = sizeBuffer;
 	Q->Base = Q->Head = Q->Tail = Buffer;
 	Q->High = Buffer + sizeBuffer;
 	Q->Wrap = NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	Q->Count= 0;
 }
@@ -190,6 +213,8 @@ static byte *queueAllocMsg (MSG_QUEUE *Q, word size) {
    * As long as a message is marked incomplete queuePeekMsg() will return
    * a 'queue empty' condition when it reaches such a message.  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	Q->Count = 0;
 }
 
@@ -201,7 +226,10 @@ static byte *queueAllocMsg(MSG_QUEUE *Q, word size) {
 	 * This must be reset via queueCompleteMsg() after the message is filled.
 	 * As long as a message is marked incomplete queuePeekMsg() will return
 	 * a 'queue empty' condition when it reaches such a message.  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	MSG_HEAD *Msg;
 	word need = MSG_NEED(size);
@@ -213,10 +241,14 @@ static byte *queueAllocMsg(MSG_QUEUE *Q, word size) {
 		goto alloc; /* empty */
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (Q->Tail > Q->Head) {
 		if (Q->Tail + need <= Q->High) goto alloc; /* append */
 		if (Q->Base + need > Q->Head) {
@@ -243,16 +275,22 @@ alloc:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ((byte*)(Msg + 1));
 }
 
 static void queueFreeMsg (MSG_QUEUE *Q) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return ((byte *)(Msg + 1));
 }
 
 static void queueFreeMsg(MSG_QUEUE *Q) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Free the message at head of queue */
 
 	word size = ((MSG_HEAD *)Q->Head)->Size & ~MSG_INCOMPLETE;
@@ -271,16 +309,22 @@ static void queueFreeMsg(MSG_QUEUE *Q) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static byte *queuePeekMsg (MSG_QUEUE *Q, word *size) {
 	/* Show the first valid message in queue BUT DON'T free the message.
    * After looking on the message contents it can be freed queueFreeMsg()
    * or simply remain in message queue.  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static byte *queuePeekMsg(MSG_QUEUE *Q, word *size) {
 	/* Show the first valid message in queue BUT DON'T free the message.
 	 * After looking on the message contents it can be freed queueFreeMsg()
 	 * or simply remain in message queue.  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	MSG_HEAD *Msg = (MSG_HEAD *)Q->Head;
 
@@ -296,6 +340,7 @@ static byte *queuePeekMsg(MSG_QUEUE *Q, word *size) {
 /*
   Message queue header
 <<<<<<< HEAD
+<<<<<<< HEAD
   */
 static MSG_QUEUE*          dbg_queue;
 static byte*               dbg_base;
@@ -304,6 +349,11 @@ static byte*               dbg_base;
 static MSG_QUEUE *dbg_queue;
 static byte *dbg_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+static MSG_QUEUE *dbg_queue;
+static byte *dbg_base;
+>>>>>>> refs/remotes/origin/master
 static int                 external_dbg_queue;
 static diva_os_spin_lock_t dbg_q_lock;
 static diva_os_spin_lock_t dbg_adapter_lock;
@@ -313,6 +363,7 @@ static dword               start_sec;
 static dword               start_usec;
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	INTERFACE:
     Initialize run time queue structures.
@@ -381,6 +432,8 @@ int diva_maint_init (byte* base, unsigned long length, int do_init) {
 
   return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   INTERFACE:
   Initialize run time queue structures.
   base:    base of the message queue
@@ -447,11 +500,15 @@ int diva_maint_init(byte *base, unsigned long length, int do_init) {
 	}
 
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   INTERFACE:
+<<<<<<< HEAD
 <<<<<<< HEAD
     Finit at unload time
     return address of internal queue or zero if queue
@@ -482,6 +539,8 @@ void* diva_maint_finit (void) {
 
   return (ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   Finit at unload time
   return address of internal queue or zero if queue
   was external
@@ -510,11 +569,15 @@ void *diva_maint_finit(void) {
 	}
 
 	return (ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   INTERFACE:
+<<<<<<< HEAD
 <<<<<<< HEAD
     Return amount of messages in debug queue
   */
@@ -524,11 +587,17 @@ dword diva_dbg_q_length (void) {
 */
 dword diva_dbg_q_length(void) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Return amount of messages in debug queue
+*/
+dword diva_dbg_q_length(void) {
+>>>>>>> refs/remotes/origin/master
 	return (dbg_queue ? queueCount(dbg_queue)	: 0);
 }
 
 /*
   INTERFACE:
+<<<<<<< HEAD
 <<<<<<< HEAD
     Lock message queue and return the pointer to the first
     entry.
@@ -551,6 +620,8 @@ diva_dbg_entry_head_t* diva_maint_get_message (word* size,
 
   return (pmsg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   Lock message queue and return the pointer to the first
   entry.
 */
@@ -571,42 +642,58 @@ diva_dbg_entry_head_t *diva_maint_get_message(word *size,
 	}
 
 	return (pmsg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   INTERFACE:
+<<<<<<< HEAD
 <<<<<<< HEAD
     acknowledge last message and unlock queue
   */
 void diva_maint_ack_message (int do_release,
                              diva_os_spin_lock_magic_t* old_irql) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   acknowledge last message and unlock queue
 */
 void diva_maint_ack_message(int do_release,
 			    diva_os_spin_lock_magic_t *old_irql) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dbg_q_busy) {
 		return;
 	}
 	if (do_release) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		queueFreeMsg (dbg_queue);
 	}
 	dbg_q_busy = 0;
   diva_os_leave_spin_lock (&dbg_q_lock, old_irql, "read_ack");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		queueFreeMsg(dbg_queue);
 	}
 	dbg_q_busy = 0;
 	diva_os_leave_spin_lock(&dbg_q_lock, old_irql, "read_ack");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*
   INTERFACE:
+<<<<<<< HEAD
 <<<<<<< HEAD
     PRT COMP function used to register
     with MAINT adapter or log in compatibility
@@ -852,6 +939,8 @@ static void DI_format (int do_lock,
 	if ((!format) ||
 			((TraceFilter[0] != 0) && ((TraceFilterIdent < 0) || (TraceFilterChannel < 0)))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   PRT COMP function used to register
   with MAINT adapter or log in compatibility
   mode in case older driver version is connected too
@@ -1095,11 +1184,15 @@ static void DI_format(int do_lock,
 
 	if ((!format) ||
 	    ((TraceFilter[0] != 0) && ((TraceFilterIdent < 0) || (TraceFilterChannel < 0)))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   
   diva_os_get_time (&sec, &usec);
@@ -1233,6 +1326,8 @@ static void DI_format(int do_lock,
     diva_os_leave_spin_lock (&dbg_q_lock, &old_irql, "format");
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	diva_os_get_time(&sec, &usec);
 
@@ -1364,11 +1459,15 @@ static void DI_format(int do_lock,
 	if (do_lock) {
 		diva_os_leave_spin_lock(&dbg_q_lock, &old_irql, "format");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   Write driver ID and driver revision to callers buffer
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 int diva_get_driver_info (dword id, byte* data, int data_length) {
@@ -1495,6 +1594,8 @@ static int diva_get_idi_adapter_info (IDI_CALL request, dword* serial, dword* lo
 
   return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 int diva_get_driver_info(dword id, byte *data, int data_length) {
 	diva_os_spin_lock_magic_t old_irql;
@@ -1619,11 +1720,15 @@ static int diva_get_idi_adapter_info(IDI_CALL request, dword *serial, dword *log
 	*serial = sync_req.GetSerial.serial;
 
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   Register XDI adapter as MAINT compatible driver
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 void diva_mnt_add_xdi_adapter (const DESCRIPTOR* d) {
@@ -1788,6 +1893,8 @@ void diva_mnt_add_xdi_adapter (const DESCRIPTOR* d) {
 
 	diva_set_driver_dbg_mask (id, org_mask);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 void diva_mnt_add_xdi_adapter(const DESCRIPTOR *d) {
 	diva_os_spin_lock_magic_t old_irql, old_irql1;
@@ -1950,11 +2057,15 @@ void diva_mnt_add_xdi_adapter(const DESCRIPTOR *d) {
 	diva_os_leave_spin_lock(&dbg_adapter_lock, &old_irql1, "register");
 
 	diva_set_driver_dbg_mask(id, org_mask);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   De-Register XDI adapter
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 void diva_mnt_remove_xdi_adapter (const DESCRIPTOR* d) {
@@ -2271,6 +2382,8 @@ static word SuperTraceCreateReadReq (byte* P, const char* path) {
 
 	var_length = (byte)strlen (path);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 void diva_mnt_remove_xdi_adapter(const DESCRIPTOR *d) {
 	diva_os_spin_lock_magic_t old_irql, old_irql1;
@@ -2585,7 +2698,10 @@ static word SuperTraceCreateReadReq(byte *P, const char *path) {
 	byte *plen;
 
 	var_length = (byte)strlen(path);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*P++ = ESC;
 	plen = P++;
@@ -2596,16 +2712,21 @@ static word SuperTraceCreateReadReq(byte *P, const char *path) {
 	*P++ = 0x00; /* Variable Length */
 	*P++ = var_length;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy (P, path, var_length);
 =======
 	memcpy(P, path, var_length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(P, path, var_length);
+>>>>>>> refs/remotes/origin/master
 	P += var_length;
 	*plen = var_length + 0x06;
 
 	return ((word)(var_length + 0x08));
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void single_p (byte * P, word * PLength, byte Id) {
   P[(*PLength)++] = Id;
@@ -3035,6 +3156,8 @@ static void diva_maint_state_change_notify (void* user_context,
       break;
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void single_p(byte *P, word *PLength, byte Id) {
 	P[(*PLength)++] = Id;
 }
@@ -3462,13 +3585,17 @@ static void diva_maint_state_change_notify(void *user_context,
 		}
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   Receive trace information from the Management Interface and store it in the
   internal trace buffer with MSG_TYPE_MLOG as is, without any filtering.
   Event Filtering and formatting is done in  Management Interface self.
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 static void diva_maint_trace_notify (void* user_context,
@@ -3553,6 +3680,8 @@ static void diva_maint_trace_notify (void* user_context,
     }
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static void diva_maint_trace_notify(void *user_context,
 				    diva_strace_library_interface_t *hLib,
@@ -3635,13 +3764,17 @@ static void diva_maint_trace_notify(void *user_context,
 			diva_maint_wakeup_read();
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 /*
   Convert MAINT trace mask to management interface trace mask/work/facility and
   issue command to management interface
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 static void diva_change_management_debug_mask (diva_maint_client_t* pC, dword old_mask) {
@@ -3682,6 +3815,8 @@ void diva_mnt_internal_dprintf (dword drv_id, dword type, char* fmt, ...) {
 	va_start(ap, fmt);
   DI_format (0, (word)drv_id, (int)type, fmt, ap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static void diva_change_management_debug_mask(diva_maint_client_t *pC, dword old_mask) {
 	if (pC->request && pC->hDbg && pC->pIdiLib) {
@@ -3720,12 +3855,16 @@ void diva_mnt_internal_dprintf(dword drv_id, dword type, char *fmt, ...) {
 
 	va_start(ap, fmt);
 	DI_format(0, (word)drv_id, (int)type, fmt, ap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	va_end(ap);
 }
 
 /*
   Shutdown all adapters before driver removal
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 int diva_mnt_shutdown_xdi_adapters (void) {
@@ -3786,6 +3925,8 @@ int diva_mnt_shutdown_xdi_adapters (void) {
 
   return (fret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 int diva_mnt_shutdown_xdi_adapters(void) {
 	diva_os_spin_lock_magic_t old_irql, old_irql1;
@@ -3844,12 +3985,16 @@ int diva_mnt_shutdown_xdi_adapters(void) {
 	}
 
 	return (fret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
   Set/Read the trace filter used for selective tracing.
   Affects B- and Audio Tap trace mask at run time
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 int diva_set_trace_filter (int filter_length, const char* filter) {
@@ -3920,6 +4065,8 @@ static int diva_dbg_cmp_key (const char* ref, const char* key) {
 	while (*key && (*ref++ == *key++));
   return (!*key && !*ref);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 int diva_set_trace_filter(int filter_length, const char *filter) {
 	diva_os_spin_lock_magic_t old_irql, old_irql1;
@@ -3988,7 +4135,10 @@ int diva_get_trace_filter(int max_length, char *filter) {
 static int diva_dbg_cmp_key(const char *ref, const char *key) {
 	while (*key && (*ref++ == *key++));
 	return (!*key && !*ref);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -3996,6 +4146,7 @@ static int diva_dbg_cmp_key(const char *ref, const char *key) {
   all following characters are interpreted as command.
   Followings commands are available:
   - single, trace single call at time, independent from CPN/CiPN
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 static int diva_mnt_cmp_nmbr (const char* nmbr) {
@@ -4073,6 +4224,8 @@ static void diva_free_dma_descriptor (IDI_CALL request, int nr) {
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static int diva_mnt_cmp_nmbr(const char *nmbr) {
 	const char *ref = &TraceFilter[0];
@@ -4147,4 +4300,7 @@ static void diva_free_dma_descriptor(IDI_CALL request, int nr) {
 
 	(*request)((ENTITY *)pReq);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

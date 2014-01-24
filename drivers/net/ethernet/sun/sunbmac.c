@@ -212,7 +212,10 @@ static void bigmac_clean_rings(struct bigmac *bp)
 static void bigmac_init_rings(struct bigmac *bp, int from_irq)
 {
 	struct bmac_init_block *bb = bp->bmac_block;
+<<<<<<< HEAD
 	struct net_device *dev = bp->dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	gfp_t gfp_flags = GFP_KERNEL;
 
@@ -233,7 +236,10 @@ static void bigmac_init_rings(struct bigmac *bp, int from_irq)
 			continue;
 
 		bp->rx_skbs[i] = skb;
+<<<<<<< HEAD
 		skb->dev = dev;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Because we reserve afterwards. */
 		skb_put(skb, ETH_FRAME_LEN);
@@ -838,7 +844,10 @@ static void bigmac_rx(struct bigmac *bp)
 					 RX_BUF_ALLOC_SIZE - 34,
 					 DMA_FROM_DEVICE);
 			bp->rx_skbs[elem] = new_skb;
+<<<<<<< HEAD
 			new_skb->dev = bp->dev;
+=======
+>>>>>>> refs/remotes/origin/master
 			skb_put(new_skb, ETH_FRAME_LEN);
 			skb_reserve(new_skb, 34);
 			this->rx_addr =
@@ -998,7 +1007,10 @@ static void bigmac_set_multicast(struct net_device *dev)
 	struct bigmac *bp = netdev_priv(dev);
 	void __iomem *bregs = bp->bregs;
 	struct netdev_hw_addr *ha;
+<<<<<<< HEAD
 	int i;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 tmp, crc;
 
 	/* Disable the receiver.  The bit self-clears when
@@ -1020,10 +1032,14 @@ static void bigmac_set_multicast(struct net_device *dev)
 		tmp |= BIGMAC_RXCFG_PMISC;
 		sbus_writel(tmp, bregs + BMAC_RXCFG);
 	} else {
+<<<<<<< HEAD
 		u16 hash_table[4];
 
 		for (i = 0; i < 4; i++)
 			hash_table[i] = 0;
+=======
+		u16 hash_table[4] = { 0 };
+>>>>>>> refs/remotes/origin/master
 
 		netdev_for_each_mc_addr(ha, dev) {
 			crc = ether_crc_le(6, ha->addr);
@@ -1045,8 +1061,13 @@ static void bigmac_set_multicast(struct net_device *dev)
 /* Ethtool support... */
 static void bigmac_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, "sunbmac");
 	strcpy(info->version, "2.0");
+=======
+	strlcpy(info->driver, "sunbmac", sizeof(info->driver));
+	strlcpy(info->version, "2.0", sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 bigmac_get_link(struct net_device *dev)
@@ -1077,8 +1098,13 @@ static const struct net_device_ops bigmac_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit bigmac_ether_init(struct platform_device *op,
 				       struct platform_device *qec_op)
+=======
+static int bigmac_ether_init(struct platform_device *op,
+			     struct platform_device *qec_op)
+>>>>>>> refs/remotes/origin/master
 {
 	static int version_printed;
 	struct net_device *dev;
@@ -1172,10 +1198,15 @@ static int __devinit bigmac_ether_init(struct platform_device *op,
 	bp->bmac_block = dma_alloc_coherent(&bp->bigmac_op->dev,
 					    PAGE_SIZE,
 					    &bp->bblock_dvma, GFP_ATOMIC);
+<<<<<<< HEAD
 	if (bp->bmac_block == NULL || bp->bblock_dvma == 0) {
 		printk(KERN_ERR "BIGMAC: Cannot allocate consistent DMA.\n");
 		goto fail_and_cleanup;
 	}
+=======
+	if (bp->bmac_block == NULL || bp->bblock_dvma == 0)
+		goto fail_and_cleanup;
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the board revision of this BigMAC. */
 	bp->board_rev = of_getintprop_default(bp->bigmac_op->dev.of_node,
@@ -1236,7 +1267,11 @@ fail_and_cleanup:
 /* QEC can be the parent of either QuadEthernet or a BigMAC.  We want
  * the latter.
  */
+<<<<<<< HEAD
 static int __devinit bigmac_sbus_probe(struct platform_device *op)
+=======
+static int bigmac_sbus_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *parent = op->dev.parent;
 	struct platform_device *qec_op;
@@ -1246,9 +1281,15 @@ static int __devinit bigmac_sbus_probe(struct platform_device *op)
 	return bigmac_ether_init(op, qec_op);
 }
 
+<<<<<<< HEAD
 static int __devexit bigmac_sbus_remove(struct platform_device *op)
 {
 	struct bigmac *bp = dev_get_drvdata(&op->dev);
+=======
+static int bigmac_sbus_remove(struct platform_device *op)
+{
+	struct bigmac *bp = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	struct device *parent = op->dev.parent;
 	struct net_device *net_dev = bp->dev;
 	struct platform_device *qec_op;
@@ -1268,8 +1309,11 @@ static int __devexit bigmac_sbus_remove(struct platform_device *op)
 
 	free_netdev(net_dev);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1289,7 +1333,11 @@ static struct platform_driver bigmac_sbus_driver = {
 		.of_match_table = bigmac_sbus_match,
 	},
 	.probe		= bigmac_sbus_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bigmac_sbus_remove),
+=======
+	.remove		= bigmac_sbus_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(bigmac_sbus_driver);

@@ -9,12 +9,17 @@
  *	the Free Software Foundation; either version 2 of the License, or
  *	(at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  */
 =======
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/device.h>
 #include <linux/usb/video.h>
@@ -28,16 +33,23 @@
  * the runtime footprint, and giving us at least some parts of what
  * a "gcc --combine ... part1.c part2.c part3.c ... " build would.
  */
+<<<<<<< HEAD
 #include "composite.c"
 #include "usbstring.c"
 #include "config.c"
 #include "epautoconf.c"
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include "uvc_queue.c"
 #include "uvc_video.c"
 #include "uvc_v4l2.c"
 #include "f_uvc.c"
 
+<<<<<<< HEAD
+=======
+USB_GADGET_COMPOSITE_OPTIONS();
+>>>>>>> refs/remotes/origin/master
 /* --------------------------------------------------------------------------
  * Device descriptor
  */
@@ -52,6 +64,7 @@ static char webcam_config_label[] = "Video";
 
 /* string IDs are assigned dynamically */
 
+<<<<<<< HEAD
 #define STRING_MANUFACTURER_IDX		0
 #define STRING_PRODUCT_IDX		1
 #define STRING_DESCRIPTION_IDX		2
@@ -59,6 +72,14 @@ static char webcam_config_label[] = "Video";
 static struct usb_string webcam_strings[] = {
 	[STRING_MANUFACTURER_IDX].s = webcam_vendor_label,
 	[STRING_PRODUCT_IDX].s = webcam_product_label,
+=======
+#define STRING_DESCRIPTION_IDX		USB_GADGET_FIRST_AVAIL_IDX
+
+static struct usb_string webcam_strings[] = {
+	[USB_GADGET_MANUFACTURER_IDX].s = webcam_vendor_label,
+	[USB_GADGET_PRODUCT_IDX].s = webcam_product_label,
+	[USB_GADGET_SERIAL_IDX].s = "",
+>>>>>>> refs/remotes/origin/master
 	[STRING_DESCRIPTION_IDX].s = webcam_config_label,
 	{  }
 };
@@ -277,7 +298,19 @@ static const struct uvc_color_matching_descriptor uvc_color_matching = {
 	.bMatrixCoefficients	= 4,
 };
 
+<<<<<<< HEAD
 static const struct uvc_descriptor_header * const uvc_control_cls[] = {
+=======
+static const struct uvc_descriptor_header * const uvc_fs_control_cls[] = {
+	(const struct uvc_descriptor_header *) &uvc_control_header,
+	(const struct uvc_descriptor_header *) &uvc_camera_terminal,
+	(const struct uvc_descriptor_header *) &uvc_processing,
+	(const struct uvc_descriptor_header *) &uvc_output_terminal,
+	NULL,
+};
+
+static const struct uvc_descriptor_header * const uvc_ss_control_cls[] = {
+>>>>>>> refs/remotes/origin/master
 	(const struct uvc_descriptor_header *) &uvc_control_header,
 	(const struct uvc_descriptor_header *) &uvc_camera_terminal,
 	(const struct uvc_descriptor_header *) &uvc_processing,
@@ -309,6 +342,21 @@ static const struct uvc_descriptor_header * const uvc_hs_streaming_cls[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
+=======
+static const struct uvc_descriptor_header * const uvc_ss_streaming_cls[] = {
+	(const struct uvc_descriptor_header *) &uvc_input_header,
+	(const struct uvc_descriptor_header *) &uvc_format_yuv,
+	(const struct uvc_descriptor_header *) &uvc_frame_yuv_360p,
+	(const struct uvc_descriptor_header *) &uvc_frame_yuv_720p,
+	(const struct uvc_descriptor_header *) &uvc_format_mjpg,
+	(const struct uvc_descriptor_header *) &uvc_frame_mjpg_360p,
+	(const struct uvc_descriptor_header *) &uvc_frame_mjpg_720p,
+	(const struct uvc_descriptor_header *) &uvc_color_matching,
+	NULL,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* --------------------------------------------------------------------------
  * USB configuration
  */
@@ -316,8 +364,14 @@ static const struct uvc_descriptor_header * const uvc_hs_streaming_cls[] = {
 static int __init
 webcam_config_bind(struct usb_configuration *c)
 {
+<<<<<<< HEAD
 	return uvc_bind_config(c, uvc_control_cls, uvc_fs_streaming_cls,
 			       uvc_hs_streaming_cls);
+=======
+	return uvc_bind_config(c, uvc_fs_control_cls, uvc_ss_control_cls,
+		uvc_fs_streaming_cls, uvc_hs_streaming_cls,
+		uvc_ss_streaming_cls);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_configuration webcam_config_driver = {
@@ -325,7 +379,11 @@ static struct usb_configuration webcam_config_driver = {
 	.bConfigurationValue	= 1,
 	.iConfiguration		= 0, /* dynamic */
 	.bmAttributes		= USB_CONFIG_ATT_SELFPOWER,
+<<<<<<< HEAD
 	.bMaxPower		= CONFIG_USB_GADGET_VBUS_DRAW / 2,
+=======
+	.MaxPower		= CONFIG_USB_GADGET_VBUS_DRAW,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int /* __init_or_exit */
@@ -342,6 +400,7 @@ webcam_bind(struct usb_composite_dev *cdev)
 	/* Allocate string descriptor numbers ... note that string contents
 	 * can be overridden by the composite_dev glue.
 	 */
+<<<<<<< HEAD
 	if ((ret = usb_string_id(cdev)) < 0)
 		goto error;
 	webcam_strings[STRING_MANUFACTURER_IDX].id = ret;
@@ -356,12 +415,27 @@ webcam_bind(struct usb_composite_dev *cdev)
 		goto error;
 	webcam_strings[STRING_DESCRIPTION_IDX].id = ret;
 	webcam_config_driver.iConfiguration = ret;
+=======
+	ret = usb_string_ids_tab(cdev, webcam_strings);
+	if (ret < 0)
+		goto error;
+	webcam_device_descriptor.iManufacturer =
+		webcam_strings[USB_GADGET_MANUFACTURER_IDX].id;
+	webcam_device_descriptor.iProduct =
+		webcam_strings[USB_GADGET_PRODUCT_IDX].id;
+	webcam_config_driver.iConfiguration =
+		webcam_strings[STRING_DESCRIPTION_IDX].id;
+>>>>>>> refs/remotes/origin/master
 
 	/* Register our configuration. */
 	if ((ret = usb_add_config(cdev, &webcam_config_driver,
 					webcam_config_bind)) < 0)
 		goto error;
 
+<<<<<<< HEAD
+=======
+	usb_composite_overwrite_options(cdev, &coverwrite);
+>>>>>>> refs/remotes/origin/master
 	INFO(cdev, "Webcam Video Gadget\n");
 	return 0;
 
@@ -374,6 +448,7 @@ error:
  * Driver
  */
 
+<<<<<<< HEAD
 static struct usb_composite_driver webcam_driver = {
 	.name		= "g_webcam",
 	.dev		= &webcam_device_descriptor,
@@ -382,13 +457,25 @@ static struct usb_composite_driver webcam_driver = {
 =======
 	.max_speed	= USB_SPEED_HIGH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __refdata struct usb_composite_driver webcam_driver = {
+	.name		= "g_webcam",
+	.dev		= &webcam_device_descriptor,
+	.strings	= webcam_device_strings,
+	.max_speed	= USB_SPEED_SUPER,
+	.bind		= webcam_bind,
+>>>>>>> refs/remotes/origin/master
 	.unbind		= webcam_unbind,
 };
 
 static int __init
 webcam_init(void)
 {
+<<<<<<< HEAD
 	return usb_composite_probe(&webcam_driver, webcam_bind);
+=======
+	return usb_composite_probe(&webcam_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit

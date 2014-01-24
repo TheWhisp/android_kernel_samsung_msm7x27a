@@ -15,12 +15,17 @@
 #include <linux/seqlock.h>
 #include <linux/nodemask.h>
 #include <linux/pageblock-flags.h>
+<<<<<<< HEAD
 #include <generated/bounds.h>
 <<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/page-flags-layout.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 
 /* Free memory management - zoned buddy allocator.  */
@@ -34,11 +39,16 @@
 /*
  * PAGE_ALLOC_COSTLY_ORDER is the order at which allocations are deemed
  * costly to service.  That is between allocation orders which should
+<<<<<<< HEAD
  * coelesce naturally under reasonable reclaim pressure and those which
+=======
+ * coalesce naturally under reasonable reclaim pressure and those which
+>>>>>>> refs/remotes/origin/master
  * will not.
  */
 #define PAGE_ALLOC_COSTLY_ORDER 3
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MIGRATE_UNMOVABLE     0
 #define MIGRATE_RECLAIMABLE   1
@@ -48,6 +58,8 @@
 #define MIGRATE_ISOLATE       4 /* can't allocate from here */
 #define MIGRATE_TYPES         5
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum {
 	MIGRATE_UNMOVABLE,
 	MIGRATE_RECLAIMABLE,
@@ -70,11 +82,18 @@ enum {
 	 */
 	MIGRATE_CMA,
 #endif
+<<<<<<< HEAD
 	MIGRATE_ISOLATE,	/* can't allocate from here */
+=======
+#ifdef CONFIG_MEMORY_ISOLATION
+	MIGRATE_ISOLATE,	/* can't allocate from here */
+#endif
+>>>>>>> refs/remotes/origin/master
 	MIGRATE_TYPES
 };
 
 #ifdef CONFIG_CMA
+<<<<<<< HEAD
 bool is_cma_pageblock(struct page *page);
 #  define is_migrate_cma(migratetype) unlikely((migratetype) == MIGRATE_CMA)
 #  define cma_wmark_pages(zone)	zone->min_cma_pages
@@ -84,6 +103,12 @@ bool is_cma_pageblock(struct page *page);
 #  define cma_wmark_pages(zone) 0
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#  define is_migrate_cma(migratetype) unlikely((migratetype) == MIGRATE_CMA)
+#else
+#  define is_migrate_cma(migratetype) false
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define for_each_migratetype_order(order, type) \
 	for (order = 0; order < MAX_ORDER; order++) \
@@ -121,6 +146,10 @@ struct zone_padding {
 enum zone_stat_item {
 	/* First 128 byte cacheline (assuming 64 bit words) */
 	NR_FREE_PAGES,
+<<<<<<< HEAD
+=======
+	NR_ALLOC_BATCH,
+>>>>>>> refs/remotes/origin/master
 	NR_LRU_BASE,
 	NR_INACTIVE_ANON = NR_LRU_BASE, /* must match order of LRU_[IN]ACTIVE */
 	NR_ACTIVE_ANON,		/*  "     "     "   "       "         */
@@ -143,9 +172,13 @@ enum zone_stat_item {
 	NR_BOUNCE,
 	NR_VMSCAN_WRITE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
+>>>>>>> refs/remotes/origin/master
 	NR_WRITEBACK_TEMP,	/* Writeback using temporary buffers */
 	NR_ISOLATED_ANON,	/* Temporary isolated pages from anon lru */
 	NR_ISOLATED_FILE,	/* Temporary isolated pages from file lru */
@@ -161,6 +194,10 @@ enum zone_stat_item {
 	NUMA_OTHER,		/* allocation from other node */
 #endif
 	NR_ANON_TRANSPARENT_HUGEPAGES,
+<<<<<<< HEAD
+=======
+	NR_FREE_CMA_PAGES,
+>>>>>>> refs/remotes/origin/master
 	NR_VM_ZONE_STAT_ITEMS };
 
 /*
@@ -186,6 +223,7 @@ enum lru_list {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define for_each_lru(l) for (l = 0; l < NR_LRU_LISTS; l++)
 
 #define for_each_evictable_lru(l) for (l = 0; l <= LRU_ACTIVE_FILE; l++)
@@ -206,6 +244,8 @@ static inline int is_unevictable_lru(enum lru_list l)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define for_each_lru(lru) for (lru = 0; lru < NR_LRU_LISTS; lru++)
 
 #define for_each_evictable_lru(lru) for (lru = 0; lru <= LRU_ACTIVE_FILE; lru++)
@@ -225,13 +265,36 @@ static inline int is_unevictable_lru(enum lru_list lru)
 	return (lru == LRU_UNEVICTABLE);
 }
 
+<<<<<<< HEAD
 struct lruvec {
 	struct list_head lists[NR_LRU_LISTS];
+=======
+struct zone_reclaim_stat {
+	/*
+	 * The pageout code in vmscan.c keeps track of how many of the
+	 * mem/swap backed and file backed pages are referenced.
+	 * The higher the rotated/scanned ratio, the more valuable
+	 * that cache is.
+	 *
+	 * The anon LRU stats live in [0], file LRU stats in [1]
+	 */
+	unsigned long		recent_rotated[2];
+	unsigned long		recent_scanned[2];
+};
+
+struct lruvec {
+	struct list_head lists[NR_LRU_LISTS];
+	struct zone_reclaim_stat reclaim_stat;
+#ifdef CONFIG_MEMCG
+	struct zone *zone;
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Mask used at gathering information at once (see memcontrol.c) */
 #define LRU_ALL_FILE (BIT(LRU_INACTIVE_FILE) | BIT(LRU_ACTIVE_FILE))
 #define LRU_ALL_ANON (BIT(LRU_INACTIVE_ANON) | BIT(LRU_ACTIVE_ANON))
+<<<<<<< HEAD
 #define LRU_ALL_EVICTABLE (LRU_ALL_FILE | LRU_ALL_ANON)
 #define LRU_ALL	     ((1 << NR_LRU_LISTS) - 1)
 
@@ -246,6 +309,18 @@ struct lruvec {
 #define ISOLATE_UNMAPPED	((__force isolate_mode_t)0x8)
 /* Isolate for asynchronous migration */
 #define ISOLATE_ASYNC_MIGRATE	((__force isolate_mode_t)0x10)
+=======
+#define LRU_ALL	     ((1 << NR_LRU_LISTS) - 1)
+
+/* Isolate clean file */
+#define ISOLATE_CLEAN		((__force isolate_mode_t)0x1)
+/* Isolate unmapped file */
+#define ISOLATE_UNMAPPED	((__force isolate_mode_t)0x2)
+/* Isolate for asynchronous migration */
+#define ISOLATE_ASYNC_MIGRATE	((__force isolate_mode_t)0x4)
+/* Isolate unevictable pages */
+#define ISOLATE_UNEVICTABLE	((__force isolate_mode_t)0x8)
+>>>>>>> refs/remotes/origin/master
 
 /* LRU Isolation modes. */
 typedef unsigned __bitwise__ isolate_mode_t;
@@ -336,6 +411,7 @@ enum zone_type {
 
 #ifndef __GENERATING_BOUNDS_H
 
+<<<<<<< HEAD
 /*
  * When a memory allocation must conform to specific limitations (such
  * as being suitable for DMA) the caller will pass in hints to the
@@ -367,6 +443,8 @@ struct zone_reclaim_stat {
 	unsigned long		recent_scanned[2];
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct zone {
 	/* Fields commonly accessed by the page allocator */
 
@@ -391,14 +469,20 @@ struct zone {
 	unsigned long		lowmem_reserve[MAX_NR_ZONES];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This is a per-zone reserve of pages that should not be
 	 * considered dirtyable memory.
 	 */
 	unsigned long		dirty_balance_reserve;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NUMA
 	int node;
 	/*
@@ -412,11 +496,23 @@ struct zone {
 	 * free areas of different sizes
 	 */
 	spinlock_t		lock;
+<<<<<<< HEAD
 	int                     all_unreclaimable; /* All pages pinned */
+=======
+#if defined CONFIG_COMPACTION || defined CONFIG_CMA
+	/* Set to true when the PG_migrate_skip bits should be cleared */
+	bool			compact_blockskip_flush;
+
+	/* pfns where compaction scanners should start */
+	unsigned long		compact_cached_free_pfn;
+	unsigned long		compact_cached_migrate_pfn;
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MEMORY_HOTPLUG
 	/* see spanned/present_pages for more description */
 	seqlock_t		span_seqlock;
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_CMA
@@ -427,6 +523,8 @@ struct zone {
 	unsigned long		min_cma_pages;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct free_area	free_area[MAX_ORDER];
 
 #ifndef CONFIG_SPARSEMEM
@@ -446,14 +544,19 @@ struct zone {
 	unsigned int		compact_considered;
 	unsigned int		compact_defer_shift;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int			compact_order_failed;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			compact_order_failed;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	ZONE_PADDING(_pad1_)
 
 	/* Fields commonly accessed by the page reclaim scanner */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spinlock_t		lru_lock;	
 	struct zone_lru {
@@ -465,6 +568,10 @@ struct zone {
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	struct zone_reclaim_stat reclaim_stat;
+=======
+	spinlock_t		lru_lock;
+	struct lruvec		lruvec;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long		pages_scanned;	   /* since last reclaim */
 	unsigned long		flags;		   /* zone flags, see below */
@@ -518,6 +625,7 @@ struct zone {
 	unsigned long		zone_start_pfn;
 
 	/*
+<<<<<<< HEAD
 	 * zone_start_pfn, spanned_pages and present_pages are all
 	 * protected by span_seqlock.  It is a seqlock because it has
 	 * to be read outside of zone->lock, and it is done in the main
@@ -529,6 +637,58 @@ struct zone {
 	 */
 	unsigned long		spanned_pages;	/* total size, including holes */
 	unsigned long		present_pages;	/* amount of memory (excluding holes) */
+=======
+	 * spanned_pages is the total pages spanned by the zone, including
+	 * holes, which is calculated as:
+	 * 	spanned_pages = zone_end_pfn - zone_start_pfn;
+	 *
+	 * present_pages is physical pages existing within the zone, which
+	 * is calculated as:
+	 *	present_pages = spanned_pages - absent_pages(pages in holes);
+	 *
+	 * managed_pages is present pages managed by the buddy system, which
+	 * is calculated as (reserved_pages includes pages allocated by the
+	 * bootmem allocator):
+	 *	managed_pages = present_pages - reserved_pages;
+	 *
+	 * So present_pages may be used by memory hotplug or memory power
+	 * management logic to figure out unmanaged pages by checking
+	 * (present_pages - managed_pages). And managed_pages should be used
+	 * by page allocator and vm scanner to calculate all kinds of watermarks
+	 * and thresholds.
+	 *
+	 * Locking rules:
+	 *
+	 * zone_start_pfn and spanned_pages are protected by span_seqlock.
+	 * It is a seqlock because it has to be read outside of zone->lock,
+	 * and it is done in the main allocator path.  But, it is written
+	 * quite infrequently.
+	 *
+	 * The span_seq lock is declared along with zone->lock because it is
+	 * frequently read in proximity to zone->lock.  It's good to
+	 * give them a chance of being in the same cacheline.
+	 *
+	 * Write access to present_pages at runtime should be protected by
+	 * lock_memory_hotplug()/unlock_memory_hotplug().  Any reader who can't
+	 * tolerant drift of present_pages should hold memory hotplug lock to
+	 * get a stable value.
+	 *
+	 * Read access to managed_pages should be safe because it's unsigned
+	 * long. Write access to zone->managed_pages and totalram_pages are
+	 * protected by managed_page_count_lock at runtime. Idealy only
+	 * adjust_managed_page_count() should be used instead of directly
+	 * touching zone->managed_pages and totalram_pages.
+	 */
+	unsigned long		spanned_pages;
+	unsigned long		present_pages;
+	unsigned long		managed_pages;
+
+	/*
+	 * Number of MIGRATE_RESEVE page block. To maintain for just
+	 * optimization. Protected by zone->lock.
+	 */
+	int			nr_migrate_reserve_block;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * rarely used fields:
@@ -542,6 +702,16 @@ typedef enum {
 	ZONE_CONGESTED,			/* zone has many dirty pages backed by
 					 * a congested BDI
 					 */
+<<<<<<< HEAD
+=======
+	ZONE_TAIL_LRU_DIRTY,		/* reclaim scanning has recently found
+					 * many dirty file pages at the tail
+					 * of the LRU.
+					 */
+	ZONE_WRITEBACK,			/* reclaim scanning has recently found
+					 * many pages under writeback
+					 */
+>>>>>>> refs/remotes/origin/master
 } zone_flags_t;
 
 static inline void zone_set_flag(struct zone *zone, zone_flags_t flag)
@@ -564,6 +734,19 @@ static inline int zone_is_reclaim_congested(const struct zone *zone)
 	return test_bit(ZONE_CONGESTED, &zone->flags);
 }
 
+<<<<<<< HEAD
+=======
+static inline int zone_is_reclaim_dirty(const struct zone *zone)
+{
+	return test_bit(ZONE_TAIL_LRU_DIRTY, &zone->flags);
+}
+
+static inline int zone_is_reclaim_writeback(const struct zone *zone)
+{
+	return test_bit(ZONE_WRITEBACK, &zone->flags);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int zone_is_reclaim_locked(const struct zone *zone)
 {
 	return test_bit(ZONE_RECLAIM_LOCKED, &zone->flags);
@@ -574,11 +757,33 @@ static inline int zone_is_oom_locked(const struct zone *zone)
 	return test_bit(ZONE_OOM_LOCKED, &zone->flags);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 unsigned long zone_nr_free_pages(struct zone *zone);
 #else
 #define zone_nr_free_pages(zone) zone_page_state(zone, NR_FREE_PAGES)
 #endif /* CONFIG_SMP */
+=======
+static inline unsigned long zone_end_pfn(const struct zone *zone)
+{
+	return zone->zone_start_pfn + zone->spanned_pages;
+}
+
+static inline bool zone_spans_pfn(const struct zone *zone, unsigned long pfn)
+{
+	return zone->zone_start_pfn <= pfn && pfn < zone_end_pfn(zone);
+}
+
+static inline bool zone_is_initialized(struct zone *zone)
+{
+	return !!zone->wait_table;
+}
+
+static inline bool zone_is_empty(struct zone *zone)
+{
+	return zone->spanned_pages == 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The "priority" of VM scanning is how much of the queues we will scan in one
@@ -706,20 +911,28 @@ struct zonelist {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_POPULATES_NODE_MAP
 =======
 #ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
+>>>>>>> refs/remotes/origin/master
 struct node_active_region {
 	unsigned long start_pfn;
 	unsigned long end_pfn;
 	int nid;
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_ARCH_POPULATES_NODE_MAP */
 =======
 #endif /* CONFIG_HAVE_MEMBLOCK_NODE_MAP */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_HAVE_MEMBLOCK_NODE_MAP */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_DISCONTIGMEM
 /* The array of struct pages - for discontigmem use pgdat->lmem_map */
@@ -744,7 +957,11 @@ typedef struct pglist_data {
 	int nr_zones;
 #ifdef CONFIG_FLAT_NODE_MEM_MAP	/* means !SPARSEMEM */
 	struct page *node_mem_map;
+<<<<<<< HEAD
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR
+=======
+#ifdef CONFIG_MEMCG
+>>>>>>> refs/remotes/origin/master
 	struct page_cgroup *node_page_cgroup;
 #endif
 #endif
@@ -757,7 +974,14 @@ typedef struct pglist_data {
 	 * or node_spanned_pages stay constant.  Holding this will also
 	 * guarantee that any pfn_valid() stays that way.
 	 *
+<<<<<<< HEAD
 	 * Nests above zone->lock and zone->size_seqlock.
+=======
+	 * pgdat_resize_lock() and pgdat_resize_unlock() are provided to
+	 * manipulate node_size_lock without checking for CONFIG_MEMORY_HOTPLUG.
+	 *
+	 * Nests above zone->lock and zone->span_seqlock
+>>>>>>> refs/remotes/origin/master
 	 */
 	spinlock_t node_size_lock;
 #endif
@@ -766,10 +990,29 @@ typedef struct pglist_data {
 	unsigned long node_spanned_pages; /* total size of physical page
 					     range, including holes */
 	int node_id;
+<<<<<<< HEAD
 	wait_queue_head_t kswapd_wait;
 	struct task_struct *kswapd;	/* Protected by lock_memory_hotplug() */
 	int kswapd_max_order;
 	enum zone_type classzone_idx;
+=======
+	nodemask_t reclaim_nodes;	/* Nodes allowed to reclaim from */
+	wait_queue_head_t kswapd_wait;
+	wait_queue_head_t pfmemalloc_wait;
+	struct task_struct *kswapd;	/* Protected by lock_memory_hotplug() */
+	int kswapd_max_order;
+	enum zone_type classzone_idx;
+#ifdef CONFIG_NUMA_BALANCING
+	/* Lock serializing the migrate rate limiting window */
+	spinlock_t numabalancing_migrate_lock;
+
+	/* Rate limiting time interval */
+	unsigned long numabalancing_migrate_next_window;
+
+	/* Number of pages migrated during the rate limiting time interval */
+	unsigned long numabalancing_migrate_nr_pages;
+#endif
+>>>>>>> refs/remotes/origin/master
 } pg_data_t;
 
 #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
@@ -782,16 +1025,34 @@ typedef struct pglist_data {
 #define nid_page_nr(nid, pagenr) 	pgdat_page_nr(NODE_DATA(nid),(pagenr))
 
 #define node_start_pfn(nid)	(NODE_DATA(nid)->node_start_pfn)
+<<<<<<< HEAD
 
 #define node_end_pfn(nid) ({\
 	pg_data_t *__pgdat = NODE_DATA(nid);\
 	__pgdat->node_start_pfn + __pgdat->node_spanned_pages;\
 })
+=======
+#define node_end_pfn(nid) pgdat_end_pfn(NODE_DATA(nid))
+
+static inline unsigned long pgdat_end_pfn(pg_data_t *pgdat)
+{
+	return pgdat->node_start_pfn + pgdat->node_spanned_pages;
+}
+
+static inline bool pgdat_is_empty(pg_data_t *pgdat)
+{
+	return !pgdat->node_start_pfn && !pgdat->node_spanned_pages;
+}
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/memory_hotplug.h>
 
 extern struct mutex zonelists_mutex;
+<<<<<<< HEAD
 void build_all_zonelists(void *data);
+=======
+void build_all_zonelists(pg_data_t *pgdat, struct zone *zone);
+>>>>>>> refs/remotes/origin/master
 void wakeup_kswapd(struct zone *zone, int order, enum zone_type classzone_idx);
 bool zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 		int classzone_idx, int alloc_flags);
@@ -805,6 +1066,20 @@ extern int init_currently_empty_zone(struct zone *zone, unsigned long start_pfn,
 				     unsigned long size,
 				     enum memmap_context context);
 
+<<<<<<< HEAD
+=======
+extern void lruvec_init(struct lruvec *lruvec);
+
+static inline struct zone *lruvec_zone(struct lruvec *lruvec)
+{
+#ifdef CONFIG_MEMCG
+	return lruvec->zone;
+#else
+	return container_of(lruvec, struct zone, lruvec);
+#endif
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HAVE_MEMORY_PRESENT
 void memory_present(int nid, unsigned long start, unsigned long end);
 #else
@@ -836,10 +1111,14 @@ extern int movable_zone;
 static inline int zone_movable_is_highmem(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_HIGHMEM) && defined(CONFIG_ARCH_POPULATES_NODE_MAP)
 =======
 #if defined(CONFIG_HIGHMEM) && defined(CONFIG_HAVE_MEMBLOCK_NODE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_HIGHMEM) && defined(CONFIG_HAVE_MEMBLOCK_NODE_MAP)
+>>>>>>> refs/remotes/origin/master
 	return movable_zone == ZONE_HIGHMEM;
 #else
 	return 0;
@@ -856,11 +1135,14 @@ static inline int is_highmem_idx(enum zone_type idx)
 #endif
 }
 
+<<<<<<< HEAD
 static inline int is_normal_idx(enum zone_type idx)
 {
 	return (idx == ZONE_NORMAL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * is_highmem - helper function to quickly check if a struct zone is a 
  *              highmem zone or not.  This is an attempt to keep references
@@ -879,6 +1161,7 @@ static inline int is_highmem(struct zone *zone)
 #endif
 }
 
+<<<<<<< HEAD
 static inline int is_normal(struct zone *zone)
 {
 	return zone == zone->zone_pgdat->node_zones + ZONE_NORMAL;
@@ -902,6 +1185,8 @@ static inline int is_dma(struct zone *zone)
 #endif
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* These two functions are used to setup the per zone pages min values */
 struct ctl_table;
 int min_free_kbytes_sysctl_handler(struct ctl_table *, int,
@@ -1058,10 +1343,14 @@ static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
 
 #if !defined(CONFIG_HAVE_ARCH_EARLY_PFN_TO_NID) && \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	!defined(CONFIG_ARCH_POPULATES_NODE_MAP)
 =======
 	!defined(CONFIG_HAVE_MEMBLOCK_NODE_MAP)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	!defined(CONFIG_HAVE_MEMBLOCK_NODE_MAP)
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long early_pfn_to_nid(unsigned long pfn)
 {
 	return 0;
@@ -1080,8 +1369,11 @@ static inline unsigned long early_pfn_to_nid(unsigned long pfn)
  * PA_SECTION_SHIFT		physical address to/from section number
  * PFN_SECTION_SHIFT		pfn to/from section number
  */
+<<<<<<< HEAD
 #define SECTIONS_SHIFT		(MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PA_SECTION_SHIFT	(SECTION_SIZE_BITS)
 #define PFN_SECTION_SHIFT	(SECTION_SIZE_BITS - PAGE_SHIFT)
 
@@ -1122,7 +1414,11 @@ struct mem_section {
 
 	/* See declaration of similar field in struct zone */
 	unsigned long *pageblock_flags;
+<<<<<<< HEAD
 #ifdef CONFIG_CGROUP_MEM_RES_CTLR
+=======
+#ifdef CONFIG_MEMCG
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If !SPARSEMEM, pgdat doesn't have page_cgroup pointer. We use
 	 * section. (see memcontrol.h/page_cgroup.h about this.)
@@ -1130,6 +1426,13 @@ struct mem_section {
 	struct page_cgroup *page_cgroup;
 	unsigned long pad;
 #endif
+<<<<<<< HEAD
+=======
+	/*
+	 * WARNING: mem_section must be a power-of-2 in size for the
+	 * calculation and use of SECTION_ROOT_MASK to make sense.
+	 */
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_SPARSEMEM_EXTREME
@@ -1231,10 +1534,14 @@ static inline int pfn_present(unsigned long pfn)
 #define pfn_to_nid(pfn)		(0)
 #endif
 
+<<<<<<< HEAD
 #ifndef early_pfn_valid
 #define early_pfn_valid(pfn)	pfn_valid(pfn)
 #endif
 
+=======
+#define early_pfn_valid(pfn)	pfn_valid(pfn)
+>>>>>>> refs/remotes/origin/master
 void sparse_init(void);
 #else
 #define sparse_init()	do {} while (0)

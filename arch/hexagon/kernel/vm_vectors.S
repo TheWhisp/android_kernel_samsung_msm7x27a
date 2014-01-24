@@ -1,7 +1,11 @@
 /*
  * Event jump tables
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2012,2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -41,7 +45,11 @@ _K_VM_event_vector:
 	jump 1b;  /*  Reset  */
 	jump _K_enter_machcheck;
 	jump _K_enter_genex;
+<<<<<<< HEAD
 	jump 1b;  /*  3 Rsvd  */
+=======
+	jump _K_enter_debug;
+>>>>>>> refs/remotes/origin/master
 	jump 1b;  /*  4 Rsvd  */
 	jump _K_enter_trap0;
 	jump 1b;  /*  6 Rsvd  */

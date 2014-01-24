@@ -30,7 +30,11 @@
 
 #include <mach/gumstix.h>
 #include <mach/mfp-pxa25x.h>
+<<<<<<< HEAD
 #include <mach/pxafb.h>
+=======
+#include <linux/platform_data/video-pxafb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -177,10 +181,14 @@ static void am300_cleanup(struct broadsheetfb_par *par)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(IRQ_GPIO(RDY_GPIO_PIN), par);
 =======
 	free_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), par);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), par);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(gpios); i++)
 		gpio_free(gpios[i]);
@@ -245,10 +253,14 @@ static int am300_setup_irq(struct fb_info *info)
 	struct broadsheetfb_par *par = info->par;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(IRQ_GPIO(RDY_GPIO_PIN), am300_handle_irq,
 =======
 	ret = request_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), am300_handle_irq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(PXA_GPIO_TO_IRQ(RDY_GPIO_PIN), am300_handle_irq,
+>>>>>>> refs/remotes/origin/master
 				IRQF_DISABLED|IRQF_TRIGGER_RISING,
 				"AM300", par);
 	if (ret)

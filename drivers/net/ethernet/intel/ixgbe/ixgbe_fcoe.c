@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel 10 Gigabit PCI Express Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -38,7 +42,11 @@
 
 /**
  * ixgbe_fcoe_clear_ddp - clear the given ddp context
+<<<<<<< HEAD
  * @ddp - ptr to the ixgbe_fcoe_ddp
+=======
+ * @ddp: ptr to the ixgbe_fcoe_ddp
+>>>>>>> refs/remotes/origin/master
  *
  * Returns : none
  *
@@ -104,10 +112,17 @@ int ixgbe_fcoe_ddp_put(struct net_device *netdev, u16 xid)
 			udelay(100);
 	}
 	if (ddp->sgl)
+<<<<<<< HEAD
 		pci_unmap_sg(adapter->pdev, ddp->sgl, ddp->sgc,
 			     DMA_FROM_DEVICE);
 	if (ddp->pool) {
 		pci_pool_free(ddp->pool, ddp->udl, ddp->udp);
+=======
+		dma_unmap_sg(&adapter->pdev->dev, ddp->sgl, ddp->sgc,
+			     DMA_FROM_DEVICE);
+	if (ddp->pool) {
+		dma_pool_free(ddp->pool, ddp->udl, ddp->udp);
+>>>>>>> refs/remotes/origin/master
 		ddp->pool = NULL;
 	}
 
@@ -134,6 +149,10 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 	struct ixgbe_hw *hw;
 	struct ixgbe_fcoe *fcoe;
 	struct ixgbe_fcoe_ddp *ddp;
+<<<<<<< HEAD
+=======
+	struct ixgbe_fcoe_ddp_pool *ddp_pool;
+>>>>>>> refs/remotes/origin/master
 	struct scatterlist *sg;
 	unsigned int i, j, dmacount;
 	unsigned int len;
@@ -144,8 +163,11 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 	unsigned int thislen = 0;
 	u32 fcbuff, fcdmarw, fcfltrw, fcrxctl;
 	dma_addr_t addr = 0;
+<<<<<<< HEAD
 	struct pci_pool *pool;
 	unsigned int cpu;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!netdev || !sgl)
 		return 0;
@@ -162,11 +184,14 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 		return 0;
 
 	fcoe = &adapter->fcoe;
+<<<<<<< HEAD
 	if (!fcoe->pool) {
 		e_warn(drv, "xid=0x%x no ddp pool for fcoe\n", xid);
 		return 0;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ddp = &fcoe->ddp[xid];
 	if (ddp->sgl) {
 		e_err(drv, "xid 0x%x w/ non-null sgl=%p nents=%d\n",
@@ -175,6 +200,7 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 	}
 	ixgbe_fcoe_clear_ddp(ddp);
 
+<<<<<<< HEAD
 	/* setup dma from scsi command sgl */
 	dmacount = pci_map_sg(adapter->pdev, sgl, sgc, DMA_FROM_DEVICE);
 	if (dmacount == 0) {
@@ -186,11 +212,38 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 	cpu = get_cpu();
 	pool = *per_cpu_ptr(fcoe->pool, cpu);
 	ddp->udl = pci_pool_alloc(pool, GFP_ATOMIC, &ddp->udp);
+=======
+
+	if (!fcoe->ddp_pool) {
+		e_warn(drv, "No ddp_pool resources allocated\n");
+		return 0;
+	}
+
+	ddp_pool = per_cpu_ptr(fcoe->ddp_pool, get_cpu());
+	if (!ddp_pool->pool) {
+		e_warn(drv, "xid=0x%x no ddp pool for fcoe\n", xid);
+		goto out_noddp;
+	}
+
+	/* setup dma from scsi command sgl */
+	dmacount = dma_map_sg(&adapter->pdev->dev, sgl, sgc, DMA_FROM_DEVICE);
+	if (dmacount == 0) {
+		e_err(drv, "xid 0x%x DMA map error\n", xid);
+		goto out_noddp;
+	}
+
+	/* alloc the udl from per cpu ddp pool */
+	ddp->udl = dma_pool_alloc(ddp_pool->pool, GFP_ATOMIC, &ddp->udp);
+>>>>>>> refs/remotes/origin/master
 	if (!ddp->udl) {
 		e_err(drv, "failed allocated ddp context\n");
 		goto out_noddp_unmap;
 	}
+<<<<<<< HEAD
 	ddp->pool = pool;
+=======
+	ddp->pool = ddp_pool->pool;
+>>>>>>> refs/remotes/origin/master
 	ddp->sgl = sgl;
 	ddp->sgc = sgc;
 
@@ -201,7 +254,11 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 		while (len) {
 			/* max number of buffers allowed in one DDP context */
 			if (j >= IXGBE_BUFFCNT_MAX) {
+<<<<<<< HEAD
 				*per_cpu_ptr(fcoe->pcpu_noddp, cpu) += 1;
+=======
+				ddp_pool->noddp++;
+>>>>>>> refs/remotes/origin/master
 				goto out_noddp_free;
 			}
 
@@ -241,7 +298,11 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 	 */
 	if (lastsize == bufflen) {
 		if (j >= IXGBE_BUFFCNT_MAX) {
+<<<<<<< HEAD
 			*per_cpu_ptr(fcoe->pcpu_noddp_ext_buff, cpu) += 1;
+=======
+			ddp_pool->noddp_ext_buff++;
+>>>>>>> refs/remotes/origin/master
 			goto out_noddp_free;
 		}
 
@@ -293,11 +354,20 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
 	return 1;
 
 out_noddp_free:
+<<<<<<< HEAD
 	pci_pool_free(pool, ddp->udl, ddp->udp);
 	ixgbe_fcoe_clear_ddp(ddp);
 
 out_noddp_unmap:
 	pci_unmap_sg(adapter->pdev, sgl, sgc, DMA_FROM_DEVICE);
+=======
+	dma_pool_free(ddp->pool, ddp->udl, ddp->udp);
+	ixgbe_fcoe_clear_ddp(ddp);
+
+out_noddp_unmap:
+	dma_unmap_sg(&adapter->pdev->dev, sgl, sgc, DMA_FROM_DEVICE);
+out_noddp:
+>>>>>>> refs/remotes/origin/master
 	put_cpu();
 	return 0;
 }
@@ -409,7 +479,11 @@ int ixgbe_fcoe_ddp(struct ixgbe_adapter *adapter,
 		break;
 	/* unmap the sg list when FCPRSP is received */
 	case __constant_cpu_to_le32(IXGBE_RXDADV_STAT_FCSTAT_FCPRSP):
+<<<<<<< HEAD
 		pci_unmap_sg(adapter->pdev, ddp->sgl,
+=======
+		dma_unmap_sg(&adapter->pdev->dev, ddp->sgl,
+>>>>>>> refs/remotes/origin/master
 			     ddp->sgc, DMA_FROM_DEVICE);
 		ddp->err = ddp_err;
 		ddp->sgl = NULL;
@@ -539,6 +613,7 @@ int ixgbe_fso(struct ixgbe_ring *tx_ring,
 		first->gso_segs = DIV_ROUND_UP(skb->len - *hdr_len,
 					       skb_shinfo(skb)->gso_size);
 		first->bytecount += (first->gso_segs - 1) * *hdr_len;
+<<<<<<< HEAD
 		first->tx_flags |= IXGBE_TX_FLAGS_FSO;
 	}
 
@@ -548,6 +623,16 @@ int ixgbe_fso(struct ixgbe_ring *tx_ring,
 	/* mss_l4len_id: use 1 for FSO as TSO, no need for L4LEN */
 	mss_l4len_idx = skb_shinfo(skb)->gso_size << IXGBE_ADVTXD_MSS_SHIFT;
 	mss_l4len_idx |= 1 << IXGBE_ADVTXD_IDX_SHIFT;
+=======
+		first->tx_flags |= IXGBE_TX_FLAGS_TSO;
+	}
+
+	/* set flag indicating FCOE to ixgbe_tx_map call */
+	first->tx_flags |= IXGBE_TX_FLAGS_FCOE | IXGBE_TX_FLAGS_CC;
+
+	/* mss_l4len_id: use 0 for FSO as TSO, no need for L4LEN */
+	mss_l4len_idx = skb_shinfo(skb)->gso_size << IXGBE_ADVTXD_MSS_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	/* vlan_macip_lens: HEADLEN, MACLEN, VLAN tag */
 	vlan_macip_lens = skb_transport_offset(skb) +
@@ -563,6 +648,7 @@ int ixgbe_fso(struct ixgbe_ring *tx_ring,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void ixgbe_fcoe_ddp_pools_free(struct ixgbe_fcoe *fcoe)
 {
 	unsigned int cpu;
@@ -601,6 +687,39 @@ static void ixgbe_fcoe_ddp_pools_alloc(struct ixgbe_adapter *adapter)
 			return;
 		}
 	}
+=======
+static void ixgbe_fcoe_dma_pool_free(struct ixgbe_fcoe *fcoe, unsigned int cpu)
+{
+	struct ixgbe_fcoe_ddp_pool *ddp_pool;
+
+	ddp_pool = per_cpu_ptr(fcoe->ddp_pool, cpu);
+	if (ddp_pool->pool)
+		dma_pool_destroy(ddp_pool->pool);
+	ddp_pool->pool = NULL;
+}
+
+static int ixgbe_fcoe_dma_pool_alloc(struct ixgbe_fcoe *fcoe,
+				     struct device *dev,
+				     unsigned int cpu)
+{
+	struct ixgbe_fcoe_ddp_pool *ddp_pool;
+	struct dma_pool *pool;
+	char pool_name[32];
+
+	snprintf(pool_name, 32, "ixgbe_fcoe_ddp_%d", cpu);
+
+	pool = dma_pool_create(pool_name, dev, IXGBE_FCPTR_MAX,
+			       IXGBE_FCPTR_ALIGN, PAGE_SIZE);
+	if (!pool)
+		return -ENOMEM;
+
+	ddp_pool = per_cpu_ptr(fcoe->ddp_pool, cpu);
+	ddp_pool->pool = pool;
+	ddp_pool->noddp = 0;
+	ddp_pool->noddp_ext_buff = 0;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -613,6 +732,7 @@ static void ixgbe_fcoe_ddp_pools_alloc(struct ixgbe_adapter *adapter)
  */
 void ixgbe_configure_fcoe(struct ixgbe_adapter *adapter)
 {
+<<<<<<< HEAD
 	int i, fcoe_q, fcoe_i;
 	struct ixgbe_hw *hw = &adapter->hw;
 	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
@@ -693,10 +813,54 @@ void ixgbe_configure_fcoe(struct ixgbe_adapter *adapter)
 	/* send FIP frames to the first FCoE queue */
 	fcoe_i = f->mask;
 	fcoe_q = adapter->rx_ring[fcoe_i]->reg_idx;
+=======
+	struct ixgbe_ring_feature *fcoe = &adapter->ring_feature[RING_F_FCOE];
+	struct ixgbe_hw *hw = &adapter->hw;
+	int i, fcoe_q, fcoe_i;
+	u32 etqf;
+
+	/* Minimal functionality for FCoE requires at least CRC offloads */
+	if (!(adapter->netdev->features & NETIF_F_FCOE_CRC))
+		return;
+
+	/* Enable L2 EtherType filter for FCoE, needed for FCoE CRC and DDP */
+	etqf = ETH_P_FCOE | IXGBE_ETQF_FCOE | IXGBE_ETQF_FILTER_EN;
+	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED) {
+		etqf |= IXGBE_ETQF_POOL_ENABLE;
+		etqf |= VMDQ_P(0) << IXGBE_ETQF_POOL_SHIFT;
+	}
+	IXGBE_WRITE_REG(hw, IXGBE_ETQF(IXGBE_ETQF_FILTER_FCOE), etqf);
+	IXGBE_WRITE_REG(hw, IXGBE_ETQS(IXGBE_ETQF_FILTER_FCOE), 0);
+
+	/* leave registers un-configured if FCoE is disabled */
+	if (!(adapter->flags & IXGBE_FLAG_FCOE_ENABLED))
+		return;
+
+	/* Use one or more Rx queues for FCoE by redirection table */
+	for (i = 0; i < IXGBE_FCRETA_SIZE; i++) {
+		fcoe_i = fcoe->offset + (i % fcoe->indices);
+		fcoe_i &= IXGBE_FCRETA_ENTRY_MASK;
+		fcoe_q = adapter->rx_ring[fcoe_i]->reg_idx;
+		IXGBE_WRITE_REG(hw, IXGBE_FCRETA(i), fcoe_q);
+	}
+	IXGBE_WRITE_REG(hw, IXGBE_FCRECTL, IXGBE_FCRECTL_ENA);
+
+	/* Enable L2 EtherType filter for FIP */
+	etqf = ETH_P_FIP | IXGBE_ETQF_FILTER_EN;
+	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED) {
+		etqf |= IXGBE_ETQF_POOL_ENABLE;
+		etqf |= VMDQ_P(0) << IXGBE_ETQF_POOL_SHIFT;
+	}
+	IXGBE_WRITE_REG(hw, IXGBE_ETQF(IXGBE_ETQF_FILTER_FIP), etqf);
+
+	/* Send FIP frames to the first FCoE queue */
+	fcoe_q = adapter->rx_ring[fcoe->offset]->reg_idx;
+>>>>>>> refs/remotes/origin/master
 	IXGBE_WRITE_REG(hw, IXGBE_ETQS(IXGBE_ETQF_FILTER_FIP),
 			IXGBE_ETQS_QUEUE_EN |
 			(fcoe_q << IXGBE_ETQS_RX_QUEUE_SHIFT));
 
+<<<<<<< HEAD
 	IXGBE_WRITE_REG(hw, IXGBE_FCRXCTRL, IXGBE_FCRXCTRL_FCCRCBO |
 			(FC_FCOE_VER << IXGBE_FCRXCTRL_FCOEVER_SHIFT));
 	return;
@@ -715,30 +879,145 @@ out_ddp_pools:
 
 /**
  * ixgbe_cleanup_fcoe - release all fcoe ddp context resources
+=======
+	/* Configure FCoE Rx control */
+	IXGBE_WRITE_REG(hw, IXGBE_FCRXCTRL,
+			IXGBE_FCRXCTRL_FCCRCBO |
+			(FC_FCOE_VER << IXGBE_FCRXCTRL_FCOEVER_SHIFT));
+}
+
+/**
+ * ixgbe_free_fcoe_ddp_resources - release all fcoe ddp context resources
+>>>>>>> refs/remotes/origin/master
  * @adapter : ixgbe adapter
  *
  * Cleans up outstanding ddp context resources
  *
  * Returns : none
  */
+<<<<<<< HEAD
 void ixgbe_cleanup_fcoe(struct ixgbe_adapter *adapter)
 {
 	int i;
 	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
 
 	if (!fcoe->pool)
+=======
+void ixgbe_free_fcoe_ddp_resources(struct ixgbe_adapter *adapter)
+{
+	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
+	int cpu, i;
+
+	/* do nothing if no DDP pools were allocated */
+	if (!fcoe->ddp_pool)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	for (i = 0; i < IXGBE_FCOE_DDP_MAX; i++)
 		ixgbe_fcoe_ddp_put(adapter->netdev, i);
+<<<<<<< HEAD
+=======
+
+	for_each_possible_cpu(cpu)
+		ixgbe_fcoe_dma_pool_free(fcoe, cpu);
+
+>>>>>>> refs/remotes/origin/master
 	dma_unmap_single(&adapter->pdev->dev,
 			 fcoe->extra_ddp_buffer_dma,
 			 IXGBE_FCBUFF_MIN,
 			 DMA_FROM_DEVICE);
+<<<<<<< HEAD
 	free_percpu(fcoe->pcpu_noddp);
 	free_percpu(fcoe->pcpu_noddp_ext_buff);
 	kfree(fcoe->extra_ddp_buffer);
 	ixgbe_fcoe_ddp_pools_free(fcoe);
+=======
+	kfree(fcoe->extra_ddp_buffer);
+
+	fcoe->extra_ddp_buffer = NULL;
+	fcoe->extra_ddp_buffer_dma = 0;
+}
+
+/**
+ * ixgbe_setup_fcoe_ddp_resources - setup all fcoe ddp context resources
+ * @adapter: ixgbe adapter
+ *
+ * Sets up ddp context resouces
+ *
+ * Returns : 0 indicates success or -EINVAL on failure
+ */
+int ixgbe_setup_fcoe_ddp_resources(struct ixgbe_adapter *adapter)
+{
+	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
+	struct device *dev = &adapter->pdev->dev;
+	void *buffer;
+	dma_addr_t dma;
+	unsigned int cpu;
+
+	/* do nothing if no DDP pools were allocated */
+	if (!fcoe->ddp_pool)
+		return 0;
+
+	/* Extra buffer to be shared by all DDPs for HW work around */
+	buffer = kmalloc(IXGBE_FCBUFF_MIN, GFP_ATOMIC);
+	if (!buffer)
+		return -ENOMEM;
+
+	dma = dma_map_single(dev, buffer, IXGBE_FCBUFF_MIN, DMA_FROM_DEVICE);
+	if (dma_mapping_error(dev, dma)) {
+		e_err(drv, "failed to map extra DDP buffer\n");
+		kfree(buffer);
+		return -ENOMEM;
+	}
+
+	fcoe->extra_ddp_buffer = buffer;
+	fcoe->extra_ddp_buffer_dma = dma;
+
+	/* allocate pci pool for each cpu */
+	for_each_possible_cpu(cpu) {
+		int err = ixgbe_fcoe_dma_pool_alloc(fcoe, dev, cpu);
+		if (!err)
+			continue;
+
+		e_err(drv, "failed to alloc DDP pool on cpu:%d\n", cpu);
+		ixgbe_free_fcoe_ddp_resources(adapter);
+		return -ENOMEM;
+	}
+
+	return 0;
+}
+
+static int ixgbe_fcoe_ddp_enable(struct ixgbe_adapter *adapter)
+{
+	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
+
+	if (!(adapter->flags & IXGBE_FLAG_FCOE_CAPABLE))
+		return -EINVAL;
+
+	fcoe->ddp_pool = alloc_percpu(struct ixgbe_fcoe_ddp_pool);
+
+	if (!fcoe->ddp_pool) {
+		e_err(drv, "failed to allocate percpu DDP resources\n");
+		return -ENOMEM;
+	}
+
+	adapter->netdev->fcoe_ddp_xid = IXGBE_FCOE_DDP_MAX - 1;
+
+	return 0;
+}
+
+static void ixgbe_fcoe_ddp_disable(struct ixgbe_adapter *adapter)
+{
+	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
+
+	adapter->netdev->fcoe_ddp_xid = 0;
+
+	if (!fcoe->ddp_pool)
+		return;
+
+	free_percpu(fcoe->ddp_pool);
+	fcoe->ddp_pool = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -751,6 +1030,7 @@ void ixgbe_cleanup_fcoe(struct ixgbe_adapter *adapter)
  */
 int ixgbe_fcoe_enable(struct net_device *netdev)
 {
+<<<<<<< HEAD
 	int rc = -EINVAL;
 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
 	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
@@ -785,6 +1065,43 @@ int ixgbe_fcoe_enable(struct net_device *netdev)
 
 out_enable:
 	return rc;
+=======
+	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
+
+	atomic_inc(&fcoe->refcnt);
+
+	if (!(adapter->flags & IXGBE_FLAG_FCOE_CAPABLE))
+		return -EINVAL;
+
+	if (adapter->flags & IXGBE_FLAG_FCOE_ENABLED)
+		return -EINVAL;
+
+	e_info(drv, "Enabling FCoE offload features.\n");
+
+	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
+		e_warn(probe, "Enabling FCoE on PF will disable legacy VFs\n");
+
+	if (netif_running(netdev))
+		netdev->netdev_ops->ndo_stop(netdev);
+
+	/* Allocate per CPU memory to track DDP pools */
+	ixgbe_fcoe_ddp_enable(adapter);
+
+	/* enable FCoE and notify stack */
+	adapter->flags |= IXGBE_FLAG_FCOE_ENABLED;
+	netdev->features |= NETIF_F_FCOE_MTU;
+	netdev_features_change(netdev);
+
+	/* release existing queues and reallocate them */
+	ixgbe_clear_interrupt_scheme(adapter);
+	ixgbe_init_interrupt_scheme(adapter);
+
+	if (netif_running(netdev))
+		netdev->netdev_ops->ndo_open(netdev);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -797,6 +1114,7 @@ out_enable:
  */
 int ixgbe_fcoe_disable(struct net_device *netdev)
 {
+<<<<<<< HEAD
 	int rc = -EINVAL;
 	struct ixgbe_adapter *adapter = netdev_priv(netdev);
 	struct ixgbe_fcoe *fcoe = &adapter->fcoe;
@@ -824,14 +1142,44 @@ int ixgbe_fcoe_disable(struct net_device *netdev)
 	adapter->flags &= ~IXGBE_FLAG_FCOE_ENABLED;
 	adapter->ring_feature[RING_F_FCOE].indices = 0;
 	ixgbe_cleanup_fcoe(adapter);
+=======
+	struct ixgbe_adapter *adapter = netdev_priv(netdev);
+
+	if (!atomic_dec_and_test(&adapter->fcoe.refcnt))
+		return -EINVAL;
+
+	if (!(adapter->flags & IXGBE_FLAG_FCOE_ENABLED))
+		return -EINVAL;
+
+	e_info(drv, "Disabling FCoE offload features.\n");
+	if (netif_running(netdev))
+		netdev->netdev_ops->ndo_stop(netdev);
+
+	/* Free per CPU memory to track DDP pools */
+	ixgbe_fcoe_ddp_disable(adapter);
+
+	/* disable FCoE and notify stack */
+	adapter->flags &= ~IXGBE_FLAG_FCOE_ENABLED;
+	netdev->features &= ~NETIF_F_FCOE_MTU;
+
+	netdev_features_change(netdev);
+
+	/* release existing queues and reallocate them */
+	ixgbe_clear_interrupt_scheme(adapter);
+>>>>>>> refs/remotes/origin/master
 	ixgbe_init_interrupt_scheme(adapter);
 
 	if (netif_running(netdev))
 		netdev->netdev_ops->ndo_open(netdev);
+<<<<<<< HEAD
 	rc = 0;
 
 out_disable:
 	return rc;
+=======
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -960,3 +1308,21 @@ int ixgbe_fcoe_get_hbainfo(struct net_device *netdev,
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * ixgbe_fcoe_get_tc - get the current TC that fcoe is mapped to
+ * @adapter - pointer to the device adapter structure
+ *
+ * Return : TC that FCoE is mapped to
+ */
+u8 ixgbe_fcoe_get_tc(struct ixgbe_adapter *adapter)
+{
+#ifdef CONFIG_IXGBE_DCB
+	return netdev_get_prio_tc_map(adapter->netdev, adapter->fcoe.up);
+#else
+	return 0;
+#endif
+}
+>>>>>>> refs/remotes/origin/master

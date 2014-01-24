@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel(R) Gigabit Ethernet Linux driver
+<<<<<<< HEAD
   Copyright(c) 2007-2012 Intel Corporation.
+=======
+  Copyright(c) 2007-2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -33,6 +37,7 @@
 
 static s32  igb_phy_setup_autoneg(struct e1000_hw *hw);
 static void igb_phy_force_speed_duplex_setup(struct e1000_hw *hw,
+<<<<<<< HEAD
 					       u16 *phy_ctrl);
 static s32  igb_wait_autoneg(struct e1000_hw *hw);
 
@@ -55,6 +60,31 @@ static const u16 e1000_igp_2_cable_length_table[] =
 #define IGP02E1000_CABLE_LENGTH_TABLE_SIZE \
 		(sizeof(e1000_igp_2_cable_length_table) / \
 		 sizeof(e1000_igp_2_cable_length_table[0]))
+=======
+					     u16 *phy_ctrl);
+static s32  igb_wait_autoneg(struct e1000_hw *hw);
+static s32  igb_set_master_slave_mode(struct e1000_hw *hw);
+
+/* Cable length tables */
+static const u16 e1000_m88_cable_length_table[] = {
+	0, 50, 80, 110, 140, 140, E1000_CABLE_LENGTH_UNDEFINED };
+#define M88E1000_CABLE_LENGTH_TABLE_SIZE \
+	(sizeof(e1000_m88_cable_length_table) / \
+	sizeof(e1000_m88_cable_length_table[0]))
+
+static const u16 e1000_igp_2_cable_length_table[] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 3, 5, 8, 11, 13, 16, 18, 21,
+	0, 0, 0, 3, 6, 10, 13, 16, 19, 23, 26, 29, 32, 35, 38, 41,
+	6, 10, 14, 18, 22, 26, 30, 33, 37, 41, 44, 48, 51, 54, 58, 61,
+	21, 26, 31, 35, 40, 44, 49, 53, 57, 61, 65, 68, 72, 75, 79, 82,
+	40, 45, 51, 56, 61, 66, 70, 75, 79, 83, 87, 91, 94, 98, 101, 104,
+	60, 66, 72, 77, 82, 87, 92, 96, 100, 104, 108, 111, 114, 117, 119, 121,
+	83, 89, 95, 100, 105, 109, 113, 116, 119, 122, 124,
+	104, 109, 114, 118, 121, 124};
+#define IGP02E1000_CABLE_LENGTH_TABLE_SIZE \
+	(sizeof(e1000_igp_2_cable_length_table) / \
+	 sizeof(e1000_igp_2_cable_length_table[0]))
+>>>>>>> refs/remotes/origin/master
 
 /**
  *  igb_check_reset_block - Check if PHY reset is blocked
@@ -70,8 +100,12 @@ s32 igb_check_reset_block(struct e1000_hw *hw)
 
 	manc = rd32(E1000_MANC);
 
+<<<<<<< HEAD
 	return (manc & E1000_MANC_BLK_PHY_RST_ON_IDE) ?
 	       E1000_BLK_PHY_RESET : 0;
+=======
+	return (manc & E1000_MANC_BLK_PHY_RST_ON_IDE) ? E1000_BLK_PHY_RESET : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -148,8 +182,12 @@ s32 igb_read_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 *data)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Set up Op-code, Phy Address, and register offset in the MDI
+=======
+	/* Set up Op-code, Phy Address, and register offset in the MDI
+>>>>>>> refs/remotes/origin/master
 	 * Control register.  The MAC will take care of interfacing with the
 	 * PHY to retrieve the desired data.
 	 */
@@ -159,8 +197,12 @@ s32 igb_read_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 *data)
 
 	wr32(E1000_MDIC, mdic);
 
+<<<<<<< HEAD
 	/*
 	 * Poll the ready bit to see if the MDI read completed
+=======
+	/* Poll the ready bit to see if the MDI read completed
+>>>>>>> refs/remotes/origin/master
 	 * Increasing the time out as testing showed failures with
 	 * the lower time out
 	 */
@@ -206,8 +248,12 @@ s32 igb_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Set up Op-code, Phy Address, and register offset in the MDI
+=======
+	/* Set up Op-code, Phy Address, and register offset in the MDI
+>>>>>>> refs/remotes/origin/master
 	 * Control register.  The MAC will take care of interfacing with the
 	 * PHY to retrieve the desired data.
 	 */
@@ -218,8 +264,12 @@ s32 igb_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
 
 	wr32(E1000_MDIC, mdic);
 
+<<<<<<< HEAD
 	/*
 	 * Poll the ready bit to see if the MDI read completed
+=======
+	/* Poll the ready bit to see if the MDI read completed
+>>>>>>> refs/remotes/origin/master
 	 * Increasing the time out as testing showed failures with
 	 * the lower time out
 	 */
@@ -258,15 +308,24 @@ s32 igb_read_phy_reg_i2c(struct e1000_hw *hw, u32 offset, u16 *data)
 	struct e1000_phy_info *phy = &hw->phy;
 	u32 i, i2ccmd = 0;
 
+<<<<<<< HEAD
 
 	/*
 	 * Set up Op-code, Phy Address, and register address in the I2CCMD
+=======
+	/* Set up Op-code, Phy Address, and register address in the I2CCMD
+>>>>>>> refs/remotes/origin/master
 	 * register.  The MAC will take care of interfacing with the
 	 * PHY to retrieve the desired data.
 	 */
 	i2ccmd = ((offset << E1000_I2CCMD_REG_ADDR_SHIFT) |
+<<<<<<< HEAD
 	          (phy->addr << E1000_I2CCMD_PHY_ADDR_SHIFT) |
 	          (E1000_I2CCMD_OPCODE_READ));
+=======
+		  (phy->addr << E1000_I2CCMD_PHY_ADDR_SHIFT) |
+		  (E1000_I2CCMD_OPCODE_READ));
+>>>>>>> refs/remotes/origin/master
 
 	wr32(E1000_I2CCMD, i2ccmd);
 
@@ -316,15 +375,25 @@ s32 igb_write_phy_reg_i2c(struct e1000_hw *hw, u32 offset, u16 data)
 	/* Swap the data bytes for the I2C interface */
 	phy_data_swapped = ((data >> 8) & 0x00FF) | ((data << 8) & 0xFF00);
 
+<<<<<<< HEAD
 	/*
 	 * Set up Op-code, Phy Address, and register address in the I2CCMD
+=======
+	/* Set up Op-code, Phy Address, and register address in the I2CCMD
+>>>>>>> refs/remotes/origin/master
 	 * register.  The MAC will take care of interfacing with the
 	 * PHY to retrieve the desired data.
 	 */
 	i2ccmd = ((offset << E1000_I2CCMD_REG_ADDR_SHIFT) |
+<<<<<<< HEAD
 	          (phy->addr << E1000_I2CCMD_PHY_ADDR_SHIFT) |
 	          E1000_I2CCMD_OPCODE_WRITE |
 	          phy_data_swapped);
+=======
+		  (phy->addr << E1000_I2CCMD_PHY_ADDR_SHIFT) |
+		  E1000_I2CCMD_OPCODE_WRITE |
+		  phy_data_swapped);
+>>>>>>> refs/remotes/origin/master
 
 	wr32(E1000_I2CCMD, i2ccmd);
 
@@ -348,6 +417,133 @@ s32 igb_write_phy_reg_i2c(struct e1000_hw *hw, u32 offset, u16 data)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ *  igb_read_sfp_data_byte - Reads SFP module data.
+ *  @hw: pointer to the HW structure
+ *  @offset: byte location offset to be read
+ *  @data: read data buffer pointer
+ *
+ *  Reads one byte from SFP module data stored
+ *  in SFP resided EEPROM memory or SFP diagnostic area.
+ *  Function should be called with
+ *  E1000_I2CCMD_SFP_DATA_ADDR(<byte offset>) for SFP module database access
+ *  E1000_I2CCMD_SFP_DIAG_ADDR(<byte offset>) for SFP diagnostics parameters
+ *  access
+ **/
+s32 igb_read_sfp_data_byte(struct e1000_hw *hw, u16 offset, u8 *data)
+{
+	u32 i = 0;
+	u32 i2ccmd = 0;
+	u32 data_local = 0;
+
+	if (offset > E1000_I2CCMD_SFP_DIAG_ADDR(255)) {
+		hw_dbg("I2CCMD command address exceeds upper limit\n");
+		return -E1000_ERR_PHY;
+	}
+
+	/* Set up Op-code, EEPROM Address,in the I2CCMD
+	 * register. The MAC will take care of interfacing with the
+	 * EEPROM to retrieve the desired data.
+	 */
+	i2ccmd = ((offset << E1000_I2CCMD_REG_ADDR_SHIFT) |
+		  E1000_I2CCMD_OPCODE_READ);
+
+	wr32(E1000_I2CCMD, i2ccmd);
+
+	/* Poll the ready bit to see if the I2C read completed */
+	for (i = 0; i < E1000_I2CCMD_PHY_TIMEOUT; i++) {
+		udelay(50);
+		data_local = rd32(E1000_I2CCMD);
+		if (data_local & E1000_I2CCMD_READY)
+			break;
+	}
+	if (!(data_local & E1000_I2CCMD_READY)) {
+		hw_dbg("I2CCMD Read did not complete\n");
+		return -E1000_ERR_PHY;
+	}
+	if (data_local & E1000_I2CCMD_ERROR) {
+		hw_dbg("I2CCMD Error bit set\n");
+		return -E1000_ERR_PHY;
+	}
+	*data = (u8) data_local & 0xFF;
+
+	return 0;
+}
+
+/**
+ *  e1000_write_sfp_data_byte - Writes SFP module data.
+ *  @hw: pointer to the HW structure
+ *  @offset: byte location offset to write to
+ *  @data: data to write
+ *
+ *  Writes one byte to SFP module data stored
+ *  in SFP resided EEPROM memory or SFP diagnostic area.
+ *  Function should be called with
+ *  E1000_I2CCMD_SFP_DATA_ADDR(<byte offset>) for SFP module database access
+ *  E1000_I2CCMD_SFP_DIAG_ADDR(<byte offset>) for SFP diagnostics parameters
+ *  access
+ **/
+s32 e1000_write_sfp_data_byte(struct e1000_hw *hw, u16 offset, u8 data)
+{
+	u32 i = 0;
+	u32 i2ccmd = 0;
+	u32 data_local = 0;
+
+	if (offset > E1000_I2CCMD_SFP_DIAG_ADDR(255)) {
+		hw_dbg("I2CCMD command address exceeds upper limit\n");
+		return -E1000_ERR_PHY;
+	}
+	/* The programming interface is 16 bits wide
+	 * so we need to read the whole word first
+	 * then update appropriate byte lane and write
+	 * the updated word back.
+	 */
+	/* Set up Op-code, EEPROM Address,in the I2CCMD
+	 * register. The MAC will take care of interfacing
+	 * with an EEPROM to write the data given.
+	 */
+	i2ccmd = ((offset << E1000_I2CCMD_REG_ADDR_SHIFT) |
+		  E1000_I2CCMD_OPCODE_READ);
+	/* Set a command to read single word */
+	wr32(E1000_I2CCMD, i2ccmd);
+	for (i = 0; i < E1000_I2CCMD_PHY_TIMEOUT; i++) {
+		udelay(50);
+		/* Poll the ready bit to see if lastly
+		 * launched I2C operation completed
+		 */
+		i2ccmd = rd32(E1000_I2CCMD);
+		if (i2ccmd & E1000_I2CCMD_READY) {
+			/* Check if this is READ or WRITE phase */
+			if ((i2ccmd & E1000_I2CCMD_OPCODE_READ) ==
+			    E1000_I2CCMD_OPCODE_READ) {
+				/* Write the selected byte
+				 * lane and update whole word
+				 */
+				data_local = i2ccmd & 0xFF00;
+				data_local |= data;
+				i2ccmd = ((offset <<
+					E1000_I2CCMD_REG_ADDR_SHIFT) |
+					E1000_I2CCMD_OPCODE_WRITE | data_local);
+				wr32(E1000_I2CCMD, i2ccmd);
+			} else {
+				break;
+			}
+		}
+	}
+	if (!(i2ccmd & E1000_I2CCMD_READY)) {
+		hw_dbg("I2CCMD Write did not complete\n");
+		return -E1000_ERR_PHY;
+	}
+	if (i2ccmd & E1000_I2CCMD_ERROR) {
+		hw_dbg("I2CCMD Error bit set\n");
+		return -E1000_ERR_PHY;
+	}
+	return 0;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  *  igb_read_phy_reg_igp - Read igp PHY register
  *  @hw: pointer to the HW structure
  *  @offset: register offset to be read
@@ -370,8 +566,13 @@ s32 igb_read_phy_reg_igp(struct e1000_hw *hw, u32 offset, u16 *data)
 
 	if (offset > MAX_PHY_MULTI_PAGE_REG) {
 		ret_val = igb_write_phy_reg_mdic(hw,
+<<<<<<< HEAD
 						   IGP01E1000_PHY_PAGE_SELECT,
 						   (u16)offset);
+=======
+						 IGP01E1000_PHY_PAGE_SELECT,
+						 (u16)offset);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val) {
 			hw->phy.ops.release(hw);
 			goto out;
@@ -409,8 +610,13 @@ s32 igb_write_phy_reg_igp(struct e1000_hw *hw, u32 offset, u16 data)
 
 	if (offset > MAX_PHY_MULTI_PAGE_REG) {
 		ret_val = igb_write_phy_reg_mdic(hw,
+<<<<<<< HEAD
 						   IGP01E1000_PHY_PAGE_SELECT,
 						   (u16)offset);
+=======
+						 IGP01E1000_PHY_PAGE_SELECT,
+						 (u16)offset);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val) {
 			hw->phy.ops.release(hw);
 			goto out;
@@ -418,7 +624,11 @@ s32 igb_write_phy_reg_igp(struct e1000_hw *hw, u32 offset, u16 data)
 	}
 
 	ret_val = igb_write_phy_reg_mdic(hw, MAX_PHY_REG_ADDRESS & offset,
+<<<<<<< HEAD
 					   data);
+=======
+					 data);
+>>>>>>> refs/remotes/origin/master
 
 	hw->phy.ops.release(hw);
 
@@ -438,7 +648,10 @@ s32 igb_copper_link_setup_82580(struct e1000_hw *hw)
 	s32 ret_val;
 	u16 phy_data;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (phy->reset_disable) {
 		ret_val = 0;
 		goto out;
@@ -463,6 +676,34 @@ s32 igb_copper_link_setup_82580(struct e1000_hw *hw)
 	phy_data |= I82580_CFG_ENABLE_DOWNSHIFT;
 
 	ret_val = phy->ops.write_reg(hw, I82580_CFG_REG, phy_data);
+<<<<<<< HEAD
+=======
+	if (ret_val)
+		goto out;
+
+	/* Set MDI/MDIX mode */
+	ret_val = phy->ops.read_reg(hw, I82580_PHY_CTRL_2, &phy_data);
+	if (ret_val)
+		goto out;
+	phy_data &= ~I82580_PHY_CTRL2_MDIX_CFG_MASK;
+	/* Options:
+	 *   0 - Auto (default)
+	 *   1 - MDI mode
+	 *   2 - MDI-X mode
+	 */
+	switch (hw->phy.mdix) {
+	case 1:
+		break;
+	case 2:
+		phy_data |= I82580_PHY_CTRL2_MANUAL_MDIX;
+		break;
+	case 0:
+	default:
+		phy_data |= I82580_PHY_CTRL2_AUTO_MDI_MDIX;
+		break;
+	}
+	ret_val = hw->phy.ops.write_reg(hw, I82580_PHY_CTRL_2, phy_data);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	return ret_val;
@@ -493,8 +734,12 @@ s32 igb_copper_link_setup_m88(struct e1000_hw *hw)
 
 	phy_data |= M88E1000_PSCR_ASSERT_CRS_ON_TX;
 
+<<<<<<< HEAD
 	/*
 	 * Options:
+=======
+	/* Options:
+>>>>>>> refs/remotes/origin/master
 	 *   MDI/MDI-X = 0 (default)
 	 *   0 - Auto for all speeds
 	 *   1 - MDI mode
@@ -519,8 +764,12 @@ s32 igb_copper_link_setup_m88(struct e1000_hw *hw)
 		break;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Options:
+=======
+	/* Options:
+>>>>>>> refs/remotes/origin/master
 	 *   disable_polarity_correction = 0 (default)
 	 *       Automatic Correction for Reversed Cable Polarity
 	 *   0 - Disabled
@@ -535,12 +784,20 @@ s32 igb_copper_link_setup_m88(struct e1000_hw *hw)
 		goto out;
 
 	if (phy->revision < E1000_REVISION_4) {
+<<<<<<< HEAD
 		/*
 		 * Force TX_CLK in the Extended PHY Specific Control Register
 		 * to 25MHz clock.
 		 */
 		ret_val = phy->ops.read_reg(hw, M88E1000_EXT_PHY_SPEC_CTRL,
 					     &phy_data);
+=======
+		/* Force TX_CLK in the Extended PHY Specific Control Register
+		 * to 25MHz clock.
+		 */
+		ret_val = phy->ops.read_reg(hw, M88E1000_EXT_PHY_SPEC_CTRL,
+					    &phy_data);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val)
 			goto out;
 
@@ -588,18 +845,29 @@ s32 igb_copper_link_setup_m88_gen2(struct e1000_hw *hw)
 	s32 ret_val;
 	u16 phy_data;
 
+<<<<<<< HEAD
 	if (phy->reset_disable) {
 		ret_val = 0;
 		goto out;
 	}
+=======
+	if (phy->reset_disable)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable CRS on Tx. This must be set for half-duplex operation. */
 	ret_val = phy->ops.read_reg(hw, M88E1000_PHY_SPEC_CTRL, &phy_data);
 	if (ret_val)
+<<<<<<< HEAD
 		goto out;
 
 	/*
 	 * Options:
+=======
+		return ret_val;
+
+	/* Options:
+>>>>>>> refs/remotes/origin/master
 	 *   MDI/MDI-X = 0 (default)
 	 *   0 - Auto for all speeds
 	 *   1 - MDI mode
@@ -627,8 +895,12 @@ s32 igb_copper_link_setup_m88_gen2(struct e1000_hw *hw)
 		break;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Options:
+=======
+	/* Options:
+>>>>>>> refs/remotes/origin/master
 	 *   disable_polarity_correction = 0 (default)
 	 *       Automatic Correction for Reversed Cable Polarity
 	 *   0 - Disabled
@@ -639,23 +911,54 @@ s32 igb_copper_link_setup_m88_gen2(struct e1000_hw *hw)
 		phy_data |= M88E1000_PSCR_POLARITY_REVERSAL;
 
 	/* Enable downshift and setting it to X6 */
+<<<<<<< HEAD
+=======
+	if (phy->id == M88E1543_E_PHY_ID) {
+		phy_data &= ~I347AT4_PSCR_DOWNSHIFT_ENABLE;
+		ret_val =
+		    phy->ops.write_reg(hw, M88E1000_PHY_SPEC_CTRL, phy_data);
+		if (ret_val)
+			return ret_val;
+
+		ret_val = igb_phy_sw_reset(hw);
+		if (ret_val) {
+			hw_dbg("Error committing the PHY changes\n");
+			return ret_val;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	phy_data &= ~I347AT4_PSCR_DOWNSHIFT_MASK;
 	phy_data |= I347AT4_PSCR_DOWNSHIFT_6X;
 	phy_data |= I347AT4_PSCR_DOWNSHIFT_ENABLE;
 
 	ret_val = phy->ops.write_reg(hw, M88E1000_PHY_SPEC_CTRL, phy_data);
 	if (ret_val)
+<<<<<<< HEAD
 		goto out;
+=======
+		return ret_val;
+>>>>>>> refs/remotes/origin/master
 
 	/* Commit the changes. */
 	ret_val = igb_phy_sw_reset(hw);
 	if (ret_val) {
 		hw_dbg("Error committing the PHY changes\n");
+<<<<<<< HEAD
 		goto out;
 	}
 
 out:
 	return ret_val;
+=======
+		return ret_val;
+	}
+	ret_val = igb_set_master_slave_mode(hw);
+	if (ret_val)
+		return ret_val;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -682,14 +985,22 @@ s32 igb_copper_link_setup_igp(struct e1000_hw *hw)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Wait 100ms for MAC to configure PHY from NVM settings, to avoid
+=======
+	/* Wait 100ms for MAC to configure PHY from NVM settings, to avoid
+>>>>>>> refs/remotes/origin/master
 	 * timeout issues when LFS is enabled.
 	 */
 	msleep(100);
 
+<<<<<<< HEAD
 	/*
 	 * The NVM settings will configure LPLU in D3 for
+=======
+	/* The NVM settings will configure LPLU in D3 for
+>>>>>>> refs/remotes/origin/master
 	 * non-IGP1 PHYs.
 	 */
 	if (phy->type == e1000_phy_igp) {
@@ -733,8 +1044,12 @@ s32 igb_copper_link_setup_igp(struct e1000_hw *hw)
 
 	/* set auto-master slave resolution settings */
 	if (hw->mac.autoneg) {
+<<<<<<< HEAD
 		/*
 		 * when autonegotiation advertisement is only 1000Mbps then we
+=======
+		/* when autonegotiation advertisement is only 1000Mbps then we
+>>>>>>> refs/remotes/origin/master
 		 * should disable SmartSpeed and enable Auto MasterSlave
 		 * resolution as hardware default.
 		 */
@@ -812,14 +1127,22 @@ static s32 igb_copper_link_autoneg(struct e1000_hw *hw)
 	s32 ret_val;
 	u16 phy_ctrl;
 
+<<<<<<< HEAD
 	/*
 	 * Perform some bounds checking on the autoneg advertisement
+=======
+	/* Perform some bounds checking on the autoneg advertisement
+>>>>>>> refs/remotes/origin/master
 	 * parameter.
 	 */
 	phy->autoneg_advertised &= phy->autoneg_mask;
 
+<<<<<<< HEAD
 	/*
 	 * If autoneg_advertised is zero, we assume it was not defaulted
+=======
+	/* If autoneg_advertised is zero, we assume it was not defaulted
+>>>>>>> refs/remotes/origin/master
 	 * by the calling code so we set to advertise full capability.
 	 */
 	if (phy->autoneg_advertised == 0)
@@ -833,8 +1156,12 @@ static s32 igb_copper_link_autoneg(struct e1000_hw *hw)
 	}
 	hw_dbg("Restarting Auto-Neg\n");
 
+<<<<<<< HEAD
 	/*
 	 * Restart auto-negotiation by setting the Auto Neg Enable bit and
+=======
+	/* Restart auto-negotiation by setting the Auto Neg Enable bit and
+>>>>>>> refs/remotes/origin/master
 	 * the Auto Neg Restart bit in the PHY control register.
 	 */
 	ret_val = phy->ops.read_reg(hw, PHY_CONTROL, &phy_ctrl);
@@ -846,8 +1173,12 @@ static s32 igb_copper_link_autoneg(struct e1000_hw *hw)
 	if (ret_val)
 		goto out;
 
+<<<<<<< HEAD
 	/*
 	 * Does the user want to wait for Auto-Neg to complete here, or
+=======
+	/* Does the user want to wait for Auto-Neg to complete here, or
+>>>>>>> refs/remotes/origin/master
 	 * check at a later time (for example, callback routine).
 	 */
 	if (phy->autoneg_wait_to_complete) {
@@ -896,16 +1227,24 @@ static s32 igb_phy_setup_autoneg(struct e1000_hw *hw)
 			goto out;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Need to parse both autoneg_advertised and fc and set up
+=======
+	/* Need to parse both autoneg_advertised and fc and set up
+>>>>>>> refs/remotes/origin/master
 	 * the appropriate PHY registers.  First we will parse for
 	 * autoneg_advertised software override.  Since we can advertise
 	 * a plethora of combinations, we need to check each bit
 	 * individually.
 	 */
 
+<<<<<<< HEAD
 	/*
 	 * First we clear all the 10/100 mb speed bits in the Auto-Neg
+=======
+	/* First we clear all the 10/100 mb speed bits in the Auto-Neg
+>>>>>>> refs/remotes/origin/master
 	 * Advertisement Register (Address 4) and the 1000 mb speed bits in
 	 * the  1000Base-T Control Register (Address 9).
 	 */
@@ -951,8 +1290,12 @@ static s32 igb_phy_setup_autoneg(struct e1000_hw *hw)
 		mii_1000t_ctrl_reg |= CR_1000T_FD_CAPS;
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Check for a software override of the flow control settings, and
+=======
+	/* Check for a software override of the flow control settings, and
+>>>>>>> refs/remotes/origin/master
 	 * setup the PHY advertisement registers accordingly.  If
 	 * auto-negotiation is enabled, then software will have to set the
 	 * "PAUSE" bits to the correct value in the Auto-Negotiation
@@ -971,15 +1314,23 @@ static s32 igb_phy_setup_autoneg(struct e1000_hw *hw)
 	 */
 	switch (hw->fc.current_mode) {
 	case e1000_fc_none:
+<<<<<<< HEAD
 		/*
 		 * Flow control (RX & TX) is completely disabled by a
+=======
+		/* Flow control (RX & TX) is completely disabled by a
+>>>>>>> refs/remotes/origin/master
 		 * software over-ride.
 		 */
 		mii_autoneg_adv_reg &= ~(NWAY_AR_ASM_DIR | NWAY_AR_PAUSE);
 		break;
 	case e1000_fc_rx_pause:
+<<<<<<< HEAD
 		/*
 		 * RX Flow control is enabled, and TX Flow control is
+=======
+		/* RX Flow control is enabled, and TX Flow control is
+>>>>>>> refs/remotes/origin/master
 		 * disabled, by a software over-ride.
 		 *
 		 * Since there really isn't a way to advertise that we are
@@ -991,16 +1342,24 @@ static s32 igb_phy_setup_autoneg(struct e1000_hw *hw)
 		mii_autoneg_adv_reg |= (NWAY_AR_ASM_DIR | NWAY_AR_PAUSE);
 		break;
 	case e1000_fc_tx_pause:
+<<<<<<< HEAD
 		/*
 		 * TX Flow control is enabled, and RX Flow control is
+=======
+		/* TX Flow control is enabled, and RX Flow control is
+>>>>>>> refs/remotes/origin/master
 		 * disabled, by a software over-ride.
 		 */
 		mii_autoneg_adv_reg |= NWAY_AR_ASM_DIR;
 		mii_autoneg_adv_reg &= ~NWAY_AR_PAUSE;
 		break;
 	case e1000_fc_full:
+<<<<<<< HEAD
 		/*
 		 * Flow control (both RX and TX) is enabled by a software
+=======
+		/* Flow control (both RX and TX) is enabled by a software
+>>>>>>> refs/remotes/origin/master
 		 * over-ride.
 		 */
 		mii_autoneg_adv_reg |= (NWAY_AR_ASM_DIR | NWAY_AR_PAUSE);
@@ -1043,18 +1402,27 @@ s32 igb_setup_copper_link(struct e1000_hw *hw)
 	s32 ret_val;
 	bool link;
 
+<<<<<<< HEAD
 
 	if (hw->mac.autoneg) {
 		/*
 		 * Setup autoneg and flow control advertisement and perform
+=======
+	if (hw->mac.autoneg) {
+		/* Setup autoneg and flow control advertisement and perform
+>>>>>>> refs/remotes/origin/master
 		 * autonegotiation.
 		 */
 		ret_val = igb_copper_link_autoneg(hw);
 		if (ret_val)
 			goto out;
 	} else {
+<<<<<<< HEAD
 		/*
 		 * PHY will be set to 10H, 10F, 100H or 100F
+=======
+		/* PHY will be set to 10H, 10F, 100H or 100F
+>>>>>>> refs/remotes/origin/master
 		 * depending on user settings.
 		 */
 		hw_dbg("Forcing Speed and Duplex\n");
@@ -1065,6 +1433,7 @@ s32 igb_setup_copper_link(struct e1000_hw *hw)
 		}
 	}
 
+<<<<<<< HEAD
 	/*
 	 * Check link status. Wait up to 100 microseconds for link to become
 	 * valid.
@@ -1073,6 +1442,12 @@ s32 igb_setup_copper_link(struct e1000_hw *hw)
 	                           COPPER_LINK_UP_LIMIT,
 	                           10,
 	                           &link);
+=======
+	/* Check link status. Wait up to 100 microseconds for link to become
+	 * valid.
+	 */
+	ret_val = igb_phy_has_link(hw, COPPER_LINK_UP_LIMIT, 10, &link);
+>>>>>>> refs/remotes/origin/master
 	if (ret_val)
 		goto out;
 
@@ -1113,8 +1488,12 @@ s32 igb_phy_force_speed_duplex_igp(struct e1000_hw *hw)
 	if (ret_val)
 		goto out;
 
+<<<<<<< HEAD
 	/*
 	 * Clear Auto-Crossover to force MDI manually.  IGP requires MDI
+=======
+	/* Clear Auto-Crossover to force MDI manually.  IGP requires MDI
+>>>>>>> refs/remotes/origin/master
 	 * forced whenever speed and duplex are forced.
 	 */
 	ret_val = phy->ops.read_reg(hw, IGP01E1000_PHY_PORT_CTRL, &phy_data);
@@ -1135,10 +1514,14 @@ s32 igb_phy_force_speed_duplex_igp(struct e1000_hw *hw)
 	if (phy->autoneg_wait_to_complete) {
 		hw_dbg("Waiting for forced speed/duplex link on IGP phy.\n");
 
+<<<<<<< HEAD
 		ret_val = igb_phy_has_link(hw,
 						     PHY_FORCE_LIMIT,
 						     100000,
 						     &link);
+=======
+		ret_val = igb_phy_has_link(hw, PHY_FORCE_LIMIT, 10000, &link);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val)
 			goto out;
 
@@ -1146,10 +1529,14 @@ s32 igb_phy_force_speed_duplex_igp(struct e1000_hw *hw)
 			hw_dbg("Link taking longer than expected.\n");
 
 		/* Try once more */
+<<<<<<< HEAD
 		ret_val = igb_phy_has_link(hw,
 						     PHY_FORCE_LIMIT,
 						     100000,
 						     &link);
+=======
+		ret_val = igb_phy_has_link(hw, PHY_FORCE_LIMIT, 10000, &link);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val)
 			goto out;
 	}
@@ -1175,6 +1562,7 @@ s32 igb_phy_force_speed_duplex_m88(struct e1000_hw *hw)
 	u16 phy_data;
 	bool link;
 
+<<<<<<< HEAD
 	/*
 	 * Clear Auto-Crossover to force MDI manually.  M88E1000 requires MDI
 	 * forced whenever speed and duplex are forced.
@@ -1189,6 +1577,26 @@ s32 igb_phy_force_speed_duplex_m88(struct e1000_hw *hw)
 		goto out;
 
 	hw_dbg("M88E1000 PSCR: %X\n", phy_data);
+=======
+	/* I210 and I211 devices support Auto-Crossover in forced operation. */
+	if (phy->type != e1000_phy_i210) {
+		/* Clear Auto-Crossover to force MDI manually.  M88E1000
+		 * requires MDI forced whenever speed and duplex are forced.
+		 */
+		ret_val = phy->ops.read_reg(hw, M88E1000_PHY_SPEC_CTRL,
+					    &phy_data);
+		if (ret_val)
+			goto out;
+
+		phy_data &= ~M88E1000_PSCR_AUTO_X_MODE;
+		ret_val = phy->ops.write_reg(hw, M88E1000_PHY_SPEC_CTRL,
+					     phy_data);
+		if (ret_val)
+			goto out;
+
+		hw_dbg("M88E1000 PSCR: %X\n", phy_data);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ret_val = phy->ops.read_reg(hw, PHY_CONTROL, &phy_data);
 	if (ret_val)
@@ -1213,6 +1621,7 @@ s32 igb_phy_force_speed_duplex_m88(struct e1000_hw *hw)
 			goto out;
 
 		if (!link) {
+<<<<<<< HEAD
 			if (hw->phy.type != e1000_phy_m88 ||
 			    hw->phy.id == I347AT4_E_PHY_ID ||
 			    hw->phy.id == M88E1112_E_PHY_ID) {
@@ -1226,6 +1635,30 @@ s32 igb_phy_force_speed_duplex_m88(struct e1000_hw *hw)
 				ret_val = phy->ops.write_reg(hw,
 							     M88E1000_PHY_PAGE_SELECT,
 							     0x001d);
+=======
+			bool reset_dsp = true;
+
+			switch (hw->phy.id) {
+			case I347AT4_E_PHY_ID:
+			case M88E1112_E_PHY_ID:
+			case I210_I_PHY_ID:
+				reset_dsp = false;
+				break;
+			default:
+				if (hw->phy.type != e1000_phy_m88)
+					reset_dsp = false;
+				break;
+			}
+			if (!reset_dsp)
+				hw_dbg("Link taking longer than expected.\n");
+			else {
+				/* We didn't get link.
+				 * Reset the DSP and cross our fingers.
+				 */
+				ret_val = phy->ops.write_reg(hw,
+						M88E1000_PHY_PAGE_SELECT,
+						0x001d);
+>>>>>>> refs/remotes/origin/master
 				if (ret_val)
 					goto out;
 				ret_val = igb_phy_reset_dsp(hw);
@@ -1243,15 +1676,24 @@ s32 igb_phy_force_speed_duplex_m88(struct e1000_hw *hw)
 
 	if (hw->phy.type != e1000_phy_m88 ||
 	    hw->phy.id == I347AT4_E_PHY_ID ||
+<<<<<<< HEAD
 	    hw->phy.id == M88E1112_E_PHY_ID)
+=======
+	    hw->phy.id == M88E1112_E_PHY_ID ||
+	    hw->phy.id == I210_I_PHY_ID)
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	ret_val = phy->ops.read_reg(hw, M88E1000_EXT_PHY_SPEC_CTRL, &phy_data);
 	if (ret_val)
 		goto out;
 
+<<<<<<< HEAD
 	/*
 	 * Resetting the phy means we need to re-force TX_CLK in the
+=======
+	/* Resetting the phy means we need to re-force TX_CLK in the
+>>>>>>> refs/remotes/origin/master
 	 * Extended PHY Specific Control Register to 25MHz clock from
 	 * the reset value of 2.5MHz.
 	 */
@@ -1260,8 +1702,12 @@ s32 igb_phy_force_speed_duplex_m88(struct e1000_hw *hw)
 	if (ret_val)
 		goto out;
 
+<<<<<<< HEAD
 	/*
 	 * In addition, we must re-enable CRS on Tx for both half and full
+=======
+	/* In addition, we must re-enable CRS on Tx for both half and full
+>>>>>>> refs/remotes/origin/master
 	 * duplex.
 	 */
 	ret_val = phy->ops.read_reg(hw, M88E1000_PHY_SPEC_CTRL, &phy_data);
@@ -1288,7 +1734,11 @@ out:
  *  take affect.
  **/
 static void igb_phy_force_speed_duplex_setup(struct e1000_hw *hw,
+<<<<<<< HEAD
 					       u16 *phy_ctrl)
+=======
+					     u16 *phy_ctrl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct e1000_mac_info *mac = &hw->mac;
 	u32 ctrl;
@@ -1369,8 +1819,12 @@ s32 igb_set_d3_lplu_state(struct e1000_hw *hw, bool active)
 					     data);
 		if (ret_val)
 			goto out;
+<<<<<<< HEAD
 		/*
 		 * LPLU and SmartSpeed are mutually exclusive.  LPLU is used
+=======
+		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
+>>>>>>> refs/remotes/origin/master
 		 * during Dx states where the power conservation is most
 		 * important.  During driver activity we should enable
 		 * SmartSpeed, so performance is maintained.
@@ -1413,13 +1867,21 @@ s32 igb_set_d3_lplu_state(struct e1000_hw *hw, bool active)
 
 		/* When LPLU is enabled, we should disable SmartSpeed */
 		ret_val = phy->ops.read_reg(hw, IGP01E1000_PHY_PORT_CONFIG,
+<<<<<<< HEAD
 					     &data);
+=======
+					    &data);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val)
 			goto out;
 
 		data &= ~IGP01E1000_PSCFR_SMART_SPEED;
 		ret_val = phy->ops.write_reg(hw, IGP01E1000_PHY_PORT_CONFIG,
+<<<<<<< HEAD
 					      data);
+=======
+					     data);
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
@@ -1441,6 +1903,10 @@ s32 igb_check_downshift(struct e1000_hw *hw)
 	u16 phy_data, offset, mask;
 
 	switch (phy->type) {
+<<<<<<< HEAD
+=======
+	case e1000_phy_i210:
+>>>>>>> refs/remotes/origin/master
 	case e1000_phy_m88:
 	case e1000_phy_gg82563:
 		offset	= M88E1000_PHY_SPEC_STATUS;
@@ -1476,7 +1942,11 @@ out:
  *
  *  Polarity is determined based on the PHY specific status register.
  **/
+<<<<<<< HEAD
 static s32 igb_check_polarity_m88(struct e1000_hw *hw)
+=======
+s32 igb_check_polarity_m88(struct e1000_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct e1000_phy_info *phy = &hw->phy;
 	s32 ret_val;
@@ -1507,8 +1977,12 @@ static s32 igb_check_polarity_igp(struct e1000_hw *hw)
 	s32 ret_val;
 	u16 data, offset, mask;
 
+<<<<<<< HEAD
 	/*
 	 * Polarity is determined based on the speed of
+=======
+	/* Polarity is determined based on the speed of
+>>>>>>> refs/remotes/origin/master
 	 * our connection.
 	 */
 	ret_val = phy->ops.read_reg(hw, IGP01E1000_PHY_PORT_STATUS, &data);
@@ -1520,8 +1994,12 @@ static s32 igb_check_polarity_igp(struct e1000_hw *hw)
 		offset	= IGP01E1000_PHY_PCS_INIT_REG;
 		mask	= IGP01E1000_PHY_POLARITY_MASK;
 	} else {
+<<<<<<< HEAD
 		/*
 		 * This really only applies to 10Mbps since
+=======
+		/* This really only applies to 10Mbps since
+>>>>>>> refs/remotes/origin/master
 		 * there is no polarity for 100Mbps (always 0).
 		 */
 		offset	= IGP01E1000_PHY_PORT_STATUS;
@@ -1540,7 +2018,11 @@ out:
 }
 
 /**
+<<<<<<< HEAD
  *  igb_wait_autoneg - Wait for auto-neg compeletion
+=======
+ *  igb_wait_autoneg - Wait for auto-neg completion
+>>>>>>> refs/remotes/origin/master
  *  @hw: pointer to the HW structure
  *
  *  Waits for auto-negotiation to complete or for the auto-negotiation time
@@ -1564,8 +2046,12 @@ static s32 igb_wait_autoneg(struct e1000_hw *hw)
 		msleep(100);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * PHY_AUTO_NEG_TIME expiration doesn't guarantee auto-negotiation
+=======
+	/* PHY_AUTO_NEG_TIME expiration doesn't guarantee auto-negotiation
+>>>>>>> refs/remotes/origin/master
 	 * has completed.
 	 */
 	return ret_val;
@@ -1581,18 +2067,27 @@ static s32 igb_wait_autoneg(struct e1000_hw *hw)
  *  Polls the PHY status register for link, 'iterations' number of times.
  **/
 s32 igb_phy_has_link(struct e1000_hw *hw, u32 iterations,
+<<<<<<< HEAD
 			       u32 usec_interval, bool *success)
+=======
+		     u32 usec_interval, bool *success)
+>>>>>>> refs/remotes/origin/master
 {
 	s32 ret_val = 0;
 	u16 i, phy_status;
 
 	for (i = 0; i < iterations; i++) {
+<<<<<<< HEAD
 		/*
 		 * Some PHYs require the PHY_STATUS register to be read
+=======
+		/* Some PHYs require the PHY_STATUS register to be read
+>>>>>>> refs/remotes/origin/master
 		 * twice due to the link bit being sticky.  No harm doing
 		 * it across the board.
 		 */
 		ret_val = hw->phy.ops.read_reg(hw, PHY_STATUS, &phy_status);
+<<<<<<< HEAD
 		if (ret_val) {
 			/*
 			 * If the first read fails, another entity may have
@@ -1600,6 +2095,17 @@ s32 igb_phy_has_link(struct e1000_hw *hw, u32 iterations,
 			 * see if they have relinquished the resources yet.
 			 */
 			udelay(usec_interval);
+=======
+		if (ret_val && usec_interval > 0) {
+			/* If the first read fails, another entity may have
+			 * ownership of the resources, wait and try again to
+			 * see if they have relinquished the resources yet.
+			 */
+			if (usec_interval >= 1000)
+				mdelay(usec_interval/1000);
+			else
+				udelay(usec_interval);
+>>>>>>> refs/remotes/origin/master
 		}
 		ret_val = hw->phy.ops.read_reg(hw, PHY_STATUS, &phy_status);
 		if (ret_val)
@@ -1665,6 +2171,31 @@ s32 igb_get_cable_length_m88_gen2(struct e1000_hw *hw)
 	u16 phy_data, phy_data2, index, default_page, is_cm;
 
 	switch (hw->phy.id) {
+<<<<<<< HEAD
+=======
+	case I210_I_PHY_ID:
+		/* Get cable length from PHY Cable Diagnostics Control Reg */
+		ret_val = phy->ops.read_reg(hw, (0x7 << GS40G_PAGE_SHIFT) +
+					    (I347AT4_PCDL + phy->addr),
+					    &phy_data);
+		if (ret_val)
+			return ret_val;
+
+		/* Check if the unit of cable length is meters or cm */
+		ret_val = phy->ops.read_reg(hw, (0x7 << GS40G_PAGE_SHIFT) +
+					    I347AT4_PCDC, &phy_data2);
+		if (ret_val)
+			return ret_val;
+
+		is_cm = !(phy_data2 & I347AT4_PCDC_CABLE_LENGTH_UNIT);
+
+		/* Populate the phy structure with cable length in meters */
+		phy->min_cable_length = phy_data / (is_cm ? 100 : 1);
+		phy->max_cable_length = phy_data / (is_cm ? 100 : 1);
+		phy->cable_length = phy_data / (is_cm ? 100 : 1);
+		break;
+	case M88E1543_E_PHY_ID:
+>>>>>>> refs/remotes/origin/master
 	case I347AT4_E_PHY_ID:
 		/* Remember the original page select and set it to 7 */
 		ret_val = phy->ops.read_reg(hw, I347AT4_PAGE_SELECT,
@@ -1764,10 +2295,17 @@ s32 igb_get_cable_length_igp_2(struct e1000_hw *hw)
 	u16 cur_agc_index, max_agc_index = 0;
 	u16 min_agc_index = IGP02E1000_CABLE_LENGTH_TABLE_SIZE - 1;
 	static const u16 agc_reg_array[IGP02E1000_PHY_CHANNEL_NUM] = {
+<<<<<<< HEAD
 	       IGP02E1000_PHY_AGC_A,
 	       IGP02E1000_PHY_AGC_B,
 	       IGP02E1000_PHY_AGC_C,
 	       IGP02E1000_PHY_AGC_D
+=======
+		IGP02E1000_PHY_AGC_A,
+		IGP02E1000_PHY_AGC_B,
+		IGP02E1000_PHY_AGC_C,
+		IGP02E1000_PHY_AGC_D
+>>>>>>> refs/remotes/origin/master
 	};
 
 	/* Read the AGC registers for all channels */
@@ -1776,8 +2314,12 @@ s32 igb_get_cable_length_igp_2(struct e1000_hw *hw)
 		if (ret_val)
 			goto out;
 
+<<<<<<< HEAD
 		/*
 		 * Getting bits 15:9, which represent the combination of
+=======
+		/* Getting bits 15:9, which represent the combination of
+>>>>>>> refs/remotes/origin/master
 		 * coarse and fine gain values.  The result is a number
 		 * that can be put into the lookup table to obtain the
 		 * approximate cable length.
@@ -1997,7 +2539,11 @@ out:
  *  Verify the reset block is not blocking us from resetting.  Acquire
  *  semaphore (if necessary) and read/set/write the device control reset
  *  bit in the PHY.  Wait the appropriate delay time for the device to
+<<<<<<< HEAD
  *  reset and relase the semaphore (if necessary).
+=======
+ *  reset and release the semaphore (if necessary).
+>>>>>>> refs/remotes/origin/master
  **/
 s32 igb_phy_hw_reset(struct e1000_hw *hw)
 {
@@ -2097,15 +2643,23 @@ s32 igb_phy_init_script_igp3(struct e1000_hw *hw)
 	hw->phy.ops.write_reg(hw, 0x1796, 0x0008);
 	/* Change cg_icount + enable integbp for channels BCD */
 	hw->phy.ops.write_reg(hw, 0x1798, 0xD008);
+<<<<<<< HEAD
 	/*
 	 * Change cg_icount + enable integbp + change prop_factor_master
+=======
+	/* Change cg_icount + enable integbp + change prop_factor_master
+>>>>>>> refs/remotes/origin/master
 	 * to 8 for channel A
 	 */
 	hw->phy.ops.write_reg(hw, 0x1898, 0xD918);
 	/* Disable AHT in Slave mode on channel A */
 	hw->phy.ops.write_reg(hw, 0x187A, 0x0800);
+<<<<<<< HEAD
 	/*
 	 * Enable LPLU and disable AN to 1000 in non-D0a states,
+=======
+	/* Enable LPLU and disable AN to 1000 in non-D0a states,
+>>>>>>> refs/remotes/origin/master
 	 * Enable SPD+B2B
 	 */
 	hw->phy.ops.write_reg(hw, 0x0019, 0x008D);
@@ -2129,10 +2683,22 @@ s32 igb_phy_init_script_igp3(struct e1000_hw *hw)
 void igb_power_up_phy_copper(struct e1000_hw *hw)
 {
 	u16 mii_reg = 0;
+<<<<<<< HEAD
+=======
+	u16 power_reg = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* The PHY will retain its settings across a power down/up cycle */
 	hw->phy.ops.read_reg(hw, PHY_CONTROL, &mii_reg);
 	mii_reg &= ~MII_CR_POWER_DOWN;
+<<<<<<< HEAD
+=======
+	if (hw->phy.type == e1000_phy_i210) {
+		hw->phy.ops.read_reg(hw, GS40G_COPPER_SPEC, &power_reg);
+		power_reg &= ~GS40G_CS_POWER_DOWN;
+		hw->phy.ops.write_reg(hw, GS40G_COPPER_SPEC, power_reg);
+	}
+>>>>>>> refs/remotes/origin/master
 	hw->phy.ops.write_reg(hw, PHY_CONTROL, mii_reg);
 }
 
@@ -2146,10 +2712,24 @@ void igb_power_up_phy_copper(struct e1000_hw *hw)
 void igb_power_down_phy_copper(struct e1000_hw *hw)
 {
 	u16 mii_reg = 0;
+<<<<<<< HEAD
+=======
+	u16 power_reg = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* The PHY will retain its settings across a power down/up cycle */
 	hw->phy.ops.read_reg(hw, PHY_CONTROL, &mii_reg);
 	mii_reg |= MII_CR_POWER_DOWN;
+<<<<<<< HEAD
+=======
+
+	/* i210 Phy requires an additional bit for power up/down */
+	if (hw->phy.type == e1000_phy_i210) {
+		hw->phy.ops.read_reg(hw, GS40G_COPPER_SPEC, &power_reg);
+		power_reg |= GS40G_CS_POWER_DOWN;
+		hw->phy.ops.write_reg(hw, GS40G_COPPER_SPEC, power_reg);
+	}
+>>>>>>> refs/remotes/origin/master
 	hw->phy.ops.write_reg(hw, PHY_CONTROL, mii_reg);
 	msleep(1);
 }
@@ -2173,8 +2753,13 @@ static s32 igb_check_polarity_82580(struct e1000_hw *hw)
 
 	if (!ret_val)
 		phy->cable_polarity = (data & I82580_PHY_STATUS2_REV_POLARITY)
+<<<<<<< HEAD
 		                      ? e1000_rev_polarity_reversed
 		                      : e1000_rev_polarity_normal;
+=======
+				      ? e1000_rev_polarity_reversed
+				      : e1000_rev_polarity_normal;
+>>>>>>> refs/remotes/origin/master
 
 	return ret_val;
 }
@@ -2194,7 +2779,10 @@ s32 igb_phy_force_speed_duplex_82580(struct e1000_hw *hw)
 	u16 phy_data;
 	bool link;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret_val = phy->ops.read_reg(hw, PHY_CONTROL, &phy_data);
 	if (ret_val)
 		goto out;
@@ -2205,16 +2793,24 @@ s32 igb_phy_force_speed_duplex_82580(struct e1000_hw *hw)
 	if (ret_val)
 		goto out;
 
+<<<<<<< HEAD
 	/*
 	 * Clear Auto-Crossover to force MDI manually.  82580 requires MDI
+=======
+	/* Clear Auto-Crossover to force MDI manually.  82580 requires MDI
+>>>>>>> refs/remotes/origin/master
 	 * forced whenever speed and duplex are forced.
 	 */
 	ret_val = phy->ops.read_reg(hw, I82580_PHY_CTRL_2, &phy_data);
 	if (ret_val)
 		goto out;
 
+<<<<<<< HEAD
 	phy_data &= ~I82580_PHY_CTRL2_AUTO_MDIX;
 	phy_data &= ~I82580_PHY_CTRL2_FORCE_MDI_MDIX;
+=======
+	phy_data &= ~I82580_PHY_CTRL2_MDIX_CFG_MASK;
+>>>>>>> refs/remotes/origin/master
 
 	ret_val = phy->ops.write_reg(hw, I82580_PHY_CTRL_2, phy_data);
 	if (ret_val)
@@ -2227,10 +2823,14 @@ s32 igb_phy_force_speed_duplex_82580(struct e1000_hw *hw)
 	if (phy->autoneg_wait_to_complete) {
 		hw_dbg("Waiting for forced speed/duplex link on 82580 phy\n");
 
+<<<<<<< HEAD
 		ret_val = igb_phy_has_link(hw,
 		                           PHY_FORCE_LIMIT,
 		                           100000,
 		                           &link);
+=======
+		ret_val = igb_phy_has_link(hw, PHY_FORCE_LIMIT, 100000, &link);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val)
 			goto out;
 
@@ -2238,10 +2838,14 @@ s32 igb_phy_force_speed_duplex_82580(struct e1000_hw *hw)
 			hw_dbg("Link taking longer than expected.\n");
 
 		/* Try once more */
+<<<<<<< HEAD
 		ret_val = igb_phy_has_link(hw,
 		                           PHY_FORCE_LIMIT,
 		                           100000,
 		                           &link);
+=======
+		ret_val = igb_phy_has_link(hw, PHY_FORCE_LIMIT, 100000, &link);
+>>>>>>> refs/remotes/origin/master
 		if (ret_val)
 			goto out;
 	}
@@ -2266,7 +2870,10 @@ s32 igb_get_phy_info_82580(struct e1000_hw *hw)
 	u16 data;
 	bool link;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret_val = igb_phy_has_link(hw, 1, 0, &link);
 	if (ret_val)
 		goto out;
@@ -2300,12 +2907,21 @@ s32 igb_get_phy_info_82580(struct e1000_hw *hw)
 			goto out;
 
 		phy->local_rx = (data & SR_1000T_LOCAL_RX_STATUS)
+<<<<<<< HEAD
 		                ? e1000_1000t_rx_status_ok
 		                : e1000_1000t_rx_status_not_ok;
 
 		phy->remote_rx = (data & SR_1000T_REMOTE_RX_STATUS)
 		                 ? e1000_1000t_rx_status_ok
 		                 : e1000_1000t_rx_status_not_ok;
+=======
+				? e1000_1000t_rx_status_ok
+				: e1000_1000t_rx_status_not_ok;
+
+		phy->remote_rx = (data & SR_1000T_REMOTE_RX_STATUS)
+				 ? e1000_1000t_rx_status_ok
+				 : e1000_1000t_rx_status_not_ok;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		phy->cable_length = E1000_CABLE_LENGTH_UNDEFINED;
 		phy->local_rx = e1000_1000t_rx_status_undefined;
@@ -2329,13 +2945,20 @@ s32 igb_get_cable_length_82580(struct e1000_hw *hw)
 	s32 ret_val;
 	u16 phy_data, length;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ret_val = phy->ops.read_reg(hw, I82580_PHY_DIAG_STATUS, &phy_data);
 	if (ret_val)
 		goto out;
 
 	length = (phy_data & I82580_DSTATUS_CABLE_LENGTH) >>
+<<<<<<< HEAD
 	         I82580_DSTATUS_CABLE_LENGTH_SHIFT;
+=======
+		 I82580_DSTATUS_CABLE_LENGTH_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	if (length == E1000_CABLE_LENGTH_UNDEFINED)
 		ret_val = -E1000_ERR_PHY;
@@ -2345,3 +2968,106 @@ s32 igb_get_cable_length_82580(struct e1000_hw *hw)
 out:
 	return ret_val;
 }
+<<<<<<< HEAD
+=======
+
+/**
+ *  igb_write_phy_reg_gs40g - Write GS40G PHY register
+ *  @hw: pointer to the HW structure
+ *  @offset: lower half is register offset to write to
+ *     upper half is page to use.
+ *  @data: data to write at register offset
+ *
+ *  Acquires semaphore, if necessary, then writes the data to PHY register
+ *  at the offset.  Release any acquired semaphores before exiting.
+ **/
+s32 igb_write_phy_reg_gs40g(struct e1000_hw *hw, u32 offset, u16 data)
+{
+	s32 ret_val;
+	u16 page = offset >> GS40G_PAGE_SHIFT;
+
+	offset = offset & GS40G_OFFSET_MASK;
+	ret_val = hw->phy.ops.acquire(hw);
+	if (ret_val)
+		return ret_val;
+
+	ret_val = igb_write_phy_reg_mdic(hw, GS40G_PAGE_SELECT, page);
+	if (ret_val)
+		goto release;
+	ret_val = igb_write_phy_reg_mdic(hw, offset, data);
+
+release:
+	hw->phy.ops.release(hw);
+	return ret_val;
+}
+
+/**
+ *  igb_read_phy_reg_gs40g - Read GS40G  PHY register
+ *  @hw: pointer to the HW structure
+ *  @offset: lower half is register offset to read to
+ *     upper half is page to use.
+ *  @data: data to read at register offset
+ *
+ *  Acquires semaphore, if necessary, then reads the data in the PHY register
+ *  at the offset.  Release any acquired semaphores before exiting.
+ **/
+s32 igb_read_phy_reg_gs40g(struct e1000_hw *hw, u32 offset, u16 *data)
+{
+	s32 ret_val;
+	u16 page = offset >> GS40G_PAGE_SHIFT;
+
+	offset = offset & GS40G_OFFSET_MASK;
+	ret_val = hw->phy.ops.acquire(hw);
+	if (ret_val)
+		return ret_val;
+
+	ret_val = igb_write_phy_reg_mdic(hw, GS40G_PAGE_SELECT, page);
+	if (ret_val)
+		goto release;
+	ret_val = igb_read_phy_reg_mdic(hw, offset, data);
+
+release:
+	hw->phy.ops.release(hw);
+	return ret_val;
+}
+
+/**
+ *  igb_set_master_slave_mode - Setup PHY for Master/slave mode
+ *  @hw: pointer to the HW structure
+ *
+ *  Sets up Master/slave mode
+ **/
+static s32 igb_set_master_slave_mode(struct e1000_hw *hw)
+{
+	s32 ret_val;
+	u16 phy_data;
+
+	/* Resolve Master/Slave mode */
+	ret_val = hw->phy.ops.read_reg(hw, PHY_1000T_CTRL, &phy_data);
+	if (ret_val)
+		return ret_val;
+
+	/* load defaults for future use */
+	hw->phy.original_ms_type = (phy_data & CR_1000T_MS_ENABLE) ?
+				   ((phy_data & CR_1000T_MS_VALUE) ?
+				    e1000_ms_force_master :
+				    e1000_ms_force_slave) : e1000_ms_auto;
+
+	switch (hw->phy.ms_type) {
+	case e1000_ms_force_master:
+		phy_data |= (CR_1000T_MS_ENABLE | CR_1000T_MS_VALUE);
+		break;
+	case e1000_ms_force_slave:
+		phy_data |= CR_1000T_MS_ENABLE;
+		phy_data &= ~(CR_1000T_MS_VALUE);
+		break;
+	case e1000_ms_auto:
+		phy_data &= ~CR_1000T_MS_ENABLE;
+		/* fall-through */
+	default:
+		break;
+	}
+
+	return hw->phy.ops.write_reg(hw, PHY_1000T_CTRL, phy_data);
+}
+>>>>>>> refs/remotes/origin/master

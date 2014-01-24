@@ -567,7 +567,11 @@ static bool rtl8192_BB_Config_ParaFile(struct net_device *dev)
 		rtStatus  = rtl8192_phy_checkBBAndRF(dev,
 					 (enum hw90_block)eCheckItem,
 					 (enum rf90_radio_path)0);
+<<<<<<< HEAD
 		if (rtStatus != true) {
+=======
+		if (!rtStatus) {
+>>>>>>> refs/remotes/origin/master
 			RT_TRACE((COMP_ERR | COMP_PHY), "PHY_RF8256_Config():"
 				 "Check PHY%d Fail!!\n", eCheckItem-1);
 			return rtStatus;
@@ -689,7 +693,11 @@ void rtl8192_phy_setTxPower(struct net_device *dev, u8 channel)
 	case RF_8258:
 		break;
 	default:
+<<<<<<< HEAD
 		RT_TRACE(COMP_ERR, "unknown rf chip in funtion %s()\n",
+=======
+		RT_TRACE(COMP_ERR, "unknown rf chip in function %s()\n",
+>>>>>>> refs/remotes/origin/master
 			 __func__);
 		break;
 	}
@@ -1179,7 +1187,11 @@ void rtl8192_SetBWModeWorkItem(struct net_device *dev)
 
 	RT_TRACE(COMP_SWBW, "==>rtl8192_SetBWModeWorkItem()  Switch to %s "
 		 "bandwidth\n", priv->CurrentChannelBW == HT_CHANNEL_WIDTH_20 ?
+<<<<<<< HEAD
 		 "20MHz" : "40MHz")
+=======
+		 "20MHz" : "40MHz");
+>>>>>>> refs/remotes/origin/master
 
 
 	if (priv->rf_chip == RF_PSEUDO_11N) {
@@ -1425,7 +1437,11 @@ static bool SetRFPowerState8190(struct net_device *dev,
 	u8	i = 0, QueueID = 0;
 	struct rtl8192_tx_ring  *ring = NULL;
 
+<<<<<<< HEAD
 	if (priv->SetRFPowerStateInProgress == true)
+=======
+	if (priv->SetRFPowerStateInProgress)
+>>>>>>> refs/remotes/origin/master
 		return false;
 	RT_TRACE(COMP_PS, "===========> SetRFPowerState8190()!\n");
 	priv->SetRFPowerStateInProgress = true;
@@ -1443,10 +1459,16 @@ static bool SetRFPowerState8190(struct net_device *dev,
 					InitilizeCount--;
 					priv->RegRfOff = false;
 					rtstatus = NicIFEnableNIC(dev);
+<<<<<<< HEAD
 				} while ((rtstatus != true) &&
 					 (InitilizeCount > 0));
 
 				if (rtstatus != true) {
+=======
+				} while (!rtstatus && (InitilizeCount > 0));
+
+				if (!rtstatus) {
+>>>>>>> refs/remotes/origin/master
 					RT_TRACE(COMP_ERR, "%s():Initialize Ada"
 						 "pter fail,return\n",
 						 __func__);

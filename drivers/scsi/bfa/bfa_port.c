@@ -25,10 +25,13 @@
 BFA_TRC_FILE(CNA, PORT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define bfa_ioc_portid(__ioc) ((__ioc)->port_id)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 bfa_port_stats_swap(struct bfa_port_s *port, union bfa_port_stats_u *stats)
 {
@@ -240,14 +243,20 @@ bfa_port_enable(struct bfa_port_s *port, bfa_port_endis_cbfn_t cbfn,
 	struct bfi_port_generic_req_s *m;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If port is PBC disabled, return error */
 	if (port->pbc_disabled) {
 		bfa_trc(port, BFA_STATUS_PBC);
 		return BFA_STATUS_PBC;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bfa_ioc_is_disabled(port->ioc)) {
 		bfa_trc(port, BFA_STATUS_IOC_DISABLED);
 		return BFA_STATUS_IOC_DISABLED;
@@ -258,6 +267,15 @@ bfa_port_enable(struct bfa_port_s *port, bfa_port_endis_cbfn_t cbfn,
 		return BFA_STATUS_IOC_FAILURE;
 	}
 
+<<<<<<< HEAD
+=======
+	/* if port is d-port enabled, return error */
+	if (port->dport_enabled) {
+		bfa_trc(port, BFA_STATUS_DPORT_ERR);
+		return BFA_STATUS_DPORT_ERR;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (port->endis_pending) {
 		bfa_trc(port, BFA_STATUS_DEVBUSY);
 		return BFA_STATUS_DEVBUSY;
@@ -293,14 +311,20 @@ bfa_port_disable(struct bfa_port_s *port, bfa_port_endis_cbfn_t cbfn,
 	struct bfi_port_generic_req_s *m;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If port is PBC disabled, return error */
 	if (port->pbc_disabled) {
 		bfa_trc(port, BFA_STATUS_PBC);
 		return BFA_STATUS_PBC;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bfa_ioc_is_disabled(port->ioc)) {
 		bfa_trc(port, BFA_STATUS_IOC_DISABLED);
 		return BFA_STATUS_IOC_DISABLED;
@@ -311,6 +335,15 @@ bfa_port_disable(struct bfa_port_s *port, bfa_port_endis_cbfn_t cbfn,
 		return BFA_STATUS_IOC_FAILURE;
 	}
 
+<<<<<<< HEAD
+=======
+	/* if port is d-port enabled, return error */
+	if (port->dport_enabled) {
+		bfa_trc(port, BFA_STATUS_DPORT_ERR);
+		return BFA_STATUS_DPORT_ERR;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (port->endis_pending) {
 		bfa_trc(port, BFA_STATUS_DEVBUSY);
 		return BFA_STATUS_DEVBUSY;
@@ -409,22 +442,29 @@ bfa_port_clear_stats(struct bfa_port_s *port, bfa_port_stats_cbfn_t cbfn,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * bfa_port_hbfail()
  *
  *
  * @param[in] Pointer to the Port module data structure.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * bfa_port_notify()
  *
  * Port module IOC event handler
  *
  * @param[in] Pointer to the Port module data structure.
  * @param[in] IOC event structure
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * @return void
  */
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 bfa_port_hbfail(void *arg)
 {
@@ -445,6 +485,8 @@ bfa_port_hbfail(void *arg)
 		port->endis_cbfn = NULL;
 		port->endis_pending = BFA_FALSE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_port_notify(void *arg, enum bfa_ioc_event_e event)
 {
 	struct bfa_port_s *port = (struct bfa_port_s *) arg;
@@ -469,10 +511,20 @@ bfa_port_notify(void *arg, enum bfa_ioc_event_e event)
 			port->endis_cbfn = NULL;
 			port->endis_pending = BFA_FALSE;
 		}
+<<<<<<< HEAD
 		break;
 	default:
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		/* clear D-port mode */
+		if (port->dport_enabled)
+			bfa_port_set_dportenabled(port, BFA_FALSE);
+		break;
+	default:
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -506,18 +558,26 @@ bfa_port_attach(struct bfa_port_s *port, struct bfa_ioc_s *ioc,
 	port->stats_cbfn = NULL;
 	port->endis_cbfn = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	bfa_ioc_mbox_regisr(port->ioc, BFI_MC_PORT, bfa_port_isr, port);
 	bfa_ioc_hbfail_init(&port->hbfail, bfa_port_hbfail, port);
 	list_add_tail(&port->hbfail.qe, &port->ioc->hb_notify_q);
 =======
 	port->pbc_disabled = BFA_FALSE;
+=======
+	port->pbc_disabled = BFA_FALSE;
+	port->dport_enabled = BFA_FALSE;
+>>>>>>> refs/remotes/origin/master
 
 	bfa_ioc_mbox_regisr(port->ioc, BFI_MC_PORT, bfa_port_isr, port);
 	bfa_q_qe_init(&port->ioc_notify);
 	bfa_ioc_notify_init(&port->ioc_notify, bfa_port_notify, port);
 	list_add_tail(&port->ioc_notify.qe, &port->ioc->notify_q);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * initialize time stamp for stats reset
@@ -528,7 +588,25 @@ bfa_port_attach(struct bfa_port_s *port, struct bfa_ioc_s *ioc,
 	bfa_trc(port, 0);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+/*
+ * bfa_port_set_dportenabled();
+ *
+ * Port module- set pbc disabled flag
+ *
+ * @param[in] port - Pointer to the Port module data structure
+ *
+ * @return void
+ */
+void
+bfa_port_set_dportenabled(struct bfa_port_s *port, bfa_boolean_t enabled)
+{
+	port->dport_enabled = enabled;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	CEE module specific definitions
@@ -894,4 +972,7 @@ bfa_cee_attach(struct bfa_cee_s *cee, struct bfa_ioc_s *ioc,
 	bfa_ioc_notify_init(&cee->ioc_notify, bfa_cee_notify, cee);
 	list_add_tail(&cee->ioc_notify.qe, &cee->ioc->notify_q);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

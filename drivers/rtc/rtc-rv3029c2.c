@@ -385,8 +385,13 @@ static struct i2c_device_id rv3029c2_id[] = {
 };
 MODULE_DEVICE_TABLE(i2c, rv3029c2_id);
 
+<<<<<<< HEAD
 static int __devinit
 rv3029c2_probe(struct i2c_client *client, const struct i2c_device_id *id)
+=======
+static int rv3029c2_probe(struct i2c_client *client,
+			  const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	int rc = 0;
@@ -395,9 +400,14 @@ rv3029c2_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_EMUL))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(client->name,
 				&client->dev, &rv3029c2_rtc_ops,
 				THIS_MODULE);
+=======
+	rtc = devm_rtc_device_register(&client->dev, client->name,
+					&rv3029c2_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
@@ -407,6 +417,7 @@ rv3029c2_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	rc = rv3029c2_i2c_get_sr(client, buf);
 	if (rc < 0) {
 		dev_err(&client->dev, "reading status failed\n");
+<<<<<<< HEAD
 		goto exit_unregister;
 	}
 
@@ -425,6 +436,12 @@ static int __devexit rv3029c2_remove(struct i2c_client *client)
 	rtc_device_unregister(rtc);
 
 	return 0;
+=======
+		return rc;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct i2c_driver rv3029c2_driver = {
@@ -432,6 +449,7 @@ static struct i2c_driver rv3029c2_driver = {
 		.name = "rtc-rv3029c2",
 	},
 	.probe = rv3029c2_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(rv3029c2_remove),
 	.id_table = rv3029c2_id,
 };
@@ -452,6 +470,12 @@ module_exit(rv3029c2_exit);
 =======
 module_i2c_driver(rv3029c2_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table = rv3029c2_id,
+};
+
+module_i2c_driver(rv3029c2_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Gregory Hermant <gregory.hermant@calao-systems.com>");
 MODULE_DESCRIPTION("Micro Crystal RV3029C2 RTC driver");

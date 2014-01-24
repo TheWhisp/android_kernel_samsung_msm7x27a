@@ -72,10 +72,14 @@ extern int of_fdt_is_compatible(struct boot_param_header *blob,
 				const char *compat);
 extern int of_fdt_match(struct boot_param_header *blob, unsigned long node,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			const char **compat);
 =======
 			const char *const *compat);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			const char *const *compat);
+>>>>>>> refs/remotes/origin/master
 extern void of_fdt_unflatten_tree(unsigned long *blob,
 			       struct device_node **mynodes);
 
@@ -93,6 +97,7 @@ extern void *of_get_flat_dt_prop(unsigned long node, const char *name,
 				 unsigned long *size);
 extern int of_flat_dt_is_compatible(unsigned long node, const char *name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int of_flat_dt_match(unsigned long node, const char **matches);
 =======
 extern int of_flat_dt_match(unsigned long node, const char *const *matches);
@@ -102,12 +107,23 @@ extern unsigned long of_get_flat_dt_root(void);
 extern int early_init_dt_scan_chosen(unsigned long node, const char *uname,
 				     int depth, void *data);
 extern void early_init_dt_check_for_initrd(unsigned long node);
+=======
+extern int of_flat_dt_match(unsigned long node, const char *const *matches);
+extern unsigned long of_get_flat_dt_root(void);
+extern int of_scan_flat_dt_by_path(const char *path,
+	int (*it)(unsigned long node, const char *name, int depth, void *data),
+	void *data);
+
+extern int early_init_dt_scan_chosen(unsigned long node, const char *uname,
+				     int depth, void *data);
+>>>>>>> refs/remotes/origin/master
 extern int early_init_dt_scan_memory(unsigned long node, const char *uname,
 				     int depth, void *data);
 extern void early_init_dt_add_memory_arch(u64 base, u64 size);
 extern void * early_init_dt_alloc_memory_arch(u64 size, u64 align);
 extern u64 dt_mem_next_cell(int s, __be32 **cellp);
 
+<<<<<<< HEAD
 /*
  * If BLK_DEV_INITRD, the fdt early init code will call this function,
  * to be provided by the arch code. start and end are specified as
@@ -118,15 +134,34 @@ extern void early_init_dt_setup_initrd_arch(unsigned long start,
 					    unsigned long end);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Early flat tree scan hooks */
 extern int early_init_dt_scan_root(unsigned long node, const char *uname,
 				   int depth, void *data);
 
+<<<<<<< HEAD
 /* Other Prototypes */
 extern void unflatten_device_tree(void);
 extern void early_init_devtree(void *);
 #else /* CONFIG_OF_FLATTREE */
 static inline void unflatten_device_tree(void) {}
+=======
+extern bool early_init_dt_scan(void *params);
+
+extern const char *of_flat_dt_get_machine_name(void);
+extern const void *of_flat_dt_match_machine(const void *default_match,
+		const void * (*get_next_compat)(const char * const**));
+
+/* Other Prototypes */
+extern void unflatten_device_tree(void);
+extern void unflatten_and_copy_device_tree(void);
+extern void early_init_devtree(void *);
+#else /* CONFIG_OF_FLATTREE */
+static inline const char *of_flat_dt_get_machine_name(void) { return NULL; }
+static inline void unflatten_device_tree(void) {}
+static inline void unflatten_and_copy_device_tree(void) {}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_OF_FLATTREE */
 
 #endif /* __ASSEMBLY__ */

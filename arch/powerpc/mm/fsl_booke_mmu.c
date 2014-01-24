@@ -102,19 +102,26 @@ unsigned long p_mapped_by_tlbcam(phys_addr_t pa)
 /*
  * Set up a variable-size TLB entry (tlbcam). The parameters are not checked;
 <<<<<<< HEAD
+<<<<<<< HEAD
  * in particular size must be a power of 4 between 4k and 256M (or 1G, for cpus
  * that support extended page sizes).  Note that while some cpus support a
  * page size of 4G, we don't allow its use here.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * in particular size must be a power of 4 between 4k and the max supported by
  * an implementation; max may further be limited by what can be represented in
  * an unsigned long (for example, 32-bit implementations cannot support a 4GB
  * size).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static void settlbcam(int index, unsigned long virt, phys_addr_t phys,
 		unsigned long size, unsigned long flags, unsigned int pid)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int tsize, lz;
 
@@ -125,6 +132,11 @@ static void settlbcam(int index, unsigned long virt, phys_addr_t phys,
 
 	tsize = __ilog2(size) - 10;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int tsize;
+
+	tsize = __ilog2(size) - 10;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMP
 	if ((flags & _PAGE_NO_CACHE) == 0)
@@ -160,7 +172,10 @@ static void settlbcam(int index, unsigned long virt, phys_addr_t phys,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long calc_cam_sz(unsigned long ram, unsigned long virt,
 			  phys_addr_t phys)
 {
@@ -186,13 +201,17 @@ unsigned long calc_cam_sz(unsigned long ram, unsigned long virt,
 	return 1UL << camsize;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long map_mem_in_cams(unsigned long ram, int max_cam_idx)
 {
 	int i;
 	unsigned long virt = PAGE_OFFSET;
 	phys_addr_t phys = memstart_addr;
 	unsigned long amount_mapped = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long max_cam = (mfspr(SPRN_TLB1CFG) >> 16) & 0xf;
 
@@ -212,13 +231,18 @@ unsigned long map_mem_in_cams(unsigned long ram, int max_cam_idx)
 
 		cam_sz = 1UL << camsize;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Calculate CAM values */
 	for (i = 0; ram && i < max_cam_idx; i++) {
 		unsigned long cam_sz;
 
 		cam_sz = calc_cam_sz(ram, virt, phys);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		settlbcam(i, virt, phys, cam_sz, PAGE_KERNEL_X, 0);
 
 		ram -= cam_sz;

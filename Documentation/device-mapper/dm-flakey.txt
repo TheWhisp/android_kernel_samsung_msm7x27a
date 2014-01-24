@@ -2,6 +2,7 @@ dm-flakey
 =========
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 This target is the same as the linear target except that it returns I/O
 errors periodically.  It's been found useful in simulating failing
 devices for testing purposes.
@@ -12,6 +13,8 @@ and then this cycle repeats.
 
 Parameters: <dev path> <offset> <up interval> <down interval>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 This target is the same as the linear target except that it exhibits
 unreliable behaviour periodically.  It's been found useful in simulating
 failing devices for testing purposes.
@@ -30,14 +33,20 @@ Table parameters
     [<num_features> [<feature arguments>]]
 
 Mandatory parameters:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     <dev path>: Full pathname to the underlying block-device, or a
                 "major:minor" device-number.
     <offset>: Starting sector within the device.
     <up interval>: Number of seconds device is available.
     <down interval>: Number of seconds device returns errors.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 Optional feature parameters:
   If no feature parameters are present, during the periods of
@@ -65,4 +74,7 @@ Examples:
 
   corrupt_bio_byte 224 w 0 32
 	- replaces the 224th byte of REQ_META (=32) bios with the value 0
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

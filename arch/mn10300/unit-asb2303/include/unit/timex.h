@@ -11,10 +11,13 @@
 #ifndef _ASM_UNIT_TIMEX_H
 #define _ASM_UNIT_TIMEX_H
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 #include <linux/irq.h>
 #endif /* __ASSEMBLY__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/timer-regs.h>
 #include <unit/clock.h>
 #include <asm/param.h>

@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/math-emu/math.c
  *
  *  S390 version
  *    Copyright (C) 1999-2001 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999, 2001
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  *
  * 'math.c' emulates IEEE instructions on a S390 processor
@@ -21,6 +26,11 @@
 #include <math-emu/double.h>
 #include <math-emu/quad.h>
 
+<<<<<<< HEAD
+=======
+#define FPC_VALID_MASK		0xF8F8FF03
+
+>>>>>>> refs/remotes/origin/master
 /*
  * I miss a macro to round a floating point number to the
  * nearest integer in the same floating point format.

@@ -38,7 +38,11 @@ void oprofile_reset_stats(void)
 }
 
 
+<<<<<<< HEAD
 void oprofile_create_stats_files(struct super_block *sb, struct dentry *root)
+=======
+void oprofile_create_stats_files(struct dentry *root)
+>>>>>>> refs/remotes/origin/master
 {
 	struct oprofile_cpu_buffer *cpu_buf;
 	struct dentry *cpudir;
@@ -46,19 +50,28 @@ void oprofile_create_stats_files(struct super_block *sb, struct dentry *root)
 	char buf[10];
 	int i;
 
+<<<<<<< HEAD
 	dir = oprofilefs_mkdir(sb, root, "stats");
+=======
+	dir = oprofilefs_mkdir(root, "stats");
+>>>>>>> refs/remotes/origin/master
 	if (!dir)
 		return;
 
 	for_each_possible_cpu(i) {
 		cpu_buf = &per_cpu(op_cpu_buffer, i);
 		snprintf(buf, 10, "cpu%d", i);
+<<<<<<< HEAD
 		cpudir = oprofilefs_mkdir(sb, dir, buf);
+=======
+		cpudir = oprofilefs_mkdir(dir, buf);
+>>>>>>> refs/remotes/origin/master
 
 		/* Strictly speaking access to these ulongs is racy,
 		 * but we can't simply lock them, and they are
 		 * informational only.
 		 */
+<<<<<<< HEAD
 		oprofilefs_create_ro_ulong(sb, cpudir, "sample_received",
 			&cpu_buf->sample_received);
 		oprofilefs_create_ro_ulong(sb, cpudir, "sample_lost_overflow",
@@ -79,6 +92,28 @@ void oprofile_create_stats_files(struct super_block *sb, struct dentry *root)
 		&oprofile_stats.bt_lost_no_mapping);
 #ifdef CONFIG_OPROFILE_EVENT_MULTIPLEX
 	oprofilefs_create_ro_atomic(sb, dir, "multiplex_counter",
+=======
+		oprofilefs_create_ro_ulong(cpudir, "sample_received",
+			&cpu_buf->sample_received);
+		oprofilefs_create_ro_ulong(cpudir, "sample_lost_overflow",
+			&cpu_buf->sample_lost_overflow);
+		oprofilefs_create_ro_ulong(cpudir, "backtrace_aborted",
+			&cpu_buf->backtrace_aborted);
+		oprofilefs_create_ro_ulong(cpudir, "sample_invalid_eip",
+			&cpu_buf->sample_invalid_eip);
+	}
+
+	oprofilefs_create_ro_atomic(dir, "sample_lost_no_mm",
+		&oprofile_stats.sample_lost_no_mm);
+	oprofilefs_create_ro_atomic(dir, "sample_lost_no_mapping",
+		&oprofile_stats.sample_lost_no_mapping);
+	oprofilefs_create_ro_atomic(dir, "event_lost_overflow",
+		&oprofile_stats.event_lost_overflow);
+	oprofilefs_create_ro_atomic(dir, "bt_lost_no_mapping",
+		&oprofile_stats.bt_lost_no_mapping);
+#ifdef CONFIG_OPROFILE_EVENT_MULTIPLEX
+	oprofilefs_create_ro_atomic(dir, "multiplex_counter",
+>>>>>>> refs/remotes/origin/master
 		&oprofile_stats.multiplex_counter);
 #endif
 }

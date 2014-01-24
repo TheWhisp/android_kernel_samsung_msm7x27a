@@ -75,6 +75,7 @@ static const unsigned short normal_i2c[] = {
 #define TT_ON 1
 #define TT_MASK 7
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MANUFACTURER_ID 0x01
 #define DEFAULT_REVISION 0xA4
 =======
@@ -82,6 +83,11 @@ static const unsigned short normal_i2c[] = {
 #define LM95231_CHIP_ID	0xA1
 #define LM95241_CHIP_ID	0xA4
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NATSEMI_MAN_ID	0x01
+#define LM95231_CHIP_ID	0xA1
+#define LM95241_CHIP_ID	0xA4
+>>>>>>> refs/remotes/origin/master
 
 static const u8 lm95241_reg_address[] = {
 	LM95241_REG_R_LOCAL_TEMPH,
@@ -175,10 +181,14 @@ static ssize_t set_type(struct device *dev, struct device_attribute *attr,
 	u8 mask = to_sensor_dev_attr(attr)->index;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val) < 0)
 =======
 	if (kstrtoul(buf, 10, &val) < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtoul(buf, 10, &val) < 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (val != 1 && val != 2)
 		return -EINVAL;
@@ -226,10 +236,14 @@ static ssize_t set_min(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val) < 0)
 =======
 	if (kstrtol(buf, 10, &val) < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val) < 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (val < -128000)
 		return -EINVAL;
@@ -268,10 +282,14 @@ static ssize_t set_max(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val) < 0)
 =======
 	if (kstrtol(buf, 10, &val) < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val) < 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (val >= 256000)
 		return -EINVAL;
@@ -308,10 +326,14 @@ static ssize_t set_interval(struct device *dev, struct device_attribute *attr,
 	unsigned long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val) < 0)
 =======
 	if (kstrtoul(buf, 10, &val) < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtoul(buf, 10, &val) < 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	data->interval = val * HZ / 1000;
@@ -361,16 +383,22 @@ static int lm95241_detect(struct i2c_client *new_client,
 {
 	struct i2c_adapter *adapter = new_client->adapter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int address = new_client->addr;
 	const char *name;
 =======
 	const char *name;
 	int mfg_id, chip_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *name;
+	int mfg_id, chip_id;
+>>>>>>> refs/remotes/origin/master
 
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((i2c_smbus_read_byte_data(new_client, LM95241_REG_R_MAN_ID)
 	     == MANUFACTURER_ID)
@@ -381,6 +409,8 @@ static int lm95241_detect(struct i2c_client *new_client,
 		dev_dbg(&adapter->dev, "LM95241 detection failed at 0x%02x\n",
 			address);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mfg_id = i2c_smbus_read_byte_data(new_client, LM95241_REG_R_MAN_ID);
 	if (mfg_id != NATSEMI_MAN_ID)
 		return -ENODEV;
@@ -394,7 +424,10 @@ static int lm95241_detect(struct i2c_client *new_client,
 		name = "lm95241";
 		break;
 	default:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -428,11 +461,18 @@ static int lm95241_probe(struct i2c_client *new_client,
 	struct lm95241_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct lm95241_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&new_client->dev, sizeof(struct lm95241_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(new_client, data);
 	mutex_init(&data->update_lock);
@@ -443,7 +483,11 @@ static int lm95241_probe(struct i2c_client *new_client,
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&new_client->dev.kobj, &lm95241_group);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -455,9 +499,12 @@ static int lm95241_probe(struct i2c_client *new_client,
 
 exit_remove_files:
 	sysfs_remove_group(&new_client->dev.kobj, &lm95241_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -468,18 +515,26 @@ static int lm95241_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &lm95241_group);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /* Driver data (common to all clients) */
 static const struct i2c_device_id lm95241_id[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ DEVNAME, 0 },
 =======
 	{ "lm95231", 0 },
 	{ "lm95241", 0 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "lm95231", 0 },
+	{ "lm95241", 0 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, lm95241_id);
@@ -497,6 +552,7 @@ static struct i2c_driver lm95241_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_lm95241_init(void)
 {
 	return i2c_add_driver(&lm95241_driver);
@@ -509,13 +565,19 @@ static void __exit sensors_lm95241_exit(void)
 =======
 module_i2c_driver(lm95241_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(lm95241_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Davide Rizzo <elpa.rizzo@gmail.com>");
 MODULE_DESCRIPTION("LM95241 sensor driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(sensors_lm95241_init);
 module_exit(sensors_lm95241_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

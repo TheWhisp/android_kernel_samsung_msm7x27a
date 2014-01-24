@@ -75,7 +75,10 @@ void *paravirt_get_gate_section(void);
 #ifdef CONFIG_PARAVIRT_GUEST
 
 #define PARAVIRT_HYPERVISOR_TYPE_DEFAULT	0
+<<<<<<< HEAD
 #define PARAVIRT_HYPERVISOR_TYPE_XEN		1
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -282,12 +285,18 @@ paravirt_init_missing_ticks_accounting(int cpu)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct static_key;
 extern struct static_key paravirt_steal_enabled;
 extern struct static_key paravirt_steal_rq_enabled;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 paravirt_do_steal_accounting(unsigned long *new_itm)
 {

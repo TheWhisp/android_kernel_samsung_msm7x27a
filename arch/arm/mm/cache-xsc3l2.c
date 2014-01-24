@@ -19,10 +19,14 @@
 #include <linux/init.h>
 #include <linux/highmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <asm/cp15.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cputype.h>
 #include <asm/cacheflush.h>
 

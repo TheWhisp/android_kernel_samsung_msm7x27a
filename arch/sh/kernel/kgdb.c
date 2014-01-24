@@ -1,7 +1,11 @@
 /*
  * SuperH KGDB support
  *
+<<<<<<< HEAD
  * Copyright (C) 2008 - 2009  Paul Mundt
+=======
+ * Copyright (C) 2008 - 2012  Paul Mundt
+>>>>>>> refs/remotes/origin/master
  *
  * Single stepping taken from the old stub by Henry Bell and Jeremy Siegel.
  *
@@ -13,11 +17,17 @@
 #include <linux/kdebug.h>
 #include <linux/irq.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
 <<<<<<< HEAD
 =======
 #include <asm/traps.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+#include <asm/cacheflush.h>
+#include <asm/traps.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Macros for single step instruction identification */
 #define OPCODE_BT(op)		(((op) & 0xff00) == 0x8900)
@@ -167,6 +177,7 @@ static void undo_single_step(struct pt_regs *linux_regs)
 	stepped_opcode = 0;
 }
 
+<<<<<<< HEAD
 void pt_regs_to_gdb_regs(unsigned long *gdb_regs, struct pt_regs *regs)
 {
 	int i;
@@ -197,12 +208,96 @@ void gdb_regs_to_pt_regs(unsigned long *gdb_regs, struct pt_regs *regs)
 	regs->gbr = gdb_regs[GDB_GBR];
 	regs->mach = gdb_regs[GDB_MACH];
 	regs->macl = gdb_regs[GDB_MACL];
+=======
+struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] = {
+	{ "r0",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[0]) },
+	{ "r1",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[1]) },
+	{ "r2",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[2]) },
+	{ "r3",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[3]) },
+	{ "r4",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[4]) },
+	{ "r5",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[5]) },
+	{ "r6",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[6]) },
+	{ "r7",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[7]) },
+	{ "r8",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[8]) },
+	{ "r9",		GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[9]) },
+	{ "r10",	GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[10]) },
+	{ "r11",	GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[11]) },
+	{ "r12",	GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[12]) },
+	{ "r13",	GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[13]) },
+	{ "r14",	GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[14]) },
+	{ "r15",	GDB_SIZEOF_REG, offsetof(struct pt_regs, regs[15]) },
+	{ "pc",		GDB_SIZEOF_REG, offsetof(struct pt_regs, pc) },
+	{ "pr",		GDB_SIZEOF_REG, offsetof(struct pt_regs, pr) },
+	{ "sr",		GDB_SIZEOF_REG, offsetof(struct pt_regs, sr) },
+	{ "gbr",	GDB_SIZEOF_REG, offsetof(struct pt_regs, gbr) },
+	{ "mach",	GDB_SIZEOF_REG, offsetof(struct pt_regs, mach) },
+	{ "macl",	GDB_SIZEOF_REG, offsetof(struct pt_regs, macl) },
+	{ "vbr",	GDB_SIZEOF_REG, -1 },
+};
+
+int dbg_set_reg(int regno, void *mem, struct pt_regs *regs)
+{
+	if (regno < 0 || regno >= DBG_MAX_REG_NUM)
+		return -EINVAL;
+
+	if (dbg_reg_def[regno].offset != -1)
+		memcpy((void *)regs + dbg_reg_def[regno].offset, mem,
+		       dbg_reg_def[regno].size);
+
+	return 0;
+}
+
+char *dbg_get_reg(int regno, void *mem, struct pt_regs *regs)
+{
+	if (regno >= DBG_MAX_REG_NUM || regno < 0)
+		return NULL;
+
+	if (dbg_reg_def[regno].size != -1)
+		memcpy(mem, (void *)regs + dbg_reg_def[regno].offset,
+		       dbg_reg_def[regno].size);
+
+	switch (regno) {
+	case GDB_VBR:
+		__asm__ __volatile__ ("stc vbr, %0" : "=r" (mem));
+		break;
+	}
+
+	return dbg_reg_def[regno].name;
+>>>>>>> refs/remotes/origin/master
 }
 
 void sleeping_thread_to_gdb_regs(unsigned long *gdb_regs, struct task_struct *p)
 {
+<<<<<<< HEAD
 	gdb_regs[GDB_R15] = p->thread.sp;
 	gdb_regs[GDB_PC] = p->thread.pc;
+=======
+	struct pt_regs *thread_regs = task_pt_regs(p);
+	int reg;
+
+	/* Initialize to zero */
+	for (reg = 0; reg < DBG_MAX_REG_NUM; reg++)
+		gdb_regs[reg] = 0;
+
+	/*
+	 * Copy out GP regs 8 to 14.
+	 *
+	 * switch_to() relies on SR.RB toggling, so regs 0->7 are banked
+	 * and need privileged instructions to get to. The r15 value we
+	 * fetch from the thread info directly.
+	 */
+	for (reg = GDB_R8; reg < GDB_R15; reg++)
+		gdb_regs[reg] = thread_regs->regs[reg];
+
+	gdb_regs[GDB_R15] = p->thread.sp;
+	gdb_regs[GDB_PC] = p->thread.pc;
+
+	/*
+	 * Additional registers we have context for
+	 */
+	gdb_regs[GDB_PR] = thread_regs->pr;
+	gdb_regs[GDB_GBR] = thread_regs->gbr;
+>>>>>>> refs/remotes/origin/master
 }
 
 int kgdb_arch_handle_exception(int e_vector, int signo, int err_code,
@@ -267,6 +362,21 @@ BUILD_TRAP_HANDLER(singlestep)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
+=======
+static void kgdb_call_nmi_hook(void *ignored)
+{
+	kgdb_nmicallback(raw_smp_processor_id(), get_irq_regs());
+}
+
+void kgdb_roundup_cpus(unsigned long flags)
+{
+	local_irq_enable();
+	smp_call_function(kgdb_call_nmi_hook, NULL, 0);
+	local_irq_disable();
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __kgdb_notify(struct die_args *args, unsigned long cmd)
 {
 	int ret;

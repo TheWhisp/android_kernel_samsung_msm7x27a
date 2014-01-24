@@ -6,12 +6,15 @@ static struct {
 	u32 ignore_gfp_wait;
 	int cache_filter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
 	struct dentry *ignore_gfp_wait_file;
 	struct dentry *cache_filter_file;
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } failslab = {
 	.attr = FAULT_ATTR_INITIALIZER,
 	.ignore_gfp_wait = 1,
@@ -42,6 +45,7 @@ __setup("failslab=", setup_failslab);
 static int __init failslab_debugfs_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode = S_IFREG | S_IRUSR | S_IWUSR;
 	struct dentry *dir;
 	int err;
@@ -69,6 +73,8 @@ static int __init failslab_debugfs_init(void)
 
 	return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dentry *dir;
 	umode_t mode = S_IFREG | S_IRUSR | S_IWUSR;
 
@@ -88,7 +94,10 @@ fail:
 	debugfs_remove_recursive(dir);
 
 	return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 late_initcall(failslab_debugfs_init);

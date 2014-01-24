@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 # enter ECRYPT_encrypt_bytes
 .text
 .p2align 5
 .globl ECRYPT_encrypt_bytes
 ECRYPT_encrypt_bytes:
+=======
+#include <linux/linkage.h>
+
+# enter salsa20_encrypt_bytes
+ENTRY(salsa20_encrypt_bytes)
+>>>>>>> refs/remotes/origin/master
 	mov	%rsp,%r11
 	and	$31,%r11
 	add	$256,%r11
@@ -802,11 +809,18 @@ ECRYPT_encrypt_bytes:
 	# comment:fp stack unchanged by jump
 	# goto bytesatleast1
 	jmp	._bytesatleast1
+<<<<<<< HEAD
 # enter ECRYPT_keysetup
 .text
 .p2align 5
 .globl ECRYPT_keysetup
 ECRYPT_keysetup:
+=======
+ENDPROC(salsa20_encrypt_bytes)
+
+# enter salsa20_keysetup
+ENTRY(salsa20_keysetup)
+>>>>>>> refs/remotes/origin/master
 	mov	%rsp,%r11
 	and	$31,%r11
 	add	$256,%r11
@@ -892,11 +906,18 @@ ECRYPT_keysetup:
 	mov	%rdi,%rax
 	mov	%rsi,%rdx
 	ret
+<<<<<<< HEAD
 # enter ECRYPT_ivsetup
 .text
 .p2align 5
 .globl ECRYPT_ivsetup
 ECRYPT_ivsetup:
+=======
+ENDPROC(salsa20_keysetup)
+
+# enter salsa20_ivsetup
+ENTRY(salsa20_ivsetup)
+>>>>>>> refs/remotes/origin/master
 	mov	%rsp,%r11
 	and	$31,%r11
 	add	$256,%r11
@@ -918,3 +939,7 @@ ECRYPT_ivsetup:
 	mov	%rdi,%rax
 	mov	%rsi,%rdx
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(salsa20_ivsetup)
+>>>>>>> refs/remotes/origin/master

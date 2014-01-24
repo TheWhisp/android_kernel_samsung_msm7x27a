@@ -41,7 +41,10 @@ enum dwc3_omap_utmi_mode {
 	DWC3_OMAP_UTMI_MODE_HW,
 	DWC3_OMAP_UTMI_MODE_SW,
 };
+<<<<<<< HEAD
 
 struct dwc3_omap_data {
 	enum dwc3_omap_utmi_mode	utmi_mode;
 };
+=======
+>>>>>>> refs/remotes/origin/master

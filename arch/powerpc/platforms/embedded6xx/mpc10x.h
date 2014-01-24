@@ -81,6 +81,7 @@
 #define	MPC10X_MAPB_PCI_MEM_OFFSET	(MPC10X_MAPB_ISA_MEM_BASE -	\
 					 MPC10X_MAPB_PCI_MEM_START)
 
+<<<<<<< HEAD
 /* Set hose members to values appropriate for the mem map used */
 #define	MPC10X_SETUP_HOSE(hose, map) {					\
 	(hose)->pci_mem_offset = MPC10X_MAP##map##_PCI_MEM_OFFSET;	\
@@ -92,6 +93,8 @@
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Miscellaneous Configuration register offsets */
 #define	MPC10X_CFG_PIR_REG		0x09
 #define	MPC10X_CFG_PIR_HOST_BRIDGE	0x00

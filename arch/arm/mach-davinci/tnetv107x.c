@@ -13,15 +13,23 @@
  * GNU General Public License for more details.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/clk.h>
 #include <linux/io.h>
 #include <linux/err.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/map.h>
 
@@ -32,6 +40,7 @@
 #include <mach/cp_intc.h>
 #include <mach/irqs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 #include <mach/hardware.h>
 #include <mach/tnetv107x.h>
@@ -40,6 +49,11 @@
 #include <mach/tnetv107x.h>
 #include <mach/gpio-davinci.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/hardware.h>
+#include <mach/tnetv107x.h>
+#include <mach/gpio-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "clock.h"
 #include "mux.h"
@@ -272,7 +286,11 @@ static struct clk_lookup clks[] = {
 	CLK(NULL,		"clk_chipcfg",		&clk_chipcfg),
 	CLK("tnetv107x-ts.0",	NULL,			&clk_tsc),
 	CLK(NULL,		"clk_rom",		&clk_rom),
+<<<<<<< HEAD
 	CLK(NULL,		"uart2",		&clk_uart2),
+=======
+	CLK("serial8250.2",     NULL,			&clk_uart2),
+>>>>>>> refs/remotes/origin/master
 	CLK(NULL,		"clk_pktsec",		&clk_pktsec),
 	CLK("tnetv107x-rng.0",	NULL,			&clk_rng),
 	CLK("tnetv107x-pka.0",	NULL,			&clk_pka),
@@ -281,9 +299,15 @@ static struct clk_lookup clks[] = {
 	CLK("tnetv107x-keypad.0", NULL,			&clk_keypad),
 	CLK(NULL,		"clk_gpio",		&clk_gpio),
 	CLK(NULL,		"clk_mdio",		&clk_mdio),
+<<<<<<< HEAD
 	CLK("davinci_mmc.0",	NULL,			&clk_sdio0),
 	CLK(NULL,		"uart0",		&clk_uart0),
 	CLK(NULL,		"uart1",		&clk_uart1),
+=======
+	CLK("dm6441-mmc.0",	NULL,			&clk_sdio0),
+	CLK("serial8250.0",	NULL,			&clk_uart0),
+	CLK("serial8250.1",	NULL,			&clk_uart1),
+>>>>>>> refs/remotes/origin/master
 	CLK(NULL,		"timer0",		&clk_timer0),
 	CLK(NULL,		"timer1",		&clk_timer1),
 	CLK("tnetv107x_wdt.0",	NULL,			&clk_wdt_arm),
@@ -301,7 +325,11 @@ static struct clk_lookup clks[] = {
 	CLK(NULL,		"clk_system",		&clk_system),
 	CLK(NULL,		"clk_imcop",		&clk_imcop),
 	CLK(NULL,		"clk_spare",		&clk_spare),
+<<<<<<< HEAD
 	CLK("davinci_mmc.1",	NULL,			&clk_sdio1),
+=======
+	CLK("dm6441-mmc.1",	NULL,			&clk_sdio1),
+>>>>>>> refs/remotes/origin/master
 	CLK(NULL,		"clk_ddr2_vrst",	&clk_ddr2_vrst),
 	CLK(NULL,		"clk_ddr2_vctl_rst",	&clk_ddr2_vctl_rst),
 	CLK(NULL,		NULL,			NULL),
@@ -740,13 +768,20 @@ static void tnetv107x_watchdog_reset(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void tnetv107x_restart(char mode, const char *cmd)
+=======
+void tnetv107x_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	tnetv107x_watchdog_reset(&tnetv107x_wdt_device);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct davinci_soc_info tnetv107x_soc_info = {
 	.io_desc		= io_desc,
 	.io_desc_num		= ARRAY_SIZE(io_desc),
@@ -768,12 +803,16 @@ static struct davinci_soc_info tnetv107x_soc_info = {
 	.gpio_type		= GPIO_TYPE_TNETV107X,
 	.gpio_num		= TNETV107X_N_GPIO,
 	.timer_info		= &timer_info,
+<<<<<<< HEAD
 	.serial_dev		= &tnetv107x_serial_device,
 <<<<<<< HEAD
 	.reset			= tnetv107x_watchdog_reset,
 	.reset_device		= &tnetv107x_wdt_device,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.serial_dev		= tnetv107x_serial_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init tnetv107x_init(void)

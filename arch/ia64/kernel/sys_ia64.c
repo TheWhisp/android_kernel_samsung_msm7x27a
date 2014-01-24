@@ -25,9 +25,15 @@ arch_get_unmapped_area (struct file *filp, unsigned long addr, unsigned long len
 			unsigned long pgoff, unsigned long flags)
 {
 	long map_shared = (flags & MAP_SHARED);
+<<<<<<< HEAD
 	unsigned long start_addr, align_mask = PAGE_SIZE - 1;
 	struct mm_struct *mm = current->mm;
 	struct vm_area_struct *vma;
+=======
+	unsigned long align_mask = 0;
+	struct mm_struct *mm = current->mm;
+	struct vm_unmapped_area_info info;
+>>>>>>> refs/remotes/origin/master
 
 	if (len > RGN_MAP_LIMIT)
 		return -ENOMEM;
@@ -44,7 +50,11 @@ arch_get_unmapped_area (struct file *filp, unsigned long addr, unsigned long len
 		addr = 0;
 #endif
 	if (!addr)
+<<<<<<< HEAD
 		addr = mm->free_area_cache;
+=======
+		addr = TASK_UNMAPPED_BASE;
+>>>>>>> refs/remotes/origin/master
 
 	if (map_shared && (TASK_SIZE > 0xfffffffful))
 		/*
@@ -53,6 +63,7 @@ arch_get_unmapped_area (struct file *filp, unsigned long addr, unsigned long len
 		 * tasks, we prefer to avoid exhausting the address space too quickly by
 		 * limiting alignment to a single page.
 		 */
+<<<<<<< HEAD
 		align_mask = SHMLBA - 1;
 
   full_search:
@@ -75,6 +86,17 @@ arch_get_unmapped_area (struct file *filp, unsigned long addr, unsigned long len
 		}
 		addr = (vma->vm_end + align_mask) & ~align_mask;
 	}
+=======
+		align_mask = PAGE_MASK & (SHMLBA - 1);
+
+	info.flags = 0;
+	info.length = len;
+	info.low_limit = addr;
+	info.high_limit = TASK_SIZE;
+	info.align_mask = align_mask;
+	info.align_offset = 0;
+	return vm_unmapped_area(&info);
+>>>>>>> refs/remotes/origin/master
 }
 
 asmlinkage long
@@ -171,6 +193,7 @@ asmlinkage unsigned long
 ia64_mremap (unsigned long addr, unsigned long old_len, unsigned long new_len, unsigned long flags,
 	     unsigned long new_addr)
 {
+<<<<<<< HEAD
 	extern unsigned long do_mremap (unsigned long addr,
 					unsigned long old_len,
 					unsigned long new_len,
@@ -187,6 +210,11 @@ ia64_mremap (unsigned long addr, unsigned long old_len, unsigned long new_len, u
 		return addr;
 
 	force_successful_syscall_return();
+=======
+	addr = sys_mremap(addr, old_len, new_len, flags, new_addr);
+	if (!IS_ERR((void *) addr))
+		force_successful_syscall_return();
+>>>>>>> refs/remotes/origin/master
 	return addr;
 }
 

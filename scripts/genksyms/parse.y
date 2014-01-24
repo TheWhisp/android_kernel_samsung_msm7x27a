@@ -52,7 +52,10 @@ remove_list(struct string_list **pb, struct string_list **pe)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Record definition of a struct/union/enum */
 static void record_compound(struct string_list **keyw,
 		       struct string_list **ident,
@@ -72,7 +75,10 @@ static void record_compound(struct string_list **keyw,
 	add_symbol(i->string, type, b, is_extern);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 %}
 
 %token ASM_KEYW
@@ -238,6 +244,7 @@ type_specifier:
 	/* Full definitions of an s/u/e.  Record it.  */
 	| STRUCT_KEYW IDENT class_body
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{ struct string_list *s = *$3, *i = *$2, *r;
 		  r = copy_node(i); r->tag = SYM_STRUCT;
 		  r->next = (*$1)->next; *$3 = r; (*$1)->next = NULL;
@@ -259,12 +266,17 @@ type_specifier:
 		  $$ = $3;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		{ record_compound($1, $2, $3, SYM_STRUCT); $$ = $3; }
 	| UNION_KEYW IDENT class_body
 		{ record_compound($1, $2, $3, SYM_UNION); $$ = $3; }
 	| ENUM_KEYW IDENT enum_body
 		{ record_compound($1, $2, $3, SYM_ENUM); $$ = $3; }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Anonymous enum definition. Tell add_symbol() to restart its counter.
 	 */

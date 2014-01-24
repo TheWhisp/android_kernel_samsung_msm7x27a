@@ -481,7 +481,11 @@ snd_wavefront_midi_disable_virtual (snd_wavefront_card_t *card)
 	spin_unlock_irqrestore (&card->wavefront.midi.virtual, flags);
 }
 
+<<<<<<< HEAD
 int __devinit
+=======
+int
+>>>>>>> refs/remotes/origin/master
 snd_wavefront_midi_start (snd_wavefront_card_t *card)
 
 {

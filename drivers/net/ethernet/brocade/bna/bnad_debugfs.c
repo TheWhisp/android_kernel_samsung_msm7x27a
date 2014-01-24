@@ -230,12 +230,16 @@ bnad_debugfs_open_drvinfo(struct inode *inode, struct file *file)
 static loff_t
 bnad_debugfs_lseek(struct file *file, loff_t offset, int orig)
 {
+<<<<<<< HEAD
 	loff_t pos = file->f_pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bnad_debug_info *debug = file->private_data;
 
 	if (!debug)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	switch (orig) {
 	case 0:
 		file->f_pos = offset;
@@ -256,6 +260,9 @@ bnad_debugfs_lseek(struct file *file, loff_t offset, int orig)
 	}
 
 	return file->f_pos;
+=======
+	return fixed_size_llseek(file, offset, orig, debug->buffer_len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t

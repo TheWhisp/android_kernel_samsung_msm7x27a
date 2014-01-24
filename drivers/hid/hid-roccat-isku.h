@@ -15,6 +15,7 @@
 #include <linux/types.h>
 
 enum {
+<<<<<<< HEAD
 	ISKU_PROFILE_NUM = 5,
 	ISKU_USB_INTERFACE_PROTOCOL = 0,
 };
@@ -30,6 +31,28 @@ enum isku_control_values {
 	ISKU_CONTROL_VALUE_STATUS_OK = 1,
 	ISKU_CONTROL_VALUE_STATUS_INVALID = 2,
 	ISKU_CONTROL_VALUE_STATUS_WAIT = 3,
+=======
+	ISKU_SIZE_CONTROL = 0x03,
+	ISKU_SIZE_INFO = 0x06,
+	ISKU_SIZE_KEY_MASK = 0x06,
+	ISKU_SIZE_KEYS_FUNCTION = 0x29,
+	ISKU_SIZE_KEYS_EASYZONE = 0x41,
+	ISKU_SIZE_KEYS_MEDIA = 0x1d,
+	ISKU_SIZE_KEYS_THUMBSTER = 0x17,
+	ISKU_SIZE_KEYS_MACRO = 0x23,
+	ISKU_SIZE_KEYS_CAPSLOCK = 0x06,
+	ISKU_SIZE_LAST_SET = 0x14,
+	ISKU_SIZE_LIGHT = 0x10,
+	ISKU_SIZE_MACRO = 0x823,
+	ISKU_SIZE_RESET = 0x03,
+	ISKU_SIZE_TALK = 0x10,
+	ISKU_SIZE_TALKFX = 0x10,
+};
+
+enum {
+	ISKU_PROFILE_NUM = 5,
+	ISKU_USB_INTERFACE_PROTOCOL = 0,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct isku_actual_profile {
@@ -38,6 +61,7 @@ struct isku_actual_profile {
 	uint8_t actual_profile;
 } __packed;
 
+<<<<<<< HEAD
 struct isku_key_mask {
 	uint8_t command; /* ISKU_COMMAND_KEY_MASK */
 	uint8_t size; /* 6 */
@@ -92,6 +116,8 @@ struct isku_last_set {
 	uint8_t data[0x14];
 } __packed;
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum isku_commands {
 	ISKU_COMMAND_CONTROL = 0x4,
 	ISKU_COMMAND_ACTUAL_PROFILE = 0x5,
@@ -104,10 +130,18 @@ enum isku_commands {
 	ISKU_COMMAND_MACRO = 0xe,
 	ISKU_COMMAND_INFO = 0xf,
 	ISKU_COMMAND_LIGHT = 0x10,
+<<<<<<< HEAD
+=======
+	ISKU_COMMAND_RESET = 0x11,
+>>>>>>> refs/remotes/origin/master
 	ISKU_COMMAND_KEYS_CAPSLOCK = 0x13,
 	ISKU_COMMAND_LAST_SET = 0x14,
 	ISKU_COMMAND_15 = 0x15,
 	ISKU_COMMAND_TALK = 0x16,
+<<<<<<< HEAD
+=======
+	ISKU_COMMAND_TALKFX = 0x17,
+>>>>>>> refs/remotes/origin/master
 	ISKU_COMMAND_FIRMWARE_WRITE = 0x1b,
 	ISKU_COMMAND_FIRMWARE_WRITE_CONTROL = 0x1c,
 };

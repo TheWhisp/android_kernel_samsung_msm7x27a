@@ -1,6 +1,7 @@
 #ifndef _SPEAKUP_SERIAL_H
 #define _SPEAKUP_SERIAL_H
 
+<<<<<<< HEAD
 #include <linux/serial.h>	/* for rs_table, serial constants &
 				   serial_uart_config */
 #include <linux/serial_reg.h>	/* for more serial constants */
@@ -8,12 +9,19 @@
 #include <linux/serialP.h>	/* for struct serial_state */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/serial.h>	/* for rs_table, serial constants */
+#include <linux/serial_reg.h>	/* for more serial constants */
+>>>>>>> refs/remotes/origin/master
 #ifndef __sparc__
 #include <asm/serial.h>
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * this is cut&paste from 8250.h. Get rid of the structure, the definitions
  * and this whole broken driver.
@@ -26,7 +34,10 @@ struct old_serial_port {
 	unsigned int flags; /* unused */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* countdown values for serial timeouts in us */
 #define SPK_SERIAL_TIMEOUT 100000
 /* countdown values transmitter/dsr timeouts in us */
@@ -44,6 +55,7 @@ struct old_serial_port {
 
 #define spk_serial_tx_busy() ((inb(speakup_info.port_tts + UART_LSR) & BOTH_EMPTY) != BOTH_EMPTY)
 
+<<<<<<< HEAD
 /* 2.6.22 doesn't have them any more, hardcode it for now (these values should
  * be fine for 99% cases) */
 #ifndef BASE_BAUD
@@ -70,4 +82,6 @@ struct old_serial_port {
 #define IRQF_SHARED SA_SHIRQ
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -19,6 +19,13 @@
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/machine.h>
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OF
+#include <linux/of.h>
+#include <linux/regulator/of_regulator.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mfd/da9052/da9052.h>
 #include <linux/mfd/da9052/reg.h>
@@ -37,6 +44,25 @@
 #define DA9052_BUCK_ILIM_MASK_EVEN	0x0c
 #define DA9052_BUCK_ILIM_MASK_ODD	0xc0
 
+<<<<<<< HEAD
+=======
+/* DA9052 REGULATOR IDs */
+#define DA9052_ID_BUCK1		0
+#define DA9052_ID_BUCK2		1
+#define DA9052_ID_BUCK3		2
+#define DA9052_ID_BUCK4		3
+#define DA9052_ID_LDO1		4
+#define DA9052_ID_LDO2		5
+#define DA9052_ID_LDO3		6
+#define DA9052_ID_LDO4		7
+#define DA9052_ID_LDO5		8
+#define DA9052_ID_LDO6		9
+#define DA9052_ID_LDO7		10
+#define DA9052_ID_LDO8		11
+#define DA9052_ID_LDO9		12
+#define DA9052_ID_LDO10		13
+
+>>>>>>> refs/remotes/origin/master
 static const u32 da9052_current_limits[3][4] = {
 	{700000, 800000, 1000000, 1200000},	/* DA9052-BC BUCKs */
 	{1600000, 2000000, 2400000, 3000000},	/* DA9053-AA/Bx BUCK-CORE */
@@ -50,8 +76,11 @@ struct da9052_regulator_info {
 	int step_uV;
 	int min_uV;
 	int max_uV;
+<<<<<<< HEAD
 	unsigned char volt_shift;
 	unsigned char en_bit;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char activate_bit;
 };
 
@@ -70,6 +99,7 @@ static int verify_range(struct da9052_regulator_info *info,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int da9052_regulator_enable(struct regulator_dev *rdev)
 {
 	struct da9052_regulator *regulator = rdev_get_drvdata(rdev);
@@ -106,6 +136,8 @@ static int da9052_regulator_is_enabled(struct regulator_dev *rdev)
 	return ret & (1 << info->en_bit);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int da9052_dcdc_get_current_limit(struct regulator_dev *rdev)
 {
 	struct da9052_regulator *regulator = rdev_get_drvdata(rdev);
@@ -147,17 +179,29 @@ static int da9052_dcdc_set_current_limit(struct regulator_dev *rdev, int min_uA,
 	else if (offset == 0)
 		row = 1;
 
+<<<<<<< HEAD
 	if (min_uA > da9052_current_limits[row][DA9052_MAX_UA] ||
 	    max_uA < da9052_current_limits[row][DA9052_MIN_UA])
 		return -EINVAL;
 
 	for (i = 0; i < DA9052_CURRENT_RANGE; i++) {
 		if (min_uA <= da9052_current_limits[row][i]) {
+=======
+	for (i = DA9052_CURRENT_RANGE - 1; i >= 0; i--) {
+		if ((min_uA <= da9052_current_limits[row][i]) &&
+		    (da9052_current_limits[row][i] <= max_uA)) {
+>>>>>>> refs/remotes/origin/master
 			reg_val = i;
 			break;
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (i < 0)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	/* Determine the even or odd position of the buck current limit
 	 * register field
 	*/
@@ -173,6 +217,7 @@ static int da9052_dcdc_set_current_limit(struct regulator_dev *rdev, int min_uA,
 					 reg_val << 6);
 }
 
+<<<<<<< HEAD
 static int da9052_list_buckperi_voltage(struct regulator_dev *rdev,
 					 unsigned int selector)
 {
@@ -195,14 +240,31 @@ static int da9052_list_buckperi_voltage(struct regulator_dev *rdev,
 	return volt_uV;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int da9052_list_voltage(struct regulator_dev *rdev,
 				unsigned int selector)
 {
 	struct da9052_regulator *regulator = rdev_get_drvdata(rdev);
 	struct da9052_regulator_info *info = regulator->info;
+<<<<<<< HEAD
 	int volt_uV;
 
 	volt_uV = info->min_uV + info->step_uV * selector;
+=======
+	int id = rdev_get_id(rdev);
+	int volt_uV;
+
+	if ((id == DA9052_ID_BUCK4) && (regulator->da9052->chip_id == DA9052)
+		&& (selector >= DA9052_BUCK_PERI_REG_MAP_UPTO_3uV)) {
+		volt_uV = ((DA9052_BUCK_PERI_REG_MAP_UPTO_3uV * info->step_uV)
+			  + info->min_uV);
+		volt_uV += (selector - DA9052_BUCK_PERI_REG_MAP_UPTO_3uV)
+				    * (DA9052_BUCK_PERI_3uV_STEP);
+	} else {
+		volt_uV = (selector * info->step_uV) + info->min_uV;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (volt_uV > info->max_uV)
 		return -EINVAL;
@@ -210,6 +272,7 @@ static int da9052_list_voltage(struct regulator_dev *rdev,
 	return volt_uV;
 }
 
+<<<<<<< HEAD
 static int da9052_regulator_set_voltage_int(struct regulator_dev *rdev,
 					     int min_uV, int max_uV,
 					     unsigned int *selector)
@@ -218,6 +281,15 @@ static int da9052_regulator_set_voltage_int(struct regulator_dev *rdev,
 	struct da9052_regulator_info *info = regulator->info;
 	int offset = rdev_get_id(rdev);
 	int ret;
+=======
+static int da9052_map_voltage(struct regulator_dev *rdev,
+			      int min_uV, int max_uV)
+{
+	struct da9052_regulator *regulator = rdev_get_drvdata(rdev);
+	struct da9052_regulator_info *info = regulator->info;
+	int id = rdev_get_id(rdev);
+	int ret, sel;
+>>>>>>> refs/remotes/origin/master
 
 	ret = verify_range(info, min_uV, max_uV);
 	if (ret < 0)
@@ -226,6 +298,7 @@ static int da9052_regulator_set_voltage_int(struct regulator_dev *rdev,
 	if (min_uV < info->min_uV)
 		min_uV = info->min_uV;
 
+<<<<<<< HEAD
 	*selector = DIV_ROUND_UP(min_uV - info->min_uV, info->step_uV);
 
 	ret = da9052_list_voltage(rdev, *selector);
@@ -344,10 +417,55 @@ static int da9052_get_buckperi_voltage_sel(struct regulator_dev *rdev)
 		return ret;
 
 	ret &= ((1 << info->volt_shift) - 1);
+=======
+	if ((id == DA9052_ID_BUCK4) && (regulator->da9052->chip_id == DA9052)
+		&& (min_uV >= DA9052_CONST_3uV)) {
+			sel = DA9052_BUCK_PERI_REG_MAP_UPTO_3uV +
+			      DIV_ROUND_UP(min_uV - DA9052_CONST_3uV,
+					   DA9052_BUCK_PERI_3uV_STEP);
+	} else {
+		sel = DIV_ROUND_UP(min_uV - info->min_uV, info->step_uV);
+	}
+
+	ret = da9052_list_voltage(rdev, sel);
+	if (ret < 0)
+		return ret;
+
+	return sel;
+}
+
+static int da9052_regulator_set_voltage_sel(struct regulator_dev *rdev,
+					    unsigned int selector)
+{
+	struct da9052_regulator *regulator = rdev_get_drvdata(rdev);
+	struct da9052_regulator_info *info = regulator->info;
+	int id = rdev_get_id(rdev);
+	int ret;
+
+	ret = da9052_reg_update(regulator->da9052, rdev->desc->vsel_reg,
+				rdev->desc->vsel_mask, selector);
+	if (ret < 0)
+		return ret;
+
+	/* Some LDOs and DCDCs are DVC controlled which requires enabling of
+	 * the activate bit to implment the changes on the output.
+	 */
+	switch (id) {
+	case DA9052_ID_BUCK1:
+	case DA9052_ID_BUCK2:
+	case DA9052_ID_BUCK3:
+	case DA9052_ID_LDO2:
+	case DA9052_ID_LDO3:
+		ret = da9052_reg_update(regulator->da9052, DA9052_SUPPLY_REG,
+					info->activate_bit, info->activate_bit);
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct regulator_ops da9052_buckperi_ops = {
 	.list_voltage = da9052_list_buckperi_voltage,
 	.get_voltage_sel = da9052_get_buckperi_voltage_sel,
@@ -363,10 +481,14 @@ static struct regulator_ops da9052_buckperi_ops = {
 
 static struct regulator_ops da9052_dcdc_ops = {
 	.set_voltage = da9052_set_dcdc_voltage,
+=======
+static struct regulator_ops da9052_dcdc_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_current_limit = da9052_dcdc_get_current_limit,
 	.set_current_limit = da9052_dcdc_set_current_limit,
 
 	.list_voltage = da9052_list_voltage,
+<<<<<<< HEAD
 	.get_voltage_sel = da9052_get_regulator_voltage_sel,
 	.is_enabled = da9052_regulator_is_enabled,
 	.enable = da9052_regulator_enable,
@@ -420,28 +542,78 @@ static struct regulator_ops da9052_ldo_ops = {
 		.id = _id,\
 		.n_voltages = (max - min) / step + 1, \
 		.owner = THIS_MODULE,\
+=======
+	.map_voltage = da9052_map_voltage,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.set_voltage_sel = da9052_regulator_set_voltage_sel,
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+};
+
+static struct regulator_ops da9052_ldo_ops = {
+	.list_voltage = da9052_list_voltage,
+	.map_voltage = da9052_map_voltage,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.set_voltage_sel = da9052_regulator_set_voltage_sel,
+	.is_enabled = regulator_is_enabled_regmap,
+	.enable = regulator_enable_regmap,
+	.disable = regulator_disable_regmap,
+};
+
+#define DA9052_LDO(_id, step, min, max, sbits, ebits, abits) \
+{\
+	.reg_desc = {\
+		.name = #_id,\
+		.ops = &da9052_ldo_ops,\
+		.type = REGULATOR_VOLTAGE,\
+		.id = DA9052_ID_##_id,\
+		.n_voltages = (max - min) / step + 1, \
+		.owner = THIS_MODULE,\
+		.vsel_reg = DA9052_BUCKCORE_REG + DA9052_ID_##_id, \
+		.vsel_mask = (1 << (sbits)) - 1,\
+		.enable_reg = DA9052_BUCKCORE_REG + DA9052_ID_##_id, \
+		.enable_mask = 1 << (ebits),\
+>>>>>>> refs/remotes/origin/master
 	},\
 	.min_uV = (min) * 1000,\
 	.max_uV = (max) * 1000,\
 	.step_uV = (step) * 1000,\
+<<<<<<< HEAD
 	.volt_shift = (sbits),\
 	.en_bit = (ebits),\
+=======
+>>>>>>> refs/remotes/origin/master
 	.activate_bit = (abits),\
 }
 
 #define DA9052_DCDC(_id, step, min, max, sbits, ebits, abits) \
 {\
 	.reg_desc = {\
+<<<<<<< HEAD
 		.name = "BUCK" #_id,\
 		.ops = &da9052_dcdc_ops,\
 		.type = REGULATOR_VOLTAGE,\
 		.id = _id,\
 		.n_voltages = (max - min) / step + 1, \
 		.owner = THIS_MODULE,\
+=======
+		.name = #_id,\
+		.ops = &da9052_dcdc_ops,\
+		.type = REGULATOR_VOLTAGE,\
+		.id = DA9052_ID_##_id,\
+		.n_voltages = (max - min) / step + 1, \
+		.owner = THIS_MODULE,\
+		.vsel_reg = DA9052_BUCKCORE_REG + DA9052_ID_##_id, \
+		.vsel_mask = (1 << (sbits)) - 1,\
+		.enable_reg = DA9052_BUCKCORE_REG + DA9052_ID_##_id, \
+		.enable_mask = 1 << (ebits),\
+>>>>>>> refs/remotes/origin/master
 	},\
 	.min_uV = (min) * 1000,\
 	.max_uV = (max) * 1000,\
 	.step_uV = (step) * 1000,\
+<<<<<<< HEAD
 	.volt_shift = (sbits),\
 	.en_bit = (ebits),\
 	.activate_bit = (abits),\
@@ -462,10 +634,13 @@ static struct regulator_ops da9052_ldo_ops = {
 	.step_uV = (step) * 1000,\
 	.volt_shift = (sbits),\
 	.en_bit = (ebits),\
+=======
+>>>>>>> refs/remotes/origin/master
 	.activate_bit = (abits),\
 }
 
 static struct da9052_regulator_info da9052_regulator_info[] = {
+<<<<<<< HEAD
 	/* Buck1 - 4 */
 	DA9052_DCDC(0, 25, 500, 2075, 6, 6, DA9052_SUPPLY_VBCOREGO),
 	DA9052_DCDC(1, 25, 500, 2075, 6, 6, DA9052_SUPPLY_VBPROGO),
@@ -501,6 +676,39 @@ static struct da9052_regulator_info da9053_regulator_info[] = {
 	DA9052_LDO(11, 50, 1200, 3600, 6, 6, 0),
 	DA9052_LDO(12, 50, 1250, 3650, 6, 6, 0),
 	DA9052_LDO(13, 50, 1200, 3600, 6, 6, 0),
+=======
+	DA9052_DCDC(BUCK1, 25, 500, 2075, 6, 6, DA9052_SUPPLY_VBCOREGO),
+	DA9052_DCDC(BUCK2, 25, 500, 2075, 6, 6, DA9052_SUPPLY_VBPROGO),
+	DA9052_DCDC(BUCK3, 25, 925, 2500, 6, 6, DA9052_SUPPLY_VBMEMGO),
+	DA9052_DCDC(BUCK4, 50, 1800, 3600, 5, 6, 0),
+	DA9052_LDO(LDO1, 50, 600, 1800, 5, 6, 0),
+	DA9052_LDO(LDO2, 25, 600, 1800, 6, 6, DA9052_SUPPLY_VLDO2GO),
+	DA9052_LDO(LDO3, 25, 1725, 3300, 6, 6, DA9052_SUPPLY_VLDO3GO),
+	DA9052_LDO(LDO4, 25, 1725, 3300, 6, 6, 0),
+	DA9052_LDO(LDO5, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO6, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO7, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO8, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO9, 50, 1250, 3650, 6, 6, 0),
+	DA9052_LDO(LDO10, 50, 1200, 3600, 6, 6, 0),
+};
+
+static struct da9052_regulator_info da9053_regulator_info[] = {
+	DA9052_DCDC(BUCK1, 25, 500, 2075, 6, 6, DA9052_SUPPLY_VBCOREGO),
+	DA9052_DCDC(BUCK2, 25, 500, 2075, 6, 6, DA9052_SUPPLY_VBPROGO),
+	DA9052_DCDC(BUCK3, 25, 925, 2500, 6, 6, DA9052_SUPPLY_VBMEMGO),
+	DA9052_DCDC(BUCK4, 25, 925, 2500, 6, 6, 0),
+	DA9052_LDO(LDO1, 50, 600, 1800, 5, 6, 0),
+	DA9052_LDO(LDO2, 25, 600, 1800, 6, 6, DA9052_SUPPLY_VLDO2GO),
+	DA9052_LDO(LDO3, 25, 1725, 3300, 6, 6, DA9052_SUPPLY_VLDO3GO),
+	DA9052_LDO(LDO4, 25, 1725, 3300, 6, 6, 0),
+	DA9052_LDO(LDO5, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO6, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO7, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO8, 50, 1200, 3600, 6, 6, 0),
+	DA9052_LDO(LDO9, 50, 1250, 3650, 6, 6, 0),
+	DA9052_LDO(LDO10, 50, 1200, 3600, 6, 6, 0),
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct da9052_regulator_info *find_regulator_info(u8 chip_id,
@@ -531,12 +739,21 @@ static inline struct da9052_regulator_info *find_regulator_info(u8 chip_id,
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit da9052_regulator_probe(struct platform_device *pdev)
 {
 	struct da9052_regulator *regulator;
 	struct da9052 *da9052;
 	struct da9052_pdata *pdata;
 	int ret;
+=======
+static int da9052_regulator_probe(struct platform_device *pdev)
+{
+	struct regulator_config config = { };
+	struct da9052_regulator *regulator;
+	struct da9052 *da9052;
+	struct da9052_pdata *pdata;
+>>>>>>> refs/remotes/origin/master
 
 	regulator = devm_kzalloc(&pdev->dev, sizeof(struct da9052_regulator),
 				 GFP_KERNEL);
@@ -544,13 +761,18 @@ static int __devinit da9052_regulator_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	da9052 = dev_get_drvdata(pdev->dev.parent);
+<<<<<<< HEAD
 	pdata = da9052->dev->platform_data;
+=======
+	pdata = dev_get_platdata(da9052->dev);
+>>>>>>> refs/remotes/origin/master
 	regulator->da9052 = da9052;
 
 	regulator->info = find_regulator_info(regulator->da9052->chip_id,
 					      pdev->id);
 	if (regulator->info == NULL) {
 		dev_err(&pdev->dev, "invalid regulator ID specified\n");
+<<<<<<< HEAD
 		ret = -EINVAL;
 		goto err;
 	}
@@ -563,11 +785,54 @@ static int __devinit da9052_regulator_probe(struct platform_device *pdev)
 			regulator->info->reg_desc.name);
 		ret = PTR_ERR(regulator->rdev);
 		goto err;
+=======
+		return -EINVAL;
+	}
+
+	config.dev = &pdev->dev;
+	config.driver_data = regulator;
+	config.regmap = da9052->regmap;
+	if (pdata && pdata->regulators) {
+		config.init_data = pdata->regulators[pdev->id];
+	} else {
+#ifdef CONFIG_OF
+		struct device_node *nproot, *np;
+
+		nproot = of_node_get(da9052->dev->of_node);
+		if (!nproot)
+			return -ENODEV;
+
+		nproot = of_find_node_by_name(nproot, "regulators");
+		if (!nproot)
+			return -ENODEV;
+
+		for_each_child_of_node(nproot, np) {
+			if (!of_node_cmp(np->name,
+					 regulator->info->reg_desc.name)) {
+				config.init_data = of_get_regulator_init_data(
+					&pdev->dev, np);
+				config.of_node = np;
+				break;
+			}
+		}
+		of_node_put(nproot);
+#endif
+	}
+
+	regulator->rdev = devm_regulator_register(&pdev->dev,
+						  &regulator->info->reg_desc,
+						  &config);
+	if (IS_ERR(regulator->rdev)) {
+		dev_err(&pdev->dev, "failed to register regulator %s\n",
+			regulator->info->reg_desc.name);
+		return PTR_ERR(regulator->rdev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, regulator);
 
 	return 0;
+<<<<<<< HEAD
 err:
 	devm_kfree(&pdev->dev, regulator);
 	return ret;
@@ -581,11 +846,16 @@ static int __devexit da9052_regulator_remove(struct platform_device *pdev)
 	devm_kfree(&pdev->dev, regulator);
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_driver da9052_regulator_driver = {
 	.probe = da9052_regulator_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(da9052_regulator_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "da9052-regulator",
 		.owner = THIS_MODULE,

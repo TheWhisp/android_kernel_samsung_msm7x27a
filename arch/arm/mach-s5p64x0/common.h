@@ -12,6 +12,11 @@
 #ifndef __ARCH_ARM_MACH_S5P64X0_COMMON_H
 #define __ARCH_ARM_MACH_S5P64X0_COMMON_H
 
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+
+>>>>>>> refs/remotes/origin/master
 void s5p6440_init_irq(void);
 void s5p6450_init_irq(void);
 void s5p64x0_init_io(struct map_desc *mach_desc, int size);
@@ -22,7 +27,11 @@ void s5p6440_setup_clocks(void);
 void s5p6450_register_clocks(void);
 void s5p6450_setup_clocks(void);
 
+<<<<<<< HEAD
 void s5p64x0_restart(char mode, const char *cmd);
+=======
+void s5p64x0_restart(enum reboot_mode mode, const char *cmd);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CPU_S5P6440
 

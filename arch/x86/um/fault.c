@@ -3,7 +3,11 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "sysdep/ptrace.h"
+=======
+#include <sysdep/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 /* These two are from asm-um/uaccess.h and linux/module.h, check them. */
 struct exception_table_entry
@@ -20,7 +24,11 @@ int arch_fixup(unsigned long address, struct uml_pt_regs *regs)
 	const struct exception_table_entry *fixup;
 
 	fixup = search_exception_tables(address);
+<<<<<<< HEAD
 	if (fixup != 0) {
+=======
+	if (fixup) {
+>>>>>>> refs/remotes/origin/master
 		UPT_IP(regs) = fixup->fixup;
 		return 1;
 	}

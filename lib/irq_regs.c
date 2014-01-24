@@ -9,11 +9,16 @@
  * 2 of the License, or (at your option) any later version.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 #include <linux/percpu.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/percpu.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq_regs.h>
 
 #ifndef ARCH_HAS_OWN_IRQ_REGS

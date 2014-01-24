@@ -54,9 +54,13 @@ static const unsigned char ethertype_ipv6[] = { ETHERTYPE_IPV6 };
 static const unsigned char llc_oui_pid_pad[] =
 			{ LLC, SNAP_BRIDGED, PID_ETHERNET, PAD_BRIDGED };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static const unsigned char pad[] = { PAD_BRIDGED };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const unsigned char pad[] = { PAD_BRIDGED };
+>>>>>>> refs/remotes/origin/master
 static const unsigned char llc_oui_ipv4[] = { LLC, SNAP_ROUTED, ETHERTYPE_IPV4 };
 static const unsigned char llc_oui_ipv6[] = { LLC, SNAP_ROUTED, ETHERTYPE_IPV6 };
 
@@ -71,12 +75,22 @@ struct br2684_vcc {
 	/* keep old push, pop functions for chaining */
 	void (*old_push)(struct atm_vcc *vcc, struct sk_buff *skb);
 	void (*old_pop)(struct atm_vcc *vcc, struct sk_buff *skb);
+<<<<<<< HEAD
+=======
+	void (*old_release_cb)(struct atm_vcc *vcc);
+	struct module *old_owner;
+>>>>>>> refs/remotes/origin/master
 	enum br2684_encaps encaps;
 	struct list_head brvccs;
 #ifdef CONFIG_ATM_BR2684_IPFILTER
 	struct br2684_filter filter;
 #endif /* CONFIG_ATM_BR2684_IPFILTER */
+<<<<<<< HEAD
 	unsigned copies_needed, copies_failed;
+=======
+	unsigned int copies_needed, copies_failed;
+	atomic_t qspace;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct br2684_dev {
@@ -184,6 +198,7 @@ static struct notifier_block atm_dev_notifier = {
 static void br2684_pop(struct atm_vcc *vcc, struct sk_buff *skb)
 {
 	struct br2684_vcc *brvcc = BR2684_VCC(vcc);
+<<<<<<< HEAD
 	struct net_device *net_dev = skb->dev;
 
 	pr_debug("(vcc %p ; net_dev %p )\n", vcc, net_dev);
@@ -196,6 +211,17 @@ static void br2684_pop(struct atm_vcc *vcc, struct sk_buff *skb)
 		netif_wake_queue(net_dev);
 
 }
+=======
+
+	pr_debug("(vcc %p ; net_dev %p )\n", vcc, brvcc->device);
+	brvcc->old_pop(vcc, skb);
+
+	/* If the queue space just went up from zero, wake */
+	if (atomic_inc_return(&brvcc->qspace) == 1)
+		netif_wake_queue(brvcc->device);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Send a packet out a particular vcc.  Not to useful right now, but paves
  * the way for multiple vcc's per itf.  Returns true if we can send,
@@ -207,13 +233,19 @@ static int br2684_xmit_vcc(struct sk_buff *skb, struct net_device *dev,
 	struct br2684_dev *brdev = BRPRIV(dev);
 	struct atm_vcc *atmvcc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int minheadroom = (brvcc->encaps == e_llc) ? 10 : 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int minheadroom = (brvcc->encaps == e_llc) ?
 		((brdev->payload == p_bridged) ?
 			sizeof(llc_oui_pid_pad) : sizeof(llc_oui_ipv4)) :
 		((brdev->payload == p_bridged) ? BR2684_PAD_LEN : 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (skb_headroom(skb) < minheadroom) {
 		struct sk_buff *skb2 = skb_realloc_headroom(skb, minheadroom);
@@ -263,6 +295,7 @@ static int br2684_xmit_vcc(struct sk_buff *skb, struct net_device *dev,
 	ATM_SKB(skb)->atm_options = atmvcc->atm_options;
 	dev->stats.tx_packets++;
 	dev->stats.tx_bytes += skb->len;
+<<<<<<< HEAD
 	atmvcc->send(atmvcc, skb);
 
 	if (!atm_may_send(atmvcc, 0)) {
@@ -273,6 +306,32 @@ static int br2684_xmit_vcc(struct sk_buff *skb, struct net_device *dev,
 	}
 
 	return 1;
+=======
+
+	if (atomic_dec_return(&brvcc->qspace) < 1) {
+		/* No more please! */
+		netif_stop_queue(brvcc->device);
+		/* We might have raced with br2684_pop() */
+		if (unlikely(atomic_read(&brvcc->qspace) > 0))
+			netif_wake_queue(brvcc->device);
+	}
+
+	/* If this fails immediately, the skb will be freed and br2684_pop()
+	   will wake the queue if appropriate. Just return an error so that
+	   the stats are updated correctly */
+	return !atmvcc->send(atmvcc, skb);
+}
+
+static void br2684_release_cb(struct atm_vcc *atmvcc)
+{
+	struct br2684_vcc *brvcc = BR2684_VCC(atmvcc);
+
+	if (atomic_read(&brvcc->qspace) > 0)
+		netif_wake_queue(brvcc->device);
+
+	if (brvcc->old_release_cb)
+		brvcc->old_release_cb(atmvcc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct br2684_vcc *pick_outgoing_vcc(const struct sk_buff *skb,
@@ -286,6 +345,11 @@ static netdev_tx_t br2684_start_xmit(struct sk_buff *skb,
 {
 	struct br2684_dev *brdev = BRPRIV(dev);
 	struct br2684_vcc *brvcc;
+<<<<<<< HEAD
+=======
+	struct atm_vcc *atmvcc;
+	netdev_tx_t ret = NETDEV_TX_OK;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("skb_dst(skb)=%p\n", skb_dst(skb));
 	read_lock(&devs_lock);
@@ -296,9 +360,32 @@ static netdev_tx_t br2684_start_xmit(struct sk_buff *skb,
 		dev->stats.tx_carrier_errors++;
 		/* netif_stop_queue(dev); */
 		dev_kfree_skb(skb);
+<<<<<<< HEAD
 		read_unlock(&devs_lock);
 		return NETDEV_TX_OK;
 	}
+=======
+		goto out_devs;
+	}
+	atmvcc = brvcc->atmvcc;
+
+	bh_lock_sock(sk_atm(atmvcc));
+
+	if (test_bit(ATM_VF_RELEASED, &atmvcc->flags) ||
+	    test_bit(ATM_VF_CLOSE, &atmvcc->flags) ||
+	    !test_bit(ATM_VF_READY, &atmvcc->flags)) {
+		dev->stats.tx_dropped++;
+		dev_kfree_skb(skb);
+		goto out;
+	}
+
+	if (sock_owned_by_user(sk_atm(atmvcc))) {
+		netif_stop_queue(brvcc->device);
+		ret = NETDEV_TX_BUSY;
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!br2684_xmit_vcc(skb, dev, brvcc)) {
 		/*
 		 * We should probably use netif_*_queue() here, but that
@@ -310,8 +397,16 @@ static netdev_tx_t br2684_start_xmit(struct sk_buff *skb,
 		dev->stats.tx_errors++;
 		dev->stats.tx_fifo_errors++;
 	}
+<<<<<<< HEAD
 	read_unlock(&devs_lock);
 	return NETDEV_TX_OK;
+=======
+ out:
+	bh_unlock_sock(sk_atm(atmvcc));
+ out_devs:
+	read_unlock(&devs_lock);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -384,9 +479,16 @@ static void br2684_close_vcc(struct br2684_vcc *brvcc)
 	list_del(&brvcc->brvccs);
 	write_unlock_irq(&devs_lock);
 	brvcc->atmvcc->user_back = NULL;	/* what about vcc->recvq ??? */
+<<<<<<< HEAD
 	brvcc->old_push(brvcc->atmvcc, NULL);	/* pass on the bad news */
 	kfree(brvcc);
 	module_put(THIS_MODULE);
+=======
+	brvcc->atmvcc->release_cb = brvcc->old_release_cb;
+	brvcc->old_push(brvcc->atmvcc, NULL);	/* pass on the bad news */
+	module_put(brvcc->old_owner);
+	kfree(brvcc);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* when AAL5 PDU comes in: */
@@ -462,10 +564,14 @@ static void br2684_push(struct atm_vcc *atmvcc, struct sk_buff *skb)
 		} else { /* p_bridged */
 			/* first 2 chars should be 0 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (*((u16 *) (skb->data)) != 0)
 =======
 			if (memcmp(skb->data, pad, BR2684_PAD_LEN) != 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (memcmp(skb->data, pad, BR2684_PAD_LEN) != 0)
+>>>>>>> refs/remotes/origin/master
 				goto error;
 			skb_pull(skb, BR2684_PAD_LEN);
 			skb->protocol = eth_type_trans(skb, net_dev);
@@ -505,6 +611,7 @@ free_skb:
 static int br2684_regvcc(struct atm_vcc *atmvcc, void __user * arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sk_buff_head queue;
 	int err;
 	struct br2684_vcc *brvcc;
@@ -515,18 +622,33 @@ static int br2684_regvcc(struct atm_vcc *atmvcc, void __user * arg)
 	struct atm_backend_br2684 be;
 	unsigned long flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct br2684_vcc *brvcc;
 	struct br2684_dev *brdev;
 	struct net_device *net_dev;
 	struct atm_backend_br2684 be;
 	int err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&be, arg, sizeof be))
 		return -EFAULT;
 	brvcc = kzalloc(sizeof(struct br2684_vcc), GFP_KERNEL);
 	if (!brvcc)
 		return -ENOMEM;
+<<<<<<< HEAD
+=======
+	/*
+	 * Allow two packets in the ATM queue. One actually being sent, and one
+	 * for the ATM 'TX done' handler to send. It shouldn't take long to get
+	 * the next one from the netdev queue, when we need it. More than that
+	 * would be bufferbloat.
+	 */
+	atomic_set(&brvcc->qspace, 2);
+>>>>>>> refs/remotes/origin/master
 	write_lock_irq(&devs_lock);
 	net_dev = br2684_find_dev(&be.ifspec);
 	if (net_dev == NULL) {
@@ -569,6 +691,7 @@ static int br2684_regvcc(struct atm_vcc *atmvcc, void __user * arg)
 	brvcc->encaps = (enum br2684_encaps)be.encaps;
 	brvcc->old_push = atmvcc->push;
 	brvcc->old_pop = atmvcc->pop;
+<<<<<<< HEAD
 	barrier();
 	atmvcc->push = br2684_push;
 	atmvcc->pop = br2684_pop;
@@ -593,6 +716,16 @@ static int br2684_regvcc(struct atm_vcc *atmvcc, void __user * arg)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	brvcc->old_release_cb = atmvcc->release_cb;
+	brvcc->old_owner = atmvcc->owner;
+	barrier();
+	atmvcc->push = br2684_push;
+	atmvcc->pop = br2684_pop;
+	atmvcc->release_cb = br2684_release_cb;
+	atmvcc->owner = THIS_MODULE;
+
+>>>>>>> refs/remotes/origin/master
 	/* initialize netdev carrier state */
 	if (atmvcc->dev->signal == ATM_PHY_SIG_LOST)
 		netif_carrier_off(net_dev);
@@ -601,12 +734,18 @@ static int br2684_regvcc(struct atm_vcc *atmvcc, void __user * arg)
 
 	__module_get(THIS_MODULE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* re-process everything received between connection setup and
 	   backend setup */
 	vcc_process_recv_queue(atmvcc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 error:
@@ -634,9 +773,13 @@ static void br2684_setup(struct net_device *netdev)
 
 	ether_setup(netdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	netdev->hard_header_len += sizeof(llc_oui_pid_pad); /* worst case */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev->hard_header_len += sizeof(llc_oui_pid_pad); /* worst case */
+>>>>>>> refs/remotes/origin/master
 	brdev->net_dev = netdev;
 
 	netdev->netdev_ops = &br2684_netdev_ops;
@@ -650,10 +793,14 @@ static void br2684_setup_routed(struct net_device *netdev)
 
 	brdev->net_dev = netdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	netdev->hard_header_len = 0;
 =======
 	netdev->hard_header_len = sizeof(llc_oui_ipv4); /* worst case */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	netdev->hard_header_len = sizeof(llc_oui_ipv4); /* worst case */
+>>>>>>> refs/remotes/origin/master
 	netdev->netdev_ops = &br2684_netdev_ops_routed;
 	netdev->addr_len = 0;
 	netdev->mtu = 1500;
@@ -740,10 +887,20 @@ static int br2684_ioctl(struct socket *sock, unsigned int cmd,
 			return -ENOIOCTLCMD;
 		if (!capable(CAP_NET_ADMIN))
 			return -EPERM;
+<<<<<<< HEAD
 		if (cmd == ATM_SETBACKEND)
 			return br2684_regvcc(atmvcc, argp);
 		else
 			return br2684_create(argp);
+=======
+		if (cmd == ATM_SETBACKEND) {
+			if (sock->state != SS_CONNECTED)
+				return -EINVAL;
+			return br2684_regvcc(atmvcc, argp);
+		} else {
+			return br2684_create(argp);
+		}
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ATM_BR2684_IPFILTER
 	case BR2684_SETFILT:
 		if (atmvcc->push != br2684_push)

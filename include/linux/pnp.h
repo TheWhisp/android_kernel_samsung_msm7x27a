@@ -51,10 +51,14 @@ static inline resource_size_t pnp_resource_len(struct resource *res)
 	if (res->start == 0 && res->end == 0)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return res->end - res->start + 1;
 =======
 	return resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return resource_size(res);
+>>>>>>> refs/remotes/origin/master
 }
 
 

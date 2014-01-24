@@ -1,7 +1,11 @@
 #ifndef ISCSI_TARGET_ERL2_H
 #define ISCSI_TARGET_ERL2_H
 
+<<<<<<< HEAD
 extern void iscsit_create_conn_recovery_datain_values(struct iscsi_cmd *, u32);
+=======
+extern void iscsit_create_conn_recovery_datain_values(struct iscsi_cmd *, __be32);
+>>>>>>> refs/remotes/origin/master
 extern void iscsit_create_conn_recovery_dataout_values(struct iscsi_cmd *);
 extern struct iscsi_conn_recovery *iscsit_get_inactive_connection_recovery_entry(
 			struct iscsi_session *, u16);

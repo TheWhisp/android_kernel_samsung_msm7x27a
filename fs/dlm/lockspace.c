@@ -3,10 +3,14 @@
 **
 **  Copyright (C) Sistina Software, Inc.  1997-2003  All rights reserved.
 <<<<<<< HEAD
+<<<<<<< HEAD
 **  Copyright (C) 2004-2008 Red Hat, Inc.  All rights reserved.
 =======
 **  Copyright (C) 2004-2011 Red Hat, Inc.  All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+**  Copyright (C) 2004-2011 Red Hat, Inc.  All rights reserved.
+>>>>>>> refs/remotes/origin/master
 **
 **  This copyrighted material is made available to anyone wishing to use,
 **  modify, copy, or redistribute it subject to the terms and conditions
@@ -20,9 +24,12 @@
 #include "member.h"
 #include "recoverd.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "ast.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "dir.h"
 #include "lowcomms.h"
 #include "config.h"
@@ -32,9 +39,13 @@
 #include "requestqueue.h"
 #include "user.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "ast.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ast.h"
+>>>>>>> refs/remotes/origin/master
 
 static int			ls_count;
 static struct mutex		ls_lock;
@@ -85,6 +96,22 @@ static ssize_t dlm_id_store(struct dlm_ls *ls, const char *buf, size_t len)
 	return len;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t dlm_nodir_show(struct dlm_ls *ls, char *buf)
+{
+	return snprintf(buf, PAGE_SIZE, "%u\n", dlm_no_directory(ls));
+}
+
+static ssize_t dlm_nodir_store(struct dlm_ls *ls, const char *buf, size_t len)
+{
+	int val = simple_strtoul(buf, NULL, 0);
+	if (val == 1)
+		set_bit(LSFL_NODIR, &ls->ls_flags);
+	return len;
+}
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t dlm_recover_status_show(struct dlm_ls *ls, char *buf)
 {
 	uint32_t status = dlm_recover_status(ls);
@@ -118,6 +145,15 @@ static struct dlm_attr dlm_attr_id = {
 	.store = dlm_id_store
 };
 
+<<<<<<< HEAD
+=======
+static struct dlm_attr dlm_attr_nodir = {
+	.attr  = {.name = "nodir", .mode = S_IRUGO | S_IWUSR},
+	.show  = dlm_nodir_show,
+	.store = dlm_nodir_store
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct dlm_attr dlm_attr_recover_status = {
 	.attr  = {.name = "recover_status", .mode = S_IRUGO},
 	.show  = dlm_recover_status_show
@@ -132,6 +168,10 @@ static struct attribute *dlm_attrs[] = {
 	&dlm_attr_control.attr,
 	&dlm_attr_event.attr,
 	&dlm_attr_id.attr,
+<<<<<<< HEAD
+=======
+	&dlm_attr_nodir.attr,
+>>>>>>> refs/remotes/origin/master
 	&dlm_attr_recover_status.attr,
 	&dlm_attr_recover_nodeid.attr,
 	NULL,
@@ -371,6 +411,7 @@ static int threads_start(void)
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Thread which process lock requests for all lockspace's */
 	error = dlm_astd_start();
 	if (error) {
@@ -383,11 +424,16 @@ static int threads_start(void)
 		log_print("cannot start dlm_scand thread %d", error);
 		goto astd_fail;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = dlm_scand_start();
 	if (error) {
 		log_print("cannot start dlm_scand thread %d", error);
 		goto fail;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Thread for sending/receiving messages for all lockspace's */
@@ -402,10 +448,13 @@ static int threads_start(void)
  scand_fail:
 	dlm_scand_stop();
 <<<<<<< HEAD
+<<<<<<< HEAD
  astd_fail:
 	dlm_astd_stop();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  fail:
 	return error;
 }
@@ -415,27 +464,37 @@ static void threads_stop(void)
 	dlm_scand_stop();
 	dlm_lowcomms_stop();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dlm_astd_stop();
 }
 
 static int new_lockspace(const char *name, int namelen, void **lockspace,
 			 uint32_t flags, int lvblen)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int new_lockspace(const char *name, const char *cluster,
 			 uint32_t flags, int lvblen,
 			 const struct dlm_lockspace_ops *ops, void *ops_arg,
 			 int *ops_result, dlm_lockspace_t **lockspace)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct dlm_ls *ls;
 	int i, size, error;
 	int do_unreg = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int namelen = strlen(name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int namelen = strlen(name);
+>>>>>>> refs/remotes/origin/master
 
 	if (namelen > DLM_LOCKSPACE_LEN)
 		return -EINVAL;
@@ -448,9 +507,12 @@ static int new_lockspace(const char *name, const char *cluster,
 
 	if (!dlm_user_daemon_available()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		module_put(THIS_MODULE);
 		return -EUNATCH;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		log_print("dlm user daemon not available");
 		error = -EUNATCH;
 		goto out;
@@ -469,7 +531,10 @@ static int new_lockspace(const char *name, const char *cluster,
 			  dlm_config.ci_cluster_name, cluster);
 		error = -EBADR;
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = 0;
@@ -508,13 +573,19 @@ static int new_lockspace(const char *name, const char *cluster,
 	ls->ls_scan_time = jiffies;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ops && dlm_config.ci_recover_callbacks) {
 		ls->ls_ops = ops;
 		ls->ls_ops_arg = ops_arg;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (flags & DLM_LSFL_TIMEWARN)
 		set_bit(LSFL_TIMEWARN, &ls->ls_flags);
 
@@ -526,6 +597,7 @@ static int new_lockspace(const char *name, const char *cluster,
 	size = dlm_config.ci_rsbtbl_size;
 	ls->ls_rsbtbl_size = size;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ls->ls_rsbtbl = kmalloc(sizeof(struct dlm_rsbtable) * size, GFP_NOFS);
 	if (!ls->ls_rsbtbl)
@@ -548,6 +620,8 @@ static int new_lockspace(const char *name, const char *cluster,
 		ls->ls_lkbtbl[i].counter = 1;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ls->ls_rsbtbl = vmalloc(sizeof(struct dlm_rsbtable) * size);
 	if (!ls->ls_rsbtbl)
 		goto out_lsfree;
@@ -557,6 +631,7 @@ static int new_lockspace(const char *name, const char *cluster,
 		spin_lock_init(&ls->ls_rsbtbl[i].lock);
 	}
 
+<<<<<<< HEAD
 	idr_init(&ls->ls_lkbidr);
 	spin_lock_init(&ls->ls_lkbidr_spin);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -575,6 +650,19 @@ static int new_lockspace(const char *name, const char *cluster,
 		INIT_LIST_HEAD(&ls->ls_dirtbl[i].list);
 		spin_lock_init(&ls->ls_dirtbl[i].lock);
 	}
+=======
+	spin_lock_init(&ls->ls_remove_spin);
+
+	for (i = 0; i < DLM_REMOVE_NAMES_MAX; i++) {
+		ls->ls_remove_names[i] = kzalloc(DLM_RESNAME_MAXLEN+1,
+						 GFP_KERNEL);
+		if (!ls->ls_remove_names[i])
+			goto out_rsbtbl;
+	}
+
+	idr_init(&ls->ls_lkbidr);
+	spin_lock_init(&ls->ls_lkbidr_spin);
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&ls->ls_waiters);
 	mutex_init(&ls->ls_waiters_mutex);
@@ -584,11 +672,17 @@ static int new_lockspace(const char *name, const char *cluster,
 	mutex_init(&ls->ls_timeout_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_LIST_HEAD(&ls->ls_new_rsb);
 	spin_lock_init(&ls->ls_new_rsb_spin);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&ls->ls_new_rsb);
+	spin_lock_init(&ls->ls_new_rsb_spin);
+
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&ls->ls_nodes);
 	INIT_LIST_HEAD(&ls->ls_nodes_gone);
 	ls->ls_num_nodes = 0;
@@ -608,11 +702,17 @@ static int new_lockspace(const char *name, const char *cluster,
 	ls->ls_members_result = -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_init(&ls->ls_cb_mutex);
 	INIT_LIST_HEAD(&ls->ls_cb_delay);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&ls->ls_cb_mutex);
+	INIT_LIST_HEAD(&ls->ls_cb_delay);
+
+>>>>>>> refs/remotes/origin/master
 	ls->ls_recoverd_task = NULL;
 	mutex_init(&ls->ls_recoverd_active);
 	spin_lock_init(&ls->ls_recover_lock);
@@ -629,33 +729,51 @@ static int new_lockspace(const char *name, const char *cluster,
 
 	ls->ls_recover_buf = kmalloc(dlm_config.ci_buffer_size, GFP_NOFS);
 	if (!ls->ls_recover_buf)
+<<<<<<< HEAD
 		goto out_dirfree;
 
 <<<<<<< HEAD
 =======
+=======
+		goto out_lkbidr;
+
+>>>>>>> refs/remotes/origin/master
 	ls->ls_slot = 0;
 	ls->ls_num_slots = 0;
 	ls->ls_slots_size = 0;
 	ls->ls_slots = NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	INIT_LIST_HEAD(&ls->ls_recover_list);
 	spin_lock_init(&ls->ls_recover_list_lock);
+=======
+	INIT_LIST_HEAD(&ls->ls_recover_list);
+	spin_lock_init(&ls->ls_recover_list_lock);
+	idr_init(&ls->ls_recover_idr);
+	spin_lock_init(&ls->ls_recover_idr_lock);
+>>>>>>> refs/remotes/origin/master
 	ls->ls_recover_list_count = 0;
 	ls->ls_local_handle = ls;
 	init_waitqueue_head(&ls->ls_wait_general);
 	INIT_LIST_HEAD(&ls->ls_root_list);
 	init_rwsem(&ls->ls_root_sem);
 
+<<<<<<< HEAD
 	down_write(&ls->ls_in_recovery);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&lslist_lock);
 	ls->ls_create_count = 1;
 	list_add(&ls->ls_list, &lslist);
 	spin_unlock(&lslist_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (flags & DLM_LSFL_FS) {
 		error = dlm_callback_start(ls);
 		if (error) {
@@ -664,6 +782,7 @@ static int new_lockspace(const char *name, const char *cluster,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* needs to find ls in lslist */
 	error = dlm_recoverd_start(ls);
@@ -676,15 +795,39 @@ static int new_lockspace(const char *name, const char *cluster,
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
+=======
+	init_waitqueue_head(&ls->ls_recover_lock_wait);
+
+	/*
+	 * Once started, dlm_recoverd first looks for ls in lslist, then
+	 * initializes ls_in_recovery as locked in "down" mode.  We need
+	 * to wait for the wakeup from dlm_recoverd because in_recovery
+	 * has to start out in down mode.
+	 */
+
+	error = dlm_recoverd_start(ls);
+	if (error) {
+		log_error(ls, "can't start dlm_recoverd %d", error);
+		goto out_callback;
+	}
+
+	wait_event(ls->ls_recover_lock_wait,
+		   test_bit(LSFL_RECOVER_LOCK, &ls->ls_flags));
+
+>>>>>>> refs/remotes/origin/master
 	ls->ls_kobj.kset = dlm_kset;
 	error = kobject_init_and_add(&ls->ls_kobj, &dlm_ktype, NULL,
 				     "%s", ls->ls_name);
 	if (error)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_stop;
 =======
 		goto out_recoverd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_recoverd;
+>>>>>>> refs/remotes/origin/master
 	kobject_uevent(&ls->ls_kobj, KOBJ_ADD);
 
 	/* let kobject handle freeing of ls if there's an error */
@@ -699,10 +842,14 @@ static int new_lockspace(const char *name, const char *cluster,
 	error = do_uevent(ls, 1);
 	if (error)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_stop;
 =======
 		goto out_recoverd;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_recoverd;
+>>>>>>> refs/remotes/origin/master
 
 	wait_for_completion(&ls->ls_members_done);
 	error = ls->ls_members_result;
@@ -720,18 +867,25 @@ static int new_lockspace(const char *name, const char *cluster,
 	dlm_clear_members(ls);
 	kfree(ls->ls_node_array);
 <<<<<<< HEAD
+<<<<<<< HEAD
  out_stop:
 	dlm_recoverd_stop(ls);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  out_recoverd:
 	dlm_recoverd_stop(ls);
  out_callback:
 	dlm_callback_stop(ls);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  out_delist:
 	spin_lock(&lslist_lock);
 	list_del(&ls->ls_list);
 	spin_unlock(&lslist_lock);
+<<<<<<< HEAD
 	kfree(ls->ls_recover_buf);
  out_dirfree:
 <<<<<<< HEAD
@@ -746,6 +900,18 @@ static int new_lockspace(const char *name, const char *cluster,
 	idr_destroy(&ls->ls_lkbidr);
 	vfree(ls->ls_rsbtbl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idr_destroy(&ls->ls_recover_idr);
+	kfree(ls->ls_recover_buf);
+ out_lkbidr:
+	idr_destroy(&ls->ls_lkbidr);
+	for (i = 0; i < DLM_REMOVE_NAMES_MAX; i++) {
+		if (ls->ls_remove_names[i])
+			kfree(ls->ls_remove_names[i]);
+	}
+ out_rsbtbl:
+	vfree(ls->ls_rsbtbl);
+>>>>>>> refs/remotes/origin/master
  out_lsfree:
 	if (do_unreg)
 		kobject_put(&ls->ls_kobj);
@@ -757,14 +923,20 @@ static int new_lockspace(const char *name, const char *cluster,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dlm_new_lockspace(const char *name, int namelen, void **lockspace,
 		      uint32_t flags, int lvblen)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int dlm_new_lockspace(const char *name, const char *cluster,
 		      uint32_t flags, int lvblen,
 		      const struct dlm_lockspace_ops *ops, void *ops_arg,
 		      int *ops_result, dlm_lockspace_t **lockspace)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int error = 0;
 
@@ -775,11 +947,16 @@ int dlm_new_lockspace(const char *name, const char *cluster,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = new_lockspace(name, namelen, lockspace, flags, lvblen);
 =======
 	error = new_lockspace(name, cluster, flags, lvblen, ops, ops_arg,
 			      ops_result, lockspace);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = new_lockspace(name, cluster, flags, lvblen, ops, ops_arg,
+			      ops_result, lockspace);
+>>>>>>> refs/remotes/origin/master
 	if (!error)
 		ls_count++;
 	if (error > 0)
@@ -791,6 +968,7 @@ int dlm_new_lockspace(const char *name, const char *cluster,
 	return error;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Return 1 if the lockspace still has active remote locks,
  *        2 if the lockspace still has active local locks.
@@ -821,13 +999,19 @@ static int lockspace_busy(struct dlm_ls *ls)
 	}
 	return lkb_found;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int lkb_idr_is_local(int id, void *p, void *data)
 {
 	struct dlm_lkb *lkb = p;
 
+<<<<<<< HEAD
 	if (!lkb->lkb_nodeid)
 		return 1;
 	return 0;
+=======
+	return lkb->lkb_nodeid == 0 && lkb->lkb_grmode != DLM_LOCK_IV;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lkb_idr_is_any(int id, void *p, void *data)
@@ -864,11 +1048,15 @@ static int lockspace_busy(struct dlm_ls *ls, int force)
 	}
 	spin_unlock(&ls->ls_lkbidr_spin);
 	return rv;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int release_lockspace(struct dlm_ls *ls, int force)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct dlm_lkb *lkb;
 	struct dlm_rsb *rsb;
@@ -883,6 +1071,8 @@ static int release_lockspace(struct dlm_ls *ls, int force)
 			rv = -EBUSY;
 		else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dlm_rsb *rsb;
 	struct rb_node *n;
 	int i, busy, rv;
@@ -894,7 +1084,10 @@ static int release_lockspace(struct dlm_ls *ls, int force)
 		if (busy) {
 			rv = -EBUSY;
 		} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* remove_lockspace takes ls off lslist */
 			ls->ls_create_count = 0;
 			rv = 0;
@@ -919,14 +1112,20 @@ static int release_lockspace(struct dlm_ls *ls, int force)
 	dlm_recoverd_stop(ls);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dlm_callback_stop(ls);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dlm_callback_stop(ls);
+
+>>>>>>> refs/remotes/origin/master
 	remove_lockspace(ls);
 
 	dlm_delete_debug_file(ls);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dlm_astd_suspend();
 
@@ -969,19 +1168,29 @@ static int release_lockspace(struct dlm_ls *ls, int force)
 	vfree(ls->ls_dirtbl);
 
 	/*
+=======
+	kfree(ls->ls_recover_buf);
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Free all lkb's in idr
 	 */
 
 	idr_for_each(&ls->ls_lkbidr, lkb_idr_free, ls);
+<<<<<<< HEAD
 	idr_remove_all(&ls->ls_lkbidr);
 	idr_destroy(&ls->ls_lkbidr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	idr_destroy(&ls->ls_lkbidr);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Free all rsb's on rsbtbl[] lists
 	 */
 
 	for (i = 0; i < ls->ls_rsbtbl_size; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		head = &ls->ls_rsbtbl[i].list;
 		while (!list_empty(head)) {
@@ -998,6 +1207,8 @@ static int release_lockspace(struct dlm_ls *ls, int force)
 					 res_hashchain);
 			list_del(&rsb->res_hashchain);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while ((n = rb_first(&ls->ls_rsbtbl[i].keep))) {
 			rsb = rb_entry(n, struct dlm_rsb, res_hashnode);
 			rb_erase(n, &ls->ls_rsbtbl[i].keep);
@@ -1007,23 +1218,37 @@ static int release_lockspace(struct dlm_ls *ls, int force)
 		while ((n = rb_first(&ls->ls_rsbtbl[i].toss))) {
 			rsb = rb_entry(n, struct dlm_rsb, res_hashnode);
 			rb_erase(n, &ls->ls_rsbtbl[i].toss);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			dlm_free_rsb(rsb);
 		}
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(ls->ls_rsbtbl);
 =======
 	vfree(ls->ls_rsbtbl);
 
+=======
+	vfree(ls->ls_rsbtbl);
+
+	for (i = 0; i < DLM_REMOVE_NAMES_MAX; i++)
+		kfree(ls->ls_remove_names[i]);
+
+>>>>>>> refs/remotes/origin/master
 	while (!list_empty(&ls->ls_new_rsb)) {
 		rsb = list_first_entry(&ls->ls_new_rsb, struct dlm_rsb,
 				       res_hashchain);
 		list_del(&rsb->res_hashchain);
 		dlm_free_rsb(rsb);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Free structures on any other lists
@@ -1031,7 +1256,10 @@ static int release_lockspace(struct dlm_ls *ls, int force)
 
 	dlm_purge_requestqueue(ls);
 	kfree(ls->ls_recover_args);
+<<<<<<< HEAD
 	dlm_clear_free_entries(ls);
+=======
+>>>>>>> refs/remotes/origin/master
 	dlm_clear_members(ls);
 	dlm_clear_members_gone(ls);
 	kfree(ls->ls_node_array);
@@ -1081,17 +1309,36 @@ int dlm_release_lockspace(void *lockspace, int force)
 void dlm_stop_lockspaces(void)
 {
 	struct dlm_ls *ls;
+<<<<<<< HEAD
 
  restart:
 	spin_lock(&lslist_lock);
 	list_for_each_entry(ls, &lslist, ls_list) {
 		if (!test_bit(LSFL_RUNNING, &ls->ls_flags))
 			continue;
+=======
+	int count;
+
+ restart:
+	count = 0;
+	spin_lock(&lslist_lock);
+	list_for_each_entry(ls, &lslist, ls_list) {
+		if (!test_bit(LSFL_RUNNING, &ls->ls_flags)) {
+			count++;
+			continue;
+		}
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&lslist_lock);
 		log_error(ls, "no userland control daemon, stopping lockspace");
 		dlm_ls_stop(ls);
 		goto restart;
 	}
 	spin_unlock(&lslist_lock);
+<<<<<<< HEAD
+=======
+
+	if (count)
+		log_print("dlm user daemon left %d lockspaces", count);
+>>>>>>> refs/remotes/origin/master
 }
 

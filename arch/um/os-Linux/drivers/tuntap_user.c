@@ -14,6 +14,7 @@
 #include <sys/wait.h>
 #include <sys/uio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "kern_util.h"
 #include "os.h"
@@ -24,6 +25,11 @@
 #include "os.h"
 #include "tuntap.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <kern_util.h>
+#include <os.h>
+#include "tuntap.h"
+>>>>>>> refs/remotes/origin/master
 
 static int tuntap_user_init(void *data, void *dev)
 {

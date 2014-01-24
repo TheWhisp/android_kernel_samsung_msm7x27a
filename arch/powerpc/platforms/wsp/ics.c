@@ -18,6 +18,11 @@
 #include <linux/smp.h>
 #include <linux/spinlock.h>
 #include <linux/types.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -347,10 +352,14 @@ static int wsp_chip_set_affinity(struct irq_data *d,
 	 * Get current irq_server for the given irq
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = cache_hwirq_map(ics, d->irq, cpumask);
 =======
 	ret = cache_hwirq_map(ics, hw_irq, cpumask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = cache_hwirq_map(ics, hw_irq, cpumask);
+>>>>>>> refs/remotes/origin/master
 	if (ret == -1) {
 		char cpulist[128];
 		cpumask_scnprintf(cpulist, sizeof(cpulist), cpumask);
@@ -365,7 +374,11 @@ static int wsp_chip_set_affinity(struct irq_data *d,
 	xive = xive_set_server(xive, get_irq_server(ics, hw_irq));
 	wsp_ics_set_xive(ics, hw_irq, xive);
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return IRQ_SET_MASK_OK;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct irq_chip wsp_irq_chip = {
@@ -715,7 +728,10 @@ void __init wsp_init_irq(void)
 	wsp_irq_chip.irq_eoi = icp_ops->eoi;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PCI_MSI
 static void wsp_ics_msi_unmask_irq(struct irq_data *d)
@@ -764,4 +780,7 @@ void wsp_ics_set_std_chip(unsigned int irq)
 	irq_set_chip(irq, &wsp_irq_chip);
 }
 #endif /* CONFIG_PCI_MSI */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

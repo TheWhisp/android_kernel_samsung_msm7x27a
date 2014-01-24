@@ -6,7 +6,11 @@
 #ifndef __IRQ_USER_H__
 #define __IRQ_USER_H__
 
+<<<<<<< HEAD
 #include "sysdep/ptrace.h"
+=======
+#include <sysdep/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 struct irq_fd {
 	struct irq_fd *next;
@@ -20,7 +24,12 @@ struct irq_fd {
 
 enum { IRQ_READ, IRQ_WRITE };
 
+<<<<<<< HEAD
 extern void sigio_handler(int sig, struct uml_pt_regs *regs);
+=======
+struct siginfo;
+extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+>>>>>>> refs/remotes/origin/master
 extern void free_irq_by_fd(int fd);
 extern void reactivate_fd(int fd, int irqnum);
 extern void deactivate_fd(int fd, int irqnum);

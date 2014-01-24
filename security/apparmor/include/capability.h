@@ -4,7 +4,11 @@
  * This file contains AppArmor capability mediation definitions.
  *
  * Copyright (C) 1998-2008 Novell/SUSE
+<<<<<<< HEAD
  * Copyright 2009-2010 Canonical Ltd.
+=======
+ * Copyright 2009-2013 Canonical Ltd.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -17,6 +21,11 @@
 
 #include <linux/sched.h>
 
+<<<<<<< HEAD
+=======
+#include "apparmorfs.h"
+
+>>>>>>> refs/remotes/origin/master
 struct aa_profile;
 
 /* aa_caps - confinement data for capabilities
@@ -34,8 +43,14 @@ struct aa_caps {
 	kernel_cap_t extended;
 };
 
+<<<<<<< HEAD
 int aa_capable(struct task_struct *task, struct aa_profile *profile, int cap,
 	       int audit);
+=======
+extern struct aa_fs_entry aa_fs_entry_caps[];
+
+int aa_capable(struct aa_profile *profile, int cap, int audit);
+>>>>>>> refs/remotes/origin/master
 
 static inline void aa_free_cap_rules(struct aa_caps *caps)
 {

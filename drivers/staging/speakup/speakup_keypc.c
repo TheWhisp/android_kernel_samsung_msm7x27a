@@ -168,7 +168,11 @@ static const char *synth_immediate(struct spk_synth *synth, const char *buf)
 		udelay(70);
 		buf++;
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void do_catch_up(struct spk_synth *synth)
@@ -184,6 +188,7 @@ static void do_catch_up(struct spk_synth *synth)
 	int full_time_val;
 	int jiffy_delta_val;
 
+<<<<<<< HEAD
 	jiffy_delta = get_var(JIFFY);
 	delay_time = get_var(DELAY);
 	full_time = get_var(FULL);
@@ -197,16 +202,39 @@ spk_lock(flags);
 		if (speakup_info.flushing) {
 			speakup_info.flushing = 0;
 			spk_unlock(flags);
+=======
+	jiffy_delta = spk_get_var(JIFFY);
+	delay_time = spk_get_var(DELAY);
+	full_time = spk_get_var(FULL);
+spin_lock_irqsave(&speakup_info.spinlock, flags);
+	jiffy_delta_val = jiffy_delta->u.n.value;
+	spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+
+	jiff_max = jiffies + jiffy_delta_val;
+	while (!kthread_should_stop()) {
+		spin_lock_irqsave(&speakup_info.spinlock, flags);
+		if (speakup_info.flushing) {
+			speakup_info.flushing = 0;
+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 			synth->flush(synth);
 			continue;
 		}
 		if (synth_buffer_empty()) {
+<<<<<<< HEAD
 			spk_unlock(flags);
+=======
+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		set_current_state(TASK_INTERRUPTIBLE);
 		full_time_val = full_time->u.n.value;
+<<<<<<< HEAD
 		spk_unlock(flags);
+=======
+		spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 		if (synth_full()) {
 			schedule_timeout(msecs_to_jiffies(full_time_val));
 			continue;
@@ -220,9 +248,15 @@ spk_lock(flags);
 			oops();
 			break;
 		}
+<<<<<<< HEAD
 		spk_lock(flags);
 		ch = synth_buffer_getc();
 		spk_unlock(flags);
+=======
+		spin_lock_irqsave(&speakup_info.spinlock, flags);
+		ch = synth_buffer_getc();
+		spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 		if (ch == '\n')
 			ch = PROCSPEECH;
 		outb_p(ch, synth_port);
@@ -237,10 +271,17 @@ spk_lock(flags);
 				break;
 			}
 			outb_p(PROCSPEECH, synth_port);
+<<<<<<< HEAD
 			spk_lock(flags);
 			jiffy_delta_val = jiffy_delta->u.n.value;
 			delay_time_val = delay_time->u.n.value;
 			spk_unlock(flags);
+=======
+			spin_lock_irqsave(&speakup_info.spinlock, flags);
+			jiffy_delta_val = jiffy_delta->u.n.value;
+			delay_time_val = delay_time->u.n.value;
+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 			schedule_timeout(msecs_to_jiffies(delay_time_val));
 			jiff_max = jiffies+jiffy_delta_val;
 		}

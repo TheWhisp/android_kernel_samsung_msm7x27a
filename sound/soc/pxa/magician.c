@@ -93,17 +93,23 @@ static int magician_playback_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int acps, acds, width, rate;
 	unsigned int div4 = PXA_SSP_CLK_SCDB_4;
 	int ret = 0;
 
 	rate = params_rate(params);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int acps, acds, width;
 	unsigned int div4 = PXA_SSP_CLK_SCDB_4;
 	int ret = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	width = snd_pcm_format_physical_width(params_format(params));
 
 	/*
@@ -420,10 +426,14 @@ static int magician_uda1380_init(struct snd_soc_pcm_runtime *rtd)
 
 	/* Add magician specific controls */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_soc_add_controls(codec, uda1380_magician_controls,
 =======
 	err = snd_soc_add_codec_controls(codec, uda1380_magician_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = snd_soc_add_codec_controls(codec, uda1380_magician_controls,
+>>>>>>> refs/remotes/origin/master
 				ARRAY_SIZE(uda1380_magician_controls));
 	if (err < 0)
 		return err;
@@ -436,9 +446,12 @@ static int magician_uda1380_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -469,9 +482,13 @@ static struct snd_soc_dai_link magician_dai[] = {
 static struct snd_soc_card snd_soc_card_magician = {
 	.name = "Magician",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = magician_dai,
 	.num_links = ARRAY_SIZE(magician_dai),
 

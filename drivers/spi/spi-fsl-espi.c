@@ -16,8 +16,14 @@
 #include <linux/fsl_devices.h>
 #include <linux/mm.h>
 #include <linux/of.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 #include <linux/of_spi.h>
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/err.h>
 #include <sysdev/fsl_soc.h>
@@ -145,10 +151,13 @@ static int fsl_espi_setup_transfer(struct spi_device *spi,
 	if (!bits_per_word)
 		bits_per_word = spi->bits_per_word;
 
+<<<<<<< HEAD
 	/* Make sure its a bit width we support [4..16] */
 	if ((bits_per_word < 4) || (bits_per_word > 16))
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!hz)
 		hz = spi->max_speed_hz;
 
@@ -158,12 +167,19 @@ static int fsl_espi_setup_transfer(struct spi_device *spi,
 	cs->get_tx = mpc8xxx_spi_tx_buf_u32;
 	if (bits_per_word <= 8) {
 		cs->rx_shift = 8 - bits_per_word;
+<<<<<<< HEAD
 	} else if (bits_per_word <= 16) {
 		cs->rx_shift = 16 - bits_per_word;
 		if (spi->mode & SPI_LSB_FIRST)
 			cs->get_tx = fsl_espi_tx_buf_lsb;
 	} else {
 		return -EINVAL;
+=======
+	} else {
+		cs->rx_shift = 16 - bits_per_word;
+		if (spi->mode & SPI_LSB_FIRST)
+			cs->get_tx = fsl_espi_tx_buf_lsb;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mpc8xxx_spi->rx_shift = cs->rx_shift;
@@ -237,7 +253,11 @@ static int fsl_espi_bufs(struct spi_device *spi, struct spi_transfer *t)
 	mpc8xxx_spi->tx = t->tx_buf;
 	mpc8xxx_spi->rx = t->rx_buf;
 
+<<<<<<< HEAD
 	INIT_COMPLETION(mpc8xxx_spi->done);
+=======
+	reinit_completion(&mpc8xxx_spi->done);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set SPCOM[CS] and SPCOM[TRANLEN] field */
 	if ((t->len - 1) > SPCOM_TRANLEN_MAX) {
@@ -296,8 +316,13 @@ static void fsl_espi_do_trans(struct spi_message *m,
 		if ((first->bits_per_word != t->bits_per_word) ||
 			(first->speed_hz != t->speed_hz)) {
 			espi_trans->status = -EINVAL;
+<<<<<<< HEAD
 			dev_err(mspi->dev, "bits_per_word/speed_hz should be"
 					" same for the same SPI transfer\n");
+=======
+			dev_err(mspi->dev,
+				"bits_per_word/speed_hz should be same for the same SPI transfer\n");
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 
@@ -588,10 +613,17 @@ static void fsl_espi_remove(struct mpc8xxx_spi *mspi)
 	iounmap(mspi->reg_base);
 }
 
+<<<<<<< HEAD
 static struct spi_master * __devinit fsl_espi_probe(struct device *dev,
 		struct resource *mem, unsigned int irq)
 {
 	struct fsl_spi_platform_data *pdata = dev->platform_data;
+=======
+static struct spi_master * fsl_espi_probe(struct device *dev,
+		struct resource *mem, unsigned int irq)
+{
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct spi_master *master;
 	struct mpc8xxx_spi *mpc8xxx_spi;
 	struct fsl_espi_reg *reg_base;
@@ -610,6 +642,10 @@ static struct spi_master * __devinit fsl_espi_probe(struct device *dev,
 	if (ret)
 		goto err_probe;
 
+<<<<<<< HEAD
+=======
+	master->bits_per_word_mask = SPI_BPW_RANGE_MASK(4, 16);
+>>>>>>> refs/remotes/origin/master
 	master->setup = fsl_espi_setup;
 
 	mpc8xxx_spi = spi_master_get_devdata(master);
@@ -671,7 +707,11 @@ err:
 static int of_fsl_espi_get_chipselects(struct device *dev)
 {
 	struct device_node *np = dev->of_node;
+<<<<<<< HEAD
 	struct fsl_spi_platform_data *pdata = dev->platform_data;
+=======
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	const u32 *prop;
 	int len;
 
@@ -687,13 +727,21 @@ static int of_fsl_espi_get_chipselects(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit of_fsl_espi_probe(struct platform_device *ofdev)
+=======
+static int of_fsl_espi_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &ofdev->dev;
 	struct device_node *np = ofdev->dev.of_node;
 	struct spi_master *master;
 	struct resource mem;
+<<<<<<< HEAD
 	struct resource irq;
+=======
+	unsigned int irq;
+>>>>>>> refs/remotes/origin/master
 	int ret = -ENOMEM;
 
 	ret = of_mpc8xxx_spi_probe(ofdev);
@@ -708,13 +756,21 @@ static int __devinit of_fsl_espi_probe(struct platform_device *ofdev)
 	if (ret)
 		goto err;
 
+<<<<<<< HEAD
 	ret = of_irq_to_resource(np, 0, &irq);
+=======
+	irq = irq_of_parse_and_map(np, 0);
+>>>>>>> refs/remotes/origin/master
 	if (!ret) {
 		ret = -EINVAL;
 		goto err;
 	}
 
+<<<<<<< HEAD
 	master = fsl_espi_probe(dev, &mem, irq.start);
+=======
+	master = fsl_espi_probe(dev, &mem, irq);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(master)) {
 		ret = PTR_ERR(master);
 		goto err;
@@ -726,7 +782,11 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit of_fsl_espi_remove(struct platform_device *dev)
+=======
+static int of_fsl_espi_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return mpc8xxx_spi_remove(&dev->dev);
 }
@@ -744,7 +804,11 @@ static struct platform_driver fsl_espi_driver = {
 		.of_match_table = of_fsl_espi_match,
 	},
 	.probe		= of_fsl_espi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(of_fsl_espi_remove),
+=======
+	.remove		= of_fsl_espi_remove,
+>>>>>>> refs/remotes/origin/master
 };
 module_platform_driver(fsl_espi_driver);
 

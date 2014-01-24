@@ -12,9 +12,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/kernel.h>
 #include <linux/string.h>
@@ -31,9 +34,13 @@
 #include <linux/proc_fs.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/arp.h>
 
 /*
@@ -42,7 +49,11 @@
 
 static int fc_header(struct sk_buff *skb, struct net_device *dev,
 		     unsigned short type,
+<<<<<<< HEAD
 		     const void *daddr, const void *saddr, unsigned len)
+=======
+		     const void *daddr, const void *saddr, unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fch_hdr *fch;
 	int hdr_len;

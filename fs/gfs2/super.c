@@ -78,6 +78,11 @@ enum {
 	Opt_quota_quantum,
 	Opt_barrier,
 	Opt_nobarrier,
+<<<<<<< HEAD
+=======
+	Opt_rgrplvb,
+	Opt_norgrplvb,
+>>>>>>> refs/remotes/origin/master
 	Opt_error,
 };
 
@@ -115,6 +120,11 @@ static const match_table_t tokens = {
 	{Opt_quota_quantum, "quota_quantum=%d"},
 	{Opt_barrier, "barrier"},
 	{Opt_nobarrier, "nobarrier"},
+<<<<<<< HEAD
+=======
+	{Opt_rgrplvb, "rgrplvb"},
+	{Opt_norgrplvb, "norgrplvb"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_error, NULL}
 };
 
@@ -267,6 +277,15 @@ int gfs2_mount_args(struct gfs2_args *args, char *options)
 		case Opt_nobarrier:
 			args->ar_nobarrier = 1;
 			break;
+<<<<<<< HEAD
+=======
+		case Opt_rgrplvb:
+			args->ar_rgrplvb = 1;
+			break;
+		case Opt_norgrplvb:
+			args->ar_rgrplvb = 0;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case Opt_error:
 		default:
 			printk(KERN_WARNING "GFS2: invalid mount option: %s\n", o);
@@ -359,6 +378,36 @@ int gfs2_jdesc_check(struct gfs2_jdesc *jd)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int init_threads(struct gfs2_sbd *sdp)
+{
+	struct task_struct *p;
+	int error = 0;
+
+	p = kthread_run(gfs2_logd, sdp, "gfs2_logd");
+	if (IS_ERR(p)) {
+		error = PTR_ERR(p);
+		fs_err(sdp, "can't start logd thread: %d\n", error);
+		return error;
+	}
+	sdp->sd_logd_process = p;
+
+	p = kthread_run(gfs2_quotad, sdp, "gfs2_quotad");
+	if (IS_ERR(p)) {
+		error = PTR_ERR(p);
+		fs_err(sdp, "can't start quotad thread: %d\n", error);
+		goto fail;
+	}
+	sdp->sd_quotad_process = p;
+	return 0;
+
+fail:
+	kthread_stop(sdp->sd_logd_process);
+	return error;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * gfs2_make_fs_rw - Turn a Read-Only FS into a Read-Write one
  * @sdp: the filesystem
@@ -374,10 +423,21 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
 	struct gfs2_log_header_host head;
 	int error;
 
+<<<<<<< HEAD
 	error = gfs2_glock_nq_init(sdp->sd_trans_gl, LM_ST_SHARED, 0, &t_gh);
 	if (error)
 		return error;
 
+=======
+	error = init_threads(sdp);
+	if (error)
+		return error;
+
+	error = gfs2_glock_nq_init(sdp->sd_trans_gl, LM_ST_SHARED, 0, &t_gh);
+	if (error)
+		goto fail_threads;
+
+>>>>>>> refs/remotes/origin/master
 	j_gl->gl_ops->go_inval(j_gl, DIO_METADATA);
 
 	error = gfs2_find_jhead(sdp->sd_jdesc, &head);
@@ -407,7 +467,13 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
 fail:
 	t_gh.gh_flags |= GL_NOCACHE;
 	gfs2_glock_dq_uninit(&t_gh);
+<<<<<<< HEAD
 
+=======
+fail_threads:
+	kthread_stop(sdp->sd_quotad_process);
+	kthread_stop(sdp->sd_logd_process);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -490,7 +556,11 @@ void gfs2_statfs_change(struct gfs2_sbd *sdp, s64 total, s64 free,
 	if (error)
 		return;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(l_ip->i_gl, l_bh, 1);
+=======
+	gfs2_trans_add_meta(l_ip->i_gl, l_bh);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&sdp->sd_statfs_spin);
 	l_sc->sc_total += total;
@@ -518,7 +588,11 @@ void update_statfs(struct gfs2_sbd *sdp, struct buffer_head *m_bh,
 	struct gfs2_statfs_change_host *m_sc = &sdp->sd_statfs_master;
 	struct gfs2_statfs_change_host *l_sc = &sdp->sd_statfs_local;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(l_ip->i_gl, l_bh, 1);
+=======
+	gfs2_trans_add_meta(l_ip->i_gl, l_bh);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&sdp->sd_statfs_spin);
 	m_sc->sc_total += l_sc->sc_total;
@@ -529,7 +603,11 @@ void update_statfs(struct gfs2_sbd *sdp, struct buffer_head *m_bh,
 	       0, sizeof(struct gfs2_statfs_change));
 	spin_unlock(&sdp->sd_statfs_spin);
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(m_ip->i_gl, m_bh, 1);
+=======
+	gfs2_trans_add_meta(m_ip->i_gl, m_bh);
+>>>>>>> refs/remotes/origin/master
 	gfs2_statfs_change_out(m_sc, m_bh->b_data + sizeof(struct gfs2_dinode));
 }
 
@@ -653,6 +731,7 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
 /**
  * gfs2_freeze_fs - freezes the file system
  * @sdp: the file system
@@ -701,6 +780,8 @@ void gfs2_unfreeze_fs(struct gfs2_sbd *sdp)
 	mutex_unlock(&sdp->sd_freeze_lock);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void gfs2_dinode_out(const struct gfs2_inode *ip, void *buf)
 {
 	struct gfs2_dinode *str = buf;
@@ -711,8 +792,13 @@ void gfs2_dinode_out(const struct gfs2_inode *ip, void *buf)
 	str->di_num.no_addr = cpu_to_be64(ip->i_no_addr);
 	str->di_num.no_formal_ino = cpu_to_be64(ip->i_no_formal_ino);
 	str->di_mode = cpu_to_be32(ip->i_inode.i_mode);
+<<<<<<< HEAD
 	str->di_uid = cpu_to_be32(ip->i_inode.i_uid);
 	str->di_gid = cpu_to_be32(ip->i_inode.i_gid);
+=======
+	str->di_uid = cpu_to_be32(i_uid_read(&ip->i_inode));
+	str->di_gid = cpu_to_be32(i_gid_read(&ip->i_inode));
+>>>>>>> refs/remotes/origin/master
 	str->di_nlink = cpu_to_be32(ip->i_inode.i_nlink);
 	str->di_size = cpu_to_be64(i_size_read(&ip->i_inode));
 	str->di_blocks = cpu_to_be64(gfs2_get_inode_blocks(&ip->i_inode));
@@ -752,6 +838,7 @@ static int gfs2_write_inode(struct inode *inode, struct writeback_control *wbc)
 	struct gfs2_sbd *sdp = GFS2_SB(inode);
 	struct address_space *metamapping = gfs2_glock2aspace(ip->i_gl);
 	struct backing_dev_info *bdi = metamapping->backing_dev_info;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct gfs2_holder gh;
 	struct buffer_head *bh;
@@ -799,6 +886,8 @@ do_flush:
 		mark_inode_dirty_sync(inode);
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (wbc->sync_mode == WB_SYNC_ALL)
@@ -847,7 +936,12 @@ static void gfs2_dirty_inode(struct inode *inode, int flags)
 			return;
 		}
 		need_unlock = 1;
+<<<<<<< HEAD
 	}
+=======
+	} else if (WARN_ON_ONCE(ip->i_gl->gl_state != LM_ST_EXCLUSIVE))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	if (current->journal_info == NULL) {
 		ret = gfs2_trans_begin(sdp, RES_DINODE, 0);
@@ -860,7 +954,11 @@ static void gfs2_dirty_inode(struct inode *inode, int flags)
 
 	ret = gfs2_meta_inode_buffer(ip, &bh);
 	if (ret == 0) {
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, bh, 1);
+=======
+		gfs2_trans_add_meta(ip->i_gl, bh);
+>>>>>>> refs/remotes/origin/master
 		gfs2_dinode_out(ip, bh->b_data);
 		brelse(bh);
 	}
@@ -870,7 +968,10 @@ static void gfs2_dirty_inode(struct inode *inode, int flags)
 out:
 	if (need_unlock)
 		gfs2_glock_dq_uninit(&gh);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -885,8 +986,16 @@ static int gfs2_make_fs_ro(struct gfs2_sbd *sdp)
 	struct gfs2_holder t_gh;
 	int error;
 
+<<<<<<< HEAD
 	flush_workqueue(gfs2_delete_workqueue);
 	gfs2_quota_sync(sdp->sd_vfs, 0, 1);
+=======
+	kthread_stop(sdp->sd_quotad_process);
+	kthread_stop(sdp->sd_logd_process);
+
+	flush_workqueue(gfs2_delete_workqueue);
+	gfs2_quota_sync(sdp->sd_vfs, 0);
+>>>>>>> refs/remotes/origin/master
 	gfs2_statfs_sync(sdp->sd_vfs, 0);
 
 	error = gfs2_glock_nq_init(sdp->sd_trans_gl, LM_ST_SHARED, GL_NOCACHE,
@@ -925,6 +1034,7 @@ static void gfs2_put_super(struct super_block *sb)
 	int error;
 	struct gfs2_jdesc *jd;
 
+<<<<<<< HEAD
 	/*  Unfreeze the filesystem, if we need to  */
 
 	mutex_lock(&sdp->sd_freeze_lock);
@@ -932,6 +1042,8 @@ static void gfs2_put_super(struct super_block *sb)
 		gfs2_glock_dq_uninit(&sdp->sd_freeze_gh);
 	mutex_unlock(&sdp->sd_freeze_lock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* No more recovery requests */
 	set_bit(SDF_NORECOVERY, &sdp->sd_flags);
 	smp_mb();
@@ -949,9 +1061,12 @@ restart:
 	}
 	spin_unlock(&sdp->sd_jindex_spin);
 
+<<<<<<< HEAD
 	kthread_stop(sdp->sd_quotad_process);
 	kthread_stop(sdp->sd_logd_process);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(sb->s_flags & MS_RDONLY)) {
 		error = gfs2_make_fs_ro(sdp);
 		if (error)
@@ -1000,6 +1115,11 @@ restart:
 static int gfs2_sync_fs(struct super_block *sb, int wait)
 {
 	struct gfs2_sbd *sdp = sb->s_fs_info;
+<<<<<<< HEAD
+=======
+
+	gfs2_quota_sync(sb, -1);
+>>>>>>> refs/remotes/origin/master
 	if (wait && sdp)
 		gfs2_log_flush(sdp, NULL);
 	return 0;
@@ -1020,7 +1140,11 @@ static int gfs2_freeze(struct super_block *sb)
 		return -EINVAL;
 
 	for (;;) {
+<<<<<<< HEAD
 		error = gfs2_freeze_fs(sdp);
+=======
+		error = gfs2_lock_fs_check_clean(sdp, &sdp->sd_freeze_gh);
+>>>>>>> refs/remotes/origin/master
 		if (!error)
 			break;
 
@@ -1048,7 +1172,13 @@ static int gfs2_freeze(struct super_block *sb)
 
 static int gfs2_unfreeze(struct super_block *sb)
 {
+<<<<<<< HEAD
 	gfs2_unfreeze_fs(sb->s_fs_info);
+=======
+	struct gfs2_sbd *sdp = sb->s_fs_info;
+
+	gfs2_glock_dq_uninit(&sdp->sd_freeze_gh);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1086,9 +1216,12 @@ static int statfs_slow_fill(struct gfs2_rgrpd *rgd,
 static int gfs2_statfs_slow(struct gfs2_sbd *sdp, struct gfs2_statfs_change_host *sc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gfs2_holder ri_gh;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct gfs2_rgrpd *rgd_next;
 	struct gfs2_holder *gha, *gh;
 	unsigned int slots = 64;
@@ -1102,12 +1235,15 @@ static int gfs2_statfs_slow(struct gfs2_sbd *sdp, struct gfs2_statfs_change_host
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = gfs2_rindex_hold(sdp, &ri_gh);
 	if (error)
 		goto out;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rgd_next = gfs2_rgrpd_get_first(sdp);
 
 	for (;;) {
@@ -1151,11 +1287,14 @@ static int gfs2_statfs_slow(struct gfs2_sbd *sdp, struct gfs2_statfs_change_host
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gfs2_glock_dq_uninit(&ri_gh);
 
 out:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(gha);
 	return error;
 }
@@ -1208,12 +1347,18 @@ static int gfs2_statfs(struct dentry *dentry, struct kstatfs *buf)
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = gfs2_rindex_update(sdp);
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gfs2_tune_get(sdp, gt_statfs_slow))
 		error = gfs2_statfs_slow(sdp, &sc);
 	else
@@ -1353,14 +1498,19 @@ static int is_ancestor(const struct dentry *d1, const struct dentry *d2)
  * gfs2_show_options - Show mount options for /proc/mounts
  * @s: seq_file structure
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @mnt: vfsmount
 =======
  * @root: root of this (sub)tree
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @root: root of this (sub)tree
+>>>>>>> refs/remotes/origin/master
  *
  * Returns: 0 on success or error code
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int gfs2_show_options(struct seq_file *s, struct vfsmount *mnt)
 {
@@ -1370,6 +1520,8 @@ static int gfs2_show_options(struct seq_file *s, struct vfsmount *mnt)
 
 	if (is_ancestor(mnt->mnt_root, sdp->sd_master_dir))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int gfs2_show_options(struct seq_file *s, struct dentry *root)
 {
 	struct gfs2_sbd *sdp = root->d_sb->s_fs_info;
@@ -1377,7 +1529,10 @@ static int gfs2_show_options(struct seq_file *s, struct dentry *root)
 	int val;
 
 	if (is_ancestor(root, sdp->sd_master_dir))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		seq_printf(s, ",meta");
 	if (args->ar_lockproto[0])
 		seq_printf(s, ",lockproto=%s", args->ar_lockproto);
@@ -1436,6 +1591,11 @@ static int gfs2_show_options(struct seq_file *s, struct dentry *root)
 	val = sdp->sd_tune.gt_statfs_quantum;
 	if (val != 30)
 		seq_printf(s, ",statfs_quantum=%d", val);
+<<<<<<< HEAD
+=======
+	else if (sdp->sd_tune.gt_statfs_slow)
+		seq_puts(s, ",statfs_quantum=0");
+>>>>>>> refs/remotes/origin/master
 	val = sdp->sd_tune.gt_quota_quantum;
 	if (val != 60)
 		seq_printf(s, ",quota_quantum=%d", val);
@@ -1461,6 +1621,11 @@ static int gfs2_show_options(struct seq_file *s, struct dentry *root)
 		seq_printf(s, ",nobarrier");
 	if (test_bit(SDF_DEMOTE, &sdp->sd_flags))
 		seq_printf(s, ",demote_interface_used");
+<<<<<<< HEAD
+=======
+	if (args->ar_rgrplvb)
+		seq_printf(s, ",rgrplvb");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1482,6 +1647,7 @@ static int gfs2_dinode_dealloc(struct gfs2_inode *ip)
 {
 	struct gfs2_sbd *sdp = GFS2_SB(&ip->i_inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gfs2_alloc *al;
 	struct gfs2_rgrpd *rgd;
 =======
@@ -1489,6 +1655,10 @@ static int gfs2_dinode_dealloc(struct gfs2_inode *ip)
 	struct gfs2_rgrpd *rgd;
 	struct gfs2_holder gh;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gfs2_rgrpd *rgd;
+	struct gfs2_holder gh;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	if (gfs2_get_inode_blocks(&ip->i_inode) != 1) {
@@ -1496,6 +1666,7 @@ static int gfs2_dinode_dealloc(struct gfs2_inode *ip)
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	al = gfs2_alloc_get(ip);
 	if (!al)
@@ -1526,6 +1697,16 @@ static int gfs2_dinode_dealloc(struct gfs2_inode *ip)
 	if (error)
 		goto out_rindex_relse;
 =======
+=======
+	error = gfs2_rindex_update(sdp);
+	if (error)
+		return error;
+
+	error = gfs2_quota_hold(ip, NO_UID_QUOTA_CHANGE, NO_GID_QUOTA_CHANGE);
+	if (error)
+		return error;
+
+>>>>>>> refs/remotes/origin/master
 	rgd = gfs2_blk2rgrpd(sdp, ip->i_no_addr, 1);
 	if (!rgd) {
 		gfs2_consist_inode(ip);
@@ -1536,7 +1717,10 @@ static int gfs2_dinode_dealloc(struct gfs2_inode *ip)
 	error = gfs2_glock_nq_init(rgd->rd_gl, LM_ST_EXCLUSIVE, 0, &gh);
 	if (error)
 		goto out_qs;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	error = gfs2_trans_begin(sdp, RES_RG_BIT + RES_STATFS + RES_QUOTA,
 				 sdp->sd_jdesc->jd_blocks);
@@ -1550,6 +1734,7 @@ static int gfs2_dinode_dealloc(struct gfs2_inode *ip)
 	gfs2_trans_end(sdp);
 
 out_rg_gunlock:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	gfs2_glock_dq_uninit(&al->al_rgd_gh);
 out_rindex_relse:
@@ -1565,6 +1750,11 @@ out_qs:
 out:
 	gfs2_qadata_put(ip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gfs2_glock_dq_uninit(&gh);
+out_qs:
+	gfs2_quota_unhold(ip);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -1603,21 +1793,31 @@ static void gfs2_evict_inode(struct inode *inode)
 	/* Must not read inode block until block type has been verified */
 	error = gfs2_glock_nq_init(ip->i_gl, LM_ST_EXCLUSIVE, GL_SKIP, &gh);
 	if (unlikely(error)) {
+<<<<<<< HEAD
+=======
+		ip->i_iopen_gh.gh_flags |= GL_NOCACHE;
+>>>>>>> refs/remotes/origin/master
 		gfs2_glock_dq_uninit(&ip->i_iopen_gh);
 		goto out;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = gfs2_check_blk_type(sdp, ip->i_no_addr, GFS2_BLKST_UNLINKED);
 	if (error)
 		goto out_truncate;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!test_bit(GIF_ALLOC_FAILED, &ip->i_flags)) {
 		error = gfs2_check_blk_type(sdp, ip->i_no_addr, GFS2_BLKST_UNLINKED);
 		if (error)
 			goto out_truncate;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(GIF_INVALID, &ip->i_flags)) {
 		error = gfs2_inode_refresh(ip);
@@ -1658,12 +1858,24 @@ static void gfs2_evict_inode(struct inode *inode)
 
 out_truncate:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	gfs2_log_flush(sdp, ip->i_gl);
 	write_inode_now(inode, 1);
 	gfs2_ail_flush(ip->i_gl, 0);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gfs2_log_flush(sdp, ip->i_gl);
+	if (test_bit(GLF_DIRTY, &ip->i_gl->gl_flags)) {
+		struct address_space *metamapping = gfs2_glock2aspace(ip->i_gl);
+		filemap_fdatawrite(metamapping);
+		filemap_fdatawait(metamapping);
+	}
+	write_inode_now(inode, 1);
+	gfs2_ail_flush(ip->i_gl, 0);
+
+>>>>>>> refs/remotes/origin/master
 	/* Case 2 starts here */
 	error = gfs2_trans_begin(sdp, 0, sdp->sd_jdesc->jd_blocks);
 	if (error)
@@ -1674,8 +1886,18 @@ out_truncate:
 
 out_unlock:
 	/* Error path for case 1 */
+<<<<<<< HEAD
 	if (test_bit(HIF_HOLDER, &ip->i_iopen_gh.gh_iflags))
 		gfs2_glock_dq(&ip->i_iopen_gh);
+=======
+	if (gfs2_rs_active(ip->i_res))
+		gfs2_rs_deltree(ip->i_res);
+
+	if (test_bit(HIF_HOLDER, &ip->i_iopen_gh.gh_iflags)) {
+		ip->i_iopen_gh.gh_flags |= GL_NOCACHE;
+		gfs2_glock_dq(&ip->i_iopen_gh);
+	}
+>>>>>>> refs/remotes/origin/master
 	gfs2_holder_uninit(&ip->i_iopen_gh);
 	gfs2_glock_dq_uninit(&gh);
 	if (error && error != GLR_TRYFAILED && error != -EROFS)
@@ -1683,6 +1905,7 @@ out_unlock:
 out:
 	/* Case 3 starts here */
 	truncate_inode_pages(&inode->i_data, 0);
+<<<<<<< HEAD
 	end_writeback(inode);
 <<<<<<< HEAD
 
@@ -1692,11 +1915,23 @@ out:
 	ip->i_gl->gl_object = NULL;
 	flush_delayed_work_sync(&ip->i_gl->gl_work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gfs2_rs_delete(ip, NULL);
+	gfs2_ordered_del_inode(ip);
+	clear_inode(inode);
+	gfs2_dir_hash_inval(ip);
+	ip->i_gl->gl_object = NULL;
+	flush_delayed_work(&ip->i_gl->gl_work);
+>>>>>>> refs/remotes/origin/master
 	gfs2_glock_add_to_lru(ip->i_gl);
 	gfs2_glock_put(ip->i_gl);
 	ip->i_gl = NULL;
 	if (ip->i_iopen_gh.gh_gl) {
 		ip->i_iopen_gh.gh_gl->gl_object = NULL;
+<<<<<<< HEAD
+=======
+		ip->i_iopen_gh.gh_flags |= GL_NOCACHE;
+>>>>>>> refs/remotes/origin/master
 		gfs2_glock_dq_uninit(&ip->i_iopen_gh);
 	}
 }
@@ -1710,9 +1945,14 @@ static struct inode *gfs2_alloc_inode(struct super_block *sb)
 		ip->i_flags = 0;
 		ip->i_gl = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ip->i_rgd = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ip->i_rgd = NULL;
+		ip->i_res = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	return &ip->i_inode;
 }
@@ -1721,9 +1961,12 @@ static void gfs2_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(gfs2_inode_cachep, inode);
 }
 
@@ -1737,9 +1980,13 @@ const struct super_operations gfs2_super_ops = {
 	.destroy_inode		= gfs2_destroy_inode,
 	.write_inode		= gfs2_write_inode,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.dirty_inode		= gfs2_dirty_inode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dirty_inode		= gfs2_dirty_inode,
+>>>>>>> refs/remotes/origin/master
 	.evict_inode		= gfs2_evict_inode,
 	.put_super		= gfs2_put_super,
 	.sync_fs		= gfs2_sync_fs,

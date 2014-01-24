@@ -9,6 +9,13 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
+=======
+/*
+ * NOTE: Code in this file is not used when booting with Device Tree support.
+ */
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/interrupt.h>
@@ -18,12 +25,19 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/serial_core.h>
 #include <linux/platform_device.h>
+=======
+#include <linux/device.h>
+#include <linux/serial_core.h>
+#include <linux/platform_device.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
@@ -43,11 +57,16 @@
 #include <plat/iic-core.h>
 #include <plat/onenand-core.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/s3c6400.h>
 =======
 
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 void __init s3c6400_map_io(void)
 {
@@ -66,6 +85,7 @@ void __init s3c6400_map_io(void)
 	s3c64xx_onenand1_setname("s3c6400-onenand");
 }
 
+<<<<<<< HEAD
 void __init s3c6400_init_clocks(int xtal)
 {
 	s3c64xx_register_clocks(xtal, S3C6400_CLKDIV0_ARM_MASK);
@@ -76,6 +96,8 @@ void __init s3c6400_init_clocks(int xtal)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init s3c6400_init_irq(void)
 {
 	/* VIC0 does not have IRQS 5..7,
@@ -84,6 +106,7 @@ void __init s3c6400_init_irq(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sysdev_class s3c6400_sysclass = {
 	.name	= "s3c6400-core",
 };
@@ -91,6 +114,8 @@ struct sysdev_class s3c6400_sysclass = {
 static struct sys_device s3c6400_sysdev = {
 	.cls	= &s3c6400_sysclass,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct bus_type s3c6400_subsys = {
 	.name		= "s3c6400-core",
 	.dev_name	= "s3c6400-core",
@@ -98,16 +123,27 @@ static struct bus_type s3c6400_subsys = {
 
 static struct device s3c6400_dev = {
 	.bus	= &s3c6400_subsys,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init s3c6400_core_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sysdev_class_register(&s3c6400_sysclass);
 =======
 	return subsys_system_register(&s3c6400_subsys, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Not applicable when using DT. */
+	if (of_have_populated_dt())
+		return 0;
+
+	return subsys_system_register(&s3c6400_subsys, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 core_initcall(s3c6400_core_init);
@@ -117,8 +153,12 @@ int __init s3c6400_init(void)
 	printk("S3C6400: Initialising architecture\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sysdev_register(&s3c6400_sysdev);
 =======
 	return device_register(&s3c6400_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return device_register(&s3c6400_dev);
+>>>>>>> refs/remotes/origin/master
 }

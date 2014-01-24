@@ -3,11 +3,14 @@
  *
  * Copyright (c) 2011 Jussi Kivilinna <jussi.kivilinna@mbnet.fi>
  *
+<<<<<<< HEAD
  * CBC & ECB parts based on code (crypto/cbc.c,ecb.c) by:
  *   Copyright (c) 2006 Herbert Xu <herbert@gondor.apana.org.au>
  * CTR part based on code (crypto/ctr.c) by:
  *   (C) Copyright IBM Corp. 2007 - Joy Latten <latten@us.ibm.com>
  *
+=======
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -33,6 +36,7 @@
 #include <crypto/algapi.h>
 #include <crypto/twofish.h>
 #include <crypto/b128ops.h>
+<<<<<<< HEAD
 #include <crypto/lrw.h>
 #include <crypto/xts.h>
 
@@ -47,6 +51,15 @@ asmlinkage void __twofish_enc_blk_3way(struct twofish_ctx *ctx, u8 *dst,
 				       const u8 *src, bool xor);
 asmlinkage void twofish_dec_blk_3way(struct twofish_ctx *ctx, u8 *dst,
 				     const u8 *src);
+=======
+#include <asm/crypto/twofish.h>
+#include <asm/crypto/glue_helper.h>
+#include <crypto/lrw.h>
+#include <crypto/xts.h>
+
+EXPORT_SYMBOL_GPL(__twofish_enc_blk_3way);
+EXPORT_SYMBOL_GPL(twofish_dec_blk_3way);
+>>>>>>> refs/remotes/origin/master
 
 static inline void twofish_enc_blk_3way(struct twofish_ctx *ctx, u8 *dst,
 					const u8 *src)
@@ -60,6 +73,7 @@ static inline void twofish_enc_blk_xor_3way(struct twofish_ctx *ctx, u8 *dst,
 	__twofish_enc_blk_3way(ctx, dst, src, true);
 }
 
+<<<<<<< HEAD
 static int ecb_crypt(struct blkcipher_desc *desc, struct blkcipher_walk *walk,
 		     void (*fn)(struct twofish_ctx *, u8 *, const u8 *),
 		     void (*fn_3way)(struct twofish_ctx *, u8 *, const u8 *))
@@ -343,11 +357,141 @@ static unsigned int __ctr_crypt(struct blkcipher_desc *desc,
 done:
 	u128_to_be128((be128 *)walk->iv, &ctrblk);
 	return nbytes;
+=======
+void twofish_dec_blk_cbc_3way(void *ctx, u128 *dst, const u128 *src)
+{
+	u128 ivs[2];
+
+	ivs[0] = src[0];
+	ivs[1] = src[1];
+
+	twofish_dec_blk_3way(ctx, (u8 *)dst, (u8 *)src);
+
+	u128_xor(&dst[1], &dst[1], &ivs[0]);
+	u128_xor(&dst[2], &dst[2], &ivs[1]);
+}
+EXPORT_SYMBOL_GPL(twofish_dec_blk_cbc_3way);
+
+void twofish_enc_blk_ctr(void *ctx, u128 *dst, const u128 *src, le128 *iv)
+{
+	be128 ctrblk;
+
+	if (dst != src)
+		*dst = *src;
+
+	le128_to_be128(&ctrblk, iv);
+	le128_inc(iv);
+
+	twofish_enc_blk(ctx, (u8 *)&ctrblk, (u8 *)&ctrblk);
+	u128_xor(dst, dst, (u128 *)&ctrblk);
+}
+EXPORT_SYMBOL_GPL(twofish_enc_blk_ctr);
+
+void twofish_enc_blk_ctr_3way(void *ctx, u128 *dst, const u128 *src,
+			      le128 *iv)
+{
+	be128 ctrblks[3];
+
+	if (dst != src) {
+		dst[0] = src[0];
+		dst[1] = src[1];
+		dst[2] = src[2];
+	}
+
+	le128_to_be128(&ctrblks[0], iv);
+	le128_inc(iv);
+	le128_to_be128(&ctrblks[1], iv);
+	le128_inc(iv);
+	le128_to_be128(&ctrblks[2], iv);
+	le128_inc(iv);
+
+	twofish_enc_blk_xor_3way(ctx, (u8 *)dst, (u8 *)ctrblks);
+}
+EXPORT_SYMBOL_GPL(twofish_enc_blk_ctr_3way);
+
+static const struct common_glue_ctx twofish_enc = {
+	.num_funcs = 2,
+	.fpu_blocks_limit = -1,
+
+	.funcs = { {
+		.num_blocks = 3,
+		.fn_u = { .ecb = GLUE_FUNC_CAST(twofish_enc_blk_3way) }
+	}, {
+		.num_blocks = 1,
+		.fn_u = { .ecb = GLUE_FUNC_CAST(twofish_enc_blk) }
+	} }
+};
+
+static const struct common_glue_ctx twofish_ctr = {
+	.num_funcs = 2,
+	.fpu_blocks_limit = -1,
+
+	.funcs = { {
+		.num_blocks = 3,
+		.fn_u = { .ecb = GLUE_FUNC_CAST(twofish_enc_blk_ctr_3way) }
+	}, {
+		.num_blocks = 1,
+		.fn_u = { .ecb = GLUE_FUNC_CAST(twofish_enc_blk_ctr) }
+	} }
+};
+
+static const struct common_glue_ctx twofish_dec = {
+	.num_funcs = 2,
+	.fpu_blocks_limit = -1,
+
+	.funcs = { {
+		.num_blocks = 3,
+		.fn_u = { .ecb = GLUE_FUNC_CAST(twofish_dec_blk_3way) }
+	}, {
+		.num_blocks = 1,
+		.fn_u = { .ecb = GLUE_FUNC_CAST(twofish_dec_blk) }
+	} }
+};
+
+static const struct common_glue_ctx twofish_dec_cbc = {
+	.num_funcs = 2,
+	.fpu_blocks_limit = -1,
+
+	.funcs = { {
+		.num_blocks = 3,
+		.fn_u = { .cbc = GLUE_CBC_FUNC_CAST(twofish_dec_blk_cbc_3way) }
+	}, {
+		.num_blocks = 1,
+		.fn_u = { .cbc = GLUE_CBC_FUNC_CAST(twofish_dec_blk) }
+	} }
+};
+
+static int ecb_encrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
+		       struct scatterlist *src, unsigned int nbytes)
+{
+	return glue_ecb_crypt_128bit(&twofish_enc, desc, dst, src, nbytes);
+}
+
+static int ecb_decrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
+		       struct scatterlist *src, unsigned int nbytes)
+{
+	return glue_ecb_crypt_128bit(&twofish_dec, desc, dst, src, nbytes);
+}
+
+static int cbc_encrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
+		       struct scatterlist *src, unsigned int nbytes)
+{
+	return glue_cbc_encrypt_128bit(GLUE_FUNC_CAST(twofish_enc_blk), desc,
+				       dst, src, nbytes);
+}
+
+static int cbc_decrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
+		       struct scatterlist *src, unsigned int nbytes)
+{
+	return glue_cbc_decrypt_128bit(&twofish_dec_cbc, desc, dst, src,
+				       nbytes);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ctr_crypt(struct blkcipher_desc *desc, struct scatterlist *dst,
 		     struct scatterlist *src, unsigned int nbytes)
 {
+<<<<<<< HEAD
 	struct blkcipher_walk walk;
 	int err;
 
@@ -365,6 +509,9 @@ static int ctr_crypt(struct blkcipher_desc *desc, struct scatterlist *dst,
 	}
 
 	return err;
+=======
+	return glue_ctr_crypt_128bit(&twofish_ctr, desc, dst, src, nbytes);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void encrypt_callback(void *priv, u8 *srcdst, unsigned int nbytes)
@@ -397,6 +544,7 @@ static void decrypt_callback(void *priv, u8 *srcdst, unsigned int nbytes)
 		twofish_dec_blk(ctx, srcdst, srcdst);
 }
 
+<<<<<<< HEAD
 struct twofish_lrw_ctx {
 	struct lrw_table_ctx lrw_table;
 	struct twofish_ctx twofish_ctx;
@@ -404,6 +552,10 @@ struct twofish_lrw_ctx {
 
 static int lrw_twofish_setkey(struct crypto_tfm *tfm, const u8 *key,
 			      unsigned int keylen)
+=======
+int lrw_twofish_setkey(struct crypto_tfm *tfm, const u8 *key,
+		       unsigned int keylen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twofish_lrw_ctx *ctx = crypto_tfm_ctx(tfm);
 	int err;
@@ -415,6 +567,10 @@ static int lrw_twofish_setkey(struct crypto_tfm *tfm, const u8 *key,
 
 	return lrw_init_table(&ctx->lrw_table, key + keylen - TF_BLOCK_SIZE);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(lrw_twofish_setkey);
+>>>>>>> refs/remotes/origin/master
 
 static int lrw_encrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
 		       struct scatterlist *src, unsigned int nbytes)
@@ -450,12 +606,17 @@ static int lrw_decrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
 	return lrw_crypt(desc, dst, src, nbytes, &req);
 }
 
+<<<<<<< HEAD
 static void lrw_exit_tfm(struct crypto_tfm *tfm)
+=======
+void lrw_twofish_exit_tfm(struct crypto_tfm *tfm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twofish_lrw_ctx *ctx = crypto_tfm_ctx(tfm);
 
 	lrw_free_table(&ctx->lrw_table);
 }
+<<<<<<< HEAD
 
 struct twofish_xts_ctx {
 	struct twofish_ctx tweak_ctx;
@@ -464,6 +625,12 @@ struct twofish_xts_ctx {
 
 static int xts_twofish_setkey(struct crypto_tfm *tfm, const u8 *key,
 			      unsigned int keylen)
+=======
+EXPORT_SYMBOL_GPL(lrw_twofish_exit_tfm);
+
+int xts_twofish_setkey(struct crypto_tfm *tfm, const u8 *key,
+		       unsigned int keylen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct twofish_xts_ctx *ctx = crypto_tfm_ctx(tfm);
 	u32 *flags = &tfm->crt_flags;
@@ -486,6 +653,10 @@ static int xts_twofish_setkey(struct crypto_tfm *tfm, const u8 *key,
 	return __twofish_setkey(&ctx->tweak_ctx, key + keylen / 2, keylen / 2,
 				flags);
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(xts_twofish_setkey);
+>>>>>>> refs/remotes/origin/master
 
 static int xts_encrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
 		       struct scatterlist *src, unsigned int nbytes)
@@ -533,7 +704,10 @@ static struct crypto_alg tf_algs[5] = { {
 	.cra_alignmask		= 0,
 	.cra_type		= &crypto_blkcipher_type,
 	.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		= LIST_HEAD_INIT(tf_algs[0].cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u = {
 		.blkcipher = {
 			.min_keysize	= TF_MIN_KEY_SIZE,
@@ -553,7 +727,10 @@ static struct crypto_alg tf_algs[5] = { {
 	.cra_alignmask		= 0,
 	.cra_type		= &crypto_blkcipher_type,
 	.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		= LIST_HEAD_INIT(tf_algs[1].cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u = {
 		.blkcipher = {
 			.min_keysize	= TF_MIN_KEY_SIZE,
@@ -574,7 +751,10 @@ static struct crypto_alg tf_algs[5] = { {
 	.cra_alignmask		= 0,
 	.cra_type		= &crypto_blkcipher_type,
 	.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		= LIST_HEAD_INIT(tf_algs[2].cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u = {
 		.blkcipher = {
 			.min_keysize	= TF_MIN_KEY_SIZE,
@@ -595,8 +775,12 @@ static struct crypto_alg tf_algs[5] = { {
 	.cra_alignmask		= 0,
 	.cra_type		= &crypto_blkcipher_type,
 	.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		= LIST_HEAD_INIT(tf_algs[3].cra_list),
 	.cra_exit		= lrw_exit_tfm,
+=======
+	.cra_exit		= lrw_twofish_exit_tfm,
+>>>>>>> refs/remotes/origin/master
 	.cra_u = {
 		.blkcipher = {
 			.min_keysize	= TF_MIN_KEY_SIZE + TF_BLOCK_SIZE,
@@ -617,7 +801,10 @@ static struct crypto_alg tf_algs[5] = { {
 	.cra_alignmask		= 0,
 	.cra_type		= &crypto_blkcipher_type,
 	.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		= LIST_HEAD_INIT(tf_algs[4].cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u = {
 		.blkcipher = {
 			.min_keysize	= TF_MIN_KEY_SIZE * 2,

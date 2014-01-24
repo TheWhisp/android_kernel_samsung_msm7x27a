@@ -132,7 +132,11 @@ static const struct ide_port_ops slc90e66_port_ops = {
 	.cable_detect		= slc90e66_cable_detect,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info slc90e66_chipset __devinitdata = {
+=======
+static const struct ide_port_info slc90e66_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= DRV_NAME,
 	.enablebits	= { {0x41, 0x80, 0x80}, {0x43, 0x80, 0x80} },
 	.port_ops	= &slc90e66_port_ops,
@@ -142,7 +146,12 @@ static const struct ide_port_info slc90e66_chipset __devinitdata = {
 	.udma_mask	= ATA_UDMA4,
 };
 
+<<<<<<< HEAD
 static int __devinit slc90e66_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int slc90e66_init_one(struct pci_dev *dev,
+			     const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	return ide_pci_init_one(dev, &slc90e66_chipset, NULL);
 }

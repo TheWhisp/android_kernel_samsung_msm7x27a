@@ -93,17 +93,25 @@ For a filesystem to be exportable it must:
    2/ make sure that d_splice_alias is used rather than d_add
       when ->lookup finds an inode for a given parent and name.
 <<<<<<< HEAD
+<<<<<<< HEAD
       Typically the ->lookup routine will end with a:
 =======
 
       If inode is NULL, d_splice_alias(inode, dentry) is eqivalent to
+=======
+
+      If inode is NULL, d_splice_alias(inode, dentry) is equivalent to
+>>>>>>> refs/remotes/origin/master
 
 		d_add(dentry, inode), NULL
 
       Similarly, d_splice_alias(ERR_PTR(err), dentry) = ERR_PTR(err)
 
       Typically the ->lookup routine will simply end with a:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		return d_splice_alias(inode, dentry);
 	}

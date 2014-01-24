@@ -43,6 +43,7 @@
 
 #define I2SSTAT_BUSY(stype)	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	((stype) == PCM_TX ? PSC_I2SSTAT_TB : PSC_I2SSTAT_RB)
 #define I2SPCR_START(stype)	\
 	((stype) == PCM_TX ? PSC_I2SPCR_TS : PSC_I2SPCR_RS)
@@ -51,6 +52,8 @@
 #define I2SPCR_CLRFIFO(stype)	\
 	((stype) == PCM_TX ? PSC_I2SPCR_TC : PSC_I2SPCR_RC)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SSTAT_TB : PSC_I2SSTAT_RB)
 #define I2SPCR_START(stype)	\
 	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TS : PSC_I2SPCR_RS)
@@ -58,7 +61,10 @@
 	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TP : PSC_I2SPCR_RP)
 #define I2SPCR_CLRFIFO(stype)	\
 	((stype) == SNDRV_PCM_STREAM_PLAYBACK ? PSC_I2SPCR_TC : PSC_I2SPCR_RC)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 static int au1xpsc_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
@@ -251,10 +257,14 @@ static int au1xpsc_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
 {
 	struct au1xpsc_audio_data *pscdata = snd_soc_dai_get_drvdata(dai);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, stype = SUBSTREAM_TYPE(substream);
 =======
 	int ret, stype = substream->stream;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, stype = substream->stream;
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
@@ -272,8 +282,11 @@ static int au1xpsc_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops au1xpsc_i2s_dai_ops = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int au1xpsc_i2s_startup(struct snd_pcm_substream *substream,
 			       struct snd_soc_dai *dai)
 {
@@ -284,7 +297,10 @@ static int au1xpsc_i2s_startup(struct snd_pcm_substream *substream,
 
 static const struct snd_soc_dai_ops au1xpsc_i2s_dai_ops = {
 	.startup	= au1xpsc_i2s_startup,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.trigger	= au1xpsc_i2s_trigger,
 	.hw_params	= au1xpsc_i2s_hw_params,
 	.set_fmt	= au1xpsc_i2s_set_fmt,
@@ -306,6 +322,7 @@ static const struct snd_soc_dai_driver au1xpsc_i2s_dai_template = {
 	.ops = &au1xpsc_i2s_dai_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -313,10 +330,20 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
 =======
 	struct resource *iores, *dmares;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_component_driver au1xpsc_i2s_component = {
+	.name		= "au1xpsc-i2s",
+};
+
+static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+{
+	struct resource *iores, *dmares;
+>>>>>>> refs/remotes/origin/master
 	unsigned long sel;
 	int ret;
 	struct au1xpsc_audio_data *wd;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wd = kzalloc(sizeof(struct au1xpsc_audio_data), GFP_KERNEL);
 	if (!wd)
@@ -336,6 +363,8 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
 	if (!wd->mmio)
 		goto out1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wd = devm_kzalloc(&pdev->dev, sizeof(struct au1xpsc_audio_data),
 			  GFP_KERNEL);
 	if (!wd)
@@ -365,7 +394,10 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
 	if (!dmares)
 		return -EBUSY;
 	wd->dmaids[SNDRV_PCM_STREAM_CAPTURE] = dmares->start;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* preserve PSC clock source set up by platform (dev.platform_data
 	 * is already occupied by soc layer)
@@ -392,6 +424,7 @@ static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, wd);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &wd->dai_drv);
 	if (ret)
@@ -425,6 +458,17 @@ static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+	return snd_soc_register_component(&pdev->dev, &au1xpsc_i2s_component,
+					  &wd->dai_drv, 1);
+}
+
+static int au1xpsc_i2s_drvremove(struct platform_device *pdev)
+{
+	struct au1xpsc_audio_data *wd = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	au_writel(0, I2S_CFG(wd));
 	au_sync();
@@ -432,12 +476,15 @@ static int __devexit au1xpsc_i2s_drvremove(struct platform_device *pdev)
 	au_sync();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iounmap(wd->mmio);
 	release_mem_region(r->start, resource_size(r));
 	kfree(wd);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -492,6 +539,7 @@ static struct platform_driver au1xpsc_i2s_driver = {
 		.pm	= AU1XPSCI2S_PMOPS,
 	},
 	.probe		= au1xpsc_i2s_drvprobe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(au1xpsc_i2s_drvremove),
 };
 
@@ -511,6 +559,12 @@ module_exit(au1xpsc_i2s_unload);
 =======
 module_platform_driver(au1xpsc_i2s_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= au1xpsc_i2s_drvremove,
+};
+
+module_platform_driver(au1xpsc_i2s_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Au12x0/Au1550 PSC I2S ALSA ASoC audio driver");

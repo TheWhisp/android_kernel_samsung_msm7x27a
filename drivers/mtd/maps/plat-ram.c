@@ -45,10 +45,13 @@ struct platram_info {
 	struct mtd_info		*mtd;
 	struct map_info		 map;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition	*partitions;
 	bool			free_partitions;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct resource		*area;
 	struct platdata_mtd_ram	*pdata;
 };
@@ -60,7 +63,11 @@ struct platram_info {
 
 static inline struct platram_info *to_platram_info(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	return (struct platram_info *)platform_get_drvdata(dev);
+=======
+	return platform_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* platram_setrw
@@ -89,8 +96,11 @@ static int platram_remove(struct platform_device *pdev)
 {
 	struct platram_info *info = to_platram_info(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(&pdev->dev, "removing device\n");
 
 	if (info == NULL)
@@ -99,12 +109,15 @@ static int platram_remove(struct platform_device *pdev)
 	if (info->mtd) {
 		mtd_device_unregister(info->mtd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (info->partitions) {
 			if (info->free_partitions)
 				kfree(info->partitions);
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		map_destroy(info->mtd);
 	}
 
@@ -142,13 +155,21 @@ static int platram_probe(struct platform_device *pdev)
 
 	dev_dbg(&pdev->dev, "probe entered\n");
 
+<<<<<<< HEAD
 	if (pdev->dev.platform_data == NULL) {
+=======
+	if (dev_get_platdata(&pdev->dev) == NULL) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "no platform data supplied\n");
 		err = -ENOENT;
 		goto exit_error;
 	}
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
 	if (info == NULL) {
@@ -211,7 +232,11 @@ static int platram_probe(struct platform_device *pdev)
 	 * supplied by the platform_data struct */
 
 	if (pdata->map_probes) {
+<<<<<<< HEAD
 		const char **map_probes = pdata->map_probes;
+=======
+		const char * const *map_probes = pdata->map_probes;
+>>>>>>> refs/remotes/origin/master
 
 		for ( ; !info->mtd && *map_probes; map_probes++)
 			info->mtd = do_map_probe(*map_probes , &info->map);
@@ -231,6 +256,7 @@ static int platram_probe(struct platform_device *pdev)
 
 	platram_setrw(info, PLATRAM_RW);
 
+<<<<<<< HEAD
 	/* check to see if there are any available partitions, or wether
 	 * to add this device whole */
 
@@ -258,6 +284,11 @@ static int platram_probe(struct platform_device *pdev)
 	if (err)
 		dev_err(&pdev->dev, "failed to register the entire device\n");
 =======
+=======
+	/* check to see if there are any available partitions, or whether
+	 * to add this device whole */
+
+>>>>>>> refs/remotes/origin/master
 	err = mtd_device_parse_register(info->mtd, pdata->probes, NULL,
 					pdata->partitions,
 					pdata->nr_partitions);
@@ -272,7 +303,10 @@ static int platram_probe(struct platform_device *pdev)
 				"failed to register the entire device\n");
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 
@@ -296,6 +330,7 @@ static struct platform_driver platram_driver = {
 	},
 };
 
+<<<<<<< HEAD
 /* module init/exit */
 
 static int __init platram_init(void)
@@ -311,6 +346,9 @@ static void __exit platram_exit(void)
 
 module_init(platram_init);
 module_exit(platram_exit);
+=======
+module_platform_driver(platram_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");

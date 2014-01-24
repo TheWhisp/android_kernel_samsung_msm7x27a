@@ -205,6 +205,7 @@ MODULE_DEVICE_TABLE(pci, rivafb_pci_tbl);
  * ------------------------------------------------------------------------- */
 
 /* command line data, set in rivafb_setup() */
+<<<<<<< HEAD
 static int flatpanel __devinitdata = -1; /* Autodetect later */
 static int forceCRTC __devinitdata = -1;
 <<<<<<< HEAD
@@ -231,12 +232,34 @@ static bool strictmode       = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static struct fb_fix_screeninfo __devinitdata rivafb_fix = {
+=======
+static int flatpanel = -1; /* Autodetect later */
+static int forceCRTC = -1;
+static bool noaccel  = 0;
+#ifdef CONFIG_MTRR
+static bool nomtrr = 0;
+#endif
+#ifdef CONFIG_PMAC_BACKLIGHT
+static int backlight = 1;
+#else
+static int backlight = 0;
+#endif
+
+static char *mode_option = NULL;
+static bool strictmode       = 0;
+
+static struct fb_fix_screeninfo rivafb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.type		= FB_TYPE_PACKED_PIXELS,
 	.xpanstep	= 1,
 	.ypanstep	= 1,
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo __devinitdata rivafb_default_var = {
+=======
+static struct fb_var_screeninfo rivafb_default_var = {
+>>>>>>> refs/remotes/origin/master
 	.xres		= 640,
 	.yres		= 480,
 	.xres_virtual	= 640,
@@ -1195,11 +1218,14 @@ static int rivafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 	if (rivafb_do_maximize(info, var, nom, den) < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (var->xoffset < 0)
 		var->xoffset = 0;
 	if (var->yoffset < 0)
 		var->yoffset = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* truncate xoffset and yoffset to maximum if too high */
 	if (var->xoffset > var->xres_virtual - var->xres)
 		var->xoffset = var->xres_virtual - var->xres - 1;
@@ -1719,7 +1745,11 @@ static struct fb_ops riva_fb_ops = {
 	.fb_sync 	= rivafb_sync,
 };
 
+<<<<<<< HEAD
 static int __devinit riva_set_fbinfo(struct fb_info *info)
+=======
+static int riva_set_fbinfo(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cmap_len;
 	struct riva_par *par = info->par;
@@ -1757,7 +1787,11 @@ static int __devinit riva_set_fbinfo(struct fb_info *info)
 }
 
 #ifdef CONFIG_PPC_OF
+<<<<<<< HEAD
 static int __devinit riva_get_EDID_OF(struct fb_info *info, struct pci_dev *pd)
+=======
+static int riva_get_EDID_OF(struct fb_info *info, struct pci_dev *pd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct riva_par *par = info->par;
 	struct device_node *dp;
@@ -1790,7 +1824,11 @@ static int __devinit riva_get_EDID_OF(struct fb_info *info, struct pci_dev *pd)
 #endif /* CONFIG_PPC_OF */
 
 #if defined(CONFIG_FB_RIVA_I2C) && !defined(CONFIG_PPC_OF)
+<<<<<<< HEAD
 static int __devinit riva_get_EDID_i2c(struct fb_info *info)
+=======
+static int riva_get_EDID_i2c(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct riva_par *par = info->par;
 	struct fb_var_screeninfo var;
@@ -1813,8 +1851,13 @@ static int __devinit riva_get_EDID_i2c(struct fb_info *info)
 }
 #endif /* CONFIG_FB_RIVA_I2C */
 
+<<<<<<< HEAD
 static void __devinit riva_update_default_var(struct fb_var_screeninfo *var,
 					      struct fb_info *info)
+=======
+static void riva_update_default_var(struct fb_var_screeninfo *var,
+				    struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_monspecs *specs = &info->monspecs;
 	struct fb_videomode modedb;
@@ -1846,7 +1889,11 @@ static void __devinit riva_update_default_var(struct fb_var_screeninfo *var,
 }
 
 
+<<<<<<< HEAD
 static void __devinit riva_get_EDID(struct fb_info *info, struct pci_dev *pdev)
+=======
+static void riva_get_EDID(struct fb_info *info, struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	NVTRACE_ENTER();
 #ifdef CONFIG_PPC_OF
@@ -1860,7 +1907,11 @@ static void __devinit riva_get_EDID(struct fb_info *info, struct pci_dev *pdev)
 }
 
 
+<<<<<<< HEAD
 static void __devinit riva_get_edidinfo(struct fb_info *info)
+=======
+static void riva_get_edidinfo(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_var_screeninfo *var = &rivafb_default_var;
 	struct riva_par *par = info->par;
@@ -1881,7 +1932,11 @@ static void __devinit riva_get_edidinfo(struct fb_info *info)
  *
  * ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static u32 __devinit riva_get_arch(struct pci_dev *pd)
+=======
+static u32 riva_get_arch(struct pci_dev *pd)
+>>>>>>> refs/remotes/origin/master
 {
     	u32 arch = 0;
 
@@ -1919,8 +1974,12 @@ static u32 __devinit riva_get_arch(struct pci_dev *pd)
 	return arch;
 }
 
+<<<<<<< HEAD
 static int __devinit rivafb_probe(struct pci_dev *pd,
 			     	const struct pci_device_id *ent)
+=======
+static int rivafb_probe(struct pci_dev *pd, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct riva_par *default_par;
 	struct fb_info *info;
@@ -2115,7 +2174,11 @@ err_ret:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit rivafb_remove(struct pci_dev *pd)
+=======
+static void rivafb_remove(struct pci_dev *pd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pd);
 	struct riva_par *par = info->par;
@@ -2155,7 +2218,11 @@ static void __devexit rivafb_remove(struct pci_dev *pd)
  * ------------------------------------------------------------------------- */
 
 #ifndef MODULE
+<<<<<<< HEAD
 static int __devinit rivafb_setup(char *options)
+=======
+static int rivafb_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	char *this_opt;
 
@@ -2196,7 +2263,11 @@ static struct pci_driver rivafb_driver = {
 	.name		= "rivafb",
 	.id_table	= rivafb_pci_tbl,
 	.probe		= rivafb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rivafb_remove),
+=======
+	.remove		= rivafb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -2207,7 +2278,11 @@ static struct pci_driver rivafb_driver = {
  *
  * ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int __devinit rivafb_init(void)
+=======
+static int rivafb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 #ifndef MODULE
 	char *option = NULL;

@@ -19,15 +19,25 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include <mach/iomux-mx3.h>
 #include <mach/hardware.h>
 #include <mach/common.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/time.h>
 #include <asm/mach/arch.h>
 #include <asm/mach-types.h>
 
+<<<<<<< HEAD
 #include "devices-imx31.h"
+=======
+#include "common.h"
+#include "devices-imx31.h"
+#include "hardware.h"
+#include "iomux-mx3.h"
+>>>>>>> refs/remotes/origin/master
 
 static const struct imxuart_platform_data uart_pdata __initconst = {
 	.flags = IMXUART_HAVE_RTSCTS,
@@ -43,10 +53,15 @@ static const unsigned int bug_pins[] __initconst = {
 static void __init bug_board_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	imx31_soc_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx31_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_iomux_setup_multiple_pins(bug_pins,
 				      ARRAY_SIZE(bug_pins), "uart-4");
 	imx31_add_imx_uart4(&uart_pdata);
@@ -57,14 +72,18 @@ static void __init bug_timer_init(void)
 	mx31_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer bug_timer = {
 	.init = bug_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_START(BUG, "BugLabs BUGBase")
 	.map_io = mx31_map_io,
 	.init_early = imx31_init_early,
 	.init_irq = mx31_init_irq,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.timer = &bug_timer,
 	.init_machine = bug_board_init,
@@ -74,4 +93,10 @@ MACHINE_START(BUG, "BugLabs BUGBase")
 	.init_machine = bug_board_init,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.handle_irq = imx31_handle_irq,
+	.init_time	= bug_timer_init,
+	.init_machine = bug_board_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

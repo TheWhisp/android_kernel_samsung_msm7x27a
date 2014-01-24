@@ -28,9 +28,18 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/capability.h>
 #include <linux/errno.h>
 #include <linux/interrupt.h>
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/capability.h>
+#include <linux/errno.h>
+#include <linux/interrupt.h>
+#include <linux/syscalls.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/signal.h>
@@ -46,7 +55,10 @@
 #include <asm/io.h>
 #include <asm/tlbflush.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include <asm/syscalls.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Known problems:
@@ -137,14 +149,22 @@ struct pt_regs *save_v86_state(struct kernel_vm86_regs *regs)
 	local_irq_enable();
 
 	if (!current->thread.vm86_info) {
+<<<<<<< HEAD
 		printk("no vm86_info: BAD\n");
+=======
+		pr_alert("no vm86_info: BAD\n");
+>>>>>>> refs/remotes/origin/master
 		do_exit(SIGSEGV);
 	}
 	set_flags(regs->pt.flags, VEFLAGS, X86_EFLAGS_VIF | current->thread.v86mask);
 	tmp = copy_vm86_regs_to_user(&current->thread.vm86_info->regs, regs);
 	tmp += put_user(current->thread.screen_bitmap, &current->thread.vm86_info->screen_bitmap);
 	if (tmp) {
+<<<<<<< HEAD
 		printk("vm86: could not access userspace vm86_info\n");
+=======
+		pr_alert("could not access userspace vm86_info\n");
+>>>>>>> refs/remotes/origin/master
 		do_exit(SIGSEGV);
 	}
 
@@ -180,7 +200,11 @@ static void mark_screen_rdonly(struct mm_struct *mm)
 	if (pud_none_or_clear_bad(pud))
 		goto out;
 	pmd = pmd_offset(pud, 0xA0000);
+<<<<<<< HEAD
 	split_huge_page_pmd(mm, pmd);
+=======
+	split_huge_page_pmd_mm(mm, 0xA0000, pmd);
+>>>>>>> refs/remotes/origin/master
 	if (pmd_none_or_clear_bad(pmd))
 		goto out;
 	pte = pte_offset_map_lock(mm, pmd, 0xA0000, &ptl);
@@ -200,13 +224,18 @@ out:
 static int do_vm86_irq_handling(int subfunction, int irqnumber);
 static void do_sys_vm86(struct kernel_vm86_struct *info, struct task_struct *tsk);
 
+<<<<<<< HEAD
 int sys_vm86old(struct vm86_struct __user *v86, struct pt_regs *regs)
+=======
+SYSCALL_DEFINE1(vm86old, struct vm86_struct __user *, v86)
+>>>>>>> refs/remotes/origin/master
 {
 	struct kernel_vm86_struct info; /* declare this _on top_,
 					 * this avoids wasting of stack space.
 					 * This remains on the stack until we
 					 * return to 32 bit user space.
 					 */
+<<<<<<< HEAD
 	struct task_struct *tsk;
 	int tmp, ret = -EPERM;
 
@@ -230,6 +259,27 @@ out:
 
 
 int sys_vm86(unsigned long cmd, unsigned long arg, struct pt_regs *regs)
+=======
+	struct task_struct *tsk = current;
+	int tmp;
+
+	if (tsk->thread.saved_sp0)
+		return -EPERM;
+	tmp = copy_vm86_regs_from_user(&info.regs, &v86->regs,
+				       offsetof(struct kernel_vm86_struct, vm86plus) -
+				       sizeof(info.regs));
+	if (tmp)
+		return -EFAULT;
+	memset(&info.vm86plus, 0, (int)&info.regs32 - (int)&info.vm86plus);
+	info.regs32 = current_pt_regs();
+	tsk->thread.vm86_info = v86;
+	do_sys_vm86(&info, tsk);
+	return 0;	/* we never return here */
+}
+
+
+SYSCALL_DEFINE2(vm86, unsigned long, cmd, unsigned long, arg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct kernel_vm86_struct info; /* declare this _on top_,
 					 * this avoids wasting of stack space.
@@ -237,7 +287,11 @@ int sys_vm86(unsigned long cmd, unsigned long arg, struct pt_regs *regs)
 					 * return to 32 bit user space.
 					 */
 	struct task_struct *tsk;
+<<<<<<< HEAD
 	int tmp, ret;
+=======
+	int tmp;
+>>>>>>> refs/remotes/origin/master
 	struct vm86plus_struct __user *v86;
 
 	tsk = current;
@@ -246,8 +300,12 @@ int sys_vm86(unsigned long cmd, unsigned long arg, struct pt_regs *regs)
 	case VM86_FREE_IRQ:
 	case VM86_GET_IRQ_BITS:
 	case VM86_GET_AND_RESET_IRQ:
+<<<<<<< HEAD
 		ret = do_vm86_irq_handling(cmd, (int)arg);
 		goto out;
+=======
+		return do_vm86_irq_handling(cmd, (int)arg);
+>>>>>>> refs/remotes/origin/master
 	case VM86_PLUS_INSTALL_CHECK:
 		/*
 		 * NOTE: on old vm86 stuff this will return the error
@@ -255,6 +313,7 @@ int sys_vm86(unsigned long cmd, unsigned long arg, struct pt_regs *regs)
 		 *  interpreted as (invalid) address to vm86_struct.
 		 *  So the installation check works.
 		 */
+<<<<<<< HEAD
 		ret = 0;
 		goto out;
 	}
@@ -263,10 +322,19 @@ int sys_vm86(unsigned long cmd, unsigned long arg, struct pt_regs *regs)
 	ret = -EPERM;
 	if (tsk->thread.saved_sp0)
 		goto out;
+=======
+		return 0;
+	}
+
+	/* we come here only for functions VM86_ENTER, VM86_ENTER_NO_BYPASS */
+	if (tsk->thread.saved_sp0)
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 	v86 = (struct vm86plus_struct __user *)arg;
 	tmp = copy_vm86_regs_from_user(&info.regs, &v86->regs,
 				       offsetof(struct kernel_vm86_struct, regs32) -
 				       sizeof(info.regs));
+<<<<<<< HEAD
 	ret = -EFAULT;
 	if (tmp)
 		goto out;
@@ -277,6 +345,15 @@ int sys_vm86(unsigned long cmd, unsigned long arg, struct pt_regs *regs)
 	ret = 0;	/* we never return here */
 out:
 	return ret;
+=======
+	if (tmp)
+		return -EFAULT;
+	info.regs32 = current_pt_regs();
+	info.vm86plus.is_vm86pus = 1;
+	tsk->thread.vm86_info = (struct vm86_struct __user *)v86;
+	do_sys_vm86(&info, tsk);
+	return 0;	/* we never return here */
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -338,16 +415,22 @@ static void do_sys_vm86(struct kernel_vm86_struct *info, struct task_struct *tsk
 		mark_screen_rdonly(tsk->mm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*call audit_syscall_exit since we do not exit via the normal paths */
 	if (unlikely(current->audit_context))
 		audit_syscall_exit(AUDITSC_RESULT(0), 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*call __audit_syscall_exit since we do not exit via the normal paths */
 #ifdef CONFIG_AUDITSYSCALL
 	if (unlikely(current->audit_context))
 		__audit_syscall_exit(1, 0);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	__asm__ __volatile__(
 		"movl %0,%%esp\n\t"
@@ -565,9 +648,15 @@ int handle_vm86_trap(struct kernel_vm86_regs *regs, long error_code, int trapno)
 		if ((trapno == 3) || (trapno == 1)) {
 			KVM86->regs32->ax = VM86_TRAP + (trapno << 8);
 			/* setting this flag forces the code in entry_32.S to
+<<<<<<< HEAD
 			   call save_v86_state() and change the stack pointer
 			   to KVM86->regs32 */
 			set_thread_flag(TIF_IRET);
+=======
+			   the path where we call save_v86_state() and change
+			   the stack pointer to KVM86->regs32 */
+			set_thread_flag(TIF_NOTIFY_RESUME);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 		do_int(regs, trapno, (unsigned char __user *) (regs->pt.ss << 4), SP(regs));
@@ -576,10 +665,14 @@ int handle_vm86_trap(struct kernel_vm86_regs *regs, long error_code, int trapno)
 	if (trapno != 1)
 		return 1; /* we let this handle by the calling routine */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current->thread.trap_no = trapno;
 =======
 	current->thread.trap_nr = trapno;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	current->thread.trap_nr = trapno;
+>>>>>>> refs/remotes/origin/master
 	current->thread.error_code = error_code;
 	force_sig(SIGTRAP, current);
 	return 0;

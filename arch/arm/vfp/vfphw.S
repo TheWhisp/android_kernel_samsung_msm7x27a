@@ -16,17 +16,32 @@
  */
 #include <asm/thread_info.h>
 #include <asm/vfpmacros.h>
+<<<<<<< HEAD
+=======
+#include <linux/kern_levels.h>
+>>>>>>> refs/remotes/origin/master
 #include "../kernel/entry-header.S"
 
 	.macro	DBGSTR, str
 #ifdef DEBUG
 	stmfd	sp!, {r0-r3, ip, lr}
+<<<<<<< HEAD
 	add	r0, pc, #4
 	bl	printk
 	b	1f
 	.asciz  "<7>VFP: \str\n"
 	.balign 4
 1:	ldmfd	sp!, {r0-r3, ip, lr}
+=======
+	ldr	r0, =1f
+	bl	printk
+	ldmfd	sp!, {r0-r3, ip, lr}
+
+	.pushsection .rodata, "a"
+1:	.ascii	KERN_DEBUG "VFP: \str\n"
+	.byte	0
+	.previous
+>>>>>>> refs/remotes/origin/master
 #endif
 	.endm
 
@@ -34,12 +49,23 @@
 #ifdef DEBUG
 	stmfd	sp!, {r0-r3, ip, lr}
 	mov	r1, \arg
+<<<<<<< HEAD
 	add	r0, pc, #4
 	bl	printk
 	b	1f
 	.asciz  "<7>VFP: \str\n"
 	.balign 4
 1:	ldmfd	sp!, {r0-r3, ip, lr}
+=======
+	ldr	r0, =1f
+	bl	printk
+	ldmfd	sp!, {r0-r3, ip, lr}
+
+	.pushsection .rodata, "a"
+1:	.ascii	KERN_DEBUG "VFP: \str\n"
+	.byte	0
+	.previous
+>>>>>>> refs/remotes/origin/master
 #endif
 	.endm
 
@@ -49,12 +75,23 @@
 	mov	r3, \arg3
 	mov	r2, \arg2
 	mov	r1, \arg1
+<<<<<<< HEAD
 	add	r0, pc, #4
 	bl	printk
 	b	1f
 	.asciz  "<7>VFP: \str\n"
 	.balign 4
 1:	ldmfd	sp!, {r0-r3, ip, lr}
+=======
+	ldr	r0, =1f
+	bl	printk
+	ldmfd	sp!, {r0-r3, ip, lr}
+
+	.pushsection .rodata, "a"
+1:	.ascii	KERN_DEBUG "VFP: \str\n"
+	.byte	0
+	.previous
+>>>>>>> refs/remotes/origin/master
 #endif
 	.endm
 
@@ -71,6 +108,14 @@
 ENTRY(vfp_support_entry)
 	DBGSTR3	"instr %08x pc %08x state %p", r0, r2, r10
 
+<<<<<<< HEAD
+=======
+	ldr	r3, [sp, #S_PSR]	@ Neither lazy restore nor FP exceptions
+	and	r3, r3, #MODE_MASK	@ are supported in kernel mode
+	teq	r3, #USR_MODE
+	bne	vfp_kmode_exception	@ Returns through lr
+
+>>>>>>> refs/remotes/origin/master
 	VFPFMRX	r1, FPEXC		@ Is the VFP enabled?
 	DBGSTR1	"fpexc %08x", r1
 	tst	r1, #FPEXC_EN
@@ -83,9 +128,12 @@ ENTRY(vfp_support_entry)
 	bic	r5, r1, #FPEXC_EX	@ make sure exceptions are disabled
 	cmp	r4, r10			@ this thread owns the hw context?
 <<<<<<< HEAD
+<<<<<<< HEAD
 	beq	vfp_hw_state_valid
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_SMP
 	@ For UP, checking that this thread owns the hw context is
 	@ sufficient to determine that the hardware state is valid.
@@ -95,11 +143,15 @@ ENTRY(vfp_support_entry)
 	@ thread wants ownership of the VFP hardware, save the old
 	@ state if there was a previous (valid) owner.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	VFPFMXR	FPEXC, r5		@ enable VFP, disable any pending
 					@ exceptions, so we can get at the
 					@ rest of it
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifndef CONFIG_SMP
 	@ Save out the current registers to the old thread state
@@ -113,6 +165,11 @@ ENTRY(vfp_support_entry)
 	cmp	r4, #0			@ if the vfp_current_hw_state is NULL
 	beq	vfp_reload_hw		@ then the hw state needs reloading
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DBGSTR1	"save old state %p", r4
+	cmp	r4, #0			@ if the vfp_current_hw_state is NULL
+	beq	vfp_reload_hw		@ then the hw state needs reloading
+>>>>>>> refs/remotes/origin/master
 	VFPFSTMIA r4, r5		@ save the working registers
 	VFPFMRX	r5, FPSCR		@ current status
 #ifndef CONFIG_CPU_FEROCEON
@@ -126,12 +183,15 @@ ENTRY(vfp_support_entry)
 #endif
 	stmia	r4, {r1, r5, r6, r8}	@ save FPEXC, FPSCR, FPINST, FPINST2
 <<<<<<< HEAD
+<<<<<<< HEAD
 					@ and point r4 at the word at the
 					@ start of the register dump
 #endif
 
 no_old_VFP_process:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 vfp_reload_hw:
 
 #else
@@ -159,7 +219,10 @@ vfp_reload_hw:
 					@ rest of it
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DBGSTR1	"load state %p", r10
 	str	r10, [r3, r11, lsl #2]	@ update the vfp_current_hw_state pointer
 					@ Load the saved state back into the VFP
@@ -191,10 +254,14 @@ vfp_hw_state_valid:
 					@ always subtract 4 from the following
 					@ instruction address.
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/master
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it
@@ -214,6 +281,7 @@ look_for_VFP_exceptions:
 	tst	r5, #FPSCR_IXE
 	bne	process_exception
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM_KRAIT
 	@ Krait does not set FPEXC.DEX for unsupported short vector instructions
 	mrc     p15, 0, r2, c0, c0, 0
@@ -230,15 +298,21 @@ look_for_VFP_exceptions:
 skip:
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	@ Fall into hand on to next handler - appropriate coproc instr
 	@ not recognised by VFP
 
 	DBGSTR	"not VFP"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 =======
 #ifdef CONFIG_PREEMPT_COUNT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PREEMPT_COUNT
+>>>>>>> refs/remotes/origin/master
 	get_thread_info	r10
 	ldr	r4, [r10, #TI_PREEMPT]	@ get preempt count
 	sub	r11, r4, #1		@ decrement it

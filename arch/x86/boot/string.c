@@ -112,7 +112,10 @@ unsigned long long simple_strtoull(const char *cp, char **endp, unsigned int bas
 	return result;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * strlen - Find the length of a string
@@ -148,4 +151,7 @@ char *strstr(const char *s1, const char *s2)
 	}
 	return NULL;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

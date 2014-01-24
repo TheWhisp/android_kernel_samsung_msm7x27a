@@ -56,9 +56,12 @@ ENTRY(cpu_v6_proc_fin)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(cpu_v6_reset)
 	mov	pc, r0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.pushsection	.idmap.text, "ax"
 ENTRY(cpu_v6_reset)
 	mrc	p15, 0, r1, c1, c0, 0		@ ctrl register
@@ -69,7 +72,10 @@ ENTRY(cpu_v6_reset)
 	mov	pc, r0
 ENDPROC(cpu_v6_reset)
 	.popsection
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	cpu_v6_do_idle()
@@ -85,16 +91,26 @@ ENTRY(cpu_v6_do_idle)
 	mov	pc, lr
 
 ENTRY(cpu_v6_dcache_clean_area)
+<<<<<<< HEAD
 #ifndef TLB_CAN_READ_FROM_L1_CACHE
+=======
+>>>>>>> refs/remotes/origin/master
 1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D entry
 	add	r0, r0, #D_CACHE_LINE_SIZE
 	subs	r1, r1, #D_CACHE_LINE_SIZE
 	bhi	1b
+<<<<<<< HEAD
 #endif
 	mov	pc, lr
 
 /*
  *	cpu_arm926_switch_mm(pgd_phys, tsk)
+=======
+	mov	pc, lr
+
+/*
+ *	cpu_v6_switch_mm(pgd_phys, tsk)
+>>>>>>> refs/remotes/origin/master
  *
  *	Set the translation table base pointer to be pgd_phys
  *
@@ -106,7 +122,11 @@ ENTRY(cpu_v6_dcache_clean_area)
 ENTRY(cpu_v6_switch_mm)
 #ifdef CONFIG_MMU
 	mov	r2, #0
+<<<<<<< HEAD
 	ldr	r1, [r1, #MM_CONTEXT_ID]	@ get mm->context.id
+=======
+	mmid	r1, r1				@ get mm->context.id
+>>>>>>> refs/remotes/origin/master
 	ALT_SMP(orr	r0, r0, #TTB_FLAGS_SMP)
 	ALT_UP(orr	r0, r0, #TTB_FLAGS_UP)
 	mcr	p15, 0, r2, c7, c5, 6		@ flush BTAC/BTB
@@ -116,7 +136,11 @@ ENTRY(cpu_v6_switch_mm)
 	mrc	p15, 0, r2, c13, c0, 1		@ read current context ID
 	bic	r2, r2, #0xff			@ extract the PID
 	and	r1, r1, #0xff
+<<<<<<< HEAD
 	orr	r1, r1, r2			@ insert the PID into r1
+=======
+	orr	r1, r1, r2			@ insert into new context ID
+>>>>>>> refs/remotes/origin/master
 #endif
 	mcr	p15, 0, r1, c13, c0, 1		@ set context ID
 #endif
@@ -143,6 +167,7 @@ ENTRY(cpu_v6_set_pte_ext)
 /* Suspend/resume support: taken from arch/arm/mach-s3c64xx/sleep.S */
 .globl	cpu_v6_suspend_size
 <<<<<<< HEAD
+<<<<<<< HEAD
 .equ	cpu_v6_suspend_size, 4 * 8
 #ifdef CONFIG_PM_SLEEP
 ENTRY(cpu_v6_do_suspend)
@@ -158,19 +183,31 @@ ENTRY(cpu_v6_do_suspend)
 	stmia	r0, {r4 - r11}
 	ldmfd	sp!, {r4- r11, pc}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 .equ	cpu_v6_suspend_size, 4 * 6
 #ifdef CONFIG_ARM_CPU_SUSPEND
 ENTRY(cpu_v6_do_suspend)
 	stmfd	sp!, {r4 - r9, lr}
 	mrc	p15, 0, r4, c13, c0, 0	@ FCSE/PID
+<<<<<<< HEAD
 	mrc	p15, 0, r5, c3, c0, 0	@ Domain ID
 	mrc	p15, 0, r6, c2, c0, 1	@ Translation table base 1
+=======
+#ifdef CONFIG_MMU
+	mrc	p15, 0, r5, c3, c0, 0	@ Domain ID
+	mrc	p15, 0, r6, c2, c0, 1	@ Translation table base 1
+#endif
+>>>>>>> refs/remotes/origin/master
 	mrc	p15, 0, r7, c1, c0, 1	@ auxiliary control register
 	mrc	p15, 0, r8, c1, c0, 2	@ co-processor access control
 	mrc	p15, 0, r9, c1, c0, 0	@ control register
 	stmia	r0, {r4 - r9}
 	ldmfd	sp!, {r4- r9, pc}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENDPROC(cpu_v6_do_suspend)
 
 ENTRY(cpu_v6_do_resume)
@@ -179,6 +216,7 @@ ENTRY(cpu_v6_do_resume)
 	mcr	p15, 0, ip, c7, c5, 0	@ invalidate I cache
 	mcr	p15, 0, ip, c7, c15, 0	@ clean+invalidate cache
 	mcr	p15, 0, ip, c7, c10, 4	@ drain write buffer
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ldmia	r0, {r4 - r11}
 	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
@@ -213,14 +251,27 @@ cpu_v6_name:
 	mcr	p15, 0, ip, c13, c0, 1	@ set reserved context ID
 	ldmia	r0, {r4 - r9}
 	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
+=======
+	mcr	p15, 0, ip, c13, c0, 1	@ set reserved context ID
+	ldmia	r0, {r4 - r9}
+	mcr	p15, 0, r4, c13, c0, 0	@ FCSE/PID
+#ifdef CONFIG_MMU
+>>>>>>> refs/remotes/origin/master
 	mcr	p15, 0, r5, c3, c0, 0	@ Domain ID
 	ALT_SMP(orr	r1, r1, #TTB_FLAGS_SMP)
 	ALT_UP(orr	r1, r1, #TTB_FLAGS_UP)
 	mcr	p15, 0, r1, c2, c0, 0	@ Translation table base 0
 	mcr	p15, 0, r6, c2, c0, 1	@ Translation table base 1
+<<<<<<< HEAD
 	mcr	p15, 0, r7, c1, c0, 1	@ auxiliary control register
 	mcr	p15, 0, r8, c1, c0, 2	@ co-processor access control
 	mcr	p15, 0, ip, c2, c0, 2	@ TTB control register
+=======
+	mcr	p15, 0, ip, c2, c0, 2	@ TTB control register
+#endif
+	mcr	p15, 0, r7, c1, c0, 1	@ auxiliary control register
+	mcr	p15, 0, r8, c1, c0, 2	@ co-processor access control
+>>>>>>> refs/remotes/origin/master
 	mcr	p15, 0, ip, c7, c5, 4	@ ISB
 	mov	r0, r9			@ control register
 	b	cpu_resume_mmu
@@ -228,12 +279,18 @@ ENDPROC(cpu_v6_do_resume)
 #endif
 
 	string	cpu_v6_name, "ARMv6-compatible processor"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	.align
 
 	__CPUINIT
 
+=======
+
+	.align
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	__v6_setup
  *
@@ -274,6 +331,7 @@ __v6_setup:
 #endif /* CONFIG_MMU */
 	adr	r5, v6_crval
 	ldmia	r5, {r5, r6}
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_ENDIAN_BE8
 	orr	r6, r6, #1 << 25		@ big-endian page tables
 #endif
@@ -282,6 +340,12 @@ __v6_setup:
 	orr	r0, r0, r6			@ set them
 <<<<<<< HEAD
 =======
+=======
+ ARM_BE8(orr	r6, r6, #1 << 25)		@ big-endian page tables
+	mrc	p15, 0, r0, c1, c0, 0		@ read control register
+	bic	r0, r0, r5			@ clear bits them
+	orr	r0, r0, r6			@ set them
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_ERRATA_364296
 	/*
 	 * Workaround for the 364296 ARM1136 r0p2 erratum (possible cache data
@@ -298,7 +362,10 @@ __v6_setup:
 	mcreq	p15, 0, r5, c1, c0, 1		@ write aux control reg
 	orreq	r0, r0, #(1 << 21)		@ low interrupt latency configuration
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr				@ return to head.S:__ret
 
 	/*
@@ -313,6 +380,7 @@ v6_crval:
 
 	__INITDATA
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.type	v6_processor_functions, #object
 ENTRY(v6_processor_functions)
@@ -342,6 +410,8 @@ cpu_elf_name:
 	.asciz	"v6"
 	.size	cpu_elf_name, . - cpu_elf_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions v6, dabort=v6_early_abort, pabort=v6_pabort, suspend=1
 
@@ -349,7 +419,10 @@ cpu_elf_name:
 
 	string	cpu_arch_name, "armv6"
 	string	cpu_elf_name, "v6"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr

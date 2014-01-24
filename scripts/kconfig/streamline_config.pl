@@ -44,9 +44,23 @@
 #
 use strict;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use Getopt::Long;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+use Getopt::Long;
+
+# set the environment variable LOCALMODCONFIG_DEBUG to get
+# debug output.
+my $debugprint = 0;
+$debugprint = 1 if (defined($ENV{LOCALMODCONFIG_DEBUG}));
+
+sub dprint {
+    return if (!$debugprint);
+    print STDERR @_;
+}
+>>>>>>> refs/remotes/origin/master
 
 my $config = ".config";
 
@@ -93,7 +107,11 @@ my @searchconfigs = (
 	},
 );
 
+<<<<<<< HEAD
 sub find_config {
+=======
+sub read_config {
+>>>>>>> refs/remotes/origin/master
     foreach my $conf (@searchconfigs) {
 	my $file = $conf->{"file"};
 
@@ -108,12 +126,20 @@ sub find_config {
 
 	print STDERR "using config: '$file'\n";
 
+<<<<<<< HEAD
 	open(CIN, "$exec $file |") || die "Failed to run $exec $file";
 	return;
+=======
+	open(my $infile, '-|', "$exec $file") || die "Failed to run $exec $file";
+	my @x = <$infile>;
+	close $infile;
+	return @x;
+>>>>>>> refs/remotes/origin/master
     }
     die "No config file found";
 }
 
+<<<<<<< HEAD
 find_config;
 
 <<<<<<< HEAD
@@ -122,6 +148,10 @@ my $ksource = $ARGV[0];
 my $kconfig = $ARGV[1];
 my $lsmod_file = $ARGV[2];
 =======
+=======
+my @config_file = read_config;
+
+>>>>>>> refs/remotes/origin/master
 # Parse options
 my $localmodconfig = 0;
 my $localyesconfig = 0;
@@ -130,10 +160,16 @@ GetOptions("localmodconfig" => \$localmodconfig,
 	   "localyesconfig" => \$localyesconfig);
 
 # Get the build source and top level Kconfig file (passed in)
+<<<<<<< HEAD
 my $ksource = $ARGV[0];
 my $kconfig = $ARGV[1];
 my $lsmod_file = $ENV{'LSMOD'};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+my $ksource = ($ARGV[0] ? $ARGV[0] : '.');
+my $kconfig = $ARGV[1];
+my $lsmod_file = $ENV{'LSMOD'};
+>>>>>>> refs/remotes/origin/master
 
 my @makefiles = `find $ksource -name Makefile 2>/dev/null`;
 chomp @makefiles;
@@ -154,7 +190,10 @@ sub read_kconfig {
 
     my $state = "NONE";
     my $config;
+<<<<<<< HEAD
     my @kconfigs;
+=======
+>>>>>>> refs/remotes/origin/master
 
     my $cont = 0;
     my $line;
@@ -169,8 +208,13 @@ sub read_kconfig {
 	$source =~ s/\$$env/$ENV{$env}/;
     }
 
+<<<<<<< HEAD
     open(KIN, "$source") || die "Can't open $kconfig";
     while (<KIN>) {
+=======
+    open(my $kinfile, '<', $source) || die "Can't open $kconfig";
+    while (<$kinfile>) {
+>>>>>>> refs/remotes/origin/master
 	chomp;
 
 	# Make sure that lines ending with \ continue
@@ -188,7 +232,17 @@ sub read_kconfig {
 
 	# collect any Kconfig sources
 	if (/^source\s*"(.*)"/) {
+<<<<<<< HEAD
 	    $kconfigs[$#kconfigs+1] = $1;
+=======
+	    my $kconfig = $1;
+	    # prevent reading twice.
+	    if (!defined($read_kconfigs{$kconfig})) {
+		$read_kconfigs{$kconfig} = 1;
+		read_kconfig($kconfig);
+	    }
+	    next;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	# configs found
@@ -196,6 +250,10 @@ sub read_kconfig {
 	    $state = "NEW";
 	    $config = $2;
 
+<<<<<<< HEAD
+=======
+	    # Add depends for 'if' nesting
+>>>>>>> refs/remotes/origin/master
 	    for (my $i = 0; $i < $iflevel; $i++) {
 		if ($i) {
 		    $depends{$config} .= " " . $ifdeps[$i];
@@ -211,6 +269,7 @@ sub read_kconfig {
 	    $depends{$config} = $1;
 	} elsif ($state eq "DEP" && /^\s*depends\s+on\s+(.*)$/) {
 	    $depends{$config} .= " " . $1;
+<<<<<<< HEAD
 
 	# Get the configs that select this config
 	} elsif ($state ne "NONE" && /^\s*select\s+(\S+)/) {
@@ -218,6 +277,23 @@ sub read_kconfig {
 		$selects{$1} .= " " . $config;
 	    } else {
 		$selects{$1} = $config;
+=======
+	} elsif ($state eq "DEP" && /^\s*def(_(bool|tristate)|ault)\s+(\S.*)$/) {
+	    my $dep = $3;
+	    if ($dep !~ /^\s*(y|m|n)\s*$/) {
+		$dep =~ s/.*\sif\s+//;
+		$depends{$config} .= " " . $dep;
+		dprint "Added default depends $dep to $config\n";
+	    }
+
+	# Get the configs that select this config
+	} elsif ($state ne "NONE" && /^\s*select\s+(\S+)/) {
+	    my $conf = $1;
+	    if (defined($selects{$conf})) {
+		$selects{$conf} .= " " . $config;
+	    } else {
+		$selects{$conf} = $config;
+>>>>>>> refs/remotes/origin/master
 	    }
 
 	# configs without prompts must be selected
@@ -245,6 +321,7 @@ sub read_kconfig {
 	    $state = "NONE";
 	}
     }
+<<<<<<< HEAD
     close(KIN);
 
     # read in any configs that were found.
@@ -254,12 +331,19 @@ sub read_kconfig {
 	    read_kconfig($kconfig);
 	}
     }
+=======
+    close($kinfile);
+>>>>>>> refs/remotes/origin/master
 }
 
 if ($kconfig) {
     read_kconfig($kconfig);
 }
 
+<<<<<<< HEAD
+=======
+# Makefiles can use variables to define their dependencies
+>>>>>>> refs/remotes/origin/master
 sub convert_vars {
     my ($line, %vars) = @_;
 
@@ -288,8 +372,13 @@ foreach my $makefile (@makefiles) {
     my $line = "";
     my %make_vars;
 
+<<<<<<< HEAD
     open(MIN,$makefile) || die "Can't open $makefile";
     while (<MIN>) {
+=======
+    open(my $infile, '<', $makefile) || die "Can't open $makefile";
+    while (<$infile>) {
+>>>>>>> refs/remotes/origin/master
 	# if this line ends with a backslash, continue
 	chomp;
 	if (/^(.*)\\$/) {
@@ -303,6 +392,10 @@ foreach my $makefile (@makefiles) {
 
 	my $objs;
 
+<<<<<<< HEAD
+=======
+	# Convert variables in a line (could define configs)
+>>>>>>> refs/remotes/origin/master
 	$_ = convert_vars($_, %make_vars);
 
 	# collect objects after obj-$(CONFIG_FOO_BAR)
@@ -335,6 +428,7 @@ foreach my $makefile (@makefiles) {
 	    }
 	}
     }
+<<<<<<< HEAD
     close(MIN);
 }
 
@@ -345,11 +439,22 @@ if (defined($lsmod_file)) {
 <<<<<<< HEAD
 	die "$lsmod_file not found";
 =======
+=======
+    close($infile);
+}
+
+my %modules;
+my $linfile;
+
+if (defined($lsmod_file)) {
+    if ( ! -f $lsmod_file) {
+>>>>>>> refs/remotes/origin/master
 	if ( -f $ENV{'objtree'}."/".$lsmod_file) {
 	    $lsmod_file = $ENV{'objtree'}."/".$lsmod_file;
 	} else {
 		die "$lsmod_file not found";
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
     }
     if ( -x $lsmod_file) {
@@ -359,6 +464,13 @@ if (defined($lsmod_file)) {
 	# Just read the contents
 	open(LIN, "$lsmod_file");
     }
+=======
+    }
+
+    my $otype = ( -x $lsmod_file) ? '-|' : '<';
+    open($linfile, $otype, $lsmod_file);
+
+>>>>>>> refs/remotes/origin/master
 } else {
 
     # see what modules are loaded on this system
@@ -375,25 +487,53 @@ if (defined($lsmod_file)) {
 	$lsmod = "lsmod";
     }
 
+<<<<<<< HEAD
     open(LIN,"$lsmod|") || die "Can not call lsmod with $lsmod";
 }
 
 while (<LIN>) {
+=======
+    open($linfile, '-|', $lsmod) || die "Can not call lsmod with $lsmod";
+}
+
+while (<$linfile>) {
+>>>>>>> refs/remotes/origin/master
 	next if (/^Module/);  # Skip the first line.
 	if (/^(\S+)/) {
 		$modules{$1} = 1;
 	}
 }
+<<<<<<< HEAD
 close (LIN);
 
 # add to the configs hash all configs that are needed to enable
 # a loaded module.
+=======
+close ($linfile);
+
+# add to the configs hash all configs that are needed to enable
+# a loaded module. This is a direct obj-${CONFIG_FOO} += bar.o
+# where we know we need bar.o so we add FOO to the list.
+>>>>>>> refs/remotes/origin/master
 my %configs;
 foreach my $module (keys(%modules)) {
     if (defined($objects{$module})) {
 	my @arr = @{$objects{$module}};
 	foreach my $conf (@arr) {
 	    $configs{$conf} = $module;
+<<<<<<< HEAD
+=======
+	    dprint "$conf added by direct ($module)\n";
+	    if ($debugprint) {
+		my $c=$conf;
+		$c =~ s/^CONFIG_//;
+		if (defined($depends{$c})) {
+		    dprint " deps = $depends{$c}\n";
+		} else {
+		    dprint " no deps\n";
+		}
+	    }
+>>>>>>> refs/remotes/origin/master
 	}
     } else {
 	# Most likely, someone has a custom (binary?) module loaded.
@@ -401,9 +541,30 @@ foreach my $module (keys(%modules)) {
     }
 }
 
+<<<<<<< HEAD
 my $valid = "A-Za-z_0-9";
 my $repeat = 1;
 
+=======
+# Read the current config, and see what is enabled. We want to
+# ignore configs that we would not enable anyway.
+
+my %orig_configs;
+my $valid = "A-Za-z_0-9";
+
+foreach my $line (@config_file) {
+    $_ = $line;
+
+    if (/(CONFIG_[$valid]*)=(m|y)/) {
+	$orig_configs{$1} = $2;
+    }
+}
+
+my $repeat = 1;
+
+my $depconfig;
+
+>>>>>>> refs/remotes/origin/master
 #
 # Note, we do not care about operands (like: &&, ||, !) we want to add any
 # config that is in the depend list of another config. This script does
@@ -412,7 +573,11 @@ my $repeat = 1;
 # to keep on. If A was on in the original config, B would not have been
 # and B would not be turned on by this script.
 #
+<<<<<<< HEAD
 sub parse_config_dep_select
+=======
+sub parse_config_depends
+>>>>>>> refs/remotes/origin/master
 {
     my ($p) = @_;
 
@@ -423,10 +588,22 @@ sub parse_config_dep_select
 
 	    $p =~ s/^[^$valid]*[$valid]+//;
 
+<<<<<<< HEAD
+=======
+	    # We only need to process if the depend config is a module
+	    if (!defined($orig_configs{$conf}) || !$orig_configs{conf} eq "m") {
+		next;
+	    }
+
+>>>>>>> refs/remotes/origin/master
 	    if (!defined($configs{$conf})) {
 		# We must make sure that this config has its
 		# dependencies met.
 		$repeat = 1; # do again
+<<<<<<< HEAD
+=======
+		dprint "$conf selected by depend $depconfig\n";
+>>>>>>> refs/remotes/origin/master
 		$configs{$conf} = 1;
 	    }
 	} else {
@@ -435,6 +612,7 @@ sub parse_config_dep_select
     }
 }
 
+<<<<<<< HEAD
 while ($repeat) {
     $repeat = 0;
 
@@ -455,11 +633,138 @@ while ($repeat) {
     }
 }
 
+=======
+# Select is treated a bit differently than depends. We call this
+# when a config has no prompt and requires another config to be
+# selected. We use to just select all configs that selected this
+# config, but found that that can balloon into enabling hundreds
+# of configs that we do not care about.
+#
+# The idea is we look at all the configs that select it. If one
+# is already in our list of configs to enable, then there's nothing
+# else to do. If there isn't, we pick the first config that was
+# enabled in the orignal config and use that.
+sub parse_config_selects
+{
+    my ($config, $p) = @_;
+
+    my $next_config;
+
+    while ($p =~ /[$valid]/) {
+
+	if ($p =~ /^[^$valid]*([$valid]+)/) {
+	    my $conf = "CONFIG_" . $1;
+
+	    $p =~ s/^[^$valid]*[$valid]+//;
+
+	    # Make sure that this config exists in the current .config file
+	    if (!defined($orig_configs{$conf})) {
+		dprint "$conf not set for $config select\n";
+		next;
+	    }
+
+	    # Check if something other than a module selects this config
+	    if (defined($orig_configs{$conf}) && $orig_configs{$conf} ne "m") {
+		dprint "$conf (non module) selects config, we are good\n";
+		# we are good with this
+		return;
+	    }
+	    if (defined($configs{$conf})) {
+		dprint "$conf selects $config so we are good\n";
+		# A set config selects this config, we are good
+		return;
+	    }
+	    # Set this config to be selected
+	    if (!defined($next_config)) {
+		$next_config = $conf;
+	    }
+	} else {
+	    die "this should never happen";
+	}
+    }
+
+    # If no possible config selected this, then something happened.
+    if (!defined($next_config)) {
+	print STDERR "WARNING: $config is required, but nothing in the\n";
+	print STDERR "  current config selects it.\n";
+	return;
+    }
+
+    # If we are here, then we found no config that is set and
+    # selects this config. Repeat.
+    $repeat = 1;
+    # Make this config need to be selected
+    $configs{$next_config} = 1;
+    dprint "$next_config selected by select $config\n";
+}
+
+my %process_selects;
+
+# loop through all configs, select their dependencies.
+sub loop_depend {
+    $repeat = 1;
+
+    while ($repeat) {
+	$repeat = 0;
+
+      forloop:
+	foreach my $config (keys %configs) {
+
+	    # If this config is not a module, we do not need to process it
+	    if (defined($orig_configs{$config}) && $orig_configs{$config} ne "m") {
+		next forloop;
+	    }
+
+	    $config =~ s/^CONFIG_//;
+	    $depconfig = $config;
+
+	    if (defined($depends{$config})) {
+		# This config has dependencies. Make sure they are also included
+		parse_config_depends $depends{$config};
+	    }
+
+	    # If the config has no prompt, then we need to check if a config
+	    # that is enabled selected it. Or if we need to enable one.
+	    if (!defined($prompts{$config}) && defined($selects{$config})) {
+		$process_selects{$config} = 1;
+	    }
+	}
+    }
+}
+
+sub loop_select {
+
+    foreach my $config (keys %process_selects) {
+	$config =~ s/^CONFIG_//;
+
+	dprint "Process select $config\n";
+
+	# config has no prompt and must be selected.
+	parse_config_selects $config, $selects{$config};
+    }
+}
+
+while ($repeat) {
+    # Get the first set of configs and their dependencies.
+    loop_depend;
+
+    $repeat = 0;
+
+    # Now we need to see if we have to check selects;
+    loop_select;
+}	    
+
+>>>>>>> refs/remotes/origin/master
 my %setconfigs;
 
 # Finally, read the .config file and turn off any module enabled that
 # we could not find a reason to keep enabled.
+<<<<<<< HEAD
 while(<CIN>) {
+=======
+foreach my $line (@config_file) {
+    $_ = $line;
+>>>>>>> refs/remotes/origin/master
 
     if (/CONFIG_IKCONFIG/) {
 	if (/# CONFIG_IKCONFIG is not set/) {
@@ -476,8 +781,11 @@ while(<CIN>) {
     if (/^(CONFIG.*)=(m|y)/) {
 	if (defined($configs{$1})) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    $setconfigs{$1} = $2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	    if ($localyesconfig) {
 	        $setconfigs{$1} = 'y';
 		print "$1=y\n";
@@ -485,7 +793,10 @@ while(<CIN>) {
 	    } else {
 	        $setconfigs{$1} = $2;
 	    }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} elsif ($2 eq "m") {
 	    print "# $1 is not set\n";
 	    next;
@@ -493,7 +804,10 @@ while(<CIN>) {
     }
     print;
 }
+<<<<<<< HEAD
 close(CIN);
+=======
+>>>>>>> refs/remotes/origin/master
 
 # Integrity check, make sure all modules that we want enabled do
 # indeed have their configs set.

@@ -31,6 +31,7 @@ struct notifier_block br_device_notifier = {
  */
 static int br_device_event(struct notifier_block *unused, unsigned long event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
 	struct net_bridge_port *p;
 	struct net_bridge *br;
@@ -38,6 +39,12 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
 =======
 	bool changed_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+	struct net_bridge_port *p;
+	struct net_bridge *br;
+	bool changed_addr;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	/* register of bridge completed, add sysfs entries */
@@ -62,16 +69,22 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
 		spin_lock_bh(&br->lock);
 		br_fdb_changeaddr(p, dev->dev_addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		br_stp_recalculate_bridge_id(br);
 		spin_unlock_bh(&br->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		changed_addr = br_stp_recalculate_bridge_id(br);
 		spin_unlock_bh(&br->lock);
 
 		if (changed_addr)
 			call_netdevice_notifiers(NETDEV_CHANGEADDR, br->dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case NETDEV_CHANGE:
@@ -90,7 +103,11 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
 		break;
 
 	case NETDEV_UP:
+<<<<<<< HEAD
 		if (netif_carrier_ok(dev) && (br->dev->flags & IFF_UP)) {
+=======
+		if (netif_running(br->dev) && netif_oper_up(dev)) {
+>>>>>>> refs/remotes/origin/master
 			spin_lock_bh(&br->lock);
 			br_stp_enable_port(p);
 			spin_unlock_bh(&br->lock);
@@ -110,6 +127,14 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
 	case NETDEV_PRE_TYPE_CHANGE:
 		/* Forbid underlaying device to change its type. */
 		return NOTIFY_BAD;
+<<<<<<< HEAD
+=======
+
+	case NETDEV_RESEND_IGMP:
+		/* Propagate to master device */
+		call_netdevice_notifiers(event, br->dev);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Events that may cause spanning tree to refresh */

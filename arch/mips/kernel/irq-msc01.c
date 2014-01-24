@@ -1,6 +1,11 @@
 /*
+<<<<<<< HEAD
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
+=======
+ * This program is free software; you can redistribute	it and/or modify it
+ * under  the terms of	the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  *
@@ -10,9 +15,12 @@
  * Copyright (C) 2004, 06 Ralf Baechle <ralf@linux-mips.org>
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
@@ -90,7 +98,11 @@ static void edge_mask_and_ack_msc_irq(struct irq_data *d)
  */
 void ll_msc_irq(void)
 {
+<<<<<<< HEAD
  	unsigned int irq;
+=======
+	unsigned int irq;
+>>>>>>> refs/remotes/origin/master
 
 	/* read the interrupt vector register */
 	MSCIC_READ(MSC01_IC_VEC, irq);

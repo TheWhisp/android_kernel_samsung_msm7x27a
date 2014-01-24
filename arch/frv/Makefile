@@ -81,7 +81,11 @@ ifdef CONFIG_DEBUG_INFO
 KBUILD_AFLAGS	+= -Wa,--gdwarf2
 endif
 
+<<<<<<< HEAD
 head-y		:= arch/frv/kernel/head.o arch/frv/kernel/init_task.o
+=======
+head-y		:= arch/frv/kernel/head.o
+>>>>>>> refs/remotes/origin/master
 
 core-y		+= arch/frv/kernel/ arch/frv/mm/
 libs-y		+= arch/frv/lib/

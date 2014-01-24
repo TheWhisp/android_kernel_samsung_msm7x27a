@@ -24,6 +24,7 @@
 #define _PPC_BOOK3S_64_HW_BREAKPOINT_H
 
 #ifdef	__KERNEL__
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 
 struct arch_hw_breakpoint {
@@ -40,14 +41,46 @@ struct arch_hw_breakpoint {
 =======
 #include <asm/debug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct arch_hw_breakpoint {
+	unsigned long	address;
+	u16		type;
+	u16		len; /* length of the target data symbol */
+};
+
+/* Note: Don't change the the first 6 bits below as they are in the same order
+ * as the dabr and dabrx.
+ */
+#define HW_BRK_TYPE_READ		0x01
+#define HW_BRK_TYPE_WRITE		0x02
+#define HW_BRK_TYPE_TRANSLATE		0x04
+#define HW_BRK_TYPE_USER		0x08
+#define HW_BRK_TYPE_KERNEL		0x10
+#define HW_BRK_TYPE_HYP			0x20
+#define HW_BRK_TYPE_EXTRANEOUS_IRQ	0x80
+
+/* bits that overlap with the bottom 3 bits of the dabr */
+#define HW_BRK_TYPE_RDWR	(HW_BRK_TYPE_READ | HW_BRK_TYPE_WRITE)
+#define HW_BRK_TYPE_DABR	(HW_BRK_TYPE_RDWR | HW_BRK_TYPE_TRANSLATE)
+#define HW_BRK_TYPE_PRIV_ALL	(HW_BRK_TYPE_USER | HW_BRK_TYPE_KERNEL | \
+				 HW_BRK_TYPE_HYP)
+
+#ifdef CONFIG_HAVE_HW_BREAKPOINT
+#include <linux/kdebug.h>
+#include <asm/reg.h>
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/master
 
 struct perf_event;
 struct pmu;
 struct perf_sample_data;
 
 #define HW_BREAKPOINT_ALIGN 0x7
+<<<<<<< HEAD
 /* Maximum permissible length of any HW Breakpoint */
 #define HW_BREAKPOINT_LEN 0x8
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern int hw_breakpoint_slots(int type);
 extern int arch_bp_generic_fields(int type, int *gen_bp_type);
@@ -62,6 +95,7 @@ extern void flush_ptrace_hw_breakpoint(struct task_struct *tsk);
 
 extern struct pmu perf_ops_bp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void ptrace_triggered(struct perf_event *bp, int nmi,
 =======
 extern void ptrace_triggered(struct perf_event *bp,
@@ -70,6 +104,18 @@ extern void ptrace_triggered(struct perf_event *bp,
 static inline void hw_breakpoint_disable(void)
 {
 	set_dabr(0);
+=======
+extern void ptrace_triggered(struct perf_event *bp,
+			struct perf_sample_data *data, struct pt_regs *regs);
+static inline void hw_breakpoint_disable(void)
+{
+	struct arch_hw_breakpoint brk;
+
+	brk.address = 0;
+	brk.type = 0;
+	brk.len = 0;
+	set_breakpoint(&brk);
+>>>>>>> refs/remotes/origin/master
 }
 extern void thread_change_pc(struct task_struct *tsk, struct pt_regs *regs);
 

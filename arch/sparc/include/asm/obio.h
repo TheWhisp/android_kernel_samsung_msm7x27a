@@ -220,6 +220,7 @@ static inline void cc_set_igen(unsigned gen)
 			      "i" (ASI_M_MXCC));
 }
 
+<<<<<<< HEAD
 /* +-------+-------------+-----------+------------------------------------+
  * | bcast |  devid      |   sid     |              levels mask           |
  * +-------+-------------+-----------+------------------------------------+
@@ -233,6 +234,8 @@ static inline void sun4d_send_ipi(int cpu, int level)
 	cc_set_igen(IGEN_MESSAGE(0, cpu << 3, 6 + ((level >> 1) & 7), 1 << (level - 1)));
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !__ASSEMBLY__ */
 
 #endif /* !(_SPARC_OBIO_H) */

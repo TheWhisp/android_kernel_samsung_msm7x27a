@@ -80,10 +80,14 @@ static int rds_loop_xmit(struct rds_connection *conn, struct rds_message *rm,
 
 	rds_recv_incoming(conn, conn->c_laddr, conn->c_faddr, &rm->m_inc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  GFP_KERNEL, KM_USER0);
 =======
 			  GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	rds_send_drop_acked(conn, be64_to_cpu(rm->m_inc.i_hdr.h_sequence),
 			    NULL);
@@ -126,10 +130,14 @@ static int rds_loop_conn_alloc(struct rds_connection *conn, gfp_t gfp)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lc = kzalloc(sizeof(struct rds_loop_connection), GFP_KERNEL);
 =======
 	lc = kzalloc(sizeof(struct rds_loop_connection), gfp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lc = kzalloc(sizeof(struct rds_loop_connection), gfp);
+>>>>>>> refs/remotes/origin/master
 	if (!lc)
 		return -ENOMEM;
 

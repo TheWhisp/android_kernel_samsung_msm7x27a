@@ -34,6 +34,12 @@
 #define DA9052_STATUS_C_REG		3
 #define DA9052_STATUS_D_REG		4
 
+<<<<<<< HEAD
+=======
+/* PARK REGISTER */
+#define DA9052_PARK_REGISTER		DA9052_STATUS_D_REG
+
+>>>>>>> refs/remotes/origin/master
 /* EVENT REGISTERS */
 #define DA9052_EVENT_A_REG		5
 #define DA9052_EVENT_B_REG		6

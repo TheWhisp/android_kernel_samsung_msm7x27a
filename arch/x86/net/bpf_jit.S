@@ -19,6 +19,7 @@
  */
 #define SKBDATA	%r8
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 sk_load_word_ind:
 	.globl	sk_load_word_ind
@@ -29,19 +30,28 @@ sk_load_word_ind:
 =======
 #define SKF_MAX_NEG_OFF    $(-0x200000) /* SKF_LL_OFF from filter.h */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SKF_MAX_NEG_OFF    $(-0x200000) /* SKF_LL_OFF from filter.h */
+>>>>>>> refs/remotes/origin/master
 
 sk_load_word:
 	.globl	sk_load_word
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	test	%esi,%esi
 	js	bpf_slow_path_word_neg
 
 sk_load_word_positive_offset:
 	.globl	sk_load_word_positive_offset
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	%r9d,%eax		# hlen
 	sub	%esi,%eax		# hlen - offset
 	cmp	$3,%eax
@@ -50,6 +60,7 @@ sk_load_word_positive_offset:
 	bswap   %eax  			/* ntohl() */
 	ret
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 sk_load_half_ind:
@@ -62,6 +73,8 @@ sk_load_half:
 	.globl	sk_load_half
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sk_load_half:
 	.globl	sk_load_half
 
@@ -71,7 +84,10 @@ sk_load_half:
 sk_load_half_positive_offset:
 	.globl	sk_load_half_positive_offset
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	%r9d,%eax
 	sub	%esi,%eax		#	hlen - offset
 	cmp	$1,%eax
@@ -80,6 +96,7 @@ sk_load_half_positive_offset:
 	rol	$8,%ax			# ntohs()
 	ret
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 sk_load_byte_ind:
 	.globl sk_load_byte_ind
@@ -90,6 +107,8 @@ sk_load_byte:
 	.globl	sk_load_byte
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sk_load_byte:
 	.globl	sk_load_byte
 
@@ -99,7 +118,10 @@ sk_load_byte:
 sk_load_byte_positive_offset:
 	.globl	sk_load_byte_positive_offset
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cmp	%esi,%r9d   /* if (offset >= hlen) goto bpf_slow_path_byte */
 	jle	bpf_slow_path_byte
 	movzbl	(SKBDATA,%rsi),%eax
@@ -111,11 +133,14 @@ sk_load_byte_positive_offset:
  * Implements BPF_S_LDX_B_MSH : ldxb  4*([offset]&0xf)
  * Must preserve A accumulator (%eax)
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Inputs : %esi is the offset value, already known positive
  */
 ENTRY(sk_load_byte_msh)
 	CFI_STARTPROC
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Inputs : %esi is the offset value
  */
 sk_load_byte_msh:
@@ -125,13 +150,17 @@ sk_load_byte_msh:
 
 sk_load_byte_msh_positive_offset:
 	.globl	sk_load_byte_msh_positive_offset
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cmp	%esi,%r9d      /* if (offset >= hlen) goto bpf_slow_path_byte_msh */
 	jle	bpf_slow_path_byte_msh
 	movzbl	(SKBDATA,%rsi),%ebx
 	and	$15,%bl
 	shl	$2,%bl
 	ret
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CFI_ENDPROC
 ENDPROC(sk_load_byte_msh)
@@ -144,6 +173,8 @@ bpf_error:
 	ret
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* rsi contains offset and can be scratched */
 #define bpf_slow_path_common(LEN)		\
@@ -191,7 +222,10 @@ bpf_slow_path_byte_msh:
 	xchg	%eax,%ebx
 	ret
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define sk_negative_common(SIZE)				\
 	push	%rdi;	/* save skb */				\
@@ -256,4 +290,7 @@ bpf_error:
 	mov		-8(%rbp),%rbx
 	leaveq
 	ret
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

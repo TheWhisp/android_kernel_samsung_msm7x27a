@@ -6,10 +6,14 @@
  * Copyright © 2009 Bluewater Systems Ltd
  * Author: Andre Renaud <andre@bluewatersys.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Ryan Mallon <ryan@bluewatersys.com>
 =======
  * Author: Ryan Mallon
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Ryan Mallon
+>>>>>>> refs/remotes/origin/master
  *
  * Based on m25p80.c
  *
@@ -57,10 +61,13 @@ struct sst25l_flash {
 	struct mutex		lock;
 	struct mtd_info		mtd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	int 			partitioned;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct flash_info {
@@ -73,7 +80,11 @@ struct flash_info {
 
 #define to_sst25l_flash(x) container_of(x, struct sst25l_flash, mtd)
 
+<<<<<<< HEAD
 static struct flash_info __devinitdata sst25l_flash_info[] = {
+=======
+static struct flash_info sst25l_flash_info[] = {
+>>>>>>> refs/remotes/origin/master
 	{"sst25lf020a", 0xbf43, 256, 1024, 4096},
 	{"sst25lf040a",	0xbf44,	256, 2048, 4096},
 };
@@ -185,11 +196,14 @@ static int sst25l_erase(struct mtd_info *mtd, struct erase_info *instr)
 
 	/* Sanity checks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (instr->addr + instr->len > flash->mtd.size)
 		return -EINVAL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((uint32_t)instr->len % mtd->erasesize)
 		return -EINVAL;
 
@@ -236,6 +250,7 @@ static int sst25l_read(struct mtd_info *mtd, loff_t from, size_t len,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Sanity checking */
 	if (len == 0)
 		return 0;
@@ -248,6 +263,8 @@ static int sst25l_read(struct mtd_info *mtd, loff_t from, size_t len,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_message_init(&message);
 	memset(&transfer, 0, sizeof(transfer));
 
@@ -290,6 +307,7 @@ static int sst25l_write(struct mtd_info *mtd, loff_t to, size_t len,
 	unsigned char command[5];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Sanity checks */
 	if (!len)
 		return 0;
@@ -299,6 +317,8 @@ static int sst25l_write(struct mtd_info *mtd, loff_t to, size_t len,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((uint32_t)to % mtd->writesize)
 		return -EINVAL;
 
@@ -351,7 +371,11 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct flash_info *__devinit sst25l_match_device(struct spi_device *spi)
+=======
+static struct flash_info *sst25l_match_device(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct flash_info *flash_info = NULL;
 	struct spi_message m;
@@ -391,11 +415,16 @@ static struct flash_info *__devinit sst25l_match_device(struct spi_device *spi)
 	return flash_info;
 }
 
+<<<<<<< HEAD
 static int __devinit sst25l_probe(struct spi_device *spi)
+=======
+static int sst25l_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct flash_info *flash_info;
 	struct sst25l_flash *flash;
 	struct flash_platform_data *data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret, i;
 	struct mtd_partition *parts = NULL;
@@ -403,20 +432,33 @@ static int __devinit sst25l_probe(struct spi_device *spi)
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	flash_info = sst25l_match_device(spi);
 	if (!flash_info)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	flash = kzalloc(sizeof(struct sst25l_flash), GFP_KERNEL);
+=======
+	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!flash)
 		return -ENOMEM;
 
 	flash->spi = spi;
 	mutex_init(&flash->lock);
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, flash);
 
 	data = spi->dev.platform_data;
+=======
+	spi_set_drvdata(spi, flash);
+
+	data = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	if (data && data->name)
 		flash->mtd.name = data->name;
 	else
@@ -429,6 +471,7 @@ static int __devinit sst25l_probe(struct spi_device *spi)
 	flash->mtd.writebufsize	= flash_info->page_size;
 	flash->mtd.size		= flash_info->page_size * flash_info->nr_pages;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	flash->mtd.erase	= sst25l_erase;
 	flash->mtd.read		= sst25l_read;
 	flash->mtd.write 	= sst25l_write;
@@ -437,16 +480,25 @@ static int __devinit sst25l_probe(struct spi_device *spi)
 	flash->mtd._read		= sst25l_read;
 	flash->mtd._write 	= sst25l_write;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	flash->mtd._erase	= sst25l_erase;
+	flash->mtd._read		= sst25l_read;
+	flash->mtd._write 	= sst25l_write;
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&spi->dev, "%s (%lld KiB)\n", flash_info->name,
 		 (long long)flash->mtd.size >> 10);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	DEBUG(MTD_DEBUG_LEVEL2,
 	      "mtd .name = %s, .size = 0x%llx (%lldMiB) "
 =======
 	pr_debug("mtd .name = %s, .size = 0x%llx (%lldMiB) "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("mtd .name = %s, .size = 0x%llx (%lldMiB) "
+>>>>>>> refs/remotes/origin/master
 	      ".erasesize = 0x%.8x (%uKiB) .numeraseregions = %d\n",
 	      flash->mtd.name,
 	      (long long)flash->mtd.size, (long long)(flash->mtd.size >> 20),
@@ -454,6 +506,7 @@ static int __devinit sst25l_probe(struct spi_device *spi)
 	      flash->mtd.numeraseregions);
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mtd_has_cmdlinepart()) {
 		static const char *part_probes[] = {"cmdlinepart", NULL};
@@ -496,10 +549,18 @@ static int __devinit sst25l_probe(struct spi_device *spi)
 		dev_set_drvdata(&spi->dev, NULL);
 		return -ENODEV;
 	}
+=======
+	ret = mtd_device_parse_register(&flash->mtd, NULL, NULL,
+					data ? data->parts : NULL,
+					data ? data->nr_parts : 0);
+	if (ret)
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit sst25l_remove(struct spi_device *spi)
 {
 	struct sst25l_flash *flash = dev_get_drvdata(&spi->dev);
@@ -509,11 +570,19 @@ static int __devexit sst25l_remove(struct spi_device *spi)
 	if (ret == 0)
 		kfree(flash);
 	return ret;
+=======
+static int sst25l_remove(struct spi_device *spi)
+{
+	struct sst25l_flash *flash = spi_get_drvdata(spi);
+
+	return mtd_device_unregister(&flash->mtd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct spi_driver sst25l_driver = {
 	.driver = {
 		.name	= "sst25l",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.bus	= &spi_bus_type,
 =======
@@ -542,10 +611,21 @@ MODULE_DESCRIPTION("MTD SPI driver for SST25L Flash chips");
 MODULE_AUTHOR("Andre Renaud <andre@bluewatersys.com>, "
 	      "Ryan Mallon <ryan@bluewatersys.com>");
 =======
+=======
+		.owner	= THIS_MODULE,
+	},
+	.probe		= sst25l_probe,
+	.remove		= sst25l_remove,
+};
+
+>>>>>>> refs/remotes/origin/master
 module_spi_driver(sst25l_driver);
 
 MODULE_DESCRIPTION("MTD SPI driver for SST25L Flash chips");
 MODULE_AUTHOR("Andre Renaud <andre@bluewatersys.com>, "
 	      "Ryan Mallon");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

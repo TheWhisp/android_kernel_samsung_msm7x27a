@@ -127,7 +127,10 @@
 #include <asm-generic/bug.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 struct pt_regs;
@@ -139,6 +142,9 @@ extern void print_backtrace(unsigned long *);
 
 #endif /* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __KERNEL__ */
 #endif /* _ASM_POWERPC_BUG_H */

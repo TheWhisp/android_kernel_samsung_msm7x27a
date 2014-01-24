@@ -21,15 +21,21 @@
 
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/types.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 
 struct module;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define VLYNQ_NUM_IRQS 32
 
 struct vlynq_mapping {

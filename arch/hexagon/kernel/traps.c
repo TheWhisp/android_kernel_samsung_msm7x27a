@@ -1,7 +1,11 @@
 /*
  * Kernel traps/events for Hexagon processor
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -65,6 +69,13 @@ static const char *ex_name(int ex)
 		return "Write protection fault";
 	case HVM_GE_C_XMAL:
 		return "Misaligned instruction";
+<<<<<<< HEAD
+=======
+	case HVM_GE_C_WREG:
+		return "Multiple writes to same register in packet";
+	case HVM_GE_C_PCAL:
+		return "Program counter values that are not properly aligned";
+>>>>>>> refs/remotes/origin/master
 	case HVM_GE_C_RMAL:
 		return "Misaligned data load";
 	case HVM_GE_C_WMAL:
@@ -191,6 +202,7 @@ void show_stack(struct task_struct *task, unsigned long *fp)
 	do_show_stack(task, fp, 0);
 }
 
+<<<<<<< HEAD
 void dump_stack(void)
 {
 	unsigned long *fp;
@@ -199,6 +211,8 @@ void dump_stack(void)
 }
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 int die(const char *str, struct pt_regs *regs, long err)
 {
 	static struct {
@@ -225,7 +239,11 @@ int die(const char *str, struct pt_regs *regs, long err)
 	do_show_stack(current, &regs->r30, pt_elr(regs));
 
 	bust_spinlocks(0);
+<<<<<<< HEAD
 	add_taint(TAINT_DIE);
+=======
+	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irq(&die.lock);
 
@@ -324,6 +342,15 @@ void do_genex(struct pt_regs *regs)
 	case HVM_GE_C_XMAL:
 		misaligned_instruction(regs);
 		break;
+<<<<<<< HEAD
+=======
+	case HVM_GE_C_WREG:
+		illegal_instruction(regs);
+		break;
+	case HVM_GE_C_PCAL:
+		misaligned_instruction(regs);
+		break;
+>>>>>>> refs/remotes/origin/master
 	case HVM_GE_C_RMAL:
 		misaligned_data_load(regs);
 		break;
@@ -356,7 +383,10 @@ long sys_syscall(void)
 
 void do_trap0(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	unsigned long syscallret = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	syscall_fn syscall;
 
 	switch (pt_cause(regs)) {
@@ -396,11 +426,16 @@ void do_trap0(struct pt_regs *regs)
 		} else {
 			syscall = (syscall_fn)
 				  (sys_call_table[regs->syscall_nr]);
+<<<<<<< HEAD
 			syscallret = syscall(regs->r00, regs->r01,
+=======
+			regs->r00 = syscall(regs->r00, regs->r01,
+>>>>>>> refs/remotes/origin/master
 				   regs->r02, regs->r03,
 				   regs->r04, regs->r05);
 		}
 
+<<<<<<< HEAD
 		/*
 		 * If it was a sigreturn system call, don't overwrite
 		 * r0 value in stack frame with return value.
@@ -411,6 +446,8 @@ void do_trap0(struct pt_regs *regs)
 		if (regs->syscall_nr != __NR_rt_sigreturn)
 			regs->r00 = syscallret;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		/* allow strace to get the syscall return state  */
 		if (unlikely(test_thread_flag(TIF_SYSCALL_TRACE)))
 			tracehook_report_syscall_exit(regs, 0);
@@ -452,3 +489,17 @@ void do_machcheck(struct pt_regs *regs)
 	/* Halt and catch fire */
 	__vmstop();
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * Treat this like the old 0xdb trap.
+ */
+
+void do_debug_exception(struct pt_regs *regs)
+{
+	regs->hvmer.vmest &= ~HVM_VMEST_CAUSE_MSK;
+	regs->hvmer.vmest |= (TRAP_DEBUG << HVM_VMEST_CAUSE_SFT);
+	do_trap0(regs);
+}
+>>>>>>> refs/remotes/origin/master

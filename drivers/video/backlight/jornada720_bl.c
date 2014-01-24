@@ -38,6 +38,7 @@ static int jornada_bl_get_brightness(struct backlight_device *bd)
 	ret = jornada_ssp_byte(GETBRIGHTNESS);
 
 	if (jornada_ssp_byte(GETBRIGHTNESS) != TXDUMMY) {
+<<<<<<< HEAD
 		printk(KERN_ERR "bl : get brightness timeout\n");
 		jornada_ssp_end();
 		return -ETIMEDOUT;
@@ -47,6 +48,19 @@ static int jornada_bl_get_brightness(struct backlight_device *bd)
 	jornada_ssp_end();
 
 	return (BL_MAX_BRIGHT - ret);
+=======
+		dev_err(&bd->dev, "get brightness timeout\n");
+		jornada_ssp_end();
+		return -ETIMEDOUT;
+	} else {
+		/* exchange txdummy for value */
+		ret = jornada_ssp_byte(TXDUMMY);
+	}
+
+	jornada_ssp_end();
+
+	return BL_MAX_BRIGHT - ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int jornada_bl_update_status(struct backlight_device *bd)
@@ -59,7 +73,11 @@ static int jornada_bl_update_status(struct backlight_device *bd)
 	if ((bd->props.power != FB_BLANK_UNBLANK) || (bd->props.fb_blank != FB_BLANK_UNBLANK)) {
 		ret = jornada_ssp_byte(BRIGHTNESSOFF);
 		if (ret != TXDUMMY) {
+<<<<<<< HEAD
 			printk(KERN_INFO "bl : brightness off timeout\n");
+=======
+			dev_info(&bd->dev, "brightness off timeout\n");
+>>>>>>> refs/remotes/origin/master
 			/* turn off backlight */
 			PPSR &= ~PPC_LDD1;
 			PPDR |= PPC_LDD1;
@@ -70,11 +88,16 @@ static int jornada_bl_update_status(struct backlight_device *bd)
 
 		/* send command to our mcu */
 		if (jornada_ssp_byte(SETBRIGHTNESS) != TXDUMMY) {
+<<<<<<< HEAD
 			printk(KERN_INFO "bl : failed to set brightness\n");
+=======
+			dev_info(&bd->dev, "failed to set brightness\n");
+>>>>>>> refs/remotes/origin/master
 			ret = -ETIMEDOUT;
 			goto out;
 		}
 
+<<<<<<< HEAD
 		/* at this point we expect that the mcu has accepted
 		   our command and is waiting for our new value
 		   please note that maximum brightness is 255,
@@ -87,6 +110,25 @@ static int jornada_bl_update_status(struct backlight_device *bd)
 
 		/* If infact we get an TXDUMMY as output we are happy and dont
 		   make any further comments about it */
+=======
+		/*
+		 * at this point we expect that the mcu has accepted
+		 * our command and is waiting for our new value
+		 * please note that maximum brightness is 255,
+		 * but due to physical layout it is equal to 0, so we simply
+		 * invert the value (MAX VALUE - NEW VALUE).
+		 */
+		if (jornada_ssp_byte(BL_MAX_BRIGHT - bd->props.brightness)
+			!= TXDUMMY) {
+			dev_err(&bd->dev, "set brightness failed\n");
+			ret = -ETIMEDOUT;
+		}
+
+		/*
+		 * If infact we get an TXDUMMY as output we are happy and dont
+		 * make any further comments about it
+		 */
+>>>>>>> refs/remotes/origin/master
 out:
 	jornada_ssp_end();
 
@@ -113,12 +155,17 @@ static int jornada_bl_probe(struct platform_device *pdev)
 
 	if (IS_ERR(bd)) {
 		ret = PTR_ERR(bd);
+<<<<<<< HEAD
 		printk(KERN_ERR "bl : failed to register device, err=%x\n", ret);
+=======
+		dev_err(&pdev->dev, "failed to register device, err=%x\n", ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
 	bd->props.power = FB_BLANK_UNBLANK;
 	bd->props.brightness = BL_DEF_BRIGHT;
+<<<<<<< HEAD
 	/* note. make sure max brightness is set otherwise
 	   you will get seemingly non-related errors when
 	   trying to change brightness */
@@ -126,6 +173,17 @@ static int jornada_bl_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, bd);
 	printk(KERN_INFO "HP Jornada 700 series backlight driver\n");
+=======
+	/*
+	 * note. make sure max brightness is set otherwise
+	 * you will get seemingly non-related errors when
+	 * trying to change brightness
+	 */
+	jornada_bl_update_status(bd);
+
+	platform_set_drvdata(pdev, bd);
+	dev_info(&pdev->dev, "HP Jornada 700 series backlight driver\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -148,6 +206,7 @@ static struct platform_driver jornada_bl_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init jornada_bl_init(void)
 {
 	return platform_driver_register(&jornada_bl_driver);
@@ -160,13 +219,19 @@ static void __exit jornada_bl_exit(void)
 =======
 module_platform_driver(jornada_bl_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jornada_bl_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kristoffer Ericson <kristoffer.ericson>");
 MODULE_DESCRIPTION("HP Jornada 710/720/728 Backlight driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(jornada_bl_init);
 module_exit(jornada_bl_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

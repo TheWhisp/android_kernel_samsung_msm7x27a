@@ -354,7 +354,11 @@ int audio_read(int dev, struct file *file, char __user *buf, int count)
 
 			if(copy_to_user(&(buf)[p], fixit, l))
 				return -EFAULT;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 
 		DMAbuf_rmchars(dev, buf_no, l);
 

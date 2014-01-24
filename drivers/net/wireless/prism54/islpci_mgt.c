@@ -25,9 +25,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/if_arp.h>
 
 #include "prismcompat.h"
@@ -127,11 +130,16 @@ islpci_mgmt_rx_fill(struct net_device *ndev)
 
 		if (buf->mem == NULL) {
 			buf->mem = kmalloc(MGMT_FRAME_SIZE, GFP_ATOMIC);
+<<<<<<< HEAD
 			if (!buf->mem) {
 				printk(KERN_WARNING
 				       "Error allocating management frame.\n");
 				return -ENOMEM;
 			}
+=======
+			if (!buf->mem)
+				return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			buf->size = MGMT_FRAME_SIZE;
 		}
 		if (buf->pci_addr == 0) {
@@ -196,6 +204,7 @@ islpci_mgt_transmit(struct net_device *ndev, int operation, unsigned long oid,
 	err = -ENOMEM;
 	p = buf.mem = kmalloc(frag_len, GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!buf.mem) {
 		printk(KERN_DEBUG "%s: cannot allocate mgmt frame\n",
 		       ndev->name);
@@ -206,6 +215,11 @@ islpci_mgt_transmit(struct net_device *ndev, int operation, unsigned long oid,
 		goto error;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!buf.mem)
+		goto error;
+
+>>>>>>> refs/remotes/origin/master
 	buf.size = frag_len;
 
 	/* create the header directly in the fragment data area */
@@ -368,6 +382,7 @@ islpci_mgt_receive(struct net_device *ndev)
 
 		/* Determine frame size, skipping OID_INL_TUNNEL headers. */
 		size = PIMFOR_HEADER_SIZE + header->length;
+<<<<<<< HEAD
 		frame = kmalloc(sizeof (struct islpci_mgmtframe) + size,
 				GFP_ATOMIC);
 		if (!frame) {
@@ -376,6 +391,13 @@ islpci_mgt_receive(struct net_device *ndev)
 			       ndev->name, header->oid);
 			continue;
 		}
+=======
+		frame = kmalloc(sizeof(struct islpci_mgmtframe) + size,
+				GFP_ATOMIC);
+		if (!frame)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		frame->ndev = ndev;
 		memcpy(&frame->buf, header, size);
 		frame->header = (pimfor_header_t *) frame->buf;

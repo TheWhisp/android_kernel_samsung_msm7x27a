@@ -14,9 +14,12 @@
 #include <linux/spinlock.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/err.h>
 #include <linux/ctype.h>

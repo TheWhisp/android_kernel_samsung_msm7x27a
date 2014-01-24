@@ -2,9 +2,12 @@
 #include <asm/cache.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable.h>
 
 #include <asm-generic/vmlinux.lds.h>
@@ -186,12 +189,15 @@ SECTIONS {
 		__start_gate_section = .;
 		*(.data..gate)
 		__stop_gate_section = .;
+<<<<<<< HEAD
 #ifdef CONFIG_XEN
 		. = ALIGN(PAGE_SIZE);
 		__xen_start_gate_section = .;
 		*(.data..gate.xen)
 		__xen_stop_gate_section = .;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	/*
 	 * make sure the gate page doesn't expose

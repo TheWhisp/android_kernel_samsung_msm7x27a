@@ -96,7 +96,11 @@ static const struct attribute_group twl4030_madc_group = {
 	.attrs = twl4030_madc_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit twl4030_madc_hwmon_probe(struct platform_device *pdev)
+=======
+static int twl4030_madc_hwmon_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct device *hwmon;
@@ -120,7 +124,11 @@ err_sysfs:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit twl4030_madc_hwmon_remove(struct platform_device *pdev)
+=======
+static int twl4030_madc_hwmon_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	hwmon_device_unregister(&pdev->dev);
 	sysfs_remove_group(&pdev->dev.kobj, &twl4030_madc_group);
@@ -130,13 +138,18 @@ static int __devexit twl4030_madc_hwmon_remove(struct platform_device *pdev)
 
 static struct platform_driver twl4030_madc_hwmon_driver = {
 	.probe = twl4030_madc_hwmon_probe,
+<<<<<<< HEAD
 	.remove = __exit_p(twl4030_madc_hwmon_remove),
+=======
+	.remove = twl4030_madc_hwmon_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		   .name = "twl4030_madc_hwmon",
 		   .owner = THIS_MODULE,
 		   },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init twl4030_madc_hwmon_init(void)
 {
@@ -154,6 +167,9 @@ module_exit(twl4030_madc_hwmon_exit);
 =======
 module_platform_driver(twl4030_madc_hwmon_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(twl4030_madc_hwmon_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("TWL4030 ADC Hwmon driver");
 MODULE_LICENSE("GPL");

@@ -35,6 +35,10 @@
 */
 
 #include <linux/hdlc.h>
+<<<<<<< HEAD
+=======
+#include <linux/hdlc/ioctl.h>
+>>>>>>> refs/remotes/origin/master
 #include "wanxl.h"
 
 /* memory addresses and offsets */

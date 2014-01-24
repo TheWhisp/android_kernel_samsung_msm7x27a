@@ -11,6 +11,7 @@
  *   NON INFRINGEMENT.  See the GNU General Public License for
  *   more details.
  */
+<<<<<<< HEAD
 
 #if !defined(_ASM_TILE_UNISTD_H) || defined(__SYSCALL)
 #define _ASM_TILE_UNISTD_H
@@ -37,11 +38,18 @@ __SYSCALL(__NR_cmpxchg_badaddr, sys_cmpxchg_badaddr)
 #endif
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 /* In compat mode, we use sys_llseek() for compat_sys_llseek(). */
 #ifdef CONFIG_COMPAT
 #define __ARCH_WANT_SYS_LLSEEK
 #endif
 #define __ARCH_WANT_SYS_NEWFSTATAT
+<<<<<<< HEAD
 #endif
 
 #endif /* _ASM_TILE_UNISTD_H */
+=======
+#define __ARCH_WANT_SYS_CLONE
+#include <uapi/asm/unistd.h>
+>>>>>>> refs/remotes/origin/master

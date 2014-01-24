@@ -1,5 +1,6 @@
 /*
 * tegra_alc5632.c  --  Toshiba AC100(PAZ00) machine ASoC driver
+<<<<<<< HEAD
 *
 * Copyright (C) 2011 The AC100 Kernel Team <ac100@lists.lauchpad.net>
 *
@@ -13,6 +14,20 @@
 */
 
 #include <asm/mach-types.h>
+=======
+ *
+ * Copyright (C) 2011 The AC100 Kernel Team <ac100@lists.lauchpad.net>
+ * Copyright (C) 2012 - NVIDIA, Inc.
+ *
+ * Authors:  Leon Romanovsky <leon@leon.nu>
+ *           Andrey Danin <danindrey@mail.ru>
+ *           Marc Dietrich <marvin24@gmx.de>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -28,19 +43,27 @@
 
 #include "../codecs/alc5632.h"
 
+<<<<<<< HEAD
 #include "tegra_das.h"
 #include "tegra_i2s.h"
 #include "tegra_pcm.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "tegra_asoc_utils.h"
 
 #define DRV_NAME "tegra-alc5632"
 
+<<<<<<< HEAD
 #define GPIO_HP_DET     BIT(0)
 
 struct tegra_alc5632 {
 	struct tegra_asoc_utils_data util_data;
 	struct platform_device *pcm_dev;
 	int gpio_requested;
+=======
+struct tegra_alc5632 {
+	struct tegra_asoc_utils_data util_data;
+>>>>>>> refs/remotes/origin/master
 	int gpio_hp_det;
 };
 
@@ -49,7 +72,11 @@ static int tegra_alc5632_asoc_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = codec_dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct snd_soc_card *card = codec->card;
 	struct tegra_alc5632 *alc5632 = snd_soc_card_get_drvdata(card);
 	int srate, mclk;
@@ -110,9 +137,15 @@ static const struct snd_kcontrol_new tegra_alc5632_controls[] = {
 
 static int tegra_alc5632_asoc_init(struct snd_soc_pcm_runtime *rtd)
 {
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = rtd->codec;
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 	struct device_node *np = codec->card->dev->of_node;
+=======
+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	struct snd_soc_codec *codec = codec_dai->codec;
+	struct snd_soc_dapm_context *dapm = &codec->dapm;
+>>>>>>> refs/remotes/origin/master
 	struct tegra_alc5632 *machine = snd_soc_card_get_drvdata(codec->card);
 
 	snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET,
@@ -121,14 +154,20 @@ static int tegra_alc5632_asoc_init(struct snd_soc_pcm_runtime *rtd)
 			ARRAY_SIZE(tegra_alc5632_hs_jack_pins),
 			tegra_alc5632_hs_jack_pins);
 
+<<<<<<< HEAD
 	machine->gpio_hp_det = of_get_named_gpio(np, "nvidia,hp-det-gpios", 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gpio_is_valid(machine->gpio_hp_det)) {
 		tegra_alc5632_hp_jack_gpio.gpio = machine->gpio_hp_det;
 		snd_soc_jack_add_gpios(&tegra_alc5632_hs_jack,
 						1,
 						&tegra_alc5632_hp_jack_gpio);
+<<<<<<< HEAD
 		machine->gpio_requested |= GPIO_HP_DET;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	snd_soc_dapm_force_enable_pin(dapm, "MICBIAS1");
@@ -139,7 +178,10 @@ static int tegra_alc5632_asoc_init(struct snd_soc_pcm_runtime *rtd)
 static struct snd_soc_dai_link tegra_alc5632_dai = {
 	.name = "ALC5632",
 	.stream_name = "ALC5632 PCM",
+<<<<<<< HEAD
 	.platform_name = "tegra-pcm-audio",
+=======
+>>>>>>> refs/remotes/origin/master
 	.codec_dai_name = "alc5632-hifi",
 	.init = tegra_alc5632_asoc_init,
 	.ops = &tegra_alc5632_asoc_ops,
@@ -160,8 +202,14 @@ static struct snd_soc_card snd_soc_tegra_alc5632 = {
 	.fully_routed = true,
 };
 
+<<<<<<< HEAD
 static __devinit int tegra_alc5632_probe(struct platform_device *pdev)
 {
+=======
+static int tegra_alc5632_probe(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	struct snd_soc_card *card = &snd_soc_tegra_alc5632;
 	struct tegra_alc5632 *alc5632;
 	int ret;
@@ -170,14 +218,19 @@ static __devinit int tegra_alc5632_probe(struct platform_device *pdev)
 			sizeof(struct tegra_alc5632), GFP_KERNEL);
 	if (!alc5632) {
 		dev_err(&pdev->dev, "Can't allocate tegra_alc5632\n");
+<<<<<<< HEAD
 		ret = -ENOMEM;
 		goto err;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	card->dev = &pdev->dev;
 	platform_set_drvdata(pdev, card);
 	snd_soc_card_set_drvdata(card, alc5632);
 
+<<<<<<< HEAD
 	alc5632->pcm_dev = ERR_PTR(-EINVAL);
 
 	if (!(pdev->dev.of_node)) {
@@ -185,6 +238,11 @@ static __devinit int tegra_alc5632_probe(struct platform_device *pdev)
 		ret = -EINVAL;
 		goto err;
 	}
+=======
+	alc5632->gpio_hp_det = of_get_named_gpio(np, "nvidia,hp-det-gpios", 0);
+	if (alc5632->gpio_hp_det == -EPROBE_DEFER)
+		return -EPROBE_DEFER;
+>>>>>>> refs/remotes/origin/master
 
 	ret = snd_soc_of_parse_card_name(card, "nvidia,model");
 	if (ret)
@@ -204,15 +262,24 @@ static __devinit int tegra_alc5632_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	tegra_alc5632_dai.cpu_dai_of_node = of_parse_phandle(
 			pdev->dev.of_node, "nvidia,i2s-controller", 0);
 	if (!tegra_alc5632_dai.cpu_dai_of_node) {
 		dev_err(&pdev->dev,
 		"Property 'nvidia,i2s-controller' missing or invalid\n");
+=======
+	tegra_alc5632_dai.cpu_of_node = of_parse_phandle(np,
+			"nvidia,i2s-controller", 0);
+	if (!tegra_alc5632_dai.cpu_of_node) {
+		dev_err(&pdev->dev,
+			"Property 'nvidia,i2s-controller' missing or invalid\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
 
+<<<<<<< HEAD
 	alc5632->pcm_dev = platform_device_register_simple(
 		"tegra-pcm-audio", -1, NULL, 0);
 	if (IS_ERR(alc5632->pcm_dev)) {
@@ -225,6 +292,13 @@ static __devinit int tegra_alc5632_probe(struct platform_device *pdev)
 	ret = tegra_asoc_utils_init(&alc5632->util_data, &pdev->dev);
 	if (ret)
 		goto err_unregister;
+=======
+	tegra_alc5632_dai.platform_of_node = tegra_alc5632_dai.cpu_of_node;
+
+	ret = tegra_asoc_utils_init(&alc5632->util_data, &pdev->dev);
+	if (ret)
+		goto err;
+>>>>>>> refs/remotes/origin/master
 
 	ret = snd_soc_register_card(card);
 	if (ret) {
@@ -237,34 +311,53 @@ static __devinit int tegra_alc5632_probe(struct platform_device *pdev)
 
 err_fini_utils:
 	tegra_asoc_utils_fini(&alc5632->util_data);
+<<<<<<< HEAD
 err_unregister:
 	if (!IS_ERR(alc5632->pcm_dev))
 		platform_device_unregister(alc5632->pcm_dev);
+=======
+>>>>>>> refs/remotes/origin/master
 err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit tegra_alc5632_remove(struct platform_device *pdev)
+=======
+static int tegra_alc5632_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 	struct tegra_alc5632 *machine = snd_soc_card_get_drvdata(card);
 
+<<<<<<< HEAD
 	if (machine->gpio_requested & GPIO_HP_DET)
 		snd_soc_jack_free_gpios(&tegra_alc5632_hs_jack,
 					1,
 					&tegra_alc5632_hp_jack_gpio);
 	machine->gpio_requested = 0;
+=======
+	snd_soc_jack_free_gpios(&tegra_alc5632_hs_jack, 1,
+				&tegra_alc5632_hp_jack_gpio);
+>>>>>>> refs/remotes/origin/master
 
 	snd_soc_unregister_card(card);
 
 	tegra_asoc_utils_fini(&machine->util_data);
+<<<<<<< HEAD
 	if (!IS_ERR(machine->pcm_dev))
 		platform_device_unregister(machine->pcm_dev);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct of_device_id tegra_alc5632_of_match[] __devinitconst = {
+=======
+static const struct of_device_id tegra_alc5632_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "nvidia,tegra-audio-alc5632", },
 	{},
 };
@@ -277,7 +370,11 @@ static struct platform_driver tegra_alc5632_driver = {
 		.of_match_table = tegra_alc5632_of_match,
 	},
 	.probe = tegra_alc5632_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(tegra_alc5632_remove),
+=======
+	.remove = tegra_alc5632_remove,
+>>>>>>> refs/remotes/origin/master
 };
 module_platform_driver(tegra_alc5632_driver);
 

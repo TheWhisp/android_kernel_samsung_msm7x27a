@@ -13,6 +13,10 @@
 #include <linux/io.h>
 #include <plat/mpp.h>
 #include <mach/dove.h>
+<<<<<<< HEAD
+=======
+#include <plat/orion-gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include "mpp.h"
 
 struct dove_mpp_grp {
@@ -46,7 +50,11 @@ static const struct dove_mpp_grp dove_mpp_grp[] = {
 
 /* Enable gpio for a range of pins. mode should be a combination of
    GPIO_OUTPUT_OK | GPIO_INPUT_OK */
+<<<<<<< HEAD
 static void dove_mpp_gpio_mode(int start, int end, int gpio_mode)
+=======
+static void __init dove_mpp_gpio_mode(int start, int end, int gpio_mode)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -56,7 +64,11 @@ static void dove_mpp_gpio_mode(int start, int end, int gpio_mode)
 
 /* Dump all the extra MPP registers. The platform code will dump the
    registers for pins 0-23. */
+<<<<<<< HEAD
 static void dove_mpp_dump_regs(void)
+=======
+static void __init dove_mpp_dump_regs(void)
+>>>>>>> refs/remotes/origin/master
 {
 	pr_debug("PMU_CTRL4_CTRL: %08x\n",
 		 readl(DOVE_MPP_CTRL4_VIRT_BASE));
@@ -67,7 +79,11 @@ static void dove_mpp_dump_regs(void)
 	pr_debug("MPP_GENERAL: %08x\n", readl(DOVE_MPP_GENERAL_VIRT_BASE));
 }
 
+<<<<<<< HEAD
 static void dove_mpp_cfg_nfc(int sel)
+=======
+static void __init dove_mpp_cfg_nfc(int sel)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mpp_gen_cfg = readl(DOVE_MPP_GENERAL_VIRT_BASE);
 
@@ -78,7 +94,11 @@ static void dove_mpp_cfg_nfc(int sel)
 	dove_mpp_gpio_mode(64, 71, GPIO_OUTPUT_OK);
 }
 
+<<<<<<< HEAD
 static void dove_mpp_cfg_au1(int sel)
+=======
+static void __init dove_mpp_cfg_au1(int sel)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mpp_ctrl4 = readl(DOVE_MPP_CTRL4_VIRT_BASE);
 	u32 ssp_ctrl1 = readl(DOVE_SSP_CTRL_STATUS_1);
@@ -118,7 +138,11 @@ static void dove_mpp_cfg_au1(int sel)
 
 /* Configure the group registers, enabling GPIO if sel indicates the
    pin is to be used for GPIO */
+<<<<<<< HEAD
 static void dove_mpp_conf_grp(unsigned int *mpp_grp_list)
+=======
+static void __init dove_mpp_conf_grp(unsigned int *mpp_grp_list)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mpp_ctrl4 = readl(DOVE_MPP_CTRL4_VIRT_BASE);
 	int gpio_mode;

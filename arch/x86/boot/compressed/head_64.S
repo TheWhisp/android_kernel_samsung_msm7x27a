@@ -27,8 +27,11 @@
 #include <linux/init.h>
 #include <linux/linkage.h>
 #include <asm/segment.h>
+<<<<<<< HEAD
 #include <asm/pgtable_types.h>
 #include <asm/page_types.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/boot.h>
 #include <asm/msr.h>
 #include <asm/processor-flags.h>
@@ -37,6 +40,15 @@
 	__HEAD
 	.code32
 ENTRY(startup_32)
+<<<<<<< HEAD
+=======
+	/*
+	 * 32bit entry is 0 and it is ABI so immutable!
+	 * If we come here directly from a bootloader,
+	 * kernel(text+data+bss+brk) ramdisk, zero_page, command line
+	 * all need to be under the 4G limit.
+	 */
+>>>>>>> refs/remotes/origin/master
 	cld
 	/*
 	 * Test KEEP_SEGMENTS flag to see if the bootloader is asking
@@ -46,7 +58,11 @@ ENTRY(startup_32)
 	jnz 1f
 
 	cli
+<<<<<<< HEAD
 	movl	$(__KERNEL_DS), %eax
+=======
+	movl	$(__BOOT_DS), %eax
+>>>>>>> refs/remotes/origin/master
 	movl	%eax, %ds
 	movl	%eax, %es
 	movl	%eax, %ss
@@ -90,9 +106,17 @@ ENTRY(startup_32)
 	addl	%eax, %ebx
 	notl	%eax
 	andl	%eax, %ebx
+<<<<<<< HEAD
 #else
 	movl	$LOAD_PHYSICAL_ADDR, %ebx
 #endif
+=======
+	cmpl	$LOAD_PHYSICAL_ADDR, %ebx
+	jge	1f
+#endif
+	movl	$LOAD_PHYSICAL_ADDR, %ebx
+1:
+>>>>>>> refs/remotes/origin/master
 
 	/* Target address to relocate to for decompression */
 	addl	$z_extract_offset, %ebx
@@ -154,6 +178,15 @@ ENTRY(startup_32)
 	btsl	$_EFER_LME, %eax
 	wrmsr
 
+<<<<<<< HEAD
+=======
+	/* After gdt is loaded */
+	xorl	%eax, %eax
+	lldt	%ax
+	movl    $0x20, %eax
+	ltr	%ax
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Setup for the jump to 64bit mode
 	 *
@@ -176,6 +209,7 @@ ENTRY(startup_32)
 	lret
 ENDPROC(startup_32)
 
+<<<<<<< HEAD
 no_longmode:
 	/* This isn't an x86-64 CPU so hang */
 1:
@@ -190,10 +224,13 @@ no_longmode:
 	 * should look at the ELF header to find this address, as
 	 * it may change in the future.
 	 */
+=======
+>>>>>>> refs/remotes/origin/master
 	.code64
 	.org 0x200
 ENTRY(startup_64)
 	/*
+<<<<<<< HEAD
 	 * We come here either from startup_32 or directly from a
 	 * 64bit bootloader.  If we come here from a bootloader we depend on
 	 * an identity mapped page table being provied that maps our
@@ -211,6 +248,37 @@ ENTRY(startup_64)
 	.org 0x210
 	mov	%rcx, %rdi
 	mov	%rdx, %rsi
+=======
+	 * 64bit entry is 0x200 and it is ABI so immutable!
+	 * We come here either from startup_32 or directly from a
+	 * 64bit bootloader.
+	 * If we come here from a bootloader, kernel(text+data+bss+brk),
+	 * ramdisk, zero_page, command line could be above 4G.
+	 * We depend on an identity mapped page table being provided
+	 * that maps our entire kernel(text+data+bss+brk), zero page
+	 * and command line.
+	 */
+#ifdef CONFIG_EFI_STUB
+	/*
+	 * The entry point for the PE/COFF executable is efi_pe_entry, so
+	 * only legacy boot loaders will execute this jmp.
+	 */
+	jmp	preferred_addr
+
+ENTRY(efi_pe_entry)
+	mov	%rcx, %rdi
+	mov	%rdx, %rsi
+	pushq	%rdi
+	pushq	%rsi
+	call	make_boot_params
+	cmpq	$0,%rax
+	je	1f
+	mov	%rax, %rdx
+	popq	%rsi
+	popq	%rdi
+
+ENTRY(efi_stub_entry)
+>>>>>>> refs/remotes/origin/master
 	call	efi_main
 	movq	%rax,%rsi
 	cmpq	$0,%rax
@@ -231,7 +299,10 @@ ENTRY(startup_64)
 
 preferred_addr:
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup data segments. */
 	xorl	%eax, %eax
@@ -240,9 +311,12 @@ preferred_addr:
 	movl	%eax, %ss
 	movl	%eax, %fs
 	movl	%eax, %gs
+<<<<<<< HEAD
 	lldt	%ax
 	movl    $0x20, %eax
 	ltr	%ax
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Compute the decompressed kernel start address.  It is where
@@ -265,9 +339,17 @@ preferred_addr:
 	addq	%rax, %rbp
 	notq	%rax
 	andq	%rax, %rbp
+<<<<<<< HEAD
 #else
 	movq	$LOAD_PHYSICAL_ADDR, %rbp
 #endif
+=======
+	cmpq	$LOAD_PHYSICAL_ADDR, %rbp
+	jge	1f
+#endif
+	movq	$LOAD_PHYSICAL_ADDR, %rbp
+1:
+>>>>>>> refs/remotes/origin/master
 
 	/* Target address to relocate to for decompression */
 	leaq	z_extract_offset(%rbp), %rbx
@@ -334,13 +416,31 @@ relocated:
 	leaq	input_data(%rip), %rdx  /* input_data */
 	movl	$z_input_len, %ecx	/* input_len */
 	movq	%rbp, %r8		/* output target address */
+<<<<<<< HEAD
 	call	decompress_kernel
+=======
+	movq	$z_output_len, %r9	/* decompressed length */
+	call	decompress_kernel	/* returns kernel location in %rax */
+>>>>>>> refs/remotes/origin/master
 	popq	%rsi
 
 /*
  * Jump to the decompressed kernel.
  */
+<<<<<<< HEAD
 	jmp	*%rbp
+=======
+	jmp	*%rax
+
+	.code32
+no_longmode:
+	/* This isn't an x86-64 CPU so hang */
+1:
+	hlt
+	jmp     1b
+
+#include "../../kernel/verify_cpu.S"
+>>>>>>> refs/remotes/origin/master
 
 	.data
 gdt:

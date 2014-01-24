@@ -36,17 +36,23 @@ MODULE_PARM_DESC(sample_tolerance,
 struct mc13783_ts_priv {
 	struct input_dev *idev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mc13783 *mc13783;
 	struct delayed_work work;
 	struct workqueue_struct *workq;
 	unsigned int sample[4];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mc13xxx *mc13xxx;
 	struct delayed_work work;
 	struct workqueue_struct *workq;
 	unsigned int sample[4];
 	struct mc13xxx_ts_platform_data *touch;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static irqreturn_t mc13783_ts_handler(int irq, void *data)
@@ -54,10 +60,14 @@ static irqreturn_t mc13783_ts_handler(int irq, void *data)
 	struct mc13783_ts_priv *priv = data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mc13783_irq_ack(priv->mc13783, irq);
 =======
 	mc13xxx_irq_ack(priv->mc13xxx, irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mc13xxx_irq_ack(priv->mc13xxx, irq);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Kick off reading coordinates. Note that if work happens already
@@ -134,12 +144,15 @@ static void mc13783_ts_work(struct work_struct *work)
 	struct mc13783_ts_priv *priv =
 		container_of(work, struct mc13783_ts_priv, work.work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int mode = MC13783_ADC_MODE_TS;
 	unsigned int channel = 12;
 
 	if (mc13783_adc_do_conversion(priv->mc13783,
 				mode, channel, priv->sample) == 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int mode = MC13XXX_ADC_MODE_TS;
 	unsigned int channel = 12;
 
@@ -147,7 +160,10 @@ static void mc13783_ts_work(struct work_struct *work)
 				mode, channel,
 				priv->touch->ato, priv->touch->atox,
 				priv->sample) == 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mc13783_ts_report_sample(priv);
 }
 
@@ -157,22 +173,29 @@ static int mc13783_ts_open(struct input_dev *dev)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mc13783_lock(priv->mc13783);
 
 	mc13783_irq_ack(priv->mc13783, MC13783_IRQ_TS);
 
 	ret = mc13783_irq_request(priv->mc13783, MC13783_IRQ_TS,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mc13xxx_lock(priv->mc13xxx);
 
 	mc13xxx_irq_ack(priv->mc13xxx, MC13XXX_IRQ_TS);
 
 	ret = mc13xxx_irq_request(priv->mc13xxx, MC13XXX_IRQ_TS,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mc13783_ts_handler, MC13783_TS_NAME, priv);
 	if (ret)
 		goto out;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = mc13783_reg_rmw(priv->mc13783, MC13783_ADC0,
 			MC13783_ADC0_TSMOD_MASK, MC13783_ADC0_TSMOD0);
@@ -181,13 +204,18 @@ static int mc13783_ts_open(struct input_dev *dev)
 out:
 	mc13783_unlock(priv->mc13783);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = mc13xxx_reg_rmw(priv->mc13xxx, MC13XXX_ADC0,
 			MC13XXX_ADC0_TSMOD_MASK, MC13XXX_ADC0_TSMOD0);
 	if (ret)
 		mc13xxx_irq_free(priv->mc13xxx, MC13XXX_IRQ_TS, priv);
 out:
 	mc13xxx_unlock(priv->mc13xxx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -196,18 +224,24 @@ static void mc13783_ts_close(struct input_dev *dev)
 	struct mc13783_ts_priv *priv = input_get_drvdata(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mc13783_lock(priv->mc13783);
 	mc13783_reg_rmw(priv->mc13783, MC13783_ADC0,
 			MC13783_ADC0_TSMOD_MASK, 0);
 	mc13783_irq_free(priv->mc13783, MC13783_IRQ_TS, priv);
 	mc13783_unlock(priv->mc13783);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mc13xxx_lock(priv->mc13xxx);
 	mc13xxx_reg_rmw(priv->mc13xxx, MC13XXX_ADC0,
 			MC13XXX_ADC0_TSMOD_MASK, 0);
 	mc13xxx_irq_free(priv->mc13xxx, MC13XXX_IRQ_TS, priv);
 	mc13xxx_unlock(priv->mc13xxx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cancel_delayed_work_sync(&priv->work);
 }
@@ -225,9 +259,12 @@ static int __init mc13783_ts_probe(struct platform_device *pdev)
 
 	INIT_DELAYED_WORK(&priv->work, mc13783_ts_work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->mc13783 = dev_get_drvdata(pdev->dev.parent);
 	priv->idev = idev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->mc13xxx = dev_get_drvdata(pdev->dev.parent);
 	priv->idev = idev;
 	priv->touch = dev_get_platdata(&pdev->dev);
@@ -236,7 +273,10 @@ static int __init mc13783_ts_probe(struct platform_device *pdev)
 		ret = -ENODEV;
 		goto err_free_mem;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We need separate workqueue because mc13783_adc_do_conversion
@@ -278,12 +318,19 @@ err_free_mem:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit mc13783_ts_remove(struct platform_device *pdev)
 {
 	struct mc13783_ts_priv *priv = platform_get_drvdata(pdev);
 
 	platform_set_drvdata(pdev, NULL);
 
+=======
+static int mc13783_ts_remove(struct platform_device *pdev)
+{
+	struct mc13783_ts_priv *priv = platform_get_drvdata(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	destroy_workqueue(priv->workq);
 	input_unregister_device(priv->idev);
 	kfree(priv);
@@ -292,13 +339,18 @@ static int __devexit mc13783_ts_remove(struct platform_device *pdev)
 }
 
 static struct platform_driver mc13783_ts_driver = {
+<<<<<<< HEAD
 	.remove		= __devexit_p(mc13783_ts_remove),
+=======
+	.remove		= mc13783_ts_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.owner	= THIS_MODULE,
 		.name	= MC13783_TS_NAME,
 	},
 };
 
+<<<<<<< HEAD
 static int __init mc13783_ts_init(void)
 {
 	return platform_driver_probe(&mc13783_ts_driver, &mc13783_ts_probe);
@@ -310,6 +362,9 @@ static void __exit mc13783_ts_exit(void)
 	platform_driver_unregister(&mc13783_ts_driver);
 }
 module_exit(mc13783_ts_exit);
+=======
+module_platform_driver_probe(mc13783_ts_driver, mc13783_ts_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("MC13783 input touchscreen driver");
 MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");

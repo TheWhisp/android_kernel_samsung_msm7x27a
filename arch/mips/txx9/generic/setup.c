@@ -23,6 +23,7 @@
 #include <linux/mtd/physmap.h>
 #include <linux/leds.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 #include <linux/device.h>
@@ -30,6 +31,13 @@
 #include <linux/slab.h>
 #include <linux/irq.h>
 #include <asm/bootinfo.h>
+=======
+#include <linux/device.h>
+#include <linux/slab.h>
+#include <linux/irq.h>
+#include <asm/bootinfo.h>
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/reboot.h>
 #include <asm/r4kcache.h>
@@ -122,7 +130,11 @@ EXPORT_SYMBOL(clk_put);
 
 /* GPIO support */
 
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_GPIO
+=======
+#ifdef CONFIG_GPIOLIB
+>>>>>>> refs/remotes/origin/master
 int gpio_to_irq(unsigned gpio)
 {
 	return -EINVAL;
@@ -353,7 +365,11 @@ static void __init select_board(void)
 	}
 
 	/* select "default" board */
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_TX39XX
+=======
+#ifdef CONFIG_TOSHIBA_JMR3927
+>>>>>>> refs/remotes/origin/master
 	txx9_board_vec = &jmr3927_vec;
 #endif
 #ifdef CONFIG_CPU_TX49XX
@@ -517,19 +533,32 @@ void __init txx9_sio_init(unsigned long baseaddr, int irq,
 }
 
 #ifdef CONFIG_EARLY_PRINTK
+<<<<<<< HEAD
 static void __init null_prom_putchar(char c)
 {
 }
 void (*txx9_prom_putchar)(char c) __initdata = null_prom_putchar;
 
 void __init prom_putchar(char c)
+=======
+static void null_prom_putchar(char c)
+{
+}
+void (*txx9_prom_putchar)(char c) = null_prom_putchar;
+
+void prom_putchar(char c)
+>>>>>>> refs/remotes/origin/master
 {
 	txx9_prom_putchar(c);
 }
 
 static void __iomem *early_txx9_sio_port;
 
+<<<<<<< HEAD
 static void __init early_txx9_sio_putchar(char c)
+=======
+static void early_txx9_sio_putchar(char c)
+>>>>>>> refs/remotes/origin/master
 {
 #define TXX9_SICISR	0x0c
 #define TXX9_SITFIFO	0x1c
@@ -636,7 +665,11 @@ void __init txx9_physmap_flash_init(int no, unsigned long addr,
 				    unsigned long size,
 				    const struct physmap_flash_data *pdata)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_MTD_PHYSMAP) || defined(CONFIG_MTD_PHYSMAP_MODULE)
+=======
+#if IS_ENABLED(CONFIG_MTD_PHYSMAP)
+>>>>>>> refs/remotes/origin/master
 	struct resource res = {
 		.start = addr,
 		.end = addr + size - 1,
@@ -674,8 +707,12 @@ void __init txx9_physmap_flash_init(int no, unsigned long addr,
 void __init txx9_ndfmc_init(unsigned long baseaddr,
 			    const struct txx9ndfmc_platform_data *pdata)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_MTD_NAND_TXX9NDFMC) || \
 	defined(CONFIG_MTD_NAND_TXX9NDFMC_MODULE)
+=======
+#if IS_ENABLED(CONFIG_MTD_NAND_TXX9NDFMC)
+>>>>>>> refs/remotes/origin/master
 	struct resource res = {
 		.start = baseaddr,
 		.end = baseaddr + 0x1000 - 1,
@@ -691,7 +728,11 @@ void __init txx9_ndfmc_init(unsigned long baseaddr,
 #endif
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_LEDS_GPIO) || defined(CONFIG_LEDS_GPIO_MODULE)
+=======
+#if IS_ENABLED(CONFIG_LEDS_GPIO)
+>>>>>>> refs/remotes/origin/master
 static DEFINE_SPINLOCK(txx9_iocled_lock);
 
 #define TXX9_IOCLED_MAXLEDS 8
@@ -814,7 +855,11 @@ void __init txx9_iocled_init(unsigned long baseaddr,
 void __init txx9_dmac_init(int id, unsigned long baseaddr, int irq,
 			   const struct txx9dmac_platform_data *pdata)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_TXX9_DMAC) || defined(CONFIG_TXX9_DMAC_MODULE)
+=======
+#if IS_ENABLED(CONFIG_TXX9_DMAC)
+>>>>>>> refs/remotes/origin/master
 	struct resource res[] = {
 		{
 			.start = baseaddr,
@@ -870,8 +915,12 @@ void __init txx9_aclc_init(unsigned long baseaddr, int irq,
 			   unsigned int dma_chan_out,
 			   unsigned int dma_chan_in)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_SND_SOC_TXX9ACLC) || \
 	defined(CONFIG_SND_SOC_TXX9ACLC_MODULE)
+=======
+#if IS_ENABLED(CONFIG_SND_SOC_TXX9ACLC)
+>>>>>>> refs/remotes/origin/master
 	unsigned int dma_base = dmac_id * TXX9_DMA_MAX_NR_CHANNELS;
 	struct resource res[] = {
 		{
@@ -902,11 +951,14 @@ void __init txx9_aclc_init(unsigned long baseaddr, int irq,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_class txx9_sramc_sysdev_class;
 
 struct txx9_sramc_sysdev {
 	struct sys_device dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct bus_type txx9_sramc_subsys = {
 	.name = "txx9_sram",
 	.dev_name = "txx9_sram",
@@ -914,7 +966,10 @@ static struct bus_type txx9_sramc_subsys = {
 
 struct txx9_sramc_dev {
 	struct device dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bin_attribute bindata_attr;
 	void __iomem *base;
 };
@@ -924,10 +979,14 @@ static ssize_t txx9_sram_read(struct file *filp, struct kobject *kobj,
 			      char *buf, loff_t pos, size_t size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct txx9_sramc_sysdev *dev = bin_attr->private;
 =======
 	struct txx9_sramc_dev *dev = bin_attr->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct txx9_sramc_dev *dev = bin_attr->private;
+>>>>>>> refs/remotes/origin/master
 	size_t ramsize = bin_attr->size;
 
 	if (pos >= ramsize)
@@ -943,10 +1002,14 @@ static ssize_t txx9_sram_write(struct file *filp, struct kobject *kobj,
 			       char *buf, loff_t pos, size_t size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct txx9_sramc_sysdev *dev = bin_attr->private;
 =======
 	struct txx9_sramc_dev *dev = bin_attr->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct txx9_sramc_dev *dev = bin_attr->private;
+>>>>>>> refs/remotes/origin/master
 	size_t ramsize = bin_attr->size;
 
 	if (pos >= ramsize)
@@ -959,6 +1022,7 @@ static ssize_t txx9_sram_write(struct file *filp, struct kobject *kobj,
 
 void __init txx9_sramc_init(struct resource *r)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct txx9_sramc_sysdev *dev;
 	size_t size;
@@ -973,6 +1037,8 @@ void __init txx9_sramc_init(struct resource *r)
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct txx9_sramc_dev *dev;
 	size_t size;
 	int err;
@@ -980,7 +1046,10 @@ void __init txx9_sramc_init(struct resource *r)
 	err = subsys_system_register(&txx9_sramc_subsys, NULL);
 	if (err)
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 	if (!dev)
 		return;
@@ -989,10 +1058,14 @@ void __init txx9_sramc_init(struct resource *r)
 	if (!dev->base)
 		goto exit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->dev.cls = &txx9_sramc_sysdev_class;
 =======
 	dev->dev.bus = &txx9_sramc_subsys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->dev.bus = &txx9_sramc_subsys;
+>>>>>>> refs/remotes/origin/master
 	sysfs_bin_attr_init(&dev->bindata_attr);
 	dev->bindata_attr.attr.name = "bindata";
 	dev->bindata_attr.attr.mode = S_IRUSR | S_IWUSR;
@@ -1001,19 +1074,27 @@ void __init txx9_sramc_init(struct resource *r)
 	dev->bindata_attr.size = size;
 	dev->bindata_attr.private = dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = sysdev_register(&dev->dev);
 =======
 	err = device_register(&dev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = device_register(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto exit;
 	err = sysfs_create_bin_file(&dev->dev.kobj, &dev->bindata_attr);
 	if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_unregister(&dev->dev);
 =======
 		device_unregister(&dev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_unregister(&dev->dev);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 	return;

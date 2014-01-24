@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 What:                dv1394 (a.k.a. "OHCI-DV I/O support" for FireWire)
 Date:                May 2010 (scheduled), finally removed in kernel v2.6.37
 Contact:        linux1394-devel@lists.sourceforge.net
@@ -14,6 +15,8 @@ Description:
 Users:
         ffmpeg/libavformat (if configured for DV1394)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 What:		dv1394 (a.k.a. "OHCI-DV I/O support" for FireWire)
 Date:		May 2010 (scheduled), finally removed in kernel v2.6.37
 Contact:	linux1394-devel@lists.sourceforge.net
@@ -28,4 +31,7 @@ Description:
 
 Users:
 	ffmpeg/libavformat (if configured for DV1394)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -4,6 +4,10 @@
 #ifdef __KERNEL__
 
 #include <asm/virtconvert.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/iomap.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are for ISA/PCI shared memory _only_ and should never be used

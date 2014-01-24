@@ -336,9 +336,15 @@ static int jbusmc_print_dimm(int syndrome_code,
 	return 0;
 }
 
+<<<<<<< HEAD
 static u64 __devinit jbusmc_dimm_group_size(u64 base,
 					    const struct linux_prom64_registers *mem_regs,
 					    int num_mem_regs)
+=======
+static u64 jbusmc_dimm_group_size(u64 base,
+				  const struct linux_prom64_registers *mem_regs,
+				  int num_mem_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 max = base + (8UL * 1024 * 1024 * 1024);
 	u64 max_seen = base;
@@ -363,10 +369,17 @@ static u64 __devinit jbusmc_dimm_group_size(u64 base,
 	return max_seen - base;
 }
 
+<<<<<<< HEAD
 static void __devinit jbusmc_construct_one_dimm_group(struct jbusmc *p,
 						      unsigned long index,
 						      const struct linux_prom64_registers *mem_regs,
 						      int num_mem_regs)
+=======
+static void jbusmc_construct_one_dimm_group(struct jbusmc *p,
+					    unsigned long index,
+					    const struct linux_prom64_registers *mem_regs,
+					    int num_mem_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jbusmc_dimm_group *dp = &p->dimm_groups[index];
 
@@ -378,9 +391,15 @@ static void __devinit jbusmc_construct_one_dimm_group(struct jbusmc *p,
 	dp->size = jbusmc_dimm_group_size(dp->base_addr, mem_regs, num_mem_regs);
 }
 
+<<<<<<< HEAD
 static void __devinit jbusmc_construct_dimm_groups(struct jbusmc *p,
 						   const struct linux_prom64_registers *mem_regs,
 						   int num_mem_regs)
+=======
+static void jbusmc_construct_dimm_groups(struct jbusmc *p,
+					 const struct linux_prom64_registers *mem_regs,
+					 int num_mem_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	if (p->mc_reg_1 & JB_MC_REG1_DIMM1_BANK0) {
 		jbusmc_construct_one_dimm_group(p, 0, mem_regs, num_mem_regs);
@@ -392,7 +411,11 @@ static void __devinit jbusmc_construct_dimm_groups(struct jbusmc *p,
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit jbusmc_probe(struct platform_device *op)
+=======
+static int jbusmc_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct linux_prom64_registers *mem_regs;
 	struct device_node *mem_node;
@@ -689,7 +712,11 @@ static void chmc_fetch_decode_regs(struct chmc *p)
 				      chmc_read_mcreg(p, CHMCTRL_DECODE4));
 }
 
+<<<<<<< HEAD
 static int __devinit chmc_probe(struct platform_device *op)
+=======
+static int chmc_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	unsigned long ver;
@@ -763,7 +790,11 @@ out_free:
 	goto out;
 }
 
+<<<<<<< HEAD
 static int __devinit us3mc_probe(struct platform_device *op)
+=======
+static int us3mc_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	if (mc_type == MC_TYPE_SAFARI)
 		return chmc_probe(op);
@@ -772,21 +803,33 @@ static int __devinit us3mc_probe(struct platform_device *op)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void __devexit chmc_destroy(struct platform_device *op, struct chmc *p)
+=======
+static void chmc_destroy(struct platform_device *op, struct chmc *p)
+>>>>>>> refs/remotes/origin/master
 {
 	list_del(&p->list);
 	of_iounmap(&op->resource[0], p->regs, 0x48);
 	kfree(p);
 }
 
+<<<<<<< HEAD
 static void __devexit jbusmc_destroy(struct platform_device *op, struct jbusmc *p)
+=======
+static void jbusmc_destroy(struct platform_device *op, struct jbusmc *p)
+>>>>>>> refs/remotes/origin/master
 {
 	mc_list_del(&p->list);
 	of_iounmap(&op->resource[0], p->regs, JBUSMC_REGS_SIZE);
 	kfree(p);
 }
 
+<<<<<<< HEAD
 static int __devexit us3mc_remove(struct platform_device *op)
+=======
+static int us3mc_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	void *p = dev_get_drvdata(&op->dev);
 
@@ -814,7 +857,11 @@ static struct platform_driver us3mc_driver = {
 		.of_match_table = us3mc_match,
 	},
 	.probe		= us3mc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(us3mc_remove),
+=======
+	.remove		= us3mc_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline bool us3mc_platform(void)

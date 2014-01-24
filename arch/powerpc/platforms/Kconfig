@@ -1,17 +1,25 @@
 menu "Platform support"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source "arch/powerpc/platforms/pseries/Kconfig"
 source "arch/powerpc/platforms/iseries/Kconfig"
 =======
 source "arch/powerpc/platforms/powernv/Kconfig"
 source "arch/powerpc/platforms/pseries/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+source "arch/powerpc/platforms/powernv/Kconfig"
+source "arch/powerpc/platforms/pseries/Kconfig"
+>>>>>>> refs/remotes/origin/master
 source "arch/powerpc/platforms/chrp/Kconfig"
 source "arch/powerpc/platforms/512x/Kconfig"
 source "arch/powerpc/platforms/52xx/Kconfig"
 source "arch/powerpc/platforms/powermac/Kconfig"
+<<<<<<< HEAD
 source "arch/powerpc/platforms/prep/Kconfig"
+=======
+>>>>>>> refs/remotes/origin/master
 source "arch/powerpc/platforms/maple/Kconfig"
 source "arch/powerpc/platforms/pasemi/Kconfig"
 source "arch/powerpc/platforms/ps3/Kconfig"
@@ -30,10 +38,15 @@ source "arch/powerpc/platforms/wsp/Kconfig"
 config KVM_GUEST
 	bool "KVM Guest support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default y
 =======
 	default n
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default n
+	select EPAPR_PARAVIRT
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This option enables various optimizations for running under the KVM
 	  hypervisor. Overhead for the kernel when not running inside KVM should
@@ -41,6 +54,17 @@ config KVM_GUEST
 
 	  In case of doubt, say Y
 
+<<<<<<< HEAD
+=======
+config EPAPR_PARAVIRT
+	bool "ePAPR para-virtualization support"
+	default n
+	help
+	  Enables ePAPR para-virtualization support for guests.
+
+	  In case of doubt, say Y
+
+>>>>>>> refs/remotes/origin/master
 config PPC_NATIVE
 	bool
 	depends on 6xx || PPC64
@@ -88,18 +112,50 @@ config MPIC
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config PPC_EPAPR_HV_PIC
 	bool
 	default n
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config MPIC_TIMER
+	bool "MPIC Global Timer"
+	depends on MPIC && FSL_SOC
+	default n
+	help
+	  The MPIC global timer is a hardware timer inside the
+	  Freescale PIC complying with OpenPIC standard. When the
+	  specified interval times out, the hardware timer generates
+	  an interrupt. The driver currently is only tested on fsl
+	  chip, but it can potentially support other global timers
+	  complying with the OpenPIC standard.
+
+config FSL_MPIC_TIMER_WAKEUP
+	tristate "Freescale MPIC global timer wakeup driver"
+	depends on FSL_SOC &&  MPIC_TIMER && PM
+	default n
+	help
+	  The driver provides a way to wake up the system by MPIC
+	  timer.
+	  e.g. "echo 5 > /sys/devices/system/mpic/timer_wakeup"
+
+config PPC_EPAPR_HV_PIC
+	bool
+	default n
+	select EPAPR_PARAVIRT
+
+>>>>>>> refs/remotes/origin/master
 config MPIC_WEIRD
 	bool
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config MPIC_MSGR
 	bool "MPIC message register support"
 	depends on MPIC
@@ -108,7 +164,10 @@ config MPIC_MSGR
 	  Enables support for the MPIC message registers.  These
 	  registers are used for inter-processor communication.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config PPC_I8259
 	bool
 	default n
@@ -134,7 +193,11 @@ config PPC_RTAS_DAEMON
 
 config RTAS_PROC
 	bool "Proc interface to RTAS"
+<<<<<<< HEAD
 	depends on PPC_RTAS
+=======
+	depends on PPC_RTAS && PROC_FS
+>>>>>>> refs/remotes/origin/master
 	default y
 
 config RTAS_FLASH
@@ -161,10 +224,14 @@ config MPIC_BROKEN_REGREAD
 
 config IBMVIO
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on PPC_PSERIES || PPC_ISERIES
 =======
 	depends on PPC_PSERIES
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on PPC_PSERIES
+>>>>>>> refs/remotes/origin/master
 	bool
 	default y
 
@@ -174,6 +241,14 @@ config IBMEBUS
 	help
 	  Bus device driver for GX bus based adapters.
 
+<<<<<<< HEAD
+=======
+config EEH
+	bool
+	depends on (PPC_POWERNV || PPC_PSERIES) && PCI
+	default y
+
+>>>>>>> refs/remotes/origin/master
 config PPC_MPC106
 	bool
 	default n
@@ -186,6 +261,7 @@ config PPC_P7_NAP
 	bool
 	default n
 
+<<<<<<< HEAD
 config PPC_INDIRECT_IO
 	bool
 	select GENERIC_IOMAP
@@ -197,10 +273,19 @@ config PPC_INDIRECT_PIO
 config PPC_INDIRECT_MMIO
 	bool
 	select PPC_INDIRECT_IO
+=======
+config PPC_INDIRECT_PIO
+	bool
+	select GENERIC_IOMAP
+
+config PPC_INDIRECT_MMIO
+	bool
+>>>>>>> refs/remotes/origin/master
 
 config PPC_IO_WORKAROUNDS
 	bool
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config GENERIC_IOMAP
 	bool
@@ -242,16 +327,26 @@ endmenu
 
 <<<<<<< HEAD
 =======
+=======
+source "drivers/cpufreq/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 menu "CPUIdle driver"
 
 source "drivers/cpuidle/Kconfig"
 
 endmenu
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config PPC601_SYNC_FIX
 	bool "Workarounds for PPC601 bugs"
 	depends on 6xx && (PPC_PREP || PPC_PMAC)
+=======
+config PPC601_SYNC_FIX
+	bool "Workarounds for PPC601 bugs"
+	depends on 6xx && PPC_PMAC
+>>>>>>> refs/remotes/origin/master
 	help
 	  Some versions of the PPC601 (the first PowerPC chip) have bugs which
 	  mean that extra synchronization instructions are required near
@@ -310,10 +405,14 @@ config TAU_AVERAGE
 config QUICC_ENGINE
 	bool "Freescale QUICC Engine (QE) Support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on FSL_SOC
 =======
 	depends on FSL_SOC && PPC32
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on FSL_SOC && PPC32
+>>>>>>> refs/remotes/origin/master
 	select PPC_LIB_RHEAP
 	select CRC32
 	help
@@ -325,7 +424,10 @@ config QUICC_ENGINE
 config QE_GPIO
 	bool "QE GPIO support"
 	depends on QUICC_ENGINE
+<<<<<<< HEAD
 	select GENERIC_GPIO
+=======
+>>>>>>> refs/remotes/origin/master
 	select ARCH_REQUIRE_GPIOLIB
 	help
 	  Say Y here if you're going to use hardware that connects to the
@@ -338,7 +440,10 @@ config CPM2
 	select PPC_LIB_RHEAP
 	select PPC_PCI_CHOICE
 	select ARCH_REQUIRE_GPIOLIB
+<<<<<<< HEAD
 	select GENERIC_GPIO
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  The CPM2 (Communications Processor Module) is a coprocessor on
 	  embedded CPUs made by Freescale.  Selecting this option means that
@@ -366,7 +471,10 @@ config FSL_ULI1575
 
 config CPM
 	bool
+<<<<<<< HEAD
 	select PPC_CLOCK
+=======
+>>>>>>> refs/remotes/origin/master
 
 config OF_RTC
 	bool
@@ -374,6 +482,7 @@ config OF_RTC
 	  Uses information from the OF or flattened device tree to instantiate
 	  platform devices for direct mapped RTC chips like the DS1742 or DS1743.
 
+<<<<<<< HEAD
 source "arch/powerpc/sysdev/bestcomm/Kconfig"
 
 <<<<<<< HEAD
@@ -393,6 +502,11 @@ config SIMPLE_GPIO
 	bool "Support for simple, memory-mapped GPIO controllers"
 	depends on PPC
 	select GENERIC_GPIO
+=======
+config SIMPLE_GPIO
+	bool "Support for simple, memory-mapped GPIO controllers"
+	depends on PPC
+>>>>>>> refs/remotes/origin/master
 	select ARCH_REQUIRE_GPIOLIB
 	help
 	  Say Y here to support simple, memory-mapped GPIO controllers.
@@ -402,6 +516,7 @@ config SIMPLE_GPIO
 
 config MCU_MPC8349EMITX
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "MPC8349E-mITX MCU driver"
 	depends on I2C && PPC_83xx
 =======
@@ -409,6 +524,10 @@ config MCU_MPC8349EMITX
 	depends on I2C=y && PPC_83xx
 >>>>>>> refs/remotes/origin/cm-10.0
 	select GENERIC_GPIO
+=======
+	bool "MPC8349E-mITX MCU driver"
+	depends on I2C=y && PPC_83xx
+>>>>>>> refs/remotes/origin/master
 	select ARCH_REQUIRE_GPIOLIB
 	help
 	  Say Y here to enable soft power-off functionality on the Freescale

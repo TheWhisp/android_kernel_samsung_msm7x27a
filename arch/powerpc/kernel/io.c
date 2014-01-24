@@ -20,15 +20,25 @@
 #include <linux/types.h>
 #include <linux/compiler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/firmware.h>
 #include <asm/bug.h>
 
+<<<<<<< HEAD
+=======
+/* See definition in io.h */
+bool isa_io_special;
+
+>>>>>>> refs/remotes/origin/master
 void _insb(const volatile u8 __iomem *port, void *buf, long count)
 {
 	u8 *tbuf = buf;

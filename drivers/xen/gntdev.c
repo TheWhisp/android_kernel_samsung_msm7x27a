@@ -19,6 +19,11 @@
 
 #undef DEBUG
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "xen:" KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -56,10 +61,22 @@ MODULE_PARM_DESC(limit, "Maximum number of grants that may be mapped by "
 static atomic_t pages_mapped = ATOMIC_INIT(0);
 
 static int use_ptemod;
+<<<<<<< HEAD
 
 struct gntdev_priv {
 	struct list_head maps;
 	/* lock protects maps from concurrent changes */
+=======
+#define populate_freeable_maps use_ptemod
+
+struct gntdev_priv {
+	/* maps with visible offsets in the file descriptor */
+	struct list_head maps;
+	/* maps that are not visible; will be freed on munmap.
+	 * Only populated if populate_freeable_maps == 1 */
+	struct list_head freeable_maps;
+	/* lock protects maps and freeable_maps */
+>>>>>>> refs/remotes/origin/master
 	spinlock_t lock;
 	struct mm_struct *mm;
 	struct mmu_notifier mn;
@@ -84,9 +101,13 @@ struct grant_map {
 	struct gnttab_map_grant_ref   *map_ops;
 	struct gnttab_unmap_grant_ref *unmap_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct gnttab_map_grant_ref   *kmap_ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gnttab_map_grant_ref   *kmap_ops;
+>>>>>>> refs/remotes/origin/master
 	struct page **pages;
 };
 
@@ -109,7 +130,10 @@ static void gntdev_print_maps(struct gntdev_priv *priv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void gntdev_free_map(struct grant_map *map)
 {
 	if (map == NULL)
@@ -125,7 +149,10 @@ static void gntdev_free_map(struct grant_map *map)
 	kfree(map);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct grant_map *gntdev_alloc_map(struct gntdev_priv *priv, int count)
 {
 	struct grant_map *add;
@@ -135,6 +162,7 @@ static struct grant_map *gntdev_alloc_map(struct gntdev_priv *priv, int count)
 	if (NULL == add)
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	add->grants    = kzalloc(sizeof(add->grants[0])    * count, GFP_KERNEL);
 	add->map_ops   = kzalloc(sizeof(add->map_ops[0])   * count, GFP_KERNEL);
@@ -148,6 +176,8 @@ static struct grant_map *gntdev_alloc_map(struct gntdev_priv *priv, int count)
 
 	if (alloc_xenballooned_pages(count, add->pages))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	add->grants    = kcalloc(count, sizeof(add->grants[0]), GFP_KERNEL);
 	add->map_ops   = kcalloc(count, sizeof(add->map_ops[0]), GFP_KERNEL);
 	add->unmap_ops = kcalloc(count, sizeof(add->unmap_ops[0]), GFP_KERNEL);
@@ -161,16 +191,23 @@ static struct grant_map *gntdev_alloc_map(struct gntdev_priv *priv, int count)
 		goto err;
 
 	if (alloc_xenballooned_pages(count, add->pages, false /* lowmem */))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err;
 
 	for (i = 0; i < count; i++) {
 		add->map_ops[i].handle = -1;
 		add->unmap_ops[i].handle = -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		add->kmap_ops[i].handle = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		add->kmap_ops[i].handle = -1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	add->index = 0;
@@ -181,6 +218,7 @@ static struct grant_map *gntdev_alloc_map(struct gntdev_priv *priv, int count)
 
 err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(add->pages);
 	kfree(add->grants);
 	kfree(add->map_ops);
@@ -189,6 +227,9 @@ err:
 =======
 	gntdev_free_map(add);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gntdev_free_map(add);
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -224,7 +265,11 @@ static struct grant_map *gntdev_find_map_index(struct gntdev_priv *priv,
 	return NULL;
 }
 
+<<<<<<< HEAD
 static void gntdev_put_map(struct grant_map *map)
+=======
+static void gntdev_put_map(struct gntdev_priv *priv, struct grant_map *map)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!map)
 		return;
@@ -236,6 +281,7 @@ static void gntdev_put_map(struct grant_map *map)
 
 	if (map->notify.flags & UNMAP_NOTIFY_SEND_EVENT) {
 		notify_remote_via_evtchn(map->notify.event);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 
@@ -252,12 +298,24 @@ static void gntdev_put_map(struct grant_map *map)
 	kfree(map);
 =======
 		evtchn_put(map->notify.event);
+=======
+		evtchn_put(map->notify.event);
+	}
+
+	if (populate_freeable_maps && priv) {
+		spin_lock(&priv->lock);
+		list_del(&map->next);
+		spin_unlock(&priv->lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (map->pages && !use_ptemod)
 		unmap_grant_pages(map, 0, map->count);
 	gntdev_free_map(map);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ------------------------------------------------------------------ */
@@ -299,11 +357,14 @@ static int map_grant_pages(struct grant_map *map)
 				map->flags, -1 /* handle */);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	pr_debug("map %d+%d\n", map->index, map->count);
 	err = gnttab_map_refs(map->map_ops, map->pages, map->count);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/*
 		 * Setup the map_ops corresponding to the pte entries pointing
@@ -312,6 +373,7 @@ static int map_grant_pages(struct grant_map *map)
 		 * with find_grant_ptes.
 		 */
 		for (i = 0; i < map->count; i++) {
+<<<<<<< HEAD
 			unsigned level;
 			unsigned long address = (unsigned long)
 				pfn_to_kaddr(page_to_pfn(map->pages[i]));
@@ -325,6 +387,14 @@ static int map_grant_pages(struct grant_map *map)
 				map->flags |
 				GNTMAP_host_map |
 				GNTMAP_contains_pte,
+=======
+			unsigned long address = (unsigned long)
+				pfn_to_kaddr(page_to_pfn(map->pages[i]));
+			BUG_ON(PageHighMem(map->pages[i]));
+
+			gnttab_set_map_op(&map->kmap_ops[i], address,
+				map->flags | GNTMAP_host_map,
+>>>>>>> refs/remotes/origin/master
 				map->grants[i].ref,
 				map->grants[i].domid);
 		}
@@ -333,7 +403,10 @@ static int map_grant_pages(struct grant_map *map)
 	pr_debug("map %d+%d\n", map->index, map->count);
 	err = gnttab_map_refs(map->map_ops, use_ptemod ? map->kmap_ops : NULL,
 			map->pages, map->count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -355,6 +428,7 @@ static int __unmap_grant_pages(struct grant_map *map, int offset, int pages)
 
 	if (map->notify.flags & UNMAP_NOTIFY_CLEAR_BYTE) {
 		int pgno = (map->notify.addr >> PAGE_SHIFT);
+<<<<<<< HEAD
 		if (pgno >= offset && pgno < offset + pages && use_ptemod) {
 			void __user *tmp = (void __user *)
 				map->vma->vm_start + map->notify.addr;
@@ -366,10 +440,17 @@ static int __unmap_grant_pages(struct grant_map *map, int offset, int pages)
 			uint8_t *tmp = kmap(map->pages[pgno]);
 			tmp[map->notify.addr & (PAGE_SIZE-1)] = 0;
 			kunmap(map->pages[pgno]);
+=======
+		if (pgno >= offset && pgno < offset + pages) {
+			/* No need for kmap, pages are in lowmem */
+			uint8_t *tmp = pfn_to_kaddr(page_to_pfn(map->pages[pgno]));
+			tmp[map->notify.addr & (PAGE_SIZE-1)] = 0;
+>>>>>>> refs/remotes/origin/master
 			map->notify.flags &= ~UNMAP_NOTIFY_CLEAR_BYTE;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = gnttab_unmap_refs(map->unmap_ops + offset, map->pages + offset, pages);
 =======
@@ -377,6 +458,11 @@ static int __unmap_grant_pages(struct grant_map *map, int offset, int pages)
 			use_ptemod ? map->kmap_ops + offset : NULL, map->pages + offset,
 			pages);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = gnttab_unmap_refs(map->unmap_ops + offset,
+			use_ptemod ? map->kmap_ops + offset : NULL, map->pages + offset,
+			pages);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -434,11 +520,32 @@ static void gntdev_vma_open(struct vm_area_struct *vma)
 static void gntdev_vma_close(struct vm_area_struct *vma)
 {
 	struct grant_map *map = vma->vm_private_data;
+<<<<<<< HEAD
 
 	pr_debug("gntdev_vma_close %p\n", vma);
 	map->vma = NULL;
 	vma->vm_private_data = NULL;
 	gntdev_put_map(map);
+=======
+	struct file *file = vma->vm_file;
+	struct gntdev_priv *priv = file->private_data;
+
+	pr_debug("gntdev_vma_close %p\n", vma);
+	if (use_ptemod) {
+		/* It is possible that an mmu notifier could be running
+		 * concurrently, so take priv->lock to ensure that the vma won't
+		 * vanishing during the unmap_grant_pages call, since we will
+		 * spin here until that completes. Such a concurrent call will
+		 * not do any unmapping, since that has been done prior to
+		 * closing the vma, but it may still iterate the unmap_ops list.
+		 */
+		spin_lock(&priv->lock);
+		map->vma = NULL;
+		spin_unlock(&priv->lock);
+	}
+	vma->vm_private_data = NULL;
+	gntdev_put_map(priv, map);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct vm_operations_struct gntdev_vmops = {
@@ -448,12 +555,40 @@ static struct vm_operations_struct gntdev_vmops = {
 
 /* ------------------------------------------------------------------ */
 
+<<<<<<< HEAD
+=======
+static void unmap_if_in_range(struct grant_map *map,
+			      unsigned long start, unsigned long end)
+{
+	unsigned long mstart, mend;
+	int err;
+
+	if (!map->vma)
+		return;
+	if (map->vma->vm_start >= end)
+		return;
+	if (map->vma->vm_end <= start)
+		return;
+	mstart = max(start, map->vma->vm_start);
+	mend   = min(end,   map->vma->vm_end);
+	pr_debug("map %d+%d (%lx %lx), range %lx %lx, mrange %lx %lx\n",
+			map->index, map->count,
+			map->vma->vm_start, map->vma->vm_end,
+			start, end, mstart, mend);
+	err = unmap_grant_pages(map,
+				(mstart - map->vma->vm_start) >> PAGE_SHIFT,
+				(mend - mstart) >> PAGE_SHIFT);
+	WARN_ON(err);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void mn_invl_range_start(struct mmu_notifier *mn,
 				struct mm_struct *mm,
 				unsigned long start, unsigned long end)
 {
 	struct gntdev_priv *priv = container_of(mn, struct gntdev_priv, mn);
 	struct grant_map *map;
+<<<<<<< HEAD
 	unsigned long mstart, mend;
 	int err;
 
@@ -475,6 +610,15 @@ static void mn_invl_range_start(struct mmu_notifier *mn,
 					(mstart - map->vma->vm_start) >> PAGE_SHIFT,
 					(mend - mstart) >> PAGE_SHIFT);
 		WARN_ON(err);
+=======
+
+	spin_lock(&priv->lock);
+	list_for_each_entry(map, &priv->maps, next) {
+		unmap_if_in_range(map, start, end);
+	}
+	list_for_each_entry(map, &priv->freeable_maps, next) {
+		unmap_if_in_range(map, start, end);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock(&priv->lock);
 }
@@ -503,10 +647,26 @@ static void mn_release(struct mmu_notifier *mn,
 		err = unmap_grant_pages(map, /* offset */ 0, map->count);
 		WARN_ON(err);
 	}
+<<<<<<< HEAD
 	spin_unlock(&priv->lock);
 }
 
 struct mmu_notifier_ops gntdev_mmu_ops = {
+=======
+	list_for_each_entry(map, &priv->freeable_maps, next) {
+		if (!map->vma)
+			continue;
+		pr_debug("map %d+%d (%lx %lx)\n",
+				map->index, map->count,
+				map->vma->vm_start, map->vma->vm_end);
+		err = unmap_grant_pages(map, /* offset */ 0, map->count);
+		WARN_ON(err);
+	}
+	spin_unlock(&priv->lock);
+}
+
+static struct mmu_notifier_ops gntdev_mmu_ops = {
+>>>>>>> refs/remotes/origin/master
 	.release                = mn_release,
 	.invalidate_page        = mn_invl_page,
 	.invalidate_range_start = mn_invl_range_start,
@@ -524,6 +684,10 @@ static int gntdev_open(struct inode *inode, struct file *flip)
 		return -ENOMEM;
 
 	INIT_LIST_HEAD(&priv->maps);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&priv->freeable_maps);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&priv->lock);
 
 	if (use_ptemod) {
@@ -556,6 +720,7 @@ static int gntdev_release(struct inode *inode, struct file *flip)
 	pr_debug("priv %p\n", priv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&priv->lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -568,6 +733,14 @@ static int gntdev_release(struct inode *inode, struct file *flip)
 	spin_unlock(&priv->lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (!list_empty(&priv->maps)) {
+		map = list_entry(priv->maps.next, struct grant_map, next);
+		list_del(&map->next);
+		gntdev_put_map(NULL /* already removed */, map);
+	}
+	WARN_ON(!list_empty(&priv->freeable_maps));
+>>>>>>> refs/remotes/origin/master
 
 	if (use_ptemod)
 		mmu_notifier_unregister(&priv->mn, priv->mm);
@@ -595,14 +768,23 @@ static long gntdev_ioctl_map_grant_ref(struct gntdev_priv *priv,
 
 	if (unlikely(atomic_add_return(op.count, &pages_mapped) > limit)) {
 		pr_debug("can't map: over limit\n");
+<<<<<<< HEAD
 		gntdev_put_map(map);
+=======
+		gntdev_put_map(NULL, map);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
 	if (copy_from_user(map->grants, &u->refs,
 			   sizeof(map->grants[0]) * op.count) != 0) {
+<<<<<<< HEAD
 		gntdev_put_map(map);
 		return err;
+=======
+		gntdev_put_map(NULL, map);
+		return -EFAULT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock(&priv->lock);
@@ -632,17 +814,26 @@ static long gntdev_ioctl_unmap_grant_ref(struct gntdev_priv *priv,
 	if (map) {
 		list_del(&map->next);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gntdev_put_map(map);
 		err = 0;
 	}
 	spin_unlock(&priv->lock);
 =======
+=======
+		if (populate_freeable_maps)
+			list_add_tail(&map->next, &priv->freeable_maps);
+>>>>>>> refs/remotes/origin/master
 		err = 0;
 	}
 	spin_unlock(&priv->lock);
 	if (map)
+<<<<<<< HEAD
 		gntdev_put_map(map);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gntdev_put_map(priv, map);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -652,11 +843,16 @@ static long gntdev_ioctl_get_offset_for_vaddr(struct gntdev_priv *priv,
 	struct ioctl_gntdev_get_offset_for_vaddr op;
 	struct vm_area_struct *vma;
 	struct grant_map *map;
+<<<<<<< HEAD
+=======
+	int rv = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&op, u, sizeof(op)) != 0)
 		return -EFAULT;
 	pr_debug("priv %p, offset for vaddr %lx\n", priv, (unsigned long)op.vaddr);
 
+<<<<<<< HEAD
 	vma = find_vma(current->mm, op.vaddr);
 	if (!vma || vma->vm_ops != &gntdev_vmops)
 		return -EINVAL;
@@ -671,6 +867,27 @@ static long gntdev_ioctl_get_offset_for_vaddr(struct gntdev_priv *priv,
 	if (copy_to_user(u, &op, sizeof(op)) != 0)
 		return -EFAULT;
 	return 0;
+=======
+	down_read(&current->mm->mmap_sem);
+	vma = find_vma(current->mm, op.vaddr);
+	if (!vma || vma->vm_ops != &gntdev_vmops)
+		goto out_unlock;
+
+	map = vma->vm_private_data;
+	if (!map)
+		goto out_unlock;
+
+	op.offset = map->index << PAGE_SHIFT;
+	op.count = map->count;
+	rv = 0;
+
+ out_unlock:
+	up_read(&current->mm->mmap_sem);
+
+	if (rv == 0 && copy_to_user(u, &op, sizeof(op)) != 0)
+		return -EFAULT;
+	return rv;
+>>>>>>> refs/remotes/origin/master
 }
 
 static long gntdev_ioctl_notify(struct gntdev_priv *priv, void __user *u)
@@ -679,10 +896,15 @@ static long gntdev_ioctl_notify(struct gntdev_priv *priv, void __user *u)
 	struct grant_map *map;
 	int rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int out_flags;
 	unsigned int out_event;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int out_flags;
+	unsigned int out_event;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&op, u, sizeof(op)))
 		return -EFAULT;
@@ -691,7 +913,10 @@ static long gntdev_ioctl_notify(struct gntdev_priv *priv, void __user *u)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* We need to grab a reference to the event channel we are going to use
 	 * to send the notify before releasing the reference we may already have
 	 * (if someone has called this ioctl twice). This is required so that
@@ -707,7 +932,10 @@ static long gntdev_ioctl_notify(struct gntdev_priv *priv, void __user *u)
 	out_flags = op.action;
 	out_event = op.event_channel_port;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&priv->lock);
 
 	list_for_each_entry(map, &priv->maps, next) {
@@ -727,6 +955,7 @@ static long gntdev_ioctl_notify(struct gntdev_priv *priv, void __user *u)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	map->notify.flags = op.action;
 	map->notify.addr = op.index - (map->index << PAGE_SHIFT);
 	map->notify.event = op.event_channel_port;
@@ -734,6 +963,8 @@ static long gntdev_ioctl_notify(struct gntdev_priv *priv, void __user *u)
  unlock_out:
 	spin_unlock(&priv->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	out_flags = map->notify.flags;
 	out_event = map->notify.event;
 
@@ -750,7 +981,10 @@ static long gntdev_ioctl_notify(struct gntdev_priv *priv, void __user *u)
 	if (out_flags & UNMAP_NOTIFY_SEND_EVENT)
 		evtchn_put(out_event);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -802,7 +1036,11 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
 	if (use_ptemod && map->vma)
 		goto unlock_out;
 	if (use_ptemod && priv->mm != vma->vm_mm) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "Huh? Other mm?\n");
+=======
+		pr_warn("Huh? Other mm?\n");
+>>>>>>> refs/remotes/origin/master
 		goto unlock_out;
 	}
 
@@ -810,7 +1048,11 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
 
 	vma->vm_ops = &gntdev_vmops;
 
+<<<<<<< HEAD
 	vma->vm_flags |= VM_RESERVED|VM_DONTEXPAND;
+=======
+	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 
 	if (use_ptemod)
 		vma->vm_flags |= VM_DONTCOPY;
@@ -837,7 +1079,11 @@ static int gntdev_mmap(struct file *flip, struct vm_area_struct *vma)
 					  vma->vm_end - vma->vm_start,
 					  find_grant_ptes, map);
 		if (err) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "find_grant_ptes() failure.\n");
+=======
+			pr_warn("find_grant_ptes() failure.\n");
+>>>>>>> refs/remotes/origin/master
 			goto out_put_map;
 		}
 	}
@@ -866,7 +1112,11 @@ out_unlock_put:
 out_put_map:
 	if (use_ptemod)
 		map->vma = NULL;
+<<<<<<< HEAD
 	gntdev_put_map(map);
+=======
+	gntdev_put_map(priv, map);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -897,7 +1147,11 @@ static int __init gntdev_init(void)
 
 	err = misc_register(&gntdev_miscdev);
 	if (err != 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Could not register gntdev device\n");
+=======
+		pr_err("Could not register gntdev device\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	return 0;

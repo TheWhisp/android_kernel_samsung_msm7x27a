@@ -38,13 +38,22 @@
 #define GPIO_NR_TREO_LCD_POWER	25
 
 /* Treo680 specific GPIOs */
+<<<<<<< HEAD
 #ifdef CONFIG_MACH_TREO680
+=======
+>>>>>>> refs/remotes/origin/master
 #define GPIO_NR_TREO680_SD_READONLY	33
 #define GPIO_NR_TREO680_SD_POWER	42
 #define GPIO_NR_TREO680_VIBRATE_EN	44
 #define GPIO_NR_TREO680_KEYB_BL		24
 #define GPIO_NR_TREO680_BT_EN		43
+<<<<<<< HEAD
 #endif /* CONFIG_MACH_TREO680 */
+=======
+#define GPIO_NR_TREO680_LCD_POWER	77
+#define GPIO_NR_TREO680_LCD_EN		86
+#define GPIO_NR_TREO680_LCD_EN_N	25
+>>>>>>> refs/remotes/origin/master
 
 /* Centro685 specific GPIOs */
 #define GPIO_NR_CENTRO_SD_POWER		21

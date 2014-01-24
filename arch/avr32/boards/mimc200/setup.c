@@ -8,7 +8,11 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 extern struct atmel_lcdfb_info mimc200_lcdc_data;
+=======
+extern struct atmel_lcdfb_pdata mimc200_lcdc_data;
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/clk.h>
 #include <linux/etherdevice.h>
@@ -71,7 +75,11 @@ static struct fb_monspecs __initdata mimc200_default_monspecs = {
 	.dclkmax		= 25200000,
 };
 
+<<<<<<< HEAD
 struct atmel_lcdfb_info __initdata mimc200_lcdc_data = {
+=======
+struct atmel_lcdfb_pdata __initdata mimc200_lcdc_data = {
+>>>>>>> refs/remotes/origin/master
 	.default_bpp		= 16,
 	.default_dmacon		= ATMEL_LCDC_DMAEN | ATMEL_LCDC_DMA2DEN,
 	.default_lcdcon2	= (ATMEL_LCDC_DISTYPE_TFT
@@ -87,10 +95,14 @@ struct eth_addr {
 };
 static struct eth_addr __initdata hw_addr[2];
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct eth_platform_data __initdata eth_data[2];
 =======
 static struct macb_platform_data __initdata eth_data[2];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data __initdata eth_data[2];
+>>>>>>> refs/remotes/origin/master
 
 static struct spi_eeprom eeprom_25lc010 = {
 		.name = "25lc010",

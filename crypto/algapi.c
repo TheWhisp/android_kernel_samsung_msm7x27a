@@ -23,6 +23,7 @@
 #include "internal.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void crypto_remove_final(struct list_head *list);
 
 =======
@@ -45,6 +46,10 @@ void crypto_larval_error(const char *name, u32 type, u32 mask)
 }
 EXPORT_SYMBOL_GPL(crypto_larval_error);
 
+=======
+static LIST_HEAD(crypto_template_list);
+
+>>>>>>> refs/remotes/origin/master
 static inline int crypto_set_driver_name(struct crypto_alg *alg)
 {
 	static const char suffix[] = "-generic";
@@ -133,6 +138,7 @@ static void crypto_remove_spawn(struct crypto_spawn *spawn,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void crypto_remove_spawns(struct crypto_alg *alg,
 				 struct list_head *list,
 				 struct crypto_alg *nalg)
@@ -140,6 +146,10 @@ static void crypto_remove_spawns(struct crypto_alg *alg,
 void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
 			  struct crypto_alg *nalg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
+			  struct crypto_alg *nalg)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 new_type = (nalg ?: alg)->cra_flags;
 	struct crypto_spawn *spawn, *n;
@@ -186,9 +196,13 @@ void crypto_remove_spawns(struct crypto_alg *alg, struct list_head *list,
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(crypto_remove_spawns);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(crypto_remove_spawns);
+>>>>>>> refs/remotes/origin/master
 
 static struct crypto_larval *__crypto_register_alg(struct crypto_alg *alg)
 {
@@ -309,7 +323,10 @@ found:
 				continue;
 
 			larval->adult = alg;
+<<<<<<< HEAD
 			complete_all(&larval->completion);
+=======
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -334,10 +351,14 @@ unlock:
 EXPORT_SYMBOL_GPL(crypto_alg_tested);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void crypto_remove_final(struct list_head *list)
 =======
 void crypto_remove_final(struct list_head *list)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void crypto_remove_final(struct list_head *list)
+>>>>>>> refs/remotes/origin/master
 {
 	struct crypto_alg *alg;
 	struct crypto_alg *n;
@@ -348,9 +369,13 @@ void crypto_remove_final(struct list_head *list)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(crypto_remove_final);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(crypto_remove_final);
+>>>>>>> refs/remotes/origin/master
 
 static void crypto_wait_for_test(struct crypto_larval *larval)
 {
@@ -427,7 +452,10 @@ int crypto_unregister_alg(struct crypto_alg *alg)
 EXPORT_SYMBOL_GPL(crypto_unregister_alg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int crypto_register_algs(struct crypto_alg *algs, int count)
 {
 	int i, ret;
@@ -463,7 +491,10 @@ int crypto_unregister_algs(struct crypto_alg *algs, int count)
 }
 EXPORT_SYMBOL_GPL(crypto_unregister_algs);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int crypto_register_template(struct crypto_template *tmpl)
 {
 	struct crypto_template *q;
@@ -488,7 +519,11 @@ EXPORT_SYMBOL_GPL(crypto_register_template);
 void crypto_unregister_template(struct crypto_template *tmpl)
 {
 	struct crypto_instance *inst;
+<<<<<<< HEAD
 	struct hlist_node *p, *n;
+=======
+	struct hlist_node *n;
+>>>>>>> refs/remotes/origin/master
 	struct hlist_head *list;
 	LIST_HEAD(users);
 
@@ -498,7 +533,11 @@ void crypto_unregister_template(struct crypto_template *tmpl)
 	list_del_init(&tmpl->list);
 
 	list = &tmpl->instances;
+<<<<<<< HEAD
 	hlist_for_each_entry(inst, p, list, list) {
+=======
+	hlist_for_each_entry(inst, list, list) {
+>>>>>>> refs/remotes/origin/master
 		int err = crypto_remove_alg(&inst->alg, &users);
 		BUG_ON(err);
 	}
@@ -507,7 +546,11 @@ void crypto_unregister_template(struct crypto_template *tmpl)
 
 	up_write(&crypto_alg_sem);
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(inst, p, n, list, list) {
+=======
+	hlist_for_each_entry_safe(inst, n, list, list) {
+>>>>>>> refs/remotes/origin/master
 		BUG_ON(atomic_read(&inst->alg.cra_refcnt) != 1);
 		tmpl->free(inst);
 	}
@@ -553,9 +596,13 @@ int crypto_register_instance(struct crypto_template *tmpl,
 
 	inst->alg.cra_module = tmpl->module;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	inst->alg.cra_flags |= CRYPTO_ALG_INSTANCE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inst->alg.cra_flags |= CRYPTO_ALG_INSTANCE;
+>>>>>>> refs/remotes/origin/master
 
 	down_write(&crypto_alg_sem);
 
@@ -582,7 +629,10 @@ err:
 EXPORT_SYMBOL_GPL(crypto_register_instance);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int crypto_unregister_instance(struct crypto_alg *alg)
 {
 	int err;
@@ -612,7 +662,10 @@ int crypto_unregister_instance(struct crypto_alg *alg)
 }
 EXPORT_SYMBOL_GPL(crypto_unregister_instance);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int crypto_init_spawn(struct crypto_spawn *spawn, struct crypto_alg *alg,
 		      struct crypto_instance *inst, u32 mask)
 {
@@ -797,12 +850,19 @@ struct crypto_alg *crypto_attr_alg2(struct rtattr *rta,
 				    u32 type, u32 mask)
 {
 	const char *name;
+<<<<<<< HEAD
 	int err;
 
 	name = crypto_attr_alg_name(rta);
 	err = PTR_ERR(name);
 	if (IS_ERR(name))
 		return ERR_PTR(err);
+=======
+
+	name = crypto_attr_alg_name(rta);
+	if (IS_ERR(name))
+		return ERR_CAST(name);
+>>>>>>> refs/remotes/origin/master
 
 	return crypto_find_alg(name, frontend, type, mask);
 }

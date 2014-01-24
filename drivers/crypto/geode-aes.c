@@ -289,7 +289,10 @@ static struct crypto_alg geode_alg = {
 	.cra_blocksize		=	AES_MIN_BLOCK_SIZE,
 	.cra_ctxsize		=	sizeof(struct geode_aes_op),
 	.cra_module			=	THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list			=	LIST_HEAD_INIT(geode_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u				=	{
 		.cipher	=	{
 			.cia_min_keysize	=	AES_MIN_KEY_SIZE,
@@ -394,11 +397,16 @@ static struct crypto_alg geode_cbc_alg = {
 	.cra_priority		=	400,
 	.cra_flags			=	CRYPTO_ALG_TYPE_BLKCIPHER |
 <<<<<<< HEAD
+<<<<<<< HEAD
 							CRYPTO_ALG_NEED_FALLBACK,
 =======
 						CRYPTO_ALG_KERN_DRIVER_ONLY |
 						CRYPTO_ALG_NEED_FALLBACK,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						CRYPTO_ALG_KERN_DRIVER_ONLY |
+						CRYPTO_ALG_NEED_FALLBACK,
+>>>>>>> refs/remotes/origin/master
 	.cra_init			=	fallback_init_blk,
 	.cra_exit			=	fallback_exit_blk,
 	.cra_blocksize		=	AES_MIN_BLOCK_SIZE,
@@ -406,7 +414,10 @@ static struct crypto_alg geode_cbc_alg = {
 	.cra_alignmask		=	15,
 	.cra_type			=	&crypto_blkcipher_type,
 	.cra_module			=	THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list			=	LIST_HEAD_INIT(geode_cbc_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u				=	{
 		.blkcipher	=	{
 			.min_keysize	=	AES_MIN_KEY_SIZE,
@@ -485,11 +496,16 @@ static struct crypto_alg geode_ecb_alg = {
 	.cra_priority		=	400,
 	.cra_flags			=	CRYPTO_ALG_TYPE_BLKCIPHER |
 <<<<<<< HEAD
+<<<<<<< HEAD
 							CRYPTO_ALG_NEED_FALLBACK,
 =======
 						CRYPTO_ALG_KERN_DRIVER_ONLY |
 						CRYPTO_ALG_NEED_FALLBACK,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						CRYPTO_ALG_KERN_DRIVER_ONLY |
+						CRYPTO_ALG_NEED_FALLBACK,
+>>>>>>> refs/remotes/origin/master
 	.cra_init			=	fallback_init_blk,
 	.cra_exit			=	fallback_exit_blk,
 	.cra_blocksize		=	AES_MIN_BLOCK_SIZE,
@@ -497,7 +513,10 @@ static struct crypto_alg geode_ecb_alg = {
 	.cra_alignmask		=	15,
 	.cra_type			=	&crypto_blkcipher_type,
 	.cra_module			=	THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list			=	LIST_HEAD_INIT(geode_ecb_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_u				=	{
 		.blkcipher	=	{
 			.min_keysize	=	AES_MIN_KEY_SIZE,
@@ -509,8 +528,12 @@ static struct crypto_alg geode_ecb_alg = {
 	}
 };
 
+<<<<<<< HEAD
 static void __devexit
 geode_aes_remove(struct pci_dev *dev)
+=======
+static void geode_aes_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	crypto_unregister_alg(&geode_alg);
 	crypto_unregister_alg(&geode_ecb_alg);
@@ -524,8 +547,12 @@ geode_aes_remove(struct pci_dev *dev)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
 geode_aes_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int geode_aes_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	ret = pci_enable_device(dev);
@@ -593,6 +620,7 @@ static struct pci_driver geode_aes_driver = {
 	.name = "Geode LX AES",
 	.id_table = geode_aes_tbl,
 	.probe = geode_aes_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(geode_aes_remove)
 };
 
@@ -607,10 +635,19 @@ geode_aes_exit(void)
 {
 	pci_unregister_driver(&geode_aes_driver);
 }
+=======
+	.remove = geode_aes_remove,
+};
+
+module_pci_driver(geode_aes_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Advanced Micro Devices, Inc.");
 MODULE_DESCRIPTION("Geode LX Hardware AES driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(geode_aes_init);
 module_exit(geode_aes_exit);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef __LINUX_MFD_NVEC
 #define __LINUX_MFD_NVEC
 
@@ -19,6 +20,8 @@ typedef enum {
 typedef enum {
 	NVEC_SYS=1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * NVEC: NVIDIA compliant embedded controller interface
  *
@@ -63,7 +66,11 @@ typedef enum {
  * enum nvec_event_size - The size of an event message
  * @NVEC_2BYTES: The message has one command byte and one data byte
  * @NVEC_3BYTES: The message has one command byte and two data bytes
+<<<<<<< HEAD
  * @NVEC_VAR_SIZE: The message has one command byte, one count byte, and as
+=======
+ * @NVEC_VAR_SIZE: The message has one command byte, one count byte, and has
+>>>>>>> refs/remotes/origin/master
  *                 up to as many bytes as the number in the count byte. The
  *                 maximum is 32
  *
@@ -91,6 +98,7 @@ enum nvec_event_size {
  */
 enum nvec_msg_type {
 	NVEC_SYS = 1,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	NVEC_BAT,
 	NVEC_KBD = 5,
@@ -115,6 +123,16 @@ struct nvec_msg {
 };
 
 =======
+=======
+	NVEC_BAT,
+	NVEC_GPIO,
+	NVEC_SLEEP,
+	NVEC_KBD,
+	NVEC_PS2,
+	NVEC_CNTL,
+	NVEC_OEM0 = 0x0d,
+	NVEC_KB_EVT = 0x80,
+>>>>>>> refs/remotes/origin/master
 	NVEC_PS2_EVT,
 };
 
@@ -140,6 +158,7 @@ struct nvec_msg {
 };
 
 /**
+<<<<<<< HEAD
  * struct nvec_subdev - A subdevice of nvec, such as nvec_kbd
  * @name: The name of the sub device
  * @platform_data: Platform data
@@ -179,6 +198,8 @@ struct nvec_platform_data {
 };
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * struct nvec_chip - A single connection to an NVIDIA Embedded controller
  * @dev: The device
  * @gpio: The same as for &struct nvec_platform_data
@@ -208,11 +229,15 @@ struct nvec_platform_data {
  * @last_sync_msg: The last synchronous message.
  * @state: State of our finite state machine used in nvec_interrupt()
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct nvec_chip {
 	struct device *dev;
 	int gpio;
 	int irq;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned char *i2c_regs;
 	nvec_state state;
@@ -221,10 +246,16 @@ struct nvec_chip {
 	void __iomem *base;
 	struct clk *i2c_clk;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i2c_addr;
+	void __iomem *base;
+	struct clk *i2c_clk;
+>>>>>>> refs/remotes/origin/master
 	struct atomic_notifier_head notifier_list;
 	struct list_head rx_data, tx_data;
 	struct notifier_block nvec_status_notifier;
 	struct work_struct rx_work, tx_work;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct nvec_msg *rx, *tx;
 
@@ -268,6 +299,8 @@ extern int nvec_kbd_init(struct nvec_chip *nvec);
 #define I2C_SL_ADDR2		0x30
 #define I2C_SL_DELAY_COUNT	0x3c
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct workqueue_struct *wq;
 	struct nvec_msg msg_pool[NVEC_POOL_SIZE];
 	struct nvec_msg *rx;
@@ -297,11 +330,18 @@ extern int nvec_register_notifier(struct nvec_chip *nvec,
 				  struct notifier_block *nb,
 				  unsigned int events);
 
+<<<<<<< HEAD
 extern int nvec_unregister_notifier(struct device *dev,
 				    struct notifier_block *nb,
 				    unsigned int events);
 
 extern void nvec_msg_free(struct nvec_chip *nvec, struct nvec_msg *msg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int nvec_unregister_notifier(struct nvec_chip *dev,
+				    struct notifier_block *nb);
+
+extern void nvec_msg_free(struct nvec_chip *nvec, struct nvec_msg *msg);
+>>>>>>> refs/remotes/origin/master
 
 #endif

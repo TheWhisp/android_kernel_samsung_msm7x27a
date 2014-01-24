@@ -11,9 +11,13 @@
 
 #include <media/rc-map.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /* mce-mode imon mce remote key table */
 static struct rc_map_table imon_mce[] = {
@@ -124,7 +128,11 @@ static struct rc_map_list imon_mce_map = {
 		.scan    = imon_mce,
 		.size    = ARRAY_SIZE(imon_mce),
 		/* its RC6, but w/a hardware decoder */
+<<<<<<< HEAD
 		.rc_type = RC_TYPE_RC6,
+=======
+		.rc_type = RC_TYPE_RC6_MCE,
+>>>>>>> refs/remotes/origin/master
 		.name    = RC_MAP_IMON_MCE,
 	}
 };

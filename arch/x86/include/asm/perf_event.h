@@ -5,11 +5,18 @@
  * Performance event hw details:
  */
 
+<<<<<<< HEAD
 #define X86_PMC_MAX_GENERIC				       32
 #define X86_PMC_MAX_FIXED					3
 
 #define X86_PMC_IDX_GENERIC				        0
 #define X86_PMC_IDX_FIXED				       32
+=======
+#define INTEL_PMC_MAX_GENERIC				       32
+#define INTEL_PMC_MAX_FIXED					3
+#define INTEL_PMC_IDX_FIXED				       32
+
+>>>>>>> refs/remotes/origin/master
 #define X86_PMC_IDX_MAX					       64
 
 #define MSR_ARCH_PERFMON_PERFCTR0			      0xc1
@@ -24,9 +31,13 @@
 #define ARCH_PERFMON_EVENTSEL_OS			(1ULL << 17)
 #define ARCH_PERFMON_EVENTSEL_EDGE			(1ULL << 18)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ARCH_PERFMON_EVENTSEL_PIN_CONTROL		(1ULL << 19)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARCH_PERFMON_EVENTSEL_PIN_CONTROL		(1ULL << 19)
+>>>>>>> refs/remotes/origin/master
 #define ARCH_PERFMON_EVENTSEL_INT			(1ULL << 20)
 #define ARCH_PERFMON_EVENTSEL_ANY			(1ULL << 21)
 #define ARCH_PERFMON_EVENTSEL_ENABLE			(1ULL << 22)
@@ -34,11 +45,25 @@
 #define ARCH_PERFMON_EVENTSEL_CMASK			0xFF000000ULL
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define AMD_PERFMON_EVENTSEL_GUESTONLY			(1ULL << 40)
 #define AMD_PERFMON_EVENTSEL_HOSTONLY			(1ULL << 41)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HSW_IN_TX					(1ULL << 32)
+#define HSW_IN_TX_CHECKPOINTED				(1ULL << 33)
+
+#define AMD64_EVENTSEL_INT_CORE_ENABLE			(1ULL << 36)
+#define AMD64_EVENTSEL_GUESTONLY			(1ULL << 40)
+#define AMD64_EVENTSEL_HOSTONLY				(1ULL << 41)
+
+#define AMD64_EVENTSEL_INT_CORE_SEL_SHIFT		37
+#define AMD64_EVENTSEL_INT_CORE_SEL_MASK		\
+	(0xFULL << AMD64_EVENTSEL_INT_CORE_SEL_SHIFT)
+
+>>>>>>> refs/remotes/origin/master
 #define AMD64_EVENTSEL_EVENT	\
 	(ARCH_PERFMON_EVENTSEL_EVENT | (0x0FULL << 32))
 #define INTEL_ARCH_EVENT_MASK	\
@@ -54,6 +79,7 @@
 	(X86_RAW_EVENT_MASK          |  \
 	 AMD64_EVENTSEL_EVENT)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define ARCH_PERFMON_UNHALTED_CORE_CYCLES_SEL		      0x3c
 #define ARCH_PERFMON_UNHALTED_CORE_CYCLES_UMASK		(0x00 << 8)
@@ -66,6 +92,14 @@
 #define AMD64_NUM_COUNTERS				4
 #define AMD64_NUM_COUNTERS_F15H				6
 #define AMD64_NUM_COUNTERS_MAX				AMD64_NUM_COUNTERS_F15H
+=======
+#define AMD64_RAW_EVENT_MASK_NB		\
+	(AMD64_EVENTSEL_EVENT        |  \
+	 ARCH_PERFMON_EVENTSEL_UMASK)
+#define AMD64_NUM_COUNTERS				4
+#define AMD64_NUM_COUNTERS_CORE				6
+#define AMD64_NUM_COUNTERS_NB				4
+>>>>>>> refs/remotes/origin/master
 
 #define ARCH_PERFMON_UNHALTED_CORE_CYCLES_SEL		0x3c
 #define ARCH_PERFMON_UNHALTED_CORE_CYCLES_UMASK		(0x00 << 8)
@@ -75,7 +109,10 @@
 
 #define ARCH_PERFMON_BRANCH_MISSES_RETIRED		6
 #define ARCH_PERFMON_EVENTS_COUNT			7
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Intel "Architectural Performance Monitoring" CPUID
@@ -92,7 +129,10 @@ union cpuid10_eax {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 union cpuid10_ebx {
 	struct {
 		unsigned int no_unhalted_core_cycles:1;
@@ -106,7 +146,10 @@ union cpuid10_ebx {
 	unsigned int full;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 union cpuid10_edx {
 	struct {
 		unsigned int num_counters_fixed:5;
@@ -117,7 +160,10 @@ union cpuid10_edx {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct x86_pmu_capability {
 	int		version;
 	int		num_counters_gp;
@@ -127,7 +173,10 @@ struct x86_pmu_capability {
 	unsigned int	events_mask;
 	int		events_mask_len;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Fixed-purpose performance events:
@@ -137,16 +186,21 @@ struct x86_pmu_capability {
  * All 3 fixed-mode PMCs are configured via this single MSR:
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MSR_ARCH_PERFMON_FIXED_CTR_CTRL			0x38d
 =======
 #define MSR_ARCH_PERFMON_FIXED_CTR_CTRL	0x38d
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSR_ARCH_PERFMON_FIXED_CTR_CTRL	0x38d
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The counts are available in three separate MSRs:
  */
 
 /* Instr_Retired.Any: */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MSR_ARCH_PERFMON_FIXED_CTR0			0x309
 #define X86_PMC_IDX_FIXED_INSTRUCTIONS			(X86_PMC_IDX_FIXED + 0)
@@ -171,6 +225,19 @@ struct x86_pmu_capability {
 #define X86_PMC_IDX_FIXED_REF_CYCLES	(X86_PMC_IDX_FIXED + 2)
 #define X86_PMC_MSK_FIXED_REF_CYCLES	(1ULL << X86_PMC_IDX_FIXED_REF_CYCLES)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSR_ARCH_PERFMON_FIXED_CTR0	0x309
+#define INTEL_PMC_IDX_FIXED_INSTRUCTIONS	(INTEL_PMC_IDX_FIXED + 0)
+
+/* CPU_CLK_Unhalted.Core: */
+#define MSR_ARCH_PERFMON_FIXED_CTR1	0x30a
+#define INTEL_PMC_IDX_FIXED_CPU_CYCLES	(INTEL_PMC_IDX_FIXED + 1)
+
+/* CPU_CLK_Unhalted.Ref: */
+#define MSR_ARCH_PERFMON_FIXED_CTR2	0x30b
+#define INTEL_PMC_IDX_FIXED_REF_CYCLES	(INTEL_PMC_IDX_FIXED + 2)
+#define INTEL_PMC_MSK_FIXED_REF_CYCLES	(1ULL << INTEL_PMC_IDX_FIXED_REF_CYCLES)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We model BTS tracing as another fixed-mode PMC.
@@ -179,10 +246,15 @@ struct x86_pmu_capability {
  * values are used by actual fixed events and higher values are used
  * to indicate other overflow conditions in the PERF_GLOBAL_STATUS msr.
  */
+<<<<<<< HEAD
 #define X86_PMC_IDX_FIXED_BTS				(X86_PMC_IDX_FIXED + 16)
 
 <<<<<<< HEAD
 =======
+=======
+#define INTEL_PMC_IDX_FIXED_BTS				(INTEL_PMC_IDX_FIXED + 16)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * IBS cpuid feature detection
  */
@@ -200,6 +272,10 @@ struct x86_pmu_capability {
 #define IBS_CAPS_OPCNT			(1U<<4)
 #define IBS_CAPS_BRNTRGT		(1U<<5)
 #define IBS_CAPS_OPCNTEXT		(1U<<6)
+<<<<<<< HEAD
+=======
+#define IBS_CAPS_RIPINVALIDCHK		(1U<<7)
+>>>>>>> refs/remotes/origin/master
 
 #define IBS_CAPS_DEFAULT		(IBS_CAPS_AVAIL		\
 					 | IBS_CAPS_FETCHSAM	\
@@ -212,20 +288,31 @@ struct x86_pmu_capability {
 #define IBSCTL_LVT_OFFSET_VALID		(1ULL<<8)
 #define IBSCTL_LVT_OFFSET_MASK		0x0F
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* IbsFetchCtl bits/masks */
+=======
+/* ibs fetch bits/masks */
+>>>>>>> refs/remotes/origin/master
 #define IBS_FETCH_RAND_EN	(1ULL<<57)
 #define IBS_FETCH_VAL		(1ULL<<49)
 #define IBS_FETCH_ENABLE	(1ULL<<48)
 #define IBS_FETCH_CNT		0xFFFF0000ULL
 #define IBS_FETCH_MAX_CNT	0x0000FFFFULL
 
+<<<<<<< HEAD
 /* IbsOpCtl bits */
+=======
+/* ibs op bits/masks */
+/* lower 4 bits of the current count are ignored: */
+#define IBS_OP_CUR_CNT		(0xFFFF0ULL<<32)
+>>>>>>> refs/remotes/origin/master
 #define IBS_OP_CNT_CTL		(1ULL<<19)
 #define IBS_OP_VAL		(1ULL<<18)
 #define IBS_OP_ENABLE		(1ULL<<17)
 #define IBS_OP_MAX_CNT		0x0000FFFFULL
 #define IBS_OP_MAX_CNT_EXT	0x007FFFFFULL	/* not a register bit mask */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #ifdef CONFIG_PERF_EVENTS
@@ -235,10 +322,20 @@ extern void perf_events_lapic_init(void);
 
 =======
 extern u32 get_ibs_caps(void);
+=======
+#define IBS_RIP_INVALID		(1ULL<<38)
+
+#ifdef CONFIG_X86_LOCAL_APIC
+extern u32 get_ibs_caps(void);
+#else
+static inline u32 get_ibs_caps(void) { return 0; }
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PERF_EVENTS
 extern void perf_events_lapic_init(void);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Abuse bit 3 of the cpu eflags register to indicate proper PEBS IP fixups.
@@ -246,6 +343,19 @@ extern void perf_events_lapic_init(void);
  * care what we do with it.
  */
 #define PERF_EFLAGS_EXACT	(1UL << 3)
+=======
+/*
+ * Abuse bits {3,5} of the cpu eflags register. These flags are otherwise
+ * unused and ABI specified to be 0, so nobody should care what we do with
+ * them.
+ *
+ * EXACT - the IP points to the exact instruction that triggered the
+ *         event (HW bugs exempt).
+ * VM    - original X86_VM_MASK; see set_linear_ip().
+ */
+#define PERF_EFLAGS_EXACT	(1UL << 3)
+#define PERF_EFLAGS_VM		(1UL << 5)
+>>>>>>> refs/remotes/origin/master
 
 struct pt_regs;
 extern unsigned long perf_instruction_pointer(struct pt_regs *regs);
@@ -264,6 +374,7 @@ extern unsigned long perf_misc_flags(struct pt_regs *regs);
 	(regs)->cs = __KERNEL_CS;				\
 	regs->flags = 0;					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 #else
@@ -271,6 +382,8 @@ static inline void perf_events_lapic_init(void)	{ }
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	asm volatile(						\
 		_ASM_MOV "%%"_ASM_SP ", %0\n"			\
 		: "=m" ((regs)->sp)				\
@@ -285,8 +398,14 @@ struct perf_guest_switch_msr {
 
 extern struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr);
 extern void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap);
+<<<<<<< HEAD
 #else
 static inline perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+=======
+extern void perf_check_microcode(void);
+#else
+static inline struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+>>>>>>> refs/remotes/origin/master
 {
 	*nr = 0;
 	return NULL;
@@ -298,6 +417,10 @@ static inline void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap)
 }
 
 static inline void perf_events_lapic_init(void)	{ }
+<<<<<<< HEAD
+=======
+static inline void perf_check_microcode(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #if defined(CONFIG_PERF_EVENTS) && defined(CONFIG_CPU_SUP_AMD)
@@ -308,5 +431,10 @@ static inline void perf_events_lapic_init(void)	{ }
  static inline void amd_pmu_disable_virt(void) { }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define arch_perf_out_copy_user copy_from_user_nmi
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_PERF_EVENT_H */

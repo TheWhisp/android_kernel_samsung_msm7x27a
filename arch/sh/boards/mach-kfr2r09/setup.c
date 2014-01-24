@@ -21,11 +21,20 @@
 #include <linux/input.h>
 #include <linux/input/sh_keysc.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/usb/r8a66597.h>
 <<<<<<< HEAD
 =======
 #include <linux/videodev2.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/lv5207lp.h>
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/machine.h>
+#include <linux/usb/r8a66597.h>
+#include <linux/videodev2.h>
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/rj54n1cb0c.h>
 #include <media/soc_camera.h>
 #include <media/sh_mobile_ceu.h>
@@ -113,7 +122,11 @@ static struct resource kfr2r09_sh_keysc_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 79,
+=======
+		.start  = evt2irq(0xbe0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -127,6 +140,7 @@ static struct platform_device kfr2r09_sh_keysc_device = {
 		.platform_data	= &kfr2r09_sh_keysc_info,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_KEYSC,
 	},
@@ -138,6 +152,11 @@ const static struct fb_videomode kfr2r09_lcdc_modes[] = {
 
 static const struct fb_videomode kfr2r09_lcdc_modes[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+static const struct fb_videomode kfr2r09_lcdc_modes[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "TX07D34VM0AAA",
 		.xres = 240,
@@ -157,6 +176,7 @@ static struct sh_mobile_lcdc_info kfr2r09_sh_lcdc_info = {
 	.ch[0] = {
 		.chan = LCDC_CHAN_MAINLCD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.bpp = 16,
 		.interface_type = SYS18,
 		.clock_divider = 6,
@@ -169,6 +189,8 @@ static struct sh_mobile_lcdc_info kfr2r09_sh_lcdc_info = {
 		},
 		.board_cfg = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.fourcc = V4L2_PIX_FMT_RGB565,
 		.interface_type = SYS18,
 		.clock_divider = 6,
@@ -178,11 +200,16 @@ static struct sh_mobile_lcdc_info kfr2r09_sh_lcdc_info = {
 		.panel_cfg = {
 			.width = 35,
 			.height = 58,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			.setup_sys = kfr2r09_lcd_setup,
 			.start_transfer = kfr2r09_lcd_start,
 			.display_on = kfr2r09_lcd_on,
 			.display_off = kfr2r09_lcd_off,
+=======
+			.setup_sys = kfr2r09_lcd_setup,
+			.start_transfer = kfr2r09_lcd_start,
+>>>>>>> refs/remotes/origin/master
 		},
 		.sys_bus_cfg = {
 			.ldmt2r = 0x07010904,
@@ -201,7 +228,11 @@ static struct resource kfr2r09_sh_lcdc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 106,
+=======
+		.start	= evt2irq(0xf40),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -214,11 +245,25 @@ static struct platform_device kfr2r09_sh_lcdc_device = {
 		.platform_data	= &kfr2r09_sh_lcdc_info,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_LCDC,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+static struct lv5207lp_platform_data kfr2r09_backlight_data = {
+	.fbdev = &kfr2r09_sh_lcdc_device.dev,
+	.def_value = 13,
+	.max_value = 13,
+};
+
+static struct i2c_board_info kfr2r09_backlight_board_info = {
+	I2C_BOARD_INFO("lv5207lp", 0x75),
+	.platform_data = &kfr2r09_backlight_data,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct r8a66597_platdata kfr2r09_usb0_gadget_data = {
@@ -232,8 +277,13 @@ static struct resource kfr2r09_usb0_gadget_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 65,
 		.end	= 65,
+=======
+		.start	= evt2irq(0xa20),
+		.end	= evt2irq(0xa20),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IRQF_TRIGGER_LOW,
 	},
 };
@@ -262,8 +312,13 @@ static struct resource kfr2r09_ceu_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 52,
 		.end  = 52,
+=======
+		.start  = evt2irq(0x880),
+		.end	= evt2irq(0x880),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 	[2] = {
@@ -280,11 +335,14 @@ static struct platform_device kfr2r09_ceu_device = {
 		.platform_data	= &sh_mobile_ceu_info,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_CEU0,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct i2c_board_info kfr2r09_i2c_camera = {
@@ -378,6 +436,16 @@ static struct platform_device kfr2r09_camera = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+/* Fixed 3.3V regulator to be used by SDHI0 */
+static struct regulator_consumer_supply fixed3v3_power_consumers[] =
+{
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.0"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.0"),
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct resource kfr2r09_sh_sdhi0_resources[] = {
 	[0] = {
 		.name	= "SDHI0",
@@ -386,7 +454,11 @@ static struct resource kfr2r09_sh_sdhi0_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 100,
+=======
+		.start  = evt2irq(0xe80),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -406,11 +478,14 @@ static struct platform_device kfr2r09_sh_sdhi0_device = {
 		.platform_data	= &sh7724_sdhi0_data,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_SDHI0,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *kfr2r09_devices[] __initdata = {
@@ -566,6 +641,12 @@ static int __init kfr2r09_devices_setup(void)
 					&kfr2r09_sdram_leave_start,
 					&kfr2r09_sdram_leave_end);
 
+<<<<<<< HEAD
+=======
+	regulator_register_always_on(0, "fixed-3.3V", fixed3v3_power_consumers,
+				     ARRAY_SIZE(fixed3v3_power_consumers), 3300000);
+
+>>>>>>> refs/remotes/origin/master
 	/* enable SCIF1 serial port for YC401 console support */
 	gpio_request(GPIO_FN_SCIF1_RXD, NULL);
 	gpio_request(GPIO_FN_SCIF1_TXD, NULL);
@@ -655,6 +736,11 @@ static int __init kfr2r09_devices_setup(void)
 	gpio_request(GPIO_FN_SDHI0CMD, NULL);
 	gpio_request(GPIO_FN_SDHI0CLK, NULL);
 
+<<<<<<< HEAD
+=======
+	i2c_register_board_info(0, &kfr2r09_backlight_board_info, 1);
+
+>>>>>>> refs/remotes/origin/master
 	return platform_add_devices(kfr2r09_devices,
 				    ARRAY_SIZE(kfr2r09_devices));
 }

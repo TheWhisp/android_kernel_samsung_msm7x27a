@@ -11,6 +11,7 @@
  *		2 of the License, or (at your option) any later version.
  *
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_IF_PPPOL2TP_H
 #define __LINUX_IF_PPPOL2TP_H
@@ -82,5 +83,13 @@ enum {
 };
 
 
+=======
+#ifndef __LINUX_IF_PPPOL2TP_H
+#define __LINUX_IF_PPPOL2TP_H
+
+#include <linux/in.h>
+#include <linux/in6.h>
+#include <uapi/linux/if_pppol2tp.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif

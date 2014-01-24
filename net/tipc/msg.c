@@ -51,8 +51,13 @@ u32 tipc_msg_tot_importance(struct tipc_msg *m)
 }
 
 
+<<<<<<< HEAD
 void tipc_msg_init(struct tipc_msg *m, u32 user, u32 type,
 			    u32 hsize, u32 destnode)
+=======
+void tipc_msg_init(struct tipc_msg *m, u32 user, u32 type, u32 hsize,
+		   u32 destnode)
+>>>>>>> refs/remotes/origin/master
 {
 	memset(m, 0, hsize);
 	msg_set_version(m);
@@ -62,6 +67,7 @@ void tipc_msg_init(struct tipc_msg *m, u32 user, u32 type,
 	msg_set_prevnode(m, tipc_own_addr);
 	msg_set_type(m, type);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!msg_short(m)) {
 		msg_set_orignode(m, tipc_own_addr);
 		msg_set_destnode(m, destnode);
@@ -70,6 +76,10 @@ void tipc_msg_init(struct tipc_msg *m, u32 user, u32 type,
 	msg_set_orignode(m, tipc_own_addr);
 	msg_set_destnode(m, destnode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg_set_orignode(m, tipc_own_addr);
+	msg_set_destnode(m, destnode);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -79,6 +89,7 @@ void tipc_msg_init(struct tipc_msg *m, u32 user, u32 type,
  *
  * Returns message data size or errno
  */
+<<<<<<< HEAD
 
 int tipc_msg_build(struct tipc_msg *hdr, struct iovec const *msg_sect,
 		   u32 num_sect, unsigned int total_len,
@@ -88,6 +99,16 @@ int tipc_msg_build(struct tipc_msg *hdr, struct iovec const *msg_sect,
 
 	dsz = total_len;
 	pos = hsz = msg_hdr_sz(hdr);
+=======
+int tipc_msg_build(struct tipc_msg *hdr, struct iovec const *msg_sect,
+		   unsigned int len, int max_size, struct sk_buff **buf)
+{
+	int dsz, sz, hsz;
+	unsigned char *to;
+
+	dsz = len;
+	hsz = msg_hdr_sz(hdr);
+>>>>>>> refs/remotes/origin/master
 	sz = hsz + dsz;
 	msg_set_size(hdr, sz);
 	if (unlikely(sz > max_size)) {
@@ -99,6 +120,7 @@ int tipc_msg_build(struct tipc_msg *hdr, struct iovec const *msg_sect,
 	if (!(*buf))
 		return -ENOMEM;
 	skb_copy_to_linear_data(*buf, hdr, hsz);
+<<<<<<< HEAD
 	for (res = 1, cnt = 0; res && (cnt < num_sect); cnt++) {
 		if (likely(usrmem))
 			res = !copy_from_user((*buf)->data + pos,
@@ -373,3 +395,13 @@ void tipc_msg_dbg(struct print_buf *buf, struct tipc_msg *msg, const char *str)
 }
 
 #endif
+=======
+	to = (*buf)->data + hsz;
+	if (len && memcpy_fromiovecend(to, msg_sect, 0, dsz)) {
+		kfree_skb(*buf);
+		*buf = NULL;
+		return -EFAULT;
+	}
+	return dsz;
+}
+>>>>>>> refs/remotes/origin/master

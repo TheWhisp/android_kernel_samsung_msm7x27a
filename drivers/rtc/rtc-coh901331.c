@@ -47,7 +47,11 @@ struct coh901331_port {
 	u32 physize;
 	void __iomem *virtbase;
 	int irq;
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	u32 irqmaskstore;
 #endif
 };
@@ -152,6 +156,7 @@ static struct rtc_class_ops coh901331_ops = {
 
 static int __exit coh901331_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct coh901331_port *rtap = dev_get_drvdata(&pdev->dev);
 
 	if (rtap) {
@@ -163,6 +168,12 @@ static int __exit coh901331_remove(struct platform_device *pdev)
 		platform_set_drvdata(pdev, NULL);
 		kfree(rtap);
 	}
+=======
+	struct coh901331_port *rtap = platform_get_drvdata(pdev);
+
+	if (rtap)
+		clk_unprepare(rtap->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -174,11 +185,17 @@ static int __init coh901331_probe(struct platform_device *pdev)
 	struct coh901331_port *rtap;
 	struct resource *res;
 
+<<<<<<< HEAD
 	rtap = kzalloc(sizeof(struct coh901331_port), GFP_KERNEL);
+=======
+	rtap = devm_kzalloc(&pdev->dev,
+			    sizeof(struct coh901331_port), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!rtap)
 		return -ENOMEM;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		ret = -ENOENT;
 		goto out_no_resource;
@@ -221,12 +238,50 @@ static int __init coh901331_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "could not enable clock\n");
 		goto out_no_clk_enable;
+=======
+	if (!res)
+		return -ENOENT;
+
+	rtap->phybase = res->start;
+	rtap->physize = resource_size(res);
+
+	if (devm_request_mem_region(&pdev->dev, rtap->phybase, rtap->physize,
+				    "rtc-coh901331") == NULL)
+		return -EBUSY;
+
+	rtap->virtbase = devm_ioremap(&pdev->dev, rtap->phybase, rtap->physize);
+	if (!rtap->virtbase)
+		return -ENOMEM;
+
+	rtap->irq = platform_get_irq(pdev, 0);
+	if (devm_request_irq(&pdev->dev, rtap->irq, coh901331_interrupt, 0,
+			     "RTC COH 901 331 Alarm", rtap))
+		return -EIO;
+
+	rtap->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(rtap->clk)) {
+		ret = PTR_ERR(rtap->clk);
+		dev_err(&pdev->dev, "could not get clock\n");
+		return ret;
+	}
+
+	/* We enable/disable the clock only to assure it works */
+	ret = clk_prepare_enable(rtap->clk);
+	if (ret) {
+		dev_err(&pdev->dev, "could not enable clock\n");
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 	clk_disable(rtap->clk);
 
 	platform_set_drvdata(pdev, rtap);
+<<<<<<< HEAD
 	rtap->rtc = rtc_device_register("coh901331", &pdev->dev, &coh901331_ops,
 					 THIS_MODULE);
+=======
+	rtap->rtc = devm_rtc_device_register(&pdev->dev, "coh901331",
+					&coh901331_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(rtap->rtc)) {
 		ret = PTR_ERR(rtap->rtc);
 		goto out_no_rtc;
@@ -235,6 +290,7 @@ static int __init coh901331_probe(struct platform_device *pdev)
 	return 0;
 
  out_no_rtc:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
  out_no_clk_enable:
 	clk_put(rtap->clk);
@@ -255,13 +311,27 @@ static int __init coh901331_probe(struct platform_device *pdev)
 static int coh901331_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct coh901331_port *rtap = dev_get_drvdata(&pdev->dev);
+=======
+	clk_unprepare(rtap->clk);
+	return ret;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int coh901331_suspend(struct device *dev)
+{
+	struct coh901331_port *rtap = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If this RTC alarm will be used for waking the system up,
 	 * don't disable it of course. Else we just disable the alarm
 	 * and await suspension.
 	 */
+<<<<<<< HEAD
 	if (device_may_wakeup(&pdev->dev)) {
+=======
+	if (device_may_wakeup(dev)) {
+>>>>>>> refs/remotes/origin/master
 		enable_irq_wake(rtap->irq);
 	} else {
 		clk_enable(rtap->clk);
@@ -269,6 +339,7 @@ static int coh901331_suspend(struct platform_device *pdev, pm_message_t state)
 		writel(0, rtap->virtbase + COH901331_IRQ_MASK);
 		clk_disable(rtap->clk);
 	}
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -277,6 +348,18 @@ static int coh901331_resume(struct platform_device *pdev)
 	struct coh901331_port *rtap = dev_get_drvdata(&pdev->dev);
 
 	if (device_may_wakeup(&pdev->dev)) {
+=======
+	clk_unprepare(rtap->clk);
+	return 0;
+}
+
+static int coh901331_resume(struct device *dev)
+{
+	struct coh901331_port *rtap = dev_get_drvdata(dev);
+
+	clk_prepare(rtap->clk);
+	if (device_may_wakeup(dev)) {
+>>>>>>> refs/remotes/origin/master
 		disable_irq_wake(rtap->irq);
 	} else {
 		clk_enable(rtap->clk);
@@ -285,6 +368,7 @@ static int coh901331_resume(struct platform_device *pdev)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define coh901331_suspend NULL
 #define coh901331_resume NULL
@@ -299,10 +383,31 @@ static void coh901331_shutdown(struct platform_device *pdev)
 	clk_disable(rtap->clk);
 }
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(coh901331_pm_ops, coh901331_suspend, coh901331_resume);
+
+static void coh901331_shutdown(struct platform_device *pdev)
+{
+	struct coh901331_port *rtap = platform_get_drvdata(pdev);
+
+	clk_enable(rtap->clk);
+	writel(0, rtap->virtbase + COH901331_IRQ_MASK);
+	clk_disable_unprepare(rtap->clk);
+}
+
+static const struct of_device_id coh901331_dt_match[] = {
+	{ .compatible = "stericsson,coh901331" },
+	{},
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver coh901331_driver = {
 	.driver = {
 		.name = "rtc-coh901331",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.remove = __exit_p(coh901331_remove),
 	.suspend = coh901331_suspend,
@@ -322,6 +427,16 @@ static void __exit coh901331_exit(void)
 
 module_init(coh901331_init);
 module_exit(coh901331_exit);
+=======
+		.pm = &coh901331_pm_ops,
+		.of_match_table = coh901331_dt_match,
+	},
+	.remove = __exit_p(coh901331_remove),
+	.shutdown = coh901331_shutdown,
+};
+
+module_platform_driver_probe(coh901331_driver, coh901331_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Linus Walleij <linus.walleij@stericsson.com>");
 MODULE_DESCRIPTION("ST-Ericsson AB COH 901 331 RTC Driver");

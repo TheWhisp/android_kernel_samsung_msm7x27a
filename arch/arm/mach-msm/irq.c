@@ -22,6 +22,7 @@
 #include <linux/irq.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
 
 #include <mach/hardware.h>
@@ -41,6 +42,11 @@ enum {
 };
 static int msm_irq_debug_mask;
 module_param_named(debug_mask, msm_irq_debug_mask, int, S_IRUGO | S_IWUSR | S_IWGRP);
+=======
+#include <mach/hardware.h>
+
+#include <mach/msm_iomap.h>
+>>>>>>> refs/remotes/origin/master
 
 #define VIC_REG(off) (MSM_VIC_BASE + (off))
 
@@ -57,6 +63,7 @@ module_param_named(debug_mask, msm_irq_debug_mask, int, S_IRUGO | S_IWUSR | S_IW
 #define VIC_INT_POLARITY0   VIC_REG(0x0050)  /* 1: NEG, 0: POS */
 #define VIC_INT_POLARITY1   VIC_REG(0x0054)  /* 1: NEG, 0: POS */
 #define VIC_NO_PEND_VAL     VIC_REG(0x0060)
+<<<<<<< HEAD
 
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
 #define VIC_NO_PEND_VAL_FIQ VIC_REG(0x0064)
@@ -67,6 +74,11 @@ module_param_named(debug_mask, msm_irq_debug_mask, int, S_IRUGO | S_IWUSR | S_IW
 #define VIC_CONFIG          VIC_REG(0x0068)  /* 1: USE ARM1136 VIC */
 #define VIC_PROTECTION      VIC_REG(0x006C)  /* 1: ENABLE          */
 #endif
+=======
+#define VIC_INT_MASTEREN    VIC_REG(0x0064)  /* 1: IRQ, 2: FIQ     */
+#define VIC_PROTECTION      VIC_REG(0x006C)  /* 1: ENABLE          */
+#define VIC_CONFIG          VIC_REG(0x0068)  /* 1: USE ARM1136 VIC */
+>>>>>>> refs/remotes/origin/master
 #define VIC_IRQ_STATUS0     VIC_REG(0x0080)
 #define VIC_IRQ_STATUS1     VIC_REG(0x0084)
 #define VIC_FIQ_STATUS0     VIC_REG(0x0090)
@@ -80,6 +92,7 @@ module_param_named(debug_mask, msm_irq_debug_mask, int, S_IRUGO | S_IWUSR | S_IW
 #define VIC_IRQ_VEC_RD      VIC_REG(0x00D0)  /* pending int # */
 #define VIC_IRQ_VEC_PEND_RD VIC_REG(0x00D4)  /* pending vector addr */
 #define VIC_IRQ_VEC_WR      VIC_REG(0x00D8)
+<<<<<<< HEAD
 
 #if defined(CONFIG_ARCH_MSM_SCORPION) && !defined(CONFIG_MSM_SMP)
 #define VIC_FIQ_VEC_RD      VIC_REG(0x00DC)
@@ -96,10 +109,16 @@ module_param_named(debug_mask, msm_irq_debug_mask, int, S_IRUGO | S_IWUSR | S_IW
 #define VIC_IRQ_IN_STACK    VIC_REG(0x00E4)
 #define VIC_TEST_BUS_SEL    VIC_REG(0x00E8)
 #endif
+=======
+#define VIC_IRQ_IN_SERVICE  VIC_REG(0x00E0)
+#define VIC_IRQ_IN_STACK    VIC_REG(0x00E4)
+#define VIC_TEST_BUS_SEL    VIC_REG(0x00E8)
+>>>>>>> refs/remotes/origin/master
 
 #define VIC_VECTPRIORITY(n) VIC_REG(0x0200+((n) * 4))
 #define VIC_VECTADDR(n)     VIC_REG(0x0400+((n) * 4))
 
+<<<<<<< HEAD
 static uint32_t msm_irq_smsm_wake_enable[2];
 static struct {
 	uint32_t int_en[2];
@@ -444,6 +463,60 @@ static struct irq_chip msm_irq_chip = {
 	.unmask    = msm_irq_unmask,
 	.set_wake  = msm_irq_set_wake,
 	.set_type  = msm_irq_set_type,
+=======
+static void msm_irq_ack(struct irq_data *d)
+{
+	void __iomem *reg = VIC_INT_CLEAR0 + ((d->irq & 32) ? 4 : 0);
+	writel(1 << (d->irq & 31), reg);
+}
+
+static void msm_irq_mask(struct irq_data *d)
+{
+	void __iomem *reg = VIC_INT_ENCLEAR0 + ((d->irq & 32) ? 4 : 0);
+	writel(1 << (d->irq & 31), reg);
+}
+
+static void msm_irq_unmask(struct irq_data *d)
+{
+	void __iomem *reg = VIC_INT_ENSET0 + ((d->irq & 32) ? 4 : 0);
+	writel(1 << (d->irq & 31), reg);
+}
+
+static int msm_irq_set_wake(struct irq_data *d, unsigned int on)
+{
+	return -EINVAL;
+}
+
+static int msm_irq_set_type(struct irq_data *d, unsigned int flow_type)
+{
+	void __iomem *treg = VIC_INT_TYPE0 + ((d->irq & 32) ? 4 : 0);
+	void __iomem *preg = VIC_INT_POLARITY0 + ((d->irq & 32) ? 4 : 0);
+	int b = 1 << (d->irq & 31);
+
+	if (flow_type & (IRQF_TRIGGER_FALLING | IRQF_TRIGGER_LOW))
+		writel(readl(preg) | b, preg);
+	if (flow_type & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_HIGH))
+		writel(readl(preg) & (~b), preg);
+
+	if (flow_type & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
+		writel(readl(treg) | b, treg);
+		__irq_set_handler_locked(d->irq, handle_edge_irq);
+	}
+	if (flow_type & (IRQF_TRIGGER_HIGH | IRQF_TRIGGER_LOW)) {
+		writel(readl(treg) & (~b), treg);
+		__irq_set_handler_locked(d->irq, handle_level_irq);
+	}
+	return 0;
+}
+
+static struct irq_chip msm_irq_chip = {
+	.name          = "msm",
+	.irq_ack       = msm_irq_ack,
+	.irq_mask      = msm_irq_mask,
+	.irq_unmask    = msm_irq_unmask,
+	.irq_set_wake  = msm_irq_set_wake,
+	.irq_set_type  = msm_irq_set_type,
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init msm_init_irq(void)
@@ -470,12 +543,17 @@ void __init msm_init_irq(void)
 	writel(0, VIC_CONFIG);
 
 	/* enable interrupt controller */
+<<<<<<< HEAD
 	writel(3, VIC_INT_MASTEREN);
+=======
+	writel(1, VIC_INT_MASTEREN);
+>>>>>>> refs/remotes/origin/master
 
 	for (n = 0; n < NR_MSM_IRQS; n++) {
 		irq_set_chip_and_handler(n, &msm_irq_chip, handle_level_irq);
 		set_irq_flags(n, IRQF_VALID);
 	}
+<<<<<<< HEAD
 
 	msm_init_sirc();
 }
@@ -605,3 +683,6 @@ void msm_fiq_exit_sleep(void)
 		fiq_glue_setup(fiq_func, fiq_data, fiq_stack + THREAD_START_SP);
 }
 #endif
+=======
+}
+>>>>>>> refs/remotes/origin/master

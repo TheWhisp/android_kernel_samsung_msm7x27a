@@ -216,12 +216,15 @@
 #define EP0_EPT_SIZE		USBA_EPT_SIZE_64
 #define EP0_NR_BANKS		1
 
+<<<<<<< HEAD
 /*
  * REVISIT: Try to eliminate this value. Can we rely on req->mapped to
  * provide this information?
  */
 #define DMA_ADDR_INVALID (~(dma_addr_t)0)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define FIFO_IOMEM_ID	0
 #define CTRL_IOMEM_ID	1
 
@@ -280,7 +283,10 @@ struct usba_ep {
 	struct usba_udc				*udc;
 
 	struct list_head			queue;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u16					fifo_size;
 	u8					nr_banks;
@@ -324,8 +330,15 @@ struct usba_udc {
 	int irq;
 	int vbus_pin;
 	int vbus_pin_inverted;
+<<<<<<< HEAD
 	struct clk *pclk;
 	struct clk *hclk;
+=======
+	int num_ep;
+	struct clk *pclk;
+	struct clk *hclk;
+	struct usba_ep *usba_ep;
+>>>>>>> refs/remotes/origin/master
 
 	u16 devstatus;
 

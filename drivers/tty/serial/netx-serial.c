@@ -196,10 +196,16 @@ static void netx_txint(struct uart_port *port)
 		uart_write_wakeup(port);
 }
 
+<<<<<<< HEAD
 static void netx_rxint(struct uart_port *port)
 {
 	unsigned char rx, flg, status;
 	struct tty_struct *tty = port->state->port.tty;
+=======
+static void netx_rxint(struct uart_port *port, unsigned long *flags)
+{
+	unsigned char rx, flg, status;
+>>>>>>> refs/remotes/origin/master
 
 	while (!(readl(port->membase + UART_FR) & FR_RXFE)) {
 		rx = readl(port->membase + UART_DR);
@@ -237,8 +243,14 @@ static void netx_rxint(struct uart_port *port)
 		uart_insert_char(port, status, SR_OE, rx, flg);
 	}
 
+<<<<<<< HEAD
 	tty_flip_buffer_push(tty);
 	return;
+=======
+	spin_unlock_irqrestore(&port->lock, *flags);
+	tty_flip_buffer_push(&port->state->port);
+	spin_lock_irqsave(&port->lock, *flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t netx_int(int irq, void *dev_id)
@@ -252,7 +264,11 @@ static irqreturn_t netx_int(int irq, void *dev_id)
 	status = readl(port->membase + UART_IIR) & IIR_MASK;
 	while (status) {
 		if (status & IIR_RIS)
+<<<<<<< HEAD
 			netx_rxint(port);
+=======
+			netx_rxint(port, &flags);
+>>>>>>> refs/remotes/origin/master
 		if (status & IIR_TIS)
 			netx_txint(port);
 		if (status & IIR_MIS) {
@@ -695,8 +711,11 @@ static int serial_netx_remove(struct platform_device *pdev)
 {
 	struct netx_port *sport = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sport)
 		uart_remove_one_port(&netx_reg, &sport->port);
 

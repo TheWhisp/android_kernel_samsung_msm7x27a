@@ -17,6 +17,7 @@
 #include <linux/seq_file.h>
 #include <linux/kernel_stat.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/of_irq.h>
 <<<<<<< HEAD
 =======
@@ -24,6 +25,10 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/prom.h>
+=======
+#include <linux/irqchip.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 static u32 concurrent_irq;
 
@@ -35,6 +40,7 @@ void __irq_entry do_IRQ(struct pt_regs *regs)
 
 	irq_enter();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	irq = get_irq(regs);
 next_irq:
 	BUG_ON(irq == -1U);
@@ -42,13 +48,18 @@ next_irq:
 
 	irq = get_irq(regs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	irq = get_irq();
 next_irq:
 	BUG_ON(!irq);
 	generic_handle_irq(irq);
 
 	irq = get_irq();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (irq != -1U) {
 		pr_debug("next irq: %d\n", irq);
 		++concurrent_irq;
@@ -59,6 +70,7 @@ next_irq:
 	set_irq_regs(old_regs);
 	trace_hardirqs_on();
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* MS: There is no any advance mapping mechanism. We are using simple 32bit
@@ -77,3 +89,11 @@ unsigned int irq_create_of_mapping(struct device_node *controller,
 EXPORT_SYMBOL_GPL(irq_create_of_mapping);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+void __init init_IRQ(void)
+{
+	/* process the entire interrupt tree in one go */
+	irqchip_init();
+}
+>>>>>>> refs/remotes/origin/master

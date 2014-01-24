@@ -29,6 +29,7 @@
 
 #ifdef CONFIG_PPC64
 
+<<<<<<< HEAD
 static loff_t page_map_seek( struct file *file, loff_t off, int whence)
 {
 	loff_t new;
@@ -50,17 +51,28 @@ static loff_t page_map_seek( struct file *file, loff_t off, int whence)
 	if ( new < 0 || new > dp->size )
 		return -EINVAL;
 	return (file->f_pos = new);
+=======
+static loff_t page_map_seek(struct file *file, loff_t off, int whence)
+{
+	return fixed_size_llseek(file, off, whence, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t page_map_read( struct file *file, char __user *buf, size_t nbytes,
 			      loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(file->f_path.dentry->d_inode);
 	return simple_read_from_buffer(buf, nbytes, ppos, dp->data, dp->size);
+=======
+	return simple_read_from_buffer(buf, nbytes, ppos,
+			PDE_DATA(file_inode(file)), PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int page_map_mmap( struct file *file, struct vm_area_struct *vma )
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(file->f_path.dentry->d_inode);
 
 	if ((vma->vm_end - vma->vm_start) > dp->size)
@@ -68,6 +80,14 @@ static int page_map_mmap( struct file *file, struct vm_area_struct *vma )
 
 	remap_pfn_range(vma, vma->vm_start, __pa(dp->data) >> PAGE_SHIFT,
 						dp->size, vma->vm_page_prot);
+=======
+	if ((vma->vm_end - vma->vm_start) > PAGE_SIZE)
+		return -EINVAL;
+
+	remap_pfn_range(vma, vma->vm_start,
+			__pa(PDE_DATA(file_inode(file))) >> PAGE_SHIFT,
+			PAGE_SIZE, vma->vm_page_prot);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -86,7 +106,11 @@ static int __init proc_ppc64_init(void)
 			       &page_map_fops, vdso_data);
 	if (!pde)
 		return 1;
+<<<<<<< HEAD
 	pde->size = PAGE_SIZE;
+=======
+	proc_set_size(pde, PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef _LINUX_ELF_H
 #define _LINUX_ELF_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/elf-em.h>
 #ifdef __KERNEL__
@@ -9,6 +10,10 @@
 
 <<<<<<< HEAD
 struct file;
+=======
+#include <asm/elf.h>
+#include <uapi/linux/elf.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef elf_read_implies_exec
   /* Executables for which elf_read_implies_exec() returns TRUE will
@@ -16,6 +21,7 @@ struct file;
      Override in asm/elf.h as needed.  */
 # define elf_read_implies_exec(ex, have_pt_gnu_stack)	0
 #endif
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -430,6 +436,13 @@ typedef struct elf64_note {
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef SET_PERSONALITY
+#define SET_PERSONALITY(ex) \
+	set_personality(PER_LINUX | (current->personality & (~PER_MASK)))
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #if ELF_CLASS == ELFCLASS32
 
 extern Elf32_Dyn _DYNAMIC [];
@@ -454,6 +467,7 @@ extern Elf64_Dyn _DYNAMIC [];
 
 /* Optional callbacks to write extra ELF notes. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct file;
 
@@ -467,4 +481,16 @@ extern int elf_coredump_extra_notes_size(void);
 extern int elf_coredump_extra_notes_write(struct file *file, loff_t *foffset);
 #endif
 #endif /* __KERNEL__ */
+=======
+struct file;
+struct coredump_params;
+
+#ifndef ARCH_HAVE_EXTRA_ELF_NOTES
+static inline int elf_coredump_extra_notes_size(void) { return 0; }
+static inline int elf_coredump_extra_notes_write(struct coredump_params *cprm) { return 0; }
+#else
+extern int elf_coredump_extra_notes_size(void);
+extern int elf_coredump_extra_notes_write(struct coredump_params *cprm);
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_ELF_H */

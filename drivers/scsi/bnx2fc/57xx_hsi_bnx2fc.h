@@ -20,7 +20,10 @@ struct b577xx_doorbell_hdr {
  * doorbell message sent to the chip
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct b577xx_doorbell {
 #if defined(__BIG_ENDIAN)
 	u16 zero_fill2;
@@ -38,7 +41,10 @@ struct b577xx_doorbell {
 /*
  * doorbell message sent to the chip
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct b577xx_doorbell_set_prod {
 #if defined(__BIG_ENDIAN)
 	u16 prod;
@@ -60,23 +66,30 @@ struct regpair {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Fixed size structure in order to plant it in Union structure
  */
 struct fcoe_abts_rsp_union {
 	u32 r_ctl;
 	u32 abts_rsp_payload[7];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ABTS info $$KEEP_ENDIANNESS$$
  */
 struct fcoe_abts_info {
 	__le16 aborted_task_id;
 	__le16 reserved0;
 	__le32 reserved1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * 4 regs size
  */
@@ -170,6 +183,8 @@ union fcoe_cmd_flow_info {
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Fixed size structure in order to plant it in Union structure
  * $$KEEP_ENDIANNESS$$
  */
@@ -217,7 +232,10 @@ struct fcoe_cleanup_info {
 /*
  * Fcp RSP flags $$KEEP_ENDIANNESS$$
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct fcoe_fcp_rsp_flags {
 	u8 flags;
 #define FCOE_FCP_RSP_FLAGS_FCP_RSP_LEN_VALID (0x1<<0)
@@ -234,6 +252,7 @@ struct fcoe_fcp_rsp_flags {
 #define FCOE_FCP_RSP_FLAGS_FCP_BIDI_FLAGS_SHIFT 5
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 struct fcoe_fcp_rsp_payload {
@@ -256,6 +275,8 @@ struct fcoe_fcp_rsp_payload {
 /*
  * Fixed size structure in order to plant it in Union structure
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Fcp RSP payload $$KEEP_ENDIANNESS$$
  */
@@ -272,13 +293,17 @@ struct fcoe_fcp_rsp_payload {
 /*
  * Fixed size structure in order to plant it in Union structure
  * $$KEEP_ENDIANNESS$$
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct fcoe_fcp_rsp_union {
 	struct fcoe_fcp_rsp_payload payload;
 	struct regpair reserved0;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 struct fcoe_fcp_xfr_rdy_payload {
@@ -312,6 +337,8 @@ union fcoe_general_task_ctx {
 	struct fcoe_cleanup_flow_info cleanup_info;
 	u32 comp_info[8];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * FC header $$KEEP_ENDIANNESS$$
  */
@@ -402,11 +429,15 @@ struct fcoe_mul_sges_ctx {
 struct fcoe_ext_mul_sges_ctx {
 	struct fcoe_mul_sges_ctx mul_sgl;
 	struct regpair rsrv0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * FCoE KCQ CQE parameters
  */
@@ -437,6 +468,8 @@ struct fcoe_kcqe {
 #elif defined(__LITTLE_ENDIAN)
 	u16 qe_self_seq;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FCP CMD payload $$KEEP_ENDIANNESS$$
  */
 struct fcoe_fcp_cmd_payload {
@@ -483,7 +516,10 @@ struct fcoe_kcqe {
 	__le32 fcoe_conn_context_id;
 	union fcoe_kcqe_params params;
 	__le16 qe_self_seq;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 op_code;
 	u8 flags;
 #define FCOE_KCQE_RESERVED0 (0x7<<0)
@@ -494,6 +530,7 @@ struct fcoe_kcqe {
 #define FCOE_KCQE_LAYER_CODE_SHIFT 4
 #define FCOE_KCQE_LINKED_WITH_NEXT (0x1<<7)
 #define FCOE_KCQE_LINKED_WITH_NEXT_SHIFT 7
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 };
@@ -513,6 +550,8 @@ struct fcoe_kwqe_header {
 	u8 op_code;
 #elif defined(__LITTLE_ENDIAN)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -521,7 +560,10 @@ struct fcoe_kwqe_header {
  * FCoE KWQE header $$KEEP_ENDIANNESS$$
  */
 struct fcoe_kwqe_header {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 op_code;
 	u8 flags;
 #define FCOE_KWQE_HEADER_RESERVED0 (0xF<<0)
@@ -530,6 +572,7 @@ struct fcoe_kwqe_header {
 #define FCOE_KWQE_HEADER_LAYER_CODE_SHIFT 4
 #define FCOE_KWQE_HEADER_RESERVED1 (0x1<<7)
 #define FCOE_KWQE_HEADER_RESERVED1_SHIFT 7
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 };
@@ -576,6 +619,8 @@ struct fcoe_kwqe_init1 {
 #elif defined(__LITTLE_ENDIAN)
 	u16 mtu;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -593,7 +638,10 @@ struct fcoe_kwqe_init1 {
 	__le16 rq_buffer_log_size;
 	__le16 cq_num_wqes;
 	__le16 mtu;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 num_sessions_log;
 	u8 flags;
 #define FCOE_KWQE_INIT1_LOG_PAGE_SIZE (0xF<<0)
@@ -602,6 +650,7 @@ struct fcoe_kwqe_init1 {
 #define FCOE_KWQE_INIT1_LOG_CACHED_PBES_PER_FUNC_SHIFT 4
 #define FCOE_KWQE_INIT1_RESERVED1 (0x1<<7)
 #define FCOE_KWQE_INIT1_RESERVED1_SHIFT 7
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 };
@@ -711,6 +760,8 @@ struct fcoe_kwqe_conn_offload3 {
 #elif defined(__LITTLE_ENDIAN)
 	u16 vlan_tag;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -778,7 +829,10 @@ struct fcoe_kwqe_conn_offload2 {
  */
 struct fcoe_kwqe_conn_offload3 {
 	__le16 vlan_tag;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FCOE_KWQE_CONN_OFFLOAD3_VLAN_ID (0xFFF<<0)
 #define FCOE_KWQE_CONN_OFFLOAD3_VLAN_ID_SHIFT 0
 #define FCOE_KWQE_CONN_OFFLOAD3_CFI (0x1<<12)
@@ -786,6 +840,7 @@ struct fcoe_kwqe_conn_offload3 {
 #define FCOE_KWQE_CONN_OFFLOAD3_PRIORITY (0x7<<13)
 #define FCOE_KWQE_CONN_OFFLOAD3_PRIORITY_SHIFT 13
 	struct fcoe_kwqe_header hdr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 #if defined(__BIG_ENDIAN)
@@ -819,6 +874,10 @@ struct fcoe_kwqe_conn_offload3 {
 	u8 s_id[3];
 	u8 tx_max_conc_seqs_c3;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 s_id[3];
+	u8 tx_max_conc_seqs_c3;
+>>>>>>> refs/remotes/origin/master
 	u8 d_id[3];
 	u8 flags;
 #define FCOE_KWQE_CONN_OFFLOAD3_B_MUL_N_PORT_IDS (0x1<<0)
@@ -837,6 +896,7 @@ struct fcoe_kwqe_conn_offload3 {
 #define FCOE_KWQE_CONN_OFFLOAD3_B_ACK_0_SHIFT 6
 #define FCOE_KWQE_CONN_OFFLOAD3_B_VLAN_FLAG (0x1<<7)
 #define FCOE_KWQE_CONN_OFFLOAD3_B_VLAN_FLAG_SHIFT 7
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 	u32 reserved;
@@ -912,6 +972,8 @@ struct fcoe_kwqe_conn_enable_disable {
 #elif defined(__LITTLE_ENDIAN)
 	u8 src_mac_addr_hi16[2];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__le32 reserved;
 	__le32 confq_first_pbe_addr_lo;
 	__le32 confq_first_pbe_addr_hi;
@@ -950,7 +1012,10 @@ struct fcoe_kwqe_conn_enable_disable {
 	u8 src_mac_addr_lo[2];
 	u8 src_mac_addr_mid[2];
 	u8 src_mac_addr_hi[2];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 vlan_tag;
 #define FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID (0xFFF<<0)
 #define FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID_SHIFT 0
@@ -958,6 +1023,7 @@ struct fcoe_kwqe_conn_enable_disable {
 #define FCOE_KWQE_CONN_ENABLE_DISABLE_CFI_SHIFT 12
 #define FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY (0x7<<13)
 #define FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY_SHIFT 13
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 	u8 dst_mac_addr_lo32[4];
@@ -1036,6 +1102,8 @@ struct fcoe_kwqe_stat {
 /*
  * FCoE KWQ WQE
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 dst_mac_addr_lo[2];
 	u8 dst_mac_addr_mid[2];
 	u8 dst_mac_addr_hi[2];
@@ -1082,7 +1150,10 @@ struct fcoe_kwqe_stat {
 
 /*
  * FCoE KWQ WQE $$KEEP_ENDIANNESS$$
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 union fcoe_kwqe {
 	struct fcoe_kwqe_init1 init1;
@@ -1099,6 +1170,7 @@ union fcoe_kwqe {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct fcoe_mul_sges_ctx {
 	struct regpair cur_sge_addr;
 #if defined(__BIG_ENDIAN)
@@ -1113,6 +1185,8 @@ struct fcoe_mul_sges_ctx {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -1149,7 +1223,10 @@ struct fcoe_read_flow_info {
 /*
  * Fcoe stat context $$KEEP_ENDIANNESS$$
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct fcoe_s_stat_ctx {
 	u8 flags;
 #define FCOE_S_STAT_CTX_ACTIVE (0x1<<0)
@@ -1168,6 +1245,7 @@ struct fcoe_s_stat_ctx {
 #define FCOE_S_STAT_CTX_RSRV1_SHIFT 6
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct fcoe_seq_ctx {
 #if defined(__BIG_ENDIAN)
@@ -1206,6 +1284,8 @@ union fcoe_sgl_ctx {
 	struct fcoe_single_sge_ctx single_sge;
 	struct fcoe_mul_sges_ctx mul_sges;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Fcoe rx seq context $$KEEP_ENDIANNESS$$
  */
@@ -1225,23 +1305,32 @@ union fcoe_rx_wr_union_ctx {
 	struct fcoe_read_flow_info read_info;
 	union fcoe_comp_flow_info comp_info;
 	__le32 opaque[8];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * FCoE SQ element
  */
 struct fcoe_sqe {
 	u16 wqe;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FCoE SQ element $$KEEP_ENDIANNESS$$
  */
 struct fcoe_sqe {
 	__le16 wqe;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FCOE_SQE_TASK_ID (0x7FFF<<0)
 #define FCOE_SQE_TASK_ID_SHIFT 0
 #define FCOE_SQE_TOGGLE_BIT (0x1<<15)
@@ -1250,6 +1339,7 @@ struct fcoe_sqe {
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct fcoe_task_ctx_entry_tx_only {
 	union fcoe_sgl_ctx sgl_ctx;
@@ -1381,6 +1471,8 @@ struct fcoe_task_ctx_entry {
 struct fcoe_xfrqe {
 	u16 wqe;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * 14 regs $$KEEP_ENDIANNESS$$
  */
@@ -1516,7 +1608,10 @@ struct fcoe_task_ctx_entry {
  */
 struct fcoe_xfrqe {
 	__le16 wqe;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FCOE_XFRQE_TASK_ID (0x7FFF<<0)
 #define FCOE_XFRQE_TASK_ID_SHIFT 0
 #define FCOE_XFRQE_TOGGLE_BIT (0x1<<15)
@@ -1525,6 +1620,7 @@ struct fcoe_xfrqe {
 
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * FCoE CONFQ element
  */
@@ -1538,6 +1634,8 @@ struct fcoe_confqe {
 #endif
 	u32 param;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * fcoe rx doorbell message sent to the chip $$KEEP_ENDIANNESS$$
  */
 struct b577xx_fcoe_rx_doorbell {
@@ -1558,16 +1656,23 @@ struct fcoe_confqe {
 	__le16 ox_id;
 	__le16 rx_id;
 	__le32 param;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * FCoE connection data base
 =======
  * FCoE conection data base
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * FCoE conection data base
+>>>>>>> refs/remotes/origin/master
  */
 struct fcoe_conn_db {
 #if defined(__BIG_ENDIAN)
@@ -1584,16 +1689,22 @@ struct fcoe_conn_db {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * FCoE CQ element
  */
 struct fcoe_cqe {
 	u16 wqe;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FCoE CQ element $$KEEP_ENDIANNESS$$
  */
 struct fcoe_cqe {
 	__le16 wqe;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FCOE_CQE_CQE_INFO (0x3FFF<<0)
 #define FCOE_CQE_CQE_INFO_SHIFT 0
 #define FCOE_CQE_CQE_TYPE (0x1<<14)
@@ -1605,6 +1716,7 @@ struct fcoe_cqe {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * FCoE error/warning resporting entry
  */
 struct fcoe_err_report_entry {
@@ -1613,6 +1725,8 @@ struct fcoe_err_report_entry {
 	u32 tx_buf_off;
 	u32 rx_buf_off;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FCoE error/warning reporting entry $$KEEP_ENDIANNESS$$
  */
 struct fcoe_partial_err_report_entry {
@@ -1627,12 +1741,16 @@ struct fcoe_partial_err_report_entry {
  */
 struct fcoe_err_report_entry {
 	struct fcoe_partial_err_report_entry data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct fcoe_fc_hdr fc_hdr;
 };
 
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * FCoE hash table entry (32 bytes)
  */
@@ -1648,10 +1766,16 @@ struct fcoe_hash_table_entry {
  */
 struct fcoe_hash_table_entry {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * FCoE hash table entry (32 bytes) $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_hash_table_entry {
+>>>>>>> refs/remotes/origin/master
 	u8 s_id_0;
 	u8 s_id_1;
 	u8 s_id_2;
 	u8 d_id_0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif
 #if defined(__BIG_ENDIAN)
@@ -1684,6 +1808,8 @@ struct fcoe_hash_table_entry {
 	u32 reserved2;
 	u32 field_id;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 d_id_1;
 	u8 d_id_2;
 	__le16 dst_mac_addr_hi;
@@ -1698,7 +1824,10 @@ struct fcoe_hash_table_entry {
 	__le16 reserved1;
 	__le32 reserved2;
 	__le32 field_id;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FCOE_HASH_TABLE_ENTRY_CID (0xFFFFFF<<0)
 #define FCOE_HASH_TABLE_ENTRY_CID_SHIFT 0
 #define FCOE_HASH_TABLE_ENTRY_RESERVED3 (0x7F<<24)
@@ -1708,12 +1837,15 @@ struct fcoe_hash_table_entry {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * FCoE pending work request CQE
  */
 struct fcoe_pend_wq_cqe {
 	u16 wqe;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * FCoE LCQ element $$KEEP_ENDIANNESS$$
@@ -1735,7 +1867,10 @@ struct fcoe_lcqe {
  */
 struct fcoe_pend_wq_cqe {
 	__le16 wqe;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FCOE_PEND_WQ_CQE_TASK_ID (0x3FFF<<0)
 #define FCOE_PEND_WQ_CQE_TASK_ID_SHIFT 0
 #define FCOE_PEND_WQ_CQE_CQE_TYPE (0x1<<14)
@@ -1747,6 +1882,7 @@ struct fcoe_pend_wq_cqe {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * FCoE RX statistics parameters section#0
  */
 struct fcoe_rx_stat_params_section0 {
@@ -1755,16 +1891,22 @@ struct fcoe_rx_stat_params_section0 {
 	u32 fcoe_rx_byte_cnt;
 	u32 fcoe_rx_drop_pkt_cnt;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FCoE RX statistics parameters section#0 $$KEEP_ENDIANNESS$$
  */
 struct fcoe_rx_stat_params_section0 {
 	__le32 fcoe_rx_pkt_cnt;
 	__le32 fcoe_rx_byte_cnt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * FCoE RX statistics parameters section#1
  */
@@ -1778,6 +1920,8 @@ struct fcoe_rx_stat_params_section1 {
 	u32 fcp_rx_pkt_cnt;
 	u32 reserved0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FCoE RX statistics parameters section#1 $$KEEP_ENDIANNESS$$
  */
 struct fcoe_rx_stat_params_section1 {
@@ -1798,11 +1942,15 @@ struct fcoe_rx_stat_params_section2 {
 	__le32 fcoe_rx_drop_pkt_cnt;
 	__le32 fcp_rx_pkt_cnt;
 	__le32 reserved0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * FCoE TX statistics parameters
  */
@@ -1816,6 +1964,8 @@ struct fcoe_tx_stat_params {
 /*
  * FCoE statistics parameters
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * FCoE TX statistics parameters $$KEEP_ENDIANNESS$$
  */
 struct fcoe_tx_stat_params {
@@ -1827,25 +1977,36 @@ struct fcoe_tx_stat_params {
 
 /*
  * FCoE statistics parameters $$KEEP_ENDIANNESS$$
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct fcoe_statistics_params {
 	struct fcoe_tx_stat_params tx_stat;
 	struct fcoe_rx_stat_params_section0 rx_stat0;
 	struct fcoe_rx_stat_params_section1 rx_stat1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct fcoe_rx_stat_params_section2 rx_stat2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fcoe_rx_stat_params_section2 rx_stat2;
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * FCoE t2 hash table entry (64 bytes)
 =======
  * FCoE t2 hash table entry (64 bytes) $$KEEP_ENDIANNESS$$
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * FCoE t2 hash table entry (64 bytes) $$KEEP_ENDIANNESS$$
+>>>>>>> refs/remotes/origin/master
  */
 struct fcoe_t2_hash_table_entry {
 	struct fcoe_hash_table_entry data;
@@ -1854,12 +2015,15 @@ struct fcoe_t2_hash_table_entry {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * FCoE unsolicited CQE
  */
 struct fcoe_unsolicited_cqe {
 	u16 wqe;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -1867,7 +2031,10 @@ struct fcoe_unsolicited_cqe {
  */
 struct fcoe_unsolicited_cqe {
 	__le16 wqe;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FCOE_UNSOLICITED_CQE_SUBTYPE (0x3<<0)
 #define FCOE_UNSOLICITED_CQE_SUBTYPE_SHIFT 0
 #define FCOE_UNSOLICITED_CQE_PKT_LEN (0xFFF<<2)
@@ -1879,8 +2046,11 @@ struct fcoe_unsolicited_cqe {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __57XX_FCOE_HSI_LINUX_LE__ */

@@ -202,7 +202,11 @@ eeprom_93xx46_bin_write(struct file *filp, struct kobject *kobj,
 	edev = dev_get_drvdata(dev);
 
 	if (unlikely(off >= edev->bin.size))
+<<<<<<< HEAD
 		return 0;
+=======
+		return -EFBIG;
+>>>>>>> refs/remotes/origin/master
 	if ((off + count) > edev->bin.size)
 		count = edev->bin.size - off;
 	if (unlikely(!count))
@@ -309,7 +313,11 @@ static ssize_t eeprom_93xx46_store_erase(struct device *dev,
 }
 static DEVICE_ATTR(erase, S_IWUSR, NULL, eeprom_93xx46_store_erase);
 
+<<<<<<< HEAD
 static int __devinit eeprom_93xx46_probe(struct spi_device *spi)
+=======
+static int eeprom_93xx46_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct eeprom_93xx46_platform_data *pd;
 	struct eeprom_93xx46_dev *edev;
@@ -363,22 +371,35 @@ static int __devinit eeprom_93xx46_probe(struct spi_device *spi)
 			dev_err(&spi->dev, "can't create erase interface\n");
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, edev);
+=======
+	spi_set_drvdata(spi, edev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 fail:
 	kfree(edev);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit eeprom_93xx46_remove(struct spi_device *spi)
 {
 	struct eeprom_93xx46_dev *edev = dev_get_drvdata(&spi->dev);
+=======
+static int eeprom_93xx46_remove(struct spi_device *spi)
+{
+	struct eeprom_93xx46_dev *edev = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(edev->pdata->flags & EE_READONLY))
 		device_remove_file(&spi->dev, &dev_attr_erase);
 
 	sysfs_remove_bin_file(&spi->dev.kobj, &edev->bin);
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(edev);
 	return 0;
 }
@@ -389,7 +410,11 @@ static struct spi_driver eeprom_93xx46_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= eeprom_93xx46_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(eeprom_93xx46_remove),
+=======
+	.remove		= eeprom_93xx46_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_spi_driver(eeprom_93xx46_driver);

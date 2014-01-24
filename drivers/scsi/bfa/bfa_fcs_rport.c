@@ -21,9 +21,13 @@
 
 #include "bfad_drv.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "bfad_im.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "bfad_im.h"
+>>>>>>> refs/remotes/origin/master
 #include "bfa_fcs.h"
 #include "bfa_fcbuild.h"
 
@@ -33,14 +37,30 @@ static u32
 bfa_fcs_rport_del_timeout = BFA_FCS_RPORT_DEF_DEL_TIMEOUT * 1000;
 	 /* In millisecs */
 /*
+<<<<<<< HEAD
+=======
+ * bfa_fcs_rport_max_logins is max count of bfa_fcs_rports
+ * whereas DEF_CFG_NUM_RPORTS is max count of bfa_rports
+ */
+static u32 bfa_fcs_rport_max_logins = BFA_FCS_MAX_RPORT_LOGINS;
+
+/*
+>>>>>>> refs/remotes/origin/master
  * forward declarations
  */
 static struct bfa_fcs_rport_s *bfa_fcs_rport_alloc(
 		struct bfa_fcs_lport_s *port, wwn_t pwwn, u32 rpid);
 static void	bfa_fcs_rport_free(struct bfa_fcs_rport_s *rport);
 static void	bfa_fcs_rport_hal_online(struct bfa_fcs_rport_s *rport);
+<<<<<<< HEAD
 static void	bfa_fcs_rport_online_action(struct bfa_fcs_rport_s *rport);
 static void	bfa_fcs_rport_offline_action(struct bfa_fcs_rport_s *rport);
+=======
+static void	bfa_fcs_rport_fcs_online_action(struct bfa_fcs_rport_s *rport);
+static void	bfa_fcs_rport_hal_online_action(struct bfa_fcs_rport_s *rport);
+static void	bfa_fcs_rport_fcs_offline_action(struct bfa_fcs_rport_s *rport);
+static void	bfa_fcs_rport_hal_offline_action(struct bfa_fcs_rport_s *rport);
+>>>>>>> refs/remotes/origin/master
 static void	bfa_fcs_rport_update(struct bfa_fcs_rport_s *rport,
 					struct fc_logi_s *plogi);
 static void	bfa_fcs_rport_timeout(void *arg);
@@ -79,6 +99,10 @@ static void	bfa_fcs_rport_send_ls_rjt(struct bfa_fcs_rport_s *rport,
 static void	bfa_fcs_rport_process_adisc(struct bfa_fcs_rport_s *rport,
 				struct fchs_s *rx_fchs, u16 len);
 static void bfa_fcs_rport_send_prlo_acc(struct bfa_fcs_rport_s *rport);
+<<<<<<< HEAD
+=======
+static void	bfa_fcs_rport_hal_offline(struct bfa_fcs_rport_s *rport);
+>>>>>>> refs/remotes/origin/master
 
 static void	bfa_fcs_rport_sm_uninit(struct bfa_fcs_rport_s *rport,
 					enum rport_event event);
@@ -90,6 +114,11 @@ static void	bfa_fcs_rport_sm_plogi_retry(struct bfa_fcs_rport_s *rport,
 						enum rport_event event);
 static void	bfa_fcs_rport_sm_plogi(struct bfa_fcs_rport_s *rport,
 					enum rport_event event);
+<<<<<<< HEAD
+=======
+static void	bfa_fcs_rport_sm_fc4_fcs_online(struct bfa_fcs_rport_s *rport,
+					enum rport_event event);
+>>>>>>> refs/remotes/origin/master
 static void	bfa_fcs_rport_sm_hal_online(struct bfa_fcs_rport_s *rport,
 						enum rport_event event);
 static void	bfa_fcs_rport_sm_online(struct bfa_fcs_rport_s *rport,
@@ -98,9 +127,19 @@ static void	bfa_fcs_rport_sm_nsquery_sending(struct bfa_fcs_rport_s *rport,
 						 enum rport_event event);
 static void	bfa_fcs_rport_sm_nsquery(struct bfa_fcs_rport_s *rport,
 					 enum rport_event event);
+<<<<<<< HEAD
 static void	bfa_fcs_rport_sm_adisc_sending(struct bfa_fcs_rport_s *rport,
 						enum rport_event event);
 static void	bfa_fcs_rport_sm_adisc(struct bfa_fcs_rport_s *rport,
+=======
+static void	bfa_fcs_rport_sm_adisc_online_sending(
+			struct bfa_fcs_rport_s *rport, enum rport_event event);
+static void	bfa_fcs_rport_sm_adisc_online(struct bfa_fcs_rport_s *rport,
+					enum rport_event event);
+static void	bfa_fcs_rport_sm_adisc_offline_sending(struct bfa_fcs_rport_s
+					*rport, enum rport_event event);
+static void	bfa_fcs_rport_sm_adisc_offline(struct bfa_fcs_rport_s *rport,
+>>>>>>> refs/remotes/origin/master
 					enum rport_event event);
 static void	bfa_fcs_rport_sm_fc4_logorcv(struct bfa_fcs_rport_s *rport,
 						enum rport_event event);
@@ -126,6 +165,13 @@ static void	bfa_fcs_rport_sm_nsdisc_sent(struct bfa_fcs_rport_s *rport,
 						enum rport_event event);
 static void	bfa_fcs_rport_sm_nsdisc_sent(struct bfa_fcs_rport_s *rport,
 						enum rport_event event);
+<<<<<<< HEAD
+=======
+static void	bfa_fcs_rport_sm_fc4_off_delete(struct bfa_fcs_rport_s *rport,
+						enum rport_event event);
+static void	bfa_fcs_rport_sm_delete_pending(struct bfa_fcs_rport_s *rport,
+						enum rport_event event);
+>>>>>>> refs/remotes/origin/master
 
 static struct bfa_sm_table_s rport_sm_table[] = {
 	{BFA_SM(bfa_fcs_rport_sm_uninit), BFA_RPORT_UNINIT},
@@ -133,12 +179,23 @@ static struct bfa_sm_table_s rport_sm_table[] = {
 	{BFA_SM(bfa_fcs_rport_sm_plogiacc_sending), BFA_RPORT_ONLINE},
 	{BFA_SM(bfa_fcs_rport_sm_plogi_retry), BFA_RPORT_PLOGI_RETRY},
 	{BFA_SM(bfa_fcs_rport_sm_plogi), BFA_RPORT_PLOGI},
+<<<<<<< HEAD
+=======
+	{BFA_SM(bfa_fcs_rport_sm_fc4_fcs_online), BFA_RPORT_ONLINE},
+>>>>>>> refs/remotes/origin/master
 	{BFA_SM(bfa_fcs_rport_sm_hal_online), BFA_RPORT_ONLINE},
 	{BFA_SM(bfa_fcs_rport_sm_online), BFA_RPORT_ONLINE},
 	{BFA_SM(bfa_fcs_rport_sm_nsquery_sending), BFA_RPORT_NSQUERY},
 	{BFA_SM(bfa_fcs_rport_sm_nsquery), BFA_RPORT_NSQUERY},
+<<<<<<< HEAD
 	{BFA_SM(bfa_fcs_rport_sm_adisc_sending), BFA_RPORT_ADISC},
 	{BFA_SM(bfa_fcs_rport_sm_adisc), BFA_RPORT_ADISC},
+=======
+	{BFA_SM(bfa_fcs_rport_sm_adisc_online_sending), BFA_RPORT_ADISC},
+	{BFA_SM(bfa_fcs_rport_sm_adisc_online), BFA_RPORT_ADISC},
+	{BFA_SM(bfa_fcs_rport_sm_adisc_offline_sending), BFA_RPORT_ADISC},
+	{BFA_SM(bfa_fcs_rport_sm_adisc_offline), BFA_RPORT_ADISC},
+>>>>>>> refs/remotes/origin/master
 	{BFA_SM(bfa_fcs_rport_sm_fc4_logorcv), BFA_RPORT_LOGORCV},
 	{BFA_SM(bfa_fcs_rport_sm_fc4_logosend), BFA_RPORT_LOGO},
 	{BFA_SM(bfa_fcs_rport_sm_fc4_offline), BFA_RPORT_OFFLINE},
@@ -218,10 +275,26 @@ bfa_fcs_rport_sm_plogi_sending(struct bfa_fcs_rport_s *rport,
 		bfa_fcs_rport_send_plogiacc(rport, NULL);
 		break;
 
+<<<<<<< HEAD
 	case RPSM_EVENT_ADDRESS_CHANGE:
 	case RPSM_EVENT_SCN:
 		/* query the NS */
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+=======
+	case RPSM_EVENT_SCN_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
+		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+		bfa_timer_start(rport->fcs->bfa, &rport->timer,
+				bfa_fcs_rport_timeout, rport,
+				bfa_fcs_rport_del_timeout);
+		break;
+	case RPSM_EVENT_ADDRESS_CHANGE:
+	case RPSM_EVENT_FAB_SCN:
+		/* query the NS */
+		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+		WARN_ON(!(bfa_fcport_get_topology(rport->port->fcs->bfa) !=
+					BFA_PORT_TOPOLOGY_LOOP));
+>>>>>>> refs/remotes/origin/master
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_nsdisc_sending);
 		rport->ns_retries = 0;
 		bfa_fcs_rport_send_nsdisc(rport, NULL);
@@ -255,8 +328,13 @@ bfa_fcs_rport_sm_plogiacc_sending(struct bfa_fcs_rport_s *rport,
 
 	switch (event) {
 	case RPSM_EVENT_FCXP_SENT:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		bfa_fcs_rport_hal_online(rport);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		bfa_fcs_rport_fcs_online_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_DELETE:
@@ -267,15 +345,31 @@ bfa_fcs_rport_sm_plogiacc_sending(struct bfa_fcs_rport_s *rport,
 
 	case RPSM_EVENT_PLOGI_RCVD:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case RPSM_EVENT_PLOGI_COMP:
 >>>>>>> refs/remotes/origin/cm-10.0
 	case RPSM_EVENT_SCN:
+=======
+	case RPSM_EVENT_PLOGI_COMP:
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Ignore, SCN is possibly online notification.
 		 */
 		break;
 
+<<<<<<< HEAD
+=======
+	case RPSM_EVENT_SCN_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
+		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+		bfa_timer_start(rport->fcs->bfa, &rport->timer,
+				bfa_fcs_rport_timeout, rport,
+				bfa_fcs_rport_del_timeout);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_nsdisc_sending);
@@ -336,9 +430,25 @@ bfa_fcs_rport_sm_plogi_retry(struct bfa_fcs_rport_s *rport,
 		bfa_fcs_rport_send_plogiacc(rport, NULL);
 		break;
 
+<<<<<<< HEAD
 	case RPSM_EVENT_ADDRESS_CHANGE:
 	case RPSM_EVENT_SCN:
 		bfa_timer_stop(&rport->timer);
+=======
+	case RPSM_EVENT_SCN_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
+		bfa_timer_stop(&rport->timer);
+		bfa_timer_start(rport->fcs->bfa, &rport->timer,
+				bfa_fcs_rport_timeout, rport,
+				bfa_fcs_rport_del_timeout);
+		break;
+
+	case RPSM_EVENT_ADDRESS_CHANGE:
+	case RPSM_EVENT_FAB_SCN:
+		bfa_timer_stop(&rport->timer);
+		WARN_ON(!(bfa_fcport_get_topology(rport->port->fcs->bfa) !=
+					BFA_PORT_TOPOLOGY_LOOP));
+>>>>>>> refs/remotes/origin/master
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_nsdisc_sending);
 		rport->ns_retries = 0;
 		bfa_fcs_rport_send_nsdisc(rport, NULL);
@@ -354,9 +464,15 @@ bfa_fcs_rport_sm_plogi_retry(struct bfa_fcs_rport_s *rport,
 		break;
 
 	case RPSM_EVENT_PLOGI_COMP:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		bfa_timer_stop(&rport->timer);
 		bfa_fcs_rport_hal_online(rport);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		bfa_timer_stop(&rport->timer);
+		bfa_fcs_rport_fcs_online_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -376,9 +492,15 @@ bfa_fcs_rport_sm_plogi(struct bfa_fcs_rport_s *rport, enum rport_event event)
 
 	switch (event) {
 	case RPSM_EVENT_ACCEPTED:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		rport->plogi_retries = 0;
 		bfa_fcs_rport_hal_online(rport);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		rport->plogi_retries = 0;
+		bfa_fcs_rport_fcs_online_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_LOGO_RCVD:
@@ -403,6 +525,10 @@ bfa_fcs_rport_sm_plogi(struct bfa_fcs_rport_s *rport, enum rport_event event)
 					BFA_FCS_RETRY_TIMEOUT);
 		} else {
 			bfa_stats(rport->port, rport_del_max_plogi_retry);
+<<<<<<< HEAD
+=======
+			rport->old_pid = rport->pid;
+>>>>>>> refs/remotes/origin/master
 			rport->pid = 0;
 			bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
 			bfa_timer_start(rport->fcs->bfa, &rport->timer,
@@ -411,7 +537,22 @@ bfa_fcs_rport_sm_plogi(struct bfa_fcs_rport_s *rport, enum rport_event event)
 		}
 		break;
 
+<<<<<<< HEAD
 	case	RPSM_EVENT_PLOGI_RETRY:
+=======
+	case RPSM_EVENT_SCN_ONLINE:
+		break;
+
+	case RPSM_EVENT_SCN_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
+		bfa_fcxp_discard(rport->fcxp);
+		bfa_timer_start(rport->fcs->bfa, &rport->timer,
+				bfa_fcs_rport_timeout, rport,
+				bfa_fcs_rport_del_timeout);
+		break;
+
+	case RPSM_EVENT_PLOGI_RETRY:
+>>>>>>> refs/remotes/origin/master
 		rport->plogi_retries = 0;
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_plogi_retry);
 		bfa_timer_start(rport->fcs->bfa, &rport->timer,
@@ -429,8 +570,15 @@ bfa_fcs_rport_sm_plogi(struct bfa_fcs_rport_s *rport, enum rport_event event)
 		break;
 
 	case RPSM_EVENT_ADDRESS_CHANGE:
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
 		bfa_fcxp_discard(rport->fcxp);
+=======
+	case RPSM_EVENT_FAB_SCN:
+		bfa_fcxp_discard(rport->fcxp);
+		WARN_ON(!(bfa_fcport_get_topology(rport->port->fcs->bfa) !=
+					BFA_PORT_TOPOLOGY_LOOP));
+>>>>>>> refs/remotes/origin/master
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_nsdisc_sending);
 		rport->ns_retries = 0;
 		bfa_fcs_rport_send_nsdisc(rport, NULL);
@@ -449,9 +597,15 @@ bfa_fcs_rport_sm_plogi(struct bfa_fcs_rport_s *rport, enum rport_event event)
 		break;
 
 	case RPSM_EVENT_PLOGI_COMP:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		bfa_fcxp_discard(rport->fcxp);
 		bfa_fcs_rport_hal_online(rport);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		bfa_fcxp_discard(rport->fcxp);
+		bfa_fcs_rport_fcs_online_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -460,6 +614,74 @@ bfa_fcs_rport_sm_plogi(struct bfa_fcs_rport_s *rport, enum rport_event event)
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * PLOGI is done. Await bfa_fcs_itnim to ascertain the scsi function
+ */
+static void
+bfa_fcs_rport_sm_fc4_fcs_online(struct bfa_fcs_rport_s *rport,
+				enum rport_event event)
+{
+	bfa_trc(rport->fcs, rport->pwwn);
+	bfa_trc(rport->fcs, rport->pid);
+	bfa_trc(rport->fcs, event);
+
+	switch (event) {
+	case RPSM_EVENT_FC4_FCS_ONLINE:
+		if (rport->scsi_function == BFA_RPORT_INITIATOR) {
+			if (!BFA_FCS_PID_IS_WKA(rport->pid))
+				bfa_fcs_rpf_rport_online(rport);
+			bfa_sm_set_state(rport, bfa_fcs_rport_sm_online);
+			break;
+		}
+
+		if (!rport->bfa_rport)
+			rport->bfa_rport =
+				bfa_rport_create(rport->fcs->bfa, rport);
+
+		if (rport->bfa_rport) {
+			bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
+			bfa_fcs_rport_hal_online(rport);
+		} else {
+			bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
+			bfa_fcs_rport_fcs_offline_action(rport);
+		}
+		break;
+
+	case RPSM_EVENT_PLOGI_RCVD:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
+		rport->plogi_pending = BFA_TRUE;
+		bfa_fcs_rport_fcs_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_PLOGI_COMP:
+	case RPSM_EVENT_LOGO_IMP:
+	case RPSM_EVENT_ADDRESS_CHANGE:
+	case RPSM_EVENT_FAB_SCN:
+	case RPSM_EVENT_SCN_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
+		bfa_fcs_rport_fcs_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_LOGO_RCVD:
+	case RPSM_EVENT_PRLO_RCVD:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logorcv);
+		bfa_fcs_rport_fcs_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_DELETE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
+		bfa_fcs_rport_fcs_offline_action(rport);
+		break;
+
+	default:
+		bfa_sm_fault(rport->fcs, event);
+		break;
+	}
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  *		PLOGI is complete. Awaiting BFA rport online callback. FC-4s
  *		are offline.
  */
@@ -474,6 +696,7 @@ bfa_fcs_rport_sm_hal_online(struct bfa_fcs_rport_s *rport,
 	switch (event) {
 	case RPSM_EVENT_HCB_ONLINE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_online);
+<<<<<<< HEAD
 		bfa_fcs_rport_online_action(rport);
 		break;
 
@@ -518,6 +741,37 @@ bfa_fcs_rport_sm_hal_online(struct bfa_fcs_rport_s *rport,
 		 * Ignore SCN - PLOGI just completed, FC-4 login should detect
 		 * device failures.
 		 */
+=======
+		bfa_fcs_rport_hal_online_action(rport);
+		break;
+
+	case RPSM_EVENT_PLOGI_COMP:
+		break;
+
+	case RPSM_EVENT_PRLO_RCVD:
+	case RPSM_EVENT_LOGO_RCVD:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logorcv);
+		bfa_fcs_rport_fcs_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_FAB_SCN:
+	case RPSM_EVENT_LOGO_IMP:
+	case RPSM_EVENT_ADDRESS_CHANGE:
+	case RPSM_EVENT_SCN_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
+		bfa_fcs_rport_fcs_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_PLOGI_RCVD:
+		rport->plogi_pending = BFA_TRUE;
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
+		bfa_fcs_rport_fcs_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_DELETE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
+		bfa_fcs_rport_fcs_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -536,14 +790,23 @@ bfa_fcs_rport_sm_online(struct bfa_fcs_rport_s *rport, enum rport_event event)
 	bfa_trc(rport->fcs, event);
 
 	switch (event) {
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
+=======
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 		if (bfa_fcs_fabric_is_switched(rport->port->fabric)) {
 			bfa_sm_set_state(rport,
 					 bfa_fcs_rport_sm_nsquery_sending);
 			rport->ns_retries = 0;
 			bfa_fcs_rport_send_nsdisc(rport, NULL);
 		} else {
+<<<<<<< HEAD
 			bfa_sm_set_state(rport, bfa_fcs_rport_sm_adisc_sending);
+=======
+			bfa_sm_set_state(rport,
+				bfa_fcs_rport_sm_adisc_online_sending);
+>>>>>>> refs/remotes/origin/master
 			bfa_fcs_rport_send_adisc(rport, NULL);
 		}
 		break;
@@ -551,21 +814,38 @@ bfa_fcs_rport_sm_online(struct bfa_fcs_rport_s *rport, enum rport_event event)
 	case RPSM_EVENT_PLOGI_RCVD:
 	case RPSM_EVENT_LOGO_IMP:
 	case RPSM_EVENT_ADDRESS_CHANGE:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
 		bfa_fcs_rport_offline_action(rport);
+=======
+	case RPSM_EVENT_SCN_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_DELETE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logorcv);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
 		break;
 
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_SCN_ONLINE:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_PLOGI_COMP:
 		break;
 
@@ -594,10 +874,17 @@ bfa_fcs_rport_sm_nsquery_sending(struct bfa_fcs_rport_s *rport,
 	case RPSM_EVENT_DELETE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
 		break;
 
 	case RPSM_EVENT_SCN:
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * ignore SCN, wait for response to query itself
 		 */
@@ -607,6 +894,7 @@ bfa_fcs_rport_sm_nsquery_sending(struct bfa_fcs_rport_s *rport,
 	case RPSM_EVENT_PRLO_RCVD:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logorcv);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
 		break;
 
@@ -619,12 +907,22 @@ bfa_fcs_rport_sm_nsquery_sending(struct bfa_fcs_rport_s *rport,
 				bfa_fcs_rport_del_timeout);
 		break;
 
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_LOGO_IMP:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_PLOGI_RCVD:
 	case RPSM_EVENT_ADDRESS_CHANGE:
 	case RPSM_EVENT_PLOGI_COMP:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -645,7 +943,11 @@ bfa_fcs_rport_sm_nsquery(struct bfa_fcs_rport_s *rport, enum rport_event event)
 
 	switch (event) {
 	case RPSM_EVENT_ACCEPTED:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_adisc_sending);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_adisc_online_sending);
+>>>>>>> refs/remotes/origin/master
 		bfa_fcs_rport_send_adisc(rport, NULL);
 		break;
 
@@ -657,24 +959,39 @@ bfa_fcs_rport_sm_nsquery(struct bfa_fcs_rport_s *rport, enum rport_event event)
 			bfa_fcs_rport_send_nsdisc(rport, NULL);
 		} else {
 			bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
+<<<<<<< HEAD
 			bfa_fcs_rport_offline_action(rport);
+=======
+			bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case RPSM_EVENT_DELETE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
 		bfa_fcxp_discard(rport->fcxp);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
 		break;
 
 	case RPSM_EVENT_SCN:
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logorcv);
 		bfa_fcxp_discard(rport->fcxp);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_PLOGI_COMP:
@@ -683,7 +1000,11 @@ bfa_fcs_rport_sm_nsquery(struct bfa_fcs_rport_s *rport, enum rport_event event)
 	case RPSM_EVENT_LOGO_IMP:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
 		bfa_fcxp_discard(rport->fcxp);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -696,7 +1017,11 @@ bfa_fcs_rport_sm_nsquery(struct bfa_fcs_rport_s *rport, enum rport_event event)
  *	authenticating with rport. FC-4s are paused.
  */
 static void
+<<<<<<< HEAD
 bfa_fcs_rport_sm_adisc_sending(struct bfa_fcs_rport_s *rport,
+=======
+bfa_fcs_rport_sm_adisc_online_sending(struct bfa_fcs_rport_s *rport,
+>>>>>>> refs/remotes/origin/master
 	 enum rport_event event)
 {
 	bfa_trc(rport->fcs, rport->pwwn);
@@ -705,36 +1030,59 @@ bfa_fcs_rport_sm_adisc_sending(struct bfa_fcs_rport_s *rport,
 
 	switch (event) {
 	case RPSM_EVENT_FCXP_SENT:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_adisc);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_adisc_online);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_DELETE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_LOGO_IMP:
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logorcv);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
 		break;
 
 	case RPSM_EVENT_SCN:
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_PLOGI_RCVD:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -747,7 +1095,12 @@ bfa_fcs_rport_sm_adisc_sending(struct bfa_fcs_rport_s *rport,
  *		FC-4s are paused.
  */
 static void
+<<<<<<< HEAD
 bfa_fcs_rport_sm_adisc(struct bfa_fcs_rport_s *rport, enum rport_event event)
+=======
+bfa_fcs_rport_sm_adisc_online(struct bfa_fcs_rport_s *rport,
+				enum rport_event event)
+>>>>>>> refs/remotes/origin/master
 {
 	bfa_trc(rport->fcs, rport->pwwn);
 	bfa_trc(rport->fcs, rport->pid);
@@ -771,16 +1124,27 @@ bfa_fcs_rport_sm_adisc(struct bfa_fcs_rport_s *rport, enum rport_event event)
 	case RPSM_EVENT_FAILED:
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_DELETE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
 		bfa_fcxp_discard(rport->fcxp);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
 		break;
 
 	case RPSM_EVENT_SCN:
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+		break;
+
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * already processing RSCN
 		 */
@@ -789,14 +1153,21 @@ bfa_fcs_rport_sm_adisc(struct bfa_fcs_rport_s *rport, enum rport_event event)
 	case RPSM_EVENT_LOGO_IMP:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_offline);
 		bfa_fcxp_discard(rport->fcxp);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logorcv);
 		bfa_fcxp_discard(rport->fcxp);
+<<<<<<< HEAD
 		bfa_fcs_rport_offline_action(rport);
+=======
+		bfa_fcs_rport_hal_offline_action(rport);
 		break;
 
 	default:
@@ -805,7 +1176,101 @@ bfa_fcs_rport_sm_adisc(struct bfa_fcs_rport_s *rport, enum rport_event event)
 }
 
 /*
+ * ADISC is being sent for authenticating with rport
+ * Already did offline actions.
+ */
+static void
+bfa_fcs_rport_sm_adisc_offline_sending(struct bfa_fcs_rport_s *rport,
+	enum rport_event event)
+{
+	bfa_trc(rport->fcs, rport->pwwn);
+	bfa_trc(rport->fcs, rport->pid);
+	bfa_trc(rport->fcs, event);
+
+	switch (event) {
+	case RPSM_EVENT_FCXP_SENT:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_adisc_offline);
+		break;
+
+	case RPSM_EVENT_DELETE:
+	case RPSM_EVENT_SCN_OFFLINE:
+	case RPSM_EVENT_LOGO_IMP:
+	case RPSM_EVENT_LOGO_RCVD:
+	case RPSM_EVENT_PRLO_RCVD:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
+		bfa_fcxp_walloc_cancel(rport->fcs->bfa,
+			&rport->fcxp_wqe);
+		bfa_timer_start(rport->fcs->bfa, &rport->timer,
+			bfa_fcs_rport_timeout, rport,
+			bfa_fcs_rport_del_timeout);
+		break;
+
+	case RPSM_EVENT_PLOGI_RCVD:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_plogiacc_sending);
+		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+		bfa_fcs_rport_send_plogiacc(rport, NULL);
+		break;
+
+	default:
+		bfa_sm_fault(rport->fcs, event);
+	}
+}
+
+/*
+ * ADISC to rport
+ * Already did offline actions
+ */
+static void
+bfa_fcs_rport_sm_adisc_offline(struct bfa_fcs_rport_s *rport,
+			enum rport_event event)
+{
+	bfa_trc(rport->fcs, rport->pwwn);
+	bfa_trc(rport->fcs, rport->pid);
+	bfa_trc(rport->fcs, event);
+
+	switch (event) {
+	case RPSM_EVENT_ACCEPTED:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
+		bfa_fcs_rport_hal_online(rport);
+		break;
+
+	case RPSM_EVENT_PLOGI_RCVD:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_plogiacc_sending);
+		bfa_fcxp_discard(rport->fcxp);
+		bfa_fcs_rport_send_plogiacc(rport, NULL);
+		break;
+
+	case RPSM_EVENT_FAILED:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
+		bfa_timer_start(rport->fcs->bfa, &rport->timer,
+			bfa_fcs_rport_timeout, rport,
+			bfa_fcs_rport_del_timeout);
+		break;
+
+	case RPSM_EVENT_DELETE:
+	case RPSM_EVENT_SCN_OFFLINE:
+	case RPSM_EVENT_LOGO_IMP:
+	case RPSM_EVENT_LOGO_RCVD:
+	case RPSM_EVENT_PRLO_RCVD:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
+		bfa_fcxp_discard(rport->fcxp);
+		bfa_timer_start(rport->fcs->bfa, &rport->timer,
+			bfa_fcs_rport_timeout, rport,
+			bfa_fcs_rport_del_timeout);
+>>>>>>> refs/remotes/origin/master
+		break;
+
+	default:
+		bfa_sm_fault(rport->fcs, event);
+	}
+}
+
+/*
+<<<<<<< HEAD
  *		Rport has sent LOGO. Awaiting FC-4 offline completion callback.
+=======
+ * Rport has sent LOGO. Awaiting FC-4 offline completion callback.
+>>>>>>> refs/remotes/origin/master
  */
 static void
 bfa_fcs_rport_sm_fc4_logorcv(struct bfa_fcs_rport_s *rport,
@@ -818,6 +1283,7 @@ bfa_fcs_rport_sm_fc4_logorcv(struct bfa_fcs_rport_s *rport,
 	switch (event) {
 	case RPSM_EVENT_FC4_OFFLINE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hcb_logorcv);
+<<<<<<< HEAD
 		bfa_sm_send_event(rport->bfa_rport, BFA_RPORT_SM_OFFLINE);
 		break;
 
@@ -825,6 +1291,23 @@ bfa_fcs_rport_sm_fc4_logorcv(struct bfa_fcs_rport_s *rport,
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_logosend);
 		break;
 
+=======
+		bfa_fcs_rport_hal_offline(rport);
+		break;
+
+	case RPSM_EVENT_DELETE:
+		if (rport->pid && (rport->prlo == BFA_TRUE))
+			bfa_fcs_rport_send_prlo_acc(rport);
+		if (rport->pid && (rport->prlo == BFA_FALSE))
+			bfa_fcs_rport_send_logo_acc(rport);
+
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_off_delete);
+		break;
+
+	case RPSM_EVENT_SCN_ONLINE:
+	case RPSM_EVENT_SCN_OFFLINE:
+	case RPSM_EVENT_HCB_ONLINE:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 	case RPSM_EVENT_ADDRESS_CHANGE:
@@ -850,7 +1333,24 @@ bfa_fcs_rport_sm_fc4_logosend(struct bfa_fcs_rport_s *rport,
 	switch (event) {
 	case RPSM_EVENT_FC4_OFFLINE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hcb_logosend);
+<<<<<<< HEAD
 		bfa_sm_send_event(rport->bfa_rport, BFA_RPORT_SM_OFFLINE);
+=======
+		bfa_fcs_rport_hal_offline(rport);
+		break;
+
+	case RPSM_EVENT_LOGO_RCVD:
+		bfa_fcs_rport_send_logo_acc(rport);
+	case RPSM_EVENT_PRLO_RCVD:
+		if (rport->prlo == BFA_TRUE)
+			bfa_fcs_rport_send_prlo_acc(rport);
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_off_delete);
+		break;
+
+	case RPSM_EVENT_HCB_ONLINE:
+	case RPSM_EVENT_DELETE:
+		/* Rport is being deleted */
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -872,6 +1372,7 @@ bfa_fcs_rport_sm_fc4_offline(struct bfa_fcs_rport_s *rport,
 	switch (event) {
 	case RPSM_EVENT_FC4_OFFLINE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hcb_offline);
+<<<<<<< HEAD
 		bfa_sm_send_event(rport->bfa_rport, BFA_RPORT_SM_OFFLINE);
 		break;
 
@@ -879,6 +1380,28 @@ bfa_fcs_rport_sm_fc4_offline(struct bfa_fcs_rport_s *rport,
 	case RPSM_EVENT_LOGO_IMP:
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
+=======
+		bfa_fcs_rport_hal_offline(rport);
+		break;
+
+	case RPSM_EVENT_SCN_ONLINE:
+		break;
+	case RPSM_EVENT_LOGO_RCVD:
+		/*
+		 * Rport is going offline. Just ack the logo
+		 */
+		bfa_fcs_rport_send_logo_acc(rport);
+		break;
+
+	case RPSM_EVENT_PRLO_RCVD:
+		bfa_fcs_rport_send_prlo_acc(rport);
+		break;
+
+	case RPSM_EVENT_SCN_OFFLINE:
+	case RPSM_EVENT_HCB_ONLINE:
+	case RPSM_EVENT_FAB_SCN:
+	case RPSM_EVENT_LOGO_IMP:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		/*
 		 * rport is already going offline.
@@ -910,7 +1433,10 @@ bfa_fcs_rport_sm_hcb_offline(struct bfa_fcs_rport_s *rport,
 	switch (event) {
 	case RPSM_EVENT_HCB_OFFLINE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (bfa_fcs_lport_is_online(rport->port) &&
 		    (rport->plogi_pending)) {
 			rport->plogi_pending = BFA_FALSE;
@@ -923,6 +1449,7 @@ bfa_fcs_rport_sm_hcb_offline(struct bfa_fcs_rport_s *rport,
 		 * !! fall through !!
 		 */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		if (bfa_fcs_lport_is_online(rport->port)) {
@@ -938,11 +1465,42 @@ bfa_fcs_rport_sm_hcb_offline(struct bfa_fcs_rport_s *rport,
 				bfa_fcs_rport_send_plogi(rport, NULL);
 			}
 		} else {
+=======
+	case RPSM_EVENT_ADDRESS_CHANGE:
+		if (!bfa_fcs_lport_is_online(rport->port)) {
+>>>>>>> refs/remotes/origin/master
 			rport->pid = 0;
 			bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
 			bfa_timer_start(rport->fcs->bfa, &rport->timer,
 					bfa_fcs_rport_timeout, rport,
 					bfa_fcs_rport_del_timeout);
+<<<<<<< HEAD
+=======
+			break;
+		}
+		if (bfa_fcs_fabric_is_switched(rport->port->fabric)) {
+			bfa_sm_set_state(rport,
+				bfa_fcs_rport_sm_nsdisc_sending);
+			rport->ns_retries = 0;
+			bfa_fcs_rport_send_nsdisc(rport, NULL);
+		} else if (bfa_fcport_get_topology(rport->port->fcs->bfa) ==
+					BFA_PORT_TOPOLOGY_LOOP) {
+			if (rport->scn_online) {
+				bfa_sm_set_state(rport,
+					bfa_fcs_rport_sm_adisc_offline_sending);
+				bfa_fcs_rport_send_adisc(rport, NULL);
+			} else {
+				bfa_sm_set_state(rport,
+					bfa_fcs_rport_sm_offline);
+				bfa_timer_start(rport->fcs->bfa, &rport->timer,
+					bfa_fcs_rport_timeout, rport,
+					bfa_fcs_rport_del_timeout);
+			}
+		} else {
+			bfa_sm_set_state(rport, bfa_fcs_rport_sm_plogi_sending);
+			rport->plogi_retries = 0;
+			bfa_fcs_rport_send_plogi(rport, NULL);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -951,6 +1509,7 @@ bfa_fcs_rport_sm_hcb_offline(struct bfa_fcs_rport_s *rport,
 		bfa_fcs_rport_free(rport);
 		break;
 
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
@@ -959,6 +1518,15 @@ bfa_fcs_rport_sm_hcb_offline(struct bfa_fcs_rport_s *rport,
 	case RPSM_EVENT_PLOGI_RCVD:
 	case RPSM_EVENT_LOGO_IMP:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case RPSM_EVENT_SCN_ONLINE:
+	case RPSM_EVENT_SCN_OFFLINE:
+	case RPSM_EVENT_FAB_SCN:
+	case RPSM_EVENT_LOGO_RCVD:
+	case RPSM_EVENT_PRLO_RCVD:
+	case RPSM_EVENT_PLOGI_RCVD:
+	case RPSM_EVENT_LOGO_IMP:
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Ignore, already offline.
 		 */
@@ -996,11 +1564,14 @@ bfa_fcs_rport_sm_hcb_logorcv(struct bfa_fcs_rport_s *rport,
 		if (bfa_fcs_lport_is_online(rport->port) &&
 			(!BFA_FCS_PID_IS_WKA(rport->pid))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bfa_sm_set_state(rport,
 				bfa_fcs_rport_sm_nsdisc_sending);
 			rport->ns_retries = 0;
 			bfa_fcs_rport_send_nsdisc(rport, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (bfa_fcs_fabric_is_switched(rport->port->fabric)) {
 				bfa_sm_set_state(rport,
 					bfa_fcs_rport_sm_nsdisc_sending);
@@ -1013,7 +1584,10 @@ bfa_fcs_rport_sm_hcb_logorcv(struct bfa_fcs_rport_s *rport,
 				rport->plogi_retries = 0;
 				bfa_fcs_rport_send_plogi(rport, NULL);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/*
 			 * if it is not a well known address, reset the
@@ -1029,13 +1603,26 @@ bfa_fcs_rport_sm_hcb_logorcv(struct bfa_fcs_rport_s *rport,
 		break;
 
 	case RPSM_EVENT_DELETE:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hcb_logosend);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_delete_pending);
+		if (rport->pid && (rport->prlo == BFA_TRUE))
+			bfa_fcs_rport_send_prlo_acc(rport);
+		if (rport->pid && (rport->prlo == BFA_FALSE))
+			bfa_fcs_rport_send_logo_acc(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_LOGO_IMP:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hcb_offline);
 		break;
 
+<<<<<<< HEAD
+=======
+	case RPSM_EVENT_SCN_ONLINE:
+	case RPSM_EVENT_SCN_OFFLINE:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 		/*
@@ -1068,7 +1655,20 @@ bfa_fcs_rport_sm_hcb_logosend(struct bfa_fcs_rport_s *rport,
 		break;
 
 	case RPSM_EVENT_LOGO_RCVD:
+<<<<<<< HEAD
 	case RPSM_EVENT_PRLO_RCVD:
+=======
+		bfa_fcs_rport_send_logo_acc(rport);
+	case RPSM_EVENT_PRLO_RCVD:
+		if (rport->prlo == BFA_TRUE)
+			bfa_fcs_rport_send_prlo_acc(rport);
+
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_delete_pending);
+		break;
+
+	case RPSM_EVENT_SCN_ONLINE:
+	case RPSM_EVENT_SCN_OFFLINE:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		break;
 
@@ -1095,12 +1695,26 @@ bfa_fcs_rport_sm_logo_sending(struct bfa_fcs_rport_s *rport,
 		bfa_fcs_rport_free(rport);
 		break;
 
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
+=======
+	case RPSM_EVENT_SCN_ONLINE:
+	case RPSM_EVENT_SCN_OFFLINE:
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		break;
 
 	case RPSM_EVENT_LOGO_RCVD:
+<<<<<<< HEAD
 	case RPSM_EVENT_PRLO_RCVD:
+=======
+		bfa_fcs_rport_send_logo_acc(rport);
+	case RPSM_EVENT_PRLO_RCVD:
+		if (rport->prlo == BFA_TRUE)
+			bfa_fcs_rport_send_prlo_acc(rport);
+
+>>>>>>> refs/remotes/origin/master
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_uninit);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
 		bfa_fcs_rport_free(rport);
@@ -1128,10 +1742,19 @@ bfa_fcs_rport_sm_offline(struct bfa_fcs_rport_s *rport, enum rport_event event)
 		bfa_fcs_rport_free(rport);
 		break;
 
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_nsdisc_sending);
 		bfa_timer_stop(&rport->timer);
+=======
+	case RPSM_EVENT_FAB_SCN:
+	case RPSM_EVENT_ADDRESS_CHANGE:
+		bfa_timer_stop(&rport->timer);
+		WARN_ON(!(bfa_fcport_get_topology(rport->port->fcs->bfa) !=
+					BFA_PORT_TOPOLOGY_LOOP));
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_nsdisc_sending);
+>>>>>>> refs/remotes/origin/master
 		rport->ns_retries = 0;
 		bfa_fcs_rport_send_nsdisc(rport, NULL);
 		break;
@@ -1151,12 +1774,28 @@ bfa_fcs_rport_sm_offline(struct bfa_fcs_rport_s *rport, enum rport_event event)
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 	case RPSM_EVENT_LOGO_IMP:
+<<<<<<< HEAD
 		break;
 
 	case RPSM_EVENT_PLOGI_COMP:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		bfa_timer_stop(&rport->timer);
 		bfa_fcs_rport_hal_online(rport);
+=======
+	case RPSM_EVENT_SCN_OFFLINE:
+		break;
+
+	case RPSM_EVENT_PLOGI_COMP:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		bfa_timer_stop(&rport->timer);
+		bfa_fcs_rport_fcs_online_action(rport);
+		break;
+
+	case RPSM_EVENT_SCN_ONLINE:
+		bfa_timer_stop(&rport->timer);
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_plogi_sending);
+		bfa_fcs_rport_send_plogi(rport, NULL);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RPSM_EVENT_PLOGI_SEND:
@@ -1199,7 +1838,11 @@ bfa_fcs_rport_sm_nsdisc_sending(struct bfa_fcs_rport_s *rport,
 		bfa_fcs_rport_send_plogiacc(rport, NULL);
 		break;
 
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
+=======
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_LOGO_RCVD:
 	case RPSM_EVENT_PRLO_RCVD:
 	case RPSM_EVENT_PLOGI_SEND:
@@ -1218,9 +1861,15 @@ bfa_fcs_rport_sm_nsdisc_sending(struct bfa_fcs_rport_s *rport,
 		break;
 
 	case RPSM_EVENT_PLOGI_COMP:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
 		bfa_fcs_rport_hal_online(rport);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		bfa_fcxp_walloc_cancel(rport->fcs->bfa, &rport->fcxp_wqe);
+		bfa_fcs_rport_fcs_online_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -1245,7 +1894,11 @@ bfa_fcs_rport_sm_nsdisc_retry(struct bfa_fcs_rport_s *rport,
 		bfa_fcs_rport_send_nsdisc(rport, NULL);
 		break;
 
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
+=======
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 	case RPSM_EVENT_ADDRESS_CHANGE:
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_nsdisc_sending);
 		bfa_timer_stop(&rport->timer);
@@ -1282,9 +1935,15 @@ bfa_fcs_rport_sm_nsdisc_retry(struct bfa_fcs_rport_s *rport,
 		break;
 
 	case RPSM_EVENT_PLOGI_COMP:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		bfa_timer_stop(&rport->timer);
 		bfa_fcs_rport_hal_online(rport);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		bfa_timer_stop(&rport->timer);
+		bfa_fcs_rport_fcs_online_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -1324,6 +1983,10 @@ bfa_fcs_rport_sm_nsdisc_sent(struct bfa_fcs_rport_s *rport,
 				 bfa_fcs_rport_sm_nsdisc_sending);
 			bfa_fcs_rport_send_nsdisc(rport, NULL);
 		} else {
+<<<<<<< HEAD
+=======
+			rport->old_pid = rport->pid;
+>>>>>>> refs/remotes/origin/master
 			rport->pid = 0;
 			bfa_sm_set_state(rport, bfa_fcs_rport_sm_offline);
 			bfa_timer_start(rport->fcs->bfa, &rport->timer,
@@ -1357,7 +2020,11 @@ bfa_fcs_rport_sm_nsdisc_sent(struct bfa_fcs_rport_s *rport,
 	case RPSM_EVENT_PRLO_RCVD:
 		bfa_fcs_rport_send_prlo_acc(rport);
 		break;
+<<<<<<< HEAD
 	case RPSM_EVENT_SCN:
+=======
+	case RPSM_EVENT_FAB_SCN:
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * ignore, wait for NS query response
 		 */
@@ -1371,9 +2038,15 @@ bfa_fcs_rport_sm_nsdisc_sent(struct bfa_fcs_rport_s *rport,
 		break;
 
 	case RPSM_EVENT_PLOGI_COMP:
+<<<<<<< HEAD
 		bfa_sm_set_state(rport, bfa_fcs_rport_sm_hal_online);
 		bfa_fcxp_discard(rport->fcxp);
 		bfa_fcs_rport_hal_online(rport);
+=======
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_fc4_fcs_online);
+		bfa_fcxp_discard(rport->fcxp);
+		bfa_fcs_rport_fcs_online_action(rport);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -1381,7 +2054,67 @@ bfa_fcs_rport_sm_nsdisc_sent(struct bfa_fcs_rport_s *rport,
 	}
 }
 
+<<<<<<< HEAD
 
+=======
+/*
+ * Rport needs to be deleted
+ * waiting for ITNIM clean up to finish
+ */
+static void
+bfa_fcs_rport_sm_fc4_off_delete(struct bfa_fcs_rport_s *rport,
+				enum rport_event event)
+{
+	bfa_trc(rport->fcs, rport->pwwn);
+	bfa_trc(rport->fcs, rport->pid);
+	bfa_trc(rport->fcs, event);
+
+	switch (event) {
+	case RPSM_EVENT_FC4_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_delete_pending);
+		bfa_fcs_rport_hal_offline(rport);
+		break;
+
+	case RPSM_EVENT_DELETE:
+	case RPSM_EVENT_PLOGI_RCVD:
+		/* Ignore these events */
+		break;
+
+	default:
+		bfa_sm_fault(rport->fcs, event);
+		break;
+	}
+}
+
+/*
+ * RPort needs to be deleted
+ * waiting for BFA/FW to finish current processing
+ */
+static void
+bfa_fcs_rport_sm_delete_pending(struct bfa_fcs_rport_s *rport,
+				enum rport_event event)
+{
+	bfa_trc(rport->fcs, rport->pwwn);
+	bfa_trc(rport->fcs, rport->pid);
+	bfa_trc(rport->fcs, event);
+
+	switch (event) {
+	case RPSM_EVENT_HCB_OFFLINE:
+		bfa_sm_set_state(rport, bfa_fcs_rport_sm_uninit);
+		bfa_fcs_rport_free(rport);
+		break;
+
+	case RPSM_EVENT_DELETE:
+	case RPSM_EVENT_LOGO_IMP:
+	case RPSM_EVENT_PLOGI_RCVD:
+		/* Ignore these events */
+		break;
+
+	default:
+		bfa_sm_fault(rport->fcs, event);
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  *  fcs_rport_private FCS RPORT provate functions
@@ -1398,10 +2131,18 @@ bfa_fcs_rport_send_plogi(void *rport_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 
 	bfa_trc(rport->fcs, rport->pwwn);
 
+<<<<<<< HEAD
 	fcxp = fcxp_alloced ? fcxp_alloced : bfa_fcs_fcxp_alloc(port->fcs);
 	if (!fcxp) {
 		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
 					bfa_fcs_rport_send_plogi, rport);
+=======
+	fcxp = fcxp_alloced ? fcxp_alloced :
+	       bfa_fcs_fcxp_alloc(port->fcs, BFA_TRUE);
+	if (!fcxp) {
+		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
+				bfa_fcs_rport_send_plogi, rport, BFA_TRUE);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rport->fcxp = fcxp;
@@ -1410,11 +2151,16 @@ bfa_fcs_rport_send_plogi(void *rport_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 				bfa_fcs_lport_get_fcid(port), 0,
 				port->port_cfg.pwwn, port->port_cfg.nwwn,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				bfa_fcport_get_maxfrsize(port->fcs->bfa));
 =======
 				bfa_fcport_get_maxfrsize(port->fcs->bfa),
 				bfa_fcport_get_rx_bbcredit(port->fcs->bfa));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				bfa_fcport_get_maxfrsize(port->fcs->bfa),
+				bfa_fcport_get_rx_bbcredit(port->fcs->bfa));
+>>>>>>> refs/remotes/origin/master
 
 	bfa_fcxp_send(fcxp, NULL, port->fabric->vf_id, port->lp_tag, BFA_FALSE,
 			FC_CLASS_3, len, &fchs, bfa_fcs_rport_plogi_response,
@@ -1522,10 +2268,18 @@ bfa_fcs_rport_send_plogiacc(void *rport_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 	bfa_trc(rport->fcs, rport->pwwn);
 	bfa_trc(rport->fcs, rport->reply_oxid);
 
+<<<<<<< HEAD
 	fcxp = fcxp_alloced ? fcxp_alloced : bfa_fcs_fcxp_alloc(port->fcs);
 	if (!fcxp) {
 		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
 					bfa_fcs_rport_send_plogiacc, rport);
+=======
+	fcxp = fcxp_alloced ? fcxp_alloced :
+	       bfa_fcs_fcxp_alloc(port->fcs, BFA_FALSE);
+	if (!fcxp) {
+		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
+				bfa_fcs_rport_send_plogiacc, rport, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rport->fcxp = fcxp;
@@ -1535,11 +2289,16 @@ bfa_fcs_rport_send_plogiacc(void *rport_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 				 rport->reply_oxid, port->port_cfg.pwwn,
 				 port->port_cfg.nwwn,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 bfa_fcport_get_maxfrsize(port->fcs->bfa));
 =======
 				 bfa_fcport_get_maxfrsize(port->fcs->bfa),
 				 bfa_fcport_get_rx_bbcredit(port->fcs->bfa));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 bfa_fcport_get_maxfrsize(port->fcs->bfa),
+				 bfa_fcport_get_rx_bbcredit(port->fcs->bfa));
+>>>>>>> refs/remotes/origin/master
 
 	bfa_fcxp_send(fcxp, NULL, port->fabric->vf_id, port->lp_tag, BFA_FALSE,
 			FC_CLASS_3, len, &fchs, NULL, NULL, FC_MAX_PDUSZ, 0);
@@ -1558,10 +2317,18 @@ bfa_fcs_rport_send_adisc(void *rport_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 
 	bfa_trc(rport->fcs, rport->pwwn);
 
+<<<<<<< HEAD
 	fcxp = fcxp_alloced ? fcxp_alloced : bfa_fcs_fcxp_alloc(port->fcs);
 	if (!fcxp) {
 		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
 					bfa_fcs_rport_send_adisc, rport);
+=======
+	fcxp = fcxp_alloced ? fcxp_alloced :
+	       bfa_fcs_fcxp_alloc(port->fcs, BFA_TRUE);
+	if (!fcxp) {
+		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
+				bfa_fcs_rport_send_adisc, rport, BFA_TRUE);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rport->fcxp = fcxp;
@@ -1621,10 +2388,18 @@ bfa_fcs_rport_send_nsdisc(void *rport_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 
 	bfa_trc(rport->fcs, rport->pid);
 
+<<<<<<< HEAD
 	fcxp = fcxp_alloced ? fcxp_alloced : bfa_fcs_fcxp_alloc(port->fcs);
 	if (!fcxp) {
 		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
 					bfa_fcs_rport_send_nsdisc, rport);
+=======
+	fcxp = fcxp_alloced ? fcxp_alloced :
+	       bfa_fcs_fcxp_alloc(port->fcs, BFA_TRUE);
+	if (!fcxp) {
+		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
+				bfa_fcs_rport_send_nsdisc, rport, BFA_TRUE);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rport->fcxp = fcxp;
@@ -1777,10 +2552,18 @@ bfa_fcs_rport_send_logo(void *rport_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 
 	port = rport->port;
 
+<<<<<<< HEAD
 	fcxp = fcxp_alloced ? fcxp_alloced : bfa_fcs_fcxp_alloc(port->fcs);
 	if (!fcxp) {
 		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
 					bfa_fcs_rport_send_logo, rport);
+=======
+	fcxp = fcxp_alloced ? fcxp_alloced :
+	       bfa_fcs_fcxp_alloc(port->fcs, BFA_FALSE);
+	if (!fcxp) {
+		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rport->fcxp_wqe,
+				bfa_fcs_rport_send_logo, rport, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rport->fcxp = fcxp;
@@ -1814,7 +2597,11 @@ bfa_fcs_rport_send_logo_acc(void *rport_cbarg)
 
 	port = rport->port;
 
+<<<<<<< HEAD
 	fcxp = bfa_fcs_fcxp_alloc(port->fcs);
+=======
+	fcxp = bfa_fcs_fcxp_alloc(port->fcs, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 	if (!fcxp)
 		return;
 
@@ -1885,7 +2672,11 @@ bfa_fcs_rport_process_prli(struct bfa_fcs_rport_s *rport,
 		bfa_fcs_itnim_is_initiator(rport->itnim);
 	}
 
+<<<<<<< HEAD
 	fcxp = bfa_fcs_fcxp_alloc(port->fcs);
+=======
+	fcxp = bfa_fcs_fcxp_alloc(port->fcs, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 	if (!fcxp)
 		return;
 
@@ -1922,7 +2713,11 @@ bfa_fcs_rport_process_rpsc(struct bfa_fcs_rport_s *rport,
 
 	speeds.port_op_speed = fc_bfa_speed_to_rpsc_operspeed(pport_attr.speed);
 
+<<<<<<< HEAD
 	fcxp = bfa_fcs_fcxp_alloc(port->fcs);
+=======
+	fcxp = bfa_fcs_fcxp_alloc(port->fcs, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 	if (!fcxp)
 		return;
 
@@ -1956,7 +2751,11 @@ bfa_fcs_rport_process_adisc(struct bfa_fcs_rport_s *rport,
 	 */
 	if (bfa_fcs_itnim_get_online_state(rport->itnim) == BFA_STATUS_OK) {
 
+<<<<<<< HEAD
 		fcxp = bfa_fcs_fcxp_alloc(port->fcs);
+=======
+		fcxp = bfa_fcs_fcxp_alloc(port->fcs, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 		if (!fcxp)
 			return;
 
@@ -1993,6 +2792,18 @@ bfa_fcs_rport_hal_online(struct bfa_fcs_rport_s *rport)
 	bfa_rport_online(rport->bfa_rport, &rport_info);
 }
 
+<<<<<<< HEAD
+=======
+static void
+bfa_fcs_rport_hal_offline(struct bfa_fcs_rport_s *rport)
+{
+	if (rport->bfa_rport)
+		bfa_sm_send_event(rport->bfa_rport, BFA_RPORT_SM_OFFLINE);
+	else
+		bfa_cb_rport_offline(rport);
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct bfa_fcs_rport_s *
 bfa_fcs_rport_alloc(struct bfa_fcs_lport_s *port, wwn_t pwwn, u32 rpid)
 {
@@ -2003,6 +2814,14 @@ bfa_fcs_rport_alloc(struct bfa_fcs_lport_s *port, wwn_t pwwn, u32 rpid)
 	/*
 	 * allocate rport
 	 */
+<<<<<<< HEAD
+=======
+	if (fcs->num_rport_logins >= bfa_fcs_rport_max_logins) {
+		bfa_trc(fcs, rpid);
+		return NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (bfa_fcb_rport_alloc(fcs->bfad, &rport, &rport_drv)
 		!= BFA_STATUS_OK) {
 		bfa_trc(fcs, rpid);
@@ -2017,6 +2836,7 @@ bfa_fcs_rport_alloc(struct bfa_fcs_lport_s *port, wwn_t pwwn, u32 rpid)
 	rport->rp_drv = rport_drv;
 	rport->pid = rpid;
 	rport->pwwn = pwwn;
+<<<<<<< HEAD
 
 	/*
 	 * allocate BFA rport
@@ -2027,6 +2847,11 @@ bfa_fcs_rport_alloc(struct bfa_fcs_lport_s *port, wwn_t pwwn, u32 rpid)
 		kfree(rport_drv);
 		return NULL;
 	}
+=======
+	rport->old_pid = 0;
+
+	rport->bfa_rport = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * allocate FC-4s
@@ -2037,14 +2862,21 @@ bfa_fcs_rport_alloc(struct bfa_fcs_lport_s *port, wwn_t pwwn, u32 rpid)
 		rport->itnim = bfa_fcs_itnim_create(rport);
 		if (!rport->itnim) {
 			bfa_trc(fcs, rpid);
+<<<<<<< HEAD
 			bfa_sm_send_event(rport->bfa_rport,
 						BFA_RPORT_SM_DELETE);
+=======
+>>>>>>> refs/remotes/origin/master
 			kfree(rport_drv);
 			return NULL;
 		}
 	}
 
 	bfa_fcs_lport_add_rport(port, rport);
+<<<<<<< HEAD
+=======
+	fcs->num_rport_logins++;
+>>>>>>> refs/remotes/origin/master
 
 	bfa_sm_set_state(rport, bfa_fcs_rport_sm_uninit);
 
@@ -2060,26 +2892,48 @@ static void
 bfa_fcs_rport_free(struct bfa_fcs_rport_s *rport)
 {
 	struct bfa_fcs_lport_s *port = rport->port;
+<<<<<<< HEAD
+=======
+	struct bfa_fcs_s *fcs = port->fcs;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * - delete FC-4s
 	 * - delete BFA rport
 	 * - remove from queue of rports
 	 */
+<<<<<<< HEAD
+=======
+	rport->plogi_pending = BFA_FALSE;
+
+>>>>>>> refs/remotes/origin/master
 	if (bfa_fcs_lport_is_initiator(port)) {
 		bfa_fcs_itnim_delete(rport->itnim);
 		if (rport->pid != 0 && !BFA_FCS_PID_IS_WKA(rport->pid))
 			bfa_fcs_rpf_rport_offline(rport);
 	}
 
+<<<<<<< HEAD
 	bfa_sm_send_event(rport->bfa_rport, BFA_RPORT_SM_DELETE);
 	bfa_fcs_lport_del_rport(port, rport);
+=======
+	if (rport->bfa_rport) {
+		bfa_sm_send_event(rport->bfa_rport, BFA_RPORT_SM_DELETE);
+		rport->bfa_rport = NULL;
+	}
+
+	bfa_fcs_lport_del_rport(port, rport);
+	fcs->num_rport_logins--;
+>>>>>>> refs/remotes/origin/master
 	kfree(rport->rp_drv);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_fcs_rport_aen_post(struct bfa_fcs_rport_s *rport,
 			enum bfa_rport_aen_event event,
 			struct bfa_rport_aen_data_s *data)
@@ -2109,8 +2963,23 @@ bfa_fcs_rport_aen_post(struct bfa_fcs_rport_s *rport,
 }
 
 static void
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 bfa_fcs_rport_online_action(struct bfa_fcs_rport_s *rport)
+=======
+bfa_fcs_rport_fcs_online_action(struct bfa_fcs_rport_s *rport)
+{
+	if ((!rport->pid) || (!rport->pwwn)) {
+		bfa_trc(rport->fcs, rport->pid);
+		bfa_sm_fault(rport->fcs, rport->pid);
+	}
+
+	bfa_sm_send_event(rport->itnim, BFA_FCS_ITNIM_SM_FCS_ONLINE);
+}
+
+static void
+bfa_fcs_rport_hal_online_action(struct bfa_fcs_rport_s *rport)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bfa_fcs_lport_s *port = rport->port;
 	struct bfad_s *bfad = (struct bfad_s *)port->fcs->bfad;
@@ -2120,15 +2989,23 @@ bfa_fcs_rport_online_action(struct bfa_fcs_rport_s *rport)
 	rport->stats.onlines++;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((!rport->pid) || (!rport->pwwn)) {
 		bfa_trc(rport->fcs, rport->pid);
 		bfa_sm_fault(rport->fcs, rport->pid);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (bfa_fcs_lport_is_initiator(port)) {
 		bfa_fcs_itnim_rport_online(rport->itnim);
+=======
+	if (bfa_fcs_lport_is_initiator(port)) {
+		bfa_fcs_itnim_brp_online(rport->itnim);
+>>>>>>> refs/remotes/origin/master
 		if (!BFA_FCS_PID_IS_WKA(rport->pid))
 			bfa_fcs_rpf_rport_online(rport);
 	};
@@ -2136,46 +3013,79 @@ bfa_fcs_rport_online_action(struct bfa_fcs_rport_s *rport)
 	wwn2str(lpwwn_buf, bfa_fcs_lport_get_pwwn(port));
 	wwn2str(rpwwn_buf, rport->pwwn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!BFA_FCS_PID_IS_WKA(rport->pid))
 		BFA_LOG(KERN_INFO, bfad, bfa_log_level,
 		"Remote port (WWN = %s) online for logical port (WWN = %s)\n",
 		rpwwn_buf, lpwwn_buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!BFA_FCS_PID_IS_WKA(rport->pid)) {
 		BFA_LOG(KERN_INFO, bfad, bfa_log_level,
 		"Remote port (WWN = %s) online for logical port (WWN = %s)\n",
 		rpwwn_buf, lpwwn_buf);
 		bfa_fcs_rport_aen_post(rport, BFA_RPORT_AEN_ONLINE, NULL);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static void
 bfa_fcs_rport_offline_action(struct bfa_fcs_rport_s *rport)
+=======
+}
+
+static void
+bfa_fcs_rport_fcs_offline_action(struct bfa_fcs_rport_s *rport)
+{
+	if (!BFA_FCS_PID_IS_WKA(rport->pid))
+		bfa_fcs_rpf_rport_offline(rport);
+
+	bfa_fcs_itnim_rport_offline(rport->itnim);
+}
+
+static void
+bfa_fcs_rport_hal_offline_action(struct bfa_fcs_rport_s *rport)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bfa_fcs_lport_s *port = rport->port;
 	struct bfad_s *bfad = (struct bfad_s *)port->fcs->bfad;
 	char	lpwwn_buf[BFA_STRING_32];
 	char	rpwwn_buf[BFA_STRING_32];
 
+<<<<<<< HEAD
 	rport->stats.offlines++;
 <<<<<<< HEAD
 =======
 	rport->plogi_pending = BFA_FALSE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!rport->bfa_rport) {
+		bfa_fcs_rport_fcs_offline_action(rport);
+		return;
+	}
+
+	rport->stats.offlines++;
+>>>>>>> refs/remotes/origin/master
 
 	wwn2str(lpwwn_buf, bfa_fcs_lport_get_pwwn(port));
 	wwn2str(rpwwn_buf, rport->pwwn);
 	if (!BFA_FCS_PID_IS_WKA(rport->pid)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (bfa_fcs_lport_is_online(rport->port) == BFA_TRUE)
 =======
 		if (bfa_fcs_lport_is_online(rport->port) == BFA_TRUE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (bfa_fcs_lport_is_online(rport->port) == BFA_TRUE) {
+>>>>>>> refs/remotes/origin/master
 			BFA_LOG(KERN_ERR, bfad, bfa_log_level,
 				"Remote port (WWN = %s) connectivity lost for "
 				"logical port (WWN = %s)\n",
 				rpwwn_buf, lpwwn_buf);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		else
 =======
@@ -2183,16 +3093,27 @@ bfa_fcs_rport_offline_action(struct bfa_fcs_rport_s *rport)
 				BFA_RPORT_AEN_DISCONNECT, NULL);
 		} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bfa_fcs_rport_aen_post(rport,
+				BFA_RPORT_AEN_DISCONNECT, NULL);
+		} else {
+>>>>>>> refs/remotes/origin/master
 			BFA_LOG(KERN_INFO, bfad, bfa_log_level,
 				"Remote port (WWN = %s) offlined by "
 				"logical port (WWN = %s)\n",
 				rpwwn_buf, lpwwn_buf);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 			bfa_fcs_rport_aen_post(rport,
 				BFA_RPORT_AEN_OFFLINE, NULL);
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bfa_fcs_rport_aen_post(rport,
+				BFA_RPORT_AEN_OFFLINE, NULL);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (bfa_fcs_lport_is_initiator(port)) {
@@ -2233,13 +3154,19 @@ bfa_fcs_rport_update(struct bfa_fcs_rport_s *rport, struct fc_logi_s *plogi)
 	 */
 	rport->cisc = plogi->csp.cisc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rport->maxfrsize = be16_to_cpu(plogi->class3.rxsz);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (be16_to_cpu(plogi->class3.rxsz) < be16_to_cpu(plogi->csp.rxsz))
 		rport->maxfrsize = be16_to_cpu(plogi->class3.rxsz);
 	else
 		rport->maxfrsize = be16_to_cpu(plogi->csp.rxsz);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bfa_trc(port->fcs, be16_to_cpu(plogi->csp.bbcred));
 	bfa_trc(port->fcs, port->fabric->bb_credit);
@@ -2260,10 +3187,14 @@ bfa_fcs_rport_update(struct bfa_fcs_rport_s *rport, struct fc_logi_s *plogi)
 		port->fabric->bb_credit = be16_to_cpu(plogi->csp.bbcred);
 		bfa_fcport_set_tx_bbcredit(port->fcs->bfa,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					  port->fabric->bb_credit);
 =======
 					  port->fabric->bb_credit, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  port->fabric->bb_credit);
+>>>>>>> refs/remotes/origin/master
 	}
 
 }
@@ -2377,6 +3308,7 @@ bfa_fcs_rport_plogi_create(struct bfa_fcs_lport_s *port, struct fchs_s *fchs,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int
 wwn_compare(wwn_t wwn1, wwn_t wwn2)
 {
@@ -2395,6 +3327,8 @@ wwn_compare(wwn_t wwn1, wwn_t wwn2)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Called by bport/vport to handle PLOGI received from an existing
  *	 remote port.
@@ -2413,6 +3347,7 @@ bfa_fcs_rport_plogi(struct bfa_fcs_rport_s *rport, struct fchs_s *rx_fchs,
 	bfa_trc(rport->fcs, rport->reply_oxid);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * In Switched fabric topology,
 	 * PLOGI to each other. If our pwwn is smaller, ignore it,
@@ -2430,6 +3365,10 @@ bfa_fcs_rport_plogi(struct bfa_fcs_rport_s *rport, struct fchs_s *rx_fchs,
 	rport->pid = rx_fchs->s_id;
 	bfa_trc(rport->fcs, rport->pid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rport->pid = rx_fchs->s_id;
+	bfa_trc(rport->fcs, rport->pid);
+>>>>>>> refs/remotes/origin/master
 
 	rport->stats.plogi_rcvd++;
 	bfa_sm_send_event(rport, RPSM_EVENT_PLOGI_RCVD);
@@ -2443,10 +3382,16 @@ void
 bfa_fcs_rport_scn(struct bfa_fcs_rport_s *rport)
 {
 	rport->stats.rscns++;
+<<<<<<< HEAD
 	bfa_sm_send_event(rport, RPSM_EVENT_SCN);
 }
 
 
+=======
+	bfa_sm_send_event(rport, RPSM_EVENT_FAB_SCN);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	brief
  *	This routine BFA callback for bfa_rport_online() call.
@@ -2513,15 +3458,63 @@ bfa_cb_rport_qos_scn_flowid(void *cbarg,
 {
 	struct bfa_fcs_rport_s *rport = (struct bfa_fcs_rport_s *) cbarg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	bfa_trc(rport->fcs, rport->pwwn);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bfa_rport_aen_data_s aen_data;
 
 	bfa_trc(rport->fcs, rport->pwwn);
 	aen_data.priv.qos = new_qos_attr;
 	bfa_fcs_rport_aen_post(rport, BFA_RPORT_AEN_QOS_FLOWID, &aen_data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+void
+bfa_cb_rport_scn_online(struct bfa_s *bfa)
+{
+	struct bfa_fcs_s *fcs = &((struct bfad_s *)bfa->bfad)->bfa_fcs;
+	struct bfa_fcs_lport_s *port = bfa_fcs_get_base_port(fcs);
+	struct bfa_fcs_rport_s *rp;
+	struct list_head *qe;
+
+	list_for_each(qe, &port->rport_q) {
+		rp = (struct bfa_fcs_rport_s *) qe;
+		bfa_sm_send_event(rp, RPSM_EVENT_SCN_ONLINE);
+		rp->scn_online = BFA_TRUE;
+	}
+
+	if (bfa_fcs_lport_is_online(port))
+		bfa_fcs_lport_lip_scn_online(port);
+}
+
+void
+bfa_cb_rport_scn_no_dev(void *rport)
+{
+	struct bfa_fcs_rport_s *rp = rport;
+
+	bfa_sm_send_event(rp, RPSM_EVENT_SCN_OFFLINE);
+	rp->scn_online = BFA_FALSE;
+}
+
+void
+bfa_cb_rport_scn_offline(struct bfa_s *bfa)
+{
+	struct bfa_fcs_s *fcs = &((struct bfad_s *)bfa->bfad)->bfa_fcs;
+	struct bfa_fcs_lport_s *port = bfa_fcs_get_base_port(fcs);
+	struct bfa_fcs_rport_s *rp;
+	struct list_head *qe;
+
+	list_for_each(qe, &port->rport_q) {
+		rp = (struct bfa_fcs_rport_s *) qe;
+		bfa_sm_send_event(rp, RPSM_EVENT_SCN_OFFLINE);
+		rp->scn_online = BFA_FALSE;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2545,15 +3538,21 @@ bfa_cb_rport_qos_scn_prio(void *cbarg,
 {
 	struct bfa_fcs_rport_s *rport = (struct bfa_fcs_rport_s *) cbarg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	bfa_trc(rport->fcs, rport->pwwn);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bfa_rport_aen_data_s aen_data;
 
 	bfa_trc(rport->fcs, rport->pwwn);
 	aen_data.priv.qos = new_qos_attr;
 	bfa_fcs_rport_aen_post(rport, BFA_RPORT_AEN_QOS_PRIO, &aen_data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2624,7 +3623,11 @@ bfa_fcs_rport_send_prlo_acc(struct bfa_fcs_rport_s *rport)
 
 	bfa_trc(rport->fcs, rport->pid);
 
+<<<<<<< HEAD
 	fcxp = bfa_fcs_fcxp_alloc(port->fcs);
+=======
+	fcxp = bfa_fcs_fcxp_alloc(port->fcs, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 	if (!fcxp)
 		return;
 	len = fc_prlo_acc_build(&fchs, bfa_fcxp_get_reqbuf(fcxp),
@@ -2650,7 +3653,11 @@ bfa_fcs_rport_send_ls_rjt(struct bfa_fcs_rport_s *rport, struct fchs_s *rx_fchs,
 
 	bfa_trc(rport->fcs, rx_fchs->s_id);
 
+<<<<<<< HEAD
 	fcxp = bfa_fcs_fcxp_alloc(rport->fcs);
+=======
+	fcxp = bfa_fcs_fcxp_alloc(rport->fcs, BFA_FALSE);
+>>>>>>> refs/remotes/origin/master
 	if (!fcxp)
 		return;
 
@@ -2699,8 +3706,22 @@ bfa_fcs_rport_prlo(struct bfa_fcs_rport_s *rport, __be16 ox_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+/*
+ * Called by BFAD to set the max limit on number of bfa_fcs_rport allocation
+ * which limits number of concurrent logins to remote ports
+ */
+void
+bfa_fcs_rport_set_max_logins(u32 max_logins)
+{
+	if (max_logins > 0)
+		bfa_fcs_rport_max_logins = max_logins;
+}
+
+>>>>>>> refs/remotes/origin/master
 void
 bfa_fcs_rport_get_attr(struct bfa_fcs_rport_s *rport,
 		struct bfa_rport_attr_s *rport_attr)
@@ -2708,6 +3729,12 @@ bfa_fcs_rport_get_attr(struct bfa_fcs_rport_s *rport,
 	struct bfa_rport_qos_attr_s qos_attr;
 	struct bfa_fcs_lport_s *port = rport->port;
 	bfa_port_speed_t rport_speed = rport->rpf.rpsc_speed;
+<<<<<<< HEAD
+=======
+	struct bfa_port_attr_s port_attr;
+
+	bfa_fcport_get_attr(rport->fcs->bfa, &port_attr);
+>>>>>>> refs/remotes/origin/master
 
 	memset(rport_attr, 0, sizeof(struct bfa_rport_attr_s));
 	memset(&qos_attr, 0, sizeof(struct bfa_rport_qos_attr_s));
@@ -2724,9 +3751,17 @@ bfa_fcs_rport_get_attr(struct bfa_fcs_rport_s *rport,
 	rport_attr->curr_speed  = rport->rpf.rpsc_speed;
 	rport_attr->assigned_speed  = rport->rpf.assigned_speed;
 
+<<<<<<< HEAD
 	qos_attr.qos_priority = rport->bfa_rport->qos_attr.qos_priority;
 	qos_attr.qos_flow_id =
 		cpu_to_be32(rport->bfa_rport->qos_attr.qos_flow_id);
+=======
+	if (rport->bfa_rport) {
+		qos_attr.qos_priority = rport->bfa_rport->qos_attr.qos_priority;
+		qos_attr.qos_flow_id =
+			cpu_to_be32(rport->bfa_rport->qos_attr.qos_flow_id);
+	}
+>>>>>>> refs/remotes/origin/master
 	rport_attr->qos_attr = qos_attr;
 
 	rport_attr->trl_enforced = BFA_FALSE;
@@ -2736,11 +3771,19 @@ bfa_fcs_rport_get_attr(struct bfa_fcs_rport_s *rport,
 			rport_speed =
 				bfa_fcport_get_ratelim_speed(rport->fcs->bfa);
 
+<<<<<<< HEAD
 		if (rport_speed < bfa_fcs_lport_get_rport_max_speed(port))
 			rport_attr->trl_enforced = BFA_TRUE;
 	}
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((bfa_fcs_lport_get_rport_max_speed(port) !=
+		    BFA_PORT_SPEED_UNKNOWN) && (rport_speed < port_attr.speed))
+			rport_attr->trl_enforced = BFA_TRUE;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Remote port implementation.
@@ -3060,10 +4103,18 @@ bfa_fcs_rpf_send_rpsc2(void *rpf_cbarg, struct bfa_fcxp_s *fcxp_alloced)
 
 	bfa_trc(rport->fcs, rport->pwwn);
 
+<<<<<<< HEAD
 	fcxp = fcxp_alloced ? fcxp_alloced : bfa_fcs_fcxp_alloc(port->fcs);
 	if (!fcxp) {
 		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rpf->fcxp_wqe,
 					bfa_fcs_rpf_send_rpsc2, rpf);
+=======
+	fcxp = fcxp_alloced ? fcxp_alloced :
+	       bfa_fcs_fcxp_alloc(port->fcs, BFA_TRUE);
+	if (!fcxp) {
+		bfa_fcs_fcxp_alloc_wait(port->fcs->bfa, &rpf->fcxp_wqe,
+				bfa_fcs_rpf_send_rpsc2, rpf, BFA_TRUE);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	rpf->fcxp = fcxp;
@@ -3106,9 +4157,16 @@ bfa_fcs_rpf_rpsc2_response(void *fcsarg, struct bfa_fcxp_s *fcxp, void *cbarg,
 		num_ents = be16_to_cpu(rpsc2_acc->num_pids);
 		bfa_trc(rport->fcs, num_ents);
 		if (num_ents > 0) {
+<<<<<<< HEAD
 			WARN_ON(rpsc2_acc->port_info[0].pid == rport->pid);
 			bfa_trc(rport->fcs,
 				be16_to_cpu(rpsc2_acc->port_info[0].pid));
+=======
+			WARN_ON(be32_to_cpu(rpsc2_acc->port_info[0].pid) !=
+						bfa_ntoh3b(rport->pid));
+			bfa_trc(rport->fcs,
+				be32_to_cpu(rpsc2_acc->port_info[0].pid));
+>>>>>>> refs/remotes/origin/master
 			bfa_trc(rport->fcs,
 				be16_to_cpu(rpsc2_acc->port_info[0].speed));
 			bfa_trc(rport->fcs,

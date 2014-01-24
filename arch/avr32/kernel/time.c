@@ -12,6 +12,10 @@
 #include <linux/irq.h>
 #include <linux/kernel.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sysreg.h>
 
@@ -58,7 +62,11 @@ static irqreturn_t timer_interrupt(int irq, void *dev_id)
 static struct irqaction timer_irqaction = {
 	.handler	= timer_interrupt,
 	/* Oprofile uses the same irq as the timer, so allow it to be shared */
+<<<<<<< HEAD
 	.flags		= IRQF_TIMER | IRQF_DISABLED | IRQF_SHARED,
+=======
+	.flags		= IRQF_TIMER | IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 	.name		= "avr32_comparator",
 };
 
@@ -87,13 +95,32 @@ static void comparator_mode(enum clock_event_mode mode,
 		pr_debug("%s: start\n", evdev->name);
 		/* FALLTHROUGH */
 	case CLOCK_EVT_MODE_RESUME:
+<<<<<<< HEAD
 		cpu_disable_idle_sleep();
+=======
+		/*
+		 * If we're using the COUNT and COMPARE registers we
+		 * need to force idle poll.
+		 */
+		cpu_idle_poll_ctrl(true);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case CLOCK_EVT_MODE_UNUSED:
 	case CLOCK_EVT_MODE_SHUTDOWN:
 		sysreg_write(COMPARE, 0);
 		pr_debug("%s: stop\n", evdev->name);
+<<<<<<< HEAD
 		cpu_enable_idle_sleep();
+=======
+		if (evdev->mode == CLOCK_EVT_MODE_ONESHOT ||
+		    evdev->mode == CLOCK_EVT_MODE_RESUME) {
+			/*
+			 * Only disable idle poll if we have forced that
+			 * in a previous call.
+			 */
+			cpu_idle_poll_ctrl(false);
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		BUG();

@@ -36,9 +36,12 @@
 #include <asm/irq.h>
 #include <asm/dma.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ethernet.h>
 #include <asm/cache.h>
 #include <arch/io_interface_mux.h>
@@ -265,10 +268,14 @@ static const struct net_device_ops e100_netdev_ops = {
 	.ndo_tx_timeout		= e100_tx_timeout,
 	.ndo_get_stats		= e100_get_stats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= set_multicast_list,
 =======
 	.ndo_set_rx_mode	= set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_do_ioctl		= e100_ioctl,
 	.ndo_set_mac_address	= e100_set_mac_address,
 	.ndo_validate_addr	= eth_validate_addr,
@@ -1016,7 +1023,11 @@ e100_send_mdio_bit(unsigned char bit)
 }
 
 static unsigned char
+<<<<<<< HEAD
 e100_receive_mdio_bit()
+=======
+e100_receive_mdio_bit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char bit;
 	*R_NETWORK_MGM_CTRL = 0;
@@ -1139,7 +1150,10 @@ static irqreturn_t
 e100rxtx_interrupt(int irq, void *dev_id)
 {
 	struct net_device *dev = (struct net_device *)dev_id;
+<<<<<<< HEAD
 	struct net_local *np = netdev_priv(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long irqbits;
 
 	/*
@@ -1457,10 +1471,17 @@ static int e100_set_settings(struct net_device *dev,
 static void e100_get_drvinfo(struct net_device *dev,
 			     struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strncpy(info->driver, "ETRAX 100LX", sizeof(info->driver) - 1);
 	strncpy(info->version, "$Revision: 1.31 $", sizeof(info->version) - 1);
 	strncpy(info->fw_version, "N/A", sizeof(info->fw_version) - 1);
 	strncpy(info->bus_info, "N/A", sizeof(info->bus_info) - 1);
+=======
+	strlcpy(info->driver, "ETRAX 100LX", sizeof(info->driver));
+	strlcpy(info->version, "$Revision: 1.31 $", sizeof(info->version));
+	strlcpy(info->fw_version, "N/A", sizeof(info->fw_version));
+	strlcpy(info->bus_info, "N/A", sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int e100_nway_reset(struct net_device *dev)
@@ -1721,7 +1742,11 @@ e100_set_network_leds(int active)
 static void
 e100_netpoll(struct net_device* netdev)
 {
+<<<<<<< HEAD
 	e100rxtx_interrupt(NETWORK_DMA_TX_IRQ_NBR, netdev, NULL);
+=======
+	e100rxtx_interrupt(NETWORK_DMA_TX_IRQ_NBR, netdev);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

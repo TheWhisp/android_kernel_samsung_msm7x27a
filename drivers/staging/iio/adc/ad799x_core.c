@@ -32,6 +32,7 @@
 #include <linux/types.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "../iio.h"
 #include "../sysfs.h"
@@ -47,6 +48,15 @@
 #include "../buffer.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/events.h>
+#include <linux/iio/buffer.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "ad799x.h"
 
 /*
@@ -57,13 +67,21 @@ static int ad799x_i2c_read16(struct ad799x_state *st, u8 reg, u16 *data)
 	struct i2c_client *client = st->client;
 	int ret = 0;
 
+<<<<<<< HEAD
 	ret = i2c_smbus_read_word_data(client, reg);
+=======
+	ret = i2c_smbus_read_word_swapped(client, reg);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&client->dev, "I2C read error\n");
 		return ret;
 	}
 
+<<<<<<< HEAD
 	*data = swab16((u16)ret);
+=======
+	*data = (u16)ret;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -89,7 +107,11 @@ static int ad799x_i2c_write16(struct ad799x_state *st, u8 reg, u16 data)
 	struct i2c_client *client = st->client;
 	int ret = 0;
 
+<<<<<<< HEAD
 	ret = i2c_smbus_write_word_data(client, reg, swab16(data));
+=======
+	ret = i2c_smbus_write_word_swapped(client, reg, data);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		dev_err(&client->dev, "I2C write error\n");
 
@@ -108,10 +130,35 @@ static int ad799x_i2c_write8(struct ad799x_state *st, u8 reg, u8 data)
 	return ret;
 }
 
+<<<<<<< HEAD
 int ad7997_8_set_scan_mode(struct ad799x_state *st, unsigned mask)
 {
 	return ad799x_i2c_write16(st, AD7998_CONF_REG,
 		st->config | (mask << AD799X_CHANNEL_SHIFT));
+=======
+static int ad7997_8_update_scan_mode(struct iio_dev *indio_dev,
+	const unsigned long *scan_mask)
+{
+	struct ad799x_state *st = iio_priv(indio_dev);
+
+	kfree(st->rx_buf);
+	st->rx_buf = kmalloc(indio_dev->scan_bytes, GFP_KERNEL);
+	if (!st->rx_buf)
+		return -ENOMEM;
+
+	st->transfer_size = bitmap_weight(scan_mask, indio_dev->masklength) * 2;
+
+	switch (st->id) {
+	case ad7997:
+	case ad7998:
+		return ad799x_i2c_write16(st, AD7998_CONF_REG,
+			st->config | (*scan_mask << AD799X_CHANNEL_SHIFT));
+	default:
+		break;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ad799x_scan_direct(struct ad799x_state *st, unsigned ch)
@@ -147,16 +194,21 @@ static int ad799x_scan_direct(struct ad799x_state *st, unsigned ch)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ad799x_read_raw(struct iio_dev *dev_info,
 =======
 static int ad799x_read_raw(struct iio_dev *indio_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ad799x_read_raw(struct iio_dev *indio_dev,
+>>>>>>> refs/remotes/origin/master
 			   struct iio_chan_spec const *chan,
 			   int *val,
 			   int *val2,
 			   long m)
 {
 	int ret;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ad799x_state *st = dev_info->dev_data;
 =======
@@ -184,6 +236,12 @@ static int ad799x_read_raw(struct iio_dev *indio_dev,
 		scale_uv = (st->int_vref_mv * 1000)
 			>> st->chip_info->channel[0].scan_type.realbits;
 =======
+=======
+	struct ad799x_state *st = iio_priv(indio_dev);
+
+	switch (m) {
+	case IIO_CHAN_INFO_RAW:
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&indio_dev->mlock);
 		if (iio_buffer_enabled(indio_dev))
 			ret = -EBUSY;
@@ -197,6 +255,7 @@ static int ad799x_read_raw(struct iio_dev *indio_dev,
 			RES_MASK(chan->scan_type.realbits);
 		return IIO_VAL_INT;
 	case IIO_CHAN_INFO_SCALE:
+<<<<<<< HEAD
 		scale_uv = (st->int_vref_mv * 1000) >> chan->scan_type.realbits;
 >>>>>>> refs/remotes/origin/cm-10.0
 		*val =  scale_uv / 1000;
@@ -208,6 +267,14 @@ static int ad799x_read_raw(struct iio_dev *indio_dev,
 <<<<<<< HEAD
 
 =======
+=======
+		*val = st->int_vref_mv;
+		*val2 = chan->scan_type.realbits;
+		return IIO_VAL_FRACTIONAL_LOG2;
+	}
+	return -EINVAL;
+}
+>>>>>>> refs/remotes/origin/master
 static const unsigned int ad7998_frequencies[] = {
 	[AD7998_CYC_DIS]	= 0,
 	[AD7998_CYC_TCONF_32]	= 15625,
@@ -217,11 +284,15 @@ static const unsigned int ad7998_frequencies[] = {
 	[AD7998_CYC_TCONF_1024]	= 488,
 	[AD7998_CYC_TCONF_2048]	= 244,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t ad799x_read_frequency(struct device *dev,
 					struct device_attribute *attr,
 					char *buf)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 	struct ad799x_state *st = iio_dev_get_devdata(dev_info);
@@ -233,6 +304,12 @@ static ssize_t ad799x_read_frequency(struct device *dev,
 
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+	struct ad799x_state *st = iio_priv(indio_dev);
+
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	u8 val;
 	ret = ad799x_i2c_read8(st, AD7998_CYCLE_TMR_REG, &val);
 	if (ret)
@@ -240,6 +317,7 @@ static ssize_t ad799x_read_frequency(struct device *dev,
 
 	val &= AD7998_CYC_MASK;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (val) {
 	case AD7998_CYC_DIS:
@@ -271,6 +349,9 @@ static ssize_t ad799x_read_frequency(struct device *dev,
 =======
 	return sprintf(buf, "%u\n", ad7998_frequencies[val]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%u\n", ad7998_frequencies[val]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t ad799x_write_frequency(struct device *dev,
@@ -279,6 +360,7 @@ static ssize_t ad799x_write_frequency(struct device *dev,
 					 size_t len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev *dev_info = dev_get_drvdata(dev);
 	struct ad799x_state *st = iio_dev_get_devdata(dev_info);
 
@@ -286,10 +368,14 @@ static ssize_t ad799x_write_frequency(struct device *dev,
 	int ret;
 =======
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad799x_state *st = iio_priv(indio_dev);
 
 	long val;
 	int ret, i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	u8 t;
 
@@ -302,12 +388,22 @@ static ssize_t ad799x_write_frequency(struct device *dev,
 =======
 	mutex_lock(&indio_dev->mlock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 t;
+
+	ret = kstrtol(buf, 10, &val);
+	if (ret)
+		return ret;
+
+	mutex_lock(&indio_dev->mlock);
+>>>>>>> refs/remotes/origin/master
 	ret = ad799x_i2c_read8(st, AD7998_CYCLE_TMR_REG, &t);
 	if (ret)
 		goto error_ret_mutex;
 	/* Wipe the bits clean */
 	t &= ~AD7998_CYC_MASK;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (val) {
 	case 15625:
@@ -344,6 +440,8 @@ static ssize_t ad799x_write_frequency(struct device *dev,
 error_ret_mutex:
 	mutex_unlock(&dev_info->mlock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(ad7998_frequencies); i++)
 		if (val == ad7998_frequencies[i])
 			break;
@@ -356,19 +454,30 @@ error_ret_mutex:
 
 error_ret_mutex:
 	mutex_unlock(&indio_dev->mlock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret ? ret : len;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int ad799x_read_event_config(struct iio_dev *indio_dev,
 				    u64 event_code)
+=======
+static int ad799x_read_event_config(struct iio_dev *indio_dev,
+				    const struct iio_chan_spec *chan,
+				    enum iio_event_type type,
+				    enum iio_event_direction dir)
+>>>>>>> refs/remotes/origin/master
 {
 	return 1;
 }
 
+<<<<<<< HEAD
 static const u8 ad799x_threshold_addresses[][2] = {
 	{ AD7998_DATALOW_CH1_REG, AD7998_DATAHIGH_CH1_REG },
 	{ AD7998_DATALOW_CH2_REG, AD7998_DATAHIGH_CH2_REG },
@@ -390,12 +499,47 @@ static int ad799x_write_event_value(struct iio_dev *indio_dev,
 	ret = ad799x_i2c_write16(st,
 				 ad799x_threshold_addresses[number][direction],
 				 val);
+=======
+static unsigned int ad799x_threshold_reg(const struct iio_chan_spec *chan,
+					 enum iio_event_direction dir,
+					 enum iio_event_info info)
+{
+	switch (info) {
+	case IIO_EV_INFO_VALUE:
+		if (dir == IIO_EV_DIR_FALLING)
+			return AD7998_DATALOW_REG(chan->channel);
+		else
+			return AD7998_DATAHIGH_REG(chan->channel);
+	case IIO_EV_INFO_HYSTERESIS:
+		return AD7998_HYST_REG(chan->channel);
+	default:
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static int ad799x_write_event_value(struct iio_dev *indio_dev,
+				    const struct iio_chan_spec *chan,
+				    enum iio_event_type type,
+				    enum iio_event_direction dir,
+				    enum iio_event_info info,
+				    int val, int val2)
+{
+	int ret;
+	struct ad799x_state *st = iio_priv(indio_dev);
+
+	mutex_lock(&indio_dev->mlock);
+	ret = ad799x_i2c_write16(st, ad799x_threshold_reg(chan, dir, info),
+		val);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&indio_dev->mlock);
 
 	return ret;
 }
 
 static int ad799x_read_event_value(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 				    u64 event_code,
 				    int *val)
 {
@@ -410,11 +554,27 @@ static int ad799x_read_event_value(struct iio_dev *indio_dev,
 	ret = ad799x_i2c_read16(st,
 				ad799x_threshold_addresses[number][direction],
 				&valin);
+=======
+				    const struct iio_chan_spec *chan,
+				    enum iio_event_type type,
+				    enum iio_event_direction dir,
+				    enum iio_event_info info,
+				    int *val, int *val2)
+{
+	int ret;
+	struct ad799x_state *st = iio_priv(indio_dev);
+	u16 valin;
+
+	mutex_lock(&indio_dev->mlock);
+	ret = ad799x_i2c_read16(st, ad799x_threshold_reg(chan, dir, info),
+		&valin);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&indio_dev->mlock);
 	if (ret < 0)
 		return ret;
 	*val = valin;
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -473,36 +633,53 @@ static ssize_t ad799x_write_channel_config(struct device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return ret ? ret : len;
+=======
+	return IIO_VAL_INT;
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t ad799x_event_handler(int irq, void *private)
 {
 	struct iio_dev *indio_dev = private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ad799x_state *st = iio_dev_get_devdata(private);
 =======
 	struct ad799x_state *st = iio_priv(private);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ad799x_state *st = iio_priv(private);
+>>>>>>> refs/remotes/origin/master
 	u8 status;
 	int i, ret;
 
 	ret = ad799x_i2c_read8(st, AD7998_ALERT_STAT_REG, &status);
 	if (ret)
+<<<<<<< HEAD
 		return ret;
 
 	if (!status)
 		return -EIO;
+=======
+		goto done;
+
+	if (!status)
+		goto done;
+>>>>>>> refs/remotes/origin/master
 
 	ad799x_i2c_write8(st, AD7998_ALERT_STAT_REG, AD7998_ALERT_STAT_CLEAR);
 
 	for (i = 0; i < 8; i++) {
 		if (status & (1 << i))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iio_push_event(indio_dev, 0,
 				       i & 0x1 ?
 				       IIO_EVENT_CODE_IN_HIGH_THRESH(i >> 1) :
 				       IIO_EVENT_CODE_IN_LOW_THRESH(i >> 1),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			iio_push_event(indio_dev,
 				       i & 0x1 ?
 				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
@@ -513,6 +690,7 @@ static irqreturn_t ad799x_event_handler(int irq, void *private)
 							    (i >> 1),
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_FALLING),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 				       iio_get_time_ns());
 	}
@@ -608,11 +786,21 @@ static IIO_DEVICE_ATTR(in_voltage3_thresh_both_hyst_raw,
 		       ad799x_write_channel_config,
 		       AD7998_HYST_CH4_REG);
 
+=======
+				       iio_get_time_ns());
+	}
+
+done:
+	return IRQ_HANDLED;
+}
+
+>>>>>>> refs/remotes/origin/master
 static IIO_DEV_ATTR_SAMP_FREQ(S_IWUSR | S_IRUGO,
 			      ad799x_read_frequency,
 			      ad799x_write_frequency);
 static IIO_CONST_ATTR_SAMP_FREQ_AVAIL("15625 7812 3906 1953 976 488 244 0");
 
+<<<<<<< HEAD
 static struct attribute *ad7993_4_7_8_event_attributes[] = {
 <<<<<<< HEAD
 	&iio_dev_attr_in0_thresh_low_value.dev_attr.attr,
@@ -658,17 +846,26 @@ static struct attribute *ad7992_event_attributes[] = {
 	&iio_dev_attr_in_voltage0_thresh_both_hyst_raw.dev_attr.attr,
 	&iio_dev_attr_in_voltage1_thresh_both_hyst_raw.dev_attr.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct attribute *ad799x_event_attributes[] = {
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_sampling_frequency.dev_attr.attr,
 	&iio_const_attr_sampling_frequency_available.dev_attr.attr,
 	NULL,
 };
 
+<<<<<<< HEAD
 static struct attribute_group ad7992_event_attrs_group = {
 	.attrs = ad7992_event_attributes,
 <<<<<<< HEAD
 =======
 	.name = "events",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct attribute_group ad799x_event_attrs_group = {
+	.attrs = ad799x_event_attributes,
+	.name = "events",
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct iio_info ad7991_info = {
@@ -676,6 +873,7 @@ static const struct iio_info ad7991_info = {
 	.driver_module = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 static const struct iio_info ad7992_info = {
 	.read_raw = &ad799x_read_raw,
 <<<<<<< HEAD
@@ -723,10 +921,59 @@ static const struct ad799x_chip_info ad799x_chip_info_tbl[] = {
 
 #define AD799X_EV_MASK (IIO_EV_BIT(IIO_EV_TYPE_THRESH, IIO_EV_DIR_RISING) | \
 			IIO_EV_BIT(IIO_EV_TYPE_THRESH, IIO_EV_DIR_FALLING))
+=======
+static const struct iio_info ad7993_4_7_8_info = {
+	.read_raw = &ad799x_read_raw,
+	.event_attrs = &ad799x_event_attrs_group,
+	.read_event_config = &ad799x_read_event_config,
+	.read_event_value = &ad799x_read_event_value,
+	.write_event_value = &ad799x_write_event_value,
+	.driver_module = THIS_MODULE,
+	.update_scan_mode = ad7997_8_update_scan_mode,
+};
+
+static const struct iio_event_spec ad799x_events[] = {
+	{
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_RISING,
+		.mask_separate = BIT(IIO_EV_INFO_VALUE) |
+			BIT(IIO_EV_INFO_ENABLE),
+	}, {
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_FALLING,
+		.mask_separate = BIT(IIO_EV_INFO_VALUE),
+			BIT(IIO_EV_INFO_ENABLE),
+	}, {
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_EITHER,
+		.mask_separate = BIT(IIO_EV_INFO_HYSTERESIS),
+	},
+};
+
+#define _AD799X_CHANNEL(_index, _realbits, _ev_spec, _num_ev_spec) { \
+	.type = IIO_VOLTAGE, \
+	.indexed = 1, \
+	.channel = (_index), \
+	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW), \
+	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE), \
+	.scan_index = (_index), \
+	.scan_type = IIO_ST('u', _realbits, 16, 12 - (_realbits)), \
+	.event_spec = _ev_spec, \
+	.num_event_specs = _num_ev_spec, \
+}
+
+#define AD799X_CHANNEL(_index, _realbits) \
+	_AD799X_CHANNEL(_index, _realbits, NULL, 0)
+
+#define AD799X_CHANNEL_WITH_EVENTS(_index, _realbits) \
+	_AD799X_CHANNEL(_index, _realbits, ad799x_events, \
+		ARRAY_SIZE(ad799x_events))
+>>>>>>> refs/remotes/origin/master
 
 static const struct ad799x_chip_info ad799x_chip_info_tbl[] = {
 	[ad7991] = {
 		.channel = {
+<<<<<<< HEAD
 			[0] = {
 				.type = IIO_VOLTAGE,
 				.indexed = 1,
@@ -955,10 +1202,63 @@ static const struct ad799x_chip_info ad799x_chip_info_tbl[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		.num_channels = 5,
 		.int_vref_mv = 1024,
+=======
+			AD799X_CHANNEL(0, 12),
+			AD799X_CHANNEL(1, 12),
+			AD799X_CHANNEL(2, 12),
+			AD799X_CHANNEL(3, 12),
+			IIO_CHAN_SOFT_TIMESTAMP(4),
+		},
+		.num_channels = 5,
+		.info = &ad7991_info,
+	},
+	[ad7995] = {
+		.channel = {
+			AD799X_CHANNEL(0, 10),
+			AD799X_CHANNEL(1, 10),
+			AD799X_CHANNEL(2, 10),
+			AD799X_CHANNEL(3, 10),
+			IIO_CHAN_SOFT_TIMESTAMP(4),
+		},
+		.num_channels = 5,
+		.info = &ad7991_info,
+	},
+	[ad7999] = {
+		.channel = {
+			AD799X_CHANNEL(0, 8),
+			AD799X_CHANNEL(1, 8),
+			AD799X_CHANNEL(2, 8),
+			AD799X_CHANNEL(3, 8),
+			IIO_CHAN_SOFT_TIMESTAMP(4),
+		},
+		.num_channels = 5,
+		.info = &ad7991_info,
+	},
+	[ad7992] = {
+		.channel = {
+			AD799X_CHANNEL_WITH_EVENTS(0, 12),
+			AD799X_CHANNEL_WITH_EVENTS(1, 12),
+			IIO_CHAN_SOFT_TIMESTAMP(3),
+		},
+		.num_channels = 3,
+		.default_config = AD7998_ALERT_EN,
+		.info = &ad7993_4_7_8_info,
+	},
+	[ad7993] = {
+		.channel = {
+			AD799X_CHANNEL_WITH_EVENTS(0, 10),
+			AD799X_CHANNEL_WITH_EVENTS(1, 10),
+			AD799X_CHANNEL_WITH_EVENTS(2, 10),
+			AD799X_CHANNEL_WITH_EVENTS(3, 10),
+			IIO_CHAN_SOFT_TIMESTAMP(4),
+		},
+		.num_channels = 5,
+>>>>>>> refs/remotes/origin/master
 		.default_config = AD7998_ALERT_EN,
 		.info = &ad7993_4_7_8_info,
 	},
 	[ad7994] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.channel[0] = IIO_CHAN(IIO_IN, 0, 1, 0, NULL, 0, 0,
 				       (1 << IIO_CHAN_INFO_SCALE_SHARED),
@@ -1012,10 +1312,21 @@ static const struct ad799x_chip_info ad799x_chip_info_tbl[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		.num_channels = 5,
 		.int_vref_mv = 4096,
+=======
+		.channel = {
+			AD799X_CHANNEL_WITH_EVENTS(0, 12),
+			AD799X_CHANNEL_WITH_EVENTS(1, 12),
+			AD799X_CHANNEL_WITH_EVENTS(2, 12),
+			AD799X_CHANNEL_WITH_EVENTS(3, 12),
+			IIO_CHAN_SOFT_TIMESTAMP(4),
+		},
+		.num_channels = 5,
+>>>>>>> refs/remotes/origin/master
 		.default_config = AD7998_ALERT_EN,
 		.info = &ad7993_4_7_8_info,
 	},
 	[ad7997] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.channel[0] = IIO_CHAN(IIO_IN, 0, 1, 0, NULL, 0, 0,
 					  (1 << IIO_CHAN_INFO_SCALE_SHARED),
@@ -1109,10 +1420,25 @@ static const struct ad799x_chip_info ad799x_chip_info_tbl[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		.num_channels = 9,
 		.int_vref_mv = 1024,
+=======
+		.channel = {
+			AD799X_CHANNEL_WITH_EVENTS(0, 10),
+			AD799X_CHANNEL_WITH_EVENTS(1, 10),
+			AD799X_CHANNEL_WITH_EVENTS(2, 10),
+			AD799X_CHANNEL_WITH_EVENTS(3, 10),
+			AD799X_CHANNEL(4, 10),
+			AD799X_CHANNEL(5, 10),
+			AD799X_CHANNEL(6, 10),
+			AD799X_CHANNEL(7, 10),
+			IIO_CHAN_SOFT_TIMESTAMP(8),
+		},
+		.num_channels = 9,
+>>>>>>> refs/remotes/origin/master
 		.default_config = AD7998_ALERT_EN,
 		.info = &ad7993_4_7_8_info,
 	},
 	[ad7998] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.channel[0] = IIO_CHAN(IIO_IN, 0, 1, 0, NULL, 0, 0,
 				       (1 << IIO_CHAN_INFO_SCALE_SHARED),
@@ -1206,11 +1532,26 @@ static const struct ad799x_chip_info ad799x_chip_info_tbl[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		.num_channels = 9,
 		.int_vref_mv = 4096,
+=======
+		.channel = {
+			AD799X_CHANNEL_WITH_EVENTS(0, 12),
+			AD799X_CHANNEL_WITH_EVENTS(1, 12),
+			AD799X_CHANNEL_WITH_EVENTS(2, 12),
+			AD799X_CHANNEL_WITH_EVENTS(3, 12),
+			AD799X_CHANNEL(4, 12),
+			AD799X_CHANNEL(5, 12),
+			AD799X_CHANNEL(6, 12),
+			AD799X_CHANNEL(7, 12),
+			IIO_CHAN_SOFT_TIMESTAMP(8),
+		},
+		.num_channels = 9,
+>>>>>>> refs/remotes/origin/master
 		.default_config = AD7998_ALERT_EN,
 		.info = &ad7993_4_7_8_info,
 	},
 };
 
+<<<<<<< HEAD
 static int __devinit ad799x_probe(struct i2c_client *client,
 				   const struct i2c_device_id *id)
 {
@@ -1223,6 +1564,17 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 	struct ad799x_state *st;
 	struct iio_dev *indio_dev = iio_allocate_device(sizeof(*st));
 
+=======
+static int ad799x_probe(struct i2c_client *client,
+				   const struct i2c_device_id *id)
+{
+	int ret;
+	struct ad799x_platform_data *pdata = client->dev.platform_data;
+	struct ad799x_state *st;
+	struct iio_dev *indio_dev;
+
+	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*st));
+>>>>>>> refs/remotes/origin/master
 	if (indio_dev == NULL)
 		return -ENOMEM;
 
@@ -1236,6 +1588,7 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 
 	/* TODO: Add pdata options for filtering and bit delay */
 
+<<<<<<< HEAD
 	if (pdata)
 		st->int_vref_mv = pdata->vref_mv;
 	else
@@ -1246,6 +1599,18 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 		ret = regulator_enable(st->reg);
 		if (ret)
 			goto error_put_reg;
+=======
+	if (!pdata)
+		return -EINVAL;
+
+	st->int_vref_mv = pdata->vref_mv;
+
+	st->reg = devm_regulator_get(&client->dev, "vcc");
+	if (!IS_ERR(st->reg)) {
+		ret = regulator_enable(st->reg);
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 	st->client = client;
 
@@ -1253,10 +1618,13 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 	indio_dev->name = id->name;
 	indio_dev->info = st->chip_info->info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	indio_dev->name = id->name;
 	indio_dev->dev_data = (void *)(st);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	indio_dev->modes = INDIO_DIRECT_MODE;
 	indio_dev->channels = st->chip_info->channel;
@@ -1266,6 +1634,7 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 	if (ret)
 		goto error_disable_reg;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = iio_device_register(indio_dev);
 	if (ret)
@@ -1283,6 +1652,8 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 	if (ret)
 		goto error_cleanup_ring;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (client->irq > 0) {
 		ret = request_threaded_irq(client->irq,
 					   NULL,
@@ -1295,10 +1666,13 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 			goto error_cleanup_ring;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = iio_device_register(indio_dev);
 	if (ret)
 		goto error_free_irq;
@@ -1307,12 +1681,16 @@ static int __devinit ad799x_probe(struct i2c_client *client,
 
 error_free_irq:
 	free_irq(client->irq, indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error_cleanup_ring:
 	ad799x_ring_cleanup(indio_dev);
 error_disable_reg:
 	if (!IS_ERR(st->reg))
 		regulator_disable(st->reg);
+<<<<<<< HEAD
 error_put_reg:
 	if (!IS_ERR(st->reg))
 		regulator_put(st->reg);
@@ -1324,25 +1702,35 @@ error_put_reg:
 =======
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int ad799x_remove(struct i2c_client *client)
+=======
+static int ad799x_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 	struct ad799x_state *st = iio_priv(indio_dev);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (client->irq > 0)
 		free_irq(client->irq, indio_dev);
 
 	iio_ring_buffer_unregister(indio_dev->ring);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	iio_device_unregister(indio_dev);
 	if (client->irq > 0)
 		free_irq(client->irq, indio_dev);
 
+<<<<<<< HEAD
 	iio_buffer_unregister(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 	ad799x_ring_cleanup(indio_dev);
@@ -1355,6 +1743,12 @@ static __devexit int ad799x_remove(struct i2c_client *client)
 =======
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad799x_ring_cleanup(indio_dev);
+	if (!IS_ERR(st->reg))
+		regulator_disable(st->reg);
+	kfree(st->rx_buf);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1378,6 +1772,7 @@ static struct i2c_driver ad799x_driver = {
 		.name = "ad799x",
 	},
 	.probe = ad799x_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ad799x_remove),
 	.id_table = ad799x_id,
 };
@@ -1395,10 +1790,17 @@ static __exit void ad799x_exit(void)
 =======
 module_i2c_driver(ad799x_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ad799x_remove,
+	.id_table = ad799x_id,
+};
+module_i2c_driver(ad799x_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("Analog Devices AD799x ADC");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 <<<<<<< HEAD
 MODULE_ALIAS("i2c:ad799x");
 
@@ -1406,3 +1808,5 @@ module_init(ad799x_init);
 module_exit(ad799x_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

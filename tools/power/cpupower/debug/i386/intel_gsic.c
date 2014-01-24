@@ -66,7 +66,11 @@ int main (void)
 		printf("ecx = 0x%.8x\n", r.ecx);
 		printf("edx = 0x%.8x\n", r.edx);
 		printf("Note also that some BIOS do not support the initial "
+<<<<<<< HEAD
 		       "GSIC call, but the newer\nspeeedstep-smi driver may "
+=======
+		       "GSIC call, but the newer\nspeedstep-smi driver may "
+>>>>>>> refs/remotes/origin/master
 		       "work.\nFor this, you need to pass some arguments to "
 		       "the speedstep-smi driver:\n");
 		printf("\tsmi_cmd=0x?? smi_port=0x?? smi_sig=1\n");

@@ -5,8 +5,13 @@
  * Copyright (C) 2009 Lemote Inc.
  * Author: Wu Zhangjin, wuzhangjin@gmail.com
  *
+<<<<<<< HEAD
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
+=======
+ * This program is free software; you can redistribute	it and/or modify it
+ * under  the terms of	the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  */
@@ -90,9 +95,15 @@ void ml2f_reboot(void)
 #define EC_SHUTDOWN_IO_PORT_HIGH 0xff2d
 #define EC_SHUTDOWN_IO_PORT_LOW	 0xff2e
 #define EC_SHUTDOWN_IO_PORT_DATA 0xff2f
+<<<<<<< HEAD
 #define REG_SHUTDOWN_HIGH        0xFC
 #define REG_SHUTDOWN_LOW         0x29
 #define BIT_SHUTDOWN_ON          (1 << 1)
+=======
+#define REG_SHUTDOWN_HIGH	 0xFC
+#define REG_SHUTDOWN_LOW	 0x29
+#define BIT_SHUTDOWN_ON		 (1 << 1)
+>>>>>>> refs/remotes/origin/master
 
 static void ml2f_shutdown(void)
 {

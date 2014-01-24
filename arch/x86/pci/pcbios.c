@@ -45,10 +45,14 @@ static inline void set_bios_x(void)
 	set_memory_x(PAGE_OFFSET + BIOS_BEGIN, (BIOS_END - BIOS_BEGIN) >> PAGE_SHIFT);
 	if (__supported_pte_mask & _PAGE_NX)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "PCI : PCI BIOS aera is rw and x. Use pci=nobios if you want it NX.\n");
 =======
 		printk(KERN_INFO "PCI : PCI BIOS area is rw and x. Use pci=nobios if you want it NX.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_INFO "PCI : PCI BIOS area is rw and x. Use pci=nobios if you want it NX.\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -128,7 +132,11 @@ static struct {
 
 static int pci_bios_present;
 
+<<<<<<< HEAD
 static int __devinit check_pcibios(void)
+=======
+static int check_pcibios(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 signature, eax, ebx, ecx;
 	u8 status, major_ver, minor_ver, hw_mech;
@@ -186,9 +194,13 @@ static int pci_bios_read(unsigned int seg, unsigned int bus,
 	unsigned long bx = (bus << 8) | devfn;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	WARN_ON(seg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/master
 	if (!value || (bus > 255) || (devfn > 255) || (reg > 255))
 		return -EINVAL;
 
@@ -256,9 +268,13 @@ static int pci_bios_write(unsigned int seg, unsigned int bus,
 	unsigned long bx = (bus << 8) | devfn;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	WARN_ON(seg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/master
 	if ((bus > 255) || (devfn > 255) || (reg > 255)) 
 		return -EINVAL;
 
@@ -314,10 +330,14 @@ static int pci_bios_write(unsigned int seg, unsigned int bus,
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_raw_ops pci_bios_access = {
 =======
 static const struct pci_raw_ops pci_bios_access = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_raw_ops pci_bios_access = {
+>>>>>>> refs/remotes/origin/master
 	.read =		pci_bios_read,
 	.write =	pci_bios_write
 };
@@ -327,10 +347,14 @@ static const struct pci_raw_ops pci_bios_access = {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_raw_ops * __devinit pci_find_bios(void)
 =======
 static const struct pci_raw_ops * __devinit pci_find_bios(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_raw_ops *pci_find_bios(void)
+>>>>>>> refs/remotes/origin/master
 {
 	union bios32 *check;
 	unsigned char sum;

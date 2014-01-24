@@ -5,12 +5,16 @@ CONFIG_IKCONFIG_PROC=y
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_BLK_DEV_INITRD=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
 CONFIG_EXPERT=y
 # CONFIG_SYSCTL_SYSCALL is not set
 =======
 CONFIG_EXPERT=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_EXPERT=y
+>>>>>>> refs/remotes/origin/master
 # CONFIG_ELF_CORE is not set
 # CONFIG_FUTEX is not set
 # CONFIG_SIGNALFD is not set
@@ -40,9 +44,12 @@ CONFIG_BANK_3=0xAAC2
 CONFIG_BINFMT_FLAT=y
 CONFIG_BINFMT_ZFLAT=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_PM=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_NET=y
 CONFIG_PACKET=y
 CONFIG_UNIX=y
@@ -64,6 +71,7 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
 # CONFIG_FW_LOADER is not set
 CONFIG_MTD=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_MTD_PARTITIONS=y
 CONFIG_MTD_CMDLINE_PARTS=y
 CONFIG_MTD_CHAR=m
@@ -80,6 +88,8 @@ CONFIG_SMC91X=y
 # CONFIG_NETDEV_1000 is not set
 # CONFIG_NETDEV_10000 is not set
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_MTD_CMDLINE_PARTS=y
 CONFIG_MTD_CHAR=y
 CONFIG_MTD_BLOCK=y
@@ -100,7 +110,10 @@ CONFIG_NETDEVICES=y
 # CONFIG_NET_VENDOR_SEEQ is not set
 CONFIG_SMC91X=y
 # CONFIG_NET_VENDOR_STMICRO is not set
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_WLAN is not set
 CONFIG_INPUT=m
 # CONFIG_INPUT_MOUSEDEV is not set
@@ -109,6 +122,7 @@ CONFIG_INPUT_EVDEV=m
 # CONFIG_INPUT_MOUSE is not set
 # CONFIG_SERIO is not set
 # CONFIG_VT is not set
+<<<<<<< HEAD
 <<<<<<< HEAD
 # CONFIG_DEVKMEM is not set
 CONFIG_BFIN_JTAG_COMM=m
@@ -119,6 +133,8 @@ CONFIG_SERIAL_BFIN_CONSOLE=y
 CONFIG_SPI=y
 CONFIG_SPI_BFIN=y
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_LEGACY_PTYS is not set
 CONFIG_BFIN_JTAG_COMM=m
 # CONFIG_DEVKMEM is not set
@@ -127,7 +143,10 @@ CONFIG_SERIAL_BFIN_CONSOLE=y
 # CONFIG_HW_RANDOM is not set
 CONFIG_SPI=y
 CONFIG_SPI_BFIN5XX=y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_GPIOLIB=y
 CONFIG_GPIO_SYSFS=y
 # CONFIG_HWMON is not set
@@ -138,6 +157,7 @@ CONFIG_BFIN_WDT=y
 CONFIG_JFFS2_FS=m
 CONFIG_NFS_FS=m
 CONFIG_NFS_V3=y
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_SMB_FS=m
 CONFIG_DEBUG_KERNEL=y
@@ -150,6 +170,11 @@ CONFIG_DEBUG_SHIRQ=y
 CONFIG_DETECT_HUNG_TASK=y
 CONFIG_DEBUG_INFO=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_DEBUG_SHIRQ=y
+CONFIG_DETECT_HUNG_TASK=y
+CONFIG_DEBUG_INFO=y
+>>>>>>> refs/remotes/origin/master
 # CONFIG_FTRACE is not set
 CONFIG_DEBUG_MMRS=y
 CONFIG_DEBUG_HWERR=y

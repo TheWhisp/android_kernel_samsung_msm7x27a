@@ -13,9 +13,12 @@
 #include <linux/platform_device.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/m32r.h>
 #include <asm/io.h>
 

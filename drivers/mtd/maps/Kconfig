@@ -1,9 +1,13 @@
 menu "Mapping drivers for chip access"
 	depends on MTD!=n
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	depends on HAS_IOMEM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/master
 
 config MTD_COMPLEX_MAPPINGS
 	bool "Support non-linear mappings of flash chips"
@@ -46,10 +50,13 @@ config MTD_PHYSMAP_START
 	  memory map which should hopefully be in the documentation for
 	  your board.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Ignore this option if you use run-time physmap configuration
 	  (i.e., run-time calling physmap_configure()).
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config MTD_PHYSMAP_LEN
 	hex "Physical length of flash mapping"
@@ -63,10 +70,13 @@ config MTD_PHYSMAP_LEN
 	  map which should hopefully be in the documentation for your
 	  board.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Ignore this option if you use run-time physmap configuration
 	  (i.e., run-time calling physmap_configure()).
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config MTD_PHYSMAP_BANKWIDTH
 	int "Bank width in octets"
@@ -78,10 +88,13 @@ config MTD_PHYSMAP_BANKWIDTH
 	  bits, you would set the bus width octet value to 4. This is
 	  used internally by the CFI drivers.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Ignore this option if you use run-time physmap configuration
 	  (i.e., run-time calling physmap_configure()).
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config MTD_PHYSMAP_OF
 	tristate "Flash device in physical memory map based on OF description"
@@ -175,6 +188,7 @@ config MTD_PXA2XX
 	help
 	  This provides a driver for the NOR flash attached to a PXA2xx chip.
 
+<<<<<<< HEAD
 config MTD_OCTAGON
 	tristate "JEDEC Flash device mapped on Octagon 5066 SBC"
 	depends on X86 && MTD_JEDEC && MTD_COMPLEX_MAPPINGS
@@ -193,6 +207,8 @@ config MTD_VMAX
 	  Board Computer. More information on the board is available at
 	  <http://www.tempustech.com/>.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MTD_SCx200_DOCFLASH
 	tristate "Flash device mapped with DOCCS on NatSemi SCx200"
 	depends on SCx200 && MTD_CFI
@@ -242,7 +258,11 @@ config MTD_CK804XROM
 
 config MTD_SCB2_FLASH
 	tristate "BIOS flash chip on Intel SCB2 boards"
+<<<<<<< HEAD
 	depends on X86 && MTD_JEDECPROBE
+=======
+	depends on X86 && MTD_JEDECPROBE && PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for treating the BIOS flash chip on Intel SCB2 boards
 	  as an MTD device - with this you can reprogram your BIOS.
@@ -261,6 +281,7 @@ config MTD_NETtel
 	help
 	  Support for flash chips on NETtel/SecureEdge/SnapGear boards.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config MTD_BCM963XX
         tristate "Map driver for Broadcom BCM963xx boards"
@@ -299,6 +320,14 @@ config MTD_DILNETPC_BOOTSIZE
 	  The amount of space taken up by the kernel or Etherboot
 	  on the DIL/Net PC flash chips.
 
+=======
+config MTD_LANTIQ
+	tristate "Lantiq SoC NOR support"
+	depends on LANTIQ
+	help
+	  Support for NOR flash attached to the Lantiq SoC's External Bus Unit.
+
+>>>>>>> refs/remotes/origin/master
 config MTD_L440GX
 	tristate "BIOS flash chip on Intel L440GX boards"
 	depends on X86 && MTD_JEDECPROBE
@@ -308,6 +337,7 @@ config MTD_L440GX
 
 	  BE VERY CAREFUL.
 
+<<<<<<< HEAD
 config MTD_TQM8XXL
 	tristate "CFI Flash device mapped on TQM8XXL"
 	depends on MTD_CFI && TQM8xxL
@@ -344,6 +374,8 @@ config MTD_DBOX2
 	  D-Box 2 board. If you have one of these boards and would like to use
 	  the flash chips on it, say 'Y'.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MTD_CFI_FLAGADM
 	tristate "CFI Flash device mapping on FlagaDM"
 	depends on 8xx && MTD_CFI
@@ -359,6 +391,7 @@ config MTD_SOLUTIONENGINE
 	  similar boards. Say 'Y' if you are building a kernel for such a board.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config MTD_ARM_INTEGRATOR
 	tristate "CFI Flash device mapped on ARM Integrator/P720T"
 	depends on ARM && MTD_CFI
@@ -372,6 +405,8 @@ config MTD_CDB89712
 	  This enables access to the flash or ROM chips on the CDB89712 board.
 	  If you have such a board, say 'Y'.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MTD_SA1100
 	tristate "CFI Flash device mapped on StrongARM SA11x0"
 	depends on MTD_CFI && ARCH_SA1100
@@ -397,6 +432,7 @@ config MTD_IXP4XX
 	  IXDP425 and Coyote. If you have an IXP4xx based board and
 	  would like to use the flash chips on it, say 'Y'.
 
+<<<<<<< HEAD
 config MTD_IXP2000
 	tristate "CFI Flash device mapped on Intel IXP2000 based systems"
 	depends on MTD_CFI && MTD_COMPLEX_MAPPINGS && ARCH_IXP2000
@@ -430,6 +466,8 @@ config MTD_EDB7312
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config MTD_IMPA7
 	tristate "JEDEC Flash device mapped on impA7"
 	depends on ARM && MTD_JEDECPROBE
@@ -437,6 +475,7 @@ config MTD_IMPA7
 	  This enables access to the NOR Flash on the impA7 board of
 	  implementa GmbH. If you have such a board, say 'Y' here.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config MTD_CEIVA
 	tristate "JEDEC Flash device mapped on Ceiva/Polaroid PhotoMax Digital Picture Frame"
@@ -455,6 +494,8 @@ config MTD_H720X
 	  This enables access to the flash chips on the Hynix evaluation boards.
 	  If you have such a board, say 'Y'.
 
+=======
+>>>>>>> refs/remotes/origin/master
 # This needs CFI or JEDEC, depending on the cards found.
 config MTD_PCI
 	tristate "PCI MTD driver"
@@ -495,7 +536,11 @@ config MTD_BFIN_ASYNC
 
 config MTD_GPIO_ADDR
 	tristate "GPIO-assisted Flash Chip Support"
+<<<<<<< HEAD
 	depends on GENERIC_GPIO || GPIOLIB
+=======
+	depends on GPIOLIB
+>>>>>>> refs/remotes/origin/master
 	depends on MTD_COMPLEX_MAPPINGS
 	help
 	  Map driver which allows flashes to be partially physically addressed
@@ -505,6 +550,7 @@ config MTD_GPIO_ADDR
 
 config MTD_UCLINUX
 	bool "Generic uClinux RAM/ROM filesystem support"
+<<<<<<< HEAD
 	depends on MTD_RAM=y && !MMU
 	help
 	  Map driver to support image based filesystems for uClinux.
@@ -530,6 +576,12 @@ config MTD_DMV182
         help
           Map driver for Dy-4 SVME/DMV-182 board.
 
+=======
+	depends on (MTD_RAM=y || MTD_ROM=y) && (!MMU || COLDFIRE)
+	help
+	  Map driver to support image based filesystems for uClinux.
+
+>>>>>>> refs/remotes/origin/master
 config MTD_INTEL_VR_NOR
 	tristate "NOR flash on Intel Vermilion Range Expansion Bus CS0"
 	depends on PCI

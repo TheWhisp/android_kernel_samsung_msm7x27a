@@ -40,7 +40,11 @@
 #ifndef __CVMX_WQE_H__
 #define __CVMX_WQE_H__
 
+<<<<<<< HEAD
 #include "cvmx-packet.h"
+=======
+#include <asm/octeon/cvmx-packet.h>
+>>>>>>> refs/remotes/origin/master
 
 
 #define OCT_TAG_TYPE_STRING(x)						\
@@ -101,6 +105,7 @@ typedef union {
 		 * - 1 = Malformed L4
 		 * - 2 = L4 Checksum Error: the L4 checksum value is
 		 * - 3 = UDP Length Error: The UDP length field would
+<<<<<<< HEAD
 		 *       make the UDP data longer than what remains in
 		 *       the IP packet (as defined by the IP header
 		 *       length field).
@@ -118,6 +123,25 @@ typedef union {
 		 *        and RST are set.
 		 * - 13 = TCP SYN FIN: the packet is TCP and both SYN
 		 *        and FIN are set.
+=======
+		 *	 make the UDP data longer than what remains in
+		 *	 the IP packet (as defined by the IP header
+		 *	 length field).
+		 * - 4 = Bad L4 Port: either the source or destination
+		 *	 TCP/UDP port is 0.
+		 * - 8 = TCP FIN Only: the packet is TCP and only the
+		 *	 FIN flag set.
+		 * - 9 = TCP No Flags: the packet is TCP and no flags
+		 *	 are set.
+		 * - 10 = TCP FIN RST: the packet is TCP and both FIN
+		 *	  and RST are set.
+		 * - 11 = TCP SYN URG: the packet is TCP and both SYN
+		 *	  and URG are set.
+		 * - 12 = TCP SYN RST: the packet is TCP and both SYN
+		 *	  and RST are set.
+		 * - 13 = TCP SYN FIN: the packet is TCP and both SYN
+		 *	  and FIN are set.
+>>>>>>> refs/remotes/origin/master
 		 */
 		uint64_t L4_error:1;
 		/* set if the packet is a fragment */
@@ -127,16 +151,28 @@ typedef union {
 		 * failure indicated in err_code below, decode:
 		 *
 		 * - 1 = Not IP: the IP version field is neither 4 nor
+<<<<<<< HEAD
 		 *       6.
 		 * - 2 = IPv4 Header Checksum Error: the IPv4 header
 		 *       has a checksum violation.
 		 * - 3 = IP Malformed Header: the packet is not long
 		 *       enough to contain the IP header.
+=======
+		 *	 6.
+		 * - 2 = IPv4 Header Checksum Error: the IPv4 header
+		 *	 has a checksum violation.
+		 * - 3 = IP Malformed Header: the packet is not long
+		 *	 enough to contain the IP header.
+>>>>>>> refs/remotes/origin/master
 		 * - 4 = IP Malformed: the packet is not long enough
 		 *	 to contain the bytes indicated by the IP
 		 *	 header. Pad is allowed.
 		 * - 5 = IP TTL Hop: the IPv4 TTL field or the IPv6
+<<<<<<< HEAD
 		 *       Hop Count field are zero.
+=======
+		 *	 Hop Count field are zero.
+>>>>>>> refs/remotes/origin/master
 		 * - 6 = IP Options
 		 */
 		uint64_t IP_exc:1;
@@ -243,6 +279,7 @@ typedef union {
 		 * decode:
 		 *
 		 * - 1 = partial error: a packet was partially
+<<<<<<< HEAD
 		 *       received, but internal buffering / bandwidth
 		 *       was not adequate to receive the entire
 		 *       packet.
@@ -283,6 +320,48 @@ typedef union {
 		 *        cover the skipped bytes.
 		 * - 18 = L2 header malformed: the packet is not long
 		 *        enough to contain the L2.
+=======
+		 *	 received, but internal buffering / bandwidth
+		 *	 was not adequate to receive the entire
+		 *	 packet.
+		 * - 2 = jabber error: the RGMII packet was too large
+		 *	 and is truncated.
+		 * - 3 = overrun error: the RGMII packet is longer
+		 *	 than allowed and had an FCS error.
+		 * - 4 = oversize error: the RGMII packet is longer
+		 *	 than allowed.
+		 * - 5 = alignment error: the RGMII packet is not an
+		 *	 integer number of bytes
+		 *	 and had an FCS error (100M and 10M only).
+		 * - 6 = fragment error: the RGMII packet is shorter
+		 *	 than allowed and had an FCS error.
+		 * - 7 = GMX FCS error: the RGMII packet had an FCS
+		 *	 error.
+		 * - 8 = undersize error: the RGMII packet is shorter
+		 *	 than allowed.
+		 * - 9 = extend error: the RGMII packet had an extend
+		 *	 error.
+		 * - 10 = length mismatch error: the RGMII packet had
+		 *	  a length that did not match the length field
+		 *	  in the L2 HDR.
+		 * - 11 = RGMII RX error/SPI4 DIP4 Error: the RGMII
+		 *	  packet had one or more data reception errors
+		 *	  (RXERR) or the SPI4 packet had one or more
+		 *	  DIP4 errors.
+		 * - 12 = RGMII skip error/SPI4 Abort Error: the RGMII
+		 *	  packet was not large enough to cover the
+		 *	  skipped bytes or the SPI4 packet was
+		 *	  terminated with an About EOPS.
+		 * - 13 = RGMII nibble error/SPI4 Port NXA Error: the
+		 *	  RGMII packet had a studder error (data not
+		 *	  repeated - 10/100M only) or the SPI4 packet
+		 *	  was sent to an NXA.
+		 * - 16 = FCS error: a SPI4.2 packet had an FCS error.
+		 * - 17 = Skip error: a packet was not large enough to
+		 *	  cover the skipped bytes.
+		 * - 18 = L2 header malformed: the packet is not long
+		 *	  enough to contain the L2.
+>>>>>>> refs/remotes/origin/master
 		 */
 
 		uint64_t rcv_error:1;
@@ -309,7 +388,11 @@ typedef struct {
 
     /*****************************************************************
      * WORD 0
+<<<<<<< HEAD
      *  HW WRITE: the following 64 bits are filled by HW when a packet arrives
+=======
+     *	HW WRITE: the following 64 bits are filled by HW when a packet arrives
+>>>>>>> refs/remotes/origin/master
      */
 
     /**
@@ -323,14 +406,22 @@ typedef struct {
     /**
      * Next pointer used by hardware for list maintenance.
      * May be written/read by HW before the work queue
+<<<<<<< HEAD
      *           entry is scheduled to a PP
+=======
+     *		 entry is scheduled to a PP
+>>>>>>> refs/remotes/origin/master
      * (Only 36 bits used in Octeon 1)
      */
 	uint64_t next_ptr:40;
 
     /*****************************************************************
      * WORD 1
+<<<<<<< HEAD
      *  HW WRITE: the following 64 bits are filled by HW when a packet arrives
+=======
+     *	HW WRITE: the following 64 bits are filled by HW when a packet arrives
+>>>>>>> refs/remotes/origin/master
      */
 
     /**
@@ -362,8 +453,13 @@ typedef struct {
 
     /**
      * WORD 2 HW WRITE: the following 64-bits are filled in by
+<<<<<<< HEAD
      *   hardware when a packet arrives This indicates a variety of
      *   status and error conditions.
+=======
+     *	 hardware when a packet arrives This indicates a variety of
+     *	 status and error conditions.
+>>>>>>> refs/remotes/origin/master
      */
 	cvmx_pip_wqe_word2 word2;
 
@@ -373,6 +469,7 @@ typedef struct {
 	union cvmx_buf_ptr packet_ptr;
 
     /**
+<<<<<<< HEAD
      *   HW WRITE: octeon will fill in a programmable amount from the
      *             packet, up to (at most, but perhaps less) the amount
      *             needed to fill the work queue entry to 128 bytes
@@ -382,6 +479,17 @@ typedef struct {
      *   alignment) writing here where the IP header starts.  If the
      *   packet is not recognized to be IP, the hardware starts
      *   writing the beginning of the packet here.
+=======
+     *	 HW WRITE: octeon will fill in a programmable amount from the
+     *		   packet, up to (at most, but perhaps less) the amount
+     *		   needed to fill the work queue entry to 128 bytes
+     *
+     *	 If the packet is recognized to be IP, the hardware starts
+     *	 (except that the IPv4 header is padded for appropriate
+     *	 alignment) writing here where the IP header starts.  If the
+     *	 packet is not recognized to be IP, the hardware starts
+     *	 writing the beginning of the packet here.
+>>>>>>> refs/remotes/origin/master
      */
 	uint8_t packet_data[96];
 

@@ -2,6 +2,10 @@
  * linux/arch/sh/boards/se/7722/setup.c
  *
  * Copyright (C) 2007 Nobuhiro Iwamatsu
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2012 Paul Mundt
+>>>>>>> refs/remotes/origin/master
  *
  * Hitachi UL SolutionEngine 7722 Support.
  *
@@ -15,7 +19,13 @@
 #include <linux/ata_platform.h>
 #include <linux/input.h>
 #include <linux/input/sh_keysc.h>
+<<<<<<< HEAD
 #include <linux/smc91x.h>
+=======
+#include <linux/irqdomain.h>
+#include <linux/smc91x.h>
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach-se/mach/se7722.h>
 #include <mach-se/mach/mrshpc.h>
 #include <asm/machvec.h>
@@ -114,7 +124,11 @@ static struct resource sh_keysc_resources[] = {
 		.flags  = IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 79,
+=======
+		.start  = evt2irq(0xbe0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -128,11 +142,14 @@ static struct platform_device sh_keysc_device = {
 		.platform_data	= &sh_keysc_info,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_KEYSC,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *se7722_devices[] __initdata = {
@@ -148,10 +165,17 @@ static int __init se7722_devices_setup(void)
 
 	/* Wire-up dynamic vectors */
 	cf_ide_resources[2].start = cf_ide_resources[2].end =
+<<<<<<< HEAD
 		se7722_fpga_irq[SE7722_FPGA_IRQ_MRSHPC0];
 
 	smc91x_eth_resources[1].start = smc91x_eth_resources[1].end =
 		se7722_fpga_irq[SE7722_FPGA_IRQ_SMC];
+=======
+		irq_find_mapping(se7722_irq_domain, SE7722_FPGA_IRQ_MRSHPC0);
+
+	smc91x_eth_resources[1].start = smc91x_eth_resources[1].end =
+		irq_find_mapping(se7722_irq_domain, SE7722_FPGA_IRQ_SMC);
+>>>>>>> refs/remotes/origin/master
 
 	return platform_add_devices(se7722_devices, ARRAY_SIZE(se7722_devices));
 }

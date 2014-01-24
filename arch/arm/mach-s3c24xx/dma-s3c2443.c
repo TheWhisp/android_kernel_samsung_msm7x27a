@@ -25,12 +25,17 @@
 
 #include <plat/regs-serial.h>
 #include <mach/regs-gpio.h>
+<<<<<<< HEAD
 #include <plat/regs-ac97.h>
 #include <plat/regs-dma.h>
 #include <mach/regs-mem.h>
 #include <mach/regs-lcd.h>
 #include <mach/regs-sdi.h>
 #include <plat/regs-iis.h>
+=======
+#include <plat/regs-dma.h>
+#include <mach/regs-lcd.h>
+>>>>>>> refs/remotes/origin/master
 #include <plat/regs-spi.h>
 
 #define MAP(x) { \
@@ -55,12 +60,29 @@ static struct s3c24xx_dma_map __initdata s3c2443_dma_mappings[] = {
 		.name		= "sdi",
 		.channels	= MAP(S3C2443_DMAREQSEL_SDI),
 	},
+<<<<<<< HEAD
 	[DMACH_SPI0] = {
 		.name		= "spi0",
 		.channels	= MAP(S3C2443_DMAREQSEL_SPI0TX),
 	},
 	[DMACH_SPI1] = { /* only on S3C2443/S3C2450 */
 		.name		= "spi1",
+=======
+	[DMACH_SPI0_RX] = {
+		.name		= "spi0-rx",
+		.channels	= MAP(S3C2443_DMAREQSEL_SPI0RX),
+	},
+	[DMACH_SPI0_TX] = {
+		.name		= "spi0-tx",
+		.channels	= MAP(S3C2443_DMAREQSEL_SPI0TX),
+	},
+	[DMACH_SPI1_RX] = { /* only on S3C2443/S3C2450 */
+		.name		= "spi1-rx",
+		.channels	= MAP(S3C2443_DMAREQSEL_SPI1RX),
+	},
+	[DMACH_SPI1_TX] = { /* only on S3C2443/S3C2450 */
+		.name		= "spi1-tx",
+>>>>>>> refs/remotes/origin/master
 		.channels	= MAP(S3C2443_DMAREQSEL_SPI1TX),
 	},
 	[DMACH_UART0] = {
@@ -124,7 +146,12 @@ static struct s3c24xx_dma_map __initdata s3c2443_dma_mappings[] = {
 static void s3c2443_dma_select(struct s3c2410_dma_chan *chan,
 			       struct s3c24xx_dma_map *map)
 {
+<<<<<<< HEAD
 	writel(map->channels[0] | S3C2443_DMAREQSEL_HW,
+=======
+	unsigned long chsel = map->channels[0] & (~DMA_CH_VALID);
+	writel(chsel | S3C2443_DMAREQSEL_HW,
+>>>>>>> refs/remotes/origin/master
 	       chan->regs + S3C2443_DMA_DMAREQSEL);
 }
 

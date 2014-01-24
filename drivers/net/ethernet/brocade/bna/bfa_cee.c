@@ -52,6 +52,7 @@ bfa_cee_format_lldp_cfg(struct bfa_cee_lldp_cfg *lldp_cfg)
 }
 
 /**
+<<<<<<< HEAD
  * bfa_cee_attr_meminfo()
  *
  * @brief Returns the size of the DMA memory needed by CEE attributes
@@ -59,6 +60,9 @@ bfa_cee_format_lldp_cfg(struct bfa_cee_lldp_cfg *lldp_cfg)
  * @param[in] void
  *
  * @return Size of DMA region
+=======
+ * bfa_cee_attr_meminfo - Returns the size of the DMA memory needed by CEE attributes
+>>>>>>> refs/remotes/origin/master
  */
 static u32
 bfa_cee_attr_meminfo(void)
@@ -66,6 +70,7 @@ bfa_cee_attr_meminfo(void)
 	return roundup(sizeof(struct bfa_cee_attr), BFA_DMA_ALIGN_SZ);
 }
 /**
+<<<<<<< HEAD
  * bfa_cee_stats_meminfo()
  *
  * @brief Returns the size of the DMA memory needed by CEE stats
@@ -73,6 +78,9 @@ bfa_cee_attr_meminfo(void)
  * @param[in] void
  *
  * @return Size of DMA region
+=======
+ * bfa_cee_stats_meminfo - Returns the size of the DMA memory needed by CEE stats
+>>>>>>> refs/remotes/origin/master
  */
 static u32
 bfa_cee_stats_meminfo(void)
@@ -81,6 +89,7 @@ bfa_cee_stats_meminfo(void)
 }
 
 /**
+<<<<<<< HEAD
  * bfa_cee_get_attr_isr()
  *
  * @brief CEE ISR for get-attributes responses from f/w
@@ -89,6 +98,12 @@ bfa_cee_stats_meminfo(void)
  *            status - Return status from the f/w
  *
  * @return void
+=======
+ * bfa_cee_get_attr_isr - CEE ISR for get-attributes responses from f/w
+ *
+ * @cee: Pointer to the CEE module
+ * @status: Return status from the f/w
+>>>>>>> refs/remotes/origin/master
  */
 static void
 bfa_cee_get_attr_isr(struct bfa_cee *cee, enum bfa_status status)
@@ -105,6 +120,7 @@ bfa_cee_get_attr_isr(struct bfa_cee *cee, enum bfa_status status)
 }
 
 /**
+<<<<<<< HEAD
  * bfa_cee_get_attr_isr()
  *
  * @brief CEE ISR for get-stats responses from f/w
@@ -113,6 +129,12 @@ bfa_cee_get_attr_isr(struct bfa_cee *cee, enum bfa_status status)
  *            status - Return status from the f/w
  *
  * @return void
+=======
+ * bfa_cee_get_attr_isr - CEE ISR for get-stats responses from f/w
+ *
+ * @cee: Pointer to the CEE module
+ * @status: Return status from the f/w
+>>>>>>> refs/remotes/origin/master
  */
 static void
 bfa_cee_get_stats_isr(struct bfa_cee *cee, enum bfa_status status)
@@ -147,6 +169,7 @@ bfa_cee_reset_stats_isr(struct bfa_cee *cee, enum bfa_status status)
 		cee->cbfn.reset_stats_cbfn(cee->cbfn.reset_stats_cbarg, status);
 }
 /**
+<<<<<<< HEAD
  * bfa_nw_cee_meminfo()
  *
  * @brief Returns the size of the DMA memory needed by CEE module
@@ -154,6 +177,9 @@ bfa_cee_reset_stats_isr(struct bfa_cee *cee, enum bfa_status status)
  * @param[in] void
  *
  * @return Size of DMA region
+=======
+ * bfa_nw_cee_meminfo - Returns the size of the DMA memory needed by CEE module
+>>>>>>> refs/remotes/origin/master
  */
 u32
 bfa_nw_cee_meminfo(void)
@@ -162,6 +188,7 @@ bfa_nw_cee_meminfo(void)
 }
 
 /**
+<<<<<<< HEAD
  * bfa_nw_cee_mem_claim()
  *
  * @brief Initialized CEE DMA Memory
@@ -171,6 +198,13 @@ bfa_nw_cee_meminfo(void)
  *	      dma_pa  Physical Address of CEE DMA Memory
  *
  * @return void
+=======
+ * bfa_nw_cee_mem_claim - Initialized CEE DMA Memory
+ *
+ * @cee: CEE module pointer
+ * @dma_kva: Kernel Virtual Address of CEE DMA Memory
+ * @dma_pa:  Physical Address of CEE DMA Memory
+>>>>>>> refs/remotes/origin/master
  */
 void
 bfa_nw_cee_mem_claim(struct bfa_cee *cee, u8 *dma_kva, u64 dma_pa)
@@ -185,6 +219,7 @@ bfa_nw_cee_mem_claim(struct bfa_cee *cee, u8 *dma_kva, u64 dma_pa)
 }
 
 /**
+<<<<<<< HEAD
  * bfa_cee_get_attr()
  *
  * @brief	Send the request to the f/w to fetch CEE attributes.
@@ -192,6 +227,13 @@ bfa_nw_cee_mem_claim(struct bfa_cee *cee, u8 *dma_kva, u64 dma_pa)
  * @param[in]	Pointer to the CEE module data structure.
  *
  * @return	Status
+=======
+ * bfa_cee_get_attr - Send the request to the f/w to fetch CEE attributes.
+ *
+ * @cee: Pointer to the CEE module data structure.
+ *
+ * Return: status
+>>>>>>> refs/remotes/origin/master
  */
 enum bfa_status
 bfa_nw_cee_get_attr(struct bfa_cee *cee, struct bfa_cee_attr *attr,
@@ -220,6 +262,7 @@ bfa_nw_cee_get_attr(struct bfa_cee *cee, struct bfa_cee_attr *attr,
 }
 
 /**
+<<<<<<< HEAD
  * bfa_cee_isrs()
  *
  * @brief Handles Mail-box interrupts for CEE module.
@@ -227,6 +270,9 @@ bfa_nw_cee_get_attr(struct bfa_cee *cee, struct bfa_cee_attr *attr,
  * @param[in] Pointer to the CEE module data structure.
  *
  * @return void
+=======
+ * bfa_cee_isrs - Handles Mail-box interrupts for CEE module.
+>>>>>>> refs/remotes/origin/master
  */
 
 static void
@@ -253,6 +299,7 @@ bfa_cee_isr(void *cbarg, struct bfi_mbmsg *m)
 }
 
 /**
+<<<<<<< HEAD
  * bfa_cee_notify()
  *
  * @brief CEE module heart-beat failure handler.
@@ -261,6 +308,11 @@ bfa_cee_isr(void *cbarg, struct bfi_mbmsg *m)
  * @param[in] IOC event type
  *
  * @return void
+=======
+ * bfa_cee_notify - CEE module heart-beat failure handler.
+ *
+ * @event: IOC event type
+>>>>>>> refs/remotes/origin/master
  */
 
 static void
@@ -307,6 +359,7 @@ bfa_cee_notify(void *arg, enum bfa_ioc_event event)
 }
 
 /**
+<<<<<<< HEAD
  * bfa_nw_cee_attach()
  *
  * @brief CEE module-attach API
@@ -318,6 +371,15 @@ bfa_cee_notify(void *arg, enum bfa_ioc_event event)
  *                  this pointer as one of the parameters.
  *
  * @return void
+=======
+ * bfa_nw_cee_attach - CEE module-attach API
+ *
+ * @cee: Pointer to the CEE module data structure
+ * @ioc: Pointer to the ioc module data structure
+ * @dev: Pointer to the device driver module data structure.
+ *       The device driver specific mbox ISR functions have
+ *       this pointer as one of the parameters.
+>>>>>>> refs/remotes/origin/master
  */
 void
 bfa_nw_cee_attach(struct bfa_cee *cee, struct bfa_ioc *ioc,

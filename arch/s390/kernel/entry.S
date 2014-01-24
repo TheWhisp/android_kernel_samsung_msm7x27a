@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/entry.S
  *    S390 low-level entry points.
  *
@@ -7,6 +8,11 @@
 =======
  *    Copyright (C) IBM Corp. 1999,2012
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *    S390 low-level entry points.
+ *
+ *    Copyright IBM Corp. 1999, 2012
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  *		 Hartmut Penner (hp@de.ibm.com),
  *		 Denis Joseph Barrow (djbarrow@de.ibm.com,barrow_dj@yahoo.com),
@@ -14,12 +20,17 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/linkage.h>
 #include <linux/init.h>
 =======
 #include <linux/init.h>
 #include <linux/linkage.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/init.h>
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/cache.h>
 #include <asm/errno.h>
 #include <asm/ptrace.h>
@@ -27,6 +38,7 @@
 #include <asm/asm-offsets.h>
 #include <asm/unistd.h>
 #include <asm/page.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 /*
@@ -64,6 +76,11 @@ _TIF_WORK_INT = (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
 _TIF_SYSCALL = (_TIF_SYSCALL_TRACE>>8 | _TIF_SYSCALL_AUDIT>>8 | \
 		_TIF_SECCOMP>>8 | _TIF_SYSCALL_TRACEPOINT>>8)
 =======
+=======
+#include <asm/sigp.h>
+#include <asm/irq.h>
+
+>>>>>>> refs/remotes/origin/master
 __PT_R0      =	__PT_GPRS
 __PT_R1      =	__PT_GPRS + 4
 __PT_R2      =	__PT_GPRS + 8
@@ -87,6 +104,7 @@ _TIF_WORK_INT = (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | \
 		 _TIF_MCCK_PENDING)
 _TIF_TRACE    = (_TIF_SYSCALL_TRACE | _TIF_SYSCALL_AUDIT | _TIF_SECCOMP | \
 		 _TIF_SYSCALL_TRACEPOINT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 STACK_SHIFT = PAGE_SHIFT + THREAD_ORDER
@@ -223,6 +241,15 @@ STACK_SIZE  = 1 << STACK_SHIFT
 	ni	__SF_EMPTY(%r15),0xbf
 	ssm	__SF_EMPTY(%r15)
 =======
+=======
+
+STACK_SHIFT = PAGE_SHIFT + THREAD_ORDER
+STACK_SIZE  = 1 << STACK_SHIFT
+STACK_INIT  = STACK_SIZE - STACK_FRAME_OVERHEAD - __PT_SIZE
+
+#define BASED(name) name-system_call(%r13)
+
+>>>>>>> refs/remotes/origin/master
 	.macro	TRACE_IRQS_ON
 #ifdef CONFIG_TRACE_IRQFLAGS
 	basr	%r2,%r0
@@ -272,10 +299,17 @@ STACK_SIZE  = 1 << STACK_SHIFT
 	sra	%r14,\shift
 	jnz	1f
 	CHECK_STACK 1<<\shift,\savearea
+<<<<<<< HEAD
 	j	2f
 1:	l	%r15,\stack		# load target stack
 2:	ahi	%r15,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
 	la	%r11,STACK_FRAME_OVERHEAD(%r15)
+=======
+	ahi	%r15,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
+	j	2f
+1:	l	%r15,\stack		# load target stack
+2:	la	%r11,STACK_FRAME_OVERHEAD(%r15)
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 	.macro	ADD64 high,low,timer
@@ -308,7 +342,10 @@ STACK_SIZE  = 1 << STACK_SHIFT
 	st	%r8,__LC_RETURN_PSW
 	ni	__LC_RETURN_PSW,0xbf
 	ssm	__LC_RETURN_PSW
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 	.section .kprobes.text, "ax"
@@ -320,6 +357,7 @@ STACK_SIZE  = 1 << STACK_SHIFT
  * Returns:
  *  gpr2 = prev
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.globl	__switch_to
 __switch_to:
@@ -335,10 +373,26 @@ __switch_to:
 ENTRY(__switch_to)
 	l	%r4,__THREAD_info(%r2)		# get thread_info of prev
 	l	%r5,__THREAD_info(%r3)		# get thread_info of next
+=======
+ENTRY(__switch_to)
+	stm	%r6,%r15,__SF_GPRS(%r15)	# store gprs of prev task
+	st	%r15,__THREAD_ksp(%r2)		# store kernel stack of prev
+	l	%r4,__THREAD_info(%r2)		# get thread_info of prev
+	l	%r5,__THREAD_info(%r3)		# get thread_info of next
+	lr	%r15,%r5
+	ahi	%r15,STACK_INIT			# end of kernel stack of next
+	st	%r3,__LC_CURRENT		# store task struct of next
+	st	%r5,__LC_THREAD_INFO		# store thread info of next
+	st	%r15,__LC_KERNEL_STACK		# store end of kernel stack
+	lctl	%c4,%c4,__TASK_pid(%r3)		# load pid to control reg. 4
+	mvc	__LC_CURRENT_PID(4,%r0),__TASK_pid(%r3)	# store pid of next
+	l	%r15,__THREAD_ksp(%r3)		# load kernel stack of next
+>>>>>>> refs/remotes/origin/master
 	tm	__TI_flags+3(%r4),_TIF_MCCK_PENDING # machine check pending?
 	jz	0f
 	ni	__TI_flags+3(%r4),255-_TIF_MCCK_PENDING	# clear flag in prev
 	oi	__TI_flags+3(%r5),_TIF_MCCK_PENDING	# set it in next
+<<<<<<< HEAD
 0:	stm	%r6,%r15,__SF_GPRS(%r15)	# store gprs of prev task
 >>>>>>> refs/remotes/origin/cm-10.0
 	st	%r15,__THREAD_ksp(%r2)		# store kernel stack of prev
@@ -350,6 +404,9 @@ ENTRY(__switch_to)
 	st	%r5,__LC_THREAD_INFO		# store thread info of next
 	ahi	%r5,STACK_SIZE			# end of kernel stack of next
 	st	%r5,__LC_KERNEL_STACK		# store end of kernel stack
+=======
+0:	lm	%r6,%r15,__SF_GPRS(%r15)	# load gprs of next task
+>>>>>>> refs/remotes/origin/master
 	br	%r14
 
 __critical_start:
@@ -358,6 +415,7 @@ __critical_start:
  * are executed with interrupts enabled.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.globl	system_call
 system_call:
@@ -393,6 +451,8 @@ sysc_nr_ok:
 	basr	%r14,%r8	  # call sys_xxxx
 	st	%r2,SP_R2(%r15)   # store return value (change R2 on stack)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(system_call)
 	stpt	__LC_SYNC_ENTER_TIMER
 sysc_stm:
@@ -401,7 +461,10 @@ sysc_stm:
 	l	%r13,__LC_SVC_NEW_PSW+4
 sysc_per:
 	l	%r15,__LC_KERNEL_STACK
+<<<<<<< HEAD
 	ahi	%r15,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
+=======
+>>>>>>> refs/remotes/origin/master
 	la	%r11,STACK_FRAME_OVERHEAD(%r15)	# pointer to pt_regs
 sysc_vtime:
 	UPDATE_VTIME %r8,%r9,__LC_SYNC_ENTER_TIMER
@@ -411,6 +474,10 @@ sysc_vtime:
 	mvc	__PT_INT_CODE(4,%r11),__LC_SVC_ILC
 sysc_do_svc:
 	oi	__TI_flags+3(%r12),_TIF_SYSCALL
+<<<<<<< HEAD
+=======
+	l	%r10,__TI_sysc_table(%r12)	# 31 bit system call table
+>>>>>>> refs/remotes/origin/master
 	lh	%r8,__PT_INT_CODE+2(%r11)
 	sla	%r8,2				# shift and test for svc0
 	jnz	sysc_nr_ok
@@ -421,7 +488,10 @@ sysc_do_svc:
 	lr	%r8,%r1
 	sla	%r8,2
 sysc_nr_ok:
+<<<<<<< HEAD
 	l	%r10,BASED(.Lsys_call_table)	# 31 bit system call table
+=======
+>>>>>>> refs/remotes/origin/master
 	xc	__SF_BACKCHAIN(4,%r15),__SF_BACKCHAIN(%r15)
 	st	%r2,__PT_ORIG_GPR2(%r11)
 	st	%r7,STACK_FRAME_OVERHEAD(%r15)
@@ -430,11 +500,15 @@ sysc_nr_ok:
 	jnz	sysc_tracesys
 	basr	%r14,%r9			# call sys_xxxx
 	st	%r2,__PT_R2(%r11)		# store return value
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 sysc_return:
 	LOCKDEP_SYS_EXIT
 sysc_tif:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tm	__TI_flags+3(%r12),_TIF_WORK_SVC
 	bnz	BASED(sysc_work)  # there is work to do (signals etc.)
@@ -467,6 +541,8 @@ sysc_work_tif:
 	bo	BASED(sysc_singlestep)
 	b	BASED(sysc_return)	# beware of critical section cleanup
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tm	__PT_PSW+1(%r11),0x01		# returning to user ?
 	jno	sysc_restore
 	tm	__TI_flags+3(%r12),_TIF_WORK_SVC
@@ -487,14 +563,23 @@ sysc_work:
 	jo	sysc_mcck_pending
 	tm	__TI_flags+3(%r12),_TIF_NEED_RESCHED
 	jo	sysc_reschedule
+<<<<<<< HEAD
+=======
+	tm	__TI_flags+3(%r12),_TIF_PER_TRAP
+	jo	sysc_singlestep
+>>>>>>> refs/remotes/origin/master
 	tm	__TI_flags+3(%r12),_TIF_SIGPENDING
 	jo	sysc_sigpending
 	tm	__TI_flags+3(%r12),_TIF_NOTIFY_RESUME
 	jo	sysc_notify_resume
+<<<<<<< HEAD
 	tm	__TI_flags+3(%r12),_TIF_PER_TRAP
 	jo	sysc_singlestep
 	j	sysc_return		# beware of critical section cleanup
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	j	sysc_return		# beware of critical section cleanup
+>>>>>>> refs/remotes/origin/master
 
 #
 # _TIF_NEED_RESCHED is set, call schedule
@@ -503,20 +588,28 @@ sysc_reschedule:
 	l	%r1,BASED(.Lschedule)
 	la	%r14,BASED(sysc_return)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	br	%r1			# call scheduler
 =======
 	br	%r1			# call schedule
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	br	%r1			# call schedule
+>>>>>>> refs/remotes/origin/master
 
 #
 # _TIF_MCCK_PENDING is set, call handler
 #
 sysc_mcck_pending:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	l	%r1,BASED(.Ls390_handle_mcck)
 =======
 	l	%r1,BASED(.Lhandle_mcck)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	l	%r1,BASED(.Lhandle_mcck)
+>>>>>>> refs/remotes/origin/master
 	la	%r14,BASED(sysc_return)
 	br	%r1			# TIF bit will be cleared by handler
 
@@ -524,6 +617,7 @@ sysc_mcck_pending:
 # _TIF_SIGPENDING is set, call do_signal
 #
 sysc_sigpending:
+<<<<<<< HEAD
 	ni	__TI_flags+3(%r12),255-_TIF_PER_TRAP # clear TIF_PER_TRAP
 <<<<<<< HEAD
 	la	%r2,SP_PTREGS(%r15)	# load pt_regs
@@ -535,33 +629,47 @@ sysc_sigpending:
 	bo	BASED(sysc_singlestep)
 	b	BASED(sysc_return)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	lr	%r2,%r11		# pass pointer to pt_regs
 	l	%r1,BASED(.Ldo_signal)
 	basr	%r14,%r1		# call do_signal
 	tm	__TI_flags+3(%r12),_TIF_SYSCALL
 	jno	sysc_return
 	lm	%r2,%r7,__PT_R2(%r11)	# load svc arguments
+<<<<<<< HEAD
+=======
+	l	%r10,__TI_sysc_table(%r12)	# 31 bit system call table
+>>>>>>> refs/remotes/origin/master
 	xr	%r8,%r8			# svc 0 returns -ENOSYS
 	clc	__PT_INT_CODE+2(2,%r11),BASED(.Lnr_syscalls+2)
 	jnl	sysc_nr_ok		# invalid svc number -> do svc 0
 	lh	%r8,__PT_INT_CODE+2(%r11)	# load new svc number
 	sla	%r8,2
 	j	sysc_nr_ok		# restart svc
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # _TIF_NOTIFY_RESUME is set, call do_notify_resume
 #
 sysc_notify_resume:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	la	%r2,SP_PTREGS(%r15)	# load pt_regs
 =======
 	lr	%r2,%r11		# pass pointer to pt_regs
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lr	%r2,%r11		# pass pointer to pt_regs
+>>>>>>> refs/remotes/origin/master
 	l	%r1,BASED(.Ldo_notify_resume)
 	la	%r14,BASED(sysc_return)
 	br	%r1			# call do_notify_resume
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #
@@ -577,10 +685,13 @@ sysc_restart:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #
 # _TIF_PER_TRAP is set, call do_per_trap
 #
 sysc_singlestep:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ni	__TI_flags+3(%r12),255-_TIF_PER_TRAP # clear TIF_PER_TRAP
 	xc	SP_SVCNR(2,%r15),SP_SVCNR(%r15)		# clear svc number
@@ -590,17 +701,24 @@ sysc_singlestep:
 	br	%r1			# branch to do_per_trap
 =======
 	ni	__TI_flags+3(%r12),255-(_TIF_SYSCALL | _TIF_PER_TRAP)
+=======
+	ni	__TI_flags+3(%r12),255-_TIF_PER_TRAP
+>>>>>>> refs/remotes/origin/master
 	lr	%r2,%r11		# pass pointer to pt_regs
 	l	%r1,BASED(.Ldo_per_trap)
 	la	%r14,BASED(sysc_return)
 	br	%r1			# call do_per_trap
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # call tracehook_report_syscall_entry/tracehook_report_syscall_exit before
 # and after the system call
 #
 sysc_tracesys:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	l	%r1,BASED(.Ltrace_entry)
 	la	%r2,SP_PTREGS(%r15)	# load pt_regs
@@ -628,6 +746,8 @@ sysc_tracenogo:
 	la	%r14,BASED(sysc_return)
 	br	%r1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	l	%r1,BASED(.Ltrace_enter)
 	lr	%r2,%r11		# pass pointer to pt_regs
 	la	%r3,0
@@ -653,11 +773,15 @@ sysc_tracenogo:
 	lr	%r2,%r11		# pass pointer to pt_regs
 	la	%r14,BASED(sysc_return)
 	br	%r1			# call do_syscall_trace_exit
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # a new process exits the kernel with ret_from_fork
 #
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.globl	ret_from_fork
 ret_from_fork:
@@ -672,10 +796,13 @@ ret_from_fork:
 	stosm	__SF_EMPTY(%r15),0x03	# reenable interrupts
 	b	BASED(sysc_tracenogo)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(ret_from_fork)
 	la	%r11,STACK_FRAME_OVERHEAD(%r15)
 	l	%r12,__LC_THREAD_INFO
 	l	%r13,__LC_SVC_NEW_PSW+4
+<<<<<<< HEAD
 	tm	__PT_PSW+1(%r11),0x01	# forking a kernel thread ?
 	jo	0f
 	st	%r15,__PT_R15(%r11)	# store stack pointer for new kthread
@@ -749,11 +876,26 @@ ENTRY(kernel_execve)
 	basr	%r14,%r1		# call execve_tail
 	j	sysc_return
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	l	%r1,BASED(.Lschedule_tail)
+	basr	%r14,%r1		# call schedule_tail
+	TRACE_IRQS_ON
+	ssm	__LC_SVC_NEW_PSW	# reenable interrupts
+	tm	__PT_PSW+1(%r11),0x01	# forking a kernel thread ?
+	jne	sysc_tracenogo
+	# it's a kernel thread
+	lm	%r9,%r10,__PT_R9(%r11)	# load gprs
+ENTRY(kernel_thread_starter)
+	la	%r2,0(%r10)
+	basr	%r14,%r9
+	j	sysc_tracenogo
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Program check handler routine
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.globl	pgm_check_handler
 pgm_check_handler:
@@ -878,6 +1020,8 @@ kernel_per:
 	basr	%r14,%r1		# branch to do_single_step
 	b	BASED(pgm_exit)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(pgm_check_handler)
 	stpt	__LC_SYNC_ENTER_TIMER
 	stm	%r8,%r15,__LC_SAVE_AREA_SYNC
@@ -891,11 +1035,19 @@ ENTRY(pgm_check_handler)
 	tm	__LC_PGM_ILC+3,0x80	# check for per exception
 	jnz	pgm_svcper		# -> single stepped svc
 0:	CHECK_STACK STACK_SIZE,__LC_SAVE_AREA_SYNC
+<<<<<<< HEAD
 	j	2f
 1:	UPDATE_VTIME %r14,%r15,__LC_SYNC_ENTER_TIMER
 	l	%r15,__LC_KERNEL_STACK
 2:	ahi	%r15,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
 	la	%r11,STACK_FRAME_OVERHEAD(%r15)
+=======
+	ahi	%r15,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
+	j	2f
+1:	UPDATE_VTIME %r14,%r15,__LC_SYNC_ENTER_TIMER
+	l	%r15,__LC_KERNEL_STACK
+2:	la	%r11,STACK_FRAME_OVERHEAD(%r15)
+>>>>>>> refs/remotes/origin/master
 	stm	%r0,%r7,__PT_R0(%r11)
 	mvc	__PT_R8(32,%r11),__LC_SAVE_AREA_SYNC
 	stm	%r8,%r9,__PT_PSW(%r11)
@@ -941,12 +1093,16 @@ pgm_svcper:
 	mvc	__LC_RETURN_PSW(4),__LC_SVC_NEW_PSW
 	mvc	__LC_RETURN_PSW+4(4),BASED(.Lsysc_per)
 	lpsw	__LC_RETURN_PSW		# branch to sysc_per and enable irqs
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IO interrupt handler routine
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.globl io_int_handler
 io_int_handler:
@@ -967,6 +1123,8 @@ io_no_vtime:
 	la	%r2,SP_PTREGS(%r15)	# address of register-save area
 	basr	%r14,%r1		# branch to standard irq handler
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(io_int_handler)
 	stck	__LC_INT_CLOCK
 	stpt	__LC_ASYNC_ENTER_TIMER
@@ -982,29 +1140,56 @@ io_skip:
 	stm	%r0,%r7,__PT_R0(%r11)
 	mvc	__PT_R8(32,%r11),__LC_SAVE_AREA_ASYNC
 	stm	%r8,%r9,__PT_PSW(%r11)
+<<<<<<< HEAD
 	TRACE_IRQS_OFF
 	xc	__SF_BACKCHAIN(4,%r15),__SF_BACKCHAIN(%r15)
 	l	%r1,BASED(.Ldo_IRQ)
 	lr	%r2,%r11		# pass pointer to pt_regs
 	basr	%r14,%r1		# call do_IRQ
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mvc	__PT_INT_CODE(12,%r11),__LC_SUBCHANNEL_ID
+	TRACE_IRQS_OFF
+	xc	__SF_BACKCHAIN(4,%r15),__SF_BACKCHAIN(%r15)
+io_loop:
+	l	%r1,BASED(.Ldo_IRQ)
+	lr	%r2,%r11		# pass pointer to pt_regs
+	lhi	%r3,IO_INTERRUPT
+	tm	__PT_INT_CODE+8(%r11),0x80	# adapter interrupt ?
+	jz	io_call
+	lhi	%r3,THIN_INTERRUPT
+io_call:
+	basr	%r14,%r1		# call do_IRQ
+	tm	__LC_MACHINE_FLAGS+2,0x10	# MACHINE_FLAG_LPAR
+	jz	io_return
+	tpi	0
+	jz	io_return
+	mvc	__PT_INT_CODE(12,%r11),__LC_SUBCHANNEL_ID
+	j	io_loop
+>>>>>>> refs/remotes/origin/master
 io_return:
 	LOCKDEP_SYS_EXIT
 	TRACE_IRQS_ON
 io_tif:
 	tm	__TI_flags+3(%r12),_TIF_WORK_INT
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bnz	BASED(io_work)		# there is work to do (signals etc.)
 io_restore:
 	RESTORE_ALL __LC_RETURN_PSW,0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	jnz	io_work			# there is work to do (signals etc.)
 io_restore:
 	mvc	__LC_RETURN_PSW(8),__PT_PSW(%r11)
 	stpt	__LC_EXIT_TIMER
 	lm	%r0,%r15,__PT_R0(%r11)
 	lpsw	__LC_RETURN_PSW
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 io_done:
 
 #
@@ -1015,6 +1200,7 @@ io_done:
 # Before any work can be done, a switch to the kernel stack is required.
 #
 io_work:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tm	SP_PSW+1(%r15),0x01	# returning to user ?
 	bo	BASED(io_work_user)	# yes -> do resched & signal
@@ -1030,6 +1216,8 @@ io_work:
 	mvc	SP_PTREGS(__PT_SIZE,%r1),SP_PTREGS(%r15)
 	xc	__SF_BACKCHAIN(4,%r1),__SF_BACKCHAIN(%r1) # clear back chain
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tm	__PT_PSW+1(%r11),0x01	# returning to user ?
 	jo	io_work_user		# yes -> do resched & signal
 #ifdef CONFIG_PREEMPT
@@ -1044,11 +1232,15 @@ io_work:
 	mvc	STACK_FRAME_OVERHEAD(__PT_SIZE,%r1),0(%r11)
 	xc	__SF_BACKCHAIN(4,%r1),__SF_BACKCHAIN(%r1)
 	la	%r11,STACK_FRAME_OVERHEAD(%r1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	lr	%r15,%r1
 	# TRACE_IRQS_ON already done at io_return, call
 	# TRACE_IRQS_OFF to keep things symmetrical
 	TRACE_IRQS_OFF
+<<<<<<< HEAD
 <<<<<<< HEAD
 	l	%r1,BASED(.Lpreempt_schedule_irq)
 	basr	%r14,%r1		# call preempt_schedule_irq
@@ -1056,12 +1248,17 @@ io_work:
 #else
 	b	BASED(io_restore)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	l	%r1,BASED(.Lpreempt_irq)
 	basr	%r14,%r1		# call preempt_schedule_irq
 	j	io_return
 #else
 	j	io_restore
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #
@@ -1069,6 +1266,7 @@ io_work:
 #
 io_work_user:
 	l	%r1,__LC_KERNEL_STACK
+<<<<<<< HEAD
 <<<<<<< HEAD
 	s	%r1,BASED(.Lc_spsize)
 	mvc	SP_PTREGS(__PT_SIZE,%r1),SP_PTREGS(%r15)
@@ -1079,6 +1277,11 @@ io_work_user:
 	xc	__SF_BACKCHAIN(4,%r1),__SF_BACKCHAIN(%r1)
 	la	%r11,STACK_FRAME_OVERHEAD(%r1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mvc	STACK_FRAME_OVERHEAD(__PT_SIZE,%r1),0(%r11)
+	xc	__SF_BACKCHAIN(4,%r1),__SF_BACKCHAIN(%r1)
+	la	%r11,STACK_FRAME_OVERHEAD(%r1)
+>>>>>>> refs/remotes/origin/master
 	lr	%r15,%r1
 
 #
@@ -1089,6 +1292,7 @@ io_work_user:
 io_work_tif:
 	tm	__TI_flags+3(%r12),_TIF_MCCK_PENDING
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bo	BASED(io_mcck_pending)
 	tm	__TI_flags+3(%r12),_TIF_NEED_RESCHED
 	bo	BASED(io_reschedule)
@@ -1098,6 +1302,8 @@ io_work_tif:
 	bo	BASED(io_notify_resume)
 	b	BASED(io_return)	# beware of critical section cleanup
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	jo	io_mcck_pending
 	tm	__TI_flags+3(%r12),_TIF_NEED_RESCHED
 	jo	io_reschedule
@@ -1106,7 +1312,10 @@ io_work_tif:
 	tm	__TI_flags+3(%r12),_TIF_NOTIFY_RESUME
 	jo	io_notify_resume
 	j	io_return		# beware of critical section cleanup
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # _TIF_MCCK_PENDING is set, call handler
@@ -1114,16 +1323,22 @@ io_work_tif:
 io_mcck_pending:
 	# TRACE_IRQS_ON already done at io_return
 <<<<<<< HEAD
+<<<<<<< HEAD
 	l	%r1,BASED(.Ls390_handle_mcck)
 	basr	%r14,%r1		# TIF bit will be cleared by handler
 	TRACE_IRQS_OFF
 	b	BASED(io_return)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	l	%r1,BASED(.Lhandle_mcck)
 	basr	%r14,%r1		# TIF bit will be cleared by handler
 	TRACE_IRQS_OFF
 	j	io_return
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # _TIF_NEED_RESCHED is set, call schedule
@@ -1132,18 +1347,24 @@ io_reschedule:
 	# TRACE_IRQS_ON already done at io_return
 	l	%r1,BASED(.Lschedule)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stosm	__SF_EMPTY(%r15),0x03	# reenable interrupts
 	basr	%r14,%r1		# call scheduler
 	stnsm	__SF_EMPTY(%r15),0xfc	# disable I/O and ext. interrupts
 	TRACE_IRQS_OFF
 	b	BASED(io_return)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ssm	__LC_SVC_NEW_PSW	# reenable interrupts
 	basr	%r14,%r1		# call scheduler
 	ssm	__LC_PGM_NEW_PSW	# disable I/O and ext. interrupts
 	TRACE_IRQS_OFF
 	j	io_return
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # _TIF_SIGPENDING is set, call do_signal
@@ -1151,6 +1372,7 @@ io_reschedule:
 io_sigpending:
 	# TRACE_IRQS_ON already done at io_return
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stosm	__SF_EMPTY(%r15),0x03	# reenable interrupts
 	la	%r2,SP_PTREGS(%r15)	# load pt_regs
 	l	%r1,BASED(.Ldo_signal)
@@ -1159,6 +1381,8 @@ io_sigpending:
 	TRACE_IRQS_OFF
 	b	BASED(io_return)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	l	%r1,BASED(.Ldo_signal)
 	ssm	__LC_SVC_NEW_PSW	# reenable interrupts
 	lr	%r2,%r11		# pass pointer to pt_regs
@@ -1166,13 +1390,17 @@ io_sigpending:
 	ssm	__LC_PGM_NEW_PSW	# disable I/O and ext. interrupts
 	TRACE_IRQS_OFF
 	j	io_return
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #
 # _TIF_SIGPENDING is set, call do_signal
 #
 io_notify_resume:
 	# TRACE_IRQS_ON already done at io_return
+<<<<<<< HEAD
 <<<<<<< HEAD
 	stosm	__SF_EMPTY(%r15),0x03	# reenable interrupts
 	la	%r2,SP_PTREGS(%r15)	# load pt_regs
@@ -1182,6 +1410,8 @@ io_notify_resume:
 	TRACE_IRQS_OFF
 	b	BASED(io_return)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	l	%r1,BASED(.Ldo_notify_resume)
 	ssm	__LC_SVC_NEW_PSW	# reenable interrupts
 	lr	%r2,%r11		# pass pointer to pt_regs
@@ -1189,12 +1419,16 @@ io_notify_resume:
 	ssm	__LC_PGM_NEW_PSW	# disable I/O and ext. interrupts
 	TRACE_IRQS_OFF
 	j	io_return
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * External interrupt handler routine
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.globl	ext_int_handler
 ext_int_handler:
@@ -1218,6 +1452,8 @@ ext_no_vtime:
 	basr	%r14,%r1
 	b	BASED(io_return)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(ext_int_handler)
 	stck	__LC_INT_CLOCK
 	stpt	__LC_ASYNC_ENTER_TIMER
@@ -1233,34 +1469,56 @@ ext_skip:
 	stm	%r0,%r7,__PT_R0(%r11)
 	mvc	__PT_R8(32,%r11),__LC_SAVE_AREA_ASYNC
 	stm	%r8,%r9,__PT_PSW(%r11)
+<<<<<<< HEAD
 	TRACE_IRQS_OFF
 	lr	%r2,%r11		# pass pointer to pt_regs
 	l	%r3,__LC_EXT_CPU_ADDR	# get cpu address + interruption code
 	l	%r4,__LC_EXT_PARAMS	# get external parameters
 	l	%r1,BASED(.Ldo_extint)
 	basr	%r14,%r1		# call do_extint
+=======
+	mvc	__PT_INT_CODE(4,%r11),__LC_EXT_CPU_ADDR
+	mvc	__PT_INT_PARM(4,%r11),__LC_EXT_PARAMS
+	TRACE_IRQS_OFF
+	l	%r1,BASED(.Ldo_IRQ)
+	lr	%r2,%r11		# pass pointer to pt_regs
+	lhi	%r3,EXT_INTERRUPT
+	basr	%r14,%r1		# call do_IRQ
+>>>>>>> refs/remotes/origin/master
 	j	io_return
 
 /*
  * Load idle PSW. The second "half" of this function is in cleanup_idle.
  */
 ENTRY(psw_idle)
+<<<<<<< HEAD
 	st	%r4,__SF_EMPTY(%r15)
+=======
+	st	%r3,__SF_EMPTY(%r15)
+>>>>>>> refs/remotes/origin/master
 	basr	%r1,0
 	la	%r1,psw_idle_lpsw+4-.(%r1)
 	st	%r1,__SF_EMPTY+4(%r15)
 	oi	__SF_EMPTY+4(%r15),0x80
+<<<<<<< HEAD
 	la	%r1,.Lvtimer_max-psw_idle_lpsw-4(%r1)
 	stck	__IDLE_ENTER(%r2)
 	ltr	%r5,%r5
 	stpt	__VQ_IDLE_ENTER(%r3)
 	jz	psw_idle_lpsw
 	spt	0(%r1)
+=======
+	stck	__CLOCK_IDLE_ENTER(%r2)
+	stpt	__TIMER_IDLE_ENTER(%r2)
+>>>>>>> refs/remotes/origin/master
 psw_idle_lpsw:
 	lpsw	__SF_EMPTY(%r15)
 	br	%r14
 psw_idle_end:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 __critical_end:
 
@@ -1268,6 +1526,7 @@ __critical_end:
  * Machine check handler routines
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.globl mcck_int_handler
 mcck_int_handler:
@@ -1397,6 +1656,8 @@ restart_crash:
 restart_go:
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(mcck_int_handler)
 	stck	__LC_MCCK_CLOCK
 	spt	__LC_CPU_TIMER_SAVE_AREA	# revalidate cpu timer
@@ -1439,7 +1700,10 @@ mcck_skip:
 	tm	__PT_PSW+1(%r11),0x01	# returning to user ?
 	jno	mcck_return
 	l	%r1,__LC_KERNEL_STACK	# switch to kernel stack
+<<<<<<< HEAD
 	ahi	%r1,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
+=======
+>>>>>>> refs/remotes/origin/master
 	mvc	STACK_FRAME_OVERHEAD(__PT_SIZE,%r1),0(%r11)
 	xc	__SF_BACKCHAIN(4,%r1),__SF_BACKCHAIN(%r1)
 	la	%r11,STACK_FRAME_OVERHEAD(%r15)
@@ -1467,6 +1731,10 @@ mcck_panic:
 	sra	%r14,PAGE_SHIFT
 	jz	0f
 	l	%r15,__LC_PANIC_STACK
+<<<<<<< HEAD
+=======
+	j	mcck_skip
+>>>>>>> refs/remotes/origin/master
 0:	ahi	%r15,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
 	j	mcck_skip
 
@@ -1483,18 +1751,33 @@ ENTRY(restart_int_handler)
 	mvc	__PT_PSW(8,%r15),__LC_RST_OLD_PSW # store restart old psw
 	ahi	%r15,-STACK_FRAME_OVERHEAD	# create stack frame on stack
 	xc	0(STACK_FRAME_OVERHEAD,%r15),0(%r15)
+<<<<<<< HEAD
 	lm	%r1,%r3,__LC_RESTART_FN		# load fn, parm & source cpu
 	ltr	%r3,%r3				# test source cpu address
 	jm	1f				# negative -> skip source stop
 0:	sigp	%r4,%r3,1			# sigp sense to source cpu
+=======
+	l	%r1,__LC_RESTART_FN		# load fn, parm & source cpu
+	l	%r2,__LC_RESTART_DATA
+	l	%r3,__LC_RESTART_SOURCE
+	ltr	%r3,%r3				# test source cpu address
+	jm	1f				# negative -> skip source stop
+0:	sigp	%r4,%r3,SIGP_SENSE		# sigp sense to source cpu
+>>>>>>> refs/remotes/origin/master
 	brc	10,0b				# wait for status stored
 1:	basr	%r14,%r1			# call function
 	stap	__SF_EMPTY(%r15)		# store cpu address
 	lh	%r3,__SF_EMPTY(%r15)
+<<<<<<< HEAD
 2:	sigp	%r4,%r3,5			# sigp stop to current cpu
 	brc	2,2b
 3:	j	3b
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+2:	sigp	%r4,%r3,SIGP_STOP		# sigp stop to current cpu
+	brc	2,2b
+3:	j	3b
+>>>>>>> refs/remotes/origin/master
 
 	.section .kprobes.text, "ax"
 
@@ -1506,6 +1789,7 @@ ENTRY(restart_int_handler)
  */
 stack_overflow:
 	l	%r15,__LC_PANIC_STACK	# change to panic stack
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sl	%r15,BASED(.Lc_spsize)
 	mvc	SP_PSW(8,%r15),0(%r12)	# move user PSW to stack
@@ -1665,6 +1949,12 @@ cleanup_io_restore_insn:
 	mvc	__PT_R8(32,%r11),0(%r14)
 	lr	%r15,%r11
 	ahi	%r15,-STACK_FRAME_OVERHEAD
+=======
+	la	%r11,STACK_FRAME_OVERHEAD(%r15)
+	stm	%r0,%r7,__PT_R0(%r11)
+	stm	%r8,%r9,__PT_PSW(%r11)
+	mvc	__PT_R8(32,%r11),0(%r14)
+>>>>>>> refs/remotes/origin/master
 	l	%r1,BASED(1f)
 	xc	__SF_BACKCHAIN(4,%r15),__SF_BACKCHAIN(%r15)
 	lr	%r2,%r11		# pass pointer to pt_regs
@@ -1744,6 +2034,7 @@ cleanup_system_call:
 	mvc	__LC_LAST_UPDATE_TIMER(8),__LC_SYNC_ENTER_TIMER
 	# set up saved register 11
 	l	%r15,__LC_KERNEL_STACK
+<<<<<<< HEAD
 	ahi	%r15,-__PT_SIZE
 	st	%r15,12(%r11)		# r11 pt_regs pointer
 	# fill pt_regs
@@ -1753,6 +2044,16 @@ cleanup_system_call:
 	mvc	__PT_INT_CODE(4,%r15),__LC_SVC_ILC
 	# setup saved register 15
 	ahi	%r15,-STACK_FRAME_OVERHEAD
+=======
+	la	%r9,STACK_FRAME_OVERHEAD(%r15)
+	st	%r9,12(%r11)		# r11 pt_regs pointer
+	# fill pt_regs
+	mvc	__PT_R8(32,%r9),__LC_SAVE_AREA_SYNC
+	stm	%r0,%r7,__PT_R0(%r9)
+	mvc	__PT_PSW(8,%r9),__LC_SVC_OLD_PSW
+	mvc	__PT_INT_CODE(4,%r9),__LC_SVC_ILC
+	# setup saved register 15
+>>>>>>> refs/remotes/origin/master
 	st	%r15,28(%r11)		# r15 stack pointer
 	# set new psw address and exit
 	l	%r9,BASED(cleanup_table+4)	# sysc_do_svc + 0x80000000
@@ -1797,6 +2098,7 @@ cleanup_io_restore_insn:
 
 cleanup_idle:
 	# copy interrupt clock & cpu timer
+<<<<<<< HEAD
 	mvc	__IDLE_EXIT(8,%r2),__LC_INT_CLOCK
 	mvc	__VQ_IDLE_EXIT(8,%r3),__LC_ASYNC_ENTER_TIMER
 	chi	%r11,__LC_SAVE_AREA_ASYNC
@@ -1826,17 +2128,48 @@ cleanup_idle:
 	mvc	__LC_LAST_UPDATE_TIMER(8),__VQ_IDLE_EXIT(%r3)
 	# prepare return psw
 	n	%r8,BASED(cleanup_idle_wait)	# clear wait state bit
+=======
+	mvc	__CLOCK_IDLE_EXIT(8,%r2),__LC_INT_CLOCK
+	mvc	__TIMER_IDLE_EXIT(8,%r2),__LC_ASYNC_ENTER_TIMER
+	chi	%r11,__LC_SAVE_AREA_ASYNC
+	je	0f
+	mvc	__CLOCK_IDLE_EXIT(8,%r2),__LC_MCCK_CLOCK
+	mvc	__TIMER_IDLE_EXIT(8,%r2),__LC_MCCK_ENTER_TIMER
+0:	# check if stck has been executed
+	cl	%r9,BASED(cleanup_idle_insn)
+	jhe	1f
+	mvc	__CLOCK_IDLE_ENTER(8,%r2),__CLOCK_IDLE_EXIT(%r2)
+	mvc	__TIMER_IDLE_ENTER(8,%r2),__TIMER_IDLE_EXIT(%r3)
+1:	# account system time going idle
+	lm	%r9,%r10,__LC_STEAL_TIMER
+	ADD64	%r9,%r10,__CLOCK_IDLE_ENTER(%r2)
+	SUB64	%r9,%r10,__LC_LAST_UPDATE_CLOCK
+	stm	%r9,%r10,__LC_STEAL_TIMER
+	mvc	__LC_LAST_UPDATE_CLOCK(8),__CLOCK_IDLE_EXIT(%r2)
+	lm	%r9,%r10,__LC_SYSTEM_TIMER
+	ADD64	%r9,%r10,__LC_LAST_UPDATE_TIMER
+	SUB64	%r9,%r10,__TIMER_IDLE_ENTER(%r2)
+	stm	%r9,%r10,__LC_SYSTEM_TIMER
+	mvc	__LC_LAST_UPDATE_TIMER(8),__TIMER_IDLE_EXIT(%r2)
+	# prepare return psw
+	n	%r8,BASED(cleanup_idle_wait)	# clear irq & wait state bits
+>>>>>>> refs/remotes/origin/master
 	l	%r9,24(%r11)			# return from psw_idle
 	br	%r14
 cleanup_idle_insn:
 	.long	psw_idle_lpsw + 0x80000000
 cleanup_idle_wait:
+<<<<<<< HEAD
 	.long	0xfffdffff
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long	0xfcfdffff
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Integer constants
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.align	4
 .Lc_spsize:	.long	SP_SIZE
@@ -1849,16 +2182,22 @@ cleanup_idle_wait:
 .L0x038:	.short	0x038
 .Lc_1:		.long	1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.align	4
 .Lnr_syscalls:
 	.long	NR_syscalls
 .Lvtimer_max:
 	.quad	0x7fffffffffffffff
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Symbol constants
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 .Ls390_mcck:	.long	s390_do_machine_check
 .Ls390_handle_mcck:
@@ -1908,6 +2247,14 @@ cleanup_idle_wait:
 .Ldo_per_trap:		.long	do_per_trap
 .Ldo_execve:		.long	do_execve
 .Lexecve_tail:		.long	execve_tail
+=======
+.Ldo_machine_check:	.long	s390_do_machine_check
+.Lhandle_mcck:		.long	s390_handle_mcck
+.Ldo_IRQ:		.long	do_IRQ
+.Ldo_signal:		.long	do_signal
+.Ldo_notify_resume:	.long	do_notify_resume
+.Ldo_per_trap:		.long	do_per_trap
+>>>>>>> refs/remotes/origin/master
 .Ljump_table:		.long	pgm_check_table
 .Lschedule:		.long	schedule
 #ifdef CONFIG_PREEMPT
@@ -1916,7 +2263,10 @@ cleanup_idle_wait:
 .Ltrace_enter:		.long	do_syscall_trace_enter
 .Ltrace_exit:		.long	do_syscall_trace_exit
 .Lschedule_tail:	.long	schedule_tail
+<<<<<<< HEAD
 .Lsys_call_table:	.long	sys_call_table
+=======
+>>>>>>> refs/remotes/origin/master
 .Lsysc_per:		.long	sysc_per + 0x80000000
 #ifdef CONFIG_TRACE_IRQFLAGS
 .Lhardirqs_on:		.long	trace_hardirqs_on_caller
@@ -1927,7 +2277,10 @@ cleanup_idle_wait:
 #endif
 .Lcritical_start:	.long	__critical_start + 0x80000000
 .Lcritical_length:	.long	__critical_end - __critical_start
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		.section .rodata, "a"
 #define SYSCALL(esa,esame,emu)	.long esa

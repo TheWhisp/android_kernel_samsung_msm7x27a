@@ -126,10 +126,14 @@ static ssize_t adcxx_set_max(struct device *dev,
 	unsigned long value;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &value))
 =======
 	if (kstrtoul(buf, 10, &value))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtoul(buf, 10, &value))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (mutex_lock_interruptible(&adc->lock))
@@ -145,10 +149,14 @@ static ssize_t adcxx_set_max(struct device *dev,
 static ssize_t adcxx_show_name(struct device *dev, struct device_attribute
 			      *devattr, char *buf)
 {
+<<<<<<< HEAD
 	struct spi_device *spi = to_spi_device(dev);
 	struct adcxx *adc = spi_get_drvdata(spi);
 
 	return sprintf(buf, "adcxx%ds\n", adc->channels);
+=======
+	return sprintf(buf, "%s\n", to_spi_device(dev)->modalias);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct sensor_device_attribute ad_input[] = {
@@ -168,14 +176,22 @@ static struct sensor_device_attribute ad_input[] = {
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devinit adcxx_probe(struct spi_device *spi)
+=======
+static int adcxx_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	int channels = spi_get_device_id(spi)->driver_data;
 	struct adcxx *adc;
 	int status;
 	int i;
 
+<<<<<<< HEAD
 	adc = kzalloc(sizeof *adc, GFP_KERNEL);
+=======
+	adc = devm_kzalloc(&spi->dev, sizeof(*adc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!adc)
 		return -ENOMEM;
 
@@ -210,6 +226,7 @@ out_err:
 	for (i--; i >= 0; i--)
 		device_remove_file(&spi->dev, &ad_input[i].dev_attr);
 
+<<<<<<< HEAD
 	spi_set_drvdata(spi, NULL);
 	mutex_unlock(&adc->lock);
 	kfree(adc);
@@ -217,6 +234,13 @@ out_err:
 }
 
 static int __devexit adcxx_remove(struct spi_device *spi)
+=======
+	mutex_unlock(&adc->lock);
+	return status;
+}
+
+static int adcxx_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct adcxx *adc = spi_get_drvdata(spi);
 	int i;
@@ -226,9 +250,13 @@ static int __devexit adcxx_remove(struct spi_device *spi)
 	for (i = 0; i < 3 + adc->channels; i++)
 		device_remove_file(&spi->dev, &ad_input[i].dev_attr);
 
+<<<<<<< HEAD
 	spi_set_drvdata(spi, NULL);
 	mutex_unlock(&adc->lock);
 	kfree(adc);
+=======
+	mutex_unlock(&adc->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -249,6 +277,7 @@ static struct spi_driver adcxx_driver = {
 	},
 	.id_table = adcxx_ids,
 	.probe	= adcxx_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(adcxx_remove),
 };
 
@@ -268,6 +297,12 @@ module_exit(exit_adcxx);
 =======
 module_spi_driver(adcxx_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= adcxx_remove,
+};
+
+module_spi_driver(adcxx_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Marc Pignat");
 MODULE_DESCRIPTION("National Semiconductor adcxx8sxxx Linux driver");

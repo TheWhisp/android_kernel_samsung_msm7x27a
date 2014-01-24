@@ -5,6 +5,7 @@
  *
  * Copyright (C) 1998 Paul Mackerras.
  */
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -139,6 +140,13 @@ enum {
 #define PMU_IOC_GRAB_BACKLIGHT	_IOR('B', 6, size_t) 
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_PMU_H
+#define _LINUX_PMU_H
+
+#include <uapi/linux/pmu.h>
+
+>>>>>>> refs/remotes/origin/master
 
 extern int find_via_pmu(void);
 
@@ -211,9 +219,13 @@ extern int pmu_sys_suspended;
 #define pmu_sys_suspended	0
 #endif
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 <<<<<<< HEAD
 =======
 
 #endif /* _LINUX_PMU_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* _LINUX_PMU_H */
+>>>>>>> refs/remotes/origin/master

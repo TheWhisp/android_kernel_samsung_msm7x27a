@@ -28,10 +28,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
@@ -50,9 +55,12 @@
 #define ESB_MODULE_NAME "i6300ESB timer"
 #define ESB_DRIVER_NAME ESB_MODULE_NAME ", v" ESB_VERSION
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX ESB_MODULE_NAME ": "
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* PCI configuration registers */
 #define ESB_CONFIG_REG  0x60            /* Config register                   */
@@ -103,12 +111,17 @@ MODULE_PARM_DESC(heartbeat,
 				__MODULE_STRING(WATCHDOG_HEARTBEAT) ")");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -227,11 +240,15 @@ static int esb_release(struct inode *inode, struct file *file)
 		esb_timer_stop();
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 				"Unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("Unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		esb_timer_keepalive();
 	}
 	clear_bit(0, &timer_alive);
@@ -361,6 +378,7 @@ MODULE_DEVICE_TABLE(pci, esb_pci_tbl);
  *      Init & exit routines
  */
 
+<<<<<<< HEAD
 static unsigned char __devinit esb_getdevice(struct pci_dev *pdev)
 {
 	if (pci_enable_device(pdev)) {
@@ -369,15 +387,25 @@ static unsigned char __devinit esb_getdevice(struct pci_dev *pdev)
 =======
 		pr_err("failed to enable device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned char esb_getdevice(struct pci_dev *pdev)
+{
+	if (pci_enable_device(pdev)) {
+		pr_err("failed to enable device\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_devput;
 	}
 
 	if (pci_request_region(pdev, 0, ESB_MODULE_NAME)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to request region\n");
 =======
 		pr_err("failed to request region\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("failed to request region\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_disable;
 	}
 
@@ -385,10 +413,14 @@ static unsigned char __devinit esb_getdevice(struct pci_dev *pdev)
 	if (BASEADDR == NULL) {
 		/* Something's wrong here, BASEADDR has to be set */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to get BASEADDR\n");
 =======
 		pr_err("failed to get BASEADDR\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("failed to get BASEADDR\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_release;
 	}
 
@@ -404,7 +436,11 @@ err_devput:
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit esb_initdevice(void)
+=======
+static void esb_initdevice(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 val1;
 	u16 val2;
@@ -427,10 +463,14 @@ static void __devinit esb_initdevice(void)
 	pci_read_config_byte(esb_pci, ESB_LOCK_REG, &val1);
 	if (val1 & ESB_WDT_LOCK)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING PFX "nowayout already set\n");
 =======
 		pr_warn("nowayout already set\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("nowayout already set\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Set the timer to watchdog mode and disable it for now */
 	pci_write_config_byte(esb_pci, ESB_LOCK_REG, 0x00);
@@ -449,7 +489,11 @@ static void __devinit esb_initdevice(void)
 	esb_timer_set_heartbeat(heartbeat);
 }
 
+<<<<<<< HEAD
 static int __devinit esb_probe(struct pci_dev *pdev,
+=======
+static int esb_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 		const struct pci_device_id *ent)
 {
 	int ret;
@@ -457,18 +501,24 @@ static int __devinit esb_probe(struct pci_dev *pdev,
 	cards_found++;
 	if (cards_found == 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "Intel 6300ESB WatchDog Timer Driver v%s\n",
 			ESB_VERSION);
 
 	if (cards_found > 1) {
 		printk(KERN_ERR PFX "This driver only supports 1 device\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("Intel 6300ESB WatchDog Timer Driver v%s\n",
 			ESB_VERSION);
 
 	if (cards_found > 1) {
 		pr_err("This driver only supports 1 device\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -481,6 +531,7 @@ static int __devinit esb_probe(struct pci_dev *pdev,
 	if (heartbeat < 0x1 || heartbeat > 2 * 0x03ff) {
 		heartbeat = WATCHDOG_HEARTBEAT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"heartbeat value must be 1<heartbeat<2046, using %d\n",
 								heartbeat);
@@ -488,6 +539,10 @@ static int __devinit esb_probe(struct pci_dev *pdev,
 		pr_info("heartbeat value must be 1<heartbeat<2046, using %d\n",
 			heartbeat);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("heartbeat value must be 1<heartbeat<2046, using %d\n",
+			heartbeat);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Initialize the watchdog and make sure it does not run */
@@ -496,6 +551,7 @@ static int __devinit esb_probe(struct pci_dev *pdev,
 	/* Register the watchdog so that userspace has access to it */
 	ret = misc_register(&esb_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -506,13 +562,18 @@ static int __devinit esb_probe(struct pci_dev *pdev,
 		"initialized (0x%p). heartbeat=%d sec (nowayout=%d)\n",
 						BASEADDR, heartbeat, nowayout);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, ret);
 		goto err_unmap;
 	}
 	pr_info("initialized (0x%p). heartbeat=%d sec (nowayout=%d)\n",
 		BASEADDR, heartbeat, nowayout);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_unmap:
@@ -523,7 +584,11 @@ err_unmap:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit esb_remove(struct pci_dev *pdev)
+=======
+static void esb_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Stop the timer before we leave */
 	if (!nowayout)
@@ -546,6 +611,7 @@ static struct pci_driver esb_driver = {
 	.name		= ESB_MODULE_NAME,
 	.id_table	= esb_pci_tbl,
 	.probe          = esb_probe,
+<<<<<<< HEAD
 	.remove         = __devexit_p(esb_remove),
 	.shutdown       = esb_shutdown,
 };
@@ -567,8 +633,18 @@ static void __exit watchdog_cleanup(void)
 
 module_init(watchdog_init);
 module_exit(watchdog_cleanup);
+=======
+	.remove         = esb_remove,
+	.shutdown       = esb_shutdown,
+};
+
+module_pci_driver(esb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ross Biro and David Härdeman");
 MODULE_DESCRIPTION("Watchdog driver for Intel 6300ESB chipsets");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

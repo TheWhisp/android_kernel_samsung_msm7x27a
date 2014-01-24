@@ -24,10 +24,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/errno.h>
 #include <linux/fs.h>
@@ -91,6 +96,7 @@ static int get_cache_mode(char *s)
 	if (!strcmp(s, "loose")) {
 		version = CACHE_LOOSE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_9P, "Cache mode: loose\n");
 	} else if (!strcmp(s, "fscache")) {
 		version = CACHE_FSCACHE;
@@ -101,6 +107,8 @@ static int get_cache_mode(char *s)
 	} else
 		printk(KERN_INFO "9p: Unknown Cache mode %s.\n", s);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		p9_debug(P9_DEBUG_9P, "Cache mode: loose\n");
 	} else if (!strcmp(s, "fscache")) {
 		version = CACHE_FSCACHE;
@@ -110,7 +118,10 @@ static int get_cache_mode(char *s)
 		p9_debug(P9_DEBUG_9P, "Cache mode: none\n");
 	} else
 		pr_info("Unknown Cache mode %s\n", s);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return version;
 }
 
@@ -150,6 +161,7 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 
 	while ((p = strsep(&options, ",")) != NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int token;
 		if (!*p)
 			continue;
@@ -166,6 +178,8 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 		switch (token) {
 		case Opt_debug:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int token, r;
 		if (!*p)
 			continue;
@@ -179,7 +193,10 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 				ret = r;
 				continue;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			v9ses->debug = option;
 #ifdef CONFIG_NET_9P_DEBUG
 			p9_debug_level = option;
@@ -188,6 +205,7 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 
 		case Opt_dfltuid:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			v9ses->dfltuid = option;
 			break;
 		case Opt_dfltgid:
@@ -195,6 +213,8 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 			break;
 		case Opt_afid:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			r = match_int(&args[0], &option);
 			if (r < 0) {
 				p9_debug(P9_DEBUG_ERROR,
@@ -202,7 +222,17 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 				ret = r;
 				continue;
 			}
+<<<<<<< HEAD
 			v9ses->dfltuid = option;
+=======
+			v9ses->dfltuid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(v9ses->dfltuid)) {
+				p9_debug(P9_DEBUG_ERROR,
+					 "uid field, but not a uid?\n");
+				ret = -EINVAL;
+				continue;
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_dfltgid:
 			r = match_int(&args[0], &option);
@@ -212,7 +242,17 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 				ret = r;
 				continue;
 			}
+<<<<<<< HEAD
 			v9ses->dfltgid = option;
+=======
+			v9ses->dfltgid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(v9ses->dfltgid)) {
+				p9_debug(P9_DEBUG_ERROR,
+					 "gid field, but not a gid?\n");
+				ret = -EINVAL;
+				continue;
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_afid:
 			r = match_int(&args[0], &option);
@@ -222,6 +262,7 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 				ret = r;
 				continue;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			v9ses->afid = option;
 			break;
@@ -230,6 +271,25 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 			break;
 		case Opt_remotename:
 			match_strlcpy(v9ses->aname, &args[0], PATH_MAX);
+=======
+			v9ses->afid = option;
+			break;
+		case Opt_uname:
+			kfree(v9ses->uname);
+			v9ses->uname = match_strdup(&args[0]);
+			if (!v9ses->uname) {
+				ret = -ENOMEM;
+				goto free_and_return;
+			}
+			break;
+		case Opt_remotename:
+			kfree(v9ses->aname);
+			v9ses->aname = match_strdup(&args[0]);
+			if (!v9ses->aname) {
+				ret = -ENOMEM;
+				goto free_and_return;
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_nodevmap:
 			v9ses->nodev = 1;
@@ -250,12 +310,17 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 			if (!s) {
 				ret = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				P9_DPRINTK(P9_DEBUG_ERROR,
 				  "problem allocating copy of cache arg\n");
 =======
 				p9_debug(P9_DEBUG_ERROR,
 					 "problem allocating copy of cache arg\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				p9_debug(P9_DEBUG_ERROR,
+					 "problem allocating copy of cache arg\n");
+>>>>>>> refs/remotes/origin/master
 				goto free_and_return;
 			}
 			ret = get_cache_mode(s);
@@ -273,12 +338,17 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 			if (!s) {
 				ret = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				P9_DPRINTK(P9_DEBUG_ERROR,
 				  "problem allocating copy of access arg\n");
 =======
 				p9_debug(P9_DEBUG_ERROR,
 					 "problem allocating copy of access arg\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				p9_debug(P9_DEBUG_ERROR,
+					 "problem allocating copy of access arg\n");
+>>>>>>> refs/remotes/origin/master
 				goto free_and_return;
 			}
 
@@ -290,6 +360,7 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 			else if (strcmp(s, "client") == 0) {
 				v9ses->flags |= V9FS_ACCESS_CLIENT;
 			} else {
+<<<<<<< HEAD
 				v9ses->flags |= V9FS_ACCESS_SINGLE;
 				v9ses->uid = simple_strtoul(s, &e, 10);
 				if (*e != '\0') {
@@ -301,6 +372,22 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 					pr_info("Unknown access argument %s\n",
 						s);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				uid_t uid;
+				v9ses->flags |= V9FS_ACCESS_SINGLE;
+				uid = simple_strtoul(s, &e, 10);
+				if (*e != '\0') {
+					ret = -EINVAL;
+					pr_info("Unknown access argument %s\n",
+						s);
+					kfree(s);
+					goto free_and_return;
+				}
+				v9ses->uid = make_kuid(current_user_ns(), uid);
+				if (!uid_valid(v9ses->uid)) {
+					ret = -EINVAL;
+					pr_info("Uknown uid %s\n", s);
+>>>>>>> refs/remotes/origin/master
 					kfree(s);
 					goto free_and_return;
 				}
@@ -314,6 +401,7 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 			v9ses->flags |= V9FS_POSIX_ACL;
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			P9_DPRINTK(P9_DEBUG_ERROR,
 					"Not defined CONFIG_9P_FS_POSIX_ACL. "
 					"Ignoring posixacl option\n");
@@ -321,6 +409,10 @@ static int v9fs_parse_options(struct v9fs_session_info *v9ses, char *opts)
 			p9_debug(P9_DEBUG_ERROR,
 				 "Not defined CONFIG_9P_FS_POSIX_ACL. Ignoring posixacl option\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			p9_debug(P9_DEBUG_ERROR,
+				 "Not defined CONFIG_9P_FS_POSIX_ACL. Ignoring posixacl option\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 			break;
 
@@ -350,6 +442,7 @@ struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
 	struct p9_fid *fid;
 	int rc;
 
+<<<<<<< HEAD
 	v9ses->uname = __getname();
 	if (!v9ses->uname)
 		return ERR_PTR(-ENOMEM);
@@ -357,14 +450,28 @@ struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
 	v9ses->aname = __getname();
 	if (!v9ses->aname) {
 		__putname(v9ses->uname);
+=======
+	v9ses->uname = kstrdup(V9FS_DEFUSER, GFP_KERNEL);
+	if (!v9ses->uname)
+		return ERR_PTR(-ENOMEM);
+
+	v9ses->aname = kstrdup(V9FS_DEFANAME, GFP_KERNEL);
+	if (!v9ses->aname) {
+		kfree(v9ses->uname);
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOMEM);
 	}
 	init_rwsem(&v9ses->rename_sem);
 
 	rc = bdi_setup_and_register(&v9ses->bdi, "9p", BDI_CAP_MAP_COPY);
 	if (rc) {
+<<<<<<< HEAD
 		__putname(v9ses->aname);
 		__putname(v9ses->uname);
+=======
+		kfree(v9ses->aname);
+		kfree(v9ses->uname);
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(rc);
 	}
 
@@ -372,9 +479,13 @@ struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
 	list_add(&v9ses->slist, &v9fs_sessionlist);
 	spin_unlock(&v9fs_sessionlist_lock);
 
+<<<<<<< HEAD
 	strcpy(v9ses->uname, V9FS_DEFUSER);
 	strcpy(v9ses->aname, V9FS_DEFANAME);
 	v9ses->uid = ~0;
+=======
+	v9ses->uid = INVALID_UID;
+>>>>>>> refs/remotes/origin/master
 	v9ses->dfltuid = V9FS_DEFUID;
 	v9ses->dfltgid = V9FS_DEFGID;
 
@@ -383,10 +494,14 @@ struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
 		retval = PTR_ERR(v9ses->clnt);
 		v9ses->clnt = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR, "problem initializing 9p client\n");
 =======
 		p9_debug(P9_DEBUG_ERROR, "problem initializing 9p client\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR, "problem initializing 9p client\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -423,7 +538,11 @@ struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
 
 		v9ses->flags &= ~V9FS_ACCESS_MASK;
 		v9ses->flags |= V9FS_ACCESS_ANY;
+<<<<<<< HEAD
 		v9ses->uid = ~0;
+=======
+		v9ses->uid = INVALID_UID;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!v9fs_proto_dotl(v9ses) ||
 		!((v9ses->flags & V9FS_ACCESS_MASK) == V9FS_ACCESS_CLIENT)) {
@@ -434,23 +553,35 @@ struct p9_fid *v9fs_session_init(struct v9fs_session_info *v9ses,
 		v9ses->flags &= ~V9FS_ACL_MASK;
 	}
 
+<<<<<<< HEAD
 	fid = p9_client_attach(v9ses->clnt, NULL, v9ses->uname, ~0,
+=======
+	fid = p9_client_attach(v9ses->clnt, NULL, v9ses->uname, INVALID_UID,
+>>>>>>> refs/remotes/origin/master
 							v9ses->aname);
 	if (IS_ERR(fid)) {
 		retval = PTR_ERR(fid);
 		fid = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		P9_DPRINTK(P9_DEBUG_ERROR, "cannot attach\n");
 =======
 		p9_debug(P9_DEBUG_ERROR, "cannot attach\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		p9_debug(P9_DEBUG_ERROR, "cannot attach\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
 	if ((v9ses->flags & V9FS_ACCESS_MASK) == V9FS_ACCESS_SINGLE)
 		fid->uid = v9ses->uid;
 	else
+<<<<<<< HEAD
 		fid->uid = ~0;
+=======
+		fid->uid = INVALID_UID;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_9P_FSCACHE
 	/* register the session for caching */
@@ -483,8 +614,13 @@ void v9fs_session_close(struct v9fs_session_info *v9ses)
 		kfree(v9ses->cachetag);
 	}
 #endif
+<<<<<<< HEAD
 	__putname(v9ses->uname);
 	__putname(v9ses->aname);
+=======
+	kfree(v9ses->uname);
+	kfree(v9ses->aname);
+>>>>>>> refs/remotes/origin/master
 
 	bdi_destroy(&v9ses->bdi);
 
@@ -502,10 +638,14 @@ void v9fs_session_close(struct v9fs_session_info *v9ses)
 
 void v9fs_session_cancel(struct v9fs_session_info *v9ses) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "cancel session %p\n", v9ses);
 =======
 	p9_debug(P9_DEBUG_ERROR, "cancel session %p\n", v9ses);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_ERROR, "cancel session %p\n", v9ses);
+>>>>>>> refs/remotes/origin/master
 	p9_client_disconnect(v9ses->clnt);
 }
 
@@ -519,10 +659,14 @@ void v9fs_session_cancel(struct v9fs_session_info *v9ses) {
 void v9fs_session_begin_cancel(struct v9fs_session_info *v9ses)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_ERROR, "begin cancel session %p\n", v9ses);
 =======
 	p9_debug(P9_DEBUG_ERROR, "begin cancel session %p\n", v9ses);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_ERROR, "begin cancel session %p\n", v9ses);
+>>>>>>> refs/remotes/origin/master
 	p9_client_begin_disconnect(v9ses->clnt);
 }
 
@@ -639,6 +783,14 @@ static int v9fs_init_inode_cache(void)
  */
 static void v9fs_destroy_inode_cache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(v9fs_inode_cache);
 }
 
@@ -649,10 +801,18 @@ static int v9fs_cache_register(void)
 	if (ret < 0)
 		return ret;
 #ifdef CONFIG_9P_FSCACHE
+<<<<<<< HEAD
 	return fscache_register_netfs(&v9fs_cache_netfs);
 #else
 	return ret;
 #endif
+=======
+	ret = fscache_register_netfs(&v9fs_cache_netfs);
+	if (ret < 0)
+		v9fs_destroy_inode_cache();
+#endif
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void v9fs_cache_unregister(void)
@@ -672,6 +832,7 @@ static int __init init_v9fs(void)
 {
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Installing v9fs 9p2000 file system support\n");
 	/* TODO: Setup list of registered trasnport modules */
 	err = register_filesystem(&v9fs_fs_type);
@@ -685,6 +846,8 @@ static int __init init_v9fs(void)
 		printk(KERN_ERR "Failed to register v9fs for caching\n");
 		goto out_fs_unreg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Installing v9fs 9p2000 file system support\n");
 	/* TODO: Setup list of registered trasnport modules */
 
@@ -692,21 +855,30 @@ static int __init init_v9fs(void)
 	if (err < 0) {
 		pr_err("Failed to register v9fs for caching\n");
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = v9fs_sysfs_init();
 	if (err < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to register with sysfs\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("Failed to register with sysfs\n");
 		goto out_cache;
 	}
 	err = register_filesystem(&v9fs_fs_type);
 	if (err < 0) {
 		pr_err("Failed to register filesystem\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_sysfs_cleanup;
 	}
 
@@ -716,12 +888,17 @@ out_sysfs_cleanup:
 	v9fs_sysfs_cleanup();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 out_fs_unreg:
 	unregister_filesystem(&v9fs_fs_type);
 =======
 out_cache:
 	v9fs_cache_unregister();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_cache:
+	v9fs_cache_unregister();
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

@@ -5,9 +5,13 @@
 #include <asm/schid.h>
 #include <asm/ccwdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/irq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 #include "css.h"
 #include "orb.h"
 
@@ -115,11 +119,17 @@ enum cdev_todo {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define FAKE_CMD_IRB	1
 #define FAKE_TM_IRB	2
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FAKE_CMD_IRB	1
+#define FAKE_TM_IRB	2
+
+>>>>>>> refs/remotes/origin/master
 struct ccw_device_private {
 	struct ccw_device *cdev;
 	struct subchannel *sch;
@@ -132,6 +142,13 @@ struct ccw_device_private {
 	u8 pgid_valid_mask;	/* mask of valid PGIDs */
 	u8 pgid_todo_mask;	/* mask of PGIDs to be adjusted */
 	u8 pgid_reset_mask;	/* mask of PGIDs which were reset */
+<<<<<<< HEAD
+=======
+	u8 path_noirq_mask;	/* mask of paths for which no irq was
+				   received */
+	u8 path_notoper_mask;	/* mask of paths which were found
+				   not operable */
+>>>>>>> refs/remotes/origin/master
 	u8 path_gone_mask;	/* mask of paths, that became unavailable */
 	u8 path_new_mask;	/* mask of paths, that became available */
 	struct {
@@ -148,6 +165,7 @@ struct ccw_device_private {
 		unsigned int donotify:1;    /* call notify function */
 		unsigned int recog_done:1;  /* dev. recog. complete */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned int fake_irb:1;    /* deliver faked irb */
 =======
 		unsigned int fake_irb:2;    /* deliver faked irb */
@@ -155,6 +173,13 @@ struct ccw_device_private {
 		unsigned int resuming:1;    /* recognition while resume */
 		unsigned int pgroup:1;	    /* pathgroup is set up */
 		unsigned int mpath:1;	    /* multipathing is set up */
+=======
+		unsigned int fake_irb:2;    /* deliver faked irb */
+		unsigned int resuming:1;    /* recognition while resume */
+		unsigned int pgroup:1;	    /* pathgroup is set up */
+		unsigned int mpath:1;	    /* multipathing is set up */
+		unsigned int pgid_unknown:1;/* unknown pgid state */
+>>>>>>> refs/remotes/origin/master
 		unsigned int initialized:1; /* set if initial reference held */
 	} __attribute__((packed)) flags;
 	unsigned long intparm;	/* user interruption parameter */
@@ -172,9 +197,13 @@ struct ccw_device_private {
 	u64 cmb_start_time;		/* clock value of cmb reset */
 	void *cmb_wait;			/* deferred cmb enable/disable */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	enum interruption_class int_class;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum interruption_class int_class;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline int rsch(struct subchannel_id schid)

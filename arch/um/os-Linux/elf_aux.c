@@ -9,6 +9,7 @@
  */
 #include <elf.h>
 #include <stddef.h>
+<<<<<<< HEAD
 #include "init.h"
 #include "elf_user.h"
 #include "mem_user.h"
@@ -26,13 +27,21 @@ typedef Elf64_auxv_t elf_auxv_t;
 char * elf_aux_platform;
 long elf_aux_hwcap;
 =======
+=======
+#include <init.h>
+#include <elf_user.h>
+#include <mem_user.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef Elf32_auxv_t elf_auxv_t;
 
 /* These are initialized very early in boot and never changed */
 char * elf_aux_platform;
 extern long elf_aux_hwcap;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long vsyscall_ehdr;
 unsigned long vsyscall_end;
 unsigned long __kernel_vsyscall;

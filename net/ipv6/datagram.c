@@ -22,6 +22,10 @@
 #include <linux/ipv6.h>
 #include <linux/route.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/ipv6.h>
 #include <net/ndisc.h>
@@ -29,10 +33,15 @@
 #include <net/transp_v6.h>
 #include <net/ip6_route.h>
 #include <net/tcp_states.h>
+<<<<<<< HEAD
+=======
+#include <net/dsfield.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/errqueue.h>
 #include <asm/uaccess.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static inline int ipv6_mapped_addr_any(const struct in6_addr *a)
@@ -41,6 +50,13 @@ static inline int ipv6_mapped_addr_any(const struct in6_addr *a)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool ipv6_mapped_addr_any(const struct in6_addr *a)
+{
+	return ipv6_addr_v4mapped(a) && (a->s6_addr32[3] == 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 int ip6_datagram_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 {
 	struct sockaddr_in6	*usin = (struct sockaddr_in6 *) uaddr;
@@ -75,10 +91,13 @@ int ip6_datagram_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 			if (flowlabel == NULL)
 				return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ipv6_addr_copy(&usin->sin6_addr, &flowlabel->dst);
 =======
 			usin->sin6_addr = flowlabel->dst;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -105,13 +124,18 @@ int ip6_datagram_connect(struct sock *sk, struct sockaddr *uaddr, int addr_len)
 		sin.sin_port = usin->sin6_port;
 
 		err = ip4_datagram_connect(sk,
+<<<<<<< HEAD
 					   (struct sockaddr*) &sin,
+=======
+					   (struct sockaddr *) &sin,
+>>>>>>> refs/remotes/origin/master
 					   sizeof(sin));
 
 ipv4_connected:
 		if (err)
 			goto out;
 
+<<<<<<< HEAD
 		ipv6_addr_set_v4mapped(inet->inet_daddr, &np->daddr);
 
 <<<<<<< HEAD
@@ -120,15 +144,26 @@ ipv4_connected:
 
 		if (ipv6_addr_any(&np->rcv_saddr)) {
 =======
+=======
+		ipv6_addr_set_v4mapped(inet->inet_daddr, &sk->sk_v6_daddr);
+
+>>>>>>> refs/remotes/origin/master
 		if (ipv6_addr_any(&np->saddr) ||
 		    ipv6_mapped_addr_any(&np->saddr))
 			ipv6_addr_set_v4mapped(inet->inet_saddr, &np->saddr);
 
+<<<<<<< HEAD
 		if (ipv6_addr_any(&np->rcv_saddr) ||
 		    ipv6_mapped_addr_any(&np->rcv_saddr)) {
 >>>>>>> refs/remotes/origin/cm-10.0
 			ipv6_addr_set_v4mapped(inet->inet_rcv_saddr,
 					       &np->rcv_saddr);
+=======
+		if (ipv6_addr_any(&sk->sk_v6_rcv_saddr) ||
+		    ipv6_mapped_addr_any(&sk->sk_v6_rcv_saddr)) {
+			ipv6_addr_set_v4mapped(inet->inet_rcv_saddr,
+					       &sk->sk_v6_rcv_saddr);
+>>>>>>> refs/remotes/origin/master
 			if (sk->sk_prot->rehash)
 				sk->sk_prot->rehash(sk);
 		}
@@ -136,7 +171,11 @@ ipv4_connected:
 		goto out;
 	}
 
+<<<<<<< HEAD
 	if (addr_type&IPV6_ADDR_LINKLOCAL) {
+=======
+	if (__ipv6_addr_needs_scope_id(addr_type)) {
+>>>>>>> refs/remotes/origin/master
 		if (addr_len >= sizeof(struct sockaddr_in6) &&
 		    usin->sin6_scope_id) {
 			if (sk->sk_bound_dev_if &&
@@ -158,10 +197,14 @@ ipv4_connected:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&np->daddr, daddr);
 =======
 	np->daddr = *daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sk->sk_v6_daddr = *daddr;
+>>>>>>> refs/remotes/origin/master
 	np->flow_label = fl6.flowlabel;
 
 	inet->inet_dport = usin->sin6_port;
@@ -173,12 +216,17 @@ ipv4_connected:
 
 	fl6.flowi6_proto = sk->sk_protocol;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &np->daddr);
 	ipv6_addr_copy(&fl6.saddr, &np->saddr);
 =======
 	fl6.daddr = np->daddr;
 	fl6.saddr = np->saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fl6.daddr = sk->sk_v6_daddr;
+	fl6.saddr = np->saddr;
+>>>>>>> refs/remotes/origin/master
 	fl6.flowi6_oif = sk->sk_bound_dev_if;
 	fl6.flowi6_mark = sk->sk_mark;
 	fl6.fl6_dport = inet->inet_dport;
@@ -203,6 +251,7 @@ ipv4_connected:
 
 	if (ipv6_addr_any(&np->saddr))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&np->saddr, &fl6.saddr);
 
 	if (ipv6_addr_any(&np->rcv_saddr)) {
@@ -213,14 +262,25 @@ ipv4_connected:
 	if (ipv6_addr_any(&np->rcv_saddr)) {
 		np->rcv_saddr = fl6.saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		np->saddr = fl6.saddr;
+
+	if (ipv6_addr_any(&sk->sk_v6_rcv_saddr)) {
+		sk->sk_v6_rcv_saddr = fl6.saddr;
+>>>>>>> refs/remotes/origin/master
 		inet->inet_rcv_saddr = LOOPBACK4_IPV6;
 		if (sk->sk_prot->rehash)
 			sk->sk_prot->rehash(sk);
 	}
 
 	ip6_dst_store(sk, dst,
+<<<<<<< HEAD
 		      ipv6_addr_equal(&fl6.daddr, &np->daddr) ?
 		      &np->daddr : NULL,
+=======
+		      ipv6_addr_equal(&fl6.daddr, &sk->sk_v6_daddr) ?
+		      &sk->sk_v6_daddr : NULL,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_IPV6_SUBTREES
 		      ipv6_addr_equal(&fl6.saddr, &np->saddr) ?
 		      &np->saddr :
@@ -232,6 +292,10 @@ out:
 	fl6_sock_release(flowlabel);
 	return err;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ip6_datagram_connect);
+>>>>>>> refs/remotes/origin/master
 
 void ipv6_icmp_error(struct sock *sk, struct sk_buff *skb, int err,
 		     __be16 port, u32 info, u8 *payload)
@@ -288,10 +352,14 @@ void ipv6_local_error(struct sock *sk, int err, struct flowi6 *fl6, u32 info)
 	skb_reset_network_header(skb);
 	iph = ipv6_hdr(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&iph->daddr, &fl6->daddr);
 =======
 	iph->daddr = fl6->daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iph->daddr = fl6->daddr;
+>>>>>>> refs/remotes/origin/master
 
 	serr = SKB_EXT_ERR(skb);
 	serr->ee.ee_errno = err;
@@ -329,6 +397,7 @@ void ipv6_local_rxpmtu(struct sock *sk, struct flowi6 *fl6, u32 mtu)
 	skb_reset_network_header(skb);
 	iph = ipv6_hdr(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&iph->daddr, &fl6->daddr);
 
 	mtu_info = IP6CBMTU(skb);
@@ -341,6 +410,11 @@ void ipv6_local_rxpmtu(struct sock *sk, struct flowi6 *fl6, u32 mtu)
 
 	mtu_info = IP6CBMTU(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iph->daddr = fl6->daddr;
+
+	mtu_info = IP6CBMTU(skb);
+>>>>>>> refs/remotes/origin/master
 
 	mtu_info->ip6m_mtu = mtu;
 	mtu_info->ip6m_addr.sin6_family = AF_INET6;
@@ -348,10 +422,14 @@ void ipv6_local_rxpmtu(struct sock *sk, struct flowi6 *fl6, u32 mtu)
 	mtu_info->ip6m_addr.sin6_flowinfo = 0;
 	mtu_info->ip6m_addr.sin6_scope_id = fl6->flowi6_oif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&mtu_info->ip6m_addr.sin6_addr, &ipv6_hdr(skb)->daddr);
 =======
 	mtu_info->ip6m_addr.sin6_addr = ipv6_hdr(skb)->daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtu_info->ip6m_addr.sin6_addr = ipv6_hdr(skb)->daddr;
+>>>>>>> refs/remotes/origin/master
 
 	__skb_pull(skb, skb_tail_pointer(skb) - skb->data);
 	skb_reset_transport_header(skb);
@@ -363,7 +441,11 @@ void ipv6_local_rxpmtu(struct sock *sk, struct flowi6 *fl6, u32 mtu)
 /*
  *	Handle MSG_ERRQUEUE
  */
+<<<<<<< HEAD
 int ipv6_recv_error(struct sock *sk, struct msghdr *msg, int len)
+=======
+int ipv6_recv_error(struct sock *sk, struct msghdr *msg, int len, int *addr_len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	struct sock_exterr_skb *serr;
@@ -400,6 +482,7 @@ int ipv6_recv_error(struct sock *sk, struct msghdr *msg, int len)
 		sin->sin6_family = AF_INET6;
 		sin->sin6_flowinfo = 0;
 		sin->sin6_port = serr->port;
+<<<<<<< HEAD
 		sin->sin6_scope_id = 0;
 		if (skb->protocol == htons(ETH_P_IPV6)) {
 <<<<<<< HEAD
@@ -419,6 +502,23 @@ int ipv6_recv_error(struct sock *sk, struct msghdr *msg, int len)
 			ipv6_addr_set_v4mapped(*(__be32 *)(nh + serr->addr_offset),
 					       &sin->sin6_addr);
 		}
+=======
+		if (skb->protocol == htons(ETH_P_IPV6)) {
+			const struct ipv6hdr *ip6h = container_of((struct in6_addr *)(nh + serr->addr_offset),
+								  struct ipv6hdr, daddr);
+			sin->sin6_addr = ip6h->daddr;
+			if (np->sndflow)
+				sin->sin6_flowinfo = ip6_flowinfo(ip6h);
+			sin->sin6_scope_id =
+				ipv6_iface_scope_id(&sin->sin6_addr,
+						    IP6CB(skb)->iif);
+		} else {
+			ipv6_addr_set_v4mapped(*(__be32 *)(nh + serr->addr_offset),
+					       &sin->sin6_addr);
+			sin->sin6_scope_id = 0;
+		}
+		*addr_len = sizeof(*sin);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	memcpy(&errhdr.ee, &serr->ee, sizeof(struct sock_extended_err));
@@ -427,6 +527,7 @@ int ipv6_recv_error(struct sock *sk, struct msghdr *msg, int len)
 	if (serr->ee.ee_origin != SO_EE_ORIGIN_LOCAL) {
 		sin->sin6_family = AF_INET6;
 		sin->sin6_flowinfo = 0;
+<<<<<<< HEAD
 		sin->sin6_scope_id = 0;
 		if (skb->protocol == htons(ETH_P_IPV6)) {
 <<<<<<< HEAD
@@ -438,11 +539,25 @@ int ipv6_recv_error(struct sock *sk, struct msghdr *msg, int len)
 				datagram_recv_ctl(sk, msg, skb);
 			if (ipv6_addr_type(&sin->sin6_addr) & IPV6_ADDR_LINKLOCAL)
 				sin->sin6_scope_id = IP6CB(skb)->iif;
+=======
+		sin->sin6_port = 0;
+		if (skb->protocol == htons(ETH_P_IPV6)) {
+			sin->sin6_addr = ipv6_hdr(skb)->saddr;
+			if (np->rxopt.all)
+				ip6_datagram_recv_ctl(sk, msg, skb);
+			sin->sin6_scope_id =
+				ipv6_iface_scope_id(&sin->sin6_addr,
+						    IP6CB(skb)->iif);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			struct inet_sock *inet = inet_sk(sk);
 
 			ipv6_addr_set_v4mapped(ip_hdr(skb)->saddr,
 					       &sin->sin6_addr);
+<<<<<<< HEAD
+=======
+			sin->sin6_scope_id = 0;
+>>>>>>> refs/remotes/origin/master
 			if (inet->cmsg_flags)
 				ip_cmsg_recv(msg, skb);
 		}
@@ -471,11 +586,20 @@ out_free_skb:
 out:
 	return err;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ipv6_recv_error);
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Handle IPV6_RECVPATHMTU
  */
+<<<<<<< HEAD
 int ipv6_recv_rxpmtu(struct sock *sk, struct msghdr *msg, int len)
+=======
+int ipv6_recv_rxpmtu(struct sock *sk, struct msghdr *msg, int len,
+		     int *addr_len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	struct sk_buff *skb;
@@ -509,10 +633,15 @@ int ipv6_recv_rxpmtu(struct sock *sk, struct msghdr *msg, int len)
 		sin->sin6_port = 0;
 		sin->sin6_scope_id = mtu_info.ip6m_addr.sin6_scope_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&sin->sin6_addr, &mtu_info.ip6m_addr.sin6_addr);
 =======
 		sin->sin6_addr = mtu_info.ip6m_addr.sin6_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sin->sin6_addr = mtu_info.ip6m_addr.sin6_addr;
+		*addr_len = sizeof(*sin);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	put_cmsg(msg, SOL_IPV6, IPV6_PATHMTU, sizeof(mtu_info), &mtu_info);
@@ -526,7 +655,12 @@ out:
 }
 
 
+<<<<<<< HEAD
 int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
+=======
+int ip6_datagram_recv_ctl(struct sock *sk, struct msghdr *msg,
+			  struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ipv6_pinfo *np = inet6_sk(sk);
 	struct inet6_skb_parm *opt = IP6CB(skb);
@@ -537,10 +671,14 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 
 		src_info.ipi6_ifindex = opt->iif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&src_info.ipi6_addr, &ipv6_hdr(skb)->daddr);
 =======
 		src_info.ipi6_addr = ipv6_hdr(skb)->daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		src_info.ipi6_addr = ipv6_hdr(skb)->daddr;
+>>>>>>> refs/remotes/origin/master
 		put_cmsg(msg, SOL_IPV6, IPV6_PKTINFO, sizeof(src_info), &src_info);
 	}
 
@@ -550,6 +688,7 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 	}
 
 	if (np->rxopt.bits.rxtclass) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		int tclass = (ntohl(*(__be32 *)ipv6_hdr(skb)) >> 20) & 0xff;
 =======
@@ -561,6 +700,16 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 	if (np->rxopt.bits.rxflow && (*(__be32 *)nh & IPV6_FLOWINFO_MASK)) {
 		__be32 flowinfo = *(__be32 *)nh & IPV6_FLOWINFO_MASK;
 		put_cmsg(msg, SOL_IPV6, IPV6_FLOWINFO, sizeof(flowinfo), &flowinfo);
+=======
+		int tclass = ipv6_get_dsfield(ipv6_hdr(skb));
+		put_cmsg(msg, SOL_IPV6, IPV6_TCLASS, sizeof(tclass), &tclass);
+	}
+
+	if (np->rxopt.bits.rxflow) {
+		__be32 flowinfo = ip6_flowinfo((struct ipv6hdr *)nh);
+		if (flowinfo)
+			put_cmsg(msg, SOL_IPV6, IPV6_FLOWINFO, sizeof(flowinfo), &flowinfo);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* HbH is allowed only once */
@@ -584,10 +733,17 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 		u8 nexthdr = ipv6_hdr(skb)->nexthdr;
 
 		while (off <= opt->lastopt) {
+<<<<<<< HEAD
 			unsigned len;
 			u8 *ptr = nh + off;
 
 			switch(nexthdr) {
+=======
+			unsigned int len;
+			u8 *ptr = nh + off;
+
+			switch (nexthdr) {
+>>>>>>> refs/remotes/origin/master
 			case IPPROTO_DSTOPTS:
 				nexthdr = ptr[0];
 				len = (ptr[1] + 1) << 3;
@@ -620,10 +776,14 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 
 		src_info.ipi6_ifindex = opt->iif;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&src_info.ipi6_addr, &ipv6_hdr(skb)->daddr);
 =======
 		src_info.ipi6_addr = ipv6_hdr(skb)->daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		src_info.ipi6_addr = ipv6_hdr(skb)->daddr;
+>>>>>>> refs/remotes/origin/master
 		put_cmsg(msg, SOL_IPV6, IPV6_2292PKTINFO, sizeof(src_info), &src_info);
 	}
 	if (np->rxopt.bits.rxohlim) {
@@ -649,10 +809,14 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 	if (np->rxopt.bits.rxorigdstaddr) {
 		struct sockaddr_in6 sin6;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u16 *ports = (u16 *) skb_transport_header(skb);
 =======
 		__be16 *ports = (__be16 *) skb_transport_header(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__be16 *ports = (__be16 *) skb_transport_header(skb);
+>>>>>>> refs/remotes/origin/master
 
 		if (skb_transport_offset(skb) + 4 <= skb->len) {
 			/* All current transport protocols have the port numbers in the
@@ -662,6 +826,7 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 
 			sin6.sin6_family = AF_INET6;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ipv6_addr_copy(&sin6.sin6_addr, &ipv6_hdr(skb)->daddr);
 =======
 			sin6.sin6_addr = ipv6_hdr(skb)->daddr;
@@ -669,12 +834,21 @@ int datagram_recv_ctl(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 			sin6.sin6_port = ports[1];
 			sin6.sin6_flowinfo = 0;
 			sin6.sin6_scope_id = 0;
+=======
+			sin6.sin6_addr = ipv6_hdr(skb)->daddr;
+			sin6.sin6_port = ports[1];
+			sin6.sin6_flowinfo = 0;
+			sin6.sin6_scope_id =
+				ipv6_iface_scope_id(&ipv6_hdr(skb)->daddr,
+						    opt->iif);
+>>>>>>> refs/remotes/origin/master
 
 			put_cmsg(msg, SOL_IPV6, IPV6_ORIGDSTADDR, sizeof(sin6), &sin6);
 		}
 	}
 	return 0;
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 int datagram_send_ctl(struct net *net,
@@ -684,6 +858,14 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 		      struct msghdr *msg, struct flowi6 *fl6,
 		      struct ipv6_txoptions *opt,
 		      int *hlimit, int *tclass, int *dontfrag)
+=======
+EXPORT_SYMBOL_GPL(ip6_datagram_recv_ctl);
+
+int ip6_datagram_send_ctl(struct net *net, struct sock *sk,
+			  struct msghdr *msg, struct flowi6 *fl6,
+			  struct ipv6_txoptions *opt,
+			  int *hlimit, int *tclass, int *dontfrag)
+>>>>>>> refs/remotes/origin/master
 {
 	struct in6_pktinfo *src_info;
 	struct cmsghdr *cmsg;
@@ -740,19 +922,25 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 			if (addr_type != IPV6_ADDR_ANY) {
 				int strict = __ipv6_addr_src_scope(addr_type) <= IPV6_ADDR_SCOPE_LINKLOCAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (!ipv6_chk_addr(net, &src_info->ipi6_addr,
 						   strict ? dev : NULL, 0))
 					err = -EINVAL;
 				else
 					ipv6_addr_copy(&fl6->saddr, &src_info->ipi6_addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				if (!(inet_sk(sk)->freebind || inet_sk(sk)->transparent) &&
 				    !ipv6_chk_addr(net, &src_info->ipi6_addr,
 						   strict ? dev : NULL, 0))
 					err = -EINVAL;
 				else
 					fl6->saddr = src_info->ipi6_addr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 
 			rcu_read_unlock();
@@ -791,7 +979,11 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 				err = -EINVAL;
 				goto exit_f;
 			}
+<<<<<<< HEAD
 			if (!capable(CAP_NET_RAW)) {
+=======
+			if (!ns_capable(net->user_ns, CAP_NET_RAW)) {
+>>>>>>> refs/remotes/origin/master
 				err = -EPERM;
 				goto exit_f;
 			}
@@ -811,7 +1003,11 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 				err = -EINVAL;
 				goto exit_f;
 			}
+<<<<<<< HEAD
 			if (!capable(CAP_NET_RAW)) {
+=======
+			if (!ns_capable(net->user_ns, CAP_NET_RAW)) {
+>>>>>>> refs/remotes/origin/master
 				err = -EPERM;
 				goto exit_f;
 			}
@@ -836,7 +1032,11 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 				err = -EINVAL;
 				goto exit_f;
 			}
+<<<<<<< HEAD
 			if (!capable(CAP_NET_RAW)) {
+=======
+			if (!ns_capable(net->user_ns, CAP_NET_RAW)) {
+>>>>>>> refs/remotes/origin/master
 				err = -EPERM;
 				goto exit_f;
 			}
@@ -859,7 +1059,11 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 			rthdr = (struct ipv6_rt_hdr *)CMSG_DATA(cmsg);
 
 			switch (rthdr->type) {
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6_MIP6) || defined(CONFIG_IPV6_MIP6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6_MIP6)
+>>>>>>> refs/remotes/origin/master
 			case IPV6_SRCRT_TYPE_2:
 				if (rthdr->hdrlen != 2 ||
 				    rthdr->segments_left != 1) {
@@ -920,9 +1124,14 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 			int tc;
 
 			err = -EINVAL;
+<<<<<<< HEAD
 			if (cmsg->cmsg_len != CMSG_LEN(sizeof(int))) {
 				goto exit_f;
 			}
+=======
+			if (cmsg->cmsg_len != CMSG_LEN(sizeof(int)))
+				goto exit_f;
+>>>>>>> refs/remotes/origin/master
 
 			tc = *(int *)CMSG_DATA(cmsg);
 			if (tc < -1 || tc > 0xff)
@@ -939,9 +1148,14 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 			int df;
 
 			err = -EINVAL;
+<<<<<<< HEAD
 			if (cmsg->cmsg_len != CMSG_LEN(sizeof(int))) {
 				goto exit_f;
 			}
+=======
+			if (cmsg->cmsg_len != CMSG_LEN(sizeof(int)))
+				goto exit_f;
+>>>>>>> refs/remotes/origin/master
 
 			df = *(int *)CMSG_DATA(cmsg);
 			if (df < 0 || df > 1)
@@ -963,3 +1177,33 @@ int datagram_send_ctl(struct net *net, struct sock *sk,
 exit_f:
 	return err;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ip6_datagram_send_ctl);
+
+void ip6_dgram_sock_seq_show(struct seq_file *seq, struct sock *sp,
+			     __u16 srcp, __u16 destp, int bucket)
+{
+	const struct in6_addr *dest, *src;
+
+	dest  = &sp->sk_v6_daddr;
+	src   = &sp->sk_v6_rcv_saddr;
+	seq_printf(seq,
+		   "%5d: %08X%08X%08X%08X:%04X %08X%08X%08X%08X:%04X "
+		   "%02X %08X:%08X %02X:%08lX %08X %5u %8d %lu %d %pK %d\n",
+		   bucket,
+		   src->s6_addr32[0], src->s6_addr32[1],
+		   src->s6_addr32[2], src->s6_addr32[3], srcp,
+		   dest->s6_addr32[0], dest->s6_addr32[1],
+		   dest->s6_addr32[2], dest->s6_addr32[3], destp,
+		   sp->sk_state,
+		   sk_wmem_alloc_get(sp),
+		   sk_rmem_alloc_get(sp),
+		   0, 0L, 0,
+		   from_kuid_munged(seq_user_ns(seq), sock_i_uid(sp)),
+		   0,
+		   sock_i_ino(sp),
+		   atomic_read(&sp->sk_refcnt), sp,
+		   atomic_read(&sp->sk_drops));
+}
+>>>>>>> refs/remotes/origin/master

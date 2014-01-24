@@ -14,9 +14,15 @@
 #include <linux/seq_file.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+
+#include <asm/byteorder.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/amigahw.h>
 #include <asm/setup.h>
@@ -24,6 +30,7 @@
 static loff_t
 proc_bus_zorro_lseek(struct file *file, loff_t off, int whence)
 {
+<<<<<<< HEAD
 	loff_t new = -1;
 	struct inode *inode = file->f_path.dentry->d_inode;
 
@@ -45,14 +52,21 @@ proc_bus_zorro_lseek(struct file *file, loff_t off, int whence)
 		file->f_pos = new;
 	mutex_unlock(&inode->i_mutex);
 	return new;
+=======
+	return fixed_size_llseek(file, off, whence, sizeof(struct ConfigDev));
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t
 proc_bus_zorro_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *ino = file->f_path.dentry->d_inode;
 	struct proc_dir_entry *dp = PDE(ino);
 	struct zorro_dev *z = dp->data;
+=======
+	struct zorro_dev *z = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	struct ConfigDev cd;
 	loff_t pos = *ppos;
 
@@ -66,10 +80,17 @@ proc_bus_zorro_read(struct file *file, char __user *buf, size_t nbytes, loff_t *
 	/* Construct a ConfigDev */
 	memset(&cd, 0, sizeof(cd));
 	cd.cd_Rom = z->rom;
+<<<<<<< HEAD
 	cd.cd_SlotAddr = z->slotaddr;
 	cd.cd_SlotSize = z->slotsize;
 	cd.cd_BoardAddr = (void *)zorro_resource_start(z);
 	cd.cd_BoardSize = zorro_resource_len(z);
+=======
+	cd.cd_SlotAddr = cpu_to_be16(z->slotaddr);
+	cd.cd_SlotSize = cpu_to_be16(z->slotsize);
+	cd.cd_BoardAddr = cpu_to_be32(zorro_resource_start(z));
+	cd.cd_BoardSize = cpu_to_be32(zorro_resource_len(z));
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_to_user(buf, (void *)&cd + pos, nbytes))
 		return -EFAULT;
@@ -144,7 +165,11 @@ static int __init zorro_proc_attach_device(unsigned int slot)
 				 &zorro_autocon[slot]);
 	if (!entry)
 		return -ENOMEM;
+<<<<<<< HEAD
 	entry->size = sizeof(struct zorro_dev);
+=======
+	proc_set_size(entry, sizeof(struct zorro_dev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

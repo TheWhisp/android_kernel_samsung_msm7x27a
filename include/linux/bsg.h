@@ -1,6 +1,7 @@
 #ifndef BSG_H
 #define BSG_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define BSG_PROTOCOL_SCSI		0
@@ -62,6 +63,10 @@ struct sg_io_v4 {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/bsg.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_BLK_DEV_BSG)
 struct bsg_class_device {
@@ -89,6 +94,9 @@ static inline void bsg_unregister_queue(struct request_queue *q)
 }
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

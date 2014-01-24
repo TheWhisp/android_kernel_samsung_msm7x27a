@@ -264,6 +264,7 @@ static reg_val common_regs[] = {
 static char *mode_option;
 static char *monitor_layout;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int noaccel = 0;
 static int default_dynclk = -2;
 static int nomodeset = 0;
@@ -278,6 +279,8 @@ static int nomtrr = 0;
 static int force_sleep;
 static int ignore_devlist;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool noaccel = 0;
 static int default_dynclk = -2;
 static bool nomodeset = 0;
@@ -291,7 +294,10 @@ static bool nomtrr = 0;
 #endif
 static bool force_sleep;
 static bool ignore_devlist;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PMAC_BACKLIGHT
 static int backlight = 1;
 #else
@@ -309,7 +315,11 @@ static void radeon_unmap_ROM(struct radeonfb_info *rinfo, struct pci_dev *dev)
 	pci_unmap_rom(dev, rinfo->bios_seg);
 }
 
+<<<<<<< HEAD
 static int __devinit radeon_map_ROM(struct radeonfb_info *rinfo, struct pci_dev *dev)
+=======
+static int radeon_map_ROM(struct radeonfb_info *rinfo, struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *rom;
 	u16 dptr;
@@ -404,7 +414,11 @@ static int __devinit radeon_map_ROM(struct radeonfb_info *rinfo, struct pci_dev 
 }
 
 #ifdef CONFIG_X86
+<<<<<<< HEAD
 static int  __devinit radeon_find_mem_vbios(struct radeonfb_info *rinfo)
+=======
+static int  radeon_find_mem_vbios(struct radeonfb_info *rinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	/* I simplified this code as we used to miss the signatures in
 	 * a lot of case. It's now closer to XFree, we just don't check
@@ -439,7 +453,11 @@ static int  __devinit radeon_find_mem_vbios(struct radeonfb_info *rinfo)
  * Read XTAL (ref clock), SCLK and MCLK from Open Firmware device
  * tree. Hopefully, ATI OF driver is kind enough to fill these
  */
+<<<<<<< HEAD
 static int __devinit radeon_read_xtal_OF (struct radeonfb_info *rinfo)
+=======
+static int radeon_read_xtal_OF(struct radeonfb_info *rinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = rinfo->of_node;
 	const u32 *val;
@@ -469,7 +487,11 @@ static int __devinit radeon_read_xtal_OF (struct radeonfb_info *rinfo)
 /*
  * Read PLL infos from chip registers
  */
+<<<<<<< HEAD
 static int __devinit radeon_probe_pll_params(struct radeonfb_info *rinfo)
+=======
+static int radeon_probe_pll_params(struct radeonfb_info *rinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char ppll_div_sel;
 	unsigned Ns, Nm, M;
@@ -607,7 +629,11 @@ static int __devinit radeon_probe_pll_params(struct radeonfb_info *rinfo)
 /*
  * Retrieve PLL infos by different means (BIOS, Open Firmware, register probing...)
  */
+<<<<<<< HEAD
 static void __devinit radeon_get_pllinfo(struct radeonfb_info *rinfo)
+=======
+static void radeon_get_pllinfo(struct radeonfb_info *rinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * In the case nothing works, these are defaults; they are mostly
@@ -835,11 +861,14 @@ static int radeonfb_check_var (struct fb_var_screeninfo *var, struct fb_info *in
 	if (v.xres_virtual < v.xres)
 		v.xres = v.xres_virtual;
 
+<<<<<<< HEAD
 	if (v.xoffset < 0)
                 v.xoffset = 0;
         if (v.yoffset < 0)
                 v.yoffset = 0;
          
+=======
+>>>>>>> refs/remotes/origin/master
         if (v.xoffset > v.xres_virtual - v.xres)
                 v.xoffset = v.xres_virtual - v.xres - 1;
                         
@@ -862,6 +891,7 @@ static int radeonfb_pan_display (struct fb_var_screeninfo *var,
         struct radeonfb_info *rinfo = info->par;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ((var->xoffset + var->xres > var->xres_virtual)
 	    || (var->yoffset + var->yres > var->yres_virtual))
                return -EINVAL;
@@ -870,11 +900,17 @@ static int radeonfb_pan_display (struct fb_var_screeninfo *var,
 	    || (var->yoffset + info->var.yres > info->var.yres_virtual))
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((var->xoffset + info->var.xres > info->var.xres_virtual)
+	    || (var->yoffset + info->var.yres > info->var.yres_virtual))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
                 
         if (rinfo->asleep)
         	return 0;
 
 	radeon_fifo_wait(2);
+<<<<<<< HEAD
 <<<<<<< HEAD
         OUTREG(CRTC_OFFSET, ((var->yoffset * var->xres_virtual + var->xoffset)
 			     * var->bits_per_pixel / 8) & ~7);
@@ -882,6 +918,10 @@ static int radeonfb_pan_display (struct fb_var_screeninfo *var,
 	OUTREG(CRTC_OFFSET, (var->yoffset * info->fix.line_length +
 			     var->xoffset * info->var.bits_per_pixel / 8) & ~7);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	OUTREG(CRTC_OFFSET, (var->yoffset * info->fix.line_length +
+			     var->xoffset * info->var.bits_per_pixel / 8) & ~7);
+>>>>>>> refs/remotes/origin/master
         return 0;
 }
 
@@ -1895,7 +1935,11 @@ static struct fb_ops radeonfb_ops = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit radeon_set_fbinfo (struct radeonfb_info *rinfo)
+=======
+static int radeon_set_fbinfo(struct radeonfb_info *rinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = rinfo->info;
 
@@ -2045,7 +2089,11 @@ static void radeon_identify_vram(struct radeonfb_info *rinfo)
           if ((rinfo->family == CHIP_FAMILY_RS100) ||
               (rinfo->family == CHIP_FAMILY_RS200)) {
              /* This is to workaround the asic bug for RMX, some versions
+<<<<<<< HEAD
                 of BIOS dosen't have this register initialized correctly.
+=======
+                of BIOS doesn't have this register initialized correctly.
+>>>>>>> refs/remotes/origin/master
              */
              OUTREGP(CRTC_MORE_CNTL, CRTC_H_CUTOFF_ACTIVE_EN,
                      ~CRTC_H_CUTOFF_ACTIVE_EN);
@@ -2170,8 +2218,13 @@ static struct bin_attribute edid2_attr = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit radeonfb_pci_register (struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
+=======
+static int radeonfb_pci_register(struct pci_dev *pdev,
+				 const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct radeonfb_info *rinfo;
@@ -2434,7 +2487,11 @@ err_out:
 
 
 
+<<<<<<< HEAD
 static void __devexit radeonfb_pci_unregister (struct pci_dev *pdev)
+=======
+static void radeonfb_pci_unregister(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
         struct fb_info *info = pci_get_drvdata(pdev);
         struct radeonfb_info *rinfo = info->par;
@@ -2492,7 +2549,11 @@ static struct pci_driver radeonfb_driver = {
 	.name		= "radeonfb",
 	.id_table	= radeonfb_pci_table,
 	.probe		= radeonfb_pci_register,
+<<<<<<< HEAD
 	.remove		= __devexit_p(radeonfb_pci_unregister),
+=======
+	.remove		= radeonfb_pci_unregister,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend       	= radeonfb_pci_suspend,
 	.resume		= radeonfb_pci_resume,

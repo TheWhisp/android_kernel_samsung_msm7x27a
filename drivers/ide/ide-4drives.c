@@ -7,10 +7,14 @@
 #define DRV_NAME "ide-4drives"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int probe_4drives;
 =======
 static bool probe_4drives;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool probe_4drives;
+>>>>>>> refs/remotes/origin/master
 
 module_param_named(probe, probe_4drives, bool, 0);
 MODULE_PARM_DESC(probe, "probe for generic IDE chipset with 4 drives/port");

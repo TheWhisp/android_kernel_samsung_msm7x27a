@@ -87,9 +87,12 @@ static __inline__ void set_pte(pte_t *pteptr, pte_t pteval)
 #define pte_unmap(pte)		do { } while (0)
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 #define IOBASE_VADDR	0xff000000
 #define IOBASE_END	0xffffffff
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PTEL coherent flags.
  * See Chapter 17 ST50 CPU Core Volume 1, Architecture.

@@ -70,7 +70,11 @@ static const struct fb_videomode grvga_modedb[] = {
     }
  };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo grvga_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo grvga_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"AG SVGACTRL",
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =       FB_VISUAL_PSEUDOCOLOR,
@@ -267,8 +271,13 @@ static struct fb_ops grvga_ops = {
 	.fb_imageblit	= cfb_imageblit
 };
 
+<<<<<<< HEAD
 static int __devinit grvga_parse_custom(char *options,
 				     struct fb_var_screeninfo *screendata)
+=======
+static int grvga_parse_custom(char *options,
+			      struct fb_var_screeninfo *screendata)
+>>>>>>> refs/remotes/origin/master
 {
 	char *this_opt;
 	int count = 0;
@@ -329,7 +338,11 @@ static int __devinit grvga_parse_custom(char *options,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit grvga_probe(struct platform_device *dev)
+=======
+static int grvga_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	int retval = -ENOMEM;
@@ -354,7 +367,11 @@ static int __devinit grvga_probe(struct platform_device *dev)
 	 */
 	if (fb_get_options("grvga", &options)) {
 		retval = -ENODEV;
+<<<<<<< HEAD
 		goto err;
+=======
+		goto free_fb;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!options || !*options)
@@ -370,7 +387,11 @@ static int __devinit grvga_probe(struct platform_device *dev)
 			if (grvga_parse_custom(this_opt, &info->var) < 0) {
 				dev_err(&dev->dev, "Failed to parse custom mode (%s).\n", this_opt);
 				retval = -EINVAL;
+<<<<<<< HEAD
 				goto err1;
+=======
+				goto free_fb;
+>>>>>>> refs/remotes/origin/master
 			}
 		} else if (!strncmp(this_opt, "addr", 4))
 			grvga_fix_addr = simple_strtoul(this_opt + 5, NULL, 16);
@@ -387,10 +408,18 @@ static int __devinit grvga_probe(struct platform_device *dev)
 	info->flags = FBINFO_DEFAULT | FBINFO_PARTIAL_PAN_OK | FBINFO_HWACCEL_YPAN;
 	info->fix.smem_len = grvga_mem_size;
 
+<<<<<<< HEAD
 	if (!request_mem_region(dev->resource[0].start, resource_size(&dev->resource[0]), "grlib-svgactrl regs")) {
 		dev_err(&dev->dev, "registers already mapped\n");
 		retval = -EBUSY;
 		goto err;
+=======
+	if (!devm_request_mem_region(&dev->dev, dev->resource[0].start,
+		    resource_size(&dev->resource[0]), "grlib-svgactrl regs")) {
+		dev_err(&dev->dev, "registers already mapped\n");
+		retval = -EBUSY;
+		goto free_fb;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	par->regs = of_ioremap(&dev->resource[0], 0,
@@ -400,14 +429,22 @@ static int __devinit grvga_probe(struct platform_device *dev)
 	if (!par->regs) {
 		dev_err(&dev->dev, "failed to map registers\n");
 		retval = -ENOMEM;
+<<<<<<< HEAD
 		goto err1;
+=======
+		goto free_fb;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	retval = fb_alloc_cmap(&info->cmap, 256, 0);
 	if (retval < 0) {
 		dev_err(&dev->dev, "failed to allocate mem with fb_alloc_cmap\n");
 		retval = -ENOMEM;
+<<<<<<< HEAD
 		goto err2;
+=======
+		goto unmap_regs;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (mode_opt) {
@@ -415,7 +452,11 @@ static int __devinit grvga_probe(struct platform_device *dev)
 				      grvga_modedb, sizeof(grvga_modedb), &grvga_modedb[0], 8);
 		if (!retval || retval == 4) {
 			retval = -EINVAL;
+<<<<<<< HEAD
 			goto err3;
+=======
+			goto dealloc_cmap;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -427,10 +468,18 @@ static int __devinit grvga_probe(struct platform_device *dev)
 
 		physical_start = grvga_fix_addr;
 
+<<<<<<< HEAD
 		if (!request_mem_region(physical_start, grvga_mem_size, dev->name)) {
 			dev_err(&dev->dev, "failed to request memory region\n");
 			retval = -ENOMEM;
 			goto err3;
+=======
+		if (!devm_request_mem_region(&dev->dev, physical_start,
+					     grvga_mem_size, dev->name)) {
+			dev_err(&dev->dev, "failed to request memory region\n");
+			retval = -ENOMEM;
+			goto dealloc_cmap;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		virtual_start = (unsigned long) ioremap(physical_start, grvga_mem_size);
@@ -438,7 +487,11 @@ static int __devinit grvga_probe(struct platform_device *dev)
 		if (!virtual_start) {
 			dev_err(&dev->dev, "error mapping framebuffer memory\n");
 			retval = -ENOMEM;
+<<<<<<< HEAD
 			goto err4;
+=======
+			goto dealloc_cmap;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {	/* Allocate frambuffer memory */
 
@@ -451,7 +504,11 @@ static int __devinit grvga_probe(struct platform_device *dev)
 				"unable to allocate framebuffer memory (%lu bytes)\n",
 				grvga_mem_size);
 			retval = -ENOMEM;
+<<<<<<< HEAD
 			goto err3;
+=======
+			goto dealloc_cmap;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		physical_start = dma_map_single(&dev->dev, (void *)virtual_start, grvga_mem_size, DMA_TO_DEVICE);
@@ -484,7 +541,11 @@ static int __devinit grvga_probe(struct platform_device *dev)
 	retval = register_framebuffer(info);
 	if (retval < 0) {
 		dev_err(&dev->dev, "failed to register framebuffer\n");
+<<<<<<< HEAD
 		goto err4;
+=======
+		goto free_mem;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	__raw_writel(physical_start, &par->regs->fb_pos);
@@ -493,6 +554,7 @@ static int __devinit grvga_probe(struct platform_device *dev)
 
 	return 0;
 
+<<<<<<< HEAD
 err4:
 	dev_set_drvdata(&dev->dev, NULL);
 	if (grvga_fix_addr) {
@@ -508,12 +570,29 @@ err2:
 err1:
 	release_mem_region(dev->resource[0].start, resource_size(&dev->resource[0]));
 err:
+=======
+free_mem:
+	if (grvga_fix_addr)
+		iounmap((void *)virtual_start);
+	else
+		kfree((void *)virtual_start);
+dealloc_cmap:
+	fb_dealloc_cmap(&info->cmap);
+unmap_regs:
+	of_iounmap(&dev->resource[0], par->regs,
+		   resource_size(&dev->resource[0]));
+free_fb:
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(info);
 
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devexit grvga_remove(struct platform_device *device)
+=======
+static int grvga_remove(struct platform_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&device->dev);
 	struct grvga_par *par = info->par;
@@ -524,6 +603,7 @@ static int __devexit grvga_remove(struct platform_device *device)
 
 		of_iounmap(&device->resource[0], par->regs,
 			   resource_size(&device->resource[0]));
+<<<<<<< HEAD
 		release_mem_region(device->resource[0].start, resource_size(&device->resource[0]));
 
 		if (!par->fb_alloced) {
@@ -534,6 +614,15 @@ static int __devexit grvga_remove(struct platform_device *device)
 
 		framebuffer_release(info);
 		dev_set_drvdata(&device->dev, NULL);
+=======
+
+		if (!par->fb_alloced)
+			iounmap(info->screen_base);
+		else
+			kfree((void *)info->screen_base);
+
+		framebuffer_release(info);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -557,6 +646,7 @@ static struct platform_driver grvga_driver = {
 		.of_match_table = svgactrl_of_match,
 	},
 	.probe		= grvga_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(grvga_remove),
 };
 
@@ -573,6 +663,12 @@ static void __exit grvga_exit(void)
 
 module_init(grvga_init);
 module_exit(grvga_exit);
+=======
+	.remove		= grvga_remove,
+};
+
+module_platform_driver(grvga_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Aeroflex Gaisler");

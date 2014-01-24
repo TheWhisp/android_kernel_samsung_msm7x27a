@@ -353,7 +353,11 @@ static int envctrl_i2c_data_translate(unsigned char data, int translate_type,
 
 	default:
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return len;
 }
@@ -644,7 +648,11 @@ envctrl_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 	default:
 		break;
 
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -687,7 +695,11 @@ envctrl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 	default:
 		return -EINVAL;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -947,7 +959,11 @@ static void envctrl_init_i2c_child(struct device_node *dp,
 
 		default:
 			break;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1028,7 +1044,11 @@ static int kenvctrld(void *__unused)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit envctrl_probe(struct platform_device *op)
+=======
+static int envctrl_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp;
 	int index, err;
@@ -1104,7 +1124,11 @@ out_iounmap:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit envctrl_remove(struct platform_device *op)
+=======
+static int envctrl_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	int index;
 
@@ -1135,6 +1159,7 @@ static struct platform_driver envctrl_driver = {
 		.of_match_table = envctrl_match,
 	},
 	.probe		= envctrl_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(envctrl_remove),
 };
 
@@ -1155,4 +1180,11 @@ module_exit(envctrl_exit);
 module_platform_driver(envctrl_driver);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= envctrl_remove,
+};
+
+module_platform_driver(envctrl_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

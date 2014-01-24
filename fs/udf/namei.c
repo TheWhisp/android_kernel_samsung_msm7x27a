@@ -33,10 +33,13 @@
 #include <linux/exportfs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum { UDF_MAX_LINKS = 0xffff };
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int udf_match(int len1, const unsigned char *name1, int len2,
 			    const unsigned char *name2)
 {
@@ -256,7 +259,11 @@ out_ok:
 }
 
 static struct dentry *udf_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				 struct nameidata *nd)
+=======
+				 unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = NULL;
 	struct fileIdentDesc cfi;
@@ -556,11 +563,16 @@ static int udf_delete_entry(struct inode *inode, struct fileIdentDesc *fi,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int udf_create(struct inode *dir, struct dentry *dentry, int mode,
 =======
 static int udf_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 		      struct nameidata *nd)
+=======
+static int udf_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		      bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct udf_fileident_bh fibh;
 	struct inode *inode;
@@ -585,11 +597,15 @@ static int udf_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 	fi = udf_add_entry(dir, dentry, &fibh, &cfi, &err);
 	if (!fi) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
 		mark_inode_dirty(inode);
 =======
 		inode_dec_link_count(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode_dec_link_count(inode);
+>>>>>>> refs/remotes/origin/master
 		iput(inode);
 		return err;
 	}
@@ -609,10 +625,37 @@ static int udf_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int udf_mknod(struct inode *dir, struct dentry *dentry, int mode,
 =======
 static int udf_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int udf_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
+{
+	struct inode *inode;
+	struct udf_inode_info *iinfo;
+	int err;
+
+	inode = udf_new_inode(dir, mode, &err);
+	if (!inode)
+		return err;
+
+	iinfo = UDF_I(inode);
+	if (iinfo->i_alloc_type == ICBTAG_FLAG_AD_IN_ICB)
+		inode->i_data.a_ops = &udf_adinicb_aops;
+	else
+		inode->i_data.a_ops = &udf_aops;
+	inode->i_op = &udf_file_inode_operations;
+	inode->i_fop = &udf_file_operations;
+	mark_inode_dirty(inode);
+
+	d_tmpfile(dentry, inode);
+	return 0;
+}
+
+static int udf_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 		     dev_t rdev)
 {
 	struct inode *inode;
@@ -634,11 +677,15 @@ static int udf_mknod(struct inode *dir, struct dentry *dentry, umode_t mode,
 	fi = udf_add_entry(dir, dentry, &fibh, &cfi, &err);
 	if (!fi) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
 		mark_inode_dirty(inode);
 =======
 		inode_dec_link_count(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inode_dec_link_count(inode);
+>>>>>>> refs/remotes/origin/master
 		iput(inode);
 		return err;
 	}
@@ -662,10 +709,14 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int udf_mkdir(struct inode *dir, struct dentry *dentry, int mode)
 =======
 static int udf_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int udf_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode;
 	struct udf_fileident_bh fibh;
@@ -675,12 +726,15 @@ static int udf_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	struct udf_inode_info *iinfo;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = -EMLINK;
 	if (dir->i_nlink >= UDF_MAX_LINKS)
 		goto out;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = -EIO;
 	inode = udf_new_inode(dir, S_IFDIR | mode, &err);
 	if (!inode)
@@ -692,6 +746,7 @@ static int udf_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	fi = udf_add_entry(inode, NULL, &fibh, &cfi, &err);
 	if (!fi) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink--;
 		mark_inode_dirty(inode);
 		iput(inode);
@@ -699,12 +754,17 @@ static int udf_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	}
 	inode->i_nlink = 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		inode_dec_link_count(inode);
 		iput(inode);
 		goto out;
 	}
 	set_nlink(inode, 2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cfi.icb.extLength = cpu_to_le32(inode->i_sb->s_blocksize);
 	cfi.icb.extLocation = cpu_to_lelb(dinfo->i_location);
 	*(__le32 *)((struct allocDescImpUse *)cfi.icb.impUse)->impUse =
@@ -718,10 +778,14 @@ static int udf_mkdir(struct inode *dir, struct dentry *dentry, umode_t mode)
 	fi = udf_add_entry(dir, dentry, &fibh, &cfi, &err);
 	if (!fi) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 0;
 =======
 		clear_nlink(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 		mark_inode_dirty(inode);
 		iput(inode);
 		goto out;
@@ -838,6 +902,7 @@ static int udf_rmdir(struct inode *dir, struct dentry *dentry)
 		goto end_rmdir;
 	if (inode->i_nlink != 2)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udf_warning(inode->i_sb, "udf_rmdir",
 			    "empty directory has nlink != 2 (%d)",
 			    inode->i_nlink);
@@ -845,6 +910,10 @@ static int udf_rmdir(struct inode *dir, struct dentry *dentry)
 		udf_warn(inode->i_sb, "empty directory has nlink != 2 (%d)\n",
 			 inode->i_nlink);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		udf_warn(inode->i_sb, "empty directory has nlink != 2 (%d)\n",
+			 inode->i_nlink);
+>>>>>>> refs/remotes/origin/master
 	clear_nlink(inode);
 	inode->i_size = 0;
 	inode_dec_link_count(dir);
@@ -884,10 +953,14 @@ static int udf_unlink(struct inode *dir, struct dentry *dentry)
 		udf_debug("Deleting nonexistent file (%lu), %d\n",
 			  inode->i_ino, inode->i_nlink);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 1;
 =======
 		set_nlink(inode, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 	}
 	retval = udf_delete_entry(dir, fi, &fibh, &cfi);
 	if (retval)
@@ -1084,11 +1157,14 @@ static int udf_link(struct dentry *old_dentry, struct inode *dir,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (inode->i_nlink >= UDF_MAX_LINKS)
 		return -EMLINK;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	fi = udf_add_entry(dir, dentry, &fibh, &cfi, &err);
 	if (!fi) {
 		return err;
@@ -1181,12 +1257,15 @@ static int udf_rename(struct inode *old_dir, struct dentry *old_dentry,
 				old_dir->i_ino)
 			goto end_rename;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		retval = -EMLINK;
 		if (!new_inode && new_dir->i_nlink >= UDF_MAX_LINKS)
 			goto end_rename;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!nfi) {
 		nfi = udf_add_entry(new_dir, new_dentry, &nfibh, &ncfi,
@@ -1263,7 +1342,11 @@ static struct dentry *udf_get_parent(struct dentry *child)
 {
 	struct kernel_lb_addr tloc;
 	struct inode *inode = NULL;
+<<<<<<< HEAD
 	struct qstr dotdot = {.name = "..", .len = 2};
+=======
+	struct qstr dotdot = QSTR_INIT("..", 2);
+>>>>>>> refs/remotes/origin/master
 	struct fileIdentDesc cfi;
 	struct udf_fileident_bh fibh;
 
@@ -1330,21 +1413,37 @@ static struct dentry *udf_fh_to_parent(struct super_block *sb,
 				 fid->udf.parent_partref,
 				 fid->udf.parent_generation);
 }
+<<<<<<< HEAD
 static int udf_encode_fh(struct dentry *de, __u32 *fh, int *lenp,
 			 int connectable)
 {
 	int len = *lenp;
 	struct inode *inode =  de->d_inode;
+=======
+static int udf_encode_fh(struct inode *inode, __u32 *fh, int *lenp,
+			 struct inode *parent)
+{
+	int len = *lenp;
+>>>>>>> refs/remotes/origin/master
 	struct kernel_lb_addr location = UDF_I(inode)->i_location;
 	struct fid *fid = (struct fid *)fh;
 	int type = FILEID_UDF_WITHOUT_PARENT;
 
+<<<<<<< HEAD
 	if (connectable && (len < 5)) {
 		*lenp = 5;
 		return 255;
 	} else if (len < 3) {
 		*lenp = 3;
 		return 255;
+=======
+	if (parent && (len < 5)) {
+		*lenp = 5;
+		return FILEID_INVALID;
+	} else if (len < 3) {
+		*lenp = 3;
+		return FILEID_INVALID;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	*lenp = 3;
@@ -1353,6 +1452,7 @@ static int udf_encode_fh(struct dentry *de, __u32 *fh, int *lenp,
 	fid->udf.parent_partref = 0;
 	fid->udf.generation = inode->i_generation;
 
+<<<<<<< HEAD
 	if (connectable && !S_ISDIR(inode->i_mode)) {
 		spin_lock(&de->d_lock);
 		inode = de->d_parent->d_inode;
@@ -1361,6 +1461,13 @@ static int udf_encode_fh(struct dentry *de, __u32 *fh, int *lenp,
 		fid->udf.parent_partref = location.partitionReferenceNum;
 		fid->udf.parent_generation = inode->i_generation;
 		spin_unlock(&de->d_lock);
+=======
+	if (parent) {
+		location = UDF_I(parent)->i_location;
+		fid->udf.parent_block = location.logicalBlockNum;
+		fid->udf.parent_partref = location.partitionReferenceNum;
+		fid->udf.parent_generation = inode->i_generation;
+>>>>>>> refs/remotes/origin/master
 		*lenp = 5;
 		type = FILEID_UDF_WITH_PARENT;
 	}
@@ -1385,6 +1492,10 @@ const struct inode_operations udf_dir_inode_operations = {
 	.rmdir				= udf_rmdir,
 	.mknod				= udf_mknod,
 	.rename				= udf_rename,
+<<<<<<< HEAD
+=======
+	.tmpfile			= udf_tmpfile,
+>>>>>>> refs/remotes/origin/master
 };
 const struct inode_operations udf_symlink_inode_operations = {
 	.readlink	= generic_readlink,

@@ -78,8 +78,13 @@ int get_acorn_filename(struct iso_directory_record *de,
 /*
  * This should _really_ be cleaned up some day..
  */
+<<<<<<< HEAD
 static int do_isofs_readdir(struct inode *inode, struct file *filp,
 		void *dirent, filldir_t filldir,
+=======
+static int do_isofs_readdir(struct inode *inode, struct file *file,
+		struct dir_context *ctx,
+>>>>>>> refs/remotes/origin/master
 		char *tmpname, struct iso_directory_record *tmpde)
 {
 	unsigned long bufsize = ISOFS_BUFFER_SIZE(inode);
@@ -94,10 +99,17 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
 	struct iso_directory_record *de;
 	struct isofs_sb_info *sbi = ISOFS_SB(inode->i_sb);
 
+<<<<<<< HEAD
 	offset = filp->f_pos & (bufsize - 1);
 	block = filp->f_pos >> bufbits;
 
 	while (filp->f_pos < inode->i_size) {
+=======
+	offset = ctx->pos & (bufsize - 1);
+	block = ctx->pos >> bufbits;
+
+	while (ctx->pos < inode->i_size) {
+>>>>>>> refs/remotes/origin/master
 		int de_len;
 
 		if (!bh) {
@@ -108,7 +120,11 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
 
 		de = (struct iso_directory_record *) (bh->b_data + offset);
 
+<<<<<<< HEAD
 		de_len = *(unsigned char *) de;
+=======
+		de_len = *(unsigned char *)de;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * If the length byte is zero, we should move on to the next
@@ -119,8 +135,13 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
 		if (de_len == 0) {
 			brelse(bh);
 			bh = NULL;
+<<<<<<< HEAD
 			filp->f_pos = (filp->f_pos + ISOFS_BLOCK_SIZE) & ~(ISOFS_BLOCK_SIZE - 1);
 			block = filp->f_pos >> bufbits;
+=======
+			ctx->pos = (ctx->pos + ISOFS_BLOCK_SIZE) & ~(ISOFS_BLOCK_SIZE - 1);
+			block = ctx->pos >> bufbits;
+>>>>>>> refs/remotes/origin/master
 			offset = 0;
 			continue;
 		}
@@ -164,16 +185,26 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
 
 		if (de->flags[-sbi->s_high_sierra] & 0x80) {
 			first_de = 0;
+<<<<<<< HEAD
 			filp->f_pos += de_len;
+=======
+			ctx->pos += de_len;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 		first_de = 1;
 
 		/* Handle the case of the '.' directory */
 		if (de->name_len[0] == 1 && de->name[0] == 0) {
+<<<<<<< HEAD
 			if (filldir(dirent, ".", 1, filp->f_pos, inode->i_ino, DT_DIR) < 0)
 				break;
 			filp->f_pos += de_len;
+=======
+			if (!dir_emit_dot(file, ctx))
+				break;
+			ctx->pos += de_len;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -181,10 +212,16 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
 
 		/* Handle the case of the '..' directory */
 		if (de->name_len[0] == 1 && de->name[0] == 1) {
+<<<<<<< HEAD
 			inode_number = parent_ino(filp->f_path.dentry);
 			if (filldir(dirent, "..", 2, filp->f_pos, inode_number, DT_DIR) < 0)
 				break;
 			filp->f_pos += de_len;
+=======
+			if (!dir_emit_dotdot(file, ctx))
+				break;
+			ctx->pos += de_len;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -198,7 +235,11 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
 		if ((sbi->s_hide && (de->flags[-sbi->s_high_sierra] & 1)) ||
 		    (!sbi->s_showassoc &&
 				(de->flags[-sbi->s_high_sierra] & 4))) {
+<<<<<<< HEAD
 			filp->f_pos += de_len;
+=======
+			ctx->pos += de_len;
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -230,10 +271,17 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
 			}
 		}
 		if (len > 0) {
+<<<<<<< HEAD
 			if (filldir(dirent, p, len, filp->f_pos, inode_number, DT_UNKNOWN) < 0)
 				break;
 		}
 		filp->f_pos += de_len;
+=======
+			if (!dir_emit(ctx, p, len, inode_number, DT_UNKNOWN))
+				break;
+		}
+		ctx->pos += de_len;
+>>>>>>> refs/remotes/origin/master
 
 		continue;
 	}
@@ -247,22 +295,31 @@ static int do_isofs_readdir(struct inode *inode, struct file *filp,
  * handling split directory entries.. The real work is done by
  * "do_isofs_readdir()".
  */
+<<<<<<< HEAD
 static int isofs_readdir(struct file *filp,
 		void *dirent, filldir_t filldir)
+=======
+static int isofs_readdir(struct file *file, struct dir_context *ctx)
+>>>>>>> refs/remotes/origin/master
 {
 	int result;
 	char *tmpname;
 	struct iso_directory_record *tmpde;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 <<<<<<< HEAD
 	struct isofs_sb_info *sbi = ISOFS_SB(inode->i_sb);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 
 	tmpname = (char *)__get_free_page(GFP_KERNEL);
 	if (tmpname == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_lock(&sbi->s_mutex);
 =======
@@ -276,6 +333,13 @@ static int isofs_readdir(struct file *filp,
 	mutex_unlock(&sbi->s_mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmpde = (struct iso_directory_record *) (tmpname+1024);
+
+	result = do_isofs_readdir(inode, file, ctx, tmpname, tmpde);
+
+	free_page((unsigned long) tmpname);
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -283,7 +347,11 @@ const struct file_operations isofs_dir_operations =
 {
 	.llseek = generic_file_llseek,
 	.read = generic_read_dir,
+<<<<<<< HEAD
 	.readdir = isofs_readdir,
+=======
+	.iterate = isofs_readdir,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*

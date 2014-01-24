@@ -31,6 +31,7 @@
 #include <linux/mtd/partitions.h>
 
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
@@ -52,6 +53,31 @@
 #include <plat/pm.h>
 
 #include "common.h"
+=======
+#include <asm/mach/irq.h>
+#include <asm/mach/map.h>
+
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+
+#include <asm/irq.h>
+#include <asm/mach-types.h>
+
+#include <mach/fb.h>
+#include <mach/hardware.h>
+#include <mach/regs-gpio.h>
+#include <mach/regs-lcd.h>
+#include <mach/gpio-samsung.h>
+
+#include <plat/clock.h>
+#include <plat/cpu.h>
+#include <plat/devs.h>
+#include <plat/pm.h>
+#include <plat/regs-serial.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+#include "h1940.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc rx3715_iodesc[] __initdata = {
 	/* dump ISA space somewhere unused */
@@ -179,6 +205,10 @@ static void __init rx3715_map_io(void)
 	s3c24xx_init_io(rx3715_iodesc, ARRAY_SIZE(rx3715_iodesc));
 	s3c24xx_init_clocks(16934000);
 	s3c24xx_init_uarts(rx3715_uartcfgs, ARRAY_SIZE(rx3715_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* H1940 and RX3715 need to reserve this for suspend */
@@ -188,11 +218,14 @@ static void __init rx3715_reserve(void)
 	memblock_reserve(0x30081000, 0x1000);
 }
 
+<<<<<<< HEAD
 static void __init rx3715_init_irq(void)
 {
 	s3c24xx_init_irq();
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init rx3715_init_machine(void)
 {
 #ifdef CONFIG_PM_H1940
@@ -210,8 +243,14 @@ MACHINE_START(RX3715, "IPAQ-RX3715")
 	.atag_offset	= 0x100,
 	.map_io		= rx3715_map_io,
 	.reserve	= rx3715_reserve,
+<<<<<<< HEAD
 	.init_irq	= rx3715_init_irq,
 	.init_machine	= rx3715_init_machine,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2440_init_irq,
+	.init_machine	= rx3715_init_machine,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c244x_restart,
 MACHINE_END

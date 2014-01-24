@@ -29,12 +29,17 @@
 #define _OS_INTFS_C_
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/kthread.h>
 <<<<<<< HEAD
 =======
 #include <linux/firmware.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kthread.h>
+#include <linux/firmware.h>
+>>>>>>> refs/remotes/origin/master
 #include "osdep_service.h"
 #include "drv_types.h"
 #include "xmit_osdep.h"
@@ -55,7 +60,11 @@ static int lbkmode = RTL8712_AIR_TRX;
 static int hci = RTL8712_USB;
 static int ampdu_enable = 1;/*for enable tx_ampdu*/
 
+<<<<<<< HEAD
 /* The video_mode variable is for vedio mode.*/
+=======
+/* The video_mode variable is for video mode.*/
+>>>>>>> refs/remotes/origin/master
 /* It may be specify when inserting module with video_mode=1 parameter.*/
 static int video_mode = 1;   /* enable video mode*/
 
@@ -99,7 +108,11 @@ static char *initmac;
 /* if wifi_test = 1, driver will disable the turbo mode and pass it to
  * firmware private.
  */
+<<<<<<< HEAD
 static int wifi_test = 0;
+=======
+static int wifi_test;
+>>>>>>> refs/remotes/origin/master
 
 module_param_string(ifname, ifname, sizeof(ifname), S_IRUGO|S_IWUSR);
 module_param(wifi_test, int, 0644);
@@ -144,7 +157,11 @@ static uint loadparam(struct _adapter *padapter, struct  net_device *pnetdev)
 	registry_par->ssid.SsidLength = 3;
 	registry_par->channel = (u8)channel;
 	registry_par->wireless_mode = (u8)wireless_mode;
+<<<<<<< HEAD
 	registry_par->vrtl_carrier_sense = (u8)vrtl_carrier_sense ;
+=======
+	registry_par->vrtl_carrier_sense = (u8)vrtl_carrier_sense;
+>>>>>>> refs/remotes/origin/master
 	registry_par->vcs_type = (u8)vcs_type;
 	registry_par->frag_thresh = (u16)frag_thresh;
 	registry_par->preamble = (u8)preamble;
@@ -182,10 +199,14 @@ static uint loadparam(struct _adapter *padapter, struct  net_device *pnetdev)
 static int r871x_net_set_mac_address(struct net_device *pnetdev, void *p)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(pnetdev);
 =======
 	struct _adapter *padapter = (struct _adapter *)netdev_priv(pnetdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct _adapter *padapter = (struct _adapter *)netdev_priv(pnetdev);
+>>>>>>> refs/remotes/origin/master
 	struct sockaddr *addr = p;
 
 	if (padapter->bup == false)
@@ -196,10 +217,14 @@ static int r871x_net_set_mac_address(struct net_device *pnetdev, void *p)
 static struct net_device_stats *r871x_net_get_stats(struct net_device *pnetdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(pnetdev);
 =======
 	struct _adapter *padapter = (struct _adapter *) netdev_priv(pnetdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct _adapter *padapter = (struct _adapter *) netdev_priv(pnetdev);
+>>>>>>> refs/remotes/origin/master
 	struct xmit_priv *pxmitpriv = &(padapter->xmitpriv);
 	struct recv_priv *precvpriv = &(padapter->recvpriv);
 
@@ -234,6 +259,7 @@ struct net_device *r8712_init_netdev(void)
 		dev_alloc_name(pnetdev, ifname);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	padapter = (struct _adapter *) _netdev_priv(pnetdev);
 =======
 	padapter = (struct _adapter *) netdev_priv(pnetdev);
@@ -241,6 +267,11 @@ struct net_device *r8712_init_netdev(void)
 	padapter->pnetdev = pnetdev;
 	printk(KERN_INFO "r8712u: register rtl8712_netdev_ops to"
 	       " netdev_ops\n");
+=======
+	padapter = (struct _adapter *) netdev_priv(pnetdev);
+	padapter->pnetdev = pnetdev;
+	pr_info("r8712u: register rtl8712_netdev_ops to netdev_ops\n");
+>>>>>>> refs/remotes/origin/master
 	pnetdev->netdev_ops = &rtl8712_netdev_ops;
 	pnetdev->watchdog_timeo = HZ; /* 1 second timeout */
 	pnetdev->wireless_handlers = (struct iw_handler_def *)
@@ -254,7 +285,11 @@ struct net_device *r8712_init_netdev(void)
 
 static u32 start_drv_threads(struct _adapter *padapter)
 {
+<<<<<<< HEAD
 	padapter->cmdThread = kthread_run(r8712_cmd_thread, padapter,
+=======
+	padapter->cmdThread = kthread_run(r8712_cmd_thread, padapter, "%s",
+>>>>>>> refs/remotes/origin/master
 			      padapter->pnetdev->name);
 	if (IS_ERR(padapter->cmdThread) < 0)
 		return _FAIL;
@@ -263,7 +298,11 @@ static u32 start_drv_threads(struct _adapter *padapter)
 
 void r8712_stop_drv_threads(struct _adapter *padapter)
 {
+<<<<<<< HEAD
 	/*Below is to termindate r8712_cmd_thread & event_thread...*/
+=======
+	/*Below is to terminate r8712_cmd_thread & event_thread...*/
+>>>>>>> refs/remotes/origin/master
 	up(&padapter->cmdpriv.cmd_queue_sema);
 	if (padapter->cmdThread)
 		_down_sema(&padapter->cmdpriv.terminate_cmdthread_sema);
@@ -278,6 +317,7 @@ static void start_drv_timers(struct _adapter *padapter)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void stop_drv_timers(struct _adapter *padapter)
 {
 	_cancel_timer_ex(&padapter->mlmepriv.assoc_timer);
@@ -288,15 +328,25 @@ void r8712_stop_drv_timers(struct _adapter *padapter)
 {
 	_cancel_timer_ex(&padapter->mlmepriv.assoc_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void r8712_stop_drv_timers(struct _adapter *padapter)
+{
+	_cancel_timer_ex(&padapter->mlmepriv.assoc_timer);
+>>>>>>> refs/remotes/origin/master
 	_cancel_timer_ex(&padapter->securitypriv.tkip_timer);
 	_cancel_timer_ex(&padapter->mlmepriv.scan_to_timer);
 	_cancel_timer_ex(&padapter->mlmepriv.dhcp_timer);
 	_cancel_timer_ex(&padapter->mlmepriv.wdg_timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	_cancel_timer_ex(&padapter->mlmepriv.sitesurveyctrl.
 			 sitesurvey_ctrl_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_cancel_timer_ex(&padapter->mlmepriv.sitesurveyctrl.
+			 sitesurvey_ctrl_timer);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u8 init_default_value(struct _adapter *padapter)
@@ -314,11 +364,17 @@ static u8 init_default_value(struct _adapter *padapter)
 	pxmitpriv->rts_thresh = pregistrypriv->rts_thresh;
 	pxmitpriv->frag_len = pregistrypriv->frag_thresh;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* mlme_priv */
 	/* Maybe someday we should rename this variable to "active_mode"(Jeff)*/
 	pmlmepriv->passive_mode = 1; /* 1: active, 0: passive. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* mlme_priv */
+	/* Maybe someday we should rename this variable to "active_mode"(Jeff)*/
+	pmlmepriv->passive_mode = 1; /* 1: active, 0: passive. */
+>>>>>>> refs/remotes/origin/master
 	/*ht_priv*/
 	{
 		int i;
@@ -360,9 +416,12 @@ u8 r8712_init_drv_sw(struct _adapter *padapter)
 	r8712_init_bcmc_stainfo(padapter);
 	r8712_init_pwrctrl_priv(padapter);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sema_init(&(padapter->pwrctrlpriv.pnp_pwr_mgnt_sema), 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mp871xinit(padapter);
 	if (init_default_value(padapter) != _SUCCESS)
 		return _FAIL;
@@ -381,19 +440,25 @@ u8 r8712_free_drv_sw(struct _adapter *padapter)
 	r8712_free_io_queue(padapter);
 	_free_xmit_priv(&padapter->xmitpriv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_r8712_free_sta_priv(&padapter->stapriv);
 	_r8712_free_recv_priv(&padapter->recvpriv);
 	mp871xdeinit(padapter);
 	if (pnetdev)
 		os_free_netdev(pnetdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (padapter->fw_found)
 		_r8712_free_sta_priv(&padapter->stapriv);
 	_r8712_free_recv_priv(&padapter->recvpriv);
 	mp871xdeinit(padapter);
 	if (pnetdev)
 		free_netdev(pnetdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return _SUCCESS;
 }
 
@@ -421,11 +486,14 @@ static void enable_video_mode(struct _adapter *padapter, int cbw40_value)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int netdev_open(struct net_device *pnetdev)
 {
 	struct _adapter *padapter = (struct _adapter *)_netdev_priv(pnetdev);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *
  * This function intends to handle the activation of an interface
@@ -437,7 +505,10 @@ static int netdev_open(struct net_device *pnetdev)
 	struct _adapter *padapter = (struct _adapter *)netdev_priv(pnetdev);
 
 	mutex_lock(&padapter->mutex_start);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (padapter->bup == false) {
 		padapter->bDriverStopped = false;
 		padapter->bSurpriseRemoved = false;
@@ -486,14 +557,19 @@ static int netdev_open(struct net_device *pnetdev)
 	start_drv_timers(padapter);
 	padapter->ledpriv.LedControlHandler(padapter, LED_CTL_NO_LINK);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&padapter->mutex_start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&padapter->mutex_start);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 netdev_open_error:
 	padapter->bup = false;
 	netif_carrier_off(pnetdev);
 	netif_stop_queue(pnetdev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return -1;
 }
@@ -502,6 +578,8 @@ static int netdev_close(struct net_device *pnetdev)
 {
 	struct _adapter *padapter = (struct _adapter *) _netdev_priv(pnetdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&padapter->mutex_start);
 	return -1;
 }
@@ -515,7 +593,10 @@ static int netdev_close(struct net_device *pnetdev)
 static int netdev_close(struct net_device *pnetdev)
 {
 	struct _adapter *padapter = (struct _adapter *) netdev_priv(pnetdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Close LED*/
 	padapter->ledpriv.LedControlHandler(padapter, LED_CTL_POWER_OFF);
@@ -536,10 +617,13 @@ static int netdev_close(struct net_device *pnetdev)
 	/*s2-4.*/
 	r8712_free_network_queue(padapter);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*Stop driver mlme relation timer*/
 	stop_drv_timers(padapter);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

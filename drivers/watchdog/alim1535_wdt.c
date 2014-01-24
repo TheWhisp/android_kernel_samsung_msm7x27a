@@ -8,10 +8,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -28,9 +33,12 @@
 
 #define WATCHDOG_NAME "ALi_M1535"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX WATCHDOG_NAME ": "
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WATCHDOG_TIMEOUT 60	/* 60 sec default timeout */
 
 /* internal variables */
@@ -48,12 +56,17 @@ MODULE_PARM_DESC(timeout,
 				__MODULE_STRING(WATCHDOG_TIMEOUT) ")");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -282,11 +295,15 @@ static int ali_release(struct inode *inode, struct file *file)
 		ali_stop();
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 				"Unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("Unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		ali_keepalive();
 	}
 	clear_bit(0, &ali_is_open);
@@ -417,6 +434,7 @@ static int __init watchdog_init(void)
 	if (timeout < 1 || timeout >= 18000) {
 		timeout = WATCHDOG_TIMEOUT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 		     "timeout value must be 0 < timeout < 18000, using %d\n",
 							timeout);
@@ -424,6 +442,10 @@ static int __init watchdog_init(void)
 		pr_info("timeout value must be 0 < timeout < 18000, using %d\n",
 			timeout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("timeout value must be 0 < timeout < 18000, using %d\n",
+			timeout);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Calculate the watchdog's timeout */
@@ -432,16 +454,21 @@ static int __init watchdog_init(void)
 	ret = register_reboot_notifier(&ali_notifier);
 	if (ret != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", ret);
 =======
 		pr_err("cannot register reboot notifier (err=%d)\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	ret = misc_register(&ali_miscdev);
 	if (ret != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -451,13 +478,18 @@ static int __init watchdog_init(void)
 
 	printk(KERN_INFO PFX "initialized. timeout=%d sec (nowayout=%d)\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, ret);
 		goto unreg_reboot;
 	}
 
 	pr_info("initialized. timeout=%d sec (nowayout=%d)\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		timeout, nowayout);
 
 out:
@@ -490,4 +522,7 @@ module_exit(watchdog_exit);
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("ALi M1535 PMU Watchdog Timer driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

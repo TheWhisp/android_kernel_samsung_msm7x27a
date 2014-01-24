@@ -13,10 +13,15 @@ struct leon_pci_info {
 	struct resource	io_space;
 	struct resource	mem_space;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*map_irq)(struct pci_dev *dev, u8 slot, u8 pin);
 =======
 	int (*map_irq)(const struct pci_dev *dev, u8 slot, u8 pin);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct resource	busn;
+	int (*map_irq)(const struct pci_dev *dev, u8 slot, u8 pin);
+>>>>>>> refs/remotes/origin/master
 };
 
 extern void leon_pci_init(struct platform_device *ofdev,

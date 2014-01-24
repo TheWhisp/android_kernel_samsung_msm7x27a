@@ -31,10 +31,14 @@ static ssize_t key_##name##_read(struct file *file,			\
 static const struct file_operations key_ ##name## _ops = {		\
 	.read = key_##name##_read,					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = mac80211_open_file_generic,				\
 =======
 	.open = simple_open,						\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/master
 	.llseek = generic_file_llseek,					\
 }
 
@@ -50,10 +54,14 @@ static const struct file_operations key_ ##name## _ops = {		\
 static const struct file_operations key_ ##name## _ops = {		\
 	.read = key_conf_##name##_read,					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open = mac80211_open_file_generic,				\
 =======
 	.open = simple_open,						\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.open = simple_open,						\
+>>>>>>> refs/remotes/origin/master
 	.llseek = generic_file_llseek,					\
 }
 
@@ -87,10 +95,14 @@ static ssize_t key_tx_spec_read(struct file *file, char __user *userbuf,
 				size_t count, loff_t *ppos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const u8 *tpn;
 =======
 	u64 pn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 pn;
+>>>>>>> refs/remotes/origin/master
 	char buf[20];
 	int len;
 	struct ieee80211_key *key = file->private_data;
@@ -107,6 +119,7 @@ static ssize_t key_tx_spec_read(struct file *file, char __user *userbuf,
 		break;
 	case WLAN_CIPHER_SUITE_CCMP:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tpn = key->u.ccmp.tx_pn;
 		len = scnprintf(buf, sizeof(buf), "%02x%02x%02x%02x%02x%02x\n",
 				tpn[0], tpn[1], tpn[2], tpn[3], tpn[4], tpn[5]);
@@ -117,6 +130,8 @@ static ssize_t key_tx_spec_read(struct file *file, char __user *userbuf,
 				tpn[0], tpn[1], tpn[2], tpn[3], tpn[4],
 				tpn[5]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pn = atomic64_read(&key->u.ccmp.tx_pn);
 		len = scnprintf(buf, sizeof(buf), "%02x%02x%02x%02x%02x%02x\n",
 				(u8)(pn >> 40), (u8)(pn >> 32), (u8)(pn >> 24),
@@ -127,7 +142,10 @@ static ssize_t key_tx_spec_read(struct file *file, char __user *userbuf,
 		len = scnprintf(buf, sizeof(buf), "%02x%02x%02x%02x%02x%02x\n",
 				(u8)(pn >> 40), (u8)(pn >> 32), (u8)(pn >> 24),
 				(u8)(pn >> 16), (u8)(pn >> 8), (u8)pn);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return 0;
@@ -140,7 +158,11 @@ static ssize_t key_rx_spec_read(struct file *file, char __user *userbuf,
 				size_t count, loff_t *ppos)
 {
 	struct ieee80211_key *key = file->private_data;
+<<<<<<< HEAD
 	char buf[14*NUM_RX_DATA_QUEUES+1], *p = buf;
+=======
+	char buf[14*IEEE80211_NUM_TIDS+1], *p = buf;
+>>>>>>> refs/remotes/origin/master
 	int i, len;
 	const u8 *rpn;
 
@@ -150,7 +172,11 @@ static ssize_t key_rx_spec_read(struct file *file, char __user *userbuf,
 		len = scnprintf(buf, sizeof(buf), "\n");
 		break;
 	case WLAN_CIPHER_SUITE_TKIP:
+<<<<<<< HEAD
 		for (i = 0; i < NUM_RX_DATA_QUEUES; i++)
+=======
+		for (i = 0; i < IEEE80211_NUM_TIDS; i++)
+>>>>>>> refs/remotes/origin/master
 			p += scnprintf(p, sizeof(buf)+buf-p,
 				       "%08x %04x\n",
 				       key->u.tkip.rx[i].iv32,
@@ -158,7 +184,11 @@ static ssize_t key_rx_spec_read(struct file *file, char __user *userbuf,
 		len = p - buf;
 		break;
 	case WLAN_CIPHER_SUITE_CCMP:
+<<<<<<< HEAD
 		for (i = 0; i < NUM_RX_DATA_QUEUES + 1; i++) {
+=======
+		for (i = 0; i < IEEE80211_NUM_TIDS + 1; i++) {
+>>>>>>> refs/remotes/origin/master
 			rpn = key->u.ccmp.rx_pn[i];
 			p += scnprintf(p, sizeof(buf)+buf-p,
 				       "%02x%02x%02x%02x%02x%02x\n",
@@ -223,6 +253,25 @@ static ssize_t key_icverrors_read(struct file *file, char __user *userbuf,
 }
 KEY_OPS(icverrors);
 
+<<<<<<< HEAD
+=======
+static ssize_t key_mic_failures_read(struct file *file, char __user *userbuf,
+				     size_t count, loff_t *ppos)
+{
+	struct ieee80211_key *key = file->private_data;
+	char buf[20];
+	int len;
+
+	if (key->conf.cipher != WLAN_CIPHER_SUITE_TKIP)
+		return -EINVAL;
+
+	len = scnprintf(buf, sizeof(buf), "%u\n", key->u.tkip.mic_failures);
+
+	return simple_read_from_buffer(userbuf, count, ppos, buf, len);
+}
+KEY_OPS(mic_failures);
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t key_key_read(struct file *file, char __user *userbuf,
 			    size_t count, loff_t *ppos)
 {
@@ -250,6 +299,7 @@ KEY_OPS(key);
 
 void ieee80211_debugfs_key_add(struct ieee80211_key *key)
 <<<<<<< HEAD
+<<<<<<< HEAD
   {
 	static int keycount;
 	char buf[50];
@@ -258,6 +308,11 @@ void ieee80211_debugfs_key_add(struct ieee80211_key *key)
 	static int keycount;
 	char buf[100];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{
+	static int keycount;
+	char buf[100];
+>>>>>>> refs/remotes/origin/master
 	struct sta_info *sta;
 
 	if (!key->local->debugfs.keys)
@@ -275,11 +330,16 @@ void ieee80211_debugfs_key_add(struct ieee80211_key *key)
 	sta = key->sta;
 	if (sta) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sprintf(buf, "../../stations/%pM", sta->sta.addr);
 =======
 		sprintf(buf, "../../netdev:%s/stations/%pM",
 			sta->sdata->name, sta->sta.addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		sprintf(buf, "../../netdev:%s/stations/%pM",
+			sta->sdata->name, sta->sta.addr);
+>>>>>>> refs/remotes/origin/master
 		key->debugfs.stalink =
 			debugfs_create_symlink("station", key->debugfs.dir, buf);
 	}
@@ -294,6 +354,10 @@ void ieee80211_debugfs_key_add(struct ieee80211_key *key)
 	DEBUGFS_ADD(rx_spec);
 	DEBUGFS_ADD(replays);
 	DEBUGFS_ADD(icverrors);
+<<<<<<< HEAD
+=======
+	DEBUGFS_ADD(mic_failures);
+>>>>>>> refs/remotes/origin/master
 	DEBUGFS_ADD(key);
 	DEBUGFS_ADD(ifindex);
 };
@@ -312,21 +376,42 @@ void ieee80211_debugfs_key_update_default(struct ieee80211_sub_if_data *sdata)
 	char buf[50];
 	struct ieee80211_key *key;
 
+<<<<<<< HEAD
 	if (!sdata->debugfs.dir)
+=======
+	if (!sdata->vif.debugfs_dir)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	lockdep_assert_held(&sdata->local->key_mtx);
 
+<<<<<<< HEAD
+=======
+	if (sdata->debugfs.default_unicast_key) {
+		debugfs_remove(sdata->debugfs.default_unicast_key);
+		sdata->debugfs.default_unicast_key = NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (sdata->default_unicast_key) {
 		key = key_mtx_dereference(sdata->local,
 					  sdata->default_unicast_key);
 		sprintf(buf, "../keys/%d", key->debugfs.cnt);
 		sdata->debugfs.default_unicast_key =
 			debugfs_create_symlink("default_unicast_key",
+<<<<<<< HEAD
 					       sdata->debugfs.dir, buf);
 	} else {
 		debugfs_remove(sdata->debugfs.default_unicast_key);
 		sdata->debugfs.default_unicast_key = NULL;
+=======
+					       sdata->vif.debugfs_dir, buf);
+	}
+
+	if (sdata->debugfs.default_multicast_key) {
+		debugfs_remove(sdata->debugfs.default_multicast_key);
+		sdata->debugfs.default_multicast_key = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (sdata->default_multicast_key) {
@@ -335,10 +420,14 @@ void ieee80211_debugfs_key_update_default(struct ieee80211_sub_if_data *sdata)
 		sprintf(buf, "../keys/%d", key->debugfs.cnt);
 		sdata->debugfs.default_multicast_key =
 			debugfs_create_symlink("default_multicast_key",
+<<<<<<< HEAD
 					       sdata->debugfs.dir, buf);
 	} else {
 		debugfs_remove(sdata->debugfs.default_multicast_key);
 		sdata->debugfs.default_multicast_key = NULL;
+=======
+					       sdata->vif.debugfs_dir, buf);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -347,7 +436,11 @@ void ieee80211_debugfs_key_add_mgmt_default(struct ieee80211_sub_if_data *sdata)
 	char buf[50];
 	struct ieee80211_key *key;
 
+<<<<<<< HEAD
 	if (!sdata->debugfs.dir)
+=======
+	if (!sdata->vif.debugfs_dir)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	key = key_mtx_dereference(sdata->local,
@@ -356,7 +449,11 @@ void ieee80211_debugfs_key_add_mgmt_default(struct ieee80211_sub_if_data *sdata)
 		sprintf(buf, "../keys/%d", key->debugfs.cnt);
 		sdata->debugfs.default_mgmt_key =
 			debugfs_create_symlink("default_mgmt_key",
+<<<<<<< HEAD
 					       sdata->debugfs.dir, buf);
+=======
+					       sdata->vif.debugfs_dir, buf);
+>>>>>>> refs/remotes/origin/master
 	} else
 		ieee80211_debugfs_key_remove_mgmt_default(sdata);
 }

@@ -26,15 +26,24 @@
 #include <linux/types.h>
 #include <linux/list.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/skbuff.h>
 #include <linux/ieee80211.h>
 #include <linux/timer.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+
+>>>>>>> refs/remotes/origin/master
 /* print_ssid() is intended to be used in debug (and possibly error)
  * messages. It should never be used for passing ssid to user space. */
 const char *print_ssid(char *buf, const char *ssid, u8 ssid_len);
@@ -47,10 +56,15 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct module;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct module;
+
+>>>>>>> refs/remotes/origin/master
 struct lib80211_crypto_ops {
 	const char *name;
 	struct list_head list;
@@ -83,7 +97,11 @@ struct lib80211_crypto_ops {
 
 	/* procfs handler for printing out key information and possible
 	 * statistics */
+<<<<<<< HEAD
 	char *(*print_stats) (char *p, void *priv);
+=======
+	void (*print_stats) (struct seq_file *m, void *priv);
+>>>>>>> refs/remotes/origin/master
 
 	/* Crypto specific flag get/set for configuration settings */
 	unsigned long (*get_flags) (void *priv);
@@ -127,6 +145,7 @@ int lib80211_register_crypto_ops(struct lib80211_crypto_ops *ops);
 int lib80211_unregister_crypto_ops(struct lib80211_crypto_ops *ops);
 struct lib80211_crypto_ops *lib80211_get_crypto_ops(const char *name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void lib80211_crypt_deinit_entries(struct lib80211_crypt_info *, int);
 void lib80211_crypt_deinit_handler(unsigned long);
 void lib80211_crypt_delayed_deinit(struct lib80211_crypt_info *info,
@@ -136,5 +155,9 @@ void lib80211_crypt_quiescing(struct lib80211_crypt_info *info);
 void lib80211_crypt_delayed_deinit(struct lib80211_crypt_info *info,
 				    struct lib80211_crypt_data **crypt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void lib80211_crypt_delayed_deinit(struct lib80211_crypt_info *info,
+				    struct lib80211_crypt_data **crypt);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* LIB80211_H */

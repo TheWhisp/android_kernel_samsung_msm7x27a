@@ -86,9 +86,14 @@ static void drain_midi_queue(int dev)
 	 */
 
 	if (midi_devs[dev]->buffer_status != NULL)
+<<<<<<< HEAD
 		while (!signal_pending(current) && midi_devs[dev]->buffer_status(dev)) 
 			interruptible_sleep_on_timeout(&midi_sleeper[dev],
 						       HZ/10);
+=======
+		wait_event_interruptible_timeout(midi_sleeper[dev],
+				!midi_devs[dev]->buffer_status(dev), HZ/10);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void midi_input_intr(int dev, unsigned char data)
@@ -233,8 +238,13 @@ void MIDIbuf_release(int dev, struct file *file)
 							   * devices
 							 */
 
+<<<<<<< HEAD
 		while (!signal_pending(current) && DATA_AVAIL(midi_out_buf[dev]))
 			  interruptible_sleep_on(&midi_sleeper[dev]);
+=======
+		wait_event_interruptible(midi_sleeper[dev],
+					 !DATA_AVAIL(midi_out_buf[dev]));
+>>>>>>> refs/remotes/origin/master
 		/*
 		 *	Sync
 		 */
@@ -282,8 +292,13 @@ int MIDIbuf_write(int dev, struct file *file, const char __user *buf, int count)
 				goto out;
 			}
 
+<<<<<<< HEAD
 			interruptible_sleep_on(&midi_sleeper[dev]);
 			if (signal_pending(current)) 
+=======
+			if (wait_event_interruptible(midi_sleeper[dev],
+						SPACE_AVAIL(midi_out_buf[dev])))
+>>>>>>> refs/remotes/origin/master
 			{
 				c = -EINTR;
 				goto out;
@@ -325,8 +340,14 @@ int MIDIbuf_read(int dev, struct file *file, char __user *buf, int count)
  			c = -EAGAIN;
 			goto out;
  		}
+<<<<<<< HEAD
 		interruptible_sleep_on_timeout(&input_sleeper[dev],
 					       parms[dev].prech_timeout);
+=======
+		wait_event_interruptible_timeout(input_sleeper[dev],
+						 DATA_AVAIL(midi_in_buf[dev]),
+						 parms[dev].prech_timeout);
+>>>>>>> refs/remotes/origin/master
 
 		if (signal_pending(current))
 			c = -EINTR;	/* The user is getting restless */

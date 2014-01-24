@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __STA_INFO_H_
 #define __STA_INFO_H_
 
@@ -67,12 +73,17 @@ struct sta_info {
 	uint state;
 	uint aid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8	mac_id;
 	u8	qos_option;
 =======
 	uint	mac_id;
 	uint	qos_option;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint	mac_id;
+	uint	qos_option;
+>>>>>>> refs/remotes/origin/master
 	u8	hwaddr[ETH_ALEN];
 	uint	ieee8021x_blocked;	/*0: allowed, 1:blocked */
 	uint	XPrivacy; /*aes, tkip...*/
@@ -99,9 +110,12 @@ struct sta_info {
 	 * sta_info: (AP & STA) CAP/INFO
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_R8712_AP
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head asoc_list;
 	struct list_head auth_list;
 	unsigned int expire_to;
@@ -110,9 +124,12 @@ struct sta_info {
 	unsigned char chg_txt[128];
 	unsigned int tx_ra_bitmap;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct	sta_priv {
@@ -126,18 +143,24 @@ struct	sta_priv {
 	struct  __queue wakeup_q;
 	struct _adapter *padapter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_R8712_AP
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head asoc_list;
 	struct list_head auth_list;
 	unsigned int auth_to;  /* sec, time to expire in authenticating. */
 	unsigned int assoc_to; /* sec, time to expire before associating. */
 	unsigned int expire_to; /* sec , time to expire after associated. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline u32 wifi_mac_hash(u8 *mac)
@@ -164,7 +187,11 @@ void r8712_free_all_stainfo(struct _adapter *padapter);
 struct sta_info *r8712_get_stainfo(struct sta_priv *pstapriv, u8 *hwaddr);
 void r8712_init_bcmc_stainfo(struct _adapter *padapter);
 struct sta_info *r8712_get_bcmc_stainfo(struct _adapter *padapter);
+<<<<<<< HEAD
 u8 r8712_access_ctrl(struct wlan_acl_pool *pacl_list, u8 * mac_addr);
+=======
+u8 r8712_access_ctrl(struct wlan_acl_pool *pacl_list, u8 *mac_addr);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _STA_INFO_H_ */
 

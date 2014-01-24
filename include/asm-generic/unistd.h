@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #if !defined(_ASM_GENERIC_UNISTD_H) || defined(__SYSCALL)
 #define _ASM_GENERIC_UNISTD_H
 
@@ -913,6 +914,10 @@ __SYSCALL(__NR_fork, sys_ni_syscall)
 #endif
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm-generic/unistd.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are required system calls, we should
@@ -923,6 +928,7 @@ __SYSCALL(__NR_fork, sys_ni_syscall)
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_LLSEEK
 #endif
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 #define __ARCH_WANT_COMPAT_SYS_RT_SIGSUSPEND
@@ -939,3 +945,5 @@ __SYSCALL(__NR_fork, sys_ni_syscall)
 
 #endif /* __KERNEL__ */
 #endif /* _ASM_GENERIC_UNISTD_H */
+=======
+>>>>>>> refs/remotes/origin/master

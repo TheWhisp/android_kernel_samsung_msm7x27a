@@ -6,10 +6,13 @@
 
 #include <linux/backing-dev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/writeback.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/writeback.h>
 
 #define show_inode_state(state)					\
@@ -35,9 +38,123 @@
 		{WB_REASON_FS_FREE_SPACE,	"fs_free_space"},	\
 		{WB_REASON_FORKER_THREAD,	"forker_thread"}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct wb_writeback_work;
 
+=======
+struct wb_writeback_work;
+
+TRACE_EVENT(writeback_dirty_page,
+
+	TP_PROTO(struct page *page, struct address_space *mapping),
+
+	TP_ARGS(page, mapping),
+
+	TP_STRUCT__entry (
+		__array(char, name, 32)
+		__field(unsigned long, ino)
+		__field(pgoff_t, index)
+	),
+
+	TP_fast_assign(
+		strncpy(__entry->name,
+			mapping ? dev_name(mapping->backing_dev_info->dev) : "(unknown)", 32);
+		__entry->ino = mapping ? mapping->host->i_ino : 0;
+		__entry->index = page->index;
+	),
+
+	TP_printk("bdi %s: ino=%lu index=%lu",
+		__entry->name,
+		__entry->ino,
+		__entry->index
+	)
+);
+
+DECLARE_EVENT_CLASS(writeback_dirty_inode_template,
+
+	TP_PROTO(struct inode *inode, int flags),
+
+	TP_ARGS(inode, flags),
+
+	TP_STRUCT__entry (
+		__array(char, name, 32)
+		__field(unsigned long, ino)
+		__field(unsigned long, flags)
+	),
+
+	TP_fast_assign(
+		struct backing_dev_info *bdi = inode->i_mapping->backing_dev_info;
+
+		/* may be called for files on pseudo FSes w/ unregistered bdi */
+		strncpy(__entry->name,
+			bdi->dev ? dev_name(bdi->dev) : "(unknown)", 32);
+		__entry->ino		= inode->i_ino;
+		__entry->flags		= flags;
+	),
+
+	TP_printk("bdi %s: ino=%lu flags=%s",
+		__entry->name,
+		__entry->ino,
+		show_inode_state(__entry->flags)
+	)
+);
+
+DEFINE_EVENT(writeback_dirty_inode_template, writeback_dirty_inode_start,
+
+	TP_PROTO(struct inode *inode, int flags),
+
+	TP_ARGS(inode, flags)
+);
+
+DEFINE_EVENT(writeback_dirty_inode_template, writeback_dirty_inode,
+
+	TP_PROTO(struct inode *inode, int flags),
+
+	TP_ARGS(inode, flags)
+);
+
+DECLARE_EVENT_CLASS(writeback_write_inode_template,
+
+	TP_PROTO(struct inode *inode, struct writeback_control *wbc),
+
+	TP_ARGS(inode, wbc),
+
+	TP_STRUCT__entry (
+		__array(char, name, 32)
+		__field(unsigned long, ino)
+		__field(int, sync_mode)
+	),
+
+	TP_fast_assign(
+		strncpy(__entry->name,
+			dev_name(inode->i_mapping->backing_dev_info->dev), 32);
+		__entry->ino		= inode->i_ino;
+		__entry->sync_mode	= wbc->sync_mode;
+	),
+
+	TP_printk("bdi %s: ino=%lu sync_mode=%d",
+		__entry->name,
+		__entry->ino,
+		__entry->sync_mode
+	)
+);
+
+DEFINE_EVENT(writeback_write_inode_template, writeback_write_inode_start,
+
+	TP_PROTO(struct inode *inode, struct writeback_control *wbc),
+
+	TP_ARGS(inode, wbc)
+);
+
+DEFINE_EVENT(writeback_write_inode_template, writeback_write_inode,
+
+	TP_PROTO(struct inode *inode, struct writeback_control *wbc),
+
+	TP_ARGS(inode, wbc)
+);
+
+>>>>>>> refs/remotes/origin/master
 DECLARE_EVENT_CLASS(writeback_work_class,
 	TP_PROTO(struct backing_dev_info *bdi, struct wb_writeback_work *work),
 	TP_ARGS(bdi, work),
@@ -50,9 +167,13 @@ DECLARE_EVENT_CLASS(writeback_work_class,
 		__field(int, range_cyclic)
 		__field(int, for_background)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		__field(int, reason)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__field(int, reason)
+>>>>>>> refs/remotes/origin/master
 	),
 	TP_fast_assign(
 		struct device *dev = bdi->dev;
@@ -66,15 +187,21 @@ DECLARE_EVENT_CLASS(writeback_work_class,
 		__entry->range_cyclic = work->range_cyclic;
 		__entry->for_background	= work->for_background;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	),
 	TP_printk("bdi %s: sb_dev %d:%d nr_pages=%ld sync_mode=%d "
 		  "kupdate=%d range_cyclic=%d background=%d",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		__entry->reason = work->reason;
 	),
 	TP_printk("bdi %s: sb_dev %d:%d nr_pages=%ld sync_mode=%d "
 		  "kupdate=%d range_cyclic=%d background=%d reason=%s",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		  __entry->name,
 		  MAJOR(__entry->sb_dev), MINOR(__entry->sb_dev),
 		  __entry->nr_pages,
@@ -82,17 +209,23 @@ DECLARE_EVENT_CLASS(writeback_work_class,
 		  __entry->for_kupdate,
 		  __entry->range_cyclic,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		  __entry->for_background
 =======
 		  __entry->for_background,
 		  __print_symbolic(__entry->reason, WB_WORK_REASON)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  __entry->for_background,
+		  __print_symbolic(__entry->reason, WB_WORK_REASON)
+>>>>>>> refs/remotes/origin/master
 	)
 );
 #define DEFINE_WRITEBACK_WORK_EVENT(name) \
 DEFINE_EVENT(writeback_work_class, name, \
 	TP_PROTO(struct backing_dev_info *bdi, struct wb_writeback_work *work), \
 	TP_ARGS(bdi, work))
+<<<<<<< HEAD
 DEFINE_WRITEBACK_WORK_EVENT(writeback_nothread);
 DEFINE_WRITEBACK_WORK_EVENT(writeback_queue);
 DEFINE_WRITEBACK_WORK_EVENT(writeback_exec);
@@ -102,6 +235,13 @@ DEFINE_WRITEBACK_WORK_EVENT(writeback_start);
 DEFINE_WRITEBACK_WORK_EVENT(writeback_written);
 DEFINE_WRITEBACK_WORK_EVENT(writeback_wait);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+DEFINE_WRITEBACK_WORK_EVENT(writeback_queue);
+DEFINE_WRITEBACK_WORK_EVENT(writeback_exec);
+DEFINE_WRITEBACK_WORK_EVENT(writeback_start);
+DEFINE_WRITEBACK_WORK_EVENT(writeback_written);
+DEFINE_WRITEBACK_WORK_EVENT(writeback_wait);
+>>>>>>> refs/remotes/origin/master
 
 TRACE_EVENT(writeback_pages_written,
 	TP_PROTO(long pages_written),
@@ -135,12 +275,17 @@ DEFINE_EVENT(writeback_class, name, \
 
 DEFINE_WRITEBACK_EVENT(writeback_nowork);
 DEFINE_WRITEBACK_EVENT(writeback_wake_background);
+<<<<<<< HEAD
 DEFINE_WRITEBACK_EVENT(writeback_wake_thread);
 DEFINE_WRITEBACK_EVENT(writeback_wake_forker_thread);
 DEFINE_WRITEBACK_EVENT(writeback_bdi_register);
 DEFINE_WRITEBACK_EVENT(writeback_bdi_unregister);
 DEFINE_WRITEBACK_EVENT(writeback_thread_start);
 DEFINE_WRITEBACK_EVENT(writeback_thread_stop);
+=======
+DEFINE_WRITEBACK_EVENT(writeback_bdi_register);
+DEFINE_WRITEBACK_EVENT(writeback_bdi_unregister);
+>>>>>>> refs/remotes/origin/master
 
 DECLARE_EVENT_CLASS(wbc_class,
 	TP_PROTO(struct writeback_control *wbc, struct backing_dev_info *bdi),
@@ -155,10 +300,13 @@ DECLARE_EVENT_CLASS(wbc_class,
 		__field(int, for_reclaim)
 		__field(int, range_cyclic)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__field(int, more_io)
 		__field(unsigned long, older_than_this)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__field(long, range_start)
 		__field(long, range_end)
 	),
@@ -173,21 +321,28 @@ DECLARE_EVENT_CLASS(wbc_class,
 		__entry->for_reclaim	= wbc->for_reclaim;
 		__entry->range_cyclic	= wbc->range_cyclic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__entry->more_io	= wbc->more_io;
 		__entry->older_than_this = wbc->older_than_this ?
 						*wbc->older_than_this : 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__entry->range_start	= (long)wbc->range_start;
 		__entry->range_end	= (long)wbc->range_end;
 	),
 
 	TP_printk("bdi %s: towrt=%ld skip=%ld mode=%d kupd=%d "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"bgrd=%d reclm=%d cyclic=%d more=%d older=0x%lx "
 =======
 		"bgrd=%d reclm=%d cyclic=%d "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"bgrd=%d reclm=%d cyclic=%d "
+>>>>>>> refs/remotes/origin/master
 		"start=0x%lx end=0x%lx",
 		__entry->name,
 		__entry->nr_to_write,
@@ -198,10 +353,13 @@ DECLARE_EVENT_CLASS(wbc_class,
 		__entry->for_reclaim,
 		__entry->range_cyclic,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__entry->more_io,
 		__entry->older_than_this,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__entry->range_start,
 		__entry->range_end)
 )
@@ -210,6 +368,7 @@ DECLARE_EVENT_CLASS(wbc_class,
 DEFINE_EVENT(wbc_class, name, \
 	TP_PROTO(struct writeback_control *wbc, struct backing_dev_info *bdi), \
 	TP_ARGS(wbc, bdi))
+<<<<<<< HEAD
 <<<<<<< HEAD
 DEFINE_WBC_EVENT(wbc_writeback_start);
 DEFINE_WBC_EVENT(wbc_writeback_written);
@@ -220,6 +379,8 @@ DEFINE_WBC_EVENT(wbc_balance_dirty_wait);
 DEFINE_WBC_EVENT(wbc_writepage);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 DEFINE_WBC_EVENT(wbc_writepage);
 
 TRACE_EVENT(writeback_queue_io,
@@ -235,11 +396,19 @@ TRACE_EVENT(writeback_queue_io,
 		__field(int,		reason)
 	),
 	TP_fast_assign(
+<<<<<<< HEAD
 		unsigned long *older_than_this = work->older_than_this;
 		strncpy(__entry->name, dev_name(wb->bdi->dev), 32);
 		__entry->older	= older_than_this ?  *older_than_this : 0;
 		__entry->age	= older_than_this ?
 				  (jiffies - *older_than_this) * 1000 / HZ : -1;
+=======
+		unsigned long older_than_this = work->older_than_this;
+		strncpy(__entry->name, dev_name(wb->bdi->dev), 32);
+		__entry->older	= older_than_this;
+		__entry->age	= older_than_this ?
+				  (jiffies - older_than_this) * 1000 / HZ : -1;
+>>>>>>> refs/remotes/origin/master
 		__entry->moved	= moved;
 		__entry->reason	= work->reason;
 	),
@@ -424,7 +593,39 @@ TRACE_EVENT(balance_dirty_pages,
 	  )
 );
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+TRACE_EVENT(writeback_sb_inodes_requeue,
+
+	TP_PROTO(struct inode *inode),
+	TP_ARGS(inode),
+
+	TP_STRUCT__entry(
+		__array(char, name, 32)
+		__field(unsigned long, ino)
+		__field(unsigned long, state)
+		__field(unsigned long, dirtied_when)
+	),
+
+	TP_fast_assign(
+		strncpy(__entry->name,
+		        dev_name(inode_to_bdi(inode)->dev), 32);
+		__entry->ino		= inode->i_ino;
+		__entry->state		= inode->i_state;
+		__entry->dirtied_when	= inode->dirtied_when;
+	),
+
+	TP_printk("bdi %s: ino=%lu state=%s dirtied_when=%lu age=%lu",
+		  __entry->name,
+		  __entry->ino,
+		  show_inode_state(__entry->state),
+		  __entry->dirtied_when,
+		  (jiffies - __entry->dirtied_when) / HZ
+	)
+);
+
+>>>>>>> refs/remotes/origin/master
 DECLARE_EVENT_CLASS(writeback_congest_waited_template,
 
 	TP_PROTO(unsigned int usec_timeout, unsigned int usec_delayed),
@@ -461,7 +662,10 @@ DEFINE_EVENT(writeback_congest_waited_template, writeback_wait_iff_congested,
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 DECLARE_EVENT_CLASS(writeback_single_inode_template,
 
 	TP_PROTO(struct inode *inode,
@@ -505,7 +709,11 @@ DECLARE_EVENT_CLASS(writeback_single_inode_template,
 	)
 );
 
+<<<<<<< HEAD
 DEFINE_EVENT(writeback_single_inode_template, writeback_single_inode_requeue,
+=======
+DEFINE_EVENT(writeback_single_inode_template, writeback_single_inode_start,
+>>>>>>> refs/remotes/origin/master
 	TP_PROTO(struct inode *inode,
 		 struct writeback_control *wbc,
 		 unsigned long nr_to_write),
@@ -519,7 +727,10 @@ DEFINE_EVENT(writeback_single_inode_template, writeback_single_inode,
 	TP_ARGS(inode, wbc, nr_to_write)
 );
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _TRACE_WRITEBACK_H */
 
 /* This part must be outside protection */

@@ -7,10 +7,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,9 +51,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include "acnamesp.h"
@@ -62,11 +71,19 @@ ACPI_MODULE_NAME("evxfregn")
  *
  * FUNCTION:    acpi_install_address_space_handler
  *
+<<<<<<< HEAD
  * PARAMETERS:  Device          - Handle for the device
  *              space_id        - The address space ID
  *              Handler         - Address of the handler
  *              Setup           - Address of the setup function
  *              Context         - Value passed to the handler on each access
+=======
+ * PARAMETERS:  device          - Handle for the device
+ *              space_id        - The address space ID
+ *              handler         - Address of the handler
+ *              setup           - Address of the setup function
+ *              context         - Value passed to the handler on each access
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -119,16 +136,27 @@ acpi_install_address_space_handler(acpi_handle device,
 	}
 
 	/*
+<<<<<<< HEAD
 	 * For the default space_iDs, (the IDs for which there are default region handlers
 	 * installed) Only execute the _REG methods if the global initialization _REG
 	 * methods have already been run (via acpi_initialize_objects). In other words,
 	 * we will defer the execution of the _REG methods for these space_iDs until
+=======
+	 * For the default space_IDs, (the IDs for which there are default region handlers
+	 * installed) Only execute the _REG methods if the global initialization _REG
+	 * methods have already been run (via acpi_initialize_objects). In other words,
+	 * we will defer the execution of the _REG methods for these space_IDs until
+>>>>>>> refs/remotes/origin/master
 	 * execution of acpi_initialize_objects. This is done because we need the handlers
 	 * for the default spaces (mem/io/pci/table) to be installed before we can run
 	 * any control methods (or _REG methods). There is known BIOS code that depends
 	 * on this.
 	 *
+<<<<<<< HEAD
 	 * For all other space_iDs, we can safely execute the _REG methods immediately.
+=======
+	 * For all other space_IDs, we can safely execute the _REG methods immediately.
+>>>>>>> refs/remotes/origin/master
 	 * This means that for IDs like embedded_controller, this function should be called
 	 * only after acpi_enable_subsystem has been called.
 	 */
@@ -146,6 +174,10 @@ acpi_install_address_space_handler(acpi_handle device,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -153,7 +185,11 @@ acpi_install_address_space_handler(acpi_handle device,
 
 	status = acpi_ev_execute_reg_methods(node, space_id);
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return_ACPI_STATUS(status);
 }
@@ -164,9 +200,15 @@ ACPI_EXPORT_SYMBOL(acpi_install_address_space_handler)
  *
  * FUNCTION:    acpi_remove_address_space_handler
  *
+<<<<<<< HEAD
  * PARAMETERS:  Device          - Handle for the device
  *              space_id        - The address space ID
  *              Handler         - Address of the handler
+=======
+ * PARAMETERS:  device          - Handle for the device
+ *              space_id        - The address space ID
+ *              handler         - Address of the handler
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -292,7 +334,11 @@ acpi_remove_address_space_handler(acpi_handle device,
 
 	status = AE_NOT_EXIST;
 
+<<<<<<< HEAD
       unlock_and_exit:
+=======
+unlock_and_exit:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 	return_ACPI_STATUS(status);
 }

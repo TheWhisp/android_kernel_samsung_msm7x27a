@@ -4,6 +4,7 @@
 #ifndef _LINUX_NFS3_H
 #define _LINUX_NFS3_H
 
+<<<<<<< HEAD
 #define NFS3_PORT		2049
 #define NFS3_MAXDATA		32768
 #define NFS3_MAXPATHLEN		PATH_MAX
@@ -95,9 +96,16 @@ struct nfs3_fh {
  
 
 #if defined(__KERNEL__)
+=======
+#include <uapi/linux/nfs3.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* Number of 32bit words in post_op_attr */
 #define NFS3_POST_OP_ATTR_WORDS		22
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_NFS3_H */

@@ -15,6 +15,11 @@
 #ifndef _ASM_TILE_PROCESSOR_H
 #define _ASM_TILE_PROCESSOR_H
 
+<<<<<<< HEAD
+=======
+#include <arch/chip.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 
 /*
@@ -25,7 +30,10 @@
 #include <asm/ptrace.h>
 #include <asm/percpu.h>
 
+<<<<<<< HEAD
 #include <arch/chip.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <arch/spr_def.h>
 
 struct task_struct;
@@ -76,6 +84,20 @@ struct async_tlb {
 
 #ifdef CONFIG_HARDWALL
 struct hardwall_info;
+<<<<<<< HEAD
+=======
+struct hardwall_task {
+	/* Which hardwall is this task tied to? (or NULL if none) */
+	struct hardwall_info *info;
+	/* Chains this task into the list at info->task_head. */
+	struct list_head list;
+};
+#ifdef __tilepro__
+#define HARDWALL_TYPES 1   /* udn */
+#else
+#define HARDWALL_TYPES 3   /* udn, idn, and ipi */
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif
 
 struct thread_struct {
@@ -99,47 +121,74 @@ struct thread_struct {
 	unsigned long long interrupt_mask;
 	/* User interrupt-control 0 state */
 	unsigned long intctrl_0;
+<<<<<<< HEAD
 #if CHIP_HAS_PROC_STATUS_SPR()
 	/* Any other miscellaneous processor state bits */
 	unsigned long proc_status;
 #endif
+=======
+	/* Is this task currently doing a backtrace? */
+	bool in_backtrace;
+	/* Any other miscellaneous processor state bits */
+	unsigned long proc_status;
+>>>>>>> refs/remotes/origin/master
 #if !CHIP_HAS_FIXED_INTVEC_BASE()
 	/* Interrupt base for PL0 interrupts */
 	unsigned long interrupt_vector_base;
 #endif
+<<<<<<< HEAD
 #if CHIP_HAS_TILE_RTF_HWM()
 	/* Tile cache retry fifo high-water mark */
 	unsigned long tile_rtf_hwm;
 #endif
+=======
+	/* Tile cache retry fifo high-water mark */
+	unsigned long tile_rtf_hwm;
+>>>>>>> refs/remotes/origin/master
 #if CHIP_HAS_DSTREAM_PF()
 	/* Data stream prefetch control */
 	unsigned long dstream_pf;
 #endif
 #ifdef CONFIG_HARDWALL
+<<<<<<< HEAD
 	/* Is this task tied to an activated hardwall? */
 	struct hardwall_info *hardwall;
 	/* Chains this task into the list at hardwall->list. */
 	struct list_head hardwall_list;
+=======
+	/* Hardwall information for various resources. */
+	struct hardwall_task hardwall[HARDWALL_TYPES];
+>>>>>>> refs/remotes/origin/master
 #endif
 #if CHIP_HAS_TILE_DMA()
 	/* Async DMA TLB fault information */
 	struct async_tlb dma_async_tlb;
 #endif
+<<<<<<< HEAD
 #if CHIP_HAS_SN_PROC()
 	/* Was static network processor when we were switched out? */
 	int sn_proc_running;
 	/* Async SNI TLB fault information */
 	struct async_tlb sn_async_tlb;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* !__ASSEMBLY__ */
 
 /*
  * Start with "sp" this many bytes below the top of the kernel stack.
+<<<<<<< HEAD
  * This preserves the invariant that a called function may write to *sp.
  */
 #define STACK_TOP_DELTA 8
+=======
+ * This allows us to be cache-aware when handling the initial save
+ * of the pt_regs value to the stack.
+ */
+#define STACK_TOP_DELTA 64
+>>>>>>> refs/remotes/origin/master
 
 /*
  * When entering the kernel via a fault, start with the top of the
@@ -155,7 +204,11 @@ struct thread_struct {
 #ifndef __ASSEMBLY__
 
 #ifdef __tilegx__
+<<<<<<< HEAD
 #define TASK_SIZE_MAX		(MEM_LOW_END + 1)
+=======
+#define TASK_SIZE_MAX		(_AC(1, UL) << (MAX_VA_WIDTH - 1))
+>>>>>>> refs/remotes/origin/master
 #else
 #define TASK_SIZE_MAX		PAGE_OFFSET
 #endif
@@ -169,10 +222,17 @@ struct thread_struct {
 #define TASK_SIZE		TASK_SIZE_MAX
 #endif
 
+<<<<<<< HEAD
 /* We provide a minimal "vdso" a la x86; just the sigreturn code for now. */
 #define VDSO_BASE		(TASK_SIZE - PAGE_SIZE)
 
 #define STACK_TOP		VDSO_BASE
+=======
+#define VDSO_BASE	((unsigned long)current->active_mm->context.vdso_base)
+#define VDSO_SYM(x)	(VDSO_BASE + (unsigned long)(x))
+
+#define STACK_TOP		TASK_SIZE
+>>>>>>> refs/remotes/origin/master
 
 /* STACK_TOP_MAX is used temporarily in execve and should not check COMPAT. */
 #define STACK_TOP_MAX		TASK_SIZE_MAX
@@ -202,6 +262,10 @@ static inline void start_thread(struct pt_regs *regs,
 {
 	regs->pc = pc;
 	regs->sp = usp;
+<<<<<<< HEAD
+=======
+	single_step_execve();
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Free all resources held by a thread. */
@@ -210,35 +274,64 @@ static inline void release_thread(struct task_struct *dead_task)
 	/* Nothing for now */
 }
 
+<<<<<<< HEAD
 /* Prepare to copy thread state - unlazy all lazy status. */
 #define prepare_to_copy(tsk)	do { } while (0)
 
 extern int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern int do_work_pending(struct pt_regs *regs, u32 flags);
 
 
 /*
  * Return saved (kernel) PC of a blocked thread.
+<<<<<<< HEAD
  * Only used in a printk() in kernel/sched.c, so don't work too hard.
+=======
+ * Only used in a printk() in kernel/sched/core.c, so don't work too hard.
+>>>>>>> refs/remotes/origin/master
  */
 #define thread_saved_pc(t)   ((t)->thread.pc)
 
 unsigned long get_wchan(struct task_struct *p);
 
 /* Return initial ksp value for given task. */
+<<<<<<< HEAD
 #define task_ksp0(task) ((unsigned long)(task)->stack + THREAD_SIZE)
 
 /* Return some info about the user process TASK. */
 #define KSTK_TOP(task)	(task_ksp0(task) - STACK_TOP_DELTA)
 #define task_pt_regs(task) \
   ((struct pt_regs *)(task_ksp0(task) - KSTK_PTREGS_GAP) - 1)
+=======
+#define task_ksp0(task) \
+	((unsigned long)(task)->stack + THREAD_SIZE - STACK_TOP_DELTA)
+
+/* Return some info about the user process TASK. */
+#define task_pt_regs(task) \
+	((struct pt_regs *)(task_ksp0(task) - KSTK_PTREGS_GAP) - 1)
+#define current_pt_regs()                                   \
+	((struct pt_regs *)((stack_pointer | (THREAD_SIZE - 1)) - \
+			    STACK_TOP_DELTA - (KSTK_PTREGS_GAP - 1)) - 1)
+>>>>>>> refs/remotes/origin/master
 #define task_sp(task)	(task_pt_regs(task)->sp)
 #define task_pc(task)	(task_pt_regs(task)->pc)
 /* Aliases for pc and sp (used in fs/proc/array.c) */
 #define KSTK_EIP(task)	task_pc(task)
 #define KSTK_ESP(task)	task_sp(task)
 
+<<<<<<< HEAD
+=======
+/* Fine-grained unaligned JIT support */
+#define GET_UNALIGN_CTL(tsk, adr)	get_unalign_ctl((tsk), (adr))
+#define SET_UNALIGN_CTL(tsk, val)	set_unalign_ctl((tsk), (val))
+
+extern int get_unalign_ctl(struct task_struct *tsk, unsigned long adr);
+extern int set_unalign_ctl(struct task_struct *tsk, unsigned int val);
+
+>>>>>>> refs/remotes/origin/master
 /* Standard format for printing registers and other word-size data. */
 #ifdef __tilegx__
 # define REGFMT "0x%016lx"
@@ -267,7 +360,10 @@ extern char chip_model[64];
 /* Data on which physical memory controller corresponds to which NUMA node. */
 extern int node_controller[];
 
+<<<<<<< HEAD
 #if CHIP_HAS_CBOX_HOME_MAP()
+=======
+>>>>>>> refs/remotes/origin/master
 /* Does the heap allocator return hash-for-home pages by default? */
 extern int hash_default;
 
@@ -277,11 +373,14 @@ extern int kstack_hash;
 /* Does MAP_ANONYMOUS return hash-for-home pages by default? */
 #define uheap_hash hash_default
 
+<<<<<<< HEAD
 #else
 #define hash_default 0
 #define kstack_hash 0
 #define uheap_hash 0
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Are we using huge pages in the TLB for kernel data? */
 extern int kdata_huge;
@@ -329,7 +428,10 @@ extern int kdata_huge;
 
 /*
  * Provide symbolic constants for PLs.
+<<<<<<< HEAD
  * Note that assembly code assumes that USER_PL is zero.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #define USER_PL 0
 #if CONFIG_KERNEL_PL == 2
@@ -338,6 +440,7 @@ extern int kdata_huge;
 #define KERNEL_PL CONFIG_KERNEL_PL
 
 /* SYSTEM_SAVE_K_0 holds the current cpu number ORed with ksp0. */
+<<<<<<< HEAD
 #define CPU_LOG_MASK_VALUE 12
 #define CPU_MASK_VALUE ((1 << CPU_LOG_MASK_VALUE) - 1)
 #if CONFIG_NR_CPUS > CPU_MASK_VALUE
@@ -353,5 +456,40 @@ extern int kdata_huge;
 	BUG_ON(__ksp0 & CPU_MASK_VALUE); \
 	__ksp0 | __cpu; \
 })
+=======
+#ifdef __tilegx__
+#define CPU_SHIFT 48
+#if CHIP_VA_WIDTH() > CPU_SHIFT
+# error Too many VA bits!
+#endif
+#define MAX_CPU_ID ((1 << (64 - CPU_SHIFT)) - 1)
+#define raw_smp_processor_id() \
+	((int)(__insn_mfspr(SPR_SYSTEM_SAVE_K_0) >> CPU_SHIFT))
+#define get_current_ksp0() \
+	((unsigned long)(((long)__insn_mfspr(SPR_SYSTEM_SAVE_K_0) << \
+			  (64 - CPU_SHIFT)) >> (64 - CPU_SHIFT)))
+#define next_current_ksp0(task) ({ \
+	unsigned long __ksp0 = task_ksp0(task) & ((1UL << CPU_SHIFT) - 1); \
+	unsigned long __cpu = (long)raw_smp_processor_id() << CPU_SHIFT; \
+	__ksp0 | __cpu; \
+})
+#else
+#define LOG2_NR_CPU_IDS 6
+#define MAX_CPU_ID ((1 << LOG2_NR_CPU_IDS) - 1)
+#define raw_smp_processor_id() \
+	((int)__insn_mfspr(SPR_SYSTEM_SAVE_K_0) & MAX_CPU_ID)
+#define get_current_ksp0() \
+	(__insn_mfspr(SPR_SYSTEM_SAVE_K_0) & ~MAX_CPU_ID)
+#define next_current_ksp0(task) ({ \
+	unsigned long __ksp0 = task_ksp0(task); \
+	int __cpu = raw_smp_processor_id(); \
+	BUG_ON(__ksp0 & MAX_CPU_ID); \
+	__ksp0 | __cpu; \
+})
+#endif
+#if CONFIG_NR_CPUS > (MAX_CPU_ID + 1)
+# error Too many cpus!
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_TILE_PROCESSOR_H */

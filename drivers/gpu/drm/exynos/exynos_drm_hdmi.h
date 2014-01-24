@@ -3,6 +3,7 @@
  * Copyright (c) 2011 Samsung Electronics Co., Ltd.
  * Authoer: Inki Dae <inki.dae@samsung.com>
  *
+<<<<<<< HEAD
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -21,11 +22,23 @@
  * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
+=======
+ * This program is free software; you can redistribute  it and/or modify it
+ * under  the terms of  the GNU General  Public License as published by the
+ * Free Software Foundation;  either version 2 of the  License, or (at your
+ * option) any later version.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _EXYNOS_DRM_HDMI_H_
 #define _EXYNOS_DRM_HDMI_H_
 
+<<<<<<< HEAD
+=======
+#define MIXER_WIN_NR		3
+#define MIXER_DEFAULT_WIN	0
+
+>>>>>>> refs/remotes/origin/master
 /*
  * exynos hdmi common context structure.
  *
@@ -41,6 +54,7 @@ struct exynos_drm_hdmi_context {
 struct exynos_hdmi_ops {
 	/* display */
 	bool (*is_connected)(void *ctx);
+<<<<<<< HEAD
 	int (*get_edid)(void *ctx, struct drm_connector *connector,
 			u8 *edid, int len);
 	int (*check_timing)(void *ctx, void *timing);
@@ -55,19 +69,50 @@ struct exynos_hdmi_ops {
 				unsigned int *height);
 	void (*commit)(void *ctx);
 	void (*disable)(void *ctx);
+=======
+	struct edid *(*get_edid)(void *ctx,
+			struct drm_connector *connector);
+	int (*check_mode)(void *ctx, struct drm_display_mode *mode);
+	int (*power_on)(void *ctx, int mode);
+
+	/* manager */
+	void (*mode_set)(void *ctx, struct drm_display_mode *mode);
+	void (*get_max_resol)(void *ctx, unsigned int *width,
+				unsigned int *height);
+	void (*commit)(void *ctx);
+	void (*dpms)(void *ctx, int mode);
+>>>>>>> refs/remotes/origin/master
 };
 
 struct exynos_mixer_ops {
 	/* manager */
+<<<<<<< HEAD
 	int (*enable_vblank)(void *ctx, int pipe);
 	void (*disable_vblank)(void *ctx);
+=======
+	int (*iommu_on)(void *ctx, bool enable);
+	int (*enable_vblank)(void *ctx, int pipe);
+	void (*disable_vblank)(void *ctx);
+	void (*wait_for_vblank)(void *ctx);
+	void (*dpms)(void *ctx, int mode);
+>>>>>>> refs/remotes/origin/master
 
 	/* overlay */
 	void (*win_mode_set)(void *ctx, struct exynos_drm_overlay *overlay);
 	void (*win_commit)(void *ctx, int zpos);
 	void (*win_disable)(void *ctx, int zpos);
+<<<<<<< HEAD
 };
 
+=======
+
+	/* display */
+	int (*check_mode)(void *ctx, struct drm_display_mode *mode);
+};
+
+void exynos_hdmi_drv_attach(struct exynos_drm_hdmi_context *ctx);
+void exynos_mixer_drv_attach(struct exynos_drm_hdmi_context *ctx);
+>>>>>>> refs/remotes/origin/master
 void exynos_hdmi_ops_register(struct exynos_hdmi_ops *ops);
 void exynos_mixer_ops_register(struct exynos_mixer_ops *ops);
 #endif

@@ -19,6 +19,10 @@
  */
 #include "pch_gbe.h"
 #include "pch_gbe_phy.h"
+<<<<<<< HEAD
+=======
+#include "pch_gbe_api.h"
+>>>>>>> refs/remotes/origin/master
 
 /* bus type values */
 #define pch_gbe_bus_type_unknown	0
@@ -60,7 +64,11 @@ static void pch_gbe_plat_get_bus_info(struct pch_gbe_hw *hw)
 /**
  * pch_gbe_plat_init_hw - Initialize hardware
  * @hw:	Pointer to the HW structure
+<<<<<<< HEAD
  * Returns
+=======
+ * Returns:
+>>>>>>> refs/remotes/origin/master
  *	0:		Successfully
  *	Negative value:	Failed-EBUSY
  */
@@ -70,7 +78,13 @@ static s32 pch_gbe_plat_init_hw(struct pch_gbe_hw *hw)
 
 	ret_val = pch_gbe_phy_get_id(hw);
 	if (ret_val) {
+<<<<<<< HEAD
 		pr_err("pch_gbe_phy_get_id error\n");
+=======
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "pch_gbe_phy_get_id error\n");
+>>>>>>> refs/remotes/origin/master
 		return ret_val;
 	}
 	pch_gbe_phy_init_setting(hw);
@@ -108,6 +122,7 @@ static void pch_gbe_plat_init_function_pointers(struct pch_gbe_hw *hw)
 /**
  * pch_gbe_hal_setup_init_funcs - Initializes function pointers
  * @hw:	Pointer to the HW structure
+<<<<<<< HEAD
  * Returns
  *	0:	Successfully
  *	ENOSYS:	Function is not registered
@@ -116,6 +131,18 @@ inline s32 pch_gbe_hal_setup_init_funcs(struct pch_gbe_hw *hw)
 {
 	if (!hw->reg) {
 		pr_err("ERROR: Registers not mapped\n");
+=======
+ * Returns:
+ *	0:	Successfully
+ *	ENOSYS:	Function is not registered
+ */
+s32 pch_gbe_hal_setup_init_funcs(struct pch_gbe_hw *hw)
+{
+	if (!hw->reg) {
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "ERROR: Registers not mapped\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOSYS;
 	}
 	pch_gbe_plat_init_function_pointers(hw);
@@ -126,17 +153,30 @@ inline s32 pch_gbe_hal_setup_init_funcs(struct pch_gbe_hw *hw)
  * pch_gbe_hal_get_bus_info - Obtain bus information for adapter
  * @hw:	Pointer to the HW structure
  */
+<<<<<<< HEAD
 inline void pch_gbe_hal_get_bus_info(struct pch_gbe_hw *hw)
 {
 	if (!hw->func->get_bus_info)
 		pr_err("ERROR: configuration\n");
 	else
 		hw->func->get_bus_info(hw);
+=======
+void pch_gbe_hal_get_bus_info(struct pch_gbe_hw *hw)
+{
+	if (!hw->func->get_bus_info) {
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "ERROR: configuration\n");
+		return;
+	}
+	hw->func->get_bus_info(hw);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * pch_gbe_hal_init_hw - Initialize hardware
  * @hw:	Pointer to the HW structure
+<<<<<<< HEAD
  * Returns
  *	0:	Successfully
  *	ENOSYS:	Function is not registered
@@ -145,6 +185,18 @@ inline s32 pch_gbe_hal_init_hw(struct pch_gbe_hw *hw)
 {
 	if (!hw->func->init_hw) {
 		pr_err("ERROR: configuration\n");
+=======
+ * Returns:
+ *	0:	Successfully
+ *	ENOSYS:	Function is not registered
+ */
+s32 pch_gbe_hal_init_hw(struct pch_gbe_hw *hw)
+{
+	if (!hw->func->init_hw) {
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "ERROR: configuration\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOSYS;
 	}
 	return hw->func->init_hw(hw);
@@ -155,11 +207,19 @@ inline s32 pch_gbe_hal_init_hw(struct pch_gbe_hw *hw)
  * @hw:	    Pointer to the HW structure
  * @offset: The register to read
  * @data:   The buffer to store the 16-bit read.
+<<<<<<< HEAD
  * Returns
  *	0:	Successfully
  *	Negative value:	Failed
  */
 inline s32 pch_gbe_hal_read_phy_reg(struct pch_gbe_hw *hw, u32 offset,
+=======
+ * Returns:
+ *	0:	Successfully
+ *	Negative value:	Failed
+ */
+s32 pch_gbe_hal_read_phy_reg(struct pch_gbe_hw *hw, u32 offset,
+>>>>>>> refs/remotes/origin/master
 					u16 *data)
 {
 	if (!hw->func->read_phy_reg)
@@ -172,11 +232,19 @@ inline s32 pch_gbe_hal_read_phy_reg(struct pch_gbe_hw *hw, u32 offset,
  * @hw:	    Pointer to the HW structure
  * @offset: The register to read
  * @data:   The value to write.
+<<<<<<< HEAD
  * Returns
  *	0:	Successfully
  *	Negative value:	Failed
  */
 inline s32 pch_gbe_hal_write_phy_reg(struct pch_gbe_hw *hw, u32 offset,
+=======
+ * Returns:
+ *	0:	Successfully
+ *	Negative value:	Failed
+ */
+s32 pch_gbe_hal_write_phy_reg(struct pch_gbe_hw *hw, u32 offset,
+>>>>>>> refs/remotes/origin/master
 					u16 data)
 {
 	if (!hw->func->write_phy_reg)
@@ -188,29 +256,54 @@ inline s32 pch_gbe_hal_write_phy_reg(struct pch_gbe_hw *hw, u32 offset,
  * pch_gbe_hal_phy_hw_reset - Hard PHY reset
  * @hw:	    Pointer to the HW structure
  */
+<<<<<<< HEAD
 inline void pch_gbe_hal_phy_hw_reset(struct pch_gbe_hw *hw)
 {
 	if (!hw->func->reset_phy)
 		pr_err("ERROR: configuration\n");
 	else
 		hw->func->reset_phy(hw);
+=======
+void pch_gbe_hal_phy_hw_reset(struct pch_gbe_hw *hw)
+{
+	if (!hw->func->reset_phy) {
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "ERROR: configuration\n");
+		return;
+	}
+	hw->func->reset_phy(hw);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * pch_gbe_hal_phy_sw_reset - Soft PHY reset
  * @hw:	    Pointer to the HW structure
  */
+<<<<<<< HEAD
 inline void pch_gbe_hal_phy_sw_reset(struct pch_gbe_hw *hw)
 {
 	if (!hw->func->sw_reset_phy)
 		pr_err("ERROR: configuration\n");
 	else
 		hw->func->sw_reset_phy(hw);
+=======
+void pch_gbe_hal_phy_sw_reset(struct pch_gbe_hw *hw)
+{
+	if (!hw->func->sw_reset_phy) {
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "ERROR: configuration\n");
+		return;
+	}
+	hw->func->sw_reset_phy(hw);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * pch_gbe_hal_read_mac_addr - Reads MAC address
  * @hw:	Pointer to the HW structure
+<<<<<<< HEAD
  * Returns
  *	0:	Successfully
  *	ENOSYS:	Function is not registered
@@ -219,6 +312,18 @@ inline s32 pch_gbe_hal_read_mac_addr(struct pch_gbe_hw *hw)
 {
 	if (!hw->func->read_mac_addr) {
 		pr_err("ERROR: configuration\n");
+=======
+ * Returns:
+ *	0:	Successfully
+ *	ENOSYS:	Function is not registered
+ */
+s32 pch_gbe_hal_read_mac_addr(struct pch_gbe_hw *hw)
+{
+	if (!hw->func->read_mac_addr) {
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "ERROR: configuration\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOSYS;
 	}
 	return hw->func->read_mac_addr(hw);
@@ -228,7 +333,11 @@ inline s32 pch_gbe_hal_read_mac_addr(struct pch_gbe_hw *hw)
  * pch_gbe_hal_power_up_phy - Power up PHY
  * @hw:	Pointer to the HW structure
  */
+<<<<<<< HEAD
 inline void pch_gbe_hal_power_up_phy(struct pch_gbe_hw *hw)
+=======
+void pch_gbe_hal_power_up_phy(struct pch_gbe_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	if (hw->func->power_up_phy)
 		hw->func->power_up_phy(hw);
@@ -238,7 +347,11 @@ inline void pch_gbe_hal_power_up_phy(struct pch_gbe_hw *hw)
  * pch_gbe_hal_power_down_phy - Power down PHY
  * @hw:	Pointer to the HW structure
  */
+<<<<<<< HEAD
 inline void pch_gbe_hal_power_down_phy(struct pch_gbe_hw *hw)
+=======
+void pch_gbe_hal_power_down_phy(struct pch_gbe_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	if (hw->func->power_down_phy)
 		hw->func->power_down_phy(hw);

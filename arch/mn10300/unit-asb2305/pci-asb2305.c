@@ -214,6 +214,7 @@ void __init pcibios_resource_survey(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  *  If we set up a device for bus mastering, we need to check the latency
  *  timer as certain crappy BIOSes forget to set it properly.
@@ -238,6 +239,8 @@ void pcibios_set_master(struct pci_dev *dev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 			enum pci_mmap_state mmap_state, int write_combine)
 {
@@ -246,7 +249,11 @@ int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 	/* Leave vm_pgoff as-is, the PCI space address is the physical
 	 * address on this platform.
 	 */
+<<<<<<< HEAD
 	vma->vm_flags |= VM_LOCKED | VM_IO;
+=======
+	vma->vm_flags |= VM_LOCKED;
+>>>>>>> refs/remotes/origin/master
 
 	prot = pgprot_val(vma->vm_page_prot);
 	prot &= ~_PAGE_CACHE;

@@ -22,7 +22,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -61,8 +65,19 @@
  *
  *****************************************************************************/
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "iwl-debug.h"
+=======
+#define DEBUG
+
+#include <linux/device.h>
+#include <linux/interrupt.h>
+#include <linux/export.h>
+#include "iwl-drv.h"
+#include "iwl-debug.h"
+#include "iwl-devtrace.h"
+>>>>>>> refs/remotes/origin/master
 
 #define __iwl_fn(fn)						\
 void __iwl_ ##fn(struct device *dev, const char *fmt, ...)	\
@@ -80,8 +95,16 @@ void __iwl_ ##fn(struct device *dev, const char *fmt, ...)	\
 }
 
 __iwl_fn(warn)
+<<<<<<< HEAD
 __iwl_fn(info)
 __iwl_fn(crit)
+=======
+IWL_EXPORT_SYMBOL(__iwl_warn);
+__iwl_fn(info)
+IWL_EXPORT_SYMBOL(__iwl_info);
+__iwl_fn(crit)
+IWL_EXPORT_SYMBOL(__iwl_crit);
+>>>>>>> refs/remotes/origin/master
 
 void __iwl_err(struct device *dev, bool rfkill_prefix, bool trace_only,
 		const char *fmt, ...)
@@ -102,6 +125,10 @@ void __iwl_err(struct device *dev, bool rfkill_prefix, bool trace_only,
 	trace_iwlwifi_err(&vaf);
 	va_end(args);
 }
+<<<<<<< HEAD
+=======
+IWL_EXPORT_SYMBOL(__iwl_err);
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_IWLWIFI_DEBUG) || defined(CONFIG_IWLWIFI_DEVICE_TRACING)
 void __iwl_dbg(struct device *dev,
@@ -118,10 +145,18 @@ void __iwl_dbg(struct device *dev,
 #ifdef CONFIG_IWLWIFI_DEBUG
 	if (iwl_have_debug_level(level) &&
 	    (!limit || net_ratelimit()))
+<<<<<<< HEAD
 		dev_err(dev, "%c %s %pV", in_interrupt() ? 'I' : 'U',
+=======
+		dev_dbg(dev, "%c %s %pV", in_interrupt() ? 'I' : 'U',
+>>>>>>> refs/remotes/origin/master
 			function, &vaf);
 #endif
 	trace_iwlwifi_dbg(level, in_interrupt(), function, &vaf);
 	va_end(args);
 }
+<<<<<<< HEAD
+=======
+IWL_EXPORT_SYMBOL(__iwl_dbg);
+>>>>>>> refs/remotes/origin/master
 #endif

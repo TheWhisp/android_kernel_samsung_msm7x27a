@@ -2,7 +2,11 @@
  * A hwmon driver for ACPI 4.0 power meters
  * Copyright (C) 2009 IBM
  *
+<<<<<<< HEAD
  * Author: Darrick J. Wong <djwong@us.ibm.com>
+=======
+ * Author: Darrick J. Wong <darrick.wong@oracle.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +33,10 @@
 #include <linux/kdev_t.h>
 #include <linux/sched.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <acpi/acpi_drivers.h>
 #include <acpi/acpi_bus.h>
 
@@ -59,10 +67,14 @@ ACPI_MODULE_NAME(ACPI_POWER_METER_NAME);
 
 static int cap_in_hardware;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int force_cap_on;
 =======
 static bool force_cap_on;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool force_cap_on;
+>>>>>>> refs/remotes/origin/master
 
 static int can_cap_in_hardware(void)
 {
@@ -105,12 +117,17 @@ struct acpi_power_meter_resource {
 	unsigned long		sensors_last_updated;
 	struct sensor_device_attribute	sensors[NUM_SENSORS];
 	int			num_sensors;
+<<<<<<< HEAD
 	int			trip[2];
+=======
+	s64			trip[2];
+>>>>>>> refs/remotes/origin/master
 	int			num_domain_devices;
 	struct acpi_device	**domain_devices;
 	struct kobject		*holders_dir;
 };
 
+<<<<<<< HEAD
 struct ro_sensor_template {
 	char *label;
 	ssize_t (*show)(struct device *dev,
@@ -120,6 +137,9 @@ struct ro_sensor_template {
 };
 
 struct rw_sensor_template {
+=======
+struct sensor_template {
+>>>>>>> refs/remotes/origin/master
 	char *label;
 	ssize_t (*show)(struct device *dev,
 			struct device_attribute *devattr,
@@ -175,10 +195,14 @@ static ssize_t set_avg_interval(struct device *dev,
 	acpi_status status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &temp);
 =======
 	res = kstrtoul(buf, 10, &temp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = kstrtoul(buf, 10, &temp);
+>>>>>>> refs/remotes/origin/master
 	if (res)
 		return res;
 
@@ -250,6 +274,7 @@ static ssize_t set_cap(struct device *dev, struct device_attribute *devattr,
 	acpi_status status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &temp);
 =======
 	res = kstrtoul(buf, 10, &temp);
@@ -258,6 +283,13 @@ static ssize_t set_cap(struct device *dev, struct device_attribute *devattr,
 		return res;
 
 	temp /= 1000;
+=======
+	res = kstrtoul(buf, 10, &temp);
+	if (res)
+		return res;
+
+	temp = DIV_ROUND_CLOSEST(temp, 1000);
+>>>>>>> refs/remotes/origin/master
 	if (temp > resource->caps.max_cap || temp < resource->caps.min_cap)
 		return -EINVAL;
 	arg0.integer.value = temp;
@@ -324,6 +356,7 @@ static ssize_t set_trip(struct device *dev, struct device_attribute *devattr,
 	unsigned long temp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &temp);
 =======
 	res = kstrtoul(buf, 10, &temp);
@@ -334,6 +367,13 @@ static ssize_t set_trip(struct device *dev, struct device_attribute *devattr,
 	temp /= 1000;
 	if (temp < 0)
 		return -EINVAL;
+=======
+	res = kstrtoul(buf, 10, &temp);
+	if (res)
+		return res;
+
+	temp = DIV_ROUND_CLOSEST(temp, 1000);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&resource->lock);
 	resource->trip[attr->index - 7] = temp;
@@ -406,11 +446,18 @@ static ssize_t show_str(struct device *dev,
 		val = resource->oem_info;
 		break;
 	default:
+<<<<<<< HEAD
 		BUG();
 <<<<<<< HEAD
 =======
 		val = "";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WARN(1, "Implementation error: unexpected attribute index %d\n",
+		     attr->index);
+		val = "";
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return sprintf(buf, "%s\n", val);
@@ -464,7 +511,13 @@ static ssize_t show_val(struct device *dev,
 		val = resource->trip[attr->index - 7] * 1000;
 		break;
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Implementation error: unexpected attribute index %d\n",
+		     attr->index);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return sprintf(buf, "%llu\n", val);
@@ -488,6 +541,7 @@ static ssize_t show_name(struct device *dev,
 	return sprintf(buf, "%s\n", ACPI_POWER_METER_NAME);
 }
 
+<<<<<<< HEAD
 /* Sensor descriptions.  If you add a sensor, update NUM_SENSORS above! */
 static struct ro_sensor_template meter_ro_attrs[] = {
 {POWER_AVERAGE_NAME, show_power, 0},
@@ -534,6 +588,69 @@ static struct ro_sensor_template misc_attrs[] = {
 {"power1_serial_number", show_str, 1},
 {NULL, NULL, 0},
 };
+=======
+#define RO_SENSOR_TEMPLATE(_label, _show, _index)	\
+	{						\
+		.label = _label,			\
+		.show  = _show,				\
+		.index = _index,			\
+	}
+
+#define RW_SENSOR_TEMPLATE(_label, _show, _set, _index)	\
+	{						\
+		.label = _label,			\
+		.show  = _show,				\
+		.set   = _set,				\
+		.index = _index,			\
+	}
+
+/* Sensor descriptions.  If you add a sensor, update NUM_SENSORS above! */
+static struct sensor_template meter_attrs[] = {
+	RO_SENSOR_TEMPLATE(POWER_AVERAGE_NAME, show_power, 0),
+	RO_SENSOR_TEMPLATE("power1_accuracy", show_accuracy, 0),
+	RO_SENSOR_TEMPLATE("power1_average_interval_min", show_val, 0),
+	RO_SENSOR_TEMPLATE("power1_average_interval_max", show_val, 1),
+	RO_SENSOR_TEMPLATE("power1_is_battery", show_val, 5),
+	RW_SENSOR_TEMPLATE(POWER_AVG_INTERVAL_NAME, show_avg_interval,
+		set_avg_interval, 0),
+	{},
+};
+
+static struct sensor_template misc_cap_attrs[] = {
+	RO_SENSOR_TEMPLATE("power1_cap_min", show_val, 2),
+	RO_SENSOR_TEMPLATE("power1_cap_max", show_val, 3),
+	RO_SENSOR_TEMPLATE("power1_cap_hyst", show_val, 4),
+	RO_SENSOR_TEMPLATE(POWER_ALARM_NAME, show_val, 6),
+	{},
+};
+
+static struct sensor_template ro_cap_attrs[] = {
+	RO_SENSOR_TEMPLATE(POWER_CAP_NAME, show_cap, 0),
+	{},
+};
+
+static struct sensor_template rw_cap_attrs[] = {
+	RW_SENSOR_TEMPLATE(POWER_CAP_NAME, show_cap, set_cap, 0),
+	{},
+};
+
+static struct sensor_template trip_attrs[] = {
+	RW_SENSOR_TEMPLATE("power1_average_min", show_val, set_trip, 7),
+	RW_SENSOR_TEMPLATE("power1_average_max", show_val, set_trip, 8),
+	{},
+};
+
+static struct sensor_template misc_attrs[] = {
+	RO_SENSOR_TEMPLATE("name", show_name, 0),
+	RO_SENSOR_TEMPLATE("power1_model_number", show_str, 0),
+	RO_SENSOR_TEMPLATE("power1_oem_info", show_str, 2),
+	RO_SENSOR_TEMPLATE("power1_serial_number", show_str, 1),
+	{},
+};
+
+#undef RO_SENSOR_TEMPLATE
+#undef RW_SENSOR_TEMPLATE
+>>>>>>> refs/remotes/origin/master
 
 /* Read power domain data */
 static void remove_domain_devices(struct acpi_power_meter_resource *resource)
@@ -611,9 +728,14 @@ static int read_domain_devices(struct acpi_power_meter_resource *resource)
 
 		/* Create a symlink to domain objects */
 		resource->domain_devices[i] = NULL;
+<<<<<<< HEAD
 		status = acpi_bus_get_device(element->reference.handle,
 					     &resource->domain_devices[i]);
 		if (ACPI_FAILURE(status))
+=======
+		if (acpi_bus_get_device(element->reference.handle,
+					&resource->domain_devices[i]))
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		obj = resource->domain_devices[i];
@@ -638,14 +760,20 @@ end:
 }
 
 /* Registration and deregistration */
+<<<<<<< HEAD
 static int register_ro_attrs(struct acpi_power_meter_resource *resource,
 			     struct ro_sensor_template *ro)
+=======
+static int register_attrs(struct acpi_power_meter_resource *resource,
+			  struct sensor_template *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &resource->acpi_dev->dev;
 	struct sensor_device_attribute *sensors =
 		&resource->sensors[resource->num_sensors];
 	int res = 0;
 
+<<<<<<< HEAD
 	while (ro->label) {
 		sensors->dev_attr.attr.name = ro->label;
 		sensors->dev_attr.attr.mode = S_IRUGO;
@@ -689,6 +817,20 @@ static int register_rw_attrs(struct acpi_power_meter_resource *resource,
 =======
 		sysfs_attr_init(&sensors->dev_attr.attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (attrs->label) {
+		sensors->dev_attr.attr.name = attrs->label;
+		sensors->dev_attr.attr.mode = S_IRUGO;
+		sensors->dev_attr.show = attrs->show;
+		sensors->index = attrs->index;
+
+		if (attrs->set) {
+			sensors->dev_attr.attr.mode |= S_IWUSR;
+			sensors->dev_attr.store = attrs->set;
+		}
+
+		sysfs_attr_init(&sensors->dev_attr.attr);
+>>>>>>> refs/remotes/origin/master
 		res = device_create_file(dev, &sensors->dev_attr);
 		if (res) {
 			sensors->dev_attr.attr.name = NULL;
@@ -696,7 +838,11 @@ static int register_rw_attrs(struct acpi_power_meter_resource *resource,
 		}
 		sensors++;
 		resource->num_sensors++;
+<<<<<<< HEAD
 		rw++;
+=======
+		attrs++;
+>>>>>>> refs/remotes/origin/master
 	}
 
 error:
@@ -728,10 +874,14 @@ static int setup_attrs(struct acpi_power_meter_resource *resource)
 		return res;
 
 	if (resource->caps.flags & POWER_METER_CAN_MEASURE) {
+<<<<<<< HEAD
 		res = register_ro_attrs(resource, meter_ro_attrs);
 		if (res)
 			goto error;
 		res = register_rw_attrs(resource, meter_rw_attrs);
+=======
+		res = register_attrs(resource, meter_attrs);
+>>>>>>> refs/remotes/origin/master
 		if (res)
 			goto error;
 	}
@@ -743,6 +893,7 @@ static int setup_attrs(struct acpi_power_meter_resource *resource)
 			goto skip_unsafe_cap;
 		}
 
+<<<<<<< HEAD
 		if (resource->caps.configurable_cap) {
 			res = register_rw_attrs(resource, rw_cap_attrs);
 			if (res)
@@ -760,11 +911,33 @@ skip_unsafe_cap:
 
 	if (resource->caps.flags & POWER_METER_CAN_TRIP) {
 		res = register_rw_attrs(resource, trip_attrs);
+=======
+		if (resource->caps.configurable_cap)
+			res = register_attrs(resource, rw_cap_attrs);
+		else
+			res = register_attrs(resource, ro_cap_attrs);
+
+		if (res)
+			goto error;
+
+		res = register_attrs(resource, misc_cap_attrs);
 		if (res)
 			goto error;
 	}
 
+skip_unsafe_cap:
+	if (resource->caps.flags & POWER_METER_CAN_TRIP) {
+		res = register_attrs(resource, trip_attrs);
+>>>>>>> refs/remotes/origin/master
+		if (res)
+			goto error;
+	}
+
+<<<<<<< HEAD
 	res = register_ro_attrs(resource, misc_attrs);
+=======
+	res = register_attrs(resource, misc_attrs);
+>>>>>>> refs/remotes/origin/master
 	if (res)
 		goto error;
 
@@ -903,7 +1076,12 @@ static void acpi_power_meter_notify(struct acpi_device *device, u32 event)
 		dev_info(&device->dev, "Capping in progress.\n");
 		break;
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Unexpected event %d\n", event);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&resource->lock);
 
@@ -959,7 +1137,11 @@ exit:
 	return res;
 }
 
+<<<<<<< HEAD
 static int acpi_power_meter_remove(struct acpi_device *device, int type)
+=======
+static int acpi_power_meter_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_power_meter_resource *resource;
 
@@ -976,6 +1158,7 @@ static int acpi_power_meter_remove(struct acpi_device *device, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_power_meter_resume(struct acpi_device *device)
 {
 	struct acpi_power_meter_resource *resource;
@@ -984,12 +1167,34 @@ static int acpi_power_meter_resume(struct acpi_device *device)
 		return -EINVAL;
 
 	resource = acpi_driver_data(device);
+=======
+#ifdef CONFIG_PM_SLEEP
+
+static int acpi_power_meter_resume(struct device *dev)
+{
+	struct acpi_power_meter_resource *resource;
+
+	if (!dev)
+		return -EINVAL;
+
+	resource = acpi_driver_data(to_acpi_device(dev));
+	if (!resource)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	free_capabilities(resource);
 	read_capabilities(resource);
 
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_PM_SLEEP */
+
+static SIMPLE_DEV_PM_OPS(acpi_power_meter_pm, NULL, acpi_power_meter_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct acpi_driver acpi_power_meter_driver = {
 	.name = "power_meter",
 	.class = ACPI_POWER_METER_CLASS,
@@ -997,9 +1202,15 @@ static struct acpi_driver acpi_power_meter_driver = {
 	.ops = {
 		.add = acpi_power_meter_add,
 		.remove = acpi_power_meter_remove,
+<<<<<<< HEAD
 		.resume = acpi_power_meter_resume,
 		.notify = acpi_power_meter_notify,
 		},
+=======
+		.notify = acpi_power_meter_notify,
+		},
+	.drv.pm = &acpi_power_meter_pm,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Module init/exit routines */
@@ -1030,7 +1241,11 @@ static int __init acpi_power_meter_init(void)
 
 	result = acpi_bus_register_driver(&acpi_power_meter_driver);
 	if (result < 0)
+<<<<<<< HEAD
 		return -ENODEV;
+=======
+		return result;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1040,7 +1255,11 @@ static void __exit acpi_power_meter_exit(void)
 	acpi_bus_unregister_driver(&acpi_power_meter_driver);
 }
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Darrick J. Wong <djwong@us.ibm.com>");
+=======
+MODULE_AUTHOR("Darrick J. Wong <darrick.wong@oracle.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("ACPI 4.0 power meter driver");
 MODULE_LICENSE("GPL");
 

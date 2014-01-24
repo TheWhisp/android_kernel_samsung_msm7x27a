@@ -7,10 +7,14 @@
 #include <linux/err.h>
 #include <linux/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/clk_interface.h>
 
 struct clk_interface clk_functions;

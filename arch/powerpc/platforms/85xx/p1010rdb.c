@@ -46,6 +46,7 @@ void __init p1010_rdb_pic_init(void)
  */
 static void __init p1010_rdb_setup_arch(void)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -60,11 +61,21 @@ static void __init p1010_rdb_setup_arch(void)
 	}
 
 #endif
+=======
+	if (ppc_md.progress)
+		ppc_md.progress("p1010_rdb_setup_arch()", 0);
+
+	fsl_pci_assign_primary();
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "P1010 RDB board from Freescale Semiconductor\n");
 }
 
+<<<<<<< HEAD
 machine_device_initcall(p1010_rdb, mpc85xx_common_publish_devices);
+=======
+machine_arch_initcall(p1010_rdb, mpc85xx_common_publish_devices);
+>>>>>>> refs/remotes/origin/master
 machine_arch_initcall(p1010_rdb, swiotlb_setup_bus_notifier);
 
 /*
@@ -76,6 +87,11 @@ static int __init p1010_rdb_probe(void)
 
 	if (of_flat_dt_is_compatible(root, "fsl,P1010RDB"))
 		return 1;
+<<<<<<< HEAD
+=======
+	if (of_flat_dt_is_compatible(root, "fsl,P1010RDB-PB"))
+		return 1;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

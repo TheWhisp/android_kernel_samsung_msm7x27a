@@ -15,9 +15,13 @@
 #include <asm/msr.h>
 #include <asm/processor.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cpu_device_id.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct cpufreq_driver	longrun_driver;
 
@@ -36,7 +40,11 @@ static unsigned int longrun_low_freq, longrun_high_freq;
  * Reads the current LongRun policy by access to MSR_TMTA_LONGRUN_FLAGS
  * and MSR_TMTA_LONGRUN_CTRL
  */
+<<<<<<< HEAD
 static void __cpuinit longrun_get_policy(struct cpufreq_policy *policy)
+=======
+static void longrun_get_policy(struct cpufreq_policy *policy)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 msr_lo, msr_hi;
 
@@ -132,9 +140,13 @@ static int longrun_verify_policy(struct cpufreq_policy *policy)
 		return -EINVAL;
 
 	policy->cpu = 0;
+<<<<<<< HEAD
 	cpufreq_verify_within_limits(policy,
 		policy->cpuinfo.min_freq,
 		policy->cpuinfo.max_freq);
+=======
+	cpufreq_verify_within_cpu_limits(policy);
+>>>>>>> refs/remotes/origin/master
 
 	if ((policy->policy != CPUFREQ_POLICY_POWERSAVE) &&
 	    (policy->policy != CPUFREQ_POLICY_PERFORMANCE))
@@ -166,7 +178,11 @@ static unsigned int longrun_get(unsigned int cpu)
  * TMTA rules:
  * performance_pctg = (target_freq - low_freq)/(high_freq - low_freq)
  */
+<<<<<<< HEAD
 static int __cpuinit longrun_determine_freqs(unsigned int *low_freq,
+=======
+static int longrun_determine_freqs(unsigned int *low_freq,
+>>>>>>> refs/remotes/origin/master
 						      unsigned int *high_freq)
 {
 	u32 msr_lo, msr_hi;
@@ -259,7 +275,11 @@ static int __cpuinit longrun_determine_freqs(unsigned int *low_freq,
 }
 
 
+<<<<<<< HEAD
 static int __cpuinit longrun_cpu_init(struct cpufreq_policy *policy)
+=======
+static int longrun_cpu_init(struct cpufreq_policy *policy)
+>>>>>>> refs/remotes/origin/master
 {
 	int result = 0;
 
@@ -289,18 +309,26 @@ static struct cpufreq_driver longrun_driver = {
 	.get		= longrun_get,
 	.init		= longrun_cpu_init,
 	.name		= "longrun",
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
 };
 
 <<<<<<< HEAD
 =======
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct x86_cpu_id longrun_ids[] = {
 	{ X86_VENDOR_TRANSMETA, X86_FAMILY_ANY, X86_MODEL_ANY,
 	  X86_FEATURE_LONGRUN },
 	{}
 };
 MODULE_DEVICE_TABLE(x86cpu, longrun_ids);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * longrun_init - initializes the Transmeta Crusoe LongRun CPUFreq driver
@@ -309,6 +337,7 @@ MODULE_DEVICE_TABLE(x86cpu, longrun_ids);
  */
 static int __init longrun_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cpuinfo_x86 *c = &cpu_data(0);
 
@@ -320,6 +349,10 @@ static int __init longrun_init(void)
 	if (!x86_match_cpu(longrun_ids))
 		return -ENODEV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(longrun_ids))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	return cpufreq_register_driver(&longrun_driver);
 }
 

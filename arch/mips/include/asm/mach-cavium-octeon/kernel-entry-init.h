@@ -16,7 +16,11 @@
 #define CP0_PRID_OCTEON_PASS1 0x000d0000
 #define CP0_PRID_OCTEON_CN30XX 0x000d0200
 
+<<<<<<< HEAD
 .macro  kernel_entry_setup
+=======
+.macro	kernel_entry_setup
+>>>>>>> refs/remotes/origin/master
 	# Registers set by bootloader:
 	# (only 32 bits set by bootloader, all addresses are physical
 	# addresses, and need to have the appropriate memory region set
@@ -28,6 +32,7 @@
 	.set push
 	.set arch=octeon
 	# Read the cavium mem control register
+<<<<<<< HEAD
 	dmfc0   v0, CP0_CVMMEMCTL_REG
 	# Clear the lower 6 bits, the CVMSEG size
 	dins    v0, $0, 0, 6
@@ -43,6 +48,18 @@
 	or  v0, v0, 0x5001
 	xor v0, v0, 0x5001
 #endif
+=======
+	dmfc0	v0, CP0_CVMMEMCTL_REG
+	# Clear the lower 6 bits, the CVMSEG size
+	dins	v0, $0, 0, 6
+	ori	v0, CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE
+	dmtc0	v0, CP0_CVMMEMCTL_REG	# Write the cavium mem control register
+	dmfc0	v0, CP0_CVMCTL_REG	# Read the cavium control register
+	# Disable unaligned load/store support but leave HW fixup enabled
+	# Needed for octeon specific memcpy
+	or  v0, v0, 0x5001
+	xor v0, v0, 0x1001
+>>>>>>> refs/remotes/origin/master
 	# Read the processor ID register
 	mfc0 v1, CP0_PRID_REG
 	# Disable instruction prefetching (Octeon Pass1 errata)
@@ -69,6 +86,7 @@ skip:
 	and	v0, v0, v1
 	ori	v0, v0, (6 << 7)
 	# Write the cavium control register
+<<<<<<< HEAD
 	dmtc0   v0, CP0_CVMCTL_REG
 	sync
 	# Flush dcache after config change
@@ -77,6 +95,16 @@ skip:
 	rdhwr   v0, $0
 	# Jump the master to kernel_entry
 	bne     a2, zero, octeon_main_processor
+=======
+	dmtc0	v0, CP0_CVMCTL_REG
+	sync
+	# Flush dcache after config change
+	cache	9, 0($0)
+	# Get my core id
+	rdhwr	v0, $0
+	# Jump the master to kernel_entry
+	bne	a2, zero, octeon_main_processor
+>>>>>>> refs/remotes/origin/master
 	nop
 
 #ifdef CONFIG_SMP
@@ -87,14 +115,22 @@ skip:
 	#
 
 	# This is the variable where the next core to boot os stored
+<<<<<<< HEAD
 	PTR_LA  t0, octeon_processor_boot
 octeon_spin_wait_boot:
 	# Get the core id of the next to be booted
 	LONG_L  t1, (t0)
+=======
+	PTR_LA	t0, octeon_processor_boot
+octeon_spin_wait_boot:
+	# Get the core id of the next to be booted
+	LONG_L	t1, (t0)
+>>>>>>> refs/remotes/origin/master
 	# Keep looping if it isn't me
 	bne t1, v0, octeon_spin_wait_boot
 	nop
 	# Get my GP from the global variable
+<<<<<<< HEAD
 	PTR_LA  t0, octeon_processor_gp
 	LONG_L  gp, (t0)
 	# Get my SP from the global variable
@@ -102,6 +138,15 @@ octeon_spin_wait_boot:
 	LONG_L  sp, (t0)
 	# Set the SP global variable to zero so the master knows we've started
 	LONG_S  zero, (t0)
+=======
+	PTR_LA	t0, octeon_processor_gp
+	LONG_L	gp, (t0)
+	# Get my SP from the global variable
+	PTR_LA	t0, octeon_processor_sp
+	LONG_L	sp, (t0)
+	# Set the SP global variable to zero so the master knows we've started
+	LONG_S	zero, (t0)
+>>>>>>> refs/remotes/origin/master
 #ifdef __OCTEON__
 	syncw
 	syncw
@@ -130,7 +175,11 @@ octeon_main_processor:
 /*
  * Do SMP slave processor setup necessary before we can savely execute C code.
  */
+<<<<<<< HEAD
 	.macro  smp_slave_setup
+=======
+	.macro	smp_slave_setup
+>>>>>>> refs/remotes/origin/master
 	.endm
 
 #endif /* __ASM_MACH_CAVIUM_OCTEON_KERNEL_ENTRY_H */

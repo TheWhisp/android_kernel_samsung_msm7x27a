@@ -14,6 +14,11 @@
 #include <linux/kernel_stat.h>
 #include <linux/math64.h>
 #include <linux/gfp.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+#include <linux/pvclock_gtod.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pvclock.h>
 #include <asm/xen/hypervisor.h>
@@ -156,15 +161,21 @@ cycle_t xen_clocksource_read(void)
 	cycle_t ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	src = &get_cpu_var(xen_vcpu)->time;
 	ret = pvclock_clocksource_read(src);
 	put_cpu_var(xen_vcpu);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	preempt_disable_notrace();
 	src = &__get_cpu_var(xen_vcpu)->time;
 	ret = pvclock_clocksource_read(src);
 	preempt_enable_notrace();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -184,6 +195,7 @@ static void xen_read_wallclock(struct timespec *ts)
 	put_cpu_var(xen_vcpu);
 }
 
+<<<<<<< HEAD
 static unsigned long xen_get_wallclock(void)
 {
 	struct timespec ts;
@@ -217,6 +229,58 @@ static int xen_set_wallclock(unsigned long now)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+static void xen_get_wallclock(struct timespec *now)
+{
+	xen_read_wallclock(now);
+}
+
+static int xen_set_wallclock(const struct timespec *now)
+{
+	return -1;
+}
+
+static int xen_pvclock_gtod_notify(struct notifier_block *nb,
+				   unsigned long was_set, void *priv)
+{
+	/* Protected by the calling core code serialization */
+	static struct timespec next_sync;
+
+	struct xen_platform_op op;
+	struct timespec now;
+
+	now = __current_kernel_time();
+
+	/*
+	 * We only take the expensive HV call when the clock was set
+	 * or when the 11 minutes RTC synchronization time elapsed.
+	 */
+	if (!was_set && timespec_compare(&now, &next_sync) < 0)
+		return NOTIFY_OK;
+
+	op.cmd = XENPF_settime;
+	op.u.settime.secs = now.tv_sec;
+	op.u.settime.nsecs = now.tv_nsec;
+	op.u.settime.system_time = xen_clocksource_read();
+
+	(void)HYPERVISOR_dom0_op(&op);
+
+	/*
+	 * Move the next drift compensation time 11 minutes
+	 * ahead. That's emulating the sync_cmos_clock() update for
+	 * the hardware RTC.
+	 */
+	next_sync = now;
+	next_sync.tv_sec += 11 * 60;
+
+	return NOTIFY_OK;
+}
+
+static struct notifier_block xen_pvclock_gtod_notifier = {
+	.notifier_call = xen_pvclock_gtod_notify,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct clocksource xen_clocksource __read_mostly = {
 	.name = "xen",
 	.rating = 400,
@@ -375,11 +439,24 @@ static const struct clock_event_device xen_vcpuop_clockevent = {
 
 static const struct clock_event_device *xen_clockevent =
 	&xen_timerop_clockevent;
+<<<<<<< HEAD
 static DEFINE_PER_CPU(struct clock_event_device, xen_clock_events);
 
 static irqreturn_t xen_timer_interrupt(int irq, void *dev_id)
 {
 	struct clock_event_device *evt = &__get_cpu_var(xen_clock_events);
+=======
+
+struct xen_clock_event_device {
+	struct clock_event_device evt;
+	char *name;
+};
+static DEFINE_PER_CPU(struct xen_clock_event_device, xen_clock_events) = { .evt.irq = -1 };
+
+static irqreturn_t xen_timer_interrupt(int irq, void *dev_id)
+{
+	struct clock_event_device *evt = &__get_cpu_var(xen_clock_events).evt;
+>>>>>>> refs/remotes/origin/master
 	irqreturn_t ret;
 
 	ret = IRQ_NONE;
@@ -393,12 +470,40 @@ static irqreturn_t xen_timer_interrupt(int irq, void *dev_id)
 	return ret;
 }
 
+<<<<<<< HEAD
 void xen_setup_timer(int cpu)
 {
 	const char *name;
 	struct clock_event_device *evt;
 	int irq;
 
+=======
+void xen_teardown_timer(int cpu)
+{
+	struct clock_event_device *evt;
+	BUG_ON(cpu == 0);
+	evt = &per_cpu(xen_clock_events, cpu).evt;
+
+	if (evt->irq >= 0) {
+		unbind_from_irqhandler(evt->irq, NULL);
+		evt->irq = -1;
+		kfree(per_cpu(xen_clock_events, cpu).name);
+		per_cpu(xen_clock_events, cpu).name = NULL;
+	}
+}
+
+void xen_setup_timer(int cpu)
+{
+	char *name;
+	struct clock_event_device *evt;
+	int irq;
+
+	evt = &per_cpu(xen_clock_events, cpu).evt;
+	WARN(evt->irq >= 0, "IRQ%d for CPU%d is already allocated\n", evt->irq, cpu);
+	if (evt->irq >= 0)
+		xen_teardown_timer(cpu);
+
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "installing Xen timer for CPU %d\n", cpu);
 
 	name = kasprintf(GFP_KERNEL, "timer%d", cpu);
@@ -406,16 +511,24 @@ void xen_setup_timer(int cpu)
 		name = "<timer kasprintf failed>";
 
 	irq = bind_virq_to_irqhandler(VIRQ_TIMER, cpu, xen_timer_interrupt,
+<<<<<<< HEAD
 				      IRQF_DISABLED|IRQF_PERCPU|
 				      IRQF_NOBALANCING|IRQF_TIMER|
 				      IRQF_FORCE_RESUME,
 				      name, NULL);
 
 	evt = &per_cpu(xen_clock_events, cpu);
+=======
+				      IRQF_PERCPU|IRQF_NOBALANCING|IRQF_TIMER|
+				      IRQF_FORCE_RESUME,
+				      name, NULL);
+
+>>>>>>> refs/remotes/origin/master
 	memcpy(evt, xen_clockevent, sizeof(*evt));
 
 	evt->cpumask = cpumask_of(cpu);
 	evt->irq = irq;
+<<<<<<< HEAD
 }
 
 void xen_teardown_timer(int cpu)
@@ -425,12 +538,21 @@ void xen_teardown_timer(int cpu)
 	evt = &per_cpu(xen_clock_events, cpu);
 	unbind_from_irqhandler(evt->irq, NULL);
 }
+=======
+	per_cpu(xen_clock_events, cpu).name = name;
+}
+
+>>>>>>> refs/remotes/origin/master
 
 void xen_setup_cpu_clockevents(void)
 {
 	BUG_ON(preemptible());
 
+<<<<<<< HEAD
 	clockevents_register_device(&__get_cpu_var(xen_clock_events));
+=======
+	clockevents_register_device(&__get_cpu_var(xen_clock_events).evt);
+>>>>>>> refs/remotes/origin/master
 }
 
 void xen_timer_resume(void)
@@ -475,6 +597,12 @@ static void __init xen_time_init(void)
 	xen_setup_runstate_info(cpu);
 	xen_setup_timer(cpu);
 	xen_setup_cpu_clockevents();
+<<<<<<< HEAD
+=======
+
+	if (xen_initial_domain())
+		pvclock_gtod_register_notifier(&xen_pvclock_gtod_notifier);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init xen_init_time_ops(void)
@@ -487,7 +615,13 @@ void __init xen_init_time_ops(void)
 
 	x86_platform.calibrate_tsc = xen_tsc_khz;
 	x86_platform.get_wallclock = xen_get_wallclock;
+<<<<<<< HEAD
 	x86_platform.set_wallclock = xen_set_wallclock;
+=======
+	/* Dom0 uses the native method to set the hardware RTC. */
+	if (!xen_initial_domain())
+		x86_platform.set_wallclock = xen_set_wallclock;
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_XEN_PVHVM

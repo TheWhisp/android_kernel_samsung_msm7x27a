@@ -31,8 +31,11 @@
 #define stub_fork sys_fork
 #define stub_vfork sys_vfork
 #define stub_execve sys_execve
+<<<<<<< HEAD
 #define stub_rt_sigsuspend sys_rt_sigsuspend
 #define stub_sigaltstack sys_sigaltstack
+=======
+>>>>>>> refs/remotes/origin/master
 #define stub_rt_sigreturn sys_rt_sigreturn
 
 #define __SYSCALL_COMMON(nr, sym, compat) __SYSCALL_64(nr, sym, compat)

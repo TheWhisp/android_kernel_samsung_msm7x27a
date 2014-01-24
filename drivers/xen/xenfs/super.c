@@ -7,6 +7,11 @@
  *                              Turned xenfs into a loadable module.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/module.h>
@@ -17,16 +22,22 @@
 
 #include "xenfs.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "../privcmd.h"
 #include "../xenbus/xenbus_comms.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "../privcmd.h"
+#include "../xenbus/xenbus_comms.h"
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/xen/hypervisor.h>
 
 MODULE_DESCRIPTION("Xen filesystem");
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static struct inode *xenfs_make_inode(struct super_block *sb, int mode)
 {
 	struct inode *ret = new_inode(sb);
@@ -67,6 +78,8 @@ static struct dentry *xenfs_create_file(struct super_block *sb,
 	return dentry;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t capabilities_read(struct file *file, char __user *buf,
 				 size_t size, loff_t *off)
 {
@@ -86,6 +99,7 @@ static const struct file_operations capabilities_file_ops = {
 static int xenfs_fill_super(struct super_block *sb, void *data, int silent)
 {
 	static struct tree_descr xenfs_files[] = {
+<<<<<<< HEAD
 		[1] = {},
 <<<<<<< HEAD
 		{ "xenbus", &xenbus_file_ops, S_IRUSR|S_IWUSR },
@@ -112,6 +126,25 @@ static int xenfs_fill_super(struct super_block *sb, void *data, int silent)
 	}
 
 	return rc;
+=======
+		[2] = { "xenbus", &xen_xenbus_fops, S_IRUSR|S_IWUSR },
+		{ "capabilities", &capabilities_file_ops, S_IRUGO },
+		{ "privcmd", &xen_privcmd_fops, S_IRUSR|S_IWUSR },
+		{""},
+	};
+
+	static struct tree_descr xenfs_init_files[] = {
+		[2] = { "xenbus", &xen_xenbus_fops, S_IRUSR|S_IWUSR },
+		{ "capabilities", &capabilities_file_ops, S_IRUGO },
+		{ "privcmd", &xen_privcmd_fops, S_IRUSR|S_IWUSR },
+		{ "xsd_kva", &xsd_kva_file_ops, S_IRUSR|S_IWUSR},
+		{ "xsd_port", &xsd_port_file_ops, S_IRUSR|S_IWUSR},
+		{""},
+	};
+
+	return simple_fill_super(sb, XENFS_SUPER_MAGIC,
+			xen_initial_domain() ? xenfs_init_files : xenfs_files);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dentry *xenfs_mount(struct file_system_type *fs_type,
@@ -127,13 +160,21 @@ static struct file_system_type xenfs_type = {
 	.mount =	xenfs_mount,
 	.kill_sb =	kill_litter_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("xenfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init xenfs_init(void)
 {
 	if (xen_domain())
 		return register_filesystem(&xenfs_type);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "XENFS: not registering filesystem on non-xen platform\n");
+=======
+	pr_info("not registering filesystem on non-xen platform\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

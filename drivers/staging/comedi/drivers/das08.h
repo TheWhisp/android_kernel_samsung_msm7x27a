@@ -14,17 +14,23 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 
 #ifndef _DAS08_H
 #define _DAS08_H
 
+<<<<<<< HEAD
 enum das08_bustype { isa, pci, pcmcia, pc104 };
+=======
+>>>>>>> refs/remotes/origin/master
 /* different ways ai data is encoded in first two registers */
 enum das08_ai_encoding { das08_encode12, das08_encode16, das08_pcm_encode12 };
 enum das08_lrange { das08_pg_none, das08_bipolar5, das08_pgh, das08_pgl,
@@ -33,6 +39,7 @@ enum das08_lrange { das08_pg_none, das08_bipolar5, das08_pgh, das08_pgl,
 
 struct das08_board_struct {
 	const char *name;
+<<<<<<< HEAD
 	unsigned int id;	/*  id for pci/pcmcia boards */
 	enum das08_bustype bustype;
 	void *ai;
@@ -43,12 +50,21 @@ struct das08_board_struct {
 	unsigned int ao_nbits;
 	void *di;
 	void *do_;
+=======
+	bool is_jr;		/* true for 'JR' boards */
+	unsigned int ai_nbits;
+	enum das08_lrange ai_pg;
+	enum das08_ai_encoding ai_encoding;
+	unsigned int ao_nbits;
+	unsigned int di_nchan;
+>>>>>>> refs/remotes/origin/master
 	unsigned int do_nchan;
 	unsigned int i8255_offset;
 	unsigned int i8254_offset;
 	unsigned int iosize;	/*  number of ioports used */
 };
 
+<<<<<<< HEAD
 struct i8254_struct {
 	int channels;		/*  available channels. Some could be used internally. */
 	int logic2phys[3];	/*  to know which physical channel is. */
@@ -75,5 +91,14 @@ extern struct das08_board_struct das08_cs_boards[NUM_DAS08_CS_BOARDS];
 
 int das08_common_attach(struct comedi_device *dev, unsigned long iobase);
 int das08_common_detach(struct comedi_device *dev);
+=======
+struct das08_private_struct {
+	unsigned int do_mux_bits;	/*  bits for do/mux register on boards without separate do register */
+	const unsigned int *pg_gainlist;
+	unsigned int ao_readback[2];	/* assume 2 AO channels */
+};
+
+int das08_common_attach(struct comedi_device *dev, unsigned long iobase);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _DAS08_H */

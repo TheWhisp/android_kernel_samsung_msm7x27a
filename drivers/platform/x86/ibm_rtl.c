@@ -29,19 +29,27 @@
 #include <linux/module.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dmi.h>
 #include <linux/efi.h>
 #include <linux/mutex.h>
 #include <asm/bios_ebda.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm-generic/io-64-nonatomic-lo-hi.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/io-64-nonatomic-lo-hi.h>
+
+>>>>>>> refs/remotes/origin/master
 static bool force;
 module_param(force, bool, 0);
 MODULE_PARM_DESC(force, "Force driver load, ignore DMI data");
@@ -93,6 +101,7 @@ static u8 rtl_cmd_type;
 static u8 rtl_cmd_width;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef readq
 static inline __u64 readq(const volatile void __iomem *addr)
 {
@@ -108,6 +117,8 @@ static inline __u64 readq(const volatile void __iomem *addr)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __iomem *rtl_port_map(phys_addr_t addr, unsigned long len)
 {
 	if (rtl_cmd_type == RTL_ADDR_TYPE_MMIO)
@@ -177,17 +188,23 @@ static int ibm_rtl_write(u8 value)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t rtl_show_version(struct sysdev_class * dev,
                                 struct sysdev_class_attribute *attr,
 =======
 static ssize_t rtl_show_version(struct device *dev,
                                 struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t rtl_show_version(struct device *dev,
+                                struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
                                 char *buf)
 {
 	return sprintf(buf, "%d\n", (int)ioread8(&rtl_table->version));
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t rtl_show_state(struct sysdev_class *dev,
                               struct sysdev_class_attribute *attr,
@@ -195,11 +212,16 @@ static ssize_t rtl_show_state(struct sysdev_class *dev,
 static ssize_t rtl_show_state(struct device *dev,
                               struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t rtl_show_state(struct device *dev,
+                              struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
                               char *buf)
 {
 	return sprintf(buf, "%d\n", ioread8(&rtl_table->rt_status));
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t rtl_set_state(struct sysdev_class *dev,
                              struct sysdev_class_attribute *attr,
@@ -207,6 +229,10 @@ static ssize_t rtl_set_state(struct sysdev_class *dev,
 static ssize_t rtl_set_state(struct device *dev,
                              struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t rtl_set_state(struct device *dev,
+                             struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
                              const char *buf,
                              size_t count)
 {
@@ -232,6 +258,7 @@ static ssize_t rtl_set_state(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sysdev_class class_rtl = {
 	.name = "ibm_rtl",
 };
@@ -243,6 +270,8 @@ static struct sysdev_class_attribute *rtl_attributes[] = {
 	&attr_version,
 	&attr_state,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct bus_type rtl_subsys = {
 	.name = "ibm_rtl",
 	.dev_name = "ibm_rtl",
@@ -254,7 +283,10 @@ static DEVICE_ATTR(state, 0600, rtl_show_state, rtl_set_state);
 static struct device_attribute *rtl_attributes[] = {
 	&dev_attr_version,
 	&dev_attr_state,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
@@ -262,18 +294,24 @@ static struct device_attribute *rtl_attributes[] = {
 static int rtl_setup_sysfs(void) {
 	int ret, i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = sysdev_class_register(&class_rtl);
 
 	if (!ret) {
 		for (i = 0; rtl_attributes[i]; i ++)
 			sysdev_class_create_file(&class_rtl, rtl_attributes[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = subsys_system_register(&rtl_subsys, NULL);
 	if (!ret) {
 		for (i = 0; rtl_attributes[i]; i ++)
 			device_create_file(rtl_subsys.dev_root, rtl_attributes[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -282,12 +320,17 @@ static void rtl_teardown_sysfs(void) {
 	int i;
 	for (i = 0; rtl_attributes[i]; i ++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sysdev_class_remove_file(&class_rtl, rtl_attributes[i]);
 	sysdev_class_unregister(&class_rtl);
 =======
 		device_remove_file(rtl_subsys.dev_root, rtl_attributes[i]);
 	bus_unregister(&rtl_subsys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		device_remove_file(rtl_subsys.dev_root, rtl_attributes[i]);
+	bus_unregister(&rtl_subsys);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -309,10 +352,14 @@ static int __init ibm_rtl_init(void) {
 		pr_warn("module loaded by force\n");
 	/* first ensure that we are running on IBM HW */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (efi_enabled || !dmi_check_system(ibm_rtl_dmi_table))
 =======
 	else if (efi_enabled(EFI_BOOT) || !dmi_check_system(ibm_rtl_dmi_table))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (efi_enabled(EFI_BOOT) || !dmi_check_system(ibm_rtl_dmi_table))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	/* Get the address for the Extended BIOS Data Area */

@@ -18,6 +18,10 @@
 #include <linux/init.h>
 #include <linux/serial_core.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/syscore_ops.h>
 #include <linux/clk.h>
@@ -36,11 +40,15 @@
 #include <mach/regs-clock.h>
 #include <plat/regs-serial.h>
 #include <mach/regs-gpio.h>
+<<<<<<< HEAD
 #include <mach/regs-gpioj.h>
 #include <mach/regs-dsc.h>
 
 #include <plat/s3c2410.h>
 #include <plat/s3c244x.h>
+=======
+
+>>>>>>> refs/remotes/origin/master
 #include <plat/clock.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
@@ -49,6 +57,11 @@
 #include <plat/nand-core.h>
 #include <plat/watchdog-reset.h>
 
+<<<<<<< HEAD
+=======
+#include "regs-dsc.h"
+
+>>>>>>> refs/remotes/origin/master
 static struct map_desc s3c244x_iodesc[] __initdata = {
 	IODESC_ENT(CLKPWR),
 	IODESC_ENT(TIMER),
@@ -135,6 +148,10 @@ void __init s3c244x_init_clocks(int xtal)
 	s3c24xx_register_baseclocks(xtal);
 	s3c244x_setup_clocks();
 	s3c2410_baseclk_add();
+<<<<<<< HEAD
+=======
+	samsung_wdt_reset_init(S3C24XX_VA_WATCHDOG);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Since the S3C2442 and S3C2440 share items, put both subsystems here */
@@ -199,12 +216,21 @@ struct syscore_ops s3c244x_pm_syscore_ops = {
 	.resume		= s3c244x_resume,
 };
 
+<<<<<<< HEAD
 void s3c244x_restart(char mode, const char *cmd)
 {
 	if (mode == 's')
 		soft_restart(0);
 
 	arch_wdt_reset();
+=======
+void s3c244x_restart(enum reboot_mode mode, const char *cmd)
+{
+	if (mode == REBOOT_SOFT)
+		soft_restart(0);
+
+	samsung_wdt_reset();
+>>>>>>> refs/remotes/origin/master
 
 	/* we'll take a jump through zero as a poor second */
 	soft_restart(0);

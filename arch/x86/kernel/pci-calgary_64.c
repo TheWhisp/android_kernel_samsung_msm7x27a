@@ -22,6 +22,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "Calgary: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/types.h>
@@ -43,9 +48,12 @@
 #include <asm/tce.h>
 #include <asm/pci-direct.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/rio.h>
 #include <asm/bios_ebda.h>
@@ -249,7 +257,11 @@ static unsigned long iommu_range_alloc(struct device *dev,
 		offset = iommu_area_alloc(tbl->it_map, tbl->it_size, 0,
 					  npages, 0, boundary_size, 0);
 		if (offset == ~0UL) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "Calgary: IOMMU full.\n");
+=======
+			pr_warn("IOMMU full\n");
+>>>>>>> refs/remotes/origin/master
 			spin_unlock_irqrestore(&tbl->it_lock, flags);
 			if (panic_on_overflow)
 				panic("Calgary: fix the allocator.\n");
@@ -275,8 +287,13 @@ static dma_addr_t iommu_alloc(struct device *dev, struct iommu_table *tbl,
 	entry = iommu_range_alloc(dev, tbl, npages);
 
 	if (unlikely(entry == DMA_ERROR_CODE)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "Calgary: failed to allocate %u pages in "
 		       "iommu %p\n", npages, tbl);
+=======
+		pr_warn("failed to allocate %u pages in iommu %p\n",
+			npages, tbl);
+>>>>>>> refs/remotes/origin/master
 		return DMA_ERROR_CODE;
 	}
 
@@ -435,10 +452,14 @@ static void calgary_unmap_page(struct device *dev, dma_addr_t dma_addr,
 
 static void* calgary_alloc_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_addr_t *dma_handle, gfp_t flag)
 =======
 	dma_addr_t *dma_handle, gfp_t flag, struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_addr_t *dma_handle, gfp_t flag, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	void *ret = NULL;
 	dma_addr_t mapping;
@@ -472,11 +493,16 @@ error:
 
 static void calgary_free_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  void *vaddr, dma_addr_t dma_handle)
 =======
 				  void *vaddr, dma_addr_t dma_handle,
 				  struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  void *vaddr, dma_addr_t dma_handle,
+				  struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int npages;
 	struct iommu_table *tbl = find_iommu_table(dev);
@@ -490,12 +516,17 @@ static void calgary_free_coherent(struct device *dev, size_t size,
 
 static struct dma_map_ops calgary_dma_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.alloc_coherent = calgary_alloc_coherent,
 	.free_coherent = calgary_free_coherent,
 =======
 	.alloc = calgary_alloc_coherent,
 	.free = calgary_free_coherent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc = calgary_alloc_coherent,
+	.free = calgary_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_sg = calgary_map_sg,
 	.unmap_sg = calgary_unmap_sg,
 	.map_page = calgary_map_page,
@@ -578,8 +609,12 @@ static void calgary_tce_cache_blast(struct iommu_table *tbl)
 		i++;
 	} while ((val & 0xff) != 0xff && i < 100);
 	if (i == 100)
+<<<<<<< HEAD
 		printk(KERN_WARNING "Calgary: PCI bus not quiesced, "
 		       "continuing anyway\n");
+=======
+		pr_warn("PCI bus not quiesced, continuing anyway\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* invalidate TCE cache */
 	target = calgary_reg(bbar, tar_offset(tbl->it_busno));
@@ -621,8 +656,12 @@ begin:
 		i++;
 	} while ((val64 & 0xff) != 0xff && i < 100);
 	if (i == 100)
+<<<<<<< HEAD
 		printk(KERN_WARNING "CalIOC2: PCI bus not quiesced, "
 		       "continuing anyway\n");
+=======
+		pr_warn("CalIOC2: PCI bus not quiesced, continuing anyway\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* 3. poll Page Migration DEBUG for SoftStopFault */
 	target = calgary_reg(bbar, phb_offset(bus) | PHB_PAGE_MIG_DEBUG);
@@ -634,8 +673,12 @@ begin:
 		if (++count < 100)
 			goto begin;
 		else {
+<<<<<<< HEAD
 			printk(KERN_WARNING "CalIOC2: too many SoftStopFaults, "
 			       "aborting TCE cache flush sequence!\n");
+=======
+			pr_warn("CalIOC2: too many SoftStopFaults, aborting TCE cache flush sequence!\n");
+>>>>>>> refs/remotes/origin/master
 			return; /* pray for the best */
 		}
 	}
@@ -857,8 +900,13 @@ static void calgary_dump_error_regs(struct iommu_table *tbl)
 	plssr = be32_to_cpu(readl(target));
 
 	/* If no error, the agent ID in the CSR is not valid */
+<<<<<<< HEAD
 	printk(KERN_EMERG "Calgary: DMA error on Calgary PHB 0x%x, "
 	       "0x%08x@CSR 0x%08x@PLSSR\n", tbl->it_busno, csr, plssr);
+=======
+	pr_emerg("DMA error on Calgary PHB 0x%x, 0x%08x@CSR 0x%08x@PLSSR\n",
+		 tbl->it_busno, csr, plssr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void calioc2_dump_error_regs(struct iommu_table *tbl)
@@ -884,6 +932,7 @@ static void calioc2_dump_error_regs(struct iommu_table *tbl)
 	target = calgary_reg(bbar, phboff | 0x800);
 	mck = be32_to_cpu(readl(target));
 
+<<<<<<< HEAD
 	printk(KERN_EMERG "Calgary: DMA error on CalIOC2 PHB 0x%x\n",
 	       tbl->it_busno);
 
@@ -892,14 +941,29 @@ static void calioc2_dump_error_regs(struct iommu_table *tbl)
 
 	/* dump rest of error regs */
 	printk(KERN_EMERG "Calgary: ");
+=======
+	pr_emerg("DMA error on CalIOC2 PHB 0x%x\n", tbl->it_busno);
+
+	pr_emerg("0x%08x@CSR 0x%08x@PLSSR 0x%08x@CSMR 0x%08x@MCK\n",
+		 csr, plssr, csmr, mck);
+
+	/* dump rest of error regs */
+	pr_emerg("");
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ARRAY_SIZE(errregs); i++) {
 		/* err regs are at 0x810 - 0x870 */
 		erroff = (0x810 + (i * 0x10));
 		target = calgary_reg(bbar, phboff | erroff);
 		errregs[i] = be32_to_cpu(readl(target));
+<<<<<<< HEAD
 		printk("0x%08x@0x%lx ", errregs[i], erroff);
 	}
 	printk("\n");
+=======
+		pr_cont("0x%08x@0x%lx ", errregs[i], erroff);
+	}
+	pr_cont("\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* root complex status */
 	target = calgary_reg(bbar, phboff | PHB_ROOT_COMPLEX_STATUS);
@@ -1497,8 +1561,14 @@ cleanup:
 static int __init calgary_parse_options(char *p)
 {
 	unsigned int bridge;
+<<<<<<< HEAD
 	size_t len;
 	char* endp;
+=======
+	unsigned long val;
+	size_t len;
+	ssize_t ret;
+>>>>>>> refs/remotes/origin/master
 
 	while (*p) {
 		if (!strncmp(p, "64k", 3))
@@ -1529,10 +1599,18 @@ static int __init calgary_parse_options(char *p)
 				++p;
 			if (*p == '\0')
 				break;
+<<<<<<< HEAD
 			bridge = simple_strtoul(p, &endp, 0);
 			if (p == endp)
 				break;
 
+=======
+			ret = kstrtoul(p, 0, &val);
+			if (ret)
+				break;
+
+			bridge = val;
+>>>>>>> refs/remotes/origin/master
 			if (bridge < MAX_PHB_BUS_NUM) {
 				printk(KERN_INFO "Calgary: disabling "
 				       "translation for PHB %#x\n", bridge);
@@ -1571,10 +1649,14 @@ static void __init calgary_fixup_one_tce_space(struct pci_dev *dev)
 
 		/* cover the whole region */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		npages = (r->end - r->start) >> PAGE_SHIFT;
 =======
 		npages = resource_size(r) >> PAGE_SHIFT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		npages = resource_size(r) >> PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 		npages++;
 
 		iommu_range_reserve(tbl, r->start, npages);

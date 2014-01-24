@@ -27,9 +27,12 @@
 
 #include <asm/cacheflush.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 
 #include "setup.h"
@@ -174,12 +177,15 @@ static void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 		c_backtrace(fp, mode);
 }
 
+<<<<<<< HEAD
 void dump_stack(void)
 {
 	dump_backtrace(NULL, NULL);
 }
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void show_stack(struct task_struct *tsk, unsigned long *sp)
 {
 	dump_backtrace(NULL, tsk);
@@ -235,7 +241,11 @@ void die(const char *str, struct pt_regs *regs, int err)
 	ret = __die(str, err, thread, regs);
 
 	bust_spinlocks(0);
+<<<<<<< HEAD
 	add_taint(TAINT_DIE);
+=======
+	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irq(&die_lock);
 	oops_exit();
 

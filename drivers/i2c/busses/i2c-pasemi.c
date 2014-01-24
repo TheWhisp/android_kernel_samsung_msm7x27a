@@ -340,7 +340,11 @@ static const struct i2c_algorithm smbus_algorithm = {
 	.functionality	= pasemi_smb_func,
 };
 
+<<<<<<< HEAD
 static int __devinit pasemi_smb_probe(struct pci_dev *dev,
+=======
+static int pasemi_smb_probe(struct pci_dev *dev,
+>>>>>>> refs/remotes/origin/master
 				      const struct pci_device_id *id)
 {
 	struct pasemi_smbus *smbus;
@@ -392,7 +396,11 @@ static int __devinit pasemi_smb_probe(struct pci_dev *dev,
 	return error;
 }
 
+<<<<<<< HEAD
 static void __devexit pasemi_smb_remove(struct pci_dev *dev)
+=======
+static void pasemi_smb_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pasemi_smbus *smbus = pci_get_drvdata(dev);
 
@@ -402,10 +410,14 @@ static void __devexit pasemi_smb_remove(struct pci_dev *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id pasemi_smb_ids[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(pasemi_smb_ids) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(pasemi_smb_ids) = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(0x1959, 0xa003) },
 	{ 0, }
 };
@@ -416,6 +428,7 @@ static struct pci_driver pasemi_smb_driver = {
 	.name		= "i2c-pasemi",
 	.id_table	= pasemi_smb_ids,
 	.probe		= pasemi_smb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pasemi_smb_remove),
 };
 
@@ -428,10 +441,19 @@ static void __exit pasemi_smb_exit(void)
 {
 	pci_unregister_driver(&pasemi_smb_driver);
 }
+=======
+	.remove		= pasemi_smb_remove,
+};
+
+module_pci_driver(pasemi_smb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR ("Olof Johansson <olof@lixom.net>");
 MODULE_DESCRIPTION("PA Semi PWRficient SMBus driver");
+<<<<<<< HEAD
 
 module_init(pasemi_smb_init);
 module_exit(pasemi_smb_exit);
+=======
+>>>>>>> refs/remotes/origin/master

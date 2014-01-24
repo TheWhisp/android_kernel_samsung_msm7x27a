@@ -1,5 +1,11 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2004 Intel Corporation <naveen.b.s@intel.com>
+=======
+ * Copyright (C) 2004, 2013 Intel Corporation
+ * Author: Naveen B S <naveen.b.s@intel.com>
+ * Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>>>>>> refs/remotes/origin/master
  *
  * All rights reserved.
  *
@@ -25,6 +31,7 @@
  * ranges.
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
@@ -32,6 +39,13 @@
 #include <linux/memory_hotplug.h>
 #include <linux/slab.h>
 #include <acpi/acpi_drivers.h>
+=======
+#include <linux/acpi.h>
+#include <linux/memory.h>
+#include <linux/memory_hotplug.h>
+
+#include "internal.h"
+>>>>>>> refs/remotes/origin/master
 
 #define ACPI_MEMORY_DEVICE_CLASS		"memory"
 #define ACPI_MEMORY_DEVICE_HID			"PNP0C80"
@@ -43,22 +57,32 @@
 #define 	PREFIX		"ACPI:memory_hp:"
 
 ACPI_MODULE_NAME("acpi_memhotplug");
+<<<<<<< HEAD
 MODULE_AUTHOR("Naveen B S <naveen.b.s@intel.com>");
 MODULE_DESCRIPTION("Hotplug Mem Driver");
 MODULE_LICENSE("GPL");
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Memory Device States */
 #define MEMORY_INVALID_STATE	0
 #define MEMORY_POWER_ON_STATE	1
 #define MEMORY_POWER_OFF_STATE	2
 
+<<<<<<< HEAD
 static int acpi_memory_device_add(struct acpi_device *device);
 static int acpi_memory_device_remove(struct acpi_device *device, int type);
+=======
+static int acpi_memory_device_add(struct acpi_device *device,
+				  const struct acpi_device_id *not_used);
+static void acpi_memory_device_remove(struct acpi_device *device);
+>>>>>>> refs/remotes/origin/master
 
 static const struct acpi_device_id memory_device_ids[] = {
 	{ACPI_MEMORY_DEVICE_HID, 0},
 	{"", 0},
 };
+<<<<<<< HEAD
 MODULE_DEVICE_TABLE(acpi, memory_device_ids);
 
 static struct acpi_driver acpi_memory_device_driver = {
@@ -69,6 +93,16 @@ static struct acpi_driver acpi_memory_device_driver = {
 		.add = acpi_memory_device_add,
 		.remove = acpi_memory_device_remove,
 		},
+=======
+
+static struct acpi_scan_handler memory_device_handler = {
+	.ids = memory_device_ids,
+	.attach = acpi_memory_device_add,
+	.detach = acpi_memory_device_remove,
+	.hotplug = {
+		.enabled = true,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 struct acpi_memory_info {
@@ -86,8 +120,11 @@ struct acpi_memory_device {
 	struct list_head res_list;
 };
 
+<<<<<<< HEAD
 static int acpi_hotmem_initialized;
 
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status
 acpi_memory_get_resource(struct acpi_resource *resource, void *context)
 {
@@ -125,6 +162,7 @@ acpi_memory_get_resource(struct acpi_resource *resource, void *context)
 	return AE_OK;
 }
 
+<<<<<<< HEAD
 static int
 acpi_memory_get_device_resources(struct acpi_memory_device *mem_device)
 {
@@ -191,6 +229,33 @@ acpi_memory_get_device(acpi_handle handle,
 		return -ENODEV;
 	}
 
+=======
+static void
+acpi_memory_free_device_resources(struct acpi_memory_device *mem_device)
+{
+	struct acpi_memory_info *info, *n;
+
+	list_for_each_entry_safe(info, n, &mem_device->res_list, list)
+		kfree(info);
+	INIT_LIST_HEAD(&mem_device->res_list);
+}
+
+static int
+acpi_memory_get_device_resources(struct acpi_memory_device *mem_device)
+{
+	acpi_status status;
+
+	if (!list_empty(&mem_device->res_list))
+		return 0;
+
+	status = acpi_walk_resources(mem_device->device->handle, METHOD_NAME__CRS,
+				     acpi_memory_get_resource, mem_device);
+	if (ACPI_FAILURE(status)) {
+		acpi_memory_free_device_resources(mem_device);
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -199,8 +264,14 @@ static int acpi_memory_check_device(struct acpi_memory_device *mem_device)
 	unsigned long long current_status;
 
 	/* Get device present/absent information from the _STA */
+<<<<<<< HEAD
 	if (ACPI_FAILURE(acpi_evaluate_integer(mem_device->device->handle, "_STA",
 					       NULL, &current_status)))
+=======
+	if (ACPI_FAILURE(acpi_evaluate_integer(mem_device->device->handle,
+					       METHOD_NAME__STA, NULL,
+					       &current_status)))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	/*
 	 * Check for device status. Device should be
@@ -214,12 +285,55 @@ static int acpi_memory_check_device(struct acpi_memory_device *mem_device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
 {
+=======
+static unsigned long acpi_meminfo_start_pfn(struct acpi_memory_info *info)
+{
+	return PFN_DOWN(info->start_addr);
+}
+
+static unsigned long acpi_meminfo_end_pfn(struct acpi_memory_info *info)
+{
+	return PFN_UP(info->start_addr + info->length-1);
+}
+
+static int acpi_bind_memblk(struct memory_block *mem, void *arg)
+{
+	return acpi_bind_one(&mem->dev, (acpi_handle)arg);
+}
+
+static int acpi_bind_memory_blocks(struct acpi_memory_info *info,
+				   acpi_handle handle)
+{
+	return walk_memory_range(acpi_meminfo_start_pfn(info),
+				 acpi_meminfo_end_pfn(info), (void *)handle,
+				 acpi_bind_memblk);
+}
+
+static int acpi_unbind_memblk(struct memory_block *mem, void *arg)
+{
+	acpi_unbind_one(&mem->dev);
+	return 0;
+}
+
+static void acpi_unbind_memory_blocks(struct acpi_memory_info *info,
+				      acpi_handle handle)
+{
+	walk_memory_range(acpi_meminfo_start_pfn(info),
+			  acpi_meminfo_end_pfn(info), NULL, acpi_unbind_memblk);
+}
+
+static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
+{
+	acpi_handle handle = mem_device->device->handle;
+>>>>>>> refs/remotes/origin/master
 	int result, num_enabled = 0;
 	struct acpi_memory_info *info;
 	int node;
 
+<<<<<<< HEAD
 
 	/* Get the range from the _CRS */
 	result = acpi_memory_get_device_resources(mem_device);
@@ -230,6 +344,9 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
 	}
 
 	node = acpi_get_node(mem_device->device->handle);
+=======
+	node = acpi_get_node(handle);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Tell the VM there is more memory here...
 	 * Note: Assume that this function returns zero on success
@@ -251,6 +368,7 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
 			node = memory_add_physaddr_to_nid(info->start_addr);
 
 		result = add_memory(node, info->start_addr, info->length);
+<<<<<<< HEAD
 		if (result)
 			continue;
 		info->enabled = 1;
@@ -258,6 +376,33 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
 	}
 	if (!num_enabled) {
 		printk(KERN_ERR PREFIX "add_memory failed\n");
+=======
+
+		/*
+		 * If the memory block has been used by the kernel, add_memory()
+		 * returns -EEXIST. If add_memory() returns the other error, it
+		 * means that this memory block is not used by the kernel.
+		 */
+		if (result && result != -EEXIST)
+			continue;
+
+		result = acpi_bind_memory_blocks(info, handle);
+		if (result) {
+			acpi_unbind_memory_blocks(info, handle);
+			return -ENODEV;
+		}
+
+		info->enabled = 1;
+
+		/*
+		 * Add num_enable even if add_memory() returns -EEXIST, so the
+		 * device is bound to this driver.
+		 */
+		num_enabled++;
+	}
+	if (!num_enabled) {
+		dev_err(&mem_device->device->dev, "add_memory failed\n");
+>>>>>>> refs/remotes/origin/master
 		mem_device->state = MEMORY_INVALID_STATE;
 		return -EINVAL;
 	}
@@ -272,6 +417,7 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int acpi_memory_powerdown_device(struct acpi_memory_device *mem_device)
 {
 	acpi_status status;
@@ -404,6 +550,43 @@ static int acpi_memory_device_add(struct acpi_device *device)
 	int result;
 	struct acpi_memory_device *mem_device = NULL;
 
+=======
+static void acpi_memory_remove_memory(struct acpi_memory_device *mem_device)
+{
+	acpi_handle handle = mem_device->device->handle;
+	struct acpi_memory_info *info, *n;
+	int nid = acpi_get_node(handle);
+
+	list_for_each_entry_safe(info, n, &mem_device->res_list, list) {
+		if (!info->enabled)
+			continue;
+
+		if (nid == NUMA_NO_NODE)
+			nid = memory_add_physaddr_to_nid(info->start_addr);
+
+		acpi_unbind_memory_blocks(info, handle);
+		remove_memory(nid, info->start_addr, info->length);
+		list_del(&info->list);
+		kfree(info);
+	}
+}
+
+static void acpi_memory_device_free(struct acpi_memory_device *mem_device)
+{
+	if (!mem_device)
+		return;
+
+	acpi_memory_free_device_resources(mem_device);
+	mem_device->device->driver_data = NULL;
+	kfree(mem_device);
+}
+
+static int acpi_memory_device_add(struct acpi_device *device,
+				  const struct acpi_device_id *not_used)
+{
+	struct acpi_memory_device *mem_device;
+	int result;
+>>>>>>> refs/remotes/origin/master
 
 	if (!device)
 		return -EINVAL;
@@ -429,6 +612,7 @@ static int acpi_memory_device_add(struct acpi_device *device)
 	/* Set the device state */
 	mem_device->state = MEMORY_POWER_ON_STATE;
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "%s \n", acpi_device_name(device));
 
 	/*
@@ -576,3 +760,38 @@ static void __exit acpi_memory_device_exit(void)
 
 module_init(acpi_memory_device_init);
 module_exit(acpi_memory_device_exit);
+=======
+	result = acpi_memory_check_device(mem_device);
+	if (result) {
+		acpi_memory_device_free(mem_device);
+		return 0;
+	}
+
+	result = acpi_memory_enable_device(mem_device);
+	if (result) {
+		dev_err(&device->dev, "acpi_memory_enable_device() error\n");
+		acpi_memory_device_free(mem_device);
+		return result;
+	}
+
+	dev_dbg(&device->dev, "Memory device configured by ACPI\n");
+	return 1;
+}
+
+static void acpi_memory_device_remove(struct acpi_device *device)
+{
+	struct acpi_memory_device *mem_device;
+
+	if (!device || !acpi_driver_data(device))
+		return;
+
+	mem_device = acpi_driver_data(device);
+	acpi_memory_remove_memory(mem_device);
+	acpi_memory_device_free(mem_device);
+}
+
+void __init acpi_memory_hotplug_init(void)
+{
+	acpi_scan_add_handler_with_hotplug(&memory_device_handler, "memory");
+}
+>>>>>>> refs/remotes/origin/master

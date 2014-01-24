@@ -56,7 +56,11 @@ struct ct_mixer {
 			      enum MIXER_PORT_T type, struct rsc *rsc);
 	int (*set_input_right)(struct ct_mixer *mixer,
 			       enum MIXER_PORT_T type, struct rsc *rsc);
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	int (*resume)(struct ct_mixer *mixer);
 #endif
 };

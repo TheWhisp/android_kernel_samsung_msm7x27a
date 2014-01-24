@@ -7,7 +7,11 @@
  * Based on code from the latency_tracer, that is:
  *
  *  Copyright (C) 2004-2006 Ingo Molnar
+<<<<<<< HEAD
  *  Copyright (C) 2004 William Lee Irwin III
+=======
+ *  Copyright (C) 2004 Nadia Yvette Chambers
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/module.h>
 #include <linux/fs.h>
@@ -15,8 +19,14 @@
 #include <linux/kallsyms.h>
 #include <linux/uaccess.h>
 #include <linux/ftrace.h>
+<<<<<<< HEAD
 #include <trace/events/sched.h>
 
+=======
+#include <linux/sched/rt.h>
+#include <linux/sched/deadline.h>
+#include <trace/events/sched.h>
+>>>>>>> refs/remotes/origin/master
 #include "trace.h"
 
 static struct trace_array	*wakeup_trace;
@@ -27,6 +37,11 @@ static int			wakeup_cpu;
 static int			wakeup_current_cpu;
 static unsigned			wakeup_prio = -1;
 static int			wakeup_rt;
+<<<<<<< HEAD
+=======
+static int			wakeup_dl;
+static int			tracing_dl = 0;
+>>>>>>> refs/remotes/origin/master
 
 static arch_spinlock_t wakeup_lock =
 	(arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;
@@ -37,6 +52,10 @@ static int wakeup_graph_entry(struct ftrace_graph_ent *trace);
 static void wakeup_graph_return(struct ftrace_graph_ret *trace);
 
 static int save_flags;
+<<<<<<< HEAD
+=======
+static bool function_enabled;
+>>>>>>> refs/remotes/origin/master
 
 #define TRACE_DISPLAY_GRAPH     1
 
@@ -89,7 +108,11 @@ func_prolog_preempt_disable(struct trace_array *tr,
 	if (cpu != wakeup_current_cpu)
 		goto out_enable;
 
+<<<<<<< HEAD
 	*data = tr->data[cpu];
+=======
+	*data = per_cpu_ptr(tr->trace_buffer.data, cpu);
+>>>>>>> refs/remotes/origin/master
 	disabled = atomic_inc_return(&(*data)->disabled);
 	if (unlikely(disabled != 1))
 		goto out;
@@ -108,7 +131,12 @@ out_enable:
  * wakeup uses its own tracer function to keep the overhead down:
  */
 static void
+<<<<<<< HEAD
 wakeup_tracer_call(unsigned long ip, unsigned long parent_ip)
+=======
+wakeup_tracer_call(unsigned long ip, unsigned long parent_ip,
+		   struct ftrace_ops *op, struct pt_regs *pt_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct trace_array *tr = wakeup_trace;
 	struct trace_array_cpu *data;
@@ -129,6 +157,7 @@ wakeup_tracer_call(unsigned long ip, unsigned long parent_ip)
 static struct ftrace_ops trace_ops __read_mostly =
 {
 	.func = wakeup_tracer_call,
+<<<<<<< HEAD
 	.flags = FTRACE_OPS_FL_GLOBAL,
 };
 #endif /* CONFIG_FUNCTION_TRACER */
@@ -142,6 +171,66 @@ static int start_func_tracer(int graph)
 	else
 		ret = register_ftrace_graph(&wakeup_graph_return,
 					    &wakeup_graph_entry);
+=======
+	.flags = FTRACE_OPS_FL_GLOBAL | FTRACE_OPS_FL_RECURSION_SAFE,
+};
+#endif /* CONFIG_FUNCTION_TRACER */
+
+static int register_wakeup_function(int graph, int set)
+{
+	int ret;
+
+	/* 'set' is set if TRACE_ITER_FUNCTION is about to be set */
+	if (function_enabled || (!set && !(trace_flags & TRACE_ITER_FUNCTION)))
+		return 0;
+
+	if (graph)
+		ret = register_ftrace_graph(&wakeup_graph_return,
+					    &wakeup_graph_entry);
+	else
+		ret = register_ftrace_function(&trace_ops);
+
+	if (!ret)
+		function_enabled = true;
+
+	return ret;
+}
+
+static void unregister_wakeup_function(int graph)
+{
+	if (!function_enabled)
+		return;
+
+	if (graph)
+		unregister_ftrace_graph();
+	else
+		unregister_ftrace_function(&trace_ops);
+
+	function_enabled = false;
+}
+
+static void wakeup_function_set(int set)
+{
+	if (set)
+		register_wakeup_function(is_graph(), 1);
+	else
+		unregister_wakeup_function(is_graph());
+}
+
+static int wakeup_flag_changed(struct tracer *tracer, u32 mask, int set)
+{
+	if (mask & TRACE_ITER_FUNCTION)
+		wakeup_function_set(set);
+
+	return trace_keep_overwrite(tracer, mask, set);
+}
+
+static int start_func_tracer(int graph)
+{
+	int ret;
+
+	ret = register_wakeup_function(graph, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret && tracing_is_enabled())
 		tracer_enabled = 1;
@@ -155,10 +244,14 @@ static void stop_func_tracer(int graph)
 {
 	tracer_enabled = 0;
 
+<<<<<<< HEAD
 	if (!graph)
 		unregister_ftrace_function(&trace_ops);
 	else
 		unregister_ftrace_graph();
+=======
+	unregister_wakeup_function(graph);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
@@ -228,12 +321,18 @@ static void wakeup_trace_close(struct trace_iterator *iter)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GRAPH_TRACER_FLAGS (TRACE_GRAPH_PRINT_PROC)
 =======
 #define GRAPH_TRACER_FLAGS (TRACE_GRAPH_PRINT_PROC | \
 			    TRACE_GRAPH_PRINT_ABS_TIME | \
 			    TRACE_GRAPH_PRINT_DURATION)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GRAPH_TRACER_FLAGS (TRACE_GRAPH_PRINT_PROC | \
+			    TRACE_GRAPH_PRINT_ABS_TIME | \
+			    TRACE_GRAPH_PRINT_DURATION)
+>>>>>>> refs/remotes/origin/master
 
 static enum print_line_t wakeup_print_line(struct trace_iterator *iter)
 {
@@ -285,10 +384,13 @@ static enum print_line_t wakeup_print_line(struct trace_iterator *iter)
 
 static void wakeup_graph_return(struct ftrace_graph_ret *trace) { }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void wakeup_print_header(struct seq_file *s) { }
 static void wakeup_trace_open(struct trace_iterator *iter) { }
 static void wakeup_trace_close(struct trace_iterator *iter) { }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void wakeup_trace_open(struct trace_iterator *iter) { }
 static void wakeup_trace_close(struct trace_iterator *iter) { }
 
@@ -303,7 +405,10 @@ static void wakeup_print_header(struct seq_file *s)
 	trace_latency_header(s);
 }
 #endif /* CONFIG_FUNCTION_TRACER */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 
 /*
@@ -362,7 +467,11 @@ probe_wakeup_sched_switch(void *ignore,
 
 	/* disable local data, not wakeup_cpu data */
 	cpu = raw_smp_processor_id();
+<<<<<<< HEAD
 	disabled = atomic_inc_return(&wakeup_trace->data[cpu]->disabled);
+=======
+	disabled = atomic_inc_return(&per_cpu_ptr(wakeup_trace->trace_buffer.data, cpu)->disabled);
+>>>>>>> refs/remotes/origin/master
 	if (likely(disabled != 1))
 		goto out;
 
@@ -374,7 +483,11 @@ probe_wakeup_sched_switch(void *ignore,
 		goto out_unlock;
 
 	/* The task we are waiting for is waking up */
+<<<<<<< HEAD
 	data = wakeup_trace->data[wakeup_cpu];
+=======
+	data = per_cpu_ptr(wakeup_trace->trace_buffer.data, wakeup_cpu);
+>>>>>>> refs/remotes/origin/master
 
 	__trace_function(wakeup_trace, CALLER_ADDR0, CALLER_ADDR1, flags, pc);
 	tracing_sched_switch_trace(wakeup_trace, prev, next, flags, pc);
@@ -396,13 +509,21 @@ out_unlock:
 	arch_spin_unlock(&wakeup_lock);
 	local_irq_restore(flags);
 out:
+<<<<<<< HEAD
 	atomic_dec(&wakeup_trace->data[cpu]->disabled);
+=======
+	atomic_dec(&per_cpu_ptr(wakeup_trace->trace_buffer.data, cpu)->disabled);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __wakeup_reset(struct trace_array *tr)
 {
 	wakeup_cpu = -1;
 	wakeup_prio = -1;
+<<<<<<< HEAD
+=======
+	tracing_dl = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (wakeup_task)
 		put_task_struct(wakeup_task);
@@ -414,7 +535,11 @@ static void wakeup_reset(struct trace_array *tr)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	tracing_reset_online_cpus(tr);
+=======
+	tracing_reset_online_cpus(&tr->trace_buffer);
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_save(flags);
 	arch_spin_lock(&wakeup_lock);
@@ -438,6 +563,7 @@ probe_wakeup(void *ignore, struct task_struct *p, int success)
 	tracing_record_cmdline(p);
 	tracing_record_cmdline(current);
 
+<<<<<<< HEAD
 	if ((wakeup_rt && !rt_task(p)) ||
 			p->prio >= wakeup_prio ||
 			p->prio >= current->prio)
@@ -445,6 +571,23 @@ probe_wakeup(void *ignore, struct task_struct *p, int success)
 
 	pc = preempt_count();
 	disabled = atomic_inc_return(&wakeup_trace->data[cpu]->disabled);
+=======
+	/*
+	 * Semantic is like this:
+	 *  - wakeup tracer handles all tasks in the system, independently
+	 *    from their scheduling class;
+	 *  - wakeup_rt tracer handles tasks belonging to sched_dl and
+	 *    sched_rt class;
+	 *  - wakeup_dl handles tasks belonging to sched_dl class only.
+	 */
+	if (tracing_dl || (wakeup_dl && !dl_task(p)) ||
+	    (wakeup_rt && !dl_task(p) && !rt_task(p)) ||
+	    (!dl_task(p) && (p->prio >= wakeup_prio || p->prio >= current->prio)))
+		return;
+
+	pc = preempt_count();
+	disabled = atomic_inc_return(&per_cpu_ptr(wakeup_trace->trace_buffer.data, cpu)->disabled);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(disabled != 1))
 		goto out;
 
@@ -452,7 +595,12 @@ probe_wakeup(void *ignore, struct task_struct *p, int success)
 	arch_spin_lock(&wakeup_lock);
 
 	/* check for races. */
+<<<<<<< HEAD
 	if (!tracer_enabled || p->prio >= wakeup_prio)
+=======
+	if (!tracer_enabled || tracing_dl ||
+	    (!dl_task(p) && p->prio >= wakeup_prio))
+>>>>>>> refs/remotes/origin/master
 		goto out_locked;
 
 	/* reset the trace */
@@ -462,12 +610,28 @@ probe_wakeup(void *ignore, struct task_struct *p, int success)
 	wakeup_current_cpu = wakeup_cpu;
 	wakeup_prio = p->prio;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Once you start tracing a -deadline task, don't bother tracing
+	 * another task until the first one wakes up.
+	 */
+	if (dl_task(p))
+		tracing_dl = 1;
+	else
+		tracing_dl = 0;
+
+>>>>>>> refs/remotes/origin/master
 	wakeup_task = p;
 	get_task_struct(wakeup_task);
 
 	local_save_flags(flags);
 
+<<<<<<< HEAD
 	data = wakeup_trace->data[wakeup_cpu];
+=======
+	data = per_cpu_ptr(wakeup_trace->trace_buffer.data, wakeup_cpu);
+>>>>>>> refs/remotes/origin/master
 	data->preempt_timestamp = ftrace_now(cpu);
 	tracing_sched_wakeup_trace(wakeup_trace, p, current, flags, pc);
 
@@ -481,7 +645,11 @@ probe_wakeup(void *ignore, struct task_struct *p, int success)
 out_locked:
 	arch_spin_unlock(&wakeup_lock);
 out:
+<<<<<<< HEAD
 	atomic_dec(&wakeup_trace->data[cpu]->disabled);
+=======
+	atomic_dec(&per_cpu_ptr(wakeup_trace->trace_buffer.data, cpu)->disabled);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void start_wakeup_tracer(struct trace_array *tr)
@@ -552,8 +720,13 @@ static int __wakeup_tracer_init(struct trace_array *tr)
 	save_flags = trace_flags;
 
 	/* non overwrite screws up the latency tracers */
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_OVERWRITE, 1);
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, 1);
+=======
+	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, 1);
+	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, 1);
+>>>>>>> refs/remotes/origin/master
 
 	tracing_max_latency = 0;
 	wakeup_trace = tr;
@@ -563,16 +736,34 @@ static int __wakeup_tracer_init(struct trace_array *tr)
 
 static int wakeup_tracer_init(struct trace_array *tr)
 {
+<<<<<<< HEAD
+=======
+	wakeup_dl = 0;
+>>>>>>> refs/remotes/origin/master
 	wakeup_rt = 0;
 	return __wakeup_tracer_init(tr);
 }
 
 static int wakeup_rt_tracer_init(struct trace_array *tr)
 {
+<<<<<<< HEAD
+=======
+	wakeup_dl = 0;
+>>>>>>> refs/remotes/origin/master
 	wakeup_rt = 1;
 	return __wakeup_tracer_init(tr);
 }
 
+<<<<<<< HEAD
+=======
+static int wakeup_dl_tracer_init(struct trace_array *tr)
+{
+	wakeup_dl = 1;
+	wakeup_rt = 0;
+	return __wakeup_tracer_init(tr);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void wakeup_tracer_reset(struct trace_array *tr)
 {
 	int lat_flag = save_flags & TRACE_ITER_LATENCY_FMT;
@@ -582,8 +773,13 @@ static void wakeup_tracer_reset(struct trace_array *tr)
 	/* make sure we put back any tasks we are tracing */
 	wakeup_reset(tr);
 
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, lat_flag);
 	set_tracer_flag(TRACE_ITER_OVERWRITE, overwrite_flag);
+=======
+	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, lat_flag);
+	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, overwrite_flag);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wakeup_tracer_start(struct trace_array *tr)
@@ -604,18 +800,30 @@ static struct tracer wakeup_tracer __read_mostly =
 	.reset		= wakeup_tracer_reset,
 	.start		= wakeup_tracer_start,
 	.stop		= wakeup_tracer_stop,
+<<<<<<< HEAD
 	.print_max	= 1,
+=======
+	.print_max	= true,
+>>>>>>> refs/remotes/origin/master
 	.print_header	= wakeup_print_header,
 	.print_line	= wakeup_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= wakeup_set_flag,
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
+=======
+	.flag_changed	= wakeup_flag_changed,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_wakeup,
 #endif
 	.open		= wakeup_trace_open,
 	.close		= wakeup_trace_close,
+<<<<<<< HEAD
 	.use_max_tr	= 1,
+=======
+	.use_max_tr	= true,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct tracer wakeup_rt_tracer __read_mostly =
@@ -626,18 +834,52 @@ static struct tracer wakeup_rt_tracer __read_mostly =
 	.start		= wakeup_tracer_start,
 	.stop		= wakeup_tracer_stop,
 	.wait_pipe	= poll_wait_pipe,
+<<<<<<< HEAD
 	.print_max	= 1,
+=======
+	.print_max	= true,
 	.print_header	= wakeup_print_header,
 	.print_line	= wakeup_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= wakeup_set_flag,
-	.flag_changed	= trace_keep_overwrite,
+	.flag_changed	= wakeup_flag_changed,
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_wakeup,
 #endif
 	.open		= wakeup_trace_open,
 	.close		= wakeup_trace_close,
+	.use_max_tr	= true,
+};
+
+static struct tracer wakeup_dl_tracer __read_mostly =
+{
+	.name		= "wakeup_dl",
+	.init		= wakeup_dl_tracer_init,
+	.reset		= wakeup_tracer_reset,
+	.start		= wakeup_tracer_start,
+	.stop		= wakeup_tracer_stop,
+	.wait_pipe	= poll_wait_pipe,
+	.print_max	= true,
+>>>>>>> refs/remotes/origin/master
+	.print_header	= wakeup_print_header,
+	.print_line	= wakeup_print_line,
+	.flags		= &tracer_flags,
+	.set_flag	= wakeup_set_flag,
+<<<<<<< HEAD
+	.flag_changed	= trace_keep_overwrite,
+=======
+	.flag_changed	= wakeup_flag_changed,
+>>>>>>> refs/remotes/origin/master
+#ifdef CONFIG_FTRACE_SELFTEST
+	.selftest    = trace_selftest_startup_wakeup,
+#endif
+	.open		= wakeup_trace_open,
+	.close		= wakeup_trace_close,
+<<<<<<< HEAD
 	.use_max_tr	= 1,
+=======
+	.use_max_tr	= true,
+>>>>>>> refs/remotes/origin/master
 };
 
 __init static int init_wakeup_tracer(void)
@@ -652,6 +894,16 @@ __init static int init_wakeup_tracer(void)
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	return 0;
 }
 device_initcall(init_wakeup_tracer);
+=======
+	ret = register_tracer(&wakeup_dl_tracer);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+core_initcall(init_wakeup_tracer);
+>>>>>>> refs/remotes/origin/master

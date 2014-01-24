@@ -338,7 +338,11 @@ int ps3av_do_pkt(u32 cid, u16 send_len, size_t usr_buf_size,
 	mutex_unlock(&ps3av->mutex);
 	return 0;
 
+<<<<<<< HEAD
       err:
+=======
+err:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&ps3av->mutex);
 	printk(KERN_ERR "%s: failed cid:%x res:%d\n", __func__, cid, res);
 	return res;
@@ -477,7 +481,10 @@ int ps3av_set_audio_mode(u32 ch, u32 fs, u32 word_bits, u32 format, u32 source)
 
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ps3av_set_audio_mode);
 
 static int ps3av_set_videomode(void)
@@ -501,7 +508,11 @@ static void ps3av_set_videomode_packet(u32 id)
 
 	video_mode = &video_mode_table[id & PS3AV_MODE_MASK];
 
+<<<<<<< HEAD
 	avb_param.num_of_video_pkt = PS3AV_AVB_NUM_VIDEO;	/* num of head */
+=======
+	avb_param.num_of_video_pkt = PS3AV_AVB_NUM_VIDEO; /* num of head */
+>>>>>>> refs/remotes/origin/master
 	avb_param.num_of_audio_pkt = 0;
 	avb_param.num_of_av_video_pkt = ps3av->av_hw_conf.num_of_hdmi +
 					ps3av->av_hw_conf.num_of_avmulti;
@@ -521,7 +532,11 @@ static void ps3av_set_videomode_packet(u32 id)
 #ifndef PS3AV_HDMI_YUV
 		if (ps3av->av_port[i] == PS3AV_CMD_AVPORT_HDMI_0 ||
 		    ps3av->av_port[i] == PS3AV_CMD_AVPORT_HDMI_1)
+<<<<<<< HEAD
 			av_video_cs = RGB8;	/* use RGB for HDMI */
+=======
+			av_video_cs = RGB8; /* use RGB for HDMI */
+>>>>>>> refs/remotes/origin/master
 #endif
 		len += ps3av_cmd_set_av_video_cs(&avb_param.buf[len],
 						 ps3av->av_port[i],
@@ -590,8 +605,13 @@ static void ps3avd(struct work_struct *work)
 #define SHIFT_VESA	8
 
 static const struct {
+<<<<<<< HEAD
 	unsigned mask : 19;
 	unsigned id :  4;
+=======
+	unsigned mask:19;
+	unsigned id:4;
+>>>>>>> refs/remotes/origin/master
 } ps3av_preferred_modes[] = {
 	{ PS3AV_RESBIT_WUXGA      << SHIFT_VESA, PS3AV_MODE_WUXGA   },
 	{ PS3AV_RESBIT_1920x1080P << SHIFT_60,   PS3AV_MODE_1080P60 },
@@ -667,7 +687,12 @@ static enum ps3av_mode_num ps3av_hdmi_get_id(struct ps3av_info_monitor *info)
 	return id;
 }
 
+<<<<<<< HEAD
 static void ps3av_monitor_info_dump(const struct ps3av_pkt_av_get_monitor_info *monitor_info)
+=======
+static void ps3av_monitor_info_dump(
+	const struct ps3av_pkt_av_get_monitor_info *monitor_info)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ps3av_info_monitor *info = &monitor_info->info;
 	const struct ps3av_info_audio *audio = info->audio;
@@ -717,8 +742,13 @@ static void ps3av_monitor_info_dump(const struct ps3av_pkt_av_get_monitor_info *
 
 	/* audio block */
 	for (i = 0; i < info->num_of_audio_block; i++) {
+<<<<<<< HEAD
 		pr_debug("audio[%d] type: %02x max_ch: %02x fs: %02x sbit: "
 			 "%02x\n",
+=======
+		pr_debug(
+			"audio[%d] type: %02x max_ch: %02x fs: %02x sbit: %02x\n",
+>>>>>>> refs/remotes/origin/master
 			 i, audio->type, audio->max_num_of_ch, audio->fs,
 			 audio->sbit);
 		audio++;
@@ -870,21 +900,30 @@ int ps3av_set_video_mode(int id)
 
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ps3av_set_video_mode);
 
 int ps3av_get_auto_mode(void)
 {
 	return ps3av_auto_videomode(&ps3av->av_hw_conf);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ps3av_get_auto_mode);
 
 int ps3av_get_mode(void)
 {
 	return ps3av ? ps3av->ps3av_mode : 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ps3av_get_mode);
 
 /* get resolution by video_mode */
@@ -902,7 +941,10 @@ int ps3av_video_mode2res(u32 id, u32 *xres, u32 *yres)
 	*yres = video_mode_table[id].y;
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ps3av_video_mode2res);
 
 /* mute */
@@ -911,7 +953,10 @@ int ps3av_video_mute(int mute)
 	return ps3av_set_av_video_mute(mute ? PS3AV_CMD_MUTE_ON
 					    : PS3AV_CMD_MUTE_OFF);
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(ps3av_video_mute);
 
 /* mute analog output only */
@@ -935,10 +980,16 @@ int ps3av_audio_mute(int mute)
 	return ps3av_set_audio_mute(mute ? PS3AV_CMD_MUTE_ON
 					 : PS3AV_CMD_MUTE_OFF);
 }
+<<<<<<< HEAD
 
 EXPORT_SYMBOL_GPL(ps3av_audio_mute);
 
 static int __devinit ps3av_probe(struct ps3_system_bus_device *dev)
+=======
+EXPORT_SYMBOL_GPL(ps3av_audio_mute);
+
+static int ps3av_probe(struct ps3_system_bus_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int res;
 	int id;

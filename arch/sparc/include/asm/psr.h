@@ -7,6 +7,7 @@
  *
  * Copyright (C) 1994 David S. Miller (davem@caip.rutgers.edu)
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_SPARC_PSR_H
 #define __LINUX_SPARC_PSR_H
@@ -36,6 +37,13 @@
 #define PSR_IMPL    0xf0000000         /* cpu-implementation field   */
 
 #ifdef __KERNEL__
+=======
+#ifndef __LINUX_SPARC_PSR_H
+#define __LINUX_SPARC_PSR_H
+
+#include <uapi/asm/psr.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 /* Get the %psr register. */
@@ -88,6 +96,9 @@ static inline unsigned int get_fsr(void)
 
 #endif /* !(__ASSEMBLY__) */
 
+<<<<<<< HEAD
 #endif /* (__KERNEL__) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(__LINUX_SPARC_PSR_H) */

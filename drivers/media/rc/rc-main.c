@@ -16,12 +16,19 @@
 #include <linux/spinlock.h>
 #include <linux/delay.h>
 #include <linux/input.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/device.h>
 <<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/leds.h>
+#include <linux/slab.h>
+#include <linux/device.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "rc-core-priv.h"
 
 /* Sizes are in bytes, 256 bytes allows for 32 entries on x64 */
@@ -34,6 +41,10 @@
 /* Used to keep track of known keymaps */
 static LIST_HEAD(rc_map_list);
 static DEFINE_SPINLOCK(rc_map_lock);
+<<<<<<< HEAD
+=======
+static struct led_trigger *led_feedback;
+>>>>>>> refs/remotes/origin/master
 
 static struct rc_map_list *seek_rc_map(const char *name)
 {
@@ -538,6 +549,10 @@ static void ir_do_keyup(struct rc_dev *dev, bool sync)
 
 	IR_dprintk(1, "keyup key 0x%04x\n", dev->last_keycode);
 	input_report_key(dev->input_dev, dev->last_keycode, 0);
+<<<<<<< HEAD
+=======
+	led_trigger_event(led_feedback, LED_OFF);
+>>>>>>> refs/remotes/origin/master
 	if (sync)
 		input_sync(dev->input_dev);
 	dev->keypressed = false;
@@ -651,6 +666,10 @@ static void ir_do_keydown(struct rc_dev *dev, int scancode,
 		input_report_key(dev->input_dev, keycode, 1);
 	}
 
+<<<<<<< HEAD
+=======
+	led_trigger_event(led_feedback, LED_FULL);
+>>>>>>> refs/remotes/origin/master
 	input_sync(dev->input_dev);
 }
 
@@ -702,16 +721,58 @@ void rc_keydown_notimeout(struct rc_dev *dev, int scancode, u8 toggle)
 }
 EXPORT_SYMBOL_GPL(rc_keydown_notimeout);
 
+<<<<<<< HEAD
+=======
+int rc_open(struct rc_dev *rdev)
+{
+	int rval = 0;
+
+	if (!rdev)
+		return -EINVAL;
+
+	mutex_lock(&rdev->lock);
+	if (!rdev->users++ && rdev->open != NULL)
+		rval = rdev->open(rdev);
+
+	if (rval)
+		rdev->users--;
+
+	mutex_unlock(&rdev->lock);
+
+	return rval;
+}
+EXPORT_SYMBOL_GPL(rc_open);
+
+>>>>>>> refs/remotes/origin/master
 static int ir_open(struct input_dev *idev)
 {
 	struct rc_dev *rdev = input_get_drvdata(idev);
 
+<<<<<<< HEAD
 	return rdev->open(rdev);
 }
+=======
+	return rc_open(rdev);
+}
+
+void rc_close(struct rc_dev *rdev)
+{
+	if (rdev) {
+		mutex_lock(&rdev->lock);
+
+		 if (!--rdev->users && rdev->close != NULL)
+			rdev->close(rdev);
+
+		mutex_unlock(&rdev->lock);
+	}
+}
+EXPORT_SYMBOL_GPL(rc_close);
+>>>>>>> refs/remotes/origin/master
 
 static void ir_close(struct input_dev *idev)
 {
 	struct rc_dev *rdev = input_get_drvdata(idev);
+<<<<<<< HEAD
 
 	 if (rdev)
 		rdev->close(rdev);
@@ -723,19 +784,40 @@ static char *ir_devnode(struct device *dev, mode_t *mode)
 =======
 static char *ir_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc_close(rdev);
+}
+
+/* class for /sys/class/rc */
+static char *rc_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return kasprintf(GFP_KERNEL, "rc/%s", dev_name(dev));
 }
 
+<<<<<<< HEAD
 static struct class ir_input_class = {
 	.name		= "rc",
 	.devnode	= ir_devnode,
 };
 
+=======
+static struct class rc_class = {
+	.name		= "rc",
+	.devnode	= rc_devnode,
+};
+
+/*
+ * These are the protocol textual descriptions that are
+ * used by the sysfs protocols file. Note that the order
+ * of the entries is relevant.
+ */
+>>>>>>> refs/remotes/origin/master
 static struct {
 	u64	type;
 	char	*name;
 } proto_names[] = {
+<<<<<<< HEAD
 	{ RC_TYPE_UNKNOWN,	"unknown"	},
 	{ RC_TYPE_RC5,		"rc-5"		},
 	{ RC_TYPE_NEC,		"nec"		},
@@ -754,6 +836,29 @@ static struct {
 
 #define PROTO_NONE	"none"
 
+=======
+	{ RC_BIT_NONE,		"none"		},
+	{ RC_BIT_OTHER,		"other"		},
+	{ RC_BIT_UNKNOWN,	"unknown"	},
+	{ RC_BIT_RC5 |
+	  RC_BIT_RC5X,		"rc-5"		},
+	{ RC_BIT_NEC,		"nec"		},
+	{ RC_BIT_RC6_0 |
+	  RC_BIT_RC6_6A_20 |
+	  RC_BIT_RC6_6A_24 |
+	  RC_BIT_RC6_6A_32 |
+	  RC_BIT_RC6_MCE,	"rc-6"		},
+	{ RC_BIT_JVC,		"jvc"		},
+	{ RC_BIT_SONY12 |
+	  RC_BIT_SONY15 |
+	  RC_BIT_SONY20,	"sony"		},
+	{ RC_BIT_RC5_SZ,	"rc-5-sz"	},
+	{ RC_BIT_SANYO,		"sanyo"		},
+	{ RC_BIT_MCE_KBD,	"mce_kbd"	},
+	{ RC_BIT_LIRC,		"lirc"		},
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * show_protocols() - shows the current IR protocol(s)
  * @device:	the device descriptor
@@ -782,6 +887,7 @@ static ssize_t show_protocols(struct device *device,
 
 	mutex_lock(&dev->lock);
 
+<<<<<<< HEAD
 	if (dev->driver_type == RC_DRIVER_SCANCODE) {
 		enabled = dev->rc_map.rc_type;
 		allowed = dev->allowed_protos;
@@ -789,6 +895,14 @@ static ssize_t show_protocols(struct device *device,
 		enabled = dev->raw->enabled_protocols;
 		allowed = ir_raw_get_allowed_protocols();
 	} else {
+=======
+	enabled = dev->enabled_protocols;
+	if (dev->driver_type == RC_DRIVER_SCANCODE)
+		allowed = dev->allowed_protos;
+	else if (dev->raw)
+		allowed = ir_raw_get_allowed_protocols();
+	else {
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&dev->lock);
 		return -ENODEV;
 	}
@@ -802,6 +916,12 @@ static ssize_t show_protocols(struct device *device,
 			tmp += sprintf(tmp, "[%s] ", proto_names[i].name);
 		else if (allowed & proto_names[i].type)
 			tmp += sprintf(tmp, "%s ", proto_names[i].name);
+<<<<<<< HEAD
+=======
+
+		if (allowed & proto_names[i].type)
+			allowed &= ~proto_names[i].type;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (tmp != buf)
@@ -843,7 +963,10 @@ static ssize_t store_protocols(struct device *device,
 	u64 type;
 	u64 mask;
 	int rc, i, count = 0;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 
 	/* Device is being removed */
@@ -852,15 +975,23 @@ static ssize_t store_protocols(struct device *device,
 
 	mutex_lock(&dev->lock);
 
+<<<<<<< HEAD
 	if (dev->driver_type == RC_DRIVER_SCANCODE)
 		type = dev->rc_map.rc_type;
 	else if (dev->raw)
 		type = dev->raw->enabled_protocols;
 	else {
+=======
+	if (dev->driver_type != RC_DRIVER_SCANCODE && !dev->raw) {
+>>>>>>> refs/remotes/origin/master
 		IR_dprintk(1, "Protocol switching not supported\n");
 		ret = -EINVAL;
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+	type = dev->enabled_protocols;
+>>>>>>> refs/remotes/origin/master
 
 	while ((tmp = strsep((char **) &data, " \n")) != NULL) {
 		if (!*tmp)
@@ -879,6 +1010,7 @@ static ssize_t store_protocols(struct device *device,
 			disable = false;
 		}
 
+<<<<<<< HEAD
 		if (!enable && !disable && !strncasecmp(tmp, PROTO_NONE, sizeof(PROTO_NONE))) {
 			tmp += sizeof(PROTO_NONE);
 			mask = 0;
@@ -899,6 +1031,23 @@ static ssize_t store_protocols(struct device *device,
 			count++;
 		}
 
+=======
+		for (i = 0; i < ARRAY_SIZE(proto_names); i++) {
+			if (!strcasecmp(tmp, proto_names[i].name)) {
+				mask = proto_names[i].type;
+				break;
+			}
+		}
+
+		if (i == ARRAY_SIZE(proto_names)) {
+			IR_dprintk(1, "Unknown protocol: '%s'\n", tmp);
+			ret = -EINVAL;
+			goto out;
+		}
+
+		count++;
+
+>>>>>>> refs/remotes/origin/master
 		if (enable)
 			type |= mask;
 		else if (disable)
@@ -914,7 +1063,11 @@ static ssize_t store_protocols(struct device *device,
 	}
 
 	if (dev->change_protocol) {
+<<<<<<< HEAD
 		rc = dev->change_protocol(dev, type);
+=======
+		rc = dev->change_protocol(dev, &type);
+>>>>>>> refs/remotes/origin/master
 		if (rc < 0) {
 			IR_dprintk(1, "Error setting protocols to 0x%llx\n",
 				   (long long)type);
@@ -923,6 +1076,7 @@ static ssize_t store_protocols(struct device *device,
 		}
 	}
 
+<<<<<<< HEAD
 	if (dev->driver_type == RC_DRIVER_SCANCODE) {
 		spin_lock_irqsave(&dev->rc_map.lock, flags);
 		dev->rc_map.rc_type = type;
@@ -931,6 +1085,9 @@ static ssize_t store_protocols(struct device *device,
 		dev->raw->enabled_protocols = type;
 	}
 
+=======
+	dev->enabled_protocols = type;
+>>>>>>> refs/remotes/origin/master
 	IR_dprintk(1, "Current protocol(s): 0x%llx\n",
 		   (long long)type);
 
@@ -944,12 +1101,15 @@ out:
 static void rc_dev_release(struct device *device)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rc_dev *dev = to_rc_dev(device);
 
 	kfree(dev);
 	module_put(THIS_MODULE);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define ADD_HOTPLUG_VAR(fmt, val...)					\
@@ -964,11 +1124,17 @@ static int rc_dev_uevent(struct device *device, struct kobj_uevent_env *env)
 	struct rc_dev *dev = to_rc_dev(device);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!dev || !dev->input_dev)
 		return -ENODEV;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dev || !dev->input_dev)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	if (dev->rc_map.name)
 		ADD_HOTPLUG_VAR("NAME=%s", dev->rc_map.name);
 	if (dev->driver_name)
@@ -1027,7 +1193,11 @@ struct rc_dev *rc_allocate_device(void)
 	setup_timer(&dev->timer_keyup, ir_timer_keyup, (unsigned long)dev);
 
 	dev->dev.type = &rc_dev_type;
+<<<<<<< HEAD
 	dev->dev.class = &ir_input_class;
+=======
+	dev->dev.class = &rc_class;
+>>>>>>> refs/remotes/origin/master
 	device_initialize(&dev->dev);
 
 	__module_get(THIS_MODULE);
@@ -1038,11 +1208,14 @@ EXPORT_SYMBOL_GPL(rc_allocate_device);
 void rc_free_device(struct rc_dev *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev) {
 		input_free_device(dev->input_dev);
 		put_device(&dev->dev);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return;
 
@@ -1053,16 +1226,23 @@ void rc_free_device(struct rc_dev *dev)
 
 	kfree(dev);
 	module_put(THIS_MODULE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(rc_free_device);
 
 int rc_register_device(struct rc_dev *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	static bool raw_init = false; /* raw decoders loaded? */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static bool raw_init = false; /* raw decoders loaded? */
+>>>>>>> refs/remotes/origin/master
 	static atomic_t devno = ATOMIC_INIT(0);
 	struct rc_map *rc_map;
 	const char *path;
@@ -1089,9 +1269,14 @@ int rc_register_device(struct rc_dev *dev)
 	/*
 	 * Take the lock here, as the device sysfs node will appear
 	 * when device_add() is called, which may trigger an ir-keytable udev
+<<<<<<< HEAD
 	 * rule, which will in turn call show_protocols and access either
 	 * dev->rc_map.rc_type or dev->raw->enabled_protocols before it has
 	 * been initialized.
+=======
+	 * rule, which will in turn call show_protocols and access
+	 * dev->enabled_protocols before it has been initialized.
+>>>>>>> refs/remotes/origin/master
 	 */
 	mutex_lock(&dev->lock);
 
@@ -1110,7 +1295,18 @@ int rc_register_device(struct rc_dev *dev)
 	memcpy(&dev->input_dev->id, &dev->input_id, sizeof(dev->input_id));
 	dev->input_dev->phys = dev->input_phys;
 	dev->input_dev->name = dev->input_name;
+<<<<<<< HEAD
 	rc = input_register_device(dev->input_dev);
+=======
+
+	/* input_register_device can call ir_open, so unlock mutex here */
+	mutex_unlock(&dev->lock);
+
+	rc = input_register_device(dev->input_dev);
+
+	mutex_lock(&dev->lock);
+
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto out_table;
 
@@ -1138,18 +1334,25 @@ int rc_register_device(struct rc_dev *dev)
 
 	if (dev->driver_type == RC_DRIVER_IR_RAW) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Load raw decoders, if they aren't already */
 		if (!raw_init) {
 			IR_dprintk(1, "Loading raw decoders\n");
 			ir_raw_init();
 			raw_init = true;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = ir_raw_event_register(dev);
 		if (rc < 0)
 			goto out_input;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mutex_unlock(&dev->lock);
 =======
@@ -1166,6 +1369,19 @@ int rc_register_device(struct rc_dev *dev)
 	mutex_unlock(&dev->lock);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (dev->change_protocol) {
+		u64 rc_type = (1 << rc_map->rc_type);
+		rc = dev->change_protocol(dev, &rc_type);
+		if (rc < 0)
+			goto out_raw;
+		dev->enabled_protocols = rc_type;
+	}
+
+	mutex_unlock(&dev->lock);
+
+>>>>>>> refs/remotes/origin/master
 	IR_dprintk(1, "Registered rc%ld (driver: %s, remote: %s, mode %s)\n",
 		   dev->devno,
 		   dev->driver_name ? dev->driver_name : "unknown",
@@ -1201,6 +1417,7 @@ void rc_unregister_device(struct rc_dev *dev)
 		ir_raw_event_unregister(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	input_unregister_device(dev->input_dev);
 	dev->input_dev = NULL;
 
@@ -1210,6 +1427,8 @@ void rc_unregister_device(struct rc_dev *dev)
 	device_unregister(&dev->dev);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Freeing the table should also call the stop callback */
 	ir_free_table(&dev->rc_map);
 	IR_dprintk(1, "Freed keycode table\n");
@@ -1222,7 +1441,10 @@ void rc_unregister_device(struct rc_dev *dev)
 	rc_free_device(dev);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(rc_unregister_device);
 
 /*
@@ -1231,17 +1453,25 @@ EXPORT_SYMBOL_GPL(rc_unregister_device);
 
 static int __init rc_core_init(void)
 {
+<<<<<<< HEAD
 	int rc = class_register(&ir_input_class);
+=======
+	int rc = class_register(&rc_class);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		printk(KERN_ERR "rc_core: unable to register rc class\n");
 		return rc;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialize/load the decoders/keymap code that will be used */
 	ir_raw_init();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	led_trigger_register_simple("rc-feedback", &led_feedback);
+>>>>>>> refs/remotes/origin/master
 	rc_map_register(&empty_map);
 
 	return 0;
@@ -1249,11 +1479,20 @@ static int __init rc_core_init(void)
 
 static void __exit rc_core_exit(void)
 {
+<<<<<<< HEAD
 	class_unregister(&ir_input_class);
 	rc_map_unregister(&empty_map);
 }
 
 module_init(rc_core_init);
+=======
+	class_unregister(&rc_class);
+	led_trigger_unregister_simple(led_feedback);
+	rc_map_unregister(&empty_map);
+}
+
+subsys_initcall(rc_core_init);
+>>>>>>> refs/remotes/origin/master
 module_exit(rc_core_exit);
 
 int rc_core_debug;    /* ir_debug level (0,1,2) */

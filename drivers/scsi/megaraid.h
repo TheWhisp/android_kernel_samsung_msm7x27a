@@ -45,6 +45,7 @@
 
 #define MAX_DEV_TYPE	32
 
+<<<<<<< HEAD
 #ifndef PCI_VENDOR_ID_LSI_LOGIC
 #define PCI_VENDOR_ID_LSI_LOGIC		0x1000
 #endif
@@ -73,10 +74,13 @@
 #define PCI_DEVICE_ID_AMI_MEGARAID3	0x1960
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PCI_DEVICE_ID_DISCOVERY		0x000E
 #define PCI_DEVICE_ID_PERC4_DI		0x000F
 #define PCI_DEVICE_ID_PERC4_QC_VERDE	0x0407
 
+<<<<<<< HEAD
 /* Sub-System Vendor IDs */
 #define	AMI_SUBSYS_VID			0x101E
 #define DELL_SUBSYS_VID			0x1028
@@ -84,6 +88,8 @@
 #define LSI_SUBSYS_VID			0x1000
 #define INTEL_SUBSYS_VID		0x8086
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define HBA_SIGNATURE	      		0x3344
 #define HBA_SIGNATURE_471	  	0xCCCC
 #define HBA_SIGNATURE_64BIT		0x0299
@@ -1022,6 +1028,7 @@ static int mega_init_scb (adapter_t *);
 static int mega_is_bios_enabled (adapter_t *);
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 static int mega_print_inquiry(char *, char *);
 static void mega_create_proc_entry(int, struct proc_dir_entry *);
 static int proc_read_config(char *, char **, off_t, int, int *, void *);
@@ -1040,6 +1047,9 @@ static int proc_rdrv_30(char *, char **, off_t, int, int *, void *);
 static int proc_rdrv_40(char *, char **, off_t, int, int *, void *);
 static int proc_rdrv(adapter_t *, char *, int, int);
 
+=======
+static void mega_create_proc_entry(int, struct proc_dir_entry *);
+>>>>>>> refs/remotes/origin/master
 static int mega_adapinq(adapter_t *, dma_addr_t);
 static int mega_internal_dev_inquiry(adapter_t *, u8, u8, dma_addr_t);
 #endif

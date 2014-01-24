@@ -321,7 +321,11 @@ err_out1:
 /*
  * Called for each adapter board from pci_unregister_driver
  */
+<<<<<<< HEAD
 static void __devexit skfp_remove_one(struct pci_dev *pdev)
+=======
+static void skfp_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *p = pci_get_drvdata(pdev);
 	struct s_smc *lp = netdev_priv(p);
@@ -436,7 +440,11 @@ static  int skfp_driver_init(struct net_device *dev)
 	}
 	read_address(smc, NULL);
 	pr_debug("HW-Addr: %pMF\n", smc->hw.fddi_canon_addr.a);
+<<<<<<< HEAD
 	memcpy(dev->dev_addr, smc->hw.fddi_canon_addr.a, 6);
+=======
+	memcpy(dev->dev_addr, smc->hw.fddi_canon_addr.a, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	smt_reset_defaults(smc, 0);
 
@@ -503,7 +511,11 @@ static int skfp_open(struct net_device *dev)
 	 *               address.
 	 */
 	read_address(smc, NULL);
+<<<<<<< HEAD
 	memcpy(dev->dev_addr, smc->hw.fddi_canon_addr.a, 6);
+=======
+	memcpy(dev->dev_addr, smc->hw.fddi_canon_addr.a, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	init_smt(smc, NULL);
 	smt_online(smc, 1);
@@ -1213,7 +1225,11 @@ static void CheckSourceAddress(unsigned char *frame, unsigned char *hw_addr)
 	if ((unsigned short) frame[1 + 10] != 0)
 		return;
 	SRBit = frame[1 + 6] & 0x01;
+<<<<<<< HEAD
 	memcpy(&frame[1 + 6], hw_addr, 6);
+=======
+	memcpy(&frame[1 + 6], hw_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	frame[8] |= SRBit;
 }				// CheckSourceAddress
 
@@ -2243,6 +2259,7 @@ static struct pci_driver skfddi_pci_driver = {
 	.name		= "skfddi",
 	.id_table	= skfddi_pci_tbl,
 	.probe		= skfp_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(skfp_remove_one),
 };
 
@@ -2258,3 +2275,9 @@ static void __exit skfd_exit(void)
 
 module_init(skfd_init);
 module_exit(skfd_exit);
+=======
+	.remove		= skfp_remove_one,
+};
+
+module_pci_driver(skfddi_pci_driver);
+>>>>>>> refs/remotes/origin/master

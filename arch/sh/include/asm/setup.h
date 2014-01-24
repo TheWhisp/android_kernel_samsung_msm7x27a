@@ -1,9 +1,14 @@
 #ifndef _SH_SETUP_H
 #define _SH_SETUP_H
 
+<<<<<<< HEAD
 #include <asm-generic/setup.h>
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/setup.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This is set up by the setup-routine at boot-time
  */
@@ -21,10 +26,14 @@
 void sh_mv_setup(void);
 void check_for_initrd(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void per_cpu_trap_init(void);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
+=======
+void per_cpu_trap_init(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _SH_SETUP_H */

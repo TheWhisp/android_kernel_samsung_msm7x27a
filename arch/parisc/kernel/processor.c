@@ -73,7 +73,11 @@ extern int update_cr16_clocksource(void);	/* from time.c */
  *
  * FIXME: doesn't do much yet...
  */
+<<<<<<< HEAD
 static void __cpuinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 init_percpu_prof(unsigned long cpunum)
 {
 	struct cpuinfo_parisc *p;
@@ -92,7 +96,11 @@ init_percpu_prof(unsigned long cpunum)
  * (return 1).  If so, initialize the chip and tell other partners in crime 
  * they have work to do.
  */
+<<<<<<< HEAD
 static int __cpuinit processor_probe(struct parisc_device *dev)
+=======
+static int processor_probe(struct parisc_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long txn_addr;
 	unsigned long cpuid;
@@ -299,7 +307,11 @@ void __init collect_boot_cpu_data(void)
  *
  * o Enable CPU profiling hooks.
  */
+<<<<<<< HEAD
 int __cpuinit init_per_cpu(int cpunum)
+=======
+int init_per_cpu(int cpunum)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct pdc_coproc_cfg coproc_cfg;
@@ -371,10 +383,30 @@ show_cpuinfo (struct seq_file *m, void *v)
 
 		seq_printf(m, "capabilities\t:");
 		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS32)
+<<<<<<< HEAD
 			seq_printf(m, " os32");
 		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS64)
 			seq_printf(m, " os64");
 		seq_printf(m, "\n");
+=======
+			seq_puts(m, " os32");
+		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_OS64)
+			seq_puts(m, " os64");
+		if (boot_cpu_data.pdc.capabilities & PDC_MODEL_IOPDIR_FDC)
+			seq_puts(m, " iopdir_fdc");
+		switch (boot_cpu_data.pdc.capabilities & PDC_MODEL_NVA_MASK) {
+		case PDC_MODEL_NVA_SUPPORTED:
+			seq_puts(m, " nva_supported");
+			break;
+		case PDC_MODEL_NVA_SLOW:
+			seq_puts(m, " nva_slow");
+			break;
+		case PDC_MODEL_NVA_UNSUPPORTED:
+			seq_puts(m, " needs_equivalent_aliasing");
+			break;
+		}
+		seq_printf(m, " (0x%02lx)\n", boot_cpu_data.pdc.capabilities);
+>>>>>>> refs/remotes/origin/master
 
 		seq_printf(m, "model\t\t: %s\n"
 				"model name\t: %s\n",

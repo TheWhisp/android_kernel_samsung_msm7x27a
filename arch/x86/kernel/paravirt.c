@@ -27,9 +27,13 @@
 #include <asm/bug.h>
 #include <asm/paravirt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/debugreg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/debugreg.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/desc.h>
 #include <asm/setup.h>
 #include <asm/pgtable.h>
@@ -42,9 +46,13 @@
 #include <asm/tlbflush.h>
 #include <asm/timer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/special_insns.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/master
 
 /* nop stub */
 void _paravirt_nop(void)
@@ -68,11 +76,14 @@ void __init default_banner(void)
 	       pv_info.name);
 }
 
+<<<<<<< HEAD
 /* Simple instruction patching code. */
 #define DEF_NATIVE(ops, name, code)					\
 	extern const char start_##ops##_##name[], end_##ops##_##name[];	\
 	asm("start_" #ops "_" #name ": " code "; end_" #ops "_" #name ":")
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Undefined instruction for dealing with missing ops pointers. */
 static const unsigned char ud2a[] = { 0x0f, 0x0b };
 
@@ -211,7 +222,10 @@ static void native_flush_tlb_single(unsigned long addr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct static_key paravirt_steal_enabled;
 struct static_key paravirt_steal_rq_enabled;
 
@@ -220,7 +234,10 @@ static u64 native_steal_clock(int cpu)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* These are in entry.S */
 extern void native_iret(void);
 extern void native_irq_enable_sysexit(void);
@@ -250,16 +267,28 @@ static DEFINE_PER_CPU(enum paravirt_lazy_mode, paravirt_lazy_mode) = PARAVIRT_LA
 
 static inline void enter_lazy(enum paravirt_lazy_mode mode)
 {
+<<<<<<< HEAD
 	BUG_ON(percpu_read(paravirt_lazy_mode) != PARAVIRT_LAZY_NONE);
 
 	percpu_write(paravirt_lazy_mode, mode);
+=======
+	BUG_ON(this_cpu_read(paravirt_lazy_mode) != PARAVIRT_LAZY_NONE);
+
+	this_cpu_write(paravirt_lazy_mode, mode);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void leave_lazy(enum paravirt_lazy_mode mode)
 {
+<<<<<<< HEAD
 	BUG_ON(percpu_read(paravirt_lazy_mode) != mode);
 
 	percpu_write(paravirt_lazy_mode, PARAVIRT_LAZY_NONE);
+=======
+	BUG_ON(this_cpu_read(paravirt_lazy_mode) != mode);
+
+	this_cpu_write(paravirt_lazy_mode, PARAVIRT_LAZY_NONE);
+>>>>>>> refs/remotes/origin/master
 }
 
 void paravirt_enter_lazy_mmu(void)
@@ -288,7 +317,11 @@ void paravirt_start_context_switch(struct task_struct *prev)
 {
 	BUG_ON(preemptible());
 
+<<<<<<< HEAD
 	if (percpu_read(paravirt_lazy_mode) == PARAVIRT_LAZY_MMU) {
+=======
+	if (this_cpu_read(paravirt_lazy_mode) == PARAVIRT_LAZY_MMU) {
+>>>>>>> refs/remotes/origin/master
 		arch_leave_lazy_mmu_mode();
 		set_ti_thread_flag(task_thread_info(prev), TIF_LAZY_MMU_UPDATES);
 	}
@@ -310,7 +343,11 @@ enum paravirt_lazy_mode paravirt_get_lazy_mode(void)
 	if (in_interrupt())
 		return PARAVIRT_LAZY_NONE;
 
+<<<<<<< HEAD
 	return percpu_read(paravirt_lazy_mode);
+=======
+	return this_cpu_read(paravirt_lazy_mode);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct pv_info pv_info = {
@@ -319,12 +356,18 @@ struct pv_info pv_info = {
 	.kernel_rpl = 0,
 	.shared_kernel_pmd = 1,	/* Only used when CONFIG_X86_PAE is set */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_64
 	.extra_user_64bit_cs = __USER_CS,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pv_init_ops pv_init_ops = {
@@ -334,12 +377,19 @@ struct pv_init_ops pv_init_ops = {
 struct pv_time_ops pv_time_ops = {
 	.sched_clock = native_sched_clock,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.steal_clock = native_steal_clock,
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 struct pv_irq_ops pv_irq_ops = {
+=======
+	.steal_clock = native_steal_clock,
+};
+
+__visible struct pv_irq_ops pv_irq_ops = {
+>>>>>>> refs/remotes/origin/master
 	.save_fl = __PV_IS_CALLEE_SAVE(native_save_fl),
 	.restore_fl = __PV_IS_CALLEE_SAVE(native_restore_fl),
 	.irq_disable = __PV_IS_CALLEE_SAVE(native_irq_disable),
@@ -351,7 +401,11 @@ struct pv_irq_ops pv_irq_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 struct pv_cpu_ops pv_cpu_ops = {
+=======
+__visible struct pv_cpu_ops pv_cpu_ops = {
+>>>>>>> refs/remotes/origin/master
 	.cpuid = native_cpuid,
 	.get_debugreg = native_get_debugreg,
 	.set_debugreg = native_set_debugreg,
@@ -367,9 +421,13 @@ struct pv_cpu_ops pv_cpu_ops = {
 #endif
 	.wbinvd = native_wbinvd,
 	.read_msr = native_read_msr_safe,
+<<<<<<< HEAD
 	.rdmsr_regs = native_rdmsr_safe_regs,
 	.write_msr = native_write_msr_safe,
 	.wrmsr_regs = native_wrmsr_safe_regs,
+=======
+	.write_msr = native_write_msr_safe,
+>>>>>>> refs/remotes/origin/master
 	.read_tsc = native_read_tsc,
 	.read_pmc = native_read_pmc,
 	.read_tscp = native_read_tscp,
@@ -377,7 +435,10 @@ struct pv_cpu_ops pv_cpu_ops = {
 	.set_ldt = native_set_ldt,
 	.load_gdt = native_load_gdt,
 	.load_idt = native_load_idt,
+<<<<<<< HEAD
 	.store_gdt = native_store_gdt,
+=======
+>>>>>>> refs/remotes/origin/master
 	.store_idt = native_store_idt,
 	.store_tr = native_store_tr,
 	.load_tls = native_load_tls,

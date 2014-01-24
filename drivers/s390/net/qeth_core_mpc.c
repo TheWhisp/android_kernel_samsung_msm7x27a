@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  drivers/s390/net/qeth_core_mpc.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *    Copyright IBM Corp. 2007
  *    Author(s): Frank Pavlic <fpavlic@de.ibm.com>,
  *		 Thomas Spatzier <tspat@de.ibm.com>,
@@ -206,11 +209,17 @@ static struct ipa_rc_msg qeth_ipa_rc_msg[] = {
 	{IPA_RC_INVALID_SETRTG_INDICATOR, "Invalid SETRTG indicator"},
 	{IPA_RC_MC_ADDR_ALREADY_DEFINED, "Multicast address already defined"},
 	{IPA_RC_LAN_OFFLINE,		"STRTLAN_LAN_DISABLED - LAN offline"},
+<<<<<<< HEAD
 	{IPA_RC_INVALID_IP_VERSION2,	"Invalid IP version"},
 <<<<<<< HEAD
 =======
 	{IPA_RC_ENOMEM,			"Memory problem"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{IPA_RC_VEPA_TO_VEB_TRANSITION,	"Adj. switch disabled port mode RR"},
+	{IPA_RC_INVALID_IP_VERSION2,	"Invalid IP version"},
+	{IPA_RC_ENOMEM,			"Memory problem"},
+>>>>>>> refs/remotes/origin/master
 	{IPA_RC_FFFF,			"Unknown Error"}
 };
 

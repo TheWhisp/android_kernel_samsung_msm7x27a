@@ -117,7 +117,11 @@
 static DEFINE_SPINLOCK(davinci_rtc_lock);
 
 struct davinci_rtc {
+<<<<<<< HEAD
 	struct rtc_device 		*rtc;
+=======
+	struct rtc_device		*rtc;
+>>>>>>> refs/remotes/origin/master
 	void __iomem			*base;
 	resource_size_t			pbase;
 	size_t				base_size;
@@ -485,7 +489,11 @@ static int __init davinci_rtc_probe(struct platform_device *pdev)
 	struct resource *res, *mem;
 	int ret = 0;
 
+<<<<<<< HEAD
 	davinci_rtc = kzalloc(sizeof(struct davinci_rtc), GFP_KERNEL);
+=======
+	davinci_rtc = devm_kzalloc(&pdev->dev, sizeof(struct davinci_rtc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!davinci_rtc) {
 		dev_dbg(dev, "could not allocate memory for private data\n");
 		return -ENOMEM;
@@ -494,20 +502,29 @@ static int __init davinci_rtc_probe(struct platform_device *pdev)
 	davinci_rtc->irq = platform_get_irq(pdev, 0);
 	if (davinci_rtc->irq < 0) {
 		dev_err(dev, "no RTC irq\n");
+<<<<<<< HEAD
 		ret = davinci_rtc->irq;
 		goto fail1;
+=======
+		return davinci_rtc->irq;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
 		dev_err(dev, "no mem resource\n");
+<<<<<<< HEAD
 		ret = -EINVAL;
 		goto fail1;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	davinci_rtc->pbase = res->start;
 	davinci_rtc->base_size = resource_size(res);
 
+<<<<<<< HEAD
 	mem = request_mem_region(davinci_rtc->pbase, davinci_rtc->base_size,
 				 pdev->name);
 	if (!mem) {
@@ -522,16 +539,40 @@ static int __init davinci_rtc_probe(struct platform_device *pdev)
 		dev_err(dev, "unable to ioremap MEM resource\n");
 		ret = -ENOMEM;
 		goto fail2;
+=======
+	mem = devm_request_mem_region(dev, davinci_rtc->pbase,
+				davinci_rtc->base_size, pdev->name);
+	if (!mem) {
+		dev_err(dev, "RTC registers at %08x are not free\n",
+			davinci_rtc->pbase);
+		return -EBUSY;
+	}
+
+	davinci_rtc->base = devm_ioremap(dev, davinci_rtc->pbase,
+					davinci_rtc->base_size);
+	if (!davinci_rtc->base) {
+		dev_err(dev, "unable to ioremap MEM resource\n");
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, davinci_rtc);
 
+<<<<<<< HEAD
 	davinci_rtc->rtc = rtc_device_register(pdev->name, &pdev->dev,
 				    &davinci_rtc_ops, THIS_MODULE);
 	if (IS_ERR(davinci_rtc->rtc)) {
 		dev_err(dev, "unable to register RTC device, err %ld\n",
 				PTR_ERR(davinci_rtc->rtc));
 		goto fail3;
+=======
+	davinci_rtc->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+				    &davinci_rtc_ops, THIS_MODULE);
+	if (IS_ERR(davinci_rtc->rtc)) {
+		dev_err(dev, "unable to register RTC device, err %d\n",
+				ret);
+		return PTR_ERR(davinci_rtc->rtc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rtcif_write(davinci_rtc, PRTCIF_INTFLG_RTCSS, PRTCIF_INTFLG);
@@ -541,6 +582,7 @@ static int __init davinci_rtc_probe(struct platform_device *pdev)
 	rtcss_write(davinci_rtc, 0, PRTCSS_RTC_CTRL);
 	rtcss_write(davinci_rtc, 0, PRTCSS_RTC_CCTRL);
 
+<<<<<<< HEAD
 	ret = request_irq(davinci_rtc->irq, davinci_rtc_interrupt,
 <<<<<<< HEAD
 			  IRQF_DISABLED, "davinci_rtc", davinci_rtc);
@@ -550,6 +592,13 @@ static int __init davinci_rtc_probe(struct platform_device *pdev)
 	if (ret < 0) {
 		dev_err(dev, "unable to register davinci RTC interrupt\n");
 		goto fail4;
+=======
+	ret = devm_request_irq(dev, davinci_rtc->irq, davinci_rtc_interrupt,
+			  0, "davinci_rtc", davinci_rtc);
+	if (ret < 0) {
+		dev_err(dev, "unable to register davinci RTC interrupt\n");
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Enable interrupts */
@@ -562,6 +611,7 @@ static int __init davinci_rtc_probe(struct platform_device *pdev)
 	device_init_wakeup(&pdev->dev, 0);
 
 	return 0;
+<<<<<<< HEAD
 
 fail4:
 	rtc_device_unregister(davinci_rtc->rtc);
@@ -577,6 +627,11 @@ fail1:
 }
 
 static int __devexit davinci_rtc_remove(struct platform_device *pdev)
+=======
+}
+
+static int __exit davinci_rtc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct davinci_rtc *davinci_rtc = platform_get_drvdata(pdev);
 
@@ -584,6 +639,7 @@ static int __devexit davinci_rtc_remove(struct platform_device *pdev)
 
 	rtcif_write(davinci_rtc, 0, PRTCIF_INTEN);
 
+<<<<<<< HEAD
 	free_irq(davinci_rtc->irq, davinci_rtc);
 
 	rtc_device_unregister(davinci_rtc->rtc);
@@ -595,18 +651,25 @@ static int __devexit davinci_rtc_remove(struct platform_device *pdev)
 
 	kfree(davinci_rtc);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver davinci_rtc_driver = {
 	.probe		= davinci_rtc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(davinci_rtc_remove),
+=======
+	.remove		= __exit_p(davinci_rtc_remove),
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name = "rtc_davinci",
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init rtc_init(void)
 {
 	return platform_driver_probe(&davinci_rtc_driver, davinci_rtc_probe);
@@ -618,6 +681,9 @@ static void __exit rtc_exit(void)
 	platform_driver_unregister(&davinci_rtc_driver);
 }
 module_exit(rtc_exit);
+=======
+module_platform_driver_probe(davinci_rtc_driver, davinci_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Miguel Aguilar <miguel.aguilar@ridgerun.com>");
 MODULE_DESCRIPTION("Texas Instruments DaVinci PRTC Driver");

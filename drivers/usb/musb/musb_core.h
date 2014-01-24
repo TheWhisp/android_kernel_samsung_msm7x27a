@@ -41,15 +41,23 @@
 #include <linux/errno.h>
 #include <linux/timer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/clk.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 #include <linux/usb.h>
 #include <linux/usb/otg.h>
 #include <linux/usb/musb.h>
+<<<<<<< HEAD
+=======
+#include <linux/phy/phy.h>
+#include <linux/workqueue.h>
+>>>>>>> refs/remotes/origin/master
 
 struct musb;
 struct musb_hw_ep;
@@ -76,6 +84,7 @@ struct musb_ep;
 #include "musb_host.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 #ifdef CONFIG_USB_MUSB_OTG
@@ -86,12 +95,15 @@ struct musb_ep;
 #define	is_host_enabled(musb)		((musb)->board_mode != MUSB_PERIPHERAL)
 #define	is_otg_enabled(musb)		((musb)->board_mode == MUSB_OTG)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* NOTE:  otg and peripheral-only state machines start at B_IDLE.
  * OTG or host-only go to A_IDLE when ID is sensed.
  */
 #define is_peripheral_active(m)		(!(m)->is_host)
 #define is_host_active(m)		((m)->is_host)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else
 #define	is_peripheral_enabled(musb)	is_peripheral_capable()
@@ -186,6 +198,14 @@ static inline void musb_host_rx(struct musb *m, u8 e) {}
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum {
+	MUSB_PORT_MODE_HOST	= 1,
+	MUSB_PORT_MODE_GADGET,
+	MUSB_PORT_MODE_DUAL_ROLE,
+};
+
+>>>>>>> refs/remotes/origin/master
 /****************************** CONSTANTS ********************************/
 
 #ifndef MUSB_C_NUM_EPS
@@ -243,11 +263,16 @@ enum musb_g_ep0_state {
 
 /* TUSB mapping: "flat" plus ep0 special cases */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if	defined(CONFIG_USB_MUSB_TUSB6010)
 =======
 #if defined(CONFIG_USB_MUSB_TUSB6010) || \
 	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_USB_MUSB_TUSB6010) || \
+	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
+>>>>>>> refs/remotes/origin/master
 #define musb_ep_select(_mbase, _epnum) \
 	musb_writeb((_mbase), MUSB_INDEX, (_epnum))
 #define	MUSB_EP_OFFSET			MUSB_TUSB_OFFSET
@@ -287,10 +312,14 @@ enum musb_g_ep0_state {
  * @vbus_status: returns vbus status if possible
  * @set_vbus:	forces vbus status
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @channel_program: pre check for standard dma channel_program func
 =======
  * @adjust_channel_params: pre check for standard dma channel_program func
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @adjust_channel_params: pre check for standard dma channel_program func
+>>>>>>> refs/remotes/origin/master
  */
 struct musb_platform_ops {
 	int	(*init)(struct musb *musb);
@@ -321,11 +350,16 @@ struct musb_hw_ep {
 	void __iomem		*regs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_TUSB6010
 =======
 #if defined(CONFIG_USB_MUSB_TUSB6010) || \
 	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_USB_MUSB_TUSB6010) || \
+	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*conf;
 #endif
 
@@ -343,11 +377,16 @@ struct musb_hw_ep {
 	struct dma_channel	*rx_channel;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_TUSB6010
 =======
 #if defined(CONFIG_USB_MUSB_TUSB6010) || \
 	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_USB_MUSB_TUSB6010) || \
+	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
+>>>>>>> refs/remotes/origin/master
 	/* TUSB has "asynchronous" and "synchronous" dma modes */
 	dma_addr_t		fifo_async;
 	dma_addr_t		fifo_sync;
@@ -355,9 +394,12 @@ struct musb_hw_ep {
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem		*target_regs;
 
 	/* currently scheduled peripheral endpoint */
@@ -367,6 +409,7 @@ struct musb_hw_ep {
 	u8			rx_reinit;
 	u8			tx_reinit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
@@ -375,16 +418,22 @@ struct musb_hw_ep {
 	struct musb_ep		ep_out;			/* RX */
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* peripheral side */
 	struct musb_ep		ep_in;			/* TX */
 	struct musb_ep		ep_out;			/* RX */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct musb_request *next_in_request(struct musb_hw_ep *hw_ep)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
 	return next_request(&hw_ep->ep_in);
 #else
@@ -393,10 +442,14 @@ static inline struct musb_request *next_in_request(struct musb_hw_ep *hw_ep)
 =======
 	return next_request(&hw_ep->ep_in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return next_request(&hw_ep->ep_in);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct musb_request *next_out_request(struct musb_hw_ep *hw_ep)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
 	return next_request(&hw_ep->ep_out);
@@ -406,6 +459,9 @@ static inline struct musb_request *next_out_request(struct musb_hw_ep *hw_ep)
 =======
 	return next_request(&hw_ep->ep_out);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return next_request(&hw_ep->ep_out);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct musb_csr_regs {
@@ -421,16 +477,23 @@ struct musb_csr_regs {
 struct musb_context_registers {
 
 	u8 power;
+<<<<<<< HEAD
 	u16 intrtxe, intrrxe;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 intrusbe;
 	u16 frame;
 	u8 index, testmode;
 
 	u8 devctl, busctl, misc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 otg_interfsel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 otg_interfsel;
+>>>>>>> refs/remotes/origin/master
 
 	struct musb_csr_regs index_regs[MUSB_C_NUM_EPS];
 };
@@ -448,20 +511,32 @@ struct musb {
 	irqreturn_t		(*isr)(int, void *);
 	struct work_struct	irq_work;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct work_struct	otg_notifier_work;
 >>>>>>> refs/remotes/origin/cm-10.0
 	u16			hwvers;
 
+=======
+	struct delayed_work	deassert_reset_work;
+	struct delayed_work	finish_resume_work;
+	u16			hwvers;
+
+	u16			intrrxe;
+	u16			intrtxe;
+>>>>>>> refs/remotes/origin/master
 /* this hub status bit is reserved by USB 2.0 and not seen by usbcore */
 #define MUSB_PORT_STAT_RESUME	(1 << 31)
 
 	u32			port1_status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long		rh_timer;
 
 	enum musb_h_ep0_state	ep0_stage;
@@ -480,9 +555,12 @@ struct musb {
 
 	struct timer_list	otg_timer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct notifier_block	nb;
 
 	struct dma_controller	*dma_controller;
@@ -492,11 +570,16 @@ struct musb {
 	void __iomem		*mregs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_TUSB6010
 =======
 #if defined(CONFIG_USB_MUSB_TUSB6010) || \
 	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_USB_MUSB_TUSB6010) || \
+	defined(CONFIG_USB_MUSB_TUSB6010_MODULE)
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t		async;
 	dma_addr_t		sync;
 	void __iomem		*sync_va;
@@ -508,11 +591,16 @@ struct musb {
 	u16			int_tx;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver	*xceiv;
 =======
 	struct usb_phy		*xceiv;
 	u8			xceiv_event;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_phy		*xceiv;
+	struct phy		*phy;
+>>>>>>> refs/remotes/origin/master
 
 	int nIrq;
 	unsigned		irq_wake:1;
@@ -525,11 +613,18 @@ struct musb {
 	u16 epmask;
 	u8 nr_endpoints;
 
+<<<<<<< HEAD
 	u8 board_mode;		/* enum musb_mode */
+=======
+>>>>>>> refs/remotes/origin/master
 	int			(*board_set_power)(int state);
 
 	u8			min_power;	/* vbus for periph, in mA/2 */
 
+<<<<<<< HEAD
+=======
+	int			port_mode;	/* MUSB_PORT_MODE_* */
+>>>>>>> refs/remotes/origin/master
 	bool			is_host;
 
 	int			a_wait_bcon;	/* VBUS timeout in msecs */
@@ -539,7 +634,10 @@ struct musb {
 	unsigned		is_active:1;
 
 	unsigned is_multipoint:1;
+<<<<<<< HEAD
 	unsigned ignore_disconnect:1;	/* during bus resets */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	unsigned		hb_iso_rx:1;	/* high bandwidth iso rx? */
 	unsigned		hb_iso_tx:1;	/* high bandwidth iso tx? */
@@ -554,9 +652,12 @@ struct musb {
 	(((type) == USB_ENDPOINT_XFER_BULK) && (musb)->bulk_combine)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* is_suspended means USB B_PERIPHERAL suspend */
 	unsigned		is_suspended:1;
 
@@ -581,9 +682,13 @@ struct musb {
 	struct usb_gadget	g;			/* the gadget */
 	struct usb_gadget_driver *gadget_driver;	/* its driver */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_hcd		*hcd;			/* the usb hcd */
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * FIXME: Remove this flag.
@@ -596,6 +701,7 @@ struct musb {
 	 * We added this flag to forcefully disable double
 	 * buffering until we get it working.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned                double_buffer_not_ok:1 __deprecated;
 =======
@@ -613,14 +719,29 @@ struct musb {
 #ifdef CONFIG_USB_GADGET_MUSB_HDRC
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned                double_buffer_not_ok:1;
+
+	struct musb_hdrc_config	*config;
+
+	int			xceiv_old_state;
+#ifdef CONFIG_DEBUG_FS
+	struct dentry		*debugfs_root;
+#endif
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline struct musb *gadget_to_musb(struct usb_gadget *g)
 {
 	return container_of(g, struct musb, g);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_BLACKFIN
 static inline int musb_read_fifosize(struct musb *musb,
@@ -653,7 +774,11 @@ static inline void musb_configure_ep0(struct musb *musb)
 static inline int musb_read_fifosize(struct musb *musb,
 		struct musb_hw_ep *hw_ep, u8 epnum)
 {
+<<<<<<< HEAD
 	void *mbase = musb->mregs;
+=======
+	void __iomem *mbase = musb->mregs;
+>>>>>>> refs/remotes/origin/master
 	u8 reg = 0;
 
 	/* read from core using indexed model */
@@ -693,8 +818,13 @@ static inline void musb_configure_ep0(struct musb *musb)
 
 extern const char musb_driver_name[];
 
+<<<<<<< HEAD
 extern void musb_start(struct musb *musb);
 extern void musb_stop(struct musb *musb);
+=======
+extern void musb_stop(struct musb *musb);
+extern void musb_start(struct musb *musb);
+>>>>>>> refs/remotes/origin/master
 
 extern void musb_write_fifo(struct musb_hw_ep *ep, u16 len, const u8 *src);
 extern void musb_read_fifo(struct musb_hw_ep *ep, u16 len, u8 *dst);

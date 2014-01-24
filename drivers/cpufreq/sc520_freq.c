@@ -23,9 +23,13 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cpu_device_id.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/msr.h>
 
 #define MMCR_BASE	0xfffef000	/* The default base address */
@@ -56,6 +60,7 @@ static unsigned int sc520_freq_get_cpu_frequency(unsigned int cpu)
 	}
 }
 
+<<<<<<< HEAD
 static void sc520_freq_set_cpu_state(unsigned int state)
 {
 
@@ -102,6 +107,23 @@ static int sc520_freq_target(struct cpufreq_policy *policy,
 }
 
 
+=======
+static int sc520_freq_target(struct cpufreq_policy *policy, unsigned int state)
+{
+
+	u8 clockspeed_reg;
+
+	local_irq_disable();
+
+	clockspeed_reg = *cpuctl & ~0x03;
+	*cpuctl = clockspeed_reg | sc520_freq_table[state].driver_data;
+
+	local_irq_enable();
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	Module init and exit code
  */
@@ -109,7 +131,10 @@ static int sc520_freq_target(struct cpufreq_policy *policy,
 static int sc520_freq_cpu_init(struct cpufreq_policy *policy)
 {
 	struct cpuinfo_x86 *c = &cpu_data(0);
+<<<<<<< HEAD
 	int result;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* capability check */
 	if (c->x86_vendor != X86_VENDOR_AMD ||
@@ -118,6 +143,7 @@ static int sc520_freq_cpu_init(struct cpufreq_policy *policy)
 
 	/* cpuinfo and default policy values */
 	policy->cpuinfo.transition_latency = 1000000; /* 1ms */
+<<<<<<< HEAD
 	policy->cur = sc520_freq_get_cpu_frequency(0);
 
 	result = cpufreq_frequency_table_cpuinfo(policy, sc520_freq_table);
@@ -168,6 +194,23 @@ static int __init sc520_freq_init(void)
 		return -ENODEV;
 	}
 =======
+=======
+
+	return cpufreq_table_validate_and_show(policy, sc520_freq_table);
+}
+
+
+static struct cpufreq_driver sc520_freq_driver = {
+	.get	= sc520_freq_get_cpu_frequency,
+	.verify	= cpufreq_generic_frequency_table_verify,
+	.target_index = sc520_freq_target,
+	.init	= sc520_freq_cpu_init,
+	.exit	= cpufreq_generic_exit,
+	.name	= "sc520_freq",
+	.attr	= cpufreq_generic_attr,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct x86_cpu_id sc520_ids[] = {
 	{ X86_VENDOR_AMD, 4, 9 },
 	{}
@@ -181,7 +224,10 @@ static int __init sc520_freq_init(void)
 	if (!x86_match_cpu(sc520_ids))
 		return -ENODEV;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cpuctl = ioremap((unsigned long)(MMCR_BASE + OFFS_CPUCTL), 1);
 	if (!cpuctl) {
 		printk(KERN_ERR "sc520_freq: error: failed to remap memory\n");

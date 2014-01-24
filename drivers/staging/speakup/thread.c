@@ -22,9 +22,15 @@ int speakup_thread(void *data)
 	while (1) {
 		DEFINE_WAIT(wait);
 		while (1) {
+<<<<<<< HEAD
 			spk_lock(flags);
 			our_sound = unprocessed_sound;
 			unprocessed_sound.active = 0;
+=======
+			spin_lock_irqsave(&speakup_info.spinlock, flags);
+			our_sound = spk_unprocessed_sound;
+			spk_unprocessed_sound.active = 0;
+>>>>>>> refs/remotes/origin/master
 			prepare_to_wait(&speakup_event, &wait,
 				TASK_INTERRUPTIBLE);
 			should_break = kthread_should_stop() ||
@@ -32,7 +38,11 @@ int speakup_thread(void *data)
 				(synth && synth->catch_up && synth->alive &&
 					(speakup_info.flushing ||
 					!synth_buffer_empty()));
+<<<<<<< HEAD
 			spk_unlock(flags);
+=======
+			spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 			if (should_break)
 				break;
 			mutex_unlock(&spk_mutex);

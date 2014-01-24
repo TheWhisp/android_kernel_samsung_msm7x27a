@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 include include/asm-generic/Kbuild.asm
 
 header-y += break.h
@@ -16,3 +17,12 @@ header-y += ptrace_offsets.h
 header-y += rse.h
 header-y += ucontext.h
 header-y += ustack.h
+=======
+
+generic-y += clkdev.h
+generic-y += exec.h
+generic-y += kvm_para.h
+generic-y += trace_clock.h
+generic-y += preempt.h
+generic-y += vtime.h
+>>>>>>> refs/remotes/origin/master

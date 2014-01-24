@@ -42,6 +42,10 @@ static const u_int16_t days_since_leapyear[] = {
  */
 enum {
 	DSE_FIRST = 2039,
+<<<<<<< HEAD
+=======
+	SECONDS_PER_DAY = 86400,
+>>>>>>> refs/remotes/origin/master
 };
 static const u_int16_t days_since_epoch[] = {
 	/* 2039 - 2030 */
@@ -78,7 +82,11 @@ static inline unsigned int localtime_1(struct xtm *r, time_t time)
 	unsigned int v, w;
 
 	/* Each day has 86400s, so finding the hour/minute is actually easy. */
+<<<<<<< HEAD
 	v         = time % 86400;
+=======
+	v         = time % SECONDS_PER_DAY;
+>>>>>>> refs/remotes/origin/master
 	r->second = v % 60;
 	w         = v / 60;
 	r->minute = w % 60;
@@ -199,6 +207,21 @@ time_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		if (packet_time < info->daytime_start &&
 		    packet_time > info->daytime_stop)
 			return false;
+<<<<<<< HEAD
+=======
+
+		/** if user asked to ignore 'next day', then e.g.
+		 *  '1 PM Wed, August 1st' should be treated
+		 *  like 'Tue 1 PM July 31st'.
+		 *
+		 * This also causes
+		 * 'Monday, "23:00 to 01:00", to match for 2 hours, starting
+		 * Monday 23:00 to Tuesday 01:00.
+		 */
+		if ((info->flags & XT_TIME_CONTIGUOUS) &&
+		     packet_time <= info->daytime_stop)
+			stamp -= SECONDS_PER_DAY;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	localtime_2(&current_time, stamp);
@@ -227,6 +250,18 @@ static int time_mt_check(const struct xt_mtchk_param *par)
 		return -EDOM;
 	}
 
+<<<<<<< HEAD
+=======
+	if (info->flags & ~XT_TIME_ALL_FLAGS) {
+		pr_info("unknown flags 0x%x\n", info->flags & ~XT_TIME_ALL_FLAGS);
+		return -EINVAL;
+	}
+
+	if ((info->flags & XT_TIME_CONTIGUOUS) &&
+	     info->daytime_start < info->daytime_stop)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

@@ -12,6 +12,7 @@
  * Copyright (C) 2002-2005 Pavel Roskin <proski@gnu.org>
  * Portions based on orinoco_cs.c:
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	Copyright (C) David Gibson, Linuxcare Australia
  * Portions based on Spectrum24tDnld.c from original spectrum24 driver:
  * 	Copyright (C) Symbol Technologies.
@@ -20,6 +21,11 @@
  * Portions based on Spectrum24tDnld.c from original spectrum24 driver:
  *	Copyright (C) Symbol Technologies.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Copyright (C) David Gibson, Linuxcare Australia
+ * Portions based on Spectrum24tDnld.c from original spectrum24 driver:
+ *	Copyright (C) Symbol Technologies.
+>>>>>>> refs/remotes/origin/master
  *
  * See copyright notice in file main.c.
  */
@@ -132,10 +138,14 @@ failed:
 
 /********************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Device methods     						    */
 =======
 /* Device methods						    */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Device methods						    */
+>>>>>>> refs/remotes/origin/master
 /********************************************************************/
 
 static int
@@ -161,10 +171,14 @@ spectrum_cs_stop_firmware(struct orinoco_private *priv, int idle)
 
 /********************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* PCMCIA stuff     						    */
 =======
 /* PCMCIA stuff							    */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* PCMCIA stuff							    */
+>>>>>>> refs/remotes/origin/master
 /********************************************************************/
 
 static int
@@ -212,10 +226,14 @@ spectrum_cs_config(struct pcmcia_device *link)
 {
 	struct orinoco_private *priv = link->priv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	void __iomem *mem;
 
@@ -336,6 +354,7 @@ static struct pcmcia_driver orinoco_driver = {
 	.resume		= spectrum_cs_resume,
 	.id_table       = spectrum_cs_ids,
 };
+<<<<<<< HEAD
 
 static int __init
 init_spectrum_cs(void)
@@ -351,3 +370,6 @@ exit_spectrum_cs(void)
 
 module_init(init_spectrum_cs);
 module_exit(exit_spectrum_cs);
+=======
+module_pcmcia_driver(orinoco_driver);
+>>>>>>> refs/remotes/origin/master

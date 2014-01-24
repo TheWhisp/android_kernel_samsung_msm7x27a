@@ -31,8 +31,12 @@
 #include <linux/mutex.h>
 #include <linux/spinlock.h>
 #include <linux/jiffies.h>
+<<<<<<< HEAD
 
 #include "fixp-arith.h"
+=======
+#include <linux/fixp-arith.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Anssi Hannula <anssi.hannula@gmail.com>");
@@ -73,12 +77,23 @@ static const struct ff_envelope *get_envelope(const struct ff_effect *effect)
 	static const struct ff_envelope empty_envelope;
 
 	switch (effect->type) {
+<<<<<<< HEAD
 		case FF_PERIODIC:
 			return &effect->u.periodic.envelope;
 		case FF_CONSTANT:
 			return &effect->u.constant.envelope;
 		default:
 			return &empty_envelope;
+=======
+	case FF_PERIODIC:
+		return &effect->u.periodic.envelope;
+
+	case FF_CONSTANT:
+		return &effect->u.constant.envelope;
+
+	default:
+		return &empty_envelope;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -177,7 +192,11 @@ static int apply_envelope(struct ml_effect_state *state, int value,
 			 value, envelope->attack_level);
 		time_from_level = jiffies_to_msecs(now - state->play_at);
 		time_of_envelope = envelope->attack_length;
+<<<<<<< HEAD
 		envelope_level = min_t(__s16, envelope->attack_level, 0x7fff);
+=======
+		envelope_level = min_t(u16, envelope->attack_level, 0x7fff);
+>>>>>>> refs/remotes/origin/master
 
 	} else if (envelope->fade_length && effect->replay.length &&
 		   time_after(now,
@@ -185,7 +204,11 @@ static int apply_envelope(struct ml_effect_state *state, int value,
 		   time_before(now, state->stop_at)) {
 		time_from_level = jiffies_to_msecs(state->stop_at - now);
 		time_of_envelope = envelope->fade_length;
+<<<<<<< HEAD
 		envelope_level = min_t(__s16, envelope->fade_level, 0x7fff);
+=======
+		envelope_level = min_t(u16, envelope->fade_level, 0x7fff);
+>>>>>>> refs/remotes/origin/master
 	} else
 		return value;
 

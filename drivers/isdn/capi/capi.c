@@ -26,10 +26,14 @@
 #include <linux/netdevice.h>
 #include <linux/ppp_defs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
 =======
 #include <linux/ppp-ioctl.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/skbuff.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
@@ -81,8 +85,11 @@ struct ackqueue_entry {
 };
 
 struct capiminor {
+<<<<<<< HEAD
 	struct kref kref;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int      minor;
 
 	struct capi20_appl	*ap;
@@ -169,10 +176,14 @@ static int capiminor_del_ack(struct capiminor *mp, u16 datahandle)
 	spin_lock_bh(&mp->ackqlock);
 	list_for_each_entry_safe(p, tmp, &mp->ackqueue, list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
  		if (p->datahandle == datahandle) {
 =======
 		if (p->datahandle == datahandle) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (p->datahandle == datahandle) {
+>>>>>>> refs/remotes/origin/master
 			list_del(&p->list);
 			mp->nack--;
 			spin_unlock_bh(&mp->ackqlock);
@@ -198,7 +209,24 @@ static void capiminor_del_all_ack(struct capiminor *mp)
 
 /* -------- struct capiminor ---------------------------------------- */
 
+<<<<<<< HEAD
 static const struct tty_port_operations capiminor_port_ops; /* we have none */
+=======
+static void capiminor_destroy(struct tty_port *port)
+{
+	struct capiminor *mp = container_of(port, struct capiminor, port);
+
+	kfree_skb(mp->outskb);
+	skb_queue_purge(&mp->inqueue);
+	skb_queue_purge(&mp->outqueue);
+	capiminor_del_all_ack(mp);
+	kfree(mp);
+}
+
+static const struct tty_port_operations capiminor_port_ops = {
+	.destruct = capiminor_destroy,
+};
+>>>>>>> refs/remotes/origin/master
 
 static struct capiminor *capiminor_alloc(struct capi20_appl *ap, u32 ncci)
 {
@@ -207,6 +235,7 @@ static struct capiminor *capiminor_alloc(struct capi20_appl *ap, u32 ncci)
 	unsigned int minor;
 
 	mp = kzalloc(sizeof(*mp), GFP_KERNEL);
+<<<<<<< HEAD
 <<<<<<< HEAD
   	if (!mp) {
   		printk(KERN_ERR "capi: can't alloc capiminor\n");
@@ -219,6 +248,13 @@ static struct capiminor *capiminor_alloc(struct capi20_appl *ap, u32 ncci)
 
 	kref_init(&mp->kref);
 
+=======
+	if (!mp) {
+		printk(KERN_ERR "capi: can't alloc capiminor\n");
+		return NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	mp->ap = ap;
 	mp->ncci = ncci;
 	INIT_LIST_HEAD(&mp->ackqueue);
@@ -247,7 +283,12 @@ static struct capiminor *capiminor_alloc(struct capi20_appl *ap, u32 ncci)
 
 	mp->minor = minor;
 
+<<<<<<< HEAD
 	dev = tty_register_device(capinc_tty_driver, minor, NULL);
+=======
+	dev = tty_port_register_device(&mp->port, capinc_tty_driver, minor,
+			NULL);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(dev))
 		goto err_out2;
 
@@ -259,6 +300,7 @@ err_out2:
 	spin_unlock(&capiminors_lock);
 
 err_out1:
+<<<<<<< HEAD
 	kfree(mp);
 	return NULL;
 }
@@ -274,6 +316,12 @@ static void capiminor_destroy(struct kref *kref)
 	kfree(mp);
 }
 
+=======
+	tty_port_put(&mp->port);
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct capiminor *capiminor_get(unsigned int minor)
 {
 	struct capiminor *mp;
@@ -281,7 +329,11 @@ static struct capiminor *capiminor_get(unsigned int minor)
 	spin_lock(&capiminors_lock);
 	mp = capiminors[minor];
 	if (mp)
+<<<<<<< HEAD
 		kref_get(&mp->kref);
+=======
+		tty_port_get(&mp->port);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&capiminors_lock);
 
 	return mp;
@@ -289,7 +341,11 @@ static struct capiminor *capiminor_get(unsigned int minor)
 
 static inline void capiminor_put(struct capiminor *mp)
 {
+<<<<<<< HEAD
 	kref_put(&mp->kref, capiminor_destroy);
+=======
+	tty_port_put(&mp->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void capiminor_free(struct capiminor *mp)
@@ -349,11 +405,14 @@ static inline void
 capincci_alloc_minor(struct capidev *cdev, struct capincci *np) { }
 static inline void capincci_free_minor(struct capincci *np) { }
 
+<<<<<<< HEAD
 static inline unsigned int capincci_minor_opencount(struct capincci *np)
 {
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !CONFIG_ISDN_CAPI_MIDDLEWARE */
 
 static struct capincci *capincci_alloc(struct capidev *cdev, u32 ncci)
@@ -385,6 +444,10 @@ static void capincci_free(struct capidev *cdev, u32 ncci)
 		}
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ISDN_CAPI_MIDDLEWARE
+>>>>>>> refs/remotes/origin/master
 static struct capincci *capincci_find(struct capidev *cdev, u32 ncci)
 {
 	struct capincci *np;
@@ -395,7 +458,10 @@ static struct capincci *capincci_find(struct capidev *cdev, u32 ncci)
 	return NULL;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ISDN_CAPI_MIDDLEWARE
+=======
+>>>>>>> refs/remotes/origin/master
 /* -------- handle data queue --------------------------------------- */
 
 static struct sk_buff *
@@ -405,10 +471,14 @@ gen_data_b3_resp_for(struct capiminor *mp, struct sk_buff *skb)
 	nskb = alloc_skb(CAPI_DATA_B3_RESP_LEN, GFP_KERNEL);
 	if (nskb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u16 datahandle = CAPIMSG_U16(skb->data,CAPIMSG_BASELEN+4+4+2);
 =======
 		u16 datahandle = CAPIMSG_U16(skb->data, CAPIMSG_BASELEN + 4 + 4 + 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u16 datahandle = CAPIMSG_U16(skb->data, CAPIMSG_BASELEN + 4 + 4 + 2);
+>>>>>>> refs/remotes/origin/master
 		unsigned char *s = skb_put(nskb, CAPI_DATA_B3_RESP_LEN);
 		capimsg_setu16(s, 0, CAPI_DATA_B3_RESP_LEN);
 		capimsg_setu16(s, 2, mp->ap->applid);
@@ -436,10 +506,14 @@ static int handle_recv_skb(struct capiminor *mp, struct sk_buff *skb)
 		return -1;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ld = tty_ldisc_ref(tty);
 	if (!ld) {
 		/* fatal error, do not requeue */
@@ -481,10 +555,14 @@ static int handle_recv_skb(struct capiminor *mp, struct sk_buff *skb)
 	} else {
 		printk(KERN_ERR "capi: send DATA_B3_RESP failed=%x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				errcode);
 =======
 		       errcode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       errcode);
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(nskb);
 
 		if (errcode == CAPI_SENDQUEUEFULL)
@@ -600,11 +678,18 @@ static void capi_recv_message(struct capi20_appl *ap, struct sk_buff *skb)
 {
 	struct capidev *cdev = ap->private;
 #ifdef CONFIG_ISDN_CAPI_MIDDLEWARE
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	struct capiminor *mp;
 	u16 datahandle;
 #endif /* CONFIG_ISDN_CAPI_MIDDLEWARE */
 	struct capincci *np;
+=======
+	struct capiminor *mp;
+	u16 datahandle;
+	struct capincci *np;
+#endif /* CONFIG_ISDN_CAPI_MIDDLEWARE */
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&cdev->lock);
 
@@ -622,6 +707,15 @@ static void capi_recv_message(struct capi20_appl *ap, struct sk_buff *skb)
 		goto unlock_out;
 	}
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_ISDN_CAPI_MIDDLEWARE
+	skb_queue_tail(&cdev->recvqueue, skb);
+	wake_up_interruptible(&cdev->recvwait);
+
+#else /* CONFIG_ISDN_CAPI_MIDDLEWARE */
+
+>>>>>>> refs/remotes/origin/master
 	np = capincci_find(cdev, CAPIMSG_CONTROL(skb->data));
 	if (!np) {
 		printk(KERN_ERR "BUG: capi_signal: ncci not found\n");
@@ -630,12 +724,15 @@ static void capi_recv_message(struct capi20_appl *ap, struct sk_buff *skb)
 		goto unlock_out;
 	}
 
+<<<<<<< HEAD
 #ifndef CONFIG_ISDN_CAPI_MIDDLEWARE
 	skb_queue_tail(&cdev->recvqueue, skb);
 	wake_up_interruptible(&cdev->recvwait);
 
 #else /* CONFIG_ISDN_CAPI_MIDDLEWARE */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mp = np->minorp;
 	if (!mp) {
 		skb_queue_tail(&cdev->recvqueue, skb);
@@ -644,10 +741,14 @@ static void capi_recv_message(struct capi20_appl *ap, struct sk_buff *skb)
 	}
 	if (CAPIMSG_SUBCOMMAND(skb->data) == CAPI_IND) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		datahandle = CAPIMSG_U16(skb->data, CAPIMSG_BASELEN+4+4+2);
 =======
 		datahandle = CAPIMSG_U16(skb->data, CAPIMSG_BASELEN + 4 + 4 + 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		datahandle = CAPIMSG_U16(skb->data, CAPIMSG_BASELEN + 4 + 4 + 2);
+>>>>>>> refs/remotes/origin/master
 		pr_debug("capi_signal: DATA_B3_IND %u len=%d\n",
 			 datahandle, skb->len-CAPIMSG_LEN(skb->data));
 		skb_queue_tail(&mp->inqueue, skb);
@@ -657,15 +758,19 @@ static void capi_recv_message(struct capi20_appl *ap, struct sk_buff *skb)
 	} else if (CAPIMSG_SUBCOMMAND(skb->data) == CAPI_CONF) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		datahandle = CAPIMSG_U16(skb->data, CAPIMSG_BASELEN+4);
 		pr_debug("capi_signal: DATA_B3_CONF %u 0x%x\n",
 			 datahandle,
 			 CAPIMSG_U16(skb->data, CAPIMSG_BASELEN+4+2));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		datahandle = CAPIMSG_U16(skb->data, CAPIMSG_BASELEN + 4);
 		pr_debug("capi_signal: DATA_B3_CONF %u 0x%x\n",
 			 datahandle,
 			 CAPIMSG_U16(skb->data, CAPIMSG_BASELEN + 4 + 2));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		kfree_skb(skb);
 		capiminor_del_ack(mp, datahandle);
@@ -674,6 +779,11 @@ static void capi_recv_message(struct capi20_appl *ap, struct sk_buff *skb)
 			tty_wakeup(tty);
 			tty_kref_put(tty);
 		}
+=======
+		kfree_skb(skb);
+		capiminor_del_ack(mp, datahandle);
+		tty_port_tty_wakeup(&mp->port);
+>>>>>>> refs/remotes/origin/master
 		handle_minor_send(mp);
 
 	} else {
@@ -706,10 +816,14 @@ capi_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 			return -EAGAIN;
 		err = wait_event_interruptible(cdev->recvwait,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(skb = skb_dequeue(&cdev->recvqueue)));
 =======
 					       (skb = skb_dequeue(&cdev->recvqueue)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       (skb = skb_dequeue(&cdev->recvqueue)));
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 	}
@@ -777,10 +891,14 @@ capi_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos
 
 static unsigned int
 <<<<<<< HEAD
+<<<<<<< HEAD
 capi_poll(struct file *file, poll_table * wait)
 =======
 capi_poll(struct file *file, poll_table *wait)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+capi_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	struct capidev *cdev = file->private_data;
 	unsigned int mask = 0;
@@ -830,6 +948,7 @@ register_out:
 		return retval;
 
 	case CAPI_GET_VERSION:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		{
 			if (copy_from_user(&data.contr, argp,
@@ -902,6 +1021,8 @@ register_out:
 		return 0;
 =======
 	{
+=======
+>>>>>>> refs/remotes/origin/master
 		if (copy_from_user(&data.contr, argp,
 				   sizeof(data.contr)))
 			return -EFAULT;
@@ -911,11 +1032,17 @@ register_out:
 		if (copy_to_user(argp, &data.version,
 				 sizeof(data.version)))
 			return -EFAULT;
+<<<<<<< HEAD
 	}
 	return 0;
 
 	case CAPI_GET_SERIAL:
 	{
+=======
+		return 0;
+
+	case CAPI_GET_SERIAL:
+>>>>>>> refs/remotes/origin/master
 		if (copy_from_user(&data.contr, argp,
 				   sizeof(data.contr)))
 			return -EFAULT;
@@ -925,10 +1052,16 @@ register_out:
 		if (copy_to_user(argp, data.serial,
 				 sizeof(data.serial)))
 			return -EFAULT;
+<<<<<<< HEAD
 	}
 	return 0;
 	case CAPI_GET_PROFILE:
 	{
+=======
+		return 0;
+
+	case CAPI_GET_PROFILE:
+>>>>>>> refs/remotes/origin/master
 		if (copy_from_user(&data.contr, argp,
 				   sizeof(data.contr)))
 			return -EFAULT;
@@ -952,11 +1085,17 @@ register_out:
 		}
 		if (retval)
 			return -EFAULT;
+<<<<<<< HEAD
 	}
 	return 0;
 
 	case CAPI_GET_MANUFACTURER:
 	{
+=======
+		return 0;
+
+	case CAPI_GET_MANUFACTURER:
+>>>>>>> refs/remotes/origin/master
 		if (copy_from_user(&data.contr, argp,
 				   sizeof(data.contr)))
 			return -EFAULT;
@@ -968,9 +1107,14 @@ register_out:
 				 sizeof(data.manufacturer)))
 			return -EFAULT;
 
+<<<<<<< HEAD
 	}
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	case CAPI_GET_ERRCODE:
 		data.errcode = cdev->errcode;
 		cdev->errcode = CAPI_NOERROR;
@@ -986,6 +1130,7 @@ register_out:
 			return 0;
 		return -ENXIO;
 
+<<<<<<< HEAD
 	case CAPI_MANUFACTURER_CMD:
 <<<<<<< HEAD
 		{
@@ -999,6 +1144,9 @@ register_out:
 		return 0;
 =======
 	{
+=======
+	case CAPI_MANUFACTURER_CMD: {
+>>>>>>> refs/remotes/origin/master
 		struct capi_manufacturer_cmd mcmd;
 		if (!capable(CAP_SYS_ADMIN))
 			return -EPERM;
@@ -1006,9 +1154,12 @@ register_out:
 			return -EFAULT;
 		return capi20_manufacturer(mcmd.cmd, mcmd.data);
 	}
+<<<<<<< HEAD
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 	case CAPI_SET_FLAGS:
 	case CAPI_CLR_FLAGS: {
 		unsigned userflags;
@@ -1030,6 +1181,14 @@ register_out:
 			return -EFAULT;
 		return 0;
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_ISDN_CAPI_MIDDLEWARE
+	case CAPI_NCCI_OPENCOUNT:
+		return 0;
+
+#else /* CONFIG_ISDN_CAPI_MIDDLEWARE */
+>>>>>>> refs/remotes/origin/master
 	case CAPI_NCCI_OPENCOUNT: {
 		struct capincci *nccip;
 		unsigned ncci;
@@ -1046,7 +1205,10 @@ register_out:
 		return count;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_ISDN_CAPI_MIDDLEWARE
+=======
+>>>>>>> refs/remotes/origin/master
 	case CAPI_NCCI_GETUNIT: {
 		struct capincci *nccip;
 		struct capiminor *mp;
@@ -1142,6 +1304,7 @@ static int
 capinc_tty_install(struct tty_driver *driver, struct tty_struct *tty)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int idx = tty->index;
 	struct capiminor *mp = capiminor_get(idx);
 	int ret = tty_init_termios(tty);
@@ -1153,13 +1316,18 @@ capinc_tty_install(struct tty_driver *driver, struct tty_struct *tty)
 		driver->ttys[idx] = tty;
 	} else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct capiminor *mp = capiminor_get(tty->index);
 	int ret = tty_standard_install(driver, tty);
 
 	if (ret == 0)
 		tty->driver_data = mp;
 	else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		capiminor_put(mp);
 	return ret;
 }
@@ -1208,10 +1376,14 @@ static int capinc_tty_write(struct tty_struct *tty,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = alloc_skb(CAPI_DATA_B3_REQ_LEN+count, GFP_ATOMIC);
 =======
 	skb = alloc_skb(CAPI_DATA_B3_REQ_LEN + count, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb = alloc_skb(CAPI_DATA_B3_REQ_LEN + count, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		printk(KERN_ERR "capinc_tty_write: alloc_skb failed\n");
 		spin_unlock_bh(&mp->outlock);
@@ -1253,10 +1425,14 @@ static int capinc_tty_put_char(struct tty_struct *tty, unsigned char ch)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = alloc_skb(CAPI_DATA_B3_REQ_LEN+CAPI_MAX_BLKSIZE, GFP_ATOMIC);
 =======
 	skb = alloc_skb(CAPI_DATA_B3_REQ_LEN + CAPI_MAX_BLKSIZE, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb = alloc_skb(CAPI_DATA_B3_REQ_LEN + CAPI_MAX_BLKSIZE, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (skb) {
 		skb_reserve(skb, CAPI_DATA_B3_REQ_LEN);
 		*(skb_put(skb, 1)) = ch;
@@ -1321,19 +1497,27 @@ static int capinc_tty_chars_in_buffer(struct tty_struct *tty)
 
 static int capinc_tty_ioctl(struct tty_struct *tty,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    unsigned int cmd, unsigned long arg)
 =======
 			    unsigned int cmd, unsigned long arg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    unsigned int cmd, unsigned long arg)
+>>>>>>> refs/remotes/origin/master
 {
 	return -ENOIOCTLCMD;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void capinc_tty_set_termios(struct tty_struct *tty, struct ktermios * old)
 =======
 static void capinc_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void capinc_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
+>>>>>>> refs/remotes/origin/master
 {
 	pr_debug("capinc_tty_set_termios\n");
 }
@@ -1444,9 +1628,12 @@ static int __init capinc_tty_init(void)
 		return -ENOMEM;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drv->owner = THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	drv->driver_name = "capi_nc";
 	drv->name = "capi";
 	drv->major = 0;
@@ -1501,10 +1688,14 @@ static inline void capinc_tty_exit(void) { }
 static int capi20_proc_show(struct seq_file *m, void *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         struct capidev *cdev;
 =======
 	struct capidev *cdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct capidev *cdev;
+>>>>>>> refs/remotes/origin/master
 	struct list_head *l;
 
 	mutex_lock(&capidev_list_lock);
@@ -1512,18 +1703,24 @@ static int capi20_proc_show(struct seq_file *m, void *v)
 		cdev = list_entry(l, struct capidev, list);
 		seq_printf(m, "0 %d %lu %lu %lu %lu\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cdev->ap.applid,
 			cdev->ap.nrecvctlpkt,
 			cdev->ap.nrecvdatapkt,
 			cdev->ap.nsentctlpkt,
 			cdev->ap.nsentdatapkt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			   cdev->ap.applid,
 			   cdev->ap.nrecvctlpkt,
 			   cdev->ap.nrecvdatapkt,
 			   cdev->ap.nsentctlpkt,
 			   cdev->ap.nsentdatapkt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&capidev_list_lock);
 	return 0;
@@ -1619,6 +1816,7 @@ static int __init capi_init(void)
 
 #ifdef CONFIG_ISDN_CAPI_MIDDLEWARE
 <<<<<<< HEAD
+<<<<<<< HEAD
         compileinfo = " (middleware)";
 #else
         compileinfo = " (no middleware)";
@@ -1627,6 +1825,11 @@ static int __init capi_init(void)
 #else
 	compileinfo = " (no middleware)";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	compileinfo = " (middleware)";
+#else
+	compileinfo = " (no middleware)";
+>>>>>>> refs/remotes/origin/master
 #endif
 	printk(KERN_NOTICE "CAPI 2.0 started up with major %d%s\n",
 	       capi_major, compileinfo);

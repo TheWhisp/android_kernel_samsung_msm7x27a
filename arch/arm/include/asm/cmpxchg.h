@@ -223,6 +223,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
 	return ret;
 }
 
+<<<<<<< HEAD
 #define cmpxchg_local(ptr,o,n)						\
 	((__typeof__(*(ptr)))__cmpxchg_local((ptr),			\
 				       (unsigned long)(o),		\
@@ -257,11 +258,36 @@ static inline unsigned long long __cmpxchg64(volatile void *ptr,
 			: "r" (ptr), "Ir" (__old), "r" (__new)
 			: "memory", "cc");
 	} while (res);
+=======
+static inline unsigned long long __cmpxchg64(unsigned long long *ptr,
+					     unsigned long long old,
+					     unsigned long long new)
+{
+	unsigned long long oldval;
+	unsigned long res;
+
+	__asm__ __volatile__(
+"1:	ldrexd		%1, %H1, [%3]\n"
+"	teq		%1, %4\n"
+"	teqeq		%H1, %H4\n"
+"	bne		2f\n"
+"	strexd		%0, %5, %H5, [%3]\n"
+"	teq		%0, #0\n"
+"	bne		1b\n"
+"2:"
+	: "=&r" (res), "=&r" (oldval), "+Qo" (*ptr)
+	: "r" (ptr), "r" (old), "r" (new)
+	: "cc");
+>>>>>>> refs/remotes/origin/master
 
 	return oldval;
 }
 
+<<<<<<< HEAD
 static inline unsigned long long __cmpxchg64_mb(volatile void *ptr,
+=======
+static inline unsigned long long __cmpxchg64_mb(unsigned long long *ptr,
+>>>>>>> refs/remotes/origin/master
 						unsigned long long old,
 						unsigned long long new)
 {
@@ -274,6 +300,7 @@ static inline unsigned long long __cmpxchg64_mb(volatile void *ptr,
 	return ret;
 }
 
+<<<<<<< HEAD
 #define cmpxchg64(ptr,o,n)						\
 	((__typeof__(*(ptr)))__cmpxchg64_mb((ptr),			\
 					    (unsigned long long)(o),	\
@@ -289,6 +316,25 @@ static inline unsigned long long __cmpxchg64_mb(volatile void *ptr,
 #define cmpxchg64_local(ptr, o, n) __cmpxchg64_local_generic((ptr), (o), (n))
 
 #endif
+=======
+#define cmpxchg_local(ptr,o,n)						\
+	((__typeof__(*(ptr)))__cmpxchg_local((ptr),			\
+				       (unsigned long)(o),		\
+				       (unsigned long)(n),		\
+				       sizeof(*(ptr))))
+
+#define cmpxchg64(ptr, o, n)						\
+	((__typeof__(*(ptr)))__cmpxchg64_mb((ptr),			\
+					(unsigned long long)(o),	\
+					(unsigned long long)(n)))
+
+#define cmpxchg64_relaxed(ptr, o, n)					\
+	((__typeof__(*(ptr)))__cmpxchg64((ptr),				\
+					(unsigned long long)(o),	\
+					(unsigned long long)(n)))
+
+#define cmpxchg64_local(ptr, o, n)	cmpxchg64_relaxed((ptr), (o), (n))
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __LINUX_ARM_ARCH__ >= 6 */
 

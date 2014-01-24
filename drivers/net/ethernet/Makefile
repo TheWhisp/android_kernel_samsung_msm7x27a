@@ -6,9 +6,17 @@ obj-$(CONFIG_NET_VENDOR_3COM) += 3com/
 obj-$(CONFIG_NET_VENDOR_8390) += 8390/
 obj-$(CONFIG_NET_VENDOR_ADAPTEC) += adaptec/
 obj-$(CONFIG_GRETH) += aeroflex/
+<<<<<<< HEAD
 obj-$(CONFIG_NET_VENDOR_ALTEON) += alteon/
 obj-$(CONFIG_NET_VENDOR_AMD) += amd/
 obj-$(CONFIG_NET_VENDOR_APPLE) += apple/
+=======
+obj-$(CONFIG_NET_VENDOR_ALLWINNER) += allwinner/
+obj-$(CONFIG_NET_VENDOR_ALTEON) += alteon/
+obj-$(CONFIG_NET_VENDOR_AMD) += amd/
+obj-$(CONFIG_NET_VENDOR_APPLE) += apple/
+obj-$(CONFIG_NET_VENDOR_ARC) += arc/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_NET_VENDOR_ATHEROS) += atheros/
 obj-$(CONFIG_NET_CADENCE) += cadence/
 obj-$(CONFIG_NET_BFIN) += adi/
@@ -40,8 +48,12 @@ obj-$(CONFIG_NET_VENDOR_MARVELL) += marvell/
 obj-$(CONFIG_NET_VENDOR_MELLANOX) += mellanox/
 obj-$(CONFIG_NET_VENDOR_MICREL) += micrel/
 obj-$(CONFIG_NET_VENDOR_MICROCHIP) += microchip/
+<<<<<<< HEAD
 obj-$(CONFIG_MIPS_SIM_NET) += mipsnet.o
 obj-$(CONFIG_ARCH_MSM) += msm/
+=======
+obj-$(CONFIG_NET_VENDOR_MOXART) += moxa/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_NET_VENDOR_MYRI) += myricom/
 obj-$(CONFIG_FEALNX) += fealnx.o
 obj-$(CONFIG_NET_VENDOR_NATSEMI) += natsemi/
@@ -55,7 +67,10 @@ obj-$(CONFIG_ETHOC) += ethoc.o
 obj-$(CONFIG_NET_PACKET_ENGINE) += packetengines/
 obj-$(CONFIG_NET_VENDOR_PASEMI) += pasemi/
 obj-$(CONFIG_NET_VENDOR_QLOGIC) += qlogic/
+<<<<<<< HEAD
 obj-$(CONFIG_NET_VENDOR_RACAL) += racal/
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_NET_VENDOR_REALTEK) += realtek/
 obj-$(CONFIG_SH_ETH) += renesas/
 obj-$(CONFIG_NET_VENDOR_RDC) += rdc/
@@ -74,5 +89,9 @@ obj-$(CONFIG_TILE_NET) += tile/
 obj-$(CONFIG_NET_VENDOR_TOSHIBA) += toshiba/
 obj-$(CONFIG_NET_VENDOR_TUNDRA) += tundra/
 obj-$(CONFIG_NET_VENDOR_VIA) += via/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_NET_VENDOR_WIZNET) += wiznet/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_NET_VENDOR_XILINX) += xilinx/
 obj-$(CONFIG_NET_VENDOR_XIRCOM) += xircom/

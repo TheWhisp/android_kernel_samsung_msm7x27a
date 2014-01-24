@@ -141,6 +141,17 @@ _GLOBAL(swsusp_arch_resume)
 	lis	r11,swsusp_save_area@h
 	ori	r11,r11,swsusp_save_area@l
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Mappings from virtual addresses to physical addresses may be
+	 * different than they were prior to restoring hibernation state. 
+	 * Invalidate the TLB so that the boot CPU is using the new
+	 * mappings.
+	 */
+	bl	_tlbil_all
+
+>>>>>>> refs/remotes/origin/master
 	lwz	r4,SL_SPRG0(r11)
 	mtsprg	0,r4
 	lwz	r4,SL_SPRG1(r11)

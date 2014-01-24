@@ -37,9 +37,13 @@
  *
  *****************************************************************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-mapping.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/termios.h>
 #include <linux/tty.h>
@@ -63,20 +67,40 @@
 #include <linux/pm_runtime.h>
 #include <linux/spi/ifx_modem.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ifx6x60.h"
 
 #define IFX_SPI_MORE_MASK		0x10
+<<<<<<< HEAD
 #define IFX_SPI_MORE_BIT		12	/* bit position in u16 */
 #define IFX_SPI_CTS_BIT			13	/* bit position in u16 */
+=======
+#define IFX_SPI_MORE_BIT		4	/* bit position in u8 */
+#define IFX_SPI_CTS_BIT			6	/* bit position in u8 */
+>>>>>>> refs/remotes/origin/master
 #define IFX_SPI_MODE			SPI_MODE_1
 #define IFX_SPI_TTY_ID			0
 #define IFX_SPI_TIMEOUT_SEC		2
 #define IFX_SPI_HEADER_0		(-1)
 #define IFX_SPI_HEADER_F		(-2)
 
+<<<<<<< HEAD
 /* forward reference */
 static void ifx_spi_handle_srdy(struct ifx_spi_device *ifx_dev);
+=======
+#define PO_POST_DELAY		200
+#define IFX_MDM_RST_PMU	4
+
+/* forward reference */
+static void ifx_spi_handle_srdy(struct ifx_spi_device *ifx_dev);
+static int ifx_modem_reboot_callback(struct notifier_block *nfb,
+				unsigned long event, void *data);
+static int ifx_modem_power_off(struct ifx_spi_device *ifx_dev);
+>>>>>>> refs/remotes/origin/master
 
 /* local variables */
 static int spi_bpw = 16;		/* 8, 16 or 32 bit word length */
@@ -84,6 +108,32 @@ static struct tty_driver *tty_drv;
 static struct ifx_spi_device *saved_ifx_dev;
 static struct lock_class_key ifx_spi_key;
 
+<<<<<<< HEAD
+=======
+static struct notifier_block ifx_modem_reboot_notifier_block = {
+	.notifier_call = ifx_modem_reboot_callback,
+};
+
+static int ifx_modem_power_off(struct ifx_spi_device *ifx_dev)
+{
+	gpio_set_value(IFX_MDM_RST_PMU, 1);
+	msleep(PO_POST_DELAY);
+
+	return 0;
+}
+
+static int ifx_modem_reboot_callback(struct notifier_block *nfb,
+				 unsigned long event, void *data)
+{
+	if (saved_ifx_dev)
+		ifx_modem_power_off(saved_ifx_dev);
+	else
+		pr_warn("no ifx modem active;\n");
+
+	return NOTIFY_OK;
+}
+
+>>>>>>> refs/remotes/origin/master
 /* GPIO/GPE settings */
 
 /**
@@ -155,13 +205,18 @@ ifx_spi_power_state_clear(struct ifx_spi_device *ifx_dev, unsigned char val)
 }
 
 /**
+<<<<<<< HEAD
  *	swap_buf
+=======
+ *	swap_buf_8
+>>>>>>> refs/remotes/origin/master
  *	@buf: our buffer
  *	@len : number of bytes (not words) in the buffer
  *	@end: end of buffer
  *
  *	Swap the contents of a buffer into big endian format
  */
+<<<<<<< HEAD
 static inline void swap_buf(u16 *buf, int len, void *end)
 {
 	int n;
@@ -175,6 +230,62 @@ static inline void swap_buf(u16 *buf, int len, void *end)
 	for (n = 0; n < len; n++) {
 		*buf = cpu_to_be16(*buf);
 		buf++;
+=======
+static inline void swap_buf_8(unsigned char *buf, int len, void *end)
+{
+	/* don't swap buffer if SPI word width is 8 bits */
+	return;
+}
+
+/**
+ *	swap_buf_16
+ *	@buf: our buffer
+ *	@len : number of bytes (not words) in the buffer
+ *	@end: end of buffer
+ *
+ *	Swap the contents of a buffer into big endian format
+ */
+static inline void swap_buf_16(unsigned char *buf, int len, void *end)
+{
+	int n;
+
+	u16 *buf_16 = (u16 *)buf;
+	len = ((len + 1) >> 1);
+	if ((void *)&buf_16[len] > end) {
+		pr_err("swap_buf_16: swap exceeds boundary (%p > %p)!",
+		       &buf_16[len], end);
+		return;
+	}
+	for (n = 0; n < len; n++) {
+		*buf_16 = cpu_to_be16(*buf_16);
+		buf_16++;
+	}
+}
+
+/**
+ *	swap_buf_32
+ *	@buf: our buffer
+ *	@len : number of bytes (not words) in the buffer
+ *	@end: end of buffer
+ *
+ *	Swap the contents of a buffer into big endian format
+ */
+static inline void swap_buf_32(unsigned char *buf, int len, void *end)
+{
+	int n;
+
+	u32 *buf_32 = (u32 *)buf;
+	len = (len + 3) >> 2;
+
+	if ((void *)&buf_32[len] > end) {
+		pr_err("swap_buf_32: swap exceeds boundary (%p > %p)!\n",
+		       &buf_32[len], end);
+		return;
+	}
+	for (n = 0; n < len; n++) {
+		*buf_32 = cpu_to_be32(*buf_32);
+		buf_32++;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -193,9 +304,13 @@ static void mrdy_assert(struct ifx_spi_device *ifx_dev)
 	if (!val) {
 		if (!test_and_set_bit(IFX_SPI_STATE_TIMER_PENDING,
 				      &ifx_dev->flags)) {
+<<<<<<< HEAD
 			ifx_dev->spi_timer.expires =
 				jiffies + IFX_SPI_TIMEOUT_SEC*HZ;
 			add_timer(&ifx_dev->spi_timer);
+=======
+			mod_timer(&ifx_dev->spi_timer,jiffies + IFX_SPI_TIMEOUT_SEC*HZ);
+>>>>>>> refs/remotes/origin/master
 
 		}
 	}
@@ -204,6 +319,7 @@ static void mrdy_assert(struct ifx_spi_device *ifx_dev)
 }
 
 /**
+<<<<<<< HEAD
  *	ifx_spi_hangup		-	hang up an IFX device
  *	@ifx_dev: our SPI device
  *
@@ -221,6 +337,8 @@ static void ifx_spi_ttyhangup(struct ifx_spi_device *ifx_dev)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  *	ifx_spi_timeout		-	SPI timeout
  *	@arg: our SPI device
  *
@@ -232,7 +350,11 @@ static void ifx_spi_timeout(unsigned long arg)
 	struct ifx_spi_device *ifx_dev = (struct ifx_spi_device *)arg;
 
 	dev_warn(&ifx_dev->spi_dev->dev, "*** SPI Timeout ***");
+<<<<<<< HEAD
 	ifx_spi_ttyhangup(ifx_dev);
+=======
+	tty_port_tty_hangup(&ifx_dev->tty_port, false);
+>>>>>>> refs/remotes/origin/master
 	mrdy_set_low(ifx_dev);
 	clear_bit(IFX_SPI_STATE_TIMER_PENDING, &ifx_dev->flags);
 }
@@ -377,6 +499,7 @@ static void ifx_spi_setup_spi_header(unsigned char *txbuffer, int tx_count,
 }
 
 /**
+<<<<<<< HEAD
  *	ifx_spi_wakeup_serial	-	SPI space made
  *	@port_data: our SPI device
  *
@@ -396,6 +519,8 @@ static void ifx_spi_wakeup_serial(struct ifx_spi_device *ifx_dev)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  *	ifx_spi_prepare_tx_buffer	-	prepare transmit frame
  *	@ifx_dev: our SPI device
  *
@@ -415,7 +540,10 @@ static int ifx_spi_prepare_tx_buffer(struct ifx_spi_device *ifx_dev)
 	unsigned char *tx_buffer;
 
 	tx_buffer = ifx_dev->tx_buffer;
+<<<<<<< HEAD
 	memset(tx_buffer, 0, IFX_SPI_TRANSFER_SIZE);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* make room for required SPI header */
 	tx_buffer += IFX_SPI_HEADER_OVERHEAD;
@@ -441,7 +569,11 @@ static int ifx_spi_prepare_tx_buffer(struct ifx_spi_device *ifx_dev)
 			tx_count += temp_count;
 			if (temp_count == queue_length)
 				/* poke port to get more data */
+<<<<<<< HEAD
 				ifx_spi_wakeup_serial(ifx_dev);
+=======
+				tty_port_tty_wakeup(&ifx_dev->tty_port);
+>>>>>>> refs/remotes/origin/master
 			else /* more data in port, use next SPI message */
 				ifx_dev->spi_more = 1;
 		}
@@ -452,7 +584,11 @@ static int ifx_spi_prepare_tx_buffer(struct ifx_spi_device *ifx_dev)
 					tx_count-IFX_SPI_HEADER_OVERHEAD,
 					ifx_dev->spi_more);
 	/* swap actual data in the buffer */
+<<<<<<< HEAD
 	swap_buf((u16 *)(ifx_dev->tx_buffer), tx_count,
+=======
+	ifx_dev->swap_buf((ifx_dev->tx_buffer), tx_count,
+>>>>>>> refs/remotes/origin/master
 		&ifx_dev->tx_buffer[IFX_SPI_TRANSFER_SIZE]);
 	return tx_count;
 }
@@ -472,9 +608,23 @@ static int ifx_spi_write(struct tty_struct *tty, const unsigned char *buf,
 {
 	struct ifx_spi_device *ifx_dev = tty->driver_data;
 	unsigned char *tmp_buf = (unsigned char *)buf;
+<<<<<<< HEAD
 	int tx_count = kfifo_in_locked(&ifx_dev->tx_fifo, tmp_buf, count,
 				   &ifx_dev->fifo_lock);
 	mrdy_assert(ifx_dev);
+=======
+	unsigned long flags;
+	bool is_fifo_empty;
+	int tx_count;
+
+	spin_lock_irqsave(&ifx_dev->fifo_lock, flags);
+	is_fifo_empty = kfifo_is_empty(&ifx_dev->tx_fifo);
+	tx_count = kfifo_in(&ifx_dev->tx_fifo, tmp_buf, count);
+	spin_unlock_irqrestore(&ifx_dev->fifo_lock, flags);
+	if (is_fifo_empty)
+		mrdy_assert(ifx_dev);
+
+>>>>>>> refs/remotes/origin/master
 	return tx_count;
 }
 
@@ -533,11 +683,25 @@ static int ifx_port_activate(struct tty_port *port, struct tty_struct *tty)
 	/* clear any old data; can't do this in 'close' */
 	kfifo_reset(&ifx_dev->tx_fifo);
 
+<<<<<<< HEAD
+=======
+	/* clear any flag which may be set in port shutdown procedure */
+	clear_bit(IFX_SPI_STATE_IO_IN_PROGRESS, &ifx_dev->flags);
+	clear_bit(IFX_SPI_STATE_IO_READY, &ifx_dev->flags);
+
+>>>>>>> refs/remotes/origin/master
 	/* put port data into this tty */
 	tty->driver_data = ifx_dev;
 
 	/* allows flip string push from int context */
+<<<<<<< HEAD
 	tty->low_latency = 1;
+=======
+	port->low_latency = 1;
+
+	/* set flag to allows data transfer */
+	set_bit(IFX_SPI_STATE_IO_AVAILABLE, &ifx_dev->flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -554,6 +718,10 @@ static void ifx_port_shutdown(struct tty_port *port)
 	struct ifx_spi_device *ifx_dev =
 		container_of(port, struct ifx_spi_device, tty_port);
 
+<<<<<<< HEAD
+=======
+	clear_bit(IFX_SPI_STATE_IO_AVAILABLE, &ifx_dev->flags);
+>>>>>>> refs/remotes/origin/master
 	mrdy_set_low(ifx_dev);
 	del_timer(&ifx_dev->spi_timer);
 	clear_bit(IFX_SPI_STATE_TIMER_PENDING, &ifx_dev->flags);
@@ -588,12 +756,17 @@ static const struct tty_operations ifx_spi_serial_ops = {
 static void ifx_spi_insert_flip_string(struct ifx_spi_device *ifx_dev,
 				    unsigned char *chars, size_t size)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty = tty_port_tty_get(&ifx_dev->tty_port);
 	if (!tty)
 		return;
 	tty_insert_flip_string(tty, chars, size);
 	tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
+=======
+	tty_insert_flip_string(&ifx_dev->tty_port, chars, size);
+	tty_flip_buffer_push(&ifx_dev->tty_port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -606,8 +779,11 @@ static void ifx_spi_insert_flip_string(struct ifx_spi_device *ifx_dev,
 static void ifx_spi_complete(void *ctx)
 {
 	struct ifx_spi_device *ifx_dev = ctx;
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	struct tty_ldisc *ldisc = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	int length;
 	int actual_length;
 	unsigned char more;
@@ -621,7 +797,11 @@ static void ifx_spi_complete(void *ctx)
 
 	if (!ifx_dev->spi_msg.status) {
 		/* check header validity, get comm flags */
+<<<<<<< HEAD
 		swap_buf((u16 *)ifx_dev->rx_buffer, IFX_SPI_HEADER_OVERHEAD,
+=======
+		ifx_dev->swap_buf(ifx_dev->rx_buffer, IFX_SPI_HEADER_OVERHEAD,
+>>>>>>> refs/remotes/origin/master
 			&ifx_dev->rx_buffer[IFX_SPI_HEADER_OVERHEAD]);
 		decode_result = ifx_spi_decode_spi_header(ifx_dev->rx_buffer,
 				&length, &more, &cts);
@@ -640,7 +820,12 @@ static void ifx_spi_complete(void *ctx)
 
 		actual_length = min((unsigned int)length,
 					ifx_dev->spi_msg.actual_length);
+<<<<<<< HEAD
 		swap_buf((u16 *)(ifx_dev->rx_buffer + IFX_SPI_HEADER_OVERHEAD),
+=======
+		ifx_dev->swap_buf(
+			(ifx_dev->rx_buffer + IFX_SPI_HEADER_OVERHEAD),
+>>>>>>> refs/remotes/origin/master
 			 actual_length,
 			 &ifx_dev->rx_buffer[IFX_SPI_TRANSFER_SIZE]);
 		ifx_spi_insert_flip_string(
@@ -684,6 +869,7 @@ complete_exit:
 			 */
 			ifx_spi_power_state_clear(ifx_dev,
 						  IFX_SPI_POWER_DATA_PENDING);
+<<<<<<< HEAD
 			tty = tty_port_tty_get(&ifx_dev->tty_port);
 			if (tty) {
 				ldisc = tty_ldisc_ref(tty);
@@ -693,6 +879,9 @@ complete_exit:
 				}
 				tty_kref_put(tty);
 			}
+=======
+			tty_port_tty_wakeup(&ifx_dev->tty_port);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -709,7 +898,12 @@ static void ifx_spi_io(unsigned long data)
 	int retval;
 	struct ifx_spi_device *ifx_dev = (struct ifx_spi_device *) data;
 
+<<<<<<< HEAD
 	if (!test_and_set_bit(IFX_SPI_STATE_IO_IN_PROGRESS, &ifx_dev->flags)) {
+=======
+	if (!test_and_set_bit(IFX_SPI_STATE_IO_IN_PROGRESS, &ifx_dev->flags) &&
+		test_bit(IFX_SPI_STATE_IO_AVAILABLE, &ifx_dev->flags)) {
+>>>>>>> refs/remotes/origin/master
 		if (ifx_dev->gpio.unack_srdy_int_nb > 0)
 			ifx_dev->gpio.unack_srdy_int_nb--;
 
@@ -727,7 +921,12 @@ static void ifx_spi_io(unsigned long data)
 		ifx_dev->spi_xfer.cs_change = 0;
 		ifx_dev->spi_xfer.speed_hz = ifx_dev->spi_dev->max_speed_hz;
 		/* ifx_dev->spi_xfer.speed_hz = 390625; */
+<<<<<<< HEAD
 		ifx_dev->spi_xfer.bits_per_word = spi_bpw;
+=======
+		ifx_dev->spi_xfer.bits_per_word =
+			ifx_dev->spi_dev->bits_per_word;
+>>>>>>> refs/remotes/origin/master
 
 		ifx_dev->spi_xfer.tx_buf = ifx_dev->tx_buffer;
 		ifx_dev->spi_xfer.rx_buf = ifx_dev->rx_buffer;
@@ -777,6 +976,10 @@ static void ifx_spi_free_port(struct ifx_spi_device *ifx_dev)
 {
 	if (ifx_dev->tty_dev)
 		tty_unregister_device(tty_drv, ifx_dev->minor);
+<<<<<<< HEAD
+=======
+	tty_port_destroy(&ifx_dev->tty_port);
+>>>>>>> refs/remotes/origin/master
 	kfifo_free(&ifx_dev->tx_fifo);
 }
 
@@ -804,16 +1007,30 @@ static int ifx_spi_create_port(struct ifx_spi_device *ifx_dev)
 	tty_port_init(pport);
 	pport->ops = &ifx_tty_port_ops;
 	ifx_dev->minor = IFX_SPI_TTY_ID;
+<<<<<<< HEAD
 	ifx_dev->tty_dev = tty_register_device(tty_drv, ifx_dev->minor,
 					       &ifx_dev->spi_dev->dev);
+=======
+	ifx_dev->tty_dev = tty_port_register_device(pport, tty_drv,
+			ifx_dev->minor, &ifx_dev->spi_dev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(ifx_dev->tty_dev)) {
 		dev_dbg(&ifx_dev->spi_dev->dev,
 			"%s: registering tty device failed", __func__);
 		ret = PTR_ERR(ifx_dev->tty_dev);
+<<<<<<< HEAD
 		goto error_ret;
 	}
 	return 0;
 
+=======
+		goto error_port;
+	}
+	return 0;
+
+error_port:
+	tty_port_destroy(pport);
+>>>>>>> refs/remotes/origin/master
 error_ret:
 	ifx_spi_free_port(ifx_dev);
 	return ret;
@@ -830,7 +1047,11 @@ error_ret:
 static void ifx_spi_handle_srdy(struct ifx_spi_device *ifx_dev)
 {
 	if (test_bit(IFX_SPI_STATE_TIMER_PENDING, &ifx_dev->flags)) {
+<<<<<<< HEAD
 		del_timer_sync(&ifx_dev->spi_timer);
+=======
+		del_timer(&ifx_dev->spi_timer);
+>>>>>>> refs/remotes/origin/master
 		clear_bit(IFX_SPI_STATE_TIMER_PENDING, &ifx_dev->flags);
 	}
 
@@ -879,7 +1100,11 @@ static irqreturn_t ifx_spi_reset_interrupt(int irq, void *dev)
 		set_bit(MR_INPROGRESS, &ifx_dev->mdm_reset_state);
 		if (!solreset) {
 			/* unsolicited reset  */
+<<<<<<< HEAD
 			ifx_spi_ttyhangup(ifx_dev);
+=======
+			tty_port_tty_hangup(&ifx_dev->tty_port, false);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		/* exited reset */
@@ -971,7 +1196,11 @@ static int ifx_spi_spi_probe(struct spi_device *spi)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	pl_data = (struct ifx_modem_platform_data *)spi->dev.platform_data;
+=======
+	pl_data = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pl_data) {
 		dev_err(&spi->dev, "missing platform data!");
 		return -ENODEV;
@@ -1005,6 +1234,17 @@ static int ifx_spi_spi_probe(struct spi_device *spi)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
+=======
+	/* init swap_buf function according to word width configuration */
+	if (spi->bits_per_word == 32)
+		ifx_dev->swap_buf = swap_buf_32;
+	else if (spi->bits_per_word == 16)
+		ifx_dev->swap_buf = swap_buf_16;
+	else
+		ifx_dev->swap_buf = swap_buf_8;
+
+>>>>>>> refs/remotes/origin/master
 	/* ensure SPI protocol flags are initialized to enable transfer */
 	ifx_dev->spi_more = 0;
 	ifx_dev->spi_slave_cts = 0;
@@ -1223,6 +1463,12 @@ static int ifx_spi_spi_remove(struct spi_device *spi)
 
 static void ifx_spi_spi_shutdown(struct spi_device *spi)
 {
+<<<<<<< HEAD
+=======
+	struct ifx_spi_device *ifx_dev = spi_get_drvdata(spi);
+
+	ifx_modem_power_off(ifx_dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1231,6 +1477,7 @@ static void ifx_spi_spi_shutdown(struct spi_device *spi)
  */
 
 /**
+<<<<<<< HEAD
  *	ifx_spi_spi_suspend	-	suspend SPI on system suspend
  *	@dev: device being suspended
  *
@@ -1255,6 +1502,8 @@ static int ifx_spi_spi_resume(struct spi_device *spi)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  *	ifx_spi_pm_suspend	-	suspend modem on system suspend
  *	@dev: device being suspended
  *
@@ -1335,6 +1584,7 @@ static const struct spi_device_id ifx_id_table[] = {
 MODULE_DEVICE_TABLE(spi, ifx_id_table);
 
 /* spi operations */
+<<<<<<< HEAD
 static const struct spi_driver ifx_spi_driver = {
 	.driver = {
 		.name = DRVNAME,
@@ -1342,13 +1592,22 @@ static const struct spi_driver ifx_spi_driver = {
 		.bus = &spi_bus_type,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct spi_driver ifx_spi_driver = {
+	.driver = {
+		.name = DRVNAME,
+>>>>>>> refs/remotes/origin/master
 		.pm = &ifx_spi_pm,
 		.owner = THIS_MODULE},
 	.probe = ifx_spi_spi_probe,
 	.shutdown = ifx_spi_spi_shutdown,
+<<<<<<< HEAD
 	.remove = __devexit_p(ifx_spi_spi_remove),
 	.suspend = ifx_spi_spi_suspend,
 	.resume = ifx_spi_spi_resume,
+=======
+	.remove = ifx_spi_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = ifx_id_table
 };
 
@@ -1362,7 +1621,13 @@ static void __exit ifx_spi_exit(void)
 {
 	/* unregister */
 	tty_unregister_driver(tty_drv);
+<<<<<<< HEAD
 	spi_unregister_driver((void *)&ifx_spi_driver);
+=======
+	put_tty_driver(tty_drv);
+	spi_unregister_driver((void *)&ifx_spi_driver);
+	unregister_reboot_notifier(&ifx_modem_reboot_notifier_block);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1384,6 +1649,7 @@ static int __init ifx_spi_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_drv->magic = TTY_DRIVER_MAGIC;
 	tty_drv->owner = THIS_MODULE;
 	tty_drv->driver_name = DRVNAME;
@@ -1395,6 +1661,11 @@ static int __init ifx_spi_init(void)
 	tty_drv->name = TTYNAME;
 	tty_drv->minor_start = IFX_SPI_TTY_ID;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_drv->driver_name = DRVNAME;
+	tty_drv->name = TTYNAME;
+	tty_drv->minor_start = IFX_SPI_TTY_ID;
+>>>>>>> refs/remotes/origin/master
 	tty_drv->type = TTY_DRIVER_TYPE_SERIAL;
 	tty_drv->subtype = SERIAL_TYPE_NORMAL;
 	tty_drv->flags = TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;
@@ -1406,16 +1677,41 @@ static int __init ifx_spi_init(void)
 	if (result) {
 		pr_err("%s: tty_register_driver failed(%d)",
 			DRVNAME, result);
+<<<<<<< HEAD
 		put_tty_driver(tty_drv);
 		return result;
+=======
+		goto err_free_tty;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	result = spi_register_driver((void *)&ifx_spi_driver);
 	if (result) {
 		pr_err("%s: spi_register_driver failed(%d)",
 			DRVNAME, result);
+<<<<<<< HEAD
 		tty_unregister_driver(tty_drv);
 	}
+=======
+		goto err_unreg_tty;
+	}
+
+	result = register_reboot_notifier(&ifx_modem_reboot_notifier_block);
+	if (result) {
+		pr_err("%s: register ifx modem reboot notifier failed(%d)",
+			DRVNAME, result);
+		goto err_unreg_spi;
+	}
+
+	return 0;
+err_unreg_spi:
+	spi_unregister_driver((void *)&ifx_spi_driver);
+err_unreg_tty:
+	tty_unregister_driver(tty_drv);
+err_free_tty:
+	put_tty_driver(tty_drv);
+
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 

@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef _INPUT_H
 #define _INPUT_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright (c) 1999-2002 Vojtech Pavlik
  *
@@ -8,6 +11,7 @@
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  */
+<<<<<<< HEAD
 
 #ifdef __KERNEL__
 #include <linux/time.h>
@@ -1185,6 +1189,17 @@ struct ff_effect {
 #define FF_CNT		(FF_MAX+1)
 
 #ifdef __KERNEL__
+=======
+#ifndef _INPUT_H
+#define _INPUT_H
+
+#include <linux/time.h>
+#include <linux/list.h>
+#include <uapi/linux/input.h>
+/* Implementation details, userspace should not care about these */
+#define ABS_MT_FIRST		ABS_MT_TOUCH_MAJOR
+#define ABS_MT_LAST		ABS_MT_TOOL_Y
+>>>>>>> refs/remotes/origin/master
 
 /*
  * In-kernel definitions.
@@ -1196,6 +1211,21 @@ struct ff_effect {
 #include <linux/mod_devicetable.h>
 
 /**
+<<<<<<< HEAD
+=======
+ * struct input_value - input value representation
+ * @type: type of value (EV_KEY, EV_ABS, etc)
+ * @code: the value code
+ * @value: the value
+ */
+struct input_value {
+	__u16 type;
+	__u16 code;
+	__s32 value;
+};
+
+/**
+>>>>>>> refs/remotes/origin/master
  * struct input_dev - represents an input device
  * @name: name of the device
  * @phys: physical path to the device in the system hierarchy
@@ -1230,11 +1260,15 @@ struct ff_effect {
  *	software autorepeat
  * @timer: timer for software autorepeat
  * @rep: current values for autorepeat parameters (delay, rate)
+<<<<<<< HEAD
  * @mt: pointer to array of struct input_mt_slot holding current values
  *	of tracked contacts
  * @mtsize: number of MT slots the device uses
  * @slot: MT slot currently being transmitted
  * @trkid: stores MT tracking ID for the current contact
+=======
+ * @mt: pointer to multitouch state
+>>>>>>> refs/remotes/origin/master
  * @absinfo: array of &struct input_absinfo elements holding information
  *	about absolute axes (current value, min, max, flat, fuzz,
  *	resolution)
@@ -1271,11 +1305,22 @@ struct ff_effect {
  *	last user closes the device
  * @going_away: marks devices that are in a middle of unregistering and
  *	causes input_open_device*() fail with -ENODEV.
+<<<<<<< HEAD
  * @sync: set to %true when there were no new events since last EV_SYN
+=======
+>>>>>>> refs/remotes/origin/master
  * @dev: driver model's view of this device
  * @h_list: list of input handles associated with the device. When
  *	accessing the list dev->mutex must be held
  * @node: used to place the device onto input_dev_list
+<<<<<<< HEAD
+=======
+ * @num_vals: number of values queued in the current frame
+ * @max_vals: maximum number of values queued in a frame
+ * @vals: array of values queued in the current frame
+ * @devres_managed: indicates that devices is managed with devres framework
+ *	and needs not be explicitly unregistered or freed.
+>>>>>>> refs/remotes/origin/master
  */
 struct input_dev {
 	const char *name;
@@ -1314,10 +1359,14 @@ struct input_dev {
 
 	int rep[REP_CNT];
 
+<<<<<<< HEAD
 	struct input_mt_slot *mt;
 	int mtsize;
 	int slot;
 	int trkid;
+=======
+	struct input_mt *mt;
+>>>>>>> refs/remotes/origin/master
 
 	struct input_absinfo *absinfo;
 
@@ -1339,12 +1388,24 @@ struct input_dev {
 	unsigned int users;
 	bool going_away;
 
+<<<<<<< HEAD
 	bool sync;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device dev;
 
 	struct list_head	h_list;
 	struct list_head	node;
+<<<<<<< HEAD
+=======
+
+	unsigned int num_vals;
+	unsigned int max_vals;
+	struct input_value *vals;
+
+	bool devres_managed;
+>>>>>>> refs/remotes/origin/master
 };
 #define to_input_dev(d) container_of(d, struct input_dev, dev)
 
@@ -1405,6 +1466,12 @@ struct input_handle;
  * @event: event handler. This method is being called by input core with
  *	interrupts disabled and dev->event_lock spinlock held and so
  *	it may not sleep
+<<<<<<< HEAD
+=======
+ * @events: event sequence handler. This method is being called by
+ *	input core with interrupts disabled and dev->event_lock
+ *	spinlock held and so it may not sleep
+>>>>>>> refs/remotes/origin/master
  * @filter: similar to @event; separates normal event handlers from
  *	"filters".
  * @match: called after comparing device's id with handler's id_table
@@ -1414,8 +1481,13 @@ struct input_handle;
  * @start: starts handler for given handle. This function is called by
  *	input core right after connect() method and also when a process
  *	that "grabbed" a device releases it
+<<<<<<< HEAD
  * @fops: file operations this driver implements
  * @minor: beginning of range of 32 minors for devices this driver
+=======
+ * @legacy_minors: set to %true by drivers using legacy minor ranges
+ * @minor: beginning of range of 32 legacy minors for devices this driver
+>>>>>>> refs/remotes/origin/master
  *	can provide
  * @name: name of the handler, to be shown in /proc/bus/input/handlers
  * @id_table: pointer to a table of input_device_ids this driver can
@@ -1441,13 +1513,22 @@ struct input_handler {
 	void *private;
 
 	void (*event)(struct input_handle *handle, unsigned int type, unsigned int code, int value);
+<<<<<<< HEAD
+=======
+	void (*events)(struct input_handle *handle,
+		       const struct input_value *vals, unsigned int count);
+>>>>>>> refs/remotes/origin/master
 	bool (*filter)(struct input_handle *handle, unsigned int type, unsigned int code, int value);
 	bool (*match)(struct input_handler *handler, struct input_dev *dev);
 	int (*connect)(struct input_handler *handler, struct input_dev *dev, const struct input_device_id *id);
 	void (*disconnect)(struct input_handle *handle);
 	void (*start)(struct input_handle *handle);
 
+<<<<<<< HEAD
 	const struct file_operations *fops;
+=======
+	bool legacy_minors;
+>>>>>>> refs/remotes/origin/master
 	int minor;
 	const char *name;
 
@@ -1483,7 +1564,12 @@ struct input_handle {
 	struct list_head	h_node;
 };
 
+<<<<<<< HEAD
 struct input_dev *input_allocate_device(void);
+=======
+struct input_dev __must_check *input_allocate_device(void);
+struct input_dev __must_check *devm_input_allocate_device(struct device *);
+>>>>>>> refs/remotes/origin/master
 void input_free_device(struct input_dev *dev);
 
 static inline struct input_dev *input_get_device(struct input_dev *dev)
@@ -1515,6 +1601,13 @@ void input_reset_device(struct input_dev *);
 int __must_check input_register_handler(struct input_handler *);
 void input_unregister_handler(struct input_handler *);
 
+<<<<<<< HEAD
+=======
+int __must_check input_get_new_minor(int legacy_base, unsigned int legacy_num,
+				     bool allow_dynamic);
+void input_free_minor(unsigned int minor);
+
+>>>>>>> refs/remotes/origin/master
 int input_handler_for_each_handle(struct input_handler *, void *data,
 				  int (*fn)(struct input_handle *, void *));
 
@@ -1669,10 +1762,14 @@ struct ff_device {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int input_ff_create(struct input_dev *dev, int max_effects);
 =======
 int input_ff_create(struct input_dev *dev, unsigned int max_effects);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int input_ff_create(struct input_dev *dev, unsigned int max_effects);
+>>>>>>> refs/remotes/origin/master
 void input_ff_destroy(struct input_dev *dev);
 
 int input_ff_event(struct input_dev *dev, unsigned int type, unsigned int code, int value);
@@ -1684,4 +1781,7 @@ int input_ff_create_memless(struct input_dev *dev, void *data,
 		int (*play_effect)(struct input_dev *, void *, struct ff_effect *));
 
 #endif
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

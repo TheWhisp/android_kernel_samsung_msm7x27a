@@ -6,6 +6,10 @@
 #include <linux/sunrpc/svcsock.h>
 #include <linux/sunrpc/svcauth.h>
 #include <linux/sunrpc/gss_api.h>
+<<<<<<< HEAD
+=======
+#include <linux/sunrpc/addr.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/seq_file.h>
 #include <linux/hash.h>
@@ -14,9 +18,15 @@
 #include <net/sock.h>
 #include <net/ipv6.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #define RPCDBG_FACILITY	RPCDBG_AUTH
 
 #include <linux/sunrpc/clnt.h>
+=======
+#include <linux/user_namespace.h>
+#define RPCDBG_FACILITY	RPCDBG_AUTH
+
+>>>>>>> refs/remotes/origin/master
 
 #include "netns.h"
 
@@ -31,6 +41,7 @@
 struct unix_domain {
 	struct auth_domain	h;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 	int	addr_changes;
 #endif /* CONFIG_NFSD_DEPRECATED */
@@ -38,11 +49,16 @@ struct unix_domain {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* other stuff later */
 };
 
 extern struct auth_ops svcauth_null;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct auth_ops svcauth_unix;
 
 static void svcauth_unix_domain_release(struct auth_domain *dom)
@@ -82,11 +98,14 @@ struct auth_domain *unix_domain_find(char *name)
 		}
 		new->h.flavour = &svcauth_unix;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 		new->addr_changes = 0;
 #endif /* CONFIG_NFSD_DEPRECATED */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rv = auth_domain_lookup(name, &new->h);
 	}
 }
@@ -106,11 +125,14 @@ struct ip_map {
 	struct in6_addr		m_addr;
 	struct unix_domain	*m_client;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 	int			m_add_change;
 #endif /* CONFIG_NFSD_DEPRECATED */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void ip_map_put(struct kref *kref)
@@ -124,6 +146,7 @@ static void ip_map_put(struct kref *kref)
 	kfree(im);
 }
 
+<<<<<<< HEAD
 #if IP_HASHBITS == 8
 /* hash_long on a 64 bit machine is currently REALLY BAD for
  * IP addresses in reverse-endian (i.e. on a little-endian machine).
@@ -141,6 +164,11 @@ static inline int hash_ip6(struct in6_addr ip)
 		hash_ip(ip.s6_addr32[1]) ^
 		hash_ip(ip.s6_addr32[2]) ^
 		hash_ip(ip.s6_addr32[3]));
+=======
+static inline int hash_ip6(const struct in6_addr *ip)
+{
+	return hash_32(ipv6_addr_hash(ip), IP_HASHBITS);
+>>>>>>> refs/remotes/origin/master
 }
 static int ip_map_match(struct cache_head *corig, struct cache_head *cnew)
 {
@@ -156,10 +184,14 @@ static void ip_map_init(struct cache_head *cnew, struct cache_head *citem)
 
 	strcpy(new->m_class, item->m_class);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&new->m_addr, &item->m_addr);
 =======
 	new->m_addr = item->m_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	new->m_addr = item->m_addr;
+>>>>>>> refs/remotes/origin/master
 }
 static void update(struct cache_head *cnew, struct cache_head *citem)
 {
@@ -169,11 +201,14 @@ static void update(struct cache_head *cnew, struct cache_head *citem)
 	kref_get(&item->m_client->h.ref);
 	new->m_client = item->m_client;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 	new->m_add_change = item->m_add_change;
 #endif /* CONFIG_NFSD_DEPRECATED */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 static struct cache_head *ip_map_alloc(void)
 {
@@ -201,11 +236,14 @@ static void ip_map_request(struct cache_detail *cd,
 	(*bpp)[-1] = '\n';
 }
 
+<<<<<<< HEAD
 static int ip_map_upcall(struct cache_detail *cd, struct cache_head *h)
 {
 	return sunrpc_cache_pipe_upcall(cd, h, ip_map_request);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ip_map *__ip_map_lookup(struct cache_detail *cd, char *class, struct in6_addr *addr);
 static int __ip_map_update(struct cache_detail *cd, struct ip_map *ipm, struct unix_domain *udom, time_t expiry);
 
@@ -243,10 +281,14 @@ static int ip_map_parse(struct cache_detail *cd,
 	if (len <= 0) return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rpc_pton(buf, len, &address.sa, sizeof(address)) == 0)
 =======
 	if (rpc_pton(cd->net, buf, len, &address.sa, sizeof(address)) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rpc_pton(cd->net, buf, len, &address.sa, sizeof(address)) == 0)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	switch (address.sa.sa_family) {
 	case AF_INET:
@@ -256,10 +298,14 @@ static int ip_map_parse(struct cache_detail *cd,
 				&sin6.sin6_addr);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		memcpy(&sin6, &address.s6, sizeof(sin6));
 		break;
@@ -314,10 +360,14 @@ static int ip_map_show(struct seq_file *m,
 	im = container_of(h, struct ip_map, h);
 	/* class addr domain */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&addr, &im->m_addr);
 =======
 	addr = im->m_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = im->m_addr;
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(CACHE_VALID, &h->flags) &&
 	    !test_bit(CACHE_NEGATIVE, &h->flags))
@@ -341,6 +391,7 @@ static struct ip_map *__ip_map_lookup(struct cache_detail *cd, char *class,
 
 	strcpy(ip.m_class, class);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&ip.m_addr, addr);
 =======
 	ip.m_addr = *addr;
@@ -348,6 +399,12 @@ static struct ip_map *__ip_map_lookup(struct cache_detail *cd, char *class,
 	ch = sunrpc_cache_lookup(cd, &ip.h,
 				 hash_str(class, IP_HASHBITS) ^
 				 hash_ip6(*addr));
+=======
+	ip.m_addr = *addr;
+	ch = sunrpc_cache_lookup(cd, &ip.h,
+				 hash_str(class, IP_HASHBITS) ^
+				 hash_ip6(addr));
+>>>>>>> refs/remotes/origin/master
 
 	if (ch)
 		return container_of(ch, struct ip_map, h);
@@ -375,6 +432,7 @@ static int __ip_map_update(struct cache_detail *cd, struct ip_map *ipm,
 	if (!udom)
 		set_bit(CACHE_NEGATIVE, &ip.h.flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 	else {
 		ip.m_add_change = udom->addr_changes;
@@ -391,6 +449,12 @@ static int __ip_map_update(struct cache_detail *cd, struct ip_map *ipm,
 	ch = sunrpc_cache_update(cd, &ip.h, &ipm->h,
 				 hash_str(ipm->m_class, IP_HASHBITS) ^
 				 hash_ip6(ipm->m_addr));
+=======
+	ip.h.expiry_time = expiry;
+	ch = sunrpc_cache_update(cd, &ip.h, &ipm->h,
+				 hash_str(ipm->m_class, IP_HASHBITS) ^
+				 hash_ip6(&ipm->m_addr));
+>>>>>>> refs/remotes/origin/master
 	if (!ch)
 		return -ENOMEM;
 	cache_put(ch, cd);
@@ -406,6 +470,7 @@ static inline int ip_map_update(struct net *net, struct ip_map *ipm,
 	return __ip_map_update(sn->ip_map_cache, ipm, udom, expiry);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_NFSD_DEPRECATED
 int auth_unix_add_addr(struct net *net, struct in6_addr *addr, struct auth_domain *dom)
@@ -476,6 +541,14 @@ void svcauth_unix_purge(void)
 		sn = net_generic(net, sunrpc_net_id);
 		cache_purge(sn->ip_map_cache);
 	}
+=======
+void svcauth_unix_purge(struct net *net)
+{
+	struct sunrpc_net *sn;
+
+	sn = net_generic(net, sunrpc_net_id);
+	cache_purge(sn->ip_map_cache);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(svcauth_unix_purge);
 
@@ -489,13 +562,21 @@ ip_map_cached_get(struct svc_xprt *xprt)
 		spin_lock(&xprt->xpt_lock);
 		ipm = xprt->xpt_auth_cache;
 		if (ipm != NULL) {
+<<<<<<< HEAD
 			if (!cache_valid(&ipm->h)) {
+=======
+			sn = net_generic(xprt->xpt_net, sunrpc_net_id);
+			if (cache_is_expired(sn->ip_map_cache, &ipm->h)) {
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * The entry has been invalidated since it was
 				 * remembered, e.g. by a second mount from the
 				 * same IP address.
 				 */
+<<<<<<< HEAD
 				sn = net_generic(xprt->xpt_net, sunrpc_net_id);
+=======
+>>>>>>> refs/remotes/origin/master
 				xprt->xpt_auth_cache = NULL;
 				spin_unlock(&xprt->xpt_lock);
 				cache_put(&ipm->h, sn->ip_map_cache);
@@ -552,6 +633,7 @@ svcauth_unix_info_release(struct svc_xprt *xpt)
 
 struct unix_gid {
 	struct cache_head	h;
+<<<<<<< HEAD
 	uid_t			uid;
 	struct group_info	*gi;
 };
@@ -559,6 +641,16 @@ struct unix_gid {
 static struct cache_head	*gid_table[GID_HASHMAX];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kuid_t			uid;
+	struct group_info	*gi;
+};
+
+static int unix_gid_hash(kuid_t uid)
+{
+	return hash_long(from_kuid(&init_user_ns, uid), GID_HASHBITS);
+}
+>>>>>>> refs/remotes/origin/master
 
 static void unix_gid_put(struct kref *kref)
 {
@@ -574,7 +666,11 @@ static int unix_gid_match(struct cache_head *corig, struct cache_head *cnew)
 {
 	struct unix_gid *orig = container_of(corig, struct unix_gid, h);
 	struct unix_gid *new = container_of(cnew, struct unix_gid, h);
+<<<<<<< HEAD
 	return orig->uid == new->uid;
+=======
+	return uid_eq(orig->uid, new->uid);
+>>>>>>> refs/remotes/origin/master
 }
 static void unix_gid_init(struct cache_head *cnew, struct cache_head *citem)
 {
@@ -606,11 +702,16 @@ static void unix_gid_request(struct cache_detail *cd,
 	char tuid[20];
 	struct unix_gid *ug = container_of(h, struct unix_gid, h);
 
+<<<<<<< HEAD
 	snprintf(tuid, 20, "%u", ug->uid);
+=======
+	snprintf(tuid, 20, "%u", from_kuid(&init_user_ns, ug->uid));
+>>>>>>> refs/remotes/origin/master
 	qword_add(bpp, blen, tuid);
 	(*bpp)[-1] = '\n';
 }
 
+<<<<<<< HEAD
 static int unix_gid_upcall(struct cache_detail *cd, struct cache_head *h)
 {
 	return sunrpc_cache_pipe_upcall(cd, h, unix_gid_request);
@@ -622,12 +723,20 @@ extern struct cache_detail unix_gid_cache;
 =======
 static struct unix_gid *unix_gid_lookup(struct cache_detail *cd, uid_t uid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct unix_gid *unix_gid_lookup(struct cache_detail *cd, kuid_t uid);
+>>>>>>> refs/remotes/origin/master
 
 static int unix_gid_parse(struct cache_detail *cd,
 			char *mesg, int mlen)
 {
 	/* uid expiry Ngid gid0 gid1 ... gidN-1 */
+<<<<<<< HEAD
 	int uid;
+=======
+	int id;
+	kuid_t uid;
+>>>>>>> refs/remotes/origin/master
 	int gids;
 	int rv;
 	int i;
@@ -635,6 +744,7 @@ static int unix_gid_parse(struct cache_detail *cd,
 	time_t expiry;
 	struct unix_gid ug, *ugp;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mlen <= 0 || mesg[mlen-1] != '\n')
 =======
@@ -646,6 +756,16 @@ static int unix_gid_parse(struct cache_detail *cd,
 	rv = get_int(&mesg, &uid);
 	if (rv)
 		return -EINVAL;
+=======
+	if (mesg[mlen - 1] != '\n')
+		return -EINVAL;
+	mesg[mlen-1] = 0;
+
+	rv = get_int(&mesg, &id);
+	if (rv)
+		return -EINVAL;
+	uid = make_kuid(&init_user_ns, id);
+>>>>>>> refs/remotes/origin/master
 	ug.uid = uid;
 
 	expiry = get_expiry(&mesg);
@@ -662,10 +782,15 @@ static int unix_gid_parse(struct cache_detail *cd,
 
 	for (i = 0 ; i < gids ; i++) {
 		int gid;
+<<<<<<< HEAD
+=======
+		kgid_t kgid;
+>>>>>>> refs/remotes/origin/master
 		rv = get_int(&mesg, &gid);
 		err = -EINVAL;
 		if (rv)
 			goto out;
+<<<<<<< HEAD
 		GROUP_AT(ug.gi, i) = gid;
 	}
 
@@ -674,10 +799,20 @@ static int unix_gid_parse(struct cache_detail *cd,
 =======
 	ugp = unix_gid_lookup(cd, uid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kgid = make_kgid(&init_user_ns, gid);
+		if (!gid_valid(kgid))
+			goto out;
+		GROUP_AT(ug.gi, i) = kgid;
+	}
+
+	ugp = unix_gid_lookup(cd, uid);
+>>>>>>> refs/remotes/origin/master
 	if (ugp) {
 		struct cache_head *ch;
 		ug.h.flags = 0;
 		ug.h.expiry_time = expiry;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ch = sunrpc_cache_update(&unix_gid_cache,
 =======
@@ -685,15 +820,24 @@ static int unix_gid_parse(struct cache_detail *cd,
 >>>>>>> refs/remotes/origin/cm-10.0
 					 &ug.h, &ugp->h,
 					 hash_long(uid, GID_HASHBITS));
+=======
+		ch = sunrpc_cache_update(cd,
+					 &ug.h, &ugp->h,
+					 unix_gid_hash(uid));
+>>>>>>> refs/remotes/origin/master
 		if (!ch)
 			err = -ENOMEM;
 		else {
 			err = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cache_put(ch, &unix_gid_cache);
 =======
 			cache_put(ch, cd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			cache_put(ch, cd);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else
 		err = -ENOMEM;
@@ -707,6 +851,10 @@ static int unix_gid_show(struct seq_file *m,
 			 struct cache_detail *cd,
 			 struct cache_head *h)
 {
+<<<<<<< HEAD
+=======
+	struct user_namespace *user_ns = &init_user_ns;
+>>>>>>> refs/remotes/origin/master
 	struct unix_gid *ug;
 	int i;
 	int glen;
@@ -722,13 +870,20 @@ static int unix_gid_show(struct seq_file *m,
 	else
 		glen = 0;
 
+<<<<<<< HEAD
 	seq_printf(m, "%u %d:", ug->uid, glen);
 	for (i = 0; i < glen; i++)
 		seq_printf(m, " %d", GROUP_AT(ug->gi, i));
+=======
+	seq_printf(m, "%u %d:", from_kuid_munged(user_ns, ug->uid), glen);
+	for (i = 0; i < glen; i++)
+		seq_printf(m, " %d", from_kgid_munged(user_ns, GROUP_AT(ug->gi, i)));
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "\n");
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct cache_detail unix_gid_cache = {
 	.owner		= THIS_MODULE,
@@ -742,6 +897,14 @@ static struct cache_detail unix_gid_cache_template = {
 	.name		= "auth.unix.gid",
 	.cache_put	= unix_gid_put,
 	.cache_upcall	= unix_gid_upcall,
+=======
+static struct cache_detail unix_gid_cache_template = {
+	.owner		= THIS_MODULE,
+	.hash_size	= GID_HASHMAX,
+	.name		= "auth.unix.gid",
+	.cache_put	= unix_gid_put,
+	.cache_request	= unix_gid_request,
+>>>>>>> refs/remotes/origin/master
 	.cache_parse	= unix_gid_parse,
 	.cache_show	= unix_gid_show,
 	.match		= unix_gid_match,
@@ -751,8 +914,11 @@ static struct cache_detail unix_gid_cache_template = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct unix_gid *unix_gid_lookup(uid_t uid)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int unix_gid_cache_create(struct net *net)
 {
 	struct sunrpc_net *sn = net_generic(net, sunrpc_net_id);
@@ -782,30 +948,43 @@ void unix_gid_cache_destroy(struct net *net)
 	cache_destroy_net(cd, net);
 }
 
+<<<<<<< HEAD
 static struct unix_gid *unix_gid_lookup(struct cache_detail *cd, uid_t uid)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct unix_gid *unix_gid_lookup(struct cache_detail *cd, kuid_t uid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct unix_gid ug;
 	struct cache_head *ch;
 
 	ug.uid = uid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ch = sunrpc_cache_lookup(&unix_gid_cache, &ug.h,
 				 hash_long(uid, GID_HASHBITS));
 =======
 	ch = sunrpc_cache_lookup(cd, &ug.h, hash_long(uid, GID_HASHBITS));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ch = sunrpc_cache_lookup(cd, &ug.h, unix_gid_hash(uid));
+>>>>>>> refs/remotes/origin/master
 	if (ch)
 		return container_of(ch, struct unix_gid, h);
 	else
 		return NULL;
 }
 
+<<<<<<< HEAD
 static struct group_info *unix_gid_find(uid_t uid, struct svc_rqst *rqstp)
+=======
+static struct group_info *unix_gid_find(kuid_t uid, struct svc_rqst *rqstp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct unix_gid *ug;
 	struct group_info *gi;
 	int ret;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	ug = unix_gid_lookup(uid);
@@ -813,6 +992,8 @@ static struct group_info *unix_gid_find(uid_t uid, struct svc_rqst *rqstp)
 		return ERR_PTR(-EAGAIN);
 	ret = cache_check(&unix_gid_cache, &ug->h, &rqstp->rq_chandle);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sunrpc_net *sn = net_generic(rqstp->rq_xprt->xpt_net,
 					    sunrpc_net_id);
 
@@ -820,7 +1001,10 @@ static struct group_info *unix_gid_find(uid_t uid, struct svc_rqst *rqstp)
 	if (!ug)
 		return ERR_PTR(-EAGAIN);
 	ret = cache_check(sn->unix_gid_cache, &ug->h, &rqstp->rq_chandle);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (ret) {
 	case -ENOENT:
 		return ERR_PTR(-ENOENT);
@@ -829,10 +1013,14 @@ static struct group_info *unix_gid_find(uid_t uid, struct svc_rqst *rqstp)
 	case 0:
 		gi = get_group_info(ug->gi);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cache_put(&ug->h, &unix_gid_cache);
 =======
 		cache_put(&ug->h, sn->unix_gid_cache);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cache_put(&ug->h, sn->unix_gid_cache);
+>>>>>>> refs/remotes/origin/master
 		return gi;
 	default:
 		return ERR_PTR(-EAGAIN);
@@ -917,6 +1105,10 @@ svcauth_null_accept(struct svc_rqst *rqstp, __be32 *authp)
 	struct svc_cred	*cred = &rqstp->rq_cred;
 
 	cred->cr_group_info = NULL;
+<<<<<<< HEAD
+=======
+	cred->cr_principal = NULL;
+>>>>>>> refs/remotes/origin/master
 	rqstp->rq_client = NULL;
 
 	if (argv->iov_len < 3*4)
@@ -934,8 +1126,13 @@ svcauth_null_accept(struct svc_rqst *rqstp, __be32 *authp)
 	}
 
 	/* Signal that mapping to nobody uid/gid is required */
+<<<<<<< HEAD
 	cred->cr_uid = (uid_t) -1;
 	cred->cr_gid = (gid_t) -1;
+=======
+	cred->cr_uid = INVALID_UID;
+	cred->cr_gid = INVALID_GID;
+>>>>>>> refs/remotes/origin/master
 	cred->cr_group_info = groups_alloc(0);
 	if (cred->cr_group_info == NULL)
 		return SVC_CLOSE; /* kmalloc failure - client must retry */
@@ -944,7 +1141,11 @@ svcauth_null_accept(struct svc_rqst *rqstp, __be32 *authp)
 	svc_putnl(resv, RPC_AUTH_NULL);
 	svc_putnl(resv, 0);
 
+<<<<<<< HEAD
 	rqstp->rq_flavor = RPC_AUTH_NULL;
+=======
+	rqstp->rq_cred.cr_flavor = RPC_AUTH_NULL;
+>>>>>>> refs/remotes/origin/master
 	return SVC_OK;
 }
 
@@ -982,6 +1183,10 @@ svcauth_unix_accept(struct svc_rqst *rqstp, __be32 *authp)
 	int		len   = argv->iov_len;
 
 	cred->cr_group_info = NULL;
+<<<<<<< HEAD
+=======
+	cred->cr_principal = NULL;
+>>>>>>> refs/remotes/origin/master
 	rqstp->rq_client = NULL;
 
 	if ((len -= 3*4) < 0)
@@ -994,17 +1199,36 @@ svcauth_unix_accept(struct svc_rqst *rqstp, __be32 *authp)
 		goto badcred;
 	argv->iov_base = (void*)((__be32*)argv->iov_base + slen);	/* skip machname */
 	argv->iov_len -= slen*4;
+<<<<<<< HEAD
 
 	cred->cr_uid = svc_getnl(argv);		/* uid */
 	cred->cr_gid = svc_getnl(argv);		/* gid */
+=======
+	/*
+	 * Note: we skip uid_valid()/gid_valid() checks here for
+	 * backwards compatibility with clients that use -1 id's.
+	 * Instead, -1 uid or gid is later mapped to the
+	 * (export-specific) anonymous id by nfsd_setuser.
+	 * Supplementary gid's will be left alone.
+	 */
+	cred->cr_uid = make_kuid(&init_user_ns, svc_getnl(argv)); /* uid */
+	cred->cr_gid = make_kgid(&init_user_ns, svc_getnl(argv)); /* gid */
+>>>>>>> refs/remotes/origin/master
 	slen = svc_getnl(argv);			/* gids length */
 	if (slen > 16 || (len -= (slen + 2)*4) < 0)
 		goto badcred;
 	cred->cr_group_info = groups_alloc(slen);
 	if (cred->cr_group_info == NULL)
 		return SVC_CLOSE;
+<<<<<<< HEAD
 	for (i = 0; i < slen; i++)
 		GROUP_AT(cred->cr_group_info, i) = svc_getnl(argv);
+=======
+	for (i = 0; i < slen; i++) {
+		kgid_t kgid = make_kgid(&init_user_ns, svc_getnl(argv));
+		GROUP_AT(cred->cr_group_info, i) = kgid;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (svc_getu32(argv) != htonl(RPC_AUTH_NULL) || svc_getu32(argv) != 0) {
 		*authp = rpc_autherr_badverf;
 		return SVC_DENIED;
@@ -1014,7 +1238,11 @@ svcauth_unix_accept(struct svc_rqst *rqstp, __be32 *authp)
 	svc_putnl(resv, RPC_AUTH_NULL);
 	svc_putnl(resv, 0);
 
+<<<<<<< HEAD
 	rqstp->rq_flavor = RPC_AUTH_UNIX;
+=======
+	rqstp->rq_cred.cr_flavor = RPC_AUTH_UNIX;
+>>>>>>> refs/remotes/origin/master
 	return SVC_OK;
 
 badcred:
@@ -1048,6 +1276,7 @@ struct auth_ops svcauth_unix = {
 	.set_client	= svcauth_unix_set_client,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int ip_map_cache_create(struct net *net)
 {
@@ -1091,12 +1320,18 @@ err_tbl:
 err_cd:
 	return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct cache_detail ip_map_cache_template = {
 	.owner		= THIS_MODULE,
 	.hash_size	= IP_HASHMAX,
 	.name		= "auth.unix.ip",
 	.cache_put	= ip_map_put,
+<<<<<<< HEAD
 	.cache_upcall	= ip_map_upcall,
+=======
+	.cache_request	= ip_map_request,
+>>>>>>> refs/remotes/origin/master
 	.cache_parse	= ip_map_parse,
 	.cache_show	= ip_map_show,
 	.match		= ip_map_match,
@@ -1121,11 +1356,15 @@ int ip_map_cache_create(struct net *net)
 	}
 	sn->ip_map_cache = cd;
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void ip_map_cache_destroy(struct net *net)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct sunrpc_net *sn;
 
@@ -1135,6 +1374,8 @@ void ip_map_cache_destroy(struct net *net)
 	kfree(sn->ip_map_cache->hash_table);
 	kfree(sn->ip_map_cache);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sunrpc_net *sn = net_generic(net, sunrpc_net_id);
 	struct cache_detail *cd = sn->ip_map_cache;
 
@@ -1142,5 +1383,8 @@ void ip_map_cache_destroy(struct net *net)
 	cache_purge(cd);
 	cache_unregister_net(cd, net);
 	cache_destroy_net(cd, net);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

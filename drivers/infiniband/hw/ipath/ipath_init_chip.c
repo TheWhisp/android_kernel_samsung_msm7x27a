@@ -34,12 +34,18 @@
 #include <linux/pci.h>
 #include <linux/netdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/slab.h>
 =======
 #include <linux/moduleparam.h>
 #include <linux/slab.h>
 #include <linux/stat.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+#include <linux/slab.h>
+#include <linux/stat.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/vmalloc.h>
 
 #include "ipath_kernel.h"
@@ -723,6 +729,7 @@ int ipath_init_chip(struct ipath_devdata *dd, int reinit)
 		goto done;
 
 	/*
+<<<<<<< HEAD
 	 * we ignore most issues after reporting them, but have to specially
 	 * handle hardware-disabled chips.
 	 */
@@ -733,6 +740,8 @@ int ipath_init_chip(struct ipath_devdata *dd, int reinit)
 	}
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * We could bump this to allow for full rcvegrcnt + rcvtidcnt,
 	 * but then it no longer nicely fits power of two, and since
 	 * we now use routines that backend onto __get_free_pages, the

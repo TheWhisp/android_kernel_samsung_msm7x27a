@@ -1,6 +1,7 @@
 #ifndef _ASM_M68K_UNISTD_H_
 #define _ASM_M68K_UNISTD_H_
 
+<<<<<<< HEAD
 /*
  * This file contains the system call numbers.
  */
@@ -381,6 +382,13 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#include <uapi/asm/unistd.h>
+
+
+#define NR_syscalls		349
+
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_OLD_READDIR
 #define __ARCH_WANT_OLD_STAT
 #define __ARCH_WANT_STAT64
@@ -404,6 +412,7 @@
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
@@ -416,4 +425,9 @@
 #define cond_syscall(x) asm(".weak\t" #x "\n\t.set\t" #x ",sys_ni_syscall")
 
 #endif /* __KERNEL__ */
+=======
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_M68K_UNISTD_H_ */

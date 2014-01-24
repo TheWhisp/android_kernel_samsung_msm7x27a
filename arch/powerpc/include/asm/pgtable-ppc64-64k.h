@@ -4,10 +4,17 @@
 #include <asm-generic/pgtable-nopud.h>
 
 
+<<<<<<< HEAD
 #define PTE_INDEX_SIZE  12
 #define PMD_INDEX_SIZE  12
 #define PUD_INDEX_SIZE	0
 #define PGD_INDEX_SIZE  4
+=======
+#define PTE_INDEX_SIZE  8
+#define PMD_INDEX_SIZE  10
+#define PUD_INDEX_SIZE	0
+#define PGD_INDEX_SIZE  12
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 #define PTE_TABLE_SIZE	(sizeof(real_pte_t) << PTE_INDEX_SIZE)
@@ -33,7 +40,12 @@
 #define PGDIR_MASK	(~(PGDIR_SIZE-1))
 
 /* Bits to mask out from a PMD to get to the PTE page */
+<<<<<<< HEAD
 #define PMD_MASKED_BITS		0x1ff
+=======
+/* PMDs point to PTE table fragments which are 4K aligned.  */
+#define PMD_MASKED_BITS		0xfff
+>>>>>>> refs/remotes/origin/master
 /* Bits to mask out from a PGD/PUD to get to the PMD page */
 #define PUD_MASKED_BITS		0x1ff
 

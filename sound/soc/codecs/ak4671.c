@@ -27,9 +27,12 @@
 struct ak4671_priv {
 	enum snd_soc_control_type control_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *control_data;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ak4671 register cache & default register settings */
@@ -173,6 +176,7 @@ static int ak4671_out2_event(struct snd_soc_dapm_widget *w,
 {
 	struct snd_soc_codec *codec = w->codec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 reg;
 
 	switch (event) {
@@ -186,6 +190,8 @@ static int ak4671_out2_event(struct snd_soc_dapm_widget *w,
 		reg &= ~AK4671_MUTEN;
 		snd_soc_write(codec, AK4671_LOUT2_POWER_MANAGERMENT, reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (event) {
 	case SND_SOC_DAPM_POST_PMU:
@@ -195,7 +201,10 @@ static int ak4671_out2_event(struct snd_soc_dapm_widget *w,
 	case SND_SOC_DAPM_PRE_PMD:
 		snd_soc_update_bits(codec, AK4671_LOUT2_POWER_MANAGERMENT,
 				    AK4671_MUTEN, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -592,14 +601,18 @@ static int ak4671_set_bias_level(struct snd_soc_codec *codec,
 		enum snd_soc_bias_level level)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 reg;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 	case SND_SOC_BIAS_PREPARE:
 	case SND_SOC_BIAS_STANDBY:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		reg = snd_soc_read(codec, AK4671_AD_DA_POWER_MANAGEMENT);
 		snd_soc_write(codec, AK4671_AD_DA_POWER_MANAGEMENT,
@@ -608,6 +621,10 @@ static int ak4671_set_bias_level(struct snd_soc_codec *codec,
 		snd_soc_update_bits(codec, AK4671_AD_DA_POWER_MANAGEMENT,
 				    AK4671_PMVCM, AK4671_PMVCM);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snd_soc_update_bits(codec, AK4671_AD_DA_POWER_MANAGEMENT,
+				    AK4671_PMVCM, AK4671_PMVCM);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SND_SOC_BIAS_OFF:
 		snd_soc_write(codec, AK4671_AD_DA_POWER_MANAGEMENT, 0x00);
@@ -625,10 +642,14 @@ static int ak4671_set_bias_level(struct snd_soc_codec *codec,
 #define AK4671_FORMATS		SNDRV_PCM_FMTBIT_S16_LE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops ak4671_dai_ops = {
 =======
 static const struct snd_soc_dai_ops ak4671_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops ak4671_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= ak4671_hw_params,
 	.set_sysclk	= ak4671_set_dai_sysclk,
 	.set_fmt	= ak4671_set_dai_fmt,
@@ -657,10 +678,13 @@ static int ak4671_probe(struct snd_soc_codec *codec)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	codec->hw_write = (hw_write_t)i2c_master_send;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = snd_soc_codec_set_cache_io(codec, 8, 8, ak4671->control_type);
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
@@ -668,10 +692,14 @@ static int ak4671_probe(struct snd_soc_codec *codec)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, ak4671_snd_controls,
 =======
 	snd_soc_add_codec_controls(codec, ak4671_snd_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_add_codec_controls(codec, ak4671_snd_controls,
+>>>>>>> refs/remotes/origin/master
 			     ARRAY_SIZE(ak4671_snd_controls));
 
 	ak4671_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
@@ -698,30 +726,44 @@ static struct snd_soc_codec_driver soc_codec_dev_ak4671 = {
 	.num_dapm_routes = ARRAY_SIZE(ak4671_intercon),
 };
 
+<<<<<<< HEAD
 static int __devinit ak4671_i2c_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
+=======
+static int ak4671_i2c_probe(struct i2c_client *client,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ak4671_priv *ak4671;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ak4671 = kzalloc(sizeof(struct ak4671_priv), GFP_KERNEL);
 =======
 	ak4671 = devm_kzalloc(&client->dev, sizeof(struct ak4671_priv),
 			      GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ak4671 = devm_kzalloc(&client->dev, sizeof(struct ak4671_priv),
+			      GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (ak4671 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(client, ak4671);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ak4671->control_data = client;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ak4671->control_type = SND_SOC_I2C;
 
 	ret = snd_soc_register_codec(&client->dev,
 			&soc_codec_dev_ak4671, &ak4671_dai, 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ret < 0)
 		kfree(ak4671);
@@ -737,6 +779,14 @@ static __devexit int ak4671_i2c_remove(struct i2c_client *client)
 	kfree(i2c_get_clientdata(client));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+static int ak4671_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -752,6 +802,7 @@ static struct i2c_driver ak4671_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = ak4671_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ak4671_i2c_remove),
 	.id_table = ak4671_i2c_id,
 };
@@ -767,6 +818,13 @@ static void __exit ak4671_exit(void)
 	i2c_del_driver(&ak4671_i2c_driver);
 }
 module_exit(ak4671_exit);
+=======
+	.remove = ak4671_i2c_remove,
+	.id_table = ak4671_i2c_id,
+};
+
+module_i2c_driver(ak4671_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC AK4671 codec driver");
 MODULE_AUTHOR("Joonyoung Shim <jy0922.shim@samsung.com>");

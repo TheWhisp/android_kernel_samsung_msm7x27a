@@ -216,7 +216,11 @@ static bool firmware_check_ready(struct net_device *dev,
 		break;
 	default:
 		rt_status = false;
+<<<<<<< HEAD
 		RT_TRACE(COMP_FIRMWARE, "Unknown firware status");
+=======
+		RT_TRACE(COMP_FIRMWARE, "Unknown firmware status");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -265,10 +269,18 @@ bool init_firmware(struct net_device *dev)
 			case FW_SOURCE_IMG_FILE:
 			{
 				if (pfirmware->firmware_buf_size[init_step] == 0) {
+<<<<<<< HEAD
 					const char *fw_name[3] = { "RTL8192E/boot.img",
 							   "RTL8192E/main.img",
 							   "RTL8192E/data.img"
 							 };
+=======
+					const char *fw_name[3] = {
+							RTL8192E_BOOT_IMG_FW,
+							RTL8192E_MAIN_IMG_FW,
+							RTL8192E_DATA_IMG_FW
+					};
+>>>>>>> refs/remotes/origin/master
 					const struct firmware	*fw_entry;
 					int rc;
 					rc = request_firmware(&fw_entry,
@@ -328,7 +340,11 @@ bool init_firmware(struct net_device *dev)
 		}
 
 		rt_status = fw_download_code(dev, mapped_file, file_length);
+<<<<<<< HEAD
 		if (rt_status != true) {
+=======
+		if (!rt_status) {
+>>>>>>> refs/remotes/origin/master
 			goto download_firmware_fail;
 		}
 

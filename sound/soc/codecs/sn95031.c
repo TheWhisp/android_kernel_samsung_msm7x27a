@@ -29,9 +29,13 @@
 #include <linux/delay.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/intel_scu_ipc.h>
 #include <sound/pcm.h>
@@ -84,10 +88,14 @@ static void configure_adc(struct snd_soc_codec *sn95031_codec, int val)
 static int find_free_channel(struct snd_soc_codec *sn95031_codec)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0, i, value;
 =======
 	int i, value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, value;
+>>>>>>> refs/remotes/origin/master
 
 	/* check whether ADC is enabled */
 	value = snd_soc_read(sn95031_codec, SN95031_ADC1CNTL1);
@@ -100,6 +108,7 @@ static int find_free_channel(struct snd_soc_codec *sn95031_codec)
 		value = snd_soc_read(sn95031_codec,
 				SN95031_ADC_CHNL_START_ADDR + i);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (value & SN95031_STOPBIT_MASK) {
 			ret = i;
 			break;
@@ -107,11 +116,16 @@ static int find_free_channel(struct snd_soc_codec *sn95031_codec)
 	}
 	return (ret > SN95031_ADC_LOOP_MAX) ? (-EINVAL) : ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (value & SN95031_STOPBIT_MASK)
 			break;
 	}
 	return (i == SN95031_ADC_CHANLS_MAX) ? (-EINVAL) : i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Initialize the ADC for reading micbias values. Can sleep. */
@@ -120,10 +134,14 @@ static int sn95031_initialize_adc(struct snd_soc_codec *sn95031_codec)
 	int base_addr, chnl_addr;
 	int value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int channel_index;
 =======
 	int channel_index;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int channel_index;
+>>>>>>> refs/remotes/origin/master
 
 	/* Index of the first channel in which the stop bit is set */
 	channel_index = find_free_channel(sn95031_codec);
@@ -183,6 +201,7 @@ static unsigned int sn95031_get_mic_bias(struct snd_soc_codec *codec)
 	return mic_bias;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(sn95031_get_mic_bias);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -190,11 +209,17 @@ EXPORT_SYMBOL_GPL(sn95031_get_mic_bias);
 
 static inline unsigned int sn95031_read(struct snd_soc_codec *codec,
 			unsigned int reg)
+=======
+/*end - adc helper functions */
+
+static int sn95031_read(void *ctx, unsigned int reg, unsigned int *val)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 value = 0;
 	int ret;
 
 	ret = intel_scu_ipc_ioread8(reg, &value);
+<<<<<<< HEAD
 	if (ret)
 		pr_err("read of %x failed, err %d\n", reg, ret);
 	return value;
@@ -212,6 +237,24 @@ static inline int sn95031_write(struct snd_soc_codec *codec,
 	return ret;
 }
 
+=======
+	if (ret == 0)
+		*val = value;
+
+	return ret;
+}
+
+static int sn95031_write(void *ctx, unsigned int reg, unsigned int value)
+{
+	return intel_scu_ipc_iowrite8(reg, value);
+}
+
+static const struct regmap_config sn95031_regmap = {
+	.reg_read = sn95031_read,
+	.reg_write = sn95031_write,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int sn95031_set_vaud_bias(struct snd_soc_codec *codec,
 		enum snd_soc_bias_level level)
 {
@@ -683,10 +726,14 @@ static int sn95031_pcm_spkr_mute(struct snd_soc_dai *dai, int mute)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int sn95031_pcm_hw_params(struct snd_pcm_substream *substream,
 =======
 static int sn95031_pcm_hw_params(struct snd_pcm_substream *substream,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int sn95031_pcm_hw_params(struct snd_pcm_substream *substream,
+>>>>>>> refs/remotes/origin/master
 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 {
 	unsigned int format, rate;
@@ -727,23 +774,32 @@ static int sn95031_pcm_hw_params(struct snd_pcm_substream *substream,
 
 /* Codec DAI section */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops sn95031_headset_dai_ops = {
 =======
 static const struct snd_soc_dai_ops sn95031_headset_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops sn95031_headset_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.digital_mute	= sn95031_pcm_hs_mute,
 	.hw_params	= sn95031_pcm_hw_params,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops sn95031_speaker_dai_ops = {
 =======
 static const struct snd_soc_dai_ops sn95031_speaker_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops sn95031_speaker_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.digital_mute	= sn95031_pcm_spkr_mute,
 	.hw_params	= sn95031_pcm_hw_params,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct snd_soc_dai_ops sn95031_vib1_dai_ops = {
 	.hw_params	= sn95031_pcm_hw_params,
@@ -755,6 +811,8 @@ static struct snd_soc_dai_ops sn95031_vib2_dai_ops = {
 
 struct snd_soc_dai_driver sn95031_dais[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct snd_soc_dai_ops sn95031_vib1_dai_ops = {
 	.hw_params	= sn95031_pcm_hw_params,
 };
@@ -764,7 +822,10 @@ static const struct snd_soc_dai_ops sn95031_vib2_dai_ops = {
 };
 
 static struct snd_soc_dai_driver sn95031_dais[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	.name = "SN95031 Headset",
 	.playback = {
@@ -876,11 +937,16 @@ static int sn95031_codec_probe(struct snd_soc_codec *codec)
 	pr_debug("codec_probe called\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
 	codec->dapm.idle_bias_off = 1;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_codec_set_cache_io(codec, 0, 0, SND_SOC_REGMAP);
+
+>>>>>>> refs/remotes/origin/master
 	/* PCM interface config
 	 * This sets the pcm rx slot conguration to max 6 slots
 	 * for max 4 dais (2 stereo and 2 mono)
@@ -924,10 +990,14 @@ static int sn95031_codec_probe(struct snd_soc_codec *codec)
 	snd_soc_write(codec, SN95031_SSR3, 0x40);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, sn95031_snd_controls,
 =======
 	snd_soc_add_codec_controls(codec, sn95031_snd_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_add_codec_controls(codec, sn95031_snd_controls,
+>>>>>>> refs/remotes/origin/master
 			     ARRAY_SIZE(sn95031_snd_controls));
 
 	return 0;
@@ -941,6 +1011,7 @@ static int sn95031_codec_remove(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 struct snd_soc_codec_driver sn95031_codec = {
 	.probe		= sn95031_codec_probe,
 	.remove		= sn95031_codec_remove,
@@ -951,20 +1022,44 @@ struct snd_soc_codec_driver sn95031_codec = {
 =======
 	.idle_bias_off	= true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_codec_driver sn95031_codec = {
+	.probe		= sn95031_codec_probe,
+	.remove		= sn95031_codec_remove,
+	.set_bias_level	= sn95031_set_vaud_bias,
+	.idle_bias_off	= true,
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets	= sn95031_dapm_widgets,
 	.num_dapm_widgets	= ARRAY_SIZE(sn95031_dapm_widgets),
 	.dapm_routes	= sn95031_audio_map,
 	.num_dapm_routes	= ARRAY_SIZE(sn95031_audio_map),
 };
 
+<<<<<<< HEAD
 static int __devinit sn95031_device_probe(struct platform_device *pdev)
 {
 	pr_debug("codec device probe called for %s\n", dev_name(&pdev->dev));
+=======
+static int sn95031_device_probe(struct platform_device *pdev)
+{
+	struct regmap *regmap;
+
+	pr_debug("codec device probe called for %s\n", dev_name(&pdev->dev));
+
+	regmap = devm_regmap_init(&pdev->dev, NULL, NULL, &sn95031_regmap);
+	if (IS_ERR(regmap))
+		return PTR_ERR(regmap);
+
+>>>>>>> refs/remotes/origin/master
 	return snd_soc_register_codec(&pdev->dev, &sn95031_codec,
 			sn95031_dais, ARRAY_SIZE(sn95031_dais));
 }
 
+<<<<<<< HEAD
 static int __devexit sn95031_device_remove(struct platform_device *pdev)
+=======
+static int sn95031_device_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	pr_debug("codec device remove called\n");
 	snd_soc_unregister_codec(&pdev->dev);
@@ -977,6 +1072,7 @@ static struct platform_driver sn95031_codec_driver = {
 		.owner		= THIS_MODULE,
 	},
 	.probe		= sn95031_device_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sn95031_device_remove),
 };
 
@@ -997,6 +1093,12 @@ module_exit(sn95031_exit);
 =======
 module_platform_driver(sn95031_codec_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= sn95031_device_remove,
+};
+
+module_platform_driver(sn95031_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC TI SN95031 codec driver");
 MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");

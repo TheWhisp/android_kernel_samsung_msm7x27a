@@ -58,17 +58,24 @@ struct page *ecryptfs_get_locked_page(struct inode *inode, loff_t index)
  *
  * Returns zero on success; non-zero otherwise
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This is where we encrypt the data and pass the encrypted data to
  * the lower filesystem.  In OpenPGP-compatible mode, we operate on
  * entire underlying packets.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int ecryptfs_writepage(struct page *page, struct writeback_control *wbc)
 {
 	int rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Refuse to write the page out if we are called from reclaim context
@@ -84,6 +91,8 @@ static int ecryptfs_writepage(struct page *page, struct writeback_control *wbc)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = ecryptfs_encrypt_page(page);
 	if (rc) {
 		ecryptfs_printk(KERN_WARNING, "Error encrypting "
@@ -157,10 +166,14 @@ ecryptfs_copy_up_encrypted_with_header(struct page *page,
 			char *page_virt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			page_virt = kmap_atomic(page, KM_USER0);
 =======
 			page_virt = kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			page_virt = kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 			memset(page_virt, 0, PAGE_CACHE_SIZE);
 			/* TODO: Support more than one header extent */
 			if (view_extent_num == 0) {
@@ -174,10 +187,14 @@ ecryptfs_copy_up_encrypted_with_header(struct page *page,
 							       &written);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(page_virt, KM_USER0);
 =======
 			kunmap_atomic(page_virt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(page_virt);
+>>>>>>> refs/remotes/origin/master
 			flush_dcache_page(page);
 			if (rc) {
 				printk(KERN_ERR "%s: Error reading xattr "
@@ -364,7 +381,12 @@ static int ecryptfs_write_begin(struct file *file,
 			if (prev_page_end_size
 			    >= i_size_read(page->mapping->host)) {
 				zero_user(page, 0, PAGE_CACHE_SIZE);
+<<<<<<< HEAD
 			} else {
+=======
+				SetPageUptodate(page);
+			} else if (len < PAGE_CACHE_SIZE) {
+>>>>>>> refs/remotes/origin/master
 				rc = ecryptfs_decrypt_page(page);
 				if (rc) {
 					printk(KERN_ERR "%s: Error decrypting "
@@ -374,8 +396,13 @@ static int ecryptfs_write_begin(struct file *file,
 					ClearPageUptodate(page);
 					goto out;
 				}
+<<<<<<< HEAD
 			}
 			SetPageUptodate(page);
+=======
+				SetPageUptodate(page);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	/* If creating a page or more of holes, zero them out via truncate.
@@ -500,12 +527,15 @@ int ecryptfs_write_inode_size_to_metadata(struct inode *ecryptfs_inode)
  * @page: The eCryptfs page
  * @fsdata: The fsdata (unused)
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This is where we encrypt the data and pass the encrypted data to
  * the lower filesystem.  In OpenPGP-compatible mode, we operate on
  * entire underlying packets.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int ecryptfs_write_end(struct file *file,
 			struct address_space *mapping,
@@ -520,9 +550,12 @@ static int ecryptfs_write_end(struct file *file,
 		&ecryptfs_inode_to_private(ecryptfs_inode)->crypt_stat;
 	int rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int need_unlock_page = 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ecryptfs_printk(KERN_DEBUG, "Calling fill_zeros_to_end_of_page"
 			"(page w/ index = [0x%.16lx], to = [%d])\n", index, to);
@@ -536,6 +569,16 @@ static int ecryptfs_write_end(struct file *file,
 		}
 		goto out;
 	}
+<<<<<<< HEAD
+=======
+	if (!PageUptodate(page)) {
+		if (copied < PAGE_CACHE_SIZE) {
+			rc = 0;
+			goto out;
+		}
+		SetPageUptodate(page);
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Fills in zeros if 'to' goes beyond inode size */
 	rc = fill_zeros_to_end_of_page(page, to);
 	if (rc) {
@@ -544,22 +587,29 @@ static int ecryptfs_write_end(struct file *file,
 		goto out;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_page_dirty(page);
 	unlock_page(page);
 	need_unlock_page = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = ecryptfs_encrypt_page(page);
 	if (rc) {
 		ecryptfs_printk(KERN_WARNING, "Error encrypting page (upper "
 				"index [0x%.16lx])\n", index);
 		goto out;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pos + copied > i_size_read(ecryptfs_inode)) {
 		i_size_write(ecryptfs_inode, pos + copied);
 		ecryptfs_printk(KERN_DEBUG, "Expanded file size to "
 			"[0x%.16llx]\n",
 			(unsigned long long)i_size_read(ecryptfs_inode));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		balance_dirty_pages_ratelimited(mapping);
 		rc = ecryptfs_write_inode_size_to_metadata(ecryptfs_inode);
@@ -574,6 +624,8 @@ out:
 	if (need_unlock_page)
 		unlock_page(page);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	rc = ecryptfs_write_inode_size_to_metadata(ecryptfs_inode);
 	if (rc)
@@ -583,7 +635,10 @@ out:
 		rc = copied;
 out:
 	unlock_page(page);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	page_cache_release(page);
 	return rc;
 }

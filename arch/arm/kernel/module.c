@@ -24,6 +24,10 @@
 #include <asm/sections.h>
 #include <asm/smp_plat.h>
 #include <asm/unwind.h>
+<<<<<<< HEAD
+=======
+#include <asm/opcodes.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_XIP_KERNEL
 /*
@@ -34,16 +38,21 @@
  */
 #undef MODULES_VADDR
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MODULES_VADDR	(((unsigned long)_etext + ~PGDIR_MASK) & PGDIR_MASK)
 =======
 #define MODULES_VADDR	(((unsigned long)_etext + ~PMD_MASK) & PMD_MASK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MODULES_VADDR	(((unsigned long)_etext + ~PMD_MASK) & PMD_MASK)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_MMU
 void *module_alloc(unsigned long size)
 {
 	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
+<<<<<<< HEAD
 				GFP_KERNEL, PAGE_KERNEL_EXEC, -1,
 				__builtin_return_address(0));
 }
@@ -70,6 +79,12 @@ int module_frob_arch_sections(Elf_Ehdr *hdr,
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				GFP_KERNEL, PAGE_KERNEL_EXEC, NUMA_NO_NODE,
+				__builtin_return_address(0));
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 int
 apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
@@ -86,6 +101,10 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 		Elf32_Sym *sym;
 		const char *symname;
 		s32 offset;
+<<<<<<< HEAD
+=======
+		u32 tmp;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_THUMB2_KERNEL
 		u32 upper, lower, sign, j1, j2;
 #endif
@@ -121,7 +140,12 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 		case R_ARM_PC24:
 		case R_ARM_CALL:
 		case R_ARM_JUMP24:
+<<<<<<< HEAD
 			offset = (*(u32 *)loc & 0x00ffffff) << 2;
+=======
+			offset = __mem_to_opcode_arm(*(u32 *)loc);
+			offset = (offset & 0x00ffffff) << 2;
+>>>>>>> refs/remotes/origin/master
 			if (offset & 0x02000000)
 				offset -= 0x04000000;
 
@@ -137,9 +161,16 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 			}
 
 			offset >>= 2;
+<<<<<<< HEAD
 
 			*(u32 *)loc &= 0xff000000;
 			*(u32 *)loc |= offset & 0x00ffffff;
+=======
+			offset &= 0x00ffffff;
+
+			*(u32 *)loc &= __opcode_to_mem_arm(0xff000000);
+			*(u32 *)loc |= __opcode_to_mem_arm(offset);
+>>>>>>> refs/remotes/origin/master
 			break;
 
 	       case R_ARM_V4BX:
@@ -147,8 +178,13 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 			* other bits to re-code instruction as
 			* MOV PC,Rm.
 			*/
+<<<<<<< HEAD
 		       *(u32 *)loc &= 0xf000000f;
 		       *(u32 *)loc |= 0x01a0f000;
+=======
+		       *(u32 *)loc &= __opcode_to_mem_arm(0xf000000f);
+		       *(u32 *)loc |= __opcode_to_mem_arm(0x01a0f000);
+>>>>>>> refs/remotes/origin/master
 		       break;
 
 		case R_ARM_PREL31:
@@ -158,7 +194,11 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 
 		case R_ARM_MOVW_ABS_NC:
 		case R_ARM_MOVT_ABS:
+<<<<<<< HEAD
 			offset = *(u32 *)loc;
+=======
+			offset = tmp = __mem_to_opcode_arm(*(u32 *)loc);
+>>>>>>> refs/remotes/origin/master
 			offset = ((offset & 0xf0000) >> 4) | (offset & 0xfff);
 			offset = (offset ^ 0x8000) - 0x8000;
 
@@ -166,16 +206,29 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 			if (ELF32_R_TYPE(rel->r_info) == R_ARM_MOVT_ABS)
 				offset >>= 16;
 
+<<<<<<< HEAD
 			*(u32 *)loc &= 0xfff0f000;
 			*(u32 *)loc |= ((offset & 0xf000) << 4) |
 					(offset & 0x0fff);
+=======
+			tmp &= 0xfff0f000;
+			tmp |= ((offset & 0xf000) << 4) |
+				(offset & 0x0fff);
+
+			*(u32 *)loc = __opcode_to_mem_arm(tmp);
+>>>>>>> refs/remotes/origin/master
 			break;
 
 #ifdef CONFIG_THUMB2_KERNEL
 		case R_ARM_THM_CALL:
 		case R_ARM_THM_JUMP24:
+<<<<<<< HEAD
 			upper = *(u16 *)loc;
 			lower = *(u16 *)(loc + 2);
+=======
+			upper = __mem_to_opcode_thumb16(*(u16 *)loc);
+			lower = __mem_to_opcode_thumb16(*(u16 *)(loc + 2));
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * 25 bit signed address range (Thumb-2 BL and B.W
@@ -224,17 +277,33 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 			sign = (offset >> 24) & 1;
 			j1 = sign ^ (~(offset >> 23) & 1);
 			j2 = sign ^ (~(offset >> 22) & 1);
+<<<<<<< HEAD
 			*(u16 *)loc = (u16)((upper & 0xf800) | (sign << 10) |
 					    ((offset >> 12) & 0x03ff));
 			*(u16 *)(loc + 2) = (u16)((lower & 0xd000) |
 						  (j1 << 13) | (j2 << 11) |
 						  ((offset >> 1) & 0x07ff));
+=======
+			upper = (u16)((upper & 0xf800) | (sign << 10) |
+					    ((offset >> 12) & 0x03ff));
+			lower = (u16)((lower & 0xd000) |
+				      (j1 << 13) | (j2 << 11) |
+				      ((offset >> 1) & 0x07ff));
+
+			*(u16 *)loc = __opcode_to_mem_thumb16(upper);
+			*(u16 *)(loc + 2) = __opcode_to_mem_thumb16(lower);
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		case R_ARM_THM_MOVW_ABS_NC:
 		case R_ARM_THM_MOVT_ABS:
+<<<<<<< HEAD
 			upper = *(u16 *)loc;
 			lower = *(u16 *)(loc + 2);
+=======
+			upper = __mem_to_opcode_thumb16(*(u16 *)loc);
+			lower = __mem_to_opcode_thumb16(*(u16 *)(loc + 2));
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * MOVT/MOVW instructions encoding in Thumb-2:
@@ -255,12 +324,23 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 			if (ELF32_R_TYPE(rel->r_info) == R_ARM_THM_MOVT_ABS)
 				offset >>= 16;
 
+<<<<<<< HEAD
 			*(u16 *)loc = (u16)((upper & 0xfbf0) |
 					    ((offset & 0xf000) >> 12) |
 					    ((offset & 0x0800) >> 1));
 			*(u16 *)(loc + 2) = (u16)((lower & 0x8f00) |
 						  ((offset & 0x0700) << 4) |
 						  (offset & 0x00ff));
+=======
+			upper = (u16)((upper & 0xfbf0) |
+				      ((offset & 0xf000) >> 12) |
+				      ((offset & 0x0800) >> 1));
+			lower = (u16)((lower & 0x8f00) |
+				      ((offset & 0x0700) << 4) |
+				      (offset & 0x00ff));
+			*(u16 *)loc = __opcode_to_mem_thumb16(upper);
+			*(u16 *)(loc + 2) = __opcode_to_mem_thumb16(lower);
+>>>>>>> refs/remotes/origin/master
 			break;
 #endif
 
@@ -274,6 +354,7 @@ apply_relocate(Elf32_Shdr *sechdrs, const char *strtab, unsigned int symindex,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int
 apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 		   unsigned int symindex, unsigned int relsec, struct module *module)
@@ -285,6 +366,8 @@ apply_relocate_add(Elf32_Shdr *sechdrs, const char *strtab,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct mod_unwind_map {
 	const Elf_Shdr *unw_sec;
 	const Elf_Shdr *txt_sec;
@@ -326,24 +409,43 @@ int module_finalize(const Elf32_Ehdr *hdr, const Elf_Shdr *sechdrs,
 
 		if (strcmp(".ARM.exidx.init.text", secname) == 0)
 			maps[ARM_SEC_INIT].unw_sec = s;
+<<<<<<< HEAD
 		else if (strcmp(".ARM.exidx.devinit.text", secname) == 0)
 			maps[ARM_SEC_DEVINIT].unw_sec = s;
+=======
+>>>>>>> refs/remotes/origin/master
 		else if (strcmp(".ARM.exidx", secname) == 0)
 			maps[ARM_SEC_CORE].unw_sec = s;
 		else if (strcmp(".ARM.exidx.exit.text", secname) == 0)
 			maps[ARM_SEC_EXIT].unw_sec = s;
+<<<<<<< HEAD
 		else if (strcmp(".ARM.exidx.devexit.text", secname) == 0)
 			maps[ARM_SEC_DEVEXIT].unw_sec = s;
 		else if (strcmp(".init.text", secname) == 0)
 			maps[ARM_SEC_INIT].txt_sec = s;
 		else if (strcmp(".devinit.text", secname) == 0)
 			maps[ARM_SEC_DEVINIT].txt_sec = s;
+=======
+		else if (strcmp(".ARM.exidx.text.unlikely", secname) == 0)
+			maps[ARM_SEC_UNLIKELY].unw_sec = s;
+		else if (strcmp(".ARM.exidx.text.hot", secname) == 0)
+			maps[ARM_SEC_HOT].unw_sec = s;
+		else if (strcmp(".init.text", secname) == 0)
+			maps[ARM_SEC_INIT].txt_sec = s;
+>>>>>>> refs/remotes/origin/master
 		else if (strcmp(".text", secname) == 0)
 			maps[ARM_SEC_CORE].txt_sec = s;
 		else if (strcmp(".exit.text", secname) == 0)
 			maps[ARM_SEC_EXIT].txt_sec = s;
+<<<<<<< HEAD
 		else if (strcmp(".devexit.text", secname) == 0)
 			maps[ARM_SEC_DEVEXIT].txt_sec = s;
+=======
+		else if (strcmp(".text.unlikely", secname) == 0)
+			maps[ARM_SEC_UNLIKELY].txt_sec = s;
+		else if (strcmp(".text.hot", secname) == 0)
+			maps[ARM_SEC_HOT].txt_sec = s;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < ARM_SEC_MAX; i++)
@@ -362,14 +464,20 @@ int module_finalize(const Elf32_Ehdr *hdr, const Elf_Shdr *sechdrs,
 	s = find_mod_section(hdr, sechdrs, ".alt.smp.init");
 	if (s && !is_smp())
 <<<<<<< HEAD
+<<<<<<< HEAD
 		fixup_smp((void *)s->sh_addr, s->sh_size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP_ON_UP
 		fixup_smp((void *)s->sh_addr, s->sh_size);
 #else
 		return -EINVAL;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

@@ -95,7 +95,11 @@ struct ppc64_tlb_batch {
 	unsigned long		index;
 	struct mm_struct	*mm;
 	real_pte_t		pte[PPC64_TLB_BATCH_NR];
+<<<<<<< HEAD
 	unsigned long		vaddr[PPC64_TLB_BATCH_NR];
+=======
+	unsigned long		vpn[PPC64_TLB_BATCH_NR];
+>>>>>>> refs/remotes/origin/master
 	unsigned int		psize;
 	int			ssize;
 };
@@ -103,9 +107,12 @@ DECLARE_PER_CPU(struct ppc64_tlb_batch, ppc64_tlb_batch);
 
 extern void __flush_tlb_pending(struct ppc64_tlb_batch *batch);
 
+<<<<<<< HEAD
 extern void hpte_need_flush(struct mm_struct *mm, unsigned long addr,
 			    pte_t *ptep, unsigned long pte, int huge);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define __HAVE_ARCH_ENTER_LAZY_MMU_MODE
 
 static inline void arch_enter_lazy_mmu_mode(void)
@@ -127,7 +134,11 @@ static inline void arch_leave_lazy_mmu_mode(void)
 #define arch_flush_lazy_mmu_mode()      do {} while (0)
 
 
+<<<<<<< HEAD
 extern void flush_hash_page(unsigned long va, real_pte_t pte, int psize,
+=======
+extern void flush_hash_page(unsigned long vpn, real_pte_t pte, int psize,
+>>>>>>> refs/remotes/origin/master
 			    int ssize, int local);
 extern void flush_hash_range(unsigned long number, int local);
 
@@ -168,7 +179,12 @@ static inline void flush_tlb_kernel_range(unsigned long start,
 /* Private function for use by PCI IO mapping code */
 extern void __flush_hash_table_range(struct mm_struct *mm, unsigned long start,
 				     unsigned long end);
+<<<<<<< HEAD
 
+=======
+extern void flush_tlb_pmd_range(struct mm_struct *mm, pmd_t *pmd,
+				unsigned long addr);
+>>>>>>> refs/remotes/origin/master
 #else
 #error Unsupported MMU type
 #endif

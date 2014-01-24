@@ -29,8 +29,14 @@
 #include <linux/slab.h>
 #include <linux/errno.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 #include <linux/of_spi.h>
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_gpio.h>
 #include <linux/interrupt.h>
 #include <linux/delay.h>
@@ -102,7 +108,11 @@ struct spi_ppc4xx_regs {
 	u8 dummy;
 	/*
 	 * Clock divisor modulus register
+<<<<<<< HEAD
 	 * This uses the follwing formula:
+=======
+	 * This uses the following formula:
+>>>>>>> refs/remotes/origin/master
 	 *    SCPClkOut = OPBCLK/(4(CDM + 1))
 	 * or
 	 *    CDM = (OPBCLK/4*SCPClkOut) - 1
@@ -191,18 +201,25 @@ static int spi_ppc4xx_setupxfer(struct spi_device *spi, struct spi_transfer *t)
 			speed = min(t->speed_hz, spi->max_speed_hz);
 	}
 
+<<<<<<< HEAD
 	if (bits_per_word != 8) {
 		dev_err(&spi->dev, "invalid bits-per-word (%d)\n",
 				bits_per_word);
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!speed || (speed > spi->max_speed_hz)) {
 		dev_err(&spi->dev, "invalid speed_hz (%d)\n", speed);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* Write new configration */
+=======
+	/* Write new configuration */
+>>>>>>> refs/remotes/origin/master
 	out_8(&hw->regs->mode, cs->mode);
 
 	/* Set the clock */
@@ -230,12 +247,15 @@ static int spi_ppc4xx_setup(struct spi_device *spi)
 {
 	struct spi_ppc4xx_cs *cs = spi->controller_state;
 
+<<<<<<< HEAD
 	if (spi->bits_per_word != 8) {
 		dev_err(&spi->dev, "invalid bits-per-word (%d)\n",
 			spi->bits_per_word);
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!spi->max_speed_hz) {
 		dev_err(&spi->dev, "invalid max_speed_hz (must be non-zero)\n");
 		return -EINVAL;
@@ -390,7 +410,11 @@ static void free_gpios(struct ppc4xx_spi *hw)
 /*
  * platform_device layer stuff...
  */
+<<<<<<< HEAD
 static int __init spi_ppc4xx_of_probe(struct platform_device *op)
+=======
+static int spi_ppc4xx_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ppc4xx_spi *hw;
 	struct spi_master *master;
@@ -407,9 +431,15 @@ static int __init spi_ppc4xx_of_probe(struct platform_device *op)
 	if (master == NULL)
 		return -ENOMEM;
 	master->dev.of_node = np;
+<<<<<<< HEAD
 	dev_set_drvdata(dev, master);
 	hw = spi_master_get_devdata(master);
 	hw->master = spi_master_get(master);
+=======
+	platform_set_drvdata(op, master);
+	hw = spi_master_get_devdata(master);
+	hw->master = master;
+>>>>>>> refs/remotes/origin/master
 	hw->dev = dev;
 
 	init_completion(&hw->done);
@@ -420,7 +450,11 @@ static int __init spi_ppc4xx_of_probe(struct platform_device *op)
 	 * This includes both "null" gpio's and real ones.
 	 */
 	num_gpios = of_gpio_count(np);
+<<<<<<< HEAD
 	if (num_gpios) {
+=======
+	if (num_gpios > 0) {
+>>>>>>> refs/remotes/origin/master
 		int i;
 
 		hw->gpios = kzalloc(sizeof(int) * num_gpios, GFP_KERNEL);
@@ -466,16 +500,24 @@ static int __init spi_ppc4xx_of_probe(struct platform_device *op)
 	bbp->use_dma = 0;
 	bbp->master->setup = spi_ppc4xx_setup;
 	bbp->master->cleanup = spi_ppc4xx_cleanup;
+<<<<<<< HEAD
 
 	/* Allocate bus num dynamically. */
 	bbp->master->bus_num = -1;
+=======
+	bbp->master->bits_per_word_mask = SPI_BPW_MASK(8);
+>>>>>>> refs/remotes/origin/master
 
 	/* the spi->mode bits understood by this driver: */
 	bbp->master->mode_bits =
 		SPI_CPHA | SPI_CPOL | SPI_CS_HIGH | SPI_LSB_FIRST;
 
 	/* this many pins in all GPIO controllers */
+<<<<<<< HEAD
 	bbp->master->num_chipselect = num_gpios;
+=======
+	bbp->master->num_chipselect = num_gpios > 0 ? num_gpios : 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the clock for the OPB */
 	opbnp = of_find_compatible_node(NULL, NULL, "ibm,opb");
@@ -557,13 +599,17 @@ request_mem_error:
 free_gpios:
 	free_gpios(hw);
 free_master:
+<<<<<<< HEAD
 	dev_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_master_put(master);
 
 	dev_err(dev, "initialization failed\n");
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit spi_ppc4xx_of_remove(struct platform_device *op)
 {
 	struct spi_master *master = dev_get_drvdata(&op->dev);
@@ -571,10 +617,22 @@ static int __exit spi_ppc4xx_of_remove(struct platform_device *op)
 
 	spi_bitbang_stop(&hw->bitbang);
 	dev_set_drvdata(&op->dev, NULL);
+=======
+static int spi_ppc4xx_of_remove(struct platform_device *op)
+{
+	struct spi_master *master = platform_get_drvdata(op);
+	struct ppc4xx_spi *hw = spi_master_get_devdata(master);
+
+	spi_bitbang_stop(&hw->bitbang);
+>>>>>>> refs/remotes/origin/master
 	release_mem_region(hw->mapbase, hw->mapsize);
 	free_irq(hw->irqnum, hw);
 	iounmap(hw->regs);
 	free_gpios(hw);
+<<<<<<< HEAD
+=======
+	spi_master_put(master);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -587,7 +645,11 @@ MODULE_DEVICE_TABLE(of, spi_ppc4xx_of_match);
 
 static struct platform_driver spi_ppc4xx_of_driver = {
 	.probe = spi_ppc4xx_of_probe,
+<<<<<<< HEAD
 	.remove = __exit_p(spi_ppc4xx_of_remove),
+=======
+	.remove = spi_ppc4xx_of_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = DRIVER_NAME,
 		.owner = THIS_MODULE,

@@ -25,6 +25,7 @@ typedef long (*syscall_fn)(unsigned long, unsigned long,
 	unsigned long, unsigned long,
 	unsigned long, unsigned long);
 
+<<<<<<< HEAD
 asmlinkage int sys_execve(char __user *ufilename, char __user * __user *argv,
 			  char __user * __user *envp);
 asmlinkage int sys_clone(unsigned long clone_flags, unsigned long newsp,
@@ -33,6 +34,8 @@ asmlinkage int sys_clone(unsigned long clone_flags, unsigned long newsp,
 #define sys_execve	sys_execve
 #define sys_clone	sys_clone
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/syscalls.h>
 
 extern void *sys_call_table[];

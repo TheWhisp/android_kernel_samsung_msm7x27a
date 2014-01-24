@@ -16,14 +16,19 @@
 
 #include <asm/assembler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cp15.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cp15.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/domain.h>
 #include <asm/ptrace.h>
 #include <asm/asm-offsets.h>
 #include <asm/memory.h>
 #include <asm/thread_info.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/system.h>
 =======
@@ -32,6 +37,12 @@
 
 #ifdef CONFIG_DEBUG_LL
 #include <mach/debug-macro.S>
+=======
+#include <asm/pgtable.h>
+
+#if defined(CONFIG_DEBUG_LL) && !defined(CONFIG_DEBUG_SEMIHOSTING)
+#include CONFIG_DEBUG_LL_INCLUDE
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -47,12 +58,15 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	swapper_pg_dir
 	.equ	swapper_pg_dir, KERNEL_RAM_VADDR - 0x4000
 
 	.macro	pgtbl, rd, phys
 	add	\rd, \phys, #TEXT_OFFSET - 0x4000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_LPAE
 	/* LPAE requires an additional page for the PGD */
 #define PG_DIR_SIZE	0x5000
@@ -67,6 +81,7 @@
 
 	.macro	pgtbl, rd, phys
 	add	\rd, \phys, #TEXT_OFFSET - PG_DIR_SIZE
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	.endm
 
@@ -78,6 +93,10 @@
 #define KERNEL_END	_end
 #endif
 
+=======
+	.endm
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Kernel startup entry point.
  * ---------------------------
@@ -97,22 +116,38 @@
  * circumstances, zImage) is for.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__HEAD
 ENTRY(stext)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.arm
 
 	__HEAD
 ENTRY(stext)
+<<<<<<< HEAD
+=======
+ ARM_BE8(setend	be )			@ ensure we are in BE8 mode
+>>>>>>> refs/remotes/origin/master
 
  THUMB(	adr	r9, BSYM(1f)	)	@ Kernel is always entered in ARM.
  THUMB(	bx	r9		)	@ If this is a Thumb-2 kernel,
  THUMB(	.thumb			)	@ switch to Thumb now.
  THUMB(1:			)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	setmode	PSR_F_BIT | PSR_I_BIT | SVC_MODE, r9 @ ensure svc mode
 						@ and irqs disabled
+=======
+#ifdef CONFIG_ARM_VIRT_EXT
+	bl	__hyp_stub_install
+#endif
+	@ ensure svc mode and all interrupts masked
+	safe_svcmode_maskall r9
+
+>>>>>>> refs/remotes/origin/master
 	mrc	p15, 0, r9, c0, c0		@ get processor id
 	bl	__lookup_processor_type		@ r5=procinfo r9=cpuid
 	movs	r10, r5				@ invalid processor (r5=0)?
@@ -120,7 +155,10 @@ ENTRY(stext)
 	beq	__error_p			@ yes, error 'p'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_LPAE
 	mrc	p15, 0, r3, c0, c1, 4		@ read ID_MMFR0
 	and	r3, r3, #0xf			@ extract VMSA support
@@ -129,7 +167,10 @@ ENTRY(stext)
 	blo	__error_p			@ only classic page table format
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_XIP_KERNEL
 	adr	r3, 2f
 	ldmia	r3, {r4, r8}
@@ -137,10 +178,14 @@ ENTRY(stext)
 	add	r8, r8, r4			@ PHYS_OFFSET
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ldr	r8, =PLAT_PHYS_OFFSET
 =======
 	ldr	r8, =PHYS_OFFSET		@ always constant in this case
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ldr	r8, =PLAT_PHYS_OFFSET		@ always constant in this case
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	/*
@@ -187,12 +232,17 @@ ENDPROC(stext)
  *
  * Returns:
  *  r0, r3, r5-r7 corrupted
+<<<<<<< HEAD
  *  r4 = physical page table address
+=======
+ *  r4 = page table (see ARCH_PGD_SHIFT in asm/memory.h)
+>>>>>>> refs/remotes/origin/master
  */
 __create_page_tables:
 	pgtbl	r4, r8				@ page table address
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Clear the 16K level 1 swapper page table
 	 */
@@ -200,12 +250,17 @@ __create_page_tables:
 	mov	r3, #0
 	add	r6, r0, #0x4000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Clear the swapper page table
 	 */
 	mov	r0, r4
 	mov	r3, #0
 	add	r6, r0, #PG_DIR_SIZE
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 1:	str	r3, [r0], #4
 	str	r3, [r0], #4
 	str	r3, [r0], #4
@@ -214,7 +269,10 @@ __create_page_tables:
 	bne	1b
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_LPAE
 	/*
 	 * Build the PGD table (first level) to point to the PMD table. A PGD
@@ -225,22 +283,42 @@ __create_page_tables:
 	orr	r3, r3, #3			@ PGD block type
 	mov	r6, #4				@ PTRS_PER_PGD
 	mov	r7, #1 << (55 - 32)		@ L_PGD_SWAPPER
+<<<<<<< HEAD
 1:	str	r3, [r0], #4			@ set bottom PGD entry bits
 	str	r7, [r0], #4			@ set top PGD entry bits
+=======
+1:
+#ifdef CONFIG_CPU_ENDIAN_BE8
+	str	r7, [r0], #4			@ set top PGD entry bits
+	str	r3, [r0], #4			@ set bottom PGD entry bits
+#else
+	str	r3, [r0], #4			@ set bottom PGD entry bits
+	str	r7, [r0], #4			@ set top PGD entry bits
+#endif
+>>>>>>> refs/remotes/origin/master
 	add	r3, r3, #0x1000			@ next PMD table
 	subs	r6, r6, #1
 	bne	1b
 
 	add	r4, r4, #0x1000			@ point to the PMD tables
+<<<<<<< HEAD
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_CPU_ENDIAN_BE8
+	add	r4, r4, #4			@ we only write the bottom word
+#endif
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	ldr	r7, [r10, #PROCINFO_MM_MMUFLAGS] @ mm_mmuflags
 
 	/*
 	 * Create identity mapping to cater for __enable_mmu.
 	 * This identity mapping will be removed by paging_init().
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	adr	r0, __enable_mmu_loc
 	ldmia	r0, {r3, r5, r6}
@@ -256,6 +334,8 @@ __create_page_tables:
 	addne	r5, r5, #1			@ next section
 	bne	1b
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	adr	r0, __turn_mmu_on_loc
 	ldmia	r0, {r3, r5, r6}
 	sub	r0, r0, r3			@ virt->phys offset
@@ -269,6 +349,7 @@ __create_page_tables:
 	cmp	r5, r6
 	addlo	r5, r5, #1			@ next section
 	blo	1b
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/*
@@ -299,10 +380,24 @@ __create_page_tables:
 	add	r3, r3, #1 << SECTION_SHIFT
 	strls	r3, [r0], #1 << PMD_ORDER
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/*
+	 * Map our RAM from the start to the end of the kernel .bss section.
+	 */
+	add	r0, r4, #PAGE_OFFSET >> (SECTION_SHIFT - PMD_ORDER)
+	ldr	r6, =(_end - 1)
+	orr	r3, r8, r7
+	add	r6, r4, r6, lsr #(SECTION_SHIFT - PMD_ORDER)
+1:	str	r3, [r0], #1 << PMD_ORDER
+	add	r3, r3, #1 << SECTION_SHIFT
+	cmp	r0, r6
+>>>>>>> refs/remotes/origin/master
 	bls	1b
 
 #ifdef CONFIG_XIP_KERNEL
 	/*
+<<<<<<< HEAD
 	 * Map some ram to cover our .data and .bss areas.
 	 */
 	add	r3, r8, #TEXT_OFFSET
@@ -323,10 +418,27 @@ __create_page_tables:
 1:	cmp	r0, r6
 	add	r3, r3, #1 << 20
 	strls	r3, [r0], #4
+=======
+	 * Map the kernel image separately as it is not located in RAM.
+	 */
+#define XIP_START XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR)
+	mov	r3, pc
+	mov	r3, r3, lsr #SECTION_SHIFT
+	orr	r3, r7, r3, lsl #SECTION_SHIFT
+	add	r0, r4,  #(XIP_START & 0xff000000) >> (SECTION_SHIFT - PMD_ORDER)
+	str	r3, [r0, #((XIP_START & 0x00f00000) >> SECTION_SHIFT) << PMD_ORDER]!
+	ldr	r6, =(_edata_loc - 1)
+	add	r0, r0, #1 << PMD_ORDER
+	add	r6, r4, r6, lsr #(SECTION_SHIFT - PMD_ORDER)
+1:	cmp	r0, r6
+	add	r3, r3, #1 << SECTION_SHIFT
+	strls	r3, [r0], #1 << PMD_ORDER
+>>>>>>> refs/remotes/origin/master
 	bls	1b
 #endif
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Then map boot params address in r2 or
 	 * the first 1MB of ram if boot params address is not specified.
@@ -357,21 +469,47 @@ __create_page_tables:
 =======
 #if !defined(CONFIG_DEBUG_ICEDCC) && !defined(CONFIG_DEBUG_SEMIHOSTING)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Then map boot params address in r2 if specified.
+	 * We map 2 sections in case the ATAGs/DTB crosses a section boundary.
+	 */
+	mov	r0, r2, lsr #SECTION_SHIFT
+	movs	r0, r0, lsl #SECTION_SHIFT
+	subne	r3, r0, r8
+	addne	r3, r3, #PAGE_OFFSET
+	addne	r3, r4, r3, lsr #(SECTION_SHIFT - PMD_ORDER)
+	orrne	r6, r7, r0
+	strne	r6, [r3], #1 << PMD_ORDER
+	addne	r6, r6, #1 << SECTION_SHIFT
+	strne	r6, [r3]
+
+#if defined(CONFIG_ARM_LPAE) && defined(CONFIG_CPU_ENDIAN_BE8)
+	sub	r4, r4, #4			@ Fixup page table pointer
+						@ for 64-bit descriptors
+#endif
+
+#ifdef CONFIG_DEBUG_LL
+#if !defined(CONFIG_DEBUG_ICEDCC) && !defined(CONFIG_DEBUG_SEMIHOSTING)
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Map in IO space for serial debugging.
 	 * This allows debug messages to be output
 	 * via a serial console before paging_init.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addruart r7, r3
 
 	mov	r3, r3, lsr #20
 	mov	r3, r3, lsl #2
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	addruart r7, r3, r0
 
 	mov	r3, r3, lsr #SECTION_SHIFT
 	mov	r3, r3, lsl #PMD_ORDER
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	add	r0, r4, r3
@@ -393,11 +531,16 @@ __create_page_tables:
 	ldr	r7, [r10, #PROCINFO_IO_MMUFLAGS] @ io_mmuflags
 #endif /* !CONFIG_DEBUG_ICEDCC */
 =======
+=======
+
+	add	r0, r4, r3
+>>>>>>> refs/remotes/origin/master
 	mov	r3, r7, lsr #SECTION_SHIFT
 	ldr	r7, [r10, #PROCINFO_IO_MMUFLAGS] @ io_mmuflags
 	orr	r3, r7, r3, lsl #SECTION_SHIFT
 #ifdef CONFIG_ARM_LPAE
 	mov	r7, #1 << (54 - 32)		@ XN
+<<<<<<< HEAD
 #else
 	orr	r3, r3, #PMD_SECT_XN
 #endif
@@ -408,12 +551,28 @@ __create_page_tables:
 	add	r3, r3, #1 << SECTION_SHIFT
 	cmp	r0, r6
 	blo	1b
+=======
+#ifdef CONFIG_CPU_ENDIAN_BE8
+	str	r7, [r0], #4
+	str	r3, [r0], #4
+#else
+	str	r3, [r0], #4
+	str	r7, [r0], #4
+#endif
+#else
+	orr	r3, r3, #PMD_SECT_XN
+	str	r3, [r0], #4
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #else /* CONFIG_DEBUG_ICEDCC || CONFIG_DEBUG_SEMIHOSTING */
 	/* we don't need any serial debugging mappings */
 	ldr	r7, [r10, #PROCINFO_IO_MMUFLAGS] @ io_mmuflags
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_ARCH_NETWINDER) || defined(CONFIG_ARCH_CATS)
 	/*
@@ -421,10 +580,14 @@ __create_page_tables:
 	 * in the 16550-type serial port for the debug messages
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	add	r0, r4, #0xff000000 >> 18
 =======
 	add	r0, r4, #0xff000000 >> (SECTION_SHIFT - PMD_ORDER)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	add	r0, r4, #0xff000000 >> (SECTION_SHIFT - PMD_ORDER)
+>>>>>>> refs/remotes/origin/master
 	orr	r3, r7, #0x7c000000
 	str	r3, [r0]
 #endif
@@ -435,6 +598,7 @@ __create_page_tables:
 	 * only for Acorn RiscPC architectures.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	add	r0, r4, #0x02000000 >> 18
 	orr	r3, r7, #0x02000000
 	str	r3, [r0]
@@ -443,6 +607,8 @@ __create_page_tables:
 #endif
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	add	r0, r4, #0x02000000 >> (SECTION_SHIFT - PMD_ORDER)
 	orr	r3, r7, #0x02000000
 	str	r3, [r0]
@@ -452,12 +618,18 @@ __create_page_tables:
 #endif
 #ifdef CONFIG_ARM_LPAE
 	sub	r4, r4, #0x1000		@ point to the PGD table
+<<<<<<< HEAD
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mov	r4, r4, lsr #ARCH_PGD_SHIFT
+#endif
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 ENDPROC(__create_page_tables)
 	.ltorg
 	.align
+<<<<<<< HEAD
 <<<<<<< HEAD
 __enable_mmu_loc:
 	.long	.
@@ -467,13 +639,19 @@ __enable_mmu_loc:
 #if defined(CONFIG_SMP)
 	__CPUINIT
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 __turn_mmu_on_loc:
 	.long	.
 	.long	__turn_mmu_on
 	.long	__turn_mmu_on_end
 
 #if defined(CONFIG_SMP)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.text
+>>>>>>> refs/remotes/origin/master
 ENTRY(secondary_startup)
 	/*
 	 * Common entry point for secondary CPUs.
@@ -482,7 +660,18 @@ ENTRY(secondary_startup)
 	 * the processor type - there is no need to check the machine type
 	 * as it has already been validated by the primary processor.
 	 */
+<<<<<<< HEAD
 	setmode	PSR_F_BIT | PSR_I_BIT | SVC_MODE, r9
+=======
+
+ ARM_BE8(setend	be)				@ ensure we are in BE8 mode
+
+#ifdef CONFIG_ARM_VIRT_EXT
+	bl	__hyp_stub_install_secondary
+#endif
+	safe_svcmode_maskall r9
+
+>>>>>>> refs/remotes/origin/master
 	mrc	p15, 0, r9, c0, c0		@ get processor id
 	bl	__lookup_processor_type
 	movs	r10, r5				@ invalid processor?
@@ -535,7 +724,11 @@ __secondary_data:
  *  r0  = cp#15 control register
  *  r1  = machine ID
  *  r2  = atags or dtb pointer
+<<<<<<< HEAD
  *  r4  = page table pointer
+=======
+ *  r4  = page table (see ARCH_PGD_SHIFT in asm/memory.h)
+>>>>>>> refs/remotes/origin/master
  *  r9  = processor ID
  *  r13 = *virtual* address to jump to upon completion
  */
@@ -554,6 +747,7 @@ __enable_mmu:
 #ifdef CONFIG_CPU_ICACHE_DISABLE
 	bic	r0, r0, #CR_I
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_ARM_LPAE
@@ -578,6 +772,16 @@ __enable_mmu:
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef CONFIG_ARM_LPAE
+	mov	r5, #(domain_val(DOMAIN_USER, DOMAIN_MANAGER) | \
+		      domain_val(DOMAIN_KERNEL, DOMAIN_MANAGER) | \
+		      domain_val(DOMAIN_TABLE, DOMAIN_MANAGER) | \
+		      domain_val(DOMAIN_IO, DOMAIN_CLIENT))
+	mcr	p15, 0, r5, c3, c0, 0		@ load domain access register
+	mcr	p15, 0, r4, c2, c0, 0		@ load page table pointer
+#endif
+>>>>>>> refs/remotes/origin/master
 	b	__turn_mmu_on
 ENDPROC(__enable_mmu)
 
@@ -597,11 +801,14 @@ ENDPROC(__enable_mmu)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 __turn_mmu_on:
 	mov	r0, r0
 	mcr	p15, 0, r0, c1, c0, 0		@ write control reg
 	mrc	p15, 0, r3, c0, c0, 0		@ read id reg
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.pushsection	.idmap.text, "ax"
 ENTRY(__turn_mmu_on)
 	mov	r0, r0
@@ -609,6 +816,7 @@ ENTRY(__turn_mmu_on)
 	mcr	p15, 0, r0, c1, c0, 0		@ write control reg
 	mrc	p15, 0, r3, c0, c0, 0		@ read id reg
 	instr_sync
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	mov	r3, r3
 #ifdef CONFIG_ARCH_MSM_KRAIT
@@ -632,6 +840,14 @@ __turn_mmu_on_end:
 ENDPROC(__turn_mmu_on)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mov	r3, r3
+	mov	r3, r13
+	mov	pc, r3
+__turn_mmu_on_end:
+ENDPROC(__turn_mmu_on)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 
 #ifdef CONFIG_SMP_ON_UP
@@ -652,7 +868,31 @@ __fixup_smp:
 	mrc	p15, 0, r0, c0, c0, 5	@ read MPIDR
 	and	r0, r0, #0xc0000000	@ multiprocessing extensions and
 	teq	r0, #0x80000000		@ not part of a uniprocessor system?
+<<<<<<< HEAD
 	moveq	pc, lr			@ yes, assume SMP
+=======
+	bne    __fixup_smp_on_up	@ no, assume UP
+
+	@ Core indicates it is SMP. Check for Aegis SOC where a single
+	@ Cortex-A9 CPU is present but SMP operations fault.
+	mov	r4, #0x41000000
+	orr	r4, r4, #0x0000c000
+	orr	r4, r4, #0x00000090
+	teq	r3, r4			@ Check for ARM Cortex-A9
+	movne	pc, lr			@ Not ARM Cortex-A9,
+
+	@ If a future SoC *does* use 0x0 as the PERIPH_BASE, then the
+	@ below address check will need to be #ifdef'd or equivalent
+	@ for the Aegis platform.
+	mrc	p15, 4, r0, c15, c0	@ get SCU base address
+	teq	r0, #0x0		@ '0' on actual UP A9 hardware
+	beq	__fixup_smp_on_up	@ So its an A9 UP
+	ldr	r0, [r0, #4]		@ read SCU Config
+ARM_BE8(rev	r0, r0)			@ byteswap if big endian
+	and	r0, r0, #0x3		@ number of CPUs
+	teq	r0, #0x0		@ is 1?
+	movne	pc, lr
+>>>>>>> refs/remotes/origin/master
 
 __fixup_smp_on_up:
 	adr	r0, 1f
@@ -701,6 +941,17 @@ ENTRY(fixup_smp)
 	ldmfd	sp!, {r4 - r6, pc}
 ENDPROC(fixup_smp)
 
+<<<<<<< HEAD
+=======
+#ifdef __ARMEB__
+#define LOW_OFFSET	0x4
+#define HIGH_OFFSET	0x0
+#else
+#define LOW_OFFSET	0x0
+#define HIGH_OFFSET	0x4
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_PATCH_PHYS_VIRT
 
 /* __fixup_pv_table - patch the stub instructions with the delta between
@@ -711,6 +962,7 @@ ENDPROC(fixup_smp)
 	__HEAD
 __fixup_pv_table:
 	adr	r0, 1f
+<<<<<<< HEAD
 	ldmia	r0, {r3-r5, r7}
 	sub	r3, r0, r3	@ PHYS_OFFSET - PAGE_OFFSET
 	add	r4, r4, r3	@ adjust table start address
@@ -732,6 +984,22 @@ __fixup_pv_table:
 THUMB(	it	ne		@ cross section branch )
 	bne	__error
 	str	r6, [r7, #4]	@ save to __pv_offset
+=======
+	ldmia	r0, {r3-r7}
+	mvn	ip, #0
+	subs	r3, r0, r3	@ PHYS_OFFSET - PAGE_OFFSET
+	add	r4, r4, r3	@ adjust table start address
+	add	r5, r5, r3	@ adjust table end address
+	add	r6, r6, r3	@ adjust __pv_phys_offset address
+	add	r7, r7, r3	@ adjust __pv_offset address
+	str	r8, [r6, #LOW_OFFSET]	@ save computed PHYS_OFFSET to __pv_phys_offset
+	strcc	ip, [r7, #HIGH_OFFSET]	@ save to __pv_offset high bits
+	mov	r6, r3, lsr #24	@ constant for add/sub instructions
+	teq	r3, r6, lsl #24 @ must be 16MiB aligned
+THUMB(	it	ne		@ cross section branch )
+	bne	__error
+	str	r3, [r7, #LOW_OFFSET]	@ save to __pv_offset low bits
+>>>>>>> refs/remotes/origin/master
 	b	__fixup_a_pv_table
 ENDPROC(__fixup_pv_table)
 
@@ -740,6 +1008,7 @@ ENDPROC(__fixup_pv_table)
 	.long	__pv_table_begin
 	.long	__pv_table_end
 2:	.long	__pv_phys_offset
+<<<<<<< HEAD
 
 	.text
 __fixup_a_pv_table:
@@ -763,6 +1032,23 @@ __fixup_a_pv_table:
 	lsls	r6, #24
 	beq	2f
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long	__pv_offset
+
+	.text
+__fixup_a_pv_table:
+	adr	r0, 3f
+	ldr	r6, [r0]
+	add	r6, r6, r3
+	ldr	r0, [r6, #HIGH_OFFSET]	@ pv_offset high word
+	ldr	r6, [r6, #LOW_OFFSET]	@ pv_offset low word
+	mov	r6, r6, lsr #24
+	cmn	r0, #1
+#ifdef CONFIG_THUMB2_KERNEL
+	moveq	r0, #0x200000	@ set bit 21, mov to mvn instruction
+	lsls	r6, #24
+	beq	2f
+>>>>>>> refs/remotes/origin/master
 	clz	r7, r6
 	lsr	r6, #24
 	lsl	r6, r7
@@ -771,6 +1057,7 @@ __fixup_a_pv_table:
 	orrcs	r6, #0x0080
 	orr	r6, r6, r7, lsl #12
 	orr	r6, #0x4000
+<<<<<<< HEAD
 <<<<<<< HEAD
 	b	4f
 2:	@ at this point the C flag is always clear
@@ -816,24 +1103,71 @@ __fixup_a_pv_table:
 	and	ip, 0x8f00
 	orr	ip, r6	@ mask in offset bits 31-24
 	strh	ip, [r7, #2]
+=======
+	b	2f
+1:	add     r7, r3
+	ldrh	ip, [r7, #2]
+ARM_BE8(rev16	ip, ip)
+	tst	ip, #0x4000
+	and	ip, #0x8f00
+	orrne	ip, r6	@ mask in offset bits 31-24
+	orreq	ip, r0	@ mask in offset bits 7-0
+ARM_BE8(rev16	ip, ip)
+	strh	ip, [r7, #2]
+	bne	2f
+	ldrh	ip, [r7]
+ARM_BE8(rev16	ip, ip)
+	bic	ip, #0x20
+	orr	ip, ip, r0, lsr #16
+ARM_BE8(rev16	ip, ip)
+	strh	ip, [r7]
+>>>>>>> refs/remotes/origin/master
 2:	cmp	r4, r5
 	ldrcc	r7, [r4], #4	@ use branch for delay slot
 	bcc	1b
 	bx	lr
 #else
+<<<<<<< HEAD
 	b	2f
 1:	ldr	ip, [r7, r3]
 	bic	ip, ip, #0x000000ff
 	orr	ip, ip, r6	@ mask in offset bits 31-24
+=======
+#ifdef CONFIG_CPU_ENDIAN_BE8
+	moveq	r0, #0x00004000	@ set bit 22, mov to mvn instruction
+#else
+	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
+#endif
+	b	2f
+1:	ldr	ip, [r7, r3]
+#ifdef CONFIG_CPU_ENDIAN_BE8
+	@ in BE8, we load data in BE, but instructions still in LE
+	bic	ip, ip, #0xff000000
+	tst	ip, #0x000f0000	@ check the rotation field
+	orrne	ip, ip, r6, lsl #24 @ mask in offset bits 31-24
+	biceq	ip, ip, #0x00004000 @ clear bit 22
+	orreq	ip, ip, r0      @ mask in offset bits 7-0
+#else
+	bic	ip, ip, #0x000000ff
+	tst	ip, #0xf00	@ check the rotation field
+	orrne	ip, ip, r6	@ mask in offset bits 31-24
+	biceq	ip, ip, #0x400000	@ clear bit 22
+	orreq	ip, ip, r0	@ mask in offset bits 7-0
+#endif
+>>>>>>> refs/remotes/origin/master
 	str	ip, [r7, r3]
 2:	cmp	r4, r5
 	ldrcc	r7, [r4], #4	@ use branch for delay slot
 	bcc	1b
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 #endif
 ENDPROC(__fixup_a_pv_table)
 
+<<<<<<< HEAD
 ENTRY(fixup_pv_table)
 	stmfd	sp!, {r4 - r7, lr}
 	ldr	r2, 2f			@ get address of __pv_phys_offset
@@ -841,21 +1175,45 @@ ENTRY(fixup_pv_table)
 	mov	r4, r0			@ r0 = table start
 	add	r5, r0, r1		@ r1 = table size
 	ldr	r6, [r2, #4]		@ get __pv_offset
+=======
+	.align
+3:	.long __pv_offset
+
+ENTRY(fixup_pv_table)
+	stmfd	sp!, {r4 - r7, lr}
+	mov	r3, #0			@ no offset
+	mov	r4, r0			@ r0 = table start
+	add	r5, r0, r1		@ r1 = table size
+>>>>>>> refs/remotes/origin/master
 	bl	__fixup_a_pv_table
 	ldmfd	sp!, {r4 - r7, pc}
 ENDPROC(fixup_pv_table)
 
+<<<<<<< HEAD
 	.align
 2:	.long	__pv_phys_offset
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.data
 	.globl	__pv_phys_offset
 	.type	__pv_phys_offset, %object
 __pv_phys_offset:
+<<<<<<< HEAD
 	.long	0
 	.size	__pv_phys_offset, . - __pv_phys_offset
 __pv_offset:
 	.long	0
+=======
+	.quad	0
+	.size	__pv_phys_offset, . -__pv_phys_offset
+
+	.globl	__pv_offset
+	.type	__pv_offset, %object
+__pv_offset:
+	.quad	0
+	.size	__pv_offset, . -__pv_offset
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #include "head-common.S"

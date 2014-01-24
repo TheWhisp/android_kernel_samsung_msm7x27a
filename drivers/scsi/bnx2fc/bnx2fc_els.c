@@ -4,10 +4,14 @@
  * and responses.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008 - 2010 Broadcom Corporation
 =======
  * Copyright (c) 2008 - 2011 Broadcom Corporation
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2008 - 2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,10 +92,14 @@ int bnx2fc_send_rrq(struct bnx2fc_cmd *aborted_io_req)
 	hton24(rrq.rrq_s_id, sid);
 	rrq.rrq_ox_id = htons(aborted_io_req->xid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rrq.rrq_rx_id = htons(aborted_io_req->task->rx_wr_tx_rd.rx_id);
 =======
 	rrq.rrq_rx_id = htons(aborted_io_req->task->rxwr_txrd.var_ctx.rx_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rrq.rrq_rx_id = htons(aborted_io_req->task->rxwr_txrd.var_ctx.rx_id);
+>>>>>>> refs/remotes/origin/master
 
 retry_rrq:
 	rc = bnx2fc_initiate_els(tgt, ELS_RRQ, &rrq, sizeof(rrq),
@@ -262,7 +270,10 @@ int bnx2fc_send_rls(struct bnx2fc_rport *tgt, struct fc_frame *fp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void bnx2fc_srr_compl(struct bnx2fc_els_cb_arg *cb_arg)
 {
 	struct bnx2fc_mp_req *mp_req;
@@ -670,7 +681,10 @@ srr_err:
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 			void *data, u32 data_len,
 			void (*cb_func)(struct bnx2fc_els_cb_arg *cb_arg),
@@ -678,10 +692,14 @@ static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 {
 	struct fcoe_port *port = tgt->port;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
 =======
 	struct bnx2fc_interface *interface = port->priv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2fc_interface *interface = port->priv;
+>>>>>>> refs/remotes/origin/master
 	struct fc_rport *rport = tgt->rport;
 	struct fc_lport *lport = port->lport;
 	struct bnx2fc_cmd *els_req;
@@ -697,19 +715,27 @@ static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 	rc = fc_remote_port_chkready(rport);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "els 0x%x: rport not ready\n", op);
 =======
 		printk(KERN_ERR PFX "els 0x%x: rport not ready\n", op);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "els 0x%x: rport not ready\n", op);
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 		goto els_err;
 	}
 	if (lport->state != LPORT_ST_READY || !(lport->link_up)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "els 0x%x: link is not ready\n", op);
 =======
 		printk(KERN_ERR PFX "els 0x%x: link is not ready\n", op);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "els 0x%x: link is not ready\n", op);
+>>>>>>> refs/remotes/origin/master
 		rc = -EINVAL;
 		goto els_err;
 	}
@@ -736,10 +762,14 @@ static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 	rc = bnx2fc_init_mp_req(els_req);
 	if (rc == FAILED) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "ELS MP request init failed\n");
 =======
 		printk(KERN_ERR PFX "ELS MP request init failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "ELS MP request init failed\n");
+>>>>>>> refs/remotes/origin/master
 		spin_lock_bh(&tgt->tgt_lock);
 		kref_put(&els_req->refcount, bnx2fc_cmd_release);
 		spin_unlock_bh(&tgt->tgt_lock);
@@ -759,10 +789,14 @@ static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 		memcpy(mp_req->req_buf, data, data_len);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ALERT PFX "Invalid ELS op 0x%x\n", op);
 =======
 		printk(KERN_ERR PFX "Invalid ELS op 0x%x\n", op);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_ERR PFX "Invalid ELS op 0x%x\n", op);
+>>>>>>> refs/remotes/origin/master
 		els_req->cb_func = NULL;
 		els_req->cb_arg = NULL;
 		spin_lock_bh(&tgt->tgt_lock);
@@ -781,10 +815,13 @@ static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 	sid = tgt->sid;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__fc_fill_fc_hdr(fc_hdr, FC_RCTL_ELS_REQ, did, sid,
 			   FC_TYPE_ELS, FC_FC_FIRST_SEQ | FC_FC_END_SEQ |
 			   FC_FC_SEQ_INIT, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (op == ELS_SRR)
 		__fc_fill_fc_hdr(fc_hdr, FC_RCTL_ELS4_REQ, did, sid,
 				   FC_TYPE_FCP, FC_FC_FIRST_SEQ |
@@ -793,7 +830,10 @@ static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 		__fc_fill_fc_hdr(fc_hdr, FC_RCTL_ELS_REQ, did, sid,
 				   FC_TYPE_ELS, FC_FC_FIRST_SEQ |
 				   FC_FC_END_SEQ | FC_FC_SEQ_INIT, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Obtain exchange id */
 	xid = els_req->xid;
@@ -802,11 +842,16 @@ static int bnx2fc_initiate_els(struct bnx2fc_rport *tgt, unsigned int op,
 
 	/* Initialize task context for this IO request */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	task_page = (struct fcoe_task_ctx_entry *) hba->task_ctx[task_idx];
 =======
 	task_page = (struct fcoe_task_ctx_entry *)
 			interface->hba->task_ctx[task_idx];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	task_page = (struct fcoe_task_ctx_entry *)
+			interface->hba->task_ctx[task_idx];
+>>>>>>> refs/remotes/origin/master
 	task = &(task_page[index]);
 	bnx2fc_init_mp_task(els_req, task);
 
@@ -872,20 +917,29 @@ void bnx2fc_process_els_compl(struct bnx2fc_cmd *els_req,
 	hdr = (u64 *)fc_hdr;
 	temp_hdr = (u64 *)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		&task->cmn.general.cmd_info.mp_fc_frame.fc_hdr;
 =======
 		&task->rxwr_only.union_ctx.comp_info.mp_rsp.fc_hdr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		&task->rxwr_only.union_ctx.comp_info.mp_rsp.fc_hdr;
+>>>>>>> refs/remotes/origin/master
 	hdr[0] = cpu_to_be64(temp_hdr[0]);
 	hdr[1] = cpu_to_be64(temp_hdr[1]);
 	hdr[2] = cpu_to_be64(temp_hdr[2]);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mp_req->resp_len = task->rx_wr_only.sgl_ctx.mul_sges.cur_sge_off;
 =======
 	mp_req->resp_len =
 		task->rxwr_only.union_ctx.comp_info.mp_rsp.mp_payload_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mp_req->resp_len =
+		task->rxwr_only.union_ctx.comp_info.mp_rsp.mp_payload_len;
+>>>>>>> refs/remotes/origin/master
 
 	/* Parse ELS response */
 	if ((els_req->cb_func) && (els_req->cb_arg)) {
@@ -903,7 +957,10 @@ static void bnx2fc_flogi_resp(struct fc_seq *seq, struct fc_frame *fp,
 	struct fc_exch *exch = fc_seq_exch(seq);
 	struct fc_lport *lport = exch->lp;
 	u8 *mac;
+<<<<<<< HEAD
 	struct fc_frame_header *fh;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 op;
 
 	if (IS_ERR(fp))
@@ -911,6 +968,7 @@ static void bnx2fc_flogi_resp(struct fc_seq *seq, struct fc_frame *fp,
 
 	mac = fr_cb(fp)->granted_mac;
 	if (is_zero_ether_addr(mac)) {
+<<<<<<< HEAD
 		fh = fc_frame_header_get(fp);
 		if (fh->fh_type != FC_TYPE_ELS) {
 			printk(KERN_ERR PFX "bnx2fc_flogi_resp:"
@@ -918,6 +976,8 @@ static void bnx2fc_flogi_resp(struct fc_seq *seq, struct fc_frame *fp,
 			fc_frame_free(fp);
 			return;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 		op = fc_frame_payload_op(fp);
 		if (lport->vport) {
 			if (op == ELS_LS_RJT) {
@@ -927,12 +987,19 @@ static void bnx2fc_flogi_resp(struct fc_seq *seq, struct fc_frame *fp,
 				return;
 			}
 		}
+<<<<<<< HEAD
 		if (fcoe_ctlr_recv_flogi(fip, lport, fp)) {
 			fc_frame_free(fp);
 			return;
 		}
 	}
 	fip->update_mac(lport, mac);
+=======
+		fcoe_ctlr_recv_flogi(fip, lport, fp);
+	}
+	if (!is_zero_ether_addr(mac))
+		fip->update_mac(lport, mac);
+>>>>>>> refs/remotes/origin/master
 done:
 	fc_lport_flogi_resp(seq, fp, lport);
 }
@@ -959,12 +1026,17 @@ struct fc_seq *bnx2fc_elsct_send(struct fc_lport *lport, u32 did,
 {
 	struct fcoe_port *port = lport_priv(lport);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bnx2fc_hba *hba = port->priv;
 	struct fcoe_ctlr *fip = &hba->ctlr;
 =======
 	struct bnx2fc_interface *interface = port->priv;
 	struct fcoe_ctlr *fip = &interface->ctlr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bnx2fc_interface *interface = port->priv;
+	struct fcoe_ctlr *fip = bnx2fc_to_ctlr(interface);
+>>>>>>> refs/remotes/origin/master
 	struct fc_frame_header *fh = fc_frame_header_get(fp);
 
 	switch (op) {

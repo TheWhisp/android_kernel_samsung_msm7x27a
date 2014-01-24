@@ -5,8 +5,13 @@
  * Author: Wu Zhangjin <wuzhangjin@gmail.com>
  */
 
+<<<<<<< HEAD
 #ifndef	_CS5536_VSM_H
 #define	_CS5536_VSM_H
+=======
+#ifndef _CS5536_VSM_H
+#define _CS5536_VSM_H
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/types.h>
 

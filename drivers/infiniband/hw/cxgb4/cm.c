@@ -38,10 +38,20 @@
 #include <linux/inetdevice.h>
 #include <linux/ip.h>
 #include <linux/tcp.h>
+<<<<<<< HEAD
+=======
+#include <linux/if_vlan.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/neighbour.h>
 #include <net/netevent.h>
 #include <net/route.h>
+<<<<<<< HEAD
+=======
+#include <net/tcp.h>
+#include <net/ip6_route.h>
+#include <net/addrconf.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "iw_cxgb4.h"
 
@@ -61,6 +71,17 @@ static char *states[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
+=======
+static int nocong;
+module_param(nocong, int, 0644);
+MODULE_PARM_DESC(nocong, "Turn of congestion control (default=0)");
+
+static int enable_ecn;
+module_param(enable_ecn, int, 0644);
+MODULE_PARM_DESC(enable_ecn, "Enable ECN (default=0/disabled)");
+
+>>>>>>> refs/remotes/origin/master
 static int dack_mode = 1;
 module_param(dack_mode, int, 0644);
 MODULE_PARM_DESC(dack_mode, "Delayed ack mode (default=1)");
@@ -104,11 +125,16 @@ static int mpa_rev = 1;
 module_param(mpa_rev, int, 0644);
 MODULE_PARM_DESC(mpa_rev, "MPA Revision, 0 supports amso1100, "
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 "1 is spec compliant. (default=1)");
 =======
 		"1 is RFC0544 spec compliant, 2 is IETF MPA Peer Connect Draft"
 		" compliant (default=1)");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"1 is RFC0544 spec compliant, 2 is IETF MPA Peer Connect Draft"
+		" compliant (default=1)");
+>>>>>>> refs/remotes/origin/master
 
 static int markers_enabled;
 module_param(markers_enabled, int, 0644);
@@ -137,14 +163,38 @@ static void connect_reply_upcall(struct c4iw_ep *ep, int status);
 static LIST_HEAD(timeout_list);
 static spinlock_t timeout_lock;
 
+<<<<<<< HEAD
+=======
+static void deref_qp(struct c4iw_ep *ep)
+{
+	c4iw_qp_rem_ref(&ep->com.qp->ibqp);
+	clear_bit(QP_REFERENCED, &ep->com.flags);
+}
+
+static void ref_qp(struct c4iw_ep *ep)
+{
+	set_bit(QP_REFERENCED, &ep->com.flags);
+	c4iw_qp_add_ref(&ep->com.qp->ibqp);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void start_ep_timer(struct c4iw_ep *ep)
 {
 	PDBG("%s ep %p\n", __func__, ep);
 	if (timer_pending(&ep->timer)) {
+<<<<<<< HEAD
 		PDBG("%s stopped / restarted timer ep %p\n", __func__, ep);
 		del_timer_sync(&ep->timer);
 	} else
 		c4iw_get_ep(&ep->com);
+=======
+		pr_err("%s timer already started! ep %p\n",
+		       __func__, ep);
+		return;
+	}
+	clear_bit(TIMEOUT, &ep->com.flags);
+	c4iw_get_ep(&ep->com);
+>>>>>>> refs/remotes/origin/master
 	ep->timer.expires = jiffies + ep_timeout_secs * HZ;
 	ep->timer.data = (unsigned long)ep;
 	ep->timer.function = ep_timeout;
@@ -153,6 +203,7 @@ static void start_ep_timer(struct c4iw_ep *ep)
 
 static void stop_ep_timer(struct c4iw_ep *ep)
 {
+<<<<<<< HEAD
 	PDBG("%s ep %p\n", __func__, ep);
 	if (!timer_pending(&ep->timer)) {
 		printk(KERN_ERR "%s timer stopped when its not running! "
@@ -162,6 +213,12 @@ static void stop_ep_timer(struct c4iw_ep *ep)
 	}
 	del_timer_sync(&ep->timer);
 	c4iw_put_ep(&ep->com);
+=======
+	PDBG("%s ep %p stopping\n", __func__, ep);
+	del_timer_sync(&ep->timer);
+	if (!test_and_set_bit(TIMEOUT, &ep->com.flags))
+		c4iw_put_ep(&ep->com);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int c4iw_l2t_send(struct c4iw_rdev *rdev, struct sk_buff *skb,
@@ -266,7 +323,14 @@ void _c4iw_free_ep(struct kref *kref)
 
 	ep = container_of(kref, struct c4iw_ep, com.kref);
 	PDBG("%s ep %p state %s\n", __func__, ep, states[state_read(&ep->com)]);
+<<<<<<< HEAD
 	if (test_bit(RELEASE_RESOURCES, &ep->com.flags)) {
+=======
+	if (test_bit(QP_REFERENCED, &ep->com.flags))
+		deref_qp(ep);
+	if (test_bit(RELEASE_RESOURCES, &ep->com.flags)) {
+		remove_handle(ep->com.dev, &ep->com.dev->hwtid_idr, ep->hwtid);
+>>>>>>> refs/remotes/origin/master
 		cxgb4_remove_tid(ep->com.dev->rdev.lldi.tids, 0, ep->hwtid);
 		dst_release(ep->dst);
 		cxgb4_l2t_release(ep->l2t);
@@ -312,22 +376,94 @@ static struct sk_buff *get_skb(struct sk_buff *skb, int len, gfp_t gfp)
 	} else {
 		skb = alloc_skb(len, gfp);
 	}
+<<<<<<< HEAD
 	return skb;
 }
 
 static struct rtable *find_route(struct c4iw_dev *dev, __be32 local_ip,
+=======
+	t4_set_arp_err_handler(skb, NULL, NULL);
+	return skb;
+}
+
+static struct net_device *get_real_dev(struct net_device *egress_dev)
+{
+	struct net_device *phys_dev = egress_dev;
+	if (egress_dev->priv_flags & IFF_802_1Q_VLAN)
+		phys_dev = vlan_dev_real_dev(egress_dev);
+	return phys_dev;
+}
+
+static int our_interface(struct c4iw_dev *dev, struct net_device *egress_dev)
+{
+	int i;
+
+	egress_dev = get_real_dev(egress_dev);
+	for (i = 0; i < dev->rdev.lldi.nports; i++)
+		if (dev->rdev.lldi.ports[i] == egress_dev)
+			return 1;
+	return 0;
+}
+
+static struct dst_entry *find_route6(struct c4iw_dev *dev, __u8 *local_ip,
+				     __u8 *peer_ip, __be16 local_port,
+				     __be16 peer_port, u8 tos,
+				     __u32 sin6_scope_id)
+{
+	struct dst_entry *dst = NULL;
+
+	if (IS_ENABLED(CONFIG_IPV6)) {
+		struct flowi6 fl6;
+
+		memset(&fl6, 0, sizeof(fl6));
+		memcpy(&fl6.daddr, peer_ip, 16);
+		memcpy(&fl6.saddr, local_ip, 16);
+		if (ipv6_addr_type(&fl6.daddr) & IPV6_ADDR_LINKLOCAL)
+			fl6.flowi6_oif = sin6_scope_id;
+		dst = ip6_route_output(&init_net, NULL, &fl6);
+		if (!dst)
+			goto out;
+		if (!our_interface(dev, ip6_dst_idev(dst)->dev) &&
+		    !(ip6_dst_idev(dst)->dev->flags & IFF_LOOPBACK)) {
+			dst_release(dst);
+			dst = NULL;
+		}
+	}
+
+out:
+	return dst;
+}
+
+static struct dst_entry *find_route(struct c4iw_dev *dev, __be32 local_ip,
+>>>>>>> refs/remotes/origin/master
 				 __be32 peer_ip, __be16 local_port,
 				 __be16 peer_port, u8 tos)
 {
 	struct rtable *rt;
 	struct flowi4 fl4;
+<<<<<<< HEAD
+=======
+	struct neighbour *n;
+>>>>>>> refs/remotes/origin/master
 
 	rt = ip_route_output_ports(&init_net, &fl4, NULL, peer_ip, local_ip,
 				   peer_port, local_port, IPPROTO_TCP,
 				   tos, 0);
 	if (IS_ERR(rt))
 		return NULL;
+<<<<<<< HEAD
 	return rt;
+=======
+	n = dst_neigh_lookup(&rt->dst, &peer_ip);
+	if (!n)
+		return NULL;
+	if (!our_interface(dev, n->dev)) {
+		dst_release(&rt->dst);
+		return NULL;
+	}
+	neigh_release(n);
+	return &rt->dst;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void arp_failure_discard(void *handle, struct sk_buff *skb)
@@ -449,12 +585,36 @@ static int send_abort(struct c4iw_ep *ep, struct sk_buff *skb, gfp_t gfp)
 static int send_connect(struct c4iw_ep *ep)
 {
 	struct cpl_act_open_req *req;
+<<<<<<< HEAD
+=======
+	struct cpl_t5_act_open_req *t5_req;
+	struct cpl_act_open_req6 *req6;
+	struct cpl_t5_act_open_req6 *t5_req6;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 	u64 opt0;
 	u32 opt2;
 	unsigned int mtu_idx;
 	int wscale;
+<<<<<<< HEAD
 	int wrlen = roundup(sizeof *req, 16);
+=======
+	int wrlen;
+	int sizev4 = is_t4(ep->com.dev->rdev.lldi.adapter_type) ?
+				sizeof(struct cpl_act_open_req) :
+				sizeof(struct cpl_t5_act_open_req);
+	int sizev6 = is_t4(ep->com.dev->rdev.lldi.adapter_type) ?
+				sizeof(struct cpl_act_open_req6) :
+				sizeof(struct cpl_t5_act_open_req6);
+	struct sockaddr_in *la = (struct sockaddr_in *)&ep->com.local_addr;
+	struct sockaddr_in *ra = (struct sockaddr_in *)&ep->com.remote_addr;
+	struct sockaddr_in6 *la6 = (struct sockaddr_in6 *)&ep->com.local_addr;
+	struct sockaddr_in6 *ra6 = (struct sockaddr_in6 *)&ep->com.remote_addr;
+
+	wrlen = (ep->com.remote_addr.ss_family == AF_INET) ?
+			roundup(sizev4, 16) :
+			roundup(sizev6, 16);
+>>>>>>> refs/remotes/origin/master
 
 	PDBG("%s ep %p atid %u\n", __func__, ep, ep->atid);
 
@@ -468,7 +628,12 @@ static int send_connect(struct c4iw_ep *ep)
 
 	cxgb4_best_mtu(ep->com.dev->rdev.lldi.mtus, ep->mtu, &mtu_idx);
 	wscale = compute_wscale(rcv_win);
+<<<<<<< HEAD
 	opt0 = KEEP_ALIVE(1) |
+=======
+	opt0 = (nocong ? NO_CONG(1) : 0) |
+	       KEEP_ALIVE(1) |
+>>>>>>> refs/remotes/origin/master
 	       DELACK(1) |
 	       WND_SCALE(wscale) |
 	       MSS_IDX(mtu_idx) |
@@ -479,6 +644,10 @@ static int send_connect(struct c4iw_ep *ep)
 	       ULP_MODE(ULP_MODE_TCPDDP) |
 	       RCV_BUFSIZ(rcv_win>>10);
 	opt2 = RX_CHANNEL(0) |
+<<<<<<< HEAD
+=======
+	       CCTRL_ECN(enable_ecn) |
+>>>>>>> refs/remotes/origin/master
 	       RSS_QUEUE_VALID | RSS_QUEUE(ep->rss_qid);
 	if (enable_tcp_timestamps)
 		opt2 |= TSTAMPS_EN(1);
@@ -488,6 +657,7 @@ static int send_connect(struct c4iw_ep *ep)
 		opt2 |= WND_SCALE_EN(1);
 	t4_set_arp_err_handler(skb, NULL, act_open_req_arp_failure);
 
+<<<<<<< HEAD
 	req = (struct cpl_act_open_req *) skb_put(skb, wrlen);
 	INIT_TP_WR(req, 0);
 	OPCODE_TID(req) = cpu_to_be32(
@@ -508,14 +678,109 @@ static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb)
 static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb,
 		u8 mpa_rev_to_use)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (is_t4(ep->com.dev->rdev.lldi.adapter_type)) {
+		if (ep->com.remote_addr.ss_family == AF_INET) {
+			req = (struct cpl_act_open_req *) skb_put(skb, wrlen);
+			INIT_TP_WR(req, 0);
+			OPCODE_TID(req) = cpu_to_be32(
+					MK_OPCODE_TID(CPL_ACT_OPEN_REQ,
+					((ep->rss_qid << 14) | ep->atid)));
+			req->local_port = la->sin_port;
+			req->peer_port = ra->sin_port;
+			req->local_ip = la->sin_addr.s_addr;
+			req->peer_ip = ra->sin_addr.s_addr;
+			req->opt0 = cpu_to_be64(opt0);
+			req->params = cpu_to_be32(cxgb4_select_ntuple(
+						ep->com.dev->rdev.lldi.ports[0],
+						ep->l2t));
+			req->opt2 = cpu_to_be32(opt2);
+		} else {
+			req6 = (struct cpl_act_open_req6 *)skb_put(skb, wrlen);
+
+			INIT_TP_WR(req6, 0);
+			OPCODE_TID(req6) = cpu_to_be32(
+					   MK_OPCODE_TID(CPL_ACT_OPEN_REQ6,
+					   ((ep->rss_qid<<14)|ep->atid)));
+			req6->local_port = la6->sin6_port;
+			req6->peer_port = ra6->sin6_port;
+			req6->local_ip_hi = *((__be64 *)
+						(la6->sin6_addr.s6_addr));
+			req6->local_ip_lo = *((__be64 *)
+						(la6->sin6_addr.s6_addr + 8));
+			req6->peer_ip_hi = *((__be64 *)
+						(ra6->sin6_addr.s6_addr));
+			req6->peer_ip_lo = *((__be64 *)
+						(ra6->sin6_addr.s6_addr + 8));
+			req6->opt0 = cpu_to_be64(opt0);
+			req6->params = cpu_to_be32(cxgb4_select_ntuple(
+						ep->com.dev->rdev.lldi.ports[0],
+						ep->l2t));
+			req6->opt2 = cpu_to_be32(opt2);
+		}
+	} else {
+		if (ep->com.remote_addr.ss_family == AF_INET) {
+			t5_req = (struct cpl_t5_act_open_req *)
+				 skb_put(skb, wrlen);
+			INIT_TP_WR(t5_req, 0);
+			OPCODE_TID(t5_req) = cpu_to_be32(
+					MK_OPCODE_TID(CPL_ACT_OPEN_REQ,
+					((ep->rss_qid << 14) | ep->atid)));
+			t5_req->local_port = la->sin_port;
+			t5_req->peer_port = ra->sin_port;
+			t5_req->local_ip = la->sin_addr.s_addr;
+			t5_req->peer_ip = ra->sin_addr.s_addr;
+			t5_req->opt0 = cpu_to_be64(opt0);
+			t5_req->params = cpu_to_be64(V_FILTER_TUPLE(
+						     cxgb4_select_ntuple(
+					     ep->com.dev->rdev.lldi.ports[0],
+					     ep->l2t)));
+			t5_req->opt2 = cpu_to_be32(opt2);
+		} else {
+			t5_req6 = (struct cpl_t5_act_open_req6 *)
+				  skb_put(skb, wrlen);
+			INIT_TP_WR(t5_req6, 0);
+			OPCODE_TID(t5_req6) = cpu_to_be32(
+					      MK_OPCODE_TID(CPL_ACT_OPEN_REQ6,
+					      ((ep->rss_qid<<14)|ep->atid)));
+			t5_req6->local_port = la6->sin6_port;
+			t5_req6->peer_port = ra6->sin6_port;
+			t5_req6->local_ip_hi = *((__be64 *)
+						(la6->sin6_addr.s6_addr));
+			t5_req6->local_ip_lo = *((__be64 *)
+						(la6->sin6_addr.s6_addr + 8));
+			t5_req6->peer_ip_hi = *((__be64 *)
+						(ra6->sin6_addr.s6_addr));
+			t5_req6->peer_ip_lo = *((__be64 *)
+						(ra6->sin6_addr.s6_addr + 8));
+			t5_req6->opt0 = cpu_to_be64(opt0);
+			t5_req6->params = (__force __be64)cpu_to_be32(
+							cxgb4_select_ntuple(
+						ep->com.dev->rdev.lldi.ports[0],
+						ep->l2t));
+			t5_req6->opt2 = cpu_to_be32(opt2);
+		}
+	}
+
+	set_bit(ACT_OPEN_REQ, &ep->com.history);
+	return c4iw_l2t_send(&ep->com.dev->rdev, skb, ep->l2t);
+}
+
+static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb,
+		u8 mpa_rev_to_use)
+>>>>>>> refs/remotes/origin/master
 {
 	int mpalen, wrlen;
 	struct fw_ofld_tx_data_wr *req;
 	struct mpa_message *mpa;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct mpa_v2_conn_params mpa_v2_params;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpa_v2_conn_params mpa_v2_params;
+>>>>>>> refs/remotes/origin/master
 
 	PDBG("%s ep %p tid %u pd_len %d\n", __func__, ep, ep->hwtid, ep->plen);
 
@@ -523,10 +788,15 @@ static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb,
 
 	mpalen = sizeof(*mpa) + ep->plen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (mpa_rev_to_use == 2)
 		mpalen += sizeof(struct mpa_v2_conn_params);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mpa_rev_to_use == 2)
+		mpalen += sizeof(struct mpa_v2_conn_params);
+>>>>>>> refs/remotes/origin/master
 	wrlen = roundup(mpalen + sizeof *req, 16);
 	skb = get_skb(skb, wrlen, GFP_KERNEL);
 	if (!skb) {
@@ -553,6 +823,7 @@ static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb,
 	memcpy(mpa->key, MPA_KEY_REQ, sizeof(mpa->key));
 	mpa->flags = (crc_enabled ? MPA_CRC : 0) |
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     (markers_enabled ? MPA_MARKERS : 0);
 	mpa->private_data_size = htons(ep->plen);
 	mpa->revision = mpa_rev;
@@ -560,6 +831,8 @@ static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb,
 	if (ep->plen)
 		memcpy(mpa->private_data, ep->mpa_pkt + sizeof(*mpa), ep->plen);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		     (markers_enabled ? MPA_MARKERS : 0) |
 		     (mpa_rev_to_use == 2 ? MPA_ENHANCED_RDMA_CONN : 0);
 	mpa->private_data_size = htons(ep->plen);
@@ -570,8 +843,13 @@ static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb,
 	}
 
 	if (mpa_rev_to_use == 2) {
+<<<<<<< HEAD
 		mpa->private_data_size +=
 			htons(sizeof(struct mpa_v2_conn_params));
+=======
+		mpa->private_data_size = htons(ntohs(mpa->private_data_size) +
+					       sizeof (struct mpa_v2_conn_params));
+>>>>>>> refs/remotes/origin/master
 		mpa_v2_params.ird = htons((u16)ep->ird);
 		mpa_v2_params.ord = htons((u16)ep->ord);
 
@@ -595,7 +873,10 @@ static void send_mpa_req(struct c4iw_ep *ep, struct sk_buff *skb,
 		if (ep->plen)
 			memcpy(mpa->private_data,
 					ep->mpa_pkt + sizeof(*mpa), ep->plen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Reference the mpa skb.  This ensures the data area
@@ -620,18 +901,27 @@ static int send_mpa_reject(struct c4iw_ep *ep, const void *pdata, u8 plen)
 	struct mpa_message *mpa;
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct mpa_v2_conn_params mpa_v2_params;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpa_v2_conn_params mpa_v2_params;
+>>>>>>> refs/remotes/origin/master
 
 	PDBG("%s ep %p tid %u pd_len %d\n", __func__, ep, ep->hwtid, ep->plen);
 
 	mpalen = sizeof(*mpa) + plen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (ep->mpa_attr.version == 2 && ep->mpa_attr.enhanced_rdma_conn)
 		mpalen += sizeof(struct mpa_v2_conn_params);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ep->mpa_attr.version == 2 && ep->mpa_attr.enhanced_rdma_conn)
+		mpalen += sizeof(struct mpa_v2_conn_params);
+>>>>>>> refs/remotes/origin/master
 	wrlen = roundup(mpalen + sizeof *req, 16);
 
 	skb = get_skb(NULL, wrlen, GFP_KERNEL);
@@ -659,6 +949,7 @@ static int send_mpa_reject(struct c4iw_ep *ep, const void *pdata, u8 plen)
 	memset(mpa, 0, sizeof(*mpa));
 	memcpy(mpa->key, MPA_KEY_REP, sizeof(mpa->key));
 	mpa->flags = MPA_REJECT;
+<<<<<<< HEAD
 	mpa->revision = mpa_rev;
 	mpa->private_data_size = htons(plen);
 <<<<<<< HEAD
@@ -670,6 +961,15 @@ static int send_mpa_reject(struct c4iw_ep *ep, const void *pdata, u8 plen)
 		mpa->flags |= MPA_ENHANCED_RDMA_CONN;
 		mpa->private_data_size +=
 			htons(sizeof(struct mpa_v2_conn_params));
+=======
+	mpa->revision = ep->mpa_attr.version;
+	mpa->private_data_size = htons(plen);
+
+	if (ep->mpa_attr.version == 2 && ep->mpa_attr.enhanced_rdma_conn) {
+		mpa->flags |= MPA_ENHANCED_RDMA_CONN;
+		mpa->private_data_size = htons(ntohs(mpa->private_data_size) +
+					       sizeof (struct mpa_v2_conn_params));
+>>>>>>> refs/remotes/origin/master
 		mpa_v2_params.ird = htons(((u16)ep->ird) |
 					  (peer2peer ? MPA_V2_PEER2PEER_MODEL :
 					   0));
@@ -688,7 +988,10 @@ static int send_mpa_reject(struct c4iw_ep *ep, const void *pdata, u8 plen)
 	} else
 		if (plen)
 			memcpy(mpa->private_data, pdata, plen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Reference the mpa skb again.  This ensures the data area
@@ -710,18 +1013,27 @@ static int send_mpa_reply(struct c4iw_ep *ep, const void *pdata, u8 plen)
 	struct mpa_message *mpa;
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct mpa_v2_conn_params mpa_v2_params;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpa_v2_conn_params mpa_v2_params;
+>>>>>>> refs/remotes/origin/master
 
 	PDBG("%s ep %p tid %u pd_len %d\n", __func__, ep, ep->hwtid, ep->plen);
 
 	mpalen = sizeof(*mpa) + plen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (ep->mpa_attr.version == 2 && ep->mpa_attr.enhanced_rdma_conn)
 		mpalen += sizeof(struct mpa_v2_conn_params);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ep->mpa_attr.version == 2 && ep->mpa_attr.enhanced_rdma_conn)
+		mpalen += sizeof(struct mpa_v2_conn_params);
+>>>>>>> refs/remotes/origin/master
 	wrlen = roundup(mpalen + sizeof *req, 16);
 
 	skb = get_skb(NULL, wrlen, GFP_KERNEL);
@@ -751,18 +1063,26 @@ static int send_mpa_reply(struct c4iw_ep *ep, const void *pdata, u8 plen)
 	mpa->flags = (ep->mpa_attr.crc_enabled ? MPA_CRC : 0) |
 		     (markers_enabled ? MPA_MARKERS : 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpa->revision = mpa_rev;
 	mpa->private_data_size = htons(plen);
 	if (plen)
 		memcpy(mpa->private_data, pdata, plen);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mpa->revision = ep->mpa_attr.version;
 	mpa->private_data_size = htons(plen);
 
 	if (ep->mpa_attr.version == 2 && ep->mpa_attr.enhanced_rdma_conn) {
 		mpa->flags |= MPA_ENHANCED_RDMA_CONN;
+<<<<<<< HEAD
 		mpa->private_data_size +=
 			htons(sizeof(struct mpa_v2_conn_params));
+=======
+		mpa->private_data_size = htons(ntohs(mpa->private_data_size) +
+					       sizeof (struct mpa_v2_conn_params));
+>>>>>>> refs/remotes/origin/master
 		mpa_v2_params.ird = htons((u16)ep->ird);
 		mpa_v2_params.ord = htons((u16)ep->ord);
 		if (peer2peer && (ep->mpa_attr.p2p_type !=
@@ -786,7 +1106,10 @@ static int send_mpa_reply(struct c4iw_ep *ep, const void *pdata, u8 plen)
 	} else
 		if (plen)
 			memcpy(mpa->private_data, pdata, plen);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Reference the mpa skb.  This ensures the data area
@@ -818,6 +1141,10 @@ static int act_establish(struct c4iw_dev *dev, struct sk_buff *skb)
 	/* setup the hwtid for this connection */
 	ep->hwtid = tid;
 	cxgb4_insert_tid(t, ep, tid);
+<<<<<<< HEAD
+=======
+	insert_handle(dev, &dev->hwtid_idr, ep, ep->hwtid);
+>>>>>>> refs/remotes/origin/master
 
 	ep->snd_seq = be32_to_cpu(req->snd_isn);
 	ep->rcv_seq = be32_to_cpu(req->rcv_isn);
@@ -825,6 +1152,7 @@ static int act_establish(struct c4iw_dev *dev, struct sk_buff *skb)
 	set_emss(ep, ntohs(req->tcp_opt));
 
 	/* dealloc the atid */
+<<<<<<< HEAD
 	cxgb4_free_atid(t, atid);
 
 	/* start MPA negotiation */
@@ -832,11 +1160,22 @@ static int act_establish(struct c4iw_dev *dev, struct sk_buff *skb)
 <<<<<<< HEAD
 	send_mpa_req(ep, skb);
 =======
+=======
+	remove_handle(ep->com.dev, &ep->com.dev->atid_idr, atid);
+	cxgb4_free_atid(t, atid);
+	set_bit(ACT_ESTAB, &ep->com.history);
+
+	/* start MPA negotiation */
+	send_flowc(ep, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ep->retry_with_mpa_v1)
 		send_mpa_req(ep, skb, 1);
 	else
 		send_mpa_req(ep, skb, mpa_rev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -854,7 +1193,11 @@ static void close_complete_upcall(struct c4iw_ep *ep)
 		ep->com.cm_id->event_handler(ep->com.cm_id, &event);
 		ep->com.cm_id->rem_ref(ep->com.cm_id);
 		ep->com.cm_id = NULL;
+<<<<<<< HEAD
 		ep->com.qp = NULL;
+=======
+		set_bit(CLOSE_UPCALL, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -863,6 +1206,10 @@ static int abort_connection(struct c4iw_ep *ep, struct sk_buff *skb, gfp_t gfp)
 	PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
 	close_complete_upcall(ep);
 	state_set(&ep->com, ABORTING);
+<<<<<<< HEAD
+=======
+	set_bit(ABORT_CONN, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	return send_abort(ep, skb, gfp);
 }
 
@@ -877,6 +1224,10 @@ static void peer_close_upcall(struct c4iw_ep *ep)
 		PDBG("peer close delivered ep %p cm_id %p tid %u\n",
 		     ep, ep->com.cm_id, ep->hwtid);
 		ep->com.cm_id->event_handler(ep->com.cm_id, &event);
+<<<<<<< HEAD
+=======
+		set_bit(DISCONN_UPCALL, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -894,7 +1245,11 @@ static void peer_abort_upcall(struct c4iw_ep *ep)
 		ep->com.cm_id->event_handler(ep->com.cm_id, &event);
 		ep->com.cm_id->rem_ref(ep->com.cm_id);
 		ep->com.cm_id = NULL;
+<<<<<<< HEAD
 		ep->com.qp = NULL;
+=======
+		set_bit(ABORT_UPCALL, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -906,6 +1261,7 @@ static void connect_reply_upcall(struct c4iw_ep *ep, int status)
 	memset(&event, 0, sizeof(event));
 	event.event = IW_CM_EVENT_CONNECT_REPLY;
 	event.status = status;
+<<<<<<< HEAD
 	event.local_addr = ep->com.local_addr;
 	event.remote_addr = ep->com.remote_addr;
 
@@ -914,6 +1270,14 @@ static void connect_reply_upcall(struct c4iw_ep *ep, int status)
 		event.private_data_len = ep->plen;
 		event.private_data = ep->mpa_pkt + sizeof(struct mpa_message);
 =======
+=======
+	memcpy(&event.local_addr, &ep->com.local_addr,
+	       sizeof(ep->com.local_addr));
+	memcpy(&event.remote_addr, &ep->com.remote_addr,
+	       sizeof(ep->com.remote_addr));
+
+	if ((status == 0) || (status == -ECONNREFUSED)) {
+>>>>>>> refs/remotes/origin/master
 		if (!ep->tried_with_mpa_v1) {
 			/* this means MPA_v2 is used */
 			event.private_data_len = ep->plen -
@@ -927,17 +1291,27 @@ static void connect_reply_upcall(struct c4iw_ep *ep, int status)
 			event.private_data = ep->mpa_pkt +
 				sizeof(struct mpa_message);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	PDBG("%s ep %p tid %u status %d\n", __func__, ep,
 	     ep->hwtid, status);
+<<<<<<< HEAD
+=======
+	set_bit(CONN_RPL_UPCALL, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	ep->com.cm_id->event_handler(ep->com.cm_id, &event);
 
 	if (status < 0) {
 		ep->com.cm_id->rem_ref(ep->com.cm_id);
 		ep->com.cm_id = NULL;
+<<<<<<< HEAD
 		ep->com.qp = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -948,6 +1322,7 @@ static void connect_request_upcall(struct c4iw_ep *ep)
 	PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
 	memset(&event, 0, sizeof(event));
 	event.event = IW_CM_EVENT_CONNECT_REQUEST;
+<<<<<<< HEAD
 	event.local_addr = ep->com.local_addr;
 	event.remote_addr = ep->com.remote_addr;
 <<<<<<< HEAD
@@ -955,6 +1330,12 @@ static void connect_request_upcall(struct c4iw_ep *ep)
 	event.private_data = ep->mpa_pkt + sizeof(struct mpa_message);
 	event.provider_data = ep;
 =======
+=======
+	memcpy(&event.local_addr, &ep->com.local_addr,
+	       sizeof(ep->com.local_addr));
+	memcpy(&event.remote_addr, &ep->com.remote_addr,
+	       sizeof(ep->com.remote_addr));
+>>>>>>> refs/remotes/origin/master
 	event.provider_data = ep;
 	if (!ep->tried_with_mpa_v1) {
 		/* this means MPA_v2 is used */
@@ -971,13 +1352,20 @@ static void connect_request_upcall(struct c4iw_ep *ep)
 		event.private_data_len = ep->plen;
 		event.private_data = ep->mpa_pkt + sizeof(struct mpa_message);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (state_read(&ep->parent_ep->com) != DEAD) {
 		c4iw_get_ep(&ep->com);
 		ep->parent_ep->com.cm_id->event_handler(
 						ep->parent_ep->com.cm_id,
 						&event);
 	}
+<<<<<<< HEAD
+=======
+	set_bit(CONNREQ_UPCALL, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	c4iw_put_ep(&ep->parent_ep->com);
 	ep->parent_ep = NULL;
 }
@@ -990,6 +1378,7 @@ static void established_upcall(struct c4iw_ep *ep)
 	memset(&event, 0, sizeof(event));
 	event.event = IW_CM_EVENT_ESTABLISHED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	event.ird = ep->ird;
 	event.ord = ep->ord;
@@ -997,6 +1386,14 @@ static void established_upcall(struct c4iw_ep *ep)
 	if (ep->com.cm_id) {
 		PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
 		ep->com.cm_id->event_handler(ep->com.cm_id, &event);
+=======
+	event.ird = ep->ird;
+	event.ord = ep->ord;
+	if (ep->com.cm_id) {
+		PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
+		ep->com.cm_id->event_handler(ep->com.cm_id, &event);
+		set_bit(ESTAB_UPCALL, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1030,13 +1427,19 @@ static void process_mpa_reply(struct c4iw_ep *ep, struct sk_buff *skb)
 {
 	struct mpa_message *mpa;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 plen;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mpa_v2_conn_params *mpa_v2_params;
 	u16 plen;
 	u16 resp_ird, resp_ord;
 	u8 rtr_mismatch = 0, insuff_ird = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct c4iw_qp_attributes attrs;
 	enum c4iw_qp_attr_mask mask;
 	int err;
@@ -1077,12 +1480,18 @@ static void process_mpa_reply(struct c4iw_ep *ep, struct sk_buff *skb)
 
 	/* Validate MPA header. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mpa->revision != mpa_rev) {
 =======
 	if (mpa->revision > mpa_rev) {
 		printk(KERN_ERR MOD "%s MPA version mismatch. Local = %d,"
 		       " Received = %d\n", __func__, mpa_rev, mpa->revision);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mpa->revision > mpa_rev) {
+		printk(KERN_ERR MOD "%s MPA version mismatch. Local = %d,"
+		       " Received = %d\n", __func__, mpa_rev, mpa->revision);
+>>>>>>> refs/remotes/origin/master
 		err = -EPROTO;
 		goto err;
 	}
@@ -1133,6 +1542,7 @@ static void process_mpa_reply(struct c4iw_ep *ep, struct sk_buff *skb)
 	ep->mpa_attr.recv_marker_enabled = markers_enabled;
 	ep->mpa_attr.xmit_marker_enabled = mpa->flags & MPA_MARKERS ? 1 : 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ep->mpa_attr.version = mpa_rev;
 	ep->mpa_attr.p2p_type = peer2peer ? p2p_type :
 					    FW_RI_INIT_P2PTYPE_DISABLED;
@@ -1141,6 +1551,8 @@ static void process_mpa_reply(struct c4iw_ep *ep, struct sk_buff *skb)
 	     ep->mpa_attr.crc_enabled, ep->mpa_attr.recv_marker_enabled,
 	     ep->mpa_attr.xmit_marker_enabled, ep->mpa_attr.version);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ep->mpa_attr.version = mpa->revision;
 	ep->mpa_attr.p2p_type = FW_RI_INIT_P2PTYPE_DISABLED;
 
@@ -1201,7 +1613,10 @@ static void process_mpa_reply(struct c4iw_ep *ep, struct sk_buff *skb)
 		ep->mpa_attr.p2p_type = FW_RI_INIT_P2PTYPE_DISABLED;
 		rtr_mismatch = 1;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	attrs.mpa_attr = ep->mpa_attr;
 	attrs.max_ird = ep->ird;
@@ -1219,7 +1634,10 @@ static void process_mpa_reply(struct c4iw_ep *ep, struct sk_buff *skb)
 	if (err)
 		goto err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If responder's RTR requirement did not match with what initiator
@@ -1253,7 +1671,10 @@ static void process_mpa_reply(struct c4iw_ep *ep, struct sk_buff *skb)
 		err = -ENOMEM;
 		goto out;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	goto out;
 err:
 	state_set(&ep->com, ABORTING);
@@ -1267,9 +1688,13 @@ static void process_mpa_request(struct c4iw_ep *ep, struct sk_buff *skb)
 {
 	struct mpa_message *mpa;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct mpa_v2_conn_params *mpa_v2_params;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mpa_v2_conn_params *mpa_v2_params;
+>>>>>>> refs/remotes/origin/master
 	u16 plen;
 
 	PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
@@ -1311,17 +1736,28 @@ static void process_mpa_request(struct c4iw_ep *ep, struct sk_buff *skb)
 	 * Validate MPA Header.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mpa->revision != mpa_rev) {
 =======
 	if (mpa->revision > mpa_rev) {
 		printk(KERN_ERR MOD "%s MPA version mismatch. Local = %d,"
 		       " Received = %d\n", __func__, mpa_rev, mpa->revision);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mpa->revision > mpa_rev) {
+		printk(KERN_ERR MOD "%s MPA version mismatch. Local = %d,"
+		       " Received = %d\n", __func__, mpa_rev, mpa->revision);
+		stop_ep_timer(ep);
+>>>>>>> refs/remotes/origin/master
 		abort_connection(ep, skb, GFP_KERNEL);
 		return;
 	}
 
 	if (memcmp(mpa->key, MPA_KEY_REQ, sizeof(mpa->key))) {
+<<<<<<< HEAD
+=======
+		stop_ep_timer(ep);
+>>>>>>> refs/remotes/origin/master
 		abort_connection(ep, skb, GFP_KERNEL);
 		return;
 	}
@@ -1332,6 +1768,10 @@ static void process_mpa_request(struct c4iw_ep *ep, struct sk_buff *skb)
 	 * Fail if there's too much private data.
 	 */
 	if (plen > MPA_MAX_PRIVATE_DATA) {
+<<<<<<< HEAD
+=======
+		stop_ep_timer(ep);
+>>>>>>> refs/remotes/origin/master
 		abort_connection(ep, skb, GFP_KERNEL);
 		return;
 	}
@@ -1340,6 +1780,10 @@ static void process_mpa_request(struct c4iw_ep *ep, struct sk_buff *skb)
 	 * If plen does not account for pkt size
 	 */
 	if (ep->mpa_pkt_len > (sizeof(*mpa) + plen)) {
+<<<<<<< HEAD
+=======
+		stop_ep_timer(ep);
+>>>>>>> refs/remotes/origin/master
 		abort_connection(ep, skb, GFP_KERNEL);
 		return;
 	}
@@ -1360,10 +1804,13 @@ static void process_mpa_request(struct c4iw_ep *ep, struct sk_buff *skb)
 	ep->mpa_attr.recv_marker_enabled = markers_enabled;
 	ep->mpa_attr.xmit_marker_enabled = mpa->flags & MPA_MARKERS ? 1 : 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ep->mpa_attr.version = mpa_rev;
 	ep->mpa_attr.p2p_type = peer2peer ? p2p_type :
 					    FW_RI_INIT_P2PTYPE_DISABLED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ep->mpa_attr.version = mpa->revision;
 	if (mpa->revision == 1)
 		ep->tried_with_mpa_v1 = 1;
@@ -1395,7 +1842,10 @@ static void process_mpa_request(struct c4iw_ep *ep, struct sk_buff *skb)
 		if (peer2peer)
 			ep->mpa_attr.p2p_type = p2p_type;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	PDBG("%s - crc_enabled=%d, recv_marker_enabled=%d, "
 	     "xmit_marker_enabled=%d, version=%d p2p_type=%d\n", __func__,
 	     ep->mpa_attr.crc_enabled, ep->mpa_attr.recv_marker_enabled,
@@ -1416,20 +1866,28 @@ static int rx_data(struct c4iw_dev *dev, struct sk_buff *skb)
 	unsigned int dlen = ntohs(hdr->len);
 	unsigned int tid = GET_TID(hdr);
 	struct tid_info *t = dev->rdev.lldi.tids;
+<<<<<<< HEAD
+=======
+	__u8 status = hdr->status;
+>>>>>>> refs/remotes/origin/master
 
 	ep = lookup_tid(t, tid);
 	PDBG("%s ep %p tid %u dlen %u\n", __func__, ep, ep->hwtid, dlen);
 	skb_pull(skb, sizeof(*hdr));
 	skb_trim(skb, dlen);
 
+<<<<<<< HEAD
 	ep->rcv_seq += dlen;
 	BUG_ON(ep->rcv_seq != (ntohl(hdr->seq) + dlen));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* update RX credits */
 	update_rx_credits(ep, dlen);
 
 	switch (state_read(&ep->com)) {
 	case MPA_REQ_SENT:
+<<<<<<< HEAD
 		process_mpa_reply(ep, skb);
 		break;
 	case MPA_REQ_WAIT:
@@ -1446,6 +1904,29 @@ static int rx_data(struct c4iw_dev *dev, struct sk_buff *skb)
 		 * The ep will timeout and inform the ULP of the failure.
 		 * See ep_timeout().
 		 */
+=======
+		ep->rcv_seq += dlen;
+		process_mpa_reply(ep, skb);
+		break;
+	case MPA_REQ_WAIT:
+		ep->rcv_seq += dlen;
+		process_mpa_request(ep, skb);
+		break;
+	case FPDU_MODE: {
+		struct c4iw_qp_attributes attrs;
+		BUG_ON(!ep->com.qp);
+		if (status)
+			pr_err("%s Unexpected streaming data." \
+			       " qpid %u ep %p state %d tid %u status %d\n",
+			       __func__, ep->com.qp->wq.sq.qid, ep,
+			       state_read(&ep->com), ep->hwtid, status);
+		attrs.next_state = C4IW_QP_STATE_TERMINATE;
+		c4iw_modify_qp(ep->com.qp->rhp, ep->com.qp,
+			       C4IW_QP_ATTR_NEXT_STATE, &attrs, 0);
+		break;
+	}
+	default:
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return 0;
@@ -1460,11 +1941,23 @@ static int abort_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 	struct tid_info *t = dev->rdev.lldi.tids;
 
 	ep = lookup_tid(t, tid);
+<<<<<<< HEAD
 	PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
 	BUG_ON(!ep);
 	mutex_lock(&ep->com.mutex);
 	switch (ep->com.state) {
 	case ABORTING:
+=======
+	if (!ep) {
+		printk(KERN_WARNING MOD "Abort rpl to freed endpoint\n");
+		return 0;
+	}
+	PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
+	mutex_lock(&ep->com.mutex);
+	switch (ep->com.state) {
+	case ABORTING:
+		c4iw_wake_up(&ep->com.wr_wait, -ECONNRESET);
+>>>>>>> refs/remotes/origin/master
 		__state_set(&ep->com, DEAD);
 		release = 1;
 		break;
@@ -1480,6 +1973,70 @@ static int abort_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void send_fw_act_open_req(struct c4iw_ep *ep, unsigned int atid)
+{
+	struct sk_buff *skb;
+	struct fw_ofld_connection_wr *req;
+	unsigned int mtu_idx;
+	int wscale;
+	struct sockaddr_in *sin;
+
+	skb = get_skb(NULL, sizeof(*req), GFP_KERNEL);
+	req = (struct fw_ofld_connection_wr *)__skb_put(skb, sizeof(*req));
+	memset(req, 0, sizeof(*req));
+	req->op_compl = htonl(V_WR_OP(FW_OFLD_CONNECTION_WR));
+	req->len16_pkd = htonl(FW_WR_LEN16(DIV_ROUND_UP(sizeof(*req), 16)));
+	req->le.filter = cpu_to_be32(cxgb4_select_ntuple(
+				     ep->com.dev->rdev.lldi.ports[0],
+				     ep->l2t));
+	sin = (struct sockaddr_in *)&ep->com.local_addr;
+	req->le.lport = sin->sin_port;
+	req->le.u.ipv4.lip = sin->sin_addr.s_addr;
+	sin = (struct sockaddr_in *)&ep->com.remote_addr;
+	req->le.pport = sin->sin_port;
+	req->le.u.ipv4.pip = sin->sin_addr.s_addr;
+	req->tcb.t_state_to_astid =
+			htonl(V_FW_OFLD_CONNECTION_WR_T_STATE(TCP_SYN_SENT) |
+			V_FW_OFLD_CONNECTION_WR_ASTID(atid));
+	req->tcb.cplrxdataack_cplpassacceptrpl =
+			htons(F_FW_OFLD_CONNECTION_WR_CPLRXDATAACK);
+	req->tcb.tx_max = (__force __be32) jiffies;
+	req->tcb.rcv_adv = htons(1);
+	cxgb4_best_mtu(ep->com.dev->rdev.lldi.mtus, ep->mtu, &mtu_idx);
+	wscale = compute_wscale(rcv_win);
+	req->tcb.opt0 = (__force __be64) (TCAM_BYPASS(1) |
+		(nocong ? NO_CONG(1) : 0) |
+		KEEP_ALIVE(1) |
+		DELACK(1) |
+		WND_SCALE(wscale) |
+		MSS_IDX(mtu_idx) |
+		L2T_IDX(ep->l2t->idx) |
+		TX_CHAN(ep->tx_chan) |
+		SMAC_SEL(ep->smac_idx) |
+		DSCP(ep->tos) |
+		ULP_MODE(ULP_MODE_TCPDDP) |
+		RCV_BUFSIZ(rcv_win >> 10));
+	req->tcb.opt2 = (__force __be32) (PACE(1) |
+		TX_QUEUE(ep->com.dev->rdev.lldi.tx_modq[ep->tx_chan]) |
+		RX_CHANNEL(0) |
+		CCTRL_ECN(enable_ecn) |
+		RSS_QUEUE_VALID | RSS_QUEUE(ep->rss_qid));
+	if (enable_tcp_timestamps)
+		req->tcb.opt2 |= (__force __be32) TSTAMPS_EN(1);
+	if (enable_tcp_sack)
+		req->tcb.opt2 |= (__force __be32) SACK_EN(1);
+	if (wscale && enable_tcp_window_scaling)
+		req->tcb.opt2 |= (__force __be32) WND_SCALE_EN(1);
+	req->tcb.opt0 = cpu_to_be64((__force u64) req->tcb.opt0);
+	req->tcb.opt2 = cpu_to_be32((__force u32) req->tcb.opt2);
+	set_wr_txq(skb, CPL_PRIORITY_CONTROL, ep->ctrlq_idx);
+	set_bit(ACT_OFLD_CONN, &ep->com.history);
+	c4iw_l2t_send(&ep->com.dev->rdev, skb, ep->l2t);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Return whether a failed active open has allocated a TID
  */
@@ -1489,6 +2046,175 @@ static inline int act_open_has_tid(int status)
 	       status != CPL_ERR_ARP_MISS;
 }
 
+<<<<<<< HEAD
+=======
+#define ACT_OPEN_RETRY_COUNT 2
+
+static int import_ep(struct c4iw_ep *ep, int iptype, __u8 *peer_ip,
+		     struct dst_entry *dst, struct c4iw_dev *cdev,
+		     bool clear_mpa_v1)
+{
+	struct neighbour *n;
+	int err, step;
+	struct net_device *pdev;
+
+	n = dst_neigh_lookup(dst, peer_ip);
+	if (!n)
+		return -ENODEV;
+
+	rcu_read_lock();
+	err = -ENOMEM;
+	if (n->dev->flags & IFF_LOOPBACK) {
+		if (iptype == 4)
+			pdev = ip_dev_find(&init_net, *(__be32 *)peer_ip);
+		else if (IS_ENABLED(CONFIG_IPV6))
+			for_each_netdev(&init_net, pdev) {
+				if (ipv6_chk_addr(&init_net,
+						  (struct in6_addr *)peer_ip,
+						  pdev, 1))
+					break;
+			}
+		else
+			pdev = NULL;
+
+		if (!pdev) {
+			err = -ENODEV;
+			goto out;
+		}
+		ep->l2t = cxgb4_l2t_get(cdev->rdev.lldi.l2t,
+					n, pdev, 0);
+		if (!ep->l2t)
+			goto out;
+		ep->mtu = pdev->mtu;
+		ep->tx_chan = cxgb4_port_chan(pdev);
+		ep->smac_idx = (cxgb4_port_viid(pdev) & 0x7F) << 1;
+		step = cdev->rdev.lldi.ntxq /
+			cdev->rdev.lldi.nchan;
+		ep->txq_idx = cxgb4_port_idx(pdev) * step;
+		step = cdev->rdev.lldi.nrxq /
+			cdev->rdev.lldi.nchan;
+		ep->ctrlq_idx = cxgb4_port_idx(pdev);
+		ep->rss_qid = cdev->rdev.lldi.rxq_ids[
+			cxgb4_port_idx(pdev) * step];
+		dev_put(pdev);
+	} else {
+		pdev = get_real_dev(n->dev);
+		ep->l2t = cxgb4_l2t_get(cdev->rdev.lldi.l2t,
+					n, pdev, 0);
+		if (!ep->l2t)
+			goto out;
+		ep->mtu = dst_mtu(dst);
+		ep->tx_chan = cxgb4_port_chan(n->dev);
+		ep->smac_idx = (cxgb4_port_viid(n->dev) & 0x7F) << 1;
+		step = cdev->rdev.lldi.ntxq /
+			cdev->rdev.lldi.nchan;
+		ep->txq_idx = cxgb4_port_idx(n->dev) * step;
+		ep->ctrlq_idx = cxgb4_port_idx(n->dev);
+		step = cdev->rdev.lldi.nrxq /
+			cdev->rdev.lldi.nchan;
+		ep->rss_qid = cdev->rdev.lldi.rxq_ids[
+			cxgb4_port_idx(n->dev) * step];
+
+		if (clear_mpa_v1) {
+			ep->retry_with_mpa_v1 = 0;
+			ep->tried_with_mpa_v1 = 0;
+		}
+	}
+	err = 0;
+out:
+	rcu_read_unlock();
+
+	neigh_release(n);
+
+	return err;
+}
+
+static int c4iw_reconnect(struct c4iw_ep *ep)
+{
+	int err = 0;
+	struct sockaddr_in *laddr = (struct sockaddr_in *)
+				    &ep->com.cm_id->local_addr;
+	struct sockaddr_in *raddr = (struct sockaddr_in *)
+				    &ep->com.cm_id->remote_addr;
+	struct sockaddr_in6 *laddr6 = (struct sockaddr_in6 *)
+				      &ep->com.cm_id->local_addr;
+	struct sockaddr_in6 *raddr6 = (struct sockaddr_in6 *)
+				      &ep->com.cm_id->remote_addr;
+	int iptype;
+	__u8 *ra;
+
+	PDBG("%s qp %p cm_id %p\n", __func__, ep->com.qp, ep->com.cm_id);
+	init_timer(&ep->timer);
+
+	/*
+	 * Allocate an active TID to initiate a TCP connection.
+	 */
+	ep->atid = cxgb4_alloc_atid(ep->com.dev->rdev.lldi.tids, ep);
+	if (ep->atid == -1) {
+		pr_err("%s - cannot alloc atid.\n", __func__);
+		err = -ENOMEM;
+		goto fail2;
+	}
+	insert_handle(ep->com.dev, &ep->com.dev->atid_idr, ep, ep->atid);
+
+	/* find a route */
+	if (ep->com.cm_id->local_addr.ss_family == AF_INET) {
+		ep->dst = find_route(ep->com.dev, laddr->sin_addr.s_addr,
+				     raddr->sin_addr.s_addr, laddr->sin_port,
+				     raddr->sin_port, 0);
+		iptype = 4;
+		ra = (__u8 *)&raddr->sin_addr;
+	} else {
+		ep->dst = find_route6(ep->com.dev, laddr6->sin6_addr.s6_addr,
+				      raddr6->sin6_addr.s6_addr,
+				      laddr6->sin6_port, raddr6->sin6_port, 0,
+				      raddr6->sin6_scope_id);
+		iptype = 6;
+		ra = (__u8 *)&raddr6->sin6_addr;
+	}
+	if (!ep->dst) {
+		pr_err("%s - cannot find route.\n", __func__);
+		err = -EHOSTUNREACH;
+		goto fail3;
+	}
+	err = import_ep(ep, iptype, ra, ep->dst, ep->com.dev, false);
+	if (err) {
+		pr_err("%s - cannot alloc l2e.\n", __func__);
+		goto fail4;
+	}
+
+	PDBG("%s txq_idx %u tx_chan %u smac_idx %u rss_qid %u l2t_idx %u\n",
+	     __func__, ep->txq_idx, ep->tx_chan, ep->smac_idx, ep->rss_qid,
+	     ep->l2t->idx);
+
+	state_set(&ep->com, CONNECTING);
+	ep->tos = 0;
+
+	/* send connect request to rnic */
+	err = send_connect(ep);
+	if (!err)
+		goto out;
+
+	cxgb4_l2t_release(ep->l2t);
+fail4:
+	dst_release(ep->dst);
+fail3:
+	remove_handle(ep->com.dev, &ep->com.dev->atid_idr, ep->atid);
+	cxgb4_free_atid(ep->com.dev->rdev.lldi.tids, ep->atid);
+fail2:
+	/*
+	 * remember to send notification to upper layer.
+	 * We are in here so the upper layer is not aware that this is
+	 * re-connect attempt and so, upper layer is still waiting for
+	 * response of 1st connect request.
+	 */
+	connect_reply_upcall(ep, -ECONNRESET);
+	c4iw_put_ep(&ep->com);
+out:
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int act_open_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 {
 	struct c4iw_ep *ep;
@@ -1497,8 +2223,21 @@ static int act_open_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 					ntohl(rpl->atid_status)));
 	struct tid_info *t = dev->rdev.lldi.tids;
 	int status = GET_AOPEN_STATUS(ntohl(rpl->atid_status));
+<<<<<<< HEAD
 
 	ep = lookup_atid(t, atid);
+=======
+	struct sockaddr_in *la;
+	struct sockaddr_in *ra;
+	struct sockaddr_in6 *la6;
+	struct sockaddr_in6 *ra6;
+
+	ep = lookup_atid(t, atid);
+	la = (struct sockaddr_in *)&ep->com.local_addr;
+	ra = (struct sockaddr_in *)&ep->com.remote_addr;
+	la6 = (struct sockaddr_in6 *)&ep->com.local_addr;
+	ra6 = (struct sockaddr_in6 *)&ep->com.remote_addr;
+>>>>>>> refs/remotes/origin/master
 
 	PDBG("%s ep %p atid %u status %u errno %d\n", __func__, ep, atid,
 	     status, status2errno(status));
@@ -1509,12 +2248,67 @@ static int act_open_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 		return 0;
 	}
 
+<<<<<<< HEAD
+=======
+	set_bit(ACT_OPEN_RPL, &ep->com.history);
+
+	/*
+	 * Log interesting failures.
+	 */
+	switch (status) {
+	case CPL_ERR_CONN_RESET:
+	case CPL_ERR_CONN_TIMEDOUT:
+		break;
+	case CPL_ERR_TCAM_FULL:
+		mutex_lock(&dev->rdev.stats.lock);
+		dev->rdev.stats.tcam_full++;
+		mutex_unlock(&dev->rdev.stats.lock);
+		if (ep->com.local_addr.ss_family == AF_INET &&
+		    dev->rdev.lldi.enable_fw_ofld_conn) {
+			send_fw_act_open_req(ep,
+					     GET_TID_TID(GET_AOPEN_ATID(
+					     ntohl(rpl->atid_status))));
+			return 0;
+		}
+		break;
+	case CPL_ERR_CONN_EXIST:
+		if (ep->retry_count++ < ACT_OPEN_RETRY_COUNT) {
+			set_bit(ACT_RETRY_INUSE, &ep->com.history);
+			remove_handle(ep->com.dev, &ep->com.dev->atid_idr,
+					atid);
+			cxgb4_free_atid(t, atid);
+			dst_release(ep->dst);
+			cxgb4_l2t_release(ep->l2t);
+			c4iw_reconnect(ep);
+			return 0;
+		}
+		break;
+	default:
+		if (ep->com.local_addr.ss_family == AF_INET) {
+			pr_info("Active open failure - atid %u status %u errno %d %pI4:%u->%pI4:%u\n",
+				atid, status, status2errno(status),
+				&la->sin_addr.s_addr, ntohs(la->sin_port),
+				&ra->sin_addr.s_addr, ntohs(ra->sin_port));
+		} else {
+			pr_info("Active open failure - atid %u status %u errno %d %pI6:%u->%pI6:%u\n",
+				atid, status, status2errno(status),
+				la6->sin6_addr.s6_addr, ntohs(la6->sin6_port),
+				ra6->sin6_addr.s6_addr, ntohs(ra6->sin6_port));
+		}
+		break;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	connect_reply_upcall(ep, status2errno(status));
 	state_set(&ep->com, DEAD);
 
 	if (status && act_open_has_tid(status))
 		cxgb4_remove_tid(ep->com.dev->rdev.lldi.tids, 0, GET_TID(rpl));
 
+<<<<<<< HEAD
+=======
+	remove_handle(ep->com.dev, &ep->com.dev->atid_idr, atid);
+>>>>>>> refs/remotes/origin/master
 	cxgb4_free_atid(t, atid);
 	dst_release(ep->dst);
 	cxgb4_l2t_release(ep->l2t);
@@ -1531,13 +2325,19 @@ static int pass_open_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 	struct c4iw_listen_ep *ep = lookup_stid(t, stid);
 
 	if (!ep) {
+<<<<<<< HEAD
 		printk(KERN_ERR MOD "stid %d lookup failure!\n", stid);
 		return 0;
+=======
+		PDBG("%s stid %d lookup failure!\n", __func__, stid);
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 	PDBG("%s ep %p status %d error %d\n", __func__, ep,
 	     rpl->status, status2errno(rpl->status));
 	c4iw_wake_up(&ep->com.wr_wait, status2errno(rpl->status));
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -1562,6 +2362,12 @@ static int listen_stop(struct c4iw_listen_ep *ep)
 	return c4iw_ofld_send(&ep->com.dev->rdev, skb);
 }
 
+=======
+out:
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int close_listsrv_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 {
 	struct cpl_close_listsvr_rpl *rpl = cplhdr(skb);
@@ -1574,7 +2380,11 @@ static int close_listsrv_rpl(struct c4iw_dev *dev, struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void accept_cr(struct c4iw_ep *ep, __be32 peer_ip, struct sk_buff *skb,
+=======
+static void accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+>>>>>>> refs/remotes/origin/master
 		      struct cpl_pass_accept_req *req)
 {
 	struct cpl_pass_accept_rpl *rpl;
@@ -1589,14 +2399,23 @@ static void accept_cr(struct c4iw_ep *ep, __be32 peer_ip, struct sk_buff *skb,
 	skb_get(skb);
 	cxgb4_best_mtu(ep->com.dev->rdev.lldi.mtus, ep->mtu, &mtu_idx);
 	wscale = compute_wscale(rcv_win);
+<<<<<<< HEAD
 	opt0 = KEEP_ALIVE(1) |
+=======
+	opt0 = (nocong ? NO_CONG(1) : 0) |
+	       KEEP_ALIVE(1) |
+>>>>>>> refs/remotes/origin/master
 	       DELACK(1) |
 	       WND_SCALE(wscale) |
 	       MSS_IDX(mtu_idx) |
 	       L2T_IDX(ep->l2t->idx) |
 	       TX_CHAN(ep->tx_chan) |
 	       SMAC_SEL(ep->smac_idx) |
+<<<<<<< HEAD
 	       DSCP(ep->tos) |
+=======
+	       DSCP(ep->tos >> 2) |
+>>>>>>> refs/remotes/origin/master
 	       ULP_MODE(ULP_MODE_TCPDDP) |
 	       RCV_BUFSIZ(rcv_win>>10);
 	opt2 = RX_CHANNEL(0) |
@@ -1608,6 +2427,18 @@ static void accept_cr(struct c4iw_ep *ep, __be32 peer_ip, struct sk_buff *skb,
 		opt2 |= SACK_EN(1);
 	if (wscale && enable_tcp_window_scaling)
 		opt2 |= WND_SCALE_EN(1);
+<<<<<<< HEAD
+=======
+	if (enable_ecn) {
+		const struct tcphdr *tcph;
+		u32 hlen = ntohl(req->hdr_len);
+
+		tcph = (const void *)(req + 1) + G_ETH_HDR_LEN(hlen) +
+			G_IP_HDR_LEN(hlen);
+		if (tcph->ece && tcph->cwr)
+			opt2 |= CCTRL_ECN(1);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	rpl = cplhdr(skb);
 	INIT_TP_WR(rpl, ep->hwtid);
@@ -1616,16 +2447,26 @@ static void accept_cr(struct c4iw_ep *ep, __be32 peer_ip, struct sk_buff *skb,
 	rpl->opt0 = cpu_to_be64(opt0);
 	rpl->opt2 = cpu_to_be32(opt2);
 	set_wr_txq(skb, CPL_PRIORITY_SETUP, ep->ctrlq_idx);
+<<<<<<< HEAD
+=======
+	t4_set_arp_err_handler(skb, NULL, arp_failure_discard);
+>>>>>>> refs/remotes/origin/master
 	c4iw_l2t_send(&ep->com.dev->rdev, skb, ep->l2t);
 
 	return;
 }
 
+<<<<<<< HEAD
 static void reject_cr(struct c4iw_dev *dev, u32 hwtid, __be32 peer_ip,
 		      struct sk_buff *skb)
 {
 	PDBG("%s c4iw_dev %p tid %u peer_ip %x\n", __func__, dev, hwtid,
 	     peer_ip);
+=======
+static void reject_cr(struct c4iw_dev *dev, u32 hwtid, struct sk_buff *skb)
+{
+	PDBG("%s c4iw_dev %p tid %u\n", __func__, dev, hwtid);
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(skb_cloned(skb));
 	skb_trim(skb, sizeof(struct cpl_tid_release));
 	skb_get(skb);
@@ -1633,13 +2474,19 @@ static void reject_cr(struct c4iw_dev *dev, u32 hwtid, __be32 peer_ip,
 	return;
 }
 
+<<<<<<< HEAD
 static void get_4tuple(struct cpl_pass_accept_req *req,
 		       __be32 *local_ip, __be32 *peer_ip,
+=======
+static void get_4tuple(struct cpl_pass_accept_req *req, int *iptype,
+		       __u8 *local_ip, __u8 *peer_ip,
+>>>>>>> refs/remotes/origin/master
 		       __be16 *local_port, __be16 *peer_port)
 {
 	int eth_len = G_ETH_HDR_LEN(be32_to_cpu(req->hdr_len));
 	int ip_len = G_IP_HDR_LEN(be32_to_cpu(req->hdr_len));
 	struct iphdr *ip = (struct iphdr *)((u8 *)(req + 1) + eth_len);
+<<<<<<< HEAD
 	struct tcphdr *tcp = (struct tcphdr *)
 			     ((u8 *)(req + 1) + eth_len + ip_len);
 
@@ -1649,12 +2496,34 @@ static void get_4tuple(struct cpl_pass_accept_req *req,
 
 	*peer_ip = ip->saddr;
 	*local_ip = ip->daddr;
+=======
+	struct ipv6hdr *ip6 = (struct ipv6hdr *)((u8 *)(req + 1) + eth_len);
+	struct tcphdr *tcp = (struct tcphdr *)
+			     ((u8 *)(req + 1) + eth_len + ip_len);
+
+	if (ip->version == 4) {
+		PDBG("%s saddr 0x%x daddr 0x%x sport %u dport %u\n", __func__,
+		     ntohl(ip->saddr), ntohl(ip->daddr), ntohs(tcp->source),
+		     ntohs(tcp->dest));
+		*iptype = 4;
+		memcpy(peer_ip, &ip->saddr, 4);
+		memcpy(local_ip, &ip->daddr, 4);
+	} else {
+		PDBG("%s saddr %pI6 daddr %pI6 sport %u dport %u\n", __func__,
+		     ip6->saddr.s6_addr, ip6->daddr.s6_addr, ntohs(tcp->source),
+		     ntohs(tcp->dest));
+		*iptype = 6;
+		memcpy(peer_ip, ip6->saddr.s6_addr, 16);
+		memcpy(local_ip, ip6->daddr.s6_addr, 16);
+	}
+>>>>>>> refs/remotes/origin/master
 	*peer_port = tcp->source;
 	*local_port = tcp->dest;
 
 	return;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static int import_ep(struct c4iw_ep *ep, __be32 peer_ip, struct dst_entry *dst,
@@ -1724,10 +2593,16 @@ out:
 static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 {
 	struct c4iw_ep *child_ep, *parent_ep;
+=======
+static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
+{
+	struct c4iw_ep *child_ep = NULL, *parent_ep;
+>>>>>>> refs/remotes/origin/master
 	struct cpl_pass_accept_req *req = cplhdr(skb);
 	unsigned int stid = GET_POPEN_TID(ntohl(req->tos_stid));
 	struct tid_info *t = dev->rdev.lldi.tids;
 	unsigned int hwtid = GET_TID(req);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct neighbour *neigh;
 	struct dst_entry *dst;
@@ -1753,6 +2628,20 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 	PDBG("%s parent ep %p tid %u\n", __func__, parent_ep, hwtid);
 
 	get_4tuple(req, &local_ip, &peer_ip, &local_port, &peer_port);
+=======
+	struct dst_entry *dst;
+	__u8 local_ip[16], peer_ip[16];
+	__be16 local_port, peer_port;
+	int err;
+	u16 peer_mss = ntohs(req->tcpopt.mss);
+	int iptype;
+
+	parent_ep = lookup_stid(t, stid);
+	if (!parent_ep) {
+		PDBG("%s connect request on invalid stid %d\n", __func__, stid);
+		goto reject;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (state_read(&parent_ep->com) != LISTEN) {
 		printk(KERN_ERR "%s - listening ep not in LISTEN\n",
@@ -1760,14 +2649,40 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 		goto reject;
 	}
 
+<<<<<<< HEAD
 	/* Find output route */
 	rt = find_route(dev, local_ip, peer_ip, local_port, peer_port,
 			GET_POPEN_TOS(ntohl(req->tos_stid)));
 	if (!rt) {
+=======
+	get_4tuple(req, &iptype, local_ip, peer_ip, &local_port, &peer_port);
+
+	/* Find output route */
+	if (iptype == 4)  {
+		PDBG("%s parent ep %p hwtid %u laddr %pI4 raddr %pI4 lport %d rport %d peer_mss %d\n"
+		     , __func__, parent_ep, hwtid,
+		     local_ip, peer_ip, ntohs(local_port),
+		     ntohs(peer_port), peer_mss);
+		dst = find_route(dev, *(__be32 *)local_ip, *(__be32 *)peer_ip,
+				 local_port, peer_port,
+				 GET_POPEN_TOS(ntohl(req->tos_stid)));
+	} else {
+		PDBG("%s parent ep %p hwtid %u laddr %pI6 raddr %pI6 lport %d rport %d peer_mss %d\n"
+		     , __func__, parent_ep, hwtid,
+		     local_ip, peer_ip, ntohs(local_port),
+		     ntohs(peer_port), peer_mss);
+		dst = find_route6(dev, local_ip, peer_ip, local_port, peer_port,
+				  PASS_OPEN_TOS(ntohl(req->tos_stid)),
+				  ((struct sockaddr_in6 *)
+				  &parent_ep->com.local_addr)->sin6_scope_id);
+	}
+	if (!dst) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR MOD "%s - failed to find dst entry!\n",
 		       __func__);
 		goto reject;
 	}
+<<<<<<< HEAD
 	dst = &rt->dst;
 <<<<<<< HEAD
 	rcu_read_lock();
@@ -1801,16 +2716,22 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 	if (!l2t) {
 		printk(KERN_ERR MOD "%s - failed to allocate l2t entry!\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	child_ep = alloc_ep(sizeof(*child_ep), GFP_KERNEL);
 	if (!child_ep) {
 		printk(KERN_ERR MOD "%s - failed to allocate ep entry!\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       __func__);
 		dst_release(dst);
 		goto reject;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	child_ep = alloc_ep(sizeof(*child_ep), GFP_KERNEL);
 	if (!child_ep) {
@@ -1822,6 +2743,9 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 	}
 =======
 	err = import_ep(child_ep, peer_ip, dst, dev, false);
+=======
+	err = import_ep(child_ep, iptype, peer_ip, dst, dev, false);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		printk(KERN_ERR MOD "%s - failed to allocate l2t entry!\n",
 		       __func__);
@@ -1830,6 +2754,7 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 		goto reject;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	state_set(&child_ep->com, CONNECTING);
 	child_ep->com.dev = dev;
@@ -1857,11 +2782,44 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 	PDBG("%s tx_chan %u smac_idx %u rss_qid %u\n", __func__,
 	     tx_chan, smac_idx, rss_qid);
 =======
+=======
+	if (peer_mss && child_ep->mtu > (peer_mss + 40))
+		child_ep->mtu = peer_mss + 40;
+
+	state_set(&child_ep->com, CONNECTING);
+	child_ep->com.dev = dev;
+	child_ep->com.cm_id = NULL;
+	if (iptype == 4) {
+		struct sockaddr_in *sin = (struct sockaddr_in *)
+			&child_ep->com.local_addr;
+		sin->sin_family = PF_INET;
+		sin->sin_port = local_port;
+		sin->sin_addr.s_addr = *(__be32 *)local_ip;
+		sin = (struct sockaddr_in *)&child_ep->com.remote_addr;
+		sin->sin_family = PF_INET;
+		sin->sin_port = peer_port;
+		sin->sin_addr.s_addr = *(__be32 *)peer_ip;
+	} else {
+		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)
+			&child_ep->com.local_addr;
+		sin6->sin6_family = PF_INET6;
+		sin6->sin6_port = local_port;
+		memcpy(sin6->sin6_addr.s6_addr, local_ip, 16);
+		sin6 = (struct sockaddr_in6 *)&child_ep->com.remote_addr;
+		sin6->sin6_family = PF_INET6;
+		sin6->sin6_port = peer_port;
+		memcpy(sin6->sin6_addr.s6_addr, peer_ip, 16);
+	}
+	c4iw_get_ep(&parent_ep->com);
+	child_ep->parent_ep = parent_ep;
+	child_ep->tos = GET_POPEN_TOS(ntohl(req->tos_stid));
+>>>>>>> refs/remotes/origin/master
 	child_ep->dst = dst;
 	child_ep->hwtid = hwtid;
 
 	PDBG("%s tx_chan %u smac_idx %u rss_qid %u\n", __func__,
 	     child_ep->tx_chan, child_ep->smac_idx, child_ep->rss_qid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	init_timer(&child_ep->timer);
@@ -1870,6 +2828,17 @@ static int pass_accept_req(struct c4iw_dev *dev, struct sk_buff *skb)
 	goto out;
 reject:
 	reject_cr(dev, hwtid, peer_ip, skb);
+=======
+
+	init_timer(&child_ep->timer);
+	cxgb4_insert_tid(t, child_ep, hwtid);
+	insert_handle(dev, &dev->hwtid_idr, child_ep, child_ep->hwtid);
+	accept_cr(child_ep, skb, req);
+	set_bit(PASS_ACCEPT_REQ, &child_ep->com.history);
+	goto out;
+reject:
+	reject_cr(dev, hwtid, skb);
+>>>>>>> refs/remotes/origin/master
 out:
 	return 0;
 }
@@ -1886,12 +2855,22 @@ static int pass_establish(struct c4iw_dev *dev, struct sk_buff *skb)
 	ep->snd_seq = be32_to_cpu(req->snd_isn);
 	ep->rcv_seq = be32_to_cpu(req->rcv_isn);
 
+<<<<<<< HEAD
+=======
+	PDBG("%s ep %p hwtid %u tcp_opt 0x%02x\n", __func__, ep, tid,
+	     ntohs(req->tcp_opt));
+
+>>>>>>> refs/remotes/origin/master
 	set_emss(ep, ntohs(req->tcp_opt));
 
 	dst_confirm(ep->dst);
 	state_set(&ep->com, MPA_REQ_WAIT);
 	start_ep_timer(ep);
 	send_flowc(ep, skb);
+<<<<<<< HEAD
+=======
+	set_bit(PASS_ESTAB, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1911,6 +2890,10 @@ static int peer_close(struct c4iw_dev *dev, struct sk_buff *skb)
 	PDBG("%s ep %p tid %u\n", __func__, ep, ep->hwtid);
 	dst_confirm(ep->dst);
 
+<<<<<<< HEAD
+=======
+	set_bit(PEER_CLOSE, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&ep->com.mutex);
 	switch (ep->com.state) {
 	case MPA_REQ_WAIT:
@@ -1991,6 +2974,7 @@ static int is_neg_adv_abort(unsigned int status)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int c4iw_reconnect(struct c4iw_ep *ep)
 {
@@ -2061,6 +3045,8 @@ out:
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
 {
 	struct cpl_abort_req_rss *req = cplhdr(skb);
@@ -2081,6 +3067,7 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
 	}
 	PDBG("%s ep %p tid %u state %u\n", __func__, ep, ep->hwtid,
 	     ep->com.state);
+<<<<<<< HEAD
 
 	/*
 	 * Wake up any threads in rdma_init() or rdma_fini().
@@ -2088,12 +3075,21 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
 	 */
 	c4iw_wake_up(&ep->com.wr_wait, -ECONNRESET);
 =======
+=======
+	set_bit(PEER_ABORT, &ep->com.history);
+
+	/*
+	 * Wake up any threads in rdma_init() or rdma_fini().
+>>>>>>> refs/remotes/origin/master
 	 * However, this is not needed if com state is just
 	 * MPA_REQ_SENT
 	 */
 	if (ep->com.state != MPA_REQ_SENT)
 		c4iw_wake_up(&ep->com.wr_wait, -ECONNRESET);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&ep->com.mutex);
 	switch (ep->com.state) {
@@ -2105,9 +3101,13 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
 	case MPA_REQ_SENT:
 		stop_ep_timer(ep);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		connect_reply_upcall(ep, -ECONNRESET);
 =======
 		if (mpa_rev == 2 && ep->tried_with_mpa_v1)
+=======
+		if (mpa_rev == 1 || (mpa_rev == 2 && ep->tried_with_mpa_v1))
+>>>>>>> refs/remotes/origin/master
 			connect_reply_upcall(ep, -ECONNRESET);
 		else {
 			/*
@@ -2122,7 +3122,10 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
 			     mpa_rev);
 			ep->retry_with_mpa_v1 = 1;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MPA_REP_SENT:
 		break;
@@ -2159,12 +3162,18 @@ static int peer_abort(struct c4iw_dev *dev, struct sk_buff *skb)
 	if (ep->com.state != ABORTING) {
 		__state_set(&ep->com, DEAD);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		release = 1;
 =======
 		/* we don't release if we want to retry with mpa_v1 */
 		if (!ep->retry_with_mpa_v1)
 			release = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* we don't release if we want to retry with mpa_v1 */
+		if (!ep->retry_with_mpa_v1)
+			release = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&ep->com.mutex);
 
@@ -2185,17 +3194,25 @@ out:
 	if (release)
 		release_ep_resources(ep);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	/* retry with mpa-v1 */
 	if (ep && ep->retry_with_mpa_v1) {
+=======
+	else if (ep->retry_with_mpa_v1) {
+		remove_handle(ep->com.dev, &ep->com.dev->hwtid_idr, ep->hwtid);
+>>>>>>> refs/remotes/origin/master
 		cxgb4_remove_tid(ep->com.dev->rdev.lldi.tids, 0, ep->hwtid);
 		dst_release(ep->dst);
 		cxgb4_l2t_release(ep->l2t);
 		c4iw_reconnect(ep);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2311,6 +3328,10 @@ int c4iw_reject_cr(struct iw_cm_id *cm_id, const void *pdata, u8 pdata_len)
 		c4iw_put_ep(&ep->com);
 		return -ECONNRESET;
 	}
+<<<<<<< HEAD
+=======
+	set_bit(ULP_REJECT, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(state_read(&ep->com) != MPA_REQ_RCVD);
 	if (mpa_rev == 0)
 		abort_connection(ep, NULL, GFP_KERNEL);
@@ -2340,6 +3361,10 @@ int c4iw_accept_cr(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	BUG_ON(state_read(&ep->com) != MPA_REQ_RCVD);
 	BUG_ON(!qp);
 
+<<<<<<< HEAD
+=======
+	set_bit(ULP_ACCEPT, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	if ((conn_param->ord > c4iw_max_read_depth) ||
 	    (conn_param->ird > c4iw_max_read_depth)) {
 		abort_connection(ep, NULL, GFP_KERNEL);
@@ -2347,6 +3372,7 @@ int c4iw_accept_cr(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		goto err;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cm_id->add_ref(cm_id);
 	ep->com.cm_id = cm_id;
@@ -2361,6 +3387,8 @@ int c4iw_accept_cr(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	PDBG("%s %d ird %d ord %d\n", __func__, __LINE__, ep->ird, ep->ord);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ep->mpa_attr.version == 2 && ep->mpa_attr.enhanced_rdma_conn) {
 		if (conn_param->ord > ep->ird) {
 			ep->ird = conn_param->ird;
@@ -2394,8 +3422,13 @@ int c4iw_accept_cr(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	cm_id->add_ref(cm_id);
 	ep->com.cm_id = cm_id;
 	ep->com.qp = qp;
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ref_qp(ep);
+
+>>>>>>> refs/remotes/origin/master
 	/* bind QP to EP and move to RTS */
 	attrs.mpa_attr = ep->mpa_attr;
 	attrs.max_ird = ep->ird;
@@ -2425,13 +3458,17 @@ int c4iw_accept_cr(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	return 0;
 err1:
 	ep->com.cm_id = NULL;
+<<<<<<< HEAD
 	ep->com.qp = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	cm_id->rem_ref(cm_id);
 err:
 	c4iw_put_ep(&ep->com);
 	return err;
 }
 
+<<<<<<< HEAD
 int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 {
 <<<<<<< HEAD
@@ -2448,6 +3485,81 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	struct rtable *rt;
 	int err = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pick_local_ipaddrs(struct c4iw_dev *dev, struct iw_cm_id *cm_id)
+{
+	struct in_device *ind;
+	int found = 0;
+	struct sockaddr_in *laddr = (struct sockaddr_in *)&cm_id->local_addr;
+	struct sockaddr_in *raddr = (struct sockaddr_in *)&cm_id->remote_addr;
+
+	ind = in_dev_get(dev->rdev.lldi.ports[0]);
+	if (!ind)
+		return -EADDRNOTAVAIL;
+	for_primary_ifa(ind) {
+		laddr->sin_addr.s_addr = ifa->ifa_address;
+		raddr->sin_addr.s_addr = ifa->ifa_address;
+		found = 1;
+		break;
+	}
+	endfor_ifa(ind);
+	in_dev_put(ind);
+	return found ? 0 : -EADDRNOTAVAIL;
+}
+
+static int get_lladdr(struct net_device *dev, struct in6_addr *addr,
+		      unsigned char banned_flags)
+{
+	struct inet6_dev *idev;
+	int err = -EADDRNOTAVAIL;
+
+	rcu_read_lock();
+	idev = __in6_dev_get(dev);
+	if (idev != NULL) {
+		struct inet6_ifaddr *ifp;
+
+		read_lock_bh(&idev->lock);
+		list_for_each_entry(ifp, &idev->addr_list, if_list) {
+			if (ifp->scope == IFA_LINK &&
+			    !(ifp->flags & banned_flags)) {
+				memcpy(addr, &ifp->addr, 16);
+				err = 0;
+				break;
+			}
+		}
+		read_unlock_bh(&idev->lock);
+	}
+	rcu_read_unlock();
+	return err;
+}
+
+static int pick_local_ip6addrs(struct c4iw_dev *dev, struct iw_cm_id *cm_id)
+{
+	struct in6_addr uninitialized_var(addr);
+	struct sockaddr_in6 *la6 = (struct sockaddr_in6 *)&cm_id->local_addr;
+	struct sockaddr_in6 *ra6 = (struct sockaddr_in6 *)&cm_id->remote_addr;
+
+	if (get_lladdr(dev->rdev.lldi.ports[0], &addr, IFA_F_TENTATIVE)) {
+		memcpy(la6->sin6_addr.s6_addr, &addr, 16);
+		memcpy(ra6->sin6_addr.s6_addr, &addr, 16);
+		return 0;
+	}
+	return -EADDRNOTAVAIL;
+}
+
+int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
+{
+	struct c4iw_dev *dev = to_c4iw_dev(cm_id->device);
+	struct c4iw_ep *ep;
+	int err = 0;
+	struct sockaddr_in *laddr = (struct sockaddr_in *)&cm_id->local_addr;
+	struct sockaddr_in *raddr = (struct sockaddr_in *)&cm_id->remote_addr;
+	struct sockaddr_in6 *laddr6 = (struct sockaddr_in6 *)&cm_id->local_addr;
+	struct sockaddr_in6 *raddr6 = (struct sockaddr_in6 *)
+				      &cm_id->remote_addr;
+	__u8 *ra;
+	int iptype;
+>>>>>>> refs/remotes/origin/master
 
 	if ((conn_param->ord > c4iw_max_read_depth) ||
 	    (conn_param->ird > c4iw_max_read_depth)) {
@@ -2475,7 +3587,16 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	ep->com.dev = dev;
 	ep->com.cm_id = cm_id;
 	ep->com.qp = get_qhp(dev, conn_param->qpn);
+<<<<<<< HEAD
 	BUG_ON(!ep->com.qp);
+=======
+	if (!ep->com.qp) {
+		PDBG("%s qpn 0x%x not found!\n", __func__, conn_param->qpn);
+		err = -EINVAL;
+		goto fail2;
+	}
+	ref_qp(ep);
+>>>>>>> refs/remotes/origin/master
 	PDBG("%s qpn 0x%x qp %p cm_id %p\n", __func__, conn_param->qpn,
 	     ep->com.qp, cm_id);
 
@@ -2488,6 +3609,7 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 		err = -ENOMEM;
 		goto fail2;
 	}
+<<<<<<< HEAD
 
 	PDBG("%s saddr 0x%x sport 0x%x raddr 0x%x rport 0x%x\n", __func__,
 	     ntohl(cm_id->local_addr.sin_addr.s_addr),
@@ -2502,10 +3624,59 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 			cm_id->local_addr.sin_port,
 			cm_id->remote_addr.sin_port, 0);
 	if (!rt) {
+=======
+	insert_handle(dev, &dev->atid_idr, ep, ep->atid);
+
+	if (cm_id->remote_addr.ss_family == AF_INET) {
+		iptype = 4;
+		ra = (__u8 *)&raddr->sin_addr;
+
+		/*
+		 * Handle loopback requests to INADDR_ANY.
+		 */
+		if ((__force int)raddr->sin_addr.s_addr == INADDR_ANY) {
+			err = pick_local_ipaddrs(dev, cm_id);
+			if (err)
+				goto fail2;
+		}
+
+		/* find a route */
+		PDBG("%s saddr %pI4 sport 0x%x raddr %pI4 rport 0x%x\n",
+		     __func__, &laddr->sin_addr, ntohs(laddr->sin_port),
+		     ra, ntohs(raddr->sin_port));
+		ep->dst = find_route(dev, laddr->sin_addr.s_addr,
+				     raddr->sin_addr.s_addr, laddr->sin_port,
+				     raddr->sin_port, 0);
+	} else {
+		iptype = 6;
+		ra = (__u8 *)&raddr6->sin6_addr;
+
+		/*
+		 * Handle loopback requests to INADDR_ANY.
+		 */
+		if (ipv6_addr_type(&raddr6->sin6_addr) == IPV6_ADDR_ANY) {
+			err = pick_local_ip6addrs(dev, cm_id);
+			if (err)
+				goto fail2;
+		}
+
+		/* find a route */
+		PDBG("%s saddr %pI6 sport 0x%x raddr %pI6 rport 0x%x\n",
+		     __func__, laddr6->sin6_addr.s6_addr,
+		     ntohs(laddr6->sin6_port),
+		     raddr6->sin6_addr.s6_addr, ntohs(raddr6->sin6_port));
+		ep->dst = find_route6(dev, laddr6->sin6_addr.s6_addr,
+				      raddr6->sin6_addr.s6_addr,
+				      laddr6->sin6_port, raddr6->sin6_port, 0,
+				      raddr6->sin6_scope_id);
+	}
+	if (!ep->dst) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR MOD "%s - cannot find route.\n", __func__);
 		err = -EHOSTUNREACH;
 		goto fail3;
 	}
+<<<<<<< HEAD
 	ep->dst = &rt->dst;
 
 <<<<<<< HEAD
@@ -2556,6 +3727,12 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 	if (err) {
 		printk(KERN_ERR MOD "%s - cannot alloc l2e.\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	err = import_ep(ep, iptype, ra, ep->dst, ep->com.dev, true);
+	if (err) {
+		printk(KERN_ERR MOD "%s - cannot alloc l2e.\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto fail4;
 	}
 
@@ -2565,8 +3742,15 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 
 	state_set(&ep->com, CONNECTING);
 	ep->tos = 0;
+<<<<<<< HEAD
 	ep->com.local_addr = cm_id->local_addr;
 	ep->com.remote_addr = cm_id->remote_addr;
+=======
+	memcpy(&ep->com.local_addr, &cm_id->local_addr,
+	       sizeof(ep->com.local_addr));
+	memcpy(&ep->com.remote_addr, &cm_id->remote_addr,
+	       sizeof(ep->com.remote_addr));
+>>>>>>> refs/remotes/origin/master
 
 	/* send connect request to rnic */
 	err = send_connect(ep);
@@ -2577,6 +3761,10 @@ int c4iw_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
 fail4:
 	dst_release(ep->dst);
 fail3:
+<<<<<<< HEAD
+=======
+	remove_handle(ep->com.dev, &ep->com.dev->atid_idr, ep->atid);
+>>>>>>> refs/remotes/origin/master
 	cxgb4_free_atid(ep->com.dev->rdev.lldi.tids, ep->atid);
 fail2:
 	cm_id->rem_ref(cm_id);
@@ -2585,13 +3773,73 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static int create_server6(struct c4iw_dev *dev, struct c4iw_listen_ep *ep)
+{
+	int err;
+	struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)&ep->com.local_addr;
+
+	c4iw_init_wr_wait(&ep->com.wr_wait);
+	err = cxgb4_create_server6(ep->com.dev->rdev.lldi.ports[0],
+				   ep->stid, &sin6->sin6_addr,
+				   sin6->sin6_port,
+				   ep->com.dev->rdev.lldi.rxq_ids[0]);
+	if (!err)
+		err = c4iw_wait_for_reply(&ep->com.dev->rdev,
+					  &ep->com.wr_wait,
+					  0, 0, __func__);
+	if (err)
+		pr_err("cxgb4_create_server6/filter failed err %d stid %d laddr %pI6 lport %d\n",
+		       err, ep->stid,
+		       sin6->sin6_addr.s6_addr, ntohs(sin6->sin6_port));
+	return err;
+}
+
+static int create_server4(struct c4iw_dev *dev, struct c4iw_listen_ep *ep)
+{
+	int err;
+	struct sockaddr_in *sin = (struct sockaddr_in *)&ep->com.local_addr;
+
+	if (dev->rdev.lldi.enable_fw_ofld_conn) {
+		do {
+			err = cxgb4_create_server_filter(
+				ep->com.dev->rdev.lldi.ports[0], ep->stid,
+				sin->sin_addr.s_addr, sin->sin_port, 0,
+				ep->com.dev->rdev.lldi.rxq_ids[0], 0, 0);
+			if (err == -EBUSY) {
+				set_current_state(TASK_UNINTERRUPTIBLE);
+				schedule_timeout(usecs_to_jiffies(100));
+			}
+		} while (err == -EBUSY);
+	} else {
+		c4iw_init_wr_wait(&ep->com.wr_wait);
+		err = cxgb4_create_server(ep->com.dev->rdev.lldi.ports[0],
+				ep->stid, sin->sin_addr.s_addr, sin->sin_port,
+				0, ep->com.dev->rdev.lldi.rxq_ids[0]);
+		if (!err)
+			err = c4iw_wait_for_reply(&ep->com.dev->rdev,
+						  &ep->com.wr_wait,
+						  0, 0, __func__);
+	}
+	if (err)
+		pr_err("cxgb4_create_server/filter failed err %d stid %d laddr %pI4 lport %d\n"
+		       , err, ep->stid,
+		       &sin->sin_addr, ntohs(sin->sin_port));
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 int c4iw_create_listen(struct iw_cm_id *cm_id, int backlog)
 {
 	int err = 0;
 	struct c4iw_dev *dev = to_c4iw_dev(cm_id->device);
 	struct c4iw_listen_ep *ep;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	might_sleep();
 
 	ep = alloc_ep(sizeof(*ep), GFP_KERNEL);
@@ -2605,17 +3853,34 @@ int c4iw_create_listen(struct iw_cm_id *cm_id, int backlog)
 	ep->com.cm_id = cm_id;
 	ep->com.dev = dev;
 	ep->backlog = backlog;
+<<<<<<< HEAD
 	ep->com.local_addr = cm_id->local_addr;
+=======
+	memcpy(&ep->com.local_addr, &cm_id->local_addr,
+	       sizeof(ep->com.local_addr));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Allocate a server TID.
 	 */
+<<<<<<< HEAD
 	ep->stid = cxgb4_alloc_stid(dev->rdev.lldi.tids, PF_INET, ep);
+=======
+	if (dev->rdev.lldi.enable_fw_ofld_conn &&
+	    ep->com.local_addr.ss_family == AF_INET)
+		ep->stid = cxgb4_alloc_sftid(dev->rdev.lldi.tids,
+					     cm_id->local_addr.ss_family, ep);
+	else
+		ep->stid = cxgb4_alloc_stid(dev->rdev.lldi.tids,
+					    cm_id->local_addr.ss_family, ep);
+
+>>>>>>> refs/remotes/origin/master
 	if (ep->stid == -1) {
 		printk(KERN_ERR MOD "%s - cannot alloc stid.\n", __func__);
 		err = -ENOMEM;
 		goto fail2;
 	}
+<<<<<<< HEAD
 
 	state_set(&ep->com, LISTEN);
 	c4iw_init_wr_wait(&ep->com.wr_wait);
@@ -2629,12 +3894,25 @@ int c4iw_create_listen(struct iw_cm_id *cm_id, int backlog)
 	/* wait for pass_open_rpl */
 	err = c4iw_wait_for_reply(&ep->com.dev->rdev, &ep->com.wr_wait, 0, 0,
 				  __func__);
+=======
+	insert_handle(dev, &dev->stid_idr, ep, ep->stid);
+	state_set(&ep->com, LISTEN);
+	if (ep->com.local_addr.ss_family == AF_INET)
+		err = create_server4(dev, ep);
+	else
+		err = create_server6(dev, ep);
+>>>>>>> refs/remotes/origin/master
 	if (!err) {
 		cm_id->provider_data = ep;
 		goto out;
 	}
+<<<<<<< HEAD
 fail3:
 	cxgb4_free_stid(ep->com.dev->rdev.lldi.tids, ep->stid, PF_INET);
+=======
+	cxgb4_free_stid(ep->com.dev->rdev.lldi.tids, ep->stid,
+			ep->com.local_addr.ss_family);
+>>>>>>> refs/remotes/origin/master
 fail2:
 	cm_id->rem_ref(cm_id);
 	c4iw_put_ep(&ep->com);
@@ -2652,6 +3930,7 @@ int c4iw_destroy_listen(struct iw_cm_id *cm_id)
 
 	might_sleep();
 	state_set(&ep->com, DEAD);
+<<<<<<< HEAD
 	c4iw_init_wr_wait(&ep->com.wr_wait);
 	err = listen_stop(ep);
 	if (err)
@@ -2659,6 +3938,26 @@ int c4iw_destroy_listen(struct iw_cm_id *cm_id)
 	err = c4iw_wait_for_reply(&ep->com.dev->rdev, &ep->com.wr_wait, 0, 0,
 				  __func__);
 	cxgb4_free_stid(ep->com.dev->rdev.lldi.tids, ep->stid, PF_INET);
+=======
+	if (ep->com.dev->rdev.lldi.enable_fw_ofld_conn &&
+	    ep->com.local_addr.ss_family == AF_INET) {
+		err = cxgb4_remove_server_filter(
+			ep->com.dev->rdev.lldi.ports[0], ep->stid,
+			ep->com.dev->rdev.lldi.rxq_ids[0], 0);
+	} else {
+		c4iw_init_wr_wait(&ep->com.wr_wait);
+		err = cxgb4_remove_server(
+				ep->com.dev->rdev.lldi.ports[0], ep->stid,
+				ep->com.dev->rdev.lldi.rxq_ids[0], 0);
+		if (err)
+			goto done;
+		err = c4iw_wait_for_reply(&ep->com.dev->rdev, &ep->com.wr_wait,
+					  0, 0, __func__);
+	}
+	remove_handle(ep->com.dev, &ep->com.dev->stid_idr, ep->stid);
+	cxgb4_free_stid(ep->com.dev->rdev.lldi.tids, ep->stid,
+			ep->com.local_addr.ss_family);
+>>>>>>> refs/remotes/origin/master
 done:
 	cm_id->rem_ref(cm_id);
 	c4iw_put_ep(&ep->com);
@@ -2721,10 +4020,20 @@ int c4iw_ep_disconnect(struct c4iw_ep *ep, int abrupt, gfp_t gfp)
 
 	if (close) {
 		if (abrupt) {
+<<<<<<< HEAD
 			close_complete_upcall(ep);
 			ret = send_abort(ep, NULL, gfp);
 		} else
 			ret = send_halfclose(ep, gfp);
+=======
+			set_bit(EP_DISC_ABORT, &ep->com.history);
+			close_complete_upcall(ep);
+			ret = send_abort(ep, NULL, gfp);
+		} else {
+			set_bit(EP_DISC_CLOSE, &ep->com.history);
+			ret = send_halfclose(ep, gfp);
+		}
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			fatal = 1;
 	}
@@ -2734,10 +4043,350 @@ int c4iw_ep_disconnect(struct c4iw_ep *ep, int abrupt, gfp_t gfp)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int async_event(struct c4iw_dev *dev, struct sk_buff *skb)
 {
 	struct cpl_fw6_msg *rpl = cplhdr(skb);
 	c4iw_ev_dispatch(dev, (struct t4_cqe *)&rpl->data[0]);
+=======
+static void active_ofld_conn_reply(struct c4iw_dev *dev, struct sk_buff *skb,
+			struct cpl_fw6_msg_ofld_connection_wr_rpl *req)
+{
+	struct c4iw_ep *ep;
+	int atid = be32_to_cpu(req->tid);
+
+	ep = (struct c4iw_ep *)lookup_atid(dev->rdev.lldi.tids,
+					   (__force u32) req->tid);
+	if (!ep)
+		return;
+
+	switch (req->retval) {
+	case FW_ENOMEM:
+		set_bit(ACT_RETRY_NOMEM, &ep->com.history);
+		if (ep->retry_count++ < ACT_OPEN_RETRY_COUNT) {
+			send_fw_act_open_req(ep, atid);
+			return;
+		}
+	case FW_EADDRINUSE:
+		set_bit(ACT_RETRY_INUSE, &ep->com.history);
+		if (ep->retry_count++ < ACT_OPEN_RETRY_COUNT) {
+			send_fw_act_open_req(ep, atid);
+			return;
+		}
+		break;
+	default:
+		pr_info("%s unexpected ofld conn wr retval %d\n",
+		       __func__, req->retval);
+		break;
+	}
+	pr_err("active ofld_connect_wr failure %d atid %d\n",
+	       req->retval, atid);
+	mutex_lock(&dev->rdev.stats.lock);
+	dev->rdev.stats.act_ofld_conn_fails++;
+	mutex_unlock(&dev->rdev.stats.lock);
+	connect_reply_upcall(ep, status2errno(req->retval));
+	state_set(&ep->com, DEAD);
+	remove_handle(dev, &dev->atid_idr, atid);
+	cxgb4_free_atid(dev->rdev.lldi.tids, atid);
+	dst_release(ep->dst);
+	cxgb4_l2t_release(ep->l2t);
+	c4iw_put_ep(&ep->com);
+}
+
+static void passive_ofld_conn_reply(struct c4iw_dev *dev, struct sk_buff *skb,
+			struct cpl_fw6_msg_ofld_connection_wr_rpl *req)
+{
+	struct sk_buff *rpl_skb;
+	struct cpl_pass_accept_req *cpl;
+	int ret;
+
+	rpl_skb = (struct sk_buff *)(unsigned long)req->cookie;
+	BUG_ON(!rpl_skb);
+	if (req->retval) {
+		PDBG("%s passive open failure %d\n", __func__, req->retval);
+		mutex_lock(&dev->rdev.stats.lock);
+		dev->rdev.stats.pas_ofld_conn_fails++;
+		mutex_unlock(&dev->rdev.stats.lock);
+		kfree_skb(rpl_skb);
+	} else {
+		cpl = (struct cpl_pass_accept_req *)cplhdr(rpl_skb);
+		OPCODE_TID(cpl) = htonl(MK_OPCODE_TID(CPL_PASS_ACCEPT_REQ,
+					(__force u32) htonl(
+					(__force u32) req->tid)));
+		ret = pass_accept_req(dev, rpl_skb);
+		if (!ret)
+			kfree_skb(rpl_skb);
+	}
+	return;
+}
+
+static int deferred_fw6_msg(struct c4iw_dev *dev, struct sk_buff *skb)
+{
+	struct cpl_fw6_msg *rpl = cplhdr(skb);
+	struct cpl_fw6_msg_ofld_connection_wr_rpl *req;
+
+	switch (rpl->type) {
+	case FW6_TYPE_CQE:
+		c4iw_ev_dispatch(dev, (struct t4_cqe *)&rpl->data[0]);
+		break;
+	case FW6_TYPE_OFLD_CONNECTION_WR_RPL:
+		req = (struct cpl_fw6_msg_ofld_connection_wr_rpl *)rpl->data;
+		switch (req->t_state) {
+		case TCP_SYN_SENT:
+			active_ofld_conn_reply(dev, skb, req);
+			break;
+		case TCP_SYN_RECV:
+			passive_ofld_conn_reply(dev, skb, req);
+			break;
+		default:
+			pr_err("%s unexpected ofld conn wr state %d\n",
+			       __func__, req->t_state);
+			break;
+		}
+		break;
+	}
+	return 0;
+}
+
+static void build_cpl_pass_accept_req(struct sk_buff *skb, int stid , u8 tos)
+{
+	u32 l2info;
+	u16 vlantag, len, hdr_len, eth_hdr_len;
+	u8 intf;
+	struct cpl_rx_pkt *cpl = cplhdr(skb);
+	struct cpl_pass_accept_req *req;
+	struct tcp_options_received tmp_opt;
+	struct c4iw_dev *dev;
+
+	dev = *((struct c4iw_dev **) (skb->cb + sizeof(void *)));
+	/* Store values from cpl_rx_pkt in temporary location. */
+	vlantag = (__force u16) cpl->vlan;
+	len = (__force u16) cpl->len;
+	l2info  = (__force u32) cpl->l2info;
+	hdr_len = (__force u16) cpl->hdr_len;
+	intf = cpl->iff;
+
+	__skb_pull(skb, sizeof(*req) + sizeof(struct rss_header));
+
+	/*
+	 * We need to parse the TCP options from SYN packet.
+	 * to generate cpl_pass_accept_req.
+	 */
+	memset(&tmp_opt, 0, sizeof(tmp_opt));
+	tcp_clear_options(&tmp_opt);
+	tcp_parse_options(skb, &tmp_opt, 0, NULL);
+
+	req = (struct cpl_pass_accept_req *)__skb_push(skb, sizeof(*req));
+	memset(req, 0, sizeof(*req));
+	req->l2info = cpu_to_be16(V_SYN_INTF(intf) |
+			 V_SYN_MAC_IDX(G_RX_MACIDX(
+			 (__force int) htonl(l2info))) |
+			 F_SYN_XACT_MATCH);
+	eth_hdr_len = is_t4(dev->rdev.lldi.adapter_type) ?
+			    G_RX_ETHHDR_LEN((__force int) htonl(l2info)) :
+			    G_RX_T5_ETHHDR_LEN((__force int) htonl(l2info));
+	req->hdr_len = cpu_to_be32(V_SYN_RX_CHAN(G_RX_CHAN(
+					(__force int) htonl(l2info))) |
+				   V_TCP_HDR_LEN(G_RX_TCPHDR_LEN(
+					(__force int) htons(hdr_len))) |
+				   V_IP_HDR_LEN(G_RX_IPHDR_LEN(
+					(__force int) htons(hdr_len))) |
+				   V_ETH_HDR_LEN(G_RX_ETHHDR_LEN(eth_hdr_len)));
+	req->vlan = (__force __be16) vlantag;
+	req->len = (__force __be16) len;
+	req->tos_stid = cpu_to_be32(PASS_OPEN_TID(stid) |
+				    PASS_OPEN_TOS(tos));
+	req->tcpopt.mss = htons(tmp_opt.mss_clamp);
+	if (tmp_opt.wscale_ok)
+		req->tcpopt.wsf = tmp_opt.snd_wscale;
+	req->tcpopt.tstamp = tmp_opt.saw_tstamp;
+	if (tmp_opt.sack_ok)
+		req->tcpopt.sack = 1;
+	OPCODE_TID(req) = htonl(MK_OPCODE_TID(CPL_PASS_ACCEPT_REQ, 0));
+	return;
+}
+
+static void send_fw_pass_open_req(struct c4iw_dev *dev, struct sk_buff *skb,
+				  __be32 laddr, __be16 lport,
+				  __be32 raddr, __be16 rport,
+				  u32 rcv_isn, u32 filter, u16 window,
+				  u32 rss_qid, u8 port_id)
+{
+	struct sk_buff *req_skb;
+	struct fw_ofld_connection_wr *req;
+	struct cpl_pass_accept_req *cpl = cplhdr(skb);
+
+	req_skb = alloc_skb(sizeof(struct fw_ofld_connection_wr), GFP_KERNEL);
+	req = (struct fw_ofld_connection_wr *)__skb_put(req_skb, sizeof(*req));
+	memset(req, 0, sizeof(*req));
+	req->op_compl = htonl(V_WR_OP(FW_OFLD_CONNECTION_WR) | FW_WR_COMPL(1));
+	req->len16_pkd = htonl(FW_WR_LEN16(DIV_ROUND_UP(sizeof(*req), 16)));
+	req->le.version_cpl = htonl(F_FW_OFLD_CONNECTION_WR_CPL);
+	req->le.filter = (__force __be32) filter;
+	req->le.lport = lport;
+	req->le.pport = rport;
+	req->le.u.ipv4.lip = laddr;
+	req->le.u.ipv4.pip = raddr;
+	req->tcb.rcv_nxt = htonl(rcv_isn + 1);
+	req->tcb.rcv_adv = htons(window);
+	req->tcb.t_state_to_astid =
+		 htonl(V_FW_OFLD_CONNECTION_WR_T_STATE(TCP_SYN_RECV) |
+			V_FW_OFLD_CONNECTION_WR_RCV_SCALE(cpl->tcpopt.wsf) |
+			V_FW_OFLD_CONNECTION_WR_ASTID(
+			GET_PASS_OPEN_TID(ntohl(cpl->tos_stid))));
+
+	/*
+	 * We store the qid in opt2 which will be used by the firmware
+	 * to send us the wr response.
+	 */
+	req->tcb.opt2 = htonl(V_RSS_QUEUE(rss_qid));
+
+	/*
+	 * We initialize the MSS index in TCB to 0xF.
+	 * So that when driver sends cpl_pass_accept_rpl
+	 * TCB picks up the correct value. If this was 0
+	 * TP will ignore any value > 0 for MSS index.
+	 */
+	req->tcb.opt0 = cpu_to_be64(V_MSS_IDX(0xF));
+	req->cookie = (unsigned long)skb;
+
+	set_wr_txq(req_skb, CPL_PRIORITY_CONTROL, port_id);
+	cxgb4_ofld_send(dev->rdev.lldi.ports[0], req_skb);
+}
+
+/*
+ * Handler for CPL_RX_PKT message. Need to handle cpl_rx_pkt
+ * messages when a filter is being used instead of server to
+ * redirect a syn packet. When packets hit filter they are redirected
+ * to the offload queue and driver tries to establish the connection
+ * using firmware work request.
+ */
+static int rx_pkt(struct c4iw_dev *dev, struct sk_buff *skb)
+{
+	int stid;
+	unsigned int filter;
+	struct ethhdr *eh = NULL;
+	struct vlan_ethhdr *vlan_eh = NULL;
+	struct iphdr *iph;
+	struct tcphdr *tcph;
+	struct rss_header *rss = (void *)skb->data;
+	struct cpl_rx_pkt *cpl = (void *)skb->data;
+	struct cpl_pass_accept_req *req = (void *)(rss + 1);
+	struct l2t_entry *e;
+	struct dst_entry *dst;
+	struct c4iw_ep *lep;
+	u16 window;
+	struct port_info *pi;
+	struct net_device *pdev;
+	u16 rss_qid, eth_hdr_len;
+	int step;
+	u32 tx_chan;
+	struct neighbour *neigh;
+
+	/* Drop all non-SYN packets */
+	if (!(cpl->l2info & cpu_to_be32(F_RXF_SYN)))
+		goto reject;
+
+	/*
+	 * Drop all packets which did not hit the filter.
+	 * Unlikely to happen.
+	 */
+	if (!(rss->filter_hit && rss->filter_tid))
+		goto reject;
+
+	/*
+	 * Calculate the server tid from filter hit index from cpl_rx_pkt.
+	 */
+	stid = (__force int) cpu_to_be32((__force u32) rss->hash_val);
+
+	lep = (struct c4iw_ep *)lookup_stid(dev->rdev.lldi.tids, stid);
+	if (!lep) {
+		PDBG("%s connect request on invalid stid %d\n", __func__, stid);
+		goto reject;
+	}
+
+	eth_hdr_len = is_t4(dev->rdev.lldi.adapter_type) ?
+			    G_RX_ETHHDR_LEN(htonl(cpl->l2info)) :
+			    G_RX_T5_ETHHDR_LEN(htonl(cpl->l2info));
+	if (eth_hdr_len == ETH_HLEN) {
+		eh = (struct ethhdr *)(req + 1);
+		iph = (struct iphdr *)(eh + 1);
+	} else {
+		vlan_eh = (struct vlan_ethhdr *)(req + 1);
+		iph = (struct iphdr *)(vlan_eh + 1);
+		skb->vlan_tci = ntohs(cpl->vlan);
+	}
+
+	if (iph->version != 0x4)
+		goto reject;
+
+	tcph = (struct tcphdr *)(iph + 1);
+	skb_set_network_header(skb, (void *)iph - (void *)rss);
+	skb_set_transport_header(skb, (void *)tcph - (void *)rss);
+	skb_get(skb);
+
+	PDBG("%s lip 0x%x lport %u pip 0x%x pport %u tos %d\n", __func__,
+	     ntohl(iph->daddr), ntohs(tcph->dest), ntohl(iph->saddr),
+	     ntohs(tcph->source), iph->tos);
+
+	dst = find_route(dev, iph->daddr, iph->saddr, tcph->dest, tcph->source,
+			 iph->tos);
+	if (!dst) {
+		pr_err("%s - failed to find dst entry!\n",
+		       __func__);
+		goto reject;
+	}
+	neigh = dst_neigh_lookup_skb(dst, skb);
+
+	if (!neigh) {
+		pr_err("%s - failed to allocate neigh!\n",
+		       __func__);
+		goto free_dst;
+	}
+
+	if (neigh->dev->flags & IFF_LOOPBACK) {
+		pdev = ip_dev_find(&init_net, iph->daddr);
+		e = cxgb4_l2t_get(dev->rdev.lldi.l2t, neigh,
+				    pdev, 0);
+		pi = (struct port_info *)netdev_priv(pdev);
+		tx_chan = cxgb4_port_chan(pdev);
+		dev_put(pdev);
+	} else {
+		pdev = get_real_dev(neigh->dev);
+		e = cxgb4_l2t_get(dev->rdev.lldi.l2t, neigh,
+					pdev, 0);
+		pi = (struct port_info *)netdev_priv(pdev);
+		tx_chan = cxgb4_port_chan(pdev);
+	}
+	if (!e) {
+		pr_err("%s - failed to allocate l2t entry!\n",
+		       __func__);
+		goto free_dst;
+	}
+
+	step = dev->rdev.lldi.nrxq / dev->rdev.lldi.nchan;
+	rss_qid = dev->rdev.lldi.rxq_ids[pi->port_id * step];
+	window = (__force u16) htons((__force u16)tcph->window);
+
+	/* Calcuate filter portion for LE region. */
+	filter = (__force unsigned int) cpu_to_be32(cxgb4_select_ntuple(
+						    dev->rdev.lldi.ports[0],
+						    e));
+
+	/*
+	 * Synthesize the cpl_pass_accept_req. We have everything except the
+	 * TID. Once firmware sends a reply with TID we update the TID field
+	 * in cpl and pass it through the regular cpl_pass_accept_req path.
+	 */
+	build_cpl_pass_accept_req(skb, stid, iph->tos);
+	send_fw_pass_open_req(dev, skb, iph->daddr, tcph->dest, iph->saddr,
+			      tcph->source, ntohl(tcph->seq), filter, window,
+			      rss_qid, pi->port_id);
+	cxgb4_l2t_release(e);
+free_dst:
+	dst_release(dst);
+reject:
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2760,7 +4409,12 @@ static c4iw_handler_func work_handlers[NUM_CPL_CMDS] = {
 	[CPL_CLOSE_CON_RPL] = close_con_rpl,
 	[CPL_RDMA_TERMINATE] = terminate,
 	[CPL_FW4_ACK] = fw4_ack,
+<<<<<<< HEAD
 	[CPL_FW6_MSG] = async_event
+=======
+	[CPL_FW6_MSG] = deferred_fw6_msg,
+	[CPL_RX_PKT] = rx_pkt
+>>>>>>> refs/remotes/origin/master
 };
 
 static void process_timeout(struct c4iw_ep *ep)
@@ -2771,6 +4425,10 @@ static void process_timeout(struct c4iw_ep *ep)
 	mutex_lock(&ep->com.mutex);
 	PDBG("%s ep %p tid %u state %d\n", __func__, ep, ep->hwtid,
 	     ep->com.state);
+<<<<<<< HEAD
+=======
+	set_bit(TIMEDOUT, &ep->com.history);
+>>>>>>> refs/remotes/origin/master
 	switch (ep->com.state) {
 	case MPA_REQ_SENT:
 		__state_set(&ep->com, ABORTING);
@@ -2790,9 +4448,14 @@ static void process_timeout(struct c4iw_ep *ep)
 		__state_set(&ep->com, ABORTING);
 		break;
 	default:
+<<<<<<< HEAD
 		printk(KERN_ERR "%s unexpected state ep %p tid %u state %u\n",
 			__func__, ep, ep->hwtid, ep->com.state);
 		WARN_ON(1);
+=======
+		WARN(1, "%s unexpected state ep %p tid %u state %u\n",
+			__func__, ep, ep->hwtid, ep->com.state);
+>>>>>>> refs/remotes/origin/master
 		abort = 0;
 	}
 	mutex_unlock(&ep->com.mutex);
@@ -2845,11 +4508,24 @@ static DECLARE_WORK(skb_work, process_work);
 static void ep_timeout(unsigned long arg)
 {
 	struct c4iw_ep *ep = (struct c4iw_ep *)arg;
+<<<<<<< HEAD
 
 	spin_lock(&timeout_lock);
 	list_add_tail(&ep->entry, &timeout_list);
 	spin_unlock(&timeout_lock);
 	queue_work(workq, &skb_work);
+=======
+	int kickit = 0;
+
+	spin_lock(&timeout_lock);
+	if (!test_and_set_bit(TIMEOUT, &ep->com.flags)) {
+		list_add_tail(&ep->entry, &timeout_list);
+		kickit = 1;
+	}
+	spin_unlock(&timeout_lock);
+	if (kickit)
+		queue_work(workq, &skb_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2892,7 +4568,11 @@ static int fw6_msg(struct c4iw_dev *dev, struct sk_buff *skb)
 	PDBG("%s type %u\n", __func__, rpl->type);
 
 	switch (rpl->type) {
+<<<<<<< HEAD
 	case 1:
+=======
+	case FW6_TYPE_WR_RPL:
+>>>>>>> refs/remotes/origin/master
 		ret = (int)((be64_to_cpu(rpl->data[0]) >> 8) & 0xff);
 		wr_waitp = (struct c4iw_wr_wait *)(__force unsigned long) rpl->data[1];
 		PDBG("%s wr_waitp %p ret %u\n", __func__, wr_waitp, ret);
@@ -2900,7 +4580,12 @@ static int fw6_msg(struct c4iw_dev *dev, struct sk_buff *skb)
 			c4iw_wake_up(wr_waitp, ret ? -ret : 0);
 		kfree_skb(skb);
 		break;
+<<<<<<< HEAD
 	case 2:
+=======
+	case FW6_TYPE_CQE:
+	case FW6_TYPE_OFLD_CONNECTION_WR_RPL:
+>>>>>>> refs/remotes/origin/master
 		sched(dev, skb);
 		break;
 	default:
@@ -2921,14 +4606,20 @@ static int peer_abort_intr(struct c4iw_dev *dev, struct sk_buff *skb)
 
 	ep = lookup_tid(t, tid);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!ep) {
 		printk(KERN_WARNING MOD
 		       "Abort on non-existent endpoint, tid %d\n", tid);
 		kfree_skb(skb);
 		return 0;
 	}
+<<<<<<< HEAD
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (is_neg_adv_abort(req->status)) {
 		PDBG("%s neg_adv_abort ep %p tid %u\n", __func__, ep,
 		     ep->hwtid);
@@ -2941,6 +4632,7 @@ static int peer_abort_intr(struct c4iw_dev *dev, struct sk_buff *skb)
 	/*
 	 * Wake up any threads in rdma_init() or rdma_fini().
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 */
 	c4iw_wake_up(&ep->com.wr_wait, -ECONNRESET);
 =======
@@ -2950,6 +4642,16 @@ static int peer_abort_intr(struct c4iw_dev *dev, struct sk_buff *skb)
 	if (ep->com.state != MPA_REQ_SENT)
 		c4iw_wake_up(&ep->com.wr_wait, -ECONNRESET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * However, if we are on MPAv2 and want to retry with MPAv1
+	 * then, don't wake up yet.
+	 */
+	if (mpa_rev == 2 && !ep->tried_with_mpa_v1) {
+		if (ep->com.state != MPA_REQ_SENT)
+			c4iw_wake_up(&ep->com.wr_wait, -ECONNRESET);
+	} else
+		c4iw_wake_up(&ep->com.wr_wait, -ECONNRESET);
+>>>>>>> refs/remotes/origin/master
 	sched(dev, skb);
 	return 0;
 }
@@ -2974,7 +4676,12 @@ c4iw_handler_func c4iw_handlers[NUM_CPL_CMDS] = {
 	[CPL_RDMA_TERMINATE] = sched,
 	[CPL_FW4_ACK] = sched,
 	[CPL_SET_TCB_RPL] = set_tcb_rpl,
+<<<<<<< HEAD
 	[CPL_FW6_MSG] = fw6_msg
+=======
+	[CPL_FW6_MSG] = fw6_msg,
+	[CPL_RX_PKT] = sched
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init c4iw_cm_init(void)

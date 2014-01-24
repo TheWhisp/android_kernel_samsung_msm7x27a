@@ -53,6 +53,7 @@ static unsigned long virt_to_phys_slow(unsigned long vaddr)
 
 		asm volatile ("ptestr %3,%2@,#7,%0\n\t"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      "pmove %%psr,%1@"
 			      : "=a&" (descaddr)
 			      : "a" (&mmusr), "a" (vaddr), "d" (get_fs().seg));
@@ -61,6 +62,11 @@ static unsigned long virt_to_phys_slow(unsigned long vaddr)
 			      : "=a&" (descaddr), "=m" (mmusr)
 			      : "a" (vaddr), "d" (get_fs().seg));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      "pmove %%psr,%1"
+			      : "=a&" (descaddr), "=m" (mmusr)
+			      : "a" (vaddr), "d" (get_fs().seg));
+>>>>>>> refs/remotes/origin/master
 		if (mmusr & (MMU_I|MMU_B|MMU_L))
 			return 0;
 		descaddr = phys_to_virt((unsigned long)descaddr);
@@ -81,9 +87,12 @@ static unsigned long virt_to_phys_slow(unsigned long vaddr)
 void flush_icache_range(unsigned long address, unsigned long endaddr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (CPU_IS_040_OR_060) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (CPU_IS_COLDFIRE) {
 		unsigned long start, end;
 		start = address & ICACHE_SET_MASK;
@@ -94,7 +103,10 @@ void flush_icache_range(unsigned long address, unsigned long endaddr)
 		}
 		flush_cf_icache(start, end);
 	} else if (CPU_IS_040_OR_060) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		address &= PAGE_MASK;
 
 		do {
@@ -120,8 +132,11 @@ void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
 			     unsigned long addr, int len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (CPU_IS_040_OR_060) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (CPU_IS_COLDFIRE) {
 		unsigned long start, end;
 		start = addr & ICACHE_SET_MASK;
@@ -133,7 +148,10 @@ void flush_icache_user_range(struct vm_area_struct *vma, struct page *page,
 		flush_cf_icache(start, end);
 
 	} else if (CPU_IS_040_OR_060) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		asm volatile ("nop\n\t"
 			      ".chip 68040\n\t"
 			      "cpushp %%bc,(%0)\n\t"

@@ -15,7 +15,11 @@
 #include <linux/fb.h>
 #include <linux/prefetch.h>
 
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "udl_drv.h"
 
 #define MAX_CMD_PIXELS		255
@@ -75,6 +79,7 @@ static int udl_trim_hline(const u8 *bback, const u8 **bfront, int *width_bytes)
 }
 #endif
 
+<<<<<<< HEAD
 static inline u16 pixel32_to_be16p(const uint8_t *pixel)
 {
 	uint32_t pix = *(uint32_t *)pixel;
@@ -84,6 +89,21 @@ static inline u16 pixel32_to_be16p(const uint8_t *pixel)
 		   ((pix >> 5) & 0x07e0) |
 		   ((pix >> 8) & 0xf800));
 	return retval;
+=======
+static inline u16 pixel32_to_be16(const uint32_t pixel)
+{
+	return (((pixel >> 3) & 0x001f) |
+		((pixel >> 5) & 0x07e0) |
+		((pixel >> 8) & 0xf800));
+}
+
+static bool pixel_repeats(const void *pixel, const uint32_t repeat, int bpp)
+{
+	if (bpp == 2)
+		return *(const uint16_t *)pixel == repeat;
+	else
+		return *(const uint32_t *)pixel == repeat;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -126,10 +146,17 @@ static void udl_compress_hline16(
 
 	while ((pixel_end > pixel) &&
 	       (cmd_buffer_end - MIN_RLX_CMD_BYTES > cmd)) {
+<<<<<<< HEAD
 		uint8_t *raw_pixels_count_byte = 0;
 		uint8_t *cmd_pixels_count_byte = 0;
 		const u8 *raw_pixel_start = 0;
 		const u8 *cmd_pixel_start, *cmd_pixel_end = 0;
+=======
+		uint8_t *raw_pixels_count_byte = NULL;
+		uint8_t *cmd_pixels_count_byte = NULL;
+		const u8 *raw_pixel_start = NULL;
+		const u8 *cmd_pixel_start, *cmd_pixel_end = NULL;
+>>>>>>> refs/remotes/origin/master
 
 		prefetchw((void *) cmd); /* pull in one cache line at least */
 
@@ -152,17 +179,31 @@ static void udl_compress_hline16(
 		prefetch_range((void *) pixel, (cmd_pixel_end - pixel) * bpp);
 
 		while (pixel < cmd_pixel_end) {
+<<<<<<< HEAD
 			const u8 * const repeating_pixel = pixel;
 
 			if (bpp == 2)
 				*(uint16_t *)cmd = cpu_to_be16p((uint16_t *)pixel);
 			else if (bpp == 4)
 				*(uint16_t *)cmd = cpu_to_be16(pixel32_to_be16p(pixel));
+=======
+			const u8 *const start = pixel;
+			u32 repeating_pixel;
+
+			if (bpp == 2) {
+				repeating_pixel = *(uint16_t *)pixel;
+				*(uint16_t *)cmd = cpu_to_be16(repeating_pixel);
+			} else {
+				repeating_pixel = *(uint32_t *)pixel;
+				*(uint16_t *)cmd = cpu_to_be16(pixel32_to_be16(repeating_pixel));
+			}
+>>>>>>> refs/remotes/origin/master
 
 			cmd += 2;
 			pixel += bpp;
 
 			if (unlikely((pixel < cmd_pixel_end) &&
+<<<<<<< HEAD
 				     (!memcmp(pixel, repeating_pixel, bpp)))) {
 				/* go back and fill in raw pixel count */
 				*raw_pixels_count_byte = (((repeating_pixel -
@@ -170,11 +211,24 @@ static void udl_compress_hline16(
 
 				while ((pixel < cmd_pixel_end)
 				       && (!memcmp(pixel, repeating_pixel, bpp))) {
+=======
+				     (pixel_repeats(pixel, repeating_pixel, bpp)))) {
+				/* go back and fill in raw pixel count */
+				*raw_pixels_count_byte = (((start -
+						raw_pixel_start) / bpp) + 1) & 0xFF;
+
+				while ((pixel < cmd_pixel_end) &&
+				       (pixel_repeats(pixel, repeating_pixel, bpp))) {
+>>>>>>> refs/remotes/origin/master
 					pixel += bpp;
 				}
 
 				/* immediately after raw data is repeat byte */
+<<<<<<< HEAD
 				*cmd++ = (((pixel - repeating_pixel) / bpp) - 1) & 0xFF;
+=======
+				*cmd++ = (((pixel - start) / bpp) - 1) & 0xFF;
+>>>>>>> refs/remotes/origin/master
 
 				/* Then start another raw pixel span */
 				raw_pixel_start = pixel;
@@ -223,6 +277,11 @@ int udl_render_hline(struct drm_device *dev, int bpp, struct urb **urb_ptr,
 	u8 *cmd = *urb_buf_ptr;
 	u8 *cmd_end = (u8 *) urb->transfer_buffer + urb->transfer_buffer_length;
 
+<<<<<<< HEAD
+=======
+	BUG_ON(!(bpp == 2 || bpp == 4));
+
+>>>>>>> refs/remotes/origin/master
 	line_start = (u8 *) (front + byte_offset);
 	next_pixel = line_start;
 	line_end = next_pixel + byte_width;

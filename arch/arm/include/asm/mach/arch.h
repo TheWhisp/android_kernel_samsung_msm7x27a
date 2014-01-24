@@ -8,6 +8,7 @@
  * published by the Free Software Foundation.
  */
 
+<<<<<<< HEAD
 #ifndef __ASSEMBLY__
 
 struct tag;
@@ -17,10 +18,29 @@ struct sys_timer;
 =======
 struct pt_regs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+
+#ifndef __ASSEMBLY__
+#include <linux/reboot.h>
+
+struct tag;
+struct meminfo;
+struct pt_regs;
+struct smp_operations;
+#ifdef CONFIG_SMP
+#define smp_ops(ops) (&(ops))
+#define smp_init_ops(ops) (&(ops))
+#else
+#define smp_ops(ops) (struct smp_operations *)NULL
+#define smp_init_ops(ops) (bool (*)(void))NULL
+#endif
+>>>>>>> refs/remotes/origin/master
 
 struct machine_desc {
 	unsigned int		nr;		/* architecture number	*/
 	const char		*name;		/* architecture name	*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long		boot_params;	/* tagged list		*/
 	const char		**dt_compat;	/* array of device tree
@@ -28,10 +48,15 @@ struct machine_desc {
 	unsigned long		atag_offset;	/* tagged list (relative) */
 	const char *const 	*dt_compat;	/* array of device tree
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long		atag_offset;	/* tagged list (relative) */
+	const char *const 	*dt_compat;	/* array of device tree
+>>>>>>> refs/remotes/origin/master
 						 * 'compatible' strings	*/
 
 	unsigned int		nr_irqs;	/* number of IRQs */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int		video_start;	/* start of video RAM	*/
 	unsigned int		video_end;	/* end of video RAM	*/
@@ -45,6 +70,10 @@ struct machine_desc {
 =======
 #ifdef CONFIG_ZONE_DMA
 	unsigned long		dma_zone_size;	/* size of DMA-able area */
+=======
+#ifdef CONFIG_ZONE_DMA
+	phys_addr_t		dma_zone_size;	/* size of DMA-able area */
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	unsigned int		video_start;	/* start of video RAM	*/
@@ -53,6 +82,7 @@ struct machine_desc {
 	unsigned char		reserve_lp0 :1;	/* never has lp0	*/
 	unsigned char		reserve_lp1 :1;	/* never has lp1	*/
 	unsigned char		reserve_lp2 :1;	/* never has lp2	*/
+<<<<<<< HEAD
 	char			restart_mode;	/* default restart mode	*/
 	void			(*fixup)(struct tag *, char **,
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -71,17 +101,44 @@ struct machine_desc {
 =======
 	void			(*restart)(char, const char *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum reboot_mode	reboot_mode;	/* default restart mode	*/
+	struct smp_operations	*smp;		/* SMP operations	*/
+	bool			(*smp_init)(void);
+	void			(*fixup)(struct tag *, char **,
+					 struct meminfo *);
+	void			(*init_meminfo)(void);
+	void			(*reserve)(void);/* reserve mem blocks	*/
+	void			(*map_io)(void);/* IO mapping function	*/
+	void			(*init_early)(void);
+	void			(*init_irq)(void);
+	void			(*init_time)(void);
+	void			(*init_machine)(void);
+	void			(*init_late)(void);
+#ifdef CONFIG_MULTI_IRQ_HANDLER
+	void			(*handle_irq)(struct pt_regs *);
+#endif
+	void			(*restart)(enum reboot_mode, const char *);
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * Current machine - only accessible during boot.
  */
+<<<<<<< HEAD
 extern struct machine_desc *machine_desc;
+=======
+extern const struct machine_desc *machine_desc;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Machine type table - also only accessible during boot
  */
+<<<<<<< HEAD
 extern struct machine_desc __arch_info_begin[], __arch_info_end[];
+=======
+extern const struct machine_desc __arch_info_begin[], __arch_info_end[];
+>>>>>>> refs/remotes/origin/master
 #define for_each_machine_desc(p)			\
 	for (p = __arch_info_begin; p < __arch_info_end; p++)
 

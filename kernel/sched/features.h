@@ -12,6 +12,7 @@ SCHED_FEAT(GENTLE_FAIR_SLEEPERS, true)
 SCHED_FEAT(START_DEBIT, true)
 
 /*
+<<<<<<< HEAD
  * Based on load and program behaviour, see if it makes sense to place
  * a newly woken task on the same cpu as the task that woke it --
  * improve cache locality. Typically used with SYNC wakeups as
@@ -20,6 +21,8 @@ SCHED_FEAT(START_DEBIT, true)
 SCHED_FEAT(AFFINE_WAKEUPS, true)
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Prefer to schedule the task we woke last (assuming it failed
  * wakeup-preemption), since its likely going to consume data we
  * touched, increases cache locality.
@@ -40,15 +43,27 @@ SCHED_FEAT(LAST_BUDDY, true)
 SCHED_FEAT(CACHE_HOT_BUDDY, true)
 
 /*
+<<<<<<< HEAD
  * Use arch dependent cpu power functions
  */
 SCHED_FEAT(ARCH_POWER, false)
+=======
+ * Allow wakeup-time preemption of the current task:
+ */
+SCHED_FEAT(WAKEUP_PREEMPTION, true)
+
+/*
+ * Use arch dependent cpu power functions
+ */
+SCHED_FEAT(ARCH_POWER, true)
+>>>>>>> refs/remotes/origin/master
 
 SCHED_FEAT(HRTICK, false)
 SCHED_FEAT(DOUBLE_TICK, false)
 SCHED_FEAT(LB_BIAS, true)
 
 /*
+<<<<<<< HEAD
  * Spin-wait on mutex acquisition when the mutex owner is running on
  * another cpu -- assumes that when the owner is running, it will soon
  * release the lock. Decreases scheduling overhead.
@@ -56,6 +71,8 @@ SCHED_FEAT(LB_BIAS, true)
 SCHED_FEAT(OWNER_SPIN, true)
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Decrement CPU power based on time not spent running tasks
  */
 SCHED_FEAT(NONTASK_POWER, true)
@@ -69,3 +86,30 @@ SCHED_FEAT(TTWU_QUEUE, true)
 SCHED_FEAT(FORCE_SD_OVERLAP, false)
 SCHED_FEAT(RT_RUNTIME_SHARE, true)
 SCHED_FEAT(LB_MIN, false)
+<<<<<<< HEAD
+=======
+
+/*
+ * Apply the automatic NUMA scheduling policy. Enabled automatically
+ * at runtime if running on a NUMA machine. Can be controlled via
+ * numa_balancing=
+ */
+#ifdef CONFIG_NUMA_BALANCING
+SCHED_FEAT(NUMA,	false)
+
+/*
+ * NUMA_FAVOUR_HIGHER will favor moving tasks towards nodes where a
+ * higher number of hinting faults are recorded during active load
+ * balancing.
+ */
+SCHED_FEAT(NUMA_FAVOUR_HIGHER, true)
+
+/*
+ * NUMA_RESIST_LOWER will resist moving tasks towards nodes where a
+ * lower number of hinting faults have been recorded. As this has
+ * the potential to prevent a task ever migrating to a new node
+ * due to CPU overload it is disabled by default.
+ */
+SCHED_FEAT(NUMA_RESIST_LOWER, false)
+#endif
+>>>>>>> refs/remotes/origin/master

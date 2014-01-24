@@ -19,10 +19,14 @@
 #include <linux/init.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/common.h>
 =======
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "prm44xx.h"
 #include "prm-regbits-44xx.h"
@@ -35,12 +39,16 @@
  * XXX This stuff presumably belongs in the vc3xxx.c or vc.c file.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct omap_vc_common_data omap4_vc_common = {
 	.smps_sa_reg = OMAP4_PRM_VC_SMPS_SA_OFFSET,
 	.smps_volra_reg = OMAP4_PRM_VC_VAL_SMPS_RA_VOL_OFFSET,
 =======
 static const struct omap_vc_common omap4_vc_common = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct omap_vc_common omap4_vc_common = {
+>>>>>>> refs/remotes/origin/master
 	.bypass_val_reg = OMAP4_PRM_VC_VAL_BYPASS_OFFSET,
 	.data_shift = OMAP4430_DATA_SHIFT,
 	.slaveaddr_shift = OMAP4430_SLAVEADDR_SHIFT,
@@ -51,6 +59,7 @@ static const struct omap_vc_common omap4_vc_common = {
 	.cmd_onlp_shift = OMAP4430_ONLP_SHIFT,
 	.cmd_ret_shift = OMAP4430_RET_SHIFT,
 	.cmd_off_shift = OMAP4430_OFF_SHIFT,
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -81,6 +90,8 @@ struct omap_vc_instance_data omap4_vc_core_data = {
 	.smps_volra_shift = OMAP4430_VOLRA_VDD_CORE_L_SHIFT,
 	.smps_volra_mask = OMAP4430_VOLRA_VDD_CORE_L_MASK,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.i2c_cfg_reg = OMAP4_PRM_VC_CFG_I2C_MODE_OFFSET,
 	.i2c_cfg_hsen_mask = OMAP4430_HSMODEEN_MASK,
 	.i2c_mcode_mask	 = OMAP4430_HSMCODE_MASK,
@@ -125,6 +136,39 @@ struct omap_vc_channel omap4_vc_core = {
 	.smps_volra_mask = OMAP4430_VOLRA_VDD_CORE_L_MASK,
 	.smps_cmdra_mask = OMAP4430_CMDRA_VDD_CORE_L_MASK,
 	.cfg_channel_sa_shift = OMAP4430_SA_VDD_CORE_L_SHIFT,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+};
+
+/*
+ * Voltage levels for different operating modes: on, sleep, retention and off
+ */
+#define OMAP4_ON_VOLTAGE_UV			1375000
+#define OMAP4_ONLP_VOLTAGE_UV			1375000
+#define OMAP4_RET_VOLTAGE_UV			837500
+#define OMAP4_OFF_VOLTAGE_UV			0
+
+struct omap_vc_param omap4_mpu_vc_data = {
+	.on			= OMAP4_ON_VOLTAGE_UV,
+	.onlp			= OMAP4_ONLP_VOLTAGE_UV,
+	.ret			= OMAP4_RET_VOLTAGE_UV,
+	.off			= OMAP4_OFF_VOLTAGE_UV,
+};
+
+struct omap_vc_param omap4_iva_vc_data = {
+	.on			= OMAP4_ON_VOLTAGE_UV,
+	.onlp			= OMAP4_ONLP_VOLTAGE_UV,
+	.ret			= OMAP4_RET_VOLTAGE_UV,
+	.off			= OMAP4_OFF_VOLTAGE_UV,
+};
+
+struct omap_vc_param omap4_core_vc_data = {
+	.on			= OMAP4_ON_VOLTAGE_UV,
+	.onlp			= OMAP4_ONLP_VOLTAGE_UV,
+	.ret			= OMAP4_RET_VOLTAGE_UV,
+	.off			= OMAP4_OFF_VOLTAGE_UV,
+};
+>>>>>>> refs/remotes/origin/master

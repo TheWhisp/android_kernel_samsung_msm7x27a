@@ -12,9 +12,13 @@
 #include <linux/blkdev.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "sas_internal.h"
 
@@ -56,7 +60,10 @@ static void sas_host_smp_discover(struct sas_ha_struct *sas_ha, u8 *resp_data,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * to_sas_gpio_gp_bit - given the gpio frame data find the byte/bit position of 'od'
  * @od: od bit to find
@@ -142,7 +149,10 @@ static int sas_host_smp_write_gpio(struct sas_ha_struct *sas_ha, u8 *resp_data,
 	return written;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void sas_report_phy_sata(struct sas_ha_struct *sas_ha, u8 *resp_data,
 				u8 phy_id)
 {
@@ -194,19 +204,28 @@ static void sas_phy_control(struct sas_ha_struct *sas_ha, u8 phy_id,
 		to_sas_internal(sas_ha->core.shost->transportt);
 	struct sas_phy_linkrates rates;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct asd_sas_phy *asd_phy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct asd_sas_phy *asd_phy;
+>>>>>>> refs/remotes/origin/master
 
 	if (phy_id >= sas_ha->num_phys) {
 		resp_data[2] = SMP_RESP_NO_PHY;
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	asd_phy = sas_ha->sas_phy[phy_id];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	asd_phy = sas_ha->sas_phy[phy_id];
+>>>>>>> refs/remotes/origin/master
 	switch (phy_op) {
 	case PHY_FUNC_NOP:
 	case PHY_FUNC_LINK_RESET:
@@ -226,8 +245,11 @@ static void sas_phy_control(struct sas_ha_struct *sas_ha, u8 phy_id,
 	rates.maximum_linkrate = max;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (i->dft->lldd_control_phy(sas_ha->sas_phy[phy_id], phy_op, &rates))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* filter reset requests through libata eh */
 	if (phy_op == PHY_FUNC_LINK_RESET && sas_try_ata_reset(asd_phy) == 0) {
 		resp_data[2] = SMP_RESP_FUNC_ACC;
@@ -235,7 +257,10 @@ static void sas_phy_control(struct sas_ha_struct *sas_ha, u8 phy_id,
 	}
 
 	if (i->dft->lldd_control_phy(asd_phy, phy_op, &rates))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		resp_data[2] = SMP_RESP_FUNC_FAILED;
 	else
 		resp_data[2] = SMP_RESP_FUNC_ACC;
@@ -272,6 +297,7 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 
 	local_irq_disable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf = kmap_atomic(bio_page(req->bio), KM_USER0) + bio_offset(req->bio);
 	memcpy(req_data, buf, blk_rq_bytes(req));
 	kunmap_atomic(buf - bio_offset(req->bio), KM_USER0);
@@ -280,6 +306,11 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 	memcpy(req_data, buf, blk_rq_bytes(req));
 	kunmap_atomic(buf - bio_offset(req->bio));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	buf = kmap_atomic(bio_page(req->bio));
+	memcpy(req_data, buf, blk_rq_bytes(req));
+	kunmap_atomic(buf - bio_offset(req->bio));
+>>>>>>> refs/remotes/origin/master
 	local_irq_enable();
 
 	if (req_data[0] != SMP_REQUEST)
@@ -348,10 +379,13 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case SMP_WRITE_GPIO_REG:
 		/* FIXME: need GPIO support in the transport class */
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SMP_WRITE_GPIO_REG: {
 		/* SFF-8485 v0.7 */
 		const int base_frame_size = 11;
@@ -369,7 +403,10 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 		rsp->resid_len -= 8;
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	case SMP_CONF_ROUTE_INFO:
 		/* Can't implement; hosts have no routes */
@@ -399,16 +436,22 @@ int sas_smp_host_handler(struct Scsi_Host *shost, struct request *req,
 
 	local_irq_disable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	buf = kmap_atomic(bio_page(rsp->bio), KM_USER0) + bio_offset(rsp->bio);
 	memcpy(buf, resp_data, blk_rq_bytes(rsp));
 	flush_kernel_dcache_page(bio_page(rsp->bio));
 	kunmap_atomic(buf - bio_offset(rsp->bio), KM_USER0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	buf = kmap_atomic(bio_page(rsp->bio));
 	memcpy(buf, resp_data, blk_rq_bytes(rsp));
 	flush_kernel_dcache_page(bio_page(rsp->bio));
 	kunmap_atomic(buf - bio_offset(rsp->bio));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_enable();
 
  out:

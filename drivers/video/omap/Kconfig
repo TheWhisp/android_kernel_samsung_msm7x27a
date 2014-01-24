@@ -1,4 +1,5 @@
 config FB_OMAP
+<<<<<<< HEAD
 	tristate "OMAP frame buffer support (EXPERIMENTAL)"
 <<<<<<< HEAD
 	depends on FB && (OMAP2_DSS = "n")
@@ -40,6 +41,9 @@ config FB_OMAP_092M9R
 endchoice
 
 =======
+=======
+	tristate "OMAP frame buffer support"
+>>>>>>> refs/remotes/origin/master
 	depends on FB
 	depends on ARCH_OMAP1
 	select FB_CFB_FILLRECT
@@ -48,7 +52,10 @@ endchoice
 	help
           Frame buffer driver for OMAP based boards.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_OMAP_LCDC_EXTERNAL
 	bool "External LCD controller support"
 	depends on FB_OMAP
@@ -64,6 +71,7 @@ config FB_OMAP_LCDC_HWA742
 	  Epson HWA742 LCD controller.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config FB_OMAP_LCDC_BLIZZARD
 	bool "Epson Blizzard LCD controller support"
 	depends on FB_OMAP && FB_OMAP_LCDC_EXTERNAL
@@ -73,6 +81,8 @@ config FB_OMAP_LCDC_BLIZZARD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_OMAP_MANUAL_UPDATE
 	bool "Default to manual update mode"
 	depends on FB_OMAP && FB_OMAP_LCDC_EXTERNAL
@@ -90,6 +100,7 @@ config FB_OMAP_LCD_MIPID
 	  the Mobile Industry Processor Interface DBI-C/DCS
 	  specification. (Supported LCDs: Philips LPH8923, Sharp LS041Y3)
 
+<<<<<<< HEAD
 config FB_OMAP_BOOTLOADER_INIT
 	bool "Check bootloader initialization"
 <<<<<<< HEAD
@@ -120,6 +131,11 @@ config FB_OMAP_DMA_TUNE
 =======
         depends on FB_OMAP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config FB_OMAP_DMA_TUNE
+        bool "Set DMA SDRAM access priority high"
+        depends on FB_OMAP
+>>>>>>> refs/remotes/origin/master
         help
           On systems in which video memory is in system memory
           (SDRAM) this will speed up graphics DMA operations.

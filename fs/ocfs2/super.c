@@ -55,9 +55,13 @@
 
 #include "alloc.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "aops.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "aops.h"
+>>>>>>> refs/remotes/origin/master
 #include "blockcheck.h"
 #include "dlmglue.h"
 #include "export.h"
@@ -71,7 +75,10 @@
 #include "super.h"
 #include "sysfile.h"
 #include "uptodate.h"
+<<<<<<< HEAD
 #include "ver.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 #include "quota.h"
 #include "refcounttree.h"
@@ -93,6 +100,10 @@ static struct dentry *ocfs2_debugfs_root = NULL;
 
 MODULE_AUTHOR("Oracle");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
+=======
+MODULE_DESCRIPTION("OCFS2 cluster file system");
+>>>>>>> refs/remotes/origin/master
 
 struct mount_options
 {
@@ -112,10 +123,14 @@ static int ocfs2_parse_options(struct super_block *sb, char *options,
 static int ocfs2_check_set_options(struct super_block *sb,
 				   struct mount_options *options);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ocfs2_show_options(struct seq_file *s, struct vfsmount *mnt);
 =======
 static int ocfs2_show_options(struct seq_file *s, struct dentry *root);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ocfs2_show_options(struct seq_file *s, struct dentry *root);
+>>>>>>> refs/remotes/origin/master
 static void ocfs2_put_super(struct super_block *sb);
 static int ocfs2_mount_volume(struct super_block *sb);
 static int ocfs2_remount(struct super_block *sb, int *flags, char *data);
@@ -293,10 +308,16 @@ static int ocfs2_osb_dump(struct ocfs2_super *osb, char *buf, int len)
 	spin_unlock(&osb->osb_lock);
 
 	out += snprintf(buf + out, len - out,
+<<<<<<< HEAD
 			"%10s => Pid: %d  Interval: %lu  Needs: %d\n", "Commit",
 			(osb->commit_task ? task_pid_nr(osb->commit_task) : -1),
 			osb->osb_commit_interval,
 			atomic_read(&osb->needs_checkpoint));
+=======
+			"%10s => Pid: %d  Interval: %lu\n", "Commit",
+			(osb->commit_task ? task_pid_nr(osb->commit_task) : -1),
+			osb->osb_commit_interval);
+>>>>>>> refs/remotes/origin/master
 
 	out += snprintf(buf + out, len - out,
 			"%10s => State: %d  TxnId: %lu  NumTxns: %d\n",
@@ -577,9 +598,12 @@ static void ocfs2_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(ocfs2_inode_cachep, OCFS2_I(inode));
 }
 
@@ -1034,7 +1058,11 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
 	struct inode *inode = NULL;
 	struct ocfs2_super *osb = NULL;
 	struct buffer_head *bh = NULL;
+<<<<<<< HEAD
 	char nodestr[8];
+=======
+	char nodestr[12];
+>>>>>>> refs/remotes/origin/master
 	struct ocfs2_blockcheck_stats stats;
 
 	trace_ocfs2_fill_super(sb, data, silent);
@@ -1119,6 +1147,7 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
 		ocfs2_set_ro_flag(osb, 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_NOTICE "Readonly device detected. No cluster "
 		       "services will be utilized for this mount. Recovery "
 		       "will be skipped.\n");
@@ -1127,6 +1156,11 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
 		       "Cluster services will not be used for this mount. "
 		       "Recovery will be skipped.\n", osb->dev_str);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_NOTICE "ocfs2: Readonly device (%s) detected. "
+		       "Cluster services will not be used for this mount. "
+		       "Recovery will be skipped.\n", osb->dev_str);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!ocfs2_is_hard_readonly(osb)) {
@@ -1172,6 +1206,7 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
 
 	status = ocfs2_mount_volume(sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (osb->root_inode)
 		inode = igrab(osb->root_inode);
 
@@ -1179,13 +1214,18 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
 		goto read_super_error;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (status < 0)
 		goto read_super_error;
 
 	if (osb->root_inode)
 		inode = igrab(osb->root_inode);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!inode) {
 		status = -EIO;
 		mlog_errno(status);
@@ -1193,10 +1233,14 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	root = d_alloc_root(inode);
 =======
 	root = d_make_root(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	root = d_make_root(inode);
+>>>>>>> refs/remotes/origin/master
 	if (!root) {
 		status = -ENOMEM;
 		mlog_errno(status);
@@ -1251,11 +1295,14 @@ read_super_error:
 	brelse(bh);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (inode)
 		iput(inode);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (osb) {
 		atomic_set(&osb->vol_state, VOLUME_DISABLED);
 		wake_up(&osb->osb_mount_event);
@@ -1302,6 +1349,10 @@ static struct file_system_type ocfs2_fs_type = {
 	.fs_flags       = FS_REQUIRES_DEV|FS_RENAME_DOES_D_MOVE,
 	.next           = NULL
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("ocfs2");
+>>>>>>> refs/remotes/origin/master
 
 static int ocfs2_check_set_options(struct super_block *sb,
 				   struct mount_options *options)
@@ -1567,6 +1618,7 @@ bail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ocfs2_show_options(struct seq_file *s, struct vfsmount *mnt)
 {
 	struct ocfs2_super *osb = OCFS2_SB(mnt->mnt_sb);
@@ -1575,6 +1627,11 @@ static int ocfs2_show_options(struct seq_file *s, struct dentry *root)
 {
 	struct ocfs2_super *osb = OCFS2_SB(root->d_sb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ocfs2_show_options(struct seq_file *s, struct dentry *root)
+{
+	struct ocfs2_super *osb = OCFS2_SB(root->d_sb);
+>>>>>>> refs/remotes/origin/master
 	unsigned long opts = osb->s_mount_opt;
 	unsigned int local_alloc_megs;
 
@@ -1607,11 +1664,15 @@ static int ocfs2_show_options(struct seq_file *s, struct dentry *root)
 		seq_printf(s, ",preferred_slot=%d", osb->preferred_slot);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(mnt->mnt_flags & MNT_NOATIME) && !(mnt->mnt_flags & MNT_RELATIME))
 		seq_printf(s, ",atime_quantum=%u", osb->s_atime_quantum);
 =======
 	seq_printf(s, ",atime_quantum=%u", osb->s_atime_quantum);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_printf(s, ",atime_quantum=%u", osb->s_atime_quantum);
+>>>>>>> refs/remotes/origin/master
 
 	if (osb->osb_commit_interval)
 		seq_printf(s, ",commit=%u",
@@ -1660,6 +1721,7 @@ static int ocfs2_show_options(struct seq_file *s, struct dentry *root)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ocfs2_init(void)
 {
 	int status;
@@ -1678,14 +1740,19 @@ static int __init ocfs2_init(void)
 		goto leave;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 wait_queue_head_t ocfs2__ioend_wq[OCFS2_IOEND_WQ_HASH_SZ];
 
 static int __init ocfs2_init(void)
 {
 	int status, i;
 
+<<<<<<< HEAD
 	ocfs2_print_version();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < OCFS2_IOEND_WQ_HASH_SZ; i++)
 		init_waitqueue_head(&ocfs2__ioend_wq[i]);
 
@@ -1696,16 +1763,23 @@ static int __init ocfs2_init(void)
 	status = ocfs2_initialize_mem_caches();
 	if (status < 0)
 		goto out2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ocfs2_wq = create_singlethread_workqueue("ocfs2_wq");
 	if (!ocfs2_wq) {
 		status = -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto leave;
 =======
 		goto out3;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ocfs2_debugfs_root = debugfs_create_dir("ocfs2", NULL);
@@ -1717,6 +1791,7 @@ static int __init ocfs2_init(void)
 	ocfs2_set_locking_protocol();
 
 	status = register_quota_format(&ocfs2_quota_format);
+<<<<<<< HEAD
 <<<<<<< HEAD
 leave:
 	if (status < 0) {
@@ -1730,6 +1805,8 @@ leave:
 	} else
 		return -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (status < 0)
 		goto out4;
 	status = register_filesystem(&ocfs2_fs_type);
@@ -1747,7 +1824,10 @@ out2:
 out1:
 	mlog_errno(status);
 	return status;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit ocfs2_exit(void)
@@ -1849,10 +1929,14 @@ static void ocfs2_inode_init_once(void *data)
 	INIT_LIST_HEAD(&oi->ip_io_markers);
 	oi->ip_dir_start_lookup = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	atomic_set(&oi->ip_unaligned_aio, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_set(&oi->ip_unaligned_aio, 0);
+>>>>>>> refs/remotes/origin/master
 	init_rwsem(&oi->ip_alloc_sem);
 	init_rwsem(&oi->ip_xattr_sem);
 	mutex_init(&oi->ip_io_mutex);
@@ -1907,6 +1991,14 @@ static int ocfs2_initialize_mem_caches(void)
 
 static void ocfs2_free_mem_caches(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	if (ocfs2_inode_cachep)
 		kmem_cache_destroy(ocfs2_inode_cachep);
 	ocfs2_inode_cachep = NULL;
@@ -1932,8 +2024,13 @@ static int ocfs2_get_sector(struct super_block *sb,
 
 	*bh = sb_getblk(sb, block);
 	if (!*bh) {
+<<<<<<< HEAD
 		mlog_errno(-EIO);
 		return -EIO;
+=======
+		mlog_errno(-ENOMEM);
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	lock_buffer(*bh);
 	if (!buffer_dirty(*bh))
@@ -2008,7 +2105,11 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
 {
 	int tmp, hangup_needed = 0;
 	struct ocfs2_super *osb = NULL;
+<<<<<<< HEAD
 	char nodestr[8];
+=======
+	char nodestr[12];
+>>>>>>> refs/remotes/origin/master
 
 	trace_ocfs2_dismount_volume(sb);
 
@@ -2031,11 +2132,23 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
 
 	ocfs2_shutdown_local_alloc(osb);
 
+<<<<<<< HEAD
 	ocfs2_truncate_log_shutdown(osb);
 
 	/* This will disable recovery and flush any recovery work. */
 	ocfs2_recovery_exit(osb);
 
+=======
+	/* This will disable recovery and flush any recovery work. */
+	ocfs2_recovery_exit(osb);
+
+	/*
+	 * During dismount, when it recovers another node it will call
+	 * ocfs2_recover_orphans and queue delayed work osb_truncate_log_wq.
+	 */
+	ocfs2_truncate_log_shutdown(osb);
+
+>>>>>>> refs/remotes/origin/master
 	ocfs2_journal_shutdown(osb);
 
 	ocfs2_sync_blockdev(sb);
@@ -2067,11 +2180,16 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
 	 * heartbeat.  Otherwise, do it.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!mnt_err && !ocfs2_mount_local(osb) && osb->uuid_str)
 =======
 	if (!mnt_err && !ocfs2_mount_local(osb) && osb->uuid_str &&
 	    !ocfs2_is_hard_readonly(osb))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!mnt_err && !ocfs2_mount_local(osb) && osb->uuid_str &&
+	    !ocfs2_is_hard_readonly(osb))
+>>>>>>> refs/remotes/origin/master
 		hangup_needed = 1;
 
 	if (osb->cconn)
@@ -2241,7 +2359,10 @@ static int ocfs2_initialize_super(struct super_block *sb,
 	}
 
 	init_waitqueue_head(&osb->checkpoint_event);
+<<<<<<< HEAD
 	atomic_set(&osb->needs_checkpoint, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	osb->s_atime_quantum = OCFS2_DEFAULT_ATIME_QUANTUM;
 
@@ -2314,10 +2435,16 @@ static int ocfs2_initialize_super(struct super_block *sb,
 	if (ocfs2_clusterinfo_valid(osb)) {
 		osb->osb_stackflags =
 			OCFS2_RAW_SB(di)->s_cluster_info.ci_stackflags;
+<<<<<<< HEAD
 		memcpy(osb->osb_cluster_stack,
 		       OCFS2_RAW_SB(di)->s_cluster_info.ci_stack,
 		       OCFS2_STACK_LABEL_LEN);
 		osb->osb_cluster_stack[OCFS2_STACK_LABEL_LEN] = '\0';
+=======
+		strlcpy(osb->osb_cluster_stack,
+		       OCFS2_RAW_SB(di)->s_cluster_info.ci_stack,
+		       OCFS2_STACK_LABEL_LEN + 1);
+>>>>>>> refs/remotes/origin/master
 		if (strlen(osb->osb_cluster_stack) != OCFS2_STACK_LABEL_LEN) {
 			mlog(ML_ERROR,
 			     "couldn't mount because of an invalid "
@@ -2326,6 +2453,12 @@ static int ocfs2_initialize_super(struct super_block *sb,
 			status = -EINVAL;
 			goto bail;
 		}
+<<<<<<< HEAD
+=======
+		strlcpy(osb->osb_cluster_name,
+			OCFS2_RAW_SB(di)->s_cluster_info.ci_cluster,
+			OCFS2_CLUSTER_NAME_LEN + 1);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* The empty string is identical with classic tools that
 		 * don't know about s_cluster_info. */
@@ -2451,10 +2584,14 @@ static int ocfs2_initialize_super(struct super_block *sb,
 		goto bail;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cleancache_init_shared_fs((char *)&uuid_net_key, sb);
 =======
 	cleancache_init_shared_fs((char *)&di->id2.i_super.s_uuid, sb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cleancache_init_shared_fs((char *)&di->id2.i_super.s_uuid, sb);
+>>>>>>> refs/remotes/origin/master
 
 bail:
 	return status;
@@ -2564,12 +2701,17 @@ static int ocfs2_check_volume(struct ocfs2_super *osb)
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mlog(ML_NOTICE, "File system was not unmounted cleanly, "
 		     "recovering volume.\n");
 =======
 		printk(KERN_NOTICE "ocfs2: File system on device (%s) was not "
 		       "unmounted cleanly, recovering it.\n", osb->dev_str);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_NOTICE "ocfs2: File system on device (%s) was not "
+		       "unmounted cleanly, recovering it.\n", osb->dev_str);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	local = ocfs2_mount_local(osb);
@@ -2622,8 +2764,12 @@ static int ocfs2_check_volume(struct ocfs2_super *osb)
 		mlog_errno(status);
 
 finally:
+<<<<<<< HEAD
 	if (local_alloc)
 		kfree(local_alloc);
+=======
+	kfree(local_alloc);
+>>>>>>> refs/remotes/origin/master
 
 	if (status)
 		mlog_errno(status);
@@ -2650,8 +2796,12 @@ static void ocfs2_delete_osb(struct ocfs2_super *osb)
 	 * we free it here.
 	 */
 	kfree(osb->journal);
+<<<<<<< HEAD
 	if (osb->local_alloc_copy)
 		kfree(osb->local_alloc_copy);
+=======
+	kfree(osb->local_alloc_copy);
+>>>>>>> refs/remotes/origin/master
 	kfree(osb->uuid_str);
 	ocfs2_put_dlm_debug(osb->osb_dlm_debug);
 	memset(osb, 0, sizeof(struct ocfs2_super));

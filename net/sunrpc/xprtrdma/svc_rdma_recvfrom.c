@@ -148,10 +148,14 @@ static int map_read_chunks(struct svcxprt_rdma *xprt,
 	ch = (struct rpcrdma_read_chunk *)&rmsgp->rm_body.rm_chunks[0];
 	ch_no = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ch_bytes = ch->rc_target.rs_length;
 =======
 	ch_bytes = ntohl(ch->rc_target.rs_length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ch_bytes = ntohl(ch->rc_target.rs_length);
+>>>>>>> refs/remotes/origin/master
 	head->arg.head[0] = rqstp->rq_arg.head[0];
 	head->arg.tail[0] = rqstp->rq_arg.tail[0];
 	head->arg.pages = &head->pages[head->count];
@@ -188,10 +192,14 @@ static int map_read_chunks(struct svcxprt_rdma *xprt,
 			ch++;
 			chl_map->ch[ch_no].start = sge_no;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ch_bytes = ch->rc_target.rs_length;
 =======
 			ch_bytes = ntohl(ch->rc_target.rs_length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ch_bytes = ntohl(ch->rc_target.rs_length);
+>>>>>>> refs/remotes/origin/master
 			/* If bytes remaining account for next chunk */
 			if (byte_count) {
 				head->arg.page_len += ch_bytes;
@@ -290,19 +298,25 @@ static int fast_reg_read_chunks(struct svcxprt_rdma *xprt,
 	ch = (struct rpcrdma_read_chunk *)&rmsgp->rm_body.rm_chunks[0];
 	for (ch_no = 0; ch_no < ch_count; ch_no++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rpl_map->sge[ch_no].iov_base = frmr->kva + offset;
 		rpl_map->sge[ch_no].iov_len = ch->rc_target.rs_length;
 		chl_map->ch[ch_no].count = 1;
 		chl_map->ch[ch_no].start = ch_no;
 		offset += ch->rc_target.rs_length;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int len = ntohl(ch->rc_target.rs_length);
 		rpl_map->sge[ch_no].iov_base = frmr->kva + offset;
 		rpl_map->sge[ch_no].iov_len = len;
 		chl_map->ch[ch_no].count = 1;
 		chl_map->ch[ch_no].start = ch_no;
 		offset += len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ch++;
 	}
 
@@ -334,10 +348,14 @@ static int rdma_set_ctxt_sge(struct svcxprt_rdma *xprt,
 		ctxt->sge[i].length = 0; /* in case map fails */
 		if (!frmr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			BUG_ON(0 == virt_to_page(vec[i].iov_base));
 =======
 			BUG_ON(!virt_to_page(vec[i].iov_base));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			BUG_ON(!virt_to_page(vec[i].iov_base));
+>>>>>>> refs/remotes/origin/master
 			off = (unsigned long)vec[i].iov_base & ~PAGE_MASK;
 			ctxt->sge[i].addr =
 				ib_dma_map_page(xprt->sc_cm_id->device,
@@ -448,9 +466,13 @@ static int rdma_read_xdr(struct svcxprt_rdma *xprt,
 	for (ch = (struct rpcrdma_read_chunk *)&rmsgp->rm_body.rm_chunks[0];
 	     ch->rc_discrim != 0; ch++, ch_no++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		u64 rs_offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u64 rs_offset;
+>>>>>>> refs/remotes/origin/master
 next_sge:
 		ctxt = svc_rdma_get_context(xprt);
 		ctxt->direction = DMA_FROM_DEVICE;
@@ -466,16 +488,22 @@ next_sge:
 		ctxt->wr_op = read_wr.opcode;
 		read_wr.send_flags = IB_SEND_SIGNALED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		read_wr.wr.rdma.rkey = ch->rc_target.rs_handle;
 		read_wr.wr.rdma.remote_addr =
 			get_unaligned(&(ch->rc_target.rs_offset)) +
 			sgl_offset;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		read_wr.wr.rdma.rkey = ntohl(ch->rc_target.rs_handle);
 		xdr_decode_hyper((__be32 *)&ch->rc_target.rs_offset,
 				 &rs_offset);
 		read_wr.wr.rdma.remote_addr = rs_offset + sgl_offset;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		read_wr.sg_list = ctxt->sge;
 		read_wr.num_sge =
 			rdma_read_max_sge(xprt, chl_map->ch[ch_no].count);
@@ -551,11 +579,19 @@ next_sge:
 		rqstp->rq_pages[ch_no] = NULL;
 
 	/*
+<<<<<<< HEAD
 	 * Detach res pages. svc_release must see a resused count of
 	 * zero or it will attempt to put them.
 	 */
 	while (rqstp->rq_resused)
 		rqstp->rq_respages[--rqstp->rq_resused] = NULL;
+=======
+	 * Detach res pages. If svc_release sees any it will attempt to
+	 * put them.
+	 */
+	while (rqstp->rq_next_page != rqstp->rq_respages)
+		*(--rqstp->rq_next_page) = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -580,7 +616,11 @@ static int rdma_read_complete(struct svc_rqst *rqstp,
 
 	/* rq_respages starts after the last arg page */
 	rqstp->rq_respages = &rqstp->rq_arg.pages[page_no];
+<<<<<<< HEAD
 	rqstp->rq_resused = 0;
+=======
+	rqstp->rq_next_page = &rqstp->rq_arg.pages[page_no];
+>>>>>>> refs/remotes/origin/master
 
 	/* Rebuild rq_arg head and tail. */
 	rqstp->rq_arg.head[0] = head->arg.head[0];

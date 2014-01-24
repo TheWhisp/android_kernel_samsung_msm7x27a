@@ -1,4 +1,5 @@
 /* atm.h - general ATM declarations */
+<<<<<<< HEAD
  
 /* Written 1995-2000 by Werner Almesberger, EPFL LRC/ICA */
  
@@ -237,6 +238,13 @@ struct atmif_sioc {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_ATM_H
+#define _LINUX_ATM_H
+
+#include <uapi/linux/atm.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 #include <linux/compat.h>
 struct compat_atmif_sioc {
@@ -246,6 +254,9 @@ struct compat_atmif_sioc {
 };
 #endif
 #endif
+<<<<<<< HEAD
 
 typedef unsigned short atm_backend_t;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

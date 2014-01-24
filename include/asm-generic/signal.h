@@ -1,6 +1,7 @@
 #ifndef __ASM_GENERIC_SIGNAL_H
 #define __ASM_GENERIC_SIGNAL_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define _NSIG		64
@@ -123,13 +124,24 @@ typedef struct sigaltstack {
 } stack_t;
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm-generic/signal.h>
+
+#ifndef __ASSEMBLY__
+#ifdef SA_RESTORER
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sigcontext.h>
 #undef __HAVE_ARCH_SIG_BITOPS
 
+<<<<<<< HEAD
 #define ptrace_signal_deliver(regs, cookie) do { } while (0)
 
 #endif /* __KERNEL__ */
 #endif /* __ASSEMBLY__ */
 
+=======
+#endif /* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_GENERIC_SIGNAL_H */

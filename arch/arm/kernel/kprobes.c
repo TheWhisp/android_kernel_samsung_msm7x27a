@@ -28,28 +28,40 @@
 #include <asm/traps.h>
 #include <asm/cacheflush.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/mmu_writeable.h>
 =======
 
 #include "kprobes.h"
 #include "patch.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include "kprobes.h"
+#include "patch.h"
+>>>>>>> refs/remotes/origin/master
 
 #define MIN_STACK_SIZE(addr) 				\
 	min((unsigned long)MAX_STACK_SIZE,		\
 	    (unsigned long)current_thread_info() + THREAD_START_SP - (addr))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define flush_insns(addr, cnt) 				\
 	flush_icache_range((unsigned long)(addr),	\
 			   (unsigned long)(addr) +	\
 			   sizeof(kprobe_opcode_t) * (cnt))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define flush_insns(addr, size)				\
 	flush_icache_range((unsigned long)(addr),	\
 			   (unsigned long)(addr) +	\
 			   (size))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Used as a marker in ARM_pc to note when we're in a jprobe. */
 #define JPROBE_MAGIC_ADDR		0xffffffff
@@ -64,6 +76,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 	kprobe_opcode_t tmp_insn[MAX_INSN_SIZE];
 	unsigned long addr = (unsigned long)p->addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int is;
 
 	if (addr & 0x3 || in_exception_text(addr))
@@ -75,6 +88,8 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 
 	switch (arm_kprobe_decode_insn(insn, &p->ainsn)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool thumb;
 	kprobe_decode_insn_t *decode_insn;
 	int is;
@@ -104,7 +119,10 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 	p->ainsn.insn = tmp_insn;
 
 	switch ((*decode_insn)(insn, &p->ainsn)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case INSN_REJECTED:	/* not supported */
 		return -EINVAL;
 
@@ -115,13 +133,19 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 		for (is = 0; is < MAX_INSN_SIZE; ++is)
 			p->ainsn.insn[is] = tmp_insn[is];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		flush_insns(p->ainsn.insn, MAX_INSN_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		flush_insns(p->ainsn.insn,
 				sizeof(p->ainsn.insn[0]) * MAX_INSN_SIZE);
 		p->ainsn.insn_fn = (kprobe_insn_fn_t *)
 					((uintptr_t)p->ainsn.insn | thumb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case INSN_GOOD_NO_SLOT:	/* instruction doesn't need insn slot */
@@ -135,6 +159,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
 void __kprobes arch_arm_kprobe(struct kprobe *p)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	mem_text_writeable_spinlock(&flags);
@@ -144,6 +169,8 @@ void __kprobes arch_arm_kprobe(struct kprobe *p)
 	mem_text_address_restore();
 	mem_text_writeable_spinunlock(&flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int brkp;
 	void *addr;
 
@@ -168,7 +195,10 @@ void __kprobes arch_arm_kprobe(struct kprobe *p)
 	}
 
 	patch_text(addr, brkp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -176,6 +206,7 @@ void __kprobes arch_arm_kprobe(struct kprobe *p)
  * stop_machine. This synchronization is necessary on SMP to avoid removing
  * a probe between the moment the 'Undefined Instruction' exception is raised
  * and the moment the exception handler reads the faulting instruction from
+<<<<<<< HEAD
 <<<<<<< HEAD
  * memory.
  */
@@ -190,6 +221,8 @@ int __kprobes __arch_disarm_kprobe(void *p)
 	mem_text_address_restore();
 	mem_text_writeable_spinunlock(&flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * memory. It is also needed to atomically set the two half-words of a 32-bit
  * Thumb breakpoint.
  */
@@ -200,17 +233,24 @@ int __kprobes __arch_disarm_kprobe(void *p)
 
 	__patch_text(addr, kp->opcode);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 void __kprobes arch_disarm_kprobe(struct kprobe *p)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stop_machine(__arch_disarm_kprobe, p, &cpu_online_map);
 =======
 	stop_machine(__arch_disarm_kprobe, p, cpu_online_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stop_machine(__arch_disarm_kprobe, p, cpu_online_mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __kprobes arch_remove_kprobe(struct kprobe *p)
@@ -229,12 +269,17 @@ static void __kprobes save_previous_kprobe(struct kprobe_ctlblk *kcb)
 
 static void __kprobes restore_previous_kprobe(struct kprobe_ctlblk *kcb)
 {
+<<<<<<< HEAD
 	__get_cpu_var(current_kprobe) = kcb->prev_kprobe.kp;
+=======
+	__this_cpu_write(current_kprobe, kcb->prev_kprobe.kp);
+>>>>>>> refs/remotes/origin/master
 	kcb->kprobe_status = kcb->prev_kprobe.status;
 }
 
 static void __kprobes set_current_kprobe(struct kprobe *p)
 {
+<<<<<<< HEAD
 	__get_cpu_var(current_kprobe) = p;
 }
 
@@ -246,6 +291,11 @@ static void __kprobes singlestep(struct kprobe *p, struct pt_regs *regs,
 	if (p->ainsn.insn_check_cc(regs->ARM_cpsr))
 		p->ainsn.insn_handler(p, regs);
 =======
+=======
+	__this_cpu_write(current_kprobe, p);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __kprobes
 singlestep_skip(struct kprobe *p, struct pt_regs *regs)
 {
@@ -264,7 +314,10 @@ static inline void __kprobes
 singlestep(struct kprobe *p, struct pt_regs *regs, struct kprobe_ctlblk *kcb)
 {
 	p->ainsn.insn_singlestep(p, regs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -279,12 +332,15 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
 	struct kprobe *p, *cur;
 	struct kprobe_ctlblk *kcb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kprobe_opcode_t	*addr = (kprobe_opcode_t *)regs->ARM_pc;
 
 	kcb = get_kprobe_ctlblk();
 	cur = kprobe_running();
 	p = get_kprobe(addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	kcb = get_kprobe_ctlblk();
 	cur = kprobe_running();
@@ -302,7 +358,10 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
 #else /* ! CONFIG_THUMB2_KERNEL */
 	p = get_kprobe((kprobe_opcode_t *)regs->ARM_pc);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (p) {
 		if (cur) {
@@ -323,11 +382,16 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
 				BUG();
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else {
 =======
 		} else if (p->ainsn.insn_check_cc(regs->ARM_cpsr)) {
 			/* Probe hit and conditional execution check ok. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (p->ainsn.insn_check_cc(regs->ARM_cpsr)) {
+			/* Probe hit and conditional execution check ok. */
+>>>>>>> refs/remotes/origin/master
 			set_current_kprobe(p);
 			kcb->kprobe_status = KPROBE_HIT_ACTIVE;
 
@@ -348,7 +412,10 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
 				reset_current_kprobe();
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/*
 			 * Probe hit but conditional execution check failed,
@@ -356,7 +423,10 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
 			 * nothing had happened.
 			 */
 			singlestep_skip(p, regs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if (cur) {
 		/* We probably hit a jprobe.  Call its break handler. */
@@ -465,14 +535,20 @@ void __naked __kprobes kretprobe_trampoline(void)
 		"mov	lr, r0			\n\t"
 		"ldmia	sp!, {r0 - r11}		\n\t"
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"mov	pc, lr			\n\t"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_THUMB2_KERNEL
 		"bx	lr			\n\t"
 #else
 		"mov	pc, lr			\n\t"
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		: : : "memory");
 }
 
@@ -481,7 +557,11 @@ static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
 {
 	struct kretprobe_instance *ri = NULL;
 	struct hlist_head *head, empty_rp;
+<<<<<<< HEAD
 	struct hlist_node *node, *tmp;
+=======
+	struct hlist_node *tmp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags, orig_ret_address = 0;
 	unsigned long trampoline_address = (unsigned long)&kretprobe_trampoline;
 
@@ -501,16 +581,27 @@ static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
 	 *       real return address, and all the rest will point to
 	 *       kretprobe_trampoline
 	 */
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, head, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (ri->task != current)
 			/* another task is sharing our hash bucket */
 			continue;
 
 		if (ri->rp && ri->rp->handler) {
+<<<<<<< HEAD
 			__get_cpu_var(current_kprobe) = &ri->rp->kp;
 			get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
 			ri->rp->handler(ri, regs);
 			__get_cpu_var(current_kprobe) = NULL;
+=======
+			__this_cpu_write(current_kprobe, &ri->rp->kp);
+			get_kprobe_ctlblk()->kprobe_status = KPROBE_HIT_ACTIVE;
+			ri->rp->handler(ri, regs);
+			__this_cpu_write(current_kprobe, NULL);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		orig_ret_address = (unsigned long)ri->ret_addr;
@@ -528,7 +619,11 @@ static __used __kprobes void *trampoline_handler(struct pt_regs *regs)
 	kretprobe_assert(ri, orig_ret_address, trampoline_address);
 	kretprobe_hash_unlock(current, &flags);
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(ri, node, tmp, &empty_rp, hlist) {
+=======
+	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+>>>>>>> refs/remotes/origin/master
 		hlist_del(&ri->hlist);
 		kfree(ri);
 	}
@@ -551,16 +646,23 @@ int __kprobes setjmp_pre_handler(struct kprobe *p, struct pt_regs *regs)
 	struct kprobe_ctlblk *kcb = get_kprobe_ctlblk();
 	long sp_addr = regs->ARM_sp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	long cpsr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	long cpsr;
+>>>>>>> refs/remotes/origin/master
 
 	kcb->jprobe_saved_regs = *regs;
 	memcpy(kcb->jprobes_stack, (void *)sp_addr, MIN_STACK_SIZE(sp_addr));
 	regs->ARM_pc = (long)jp->entry;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regs->ARM_cpsr |= PSR_I_BIT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cpsr = regs->ARM_cpsr | PSR_I_BIT;
 #ifdef CONFIG_THUMB2_KERNEL
@@ -572,7 +674,10 @@ int __kprobes setjmp_pre_handler(struct kprobe *p, struct pt_regs *regs)
 #endif
 	regs->ARM_cpsr = cpsr;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	preempt_disable();
 	return 1;
 }
@@ -595,15 +700,21 @@ void __kprobes jprobe_return(void)
 		 * over the regs when they are accessing the stack.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"sub    sp, %0, %1		\n\t"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_THUMB2_KERNEL
 		"sub    r0, %0, %1		\n\t"
 		"mov    sp, r0			\n\t"
 #else
 		"sub    sp, %0, %1		\n\t"
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		"ldr    r0, ="__stringify(JPROBE_MAGIC_ADDR)"\n\t"
 		"str    %0, [sp, %2]		\n\t"
 		"str    r0, [sp, %3]		\n\t"
@@ -615,10 +726,13 @@ void __kprobes jprobe_return(void)
 		 * and restored by longjmp_break_handler.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"ldr	r0, [sp, %4]		\n\t"
 		"msr	cpsr_cxsf, r0		\n\t"
 		"ldmia	sp, {r0 - pc}		\n\t"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_THUMB2_KERNEL
 		"ldr	lr, [sp, %2]		\n\t" /* lr = saved sp */
 		"ldrd	r0, r1, [sp, %5]	\n\t" /* r0,r1 = saved lr,pc */
@@ -634,18 +748,26 @@ void __kprobes jprobe_return(void)
 		"msr	cpsr_cxsf, r0		\n\t"
 		"ldmia	sp, {r0 - pc}		\n\t"
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		:
 		: "r" (kcb->jprobe_saved_regs.ARM_sp),
 		  "I" (sizeof(struct pt_regs) * 2),
 		  "J" (offsetof(struct pt_regs, ARM_sp)),
 		  "J" (offsetof(struct pt_regs, ARM_pc)),
 <<<<<<< HEAD
+<<<<<<< HEAD
 		  "J" (offsetof(struct pt_regs, ARM_cpsr))
 =======
 		  "J" (offsetof(struct pt_regs, ARM_cpsr)),
 		  "J" (offsetof(struct pt_regs, ARM_lr))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  "J" (offsetof(struct pt_regs, ARM_cpsr)),
+		  "J" (offsetof(struct pt_regs, ARM_lr))
+>>>>>>> refs/remotes/origin/master
 		: "memory", "cc");
 }
 
@@ -683,10 +805,13 @@ int __kprobes arch_trampoline_kprobe(struct kprobe *p)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct undef_hook kprobes_break_hook = {
 	.instr_mask	= 0xffffffff,
 	.instr_val	= KPROBE_BREAKPOINT_INSTRUCTION,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_THUMB2_KERNEL
 
 static struct undef_hook kprobes_thumb16_break_hook = {
@@ -700,18 +825,24 @@ static struct undef_hook kprobes_thumb16_break_hook = {
 static struct undef_hook kprobes_thumb32_break_hook = {
 	.instr_mask	= 0xffffffff,
 	.instr_val	= KPROBE_THUMB32_BREAKPOINT_INSTRUCTION,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpsr_mask	= MODE_MASK,
 	.cpsr_val	= SVC_MODE,
 	.fn		= kprobe_trap_handler,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init arch_init_kprobes()
 {
 	arm_kprobe_decode_init();
 	register_undef_hook(&kprobes_break_hook);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #else  /* !CONFIG_THUMB2_KERNEL */
 
 static struct undef_hook kprobes_arm_break_hook = {
@@ -733,6 +864,9 @@ int __init arch_init_kprobes()
 #else
 	register_undef_hook(&kprobes_arm_break_hook);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }

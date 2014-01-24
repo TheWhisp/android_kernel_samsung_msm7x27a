@@ -18,9 +18,12 @@
 
 #include <asm/sysreg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AVR32_PERFCTR_IRQ_GROUP	0
 #define AVR32_PERFCTR_IRQ_LINE	1
@@ -101,8 +104,12 @@ static irqreturn_t avr32_perf_counter_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int avr32_perf_counter_create_files(struct super_block *sb,
 		struct dentry *root)
+=======
+static int avr32_perf_counter_create_files(struct dentry *root)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry *dir;
 	unsigned int i;
@@ -110,6 +117,7 @@ static int avr32_perf_counter_create_files(struct super_block *sb,
 
 	for (i = 0; i < NR_counter; i++) {
 		snprintf(filename, sizeof(filename), "%u", i);
+<<<<<<< HEAD
 		dir = oprofilefs_mkdir(sb, root, filename);
 
 		oprofilefs_create_ulong(sb, dir, "enabled",
@@ -125,6 +133,23 @@ static int avr32_perf_counter_create_files(struct super_block *sb,
 		oprofilefs_create_ulong(sb, dir, "user",
 				&counter[i].user);
 		oprofilefs_create_ulong(sb, dir, "unit_mask",
+=======
+		dir = oprofilefs_mkdir(root, filename);
+
+		oprofilefs_create_ulong(dir, "enabled",
+				&counter[i].enabled);
+		oprofilefs_create_ulong(dir, "event",
+				&counter[i].event);
+		oprofilefs_create_ulong(dir, "count",
+				&counter[i].count);
+
+		/* Dummy entries */
+		oprofilefs_create_ulong(dir, "kernel",
+				&counter[i].kernel);
+		oprofilefs_create_ulong(dir, "user",
+				&counter[i].user);
+		oprofilefs_create_ulong(dir, "unit_mask",
+>>>>>>> refs/remotes/origin/master
 				&counter[i].unit_mask);
 	}
 

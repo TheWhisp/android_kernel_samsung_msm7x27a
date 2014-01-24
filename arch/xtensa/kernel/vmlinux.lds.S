@@ -7,7 +7,11 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  *
+<<<<<<< HEAD
  * Copyright (C) 2001 - 2005 Tensilica Inc.
+=======
+ * Copyright (C) 2001 - 2008 Tensilica Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Chris Zankel <chris@zankel.net>
  * Marc Gauthier <marc@tensilica.com, marc@alumni.uwaterloo.ca>
@@ -18,6 +22,10 @@
 #include <asm/page.h>
 #include <asm/thread_info.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/vectors.h>
+>>>>>>> refs/remotes/origin/master
 #include <variant/core.h>
 #include <platform/hardware.h>
 OUTPUT_ARCH(xtensa)
@@ -30,7 +38,11 @@ jiffies = jiffies_64;
 #endif
 
 #ifndef KERNELOFFSET
+<<<<<<< HEAD
 #define KERNELOFFSET 0xd0001000
+=======
+#define KERNELOFFSET 0xd0003000
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Note: In the following macros, it would be nice to specify only the
@@ -84,9 +96,12 @@ SECTIONS
   _text = .;
   _stext = .;
 <<<<<<< HEAD
+<<<<<<< HEAD
   _ftext = .;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
   .text :
   {
@@ -116,10 +131,14 @@ SECTIONS
   /* Data section */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   _fdata = .;
 =======
   _sdata = .;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  _sdata = .;
+>>>>>>> refs/remotes/origin/master
   RW_DATA_SECTION(XCHAL_ICACHE_LINESIZE, PAGE_SIZE, THREAD_SIZE)
   _edata = .;
 
@@ -142,6 +161,29 @@ SECTIONS
 
     RELOCATE_ENTRY(_WindowVectors_text,
 		   .WindowVectors.text);
+<<<<<<< HEAD
+=======
+#if XCHAL_EXCM_LEVEL >= 2
+    RELOCATE_ENTRY(_Level2InterruptVector_text,
+		   .Level2InterruptVector.text);
+#endif
+#if XCHAL_EXCM_LEVEL >= 3
+    RELOCATE_ENTRY(_Level3InterruptVector_text,
+		   .Level3InterruptVector.text);
+#endif
+#if XCHAL_EXCM_LEVEL >= 4
+    RELOCATE_ENTRY(_Level4InterruptVector_text,
+		   .Level4InterruptVector.text);
+#endif
+#if XCHAL_EXCM_LEVEL >= 5
+    RELOCATE_ENTRY(_Level5InterruptVector_text,
+		   .Level5InterruptVector.text);
+#endif
+#if XCHAL_EXCM_LEVEL >= 6
+    RELOCATE_ENTRY(_Level6InterruptVector_text,
+		   .Level6InterruptVector.text);
+#endif
+>>>>>>> refs/remotes/origin/master
     RELOCATE_ENTRY(_KernelExceptionVector_text,
 		   .KernelExceptionVector.text);
     RELOCATE_ENTRY(_UserExceptionVector_text,
@@ -173,15 +215,24 @@ SECTIONS
 
   SECTION_VECTOR (_WindowVectors_text,
 		  .WindowVectors.text,
+<<<<<<< HEAD
 		  XCHAL_WINDOW_VECTORS_VADDR, 4,
 		  .dummy)
   SECTION_VECTOR (_DebugInterruptVector_literal,
 		  .DebugInterruptVector.literal,
 		  XCHAL_DEBUG_VECTOR_VADDR - 4,
+=======
+		  WINDOW_VECTORS_VADDR, 4,
+		  .dummy)
+  SECTION_VECTOR (_DebugInterruptVector_literal,
+		  .DebugInterruptVector.literal,
+		  DEBUG_VECTOR_VADDR - 4,
+>>>>>>> refs/remotes/origin/master
 		  SIZEOF(.WindowVectors.text),
 		  .WindowVectors.text)
   SECTION_VECTOR (_DebugInterruptVector_text,
 		  .DebugInterruptVector.text,
+<<<<<<< HEAD
 		  XCHAL_DEBUG_VECTOR_VADDR,
 		  4,
 		  .DebugInterruptVector.literal)
@@ -193,26 +244,97 @@ SECTIONS
   SECTION_VECTOR (_KernelExceptionVector_text,
 		  .KernelExceptionVector.text,
 		  XCHAL_KERNEL_VECTOR_VADDR,
+=======
+		  DEBUG_VECTOR_VADDR,
+		  4,
+		  .DebugInterruptVector.literal)
+#undef LAST
+#define LAST	.DebugInterruptVector.text
+#if XCHAL_EXCM_LEVEL >= 2
+  SECTION_VECTOR (_Level2InterruptVector_text,
+		  .Level2InterruptVector.text,
+		  INTLEVEL2_VECTOR_VADDR,
+		  SIZEOF(LAST), LAST)
+# undef LAST
+# define LAST	.Level2InterruptVector.text
+#endif
+#if XCHAL_EXCM_LEVEL >= 3
+  SECTION_VECTOR (_Level3InterruptVector_text,
+		  .Level3InterruptVector.text,
+		  INTLEVEL3_VECTOR_VADDR,
+		  SIZEOF(LAST), LAST)
+# undef LAST
+# define LAST	.Level3InterruptVector.text
+#endif
+#if XCHAL_EXCM_LEVEL >= 4
+  SECTION_VECTOR (_Level4InterruptVector_text,
+		  .Level4InterruptVector.text,
+		  INTLEVEL4_VECTOR_VADDR,
+		  SIZEOF(LAST), LAST)
+# undef LAST
+# define LAST	.Level4InterruptVector.text
+#endif
+#if XCHAL_EXCM_LEVEL >= 5
+  SECTION_VECTOR (_Level5InterruptVector_text,
+		  .Level5InterruptVector.text,
+		  INTLEVEL5_VECTOR_VADDR,
+		  SIZEOF(LAST), LAST)
+# undef LAST
+# define LAST	.Level5InterruptVector.text
+#endif
+#if XCHAL_EXCM_LEVEL >= 6
+  SECTION_VECTOR (_Level6InterruptVector_text,
+		  .Level6InterruptVector.text,
+		  INTLEVEL6_VECTOR_VADDR,
+		  SIZEOF(LAST), LAST)
+# undef LAST
+# define LAST	.Level6InterruptVector.text
+#endif
+  SECTION_VECTOR (_KernelExceptionVector_literal,
+		  .KernelExceptionVector.literal,
+		  KERNEL_VECTOR_VADDR - 4,
+		  SIZEOF(LAST), LAST)
+#undef LAST
+  SECTION_VECTOR (_KernelExceptionVector_text,
+		  .KernelExceptionVector.text,
+		  KERNEL_VECTOR_VADDR,
+>>>>>>> refs/remotes/origin/master
 		  4,
 		  .KernelExceptionVector.literal)
   SECTION_VECTOR (_UserExceptionVector_literal,
 		  .UserExceptionVector.literal,
+<<<<<<< HEAD
 		  XCHAL_USER_VECTOR_VADDR - 4,
+=======
+		  USER_VECTOR_VADDR - 4,
+>>>>>>> refs/remotes/origin/master
 		  SIZEOF(.KernelExceptionVector.text),
 		  .KernelExceptionVector.text)
   SECTION_VECTOR (_UserExceptionVector_text,
 		  .UserExceptionVector.text,
+<<<<<<< HEAD
 		  XCHAL_USER_VECTOR_VADDR,
+=======
+		  USER_VECTOR_VADDR,
+>>>>>>> refs/remotes/origin/master
 		  4,
 		  .UserExceptionVector.literal)
   SECTION_VECTOR (_DoubleExceptionVector_literal,
 		  .DoubleExceptionVector.literal,
+<<<<<<< HEAD
 		  XCHAL_DOUBLEEXC_VECTOR_VADDR - 16,
+=======
+		  DOUBLEEXC_VECTOR_VADDR - 16,
+>>>>>>> refs/remotes/origin/master
 		  SIZEOF(.UserExceptionVector.text),
 		  .UserExceptionVector.text)
   SECTION_VECTOR (_DoubleExceptionVector_text,
 		  .DoubleExceptionVector.text,
+<<<<<<< HEAD
 		  XCHAL_DOUBLEEXC_VECTOR_VADDR,
+=======
+		  DOUBLEEXC_VECTOR_VADDR,
+>>>>>>> refs/remotes/origin/master
 		  32,
 		  .DoubleExceptionVector.literal)
 
@@ -230,16 +352,38 @@ SECTIONS
   . = ALIGN(0x10);
   .bootstrap : { *(.bootstrap.literal .bootstrap.text .bootstrap.data) }
 
+<<<<<<< HEAD
   . = ALIGN(0x1000);
   __initrd_start = .;
   .initrd : { *(.initrd) }
   __initrd_end = .;
 
   .ResetVector.text XCHAL_RESET_VECTOR_VADDR :
+=======
+  .ResetVector.text RESET_VECTOR_VADDR :
+>>>>>>> refs/remotes/origin/master
   {
     *(.ResetVector.text)
   }
 
+<<<<<<< HEAD
+=======
+
+  /*
+   * This is a remapped copy of the Secondary Reset Vector Code.
+   * It keeps gdb in sync with the PC after switching
+   * to the temporary mapping used while setting up
+   * the V2 MMU mappings for Linux.
+   *
+   * Only debug information about this section is put in the kernel image.
+   */
+  .SecondaryResetVector.remapped_text 0x46000000 (INFO):
+  {
+	*(.SecondaryResetVector.remapped_text)
+  }
+
+
+>>>>>>> refs/remotes/origin/master
   .xt.lit : { *(.xt.lit) }
   .xt.prop : { *(.xt.prop) }
 

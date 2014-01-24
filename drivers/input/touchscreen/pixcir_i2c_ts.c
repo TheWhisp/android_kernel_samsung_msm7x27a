@@ -125,7 +125,11 @@ static int pixcir_i2c_ts_resume(struct device *dev)
 static SIMPLE_DEV_PM_OPS(pixcir_dev_pm_ops,
 			 pixcir_i2c_ts_suspend, pixcir_i2c_ts_resume);
 
+<<<<<<< HEAD
 static int __devinit pixcir_i2c_ts_probe(struct i2c_client *client,
+=======
+static int pixcir_i2c_ts_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 					 const struct i2c_device_id *id)
 {
 	const struct pixcir_ts_platform_data *pdata = client->dev.platform_data;
@@ -165,7 +169,11 @@ static int __devinit pixcir_i2c_ts_probe(struct i2c_client *client,
 	input_set_drvdata(input, tsdata);
 
 	error = request_threaded_irq(client->irq, NULL, pixcir_ts_isr,
+<<<<<<< HEAD
 				     IRQF_TRIGGER_FALLING,
+=======
+				     IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				     client->name, tsdata);
 	if (error) {
 		dev_err(&client->dev, "Unable to request touchscreen IRQ.\n");
@@ -189,7 +197,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit pixcir_i2c_ts_remove(struct i2c_client *client)
+=======
+static int pixcir_i2c_ts_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pixcir_i2c_ts_data *tsdata = i2c_get_clientdata(client);
 
@@ -218,7 +230,11 @@ static struct i2c_driver pixcir_i2c_ts_driver = {
 		.pm	= &pixcir_dev_pm_ops,
 	},
 	.probe		= pixcir_i2c_ts_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pixcir_i2c_ts_remove),
+=======
+	.remove		= pixcir_i2c_ts_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= pixcir_i2c_ts_id,
 };
 

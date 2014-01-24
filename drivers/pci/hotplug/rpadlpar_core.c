@@ -19,9 +19,13 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/string.h>
 #include <linux/vmalloc.h>
@@ -163,10 +167,14 @@ static void dlpar_pci_add_bus(struct device_node *dn)
 	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE ||
 	    dev->hdr_type == PCI_HEADER_TYPE_CARDBUS)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		of_scan_pci_bridge(dn, dev);
 =======
 		of_scan_pci_bridge(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		of_scan_pci_bridge(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Map IO space for child bus, which may or may not succeed */
 	pcibios_map_io_space(dev->subordinate);
@@ -224,7 +232,11 @@ static int dlpar_remove_phb(char *drc_name, struct device_node *dn)
 	if (!pcibios_find_pci_bus(dn))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* If pci slot is hotplugable, use hotplug to remove it */
+=======
+	/* If pci slot is hotpluggable, use hotplug to remove it */
+>>>>>>> refs/remotes/origin/master
 	slot = find_php_slot(dn);
 	if (slot && rpaphp_deregister_slot(slot)) {
 		printk(KERN_ERR "%s: unable to remove hotplug slot %s\n",
@@ -395,12 +407,16 @@ int dlpar_remove_pci_slot(char *drc_name, struct device_node *dn)
 	/* Remove the EADS bridge device itself */
 	BUG_ON(!bus->self);
 	pr_debug("PCI: Now removing bridge device %s\n", pci_name(bus->self));
+<<<<<<< HEAD
 	eeh_remove_bus_device(bus->self);
 <<<<<<< HEAD
 	pci_remove_bus_device(bus->self);
 =======
 	pci_stop_and_remove_bus_device(bus->self);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_stop_and_remove_bus_device(bus->self);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

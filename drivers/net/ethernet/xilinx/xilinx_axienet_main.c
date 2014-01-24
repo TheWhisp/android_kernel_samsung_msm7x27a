@@ -48,7 +48,11 @@
 #define AXIENET_REGS_N		32
 
 /* Match table for of_platform binding */
+<<<<<<< HEAD
 static struct of_device_id axienet_of_match[] __devinitdata = {
+=======
+static struct of_device_id axienet_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "xlnx,axi-ethernet-1.00.a", },
 	{ .compatible = "xlnx,axi-ethernet-1.01.a", },
 	{ .compatible = "xlnx,axi-ethernet-2.01.a", },
@@ -201,6 +205,7 @@ static int axienet_dma_bd_init(struct net_device *ndev)
 	/*
 	 * Allocate the Tx and Rx buffer descriptors.
 	 */
+<<<<<<< HEAD
 	lp->tx_bd_v = dma_alloc_coherent(ndev->dev.parent,
 					 sizeof(*lp->tx_bd_v) * TX_BD_NUM,
 					 &lp->tx_bd_p,
@@ -222,23 +227,45 @@ static int axienet_dma_bd_init(struct net_device *ndev)
 	}
 
 	memset(lp->tx_bd_v, 0, sizeof(*lp->tx_bd_v) * TX_BD_NUM);
+=======
+	lp->tx_bd_v = dma_zalloc_coherent(ndev->dev.parent,
+					  sizeof(*lp->tx_bd_v) * TX_BD_NUM,
+					  &lp->tx_bd_p, GFP_KERNEL);
+	if (!lp->tx_bd_v)
+		goto out;
+
+	lp->rx_bd_v = dma_zalloc_coherent(ndev->dev.parent,
+					  sizeof(*lp->rx_bd_v) * RX_BD_NUM,
+					  &lp->rx_bd_p, GFP_KERNEL);
+	if (!lp->rx_bd_v)
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < TX_BD_NUM; i++) {
 		lp->tx_bd_v[i].next = lp->tx_bd_p +
 				      sizeof(*lp->tx_bd_v) *
 				      ((i + 1) % TX_BD_NUM);
 	}
 
+<<<<<<< HEAD
 	memset(lp->rx_bd_v, 0, sizeof(*lp->rx_bd_v) * RX_BD_NUM);
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < RX_BD_NUM; i++) {
 		lp->rx_bd_v[i].next = lp->rx_bd_p +
 				      sizeof(*lp->rx_bd_v) *
 				      ((i + 1) % RX_BD_NUM);
 
 		skb = netdev_alloc_skb_ip_align(ndev, lp->max_frm_size);
+<<<<<<< HEAD
 		if (!skb) {
 			dev_err(&ndev->dev, "alloc_skb error %d\n", i);
 			goto out;
 		}
+=======
+		if (!skb)
+			goto out;
+>>>>>>> refs/remotes/origin/master
 
 		lp->rx_bd_v[i].sw_id_offset = (u32) skb;
 		lp->rx_bd_v[i].phys = dma_map_single(ndev->dev.parent,
@@ -312,7 +339,11 @@ static void axienet_set_mac_address(struct net_device *ndev, void *address)
 	if (address)
 		memcpy(ndev->dev_addr, address, ETH_ALEN);
 	if (!is_valid_ether_addr(ndev->dev_addr))
+<<<<<<< HEAD
 		random_ether_addr(ndev->dev_addr);
+=======
+		eth_random_addr(ndev->dev_addr);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up unicast MAC address filter set its mac address */
 	axienet_iow(lp, XAE_UAW0_OFFSET,
@@ -777,10 +808,16 @@ static void axienet_recv(struct net_device *ndev)
 		packets++;
 
 		new_skb = netdev_alloc_skb_ip_align(ndev, lp->max_frm_size);
+<<<<<<< HEAD
 		if (!new_skb) {
 			dev_err(&ndev->dev, "no memory for new sk_buff\n");
 			return;
 		}
+=======
+		if (!new_skb)
+			return;
+
+>>>>>>> refs/remotes/origin/master
 		cur_p->phys = dma_map_single(ndev->dev.parent, new_skb->data,
 					     lp->max_frm_size,
 					     DMA_FROM_DEVICE);
@@ -894,6 +931,11 @@ out:
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+static void axienet_dma_err_handler(unsigned long data);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * axienet_open - Driver open routine.
  * @ndev:	Pointer to net_device structure
@@ -942,6 +984,13 @@ static int axienet_open(struct net_device *ndev)
 		phy_start(lp->phy_dev);
 	}
 
+<<<<<<< HEAD
+=======
+	/* Enable tasklets for Axi DMA error handling */
+	tasklet_init(&lp->dma_err_tasklet, axienet_dma_err_handler,
+		     (unsigned long) lp);
+
+>>>>>>> refs/remotes/origin/master
 	/* Enable interrupts for Axi DMA Tx */
 	ret = request_irq(lp->tx_irq, axienet_tx_irq, 0, ndev->name, ndev);
 	if (ret)
@@ -950,8 +999,12 @@ static int axienet_open(struct net_device *ndev)
 	ret = request_irq(lp->rx_irq, axienet_rx_irq, 0, ndev->name, ndev);
 	if (ret)
 		goto err_rx_irq;
+<<<<<<< HEAD
 	/* Enable tasklets for Axi DMA error handling */
 	tasklet_enable(&lp->dma_err_tasklet);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_rx_irq:
@@ -960,6 +1013,10 @@ err_tx_irq:
 	if (lp->phy_dev)
 		phy_disconnect(lp->phy_dev);
 	lp->phy_dev = NULL;
+<<<<<<< HEAD
+=======
+	tasklet_kill(&lp->dma_err_tasklet);
+>>>>>>> refs/remotes/origin/master
 	dev_err(lp->dev, "request_irq() failed\n");
 	return ret;
 }
@@ -990,7 +1047,11 @@ static int axienet_stop(struct net_device *ndev)
 	axienet_setoptions(ndev, lp->options &
 			   ~(XAE_OPTION_TXEN | XAE_OPTION_RXEN));
 
+<<<<<<< HEAD
 	tasklet_disable(&lp->dma_err_tasklet);
+=======
+	tasklet_kill(&lp->dma_err_tasklet);
+>>>>>>> refs/remotes/origin/master
 
 	free_irq(lp->tx_irq, ndev);
 	free_irq(lp->rx_irq, ndev);
@@ -1118,9 +1179,14 @@ static int axienet_ethtools_set_settings(struct net_device *ndev,
 static void axienet_ethtools_get_drvinfo(struct net_device *ndev,
 					 struct ethtool_drvinfo *ed)
 {
+<<<<<<< HEAD
 	memset(ed, 0, sizeof(struct ethtool_drvinfo));
 	strcpy(ed->driver, DRIVER_NAME);
 	strcpy(ed->version, DRIVER_VERSION);
+=======
+	strlcpy(ed->driver, DRIVER_NAME, sizeof(ed->driver));
+	strlcpy(ed->version, DRIVER_VERSION, sizeof(ed->version));
+>>>>>>> refs/remotes/origin/master
 	ed->regdump_len = sizeof(u32) * AXIENET_REGS_N;
 }
 
@@ -1476,7 +1542,11 @@ static void axienet_dma_err_handler(unsigned long data)
  * device. Parses through device tree and populates fields of
  * axienet_local. It registers the Ethernet device.
  */
+<<<<<<< HEAD
 static int __devinit axienet_of_probe(struct platform_device *op)
+=======
+static int axienet_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	__be32 *p;
 	int size, ret = 0;
@@ -1490,11 +1560,19 @@ static int __devinit axienet_of_probe(struct platform_device *op)
 		return -ENOMEM;
 
 	ether_setup(ndev);
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, ndev);
 
 	SET_NETDEV_DEV(ndev, &op->dev);
 	ndev->flags &= ~IFF_MULTICAST;  /* clear multicast */
 	ndev->features = NETIF_F_SG | NETIF_F_FRAGLIST;
+=======
+	platform_set_drvdata(op, ndev);
+
+	SET_NETDEV_DEV(ndev, &op->dev);
+	ndev->flags &= ~IFF_MULTICAST;  /* clear multicast */
+	ndev->features = NETIF_F_SG;
+>>>>>>> refs/remotes/origin/master
 	ndev->netdev_ops = &axienet_netdev_ops;
 	ndev->ethtool_ops = &axienet_ethtool_ops;
 
@@ -1584,7 +1662,11 @@ static int __devinit axienet_of_probe(struct platform_device *op)
 	lp->rx_irq = irq_of_parse_and_map(np, 1);
 	lp->tx_irq = irq_of_parse_and_map(np, 0);
 	of_node_put(np);
+<<<<<<< HEAD
 	if ((lp->rx_irq == NO_IRQ) || (lp->tx_irq == NO_IRQ)) {
+=======
+	if ((lp->rx_irq <= 0) || (lp->tx_irq <= 0)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&op->dev, "could not determine irqs\n");
 		ret = -ENOMEM;
 		goto err_iounmap_2;
@@ -1613,10 +1695,13 @@ static int __devinit axienet_of_probe(struct platform_device *op)
 		goto err_iounmap_2;
 	}
 
+<<<<<<< HEAD
 	tasklet_init(&lp->dma_err_tasklet, axienet_dma_err_handler,
 		     (unsigned long) lp);
 	tasklet_disable(&lp->dma_err_tasklet);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_iounmap_2:
@@ -1630,9 +1715,15 @@ nodev:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit axienet_of_remove(struct platform_device *op)
 {
 	struct net_device *ndev = dev_get_drvdata(&op->dev);
+=======
+static int axienet_of_remove(struct platform_device *op)
+{
+	struct net_device *ndev = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	struct axienet_local *lp = netdev_priv(ndev);
 
 	axienet_mdio_teardown(lp);
@@ -1642,8 +1733,11 @@ static int __devexit axienet_of_remove(struct platform_device *op)
 		of_node_put(lp->phy_node);
 	lp->phy_node = NULL;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(lp->regs);
 	if (lp->dma_regs)
 		iounmap(lp->dma_regs);
@@ -1654,7 +1748,11 @@ static int __devexit axienet_of_remove(struct platform_device *op)
 
 static struct platform_driver axienet_of_driver = {
 	.probe = axienet_of_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(axienet_of_remove),
+=======
+	.remove = axienet_of_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		 .owner = THIS_MODULE,
 		 .name = "xilinx_axienet",

@@ -56,6 +56,7 @@
  * Driver data
  */
 static int hwcursor = 1;
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
 <<<<<<< HEAD
 static int noaccel __devinitdata;
@@ -70,6 +71,14 @@ static bool noaccel __devinitdata;
 #ifdef CONFIG_MTRR
 static bool nomtrr __devinitdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *mode_option;
+static bool noaccel;
+
+/* mtrr option */
+#ifdef CONFIG_MTRR
+static bool nomtrr;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -92,7 +101,11 @@ struct pm3_par {
  * if we don't use modedb. If we do use modedb see pm3fb_init how to use it
  * to get a fb_var_screeninfo. Otherwise define a default var as well.
  */
+<<<<<<< HEAD
 static struct fb_fix_screeninfo pm3fb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo pm3fb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"Permedia3",
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_PSEUDOCOLOR,
@@ -1156,6 +1169,7 @@ static int pm3fb_pan_display(struct fb_var_screeninfo *var,
 {
 	struct pm3_par *par = info->par;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 xres = (var->xres + 31) & ~31;
 
 	par->base = pm3fb_shift_bpp(var->bits_per_pixel,
@@ -1164,6 +1178,11 @@ static int pm3fb_pan_display(struct fb_var_screeninfo *var,
 
 	par->base = pm3fb_shift_bpp(info->var.bits_per_pixel,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const u32 xres = (info->var.xres + 31) & ~31;
+
+	par->base = pm3fb_shift_bpp(info->var.bits_per_pixel,
+>>>>>>> refs/remotes/origin/master
 					(var->yoffset * xres)
 					+ var->xoffset);
 	PM3_WAIT(par, 1);
@@ -1243,7 +1262,11 @@ static struct fb_ops pm3fb_ops = {
 
 /* mmio register are already mapped when this function is called */
 /* the pm3fb_fix.smem_start is also set */
+<<<<<<< HEAD
 static unsigned long __devinit pm3fb_size_memory(struct pm3_par *par)
+=======
+static unsigned long pm3fb_size_memory(struct pm3_par *par)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long	memsize = 0;
 	unsigned long	tempBypass, i, temp1, temp2;
@@ -1328,8 +1351,12 @@ static unsigned long __devinit pm3fb_size_memory(struct pm3_par *par)
 	return memsize;
 }
 
+<<<<<<< HEAD
 static int __devinit pm3fb_probe(struct pci_dev *dev,
 				  const struct pci_device_id *ent)
+=======
+static int pm3fb_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct pm3_par *par;
@@ -1460,8 +1487,12 @@ static int __devinit pm3fb_probe(struct pci_dev *dev,
 		retval = -EINVAL;
 		goto err_exit_all;
 	}
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n", info->node,
 	   info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(dev, info);
 	return 0;
 
@@ -1483,7 +1514,11 @@ static int __devinit pm3fb_probe(struct pci_dev *dev,
 	/*
 	 *  Cleanup
 	 */
+<<<<<<< HEAD
 static void __devexit pm3fb_remove(struct pci_dev *dev)
+=======
+static void pm3fb_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(dev);
 
@@ -1504,7 +1539,10 @@ static void __devexit pm3fb_remove(struct pci_dev *dev)
 		iounmap(par->v_regs);
 		release_mem_region(fix->mmio_start, fix->mmio_len);
 
+<<<<<<< HEAD
 		pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(info->pixmap.addr);
 		framebuffer_release(info);
 	}
@@ -1521,7 +1559,11 @@ static struct pci_driver pm3fb_driver = {
 	.name =		"pm3fb",
 	.id_table =	pm3fb_id_table,
 	.probe =	pm3fb_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(pm3fb_remove),
+=======
+	.remove =	pm3fb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_DEVICE_TABLE(pci, pm3fb_id_table);
@@ -1540,10 +1582,14 @@ static int __init pm3fb_setup(char *options)
 	char *this_opt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Parse user speficied options (`video=pm3fb:') */
 =======
 	/* Parse user specified options (`video=pm3fb:') */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Parse user specified options (`video=pm3fb:') */
+>>>>>>> refs/remotes/origin/master
 	if (!options || !*options)
 		return 0;
 

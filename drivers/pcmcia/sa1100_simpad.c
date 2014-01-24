@@ -16,6 +16,7 @@
 #include "sa1100_generic.h"
  
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern long get_cs3_shadow(void);
 extern void set_cs3_bit(int value); 
 extern void clear_cs3_bit(int value);
@@ -33,6 +34,8 @@ static int simpad_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 
 	return soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int simpad_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 
@@ -44,11 +47,15 @@ static int simpad_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	skt->stat[SOC_STAT_RDY].name = "CF_RDY";
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void simpad_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
 
@@ -60,12 +67,18 @@ static void simpad_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 	/*simpad_set_cs3_bit(PCMCIA_BUFF_DIS);*/
 	simpad_clear_cs3_bit(PCMCIA_RESET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Disable CF bus: */
+	/*simpad_set_cs3_bit(PCMCIA_BUFF_DIS);*/
+	simpad_clear_cs3_bit(PCMCIA_RESET);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 simpad_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 			   struct pcmcia_state *state)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long levels = GPLR;
 	long cs3reg = get_cs3_shadow();
@@ -78,6 +91,8 @@ simpad_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
   
 	if((cs3reg & 0x0c) == 0x0c) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long cs3reg = simpad_get_cs3_ro();
 
 	/* the detect signal is inverted - fix that up here */
@@ -88,7 +103,10 @@ simpad_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 
 	if ((cs3reg & (PCMCIA_VS1|PCMCIA_VS2)) ==
 			(PCMCIA_VS1|PCMCIA_VS2)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		state->vs_3v=0;
 		state->vs_Xv=0;
 	} else {
@@ -109,6 +127,7 @@ simpad_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	switch (state->Vcc) {
 	case 0:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
 		break;
 
@@ -121,6 +140,8 @@ simpad_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 		clear_cs3_bit(VCC_5V_EN|EN1);
 		set_cs3_bit(VCC_3V_EN|EN0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		simpad_clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
 		break;
 
@@ -132,17 +153,24 @@ simpad_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	case 50:
 		simpad_clear_cs3_bit(VCC_5V_EN|EN1);
 		simpad_set_cs3_bit(VCC_3V_EN|EN0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
 		printk(KERN_ERR "%s(): unrecognized Vcc %u\n",
 			__func__, state->Vcc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
 =======
 		simpad_clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		simpad_clear_cs3_bit(VCC_3V_EN|VCC_5V_EN|EN0|EN1);
+>>>>>>> refs/remotes/origin/master
 		local_irq_restore(flags);
 		return -1;
 	}
@@ -153,6 +181,7 @@ simpad_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void simpad_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
@@ -168,6 +197,11 @@ static void simpad_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 {
 	simpad_set_cs3_bit(PCMCIA_RESET);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void simpad_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
+{
+	simpad_set_cs3_bit(PCMCIA_RESET);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pcmcia_low_level simpad_pcmcia_ops = { 
@@ -177,6 +211,7 @@ static struct pcmcia_low_level simpad_pcmcia_ops = {
 	.socket_state		= simpad_pcmcia_socket_state,
 	.configure_socket	= simpad_pcmcia_configure_socket,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.socket_init		= simpad_pcmcia_socket_init,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -184,6 +219,12 @@ static struct pcmcia_low_level simpad_pcmcia_ops = {
 };
 
 int __devinit pcmcia_simpad_init(struct device *dev)
+=======
+	.socket_suspend		= simpad_pcmcia_socket_suspend,
+};
+
+int pcmcia_simpad_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 

@@ -28,6 +28,7 @@
 #include "../base.h"
 #include "pnpacpi.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_IA64
 #define valid_IRQ(i) (1)
 #else
@@ -59,6 +60,8 @@ static int irq_flags(int triggering, int polarity, int shareable)
 	return flags;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void decode_irq_flags(struct pnp_dev *dev, int flags, int *triggering,
 			     int *polarity, int *shareable)
 {
@@ -94,6 +97,7 @@ static void decode_irq_flags(struct pnp_dev *dev, int flags, int *triggering,
 		*shareable = ACPI_EXCLUSIVE;
 }
 
+<<<<<<< HEAD
 static void pnpacpi_parse_allocated_irqresource(struct pnp_dev *dev,
 						u32 gsi, int triggering,
 						int polarity, int shareable)
@@ -133,6 +137,8 @@ static void pnpacpi_parse_allocated_irqresource(struct pnp_dev *dev,
 	pnp_add_irq_resource(dev, irq, flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int dma_flags(struct pnp_dev *dev, int type, int bus_master,
 		     int transfer)
 {
@@ -177,6 +183,7 @@ static int dma_flags(struct pnp_dev *dev, int type, int bus_master,
 	return flags;
 }
 
+<<<<<<< HEAD
 static void pnpacpi_parse_allocated_ioresource(struct pnp_dev *dev, u64 start,
 					       u64 len, int io_decode,
 					       int window)
@@ -192,6 +199,18 @@ static void pnpacpi_parse_allocated_ioresource(struct pnp_dev *dev, u64 start,
 		flags |= IORESOURCE_WINDOW;
 
 	pnp_add_io_resource(dev, start, end, flags);
+=======
+/*
+ * Allocated Resources
+ */
+
+static void pnpacpi_add_irqresource(struct pnp_dev *dev, struct resource *r)
+{
+	if (!(r->flags & IORESOURCE_DISABLED))
+		pcibios_penalize_isa_irq(r->start, 1);
+
+	pnp_add_resource(dev, r);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -249,6 +268,7 @@ static void pnpacpi_parse_allocated_vendor(struct pnp_dev *dev,
 	}
 }
 
+<<<<<<< HEAD
 static void pnpacpi_parse_allocated_memresource(struct pnp_dev *dev,
 						u64 start, u64 len,
 						int write_protect, int window)
@@ -326,10 +346,13 @@ static void pnpacpi_parse_allocated_ext_address_space(struct pnp_dev *dev,
 		pnpacpi_parse_allocated_busresource(dev, p->minimum, len);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static acpi_status pnpacpi_allocated_resource(struct acpi_resource *res,
 					      void *data)
 {
 	struct pnp_dev *dev = data;
+<<<<<<< HEAD
 	struct acpi_resource_irq *irq;
 	struct acpi_resource_dma *dma;
 	struct acpi_resource_io *io;
@@ -359,20 +382,56 @@ static acpi_status pnpacpi_allocated_resource(struct acpi_resource *res,
 				    irq->sharable);
 			}
 
+=======
+	struct acpi_resource_dma *dma;
+	struct acpi_resource_vendor_typed *vendor_typed;
+	struct resource r = {0};
+	int i, flags;
+
+	if (acpi_dev_resource_memory(res, &r)
+	    || acpi_dev_resource_io(res, &r)
+	    || acpi_dev_resource_address_space(res, &r)
+	    || acpi_dev_resource_ext_address_space(res, &r)) {
+		pnp_add_resource(dev, &r);
+		return AE_OK;
+	}
+
+	r.flags = 0;
+	if (acpi_dev_resource_interrupt(res, 0, &r)) {
+		pnpacpi_add_irqresource(dev, &r);
+		for (i = 1; acpi_dev_resource_interrupt(res, i, &r); i++)
+			pnpacpi_add_irqresource(dev, &r);
+
+		if (i > 1) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * The IRQ encoder puts a single interrupt in each
 			 * descriptor, so if a _CRS descriptor has more than
 			 * one interrupt, we won't be able to re-encode it.
 			 */
+<<<<<<< HEAD
 			if (pnp_can_write(dev) && irq->interrupt_count > 1) {
+=======
+			if (pnp_can_write(dev)) {
+>>>>>>> refs/remotes/origin/master
 				dev_warn(&dev->dev, "multiple interrupts in "
 					 "_CRS descriptor; configuration can't "
 					 "be changed\n");
 				dev->capabilities &= ~PNP_WRITE;
 			}
 		}
+<<<<<<< HEAD
 		break;
 
+=======
+		return AE_OK;
+	} else if (r.flags & IORESOURCE_DISABLED) {
+		pnp_add_irq_resource(dev, 0, IORESOURCE_DISABLED);
+		return AE_OK;
+	}
+
+	switch (res->type) {
+>>>>>>> refs/remotes/origin/master
 	case ACPI_RESOURCE_TYPE_DMA:
 		dma = &res->data.dma;
 		if (dma->channel_count > 0 && dma->channels[0] != (u8) -1)
@@ -383,6 +442,7 @@ static acpi_status pnpacpi_allocated_resource(struct acpi_resource *res,
 		pnp_add_dma_resource(dev, dma->channels[0], flags);
 		break;
 
+<<<<<<< HEAD
 	case ACPI_RESOURCE_TYPE_IO:
 		io = &res->data.io;
 		pnpacpi_parse_allocated_ioresource(dev,
@@ -391,10 +451,13 @@ static acpi_status pnpacpi_allocated_resource(struct acpi_resource *res,
 			io->io_decode, 0);
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	case ACPI_RESOURCE_TYPE_START_DEPENDENT:
 	case ACPI_RESOURCE_TYPE_END_DEPENDENT:
 		break;
 
+<<<<<<< HEAD
 	case ACPI_RESOURCE_TYPE_FIXED_IO:
 		fixed_io = &res->data.fixed_io;
 		pnpacpi_parse_allocated_ioresource(dev,
@@ -403,6 +466,8 @@ static acpi_status pnpacpi_allocated_resource(struct acpi_resource *res,
 			ACPI_DECODE_10, 0);
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	case ACPI_RESOURCE_TYPE_VENDOR:
 		vendor_typed = &res->data.vendor_typed;
 		pnpacpi_parse_allocated_vendor(dev, vendor_typed);
@@ -411,6 +476,7 @@ static acpi_status pnpacpi_allocated_resource(struct acpi_resource *res,
 	case ACPI_RESOURCE_TYPE_END_TAG:
 		break;
 
+<<<<<<< HEAD
 	case ACPI_RESOURCE_TYPE_MEMORY24:
 		memory24 = &res->data.memory24;
 		pnpacpi_parse_allocated_memresource(dev,
@@ -471,6 +537,8 @@ static acpi_status pnpacpi_allocated_resource(struct acpi_resource *res,
 		}
 		break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	case ACPI_RESOURCE_TYPE_GENERIC_REGISTER:
 		break;
 
@@ -512,11 +580,14 @@ static __init void pnpacpi_parse_dma_option(struct pnp_dev *dev,
 	unsigned char map = 0, flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->channel_count == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < p->channel_count; i++)
 		map |= 1 << p->channels[i];
 
@@ -533,17 +604,24 @@ static __init void pnpacpi_parse_irq_option(struct pnp_dev *dev,
 	unsigned char flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->interrupt_count == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bitmap_zero(map.bits, PNP_IRQ_NR);
 	for (i = 0; i < p->interrupt_count; i++)
 		if (p->interrupts[i])
 			__set_bit(p->interrupts[i], map.bits);
 
+<<<<<<< HEAD
 	flags = irq_flags(p->triggering, p->polarity, p->sharable);
+=======
+	flags = acpi_dev_irq_flags(p->triggering, p->polarity, p->sharable);
+>>>>>>> refs/remotes/origin/master
 	pnp_register_irq_resource(dev, option_flags, &map, flags);
 }
 
@@ -556,11 +634,14 @@ static __init void pnpacpi_parse_ext_irq_option(struct pnp_dev *dev,
 	unsigned char flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->interrupt_count == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bitmap_zero(map.bits, PNP_IRQ_NR);
 	for (i = 0; i < p->interrupt_count; i++) {
 		if (p->interrupts[i]) {
@@ -573,7 +654,11 @@ static __init void pnpacpi_parse_ext_irq_option(struct pnp_dev *dev,
 		}
 	}
 
+<<<<<<< HEAD
 	flags = irq_flags(p->triggering, p->polarity, p->sharable);
+=======
+	flags = acpi_dev_irq_flags(p->triggering, p->polarity, p->sharable);
+>>>>>>> refs/remotes/origin/master
 	pnp_register_irq_resource(dev, option_flags, &map, flags);
 }
 
@@ -584,11 +669,14 @@ static __init void pnpacpi_parse_port_option(struct pnp_dev *dev,
 	unsigned char flags = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (io->address_length == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (io->io_decode == ACPI_DECODE_16)
 		flags = IORESOURCE_IO_16BIT_ADDR;
 	pnp_register_port_resource(dev, option_flags, io->minimum, io->maximum,
@@ -600,11 +688,14 @@ static __init void pnpacpi_parse_fixed_port_option(struct pnp_dev *dev,
 					struct acpi_resource_fixed_io *io)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (io->address_length == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pnp_register_port_resource(dev, option_flags, io->address, io->address,
 				   0, io->address_length, IORESOURCE_IO_FIXED);
 }
@@ -616,11 +707,14 @@ static __init void pnpacpi_parse_mem24_option(struct pnp_dev *dev,
 	unsigned char flags = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->address_length == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p->write_protect == ACPI_READ_WRITE_MEMORY)
 		flags = IORESOURCE_MEM_WRITEABLE;
 	pnp_register_mem_resource(dev, option_flags, p->minimum, p->maximum,
@@ -634,11 +728,14 @@ static __init void pnpacpi_parse_mem32_option(struct pnp_dev *dev,
 	unsigned char flags = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->address_length == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p->write_protect == ACPI_READ_WRITE_MEMORY)
 		flags = IORESOURCE_MEM_WRITEABLE;
 	pnp_register_mem_resource(dev, option_flags, p->minimum, p->maximum,
@@ -652,11 +749,14 @@ static __init void pnpacpi_parse_fixed_mem32_option(struct pnp_dev *dev,
 	unsigned char flags = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->address_length == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p->write_protect == ACPI_READ_WRITE_MEMORY)
 		flags = IORESOURCE_MEM_WRITEABLE;
 	pnp_register_mem_resource(dev, option_flags, p->address, p->address,
@@ -679,11 +779,14 @@ static __init void pnpacpi_parse_address_option(struct pnp_dev *dev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->address_length == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p->resource_type == ACPI_MEMORY_RANGE) {
 		if (p->info.mem.write_protect == ACPI_READ_WRITE_MEMORY)
 			flags = IORESOURCE_MEM_WRITEABLE;
@@ -704,11 +807,14 @@ static __init void pnpacpi_parse_ext_address_option(struct pnp_dev *dev,
 	unsigned char flags = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (p->address_length == 0)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (p->resource_type == ACPI_MEMORY_RANGE) {
 		if (p->info.mem.write_protect == ACPI_READ_WRITE_MEMORY)
 			flags = IORESOURCE_MEM_WRITEABLE;
@@ -926,6 +1032,10 @@ int pnpacpi_build_resource_template(struct pnp_dev *dev,
 	}
 	/* resource will pointer the end resource now */
 	resource->type = ACPI_RESOURCE_TYPE_END_TAG;
+<<<<<<< HEAD
+=======
+	resource->length = sizeof(struct acpi_resource);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1049,10 +1159,14 @@ static void pnpacpi_encode_io(struct pnp_dev *dev,
 		io->maximum = p->end;
 		io->alignment = 0;	/* Correct? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		io->address_length = p->end - p->start + 1;
 =======
 		io->address_length = resource_size(p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		io->address_length = resource_size(p);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		io->minimum = 0;
 		io->address_length = 0;
@@ -1071,10 +1185,14 @@ static void pnpacpi_encode_fixed_io(struct pnp_dev *dev,
 	if (pnp_resource_enabled(p)) {
 		fixed_io->address = p->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		fixed_io->address_length = p->end - p->start + 1;
 =======
 		fixed_io->address_length = resource_size(p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		fixed_io->address_length = resource_size(p);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		fixed_io->address = 0;
 		fixed_io->address_length = 0;
@@ -1098,10 +1216,14 @@ static void pnpacpi_encode_mem24(struct pnp_dev *dev,
 		memory24->maximum = p->end;
 		memory24->alignment = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memory24->address_length = p->end - p->start + 1;
 =======
 		memory24->address_length = resource_size(p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memory24->address_length = resource_size(p);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		memory24->minimum = 0;
 		memory24->address_length = 0;
@@ -1126,10 +1248,14 @@ static void pnpacpi_encode_mem32(struct pnp_dev *dev,
 		memory32->maximum = p->end;
 		memory32->alignment = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memory32->address_length = p->end - p->start + 1;
 =======
 		memory32->address_length = resource_size(p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memory32->address_length = resource_size(p);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		memory32->minimum = 0;
 		memory32->alignment = 0;
@@ -1153,10 +1279,14 @@ static void pnpacpi_encode_fixed_mem32(struct pnp_dev *dev,
 		    ACPI_READ_WRITE_MEMORY : ACPI_READ_ONLY_MEMORY;
 		fixed_memory32->address = p->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		fixed_memory32->address_length = p->end - p->start + 1;
 =======
 		fixed_memory32->address_length = resource_size(p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		fixed_memory32->address_length = resource_size(p);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		fixed_memory32->address = 0;
 		fixed_memory32->address_length = 0;

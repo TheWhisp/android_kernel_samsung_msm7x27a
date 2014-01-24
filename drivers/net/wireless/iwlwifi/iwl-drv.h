@@ -5,7 +5,11 @@
  *
  * GPL LICENSE SUMMARY
  *
+<<<<<<< HEAD
  * Copyright(c) 2008 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2008 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of version 2 of the GNU General Public License as
@@ -22,7 +26,11 @@
  * USA
  *
  * The full GNU General Public License is included in this distribution
+<<<<<<< HEAD
  * in the file called LICENSE.GPL.
+=======
+ * in the file called COPYING.
+>>>>>>> refs/remotes/origin/master
  *
  * Contact Information:
  *  Intel Linux Wireless <ilw@linux.intel.com>
@@ -30,7 +38,11 @@
  *
  * BSD LICENSE
  *
+<<<<<<< HEAD
  * Copyright(c) 2005 - 2012 Intel Corporation. All rights reserved.
+=======
+ * Copyright(c) 2005 - 2013 Intel Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,8 +74,19 @@
 
 #ifndef __iwl_drv_h__
 #define __iwl_drv_h__
+<<<<<<< HEAD
 
 #include "iwl-shared.h"
+=======
+#include <linux/export.h>
+
+/* for all modules */
+#define DRV_NAME        "iwlwifi"
+#define IWLWIFI_VERSION "in-tree:"
+#define DRV_COPYRIGHT	"Copyright(c) 2003-2013 Intel Corporation"
+#define DRV_AUTHOR     "<ilw@linux.intel.com>"
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * DOC: Driver system flows - drv component
@@ -85,6 +108,7 @@
  * 4) The bus specific component configures the bus
  * 5) The bus specific component calls to the drv bus agnostic part
  *    (iwl_drv_start)
+<<<<<<< HEAD
  * 6) iwl_drv_start fetches the fw ASYNC, iwl_ucode_callback
  * 7) iwl_ucode_callback parses the fw file
  * 8) iwl_ucode_callback starts the wifi implementation to matches the fw
@@ -106,18 +130,62 @@
  */
 int iwl_drv_start(struct iwl_shared *shrd,
 		  struct iwl_trans *trans, const struct iwl_cfg *cfg);
+=======
+ * 6) iwl_drv_start fetches the fw ASYNC, iwl_req_fw_callback
+ * 7) iwl_req_fw_callback parses the fw file
+ * 8) iwl_req_fw_callback starts the wifi implementation to matches the fw
+ */
+
+struct iwl_drv;
+struct iwl_trans;
+struct iwl_cfg;
+/**
+ * iwl_drv_start - start the drv
+ *
+ * @trans_ops: the ops of the transport
+ * @cfg: device specific constants / virtual functions
+ *
+ * starts the driver: fetches the firmware. This should be called by bus
+ * specific system flows implementations. For example, the bus specific probe
+ * function should do bus related operations only, and then call to this
+ * function. It returns the driver object or %NULL if an error occured.
+ */
+struct iwl_drv *iwl_drv_start(struct iwl_trans *trans,
+			      const struct iwl_cfg *cfg);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * iwl_drv_stop - stop the drv
  *
+<<<<<<< HEAD
  * @shrd: the shrd area
  *
  * TODO: review the parameters given to this function
+=======
+ * @drv:
+>>>>>>> refs/remotes/origin/master
  *
  * Stop the driver. This should be called by bus specific system flows
  * implementations. For example, the bus specific remove function should first
  * call this function and then do the bus related operations only.
  */
+<<<<<<< HEAD
 void iwl_drv_stop(struct iwl_shared *shrd);
+=======
+void iwl_drv_stop(struct iwl_drv *drv);
+
+/*
+ * exported symbol management
+ *
+ * The driver can be split into multiple modules, in which case some symbols
+ * must be exported for the sub-modules. However, if it's not split and
+ * everything is built-in, then we can avoid that.
+ */
+#ifdef CONFIG_IWLWIFI_OPMODE_MODULAR
+#define IWL_EXPORT_SYMBOL(sym)	EXPORT_SYMBOL_GPL(sym)
+#else
+#define IWL_EXPORT_SYMBOL(sym)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __iwl_drv_h__ */

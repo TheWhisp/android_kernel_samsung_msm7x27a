@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * Carsten Langgaard, carstenl@mips.com
  * Copyright (C) 1999,2000 MIPS Technologies, Inc.  All rights reserved.
  *
@@ -28,6 +29,22 @@
 #include <asm/io.h>
 #include <asm/reboot.h>
 #include <asm/mips-boards/generic.h>
+=======
+ * This file is subject to the terms and conditions of the GNU General Public
+ * License.  See the file "COPYING" in the main directory of this archive
+ * for more details.
+ *
+ * Carsten Langgaard, carstenl@mips.com
+ * Copyright (C) 1999,2000 MIPS Technologies, Inc.  All rights reserved.
+ */
+#include <linux/io.h>
+#include <linux/pm.h>
+
+#include <asm/reboot.h>
+
+#define SOFTRES_REG	0x1f000500
+#define GORESET		0x42
+>>>>>>> refs/remotes/origin/master
 
 static void mips_machine_restart(char *command)
 {
@@ -45,7 +62,10 @@ static void mips_machine_halt(void)
 	__raw_writel(GORESET, softres_reg);
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init mips_reboot_setup(void)
 {
 	_machine_restart = mips_machine_restart;
@@ -54,5 +74,8 @@ static int __init mips_reboot_setup(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 arch_initcall(mips_reboot_setup);

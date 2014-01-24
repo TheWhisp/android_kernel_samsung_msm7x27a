@@ -166,7 +166,11 @@ static void tca6416_keys_close(struct input_dev *dev)
 		disable_irq(chip->irqnum);
 }
 
+<<<<<<< HEAD
 static int __devinit tca6416_setup_registers(struct tca6416_keypad_chip *chip)
+=======
+static int tca6416_setup_registers(struct tca6416_keypad_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 
@@ -197,7 +201,11 @@ static int __devinit tca6416_setup_registers(struct tca6416_keypad_chip *chip)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit tca6416_keypad_probe(struct i2c_client *client,
+=======
+static int tca6416_keypad_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				   const struct i2c_device_id *id)
 {
 	struct tca6416_keys_platform_data *pdata;
@@ -278,7 +286,12 @@ static int __devinit tca6416_keypad_probe(struct i2c_client *client,
 
 		error = request_threaded_irq(chip->irqnum, NULL,
 					     tca6416_keys_isr,
+<<<<<<< HEAD
 					     IRQF_TRIGGER_FALLING,
+=======
+					     IRQF_TRIGGER_FALLING |
+						IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 					     "tca6416-keypad", chip);
 		if (error) {
 			dev_dbg(&client->dev,
@@ -312,7 +325,11 @@ fail1:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit tca6416_keypad_remove(struct i2c_client *client)
+=======
+static int tca6416_keypad_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tca6416_keypad_chip *chip = i2c_get_clientdata(client);
 
@@ -360,7 +377,11 @@ static struct i2c_driver tca6416_keypad_driver = {
 		.pm	= &tca6416_keypad_dev_pm_ops,
 	},
 	.probe		= tca6416_keypad_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(tca6416_keypad_remove),
+=======
+	.remove		= tca6416_keypad_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= tca6416_id,
 };
 

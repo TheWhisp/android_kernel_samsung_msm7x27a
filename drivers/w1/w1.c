@@ -2,10 +2,14 @@
  *	w1.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004 Evgeniy Polyakov <johnpol@2ka.mipt.ru>
 =======
  * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2004 Evgeniy Polyakov <zbr@ioremap.net>
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -38,10 +42,14 @@
 #include <linux/freezer.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "w1.h"
 #include "w1_log.h"
@@ -51,10 +59,14 @@
 
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Evgeniy Polyakov <johnpol@2ka.mipt.ru>");
 =======
 MODULE_AUTHOR("Evgeniy Polyakov <zbr@ioremap.net>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_AUTHOR("Evgeniy Polyakov <zbr@ioremap.net>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Driver for 1-wire Dallas network protocol.");
 
 static int w1_timeout = 10;
@@ -108,14 +120,24 @@ static void w1_slave_release(struct device *dev)
 	complete(&sl->released);
 }
 
+<<<<<<< HEAD
 static ssize_t w1_slave_read_name(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t name_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w1_slave *sl = dev_to_w1_slave(dev);
 
 	return sprintf(buf, "%s\n", sl->name);
 }
+<<<<<<< HEAD
 
 static ssize_t w1_slave_read_id(struct device *dev,
+=======
+static DEVICE_ATTR_RO(name);
+
+static ssize_t id_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 	struct device_attribute *attr, char *buf)
 {
 	struct w1_slave *sl = dev_to_w1_slave(dev);
@@ -124,6 +146,7 @@ static ssize_t w1_slave_read_id(struct device *dev,
 	memcpy(buf, (u8 *)&sl->reg_num, count);
 	return count;
 }
+<<<<<<< HEAD
 
 static struct device_attribute w1_slave_attr_name =
 	__ATTR(name, S_IRUGO, w1_slave_read_name, NULL);
@@ -135,6 +158,22 @@ static struct device_attribute w1_slave_attr_id =
 static ssize_t w1_default_write(struct file *filp, struct kobject *kobj,
 				struct bin_attribute *bin_attr,
 				char *buf, loff_t off, size_t count)
+=======
+static DEVICE_ATTR_RO(id);
+
+static struct attribute *w1_slave_attrs[] = {
+	&dev_attr_name.attr,
+	&dev_attr_id.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(w1_slave);
+
+/* Default family */
+
+static ssize_t rw_write(struct file *filp, struct kobject *kobj,
+			struct bin_attribute *bin_attr, char *buf, loff_t off,
+			size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w1_slave *sl = kobj_to_w1_slave(kobj);
 
@@ -151,9 +190,15 @@ out_up:
 	return count;
 }
 
+<<<<<<< HEAD
 static ssize_t w1_default_read(struct file *filp, struct kobject *kobj,
 			       struct bin_attribute *bin_attr,
 			       char *buf, loff_t off, size_t count)
+=======
+static ssize_t rw_read(struct file *filp, struct kobject *kobj,
+		       struct bin_attribute *bin_attr, char *buf, loff_t off,
+		       size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct w1_slave *sl = kobj_to_w1_slave(kobj);
 
@@ -163,6 +208,7 @@ static ssize_t w1_default_read(struct file *filp, struct kobject *kobj,
 	return count;
 }
 
+<<<<<<< HEAD
 static struct bin_attribute w1_default_attr = {
       .attr = {
               .name = "rw",
@@ -186,6 +232,26 @@ static void w1_default_remove_slave(struct w1_slave *sl)
 static struct w1_family_ops w1_default_fops = {
 	.add_slave	= w1_default_add_slave,
 	.remove_slave	= w1_default_remove_slave,
+=======
+static BIN_ATTR_RW(rw, PAGE_SIZE);
+
+static struct bin_attribute *w1_slave_bin_attrs[] = {
+	&bin_attr_rw,
+	NULL,
+};
+
+static const struct attribute_group w1_slave_default_group = {
+	.bin_attrs = w1_slave_bin_attrs,
+};
+
+static const struct attribute_group *w1_slave_default_groups[] = {
+	&w1_slave_default_group,
+	NULL,
+};
+
+static struct w1_family_ops w1_default_fops = {
+	.groups		= w1_slave_default_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct w1_family w1_default_family = {
@@ -247,9 +313,17 @@ static ssize_t w1_master_attribute_store_search(struct device * dev,
 {
 	long tmp;
 	struct w1_master *md = dev_to_w1_master(dev);
+<<<<<<< HEAD
 
 	if (strict_strtol(buf, 0, &tmp) == -EINVAL)
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtol(buf, 0, &tmp);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&md->mutex);
 	md->search_count = tmp;
@@ -279,9 +353,17 @@ static ssize_t w1_master_attribute_store_pullup(struct device *dev,
 {
 	long tmp;
 	struct w1_master *md = dev_to_w1_master(dev);
+<<<<<<< HEAD
 
 	if (strict_strtol(buf, 0, &tmp) == -EINVAL)
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtol(buf, 0, &tmp);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&md->mutex);
 	md->enable_pullup = tmp;
@@ -563,13 +645,20 @@ void w1_destroy_master_attributes(struct w1_master *master)
 	sysfs_remove_group(&master->dev.kobj, &w1_master_defattr_group);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 static int w1_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
 	struct w1_master *md = NULL;
 	struct w1_slave *sl = NULL;
 	char *event_owner, *name;
+<<<<<<< HEAD
 	int err;
+=======
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->driver == &w1_master_driver) {
 		md = container_of(dev, struct w1_master, dev);
@@ -588,6 +677,7 @@ static int w1_uevent(struct device *dev, struct kobj_uevent_env *env)
 			event_owner, name, dev_name(dev));
 
 	if (dev->driver != &w1_slave_driver || !sl)
+<<<<<<< HEAD
 		return 0;
 
 	err = add_uevent_var(env, "W1_FID=%02X", sl->reg_num.family);
@@ -607,6 +697,82 @@ static int w1_uevent(struct device *dev, struct kobj_uevent_env *env)
 	return 0;
 }
 #endif
+=======
+		goto end;
+
+	err = add_uevent_var(env, "W1_FID=%02X", sl->reg_num.family);
+	if (err)
+		goto end;
+
+	err = add_uevent_var(env, "W1_SLAVE_ID=%024LX",
+			     (unsigned long long)sl->reg_num.id);
+end:
+	return err;
+}
+
+/*
+ * Handle sysfs file creation and removal here, before userspace is told that
+ * the device is added / removed from the system
+ */
+static int w1_bus_notify(struct notifier_block *nb, unsigned long action,
+			 void *data)
+{
+	struct device *dev = data;
+	struct w1_slave *sl;
+	struct w1_family_ops *fops;
+	int err;
+
+	/*
+	 * Only care about slave devices at the moment.  Yes, we should use a
+	 * separate "type" for this, but for now, look at the release function
+	 * to know which type it is...
+	 */
+	if (dev->release != w1_slave_release)
+		return 0;
+
+	sl = dev_to_w1_slave(dev);
+	fops = sl->family->fops;
+
+	if (!fops)
+		return 0;
+
+	switch (action) {
+	case BUS_NOTIFY_ADD_DEVICE:
+		/* if the family driver needs to initialize something... */
+		if (fops->add_slave) {
+			err = fops->add_slave(sl);
+			if (err < 0) {
+				dev_err(&sl->dev,
+					"add_slave() call failed. err=%d\n",
+					err);
+				return err;
+			}
+		}
+		if (fops->groups) {
+			err = sysfs_create_groups(&sl->dev.kobj, fops->groups);
+			if (err) {
+				dev_err(&sl->dev,
+					"sysfs group creation failed. err=%d\n",
+					err);
+				return err;
+			}
+		}
+
+		break;
+	case BUS_NOTIFY_DEL_DEVICE:
+		if (fops->remove_slave)
+			sl->family->fops->remove_slave(sl);
+		if (fops->groups)
+			sysfs_remove_groups(&sl->dev.kobj, fops->groups);
+		break;
+	}
+	return 0;
+}
+
+static struct notifier_block w1_bus_nb = {
+	.notifier_call = w1_bus_notify,
+};
+>>>>>>> refs/remotes/origin/master
 
 static int __w1_attach_slave_device(struct w1_slave *sl)
 {
@@ -616,6 +782,10 @@ static int __w1_attach_slave_device(struct w1_slave *sl)
 	sl->dev.driver = &w1_slave_driver;
 	sl->dev.bus = &w1_bus_type;
 	sl->dev.release = &w1_slave_release;
+<<<<<<< HEAD
+=======
+	sl->dev.groups = w1_slave_groups;
+>>>>>>> refs/remotes/origin/master
 
 	dev_set_name(&sl->dev, "%02x-%012llx",
 		 (unsigned int) sl->reg_num.family,
@@ -636,6 +806,7 @@ static int __w1_attach_slave_device(struct w1_slave *sl)
 		return err;
 	}
 
+<<<<<<< HEAD
 	/* Create "name" entry */
 	err = device_create_file(&sl->dev, &w1_slave_attr_name);
 	if (err < 0) {
@@ -662,10 +833,16 @@ static int __w1_attach_slave_device(struct w1_slave *sl)
 			dev_name(&sl->dev), err);
 		goto out_rem2;
 	}
+=======
+
+	dev_set_uevent_suppress(&sl->dev, false);
+	kobject_uevent(&sl->dev.kobj, KOBJ_ADD);
+>>>>>>> refs/remotes/origin/master
 
 	list_add_tail(&sl->w1_slave_entry, &sl->master->slist);
 
 	return 0;
+<<<<<<< HEAD
 
 out_rem2:
 	device_remove_file(&sl->dev, &w1_slave_attr_id);
@@ -674,6 +851,8 @@ out_rem1:
 out_unreg:
 	device_unregister(&sl->dev);
 	return err;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int w1_attach_slave_device(struct w1_master *dev, struct w1_reg_num *rn)
@@ -694,13 +873,25 @@ static int w1_attach_slave_device(struct w1_master *dev, struct w1_reg_num *rn)
 
 	sl->owner = THIS_MODULE;
 	sl->master = dev;
+<<<<<<< HEAD
 	set_bit(W1_SLAVE_ACTIVE, (long *)&sl->flags);
+=======
+	set_bit(W1_SLAVE_ACTIVE, &sl->flags);
+>>>>>>> refs/remotes/origin/master
 
 	memset(&msg, 0, sizeof(msg));
 	memcpy(&sl->reg_num, rn, sizeof(sl->reg_num));
 	atomic_set(&sl->refcnt, 0);
 	init_completion(&sl->released);
 
+<<<<<<< HEAD
+=======
+	/* slave modules need to be loaded in a context with unlocked mutex */
+	mutex_unlock(&dev->mutex);
+	request_module("w1-family-0x%0x", rn->family);
+	mutex_lock(&dev->mutex);
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&w1_flock);
 	f = w1_family_registered(rn->family);
 	if (!f) {
@@ -742,16 +933,22 @@ void w1_slave_detach(struct w1_slave *sl)
 
 	list_del(&sl->w1_slave_entry);
 
+<<<<<<< HEAD
 	if (sl->family->fops && sl->family->fops->remove_slave)
 		sl->family->fops->remove_slave(sl);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(&msg, 0, sizeof(msg));
 	memcpy(msg.id.id, &sl->reg_num, sizeof(msg.id));
 	msg.type = W1_SLAVE_REMOVE;
 	w1_netlink_send(sl->master, &msg);
 
+<<<<<<< HEAD
 	device_remove_file(&sl->dev, &w1_slave_attr_id);
 	device_remove_file(&sl->dev, &w1_slave_attr_name);
+=======
+>>>>>>> refs/remotes/origin/master
 	device_unregister(&sl->dev);
 
 	wait_for_completion(&sl->released);
@@ -851,7 +1048,11 @@ void w1_slave_found(struct w1_master *dev, u64 rn)
 
 	sl = w1_slave_search_device(dev, tmp);
 	if (sl) {
+<<<<<<< HEAD
 		set_bit(W1_SLAVE_ACTIVE, (long *)&sl->flags);
+=======
+		set_bit(W1_SLAVE_ACTIVE, &sl->flags);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (rn && tmp->crc == w1_calc_crc8((u8 *)&rn_le, 7))
 			w1_attach_slave_device(dev, tmp);
@@ -899,11 +1100,18 @@ void w1_search(struct w1_master *dev, u8 search_type, w1_slave_found_callback cb
 		 *
 		 * Return 0 - device(s) present, 1 - no devices present.
 		 */
+<<<<<<< HEAD
 		if (w1_reset_bus(dev)) {
+=======
+		mutex_lock(&dev->bus_mutex);
+		if (w1_reset_bus(dev)) {
+			mutex_unlock(&dev->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(&dev->dev, "No devices present on the wire.\n");
 			break;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		/* Do fast search on single slave bus */
@@ -911,12 +1119,25 @@ void w1_search(struct w1_master *dev, u8 search_type, w1_slave_found_callback cb
 			w1_write_8(dev, W1_READ_ROM);
 
 			if (w1_read_block(dev, (u8 *)&rn, 8) == 8 && rn)
+=======
+		/* Do fast search on single slave bus */
+		if (dev->max_slave_count == 1) {
+			int rv;
+			w1_write_8(dev, W1_READ_ROM);
+			rv = w1_read_block(dev, (u8 *)&rn, 8);
+			mutex_unlock(&dev->bus_mutex);
+
+			if (rv == 8 && rn)
+>>>>>>> refs/remotes/origin/master
 				cb(dev, rn);
 
 			break;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Start the search */
 		w1_write_8(dev, search_type);
 		for (i = 0; i < 64; ++i) {
@@ -945,10 +1166,18 @@ void w1_search(struct w1_master *dev, u8 search_type, w1_slave_found_callback cb
 
 			/* ensure we're called from kthread and not by netlink callback */
 			if (!dev->priv && kthread_should_stop()) {
+<<<<<<< HEAD
+=======
+				mutex_unlock(&dev->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 				dev_dbg(&dev->dev, "Abort w1_search\n");
 				return;
 			}
 		}
+<<<<<<< HEAD
+=======
+		mutex_unlock(&dev->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 		if ( (triplet_ret & 0x03) != 0x03 ) {
 			if ( (desc_bit == last_zero) || (last_zero < 0))
@@ -965,14 +1194,24 @@ void w1_search_process_cb(struct w1_master *dev, u8 search_type,
 	struct w1_slave *sl, *sln;
 
 	list_for_each_entry(sl, &dev->slist, w1_slave_entry)
+<<<<<<< HEAD
 		clear_bit(W1_SLAVE_ACTIVE, (long *)&sl->flags);
+=======
+		clear_bit(W1_SLAVE_ACTIVE, &sl->flags);
+>>>>>>> refs/remotes/origin/master
 
 	w1_search_devices(dev, search_type, cb);
 
 	list_for_each_entry_safe(sl, sln, &dev->slist, w1_slave_entry) {
+<<<<<<< HEAD
 		if (!test_bit(W1_SLAVE_ACTIVE, (unsigned long *)&sl->flags) && !--sl->ttl)
 			w1_slave_detach(sl);
 		else if (test_bit(W1_SLAVE_ACTIVE, (unsigned long *)&sl->flags))
+=======
+		if (!test_bit(W1_SLAVE_ACTIVE, &sl->flags) && !--sl->ttl)
+			w1_slave_detach(sl);
+		else if (test_bit(W1_SLAVE_ACTIVE, &sl->flags))
+>>>>>>> refs/remotes/origin/master
 			sl->ttl = dev->slave_ttl;
 	}
 
@@ -1032,6 +1271,13 @@ static int __init w1_init(void)
 		goto err_out_exit_init;
 	}
 
+<<<<<<< HEAD
+=======
+	retval = bus_register_notifier(&w1_bus_type, &w1_bus_nb);
+	if (retval)
+		goto err_out_bus_unregister;
+
+>>>>>>> refs/remotes/origin/master
 	retval = driver_register(&w1_master_driver);
 	if (retval) {
 		printk(KERN_ERR
@@ -1043,7 +1289,11 @@ static int __init w1_init(void)
 	retval = driver_register(&w1_slave_driver);
 	if (retval) {
 		printk(KERN_ERR
+<<<<<<< HEAD
 			"Failed to register master driver. err=%d.\n",
+=======
+			"Failed to register slave driver. err=%d.\n",
+>>>>>>> refs/remotes/origin/master
 			retval);
 		goto err_out_master_unregister;
 	}

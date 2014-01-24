@@ -48,6 +48,7 @@
 
 /* PXA GPIOs */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define POODLE_IRQ_GPIO_ON_KEY		IRQ_GPIO(0)
 #define POODLE_IRQ_GPIO_AC_IN		IRQ_GPIO(1)
 #define POODLE_IRQ_GPIO_HP_IN		IRQ_GPIO(4)
@@ -61,6 +62,8 @@
 #define POODLE_IRQ_GPIO_nSD_DETECT	IRQ_GPIO(9)
 #define POODLE_IRQ_GPIO_MAIN_BAT_LOW	IRQ_GPIO(13)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define POODLE_IRQ_GPIO_ON_KEY		PXA_GPIO_TO_IRQ(0)
 #define POODLE_IRQ_GPIO_AC_IN		PXA_GPIO_TO_IRQ(1)
 #define POODLE_IRQ_GPIO_HP_IN		PXA_GPIO_TO_IRQ(4)
@@ -73,7 +76,10 @@
 #define POODLE_IRQ_GPIO_nSD_INT		PXA_GPIO_TO_IRQ(8)
 #define POODLE_IRQ_GPIO_nSD_DETECT	PXA_GPIO_TO_IRQ(9)
 #define POODLE_IRQ_GPIO_MAIN_BAT_LOW	PXA_GPIO_TO_IRQ(13)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* SCOOP GPIOs */
 #define POODLE_SCOOP_CHARGE_ON	SCOOP_GPCR_PA11
@@ -87,10 +93,14 @@
 #define POODLE_SCOOP_IO_OUT	( 0 )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define POODLE_SCOOP_GPIO_BASE	(NR_BUILTIN_GPIO)
 =======
 #define POODLE_SCOOP_GPIO_BASE	(PXA_NR_BUILTIN_GPIO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define POODLE_SCOOP_GPIO_BASE	(PXA_NR_BUILTIN_GPIO)
+>>>>>>> refs/remotes/origin/master
 #define POODLE_GPIO_CHARGE_ON	(POODLE_SCOOP_GPIO_BASE + 0)
 #define POODLE_GPIO_CP401	(POODLE_SCOOP_GPIO_BASE + 2)
 #define POODLE_GPIO_VPEN	(POODLE_SCOOP_GPIO_BASE + 7)

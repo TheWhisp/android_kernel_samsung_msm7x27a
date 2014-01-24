@@ -41,14 +41,22 @@ MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE("GPL");
 
+<<<<<<< HEAD
 static int __devinit aer_probe(struct pcie_device *dev);
+=======
+static int aer_probe(struct pcie_device *dev);
+>>>>>>> refs/remotes/origin/master
 static void aer_remove(struct pcie_device *dev);
 static pci_ers_result_t aer_error_detected(struct pci_dev *dev,
 	enum pci_channel_state error);
 static void aer_error_resume(struct pci_dev *dev);
 static pci_ers_result_t aer_root_reset(struct pci_dev *dev);
 
+<<<<<<< HEAD
 static struct pci_error_handlers aer_error_handlers = {
+=======
+static const struct pci_error_handlers aer_error_handlers = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected = aer_error_detected,
 	.resume		= aer_error_resume,
 };
@@ -81,10 +89,18 @@ bool pci_aer_available(void)
 static int set_device_error_reporting(struct pci_dev *dev, void *data)
 {
 	bool enable = *((bool *)data);
+<<<<<<< HEAD
 
 	if ((dev->pcie_type == PCI_EXP_TYPE_ROOT_PORT) ||
 	    (dev->pcie_type == PCI_EXP_TYPE_UPSTREAM) ||
 	    (dev->pcie_type == PCI_EXP_TYPE_DOWNSTREAM)) {
+=======
+	int type = pci_pcie_type(dev);
+
+	if ((type == PCI_EXP_TYPE_ROOT_PORT) ||
+	    (type == PCI_EXP_TYPE_UPSTREAM) ||
+	    (type == PCI_EXP_TYPE_DOWNSTREAM)) {
+>>>>>>> refs/remotes/origin/master
 		if (enable)
 			pci_enable_pcie_error_reporting(dev);
 		else
@@ -121,6 +137,7 @@ static void set_downstream_devices_error_reporting(struct pci_dev *dev,
 static void aer_enable_rootport(struct aer_rpc *rpc)
 {
 	struct pci_dev *pdev = rpc->rpd->port;
+<<<<<<< HEAD
 	int pos, aer_pos;
 	u16 reg16;
 	u32 reg32;
@@ -134,6 +151,19 @@ static void aer_enable_rootport(struct aer_rpc *rpc)
 	pci_read_config_word(pdev, pos + PCI_EXP_RTCTL, &reg16);
 	reg16 &= ~(SYSTEM_ERROR_INTR_ON_MESG_MASK);
 	pci_write_config_word(pdev, pos + PCI_EXP_RTCTL, reg16);
+=======
+	int aer_pos;
+	u16 reg16;
+	u32 reg32;
+
+	/* Clear PCIe Capability's Device Status */
+	pcie_capability_read_word(pdev, PCI_EXP_DEVSTA, &reg16);
+	pcie_capability_write_word(pdev, PCI_EXP_DEVSTA, reg16);
+
+	/* Disable system error generation in response to error messages */
+	pcie_capability_clear_word(pdev, PCI_EXP_RTCTL,
+				   SYSTEM_ERROR_INTR_ON_MESG_MASK);
+>>>>>>> refs/remotes/origin/master
 
 	aer_pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_ERR);
 	/* Clear error status */
@@ -301,7 +331,11 @@ static void aer_remove(struct pcie_device *dev)
  *
  * Invoked when PCI Express bus loads AER service driver.
  */
+<<<<<<< HEAD
 static int __devinit aer_probe(struct pcie_device *dev)
+=======
+static int aer_probe(struct pcie_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 	struct aer_rpc *rpc;
@@ -353,7 +387,11 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
 	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
 	pci_write_config_dword(dev, pos + PCI_ERR_ROOT_COMMAND, reg32);
 
+<<<<<<< HEAD
 	aer_do_secondary_bus_reset(dev);
+=======
+	pci_reset_bridge_secondary_bus(dev);
+>>>>>>> refs/remotes/origin/master
 	dev_printk(KERN_DEBUG, &dev->dev, "Root Port link has been reset\n");
 
 	/* Clear Root Error Status */
@@ -395,9 +433,14 @@ static void aer_error_resume(struct pci_dev *dev)
 	u16 reg16;
 
 	/* Clean up Root device status */
+<<<<<<< HEAD
 	pos = pci_pcie_cap(dev);
 	pci_read_config_word(dev, pos + PCI_EXP_DEVSTA, &reg16);
 	pci_write_config_word(dev, pos + PCI_EXP_DEVSTA, reg16);
+=======
+	pcie_capability_read_word(dev, PCI_EXP_DEVSTA, &reg16);
+	pcie_capability_write_word(dev, PCI_EXP_DEVSTA, reg16);
+>>>>>>> refs/remotes/origin/master
 
 	/* Clean AER Root Error Status */
 	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ERR);

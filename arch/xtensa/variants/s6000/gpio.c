@@ -2,8 +2,13 @@
  * s6000 gpio driver
  *
  * Copyright (c) 2009 emlix GmbH
+<<<<<<< HEAD
  * Authors:	Oskar Schirmer <os@emlix.com>
  *		Johannes Weiner <jw@emlix.com>
+=======
+ * Authors:	Oskar Schirmer <oskar@scara.com>
+ *		Johannes Weiner <hannes@cmpxchg.org>
+>>>>>>> refs/remotes/origin/master
  *		Daniel Gloeckner <dg@emlix.com>
  */
 #include <linux/bitops.h>
@@ -164,7 +169,11 @@ static void demux_irqs(unsigned int irq, struct irq_desc *desc)
 	int cirq;
 
 	chip->irq_mask(&desc->irq_data);
+<<<<<<< HEAD
 	chip->irq_ack(&desc->irq_data));
+=======
+	chip->irq_ack(&desc->irq_data);
+>>>>>>> refs/remotes/origin/master
 	pending = readb(S6_REG_GPIO + S6_GPIO_BANK(0) + S6_GPIO_MIS) & *mask;
 	cirq = IRQ_BASE - 1;
 	while (pending) {
@@ -173,7 +182,11 @@ static void demux_irqs(unsigned int irq, struct irq_desc *desc)
 		pending >>= n;
 		generic_handle_irq(cirq);
 	}
+<<<<<<< HEAD
 	chip->irq_unmask(&desc->irq_data));
+=======
+	chip->irq_unmask(&desc->irq_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 extern const signed char *platform_irq_mappings[XTENSA_NR_IRQS];

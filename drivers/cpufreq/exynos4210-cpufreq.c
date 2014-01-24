@@ -18,18 +18,24 @@
 #include <linux/cpufreq.h>
 
 #include <mach/regs-clock.h>
+<<<<<<< HEAD
 #include <mach/cpufreq.h>
 
 #define CPUFREQ_LEVEL_END	L5
 
 static int max_support_idx = L0;
 static int min_support_idx = (CPUFREQ_LEVEL_END - 1);
+=======
+
+#include "exynos-cpufreq.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct clk *cpu_clk;
 static struct clk *moutcore;
 static struct clk *mout_mpll;
 static struct clk *mout_apll;
 
+<<<<<<< HEAD
 struct cpufreq_clkdiv {
 	unsigned int index;
 	unsigned int clkdiv;
@@ -111,6 +117,34 @@ static unsigned int exynos4210_apll_pms_table[CPUFREQ_LEVEL_END] = {
 
 	/* APLL FOUT L4: 200MHz */
 	((200 << 16) | (6 << 8) | 3),
+=======
+static unsigned int exynos4210_volt_table[] = {
+	1250000, 1150000, 1050000, 975000, 950000,
+};
+
+static struct cpufreq_frequency_table exynos4210_freq_table[] = {
+	{L0, 1200 * 1000},
+	{L1, 1000 * 1000},
+	{L2,  800 * 1000},
+	{L3,  500 * 1000},
+	{L4,  200 * 1000},
+	{0, CPUFREQ_TABLE_END},
+};
+
+static struct apll_freq apll_freq_4210[] = {
+	/*
+	 * values:
+	 * freq
+	 * clock divider for CORE, COREM0, COREM1, PERIPH, ATB, PCLK_DBG, APLL, RESERVED
+	 * clock divider for COPY, HPM, RESERVED
+	 * PLL M, P, S
+	 */
+	APLL_FREQ(1200, 0, 3, 7, 3, 4, 1, 7, 0, 5, 0, 0, 150, 3, 1),
+	APLL_FREQ(1000, 0, 3, 7, 3, 4, 1, 7, 0, 4, 0, 0, 250, 6, 1),
+	APLL_FREQ(800,  0, 3, 7, 3, 3, 1, 7, 0, 3, 0, 0, 200, 6, 1),
+	APLL_FREQ(500,  0, 3, 7, 3, 3, 1, 7, 0, 3, 0, 0, 250, 6, 2),
+	APLL_FREQ(200,  0, 1, 3, 1, 3, 1, 0, 0, 3, 0, 0, 200, 6, 3),
+>>>>>>> refs/remotes/origin/master
 };
 
 static void exynos4210_set_clkdiv(unsigned int div_index)
@@ -119,7 +153,11 @@ static void exynos4210_set_clkdiv(unsigned int div_index)
 
 	/* Change Divider - CPU0 */
 
+<<<<<<< HEAD
 	tmp = exynos4210_clkdiv_table[div_index].clkdiv;
+=======
+	tmp = apll_freq_4210[div_index].clk_div_cpu0;
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel(tmp, EXYNOS4_CLKDIV_CPU);
 
@@ -129,12 +167,16 @@ static void exynos4210_set_clkdiv(unsigned int div_index)
 
 	/* Change Divider - CPU1 */
 
+<<<<<<< HEAD
 	tmp = __raw_readl(EXYNOS4_CLKDIV_CPU1);
 
 	tmp &= ~((0x7 << 4) | 0x7);
 
 	tmp |= ((clkdiv_cpu1[div_index][0] << 4) |
 		(clkdiv_cpu1[div_index][1] << 0));
+=======
+	tmp = apll_freq_4210[div_index].clk_div_cpu1;
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel(tmp, EXYNOS4_CLKDIV_CPU1);
 
@@ -145,9 +187,15 @@ static void exynos4210_set_clkdiv(unsigned int div_index)
 
 static void exynos4210_set_apll(unsigned int index)
 {
+<<<<<<< HEAD
 	unsigned int tmp;
 
 	/* 1. MUX_CORE_SEL = MPLL, ARMCLK uses MPLL for lock time */
+=======
+	unsigned int tmp, freq = apll_freq_4210[index].freq;
+
+	/* MUX_CORE_SEL = MPLL, ARMCLK uses MPLL for lock time */
+>>>>>>> refs/remotes/origin/master
 	clk_set_parent(moutcore, mout_mpll);
 
 	do {
@@ -156,6 +204,7 @@ static void exynos4210_set_apll(unsigned int index)
 		tmp &= 0x7;
 	} while (tmp != 0x2);
 
+<<<<<<< HEAD
 	/* 2. Set APLL Lock time */
 	__raw_writel(EXYNOS4_APLL_LOCKTIME, EXYNOS4_APLL_LOCK);
 
@@ -171,6 +220,11 @@ static void exynos4210_set_apll(unsigned int index)
 	} while (!(tmp & (0x1 << EXYNOS4_APLLCON0_LOCKED_SHIFT)));
 
 	/* 5. MUX_CORE_SEL = APLL */
+=======
+	clk_set_rate(mout_apll, freq * 1000);
+
+	/* MUX_CORE_SEL = APLL */
+>>>>>>> refs/remotes/origin/master
 	clk_set_parent(moutcore, mout_apll);
 
 	do {
@@ -179,6 +233,7 @@ static void exynos4210_set_apll(unsigned int index)
 	} while (tmp != (0x1 << EXYNOS4_CLKSRC_CPU_MUXCORE_SHIFT));
 }
 
+<<<<<<< HEAD
 bool exynos4210_pms_change(unsigned int old_index, unsigned int new_index)
 {
 	unsigned int old_pm = (exynos4210_apll_pms_table[old_index] >> 8);
@@ -226,13 +281,27 @@ static void exynos4210_set_frequency(unsigned int old_index,
 			/* 2. Change the system clock divider values */
 			exynos4210_set_clkdiv(new_index);
 		}
+=======
+static void exynos4210_set_frequency(unsigned int old_index,
+				     unsigned int new_index)
+{
+	if (old_index > new_index) {
+		exynos4210_set_clkdiv(new_index);
+		exynos4210_set_apll(new_index);
+	} else if (old_index < new_index) {
+		exynos4210_set_apll(new_index);
+		exynos4210_set_clkdiv(new_index);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 int exynos4210_cpufreq_init(struct exynos_dvfs_info *info)
 {
+<<<<<<< HEAD
 	int i;
 	unsigned int tmp;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long rate;
 
 	cpu_clk = clk_get(NULL, "armclk");
@@ -253,6 +322,7 @@ int exynos4210_cpufreq_init(struct exynos_dvfs_info *info)
 	if (IS_ERR(mout_apll))
 		goto err_mout_apll;
 
+<<<<<<< HEAD
 	tmp = __raw_readl(EXYNOS4_CLKDIV_CPU);
 
 	for (i = L0; i <  CPUFREQ_LEVEL_END; i++) {
@@ -280,15 +350,24 @@ int exynos4210_cpufreq_init(struct exynos_dvfs_info *info)
 	info->pll_safe_idx = L2;
 	info->max_support_idx = max_support_idx;
 	info->min_support_idx = min_support_idx;
+=======
+	info->mpll_freq_khz = rate;
+	/* 800Mhz */
+	info->pll_safe_idx = L2;
+>>>>>>> refs/remotes/origin/master
 	info->cpu_clk = cpu_clk;
 	info->volt_table = exynos4210_volt_table;
 	info->freq_table = exynos4210_freq_table;
 	info->set_freq = exynos4210_set_frequency;
+<<<<<<< HEAD
 	info->need_apll_change = exynos4210_pms_change;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 err_mout_apll:
+<<<<<<< HEAD
 	if (!IS_ERR(mout_mpll))
 		clk_put(mout_mpll);
 err_mout_mpll:
@@ -297,8 +376,18 @@ err_mout_mpll:
 err_moutcore:
 	if (!IS_ERR(cpu_clk))
 		clk_put(cpu_clk);
+=======
+	clk_put(mout_mpll);
+err_mout_mpll:
+	clk_put(moutcore);
+err_moutcore:
+	clk_put(cpu_clk);
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s: failed initialization\n", __func__);
 	return -EINVAL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(exynos4210_cpufreq_init);
+=======
+>>>>>>> refs/remotes/origin/master

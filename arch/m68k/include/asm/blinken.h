@@ -18,15 +18,20 @@
 #define HP300_LEDS		0xf001ffff
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned char ledstate;
 =======
 extern unsigned char hp300_ledstate;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned char hp300_ledstate;
+>>>>>>> refs/remotes/origin/master
 
 static __inline__ void blinken_leds(int on, int off)
 {
 	if (MACH_IS_HP300)
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ledstate |= on;
 		ledstate &= ~off;
@@ -36,6 +41,11 @@ static __inline__ void blinken_leds(int on, int off)
 		hp300_ledstate &= ~off;
 		out_8(HP300_LEDS, ~hp300_ledstate);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hp300_ledstate |= on;
+		hp300_ledstate &= ~off;
+		out_8(HP300_LEDS, ~hp300_ledstate);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

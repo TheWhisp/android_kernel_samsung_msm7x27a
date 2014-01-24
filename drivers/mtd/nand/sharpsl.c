@@ -104,6 +104,7 @@ static int sharpsl_nand_calculate_ecc(struct mtd_info *mtd, const u_char * dat, 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL };
 
 =======
@@ -123,6 +124,18 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 	int err = 0;
 	struct sharpsl_nand *sharpsl;
 	struct sharpsl_nand_platform_data *data = pdev->dev.platform_data;
+=======
+/*
+ * Main initialization routine
+ */
+static int sharpsl_nand_probe(struct platform_device *pdev)
+{
+	struct nand_chip *this;
+	struct resource *r;
+	int err = 0;
+	struct sharpsl_nand *sharpsl;
+	struct sharpsl_nand_platform_data *data = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (!data) {
 		dev_err(&pdev->dev, "no platform data!\n");
@@ -178,9 +191,13 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 	this->ecc.size = 256;
 	this->ecc.bytes = 3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	this->ecc.strength = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	this->ecc.strength = 1;
+>>>>>>> refs/remotes/origin/master
 	this->badblock_pattern = data->badblock_pattern;
 	this->ecc.layout = data->ecc_layout;
 	this->ecc.hwctl = sharpsl_nand_enable_hwecc;
@@ -195,6 +212,7 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 	/* Register the partitions */
 	sharpsl->mtd.name = "sharpsl-nand";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nr_partitions = parse_mtd_partitions(&sharpsl->mtd, part_probes, &sharpsl_partition_info, 0);
 	if (nr_partitions <= 0) {
 		nr_partitions = data->nr_partitions;
@@ -208,6 +226,11 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
 	err = mtd_device_parse_register(&sharpsl->mtd, NULL, NULL,
 					data->partitions, data->nr_partitions);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	err = mtd_device_parse_register(&sharpsl->mtd, NULL, NULL,
+					data->partitions, data->nr_partitions);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto err_add;
 
@@ -218,7 +241,10 @@ err_add:
 	nand_release(&sharpsl->mtd);
 
 err_scan:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(sharpsl->io);
 err_ioremap:
 err_get_res:
@@ -229,15 +255,22 @@ err_get_res:
 /*
  * Clean up routine
  */
+<<<<<<< HEAD
 static int __devexit sharpsl_nand_remove(struct platform_device *pdev)
+=======
+static int sharpsl_nand_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sharpsl_nand *sharpsl = platform_get_drvdata(pdev);
 
 	/* Release resources, unregister device */
 	nand_release(&sharpsl->mtd);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(sharpsl->io);
 
 	/* Free the MTD device structure */
@@ -252,6 +285,7 @@ static struct platform_driver sharpsl_nand_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= sharpsl_nand_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sharpsl_nand_remove),
 };
 
@@ -270,6 +304,12 @@ module_exit(sharpsl_nand_exit);
 =======
 module_platform_driver(sharpsl_nand_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= sharpsl_nand_remove,
+};
+
+module_platform_driver(sharpsl_nand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Richard Purdie <rpurdie@rpsys.net>");

@@ -64,9 +64,12 @@ static inline void bictcp_reset(struct bictcp *ca)
 	ca->cnt = 0;
 	ca->last_max_cwnd = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ca->loss_cwnd = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ca->last_cwnd = 0;
 	ca->last_time = 0;
 	ca->epoch_start = 0;
@@ -76,14 +79,20 @@ static inline void bictcp_reset(struct bictcp *ca)
 static void bictcp_init(struct sock *sk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bictcp_reset(inet_csk_ca(sk));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bictcp *ca = inet_csk_ca(sk);
 
 	bictcp_reset(ca);
 	ca->loss_cwnd = 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (initial_ssthresh)
 		tcp_sk(sk)->snd_ssthresh = initial_ssthresh;
 }
@@ -139,10 +148,14 @@ static inline void bictcp_update(struct bictcp *ca, u32 cwnd)
 
 	/* if in slow start or link utilization is very low */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ca->loss_cwnd == 0) {
 =======
 	if (ca->last_max_cwnd == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ca->last_max_cwnd == 0) {
+>>>>>>> refs/remotes/origin/master
 		if (ca->cnt > 20) /* increase cwnd 5% per RTT */
 			ca->cnt = 20;
 	}
@@ -152,7 +165,12 @@ static inline void bictcp_update(struct bictcp *ca, u32 cwnd)
 		ca->cnt = 1;
 }
 
+<<<<<<< HEAD
 static void bictcp_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
+=======
+static void bictcp_cong_avoid(struct sock *sk, u32 ack, u32 acked,
+			      u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct bictcp *ca = inet_csk_ca(sk);
@@ -161,7 +179,11 @@ static void bictcp_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 		return;
 
 	if (tp->snd_cwnd <= tp->snd_ssthresh)
+<<<<<<< HEAD
 		tcp_slow_start(tp);
+=======
+		tcp_slow_start(tp, acked);
+>>>>>>> refs/remotes/origin/master
 	else {
 		bictcp_update(ca, tp->snd_cwnd);
 		tcp_cong_avoid_ai(tp, ca->cnt);
@@ -201,10 +223,14 @@ static u32 bictcp_undo_cwnd(struct sock *sk)
 	const struct tcp_sock *tp = tcp_sk(sk);
 	const struct bictcp *ca = inet_csk_ca(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return max(tp->snd_cwnd, ca->last_max_cwnd);
 =======
 	return max(tp->snd_cwnd, ca->loss_cwnd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return max(tp->snd_cwnd, ca->loss_cwnd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bictcp_state(struct sock *sk, u8 new_state)

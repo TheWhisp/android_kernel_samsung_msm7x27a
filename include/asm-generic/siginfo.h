@@ -1,6 +1,7 @@
 #ifndef _ASM_GENERIC_SIGINFO_H
 #define _ASM_GENERIC_SIGINFO_H
 
+<<<<<<< HEAD
 #include <linux/compiler.h>
 #include <linux/types.h>
 
@@ -138,6 +139,10 @@ typedef struct siginfo {
 #define si_fd		_sifields._sigpoll._fd
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm-generic/siginfo.h>
+
+>>>>>>> refs/remotes/origin/master
 #define __SI_MASK	0xffff0000u
 #define __SI_KILL	(0 << 16)
 #define __SI_TIMER	(1 << 16)
@@ -146,6 +151,7 @@ typedef struct siginfo {
 #define __SI_CHLD	(4 << 16)
 #define __SI_RT		(5 << 16)
 #define __SI_MESGQ	(6 << 16)
+<<<<<<< HEAD
 #define __SI_CODE(T,N)	((T) | ((N) & 0xffff))
 #else
 #define __SI_KILL	0
@@ -296,6 +302,10 @@ typedef struct sigevent {
 #define sigev_notify_thread_id	 _sigev_un._tid
 
 #ifdef __KERNEL__
+=======
+#define __SI_SYS	(7 << 16)
+#define __SI_CODE(T,N)	((T) | ((N) & 0xffff))
+>>>>>>> refs/remotes/origin/master
 
 struct siginfo;
 void do_schedule_next_timer(struct siginfo *info);
@@ -315,8 +325,12 @@ static inline void copy_siginfo(struct siginfo *to, struct siginfo *from)
 
 #endif
 
+<<<<<<< HEAD
 extern int copy_siginfo_to_user(struct siginfo __user *to, struct siginfo *from);
 
 #endif /* __KERNEL__ */
+=======
+extern int copy_siginfo_to_user(struct siginfo __user *to, const struct siginfo *from);
+>>>>>>> refs/remotes/origin/master
 
 #endif

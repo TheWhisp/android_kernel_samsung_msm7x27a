@@ -62,12 +62,15 @@ extern int dmm_create(struct dmm_object **dmm_manager,
 			     const struct dmm_mgrattrs *mgr_attrts);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern bool dmm_init(void);
 
 extern void dmm_exit(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int dmm_create_tables(struct dmm_object *dmm_mgr,
 				    u32 addr, u32 size);
 

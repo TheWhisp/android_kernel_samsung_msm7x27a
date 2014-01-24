@@ -89,12 +89,15 @@ $(obj)/$(offsets-file): arch/$(SRCARCH)/kernel/asm-offsets.s Kbuild
 #
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 quiet_cmd_syscalls = CALL    $<
       cmd_syscalls = $(CONFIG_SHELL) $< $(CC) $(c_flags)
 
 PHONY += missing-syscalls
 missing-syscalls: scripts/checksyscalls.sh FORCE
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 always += missing-syscalls
 targets += missing-syscalls
 
@@ -102,7 +105,10 @@ quiet_cmd_syscalls = CALL    $<
       cmd_syscalls = $(CONFIG_SHELL) $< $(CC) $(c_flags) $(missing_syscalls_flags)
 
 missing-syscalls: scripts/checksyscalls.sh $(offsets-file) FORCE
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	$(call cmd,syscalls)
 
 # Keep these two files during make clean

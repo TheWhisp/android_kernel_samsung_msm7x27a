@@ -20,11 +20,19 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/common.h>
 #include <mach/iomux-mx27.h>
 
 #include "devices-imx27.h"
+=======
+
+#include "common.h"
+#include "devices-imx27.h"
+#include "hardware.h"
+#include "iomux-mx27.h"
+>>>>>>> refs/remotes/origin/master
 
 static const int mx27lite_pins[] __initconst = {
 	/* UART1 */
@@ -60,10 +68,15 @@ static const struct imxuart_platform_data uart_pdata __initconst = {
 static void __init mx27lite_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	imx27_soc_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx27_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_gpio_setup_multiple_pins(mx27lite_pins, ARRAY_SIZE(mx27lite_pins),
 		"imx27lite");
 	imx27_add_imx_uart0(&uart_pdata);
@@ -75,6 +88,7 @@ static void __init mx27lite_timer_init(void)
 	mx27_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer mx27lite_timer = {
 	.init	= mx27lite_timer_init,
 };
@@ -88,13 +102,22 @@ MACHINE_START(IMX27LITE, "LogicPD i.MX27LITE")
 	.timer = &mx27lite_timer,
 	.init_machine = mx27lite_init,
 =======
+=======
+MACHINE_START(IMX27LITE, "LogicPD i.MX27LITE")
+>>>>>>> refs/remotes/origin/master
 	.atag_offset = 0x100,
 	.map_io = mx27_map_io,
 	.init_early = imx27_init_early,
 	.init_irq = mx27_init_irq,
 	.handle_irq = imx27_handle_irq,
+<<<<<<< HEAD
 	.timer = &mx27lite_timer,
 	.init_machine = mx27lite_init,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mx27lite_timer_init,
+	.init_machine = mx27lite_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

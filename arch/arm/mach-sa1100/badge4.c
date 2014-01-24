@@ -16,12 +16,21 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/sa11x0-serial.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/delay.h>
 #include <linux/tty.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+#include <linux/leds.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
@@ -32,13 +41,17 @@
 #include <asm/mach/flash.h>
 #include <asm/mach/map.h>
 #include <asm/hardware/sa1111.h>
+<<<<<<< HEAD
 #include <asm/mach/serial_sa1100.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/badge4.h>
 
 #include "generic.h"
 
 static struct resource sa1111_resources[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	[0] = {
 		.start		= BADGE4_SA1111_BASE,
@@ -55,6 +68,8 @@ static struct resource sa1111_resources[] = {
 static struct sa1111_platform_data sa1111_info = {
 	.irq_base	= IRQ_BOARD_END,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	[0] = DEFINE_RES_MEM(BADGE4_SA1111_BASE, 0x2000),
 	[1] = DEFINE_RES_IRQ(BADGE4_IRQ_GPIO_SA1111),
 };
@@ -76,7 +91,10 @@ static struct sa1111_platform_data sa1111_info = {
 	.disable_devs	= SA1111_DEVID_PS2_MSE,
 	.enable		= badge4_sa1111_enable,
 	.disable	= badge4_sa1111_disable,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static u64 sa1111_dmamask = 0xffffffffUL;
@@ -93,8 +111,41 @@ static struct platform_device sa1111_device = {
 	.resource	= sa1111_resources,
 };
 
+<<<<<<< HEAD
 static struct platform_device *devices[] __initdata = {
 	&sa1111_device,
+=======
+/* LEDs */
+struct gpio_led badge4_gpio_leds[] = {
+	{
+		.name			= "badge4:red",
+		.default_trigger	= "heartbeat",
+		.gpio			= 7,
+	},
+	{
+		.name			= "badge4:green",
+		.default_trigger	= "cpu0",
+		.gpio			= 9,
+	},
+};
+
+static struct gpio_led_platform_data badge4_gpio_led_info = {
+	.leds		= badge4_gpio_leds,
+	.num_leds	= ARRAY_SIZE(badge4_gpio_leds),
+};
+
+static struct platform_device badge4_leds = {
+	.name	= "leds-gpio",
+	.id	= -1,
+	.dev	= {
+		.platform_data	= &badge4_gpio_led_info,
+	}
+};
+
+static struct platform_device *devices[] __initdata = {
+	&sa1111_device,
+	&badge4_leds,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init badge4_sa1111_init(void)
@@ -146,6 +197,7 @@ static struct flash_platform_data badge4_flash_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct resource badge4_flash_resource = {
 	.start		= SA1100_CS0_PHYS,
 	.end		= SA1100_CS0_PHYS + SZ_64M - 1,
@@ -155,6 +207,10 @@ static struct resource badge4_flash_resource = {
 static struct resource badge4_flash_resource =
 	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_64M);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct resource badge4_flash_resource =
+	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_64M);
+>>>>>>> refs/remotes/origin/master
 
 static int five_v_on __initdata = 0;
 
@@ -299,6 +355,7 @@ static struct map_desc badge4_io_desc[] __initdata = {
 		.length		= 0x00100000,
 		.type		= MT_DEVICE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}, {	/* SA-1111      */
 		.virtual	= 0xf4000000,
 		.pfn		= __phys_to_pfn(0x48000000),
@@ -306,6 +363,8 @@ static struct map_desc badge4_io_desc[] __initdata = {
 		.type		= MT_DEVICE
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
@@ -335,19 +394,30 @@ static void __init badge4_map_io(void)
 
 MACHINE_START(BADGE4, "Hewlett-Packard Laboratories BadgePAD 4")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xc0000100,
 	.map_io		= badge4_map_io,
 	.init_irq	= sa1100_init_irq,
 	.timer		= &sa1100_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= badge4_map_io,
 	.nr_irqs	= SA1100_NR_IRQS,
 	.init_irq	= sa1100_init_irq,
+<<<<<<< HEAD
 	.timer		= &sa1100_timer,
+=======
+	.init_late	= sa11x0_init_late,
+	.init_time	= sa1100_timer_init,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SA1111
 	.dma_zone_size	= SZ_1M,
 #endif
 	.restart	= sa11x0_restart,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -39,12 +39,16 @@
 #define SUPPORT_CPRM
 #define SUPPORT_MAGIC_GATE
 #define SUPPORT_MSXC
+<<<<<<< HEAD
 /* #define LED_AUTO_BLINK */
 
 /* { wwang, 2010-07-26
  * Add support for SD lock/unlock */
 /* #define SUPPORT_SD_LOCK */
 /* } wwang, 2010-07-26 */
+=======
+#define USING_POLLING_CYCLE_DELINK
+>>>>>>> refs/remotes/origin/master
 
 #ifdef SUPPORT_MAGIC_GA
 /* Using NORMAL_WRITE instead of AUTO_WRITE to set ICVTE */
@@ -63,7 +67,10 @@
 #define SUPPORT_OCP
 
 #define MS_SPEEDUP
+<<<<<<< HEAD
 /* #define XD_SPEEDUP */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SD_XD_IO_FOLLOW_PWR
 
@@ -81,7 +88,10 @@
 
 #define MAX_ALLOWED_LUN_CNT	8
 #define CMD_BUF_LEN		1024
+<<<<<<< HEAD
 #define RSP_BUF_LEN		1024
+=======
+>>>>>>> refs/remotes/origin/master
 #define POLLING_INTERVAL	50	/* 50ms */
 
 #define XD_FREE_TABLE_CNT	1200
@@ -128,8 +138,11 @@
 #endif
 
 #define STATUS_FAIL		1
+<<<<<<< HEAD
 #define STATUS_READ_FAIL	2
 #define STATUS_WRITE_FAIL	3
+=======
+>>>>>>> refs/remotes/origin/master
 #define STATUS_TIMEDOUT		4
 #define STATUS_NOMEM		5
 #define STATUS_TRANS_SHORT	6
@@ -139,8 +152,11 @@
 
 #define IDLE_MAX_COUNT		10
 #define POLLING_WAIT_CNT	1
+<<<<<<< HEAD
 #define DELINK_DELAY		100
 #define LED_TOGGLE_INTERVAL	6
+=======
+>>>>>>> refs/remotes/origin/master
 #define LED_GPIO		0
 
 /* package */
@@ -157,8 +173,11 @@
 #define TRANSPORT_GOOD		0
 /* Transport good, command failed */
 #define TRANSPORT_FAILED	1
+<<<<<<< HEAD
 /* Command failed, no auto-sense */
 #define TRANSPORT_NO_SENSE	2
+=======
+>>>>>>> refs/remotes/origin/master
 /* Transport bad (i.e. device dead) */
 #define TRANSPORT_ERROR		3
 
@@ -195,7 +214,10 @@ struct trace_msg_t {
 #define	SENSE_TYPE_MEDIA_INVALID_CMD_FIELD		6
 #define	SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR		7
 #define	SENSE_TYPE_MEDIA_WRITE_ERR			8
+<<<<<<< HEAD
 #define SENSE_TYPE_FORMAT_IN_PROGRESS			9
+=======
+>>>>>>> refs/remotes/origin/master
 #define SENSE_TYPE_FORMAT_CMD_FAILED			10
 #ifdef SUPPORT_MAGIC_GATE
 /* COPY PROTECTION KEY EXCHANGE FAILURE - KEY NOT ESTABLISHED */
@@ -207,6 +229,7 @@ struct trace_msg_t {
 /* WRITE ERROR */
 #define SENSE_TYPE_MG_WRITE_ERR				0x0e
 #endif
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 /* FOR Locked SD card */
 #define SENSE_TYPE_MEDIA_READ_FORBIDDEN			0x10
@@ -230,10 +253,16 @@ struct trace_msg_t {
 #define EQUAL                   0x0c	/* Search Data end with Equal       */
 #define VLM_OVRFLW              0x0d	/* Some data are left in buffer     */
 #define MISCMP                  0x0e	/* find inequality                  */
+=======
+
+/*---- sense key ----*/
+#define ILGAL_REQ               0x05	/* CDB/parameter/identify msg error */
+>>>>>>> refs/remotes/origin/master
 
 /*-----------------------------------
     SENSE_DATA
 -----------------------------------*/
+<<<<<<< HEAD
 /*---- valid ----*/
 #define SENSE_VALID             0x80	/* Sense data is valid as SCSI2     */
 #define SENSE_INVALID           0x00	/* Sense data is invalid as SCSI2   */
@@ -284,6 +313,22 @@ struct trace_msg_t {
 #define ASCQ_READ_ERR           0x00
 #define ASCQ_LOAD_EJCT_ERR      0x00
 #define	ASCQ_WRITE_PROTECT	0x00
+=======
+
+/*---- error code ----*/
+#define CUR_ERR                 0x70	/* current error                    */
+
+/*---- sense key Information ----*/
+
+#define SKSV                    0x80
+#define CDB_ILLEGAL             0x40
+
+/*---- ASC ----*/
+#define ASC_INVLD_CDB           0x24
+
+/*---- ASQC ----*/
+#define ASCQ_INVLD_CDB          0x00
+>>>>>>> refs/remotes/origin/master
 
 struct sense_data_t {
 	unsigned char err_code;	/* error code */
@@ -296,6 +341,7 @@ struct sense_data_t {
 	unsigned char seg_no;	/* segment No.                      */
 	unsigned char sense_key;	/* byte5 : ILI                      */
 	/* bit3-0 : sense key              */
+<<<<<<< HEAD
 	unsigned char info[4];	/* infomation                       */
 	unsigned char ad_sense_len;	/* additional sense data length     */
 	unsigned char cmd_info[4];	/* command specific infomation      */
@@ -303,6 +349,15 @@ struct sense_data_t {
 	unsigned char ascq;	/* ASCQ                             */
 	unsigned char rfu;	/* FRU                              */
 	unsigned char sns_key_info[3];	/* sense key specific infomation    */
+=======
+	unsigned char info[4];	/* information                       */
+	unsigned char ad_sense_len;	/* additional sense data length     */
+	unsigned char cmd_info[4];	/* command specific information      */
+	unsigned char asc;	/* ASC                              */
+	unsigned char ascq;	/* ASCQ                             */
+	unsigned char rfu;	/* FRU                              */
+	unsigned char sns_key_info[3];	/* sense key specific information    */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* sd_ctl bit map */
@@ -323,9 +378,13 @@ struct sense_data_t {
 #define SUPPORT_UHS50_MMC44		0x40
 
 struct rts51x_option {
+<<<<<<< HEAD
 	u8 led_blink_speed;
 
 	int mspro_formatter_enable;
+=======
+	int rts51x_mspro_formatter_enable;
+>>>>>>> refs/remotes/origin/master
 
 	/* card clock expected by user for fpga platform */
 	int fpga_sd_sdr104_clk;
@@ -368,8 +427,11 @@ struct rts51x_option {
 	int ss_en;
 	/* Interval to enter SS from IDLE state (second) */
 	int ss_delay;
+<<<<<<< HEAD
 	int needs_remote_wakeup;
 	u8 ww_enable;	/* sangdy2010-08-03:add for remote wakeup */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable SSC clock */
 	int ssc_en;
@@ -382,7 +444,11 @@ struct rts51x_option {
 	 * add for config delay between 1/4 PMOS and 3/4 PMOS */
 	int pwr_delay;
 
+<<<<<<< HEAD
 	int xd_rw_step;		/* add to tune xd tRP */
+=======
+	int rts51x_xd_rw_step;		/* add to tune xd tRP */
+>>>>>>> refs/remotes/origin/master
 	int D3318_off_delay;	/* add to tune D3318 off delay time */
 	int delink_delay;	/* add to tune delink delay time */
 	/* add for rts5129 to enable/disable D3318 off */
@@ -392,12 +458,18 @@ struct rts51x_option {
 	/*if reset or rw fail,then set SD20 pad drive again */
 	u8 reset_or_rw_fail_set_pad_drive;
 
+<<<<<<< HEAD
 	u8 rcc_fail_flag;	/* add to indicate whether rcc bug happen */
 	u8 rcc_bug_fix_en;	/* if set,then support fixing rcc bug */
 	u8 debounce_num;	/* debounce number */
 	int polling_time;	/* polling delay time */
 	u8 led_toggle_interval;	/* used to control led toggle speed */
 	int xd_rwn_step;
+=======
+	u8 debounce_num;	/* debounce number */
+	u8 led_toggle_interval;	/* used to control led toggle speed */
+	int rts51x_xd_rwn_step;
+>>>>>>> refs/remotes/origin/master
 	u8 sd_send_status_en;
 	/* used to store default phase which is
 	 * used when phase tune all pass. */
@@ -405,7 +477,11 @@ struct rts51x_option {
 	u8 ddr50_rx_phase;
 	u8 sdr50_tx_phase;
 	u8 sdr50_rx_phase;
+<<<<<<< HEAD
 	/* used to enable select sdr50 tx phase according to  proportion. */
+=======
+	/* used to enable select sdr50 tx phase according to proportion. */
+>>>>>>> refs/remotes/origin/master
 	u8 sdr50_phase_sel;
 	u8 ms_errreg_fix;
 	u8 reset_mmc_first;
@@ -414,11 +490,19 @@ struct rts51x_option {
 	u8 dv18_voltage;	/* add to tune dv18 voltage */
 };
 
+<<<<<<< HEAD
 #define MS_FORMATTER_ENABLED(chip)	((chip)->option.mspro_formatter_enable)
 
 struct rts51x_chip;
 
 typedef int (*card_rw_func) (struct scsi_cmnd *srb, struct rts51x_chip *chip,
+=======
+#define MS_FORMATTER_ENABLED(chip)	((chip)->option.rts51x_mspro_formatter_enable)
+
+struct rts51x_chip;
+
+typedef int (*rts51x_card_rw_func) (struct scsi_cmnd *srb, struct rts51x_chip *chip,
+>>>>>>> refs/remotes/origin/master
 			     u32 sec_addr, u16 sec_cnt);
 
 /* For MS Card */
@@ -614,11 +698,14 @@ struct sd_info {
 	u8 sd_reset_fail;	/* sangdy2010-07-01 */
 	u8 sd_send_status_en;
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	u8 sd_lock_status;
 	u8 sd_erase_status;
 	u8 sd_lock_notify;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define MODE_512_SEQ		0x01
@@ -646,7 +733,11 @@ struct sd_info {
 #define CHK_MS8BIT(ms_card)	(((ms_card)->ms_type & MS_8BIT))
 #define CHK_MS4BIT(ms_card)	(((ms_card)->ms_type & MS_4BIT))
 
+<<<<<<< HEAD
 struct ms_delay_write_tag {
+=======
+struct rts51x_ms_delay_write_tag {
+>>>>>>> refs/remotes/origin/master
 	u16 old_phyblock;
 	u16 new_phyblock;
 	u16 logblock;
@@ -687,7 +778,11 @@ struct ms_info {
 	u32 total_sec_cnt;
 	u8 last_rw_int;
 
+<<<<<<< HEAD
 	struct ms_delay_write_tag delay_write;
+=======
+	struct rts51x_ms_delay_write_tag delay_write;
+>>>>>>> refs/remotes/origin/master
 
 	int counter;
 
@@ -720,9 +815,14 @@ struct rts51x_chip {
 	struct scsi_cmnd *srb;
 	struct sense_data_t sense_buffer[MAX_ALLOWED_LUN_CNT];
 
+<<<<<<< HEAD
 #ifndef LED_AUTO_BLINK
 	int led_toggle_counter;
 #endif
+=======
+	int led_toggle_counter;
+
+>>>>>>> refs/remotes/origin/master
 	int ss_counter;
 	int idle_counter;
 	int auto_delink_counter;
@@ -754,7 +854,11 @@ struct rts51x_chip {
 	u32 capacity[MAX_ALLOWED_LUN_CNT];
 
 	/* read/write card function pointer */
+<<<<<<< HEAD
 	card_rw_func rw_card[MAX_ALLOWED_LUN_CNT];
+=======
+	rts51x_card_rw_func rw_card[MAX_ALLOWED_LUN_CNT];
+>>>>>>> refs/remotes/origin/master
 	/* read/write capacity, used for GPIO Toggle */
 	u32 rw_cap[MAX_ALLOWED_LUN_CNT];
 	/* card to lun mapping table */

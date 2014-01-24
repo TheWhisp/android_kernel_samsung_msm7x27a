@@ -1,6 +1,11 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2006, 2007, 2008, 2009, 2010 QLogic Corporation.
  * All rights reserved.
+=======
+ * Copyright (c) 2012, 2013 Intel Corporation.  All rights reserved.
+ * Copyright (c) 2006 - 2012 QLogic Corporation.  * All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2005, 2006 PathScale, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -35,9 +40,16 @@
 #include <linux/err.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/jhash.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/jhash.h>
+#ifdef CONFIG_DEBUG_FS
+#include <linux/seq_file.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #include "qib.h"
 
@@ -209,7 +221,10 @@ static void free_qpn(struct qib_qpn_table *qpt, u32 qpn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned qpn_hash(struct qib_ibdev *dev, u32 qpn)
 {
 	return jhash_1word(qpn, dev->qp_rnd) &
@@ -217,7 +232,10 @@ static inline unsigned qpn_hash(struct qib_ibdev *dev, u32 qpn)
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Put the QP into the hash table.
  * The hash table holds a reference to the QP.
@@ -225,6 +243,7 @@ static inline unsigned qpn_hash(struct qib_ibdev *dev, u32 qpn)
 static void insert_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 {
 	struct qib_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned n = qp->ibqp.qp_num % dev->qp_table_size;
 	unsigned long flags;
@@ -248,6 +267,13 @@ static void insert_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 
 	spin_lock_irqsave(&dev->qpt_lock, flags);
 	atomic_inc(&qp->refcount);
+=======
+	unsigned long flags;
+	unsigned n = qpn_hash(dev, qp->ibqp.qp_num);
+
+	atomic_inc(&qp->refcount);
+	spin_lock_irqsave(&dev->qpt_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (qp->ibqp.qp_num == 0)
 		rcu_assign_pointer(ibp->qp0, qp);
@@ -259,8 +285,11 @@ static void insert_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 	}
 
 	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+<<<<<<< HEAD
 	synchronize_rcu();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -270,6 +299,7 @@ static void insert_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 static void remove_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 {
 	struct qib_ibport *ibp = to_iport(qp->ibqp.device, qp->port_num);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct qib_qp *q, **qpp;
 	unsigned long flags;
@@ -315,13 +345,48 @@ static void remove_qp(struct qib_ibdev *dev, struct qib_qp *qp)
 				atomic_dec(&qp->refcount);
 				rcu_assign_pointer(*qpp, qp->next);
 				qp->next = NULL;
+=======
+	unsigned n = qpn_hash(dev, qp->ibqp.qp_num);
+	unsigned long flags;
+	int removed = 1;
+
+	spin_lock_irqsave(&dev->qpt_lock, flags);
+
+	if (rcu_dereference_protected(ibp->qp0,
+			lockdep_is_held(&dev->qpt_lock)) == qp) {
+		rcu_assign_pointer(ibp->qp0, NULL);
+	} else if (rcu_dereference_protected(ibp->qp1,
+			lockdep_is_held(&dev->qpt_lock)) == qp) {
+		rcu_assign_pointer(ibp->qp1, NULL);
+	} else {
+		struct qib_qp *q;
+		struct qib_qp __rcu **qpp;
+
+		removed = 0;
+		qpp = &dev->qp_table[n];
+		for (; (q = rcu_dereference_protected(*qpp,
+				lockdep_is_held(&dev->qpt_lock))) != NULL;
+				qpp = &q->next)
+			if (q == qp) {
+				rcu_assign_pointer(*qpp,
+					rcu_dereference_protected(qp->next,
+					 lockdep_is_held(&dev->qpt_lock)));
+				removed = 1;
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 	}
 
 	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+<<<<<<< HEAD
 	synchronize_rcu();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (removed) {
+		synchronize_rcu();
+		atomic_dec(&qp->refcount);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -344,22 +409,29 @@ unsigned qib_free_all_qps(struct qib_devdata *dd)
 		if (!qib_mcast_tree_empty(ibp))
 			qp_inuse++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ibp->qp0)
 			qp_inuse++;
 		if (ibp->qp1)
 			qp_inuse++;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		rcu_read_lock();
 		if (rcu_dereference(ibp->qp0))
 			qp_inuse++;
 		if (rcu_dereference(ibp->qp1))
 			qp_inuse++;
 		rcu_read_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_irqsave(&dev->qpt_lock, flags);
 	for (n = 0; n < dev->qp_table_size; n++) {
+<<<<<<< HEAD
 		qp = dev->qp_table[n];
 <<<<<<< HEAD
 		dev->qp_table[n] = NULL;
@@ -375,6 +447,18 @@ unsigned qib_free_all_qps(struct qib_devdata *dd)
 =======
 	synchronize_rcu();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		qp = rcu_dereference_protected(dev->qp_table[n],
+			lockdep_is_held(&dev->qpt_lock));
+		rcu_assign_pointer(dev->qp_table[n], NULL);
+
+		for (; qp; qp = rcu_dereference_protected(qp->next,
+					lockdep_is_held(&dev->qpt_lock)))
+			qp_inuse++;
+	}
+	spin_unlock_irqrestore(&dev->qpt_lock, flags);
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/master
 
 	return qp_inuse;
 }
@@ -389,6 +473,7 @@ unsigned qib_free_all_qps(struct qib_devdata *dd)
  */
 struct qib_qp *qib_lookup_qpn(struct qib_ibport *ibp, u32 qpn)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct qib_ibdev *dev = &ppd_from_ibp(ibp)->dd->verbs_dev;
 	unsigned long flags;
@@ -414,14 +499,26 @@ struct qib_qp *qib_lookup_qpn(struct qib_ibport *ibp, u32 qpn)
 
 	if (unlikely(qpn <= 1)) {
 		rcu_read_lock();
+=======
+	struct qib_qp *qp = NULL;
+
+	rcu_read_lock();
+	if (unlikely(qpn <= 1)) {
+>>>>>>> refs/remotes/origin/master
 		if (qpn == 0)
 			qp = rcu_dereference(ibp->qp0);
 		else
 			qp = rcu_dereference(ibp->qp1);
+<<<<<<< HEAD
+=======
+		if (qp)
+			atomic_inc(&qp->refcount);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		struct qib_ibdev *dev = &ppd_from_ibp(ibp)->dd->verbs_dev;
 		unsigned n = qpn_hash(dev, qpn);
 
+<<<<<<< HEAD
 		rcu_read_lock();
 		for (qp = dev->qp_table[n]; rcu_dereference(qp); qp = qp->next)
 			if (qp->ibqp.qp_num == qpn)
@@ -433,6 +530,16 @@ struct qib_qp *qib_lookup_qpn(struct qib_ibport *ibp, u32 qpn)
 
 	rcu_read_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (qp = rcu_dereference(dev->qp_table[n]); qp;
+			qp = rcu_dereference(qp->next))
+			if (qp->ibqp.qp_num == qpn) {
+				atomic_inc(&qp->refcount);
+				break;
+			}
+	}
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 	return qp;
 }
 
@@ -493,6 +600,7 @@ static void clear_mr_refs(struct qib_qp *qp, int clr_sends)
 	unsigned n;
 
 	if (test_and_clear_bit(QIB_R_REWIND_SGE, &qp->r_aflags))
+<<<<<<< HEAD
 		while (qp->s_rdma_read_sge.num_sge) {
 			atomic_dec(&qp->s_rdma_read_sge.sge.mr->refcount);
 			if (--qp->s_rdma_read_sge.num_sge)
@@ -505,6 +613,11 @@ static void clear_mr_refs(struct qib_qp *qp, int clr_sends)
 		if (--qp->r_sge.num_sge)
 			qp->r_sge.sge = *qp->r_sge.sg_list++;
 	}
+=======
+		qib_put_ss(&qp->s_rdma_read_sge);
+
+	qib_put_ss(&qp->r_sge);
+>>>>>>> refs/remotes/origin/master
 
 	if (clr_sends) {
 		while (qp->s_last != qp->s_head) {
@@ -514,7 +627,11 @@ static void clear_mr_refs(struct qib_qp *qp, int clr_sends)
 			for (i = 0; i < wqe->wr.num_sge; i++) {
 				struct qib_sge *sge = &wqe->sg_list[i];
 
+<<<<<<< HEAD
 				atomic_dec(&sge->mr->refcount);
+=======
+				qib_put_mr(sge->mr);
+>>>>>>> refs/remotes/origin/master
 			}
 			if (qp->ibqp.qp_type == IB_QPT_UD ||
 			    qp->ibqp.qp_type == IB_QPT_SMI ||
@@ -524,7 +641,11 @@ static void clear_mr_refs(struct qib_qp *qp, int clr_sends)
 				qp->s_last = 0;
 		}
 		if (qp->s_rdma_mr) {
+<<<<<<< HEAD
 			atomic_dec(&qp->s_rdma_mr->refcount);
+=======
+			qib_put_mr(qp->s_rdma_mr);
+>>>>>>> refs/remotes/origin/master
 			qp->s_rdma_mr = NULL;
 		}
 	}
@@ -537,7 +658,11 @@ static void clear_mr_refs(struct qib_qp *qp, int clr_sends)
 
 		if (e->opcode == IB_OPCODE_RC_RDMA_READ_REQUEST &&
 		    e->rdma_sge.mr) {
+<<<<<<< HEAD
 			atomic_dec(&e->rdma_sge.mr->refcount);
+=======
+			qib_put_mr(e->rdma_sge.mr);
+>>>>>>> refs/remotes/origin/master
 			e->rdma_sge.mr = NULL;
 		}
 	}
@@ -582,7 +707,11 @@ int qib_error_qp(struct qib_qp *qp, enum ib_wc_status err)
 	if (!(qp->s_flags & QIB_S_BUSY)) {
 		qp->s_hdrwords = 0;
 		if (qp->s_rdma_mr) {
+<<<<<<< HEAD
 			atomic_dec(&qp->s_rdma_mr->refcount);
+=======
+			qib_put_mr(qp->s_rdma_mr);
+>>>>>>> refs/remotes/origin/master
 			qp->s_rdma_mr = NULL;
 		}
 		if (qp->s_tx) {
@@ -871,14 +1000,20 @@ int qib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (attr_mask & IB_QP_PATH_MTU)
 		qp->path_mtu = pmtu;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (attr_mask & IB_QP_PATH_MTU) {
 		qp->path_mtu = pmtu;
 		qp->pmtu = ib_mtu_enum_to_int(pmtu);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (attr_mask & IB_QP_RETRY_CNT) {
 		qp->s_retry_cnt = attr->retry_cnt;
@@ -894,16 +1029,22 @@ int qib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
 		qp->r_min_rnr_timer = attr->min_rnr_timer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (attr_mask & IB_QP_TIMEOUT)
 		qp->timeout = attr->timeout;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (attr_mask & IB_QP_TIMEOUT) {
 		qp->timeout = attr->timeout;
 		qp->timeout_jiffies =
 			usecs_to_jiffies((4096UL * (1UL << qp->timeout)) /
 				1000UL);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (attr_mask & IB_QP_QKEY)
 		qp->qkey = attr->qkey;
@@ -1135,12 +1276,24 @@ struct ib_qp *qib_create_qp(struct ib_pd *ibpd,
 			goto bail_swq;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		RCU_INIT_POINTER(qp->next, NULL);
 		qp->timeout_jiffies =
 			usecs_to_jiffies((4096UL * (1UL << qp->timeout)) /
 				1000UL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		RCU_INIT_POINTER(qp->next, NULL);
+		qp->s_hdr = kzalloc(sizeof(*qp->s_hdr), GFP_KERNEL);
+		if (!qp->s_hdr) {
+			ret = ERR_PTR(-ENOMEM);
+			goto bail_qp;
+		}
+		qp->timeout_jiffies =
+			usecs_to_jiffies((4096UL * (1UL << qp->timeout)) /
+				1000UL);
+>>>>>>> refs/remotes/origin/master
 		if (init_attr->srq)
 			sz = 0;
 		else {
@@ -1259,6 +1412,10 @@ bail_ip:
 		vfree(qp->r_rq.wq);
 	free_qpn(&dev->qpn_table, qp->ibqp.qp_num);
 bail_qp:
+<<<<<<< HEAD
+=======
+	kfree(qp->s_hdr);
+>>>>>>> refs/remotes/origin/master
 	kfree(qp);
 bail_swq:
 	vfree(swq);
@@ -1314,6 +1471,10 @@ int qib_destroy_qp(struct ib_qp *ibqp)
 	else
 		vfree(qp->r_rq.wq);
 	vfree(qp->s_wq);
+<<<<<<< HEAD
+=======
+	kfree(qp->s_hdr);
+>>>>>>> refs/remotes/origin/master
 	kfree(qp);
 	return 0;
 }
@@ -1379,3 +1540,97 @@ void qib_get_credit(struct qib_qp *qp, u32 aeth)
 		}
 	}
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_DEBUG_FS
+
+struct qib_qp_iter {
+	struct qib_ibdev *dev;
+	struct qib_qp *qp;
+	int n;
+};
+
+struct qib_qp_iter *qib_qp_iter_init(struct qib_ibdev *dev)
+{
+	struct qib_qp_iter *iter;
+
+	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
+	if (!iter)
+		return NULL;
+
+	iter->dev = dev;
+	if (qib_qp_iter_next(iter)) {
+		kfree(iter);
+		return NULL;
+	}
+
+	return iter;
+}
+
+int qib_qp_iter_next(struct qib_qp_iter *iter)
+{
+	struct qib_ibdev *dev = iter->dev;
+	int n = iter->n;
+	int ret = 1;
+	struct qib_qp *pqp = iter->qp;
+	struct qib_qp *qp;
+
+	rcu_read_lock();
+	for (; n < dev->qp_table_size; n++) {
+		if (pqp)
+			qp = rcu_dereference(pqp->next);
+		else
+			qp = rcu_dereference(dev->qp_table[n]);
+		pqp = qp;
+		if (qp) {
+			if (iter->qp)
+				atomic_dec(&iter->qp->refcount);
+			atomic_inc(&qp->refcount);
+			rcu_read_unlock();
+			iter->qp = qp;
+			iter->n = n;
+			return 0;
+		}
+	}
+	rcu_read_unlock();
+	if (iter->qp)
+		atomic_dec(&iter->qp->refcount);
+	return ret;
+}
+
+static const char * const qp_type_str[] = {
+	"SMI", "GSI", "RC", "UC", "UD",
+};
+
+void qib_qp_iter_print(struct seq_file *s, struct qib_qp_iter *iter)
+{
+	struct qib_swqe *wqe;
+	struct qib_qp *qp = iter->qp;
+
+	wqe = get_swqe_ptr(qp, qp->s_last);
+	seq_printf(s,
+		   "N %d QP%u %s %u %u %u f=%x %u %u %u %u %u PSN %x %x %x %x %x (%u %u %u %u %u %u) QP%u LID %x\n",
+		   iter->n,
+		   qp->ibqp.qp_num,
+		   qp_type_str[qp->ibqp.qp_type],
+		   qp->state,
+		   wqe->wr.opcode,
+		   qp->s_hdrwords,
+		   qp->s_flags,
+		   atomic_read(&qp->s_dma_busy),
+		   !list_empty(&qp->iowait),
+		   qp->timeout,
+		   wqe->ssn,
+		   qp->s_lsn,
+		   qp->s_last_psn,
+		   qp->s_psn, qp->s_next_psn,
+		   qp->s_sending_psn, qp->s_sending_hpsn,
+		   qp->s_last, qp->s_acked, qp->s_cur,
+		   qp->s_tail, qp->s_head, qp->s_size,
+		   qp->remote_qpn,
+		   qp->remote_ah_attr.dlid);
+}
+
+#endif
+>>>>>>> refs/remotes/origin/master

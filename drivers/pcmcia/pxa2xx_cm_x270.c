@@ -15,11 +15,15 @@
 #include <linux/delay.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/mach-types.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "soc_common.h"
 
@@ -27,6 +31,7 @@
 #define GPIO_PCMCIA_S0_RDYINT	(82)
 #define GPIO_PCMCIA_RESET	(53)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define PCMCIA_S0_CD_VALID	IRQ_GPIO(GPIO_PCMCIA_S0_CD_VALID)
 #define PCMCIA_S0_RDYINT	IRQ_GPIO(GPIO_PCMCIA_S0_RDYINT)
@@ -38,6 +43,8 @@ static struct pcmcia_irqs irqs[] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int cmx270_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	int ret = gpio_request(GPIO_PCMCIA_RESET, "PCCard reset");
@@ -46,16 +53,22 @@ static int cmx270_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	gpio_direction_output(GPIO_PCMCIA_RESET, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skt->socket.pci_irq = PCMCIA_S0_RDYINT;
 	ret = soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
 	if (!ret)
 		gpio_free(GPIO_PCMCIA_RESET);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	skt->stat[SOC_STAT_CD].gpio = GPIO_PCMCIA_S0_CD_VALID;
 	skt->stat[SOC_STAT_CD].name = "PCMCIA0 CD";
 	skt->stat[SOC_STAT_RDY].gpio = GPIO_PCMCIA_S0_RDYINT;
 	skt->stat[SOC_STAT_RDY].name = "PCMCIA0 RDY";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -63,9 +76,12 @@ static int cmx270_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 static void cmx270_pcmcia_shutdown(struct soc_pcmcia_socket *skt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	gpio_free(GPIO_PCMCIA_RESET);
 }
 
@@ -73,6 +89,7 @@ static void cmx270_pcmcia_shutdown(struct soc_pcmcia_socket *skt)
 static void cmx270_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 				       struct pcmcia_state *state)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	state->detect = (gpio_get_value(GPIO_PCMCIA_S0_CD_VALID) == 0) ? 1 : 0;
 	state->ready  = (gpio_get_value(GPIO_PCMCIA_S0_RDYINT) == 0) ? 0 : 1;
@@ -85,6 +102,10 @@ static void cmx270_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 	state->vs_3v  = 0;
 	state->vs_Xv  = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	state->vs_3v  = 0;
+	state->vs_Xv  = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -105,6 +126,7 @@ static int cmx270_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void cmx270_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 }
@@ -116,6 +138,8 @@ static void cmx270_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pcmcia_low_level cmx270_pcmcia_ops __initdata = {
 	.owner			= THIS_MODULE,
 	.hw_init		= cmx270_pcmcia_hw_init,
@@ -123,10 +147,13 @@ static struct pcmcia_low_level cmx270_pcmcia_ops __initdata = {
 	.socket_state		= cmx270_pcmcia_socket_state,
 	.configure_socket	= cmx270_pcmcia_configure_socket,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.socket_init		= cmx270_pcmcia_socket_init,
 	.socket_suspend		= cmx270_pcmcia_socket_suspend,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.nr			= 1,
 };
 

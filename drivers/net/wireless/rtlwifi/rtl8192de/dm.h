@@ -87,6 +87,7 @@
 #define TX_POWER_NEAR_FIELD_THRESH_LVL1		67
 #define INDEX_MAPPING_NUM			13
 
+<<<<<<< HEAD
 struct ps_t {
 	u8 pre_ccastate;
 	u8 cur_ccasate;
@@ -136,6 +137,8 @@ struct dig_t {
 	u32 recover_cnt;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct swat {
 	u8 failure_cnt;
 	u8 try_flag;
@@ -200,8 +203,11 @@ enum dm_dig_connect {
 	DIG_CONNECT_MAX
 };
 
+<<<<<<< HEAD
 extern struct dig_t de_digtable;
 
+=======
+>>>>>>> refs/remotes/origin/master
 void rtl92d_dm_init(struct ieee80211_hw *hw);
 void rtl92d_dm_watchdog(struct ieee80211_hw *hw);
 void rtl92d_dm_init_edca_turbo(struct ieee80211_hw *hw);

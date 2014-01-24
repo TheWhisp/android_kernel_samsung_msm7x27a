@@ -25,6 +25,7 @@
 #include "i82365.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int disable_clkrun;
 module_param(disable_clkrun, bool, 0444);
 MODULE_PARM_DESC(disable_clkrun, "If PC card doesn't function properly, please try this option");
@@ -35,6 +36,8 @@ MODULE_PARM_DESC(isa_probe, "If set ISA interrupts are probed (default). Set to 
 
 static int pwr_irqs_off;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool disable_clkrun;
 module_param(disable_clkrun, bool, 0444);
 MODULE_PARM_DESC(disable_clkrun, "If PC card doesn't function properly, please try this option");
@@ -44,7 +47,10 @@ module_param(isa_probe, bool, 0444);
 MODULE_PARM_DESC(isa_probe, "If set ISA interrupts are probed (default). Set to N to disable probing");
 
 static bool pwr_irqs_off;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(pwr_irqs_off, bool, 0644);
 MODULE_PARM_DESC(pwr_irqs_off, "Force IRQs off during power-on of slot. Use only when seeing IRQ storms!");
 
@@ -795,7 +801,11 @@ static void yenta_free_resources(struct yenta_socket *socket)
 /*
  * Close it down - release our resources and go home..
  */
+<<<<<<< HEAD
 static void __devexit yenta_close(struct pci_dev *dev)
+=======
+static void yenta_close(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct yenta_socket *sock = pci_get_drvdata(dev);
 
@@ -1060,8 +1070,13 @@ static void yenta_config_init(struct yenta_socket *socket)
 	config_writeb(socket, PCI_LATENCY_TIMER, 168);
 	config_writel(socket, PCI_PRIMARY_BUS,
 		(176 << 24) |			   /* sec. latency timer */
+<<<<<<< HEAD
 		(dev->subordinate->subordinate << 16) | /* subordinate bus */
 		(dev->subordinate->secondary << 8) |  /* secondary bus */
+=======
+		((unsigned int)dev->subordinate->busn_res.end << 16) | /* subordinate bus */
+		((unsigned int)dev->subordinate->busn_res.start << 8) |  /* secondary bus */
+>>>>>>> refs/remotes/origin/master
 		dev->subordinate->primary);		   /* primary bus */
 
 	/*
@@ -1098,14 +1113,22 @@ static void yenta_fixup_parent_bridge(struct pci_bus *cardbus_bridge)
 	struct pci_bus *bridge_to_fix = cardbus_bridge->parent;
 
 	/* Check bus numbers are already set up correctly: */
+<<<<<<< HEAD
 	if (bridge_to_fix->subordinate >= cardbus_bridge->subordinate)
+=======
+	if (bridge_to_fix->busn_res.end >= cardbus_bridge->busn_res.end)
+>>>>>>> refs/remotes/origin/master
 		return; /* The subordinate number is ok, nothing to do */
 
 	if (!bridge_to_fix->parent)
 		return; /* Root bridges are ok */
 
 	/* stay within the limits of the bus range of the parent: */
+<<<<<<< HEAD
 	upper_limit = bridge_to_fix->parent->subordinate;
+=======
+	upper_limit = bridge_to_fix->parent->busn_res.end;
+>>>>>>> refs/remotes/origin/master
 
 	/* check the bus ranges of all silbling bridges to prevent overlap */
 	list_for_each(tmp, &bridge_to_fix->parent->children) {
@@ -1116,6 +1139,7 @@ static void yenta_fixup_parent_bridge(struct pci_bus *cardbus_bridge)
 		 * current upper limit, set the new upper limit to
 		 * the bus number below the silbling's range:
 		 */
+<<<<<<< HEAD
 		if (silbling->secondary > bridge_to_fix->subordinate
 		    && silbling->secondary <= upper_limit)
 			upper_limit = silbling->secondary - 1;
@@ -1123,21 +1147,39 @@ static void yenta_fixup_parent_bridge(struct pci_bus *cardbus_bridge)
 
 	/* Show that the wanted subordinate number is not possible: */
 	if (cardbus_bridge->subordinate > upper_limit)
+=======
+		if (silbling->busn_res.start > bridge_to_fix->busn_res.end
+		    && silbling->busn_res.start <= upper_limit)
+			upper_limit = silbling->busn_res.start - 1;
+	}
+
+	/* Show that the wanted subordinate number is not possible: */
+	if (cardbus_bridge->busn_res.end > upper_limit)
+>>>>>>> refs/remotes/origin/master
 		dev_printk(KERN_WARNING, &cardbus_bridge->dev,
 			   "Upper limit for fixing this "
 			   "bridge's parent bridge: #%02x\n", upper_limit);
 
 	/* If we have room to increase the bridge's subordinate number, */
+<<<<<<< HEAD
 	if (bridge_to_fix->subordinate < upper_limit) {
 
 		/* use the highest number of the hidden bus, within limits */
 		unsigned char subordinate_to_assign =
 			min(cardbus_bridge->subordinate, upper_limit);
+=======
+	if (bridge_to_fix->busn_res.end < upper_limit) {
+
+		/* use the highest number of the hidden bus, within limits */
+		unsigned char subordinate_to_assign =
+			min_t(int, cardbus_bridge->busn_res.end, upper_limit);
+>>>>>>> refs/remotes/origin/master
 
 		dev_printk(KERN_INFO, &bridge_to_fix->dev,
 			   "Raising subordinate bus# of parent "
 			   "bus (#%02x) from #%02x to #%02x\n",
 			   bridge_to_fix->number,
+<<<<<<< HEAD
 			   bridge_to_fix->subordinate, subordinate_to_assign);
 
 		/* Save the new subordinate in the bus struct of the bridge */
@@ -1146,6 +1188,16 @@ static void yenta_fixup_parent_bridge(struct pci_bus *cardbus_bridge)
 		/* and update the PCI config space with the new subordinate */
 		pci_write_config_byte(bridge_to_fix->self,
 			PCI_SUBORDINATE_BUS, bridge_to_fix->subordinate);
+=======
+			   (int)bridge_to_fix->busn_res.end, subordinate_to_assign);
+
+		/* Save the new subordinate in the bus struct of the bridge */
+		bridge_to_fix->busn_res.end = subordinate_to_assign;
+
+		/* and update the PCI config space with the new subordinate */
+		pci_write_config_byte(bridge_to_fix->self,
+			PCI_SUBORDINATE_BUS, bridge_to_fix->busn_res.end);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1154,7 +1206,11 @@ static void yenta_fixup_parent_bridge(struct pci_bus *cardbus_bridge)
  * interrupt, and that we can map the cardbus area. Fill in the
  * socket information structure..
  */
+<<<<<<< HEAD
 static int __devinit yenta_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int yenta_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct yenta_socket *socket;
 	int ret;
@@ -1365,10 +1421,14 @@ static const struct dev_pm_ops yenta_pm_ops = {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_device_id yenta_table[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(yenta_table) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(yenta_table) = {
+>>>>>>> refs/remotes/origin/master
 	CB_ID(PCI_VENDOR_ID_TI, PCI_DEVICE_ID_TI_1031, TI),
 
 	/*
@@ -1451,6 +1511,7 @@ static struct pci_driver yenta_cardbus_driver = {
 	.name		= "yenta_cardbus",
 	.id_table	= yenta_table,
 	.probe		= yenta_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(yenta_close),
 	.driver.pm	= YENTA_PM_OPS,
 };
@@ -1470,5 +1531,12 @@ static void __exit yenta_socket_exit(void)
 
 module_init(yenta_socket_init);
 module_exit(yenta_socket_exit);
+=======
+	.remove		= yenta_close,
+	.driver.pm	= YENTA_PM_OPS,
+};
+
+module_pci_driver(yenta_cardbus_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");

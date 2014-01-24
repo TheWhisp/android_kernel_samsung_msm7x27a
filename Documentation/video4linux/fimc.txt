@@ -1,6 +1,10 @@
 Samsung S5P/EXYNOS4 FIMC driver
 
+<<<<<<< HEAD
 Copyright (C) 2012 Samsung Electronics Co., Ltd.
+=======
+Copyright (C) 2012 - 2013 Samsung Electronics Co., Ltd.
+>>>>>>> refs/remotes/origin/master
 ---------------------------------------------------------------------------
 
 The FIMC (Fully Interactive Mobile Camera) device available in Samsung
@@ -10,7 +14,11 @@ data from LCD controller (FIMD) through the SoC internal writeback data
 path.  There are multiple FIMC instances in the SoCs (up to 4), having
 slightly different capabilities, like pixel alignment constraints, rotator
 availability, LCD writeback support, etc. The driver is located at
+<<<<<<< HEAD
 drivers/media/video/s5p-fimc directory.
+=======
+drivers/media/platform/exynos4-is directory.
+>>>>>>> refs/remotes/origin/master
 
 1. Supported SoCs
 =================
@@ -36,6 +44,7 @@ Not currently supported:
 =====================
 
 - media device driver
+<<<<<<< HEAD
   drivers/media/video/s5p-fimc/fimc-mdevice.[ch]
 
  - camera capture video device driver
@@ -51,6 +60,23 @@ Not currently supported:
   drivers/media/video/s5p-fimc/fimc-core.h
   drivers/media/video/s5p-fimc/fimc-reg.h
   drivers/media/video/s5p-fimc/regs-fimc.h
+=======
+  drivers/media/platform/exynos4-is/media-dev.[ch]
+
+ - camera capture video device driver
+  drivers/media/platform/exynos4-is/fimc-capture.c
+
+ - MIPI-CSI2 receiver subdev
+  drivers/media/platform/exynos4-is/mipi-csis.[ch]
+
+ - video post-processor (mem-to-mem)
+  drivers/media/platform/exynos4-is/fimc-core.c
+
+ - common files
+  drivers/media/platform/exynos4-is/fimc-core.h
+  drivers/media/platform/exynos4-is/fimc-reg.h
+  drivers/media/platform/exynos4-is/regs-fimc.h
+>>>>>>> refs/remotes/origin/master
 
 4. User space interfaces
 ========================
@@ -58,7 +84,11 @@ Not currently supported:
 4.1. Media device interface
 
 The driver supports Media Controller API as defined at
+<<<<<<< HEAD
 http://http://linuxtv.org/downloads/v4l-dvb-apis/media_common.html
+=======
+http://linuxtv.org/downloads/v4l-dvb-apis/media_common.html
+>>>>>>> refs/remotes/origin/master
 The media device driver name is "SAMSUNG S5P FIMC".
 
 The purpose of this interface is to allow changing assignment of FIMC instances
@@ -143,7 +173,12 @@ or retrieve the information from /dev/media? with help of the media-ctl tool:
 6. Platform support
 ===================
 
+<<<<<<< HEAD
 The machine code (plat-s5p and arch/arm/mach-*) must select following options
+=======
+The machine code (arch/arm/plat-samsung and arch/arm/mach-*) must select
+following options:
+>>>>>>> refs/remotes/origin/master
 
 CONFIG_S5P_DEV_FIMC0       mandatory
 CONFIG_S5P_DEV_FIMC1  \

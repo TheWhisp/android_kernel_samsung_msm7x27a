@@ -7,12 +7,20 @@
 
 typedef struct TransportAddress_ipAddress {	/* SEQUENCE */
 	int options;		/* No use */
+<<<<<<< HEAD
 	unsigned ip;
+=======
+	unsigned int ip;
+>>>>>>> refs/remotes/origin/master
 } TransportAddress_ipAddress;
 
 typedef struct TransportAddress_ip6Address {	/* SEQUENCE */
 	int options;		/* No use */
+<<<<<<< HEAD
 	unsigned ip;
+=======
+	unsigned int ip;
+>>>>>>> refs/remotes/origin/master
 } TransportAddress_ip6Address;
 
 typedef struct TransportAddress {	/* CHOICE */
@@ -96,12 +104,20 @@ typedef struct DataType {	/* CHOICE */
 
 typedef struct UnicastAddress_iPAddress {	/* SEQUENCE */
 	int options;		/* No use */
+<<<<<<< HEAD
 	unsigned network;
+=======
+	unsigned int network;
+>>>>>>> refs/remotes/origin/master
 } UnicastAddress_iPAddress;
 
 typedef struct UnicastAddress_iP6Address {	/* SEQUENCE */
 	int options;		/* No use */
+<<<<<<< HEAD
 	unsigned network;
+=======
+	unsigned int network;
+>>>>>>> refs/remotes/origin/master
 } UnicastAddress_iP6Address;
 
 typedef struct UnicastAddress {	/* CHOICE */
@@ -698,7 +714,11 @@ typedef struct RegistrationRequest {	/* SEQUENCE */
 	} options;
 	RegistrationRequest_callSignalAddress callSignalAddress;
 	RegistrationRequest_rasAddress rasAddress;
+<<<<<<< HEAD
 	unsigned timeToLive;
+=======
+	unsigned int timeToLive;
+>>>>>>> refs/remotes/origin/master
 } RegistrationRequest;
 
 typedef struct RegistrationConfirm_callSignalAddress {	/* SEQUENCE OF */
@@ -730,7 +750,11 @@ typedef struct RegistrationConfirm {	/* SEQUENCE */
 		eRegistrationConfirm_genericData = (1 << 12),
 	} options;
 	RegistrationConfirm_callSignalAddress callSignalAddress;
+<<<<<<< HEAD
 	unsigned timeToLive;
+=======
+	unsigned int timeToLive;
+>>>>>>> refs/remotes/origin/master
 } RegistrationConfirm;
 
 typedef struct UnregistrationRequest_callSignalAddress {	/* SEQUENCE OF */

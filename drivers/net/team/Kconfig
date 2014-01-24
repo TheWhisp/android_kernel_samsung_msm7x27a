@@ -1,6 +1,10 @@
 menuconfig NET_TEAM
+<<<<<<< HEAD
 	tristate "Ethernet team driver support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	tristate "Ethernet team driver support"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This allows one to create virtual interfaces that teams together
 	  multiple ethernet devices.
@@ -15,6 +19,20 @@ menuconfig NET_TEAM
 
 if NET_TEAM
 
+<<<<<<< HEAD
+=======
+config NET_TEAM_MODE_BROADCAST
+	tristate "Broadcast mode support"
+	depends on NET_TEAM
+	---help---
+	  Basic mode where packets are transmitted always by all suitable ports.
+
+	  All added ports are setup to have team's device address.
+
+	  To compile this team mode as a module, choose M here: the module
+	  will be called team_mode_broadcast.
+
+>>>>>>> refs/remotes/origin/master
 config NET_TEAM_MODE_ROUNDROBIN
 	tristate "Round-robin mode support"
 	depends on NET_TEAM
@@ -22,11 +40,30 @@ config NET_TEAM_MODE_ROUNDROBIN
 	  Basic mode where port used for transmitting packets is selected in
 	  round-robin fashion using packet counter.
 
+<<<<<<< HEAD
 	  All added ports are setup to have bond's mac address.
+=======
+	  All added ports are setup to have team's device address.
+>>>>>>> refs/remotes/origin/master
 
 	  To compile this team mode as a module, choose M here: the module
 	  will be called team_mode_roundrobin.
 
+<<<<<<< HEAD
+=======
+config NET_TEAM_MODE_RANDOM
+	tristate "Random mode support"
+	depends on NET_TEAM
+	---help---
+	  Basic mode where port used for transmitting packets is selected
+	  randomly.
+
+	  All added ports are setup to have team's device address.
+
+	  To compile this team mode as a module, choose M here: the module
+	  will be called team_mode_random.
+
+>>>>>>> refs/remotes/origin/master
 config NET_TEAM_MODE_ACTIVEBACKUP
 	tristate "Active-backup mode support"
 	depends on NET_TEAM
@@ -40,4 +77,18 @@ config NET_TEAM_MODE_ACTIVEBACKUP
 	  To compile this team mode as a module, choose M here: the module
 	  will be called team_mode_activebackup.
 
+<<<<<<< HEAD
+=======
+config NET_TEAM_MODE_LOADBALANCE
+	tristate "Load-balance mode support"
+	depends on NET_TEAM
+	---help---
+	  This mode provides load balancing functionality. Tx port selection
+	  is done using BPF function set up from userspace (bpf_hash_func
+	  option)
+
+	  To compile this team mode as a module, choose M here: the module
+	  will be called team_mode_loadbalance.
+
+>>>>>>> refs/remotes/origin/master
 endif # NET_TEAM

@@ -67,10 +67,15 @@
  * int num_possible_nodes()		Number of all possible Nodes
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * int node_random(mask)		Random node with set bit in mask
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * int node_random(mask)		Random node with set bit in mask
+ *
+>>>>>>> refs/remotes/origin/master
  * int node_online(node)		Is some node online?
  * int node_possible(node)		Is some node possible?
  *
@@ -101,8 +106,22 @@
 typedef struct { DECLARE_BITMAP(bits, MAX_NUMNODES); } nodemask_t;
 extern nodemask_t _unused_nodemask_arg_;
 
+<<<<<<< HEAD
 #define node_set(node, dst) __node_set((node), &(dst))
 static inline void __node_set(int node, volatile nodemask_t *dstp)
+=======
+/*
+ * The inline keyword gives the compiler room to decide to inline, or
+ * not inline a function as it sees best.  However, as these functions
+ * are called in both __init and non-__init functions, if they are not
+ * inlined we will end up with a section mis-match error (of the type of
+ * freeable items not being freed).  So we must use __always_inline here
+ * to fix the problem.  If other functions in the future also end up in
+ * this situation they will also need to be annotated as __always_inline
+ */
+#define node_set(node, dst) __node_set((node), &(dst))
+static __always_inline void __node_set(int node, volatile nodemask_t *dstp)
+>>>>>>> refs/remotes/origin/master
 {
 	set_bit(node, dstp->bits);
 }
@@ -383,6 +402,14 @@ enum node_states {
 #else
 	N_HIGH_MEMORY = N_NORMAL_MEMORY,
 #endif
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MOVABLE_NODE
+	N_MEMORY,		/* The node has memory(regular, high, movable) */
+#else
+	N_MEMORY = N_HIGH_MEMORY,
+#endif
+>>>>>>> refs/remotes/origin/master
 	N_CPU,		/* The node has one or more cpus */
 	NR_NODE_STATES
 };
@@ -436,9 +463,13 @@ static inline void node_set_offline(int nid)
 	nr_online_nodes = num_node_state(N_ONLINE);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #else
 
 static inline int node_state(int node, enum node_states state)
@@ -470,7 +501,10 @@ static inline int num_node_state(enum node_states state)
 #define node_set_online(node)	   node_set_state((node), N_ONLINE)
 #define node_set_offline(node)	   node_clear_state((node), N_ONLINE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif
 
@@ -481,7 +515,10 @@ static inline int node_random(const nodemask_t *mask)
 {
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define node_online_map 	node_states[N_ONLINE]

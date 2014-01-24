@@ -12,23 +12,32 @@
  *   more details.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Do not include directly; use <asm/atomic.h>.
 =======
  * Do not include directly; use <linux/atomic.h>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Do not include directly; use <linux/atomic.h>.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _ASM_TILE_ATOMIC_32_H
 #define _ASM_TILE_ATOMIC_32_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/barrier.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/barrier.h>
+>>>>>>> refs/remotes/origin/master
 #include <arch/chip.h>
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Tile-specific routines to support <asm/atomic.h>. */
 =======
@@ -67,6 +76,8 @@ static inline int atomic_cmpxchg(atomic_t *v, int o, int n)
 	return _atomic_cmpxchg(v, o, n);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * atomic_add - add integer to atomic variable
  * @i: integer value to add
@@ -76,7 +87,11 @@ static inline int atomic_cmpxchg(atomic_t *v, int o, int n)
  */
 static inline void atomic_add(int i, atomic_t *v)
 {
+<<<<<<< HEAD
 	_atomic_xchg_add(v, i);
+=======
+	_atomic_xchg_add(&v->counter, i);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -89,6 +104,7 @@ static inline void atomic_add(int i, atomic_t *v)
 static inline int atomic_add_return(int i, atomic_t *v)
 {
 	smp_mb();  /* barrier for proper semantics */
+<<<<<<< HEAD
 	return _atomic_xchg_add(v, i) + i;
 }
 
@@ -98,11 +114,19 @@ static inline int atomic_add_return(int i, atomic_t *v)
 =======
  * __atomic_add_unless - add unless the number is already a given value
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return _atomic_xchg_add(&v->counter, i) + i;
+}
+
+/**
+ * __atomic_add_unless - add unless the number is already a given value
+>>>>>>> refs/remotes/origin/master
  * @v: pointer of type atomic_t
  * @a: the amount to add to v...
  * @u: ...unless v is equal to u.
  *
  * Atomically adds @a to @v, so long as @v was not already @u.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
@@ -111,13 +135,19 @@ static inline int atomic_add_unless(atomic_t *v, int a, int u)
 	smp_mb();  /* barrier for proper semantics */
 	return _atomic_xchg_add_unless(v, a, u) != u;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Returns the old value of @v.
  */
 static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 {
 	smp_mb();  /* barrier for proper semantics */
+<<<<<<< HEAD
 	return _atomic_xchg_add_unless(v, a, u);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return _atomic_xchg_add_unless(&v->counter, a, u);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -132,35 +162,51 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
  */
 static inline void atomic_set(atomic_t *v, int n)
 {
+<<<<<<< HEAD
 	_atomic_xchg(v, n);
+=======
+	_atomic_xchg(&v->counter, n);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* A 64bit atomic type */
 
 typedef struct {
+<<<<<<< HEAD
 	u64 __aligned(8) counter;
+=======
+	long long counter;
+>>>>>>> refs/remotes/origin/master
 } atomic64_t;
 
 #define ATOMIC64_INIT(val) { (val) }
 
+<<<<<<< HEAD
 u64 _atomic64_xchg(atomic64_t *v, u64 n);
 u64 _atomic64_xchg_add(atomic64_t *v, u64 i);
 u64 _atomic64_xchg_add_unless(atomic64_t *v, u64 a, u64 u);
 u64 _atomic64_cmpxchg(atomic64_t *v, u64 o, u64 n);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * atomic64_read - read atomic variable
  * @v: pointer of type atomic64_t
  *
  * Atomically reads the value of @v.
  */
+<<<<<<< HEAD
 static inline u64 atomic64_read(const atomic64_t *v)
+=======
+static inline long long atomic64_read(const atomic64_t *v)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Requires an atomic op to read both 32-bit parts consistently.
 	 * Casting away const is safe since the atomic support routines
 	 * do not write to memory if the value has not been modified.
 	 */
+<<<<<<< HEAD
 	return _atomic64_xchg_add((atomic64_t *)v, 0);
 }
 
@@ -190,6 +236,9 @@ static inline u64 atomic64_cmpxchg(atomic64_t *v, u64 o, u64 n)
 {
 	smp_mb();  /* barrier for proper semantics */
 	return _atomic64_cmpxchg(v, o, n);
+=======
+	return _atomic64_xchg_add((long long *)&v->counter, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -199,9 +248,15 @@ static inline u64 atomic64_cmpxchg(atomic64_t *v, u64 o, u64 n)
  *
  * Atomically adds @i to @v.
  */
+<<<<<<< HEAD
 static inline void atomic64_add(u64 i, atomic64_t *v)
 {
 	_atomic64_xchg_add(v, i);
+=======
+static inline void atomic64_add(long long i, atomic64_t *v)
+{
+	_atomic64_xchg_add(&v->counter, i);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -211,10 +266,17 @@ static inline void atomic64_add(u64 i, atomic64_t *v)
  *
  * Atomically adds @i to @v and returns @i + @v
  */
+<<<<<<< HEAD
 static inline u64 atomic64_add_return(u64 i, atomic64_t *v)
 {
 	smp_mb();  /* barrier for proper semantics */
 	return _atomic64_xchg_add(v, i) + i;
+=======
+static inline long long atomic64_add_return(long long i, atomic64_t *v)
+{
+	smp_mb();  /* barrier for proper semantics */
+	return _atomic64_xchg_add(&v->counter, i) + i;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -226,10 +288,18 @@ static inline u64 atomic64_add_return(u64 i, atomic64_t *v)
  * Atomically adds @a to @v, so long as @v was not already @u.
  * Returns non-zero if @v was not @u, and zero otherwise.
  */
+<<<<<<< HEAD
 static inline u64 atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
 {
 	smp_mb();  /* barrier for proper semantics */
 	return _atomic64_xchg_add_unless(v, a, u) != u;
+=======
+static inline long long atomic64_add_unless(atomic64_t *v, long long a,
+					long long u)
+{
+	smp_mb();  /* barrier for proper semantics */
+	return _atomic64_xchg_add_unless(&v->counter, a, u) != u;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -242,9 +312,15 @@ static inline u64 atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
  * atomic64_set() can't be just a raw store, since it would be lost if it
  * fell between the load and store of one of the other atomic ops.
  */
+<<<<<<< HEAD
 static inline void atomic64_set(atomic64_t *v, u64 n)
 {
 	_atomic64_xchg(v, n);
+=======
+static inline void atomic64_set(atomic64_t *v, long long n)
+{
+	_atomic64_xchg(&v->counter, n);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define atomic64_add_negative(a, v)	(atomic64_add_return((a), (v)) < 0)
@@ -276,6 +352,7 @@ static inline void atomic64_set(atomic64_t *v, u64 n)
  * Internal definitions only beyond this point.
  */
 
+<<<<<<< HEAD
 #define ATOMIC_LOCKS_FOUND_VIA_TABLE() \
   (!CHIP_HAS_CBOX_HOME_MAP() && defined(CONFIG_SMP))
 
@@ -291,6 +368,8 @@ static inline void atomic64_set(atomic64_t *v, u64 n)
 
 #else /* ATOMIC_LOCKS_FOUND_VIA_TABLE() */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Number of atomic locks in atomic_locks[]. Must be a power of two.
  * There is no reason for more than PAGE_SIZE / 8 entries, since that
@@ -305,8 +384,11 @@ static inline void atomic64_set(atomic64_t *v, u64 n)
 extern int atomic_locks[];
 #endif
 
+<<<<<<< HEAD
 #endif /* ATOMIC_LOCKS_FOUND_VIA_TABLE() */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * All the code that may fault while holding an atomic lock must
  * place the pointer to the lock in ATOMIC_LOCK_REG so the fault code
@@ -327,7 +409,18 @@ void __init_atomic_per_cpu(void);
 void __atomic_fault_unlock(int *lock_ptr);
 #endif
 
+<<<<<<< HEAD
 /* Private helper routines in lib/atomic_asm_32.S */
+=======
+/* Return a pointer to the lock for the given address. */
+int *__atomic_hashed_lock(volatile void *v);
+
+/* Private helper routines in lib/atomic_asm_32.S */
+struct __get_user {
+	unsigned long val;
+	int err;
+};
+>>>>>>> refs/remotes/origin/master
 extern struct __get_user __atomic_cmpxchg(volatile int *p,
 					  int *lock, int o, int n);
 extern struct __get_user __atomic_xchg(volatile int *p, int *lock, int n);
@@ -337,11 +430,24 @@ extern struct __get_user __atomic_xchg_add_unless(volatile int *p,
 extern struct __get_user __atomic_or(volatile int *p, int *lock, int n);
 extern struct __get_user __atomic_andn(volatile int *p, int *lock, int n);
 extern struct __get_user __atomic_xor(volatile int *p, int *lock, int n);
+<<<<<<< HEAD
 extern u64 __atomic64_cmpxchg(volatile u64 *p, int *lock, u64 o, u64 n);
 extern u64 __atomic64_xchg(volatile u64 *p, int *lock, u64 n);
 extern u64 __atomic64_xchg_add(volatile u64 *p, int *lock, u64 n);
 extern u64 __atomic64_xchg_add_unless(volatile u64 *p,
 				      int *lock, u64 o, u64 n);
+=======
+extern long long __atomic64_cmpxchg(volatile long long *p, int *lock,
+					long long o, long long n);
+extern long long __atomic64_xchg(volatile long long *p, int *lock, long long n);
+extern long long __atomic64_xchg_add(volatile long long *p, int *lock,
+					long long n);
+extern long long __atomic64_xchg_add_unless(volatile long long *p,
+					int *lock, long long o, long long n);
+
+/* Return failure from the atomic wrappers. */
+struct __get_user __atomic_bad_address(int __user *addr);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !__ASSEMBLY__ */
 

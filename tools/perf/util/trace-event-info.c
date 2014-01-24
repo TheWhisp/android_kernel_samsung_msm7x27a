@@ -19,10 +19,14 @@
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define _GNU_SOURCE
 =======
 #include "util.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "util.h"
+>>>>>>> refs/remotes/origin/master
 #include <dirent.h>
 #include <mntent.h>
 #include <stdio.h>
@@ -36,9 +40,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <ctype.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <errno.h>
 #include <stdbool.h>
 #include <linux/list.h>
@@ -46,11 +53,16 @@
 
 #include "../perf.h"
 #include "trace-event.h"
+<<<<<<< HEAD
 #include "debugfs.h"
+=======
+#include <api/fs/debugfs.h>
+>>>>>>> refs/remotes/origin/master
 #include "evsel.h"
 
 #define VERSION "0.5"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define _STR(x) #x
 #define STR(x) _STR(x)
@@ -186,6 +198,10 @@ static ssize_t write_or_die(const void *buf, size_t len)
 
 	return ret;
 }
+=======
+static int output_fd;
+
+>>>>>>> refs/remotes/origin/master
 
 int bigendian(void)
 {
@@ -196,6 +212,7 @@ int bigendian(void)
 	return *ptr == 0x01020304;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned long long copy_file_fd(int fd)
 {
@@ -221,11 +238,16 @@ static unsigned long long copy_file(const char *file)
 =======
 /* unfortunately, you can not stat debugfs or proc files for size */
 static void record_file(const char *file, size_t hdr_sz)
+=======
+/* unfortunately, you can not stat debugfs or proc files for size */
+static int record_file(const char *file, ssize_t hdr_sz)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long long size = 0;
 	char buf[BUFSIZ], *sizep;
 	off_t hdr_pos = lseek(output_fd, 0, SEEK_CUR);
 	int r, fd;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	fd = open(file, O_RDONLY);
@@ -272,21 +294,44 @@ static unsigned long get_size(const char *file)
 	/* put in zeros for file size, then fill true size later */
 	if (hdr_sz)
 		write_or_die(&size, hdr_sz);
+=======
+	int err = -EIO;
+
+	fd = open(file, O_RDONLY);
+	if (fd < 0) {
+		pr_debug("Can't read '%s'", file);
+		return -errno;
+	}
+
+	/* put in zeros for file size, then fill true size later */
+	if (hdr_sz) {
+		if (write(output_fd, &size, hdr_sz) != hdr_sz)
+			goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		r = read(fd, buf, BUFSIZ);
 		if (r > 0) {
 			size += r;
+<<<<<<< HEAD
 			write_or_die(buf, r);
 		}
 	} while (r > 0);
 	close(fd);
+=======
+			if (write(output_fd, buf, r) != r)
+				goto out;
+		}
+	} while (r > 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* ugh, handle big-endian hdr_size == 4 */
 	sizep = (char*)&size;
 	if (bigendian())
 		sizep += sizeof(u64) - hdr_sz;
 
+<<<<<<< HEAD
 	if (hdr_sz && pwrite(output_fd, sizep, hdr_sz, hdr_pos) < 0)
 		die("writing to %s", output_file);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -351,6 +396,74 @@ static void read_header_files(void)
 	record_file(path, 8);
 	put_tracing_file(path);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (hdr_sz && pwrite(output_fd, sizep, hdr_sz, hdr_pos) < 0) {
+		pr_debug("writing file size failed\n");
+		goto out;
+	}
+
+	err = 0;
+out:
+	close(fd);
+	return err;
+}
+
+static int record_header_files(void)
+{
+	char *path;
+	struct stat st;
+	int err = -EIO;
+
+	path = get_tracing_file("events/header_page");
+	if (!path) {
+		pr_debug("can't get tracing/events/header_page");
+		return -ENOMEM;
+	}
+
+	if (stat(path, &st) < 0) {
+		pr_debug("can't read '%s'", path);
+		goto out;
+	}
+
+	if (write(output_fd, "header_page", 12) != 12) {
+		pr_debug("can't write header_page\n");
+		goto out;
+	}
+
+	if (record_file(path, 8) < 0) {
+		pr_debug("can't record header_page file\n");
+		goto out;
+	}
+
+	put_tracing_file(path);
+
+	path = get_tracing_file("events/header_event");
+	if (!path) {
+		pr_debug("can't get tracing/events/header_event");
+		err = -ENOMEM;
+		goto out;
+	}
+
+	if (stat(path, &st) < 0) {
+		pr_debug("can't read '%s'", path);
+		goto out;
+	}
+
+	if (write(output_fd, "header_event", 13) != 13) {
+		pr_debug("can't write header_event\n");
+		goto out;
+	}
+
+	if (record_file(path, 8) < 0) {
+		pr_debug("can't record header_event file\n");
+		goto out;
+	}
+
+	err = 0;
+out:
+	put_tracing_file(path);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool name_in_tp_list(char *sys, struct tracepoint_path *tps)
@@ -364,22 +477,37 @@ static bool name_in_tp_list(char *sys, struct tracepoint_path *tps)
 	return false;
 }
 
+<<<<<<< HEAD
 static void copy_event_system(const char *sys, struct tracepoint_path *tps)
 {
 <<<<<<< HEAD
 	unsigned long long size, check_size;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int copy_event_system(const char *sys, struct tracepoint_path *tps)
+{
+>>>>>>> refs/remotes/origin/master
 	struct dirent *dent;
 	struct stat st;
 	char *format;
 	DIR *dir;
 	int count = 0;
 	int ret;
+<<<<<<< HEAD
 
 	dir = opendir(sys);
 	if (!dir)
 		die("can't read directory '%s'", sys);
+=======
+	int err;
+
+	dir = opendir(sys);
+	if (!dir) {
+		pr_debug("can't read directory '%s'", sys);
+		return -errno;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	while ((dent = readdir(dir))) {
 		if (dent->d_type != DT_DIR ||
@@ -387,7 +515,15 @@ static void copy_event_system(const char *sys, struct tracepoint_path *tps)
 		    strcmp(dent->d_name, "..") == 0 ||
 		    !name_in_tp_list(dent->d_name, tps))
 			continue;
+<<<<<<< HEAD
 		format = malloc_or_die(strlen(sys) + strlen(dent->d_name) + 10);
+=======
+		format = malloc(strlen(sys) + strlen(dent->d_name) + 10);
+		if (!format) {
+			err = -ENOMEM;
+			goto out;
+		}
+>>>>>>> refs/remotes/origin/master
 		sprintf(format, "%s/%s/format", sys, dent->d_name);
 		ret = stat(format, &st);
 		free(format);
@@ -396,7 +532,15 @@ static void copy_event_system(const char *sys, struct tracepoint_path *tps)
 		count++;
 	}
 
+<<<<<<< HEAD
 	write_or_die(&count, 4);
+=======
+	if (write(output_fd, &count, 4) != 4) {
+		err = -EIO;
+		pr_debug("can't write count\n");
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	rewinddir(dir);
 	while ((dent = readdir(dir))) {
@@ -405,6 +549,7 @@ static void copy_event_system(const char *sys, struct tracepoint_path *tps)
 		    strcmp(dent->d_name, "..") == 0 ||
 		    !name_in_tp_list(dent->d_name, tps))
 			continue;
+<<<<<<< HEAD
 		format = malloc_or_die(strlen(sys) + strlen(dent->d_name) + 10);
 		sprintf(format, "%s/%s/format", sys, dent->d_name);
 		ret = stat(format, &st);
@@ -437,6 +582,47 @@ static void read_ftrace_files(struct tracepoint_path *tps)
 	copy_event_system(path, tps);
 
 	put_tracing_file(path);
+=======
+		format = malloc(strlen(sys) + strlen(dent->d_name) + 10);
+		if (!format) {
+			err = -ENOMEM;
+			goto out;
+		}
+		sprintf(format, "%s/%s/format", sys, dent->d_name);
+		ret = stat(format, &st);
+
+		if (ret >= 0) {
+			err = record_file(format, 8);
+			if (err) {
+				free(format);
+				goto out;
+			}
+		}
+		free(format);
+	}
+	err = 0;
+out:
+	closedir(dir);
+	return err;
+}
+
+static int record_ftrace_files(struct tracepoint_path *tps)
+{
+	char *path;
+	int ret;
+
+	path = get_tracing_file("events/ftrace");
+	if (!path) {
+		pr_debug("can't get tracing/events/ftrace");
+		return -ENOMEM;
+	}
+
+	ret = copy_event_system(path, tps);
+
+	put_tracing_file(path);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool system_in_tp_list(char *sys, struct tracepoint_path *tps)
@@ -450,7 +636,11 @@ static bool system_in_tp_list(char *sys, struct tracepoint_path *tps)
 	return false;
 }
 
+<<<<<<< HEAD
 static void read_event_files(struct tracepoint_path *tps)
+=======
+static int record_event_files(struct tracepoint_path *tps)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dirent *dent;
 	struct stat st;
@@ -459,12 +649,29 @@ static void read_event_files(struct tracepoint_path *tps)
 	DIR *dir;
 	int count = 0;
 	int ret;
+<<<<<<< HEAD
 
 	path = get_tracing_file("events");
 
 	dir = opendir(path);
 	if (!dir)
 		die("can't read directory '%s'", path);
+=======
+	int err;
+
+	path = get_tracing_file("events");
+	if (!path) {
+		pr_debug("can't get tracing/events");
+		return -ENOMEM;
+	}
+
+	dir = opendir(path);
+	if (!dir) {
+		err = -errno;
+		pr_debug("can't read directory '%s'", path);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	while ((dent = readdir(dir))) {
 		if (dent->d_type != DT_DIR ||
@@ -476,7 +683,15 @@ static void read_event_files(struct tracepoint_path *tps)
 		count++;
 	}
 
+<<<<<<< HEAD
 	write_or_die(&count, 4);
+=======
+	if (write(output_fd, &count, 4) != 4) {
+		err = -EIO;
+		pr_debug("can't write count\n");
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	rewinddir(dir);
 	while ((dent = readdir(dir))) {
@@ -486,6 +701,7 @@ static void read_event_files(struct tracepoint_path *tps)
 		    strcmp(dent->d_name, "ftrace") == 0 ||
 		    !system_in_tp_list(dent->d_name, tps))
 			continue;
+<<<<<<< HEAD
 		sys = malloc_or_die(strlen(path) + strlen(dent->d_name) + 2);
 		sprintf(sys, "%s/%s", path, dent->d_name);
 		ret = stat(sys, &st);
@@ -510,11 +726,47 @@ static void read_proc_kallsyms(void)
 	const char *path = "/proc/kallsyms";
 	struct stat st;
 	int ret;
+=======
+		sys = malloc(strlen(path) + strlen(dent->d_name) + 2);
+		if (!sys) {
+			err = -ENOMEM;
+			goto out;
+		}
+		sprintf(sys, "%s/%s", path, dent->d_name);
+		ret = stat(sys, &st);
+		if (ret >= 0) {
+			ssize_t size = strlen(dent->d_name) + 1;
+
+			if (write(output_fd, dent->d_name, size) != size ||
+			    copy_event_system(sys, tps) < 0) {
+				err = -EIO;
+				free(sys);
+				goto out;
+			}
+		}
+		free(sys);
+	}
+	err = 0;
+out:
+	closedir(dir);
+	put_tracing_file(path);
+
+	return err;
+}
+
+static int record_proc_kallsyms(void)
+{
+	unsigned int size;
+	const char *path = "/proc/kallsyms";
+	struct stat st;
+	int ret, err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	ret = stat(path, &st);
 	if (ret < 0) {
 		/* not found */
 		size = 0;
+<<<<<<< HEAD
 		write_or_die(&size, 4);
 		return;
 	}
@@ -542,10 +794,33 @@ static void read_ftrace_printk(void)
 	int ret;
 
 	path = get_tracing_file("printk_formats");
+=======
+		if (write(output_fd, &size, 4) != 4)
+			err = -EIO;
+		return err;
+	}
+	return record_file(path, 4);
+}
+
+static int record_ftrace_printk(void)
+{
+	unsigned int size;
+	char *path;
+	struct stat st;
+	int ret, err = 0;
+
+	path = get_tracing_file("printk_formats");
+	if (!path) {
+		pr_debug("can't get tracing/printk_formats");
+		return -ENOMEM;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ret = stat(path, &st);
 	if (ret < 0) {
 		/* not found */
 		size = 0;
+<<<<<<< HEAD
 		write_or_die(&size, 4);
 		goto out;
 	}
@@ -561,6 +836,30 @@ static void read_ftrace_printk(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 out:
 	put_tracing_file(path);
+=======
+		if (write(output_fd, &size, 4) != 4)
+			err = -EIO;
+		goto out;
+	}
+	err = record_file(path, 4);
+
+out:
+	put_tracing_file(path);
+	return err;
+}
+
+static void
+put_tracepoints_path(struct tracepoint_path *tps)
+{
+	while (tps) {
+		struct tracepoint_path *t = tps;
+
+		tps = tps->next;
+		zfree(&t->name);
+		zfree(&t->system);
+		free(t);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct tracepoint_path *
@@ -574,15 +873,40 @@ get_tracepoints_path(struct list_head *pattrs)
 		if (pos->attr.type != PERF_TYPE_TRACEPOINT)
 			continue;
 		++nr_tracepoints;
+<<<<<<< HEAD
 		ppath->next = tracepoint_id_to_path(pos->attr.config);
 		if (!ppath->next)
 			die("%s\n", "No memory to alloc tracepoints list");
+=======
+
+		if (pos->name) {
+			ppath->next = tracepoint_name_to_path(pos->name);
+			if (ppath->next)
+				goto next;
+
+			if (strchr(pos->name, ':') == NULL)
+				goto try_id;
+
+			goto error;
+		}
+
+try_id:
+		ppath->next = tracepoint_id_to_path(pos->attr.config);
+		if (!ppath->next) {
+error:
+			pr_debug("No memory to alloc tracepoints list\n");
+			put_tracepoints_path(&path);
+			return NULL;
+		}
+next:
+>>>>>>> refs/remotes/origin/master
 		ppath = ppath->next;
 	}
 
 	return nr_tracepoints > 0 ? path.next : NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static void
@@ -599,6 +923,8 @@ put_tracepoints_path(struct tracepoint_path *tps)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 bool have_tracepoints(struct list_head *pattrs)
 {
 	struct perf_evsel *pos;
@@ -610,6 +936,7 @@ bool have_tracepoints(struct list_head *pattrs)
 	return false;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int read_tracing_data(int fd, struct list_head *pattrs)
 {
@@ -631,14 +958,31 @@ static void tracing_data_header(void)
 
 	/* just guessing this is someone's birthday.. ;) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tracing_data_header(void)
+{
+	char buf[20];
+	ssize_t size;
+
+	/* just guessing this is someone's birthday.. ;) */
+>>>>>>> refs/remotes/origin/master
 	buf[0] = 23;
 	buf[1] = 8;
 	buf[2] = 68;
 	memcpy(buf + 3, "tracing", 7);
 
+<<<<<<< HEAD
 	write_or_die(buf, 10);
 
 	write_or_die(VERSION, strlen(VERSION) + 1);
+=======
+	if (write(output_fd, buf, 10) != 10)
+		return -1;
+
+	size = strlen(VERSION) + 1;
+	if (write(output_fd, VERSION, size) != size)
+		return -1;
+>>>>>>> refs/remotes/origin/master
 
 	/* save endian */
 	if (bigendian())
@@ -646,6 +990,7 @@ static void tracing_data_header(void)
 	else
 		buf[0] = 0;
 
+<<<<<<< HEAD
 	write_or_die(buf, 1);
 
 	/* save size of long */
@@ -658,6 +1003,21 @@ static void tracing_data_header(void)
 <<<<<<< HEAD
 
 =======
+=======
+	if (write(output_fd, buf, 1) != 1)
+		return -1;
+
+	/* save size of long */
+	buf[0] = sizeof(long);
+	if (write(output_fd, buf, 1) != 1)
+		return -1;
+
+	/* save page_size */
+	if (write(output_fd, &page_size, 4) != 4)
+		return -1;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 struct tracing_data *tracing_data_get(struct list_head *pattrs,
@@ -665,6 +1025,10 @@ struct tracing_data *tracing_data_get(struct list_head *pattrs,
 {
 	struct tracepoint_path *tps;
 	struct tracing_data *tdata;
+<<<<<<< HEAD
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	output_fd = fd;
 
@@ -672,7 +1036,14 @@ struct tracing_data *tracing_data_get(struct list_head *pattrs,
 	if (!tps)
 		return NULL;
 
+<<<<<<< HEAD
 	tdata = malloc_or_die(sizeof(*tdata));
+=======
+	tdata = malloc(sizeof(*tdata));
+	if (!tdata)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	tdata->temp = temp;
 	tdata->size = 0;
 
@@ -681,12 +1052,25 @@ struct tracing_data *tracing_data_get(struct list_head *pattrs,
 
 		snprintf(tdata->temp_file, sizeof(tdata->temp_file),
 			 "/tmp/perf-XXXXXX");
+<<<<<<< HEAD
 		if (!mkstemp(tdata->temp_file))
 			die("Can't make temp file");
 
 		temp_fd = open(tdata->temp_file, O_RDWR);
 		if (temp_fd < 0)
 			die("Can't read '%s'", tdata->temp_file);
+=======
+		if (!mkstemp(tdata->temp_file)) {
+			pr_debug("Can't make temp file");
+			return NULL;
+		}
+
+		temp_fd = open(tdata->temp_file, O_RDWR);
+		if (temp_fd < 0) {
+			pr_debug("Can't read '%s'", tdata->temp_file);
+			return NULL;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Set the temp file the default output, so all the
@@ -695,6 +1079,7 @@ struct tracing_data *tracing_data_get(struct list_head *pattrs,
 		output_fd = temp_fd;
 	}
 
+<<<<<<< HEAD
 	tracing_data_header();
 >>>>>>> refs/remotes/origin/cm-10.0
 	read_header_files();
@@ -722,6 +1107,26 @@ ssize_t read_tracing_data_size(int fd, struct list_head *pattrs)
 
 	return size;
 =======
+=======
+	err = tracing_data_header();
+	if (err)
+		goto out;
+	err = record_header_files();
+	if (err)
+		goto out;
+	err = record_ftrace_files(tps);
+	if (err)
+		goto out;
+	err = record_event_files(tps);
+	if (err)
+		goto out;
+	err = record_proc_kallsyms();
+	if (err)
+		goto out;
+	err = record_ftrace_printk();
+
+out:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * All tracing data are stored by now, we can restore
 	 * the default output file in case we used temp file.
@@ -732,22 +1137,45 @@ ssize_t read_tracing_data_size(int fd, struct list_head *pattrs)
 		output_fd = fd;
 	}
 
+<<<<<<< HEAD
+=======
+	if (err)
+		zfree(&tdata);
+
+>>>>>>> refs/remotes/origin/master
 	put_tracepoints_path(tps);
 	return tdata;
 }
 
+<<<<<<< HEAD
 void tracing_data_put(struct tracing_data *tdata)
 {
 	if (tdata->temp) {
 		record_file(tdata->temp_file, 0);
+=======
+int tracing_data_put(struct tracing_data *tdata)
+{
+	int err = 0;
+
+	if (tdata->temp) {
+		err = record_file(tdata->temp_file, 0);
+>>>>>>> refs/remotes/origin/master
 		unlink(tdata->temp_file);
 	}
 
 	free(tdata);
+<<<<<<< HEAD
+=======
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 int read_tracing_data(int fd, struct list_head *pattrs)
 {
+<<<<<<< HEAD
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 	struct tracing_data *tdata;
 
 	/*
@@ -758,7 +1186,12 @@ int read_tracing_data(int fd, struct list_head *pattrs)
 	if (!tdata)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	tracing_data_put(tdata);
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = tracing_data_put(tdata);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }

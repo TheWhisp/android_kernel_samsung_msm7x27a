@@ -4,6 +4,7 @@
  * Copyright (C) 2009 Bluewater Systems Ltd
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Ryan Mallon <ryan@bluewatersys.com>
 =======
  * Author: Ryan Mallon
@@ -11,6 +12,14 @@
  *
  * DS2786 added by Yulia Vilensky <vilensky@compulab.co.il>
  *
+=======
+ * Author: Ryan Mallon
+ *
+ * DS2786 added by Yulia Vilensky <vilensky@compulab.co.il>
+ *
+ * UEvent sending added by Evgeny Romanov <romanov@neurosoft.ru>
+ *
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -23,6 +32,10 @@
 #include <linux/errno.h>
 #include <linux/swab.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/idr.h>
 #include <linux/power_supply.h>
 #include <linux/slab.h>
@@ -44,6 +57,11 @@
 
 #define DS2786_CURRENT_UNITS	25
 
+<<<<<<< HEAD
+=======
+#define DS278x_DELAY		1000
+
+>>>>>>> refs/remotes/origin/master
 struct ds278x_info;
 
 struct ds278x_battery_ops {
@@ -58,8 +76,16 @@ struct ds278x_info {
 	struct i2c_client	*client;
 	struct power_supply	battery;
 	struct ds278x_battery_ops  *ops;
+<<<<<<< HEAD
 	int			id;
 	int                     rsns;
+=======
+	struct delayed_work	bat_work;
+	int			id;
+	int                     rsns;
+	int			capacity;
+	int			status;		/* State Of Charge */
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_IDR(battery_id);
@@ -84,13 +110,21 @@ static inline int ds278x_read_reg16(struct ds278x_info *info, int reg_msb,
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = swab16(i2c_smbus_read_word_data(info->client, reg_msb));
+=======
+	ret = i2c_smbus_read_word_data(info->client, reg_msb);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&info->client->dev, "register read failed\n");
 		return ret;
 	}
 
+<<<<<<< HEAD
 	*val = ret;
+=======
+	*val = swab16(ret);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -224,6 +258,11 @@ static int ds278x_get_status(struct ds278x_info *info, int *status)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
+=======
+	info->capacity = capacity;
+
+>>>>>>> refs/remotes/origin/master
 	if (capacity == 100)
 		*status = POWER_SUPPLY_STATUS_FULL;
 	else if (current_uA == 0)
@@ -271,6 +310,30 @@ static int ds278x_battery_get_property(struct power_supply *psy,
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static void ds278x_bat_update(struct ds278x_info *info)
+{
+	int old_status = info->status;
+	int old_capacity = info->capacity;
+
+	ds278x_get_status(info, &info->status);
+
+	if ((old_status != info->status) || (old_capacity != info->capacity))
+		power_supply_changed(&info->battery);
+}
+
+static void ds278x_bat_work(struct work_struct *work)
+{
+	struct ds278x_info *info;
+
+	info = container_of(work, struct ds278x_info, bat_work.work);
+	ds278x_bat_update(info);
+
+	schedule_delayed_work(&info->bat_work, DS278x_DELAY);
+}
+
+>>>>>>> refs/remotes/origin/master
 static enum power_supply_property ds278x_battery_props[] = {
 	POWER_SUPPLY_PROP_STATUS,
 	POWER_SUPPLY_PROP_CAPACITY,
@@ -299,10 +362,45 @@ static int ds278x_battery_remove(struct i2c_client *client)
 	idr_remove(&battery_id, info->id);
 	mutex_unlock(&battery_lock);
 
+<<<<<<< HEAD
+=======
+	cancel_delayed_work(&info->bat_work);
+
+>>>>>>> refs/remotes/origin/master
 	kfree(info);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM_SLEEP
+
+static int ds278x_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+	struct ds278x_info *info = i2c_get_clientdata(client);
+
+	cancel_delayed_work(&info->bat_work);
+	return 0;
+}
+
+static int ds278x_resume(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+	struct ds278x_info *info = i2c_get_clientdata(client);
+
+	schedule_delayed_work(&info->bat_work, DS278x_DELAY);
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(ds278x_battery_pm_ops, ds278x_suspend, ds278x_resume);
+#define DS278X_BATTERY_PM_OPS (&ds278x_battery_pm_ops)
+
+#else
+#define DS278X_BATTERY_PM_OPS NULL
+#endif /* CONFIG_PM_SLEEP */
+
+>>>>>>> refs/remotes/origin/master
 enum ds278x_num_id {
 	DS2782 = 0,
 	DS2786,
@@ -339,6 +437,7 @@ static int ds278x_battery_probe(struct i2c_client *client,
 	}
 
 	/* Get an ID for this battery */
+<<<<<<< HEAD
 	ret = idr_pre_get(&battery_id, GFP_KERNEL);
 	if (ret == 0) {
 		ret = -ENOMEM;
@@ -350,6 +449,14 @@ static int ds278x_battery_probe(struct i2c_client *client,
 	mutex_unlock(&battery_lock);
 	if (ret < 0)
 		goto fail_id;
+=======
+	mutex_lock(&battery_lock);
+	ret = idr_alloc(&battery_id, client, 0, 0, GFP_KERNEL);
+	mutex_unlock(&battery_lock);
+	if (ret < 0)
+		goto fail_id;
+	num = ret;
+>>>>>>> refs/remotes/origin/master
 
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
 	if (!info) {
@@ -372,10 +479,23 @@ static int ds278x_battery_probe(struct i2c_client *client,
 	info->ops  = &ds278x_ops[id->driver_data];
 	ds278x_power_supply_init(&info->battery);
 
+<<<<<<< HEAD
+=======
+	info->capacity = 100;
+	info->status = POWER_SUPPLY_STATUS_FULL;
+
+	INIT_DELAYED_WORK(&info->bat_work, ds278x_bat_work);
+
+>>>>>>> refs/remotes/origin/master
 	ret = power_supply_register(&client->dev, &info->battery);
 	if (ret) {
 		dev_err(&client->dev, "failed to register battery\n");
 		goto fail_register;
+<<<<<<< HEAD
+=======
+	} else {
+		schedule_delayed_work(&info->bat_work, DS278x_DELAY);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -402,11 +522,16 @@ MODULE_DEVICE_TABLE(i2c, ds278x_id);
 static struct i2c_driver ds278x_battery_driver = {
 	.driver 	= {
 		.name	= "ds2782-battery",
+<<<<<<< HEAD
+=======
+		.pm	= DS278X_BATTERY_PM_OPS,
+>>>>>>> refs/remotes/origin/master
 	},
 	.probe		= ds278x_battery_probe,
 	.remove		= ds278x_battery_remove,
 	.id_table	= ds278x_id,
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init ds278x_init(void)
@@ -427,5 +552,10 @@ module_i2c_driver(ds278x_battery_driver);
 
 MODULE_AUTHOR("Ryan Mallon");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(ds278x_battery_driver);
+
+MODULE_AUTHOR("Ryan Mallon");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Maxim/Dallas DS2782 Stand-Alone Fuel Gauage IC driver");
 MODULE_LICENSE("GPL");

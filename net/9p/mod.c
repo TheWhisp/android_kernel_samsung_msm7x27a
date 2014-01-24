@@ -25,14 +25,20 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/module.h>
 #include <linux/errno.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/moduleparam.h>
 #include <net/9p/9p.h>
 #include <linux/fs.h>
@@ -48,7 +54,10 @@ EXPORT_SYMBOL(p9_debug_level);
 module_param_named(debug, p9_debug_level, uint, 0);
 MODULE_PARM_DESC(debug, "9P debugging level");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void _p9_debug(enum p9_debug_flags level, const char *func,
 		const char *fmt, ...)
@@ -72,7 +81,10 @@ void _p9_debug(enum p9_debug_flags level, const char *func,
 	va_end(args);
 }
 EXPORT_SYMBOL(_p9_debug);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -115,10 +127,14 @@ EXPORT_SYMBOL(v9fs_unregister_trans);
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct p9_trans_module *v9fs_get_trans_by_name(const substring_t *name)
 =======
 struct p9_trans_module *v9fs_get_trans_by_name(char *s)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct p9_trans_module *v9fs_get_trans_by_name(char *s)
+>>>>>>> refs/remotes/origin/master
 {
 	struct p9_trans_module *t, *found = NULL;
 
@@ -126,10 +142,14 @@ struct p9_trans_module *v9fs_get_trans_by_name(char *s)
 
 	list_for_each_entry(t, &v9fs_trans_list, list)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (strncmp(t->name, name->from, name->to-name->from) == 0 &&
 =======
 		if (strcmp(t->name, s) == 0 &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (strcmp(t->name, s) == 0 &&
+>>>>>>> refs/remotes/origin/master
 		    try_module_get(t->owner)) {
 			found = t;
 			break;
@@ -190,10 +210,14 @@ static int __init init_p9(void)
 
 	p9_error_init();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Installing 9P2000 support\n");
 =======
 	pr_info("Installing 9P2000 support\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Installing 9P2000 support\n");
+>>>>>>> refs/remotes/origin/master
 	p9_trans_fd_init();
 
 	return ret;
@@ -207,10 +231,14 @@ static int __init init_p9(void)
 static void __exit exit_p9(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "Unloading 9P2000 support\n");
 =======
 	pr_info("Unloading 9P2000 support\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Unloading 9P2000 support\n");
+>>>>>>> refs/remotes/origin/master
 
 	p9_trans_fd_exit();
 }

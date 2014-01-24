@@ -19,10 +19,15 @@
 #include <linux/mm.h>
 #include <linux/init.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/pinctrl/machine.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pgtable.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/common.h>
 <<<<<<< HEAD
 #include <mach/hardware.h>
@@ -36,6 +41,13 @@
 #include <mach/iomux-v3.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/irqs.h>
+=======
+#include "common.h"
+#include "devices/devices-common.h"
+#include "hardware.h"
+#include "iomux-v3.h"
+#include "mx25.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This table defines static virtual address mappings for I/O regions.
@@ -61,6 +73,7 @@ void __init imx25_init_early(void)
 {
 	mxc_set_cpu_type(MXC_CPU_MX25);
 	mxc_iomux_v3_init(MX25_IO_ADDRESS(MX25_IOMUXC_BASE_ADDR));
+<<<<<<< HEAD
 	mxc_arch_reset_init(MX25_IO_ADDRESS(MX25_WDOG_BASE_ADDR));
 }
 
@@ -79,11 +92,16 @@ void __init mx25_init_irq(void)
 }
 
 =======
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 void __init mx25_init_irq(void)
 {
 	mxc_init_irq(MX25_IO_ADDRESS(MX25_AVIC_BASE_ADDR));
 }
 
+<<<<<<< HEAD
 static struct sdma_script_start_addrs imx25_sdma_script __initdata = {
 	.ap_2_ap_addr = 729,
 	.uart_2_mcu_addr = 904,
@@ -103,6 +121,10 @@ static struct sdma_script_start_addrs imx25_sdma_script __initdata = {
 static struct sdma_platform_data imx25_sdma_pdata __initdata = {
 	.fw_name = "sdma-imx25.bin",
 	.script_addrs = &imx25_sdma_script,
+=======
+static struct sdma_platform_data imx25_sdma_pdata __initdata = {
+	.fw_name = "sdma-imx25.bin",
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct resource imx25_audmux_res[] __initconst = {
@@ -111,16 +133,32 @@ static const struct resource imx25_audmux_res[] __initconst = {
 
 void __init imx25_soc_init(void)
 {
+<<<<<<< HEAD
 	/* i.mx25 has the i.mx31 type gpio */
 	mxc_register_gpio("imx31-gpio", 0, MX25_GPIO1_BASE_ADDR, SZ_16K, MX25_INT_GPIO1, 0);
 	mxc_register_gpio("imx31-gpio", 1, MX25_GPIO2_BASE_ADDR, SZ_16K, MX25_INT_GPIO2, 0);
 	mxc_register_gpio("imx31-gpio", 2, MX25_GPIO3_BASE_ADDR, SZ_16K, MX25_INT_GPIO3, 0);
 	mxc_register_gpio("imx31-gpio", 3, MX25_GPIO4_BASE_ADDR, SZ_16K, MX25_INT_GPIO4, 0);
 
+=======
+	mxc_arch_reset_init(MX25_IO_ADDRESS(MX25_WDOG_BASE_ADDR));
+	mxc_device_init();
+
+	/* i.mx25 has the i.mx35 type gpio */
+	mxc_register_gpio("imx35-gpio", 0, MX25_GPIO1_BASE_ADDR, SZ_16K, MX25_INT_GPIO1, 0);
+	mxc_register_gpio("imx35-gpio", 1, MX25_GPIO2_BASE_ADDR, SZ_16K, MX25_INT_GPIO2, 0);
+	mxc_register_gpio("imx35-gpio", 2, MX25_GPIO3_BASE_ADDR, SZ_16K, MX25_INT_GPIO3, 0);
+	mxc_register_gpio("imx35-gpio", 3, MX25_GPIO4_BASE_ADDR, SZ_16K, MX25_INT_GPIO4, 0);
+
+	pinctrl_provide_dummies();
+>>>>>>> refs/remotes/origin/master
 	/* i.mx25 has the i.mx35 type sdma */
 	imx_add_imx_sdma("imx35-sdma", MX25_SDMA_BASE_ADDR, MX25_INT_SDMA, &imx25_sdma_pdata);
 	/* i.mx25 has the i.mx31 type audmux */
 	platform_device_register_simple("imx31-audmux", 0, imx25_audmux_res,
 					ARRAY_SIZE(imx25_audmux_res));
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

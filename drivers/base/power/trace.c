@@ -9,9 +9,13 @@
 
 #include <linux/resume-trace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/rtc.h>
 
 #include <asm/rtc.h>
@@ -117,10 +121,14 @@ static unsigned int read_magic_time(void)
 
 	get_rtc_time(&time);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("Time: %2d:%02d:%02d  Date: %02d/%02d/%02d\n",
 =======
 	pr_info("RTC time: %2d:%02d:%02d, date: %02d/%02d/%02d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("RTC time: %2d:%02d:%02d, date: %02d/%02d/%02d\n",
+>>>>>>> refs/remotes/origin/master
 		time.tm_hour, time.tm_min, time.tm_sec,
 		time.tm_mon + 1, time.tm_mday, time.tm_year % 100);
 	val = time.tm_year;				/* 100 years */

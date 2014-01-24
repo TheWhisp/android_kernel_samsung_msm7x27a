@@ -14,13 +14,18 @@
 #define PCIE_PORT_DEVICE_MAXSERVICES   4
 /*
  * According to the PCI Express Base Specification 2.0, the indices of
+<<<<<<< HEAD
  * the MSI-X table entires used by port services must not exceed 31
+=======
+ * the MSI-X table entries used by port services must not exceed 31
+>>>>>>> refs/remotes/origin/master
  */
 #define PCIE_PORT_MAX_MSIX_ENTRIES	32
 
 #define get_descriptor_id(type, service) (((type - 4) << 4) | service)
 
 extern struct bus_type pcie_port_bus_type;
+<<<<<<< HEAD
 extern int pcie_port_device_register(struct pci_dev *dev);
 #ifdef CONFIG_PM
 extern int pcie_port_device_suspend(struct device *dev);
@@ -36,6 +41,21 @@ extern void pcie_clear_root_pme_status(struct pci_dev *dev);
 
 <<<<<<< HEAD
 =======
+=======
+int pcie_port_device_register(struct pci_dev *dev);
+#ifdef CONFIG_PM
+int pcie_port_device_suspend(struct device *dev);
+int pcie_port_device_resume(struct device *dev);
+#endif
+void pcie_port_device_remove(struct pci_dev *dev);
+int __must_check pcie_port_bus_register(void);
+void pcie_port_bus_unregister(void);
+
+struct pci_dev;
+
+void pcie_clear_root_pme_status(struct pci_dev *dev);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HOTPLUG_PCI_PCIE
 extern bool pciehp_msi_disabled;
 
@@ -48,7 +68,10 @@ static inline bool pciehp_no_msi(void)
 static inline bool pciehp_no_msi(void) { return false; }
 #endif /* !CONFIG_HOTPLUG_PCI_PCIE */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PCIE_PME
 extern bool pcie_pme_msi_disabled;
 
@@ -62,7 +85,11 @@ static inline bool pcie_pme_no_msi(void)
 	return pcie_pme_msi_disabled;
 }
 
+<<<<<<< HEAD
 extern void pcie_pme_interrupt_enable(struct pci_dev *dev, bool enable);
+=======
+void pcie_pme_interrupt_enable(struct pci_dev *dev, bool enable);
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_PCIE_PME */
 static inline void pcie_pme_disable_msi(void) {}
 static inline bool pcie_pme_no_msi(void) { return false; }
@@ -70,7 +97,11 @@ static inline void pcie_pme_interrupt_enable(struct pci_dev *dev, bool en) {}
 #endif /* !CONFIG_PCIE_PME */
 
 #ifdef CONFIG_ACPI
+<<<<<<< HEAD
 extern int pcie_port_acpi_setup(struct pci_dev *port, int *mask);
+=======
+int pcie_port_acpi_setup(struct pci_dev *port, int *mask);
+>>>>>>> refs/remotes/origin/master
 
 static inline int pcie_port_platform_notify(struct pci_dev *port, int *mask)
 {

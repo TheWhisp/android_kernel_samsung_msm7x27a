@@ -186,6 +186,7 @@ static struct serio_driver gunze_drv = {
 	.disconnect	= gunze_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -202,3 +203,6 @@ static void __exit gunze_exit(void)
 
 module_init(gunze_init);
 module_exit(gunze_exit);
+=======
+module_serio_driver(gunze_drv);
+>>>>>>> refs/remotes/origin/master

@@ -14,9 +14,13 @@
 #include <linux/slab.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include "sbshc.h"
 
@@ -36,7 +40,11 @@ struct acpi_smb_hc {
 };
 
 static int acpi_smbus_hc_add(struct acpi_device *device);
+<<<<<<< HEAD
 static int acpi_smbus_hc_remove(struct acpi_device *device, int type);
+=======
+static int acpi_smbus_hc_remove(struct acpi_device *device);
+>>>>>>> refs/remotes/origin/master
 
 static const struct acpi_device_id sbs_device_ids[] = {
 	{"ACPI0001", 0},
@@ -299,7 +307,11 @@ static int acpi_smbus_hc_add(struct acpi_device *device)
 
 extern void acpi_ec_remove_query_handler(struct acpi_ec *ec, u8 query_bit);
 
+<<<<<<< HEAD
 static int acpi_smbus_hc_remove(struct acpi_device *device, int type)
+=======
+static int acpi_smbus_hc_remove(struct acpi_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_smb_hc *hc;
 
@@ -313,6 +325,7 @@ static int acpi_smbus_hc_remove(struct acpi_device *device, int type)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init acpi_smb_hc_init(void)
 {
 	int result;
@@ -330,6 +343,9 @@ static void __exit acpi_smb_hc_exit(void)
 
 module_init(acpi_smb_hc_init);
 module_exit(acpi_smb_hc_exit);
+=======
+module_acpi_driver(acpi_smb_hc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Alexey Starikovskiy");

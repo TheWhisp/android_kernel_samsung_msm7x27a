@@ -18,10 +18,13 @@
 #include <mach/hardware.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IO_SPACE_LIMIT 0x0000ffff
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int (*ixp4xx_pci_read)(u32 addr, u32 cmd, u32* data);
 extern int ixp4xx_pci_write(u32 addr, u32 cmd, u32 data);
 
@@ -45,6 +48,7 @@ extern int ixp4xx_pci_write(u32 addr, u32 cmd, u32 data);
  *    cannot mmap() PCI devices in this case.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef	CONFIG_IXP4XX_INDIRECT_PCI
 
 #define __mem_pci(a)		(a)
@@ -53,6 +57,9 @@ extern int ixp4xx_pci_write(u32 addr, u32 cmd, u32 data);
 =======
 #ifdef	CONFIG_IXP4XX_INDIRECT_PCI
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef	CONFIG_IXP4XX_INDIRECT_PCI
+>>>>>>> refs/remotes/origin/master
 
 /*
  * In the case of using indirect PCI, we simply return the actual PCI
@@ -66,6 +73,7 @@ static inline int is_pci_memory(u32 addr)
 	return (addr >= PCIBIOS_MIN_MEM) && (addr <= 0x4FFFFFFF);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void __iomem * __indirect_ioremap(unsigned long addr, size_t size,
 						unsigned int mtype)
@@ -87,6 +95,8 @@ static inline void __indirect_iounmap(void __iomem *addr)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define writeb(v, p)			__indirect_writeb(v, p)
 #define writew(v, p)			__indirect_writew(v, p)
 #define writel(v, p)			__indirect_writel(v, p)

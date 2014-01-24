@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,6 +35,8 @@ struct gpio_regulator_platform_data {
 	unsigned			gpio;
 	int				active_low;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * gpio-regulator.h
  *
@@ -118,7 +121,10 @@ struct gpio_regulator_config {
 
 	enum regulator_type type;
 	struct regulator_init_data *init_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

@@ -53,7 +53,11 @@ static struct peak_usb_adapter *peak_usb_adapters_list[] = {
  * dump memory
  */
 #define DUMP_WIDTH	16
+<<<<<<< HEAD
 void dump_mem(char *prompt, void *p, int l)
+=======
+void pcan_dump_mem(char *prompt, void *p, int l)
+>>>>>>> refs/remotes/origin/master
 {
 	pr_info("%s dumping %s (%d bytes):\n",
 		PCAN_USB_DRIVER_NAME, prompt ? prompt : "memory", l);
@@ -203,9 +207,15 @@ static void peak_usb_read_bulk_callback(struct urb *urb)
 		if (dev->state & PCAN_USB_STATE_STARTED) {
 			err = dev->adapter->dev_decode_buf(dev, urb);
 			if (err)
+<<<<<<< HEAD
 				dump_mem("received usb message",
 					urb->transfer_buffer,
 					urb->transfer_buffer_length);
+=======
+				pcan_dump_mem("received usb message",
+					      urb->transfer_buffer,
+					      urb->transfer_buffer_length);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -386,7 +396,10 @@ static int peak_usb_start(struct peak_usb_device *dev)
 
 		buf = kmalloc(dev->adapter->rx_buffer_size, GFP_KERNEL);
 		if (!buf) {
+<<<<<<< HEAD
 			netdev_err(netdev, "No memory left for USB buffer\n");
+=======
+>>>>>>> refs/remotes/origin/master
 			usb_free_urb(urb);
 			err = -ENOMEM;
 			break;
@@ -442,7 +455,10 @@ static int peak_usb_start(struct peak_usb_device *dev)
 
 		buf = kmalloc(dev->adapter->tx_buffer_size, GFP_KERNEL);
 		if (!buf) {
+<<<<<<< HEAD
 			netdev_err(netdev, "No memory left for USB buffer\n");
+=======
+>>>>>>> refs/remotes/origin/master
 			usb_free_urb(urb);
 			err = -ENOMEM;
 			break;
@@ -465,7 +481,11 @@ static int peak_usb_start(struct peak_usb_device *dev)
 	if (i < PCAN_USB_MAX_TX_URBS) {
 		if (i == 0) {
 			netdev_err(netdev, "couldn't setup any tx URB\n");
+<<<<<<< HEAD
 			return err;
+=======
+			goto err_tx;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		netdev_warn(netdev, "tx performance may be slow\n");
@@ -474,7 +494,11 @@ static int peak_usb_start(struct peak_usb_device *dev)
 	if (dev->adapter->dev_start) {
 		err = dev->adapter->dev_start(dev);
 		if (err)
+<<<<<<< HEAD
 			goto failed;
+=======
+			goto err_adapter;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->state |= PCAN_USB_STATE_STARTED;
@@ -483,19 +507,37 @@ static int peak_usb_start(struct peak_usb_device *dev)
 	if (dev->adapter->dev_set_bus) {
 		err = dev->adapter->dev_set_bus(dev, 1);
 		if (err)
+<<<<<<< HEAD
 			goto failed;
+=======
+			goto err_adapter;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
 
 	return 0;
 
+<<<<<<< HEAD
 failed:
+=======
+err_adapter:
+>>>>>>> refs/remotes/origin/master
 	if (err == -ENODEV)
 		netif_device_detach(dev->netdev);
 
 	netdev_warn(netdev, "couldn't submit control: %d\n", err);
 
+<<<<<<< HEAD
+=======
+	for (i = 0; i < PCAN_USB_MAX_TX_URBS; i++) {
+		usb_free_urb(dev->tx_contexts[i].urb);
+		dev->tx_contexts[i].urb = NULL;
+	}
+err_tx:
+	usb_kill_anchored_urbs(&dev->rx_submitted);
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -520,7 +562,10 @@ static int peak_usb_ndo_open(struct net_device *netdev)
 		return err;
 	}
 
+<<<<<<< HEAD
 	dev->open_time = jiffies;
+=======
+>>>>>>> refs/remotes/origin/master
 	netif_start_queue(netdev);
 
 	return 0;
@@ -576,7 +621,10 @@ static int peak_usb_ndo_stop(struct net_device *netdev)
 
 	close_candev(netdev);
 
+<<<<<<< HEAD
 	dev->open_time = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->can.state = CAN_STATE_STOPPED;
 
 	/* can set bus off now */
@@ -636,7 +684,10 @@ static int peak_usb_restart(struct peak_usb_device *dev)
 	/* also allocate enough space for the commands to send */
 	buf = kmalloc(PCAN_USB_MAX_CMD_LEN, GFP_ATOMIC);
 	if (!buf) {
+<<<<<<< HEAD
 		netdev_err(dev->netdev, "no memory left for async cmd\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		usb_free_urb(urb);
 		return -ENOMEM;
 	}
@@ -661,9 +712,12 @@ static int peak_usb_set_mode(struct net_device *netdev, enum can_mode mode)
 	struct peak_usb_device *dev = netdev_priv(netdev);
 	int err = 0;
 
+<<<<<<< HEAD
 	if (!dev->open_time)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (mode) {
 	case CAN_MODE_START:
 		err = peak_usb_restart(dev);
@@ -734,8 +788,11 @@ static int peak_usb_create_dev(struct peak_usb_adapter *peak_usb_adapter,
 	/* allocate a buffer large enough to send commands */
 	dev->cmd_buf = kmalloc(PCAN_USB_MAX_CMD_LEN, GFP_KERNEL);
 	if (!dev->cmd_buf) {
+<<<<<<< HEAD
 		dev_err(&intf->dev, "%s: couldn't alloc cmd buffer\n",
 			PCAN_USB_DRIVER_NAME);
+=======
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto lbl_set_intf_data;
 	}

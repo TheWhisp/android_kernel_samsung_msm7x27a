@@ -73,10 +73,14 @@ CONFIG_SERIAL_BFIN_UART1=y
 # CONFIG_HW_RANDOM is not set
 CONFIG_SPI=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_SPI_BFIN=y
 =======
 CONFIG_SPI_BFIN5XX=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_SPI_BFIN5XX=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_GPIOLIB=y
 CONFIG_GPIO_SYSFS=y
 CONFIG_USB_GADGET=y

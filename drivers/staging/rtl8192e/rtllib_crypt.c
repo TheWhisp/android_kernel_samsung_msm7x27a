@@ -183,7 +183,11 @@ struct lib80211_crypto_ops *rtllib_get_crypto_ops(const char *name)
 EXPORT_SYMBOL(rtllib_get_crypto_ops);
 
 
+<<<<<<< HEAD
 static void * rtllib_crypt_null_init(int keyidx) { return (void *) 1; }
+=======
+static void *rtllib_crypt_null_init(int keyidx) { return (void *) 1; }
+>>>>>>> refs/remotes/origin/master
 static void rtllib_crypt_null_deinit(void *priv) {}
 
 static struct lib80211_crypto_ops rtllib_crypt_null = {

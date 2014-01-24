@@ -14,6 +14,7 @@
 #include <sound/jack.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "../codecs/wm8915.h"
 #include "../codecs/wm9081.h"
@@ -22,6 +23,8 @@
 
 static int speyside_set_bias_level(struct snd_soc_card *card,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 
 #include "../codecs/wm8996.h"
@@ -32,6 +35,7 @@ static int speyside_set_bias_level(struct snd_soc_card *card,
 
 static int speyside_set_bias_level(struct snd_soc_card *card,
 				   struct snd_soc_dapm_context *dapm,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 				   enum snd_soc_bias_level level)
 {
@@ -43,31 +47,49 @@ static int speyside_set_bias_level(struct snd_soc_card *card,
 	case SND_SOC_BIAS_STANDBY:
 		ret = snd_soc_dai_set_sysclk(codec_dai, WM8915_SYSCLK_MCLK1,
 =======
+=======
+				   enum snd_soc_bias_level level)
+{
+	struct snd_soc_dai *codec_dai = card->rtd[1].codec_dai;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	if (dapm->dev != codec_dai->dev)
 		return 0;
 
 	switch (level) {
 	case SND_SOC_BIAS_STANDBY:
 		ret = snd_soc_dai_set_sysclk(codec_dai, WM8996_SYSCLK_MCLK2,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					     32768, SND_SOC_CLOCK_IN);
 		if (ret < 0)
 			return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = snd_soc_dai_set_pll(codec_dai, WM8915_FLL_MCLK1,
 =======
 		ret = snd_soc_dai_set_pll(codec_dai, WM8996_FLL_MCLK2,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = snd_soc_dai_set_pll(codec_dai, WM8996_FLL_MCLK2,
+>>>>>>> refs/remotes/origin/master
 					  0, 0, 0);
 		if (ret < 0) {
 			pr_err("Failed to stop FLL\n");
 			return ret;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+>>>>>>> refs/remotes/origin/master
 
 	default:
 		break;
@@ -77,12 +99,19 @@ static int speyside_set_bias_level(struct snd_soc_card *card,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int speyside_set_bias_level_post(struct snd_soc_card *card,
 					struct snd_soc_dapm_context *dapm,
 					enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
 	struct snd_soc_dai *codec_dai = card->rtd[0].codec_dai;
+=======
+	struct snd_soc_dai *codec_dai = card->rtd[1].codec_dai;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (dapm->dev != codec_dai->dev)
@@ -117,6 +146,7 @@ static int speyside_set_bias_level_post(struct snd_soc_card *card,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int speyside_hw_params(struct snd_pcm_substream *substream,
 			      struct snd_pcm_hw_params *params)
@@ -158,6 +188,8 @@ static struct snd_soc_ops speyside_ops = {
 	.hw_params = speyside_hw_params,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_jack speyside_headset;
 
 /* Headset jack detection DAPM pins */
@@ -167,12 +199,15 @@ static struct snd_soc_jack_pin speyside_headset_pins[] = {
 		.mask = SND_JACK_MICROPHONE,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{
 		.pin = "Headphone",
 		.mask = SND_JACK_HEADPHONE,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Default the headphone selection to active high */
@@ -194,15 +229,20 @@ static void speyside_set_polarity(struct snd_soc_codec *codec,
 {
 	speyside_jack_polarity = !polarity;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_direction_output(WM8915_HPSEL_GPIO, speyside_jack_polarity);
 =======
 	gpio_direction_output(WM8996_HPSEL_GPIO, speyside_jack_polarity);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_direction_output(WM8996_HPSEL_GPIO, speyside_jack_polarity);
+>>>>>>> refs/remotes/origin/master
 
 	/* Re-run DAPM to make sure we're using the correct mic bias */
 	snd_soc_dapm_sync(&codec->dapm);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int speyside_wm8915_init(struct snd_soc_pcm_runtime *rtd)
 =======
@@ -226,6 +266,26 @@ static int speyside_wm8996_init(struct snd_soc_pcm_runtime *rtd)
 	ret = snd_soc_jack_new(codec, "Headset",
 			       SND_JACK_HEADSET | SND_JACK_BTN_0,
 =======
+=======
+static int speyside_wm0010_init(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_soc_dai *dai = rtd->codec_dai;
+	int ret;
+
+	ret = snd_soc_dai_set_sysclk(dai, 0, MCLK_AUDIO_RATE, 0);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
+static int speyside_wm8996_init(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_soc_dai *dai = rtd->codec_dai;
+	struct snd_soc_codec *codec = rtd->codec;
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	ret = snd_soc_dai_set_sysclk(dai, WM8996_SYSCLK_MCLK2, 32768, 0);
 	if (ret < 0)
 		return ret;
@@ -238,7 +298,10 @@ static int speyside_wm8996_init(struct snd_soc_pcm_runtime *rtd)
 	ret = snd_soc_jack_new(codec, "Headset",
 			       SND_JACK_LINEOUT | SND_JACK_HEADSET |
 			       SND_JACK_BTN_0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			       &speyside_headset);
 	if (ret)
 		return ret;
@@ -250,10 +313,14 @@ static int speyside_wm8996_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wm8915_detect(codec, &speyside_headset, speyside_set_polarity);
 =======
 	wm8996_detect(codec, &speyside_headset, speyside_set_polarity);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8996_detect(codec, &speyside_headset, speyside_set_polarity);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -265,16 +332,21 @@ static int speyside_late_probe(struct snd_soc_card *card)
 	snd_soc_dapm_ignore_suspend(&card->dapm, "Main AMIC");
 	snd_soc_dapm_ignore_suspend(&card->dapm, "Main DMIC");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_ignore_suspend(&card->dapm, "Speaker");
 =======
 	snd_soc_dapm_ignore_suspend(&card->dapm, "Main Speaker");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_dapm_ignore_suspend(&card->dapm, "Main Speaker");
+>>>>>>> refs/remotes/origin/master
 	snd_soc_dapm_ignore_suspend(&card->dapm, "WM1250 Output");
 	snd_soc_dapm_ignore_suspend(&card->dapm, "WM1250 Input");
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct snd_soc_dai_link speyside_dai[] = {
 	{
 		.name = "CPU",
@@ -292,10 +364,44 @@ static struct snd_soc_dai_link speyside_dai[] = {
 		.init = speyside_wm8996_init,
 >>>>>>> refs/remotes/origin/cm-10.0
 		.ops = &speyside_ops,
+=======
+static const struct snd_soc_pcm_stream dsp_codec_params = {
+	.formats = SNDRV_PCM_FMTBIT_S32_LE,
+	.rate_min = 48000,
+	.rate_max = 48000,
+	.channels_min = 2,
+	.channels_max = 2,
+};
+
+static struct snd_soc_dai_link speyside_dai[] = {
+	{
+		.name = "CPU-DSP",
+		.stream_name = "CPU-DSP",
+		.cpu_dai_name = "samsung-i2s.0",
+		.codec_dai_name = "wm0010-sdi1",
+		.platform_name = "samsung-i2s.0",
+		.codec_name = "spi0.0",
+		.init = speyside_wm0010_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+				| SND_SOC_DAIFMT_CBM_CFM,
+	},
+	{
+		.name = "DSP-CODEC",
+		.stream_name = "DSP-CODEC",
+		.cpu_dai_name = "wm0010-sdi2",
+		.codec_dai_name = "wm8996-aif1",
+		.codec_name = "wm8996.1-001a",
+		.init = speyside_wm8996_init,
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+				| SND_SOC_DAIFMT_CBM_CFM,
+		.params = &dsp_codec_params,
+		.ignore_suspend = 1,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name = "Baseband",
 		.stream_name = "Baseband",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.cpu_dai_name = "wm8915-aif2",
 =======
@@ -304,12 +410,20 @@ static struct snd_soc_dai_link speyside_dai[] = {
 		.codec_dai_name = "wm1250-ev1",
 		.codec_name = "wm1250-ev1.1-0027",
 		.ops = &speyside_ops,
+=======
+		.cpu_dai_name = "wm8996-aif2",
+		.codec_dai_name = "wm1250-ev1",
+		.codec_name = "wm1250-ev1.1-0027",
+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+				| SND_SOC_DAIFMT_CBM_CFM,
+>>>>>>> refs/remotes/origin/master
 		.ignore_suspend = 1,
 	},
 };
 
 static int speyside_wm9081_init(struct snd_soc_dapm_context *dapm)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	snd_soc_dapm_nc_pin(dapm, "LINEOUT");
 
@@ -321,6 +435,11 @@ static int speyside_wm9081_init(struct snd_soc_dapm_context *dapm)
 	return snd_soc_codec_set_sysclk(dapm->codec, WM9081_SYSCLK_MCLK, 0,
 					MCLK_AUDIO_RATE, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* At any time the WM9081 is active it will have this clock */
+	return snd_soc_codec_set_sysclk(dapm->codec, WM9081_SYSCLK_MCLK, 0,
+					MCLK_AUDIO_RATE, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct snd_soc_aux_dev speyside_aux_dev[] = {
@@ -345,9 +464,13 @@ static const struct snd_kcontrol_new controls[] = {
 	SOC_DAPM_PIN_SWITCH("WM1250 Input"),
 	SOC_DAPM_PIN_SWITCH("WM1250 Output"),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	SOC_DAPM_PIN_SWITCH("Headphone"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SOC_DAPM_PIN_SWITCH("Headphone"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct snd_soc_dapm_widget widgets[] = {
@@ -390,9 +513,13 @@ static struct snd_soc_dapm_route audio_paths[] = {
 static struct snd_soc_card speyside = {
 	.name = "Speyside",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = speyside_dai,
 	.num_links = ARRAY_SIZE(speyside_dai),
 	.aux_dev = speyside_aux_dev,
@@ -402,9 +529,13 @@ static struct snd_soc_card speyside = {
 
 	.set_bias_level = speyside_set_bias_level,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.set_bias_level_post = speyside_set_bias_level_post,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_bias_level_post = speyside_set_bias_level_post,
+>>>>>>> refs/remotes/origin/master
 
 	.controls = controls,
 	.num_controls = ARRAY_SIZE(controls),
@@ -413,14 +544,22 @@ static struct snd_soc_card speyside = {
 	.dapm_routes = audio_paths,
 	.num_dapm_routes = ARRAY_SIZE(audio_paths),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.fully_routed = true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.fully_routed = true,
+>>>>>>> refs/remotes/origin/master
 
 	.late_probe = speyside_late_probe,
 };
 
+<<<<<<< HEAD
 static __devinit int speyside_probe(struct platform_device *pdev)
+=======
+static int speyside_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &speyside;
 	int ret;
@@ -437,7 +576,11 @@ static __devinit int speyside_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit speyside_remove(struct platform_device *pdev)
+=======
+static int speyside_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -453,6 +596,7 @@ static struct platform_driver speyside_driver = {
 		.pm = &snd_soc_pm_ops,
 	},
 	.probe = speyside_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(speyside_remove),
 };
 
@@ -471,6 +615,12 @@ module_exit(speyside_audio_exit);
 =======
 module_platform_driver(speyside_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = speyside_remove,
+};
+
+module_platform_driver(speyside_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Speyside audio support");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

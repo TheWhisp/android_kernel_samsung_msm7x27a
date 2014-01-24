@@ -2,10 +2,14 @@
  * GPIOLIB interface for BF538/9 PORT C, D, and E GPIOs
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009 Analog Devices Inc.
 =======
  * Copyright 2009-2011 Analog Devices Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009-2011 Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -126,7 +130,10 @@ static int __init bf538_extgpio_setup(void)
 }
 arch_initcall(bf538_extgpio_setup);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PM
 static struct {
@@ -162,4 +169,7 @@ void bfin_special_gpio_pm_hibernate_restore(void)
 	}
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

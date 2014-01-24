@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 /*----------------------------------------------------------------------------
@@ -92,6 +98,7 @@
 typedef struct mp_xcptcontext_s MP_XCPTC;
 struct mp_xcptcontext_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
     dword       sr;
     dword       cr;
     dword       epc;
@@ -117,6 +124,8 @@ struct mp_load {
   dword     volatile signature;
   dword data[60000]; /* real interface description */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword       sr;
 	dword       cr;
 	dword       epc;
@@ -141,7 +150,10 @@ struct mp_load {
 	dword     volatile rest[((0x1020 >> 2) - 6) - 0x1b - 1 - 0x03 - (sizeof(MP_XCPTC) >> 2)];
 	dword     volatile signature;
 	dword data[60000]; /* real interface description */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 /*----------------------------------------------------------------------------*/
 /* SERVER 4BRI (Quattro PCI)                                                  */
@@ -201,18 +213,24 @@ struct mp_load {
 #define BOOT_BASEREG  0x001c
 #define GTREGS_BASEREG 0x0024   /*GTRegsBase reg-contain the base addr where*/
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 /*the GT64010 internal regs where mapped    */
 /*
  *  GT64010 internal registers
  */
         /* DRAM device coding  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				/*the GT64010 internal regs where mapped    */
 /*
  *  GT64010 internal registers
  */
 /* DRAM device coding  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LOW_RAS0_DREG 0x0400    /*Ras0 low decode address*/
 #define HI_RAS0_DREG  0x0404    /*Ras0 high decode address*/
 #define LOW_RAS1_DREG 0x0408    /*Ras1 low decode address*/
@@ -222,10 +240,14 @@ struct mp_load {
 #define LOW_RAS3_DREG 0x0418    /*Ras3 low decode address*/
 #define HI_RAS3_DREG  0x041c    /*Ras3 high decode address*/
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* I/O CS device coding  */
 =======
 /* I/O CS device coding  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* I/O CS device coding  */
+>>>>>>> refs/remotes/origin/master
 #define LOW_CS0_DREG  0x0420 /* CS0* low decode register */
 #define HI_CS0_DREG   0x0424 /* CS0* high decode register */
 #define LOW_CS1_DREG  0x0428 /* CS1* low decode register */
@@ -235,34 +257,48 @@ struct mp_load {
 #define LOW_CS3_DREG  0x0438 /* CS3* low decode register */
 #define HI_CS3_DREG   0x043c /* CS3* high decode register */
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* Boot PROM device coding */
 #define LOW_BOOTCS_DREG 0x0440 /* Boot CS low decode register */
 #define HI_BOOTCS_DREG 0x0444 /* Boot CS High decode register */
         /* DRAM group coding (for CPU)  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Boot PROM device coding */
 #define LOW_BOOTCS_DREG 0x0440 /* Boot CS low decode register */
 #define HI_BOOTCS_DREG 0x0444 /* Boot CS High decode register */
 /* DRAM group coding (for CPU)  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LO_RAS10_GREG 0x0008    /*Ras1..0 group low decode address*/
 #define HI_RAS10_GREG 0x0010    /*Ras1..0 group high decode address*/
 #define LO_RAS32_GREG 0x0018    /*Ras3..2 group low decode address  */
 #define HI_RAS32_GREG 0x0020    /*Ras3..2 group high decode address  */
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* I/O CS group coding for (CPU)  */
 =======
 /* I/O CS group coding for (CPU)  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* I/O CS group coding for (CPU)  */
+>>>>>>> refs/remotes/origin/master
 #define LO_CS20_GREG  0x0028 /* CS2..0 group low decode register */
 #define HI_CS20_GREG  0x0030 /* CS2..0 group high decode register */
 #define LO_CS3B_GREG  0x0038 /* CS3 & PROM group low decode register */
 #define HI_CS3B_GREG  0x0040 /* CS3 & PROM group high decode register */
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* Galileo specific PCI config. */
 =======
 /* Galileo specific PCI config. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Galileo specific PCI config. */
+>>>>>>> refs/remotes/origin/master
 #define PCI_TIMEOUT_RET 0x0c04 /* Time Out and retry register */
 #define RAS10_BANKSIZE 0x0c08 /* RAS 1..0 group PCI bank size */
 #define RAS32_BANKSIZE 0x0c0c /* RAS 3..2 group PCI bank size */

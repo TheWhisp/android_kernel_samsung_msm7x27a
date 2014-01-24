@@ -437,6 +437,7 @@ static void slab_stats(struct slabinfo *s)
 	printf("Fastpath             %8lu %8lu %3lu %3lu\n",
 		s->alloc_fastpath, s->free_fastpath,
 		s->alloc_fastpath * 100 / total_alloc,
+<<<<<<< HEAD
 		s->free_fastpath * 100 / total_free);
 	printf("Slowpath             %8lu %8lu %3lu %3lu\n",
 		total_alloc - s->alloc_fastpath, s->free_slowpath,
@@ -446,25 +447,52 @@ static void slab_stats(struct slabinfo *s)
 		s->alloc_slab, s->free_slab,
 		s->alloc_slab * 100 / total_alloc,
 		s->free_slab * 100 / total_free);
+=======
+		total_free ? s->free_fastpath * 100 / total_free : 0);
+	printf("Slowpath             %8lu %8lu %3lu %3lu\n",
+		total_alloc - s->alloc_fastpath, s->free_slowpath,
+		(total_alloc - s->alloc_fastpath) * 100 / total_alloc,
+		total_free ? s->free_slowpath * 100 / total_free : 0);
+	printf("Page Alloc           %8lu %8lu %3lu %3lu\n",
+		s->alloc_slab, s->free_slab,
+		s->alloc_slab * 100 / total_alloc,
+		total_free ? s->free_slab * 100 / total_free : 0);
+>>>>>>> refs/remotes/origin/master
 	printf("Add partial          %8lu %8lu %3lu %3lu\n",
 		s->deactivate_to_head + s->deactivate_to_tail,
 		s->free_add_partial,
 		(s->deactivate_to_head + s->deactivate_to_tail) * 100 / total_alloc,
+<<<<<<< HEAD
 		s->free_add_partial * 100 / total_free);
 	printf("Remove partial       %8lu %8lu %3lu %3lu\n",
 		s->alloc_from_partial, s->free_remove_partial,
 		s->alloc_from_partial * 100 / total_alloc,
 		s->free_remove_partial * 100 / total_free);
+=======
+		total_free ? s->free_add_partial * 100 / total_free : 0);
+	printf("Remove partial       %8lu %8lu %3lu %3lu\n",
+		s->alloc_from_partial, s->free_remove_partial,
+		s->alloc_from_partial * 100 / total_alloc,
+		total_free ? s->free_remove_partial * 100 / total_free : 0);
+>>>>>>> refs/remotes/origin/master
 
 	printf("Cpu partial list     %8lu %8lu %3lu %3lu\n",
 		s->cpu_partial_alloc, s->cpu_partial_free,
 		s->cpu_partial_alloc * 100 / total_alloc,
+<<<<<<< HEAD
 		s->cpu_partial_free * 100 / total_free);
+=======
+		total_free ? s->cpu_partial_free * 100 / total_free : 0);
+>>>>>>> refs/remotes/origin/master
 
 	printf("RemoteObj/SlabFrozen %8lu %8lu %3lu %3lu\n",
 		s->deactivate_remote_frees, s->free_frozen,
 		s->deactivate_remote_frees * 100 / total_alloc,
+<<<<<<< HEAD
 		s->free_frozen * 100 / total_free);
+=======
+		total_free ? s->free_frozen * 100 / total_free : 0);
+>>>>>>> refs/remotes/origin/master
 
 	printf("Total                %8lu %8lu\n\n", total_alloc, total_free);
 

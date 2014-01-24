@@ -1,15 +1,21 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2004-2009 Analog Devices Inc.
  *
  * Licensed under the GPL-2 or later.
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright 2004-2009 Analog Devices Inc.
  *
  * Licensed under the GPL-2 or later.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __BFIN_SPINLOCK_H
 #define __BFIN_SPINLOCK_H
@@ -19,10 +25,14 @@
 #else
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage int __raw_spin_is_locked_asm(volatile int *ptr);
 asmlinkage void __raw_spin_lock_asm(volatile int *ptr);

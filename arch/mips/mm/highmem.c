@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+#include <linux/compiler.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/highmem.h>
 #include <linux/sched.h>
@@ -42,10 +46,14 @@ EXPORT_SYMBOL(kunmap);
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *__kmap_atomic(struct page *page)
 =======
 void *kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long vaddr;
 	int idx, type;
@@ -67,15 +75,23 @@ void *kmap_atomic(struct page *page)
 	return (void*) vaddr;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
 =======
 EXPORT_SYMBOL(kmap_atomic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/master
 
 void __kunmap_atomic(void *kvaddr)
 {
 	unsigned long vaddr = (unsigned long) kvaddr & PAGE_MASK;
+<<<<<<< HEAD
 	int type;
+=======
+	int type __maybe_unused;
+>>>>>>> refs/remotes/origin/master
 
 	if (vaddr < FIXADDR_START) { // FIXME
 		pagefault_enable();

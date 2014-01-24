@@ -322,6 +322,7 @@ static u8 k2_stat_check_status(struct ata_port *ap)
 }
 
 #ifdef CONFIG_PPC_OF
+<<<<<<< HEAD
 /*
  * k2_sata_proc_info
  * inout : decides on the direction of the dataflow and the meaning of the
@@ -339,6 +340,13 @@ static int k2_sata_proc_info(struct Scsi_Host *shost, char *page, char **start,
 	struct ata_port *ap;
 	struct device_node *np;
 	int len, index;
+=======
+static int k2_sata_show_info(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct ata_port *ap;
+	struct device_node *np;
+	int index;
+>>>>>>> refs/remotes/origin/master
 
 	/* Find  the ata_port */
 	ap = ata_shost_to_port(shost);
@@ -356,6 +364,7 @@ static int k2_sata_proc_info(struct Scsi_Host *shost, char *page, char **start,
 		const u32 *reg = of_get_property(np, "reg", NULL);
 		if (!reg)
 			continue;
+<<<<<<< HEAD
 		if (index == *reg)
 			break;
 	}
@@ -365,6 +374,14 @@ static int k2_sata_proc_info(struct Scsi_Host *shost, char *page, char **start,
 	len = sprintf(page, "devspec: %s\n", np->full_name);
 
 	return len;
+=======
+		if (index == *reg) {
+			seq_printf(m, "devspec: %s\n", np->full_name);
+			break;
+		}
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_PPC_OF */
 
@@ -372,7 +389,11 @@ static int k2_sata_proc_info(struct Scsi_Host *shost, char *page, char **start,
 static struct scsi_host_template k2_sata_sht = {
 	ATA_BMDMA_SHT(DRV_NAME),
 #ifdef CONFIG_PPC_OF
+<<<<<<< HEAD
 	.proc_info		= k2_sata_proc_info,
+=======
+	.show_info		= k2_sata_show_info,
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
@@ -450,9 +471,12 @@ static void k2_sata_setup_port(struct ata_ioports *port, void __iomem *base)
 static int k2_sata_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct ata_port_info *ppi[] =
 		{ &k2_port_info[ent->driver_data], NULL };
 	struct ata_host *host;
@@ -460,11 +484,15 @@ static int k2_sata_init_one(struct pci_dev *pdev, const struct pci_device_id *en
 	int n_ports, i, rc, bar_pos;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* allocate host */
 	n_ports = 4;
@@ -569,6 +597,7 @@ static struct pci_driver k2_sata_pci_driver = {
 	.remove			= ata_pci_remove_one,
 };
 
+<<<<<<< HEAD
 static int __init k2_sata_init(void)
 {
 	return pci_register_driver(&k2_sata_pci_driver);
@@ -578,12 +607,18 @@ static void __exit k2_sata_exit(void)
 {
 	pci_unregister_driver(&k2_sata_pci_driver);
 }
+=======
+module_pci_driver(k2_sata_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Benjamin Herrenschmidt");
 MODULE_DESCRIPTION("low-level driver for K2 SATA controller");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, k2_sata_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(k2_sata_init);
 module_exit(k2_sata_exit);
+=======
+>>>>>>> refs/remotes/origin/master

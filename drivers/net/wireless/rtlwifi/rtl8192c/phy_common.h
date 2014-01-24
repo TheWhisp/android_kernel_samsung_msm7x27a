@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -43,9 +47,13 @@
 #define RT_CANNOT_IO(hw)		false
 #define HIGHPOWER_RADIOA_ARRAYLEN	22
 
+<<<<<<< HEAD
 #define IQK_ADDA_REG_NUM		16
 #define MAX_TOLERANCE			5
 #define	IQK_DELAY_TIME			1
+=======
+#define MAX_TOLERANCE			5
+>>>>>>> refs/remotes/origin/master
 
 #define	APK_BB_REG_NUM			5
 #define	APK_AFE_REG_NUM			16
@@ -209,8 +217,11 @@ void rtl92c_phy_get_txpower_level(struct ieee80211_hw *hw,
 void rtl92c_phy_set_txpower_level(struct ieee80211_hw *hw, u8 channel);
 bool rtl92c_phy_update_txpower_dbm(struct ieee80211_hw *hw,
 					  long power_indbm);
+<<<<<<< HEAD
 void rtl92c_phy_scan_operation_backup(struct ieee80211_hw *hw,
 					     u8 operation);
+=======
+>>>>>>> refs/remotes/origin/master
 void rtl92c_phy_set_bw_mode(struct ieee80211_hw *hw,
 				   enum nl80211_channel_type ch_type);
 void rtl92c_phy_sw_chnl_callback(struct ieee80211_hw *hw);

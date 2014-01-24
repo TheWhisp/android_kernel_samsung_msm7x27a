@@ -5,7 +5,11 @@
  *
  * Copyright (C) 2008 Nokia Corporation.
  *
+<<<<<<< HEAD
  * Author: Rémi Denis-Courmont <remi.denis-courmont@nokia.com>
+=======
+ * Author: Rémi Denis-Courmont
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,9 +35,13 @@
 
 #include <linux/phonet.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/phonet/phonet.h>
 #include <net/phonet/pep.h>
 #include <net/phonet/gprs.h>
@@ -276,7 +284,11 @@ static int pipe_rcv_status(struct sock *sk, struct sk_buff *skb)
 	hdr = pnp_hdr(skb);
 	if (hdr->data[0] != PN_PEP_TYPE_COMMON) {
 		LIMIT_NETDEBUG(KERN_DEBUG"Phonet unknown PEP type: %u\n",
+<<<<<<< HEAD
 				(unsigned)hdr->data[0]);
+=======
+				(unsigned int)hdr->data[0]);
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 	}
 
@@ -308,7 +320,11 @@ static int pipe_rcv_status(struct sock *sk, struct sk_buff *skb)
 
 	default:
 		LIMIT_NETDEBUG(KERN_DEBUG"Phonet unknown PEP indication: %u\n",
+<<<<<<< HEAD
 				(unsigned)hdr->data[1]);
+=======
+				(unsigned int)hdr->data[1]);
+>>>>>>> refs/remotes/origin/master
 		return -EOPNOTSUPP;
 	}
 	if (wake)
@@ -481,9 +497,15 @@ static void pipe_destruct(struct sock *sk)
 	skb_queue_purge(&pn->ctrlreq_queue);
 }
 
+<<<<<<< HEAD
 static u8 pipe_negotiate_fc(const u8 *fcs, unsigned n)
 {
 	unsigned i;
+=======
+static u8 pipe_negotiate_fc(const u8 *fcs, unsigned int n)
+{
+	unsigned int i;
+>>>>>>> refs/remotes/origin/master
 	u8 final_fc = PN_NO_FLOW_CONTROL;
 
 	for (i = 0; i < n; i++) {
@@ -538,7 +560,10 @@ static int pep_connresp_rcv(struct sock *sk, struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int pep_enableresp_rcv(struct sock *sk, struct sk_buff *skb)
 {
 	struct pnpipehdr *hdr = pnp_hdr(skb);
@@ -562,7 +587,10 @@ static void pipe_start_flow_control(struct sock *sk)
 	pipe_grant_credits(sk, GFP_ATOMIC);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Queue an skb to an actively connected sock.
  * Socket lock must be held. */
 static int pipe_handler_do_rcv(struct sock *sk, struct sk_buff *skb)
@@ -609,6 +637,7 @@ static int pipe_handler_do_rcv(struct sock *sk, struct sk_buff *skb)
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		sk->sk_state = TCP_ESTABLISHED;
 		if (!pn_flow_safe(pn->tx_fc)) {
@@ -617,6 +646,8 @@ static int pipe_handler_do_rcv(struct sock *sk, struct sk_buff *skb)
 		}
 		pipe_grant_credits(sk, GFP_ATOMIC);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pn->init_enable == PN_PIPE_DISABLE)
 			sk->sk_state = TCP_SYN_RECV;
 		else {
@@ -636,7 +667,10 @@ static int pipe_handler_do_rcv(struct sock *sk, struct sk_buff *skb)
 
 		sk->sk_state = TCP_ESTABLISHED;
 		pipe_start_flow_control(sk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case PNS_PEP_DISCONNECT_RESP:
@@ -656,11 +690,18 @@ static struct sock *pep_find_pipe(const struct hlist_head *hlist,
 					const struct sockaddr_pn *dst,
 					u8 pipe_handle)
 {
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct sock *sknode;
 	u16 dobj = pn_sockaddr_get_object(dst);
 
 	sk_for_each(sknode, node, hlist) {
+=======
+	struct sock *sknode;
+	u16 dobj = pn_sockaddr_get_object(dst);
+
+	sk_for_each(sknode, hlist) {
+>>>>>>> refs/remotes/origin/master
 		struct pep_sock *pnnode = pep_sk(sknode);
 
 		/* Ports match, but addresses might not: */
@@ -916,23 +957,32 @@ static int pep_sock_connect(struct sock *sk, struct sockaddr *addr, int len)
 	u8 data[4] = { 0 /* sub-blocks */, PAD, PAD, PAD };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pn->pipe_handle = 1; /* anything but INVALID_HANDLE */
 	err = pipe_handler_request(sk, PNS_PEP_CONNECT_REQ,
 					PN_PIPE_ENABLE, data, 4);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pn->pipe_handle == PN_PIPE_INVALID_HANDLE)
 		pn->pipe_handle = 1; /* anything but INVALID_HANDLE */
 
 	err = pipe_handler_request(sk, PNS_PEP_CONNECT_REQ,
 				pn->init_enable, data, 4);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		pn->pipe_handle = PN_PIPE_INVALID_HANDLE;
 		return err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sk->sk_state = TCP_SYN_SENT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sk->sk_state = TCP_SYN_SENT;
 
@@ -950,7 +1000,10 @@ static int pep_sock_enable(struct sock *sk, struct sockaddr *addr, int len)
 
 	sk->sk_state = TCP_SYN_SENT;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -959,12 +1012,15 @@ static int pep_ioctl(struct sock *sk, int cmd, unsigned long arg)
 	struct pep_sock *pn = pep_sk(sk);
 	int answ;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	switch (cmd) {
 	case SIOCINQ:
 		if (sk->sk_state == TCP_LISTEN)
 			return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = -ENOIOCTLCMD;
 
 	switch (cmd) {
@@ -973,7 +1029,10 @@ static int pep_ioctl(struct sock *sk, int cmd, unsigned long arg)
 			ret = -EINVAL;
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		lock_sock(sk);
 		if (sock_flag(sk, SOCK_URGINLINE) &&
@@ -985,11 +1044,14 @@ static int pep_ioctl(struct sock *sk, int cmd, unsigned long arg)
 			answ = 0;
 		release_sock(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return put_user(answ, (int __user *)arg);
 	}
 
 	return -ENOIOCTLCMD;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = put_user(answ, (int __user *)arg);
 		break;
 
@@ -1006,7 +1068,10 @@ static int pep_ioctl(struct sock *sk, int cmd, unsigned long arg)
 	}
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pep_init(struct sock *sk)
@@ -1070,7 +1135,10 @@ static int pep_setsockopt(struct sock *sk, int level, int optname,
 		goto out_norel;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case PNPIPE_HANDLE:
 		if ((sk->sk_state == TCP_CLOSE) &&
 			(val >= 0) && (val < PN_PIPE_INVALID_HANDLE))
@@ -1083,7 +1151,10 @@ static int pep_setsockopt(struct sock *sk, int level, int optname,
 		pn->init_enable = !!val;
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		err = -ENOPROTOOPT;
 	}
@@ -1120,12 +1191,18 @@ static int pep_getsockopt(struct sock *sk, int level, int optname,
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case PNPIPE_INITSTATE:
 		val = pn->init_enable;
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENOPROTOOPT;
 	}

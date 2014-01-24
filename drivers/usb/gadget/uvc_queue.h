@@ -6,6 +6,10 @@
 #include <linux/kernel.h>
 #include <linux/poll.h>
 #include <linux/videodev2.h>
+<<<<<<< HEAD
+=======
+#include <media/videobuf2-core.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Maximum frame size in bytes, for sanity checking. */
 #define UVC_MAX_FRAME_SIZE	(16*1024*1024)
@@ -25,6 +29,7 @@ enum uvc_buffer_state {
 };
 
 struct uvc_buffer {
+<<<<<<< HEAD
 	unsigned long vma_use_count;
 	struct list_head stream;
 
@@ -55,12 +60,41 @@ struct uvc_video_queue {
 	spinlock_t irqlock;	/* protects irqqueue */
 
 	struct list_head mainqueue;
+=======
+	struct vb2_buffer buf;
+	struct list_head queue;
+
+	enum uvc_buffer_state state;
+	void *mem;
+	unsigned int length;
+	unsigned int bytesused;
+};
+
+#define UVC_QUEUE_DISCONNECTED		(1 << 0)
+#define UVC_QUEUE_DROP_INCOMPLETE	(1 << 1)
+#define UVC_QUEUE_PAUSED		(1 << 2)
+
+struct uvc_video_queue {
+	struct vb2_queue queue;
+	struct mutex mutex;	/* Protects queue */
+
+	unsigned int flags;
+	__u32 sequence;
+
+	unsigned int buf_used;
+
+	spinlock_t irqlock;	/* Protects flags and irqqueue */
+>>>>>>> refs/remotes/origin/master
 	struct list_head irqqueue;
 };
 
 static inline int uvc_queue_streaming(struct uvc_video_queue *queue)
 {
+<<<<<<< HEAD
 	return queue->flags & UVC_QUEUE_STREAMING;
+=======
+	return vb2_is_streaming(&queue->queue);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __KERNEL__ */

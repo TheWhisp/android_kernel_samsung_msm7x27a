@@ -2,7 +2,11 @@
  * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
  *
  * Based on the r8180 driver, which is:
+<<<<<<< HEAD
  * Copyright 2004-2005 Andrea Merello <andreamrl@tiscali.it>, et al.
+=======
+ * Copyright 2004-2005 Andrea Merello <andrea.merello@gmail.com>, et al.
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -31,12 +35,19 @@ static void rtl8192_parse_pci_configuration(struct pci_dev *pdev,
 	struct r8192_priv *priv = (struct r8192_priv *)rtllib_priv(dev);
 
 	u8 tmp;
+<<<<<<< HEAD
 	int pos;
 	u8 LinkCtrlReg;
 
 	pos = pci_find_capability(priv->pdev, PCI_CAP_ID_EXP);
 	pci_read_config_byte(priv->pdev, pos + PCI_EXP_LNKCTL, &LinkCtrlReg);
 	priv->NdisAdapter.LinkCtrlReg = LinkCtrlReg;
+=======
+	u16 LinkCtrlReg;
+
+	pcie_capability_read_word(priv->pdev, PCI_EXP_LNKCTL, &LinkCtrlReg);
+	priv->NdisAdapter.LinkCtrlReg = (u8)LinkCtrlReg;
+>>>>>>> refs/remotes/origin/master
 
 	RT_TRACE(COMP_INIT, "Link Control Register =%x\n",
 		 priv->NdisAdapter.LinkCtrlReg);

@@ -11,9 +11,13 @@
 
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/scatterlist.h>
 
@@ -24,6 +28,45 @@
 #include "core.h"
 #include "mmc_ops.h"
 
+<<<<<<< HEAD
+=======
+#define MMC_OPS_TIMEOUT_MS	(10 * 60 * 1000) /* 10 minute timeout */
+
+static inline int __mmc_send_status(struct mmc_card *card, u32 *status,
+				    bool ignore_crc)
+{
+	int err;
+	struct mmc_command cmd = {0};
+
+	BUG_ON(!card);
+	BUG_ON(!card->host);
+
+	cmd.opcode = MMC_SEND_STATUS;
+	if (!mmc_host_is_spi(card->host))
+		cmd.arg = card->rca << 16;
+	cmd.flags = MMC_RSP_SPI_R2 | MMC_RSP_R1 | MMC_CMD_AC;
+	if (ignore_crc)
+		cmd.flags &= ~MMC_RSP_CRC;
+
+	err = mmc_wait_for_cmd(card->host, &cmd, MMC_CMD_RETRIES);
+	if (err)
+		return err;
+
+	/* NOTE: callers are required to understand the difference
+	 * between "native" and SPI format status words!
+	 */
+	if (status)
+		*status = cmd.resp[0];
+
+	return 0;
+}
+
+int mmc_send_status(struct mmc_card *card, u32 *status)
+{
+	return __mmc_send_status(card, status, false);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int _mmc_select_card(struct mmc_host *host, struct mmc_card *card)
 {
 	int err;
@@ -60,6 +103,7 @@ int mmc_deselect_cards(struct mmc_host *host)
 	return _mmc_select_card(host, NULL);
 }
 
+<<<<<<< HEAD
 int mmc_card_sleepawake(struct mmc_host *host, int sleep)
 {
 	struct mmc_command cmd = {0};
@@ -94,6 +138,8 @@ int mmc_card_sleepawake(struct mmc_host *host, int sleep)
 	return err;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int mmc_go_idle(struct mmc_host *host)
 {
 	int err;
@@ -233,19 +279,31 @@ mmc_send_cxd_native(struct mmc_host *host, u32 arg, u32 *cxd, int opcode)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * NOTE: void *buf, caller for the buf is required to use DMA-capable
+ * buffer or on-stack buffer (with some overhead in callee).
+ */
+>>>>>>> refs/remotes/origin/master
 static int
 mmc_send_cxd_data(struct mmc_card *card, struct mmc_host *host,
 		u32 opcode, void *buf, unsigned len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mmc_request mrq = {0};
 =======
 	struct mmc_request mrq = {NULL};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mmc_request mrq = {NULL};
+>>>>>>> refs/remotes/origin/master
 	struct mmc_command cmd = {0};
 	struct mmc_data data = {0};
 	struct scatterlist sg;
 	void *data_buf;
+<<<<<<< HEAD
 
 	/* dma onto stack is unsafe/nonportable, but callers to this
 	 * routine normally provide temporary on-stack buffers ...
@@ -253,6 +311,21 @@ mmc_send_cxd_data(struct mmc_card *card, struct mmc_host *host,
 	data_buf = kmalloc(len, GFP_KERNEL);
 	if (data_buf == NULL)
 		return -ENOMEM;
+=======
+	int is_on_stack;
+
+	is_on_stack = object_is_on_stack(buf);
+	if (is_on_stack) {
+		/*
+		 * dma onto stack is unsafe/nonportable, but callers to this
+		 * routine normally provide temporary on-stack buffers ...
+		 */
+		data_buf = kmalloc(len, GFP_KERNEL);
+		if (!data_buf)
+			return -ENOMEM;
+	} else
+		data_buf = buf;
+>>>>>>> refs/remotes/origin/master
 
 	mrq.cmd = &cmd;
 	mrq.data = &data;
@@ -287,8 +360,15 @@ mmc_send_cxd_data(struct mmc_card *card, struct mmc_host *host,
 
 	mmc_wait_for_req(host, &mrq);
 
+<<<<<<< HEAD
 	memcpy(buf, data_buf, len);
 	kfree(data_buf);
+=======
+	if (is_on_stack) {
+		memcpy(buf, data_buf, len);
+		kfree(data_buf);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (cmd.error)
 		return cmd.error;
@@ -301,11 +381,16 @@ mmc_send_cxd_data(struct mmc_card *card, struct mmc_host *host,
 int mmc_send_csd(struct mmc_card *card, u32 *csd)
 {
 	int ret, i;
+<<<<<<< HEAD
+=======
+	u32 *csd_tmp;
+>>>>>>> refs/remotes/origin/master
 
 	if (!mmc_host_is_spi(card->host))
 		return mmc_send_cxd_native(card->host, card->rca << 16,
 				csd, MMC_SEND_CSD);
 
+<<<<<<< HEAD
 	ret = mmc_send_cxd_data(card, card->host, MMC_SEND_CSD, csd, 16);
 	if (ret)
 		return ret;
@@ -314,11 +399,31 @@ int mmc_send_csd(struct mmc_card *card, u32 *csd)
 		csd[i] = be32_to_cpu(csd[i]);
 
 	return 0;
+=======
+	csd_tmp = kmalloc(16, GFP_KERNEL);
+	if (!csd_tmp)
+		return -ENOMEM;
+
+	ret = mmc_send_cxd_data(card, card->host, MMC_SEND_CSD, csd_tmp, 16);
+	if (ret)
+		goto err;
+
+	for (i = 0;i < 4;i++)
+		csd[i] = be32_to_cpu(csd_tmp[i]);
+
+err:
+	kfree(csd_tmp);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 int mmc_send_cid(struct mmc_host *host, u32 *cid)
 {
 	int ret, i;
+<<<<<<< HEAD
+=======
+	u32 *cid_tmp;
+>>>>>>> refs/remotes/origin/master
 
 	if (!mmc_host_is_spi(host)) {
 		if (!host->card)
@@ -327,6 +432,7 @@ int mmc_send_cid(struct mmc_host *host, u32 *cid)
 				cid, MMC_SEND_CID);
 	}
 
+<<<<<<< HEAD
 	ret = mmc_send_cxd_data(NULL, host, MMC_SEND_CID, cid, 16);
 	if (ret)
 		return ret;
@@ -335,6 +441,22 @@ int mmc_send_cid(struct mmc_host *host, u32 *cid)
 		cid[i] = be32_to_cpu(cid[i]);
 
 	return 0;
+=======
+	cid_tmp = kmalloc(16, GFP_KERNEL);
+	if (!cid_tmp)
+		return -ENOMEM;
+
+	ret = mmc_send_cxd_data(NULL, host, MMC_SEND_CID, cid_tmp, 16);
+	if (ret)
+		goto err;
+
+	for (i = 0;i < 4;i++)
+		cid[i] = be32_to_cpu(cid_tmp[i]);
+
+err:
+	kfree(cid_tmp);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd)
@@ -343,9 +465,13 @@ int mmc_send_ext_csd(struct mmc_card *card, u8 *ext_csd)
 			ext_csd, 512);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(mmc_send_ext_csd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(mmc_send_ext_csd);
+>>>>>>> refs/remotes/origin/master
 
 int mmc_spi_read_ocr(struct mmc_host *host, int highcap, u32 *ocrp)
 {
@@ -378,13 +504,18 @@ int mmc_spi_set_crc(struct mmc_host *host, int use_crc)
 }
 
 /**
+<<<<<<< HEAD
  *	mmc_switch - modify EXT_CSD register
+=======
+ *	__mmc_switch - modify EXT_CSD register
+>>>>>>> refs/remotes/origin/master
  *	@card: the MMC card associated with the data transfer
  *	@set: cmd set values
  *	@index: EXT_CSD register index
  *	@value: value to program into EXT_CSD register
  *	@timeout_ms: timeout (ms) for operation performed by register write,
  *                   timeout of zero implies maximum possible timeout
+<<<<<<< HEAD
  *
  *	Modifies the EXT_CSD register for selected card.
  */
@@ -394,6 +525,21 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 	int err;
 	struct mmc_command cmd = {0};
 	u32 status;
+=======
+ *	@use_busy_signal: use the busy signal as response type
+ *	@send_status: send status cmd to poll for busy
+ *
+ *	Modifies the EXT_CSD register for selected card.
+ */
+int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
+		unsigned int timeout_ms, bool use_busy_signal, bool send_status)
+{
+	int err;
+	struct mmc_command cmd = {0};
+	unsigned long timeout;
+	u32 status = 0;
+	bool ignore_crc = false;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!card);
 	BUG_ON(!card->host);
@@ -403,6 +549,7 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 		  (index << 16) |
 		  (value << 8) |
 		  set;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cmd.flags = MMC_RSP_SPI_R1B | MMC_RSP_R1B | MMC_CMD_AC;
 =======
@@ -414,11 +561,24 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 		cmd.flags |= MMC_RSP_SPI_R1B | MMC_RSP_R1B;
 >>>>>>> refs/remotes/origin/cm-10.0
 	cmd.cmd_timeout_ms = timeout_ms;
+=======
+	cmd.flags = MMC_CMD_AC;
+	if (use_busy_signal)
+		cmd.flags |= MMC_RSP_SPI_R1B | MMC_RSP_R1B;
+	else
+		cmd.flags |= MMC_RSP_SPI_R1 | MMC_RSP_R1;
+
+
+	cmd.cmd_timeout_ms = timeout_ms;
+	if (index == EXT_CSD_SANITIZE_START)
+		cmd.sanitize_busy = true;
+>>>>>>> refs/remotes/origin/master
 
 	err = mmc_wait_for_cmd(card->host, &cmd, MMC_CMD_RETRIES);
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* No need to check card status in case of BKOPS switch*/
@@ -432,15 +592,58 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 		err = mmc_send_status(card, &status);
 		if (err)
 			return err;
+=======
+	/* No need to check card status in case of unblocking command */
+	if (!use_busy_signal)
+		return 0;
+
+	/*
+	 * Must check status to be sure of no errors
+	 * If CMD13 is to check the busy completion of the timing change,
+	 * disable the check of CRC error.
+	 */
+	if (index == EXT_CSD_HS_TIMING &&
+	    !(card->host->caps & MMC_CAP_WAIT_WHILE_BUSY))
+		ignore_crc = true;
+
+	timeout = jiffies + msecs_to_jiffies(MMC_OPS_TIMEOUT_MS);
+	do {
+		if (send_status) {
+			err = __mmc_send_status(card, &status, ignore_crc);
+			if (err)
+				return err;
+		}
+>>>>>>> refs/remotes/origin/master
 		if (card->host->caps & MMC_CAP_WAIT_WHILE_BUSY)
 			break;
 		if (mmc_host_is_spi(card->host))
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} while (R1_CURRENT_STATE(status) == 7);
 =======
 	} while (R1_CURRENT_STATE(status) == R1_STATE_PRG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		/*
+		 * We are not allowed to issue a status command and the host
+		 * does'nt support MMC_CAP_WAIT_WHILE_BUSY, then we can only
+		 * rely on waiting for the stated timeout to be sufficient.
+		 */
+		if (!send_status) {
+			mmc_delay(timeout_ms);
+			return 0;
+		}
+
+		/* Timeout if the device never leaves the program state. */
+		if (time_after(jiffies, timeout)) {
+			pr_err("%s: Card stuck in programming state! %s\n",
+				mmc_hostname(card->host), __func__);
+			return -ETIMEDOUT;
+		}
+	} while (R1_CURRENT_STATE(status) == R1_STATE_PRG);
+>>>>>>> refs/remotes/origin/master
 
 	if (mmc_host_is_spi(card->host)) {
 		if (status & R1_SPI_ILLEGAL_COMMAND)
@@ -448,10 +651,14 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 	} else {
 		if (status & 0xFDFFA000)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: unexpected status %#x after "
 =======
 			pr_warning("%s: unexpected status %#x after "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warning("%s: unexpected status %#x after "
+>>>>>>> refs/remotes/origin/master
 			       "switch", mmc_hostname(card->host), status);
 		if (status & R1_SWITCH_ERROR)
 			return -EBADMSG;
@@ -459,6 +666,7 @@ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(mmc_switch);
 
 int mmc_send_status(struct mmc_card *card, u32 *status)
@@ -486,16 +694,30 @@ int mmc_send_status(struct mmc_card *card, u32 *status)
 
 	return 0;
 }
+=======
+EXPORT_SYMBOL_GPL(__mmc_switch);
+
+int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
+		unsigned int timeout_ms)
+{
+	return __mmc_switch(card, set, index, value, timeout_ms, true, true);
+}
+EXPORT_SYMBOL_GPL(mmc_switch);
+>>>>>>> refs/remotes/origin/master
 
 static int
 mmc_send_bus_test(struct mmc_card *card, struct mmc_host *host, u8 opcode,
 		  u8 len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mmc_request mrq = {0};
 =======
 	struct mmc_request mrq = {NULL};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mmc_request mrq = {NULL};
+>>>>>>> refs/remotes/origin/master
 	struct mmc_command cmd = {0};
 	struct mmc_data data = {0};
 	struct scatterlist sg;
@@ -518,10 +740,14 @@ mmc_send_bus_test(struct mmc_card *card, struct mmc_host *host, u8 opcode,
 		test_buf = testdata_4bit;
 	else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Invalid bus_width %d\n",
 =======
 		pr_err("%s: Invalid bus_width %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: Invalid bus_width %d\n",
+>>>>>>> refs/remotes/origin/master
 		       mmc_hostname(host), len);
 		kfree(data_buf);
 		return -EINVAL;
@@ -551,9 +777,13 @@ mmc_send_bus_test(struct mmc_card *card, struct mmc_host *host, u8 opcode,
 
 	data.sg = &sg;
 	data.sg_len = 1;
+<<<<<<< HEAD
 	data.timeout_ns = 1000000;
 	data.timeout_clks = 0;
 
+=======
+	mmc_set_data_timeout(&data, card);
+>>>>>>> refs/remotes/origin/master
 	sg_init_one(&sg, data_buf, len);
 	mmc_wait_for_req(host, &mrq);
 	err = 0;
@@ -596,7 +826,10 @@ int mmc_bus_test(struct mmc_card *card, u8 bus_width)
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 int mmc_send_hpi_cmd(struct mmc_card *card, u32 *status)
 {
@@ -618,7 +851,10 @@ int mmc_send_hpi_cmd(struct mmc_card *card, u32 *status)
 
 	cmd.opcode = opcode;
 	cmd.arg = card->rca << 16 | 1;
+<<<<<<< HEAD
 	cmd.cmd_timeout_ms = card->ext_csd.out_of_int_time;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = mmc_wait_for_cmd(card->host, &cmd, 0);
 	if (err) {
@@ -632,4 +868,7 @@ int mmc_send_hpi_cmd(struct mmc_card *card, u32 *status)
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

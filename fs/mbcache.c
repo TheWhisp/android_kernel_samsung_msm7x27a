@@ -86,6 +86,7 @@ static LIST_HEAD(mb_cache_list);
 static LIST_HEAD(mb_cache_lru_list);
 static DEFINE_SPINLOCK(mb_cache_spinlock);
 
+<<<<<<< HEAD
 /*
  * What the mbcache registers as to get shrunk dynamically.
  */
@@ -98,6 +99,8 @@ static struct shrinker mb_cache_shrinker = {
 	.seeks = DEFAULT_SEEKS,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 __mb_cache_entry_is_hashed(struct mb_cache_entry *ce)
 {
@@ -151,7 +154,11 @@ forget:
 
 
 /*
+<<<<<<< HEAD
  * mb_cache_shrink_fn()  memory pressure callback
+=======
+ * mb_cache_shrink_scan()  memory pressure callback
+>>>>>>> refs/remotes/origin/master
  *
  * This function is called by the kernel memory management when memory
  * gets low.
@@ -159,6 +166,7 @@ forget:
  * @shrink: (ignored)
  * @sc: shrink_control passed from reclaim
  *
+<<<<<<< HEAD
  * Returns the number of objects which are present in the cache.
  */
 static int
@@ -170,6 +178,18 @@ mb_cache_shrink_fn(struct shrinker *shrink, struct shrink_control *sc)
 	int count = 0;
 	int nr_to_scan = sc->nr_to_scan;
 	gfp_t gfp_mask = sc->gfp_mask;
+=======
+ * Returns the number of objects freed.
+ */
+static unsigned long
+mb_cache_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+{
+	LIST_HEAD(free_list);
+	struct mb_cache_entry *entry, *tmp;
+	int nr_to_scan = sc->nr_to_scan;
+	gfp_t gfp_mask = sc->gfp_mask;
+	unsigned long freed = 0;
+>>>>>>> refs/remotes/origin/master
 
 	mb_debug("trying to free %d entries", nr_to_scan);
 	spin_lock(&mb_cache_spinlock);
@@ -179,19 +199,50 @@ mb_cache_shrink_fn(struct shrinker *shrink, struct shrink_control *sc)
 				   struct mb_cache_entry, e_lru_list);
 		list_move_tail(&ce->e_lru_list, &free_list);
 		__mb_cache_entry_unhash(ce);
+<<<<<<< HEAD
 	}
+=======
+		freed++;
+	}
+	spin_unlock(&mb_cache_spinlock);
+	list_for_each_entry_safe(entry, tmp, &free_list, e_lru_list) {
+		__mb_cache_entry_forget(entry, gfp_mask);
+	}
+	return freed;
+}
+
+static unsigned long
+mb_cache_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+{
+	struct mb_cache *cache;
+	unsigned long count = 0;
+
+	spin_lock(&mb_cache_spinlock);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(cache, &mb_cache_list, c_cache_list) {
 		mb_debug("cache %s (%d)", cache->c_name,
 			  atomic_read(&cache->c_entry_count));
 		count += atomic_read(&cache->c_entry_count);
 	}
 	spin_unlock(&mb_cache_spinlock);
+<<<<<<< HEAD
 	list_for_each_entry_safe(entry, tmp, &free_list, e_lru_list) {
 		__mb_cache_entry_forget(entry, gfp_mask);
 	}
 	return (count / 100) * sysctl_vfs_cache_pressure;
 }
 
+=======
+
+	return vfs_pressure_ratio(count);
+}
+
+static struct shrinker mb_cache_shrinker = {
+	.count_objects = mb_cache_shrink_count,
+	.scan_objects = mb_cache_shrink_scan,
+	.seeks = DEFAULT_SEEKS,
+};
+>>>>>>> refs/remotes/origin/master
 
 /*
  * mb_cache_create()  create a new cache

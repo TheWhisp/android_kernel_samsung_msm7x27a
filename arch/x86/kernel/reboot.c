@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/reboot.h>
 #include <linux/init.h>
@@ -20,6 +25,7 @@
 #include <asm/virtext.h>
 #include <asm/cpu.h>
 #include <asm/nmi.h>
+<<<<<<< HEAD
 
 #ifdef CONFIG_X86_32
 # include <linux/ctype.h>
@@ -27,6 +33,14 @@
 #else
 # include <asm/x86_init.h>
 #endif
+=======
+#include <asm/smp.h>
+
+#include <linux/ctype.h>
+#include <linux/mc146818rtc.h>
+#include <asm/realmode.h>
+#include <asm/x86_init.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Power off function, if any
@@ -35,6 +49,7 @@ void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
 
 static const struct desc_ptr no_idt = {};
+<<<<<<< HEAD
 static int reboot_mode;
 enum reboot_type reboot_type = BOOT_ACPI;
 int reboot_force;
@@ -55,6 +70,11 @@ static int reboot_cpu = -1;
 #endif
 
 /* This is set if we need to go through the 'emergency' path.
+=======
+
+/*
+ * This is set if we need to go through the 'emergency' path.
+>>>>>>> refs/remotes/origin/master
  * When machine_emergency_restart() is called, we may be on
  * an inconsistent state and won't be able to do a clean cleanup
  */
@@ -63,6 +83,7 @@ static int reboot_emergency;
 /* This is set by the PCI code if either type 1 or type 2 PCI is detected */
 bool port_cf9_safe = false;
 
+<<<<<<< HEAD
 /* reboot=b[ios] | s[mp] | t[riple] | k[bd] | e[fi] [, [w]arm | [c]old] | p[ci]
    warm   Don't set the cold reboot flag
    cold   Set the cold reboot flag
@@ -138,6 +159,8 @@ __setup("reboot=", reboot_setup);
 
 
 #ifdef CONFIG_X86_32
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Reboot options and system auto-detection code provided by
  * Dell Inc. so their systems "just work". :-)
@@ -151,7 +174,68 @@ static int __init set_bios_reboot(const struct dmi_system_id *d)
 {
 	if (reboot_type != BOOT_BIOS) {
 		reboot_type = BOOT_BIOS;
+<<<<<<< HEAD
 		printk(KERN_INFO "%s series board detected. Selecting BIOS-method for reboots.\n", d->ident);
+=======
+		pr_info("%s series board detected. Selecting %s-method for reboots.\n",
+			d->ident, "BIOS");
+	}
+	return 0;
+}
+
+void __noreturn machine_real_restart(unsigned int type)
+{
+	local_irq_disable();
+
+	/*
+	 * Write zero to CMOS register number 0x0f, which the BIOS POST
+	 * routine will recognize as telling it to do a proper reboot.  (Well
+	 * that's what this book in front of me says -- it may only apply to
+	 * the Phoenix BIOS though, it's not clear).  At the same time,
+	 * disable NMIs by setting the top bit in the CMOS address register,
+	 * as we're about to do peculiar things to the CPU.  I'm not sure if
+	 * `outb_p' is needed instead of just `outb'.  Use it to be on the
+	 * safe side.  (Yes, CMOS_WRITE does outb_p's. -  Paul G.)
+	 */
+	spin_lock(&rtc_lock);
+	CMOS_WRITE(0x00, 0x8f);
+	spin_unlock(&rtc_lock);
+
+	/*
+	 * Switch back to the initial page table.
+	 */
+#ifdef CONFIG_X86_32
+	load_cr3(initial_page_table);
+#else
+	write_cr3(real_mode_header->trampoline_pgd);
+#endif
+
+	/* Jump to the identity-mapped low memory code */
+#ifdef CONFIG_X86_32
+	asm volatile("jmpl *%0" : :
+		     "rm" (real_mode_header->machine_real_restart_asm),
+		     "a" (type));
+#else
+	asm volatile("ljmpl *%0" : :
+		     "m" (real_mode_header->machine_real_restart_asm),
+		     "D" (type));
+#endif
+	unreachable();
+}
+#ifdef CONFIG_APM_MODULE
+EXPORT_SYMBOL(machine_real_restart);
+#endif
+
+/*
+ * Some Apple MacBook and MacBookPro's needs reboot=p to be able to reboot
+ */
+static int __init set_pci_reboot(const struct dmi_system_id *d)
+{
+	if (reboot_type != BOOT_CF9) {
+		reboot_type = BOOT_CF9;
+		pr_info("%s series board detected. Selecting %s-method for reboots.\n",
+			d->ident, "PCI");
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -160,11 +244,17 @@ static int __init set_kbd_reboot(const struct dmi_system_id *d)
 {
 	if (reboot_type != BOOT_KBD) {
 		reboot_type = BOOT_KBD;
+<<<<<<< HEAD
 		printk(KERN_INFO "%s series board detected. Selecting KBD-method for reboot.\n", d->ident);
+=======
+		pr_info("%s series board detected. Selecting %s-method for reboot.\n",
+			d->ident, "KBD");
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct dmi_system_id __initdata reboot_dmi_table[] = {
 	{	/* Handle problems with rebooting on Dell E520's */
 		.callback = set_bios_reboot,
@@ -537,6 +627,276 @@ static int __init pci_reboot_init(void)
 	return 0;
 }
 core_initcall(pci_reboot_init);
+=======
+/*
+ * This is a single dmi_table handling all reboot quirks.
+ */
+static struct dmi_system_id __initdata reboot_dmi_table[] = {
+
+	/* Acer */
+	{	/* Handle reboot issue on Acer Aspire one */
+		.callback = set_kbd_reboot,
+		.ident = "Acer Aspire One A110",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "AOA110"),
+		},
+	},
+
+	/* Apple */
+	{	/* Handle problems with rebooting on Apple MacBook5 */
+		.callback = set_pci_reboot,
+		.ident = "Apple MacBook5",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "MacBook5"),
+		},
+	},
+	{	/* Handle problems with rebooting on Apple MacBookPro5 */
+		.callback = set_pci_reboot,
+		.ident = "Apple MacBookPro5",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "MacBookPro5"),
+		},
+	},
+	{	/* Handle problems with rebooting on Apple Macmini3,1 */
+		.callback = set_pci_reboot,
+		.ident = "Apple Macmini3,1",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Macmini3,1"),
+		},
+	},
+	{	/* Handle problems with rebooting on the iMac9,1. */
+		.callback = set_pci_reboot,
+		.ident = "Apple iMac9,1",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "iMac9,1"),
+		},
+	},
+
+	/* ASUS */
+	{	/* Handle problems with rebooting on ASUS P4S800 */
+		.callback = set_bios_reboot,
+		.ident = "ASUS P4S800",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK Computer INC."),
+			DMI_MATCH(DMI_BOARD_NAME, "P4S800"),
+		},
+	},
+
+	/* Dell */
+	{	/* Handle problems with rebooting on Dell DXP061 */
+		.callback = set_bios_reboot,
+		.ident = "Dell DXP061",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Dell DXP061"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell E520's */
+		.callback = set_bios_reboot,
+		.ident = "Dell E520",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Dell DM061"),
+		},
+	},
+	{	/* Handle problems with rebooting on the Latitude E5410. */
+		.callback = set_pci_reboot,
+		.ident = "Dell Latitude E5410",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Latitude E5410"),
+		},
+	},
+	{	/* Handle problems with rebooting on the Latitude E5420. */
+		.callback = set_pci_reboot,
+		.ident = "Dell Latitude E5420",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Latitude E5420"),
+		},
+	},
+	{	/* Handle problems with rebooting on the Latitude E6320. */
+		.callback = set_pci_reboot,
+		.ident = "Dell Latitude E6320",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Latitude E6320"),
+		},
+	},
+	{	/* Handle problems with rebooting on the Latitude E6420. */
+		.callback = set_pci_reboot,
+		.ident = "Dell Latitude E6420",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Latitude E6420"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell Optiplex 330 with 0KP561 */
+		.callback = set_bios_reboot,
+		.ident = "Dell OptiPlex 330",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 330"),
+			DMI_MATCH(DMI_BOARD_NAME, "0KP561"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell Optiplex 360 with 0T656F */
+		.callback = set_bios_reboot,
+		.ident = "Dell OptiPlex 360",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 360"),
+			DMI_MATCH(DMI_BOARD_NAME, "0T656F"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell Optiplex 745's SFF */
+		.callback = set_bios_reboot,
+		.ident = "Dell OptiPlex 745",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 745"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell Optiplex 745's DFF */
+		.callback = set_bios_reboot,
+		.ident = "Dell OptiPlex 745",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 745"),
+			DMI_MATCH(DMI_BOARD_NAME, "0MM599"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell Optiplex 745 with 0KW626 */
+		.callback = set_bios_reboot,
+		.ident = "Dell OptiPlex 745",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 745"),
+			DMI_MATCH(DMI_BOARD_NAME, "0KW626"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell OptiPlex 760 with 0G919G */
+		.callback = set_bios_reboot,
+		.ident = "Dell OptiPlex 760",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 760"),
+			DMI_MATCH(DMI_BOARD_NAME, "0G919G"),
+		},
+	},
+	{	/* Handle problems with rebooting on the OptiPlex 990. */
+		.callback = set_pci_reboot,
+		.ident = "Dell OptiPlex 990",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OptiPlex 990"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell 300's */
+		.callback = set_bios_reboot,
+		.ident = "Dell PowerEdge 300",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Computer Corporation"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "PowerEdge 300/"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell 1300's */
+		.callback = set_bios_reboot,
+		.ident = "Dell PowerEdge 1300",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Computer Corporation"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "PowerEdge 1300/"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell 2400's */
+		.callback = set_bios_reboot,
+		.ident = "Dell PowerEdge 2400",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Computer Corporation"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "PowerEdge 2400"),
+		},
+	},
+	{	/* Handle problems with rebooting on the Dell PowerEdge C6100. */
+		.callback = set_pci_reboot,
+		.ident = "Dell PowerEdge C6100",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "C6100"),
+		},
+	},
+	{	/* Handle problems with rebooting on the Precision M6600. */
+		.callback = set_pci_reboot,
+		.ident = "Dell Precision M6600",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Precision M6600"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell T5400's */
+		.callback = set_bios_reboot,
+		.ident = "Dell Precision T5400",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Precision WorkStation T5400"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell T7400's */
+		.callback = set_bios_reboot,
+		.ident = "Dell Precision T7400",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Precision WorkStation T7400"),
+		},
+	},
+	{	/* Handle problems with rebooting on Dell XPS710 */
+		.callback = set_bios_reboot,
+		.ident = "Dell XPS710",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "Dell XPS710"),
+		},
+	},
+
+	/* Hewlett-Packard */
+	{	/* Handle problems with rebooting on HP laptops */
+		.callback = set_bios_reboot,
+		.ident = "HP Compaq Laptop",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Compaq"),
+		},
+	},
+
+	/* Sony */
+	{	/* Handle problems with rebooting on Sony VGN-Z540N */
+		.callback = set_bios_reboot,
+		.ident = "Sony VGN-Z540N",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "VGN-Z540N"),
+		},
+	},
+
+	{ }
+};
+
+static int __init reboot_init(void)
+{
+	/*
+	 * Only do the DMI check if reboot_type hasn't been overridden
+	 * on the command line
+	 */
+	if (reboot_default)
+		dmi_check_system(reboot_dmi_table);
+	return 0;
+}
+core_initcall(reboot_init);
+>>>>>>> refs/remotes/origin/master
 
 static inline void kb_wait(void)
 {
@@ -550,22 +910,35 @@ static inline void kb_wait(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void vmxoff_nmi(int cpu, struct die_args *args)
 =======
 static void vmxoff_nmi(int cpu, struct pt_regs *regs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void vmxoff_nmi(int cpu, struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	cpu_emergency_vmxoff();
 }
 
+<<<<<<< HEAD
 /* Use NMIs as IPIs to tell all CPUs to disable virtualization
  */
+=======
+/* Use NMIs as IPIs to tell all CPUs to disable virtualization */
+>>>>>>> refs/remotes/origin/master
 static void emergency_vmx_disable_all(void)
 {
 	/* Just make sure we won't change CPUs while doing this */
 	local_irq_disable();
 
+<<<<<<< HEAD
 	/* We need to disable VMX on all CPUs before rebooting, otherwise
+=======
+	/*
+	 * We need to disable VMX on all CPUs before rebooting, otherwise
+>>>>>>> refs/remotes/origin/master
 	 * we risk hanging up the machine, because the CPU ignore INIT
 	 * signals when VMX is enabled.
 	 *
@@ -584,8 +957,12 @@ static void emergency_vmx_disable_all(void)
 	 * is still enabling VMX.
 	 */
 	if (cpu_has_vmx() && cpu_vmx_enabled()) {
+<<<<<<< HEAD
 		/* Disable VMX on this CPU.
 		 */
+=======
+		/* Disable VMX on this CPU. */
+>>>>>>> refs/remotes/origin/master
 		cpu_vmxoff();
 
 		/* Halt and disable VMX on the other CPUs */
@@ -617,6 +994,10 @@ static void native_machine_emergency_restart(void)
 	int i;
 	int attempt = 0;
 	int orig_reboot_type = reboot_type;
+<<<<<<< HEAD
+=======
+	unsigned short mode;
+>>>>>>> refs/remotes/origin/master
 
 	if (reboot_emergency)
 		emergency_vmx_disable_all();
@@ -624,18 +1005,31 @@ static void native_machine_emergency_restart(void)
 	tboot_shutdown(TB_SHUTDOWN_REBOOT);
 
 	/* Tell the BIOS if we want cold or warm reboot */
+<<<<<<< HEAD
 	*((unsigned short *)__va(0x472)) = reboot_mode;
+=======
+	mode = reboot_mode == REBOOT_WARM ? 0x1234 : 0;
+	*((unsigned short *)__va(0x472)) = mode;
+>>>>>>> refs/remotes/origin/master
 
 	for (;;) {
 		/* Could also try the reset bit in the Hammer NB */
 		switch (reboot_type) {
 		case BOOT_KBD:
+<<<<<<< HEAD
 			mach_reboot_fixups(); /* for board specific fixups */
+=======
+			mach_reboot_fixups(); /* For board specific fixups */
+>>>>>>> refs/remotes/origin/master
 
 			for (i = 0; i < 10; i++) {
 				kb_wait();
 				udelay(50);
+<<<<<<< HEAD
 				outb(0xfe, 0x64); /* pulse reset low */
+=======
+				outb(0xfe, 0x64); /* Pulse reset low */
+>>>>>>> refs/remotes/origin/master
 				udelay(50);
 			}
 			if (attempt == 0 && orig_reboot_type == BOOT_ACPI) {
@@ -653,13 +1047,19 @@ static void native_machine_emergency_restart(void)
 			reboot_type = BOOT_KBD;
 			break;
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
+=======
+>>>>>>> refs/remotes/origin/master
 		case BOOT_BIOS:
 			machine_real_restart(MRR_BIOS);
 
 			reboot_type = BOOT_KBD;
 			break;
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 		case BOOT_ACPI:
 			acpi_reboot();
@@ -668,11 +1068,16 @@ static void native_machine_emergency_restart(void)
 
 		case BOOT_EFI:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (efi_enabled)
 =======
 			if (efi_enabled(EFI_RUNTIME_SERVICES))
 >>>>>>> refs/remotes/origin/cm-10.0
 				efi.reset_system(reboot_mode ?
+=======
+			if (efi_enabled(EFI_RUNTIME_SERVICES))
+				efi.reset_system(reboot_mode == REBOOT_WARM ?
+>>>>>>> refs/remotes/origin/master
 						 EFI_RESET_WARM :
 						 EFI_RESET_COLD,
 						 EFI_SUCCESS, 0, NULL);
@@ -681,6 +1086,7 @@ static void native_machine_emergency_restart(void)
 
 		case BOOT_CF9:
 			port_cf9_safe = true;
+<<<<<<< HEAD
 			/* fall through */
 
 		case BOOT_CF9_COND:
@@ -689,6 +1095,19 @@ static void native_machine_emergency_restart(void)
 				outb(cf9|2, 0xcf9); /* Request hard reset */
 				udelay(50);
 				outb(cf9|6, 0xcf9); /* Actually do the reset */
+=======
+			/* Fall through */
+
+		case BOOT_CF9_COND:
+			if (port_cf9_safe) {
+				u8 reboot_code = reboot_mode == REBOOT_WARM ?
+					0x06 : 0x0E;
+				u8 cf9 = inb(0xcf9) & ~reboot_code;
+				outb(cf9|2, 0xcf9); /* Request hard reset */
+				udelay(50);
+				/* Actually do the reset */
+				outb(cf9|reboot_code, 0xcf9);
+>>>>>>> refs/remotes/origin/master
 				udelay(50);
 			}
 			reboot_type = BOOT_KBD;
@@ -700,6 +1119,7 @@ static void native_machine_emergency_restart(void)
 void native_machine_shutdown(void)
 {
 	/* Stop the cpus and apics */
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 
 	/* The boot cpu is always logical cpu 0 */
@@ -722,15 +1142,42 @@ void native_machine_shutdown(void)
 	/* O.K Now that I'm on the appropriate processor,
 	 * stop all of the others.
 	 */
+=======
+#ifdef CONFIG_X86_IO_APIC
+	/*
+	 * Disabling IO APIC before local APIC is a workaround for
+	 * erratum AVR31 in "Intel Atom Processor C2000 Product Family
+	 * Specification Update". In this situation, interrupts that target
+	 * a Logical Processor whose Local APIC is either in the process of
+	 * being hardware disabled or software disabled are neither delivered
+	 * nor discarded. When this erratum occurs, the processor may hang.
+	 *
+	 * Even without the erratum, it still makes sense to quiet IO APIC
+	 * before disabling Local APIC.
+	 */
+	disable_IO_APIC();
+#endif
+
+#ifdef CONFIG_SMP
+	/*
+	 * Stop all of the others. Also disable the local irq to
+	 * not receive the per-cpu timer interrupt which may trigger
+	 * scheduler's load balance.
+	 */
+	local_irq_disable();
+>>>>>>> refs/remotes/origin/master
 	stop_other_cpus();
 #endif
 
 	lapic_shutdown();
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_IO_APIC
 	disable_IO_APIC();
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HPET_TIMER
 	hpet_disable();
 #endif
@@ -748,7 +1195,11 @@ static void __machine_emergency_restart(int emergency)
 
 static void native_machine_restart(char *__unused)
 {
+<<<<<<< HEAD
 	printk("machine restart\n");
+=======
+	pr_notice("machine restart\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (!reboot_force)
 		machine_shutdown();
@@ -757,12 +1208,19 @@ static void native_machine_restart(char *__unused)
 
 static void native_machine_halt(void)
 {
+<<<<<<< HEAD
 	/* stop other cpus and apics */
+=======
+	/* Stop other cpus and apics */
+>>>>>>> refs/remotes/origin/master
 	machine_shutdown();
 
 	tboot_shutdown(TB_SHUTDOWN_HALT);
 
+<<<<<<< HEAD
 	/* stop this cpu */
+=======
+>>>>>>> refs/remotes/origin/master
 	stop_this_cpu(NULL);
 }
 
@@ -773,7 +1231,11 @@ static void native_machine_power_off(void)
 			machine_shutdown();
 		pm_power_off();
 	}
+<<<<<<< HEAD
 	/* a fallback in case there is no PM info available */
+=======
+	/* A fallback in case there is no PM info available */
+>>>>>>> refs/remotes/origin/master
 	tboot_shutdown(TB_SHUTDOWN_HALT);
 }
 
@@ -830,6 +1292,7 @@ static nmi_shootdown_cb shootdown_callback;
 static atomic_t waiting_for_crash_ipi;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int crash_nmi_callback(struct notifier_block *self,
 			unsigned long val, void *data)
 {
@@ -839,29 +1302,44 @@ static int crash_nmi_callback(struct notifier_block *self,
 		return NOTIFY_OK;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int crash_nmi_callback(unsigned int val, struct pt_regs *regs)
 {
 	int cpu;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	cpu = raw_smp_processor_id();
 
 	/* Don't do anything if this handler is invoked on crashing cpu.
+=======
+	cpu = raw_smp_processor_id();
+
+	/*
+	 * Don't do anything if this handler is invoked on crashing cpu.
+>>>>>>> refs/remotes/origin/master
 	 * Otherwise, system will completely hang. Crashing cpu can get
 	 * an NMI if system was initially booted with nmi_watchdog parameter.
 	 */
 	if (cpu == crashing_cpu)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return NOTIFY_STOP;
 	local_irq_disable();
 
 	shootdown_callback(cpu, (struct die_args *)data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return NMI_HANDLED;
 	local_irq_disable();
 
 	shootdown_callback(cpu, regs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	atomic_dec(&waiting_for_crash_ipi);
 	/* Assume hlt works */
@@ -870,10 +1348,14 @@ static int crash_nmi_callback(unsigned int val, struct pt_regs *regs)
 		cpu_relax();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 1;
 =======
 	return NMI_HANDLED;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return NMI_HANDLED;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void smp_send_nmi_allbutself(void)
@@ -881,6 +1363,7 @@ static void smp_send_nmi_allbutself(void)
 	apic->send_IPI_allbutself(NMI_VECTOR);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct notifier_block crash_nmi_nb = {
 	.notifier_call = crash_nmi_callback,
@@ -891,6 +1374,10 @@ static struct notifier_block crash_nmi_nb = {
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 /* Halt all other CPUs, calling the specified function on each of them
+=======
+/*
+ * Halt all other CPUs, calling the specified function on each of them
+>>>>>>> refs/remotes/origin/master
  *
  * This function can be used to halt all other CPUs on crash
  * or emergency reboot time. The function passed as parameter
@@ -901,13 +1388,18 @@ void nmi_shootdown_cpus(nmi_shootdown_cb callback)
 	unsigned long msecs;
 	local_irq_disable();
 
+<<<<<<< HEAD
 	/* Make a note of crashing cpu. Will be used in NMI callback.*/
+=======
+	/* Make a note of crashing cpu. Will be used in NMI callback. */
+>>>>>>> refs/remotes/origin/master
 	crashing_cpu = safe_smp_processor_id();
 
 	shootdown_callback = callback;
 
 	atomic_set(&waiting_for_crash_ipi, num_online_cpus() - 1);
 	/* Would it be better to replace the trap vector here? */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (register_die_notifier(&crash_nmi_nb))
 =======
@@ -916,6 +1408,13 @@ void nmi_shootdown_cpus(nmi_shootdown_cb callback)
 >>>>>>> refs/remotes/origin/cm-10.0
 		return;		/* return what? */
 	/* Ensure the new callback function is set before sending
+=======
+	if (register_nmi_handler(NMI_LOCAL, crash_nmi_callback,
+				 NMI_FLAG_FIRST, "crash"))
+		return;		/* Return what? */
+	/*
+	 * Ensure the new callback function is set before sending
+>>>>>>> refs/remotes/origin/master
 	 * out the NMI
 	 */
 	wmb();

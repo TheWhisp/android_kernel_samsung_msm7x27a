@@ -28,6 +28,7 @@
 #define IRQ_VIC1_BASE	S3C_IRQ(32)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* UART interrupts, each UART has 4 intterupts per channel so
  * use the space between the ISA and S3C main interrupts. Note, these
  * are not in the same order as the S3C24XX series! */
@@ -60,6 +61,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* VIC based IRQs */
 
 #define S3C64XX_IRQ_VIC0(x)	(IRQ_VIC0_BASE + (x))
@@ -140,6 +143,7 @@
 #define IRQ_TC			IRQ_PENDN
 #define IRQ_ADC			S3C64XX_IRQ_VIC1(31)
 
+<<<<<<< HEAD
 #define S3C64XX_TIMER_IRQ(x)	S3C_IRQ(64 + (x))
 
 #define IRQ_TIMER0		S3C64XX_TIMER_IRQ(0)
@@ -148,6 +152,8 @@
 #define IRQ_TIMER3		S3C64XX_TIMER_IRQ(3)
 #define IRQ_TIMER4		S3C64XX_TIMER_IRQ(4)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* compatibility for device defines */
 
 #define IRQ_IIC1		IRQ_S3C6410_IIC1
@@ -202,12 +208,18 @@
 #define IRQ_BOARD_START (IRQ_EINT_GROUP9_BASE + IRQ_EINT_GROUP9_NR + 1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SMDK6410_WM1190_EV1
 =======
 #ifdef CONFIG_MACH_WLF_CRAGG_6410
 #define IRQ_BOARD_NR 160
 #elif defined(CONFIG_SMDK6410_WM1190_EV1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MACH_WLF_CRAGG_6410
+#define IRQ_BOARD_NR 160
+#elif defined(CONFIG_SMDK6410_WM1190_EV1)
+>>>>>>> refs/remotes/origin/master
 #define IRQ_BOARD_NR 64
 #elif defined(CONFIG_SMDK6410_WM1192_EV1)
 #define IRQ_BOARD_NR 64
@@ -225,9 +237,13 @@
 
 #define IRQ_ONENAND	IRQ_ONENAND0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IRQ_I2S0	IRQ_S3C6410_IIS
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IRQ_I2S0	IRQ_S3C6410_IIS
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_MACH_S3C64XX_IRQS_H */
 

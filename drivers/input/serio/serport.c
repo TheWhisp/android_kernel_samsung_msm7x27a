@@ -124,7 +124,11 @@ static void serport_ldisc_receive(struct tty_struct *tty, const unsigned char *c
 {
 	struct serport *serport = (struct serport*) tty->disc_data;
 	unsigned long flags;
+<<<<<<< HEAD
 	unsigned int ch_flags;
+=======
+	unsigned int ch_flags = 0;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	spin_lock_irqsave(&serport->lock, flags);
@@ -133,6 +137,7 @@ static void serport_ldisc_receive(struct tty_struct *tty, const unsigned char *c
 		goto out;
 
 	for (i = 0; i < count; i++) {
+<<<<<<< HEAD
 		switch (fp[i]) {
 		case TTY_FRAME:
 			ch_flags = SERIO_FRAME;
@@ -145,6 +150,22 @@ static void serport_ldisc_receive(struct tty_struct *tty, const unsigned char *c
 		default:
 			ch_flags = 0;
 			break;
+=======
+		if (fp) {
+			switch (fp[i]) {
+			case TTY_FRAME:
+				ch_flags = SERIO_FRAME;
+				break;
+
+			case TTY_PARITY:
+				ch_flags = SERIO_PARITY;
+				break;
+
+			default:
+				ch_flags = 0;
+				break;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 		serio_interrupt(serport->serio, cp[i], ch_flags);

@@ -6,7 +6,12 @@ struct alphatrack_ocmd {
 	unsigned char cmd[8];
 };
 
+<<<<<<< HEAD
 /* These are unused by the present driver but provide documentation for the
+=======
+/*
+ * These are unused by the present driver but provide documentation for the
+>>>>>>> refs/remotes/origin/master
  * userspace API.
  */
 enum LightID {
@@ -58,7 +63,12 @@ enum LightID {
 #define BUTTONMASK_PRESS2      0x00008010
 #define BUTTONMASK_PRESS3      0x00002020
 
+<<<<<<< HEAD
 /* last 3 bytes are the slider position
+=======
+/*
+ * last 3 bytes are the slider position
+>>>>>>> refs/remotes/origin/master
  * 40 is the actual slider moving, the most sig bits, and 3 lsb
  */
 

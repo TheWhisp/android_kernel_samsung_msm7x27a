@@ -38,7 +38,10 @@
 static uint profile_numbers[5] = {0, 1, 2, 3, 4};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void kone_profile_activated(struct kone_device *kone, uint new_profile)
 {
 	kone->actual_profile = new_profile;
@@ -93,7 +96,10 @@ static int kone_send(struct usb_device *usb_dev, uint usb_command,
 	return ((len < 0) ? len : ((len != size) ? -EIO : 0));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* kone_class is used for creating sysfs attributes via roccat char device */
 static struct class *kone_class;
 
@@ -126,10 +132,14 @@ static int kone_check_write(struct usb_device *usb_dev)
 		msleep(80);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		retval = roccat_common_receive(usb_dev,
 =======
 		retval = kone_receive(usb_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		retval = kone_receive(usb_dev,
+>>>>>>> refs/remotes/origin/master
 				kone_command_confirm_write, &data, 1);
 		if (retval)
 			return retval;
@@ -145,7 +155,11 @@ static int kone_check_write(struct usb_device *usb_dev)
 		return 0;
 
 	/* unknown answer */
+<<<<<<< HEAD
 	hid_err(usb_dev, "got retval %d when checking write\n", data);
+=======
+	dev_err(&usb_dev->dev, "got retval %d when checking write\n", data);
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
@@ -158,10 +172,14 @@ static int kone_get_settings(struct usb_device *usb_dev,
 		struct kone_settings *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return roccat_common_receive(usb_dev, kone_command_settings, buf,
 =======
 	return kone_receive(usb_dev, kone_command_settings, buf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return kone_receive(usb_dev, kone_command_settings, buf,
+>>>>>>> refs/remotes/origin/master
 			sizeof(struct kone_settings));
 }
 
@@ -175,10 +193,14 @@ static int kone_set_settings(struct usb_device *usb_dev,
 {
 	int retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = roccat_common_send(usb_dev, kone_command_settings,
 =======
 	retval = kone_send(usb_dev, kone_command_settings,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = kone_send(usb_dev, kone_command_settings,
+>>>>>>> refs/remotes/origin/master
 			settings, sizeof(struct kone_settings));
 	if (retval)
 		return retval;
@@ -252,10 +274,14 @@ static int kone_get_weight(struct usb_device *usb_dev, int *result)
 	uint8_t data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = roccat_common_receive(usb_dev, kone_command_weight, &data, 1);
 =======
 	retval = kone_receive(usb_dev, kone_command_weight, &data, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = kone_receive(usb_dev, kone_command_weight, &data, 1);
+>>>>>>> refs/remotes/origin/master
 
 	if (retval)
 		return retval;
@@ -275,10 +301,14 @@ static int kone_get_firmware_version(struct usb_device *usb_dev, int *result)
 	uint16_t data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = roccat_common_receive(usb_dev, kone_command_firmware_version,
 =======
 	retval = kone_receive(usb_dev, kone_command_firmware_version,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = kone_receive(usb_dev, kone_command_firmware_version,
+>>>>>>> refs/remotes/origin/master
 			&data, 2);
 	if (retval)
 		return retval;
@@ -320,10 +350,14 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
 	struct kone_device *kone = hid_get_drvdata(dev_get_drvdata(dev));
 	struct usb_device *usb_dev = interface_to_usbdev(to_usb_interface(dev));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int retval = 0, difference;
 =======
 	int retval = 0, difference, old_profile;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retval = 0, difference, old_profile;
+>>>>>>> refs/remotes/origin/master
 
 	/* I need to get my data in one piece */
 	if (off != 0 || count != sizeof(struct kone_settings))
@@ -334,6 +368,7 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
 	if (difference) {
 		retval = kone_set_settings(usb_dev,
 				(struct kone_settings const *)buf);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!retval)
 			memcpy(&kone->settings, buf,
@@ -351,6 +386,8 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
 	kone->actual_profile = kone->settings.startup_profile;
 	kone->actual_dpi = kone->profiles[kone->actual_profile - 1].startup_dpi;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (retval) {
 			mutex_unlock(&kone->kone_lock);
 			return retval;
@@ -365,10 +402,18 @@ static ssize_t kone_sysfs_write_settings(struct file *fp, struct kobject *kobj,
 			kone_profile_report(kone, kone->settings.startup_profile);
 	}
 	mutex_unlock(&kone->kone_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return sizeof(struct kone_settings);
 }
+=======
+
+	return sizeof(struct kone_settings);
+}
+static BIN_ATTR(settings, 0660, kone_sysfs_read_settings,
+		kone_sysfs_write_settings, sizeof(struct kone_settings));
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t kone_sysfs_read_profilex(struct file *fp,
 		struct kobject *kobj, struct bin_attribute *attr,
@@ -423,6 +468,22 @@ static ssize_t kone_sysfs_write_profilex(struct file *fp,
 
 	return sizeof(struct kone_profile);
 }
+<<<<<<< HEAD
+=======
+#define PROFILE_ATTR(number)					\
+static struct bin_attribute bin_attr_profile##number = {	\
+	.attr = { .name = "profile" #number, .mode = 0660 },	\
+	.size = sizeof(struct kone_profile),			\
+	.read = kone_sysfs_read_profilex,			\
+	.write = kone_sysfs_write_profilex,			\
+	.private = &profile_numbers[number-1],			\
+};
+PROFILE_ATTR(1);
+PROFILE_ATTR(2);
+PROFILE_ATTR(3);
+PROFILE_ATTR(4);
+PROFILE_ATTR(5);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t kone_sysfs_show_actual_profile(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -431,6 +492,10 @@ static ssize_t kone_sysfs_show_actual_profile(struct device *dev,
 			hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
 	return snprintf(buf, PAGE_SIZE, "%d\n", kone->actual_profile);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(actual_profile, 0440, kone_sysfs_show_actual_profile, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t kone_sysfs_show_actual_dpi(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -439,6 +504,10 @@ static ssize_t kone_sysfs_show_actual_dpi(struct device *dev,
 			hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
 	return snprintf(buf, PAGE_SIZE, "%d\n", kone->actual_dpi);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(actual_dpi, 0440, kone_sysfs_show_actual_dpi, NULL);
+>>>>>>> refs/remotes/origin/master
 
 /* weight is read each time, since we don't get informed when it's changed */
 static ssize_t kone_sysfs_show_weight(struct device *dev,
@@ -461,6 +530,10 @@ static ssize_t kone_sysfs_show_weight(struct device *dev,
 		return retval;
 	return snprintf(buf, PAGE_SIZE, "%d\n", weight);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(weight, 0440, kone_sysfs_show_weight, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t kone_sysfs_show_firmware_version(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -469,6 +542,11 @@ static ssize_t kone_sysfs_show_firmware_version(struct device *dev,
 			hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
 	return snprintf(buf, PAGE_SIZE, "%d\n", kone->firmware_version);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(firmware_version, 0440, kone_sysfs_show_firmware_version,
+		   NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t kone_sysfs_show_tcu(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -483,10 +561,14 @@ static int kone_tcu_command(struct usb_device *usb_dev, int number)
 	unsigned char value;
 	value = number;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return roccat_common_send(usb_dev, kone_command_calibrate, &value, 1);
 =======
 	return kone_send(usb_dev, kone_command_calibrate, &value, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return kone_send(usb_dev, kone_command_calibrate, &value, 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -505,7 +587,11 @@ static ssize_t kone_sysfs_set_tcu(struct device *dev,
 	kone = hid_get_drvdata(dev_get_drvdata(dev));
 	usb_dev = interface_to_usbdev(to_usb_interface(dev));
 
+<<<<<<< HEAD
 	retval = strict_strtoul(buf, 10, &state);
+=======
+	retval = kstrtoul(buf, 10, &state);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -552,7 +638,11 @@ static ssize_t kone_sysfs_set_tcu(struct device *dev,
 
 		retval = kone_set_settings(usb_dev, &kone->settings);
 		if (retval) {
+<<<<<<< HEAD
 			hid_err(usb_dev, "couldn't set tcu state\n");
+=======
+			dev_err(&usb_dev->dev, "couldn't set tcu state\n");
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * try to reread valid settings into buffer overwriting
 			 * first error code
@@ -563,19 +653,32 @@ static ssize_t kone_sysfs_set_tcu(struct device *dev,
 			goto exit_unlock;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* calibration resets profile */
 		kone_profile_activated(kone, kone->settings.startup_profile);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* calibration resets profile */
+		kone_profile_activated(kone, kone->settings.startup_profile);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	retval = size;
 exit_no_settings:
+<<<<<<< HEAD
 	hid_err(usb_dev, "couldn't read settings\n");
+=======
+	dev_err(&usb_dev->dev, "couldn't read settings\n");
+>>>>>>> refs/remotes/origin/master
 exit_unlock:
 	mutex_unlock(&kone->kone_lock);
 	return retval;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(tcu, 0660, kone_sysfs_show_tcu, kone_sysfs_set_tcu);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t kone_sysfs_show_startup_profile(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -597,7 +700,11 @@ static ssize_t kone_sysfs_set_startup_profile(struct device *dev,
 	kone = hid_get_drvdata(dev_get_drvdata(dev));
 	usb_dev = interface_to_usbdev(to_usb_interface(dev));
 
+<<<<<<< HEAD
 	retval = strict_strtoul(buf, 10, &new_startup_profile);
+=======
+	retval = kstrtoul(buf, 10, &new_startup_profile);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -611,6 +718,7 @@ static ssize_t kone_sysfs_set_startup_profile(struct device *dev,
 
 	retval = kone_set_settings(usb_dev, &kone->settings);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	mutex_unlock(&kone->kone_lock);
 
@@ -622,6 +730,8 @@ static ssize_t kone_sysfs_set_startup_profile(struct device *dev,
 	kone->actual_dpi = kone->profiles[kone->actual_profile - 1].startup_dpi;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 		mutex_unlock(&kone->kone_lock);
 		return retval;
@@ -632,18 +742,32 @@ static ssize_t kone_sysfs_set_startup_profile(struct device *dev,
 	kone_profile_report(kone, new_startup_profile);
 
 	mutex_unlock(&kone->kone_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return size;
 }
 
 static struct device_attribute kone_attributes[] = {
+=======
+	return size;
+}
+static DEVICE_ATTR(startup_profile, 0660, kone_sysfs_show_startup_profile,
+		   kone_sysfs_set_startup_profile);
+
+static struct attribute *kone_attrs[] = {
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Read actual dpi settings.
 	 * Returns raw value for further processing. Refer to enum
 	 * kone_polling_rates to get real value.
 	 */
+<<<<<<< HEAD
 	__ATTR(actual_dpi, 0440, kone_sysfs_show_actual_dpi, NULL),
 	__ATTR(actual_profile, 0440, kone_sysfs_show_actual_profile, NULL),
+=======
+	&dev_attr_actual_dpi.attr,
+	&dev_attr_actual_profile.attr,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The mouse can be equipped with one of four supplied weights from 5
@@ -652,7 +776,11 @@ static struct device_attribute kone_attributes[] = {
 	 * by software. Refer to enum kone_weights to get corresponding real
 	 * weight.
 	 */
+<<<<<<< HEAD
 	__ATTR(weight, 0440, kone_sysfs_show_weight, NULL),
+=======
+	&dev_attr_weight.attr,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Prints firmware version stored in mouse as integer.
@@ -660,14 +788,19 @@ static struct device_attribute kone_attributes[] = {
 	 * to get the real version number the decimal point has to be shifted 2
 	 * positions to the left. E.g. a value of 138 means 1.38.
 	 */
+<<<<<<< HEAD
 	__ATTR(firmware_version, 0440,
 			kone_sysfs_show_firmware_version, NULL),
+=======
+	&dev_attr_firmware_version.attr,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Prints state of Tracking Control Unit as number where 0 = off and
 	 * 1 = on. Writing 0 deactivates tcu and writing 1 calibrates and
 	 * activates the tcu
 	 */
+<<<<<<< HEAD
 	__ATTR(tcu, 0660, kone_sysfs_show_tcu, kone_sysfs_set_tcu),
 
 	/* Prints and takes the number of the profile the mouse starts with */
@@ -720,6 +853,33 @@ static struct bin_attribute kone_bin_attributes[] = {
 		.private = &profile_numbers[4]
 	},
 	__ATTR_NULL
+=======
+	&dev_attr_tcu.attr,
+
+	/* Prints and takes the number of the profile the mouse starts with */
+	&dev_attr_startup_profile.attr,
+	NULL,
+};
+
+static struct bin_attribute *kone_bin_attributes[] = {
+	&bin_attr_settings,
+	&bin_attr_profile1,
+	&bin_attr_profile2,
+	&bin_attr_profile3,
+	&bin_attr_profile4,
+	&bin_attr_profile5,
+	NULL,
+};
+
+static const struct attribute_group kone_group = {
+	.attrs = kone_attrs,
+	.bin_attrs = kone_bin_attributes,
+};
+
+static const struct attribute_group *kone_groups[] = {
+	&kone_group,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int kone_init_kone_device_struct(struct usb_device *usb_dev,
@@ -745,11 +905,15 @@ static int kone_init_kone_device_struct(struct usb_device *usb_dev,
 		return retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kone->actual_profile = kone->settings.startup_profile;
 	kone->actual_dpi = kone->profiles[kone->actual_profile].startup_dpi;
 =======
 	kone_profile_activated(kone, kone->settings.startup_profile);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kone_profile_activated(kone, kone->settings.startup_profile);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -860,16 +1024,22 @@ static void kone_keep_values_up_to_date(struct kone_device *kone,
 	switch (event->event) {
 	case kone_mouse_event_switch_profile:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case kone_mouse_event_osd_profile:
 		kone->actual_profile = event->value;
 		kone->actual_dpi = kone->profiles[kone->actual_profile - 1].
 				startup_dpi;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		kone->actual_dpi = kone->profiles[event->value - 1].
 				startup_dpi;
 	case kone_mouse_event_osd_profile:
 		kone->actual_profile = event->value;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case kone_mouse_event_switch_dpi:
 	case kone_mouse_event_osd_dpi:
@@ -895,8 +1065,14 @@ static void kone_report_to_chrdev(struct kone_device const *kone,
 				(uint8_t *)&roccat_report);
 		break;
 	case kone_mouse_event_call_overlong_macro:
+<<<<<<< HEAD
 		if (event->value == kone_keystroke_action_press) {
 			roccat_report.event = kone_mouse_event_call_overlong_macro;
+=======
+	case kone_mouse_event_multimedia:
+		if (event->value == kone_keystroke_action_press) {
+			roccat_report.event = event->event;
+>>>>>>> refs/remotes/origin/master
 			roccat_report.value = kone->actual_profile;
 			roccat_report.key = event->macro_key;
 			roccat_report_event(kone->chrdev_minor,
@@ -923,11 +1099,17 @@ static int kone_raw_event(struct hid_device *hdev, struct hid_report *report,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (kone == NULL)
 		return 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kone == NULL)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Firmware 1.38 introduced new behaviour for tilt and special buttons.
 	 * Pressed button is reported in each movement event.
@@ -970,8 +1152,12 @@ static int __init kone_init(void)
 	kone_class = class_create(THIS_MODULE, "kone");
 	if (IS_ERR(kone_class))
 		return PTR_ERR(kone_class);
+<<<<<<< HEAD
 	kone_class->dev_attrs = kone_attributes;
 	kone_class->dev_bin_attrs = kone_bin_attributes;
+=======
+	kone_class->dev_groups = kone_groups;
+>>>>>>> refs/remotes/origin/master
 
 	retval = hid_register_driver(&kone_driver);
 	if (retval)

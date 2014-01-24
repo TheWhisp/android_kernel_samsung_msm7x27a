@@ -572,7 +572,11 @@ static void falcon_get_lock(void)
 }
 
 
+<<<<<<< HEAD
 int __init atari_scsi_detect(struct scsi_host_template *host)
+=======
+static int __init atari_scsi_detect(struct scsi_host_template *host)
+>>>>>>> refs/remotes/origin/master
 {
 	static int called = 0;
 	struct Scsi_Host *instance;
@@ -724,12 +728,17 @@ int __init atari_scsi_detect(struct scsi_host_template *host)
 	return 1;
 }
 
+<<<<<<< HEAD
 int atari_scsi_release(struct Scsi_Host *sh)
+=======
+static int atari_scsi_release(struct Scsi_Host *sh)
+>>>>>>> refs/remotes/origin/master
 {
 	if (IS_A_TT())
 		free_irq(IRQ_TT_MFP_SCSI, sh);
 	if (atari_dma_buffer)
 		atari_stram_free(atari_dma_buffer);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	NCR5380_exit(sh);
@@ -738,16 +747,34 @@ int atari_scsi_release(struct Scsi_Host *sh)
 }
 
 void __init atari_scsi_setup(char *str, int *ints)
+=======
+	NCR5380_exit(sh);
+	return 1;
+}
+
+#ifndef MODULE
+static int __init atari_scsi_setup(char *str)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Format of atascsi parameter is:
 	 *   atascsi=<can_queue>,<cmd_per_lun>,<sg_tablesize>,<hostid>,<use_tags>
 	 * Defaults depend on TT or Falcon, hostid determined at run time.
 	 * Negative values mean don't change.
 	 */
+<<<<<<< HEAD
 
 	if (ints[0] < 1) {
 		printk("atari_scsi_setup: no arguments!\n");
 		return;
+=======
+	int ints[6];
+
+	get_options(str, ARRAY_SIZE(ints), ints);
+
+	if (ints[0] < 1) {
+		printk("atari_scsi_setup: no arguments!\n");
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ints[0] >= 1) {
@@ -780,9 +807,20 @@ void __init atari_scsi_setup(char *str, int *ints)
 			setup_use_tagged_queuing = !!ints[5];
 	}
 #endif
+<<<<<<< HEAD
 }
 
 int atari_scsi_bus_reset(Scsi_Cmnd *cmd)
+=======
+
+	return 1;
+}
+
+__setup("atascsi=", atari_scsi_setup);
+#endif /* !MODULE */
+
+static int atari_scsi_bus_reset(Scsi_Cmnd *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	int rv;
 	struct NCR5380_hostdata *hostdata =
@@ -855,7 +893,11 @@ static void __init atari_scsi_reset_boot(void)
 #endif
 
 
+<<<<<<< HEAD
 const char *atari_scsi_info(struct Scsi_Host *host)
+=======
+static const char *atari_scsi_info(struct Scsi_Host *host)
+>>>>>>> refs/remotes/origin/master
 {
 	/* atari_scsi_detect() is verbose enough... */
 	static const char string[] = "Atari native SCSI";
@@ -865,8 +907,14 @@ const char *atari_scsi_info(struct Scsi_Host *host)
 
 #if defined(REAL_DMA)
 
+<<<<<<< HEAD
 unsigned long atari_scsi_dma_setup(struct Scsi_Host *instance, void *data,
 				   unsigned long count, int dir)
+=======
+static unsigned long atari_scsi_dma_setup(struct Scsi_Host *instance,
+					  void *data, unsigned long count,
+					  int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long addr = virt_to_phys(data);
 
@@ -1093,7 +1141,11 @@ static void atari_scsi_falcon_reg_write(unsigned char reg, unsigned char value)
 #include "atari_NCR5380.c"
 
 static struct scsi_host_template driver_template = {
+<<<<<<< HEAD
 	.proc_info		= atari_scsi_proc_info,
+=======
+	.show_info		= atari_scsi_show_info,
+>>>>>>> refs/remotes/origin/master
 	.name			= "Atari native SCSI",
 	.detect			= atari_scsi_detect,
 	.release		= atari_scsi_release,

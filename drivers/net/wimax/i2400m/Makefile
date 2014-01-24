@@ -1,7 +1,10 @@
 
 obj-$(CONFIG_WIMAX_I2400M) += i2400m.o
 obj-$(CONFIG_WIMAX_I2400M_USB) += i2400m-usb.o
+<<<<<<< HEAD
 obj-$(CONFIG_WIMAX_I2400M_SDIO) += i2400m-sdio.o
+=======
+>>>>>>> refs/remotes/origin/master
 
 i2400m-y :=		\
 	control.o	\
@@ -21,6 +24,7 @@ i2400m-usb-y :=			\
 	usb-tx.o		\
 	usb-rx.o		\
 	usb.o
+<<<<<<< HEAD
 
 
 i2400m-sdio-y := 		\
@@ -28,3 +32,5 @@ i2400m-sdio-y := 		\
 	sdio-tx.o   		\
 	sdio-fw.o	 	\
 	sdio-rx.o
+=======
+>>>>>>> refs/remotes/origin/master

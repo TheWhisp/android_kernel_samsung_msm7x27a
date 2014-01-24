@@ -19,6 +19,7 @@ struct insn {
 
 struct insn_args {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long *target;
 	struct insn *insn;
 	ssize_t size;
@@ -40,6 +41,8 @@ void arch_jump_label_transform(struct jump_entry *entry,
 	struct insn_args args;
 	struct insn insn;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct jump_entry *entry;
 	enum jump_label_type type;
 };
@@ -49,7 +52,10 @@ static void __jump_label_transform(struct jump_entry *entry,
 {
 	struct insn insn;
 	int rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (type == JUMP_LABEL_ENABLE) {
 		/* brcl 15,offset */
@@ -62,12 +68,15 @@ static void __jump_label_transform(struct jump_entry *entry,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	args.target = (void *) entry->code;
 	args.insn = &insn;
 	args.size = JUMP_LABEL_NOP_SIZE;
 
 	stop_machine(__arch_jump_label_transform, &args, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = probe_kernel_write((void *)entry->code, &insn, JUMP_LABEL_NOP_SIZE);
 	WARN_ON_ONCE(rc < 0);
 }
@@ -95,7 +104,10 @@ void arch_jump_label_transform_static(struct jump_entry *entry,
 				      enum jump_label_type type)
 {
 	__jump_label_transform(entry, type);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif

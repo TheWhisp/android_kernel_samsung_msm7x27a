@@ -25,8 +25,13 @@
  *          Alex Deucher
  *          Jerome Glisse
  */
+<<<<<<< HEAD
 #include "drmP.h"
 #include "radeon_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_reg.h"
 #include "radeon.h"
 #include "atom.h"
@@ -97,10 +102,14 @@ uint32_t radeon_legacy_get_memory_clock(struct radeon_device *rdev)
  * tree. Hopefully, ATI OF driver is kind enough to fill these
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool __devinit radeon_read_clocks_OF(struct drm_device *dev)
 =======
 static bool radeon_read_clocks_OF(struct drm_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool radeon_read_clocks_OF(struct drm_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct radeon_device *rdev = dev->dev_private;
 	struct device_node *dp = rdev->pdev->dev.of_node;
@@ -171,10 +180,14 @@ static bool radeon_read_clocks_OF(struct drm_device *dev)
 }
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool __devinit radeon_read_clocks_OF(struct drm_device *dev)
 =======
 static bool radeon_read_clocks_OF(struct drm_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool radeon_read_clocks_OF(struct drm_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return false;
 }
@@ -343,10 +356,14 @@ void radeon_get_clock_info(struct drm_device *dev)
 	if (!rdev->clock.default_sclk)
 		rdev->clock.default_sclk = radeon_get_engine_clock(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((!rdev->clock.default_mclk) && rdev->asic->get_memory_clock)
 =======
 	if ((!rdev->clock.default_mclk) && rdev->asic->pm.get_memory_clock)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((!rdev->clock.default_mclk) && rdev->asic->pm.get_memory_clock)
+>>>>>>> refs/remotes/origin/master
 		rdev->clock.default_mclk = radeon_get_memory_clock(rdev);
 
 	rdev->pm.current_sclk = rdev->clock.default_sclk;
@@ -646,10 +663,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 				tmp |= RADEON_SCLK_FORCE_CP;
 				WREG32_PLL(RADEON_SCLK_CNTL, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				udelay(15000);
 =======
 				mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mdelay(15);
+>>>>>>> refs/remotes/origin/master
 
 				tmp = RREG32_PLL(R300_SCLK_CNTL2);
 				tmp &= ~(R300_SCLK_FORCE_TCL |
@@ -668,19 +689,27 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 				(0x01 << RADEON_ACTIVE_HILO_LAT_SHIFT));
 			WREG32_PLL(RADEON_CLK_PWRMGT_CNTL, tmp);
 <<<<<<< HEAD
-			udelay(15000);
-=======
-			mdelay(15);
->>>>>>> refs/remotes/origin/cm-10.0
-
-			tmp = RREG32_PLL(RADEON_CLK_PIN_CNTL);
-			tmp |= RADEON_SCLK_DYN_START_CNTL;
-			WREG32_PLL(RADEON_CLK_PIN_CNTL, tmp);
 <<<<<<< HEAD
 			udelay(15000);
 =======
 			mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdelay(15);
+>>>>>>> refs/remotes/origin/master
+
+			tmp = RREG32_PLL(RADEON_CLK_PIN_CNTL);
+			tmp |= RADEON_SCLK_DYN_START_CNTL;
+			WREG32_PLL(RADEON_CLK_PIN_CNTL, tmp);
+<<<<<<< HEAD
+<<<<<<< HEAD
+			udelay(15000);
+=======
+			mdelay(15);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdelay(15);
+>>>>>>> refs/remotes/origin/master
 
 			/* When DRI is enabled, setting DYN_STOP_LAT to zero can cause some R200
 			   to lockup randomly, leave them as set by BIOS.
@@ -721,10 +750,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 				}
 				WREG32_PLL(RADEON_SCLK_MORE_CNTL, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				udelay(15000);
 =======
 				mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mdelay(15);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			/* RV200::A11 A12, RV250::A11 A12 */
@@ -738,10 +771,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 				WREG32_PLL(RADEON_PLL_PWRMGT_CNTL, tmp);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			udelay(15000);
 =======
 			mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdelay(15);
+>>>>>>> refs/remotes/origin/master
 
 			/*enable dynamic mode for display clocks (PIXCLK and PIX2CLK) */
 			tmp = RREG32_PLL(RADEON_PIXCLKS_CNTL);
@@ -755,10 +792,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 
 			WREG32_PLL(RADEON_PIXCLKS_CNTL, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			udelay(15000);
 =======
 			mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdelay(15);
+>>>>>>> refs/remotes/origin/master
 
 			tmp = RREG32_PLL(RADEON_VCLK_ECP_CNTL);
 			tmp |= (RADEON_PIXCLK_ALWAYS_ONb |
@@ -766,10 +807,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 
 			WREG32_PLL(RADEON_VCLK_ECP_CNTL, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			udelay(15000);
 =======
 			mdelay(15);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdelay(15);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		/* Turn everything OFF (ForceON to everything) */
@@ -902,10 +947,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 			WREG32_PLL(RADEON_SCLK_CNTL, tmp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			udelay(16000);
 =======
 			mdelay(16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdelay(16);
+>>>>>>> refs/remotes/origin/master
 
 			if ((rdev->family == CHIP_R300) ||
 			    (rdev->family == CHIP_R350)) {
@@ -915,10 +964,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 					R300_SCLK_FORCE_CBA);
 				WREG32_PLL(R300_SCLK_CNTL2, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				udelay(16000);
 =======
 				mdelay(16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mdelay(16);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			if (rdev->flags & RADEON_IS_IGP) {
@@ -927,10 +980,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 					 RADEON_FORCEON_YCLKA);
 				WREG32_PLL(RADEON_MCLK_CNTL, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				udelay(16000);
 =======
 				mdelay(16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mdelay(16);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			if ((rdev->family == CHIP_RV200) ||
@@ -940,10 +997,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 				tmp |= RADEON_SCLK_MORE_FORCEON;
 				WREG32_PLL(RADEON_SCLK_MORE_CNTL, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				udelay(16000);
 =======
 				mdelay(16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mdelay(16);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			tmp = RREG32_PLL(RADEON_PIXCLKS_CNTL);
@@ -957,10 +1018,14 @@ void radeon_legacy_set_clock_gating(struct radeon_device *rdev, int enable)
 
 			WREG32_PLL(RADEON_PIXCLKS_CNTL, tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			udelay(16000);
 =======
 			mdelay(16);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mdelay(16);
+>>>>>>> refs/remotes/origin/master
 
 			tmp = RREG32_PLL(RADEON_VCLK_ECP_CNTL);
 			tmp &= ~(RADEON_PIXCLK_ALWAYS_ONb |

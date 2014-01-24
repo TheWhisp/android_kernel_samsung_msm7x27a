@@ -196,6 +196,7 @@ chmod 0644 /dev/cpu/microcode
 as root before you can use this.  You'll probably also want to
 get the user-space microcode_ctl utility to use with this.
 
+<<<<<<< HEAD
 Powertweak
 ----------
 
@@ -203,6 +204,8 @@ If you are running v0.1.17 or earlier, you should upgrade to
 version v0.99.0 or higher. Running old versions may cause problems
 with programs using shared memory.
 
+=======
+>>>>>>> refs/remotes/origin/master
 udev
 ----
 udev is a userspace application for populating /dev dynamically with
@@ -366,10 +369,13 @@ Intel P6 microcode
 ------------------
 o  <http://www.urbanmyth.org/microcode/>
 
+<<<<<<< HEAD
 Powertweak
 ----------
 o  <http://powertweak.sourceforge.net/>
 
+=======
+>>>>>>> refs/remotes/origin/master
 udev
 ----
 o <http://www.kernel.org/pub/linux/utils/kernel/hotplug/udev.html>

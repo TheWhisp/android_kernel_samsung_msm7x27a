@@ -1,6 +1,7 @@
 #ifndef _LINUX_RESOURCE_H
 #define _LINUX_RESOURCE_H
 
+<<<<<<< HEAD
 #include <linux/time.h>
 #include <linux/types.h>
 
@@ -77,6 +78,10 @@ struct rlimit64 {
 #include <asm/resource.h>
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/resource.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct task_struct;
 
@@ -84,6 +89,9 @@ int getrusage(struct task_struct *p, int who, struct rusage __user *ru);
 int do_prlimit(struct task_struct *tsk, unsigned int resource,
 		struct rlimit *new_rlim, struct rlimit *old_rlim);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -34,7 +34,11 @@ static struct scsi_host_template bvme6000_scsi_driver_template = {
 
 static struct platform_device *bvme6000_scsi_device;
 
+<<<<<<< HEAD
 static __devinit int
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 bvme6000_probe(struct platform_device *dev)
 {
 	struct Scsi_Host *host;
@@ -88,7 +92,11 @@ bvme6000_probe(struct platform_device *dev)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static __devexit int
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 bvme6000_device_remove(struct platform_device *dev)
 {
 	struct Scsi_Host *host = platform_get_drvdata(dev);
@@ -108,7 +116,11 @@ static struct platform_driver bvme6000_scsi_driver = {
 		.owner		= THIS_MODULE,
 	},
 	.probe		= bvme6000_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bvme6000_device_remove),
+=======
+	.remove		= bvme6000_device_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init bvme6000_scsi_init(void)

@@ -1,6 +1,7 @@
 #ifndef _M68K_BARRIER_H
 #define _M68K_BARRIER_H
 
+<<<<<<< HEAD
 /*
  * Force strict CPU ordering.
  * Not really required on m68k...
@@ -16,5 +17,10 @@
 #define smp_rmb()	barrier()
 #define smp_wmb()	barrier()
 #define smp_read_barrier_depends()	((void)0)
+=======
+#define nop()		do { asm volatile ("nop"); barrier(); } while (0)
+
+#include <asm-generic/barrier.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _M68K_BARRIER_H */

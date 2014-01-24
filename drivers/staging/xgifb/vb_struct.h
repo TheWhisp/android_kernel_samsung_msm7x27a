@@ -1,6 +1,7 @@
 #ifndef _VB_STRUCT_
 #define _VB_STRUCT_
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef _INITNEW_
 #define EXTERN
@@ -24,6 +25,9 @@ struct XGI_LCDDataStruct {
 =======
 #include "../../video/sis/vstruct.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "../../video/sis/vstruct.h"
+>>>>>>> refs/remotes/origin/master
 
 struct XGI_LVDSCRT1HDataStruct {
 	unsigned char Reg[8];
@@ -33,6 +37,7 @@ struct XGI_LVDSCRT1VDataStruct {
 	unsigned char Reg[7];
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct XGI_TVDataStruct {
 	unsigned short RVBHCMAX;
@@ -97,16 +102,22 @@ struct XGI_StandTableStruct {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct XGI_ExtStruct {
 	unsigned char Ext_ModeID;
 	unsigned short Ext_ModeFlag;
 	unsigned short Ext_ModeInfo;
+<<<<<<< HEAD
 	unsigned short Ext_Point;
 	unsigned short Ext_VESAID;
 	unsigned char Ext_VESAMEMSize;
 	unsigned char Ext_RESINFO;
 	unsigned char VB_ExtTVFlickerIndex;
 	unsigned char VB_ExtTVEdgeIndex;
+=======
+	unsigned char Ext_RESINFO;
+>>>>>>> refs/remotes/origin/master
 	unsigned char VB_ExtTVYFilterIndex;
 	unsigned char REFindex;
 };
@@ -120,6 +131,7 @@ struct XGI_Ext2Struct {
 	unsigned char  ModeID;
 	unsigned short XRes;
 	unsigned short YRes;
+<<<<<<< HEAD
 	/* unsigned short ROM_OFFSET; */
 };
 
@@ -132,11 +144,16 @@ struct XGI_MCLKDataStruct {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 struct XGI_ECLKDataStruct {
 	unsigned char SR2E, SR2F, SR30;
 	unsigned short CLOCK;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct XGI_VCLKDataStruct {
 	unsigned char SR2B, SR2C;
@@ -166,6 +183,8 @@ struct XGI_LCDNBDesStruct {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*add for new UNIVGABIOS*/
 struct XGI_LCDDesStruct {
 	unsigned short LCDHDES;
@@ -174,6 +193,7 @@ struct XGI_LCDDesStruct {
 	unsigned short LCDVRS;
 };
 
+<<<<<<< HEAD
 struct XGI_LCDDataTablStruct {
 	unsigned char  PANELID;
 	unsigned short MASK;
@@ -205,6 +225,8 @@ struct XGI330_LVDSDataStruct {
 	unsigned short LCDVT;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct XGI330_LCDDataDesStruct2 {
 	unsigned short LCDHDES;
 	unsigned short LCDHRS;
@@ -214,6 +236,7 @@ struct XGI330_LCDDataDesStruct2 {
 	unsigned short LCDVSync;
 };
 
+<<<<<<< HEAD
 struct XGI330_LCDDataStruct {
 	unsigned short RVBHCMAX;
 	unsigned short RVBHCFACT;
@@ -236,16 +259,23 @@ struct XGI330_TVDataStruct {
 	unsigned short HALFRVBHRS;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct XGI330_LCDDataTablStruct {
 	unsigned char  PANELID;
 	unsigned short MASK;
 	unsigned short CAP;
+<<<<<<< HEAD
 	unsigned short DATAPTR;
+=======
+	void const *DATAPTR;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct XGI330_TVDataTablStruct {
 	unsigned short MASK;
 	unsigned short CAP;
+<<<<<<< HEAD
 	unsigned short DATAPTR;
 };
 
@@ -257,6 +287,12 @@ struct XGI330_CHTVDataStruct {
 	unsigned short LCDVT;
 };
 
+=======
+	struct SiS_TVData const *DATAPTR;
+};
+
+
+>>>>>>> refs/remotes/origin/master
 struct XGI_TimingHStruct {
 	unsigned char data[8];
 };
@@ -265,6 +301,7 @@ struct XGI_TimingVStruct {
 	unsigned char data[7];
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct XGI_CH7007TV_TimingHStruct {
 	unsigned char data[10];
@@ -276,10 +313,13 @@ struct XGI_CH7007TV_TimingVStruct {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct XGI_XG21CRT1Struct {
 	unsigned char ModeID, CR02, CR03, CR15, CR16;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct XGI330_CHTVRegDataStruct {
 	unsigned char Reg[16];
@@ -292,6 +332,11 @@ struct XGI330_LCDCapStruct {
 	unsigned short	LCD_Capability;
 	unsigned char	LCD_SetFlag;
 	unsigned char	LCD_DelayCompensation;
+=======
+struct XGI330_LCDCapStruct {
+	unsigned char	LCD_ID;
+	unsigned short	LCD_Capability;
+>>>>>>> refs/remotes/origin/master
 	unsigned char	LCD_HSyncWidth;
 	unsigned char	LCD_VSyncWidth;
 	unsigned char	LCD_VCLK;
@@ -299,6 +344,7 @@ struct XGI330_LCDCapStruct {
 	unsigned char	LCDA_VCLKData2;
 	unsigned char	LCUCHAR_VCLKData1;
 	unsigned char	LCUCHAR_VCLKData2;
+<<<<<<< HEAD
 	unsigned char	PSC_S1;
 	unsigned char	PSC_S2;
 	unsigned char	PSC_S3;
@@ -309,6 +355,8 @@ struct XGI330_LCDCapStruct {
 	unsigned char	PWD_2D;
 	unsigned char	PWD_2E;
 	unsigned char	PWD_2F;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char	Spectrum_31;
 	unsigned char	Spectrum_32;
 	unsigned char	Spectrum_33;
@@ -327,10 +375,17 @@ struct XGI21_LVDSCapStruct {
 	unsigned short LVDSVSYNC;
 	unsigned char  VCLKData1;
 	unsigned char  VCLKData2;
+<<<<<<< HEAD
 	unsigned char  PSC_S1;
 	unsigned char  PSC_S2;
 	unsigned char  PSC_S3;
 	unsigned char  PSC_S4;
+=======
+	unsigned char  PSC_S1; /* Duration between CPL on and signal on */
+	unsigned char  PSC_S2; /* Duration signal on and Vdd on */
+	unsigned char  PSC_S3; /* Duration between CPL off and signal off */
+	unsigned char  PSC_S4; /* Duration signal off and Vdd off */
+>>>>>>> refs/remotes/origin/master
 	unsigned char  PSC_S5;
 };
 
@@ -339,16 +394,20 @@ struct XGI_CRT1TableStruct {
 };
 
 
+<<<<<<< HEAD
 struct XGI330_VCLKDataStruct {
 	unsigned char SR2B, SR2C;
 	unsigned short CLOCK;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct XGI301C_Tap4TimingStruct {
 	unsigned short DE;
 	unsigned char  Reg[64];   /* C0-FF */
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct XGI_New_StandTableStruct {
 	unsigned char  CRT_COLS;
@@ -366,6 +425,9 @@ struct XGI_New_StandTableStruct {
 >>>>>>> refs/remotes/origin/cm-10.0
 struct vb_device_info {
 	unsigned char  ISXPDOS;
+=======
+struct vb_device_info {
+>>>>>>> refs/remotes/origin/master
 	unsigned long   P3c4, P3d4, P3c0, P3ce, P3c2, P3cc;
 	unsigned long   P3ca, P3c6, P3c7, P3c8, P3c9, P3da;
 	unsigned long   Part0Port, Part1Port, Part2Port;
@@ -376,6 +438,7 @@ struct vb_device_info {
 	unsigned short   LCDHRS, LCDVRS, LCDHDES, LCDVDES;
 
 	unsigned short   ModeType;
+<<<<<<< HEAD
 	/* ,IF_DEF_FSTN; add for dstn */
 	unsigned short   IF_DEF_LVDS, IF_DEF_TRUMPION, IF_DEF_DSTN;
 <<<<<<< HEAD
@@ -396,10 +459,19 @@ struct vb_device_info {
 	unsigned short   VBInfo, TVInfo, LCDInfo;
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned short   VBExtInfo;/*301lv*/
+=======
+	unsigned short   IF_DEF_LVDS;
+	unsigned short   IF_DEF_CRT2Monitor;
+	unsigned short   IF_DEF_YPbPr;
+	unsigned short   IF_DEF_HiVision;
+	unsigned short   LCDResInfo, LCDTypeInfo, VBType;/*301b*/
+	unsigned short   VBInfo, TVInfo, LCDInfo;
+>>>>>>> refs/remotes/origin/master
 	unsigned short   SetFlag;
 	unsigned short   NewFlickerMode;
 	unsigned short   SelectCRT2Rate;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned char *ROMAddr;
 	unsigned char *FBAddr;
@@ -541,11 +613,29 @@ struct TimingInfo {
 	struct SiS_StResInfo_S   *StResInfo;
 	struct SiS_ModeResInfo_S *ModeResInfo;
 	struct XGI_XG21CRT1Struct	  *UpdateCRT1;
+=======
+	void __iomem *FBAddr;
+
+	unsigned char const *SR18;
+	unsigned char const (*CR40)[3];
+
+	struct SiS_MCLKData const *MCLKData;
+
+	unsigned char   XGINew_CR97;
+
+	struct XGI330_LCDCapStruct const *LCDCapList;
+
+	struct XGI_TimingHStruct TimingH;
+	struct XGI_TimingVStruct TimingV;
+>>>>>>> refs/remotes/origin/master
 
 	int ram_type;
 	int ram_channel;
 	int ram_bus;
 };  /* _struct vb_device_info */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _VB_STRUCT_ */

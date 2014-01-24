@@ -36,6 +36,7 @@ static void s3c_dma_cb(struct s3c2410_dma_chan *channel, void *param,
 }
 
 static unsigned s3c_dma_request(enum dma_ch dma_ch,
+<<<<<<< HEAD
 				 struct samsung_dma_info *info)
 {
 	struct cb_data *data;
@@ -45,10 +46,26 @@ static unsigned s3c_dma_request(enum dma_ch dma_ch,
 		return 0;
 	}
 
+=======
+				struct samsung_dma_req *param,
+				struct device *dev, char *ch_name)
+{
+	struct cb_data *data;
+
+	if (s3c2410_dma_request(dma_ch, param->client, NULL) < 0) {
+		s3c2410_dma_free(dma_ch, param->client);
+		return 0;
+	}
+
+	if (param->cap == DMA_CYCLIC)
+		s3c2410_dma_setflags(dma_ch, S3C2410_DMAF_CIRCULAR);
+
+>>>>>>> refs/remotes/origin/master
 	data = kzalloc(sizeof(struct cb_data), GFP_KERNEL);
 	data->ch = dma_ch;
 	list_add_tail(&data->node, &dma_list);
 
+<<<<<<< HEAD
 	s3c2410_dma_devconfig(dma_ch, info->direction, info->fifo);
 
 	if (info->cap == DMA_CYCLIC)
@@ -60,6 +77,12 @@ static unsigned s3c_dma_request(enum dma_ch dma_ch,
 }
 
 static int s3c_dma_release(unsigned ch, struct s3c2410_dma_client *client)
+=======
+	return (unsigned)dma_ch;
+}
+
+static int s3c_dma_release(unsigned ch, void *param)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cb_data *data;
 
@@ -68,16 +91,36 @@ static int s3c_dma_release(unsigned ch, struct s3c2410_dma_client *client)
 			break;
 	list_del(&data->node);
 
+<<<<<<< HEAD
 	s3c2410_dma_free(ch, client);
+=======
+	s3c2410_dma_free(ch, param);
+>>>>>>> refs/remotes/origin/master
 	kfree(data);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int s3c_dma_prepare(unsigned ch, struct samsung_dma_prep_info *info)
 {
 	struct cb_data *data;
 	int len = (info->cap == DMA_CYCLIC) ? info->period : info->len;
+=======
+static int s3c_dma_config(unsigned ch, struct samsung_dma_config *param)
+{
+	s3c2410_dma_devconfig(ch, param->direction, param->fifo);
+	s3c2410_dma_config(ch, param->width);
+
+	return 0;
+}
+
+static int s3c_dma_prepare(unsigned ch, struct samsung_dma_prep *param)
+{
+	struct cb_data *data;
+	dma_addr_t pos = param->buf;
+	dma_addr_t end = param->buf + param->len;
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry(data, &dma_list, node)
 		if (data->ch == ch)
@@ -85,11 +128,27 @@ static int s3c_dma_prepare(unsigned ch, struct samsung_dma_prep_info *info)
 
 	if (!data->fp) {
 		s3c2410_dma_set_buffdone_fn(ch, s3c_dma_cb);
+<<<<<<< HEAD
 		data->fp = info->fp;
 		data->fp_param = info->fp_param;
 	}
 
 	s3c2410_dma_enqueue(ch, (void *)data, info->buf, len);
+=======
+		data->fp = param->fp;
+		data->fp_param = param->fp_param;
+	}
+
+	if (param->cap != DMA_CYCLIC) {
+		s3c2410_dma_enqueue(ch, (void *)data, param->buf, param->len);
+		return 0;
+	}
+
+	while (pos < end) {
+		s3c2410_dma_enqueue(ch, (void *)data, pos, param->period);
+		pos += param->period;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -117,6 +176,10 @@ static inline int s3c_dma_stop(unsigned ch)
 static struct samsung_dma_ops s3c_dma_ops = {
 	.request	= s3c_dma_request,
 	.release	= s3c_dma_release,
+<<<<<<< HEAD
+=======
+	.config		= s3c_dma_config,
+>>>>>>> refs/remotes/origin/master
 	.prepare	= s3c_dma_prepare,
 	.trigger	= s3c_dma_trigger,
 	.started	= s3c_dma_started,

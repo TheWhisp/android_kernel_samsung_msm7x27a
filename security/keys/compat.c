@@ -24,7 +24,11 @@
  *
  * If successful, 0 will be returned.
  */
+<<<<<<< HEAD
 long compat_keyctl_instantiate_key_iov(
+=======
+static long compat_keyctl_instantiate_key_iov(
+>>>>>>> refs/remotes/origin/master
 	key_serial_t id,
 	const struct compat_iovec __user *_payload_iov,
 	unsigned ioc,
@@ -33,16 +37,24 @@ long compat_keyctl_instantiate_key_iov(
 	struct iovec iovstack[UIO_FASTIOV], *iov = iovstack;
 	long ret;
 
+<<<<<<< HEAD
 	if (_payload_iov == 0 || ioc == 0)
+=======
+	if (!_payload_iov || !ioc)
+>>>>>>> refs/remotes/origin/master
 		goto no_payload;
 
 	ret = compat_rw_copy_check_uvector(WRITE, _payload_iov, ioc,
 					   ARRAY_SIZE(iovstack),
 <<<<<<< HEAD
+<<<<<<< HEAD
 					   iovstack, &iov);
 =======
 					   iovstack, &iov, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   iovstack, &iov);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto err;
 	if (ret == 0)
@@ -139,6 +151,15 @@ asmlinkage long compat_sys_keyctl(u32 option,
 		return compat_keyctl_instantiate_key_iov(
 			arg2, compat_ptr(arg3), arg4, arg5);
 
+<<<<<<< HEAD
+=======
+	case KEYCTL_INVALIDATE:
+		return keyctl_invalidate_key(arg2);
+
+	case KEYCTL_GET_PERSISTENT:
+		return keyctl_get_persistent(arg2, arg3);
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EOPNOTSUPP;
 	}

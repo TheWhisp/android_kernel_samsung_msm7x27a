@@ -44,7 +44,11 @@ int rpaphp_get_sensor_state(struct slot *slot, int *state)
 			dbg("%s: slot must be power up to get sensor-state\n",
 			    __func__);
 
+<<<<<<< HEAD
 			/* some slots have to be powered up 
+=======
+			/* some slots have to be powered up
+>>>>>>> refs/remotes/origin/master
 			 * before get-sensor will succeed.
 			 */
 			rc = rtas_set_power_level(slot->power_domain, POWER_ON,
@@ -133,4 +137,7 @@ int rpaphp_enable_slot(struct slot *slot)
 
 	return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

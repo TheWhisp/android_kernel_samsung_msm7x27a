@@ -37,11 +37,15 @@
  * recovery time (MSCx = 0x7f8c) with a memory clock of 99.53 MHz.
  */
 
+<<<<<<< HEAD
 #ifdef CONFIG_USB_DEBUG
 # define ISP1362_DEBUG
 #else
 # undef ISP1362_DEBUG
 #endif
+=======
+#undef ISP1362_DEBUG
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The PXA255 UDC apparently doesn't handle GET_STATUS, GET_CONFIG and
@@ -71,7 +75,10 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/interrupt.h>
 #include <linux/usb.h>
@@ -82,12 +89,19 @@
 #include <linux/io.h>
 #include <linux/bitmap.h>
 #include <linux/prefetch.h>
+<<<<<<< HEAD
 
 #include <asm/irq.h>
 <<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/debugfs.h>
+#include <linux/seq_file.h>
+
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 #include <asm/unaligned.h>
 
@@ -96,7 +110,10 @@ static int dbg_level;
 module_param(dbg_level, int, 0644);
 #else
 module_param(dbg_level, int, 0);
+<<<<<<< HEAD
 #define	STUB_DEBUG_FILE
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #include "../core/usb.h"
@@ -354,8 +371,11 @@ static void isp1362_write_ptd(struct isp1362_hcd *isp1362_hcd, struct isp1362_ep
 	struct ptd *ptd = &ep->ptd;
 	int len = PTD_GET_DIR(ptd) == PTD_DIR_IN ? 0 : ep->length;
 
+<<<<<<< HEAD
 	_BUG_ON(ep->ptd_offset < 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	prefetch(ptd);
 	isp1362_write_buffer(isp1362_hcd, ptd, ep->ptd_offset, PTD_HEADER_SIZE);
 	if (len)
@@ -547,12 +567,21 @@ static void postproc_ep(struct isp1362_hcd *isp1362_hcd, struct isp1362_ep *ep)
 			    usb_pipein(urb->pipe) ? "IN" : "OUT", ep->nextpid,
 			    short_ok ? "" : "not_",
 			    PTD_GET_COUNT(ptd), ep->maxpacket, len);
+<<<<<<< HEAD
 			if (usb_pipecontrol(urb->pipe)) {
 				ep->nextpid = USB_PID_ACK;
 				/* save the data underrun error code for later and
 				 * proceed with the status stage
 				 */
 				urb->actual_length += PTD_GET_COUNT(ptd);
+=======
+			/* save the data underrun error code for later and
+			 * proceed with the status stage
+			 */
+			urb->actual_length += PTD_GET_COUNT(ptd);
+			if (usb_pipecontrol(urb->pipe)) {
+				ep->nextpid = USB_PID_ACK;
+>>>>>>> refs/remotes/origin/master
 				BUG_ON(urb->actual_length > urb->transfer_buffer_length);
 
 				if (urb->status == -EINPROGRESS)
@@ -1579,12 +1608,20 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		DBG(0, "ClearHubFeature: ");
 		switch (wValue) {
 		case C_HUB_OVER_CURRENT:
+<<<<<<< HEAD
 			_DBG(0, "C_HUB_OVER_CURRENT\n");
+=======
+			DBG(0, "C_HUB_OVER_CURRENT\n");
+>>>>>>> refs/remotes/origin/master
 			spin_lock_irqsave(&isp1362_hcd->lock, flags);
 			isp1362_write_reg32(isp1362_hcd, HCRHSTATUS, RH_HS_OCIC);
 			spin_unlock_irqrestore(&isp1362_hcd->lock, flags);
 		case C_HUB_LOCAL_POWER:
+<<<<<<< HEAD
 			_DBG(0, "C_HUB_LOCAL_POWER\n");
+=======
+			DBG(0, "C_HUB_LOCAL_POWER\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			goto error;
@@ -1595,7 +1632,11 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		switch (wValue) {
 		case C_HUB_OVER_CURRENT:
 		case C_HUB_LOCAL_POWER:
+<<<<<<< HEAD
 			_DBG(0, "C_HUB_OVER_CURRENT or C_HUB_LOCAL_POWER\n");
+=======
+			DBG(0, "C_HUB_OVER_CURRENT or C_HUB_LOCAL_POWER\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			goto error;
@@ -1626,6 +1667,7 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 
 		switch (wValue) {
 		case USB_PORT_FEAT_ENABLE:
+<<<<<<< HEAD
 			_DBG(0, "USB_PORT_FEAT_ENABLE\n");
 			tmp = RH_PS_CCS;
 			break;
@@ -1643,10 +1685,30 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			break;
 		case USB_PORT_FEAT_POWER:
 			_DBG(0, "USB_PORT_FEAT_POWER\n");
+=======
+			DBG(0, "USB_PORT_FEAT_ENABLE\n");
+			tmp = RH_PS_CCS;
+			break;
+		case USB_PORT_FEAT_C_ENABLE:
+			DBG(0, "USB_PORT_FEAT_C_ENABLE\n");
+			tmp = RH_PS_PESC;
+			break;
+		case USB_PORT_FEAT_SUSPEND:
+			DBG(0, "USB_PORT_FEAT_SUSPEND\n");
+			tmp = RH_PS_POCI;
+			break;
+		case USB_PORT_FEAT_C_SUSPEND:
+			DBG(0, "USB_PORT_FEAT_C_SUSPEND\n");
+			tmp = RH_PS_PSSC;
+			break;
+		case USB_PORT_FEAT_POWER:
+			DBG(0, "USB_PORT_FEAT_POWER\n");
+>>>>>>> refs/remotes/origin/master
 			tmp = RH_PS_LSDA;
 
 			break;
 		case USB_PORT_FEAT_C_CONNECTION:
+<<<<<<< HEAD
 			_DBG(0, "USB_PORT_FEAT_C_CONNECTION\n");
 			tmp = RH_PS_CSC;
 			break;
@@ -1656,6 +1718,17 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			break;
 		case USB_PORT_FEAT_C_RESET:
 			_DBG(0, "USB_PORT_FEAT_C_RESET\n");
+=======
+			DBG(0, "USB_PORT_FEAT_C_CONNECTION\n");
+			tmp = RH_PS_CSC;
+			break;
+		case USB_PORT_FEAT_C_OVER_CURRENT:
+			DBG(0, "USB_PORT_FEAT_C_OVER_CURRENT\n");
+			tmp = RH_PS_OCIC;
+			break;
+		case USB_PORT_FEAT_C_RESET:
+			DBG(0, "USB_PORT_FEAT_C_RESET\n");
+>>>>>>> refs/remotes/origin/master
 			tmp = RH_PS_PRSC;
 			break;
 		default:
@@ -1675,7 +1748,11 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 		wIndex--;
 		switch (wValue) {
 		case USB_PORT_FEAT_SUSPEND:
+<<<<<<< HEAD
 			_DBG(0, "USB_PORT_FEAT_SUSPEND\n");
+=======
+			DBG(0, "USB_PORT_FEAT_SUSPEND\n");
+>>>>>>> refs/remotes/origin/master
 			spin_lock_irqsave(&isp1362_hcd->lock, flags);
 			isp1362_write_reg32(isp1362_hcd, HCRHPORT1 + wIndex, RH_PS_PSS);
 			isp1362_hcd->rhport[wIndex] =
@@ -1683,7 +1760,11 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			spin_unlock_irqrestore(&isp1362_hcd->lock, flags);
 			break;
 		case USB_PORT_FEAT_POWER:
+<<<<<<< HEAD
 			_DBG(0, "USB_PORT_FEAT_POWER\n");
+=======
+			DBG(0, "USB_PORT_FEAT_POWER\n");
+>>>>>>> refs/remotes/origin/master
 			spin_lock_irqsave(&isp1362_hcd->lock, flags);
 			isp1362_write_reg32(isp1362_hcd, HCRHPORT1 + wIndex, RH_PS_PPS);
 			isp1362_hcd->rhport[wIndex] =
@@ -1691,7 +1772,11 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 			spin_unlock_irqrestore(&isp1362_hcd->lock, flags);
 			break;
 		case USB_PORT_FEAT_RESET:
+<<<<<<< HEAD
 			_DBG(0, "USB_PORT_FEAT_RESET\n");
+=======
+			DBG(0, "USB_PORT_FEAT_RESET\n");
+>>>>>>> refs/remotes/origin/master
 			spin_lock_irqsave(&isp1362_hcd->lock, flags);
 
 			t1 = jiffies + msecs_to_jiffies(USB_RESET_WIDTH);
@@ -1725,7 +1810,11 @@ static int isp1362_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
 	default:
  error:
 		/* "protocol stall" on error */
+<<<<<<< HEAD
 		_DBG(0, "PROTOCOL STALL\n");
+=======
+		DBG(0, "PROTOCOL STALL\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -EPIPE;
 	}
 
@@ -1917,6 +2006,7 @@ static int isp1362_bus_resume(struct usb_hcd *hcd)
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 #ifdef STUB_DEBUG_FILE
 
 static inline void create_debug_file(struct isp1362_hcd *isp1362_hcd)
@@ -1931,6 +2021,8 @@ static inline void remove_debug_file(struct isp1362_hcd *isp1362_hcd)
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void dump_irq(struct seq_file *s, char *label, u16 mask)
 {
 	seq_printf(s, "%-15s %04x%s%s%s%s%s%s\n", label, mask,
@@ -2073,7 +2165,11 @@ static void dump_regs(struct seq_file *s, struct isp1362_hcd *isp1362_hcd)
 		   isp1362_read_reg16(isp1362_hcd, HCATLDTCTO));
 }
 
+<<<<<<< HEAD
 static int proc_isp1362_show(struct seq_file *s, void *unused)
+=======
+static int isp1362_show(struct seq_file *s, void *unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct isp1362_hcd *isp1362_hcd = s->private;
 	struct isp1362_ep *ep;
@@ -2131,7 +2227,11 @@ static int proc_isp1362_show(struct seq_file *s, void *unused)
 				   default:
 					   s = "?";
 					   break;
+<<<<<<< HEAD
 				   };
+=======
+				   }
+>>>>>>> refs/remotes/origin/master
 				   s;}), ep->maxpacket) ;
 		list_for_each_entry(urb, &ep->hep->urb_list, urb_list) {
 			seq_printf(s, "  urb%p, %d/%d\n", urb,
@@ -2177,6 +2277,7 @@ static int proc_isp1362_show(struct seq_file *s, void *unused)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int proc_isp1362_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, proc_isp1362_show, PDE(inode)->data);
@@ -2184,12 +2285,22 @@ static int proc_isp1362_open(struct inode *inode, struct file *file)
 
 static const struct file_operations proc_ops = {
 	.open = proc_isp1362_open,
+=======
+static int isp1362_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, isp1362_show, inode);
+}
+
+static const struct file_operations debug_ops = {
+	.open = isp1362_open,
+>>>>>>> refs/remotes/origin/master
 	.read = seq_read,
 	.llseek = seq_lseek,
 	.release = single_release,
 };
 
 /* expect just one isp1362_hcd per system */
+<<<<<<< HEAD
 static const char proc_filename[] = "driver/isp1362";
 
 static void create_debug_file(struct isp1362_hcd *isp1362_hcd)
@@ -2205,16 +2316,29 @@ static void create_debug_file(struct isp1362_hcd *isp1362_hcd)
 	pde->proc_fops = &proc_ops;
 	pde->data = isp1362_hcd;
 	isp1362_hcd->pde = pde;
+=======
+static void create_debug_file(struct isp1362_hcd *isp1362_hcd)
+{
+	isp1362_hcd->debug_file = debugfs_create_file("isp1362", S_IRUGO,
+						      usb_debug_root,
+						      isp1362_hcd, &debug_ops);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void remove_debug_file(struct isp1362_hcd *isp1362_hcd)
 {
+<<<<<<< HEAD
 	if (isp1362_hcd->pde)
 		remove_proc_entry(proc_filename, NULL);
 }
 
 #endif
 
+=======
+	debugfs_remove(isp1362_hcd->debug_file);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 static void __isp1362_sw_reset(struct isp1362_hcd *isp1362_hcd)
@@ -2362,10 +2486,14 @@ static int isp1362_hc_reset(struct usb_hcd *hcd)
 	int clkrdy = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s:\n", __func__);
 =======
 	pr_debug("%s:\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	if (isp1362_hcd->board && isp1362_hcd->board->reset) {
 		isp1362_hcd->board->reset(hcd->self.controller, 1);
@@ -2403,10 +2531,14 @@ static void isp1362_hc_stop(struct usb_hcd *hcd)
 	u32 tmp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s:\n", __func__);
 =======
 	pr_debug("%s:\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	del_timer_sync(&hcd->rh_timer);
 
@@ -2535,10 +2667,14 @@ static int isp1362_hc_start(struct usb_hcd *hcd)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("%s:\n", __func__);
 =======
 	pr_debug("%s:\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s:\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&isp1362_hcd->lock, flags);
 	chipid = isp1362_read_reg16(isp1362_hcd, HCCHIPID);
@@ -2661,7 +2797,11 @@ static struct hc_driver isp1362_hc_driver = {
 
 /*-------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static int __devexit isp1362_remove(struct platform_device *pdev)
+=======
+static int isp1362_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
 	struct isp1362_hcd *isp1362_hcd = hcd_to_isp1362_hcd(hcd);
@@ -2696,7 +2836,11 @@ static int __devexit isp1362_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit isp1362_probe(struct platform_device *pdev)
+=======
+static int isp1362_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd;
 	struct isp1362_hcd *isp1362_hcd;
@@ -2709,11 +2853,17 @@ static int __devinit isp1362_probe(struct platform_device *pdev)
 	unsigned int irq_flags = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (usb_disabled())
 		return -ENODEV;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (usb_disabled())
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	/* basic sanity checks first.  board-specific init logic should
 	 * have initialized this the three resources and probably board
 	 * specific platform_data.  we don't probe for IRQs, and do only
@@ -2776,7 +2926,11 @@ static int __devinit isp1362_probe(struct platform_device *pdev)
 	INIT_LIST_HEAD(&isp1362_hcd->periodic);
 	INIT_LIST_HEAD(&isp1362_hcd->isoc);
 	INIT_LIST_HEAD(&isp1362_hcd->remove_list);
+<<<<<<< HEAD
 	isp1362_hcd->board = pdev->dev.platform_data;
+=======
+	isp1362_hcd->board = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 #if USE_PLATFORM_DELAY
 	if (!isp1362_hcd->board->delay) {
 		dev_err(hcd->self.controller, "No platform delay function given\n");
@@ -2795,12 +2949,20 @@ static int __devinit isp1362_probe(struct platform_device *pdev)
 		irq_flags |= IRQF_TRIGGER_LOW;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = usb_add_hcd(hcd, irq, irq_flags | IRQF_DISABLED | IRQF_SHARED);
 =======
 	retval = usb_add_hcd(hcd, irq, irq_flags | IRQF_SHARED);
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (retval != 0)
 		goto err6;
+=======
+	retval = usb_add_hcd(hcd, irq, irq_flags | IRQF_SHARED);
+	if (retval != 0)
+		goto err6;
+	device_wakeup_enable(hcd->self.controller);
+
+>>>>>>> refs/remotes/origin/master
 	pr_info("%s, irq %d\n", hcd->product_desc, irq);
 
 	create_debug_file(isp1362_hcd);
@@ -2879,16 +3041,25 @@ static int isp1362_resume(struct platform_device *pdev)
 
 static struct platform_driver isp1362_driver = {
 	.probe = isp1362_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(isp1362_remove),
+=======
+	.remove = isp1362_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.suspend = isp1362_suspend,
 	.resume = isp1362_resume,
 	.driver = {
+<<<<<<< HEAD
 		.name = (char *)hcd_name,
+=======
+		.name = hcd_name,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*-------------------------------------------------------------------------*/
 
@@ -2909,3 +3080,6 @@ module_exit(isp1362_cleanup);
 =======
 module_platform_driver(isp1362_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(isp1362_driver);
+>>>>>>> refs/remotes/origin/master

@@ -77,6 +77,7 @@ FIRMWARE
  for older versions or when you build the driver into kernel.]
  
 <<<<<<< HEAD
+<<<<<<< HEAD
 For loading the firmware automatically after the module is loaded, use
 the post-install command.  For example, add the following entry to
 /etc/modprobe.conf for miXart driver:
@@ -85,6 +86,11 @@ For loading the firmware automatically after the module is loaded, use a
 install command.  For example, add the following entry to
 /etc/modprobe.d/mixart.conf for miXart driver:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+For loading the firmware automatically after the module is loaded, use a
+install command.  For example, add the following entry to
+/etc/modprobe.d/mixart.conf for miXart driver:
+>>>>>>> refs/remotes/origin/master
 
 	install snd-mixart /sbin/modprobe --first-time -i snd-mixart && \
 			   /usr/bin/mixartloader

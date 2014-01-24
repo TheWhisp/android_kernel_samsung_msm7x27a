@@ -18,6 +18,10 @@
 #include <linux/slab.h>
 #include <linux/clk.h>
 #include <linux/sh_clk.h>
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include "pcie-sh7786.h"
 #include <asm/sizes.h>
 
@@ -34,7 +38,11 @@ static unsigned int nr_ports;
 
 static struct sh7786_pcie_hwops {
 	int (*core_init)(void);
+<<<<<<< HEAD
 	async_func_ptr *port_init_hw;
+=======
+	async_func_t port_init_hw;
+>>>>>>> refs/remotes/origin/master
 } *sh7786_pcie_hwops;
 
 static struct resource sh7786_pci0_resources[] = {
@@ -131,7 +139,11 @@ static struct clk fixed_pciexclkp = {
 	.rate = 100000000,	/* 100 MHz reference clock */
 };
 
+<<<<<<< HEAD
 static void __devinit sh7786_pci_fixup(struct pci_dev *dev)
+=======
+static void sh7786_pci_fixup(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Prevent enumeration of root complex resources.
@@ -238,7 +250,11 @@ static int __init pcie_clk_init(struct sh7786_pcie_port *port)
 	clk->enable_reg = (void __iomem *)(chan->reg_base + SH4A_PCIEPHYCTLR);
 	clk->enable_bit = BITS_CKE;
 
+<<<<<<< HEAD
 	ret = sh_clk_mstp32_register(clk, 1);
+=======
+	ret = sh_clk_mstp_register(clk, 1);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret < 0))
 		goto err_phy;
 
@@ -467,12 +483,18 @@ static int __init pcie_init(struct sh7786_pcie_port *port)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __init pcibios_map_platform_irq(struct pci_dev *pdev, u8 slot, u8 pin)
 =======
 int __init pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
         return 71;
+=======
+int __init pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
+{
+        return evt2irq(0xae0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init sh7786_pcie_core_init(void)

@@ -107,10 +107,14 @@ static enum event_status read_page(int cpu)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bpage = ring_buffer_alloc_read_page(buffer);
 =======
 	bpage = ring_buffer_alloc_read_page(buffer, cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bpage = ring_buffer_alloc_read_page(buffer, cpu);
+>>>>>>> refs/remotes/origin/master
 	if (!bpage)
 		return EVENT_DROPPED;
 

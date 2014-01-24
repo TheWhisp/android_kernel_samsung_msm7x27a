@@ -12,6 +12,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,6 +25,8 @@
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /* #define VERBOSE_DEBUG */
@@ -34,18 +37,31 @@
 #include <linux/ioport.h>
 #include <linux/types.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/slab.h>
 #include <linux/init.h>
+=======
+#include <linux/err.h>
+#include <linux/delay.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/list.h>
 #include <linux/interrupt.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/pxa2xx_udc.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 #include <linux/irq.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/err.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/seq_file.h>
 #include <linux/debugfs.h>
 #include <linux/io.h>
@@ -55,9 +71,12 @@
 #include <asm/dma.h>
 #include <asm/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/unaligned.h>
 
@@ -70,15 +89,22 @@
  */
 #ifdef CONFIG_ARCH_PXA
 #include <mach/pxa25x-udc.h>
+<<<<<<< HEAD
+=======
+#include <mach/hardware.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_ARCH_LUBBOCK
 #include <mach/lubbock.h>
 #endif
 
+<<<<<<< HEAD
 #include <asm/mach/udc_pxa2xx.h>
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This driver handles the USB Device Controller (UDC) in Intel's PXA 25x
  * series processors.  The UDC for the IXP 4xx series is very similar.
@@ -235,6 +261,7 @@ static int pxa25x_ep_enable (struct usb_ep *_ep,
 	struct pxa25x_udc       *dev;
 
 	ep = container_of (_ep, struct pxa25x_ep, ep);
+<<<<<<< HEAD
 	if (!_ep || !desc || ep->desc || _ep->name == ep0name
 			|| desc->bDescriptorType != USB_DT_ENDPOINT
 			|| ep->bEndpointAddress != desc->bEndpointAddress
@@ -244,6 +271,12 @@ static int pxa25x_ep_enable (struct usb_ep *_ep,
 =======
 			|| ep->fifo_size < usb_endpoint_maxp (desc)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!_ep || !desc || _ep->name == ep0name
+			|| desc->bDescriptorType != USB_DT_ENDPOINT
+			|| ep->bEndpointAddress != desc->bEndpointAddress
+			|| ep->fifo_size < usb_endpoint_maxp (desc)) {
+>>>>>>> refs/remotes/origin/master
 		DMSG("%s, bad ep or descriptor\n", __func__);
 		return -EINVAL;
 	}
@@ -259,10 +292,14 @@ static int pxa25x_ep_enable (struct usb_ep *_ep,
 	/* hardware _could_ do smaller, but driver doesn't */
 	if ((desc->bmAttributes == USB_ENDPOINT_XFER_BULK
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&& le16_to_cpu (desc->wMaxPacketSize)
 =======
 				&& usb_endpoint_maxp (desc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				&& usb_endpoint_maxp (desc)
+>>>>>>> refs/remotes/origin/master
 						!= BULK_FIFO_SIZE)
 			|| !desc->wMaxPacketSize) {
 		DMSG("%s, bad %s maxpacket\n", __func__, _ep->name);
@@ -275,6 +312,7 @@ static int pxa25x_ep_enable (struct usb_ep *_ep,
 		return -ESHUTDOWN;
 	}
 
+<<<<<<< HEAD
 	ep->desc = desc;
 	ep->stopped = 0;
 	ep->pio_irqs = 0;
@@ -283,6 +321,12 @@ static int pxa25x_ep_enable (struct usb_ep *_ep,
 =======
 	ep->ep.maxpacket = usb_endpoint_maxp (desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.desc = desc;
+	ep->stopped = 0;
+	ep->pio_irqs = 0;
+	ep->ep.maxpacket = usb_endpoint_maxp (desc);
+>>>>>>> refs/remotes/origin/master
 
 	/* flush fifo (mostly for OUT buffers) */
 	pxa25x_ep_fifo_flush (_ep);
@@ -299,7 +343,11 @@ static int pxa25x_ep_disable (struct usb_ep *_ep)
 	unsigned long		flags;
 
 	ep = container_of (_ep, struct pxa25x_ep, ep);
+<<<<<<< HEAD
 	if (!_ep || !ep->desc) {
+=======
+	if (!_ep || !ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		DMSG("%s, %s not enabled\n", __func__,
 			_ep ? ep->ep.name : NULL);
 		return -EINVAL;
@@ -311,11 +359,15 @@ static int pxa25x_ep_disable (struct usb_ep *_ep)
 	/* flush fifo (mostly for IN buffers) */
 	pxa25x_ep_fifo_flush (_ep);
 
+<<<<<<< HEAD
 	ep->desc = NULL;
 <<<<<<< HEAD
 =======
 	ep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 	ep->stopped = 1;
 
 	local_irq_restore(flags);
@@ -424,10 +476,14 @@ write_fifo (struct pxa25x_ep *ep, struct pxa25x_request *req)
 	unsigned		max;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	max = le16_to_cpu(ep->desc->wMaxPacketSize);
 =======
 	max = usb_endpoint_maxp(ep->desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max = usb_endpoint_maxp(ep->ep.desc);
+>>>>>>> refs/remotes/origin/master
 	do {
 		unsigned	count;
 		int		is_last, is_short;
@@ -681,7 +737,11 @@ pxa25x_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 	}
 
 	ep = container_of(_ep, struct pxa25x_ep, ep);
+<<<<<<< HEAD
 	if (unlikely (!_ep || (!ep->desc && ep->ep.name != ep0name))) {
+=======
+	if (unlikely(!_ep || (!ep->ep.desc && ep->ep.name != ep0name))) {
+>>>>>>> refs/remotes/origin/master
 		DMSG("%s, bad ep\n", __func__);
 		return -EINVAL;
 	}
@@ -698,11 +758,15 @@ pxa25x_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 	 */
 	if (unlikely (ep->bmAttributes == USB_ENDPOINT_XFER_ISOC
 <<<<<<< HEAD
+<<<<<<< HEAD
 			&& req->req.length > le16_to_cpu
 						(ep->desc->wMaxPacketSize)))
 =======
 		        && req->req.length > usb_endpoint_maxp (ep->desc)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			&& req->req.length > usb_endpoint_maxp(ep->ep.desc)))
+>>>>>>> refs/remotes/origin/master
 		return -EMSGSIZE;
 
 	DBG(DBG_NOISY, "%s queue req %p, len %d buf %p\n",
@@ -715,7 +779,11 @@ pxa25x_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 
 	/* kickstart this i/o queue? */
 	if (list_empty(&ep->queue) && !ep->stopped) {
+<<<<<<< HEAD
 		if (ep->desc == NULL/* ep0 */) {
+=======
+		if (ep->ep.desc == NULL/* ep0 */) {
+>>>>>>> refs/remotes/origin/master
 			unsigned	length = _req->length;
 
 			switch (dev->ep0state) {
@@ -764,7 +832,11 @@ pxa25x_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 			req = NULL;
 		}
 
+<<<<<<< HEAD
 		if (likely (req && ep->desc))
+=======
+		if (likely(req && ep->ep.desc))
+>>>>>>> refs/remotes/origin/master
 			pio_irq_enable(ep->bEndpointAddress);
 	}
 
@@ -791,7 +863,11 @@ static void nuke(struct pxa25x_ep *ep, int status)
 				queue);
 		done(ep, req, status);
 	}
+<<<<<<< HEAD
 	if (ep->desc)
+=======
+	if (ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 		pio_irq_disable (ep->bEndpointAddress);
 }
 
@@ -834,7 +910,11 @@ static int pxa25x_ep_set_halt(struct usb_ep *_ep, int value)
 
 	ep = container_of(_ep, struct pxa25x_ep, ep);
 	if (unlikely (!_ep
+<<<<<<< HEAD
 			|| (!ep->desc && ep->ep.name != ep0name))
+=======
+			|| (!ep->ep.desc && ep->ep.name != ep0name))
+>>>>>>> refs/remotes/origin/master
 			|| ep->bmAttributes == USB_ENDPOINT_XFER_ISOC) {
 		DMSG("%s, bad ep\n", __func__);
 		return -EINVAL;
@@ -862,7 +942,11 @@ static int pxa25x_ep_set_halt(struct usb_ep *_ep, int value)
 	*ep->reg_udccs = UDCCS_BI_FST|UDCCS_BI_FTF;
 
 	/* ep0 needs special care */
+<<<<<<< HEAD
 	if (!ep->desc) {
+=======
+	if (!ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		start_watchdog(ep->dev);
 		ep->dev->req_pending = 0;
 		ep->dev->ep0state = EP0_STALL;
@@ -1036,6 +1120,7 @@ static int pxa25x_udc_vbus_draw(struct usb_gadget *_gadget, unsigned mA)
 
 	udc = container_of(_gadget, struct pxa25x_udc, gadget);
 
+<<<<<<< HEAD
 	if (udc->transceiver)
 <<<<<<< HEAD
 		return otg_set_power(udc->transceiver, mA);
@@ -1043,15 +1128,26 @@ static int pxa25x_udc_vbus_draw(struct usb_gadget *_gadget, unsigned mA)
 }
 
 =======
+=======
+	if (!IS_ERR_OR_NULL(udc->transceiver))
+>>>>>>> refs/remotes/origin/master
 		return usb_phy_set_power(udc->transceiver, mA);
 	return -EOPNOTSUPP;
 }
 
+<<<<<<< HEAD
 static int pxa25x_start(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *));
 static int pxa25x_stop(struct usb_gadget_driver *driver);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pxa25x_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+static int pxa25x_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+
+>>>>>>> refs/remotes/origin/master
 static const struct usb_gadget_ops pxa25x_udc_ops = {
 	.get_frame	= pxa25x_udc_get_frame,
 	.wakeup		= pxa25x_udc_wakeup,
@@ -1059,10 +1155,15 @@ static const struct usb_gadget_ops pxa25x_udc_ops = {
 	.pullup		= pxa25x_udc_pullup,
 	.vbus_draw	= pxa25x_udc_vbus_draw,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.start		= pxa25x_start,
 	.stop		= pxa25x_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start	= pxa25x_udc_start,
+	.udc_stop	= pxa25x_udc_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*-------------------------------------------------------------------------*/
@@ -1139,17 +1240,25 @@ udc_seq_show(struct seq_file *m, void *_d)
 		if (i != 0) {
 			const struct usb_endpoint_descriptor	*desc;
 
+<<<<<<< HEAD
 			desc = ep->desc;
+=======
+			desc = ep->ep.desc;
+>>>>>>> refs/remotes/origin/master
 			if (!desc)
 				continue;
 			tmp = *dev->ep [i].reg_udccs;
 			seq_printf(m,
 				"%s max %d %s udccs %02x irqs %lu\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ep->ep.name, le16_to_cpu(desc->wMaxPacketSize),
 =======
 				ep->ep.name, usb_endpoint_maxp(desc),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ep->ep.name, usb_endpoint_maxp(desc),
+>>>>>>> refs/remotes/origin/master
 				"pio", tmp, ep->pio_irqs);
 			/* TODO translate all five groups of udccs bits! */
 
@@ -1247,6 +1356,7 @@ static void udc_reinit(struct pxa25x_udc *dev)
 		if (i != 0)
 			list_add_tail (&ep->ep.ep_list, &dev->gadget.ep_list);
 
+<<<<<<< HEAD
 		ep->desc = NULL;
 <<<<<<< HEAD
 =======
@@ -1255,6 +1365,13 @@ static void udc_reinit(struct pxa25x_udc *dev)
 		ep->stopped = 0;
 		INIT_LIST_HEAD (&ep->queue);
 		ep->pio_irqs = 0;
+=======
+		ep->ep.desc = NULL;
+		ep->stopped = 0;
+		INIT_LIST_HEAD (&ep->queue);
+		ep->pio_irqs = 0;
+		usb_ep_set_maxpacket_limit(&ep->ep, ep->ep.maxpacket);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* the rest was statically initialized, and is read-only */
@@ -1317,6 +1434,7 @@ static void udc_enable (struct pxa25x_udc *dev)
  * disconnect is reported.  then a host may connect again, or
  * the driver might get unbound.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 =======
@@ -1381,6 +1499,27 @@ fail:
 				driver->unbind(&dev->gadget);
 			goto bind_fail;
 		}
+=======
+static int pxa25x_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct pxa25x_udc	*dev = to_pxa25x(g);
+	int			retval;
+
+	/* first hook up the driver ... */
+	dev->driver = driver;
+	dev->pullup = 1;
+
+	/* ... then enable host detection and ep0; and we're ready
+	 * for set_configuration as well as eventual disconnect.
+	 */
+	/* connect to bus through transceiver */
+	if (!IS_ERR_OR_NULL(dev->transceiver)) {
+		retval = otg_set_peripheral(dev->transceiver->otg,
+						&dev->gadget);
+		if (retval)
+			goto bind_fail;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pullup(dev);
@@ -1390,9 +1529,12 @@ bind_fail:
 	return retval;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_probe_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void
 stop_activity(struct pxa25x_udc *dev, struct usb_gadget_driver *driver)
@@ -1422,6 +1564,7 @@ stop_activity(struct pxa25x_udc *dev, struct usb_gadget_driver *driver)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 =======
 static int pxa25x_stop(struct usb_gadget_driver *driver)
@@ -1433,6 +1576,12 @@ static int pxa25x_stop(struct usb_gadget_driver *driver)
 		return -ENODEV;
 	if (!driver || driver != dev->driver || !driver->unbind)
 		return -EINVAL;
+=======
+static int pxa25x_udc_stop(struct usb_gadget*g,
+		struct usb_gadget_driver *driver)
+{
+	struct pxa25x_udc	*dev = to_pxa25x(g);
+>>>>>>> refs/remotes/origin/master
 
 	local_irq_disable();
 	dev->pullup = 0;
@@ -1440,6 +1589,7 @@ static int pxa25x_stop(struct usb_gadget_driver *driver)
 	stop_activity(dev, driver);
 	local_irq_enable();
 
+<<<<<<< HEAD
 	if (dev->transceiver)
 <<<<<<< HEAD
 		(void) otg_set_peripheral(dev->transceiver, NULL);
@@ -1462,6 +1612,17 @@ EXPORT_SYMBOL(usb_gadget_unregister_driver);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(dev->transceiver))
+		(void) otg_set_peripheral(dev->transceiver->otg, NULL);
+
+	dev->driver = NULL;
+
+	dump_state(dev);
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
@@ -2186,12 +2347,21 @@ static struct pxa25x_udc memory = {
 /*
  *	probe - binds to the platform device
  */
+<<<<<<< HEAD
 static int __init pxa25x_udc_probe(struct platform_device *pdev)
+=======
+static int pxa25x_udc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pxa25x_udc *dev = &memory;
 	int retval, irq;
 	u32 chiprev;
 
+<<<<<<< HEAD
+=======
+	pr_info("%s: version %s\n", driver_name, DRIVER_VERSION);
+
+>>>>>>> refs/remotes/origin/master
 	/* insist on Intel/ARM/XScale */
 	asm("mrc%? p15, 0, %0, c0, c0" : "=r" (chiprev));
 	if ((chiprev & CP15R0_VENDOR_MASK) != CP15R0_XSCALE_VALUE) {
@@ -2247,6 +2417,7 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 
 	/* other non-static parts of init */
 	dev->dev = &pdev->dev;
+<<<<<<< HEAD
 	dev->mach = pdev->dev.platform_data;
 
 <<<<<<< HEAD
@@ -2254,6 +2425,11 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 =======
 	dev->transceiver = usb_get_transceiver();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->mach = dev_get_platdata(&pdev->dev);
+
+	dev->transceiver = usb_get_phy(USB_PHY_TYPE_USB2);
+>>>>>>> refs/remotes/origin/master
 
 	if (gpio_is_valid(dev->mach->gpio_pullup)) {
 		if ((retval = gpio_request(dev->mach->gpio_pullup,
@@ -2270,10 +2446,13 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 	dev->timer.function = udc_watchdog;
 	dev->timer.data = (unsigned long) dev;
 
+<<<<<<< HEAD
 	device_initialize(&dev->gadget.dev);
 	dev->gadget.dev.parent = &pdev->dev;
 	dev->gadget.dev.dma_mask = pdev->dev.dma_mask;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	the_controller = dev;
 	platform_set_drvdata(pdev, dev);
 
@@ -2285,10 +2464,14 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 	/* irq setup after old hardware state is cleaned up */
 	retval = request_irq(irq, pxa25x_udc_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED, driver_name, dev);
 =======
 			0, driver_name, dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			0, driver_name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (retval != 0) {
 		pr_err("%s: can't get irq %d, err %d\n",
 			driver_name, irq, retval);
@@ -2298,6 +2481,7 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 
 #ifdef CONFIG_ARCH_LUBBOCK
 	if (machine_is_lubbock()) {
+<<<<<<< HEAD
 		retval = request_irq(LUBBOCK_USB_DISC_IRQ,
 				lubbock_vbus_irq,
 <<<<<<< HEAD
@@ -2306,11 +2490,16 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 				IRQF_SAMPLE_RANDOM,
 >>>>>>> refs/remotes/origin/cm-10.0
 				driver_name, dev);
+=======
+		retval = request_irq(LUBBOCK_USB_DISC_IRQ, lubbock_vbus_irq,
+				     0, driver_name, dev);
+>>>>>>> refs/remotes/origin/master
 		if (retval != 0) {
 			pr_err("%s: can't get irq %i, err %d\n",
 				driver_name, LUBBOCK_USB_DISC_IRQ, retval);
 			goto err_irq_lub;
 		}
+<<<<<<< HEAD
 		retval = request_irq(LUBBOCK_USB_IRQ,
 				lubbock_vbus_irq,
 <<<<<<< HEAD
@@ -2319,6 +2508,10 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 				IRQF_SAMPLE_RANDOM,
 >>>>>>> refs/remotes/origin/cm-10.0
 				driver_name, dev);
+=======
+		retval = request_irq(LUBBOCK_USB_IRQ, lubbock_vbus_irq,
+				     0, driver_name, dev);
+>>>>>>> refs/remotes/origin/master
 		if (retval != 0) {
 			pr_err("%s: can't get irq %i, err %d\n",
 				driver_name, LUBBOCK_USB_IRQ, retval);
@@ -2329,15 +2522,21 @@ static int __init pxa25x_udc_probe(struct platform_device *pdev)
 	create_debug_files(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	retval = usb_add_gadget_udc(&pdev->dev, &dev->gadget);
 	if (!retval)
 		return retval;
 
 	remove_debug_files(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef	CONFIG_ARCH_LUBBOCK
 lubbock_fail0:
 	free_irq(LUBBOCK_USB_DISC_IRQ, dev);
@@ -2348,12 +2547,17 @@ lubbock_fail0:
 	if (gpio_is_valid(dev->mach->gpio_pullup))
 		gpio_free(dev->mach->gpio_pullup);
  err_gpio_pullup:
+<<<<<<< HEAD
 	if (dev->transceiver) {
 <<<<<<< HEAD
 		otg_put_transceiver(dev->transceiver);
 =======
 		usb_put_transceiver(dev->transceiver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!IS_ERR_OR_NULL(dev->transceiver)) {
+		usb_put_phy(dev->transceiver);
+>>>>>>> refs/remotes/origin/master
 		dev->transceiver = NULL;
 	}
 	clk_put(dev->clk);
@@ -2366,6 +2570,7 @@ static void pxa25x_udc_shutdown(struct platform_device *_dev)
 	pullup_off();
 }
 
+<<<<<<< HEAD
 static int __exit pxa25x_udc_remove(struct platform_device *pdev)
 {
 	struct pxa25x_udc *dev = platform_get_drvdata(pdev);
@@ -2377,6 +2582,16 @@ static int __exit pxa25x_udc_remove(struct platform_device *pdev)
 	if (dev->driver)
 		return -EBUSY;
 
+=======
+static int pxa25x_udc_remove(struct platform_device *pdev)
+{
+	struct pxa25x_udc *dev = platform_get_drvdata(pdev);
+
+	if (dev->driver)
+		return -EBUSY;
+
+	usb_del_gadget_udc(&dev->gadget);
+>>>>>>> refs/remotes/origin/master
 	dev->pullup = 0;
 	pullup(dev);
 
@@ -2397,6 +2612,7 @@ static int __exit pxa25x_udc_remove(struct platform_device *pdev)
 
 	clk_put(dev->clk);
 
+<<<<<<< HEAD
 	if (dev->transceiver) {
 <<<<<<< HEAD
 		otg_put_transceiver(dev->transceiver);
@@ -2407,6 +2623,13 @@ static int __exit pxa25x_udc_remove(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(pdev, NULL);
+=======
+	if (!IS_ERR_OR_NULL(dev->transceiver)) {
+		usb_put_phy(dev->transceiver);
+		dev->transceiver = NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	the_controller = NULL;
 	return 0;
 }
@@ -2465,7 +2688,12 @@ static int pxa25x_udc_resume(struct platform_device *dev)
 
 static struct platform_driver udc_driver = {
 	.shutdown	= pxa25x_udc_shutdown,
+<<<<<<< HEAD
 	.remove		= __exit_p(pxa25x_udc_remove),
+=======
+	.probe		= pxa25x_udc_probe,
+	.remove		= pxa25x_udc_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= pxa25x_udc_suspend,
 	.resume		= pxa25x_udc_resume,
 	.driver		= {
@@ -2474,6 +2702,7 @@ static struct platform_driver udc_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init udc_init(void)
 {
 	pr_info("%s: version %s\n", driver_name, DRIVER_VERSION);
@@ -2486,6 +2715,9 @@ static void __exit udc_exit(void)
 	platform_driver_unregister(&udc_driver);
 }
 module_exit(udc_exit);
+=======
+module_platform_driver(udc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_AUTHOR("Frank Becker, Robert Schwebel, David Brownell");

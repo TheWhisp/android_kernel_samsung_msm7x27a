@@ -48,7 +48,10 @@
 struct omapfb_device;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAPFB_PLANE_NUM		1
 
 struct omapfb_mem_region {
@@ -70,7 +73,10 @@ struct omapfb_mem_desc {
 	struct omapfb_mem_region	region[OMAPFB_PLANE_NUM];
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct lcd_panel {
 	const char	*name;
 	int		config;		/* TFT/STN, signal inversion */
@@ -232,6 +238,7 @@ struct omapfb_device {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_OMAP1
 extern struct lcd_ctrl omap1_lcd_ctrl;
 #else
@@ -240,6 +247,9 @@ extern struct lcd_ctrl omap2_disp_ctrl;
 =======
 extern struct lcd_ctrl omap1_lcd_ctrl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct lcd_ctrl omap1_lcd_ctrl;
+>>>>>>> refs/remotes/origin/master
 
 extern void omapfb_register_panel(struct lcd_panel *panel);
 extern void omapfb_write_first_pixel(struct omapfb_device *fbdev, u16 pixval);

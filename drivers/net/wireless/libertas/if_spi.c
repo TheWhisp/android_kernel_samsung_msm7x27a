@@ -20,12 +20,18 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/hardirq.h>
 #include <linux/interrupt.h>
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hardirq.h>
+#include <linux/interrupt.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/firmware.h>
 #include <linux/jiffies.h>
 #include <linux/list.h>
@@ -536,12 +542,15 @@ static int if_spi_prog_helper_firmware(struct if_spi_card *card,
 	err = spu_write_u16(card, IF_SPI_CARD_INT_CAUSE_REG,
 				IF_SPI_CIC_CMD_DOWNLOAD_OVER);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out;
 
 	lbs_deb_spi("waiting for helper to boot...\n");
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	if (err)
 		pr_err("failed to load helper firmware (err=%d)\n", err);
@@ -1043,9 +1052,12 @@ static int if_spi_init_card(struct if_spi_card *card)
 {
 	struct lbs_private *priv = card->priv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct spi_device *spi = card->spi;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int err, i;
 	u32 scratch;
 	const struct firmware *helper = NULL;
@@ -1079,9 +1091,14 @@ static int if_spi_init_card(struct if_spi_card *card)
 			goto out;
 		}
 
+<<<<<<< HEAD
 		err = lbs_get_firmware(&card->spi->dev, NULL, NULL,
 					card->card_id, &fw_table[0], &helper,
 					&mainfw);
+=======
+		err = lbs_get_firmware(&card->spi->dev, card->card_id,
+					&fw_table[0], &helper, &mainfw);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			netdev_err(priv->dev, "failed to find firmware (%d)\n",
 				   err);
@@ -1094,6 +1111,7 @@ static int if_spi_init_card(struct if_spi_card *card)
 				"spi->max_speed_hz=%d\n",
 				card->card_id, card->card_rev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				spi->master->bus_num, spi->chip_select,
 				spi->max_speed_hz);
 =======
@@ -1101,6 +1119,11 @@ static int if_spi_init_card(struct if_spi_card *card)
 				card->spi->chip_select,
 				card->spi->max_speed_hz);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				card->spi->master->bus_num,
+				card->spi->chip_select,
+				card->spi->max_speed_hz);
+>>>>>>> refs/remotes/origin/master
 		err = if_spi_prog_helper_firmware(card, helper);
 		if (err)
 			goto out;
@@ -1115,6 +1138,7 @@ static int if_spi_init_card(struct if_spi_card *card)
 		goto out;
 
 out:
+<<<<<<< HEAD
 	if (helper)
 		release_firmware(helper);
 	if (mainfw)
@@ -1122,6 +1146,9 @@ out:
 
 	lbs_deb_leave_args(LBS_DEB_SPI, "err %d\n", err);
 
+=======
+	lbs_deb_leave_args(LBS_DEB_SPI, "err %d\n", err);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1147,11 +1174,19 @@ static void if_spi_resume_worker(struct work_struct *work)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit if_spi_probe(struct spi_device *spi)
 {
 	struct if_spi_card *card;
 	struct lbs_private *priv = NULL;
 	struct libertas_spi_platform_data *pdata = spi->dev.platform_data;
+=======
+static int if_spi_probe(struct spi_device *spi)
+{
+	struct if_spi_card *card;
+	struct lbs_private *priv = NULL;
+	struct libertas_spi_platform_data *pdata = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	lbs_deb_enter(LBS_DEB_SPI);
@@ -1249,7 +1284,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit libertas_spi_remove(struct spi_device *spi)
+=======
+static int libertas_spi_remove(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct if_spi_card *card = spi_get_drvdata(spi);
 	struct lbs_private *priv = card->priv;
@@ -1308,6 +1347,7 @@ static const struct dev_pm_ops if_spi_pm_ops = {
 
 static struct spi_driver libertas_spi_driver = {
 	.probe	= if_spi_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(libertas_spi_remove),
 	.driver = {
 		.name	= "libertas_spi",
@@ -1315,6 +1355,11 @@ static struct spi_driver libertas_spi_driver = {
 		.bus	= &spi_bus_type,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = libertas_spi_remove,
+	.driver = {
+		.name	= "libertas_spi",
+>>>>>>> refs/remotes/origin/master
 		.owner	= THIS_MODULE,
 		.pm	= &if_spi_pm_ops,
 	},

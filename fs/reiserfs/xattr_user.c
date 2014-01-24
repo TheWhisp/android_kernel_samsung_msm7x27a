@@ -1,17 +1,25 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 =======
 #include "reiserfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/fs.h>
 #include <linux/pagemap.h>
 #include <linux/xattr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_xattr.h>
 =======
 #include "xattr.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "xattr.h"
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 static int

@@ -40,12 +40,18 @@ struct red_sched_data {
 	u32			limit;		/* HARD maximal queue length */
 	unsigned char		flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct red_parms	parms;
 =======
 	struct timer_list	adapt_timer;
 	struct red_parms	parms;
 	struct red_vars		vars;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct timer_list	adapt_timer;
+	struct red_parms	parms;
+	struct red_vars		vars;
+>>>>>>> refs/remotes/origin/master
 	struct red_stats	stats;
 	struct Qdisc		*qdisc;
 };
@@ -67,6 +73,7 @@ static int red_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	q->parms.qavg = red_calc_qavg(&q->parms, child->qstats.backlog);
 
 	if (red_is_idling(&q->parms))
@@ -74,6 +81,8 @@ static int red_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 
 	switch (red_action(&q->parms, q->parms.qavg)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	q->vars.qavg = red_calc_qavg(&q->parms,
 				     &q->vars,
 				     child->qstats.backlog);
@@ -82,7 +91,10 @@ static int red_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		red_end_of_idle_period(&q->vars);
 
 	switch (red_action(&q->parms, &q->vars, q->vars.qavg)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case RED_DONT_MARK:
 		break;
 
@@ -134,12 +146,17 @@ static struct sk_buff *red_dequeue(struct Qdisc *sch)
 		sch->q.qlen--;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!red_is_idling(&q->parms))
 			red_start_of_idle_period(&q->parms);
 =======
 		if (!red_is_idling(&q->vars))
 			red_start_of_idle_period(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!red_is_idling(&q->vars))
+			red_start_of_idle_period(&q->vars);
+>>>>>>> refs/remotes/origin/master
 	}
 	return skb;
 }
@@ -166,12 +183,17 @@ static unsigned int red_drop(struct Qdisc *sch)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!red_is_idling(&q->parms))
 		red_start_of_idle_period(&q->parms);
 =======
 	if (!red_is_idling(&q->vars))
 		red_start_of_idle_period(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!red_is_idling(&q->vars))
+		red_start_of_idle_period(&q->vars);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -183,20 +205,29 @@ static void red_reset(struct Qdisc *sch)
 	qdisc_reset(q->qdisc);
 	sch->q.qlen = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	red_restart(&q->parms);
 =======
 	red_restart(&q->vars);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	red_restart(&q->vars);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void red_destroy(struct Qdisc *sch)
 {
 	struct red_sched_data *q = qdisc_priv(sch);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	del_timer_sync(&q->adapt_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	del_timer_sync(&q->adapt_timer);
+>>>>>>> refs/remotes/origin/master
 	qdisc_destroy(q->qdisc);
 }
 
@@ -204,9 +235,13 @@ static const struct nla_policy red_policy[TCA_RED_MAX + 1] = {
 	[TCA_RED_PARMS]	= { .len = sizeof(struct tc_red_qopt) },
 	[TCA_RED_STAB]	= { .len = RED_STAB_SIZE },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	[TCA_RED_MAX_P] = { .type = NLA_U32 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[TCA_RED_MAX_P] = { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/master
 };
 
 static int red_change(struct Qdisc *sch, struct nlattr *opt)
@@ -217,9 +252,13 @@ static int red_change(struct Qdisc *sch, struct nlattr *opt)
 	struct Qdisc *child = NULL;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 max_P;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 max_P;
+>>>>>>> refs/remotes/origin/master
 
 	if (opt == NULL)
 		return -EINVAL;
@@ -233,10 +272,15 @@ static int red_change(struct Qdisc *sch, struct nlattr *opt)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	max_P = tb[TCA_RED_MAX_P] ? nla_get_u32(tb[TCA_RED_MAX_P]) : 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_P = tb[TCA_RED_MAX_P] ? nla_get_u32(tb[TCA_RED_MAX_P]) : 0;
+
+>>>>>>> refs/remotes/origin/master
 	ctl = nla_data(tb[TCA_RED_PARMS]);
 
 	if (ctl->limit > 0) {
@@ -255,6 +299,7 @@ static int red_change(struct Qdisc *sch, struct nlattr *opt)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	red_set_parms(&q->parms, ctl->qth_min, ctl->qth_max, ctl->Wlog,
 				 ctl->Plog, ctl->Scell_log,
 				 nla_data(tb[TCA_RED_STAB]));
@@ -262,6 +307,8 @@ static int red_change(struct Qdisc *sch, struct nlattr *opt)
 	if (skb_queue_empty(&sch->q))
 		red_end_of_idle_period(&q->parms);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	red_set_parms(&q->parms,
 		      ctl->qth_min, ctl->qth_max, ctl->Wlog,
 		      ctl->Plog, ctl->Scell_log,
@@ -275,14 +322,20 @@ static int red_change(struct Qdisc *sch, struct nlattr *opt)
 
 	if (!q->qdisc->q.qlen)
 		red_start_of_idle_period(&q->vars);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	sch_tree_unlock(sch);
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void red_adaptative_timer(unsigned long arg)
 {
 	struct Qdisc *sch = (struct Qdisc *)arg;
@@ -295,16 +348,23 @@ static inline void red_adaptative_timer(unsigned long arg)
 	spin_unlock(root_lock);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int red_init(struct Qdisc *sch, struct nlattr *opt)
 {
 	struct red_sched_data *q = qdisc_priv(sch);
 
 	q->qdisc = &noop_qdisc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	setup_timer(&q->adapt_timer, red_adaptative_timer, (unsigned long)sch);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	setup_timer(&q->adapt_timer, red_adaptative_timer, (unsigned long)sch);
+>>>>>>> refs/remotes/origin/master
 	return red_change(sch, opt);
 }
 
@@ -326,11 +386,17 @@ static int red_dump(struct Qdisc *sch, struct sk_buff *skb)
 	opts = nla_nest_start(skb, TCA_OPTIONS);
 	if (opts == NULL)
 		goto nla_put_failure;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_RED_PARMS, sizeof(opt), &opt);
 <<<<<<< HEAD
 =======
 	NLA_PUT_U32(skb, TCA_RED_MAX_P, q->parms.max_P);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (nla_put(skb, TCA_RED_PARMS, sizeof(opt), &opt) ||
+	    nla_put_u32(skb, TCA_RED_MAX_P, q->parms.max_P))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return nla_nest_end(skb, opts);
 
 nla_put_failure:

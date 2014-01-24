@@ -10,19 +10,27 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
 <<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 
 
 /* ------------------------------------------------------------------------- */
@@ -97,6 +105,7 @@ void __init at91_pwm_leds(struct gpio_led *leds, int nr)
 #else
 void __init at91_pwm_leds(struct gpio_led *leds, int nr){}
 #endif
+<<<<<<< HEAD
 
 
 /* ------------------------------------------------------------------------- */
@@ -202,3 +211,5 @@ void __init at91_init_leds(u8 cpu_led, u8 timer_led)
 #else
 void __init at91_init_leds(u8 cpu_led, u8 timer_led) {}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

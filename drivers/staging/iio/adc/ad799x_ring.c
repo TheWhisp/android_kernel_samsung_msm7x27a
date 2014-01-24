@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2010 Michael Hennerich, Analog Devices Inc.
+=======
+ * Copyright (C) 2010-2012 Michael Hennerich, Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2008-2010 Jonathan Cameron
  *
  * This program is free software; you can redistribute it and/or modify
@@ -11,6 +15,7 @@
 
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/slab.h>
 #include <linux/kernel.h>
@@ -19,10 +24,15 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/i2c.h>
 #include <linux/bitops.h>
 
+<<<<<<< HEAD
 #include "../iio.h"
 <<<<<<< HEAD
 #include "../ring_generic.h"
@@ -134,6 +144,15 @@ static int ad799x_ring_preenable(struct iio_dev *indio_dev)
 	return 0;
 }
 
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/buffer.h>
+#include <linux/iio/trigger_consumer.h>
+#include <linux/iio/triggered_buffer.h>
+
+#include "ad799x.h"
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ad799x_trigger_handler() bh of trigger launched polling to ring buffer
  *
@@ -144,6 +163,7 @@ static int ad799x_ring_preenable(struct iio_dev *indio_dev)
 static irqreturn_t ad799x_trigger_handler(int irq, void *p)
 {
 	struct iio_poll_func *pf = p;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct iio_dev *indio_dev = pf->private_data;
 	struct ad799x_state *st = iio_dev_get_devdata(indio_dev);
@@ -162,25 +182,41 @@ static irqreturn_t ad799x_trigger_handler(int irq, void *p)
 	if (rxbuf == NULL)
 		goto out;
 
+=======
+	struct iio_dev *indio_dev = pf->indio_dev;
+	struct ad799x_state *st = iio_priv(indio_dev);
+	int b_sent;
+	u8 cmd;
+
+>>>>>>> refs/remotes/origin/master
 	switch (st->id) {
 	case ad7991:
 	case ad7995:
 	case ad7999:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		cmd = st->config | (ring->scan_mask << AD799X_CHANNEL_SHIFT);
 =======
 		cmd = st->config |
 			(*indio_dev->active_scan_mask << AD799X_CHANNEL_SHIFT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cmd = st->config |
+			(*indio_dev->active_scan_mask << AD799X_CHANNEL_SHIFT);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case ad7992:
 	case ad7993:
 	case ad7994:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd = (ring->scan_mask << AD799X_CHANNEL_SHIFT) |
 =======
 		cmd = (*indio_dev->active_scan_mask << AD799X_CHANNEL_SHIFT) |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cmd = (*indio_dev->active_scan_mask << AD799X_CHANNEL_SHIFT) |
+>>>>>>> refs/remotes/origin/master
 			AD7998_CONV_RES_REG;
 		break;
 	case ad7997:
@@ -192,6 +228,7 @@ static irqreturn_t ad799x_trigger_handler(int irq, void *p)
 	}
 
 	b_sent = i2c_smbus_read_i2c_block_data(st->client,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			cmd, ring->scan_count * 2, rxbuf);
 =======
@@ -216,12 +253,21 @@ done:
 	kfree(rxbuf);
 	if (b_sent < 0)
 		return b_sent;
+=======
+			cmd, st->transfer_size, st->rx_buf);
+	if (b_sent < 0)
+		goto out;
+
+	iio_push_to_buffers_with_timestamp(indio_dev, st->rx_buf,
+			iio_get_time_ns());
+>>>>>>> refs/remotes/origin/master
 out:
 	iio_trigger_notify_done(indio_dev->trig);
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct iio_ring_setup_ops ad799x_buf_setup_ops = {
 	.preenable = &ad799x_ring_preenable,
@@ -290,10 +336,17 @@ error_deallocate_sw_rb:
 >>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
 	return ret;
+=======
+int ad799x_register_ring_funcs_and_init(struct iio_dev *indio_dev)
+{
+	return iio_triggered_buffer_setup(indio_dev, NULL,
+		&ad799x_trigger_handler, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 void ad799x_ring_cleanup(struct iio_dev *indio_dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* ensure that the trigger has been detached */
 	if (indio_dev->trig) {
@@ -307,4 +360,7 @@ void ad799x_ring_cleanup(struct iio_dev *indio_dev)
 	iio_dealloc_pollfunc(indio_dev->pollfunc);
 	iio_sw_rb_free(indio_dev->buffer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iio_triggered_buffer_cleanup(indio_dev);
+>>>>>>> refs/remotes/origin/master
 }

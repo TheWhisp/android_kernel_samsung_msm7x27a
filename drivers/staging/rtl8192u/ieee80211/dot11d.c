@@ -67,9 +67,15 @@ Dot11d_Reset(struct ieee80211_device *ieee)
 void
 Dot11d_UpdateCountryIe(
 	struct ieee80211_device *dev,
+<<<<<<< HEAD
 	u8 *		pTaddr,
 	u16	CoutryIeLen,
 	u8 * pCoutryIe
+=======
+	u8 *pTaddr,
+	u16	CoutryIeLen,
+	u8 *pCoutryIe
+>>>>>>> refs/remotes/origin/master
 	)
 {
 	PRT_DOT11D_INFO pDot11dInfo = GET_DOT11D_INFO(dev);
@@ -101,7 +107,11 @@ Dot11d_UpdateCountryIe(
 			MaxChnlNum = pTriple->FirstChnl + j;
 		}
 
+<<<<<<< HEAD
 		pTriple = (PCHNL_TXPOWER_TRIPLE)((u8*)pTriple + 3);
+=======
+		pTriple = (PCHNL_TXPOWER_TRIPLE)((u8 *)pTriple + 3);
+>>>>>>> refs/remotes/origin/master
 	}
 	//printk("Dot11d_UpdateCountryIe(): Channel List:\n");
 	printk("Channel List:");
@@ -143,12 +153,20 @@ DOT11D_GetMaxTxPwrInDbm(
 
 void
 DOT11D_ScanComplete(
+<<<<<<< HEAD
 	struct ieee80211_device * dev
+=======
+	struct ieee80211_device *dev
+>>>>>>> refs/remotes/origin/master
 	)
 {
 	PRT_DOT11D_INFO pDot11dInfo = GET_DOT11D_INFO(dev);
 
+<<<<<<< HEAD
 	switch(pDot11dInfo->State)
+=======
+	switch (pDot11dInfo->State)
+>>>>>>> refs/remotes/origin/master
 	{
 	case DOT11D_STATE_LEARNED:
 		pDot11dInfo->State = DOT11D_STATE_DONE;
@@ -166,7 +184,11 @@ DOT11D_ScanComplete(
 }
 
 int IsLegalChannel(
+<<<<<<< HEAD
 	struct ieee80211_device * dev,
+=======
+	struct ieee80211_device *dev,
+>>>>>>> refs/remotes/origin/master
 	u8 channel
 )
 {
@@ -183,7 +205,11 @@ int IsLegalChannel(
 }
 
 int ToLegalChannel(
+<<<<<<< HEAD
 	struct ieee80211_device * dev,
+=======
+	struct ieee80211_device *dev,
+>>>>>>> refs/remotes/origin/master
 	u8 channel
 )
 {
@@ -218,4 +244,7 @@ EXPORT_SYMBOL(DOT11D_GetMaxTxPwrInDbm);
 EXPORT_SYMBOL(DOT11D_ScanComplete);
 EXPORT_SYMBOL(IsLegalChannel);
 EXPORT_SYMBOL(ToLegalChannel);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master

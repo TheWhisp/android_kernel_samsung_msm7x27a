@@ -27,18 +27,31 @@
 #include <linux/usb/otg.h>
 #include <linux/usb/ulpi.h>
 
+<<<<<<< HEAD
 #include <mach/eukrea-baseboards.h>
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/memory.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/mx25.h>
 #include <mach/iomux-mx25.h>
 
 #include "devices-imx25.h"
+=======
+
+#include "common.h"
+#include "devices-imx25.h"
+#include "eukrea-baseboards.h"
+#include "hardware.h"
+#include "iomux-mx25.h"
+#include "mx25.h"
+>>>>>>> refs/remotes/origin/master
 
 static const struct imxuart_platform_data uart_pdata __initconst = {
 	.flags = IMXUART_HAVE_RTSCTS,
@@ -106,13 +119,21 @@ static const struct mxc_usbh_platform_data usbh2_pdata __initconst = {
 static const struct fsl_usb2_platform_data otg_device_pdata __initconst = {
 	.operating_mode = FSL_USB2_DR_DEVICE,
 	.phy_mode       = FSL_USB2_PHY_UTMI,
+<<<<<<< HEAD
 };
 
 static int otg_mode_host;
+=======
+	.workaround     = FLS_USB2_WORKAROUND_ENGCM09152,
+};
+
+static bool otg_mode_host __initdata;
+>>>>>>> refs/remotes/origin/master
 
 static int __init eukrea_cpuimx25_otg_mode(char *options)
 {
 	if (!strcmp(options, "host"))
+<<<<<<< HEAD
 		otg_mode_host = 1;
 	else if (!strcmp(options, "device"))
 		otg_mode_host = 0;
@@ -120,24 +141,44 @@ static int __init eukrea_cpuimx25_otg_mode(char *options)
 		pr_info("otg_mode neither \"host\" nor \"device\". "
 			"Defaulting to device\n");
 	return 0;
+=======
+		otg_mode_host = true;
+	else if (!strcmp(options, "device"))
+		otg_mode_host = false;
+	else
+		pr_info("otg_mode neither \"host\" nor \"device\". "
+			"Defaulting to device\n");
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 __setup("otg_mode=", eukrea_cpuimx25_otg_mode);
 
 static void __init eukrea_cpuimx25_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	imx25_soc_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx25_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	if (mxc_iomux_v3_setup_multiple_pads(eukrea_cpuimx25_pads,
 			ARRAY_SIZE(eukrea_cpuimx25_pads)))
 		printk(KERN_ERR "error setting cpuimx25 pads !\n");
 
 	imx25_add_imx_uart0(&uart_pdata);
 	imx25_add_mxc_nand(&eukrea_cpuimx25_nand_board_info);
+<<<<<<< HEAD
 	imx25_add_imxdi_rtc(NULL);
 	imx25_add_fec(&mx25_fec_pdata);
+=======
+	imx25_add_imxdi_rtc();
+	imx25_add_fec(&mx25_fec_pdata);
+	imx25_add_imx2_wdt();
+>>>>>>> refs/remotes/origin/master
 
 	i2c_register_board_info(0, eukrea_cpuimx25_i2c_devices,
 				ARRAY_SIZE(eukrea_cpuimx25_i2c_devices));
@@ -160,6 +201,7 @@ static void __init eukrea_cpuimx25_timer_init(void)
 	mx25_clocks_init();
 }
 
+<<<<<<< HEAD
 static struct sys_timer eukrea_cpuimx25_timer = {
 	.init   = eukrea_cpuimx25_timer_init,
 };
@@ -174,6 +216,8 @@ MACHINE_START(EUKREA_CPUIMX25, "Eukrea CPUIMX25")
 	.timer = &eukrea_cpuimx25_timer,
 	.init_machine = eukrea_cpuimx25_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_START(EUKREA_CPUIMX25SD, "Eukrea CPUIMX25")
 	/* Maintainer: Eukrea Electromatique */
 	.atag_offset = 0x100,
@@ -181,8 +225,14 @@ MACHINE_START(EUKREA_CPUIMX25SD, "Eukrea CPUIMX25")
 	.init_early = imx25_init_early,
 	.init_irq = mx25_init_irq,
 	.handle_irq = imx25_handle_irq,
+<<<<<<< HEAD
 	.timer = &eukrea_cpuimx25_timer,
 	.init_machine = eukrea_cpuimx25_init,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time = eukrea_cpuimx25_timer_init,
+	.init_machine = eukrea_cpuimx25_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

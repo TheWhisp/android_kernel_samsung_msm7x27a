@@ -1,6 +1,10 @@
 /* bnx2x_stats.h: Broadcom Everest network driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2007-2012 Broadcom Corporation
+=======
+ * Copyright (c) 2007-2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +44,10 @@ struct nig_stats {
 	u32 egress_mac_pkt1_hi;
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum bnx2x_stats_event {
 	STATS_EVENT_PMF = 0,
 	STATS_EVENT_LINK_UP,
@@ -203,9 +210,17 @@ struct bnx2x_eth_stats {
 	/* Recovery */
 	u32 recoverable_error;
 	u32 unrecoverable_error;
+<<<<<<< HEAD
 };
 
 
+=======
+	u32 driver_filtered_tx_pkt;
+	/* src: Clear-on-Read register; Will not survive PMF Migration */
+	u32 eee_tx_lpi;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct bnx2x_eth_q_stats {
 	u32 total_unicast_bytes_received_hi;
 	u32 total_unicast_bytes_received_lo;
@@ -262,6 +277,10 @@ struct bnx2x_eth_q_stats {
 	u32 total_tpa_aggregated_frames_lo;
 	u32 total_tpa_bytes_hi;
 	u32 total_tpa_bytes_lo;
+<<<<<<< HEAD
+=======
+	u32 driver_filtered_tx_pkt;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bnx2x_eth_stats_old {
@@ -313,6 +332,10 @@ struct bnx2x_eth_q_stats_old {
 	u32 rx_err_discard_pkt_old;
 	u32 rx_skb_alloc_failed_old;
 	u32 hw_csum_err_old;
+<<<<<<< HEAD
+=======
+	u32 driver_filtered_tx_pkt_old;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct bnx2x_net_stats_old {
@@ -326,7 +349,10 @@ struct bnx2x_fw_port_stats_old {
 	 u32 mac_discard;
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /****************************************************************************
 * Macros
 ****************************************************************************/
@@ -338,6 +364,21 @@ struct bnx2x_fw_port_stats_old {
 		s_hi += a_hi + ((s_lo < a_lo) ? 1 : 0); \
 	} while (0)
 
+<<<<<<< HEAD
+=======
+#define LE32_0 ((__force __le32) 0)
+#define LE16_0 ((__force __le16) 0)
+
+/* The _force is for cases where high value is 0 */
+#define ADD_64_LE(s_hi, a_hi_le, s_lo, a_lo_le) \
+		ADD_64(s_hi, le32_to_cpu(a_hi_le), \
+		       s_lo, le32_to_cpu(a_lo_le))
+
+#define ADD_64_LE16(s_hi, a_hi_le, s_lo, a_lo_le) \
+		ADD_64(s_hi, le16_to_cpu(a_hi_le), \
+		       s_lo, le16_to_cpu(a_lo_le))
+
+>>>>>>> refs/remotes/origin/master
 /* difference = minuend - subtrahend */
 #define DIFF_64(d_hi, m_hi, s_hi, d_lo, m_lo, s_lo) \
 	do { \
@@ -404,16 +445,31 @@ struct bnx2x_fw_port_stats_old {
 			      new->s); \
 	} while (0)
 
+<<<<<<< HEAD
 #define UPDATE_EXTEND_TSTAT(s, t) \
 	do { \
 		diff = le32_to_cpu(tclient->s) - le32_to_cpu(old_tclient->s); \
+=======
+#define UPDATE_EXTEND_TSTAT_X(s, t, size) \
+	do { \
+		diff = le##size##_to_cpu(tclient->s) - \
+		       le##size##_to_cpu(old_tclient->s); \
+>>>>>>> refs/remotes/origin/master
 		old_tclient->s = tclient->s; \
 		ADD_EXTEND_64(qstats->t##_hi, qstats->t##_lo, diff); \
 	} while (0)
 
+<<<<<<< HEAD
 #define UPDATE_EXTEND_E_TSTAT(s, t) \
 	do { \
 		UPDATE_EXTEND_TSTAT(s, t); \
+=======
+#define UPDATE_EXTEND_TSTAT(s, t) UPDATE_EXTEND_TSTAT_X(s, t, 32)
+
+#define UPDATE_EXTEND_E_TSTAT(s, t, size) \
+	do { \
+		UPDATE_EXTEND_TSTAT_X(s, t, size); \
+>>>>>>> refs/remotes/origin/master
 		ADD_EXTEND_64(estats->t##_hi, estats->t##_lo, diff); \
 	} while (0)
 
@@ -516,6 +572,7 @@ struct bnx2x_fw_port_stats_old {
 		SUB_EXTEND_64(qstats->t##_hi, qstats->t##_lo, diff); \
 	} while (0)
 
+<<<<<<< HEAD
 
 /* forward */
 struct bnx2x;
@@ -523,6 +580,17 @@ struct bnx2x;
 void bnx2x_stats_init(struct bnx2x *bp);
 
 void bnx2x_stats_handle(struct bnx2x *bp, enum bnx2x_stats_event event);
+=======
+/* forward */
+struct bnx2x;
+
+void bnx2x_memset_stats(struct bnx2x *bp);
+void bnx2x_stats_init(struct bnx2x *bp);
+void bnx2x_stats_handle(struct bnx2x *bp, enum bnx2x_stats_event event);
+void bnx2x_stats_safe_exec(struct bnx2x *bp,
+			   void (func_to_exec)(void *cookie),
+			   void *cookie);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * bnx2x_save_statistics - save statistics when unloading.
@@ -530,4 +598,10 @@ void bnx2x_stats_handle(struct bnx2x *bp, enum bnx2x_stats_event event);
  * @bp:		driver handle
  */
 void bnx2x_save_statistics(struct bnx2x *bp);
+<<<<<<< HEAD
+=======
+
+void bnx2x_afex_collect_stats(struct bnx2x *bp, void *void_afex_stats,
+			      u32 stats_type);
+>>>>>>> refs/remotes/origin/master
 #endif /* BNX2X_STATS_H */

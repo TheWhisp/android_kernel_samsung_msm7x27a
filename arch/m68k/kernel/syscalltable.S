@@ -22,7 +22,11 @@ ALIGN
 ENTRY(sys_call_table)
 	.long sys_restart_syscall	/* 0 - old "setup()" system call, used for restarting */
 	.long sys_exit
+<<<<<<< HEAD
 	.long sys_fork
+=======
+	.long __sys_fork
+>>>>>>> refs/remotes/origin/master
 	.long sys_read
 	.long sys_write
 	.long sys_open			/* 5 */
@@ -140,7 +144,11 @@ ENTRY(sys_call_table)
 	.long sys_ipc
 	.long sys_fsync
 	.long sys_sigreturn
+<<<<<<< HEAD
 	.long sys_clone			/* 120 */
+=======
+	.long __sys_clone		/* 120 */
+>>>>>>> refs/remotes/origin/master
 	.long sys_setdomainname
 	.long sys_newuname
 	.long sys_cacheflush		/* modify_ldt for i386 */
@@ -190,10 +198,14 @@ ENTRY(sys_call_table)
 	.long sys_ni_syscall		/* old "query_module" */
 	.long sys_poll
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.long sys_nfsservctl
 =======
 	.long sys_ni_syscall		/* old nfsservctl */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long sys_ni_syscall		/* old nfsservctl */
+>>>>>>> refs/remotes/origin/master
 	.long sys_setresgid16		/* 170 */
 	.long sys_getresgid16
 	.long sys_prctl
@@ -214,7 +226,11 @@ ENTRY(sys_call_table)
 	.long sys_sendfile
 	.long sys_ni_syscall		/* streams1 */
 	.long sys_ni_syscall		/* streams2 */
+<<<<<<< HEAD
 	.long sys_vfork			/* 190 */
+=======
+	.long __sys_vfork		/* 190 */
+>>>>>>> refs/remotes/origin/master
 	.long sys_getrlimit
 	.long sys_mmap2
 	.long sys_truncate64
@@ -370,8 +386,15 @@ ENTRY(sys_call_table)
 	.long sys_syncfs
 	.long sys_setns
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.long sys_process_vm_readv	/* 345 */
 	.long sys_process_vm_writev
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.long sys_process_vm_readv	/* 345 */
+	.long sys_process_vm_writev
+	.long sys_kcmp
+	.long sys_finit_module
+>>>>>>> refs/remotes/origin/master
 

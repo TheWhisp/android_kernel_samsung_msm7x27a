@@ -26,8 +26,13 @@
 #define BD2802_LED_OFFSET		0xa
 #define BD2802_COLOR_OFFSET		0x3
 
+<<<<<<< HEAD
 #define BD2802_REG_CLKSETUP 		0x00
 #define BD2802_REG_CONTROL 		0x01
+=======
+#define BD2802_REG_CLKSETUP		0x00
+#define BD2802_REG_CONTROL		0x01
+>>>>>>> refs/remotes/origin/master
 #define BD2802_REG_HOURSETUP		0x02
 #define BD2802_REG_CURRENT1SETUP	0x03
 #define BD2802_REG_CURRENT2SETUP	0x04
@@ -93,7 +98,11 @@ struct bd2802_led {
 	 * In ADF mode, user can set registers of BD2802GU directly,
 	 * therefore BD2802GU doesn't enter reset state.
 	 */
+<<<<<<< HEAD
 	int 				adf_on;
+=======
+	int				adf_on;
+>>>>>>> refs/remotes/origin/master
 
 	enum led_ids			led_id;
 	enum led_colors			color;
@@ -328,7 +337,11 @@ static ssize_t bd2802_store_reg##reg_addr(struct device *dev,		\
 	int ret;							\
 	if (!count)							\
 		return -EINVAL;						\
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 16, &val);				\
+=======
+	ret = kstrtoul(buf, 16, &val);					\
+>>>>>>> refs/remotes/origin/master
 	if (ret)							\
 		return ret;						\
 	down_write(&led->rwsem);					\
@@ -492,7 +505,11 @@ static ssize_t bd2802_store_##attr_name(struct device *dev,		\
 	int ret;							\
 	if (!count)							\
 		return -EINVAL;						\
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 16, &val);				\
+=======
+	ret = kstrtoul(buf, 16, &val);					\
+>>>>>>> refs/remotes/origin/master
 	if (ret)							\
 		return ret;						\
 	down_write(&led->rwsem);					\
@@ -663,30 +680,45 @@ static void bd2802_unregister_led_classdev(struct bd2802_led *led)
 {
 	cancel_work_sync(&led->work);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	led_classdev_unregister(&led->cdev_led2b);
 	led_classdev_unregister(&led->cdev_led2g);
 	led_classdev_unregister(&led->cdev_led2r);
 	led_classdev_unregister(&led->cdev_led1b);
 	led_classdev_unregister(&led->cdev_led1g);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	led_classdev_unregister(&led->cdev_led1r);
 }
 
 static int __devinit bd2802_probe(struct i2c_client *client,
+=======
+	led_classdev_unregister(&led->cdev_led1r);
+}
+
+static int bd2802_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 			const struct i2c_device_id *id)
 {
 	struct bd2802_led *led;
 	struct bd2802_led_platform_data *pdata;
 	int ret, i;
 
+<<<<<<< HEAD
 	led = kzalloc(sizeof(struct bd2802_led), GFP_KERNEL);
+=======
+	led = devm_kzalloc(&client->dev, sizeof(struct bd2802_led), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!led) {
 		dev_err(&client->dev, "failed to allocate driver data\n");
 		return -ENOMEM;
 	}
 
 	led->client = client;
+<<<<<<< HEAD
 	pdata = led->pdata = client->dev.platform_data;
 	i2c_set_clientdata(client, led);
 
@@ -697,6 +729,13 @@ static int __devinit bd2802_probe(struct i2c_client *client,
 =======
 	gpio_request_one(pdata->reset_gpio, GPIOF_OUT_INIT_HIGH, "RGB_RESETB");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pdata = led->pdata = dev_get_platdata(&client->dev);
+	i2c_set_clientdata(client, led);
+
+	/* Configure RESET GPIO (L: RESET, H: RESET cancel) */
+	gpio_request_one(pdata->reset_gpio, GPIOF_OUT_INIT_HIGH, "RGB_RESETB");
+>>>>>>> refs/remotes/origin/master
 
 	/* Tacss = min 0.1ms */
 	udelay(100);
@@ -705,7 +744,11 @@ static int __devinit bd2802_probe(struct i2c_client *client,
 	ret = bd2802_write_byte(client, BD2802_REG_CLKSETUP, 0x00);
 	if (ret < 0) {
 		dev_err(&client->dev, "failed to detect device\n");
+<<<<<<< HEAD
 		goto failed_free;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	} else
 		dev_info(&client->dev, "return 0x%02x\n", ret);
 
@@ -737,6 +780,7 @@ static int __devinit bd2802_probe(struct i2c_client *client,
 failed_unregister_dev_file:
 	for (i--; i >= 0; i--)
 		device_remove_file(&led->client->dev, bd2802_attributes[i]);
+<<<<<<< HEAD
 failed_free:
 	kfree(led);
 
@@ -744,6 +788,12 @@ failed_free:
 }
 
 static int __exit bd2802_remove(struct i2c_client *client)
+=======
+	return ret;
+}
+
+static int bd2802_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bd2802_led *led = i2c_get_clientdata(client);
 	int i;
@@ -754,13 +804,20 @@ static int __exit bd2802_remove(struct i2c_client *client)
 		bd2802_disable_adv_conf(led);
 	for (i = 0; i < ARRAY_SIZE(bd2802_attributes); i++)
 		device_remove_file(&led->client->dev, bd2802_attributes[i]);
+<<<<<<< HEAD
 	kfree(led);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static void bd2802_restore_state(struct bd2802_led *led)
 {
 	int i;
@@ -797,12 +854,18 @@ static int bd2802_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static SIMPLE_DEV_PM_OPS(bd2802_pm, bd2802_suspend, bd2802_resume);
 #define BD2802_PM (&bd2802_pm)
 #else		/* CONFIG_PM */
 #define BD2802_PM NULL
 #endif
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(bd2802_pm, bd2802_suspend, bd2802_resume);
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id bd2802_id[] = {
 	{ "BD2802", 0 },
@@ -813,6 +876,7 @@ MODULE_DEVICE_TABLE(i2c, bd2802_id);
 static struct i2c_driver bd2802_i2c_driver = {
 	.driver	= {
 		.name	= "BD2802",
+<<<<<<< HEAD
 		.pm	= BD2802_PM,
 	},
 	.probe		= bd2802_probe,
@@ -835,6 +899,16 @@ module_exit(bd2802_exit);
 =======
 module_i2c_driver(bd2802_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &bd2802_pm,
+	},
+	.probe		= bd2802_probe,
+	.remove		= bd2802_remove,
+	.id_table	= bd2802_id,
+};
+
+module_i2c_driver(bd2802_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kim Kyuwon <q1.kim@samsung.com>");
 MODULE_DESCRIPTION("BD2802 LED driver");

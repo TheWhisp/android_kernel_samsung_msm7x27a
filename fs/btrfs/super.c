@@ -41,15 +41,21 @@
 #include <linux/slab.h>
 #include <linux/cleancache.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/ratelimit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "compat.h"
+=======
+#include <linux/ratelimit.h>
+#include <linux/btrfs.h>
+>>>>>>> refs/remotes/origin/master
 #include "delayed-inode.h"
 #include "ctree.h"
 #include "disk-io.h"
 #include "transaction.h"
 #include "btrfs_inode.h"
+<<<<<<< HEAD
 #include "ioctl.h"
 #include "print-tree.h"
 #include "xattr.h"
@@ -57,11 +63,24 @@
 #include "version.h"
 #include "export.h"
 #include "compression.h"
+=======
+#include "print-tree.h"
+#include "xattr.h"
+#include "volumes.h"
+#include "export.h"
+#include "compression.h"
+#include "rcu-string.h"
+#include "dev-replace.h"
+#include "free-space-cache.h"
+#include "backref.h"
+#include "tests/btrfs-tests.h"
+>>>>>>> refs/remotes/origin/master
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/btrfs.h>
 
 static const struct super_operations btrfs_super_ops;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static struct file_system_type btrfs_fs_type;
@@ -71,6 +90,13 @@ static const char *btrfs_decode_error(struct btrfs_fs_info *fs_info, int errno,
 				      char nbuf[16])
 {
 	char *errstr = NULL;
+=======
+static struct file_system_type btrfs_fs_type;
+
+static const char *btrfs_decode_error(int errno)
+{
+	char *errstr = "unknown";
+>>>>>>> refs/remotes/origin/master
 
 	switch (errno) {
 	case -EIO:
@@ -83,6 +109,7 @@ static const char *btrfs_decode_error(struct btrfs_fs_info *fs_info, int errno,
 		errstr = "Readonly filesystem";
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case -EEXIST:
 		errstr = "Object already exists";
@@ -93,18 +120,33 @@ static const char *btrfs_decode_error(struct btrfs_fs_info *fs_info, int errno,
 			if (snprintf(nbuf, 16, "error %d", -errno) >= 0)
 				errstr = nbuf;
 		}
+=======
+	case -EEXIST:
+		errstr = "Object already exists";
+		break;
+	case -ENOSPC:
+		errstr = "No space left";
+		break;
+	case -ENOENT:
+		errstr = "No such entry";
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
 	return errstr;
 }
 
+<<<<<<< HEAD
 static void __save_error_info(struct btrfs_fs_info *fs_info)
+=======
+static void save_error_info(struct btrfs_fs_info *fs_info)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * today we only save the error info into ram.  Long term we'll
 	 * also send it down to the disk
 	 */
+<<<<<<< HEAD
 	fs_info->fs_state = BTRFS_SUPER_FLAG_ERROR;
 }
 
@@ -115,6 +157,9 @@ static void __save_error_info(struct btrfs_fs_info *fs_info)
 static void save_error_info(struct btrfs_fs_info *fs_info)
 {
 	__save_error_info(fs_info);
+=======
+	set_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* btrfs handle error by forcing the filesystem readonly */
@@ -125,6 +170,7 @@ static void btrfs_handle_error(struct btrfs_fs_info *fs_info)
 	if (sb->s_flags & MS_RDONLY)
 		return;
 
+<<<<<<< HEAD
 	if (fs_info->fs_state & BTRFS_SUPER_FLAG_ERROR) {
 		sb->s_flags |= MS_RDONLY;
 		printk(KERN_INFO "btrfs is forced readonly\n");
@@ -136,11 +182,31 @@ static void btrfs_handle_error(struct btrfs_fs_info *fs_info)
 	}
 }
 
+=======
+	if (test_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state)) {
+		sb->s_flags |= MS_RDONLY;
+		btrfs_info(fs_info, "forced readonly");
+		/*
+		 * Note that a running device replace operation is not
+		 * canceled here although there is no way to update
+		 * the progress. It would add the risk of a deadlock,
+		 * therefore the canceling is ommited. The only penalty
+		 * is that some I/O remains active until the procedure
+		 * completes. The next time when the filesystem is
+		 * mounted writeable again, the device replace
+		 * operation continues.
+		 */
+	}
+}
+
+#ifdef CONFIG_PRINTK
+>>>>>>> refs/remotes/origin/master
 /*
  * __btrfs_std_error decodes expected errors from the caller and
  * invokes the approciate error response.
  */
 void __btrfs_std_error(struct btrfs_fs_info *fs_info, const char *function,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		     unsigned int line, int errno)
 =======
@@ -155,12 +221,19 @@ void __btrfs_std_error(struct btrfs_fs_info *fs_info, const char *function,
 	va_list args;
 	va_start(args, fmt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       unsigned int line, int errno, const char *fmt, ...)
+{
+	struct super_block *sb = fs_info->sb;
+	const char *errstr;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Special case: if the error is EROFS, and we're already
 	 * under MS_RDONLY, then it is safe here.
 	 */
 	if (errno == -EROFS && (sb->s_flags & MS_RDONLY))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return;
 
@@ -207,6 +280,34 @@ static void btrfs_put_super(struct super_block *sb)
 }
 
 const char *logtypes[] = {
+=======
+  		return;
+
+	errstr = btrfs_decode_error(errno);
+	if (fmt) {
+		struct va_format vaf;
+		va_list args;
+
+		va_start(args, fmt);
+		vaf.fmt = fmt;
+		vaf.va = &args;
+
+		printk(KERN_CRIT "BTRFS error (device %s) in %s:%d: errno=%d %s (%pV)\n",
+			sb->s_id, function, line, errno, errstr, &vaf);
+		va_end(args);
+	} else {
+		printk(KERN_CRIT "BTRFS error (device %s) in %s:%d: errno=%d %s\n",
+			sb->s_id, function, line, errno, errstr);
+	}
+
+	/* Don't go through full error handling during mount */
+	save_error_info(fs_info);
+	if (sb->s_flags & MS_BORN)
+		btrfs_handle_error(fs_info);
+}
+
+static const char * const logtypes[] = {
+>>>>>>> refs/remotes/origin/master
 	"emergency",
 	"alert",
 	"critical",
@@ -217,13 +318,18 @@ const char *logtypes[] = {
 	"debug",
 };
 
+<<<<<<< HEAD
 void btrfs_printk(struct btrfs_fs_info *fs_info, const char *fmt, ...)
+=======
+void btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = fs_info->sb;
 	char lvl[4];
 	struct va_format vaf;
 	va_list args;
 	const char *type = logtypes[4];
+<<<<<<< HEAD
 
 	va_start(args, fmt);
 
@@ -231,13 +337,56 @@ void btrfs_printk(struct btrfs_fs_info *fs_info, const char *fmt, ...)
 		strncpy(lvl, fmt, 3);
 		fmt += 3;
 		type = logtypes[fmt[1] - '0'];
+=======
+	int kern_level;
+
+	va_start(args, fmt);
+
+	kern_level = printk_get_level(fmt);
+	if (kern_level) {
+		size_t size = printk_skip_level(fmt) - fmt;
+		memcpy(lvl, fmt,  size);
+		lvl[size] = '\0';
+		fmt += size;
+		type = logtypes[kern_level - '0'];
+>>>>>>> refs/remotes/origin/master
 	} else
 		*lvl = '\0';
 
 	vaf.fmt = fmt;
 	vaf.va = &args;
+<<<<<<< HEAD
 	printk("%sBTRFS %s (device %s): %pV", lvl, type, sb->s_id, &vaf);
 }
+=======
+
+	printk("%sBTRFS %s (device %s): %pV\n", lvl, type, sb->s_id, &vaf);
+
+	va_end(args);
+}
+
+#else
+
+void __btrfs_std_error(struct btrfs_fs_info *fs_info, const char *function,
+		       unsigned int line, int errno, const char *fmt, ...)
+{
+	struct super_block *sb = fs_info->sb;
+
+	/*
+	 * Special case: if the error is EROFS, and we're already
+	 * under MS_RDONLY, then it is safe here.
+	 */
+	if (errno == -EROFS && (sb->s_flags & MS_RDONLY))
+		return;
+
+	/* Don't go through full error handling during mount */
+	if (sb->s_flags & MS_BORN) {
+		save_error_info(fs_info);
+		btrfs_handle_error(fs_info);
+	}
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We only mark the transaction aborted and then set the file system read-only.
@@ -256,15 +405,41 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
 			       struct btrfs_root *root, const char *function,
 			       unsigned int line, int errno)
 {
+<<<<<<< HEAD
 	WARN_ONCE(1, KERN_DEBUG "btrfs: Transaction aborted");
+=======
+	/*
+	 * Report first abort since mount
+	 */
+	if (!test_and_set_bit(BTRFS_FS_STATE_TRANS_ABORTED,
+				&root->fs_info->fs_state)) {
+		WARN(1, KERN_DEBUG "btrfs: Transaction aborted (error %d)\n",
+				errno);
+	}
+>>>>>>> refs/remotes/origin/master
 	trans->aborted = errno;
 	/* Nothing used. The other threads that have joined this
 	 * transaction may be able to continue. */
 	if (!trans->blocks_used) {
+<<<<<<< HEAD
 		btrfs_printk(root->fs_info, "Aborting unused transaction.\n");
 		return;
 	}
 	trans->transaction->aborted = errno;
+=======
+		const char *errstr;
+
+		errstr = btrfs_decode_error(errno);
+		btrfs_warn(root->fs_info,
+		           "%s:%d: Aborting unused transaction(%s).",
+		           function, line, errstr);
+		return;
+	}
+	ACCESS_ONCE(trans->transaction->aborted) = errno;
+	/* Wake up anybody who may be waiting on this transaction */
+	wake_up(&root->fs_info->transaction_wait);
+	wake_up(&root->fs_info->transaction_blocked_wait);
+>>>>>>> refs/remotes/origin/master
 	__btrfs_std_error(root->fs_info, function, line, errno, NULL);
 }
 /*
@@ -274,7 +449,10 @@ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
 void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
 		   unsigned int line, int errno, const char *fmt, ...)
 {
+<<<<<<< HEAD
 	char nbuf[16];
+=======
+>>>>>>> refs/remotes/origin/master
 	char *s_id = "<unknown>";
 	const char *errstr;
 	struct va_format vaf = { .fmt = fmt };
@@ -286,6 +464,7 @@ void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
 	va_start(args, fmt);
 	vaf.va = &args;
 
+<<<<<<< HEAD
 	errstr = btrfs_decode_error(fs_info, errno, nbuf);
 	if (fs_info->mount_opt & BTRFS_MOUNT_PANIC_ON_FATAL_ERROR)
 		panic(KERN_CRIT "BTRFS panic (device %s) in %s:%d: %pV (%s)\n",
@@ -293,6 +472,15 @@ void __btrfs_panic(struct btrfs_fs_info *fs_info, const char *function,
 
 	printk(KERN_CRIT "BTRFS panic (device %s) in %s:%d: %pV (%s)\n",
 	       s_id, function, line, &vaf, errstr);
+=======
+	errstr = btrfs_decode_error(errno);
+	if (fs_info && (fs_info->mount_opt & BTRFS_MOUNT_PANIC_ON_FATAL_ERROR))
+		panic(KERN_CRIT "BTRFS panic (device %s) in %s:%d: %pV (errno=%d %s)\n",
+			s_id, function, line, &vaf, errno, errstr);
+
+	printk(KERN_CRIT "BTRFS panic (device %s) in %s:%d: %pV (errno=%d %s)\n",
+	       s_id, function, line, &vaf, errno, errstr);
+>>>>>>> refs/remotes/origin/master
 	va_end(args);
 	/* Caller calls BUG() */
 }
@@ -306,7 +494,10 @@ static void btrfs_put_super(struct super_block *sb)
 	 * last process that kept it busy.  Or segfault in the aforementioned
 	 * process...  Whom would you report that to?
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 enum {
@@ -317,6 +508,7 @@ enum {
 	Opt_notreelog, Opt_ratio, Opt_flushoncommit, Opt_discard,
 	Opt_space_cache, Opt_clear_cache, Opt_user_subvol_rm_allowed,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Opt_enospc_debug, Opt_subvolrootid, Opt_defrag,
 	Opt_inode_cache, Opt_err,
 =======
@@ -326,12 +518,24 @@ enum {
 	Opt_check_integrity_print_mask, Opt_fatal_errors,
 	Opt_err,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Opt_enospc_debug, Opt_subvolrootid, Opt_defrag, Opt_inode_cache,
+	Opt_no_space_cache, Opt_recovery, Opt_skip_balance,
+	Opt_check_integrity, Opt_check_integrity_including_extent_data,
+	Opt_check_integrity_print_mask, Opt_fatal_errors, Opt_rescan_uuid_tree,
+	Opt_commit_interval,
+	Opt_err,
+>>>>>>> refs/remotes/origin/master
 };
 
 static match_table_t tokens = {
 	{Opt_degraded, "degraded"},
 	{Opt_subvol, "subvol=%s"},
+<<<<<<< HEAD
 	{Opt_subvolid, "subvolid=%d"},
+=======
+	{Opt_subvolid, "subvolid=%s"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_device, "device=%s"},
 	{Opt_nodatasum, "nodatasum"},
 	{Opt_nodatacow, "nodatacow"},
@@ -359,15 +563,24 @@ static match_table_t tokens = {
 	{Opt_defrag, "autodefrag"},
 	{Opt_inode_cache, "inode_cache"},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{Opt_no_space_cache, "nospace_cache"},
 	{Opt_recovery, "recovery"},
 	{Opt_skip_balance, "skip_balance"},
 	{Opt_check_integrity, "check_int"},
 	{Opt_check_integrity_including_extent_data, "check_int_data"},
 	{Opt_check_integrity_print_mask, "check_int_print_mask=%d"},
+<<<<<<< HEAD
 	{Opt_fatal_errors, "fatal_errors=%s"},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{Opt_rescan_uuid_tree, "rescan_uuid_tree"},
+	{Opt_fatal_errors, "fatal_errors=%s"},
+	{Opt_commit_interval, "commit=%d"},
+>>>>>>> refs/remotes/origin/master
 	{Opt_err, NULL},
 };
 
@@ -375,36 +588,51 @@ static match_table_t tokens = {
  * Regular mount options parser.  Everything that is needed only when
  * reading in a new superblock is parsed here.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * XXX JDM: This needs to be cleaned up for remount.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * XXX JDM: This needs to be cleaned up for remount.
+>>>>>>> refs/remotes/origin/master
  */
 int btrfs_parse_options(struct btrfs_root *root, char *options)
 {
 	struct btrfs_fs_info *info = root->fs_info;
 	substring_t args[MAX_OPT_ARGS];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *p, *num, *orig;
 =======
 	char *p, *num, *orig = NULL;
 	u64 cache_gen;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char *p, *num, *orig = NULL;
+	u64 cache_gen;
+>>>>>>> refs/remotes/origin/master
 	int intarg;
 	int ret = 0;
 	char *compress_type;
 	bool compress_force = false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!options)
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cache_gen = btrfs_super_cache_generation(root->fs_info->super_copy);
 	if (cache_gen)
 		btrfs_set_opt(info->mount_opt, SPACE_CACHE);
 
 	if (!options)
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * strsep changes the string, duplicate it because parse_options
@@ -441,13 +669,28 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 			btrfs_set_opt(info->mount_opt, NODATASUM);
 			break;
 		case Opt_nodatacow:
+<<<<<<< HEAD
 			printk(KERN_INFO "btrfs: setting nodatacow\n");
+=======
+			if (!btrfs_test_opt(root, COMPRESS) ||
+				!btrfs_test_opt(root, FORCE_COMPRESS)) {
+					printk(KERN_INFO "btrfs: setting nodatacow, compression disabled\n");
+			} else {
+				printk(KERN_INFO "btrfs: setting nodatacow\n");
+			}
+			btrfs_clear_opt(info->mount_opt, COMPRESS);
+			btrfs_clear_opt(info->mount_opt, FORCE_COMPRESS);
+>>>>>>> refs/remotes/origin/master
 			btrfs_set_opt(info->mount_opt, NODATACOW);
 			btrfs_set_opt(info->mount_opt, NODATASUM);
 			break;
 		case Opt_compress_force:
 		case Opt_compress_force_type:
 			compress_force = true;
+<<<<<<< HEAD
+=======
+			/* Fallthrough */
+>>>>>>> refs/remotes/origin/master
 		case Opt_compress:
 		case Opt_compress_type:
 			if (token == Opt_compress ||
@@ -455,22 +698,50 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 			    strcmp(args[0].from, "zlib") == 0) {
 				compress_type = "zlib";
 				info->compress_type = BTRFS_COMPRESS_ZLIB;
+<<<<<<< HEAD
 			} else if (strcmp(args[0].from, "lzo") == 0) {
 				compress_type = "lzo";
 				info->compress_type = BTRFS_COMPRESS_LZO;
+=======
+				btrfs_set_opt(info->mount_opt, COMPRESS);
+				btrfs_clear_opt(info->mount_opt, NODATACOW);
+				btrfs_clear_opt(info->mount_opt, NODATASUM);
+			} else if (strcmp(args[0].from, "lzo") == 0) {
+				compress_type = "lzo";
+				info->compress_type = BTRFS_COMPRESS_LZO;
+				btrfs_set_opt(info->mount_opt, COMPRESS);
+				btrfs_clear_opt(info->mount_opt, NODATACOW);
+				btrfs_clear_opt(info->mount_opt, NODATASUM);
+				btrfs_set_fs_incompat(info, COMPRESS_LZO);
+			} else if (strncmp(args[0].from, "no", 2) == 0) {
+				compress_type = "no";
+				btrfs_clear_opt(info->mount_opt, COMPRESS);
+				btrfs_clear_opt(info->mount_opt, FORCE_COMPRESS);
+				compress_force = false;
+>>>>>>> refs/remotes/origin/master
 			} else {
 				ret = -EINVAL;
 				goto out;
 			}
 
+<<<<<<< HEAD
 			btrfs_set_opt(info->mount_opt, COMPRESS);
+=======
+>>>>>>> refs/remotes/origin/master
 			if (compress_force) {
 				btrfs_set_opt(info->mount_opt, FORCE_COMPRESS);
 				pr_info("btrfs: force %s compression\n",
 					compress_type);
+<<<<<<< HEAD
 			} else
 				pr_info("btrfs: use %s compression\n",
 					compress_type);
+=======
+			} else if (btrfs_test_opt(root, COMPRESS)) {
+				pr_info("btrfs: use %s compression\n",
+					compress_type);
+			}
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_ssd:
 			printk(KERN_INFO "btrfs: use ssd allocation scheme\n");
@@ -494,12 +765,23 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 			btrfs_set_opt(info->mount_opt, NOBARRIER);
 			break;
 		case Opt_thread_pool:
+<<<<<<< HEAD
 			intarg = 0;
 			match_int(&args[0], &intarg);
 			if (intarg) {
 				info->thread_pool_size = intarg;
 				printk(KERN_INFO "btrfs: thread pool %d\n",
 				       info->thread_pool_size);
+=======
+			ret = match_int(&args[0], &intarg);
+			if (ret) {
+				goto out;
+			} else if (intarg > 0) {
+				info->thread_pool_size = intarg;
+			} else {
+				ret = -EINVAL;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case Opt_max_inline:
@@ -514,17 +796,37 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 						root->sectorsize);
 				}
 				printk(KERN_INFO "btrfs: max_inline at %llu\n",
+<<<<<<< HEAD
 					(unsigned long long)info->max_inline);
+=======
+					info->max_inline);
+			} else {
+				ret = -ENOMEM;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case Opt_alloc_start:
 			num = match_strdup(&args[0]);
 			if (num) {
+<<<<<<< HEAD
 				info->alloc_start = memparse(num, NULL);
 				kfree(num);
 				printk(KERN_INFO
 					"btrfs: allocations start at %llu\n",
 					(unsigned long long)info->alloc_start);
+=======
+				mutex_lock(&info->chunk_mutex);
+				info->alloc_start = memparse(num, NULL);
+				mutex_unlock(&info->chunk_mutex);
+				kfree(num);
+				printk(KERN_INFO
+					"btrfs: allocations start at %llu\n",
+					info->alloc_start);
+			} else {
+				ret = -ENOMEM;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case Opt_noacl:
@@ -539,12 +841,25 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 			btrfs_set_opt(info->mount_opt, FLUSHONCOMMIT);
 			break;
 		case Opt_ratio:
+<<<<<<< HEAD
 			intarg = 0;
 			match_int(&args[0], &intarg);
 			if (intarg) {
 				info->metadata_ratio = intarg;
 				printk(KERN_INFO "btrfs: metadata ratio %d\n",
 				       info->metadata_ratio);
+=======
+			ret = match_int(&args[0], &intarg);
+			if (ret) {
+				goto out;
+			} else if (intarg >= 0) {
+				info->metadata_ratio = intarg;
+				printk(KERN_INFO "btrfs: metadata ratio %d\n",
+				       info->metadata_ratio);
+			} else {
+				ret = -EINVAL;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 		case Opt_discard:
@@ -552,17 +867,27 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 			break;
 		case Opt_space_cache:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "btrfs: enabling disk space caching\n");
 			btrfs_set_opt(info->mount_opt, SPACE_CACHE);
 			break;
 =======
 			btrfs_set_opt(info->mount_opt, SPACE_CACHE);
+=======
+			btrfs_set_opt(info->mount_opt, SPACE_CACHE);
+			break;
+		case Opt_rescan_uuid_tree:
+			btrfs_set_opt(info->mount_opt, RESCAN_UUID_TREE);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_no_space_cache:
 			printk(KERN_INFO "btrfs: disabling disk space caching\n");
 			btrfs_clear_opt(info->mount_opt, SPACE_CACHE);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		case Opt_inode_cache:
 			printk(KERN_INFO "btrfs: enabling inode map caching\n");
 			btrfs_set_opt(info->mount_opt, INODE_MAP_CACHE);
@@ -578,6 +903,7 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 			btrfs_set_opt(info->mount_opt, ENOSPC_DEBUG);
 			break;
 		case Opt_defrag:
+<<<<<<< HEAD
 			printk(KERN_INFO "btrfs: enabling auto defrag");
 			btrfs_set_opt(info->mount_opt, AUTO_DEFRAG);
 			break;
@@ -585,6 +911,13 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 =======
 		case Opt_recovery:
 			printk(KERN_INFO "btrfs: enabling auto recovery");
+=======
+			printk(KERN_INFO "btrfs: enabling auto defrag\n");
+			btrfs_set_opt(info->mount_opt, AUTO_DEFRAG);
+			break;
+		case Opt_recovery:
+			printk(KERN_INFO "btrfs: enabling auto recovery\n");
+>>>>>>> refs/remotes/origin/master
 			btrfs_set_opt(info->mount_opt, RECOVERY);
 			break;
 		case Opt_skip_balance:
@@ -603,13 +936,26 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 			btrfs_set_opt(info->mount_opt, CHECK_INTEGRITY);
 			break;
 		case Opt_check_integrity_print_mask:
+<<<<<<< HEAD
 			intarg = 0;
 			match_int(&args[0], &intarg);
 			if (intarg) {
+=======
+			ret = match_int(&args[0], &intarg);
+			if (ret) {
+				goto out;
+			} else if (intarg >= 0) {
+>>>>>>> refs/remotes/origin/master
 				info->check_integrity_print_mask = intarg;
 				printk(KERN_INFO "btrfs:"
 				       " check_integrity_print_mask 0x%x\n",
 				       info->check_integrity_print_mask);
+<<<<<<< HEAD
+=======
+			} else {
+				ret = -EINVAL;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 			break;
 #else
@@ -633,7 +979,33 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 				goto out;
 			}
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case Opt_commit_interval:
+			intarg = 0;
+			ret = match_int(&args[0], &intarg);
+			if (ret < 0) {
+				printk(KERN_ERR
+					"btrfs: invalid commit interval\n");
+				ret = -EINVAL;
+				goto out;
+			}
+			if (intarg > 0) {
+				if (intarg > 300) {
+					printk(KERN_WARNING
+					    "btrfs: excessive commit interval %d\n",
+							intarg);
+				}
+				info->commit_interval = intarg;
+			} else {
+				printk(KERN_INFO
+				    "btrfs: using default commit interval %ds\n",
+				    BTRFS_DEFAULT_COMMIT_INTERVAL);
+				info->commit_interval = BTRFS_DEFAULT_COMMIT_INTERVAL;
+			}
+			break;
+>>>>>>> refs/remotes/origin/master
 		case Opt_err:
 			printk(KERN_INFO "btrfs: unrecognized mount option "
 			       "'%s'\n", p);
@@ -645,10 +1017,15 @@ int btrfs_parse_options(struct btrfs_root *root, char *options)
 	}
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!ret && btrfs_test_opt(root, SPACE_CACHE))
 		printk(KERN_INFO "btrfs: disk space caching is enabled\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ret && btrfs_test_opt(root, SPACE_CACHE))
+		printk(KERN_INFO "btrfs: disk space caching is enabled\n");
+>>>>>>> refs/remotes/origin/master
 	kfree(orig);
 	return ret;
 }
@@ -661,6 +1038,7 @@ out:
  */
 static int btrfs_parse_early_options(const char *options, fmode_t flags,
 		void *holder, char **subvol_name, u64 *subvol_objectid,
+<<<<<<< HEAD
 		u64 *subvol_rootid, struct btrfs_fs_devices **fs_devices)
 {
 	substring_t args[MAX_OPT_ARGS];
@@ -678,6 +1056,17 @@ static int btrfs_parse_early_options(const char *options, fmode_t flags,
 =======
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct btrfs_fs_devices **fs_devices)
+{
+	substring_t args[MAX_OPT_ARGS];
+	char *device_name, *opts, *orig, *p;
+	char *num = NULL;
+	int error = 0;
+
+	if (!options)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * strsep changes the string, duplicate it because parse_options
@@ -696,6 +1085,7 @@ static int btrfs_parse_early_options(const char *options, fmode_t flags,
 		token = match_token(p, tokens, args);
 		switch (token) {
 		case Opt_subvol:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 			kfree(*subvol_name);
@@ -733,6 +1123,34 @@ static int btrfs_parse_early_options(const char *options, fmode_t flags,
 			if (error)
 				goto out_free_opts;
 =======
+=======
+			kfree(*subvol_name);
+			*subvol_name = match_strdup(&args[0]);
+			if (!*subvol_name) {
+				error = -ENOMEM;
+				goto out;
+			}
+			break;
+		case Opt_subvolid:
+			num = match_strdup(&args[0]);
+			if (num) {
+				*subvol_objectid = memparse(num, NULL);
+				kfree(num);
+				/* we want the original fs_tree */
+				if (!*subvol_objectid)
+					*subvol_objectid =
+						BTRFS_FS_TREE_OBJECTID;
+			} else {
+				error = -EINVAL;
+				goto out;
+			}
+			break;
+		case Opt_subvolrootid:
+			printk(KERN_WARNING
+				"btrfs: 'subvolrootid' mount option is deprecated and has no effect\n");
+			break;
+		case Opt_device:
+>>>>>>> refs/remotes/origin/master
 			device_name = match_strdup(&args[0]);
 			if (!device_name) {
 				error = -ENOMEM;
@@ -743,13 +1161,17 @@ static int btrfs_parse_early_options(const char *options, fmode_t flags,
 			kfree(device_name);
 			if (error)
 				goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			break;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
  out_free_opts:
 	kfree(orig);
@@ -768,6 +1190,10 @@ static int btrfs_parse_early_options(const char *options, fmode_t flags,
 out:
 	kfree(orig);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	kfree(orig);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -775,20 +1201,28 @@ static struct dentry *get_default_root(struct super_block *sb,
 				       u64 subvol_objectid)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btrfs_root *root = sb->s_fs_info;
 =======
 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
 	struct btrfs_root *root = fs_info->tree_root;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+	struct btrfs_root *root = fs_info->tree_root;
+>>>>>>> refs/remotes/origin/master
 	struct btrfs_root *new_root;
 	struct btrfs_dir_item *di;
 	struct btrfs_path *path;
 	struct btrfs_key location;
 	struct inode *inode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *dentry;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u64 dir_id;
 	int new = 0;
 
@@ -814,10 +1248,14 @@ static struct dentry *get_default_root(struct super_block *sb,
 	 * to mount.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dir_id = btrfs_super_root_dir(&root->fs_info->super_copy);
 =======
 	dir_id = btrfs_super_root_dir(fs_info->super_copy);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dir_id = btrfs_super_root_dir(fs_info->super_copy);
+>>>>>>> refs/remotes/origin/master
 	di = btrfs_lookup_dir_item(NULL, root, path, dir_id, "default", 7, 0);
 	if (IS_ERR(di)) {
 		btrfs_free_path(path);
@@ -832,10 +1270,14 @@ static struct dentry *get_default_root(struct super_block *sb,
 		btrfs_free_path(path);
 		dir_id = BTRFS_FIRST_FREE_OBJECTID;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		new_root = root->fs_info->fs_root;
 =======
 		new_root = fs_info->fs_root;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		new_root = fs_info->fs_root;
+>>>>>>> refs/remotes/origin/master
 		goto setup_root;
 	}
 
@@ -843,6 +1285,7 @@ static struct dentry *get_default_root(struct super_block *sb,
 	btrfs_free_path(path);
 
 find_root:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	new_root = btrfs_read_fs_root_no_name(root->fs_info, &location);
 =======
@@ -854,6 +1297,12 @@ find_root:
 	if (btrfs_root_refs(&new_root->root_item) == 0)
 		return ERR_PTR(-ENOENT);
 
+=======
+	new_root = btrfs_read_fs_root_no_name(fs_info, &location);
+	if (IS_ERR(new_root))
+		return ERR_CAST(new_root);
+
+>>>>>>> refs/remotes/origin/master
 	dir_id = btrfs_root_dirid(&new_root->root_item);
 setup_root:
 	location.objectid = dir_id;
@@ -874,6 +1323,7 @@ setup_root:
 		return dget(sb->s_root);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (new) {
 		const struct qstr name = { .name = "/", .len = 1 };
@@ -901,6 +1351,9 @@ setup_root:
 =======
 	return d_obtain_alias(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return d_obtain_alias(inode);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int btrfs_fill_super(struct super_block *sb,
@@ -909,11 +1362,15 @@ static int btrfs_fill_super(struct super_block *sb,
 {
 	struct inode *inode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *root_dentry;
 	struct btrfs_root *tree_root;
 =======
 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+>>>>>>> refs/remotes/origin/master
 	struct btrfs_key key;
 	int err;
 
@@ -927,6 +1384,7 @@ static int btrfs_fill_super(struct super_block *sb,
 #ifdef CONFIG_BTRFS_FS_POSIX_ACL
 	sb->s_flags |= MS_POSIXACL;
 #endif
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	tree_root = open_ctree(sb, fs_devices, (char *)data);
@@ -937,26 +1395,37 @@ static int btrfs_fill_super(struct super_block *sb,
 	}
 	sb->s_fs_info = tree_root;
 =======
+=======
+	sb->s_flags |= MS_I_VERSION;
+>>>>>>> refs/remotes/origin/master
 	err = open_ctree(sb, fs_devices, (char *)data);
 	if (err) {
 		printk("btrfs: open_ctree failed\n");
 		return err;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	key.objectid = BTRFS_FIRST_FREE_OBJECTID;
 	key.type = BTRFS_INODE_ITEM_KEY;
 	key.offset = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode = btrfs_iget(sb, &key, tree_root->fs_info->fs_root, NULL);
 =======
 	inode = btrfs_iget(sb, &key, fs_info->fs_root, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	inode = btrfs_iget(sb, &key, fs_info->fs_root, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(inode)) {
 		err = PTR_ERR(inode);
 		goto fail_close;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	root_dentry = d_alloc_root(inode);
 	if (!root_dentry) {
@@ -965,10 +1434,15 @@ static int btrfs_fill_super(struct super_block *sb,
 	sb->s_root = d_make_root(inode);
 	if (!sb->s_root) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(inode);
+	if (!sb->s_root) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto fail_close;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sb->s_root = root_dentry;
 
@@ -979,6 +1453,8 @@ static int btrfs_fill_super(struct super_block *sb,
 fail_close:
 	close_ctree(tree_root);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	save_mount_options(sb, data);
 	cleancache_init_fs(sb);
 	sb->s_flags |= MS_ACTIVE;
@@ -986,7 +1462,10 @@ fail_close:
 
 fail_close:
 	close_ctree(fs_info->tree_root);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -994,16 +1473,22 @@ int btrfs_sync_fs(struct super_block *sb, int wait)
 {
 	struct btrfs_trans_handle *trans;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btrfs_root *root = btrfs_sb(sb);
 =======
 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
 	struct btrfs_root *root = fs_info->tree_root;
 >>>>>>> refs/remotes/origin/cm-10.0
 	int ret;
+=======
+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+	struct btrfs_root *root = fs_info->tree_root;
+>>>>>>> refs/remotes/origin/master
 
 	trace_btrfs_sync_fs(wait);
 
 	if (!wait) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		filemap_flush(root->fs_info->btree_inode->i_mapping);
 		return 0;
@@ -1011,10 +1496,13 @@ int btrfs_sync_fs(struct super_block *sb, int wait)
 
 	btrfs_start_delalloc_inodes(root, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		filemap_flush(fs_info->btree_inode->i_mapping);
 		return 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	btrfs_wait_ordered_extents(root, 0, 0);
 
@@ -1031,11 +1519,28 @@ static int btrfs_show_options(struct seq_file *seq, struct vfsmount *vfs)
 	struct btrfs_root *root = btrfs_sb(vfs->mnt_sb);
 	struct btrfs_fs_info *info = root->fs_info;
 =======
+=======
+	btrfs_wait_ordered_roots(fs_info, -1);
+
+	trans = btrfs_attach_transaction_barrier(root);
+	if (IS_ERR(trans)) {
+		/* no transaction, don't bother */
+		if (PTR_ERR(trans) == -ENOENT)
+			return 0;
+		return PTR_ERR(trans);
+	}
+	return btrfs_commit_transaction(trans, root);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
 {
 	struct btrfs_fs_info *info = btrfs_sb(dentry->d_sb);
 	struct btrfs_root *root = info->tree_root;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char *compress_type;
 
 	if (btrfs_test_opt(root, DEGRADED))
@@ -1047,11 +1552,17 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
 	if (btrfs_test_opt(root, NOBARRIER))
 		seq_puts(seq, ",nobarrier");
 	if (info->max_inline != 8192 * 1024)
+<<<<<<< HEAD
 		seq_printf(seq, ",max_inline=%llu",
 			   (unsigned long long)info->max_inline);
 	if (info->alloc_start != 0)
 		seq_printf(seq, ",alloc_start=%llu",
 			   (unsigned long long)info->alloc_start);
+=======
+		seq_printf(seq, ",max_inline=%llu", info->max_inline);
+	if (info->alloc_start != 0)
+		seq_printf(seq, ",alloc_start=%llu", info->alloc_start);
+>>>>>>> refs/remotes/origin/master
 	if (info->thread_pool_size !=  min_t(unsigned long,
 					     num_online_cpus() + 2, 8))
 		seq_printf(seq, ",thread_pool=%d", info->thread_pool_size);
@@ -1082,10 +1593,17 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
 	if (btrfs_test_opt(root, SPACE_CACHE))
 		seq_puts(seq, ",space_cache");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else
 		seq_puts(seq, ",nospace_cache");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else
+		seq_puts(seq, ",nospace_cache");
+	if (btrfs_test_opt(root, RESCAN_UUID_TREE))
+		seq_puts(seq, ",rescan_uuid_tree");
+>>>>>>> refs/remotes/origin/master
 	if (btrfs_test_opt(root, CLEAR_CACHE))
 		seq_puts(seq, ",clear_cache");
 	if (btrfs_test_opt(root, USER_SUBVOL_RM_ALLOWED))
@@ -1097,17 +1615,41 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
 	if (btrfs_test_opt(root, INODE_MAP_CACHE))
 		seq_puts(seq, ",inode_cache");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (btrfs_test_opt(root, SKIP_BALANCE))
 		seq_puts(seq, ",skip_balance");
 	if (btrfs_test_opt(root, PANIC_ON_FATAL_ERROR))
 		seq_puts(seq, ",fatal_errors=panic");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (btrfs_test_opt(root, SKIP_BALANCE))
+		seq_puts(seq, ",skip_balance");
+	if (btrfs_test_opt(root, RECOVERY))
+		seq_puts(seq, ",recovery");
+#ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+	if (btrfs_test_opt(root, CHECK_INTEGRITY_INCLUDING_EXTENT_DATA))
+		seq_puts(seq, ",check_int_data");
+	else if (btrfs_test_opt(root, CHECK_INTEGRITY))
+		seq_puts(seq, ",check_int");
+	if (info->check_integrity_print_mask)
+		seq_printf(seq, ",check_int_print_mask=%d",
+				info->check_integrity_print_mask);
+#endif
+	if (info->metadata_ratio)
+		seq_printf(seq, ",metadata_ratio=%d",
+				info->metadata_ratio);
+	if (btrfs_test_opt(root, PANIC_ON_FATAL_ERROR))
+		seq_puts(seq, ",fatal_errors=panic");
+	if (info->commit_interval != BTRFS_DEFAULT_COMMIT_INTERVAL)
+		seq_printf(seq, ",commit=%d", info->commit_interval);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int btrfs_test_super(struct super_block *s, void *data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct btrfs_root *test_root = data;
 	struct btrfs_root *root = btrfs_sb(s);
@@ -1120,15 +1662,21 @@ static int btrfs_test_super(struct super_block *s, void *data)
 		return 0;
 	return root->fs_info->fs_devices == test_root->fs_info->fs_devices;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct btrfs_fs_info *p = data;
 	struct btrfs_fs_info *fs_info = btrfs_sb(s);
 
 	return fs_info->fs_devices == p->fs_devices;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int btrfs_set_super(struct super_block *s, void *data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	s->s_fs_info = data;
 
@@ -1136,6 +1684,8 @@ static int btrfs_set_super(struct super_block *s, void *data)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = set_anon_super(s, data);
 	if (!err)
 		s->s_fs_info = data;
@@ -1159,6 +1709,7 @@ static inline int is_subvolume_inode(struct inode *inode)
  */
 static char *setup_root_args(char *args)
 {
+<<<<<<< HEAD
 	unsigned copied = 0;
 	unsigned len = strlen(args) + 2;
 	char *pos;
@@ -1216,6 +1767,50 @@ static char *setup_root_args(char *args)
 	copied += strlen(pos);
 
 	return ret;
+=======
+	unsigned len = strlen(args) + 2 + 1;
+	char *src, *dst, *buf;
+
+	/*
+	 * We need the same args as before, but with this substitution:
+	 * s!subvol=[^,]+!subvolid=0!
+	 *
+	 * Since the replacement string is up to 2 bytes longer than the
+	 * original, allocate strlen(args) + 2 + 1 bytes.
+	 */
+
+	src = strstr(args, "subvol=");
+	/* This shouldn't happen, but just in case.. */
+	if (!src)
+		return NULL;
+
+	buf = dst = kmalloc(len, GFP_NOFS);
+	if (!buf)
+		return NULL;
+
+	/*
+	 * If the subvol= arg is not at the start of the string,
+	 * copy whatever precedes it into buf.
+	 */
+	if (src != args) {
+		*src++ = '\0';
+		strcpy(buf, args);
+		dst += strlen(args);
+	}
+
+	strcpy(dst, "subvolid=0");
+	dst += strlen("subvolid=0");
+
+	/*
+	 * If there is a "," after the original subvol=... string,
+	 * copy that suffix into our buffer.  Otherwise, we're done.
+	 */
+	src = strchr(src, ',');
+	if (src)
+		strcpy(dst, src);
+
+	return buf;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dentry *mount_subvol(const char *subvol_name, int flags,
@@ -1247,7 +1842,10 @@ static struct dentry *mount_subvol(const char *subvol_name, int flags,
 
 	return root;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Find a superblock for the given device / mount point.
@@ -1263,14 +1861,20 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 	struct dentry *root;
 	struct btrfs_fs_devices *fs_devices = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btrfs_root *tree_root = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct btrfs_fs_info *fs_info = NULL;
 	fmode_t mode = FMODE_READ;
 	char *subvol_name = NULL;
 	u64 subvol_objectid = 0;
+<<<<<<< HEAD
 	u64 subvol_rootid = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	int error = 0;
 
 	if (!(flags & MS_RDONLY))
@@ -1278,6 +1882,7 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 
 	error = btrfs_parse_early_options(data, mode, fs_type,
 					  &subvol_name, &subvol_objectid,
+<<<<<<< HEAD
 					  &subvol_rootid, &fs_devices);
 <<<<<<< HEAD
 	if (error)
@@ -1296,6 +1901,9 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 		goto error_close_devices;
 	}
 =======
+=======
+					  &fs_devices);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		kfree(subvol_name);
 		return ERR_PTR(error);
@@ -1310,7 +1918,10 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 	error = btrfs_scan_one_device(device_name, mode, fs_type, &fs_devices);
 	if (error)
 		return ERR_PTR(error);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Setup a dummy root and fs_info for test/set super.  This is because
@@ -1319,6 +1930,7 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 	 * then open_ctree will properly initialize everything later.
 	 */
 	fs_info = kzalloc(sizeof(struct btrfs_fs_info), GFP_NOFS);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tree_root = kzalloc(sizeof(struct btrfs_root), GFP_NOFS);
 	if (!fs_info || !tree_root) {
@@ -1345,6 +1957,8 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 		kfree(fs_info);
 		kfree(tree_root);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!fs_info)
 		return ERR_PTR(-ENOMEM);
 
@@ -1367,7 +1981,12 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 	}
 
 	bdev = fs_devices->latest_bdev;
+<<<<<<< HEAD
 	s = sget(fs_type, btrfs_test_super, btrfs_set_super, fs_info);
+=======
+	s = sget(fs_type, btrfs_test_super, btrfs_set_super, flags | MS_NOSEC,
+		 fs_info);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(s)) {
 		error = PTR_ERR(s);
 		goto error_close_devices;
@@ -1378,6 +1997,7 @@ static struct dentry *btrfs_mount(struct file_system_type *fs_type, int flags,
 		free_fs_info(fs_info);
 		if ((flags ^ s->s_flags) & MS_RDONLY)
 			error = -EBUSY;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		char b[BDEVNAME_SIZE];
@@ -1448,6 +2068,12 @@ error_close_devices:
 error_free_subvol_name:
 	kfree(subvol_name);
 =======
+=======
+	} else {
+		char b[BDEVNAME_SIZE];
+
+		strlcpy(s->s_id, bdevname(bdev, b), sizeof(s->s_id));
+>>>>>>> refs/remotes/origin/master
 		btrfs_sb(s)->bdev_holder = fs_type;
 		error = btrfs_fill_super(s, fs_devices, data,
 					 flags & MS_SILENT ? 1 : 0);
@@ -1463,6 +2089,7 @@ error_close_devices:
 	btrfs_close_devices(fs_devices);
 error_fs_info:
 	free_fs_info(fs_info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return ERR_PTR(error);
 }
@@ -1477,6 +2104,83 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
 	if (ret)
 		return -EINVAL;
 =======
+=======
+	return ERR_PTR(error);
+}
+
+static void btrfs_set_max_workers(struct btrfs_workers *workers, int new_limit)
+{
+	spin_lock_irq(&workers->lock);
+	workers->max_workers = new_limit;
+	spin_unlock_irq(&workers->lock);
+}
+
+static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
+				     int new_pool_size, int old_pool_size)
+{
+	if (new_pool_size == old_pool_size)
+		return;
+
+	fs_info->thread_pool_size = new_pool_size;
+
+	printk(KERN_INFO "btrfs: resize thread pool %d -> %d\n",
+	       old_pool_size, new_pool_size);
+
+	btrfs_set_max_workers(&fs_info->generic_worker, new_pool_size);
+	btrfs_set_max_workers(&fs_info->workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->delalloc_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->submit_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->caching_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->fixup_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->endio_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->endio_meta_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->endio_meta_write_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->endio_write_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->endio_freespace_worker, new_pool_size);
+	btrfs_set_max_workers(&fs_info->delayed_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->readahead_workers, new_pool_size);
+	btrfs_set_max_workers(&fs_info->scrub_wr_completion_workers,
+			      new_pool_size);
+}
+
+static inline void btrfs_remount_prepare(struct btrfs_fs_info *fs_info)
+{
+	set_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
+}
+
+static inline void btrfs_remount_begin(struct btrfs_fs_info *fs_info,
+				       unsigned long old_opts, int flags)
+{
+	if (btrfs_raw_test_opt(old_opts, AUTO_DEFRAG) &&
+	    (!btrfs_raw_test_opt(fs_info->mount_opt, AUTO_DEFRAG) ||
+	     (flags & MS_RDONLY))) {
+		/* wait for any defraggers to finish */
+		wait_event(fs_info->transaction_wait,
+			   (atomic_read(&fs_info->defrag_running) == 0));
+		if (flags & MS_RDONLY)
+			sync_filesystem(fs_info->sb);
+	}
+}
+
+static inline void btrfs_remount_cleanup(struct btrfs_fs_info *fs_info,
+					 unsigned long old_opts)
+{
+	/*
+	 * We need cleanup all defragable inodes if the autodefragment is
+	 * close or the fs is R/O.
+	 */
+	if (btrfs_raw_test_opt(old_opts, AUTO_DEFRAG) &&
+	    (!btrfs_raw_test_opt(fs_info->mount_opt, AUTO_DEFRAG) ||
+	     (fs_info->sb->s_flags & MS_RDONLY))) {
+		btrfs_cleanup_defrag_inodes(fs_info);
+	}
+
+	clear_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
+}
+
+static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+{
+>>>>>>> refs/remotes/origin/master
 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
 	struct btrfs_root *root = fs_info->tree_root;
 	unsigned old_flags = sb->s_flags;
@@ -1488,11 +2192,17 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
 	unsigned int old_metadata_ratio = fs_info->metadata_ratio;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	btrfs_remount_prepare(fs_info);
+
+>>>>>>> refs/remotes/origin/master
 	ret = btrfs_parse_options(root, data);
 	if (ret) {
 		ret = -EINVAL;
 		goto restore;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	if ((*flags & MS_RDONLY) == (sb->s_flags & MS_RDONLY))
@@ -1518,15 +2228,63 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
 		ret = btrfs_recover_relocation(root);
 		WARN_ON(ret);
 =======
+=======
+
+	btrfs_remount_begin(fs_info, old_opts, *flags);
+	btrfs_resize_thread_pool(fs_info,
+		fs_info->thread_pool_size, old_thread_pool_size);
+
+	if ((*flags & MS_RDONLY) == (sb->s_flags & MS_RDONLY))
+		goto out;
+
+	if (*flags & MS_RDONLY) {
+		/*
+		 * this also happens on 'umount -rf' or on shutdown, when
+		 * the filesystem is busy.
+		 */
+
+		/* wait for the uuid_scan task to finish */
+		down(&fs_info->uuid_tree_rescan_sem);
+		/* avoid complains from lockdep et al. */
+		up(&fs_info->uuid_tree_rescan_sem);
+
+		sb->s_flags |= MS_RDONLY;
+
+		btrfs_dev_replace_suspend_for_unmount(fs_info);
+		btrfs_scrub_cancel(fs_info);
+		btrfs_pause_balance(fs_info);
+
+>>>>>>> refs/remotes/origin/master
 		ret = btrfs_commit_super(root);
 		if (ret)
 			goto restore;
 	} else {
+<<<<<<< HEAD
+=======
+		if (test_bit(BTRFS_FS_STATE_ERROR, &root->fs_info->fs_state)) {
+			btrfs_err(fs_info,
+				"Remounting read-write after error is not allowed\n");
+			ret = -EINVAL;
+			goto restore;
+		}
+>>>>>>> refs/remotes/origin/master
 		if (fs_info->fs_devices->rw_devices == 0) {
 			ret = -EACCES;
 			goto restore;
 		}
 
+<<<<<<< HEAD
+=======
+		if (fs_info->fs_devices->missing_devices >
+		     fs_info->num_tolerated_disk_barrier_failures &&
+		    !(*flags & MS_RDONLY)) {
+			printk(KERN_WARNING
+			       "Btrfs: too many missing devices, writeable remount is not allowed\n");
+			ret = -EACCES;
+			goto restore;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (btrfs_super_log_root(fs_info->super_copy) != 0) {
 			ret = -EINVAL;
 			goto restore;
@@ -1540,6 +2298,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
 		ret = btrfs_recover_relocation(root);
 		if (ret)
 			goto restore;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		sb->s_flags &= ~MS_RDONLY;
@@ -1548,6 +2307,33 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
 	return 0;
 <<<<<<< HEAD
 =======
+=======
+
+		ret = btrfs_resume_balance_async(fs_info);
+		if (ret)
+			goto restore;
+
+		ret = btrfs_resume_dev_replace_async(fs_info);
+		if (ret) {
+			pr_warn("btrfs: failed to resume dev_replace\n");
+			goto restore;
+		}
+
+		if (!fs_info->uuid_root) {
+			pr_info("btrfs: creating UUID tree\n");
+			ret = btrfs_create_uuid_tree(fs_info);
+			if (ret) {
+				pr_warn("btrfs: failed to create the uuid tree"
+					"%d\n", ret);
+				goto restore;
+			}
+		}
+		sb->s_flags &= ~MS_RDONLY;
+	}
+out:
+	btrfs_remount_cleanup(fs_info, old_opts);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 
 restore:
 	/* We've hit an error - don't reset MS_RDONLY */
@@ -1557,11 +2343,22 @@ restore:
 	fs_info->mount_opt = old_opts;
 	fs_info->compress_type = old_compress_type;
 	fs_info->max_inline = old_max_inline;
+<<<<<<< HEAD
 	fs_info->alloc_start = old_alloc_start;
 	fs_info->thread_pool_size = old_thread_pool_size;
 	fs_info->metadata_ratio = old_metadata_ratio;
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&fs_info->chunk_mutex);
+	fs_info->alloc_start = old_alloc_start;
+	mutex_unlock(&fs_info->chunk_mutex);
+	btrfs_resize_thread_pool(fs_info,
+		old_thread_pool_size, fs_info->thread_pool_size);
+	fs_info->metadata_ratio = old_metadata_ratio;
+	btrfs_remount_cleanup(fs_info, old_opts);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Used to sort the devices by max_avail(descending sort) */
@@ -1606,27 +2403,37 @@ static int btrfs_calc_avail_data_space(struct btrfs_root *root, u64 *free_bytes)
 	u64 used_space;
 	u64 min_stripe_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int min_stripes = 1;
 	int i = 0, nr_devices;
 	int ret;
 
 	nr_devices = fs_info->fs_devices->rw_devices;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int min_stripes = 1, num_stripes = 1;
 	int i = 0, nr_devices;
 	int ret;
 
 	nr_devices = fs_info->fs_devices->open_devices;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	BUG_ON(!nr_devices);
 
 	devices_info = kmalloc(sizeof(*devices_info) * nr_devices,
+=======
+	BUG_ON(!nr_devices);
+
+	devices_info = kmalloc_array(nr_devices, sizeof(*devices_info),
+>>>>>>> refs/remotes/origin/master
 			       GFP_NOFS);
 	if (!devices_info)
 		return -ENOMEM;
 
 	/* calc min stripe number for data space alloction */
 	type = btrfs_get_alloc_profile(root, 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (type & BTRFS_BLOCK_GROUP_RAID0)
 		min_stripes = 2;
@@ -1635,6 +2442,8 @@ static int btrfs_calc_avail_data_space(struct btrfs_root *root, u64 *free_bytes)
 	else if (type & BTRFS_BLOCK_GROUP_RAID10)
 		min_stripes = 4;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (type & BTRFS_BLOCK_GROUP_RAID0) {
 		min_stripes = 2;
 		num_stripes = nr_devices;
@@ -1645,7 +2454,10 @@ static int btrfs_calc_avail_data_space(struct btrfs_root *root, u64 *free_bytes)
 		min_stripes = 4;
 		num_stripes = 4;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (type & BTRFS_BLOCK_GROUP_DUP)
 		min_stripe_size = 2 * BTRFS_STRIPE_LEN;
@@ -1653,12 +2465,18 @@ static int btrfs_calc_avail_data_space(struct btrfs_root *root, u64 *free_bytes)
 		min_stripe_size = BTRFS_STRIPE_LEN;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry(device, &fs_devices->alloc_list, dev_alloc_list) {
 		if (!device->in_fs_metadata)
 =======
 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
 		if (!device->in_fs_metadata || !device->bdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+		if (!device->in_fs_metadata || !device->bdev ||
+		    device->is_tgtdev_for_dev_replace)
+>>>>>>> refs/remotes/origin/master
 			continue;
 
 		avail_space = device->total_bytes - device->bytes_used;
@@ -1720,15 +2538,22 @@ static int btrfs_calc_avail_data_space(struct btrfs_root *root, u64 *free_bytes)
 	avail_space = 0;
 	while (nr_devices >= min_stripes) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (num_stripes > nr_devices)
 			num_stripes = nr_devices;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (num_stripes > nr_devices)
+			num_stripes = nr_devices;
+
+>>>>>>> refs/remotes/origin/master
 		if (devices_info[i].max_avail >= min_stripe_size) {
 			int j;
 			u64 alloc_size;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			avail_space += devices_info[i].max_avail * min_stripes;
 			alloc_size = devices_info[i].max_avail;
@@ -1738,6 +2563,11 @@ static int btrfs_calc_avail_data_space(struct btrfs_root *root, u64 *free_bytes)
 			alloc_size = devices_info[i].max_avail;
 			for (j = i + 1 - num_stripes; j <= i; j++)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			avail_space += devices_info[i].max_avail * num_stripes;
+			alloc_size = devices_info[i].max_avail;
+			for (j = i + 1 - num_stripes; j <= i; j++)
+>>>>>>> refs/remotes/origin/master
 				devices_info[j].max_avail -= alloc_size;
 		}
 		i--;
@@ -1752,6 +2582,7 @@ static int btrfs_calc_avail_data_space(struct btrfs_root *root, u64 *free_bytes)
 static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct btrfs_root *root = btrfs_sb(dentry->d_sb);
 	struct btrfs_super_block *disk_super = &root->fs_info->super_copy;
 	struct list_head *head = &root->fs_info->space_info;
@@ -1760,10 +2591,16 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	struct btrfs_super_block *disk_super = fs_info->super_copy;
 	struct list_head *head = &fs_info->space_info;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct btrfs_fs_info *fs_info = btrfs_sb(dentry->d_sb);
+	struct btrfs_super_block *disk_super = fs_info->super_copy;
+	struct list_head *head = &fs_info->space_info;
+>>>>>>> refs/remotes/origin/master
 	struct btrfs_space_info *found;
 	u64 total_used = 0;
 	u64 total_free_data = 0;
 	int bits = dentry->d_sb->s_blocksize_bits;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__be32 *fsid = (__be32 *)root->fs_info->fsid;
 	int ret;
@@ -1771,12 +2608,17 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	/* holding chunk_muext to avoid allocating new chunks */
 	mutex_lock(&root->fs_info->chunk_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__be32 *fsid = (__be32 *)fs_info->fsid;
 	int ret;
 
 	/* holding chunk_muext to avoid allocating new chunks */
 	mutex_lock(&fs_info->chunk_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rcu_read_lock();
 	list_for_each_entry_rcu(found, head, list) {
 		if (found->flags & BTRFS_BLOCK_GROUP_DATA) {
@@ -1796,6 +2638,7 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	buf->f_type = BTRFS_SUPER_MAGIC;
 	buf->f_bavail = total_free_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = btrfs_calc_avail_data_space(root, &total_free_data);
 	if (ret) {
 		mutex_unlock(&root->fs_info->chunk_mutex);
@@ -1804,15 +2647,24 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	if (ret) {
 		mutex_unlock(&fs_info->chunk_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = btrfs_calc_avail_data_space(fs_info->tree_root, &total_free_data);
+	if (ret) {
+		mutex_unlock(&fs_info->chunk_mutex);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	buf->f_bavail += total_free_data;
 	buf->f_bavail = buf->f_bavail >> bits;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&root->fs_info->chunk_mutex);
 =======
 	mutex_unlock(&fs_info->chunk_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&fs_info->chunk_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/* We treat it as constant endianness (it doesn't matter _which_)
 	   because we want the fsid to come out the same whether mounted
@@ -1827,7 +2679,10 @@ static int btrfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void btrfs_kill_super(struct super_block *sb)
 {
 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
@@ -1835,11 +2690,15 @@ static void btrfs_kill_super(struct super_block *sb)
 	free_fs_info(fs_info);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct file_system_type btrfs_fs_type = {
 	.owner		= THIS_MODULE,
 	.name		= "btrfs",
 	.mount		= btrfs_mount,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.kill_sb	= kill_anon_super,
 =======
@@ -1847,6 +2706,12 @@ static struct file_system_type btrfs_fs_type = {
 >>>>>>> refs/remotes/origin/cm-10.0
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+=======
+	.kill_sb	= btrfs_kill_super,
+	.fs_flags	= FS_REQUIRES_DEV,
+};
+MODULE_ALIAS_FS("btrfs");
+>>>>>>> refs/remotes/origin/master
 
 /*
  * used by btrfsctl to scan devices when no FS is mounted
@@ -1870,6 +2735,16 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
 		ret = btrfs_scan_one_device(vol->name, FMODE_READ,
 					    &btrfs_fs_type, &fs_devices);
 		break;
+<<<<<<< HEAD
+=======
+	case BTRFS_IOC_DEVICES_READY:
+		ret = btrfs_scan_one_device(vol->name, FMODE_READ,
+					    &btrfs_fs_type, &fs_devices);
+		if (ret)
+			break;
+		ret = !(fs_devices->num_devices == fs_devices->total_devices);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree(vol);
@@ -1878,6 +2753,7 @@ static long btrfs_control_ioctl(struct file *file, unsigned int cmd,
 
 static int btrfs_freeze(struct super_block *sb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct btrfs_root *root = btrfs_sb(sb);
 	mutex_lock(&root->fs_info->transaction_kthread_mutex);
@@ -1888,10 +2764,24 @@ static int btrfs_freeze(struct super_block *sb)
 	mutex_lock(&fs_info->cleaner_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
+=======
+	struct btrfs_trans_handle *trans;
+	struct btrfs_root *root = btrfs_sb(sb)->tree_root;
+
+	trans = btrfs_attach_transaction_barrier(root);
+	if (IS_ERR(trans)) {
+		/* no transaction, don't bother */
+		if (PTR_ERR(trans) == -ENOENT)
+			return 0;
+		return PTR_ERR(trans);
+	}
+	return btrfs_commit_transaction(trans, root);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int btrfs_unfreeze(struct super_block *sb)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct btrfs_root *root = btrfs_sb(sb);
 	mutex_unlock(&root->fs_info->cleaner_mutex);
@@ -1917,18 +2807,61 @@ static void btrfs_fs_dirty_inode(struct inode *inode, int flags)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+static int btrfs_show_devname(struct seq_file *m, struct dentry *root)
+{
+	struct btrfs_fs_info *fs_info = btrfs_sb(root->d_sb);
+	struct btrfs_fs_devices *cur_devices;
+	struct btrfs_device *dev, *first_dev = NULL;
+	struct list_head *head;
+	struct rcu_string *name;
+
+	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+	cur_devices = fs_info->fs_devices;
+	while (cur_devices) {
+		head = &cur_devices->devices;
+		list_for_each_entry(dev, head, dev_list) {
+			if (dev->missing)
+				continue;
+			if (!first_dev || dev->devid < first_dev->devid)
+				first_dev = dev;
+		}
+		cur_devices = cur_devices->seed;
+	}
+
+	if (first_dev) {
+		rcu_read_lock();
+		name = rcu_dereference(first_dev->name);
+		seq_escape(m, name->str, " \t\n\\");
+		rcu_read_unlock();
+	} else {
+		WARN_ON(1);
+	}
+	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct super_operations btrfs_super_ops = {
 	.drop_inode	= btrfs_drop_inode,
 	.evict_inode	= btrfs_evict_inode,
 	.put_super	= btrfs_put_super,
 	.sync_fs	= btrfs_sync_fs,
 	.show_options	= btrfs_show_options,
+<<<<<<< HEAD
 	.write_inode	= btrfs_write_inode,
 <<<<<<< HEAD
 	.dirty_inode	= btrfs_dirty_inode,
 =======
 	.dirty_inode	= btrfs_fs_dirty_inode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.show_devname	= btrfs_show_devname,
+	.write_inode	= btrfs_write_inode,
+>>>>>>> refs/remotes/origin/master
 	.alloc_inode	= btrfs_alloc_inode,
 	.destroy_inode	= btrfs_destroy_inode,
 	.statfs		= btrfs_statfs,
@@ -1961,7 +2894,49 @@ static int btrfs_interface_init(void)
 static void btrfs_interface_exit(void)
 {
 	if (misc_deregister(&btrfs_misc) < 0)
+<<<<<<< HEAD
 		printk(KERN_INFO "misc_deregister failed for control device");
+=======
+		printk(KERN_INFO "btrfs: misc_deregister failed for control device\n");
+}
+
+static void btrfs_print_info(void)
+{
+	printk(KERN_INFO "Btrfs loaded"
+#ifdef CONFIG_BTRFS_DEBUG
+			", debug=on"
+#endif
+#ifdef CONFIG_BTRFS_ASSERT
+			", assert=on"
+#endif
+#ifdef CONFIG_BTRFS_FS_CHECK_INTEGRITY
+			", integrity-checker=on"
+#endif
+			"\n");
+}
+
+static int btrfs_run_sanity_tests(void)
+{
+	int ret;
+
+	ret = btrfs_init_test_fs();
+	if (ret)
+		return ret;
+
+	ret = btrfs_test_free_space_cache();
+	if (ret)
+		goto out;
+	ret = btrfs_test_extent_buffer_operations();
+	if (ret)
+		goto out;
+	ret = btrfs_test_extent_io();
+	if (ret)
+		goto out;
+	ret = btrfs_test_inodes();
+out:
+	btrfs_destroy_test_fs();
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init init_btrfs_fs(void)
@@ -1973,12 +2948,16 @@ static int __init init_btrfs_fs(void)
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = btrfs_init_compress();
 	if (err)
 		goto free_sysfs;
 =======
 	btrfs_init_compress();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	btrfs_init_compress();
+>>>>>>> refs/remotes/origin/master
 
 	err = btrfs_init_cachep();
 	if (err)
@@ -1992,6 +2971,7 @@ static int __init init_btrfs_fs(void)
 	if (err)
 		goto free_extent_io;
 
+<<<<<<< HEAD
 	err = btrfs_delayed_inode_init();
 	if (err)
 		goto free_extent_map;
@@ -2010,12 +2990,63 @@ static int __init init_btrfs_fs(void)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_INFO "%s loaded\n", BTRFS_BUILD_VERSION);
+=======
+	err = ordered_data_init();
+	if (err)
+		goto free_extent_map;
+
+	err = btrfs_delayed_inode_init();
+	if (err)
+		goto free_ordered_data;
+
+	err = btrfs_auto_defrag_init();
+	if (err)
+		goto free_delayed_inode;
+
+	err = btrfs_delayed_ref_init();
+	if (err)
+		goto free_auto_defrag;
+
+	err = btrfs_prelim_ref_init();
+	if (err)
+		goto free_prelim_ref;
+
+	err = btrfs_interface_init();
+	if (err)
+		goto free_delayed_ref;
+
+	btrfs_init_lockdep();
+
+	btrfs_print_info();
+
+	err = btrfs_run_sanity_tests();
+	if (err)
+		goto unregister_ioctl;
+
+	err = register_filesystem(&btrfs_fs_type);
+	if (err)
+		goto unregister_ioctl;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 unregister_ioctl:
 	btrfs_interface_exit();
+<<<<<<< HEAD
 free_delayed_inode:
 	btrfs_delayed_inode_exit();
+=======
+free_prelim_ref:
+	btrfs_prelim_ref_exit();
+free_delayed_ref:
+	btrfs_delayed_ref_exit();
+free_auto_defrag:
+	btrfs_auto_defrag_exit();
+free_delayed_inode:
+	btrfs_delayed_inode_exit();
+free_ordered_data:
+	ordered_data_exit();
+>>>>>>> refs/remotes/origin/master
 free_extent_map:
 	extent_map_exit();
 free_extent_io:
@@ -2025,9 +3056,12 @@ free_cachep:
 free_compress:
 	btrfs_exit_compress();
 <<<<<<< HEAD
+<<<<<<< HEAD
 free_sysfs:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	btrfs_exit_sysfs();
 	return err;
 }
@@ -2035,7 +3069,15 @@ free_sysfs:
 static void __exit exit_btrfs_fs(void)
 {
 	btrfs_destroy_cachep();
+<<<<<<< HEAD
 	btrfs_delayed_inode_exit();
+=======
+	btrfs_delayed_ref_exit();
+	btrfs_auto_defrag_exit();
+	btrfs_delayed_inode_exit();
+	btrfs_prelim_ref_exit();
+	ordered_data_exit();
+>>>>>>> refs/remotes/origin/master
 	extent_map_exit();
 	extent_io_exit();
 	btrfs_interface_exit();

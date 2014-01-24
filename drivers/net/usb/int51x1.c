@@ -116,6 +116,7 @@ static struct sk_buff *int51x1_tx_fixup(struct usbnet *dev,
 	return skb;
 }
 
+<<<<<<< HEAD
 static void int51x1_async_cmd_callback(struct urb *urb)
 {
 	struct usb_ctrlrequest *req = (struct usb_ctrlrequest *)urb->context;
@@ -133,6 +134,10 @@ static void int51x1_set_multicast(struct net_device *netdev)
 	struct usb_ctrlrequest *req;
 	int status;
 	struct urb *urb;
+=======
+static void int51x1_set_multicast(struct net_device *netdev)
+{
+>>>>>>> refs/remotes/origin/master
 	struct usbnet *dev = netdev_priv(netdev);
 	u16 filter = PACKET_TYPE_DIRECTED | PACKET_TYPE_BROADCAST;
 
@@ -149,6 +154,7 @@ static void int51x1_set_multicast(struct net_device *netdev)
 		netdev_dbg(dev->net, "receive own packets only\n");
 	}
 
+<<<<<<< HEAD
 	urb = usb_alloc_urb(0, GFP_ATOMIC);
 	if (!urb) {
 		netdev_warn(dev->net, "Error allocating URB\n");
@@ -183,6 +189,11 @@ out1:
 	kfree(req);
 out:
 	usb_free_urb(urb);
+=======
+	usbnet_write_cmd_async(dev, SET_ETHERNET_PACKET_FILTER,
+			       USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+			       filter, 0, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct net_device_ops int51x1_netdev_ops = {
@@ -194,10 +205,14 @@ static const struct net_device_ops int51x1_netdev_ops = {
 	.ndo_set_mac_address	= eth_mac_addr,
 	.ndo_validate_addr	= eth_validate_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= int51x1_set_multicast,
 =======
 	.ndo_set_rx_mode	= int51x1_set_multicast,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= int51x1_set_multicast,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int int51x1_bind(struct usbnet *dev, struct usb_interface *intf)
@@ -240,6 +255,7 @@ static struct usb_driver int51x1_driver = {
 	.disconnect = usbnet_disconnect,
 	.suspend    = usbnet_suspend,
 	.resume     = usbnet_resume,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -257,6 +273,12 @@ module_exit(int51x1_exit);
 =======
 module_usb_driver(int51x1_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(int51x1_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Peter Holik");
 MODULE_DESCRIPTION("Intellon usb powerline adapter");

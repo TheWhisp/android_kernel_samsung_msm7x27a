@@ -39,9 +39,12 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sched.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "rt2x00.h"
 #include "rt2800lib.h"
@@ -84,7 +87,11 @@ static inline bool rt2800_is_305x_soc(struct rt2x00_dev *rt2x00dev)
 	    rt2x00_rf(rt2x00dev, RF3022))
 		return true;
 
+<<<<<<< HEAD
 	NOTICE(rt2x00dev, "Unknown RF chipset on rt305x\n");
+=======
+	rt2x00_warn(rt2x00dev, "Unknown RF chipset on rt305x\n");
+>>>>>>> refs/remotes/origin/master
 	return false;
 }
 
@@ -225,6 +232,218 @@ static void rt2800_rf_write(struct rt2x00_dev *rt2x00dev,
 	mutex_unlock(&rt2x00dev->csr_mutex);
 }
 
+<<<<<<< HEAD
+=======
+static const unsigned int rt2800_eeprom_map[EEPROM_WORD_COUNT] = {
+	[EEPROM_CHIP_ID]		= 0x0000,
+	[EEPROM_VERSION]		= 0x0001,
+	[EEPROM_MAC_ADDR_0]		= 0x0002,
+	[EEPROM_MAC_ADDR_1]		= 0x0003,
+	[EEPROM_MAC_ADDR_2]		= 0x0004,
+	[EEPROM_NIC_CONF0]		= 0x001a,
+	[EEPROM_NIC_CONF1]		= 0x001b,
+	[EEPROM_FREQ]			= 0x001d,
+	[EEPROM_LED_AG_CONF]		= 0x001e,
+	[EEPROM_LED_ACT_CONF]		= 0x001f,
+	[EEPROM_LED_POLARITY]		= 0x0020,
+	[EEPROM_NIC_CONF2]		= 0x0021,
+	[EEPROM_LNA]			= 0x0022,
+	[EEPROM_RSSI_BG]		= 0x0023,
+	[EEPROM_RSSI_BG2]		= 0x0024,
+	[EEPROM_TXMIXER_GAIN_BG]	= 0x0024, /* overlaps with RSSI_BG2 */
+	[EEPROM_RSSI_A]			= 0x0025,
+	[EEPROM_RSSI_A2]		= 0x0026,
+	[EEPROM_TXMIXER_GAIN_A]		= 0x0026, /* overlaps with RSSI_A2 */
+	[EEPROM_EIRP_MAX_TX_POWER]	= 0x0027,
+	[EEPROM_TXPOWER_DELTA]		= 0x0028,
+	[EEPROM_TXPOWER_BG1]		= 0x0029,
+	[EEPROM_TXPOWER_BG2]		= 0x0030,
+	[EEPROM_TSSI_BOUND_BG1]		= 0x0037,
+	[EEPROM_TSSI_BOUND_BG2]		= 0x0038,
+	[EEPROM_TSSI_BOUND_BG3]		= 0x0039,
+	[EEPROM_TSSI_BOUND_BG4]		= 0x003a,
+	[EEPROM_TSSI_BOUND_BG5]		= 0x003b,
+	[EEPROM_TXPOWER_A1]		= 0x003c,
+	[EEPROM_TXPOWER_A2]		= 0x0053,
+	[EEPROM_TSSI_BOUND_A1]		= 0x006a,
+	[EEPROM_TSSI_BOUND_A2]		= 0x006b,
+	[EEPROM_TSSI_BOUND_A3]		= 0x006c,
+	[EEPROM_TSSI_BOUND_A4]		= 0x006d,
+	[EEPROM_TSSI_BOUND_A5]		= 0x006e,
+	[EEPROM_TXPOWER_BYRATE]		= 0x006f,
+	[EEPROM_BBP_START]		= 0x0078,
+};
+
+static const unsigned int rt2800_eeprom_map_ext[EEPROM_WORD_COUNT] = {
+	[EEPROM_CHIP_ID]		= 0x0000,
+	[EEPROM_VERSION]		= 0x0001,
+	[EEPROM_MAC_ADDR_0]		= 0x0002,
+	[EEPROM_MAC_ADDR_1]		= 0x0003,
+	[EEPROM_MAC_ADDR_2]		= 0x0004,
+	[EEPROM_NIC_CONF0]		= 0x001a,
+	[EEPROM_NIC_CONF1]		= 0x001b,
+	[EEPROM_NIC_CONF2]		= 0x001c,
+	[EEPROM_EIRP_MAX_TX_POWER]	= 0x0020,
+	[EEPROM_FREQ]			= 0x0022,
+	[EEPROM_LED_AG_CONF]		= 0x0023,
+	[EEPROM_LED_ACT_CONF]		= 0x0024,
+	[EEPROM_LED_POLARITY]		= 0x0025,
+	[EEPROM_LNA]			= 0x0026,
+	[EEPROM_EXT_LNA2]		= 0x0027,
+	[EEPROM_RSSI_BG]		= 0x0028,
+	[EEPROM_RSSI_BG2]		= 0x0029,
+	[EEPROM_RSSI_A]			= 0x002a,
+	[EEPROM_RSSI_A2]		= 0x002b,
+	[EEPROM_TXPOWER_BG1]		= 0x0030,
+	[EEPROM_TXPOWER_BG2]		= 0x0037,
+	[EEPROM_EXT_TXPOWER_BG3]	= 0x003e,
+	[EEPROM_TSSI_BOUND_BG1]		= 0x0045,
+	[EEPROM_TSSI_BOUND_BG2]		= 0x0046,
+	[EEPROM_TSSI_BOUND_BG3]		= 0x0047,
+	[EEPROM_TSSI_BOUND_BG4]		= 0x0048,
+	[EEPROM_TSSI_BOUND_BG5]		= 0x0049,
+	[EEPROM_TXPOWER_A1]		= 0x004b,
+	[EEPROM_TXPOWER_A2]		= 0x0065,
+	[EEPROM_EXT_TXPOWER_A3]		= 0x007f,
+	[EEPROM_TSSI_BOUND_A1]		= 0x009a,
+	[EEPROM_TSSI_BOUND_A2]		= 0x009b,
+	[EEPROM_TSSI_BOUND_A3]		= 0x009c,
+	[EEPROM_TSSI_BOUND_A4]		= 0x009d,
+	[EEPROM_TSSI_BOUND_A5]		= 0x009e,
+	[EEPROM_TXPOWER_BYRATE]		= 0x00a0,
+};
+
+static unsigned int rt2800_eeprom_word_index(struct rt2x00_dev *rt2x00dev,
+					     const enum rt2800_eeprom_word word)
+{
+	const unsigned int *map;
+	unsigned int index;
+
+	if (WARN_ONCE(word >= EEPROM_WORD_COUNT,
+		      "%s: invalid EEPROM word %d\n",
+		      wiphy_name(rt2x00dev->hw->wiphy), word))
+		return 0;
+
+	if (rt2x00_rt(rt2x00dev, RT3593))
+		map = rt2800_eeprom_map_ext;
+	else
+		map = rt2800_eeprom_map;
+
+	index = map[word];
+
+	/* Index 0 is valid only for EEPROM_CHIP_ID.
+	 * Otherwise it means that the offset of the
+	 * given word is not initialized in the map,
+	 * or that the field is not usable on the
+	 * actual chipset.
+	 */
+	WARN_ONCE(word != EEPROM_CHIP_ID && index == 0,
+		  "%s: invalid access of EEPROM word %d\n",
+		  wiphy_name(rt2x00dev->hw->wiphy), word);
+
+	return index;
+}
+
+static void *rt2800_eeprom_addr(struct rt2x00_dev *rt2x00dev,
+				const enum rt2800_eeprom_word word)
+{
+	unsigned int index;
+
+	index = rt2800_eeprom_word_index(rt2x00dev, word);
+	return rt2x00_eeprom_addr(rt2x00dev, index);
+}
+
+static void rt2800_eeprom_read(struct rt2x00_dev *rt2x00dev,
+			       const enum rt2800_eeprom_word word, u16 *data)
+{
+	unsigned int index;
+
+	index = rt2800_eeprom_word_index(rt2x00dev, word);
+	rt2x00_eeprom_read(rt2x00dev, index, data);
+}
+
+static void rt2800_eeprom_write(struct rt2x00_dev *rt2x00dev,
+				const enum rt2800_eeprom_word word, u16 data)
+{
+	unsigned int index;
+
+	index = rt2800_eeprom_word_index(rt2x00dev, word);
+	rt2x00_eeprom_write(rt2x00dev, index, data);
+}
+
+static void rt2800_eeprom_read_from_array(struct rt2x00_dev *rt2x00dev,
+					  const enum rt2800_eeprom_word array,
+					  unsigned int offset,
+					  u16 *data)
+{
+	unsigned int index;
+
+	index = rt2800_eeprom_word_index(rt2x00dev, array);
+	rt2x00_eeprom_read(rt2x00dev, index + offset, data);
+}
+
+static int rt2800_enable_wlan_rt3290(struct rt2x00_dev *rt2x00dev)
+{
+	u32 reg;
+	int i, count;
+
+	rt2800_register_read(rt2x00dev, WLAN_FUN_CTRL, &reg);
+	if (rt2x00_get_field32(reg, WLAN_EN))
+		return 0;
+
+	rt2x00_set_field32(&reg, WLAN_GPIO_OUT_OE_BIT_ALL, 0xff);
+	rt2x00_set_field32(&reg, FRC_WL_ANT_SET, 1);
+	rt2x00_set_field32(&reg, WLAN_CLK_EN, 0);
+	rt2x00_set_field32(&reg, WLAN_EN, 1);
+	rt2800_register_write(rt2x00dev, WLAN_FUN_CTRL, reg);
+
+	udelay(REGISTER_BUSY_DELAY);
+
+	count = 0;
+	do {
+		/*
+		 * Check PLL_LD & XTAL_RDY.
+		 */
+		for (i = 0; i < REGISTER_BUSY_COUNT; i++) {
+			rt2800_register_read(rt2x00dev, CMB_CTRL, &reg);
+			if (rt2x00_get_field32(reg, PLL_LD) &&
+			    rt2x00_get_field32(reg, XTAL_RDY))
+				break;
+			udelay(REGISTER_BUSY_DELAY);
+		}
+
+		if (i >= REGISTER_BUSY_COUNT) {
+
+			if (count >= 10)
+				return -EIO;
+
+			rt2800_register_write(rt2x00dev, 0x58, 0x018);
+			udelay(REGISTER_BUSY_DELAY);
+			rt2800_register_write(rt2x00dev, 0x58, 0x418);
+			udelay(REGISTER_BUSY_DELAY);
+			rt2800_register_write(rt2x00dev, 0x58, 0x618);
+			udelay(REGISTER_BUSY_DELAY);
+			count++;
+		} else {
+			count = 0;
+		}
+
+		rt2800_register_read(rt2x00dev, WLAN_FUN_CTRL, &reg);
+		rt2x00_set_field32(&reg, PCIE_APP0_CLK_REQ, 0);
+		rt2x00_set_field32(&reg, WLAN_CLK_EN, 1);
+		rt2x00_set_field32(&reg, WLAN_RESET, 1);
+		rt2800_register_write(rt2x00dev, WLAN_FUN_CTRL, reg);
+		udelay(10);
+		rt2x00_set_field32(&reg, WLAN_RESET, 0);
+		rt2800_register_write(rt2x00dev, WLAN_FUN_CTRL, reg);
+		udelay(10);
+		rt2800_register_write(rt2x00dev, INT_SOURCE_CSR, 0x7fffffff);
+	} while (count != 0);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 void rt2800_mcu_request(struct rt2x00_dev *rt2x00dev,
 			const u8 command, const u8 token,
 			const u8 arg0, const u8 arg1)
@@ -271,7 +490,11 @@ int rt2800_wait_csr_ready(struct rt2x00_dev *rt2x00dev)
 		msleep(1);
 	}
 
+<<<<<<< HEAD
 	ERROR(rt2x00dev, "Unstable hardware.\n");
+=======
+	rt2x00_err(rt2x00dev, "Unstable hardware\n");
+>>>>>>> refs/remotes/origin/master
 	return -EBUSY;
 }
 EXPORT_SYMBOL_GPL(rt2800_wait_csr_ready);
@@ -294,11 +517,55 @@ int rt2800_wait_wpdma_ready(struct rt2x00_dev *rt2x00dev)
 		msleep(10);
 	}
 
+<<<<<<< HEAD
 	ERROR(rt2x00dev, "WPDMA TX/RX busy, aborting.\n");
+=======
+	rt2x00_err(rt2x00dev, "WPDMA TX/RX busy [0x%08x]\n", reg);
+>>>>>>> refs/remotes/origin/master
 	return -EACCES;
 }
 EXPORT_SYMBOL_GPL(rt2800_wait_wpdma_ready);
 
+<<<<<<< HEAD
+=======
+void rt2800_disable_wpdma(struct rt2x00_dev *rt2x00dev)
+{
+	u32 reg;
+
+	rt2800_register_read(rt2x00dev, WPDMA_GLO_CFG, &reg);
+	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_ENABLE_TX_DMA, 0);
+	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_TX_DMA_BUSY, 0);
+	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_ENABLE_RX_DMA, 0);
+	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_RX_DMA_BUSY, 0);
+	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_TX_WRITEBACK_DONE, 1);
+	rt2800_register_write(rt2x00dev, WPDMA_GLO_CFG, reg);
+}
+EXPORT_SYMBOL_GPL(rt2800_disable_wpdma);
+
+void rt2800_get_txwi_rxwi_size(struct rt2x00_dev *rt2x00dev,
+			       unsigned short *txwi_size,
+			       unsigned short *rxwi_size)
+{
+	switch (rt2x00dev->chip.rt) {
+	case RT3593:
+		*txwi_size = TXWI_DESC_SIZE_4WORDS;
+		*rxwi_size = RXWI_DESC_SIZE_5WORDS;
+		break;
+
+	case RT5592:
+		*txwi_size = TXWI_DESC_SIZE_5WORDS;
+		*rxwi_size = RXWI_DESC_SIZE_6WORDS;
+		break;
+
+	default:
+		*txwi_size = TXWI_DESC_SIZE_4WORDS;
+		*rxwi_size = RXWI_DESC_SIZE_4WORDS;
+		break;
+	}
+}
+EXPORT_SYMBOL_GPL(rt2800_get_txwi_rxwi_size);
+
+>>>>>>> refs/remotes/origin/master
 static bool rt2800_check_firmware_crc(const u8 *data, const size_t len)
 {
 	u16 fw_crc;
@@ -344,6 +611,7 @@ int rt2800_check_firmware(struct rt2x00_dev *rt2x00dev,
 	 * of 4kb. Certain USB chipsets however require different firmware,
 	 * which Ralink only provides attached to the original firmware
 	 * file. Thus for USB devices, firmware files have a length
+<<<<<<< HEAD
 	 * which is a multiple of 4kb.
 	 */
 	if (rt2x00_is_usb(rt2x00dev)) {
@@ -354,6 +622,17 @@ int rt2800_check_firmware(struct rt2x00_dev *rt2x00dev,
 		multiple = true;
 	}
 
+=======
+	 * which is a multiple of 4kb. The firmware for rt3290 chip also
+	 * have a length which is a multiple of 4kb.
+	 */
+	if (rt2x00_is_usb(rt2x00dev) || rt2x00_rt(rt2x00dev, RT3290))
+		fw_len = 4096;
+	else
+		fw_len = 8192;
+
+	multiple = true;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Validate the firmware length
 	 */
@@ -391,6 +670,16 @@ int rt2800_load_firmware(struct rt2x00_dev *rt2x00dev,
 {
 	unsigned int i;
 	u32 reg;
+<<<<<<< HEAD
+=======
+	int retval;
+
+	if (rt2x00_rt(rt2x00dev, RT3290)) {
+		retval = rt2800_enable_wlan_rt3290(rt2x00dev);
+		if (retval)
+			return -EBUSY;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If driver doesn't wake up firmware here,
@@ -406,12 +695,19 @@ int rt2800_load_firmware(struct rt2x00_dev *rt2x00dev,
 
 	if (rt2x00_is_pci(rt2x00dev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (rt2x00_rt(rt2x00dev, RT5390)) {
 =======
 		if (rt2x00_rt(rt2x00dev, RT3572) ||
 		    rt2x00_rt(rt2x00dev, RT5390) ||
 		    rt2x00_rt(rt2x00dev, RT5392)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (rt2x00_rt(rt2x00dev, RT3290) ||
+		    rt2x00_rt(rt2x00dev, RT3572) ||
+		    rt2x00_rt(rt2x00dev, RT5390) ||
+		    rt2x00_rt(rt2x00dev, RT5392)) {
+>>>>>>> refs/remotes/origin/master
 			rt2800_register_read(rt2x00dev, AUX_CTRL, &reg);
 			rt2x00_set_field32(&reg, AUX_CTRL_FORCE_PCIE_CLK, 1);
 			rt2x00_set_field32(&reg, AUX_CTRL_WAKE_PCIE_EN, 1);
@@ -420,6 +716,7 @@ int rt2800_load_firmware(struct rt2x00_dev *rt2x00dev,
 		rt2800_register_write(rt2x00dev, PWR_PIN_CFG, 0x00000002);
 	}
 
+<<<<<<< HEAD
 	/*
 <<<<<<< HEAD
 	 * Disable DMA, will be reenabled later when enabling
@@ -436,6 +733,11 @@ int rt2800_load_firmware(struct rt2x00_dev *rt2x00dev,
 	/*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rt2800_disable_wpdma(rt2x00dev);
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Write firmware to the device.
 	 */
 	rt2800_drv_write_firmware(rt2x00dev, data, len);
@@ -451,11 +753,16 @@ int rt2800_load_firmware(struct rt2x00_dev *rt2x00dev,
 	}
 
 	if (i == REGISTER_BUSY_COUNT) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "PBF system register not ready.\n");
+=======
+		rt2x00_err(rt2x00dev, "PBF system register not ready\n");
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	 * Disable DMA, will be reenabled later when enabling
@@ -468,15 +775,30 @@ int rt2800_load_firmware(struct rt2x00_dev *rt2x00dev,
 
 	/*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Disable DMA, will be reenabled later when enabling
+	 * the radio.
+	 */
+	rt2800_disable_wpdma(rt2x00dev);
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Initialize firmware.
 	 */
 	rt2800_register_write(rt2x00dev, H2M_BBP_AGENT, 0);
 	rt2800_register_write(rt2x00dev, H2M_MAILBOX_CSR, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (rt2x00_is_usb(rt2x00dev))
 		rt2800_register_write(rt2x00dev, H2M_INT_SRC, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rt2x00_is_usb(rt2x00dev)) {
+		rt2800_register_write(rt2x00dev, H2M_INT_SRC, 0);
+		rt2800_mcu_request(rt2x00dev, MCU_BOOT_SIGNAL, 0, 0, 0);
+	}
+>>>>>>> refs/remotes/origin/master
 	msleep(1);
 
 	return 0;
@@ -488,6 +810,10 @@ void rt2800_write_tx_data(struct queue_entry *entry,
 {
 	__le32 *txwi = rt2800_drv_get_txwi(entry);
 	u32 word;
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialize TX Info descriptor
@@ -523,10 +849,14 @@ void rt2800_write_tx_data(struct queue_entry *entry,
 	rt2x00_set_field32(&word, TXWI_W1_WIRELESS_CLI_ID,
 			   test_bit(ENTRY_TXD_ENCRYPT, &txdesc->flags) ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   txdesc->key_idx : 0xff);
 =======
 			   txdesc->key_idx : txdesc->u.ht.wcid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   txdesc->key_idx : txdesc->u.ht.wcid);
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&word, TXWI_W1_MPDU_TOTAL_BYTE_COUNT,
 			   txdesc->length);
 	rt2x00_set_field32(&word, TXWI_W1_PACKETID_QUEUE, entry->queue->qid);
@@ -534,6 +864,7 @@ void rt2800_write_tx_data(struct queue_entry *entry,
 	rt2x00_desc_write(txwi, 1, word);
 
 	/*
+<<<<<<< HEAD
 	 * Always write 0 to IV/EIV fields, hardware will insert the IV
 	 * from the IVEIV register when TXD_W3_WIV is set to 0.
 	 * When TXD_W3_WIV is set to 1 it will use the IV data
@@ -542,11 +873,24 @@ void rt2800_write_tx_data(struct queue_entry *entry,
 	 */
 	_rt2x00_desc_write(txwi, 2, 0 /* skbdesc->iv[0] */);
 	_rt2x00_desc_write(txwi, 3, 0 /* skbdesc->iv[1] */);
+=======
+	 * Always write 0 to IV/EIV fields (word 2 and 3), hardware will insert
+	 * the IV from the IVEIV register when TXD_W3_WIV is set to 0.
+	 * When TXD_W3_WIV is set to 1 it will use the IV data
+	 * from the descriptor. The TXWI_W1_WIRELESS_CLI_ID indicates which
+	 * crypto entry in the registers should be used to encrypt the frame.
+	 *
+	 * Nulify all remaining words as well, we don't know how to program them.
+	 */
+	for (i = 2; i < entry->queue->winfo_size / sizeof(__le32); i++)
+		_rt2x00_desc_write(txwi, i, 0);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(rt2800_write_tx_data);
 
 static int rt2800_agc_to_rssi(struct rt2x00_dev *rt2x00dev, u32 rxwi_w2)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int rssi0 = rt2x00_get_field32(rxwi_w2, RXWI_W2_RSSI0);
 	int rssi1 = rt2x00_get_field32(rxwi_w2, RXWI_W2_RSSI1);
@@ -556,12 +900,18 @@ static int rt2800_agc_to_rssi(struct rt2x00_dev *rt2x00dev, u32 rxwi_w2)
 	s8 rssi1 = rt2x00_get_field32(rxwi_w2, RXWI_W2_RSSI1);
 	s8 rssi2 = rt2x00_get_field32(rxwi_w2, RXWI_W2_RSSI2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s8 rssi0 = rt2x00_get_field32(rxwi_w2, RXWI_W2_RSSI0);
+	s8 rssi1 = rt2x00_get_field32(rxwi_w2, RXWI_W2_RSSI1);
+	s8 rssi2 = rt2x00_get_field32(rxwi_w2, RXWI_W2_RSSI2);
+>>>>>>> refs/remotes/origin/master
 	u16 eeprom;
 	u8 offset0;
 	u8 offset1;
 	u8 offset2;
 
 	if (rt2x00dev->curr_band == IEEE80211_BAND_2GHZ) {
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_BG, &eeprom);
 		offset0 = rt2x00_get_field16(eeprom, EEPROM_RSSI_BG_OFFSET0);
 		offset1 = rt2x00_get_field16(eeprom, EEPROM_RSSI_BG_OFFSET1);
@@ -572,6 +922,18 @@ static int rt2800_agc_to_rssi(struct rt2x00_dev *rt2x00dev, u32 rxwi_w2)
 		offset0 = rt2x00_get_field16(eeprom, EEPROM_RSSI_A_OFFSET0);
 		offset1 = rt2x00_get_field16(eeprom, EEPROM_RSSI_A_OFFSET1);
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_A2, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_BG, &eeprom);
+		offset0 = rt2x00_get_field16(eeprom, EEPROM_RSSI_BG_OFFSET0);
+		offset1 = rt2x00_get_field16(eeprom, EEPROM_RSSI_BG_OFFSET1);
+		rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_BG2, &eeprom);
+		offset2 = rt2x00_get_field16(eeprom, EEPROM_RSSI_BG2_OFFSET2);
+	} else {
+		rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_A, &eeprom);
+		offset0 = rt2x00_get_field16(eeprom, EEPROM_RSSI_A_OFFSET0);
+		offset1 = rt2x00_get_field16(eeprom, EEPROM_RSSI_A_OFFSET1);
+		rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_A2, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		offset2 = rt2x00_get_field16(eeprom, EEPROM_RSSI_A2_OFFSET2);
 	}
 
@@ -592,10 +954,14 @@ static int rt2800_agc_to_rssi(struct rt2x00_dev *rt2x00dev, u32 rxwi_w2)
 	 */
 	rssi0 = max(rssi0, rssi1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return max(rssi0, rssi2);
 =======
 	return (int)max(rssi0, rssi2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (int)max(rssi0, rssi2);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rt2800_process_rxwi(struct queue_entry *entry,
@@ -636,6 +1002,7 @@ void rt2800_process_rxwi(struct queue_entry *entry,
 	 * Convert descriptor AGC value to RSSI value.
 	 */
 	rxdesc->rssi = rt2800_agc_to_rssi(entry->queue->rt2x00dev, word);
+<<<<<<< HEAD
 
 	/*
 	 * Remove RXWI descriptor from start of buffer.
@@ -701,6 +1068,16 @@ void rt2800_txdone_entry(struct queue_entry *entry, u32 status)
 =======
 void rt2800_txdone_entry(struct queue_entry *entry, u32 status, __le32 *txwi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * Remove RXWI descriptor from start of the buffer.
+	 */
+	skb_pull(entry->skb, entry->queue->winfo_size);
+}
+EXPORT_SYMBOL_GPL(rt2800_process_rxwi);
+
+void rt2800_txdone_entry(struct queue_entry *entry, u32 status, __le32 *txwi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rt2x00_dev *rt2x00dev = entry->queue->rt2x00dev;
 	struct skb_frame_desc *skbdesc = get_skb_frame_desc(entry->skb);
@@ -709,18 +1086,24 @@ void rt2800_txdone_entry(struct queue_entry *entry, u32 status, __le32 *txwi)
 	u16 mcs, real_mcs;
 	int aggr, ampdu;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__le32 *txwi;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Obtain the status about this packet.
 	 */
 	txdesc.flags = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	txwi = rt2800_drv_get_txwi(entry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rt2x00_desc_read(txwi, 0, &word);
 
 	mcs = rt2x00_get_field32(word, TXWI_W0_MCS);
@@ -789,6 +1172,7 @@ void rt2800_txdone_entry(struct queue_entry *entry, u32 status, __le32 *txwi)
 EXPORT_SYMBOL_GPL(rt2800_txdone_entry);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void rt2800_txdone(struct rt2x00_dev *rt2x00dev)
 {
 	struct data_queue *queue;
@@ -829,6 +1213,20 @@ EXPORT_SYMBOL_GPL(rt2800_txdone);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int rt2800_hw_beacon_base(struct rt2x00_dev *rt2x00dev,
+					  unsigned int index)
+{
+	return HW_BEACON_BASE(index);
+}
+
+static inline u8 rt2800_get_beacon_offset(struct rt2x00_dev *rt2x00dev,
+					  unsigned int index)
+{
+	return BEACON_BASE_TO_OFFSET(rt2800_hw_beacon_base(rt2x00dev, index));
+}
+
+>>>>>>> refs/remotes/origin/master
 void rt2800_write_beacon(struct queue_entry *entry, struct txentry_desc *txdesc)
 {
 	struct rt2x00_dev *rt2x00dev = entry->queue->rt2x00dev;
@@ -836,6 +1234,10 @@ void rt2800_write_beacon(struct queue_entry *entry, struct txentry_desc *txdesc)
 	unsigned int beacon_base;
 	unsigned int padding_len;
 	u32 orig_reg, reg;
+<<<<<<< HEAD
+=======
+	const int txwi_desc_size = entry->queue->winfo_size;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Disable beaconing while we are reloading the beacon data,
@@ -849,14 +1251,22 @@ void rt2800_write_beacon(struct queue_entry *entry, struct txentry_desc *txdesc)
 	/*
 	 * Add space for the TXWI in front of the skb.
 	 */
+<<<<<<< HEAD
 	memset(skb_push(entry->skb, TXWI_DESC_SIZE), 0, TXWI_DESC_SIZE);
+=======
+	memset(skb_push(entry->skb, txwi_desc_size), 0, txwi_desc_size);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Register descriptor details in skb frame descriptor.
 	 */
 	skbdesc->flags |= SKBDESC_DESC_IN_SKB;
 	skbdesc->desc = entry->skb->data;
+<<<<<<< HEAD
 	skbdesc->desc_len = TXWI_DESC_SIZE;
+=======
+	skbdesc->desc_len = txwi_desc_size;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Add the TXWI for the beacon to the skb.
@@ -873,14 +1283,23 @@ void rt2800_write_beacon(struct queue_entry *entry, struct txentry_desc *txdesc)
 	 */
 	padding_len = roundup(entry->skb->len, 4) - entry->skb->len;
 	if (padding_len && skb_pad(entry->skb, padding_len)) {
+<<<<<<< HEAD
 		ERROR(rt2x00dev, "Failure padding beacon, aborting\n");
+=======
+		rt2x00_err(rt2x00dev, "Failure padding beacon, aborting\n");
+>>>>>>> refs/remotes/origin/master
 		/* skb freed by skb_pad() on failure */
 		entry->skb = NULL;
 		rt2800_register_write(rt2x00dev, BCN_TIME_CFG, orig_reg);
 		return;
 	}
 
+<<<<<<< HEAD
 	beacon_base = HW_BEACON_OFFSET(entry->entry_idx);
+=======
+	beacon_base = rt2800_hw_beacon_base(rt2x00dev, entry->entry_idx);
+
+>>>>>>> refs/remotes/origin/master
 	rt2800_register_multiwrite(rt2x00dev, beacon_base, entry->skb->data,
 				   entry->skb->len + padding_len);
 
@@ -899,16 +1318,30 @@ void rt2800_write_beacon(struct queue_entry *entry, struct txentry_desc *txdesc)
 EXPORT_SYMBOL_GPL(rt2800_write_beacon);
 
 static inline void rt2800_clear_beacon_register(struct rt2x00_dev *rt2x00dev,
+<<<<<<< HEAD
 						unsigned int beacon_base)
 {
 	int i;
+=======
+						unsigned int index)
+{
+	int i;
+	const int txwi_desc_size = rt2x00dev->bcn->winfo_size;
+	unsigned int beacon_base;
+
+	beacon_base = rt2800_hw_beacon_base(rt2x00dev, index);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * For the Beacon base registers we only need to clear
 	 * the whole TXWI which (when set to 0) will invalidate
 	 * the entire beacon.
 	 */
+<<<<<<< HEAD
 	for (i = 0; i < TXWI_DESC_SIZE; i += sizeof(__le32))
+=======
+	for (i = 0; i < txwi_desc_size; i += sizeof(__le32))
+>>>>>>> refs/remotes/origin/master
 		rt2800_register_write(rt2x00dev, beacon_base + i, 0);
 }
 
@@ -928,8 +1361,12 @@ void rt2800_clear_beacon(struct queue_entry *entry)
 	/*
 	 * Clear beacon.
 	 */
+<<<<<<< HEAD
 	rt2800_clear_beacon_register(rt2x00dev,
 				     HW_BEACON_OFFSET(entry->entry_idx));
+=======
+	rt2800_clear_beacon_register(rt2x00dev, entry->entry_idx);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Enabled beaconing again.
@@ -951,6 +1388,12 @@ const struct rt2x00debug rt2800_rt2x00debug = {
 		.word_count	= CSR_REG_SIZE / sizeof(u32),
 	},
 	.eeprom	= {
+<<<<<<< HEAD
+=======
+		/* NOTE: The local EEPROM access functions can't
+		 * be used here, use the generic versions instead.
+		 */
+>>>>>>> refs/remotes/origin/master
 		.read		= rt2x00_eeprom_read,
 		.write		= rt2x00_eeprom_write,
 		.word_base	= EEPROM_BASE,
@@ -971,6 +1414,16 @@ const struct rt2x00debug rt2800_rt2x00debug = {
 		.word_size	= sizeof(u32),
 		.word_count	= RF_SIZE / sizeof(u32),
 	},
+<<<<<<< HEAD
+=======
+	.rfcsr	= {
+		.read		= rt2800_rfcsr_read,
+		.write		= rt2800_rfcsr_write,
+		.word_base	= RFCSR_BASE,
+		.word_size	= sizeof(u8),
+		.word_count	= RFCSR_SIZE / sizeof(u8),
+	},
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL_GPL(rt2800_rt2x00debug);
 #endif /* CONFIG_RT2X00_LIB_DEBUGFS */
@@ -979,8 +1432,18 @@ int rt2800_rfkill_poll(struct rt2x00_dev *rt2x00dev)
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2800_register_read(rt2x00dev, GPIO_CTRL_CFG, &reg);
 	return rt2x00_get_field32(reg, GPIO_CTRL_CFG_BIT2);
+=======
+	if (rt2x00_rt(rt2x00dev, RT3290)) {
+		rt2800_register_read(rt2x00dev, WLAN_FUN_CTRL, &reg);
+		return rt2x00_get_field32(reg, WLAN_GPIO_IN_BIT0);
+	} else {
+		rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
+		return rt2x00_get_field32(reg, GPIO_CTRL_VAL2);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(rt2800_rfkill_poll);
 
@@ -1046,6 +1509,7 @@ static void rt2800_brightness_set(struct led_classdev *led_cdev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int rt2800_blink_set(struct led_classdev *led_cdev,
 			    unsigned long *delay_on, unsigned long *delay_off)
 {
@@ -1063,6 +1527,8 @@ static int rt2800_blink_set(struct led_classdev *led_cdev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void rt2800_init_led(struct rt2x00_dev *rt2x00dev,
 		     struct rt2x00_led *led, enum led_type type)
 {
@@ -1070,9 +1536,12 @@ static void rt2800_init_led(struct rt2x00_dev *rt2x00dev,
 	led->type = type;
 	led->led_dev.brightness_set = rt2800_brightness_set;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	led->led_dev.blink_set = rt2800_blink_set;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	led->flags = LED_INITIALIZED;
 }
 #endif /* CONFIG_RT2X00_LIB_LEDS */
@@ -1081,12 +1550,15 @@ static void rt2800_init_led(struct rt2x00_dev *rt2x00dev,
  * Configuration handlers.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void rt2800_config_wcid_attr(struct rt2x00_dev *rt2x00dev,
 				    struct rt2x00lib_crypto *crypto,
 				    struct ieee80211_key_conf *key)
 {
 	struct mac_wcid_entry wcid_entry;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void rt2800_config_wcid(struct rt2x00_dev *rt2x00dev,
 			       const u8 *address,
 			       int wcid)
@@ -1132,7 +1604,10 @@ static void rt2800_config_wcid_attr_cipher(struct rt2x00_dev *rt2x00dev,
 					   struct rt2x00lib_crypto *crypto,
 					   struct ieee80211_key_conf *key)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mac_iveiv_entry iveiv_entry;
 	u32 offset;
 	u32 reg;
@@ -1153,6 +1628,7 @@ static void rt2800_config_wcid_attr_cipher(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, MAC_WCID_ATTRIBUTE_CIPHER_EXT,
 				   (crypto->cipher & 0x8) >> 3);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rt2x00_set_field32(&reg, MAC_WCID_ATTRIBUTE_BSS_IDX,
 				   (crypto->bssidx & 0x7));
 		rt2x00_set_field32(&reg, MAC_WCID_ATTRIBUTE_BSS_IDX_EXT,
@@ -1162,6 +1638,8 @@ static void rt2800_config_wcid_attr_cipher(struct rt2x00_dev *rt2x00dev,
 	} else {
 		rt2800_register_write(rt2x00dev, offset, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		rt2x00_set_field32(&reg, MAC_WCID_ATTRIBUTE_RX_WIUDF, crypto->cipher);
 		rt2800_register_write(rt2x00dev, offset, reg);
 	} else {
@@ -1172,7 +1650,10 @@ static void rt2800_config_wcid_attr_cipher(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, MAC_WCID_ATTRIBUTE_CIPHER_EXT, 0);
 		rt2x00_set_field32(&reg, MAC_WCID_ATTRIBUTE_RX_WIUDF, 0);
 		rt2800_register_write(rt2x00dev, offset, reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	offset = MAC_IVEIV_ENTRY(key->hw_key_idx);
@@ -1186,6 +1667,7 @@ static void rt2800_config_wcid_attr_cipher(struct rt2x00_dev *rt2x00dev,
 	rt2800_register_multiwrite(rt2x00dev, offset,
 				      &iveiv_entry, sizeof(iveiv_entry));
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	offset = MAC_WCID_ENTRY(key->hw_key_idx);
 
@@ -1196,6 +1678,8 @@ static void rt2800_config_wcid_attr_cipher(struct rt2x00_dev *rt2x00dev,
 				      &wcid_entry, sizeof(wcid_entry));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int rt2800_config_shared_key(struct rt2x00_dev *rt2x00dev,
@@ -1243,18 +1727,25 @@ int rt2800_config_shared_key(struct rt2x00_dev *rt2x00dev,
 	 * Update WCID information
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2800_config_wcid_attr(rt2x00dev, crypto, key);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rt2800_config_wcid(rt2x00dev, crypto->address, key->hw_key_idx);
 	rt2800_config_wcid_attr_bssidx(rt2x00dev, key->hw_key_idx,
 				       crypto->bssidx);
 	rt2800_config_wcid_attr_cipher(rt2x00dev, crypto, key);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 EXPORT_SYMBOL_GPL(rt2800_config_shared_key);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int rt2800_find_pairwise_keyslot(struct rt2x00_dev *rt2x00dev)
 {
@@ -1265,6 +1756,8 @@ static inline int rt2800_find_pairwise_keyslot(struct rt2x00_dev *rt2x00dev)
 	 * Search for the first free pairwise key entry and return the
 	 * corresponding index.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int rt2800_find_wcid(struct rt2x00_dev *rt2x00dev)
 {
 	struct mac_wcid_entry wcid_entry;
@@ -1274,7 +1767,10 @@ static inline int rt2800_find_wcid(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * Search for the first free WCID entry and return the corresponding
 	 * index.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * Make sure the WCID starts _after_ the last possible shared key
 	 * entry (>32).
@@ -1285,12 +1781,15 @@ static inline int rt2800_find_wcid(struct rt2x00_dev *rt2x00dev)
 	 */
 	for (idx = 33; idx <= 222; idx++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		offset = MAC_WCID_ATTR_ENTRY(idx);
 		rt2800_register_read(rt2x00dev, offset, &reg);
 		if (!reg)
 			return idx;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		offset = MAC_WCID_ENTRY(idx);
 		rt2800_register_multiread(rt2x00dev, offset, &wcid_entry,
 					  sizeof(wcid_entry));
@@ -1302,7 +1801,10 @@ static inline int rt2800_find_wcid(struct rt2x00_dev *rt2x00dev)
 	 * Use -1 to indicate that we don't have any more space in the WCID
 	 * table.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return -1;
 }
 
@@ -1313,6 +1815,7 @@ int rt2800_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 	struct hw_key_entry key_entry;
 	u32 offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int idx;
 
 	if (crypto->cmd == SET_KEY) {
@@ -1321,6 +1824,8 @@ int rt2800_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 			return -ENOSPC;
 		key->hw_key_idx = idx;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (crypto->cmd == SET_KEY) {
 		/*
@@ -1330,7 +1835,10 @@ int rt2800_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 		if (crypto->wcid < 0)
 			return -ENOSPC;
 		key->hw_key_idx = crypto->wcid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		memcpy(key_entry.key, crypto->key,
 		       sizeof(key_entry.key));
@@ -1348,17 +1856,24 @@ int rt2800_config_pairwise_key(struct rt2x00_dev *rt2x00dev,
 	 * Update WCID information
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2800_config_wcid_attr(rt2x00dev, crypto, key);
 =======
 	rt2800_config_wcid_attr_cipher(rt2x00dev, crypto, key);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rt2800_config_wcid_attr_cipher(rt2x00dev, crypto, key);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 EXPORT_SYMBOL_GPL(rt2800_config_pairwise_key);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int rt2800_sta_add(struct rt2x00_dev *rt2x00dev, struct ieee80211_vif *vif,
 		   struct ieee80211_sta *sta)
 {
@@ -1406,7 +1921,10 @@ int rt2800_sta_remove(struct rt2x00_dev *rt2x00dev, int wcid)
 }
 EXPORT_SYMBOL_GPL(rt2800_sta_remove);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void rt2800_config_filter(struct rt2x00_dev *rt2x00dev,
 			  const unsigned int filter_flags)
 {
@@ -1444,6 +1962,7 @@ void rt2800_config_filter(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field32(&reg, RX_FILTER_CFG_DROP_PSPOLL,
 			   !(filter_flags & FIF_PSPOLL));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2x00_set_field32(&reg, RX_FILTER_CFG_DROP_BA, 1);
 	rt2x00_set_field32(&reg, RX_FILTER_CFG_DROP_BAR, 0);
 =======
@@ -1452,6 +1971,11 @@ void rt2800_config_filter(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field32(&reg, RX_FILTER_CFG_DROP_BAR,
 			   !(filter_flags & FIF_CONTROL));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rt2x00_set_field32(&reg, RX_FILTER_CFG_DROP_BA, 0);
+	rt2x00_set_field32(&reg, RX_FILTER_CFG_DROP_BAR,
+			   !(filter_flags & FIF_CONTROL));
+>>>>>>> refs/remotes/origin/master
 	rt2x00_set_field32(&reg, RX_FILTER_CFG_DROP_CNTL,
 			   !(filter_flags & FIF_CONTROL));
 	rt2800_register_write(rt2x00dev, RX_FILTER_CFG, reg);
@@ -1596,10 +2120,14 @@ static void rt2800_config_ht_opmode(struct rt2x00_dev *rt2x00dev,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	};
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* check for STAs not supporting greenfield mode */
 	if (any_sta_nongf)
@@ -1678,7 +2206,10 @@ void rt2800_config_erp(struct rt2x00_dev *rt2x00dev, struct rt2x00lib_erp *erp,
 EXPORT_SYMBOL_GPL(rt2800_config_erp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void rt2800_config_3572bt_ant(struct rt2x00_dev *rt2x00dev)
 {
 	u32 reg;
@@ -1700,7 +2231,11 @@ static void rt2800_config_3572bt_ant(struct rt2x00_dev *rt2x00dev)
 	led_r_mode = rt2x00_get_field32(reg, LED_CFG_LED_POLAR) ? 0 : 3;
 	if (led_g_mode != rt2x00_get_field32(reg, LED_CFG_G_LED_MODE) ||
 	    led_r_mode != rt2x00_get_field32(reg, LED_CFG_R_LED_MODE)) {
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_FREQ, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_FREQ, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		led_ctrl = rt2x00_get_field16(eeprom, EEPROM_FREQ_LED_MODE);
 		if (led_ctrl == 0 || led_ctrl > 0x40) {
 			rt2x00_set_field32(&reg, LED_CFG_G_LED_MODE, led_g_mode);
@@ -1713,7 +2248,10 @@ static void rt2800_config_3572bt_ant(struct rt2x00_dev *rt2x00dev)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void rt2800_set_ant_diversity(struct rt2x00_dev *rt2x00dev,
 				     enum antenna ant)
 {
@@ -1729,10 +2267,17 @@ static void rt2800_set_ant_diversity(struct rt2x00_dev *rt2x00dev,
 		rt2800_mcu_request(rt2x00dev, MCU_ANT_SELECT, 0xff,
 				   eesk_pin, 0);
 
+<<<<<<< HEAD
 	rt2800_register_read(rt2x00dev, GPIO_CTRL_CFG, &reg);
 	rt2x00_set_field32(&reg, GPIO_CTRL_CFG_GPIOD_BIT3, 0);
 	rt2x00_set_field32(&reg, GPIO_CTRL_CFG_BIT3, gpio_bit3);
 	rt2800_register_write(rt2x00dev, GPIO_CTRL_CFG, reg);
+=======
+	rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
+	rt2x00_set_field32(&reg, GPIO_CTRL_DIR3, 0);
+	rt2x00_set_field32(&reg, GPIO_CTRL_VAL3, gpio_bit3);
+	rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
@@ -1745,12 +2290,19 @@ void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
 	rt2800_bbp_read(rt2x00dev, 3, &r3);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (rt2x00_rt(rt2x00dev, RT3572) &&
 	    test_bit(CAPABILITY_BT_COEXIST, &rt2x00dev->cap_flags))
 		rt2800_config_3572bt_ant(rt2x00dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rt2x00_rt(rt2x00dev, RT3572) &&
+	    rt2x00_has_cap_bt_coexist(rt2x00dev))
+		rt2800_config_3572bt_ant(rt2x00dev);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Configure the TX antenna.
 	 */
@@ -1759,6 +2311,7 @@ void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
 		rt2x00_set_field8(&r1, BBP1_TX_ANTENNA, 0);
 		break;
 	case 2:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		rt2x00_set_field8(&r1, BBP1_TX_ANTENNA, 2);
 =======
@@ -1771,6 +2324,16 @@ void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
 		break;
 	case 3:
 		rt2x00_set_field8(&r1, BBP1_TX_ANTENNA, 0);
+=======
+		if (rt2x00_rt(rt2x00dev, RT3572) &&
+		    rt2x00_has_cap_bt_coexist(rt2x00dev))
+			rt2x00_set_field8(&r1, BBP1_TX_ANTENNA, 1);
+		else
+			rt2x00_set_field8(&r1, BBP1_TX_ANTENNA, 2);
+		break;
+	case 3:
+		rt2x00_set_field8(&r1, BBP1_TX_ANTENNA, 2);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -1781,8 +2344,14 @@ void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
 	case 1:
 		if (rt2x00_rt(rt2x00dev, RT3070) ||
 		    rt2x00_rt(rt2x00dev, RT3090) ||
+<<<<<<< HEAD
 		    rt2x00_rt(rt2x00dev, RT3390)) {
 			rt2x00_eeprom_read(rt2x00dev,
+=======
+		    rt2x00_rt(rt2x00dev, RT3352) ||
+		    rt2x00_rt(rt2x00dev, RT3390)) {
+			rt2800_eeprom_read(rt2x00dev,
+>>>>>>> refs/remotes/origin/master
 					   EEPROM_NIC_CONF1, &eeprom);
 			if (rt2x00_get_field16(eeprom,
 						EEPROM_NIC_CONF1_ANT_DIVERSITY))
@@ -1793,10 +2362,15 @@ void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
 		break;
 	case 2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rt2x00_set_field8(&r3, BBP3_RX_ANTENNA, 1);
 =======
 		if (rt2x00_rt(rt2x00dev, RT3572) &&
 		    test_bit(CAPABILITY_BT_COEXIST, &rt2x00dev->cap_flags)) {
+=======
+		if (rt2x00_rt(rt2x00dev, RT3572) &&
+		    rt2x00_has_cap_bt_coexist(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 			rt2x00_set_field8(&r3, BBP3_RX_ADC, 1);
 			rt2x00_set_field8(&r3, BBP3_RX_ANTENNA,
 				rt2x00dev->curr_band == IEEE80211_BAND_5GHZ);
@@ -1804,7 +2378,10 @@ void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
 		} else {
 			rt2x00_set_field8(&r3, BBP3_RX_ANTENNA, 1);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 3:
 		rt2x00_set_field8(&r3, BBP3_RX_ANTENNA, 2);
@@ -1813,6 +2390,16 @@ void rt2800_config_ant(struct rt2x00_dev *rt2x00dev, struct antenna_setup *ant)
 
 	rt2800_bbp_write(rt2x00dev, 3, r3);
 	rt2800_bbp_write(rt2x00dev, 1, r1);
+<<<<<<< HEAD
+=======
+
+	if (rt2x00_rt(rt2x00dev, RT3593)) {
+		if (ant->rx_chain_num == 1)
+			rt2800_bbp_write(rt2x00dev, 86, 0x00);
+		else
+			rt2800_bbp_write(rt2x00dev, 86, 0x46);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(rt2800_config_ant);
 
@@ -1823,6 +2410,7 @@ static void rt2800_config_lna_gain(struct rt2x00_dev *rt2x00dev,
 	short lna_gain;
 
 	if (libconf->rf.channel <= 14) {
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_LNA, &eeprom);
 		lna_gain = rt2x00_get_field16(eeprom, EEPROM_LNA_BG);
 	} else if (libconf->rf.channel <= 64) {
@@ -1834,11 +2422,78 @@ static void rt2800_config_lna_gain(struct rt2x00_dev *rt2x00dev,
 	} else {
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_A2, &eeprom);
 		lna_gain = rt2x00_get_field16(eeprom, EEPROM_RSSI_A2_LNA_A2);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_LNA, &eeprom);
+		lna_gain = rt2x00_get_field16(eeprom, EEPROM_LNA_BG);
+	} else if (libconf->rf.channel <= 64) {
+		rt2800_eeprom_read(rt2x00dev, EEPROM_LNA, &eeprom);
+		lna_gain = rt2x00_get_field16(eeprom, EEPROM_LNA_A0);
+	} else if (libconf->rf.channel <= 128) {
+		if (rt2x00_rt(rt2x00dev, RT3593)) {
+			rt2800_eeprom_read(rt2x00dev, EEPROM_EXT_LNA2, &eeprom);
+			lna_gain = rt2x00_get_field16(eeprom,
+						      EEPROM_EXT_LNA2_A1);
+		} else {
+			rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_BG2, &eeprom);
+			lna_gain = rt2x00_get_field16(eeprom,
+						      EEPROM_RSSI_BG2_LNA_A1);
+		}
+	} else {
+		if (rt2x00_rt(rt2x00dev, RT3593)) {
+			rt2800_eeprom_read(rt2x00dev, EEPROM_EXT_LNA2, &eeprom);
+			lna_gain = rt2x00_get_field16(eeprom,
+						      EEPROM_EXT_LNA2_A2);
+		} else {
+			rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_A2, &eeprom);
+			lna_gain = rt2x00_get_field16(eeprom,
+						      EEPROM_RSSI_A2_LNA_A2);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rt2x00dev->lna_gain = lna_gain;
 }
 
+<<<<<<< HEAD
+=======
+#define FREQ_OFFSET_BOUND	0x5f
+
+static void rt2800_adjust_freq_offset(struct rt2x00_dev *rt2x00dev)
+{
+	u8 freq_offset, prev_freq_offset;
+	u8 rfcsr, prev_rfcsr;
+
+	freq_offset = rt2x00_get_field8(rt2x00dev->freq_offset, RFCSR17_CODE);
+	freq_offset = min_t(u8, freq_offset, FREQ_OFFSET_BOUND);
+
+	rt2800_rfcsr_read(rt2x00dev, 17, &rfcsr);
+	prev_rfcsr = rfcsr;
+
+	rt2x00_set_field8(&rfcsr, RFCSR17_CODE, freq_offset);
+	if (rfcsr == prev_rfcsr)
+		return;
+
+	if (rt2x00_is_usb(rt2x00dev)) {
+		rt2800_mcu_request(rt2x00dev, MCU_FREQ_OFFSET, 0xff,
+				   freq_offset, prev_rfcsr);
+		return;
+	}
+
+	prev_freq_offset = rt2x00_get_field8(prev_rfcsr, RFCSR17_CODE);
+	while (prev_freq_offset != freq_offset) {
+		if (prev_freq_offset < freq_offset)
+			prev_freq_offset++;
+		else
+			prev_freq_offset--;
+
+		rt2x00_set_field8(&rfcsr, RFCSR17_CODE, prev_freq_offset);
+		rt2800_rfcsr_write(rt2x00dev, 17, rfcsr);
+
+		usleep_range(1000, 1500);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static void rt2800_config_channel_rf2xxx(struct rt2x00_dev *rt2x00dev,
 					 struct ieee80211_conf *conf,
 					 struct rf_channel *rf,
@@ -1910,11 +2565,14 @@ static void rt2800_config_channel_rf3xxx(struct rt2x00_dev *rt2x00dev,
 					 struct channel_info *info)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 rfcsr;
 
 	rt2800_rfcsr_write(rt2x00dev, 2, rf->rf1);
 	rt2800_rfcsr_write(rt2x00dev, 3, rf->rf3);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
 	u8 rfcsr, calib_tx, calib_rx;
 
@@ -1923,7 +2581,10 @@ static void rt2800_config_channel_rf3xxx(struct rt2x00_dev *rt2x00dev,
 	rt2800_rfcsr_read(rt2x00dev, 3, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR3_K, rf->rf3);
 	rt2800_rfcsr_write(rt2x00dev, 3, rfcsr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rt2800_rfcsr_read(rt2x00dev, 6, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR6_R1, rf->rf2);
@@ -1937,6 +2598,7 @@ static void rt2800_config_channel_rf3xxx(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field8(&rfcsr, RFCSR13_TX_POWER, info->default_power2);
 	rt2800_rfcsr_write(rt2x00dev, 13, rfcsr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
@@ -1981,14 +2643,32 @@ static void rt2800_config_channel_rf3xxx(struct rt2x00_dev *rt2x00dev,
 	rt2800_rfcsr_write(rt2x00dev, 30, rfcsr);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD,
+			  rt2x00dev->default_ant.rx_chain_num <= 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD,
+			  rt2x00dev->default_ant.rx_chain_num <= 2);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD,
+			  rt2x00dev->default_ant.tx_chain_num <= 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD,
+			  rt2x00dev->default_ant.tx_chain_num <= 2);
+	rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+
+>>>>>>> refs/remotes/origin/master
 	rt2800_rfcsr_read(rt2x00dev, 23, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR23_FREQ_OFFSET, rt2x00dev->freq_offset);
 	rt2800_rfcsr_write(rt2x00dev, 23, rfcsr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rt2800_rfcsr_write(rt2x00dev, 24,
 			      rt2x00dev->calibration[conf_is_ht40(conf)]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rt2x00_rt(rt2x00dev, RT3390)) {
 		calib_tx = conf_is_ht40(conf) ? 0x68 : 0x4f;
 		calib_rx = conf_is_ht40(conf) ? 0x6f : 0x4f;
@@ -2009,15 +2689,21 @@ static void rt2800_config_channel_rf3xxx(struct rt2x00_dev *rt2x00dev,
 	rt2800_rfcsr_read(rt2x00dev, 31, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR31_RX_CALIB, calib_rx);
 	rt2800_rfcsr_write(rt2x00dev, 31, rfcsr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rt2800_rfcsr_read(rt2x00dev, 7, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR7_RF_TUNING, 1);
 	rt2800_rfcsr_write(rt2x00dev, 7, rfcsr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rt2800_rfcsr_read(rt2x00dev, 30, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR30_RF_CALIBRATION, 1);
@@ -2095,7 +2781,11 @@ static void rt2800_config_channel_rf3052(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 0);
 	rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 0);
 	rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 0);
+<<<<<<< HEAD
 	if (test_bit(CAPABILITY_BT_COEXIST, &rt2x00dev->cap_flags)) {
+=======
+	if (rt2x00_has_cap_bt_coexist(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 		if (rf->channel <= 14) {
 			rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 1);
 			rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 1);
@@ -2184,6 +2874,7 @@ static void rt2800_config_channel_rf3052(struct rt2x00_dev *rt2x00dev,
 		rt2800_rfcsr_write(rt2x00dev, 29, 0x9f);
 	}
 
+<<<<<<< HEAD
 	rt2800_register_read(rt2x00dev, GPIO_CTRL_CFG, &reg);
 	rt2x00_set_field32(&reg, GPIO_CTRL_CFG_GPIOD_BIT7, 0);
 	if (rf->channel <= 14)
@@ -2191,21 +2882,36 @@ static void rt2800_config_channel_rf3052(struct rt2x00_dev *rt2x00dev,
 	else
 		rt2x00_set_field32(&reg, GPIO_CTRL_CFG_BIT7, 0);
 	rt2800_register_write(rt2x00dev, GPIO_CTRL_CFG, reg);
+=======
+	rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
+	rt2x00_set_field32(&reg, GPIO_CTRL_DIR7, 0);
+	if (rf->channel <= 14)
+		rt2x00_set_field32(&reg, GPIO_CTRL_VAL7, 1);
+	else
+		rt2x00_set_field32(&reg, GPIO_CTRL_VAL7, 0);
+	rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
+>>>>>>> refs/remotes/origin/master
 
 	rt2800_rfcsr_read(rt2x00dev, 7, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR7_RF_TUNING, 1);
 	rt2800_rfcsr_write(rt2x00dev, 7, rfcsr);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define RT5390_POWER_BOUND     0x27
 #define RT5390_FREQ_OFFSET_BOUND       0x5f
 
 static void rt2800_config_channel_rf53xx(struct rt2x00_dev *rt2x00dev,
+=======
+
+static void rt2800_config_channel_rf3053(struct rt2x00_dev *rt2x00dev,
+>>>>>>> refs/remotes/origin/master
 					 struct ieee80211_conf *conf,
 					 struct rf_channel *rf,
 					 struct channel_info *info)
 {
+<<<<<<< HEAD
 	u8 rfcsr;
 
 	rt2800_rfcsr_write(rt2x00dev, 8, rf->rf1);
@@ -2235,11 +2941,439 @@ static void rt2800_config_channel_rf53xx(struct rt2x00_dev *rt2x00dev,
 	else
 		rt2x00_set_field8(&rfcsr, RFCSR17_CODE, rt2x00dev->freq_offset);
 	rt2800_rfcsr_write(rt2x00dev, 17, rfcsr);
+=======
+	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+	u8 txrx_agc_fc;
+	u8 txrx_h20m;
+	u8 rfcsr;
+	u8 bbp;
+	const bool txbf_enabled = false; /* TODO */
+
+	/* TODO: use TX{0,1,2}FinePowerControl values from EEPROM */
+	rt2800_bbp_read(rt2x00dev, 109, &bbp);
+	rt2x00_set_field8(&bbp, BBP109_TX0_POWER, 0);
+	rt2x00_set_field8(&bbp, BBP109_TX1_POWER, 0);
+	rt2800_bbp_write(rt2x00dev, 109, bbp);
+
+	rt2800_bbp_read(rt2x00dev, 110, &bbp);
+	rt2x00_set_field8(&bbp, BBP110_TX2_POWER, 0);
+	rt2800_bbp_write(rt2x00dev, 110, bbp);
+
+	if (rf->channel <= 14) {
+		/* Restore BBP 25 & 26 for 2.4 GHz */
+		rt2800_bbp_write(rt2x00dev, 25, drv_data->bbp25);
+		rt2800_bbp_write(rt2x00dev, 26, drv_data->bbp26);
+	} else {
+		/* Hard code BBP 25 & 26 for 5GHz */
+
+		/* Enable IQ Phase correction */
+		rt2800_bbp_write(rt2x00dev, 25, 0x09);
+		/* Setup IQ Phase correction value */
+		rt2800_bbp_write(rt2x00dev, 26, 0xff);
+	}
+
+	rt2800_rfcsr_write(rt2x00dev, 8, rf->rf1);
+	rt2800_rfcsr_write(rt2x00dev, 9, rf->rf3 & 0xf);
+
+	rt2800_rfcsr_read(rt2x00dev, 11, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR11_R, (rf->rf2 & 0x3));
+	rt2800_rfcsr_write(rt2x00dev, 11, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 11, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR11_PLL_IDOH, 1);
+	if (rf->channel <= 14)
+		rt2x00_set_field8(&rfcsr, RFCSR11_PLL_MOD, 1);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR11_PLL_MOD, 2);
+	rt2800_rfcsr_write(rt2x00dev, 11, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 53, &rfcsr);
+	if (rf->channel <= 14) {
+		rfcsr = 0;
+		rt2x00_set_field8(&rfcsr, RFCSR53_TX_POWER,
+				  info->default_power1 & 0x1f);
+	} else {
+		if (rt2x00_is_usb(rt2x00dev))
+			rfcsr = 0x40;
+
+		rt2x00_set_field8(&rfcsr, RFCSR53_TX_POWER,
+				  ((info->default_power1 & 0x18) << 1) |
+				  (info->default_power1 & 7));
+	}
+	rt2800_rfcsr_write(rt2x00dev, 53, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 55, &rfcsr);
+	if (rf->channel <= 14) {
+		rfcsr = 0;
+		rt2x00_set_field8(&rfcsr, RFCSR55_TX_POWER,
+				  info->default_power2 & 0x1f);
+	} else {
+		if (rt2x00_is_usb(rt2x00dev))
+			rfcsr = 0x40;
+
+		rt2x00_set_field8(&rfcsr, RFCSR55_TX_POWER,
+				  ((info->default_power2 & 0x18) << 1) |
+				  (info->default_power2 & 7));
+	}
+	rt2800_rfcsr_write(rt2x00dev, 55, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 54, &rfcsr);
+	if (rf->channel <= 14) {
+		rfcsr = 0;
+		rt2x00_set_field8(&rfcsr, RFCSR54_TX_POWER,
+				  info->default_power3 & 0x1f);
+	} else {
+		if (rt2x00_is_usb(rt2x00dev))
+			rfcsr = 0x40;
+
+		rt2x00_set_field8(&rfcsr, RFCSR54_TX_POWER,
+				  ((info->default_power3 & 0x18) << 1) |
+				  (info->default_power3 & 7));
+	}
+	rt2800_rfcsr_write(rt2x00dev, 54, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RF_BLOCK_EN, 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_PLL_PD, 1);
+
+	switch (rt2x00dev->default_ant.tx_chain_num) {
+	case 3:
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 1);
+		/* fallthrough */
+	case 2:
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 1);
+		/* fallthrough */
+	case 1:
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 1);
+		break;
+	}
+
+	switch (rt2x00dev->default_ant.rx_chain_num) {
+	case 3:
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 1);
+		/* fallthrough */
+	case 2:
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 1);
+		/* fallthrough */
+	case 1:
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 1);
+		break;
+	}
+	rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+
+	rt2800_adjust_freq_offset(rt2x00dev);
+
+	if (conf_is_ht40(conf)) {
+		txrx_agc_fc = rt2x00_get_field8(drv_data->calibration_bw40,
+						RFCSR24_TX_AGC_FC);
+		txrx_h20m = rt2x00_get_field8(drv_data->calibration_bw40,
+					      RFCSR24_TX_H20M);
+	} else {
+		txrx_agc_fc = rt2x00_get_field8(drv_data->calibration_bw20,
+						RFCSR24_TX_AGC_FC);
+		txrx_h20m = rt2x00_get_field8(drv_data->calibration_bw20,
+					      RFCSR24_TX_H20M);
+	}
+
+	/* NOTE: the reference driver does not writes the new value
+	 * back to RFCSR 32
+	 */
+	rt2800_rfcsr_read(rt2x00dev, 32, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR32_TX_AGC_FC, txrx_agc_fc);
+
+	if (rf->channel <= 14)
+		rfcsr = 0xa0;
+	else
+		rfcsr = 0x80;
+	rt2800_rfcsr_write(rt2x00dev, 31, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 30, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR30_TX_H20M, txrx_h20m);
+	rt2x00_set_field8(&rfcsr, RFCSR30_RX_H20M, txrx_h20m);
+	rt2800_rfcsr_write(rt2x00dev, 30, rfcsr);
+
+	/* Band selection */
+	rt2800_rfcsr_read(rt2x00dev, 36, &rfcsr);
+	if (rf->channel <= 14)
+		rt2x00_set_field8(&rfcsr, RFCSR36_RF_BS, 1);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR36_RF_BS, 0);
+	rt2800_rfcsr_write(rt2x00dev, 36, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 34, &rfcsr);
+	if (rf->channel <= 14)
+		rfcsr = 0x3c;
+	else
+		rfcsr = 0x20;
+	rt2800_rfcsr_write(rt2x00dev, 34, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 12, &rfcsr);
+	if (rf->channel <= 14)
+		rfcsr = 0x1a;
+	else
+		rfcsr = 0x12;
+	rt2800_rfcsr_write(rt2x00dev, 12, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 6, &rfcsr);
+	if (rf->channel >= 1 && rf->channel <= 14)
+		rt2x00_set_field8(&rfcsr, RFCSR6_VCO_IC, 1);
+	else if (rf->channel >= 36 && rf->channel <= 64)
+		rt2x00_set_field8(&rfcsr, RFCSR6_VCO_IC, 2);
+	else if (rf->channel >= 100 && rf->channel <= 128)
+		rt2x00_set_field8(&rfcsr, RFCSR6_VCO_IC, 2);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR6_VCO_IC, 1);
+	rt2800_rfcsr_write(rt2x00dev, 6, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 30, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR30_RX_VCM, 2);
+	rt2800_rfcsr_write(rt2x00dev, 30, rfcsr);
+
+	rt2800_rfcsr_write(rt2x00dev, 46, 0x60);
+
+	if (rf->channel <= 14) {
+		rt2800_rfcsr_write(rt2x00dev, 10, 0xd3);
+		rt2800_rfcsr_write(rt2x00dev, 13, 0x12);
+	} else {
+		rt2800_rfcsr_write(rt2x00dev, 10, 0xd8);
+		rt2800_rfcsr_write(rt2x00dev, 13, 0x23);
+	}
+
+	rt2800_rfcsr_read(rt2x00dev, 51, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR51_BITS01, 1);
+	rt2800_rfcsr_write(rt2x00dev, 51, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 51, &rfcsr);
+	if (rf->channel <= 14) {
+		rt2x00_set_field8(&rfcsr, RFCSR51_BITS24, 5);
+		rt2x00_set_field8(&rfcsr, RFCSR51_BITS57, 3);
+	} else {
+		rt2x00_set_field8(&rfcsr, RFCSR51_BITS24, 4);
+		rt2x00_set_field8(&rfcsr, RFCSR51_BITS57, 2);
+	}
+	rt2800_rfcsr_write(rt2x00dev, 51, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 49, &rfcsr);
+	if (rf->channel <= 14)
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX_LO1_IC, 3);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX_LO1_IC, 2);
+
+	if (txbf_enabled)
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX_DIV, 1);
+
+	rt2800_rfcsr_write(rt2x00dev, 49, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 50, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR50_TX_LO1_EN, 0);
+	rt2800_rfcsr_write(rt2x00dev, 50, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 57, &rfcsr);
+	if (rf->channel <= 14)
+		rt2x00_set_field8(&rfcsr, RFCSR57_DRV_CC, 0x1b);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR57_DRV_CC, 0x0f);
+	rt2800_rfcsr_write(rt2x00dev, 57, rfcsr);
+
+	if (rf->channel <= 14) {
+		rt2800_rfcsr_write(rt2x00dev, 44, 0x93);
+		rt2800_rfcsr_write(rt2x00dev, 52, 0x45);
+	} else {
+		rt2800_rfcsr_write(rt2x00dev, 44, 0x9b);
+		rt2800_rfcsr_write(rt2x00dev, 52, 0x05);
+	}
+
+	/* Initiate VCO calibration */
+	rt2800_rfcsr_read(rt2x00dev, 3, &rfcsr);
+	if (rf->channel <= 14) {
+		rt2x00_set_field8(&rfcsr, RFCSR3_VCOCAL_EN, 1);
+	} else {
+		rt2x00_set_field8(&rfcsr, RFCSR3_BIT1, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR3_BIT2, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR3_BIT3, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR3_BIT4, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR3_BIT5, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR3_VCOCAL_EN, 1);
+	}
+	rt2800_rfcsr_write(rt2x00dev, 3, rfcsr);
+
+	if (rf->channel >= 1 && rf->channel <= 14) {
+		rfcsr = 0x23;
+		if (txbf_enabled)
+			rt2x00_set_field8(&rfcsr, RFCSR39_RX_DIV, 1);
+		rt2800_rfcsr_write(rt2x00dev, 39, rfcsr);
+
+		rt2800_rfcsr_write(rt2x00dev, 45, 0xbb);
+	} else if (rf->channel >= 36 && rf->channel <= 64) {
+		rfcsr = 0x36;
+		if (txbf_enabled)
+			rt2x00_set_field8(&rfcsr, RFCSR39_RX_DIV, 1);
+		rt2800_rfcsr_write(rt2x00dev, 39, 0x36);
+
+		rt2800_rfcsr_write(rt2x00dev, 45, 0xeb);
+	} else if (rf->channel >= 100 && rf->channel <= 128) {
+		rfcsr = 0x32;
+		if (txbf_enabled)
+			rt2x00_set_field8(&rfcsr, RFCSR39_RX_DIV, 1);
+		rt2800_rfcsr_write(rt2x00dev, 39, rfcsr);
+
+		rt2800_rfcsr_write(rt2x00dev, 45, 0xb3);
+	} else {
+		rfcsr = 0x30;
+		if (txbf_enabled)
+			rt2x00_set_field8(&rfcsr, RFCSR39_RX_DIV, 1);
+		rt2800_rfcsr_write(rt2x00dev, 39, rfcsr);
+
+		rt2800_rfcsr_write(rt2x00dev, 45, 0x9b);
+	}
+}
+
+#define POWER_BOUND		0x27
+#define POWER_BOUND_5G		0x2b
+
+static void rt2800_config_channel_rf3290(struct rt2x00_dev *rt2x00dev,
+					 struct ieee80211_conf *conf,
+					 struct rf_channel *rf,
+					 struct channel_info *info)
+{
+	u8 rfcsr;
+
+	rt2800_rfcsr_write(rt2x00dev, 8, rf->rf1);
+	rt2800_rfcsr_write(rt2x00dev, 9, rf->rf3);
+	rt2800_rfcsr_read(rt2x00dev, 11, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR11_R, rf->rf2);
+	rt2800_rfcsr_write(rt2x00dev, 11, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 49, &rfcsr);
+	if (info->default_power1 > POWER_BOUND)
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX, POWER_BOUND);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX, info->default_power1);
+	rt2800_rfcsr_write(rt2x00dev, 49, rfcsr);
+
+	rt2800_adjust_freq_offset(rt2x00dev);
+
+	if (rf->channel <= 14) {
+		if (rf->channel == 6)
+			rt2800_bbp_write(rt2x00dev, 68, 0x0c);
+		else
+			rt2800_bbp_write(rt2x00dev, 68, 0x0b);
+
+		if (rf->channel >= 1 && rf->channel <= 6)
+			rt2800_bbp_write(rt2x00dev, 59, 0x0f);
+		else if (rf->channel >= 7 && rf->channel <= 11)
+			rt2800_bbp_write(rt2x00dev, 59, 0x0e);
+		else if (rf->channel >= 12 && rf->channel <= 14)
+			rt2800_bbp_write(rt2x00dev, 59, 0x0d);
+	}
+}
+
+static void rt2800_config_channel_rf3322(struct rt2x00_dev *rt2x00dev,
+					 struct ieee80211_conf *conf,
+					 struct rf_channel *rf,
+					 struct channel_info *info)
+{
+	u8 rfcsr;
+
+	rt2800_rfcsr_write(rt2x00dev, 8, rf->rf1);
+	rt2800_rfcsr_write(rt2x00dev, 9, rf->rf3);
+
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x42);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x1c);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x00);
+
+	if (info->default_power1 > POWER_BOUND)
+		rt2800_rfcsr_write(rt2x00dev, 47, POWER_BOUND);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 47, info->default_power1);
+
+	if (info->default_power2 > POWER_BOUND)
+		rt2800_rfcsr_write(rt2x00dev, 48, POWER_BOUND);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 48, info->default_power2);
+
+	rt2800_adjust_freq_offset(rt2x00dev);
+
+	rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 1);
+
+	if ( rt2x00dev->default_ant.tx_chain_num == 2 )
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 1);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 0);
+
+	if ( rt2x00dev->default_ant.rx_chain_num == 2 )
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 1);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 0);
+
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 0);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 0);
+
+	rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+
+	rt2800_rfcsr_write(rt2x00dev, 31, 80);
+}
+
+static void rt2800_config_channel_rf53xx(struct rt2x00_dev *rt2x00dev,
+					 struct ieee80211_conf *conf,
+					 struct rf_channel *rf,
+					 struct channel_info *info)
+{
+	u8 rfcsr;
+
+	rt2800_rfcsr_write(rt2x00dev, 8, rf->rf1);
+	rt2800_rfcsr_write(rt2x00dev, 9, rf->rf3);
+	rt2800_rfcsr_read(rt2x00dev, 11, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR11_R, rf->rf2);
+	rt2800_rfcsr_write(rt2x00dev, 11, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 49, &rfcsr);
+	if (info->default_power1 > POWER_BOUND)
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX, POWER_BOUND);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX, info->default_power1);
+	rt2800_rfcsr_write(rt2x00dev, 49, rfcsr);
+
+	if (rt2x00_rt(rt2x00dev, RT5392)) {
+		rt2800_rfcsr_read(rt2x00dev, 50, &rfcsr);
+		if (info->default_power2 > POWER_BOUND)
+			rt2x00_set_field8(&rfcsr, RFCSR50_TX, POWER_BOUND);
+		else
+			rt2x00_set_field8(&rfcsr, RFCSR50_TX,
+					  info->default_power2);
+		rt2800_rfcsr_write(rt2x00dev, 50, rfcsr);
+	}
+
+	rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
+	if (rt2x00_rt(rt2x00dev, RT5392)) {
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 1);
+	}
+	rt2x00_set_field8(&rfcsr, RFCSR1_RF_BLOCK_EN, 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_PLL_PD, 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 1);
+	rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+
+	rt2800_adjust_freq_offset(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (rf->channel <= 14) {
 		int idx = rf->channel-1;
 
+<<<<<<< HEAD
 		if (test_bit(CAPABILITY_BT_COEXIST, &rt2x00dev->cap_flags)) {
+=======
+		if (rt2x00_has_cap_bt_coexist(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 			if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390F)) {
 				/* r55/r59 value array of channel 1~14 */
 				static const char r55_bt_rev[] = {0x83, 0x83,
@@ -2274,11 +3408,16 @@ static void rt2800_config_channel_rf53xx(struct rt2x00_dev *rt2x00dev,
 				rt2800_rfcsr_write(rt2x00dev, 59,
 						   r59_nonbt_rev[idx]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			} else if (rt2x00_rt(rt2x00dev, RT5390)) {
 =======
 			} else if (rt2x00_rt(rt2x00dev, RT5390) ||
 					   rt2x00_rt(rt2x00dev, RT5392)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else if (rt2x00_rt(rt2x00dev, RT5390) ||
+				   rt2x00_rt(rt2x00dev, RT5392)) {
+>>>>>>> refs/remotes/origin/master
 				static const char r59_non_bt[] = {0x8f, 0x8f,
 					0x8f, 0x8f, 0x8f, 0x8f, 0x8f, 0x8d,
 					0x8a, 0x88, 0x88, 0x87, 0x87, 0x86};
@@ -2288,6 +3427,7 @@ static void rt2800_config_channel_rf53xx(struct rt2x00_dev *rt2x00dev,
 			}
 		}
 	}
+<<<<<<< HEAD
 
 	rt2800_rfcsr_read(rt2x00dev, 30, &rfcsr);
 	rt2x00_set_field8(&rfcsr, RFCSR30_TX_H20M, 0);
@@ -2333,6 +3473,424 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 	switch (rt2x00dev->chip.rf) {
 	case RF2020:
 	case RF3020:
+=======
+}
+
+static void rt2800_config_channel_rf55xx(struct rt2x00_dev *rt2x00dev,
+					 struct ieee80211_conf *conf,
+					 struct rf_channel *rf,
+					 struct channel_info *info)
+{
+	u8 rfcsr, ep_reg;
+	u32 reg;
+	int power_bound;
+
+	/* TODO */
+	const bool is_11b = false;
+	const bool is_type_ep = false;
+
+	rt2800_register_read(rt2x00dev, LDO_CFG0, &reg);
+	rt2x00_set_field32(&reg, LDO_CFG0_LDO_CORE_VLEVEL,
+			   (rf->channel > 14 || conf_is_ht40(conf)) ? 5 : 0);
+	rt2800_register_write(rt2x00dev, LDO_CFG0, reg);
+
+	/* Order of values on rf_channel entry: N, K, mod, R */
+	rt2800_rfcsr_write(rt2x00dev, 8, rf->rf1 & 0xff);
+
+	rt2800_rfcsr_read(rt2x00dev,  9, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR9_K, rf->rf2 & 0xf);
+	rt2x00_set_field8(&rfcsr, RFCSR9_N, (rf->rf1 & 0x100) >> 8);
+	rt2x00_set_field8(&rfcsr, RFCSR9_MOD, ((rf->rf3 - 8) & 0x4) >> 2);
+	rt2800_rfcsr_write(rt2x00dev, 9, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 11, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR11_R, rf->rf4 - 1);
+	rt2x00_set_field8(&rfcsr, RFCSR11_MOD, (rf->rf3 - 8) & 0x3);
+	rt2800_rfcsr_write(rt2x00dev, 11, rfcsr);
+
+	if (rf->channel <= 14) {
+		rt2800_rfcsr_write(rt2x00dev, 10, 0x90);
+		/* FIXME: RF11 owerwrite ? */
+		rt2800_rfcsr_write(rt2x00dev, 11, 0x4A);
+		rt2800_rfcsr_write(rt2x00dev, 12, 0x52);
+		rt2800_rfcsr_write(rt2x00dev, 13, 0x42);
+		rt2800_rfcsr_write(rt2x00dev, 22, 0x40);
+		rt2800_rfcsr_write(rt2x00dev, 24, 0x4A);
+		rt2800_rfcsr_write(rt2x00dev, 25, 0x80);
+		rt2800_rfcsr_write(rt2x00dev, 27, 0x42);
+		rt2800_rfcsr_write(rt2x00dev, 36, 0x80);
+		rt2800_rfcsr_write(rt2x00dev, 37, 0x08);
+		rt2800_rfcsr_write(rt2x00dev, 38, 0x89);
+		rt2800_rfcsr_write(rt2x00dev, 39, 0x1B);
+		rt2800_rfcsr_write(rt2x00dev, 40, 0x0D);
+		rt2800_rfcsr_write(rt2x00dev, 41, 0x9B);
+		rt2800_rfcsr_write(rt2x00dev, 42, 0xD5);
+		rt2800_rfcsr_write(rt2x00dev, 43, 0x72);
+		rt2800_rfcsr_write(rt2x00dev, 44, 0x0E);
+		rt2800_rfcsr_write(rt2x00dev, 45, 0xA2);
+		rt2800_rfcsr_write(rt2x00dev, 46, 0x6B);
+		rt2800_rfcsr_write(rt2x00dev, 48, 0x10);
+		rt2800_rfcsr_write(rt2x00dev, 51, 0x3E);
+		rt2800_rfcsr_write(rt2x00dev, 52, 0x48);
+		rt2800_rfcsr_write(rt2x00dev, 54, 0x38);
+		rt2800_rfcsr_write(rt2x00dev, 56, 0xA1);
+		rt2800_rfcsr_write(rt2x00dev, 57, 0x00);
+		rt2800_rfcsr_write(rt2x00dev, 58, 0x39);
+		rt2800_rfcsr_write(rt2x00dev, 60, 0x45);
+		rt2800_rfcsr_write(rt2x00dev, 61, 0x91);
+		rt2800_rfcsr_write(rt2x00dev, 62, 0x39);
+
+		/* TODO RF27 <- tssi */
+
+		rfcsr = rf->channel <= 10 ? 0x07 : 0x06;
+		rt2800_rfcsr_write(rt2x00dev, 23, rfcsr);
+		rt2800_rfcsr_write(rt2x00dev, 59, rfcsr);
+
+		if (is_11b) {
+			/* CCK */
+			rt2800_rfcsr_write(rt2x00dev, 31, 0xF8);
+			rt2800_rfcsr_write(rt2x00dev, 32, 0xC0);
+			if (is_type_ep)
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x06);
+			else
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x47);
+		} else {
+			/* OFDM */
+			if (is_type_ep)
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x03);
+			else
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x43);
+		}
+
+		power_bound = POWER_BOUND;
+		ep_reg = 0x2;
+	} else {
+		rt2800_rfcsr_write(rt2x00dev, 10, 0x97);
+		/* FIMXE: RF11 overwrite */
+		rt2800_rfcsr_write(rt2x00dev, 11, 0x40);
+		rt2800_rfcsr_write(rt2x00dev, 25, 0xBF);
+		rt2800_rfcsr_write(rt2x00dev, 27, 0x42);
+		rt2800_rfcsr_write(rt2x00dev, 36, 0x00);
+		rt2800_rfcsr_write(rt2x00dev, 37, 0x04);
+		rt2800_rfcsr_write(rt2x00dev, 38, 0x85);
+		rt2800_rfcsr_write(rt2x00dev, 40, 0x42);
+		rt2800_rfcsr_write(rt2x00dev, 41, 0xBB);
+		rt2800_rfcsr_write(rt2x00dev, 42, 0xD7);
+		rt2800_rfcsr_write(rt2x00dev, 45, 0x41);
+		rt2800_rfcsr_write(rt2x00dev, 48, 0x00);
+		rt2800_rfcsr_write(rt2x00dev, 57, 0x77);
+		rt2800_rfcsr_write(rt2x00dev, 60, 0x05);
+		rt2800_rfcsr_write(rt2x00dev, 61, 0x01);
+
+		/* TODO RF27 <- tssi */
+
+		if (rf->channel >= 36 && rf->channel <= 64) {
+
+			rt2800_rfcsr_write(rt2x00dev, 12, 0x2E);
+			rt2800_rfcsr_write(rt2x00dev, 13, 0x22);
+			rt2800_rfcsr_write(rt2x00dev, 22, 0x60);
+			rt2800_rfcsr_write(rt2x00dev, 23, 0x7F);
+			if (rf->channel <= 50)
+				rt2800_rfcsr_write(rt2x00dev, 24, 0x09);
+			else if (rf->channel >= 52)
+				rt2800_rfcsr_write(rt2x00dev, 24, 0x07);
+			rt2800_rfcsr_write(rt2x00dev, 39, 0x1C);
+			rt2800_rfcsr_write(rt2x00dev, 43, 0x5B);
+			rt2800_rfcsr_write(rt2x00dev, 44, 0X40);
+			rt2800_rfcsr_write(rt2x00dev, 46, 0X00);
+			rt2800_rfcsr_write(rt2x00dev, 51, 0xFE);
+			rt2800_rfcsr_write(rt2x00dev, 52, 0x0C);
+			rt2800_rfcsr_write(rt2x00dev, 54, 0xF8);
+			if (rf->channel <= 50) {
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x06),
+				rt2800_rfcsr_write(rt2x00dev, 56, 0xD3);
+			} else if (rf->channel >= 52) {
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x04);
+				rt2800_rfcsr_write(rt2x00dev, 56, 0xBB);
+			}
+
+			rt2800_rfcsr_write(rt2x00dev, 58, 0x15);
+			rt2800_rfcsr_write(rt2x00dev, 59, 0x7F);
+			rt2800_rfcsr_write(rt2x00dev, 62, 0x15);
+
+		} else if (rf->channel >= 100 && rf->channel <= 165) {
+
+			rt2800_rfcsr_write(rt2x00dev, 12, 0x0E);
+			rt2800_rfcsr_write(rt2x00dev, 13, 0x42);
+			rt2800_rfcsr_write(rt2x00dev, 22, 0x40);
+			if (rf->channel <= 153) {
+				rt2800_rfcsr_write(rt2x00dev, 23, 0x3C);
+				rt2800_rfcsr_write(rt2x00dev, 24, 0x06);
+			} else if (rf->channel >= 155) {
+				rt2800_rfcsr_write(rt2x00dev, 23, 0x38);
+				rt2800_rfcsr_write(rt2x00dev, 24, 0x05);
+			}
+			if (rf->channel <= 138) {
+				rt2800_rfcsr_write(rt2x00dev, 39, 0x1A);
+				rt2800_rfcsr_write(rt2x00dev, 43, 0x3B);
+				rt2800_rfcsr_write(rt2x00dev, 44, 0x20);
+				rt2800_rfcsr_write(rt2x00dev, 46, 0x18);
+			} else if (rf->channel >= 140) {
+				rt2800_rfcsr_write(rt2x00dev, 39, 0x18);
+				rt2800_rfcsr_write(rt2x00dev, 43, 0x1B);
+				rt2800_rfcsr_write(rt2x00dev, 44, 0x10);
+				rt2800_rfcsr_write(rt2x00dev, 46, 0X08);
+			}
+			if (rf->channel <= 124)
+				rt2800_rfcsr_write(rt2x00dev, 51, 0xFC);
+			else if (rf->channel >= 126)
+				rt2800_rfcsr_write(rt2x00dev, 51, 0xEC);
+			if (rf->channel <= 138)
+				rt2800_rfcsr_write(rt2x00dev, 52, 0x06);
+			else if (rf->channel >= 140)
+				rt2800_rfcsr_write(rt2x00dev, 52, 0x06);
+			rt2800_rfcsr_write(rt2x00dev, 54, 0xEB);
+			if (rf->channel <= 138)
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x01);
+			else if (rf->channel >= 140)
+				rt2800_rfcsr_write(rt2x00dev, 55, 0x00);
+			if (rf->channel <= 128)
+				rt2800_rfcsr_write(rt2x00dev, 56, 0xBB);
+			else if (rf->channel >= 130)
+				rt2800_rfcsr_write(rt2x00dev, 56, 0xAB);
+			if (rf->channel <= 116)
+				rt2800_rfcsr_write(rt2x00dev, 58, 0x1D);
+			else if (rf->channel >= 118)
+				rt2800_rfcsr_write(rt2x00dev, 58, 0x15);
+			if (rf->channel <= 138)
+				rt2800_rfcsr_write(rt2x00dev, 59, 0x3F);
+			else if (rf->channel >= 140)
+				rt2800_rfcsr_write(rt2x00dev, 59, 0x7C);
+			if (rf->channel <= 116)
+				rt2800_rfcsr_write(rt2x00dev, 62, 0x1D);
+			else if (rf->channel >= 118)
+				rt2800_rfcsr_write(rt2x00dev, 62, 0x15);
+		}
+
+		power_bound = POWER_BOUND_5G;
+		ep_reg = 0x3;
+	}
+
+	rt2800_rfcsr_read(rt2x00dev, 49, &rfcsr);
+	if (info->default_power1 > power_bound)
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX, power_bound);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR49_TX, info->default_power1);
+	if (is_type_ep)
+		rt2x00_set_field8(&rfcsr, RFCSR49_EP, ep_reg);
+	rt2800_rfcsr_write(rt2x00dev, 49, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 50, &rfcsr);
+	if (info->default_power2 > power_bound)
+		rt2x00_set_field8(&rfcsr, RFCSR50_TX, power_bound);
+	else
+		rt2x00_set_field8(&rfcsr, RFCSR50_TX, info->default_power2);
+	if (is_type_ep)
+		rt2x00_set_field8(&rfcsr, RFCSR50_EP, ep_reg);
+	rt2800_rfcsr_write(rt2x00dev, 50, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RF_BLOCK_EN, 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_PLL_PD, 1);
+
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD,
+			  rt2x00dev->default_ant.tx_chain_num >= 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD,
+			  rt2x00dev->default_ant.tx_chain_num == 2);
+	rt2x00_set_field8(&rfcsr, RFCSR1_TX2_PD, 0);
+
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD,
+			  rt2x00dev->default_ant.rx_chain_num >= 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD,
+			  rt2x00dev->default_ant.rx_chain_num == 2);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RX2_PD, 0);
+
+	rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0xe4);
+
+	if (conf_is_ht40(conf))
+		rt2800_rfcsr_write(rt2x00dev, 30, 0x16);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 30, 0x10);
+
+	if (!is_11b) {
+		rt2800_rfcsr_write(rt2x00dev, 31, 0x80);
+		rt2800_rfcsr_write(rt2x00dev, 32, 0x80);
+	}
+
+	/* TODO proper frequency adjustment */
+	rt2800_adjust_freq_offset(rt2x00dev);
+
+	/* TODO merge with others */
+	rt2800_rfcsr_read(rt2x00dev, 3, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR3_VCOCAL_EN, 1);
+	rt2800_rfcsr_write(rt2x00dev, 3, rfcsr);
+
+	/* BBP settings */
+	rt2800_bbp_write(rt2x00dev, 62, 0x37 - rt2x00dev->lna_gain);
+	rt2800_bbp_write(rt2x00dev, 63, 0x37 - rt2x00dev->lna_gain);
+	rt2800_bbp_write(rt2x00dev, 64, 0x37 - rt2x00dev->lna_gain);
+
+	rt2800_bbp_write(rt2x00dev, 79, (rf->channel <= 14) ? 0x1C : 0x18);
+	rt2800_bbp_write(rt2x00dev, 80, (rf->channel <= 14) ? 0x0E : 0x08);
+	rt2800_bbp_write(rt2x00dev, 81, (rf->channel <= 14) ? 0x3A : 0x38);
+	rt2800_bbp_write(rt2x00dev, 82, (rf->channel <= 14) ? 0x62 : 0x92);
+
+	/* GLRT band configuration */
+	rt2800_bbp_write(rt2x00dev, 195, 128);
+	rt2800_bbp_write(rt2x00dev, 196, (rf->channel <= 14) ? 0xE0 : 0xF0);
+	rt2800_bbp_write(rt2x00dev, 195, 129);
+	rt2800_bbp_write(rt2x00dev, 196, (rf->channel <= 14) ? 0x1F : 0x1E);
+	rt2800_bbp_write(rt2x00dev, 195, 130);
+	rt2800_bbp_write(rt2x00dev, 196, (rf->channel <= 14) ? 0x38 : 0x28);
+	rt2800_bbp_write(rt2x00dev, 195, 131);
+	rt2800_bbp_write(rt2x00dev, 196, (rf->channel <= 14) ? 0x32 : 0x20);
+	rt2800_bbp_write(rt2x00dev, 195, 133);
+	rt2800_bbp_write(rt2x00dev, 196, (rf->channel <= 14) ? 0x28 : 0x7F);
+	rt2800_bbp_write(rt2x00dev, 195, 124);
+	rt2800_bbp_write(rt2x00dev, 196, (rf->channel <= 14) ? 0x19 : 0x7F);
+}
+
+static void rt2800_bbp_write_with_rx_chain(struct rt2x00_dev *rt2x00dev,
+					   const unsigned int word,
+					   const u8 value)
+{
+	u8 chain, reg;
+
+	for (chain = 0; chain < rt2x00dev->default_ant.rx_chain_num; chain++) {
+		rt2800_bbp_read(rt2x00dev, 27, &reg);
+		rt2x00_set_field8(&reg,  BBP27_RX_CHAIN_SEL, chain);
+		rt2800_bbp_write(rt2x00dev, 27, reg);
+
+		rt2800_bbp_write(rt2x00dev, word, value);
+	}
+}
+
+static void rt2800_iq_calibrate(struct rt2x00_dev *rt2x00dev, int channel)
+{
+	u8 cal;
+
+	/* TX0 IQ Gain */
+	rt2800_bbp_write(rt2x00dev, 158, 0x2c);
+	if (channel <= 14)
+		cal = rt2x00_eeprom_byte(rt2x00dev, EEPROM_IQ_GAIN_CAL_TX0_2G);
+	else if (channel >= 36 && channel <= 64)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_GAIN_CAL_TX0_CH36_TO_CH64_5G);
+	else if (channel >= 100 && channel <= 138)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_GAIN_CAL_TX0_CH100_TO_CH138_5G);
+	else if (channel >= 140 && channel <= 165)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_GAIN_CAL_TX0_CH140_TO_CH165_5G);
+	else
+		cal = 0;
+	rt2800_bbp_write(rt2x00dev, 159, cal);
+
+	/* TX0 IQ Phase */
+	rt2800_bbp_write(rt2x00dev, 158, 0x2d);
+	if (channel <= 14)
+		cal = rt2x00_eeprom_byte(rt2x00dev, EEPROM_IQ_PHASE_CAL_TX0_2G);
+	else if (channel >= 36 && channel <= 64)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_PHASE_CAL_TX0_CH36_TO_CH64_5G);
+	else if (channel >= 100 && channel <= 138)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_PHASE_CAL_TX0_CH100_TO_CH138_5G);
+	else if (channel >= 140 && channel <= 165)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_PHASE_CAL_TX0_CH140_TO_CH165_5G);
+	else
+		cal = 0;
+	rt2800_bbp_write(rt2x00dev, 159, cal);
+
+	/* TX1 IQ Gain */
+	rt2800_bbp_write(rt2x00dev, 158, 0x4a);
+	if (channel <= 14)
+		cal = rt2x00_eeprom_byte(rt2x00dev, EEPROM_IQ_GAIN_CAL_TX1_2G);
+	else if (channel >= 36 && channel <= 64)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_GAIN_CAL_TX1_CH36_TO_CH64_5G);
+	else if (channel >= 100 && channel <= 138)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_GAIN_CAL_TX1_CH100_TO_CH138_5G);
+	else if (channel >= 140 && channel <= 165)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_GAIN_CAL_TX1_CH140_TO_CH165_5G);
+	else
+		cal = 0;
+	rt2800_bbp_write(rt2x00dev, 159, cal);
+
+	/* TX1 IQ Phase */
+	rt2800_bbp_write(rt2x00dev, 158, 0x4b);
+	if (channel <= 14)
+		cal = rt2x00_eeprom_byte(rt2x00dev, EEPROM_IQ_PHASE_CAL_TX1_2G);
+	else if (channel >= 36 && channel <= 64)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_PHASE_CAL_TX1_CH36_TO_CH64_5G);
+	else if (channel >= 100 && channel <= 138)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_PHASE_CAL_TX1_CH100_TO_CH138_5G);
+	else if (channel >= 140 && channel <= 165)
+		cal = rt2x00_eeprom_byte(rt2x00dev,
+					 EEPROM_IQ_PHASE_CAL_TX1_CH140_TO_CH165_5G);
+	else
+		cal = 0;
+	rt2800_bbp_write(rt2x00dev, 159, cal);
+
+	/* FIXME: possible RX0, RX1 callibration ? */
+
+	/* RF IQ compensation control */
+	rt2800_bbp_write(rt2x00dev, 158, 0x04);
+	cal = rt2x00_eeprom_byte(rt2x00dev, EEPROM_RF_IQ_COMPENSATION_CONTROL);
+	rt2800_bbp_write(rt2x00dev, 159, cal != 0xff ? cal : 0);
+
+	/* RF IQ imbalance compensation control */
+	rt2800_bbp_write(rt2x00dev, 158, 0x03);
+	cal = rt2x00_eeprom_byte(rt2x00dev,
+				 EEPROM_RF_IQ_IMBALANCE_COMPENSATION_CONTROL);
+	rt2800_bbp_write(rt2x00dev, 159, cal != 0xff ? cal : 0);
+}
+
+static char rt2800_txpower_to_dev(struct rt2x00_dev *rt2x00dev,
+				  unsigned int channel,
+				  char txpower)
+{
+	if (rt2x00_rt(rt2x00dev, RT3593))
+		txpower = rt2x00_get_field8(txpower, EEPROM_TXPOWER_ALC);
+
+	if (channel <= 14)
+		return clamp_t(char, txpower, MIN_G_TXPOWER, MAX_G_TXPOWER);
+
+	if (rt2x00_rt(rt2x00dev, RT3593))
+		return clamp_t(char, txpower, MIN_A_TXPOWER_3593,
+			       MAX_A_TXPOWER_3593);
+	else
+		return clamp_t(char, txpower, MIN_A_TXPOWER, MAX_A_TXPOWER);
+}
+
+static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
+				  struct ieee80211_conf *conf,
+				  struct rf_channel *rf,
+				  struct channel_info *info)
+{
+	u32 reg;
+	unsigned int tx_pin;
+	u8 bbp, rfcsr;
+
+	info->default_power1 = rt2800_txpower_to_dev(rt2x00dev, rf->channel,
+						     info->default_power1);
+	info->default_power2 = rt2800_txpower_to_dev(rt2x00dev, rf->channel,
+						     info->default_power2);
+	if (rt2x00dev->default_ant.tx_chain_num > 2)
+		info->default_power3 =
+			rt2800_txpower_to_dev(rt2x00dev, rf->channel,
+					      info->default_power3);
+
+	switch (rt2x00dev->chip.rf) {
+	case RF2020:
+	case RF3020:
+>>>>>>> refs/remotes/origin/master
 	case RF3021:
 	case RF3022:
 	case RF3320:
@@ -2341,6 +3899,7 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 	case RF3052:
 		rt2800_config_channel_rf3052(rt2x00dev, conf, rf, info);
 		break;
+<<<<<<< HEAD
 	case RF5370:
 	case RF5372:
 	case RF5390:
@@ -2350,10 +3909,54 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 		rt2800_config_channel_rf2xxx(rt2x00dev, conf, rf, info);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case RF3053:
+		rt2800_config_channel_rf3053(rt2x00dev, conf, rf, info);
+		break;
+	case RF3290:
+		rt2800_config_channel_rf3290(rt2x00dev, conf, rf, info);
+		break;
+	case RF3322:
+		rt2800_config_channel_rf3322(rt2x00dev, conf, rf, info);
+		break;
+	case RF3070:
+	case RF5360:
+	case RF5370:
+	case RF5372:
+	case RF5390:
+	case RF5392:
+		rt2800_config_channel_rf53xx(rt2x00dev, conf, rf, info);
+		break;
+	case RF5592:
+		rt2800_config_channel_rf55xx(rt2x00dev, conf, rf, info);
+		break;
+	default:
+		rt2800_config_channel_rf2xxx(rt2x00dev, conf, rf, info);
+	}
+
+	if (rt2x00_rf(rt2x00dev, RF3070) ||
+	    rt2x00_rf(rt2x00dev, RF3290) ||
+	    rt2x00_rf(rt2x00dev, RF3322) ||
+	    rt2x00_rf(rt2x00dev, RF5360) ||
+	    rt2x00_rf(rt2x00dev, RF5370) ||
+	    rt2x00_rf(rt2x00dev, RF5372) ||
+	    rt2x00_rf(rt2x00dev, RF5390) ||
+	    rt2x00_rf(rt2x00dev, RF5392)) {
+		rt2800_rfcsr_read(rt2x00dev, 30, &rfcsr);
+		rt2x00_set_field8(&rfcsr, RFCSR30_TX_H20M, 0);
+		rt2x00_set_field8(&rfcsr, RFCSR30_RX_H20M, 0);
+		rt2800_rfcsr_write(rt2x00dev, 30, rfcsr);
+
+		rt2800_rfcsr_read(rt2x00dev, 3, &rfcsr);
+		rt2x00_set_field8(&rfcsr, RFCSR3_VCOCAL_EN, 1);
+		rt2800_rfcsr_write(rt2x00dev, 3, rfcsr);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Change BBP settings
 	 */
+<<<<<<< HEAD
 	rt2800_bbp_write(rt2x00dev, 62, 0x37 - rt2x00dev->lna_gain);
 	rt2800_bbp_write(rt2x00dev, 63, 0x37 - rt2x00dev->lna_gain);
 	rt2800_bbp_write(rt2x00dev, 64, 0x37 - rt2x00dev->lna_gain);
@@ -2386,6 +3989,66 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		if (test_bit(CAPABILITY_EXTERNAL_LNA_A, &rt2x00dev->cap_flags))
+=======
+	if (rt2x00_rt(rt2x00dev, RT3352)) {
+		rt2800_bbp_write(rt2x00dev, 27, 0x0);
+		rt2800_bbp_write(rt2x00dev, 66, 0x26 + rt2x00dev->lna_gain);
+		rt2800_bbp_write(rt2x00dev, 27, 0x20);
+		rt2800_bbp_write(rt2x00dev, 66, 0x26 + rt2x00dev->lna_gain);
+	} else if (rt2x00_rt(rt2x00dev, RT3593)) {
+		if (rf->channel > 14) {
+			/* Disable CCK Packet detection on 5GHz */
+			rt2800_bbp_write(rt2x00dev, 70, 0x00);
+		} else {
+			rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+		}
+
+		if (conf_is_ht40(conf))
+			rt2800_bbp_write(rt2x00dev, 105, 0x04);
+		else
+			rt2800_bbp_write(rt2x00dev, 105, 0x34);
+
+		rt2800_bbp_write(rt2x00dev, 62, 0x37 - rt2x00dev->lna_gain);
+		rt2800_bbp_write(rt2x00dev, 63, 0x37 - rt2x00dev->lna_gain);
+		rt2800_bbp_write(rt2x00dev, 64, 0x37 - rt2x00dev->lna_gain);
+		rt2800_bbp_write(rt2x00dev, 77, 0x98);
+	} else {
+		rt2800_bbp_write(rt2x00dev, 62, 0x37 - rt2x00dev->lna_gain);
+		rt2800_bbp_write(rt2x00dev, 63, 0x37 - rt2x00dev->lna_gain);
+		rt2800_bbp_write(rt2x00dev, 64, 0x37 - rt2x00dev->lna_gain);
+		rt2800_bbp_write(rt2x00dev, 86, 0);
+	}
+
+	if (rf->channel <= 14) {
+		if (!rt2x00_rt(rt2x00dev, RT5390) &&
+		    !rt2x00_rt(rt2x00dev, RT5392)) {
+			if (rt2x00_has_cap_external_lna_bg(rt2x00dev)) {
+				rt2800_bbp_write(rt2x00dev, 82, 0x62);
+				rt2800_bbp_write(rt2x00dev, 75, 0x46);
+			} else {
+				if (rt2x00_rt(rt2x00dev, RT3593))
+					rt2800_bbp_write(rt2x00dev, 82, 0x62);
+				else
+					rt2800_bbp_write(rt2x00dev, 82, 0x84);
+				rt2800_bbp_write(rt2x00dev, 75, 0x50);
+			}
+			if (rt2x00_rt(rt2x00dev, RT3593))
+				rt2800_bbp_write(rt2x00dev, 83, 0x8a);
+		}
+
+	} else {
+		if (rt2x00_rt(rt2x00dev, RT3572))
+			rt2800_bbp_write(rt2x00dev, 82, 0x94);
+		else if (rt2x00_rt(rt2x00dev, RT3593))
+			rt2800_bbp_write(rt2x00dev, 82, 0x82);
+		else
+			rt2800_bbp_write(rt2x00dev, 82, 0xf2);
+
+		if (rt2x00_rt(rt2x00dev, RT3593))
+			rt2800_bbp_write(rt2x00dev, 83, 0x9a);
+
+		if (rt2x00_has_cap_external_lna_a(rt2x00dev))
+>>>>>>> refs/remotes/origin/master
 			rt2800_bbp_write(rt2x00dev, 75, 0x46);
 		else
 			rt2800_bbp_write(rt2x00dev, 75, 0x50);
@@ -2397,6 +4060,7 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 	rt2x00_set_field32(&reg, TX_BAND_CFG_BG, rf->channel <= 14);
 	rt2800_register_write(rt2x00dev, TX_BAND_CFG, reg);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (rt2x00_rt(rt2x00dev, RT3572))
@@ -2411,10 +4075,28 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A1_EN, 1);
 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G1_EN, 1);
 =======
+=======
+	if (rt2x00_rt(rt2x00dev, RT3572))
+		rt2800_rfcsr_write(rt2x00dev, 8, 0);
+
+	tx_pin = 0;
+
+	switch (rt2x00dev->default_ant.tx_chain_num) {
+	case 3:
+		/* Turn on tertiary PAs */
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A2_EN,
+				   rf->channel > 14);
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G2_EN,
+				   rf->channel <= 14);
+		/* fall-through */
+	case 2:
+		/* Turn on secondary PAs */
+>>>>>>> refs/remotes/origin/master
 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A1_EN,
 				   rf->channel > 14);
 		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G1_EN,
 				   rf->channel <= 14);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
@@ -2447,6 +4129,110 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 		rt2800_rfcsr_write(rt2x00dev, 8, 0x80);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* fall-through */
+	case 1:
+		/* Turn on primary PAs */
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_A0_EN,
+				   rf->channel > 14);
+		if (rt2x00_has_cap_bt_coexist(rt2x00dev))
+			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G0_EN, 1);
+		else
+			rt2x00_set_field32(&tx_pin, TX_PIN_CFG_PA_PE_G0_EN,
+					   rf->channel <= 14);
+		break;
+	}
+
+	switch (rt2x00dev->default_ant.rx_chain_num) {
+	case 3:
+		/* Turn on tertiary LNAs */
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_A2_EN, 1);
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_G2_EN, 1);
+		/* fall-through */
+	case 2:
+		/* Turn on secondary LNAs */
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_A1_EN, 1);
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_G1_EN, 1);
+		/* fall-through */
+	case 1:
+		/* Turn on primary LNAs */
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_A0_EN, 1);
+		rt2x00_set_field32(&tx_pin, TX_PIN_CFG_LNA_PE_G0_EN, 1);
+		break;
+	}
+
+	rt2x00_set_field32(&tx_pin, TX_PIN_CFG_RFTR_EN, 1);
+	rt2x00_set_field32(&tx_pin, TX_PIN_CFG_TRSW_EN, 1);
+
+	rt2800_register_write(rt2x00dev, TX_PIN_CFG, tx_pin);
+
+	if (rt2x00_rt(rt2x00dev, RT3572)) {
+		rt2800_rfcsr_write(rt2x00dev, 8, 0x80);
+
+		/* AGC init */
+		if (rf->channel <= 14)
+			reg = 0x1c + (2 * rt2x00dev->lna_gain);
+		else
+			reg = 0x22 + ((rt2x00dev->lna_gain * 5) / 3);
+
+		rt2800_bbp_write_with_rx_chain(rt2x00dev, 66, reg);
+	}
+
+	if (rt2x00_rt(rt2x00dev, RT3593)) {
+		rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
+
+		/* Band selection */
+		if (rt2x00_is_usb(rt2x00dev) ||
+		    rt2x00_is_pcie(rt2x00dev)) {
+			/* GPIO #8 controls all paths */
+			rt2x00_set_field32(&reg, GPIO_CTRL_DIR8, 0);
+			if (rf->channel <= 14)
+				rt2x00_set_field32(&reg, GPIO_CTRL_VAL8, 1);
+			else
+				rt2x00_set_field32(&reg, GPIO_CTRL_VAL8, 0);
+		}
+
+		/* LNA PE control. */
+		if (rt2x00_is_usb(rt2x00dev)) {
+			/* GPIO #4 controls PE0 and PE1,
+			 * GPIO #7 controls PE2
+			 */
+			rt2x00_set_field32(&reg, GPIO_CTRL_DIR4, 0);
+			rt2x00_set_field32(&reg, GPIO_CTRL_DIR7, 0);
+
+			rt2x00_set_field32(&reg, GPIO_CTRL_VAL4, 1);
+			rt2x00_set_field32(&reg, GPIO_CTRL_VAL7, 1);
+		} else if (rt2x00_is_pcie(rt2x00dev)) {
+			/* GPIO #4 controls PE0, PE1 and PE2 */
+			rt2x00_set_field32(&reg, GPIO_CTRL_DIR4, 0);
+			rt2x00_set_field32(&reg, GPIO_CTRL_VAL4, 1);
+		}
+
+		rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
+
+		/* AGC init */
+		if (rf->channel <= 14)
+			reg = 0x1c + 2 * rt2x00dev->lna_gain;
+		else
+			reg = 0x22 + ((rt2x00dev->lna_gain * 5) / 3);
+
+		rt2800_bbp_write_with_rx_chain(rt2x00dev, 66, reg);
+
+		usleep_range(1000, 1500);
+	}
+
+	if (rt2x00_rt(rt2x00dev, RT5592)) {
+		rt2800_bbp_write(rt2x00dev, 195, 141);
+		rt2800_bbp_write(rt2x00dev, 196, conf_is_ht40(conf) ? 0x10 : 0x1a);
+
+		/* AGC init */
+		reg = (rf->channel <= 14 ? 0x1c : 0x24) + 2 * rt2x00dev->lna_gain;
+		rt2800_bbp_write_with_rx_chain(rt2x00dev, 66, reg);
+
+		rt2800_iq_calibrate(rt2x00dev, rf->channel);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	rt2800_bbp_read(rt2x00dev, 4, &bbp);
 	rt2x00_set_field8(&bbp, BBP4_BANDWIDTH, 2 * conf_is_ht40(conf));
 	rt2800_bbp_write(rt2x00dev, 4, bbp);
@@ -2475,6 +4261,18 @@ static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
 	rt2800_register_read(rt2x00dev, CH_IDLE_STA, &reg);
 	rt2800_register_read(rt2x00dev, CH_BUSY_STA, &reg);
 	rt2800_register_read(rt2x00dev, CH_BUSY_STA_SEC, &reg);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Clear update flag
+	 */
+	if (rt2x00_rt(rt2x00dev, RT3352)) {
+		rt2800_bbp_read(rt2x00dev, 49, &bbp);
+		rt2x00_set_field8(&bbp, BBP49_UPDATE_FLAG, 0);
+		rt2800_bbp_write(rt2x00dev, 49, bbp);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int rt2800_get_gain_calibration_delta(struct rt2x00_dev *rt2x00dev)
@@ -2488,7 +4286,11 @@ static int rt2800_get_gain_calibration_delta(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * First check if temperature compensation is supported.
 	 */
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+>>>>>>> refs/remotes/origin/master
 	if (!rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_EXTERNAL_TX_ALC))
 		return 0;
 
@@ -2501,62 +4303,102 @@ static int rt2800_get_gain_calibration_delta(struct rt2x00_dev *rt2x00dev)
 	 * Example TSSI bounds  0xF0 0xD0 0xB5 0xA0 0x88 0x45 0x25 0x15 0x00
 	 */
 	if (rt2x00dev->curr_band == IEEE80211_BAND_2GHZ) {
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG1, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG1, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[0] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG1_MINUS4);
 		tssi_bounds[1] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG1_MINUS3);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG2, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG2, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[2] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG2_MINUS2);
 		tssi_bounds[3] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG2_MINUS1);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG3, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG3, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[4] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG3_REF);
 		tssi_bounds[5] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG3_PLUS1);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG4, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG4, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[6] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG4_PLUS2);
 		tssi_bounds[7] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG4_PLUS3);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG5, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_BG5, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[8] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_BG5_PLUS4);
 
 		step = rt2x00_get_field16(eeprom,
 					  EEPROM_TSSI_BOUND_BG5_AGC_STEP);
 	} else {
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A1, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A1, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[0] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A1_MINUS4);
 		tssi_bounds[1] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A1_MINUS3);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A2, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A2, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[2] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A2_MINUS2);
 		tssi_bounds[3] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A2_MINUS1);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A3, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A3, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[4] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A3_REF);
 		tssi_bounds[5] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A3_PLUS1);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A4, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A4, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[6] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A4_PLUS2);
 		tssi_bounds[7] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A4_PLUS3);
 
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A5, &eeprom);
+=======
+		rt2800_eeprom_read(rt2x00dev, EEPROM_TSSI_BOUND_A5, &eeprom);
+>>>>>>> refs/remotes/origin/master
 		tssi_bounds[8] = rt2x00_get_field16(eeprom,
 					EEPROM_TSSI_BOUND_A5_PLUS4);
 
@@ -2602,7 +4444,11 @@ static int rt2800_get_txpower_bw_comp(struct rt2x00_dev *rt2x00dev,
 	u8 comp_type;
 	int comp_value = 0;
 
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_TXPOWER_DELTA, &eeprom);
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_TXPOWER_DELTA, &eeprom);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * HT40 compensation not required.
@@ -2638,21 +4484,55 @@ static int rt2800_get_txpower_bw_comp(struct rt2x00_dev *rt2x00dev,
 	return comp_value;
 }
 
+<<<<<<< HEAD
+=======
+static int rt2800_get_txpower_reg_delta(struct rt2x00_dev *rt2x00dev,
+					int power_level, int max_power)
+{
+	int delta;
+
+	if (rt2x00_has_cap_power_limit(rt2x00dev))
+		return 0;
+
+	/*
+	 * XXX: We don't know the maximum transmit power of our hardware since
+	 * the EEPROM doesn't expose it. We only know that we are calibrated
+	 * to 100% tx power.
+	 *
+	 * Hence, we assume the regulatory limit that cfg80211 calulated for
+	 * the current channel is our maximum and if we are requested to lower
+	 * the value we just reduce our tx power accordingly.
+	 */
+	delta = power_level - max_power;
+	return min(delta, 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 static u8 rt2800_compensate_txpower(struct rt2x00_dev *rt2x00dev, int is_rate_b,
 				   enum ieee80211_band band, int power_level,
 				   u8 txpower, int delta)
 {
+<<<<<<< HEAD
 	u32 reg;
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 eeprom;
 	u8 criterion;
 	u8 eirp_txpower;
 	u8 eirp_txpower_criterion;
 	u8 reg_limit;
 
+<<<<<<< HEAD
 	if (!((band == IEEE80211_BAND_5GHZ) && is_rate_b))
 		return txpower;
 
 	if (test_bit(CAPABILITY_POWER_LIMIT, &rt2x00dev->cap_flags)) {
+=======
+	if (rt2x00_rt(rt2x00dev, RT3593))
+		return min_t(u8, txpower, 0xc);
+
+	if (rt2x00_has_cap_power_limit(rt2x00dev)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Check if eirp txpower exceed txpower_limit.
 		 * We use OFDM 6M as criterion and its eirp txpower
@@ -2660,11 +4540,21 @@ static u8 rt2800_compensate_txpower(struct rt2x00_dev *rt2x00dev, int is_rate_b,
 		 * .11b data rate need add additional 4dbm
 		 * when calculating eirp txpower.
 		 */
+<<<<<<< HEAD
 		rt2800_register_read(rt2x00dev, TX_PWR_CFG_0, &reg);
 		criterion = rt2x00_get_field32(reg, TX_PWR_CFG_0_6MBS);
 
 		rt2x00_eeprom_read(rt2x00dev,
 				   EEPROM_EIRP_MAX_TX_POWER, &eeprom);
+=======
+		rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+					      1, &eeprom);
+		criterion = rt2x00_get_field16(eeprom,
+					       EEPROM_TXPOWER_BYRATE_RATE0);
+
+		rt2800_eeprom_read(rt2x00dev, EEPROM_EIRP_MAX_TX_POWER,
+				   &eeprom);
+>>>>>>> refs/remotes/origin/master
 
 		if (band == IEEE80211_BAND_2GHZ)
 			eirp_txpower_criterion = rt2x00_get_field16(eeprom,
@@ -2681,6 +4571,7 @@ static u8 rt2800_compensate_txpower(struct rt2x00_dev *rt2x00dev, int is_rate_b,
 	} else
 		reg_limit = 0;
 
+<<<<<<< HEAD
 	return txpower + delta - reg_limit;
 }
 
@@ -2698,20 +4589,499 @@ static void rt2800_config_txpower(struct rt2x00_dev *rt2x00dev,
 
 	/*
 	 * Calculate HT40 compensation delta
+=======
+	txpower = max(0, txpower + delta - reg_limit);
+	return min_t(u8, txpower, 0xc);
+}
+
+
+enum {
+	TX_PWR_CFG_0_IDX,
+	TX_PWR_CFG_1_IDX,
+	TX_PWR_CFG_2_IDX,
+	TX_PWR_CFG_3_IDX,
+	TX_PWR_CFG_4_IDX,
+	TX_PWR_CFG_5_IDX,
+	TX_PWR_CFG_6_IDX,
+	TX_PWR_CFG_7_IDX,
+	TX_PWR_CFG_8_IDX,
+	TX_PWR_CFG_9_IDX,
+	TX_PWR_CFG_0_EXT_IDX,
+	TX_PWR_CFG_1_EXT_IDX,
+	TX_PWR_CFG_2_EXT_IDX,
+	TX_PWR_CFG_3_EXT_IDX,
+	TX_PWR_CFG_4_EXT_IDX,
+	TX_PWR_CFG_IDX_COUNT,
+};
+
+static void rt2800_config_txpower_rt3593(struct rt2x00_dev *rt2x00dev,
+					 struct ieee80211_channel *chan,
+					 int power_level)
+{
+	u8 txpower;
+	u16 eeprom;
+	u32 regs[TX_PWR_CFG_IDX_COUNT];
+	unsigned int offset;
+	enum ieee80211_band band = chan->band;
+	int delta;
+	int i;
+
+	memset(regs, '\0', sizeof(regs));
+
+	/* TODO: adapt TX power reduction from the rt28xx code */
+
+	/* calculate temperature compensation delta */
+	delta = rt2800_get_gain_calibration_delta(rt2x00dev);
+
+	if (band == IEEE80211_BAND_5GHZ)
+		offset = 16;
+	else
+		offset = 0;
+
+	if (test_bit(CONFIG_CHANNEL_HT40, &rt2x00dev->flags))
+		offset += 8;
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset, &eeprom);
+
+	/* CCK 1MBS,2MBS */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 1, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_CCK1_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_CCK1_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_EXT_IDX],
+			   TX_PWR_CFG_0_EXT_CCK1_CH2, txpower);
+
+	/* CCK 5.5MBS,11MBS */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE1);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 1, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_CCK5_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_CCK5_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_EXT_IDX],
+			   TX_PWR_CFG_0_EXT_CCK5_CH2, txpower);
+
+	/* OFDM 6MBS,9MBS */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE2);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_OFDM6_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_OFDM6_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_EXT_IDX],
+			   TX_PWR_CFG_0_EXT_OFDM6_CH2, txpower);
+
+	/* OFDM 12MBS,18MBS */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE3);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_OFDM12_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_IDX],
+			   TX_PWR_CFG_0_OFDM12_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_0_EXT_IDX],
+			   TX_PWR_CFG_0_EXT_OFDM12_CH2, txpower);
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset + 1, &eeprom);
+
+	/* OFDM 24MBS,36MBS */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_OFDM24_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_OFDM24_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_EXT_IDX],
+			   TX_PWR_CFG_1_EXT_OFDM24_CH2, txpower);
+
+	/* OFDM 48MBS */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE1);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_OFDM48_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_OFDM48_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_EXT_IDX],
+			   TX_PWR_CFG_1_EXT_OFDM48_CH2, txpower);
+
+	/* OFDM 54MBS */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE2);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_7_IDX],
+			   TX_PWR_CFG_7_OFDM54_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_7_IDX],
+			   TX_PWR_CFG_7_OFDM54_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_7_IDX],
+			   TX_PWR_CFG_7_OFDM54_CH2, txpower);
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset + 2, &eeprom);
+
+	/* MCS 0,1 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_MCS0_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_MCS0_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_EXT_IDX],
+			   TX_PWR_CFG_1_EXT_MCS0_CH2, txpower);
+
+	/* MCS 2,3 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE1);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_MCS2_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_IDX],
+			   TX_PWR_CFG_1_MCS2_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_1_EXT_IDX],
+			   TX_PWR_CFG_1_EXT_MCS2_CH2, txpower);
+
+	/* MCS 4,5 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE2);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS4_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS4_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_EXT_IDX],
+			   TX_PWR_CFG_2_EXT_MCS4_CH2, txpower);
+
+	/* MCS 6 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE3);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS6_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS6_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_EXT_IDX],
+			   TX_PWR_CFG_2_EXT_MCS6_CH2, txpower);
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset + 3, &eeprom);
+
+	/* MCS 7 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_7_IDX],
+			   TX_PWR_CFG_7_MCS7_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_7_IDX],
+			   TX_PWR_CFG_7_MCS7_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_7_IDX],
+			   TX_PWR_CFG_7_MCS7_CH2, txpower);
+
+	/* MCS 8,9 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE1);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS8_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS8_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_EXT_IDX],
+			   TX_PWR_CFG_2_EXT_MCS8_CH2, txpower);
+
+	/* MCS 10,11 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE2);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS10_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_IDX],
+			   TX_PWR_CFG_2_MCS10_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_2_EXT_IDX],
+			   TX_PWR_CFG_2_EXT_MCS10_CH2, txpower);
+
+	/* MCS 12,13 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE3);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_MCS12_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_MCS12_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_EXT_IDX],
+			   TX_PWR_CFG_3_EXT_MCS12_CH2, txpower);
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset + 4, &eeprom);
+
+	/* MCS 14 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_MCS14_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_MCS14_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_EXT_IDX],
+			   TX_PWR_CFG_3_EXT_MCS14_CH2, txpower);
+
+	/* MCS 15 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE1);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_8_IDX],
+			   TX_PWR_CFG_8_MCS15_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_8_IDX],
+			   TX_PWR_CFG_8_MCS15_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_8_IDX],
+			   TX_PWR_CFG_8_MCS15_CH2, txpower);
+
+	/* MCS 16,17 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE2);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_5_IDX],
+			   TX_PWR_CFG_5_MCS16_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_5_IDX],
+			   TX_PWR_CFG_5_MCS16_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_5_IDX],
+			   TX_PWR_CFG_5_MCS16_CH2, txpower);
+
+	/* MCS 18,19 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE3);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_5_IDX],
+			   TX_PWR_CFG_5_MCS18_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_5_IDX],
+			   TX_PWR_CFG_5_MCS18_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_5_IDX],
+			   TX_PWR_CFG_5_MCS18_CH2, txpower);
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset + 5, &eeprom);
+
+	/* MCS 20,21 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_6_IDX],
+			   TX_PWR_CFG_6_MCS20_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_6_IDX],
+			   TX_PWR_CFG_6_MCS20_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_6_IDX],
+			   TX_PWR_CFG_6_MCS20_CH2, txpower);
+
+	/* MCS 22 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE1);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_6_IDX],
+			   TX_PWR_CFG_6_MCS22_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_6_IDX],
+			   TX_PWR_CFG_6_MCS22_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_6_IDX],
+			   TX_PWR_CFG_6_MCS22_CH2, txpower);
+
+	/* MCS 23 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE2);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_8_IDX],
+			   TX_PWR_CFG_8_MCS23_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_8_IDX],
+			   TX_PWR_CFG_8_MCS23_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_8_IDX],
+			   TX_PWR_CFG_8_MCS23_CH2, txpower);
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset + 6, &eeprom);
+
+	/* STBC, MCS 0,1 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_STBC0_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_STBC0_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_EXT_IDX],
+			   TX_PWR_CFG_3_EXT_STBC0_CH2, txpower);
+
+	/* STBC, MCS 2,3 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE1);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_STBC2_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_IDX],
+			   TX_PWR_CFG_3_STBC2_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_3_EXT_IDX],
+			   TX_PWR_CFG_3_EXT_STBC2_CH2, txpower);
+
+	/* STBC, MCS 4,5 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE2);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_4_IDX], TX_PWR_CFG_RATE0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_4_IDX], TX_PWR_CFG_RATE1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_4_EXT_IDX], TX_PWR_CFG_RATE0,
+			   txpower);
+
+	/* STBC, MCS 6 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE3);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_4_IDX], TX_PWR_CFG_RATE2, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_4_IDX], TX_PWR_CFG_RATE3, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_4_EXT_IDX], TX_PWR_CFG_RATE2,
+			   txpower);
+
+	/* read the next four txpower values */
+	rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+				      offset + 7, &eeprom);
+
+	/* STBC, MCS 7 */
+	txpower = rt2x00_get_field16(eeprom, EEPROM_TXPOWER_BYRATE_RATE0);
+	txpower = rt2800_compensate_txpower(rt2x00dev, 0, band, power_level,
+					    txpower, delta);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_9_IDX],
+			   TX_PWR_CFG_9_STBC7_CH0, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_9_IDX],
+			   TX_PWR_CFG_9_STBC7_CH1, txpower);
+	rt2x00_set_field32(&regs[TX_PWR_CFG_9_IDX],
+			   TX_PWR_CFG_9_STBC7_CH2, txpower);
+
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_0, regs[TX_PWR_CFG_0_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_1, regs[TX_PWR_CFG_1_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_2, regs[TX_PWR_CFG_2_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_3, regs[TX_PWR_CFG_3_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_4, regs[TX_PWR_CFG_4_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_5, regs[TX_PWR_CFG_5_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_6, regs[TX_PWR_CFG_6_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_7, regs[TX_PWR_CFG_7_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_8, regs[TX_PWR_CFG_8_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_9, regs[TX_PWR_CFG_9_IDX]);
+
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_0_EXT,
+			      regs[TX_PWR_CFG_0_EXT_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_1_EXT,
+			      regs[TX_PWR_CFG_1_EXT_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_2_EXT,
+			      regs[TX_PWR_CFG_2_EXT_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_3_EXT,
+			      regs[TX_PWR_CFG_3_EXT_IDX]);
+	rt2800_register_write(rt2x00dev, TX_PWR_CFG_4_EXT,
+			      regs[TX_PWR_CFG_4_EXT_IDX]);
+
+	for (i = 0; i < TX_PWR_CFG_IDX_COUNT; i++)
+		rt2x00_dbg(rt2x00dev,
+			   "band:%cGHz, BW:%c0MHz, TX_PWR_CFG_%d%s = %08lx\n",
+			   (band == IEEE80211_BAND_5GHZ) ? '5' : '2',
+			   (test_bit(CONFIG_CHANNEL_HT40, &rt2x00dev->flags)) ?
+								'4' : '2',
+			   (i > TX_PWR_CFG_9_IDX) ?
+					(i - TX_PWR_CFG_9_IDX - 1) : i,
+			   (i > TX_PWR_CFG_9_IDX) ? "_EXT" : "",
+			   (unsigned long) regs[i]);
+}
+
+/*
+ * We configure transmit power using MAC TX_PWR_CFG_{0,...,N} registers and
+ * BBP R1 register. TX_PWR_CFG_X allow to configure per rate TX power values,
+ * 4 bits for each rate (tune from 0 to 15 dBm). BBP_R1 controls transmit power
+ * for all rates, but allow to set only 4 discrete values: -12, -6, 0 and 6 dBm.
+ * Reference per rate transmit power values are located in the EEPROM at
+ * EEPROM_TXPOWER_BYRATE offset. We adjust them and BBP R1 settings according to
+ * current conditions (i.e. band, bandwidth, temperature, user settings).
+ */
+static void rt2800_config_txpower_rt28xx(struct rt2x00_dev *rt2x00dev,
+					 struct ieee80211_channel *chan,
+					 int power_level)
+{
+	u8 txpower, r1;
+	u16 eeprom;
+	u32 reg, offset;
+	int i, is_rate_b, delta, power_ctrl;
+	enum ieee80211_band band = chan->band;
+
+	/*
+	 * Calculate HT40 compensation. For 40MHz we need to add or subtract
+	 * value read from EEPROM (different for 2GHz and for 5GHz).
+>>>>>>> refs/remotes/origin/master
 	 */
 	delta = rt2800_get_txpower_bw_comp(rt2x00dev, band);
 
 	/*
+<<<<<<< HEAD
 	 * calculate temperature compensation delta
+=======
+	 * Calculate temperature compensation. Depends on measurement of current
+	 * TSSI (Transmitter Signal Strength Indication) we know TX power (due
+	 * to temperature or maybe other factors) is smaller or bigger than
+	 * expected. We adjust it, based on TSSI reference and boundaries values
+	 * provided in EEPROM.
+>>>>>>> refs/remotes/origin/master
 	 */
 	delta += rt2800_get_gain_calibration_delta(rt2x00dev);
 
 	/*
+<<<<<<< HEAD
 	 * set to normal bbp tx power control mode: +/- 0dBm
 	 */
 	rt2800_bbp_read(rt2x00dev, 1, &r1);
 	rt2x00_set_field8(&r1, BBP1_TX_POWER_CTRL, 0);
 	rt2800_bbp_write(rt2x00dev, 1, r1);
+=======
+	 * Decrease power according to user settings, on devices with unknown
+	 * maximum tx power. For other devices we take user power_level into
+	 * consideration on rt2800_compensate_txpower().
+	 */
+	delta += rt2800_get_txpower_reg_delta(rt2x00dev, power_level,
+					      chan->max_power);
+
+	/*
+	 * BBP_R1 controls TX power for all rates, it allow to set the following
+	 * gains -12, -6, 0, +6 dBm by setting values 2, 1, 0, 3 respectively.
+	 *
+	 * TODO: we do not use +6 dBm option to do not increase power beyond
+	 * regulatory limit, however this could be utilized for devices with
+	 * CAPABILITY_POWER_LIMIT.
+	 *
+	 * TODO: add different temperature compensation code for RT3290 & RT5390
+	 * to allow to use BBP_R1 for those chips.
+	 */
+	if (!rt2x00_rt(rt2x00dev, RT3290) &&
+	    !rt2x00_rt(rt2x00dev, RT5390)) {
+		rt2800_bbp_read(rt2x00dev, 1, &r1);
+		if (delta <= -12) {
+			power_ctrl = 2;
+			delta += 12;
+		} else if (delta <= -6) {
+			power_ctrl = 1;
+			delta += 6;
+		} else {
+			power_ctrl = 0;
+		}
+		rt2x00_set_field8(&r1, BBP1_TX_POWER_CTRL, power_ctrl);
+		rt2800_bbp_write(rt2x00dev, 1, r1);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	offset = TX_PWR_CFG_0;
 
 	for (i = 0; i < EEPROM_TXPOWER_BYRATE_SIZE; i += 2) {
@@ -2722,8 +5092,13 @@ static void rt2800_config_txpower(struct rt2x00_dev *rt2x00dev,
 		rt2800_register_read(rt2x00dev, offset, &reg);
 
 		/* read the next four txpower values */
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TXPOWER_BYRATE + i,
 				   &eeprom);
+=======
+		rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+					      i, &eeprom);
+>>>>>>> refs/remotes/origin/master
 
 		is_rate_b = i ? 0 : 1;
 		/*
@@ -2771,8 +5146,13 @@ static void rt2800_config_txpower(struct rt2x00_dev *rt2x00dev,
 		rt2x00_set_field32(&reg, TX_PWR_CFG_RATE3, txpower);
 
 		/* read the next four txpower values */
+<<<<<<< HEAD
 		rt2x00_eeprom_read(rt2x00dev, EEPROM_TXPOWER_BYRATE + i + 1,
 				   &eeprom);
+=======
+		rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_TXPOWER_BYRATE,
+					      i + 1, &eeprom);
+>>>>>>> refs/remotes/origin/master
 
 		is_rate_b = 0;
 		/*
@@ -2826,15 +5206,34 @@ static void rt2800_config_txpower(struct rt2x00_dev *rt2x00dev,
 	}
 }
 
+<<<<<<< HEAD
 void rt2800_gain_calibration(struct rt2x00_dev *rt2x00dev)
 {
 	rt2800_config_txpower(rt2x00dev, rt2x00dev->curr_band,
+=======
+static void rt2800_config_txpower(struct rt2x00_dev *rt2x00dev,
+				  struct ieee80211_channel *chan,
+				  int power_level)
+{
+	if (rt2x00_rt(rt2x00dev, RT3593))
+		rt2800_config_txpower_rt3593(rt2x00dev, chan, power_level);
+	else
+		rt2800_config_txpower_rt28xx(rt2x00dev, chan, power_level);
+}
+
+void rt2800_gain_calibration(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_config_txpower(rt2x00dev, rt2x00dev->hw->conf.chandef.chan,
+>>>>>>> refs/remotes/origin/master
 			      rt2x00dev->tx_power);
 }
 EXPORT_SYMBOL_GPL(rt2800_gain_calibration);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void rt2800_vco_calibration(struct rt2x00_dev *rt2x00dev)
 {
 	u32	tx_pin;
@@ -2863,11 +5262,24 @@ void rt2800_vco_calibration(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field8(&rfcsr, RFCSR7_RF_TUNING, 1);
 		rt2800_rfcsr_write(rt2x00dev, 7, rfcsr);
 		break;
+<<<<<<< HEAD
 	case RF5370:
 	case RF5372:
 	case RF5390:
 		rt2800_rfcsr_read(rt2x00dev, 3, &rfcsr);
 		rt2x00_set_field8(&rfcsr, RFCSR30_RF_CALIBRATION, 1);
+=======
+	case RF3053:
+	case RF3070:
+	case RF3290:
+	case RF5360:
+	case RF5370:
+	case RF5372:
+	case RF5390:
+	case RF5392:
+		rt2800_rfcsr_read(rt2x00dev, 3, &rfcsr);
+		rt2x00_set_field8(&rfcsr, RFCSR3_VCOCAL_EN, 1);
+>>>>>>> refs/remotes/origin/master
 		rt2800_rfcsr_write(rt2x00dev, 3, rfcsr);
 		break;
 	default:
@@ -2909,7 +5321,10 @@ void rt2800_vco_calibration(struct rt2x00_dev *rt2x00dev)
 }
 EXPORT_SYMBOL_GPL(rt2800_vco_calibration);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void rt2800_config_retry_limit(struct rt2x00_dev *rt2x00dev,
 				      struct rt2x00lib_conf *libconf)
 {
@@ -2963,11 +5378,19 @@ void rt2800_config(struct rt2x00_dev *rt2x00dev,
 	if (flags & IEEE80211_CONF_CHANGE_CHANNEL) {
 		rt2800_config_channel(rt2x00dev, libconf->conf,
 				      &libconf->rf, &libconf->channel);
+<<<<<<< HEAD
 		rt2800_config_txpower(rt2x00dev, libconf->conf->channel->band,
 				      libconf->conf->power_level);
 	}
 	if (flags & IEEE80211_CONF_CHANGE_POWER)
 		rt2800_config_txpower(rt2x00dev, libconf->conf->channel->band,
+=======
+		rt2800_config_txpower(rt2x00dev, libconf->conf->chandef.chan,
+				      libconf->conf->power_level);
+	}
+	if (flags & IEEE80211_CONF_CHANGE_POWER)
+		rt2800_config_txpower(rt2x00dev, libconf->conf->chandef.chan,
+>>>>>>> refs/remotes/origin/master
 				      libconf->conf->power_level);
 	if (flags & IEEE80211_CONF_CHANGE_RETRY_LIMITS)
 		rt2800_config_retry_limit(rt2x00dev, libconf);
@@ -2993,10 +5416,16 @@ EXPORT_SYMBOL_GPL(rt2800_link_stats);
 
 static u8 rt2800_get_default_vgc(struct rt2x00_dev *rt2x00dev)
 {
+<<<<<<< HEAD
+=======
+	u8 vgc;
+
+>>>>>>> refs/remotes/origin/master
 	if (rt2x00dev->curr_band == IEEE80211_BAND_2GHZ) {
 		if (rt2x00_rt(rt2x00dev, RT3070) ||
 		    rt2x00_rt(rt2x00dev, RT3071) ||
 		    rt2x00_rt(rt2x00dev, RT3090) ||
+<<<<<<< HEAD
 		    rt2x00_rt(rt2x00dev, RT3390) ||
 <<<<<<< HEAD
 		    rt2x00_rt(rt2x00dev, RT5390))
@@ -3013,13 +5442,53 @@ static u8 rt2800_get_default_vgc(struct rt2x00_dev *rt2x00dev)
 		return 0x32 + (rt2x00dev->lna_gain * 5) / 3;
 	else
 		return 0x3a + (rt2x00dev->lna_gain * 5) / 3;
+=======
+		    rt2x00_rt(rt2x00dev, RT3290) ||
+		    rt2x00_rt(rt2x00dev, RT3390) ||
+		    rt2x00_rt(rt2x00dev, RT3572) ||
+		    rt2x00_rt(rt2x00dev, RT3593) ||
+		    rt2x00_rt(rt2x00dev, RT5390) ||
+		    rt2x00_rt(rt2x00dev, RT5392) ||
+		    rt2x00_rt(rt2x00dev, RT5592))
+			vgc = 0x1c + (2 * rt2x00dev->lna_gain);
+		else
+			vgc = 0x2e + rt2x00dev->lna_gain;
+	} else { /* 5GHZ band */
+		if (rt2x00_rt(rt2x00dev, RT3593))
+			vgc = 0x20 + (rt2x00dev->lna_gain * 5) / 3;
+		else if (rt2x00_rt(rt2x00dev, RT5592))
+			vgc = 0x24 + (2 * rt2x00dev->lna_gain);
+		else {
+			if (!test_bit(CONFIG_CHANNEL_HT40, &rt2x00dev->flags))
+				vgc = 0x32 + (rt2x00dev->lna_gain * 5) / 3;
+			else
+				vgc = 0x3a + (rt2x00dev->lna_gain * 5) / 3;
+		}
+	}
+
+	return vgc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void rt2800_set_vgc(struct rt2x00_dev *rt2x00dev,
 				  struct link_qual *qual, u8 vgc_level)
 {
 	if (qual->vgc_level != vgc_level) {
+<<<<<<< HEAD
 		rt2800_bbp_write(rt2x00dev, 66, vgc_level);
+=======
+		if (rt2x00_rt(rt2x00dev, RT3572) ||
+		    rt2x00_rt(rt2x00dev, RT3593)) {
+			rt2800_bbp_write_with_rx_chain(rt2x00dev, 66,
+						       vgc_level);
+		} else if (rt2x00_rt(rt2x00dev, RT5592)) {
+			rt2800_bbp_write(rt2x00dev, 83, qual->rssi > -65 ? 0x4a : 0x7a);
+			rt2800_bbp_write_with_rx_chain(rt2x00dev, 66, vgc_level);
+		} else {
+			rt2800_bbp_write(rt2x00dev, 66, vgc_level);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		qual->vgc_level = vgc_level;
 		qual->vgc_level_reg = vgc_level;
 	}
@@ -3034,6 +5503,7 @@ EXPORT_SYMBOL_GPL(rt2800_reset_tuner);
 void rt2800_link_tuner(struct rt2x00_dev *rt2x00dev, struct link_qual *qual,
 		       const u32 count)
 {
+<<<<<<< HEAD
 	if (rt2x00_rt_rev(rt2x00dev, RT2860, REV_RT2860C))
 		return;
 
@@ -3043,6 +5513,43 @@ void rt2800_link_tuner(struct rt2x00_dev *rt2x00dev, struct link_qual *qual,
 	rt2800_set_vgc(rt2x00dev, qual,
 		       rt2800_get_default_vgc(rt2x00dev) +
 		       ((qual->rssi > -80) * 0x10));
+=======
+	u8 vgc;
+
+	if (rt2x00_rt_rev(rt2x00dev, RT2860, REV_RT2860C))
+		return;
+
+	/* When RSSI is better than a certain threshold, increase VGC
+	 * with a chip specific value in order to improve the balance
+	 * between sensibility and noise isolation.
+	 */
+
+	vgc = rt2800_get_default_vgc(rt2x00dev);
+
+	switch (rt2x00dev->chip.rt) {
+	case RT3572:
+	case RT3593:
+		if (qual->rssi > -65) {
+			if (rt2x00dev->curr_band == IEEE80211_BAND_2GHZ)
+				vgc += 0x20;
+			else
+				vgc += 0x10;
+		}
+		break;
+
+	case RT5592:
+		if (qual->rssi > -65)
+			vgc += 0x20;
+		break;
+
+	default:
+		if (qual->rssi > -80)
+			vgc += 0x10;
+		break;
+	}
+
+	rt2800_set_vgc(rt2x00dev, qual, vgc);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(rt2800_link_tuner);
 
@@ -3056,6 +5563,7 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 	unsigned int i;
 	int ret;
 
+<<<<<<< HEAD
 	rt2800_register_read(rt2x00dev, WPDMA_GLO_CFG, &reg);
 	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_ENABLE_TX_DMA, 0);
 	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_TX_DMA_BUSY, 0);
@@ -3063,12 +5571,16 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_RX_DMA_BUSY, 0);
 	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_TX_WRITEBACK_DONE, 1);
 	rt2800_register_write(rt2x00dev, WPDMA_GLO_CFG, reg);
+=======
+	rt2800_disable_wpdma(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 	ret = rt2800_drv_init_registers(rt2x00dev);
 	if (ret)
 		return ret;
 
 	rt2800_register_read(rt2x00dev, BCN_OFFSET0, &reg);
+<<<<<<< HEAD
 	rt2x00_set_field32(&reg, BCN_OFFSET0_BCN0, 0xe0); /* 0x3800 */
 	rt2x00_set_field32(&reg, BCN_OFFSET0_BCN1, 0xe8); /* 0x3a00 */
 	rt2x00_set_field32(&reg, BCN_OFFSET0_BCN2, 0xf0); /* 0x3c00 */
@@ -3080,6 +5592,27 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_field32(&reg, BCN_OFFSET1_BCN5, 0xd0); /* 0x3400 */
 	rt2x00_set_field32(&reg, BCN_OFFSET1_BCN6, 0x77); /* 0x1dc0 */
 	rt2x00_set_field32(&reg, BCN_OFFSET1_BCN7, 0x6f); /* 0x1bc0 */
+=======
+	rt2x00_set_field32(&reg, BCN_OFFSET0_BCN0,
+			   rt2800_get_beacon_offset(rt2x00dev, 0));
+	rt2x00_set_field32(&reg, BCN_OFFSET0_BCN1,
+			   rt2800_get_beacon_offset(rt2x00dev, 1));
+	rt2x00_set_field32(&reg, BCN_OFFSET0_BCN2,
+			   rt2800_get_beacon_offset(rt2x00dev, 2));
+	rt2x00_set_field32(&reg, BCN_OFFSET0_BCN3,
+			   rt2800_get_beacon_offset(rt2x00dev, 3));
+	rt2800_register_write(rt2x00dev, BCN_OFFSET0, reg);
+
+	rt2800_register_read(rt2x00dev, BCN_OFFSET1, &reg);
+	rt2x00_set_field32(&reg, BCN_OFFSET1_BCN4,
+			   rt2800_get_beacon_offset(rt2x00dev, 4));
+	rt2x00_set_field32(&reg, BCN_OFFSET1_BCN5,
+			   rt2800_get_beacon_offset(rt2x00dev, 5));
+	rt2x00_set_field32(&reg, BCN_OFFSET1_BCN6,
+			   rt2800_get_beacon_offset(rt2x00dev, 6));
+	rt2x00_set_field32(&reg, BCN_OFFSET1_BCN7,
+			   rt2800_get_beacon_offset(rt2x00dev, 7));
+>>>>>>> refs/remotes/origin/master
 	rt2800_register_write(rt2x00dev, BCN_OFFSET1, reg);
 
 	rt2800_register_write(rt2x00dev, LEGACY_BASIC_RATE, 0x0000013f);
@@ -3103,15 +5636,71 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_field32(&reg, BKOFF_SLOT_CFG_CC_DELAY_TIME, 2);
 	rt2800_register_write(rt2x00dev, BKOFF_SLOT_CFG, reg);
 
+<<<<<<< HEAD
 	if (rt2x00_rt(rt2x00dev, RT3071) ||
 	    rt2x00_rt(rt2x00dev, RT3090) ||
 	    rt2x00_rt(rt2x00dev, RT3390)) {
 		rt2800_register_write(rt2x00dev, TX_SW_CFG0, 0x00000400);
+=======
+	if (rt2x00_rt(rt2x00dev, RT3290)) {
+		rt2800_register_read(rt2x00dev, WLAN_FUN_CTRL, &reg);
+		if (rt2x00_get_field32(reg, WLAN_EN) == 1) {
+			rt2x00_set_field32(&reg, PCIE_APP0_CLK_REQ, 1);
+			rt2800_register_write(rt2x00dev, WLAN_FUN_CTRL, reg);
+		}
+
+		rt2800_register_read(rt2x00dev, CMB_CTRL, &reg);
+		if (!(rt2x00_get_field32(reg, LDO0_EN) == 1)) {
+			rt2x00_set_field32(&reg, LDO0_EN, 1);
+			rt2x00_set_field32(&reg, LDO_BGSEL, 3);
+			rt2800_register_write(rt2x00dev, CMB_CTRL, reg);
+		}
+
+		rt2800_register_read(rt2x00dev, OSC_CTRL, &reg);
+		rt2x00_set_field32(&reg, OSC_ROSC_EN, 1);
+		rt2x00_set_field32(&reg, OSC_CAL_REQ, 1);
+		rt2x00_set_field32(&reg, OSC_REF_CYCLE, 0x27);
+		rt2800_register_write(rt2x00dev, OSC_CTRL, reg);
+
+		rt2800_register_read(rt2x00dev, COEX_CFG0, &reg);
+		rt2x00_set_field32(&reg, COEX_CFG_ANT, 0x5e);
+		rt2800_register_write(rt2x00dev, COEX_CFG0, reg);
+
+		rt2800_register_read(rt2x00dev, COEX_CFG2, &reg);
+		rt2x00_set_field32(&reg, BT_COEX_CFG1, 0x00);
+		rt2x00_set_field32(&reg, BT_COEX_CFG0, 0x17);
+		rt2x00_set_field32(&reg, WL_COEX_CFG1, 0x93);
+		rt2x00_set_field32(&reg, WL_COEX_CFG0, 0x7f);
+		rt2800_register_write(rt2x00dev, COEX_CFG2, reg);
+
+		rt2800_register_read(rt2x00dev, PLL_CTRL, &reg);
+		rt2x00_set_field32(&reg, PLL_CONTROL, 1);
+		rt2800_register_write(rt2x00dev, PLL_CTRL, reg);
+	}
+
+	if (rt2x00_rt(rt2x00dev, RT3071) ||
+	    rt2x00_rt(rt2x00dev, RT3090) ||
+	    rt2x00_rt(rt2x00dev, RT3290) ||
+	    rt2x00_rt(rt2x00dev, RT3390)) {
+
+		if (rt2x00_rt(rt2x00dev, RT3290))
+			rt2800_register_write(rt2x00dev, TX_SW_CFG0,
+					      0x00000404);
+		else
+			rt2800_register_write(rt2x00dev, TX_SW_CFG0,
+					      0x00000400);
+
+>>>>>>> refs/remotes/origin/master
 		rt2800_register_write(rt2x00dev, TX_SW_CFG1, 0x00000000);
 		if (rt2x00_rt_rev_lt(rt2x00dev, RT3071, REV_RT3071E) ||
 		    rt2x00_rt_rev_lt(rt2x00dev, RT3090, REV_RT3090E) ||
 		    rt2x00_rt_rev_lt(rt2x00dev, RT3390, REV_RT3390E)) {
+<<<<<<< HEAD
 			rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+=======
+			rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1,
+					   &eeprom);
+>>>>>>> refs/remotes/origin/master
 			if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_DAC_TEST))
 				rt2800_register_write(rt2x00dev, TX_SW_CFG2,
 						      0x0000002c);
@@ -3136,6 +5725,7 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 		rt2800_register_write(rt2x00dev, TX_SW_CFG1, 0x00000000);
 		rt2800_register_write(rt2x00dev, TX_SW_CFG2, 0x00000030);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (rt2x00_rt(rt2x00dev, RT5390)) {
 =======
 	} else if (rt2x00_rt(rt2x00dev, RT3572)) {
@@ -3144,6 +5734,35 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 	} else if (rt2x00_rt(rt2x00dev, RT5390) ||
 			   rt2x00_rt(rt2x00dev, RT5392)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (rt2x00_rt(rt2x00dev, RT3352)) {
+		rt2800_register_write(rt2x00dev, TX_SW_CFG0, 0x00000402);
+		rt2800_register_write(rt2x00dev, TX_SW_CFG1, 0x00080606);
+		rt2800_register_write(rt2x00dev, TX_SW_CFG2, 0x00000000);
+	} else if (rt2x00_rt(rt2x00dev, RT3572)) {
+		rt2800_register_write(rt2x00dev, TX_SW_CFG0, 0x00000400);
+		rt2800_register_write(rt2x00dev, TX_SW_CFG1, 0x00080606);
+	} else if (rt2x00_rt(rt2x00dev, RT3593)) {
+		rt2800_register_write(rt2x00dev, TX_SW_CFG0, 0x00000402);
+		rt2800_register_write(rt2x00dev, TX_SW_CFG1, 0x00000000);
+		if (rt2x00_rt_rev_lt(rt2x00dev, RT3593, REV_RT3593E)) {
+			rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1,
+					   &eeprom);
+			if (rt2x00_get_field16(eeprom,
+					       EEPROM_NIC_CONF1_DAC_TEST))
+				rt2800_register_write(rt2x00dev, TX_SW_CFG2,
+						      0x0000001f);
+			else
+				rt2800_register_write(rt2x00dev, TX_SW_CFG2,
+						      0x0000000f);
+		} else {
+			rt2800_register_write(rt2x00dev, TX_SW_CFG2,
+					      0x00000000);
+		}
+	} else if (rt2x00_rt(rt2x00dev, RT5390) ||
+		   rt2x00_rt(rt2x00dev, RT5392) ||
+		   rt2x00_rt(rt2x00dev, RT5592)) {
+>>>>>>> refs/remotes/origin/master
 		rt2800_register_write(rt2x00dev, TX_SW_CFG0, 0x00000404);
 		rt2800_register_write(rt2x00dev, TX_SW_CFG1, 0x00080606);
 		rt2800_register_write(rt2x00dev, TX_SW_CFG2, 0x00000000);
@@ -3323,7 +5942,12 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2x00_set_field32(&reg, TXOP_CTRL_CFG_EXT_CWMIN, 0);
 	rt2800_register_write(rt2x00dev, TXOP_CTRL_CFG, reg);
 
+<<<<<<< HEAD
 	rt2800_register_write(rt2x00dev, TXOP_HLDR_ET, 0x00000002);
+=======
+	reg = rt2x00_rt(rt2x00dev, RT5592) ? 0x00000082 : 0x00000002;
+	rt2800_register_write(rt2x00dev, TXOP_HLDR_ET, reg);
+>>>>>>> refs/remotes/origin/master
 
 	rt2800_register_read(rt2x00dev, TX_RTS_CFG, &reg);
 	rt2x00_set_field32(&reg, TX_RTS_CFG_AUTO_RTS_RETRY_LIMIT, 32);
@@ -3360,6 +5984,7 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 
 	for (i = 0; i < 256; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		static const u32 wcid[2] = { 0xffffffff, 0x00ffffff };
 		rt2800_register_multiwrite(rt2x00dev, MAC_WCID_ENTRY(i),
 					      wcid, sizeof(wcid));
@@ -3369,12 +5994,17 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 		rt2800_config_wcid(rt2x00dev, NULL, i);
 		rt2800_delete_wcid_attr(rt2x00dev, i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rt2800_config_wcid(rt2x00dev, NULL, i);
+		rt2800_delete_wcid_attr(rt2x00dev, i);
+>>>>>>> refs/remotes/origin/master
 		rt2800_register_write(rt2x00dev, MAC_IVEIV_ENTRY(i), 0);
 	}
 
 	/*
 	 * Clear all beacons
 	 */
+<<<<<<< HEAD
 	rt2800_clear_beacon_register(rt2x00dev, HW_BEACON_BASE0);
 	rt2800_clear_beacon_register(rt2x00dev, HW_BEACON_BASE1);
 	rt2800_clear_beacon_register(rt2x00dev, HW_BEACON_BASE2);
@@ -3383,6 +6013,10 @@ static int rt2800_init_registers(struct rt2x00_dev *rt2x00dev)
 	rt2800_clear_beacon_register(rt2x00dev, HW_BEACON_BASE5);
 	rt2800_clear_beacon_register(rt2x00dev, HW_BEACON_BASE6);
 	rt2800_clear_beacon_register(rt2x00dev, HW_BEACON_BASE7);
+=======
+	for (i = 0; i < 8; i++)
+		rt2800_clear_beacon_register(rt2x00dev, i);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00_is_usb(rt2x00dev)) {
 		rt2800_register_read(rt2x00dev, US_CYC_CNT, &reg);
@@ -3488,7 +6122,11 @@ static int rt2800_wait_bbp_rf_ready(struct rt2x00_dev *rt2x00dev)
 		udelay(REGISTER_BUSY_DELAY);
 	}
 
+<<<<<<< HEAD
 	ERROR(rt2x00dev, "BBP/RF register access failed, aborting.\n");
+=======
+	rt2x00_err(rt2x00dev, "BBP/RF register access failed, aborting\n");
+>>>>>>> refs/remotes/origin/master
 	return -EACCES;
 }
 
@@ -3512,6 +6150,7 @@ static int rt2800_wait_bbp_ready(struct rt2x00_dev *rt2x00dev)
 		udelay(REGISTER_BUSY_DELAY);
 	}
 
+<<<<<<< HEAD
 	ERROR(rt2x00dev, "BBP register access failed, aborting.\n");
 	return -EACCES;
 }
@@ -3547,10 +6186,90 @@ static int rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
 	    rt2x00_rt(rt2x00dev, RT5392))
 >>>>>>> refs/remotes/origin/cm-10.0
 		rt2800_bbp_write(rt2x00dev, 31, 0x08);
+=======
+	rt2x00_err(rt2x00dev, "BBP register access failed, aborting\n");
+	return -EACCES;
+}
+
+static void rt2800_bbp4_mac_if_ctrl(struct rt2x00_dev *rt2x00dev)
+{
+	u8 value;
+
+	rt2800_bbp_read(rt2x00dev, 4, &value);
+	rt2x00_set_field8(&value, BBP4_MAC_IF_CTRL, 1);
+	rt2800_bbp_write(rt2x00dev, 4, value);
+}
+
+static void rt2800_init_freq_calibration(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 142, 1);
+	rt2800_bbp_write(rt2x00dev, 143, 57);
+}
+
+static void rt2800_init_bbp_5592_glrt(struct rt2x00_dev *rt2x00dev)
+{
+	const u8 glrt_table[] = {
+		0xE0, 0x1F, 0X38, 0x32, 0x08, 0x28, 0x19, 0x0A, 0xFF, 0x00, /* 128 ~ 137 */
+		0x16, 0x10, 0x10, 0x0B, 0x36, 0x2C, 0x26, 0x24, 0x42, 0x36, /* 138 ~ 147 */
+		0x30, 0x2D, 0x4C, 0x46, 0x3D, 0x40, 0x3E, 0x42, 0x3D, 0x40, /* 148 ~ 157 */
+		0X3C, 0x34, 0x2C, 0x2F, 0x3C, 0x35, 0x2E, 0x2A, 0x49, 0x41, /* 158 ~ 167 */
+		0x36, 0x31, 0x30, 0x30, 0x0E, 0x0D, 0x28, 0x21, 0x1C, 0x16, /* 168 ~ 177 */
+		0x50, 0x4A, 0x43, 0x40, 0x10, 0x10, 0x10, 0x10, 0x00, 0x00, /* 178 ~ 187 */
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* 188 ~ 197 */
+		0x00, 0x00, 0x7D, 0x14, 0x32, 0x2C, 0x36, 0x4C, 0x43, 0x2C, /* 198 ~ 207 */
+		0x2E, 0x36, 0x30, 0x6E,					    /* 208 ~ 211 */
+	};
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(glrt_table); i++) {
+		rt2800_bbp_write(rt2x00dev, 195, 128 + i);
+		rt2800_bbp_write(rt2x00dev, 196, glrt_table[i]);
+	}
+};
+
+static void rt2800_init_bbp_early(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 65, 0x2C);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+	rt2800_bbp_write(rt2x00dev, 68, 0x0B);
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+	rt2800_bbp_write(rt2x00dev, 81, 0x37);
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+	rt2800_bbp_write(rt2x00dev, 83, 0x6A);
+	rt2800_bbp_write(rt2x00dev, 84, 0x99);
+	rt2800_bbp_write(rt2x00dev, 86, 0x00);
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+	rt2800_bbp_write(rt2x00dev, 92, 0x00);
+	rt2800_bbp_write(rt2x00dev, 103, 0x00);
+	rt2800_bbp_write(rt2x00dev, 105, 0x05);
+	rt2800_bbp_write(rt2x00dev, 106, 0x35);
+}
+
+static void rt2800_disable_unused_dac_adc(struct rt2x00_dev *rt2x00dev)
+{
+	u16 eeprom;
+	u8 value;
+
+	rt2800_bbp_read(rt2x00dev, 138, &value);
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &eeprom);
+	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) == 1)
+		value |= 0x20;
+	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH) == 1)
+		value &= ~0x02;
+	rt2800_bbp_write(rt2x00dev, 138, value);
+}
+
+static void rt2800_init_bbp_305x_soc(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 31, 0x08);
+>>>>>>> refs/remotes/origin/master
 
 	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
 	rt2800_bbp_write(rt2x00dev, 66, 0x38);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (rt2x00_rt(rt2x00dev, RT5390))
 =======
@@ -3558,10 +6277,44 @@ static int rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
 		rt2x00_rt(rt2x00dev, RT5392))
 >>>>>>> refs/remotes/origin/cm-10.0
 		rt2800_bbp_write(rt2x00dev, 68, 0x0b);
+=======
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+
+	rt2800_bbp_write(rt2x00dev, 78, 0x0e);
+	rt2800_bbp_write(rt2x00dev, 80, 0x08);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x6a);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x99);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x01);
+
+	rt2800_bbp_write(rt2x00dev, 106, 0x35);
+}
+
+static void rt2800_init_bbp_28xx(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00_rt_rev(rt2x00dev, RT2860, REV_RT2860C)) {
 		rt2800_bbp_write(rt2x00dev, 69, 0x16);
 		rt2800_bbp_write(rt2x00dev, 73, 0x12);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else if (rt2x00_rt(rt2x00dev, RT5390)) {
 =======
@@ -3573,6 +6326,8 @@ static int rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
 		rt2800_bbp_write(rt2x00dev, 75, 0x46);
 		rt2800_bbp_write(rt2x00dev, 76, 0x28);
 		rt2800_bbp_write(rt2x00dev, 77, 0x59);
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		rt2800_bbp_write(rt2x00dev, 69, 0x12);
 		rt2800_bbp_write(rt2x00dev, 73, 0x10);
@@ -3580,6 +6335,7 @@ static int rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
 
 	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
 
+<<<<<<< HEAD
 	if (rt2x00_rt(rt2x00dev, RT3070) ||
 	    rt2x00_rt(rt2x00dev, RT3071) ||
 	    rt2x00_rt(rt2x00dev, RT3090) ||
@@ -3639,11 +6395,352 @@ static int rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
 
 	if (rt2x00_rt(rt2x00dev, RT5390))
 =======
+=======
+	rt2800_bbp_write(rt2x00dev, 81, 0x37);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x6a);
+
+	if (rt2x00_rt_rev(rt2x00dev, RT2860, REV_RT2860D))
+		rt2800_bbp_write(rt2x00dev, 84, 0x19);
+	else
+		rt2800_bbp_write(rt2x00dev, 84, 0x99);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 103, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x05);
+
+	rt2800_bbp_write(rt2x00dev, 106, 0x35);
+}
+
+static void rt2800_init_bbp_30xx(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+
+	rt2800_bbp_write(rt2x00dev, 79, 0x13);
+	rt2800_bbp_write(rt2x00dev, 80, 0x05);
+	rt2800_bbp_write(rt2x00dev, 81, 0x33);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x6a);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x99);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x00);
+
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT3070, REV_RT3070F) ||
+	    rt2x00_rt_rev_gte(rt2x00dev, RT3071, REV_RT3071E) ||
+	    rt2x00_rt_rev_gte(rt2x00dev, RT3090, REV_RT3090E))
+		rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+	else
+		rt2800_bbp_write(rt2x00dev, 103, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x05);
+
+	rt2800_bbp_write(rt2x00dev, 106, 0x35);
+
+	if (rt2x00_rt(rt2x00dev, RT3071) ||
+	    rt2x00_rt(rt2x00dev, RT3090))
+		rt2800_disable_unused_dac_adc(rt2x00dev);
+}
+
+static void rt2800_init_bbp_3290(struct rt2x00_dev *rt2x00dev)
+{
+	u8 value;
+
+	rt2800_bbp4_mac_if_ctrl(rt2x00dev);
+
+	rt2800_bbp_write(rt2x00dev, 31, 0x08);
+
+	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 68, 0x0b);
+
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 73, 0x13);
+	rt2800_bbp_write(rt2x00dev, 75, 0x46);
+	rt2800_bbp_write(rt2x00dev, 76, 0x28);
+
+	rt2800_bbp_write(rt2x00dev, 77, 0x58);
+
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+
+	rt2800_bbp_write(rt2x00dev, 74, 0x0b);
+	rt2800_bbp_write(rt2x00dev, 79, 0x18);
+	rt2800_bbp_write(rt2x00dev, 80, 0x09);
+	rt2800_bbp_write(rt2x00dev, 81, 0x33);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x7a);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x9a);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x02);
+
+	rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+
+	rt2800_bbp_write(rt2x00dev, 104, 0x92);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x1c);
+
+	rt2800_bbp_write(rt2x00dev, 106, 0x03);
+
+	rt2800_bbp_write(rt2x00dev, 128, 0x12);
+
+	rt2800_bbp_write(rt2x00dev, 67, 0x24);
+	rt2800_bbp_write(rt2x00dev, 143, 0x04);
+	rt2800_bbp_write(rt2x00dev, 142, 0x99);
+	rt2800_bbp_write(rt2x00dev, 150, 0x30);
+	rt2800_bbp_write(rt2x00dev, 151, 0x2e);
+	rt2800_bbp_write(rt2x00dev, 152, 0x20);
+	rt2800_bbp_write(rt2x00dev, 153, 0x34);
+	rt2800_bbp_write(rt2x00dev, 154, 0x40);
+	rt2800_bbp_write(rt2x00dev, 155, 0x3b);
+	rt2800_bbp_write(rt2x00dev, 253, 0x04);
+
+	rt2800_bbp_read(rt2x00dev, 47, &value);
+	rt2x00_set_field8(&value, BBP47_TSSI_ADC6, 1);
+	rt2800_bbp_write(rt2x00dev, 47, value);
+
+	/* Use 5-bit ADC for Acquisition and 8-bit ADC for data */
+	rt2800_bbp_read(rt2x00dev, 3, &value);
+	rt2x00_set_field8(&value, BBP3_ADC_MODE_SWITCH, 1);
+	rt2x00_set_field8(&value, BBP3_ADC_INIT_MODE, 1);
+	rt2800_bbp_write(rt2x00dev, 3, value);
+}
+
+static void rt2800_init_bbp_3352(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 3, 0x00);
+	rt2800_bbp_write(rt2x00dev, 4, 0x50);
+
+	rt2800_bbp_write(rt2x00dev, 31, 0x08);
+
+	rt2800_bbp_write(rt2x00dev, 47, 0x48);
+
+	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 68, 0x0b);
+
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 73, 0x13);
+	rt2800_bbp_write(rt2x00dev, 75, 0x46);
+	rt2800_bbp_write(rt2x00dev, 76, 0x28);
+
+	rt2800_bbp_write(rt2x00dev, 77, 0x59);
+
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+
+	rt2800_bbp_write(rt2x00dev, 78, 0x0e);
+	rt2800_bbp_write(rt2x00dev, 80, 0x08);
+	rt2800_bbp_write(rt2x00dev, 81, 0x37);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x6a);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x99);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 88, 0x90);
+
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x02);
+
+	rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+
+	rt2800_bbp_write(rt2x00dev, 104, 0x92);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x34);
+
+	rt2800_bbp_write(rt2x00dev, 106, 0x05);
+
+	rt2800_bbp_write(rt2x00dev, 120, 0x50);
+
+	rt2800_bbp_write(rt2x00dev, 137, 0x0f);
+
+	rt2800_bbp_write(rt2x00dev, 163, 0xbd);
+	/* Set ITxBF timeout to 0x9c40=1000msec */
+	rt2800_bbp_write(rt2x00dev, 179, 0x02);
+	rt2800_bbp_write(rt2x00dev, 180, 0x00);
+	rt2800_bbp_write(rt2x00dev, 182, 0x40);
+	rt2800_bbp_write(rt2x00dev, 180, 0x01);
+	rt2800_bbp_write(rt2x00dev, 182, 0x9c);
+	rt2800_bbp_write(rt2x00dev, 179, 0x00);
+	/* Reprogram the inband interface to put right values in RXWI */
+	rt2800_bbp_write(rt2x00dev, 142, 0x04);
+	rt2800_bbp_write(rt2x00dev, 143, 0x3b);
+	rt2800_bbp_write(rt2x00dev, 142, 0x06);
+	rt2800_bbp_write(rt2x00dev, 143, 0xa0);
+	rt2800_bbp_write(rt2x00dev, 142, 0x07);
+	rt2800_bbp_write(rt2x00dev, 143, 0xa1);
+	rt2800_bbp_write(rt2x00dev, 142, 0x08);
+	rt2800_bbp_write(rt2x00dev, 143, 0xa2);
+
+	rt2800_bbp_write(rt2x00dev, 148, 0xc8);
+}
+
+static void rt2800_init_bbp_3390(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+
+	rt2800_bbp_write(rt2x00dev, 79, 0x13);
+	rt2800_bbp_write(rt2x00dev, 80, 0x05);
+	rt2800_bbp_write(rt2x00dev, 81, 0x33);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x6a);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x99);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x00);
+
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT3390, REV_RT3390E))
+		rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+	else
+		rt2800_bbp_write(rt2x00dev, 103, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x05);
+
+	rt2800_bbp_write(rt2x00dev, 106, 0x35);
+
+	rt2800_disable_unused_dac_adc(rt2x00dev);
+}
+
+static void rt2800_init_bbp_3572(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_bbp_write(rt2x00dev, 31, 0x08);
+
+	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 73, 0x10);
+
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+
+	rt2800_bbp_write(rt2x00dev, 79, 0x13);
+	rt2800_bbp_write(rt2x00dev, 80, 0x05);
+	rt2800_bbp_write(rt2x00dev, 81, 0x33);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x6a);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x99);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x00);
+
+	rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x05);
+
+	rt2800_bbp_write(rt2x00dev, 106, 0x35);
+
+	rt2800_disable_unused_dac_adc(rt2x00dev);
+}
+
+static void rt2800_init_bbp_3593(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_init_bbp_early(rt2x00dev);
+
+	rt2800_bbp_write(rt2x00dev, 79, 0x13);
+	rt2800_bbp_write(rt2x00dev, 80, 0x05);
+	rt2800_bbp_write(rt2x00dev, 81, 0x33);
+	rt2800_bbp_write(rt2x00dev, 137, 0x0f);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x19);
+
+	/* Enable DC filter */
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT3593, REV_RT3593E))
+		rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+}
+
+static void rt2800_init_bbp_53xx(struct rt2x00_dev *rt2x00dev)
+{
+	int ant, div_mode;
+	u16 eeprom;
+	u8 value;
+
+	rt2800_bbp4_mac_if_ctrl(rt2x00dev);
+
+	rt2800_bbp_write(rt2x00dev, 31, 0x08);
+
+	rt2800_bbp_write(rt2x00dev, 65, 0x2c);
+	rt2800_bbp_write(rt2x00dev, 66, 0x38);
+
+	rt2800_bbp_write(rt2x00dev, 68, 0x0b);
+
+	rt2800_bbp_write(rt2x00dev, 69, 0x12);
+	rt2800_bbp_write(rt2x00dev, 73, 0x13);
+	rt2800_bbp_write(rt2x00dev, 75, 0x46);
+	rt2800_bbp_write(rt2x00dev, 76, 0x28);
+
+	rt2800_bbp_write(rt2x00dev, 77, 0x59);
+
+	rt2800_bbp_write(rt2x00dev, 70, 0x0a);
+
+	rt2800_bbp_write(rt2x00dev, 79, 0x13);
+	rt2800_bbp_write(rt2x00dev, 80, 0x05);
+	rt2800_bbp_write(rt2x00dev, 81, 0x33);
+
+	rt2800_bbp_write(rt2x00dev, 82, 0x62);
+
+	rt2800_bbp_write(rt2x00dev, 83, 0x7a);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x9a);
+
+	rt2800_bbp_write(rt2x00dev, 86, 0x38);
+
+>>>>>>> refs/remotes/origin/master
 	if (rt2x00_rt(rt2x00dev, RT5392))
 		rt2800_bbp_write(rt2x00dev, 88, 0x90);
 
 	rt2800_bbp_write(rt2x00dev, 91, 0x04);
 
+<<<<<<< HEAD
 	if (rt2x00_rt(rt2x00dev, RT5390) ||
 		rt2x00_rt(rt2x00dev, RT5392))
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -3653,11 +6750,16 @@ static int rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
 
 <<<<<<< HEAD
 =======
+=======
+	rt2800_bbp_write(rt2x00dev, 92, 0x02);
+
+>>>>>>> refs/remotes/origin/master
 	if (rt2x00_rt(rt2x00dev, RT5392)) {
 		rt2800_bbp_write(rt2x00dev, 95, 0x9a);
 		rt2800_bbp_write(rt2x00dev, 98, 0x12);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (rt2x00_rt_rev_gte(rt2x00dev, RT3070, REV_RT3070F) ||
 	    rt2x00_rt_rev_gte(rt2x00dev, RT3071, REV_RT3071E) ||
@@ -3717,12 +6819,29 @@ static int rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
 	if (rt2x00_rt(rt2x00dev, RT5390) ||
 		rt2x00_rt(rt2x00dev, RT5392))
 		rt2800_bbp_write(rt2x00dev, 128, 0x12);
+=======
+	rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+
+	rt2800_bbp_write(rt2x00dev, 104, 0x92);
+
+	rt2800_bbp_write(rt2x00dev, 105, 0x3c);
+
+	if (rt2x00_rt(rt2x00dev, RT5390))
+		rt2800_bbp_write(rt2x00dev, 106, 0x03);
+	else if (rt2x00_rt(rt2x00dev, RT5392))
+		rt2800_bbp_write(rt2x00dev, 106, 0x12);
+	else
+		WARN_ON(1);
+
+	rt2800_bbp_write(rt2x00dev, 128, 0x12);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00_rt(rt2x00dev, RT5392)) {
 		rt2800_bbp_write(rt2x00dev, 134, 0xd0);
 		rt2800_bbp_write(rt2x00dev, 135, 0xf6);
 	}
 
+<<<<<<< HEAD
 	if (rt2x00_rt(rt2x00dev, RT3071) ||
 	    rt2x00_rt(rt2x00dev, RT3090) ||
 	    rt2x00_rt(rt2x00dev, RT3390) ||
@@ -4177,6 +7296,514 @@ static int rt2800_init_rfcsr(struct rt2x00_dev *rt2x00dev)
 			rt2800_rfcsr_write(rt2x00dev, 63, 0x07);
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	rt2800_disable_unused_dac_adc(rt2x00dev);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+	div_mode = rt2x00_get_field16(eeprom,
+				      EEPROM_NIC_CONF1_ANT_DIVERSITY);
+	ant = (div_mode == 3) ? 1 : 0;
+
+	/* check if this is a Bluetooth combo card */
+	if (rt2x00_has_cap_bt_coexist(rt2x00dev)) {
+		u32 reg;
+
+		rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
+		rt2x00_set_field32(&reg, GPIO_CTRL_DIR3, 0);
+		rt2x00_set_field32(&reg, GPIO_CTRL_DIR6, 0);
+		rt2x00_set_field32(&reg, GPIO_CTRL_VAL3, 0);
+		rt2x00_set_field32(&reg, GPIO_CTRL_VAL6, 0);
+		if (ant == 0)
+			rt2x00_set_field32(&reg, GPIO_CTRL_VAL3, 1);
+		else if (ant == 1)
+			rt2x00_set_field32(&reg, GPIO_CTRL_VAL6, 1);
+		rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
+	}
+
+	/* This chip has hardware antenna diversity*/
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390R)) {
+		rt2800_bbp_write(rt2x00dev, 150, 0); /* Disable Antenna Software OFDM */
+		rt2800_bbp_write(rt2x00dev, 151, 0); /* Disable Antenna Software CCK */
+		rt2800_bbp_write(rt2x00dev, 154, 0); /* Clear previously selected antenna */
+	}
+
+	rt2800_bbp_read(rt2x00dev, 152, &value);
+	if (ant == 0)
+		rt2x00_set_field8(&value, BBP152_RX_DEFAULT_ANT, 1);
+	else
+		rt2x00_set_field8(&value, BBP152_RX_DEFAULT_ANT, 0);
+	rt2800_bbp_write(rt2x00dev, 152, value);
+
+	rt2800_init_freq_calibration(rt2x00dev);
+}
+
+static void rt2800_init_bbp_5592(struct rt2x00_dev *rt2x00dev)
+{
+	int ant, div_mode;
+	u16 eeprom;
+	u8 value;
+
+	rt2800_init_bbp_early(rt2x00dev);
+
+	rt2800_bbp_read(rt2x00dev, 105, &value);
+	rt2x00_set_field8(&value, BBP105_MLD,
+			  rt2x00dev->default_ant.rx_chain_num == 2);
+	rt2800_bbp_write(rt2x00dev, 105, value);
+
+	rt2800_bbp4_mac_if_ctrl(rt2x00dev);
+
+	rt2800_bbp_write(rt2x00dev, 20, 0x06);
+	rt2800_bbp_write(rt2x00dev, 31, 0x08);
+	rt2800_bbp_write(rt2x00dev, 65, 0x2C);
+	rt2800_bbp_write(rt2x00dev, 68, 0xDD);
+	rt2800_bbp_write(rt2x00dev, 69, 0x1A);
+	rt2800_bbp_write(rt2x00dev, 70, 0x05);
+	rt2800_bbp_write(rt2x00dev, 73, 0x13);
+	rt2800_bbp_write(rt2x00dev, 74, 0x0F);
+	rt2800_bbp_write(rt2x00dev, 75, 0x4F);
+	rt2800_bbp_write(rt2x00dev, 76, 0x28);
+	rt2800_bbp_write(rt2x00dev, 77, 0x59);
+	rt2800_bbp_write(rt2x00dev, 84, 0x9A);
+	rt2800_bbp_write(rt2x00dev, 86, 0x38);
+	rt2800_bbp_write(rt2x00dev, 88, 0x90);
+	rt2800_bbp_write(rt2x00dev, 91, 0x04);
+	rt2800_bbp_write(rt2x00dev, 92, 0x02);
+	rt2800_bbp_write(rt2x00dev, 95, 0x9a);
+	rt2800_bbp_write(rt2x00dev, 98, 0x12);
+	rt2800_bbp_write(rt2x00dev, 103, 0xC0);
+	rt2800_bbp_write(rt2x00dev, 104, 0x92);
+	/* FIXME BBP105 owerwrite */
+	rt2800_bbp_write(rt2x00dev, 105, 0x3C);
+	rt2800_bbp_write(rt2x00dev, 106, 0x35);
+	rt2800_bbp_write(rt2x00dev, 128, 0x12);
+	rt2800_bbp_write(rt2x00dev, 134, 0xD0);
+	rt2800_bbp_write(rt2x00dev, 135, 0xF6);
+	rt2800_bbp_write(rt2x00dev, 137, 0x0F);
+
+	/* Initialize GLRT (Generalized Likehood Radio Test) */
+	rt2800_init_bbp_5592_glrt(rt2x00dev);
+
+	rt2800_bbp4_mac_if_ctrl(rt2x00dev);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+	div_mode = rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_ANT_DIVERSITY);
+	ant = (div_mode == 3) ? 1 : 0;
+	rt2800_bbp_read(rt2x00dev, 152, &value);
+	if (ant == 0) {
+		/* Main antenna */
+		rt2x00_set_field8(&value, BBP152_RX_DEFAULT_ANT, 1);
+	} else {
+		/* Auxiliary antenna */
+		rt2x00_set_field8(&value, BBP152_RX_DEFAULT_ANT, 0);
+	}
+	rt2800_bbp_write(rt2x00dev, 152, value);
+
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5592, REV_RT5592C)) {
+		rt2800_bbp_read(rt2x00dev, 254, &value);
+		rt2x00_set_field8(&value, BBP254_BIT7, 1);
+		rt2800_bbp_write(rt2x00dev, 254, value);
+	}
+
+	rt2800_init_freq_calibration(rt2x00dev);
+
+	rt2800_bbp_write(rt2x00dev, 84, 0x19);
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5592, REV_RT5592C))
+		rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+}
+
+static void rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
+{
+	unsigned int i;
+	u16 eeprom;
+	u8 reg_id;
+	u8 value;
+
+	if (rt2800_is_305x_soc(rt2x00dev))
+		rt2800_init_bbp_305x_soc(rt2x00dev);
+
+	switch (rt2x00dev->chip.rt) {
+	case RT2860:
+	case RT2872:
+	case RT2883:
+		rt2800_init_bbp_28xx(rt2x00dev);
+		break;
+	case RT3070:
+	case RT3071:
+	case RT3090:
+		rt2800_init_bbp_30xx(rt2x00dev);
+		break;
+	case RT3290:
+		rt2800_init_bbp_3290(rt2x00dev);
+		break;
+	case RT3352:
+		rt2800_init_bbp_3352(rt2x00dev);
+		break;
+	case RT3390:
+		rt2800_init_bbp_3390(rt2x00dev);
+		break;
+	case RT3572:
+		rt2800_init_bbp_3572(rt2x00dev);
+		break;
+	case RT3593:
+		rt2800_init_bbp_3593(rt2x00dev);
+		return;
+	case RT5390:
+	case RT5392:
+		rt2800_init_bbp_53xx(rt2x00dev);
+		break;
+	case RT5592:
+		rt2800_init_bbp_5592(rt2x00dev);
+		return;
+	}
+
+	for (i = 0; i < EEPROM_BBP_SIZE; i++) {
+		rt2800_eeprom_read_from_array(rt2x00dev, EEPROM_BBP_START, i,
+					      &eeprom);
+
+		if (eeprom != 0xffff && eeprom != 0x0000) {
+			reg_id = rt2x00_get_field16(eeprom, EEPROM_BBP_REG_ID);
+			value = rt2x00_get_field16(eeprom, EEPROM_BBP_VALUE);
+			rt2800_bbp_write(rt2x00dev, reg_id, value);
+		}
+	}
+}
+
+static void rt2800_led_open_drain_enable(struct rt2x00_dev *rt2x00dev)
+{
+	u32 reg;
+
+	rt2800_register_read(rt2x00dev, OPT_14_CSR, &reg);
+	rt2x00_set_field32(&reg, OPT_14_CSR_BIT0, 1);
+	rt2800_register_write(rt2x00dev, OPT_14_CSR, reg);
+}
+
+static u8 rt2800_init_rx_filter(struct rt2x00_dev *rt2x00dev, bool bw40,
+				u8 filter_target)
+{
+	unsigned int i;
+	u8 bbp;
+	u8 rfcsr;
+	u8 passband;
+	u8 stopband;
+	u8 overtuned = 0;
+	u8 rfcsr24 = (bw40) ? 0x27 : 0x07;
+
+	rt2800_rfcsr_write(rt2x00dev, 24, rfcsr24);
+
+	rt2800_bbp_read(rt2x00dev, 4, &bbp);
+	rt2x00_set_field8(&bbp, BBP4_BANDWIDTH, 2 * bw40);
+	rt2800_bbp_write(rt2x00dev, 4, bbp);
+
+	rt2800_rfcsr_read(rt2x00dev, 31, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR31_RX_H20M, bw40);
+	rt2800_rfcsr_write(rt2x00dev, 31, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 22, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR22_BASEBAND_LOOPBACK, 1);
+	rt2800_rfcsr_write(rt2x00dev, 22, rfcsr);
+
+	/*
+	 * Set power & frequency of passband test tone
+	 */
+	rt2800_bbp_write(rt2x00dev, 24, 0);
+
+	for (i = 0; i < 100; i++) {
+		rt2800_bbp_write(rt2x00dev, 25, 0x90);
+		msleep(1);
+
+		rt2800_bbp_read(rt2x00dev, 55, &passband);
+		if (passband)
+			break;
+	}
+
+	/*
+	 * Set power & frequency of stopband test tone
+	 */
+	rt2800_bbp_write(rt2x00dev, 24, 0x06);
+
+	for (i = 0; i < 100; i++) {
+		rt2800_bbp_write(rt2x00dev, 25, 0x90);
+		msleep(1);
+
+		rt2800_bbp_read(rt2x00dev, 55, &stopband);
+
+		if ((passband - stopband) <= filter_target) {
+			rfcsr24++;
+			overtuned += ((passband - stopband) == filter_target);
+		} else
+			break;
+
+		rt2800_rfcsr_write(rt2x00dev, 24, rfcsr24);
+	}
+
+	rfcsr24 -= !!overtuned;
+
+	rt2800_rfcsr_write(rt2x00dev, 24, rfcsr24);
+	return rfcsr24;
+}
+
+static void rt2800_rf_init_calibration(struct rt2x00_dev *rt2x00dev,
+				       const unsigned int rf_reg)
+{
+	u8 rfcsr;
+
+	rt2800_rfcsr_read(rt2x00dev, rf_reg, &rfcsr);
+	rt2x00_set_field8(&rfcsr, FIELD8(0x80), 1);
+	rt2800_rfcsr_write(rt2x00dev, rf_reg, rfcsr);
+	msleep(1);
+	rt2x00_set_field8(&rfcsr, FIELD8(0x80), 0);
+	rt2800_rfcsr_write(rt2x00dev, rf_reg, rfcsr);
+}
+
+static void rt2800_rx_filter_calibration(struct rt2x00_dev *rt2x00dev)
+{
+	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+	u8 filter_tgt_bw20;
+	u8 filter_tgt_bw40;
+	u8 rfcsr, bbp;
+
+	/*
+	 * TODO: sync filter_tgt values with vendor driver
+	 */
+	if (rt2x00_rt(rt2x00dev, RT3070)) {
+		filter_tgt_bw20 = 0x16;
+		filter_tgt_bw40 = 0x19;
+	} else {
+		filter_tgt_bw20 = 0x13;
+		filter_tgt_bw40 = 0x15;
+	}
+
+	drv_data->calibration_bw20 =
+		rt2800_init_rx_filter(rt2x00dev, false, filter_tgt_bw20);
+	drv_data->calibration_bw40 =
+		rt2800_init_rx_filter(rt2x00dev, true, filter_tgt_bw40);
+
+	/*
+	 * Save BBP 25 & 26 values for later use in channel switching (for 3052)
+	 */
+	rt2800_bbp_read(rt2x00dev, 25, &drv_data->bbp25);
+	rt2800_bbp_read(rt2x00dev, 26, &drv_data->bbp26);
+
+	/*
+	 * Set back to initial state
+	 */
+	rt2800_bbp_write(rt2x00dev, 24, 0);
+
+	rt2800_rfcsr_read(rt2x00dev, 22, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR22_BASEBAND_LOOPBACK, 0);
+	rt2800_rfcsr_write(rt2x00dev, 22, rfcsr);
+
+	/*
+	 * Set BBP back to BW20
+	 */
+	rt2800_bbp_read(rt2x00dev, 4, &bbp);
+	rt2x00_set_field8(&bbp, BBP4_BANDWIDTH, 0);
+	rt2800_bbp_write(rt2x00dev, 4, bbp);
+}
+
+static void rt2800_normal_mode_setup_3xxx(struct rt2x00_dev *rt2x00dev)
+{
+	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+	u8 min_gain, rfcsr, bbp;
+	u16 eeprom;
+
+	rt2800_rfcsr_read(rt2x00dev, 17, &rfcsr);
+
+	rt2x00_set_field8(&rfcsr, RFCSR17_TX_LO1_EN, 0);
+	if (rt2x00_rt(rt2x00dev, RT3070) ||
+	    rt2x00_rt_rev_lt(rt2x00dev, RT3071, REV_RT3071E) ||
+	    rt2x00_rt_rev_lt(rt2x00dev, RT3090, REV_RT3090E) ||
+	    rt2x00_rt_rev_lt(rt2x00dev, RT3390, REV_RT3390E)) {
+		if (!rt2x00_has_cap_external_lna_bg(rt2x00dev))
+			rt2x00_set_field8(&rfcsr, RFCSR17_R, 1);
+	}
+
+	min_gain = rt2x00_rt(rt2x00dev, RT3070) ? 1 : 2;
+	if (drv_data->txmixer_gain_24g >= min_gain) {
+		rt2x00_set_field8(&rfcsr, RFCSR17_TXMIXER_GAIN,
+				  drv_data->txmixer_gain_24g);
+	}
+
+	rt2800_rfcsr_write(rt2x00dev, 17, rfcsr);
+
+	if (rt2x00_rt(rt2x00dev, RT3090)) {
+		/*  Turn off unused DAC1 and ADC1 to reduce power consumption */
+		rt2800_bbp_read(rt2x00dev, 138, &bbp);
+		rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &eeprom);
+		if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH) == 1)
+			rt2x00_set_field8(&bbp, BBP138_RX_ADC1, 0);
+		if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) == 1)
+			rt2x00_set_field8(&bbp, BBP138_TX_DAC1, 1);
+		rt2800_bbp_write(rt2x00dev, 138, bbp);
+	}
+
+	if (rt2x00_rt(rt2x00dev, RT3070)) {
+		rt2800_rfcsr_read(rt2x00dev, 27, &rfcsr);
+		if (rt2x00_rt_rev_lt(rt2x00dev, RT3070, REV_RT3070F))
+			rt2x00_set_field8(&rfcsr, RFCSR27_R1, 3);
+		else
+			rt2x00_set_field8(&rfcsr, RFCSR27_R1, 0);
+		rt2x00_set_field8(&rfcsr, RFCSR27_R2, 0);
+		rt2x00_set_field8(&rfcsr, RFCSR27_R3, 0);
+		rt2x00_set_field8(&rfcsr, RFCSR27_R4, 0);
+		rt2800_rfcsr_write(rt2x00dev, 27, rfcsr);
+	} else if (rt2x00_rt(rt2x00dev, RT3071) ||
+		   rt2x00_rt(rt2x00dev, RT3090) ||
+		   rt2x00_rt(rt2x00dev, RT3390)) {
+		rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
+		rt2x00_set_field8(&rfcsr, RFCSR1_RF_BLOCK_EN, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX0_PD, 0);
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX0_PD, 0);
+		rt2x00_set_field8(&rfcsr, RFCSR1_RX1_PD, 1);
+		rt2x00_set_field8(&rfcsr, RFCSR1_TX1_PD, 1);
+		rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+
+		rt2800_rfcsr_read(rt2x00dev, 15, &rfcsr);
+		rt2x00_set_field8(&rfcsr, RFCSR15_TX_LO2_EN, 0);
+		rt2800_rfcsr_write(rt2x00dev, 15, rfcsr);
+
+		rt2800_rfcsr_read(rt2x00dev, 20, &rfcsr);
+		rt2x00_set_field8(&rfcsr, RFCSR20_RX_LO1_EN, 0);
+		rt2800_rfcsr_write(rt2x00dev, 20, rfcsr);
+
+		rt2800_rfcsr_read(rt2x00dev, 21, &rfcsr);
+		rt2x00_set_field8(&rfcsr, RFCSR21_RX_LO2_EN, 0);
+		rt2800_rfcsr_write(rt2x00dev, 21, rfcsr);
+	}
+}
+
+static void rt2800_normal_mode_setup_3593(struct rt2x00_dev *rt2x00dev)
+{
+	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+	u8 rfcsr;
+	u8 tx_gain;
+
+	rt2800_rfcsr_read(rt2x00dev, 50, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR50_TX_LO2_EN, 0);
+	rt2800_rfcsr_write(rt2x00dev, 50, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 51, &rfcsr);
+	tx_gain = rt2x00_get_field8(drv_data->txmixer_gain_24g,
+				    RFCSR17_TXMIXER_GAIN);
+	rt2x00_set_field8(&rfcsr, RFCSR51_BITS24, tx_gain);
+	rt2800_rfcsr_write(rt2x00dev, 51, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 38, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR38_RX_LO1_EN, 0);
+	rt2800_rfcsr_write(rt2x00dev, 38, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 39, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR39_RX_LO2_EN, 0);
+	rt2800_rfcsr_write(rt2x00dev, 39, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 1, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR1_RF_BLOCK_EN, 1);
+	rt2x00_set_field8(&rfcsr, RFCSR1_PLL_PD, 1);
+	rt2800_rfcsr_write(rt2x00dev, 1, rfcsr);
+
+	rt2800_rfcsr_read(rt2x00dev, 30, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR30_RX_VCM, 2);
+	rt2800_rfcsr_write(rt2x00dev, 30, rfcsr);
+
+	/* TODO: enable stream mode */
+}
+
+static void rt2800_normal_mode_setup_5xxx(struct rt2x00_dev *rt2x00dev)
+{
+	u8 reg;
+	u16 eeprom;
+
+	/*  Turn off unused DAC1 and ADC1 to reduce power consumption */
+	rt2800_bbp_read(rt2x00dev, 138, &reg);
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &eeprom);
+	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH) == 1)
+		rt2x00_set_field8(&reg, BBP138_RX_ADC1, 0);
+	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) == 1)
+		rt2x00_set_field8(&reg, BBP138_TX_DAC1, 1);
+	rt2800_bbp_write(rt2x00dev, 138, reg);
+
+	rt2800_rfcsr_read(rt2x00dev, 38, &reg);
+	rt2x00_set_field8(&reg, RFCSR38_RX_LO1_EN, 0);
+	rt2800_rfcsr_write(rt2x00dev, 38, reg);
+
+	rt2800_rfcsr_read(rt2x00dev, 39, &reg);
+	rt2x00_set_field8(&reg, RFCSR39_RX_LO2_EN, 0);
+	rt2800_rfcsr_write(rt2x00dev, 39, reg);
+
+	rt2800_bbp4_mac_if_ctrl(rt2x00dev);
+
+	rt2800_rfcsr_read(rt2x00dev, 30, &reg);
+	rt2x00_set_field8(&reg, RFCSR30_RX_VCM, 2);
+	rt2800_rfcsr_write(rt2x00dev, 30, reg);
+}
+
+static void rt2800_init_rfcsr_305x_soc(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_rf_init_calibration(rt2x00dev, 30);
+
+	rt2800_rfcsr_write(rt2x00dev, 0, 0x50);
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x01);
+	rt2800_rfcsr_write(rt2x00dev, 2, 0xf7);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x75);
+	rt2800_rfcsr_write(rt2x00dev, 4, 0x40);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0x50);
+	rt2800_rfcsr_write(rt2x00dev, 8, 0x39);
+	rt2800_rfcsr_write(rt2x00dev, 9, 0x0f);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0x60);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x21);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x75);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x75);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0x90);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x58);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0xb3);
+	rt2800_rfcsr_write(rt2x00dev, 17, 0x92);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x2c);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 20, 0xba);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0xdb);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 23, 0x31);
+	rt2800_rfcsr_write(rt2x00dev, 24, 0x08);
+	rt2800_rfcsr_write(rt2x00dev, 25, 0x01);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x25);
+	rt2800_rfcsr_write(rt2x00dev, 27, 0x23);
+	rt2800_rfcsr_write(rt2x00dev, 28, 0x13);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x83);
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x00);
+}
+
+static void rt2800_init_rfcsr_30xx(struct rt2x00_dev *rt2x00dev)
+{
+	u8 rfcsr;
+	u16 eeprom;
+	u32 reg;
+
+	/* XXX vendor driver do this only for 3070 */
+	rt2800_rf_init_calibration(rt2x00dev, 30);
+
+	rt2800_rfcsr_write(rt2x00dev, 4, 0x40);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0x60);
+	rt2800_rfcsr_write(rt2x00dev, 9, 0x0f);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0x41);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x21);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x7b);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0x90);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x58);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0xb3);
+	rt2800_rfcsr_write(rt2x00dev, 17, 0x92);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x2c);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 20, 0xba);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0xdb);
+	rt2800_rfcsr_write(rt2x00dev, 24, 0x16);
+	rt2800_rfcsr_write(rt2x00dev, 25, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x1f);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00_rt_rev_lt(rt2x00dev, RT3070, REV_RT3070F)) {
 		rt2800_register_read(rt2x00dev, LDO_CFG0, &reg);
@@ -4195,7 +7822,12 @@ static int rt2800_init_rfcsr(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field32(&reg, LDO_CFG0_BGSEL, 1);
 		if (rt2x00_rt_rev_lt(rt2x00dev, RT3071, REV_RT3071E) ||
 		    rt2x00_rt_rev_lt(rt2x00dev, RT3090, REV_RT3090E)) {
+<<<<<<< HEAD
 			rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+=======
+			rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1,
+					   &eeprom);
+>>>>>>> refs/remotes/origin/master
 			if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF1_DAC_TEST))
 				rt2x00_set_field32(&reg, LDO_CFG0_LDO_CORE_VLEVEL, 3);
 			else
@@ -4206,6 +7838,7 @@ static int rt2800_init_rfcsr(struct rt2x00_dev *rt2x00dev)
 		rt2800_register_read(rt2x00dev, GPIO_SWITCH, &reg);
 		rt2x00_set_field32(&reg, GPIO_SWITCH_5, 0);
 		rt2800_register_write(rt2x00dev, GPIO_SWITCH, reg);
+<<<<<<< HEAD
 	} else if (rt2x00_rt(rt2x00dev, RT3390)) {
 		rt2800_register_read(rt2x00dev, GPIO_SWITCH, &reg);
 		rt2x00_set_field32(&reg, GPIO_SWITCH_5, 0);
@@ -4396,6 +8029,635 @@ static int rt2800_init_rfcsr(struct rt2x00_dev *rt2x00dev)
 	}
 
 	return 0;
+=======
+	}
+
+	rt2800_rx_filter_calibration(rt2x00dev);
+
+	if (rt2x00_rt_rev_lt(rt2x00dev, RT3070, REV_RT3070F) ||
+	    rt2x00_rt_rev_lt(rt2x00dev, RT3071, REV_RT3071E) ||
+	    rt2x00_rt_rev_lt(rt2x00dev, RT3090, REV_RT3090E))
+		rt2800_rfcsr_write(rt2x00dev, 27, 0x03);
+
+	rt2800_led_open_drain_enable(rt2x00dev);
+	rt2800_normal_mode_setup_3xxx(rt2x00dev);
+}
+
+static void rt2800_init_rfcsr_3290(struct rt2x00_dev *rt2x00dev)
+{
+	u8 rfcsr;
+
+	rt2800_rf_init_calibration(rt2x00dev, 2);
+
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x0f);
+	rt2800_rfcsr_write(rt2x00dev, 2, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x08);
+	rt2800_rfcsr_write(rt2x00dev, 4, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0xa0);
+	rt2800_rfcsr_write(rt2x00dev, 8, 0xf3);
+	rt2800_rfcsr_write(rt2x00dev, 9, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0x53);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x4a);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x46);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x9f);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x20);
+	rt2800_rfcsr_write(rt2x00dev, 25, 0x83);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x82);
+	rt2800_rfcsr_write(rt2x00dev, 27, 0x09);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 32, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 33, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 34, 0x05);
+	rt2800_rfcsr_write(rt2x00dev, 35, 0x12);
+	rt2800_rfcsr_write(rt2x00dev, 36, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 38, 0x85);
+	rt2800_rfcsr_write(rt2x00dev, 39, 0x1b);
+	rt2800_rfcsr_write(rt2x00dev, 40, 0x0b);
+	rt2800_rfcsr_write(rt2x00dev, 41, 0xbb);
+	rt2800_rfcsr_write(rt2x00dev, 42, 0xd5);
+	rt2800_rfcsr_write(rt2x00dev, 43, 0x7b);
+	rt2800_rfcsr_write(rt2x00dev, 44, 0x0e);
+	rt2800_rfcsr_write(rt2x00dev, 45, 0xa2);
+	rt2800_rfcsr_write(rt2x00dev, 46, 0x73);
+	rt2800_rfcsr_write(rt2x00dev, 47, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 48, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 49, 0x98);
+	rt2800_rfcsr_write(rt2x00dev, 52, 0x38);
+	rt2800_rfcsr_write(rt2x00dev, 53, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 54, 0x78);
+	rt2800_rfcsr_write(rt2x00dev, 55, 0x43);
+	rt2800_rfcsr_write(rt2x00dev, 56, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 57, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 58, 0x7f);
+	rt2800_rfcsr_write(rt2x00dev, 59, 0x09);
+	rt2800_rfcsr_write(rt2x00dev, 60, 0x45);
+	rt2800_rfcsr_write(rt2x00dev, 61, 0xc1);
+
+	rt2800_rfcsr_read(rt2x00dev, 29, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR29_RSSI_GAIN, 3);
+	rt2800_rfcsr_write(rt2x00dev, 29, rfcsr);
+
+	rt2800_led_open_drain_enable(rt2x00dev);
+	rt2800_normal_mode_setup_3xxx(rt2x00dev);
+}
+
+static void rt2800_init_rfcsr_3352(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_rf_init_calibration(rt2x00dev, 30);
+
+	rt2800_rfcsr_write(rt2x00dev, 0, 0xf0);
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x23);
+	rt2800_rfcsr_write(rt2x00dev, 2, 0x50);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x18);
+	rt2800_rfcsr_write(rt2x00dev, 4, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0x33);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 8, 0xf1);
+	rt2800_rfcsr_write(rt2x00dev, 9, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0xd2);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x42);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x1c);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0x5a);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0x01);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x45);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 20, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 23, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 24, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 25, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 27, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 28, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 32, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 33, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 34, 0x01);
+	rt2800_rfcsr_write(rt2x00dev, 35, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 36, 0xbd);
+	rt2800_rfcsr_write(rt2x00dev, 37, 0x3c);
+	rt2800_rfcsr_write(rt2x00dev, 38, 0x5f);
+	rt2800_rfcsr_write(rt2x00dev, 39, 0xc5);
+	rt2800_rfcsr_write(rt2x00dev, 40, 0x33);
+	rt2800_rfcsr_write(rt2x00dev, 41, 0x5b);
+	rt2800_rfcsr_write(rt2x00dev, 42, 0x5b);
+	rt2800_rfcsr_write(rt2x00dev, 43, 0xdb);
+	rt2800_rfcsr_write(rt2x00dev, 44, 0xdb);
+	rt2800_rfcsr_write(rt2x00dev, 45, 0xdb);
+	rt2800_rfcsr_write(rt2x00dev, 46, 0xdd);
+	rt2800_rfcsr_write(rt2x00dev, 47, 0x0d);
+	rt2800_rfcsr_write(rt2x00dev, 48, 0x14);
+	rt2800_rfcsr_write(rt2x00dev, 49, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 50, 0x2d);
+	rt2800_rfcsr_write(rt2x00dev, 51, 0x7f);
+	rt2800_rfcsr_write(rt2x00dev, 52, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 53, 0x52);
+	rt2800_rfcsr_write(rt2x00dev, 54, 0x1b);
+	rt2800_rfcsr_write(rt2x00dev, 55, 0x7f);
+	rt2800_rfcsr_write(rt2x00dev, 56, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 57, 0x52);
+	rt2800_rfcsr_write(rt2x00dev, 58, 0x1b);
+	rt2800_rfcsr_write(rt2x00dev, 59, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 60, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 61, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 62, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 63, 0x00);
+
+	rt2800_rx_filter_calibration(rt2x00dev);
+	rt2800_led_open_drain_enable(rt2x00dev);
+	rt2800_normal_mode_setup_3xxx(rt2x00dev);
+}
+
+static void rt2800_init_rfcsr_3390(struct rt2x00_dev *rt2x00dev)
+{
+	u32 reg;
+
+	rt2800_rf_init_calibration(rt2x00dev, 30);
+
+	rt2800_rfcsr_write(rt2x00dev, 0, 0xa0);
+	rt2800_rfcsr_write(rt2x00dev, 1, 0xe1);
+	rt2800_rfcsr_write(rt2x00dev, 2, 0xf1);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x62);
+	rt2800_rfcsr_write(rt2x00dev, 4, 0x40);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x8b);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0x42);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0x34);
+	rt2800_rfcsr_write(rt2x00dev, 8, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 9, 0xc0);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0x61);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x21);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x3b);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0xe0);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0x90);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x53);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0xe0);
+	rt2800_rfcsr_write(rt2x00dev, 17, 0x94);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x5c);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x4a);
+	rt2800_rfcsr_write(rt2x00dev, 20, 0xb2);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0xf6);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 23, 0x14);
+	rt2800_rfcsr_write(rt2x00dev, 24, 0x08);
+	rt2800_rfcsr_write(rt2x00dev, 25, 0x3d);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x85);
+	rt2800_rfcsr_write(rt2x00dev, 27, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 28, 0x41);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x8f);
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x20);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x0f);
+
+	rt2800_register_read(rt2x00dev, GPIO_SWITCH, &reg);
+	rt2x00_set_field32(&reg, GPIO_SWITCH_5, 0);
+	rt2800_register_write(rt2x00dev, GPIO_SWITCH, reg);
+
+	rt2800_rx_filter_calibration(rt2x00dev);
+
+	if (rt2x00_rt_rev_lt(rt2x00dev, RT3390, REV_RT3390E))
+		rt2800_rfcsr_write(rt2x00dev, 27, 0x03);
+
+	rt2800_led_open_drain_enable(rt2x00dev);
+	rt2800_normal_mode_setup_3xxx(rt2x00dev);
+}
+
+static void rt2800_init_rfcsr_3572(struct rt2x00_dev *rt2x00dev)
+{
+	u8 rfcsr;
+	u32 reg;
+
+	rt2800_rf_init_calibration(rt2x00dev, 30);
+
+	rt2800_rfcsr_write(rt2x00dev, 0, 0x70);
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x81);
+	rt2800_rfcsr_write(rt2x00dev, 2, 0xf1);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 4, 0x4c);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x05);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0x4a);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0xd8);
+	rt2800_rfcsr_write(rt2x00dev, 9, 0xc3);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0xf1);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0xb9);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x70);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x65);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0xa0);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x53);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0x4c);
+	rt2800_rfcsr_write(rt2x00dev, 17, 0x23);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0xac);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x93);
+	rt2800_rfcsr_write(rt2x00dev, 20, 0xb3);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0xd0);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 23, 0x3c);
+	rt2800_rfcsr_write(rt2x00dev, 24, 0x16);
+	rt2800_rfcsr_write(rt2x00dev, 25, 0x15);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x85);
+	rt2800_rfcsr_write(rt2x00dev, 27, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 28, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x9b);
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x09);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x10);
+
+	rt2800_rfcsr_read(rt2x00dev, 6, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR6_R2, 1);
+	rt2800_rfcsr_write(rt2x00dev, 6, rfcsr);
+
+	rt2800_register_read(rt2x00dev, LDO_CFG0, &reg);
+	rt2x00_set_field32(&reg, LDO_CFG0_LDO_CORE_VLEVEL, 3);
+	rt2x00_set_field32(&reg, LDO_CFG0_BGSEL, 1);
+	rt2800_register_write(rt2x00dev, LDO_CFG0, reg);
+	msleep(1);
+	rt2800_register_read(rt2x00dev, LDO_CFG0, &reg);
+	rt2x00_set_field32(&reg, LDO_CFG0_LDO_CORE_VLEVEL, 0);
+	rt2x00_set_field32(&reg, LDO_CFG0_BGSEL, 1);
+	rt2800_register_write(rt2x00dev, LDO_CFG0, reg);
+
+	rt2800_rx_filter_calibration(rt2x00dev);
+	rt2800_led_open_drain_enable(rt2x00dev);
+	rt2800_normal_mode_setup_3xxx(rt2x00dev);
+}
+
+static void rt3593_post_bbp_init(struct rt2x00_dev *rt2x00dev)
+{
+	u8 bbp;
+	bool txbf_enabled = false; /* FIXME */
+
+	rt2800_bbp_read(rt2x00dev, 105, &bbp);
+	if (rt2x00dev->default_ant.rx_chain_num == 1)
+		rt2x00_set_field8(&bbp, BBP105_MLD, 0);
+	else
+		rt2x00_set_field8(&bbp, BBP105_MLD, 1);
+	rt2800_bbp_write(rt2x00dev, 105, bbp);
+
+	rt2800_bbp4_mac_if_ctrl(rt2x00dev);
+
+	rt2800_bbp_write(rt2x00dev, 92, 0x02);
+	rt2800_bbp_write(rt2x00dev, 82, 0x82);
+	rt2800_bbp_write(rt2x00dev, 106, 0x05);
+	rt2800_bbp_write(rt2x00dev, 104, 0x92);
+	rt2800_bbp_write(rt2x00dev, 88, 0x90);
+	rt2800_bbp_write(rt2x00dev, 148, 0xc8);
+	rt2800_bbp_write(rt2x00dev, 47, 0x48);
+	rt2800_bbp_write(rt2x00dev, 120, 0x50);
+
+	if (txbf_enabled)
+		rt2800_bbp_write(rt2x00dev, 163, 0xbd);
+	else
+		rt2800_bbp_write(rt2x00dev, 163, 0x9d);
+
+	/* SNR mapping */
+	rt2800_bbp_write(rt2x00dev, 142, 6);
+	rt2800_bbp_write(rt2x00dev, 143, 160);
+	rt2800_bbp_write(rt2x00dev, 142, 7);
+	rt2800_bbp_write(rt2x00dev, 143, 161);
+	rt2800_bbp_write(rt2x00dev, 142, 8);
+	rt2800_bbp_write(rt2x00dev, 143, 162);
+
+	/* ADC/DAC control */
+	rt2800_bbp_write(rt2x00dev, 31, 0x08);
+
+	/* RX AGC energy lower bound in log2 */
+	rt2800_bbp_write(rt2x00dev, 68, 0x0b);
+
+	/* FIXME: BBP 105 owerwrite? */
+	rt2800_bbp_write(rt2x00dev, 105, 0x04);
+
+}
+
+static void rt2800_init_rfcsr_3593(struct rt2x00_dev *rt2x00dev)
+{
+	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+	u32 reg;
+	u8 rfcsr;
+
+	/* Disable GPIO #4 and #7 function for LAN PE control */
+	rt2800_register_read(rt2x00dev, GPIO_SWITCH, &reg);
+	rt2x00_set_field32(&reg, GPIO_SWITCH_4, 0);
+	rt2x00_set_field32(&reg, GPIO_SWITCH_7, 0);
+	rt2800_register_write(rt2x00dev, GPIO_SWITCH, reg);
+
+	/* Initialize default register values */
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0x40);
+	rt2800_rfcsr_write(rt2x00dev, 8, 0xf1);
+	rt2800_rfcsr_write(rt2x00dev, 9, 0x02);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0xd3);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x40);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x4e);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x12);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x40);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x20);
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 32, 0x78);
+	rt2800_rfcsr_write(rt2x00dev, 33, 0x3b);
+	rt2800_rfcsr_write(rt2x00dev, 34, 0x3c);
+	rt2800_rfcsr_write(rt2x00dev, 35, 0xe0);
+	rt2800_rfcsr_write(rt2x00dev, 38, 0x86);
+	rt2800_rfcsr_write(rt2x00dev, 39, 0x23);
+	rt2800_rfcsr_write(rt2x00dev, 44, 0xd3);
+	rt2800_rfcsr_write(rt2x00dev, 45, 0xbb);
+	rt2800_rfcsr_write(rt2x00dev, 46, 0x60);
+	rt2800_rfcsr_write(rt2x00dev, 49, 0x8e);
+	rt2800_rfcsr_write(rt2x00dev, 50, 0x86);
+	rt2800_rfcsr_write(rt2x00dev, 51, 0x75);
+	rt2800_rfcsr_write(rt2x00dev, 52, 0x45);
+	rt2800_rfcsr_write(rt2x00dev, 53, 0x18);
+	rt2800_rfcsr_write(rt2x00dev, 54, 0x18);
+	rt2800_rfcsr_write(rt2x00dev, 55, 0x18);
+	rt2800_rfcsr_write(rt2x00dev, 56, 0xdb);
+	rt2800_rfcsr_write(rt2x00dev, 57, 0x6e);
+
+	/* Initiate calibration */
+	/* TODO: use rt2800_rf_init_calibration ? */
+	rt2800_rfcsr_read(rt2x00dev, 2, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR2_RESCAL_EN, 1);
+	rt2800_rfcsr_write(rt2x00dev, 2, rfcsr);
+
+	rt2800_adjust_freq_offset(rt2x00dev);
+
+	rt2800_rfcsr_read(rt2x00dev, 18, &rfcsr);
+	rt2x00_set_field8(&rfcsr, RFCSR18_XO_TUNE_BYPASS, 1);
+	rt2800_rfcsr_write(rt2x00dev, 18, rfcsr);
+
+	rt2800_register_read(rt2x00dev, LDO_CFG0, &reg);
+	rt2x00_set_field32(&reg, LDO_CFG0_LDO_CORE_VLEVEL, 3);
+	rt2x00_set_field32(&reg, LDO_CFG0_BGSEL, 1);
+	rt2800_register_write(rt2x00dev, LDO_CFG0, reg);
+	usleep_range(1000, 1500);
+	rt2800_register_read(rt2x00dev, LDO_CFG0, &reg);
+	rt2x00_set_field32(&reg, LDO_CFG0_LDO_CORE_VLEVEL, 0);
+	rt2800_register_write(rt2x00dev, LDO_CFG0, reg);
+
+	/* Set initial values for RX filter calibration */
+	drv_data->calibration_bw20 = 0x1f;
+	drv_data->calibration_bw40 = 0x2f;
+
+	/* Save BBP 25 & 26 values for later use in channel switching */
+	rt2800_bbp_read(rt2x00dev, 25, &drv_data->bbp25);
+	rt2800_bbp_read(rt2x00dev, 26, &drv_data->bbp26);
+
+	rt2800_led_open_drain_enable(rt2x00dev);
+	rt2800_normal_mode_setup_3593(rt2x00dev);
+
+	rt3593_post_bbp_init(rt2x00dev);
+
+	/* TODO: enable stream mode support */
+}
+
+static void rt2800_init_rfcsr_5390(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_rf_init_calibration(rt2x00dev, 2);
+
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x0f);
+	rt2800_rfcsr_write(rt2x00dev, 2, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x88);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x10);
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390F))
+		rt2800_rfcsr_write(rt2x00dev, 6, 0xe0);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 6, 0xa0);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0x53);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x4a);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0xc6);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x9f);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x00);
+
+	rt2800_rfcsr_write(rt2x00dev, 20, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x20);
+	rt2800_rfcsr_write(rt2x00dev, 23, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 24, 0x00);
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390F))
+		rt2800_rfcsr_write(rt2x00dev, 25, 0x80);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 25, 0xc0);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 27, 0x09);
+	rt2800_rfcsr_write(rt2x00dev, 28, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x10);
+
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 32, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 33, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 34, 0x07);
+	rt2800_rfcsr_write(rt2x00dev, 35, 0x12);
+	rt2800_rfcsr_write(rt2x00dev, 36, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 37, 0x08);
+	rt2800_rfcsr_write(rt2x00dev, 38, 0x85);
+	rt2800_rfcsr_write(rt2x00dev, 39, 0x1b);
+
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390F))
+		rt2800_rfcsr_write(rt2x00dev, 40, 0x0b);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 40, 0x4b);
+	rt2800_rfcsr_write(rt2x00dev, 41, 0xbb);
+	rt2800_rfcsr_write(rt2x00dev, 42, 0xd2);
+	rt2800_rfcsr_write(rt2x00dev, 43, 0x9a);
+	rt2800_rfcsr_write(rt2x00dev, 44, 0x0e);
+	rt2800_rfcsr_write(rt2x00dev, 45, 0xa2);
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390F))
+		rt2800_rfcsr_write(rt2x00dev, 46, 0x73);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 46, 0x7b);
+	rt2800_rfcsr_write(rt2x00dev, 47, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 48, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 49, 0x94);
+
+	rt2800_rfcsr_write(rt2x00dev, 52, 0x38);
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390F))
+		rt2800_rfcsr_write(rt2x00dev, 53, 0x00);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 53, 0x84);
+	rt2800_rfcsr_write(rt2x00dev, 54, 0x78);
+	rt2800_rfcsr_write(rt2x00dev, 55, 0x44);
+	rt2800_rfcsr_write(rt2x00dev, 56, 0x22);
+	rt2800_rfcsr_write(rt2x00dev, 57, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 58, 0x7f);
+	rt2800_rfcsr_write(rt2x00dev, 59, 0x8f);
+
+	rt2800_rfcsr_write(rt2x00dev, 60, 0x45);
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390F))
+		rt2800_rfcsr_write(rt2x00dev, 61, 0xd1);
+	else
+		rt2800_rfcsr_write(rt2x00dev, 61, 0xdd);
+	rt2800_rfcsr_write(rt2x00dev, 62, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 63, 0x00);
+
+	rt2800_normal_mode_setup_5xxx(rt2x00dev);
+
+	rt2800_led_open_drain_enable(rt2x00dev);
+}
+
+static void rt2800_init_rfcsr_5392(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_rf_init_calibration(rt2x00dev, 2);
+
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x17);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x88);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0xe0);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 10, 0x53);
+	rt2800_rfcsr_write(rt2x00dev, 11, 0x4a);
+	rt2800_rfcsr_write(rt2x00dev, 12, 0x46);
+	rt2800_rfcsr_write(rt2x00dev, 13, 0x9f);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x4d);
+	rt2800_rfcsr_write(rt2x00dev, 20, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0x8d);
+	rt2800_rfcsr_write(rt2x00dev, 22, 0x20);
+	rt2800_rfcsr_write(rt2x00dev, 23, 0x0b);
+	rt2800_rfcsr_write(rt2x00dev, 24, 0x44);
+	rt2800_rfcsr_write(rt2x00dev, 25, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x82);
+	rt2800_rfcsr_write(rt2x00dev, 27, 0x09);
+	rt2800_rfcsr_write(rt2x00dev, 28, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 30, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 31, 0x80);
+	rt2800_rfcsr_write(rt2x00dev, 32, 0x20);
+	rt2800_rfcsr_write(rt2x00dev, 33, 0xC0);
+	rt2800_rfcsr_write(rt2x00dev, 34, 0x07);
+	rt2800_rfcsr_write(rt2x00dev, 35, 0x12);
+	rt2800_rfcsr_write(rt2x00dev, 36, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 37, 0x08);
+	rt2800_rfcsr_write(rt2x00dev, 38, 0x89);
+	rt2800_rfcsr_write(rt2x00dev, 39, 0x1b);
+	rt2800_rfcsr_write(rt2x00dev, 40, 0x0f);
+	rt2800_rfcsr_write(rt2x00dev, 41, 0xbb);
+	rt2800_rfcsr_write(rt2x00dev, 42, 0xd5);
+	rt2800_rfcsr_write(rt2x00dev, 43, 0x9b);
+	rt2800_rfcsr_write(rt2x00dev, 44, 0x0e);
+	rt2800_rfcsr_write(rt2x00dev, 45, 0xa2);
+	rt2800_rfcsr_write(rt2x00dev, 46, 0x73);
+	rt2800_rfcsr_write(rt2x00dev, 47, 0x0c);
+	rt2800_rfcsr_write(rt2x00dev, 48, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 49, 0x94);
+	rt2800_rfcsr_write(rt2x00dev, 50, 0x94);
+	rt2800_rfcsr_write(rt2x00dev, 51, 0x3a);
+	rt2800_rfcsr_write(rt2x00dev, 52, 0x48);
+	rt2800_rfcsr_write(rt2x00dev, 53, 0x44);
+	rt2800_rfcsr_write(rt2x00dev, 54, 0x38);
+	rt2800_rfcsr_write(rt2x00dev, 55, 0x43);
+	rt2800_rfcsr_write(rt2x00dev, 56, 0xa1);
+	rt2800_rfcsr_write(rt2x00dev, 57, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 58, 0x39);
+	rt2800_rfcsr_write(rt2x00dev, 59, 0x07);
+	rt2800_rfcsr_write(rt2x00dev, 60, 0x45);
+	rt2800_rfcsr_write(rt2x00dev, 61, 0x91);
+	rt2800_rfcsr_write(rt2x00dev, 62, 0x39);
+	rt2800_rfcsr_write(rt2x00dev, 63, 0x07);
+
+	rt2800_normal_mode_setup_5xxx(rt2x00dev);
+
+	rt2800_led_open_drain_enable(rt2x00dev);
+}
+
+static void rt2800_init_rfcsr_5592(struct rt2x00_dev *rt2x00dev)
+{
+	rt2800_rf_init_calibration(rt2x00dev, 30);
+
+	rt2800_rfcsr_write(rt2x00dev, 1, 0x3F);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x08);
+	rt2800_rfcsr_write(rt2x00dev, 3, 0x08);
+	rt2800_rfcsr_write(rt2x00dev, 5, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 6, 0xE4);
+	rt2800_rfcsr_write(rt2x00dev, 7, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 14, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 15, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 16, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 18, 0x03);
+	rt2800_rfcsr_write(rt2x00dev, 19, 0x4D);
+	rt2800_rfcsr_write(rt2x00dev, 20, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 21, 0x8D);
+	rt2800_rfcsr_write(rt2x00dev, 26, 0x82);
+	rt2800_rfcsr_write(rt2x00dev, 28, 0x00);
+	rt2800_rfcsr_write(rt2x00dev, 29, 0x10);
+	rt2800_rfcsr_write(rt2x00dev, 33, 0xC0);
+	rt2800_rfcsr_write(rt2x00dev, 34, 0x07);
+	rt2800_rfcsr_write(rt2x00dev, 35, 0x12);
+	rt2800_rfcsr_write(rt2x00dev, 47, 0x0C);
+	rt2800_rfcsr_write(rt2x00dev, 53, 0x22);
+	rt2800_rfcsr_write(rt2x00dev, 63, 0x07);
+
+	rt2800_rfcsr_write(rt2x00dev, 2, 0x80);
+	msleep(1);
+
+	rt2800_adjust_freq_offset(rt2x00dev);
+
+	/* Enable DC filter */
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5592, REV_RT5592C))
+		rt2800_bbp_write(rt2x00dev, 103, 0xc0);
+
+	rt2800_normal_mode_setup_5xxx(rt2x00dev);
+
+	if (rt2x00_rt_rev_lt(rt2x00dev, RT5592, REV_RT5592C))
+		rt2800_rfcsr_write(rt2x00dev, 27, 0x03);
+
+	rt2800_led_open_drain_enable(rt2x00dev);
+}
+
+static void rt2800_init_rfcsr(struct rt2x00_dev *rt2x00dev)
+{
+	if (rt2800_is_305x_soc(rt2x00dev)) {
+		rt2800_init_rfcsr_305x_soc(rt2x00dev);
+		return;
+	}
+
+	switch (rt2x00dev->chip.rt) {
+	case RT3070:
+	case RT3071:
+	case RT3090:
+		rt2800_init_rfcsr_30xx(rt2x00dev);
+		break;
+	case RT3290:
+		rt2800_init_rfcsr_3290(rt2x00dev);
+		break;
+	case RT3352:
+		rt2800_init_rfcsr_3352(rt2x00dev);
+		break;
+	case RT3390:
+		rt2800_init_rfcsr_3390(rt2x00dev);
+		break;
+	case RT3572:
+		rt2800_init_rfcsr_3572(rt2x00dev);
+		break;
+	case RT3593:
+		rt2800_init_rfcsr_3593(rt2x00dev);
+		break;
+	case RT5390:
+		rt2800_init_rfcsr_5390(rt2x00dev);
+		break;
+	case RT5392:
+		rt2800_init_rfcsr_5392(rt2x00dev);
+		break;
+	case RT5592:
+		rt2800_init_rfcsr_5592(rt2x00dev);
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 int rt2800_enable_radio(struct rt2x00_dev *rt2x00dev)
@@ -4404,6 +8666,7 @@ int rt2800_enable_radio(struct rt2x00_dev *rt2x00dev)
 	u16 word;
 
 	/*
+<<<<<<< HEAD
 	 * Initialize all registers.
 	 */
 	if (unlikely(rt2800_wait_wpdma_ready(rt2x00dev) ||
@@ -4416,6 +8679,41 @@ int rt2800_enable_radio(struct rt2x00_dev *rt2x00dev)
 	 * Send signal to firmware during boot time.
 	 */
 	rt2800_mcu_request(rt2x00dev, MCU_BOOT_SIGNAL, 0, 0, 0);
+=======
+	 * Initialize MAC registers.
+	 */
+	if (unlikely(rt2800_wait_wpdma_ready(rt2x00dev) ||
+		     rt2800_init_registers(rt2x00dev)))
+		return -EIO;
+
+	/*
+	 * Wait BBP/RF to wake up.
+	 */
+	if (unlikely(rt2800_wait_bbp_rf_ready(rt2x00dev)))
+		return -EIO;
+
+	/*
+	 * Send signal during boot time to initialize firmware.
+	 */
+	rt2800_register_write(rt2x00dev, H2M_BBP_AGENT, 0);
+	rt2800_register_write(rt2x00dev, H2M_MAILBOX_CSR, 0);
+	if (rt2x00_is_usb(rt2x00dev))
+		rt2800_register_write(rt2x00dev, H2M_INT_SRC, 0);
+	rt2800_mcu_request(rt2x00dev, MCU_BOOT_SIGNAL, 0, 0, 0);
+	msleep(1);
+
+	/*
+	 * Make sure BBP is up and running.
+	 */
+	if (unlikely(rt2800_wait_bbp_ready(rt2x00dev)))
+		return -EIO;
+
+	/*
+	 * Initialize BBP/RF registers.
+	 */
+	rt2800_init_bbp(rt2x00dev);
+	rt2800_init_rfcsr(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00_is_usb(rt2x00dev) &&
 	    (rt2x00_rt(rt2x00dev, RT3070) ||
@@ -4451,6 +8749,7 @@ int rt2800_enable_radio(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * Initialize LED control
 	 */
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_LED_AG_CONF, &word);
 	rt2800_mcu_request(rt2x00dev, MCU_LED_AG_CONF, 0xff,
 			   word & 0xff, (word >> 8) & 0xff);
@@ -4460,6 +8759,17 @@ int rt2800_enable_radio(struct rt2x00_dev *rt2x00dev)
 			   word & 0xff, (word >> 8) & 0xff);
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_LED_POLARITY, &word);
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_LED_AG_CONF, &word);
+	rt2800_mcu_request(rt2x00dev, MCU_LED_AG_CONF, 0xff,
+			   word & 0xff, (word >> 8) & 0xff);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_LED_ACT_CONF, &word);
+	rt2800_mcu_request(rt2x00dev, MCU_LED_ACT_CONF, 0xff,
+			   word & 0xff, (word >> 8) & 0xff);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_LED_POLARITY, &word);
+>>>>>>> refs/remotes/origin/master
 	rt2800_mcu_request(rt2x00dev, MCU_LED_LED_POLARITY, 0xff,
 			   word & 0xff, (word >> 8) & 0xff);
 
@@ -4471,10 +8781,14 @@ void rt2800_disable_radio(struct rt2x00_dev *rt2x00dev)
 {
 	u32 reg;
 
+<<<<<<< HEAD
 	rt2800_register_read(rt2x00dev, WPDMA_GLO_CFG, &reg);
 	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_ENABLE_TX_DMA, 0);
 	rt2x00_set_field32(&reg, WPDMA_GLO_CFG_ENABLE_RX_DMA, 0);
 	rt2800_register_write(rt2x00dev, WPDMA_GLO_CFG, reg);
+=======
+	rt2800_disable_wpdma(rt2x00dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Wait for DMA, ignore error */
 	rt2800_wait_wpdma_ready(rt2x00dev);
@@ -4489,9 +8803,20 @@ EXPORT_SYMBOL_GPL(rt2800_disable_radio);
 int rt2800_efuse_detect(struct rt2x00_dev *rt2x00dev)
 {
 	u32 reg;
+<<<<<<< HEAD
 
 	rt2800_register_read(rt2x00dev, EFUSE_CTRL, &reg);
 
+=======
+	u16 efuse_ctrl_reg;
+
+	if (rt2x00_rt(rt2x00dev, RT3290))
+		efuse_ctrl_reg = EFUSE_CTRL_3290;
+	else
+		efuse_ctrl_reg = EFUSE_CTRL;
+
+	rt2800_register_read(rt2x00dev, efuse_ctrl_reg, &reg);
+>>>>>>> refs/remotes/origin/master
 	return rt2x00_get_field32(reg, EFUSE_CTRL_PRESENT);
 }
 EXPORT_SYMBOL_GPL(rt2800_efuse_detect);
@@ -4499,6 +8824,7 @@ EXPORT_SYMBOL_GPL(rt2800_efuse_detect);
 static void rt2800_efuse_read(struct rt2x00_dev *rt2x00dev, unsigned int i)
 {
 	u32 reg;
+<<<<<<< HEAD
 
 	mutex_lock(&rt2x00dev->csr_mutex);
 
@@ -4520,17 +8846,62 @@ static void rt2800_efuse_read(struct rt2x00_dev *rt2x00dev, unsigned int i)
 	rt2800_register_read_lock(rt2x00dev, EFUSE_DATA1, &reg);
 	*(u32 *)&rt2x00dev->eeprom[i + 4] = cpu_to_le32(reg);
 	rt2800_register_read_lock(rt2x00dev, EFUSE_DATA0, &reg);
+=======
+	u16 efuse_ctrl_reg;
+	u16 efuse_data0_reg;
+	u16 efuse_data1_reg;
+	u16 efuse_data2_reg;
+	u16 efuse_data3_reg;
+
+	if (rt2x00_rt(rt2x00dev, RT3290)) {
+		efuse_ctrl_reg = EFUSE_CTRL_3290;
+		efuse_data0_reg = EFUSE_DATA0_3290;
+		efuse_data1_reg = EFUSE_DATA1_3290;
+		efuse_data2_reg = EFUSE_DATA2_3290;
+		efuse_data3_reg = EFUSE_DATA3_3290;
+	} else {
+		efuse_ctrl_reg = EFUSE_CTRL;
+		efuse_data0_reg = EFUSE_DATA0;
+		efuse_data1_reg = EFUSE_DATA1;
+		efuse_data2_reg = EFUSE_DATA2;
+		efuse_data3_reg = EFUSE_DATA3;
+	}
+	mutex_lock(&rt2x00dev->csr_mutex);
+
+	rt2800_register_read_lock(rt2x00dev, efuse_ctrl_reg, &reg);
+	rt2x00_set_field32(&reg, EFUSE_CTRL_ADDRESS_IN, i);
+	rt2x00_set_field32(&reg, EFUSE_CTRL_MODE, 0);
+	rt2x00_set_field32(&reg, EFUSE_CTRL_KICK, 1);
+	rt2800_register_write_lock(rt2x00dev, efuse_ctrl_reg, reg);
+
+	/* Wait until the EEPROM has been loaded */
+	rt2800_regbusy_read(rt2x00dev, efuse_ctrl_reg, EFUSE_CTRL_KICK, &reg);
+	/* Apparently the data is read from end to start */
+	rt2800_register_read_lock(rt2x00dev, efuse_data3_reg, &reg);
+	/* The returned value is in CPU order, but eeprom is le */
+	*(u32 *)&rt2x00dev->eeprom[i] = cpu_to_le32(reg);
+	rt2800_register_read_lock(rt2x00dev, efuse_data2_reg, &reg);
+	*(u32 *)&rt2x00dev->eeprom[i + 2] = cpu_to_le32(reg);
+	rt2800_register_read_lock(rt2x00dev, efuse_data1_reg, &reg);
+	*(u32 *)&rt2x00dev->eeprom[i + 4] = cpu_to_le32(reg);
+	rt2800_register_read_lock(rt2x00dev, efuse_data0_reg, &reg);
+>>>>>>> refs/remotes/origin/master
 	*(u32 *)&rt2x00dev->eeprom[i + 6] = cpu_to_le32(reg);
 
 	mutex_unlock(&rt2x00dev->csr_mutex);
 }
 
+<<<<<<< HEAD
 void rt2800_read_eeprom_efuse(struct rt2x00_dev *rt2x00dev)
+=======
+int rt2800_read_eeprom_efuse(struct rt2x00_dev *rt2x00dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
 	for (i = 0; i < EEPROM_SIZE / sizeof(u16); i += 8)
 		rt2800_efuse_read(rt2x00dev, i);
+<<<<<<< HEAD
 }
 EXPORT_SYMBOL_GPL(rt2800_read_eeprom_efuse);
 
@@ -4543,10 +8914,60 @@ int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 	u16 word;
 	u8 *mac;
 	u8 default_lna_gain;
+=======
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(rt2800_read_eeprom_efuse);
+
+static u8 rt2800_get_txmixer_gain_24g(struct rt2x00_dev *rt2x00dev)
+{
+	u16 word;
+
+	if (rt2x00_rt(rt2x00dev, RT3593))
+		return 0;
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_TXMIXER_GAIN_BG, &word);
+	if ((word & 0x00ff) != 0x00ff)
+		return rt2x00_get_field16(word, EEPROM_TXMIXER_GAIN_BG_VAL);
+
+	return 0;
+}
+
+static u8 rt2800_get_txmixer_gain_5g(struct rt2x00_dev *rt2x00dev)
+{
+	u16 word;
+
+	if (rt2x00_rt(rt2x00dev, RT3593))
+		return 0;
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_TXMIXER_GAIN_A, &word);
+	if ((word & 0x00ff) != 0x00ff)
+		return rt2x00_get_field16(word, EEPROM_TXMIXER_GAIN_A_VAL);
+
+	return 0;
+}
+
+static int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
+{
+	struct rt2800_drv_data *drv_data = rt2x00dev->drv_data;
+	u16 word;
+	u8 *mac;
+	u8 default_lna_gain;
+	int retval;
+
+	/*
+	 * Read the EEPROM.
+	 */
+	retval = rt2800_read_eeprom(rt2x00dev);
+	if (retval)
+		return retval;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Start validation of the data that has been read.
 	 */
+<<<<<<< HEAD
 	mac = rt2x00_eeprom_addr(rt2x00dev, EEPROM_MAC_ADDR_0);
 	if (!is_valid_ether_addr(mac)) {
 		random_ether_addr(mac);
@@ -4554,12 +8975,26 @@ int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &word);
+=======
+	mac = rt2800_eeprom_addr(rt2x00dev, EEPROM_MAC_ADDR_0);
+	if (!is_valid_ether_addr(mac)) {
+		eth_random_addr(mac);
+		rt2x00_eeprom_dbg(rt2x00dev, "MAC: %pM\n", mac);
+	}
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &word);
+>>>>>>> refs/remotes/origin/master
 	if (word == 0xffff) {
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF0_RXPATH, 2);
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF0_TXPATH, 1);
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF0_RF_TYPE, RF2820);
+<<<<<<< HEAD
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_NIC_CONF0, word);
 		EEPROM(rt2x00dev, "Antenna: 0x%04x\n", word);
+=======
+		rt2800_eeprom_write(rt2x00dev, EEPROM_NIC_CONF0, word);
+		rt2x00_eeprom_dbg(rt2x00dev, "Antenna: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	} else if (rt2x00_rt(rt2x00dev, RT2860) ||
 		   rt2x00_rt(rt2x00dev, RT2872)) {
 		/*
@@ -4567,10 +9002,17 @@ int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		 */
 		if (rt2x00_get_field16(word, EEPROM_NIC_CONF0_RXPATH) > 2)
 			rt2x00_set_field16(&word, EEPROM_NIC_CONF0_RXPATH, 2);
+<<<<<<< HEAD
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_NIC_CONF0, word);
 	}
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &word);
+=======
+		rt2800_eeprom_write(rt2x00dev, EEPROM_NIC_CONF0, word);
+	}
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &word);
+>>>>>>> refs/remotes/origin/master
 	if (word == 0xffff) {
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_HW_RADIO, 0);
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_EXTERNAL_TX_ALC, 0);
@@ -4587,6 +9029,7 @@ int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_INTERNAL_TX_ALC, 0);
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_BT_COEXIST, 0);
 		rt2x00_set_field16(&word, EEPROM_NIC_CONF1_DAC_TEST, 0);
+<<<<<<< HEAD
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_NIC_CONF1, word);
 		EEPROM(rt2x00dev, "NIC: 0x%04x\n", word);
 	}
@@ -4596,16 +9039,35 @@ int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00_set_field16(&word, EEPROM_FREQ_OFFSET, 0);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_FREQ, word);
 		EEPROM(rt2x00dev, "Freq: 0x%04x\n", word);
+=======
+		rt2800_eeprom_write(rt2x00dev, EEPROM_NIC_CONF1, word);
+		rt2x00_eeprom_dbg(rt2x00dev, "NIC: 0x%04x\n", word);
+	}
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_FREQ, &word);
+	if ((word & 0x00ff) == 0x00ff) {
+		rt2x00_set_field16(&word, EEPROM_FREQ_OFFSET, 0);
+		rt2800_eeprom_write(rt2x00dev, EEPROM_FREQ, word);
+		rt2x00_eeprom_dbg(rt2x00dev, "Freq: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 	if ((word & 0xff00) == 0xff00) {
 		rt2x00_set_field16(&word, EEPROM_FREQ_LED_MODE,
 				   LED_MODE_TXRX_ACTIVITY);
 		rt2x00_set_field16(&word, EEPROM_FREQ_LED_POLARITY, 0);
+<<<<<<< HEAD
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_FREQ, word);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_LED_AG_CONF, 0x5555);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_LED_ACT_CONF, 0x2221);
 		rt2x00_eeprom_write(rt2x00dev, EEPROM_LED_POLARITY, 0xa9f8);
 		EEPROM(rt2x00dev, "Led Mode: 0x%04x\n", word);
+=======
+		rt2800_eeprom_write(rt2x00dev, EEPROM_FREQ, word);
+		rt2800_eeprom_write(rt2x00dev, EEPROM_LED_AG_CONF, 0x5555);
+		rt2800_eeprom_write(rt2x00dev, EEPROM_LED_ACT_CONF, 0x2221);
+		rt2800_eeprom_write(rt2x00dev, EEPROM_LED_POLARITY, 0xa9f8);
+		rt2x00_eeprom_dbg(rt2x00dev, "Led Mode: 0x%04x\n", word);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -4613,14 +9075,22 @@ int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 	 * lna0 as correct value. Note that EEPROM_LNA
 	 * is never validated.
 	 */
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_LNA, &word);
 	default_lna_gain = rt2x00_get_field16(word, EEPROM_LNA_A0);
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_BG, &word);
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_LNA, &word);
+	default_lna_gain = rt2x00_get_field16(word, EEPROM_LNA_A0);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_BG, &word);
+>>>>>>> refs/remotes/origin/master
 	if (abs(rt2x00_get_field16(word, EEPROM_RSSI_BG_OFFSET0)) > 10)
 		rt2x00_set_field16(&word, EEPROM_RSSI_BG_OFFSET0, 0);
 	if (abs(rt2x00_get_field16(word, EEPROM_RSSI_BG_OFFSET1)) > 10)
 		rt2x00_set_field16(&word, EEPROM_RSSI_BG_OFFSET1, 0);
+<<<<<<< HEAD
 	rt2x00_eeprom_write(rt2x00dev, EEPROM_RSSI_BG, word);
 
 <<<<<<< HEAD
@@ -4655,10 +9125,31 @@ int rt2800_validate_eeprom(struct rt2x00_dev *rt2x00dev)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_A, &word);
+=======
+	rt2800_eeprom_write(rt2x00dev, EEPROM_RSSI_BG, word);
+
+	drv_data->txmixer_gain_24g = rt2800_get_txmixer_gain_24g(rt2x00dev);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_BG2, &word);
+	if (abs(rt2x00_get_field16(word, EEPROM_RSSI_BG2_OFFSET2)) > 10)
+		rt2x00_set_field16(&word, EEPROM_RSSI_BG2_OFFSET2, 0);
+	if (!rt2x00_rt(rt2x00dev, RT3593)) {
+		if (rt2x00_get_field16(word, EEPROM_RSSI_BG2_LNA_A1) == 0x00 ||
+		    rt2x00_get_field16(word, EEPROM_RSSI_BG2_LNA_A1) == 0xff)
+			rt2x00_set_field16(&word, EEPROM_RSSI_BG2_LNA_A1,
+					   default_lna_gain);
+	}
+	rt2800_eeprom_write(rt2x00dev, EEPROM_RSSI_BG2, word);
+
+	drv_data->txmixer_gain_5g = rt2800_get_txmixer_gain_5g(rt2x00dev);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_A, &word);
+>>>>>>> refs/remotes/origin/master
 	if (abs(rt2x00_get_field16(word, EEPROM_RSSI_A_OFFSET0)) > 10)
 		rt2x00_set_field16(&word, EEPROM_RSSI_A_OFFSET0, 0);
 	if (abs(rt2x00_get_field16(word, EEPROM_RSSI_A_OFFSET1)) > 10)
 		rt2x00_set_field16(&word, EEPROM_RSSI_A_OFFSET1, 0);
+<<<<<<< HEAD
 	rt2x00_eeprom_write(rt2x00dev, EEPROM_RSSI_A, word);
 
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_RSSI_A2, &word);
@@ -4679,17 +9170,58 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	u32 reg;
 	u16 value;
 	u16 eeprom;
+=======
+	rt2800_eeprom_write(rt2x00dev, EEPROM_RSSI_A, word);
+
+	rt2800_eeprom_read(rt2x00dev, EEPROM_RSSI_A2, &word);
+	if (abs(rt2x00_get_field16(word, EEPROM_RSSI_A2_OFFSET2)) > 10)
+		rt2x00_set_field16(&word, EEPROM_RSSI_A2_OFFSET2, 0);
+	if (!rt2x00_rt(rt2x00dev, RT3593)) {
+		if (rt2x00_get_field16(word, EEPROM_RSSI_A2_LNA_A2) == 0x00 ||
+		    rt2x00_get_field16(word, EEPROM_RSSI_A2_LNA_A2) == 0xff)
+			rt2x00_set_field16(&word, EEPROM_RSSI_A2_LNA_A2,
+					   default_lna_gain);
+	}
+	rt2800_eeprom_write(rt2x00dev, EEPROM_RSSI_A2, word);
+
+	if (rt2x00_rt(rt2x00dev, RT3593)) {
+		rt2800_eeprom_read(rt2x00dev, EEPROM_EXT_LNA2, &word);
+		if (rt2x00_get_field16(word, EEPROM_EXT_LNA2_A1) == 0x00 ||
+		    rt2x00_get_field16(word, EEPROM_EXT_LNA2_A1) == 0xff)
+			rt2x00_set_field16(&word, EEPROM_EXT_LNA2_A1,
+					   default_lna_gain);
+		if (rt2x00_get_field16(word, EEPROM_EXT_LNA2_A2) == 0x00 ||
+		    rt2x00_get_field16(word, EEPROM_EXT_LNA2_A2) == 0xff)
+			rt2x00_set_field16(&word, EEPROM_EXT_LNA2_A1,
+					   default_lna_gain);
+		rt2800_eeprom_write(rt2x00dev, EEPROM_EXT_LNA2, word);
+	}
+
+	return 0;
+}
+
+static int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
+{
+	u16 value;
+	u16 eeprom;
+	u16 rf;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Read EEPROM word for configuration.
 	 */
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &eeprom);
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &eeprom);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Identify RF chipset by EEPROM value
 	 * RT28xx/RT30xx: defined in "EEPROM_NIC_CONF0_RF_TYPE" field
 	 * RT53xx: defined in "EEPROM_CHIP_ID" field
 	 */
+<<<<<<< HEAD
 	rt2800_register_read(rt2x00dev, MAC_CSR0, &reg);
 <<<<<<< HEAD
 	if (rt2x00_get_field32(reg, MAC_CSR0_CHIPSET) == RT5390)
@@ -4735,6 +9267,16 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	}
 
 	switch (rt2x00dev->chip.rf) {
+=======
+	if (rt2x00_rt(rt2x00dev, RT3290) ||
+	    rt2x00_rt(rt2x00dev, RT5390) ||
+	    rt2x00_rt(rt2x00dev, RT5392))
+		rt2800_eeprom_read(rt2x00dev, EEPROM_CHIP_ID, &rf);
+	else
+		rf = rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RF_TYPE);
+
+	switch (rf) {
+>>>>>>> refs/remotes/origin/master
 	case RF2820:
 	case RF2850:
 	case RF2720:
@@ -4744,6 +9286,7 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	case RF3021:
 	case RF3022:
 	case RF3052:
+<<<<<<< HEAD
 	case RF3320:
 	case RF5370:
 <<<<<<< HEAD
@@ -4762,6 +9305,28 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 		return -ENODEV;
 	}
 
+=======
+	case RF3053:
+	case RF3070:
+	case RF3290:
+	case RF3320:
+	case RF3322:
+	case RF5360:
+	case RF5370:
+	case RF5372:
+	case RF5390:
+	case RF5392:
+	case RF5592:
+		break;
+	default:
+		rt2x00_err(rt2x00dev, "Invalid RF chipset 0x%04x detected\n",
+			   rf);
+		return -ENODEV;
+	}
+
+	rt2x00_set_rf(rt2x00dev, rf);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Identify default antenna configuration.
 	 */
@@ -4770,10 +9335,18 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	rt2x00dev->default_ant.rx_chain_num =
 	    rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH);
 
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
 
 	if (rt2x00_rt(rt2x00dev, RT3070) ||
 	    rt2x00_rt(rt2x00dev, RT3090) ||
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_NIC_CONF1, &eeprom);
+
+	if (rt2x00_rt(rt2x00dev, RT3070) ||
+	    rt2x00_rt(rt2x00dev, RT3090) ||
+	    rt2x00_rt(rt2x00dev, RT3352) ||
+>>>>>>> refs/remotes/origin/master
 	    rt2x00_rt(rt2x00dev, RT3390)) {
 		value = rt2x00_get_field16(eeprom,
 				EEPROM_NIC_CONF1_ANT_DIVERSITY);
@@ -4794,6 +9367,14 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 		rt2x00dev->default_ant.rx = ANTENNA_A;
 	}
 
+<<<<<<< HEAD
+=======
+	if (rt2x00_rt_rev_gte(rt2x00dev, RT5390, REV_RT5390R)) {
+		rt2x00dev->default_ant.tx = ANTENNA_HW_DIVERSITY; /* Unused */
+		rt2x00dev->default_ant.rx = ANTENNA_HW_DIVERSITY; /* Unused */
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Determine external LNA informations.
 	 */
@@ -4817,7 +9398,11 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * Read frequency offset and RF programming sequence.
 	 */
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_FREQ, &eeprom);
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_FREQ, &eeprom);
+>>>>>>> refs/remotes/origin/master
 	rt2x00dev->freq_offset = rt2x00_get_field16(eeprom, EEPROM_FREQ_OFFSET);
 
 	/*
@@ -4834,7 +9419,11 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 	/*
 	 * Check if support EIRP tx power limit feature.
 	 */
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_EIRP_MAX_TX_POWER, &eeprom);
+=======
+	rt2800_eeprom_read(rt2x00dev, EEPROM_EIRP_MAX_TX_POWER, &eeprom);
+>>>>>>> refs/remotes/origin/master
 
 	if (rt2x00_get_field16(eeprom, EEPROM_EIRP_MAX_TX_POWER_2GHZ) <
 					EIRP_MAX_TX_POWER_LIMIT)
@@ -4842,7 +9431,10 @@ int rt2800_init_eeprom(struct rt2x00_dev *rt2x00dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(rt2800_init_eeprom);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * RF value list for rt28xx
@@ -4921,7 +9513,11 @@ static const struct rf_channel rf_vals[] = {
 
 /*
  * RF value list for rt3xxx
+<<<<<<< HEAD
  * Supports: 2.4 GHz (all) & 5.2 GHz (RF3052)
+=======
+ * Supports: 2.4 GHz (all) & 5.2 GHz (RF3052 & RF3053)
+>>>>>>> refs/remotes/origin/master
  */
 static const struct rf_channel rf_vals_3x[] = {
 	{1,  241, 2, 2 },
@@ -4985,14 +9581,156 @@ static const struct rf_channel rf_vals_3x[] = {
 	{173, 0x61, 0, 9},
 };
 
+<<<<<<< HEAD
 int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
+=======
+static const struct rf_channel rf_vals_5592_xtal20[] = {
+	/* Channel, N, K, mod, R */
+	{1, 482, 4, 10, 3},
+	{2, 483, 4, 10, 3},
+	{3, 484, 4, 10, 3},
+	{4, 485, 4, 10, 3},
+	{5, 486, 4, 10, 3},
+	{6, 487, 4, 10, 3},
+	{7, 488, 4, 10, 3},
+	{8, 489, 4, 10, 3},
+	{9, 490, 4, 10, 3},
+	{10, 491, 4, 10, 3},
+	{11, 492, 4, 10, 3},
+	{12, 493, 4, 10, 3},
+	{13, 494, 4, 10, 3},
+	{14, 496, 8, 10, 3},
+	{36, 172, 8, 12, 1},
+	{38, 173, 0, 12, 1},
+	{40, 173, 4, 12, 1},
+	{42, 173, 8, 12, 1},
+	{44, 174, 0, 12, 1},
+	{46, 174, 4, 12, 1},
+	{48, 174, 8, 12, 1},
+	{50, 175, 0, 12, 1},
+	{52, 175, 4, 12, 1},
+	{54, 175, 8, 12, 1},
+	{56, 176, 0, 12, 1},
+	{58, 176, 4, 12, 1},
+	{60, 176, 8, 12, 1},
+	{62, 177, 0, 12, 1},
+	{64, 177, 4, 12, 1},
+	{100, 183, 4, 12, 1},
+	{102, 183, 8, 12, 1},
+	{104, 184, 0, 12, 1},
+	{106, 184, 4, 12, 1},
+	{108, 184, 8, 12, 1},
+	{110, 185, 0, 12, 1},
+	{112, 185, 4, 12, 1},
+	{114, 185, 8, 12, 1},
+	{116, 186, 0, 12, 1},
+	{118, 186, 4, 12, 1},
+	{120, 186, 8, 12, 1},
+	{122, 187, 0, 12, 1},
+	{124, 187, 4, 12, 1},
+	{126, 187, 8, 12, 1},
+	{128, 188, 0, 12, 1},
+	{130, 188, 4, 12, 1},
+	{132, 188, 8, 12, 1},
+	{134, 189, 0, 12, 1},
+	{136, 189, 4, 12, 1},
+	{138, 189, 8, 12, 1},
+	{140, 190, 0, 12, 1},
+	{149, 191, 6, 12, 1},
+	{151, 191, 10, 12, 1},
+	{153, 192, 2, 12, 1},
+	{155, 192, 6, 12, 1},
+	{157, 192, 10, 12, 1},
+	{159, 193, 2, 12, 1},
+	{161, 193, 6, 12, 1},
+	{165, 194, 2, 12, 1},
+	{184, 164, 0, 12, 1},
+	{188, 164, 4, 12, 1},
+	{192, 165, 8, 12, 1},
+	{196, 166, 0, 12, 1},
+};
+
+static const struct rf_channel rf_vals_5592_xtal40[] = {
+	/* Channel, N, K, mod, R */
+	{1, 241, 2, 10, 3},
+	{2, 241, 7, 10, 3},
+	{3, 242, 2, 10, 3},
+	{4, 242, 7, 10, 3},
+	{5, 243, 2, 10, 3},
+	{6, 243, 7, 10, 3},
+	{7, 244, 2, 10, 3},
+	{8, 244, 7, 10, 3},
+	{9, 245, 2, 10, 3},
+	{10, 245, 7, 10, 3},
+	{11, 246, 2, 10, 3},
+	{12, 246, 7, 10, 3},
+	{13, 247, 2, 10, 3},
+	{14, 248, 4, 10, 3},
+	{36, 86, 4, 12, 1},
+	{38, 86, 6, 12, 1},
+	{40, 86, 8, 12, 1},
+	{42, 86, 10, 12, 1},
+	{44, 87, 0, 12, 1},
+	{46, 87, 2, 12, 1},
+	{48, 87, 4, 12, 1},
+	{50, 87, 6, 12, 1},
+	{52, 87, 8, 12, 1},
+	{54, 87, 10, 12, 1},
+	{56, 88, 0, 12, 1},
+	{58, 88, 2, 12, 1},
+	{60, 88, 4, 12, 1},
+	{62, 88, 6, 12, 1},
+	{64, 88, 8, 12, 1},
+	{100, 91, 8, 12, 1},
+	{102, 91, 10, 12, 1},
+	{104, 92, 0, 12, 1},
+	{106, 92, 2, 12, 1},
+	{108, 92, 4, 12, 1},
+	{110, 92, 6, 12, 1},
+	{112, 92, 8, 12, 1},
+	{114, 92, 10, 12, 1},
+	{116, 93, 0, 12, 1},
+	{118, 93, 2, 12, 1},
+	{120, 93, 4, 12, 1},
+	{122, 93, 6, 12, 1},
+	{124, 93, 8, 12, 1},
+	{126, 93, 10, 12, 1},
+	{128, 94, 0, 12, 1},
+	{130, 94, 2, 12, 1},
+	{132, 94, 4, 12, 1},
+	{134, 94, 6, 12, 1},
+	{136, 94, 8, 12, 1},
+	{138, 94, 10, 12, 1},
+	{140, 95, 0, 12, 1},
+	{149, 95, 9, 12, 1},
+	{151, 95, 11, 12, 1},
+	{153, 96, 1, 12, 1},
+	{155, 96, 3, 12, 1},
+	{157, 96, 5, 12, 1},
+	{159, 96, 7, 12, 1},
+	{161, 96, 9, 12, 1},
+	{165, 97, 1, 12, 1},
+	{184, 82, 0, 12, 1},
+	{188, 82, 4, 12, 1},
+	{192, 82, 8, 12, 1},
+	{196, 83, 0, 12, 1},
+};
+
+static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hw_mode_spec *spec = &rt2x00dev->spec;
 	struct channel_info *info;
 	char *default_power1;
 	char *default_power2;
+<<<<<<< HEAD
 	unsigned int i;
 	u16 eeprom;
+=======
+	char *default_power3;
+	unsigned int i;
+	u32 reg;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Disable powersaving as default on PCI devices.
@@ -5008,12 +9746,19 @@ int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	    IEEE80211_HW_SUPPORTS_PS |
 	    IEEE80211_HW_PS_NULLFUNC_STACK |
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    IEEE80211_HW_AMPDU_AGGREGATION;
 =======
 	    IEEE80211_HW_AMPDU_AGGREGATION |
 	    IEEE80211_HW_REPORTS_TX_ACK_STATUS;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    IEEE80211_HW_AMPDU_AGGREGATION |
+	    IEEE80211_HW_REPORTS_TX_ACK_STATUS |
+	    IEEE80211_HW_SUPPORTS_HT_CCK_RATES;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Don't set IEEE80211_HW_HOST_BROADCAST_PS_BUFFERING for USB devices
 	 * unless we are capable of sending the buffered frames out after the
@@ -5027,7 +9772,11 @@ int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 
 	SET_IEEE80211_DEV(rt2x00dev->hw, rt2x00dev->dev);
 	SET_IEEE80211_PERM_ADDR(rt2x00dev->hw,
+<<<<<<< HEAD
 				rt2x00_eeprom_addr(rt2x00dev,
+=======
+				rt2800_eeprom_addr(rt2x00dev,
+>>>>>>> refs/remotes/origin/master
 						   EEPROM_MAC_ADDR_0));
 
 	/*
@@ -5043,6 +9792,7 @@ int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	rt2x00dev->hw->max_report_rates = 7;
 	rt2x00dev->hw->max_rate_tries = 1;
 
+<<<<<<< HEAD
 	rt2x00_eeprom_read(rt2x00dev, EEPROM_NIC_CONF0, &eeprom);
 
 	/*
@@ -5079,6 +9829,68 @@ int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 		spec->channels = rf_vals_3x;
 	}
 
+=======
+	/*
+	 * Initialize hw_mode information.
+	 */
+	spec->supported_rates = SUPPORT_RATE_CCK | SUPPORT_RATE_OFDM;
+
+	switch (rt2x00dev->chip.rf) {
+	case RF2720:
+	case RF2820:
+		spec->num_channels = 14;
+		spec->channels = rf_vals;
+		break;
+
+	case RF2750:
+	case RF2850:
+		spec->num_channels = ARRAY_SIZE(rf_vals);
+		spec->channels = rf_vals;
+		break;
+
+	case RF2020:
+	case RF3020:
+	case RF3021:
+	case RF3022:
+	case RF3070:
+	case RF3290:
+	case RF3320:
+	case RF3322:
+	case RF5360:
+	case RF5370:
+	case RF5372:
+	case RF5390:
+	case RF5392:
+		spec->num_channels = 14;
+		spec->channels = rf_vals_3x;
+		break;
+
+	case RF3052:
+	case RF3053:
+		spec->num_channels = ARRAY_SIZE(rf_vals_3x);
+		spec->channels = rf_vals_3x;
+		break;
+
+	case RF5592:
+		rt2800_register_read(rt2x00dev, MAC_DEBUG_INDEX, &reg);
+		if (rt2x00_get_field32(reg, MAC_DEBUG_INDEX_XTAL)) {
+			spec->num_channels = ARRAY_SIZE(rf_vals_5592_xtal40);
+			spec->channels = rf_vals_5592_xtal40;
+		} else {
+			spec->num_channels = ARRAY_SIZE(rf_vals_5592_xtal20);
+			spec->channels = rf_vals_5592_xtal20;
+		}
+		break;
+	}
+
+	if (WARN_ON_ONCE(!spec->channels))
+		return -ENODEV;
+
+	spec->supported_bands = SUPPORT_BAND_2GHZ;
+	if (spec->num_channels > 14)
+		spec->supported_bands |= SUPPORT_BAND_5GHZ;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Initialize HT information.
 	 */
@@ -5093,22 +9905,37 @@ int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	    IEEE80211_HT_CAP_SGI_20 |
 	    IEEE80211_HT_CAP_SGI_40;
 
+<<<<<<< HEAD
 	if (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) >= 2)
 		spec->ht.cap |= IEEE80211_HT_CAP_TX_STBC;
 
 	spec->ht.cap |=
 	    rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH) <<
 		IEEE80211_HT_CAP_RX_STBC_SHIFT;
+=======
+	if (rt2x00dev->default_ant.tx_chain_num >= 2)
+		spec->ht.cap |= IEEE80211_HT_CAP_TX_STBC;
+
+	spec->ht.cap |= rt2x00dev->default_ant.rx_chain_num <<
+			IEEE80211_HT_CAP_RX_STBC_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	spec->ht.ampdu_factor = 3;
 	spec->ht.ampdu_density = 4;
 	spec->ht.mcs.tx_params =
 	    IEEE80211_HT_MCS_TX_DEFINED |
 	    IEEE80211_HT_MCS_TX_RX_DIFF |
+<<<<<<< HEAD
 	    ((rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_TXPATH) - 1) <<
 		IEEE80211_HT_MCS_TX_MAX_STREAMS_SHIFT);
 
 	switch (rt2x00_get_field16(eeprom, EEPROM_NIC_CONF0_RXPATH)) {
+=======
+	    ((rt2x00dev->default_ant.tx_chain_num - 1) <<
+	     IEEE80211_HT_MCS_TX_MAX_STREAMS_SHIFT);
+
+	switch (rt2x00dev->default_ant.rx_chain_num) {
+>>>>>>> refs/remotes/origin/master
 	case 3:
 		spec->ht.mcs.rx_mask[2] = 0xff;
 	case 2:
@@ -5128,26 +9955,64 @@ int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 
 	spec->channels_info = info;
 
+<<<<<<< HEAD
 	default_power1 = rt2x00_eeprom_addr(rt2x00dev, EEPROM_TXPOWER_BG1);
 	default_power2 = rt2x00_eeprom_addr(rt2x00dev, EEPROM_TXPOWER_BG2);
+=======
+	default_power1 = rt2800_eeprom_addr(rt2x00dev, EEPROM_TXPOWER_BG1);
+	default_power2 = rt2800_eeprom_addr(rt2x00dev, EEPROM_TXPOWER_BG2);
+
+	if (rt2x00dev->default_ant.tx_chain_num > 2)
+		default_power3 = rt2800_eeprom_addr(rt2x00dev,
+						    EEPROM_EXT_TXPOWER_BG3);
+	else
+		default_power3 = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < 14; i++) {
 		info[i].default_power1 = default_power1[i];
 		info[i].default_power2 = default_power2[i];
+<<<<<<< HEAD
 	}
 
 	if (spec->num_channels > 14) {
 		default_power1 = rt2x00_eeprom_addr(rt2x00dev, EEPROM_TXPOWER_A1);
 		default_power2 = rt2x00_eeprom_addr(rt2x00dev, EEPROM_TXPOWER_A2);
+=======
+		if (default_power3)
+			info[i].default_power3 = default_power3[i];
+	}
+
+	if (spec->num_channels > 14) {
+		default_power1 = rt2800_eeprom_addr(rt2x00dev,
+						    EEPROM_TXPOWER_A1);
+		default_power2 = rt2800_eeprom_addr(rt2x00dev,
+						    EEPROM_TXPOWER_A2);
+
+		if (rt2x00dev->default_ant.tx_chain_num > 2)
+			default_power3 =
+				rt2800_eeprom_addr(rt2x00dev,
+						   EEPROM_EXT_TXPOWER_A3);
+		else
+			default_power3 = NULL;
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 14; i < spec->num_channels; i++) {
 			info[i].default_power1 = default_power1[i - 14];
 			info[i].default_power2 = default_power2[i - 14];
+<<<<<<< HEAD
 		}
 	}
 
 <<<<<<< HEAD
 =======
+=======
+			if (default_power3)
+				info[i].default_power3 = default_power3[i - 14];
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	switch (rt2x00dev->chip.rf) {
 	case RF2020:
 	case RF3020:
@@ -5155,17 +10020,144 @@ int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
 	case RF3022:
 	case RF3320:
 	case RF3052:
+<<<<<<< HEAD
 	case RF5370:
 	case RF5372:
 	case RF5390:
+=======
+	case RF3053:
+	case RF3070:
+	case RF3290:
+	case RF5360:
+	case RF5370:
+	case RF5372:
+	case RF5390:
+	case RF5392:
+>>>>>>> refs/remotes/origin/master
 		__set_bit(CAPABILITY_VCO_RECALIBRATION, &rt2x00dev->cap_flags);
 		break;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
 EXPORT_SYMBOL_GPL(rt2800_probe_hw_mode);
+=======
+	return 0;
+}
+
+static int rt2800_probe_rt(struct rt2x00_dev *rt2x00dev)
+{
+	u32 reg;
+	u32 rt;
+	u32 rev;
+
+	if (rt2x00_rt(rt2x00dev, RT3290))
+		rt2800_register_read(rt2x00dev, MAC_CSR0_3290, &reg);
+	else
+		rt2800_register_read(rt2x00dev, MAC_CSR0, &reg);
+
+	rt = rt2x00_get_field32(reg, MAC_CSR0_CHIPSET);
+	rev = rt2x00_get_field32(reg, MAC_CSR0_REVISION);
+
+	switch (rt) {
+	case RT2860:
+	case RT2872:
+	case RT2883:
+	case RT3070:
+	case RT3071:
+	case RT3090:
+	case RT3290:
+	case RT3352:
+	case RT3390:
+	case RT3572:
+	case RT3593:
+	case RT5390:
+	case RT5392:
+	case RT5592:
+		break;
+	default:
+		rt2x00_err(rt2x00dev, "Invalid RT chipset 0x%04x, rev %04x detected\n",
+			   rt, rev);
+		return -ENODEV;
+	}
+
+	rt2x00_set_rt(rt2x00dev, rt, rev);
+
+	return 0;
+}
+
+int rt2800_probe_hw(struct rt2x00_dev *rt2x00dev)
+{
+	int retval;
+	u32 reg;
+
+	retval = rt2800_probe_rt(rt2x00dev);
+	if (retval)
+		return retval;
+
+	/*
+	 * Allocate eeprom data.
+	 */
+	retval = rt2800_validate_eeprom(rt2x00dev);
+	if (retval)
+		return retval;
+
+	retval = rt2800_init_eeprom(rt2x00dev);
+	if (retval)
+		return retval;
+
+	/*
+	 * Enable rfkill polling by setting GPIO direction of the
+	 * rfkill switch GPIO pin correctly.
+	 */
+	rt2800_register_read(rt2x00dev, GPIO_CTRL, &reg);
+	rt2x00_set_field32(&reg, GPIO_CTRL_DIR2, 1);
+	rt2800_register_write(rt2x00dev, GPIO_CTRL, reg);
+
+	/*
+	 * Initialize hw specifications.
+	 */
+	retval = rt2800_probe_hw_mode(rt2x00dev);
+	if (retval)
+		return retval;
+
+	/*
+	 * Set device capabilities.
+	 */
+	__set_bit(CAPABILITY_CONTROL_FILTERS, &rt2x00dev->cap_flags);
+	__set_bit(CAPABILITY_CONTROL_FILTER_PSPOLL, &rt2x00dev->cap_flags);
+	if (!rt2x00_is_usb(rt2x00dev))
+		__set_bit(CAPABILITY_PRE_TBTT_INTERRUPT, &rt2x00dev->cap_flags);
+
+	/*
+	 * Set device requirements.
+	 */
+	if (!rt2x00_is_soc(rt2x00dev))
+		__set_bit(REQUIRE_FIRMWARE, &rt2x00dev->cap_flags);
+	__set_bit(REQUIRE_L2PAD, &rt2x00dev->cap_flags);
+	__set_bit(REQUIRE_TXSTATUS_FIFO, &rt2x00dev->cap_flags);
+	if (!rt2800_hwcrypt_disabled(rt2x00dev))
+		__set_bit(CAPABILITY_HW_CRYPTO, &rt2x00dev->cap_flags);
+	__set_bit(CAPABILITY_LINK_TUNING, &rt2x00dev->cap_flags);
+	__set_bit(REQUIRE_HT_TX_DESC, &rt2x00dev->cap_flags);
+	if (rt2x00_is_usb(rt2x00dev))
+		__set_bit(REQUIRE_PS_AUTOWAKE, &rt2x00dev->cap_flags);
+	else {
+		__set_bit(REQUIRE_DMA, &rt2x00dev->cap_flags);
+		__set_bit(REQUIRE_TASKLET_CONTEXT, &rt2x00dev->cap_flags);
+	}
+
+	/*
+	 * Set the rssi offset.
+	 */
+	rt2x00dev->rssi_offset = DEFAULT_RSSI_OFFSET;
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(rt2800_probe_hw);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IEEE80211 stack callback functions.
@@ -5225,11 +10217,16 @@ int rt2800_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
 EXPORT_SYMBOL_GPL(rt2800_set_rts_threshold);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int rt2800_conf_tx(struct ieee80211_hw *hw, u16 queue_idx,
 =======
 int rt2800_conf_tx(struct ieee80211_hw *hw,
 		   struct ieee80211_vif *vif, u16 queue_idx,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int rt2800_conf_tx(struct ieee80211_hw *hw,
+		   struct ieee80211_vif *vif, u16 queue_idx,
+>>>>>>> refs/remotes/origin/master
 		   const struct ieee80211_tx_queue_params *params)
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
@@ -5246,10 +10243,14 @@ int rt2800_conf_tx(struct ieee80211_hw *hw,
 	 * in the queue parameter.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = rt2x00mac_conf_tx(hw, queue_idx, params);
 =======
 	retval = rt2x00mac_conf_tx(hw, vif, queue_idx, params);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = rt2x00mac_conf_tx(hw, vif, queue_idx, params);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -5302,10 +10303,14 @@ int rt2800_conf_tx(struct ieee80211_hw *hw,
 EXPORT_SYMBOL_GPL(rt2800_conf_tx);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 u64 rt2800_get_tsf(struct ieee80211_hw *hw)
 =======
 u64 rt2800_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u64 rt2800_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rt2x00_dev *rt2x00dev = hw->priv;
 	u64 tsf;
@@ -5326,9 +10331,12 @@ int rt2800_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 			u8 buf_size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rt2x00_sta *sta_priv = (struct rt2x00_sta *)sta->drv_priv;
 	int ret = 0;
 
@@ -5342,7 +10350,10 @@ int rt2800_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	if (sta_priv->wcid < 0)
 		return 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (action) {
 	case IEEE80211_AMPDU_RX_START:
 	case IEEE80211_AMPDU_RX_STOP:
@@ -5356,13 +10367,24 @@ int rt2800_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 	case IEEE80211_AMPDU_TX_START:
 		ieee80211_start_tx_ba_cb_irqsafe(vif, sta->addr, tid);
 		break;
+<<<<<<< HEAD
 	case IEEE80211_AMPDU_TX_STOP:
+=======
+	case IEEE80211_AMPDU_TX_STOP_CONT:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+>>>>>>> refs/remotes/origin/master
 		ieee80211_stop_tx_ba_cb_irqsafe(vif, sta->addr, tid);
 		break;
 	case IEEE80211_AMPDU_TX_OPERATIONAL:
 		break;
 	default:
+<<<<<<< HEAD
 		WARNING((struct rt2x00_dev *)hw->priv, "Unknown AMPDU action\n");
+=======
+		rt2x00_warn((struct rt2x00_dev *)hw->priv,
+			    "Unknown AMPDU action\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -5379,7 +10401,11 @@ int rt2800_get_survey(struct ieee80211_hw *hw, int idx,
 	if (idx != 0)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	survey->channel = conf->channel;
+=======
+	survey->channel = conf->chandef.chan;
+>>>>>>> refs/remotes/origin/master
 
 	rt2800_register_read(rt2x00dev, CH_IDLE_STA, &idle);
 	rt2800_register_read(rt2x00dev, CH_BUSY_STA, &busy);
@@ -5396,11 +10422,17 @@ int rt2800_get_survey(struct ieee80211_hw *hw, int idx,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!(hw->conf.flags & IEEE80211_CONF_OFFCHANNEL))
 		survey->filled |= SURVEY_INFO_IN_USE;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(hw->conf.flags & IEEE80211_CONF_OFFCHANNEL))
+		survey->filled |= SURVEY_INFO_IN_USE;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 }

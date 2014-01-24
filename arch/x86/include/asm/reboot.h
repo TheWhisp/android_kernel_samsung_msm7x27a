@@ -18,6 +18,7 @@ extern struct machine_ops machine_ops;
 
 void native_machine_crash_shutdown(struct pt_regs *regs);
 void native_machine_shutdown(void);
+<<<<<<< HEAD
 void machine_real_restart(unsigned int type);
 /* These must match dispatch_table in reboot_32.S */
 #define MRR_BIOS	0
@@ -28,6 +29,14 @@ typedef void (*nmi_shootdown_cb)(int, struct die_args*);
 =======
 typedef void (*nmi_shootdown_cb)(int, struct pt_regs*);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __noreturn machine_real_restart(unsigned int type);
+/* These must match dispatch in arch/x86/realmore/rm/reboot.S */
+#define MRR_BIOS	0
+#define MRR_APM		1
+
+typedef void (*nmi_shootdown_cb)(int, struct pt_regs*);
+>>>>>>> refs/remotes/origin/master
 void nmi_shootdown_cpus(nmi_shootdown_cb callback);
 
 #endif /* _ASM_X86_REBOOT_H */

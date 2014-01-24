@@ -75,7 +75,11 @@ static struct card_info {
 	zorro_id id;
 	const char *name;
 	unsigned int offset;
+<<<<<<< HEAD
 } cards[] __devinitdata = {
+=======
+} cards[] = {
+>>>>>>> refs/remotes/origin/master
 	{ ZORRO_PROD_VILLAGE_TRONIC_ARIADNE2, "Ariadne II", 0x0600 },
 	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, "X-Surf", 0x8600 },
 };
@@ -254,7 +258,11 @@ static int zorro8390_close(struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit zorro8390_remove_one(struct zorro_dev *z)
+=======
+static void zorro8390_remove_one(struct zorro_dev *z)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = zorro_get_drvdata(z);
 
@@ -264,7 +272,11 @@ static void __devexit zorro8390_remove_one(struct zorro_dev *z)
 	free_netdev(dev);
 }
 
+<<<<<<< HEAD
 static struct zorro_device_id zorro8390_zorro_tbl[] __devinitdata = {
+=======
+static struct zorro_device_id zorro8390_zorro_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ ZORRO_PROD_VILLAGE_TRONIC_ARIADNE2, },
 	{ ZORRO_PROD_INDIVIDUAL_COMPUTERS_X_SURF, },
 	{ 0 }
@@ -286,9 +298,14 @@ static const struct net_device_ops zorro8390_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit zorro8390_init(struct net_device *dev,
 				    unsigned long board, const char *name,
 				    unsigned long ioaddr)
+=======
+static int zorro8390_init(struct net_device *dev, unsigned long board,
+			  const char *name, void __iomem *ioaddr)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int err;
@@ -355,7 +372,11 @@ static int __devinit zorro8390_init(struct net_device *dev,
 	start_page = NESM_START_PG;
 	stop_page = NESM_STOP_PG;
 
+<<<<<<< HEAD
 	dev->base_addr = ioaddr;
+=======
+	dev->base_addr = (unsigned long)ioaddr;
+>>>>>>> refs/remotes/origin/master
 	dev->irq = IRQ_AMIGA_PORTS;
 
 	/* Install the Interrupt handler */
@@ -396,8 +417,13 @@ static int __devinit zorro8390_init(struct net_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit zorro8390_init_one(struct zorro_dev *z,
 					const struct zorro_device_id *ent)
+=======
+static int zorro8390_init_one(struct zorro_dev *z,
+			      const struct zorro_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	unsigned long board, ioaddr;
@@ -432,7 +458,11 @@ static struct zorro_driver zorro8390_driver = {
 	.name		= "zorro8390",
 	.id_table	= zorro8390_zorro_tbl,
 	.probe		= zorro8390_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(zorro8390_remove_one),
+=======
+	.remove		= zorro8390_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init zorro8390_init_module(void)

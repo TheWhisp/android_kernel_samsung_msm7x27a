@@ -57,17 +57,23 @@
  *  urb->dev->devnum, to make sure that we always have the right
  *  destination address.
  */
+<<<<<<< HEAD
 #include <linux/init.h>
 <<<<<<< HEAD
 #include <asm/atomic.h>
 #include <linux/bitmap.h>
 #include <linux/slab.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/atomic.h>
 #include <linux/bitmap.h>
 #include <linux/slab.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "wusbhc.h"
 #include "wa-hc.h"
@@ -86,7 +92,11 @@ static int __rpipe_get_descr(struct wahc *wa,
 		USB_REQ_GET_DESCRIPTOR,
 		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_RPIPE,
 		USB_DT_RPIPE<<8, index, descr, sizeof(*descr),
+<<<<<<< HEAD
 		1000 /* FIXME: arbitrary */);
+=======
+		USB_CTRL_GET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	if (result < 0) {
 		dev_err(dev, "rpipe %u: get descriptor failed: %d\n",
 			index, (int)result);
@@ -124,7 +134,11 @@ static int __rpipe_set_descr(struct wahc *wa,
 		USB_REQ_SET_DESCRIPTOR,
 		USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_RPIPE,
 		USB_DT_RPIPE<<8, index, descr, sizeof(*descr),
+<<<<<<< HEAD
 		HZ / 10);
+=======
+		USB_CTRL_SET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	if (result < 0) {
 		dev_err(dev, "rpipe %u: set descriptor failed: %d\n",
 			index, (int)result);
@@ -149,17 +163,29 @@ static void rpipe_init(struct wa_rpipe *rpipe)
 	kref_init(&rpipe->refcnt);
 	spin_lock_init(&rpipe->seg_lock);
 	INIT_LIST_HEAD(&rpipe->seg_list);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&rpipe->list_node);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned rpipe_get_idx(struct wahc *wa, unsigned rpipe_idx)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&wa->rpipe_bm_lock, flags);
 	rpipe_idx = find_next_zero_bit(wa->rpipe_bm, wa->rpipes, rpipe_idx);
 	if (rpipe_idx < wa->rpipes)
 		set_bit(rpipe_idx, wa->rpipe_bm);
 	spin_unlock_irqrestore(&wa->rpipe_bm_lock, flags);
+=======
+	spin_lock_irqsave(&wa->rpipe_lock, flags);
+	rpipe_idx = find_next_zero_bit(wa->rpipe_bm, wa->rpipes, rpipe_idx);
+	if (rpipe_idx < wa->rpipes)
+		set_bit(rpipe_idx, wa->rpipe_bm);
+	spin_unlock_irqrestore(&wa->rpipe_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return rpipe_idx;
 }
@@ -168,9 +194,15 @@ static void rpipe_put_idx(struct wahc *wa, unsigned rpipe_idx)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&wa->rpipe_bm_lock, flags);
 	clear_bit(rpipe_idx, wa->rpipe_bm);
 	spin_unlock_irqrestore(&wa->rpipe_bm_lock, flags);
+=======
+	spin_lock_irqsave(&wa->rpipe_lock, flags);
+	clear_bit(rpipe_idx, wa->rpipe_bm);
+	spin_unlock_irqrestore(&wa->rpipe_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rpipe_destroy(struct kref *_rpipe)
@@ -189,7 +221,11 @@ EXPORT_SYMBOL_GPL(rpipe_destroy);
 /*
  * Locate an idle rpipe, create an structure for it and return it
  *
+<<<<<<< HEAD
  * @wa 	  is referenced and unlocked
+=======
+ * @wa	  is referenced and unlocked
+>>>>>>> refs/remotes/origin/master
  * @crs   enum rpipe_attr, required endpoint characteristics
  *
  * The rpipe can be used only sequentially (not in parallel).
@@ -242,7 +278,11 @@ static int __rpipe_reset(struct wahc *wa, unsigned index)
 		wa->usb_dev, usb_sndctrlpipe(wa->usb_dev, 0),
 		USB_REQ_RPIPE_RESET,
 		USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_RPIPE,
+<<<<<<< HEAD
 		0, index, NULL, 0, 1000 /* FIXME: arbitrary */);
+=======
+		0, index, NULL, 0, USB_CTRL_SET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	if (result < 0)
 		dev_err(dev, "rpipe %u: reset failed: %d\n",
 			index, result);
@@ -257,8 +297,13 @@ static int __rpipe_reset(struct wahc *wa, unsigned index)
 static struct usb_wireless_ep_comp_descriptor epc0 = {
 	.bLength = sizeof(epc0),
 	.bDescriptorType = USB_DT_WIRELESS_ENDPOINT_COMP,
+<<<<<<< HEAD
 /*	.bMaxBurst = 1, */
 	.bMaxSequence = 31,
+=======
+	.bMaxBurst = 1,
+	.bMaxSequence = 2,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -313,7 +358,11 @@ out:
 /*
  * Aim an rpipe to its device & endpoint destination
  *
+<<<<<<< HEAD
  * Make sure we change the address to unauthenticathed if the device
+=======
+ * Make sure we change the address to unauthenticated if the device
+>>>>>>> refs/remotes/origin/master
  * is WUSB and it is not authenticated.
  */
 static int rpipe_aim(struct wa_rpipe *rpipe, struct wahc *wa,
@@ -323,6 +372,10 @@ static int rpipe_aim(struct wa_rpipe *rpipe, struct wahc *wa,
 	struct device *dev = &wa->usb_iface->dev;
 	struct usb_device *usb_dev = urb->dev;
 	struct usb_wireless_ep_comp_descriptor *epcd;
+<<<<<<< HEAD
+=======
+	u32 ack_window, epcd_max_sequence;
+>>>>>>> refs/remotes/origin/master
 	u8 unauth;
 
 	epcd = rpipe_epc_find(dev, ep);
@@ -333,14 +386,31 @@ static int rpipe_aim(struct wa_rpipe *rpipe, struct wahc *wa,
 	}
 	unauth = usb_dev->wusb && !usb_dev->authenticated ? 0x80 : 0;
 	__rpipe_reset(wa, le16_to_cpu(rpipe->descr.wRPipeIndex));
+<<<<<<< HEAD
 	atomic_set(&rpipe->segs_available, le16_to_cpu(rpipe->descr.wRequests));
+=======
+	atomic_set(&rpipe->segs_available,
+		le16_to_cpu(rpipe->descr.wRequests));
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: block allocation system; request with queuing and timeout */
 	/* FIXME: compute so seg_size > ep->maxpktsize */
 	rpipe->descr.wBlocks = cpu_to_le16(16);		/* given */
 	/* ep0 maxpktsize is 0x200 (WUSB1.0[4.8.1]) */
+<<<<<<< HEAD
 	rpipe->descr.wMaxPacketSize = cpu_to_le16(ep->desc.wMaxPacketSize);
 	rpipe->descr.bHSHubAddress = 0;			/* reserved: zero */
 	rpipe->descr.bHSHubPort = wusb_port_no_to_idx(urb->dev->portnum);
+=======
+	if (usb_endpoint_xfer_isoc(&ep->desc))
+		rpipe->descr.wMaxPacketSize = epcd->wOverTheAirPacketSize;
+	else
+		rpipe->descr.wMaxPacketSize = ep->desc.wMaxPacketSize;
+
+	rpipe->descr.hwa_bMaxBurst = max(min_t(unsigned int,
+				epcd->bMaxBurst, 16U), 1U);
+	rpipe->descr.hwa_bDeviceInfoIndex =
+			wusb_port_no_to_idx(urb->dev->portnum);
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: use maximum speed as supported or recommended by device */
 	rpipe->descr.bSpeed = usb_pipeendpoint(urb->pipe) == 0 ?
 		UWB_PHY_RATE_53 : UWB_PHY_RATE_200;
@@ -350,6 +420,7 @@ static int rpipe_aim(struct wa_rpipe *rpipe, struct wahc *wa,
 		le16_to_cpu(rpipe->descr.wRPipeIndex),
 		usb_pipeendpoint(urb->pipe), rpipe->descr.bSpeed);
 
+<<<<<<< HEAD
 	/* see security.c:wusb_update_address() */
 	if (unlikely(urb->dev->devnum == 0x80))
 		rpipe->descr.bDeviceAddress = 0;
@@ -370,6 +441,30 @@ static int rpipe_aim(struct wa_rpipe *rpipe, struct wahc *wa,
 	/* rpipe->descr.bmCharacteristics RO */
 	/* FIXME: bmRetryOptions */
 	rpipe->descr.bmRetryOptions = 15;
+=======
+	rpipe->descr.hwa_reserved = 0;
+
+	rpipe->descr.bEndpointAddress = ep->desc.bEndpointAddress;
+	/* FIXME: bDataSequence */
+	rpipe->descr.bDataSequence = 0;
+
+	/* start with base window of hwa_bMaxBurst bits starting at 0. */
+	ack_window = 0xFFFFFFFF >> (32 - rpipe->descr.hwa_bMaxBurst);
+	rpipe->descr.dwCurrentWindow = cpu_to_le32(ack_window);
+	epcd_max_sequence = max(min_t(unsigned int,
+			epcd->bMaxSequence, 32U), 2U);
+	rpipe->descr.bMaxDataSequence = epcd_max_sequence - 1;
+	rpipe->descr.bInterval = ep->desc.bInterval;
+	if (usb_endpoint_xfer_isoc(&ep->desc))
+		rpipe->descr.bOverTheAirInterval = epcd->bOverTheAirInterval;
+	else
+		rpipe->descr.bOverTheAirInterval = 0;	/* 0 if not isoc */
+	/* FIXME: xmit power & preamble blah blah */
+	rpipe->descr.bmAttribute = (ep->desc.bmAttributes &
+					USB_ENDPOINT_XFERTYPE_MASK);
+	/* rpipe->descr.bmCharacteristics RO */
+	rpipe->descr.bmRetryOptions = (wa->wusb->retry_count & 0xF);
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: use for assessing link quality? */
 	rpipe->descr.wNumTransactionErrors = 0;
 	result = __rpipe_set_descr(wa, &rpipe->descr,
@@ -393,10 +488,15 @@ static int rpipe_check_aim(const struct wa_rpipe *rpipe, const struct wahc *wa,
 			   const struct usb_host_endpoint *ep,
 			   const struct urb *urb, gfp_t gfp)
 {
+<<<<<<< HEAD
 	int result = 0;		/* better code for lack of companion? */
 	struct device *dev = &wa->usb_iface->dev;
 	struct usb_device *usb_dev = urb->dev;
 	u8 unauth = (usb_dev->wusb && !usb_dev->authenticated) ? 0x80 : 0;
+=======
+	int result = 0;
+	struct device *dev = &wa->usb_iface->dev;
+>>>>>>> refs/remotes/origin/master
 	u8 portnum = wusb_port_no_to_idx(urb->dev->portnum);
 
 #define AIM_CHECK(rdf, val, text)					\
@@ -409,6 +509,7 @@ static int rpipe_check_aim(const struct wa_rpipe *rpipe, const struct wahc *wa,
 			WARN_ON(1);					\
 		}							\
 	} while (0)
+<<<<<<< HEAD
 	AIM_CHECK(wMaxPacketSize, cpu_to_le16(ep->desc.wMaxPacketSize),
 		  "(%u vs %u)");
 	AIM_CHECK(bHSHubPort, portnum, "(%u vs %u)");
@@ -416,6 +517,12 @@ static int rpipe_check_aim(const struct wa_rpipe *rpipe, const struct wahc *wa,
 			UWB_PHY_RATE_53 : UWB_PHY_RATE_200,
 		  "(%u vs %u)");
 	AIM_CHECK(bDeviceAddress, urb->dev->devnum | unauth, "(%u vs %u)");
+=======
+	AIM_CHECK(hwa_bDeviceInfoIndex, portnum, "(%u vs %u)");
+	AIM_CHECK(bSpeed, usb_pipeendpoint(urb->pipe) == 0 ?
+			UWB_PHY_RATE_53 : UWB_PHY_RATE_200,
+		  "(%u vs %u)");
+>>>>>>> refs/remotes/origin/master
 	AIM_CHECK(bEndpointAddress, ep->desc.bEndpointAddress, "(%u vs %u)");
 	AIM_CHECK(bInterval, ep->desc.bInterval, "(%u vs %u)");
 	AIM_CHECK(bmAttribute, ep->desc.bmAttributes & 0x03, "(%u vs %u)");
@@ -484,7 +591,11 @@ error:
  */
 int wa_rpipes_create(struct wahc *wa)
 {
+<<<<<<< HEAD
 	wa->rpipes = wa->wa_descr->wNumRPipes;
+=======
+	wa->rpipes = le16_to_cpu(wa->wa_descr->wNumRPipes);
+>>>>>>> refs/remotes/origin/master
 	wa->rpipe_bm = kzalloc(BITS_TO_LONGS(wa->rpipes)*sizeof(unsigned long),
 			       GFP_KERNEL);
 	if (wa->rpipe_bm == NULL)
@@ -528,9 +639,36 @@ void rpipe_ep_disable(struct wahc *wa, struct usb_host_endpoint *ep)
 			wa->usb_dev, usb_rcvctrlpipe(wa->usb_dev, 0),
 			USB_REQ_RPIPE_ABORT,
 			USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_RPIPE,
+<<<<<<< HEAD
 			0, index, NULL, 0, 1000 /* FIXME: arbitrary */);
+=======
+			0, index, NULL, 0, USB_CTRL_SET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 		rpipe_put(rpipe);
 	}
 	mutex_unlock(&wa->rpipe_mutex);
 }
 EXPORT_SYMBOL_GPL(rpipe_ep_disable);
+<<<<<<< HEAD
+=======
+
+/* Clear the stalled status of an RPIPE. */
+void rpipe_clear_feature_stalled(struct wahc *wa, struct usb_host_endpoint *ep)
+{
+	struct wa_rpipe *rpipe;
+
+	mutex_lock(&wa->rpipe_mutex);
+	rpipe = ep->hcpriv;
+	if (rpipe != NULL) {
+		u16 index = le16_to_cpu(rpipe->descr.wRPipeIndex);
+
+		usb_control_msg(
+			wa->usb_dev, usb_rcvctrlpipe(wa->usb_dev, 0),
+			USB_REQ_CLEAR_FEATURE,
+			USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_RPIPE,
+			RPIPE_STALL, index, NULL, 0, USB_CTRL_SET_TIMEOUT);
+	}
+	mutex_unlock(&wa->rpipe_mutex);
+}
+EXPORT_SYMBOL_GPL(rpipe_clear_feature_stalled);
+>>>>>>> refs/remotes/origin/master

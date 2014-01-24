@@ -361,11 +361,14 @@ static int vmu_flash_read(struct mtd_info *mtd, loff_t from, size_t len,
 	unsigned char cx;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (len < 1)
 		return -EIO;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mpart = mtd->priv;
 	mdev = mpart->mdev;
 	partition = mpart->partition;
@@ -438,6 +441,7 @@ static int vmu_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
 	card = maple_get_drvdata(mdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* simple sanity checks */
 	if (len < 1) {
 		error = -EIO;
@@ -445,6 +449,8 @@ static int vmu_flash_write(struct mtd_info *mtd, loff_t to, size_t len,
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	numblocks = card->parts[partition].numblocks;
 	if (to + len > numblocks * card->blocklen)
 		len = numblocks * card->blocklen - to;
@@ -551,6 +557,7 @@ static void vmu_queryblocks(struct mapleq *mq)
 	mtd_cur->size = part_cur->numblocks * card->blocklen;
 	mtd_cur->erasesize = card->blocklen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mtd_cur->write = vmu_flash_write;
 	mtd_cur->read = vmu_flash_read;
 	mtd_cur->sync = vmu_flash_sync;
@@ -559,6 +566,11 @@ static void vmu_queryblocks(struct mapleq *mq)
 	mtd_cur->_read = vmu_flash_read;
 	mtd_cur->_sync = vmu_flash_sync;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_cur->_write = vmu_flash_write;
+	mtd_cur->_read = vmu_flash_read;
+	mtd_cur->_sync = vmu_flash_sync;
+>>>>>>> refs/remotes/origin/master
 	mtd_cur->writesize = card->blocklen;
 
 	mpart = kmalloc(sizeof(struct mdev_part), GFP_KERNEL);
@@ -616,7 +628,11 @@ fail_name:
 }
 
 /* Handles very basic info about the flash, queries for details */
+<<<<<<< HEAD
 static int __devinit vmu_connect(struct maple_device *mdev)
+=======
+static int vmu_connect(struct maple_device *mdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long test_flash_data, basic_flash_data;
 	int c, error;
@@ -710,7 +726,11 @@ fail_nomem:
 	return error;
 }
 
+<<<<<<< HEAD
 static void __devexit vmu_disconnect(struct maple_device *mdev)
+=======
+static void vmu_disconnect(struct maple_device *mdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct memcard *card;
 	struct mdev_part *mpart;
@@ -792,7 +812,11 @@ static void vmu_file_error(struct maple_device *mdev, void *recvbuf)
 }
 
 
+<<<<<<< HEAD
 static int __devinit probe_maple_vmu(struct device *dev)
+=======
+static int probe_maple_vmu(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	struct maple_device *mdev = to_maple_dev(dev);
@@ -809,7 +833,11 @@ static int __devinit probe_maple_vmu(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit remove_maple_vmu(struct device *dev)
+=======
+static int remove_maple_vmu(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct maple_device *mdev = to_maple_dev(dev);
 
@@ -822,7 +850,11 @@ static struct maple_driver vmu_flash_driver = {
 	.drv = {
 		.name =		"Dreamcast_visual_memory",
 		.probe =	probe_maple_vmu,
+<<<<<<< HEAD
 		.remove = 	__devexit_p(remove_maple_vmu),
+=======
+		.remove =	remove_maple_vmu,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

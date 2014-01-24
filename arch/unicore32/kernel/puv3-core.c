@@ -14,9 +14,12 @@
 #include <linux/init.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/amba/bus.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>

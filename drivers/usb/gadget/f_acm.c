@@ -5,12 +5,16 @@
  * Copyright (C) 2008 by David Brownell
  * Copyright (C) 2008 by Nokia Corporation
  * Copyright (C) 2009 by Samsung Electronics
+<<<<<<< HEAD
  * Copyright (c) 2011 The Linux Foundation. All rights reserved.
 <<<<<<< HEAD
  * Author: Michal Nazarewicz (m.nazarewicz@samsung.com)
 =======
  * Author: Michal Nazarewicz (mina86@mina86.com)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Michal Nazarewicz (mina86@mina86.com)
+>>>>>>> refs/remotes/origin/master
  *
  * This software is distributed under the terms of the GNU General
  * Public License ("GPL") as published by the Free Software Foundation,
@@ -21,9 +25,15 @@
 
 #include <linux/slab.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/usb/android_composite.h>
 #include <mach/usb_gadget_xport.h>
+=======
+#include <linux/module.h>
+#include <linux/device.h>
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "u_serial.h"
 #include "gadget_chips.h"
@@ -47,6 +57,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct acm_ep_descs {
 	struct usb_endpoint_descriptor	*in;
 	struct usb_endpoint_descriptor	*out;
@@ -55,11 +66,16 @@ struct acm_ep_descs {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct f_acm {
 	struct gserial			port;
 	u8				ctrl_id, data_id;
 	u8				port_num;
+<<<<<<< HEAD
 	enum transport_type		transport;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u8				pending;
 
@@ -70,6 +86,7 @@ struct f_acm {
 	spinlock_t			lock;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct acm_ep_descs		fs;
 	struct acm_ep_descs		hs;
 
@@ -78,6 +95,9 @@ struct f_acm {
 =======
 	struct usb_ep			*notify;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_ep			*notify;
+>>>>>>> refs/remotes/origin/master
 	struct usb_request		*notify_req;
 
 	struct usb_cdc_line_coding	port_line_coding;	/* 8-N-1 etc */
@@ -98,6 +118,7 @@ struct f_acm {
 #define ACM_CTRL_DCD		(1 << 0)
 };
 
+<<<<<<< HEAD
 static unsigned int no_acm_tty_ports;
 static unsigned int no_acm_sdio_ports;
 static unsigned int no_acm_smd_ports;
@@ -109,6 +130,8 @@ static struct acm_port_info {
 	unsigned		client_port_num;
 } gacm_ports[GSERIAL_NO_PORTS];
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct f_acm *func_to_acm(struct usb_function *f)
 {
 	return container_of(f, struct f_acm, port.func);
@@ -119,6 +142,7 @@ static inline struct f_acm *port_to_acm(struct gserial *p)
 	return container_of(p, struct f_acm, port);
 }
 
+<<<<<<< HEAD
 static int acm_port_setup(struct usb_configuration *c)
 {
 	int ret = 0;
@@ -195,11 +219,17 @@ static int acm_port_disconnect(struct f_acm *acm)
 
 	return 0;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /* notification endpoint uses smallish and infrequent fixed-size messages */
 
+<<<<<<< HEAD
 #define GS_LOG2_NOTIFY_INTERVAL		5	/* 1 << 5 == 32 msec */
+=======
+#define GS_NOTIFY_INTERVAL_MS		32
+>>>>>>> refs/remotes/origin/master
 #define GS_NOTIFY_MAXPACKET		10	/* notification + 2 bytes */
 
 /* interface and class descriptors: */
@@ -279,7 +309,11 @@ static struct usb_endpoint_descriptor acm_fs_notify_desc = {
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_INT,
 	.wMaxPacketSize =	cpu_to_le16(GS_NOTIFY_MAXPACKET),
+<<<<<<< HEAD
 	.bInterval =		1 << GS_LOG2_NOTIFY_INTERVAL,
+=======
+	.bInterval =		GS_NOTIFY_INTERVAL_MS,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_endpoint_descriptor acm_fs_in_desc = {
@@ -311,14 +345,21 @@ static struct usb_descriptor_header *acm_fs_function[] = {
 };
 
 /* high speed support: */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_endpoint_descriptor acm_hs_notify_desc = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 	.bEndpointAddress =	USB_DIR_IN,
 	.bmAttributes =		USB_ENDPOINT_XFER_INT,
 	.wMaxPacketSize =	cpu_to_le16(GS_NOTIFY_MAXPACKET),
+<<<<<<< HEAD
 	.bInterval =		GS_LOG2_NOTIFY_INTERVAL+4,
+=======
+	.bInterval =		USB_MS_TO_HS_INTERVAL(GS_NOTIFY_INTERVAL_MS),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_endpoint_descriptor acm_hs_in_desc = {
@@ -350,7 +391,10 @@ static struct usb_descriptor_header *acm_hs_function[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct usb_endpoint_descriptor acm_ss_in_desc = {
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
@@ -387,7 +431,10 @@ static struct usb_descriptor_header *acm_ss_function[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* string descriptors: */
 
 #define ACM_CTRL_IDX	0
@@ -399,7 +446,11 @@ static struct usb_string acm_string_defs[] = {
 	[ACM_CTRL_IDX].s = "CDC Abstract Control Model (ACM)",
 	[ACM_DATA_IDX].s = "CDC ACM Data",
 	[ACM_IAD_IDX ].s = "CDC Serial",
+<<<<<<< HEAD
 	{  /* ZEROES END LIST */ },
+=======
+	{  } /* end of list */
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_gadget_strings acm_string_table = {
@@ -474,7 +525,12 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 	/* SET_LINE_CODING ... just read and save what the host sends */
 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
 			| USB_CDC_REQ_SET_LINE_CODING:
+<<<<<<< HEAD
 		if (w_length != sizeof(struct usb_cdc_line_coding))
+=======
+		if (w_length != sizeof(struct usb_cdc_line_coding)
+				|| w_index != acm->ctrl_id)
+>>>>>>> refs/remotes/origin/master
 			goto invalid;
 
 		value = w_length;
@@ -485,6 +541,11 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 	/* GET_LINE_CODING ... return what host sent, or initial value */
 	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
 			| USB_CDC_REQ_GET_LINE_CODING:
+<<<<<<< HEAD
+=======
+		if (w_index != acm->ctrl_id)
+			goto invalid;
+>>>>>>> refs/remotes/origin/master
 
 		value = min_t(unsigned, w_length,
 				sizeof(struct usb_cdc_line_coding));
@@ -494,6 +555,12 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 	/* SET_CONTROL_LINE_STATE ... save what the host sent */
 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8)
 			| USB_CDC_REQ_SET_CONTROL_LINE_STATE:
+<<<<<<< HEAD
+=======
+		if (w_index != acm->ctrl_id)
+			goto invalid;
+
+>>>>>>> refs/remotes/origin/master
 		value = 0;
 
 		/* FIXME we should not allow data to flow until the
@@ -501,12 +568,15 @@ static int acm_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
 		 * that bit, we should return to that no-flow state.
 		 */
 		acm->port_handshake_bits = w_value;
+<<<<<<< HEAD
 		if (acm->port.notify_modem) {
 			unsigned port_num =
 				gacm_ports[acm->port_num].client_port_num;
 
 			acm->port.notify_modem(&acm->port, port_num, w_value);
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -546,6 +616,7 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 			usb_ep_disable(acm->notify);
 		} else {
 			VDBG(cdev, "init acm ctrl interface %d\n", intf);
+<<<<<<< HEAD
 		}
 <<<<<<< HEAD
 		acm->notify_desc = ep_choose(cdev->gadget,
@@ -558,11 +629,18 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 
 		usb_ep_enable(acm->notify);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (config_ep_by_speed(cdev->gadget, f, acm->notify))
+				return -EINVAL;
+		}
+		usb_ep_enable(acm->notify);
+>>>>>>> refs/remotes/origin/master
 		acm->notify->driver_data = acm;
 
 	} else if (intf == acm->data_id) {
 		if (acm->port.in->driver_data) {
 			DBG(cdev, "reset acm ttyGS%d\n", acm->port_num);
+<<<<<<< HEAD
 			acm_port_disconnect(acm);
 <<<<<<< HEAD
 		} else {
@@ -573,6 +651,9 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 		acm->port.out_desc = ep_choose(cdev->gadget,
 				acm->hs.out, acm->fs.out);
 =======
+=======
+			gserial_disconnect(&acm->port);
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!acm->port.in->desc || !acm->port.out->desc) {
 			DBG(cdev, "activate acm ttyGS%d\n", acm->port_num);
@@ -585,6 +666,7 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 				return -EINVAL;
 			}
 		}
+<<<<<<< HEAD
 		if (config_ep_by_speed(cdev->gadget, f,
 				acm->port.in) ||
 			config_ep_by_speed(cdev->gadget, f,
@@ -596,6 +678,9 @@ static int acm_set_alt(struct usb_function *f, unsigned intf, unsigned alt)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 		acm_port_connect(acm);
+=======
+		gserial_connect(&acm->port, acm->port_num);
+>>>>>>> refs/remotes/origin/master
 
 	} else
 		return -EINVAL;
@@ -609,7 +694,11 @@ static void acm_disable(struct usb_function *f)
 	struct usb_composite_dev *cdev = f->config->cdev;
 
 	DBG(cdev, "acm ttyGS%d deactivated\n", acm->port_num);
+<<<<<<< HEAD
 	acm_port_disconnect(acm);
+=======
+	gserial_disconnect(&acm->port);
+>>>>>>> refs/remotes/origin/master
 	usb_ep_disable(acm->notify);
 	acm->notify->driver_data = NULL;
 }
@@ -740,6 +829,7 @@ static int acm_send_break(struct gserial *port, int duration)
 	return acm_notify_serial_state(acm);
 }
 
+<<<<<<< HEAD
 static int acm_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
 {
 	struct f_acm *acm = port_to_acm(port);
@@ -749,6 +839,8 @@ static int acm_send_modem_ctrl_bits(struct gserial *port, int ctrl_bits)
 	return acm_notify_serial_state(acm);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*-------------------------------------------------------------------------*/
 
 /* ACM function driver setup/binding */
@@ -757,9 +849,29 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 {
 	struct usb_composite_dev *cdev = c->cdev;
 	struct f_acm		*acm = func_to_acm(f);
+<<<<<<< HEAD
 	int			status;
 	struct usb_ep		*ep;
 
+=======
+	struct usb_string	*us;
+	int			status;
+	struct usb_ep		*ep;
+
+	/* REVISIT might want instance-specific strings to help
+	 * distinguish instances ...
+	 */
+
+	/* maybe allocate device-global string IDs, and patch descriptors */
+	us = usb_gstrings_attach(cdev, acm_strings,
+			ARRAY_SIZE(acm_string_defs));
+	if (IS_ERR(us))
+		return PTR_ERR(us);
+	acm_control_interface_desc.iInterface = us[ACM_CTRL_IDX].id;
+	acm_data_interface_desc.iInterface = us[ACM_DATA_IDX].id;
+	acm_iad_descriptor.iFunction = us[ACM_IAD_IDX].id;
+
+>>>>>>> refs/remotes/origin/master
 	/* allocate instance-specific interface IDs, and patch descriptors */
 	status = usb_interface_id(c, f);
 	if (status < 0)
@@ -811,6 +923,7 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 	acm->notify_req->context = acm;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* copy descriptors, and track endpoint copies */
 =======
 	/* copy descriptors */
@@ -829,10 +942,13 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* support all relevant hardware speeds... we expect that when
 	 * hardware is dual speed, all bulk-capable endpoints work at
 	 * both speeds
 	 */
+<<<<<<< HEAD
 	if (gadget_is_dualspeed(c->cdev->gadget)) {
 		acm_hs_in_desc.bEndpointAddress =
 				acm_fs_in_desc.bEndpointAddress;
@@ -878,17 +994,38 @@ acm_bind(struct usb_configuration *c, struct usb_function *f)
 =======
 			gadget_is_superspeed(c->cdev->gadget) ? "super" :
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	acm_hs_in_desc.bEndpointAddress = acm_fs_in_desc.bEndpointAddress;
+	acm_hs_out_desc.bEndpointAddress = acm_fs_out_desc.bEndpointAddress;
+	acm_hs_notify_desc.bEndpointAddress =
+		acm_fs_notify_desc.bEndpointAddress;
+
+	acm_ss_in_desc.bEndpointAddress = acm_fs_in_desc.bEndpointAddress;
+	acm_ss_out_desc.bEndpointAddress = acm_fs_out_desc.bEndpointAddress;
+
+	status = usb_assign_descriptors(f, acm_fs_function, acm_hs_function,
+			acm_ss_function);
+	if (status)
+		goto fail;
+
+	DBG(cdev, "acm ttyGS%d: %s speed IN/%s OUT/%s NOTIFY/%s\n",
+			acm->port_num,
+			gadget_is_superspeed(c->cdev->gadget) ? "super" :
+>>>>>>> refs/remotes/origin/master
 			gadget_is_dualspeed(c->cdev->gadget) ? "dual" : "full",
 			acm->port.in->name, acm->port.out->name,
 			acm->notify->name);
 	return 0;
 
 fail:
+<<<<<<< HEAD
 	if (f->hs_descriptors)
 		usb_free_descriptors(f->hs_descriptors);
 	if (f->descriptors)
 		usb_free_descriptors(f->descriptors);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (acm->notify_req)
 		gs_free_req(acm->notify, acm->notify_req);
 
@@ -905,6 +1042,7 @@ fail:
 	return status;
 }
 
+<<<<<<< HEAD
 static void
 acm_unbind(struct usb_configuration *c, struct usb_function *f)
 {
@@ -1002,10 +1140,49 @@ int acm_bind_config(struct usb_configuration *c, u8 port_num)
 	/* descriptors are per-instance copies */
 	acm->port.func.bind = acm_bind;
 	acm->port.func.unbind = acm_unbind;
+=======
+static void acm_unbind(struct usb_configuration *c, struct usb_function *f)
+{
+	struct f_acm		*acm = func_to_acm(f);
+
+	acm_string_defs[0].id = 0;
+	usb_free_all_descriptors(f);
+	if (acm->notify_req)
+		gs_free_req(acm->notify, acm->notify_req);
+}
+
+static void acm_free_func(struct usb_function *f)
+{
+	struct f_acm		*acm = func_to_acm(f);
+
+	kfree(acm);
+}
+
+static struct usb_function *acm_alloc_func(struct usb_function_instance *fi)
+{
+	struct f_serial_opts *opts;
+	struct f_acm *acm;
+
+	acm = kzalloc(sizeof(*acm), GFP_KERNEL);
+	if (!acm)
+		return ERR_PTR(-ENOMEM);
+
+	spin_lock_init(&acm->lock);
+
+	acm->port.connect = acm_connect;
+	acm->port.disconnect = acm_disconnect;
+	acm->port.send_break = acm_send_break;
+
+	acm->port.func.name = "acm";
+	acm->port.func.strings = acm_strings;
+	/* descriptors are per-instance copies */
+	acm->port.func.bind = acm_bind;
+>>>>>>> refs/remotes/origin/master
 	acm->port.func.set_alt = acm_set_alt;
 	acm->port.func.setup = acm_setup;
 	acm->port.func.disable = acm_disable;
 
+<<<<<<< HEAD
 	status = usb_add_function(c, &acm->port.func);
 	if (status)
 		kfree(acm);
@@ -1052,3 +1229,95 @@ static int acm_init_port(int port_num, const char *name)
 
 	return 0;
 }
+=======
+	opts = container_of(fi, struct f_serial_opts, func_inst);
+	acm->port_num = opts->port_num;
+	acm->port.func.unbind = acm_unbind;
+	acm->port.func.free_func = acm_free_func;
+
+	return &acm->port.func;
+}
+
+static inline struct f_serial_opts *to_f_serial_opts(struct config_item *item)
+{
+	return container_of(to_config_group(item), struct f_serial_opts,
+			func_inst.group);
+}
+
+CONFIGFS_ATTR_STRUCT(f_serial_opts);
+static ssize_t f_acm_attr_show(struct config_item *item,
+				 struct configfs_attribute *attr,
+				 char *page)
+{
+	struct f_serial_opts *opts = to_f_serial_opts(item);
+	struct f_serial_opts_attribute *f_serial_opts_attr =
+		container_of(attr, struct f_serial_opts_attribute, attr);
+	ssize_t ret = 0;
+
+	if (f_serial_opts_attr->show)
+		ret = f_serial_opts_attr->show(opts, page);
+	return ret;
+}
+
+static void acm_attr_release(struct config_item *item)
+{
+	struct f_serial_opts *opts = to_f_serial_opts(item);
+
+	usb_put_function_instance(&opts->func_inst);
+}
+
+static struct configfs_item_operations acm_item_ops = {
+	.release                = acm_attr_release,
+	.show_attribute		= f_acm_attr_show,
+};
+
+static ssize_t f_acm_port_num_show(struct f_serial_opts *opts, char *page)
+{
+	return sprintf(page, "%u\n", opts->port_num);
+}
+
+static struct f_serial_opts_attribute f_acm_port_num =
+	__CONFIGFS_ATTR_RO(port_num, f_acm_port_num_show);
+
+
+static struct configfs_attribute *acm_attrs[] = {
+	&f_acm_port_num.attr,
+	NULL,
+};
+
+static struct config_item_type acm_func_type = {
+	.ct_item_ops    = &acm_item_ops,
+	.ct_attrs	= acm_attrs,
+	.ct_owner       = THIS_MODULE,
+};
+
+static void acm_free_instance(struct usb_function_instance *fi)
+{
+	struct f_serial_opts *opts;
+
+	opts = container_of(fi, struct f_serial_opts, func_inst);
+	gserial_free_line(opts->port_num);
+	kfree(opts);
+}
+
+static struct usb_function_instance *acm_alloc_instance(void)
+{
+	struct f_serial_opts *opts;
+	int ret;
+
+	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
+	if (!opts)
+		return ERR_PTR(-ENOMEM);
+	opts->func_inst.free_func_inst = acm_free_instance;
+	ret = gserial_alloc_line(&opts->port_num);
+	if (ret) {
+		kfree(opts);
+		return ERR_PTR(ret);
+	}
+	config_group_init_type_name(&opts->func_inst.group, "",
+			&acm_func_type);
+	return &opts->func_inst;
+}
+DECLARE_USB_FUNCTION_INIT(acm, acm_alloc_instance, acm_alloc_func);
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

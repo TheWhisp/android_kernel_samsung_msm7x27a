@@ -19,6 +19,7 @@ ccflags-y :=				\
 	-Idrivers/net/wireless/brcm80211/brcmutil \
 	-Idrivers/net/wireless/brcm80211/include
 
+<<<<<<< HEAD
 BRCMUTIL_OFILES := \
 	utils.o
 
@@ -26,3 +27,7 @@ MODULEPFX := brcmutil
 
 obj-$(CONFIG_BRCMUTIL)	+= $(MODULEPFX).o
 $(MODULEPFX)-objs	= $(BRCMUTIL_OFILES)
+=======
+obj-$(CONFIG_BRCMUTIL)	+= brcmutil.o
+brcmutil-objs	= utils.o d11.o
+>>>>>>> refs/remotes/origin/master

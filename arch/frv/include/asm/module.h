@@ -11,6 +11,7 @@
 #ifndef _ASM_MODULE_H
 #define _ASM_MODULE_H
 
+<<<<<<< HEAD
 struct mod_arch_specific
 {
 };
@@ -18,6 +19,9 @@ struct mod_arch_specific
 #define Elf_Shdr	Elf32_Shdr
 #define Elf_Sym		Elf32_Sym
 #define Elf_Ehdr	Elf32_Ehdr
+=======
+#include <asm-generic/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Include the architecture version.

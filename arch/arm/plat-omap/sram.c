@@ -6,8 +6,13 @@
  * Copyright (C) 2005 Nokia Corporation
  * Written by Tony Lindgren <tony@atomide.com>
  *
+<<<<<<< HEAD
  * Copyright (C) 2009 Texas Instruments
  * Added OMAP4 support - Santosh Shilimkar <santosh.shilimkar@ti.com>
+=======
+ * Copyright (C) 2009-2012 Texas Instruments
+ * Added OMAP4/5 support - Santosh Shilimkar <santosh.shilimkar@ti.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -20,16 +25,22 @@
 #include <linux/init.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/omapfb.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+#include <asm/fncpy.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlb.h>
 #include <asm/cacheflush.h>
 
 #include <asm/mach/map.h>
 
 #include <plat/sram.h>
+<<<<<<< HEAD
 #include <plat/board.h>
 #include <plat/cpu.h>
 <<<<<<< HEAD
@@ -338,6 +349,15 @@ static void __init omap_map_sram(void)
 	memset((void *)omap_sram_base + SRAM_BOOTLOADER_SZ, 0,
 	       omap_sram_size - SRAM_BOOTLOADER_SZ);
 }
+=======
+
+#define ROUND_DOWN(value,boundary)	((value) & (~((boundary)-1)))
+
+static void __iomem *omap_sram_base;
+static unsigned long omap_sram_skip;
+static unsigned long omap_sram_size;
+static void __iomem *omap_sram_ceil;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Memory allocator for SRAM: calculates the new ceiling address
@@ -349,6 +369,7 @@ static void __init omap_map_sram(void)
 void *omap_sram_push_address(unsigned long size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (size > (omap_sram_ceil - (omap_sram_base + SRAM_BOOTLOADER_SZ))) {
 =======
 	unsigned long available, new_ceil = (unsigned long)omap_sram_ceil;
@@ -357,10 +378,18 @@ void *omap_sram_push_address(unsigned long size)
 
 	if (size > available) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long available, new_ceil = (unsigned long)omap_sram_ceil;
+
+	available = omap_sram_ceil - (omap_sram_base + omap_sram_skip);
+
+	if (size > available) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("Not enough space in SRAM\n");
 		return NULL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	omap_sram_ceil -= size;
 	omap_sram_ceil = ROUND_DOWN(omap_sram_ceil, FNCPY_ALIGN);
@@ -369,10 +398,16 @@ void *omap_sram_push_address(unsigned long size)
 	new_ceil = ROUND_DOWN(new_ceil, FNCPY_ALIGN);
 	omap_sram_ceil = IOMEM(new_ceil);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	new_ceil -= size;
+	new_ceil = ROUND_DOWN(new_ceil, FNCPY_ALIGN);
+	omap_sram_ceil = IOMEM(new_ceil);
+>>>>>>> refs/remotes/origin/master
 
 	return (void *)omap_sram_ceil;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_OMAP1
 
 static void (*_omap_sram_reprogram_clock)(u32 dpllctl, u32 ckctl);
@@ -565,4 +600,41 @@ int __init omap_sram_init(void)
 		omap34xx_sram_init();
 
 	return 0;
+=======
+/*
+ * The SRAM context is lost during off-idle and stack
+ * needs to be reset.
+ */
+void omap_sram_reset(void)
+{
+	omap_sram_ceil = omap_sram_base + omap_sram_size;
+}
+
+/*
+ * Note that we cannot use ioremap for SRAM, as clock init needs SRAM early.
+ */
+void __init omap_map_sram(unsigned long start, unsigned long size,
+				 unsigned long skip, int cached)
+{
+	if (size == 0)
+		return;
+
+	start = ROUND_DOWN(start, PAGE_SIZE);
+	omap_sram_size = size;
+	omap_sram_skip = skip;
+	omap_sram_base = __arm_ioremap_exec(start, size, cached);
+	if (!omap_sram_base) {
+		pr_err("SRAM: Could not map\n");
+		return;
+	}
+
+	omap_sram_reset();
+
+	/*
+	 * Looks like we need to preserve some bootloader code at the
+	 * beginning of SRAM for jumping to flash for reboot to work...
+	 */
+	memset_io(omap_sram_base + omap_sram_skip, 0,
+		  omap_sram_size - omap_sram_skip);
+>>>>>>> refs/remotes/origin/master
 }

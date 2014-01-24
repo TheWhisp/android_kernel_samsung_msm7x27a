@@ -19,9 +19,13 @@
 #include <linux/mm.h>
 #include <linux/stddef.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/unistd.h>
 #include <linux/user.h>
 #include <linux/reboot.h>
@@ -120,7 +124,11 @@ static void cell_fixup_pcie_rootcomplex(struct pci_dev *dev)
 }
 DECLARE_PCI_FIXUP_HEADER(PCI_ANY_ID, PCI_ANY_ID, cell_fixup_pcie_rootcomplex);
 
+<<<<<<< HEAD
 static int __devinit cell_setup_phb(struct pci_controller *phb)
+=======
+static int cell_setup_phb(struct pci_controller *phb)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *model;
 	struct device_node *np;
@@ -144,10 +152,14 @@ static int __devinit cell_setup_phb(struct pci_controller *phb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct of_device_id cell_bus_ids[] __initdata = {
 =======
 static const struct of_device_id cell_bus_ids[] __initconst = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct of_device_id cell_bus_ids[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	{ .type = "soc", },
 	{ .compatible = "soc", },
 	{ .type = "spider", },
@@ -192,6 +204,7 @@ static int __init cell_publish_devices(void)
 machine_subsys_initcall(cell, cell_publish_devices);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void cell_mpic_cascade(unsigned int irq, struct irq_desc *desc)
 {
 	struct irq_chip *chip = irq_desc_get_chip(desc);
@@ -207,14 +220,19 @@ static void cell_mpic_cascade(unsigned int irq, struct irq_desc *desc)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init mpic_init_IRQ(void)
 {
 	struct device_node *dn;
 	struct mpic *mpic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int virq;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (dn = NULL;
 	     (dn = of_find_node_by_name(dn, "interrupt-controller"));) {
@@ -224,6 +242,7 @@ static void __init mpic_init_IRQ(void)
 		/* The MPIC driver will get everything it needs from the
 		 * device-tree, just pass 0 to all arguments
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		mpic = mpic_alloc(dn, 0, 0, 0, 0, " MPIC     ");
 		if (mpic == NULL)
@@ -239,12 +258,17 @@ static void __init mpic_init_IRQ(void)
 		irq_set_handler_data(virq, mpic);
 		irq_set_chained_handler(virq, cell_mpic_cascade);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mpic = mpic_alloc(dn, 0, MPIC_SECONDARY | MPIC_NO_RESET,
 				0, 0, " MPIC     ");
 		if (mpic == NULL)
 			continue;
 		mpic_init(mpic);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

@@ -19,10 +19,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/irqdomain.h>
+#include <linux/irqchip/chained_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
@@ -31,14 +40,22 @@
 #include <linux/of_device.h>
 #include <linux/module.h>
 #include <asm-generic/bug.h>
+<<<<<<< HEAD
 #include <asm/mach/irq.h>
 
 #define irq_to_gpio(irq)	((irq) - MXC_GPIO_IRQ_START)
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum mxc_gpio_hwtype {
 	IMX1_GPIO,	/* runs on i.mx1 */
 	IMX21_GPIO,	/* runs on i.mx21 and i.mx27 */
+<<<<<<< HEAD
 	IMX31_GPIO,	/* runs on all other i.mx */
+=======
+	IMX31_GPIO,	/* runs on i.mx31 */
+	IMX35_GPIO,	/* runs on all other i.mx */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* device type dependent stuff */
@@ -50,6 +67,10 @@ struct mxc_gpio_hwdata {
 	unsigned icr2_reg;
 	unsigned imr_reg;
 	unsigned isr_reg;
+<<<<<<< HEAD
+=======
+	int edge_sel_reg;
+>>>>>>> refs/remotes/origin/master
 	unsigned low_level;
 	unsigned high_level;
 	unsigned rise_edge;
@@ -61,7 +82,11 @@ struct mxc_gpio_port {
 	void __iomem *base;
 	int irq;
 	int irq_high;
+<<<<<<< HEAD
 	int virtual_irq_start;
+=======
+	struct irq_domain *domain;
+>>>>>>> refs/remotes/origin/master
 	struct bgpio_chip bgc;
 	u32 both_edges;
 };
@@ -74,6 +99,10 @@ static struct mxc_gpio_hwdata imx1_imx21_gpio_hwdata = {
 	.icr2_reg	= 0x2c,
 	.imr_reg	= 0x30,
 	.isr_reg	= 0x34,
+<<<<<<< HEAD
+=======
+	.edge_sel_reg	= -EINVAL,
+>>>>>>> refs/remotes/origin/master
 	.low_level	= 0x03,
 	.high_level	= 0x02,
 	.rise_edge	= 0x00,
@@ -88,6 +117,25 @@ static struct mxc_gpio_hwdata imx31_gpio_hwdata = {
 	.icr2_reg	= 0x10,
 	.imr_reg	= 0x14,
 	.isr_reg	= 0x18,
+<<<<<<< HEAD
+=======
+	.edge_sel_reg	= -EINVAL,
+	.low_level	= 0x00,
+	.high_level	= 0x01,
+	.rise_edge	= 0x02,
+	.fall_edge	= 0x03,
+};
+
+static struct mxc_gpio_hwdata imx35_gpio_hwdata = {
+	.dr_reg		= 0x00,
+	.gdir_reg	= 0x04,
+	.psr_reg	= 0x08,
+	.icr1_reg	= 0x0c,
+	.icr2_reg	= 0x10,
+	.imr_reg	= 0x14,
+	.isr_reg	= 0x18,
+	.edge_sel_reg	= 0x1c,
+>>>>>>> refs/remotes/origin/master
 	.low_level	= 0x00,
 	.high_level	= 0x01,
 	.rise_edge	= 0x02,
@@ -104,12 +152,20 @@ static struct mxc_gpio_hwdata *mxc_gpio_hwdata;
 #define GPIO_ICR2		(mxc_gpio_hwdata->icr2_reg)
 #define GPIO_IMR		(mxc_gpio_hwdata->imr_reg)
 #define GPIO_ISR		(mxc_gpio_hwdata->isr_reg)
+<<<<<<< HEAD
+=======
+#define GPIO_EDGE_SEL		(mxc_gpio_hwdata->edge_sel_reg)
+>>>>>>> refs/remotes/origin/master
 
 #define GPIO_INT_LOW_LEV	(mxc_gpio_hwdata->low_level)
 #define GPIO_INT_HIGH_LEV	(mxc_gpio_hwdata->high_level)
 #define GPIO_INT_RISE_EDGE	(mxc_gpio_hwdata->rise_edge)
 #define GPIO_INT_FALL_EDGE	(mxc_gpio_hwdata->fall_edge)
+<<<<<<< HEAD
 #define GPIO_INT_NONE		0x4
+=======
+#define GPIO_INT_BOTH_EDGES	0x4
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_device_id mxc_gpio_devtype[] = {
 	{
@@ -122,6 +178,12 @@ static struct platform_device_id mxc_gpio_devtype[] = {
 		.name = "imx31-gpio",
 		.driver_data = IMX31_GPIO,
 	}, {
+<<<<<<< HEAD
+=======
+		.name = "imx35-gpio",
+		.driver_data = IMX35_GPIO,
+	}, {
+>>>>>>> refs/remotes/origin/master
 		/* sentinel */
 	}
 };
@@ -130,6 +192,10 @@ static const struct of_device_id mxc_gpio_dt_ids[] = {
 	{ .compatible = "fsl,imx1-gpio", .data = &mxc_gpio_devtype[IMX1_GPIO], },
 	{ .compatible = "fsl,imx21-gpio", .data = &mxc_gpio_devtype[IMX21_GPIO], },
 	{ .compatible = "fsl,imx31-gpio", .data = &mxc_gpio_devtype[IMX31_GPIO], },
+<<<<<<< HEAD
+=======
+	{ .compatible = "fsl,imx35-gpio", .data = &mxc_gpio_devtype[IMX35_GPIO], },
+>>>>>>> refs/remotes/origin/master
 	{ /* sentinel */ }
 };
 
@@ -144,6 +210,7 @@ static LIST_HEAD(mxc_gpio_ports);
 
 static int gpio_set_irq_type(struct irq_data *d, u32 type)
 {
+<<<<<<< HEAD
 	u32 gpio = irq_to_gpio(d->irq);
 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
 	struct mxc_gpio_port *port = gc->private;
@@ -152,6 +219,17 @@ static int gpio_set_irq_type(struct irq_data *d, u32 type)
 	void __iomem *reg = port->base;
 
 	port->both_edges &= ~(1 << (gpio & 31));
+=======
+	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+	struct mxc_gpio_port *port = gc->private;
+	u32 bit, val;
+	u32 gpio_idx = d->hwirq;
+	u32 gpio = port->bgc.gc.base + gpio_idx;
+	int edge;
+	void __iomem *reg = port->base;
+
+	port->both_edges &= ~(1 << gpio_idx);
+>>>>>>> refs/remotes/origin/master
 	switch (type) {
 	case IRQ_TYPE_EDGE_RISING:
 		edge = GPIO_INT_RISE_EDGE;
@@ -160,6 +238,7 @@ static int gpio_set_irq_type(struct irq_data *d, u32 type)
 		edge = GPIO_INT_FALL_EDGE;
 		break;
 	case IRQ_TYPE_EDGE_BOTH:
+<<<<<<< HEAD
 		val = gpio_get_value(gpio);
 		if (val) {
 			edge = GPIO_INT_LOW_LEV;
@@ -169,6 +248,21 @@ static int gpio_set_irq_type(struct irq_data *d, u32 type)
 			pr_debug("mxc: set GPIO %d to high trigger\n", gpio);
 		}
 		port->both_edges |= 1 << (gpio & 31);
+=======
+		if (GPIO_EDGE_SEL >= 0) {
+			edge = GPIO_INT_BOTH_EDGES;
+		} else {
+			val = gpio_get_value(gpio);
+			if (val) {
+				edge = GPIO_INT_LOW_LEV;
+				pr_debug("mxc: set GPIO %d to low trigger\n", gpio);
+			} else {
+				edge = GPIO_INT_HIGH_LEV;
+				pr_debug("mxc: set GPIO %d to high trigger\n", gpio);
+			}
+			port->both_edges |= 1 << gpio_idx;
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	case IRQ_TYPE_LEVEL_LOW:
 		edge = GPIO_INT_LOW_LEV;
@@ -180,11 +274,32 @@ static int gpio_set_irq_type(struct irq_data *d, u32 type)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	reg += GPIO_ICR1 + ((gpio & 0x10) >> 2); /* lower or upper register */
 	bit = gpio & 0xf;
 	val = readl(reg) & ~(0x3 << (bit << 1));
 	writel(val | (edge << (bit << 1)), reg);
 	writel(1 << (gpio & 0x1f), port->base + GPIO_ISR);
+=======
+	if (GPIO_EDGE_SEL >= 0) {
+		val = readl(port->base + GPIO_EDGE_SEL);
+		if (edge == GPIO_INT_BOTH_EDGES)
+			writel(val | (1 << gpio_idx),
+				port->base + GPIO_EDGE_SEL);
+		else
+			writel(val & ~(1 << gpio_idx),
+				port->base + GPIO_EDGE_SEL);
+	}
+
+	if (edge != GPIO_INT_BOTH_EDGES) {
+		reg += GPIO_ICR1 + ((gpio_idx & 0x10) >> 2); /* lower or upper register */
+		bit = gpio_idx & 0xf;
+		val = readl(reg) & ~(0x3 << (bit << 1));
+		writel(val | (edge << (bit << 1)), reg);
+	}
+
+	writel(1 << gpio_idx, port->base + GPIO_ISR);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -217,15 +332,22 @@ static void mxc_flip_edge(struct mxc_gpio_port *port, u32 gpio)
 /* handle 32 interrupts in one status register */
 static void mxc_gpio_irq_handler(struct mxc_gpio_port *port, u32 irq_stat)
 {
+<<<<<<< HEAD
 	u32 gpio_irq_no_base = port->virtual_irq_start;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	while (irq_stat != 0) {
 		int irqoffset = fls(irq_stat) - 1;
 
 		if (port->both_edges & (1 << irqoffset))
 			mxc_flip_edge(port, irqoffset);
 
+<<<<<<< HEAD
 		generic_handle_irq(gpio_irq_no_base + irqoffset);
+=======
+		generic_handle_irq(irq_find_mapping(port->domain, irqoffset));
+>>>>>>> refs/remotes/origin/master
 
 		irq_stat &= ~(1 << irqoffset);
 	}
@@ -252,6 +374,12 @@ static void mx2_gpio_irq_handler(u32 irq, struct irq_desc *desc)
 {
 	u32 irq_msk, irq_stat;
 	struct mxc_gpio_port *port;
+<<<<<<< HEAD
+=======
+	struct irq_chip *chip = irq_get_chip(irq);
+
+	chained_irq_enter(chip, desc);
+>>>>>>> refs/remotes/origin/master
 
 	/* walk through all interrupt status registers */
 	list_for_each_entry(port, &mxc_gpio_ports, node) {
@@ -263,6 +391,10 @@ static void mx2_gpio_irq_handler(u32 irq, struct irq_desc *desc)
 		if (irq_stat)
 			mxc_gpio_irq_handler(port, irq_stat);
 	}
+<<<<<<< HEAD
+=======
+	chained_irq_exit(chip, desc);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -276,10 +408,16 @@ static void mx2_gpio_irq_handler(u32 irq, struct irq_desc *desc)
  */
 static int gpio_set_wake_irq(struct irq_data *d, u32 enable)
 {
+<<<<<<< HEAD
 	u32 gpio = irq_to_gpio(d->irq);
 	u32 gpio_idx = gpio & 0x1F;
 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
 	struct mxc_gpio_port *port = gc->private;
+=======
+	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+	struct mxc_gpio_port *port = gc->private;
+	u32 gpio_idx = d->hwirq;
+>>>>>>> refs/remotes/origin/master
 
 	if (enable) {
 		if (port->irq_high && (gpio_idx >= 16))
@@ -296,12 +434,20 @@ static int gpio_set_wake_irq(struct irq_data *d, u32 enable)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __init mxc_gpio_init_gc(struct mxc_gpio_port *port)
+=======
+static void __init mxc_gpio_init_gc(struct mxc_gpio_port *port, int irq_base)
+>>>>>>> refs/remotes/origin/master
 {
 	struct irq_chip_generic *gc;
 	struct irq_chip_type *ct;
 
+<<<<<<< HEAD
 	gc = irq_alloc_generic_chip("gpio-mxc", 1, port->virtual_irq_start,
+=======
+	gc = irq_alloc_generic_chip("gpio-mxc", 1, irq_base,
+>>>>>>> refs/remotes/origin/master
 				    port->base, handle_level_irq);
 	gc->private = port;
 
@@ -318,7 +464,11 @@ static void __init mxc_gpio_init_gc(struct mxc_gpio_port *port)
 			       IRQ_NOREQUEST, 0);
 }
 
+<<<<<<< HEAD
 static void __devinit mxc_gpio_get_hw(struct platform_device *pdev)
+=======
+static void mxc_gpio_get_hw(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *of_id =
 			of_match_device(mxc_gpio_dt_ids, &pdev->dev);
@@ -338,7 +488,13 @@ static void __devinit mxc_gpio_get_hw(struct platform_device *pdev)
 		return;
 	}
 
+<<<<<<< HEAD
 	if (hwtype == IMX31_GPIO)
+=======
+	if (hwtype == IMX35_GPIO)
+		mxc_gpio_hwdata = &imx35_gpio_hwdata;
+	else if (hwtype == IMX31_GPIO)
+>>>>>>> refs/remotes/origin/master
 		mxc_gpio_hwdata = &imx31_gpio_hwdata;
 	else
 		mxc_gpio_hwdata = &imx1_imx21_gpio_hwdata;
@@ -352,23 +508,39 @@ static int mxc_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
 	struct mxc_gpio_port *port =
 		container_of(bgc, struct mxc_gpio_port, bgc);
 
+<<<<<<< HEAD
 	return port->virtual_irq_start + offset;
 }
 
 static int __devinit mxc_gpio_probe(struct platform_device *pdev)
+=======
+	return irq_find_mapping(port->domain, offset);
+}
+
+static int mxc_gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = pdev->dev.of_node;
 	struct mxc_gpio_port *port;
 	struct resource *iores;
+<<<<<<< HEAD
+=======
+	int irq_base;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	mxc_gpio_get_hw(pdev);
 
+<<<<<<< HEAD
 	port = kzalloc(sizeof(struct mxc_gpio_port), GFP_KERNEL);
+=======
+	port = devm_kzalloc(&pdev->dev, sizeof(*port), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!port)
 		return -ENOMEM;
 
 	iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!iores) {
 		err = -ENODEV;
 		goto out_kfree;
@@ -392,16 +564,35 @@ static int __devinit mxc_gpio_probe(struct platform_device *pdev)
 		err = -EINVAL;
 		goto out_iounmap;
 	}
+=======
+	port->base = devm_ioremap_resource(&pdev->dev, iores);
+	if (IS_ERR(port->base))
+		return PTR_ERR(port->base);
+
+	port->irq_high = platform_get_irq(pdev, 1);
+	port->irq = platform_get_irq(pdev, 0);
+	if (port->irq < 0)
+		return port->irq;
+>>>>>>> refs/remotes/origin/master
 
 	/* disable the interrupt and clear the status */
 	writel(0, port->base + GPIO_IMR);
 	writel(~0, port->base + GPIO_ISR);
 
 	if (mxc_gpio_hwtype == IMX21_GPIO) {
+<<<<<<< HEAD
 		/* setup one handler for all GPIO interrupts */
 		if (pdev->id == 0)
 			irq_set_chained_handler(port->irq,
 						mx2_gpio_irq_handler);
+=======
+		/*
+		 * Setup one handler for all GPIO interrupts. Actually setting
+		 * the handler is needed only once, but doing it for every port
+		 * is more robust and easier.
+		 */
+		irq_set_chained_handler(port->irq, mx2_gpio_irq_handler);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* setup one handler for each entry */
 		irq_set_chained_handler(port->irq, mx3_gpio_irq_handler);
@@ -417,6 +608,7 @@ static int __devinit mxc_gpio_probe(struct platform_device *pdev)
 	err = bgpio_init(&port->bgc, &pdev->dev, 4,
 			 port->base + GPIO_PSR,
 			 port->base + GPIO_DR, NULL,
+<<<<<<< HEAD
 			 port->base + GPIO_GDIR, NULL, false);
 	if (err)
 		goto out_iounmap;
@@ -425,11 +617,21 @@ static int __devinit mxc_gpio_probe(struct platform_device *pdev)
 	port->bgc.gc.base = pdev->id * 32;
 	port->bgc.dir = port->bgc.read_reg(port->bgc.reg_dir);
 	port->bgc.data = port->bgc.read_reg(port->bgc.reg_set);
+=======
+			 port->base + GPIO_GDIR, NULL, 0);
+	if (err)
+		goto out_bgio;
+
+	port->bgc.gc.to_irq = mxc_gpio_to_irq;
+	port->bgc.gc.base = (pdev->id < 0) ? of_alias_get_id(np, "gpio") * 32 :
+					     pdev->id * 32;
+>>>>>>> refs/remotes/origin/master
 
 	err = gpiochip_add(&port->bgc.gc);
 	if (err)
 		goto out_bgpio_remove;
 
+<<<<<<< HEAD
 	/*
 	 * In dt case, we use gpio number range dynamically
 	 * allocated by gpio core.
@@ -439,11 +641,29 @@ static int __devinit mxc_gpio_probe(struct platform_device *pdev)
 
 	/* gpio-mxc can be a generic irq chip */
 	mxc_gpio_init_gc(port);
+=======
+	irq_base = irq_alloc_descs(-1, 0, 32, numa_node_id());
+	if (irq_base < 0) {
+		err = irq_base;
+		goto out_gpiochip_remove;
+	}
+
+	port->domain = irq_domain_add_legacy(np, 32, irq_base, 0,
+					     &irq_domain_simple_ops, NULL);
+	if (!port->domain) {
+		err = -ENODEV;
+		goto out_irqdesc_free;
+	}
+
+	/* gpio-mxc can be a generic irq chip */
+	mxc_gpio_init_gc(port, irq_base);
+>>>>>>> refs/remotes/origin/master
 
 	list_add_tail(&port->node, &mxc_gpio_ports);
 
 	return 0;
 
+<<<<<<< HEAD
 out_bgpio_remove:
 	bgpio_remove(&port->bgc);
 out_iounmap:
@@ -452,6 +672,15 @@ out_release_mem:
 	release_mem_region(iores->start, resource_size(iores));
 out_kfree:
 	kfree(port);
+=======
+out_irqdesc_free:
+	irq_free_descs(irq_base, 32);
+out_gpiochip_remove:
+	WARN_ON(gpiochip_remove(&port->bgc.gc) < 0);
+out_bgpio_remove:
+	bgpio_remove(&port->bgc);
+out_bgio:
+>>>>>>> refs/remotes/origin/master
 	dev_info(&pdev->dev, "%s failed with errno %d\n", __func__, err);
 	return err;
 }

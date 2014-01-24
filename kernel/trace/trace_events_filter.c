@@ -28,14 +28,20 @@
 #include "trace_output.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DEFAULT_SYS_FILTER_MESSAGE					\
 	"### global filter ###\n"					\
 	"# Use this to set filters for multiple events.\n"		\
 	"# Only events with the given fields will be affected.\n"	\
 	"# If no events are modified, an error message will be displayed here"
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum filter_op_ids
 {
 	OP_OR,
@@ -47,6 +53,10 @@ enum filter_op_ids
 	OP_LE,
 	OP_GT,
 	OP_GE,
+<<<<<<< HEAD
+=======
+	OP_BAND,
+>>>>>>> refs/remotes/origin/master
 	OP_NONE,
 	OP_OPEN_PAREN,
 };
@@ -57,6 +67,10 @@ struct filter_op {
 	int precedence;
 };
 
+<<<<<<< HEAD
+=======
+/* Order must be the same as enum filter_op_ids above */
+>>>>>>> refs/remotes/origin/master
 static struct filter_op filter_ops[] = {
 	{ OP_OR,	"||",		1 },
 	{ OP_AND,	"&&",		2 },
@@ -67,6 +81,10 @@ static struct filter_op filter_ops[] = {
 	{ OP_LE,	"<=",		5 },
 	{ OP_GT,	">",		5 },
 	{ OP_GE,	">=",		5 },
+<<<<<<< HEAD
+=======
+	{ OP_BAND,	"&",		6 },
+>>>>>>> refs/remotes/origin/master
 	{ OP_NONE,	"OP_NONE",	0 },
 	{ OP_OPEN_PAREN, "(",		0 },
 };
@@ -85,9 +103,13 @@ enum {
 	FILT_ERR_MISSING_FIELD,
 	FILT_ERR_INVALID_FILTER,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	FILT_ERR_IP_FIELD_ONLY,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	FILT_ERR_IP_FIELD_ONLY,
+>>>>>>> refs/remotes/origin/master
 };
 
 static char *err_text[] = {
@@ -104,9 +126,13 @@ static char *err_text[] = {
 	"Missing field name and/or value",
 	"Meaningless filter expression",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	"Only 'ip' field is supported for function trace",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"Only 'ip' field is supported for function trace",
+>>>>>>> refs/remotes/origin/master
 };
 
 struct opstack_op {
@@ -165,6 +191,12 @@ static int filter_pred_##type(struct filter_pred *pred, void *event)	\
 	case OP_GE:							\
 		match = (*addr >= val);					\
 		break;							\
+<<<<<<< HEAD
+=======
+	case OP_BAND:							\
+		match = (*addr & val);					\
+		break;							\
+>>>>>>> refs/remotes/origin/master
 	default:							\
 		break;							\
 	}								\
@@ -399,7 +431,10 @@ get_pred_parent(struct filter_pred *pred, struct filter_pred *preds,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum walk_return {
 	WALK_PRED_ABORT,
 	WALK_PRED_PARENT,
@@ -457,7 +492,10 @@ static int walk_pred_tree(struct filter_pred *preds,
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * A series of AND or ORs where found together. Instead of
  * climbing up and down the tree branches, an array of the
@@ -488,17 +526,23 @@ static int process_ops(struct filter_pred *preds,
 	for (i = 0; i < op->val; i++) {
 		pred = &preds[op->ops[i]];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		match = pred->fn(pred, rec);
 =======
 		if (!WARN_ON_ONCE(!pred->fn))
 			match = pred->fn(pred, rec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!WARN_ON_ONCE(!pred->fn))
+			match = pred->fn(pred, rec);
+>>>>>>> refs/remotes/origin/master
 		if (!!match == type)
 			return match;
 	}
 	return match;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* return 1 if event matches, 0 otherwise (discard) */
 int filter_match_preds(struct event_filter *filter, void *rec)
@@ -511,6 +555,8 @@ int filter_match_preds(struct event_filter *filter, void *rec)
 	int n_preds;
 	int done = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct filter_match_preds_data {
 	struct filter_pred *preds;
 	int match;
@@ -568,7 +614,10 @@ int filter_match_preds(struct event_filter *filter, void *rec)
 		.rec   = rec,
 	};
 	int n_preds, ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* no filter is considered a match */
 	if (!filter)
@@ -576,9 +625,12 @@ int filter_match_preds(struct event_filter *filter, void *rec)
 
 	n_preds = filter->n_preds;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!n_preds)
 		return 1;
 
@@ -586,13 +638,17 @@ int filter_match_preds(struct event_filter *filter, void *rec)
 	 * n_preds, root and filter->preds are protect with preemption disabled.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	preds = rcu_dereference_sched(filter->preds);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	root = rcu_dereference_sched(filter->root);
 	if (!root)
 		return 1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pred = root;
 
@@ -653,11 +709,16 @@ int filter_match_preds(struct event_filter *filter, void *rec)
 
 	return match;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	data.preds = preds = rcu_dereference_sched(filter->preds);
 	ret = walk_pred_tree(preds, root, filter_match_preds_cb, &data);
 	WARN_ON(ret);
 	return data.match;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(filter_match_preds);
 
@@ -729,6 +790,7 @@ static void append_filter_err(struct filter_parse_state *ps,
 	free_page((unsigned long) buf);
 }
 
+<<<<<<< HEAD
 void print_event_filter(struct ftrace_event_call *call, struct trace_seq *s)
 {
 	struct event_filter *filter;
@@ -740,6 +802,25 @@ void print_event_filter(struct ftrace_event_call *call, struct trace_seq *s)
 	else
 		trace_seq_printf(s, "none\n");
 	mutex_unlock(&event_mutex);
+=======
+static inline struct event_filter *event_filter(struct ftrace_event_file *file)
+{
+	if (file->event_call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		return file->event_call->filter;
+	else
+		return file->filter;
+}
+
+/* caller must hold event_mutex */
+void print_event_filter(struct ftrace_event_file *file, struct trace_seq *s)
+{
+	struct event_filter *filter = event_filter(file);
+
+	if (filter && filter->filter_string)
+		trace_seq_printf(s, "%s\n", filter->filter_string);
+	else
+		trace_seq_puts(s, "none\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 void print_subsystem_event_filter(struct event_subsystem *system,
@@ -752,6 +833,7 @@ void print_subsystem_event_filter(struct event_subsystem *system,
 	if (filter && filter->filter_string)
 		trace_seq_printf(s, "%s\n", filter->filter_string);
 	else
+<<<<<<< HEAD
 <<<<<<< HEAD
 		trace_seq_printf(s, "none\n");
 =======
@@ -812,6 +894,15 @@ static int __alloc_pred_stack(struct pred_stack *stack, int n_preds)
 {
 	stack->preds = kcalloc(n_preds + 1, sizeof(*stack->preds), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		trace_seq_puts(s, DEFAULT_SYS_FILTER_MESSAGE "\n");
+	mutex_unlock(&event_mutex);
+}
+
+static int __alloc_pred_stack(struct pred_stack *stack, int n_preds)
+{
+	stack->preds = kcalloc(n_preds + 1, sizeof(*stack->preds), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!stack->preds)
 		return -ENOMEM;
 	stack->index = n_preds;
@@ -855,17 +946,22 @@ static int filter_set_pred(struct event_filter *filter,
 			   int idx,
 			   struct pred_stack *stack,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   struct filter_pred *src,
 			   filter_pred_fn_t fn)
 =======
 			   struct filter_pred *src)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   struct filter_pred *src)
+>>>>>>> refs/remotes/origin/master
 {
 	struct filter_pred *dest = &filter->preds[idx];
 	struct filter_pred *left;
 	struct filter_pred *right;
 
 	*dest = *src;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (src->field_name) {
 		dest->field_name = kstrdup(src->field_name, GFP_KERNEL);
@@ -875,6 +971,8 @@ static int filter_set_pred(struct event_filter *filter,
 	dest->fn = fn;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dest->index = idx;
 
 	if (dest->op == OP_OR || dest->op == OP_AND) {
@@ -919,12 +1017,17 @@ static void __free_preds(struct event_filter *filter)
 
 	if (filter->preds) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < filter->a_preds; i++)
 			kfree(filter->preds[i].field_name);
 =======
 		for (i = 0; i < filter->n_preds; i++)
 			kfree(filter->preds[i].ops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < filter->n_preds; i++)
+			kfree(filter->preds[i].ops);
+>>>>>>> refs/remotes/origin/master
 		kfree(filter->preds);
 		filter->preds = NULL;
 	}
@@ -932,11 +1035,28 @@ static void __free_preds(struct event_filter *filter)
 	filter->n_preds = 0;
 }
 
+<<<<<<< HEAD
 static void filter_disable(struct ftrace_event_call *call)
+=======
+static void call_filter_disable(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	call->flags &= ~TRACE_EVENT_FL_FILTERED;
 }
 
+<<<<<<< HEAD
+=======
+static void filter_disable(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		call_filter_disable(call);
+	else
+		file->flags &= ~FTRACE_EVENT_FL_FILTERED;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __free_filter(struct event_filter *filter)
 {
 	if (!filter)
@@ -947,6 +1067,7 @@ static void __free_filter(struct event_filter *filter)
 	kfree(filter);
 }
 
+<<<<<<< HEAD
 /*
  * Called when destroying the ftrace_event_call.
  * The call is being freed, so we do not need to worry about
@@ -957,6 +1078,32 @@ void destroy_preds(struct ftrace_event_call *call)
 {
 	__free_filter(call->filter);
 	call->filter = NULL;
+=======
+void destroy_call_preds(struct ftrace_event_call *call)
+{
+	__free_filter(call->filter);
+	call->filter = NULL;
+}
+
+static void destroy_file_preds(struct ftrace_event_file *file)
+{
+	__free_filter(file->filter);
+	file->filter = NULL;
+}
+
+/*
+ * Called when destroying the ftrace_event_file.
+ * The file is being freed, so we do not need to worry about
+ * the file being currently used. This is for module code removing
+ * the tracepoints from within it.
+ */
+void destroy_preds(struct ftrace_event_file *file)
+{
+	if (file->event_call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		destroy_call_preds(file->event_call);
+	else
+		destroy_file_preds(file);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct event_filter *__alloc_filter(void)
@@ -976,11 +1123,15 @@ static int __alloc_preds(struct event_filter *filter, int n_preds)
 		__free_preds(filter);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	filter->preds =
 		kzalloc(sizeof(*filter->preds) * n_preds, GFP_KERNEL);
 =======
 	filter->preds = kcalloc(n_preds, sizeof(*filter->preds), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	filter->preds = kcalloc(n_preds, sizeof(*filter->preds), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!filter->preds)
 		return -ENOMEM;
@@ -996,6 +1147,7 @@ static int __alloc_preds(struct event_filter *filter, int n_preds)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void filter_free_subsystem_preds(struct event_subsystem *system)
 {
 	struct ftrace_event_call *call;
@@ -1031,13 +1183,71 @@ static int filter_add_pred_fn(struct filter_parse_state *ps,
 {
 	int idx, err;
 =======
+=======
+static inline void __remove_filter(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	filter_disable(file);
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		remove_filter_string(call->filter);
+	else
+		remove_filter_string(file->filter);
+}
+
+static void filter_free_subsystem_preds(struct event_subsystem *system,
+					struct trace_array *tr)
+{
+	struct ftrace_event_file *file;
+	struct ftrace_event_call *call;
+
+	list_for_each_entry(file, &tr->events, list) {
+		call = file->event_call;
+		if (strcmp(call->class->system, system->name) != 0)
+			continue;
+
+		__remove_filter(file);
+	}
+}
+
+static inline void __free_subsystem_filter(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER) {
+		__free_filter(call->filter);
+		call->filter = NULL;
+	} else {
+		__free_filter(file->filter);
+		file->filter = NULL;
+	}
+}
+
+static void filter_free_subsystem_filters(struct event_subsystem *system,
+					  struct trace_array *tr)
+{
+	struct ftrace_event_file *file;
+	struct ftrace_event_call *call;
+
+	list_for_each_entry(file, &tr->events, list) {
+		call = file->event_call;
+		if (strcmp(call->class->system, system->name) != 0)
+			continue;
+		__free_subsystem_filter(file);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int filter_add_pred(struct filter_parse_state *ps,
 			   struct event_filter *filter,
 			   struct filter_pred *pred,
 			   struct pred_stack *stack)
 {
 	int err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (WARN_ON(filter->n_preds == filter->a_preds)) {
 		parse_error(ps, FILT_ERR_TOO_MANY_PREDS, 0);
@@ -1045,12 +1255,16 @@ static int filter_add_pred(struct filter_parse_state *ps,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	idx = filter->n_preds;
 	filter_clear_pred(&filter->preds[idx]);
 	err = filter_set_pred(filter, idx, stack, pred, fn);
 =======
 	err = filter_set_pred(filter, filter->n_preds, stack, pred);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = filter_set_pred(filter, filter->n_preds, stack, pred);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 
@@ -1071,13 +1285,19 @@ int filter_assign_type(const char *type)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool is_function_field(struct ftrace_event_field *field)
 {
 	return field->filter_type == FILTER_TRACE_FN;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static bool is_string_field(struct ftrace_event_field *field)
 {
 	return field->filter_type == FILTER_DYN_STRING ||
@@ -1140,6 +1360,7 @@ static filter_pred_fn_t select_comparison_fn(int op, int field_size,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int filter_add_pred(struct filter_parse_state *ps,
 			   struct ftrace_event_call *call,
 			   struct event_filter *filter,
@@ -1166,6 +1387,8 @@ static int filter_add_pred(struct filter_parse_state *ps,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int init_pred(struct filter_parse_state *ps,
 		     struct ftrace_event_field *field,
 		     struct filter_pred *pred)
@@ -1175,7 +1398,10 @@ static int init_pred(struct filter_parse_state *ps,
 	unsigned long long val;
 	int ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pred->offset = field->offset;
 
 	if (!is_legal_op(field, pred->op)) {
@@ -1194,18 +1420,29 @@ static int init_pred(struct filter_parse_state *ps,
 		else
 			fn = filter_pred_pchar;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (is_function_field(field)) {
 		if (strcmp(field->name, "ip")) {
 			parse_error(ps, FILT_ERR_IP_FIELD_ONLY, 0);
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		if (field->is_signed)
 			ret = strict_strtoll(pred->regex.pattern, 0, &val);
 		else
 			ret = strict_strtoull(pred->regex.pattern, 0, &val);
+=======
+	} else {
+		if (field->is_signed)
+			ret = kstrtoll(pred->regex.pattern, 0, &val);
+		else
+			ret = kstrtoull(pred->regex.pattern, 0, &val);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			parse_error(ps, FILT_ERR_ILLEGAL_INTVAL, 0);
 			return -EINVAL;
@@ -1224,12 +1461,16 @@ static int init_pred(struct filter_parse_state *ps,
 		pred->not = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 add_pred_fn:
 	if (!dry_run)
 		return filter_add_pred_fn(ps, call, filter, pred, stack, fn);
 =======
 	pred->fn = fn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pred->fn = fn;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1529,6 +1770,7 @@ parse_operand:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct filter_pred *create_pred(int op, char *operand1, char *operand2)
 {
 	struct filter_pred *pred;
@@ -1563,6 +1805,8 @@ static struct filter_pred *create_logical_pred(int op)
 
 	return pred;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct filter_pred *create_pred(struct filter_parse_state *ps,
 				       struct ftrace_event_call *call,
 				       int op, char *operand1, char *operand2)
@@ -1581,7 +1825,11 @@ static struct filter_pred *create_pred(struct filter_parse_state *ps,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	field = find_event_field(call, operand1);
+=======
+	field = trace_find_event_field(call, operand1);
+>>>>>>> refs/remotes/origin/master
 	if (!field) {
 		parse_error(ps, FILT_ERR_FIELD_NOT_FOUND, 0);
 		return NULL;
@@ -1591,7 +1839,10 @@ static struct filter_pred *create_pred(struct filter_parse_state *ps,
 	pred.regex.len = strlen(pred.regex.pattern);
 	pred.field = field;
 	return init_pred(ps, field, &pred) ? NULL : &pred;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int check_preds(struct filter_parse_state *ps)
@@ -1633,7 +1884,10 @@ static int count_preds(struct filter_parse_state *ps)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct check_pred_data {
 	int count;
 	int max;
@@ -1651,7 +1905,10 @@ static int check_pred_tree_cb(enum move_type move, struct filter_pred *pred,
 	return WALK_PRED_DEFAULT;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The tree is walked at filtering of an event. If the tree is not correctly
  * built, it may cause an infinite loop. Check here that the tree does
@@ -1660,6 +1917,7 @@ static int check_pred_tree_cb(enum move_type move, struct filter_pred *pred,
 static int check_pred_tree(struct event_filter *filter,
 			   struct filter_pred *root)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct filter_pred *preds;
 	struct filter_pred *pred;
@@ -1714,6 +1972,8 @@ static int check_pred_tree(struct event_filter *filter,
 	/* We are fine. */
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct check_pred_data data = {
 		/*
 		 * The max that we can hit a node is three times.
@@ -1739,11 +1999,15 @@ static int count_leafs_cb(enum move_type move, struct filter_pred *pred,
 		(*count)++;
 
 	return WALK_PRED_DEFAULT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int count_leafs(struct filter_pred *preds, struct filter_pred *root)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct filter_pred *pred;
 	enum move_type move = MOVE_DOWN;
@@ -1782,6 +2046,8 @@ static int count_leafs(struct filter_pred *preds, struct filter_pred *root)
 
 	return count;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int count = 0, ret;
 
 	ret = walk_pred_tree(preds, root, count_leafs_cb, &count);
@@ -1814,11 +2080,15 @@ static int fold_pred_cb(enum move_type move, struct filter_pred *pred,
 	pred->index &= ~FILTER_PRED_FOLD;
 	root->ops[d->count++] = pred->index;
 	return WALK_PRED_DEFAULT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int fold_pred(struct filter_pred *preds, struct filter_pred *root)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct filter_pred *pred;
 	enum move_type move = MOVE_DOWN;
@@ -1826,12 +2096,17 @@ static int fold_pred(struct filter_pred *preds, struct filter_pred *root)
 	int children;
 	int done = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct fold_pred_data data = {
 		.root  = root,
 		.count = 0,
 	};
 	int children;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* No need to keep the fold flag */
 	root->index &= ~FILTER_PRED_FOLD;
@@ -1845,14 +2120,19 @@ static int fold_pred(struct filter_pred *preds, struct filter_pred *root)
 	children += count_leafs(preds, &preds[root->right]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	root->ops = kzalloc(sizeof(*root->ops) * children, GFP_KERNEL);
 =======
 	root->ops = kcalloc(children, sizeof(*root->ops), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	root->ops = kcalloc(children, sizeof(*root->ops), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!root->ops)
 		return -ENOMEM;
 
 	root->val = children;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	pred = root;
@@ -1886,6 +2166,8 @@ static int fold_pred(struct filter_pred *preds, struct filter_pred *root)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	data.children = children;
 	return walk_pred_tree(preds, root, fold_pred_cb, &data);
 }
@@ -1906,7 +2188,10 @@ static int fold_pred_tree_cb(enum move_type move, struct filter_pred *pred,
 
 	/* eveyrhing below is folded, continue with parent */
 	return WALK_PRED_PARENT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1917,6 +2202,7 @@ static int fold_pred_tree_cb(enum move_type move, struct filter_pred *pred,
 static int fold_pred_tree(struct event_filter *filter,
 			   struct filter_pred *root)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct filter_pred *preds;
 	struct filter_pred *pred;
@@ -1967,6 +2253,10 @@ static int fold_pred_tree(struct event_filter *filter,
 	return walk_pred_tree(filter->preds, root, fold_pred_tree_cb,
 			      filter->preds);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return walk_pred_tree(filter->preds, root, fold_pred_tree_cb,
+			      filter->preds);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int replace_preds(struct ftrace_event_call *call,
@@ -2024,6 +2314,7 @@ static int replace_preds(struct ftrace_event_call *call,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (elt->op == OP_AND || elt->op == OP_OR) {
 			pred = create_logical_pred(elt->op);
 			goto add_pred;
@@ -2035,10 +2326,15 @@ static int replace_preds(struct ftrace_event_call *call,
 		pred = create_pred(ps, call, elt->op, operand1, operand2);
 		if (!pred) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pred = create_pred(ps, call, elt->op, operand1, operand2);
+		if (!pred) {
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			goto fail;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		pred = create_pred(elt->op, operand1, operand2);
 add_pred:
@@ -2051,12 +2347,17 @@ add_pred:
 		if (err)
 			goto fail;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!dry_run) {
 			err = filter_add_pred(ps, filter, pred, &stack);
 			if (err)
 				goto fail;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		operand1 = operand2 = NULL;
 	}
@@ -2095,15 +2396,94 @@ fail:
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static inline void event_set_filtered_flag(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		call->flags |= TRACE_EVENT_FL_FILTERED;
+	else
+		file->flags |= FTRACE_EVENT_FL_FILTERED;
+}
+
+static inline void event_set_filter(struct ftrace_event_file *file,
+				    struct event_filter *filter)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		rcu_assign_pointer(call->filter, filter);
+	else
+		rcu_assign_pointer(file->filter, filter);
+}
+
+static inline void event_clear_filter(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		RCU_INIT_POINTER(call->filter, NULL);
+	else
+		RCU_INIT_POINTER(file->filter, NULL);
+}
+
+static inline void
+event_set_no_set_filter_flag(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		call->flags |= TRACE_EVENT_FL_NO_SET_FILTER;
+	else
+		file->flags |= FTRACE_EVENT_FL_NO_SET_FILTER;
+}
+
+static inline void
+event_clear_no_set_filter_flag(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (call->flags & TRACE_EVENT_FL_USE_CALL_FILTER)
+		call->flags &= ~TRACE_EVENT_FL_NO_SET_FILTER;
+	else
+		file->flags &= ~FTRACE_EVENT_FL_NO_SET_FILTER;
+}
+
+static inline bool
+event_no_set_filter_flag(struct ftrace_event_file *file)
+{
+	struct ftrace_event_call *call = file->event_call;
+
+	if (file->flags & FTRACE_EVENT_FL_NO_SET_FILTER)
+		return true;
+
+	if ((call->flags & TRACE_EVENT_FL_USE_CALL_FILTER) &&
+	    (call->flags & TRACE_EVENT_FL_NO_SET_FILTER))
+		return true;
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct filter_list {
 	struct list_head	list;
 	struct event_filter	*filter;
 };
 
 static int replace_system_preds(struct event_subsystem *system,
+<<<<<<< HEAD
 				struct filter_parse_state *ps,
 				char *filter_string)
 {
+=======
+				struct trace_array *tr,
+				struct filter_parse_state *ps,
+				char *filter_string)
+{
+	struct ftrace_event_file *file;
+>>>>>>> refs/remotes/origin/master
 	struct ftrace_event_call *call;
 	struct filter_list *filter_item;
 	struct filter_list *tmp;
@@ -2111,8 +2491,13 @@ static int replace_system_preds(struct event_subsystem *system,
 	bool fail = true;
 	int err;
 
+<<<<<<< HEAD
 	list_for_each_entry(call, &ftrace_events, list) {
 
+=======
+	list_for_each_entry(file, &tr->events, list) {
+		call = file->event_call;
+>>>>>>> refs/remotes/origin/master
 		if (strcmp(call->class->system, system->name) != 0)
 			continue;
 
@@ -2122,6 +2507,7 @@ static int replace_system_preds(struct event_subsystem *system,
 		 */
 		err = replace_preds(call, NULL, ps, filter_string, true);
 		if (err)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			goto fail;
 =======
@@ -2143,6 +2529,24 @@ static int replace_system_preds(struct event_subsystem *system,
 			continue;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			event_set_no_set_filter_flag(file);
+		else
+			event_clear_no_set_filter_flag(file);
+	}
+
+	list_for_each_entry(file, &tr->events, list) {
+		struct event_filter *filter;
+
+		call = file->event_call;
+
+		if (strcmp(call->class->system, system->name) != 0)
+			continue;
+
+		if (event_no_set_filter_flag(file))
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		filter_item = kzalloc(sizeof(*filter_item), GFP_KERNEL);
 		if (!filter_item)
 			goto fail_mem;
@@ -2161,17 +2565,30 @@ static int replace_system_preds(struct event_subsystem *system,
 
 		err = replace_preds(call, filter, ps, filter_string, false);
 		if (err) {
+<<<<<<< HEAD
 			filter_disable(call);
 			parse_error(ps, FILT_ERR_BAD_SUBSYS_FILTER, 0);
 			append_filter_err(ps, filter);
 		} else
 			call->flags |= TRACE_EVENT_FL_FILTERED;
+=======
+			filter_disable(file);
+			parse_error(ps, FILT_ERR_BAD_SUBSYS_FILTER, 0);
+			append_filter_err(ps, filter);
+		} else
+			event_set_filtered_flag(file);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Regardless of if this returned an error, we still
 		 * replace the filter for the call.
 		 */
+<<<<<<< HEAD
 		filter = call->filter;
 		rcu_assign_pointer(call->filter, filter_item->filter);
+=======
+		filter = event_filter(file);
+		event_set_filter(file, filter_item->filter);
+>>>>>>> refs/remotes/origin/master
 		filter_item->filter = filter;
 
 		fail = false;
@@ -2213,12 +2630,15 @@ static int replace_system_preds(struct event_subsystem *system,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int apply_event_filter(struct ftrace_event_call *call, char *filter_string)
 {
 	struct filter_parse_state *ps;
 	struct event_filter *filter;
 	struct event_filter *tmp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int create_filter_start(char *filter_str, bool set_str,
 			       struct filter_parse_state **psp,
 			       struct event_filter **filterp)
@@ -2308,6 +2728,10 @@ static int create_filter(struct ftrace_event_call *call,
  * and always remembers @filter_str.
  */
 static int create_system_filter(struct event_subsystem *system,
+<<<<<<< HEAD
+=======
+				struct trace_array *tr,
+>>>>>>> refs/remotes/origin/master
 				char *filter_str, struct event_filter **filterp)
 {
 	struct event_filter *filter = NULL;
@@ -2316,7 +2740,11 @@ static int create_system_filter(struct event_subsystem *system,
 
 	err = create_filter_start(filter_str, true, &ps, &filter);
 	if (!err) {
+<<<<<<< HEAD
 		err = replace_system_preds(system, ps, filter_str);
+=======
+		err = replace_system_preds(system, tr, ps, filter_str);
+>>>>>>> refs/remotes/origin/master
 		if (!err) {
 			/* System filters just show a default message */
 			kfree(filter->filter_string);
@@ -2331,6 +2759,7 @@ static int create_system_filter(struct event_subsystem *system,
 	return err;
 }
 
+<<<<<<< HEAD
 int apply_event_filter(struct ftrace_event_call *call, char *filter_string)
 {
 	struct event_filter *filter;
@@ -2383,12 +2812,40 @@ out:
 	err = create_filter(call, filter_string, true, &filter);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* caller must hold event_mutex */
+int apply_event_filter(struct ftrace_event_file *file, char *filter_string)
+{
+	struct ftrace_event_call *call = file->event_call;
+	struct event_filter *filter;
+	int err;
+
+	if (!strcmp(strstrip(filter_string), "0")) {
+		filter_disable(file);
+		filter = event_filter(file);
+
+		if (!filter)
+			return 0;
+
+		event_clear_filter(file);
+
+		/* Make sure the filter is not being used */
+		synchronize_sched();
+		__free_filter(filter);
+
+		return 0;
+	}
+
+	err = create_filter(call, filter_string, true, &filter);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Always swap the call filter with the new filter
 	 * even if there was an error. If there was an error
 	 * in the filter, we disable the filter and show the error
 	 * string
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tmp = call->filter;
 	rcu_assign_pointer(call->filter, filter);
@@ -2410,6 +2867,18 @@ out:
 			filter_disable(call);
 
 		rcu_assign_pointer(call->filter, filter);
+=======
+	if (filter) {
+		struct event_filter *tmp;
+
+		tmp = event_filter(file);
+		if (!err)
+			event_set_filtered_flag(file);
+		else
+			filter_disable(file);
+
+		event_set_filter(file, filter);
+>>>>>>> refs/remotes/origin/master
 
 		if (tmp) {
 			/* Make sure the call is done with the filter */
@@ -2417,13 +2886,17 @@ out:
 			__free_filter(tmp);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 out_unlock:
 	mutex_unlock(&event_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
 
+<<<<<<< HEAD
 int apply_subsystem_event_filter(struct event_subsystem *system,
 				 char *filter_string)
 {
@@ -2431,29 +2904,49 @@ int apply_subsystem_event_filter(struct event_subsystem *system,
 	struct filter_parse_state *ps;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int apply_subsystem_event_filter(struct ftrace_subsystem_dir *dir,
+				 char *filter_string)
+{
+	struct event_subsystem *system = dir->subsystem;
+	struct trace_array *tr = dir->tr;
+>>>>>>> refs/remotes/origin/master
 	struct event_filter *filter;
 	int err = 0;
 
 	mutex_lock(&event_mutex);
 
 	/* Make sure the system still has events */
+<<<<<<< HEAD
 	if (!system->nr_events) {
+=======
+	if (!dir->nr_events) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto out_unlock;
 	}
 
 	if (!strcmp(strstrip(filter_string), "0")) {
+<<<<<<< HEAD
 		filter_free_subsystem_preds(system);
+=======
+		filter_free_subsystem_preds(system, tr);
+>>>>>>> refs/remotes/origin/master
 		remove_filter_string(system->filter);
 		filter = system->filter;
 		system->filter = NULL;
 		/* Ensure all filters are no longer used */
 		synchronize_sched();
+<<<<<<< HEAD
 		filter_free_subsystem_filters(system);
+=======
+		filter_free_subsystem_filters(system, tr);
+>>>>>>> refs/remotes/origin/master
 		__free_filter(filter);
 		goto out_unlock;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = -ENOMEM;
 	ps = kzalloc(sizeof(*ps), GFP_KERNEL);
@@ -2489,6 +2982,9 @@ out:
 	kfree(ps);
 =======
 	err = create_system_filter(system, filter_string, &filter);
+=======
+	err = create_system_filter(system, tr, filter_string, &filter);
+>>>>>>> refs/remotes/origin/master
 	if (filter) {
 		/*
 		 * No event actually uses the system filter
@@ -2497,7 +2993,10 @@ out:
 		__free_filter(system->filter);
 		system->filter = filter;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_unlock:
 	mutex_unlock(&event_mutex);
 
@@ -2515,7 +3014,10 @@ void ftrace_profile_free_filter(struct perf_event *event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct function_filter_data {
 	struct ftrace_ops *ops;
 	int first_filter;
@@ -2560,7 +3062,11 @@ static int ftrace_function_set_regexp(struct ftrace_ops *ops, int filter,
 static int __ftrace_function_set_filter(int filter, char *buf, int len,
 					struct function_filter_data *data)
 {
+<<<<<<< HEAD
 	int i, re_cnt, ret;
+=======
+	int i, re_cnt, ret = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	int *reset;
 	char **re;
 
@@ -2658,12 +3164,16 @@ static int ftrace_function_set_filter(struct perf_event *event,
 }
 #endif /* CONFIG_FUNCTION_TRACER */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ftrace_profile_set_filter(struct perf_event *event, int event_id,
 			      char *filter_str)
 {
 	int err;
 	struct event_filter *filter;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct filter_parse_state *ps;
 	struct ftrace_event_call *call = NULL;
@@ -2678,6 +3188,8 @@ int ftrace_profile_set_filter(struct perf_event *event, int event_id,
 	err = -EINVAL;
 	if (&call->list == &ftrace_events)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ftrace_event_call *call;
 
 	mutex_lock(&event_mutex);
@@ -2686,13 +3198,17 @@ int ftrace_profile_set_filter(struct perf_event *event, int event_id,
 
 	err = -EINVAL;
 	if (!call)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 
 	err = -EEXIST;
 	if (event->filter)
 		goto out_unlock;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	filter = __alloc_filter();
 	if (!filter) {
@@ -2722,6 +3238,8 @@ free_ps:
 free_filter:
 	if (err)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = create_filter(call, filter_str, false, &filter);
 	if (err)
 		goto free_filter;
@@ -2733,7 +3251,10 @@ free_filter:
 
 free_filter:
 	if (err || ftrace_event_is_function(call))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__free_filter(filter);
 
 out_unlock:
@@ -2745,7 +3266,10 @@ out_unlock:
 #endif /* CONFIG_PERF_EVENTS */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FTRACE_STARTUP_TEST
 
 #include <linux/types.h>
@@ -2922,4 +3446,7 @@ static __init int ftrace_test_event_filter(void)
 late_initcall(ftrace_test_event_filter);
 
 #endif /* CONFIG_FTRACE_STARTUP_TEST */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

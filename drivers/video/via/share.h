@@ -23,10 +23,15 @@
 #define __SHARE_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "via_modesetting.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "via_modesetting.h"
+
+>>>>>>> refs/remotes/origin/master
 /* Define Bit Field */
 #define BIT0    0x01
 #define BIT1    0x02
@@ -286,6 +291,7 @@
 #define HW_LAYOUT_LCD1_LCD2     0x04
 #define HW_LAYOUT_LCD_EXTERNAL_LCD2 0x10
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Definition Refresh Rate */
 #define REFRESH_49      49
@@ -620,6 +626,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Definition CRTC Timing Index */
 #define H_TOTAL_INDEX               0
 #define H_ADDR_INDEX                1
@@ -643,12 +651,15 @@
 #define V_SYNC_END_SHADOW_INDEX     19
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Definition Video Mode Pixel Clock (picoseconds)
 */
 #define RES_640X480_60HZ_PIXCLOCK    39722
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* LCD display method
 */
 #define     LCD_EXPANDSION              0x00
@@ -659,6 +670,7 @@
 #define     LCD_OPENLDI               0x00
 #define     LCD_SPWG                  0x01
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Define display timing
 */
@@ -679,11 +691,17 @@ struct display_timing {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct crt_mode_table {
 	int refresh_rate;
 	int h_sync_polarity;
 	int v_sync_polarity;
+<<<<<<< HEAD
 	struct display_timing crtc;
+=======
+	struct via_display_timing crtc;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct io_reg {

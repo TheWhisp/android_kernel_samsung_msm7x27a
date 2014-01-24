@@ -15,9 +15,13 @@
 #include <linux/thread_info.h>
 #include <linux/kbuild.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/pda.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pda.h>
+>>>>>>> refs/remotes/origin/master
 
 int main(void)
 {
@@ -143,7 +147,10 @@ int main(void)
 	DEFINE(PDA_DF_RETX, offsetof(struct blackfin_pda, retx_doublefault));
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* PDA initial management */
 	DEFINE(PDA_INIT_RETX, offsetof(struct blackfin_initial_pda, retx));
@@ -154,7 +161,10 @@ int main(void)
 	DEFINE(PDA_INIT_DF_RETX, offsetof(struct blackfin_initial_pda, retx_doublefault));
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 	/* Inter-core lock (in L2 SRAM) */
 	DEFINE(SIZEOF_CORELOCK, sizeof(struct corelock_slot));

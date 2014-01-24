@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,10 +57,14 @@
 #define _COMPONENT          ACPI_EVENTS
 ACPI_MODULE_NAME("evglock")
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if (!ACPI_REDUCED_HARDWARE)	/* Entire module */
+>>>>>>> refs/remotes/origin/master
 /* Local prototypes */
 static u32 acpi_ev_global_lock_handler(void *context);
 
@@ -79,14 +87,20 @@ acpi_status acpi_ev_init_global_lock_handler(void)
 	ACPI_FUNCTION_TRACE(ev_init_global_lock_handler);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If Hardware Reduced flag is set, there is no global lock */
 
 	if (acpi_gbl_reduced_hardware) {
 		return_ACPI_STATUS(AE_OK);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Attempt installation of the global lock handler */
 
 	status = acpi_install_fixed_event_handler(ACPI_EVENT_GLOBAL,
@@ -139,6 +153,10 @@ acpi_status acpi_ev_remove_global_lock_handler(void)
 	status = acpi_remove_fixed_event_handler(ACPI_EVENT_GLOBAL,
 						 acpi_ev_global_lock_handler);
 
+<<<<<<< HEAD
+=======
+	acpi_os_delete_lock(acpi_gbl_global_lock_pending_lock);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -146,7 +164,11 @@ acpi_status acpi_ev_remove_global_lock_handler(void)
  *
  * FUNCTION:    acpi_ev_global_lock_handler
  *
+<<<<<<< HEAD
  * PARAMETERS:  Context         - From thread interface, not used
+=======
+ * PARAMETERS:  context         - From thread interface, not used
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      ACPI_INTERRUPT_HANDLED
  *
@@ -183,7 +205,11 @@ static u32 acpi_ev_global_lock_handler(void *context)
 
 	acpi_gbl_global_lock_pending = FALSE;
 
+<<<<<<< HEAD
       cleanup_and_exit:
+=======
+cleanup_and_exit:
+>>>>>>> refs/remotes/origin/master
 
 	acpi_os_release_lock(acpi_gbl_global_lock_pending_lock, flags);
 	return (ACPI_INTERRUPT_HANDLED);
@@ -193,7 +219,11 @@ static u32 acpi_ev_global_lock_handler(void *context)
  *
  * FUNCTION:    acpi_ev_acquire_global_lock
  *
+<<<<<<< HEAD
  * PARAMETERS:  Timeout         - Max time to wait for the lock, in millisec.
+=======
+ * PARAMETERS:  timeout         - Max time to wait for the lock, in millisec.
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -351,7 +381,12 @@ acpi_status acpi_ev_release_global_lock(void)
 	return_ACPI_STATUS(status);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #endif				/* !ACPI_REDUCED_HARDWARE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+>>>>>>> refs/remotes/origin/master

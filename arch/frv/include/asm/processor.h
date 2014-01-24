@@ -54,7 +54,10 @@ extern struct cpuinfo_frv __nongprelbss boot_cpu_data;
  * Bus types
  */
 #define EISA_bus 0
+<<<<<<< HEAD
 #define MCA_bus 0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct thread_struct {
 	struct pt_regs		*frame;		/* [GR28] exception frame ptr for this thread */
@@ -93,6 +96,7 @@ extern struct task_struct *__kernel_current_task;
 
 /*
  * do necessary setup to start up a newly executed thread.
+<<<<<<< HEAD
  * - need to discard the frame stacked by init() invoking the execve syscall
  */
 #define start_thread(_regs, _pc, _usp)			\
@@ -109,12 +113,25 @@ do {							\
 
 extern void prepare_to_copy(struct task_struct *tsk);
 
+=======
+ */
+#define start_thread(_regs, _pc, _usp)			\
+do {							\
+	_regs->pc	= (_pc);			\
+	_regs->psr	&= ~PSR_S;			\
+	_regs->sp	= (_usp);			\
+} while(0)
+
+>>>>>>> refs/remotes/origin/master
 /* Free all resources held by a thread. */
 static inline void release_thread(struct task_struct *dead_task)
 {
 }
 
+<<<<<<< HEAD
 extern asmlinkage int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
+=======
+>>>>>>> refs/remotes/origin/master
 extern asmlinkage void save_user_regs(struct user_context *target);
 extern asmlinkage void *restore_user_regs(const struct user_context *target, ...);
 
@@ -140,12 +157,15 @@ unsigned long get_wchan(struct task_struct *p);
 #define	KSTK_ESP(tsk)	((tsk)->thread.frame0->sp)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Allocation and freeing of basic task resources. */
 extern struct task_struct *alloc_task_struct_node(int node);
 extern void free_task_struct(struct task_struct *p);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define cpu_relax()    barrier()
 
 /* data cache prefetch */

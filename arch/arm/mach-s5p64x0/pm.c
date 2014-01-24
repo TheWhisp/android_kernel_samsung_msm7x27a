@@ -18,7 +18,10 @@
 
 #include <plat/cpu.h>
 #include <plat/pm.h>
+<<<<<<< HEAD
 #include <plat/regs-timer.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/wakeup-mask.h>
 
 #include <mach/regs-clock.h>
@@ -48,8 +51,11 @@ static struct sleep_save s5p64x0_misc_save[] = {
 	SAVE_ITEM(S5P64X0_MEM0CONSLP1),
 	SAVE_ITEM(S5P64X0_MEM0DRVCON),
 	SAVE_ITEM(S5P64X0_MEM1DRVCON),
+<<<<<<< HEAD
 
 	SAVE_ITEM(S3C64XX_TINT_CSTAT),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* DPLL is present only in S5P6450 */
@@ -103,8 +109,13 @@ static int s5p64x0_cpu_suspend(unsigned long arg)
 	    "mcr p15, 0, %0, c7, c10, 4\n\t"
 	    "mcr p15, 0, %0, c7, c0, 4" : : "r" (tmp));
 
+<<<<<<< HEAD
 	/* we should never get past here */
 	panic("sleep resumed to originator?");
+=======
+	pr_info("Failed to suspend the system\n");
+	return 1; /* Aborting suspend */
+>>>>>>> refs/remotes/origin/master
 }
 
 /* mapping of interrupts to parts of the wakeup mask */

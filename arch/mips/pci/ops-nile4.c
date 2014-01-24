@@ -5,12 +5,18 @@
 
 #include <asm/lasat/lasat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gt64120.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/nile4.h>
 
 #define PCI_ACCESS_READ  0
+=======
+#include <asm/nile4.h>
+
+#define PCI_ACCESS_READ	 0
+>>>>>>> refs/remotes/origin/master
 #define PCI_ACCESS_WRITE 1
 
 #define LO(reg) (reg / 4)

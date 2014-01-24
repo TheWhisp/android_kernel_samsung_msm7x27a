@@ -10,9 +10,13 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/errno.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/errno.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sram.h>
 
 /*

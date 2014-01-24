@@ -8,10 +8,15 @@
 #define __ARCH_SYSTEM_REV_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/system_info.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/system_info.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * board revision encoding
  * mach specific
@@ -25,10 +30,14 @@
 static inline int board_have_nand_16bit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return system_rev & BOARD_HAVE_NAND_16BIT;
 =======
 	return (system_rev & BOARD_HAVE_NAND_16BIT) ? 1 : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (system_rev & BOARD_HAVE_NAND_16BIT) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __ARCH_SYSTEM_REV_H__ */

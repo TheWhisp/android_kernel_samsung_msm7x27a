@@ -1,6 +1,11 @@
 /*
  * Freescale MPC85xx Memory Controller kenel module
  *
+<<<<<<< HEAD
+=======
+ * Parts Copyrighted (c) 2013 by Freescale Semiconductor, Inc.
+ *
+>>>>>>> refs/remotes/origin/master
  * Author: Dave Jiang <djiang@mvista.com>
  *
  * 2006-2007 (c) MontaVista Software, Inc. This file is licensed under
@@ -49,34 +54,68 @@ static u32 orig_hid1[2];
 
 /************************ MC SYSFS parts ***********************************/
 
+<<<<<<< HEAD
 static ssize_t mpc85xx_mc_inject_data_hi_show(struct mem_ctl_info *mci,
 					      char *data)
 {
+=======
+#define to_mci(k) container_of(k, struct mem_ctl_info, dev)
+
+static ssize_t mpc85xx_mc_inject_data_hi_show(struct device *dev,
+					      struct device_attribute *mattr,
+					      char *data)
+{
+	struct mem_ctl_info *mci = to_mci(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 	return sprintf(data, "0x%08x",
 		       in_be32(pdata->mc_vbase +
 			       MPC85XX_MC_DATA_ERR_INJECT_HI));
 }
 
+<<<<<<< HEAD
 static ssize_t mpc85xx_mc_inject_data_lo_show(struct mem_ctl_info *mci,
 					      char *data)
 {
+=======
+static ssize_t mpc85xx_mc_inject_data_lo_show(struct device *dev,
+					      struct device_attribute *mattr,
+					      char *data)
+{
+	struct mem_ctl_info *mci = to_mci(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 	return sprintf(data, "0x%08x",
 		       in_be32(pdata->mc_vbase +
 			       MPC85XX_MC_DATA_ERR_INJECT_LO));
 }
 
+<<<<<<< HEAD
 static ssize_t mpc85xx_mc_inject_ctrl_show(struct mem_ctl_info *mci, char *data)
 {
+=======
+static ssize_t mpc85xx_mc_inject_ctrl_show(struct device *dev,
+					   struct device_attribute *mattr,
+					   char *data)
+{
+	struct mem_ctl_info *mci = to_mci(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 	return sprintf(data, "0x%08x",
 		       in_be32(pdata->mc_vbase + MPC85XX_MC_ECC_ERR_INJECT));
 }
 
+<<<<<<< HEAD
 static ssize_t mpc85xx_mc_inject_data_hi_store(struct mem_ctl_info *mci,
 					       const char *data, size_t count)
 {
+=======
+static ssize_t mpc85xx_mc_inject_data_hi_store(struct device *dev,
+					       struct device_attribute *mattr,
+					       const char *data, size_t count)
+{
+	struct mem_ctl_info *mci = to_mci(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 	if (isdigit(*data)) {
 		out_be32(pdata->mc_vbase + MPC85XX_MC_DATA_ERR_INJECT_HI,
@@ -86,9 +125,17 @@ static ssize_t mpc85xx_mc_inject_data_hi_store(struct mem_ctl_info *mci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t mpc85xx_mc_inject_data_lo_store(struct mem_ctl_info *mci,
 					       const char *data, size_t count)
 {
+=======
+static ssize_t mpc85xx_mc_inject_data_lo_store(struct device *dev,
+					       struct device_attribute *mattr,
+					       const char *data, size_t count)
+{
+	struct mem_ctl_info *mci = to_mci(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 	if (isdigit(*data)) {
 		out_be32(pdata->mc_vbase + MPC85XX_MC_DATA_ERR_INJECT_LO,
@@ -98,9 +145,17 @@ static ssize_t mpc85xx_mc_inject_data_lo_store(struct mem_ctl_info *mci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static ssize_t mpc85xx_mc_inject_ctrl_store(struct mem_ctl_info *mci,
 					    const char *data, size_t count)
 {
+=======
+static ssize_t mpc85xx_mc_inject_ctrl_store(struct device *dev,
+					       struct device_attribute *mattr,
+					       const char *data, size_t count)
+{
+	struct mem_ctl_info *mci = to_mci(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 	if (isdigit(*data)) {
 		out_be32(pdata->mc_vbase + MPC85XX_MC_ECC_ERR_INJECT,
@@ -110,6 +165,7 @@ static ssize_t mpc85xx_mc_inject_ctrl_store(struct mem_ctl_info *mci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct mcidev_sysfs_attribute mpc85xx_mc_sysfs_attributes[] = {
 	{
 	 .attr = {
@@ -142,6 +198,37 @@ static struct mcidev_sysfs_attribute mpc85xx_mc_sysfs_attributes[] = {
 static void mpc85xx_set_mc_sysfs_attributes(struct mem_ctl_info *mci)
 {
 	mci->mc_driver_sysfs_attributes = mpc85xx_mc_sysfs_attributes;
+=======
+DEVICE_ATTR(inject_data_hi, S_IRUGO | S_IWUSR,
+	    mpc85xx_mc_inject_data_hi_show, mpc85xx_mc_inject_data_hi_store);
+DEVICE_ATTR(inject_data_lo, S_IRUGO | S_IWUSR,
+	    mpc85xx_mc_inject_data_lo_show, mpc85xx_mc_inject_data_lo_store);
+DEVICE_ATTR(inject_ctrl, S_IRUGO | S_IWUSR,
+	    mpc85xx_mc_inject_ctrl_show, mpc85xx_mc_inject_ctrl_store);
+
+static int mpc85xx_create_sysfs_attributes(struct mem_ctl_info *mci)
+{
+	int rc;
+
+	rc = device_create_file(&mci->dev, &dev_attr_inject_data_hi);
+	if (rc < 0)
+		return rc;
+	rc = device_create_file(&mci->dev, &dev_attr_inject_data_lo);
+	if (rc < 0)
+		return rc;
+	rc = device_create_file(&mci->dev, &dev_attr_inject_ctrl);
+	if (rc < 0)
+		return rc;
+
+	return 0;
+}
+
+static void mpc85xx_remove_sysfs_attributes(struct mem_ctl_info *mci)
+{
+	device_remove_file(&mci->dev, &dev_attr_inject_data_hi);
+	device_remove_file(&mci->dev, &dev_attr_inject_data_lo);
+	device_remove_file(&mci->dev, &dev_attr_inject_ctrl);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**************************** PCI Err device ***************************/
@@ -184,6 +271,45 @@ static void mpc85xx_pci_check(struct edac_pci_ctl_info *pci)
 		edac_pci_handle_npe(pci, pci->ctl_name);
 }
 
+<<<<<<< HEAD
+=======
+static void mpc85xx_pcie_check(struct edac_pci_ctl_info *pci)
+{
+	struct mpc85xx_pci_pdata *pdata = pci->pvt_info;
+	u32 err_detect;
+
+	err_detect = in_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_DR);
+
+	pr_err("PCIe error(s) detected\n");
+	pr_err("PCIe ERR_DR register: 0x%08x\n", err_detect);
+	pr_err("PCIe ERR_CAP_STAT register: 0x%08x\n",
+			in_be32(pdata->pci_vbase + MPC85XX_PCI_GAS_TIMR));
+	pr_err("PCIe ERR_CAP_R0 register: 0x%08x\n",
+			in_be32(pdata->pci_vbase + MPC85XX_PCIE_ERR_CAP_R0));
+	pr_err("PCIe ERR_CAP_R1 register: 0x%08x\n",
+			in_be32(pdata->pci_vbase + MPC85XX_PCIE_ERR_CAP_R1));
+	pr_err("PCIe ERR_CAP_R2 register: 0x%08x\n",
+			in_be32(pdata->pci_vbase + MPC85XX_PCIE_ERR_CAP_R2));
+	pr_err("PCIe ERR_CAP_R3 register: 0x%08x\n",
+			in_be32(pdata->pci_vbase + MPC85XX_PCIE_ERR_CAP_R3));
+
+	/* clear error bits */
+	out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_DR, err_detect);
+}
+
+static int mpc85xx_pcie_find_capability(struct device_node *np)
+{
+	struct pci_controller *hose;
+
+	if (!np)
+		return -EINVAL;
+
+	hose = pci_find_hose_for_OF_device(np);
+
+	return early_find_capability(hose, 0, 0, PCI_CAP_ID_EXP);
+}
+
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t mpc85xx_pci_isr(int irq, void *dev_id)
 {
 	struct edac_pci_ctl_info *pci = dev_id;
@@ -195,12 +321,23 @@ static irqreturn_t mpc85xx_pci_isr(int irq, void *dev_id)
 	if (!err_detect)
 		return IRQ_NONE;
 
+<<<<<<< HEAD
 	mpc85xx_pci_check(pci);
+=======
+	if (pdata->is_pcie)
+		mpc85xx_pcie_check(pci);
+	else
+		mpc85xx_pci_check(pci);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mpc85xx_pci_err_probe(struct platform_device *op)
+=======
+int mpc85xx_pci_err_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct edac_pci_ctl_info *pci;
 	struct mpc85xx_pci_pdata *pdata;
@@ -214,17 +351,46 @@ static int __devinit mpc85xx_pci_err_probe(struct platform_device *op)
 	if (!pci)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	pdata = pci->pvt_info;
 	pdata->name = "mpc85xx_pci_err";
 	pdata->irq = NO_IRQ;
+=======
+	/* make sure error reporting method is sane */
+	switch (edac_op_state) {
+	case EDAC_OPSTATE_POLL:
+	case EDAC_OPSTATE_INT:
+		break;
+	default:
+		edac_op_state = EDAC_OPSTATE_INT;
+		break;
+	}
+
+	pdata = pci->pvt_info;
+	pdata->name = "mpc85xx_pci_err";
+	pdata->irq = NO_IRQ;
+
+	if (mpc85xx_pcie_find_capability(op->dev.of_node) > 0)
+		pdata->is_pcie = true;
+
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&op->dev, pci);
 	pci->dev = &op->dev;
 	pci->mod_name = EDAC_MOD_STR;
 	pci->ctl_name = pdata->name;
 	pci->dev_name = dev_name(&op->dev);
 
+<<<<<<< HEAD
 	if (edac_op_state == EDAC_OPSTATE_POLL)
 		pci->edac_check = mpc85xx_pci_check;
+=======
+	if (edac_op_state == EDAC_OPSTATE_POLL) {
+		if (pdata->is_pcie)
+			pci->edac_check = mpc85xx_pcie_check;
+		else
+			pci->edac_check = mpc85xx_pci_check;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	pdata->edac_idx = edac_pci_idx++;
 
@@ -253,6 +419,7 @@ static int __devinit mpc85xx_pci_err_probe(struct platform_device *op)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	orig_pci_err_cap_dr =
 	    in_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_CAP_DR);
 
@@ -263,23 +430,58 @@ static int __devinit mpc85xx_pci_err_probe(struct platform_device *op)
 
 	/* disable master abort reporting */
 	out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_EN, ~0x40);
+=======
+	if (pdata->is_pcie) {
+		orig_pci_err_cap_dr =
+		    in_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_ADDR);
+		out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_ADDR, ~0);
+		orig_pci_err_en =
+		    in_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_EN);
+		out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_EN, 0);
+	} else {
+		orig_pci_err_cap_dr =
+		    in_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_CAP_DR);
+
+		/* PCI master abort is expected during config cycles */
+		out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_CAP_DR, 0x40);
+
+		orig_pci_err_en =
+		    in_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_EN);
+
+		/* disable master abort reporting */
+		out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_EN, ~0x40);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* clear error bits */
 	out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_DR, ~0);
 
 	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_pci_add_device()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_pci_add_device()\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
 	if (edac_op_state == EDAC_OPSTATE_INT) {
 		pdata->irq = irq_of_parse_and_map(op->dev.of_node, 0);
 		res = devm_request_irq(&op->dev, pdata->irq,
+<<<<<<< HEAD
 				       mpc85xx_pci_isr, IRQF_DISABLED,
 				       "[EDAC] PCI err", pci);
 		if (res < 0) {
 			printk(KERN_ERR
 			       "%s: Unable to requiest irq %d for "
+=======
+				       mpc85xx_pci_isr,
+				       IRQF_DISABLED | IRQF_SHARED,
+				       "[EDAC] PCI err", pci);
+		if (res < 0) {
+			printk(KERN_ERR
+			       "%s: Unable to request irq %d for "
+>>>>>>> refs/remotes/origin/master
 			       "MPC85xx PCI err\n", __func__, pdata->irq);
 			irq_dispose_mapping(pdata->irq);
 			res = -ENODEV;
@@ -290,8 +492,29 @@ static int __devinit mpc85xx_pci_err_probe(struct platform_device *op)
 		       pdata->irq);
 	}
 
+<<<<<<< HEAD
 	devres_remove_group(&op->dev, mpc85xx_pci_err_probe);
 	debugf3("%s(): success\n", __func__);
+=======
+	if (pdata->is_pcie) {
+		/*
+		 * Enable all PCIe error interrupt & error detect except invalid
+		 * PEX_CONFIG_ADDR/PEX_CONFIG_DATA access interrupt generation
+		 * enable bit and invalid PEX_CONFIG_ADDR/PEX_CONFIG_DATA access
+		 * detection enable bit. Because PCIe bus code to initialize and
+		 * configure these PCIe devices on booting will use some invalid
+		 * PEX_CONFIG_ADDR/PEX_CONFIG_DATA, edac driver prints the much
+		 * notice information. So disable this detect to fix ugly print.
+		 */
+		out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_EN, ~0
+			 & ~PEX_ERR_ICCAIE_EN_BIT);
+		out_be32(pdata->pci_vbase + MPC85XX_PCI_ERR_ADDR, 0
+			 | PEX_ERR_ICCAD_DISR_BIT);
+	}
+
+	devres_remove_group(&op->dev, mpc85xx_pci_err_probe);
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO EDAC_MOD_STR " PCI err registered\n");
 
 	return 0;
@@ -303,6 +526,7 @@ err:
 	devres_release_group(&op->dev, mpc85xx_pci_err_probe);
 	return res;
 }
+<<<<<<< HEAD
 
 static int mpc85xx_pci_err_remove(struct platform_device *op)
 {
@@ -346,6 +570,9 @@ static struct platform_driver mpc85xx_pci_err_driver = {
 		.of_match_table = mpc85xx_pci_err_of_match,
 	},
 };
+=======
+EXPORT_SYMBOL(mpc85xx_pci_err_probe);
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* CONFIG_PCI */
 
@@ -502,7 +729,11 @@ static irqreturn_t mpc85xx_l2_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mpc85xx_l2_err_probe(struct platform_device *op)
+=======
+static int mpc85xx_l2_err_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct edac_device_ctl_info *edac_dev;
 	struct mpc85xx_l2_pdata *pdata;
@@ -539,12 +770,17 @@ static int __devinit mpc85xx_l2_err_probe(struct platform_device *op)
 	r.start += 0xe00;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!devm_request_mem_region(&op->dev, r.start,
 				     r.end - r.start + 1, pdata->name)) {
 =======
 	if (!devm_request_mem_region(&op->dev, r.start, resource_size(&r),
 				     pdata->name)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!devm_request_mem_region(&op->dev, r.start, resource_size(&r),
+				     pdata->name)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "%s: Error while requesting mem region\n",
 		       __func__);
 		res = -EBUSY;
@@ -552,10 +788,14 @@ static int __devinit mpc85xx_l2_err_probe(struct platform_device *op)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pdata->l2_vbase = devm_ioremap(&op->dev, r.start, r.end - r.start + 1);
 =======
 	pdata->l2_vbase = devm_ioremap(&op->dev, r.start, resource_size(&r));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pdata->l2_vbase = devm_ioremap(&op->dev, r.start, resource_size(&r));
+>>>>>>> refs/remotes/origin/master
 	if (!pdata->l2_vbase) {
 		printk(KERN_ERR "%s: Unable to setup L2 err regs\n", __func__);
 		res = -ENOMEM;
@@ -579,7 +819,11 @@ static int __devinit mpc85xx_l2_err_probe(struct platform_device *op)
 	pdata->edac_idx = edac_dev_idx++;
 
 	if (edac_device_add_device(edac_dev) > 0) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_device_add_device()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_device_add_device()\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -590,7 +834,11 @@ static int __devinit mpc85xx_l2_err_probe(struct platform_device *op)
 				       "[EDAC] L2 err", edac_dev);
 		if (res < 0) {
 			printk(KERN_ERR
+<<<<<<< HEAD
 			       "%s: Unable to requiest irq %d for "
+=======
+			       "%s: Unable to request irq %d for "
+>>>>>>> refs/remotes/origin/master
 			       "MPC85xx L2 err\n", __func__, pdata->irq);
 			irq_dispose_mapping(pdata->irq);
 			res = -ENODEV;
@@ -607,7 +855,11 @@ static int __devinit mpc85xx_l2_err_probe(struct platform_device *op)
 
 	devres_remove_group(&op->dev, mpc85xx_l2_err_probe);
 
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO EDAC_MOD_STR " L2 err registered\n");
 
 	return 0;
@@ -625,7 +877,11 @@ static int mpc85xx_l2_err_remove(struct platform_device *op)
 	struct edac_device_ctl_info *edac_dev = dev_get_drvdata(&op->dev);
 	struct mpc85xx_l2_pdata *pdata = edac_dev->pvt_info;
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (edac_op_state == EDAC_OPSTATE_INT) {
 		out_be32(pdata->l2_vbase + MPC85XX_L2_ERRINTEN, 0);
@@ -822,7 +1078,11 @@ static void mpc85xx_mc_check(struct mem_ctl_info *mci)
 	pfn = err_addr >> PAGE_SHIFT;
 
 	for (row_index = 0; row_index < mci->nr_csrows; row_index++) {
+<<<<<<< HEAD
 		csrow = &mci->csrows[row_index];
+=======
+		csrow = mci->csrows[row_index];
+>>>>>>> refs/remotes/origin/master
 		if ((pfn >= csrow->first_page) && (pfn <= csrow->last_page))
 			break;
 	}
@@ -864,6 +1124,7 @@ static void mpc85xx_mc_check(struct mem_ctl_info *mci)
 
 	if (err_detect & DDR_EDE_SBE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		edac_mc_handle_ce(mci, pfn, err_addr & PAGE_MASK,
 				  syndrome, row_index, 0, mci->ctl_name);
 
@@ -877,6 +1138,18 @@ static void mpc85xx_mc_check(struct mem_ctl_info *mci)
 		edac_mc_handle_ue(mci, pfn, err_addr & ~PAGE_MASK,
 >>>>>>> refs/remotes/origin/cm-10.0
 				  row_index, mci->ctl_name);
+=======
+		edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci, 1,
+				     pfn, err_addr & ~PAGE_MASK, syndrome,
+				     row_index, 0, -1,
+				     mci->ctl_name, "");
+
+	if (err_detect & DDR_EDE_MBE)
+		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, 1,
+				     pfn, err_addr & ~PAGE_MASK, syndrome,
+				     row_index, 0, -1,
+				     mci->ctl_name, "");
+>>>>>>> refs/remotes/origin/master
 
 	out_be32(pdata->mc_vbase + MPC85XX_MC_ERR_DETECT, err_detect);
 }
@@ -896,10 +1169,18 @@ static irqreturn_t mpc85xx_mc_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static void __devinit mpc85xx_init_csrows(struct mem_ctl_info *mci)
 {
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 	struct csrow_info *csrow;
+=======
+static void mpc85xx_init_csrows(struct mem_ctl_info *mci)
+{
+	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
+	struct csrow_info *csrow;
+	struct dimm_info *dimm;
+>>>>>>> refs/remotes/origin/master
 	u32 sdram_ctl;
 	u32 sdtype;
 	enum mem_type mtype;
@@ -945,7 +1226,13 @@ static void __devinit mpc85xx_init_csrows(struct mem_ctl_info *mci)
 		u32 start;
 		u32 end;
 
+<<<<<<< HEAD
 		csrow = &mci->csrows[index];
+=======
+		csrow = mci->csrows[index];
+		dimm = csrow->channels[0]->dimm;
+
+>>>>>>> refs/remotes/origin/master
 		cs_bnds = in_be32(pdata->mc_vbase + MPC85XX_MC_CS_BNDS_0 +
 				  (index * MPC85XX_MC_CS_BNDS_OFS));
 
@@ -961,6 +1248,7 @@ static void __devinit mpc85xx_init_csrows(struct mem_ctl_info *mci)
 
 		csrow->first_page = start;
 		csrow->last_page = end;
+<<<<<<< HEAD
 		csrow->nr_pages = end + 1 - start;
 		csrow->grain = 8;
 		csrow->mtype = mtype;
@@ -974,6 +1262,23 @@ static void __devinit mpc85xx_init_csrows(struct mem_ctl_info *mci)
 static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 {
 	struct mem_ctl_info *mci;
+=======
+
+		dimm->nr_pages = end + 1 - start;
+		dimm->grain = 8;
+		dimm->mtype = mtype;
+		dimm->dtype = DEV_UNKNOWN;
+		if (sdram_ctl & DSC_X32_EN)
+			dimm->dtype = DEV_X32;
+		dimm->edac_mode = EDAC_SECDED;
+	}
+}
+
+static int mpc85xx_mc_err_probe(struct platform_device *op)
+{
+	struct mem_ctl_info *mci;
+	struct edac_mc_layer layers[2];
+>>>>>>> refs/remotes/origin/master
 	struct mpc85xx_mc_pdata *pdata;
 	struct resource r;
 	u32 sdram_ctl;
@@ -982,7 +1287,18 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 	if (!devres_open_group(&op->dev, mpc85xx_mc_err_probe, GFP_KERNEL))
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	mci = edac_mc_alloc(sizeof(*pdata), 4, 1, edac_mc_idx);
+=======
+	layers[0].type = EDAC_MC_LAYER_CHIP_SELECT;
+	layers[0].size = 4;
+	layers[0].is_virt_csrow = true;
+	layers[1].type = EDAC_MC_LAYER_CHANNEL;
+	layers[1].size = 1;
+	layers[1].is_virt_csrow = false;
+	mci = edac_mc_alloc(edac_mc_idx, ARRAY_SIZE(layers), layers,
+			    sizeof(*pdata));
+>>>>>>> refs/remotes/origin/master
 	if (!mci) {
 		devres_release_group(&op->dev, mpc85xx_mc_err_probe);
 		return -ENOMEM;
@@ -991,9 +1307,15 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 	pdata = mci->pvt_info;
 	pdata->name = "mpc85xx_mc_err";
 	pdata->irq = NO_IRQ;
+<<<<<<< HEAD
 	mci->dev = &op->dev;
 	pdata->edac_idx = edac_mc_idx++;
 	dev_set_drvdata(mci->dev, mci);
+=======
+	mci->pdev = &op->dev;
+	pdata->edac_idx = edac_mc_idx++;
+	dev_set_drvdata(mci->pdev, mci);
+>>>>>>> refs/remotes/origin/master
 	mci->ctl_name = pdata->name;
 	mci->dev_name = pdata->name;
 
@@ -1005,12 +1327,17 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!devm_request_mem_region(&op->dev, r.start,
 				     r.end - r.start + 1, pdata->name)) {
 =======
 	if (!devm_request_mem_region(&op->dev, r.start, resource_size(&r),
 				     pdata->name)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!devm_request_mem_region(&op->dev, r.start, resource_size(&r),
+				     pdata->name)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "%s: Error while requesting mem region\n",
 		       __func__);
 		res = -EBUSY;
@@ -1018,10 +1345,14 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pdata->mc_vbase = devm_ioremap(&op->dev, r.start, r.end - r.start + 1);
 =======
 	pdata->mc_vbase = devm_ioremap(&op->dev, r.start, resource_size(&r));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pdata->mc_vbase = devm_ioremap(&op->dev, r.start, resource_size(&r));
+>>>>>>> refs/remotes/origin/master
 	if (!pdata->mc_vbase) {
 		printk(KERN_ERR "%s: Unable to setup MC err regs\n", __func__);
 		res = -ENOMEM;
@@ -1036,7 +1367,11 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	debugf3("%s(): init mci\n", __func__);
+=======
+	edac_dbg(3, "init mci\n");
+>>>>>>> refs/remotes/origin/master
 	mci->mtype_cap = MEM_FLAG_RDDR | MEM_FLAG_RDDR2 |
 	    MEM_FLAG_DDR | MEM_FLAG_DDR2;
 	mci->edac_ctl_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
@@ -1051,8 +1386,11 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 
 	mci->scrub_mode = SCRUB_SW_SRC;
 
+<<<<<<< HEAD
 	mpc85xx_set_mc_sysfs_attributes(mci);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mpc85xx_init_csrows(mci);
 
 	/* store the original error disable bits */
@@ -1064,7 +1402,17 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 	out_be32(pdata->mc_vbase + MPC85XX_MC_ERR_DETECT, ~0);
 
 	if (edac_mc_add_mc(mci)) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_mc_add_mc()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_mc_add_mc()\n");
+		goto err;
+	}
+
+	if (mpc85xx_create_sysfs_attributes(mci)) {
+		edac_mc_del_mc(mci->pdev);
+		edac_dbg(3, "failed edac_mc_add_mc()\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -1098,7 +1446,11 @@ static int __devinit mpc85xx_mc_err_probe(struct platform_device *op)
 	}
 
 	devres_remove_group(&op->dev, mpc85xx_mc_err_probe);
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO EDAC_MOD_STR " MC err registered\n");
 
 	return 0;
@@ -1116,7 +1468,11 @@ static int mpc85xx_mc_err_remove(struct platform_device *op)
 	struct mem_ctl_info *mci = dev_get_drvdata(&op->dev);
 	struct mpc85xx_mc_pdata *pdata = mci->pvt_info;
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (edac_op_state == EDAC_OPSTATE_INT) {
 		out_be32(pdata->mc_vbase + MPC85XX_MC_ERR_INT_EN, 0);
@@ -1127,6 +1483,10 @@ static int mpc85xx_mc_err_remove(struct platform_device *op)
 		 orig_ddr_err_disable);
 	out_be32(pdata->mc_vbase + MPC85XX_MC_ERR_SBE, orig_ddr_err_sbe);
 
+<<<<<<< HEAD
+=======
+	mpc85xx_remove_sysfs_attributes(mci);
+>>>>>>> refs/remotes/origin/master
 	edac_mc_del_mc(&op->dev);
 	edac_mc_free(mci);
 	return 0;
@@ -1155,10 +1515,14 @@ static struct of_device_id mpc85xx_mc_err_of_match[] = {
 	{ .compatible = "fsl,p1021-memory-controller", },
 	{ .compatible = "fsl,p2020-memory-controller", },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .compatible = "fsl,p4080-memory-controller", },
 =======
 	{ .compatible = "fsl,qoriq-memory-controller", },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ .compatible = "fsl,qoriq-memory-controller", },
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 MODULE_DEVICE_TABLE(of, mpc85xx_mc_err_of_match);
@@ -1207,12 +1571,15 @@ static int __init mpc85xx_mc_init(void)
 	if (res)
 		printk(KERN_WARNING EDAC_MOD_STR "L2 fails to register\n");
 
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	res = platform_driver_register(&mpc85xx_pci_err_driver);
 	if (res)
 		printk(KERN_WARNING EDAC_MOD_STR "PCI fails to register\n");
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FSL_SOC_BOOKE
 	pvr = mfspr(SPRN_PVR);
 
@@ -1249,9 +1616,12 @@ static void __exit mpc85xx_mc_exit(void)
 		on_each_cpu(mpc85xx_mc_restore_hid1, NULL, 0);
 	}
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	platform_driver_unregister(&mpc85xx_pci_err_driver);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	platform_driver_unregister(&mpc85xx_l2_err_driver);
 	platform_driver_unregister(&mpc85xx_mc_err_driver);
 }

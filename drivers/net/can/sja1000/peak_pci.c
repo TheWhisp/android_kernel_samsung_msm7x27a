@@ -30,9 +30,16 @@
 
 #include "sja1000.h"
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
 MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCI family cards");
 MODULE_SUPPORTED_DEVICE("PEAK PCAN PCI/PCIe/PCIeC miniPCI CAN cards");
+=======
+MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
+MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCI family cards");
+MODULE_SUPPORTED_DEVICE("PEAK PCAN PCI/PCIe/PCIeC miniPCI CAN cards");
+MODULE_SUPPORTED_DEVICE("PEAK PCAN miniPCIe/cPCI PC/104+ PCI/104e CAN Cards");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL v2");
 
 #define DRV_NAME  "peak_pci"
@@ -64,7 +71,15 @@ struct peak_pci_chan {
 #define PEAK_PCI_DEVICE_ID	0x0001	/* for PCI/PCIe slot cards */
 #define PEAK_PCIEC_DEVICE_ID	0x0002	/* for ExpressCard slot cards */
 #define PEAK_PCIE_DEVICE_ID	0x0003	/* for nextgen PCIe slot cards */
+<<<<<<< HEAD
 #define PEAK_MPCI_DEVICE_ID	0x0008	/* The miniPCI slot cards */
+=======
+#define PEAK_CPCI_DEVICE_ID	0x0004	/* for nextgen cPCI slot cards */
+#define PEAK_MPCI_DEVICE_ID	0x0005	/* for nextgen miniPCI slot cards */
+#define PEAK_PC_104P_DEVICE_ID	0x0006	/* PCAN-PC/104+ cards */
+#define PEAK_PCI_104E_DEVICE_ID	0x0007	/* PCAN-PCI/104 Express cards */
+#define PEAK_MPCIE_DEVICE_ID	0x0008	/* The miniPCIe slot cards */
+>>>>>>> refs/remotes/origin/master
 
 #define PEAK_PCI_CHAN_MAX	4
 
@@ -76,6 +91,13 @@ static DEFINE_PCI_DEVICE_TABLE(peak_pci_tbl) = {
 	{PEAK_PCI_VENDOR_ID, PEAK_PCI_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
 	{PEAK_PCI_VENDOR_ID, PEAK_PCIE_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
 	{PEAK_PCI_VENDOR_ID, PEAK_MPCI_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
+<<<<<<< HEAD
+=======
+	{PEAK_PCI_VENDOR_ID, PEAK_MPCIE_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PEAK_PC_104P_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PEAK_PCI_104E_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PEAK_CPCI_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CAN_PEAK_PCIEC
 	{PEAK_PCI_VENDOR_ID, PEAK_PCIEC_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,},
 #endif
@@ -330,8 +352,12 @@ static void peak_pciec_set_leds(struct peak_pciec_card *card, u8 led_mask, u8 s)
  */
 static void peak_pciec_start_led_work(struct peak_pciec_card *card)
 {
+<<<<<<< HEAD
 	if (!delayed_work_pending(&card->led_work))
 		schedule_delayed_work(&card->led_work, HZ);
+=======
+	schedule_delayed_work(&card->led_work, HZ);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -394,7 +420,11 @@ static void peak_pciec_write_reg(const struct sja1000_priv *priv,
 	int c = (priv->reg_base - card->reg_base) / PEAK_PCI_CHAN_SIZE;
 
 	/* sja1000 register changes control the leds state */
+<<<<<<< HEAD
 	if (port == REG_MOD)
+=======
+	if (port == SJA1000_MOD)
+>>>>>>> refs/remotes/origin/master
 		switch (val) {
 		case MOD_RM:
 			/* Reset Mode: set led on */
@@ -442,11 +472,16 @@ static int peak_pciec_probe(struct pci_dev *pdev, struct net_device *dev)
 	} else {
 		/* create the bit banging I2C adapter structure */
 		card = kzalloc(sizeof(struct peak_pciec_card), GFP_KERNEL);
+<<<<<<< HEAD
 		if (!card) {
 			dev_err(&pdev->dev,
 				 "failed allocating memory for i2c chip\n");
 			return -ENOMEM;
 		}
+=======
+		if (!card)
+			return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 		card->cfg_base = chan->cfg_base;
 		card->reg_base = priv->reg_base;
@@ -542,8 +577,12 @@ static void peak_pci_post_irq(const struct sja1000_priv *priv)
 		writew(chan->icr_mask, chan->cfg_base + PITA_ICR);
 }
 
+<<<<<<< HEAD
 static int __devinit peak_pci_probe(struct pci_dev *pdev,
 				    const struct pci_device_id *ent)
+=======
+static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sja1000_priv *priv;
 	struct peak_pci_chan *chan;
@@ -583,12 +622,20 @@ static int __devinit peak_pci_probe(struct pci_dev *pdev,
 	cfg_base = pci_iomap(pdev, 0, PEAK_PCI_CFG_SIZE);
 	if (!cfg_base) {
 		dev_err(&pdev->dev, "failed to map PCI resource #0\n");
+<<<<<<< HEAD
+=======
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto failure_release_regions;
 	}
 
 	reg_base = pci_iomap(pdev, 1, PEAK_PCI_CHAN_SIZE * channels);
 	if (!reg_base) {
 		dev_err(&pdev->dev, "failed to map PCI resource #1\n");
+<<<<<<< HEAD
+=======
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto failure_unmap_cfg_base;
 	}
 
@@ -706,7 +753,11 @@ failure_disable_pci:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit peak_pci_remove(struct pci_dev *pdev)
+=======
+static void peak_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev); /* Last device */
 	struct sja1000_priv *priv = netdev_priv(dev);
@@ -738,14 +789,18 @@ static void __devexit peak_pci_remove(struct pci_dev *pdev)
 	pci_iounmap(pdev, cfg_base);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pci_driver peak_pci_driver = {
 	.name = DRV_NAME,
 	.id_table = peak_pci_tbl,
 	.probe = peak_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(peak_pci_remove),
 };
 
@@ -760,3 +815,9 @@ static void __exit peak_pci_exit(void)
 	pci_unregister_driver(&peak_pci_driver);
 }
 module_exit(peak_pci_exit);
+=======
+	.remove = peak_pci_remove,
+};
+
+module_pci_driver(peak_pci_driver);
+>>>>>>> refs/remotes/origin/master

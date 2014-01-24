@@ -33,7 +33,10 @@
 #ifndef _ASM_X86_XEN_HYPERVISOR_H
 #define _ASM_X86_XEN_HYPERVISOR_H
 
+<<<<<<< HEAD
 /* arch/i386/kernel/setup.c */
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct shared_info *HYPERVISOR_shared_info;
 extern struct start_info *xen_start_info;
 
@@ -41,6 +44,7 @@ extern struct start_info *xen_start_info;
 
 static inline uint32_t xen_cpuid_base(void)
 {
+<<<<<<< HEAD
 	uint32_t base, eax, ebx, ecx, edx;
 	char signature[13];
 
@@ -56,6 +60,9 @@ static inline uint32_t xen_cpuid_base(void)
 	}
 
 	return 0;
+=======
+	return hypervisor_cpuid_base("XenVMMXenVMM", 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_XEN

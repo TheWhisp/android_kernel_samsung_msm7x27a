@@ -20,6 +20,10 @@
 #include <linux/i2c/tps65010.h>
 
 #include <plat/cpu-freq.h>
+<<<<<<< HEAD
+=======
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 
 #define OSIRIS_GPIO_DVS	S3C2410_GPB(5)
 
@@ -93,7 +97,11 @@ static struct notifier_block osiris_dvs_nb = {
 	.notifier_call	= osiris_dvs_notify,
 };
 
+<<<<<<< HEAD
 static int __devinit osiris_dvs_probe(struct platform_device *pdev)
+=======
+static int osiris_dvs_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -126,7 +134,11 @@ err_nogpio:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit osiris_dvs_remove(struct platform_device *pdev)
+=======
+static int osiris_dvs_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	dev_info(&pdev->dev, "exiting\n");
 
@@ -167,7 +179,11 @@ static const struct dev_pm_ops osiris_dvs_pm = {
 
 static struct platform_driver osiris_dvs_driver = {
 	.probe		= osiris_dvs_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(osiris_dvs_remove),
+=======
+	.remove		= osiris_dvs_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "osiris-dvs",
 		.owner	= THIS_MODULE,
@@ -175,6 +191,7 @@ static struct platform_driver osiris_dvs_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init osiris_dvs_init(void)
 {
 	return platform_driver_register(&osiris_dvs_driver);
@@ -187,6 +204,9 @@ static void __exit osiris_dvs_exit(void)
 
 module_init(osiris_dvs_init);
 module_exit(osiris_dvs_exit);
+=======
+module_platform_driver(osiris_dvs_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Simtec OSIRIS DVS support");
 MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");

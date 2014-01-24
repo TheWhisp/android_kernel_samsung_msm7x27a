@@ -5,7 +5,11 @@
  */
 
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "ulist.h"
 
 /*
@@ -23,9 +27,15 @@
  *
  * ulist = ulist_alloc();
  * ulist_add(ulist, root);
+<<<<<<< HEAD
  * elem = NULL;
  *
  * while ((elem = ulist_next(ulist, elem)) {
+=======
+ * ULIST_ITER_INIT(&uiter);
+ *
+ * while ((elem = ulist_next(ulist, &uiter)) {
+>>>>>>> refs/remotes/origin/master
  * 	for (all child nodes n in elem)
  *		ulist_add(ulist, n);
  *	do something useful with the node;
@@ -53,6 +63,10 @@ void ulist_init(struct ulist *ulist)
 	ulist->nnodes = 0;
 	ulist->nodes = ulist->int_nodes;
 	ulist->nodes_alloced = ULIST_SIZE;
+<<<<<<< HEAD
+=======
+	ulist->root = RB_ROOT;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ulist_init);
 
@@ -72,6 +86,10 @@ void ulist_fini(struct ulist *ulist)
 	if (ulist->nodes_alloced > ULIST_SIZE)
 		kfree(ulist->nodes);
 	ulist->nodes_alloced = 0;	/* in case ulist_fini is called twice */
+<<<<<<< HEAD
+=======
+	ulist->root = RB_ROOT;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ulist_fini);
 
@@ -95,7 +113,11 @@ EXPORT_SYMBOL(ulist_reinit);
  *
  * The allocated ulist will be returned in an initialized state.
  */
+<<<<<<< HEAD
 struct ulist *ulist_alloc(unsigned long gfp_mask)
+=======
+struct ulist *ulist_alloc(gfp_t gfp_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ulist *ulist = kmalloc(sizeof(*ulist), gfp_mask);
 
@@ -123,6 +145,48 @@ void ulist_free(struct ulist *ulist)
 }
 EXPORT_SYMBOL(ulist_free);
 
+<<<<<<< HEAD
+=======
+static struct ulist_node *ulist_rbtree_search(struct ulist *ulist, u64 val)
+{
+	struct rb_node *n = ulist->root.rb_node;
+	struct ulist_node *u = NULL;
+
+	while (n) {
+		u = rb_entry(n, struct ulist_node, rb_node);
+		if (u->val < val)
+			n = n->rb_right;
+		else if (u->val > val)
+			n = n->rb_left;
+		else
+			return u;
+	}
+	return NULL;
+}
+
+static int ulist_rbtree_insert(struct ulist *ulist, struct ulist_node *ins)
+{
+	struct rb_node **p = &ulist->root.rb_node;
+	struct rb_node *parent = NULL;
+	struct ulist_node *cur = NULL;
+
+	while (*p) {
+		parent = *p;
+		cur = rb_entry(parent, struct ulist_node, rb_node);
+
+		if (cur->val < ins->val)
+			p = &(*p)->rb_right;
+		else if (cur->val > ins->val)
+			p = &(*p)->rb_left;
+		else
+			return -EEXIST;
+	}
+	rb_link_node(&ins->rb_node, parent, p);
+	rb_insert_color(&ins->rb_node, &ulist->root);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ulist_add - add an element to the ulist
  * @ulist:	ulist to add the element to
@@ -143,6 +207,7 @@ EXPORT_SYMBOL(ulist_free);
  * In case of allocation failure -ENOMEM is returned and the ulist stays
  * unaltered.
  */
+<<<<<<< HEAD
 int ulist_add(struct ulist *ulist, u64 val, unsigned long aux,
 	      unsigned long gfp_mask)
 {
@@ -151,12 +216,36 @@ int ulist_add(struct ulist *ulist, u64 val, unsigned long aux,
 	for (i = 0; i < ulist->nnodes; ++i) {
 		if (ulist->nodes[i].val == val)
 			return 0;
+=======
+int ulist_add(struct ulist *ulist, u64 val, u64 aux, gfp_t gfp_mask)
+{
+	return ulist_add_merge(ulist, val, aux, NULL, gfp_mask);
+}
+
+int ulist_add_merge(struct ulist *ulist, u64 val, u64 aux,
+		    u64 *old_aux, gfp_t gfp_mask)
+{
+	int ret = 0;
+	struct ulist_node *node = NULL;
+	node = ulist_rbtree_search(ulist, val);
+	if (node) {
+		if (old_aux)
+			*old_aux = node->aux;
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ulist->nnodes >= ulist->nodes_alloced) {
 		u64 new_alloced = ulist->nodes_alloced + 128;
 		struct ulist_node *new_nodes;
 		void *old = NULL;
+<<<<<<< HEAD
+=======
+		int i;
+
+		for (i = 0; i < ulist->nnodes; i++)
+			rb_erase(&ulist->nodes[i].rb_node, &ulist->root);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * if nodes_alloced == ULIST_SIZE no memory has been allocated
@@ -176,9 +265,28 @@ int ulist_add(struct ulist *ulist, u64 val, unsigned long aux,
 
 		ulist->nodes = new_nodes;
 		ulist->nodes_alloced = new_alloced;
+<<<<<<< HEAD
 	}
 	ulist->nodes[ulist->nnodes].val = val;
 	ulist->nodes[ulist->nnodes].aux = aux;
+=======
+
+		/*
+		 * krealloc actually uses memcpy, which does not copy rb_node
+		 * pointers, so we have to do it ourselves.  Otherwise we may
+		 * be bitten by crashes.
+		 */
+		for (i = 0; i < ulist->nnodes; i++) {
+			ret = ulist_rbtree_insert(ulist, &ulist->nodes[i]);
+			if (ret < 0)
+				return ret;
+		}
+	}
+	ulist->nodes[ulist->nnodes].val = val;
+	ulist->nodes[ulist->nnodes].aux = aux;
+	ret = ulist_rbtree_insert(ulist, &ulist->nodes[ulist->nnodes]);
+	BUG_ON(ret);
+>>>>>>> refs/remotes/origin/master
 	++ulist->nnodes;
 
 	return 1;
@@ -188,19 +296,29 @@ EXPORT_SYMBOL(ulist_add);
 /**
  * ulist_next - iterate ulist
  * @ulist:	ulist to iterate
+<<<<<<< HEAD
  * @prev:	previously returned element or %NULL to start iteration
+=======
+ * @uiter:	iterator variable, initialized with ULIST_ITER_INIT(&iterator)
+>>>>>>> refs/remotes/origin/master
  *
  * Note: locking must be provided by the caller. In case of rwlocks only read
  *       locking is needed
  *
+<<<<<<< HEAD
  * This function is used to iterate an ulist. The iteration is started with
  * @prev = %NULL. It returns the next element from the ulist or %NULL when the
+=======
+ * This function is used to iterate an ulist.
+ * It returns the next element from the ulist or %NULL when the
+>>>>>>> refs/remotes/origin/master
  * end is reached. No guarantee is made with respect to the order in which
  * the elements are returned. They might neither be returned in order of
  * addition nor in ascending order.
  * It is allowed to call ulist_add during an enumeration. Newly added items
  * are guaranteed to show up in the running enumeration.
  */
+<<<<<<< HEAD
 struct ulist_node *ulist_next(struct ulist *ulist, struct ulist_node *prev)
 {
 	int next;
@@ -216,5 +334,15 @@ struct ulist_node *ulist_next(struct ulist *ulist, struct ulist_node *prev)
 		return NULL;
 
 	return &ulist->nodes[next];
+=======
+struct ulist_node *ulist_next(struct ulist *ulist, struct ulist_iterator *uiter)
+{
+	if (ulist->nnodes == 0)
+		return NULL;
+	if (uiter->i < 0 || uiter->i >= ulist->nnodes)
+		return NULL;
+
+	return &ulist->nodes[uiter->i++];
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ulist_next);

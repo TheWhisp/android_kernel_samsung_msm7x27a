@@ -1,6 +1,7 @@
 # x86 Opcode Maps
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 # This is (mostly) based on following documentations.
 # - Intel(R) 64 and IA-32 Architectures Software Developer's Manual Vol.2
@@ -9,6 +10,12 @@
 #   (#319433-011,JUNE 2011).
 #
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# This is (mostly) based on following documentations.
+# - Intel(R) 64 and IA-32 Architectures Software Developer's Manual Vol.2C
+#   (#326018-047US, June 2013)
+#
+>>>>>>> refs/remotes/origin/master
 #<Opcode maps>
 # Table: table-name
 # Referrer: escaped-name
@@ -25,11 +32,14 @@
 #
 # AVX Superscripts
 <<<<<<< HEAD
+<<<<<<< HEAD
 #  (VEX): this opcode can accept VEX prefix.
 #  (oVEX): this opcode requires VEX prefix.
 #  (o128): this opcode only supports 128bit VEX.
 #  (o256): this opcode only supports 256bit VEX.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #  (v): this opcode requires VEX prefix.
 #  (v1): this opcode only supports 128bit VEX.
 #
@@ -37,8 +47,13 @@
 #  - (66): the last prefix is 0x66
 #  - (F3): the last prefix is 0xF3
 #  - (F2): the last prefix is 0xF2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #
+=======
+#  - (!F3) : the last prefix is not 0xF3 (including non-last prefix case)
+#  - (66&F2): Both 0x66 and 0xF2 prefixes are specified.
+>>>>>>> refs/remotes/origin/master
 
 Table: one byte opcode
 Referrer:
@@ -219,12 +234,17 @@ a1: MOV rAX,Ov
 a2: MOV Ob,AL
 a3: MOV Ov,rAX
 <<<<<<< HEAD
+<<<<<<< HEAD
 a4: MOVS/B Xb,Yb
 a5: MOVS/W/D/Q Xv,Yv
 =======
 a4: MOVS/B Yb,Xb
 a5: MOVS/W/D/Q Yv,Xv
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+a4: MOVS/B Yb,Xb
+a5: MOVS/W/D/Q Yv,Xv
+>>>>>>> refs/remotes/origin/master
 a6: CMPS/B Xb,Yb
 a7: CMPS/W/D Xv,Yv
 a8: TEST AL,Ib
@@ -235,12 +255,18 @@ ac: LODS/B AL,Xb
 ad: LODS/W/D/Q rAX,Xv
 ae: SCAS/B AL,Yb
 <<<<<<< HEAD
+<<<<<<< HEAD
 af: SCAS/W/D/Q rAX,Xv
 =======
 # Note: The May 2011 Intel manual shows Xv for the second parameter of the
 # next instruction but Yv is correct
 af: SCAS/W/D/Q rAX,Yv
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# Note: The May 2011 Intel manual shows Xv for the second parameter of the
+# next instruction but Yv is correct
+af: SCAS/W/D/Q rAX,Yv
+>>>>>>> refs/remotes/origin/master
 # 0xb0 - 0xbf
 b0: MOV AL/R8L,Ib
 b1: MOV CL/R9L,Ib
@@ -264,6 +290,7 @@ c1: Grp2 Ev,Ib (1A)
 c2: RETN Iw (f64)
 c3: RETN
 <<<<<<< HEAD
+<<<<<<< HEAD
 c4: LES Gz,Mp (i64) | 3bytes-VEX (Prefix)
 c5: LDS Gz,Mp (i64) | 2bytes-VEX (Prefix)
 =======
@@ -272,6 +299,12 @@ c5: LDS Gz,Mp (i64) | VEX+1byte (Prefix)
 >>>>>>> refs/remotes/origin/cm-10.0
 c6: Grp11 Eb,Ib (1A)
 c7: Grp11 Ev,Iz (1A)
+=======
+c4: LES Gz,Mp (i64) | VEX+2byte (Prefix)
+c5: LDS Gz,Mp (i64) | VEX+1byte (Prefix)
+c6: Grp11A Eb,Ib (1A)
+c7: Grp11B Ev,Iz (1A)
+>>>>>>> refs/remotes/origin/master
 c8: ENTER Iw,Ib
 c9: LEAVE (d64)
 ca: RETF Iw
@@ -317,8 +350,13 @@ ef: OUT DX,eAX
 # 0xf0 - 0xff
 f0: LOCK (Prefix)
 f1:
+<<<<<<< HEAD
 f2: REPNE (Prefix)
 f3: REP/REPE (Prefix)
+=======
+f2: REPNE (Prefix) | XACQUIRE (Prefix)
+f3: REP/REPE (Prefix) | XRELEASE (Prefix)
+>>>>>>> refs/remotes/origin/master
 f4: HLT
 f5: CMC
 f6: Grp3_1 Eb (1A)
@@ -350,11 +388,17 @@ AVXcode: 1
 0a:
 0b: UD2 (1B)
 0c:
+<<<<<<< HEAD
 0d: NOP Ev | GrpP
+=======
+# AMD's prefetch group. Intel supports prefetchw(/1) only.
+0d: GrpP
+>>>>>>> refs/remotes/origin/master
 0e: FEMMS
 # 3DNow! uses the last imm byte as opcode extension.
 0f: 3DNow! Pq,Qq,Ib
 # 0x0f 0x10-0x1f
+<<<<<<< HEAD
 <<<<<<< HEAD
 10: movups Vps,Wps (VEX) | movss Vss,Wss (F3),(VEX),(o128) | movupd Vpd,Wpd (66),(VEX) | movsd Vsd,Wsd (F2),(VEX),(o128)
 11: movups Wps,Vps (VEX) | movss Wss,Vss (F3),(VEX),(o128) | movupd Wpd,Vpd (66),(VEX) | movsd Wsd,Vsd (F2),(VEX),(o128)
@@ -365,6 +409,8 @@ AVXcode: 1
 16: movhps Vq,Mq (VEX),(o128) | movhpd Vq,Mq (66),(VEX),(o128) | movlsps Vq,Uq (VEX),(o128) | movshdup Vq,Wq (F3),(VEX)
 17: movhps Mq,Vq (VEX),(o128) | movhpd Mq,Vq (66),(VEX),(o128)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # NOTE: According to Intel SDM opcode map, vmovups and vmovupd has no operands
 # but it actually has operands. And also, vmovss and vmovsd only accept 128bit.
 # MOVSS/MOVSD has too many forms(3) on SDM. This map just shows a typical form.
@@ -378,11 +424,18 @@ AVXcode: 1
 15: vunpckhps Vx,Hx,Wx | vunpckhpd Vx,Hx,Wx (66)
 16: vmovhps Vdq,Hq,Mq (v1) | vmovlhps Vdq,Hq,Uq (v1) | vmovhpd Vdq,Hq,Mq (66),(v1) | vmovshdup Vx,Wx (F3)
 17: vmovhps Mq,Vq (v1) | vmovhpd Mq,Vq (66),(v1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 18: Grp16 (1A)
 19:
 1a:
 1b:
+=======
+18: Grp16 (1A)
+19:
+1a: BNDCL Ev,Gv | BNDCU Ev,Gv | BNDMOV Gv,Ev | BNDLDX Gv,Ev,Gv
+1b: BNDCN Ev,Gv | BNDMOV Ev,Gv | BNDMK Gv,Ev | BNDSTX Ev,GV,Gv
+>>>>>>> refs/remotes/origin/master
 1c:
 1d:
 1e:
@@ -397,6 +450,7 @@ AVXcode: 1
 26:
 27:
 <<<<<<< HEAD
+<<<<<<< HEAD
 28: movaps Vps,Wps (VEX) | movapd Vpd,Wpd (66),(VEX)
 29: movaps Wps,Vps (VEX) | movapd Wpd,Vpd (66),(VEX)
 2a: cvtpi2ps Vps,Qpi | cvtsi2ss Vss,Ed/q (F3),(VEX),(o128) | cvtpi2pd Vpd,Qpi (66) | cvtsi2sd Vsd,Ed/q (F2),(VEX),(o128)
@@ -406,6 +460,8 @@ AVXcode: 1
 2e: ucomiss Vss,Wss (VEX),(o128) | ucomisd  Vsd,Wsd (66),(VEX),(o128)
 2f: comiss Vss,Wss (VEX),(o128) | comisd  Vsd,Wsd (66),(VEX),(o128)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 28: vmovaps Vps,Wps | vmovapd Vpd,Wpd (66)
 29: vmovaps Wps,Vps | vmovapd Wpd,Vpd (66)
 2a: cvtpi2ps Vps,Qpi | cvtpi2pd Vpd,Qpi (66) | vcvtsi2ss Vss,Hss,Ey (F3),(v1) | vcvtsi2sd Vsd,Hsd,Ey (F2),(v1)
@@ -414,7 +470,10 @@ AVXcode: 1
 2d: cvtps2pi Ppi,Wps | cvtpd2pi Qpi,Wpd (66) | vcvtss2si Gy,Wss (F3),(v1) | vcvtsd2si Gy,Wsd (F2),(v1)
 2e: vucomiss Vss,Wss (v1) | vucomisd  Vsd,Wsd (66),(v1)
 2f: vcomiss Vss,Wss (v1) | vcomisd  Vsd,Wsd (66),(v1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # 0x0f 0x30-0x3f
 30: WRMSR
 31: RDTSC
@@ -450,6 +509,7 @@ AVXcode: 1
 4e: CMOVLE/NG Gv,Ev
 4f: CMOVNLE/G Gv,Ev
 # 0x0f 0x50-0x5f
+<<<<<<< HEAD
 <<<<<<< HEAD
 50: movmskps Gd/q,Ups (VEX) | movmskpd Gd/q,Upd (66),(VEX)
 51: sqrtps Vps,Wps (VEX) | sqrtss Vss,Wss (F3),(VEX),(o128) | sqrtpd Vpd,Wpd (66),(VEX) | sqrtsd Vsd,Wsd (F2),(VEX),(o128)
@@ -511,6 +571,8 @@ AVXcode: 1
 86: JBE/JNA Jz (f64)
 87: JNBE/JA Jz (f64)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 50: vmovmskps Gy,Ups | vmovmskpd Gy,Upd (66)
 51: vsqrtps Vps,Wps | vsqrtpd Vpd,Wpd (66) | vsqrtss Vss,Hss,Wss (F3),(v1) | vsqrtsd Vsd,Hsd,Wsd (F2),(v1)
 52: vrsqrtps Vps,Wps | vrsqrtss Vss,Hss,Wss (F3),(v1)
@@ -571,7 +633,10 @@ AVXcode: 1
 85: JNE/JNZ Jz (f64)
 86: JBE/JNA Jz (f64)
 87: JA/JNBE Jz (f64)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 88: JS Jz (f64)
 89: JNS Jz (f64)
 8a: JP/JPE Jz (f64)
@@ -623,6 +688,7 @@ b4: LFS Gv,Mp
 b5: LGS Gv,Mp
 b6: MOVZX Gv,Eb
 b7: MOVZX Gv,Ew
+<<<<<<< HEAD
 b8: JMPE | POPCNT Gv,Ev (F3)
 b9: Grp10 (1A)
 ba: Grp8 Ev,Ib (1A)
@@ -634,11 +700,20 @@ bd: BSR Gv,Ev
 bc: BSF Gv,Ev | TZCNT Gv,Ev (F3)
 bd: BSR Gv,Ev | LZCNT Gv,Ev (F3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+b8: JMPE (!F3) | POPCNT Gv,Ev (F3)
+b9: Grp10 (1A)
+ba: Grp8 Ev,Ib (1A)
+bb: BTC Ev,Gv
+bc: BSF Gv,Ev (!F3) | TZCNT Gv,Ev (F3)
+bd: BSR Gv,Ev (!F3) | LZCNT Gv,Ev (F3)
+>>>>>>> refs/remotes/origin/master
 be: MOVSX Gv,Eb
 bf: MOVSX Gv,Ew
 # 0x0f 0xc0-0xcf
 c0: XADD Eb,Gb
 c1: XADD Ev,Gv
+<<<<<<< HEAD
 <<<<<<< HEAD
 c2: cmpps Vps,Wps,Ib (VEX) | cmpss Vss,Wss,Ib (F3),(VEX),(o128) | cmppd Vpd,Wpd,Ib (66),(VEX) | cmpsd Vsd,Wsd,Ib (F2),(VEX)
 c3: movnti Md/q,Gd/q
@@ -646,12 +721,17 @@ c4: pinsrw Pq,Rd/q/Mw,Ib | pinsrw Vdq,Rd/q/Mw,Ib (66),(VEX),(o128)
 c5: pextrw Gd,Nq,Ib | pextrw Gd,Udq,Ib (66),(VEX),(o128)
 c6: shufps Vps,Wps,Ib (VEX) | shufpd Vpd,Wpd,Ib (66),(VEX)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 c2: vcmpps Vps,Hps,Wps,Ib | vcmppd Vpd,Hpd,Wpd,Ib (66) | vcmpss Vss,Hss,Wss,Ib (F3),(v1) | vcmpsd Vsd,Hsd,Wsd,Ib (F2),(v1)
 c3: movnti My,Gy
 c4: pinsrw Pq,Ry/Mw,Ib | vpinsrw Vdq,Hdq,Ry/Mw,Ib (66),(v1)
 c5: pextrw Gd,Nq,Ib | vpextrw Gd,Udq,Ib (66),(v1)
 c6: vshufps Vps,Hps,Wps,Ib | vshufpd Vpd,Hpd,Wpd,Ib (66)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 c7: Grp9 (1A)
 c8: BSWAP RAX/EAX/R8/R8D
 c9: BSWAP RCX/ECX/R9/R9D
@@ -662,6 +742,7 @@ cd: BSWAP RBP/EBP/R13/R13D
 ce: BSWAP RSI/ESI/R14/R14D
 cf: BSWAP RDI/EDI/R15/R15D
 # 0x0f 0xd0-0xdf
+<<<<<<< HEAD
 <<<<<<< HEAD
 d0: addsubps Vps,Wps (F2),(VEX) | addsubpd Vpd,Wpd (66),(VEX)
 d1: psrlw Pq,Qq | psrlw Vdq,Wdq (66),(VEX),(o128)
@@ -713,6 +794,8 @@ fc: paddb Pq,Qq | paddb Vdq,Wdq (66),(VEX),(o128)
 fd: paddw Pq,Qq | paddw Vdq,Wdq (66),(VEX),(o128)
 fe: paddd Pq,Qq | paddd Vdq,Wdq (66),(VEX),(o128)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 d0: vaddsubpd Vpd,Hpd,Wpd (66) | vaddsubps Vps,Hps,Wps (F2)
 d1: psrlw Pq,Qq | vpsrlw Vx,Hx,Wx (66),(v1)
 d2: psrld Pq,Qq | vpsrld Vx,Hx,Wx (66),(v1)
@@ -762,7 +845,10 @@ fb: psubq Pq,Qq | vpsubq Vx,Hx,Wx (66),(v1)
 fc: paddb Pq,Qq | vpaddb Vx,Hx,Wx (66),(v1)
 fd: paddw Pq,Qq | vpaddw Vx,Hx,Wx (66),(v1)
 fe: paddd Pq,Qq | vpaddd Vx,Hx,Wx (66),(v1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ff:
 EndTable
 
@@ -770,6 +856,7 @@ Table: 3-byte opcode 1 (0x0f 0x38)
 Referrer: 3-byte escape 1
 AVXcode: 2
 # 0x0f 0x38 0x00-0x0f
+<<<<<<< HEAD
 <<<<<<< HEAD
 00: pshufb Pq,Qq | pshufb Vdq,Wdq (66),(VEX),(o128)
 01: phaddw Pq,Qq | phaddw Vdq,Wdq (66),(VEX),(o128)
@@ -788,6 +875,8 @@ AVXcode: 2
 0e: vtestps /r (66),(oVEX)
 0f: vtestpd /r (66),(oVEX)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 00: pshufb Pq,Qq | vpshufb Vx,Hx,Wx (66),(v1)
 01: phaddw Pq,Qq | vphaddw Vx,Hx,Wx (66),(v1)
 02: phaddd Pq,Qq | vphaddd Vx,Hx,Wx (66),(v1)
@@ -804,11 +893,15 @@ AVXcode: 2
 0d: vpermilpd Vx,Hx,Wx (66),(v)
 0e: vtestps Vx,Wx (66),(v)
 0f: vtestpd Vx,Wx (66),(v)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # 0x0f 0x38 0x10-0x1f
 10: pblendvb Vdq,Wdq (66)
 11:
 12:
+<<<<<<< HEAD
 <<<<<<< HEAD
 13:
 14: blendvps Vdq,Wdq (66)
@@ -902,6 +995,8 @@ df: aesdeclast Vdq,Wdq (66),(VEX),(o128)
 f0: MOVBE Gv,Mv | CRC32 Gd,Eb (F2)
 f1: MOVBE Mv,Gv | CRC32 Gd,Ev (F2)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 13: vcvtph2ps Vx,Wx,Ib (66),(v)
 14: blendvps Vdq,Wdq (66)
 15: blendvpd Vdq,Wdq (66)
@@ -1014,6 +1109,7 @@ dc: VAESENC Vdq,Hdq,Wdq (66),(v1)
 dd: VAESENCLAST Vdq,Hdq,Wdq (66),(v1)
 de: VAESDEC Vdq,Hdq,Wdq (66),(v1)
 df: VAESDECLAST Vdq,Hdq,Wdq (66),(v1)
+<<<<<<< HEAD
 f0: MOVBE Gy,My | MOVBE Gw,Mw (66) | CRC32 Gd,Eb (F2)
 f1: MOVBE My,Gy | MOVBE Mw,Gw (66) | CRC32 Gd,Ey (F2)
 f2: ANDN Gy,By,Ey (v)
@@ -1022,12 +1118,22 @@ f5: BZHI Gy,Ey,By (v) | PEXT Gy,By,Ey (F3),(v) | PDEP Gy,By,Ey (F2),(v)
 f6: MULX By,Gy,rDX,Ey (F2),(v)
 f7: BEXTR Gy,Ey,By (v) | SHLX Gy,Ey,By (66),(v) | SARX Gy,Ey,By (F3),(v) | SHRX Gy,Ey,By (F2),(v)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+f0: MOVBE Gy,My | MOVBE Gw,Mw (66) | CRC32 Gd,Eb (F2) | CRC32 Gd,Eb (66&F2)
+f1: MOVBE My,Gy | MOVBE Mw,Gw (66) | CRC32 Gd,Ey (F2) | CRC32 Gd,Ew (66&F2)
+f2: ANDN Gy,By,Ey (v)
+f3: Grp17 (1A)
+f5: BZHI Gy,Ey,By (v) | PEXT Gy,By,Ey (F3),(v) | PDEP Gy,By,Ey (F2),(v)
+f6: ADCX Gy,Ey (66) | ADOX Gy,Ey (F3) | MULX By,Gy,rDX,Ey (F2),(v)
+f7: BEXTR Gy,Ey,By (v) | SHLX Gy,Ey,By (66),(v) | SARX Gy,Ey,By (F3),(v) | SHRX Gy,Ey,By (F2),(v)
+>>>>>>> refs/remotes/origin/master
 EndTable
 
 Table: 3-byte opcode 2 (0x0f 0x3a)
 Referrer: 3-byte escape 2
 AVXcode: 3
 # 0x0f 0x3a 0x00-0xff
+<<<<<<< HEAD
 <<<<<<< HEAD
 04: vpermilps /r,Ib (66),(oVEX)
 05: vpermilpd /r,Ib (66),(oVEX)
@@ -1062,6 +1168,8 @@ AVXcode: 3
 63: pcmpistri Vdq,Wdq,Ib (66),(VEX),(o128)
 df: aeskeygenassist Vdq,Wdq,Ib (66),(VEX),(o128)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 00: vpermq Vqq,Wqq,Ib (66),(v)
 01: vpermpd Vqq,Wqq,Ib (66),(v)
 02: vpblendd Vx,Hx,Wx,Ib (66),(v)
@@ -1104,7 +1212,10 @@ df: aeskeygenassist Vdq,Wdq,Ib (66),(VEX),(o128)
 63: vpcmpistri Vdq,Wdq,Ib (66),(v1)
 df: VAESKEYGEN Vdq,Wdq,Ib (66),(v1)
 f0: RORX Gy,Ey,Ib (F2),(v)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EndTable
 
 GrpTable: Grp1
@@ -1167,10 +1278,14 @@ GrpTable: Grp5
 3: CALLF Ep
 4: JMPN Ev (f64)
 <<<<<<< HEAD
+<<<<<<< HEAD
 5: JMPF Ep
 =======
 5: JMPF Mp
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+5: JMPF Mp
+>>>>>>> refs/remotes/origin/master
 6: PUSH Ev (d64)
 7:
 EndTable
@@ -1186,12 +1301,17 @@ EndTable
 
 GrpTable: Grp7
 0: SGDT Ms | VMCALL (001),(11B) | VMLAUNCH (010),(11B) | VMRESUME (011),(11B) | VMXOFF (100),(11B)
+<<<<<<< HEAD
 1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001)
 <<<<<<< HEAD
 2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B)
 =======
 2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+1: SIDT Ms | MONITOR (000),(11B) | MWAIT (001),(11B) | CLAC (010),(11B) | STAC (011),(11B)
+2: LGDT Ms | XGETBV (000),(11B) | XSETBV (001),(11B) | VMFUNC (100),(11B) | XEND (101)(11B) | XTEST (110)(11B)
+>>>>>>> refs/remotes/origin/master
 3: LIDT Ms
 4: SMSW Mw/Rv
 5:
@@ -1209,17 +1329,23 @@ EndTable
 GrpTable: Grp9
 1: CMPXCHG8B/16B Mq/Mdq
 <<<<<<< HEAD
+<<<<<<< HEAD
 6: VMPTRLD Mq | VMCLEAR Mq (66) | VMXON Mq (F3)
 7: VMPTRST Mq
 =======
 6: VMPTRLD Mq | VMCLEAR Mq (66) | VMXON Mq (F3) | RDRAND Rv (11B)
 7: VMPTRST Mq | VMPTRST Mq (F3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+6: VMPTRLD Mq | VMCLEAR Mq (66) | VMXON Mq (F3) | RDRAND Rv (11B)
+7: VMPTRST Mq | VMPTRST Mq (F3) | RDSEED Rv (11B)
+>>>>>>> refs/remotes/origin/master
 EndTable
 
 GrpTable: Grp10
 EndTable
 
+<<<<<<< HEAD
 GrpTable: Grp11
 <<<<<<< HEAD
 =======
@@ -1257,6 +1383,20 @@ GrpTable: Grp15
 5: XRSTOR | lfence (11B)
 6: mfence (11B)
 =======
+=======
+# Grp11A and Grp11B are expressed as Grp11 in Intel SDM
+GrpTable: Grp11A
+0: MOV Eb,Ib
+7: XABORT Ib (000),(11B)
+EndTable
+
+GrpTable: Grp11B
+0: MOV Eb,Iz
+7: XBEGIN Jz (000),(11B)
+EndTable
+
+GrpTable: Grp12
+>>>>>>> refs/remotes/origin/master
 2: psrlw Nq,Ib (11B) | vpsrlw Hx,Ux,Ib (66),(11B),(v1)
 4: psraw Nq,Ib (11B) | vpsraw Hx,Ux,Ib (66),(11B),(v1)
 6: psllw Nq,Ib (11B) | vpsllw Hx,Ux,Ib (66),(11B),(v1)
@@ -1283,7 +1423,10 @@ GrpTable: Grp15
 4: XSAVE
 5: XRSTOR | lfence (11B)
 6: XSAVEOPT | mfence (11B)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 7: clflush | sfence (11B)
 EndTable
 
@@ -1295,14 +1438,20 @@ GrpTable: Grp16
 EndTable
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 GrpTable: Grp17
 1: BLSR By,Ey (v)
 2: BLSMSK By,Ey (v)
 3: BLSI By,Ey (v)
 EndTable
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # AMD's Prefetch Group
 GrpTable: GrpP
 0: PREFETCH

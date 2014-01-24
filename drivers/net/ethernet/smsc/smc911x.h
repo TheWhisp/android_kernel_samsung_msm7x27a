@@ -159,12 +159,20 @@ static inline void SMC_insl(struct smc911x_local *lp, int reg,
 	void __iomem *ioaddr = lp->base + reg;
 
 	if (lp->cfg.flags & SMC911X_USE_32BIT) {
+<<<<<<< HEAD
 		readsl(ioaddr, addr, count);
+=======
+		ioread32_rep(ioaddr, addr, count);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (lp->cfg.flags & SMC911X_USE_16BIT) {
+<<<<<<< HEAD
 		readsw(ioaddr, addr, count * 2);
+=======
+		ioread16_rep(ioaddr, addr, count * 2);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -177,12 +185,20 @@ static inline void SMC_outsl(struct smc911x_local *lp, int reg,
 	void __iomem *ioaddr = lp->base + reg;
 
 	if (lp->cfg.flags & SMC911X_USE_32BIT) {
+<<<<<<< HEAD
 		writesl(ioaddr, addr, count);
+=======
+		iowrite32_rep(ioaddr, addr, count);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (lp->cfg.flags & SMC911X_USE_16BIT) {
+<<<<<<< HEAD
 		writesw(ioaddr, addr, count * 2);
+=======
+		iowrite16_rep(ioaddr, addr, count * 2);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -196,14 +212,24 @@ static inline void SMC_outsl(struct smc911x_local *lp, int reg,
 		 writew(v & 0xFFFF, (lp)->base + (r));	 \
 		 writew(v >> 16, (lp)->base + (r) + 2); \
 	 } while (0)
+<<<<<<< HEAD
 #define SMC_insl(lp, r, p, l)	 readsw((short*)((lp)->base + (r)), p, l*2)
 #define SMC_outsl(lp, r, p, l)	 writesw((short*)((lp)->base + (r)), p, l*2)
+=======
+#define SMC_insl(lp, r, p, l)	 ioread16_rep((short*)((lp)->base + (r)), p, l*2)
+#define SMC_outsl(lp, r, p, l)	 iowrite16_rep((short*)((lp)->base + (r)), p, l*2)
+>>>>>>> refs/remotes/origin/master
 
 #elif	SMC_USE_32BIT
 #define SMC_inl(lp, r)		 readl((lp)->base + (r))
 #define SMC_outl(v, lp, r)	 writel(v, (lp)->base + (r))
+<<<<<<< HEAD
 #define SMC_insl(lp, r, p, l)	 readsl((int*)((lp)->base + (r)), p, l)
 #define SMC_outsl(lp, r, p, l)	 writesl((int*)((lp)->base + (r)), p, l)
+=======
+#define SMC_insl(lp, r, p, l)	 ioread32_rep((int*)((lp)->base + (r)), p, l)
+#define SMC_outsl(lp, r, p, l)	 iowrite32_rep((int*)((lp)->base + (r)), p, l)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* SMC_USE_16BIT */
 #endif /* SMC_DYNAMIC_BUS_CONFIG */
@@ -227,7 +253,11 @@ static inline void SMC_outsl(struct smc911x_local *lp, int reg,
 #define SMC_DMA_ACK_IRQ(dev, dma)					\
 {									\
 	if (DCSR(dma) & DCSR_BUSERR) {					\
+<<<<<<< HEAD
 		printk("%s: DMA %d bus error!\n", dev->name, dma);	\
+=======
+		netdev_err(dev, "DMA %d bus error!\n", dma);		\
+>>>>>>> refs/remotes/origin/master
 	}								\
 	DCSR(dma) = DCSR_STARTINTR|DCSR_ENDINTR|DCSR_BUSERR;		\
 }

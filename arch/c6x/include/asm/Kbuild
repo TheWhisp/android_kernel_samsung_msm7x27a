@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 include include/asm-generic/Kbuild.asm
 
 generic-y += atomic.h
 generic-y += auxvec.h
+=======
+
+generic-y += atomic.h
+generic-y += auxvec.h
+generic-y += barrier.h
+>>>>>>> refs/remotes/origin/master
 generic-y += bitsperlong.h
 generic-y += bugs.h
 generic-y += cputime.h
@@ -11,6 +18,10 @@ generic-y += div64.h
 generic-y += dma.h
 generic-y += emergency-restart.h
 generic-y += errno.h
+<<<<<<< HEAD
+=======
+generic-y += exec.h
+>>>>>>> refs/remotes/origin/master
 generic-y += fb.h
 generic-y += fcntl.h
 generic-y += futex.h
@@ -24,6 +35,10 @@ generic-y += kdebug.h
 generic-y += kmap_types.h
 generic-y += local.h
 generic-y += mman.h
+<<<<<<< HEAD
+=======
+generic-y += mmu.h
+>>>>>>> refs/remotes/origin/master
 generic-y += mmu_context.h
 generic-y += msgbuf.h
 generic-y += param.h
@@ -39,6 +54,10 @@ generic-y += sembuf.h
 generic-y += shmbuf.h
 generic-y += shmparam.h
 generic-y += siginfo.h
+<<<<<<< HEAD
+=======
+generic-y += signal.h
+>>>>>>> refs/remotes/origin/master
 generic-y += socket.h
 generic-y += sockios.h
 generic-y += stat.h
@@ -47,7 +66,16 @@ generic-y += termbits.h
 generic-y += termios.h
 generic-y += tlbflush.h
 generic-y += topology.h
+<<<<<<< HEAD
+=======
+generic-y += trace_clock.h
+>>>>>>> refs/remotes/origin/master
 generic-y += types.h
 generic-y += ucontext.h
 generic-y += user.h
 generic-y += vga.h
+<<<<<<< HEAD
+=======
+generic-y += xor.h
+generic-y += preempt.h
+>>>>>>> refs/remotes/origin/master

@@ -1,9 +1,15 @@
 /*
+<<<<<<< HEAD
  *  linux/drivers/s390/crypto/zcrypt_error.h
  *
  *  zcrypt 2.1.0
  *
  *  Copyright (C)  2001, 2006 IBM Corporation
+=======
+ *  zcrypt 2.1.0
+ *
+ *  Copyright IBM Corp. 2001, 2006
+>>>>>>> refs/remotes/origin/master
  *  Author(s): Robert Burroughs
  *	       Eric Rossman (edrossma@us.ibm.com)
  *
@@ -28,6 +34,11 @@
 #ifndef _ZCRYPT_ERROR_H_
 #define _ZCRYPT_ERROR_H_
 
+<<<<<<< HEAD
+=======
+#include <linux/atomic.h>
+#include "zcrypt_debug.h"
+>>>>>>> refs/remotes/origin/master
 #include "zcrypt_api.h"
 
 /**
@@ -106,20 +117,48 @@ static inline int convert_error(struct zcrypt_device *zdev,
 	//   REP88_ERROR_MESSAGE_TYPE		// '20' CEX2A
 		/*
 		 * To sent a message of the wrong type is a bug in the
+<<<<<<< HEAD
 		 * device driver. Warn about it, disable the device
 		 * and then repeat the request.
 		 */
 		WARN_ON(1);
 		zdev->online = 0;
+=======
+		 * device driver. Send error msg, disable the device
+		 * and then repeat the request.
+		 */
+		atomic_set(&zcrypt_rescan_req, 1);
+		zdev->online = 0;
+		pr_err("Cryptographic device %x failed and was set offline\n",
+		       zdev->ap_dev->qid);
+		ZCRYPT_DBF_DEV(DBF_ERR, zdev, "dev%04xo%drc%d",
+			zdev->ap_dev->qid, zdev->online, ehdr->reply_code);
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	case REP82_ERROR_TRANSPORT_FAIL:
 	case REP82_ERROR_MACHINE_FAILURE:
 	//   REP88_ERROR_MODULE_FAILURE		// '10' CEX2A
 		/* If a card fails disable it and repeat the request. */
+<<<<<<< HEAD
 		zdev->online = 0;
 		return -EAGAIN;
 	default:
 		zdev->online = 0;
+=======
+		atomic_set(&zcrypt_rescan_req, 1);
+		zdev->online = 0;
+		pr_err("Cryptographic device %x failed and was set offline\n",
+		       zdev->ap_dev->qid);
+		ZCRYPT_DBF_DEV(DBF_ERR, zdev, "dev%04xo%drc%d",
+			zdev->ap_dev->qid, zdev->online, ehdr->reply_code);
+		return -EAGAIN;
+	default:
+		zdev->online = 0;
+		pr_err("Cryptographic device %x failed and was set offline\n",
+		       zdev->ap_dev->qid);
+		ZCRYPT_DBF_DEV(DBF_ERR, zdev, "dev%04xo%drc%d",
+			zdev->ap_dev->qid, zdev->online, ehdr->reply_code);
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;	/* repeat the request on a different device. */
 	}
 }

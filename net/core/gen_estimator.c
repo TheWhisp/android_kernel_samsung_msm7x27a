@@ -15,9 +15,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <linux/module.h>
 #include <linux/types.h>
@@ -86,7 +89,11 @@ struct gen_estimator
 {
 	struct list_head	list;
 	struct gnet_stats_basic_packed	*bstats;
+<<<<<<< HEAD
 	struct gnet_stats_rate_est	*rate_est;
+=======
+	struct gnet_stats_rate_est64	*rate_est;
+>>>>>>> refs/remotes/origin/master
 	spinlock_t		*stats_lock;
 	int			ewma_log;
 	u64			last_bytes;
@@ -171,7 +178,11 @@ static void gen_add_node(struct gen_estimator *est)
 
 static
 struct gen_estimator *gen_find_node(const struct gnet_stats_basic_packed *bstats,
+<<<<<<< HEAD
 				    const struct gnet_stats_rate_est *rate_est)
+=======
+				    const struct gnet_stats_rate_est64 *rate_est)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rb_node *p = est_root.rb_node;
 
@@ -207,7 +218,11 @@ struct gen_estimator *gen_find_node(const struct gnet_stats_basic_packed *bstats
  *
  */
 int gen_new_estimator(struct gnet_stats_basic_packed *bstats,
+<<<<<<< HEAD
 		      struct gnet_stats_rate_est *rate_est,
+=======
+		      struct gnet_stats_rate_est64 *rate_est,
+>>>>>>> refs/remotes/origin/master
 		      spinlock_t *stats_lock,
 		      struct nlattr *opt)
 {
@@ -262,7 +277,11 @@ EXPORT_SYMBOL(gen_new_estimator);
  * Note : Caller should respect an RCU grace period before freeing stats_lock
  */
 void gen_kill_estimator(struct gnet_stats_basic_packed *bstats,
+<<<<<<< HEAD
 			struct gnet_stats_rate_est *rate_est)
+=======
+			struct gnet_stats_rate_est64 *rate_est)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gen_estimator *e;
 
@@ -294,7 +313,11 @@ EXPORT_SYMBOL(gen_kill_estimator);
  * Returns 0 on success or a negative error code.
  */
 int gen_replace_estimator(struct gnet_stats_basic_packed *bstats,
+<<<<<<< HEAD
 			  struct gnet_stats_rate_est *rate_est,
+=======
+			  struct gnet_stats_rate_est64 *rate_est,
+>>>>>>> refs/remotes/origin/master
 			  spinlock_t *stats_lock, struct nlattr *opt)
 {
 	gen_kill_estimator(bstats, rate_est);
@@ -310,7 +333,11 @@ EXPORT_SYMBOL(gen_replace_estimator);
  * Returns true if estimator is active, and false if not.
  */
 bool gen_estimator_active(const struct gnet_stats_basic_packed *bstats,
+<<<<<<< HEAD
 			  const struct gnet_stats_rate_est *rate_est)
+=======
+			  const struct gnet_stats_rate_est64 *rate_est)
+>>>>>>> refs/remotes/origin/master
 {
 	bool res;
 

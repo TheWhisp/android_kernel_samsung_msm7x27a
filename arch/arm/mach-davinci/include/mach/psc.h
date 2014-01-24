@@ -31,6 +31,7 @@
 
 /* Power and Sleep Controller (PSC) Domains */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DAVINCI_GPSC_ARMDOMAIN      0
 #define DAVINCI_GPSC_DSPDOMAIN      1
 
@@ -73,6 +74,8 @@
 #define DAVINCI_LPSC_GEM            39
 #define DAVINCI_LPSC_IMCOP          40
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DAVINCI_GPSC_ARMDOMAIN		0
 #define DAVINCI_GPSC_DSPDOMAIN		1
 
@@ -114,7 +117,10 @@
 #define DAVINCI_LPSC_CFG5		38
 #define DAVINCI_LPSC_GEM		39
 #define DAVINCI_LPSC_IMCOP		40
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DM355_LPSC_TIMER3		5
 #define DM355_LPSC_SPI1			6
@@ -146,6 +152,7 @@
 /*
  * LPSC Assignments
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define DM646X_LPSC_ARM            0
 #define DM646X_LPSC_C64X_CPU       1
@@ -181,6 +188,8 @@
 #define DM646X_LPSC_TIMER1         35
 #define DM646X_LPSC_ARM_INTC       45
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DM646X_LPSC_ARM		0
 #define DM646X_LPSC_C64X_CPU	1
 #define DM646X_LPSC_HDVICP0	2
@@ -214,7 +223,10 @@
 #define DM646X_LPSC_TIMER0	34
 #define DM646X_LPSC_TIMER1	35
 #define DM646X_LPSC_ARM_INTC	45
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* PSC0 defines */
 #define DA8XX_LPSC0_TPCC		0
@@ -246,6 +258,10 @@
 #define DA830_LPSC1_McASP1		8
 #define DA850_LPSC1_SATA		8
 #define DA830_LPSC1_McASP2		9
+<<<<<<< HEAD
+=======
+#define DA850_LPSC1_VPIF		9
+>>>>>>> refs/remotes/origin/master
 #define DA8XX_LPSC1_SPI1		10
 #define DA8XX_LPSC1_I2C			11
 #define DA8XX_LPSC1_UART1		12
@@ -314,10 +330,14 @@
 #define PTSTAT		0x128
 #define PDSTAT		0x200
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PDCTL1		0x304
 =======
 #define PDCTL		0x300
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PDCTL		0x300
+>>>>>>> refs/remotes/origin/master
 #define MDSTAT		0x800
 #define MDCTL		0xA00
 
@@ -328,6 +348,7 @@
 #define PSC_STATE_ENABLE	3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MDSTAT_STATE_MASK 0x1f
 =======
 #define MDSTAT_STATE_MASK	0x3f
@@ -336,16 +357,31 @@
 #define PDCTL_NEXT		BIT(1)
 #define PDCTL_EPCGOOD		BIT(8)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MDSTAT_STATE_MASK	0x3f
+#define PDSTAT_STATE_MASK	0x1f
+#define MDCTL_LRST		BIT(8)
+#define MDCTL_FORCE		BIT(31)
+#define PDCTL_NEXT		BIT(0)
+#define PDCTL_EPCGOOD		BIT(8)
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLER__
 
 extern int davinci_psc_is_clk_active(unsigned int ctlr, unsigned int id);
+<<<<<<< HEAD
 extern void davinci_psc_config(unsigned int domain, unsigned int ctlr,
 <<<<<<< HEAD
 		unsigned int id, u32 next_state);
 =======
 		unsigned int id, bool enable, u32 flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void davinci_psc_reset(unsigned int ctlr, unsigned int id,
+		bool reset);
+extern void davinci_psc_config(unsigned int domain, unsigned int ctlr,
+		unsigned int id, bool enable, u32 flags);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

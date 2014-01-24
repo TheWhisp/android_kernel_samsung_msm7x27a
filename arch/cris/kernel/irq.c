@@ -37,9 +37,13 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <arch/system.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/master
 
 /* called by the assembler IRQ entry functions defined in irq.h
  * to dispatch the interrupts to registered handlers

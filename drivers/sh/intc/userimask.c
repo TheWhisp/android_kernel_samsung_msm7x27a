@@ -11,15 +11,21 @@
 
 #include <linux/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/init.h>
 #include <linux/io.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/stat.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sizes.h>
 #include "internals.h"
 
@@ -27,17 +33,23 @@ static void __iomem *uimask;
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 show_intc_userimask(struct sysdev_class *cls,
 		    struct sysdev_class_attribute *attr, char *buf)
 =======
 show_intc_userimask(struct device *dev,
 		    struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+show_intc_userimask(struct device *dev,
+		    struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf, "%d\n", (__raw_readl(uimask) >> 4) & 0xf);
 }
 
 static ssize_t
+<<<<<<< HEAD
 <<<<<<< HEAD
 store_intc_userimask(struct sysdev_class *cls,
 		     struct sysdev_class_attribute *attr,
@@ -45,6 +57,10 @@ store_intc_userimask(struct sysdev_class *cls,
 store_intc_userimask(struct device *dev,
 		     struct device_attribute *attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+store_intc_userimask(struct device *dev,
+		     struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 		     const char *buf, size_t count)
 {
 	unsigned long level;
@@ -72,12 +88,17 @@ store_intc_userimask(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(userimask, S_IRUSR | S_IWUSR,
 			 show_intc_userimask, store_intc_userimask);
 =======
 static DEVICE_ATTR(userimask, S_IRUSR | S_IWUSR,
 		   show_intc_userimask, store_intc_userimask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEVICE_ATTR(userimask, S_IRUSR | S_IWUSR,
+		   show_intc_userimask, store_intc_userimask);
+>>>>>>> refs/remotes/origin/master
 
 
 static int __init userimask_sysdev_init(void)
@@ -86,10 +107,14 @@ static int __init userimask_sysdev_init(void)
 		return -ENXIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sysdev_class_create_file(&intc_sysdev_class, &attr_userimask);
 =======
 	return device_create_file(intc_subsys.dev_root, &dev_attr_userimask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return device_create_file(intc_subsys.dev_root, &dev_attr_userimask);
+>>>>>>> refs/remotes/origin/master
 }
 late_initcall(userimask_sysdev_init);
 

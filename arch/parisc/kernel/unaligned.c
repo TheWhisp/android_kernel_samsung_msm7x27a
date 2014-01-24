@@ -27,6 +27,10 @@
 #include <linux/signal.h>
 #include <linux/ratelimit.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
+=======
+#include <asm/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 
 /* #define DEBUG_UNALIGNED 1 */
 
@@ -454,6 +458,11 @@ void handle_unaligned(struct pt_regs *regs)
 	struct siginfo si;
 	register int flop=0;	/* true if this is a flop */
 
+<<<<<<< HEAD
+=======
+	__inc_irq_stat(irq_unaligned_count);
+
+>>>>>>> refs/remotes/origin/master
 	/* log a message with pacing */
 	if (user_mode(regs)) {
 		if (current->thread.flags & PARISC_UAC_SIGBUS) {

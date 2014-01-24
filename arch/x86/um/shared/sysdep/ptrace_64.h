@@ -8,6 +8,7 @@
 #ifndef __SYSDEP_X86_64_PTRACE_H
 #define __SYSDEP_X86_64_PTRACE_H
 
+<<<<<<< HEAD
 #include <generated/user_constants.h>
 #include "sysdep/faultinfo.h"
 
@@ -24,6 +25,10 @@
 #define REGS_RDI(r) ((r)[HOST_DI])
 #define REGS_RBP(r) ((r)[HOST_BP])
 #define REGS_RAX(r) ((r)[HOST_AX])
+=======
+#define MAX_FP_NR HOST_FP_SIZE
+
+>>>>>>> refs/remotes/origin/master
 #define REGS_R8(r) ((r)[HOST_R8])
 #define REGS_R9(r) ((r)[HOST_R9])
 #define REGS_R10(r) ((r)[HOST_R10])
@@ -32,9 +37,12 @@
 #define REGS_R13(r) ((r)[HOST_R13])
 #define REGS_R14(r) ((r)[HOST_R14])
 #define REGS_R15(r) ((r)[HOST_R15])
+<<<<<<< HEAD
 #define REGS_CS(r) ((r)[HOST_CS])
 #define REGS_EFLAGS(r) ((r)[HOST_EFLAGS])
 #define REGS_SS(r) ((r)[HOST_SS])
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define HOST_FS_BASE 21
 #define HOST_GS_BASE 22
@@ -58,6 +66,7 @@
 #define GS (HOST_GS * sizeof(long))
 #endif
 
+<<<<<<< HEAD
 #define REGS_FS_BASE(r) ((r)[HOST_FS_BASE])
 #define REGS_GS_BASE(r) ((r)[HOST_GS_BASE])
 #define REGS_DS(r) ((r)[HOST_DS])
@@ -97,6 +106,8 @@ struct uml_pt_regs {
 #define UPT_RDI(r) REGS_RDI((r)->gp)
 #define UPT_RBP(r) REGS_RBP((r)->gp)
 #define UPT_RAX(r) REGS_RAX((r)->gp)
+=======
+>>>>>>> refs/remotes/origin/master
 #define UPT_R8(r) REGS_R8((r)->gp)
 #define UPT_R9(r) REGS_R9((r)->gp)
 #define UPT_R10(r) REGS_R10((r)->gp)
@@ -105,6 +116,7 @@ struct uml_pt_regs {
 #define UPT_R13(r) REGS_R13((r)->gp)
 #define UPT_R14(r) REGS_R14((r)->gp)
 #define UPT_R15(r) REGS_R15((r)->gp)
+<<<<<<< HEAD
 #define UPT_CS(r) REGS_CS((r)->gp)
 #define UPT_FS_BASE(r) REGS_FS_BASE((r)->gp)
 #define UPT_FS(r) REGS_FS((r)->gp)
@@ -130,10 +142,17 @@ extern int user_context(unsigned long sp);
 #define UPT_SYSCALL_ARG1(r) UPT_RDI(r)
 #define UPT_SYSCALL_ARG2(r) UPT_RSI(r)
 #define UPT_SYSCALL_ARG3(r) UPT_RDX(r)
+=======
+
+#define UPT_SYSCALL_ARG1(r) UPT_DI(r)
+#define UPT_SYSCALL_ARG2(r) UPT_SI(r)
+#define UPT_SYSCALL_ARG3(r) UPT_DX(r)
+>>>>>>> refs/remotes/origin/master
 #define UPT_SYSCALL_ARG4(r) UPT_R10(r)
 #define UPT_SYSCALL_ARG5(r) UPT_R8(r)
 #define UPT_SYSCALL_ARG6(r) UPT_R9(r)
 
+<<<<<<< HEAD
 struct syscall_args {
 	unsigned long args[6];
 };
@@ -150,6 +169,8 @@ struct syscall_args {
 
 #define UPT_FAULTINFO(r) (&(r)->faultinfo)
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void arch_init_registers(int pid)
 {
 }

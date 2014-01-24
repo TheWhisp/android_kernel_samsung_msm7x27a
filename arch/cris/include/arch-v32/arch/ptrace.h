@@ -112,9 +112,12 @@ struct switch_stack {
 #define user_mode(regs) (((regs)->ccs & (1 << (U_CCS_BITNR + CCS_SHIFT))) != 0)
 #define instruction_pointer(regs) ((regs)->erp)
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define profile_pc(regs) instruction_pointer(regs)
 
 #endif  /*  __KERNEL__  */

@@ -710,7 +710,11 @@ struct snd_ca0106 {
 
 	u16 spi_dac_reg[16];
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 #define NUM_SAVED_VOLUMES	9
 	unsigned int saved_vol[NUM_SAVED_VOLUMES];
 #endif
@@ -733,7 +737,11 @@ int snd_ca0106_i2c_write(struct snd_ca0106 *emu, u32 reg, u32 value);
 int snd_ca0106_spi_write(struct snd_ca0106 * emu,
 				   unsigned int data);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 void snd_ca0106_mixer_suspend(struct snd_ca0106 *chip);
 void snd_ca0106_mixer_resume(struct snd_ca0106 *chip);
 #else

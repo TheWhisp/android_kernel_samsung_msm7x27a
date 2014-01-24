@@ -14,11 +14,16 @@ Supported chips:
                http://www.national.com/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Author: Frodo Looijaard <frodol@dds.nl>
 =======
 Authors: Frodo Looijaard <frodol@dds.nl>
          Jean Delvare <khali@linux-fr.org>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Authors: Frodo Looijaard <frodol@dds.nl>
+         Jean Delvare <khali@linux-fr.org>
+>>>>>>> refs/remotes/origin/master
 
 Description
 -----------

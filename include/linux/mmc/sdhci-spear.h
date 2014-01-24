@@ -4,7 +4,11 @@
  * SDHCI declarations specific to ST SPEAr platform
  *
  * Copyright (C) 2010 ST Microelectronics
+<<<<<<< HEAD
  * Viresh Kumar<viresh.kumar@st.com>
+=======
+ * Viresh Kumar <viresh.linux@gmail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This file is licensed under the terms of the GNU General Public
  * License version 2. This program is licensed "as is" without any
@@ -12,12 +16,17 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef MMC_SDHCI_SPEAR_H
 #define MMC_SDHCI_SPEAR_H
 =======
 #ifndef LINUX_MMC_SDHCI_SPEAR_H
 #define LINUX_MMC_SDHCI_SPEAR_H
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef LINUX_MMC_SDHCI_SPEAR_H
+#define LINUX_MMC_SDHCI_SPEAR_H
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/platform_device.h>
 /*
@@ -45,7 +54,11 @@ sdhci_set_plat_data(struct platform_device *pdev, struct sdhci_plat_data *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* MMC_SDHCI_SPEAR_H */
 =======
 #endif /* LINUX_MMC_SDHCI_SPEAR_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* LINUX_MMC_SDHCI_SPEAR_H */
+>>>>>>> refs/remotes/origin/master

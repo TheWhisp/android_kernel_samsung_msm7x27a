@@ -4,6 +4,10 @@
 #include <linux/kmemcheck.h>
 #include <linux/mm.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/poll.h>
+>>>>>>> refs/remotes/origin/master
 
 struct ring_buffer;
 struct ring_buffer_iter;
@@ -96,9 +100,22 @@ __ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *k
 	__ring_buffer_alloc((size), (flags), &__key);	\
 })
 
+<<<<<<< HEAD
 void ring_buffer_free(struct ring_buffer *buffer);
 
 int ring_buffer_resize(struct ring_buffer *buffer, unsigned long size);
+=======
+void ring_buffer_wait(struct ring_buffer *buffer, int cpu);
+int ring_buffer_poll_wait(struct ring_buffer *buffer, int cpu,
+			  struct file *filp, poll_table *poll_table);
+
+
+#define RING_BUFFER_ALL_CPUS -1
+
+void ring_buffer_free(struct ring_buffer *buffer);
+
+int ring_buffer_resize(struct ring_buffer *buffer, unsigned long size, int cpu);
+>>>>>>> refs/remotes/origin/master
 
 void ring_buffer_change_overwrite(struct ring_buffer *buffer, int val);
 
@@ -129,7 +146,11 @@ ring_buffer_read(struct ring_buffer_iter *iter, u64 *ts);
 void ring_buffer_iter_reset(struct ring_buffer_iter *iter);
 int ring_buffer_iter_empty(struct ring_buffer_iter *iter);
 
+<<<<<<< HEAD
 unsigned long ring_buffer_size(struct ring_buffer *buffer);
+=======
+unsigned long ring_buffer_size(struct ring_buffer *buffer, int cpu);
+>>>>>>> refs/remotes/origin/master
 
 void ring_buffer_reset_cpu(struct ring_buffer *buffer, int cpu);
 void ring_buffer_reset(struct ring_buffer *buffer);
@@ -152,24 +173,37 @@ int ring_buffer_empty_cpu(struct ring_buffer *buffer, int cpu);
 void ring_buffer_record_disable(struct ring_buffer *buffer);
 void ring_buffer_record_enable(struct ring_buffer *buffer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ring_buffer_record_disable_cpu(struct ring_buffer *buffer, int cpu);
 void ring_buffer_record_enable_cpu(struct ring_buffer *buffer, int cpu);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void ring_buffer_record_off(struct ring_buffer *buffer);
 void ring_buffer_record_on(struct ring_buffer *buffer);
 int ring_buffer_record_is_on(struct ring_buffer *buffer);
 void ring_buffer_record_disable_cpu(struct ring_buffer *buffer, int cpu);
 void ring_buffer_record_enable_cpu(struct ring_buffer *buffer, int cpu);
 
+<<<<<<< HEAD
 unsigned long ring_buffer_oldest_event_ts(struct ring_buffer *buffer, int cpu);
 unsigned long ring_buffer_bytes_cpu(struct ring_buffer *buffer, int cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u64 ring_buffer_oldest_event_ts(struct ring_buffer *buffer, int cpu);
+unsigned long ring_buffer_bytes_cpu(struct ring_buffer *buffer, int cpu);
+>>>>>>> refs/remotes/origin/master
 unsigned long ring_buffer_entries(struct ring_buffer *buffer);
 unsigned long ring_buffer_overruns(struct ring_buffer *buffer);
 unsigned long ring_buffer_entries_cpu(struct ring_buffer *buffer, int cpu);
 unsigned long ring_buffer_overrun_cpu(struct ring_buffer *buffer, int cpu);
 unsigned long ring_buffer_commit_overrun_cpu(struct ring_buffer *buffer, int cpu);
+<<<<<<< HEAD
+=======
+unsigned long ring_buffer_dropped_events_cpu(struct ring_buffer *buffer, int cpu);
+unsigned long ring_buffer_read_events_cpu(struct ring_buffer *buffer, int cpu);
+>>>>>>> refs/remotes/origin/master
 
 u64 ring_buffer_time_stamp(struct ring_buffer *buffer, int cpu);
 void ring_buffer_normalize_time_stamp(struct ring_buffer *buffer,
@@ -181,10 +215,14 @@ size_t ring_buffer_page_len(void *page);
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *ring_buffer_alloc_read_page(struct ring_buffer *buffer);
 =======
 void *ring_buffer_alloc_read_page(struct ring_buffer *buffer, int cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *ring_buffer_alloc_read_page(struct ring_buffer *buffer, int cpu);
+>>>>>>> refs/remotes/origin/master
 void ring_buffer_free_read_page(struct ring_buffer *buffer, void *data);
 int ring_buffer_read_page(struct ring_buffer *buffer, void **data_page,
 			  size_t len, int cpu, int full);

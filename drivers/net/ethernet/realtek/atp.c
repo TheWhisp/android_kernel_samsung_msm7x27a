@@ -175,8 +175,12 @@ struct net_local {
     unsigned int tx_unit_busy:1;
     unsigned char re_tx,	/* Number of packet retransmissions. */
 		addr_mode,		/* Current Rx filter e.g. promiscuous, etc. */
+<<<<<<< HEAD
 		pac_cnt_in_tx_buf,
 		chip_type;
+=======
+		pac_cnt_in_tx_buf;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This code, written by wwc@super.org, resets the adapter every
@@ -339,7 +343,10 @@ static int __init atp_probe1(long ioaddr)
 	write_reg_high(ioaddr, CMR1, CMR1h_RESET | CMR1h_MUX);
 
 	lp = netdev_priv(dev);
+<<<<<<< HEAD
 	lp->chip_type = RTL8002;
+=======
+>>>>>>> refs/remotes/origin/master
 	lp->addr_mode = CMR2h_Normal;
 	spin_lock_init(&lp->lock);
 
@@ -784,8 +791,11 @@ static void net_rx(struct net_device *dev)
 
 		skb = netdev_alloc_skb(dev, pkt_len + 2);
 		if (skb == NULL) {
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: Memory squeeze, dropping packet.\n",
 				   dev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 			dev->stats.rx_dropped++;
 			goto done;
 		}
@@ -852,7 +862,11 @@ net_close(struct net_device *dev)
  *	Set or clear the multicast filter for this adapter.
  */
 
+<<<<<<< HEAD
 static void set_rx_mode_8002(struct net_device *dev)
+=======
+static void set_rx_mode(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_local *lp = netdev_priv(dev);
 	long ioaddr = dev->base_addr;
@@ -864,6 +878,7 @@ static void set_rx_mode_8002(struct net_device *dev)
 	write_reg_high(ioaddr, CMR2, lp->addr_mode);
 }
 
+<<<<<<< HEAD
 static void set_rx_mode_8012(struct net_device *dev)
 {
 	struct net_local *lp = netdev_priv(dev);
@@ -916,6 +931,8 @@ static void set_rx_mode(struct net_device *dev)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init atp_init_module(void) {
 	if (debug)					/* Emit version even if no cards detected. */
 		printk(KERN_INFO "%s", version);

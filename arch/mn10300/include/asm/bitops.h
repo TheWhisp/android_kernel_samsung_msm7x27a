@@ -228,6 +228,7 @@ int ffs(int x)
 #include <asm-generic/bitops/sched.h>
 #include <asm-generic/bitops/hweight.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define ext2_set_bit_atomic(lock, nr, addr) \
 	test_and_set_bit((nr), (addr))
@@ -237,6 +238,9 @@ int ffs(int x)
 =======
 #include <asm-generic/bitops/ext2-atomic-setbit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/bitops/le.h>
 
 #endif /* __KERNEL__ */

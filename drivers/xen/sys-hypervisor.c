@@ -11,6 +11,10 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/kobject.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/xen/hypervisor.h>
 #include <asm/xen/hypercall.h>
@@ -98,10 +102,14 @@ static struct attribute *version_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute_group version_group = {
 =======
 static const struct attribute_group version_group = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct attribute_group version_group = {
+>>>>>>> refs/remotes/origin/master
 	.name = "version",
 	.attrs = version_attrs,
 };
@@ -118,7 +126,11 @@ static void xen_sysfs_version_destroy(void)
 
 /* UUID */
 
+<<<<<<< HEAD
 static ssize_t uuid_show(struct hyp_sysfs_attr *attr, char *buffer)
+=======
+static ssize_t uuid_show_fallback(struct hyp_sysfs_attr *attr, char *buffer)
+>>>>>>> refs/remotes/origin/master
 {
 	char *vm, *val;
 	int ret;
@@ -139,6 +151,20 @@ static ssize_t uuid_show(struct hyp_sysfs_attr *attr, char *buffer)
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t uuid_show(struct hyp_sysfs_attr *attr, char *buffer)
+{
+	xen_domain_handle_t uuid;
+	int ret;
+	ret = HYPERVISOR_xen_version(XENVER_guest_handle, uuid);
+	if (ret)
+		return uuid_show_fallback(attr, buffer);
+	ret = sprintf(buffer, "%pU\n", uuid);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 HYPERVISOR_ATTR_RO(uuid);
 
 static int __init xen_sysfs_uuid_init(void)
@@ -215,10 +241,14 @@ static struct attribute *xen_compile_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute_group xen_compilation_group = {
 =======
 static const struct attribute_group xen_compilation_group = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct attribute_group xen_compilation_group = {
+>>>>>>> refs/remotes/origin/master
 	.name = "compilation",
 	.attrs = xen_compile_attrs,
 };
@@ -281,7 +311,12 @@ static ssize_t virtual_start_show(struct hyp_sysfs_attr *attr, char *buffer)
 		ret = HYPERVISOR_xen_version(XENVER_platform_parameters,
 					     parms);
 		if (!ret)
+<<<<<<< HEAD
 			ret = sprintf(buffer, "%lx\n", parms->virt_start);
+=======
+			ret = sprintf(buffer, "%"PRI_xen_ulong"\n",
+				      parms->virt_start);
+>>>>>>> refs/remotes/origin/master
 		kfree(parms);
 	}
 
@@ -349,10 +384,14 @@ static struct attribute *xen_properties_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct attribute_group xen_properties_group = {
 =======
 static const struct attribute_group xen_properties_group = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct attribute_group xen_properties_group = {
+>>>>>>> refs/remotes/origin/master
 	.name = "properties",
 	.attrs = xen_properties_attrs,
 };

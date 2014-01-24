@@ -7,6 +7,11 @@
 #include <linux/moduleparam.h>
 #include <acpi/acpi_drivers.h>
 
+<<<<<<< HEAD
+=======
+#include "internal.h"
+
+>>>>>>> refs/remotes/origin/master
 #define _COMPONENT		ACPI_SYSTEM_COMPONENT
 ACPI_MODULE_NAME("sysfs");
 
@@ -150,19 +155,27 @@ static int param_get_debug_level(char *buffer, const struct kernel_param *kp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct kernel_param_ops param_ops_debug_layer = {
 =======
 static const struct kernel_param_ops param_ops_debug_layer = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct kernel_param_ops param_ops_debug_layer = {
+>>>>>>> refs/remotes/origin/master
 	.set = param_set_uint,
 	.get = param_get_debug_layer,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct kernel_param_ops param_ops_debug_level = {
 =======
 static const struct kernel_param_ops param_ops_debug_level = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct kernel_param_ops param_ops_debug_level = {
+>>>>>>> refs/remotes/origin/master
 	.set = param_set_uint,
 	.get = param_get_debug_level,
 };
@@ -181,7 +194,11 @@ static int param_set_trace_state(const char *val, struct kernel_param *kp)
 {
 	int result = 0;
 
+<<<<<<< HEAD
 	if (!strncmp(val, "enable", strlen("enable"))) {
+=======
+	if (!strncmp(val, "enable", sizeof("enable") - 1)) {
+>>>>>>> refs/remotes/origin/master
 		result = acpi_debug_trace(trace_method_name, trace_debug_level,
 					  trace_debug_layer, 0);
 		if (result)
@@ -189,7 +206,11 @@ static int param_set_trace_state(const char *val, struct kernel_param *kp)
 		goto exit;
 	}
 
+<<<<<<< HEAD
 	if (!strncmp(val, "disable", strlen("disable"))) {
+=======
+	if (!strncmp(val, "disable", sizeof("disable") - 1)) {
+>>>>>>> refs/remotes/origin/master
 		int name = 0;
 		result = acpi_debug_trace((char *)&name, trace_debug_level,
 					  trace_debug_layer, 0);
@@ -257,6 +278,10 @@ module_param_call(acpica_version, NULL, param_get_acpica_version, NULL, 0444);
 static LIST_HEAD(acpi_table_attr_list);
 static struct kobject *tables_kobj;
 static struct kobject *dynamic_tables_kobj;
+<<<<<<< HEAD
+=======
+static struct kobject *hotplug_kobj;
+>>>>>>> refs/remotes/origin/master
 
 struct acpi_table_attr {
 	struct bin_attribute attr;
@@ -314,7 +339,11 @@ static void acpi_table_attr_init(struct acpi_table_attr *table_attr,
 		sprintf(table_attr->name + ACPI_NAME_SIZE, "%d",
 			table_attr->instance);
 
+<<<<<<< HEAD
 	table_attr->attr.size = 0;
+=======
+	table_attr->attr.size = table_header->length;
+>>>>>>> refs/remotes/origin/master
 	table_attr->attr.read = acpi_table_show;
 	table_attr->attr.attr.name = table_attr->name;
 	table_attr->attr.attr.mode = 0400;
@@ -359,8 +388,14 @@ static int acpi_tables_sysfs_init(void)
 {
 	struct acpi_table_attr *table_attr;
 	struct acpi_table_header *table_header = NULL;
+<<<<<<< HEAD
 	int table_index = 0;
 	int result;
+=======
+	int table_index;
+	acpi_status status;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	tables_kobj = kobject_create_and_add("tables", acpi_kobj);
 	if (!tables_kobj)
@@ -370,6 +405,7 @@ static int acpi_tables_sysfs_init(void)
 	if (!dynamic_tables_kobj)
 		goto err_dynamic_tables;
 
+<<<<<<< HEAD
 	do {
 		result = acpi_get_table_by_index(table_index, &table_header);
 		if (!result) {
@@ -397,6 +433,36 @@ static int acpi_tables_sysfs_init(void)
 	result = acpi_install_table_handler(acpi_sysfs_table_handler, NULL);
 
 	return result == AE_OK ? 0 : -EINVAL;
+=======
+	for (table_index = 0;; table_index++) {
+		status = acpi_get_table_by_index(table_index, &table_header);
+
+		if (status == AE_BAD_PARAMETER)
+			break;
+
+		if (ACPI_FAILURE(status))
+			continue;
+
+		table_attr = NULL;
+		table_attr = kzalloc(sizeof(*table_attr), GFP_KERNEL);
+		if (!table_attr)
+			return -ENOMEM;
+
+		acpi_table_attr_init(table_attr, table_header);
+		ret = sysfs_create_bin_file(tables_kobj, &table_attr->attr);
+		if (ret) {
+			kfree(table_attr);
+			return ret;
+		}
+		list_add_tail(&table_attr->node, &acpi_table_attr_list);
+	}
+
+	kobject_uevent(tables_kobj, KOBJ_ADD);
+	kobject_uevent(dynamic_tables_kobj, KOBJ_ADD);
+	status = acpi_install_table_handler(acpi_sysfs_table_handler, NULL);
+
+	return ACPI_FAILURE(status) ? -EINVAL : 0;
+>>>>>>> refs/remotes/origin/master
 err_dynamic_tables:
 	kobject_put(tables_kobj);
 err:
@@ -484,7 +550,11 @@ static void fixed_event_count(u32 event_number)
 	return;
 }
 
+<<<<<<< HEAD
 static void acpi_gbl_event_handler(u32 event_type, acpi_handle device,
+=======
+static void acpi_global_event_handler(u32 event_type, acpi_handle device,
+>>>>>>> refs/remotes/origin/master
 	u32 event_number, void *context)
 {
 	if (event_type == ACPI_EVENT_TYPE_GPE)
@@ -506,7 +576,11 @@ static int get_status(u32 index, acpi_event_status *status,
 		result = acpi_get_gpe_device(index, handle);
 		if (result) {
 			ACPI_EXCEPTION((AE_INFO, AE_NOT_FOUND,
+<<<<<<< HEAD
 					"Invalid GPE 0x%x\n", index));
+=======
+					"Invalid GPE 0x%x", index));
+>>>>>>> refs/remotes/origin/master
 			goto end;
 		}
 		result = acpi_get_gpe_status(*handle, index, status);
@@ -569,6 +643,10 @@ static ssize_t counter_set(struct kobject *kobj,
 	acpi_event_status status;
 	acpi_handle handle;
 	int result = 0;
+<<<<<<< HEAD
+=======
+	unsigned long tmp;
+>>>>>>> refs/remotes/origin/master
 
 	if (index == num_gpes + ACPI_NUM_FIXED_EVENTS + COUNT_SCI) {
 		int i;
@@ -601,8 +679,15 @@ static ssize_t counter_set(struct kobject *kobj,
 		else if (!strcmp(buf, "clear\n") &&
 			 (status & ACPI_EVENT_FLAG_SET))
 			result = acpi_clear_gpe(handle, index);
+<<<<<<< HEAD
 		else
 			all_counters[index].count = strtoul(buf, NULL, 0);
+=======
+		else if (!kstrtoul(buf, 0, &tmp))
+			all_counters[index].count = tmp;
+		else
+			result = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	} else if (index < num_gpes + ACPI_NUM_FIXED_EVENTS) {
 		int event = index - num_gpes;
 		if (!strcmp(buf, "disable\n") &&
@@ -614,8 +699,15 @@ static ssize_t counter_set(struct kobject *kobj,
 		else if (!strcmp(buf, "clear\n") &&
 			 (status & ACPI_EVENT_FLAG_SET))
 			result = acpi_clear_event(event);
+<<<<<<< HEAD
 		else
 			all_counters[index].count = strtoul(buf, NULL, 0);
+=======
+		else if (!kstrtoul(buf, 0, &tmp))
+			all_counters[index].count = tmp;
+		else
+			result = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	} else
 		all_counters[index].count = strtoul(buf, NULL, 0);
 
@@ -646,7 +738,11 @@ void acpi_irq_stats_init(void)
 	if (all_counters == NULL)
 		goto fail;
 
+<<<<<<< HEAD
 	status = acpi_install_global_event_handler(acpi_gbl_event_handler, NULL);
+=======
+	status = acpi_install_global_event_handler(acpi_global_event_handler, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status))
 		goto fail;
 
@@ -682,10 +778,16 @@ void acpi_irq_stats_init(void)
 		else
 			sprintf(buffer, "bug%02X", i);
 
+<<<<<<< HEAD
 		name = kzalloc(strlen(buffer) + 1, GFP_KERNEL);
 		if (name == NULL)
 			goto fail;
 		strncpy(name, buffer, strlen(buffer) + 1);
+=======
+		name = kstrdup(buffer, GFP_KERNEL);
+		if (name == NULL)
+			goto fail;
+>>>>>>> refs/remotes/origin/master
 
 		sysfs_attr_init(&counter_attrs[i].attr);
 		counter_attrs[i].attr.name = name;
@@ -715,7 +817,10 @@ static void __exit interrupt_stats_exit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t
 acpi_show_profile(struct device *dev, struct device_attribute *attr,
 		  char *buf)
@@ -726,12 +831,99 @@ acpi_show_profile(struct device *dev, struct device_attribute *attr,
 static const struct device_attribute pm_profile_attr =
 	__ATTR(pm_profile, S_IRUGO, acpi_show_profile, NULL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t hotplug_enabled_show(struct kobject *kobj,
+				    struct kobj_attribute *attr, char *buf)
+{
+	struct acpi_hotplug_profile *hotplug = to_acpi_hotplug_profile(kobj);
+
+	return sprintf(buf, "%d\n", hotplug->enabled);
+}
+
+static ssize_t hotplug_enabled_store(struct kobject *kobj,
+				     struct kobj_attribute *attr,
+				     const char *buf, size_t size)
+{
+	struct acpi_hotplug_profile *hotplug = to_acpi_hotplug_profile(kobj);
+	unsigned int val;
+
+	if (kstrtouint(buf, 10, &val) || val > 1)
+		return -EINVAL;
+
+	acpi_scan_hotplug_enabled(hotplug, val);
+	return size;
+}
+
+static struct kobj_attribute hotplug_enabled_attr =
+	__ATTR(enabled, S_IRUGO | S_IWUSR, hotplug_enabled_show,
+		hotplug_enabled_store);
+
+static struct attribute *hotplug_profile_attrs[] = {
+	&hotplug_enabled_attr.attr,
+	NULL
+};
+
+static struct kobj_type acpi_hotplug_profile_ktype = {
+	.sysfs_ops = &kobj_sysfs_ops,
+	.default_attrs = hotplug_profile_attrs,
+};
+
+void acpi_sysfs_add_hotplug_profile(struct acpi_hotplug_profile *hotplug,
+				    const char *name)
+{
+	int error;
+
+	if (!hotplug_kobj)
+		goto err_out;
+
+	error = kobject_init_and_add(&hotplug->kobj,
+		&acpi_hotplug_profile_ktype, hotplug_kobj, "%s", name);
+	if (error)
+		goto err_out;
+
+	kobject_uevent(&hotplug->kobj, KOBJ_ADD);
+	return;
+
+ err_out:
+	pr_err(PREFIX "Unable to add hotplug profile '%s'\n", name);
+}
+
+static ssize_t force_remove_show(struct kobject *kobj,
+				 struct kobj_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", !!acpi_force_hot_remove);
+}
+
+static ssize_t force_remove_store(struct kobject *kobj,
+				  struct kobj_attribute *attr,
+				  const char *buf, size_t size)
+{
+	bool val;
+	int ret;
+
+	ret = strtobool(buf, &val);
+	if (ret < 0)
+		return ret;
+
+	lock_device_hotplug();
+	acpi_force_hot_remove = val;
+	unlock_device_hotplug();
+	return size;
+}
+
+static const struct kobj_attribute force_remove_attr =
+	__ATTR(force_remove, S_IRUGO | S_IWUSR, force_remove_show,
+	       force_remove_store);
+
+>>>>>>> refs/remotes/origin/master
 int __init acpi_sysfs_init(void)
 {
 	int result;
 
 	result = acpi_tables_sysfs_init();
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -739,5 +931,16 @@ int __init acpi_sysfs_init(void)
 		return result;
 	result = sysfs_create_file(acpi_kobj, &pm_profile_attr.attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (result)
+		return result;
+
+	hotplug_kobj = kobject_create_and_add("hotplug", acpi_kobj);
+	result = sysfs_create_file(hotplug_kobj, &force_remove_attr.attr);
+	if (result)
+		return result;
+
+	result = sysfs_create_file(acpi_kobj, &pm_profile_attr.attr);
+>>>>>>> refs/remotes/origin/master
 	return result;
 }

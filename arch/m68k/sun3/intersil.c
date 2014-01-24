@@ -15,9 +15,12 @@
 
 #include <asm/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/rtc.h>
 #include <asm/intersil.h>
 
@@ -27,9 +30,15 @@
 #define START_VAL (INTERSIL_RUN | INTERSIL_INT_ENABLE | INTERSIL_24H_MODE)
 
 /* does this need to be implemented? */
+<<<<<<< HEAD
 unsigned long sun3_gettimeoffset(void)
 {
   return 1;
+=======
+u32 sun3_gettimeoffset(void)
+{
+  return 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 

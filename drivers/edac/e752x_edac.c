@@ -4,7 +4,15 @@
  * This file may be distributed under the terms of the
  * GNU General Public License.
  *
+<<<<<<< HEAD
  * See "enum e752x_chips" below for supported chipsets
+=======
+ * Implement support for the e7520, E7525, e7320 and i3100 memory controllers.
+ *
+ * Datasheets:
+ *	http://www.intel.in/content/www/in/en/chipsets/e7525-memory-controller-hub-datasheet.html
+ *	ftp://download.intel.com/design/intarch/datashts/31345803.pdf
+>>>>>>> refs/remotes/origin/master
  *
  * Written by Tom Zimmerman
  *
@@ -13,8 +21,11 @@
  * 	Wang Zhenyu at intel.com
  * 	Dave Jiang at mvista.com
  *
+<<<<<<< HEAD
  * $Id: edac_e752x.c,v 1.5.2.11 2005/10/05 00:43:44 dsp_llnl Exp $
  *
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
@@ -187,6 +198,28 @@ enum e752x_chips {
 	I3100 = 3
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * Those chips Support single-rank and dual-rank memories only.
+ *
+ * On e752x chips, the odd rows are present only on dual-rank memories.
+ * Dividing the rank by two will provide the dimm#
+ *
+ * i3100 MC has a different mapping: it supports only 4 ranks.
+ *
+ * The mapping is (from 1 to n):
+ *	slot	   single-ranked	double-ranked
+ *	dimm #1 -> rank #4		NA
+ *	dimm #2 -> rank #3		NA
+ *	dimm #3 -> rank #2		Ranks 2 and 3
+ *	dimm #4 -> rank $1		Ranks 1 and 4
+ *
+ * FIXME: The current mapping for i3100 considers that it supports up to 8
+ *	  ranks/chanel, but datasheet says that the MC supports only 4 ranks.
+ */
+
+>>>>>>> refs/remotes/origin/master
 struct e752x_pvt {
 	struct pci_dev *bridge_ck;
 	struct pci_dev *dev_d0f0;
@@ -288,7 +321,11 @@ static unsigned long ctl_page_to_phys(struct mem_ctl_info *mci,
 	u32 remap;
 	struct e752x_pvt *pvt = (struct e752x_pvt *)mci->pvt_info;
 
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (page < pvt->tolm)
 		return page;
@@ -314,7 +351,11 @@ static void do_process_ce(struct mem_ctl_info *mci, u16 error_one,
 	int i;
 	struct e752x_pvt *pvt = (struct e752x_pvt *)mci->pvt_info;
 
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* convert the addr to 4k page */
 	page = sec1_add >> (PAGE_SHIFT - 4);
@@ -350,8 +391,15 @@ static void do_process_ce(struct mem_ctl_info *mci, u16 error_one,
 	channel = !(error_one & 1);
 
 	/* e752x mc reads 34:6 of the DRAM linear address */
+<<<<<<< HEAD
 	edac_mc_handle_ce(mci, page, offset_in_page(sec1_add << 4),
 			sec1_syndrome, row, channel, "e752x CE");
+=======
+	edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci, 1,
+			     page, offset_in_page(sec1_add << 4), sec1_syndrome,
+			     row, channel, -1,
+			     "e752x CE", "");
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void process_ce(struct mem_ctl_info *mci, u16 error_one,
@@ -371,7 +419,11 @@ static void do_process_ue(struct mem_ctl_info *mci, u16 error_one,
 	int row;
 	struct e752x_pvt *pvt = (struct e752x_pvt *)mci->pvt_info;
 
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (error_one & 0x0202) {
 		error_2b = ded_add;
@@ -385,9 +437,18 @@ static void do_process_ue(struct mem_ctl_info *mci, u16 error_one,
 			edac_mc_find_csrow_by_page(mci, block_page);
 
 		/* e752x mc reads 34:6 of the DRAM linear address */
+<<<<<<< HEAD
 		edac_mc_handle_ue(mci, block_page,
 				offset_in_page(error_2b << 4),
 				row, "e752x UE from Read");
+=======
+		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, 1,
+					block_page,
+					offset_in_page(error_2b << 4), 0,
+					 row, -1, -1,
+					"e752x UE from Read", "");
+
+>>>>>>> refs/remotes/origin/master
 	}
 	if (error_one & 0x0404) {
 		error_2b = scrb_add;
@@ -401,9 +462,17 @@ static void do_process_ue(struct mem_ctl_info *mci, u16 error_one,
 			edac_mc_find_csrow_by_page(mci, block_page);
 
 		/* e752x mc reads 34:6 of the DRAM linear address */
+<<<<<<< HEAD
 		edac_mc_handle_ue(mci, block_page,
 				offset_in_page(error_2b << 4),
 				row, "e752x UE from Scruber");
+=======
+		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, 1,
+					block_page,
+					offset_in_page(error_2b << 4), 0,
+					row, -1, -1,
+					"e752x UE from Scruber", "");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -425,8 +494,15 @@ static inline void process_ue_no_info_wr(struct mem_ctl_info *mci,
 	if (!handle_error)
 		return;
 
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
 	edac_mc_handle_ue_no_info(mci, "e752x UE log memory write");
+=======
+	edac_dbg(3, "\n");
+	edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, 1, 0, 0, 0,
+			     -1, -1, -1,
+			     "e752x UE log memory write", "");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void do_process_ded_retry(struct mem_ctl_info *mci, u16 error,
@@ -952,7 +1028,11 @@ static void e752x_check(struct mem_ctl_info *mci)
 {
 	struct e752x_error_info info;
 
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 	e752x_get_error_info(mci, &info);
 	e752x_process_error_info(mci, &info, 1);
 }
@@ -1039,12 +1119,20 @@ static void e752x_init_csrows(struct mem_ctl_info *mci, struct pci_dev *pdev,
 			u16 ddrcsr)
 {
 	struct csrow_info *csrow;
+<<<<<<< HEAD
+=======
+	enum edac_type edac_mode;
+>>>>>>> refs/remotes/origin/master
 	unsigned long last_cumul_size;
 	int index, mem_dev, drc_chan;
 	int drc_drbg;		/* DRB granularity 0=64mb, 1=128mb */
 	int drc_ddim;		/* DRAM Data Integrity Mode 0=none, 2=edac */
 	u8 value;
+<<<<<<< HEAD
 	u32 dra, drc, cumul_size;
+=======
+	u32 dra, drc, cumul_size, i, nr_pages;
+>>>>>>> refs/remotes/origin/master
 
 	dra = 0;
 	for (index = 0; index < 4; index++) {
@@ -1053,7 +1141,11 @@ static void e752x_init_csrows(struct mem_ctl_info *mci, struct pci_dev *pdev,
 		dra |= dra_reg << (index * 8);
 	}
 	pci_read_config_dword(pdev, E752X_DRC, &drc);
+<<<<<<< HEAD
 	drc_chan = dual_channel_active(ddrcsr);
+=======
+	drc_chan = dual_channel_active(ddrcsr) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 	drc_drbg = drc_chan + 1;	/* 128 in dual mode, 64 in single */
 	drc_ddim = (drc >> 20) & 0x3;
 
@@ -1065,19 +1157,28 @@ static void e752x_init_csrows(struct mem_ctl_info *mci, struct pci_dev *pdev,
 	for (last_cumul_size = index = 0; index < mci->nr_csrows; index++) {
 		/* mem_dev 0=x8, 1=x4 */
 		mem_dev = (dra >> (index * 4 + 2)) & 0x3;
+<<<<<<< HEAD
 		csrow = &mci->csrows[remap_csrow_index(mci, index)];
+=======
+		csrow = mci->csrows[remap_csrow_index(mci, index)];
+>>>>>>> refs/remotes/origin/master
 
 		mem_dev = (mem_dev == 2);
 		pci_read_config_byte(pdev, E752X_DRB + index, &value);
 		/* convert a 128 or 64 MiB DRB to a page size. */
 		cumul_size = value << (25 + drc_drbg - PAGE_SHIFT);
+<<<<<<< HEAD
 		debugf3("%s(): (%d) cumul_size 0x%x\n", __func__, index,
 			cumul_size);
+=======
+		edac_dbg(3, "(%d) cumul_size 0x%x\n", index, cumul_size);
+>>>>>>> refs/remotes/origin/master
 		if (cumul_size == last_cumul_size)
 			continue;	/* not populated */
 
 		csrow->first_page = last_cumul_size;
 		csrow->last_page = cumul_size - 1;
+<<<<<<< HEAD
 		csrow->nr_pages = cumul_size - last_cumul_size;
 		last_cumul_size = cumul_size;
 		csrow->grain = 1 << 12;	/* 4KiB - resolution of CELOG */
@@ -1098,6 +1199,35 @@ static void e752x_init_csrows(struct mem_ctl_info *mci, struct pci_dev *pdev,
 			}
 		} else
 			csrow->edac_mode = EDAC_NONE;
+=======
+		nr_pages = cumul_size - last_cumul_size;
+		last_cumul_size = cumul_size;
+
+		/*
+		* if single channel or x8 devices then SECDED
+		* if dual channel and x4 then S4ECD4ED
+		*/
+		if (drc_ddim) {
+			if (drc_chan && mem_dev) {
+				edac_mode = EDAC_S4ECD4ED;
+				mci->edac_cap |= EDAC_FLAG_S4ECD4ED;
+			} else {
+				edac_mode = EDAC_SECDED;
+				mci->edac_cap |= EDAC_FLAG_SECDED;
+			}
+		} else
+			edac_mode = EDAC_NONE;
+		for (i = 0; i < csrow->nr_channels; i++) {
+			struct dimm_info *dimm = csrow->channels[i]->dimm;
+
+			edac_dbg(3, "Initializing rank at (%i,%i)\n", index, i);
+			dimm->nr_pages = nr_pages / csrow->nr_channels;
+			dimm->grain = 1 << 12;	/* 4KiB - resolution of CELOG */
+			dimm->mtype = MEM_RDDR;	/* only one type supported */
+			dimm->dtype = mem_dev ? DEV_X4 : DEV_X8;
+			dimm->edac_mode = edac_mode;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1145,9 +1275,17 @@ static int e752x_get_devs(struct pci_dev *pdev, int dev_idx,
 	pvt->bridge_ck = pci_get_device(PCI_VENDOR_ID_INTEL,
 				pvt->dev_info->err_dev, pvt->bridge_ck);
 
+<<<<<<< HEAD
 	if (pvt->bridge_ck == NULL)
 		pvt->bridge_ck = pci_scan_single_device(pdev->bus,
 							PCI_DEVFN(0, 1));
+=======
+	if (pvt->bridge_ck == NULL) {
+		pvt->bridge_ck = pci_scan_single_device(pdev->bus,
+							PCI_DEVFN(0, 1));
+		pci_dev_get(pvt->bridge_ck);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (pvt->bridge_ck == NULL) {
 		e752x_printk(KERN_ERR, "error reporting device not found:"
@@ -1226,13 +1364,22 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 	u16 pci_data;
 	u8 stat8;
 	struct mem_ctl_info *mci;
+<<<<<<< HEAD
+=======
+	struct edac_mc_layer layers[2];
+>>>>>>> refs/remotes/origin/master
 	struct e752x_pvt *pvt;
 	u16 ddrcsr;
 	int drc_chan;		/* Number of channels 0=1chan,1=2chan */
 	struct e752x_error_info discard;
 
+<<<<<<< HEAD
 	debugf0("%s(): mci\n", __func__);
 	debugf0("Starting Probe1\n");
+=======
+	edac_dbg(0, "mci\n");
+	edac_dbg(0, "Starting Probe1\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* check to see if device 0 function 1 is enabled; if it isn't, we
 	 * assume the BIOS has reserved it for a reason and is expecting
@@ -1252,6 +1399,7 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 	/* Dual channel = 1, Single channel = 0 */
 	drc_chan = dual_channel_active(ddrcsr);
 
+<<<<<<< HEAD
 	mci = edac_mc_alloc(sizeof(*pvt), E752X_NR_CSROWS, drc_chan + 1, 0);
 
 	if (mci == NULL) {
@@ -1259,6 +1407,19 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 	}
 
 	debugf3("%s(): init mci\n", __func__);
+=======
+	layers[0].type = EDAC_MC_LAYER_CHIP_SELECT;
+	layers[0].size = E752X_NR_CSROWS;
+	layers[0].is_virt_csrow = true;
+	layers[1].type = EDAC_MC_LAYER_CHANNEL;
+	layers[1].size = drc_chan + 1;
+	layers[1].is_virt_csrow = false;
+	mci = edac_mc_alloc(0, ARRAY_SIZE(layers), layers, sizeof(*pvt));
+	if (mci == NULL)
+		return -ENOMEM;
+
+	edac_dbg(3, "init mci\n");
+>>>>>>> refs/remotes/origin/master
 	mci->mtype_cap = MEM_FLAG_RDDR;
 	/* 3100 IMCH supports SECDEC only */
 	mci->edac_ctl_cap = (dev_idx == I3100) ? EDAC_FLAG_SECDED :
@@ -1266,9 +1427,15 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 	/* FIXME - what if different memory types are in different csrows? */
 	mci->mod_name = EDAC_MOD_STR;
 	mci->mod_ver = E752X_REVISION;
+<<<<<<< HEAD
 	mci->dev = &pdev->dev;
 
 	debugf3("%s(): init pvt\n", __func__);
+=======
+	mci->pdev = &pdev->dev;
+
+	edac_dbg(3, "init pvt\n");
+>>>>>>> refs/remotes/origin/master
 	pvt = (struct e752x_pvt *)mci->pvt_info;
 	pvt->dev_info = &e752x_devs[dev_idx];
 	pvt->mc_symmetric = ((ddrcsr & 0x10) != 0);
@@ -1278,7 +1445,11 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	debugf3("%s(): more mci init\n", __func__);
+=======
+	edac_dbg(3, "more mci init\n");
+>>>>>>> refs/remotes/origin/master
 	mci->ctl_name = pvt->dev_info->ctl_name;
 	mci->dev_name = pci_name(pdev);
 	mci->edac_check = e752x_check;
@@ -1300,7 +1471,11 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 		mci->edac_cap = EDAC_FLAG_SECDED; /* the only mode supported */
 	else
 		mci->edac_cap |= EDAC_FLAG_NONE;
+<<<<<<< HEAD
 	debugf3("%s(): tolm, remapbase, remaplimit\n", __func__);
+=======
+	edac_dbg(3, "tolm, remapbase, remaplimit\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* load the top of low memory, remap base, and remap limit vars */
 	pci_read_config_word(pdev, E752X_TOLM, &pci_data);
@@ -1317,7 +1492,11 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 	 * type of memory controller.  The ID is therefore hardcoded to 0.
 	 */
 	if (edac_mc_add_mc(mci)) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_mc_add_mc()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_mc_add_mc()\n");
+>>>>>>> refs/remotes/origin/master
 		goto fail;
 	}
 
@@ -1335,7 +1514,11 @@ static int e752x_probe1(struct pci_dev *pdev, int dev_idx)
 	}
 
 	/* get this far and it's successful */
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 fail:
@@ -1348,10 +1531,16 @@ fail:
 }
 
 /* returns count (>= 0), or negative on error */
+<<<<<<< HEAD
 static int __devinit e752x_init_one(struct pci_dev *pdev,
 				const struct pci_device_id *ent)
 {
 	debugf0("%s()\n", __func__);
+=======
+static int e752x_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+{
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* wake up and enable device */
 	if (pci_enable_device(pdev) < 0)
@@ -1360,12 +1549,20 @@ static int __devinit e752x_init_one(struct pci_dev *pdev,
 	return e752x_probe1(pdev, ent->driver_data);
 }
 
+<<<<<<< HEAD
 static void __devexit e752x_remove_one(struct pci_dev *pdev)
+=======
+static void e752x_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mem_ctl_info *mci;
 	struct e752x_pvt *pvt;
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (e752x_pci)
 		edac_pci_release_generic_ctl(e752x_pci);
@@ -1381,10 +1578,14 @@ static void __devexit e752x_remove_one(struct pci_dev *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id e752x_pci_tbl[] __devinitdata = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(e752x_pci_tbl) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id e752x_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 	 PCI_VEND_DEV(INTEL, 7520_0), PCI_ANY_ID, PCI_ANY_ID, 0, 0,
 	 E7520},
@@ -1407,7 +1608,11 @@ MODULE_DEVICE_TABLE(pci, e752x_pci_tbl);
 static struct pci_driver e752x_driver = {
 	.name = EDAC_MOD_STR,
 	.probe = e752x_init_one,
+<<<<<<< HEAD
 	.remove = __devexit_p(e752x_remove_one),
+=======
+	.remove = e752x_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table = e752x_pci_tbl,
 };
 
@@ -1415,7 +1620,11 @@ static int __init e752x_init(void)
 {
 	int pci_rc;
 
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 
        /* Ensure that the OPSTATE is set correctly for POLL or NMI */
        opstate_init();
@@ -1426,7 +1635,11 @@ static int __init e752x_init(void)
 
 static void __exit e752x_exit(void)
 {
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 	pci_unregister_driver(&e752x_driver);
 }
 

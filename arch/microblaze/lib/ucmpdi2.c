@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "libgcc.h"
 

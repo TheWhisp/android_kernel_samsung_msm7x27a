@@ -8,6 +8,7 @@ config SND_AOA_ONYX
 	(most of those with digital audio output).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #config SND_AOA_TOPAZ
 #	tristate "support Topaz chips"
 #	---help---
@@ -18,6 +19,8 @@ config SND_AOA_ONYX
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config SND_AOA_TAS
 	tristate "support TAS chips"
 	select I2C

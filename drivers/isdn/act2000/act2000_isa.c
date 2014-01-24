@@ -5,10 +5,14 @@
  * Author       Fritz Elfert
  * Copyright    by Fritz Elfert      <fritz@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -29,6 +33,7 @@
 static int
 act2000_isa_reset(unsigned short portbase)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         unsigned char reg;
         int i;
@@ -52,6 +57,8 @@ act2000_isa_reset(unsigned short portbase)
         }
         return found;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char reg;
 	int i;
 	int found;
@@ -73,12 +80,16 @@ act2000_isa_reset(unsigned short portbase)
 			found++;
 	}
 	return found;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int
 act2000_isa_detect(unsigned short portbase)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         int ret = 0;
 
@@ -88,6 +99,8 @@ act2000_isa_detect(unsigned short portbase)
 	}
         return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (request_region(portbase, ACT2000_PORTLEN, "act2000isa")) {
@@ -95,12 +108,16 @@ act2000_isa_detect(unsigned short portbase)
 		release_region(portbase, ISA_REGION);
 	}
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t
 act2000_isa_interrupt(int dummy, void *dev_id)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         act2000_card *card = dev_id;
         u_char istatus;
@@ -109,17 +126,23 @@ act2000_isa_interrupt(int dummy, void *dev_id)
         if (istatus & ISA_ISR_OUT) {
                 /* RX fifo has data */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	act2000_card *card = dev_id;
 	u_char istatus;
 
 	istatus = (inb(ISA_PORT_ISR) & 0x07);
 	if (istatus & ISA_ISR_OUT) {
 		/* RX fifo has data */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		istatus &= ISA_ISR_OUT_MASK;
 		outb(0, ISA_PORT_SIS);
 		act2000_isa_receive(card);
 		outb(ISA_SIS_INT, ISA_PORT_SIS);
+<<<<<<< HEAD
 <<<<<<< HEAD
         }
         if (istatus & ISA_ISR_ERR) {
@@ -128,13 +151,18 @@ act2000_isa_interrupt(int dummy, void *dev_id)
                 printk(KERN_WARNING "act2000: errIRQ\n");
         }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (istatus & ISA_ISR_ERR) {
 		/* Error Interrupt */
 		istatus &= ISA_ISR_ERR_MASK;
 		printk(KERN_WARNING "act2000: errIRQ\n");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (istatus)
 		printk(KERN_DEBUG "act2000: ?IRQ %d %02x\n", card->irq, istatus);
 	return IRQ_HANDLED;
@@ -142,15 +170,20 @@ act2000_isa_interrupt(int dummy, void *dev_id)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 act2000_isa_select_irq(act2000_card * card)
 =======
 act2000_isa_select_irq(act2000_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+act2000_isa_select_irq(act2000_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char reg;
 
 	reg = (inb(ISA_PORT_COR) & ~ISA_COR_IRQOFF) | ISA_COR_PERR;
 	switch (card->irq) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 3:
 			reg = ISA_COR_IRQ03;
@@ -174,6 +207,8 @@ act2000_isa_select_irq(act2000_card *card)
 			reg = ISA_COR_IRQ15;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 3:
 		reg = ISA_COR_IRQ03;
 		break;
@@ -195,17 +230,24 @@ act2000_isa_select_irq(act2000_card *card)
 	case 15:
 		reg = ISA_COR_IRQ15;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	outb(reg, ISA_PORT_COR);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 act2000_isa_enable_irq(act2000_card * card)
 =======
 act2000_isa_enable_irq(act2000_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+act2000_isa_enable_irq(act2000_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	act2000_isa_select_irq(card);
 	/* Enable READ irq */
@@ -217,6 +259,7 @@ act2000_isa_enable_irq(act2000_card *card)
  * If irq is -1, choose next free irq, else irq is given explicitly.
  */
 int
+<<<<<<< HEAD
 <<<<<<< HEAD
 act2000_isa_config_irq(act2000_card * card, short irq)
 {
@@ -230,6 +273,8 @@ act2000_isa_config_irq(act2000_card * card, short irq)
         if (!irq)
                 return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 act2000_isa_config_irq(act2000_card *card, short irq)
 {
 	int old_irq;
@@ -241,13 +286,17 @@ act2000_isa_config_irq(act2000_card *card, short irq)
 	outb(ISA_COR_IRQOFF, ISA_PORT_COR);
 	if (!irq)
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	old_irq = card->irq;
 	card->irq = irq;
 	if (request_irq(irq, &act2000_isa_interrupt, 0, card->regname, card)) {
 		card->irq = old_irq;
 		card->flags |= ACT2000_FLAGS_IVALID;
+<<<<<<< HEAD
 <<<<<<< HEAD
                 printk(KERN_WARNING
                        "act2000: Could not request irq %d\n",irq);
@@ -276,6 +325,8 @@ act2000_isa_config_port(act2000_card * card, unsigned short portbase)
                 return 0;
         }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING
 		       "act2000: Could not request irq %d\n", irq);
 		return -EBUSY;
@@ -302,13 +353,17 @@ act2000_isa_config_port(act2000_card *card, unsigned short portbase)
 		card->flags |= ACT2000_FLAGS_PVALID;
 		return 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Release ressources, used by an adaptor.
  */
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 act2000_isa_release(act2000_card * card)
 {
@@ -358,6 +413,8 @@ act2000_isa_readb(act2000_card * card, u_char * data)
         }
         return 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 act2000_isa_release(act2000_card *card)
 {
 	unsigned long flags;
@@ -405,7 +462,10 @@ act2000_isa_readb(act2000_card *card, u_char *data)
 		}
 	}
 	return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -414,18 +474,24 @@ act2000_isa_receive(act2000_card *card)
 	u_char c;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (test_and_set_bit(ACT2000_LOCK_RX, (void *) &card->ilock) != 0)
 		return;
 	while (!act2000_isa_readb(card, &c)) {
 		if (card->idat.isa.rcvidx < 8) {
                         card->idat.isa.rcvhdr[card->idat.isa.rcvidx++] = c;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (test_and_set_bit(ACT2000_LOCK_RX, (void *) &card->ilock) != 0)
 		return;
 	while (!act2000_isa_readb(card, &c)) {
 		if (card->idat.isa.rcvidx < 8) {
 			card->idat.isa.rcvhdr[card->idat.isa.rcvidx++] = c;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (card->idat.isa.rcvidx == 8) {
 				int valid = actcapi_chkhdr(card, (actcapi_msghdr *)&card->idat.isa.rcvhdr);
 
@@ -481,10 +547,14 @@ act2000_isa_receive(act2000_card *card)
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 act2000_isa_send(act2000_card * card)
 =======
 act2000_isa_send(act2000_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+act2000_isa_send(act2000_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	struct sk_buff *skb;
@@ -492,10 +562,14 @@ act2000_isa_send(act2000_card *card)
 	int l;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (test_and_set_bit(ACT2000_LOCK_TX, (void *) &card->ilock) != 0)
 =======
 	if (test_and_set_bit(ACT2000_LOCK_TX, (void *) &card->ilock) != 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_and_set_bit(ACT2000_LOCK_TX, (void *) &card->ilock) != 0)
+>>>>>>> refs/remotes/origin/master
 		return;
 	while (1) {
 		spin_lock_irqsave(&card->lock, flags);
@@ -505,10 +579,14 @@ act2000_isa_send(act2000_card *card)
 				msg = (actcapi_msg *)card->sbuf->data;
 				if ((msg->hdr.cmd.cmd == 0x86) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    (msg->hdr.cmd.subcmd == 0)   ) {
 =======
 				    (msg->hdr.cmd.subcmd == 0)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    (msg->hdr.cmd.subcmd == 0)) {
+>>>>>>> refs/remotes/origin/master
 					/* Save flags in message */
 					card->need_b3ack = msg->msg.data_b3_req.flags;
 					msg->msg.data_b3_req.flags = 0;
@@ -537,10 +615,14 @@ act2000_isa_send(act2000_card *card)
 		msg = (actcapi_msg *)card->ack_msg;
 		if ((msg->hdr.cmd.cmd == 0x86) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    (msg->hdr.cmd.subcmd == 0)   ) {
 =======
 		    (msg->hdr.cmd.subcmd == 0)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    (msg->hdr.cmd.subcmd == 0)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * If it's user data, reset data-ptr
 			 * and put skb into ackq.
@@ -559,6 +641,7 @@ act2000_isa_send(act2000_card *card)
  * Get firmware ID, check for 'ISDN' signature.
  */
 static int
+<<<<<<< HEAD
 <<<<<<< HEAD
 act2000_isa_getid(act2000_card * card)
 {
@@ -588,6 +671,8 @@ act2000_isa_getid(act2000_card * card)
 		*p = '\0';
         printk(KERN_INFO "act2000: Firmware-ID: %s\n", fid.revision);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 act2000_isa_getid(act2000_card *card)
 {
 
@@ -615,22 +700,30 @@ act2000_isa_getid(act2000_card *card)
 	if ((p = strchr(fid.revision, '\n')))
 		*p = '\0';
 	printk(KERN_INFO "act2000: Firmware-ID: %s\n", fid.revision);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (card->flags & ACT2000_FLAGS_IVALID) {
 		printk(KERN_DEBUG "Enabling Interrupts ...\n");
 		act2000_isa_enable_irq(card);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
         return 0;
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Download microcode into card, check Firmware signature.
  */
 int
+<<<<<<< HEAD
 <<<<<<< HEAD
 act2000_isa_download(act2000_card * card, act2000_ddef __user * cb)
 {
@@ -681,6 +774,8 @@ act2000_isa_download(act2000_card * card, act2000_ddef __user * cb)
         msleep_interruptible(500);
         return (act2000_isa_getid(card));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 act2000_isa_download(act2000_card *card, act2000_ddef __user *cb)
 {
 	unsigned int length;
@@ -729,5 +824,8 @@ act2000_isa_download(act2000_card *card, act2000_ddef __user *cb)
 	kfree(buf);
 	msleep_interruptible(500);
 	return (act2000_isa_getid(card));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

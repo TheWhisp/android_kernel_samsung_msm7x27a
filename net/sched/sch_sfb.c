@@ -27,9 +27,13 @@
 #include <net/pkt_sched.h>
 #include <net/inet_ecn.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/flow_keys.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/flow_keys.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * SFB uses two B[l][n] : L x N arrays of bins (L levels, N bins per level)
@@ -290,7 +294,10 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	u32 r, slot, salt, sfbhash;
 	int ret = NET_XMIT_SUCCESS | __NET_XMIT_BYPASS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct flow_keys keys;
 
 	if (unlikely(sch->q.qlen >= q->limit)) {
@@ -298,7 +305,10 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		q->stats.queuedrop++;
 		goto drop;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (q->rehash_interval > 0) {
 		unsigned long limit = q->rehash_time + q->rehash_interval;
@@ -317,27 +327,39 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		if (!sfb_classify(skb, q, &ret, &salt))
 			goto other_drop;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else {
 		salt = skb_get_rxhash(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		keys.src = salt;
 		keys.dst = 0;
 		keys.ports = 0;
 	} else {
 		skb_flow_dissect(skb, &keys);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	slot = q->slot;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sfbhash = jhash_1word(salt, q->bins[slot].perturbation);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sfbhash = jhash_3words((__force u32)keys.dst,
 			       (__force u32)keys.src,
 			       (__force u32)keys.ports,
 			       q->bins[slot].perturbation);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!sfbhash)
 		sfbhash = 1;
 	sfb_skb_cb(skb)->hashes[slot] = sfbhash;
@@ -361,6 +383,7 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 	sfb_skb_cb(skb)->hashes[slot] = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(minqlen >= q->max || sch->q.qlen >= q->limit)) {
 		sch->qstats.overlimits++;
 		if (minqlen >= q->max)
@@ -372,6 +395,11 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		sch->qstats.overlimits++;
 		q->stats.bucketdrop++;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(minqlen >= q->max)) {
+		sch->qstats.overlimits++;
+		q->stats.bucketdrop++;
+>>>>>>> refs/remotes/origin/master
 		goto drop;
 	}
 
@@ -379,13 +407,19 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch)
 		/* Inelastic flow */
 		if (q->double_buffering) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sfbhash = jhash_1word(salt, q->bins[slot].perturbation);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			sfbhash = jhash_3words((__force u32)keys.dst,
 					       (__force u32)keys.src,
 					       (__force u32)keys.ports,
 					       q->bins[slot].perturbation);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!sfbhash)
 				sfbhash = 1;
 			sfb_skb_cb(skb)->hashes[slot] = sfbhash;
@@ -600,7 +634,12 @@ static int sfb_dump(struct Qdisc *sch, struct sk_buff *skb)
 	opts = nla_nest_start(skb, TCA_OPTIONS);
 	if (opts == NULL)
 		goto nla_put_failure;
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_SFB_PARMS, sizeof(opt), &opt);
+=======
+	if (nla_put(skb, TCA_SFB_PARMS, sizeof(opt), &opt))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return nla_nest_end(skb, opts);
 
 nla_put_failure:

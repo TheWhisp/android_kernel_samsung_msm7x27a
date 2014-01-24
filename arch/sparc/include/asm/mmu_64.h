@@ -30,6 +30,7 @@
 #define CTX_PGSZ_MASK		((CTX_PGSZ_BITS << CTX_PGSZ0_SHIFT) | \
 				 (CTX_PGSZ_BITS << CTX_PGSZ1_SHIFT))
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPARC64_PAGE_SIZE_8KB)
 #define CTX_PGSZ_BASE	CTX_PGSZ_8KB
 #elif defined(CONFIG_SPARC64_PAGE_SIZE_64KB)
@@ -46,6 +47,10 @@
 #define CTX_PGSZ_HUGE		CTX_PGSZ_64KB
 #endif
 
+=======
+#define CTX_PGSZ_BASE	CTX_PGSZ_8KB
+#define CTX_PGSZ_HUGE	CTX_PGSZ_4MB
+>>>>>>> refs/remotes/origin/master
 #define CTX_PGSZ_KERN	CTX_PGSZ_4MB
 
 /* Thus, when running on UltraSPARC-III+ and later, we use the following
@@ -96,7 +101,11 @@ struct tsb_config {
 
 #define MM_TSB_BASE	0
 
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 #define MM_TSB_HUGE	1
 #define MM_NUM_TSBS	2
 #else

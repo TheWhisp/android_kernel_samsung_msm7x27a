@@ -30,6 +30,12 @@
  *  The decompression of IP datagram MUST be done after the reassembly,
  *  AH/ESP processing.
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) "IPv6: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <net/ip.h>
 #include <net/xfrm.h>
@@ -43,6 +49,10 @@
 #include <linux/list.h>
 #include <linux/vmalloc.h>
 #include <linux/rtnetlink.h>
+<<<<<<< HEAD
+=======
+#include <net/ip6_route.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/icmp.h>
 #include <net/ipv6.h>
 #include <net/protocol.h>
@@ -60,7 +70,12 @@ static void ipcomp6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 		(struct ip_comp_hdr *)(skb->data + offset);
 	struct xfrm_state *x;
 
+<<<<<<< HEAD
 	if (type != ICMPV6_DEST_UNREACH && type != ICMPV6_PKT_TOOBIG)
+=======
+	if (type != ICMPV6_PKT_TOOBIG &&
+	    type != NDISC_REDIRECT)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	spi = htonl(ntohs(ipcomph->cpi));
@@ -69,8 +84,15 @@ static void ipcomp6_err(struct sk_buff *skb, struct inet6_skb_parm *opt,
 	if (!x)
 		return;
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "pmtu discovery on SA IPCOMP/%08x/%pI6\n",
 			spi, &iph->daddr);
+=======
+	if (type == NDISC_REDIRECT)
+		ip6_redirect(skb, net, skb->dev->ifindex, 0);
+	else
+		ip6_update_pmtu(skb, net, info, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	xfrm_state_put(x);
 }
 
@@ -190,11 +212,19 @@ static const struct inet6_protocol ipcomp6_protocol =
 static int __init ipcomp6_init(void)
 {
 	if (xfrm_register_type(&ipcomp6_type, AF_INET6) < 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "ipcomp6 init: can't add xfrm type\n");
 		return -EAGAIN;
 	}
 	if (inet6_add_protocol(&ipcomp6_protocol, IPPROTO_COMP) < 0) {
 		printk(KERN_INFO "ipcomp6 init: can't add protocol\n");
+=======
+		pr_info("%s: can't add xfrm type\n", __func__);
+		return -EAGAIN;
+	}
+	if (inet6_add_protocol(&ipcomp6_protocol, IPPROTO_COMP) < 0) {
+		pr_info("%s: can't add protocol\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		xfrm_unregister_type(&ipcomp6_type, AF_INET6);
 		return -EAGAIN;
 	}
@@ -204,9 +234,15 @@ static int __init ipcomp6_init(void)
 static void __exit ipcomp6_fini(void)
 {
 	if (inet6_del_protocol(&ipcomp6_protocol, IPPROTO_COMP) < 0)
+<<<<<<< HEAD
 		printk(KERN_INFO "ipv6 ipcomp close: can't remove protocol\n");
 	if (xfrm_unregister_type(&ipcomp6_type, AF_INET6) < 0)
 		printk(KERN_INFO "ipv6 ipcomp close: can't remove xfrm type\n");
+=======
+		pr_info("%s: can't remove protocol\n", __func__);
+	if (xfrm_unregister_type(&ipcomp6_type, AF_INET6) < 0)
+		pr_info("%s: can't remove xfrm type\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ipcomp6_init);

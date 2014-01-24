@@ -37,9 +37,12 @@ struct migor_ts_priv {
 	struct i2c_client *client;
 	struct input_dev *input;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct delayed_work work;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int irq;
 };
 
@@ -47,6 +50,7 @@ static const u_int8_t migor_ts_ena_seq[17] = { 0x33, 0x22, 0x11,
 					       0x01, 0x06, 0x07, };
 static const u_int8_t migor_ts_dis_seq[17] = { };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void migor_ts_poscheck(struct work_struct *work)
 {
@@ -58,12 +62,20 @@ static irqreturn_t migor_ts_isr(int irq, void *dev_id)
 {
 	struct migor_ts_priv *priv = dev_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static irqreturn_t migor_ts_isr(int irq, void *dev_id)
+{
+	struct migor_ts_priv *priv = dev_id;
+>>>>>>> refs/remotes/origin/master
 	unsigned short xpos, ypos;
 	unsigned char event;
 	u_int8_t buf[16];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The touch screen controller chip is hooked up to the CPU
 	 * using I2C and a single interrupt line. The interrupt line
@@ -75,7 +87,10 @@ static irqreturn_t migor_ts_isr(int irq, void *dev_id)
 	 * IRQ here.
 	 */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(buf, 0, sizeof(buf));
 
 	/* Set Index 0 */
@@ -96,16 +111,23 @@ static irqreturn_t migor_ts_isr(int irq, void *dev_id)
 	event = buf[12];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (event == EVENT_PENDOWN || event == EVENT_REPEAT) {
 =======
 	switch (event) {
 	case EVENT_PENDOWN:
 	case EVENT_REPEAT:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (event) {
+	case EVENT_PENDOWN:
+	case EVENT_REPEAT:
+>>>>>>> refs/remotes/origin/master
 		input_report_key(priv->input, BTN_TOUCH, 1);
 		input_report_abs(priv->input, ABS_X, ypos); /*X-Y swap*/
 		input_report_abs(priv->input, ABS_Y, xpos);
 		input_sync(priv->input);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else if (event == EVENT_PENUP) {
 		input_report_key(priv->input, BTN_TOUCH, 0);
@@ -138,6 +160,8 @@ static irqreturn_t migor_ts_isr(int irq, void *dev_id)
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case EVENT_PENUP:
@@ -150,7 +174,10 @@ static irqreturn_t migor_ts_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int migor_ts_open(struct input_dev *dev)
 {
 	struct migor_ts_priv *priv = input_get_drvdata(dev);
@@ -176,6 +203,7 @@ static void migor_ts_close(struct input_dev *dev)
 	disable_irq(priv->irq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* cancel pending work and wait for migor_ts_poscheck() to finish */
 	if (cancel_delayed_work_sync(&priv->work)) {
 		/*
@@ -187,6 +215,8 @@ static void migor_ts_close(struct input_dev *dev)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* disable controller */
 	i2c_master_send(client, migor_ts_dis_seq, sizeof(migor_ts_dis_seq));
 
@@ -201,6 +231,7 @@ static int migor_ts_probe(struct i2c_client *client,
 	int error;
 
 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!priv) {
 		dev_err(&client->dev, "failed to allocate driver data\n");
@@ -220,6 +251,8 @@ static int migor_ts_probe(struct i2c_client *client,
 	input->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
 	input->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	input = input_allocate_device();
 	if (!priv || !input) {
 		dev_err(&client->dev, "failed to allocate memory\n");
@@ -234,7 +267,10 @@ static int migor_ts_probe(struct i2c_client *client,
 	input->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
 
 	__set_bit(BTN_TOUCH, input->keybit);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	input_set_abs_params(input, ABS_X, 95, 955, 0, 0);
 	input_set_abs_params(input, ABS_Y, 85, 935, 0, 0);
@@ -248,6 +284,7 @@ static int migor_ts_probe(struct i2c_client *client,
 
 	input_set_drvdata(input, priv);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	priv->client = client;
 	priv->input = input;
@@ -277,6 +314,8 @@ static int migor_ts_probe(struct i2c_client *client,
  err0:
 	dev_set_drvdata(&client->dev, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = request_threaded_irq(priv->irq, NULL, migor_ts_isr,
                                      IRQF_TRIGGER_LOW | IRQF_ONESHOT,
                                      client->name, priv);
@@ -299,17 +338,24 @@ static int migor_ts_probe(struct i2c_client *client,
  err_free_mem:
 	input_free_device(input);
 	kfree(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
 static int migor_ts_remove(struct i2c_client *client)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct migor_ts_priv *priv = dev_get_drvdata(&client->dev);
 =======
 	struct migor_ts_priv *priv = i2c_get_clientdata(client);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct migor_ts_priv *priv = i2c_get_clientdata(client);
+>>>>>>> refs/remotes/origin/master
 
 	free_irq(priv->irq, priv);
 	input_unregister_device(priv->input);
@@ -324,10 +370,14 @@ static int migor_ts_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct migor_ts_priv *priv = dev_get_drvdata(&client->dev);
 =======
 	struct migor_ts_priv *priv = i2c_get_clientdata(client);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct migor_ts_priv *priv = i2c_get_clientdata(client);
+>>>>>>> refs/remotes/origin/master
 
 	if (device_may_wakeup(&client->dev))
 		enable_irq_wake(priv->irq);
@@ -339,10 +389,14 @@ static int migor_ts_resume(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct migor_ts_priv *priv = dev_get_drvdata(&client->dev);
 =======
 	struct migor_ts_priv *priv = i2c_get_clientdata(client);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct migor_ts_priv *priv = i2c_get_clientdata(client);
+>>>>>>> refs/remotes/origin/master
 
 	if (device_may_wakeup(&client->dev))
 		disable_irq_wake(priv->irq);
@@ -369,6 +423,7 @@ static struct i2c_driver migor_ts_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init migor_ts_init(void)
 {
 	return i2c_add_driver(&migor_ts_driver);
@@ -381,13 +436,19 @@ static void __exit migor_ts_exit(void)
 =======
 module_i2c_driver(migor_ts_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(migor_ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("MigoR Touchscreen driver");
 MODULE_AUTHOR("Magnus Damm <damm@opensource.se>");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(migor_ts_init);
 module_exit(migor_ts_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

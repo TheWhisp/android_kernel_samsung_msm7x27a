@@ -27,18 +27,24 @@
 #include <linux/string.h>
 #include <linux/bug.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 #include <asm/unaligned.h>
 #include <asm/system.h>
 #include <asm/io.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 
 #include <asm/unaligned.h>
 #include <asm/io.h>
 #include <asm/barrier.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MTD_MAP_BANK_WIDTH_1
 #define map_bankwidth(map) 1
@@ -223,9 +229,13 @@ struct map_info {
 	void *cached;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int swap; /* this mapping's byte-swapping requirement */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int swap; /* this mapping's byte-swapping requirement */
+>>>>>>> refs/remotes/origin/master
 	int bankwidth; /* in octets. This isn't necessarily the width
 		       of actual bus cycles -- it's the repeat interval
 		      in bytes, before you are talking to the first chip again.
@@ -256,6 +266,10 @@ struct map_info {
 	unsigned long pfow_base;
 	unsigned long map_priv_1;
 	unsigned long map_priv_2;
+<<<<<<< HEAD
+=======
+	struct device_node *device_node;
+>>>>>>> refs/remotes/origin/master
 	void *fldrv_priv;
 	struct mtd_chip_driver *fldrv;
 };
@@ -353,6 +367,11 @@ static inline map_word map_word_load(struct map_info *map, const void *ptr)
 #endif
 	else if (map_bankwidth_is_large(map))
 		memcpy(r.x, ptr, map->bankwidth);
+<<<<<<< HEAD
+=======
+	else
+		BUG();
+>>>>>>> refs/remotes/origin/master
 
 	return r;
 }
@@ -373,7 +392,11 @@ static inline map_word map_word_load_partial(struct map_info *map, map_word orig
 			bitpos = (map_bankwidth(map)-1-i)*8;
 #endif
 			orig.x[0] &= ~(0xff << bitpos);
+<<<<<<< HEAD
 			orig.x[0] |= buf[i-start] << bitpos;
+=======
+			orig.x[0] |= (unsigned long)buf[i-start] << bitpos;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return orig;
@@ -392,7 +415,11 @@ static inline map_word map_word_ff(struct map_info *map)
 
 	if (map_bankwidth(map) < MAP_FF_LIMIT) {
 		int bw = 8 * map_bankwidth(map);
+<<<<<<< HEAD
 		r.x[0] = (1 << bw) - 1;
+=======
+		r.x[0] = (1UL << bw) - 1;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		for (i=0; i<map_words(map); i++)
 			r.x[i] = ~0UL;
@@ -436,6 +463,11 @@ static inline void inline_map_write(struct map_info *map, const map_word datum, 
 #endif
 	else if (map_bankwidth_is_large(map))
 		memcpy_toio(map->virt+ofs, datum.x, map->bankwidth);
+<<<<<<< HEAD
+=======
+	else
+		BUG();
+>>>>>>> refs/remotes/origin/master
 	mb();
 }
 

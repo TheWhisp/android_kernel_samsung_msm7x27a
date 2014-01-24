@@ -15,7 +15,10 @@
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
 #include <asm/btfixup.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/ptrace.h>
 #include <asm/page.h>
 
@@ -78,6 +81,7 @@ register struct thread_info *current_thread_info_reg asm("g6");
 /*
  * thread information allocation
  */
+<<<<<<< HEAD
 #define THREAD_INFO_ORDER  1
 
 #define __HAVE_ARCH_THREAD_INFO_ALLOCATOR
@@ -100,6 +104,14 @@ BTFIXUPDEF_CALL(void, free_thread_info, struct thread_info *)
 =======
 #define THREAD_SIZE		(2 * PAGE_SIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define THREAD_SIZE_ORDER  1
+
+#endif /* __ASSEMBLY__ */
+
+/* Size of kernel stack for each process */
+#define THREAD_SIZE		(2 * PAGE_SIZE)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Offsets in thread_info structure, used in assembly code
@@ -122,8 +134,11 @@ BTFIXUPDEF_CALL(void, free_thread_info, struct thread_info *)
 #define TI_W_SAVED	0x250
 /* #define TI_RESTART_BLOCK 0x25n */ /* Nobody cares */
 
+<<<<<<< HEAD
 #define PREEMPT_ACTIVE		0x4000000
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * thread information flag bit numbers
  */
@@ -138,26 +153,36 @@ BTFIXUPDEF_CALL(void, free_thread_info, struct thread_info *)
 					 * TIF_NEED_RESCHED */
 #define TIF_MEMDIE		10	/* is terminating due to OOM killer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		11	/* is freezing for suspend */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* as above, but as bit values */
 #define _TIF_SYSCALL_TRACE	(1<<TIF_SYSCALL_TRACE)
 #define _TIF_NOTIFY_RESUME	(1<<TIF_NOTIFY_RESUME)
 #define _TIF_SIGPENDING		(1<<TIF_SIGPENDING)
 #define _TIF_NEED_RESCHED	(1<<TIF_NEED_RESCHED)
+<<<<<<< HEAD
 #define _TIF_RESTORE_SIGMASK	(1<<TIF_RESTORE_SIGMASK)
+=======
+>>>>>>> refs/remotes/origin/master
 #define _TIF_USEDFPU		(1<<TIF_USEDFPU)
 #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
 
 #define _TIF_DO_NOTIFY_RESUME_MASK	(_TIF_NOTIFY_RESUME | \
+<<<<<<< HEAD
 					 _TIF_SIGPENDING | \
 					 _TIF_RESTORE_SIGMASK)
 <<<<<<< HEAD
 #define _TIF_FREEZE		(1<<TIF_FREEZE)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 _TIF_SIGPENDING)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 

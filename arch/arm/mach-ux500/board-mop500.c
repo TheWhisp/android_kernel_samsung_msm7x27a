@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2008-2009 ST-Ericsson
+=======
+ * Copyright (C) 2008-2012 ST-Ericsson
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Srinidhi KASAGAR <srinidhi.kasagar@stericsson.com>
  *
@@ -12,6 +16,7 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/i2c.h>
 #include <linux/gpio.h>
@@ -68,10 +73,39 @@
 
 #include "pins-db8500.h"
 #include "ste-dma40-db8500.h"
+=======
+#include <linux/clk.h>
+#include <linux/io.h>
+#include <linux/platform_data/db8500_thermal.h>
+#include <linux/amba/bus.h>
+#include <linux/amba/pl022.h>
+#include <linux/mfd/abx500/ab8500.h>
+#include <linux/regulator/ab8500.h>
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/driver.h>
+#include <linux/mfd/tps6105x.h>
+#include <linux/platform_data/leds-lp55xx.h>
+#include <linux/input.h>
+#include <linux/delay.h>
+#include <linux/leds.h>
+#include <linux/pinctrl/consumer.h>
+#include <linux/platform_data/pinctrl-nomadik.h>
+#include <linux/platform_data/dma-ste-dma40.h>
+
+#include <asm/mach-types.h>
+
+#include "setup.h"
+#include "devices.h"
+#include "irqs.h"
+
+#include "ste-dma40-db8500.h"
+#include "db8500-regs.h"
+>>>>>>> refs/remotes/origin/master
 #include "devices-db8500.h"
 #include "board-mop500.h"
 #include "board-mop500-regulators.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct ab8500_gpio_platform_data ab8500_gpio_pdata = {
 	.gpio_base		= MOP500_AB8500_GPIO(0),
@@ -465,20 +499,31 @@ static struct platform_device *mop500_platform_devs[] __initdata = {
 	&mop500_gpio_keys_device,
 	&ab8500_device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct ab8500_platform_data ab8500_platdata = {
+	.irq_base	= MOP500_AB8500_IRQ_BASE,
+	.regulator	= &ab8500_regulator_plat_data,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_STE_DMA40
 static struct stedma40_chan_cfg ssp0_dma_cfg_rx = {
 	.mode = STEDMA40_MODE_LOGICAL,
+<<<<<<< HEAD
 	.dir = STEDMA40_PERIPH_TO_MEM,
 	.src_dev_type =  DB8500_DMA_DEV8_SSP0_RX,
 	.dst_dev_type = STEDMA40_DEV_DST_MEMORY,
 	.src_info.data_width = STEDMA40_BYTE_WIDTH,
 	.dst_info.data_width = STEDMA40_BYTE_WIDTH,
+=======
+	.dir = DMA_DEV_TO_MEM,
+	.dev_type = DB8500_DMA_DEV8_SSP0,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct stedma40_chan_cfg ssp0_dma_cfg_tx = {
 	.mode = STEDMA40_MODE_LOGICAL,
+<<<<<<< HEAD
 	.dir = STEDMA40_MEM_TO_PERIPH,
 	.src_dev_type = STEDMA40_DEV_SRC_MEMORY,
 	.dst_dev_type = DB8500_DMA_DEV8_SSP0_TX,
@@ -492,6 +537,14 @@ static struct pl022_ssp_controller ssp0_platform_data = {
 =======
 static struct pl022_ssp_controller ssp0_plat = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dir = DMA_MEM_TO_DEV,
+	.dev_type = DB8500_DMA_DEV8_SSP0,
+};
+#endif
+
+struct pl022_ssp_controller ssp0_plat = {
+>>>>>>> refs/remotes/origin/master
 	.bus_id = 0,
 #ifdef CONFIG_STE_DMA40
 	.enable_dma = 1,
@@ -506,6 +559,7 @@ static struct pl022_ssp_controller ssp0_plat = {
 	 */
 	.num_chipselect = 5,
 };
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static void __init mop500_spi_init(void)
@@ -943,3 +997,5 @@ DT_MACHINE_START(U8500_DT, "ST-Ericsson U8500 platform (Device Tree Support)")
 MACHINE_END
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

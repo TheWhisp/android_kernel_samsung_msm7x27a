@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: exresop - AML Interpreter operand/object resolution
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,7 +98,11 @@ acpi_ex_check_object_type(acpi_object_type type_needed,
 	if (type_needed == ACPI_TYPE_LOCAL_REFERENCE) {
 		/*
 		 * Allow the AML "Constant" opcodes (Zero, One, etc.) to be reference
+<<<<<<< HEAD
 		 * objects and thus allow them to be targets.  (As per the ACPI
+=======
+		 * objects and thus allow them to be targets. (As per the ACPI
+>>>>>>> refs/remotes/origin/master
 		 * specification, a store to a constant is a noop.)
 		 */
 		if ((this_type == ACPI_TYPE_INTEGER) &&
@@ -117,7 +128,11 @@ acpi_ex_check_object_type(acpi_object_type type_needed,
  *
  * FUNCTION:    acpi_ex_resolve_operands
  *
+<<<<<<< HEAD
  * PARAMETERS:  Opcode              - Opcode being interpreted
+=======
+ * PARAMETERS:  opcode              - Opcode being interpreted
+>>>>>>> refs/remotes/origin/master
  *              stack_ptr           - Pointer to the operand stack to be
  *                                    resolved
  *              walk_state          - Current state
@@ -311,8 +326,12 @@ acpi_ex_resolve_operands(u16 opcode,
 		case ARGI_DEVICE_REF:
 		case ARGI_TARGETREF:	/* Allows implicit conversion rules before store */
 		case ARGI_FIXED_TARGET:	/* No implicit conversion before store to target */
+<<<<<<< HEAD
 		case ARGI_SIMPLE_TARGET:	/* Name, Local, or Arg - no implicit conversion  */
 
+=======
+		case ARGI_SIMPLE_TARGET:	/* Name, Local, or arg - no implicit conversion  */
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Need an operand of type ACPI_TYPE_LOCAL_REFERENCE
 			 * A Namespace Node is OK as-is
@@ -331,7 +350,10 @@ acpi_ex_resolve_operands(u16 opcode,
 			goto next_operand;
 
 		case ARGI_DATAREFOBJ:	/* Store operator only */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * We don't want to resolve index_op reference objects during
 			 * a store because this would be an implicit de_ref_of operation.
@@ -341,13 +363,24 @@ acpi_ex_resolve_operands(u16 opcode,
 			if ((opcode == AML_STORE_OP) &&
 			    ((*stack_ptr)->common.type ==
 			     ACPI_TYPE_LOCAL_REFERENCE)
+<<<<<<< HEAD
 			    && ((*stack_ptr)->reference.class == ACPI_REFCLASS_INDEX)) {
+=======
+			    && ((*stack_ptr)->reference.class ==
+				ACPI_REFCLASS_INDEX)) {
+>>>>>>> refs/remotes/origin/master
 				goto next_operand;
 			}
 			break;
 
 		default:
+<<<<<<< HEAD
 			/* All cases covered above */
+=======
+
+			/* All cases covered above */
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -414,7 +447,11 @@ acpi_ex_resolve_operands(u16 opcode,
 			/*
 			 * Need an operand of type ACPI_TYPE_INTEGER,
 			 * But we can implicitly convert from a STRING or BUFFER
+<<<<<<< HEAD
 			 * Aka - "Implicit Source Operand Conversion"
+=======
+			 * aka - "Implicit Source Operand Conversion"
+>>>>>>> refs/remotes/origin/master
 			 */
 			status =
 			    acpi_ex_convert_to_integer(obj_desc, stack_ptr, 16);
@@ -437,11 +474,18 @@ acpi_ex_resolve_operands(u16 opcode,
 			goto next_operand;
 
 		case ARGI_BUFFER:
+<<<<<<< HEAD
 
 			/*
 			 * Need an operand of type ACPI_TYPE_BUFFER,
 			 * But we can implicitly convert from a STRING or INTEGER
 			 * Aka - "Implicit Source Operand Conversion"
+=======
+			/*
+			 * Need an operand of type ACPI_TYPE_BUFFER,
+			 * But we can implicitly convert from a STRING or INTEGER
+			 * aka - "Implicit Source Operand Conversion"
+>>>>>>> refs/remotes/origin/master
 			 */
 			status = acpi_ex_convert_to_buffer(obj_desc, stack_ptr);
 			if (ACPI_FAILURE(status)) {
@@ -463,11 +507,18 @@ acpi_ex_resolve_operands(u16 opcode,
 			goto next_operand;
 
 		case ARGI_STRING:
+<<<<<<< HEAD
 
 			/*
 			 * Need an operand of type ACPI_TYPE_STRING,
 			 * But we can implicitly convert from a BUFFER or INTEGER
 			 * Aka - "Implicit Source Operand Conversion"
+=======
+			/*
+			 * Need an operand of type ACPI_TYPE_STRING,
+			 * But we can implicitly convert from a BUFFER or INTEGER
+			 * aka - "Implicit Source Operand Conversion"
+>>>>>>> refs/remotes/origin/master
 			 */
 			status = acpi_ex_convert_to_string(obj_desc, stack_ptr,
 							   ACPI_IMPLICIT_CONVERT_HEX);
@@ -566,6 +617,10 @@ acpi_ex_resolve_operands(u16 opcode,
 				break;
 
 			default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 				ACPI_ERROR((AE_INFO,
 					    "Needed [Buffer/String/Package/Reference], found [%s] %p",
 					    acpi_ut_get_object_type_name
@@ -588,6 +643,10 @@ acpi_ex_resolve_operands(u16 opcode,
 				break;
 
 			default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 				ACPI_ERROR((AE_INFO,
 					    "Needed [Buffer/String/Package], found [%s] %p",
 					    acpi_ut_get_object_type_name
@@ -609,6 +668,10 @@ acpi_ex_resolve_operands(u16 opcode,
 				break;
 
 			default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 				ACPI_ERROR((AE_INFO,
 					    "Needed [Region/Buffer], found [%s] %p",
 					    acpi_ut_get_object_type_name
@@ -642,7 +705,11 @@ acpi_ex_resolve_operands(u16 opcode,
 				if (acpi_gbl_enable_interpreter_slack) {
 					/*
 					 * Enable original behavior of Store(), allowing any and all
+<<<<<<< HEAD
 					 * objects as the source operand.  The ACPI spec does not
+=======
+					 * objects as the source operand. The ACPI spec does not
+>>>>>>> refs/remotes/origin/master
 					 * allow this, however.
 					 */
 					break;
@@ -686,7 +753,11 @@ acpi_ex_resolve_operands(u16 opcode,
 			return_ACPI_STATUS(status);
 		}
 
+<<<<<<< HEAD
 	      next_operand:
+=======
+next_operand:
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If more operands needed, decrement stack_ptr to point
 		 * to next operand on stack

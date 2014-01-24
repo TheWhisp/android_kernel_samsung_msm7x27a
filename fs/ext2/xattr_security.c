@@ -4,6 +4,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -12,6 +13,9 @@
 =======
 #include "ext2.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ext2.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/security.h>
 #include "xattr.h"
 
@@ -51,6 +55,7 @@ ext2_xattr_security_set(struct dentry *dentry, const char *name,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int
 ext2_init_security(struct inode *inode, struct inode *dir,
 		   const struct qstr *qstr)
@@ -74,6 +79,8 @@ ext2_init_security(struct inode *inode, struct inode *dir,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ext2_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 		    void *fs_info)
 {
@@ -98,7 +105,10 @@ ext2_init_security(struct inode *inode, struct inode *dir,
 					    &ext2_initxattrs, NULL);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 const struct xattr_handler ext2_xattr_security_handler = {
 	.prefix	= XATTR_SECURITY_PREFIX,
 	.list	= ext2_xattr_security_list,

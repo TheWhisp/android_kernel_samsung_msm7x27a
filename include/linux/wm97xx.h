@@ -39,14 +39,20 @@
 #define WM97XX_ADCSEL_Y		0x2000	/* y coord measurement */
 #define WM97XX_ADCSEL_PRES	0x3000	/* pressure measurement */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WM97XX_ADCSEL_MASK	0x7000
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM97XX_AUX_ID1		0x4000
 #define WM97XX_AUX_ID2		0x5000
 #define WM97XX_AUX_ID3		0x6000
 #define WM97XX_AUX_ID4		0x7000
 #define WM97XX_ADCSEL_MASK	0x7000	/* ADC selection mask */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM97XX_COO		0x0800	/* enable coordinate mode */
 #define WM97XX_CTC		0x0400	/* enable continuous mode */
 #define WM97XX_CM_RATE_93	0x0000	/* 93.75Hz continuous rate */
@@ -70,6 +76,7 @@
 #define WM97XX_RPR		0x2000	/* wake up on pen down */
 #define WM97XX_PEN_DOWN		0x8000	/* pen is down */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WM97XX_ADCSRC_MASK	0x7000	/* ADC source mask */
 
 #define WM97XX_AUX_ID1		0x8001
@@ -79,6 +86,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* WM9712 Bits */
 #define WM9712_45W		0x1000	/* set for 5-wire touchscreen */

@@ -16,11 +16,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if 0 // by bbelief
 #include <linux/export.h>
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 #include <net/mac80211.h>
 
@@ -50,7 +54,12 @@ bool ath_hw_keyreset(struct ath_common *common, u16 entry)
 	void *ah = common->ah;
 
 	if (entry >= common->keymax) {
+<<<<<<< HEAD
 		ath_err(common, "keycache entry %u out of range\n", entry);
+=======
+		ath_err(common, "keyreset: keycache entry %u out of range\n",
+			entry);
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
@@ -96,7 +105,12 @@ static bool ath_hw_keysetmac(struct ath_common *common,
 	void *ah = common->ah;
 
 	if (entry >= common->keymax) {
+<<<<<<< HEAD
 		ath_err(common, "keycache entry %u out of range\n", entry);
+=======
+		ath_err(common, "keysetmac: keycache entry %u out of range\n",
+			entry);
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
@@ -111,6 +125,7 @@ static bool ath_hw_keysetmac(struct ath_common *common,
 		if (mac[0] & 0x01)
 			unicast_flag = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #if 0 // by bbelief
@@ -127,6 +142,10 @@ static bool ath_hw_keysetmac(struct ath_common *common,
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		macLo = get_unaligned_le32(mac);
+		macHi = get_unaligned_le16(mac + 4);
+>>>>>>> refs/remotes/origin/master
 		macLo >>= 1;
 		macLo |= (macHi & 1) << 31;
 		macHi >>= 1;
@@ -152,7 +171,12 @@ static bool ath_hw_set_keycache_entry(struct ath_common *common, u16 entry,
 	u32 keyType;
 
 	if (entry >= common->keymax) {
+<<<<<<< HEAD
 		ath_err(common, "keycache entry %u out of range\n", entry);
+=======
+		ath_err(common, "set-entry: keycache entry %u out of range\n",
+			entry);
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 
@@ -162,7 +186,11 @@ static bool ath_hw_set_keycache_entry(struct ath_common *common, u16 entry,
 		break;
 	case ATH_CIPHER_AES_CCM:
 		if (!(common->crypt_caps & ATH_CRYPT_CAP_CIPHER_AESCCM)) {
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANY,
+=======
+			ath_dbg(common, ANY,
+>>>>>>> refs/remotes/origin/master
 				"AES-CCM not supported by this mac rev\n");
 			return false;
 		}
@@ -171,15 +199,24 @@ static bool ath_hw_set_keycache_entry(struct ath_common *common, u16 entry,
 	case ATH_CIPHER_TKIP:
 		keyType = AR_KEYTABLE_TYPE_TKIP;
 		if (entry + 64 >= common->keymax) {
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANY,
+=======
+			ath_dbg(common, ANY,
+>>>>>>> refs/remotes/origin/master
 				"entry %u inappropriate for TKIP\n", entry);
 			return false;
 		}
 		break;
 	case ATH_CIPHER_WEP:
 		if (k->kv_len < WLAN_KEY_LEN_WEP40) {
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANY,
 				"WEP key length %u too small\n", k->kv_len);
+=======
+			ath_dbg(common, ANY, "WEP key length %u too small\n",
+				k->kv_len);
+>>>>>>> refs/remotes/origin/master
 			return false;
 		}
 		if (k->kv_len <= WLAN_KEY_LEN_WEP40)
@@ -576,11 +613,17 @@ int ath_key_config(struct ath_common *common,
 
 	set_bit(idx, common->keymap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (key->cipher == WLAN_CIPHER_SUITE_CCMP)
 		set_bit(idx, common->ccmp_keymap);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (key->cipher == WLAN_CIPHER_SUITE_CCMP)
+		set_bit(idx, common->ccmp_keymap);
+
+>>>>>>> refs/remotes/origin/master
 	if (key->cipher == WLAN_CIPHER_SUITE_TKIP) {
 		set_bit(idx + 64, common->keymap);
 		set_bit(idx, common->tkip_keymap);
@@ -608,9 +651,13 @@ void ath_key_delete(struct ath_common *common, struct ieee80211_key_conf *key)
 
 	clear_bit(key->hw_key_idx, common->keymap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	clear_bit(key->hw_key_idx, common->ccmp_keymap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clear_bit(key->hw_key_idx, common->ccmp_keymap);
+>>>>>>> refs/remotes/origin/master
 	if (key->cipher != WLAN_CIPHER_SUITE_TKIP)
 		return;
 

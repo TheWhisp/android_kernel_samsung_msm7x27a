@@ -106,19 +106,27 @@
 #include <linux/ide.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 
 #define DRV_NAME "cmd640"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int cmd640_vlb;
 =======
 static bool cmd640_vlb;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool cmd640_vlb;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * CMD640 specific registers definition.
@@ -692,7 +700,11 @@ static int pci_conf2(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct ide_port_info cmd640_port_info __initdata = {
+=======
+static const struct ide_port_info cmd640_port_info __initconst = {
+>>>>>>> refs/remotes/origin/master
 	.chipset		= ide_cmd640,
 	.host_flags		= IDE_HFLAG_SERIALIZE |
 				  IDE_HFLAG_NO_DMA |

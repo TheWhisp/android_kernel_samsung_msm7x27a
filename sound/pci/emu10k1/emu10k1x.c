@@ -35,10 +35,14 @@
 #include <linux/dma-mapping.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/pcm.h>
@@ -55,10 +59,14 @@ MODULE_SUPPORTED_DEVICE("{{Dell Creative Labs,SB Live!}");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for the EMU10K1X soundcard.");
@@ -838,9 +846,28 @@ static irqreturn_t snd_emu10k1x_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_emu10k1x_pcm(struct emu10k1x *emu, int device, struct snd_pcm **rpcm)
 {
 	struct snd_pcm *pcm;
+=======
+static const struct snd_pcm_chmap_elem surround_map[] = {
+	{ .channels = 2,
+	  .map = { SNDRV_CHMAP_RL, SNDRV_CHMAP_RR } },
+	{ }
+};
+
+static const struct snd_pcm_chmap_elem clfe_map[] = {
+	{ .channels = 2,
+	  .map = { SNDRV_CHMAP_FC, SNDRV_CHMAP_LFE } },
+	{ }
+};
+
+static int snd_emu10k1x_pcm(struct emu10k1x *emu, int device, struct snd_pcm **rpcm)
+{
+	struct snd_pcm *pcm;
+	const struct snd_pcm_chmap_elem *map = NULL;
+>>>>>>> refs/remotes/origin/master
 	int err;
 	int capture = 0;
   
@@ -869,12 +896,24 @@ static int __devinit snd_emu10k1x_pcm(struct emu10k1x *emu, int device, struct s
 	switch(device) {
 	case 0:
 		strcpy(pcm->name, "EMU10K1X Front");
+<<<<<<< HEAD
 		break;
 	case 1:
 		strcpy(pcm->name, "EMU10K1X Rear");
 		break;
 	case 2:
 		strcpy(pcm->name, "EMU10K1X Center/LFE");
+=======
+		map = snd_pcm_std_chmaps;
+		break;
+	case 1:
+		strcpy(pcm->name, "EMU10K1X Rear");
+		map = surround_map;
+		break;
+	case 2:
+		strcpy(pcm->name, "EMU10K1X Center/LFE");
+		map = clfe_map;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	emu->pcm = pcm;
@@ -883,15 +922,29 @@ static int __devinit snd_emu10k1x_pcm(struct emu10k1x *emu, int device, struct s
 					      snd_dma_pci_data(emu->pci), 
 					      32*1024, 32*1024);
   
+<<<<<<< HEAD
+=======
+	err = snd_pcm_add_chmap_ctls(pcm, SNDRV_PCM_STREAM_PLAYBACK, map, 2,
+				     1 << 2, NULL);
+	if (err < 0)
+		return err;
+
+>>>>>>> refs/remotes/origin/master
 	if (rpcm)
 		*rpcm = pcm;
   
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_emu10k1x_create(struct snd_card *card,
 					 struct pci_dev *pci,
 					 struct emu10k1x **rchip)
+=======
+static int snd_emu10k1x_create(struct snd_card *card,
+			       struct pci_dev *pci,
+			       struct emu10k1x **rchip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct emu10k1x *chip;
 	int err;
@@ -934,10 +987,14 @@ static int __devinit snd_emu10k1x_create(struct snd_card *card,
 
 	if (request_irq(pci->irq, snd_emu10k1x_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED, "EMU10K1X", chip)) {
 =======
 			IRQF_SHARED, KBUILD_MODNAME, chip)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, KBUILD_MODNAME, chip)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "emu10k1x: cannot grab irq %d\n", pci->irq);
 		snd_emu10k1x_free(chip);
 		return -EBUSY;
@@ -1057,7 +1114,11 @@ static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry,
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit snd_emu10k1x_proc_init(struct emu10k1x * emu)
+=======
+static int snd_emu10k1x_proc_init(struct emu10k1x *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 	
@@ -1106,7 +1167,11 @@ static int snd_emu10k1x_shared_spdif_put(struct snd_kcontrol *kcontrol,
 	return change;
 }
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_emu10k1x_shared_spdif __devinitdata =
+=======
+static struct snd_kcontrol_new snd_emu10k1x_shared_spdif =
+>>>>>>> refs/remotes/origin/master
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name =		"Analog/Digital Output Jack",
@@ -1185,7 +1250,11 @@ static struct snd_kcontrol_new snd_emu10k1x_spdif_control =
 	.put =          snd_emu10k1x_spdif_put
 };
 
+<<<<<<< HEAD
 static int __devinit snd_emu10k1x_mixer(struct emu10k1x *emu)
+=======
+static int snd_emu10k1x_mixer(struct emu10k1x *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_kcontrol *kctl;
@@ -1498,8 +1567,14 @@ static void snd_emu10k1x_midi_free(struct snd_rawmidi *rmidi)
 	midi->rmidi = NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit emu10k1x_midi_init(struct emu10k1x *emu,
 					struct emu10k1x_midi *midi, int device, char *name)
+=======
+static int emu10k1x_midi_init(struct emu10k1x *emu,
+			      struct emu10k1x_midi *midi, int device,
+			      char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_rawmidi *rmidi;
 	int err;
@@ -1522,7 +1597,11 @@ static int __devinit emu10k1x_midi_init(struct emu10k1x *emu,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_emu10k1x_midi(struct emu10k1x *emu)
+=======
+static int snd_emu10k1x_midi(struct emu10k1x *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct emu10k1x_midi *midi = &emu->midi;
 	int err;
@@ -1539,8 +1618,13 @@ static int __devinit snd_emu10k1x_midi(struct emu10k1x *emu)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_emu10k1x_probe(struct pci_dev *pci,
 					const struct pci_device_id *pci_id)
+=======
+static int snd_emu10k1x_probe(struct pci_dev *pci,
+			      const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -1610,10 +1694,16 @@ static int __devinit snd_emu10k1x_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_emu10k1x_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
 	pci_set_drvdata(pci, NULL);
+=======
+static void snd_emu10k1x_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+>>>>>>> refs/remotes/origin/master
 }
 
 // PCI IDs
@@ -1624,6 +1714,7 @@ static DEFINE_PCI_DEVICE_TABLE(snd_emu10k1x_ids) = {
 MODULE_DEVICE_TABLE(pci, snd_emu10k1x_ids);
 
 // pci_driver definition
+<<<<<<< HEAD
 static struct pci_driver driver = {
 <<<<<<< HEAD
 	.name = "EMU10K1X",
@@ -1649,3 +1740,13 @@ static void __exit alsa_card_emu10k1x_exit(void)
 
 module_init(alsa_card_emu10k1x_init)
 module_exit(alsa_card_emu10k1x_exit)
+=======
+static struct pci_driver emu10k1x_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_emu10k1x_ids,
+	.probe = snd_emu10k1x_probe,
+	.remove = snd_emu10k1x_remove,
+};
+
+module_pci_driver(emu10k1x_driver);
+>>>>>>> refs/remotes/origin/master

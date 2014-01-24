@@ -24,7 +24,17 @@
 #ifndef __ASOC_MCBSP_H
 #define __ASOC_MCBSP_H
 
+<<<<<<< HEAD
 #include "omap-pcm.h"
+=======
+#ifdef CONFIG_ARCH_OMAP1
+#define mcbsp_omap1()	1
+#else
+#define mcbsp_omap1()	0
+#endif
+
+#include <sound/dmaengine_pcm.h>
+>>>>>>> refs/remotes/origin/master
 
 /* McBSP register numbers. Register address offset = num * reg_step */
 enum {
@@ -217,17 +227,32 @@ enum {
 /********************** McBSP DMA operating modes **************************/
 #define MCBSP_DMA_MODE_ELEMENT		0
 #define MCBSP_DMA_MODE_THRESHOLD	1
+<<<<<<< HEAD
 #define MCBSP_DMA_MODE_FRAME		2
 
 /********************** McBSP WAKEUPEN bit definitions *********************/
+=======
+
+/********************** McBSP WAKEUPEN/IRQST/IRQEN bit definitions *********/
+>>>>>>> refs/remotes/origin/master
 #define RSYNCERREN		BIT(0)
 #define RFSREN			BIT(1)
 #define REOFEN			BIT(2)
 #define RRDYEN			BIT(3)
+<<<<<<< HEAD
+=======
+#define RUNDFLEN		BIT(4)
+#define ROVFLEN			BIT(5)
+>>>>>>> refs/remotes/origin/master
 #define XSYNCERREN		BIT(7)
 #define XFSXEN			BIT(8)
 #define XEOFEN			BIT(9)
 #define XRDYEN			BIT(10)
+<<<<<<< HEAD
+=======
+#define XUNDFLEN		BIT(11)
+#define XOVFLEN			BIT(12)
+>>>>>>> refs/remotes/origin/master
 #define XEMPTYEOFEN		BIT(14)
 
 /* Clock signal muxing options */
@@ -295,6 +320,10 @@ struct omap_mcbsp {
 	int configured;
 	u8 free;
 
+<<<<<<< HEAD
+=======
+	int irq;
+>>>>>>> refs/remotes/origin/master
 	int rx_irq;
 	int tx_irq;
 
@@ -302,7 +331,12 @@ struct omap_mcbsp {
 	struct omap_mcbsp_platform_data *pdata;
 	struct omap_mcbsp_st_data *st_data;
 	struct omap_mcbsp_reg_cfg cfg_regs;
+<<<<<<< HEAD
 	struct omap_pcm_dma_data dma_data[2];
+=======
+	struct snd_dmaengine_dai_dma_data dma_data[2];
+	unsigned int dma_req[2];
+>>>>>>> refs/remotes/origin/master
 	int dma_op_mode;
 	u16 max_tx_thres;
 	u16 max_rx_thres;
@@ -330,9 +364,12 @@ void omap_mcbsp_stop(struct omap_mcbsp *mcbsp, int tx, int rx);
 /* McBSP functional clock source changing function */
 int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id);
 
+<<<<<<< HEAD
 /* McBSP signal muxing API */
 int omap_mcbsp_6pin_src_mux(struct omap_mcbsp *mcbsp, u8 mux);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Sidetone specific API */
 int omap_st_set_chgain(struct omap_mcbsp *mcbsp, int channel, s16 chgain);
 int omap_st_get_chgain(struct omap_mcbsp *mcbsp, int channel, s16 *chgain);
@@ -340,7 +377,12 @@ int omap_st_enable(struct omap_mcbsp *mcbsp);
 int omap_st_disable(struct omap_mcbsp *mcbsp);
 int omap_st_is_enabled(struct omap_mcbsp *mcbsp);
 
+<<<<<<< HEAD
 int __devinit omap_mcbsp_init(struct platform_device *pdev);
 void __devexit omap_mcbsp_sysfs_remove(struct omap_mcbsp *mcbsp);
+=======
+int omap_mcbsp_init(struct platform_device *pdev);
+void omap_mcbsp_sysfs_remove(struct omap_mcbsp *mcbsp);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASOC_MCBSP_H */

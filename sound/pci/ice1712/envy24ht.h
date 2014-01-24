@@ -67,9 +67,13 @@ enum {
 #define   VT1724_CFG_MPU401	0x20		/* MPU401 UARTs */
 #define   VT1724_CFG_ADC_MASK	0x0c	/* one, two or one and S/PDIF, stereo ADCs */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define   VT1724_CFG_ADC_NONE	0x0c	/* no ADCs */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define   VT1724_CFG_ADC_NONE	0x0c	/* no ADCs */
+>>>>>>> refs/remotes/origin/master
 #define   VT1724_CFG_DAC_MASK	0x03	/* one, two, three, four stereo DACs */
 
 #define VT1724_REG_AC97_CFG		0x05	/* byte */

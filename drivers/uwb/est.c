@@ -42,9 +42,13 @@
 #include <linux/spinlock.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "uwb-internal.h"
 
@@ -188,10 +192,14 @@ int uwb_est_create(void)
 	uwb_est_size = 2;
 	uwb_est_used = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uwb_est = kzalloc(uwb_est_size * sizeof(uwb_est[0]), GFP_KERNEL);
 =======
 	uwb_est = kcalloc(uwb_est_size, sizeof(uwb_est[0]), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uwb_est = kcalloc(uwb_est_size, sizeof(uwb_est[0]), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (uwb_est == NULL)
 		return -ENOMEM;
 
@@ -443,7 +451,10 @@ ssize_t uwb_est_find_size(struct uwb_rc *rc, const struct uwb_rceb *rceb,
 	unsigned long flags;
 	unsigned itr;
 	u16 type_event_high, event;
+<<<<<<< HEAD
 	u8 *ptr = (u8 *) rceb;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	read_lock_irqsave(&uwb_est_lock, flags);
 	size = -ENOSPC;
@@ -460,12 +471,21 @@ ssize_t uwb_est_find_size(struct uwb_rc *rc, const struct uwb_rceb *rceb,
 		if (size != -ENOENT)
 			goto out;
 	}
+<<<<<<< HEAD
 	dev_dbg(dev, "event 0x%02x/%04x/%02x: no handlers available; "
 		"RCEB %02x %02x %02x %02x\n",
 		(unsigned) rceb->bEventType,
 		(unsigned) le16_to_cpu(rceb->wEvent),
 		(unsigned) rceb->bEventContext,
 		ptr[0], ptr[1], ptr[2], ptr[3]);
+=======
+	dev_dbg(dev,
+		"event 0x%02x/%04x/%02x: no handlers available; RCEB %4ph\n",
+		(unsigned) rceb->bEventType,
+		(unsigned) le16_to_cpu(rceb->wEvent),
+		(unsigned) rceb->bEventContext,
+		rceb);
+>>>>>>> refs/remotes/origin/master
 	size = -ENOENT;
 out:
 	read_unlock_irqrestore(&uwb_est_lock, flags);

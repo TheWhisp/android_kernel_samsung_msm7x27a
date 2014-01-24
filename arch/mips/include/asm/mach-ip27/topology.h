@@ -34,6 +34,7 @@ extern int pcibus_to_node(struct pci_bus *);
 
 extern unsigned char __node_distances[MAX_COMPACT_NODES][MAX_COMPACT_NODES];
 
+<<<<<<< HEAD
 #define node_distance(from, to)	(__node_distances[(from)][(to)])
 
 /* sched_domains SD_NODE_INIT for SGI IP27 machines */
@@ -52,6 +53,9 @@ extern unsigned char __node_distances[MAX_COMPACT_NODES][MAX_COMPACT_NODES];
 	.balance_interval	= 1,			\
 	.nr_balance_failed	= 0,			\
 }
+=======
+#define node_distance(from, to) (__node_distances[(from)][(to)])
+>>>>>>> refs/remotes/origin/master
 
 #include <asm-generic/topology.h>
 

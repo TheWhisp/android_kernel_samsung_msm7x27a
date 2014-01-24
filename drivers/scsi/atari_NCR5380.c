@@ -719,6 +719,7 @@ static void __init NCR5380_print_options(struct Scsi_Host *instance)
  * Inputs : instance, pointer to this instance.
  */
 
+<<<<<<< HEAD
 static void NCR5380_print_status(struct Scsi_Host *instance)
 {
 	char *pr_bfr;
@@ -832,6 +833,96 @@ static char *lprint_Scsi_Cmnd(Scsi_Cmnd *cmd, char *pos, char *buffer, int lengt
 	return pos;
 }
 
+=======
+static void lprint_Scsi_Cmnd(Scsi_Cmnd *cmd)
+{
+	int i, s;
+	unsigned char *command;
+	printk("scsi%d: destination target %d, lun %d\n",
+		H_NO(cmd), cmd->device->id, cmd->device->lun);
+	printk(KERN_CONT "        command = ");
+	command = cmd->cmnd;
+	printk(KERN_CONT "%2d (0x%02x)", command[0], command[0]);
+	for (i = 1, s = COMMAND_SIZE(command[0]); i < s; ++i)
+		printk(KERN_CONT " %02x", command[i]);
+	printk("\n");
+}
+
+static void NCR5380_print_status(struct Scsi_Host *instance)
+{
+	struct NCR5380_hostdata *hostdata;
+	Scsi_Cmnd *ptr;
+	unsigned long flags;
+
+	NCR_PRINT(NDEBUG_ANY);
+	NCR_PRINT_PHASE(NDEBUG_ANY);
+
+	hostdata = (struct NCR5380_hostdata *)instance->hostdata;
+
+	printk("\nNCR5380 core release=%d.\n", NCR5380_PUBLIC_RELEASE);
+	local_irq_save(flags);
+	printk("NCR5380: coroutine is%s running.\n",
+		main_running ? "" : "n't");
+	if (!hostdata->connected)
+		printk("scsi%d: no currently connected command\n", HOSTNO);
+	else
+		lprint_Scsi_Cmnd((Scsi_Cmnd *) hostdata->connected);
+	printk("scsi%d: issue_queue\n", HOSTNO);
+	for (ptr = (Scsi_Cmnd *)hostdata->issue_queue; ptr; ptr = NEXT(ptr))
+		lprint_Scsi_Cmnd(ptr);
+
+	printk("scsi%d: disconnected_queue\n", HOSTNO);
+	for (ptr = (Scsi_Cmnd *) hostdata->disconnected_queue; ptr;
+	     ptr = NEXT(ptr))
+		lprint_Scsi_Cmnd(ptr);
+
+	local_irq_restore(flags);
+	printk("\n");
+}
+
+static void show_Scsi_Cmnd(Scsi_Cmnd *cmd, struct seq_file *m)
+{
+	int i, s;
+	unsigned char *command;
+	seq_printf(m, "scsi%d: destination target %d, lun %d\n",
+		H_NO(cmd), cmd->device->id, cmd->device->lun);
+	seq_printf(m, "        command = ");
+	command = cmd->cmnd;
+	seq_printf(m, "%2d (0x%02x)", command[0], command[0]);
+	for (i = 1, s = COMMAND_SIZE(command[0]); i < s; ++i)
+		seq_printf(m, " %02x", command[i]);
+	seq_printf(m, "\n");
+}
+
+static int NCR5380_show_info(struct seq_file *m, struct Scsi_Host *instance)
+{
+	struct NCR5380_hostdata *hostdata;
+	Scsi_Cmnd *ptr;
+	unsigned long flags;
+
+	hostdata = (struct NCR5380_hostdata *)instance->hostdata;
+
+	seq_printf(m, "NCR5380 core release=%d.\n", NCR5380_PUBLIC_RELEASE);
+	local_irq_save(flags);
+	seq_printf(m, "NCR5380: coroutine is%s running.\n",
+		main_running ? "" : "n't");
+	if (!hostdata->connected)
+		seq_printf(m, "scsi%d: no currently connected command\n", HOSTNO);
+	else
+		show_Scsi_Cmnd((Scsi_Cmnd *) hostdata->connected, m);
+	seq_printf(m, "scsi%d: issue_queue\n", HOSTNO);
+	for (ptr = (Scsi_Cmnd *)hostdata->issue_queue; ptr; ptr = NEXT(ptr))
+		show_Scsi_Cmnd(ptr, m);
+
+	seq_printf(m, "scsi%d: disconnected_queue\n", HOSTNO);
+	for (ptr = (Scsi_Cmnd *) hostdata->disconnected_queue; ptr;
+	     ptr = NEXT(ptr))
+		show_Scsi_Cmnd(ptr, m);
+
+	local_irq_restore(flags);
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Function : void NCR5380_init (struct Scsi_Host *instance)
@@ -893,13 +984,19 @@ static int __init NCR5380_init(struct Scsi_Host *instance, int flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void NCR5380_exit(struct Scsi_Host *instance)
 {
 	/* Empty, as we didn't schedule any delayed work */
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Function : int NCR5380_queue_command (Scsi_Cmnd *cmd,
  *	void (*done)(Scsi_Cmnd *))
@@ -923,9 +1020,12 @@ static int NCR5380_queue_command_lck(Scsi_Cmnd *cmd, void (*done)(Scsi_Cmnd *))
 	SETUP_HOSTDATA(cmd->device->host);
 	Scsi_Cmnd *tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int oldto;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 #if (NDEBUG & NDEBUG_NO_WRITE)

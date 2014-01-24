@@ -74,6 +74,7 @@ typedef enum _OVRL_PIX_FORMAT {
 typedef struct {
 	/* 0h  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	volatile unsigned long Thread0Enable;	/* 0x0000 */
 	volatile unsigned long Thread1Enable;	/* 0x0004 */
 	volatile unsigned long Thread0Recover;	/* 0x0008 */
@@ -279,6 +280,8 @@ typedef struct {
 	/* DWFILL; //GAP 0x3000          ALUT 256MB offset */
 	volatile unsigned long Fill_3;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	volatile u32 Thread0Enable;	/* 0x0000 */
 	volatile u32 Thread1Enable;	/* 0x0004 */
 	volatile u32 Thread0Recover;	/* 0x0008 */
@@ -483,7 +486,10 @@ typedef struct {
 
 	/* DWFILL; //GAP 0x3000          ALUT 256MB offset */
 	volatile u32 Fill_3;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 } STG4000REG;
 

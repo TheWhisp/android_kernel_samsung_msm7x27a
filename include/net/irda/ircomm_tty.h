@@ -52,21 +52,31 @@
 /* Same for payload size. See qos.c for the smallest max data size */
 #define IRCOMM_TTY_DATA_UNINITIALISED	(64 - IRCOMM_TTY_HDR_UNINITIALISED)
 
+<<<<<<< HEAD
 /* Those are really defined in include/linux/serial.h - Jean II */
 #define ASYNC_B_INITIALIZED	31	/* Serial port was initialized */
 #define ASYNC_B_NORMAL_ACTIVE	29	/* Normal device is active */
 #define ASYNC_B_CLOSING		27	/* Serial port is closing */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IrCOMM TTY driver state
  */
 struct ircomm_tty_cb {
 	irda_queue_t queue;            /* Must be first */
+<<<<<<< HEAD
+=======
+	struct tty_port port;
+>>>>>>> refs/remotes/origin/master
 	magic_t magic;
 
 	int state;                /* Connect state */
 
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ircomm_cb *ircomm; /* IrCOMM layer instance */
 
 	struct sk_buff *tx_skb;   /* Transmit buffer */
@@ -80,7 +90,10 @@ struct ircomm_tty_cb {
 	LOCAL_FLOW flow;          /* IrTTP flow status */
 
 	int line;
+<<<<<<< HEAD
 	unsigned long flags;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	__u8 dlsap_sel;
 	__u8 slsap_sel;
@@ -97,6 +110,7 @@ struct ircomm_tty_cb {
 	void *skey;
 	void *ckey;
 
+<<<<<<< HEAD
 	wait_queue_head_t open_wait;
 	wait_queue_head_t close_wait;
 	struct timer_list watchdog_timer;
@@ -110,6 +124,12 @@ struct ircomm_tty_cb {
 
 	/* Protect concurent access to :
 	 *	o self->open_count
+=======
+	struct timer_list watchdog_timer;
+	struct work_struct  tqueue;
+
+	/* Protect concurent access to :
+>>>>>>> refs/remotes/origin/master
 	 *	o self->ctrl_skb
 	 *	o self->tx_skb
 	 * Maybe other things may gain to be protected as well...
@@ -120,6 +140,7 @@ struct ircomm_tty_cb {
 void ircomm_tty_start(struct tty_struct *tty);
 void ircomm_tty_check_modem_status(struct ircomm_tty_cb *self);
 
+<<<<<<< HEAD
 extern int ircomm_tty_tiocmget(struct tty_struct *tty);
 extern int ircomm_tty_tiocmset(struct tty_struct *tty,
 			       unsigned int set, unsigned int clear);
@@ -127,6 +148,15 @@ extern int ircomm_tty_ioctl(struct tty_struct *tty,
 			    unsigned int cmd, unsigned long arg);
 extern void ircomm_tty_set_termios(struct tty_struct *tty, 
 				   struct ktermios *old_termios);
+=======
+int ircomm_tty_tiocmget(struct tty_struct *tty);
+int ircomm_tty_tiocmset(struct tty_struct *tty, unsigned int set,
+			unsigned int clear);
+int ircomm_tty_ioctl(struct tty_struct *tty, unsigned int cmd,
+		     unsigned long arg);
+void ircomm_tty_set_termios(struct tty_struct *tty,
+			    struct ktermios *old_termios);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

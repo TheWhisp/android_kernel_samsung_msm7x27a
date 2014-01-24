@@ -19,14 +19,19 @@
 #include <linux/spinlock.h>
 #include <linux/idr.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gfp.h>
 #include <linux/slab.h>
 
 #include <asm/mmu_context.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #ifdef CONFIG_PPC_ICSWX
@@ -226,10 +231,16 @@ EXPORT_SYMBOL_GPL(drop_cop);
 =======
 #include "icswx.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pgalloc.h>
+
+#include "icswx.h"
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_SPINLOCK(mmu_context_lock);
 static DEFINE_IDA(mmu_context_ida);
 
+<<<<<<< HEAD
 /*
  * The proto-VSID space has 2^35 - 1 segments available for user mappings.
  * Each segment contains 2^28 bytes.  Each context maps 2^44 bytes,
@@ -237,6 +248,8 @@ static DEFINE_IDA(mmu_context_ida);
  */
 #define MAX_CONTEXT	((1UL << 19) - 1)
 
+=======
+>>>>>>> refs/remotes/origin/master
 int __init_new_context(void)
 {
 	int index;
@@ -255,7 +268,11 @@ again:
 	else if (err)
 		return err;
 
+<<<<<<< HEAD
 	if (index > MAX_CONTEXT) {
+=======
+	if (index > MAX_USER_CONTEXT) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&mmu_context_lock);
 		ida_remove(&mmu_context_ida, index);
 		spin_unlock(&mmu_context_lock);
@@ -293,6 +310,12 @@ int init_new_context(struct task_struct *tsk, struct mm_struct *mm)
 	spin_lock_init(mm->context.cop_lockp);
 #endif /* CONFIG_PPC_ICSWX */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_64K_PAGES
+	mm->context.pte_frag = NULL;
+#endif
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -304,13 +327,54 @@ void __destroy_context(int context_id)
 }
 EXPORT_SYMBOL_GPL(__destroy_context);
 
+<<<<<<< HEAD
 void destroy_context(struct mm_struct *mm)
 {
+=======
+#ifdef CONFIG_PPC_64K_PAGES
+static void destroy_pagetable_page(struct mm_struct *mm)
+{
+	int count;
+	void *pte_frag;
+	struct page *page;
+
+	pte_frag = mm->context.pte_frag;
+	if (!pte_frag)
+		return;
+
+	page = virt_to_page(pte_frag);
+	/* drop all the pending references */
+	count = ((unsigned long)pte_frag & ~PAGE_MASK) >> PTE_FRAG_SIZE_SHIFT;
+	/* We allow PTE_FRAG_NR fragments from a PTE page */
+	count = atomic_sub_return(PTE_FRAG_NR - count, &page->_count);
+	if (!count) {
+		pgtable_page_dtor(page);
+		free_hot_cold_page(page, 0);
+	}
+}
+
+#else
+static inline void destroy_pagetable_page(struct mm_struct *mm)
+{
+	return;
+}
+#endif
+
+
+void destroy_context(struct mm_struct *mm)
+{
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC_ICSWX
 	drop_cop(mm->context.acop, mm);
 	kfree(mm->context.cop_lockp);
 	mm->context.cop_lockp = NULL;
 #endif /* CONFIG_PPC_ICSWX */
+<<<<<<< HEAD
+=======
+
+	destroy_pagetable_page(mm);
+>>>>>>> refs/remotes/origin/master
 	__destroy_context(mm->context.id);
 	subpage_prot_free(mm);
 	mm->context.id = MMU_NO_CONTEXT;

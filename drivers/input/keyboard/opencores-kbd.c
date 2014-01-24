@@ -37,7 +37,11 @@ static irqreturn_t opencores_kbd_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit opencores_kbd_probe(struct platform_device *pdev)
+=======
+static int opencores_kbd_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input;
 	struct opencores_kbd *opencores_kbd;
@@ -139,7 +143,11 @@ static int __devinit opencores_kbd_probe(struct platform_device *pdev)
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit opencores_kbd_remove(struct platform_device *pdev)
+=======
+static int opencores_kbd_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct opencores_kbd *opencores_kbd = platform_get_drvdata(pdev);
 
@@ -151,18 +159,26 @@ static int __devexit opencores_kbd_remove(struct platform_device *pdev)
 	input_unregister_device(opencores_kbd->input);
 	kfree(opencores_kbd);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver opencores_kbd_device_driver = {
 	.probe    = opencores_kbd_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(opencores_kbd_remove),
+=======
+	.remove   = opencores_kbd_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver   = {
 		.name = "opencores-kbd",
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init opencores_kbd_init(void)
@@ -179,6 +195,9 @@ module_exit(opencores_kbd_exit);
 =======
 module_platform_driver(opencores_kbd_device_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(opencores_kbd_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Javier Herrero <jherrero@hvsistemas.es>");

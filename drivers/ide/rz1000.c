@@ -22,7 +22,11 @@
 
 #define DRV_NAME "rz1000"
 
+<<<<<<< HEAD
 static int __devinit rz1000_disable_readahead(struct pci_dev *dev)
+=======
+static int rz1000_disable_readahead(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 reg;
 
@@ -38,12 +42,20 @@ static int __devinit rz1000_disable_readahead(struct pci_dev *dev)
 	}
 }
 
+<<<<<<< HEAD
 static const struct ide_port_info rz1000_chipset __devinitdata = {
+=======
+static const struct ide_port_info rz1000_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= DRV_NAME,
 	.host_flags	= IDE_HFLAG_NO_DMA,
 };
 
+<<<<<<< HEAD
 static int __devinit rz1000_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int rz1000_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ide_port_info d = rz1000_chipset;
 	int rc;

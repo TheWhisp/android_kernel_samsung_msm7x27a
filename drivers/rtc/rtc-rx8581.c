@@ -228,8 +228,13 @@ static const struct rtc_class_ops rx8581_rtc_ops = {
 	.set_time	= rx8581_rtc_set_time,
 };
 
+<<<<<<< HEAD
 static int __devinit rx8581_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
+=======
+static int rx8581_probe(struct i2c_client *client,
+			const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 
@@ -240,8 +245,13 @@ static int __devinit rx8581_probe(struct i2c_client *client,
 
 	dev_info(&client->dev, "chip found, driver version " DRV_VERSION "\n");
 
+<<<<<<< HEAD
 	rtc = rtc_device_register(rx8581_driver.driver.name,
 				&client->dev, &rx8581_rtc_ops, THIS_MODULE);
+=======
+	rtc = devm_rtc_device_register(&client->dev, rx8581_driver.driver.name,
+					&rx8581_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
@@ -251,6 +261,7 @@ static int __devinit rx8581_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit rx8581_remove(struct i2c_client *client)
 {
 	struct rtc_device *rtc = i2c_get_clientdata(client);
@@ -260,6 +271,8 @@ static int __devexit rx8581_remove(struct i2c_client *client)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id rx8581_id[] = {
 	{ "rx8581", 0 },
 	{ }
@@ -272,6 +285,7 @@ static struct i2c_driver rx8581_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= rx8581_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rx8581_remove),
 	.id_table	= rx8581_id,
 };
@@ -289,14 +303,23 @@ static void __exit rx8581_exit(void)
 =======
 module_i2c_driver(rx8581_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table	= rx8581_id,
+};
+
+module_i2c_driver(rx8581_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Martyn Welch <martyn.welch@ge.com>");
 MODULE_DESCRIPTION("Epson RX-8581 RTC driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(rx8581_init);
 module_exit(rx8581_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

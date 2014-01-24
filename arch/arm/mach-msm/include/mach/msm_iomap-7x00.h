@@ -1,6 +1,10 @@
 /* arch/arm/mach-msm/include/mach/msm_iomap.h
  *
  * Copyright (C) 2007 Google, Inc.
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Author: Brian Swetland <swetland@google.com>
  *
  * This software is licensed under the terms of the GNU General Public
@@ -38,6 +42,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __ASSEMBLY__
 #define IOMEM(x)	x
 #else
@@ -74,6 +79,30 @@
 #define MSM_CLK_CTL_SIZE      SZ_4K
 
 #define MSM_SHARED_RAM_BASE   IOMEM(0xF8100000)
+=======
+#define MSM_VIC_BASE          IOMEM(0xE0000000)
+#define MSM_VIC_PHYS          0xC0000000
+#define MSM_VIC_SIZE          SZ_4K
+
+#define MSM7X00_CSR_PHYS      0xC0100000
+#define MSM7X00_CSR_SIZE      SZ_4K
+
+#define MSM_DMOV_BASE         IOMEM(0xE0002000)
+#define MSM_DMOV_PHYS         0xA9700000
+#define MSM_DMOV_SIZE         SZ_4K
+
+#define MSM7X00_GPIO1_PHYS        0xA9200000
+#define MSM7X00_GPIO1_SIZE        SZ_4K
+
+#define MSM7X00_GPIO2_PHYS        0xA9300000
+#define MSM7X00_GPIO2_SIZE        SZ_4K
+
+#define MSM_CLK_CTL_BASE      IOMEM(0xE0005000)
+#define MSM_CLK_CTL_PHYS      0xA8600000
+#define MSM_CLK_CTL_SIZE      SZ_4K
+
+#define MSM_SHARED_RAM_BASE   IOMEM(0xE0100000)
+>>>>>>> refs/remotes/origin/master
 #define MSM_SHARED_RAM_PHYS   0x01F00000
 #define MSM_SHARED_RAM_SIZE   SZ_1M
 
@@ -98,9 +127,12 @@
 #define MSM_SDC4_PHYS         0xA0700000
 #define MSM_SDC4_SIZE         SZ_4K
 
+<<<<<<< HEAD
 #define MSM_NAND_PHYS         0xA0A00000
 #define MSM_NAND_SIZE         SZ_4K
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define MSM_I2C_PHYS          0xA9900000
 #define MSM_I2C_SIZE          SZ_4K
 
@@ -116,6 +148,7 @@
 #define MSM_MDP_PHYS          0xAA200000
 #define MSM_MDP_SIZE          0x000F0000
 
+<<<<<<< HEAD
 #define MSM_MDC_BASE	      IOMEM(0xF8200000)
 #define MSM_MDC_PHYS	      0xAA500000
 #define MSM_MDC_SIZE	      SZ_1M
@@ -142,4 +175,12 @@
 #define MSM_GCC_SIZE          SZ_4K
 #endif
 
+=======
+#define MSM_MDC_PHYS	      0xAA500000
+#define MSM_MDC_SIZE	      SZ_1M
+
+#define MSM_AD5_PHYS          0xAC000000
+#define MSM_AD5_SIZE          (SZ_1M*13)
+
+>>>>>>> refs/remotes/origin/master
 #endif

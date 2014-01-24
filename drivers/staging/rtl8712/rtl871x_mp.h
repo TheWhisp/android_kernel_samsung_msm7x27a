@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,6 +28,7 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __RTL871X_MP_H_
 #define __RTL871X_MP_H_
@@ -85,6 +89,11 @@
 #define NDIS_STATUS_INCOMPATABLE_QOS	((uint)0xC0010027L)  /* 49*/
 #define NDIS_STATUS_AAL_PARAMS_UNSUPPORTED ((uint)0xC0010028L)  /*  93*/
 #define NDIS_STATUS_NO_ROUTE_TO_DESTINATION ((uint)0xC0010029L)  /*  3*/
+=======
+#ifndef __RTL871X_MP_H_
+#define __RTL871X_MP_H_
+
+>>>>>>> refs/remotes/origin/master
 #define MPT_NOOP			0
 #define MPT_READ_MAC_1BYTE		1
 #define MPT_READ_MAC_2BYTE		2
@@ -130,9 +139,12 @@ struct mp_xmit_frame {
 	u8 bpending[8];
 	u8 last[8];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint mem[(MAX_MP_XMITBUF_SZ >> 2)];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mp_wiparam {

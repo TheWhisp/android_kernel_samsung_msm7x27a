@@ -7,18 +7,25 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/slab.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dmaengine.h>
 #include <linux/platform_device.h>
 #include <linux/clk.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/err.h>
 
@@ -35,6 +42,19 @@
 
 #include "dmaengine.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/log2.h>
+#include <linux/pm.h>
+#include <linux/pm_runtime.h>
+#include <linux/err.h>
+#include <linux/of.h>
+#include <linux/of_dma.h>
+#include <linux/amba/bus.h>
+#include <linux/regulator/consumer.h>
+#include <linux/platform_data/dma-ste-dma40.h>
+
+#include "dmaengine.h"
+>>>>>>> refs/remotes/origin/master
 #include "ste_dma40_ll.h"
 
 #define D40_NAME "dma40"
@@ -49,11 +69,17 @@
 #define D40_SUSPEND_MAX_IT 500
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Milliseconds */
 #define DMA40_AUTOSUSPEND_DELAY	100
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Milliseconds */
+#define DMA40_AUTOSUSPEND_DELAY	100
+
+>>>>>>> refs/remotes/origin/master
 /* Hardware requirement on LCLA alignment */
 #define LCLA_ALIGNMENT 0x40000
 
@@ -61,10 +87,17 @@
 #define D40_LCLA_LINK_PER_EVENT_GRP 128
 #define D40_LCLA_END D40_LCLA_LINK_PER_EVENT_GRP
 
+<<<<<<< HEAD
+=======
+/* Max number of logical channels per physical channel */
+#define D40_MAX_LOG_CHAN_PER_PHY 32
+
+>>>>>>> refs/remotes/origin/master
 /* Attempts before giving up to trying to get pages that are aligned */
 #define MAX_LCLA_ALLOC_ATTEMPTS 256
 
 /* Bit markings for allocation map */
+<<<<<<< HEAD
 #define D40_ALLOC_FREE		(1 << 31)
 #define D40_ALLOC_PHY		(1 << 30)
 #define D40_ALLOC_LOG_FREE	0
@@ -75,6 +108,59 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define D40_ALLOC_FREE		BIT(31)
+#define D40_ALLOC_PHY		BIT(30)
+#define D40_ALLOC_LOG_FREE	0
+
+#define D40_MEMCPY_MAX_CHANS	8
+
+/* Reserved event lines for memcpy only. */
+#define DB8500_DMA_MEMCPY_EV_0	51
+#define DB8500_DMA_MEMCPY_EV_1	56
+#define DB8500_DMA_MEMCPY_EV_2	57
+#define DB8500_DMA_MEMCPY_EV_3	58
+#define DB8500_DMA_MEMCPY_EV_4	59
+#define DB8500_DMA_MEMCPY_EV_5	60
+
+static int dma40_memcpy_channels[] = {
+	DB8500_DMA_MEMCPY_EV_0,
+	DB8500_DMA_MEMCPY_EV_1,
+	DB8500_DMA_MEMCPY_EV_2,
+	DB8500_DMA_MEMCPY_EV_3,
+	DB8500_DMA_MEMCPY_EV_4,
+	DB8500_DMA_MEMCPY_EV_5,
+};
+
+/* Default configuration for physcial memcpy */
+static struct stedma40_chan_cfg dma40_memcpy_conf_phy = {
+	.mode = STEDMA40_MODE_PHYSICAL,
+	.dir = DMA_MEM_TO_MEM,
+
+	.src_info.data_width = DMA_SLAVE_BUSWIDTH_1_BYTE,
+	.src_info.psize = STEDMA40_PSIZE_PHY_1,
+	.src_info.flow_ctrl = STEDMA40_NO_FLOW_CTRL,
+
+	.dst_info.data_width = DMA_SLAVE_BUSWIDTH_1_BYTE,
+	.dst_info.psize = STEDMA40_PSIZE_PHY_1,
+	.dst_info.flow_ctrl = STEDMA40_NO_FLOW_CTRL,
+};
+
+/* Default configuration for logical memcpy */
+static struct stedma40_chan_cfg dma40_memcpy_conf_log = {
+	.mode = STEDMA40_MODE_LOGICAL,
+	.dir = DMA_MEM_TO_MEM,
+
+	.src_info.data_width = DMA_SLAVE_BUSWIDTH_1_BYTE,
+	.src_info.psize = STEDMA40_PSIZE_LOG_1,
+	.src_info.flow_ctrl = STEDMA40_NO_FLOW_CTRL,
+
+	.dst_info.data_width = DMA_SLAVE_BUSWIDTH_1_BYTE,
+	.dst_info.psize = STEDMA40_PSIZE_LOG_1,
+	.dst_info.flow_ctrl = STEDMA40_NO_FLOW_CTRL,
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * enum 40_command - The different commands and/or statuses.
  *
@@ -91,7 +177,10 @@ enum d40_command {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * enum d40_events - The different Event Enables for the event lines.
  *
@@ -124,8 +213,24 @@ static u32 d40_backup_regs[] = {
 
 #define BACKUP_REGS_SZ ARRAY_SIZE(d40_backup_regs)
 
+<<<<<<< HEAD
 /* TODO: Check if all these registers have to be saved/restored on dma40 v3 */
 static u32 d40_backup_regs_v3[] = {
+=======
+/*
+ * since 9540 and 8540 has the same HW revision
+ * use v4a for 9540 or ealier
+ * use v4b for 8540 or later
+ * HW revision:
+ * DB8500ed has revision 0
+ * DB8500v1 has revision 2
+ * DB8500v2 has revision 3
+ * AP9540v1 has revision 4
+ * DB8540v1 has revision 4
+ * TODO: Check if all these registers have to be saved/restored on dma40 v4a
+ */
+static u32 d40_backup_regs_v4a[] = {
+>>>>>>> refs/remotes/origin/master
 	D40_DREG_PSEG1,
 	D40_DREG_PSEG2,
 	D40_DREG_PSEG3,
@@ -144,7 +249,36 @@ static u32 d40_backup_regs_v3[] = {
 	D40_DREG_RCEG4,
 };
 
+<<<<<<< HEAD
 #define BACKUP_REGS_SZ_V3 ARRAY_SIZE(d40_backup_regs_v3)
+=======
+#define BACKUP_REGS_SZ_V4A ARRAY_SIZE(d40_backup_regs_v4a)
+
+static u32 d40_backup_regs_v4b[] = {
+	D40_DREG_CPSEG1,
+	D40_DREG_CPSEG2,
+	D40_DREG_CPSEG3,
+	D40_DREG_CPSEG4,
+	D40_DREG_CPSEG5,
+	D40_DREG_CPCEG1,
+	D40_DREG_CPCEG2,
+	D40_DREG_CPCEG3,
+	D40_DREG_CPCEG4,
+	D40_DREG_CPCEG5,
+	D40_DREG_CRSEG1,
+	D40_DREG_CRSEG2,
+	D40_DREG_CRSEG3,
+	D40_DREG_CRSEG4,
+	D40_DREG_CRSEG5,
+	D40_DREG_CRCEG1,
+	D40_DREG_CRCEG2,
+	D40_DREG_CRCEG3,
+	D40_DREG_CRCEG4,
+	D40_DREG_CRCEG5,
+};
+
+#define BACKUP_REGS_SZ_V4B ARRAY_SIZE(d40_backup_regs_v4b)
+>>>>>>> refs/remotes/origin/master
 
 static u32 d40_backup_regs_chan[] = {
 	D40_CHAN_REG_SSCFG,
@@ -157,7 +291,109 @@ static u32 d40_backup_regs_chan[] = {
 	D40_CHAN_REG_SDLNK,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BACKUP_REGS_SZ_MAX ((BACKUP_REGS_SZ_V4A > BACKUP_REGS_SZ_V4B) ? \
+			     BACKUP_REGS_SZ_V4A : BACKUP_REGS_SZ_V4B)
+
+/**
+ * struct d40_interrupt_lookup - lookup table for interrupt handler
+ *
+ * @src: Interrupt mask register.
+ * @clr: Interrupt clear register.
+ * @is_error: true if this is an error interrupt.
+ * @offset: start delta in the lookup_log_chans in d40_base. If equals to
+ * D40_PHY_CHAN, the lookup_phy_chans shall be used instead.
+ */
+struct d40_interrupt_lookup {
+	u32 src;
+	u32 clr;
+	bool is_error;
+	int offset;
+};
+
+
+static struct d40_interrupt_lookup il_v4a[] = {
+	{D40_DREG_LCTIS0, D40_DREG_LCICR0, false,  0},
+	{D40_DREG_LCTIS1, D40_DREG_LCICR1, false, 32},
+	{D40_DREG_LCTIS2, D40_DREG_LCICR2, false, 64},
+	{D40_DREG_LCTIS3, D40_DREG_LCICR3, false, 96},
+	{D40_DREG_LCEIS0, D40_DREG_LCICR0, true,   0},
+	{D40_DREG_LCEIS1, D40_DREG_LCICR1, true,  32},
+	{D40_DREG_LCEIS2, D40_DREG_LCICR2, true,  64},
+	{D40_DREG_LCEIS3, D40_DREG_LCICR3, true,  96},
+	{D40_DREG_PCTIS,  D40_DREG_PCICR,  false, D40_PHY_CHAN},
+	{D40_DREG_PCEIS,  D40_DREG_PCICR,  true,  D40_PHY_CHAN},
+};
+
+static struct d40_interrupt_lookup il_v4b[] = {
+	{D40_DREG_CLCTIS1, D40_DREG_CLCICR1, false,  0},
+	{D40_DREG_CLCTIS2, D40_DREG_CLCICR2, false, 32},
+	{D40_DREG_CLCTIS3, D40_DREG_CLCICR3, false, 64},
+	{D40_DREG_CLCTIS4, D40_DREG_CLCICR4, false, 96},
+	{D40_DREG_CLCTIS5, D40_DREG_CLCICR5, false, 128},
+	{D40_DREG_CLCEIS1, D40_DREG_CLCICR1, true,   0},
+	{D40_DREG_CLCEIS2, D40_DREG_CLCICR2, true,  32},
+	{D40_DREG_CLCEIS3, D40_DREG_CLCICR3, true,  64},
+	{D40_DREG_CLCEIS4, D40_DREG_CLCICR4, true,  96},
+	{D40_DREG_CLCEIS5, D40_DREG_CLCICR5, true,  128},
+	{D40_DREG_CPCTIS,  D40_DREG_CPCICR,  false, D40_PHY_CHAN},
+	{D40_DREG_CPCEIS,  D40_DREG_CPCICR,  true,  D40_PHY_CHAN},
+};
+
+/**
+ * struct d40_reg_val - simple lookup struct
+ *
+ * @reg: The register.
+ * @val: The value that belongs to the register in reg.
+ */
+struct d40_reg_val {
+	unsigned int reg;
+	unsigned int val;
+};
+
+static __initdata struct d40_reg_val dma_init_reg_v4a[] = {
+	/* Clock every part of the DMA block from start */
+	{ .reg = D40_DREG_GCC,    .val = D40_DREG_GCC_ENABLE_ALL},
+
+	/* Interrupts on all logical channels */
+	{ .reg = D40_DREG_LCMIS0, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCMIS1, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCMIS2, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCMIS3, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCICR0, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCICR1, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCICR2, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCICR3, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCTIS0, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCTIS1, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCTIS2, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_LCTIS3, .val = 0xFFFFFFFF}
+};
+static __initdata struct d40_reg_val dma_init_reg_v4b[] = {
+	/* Clock every part of the DMA block from start */
+	{ .reg = D40_DREG_GCC,    .val = D40_DREG_GCC_ENABLE_ALL},
+
+	/* Interrupts on all logical channels */
+	{ .reg = D40_DREG_CLCMIS1, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCMIS2, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCMIS3, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCMIS4, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCMIS5, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCICR1, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCICR2, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCICR3, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCICR4, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCICR5, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCTIS1, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCTIS2, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCTIS3, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCTIS4, .val = 0xFFFFFFFF},
+	{ .reg = D40_DREG_CLCTIS5, .val = 0xFFFFFFFF}
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct d40_lli_pool - Structure for keeping LLIs in memory
  *
@@ -193,10 +429,14 @@ struct d40_lli_pool {
  * @node: List entry.
  * @is_in_client_list: true if the client owns this descriptor.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * the previous one.
 =======
  * @cyclic: true if this is a cyclic job
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @cyclic: true if this is a cyclic job
+>>>>>>> refs/remotes/origin/master
  *
  * This descriptor is used for both logical and physical transfers.
  */
@@ -244,15 +484,20 @@ struct d40_lcla_pool {
  *
  * @lock: A lock protection this entity.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @reserved: True if used by secure world or otherwise.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @reserved: True if used by secure world or otherwise.
+>>>>>>> refs/remotes/origin/master
  * @num: The physical channel number of this entity.
  * @allocated_src: Bit mapped to show which src event line's are mapped to
  * this physical channel. Can also be free or physically allocated.
  * @allocated_dst: Same as for src but is dst.
  * allocated_dst and allocated_src uses the D40_ALLOC* defines as well as
  * event line number.
+<<<<<<< HEAD
  */
 struct d40_phy_res {
 	spinlock_t lock;
@@ -263,6 +508,17 @@ struct d40_phy_res {
 	int	   num;
 	u32	   allocated_src;
 	u32	   allocated_dst;
+=======
+ * @use_soft_lli: To mark if the linked lists of channel are managed by SW.
+ */
+struct d40_phy_res {
+	spinlock_t lock;
+	bool	   reserved;
+	int	   num;
+	u32	   allocated_src;
+	u32	   allocated_dst;
+	bool	   use_soft_lli;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct d40_base;
@@ -273,10 +529,13 @@ struct d40_base;
  * @lock: A spinlock to protect this struct.
  * @log_num: The logical number, if any of this channel.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @completed: Starts with 1, after first interrupt it is set to dma engine's
  * current cookie.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @pending_tx: The number of pending transfers. Used between interrupt handler
  * and tasklet.
  * @busy: Set to true when transfer is ongoing on this channel.
@@ -287,6 +546,7 @@ struct d40_base;
  * transfer and call client callback.
  * @client: Cliented owned descriptor list.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @active: Active descriptor.
  * @queue: Queued jobs.
 =======
@@ -295,12 +555,20 @@ struct d40_base;
  * @queue: Queued jobs.
  * @prepare_queue: Prepared jobs.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @pending_queue: Submitted jobs, to be issued by issue_pending()
+ * @active: Active descriptor.
+ * @done: Completed jobs
+ * @queue: Queued jobs.
+ * @prepare_queue: Prepared jobs.
+>>>>>>> refs/remotes/origin/master
  * @dma_cfg: The client configuration of this dma channel.
  * @configured: whether the dma_cfg configuration is valid
  * @base: Pointer to the device instance struct.
  * @src_def_cfg: Default cfg register setting for src.
  * @dst_def_cfg: Default cfg register setting for dst.
  * @log_def: Default logical channel settings.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * @lcla: Space for one dst src pair for logical channel transfers.
  * @lcpa: Pointer to dst and src lcpa settings.
@@ -309,6 +577,11 @@ struct d40_base;
  * @runtime_addr: runtime configured address.
  * @runtime_direction: runtime configured direction.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @lcpa: Pointer to dst and src lcpa settings.
+ * @runtime_addr: runtime configured address.
+ * @runtime_direction: runtime configured direction.
+>>>>>>> refs/remotes/origin/master
  *
  * This struct can either "be" a logical or a physical channel.
  */
@@ -316,16 +589,20 @@ struct d40_chan {
 	spinlock_t			 lock;
 	int				 log_num;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* ID of the most recent completed transfer */
 	int				 completed;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int				 pending_tx;
 	bool				 busy;
 	struct d40_phy_res		*phy_chan;
 	struct dma_chan			 chan;
 	struct tasklet_struct		 tasklet;
 	struct list_head		 client;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct list_head		 active;
 	struct list_head		 queue;
@@ -335,6 +612,13 @@ struct d40_chan {
 	struct list_head		 queue;
 	struct list_head		 prepare_queue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct list_head		 pending_queue;
+	struct list_head		 active;
+	struct list_head		 done;
+	struct list_head		 queue;
+	struct list_head		 prepare_queue;
+>>>>>>> refs/remotes/origin/master
 	struct stedma40_chan_cfg	 dma_cfg;
 	bool				 configured;
 	struct d40_base			*base;
@@ -346,10 +630,46 @@ struct d40_chan {
 	/* Runtime reconfiguration */
 	dma_addr_t			runtime_addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum dma_data_direction		runtime_direction;
 =======
 	enum dma_transfer_direction	runtime_direction;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum dma_transfer_direction	runtime_direction;
+};
+
+/**
+ * struct d40_gen_dmac - generic values to represent u8500/u8540 DMA
+ * controller
+ *
+ * @backup: the pointer to the registers address array for backup
+ * @backup_size: the size of the registers address array for backup
+ * @realtime_en: the realtime enable register
+ * @realtime_clear: the realtime clear register
+ * @high_prio_en: the high priority enable register
+ * @high_prio_clear: the high priority clear register
+ * @interrupt_en: the interrupt enable register
+ * @interrupt_clear: the interrupt clear register
+ * @il: the pointer to struct d40_interrupt_lookup
+ * @il_size: the size of d40_interrupt_lookup array
+ * @init_reg: the pointer to the struct d40_reg_val
+ * @init_reg_size: the size of d40_reg_val array
+ */
+struct d40_gen_dmac {
+	u32				*backup;
+	u32				 backup_size;
+	u32				 realtime_en;
+	u32				 realtime_clear;
+	u32				 high_prio_en;
+	u32				 high_prio_clear;
+	u32				 interrupt_en;
+	u32				 interrupt_clear;
+	struct d40_interrupt_lookup	*il;
+	u32				 il_size;
+	struct d40_reg_val		*init_reg;
+	u32				 init_reg_size;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -365,6 +685,11 @@ struct d40_chan {
  * @phy_start: Physical memory start of the DMA registers.
  * @phy_size: Size of the DMA register map.
  * @irq: The IRQ number.
+<<<<<<< HEAD
+=======
+ * @num_memcpy_chans: The number of channels used for memcpy (mem-to-mem
+ * transfers).
+>>>>>>> refs/remotes/origin/master
  * @num_phy_chans: The number of physical channels. Read from HW. This
  * is the number of available channels for this driver, not counting "Secure
  * mode" allocated physical channels.
@@ -374,9 +699,13 @@ struct d40_chan {
  * @dma_slave: dma_device channels that can do only do slave transfers.
  * @dma_memcpy: dma_device channels that can do only do memcpy transfers.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @phy_chans: Room for all possible physical channels in system.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @phy_chans: Room for all possible physical channels in system.
+>>>>>>> refs/remotes/origin/master
  * @log_chans: Room for all possible logical channels in system.
  * @lookup_log_chans: Used to map interrupt number to logical channel. Points
  * to log_chans entries.
@@ -385,15 +714,20 @@ struct d40_chan {
  * @plat_data: Pointer to provided platform_data which is the driver
  * configuration.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @lcpa_regulator: Pointer to hold the regulator for the esram bank for lcla.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @lcpa_regulator: Pointer to hold the regulator for the esram bank for lcla.
+>>>>>>> refs/remotes/origin/master
  * @phy_res: Vector containing all physical channels.
  * @lcla_pool: lcla pool settings and data.
  * @lcpa_base: The virtual mapped address of LCPA.
  * @phy_lcpa: The physical address of the LCPA.
  * @lcpa_size: The size of the LCPA area.
  * @desc_slab: cache for descriptors.
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
  * @reg_val_backup: Here the values of some hardware registers are stored
@@ -404,6 +738,17 @@ struct d40_chan {
  * @gcc_pwr_off_mask: Mask to maintain the channels that can be turned off.
  * @initialized: true if the dma has been initialized
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @reg_val_backup: Here the values of some hardware registers are stored
+ * before the DMA is powered off. They are restored when the power is back on.
+ * @reg_val_backup_v4: Backup of registers that only exits on dma40 v3 and
+ * later
+ * @reg_val_backup_chan: Backup data for standard channel parameter registers.
+ * @gcc_pwr_off_mask: Mask to maintain the channels that can be turned off.
+ * @initialized: true if the dma has been initialized
+ * @gen_dmac: the struct for generic registers values to represent u8500/8540
+ * DMA controller
+>>>>>>> refs/remotes/origin/master
  */
 struct d40_base {
 	spinlock_t			 interrupt_lock;
@@ -415,8 +760,15 @@ struct d40_base {
 	phys_addr_t			  phy_start;
 	resource_size_t			  phy_size;
 	int				  irq;
+<<<<<<< HEAD
 	int				  num_phy_chans;
 	int				  num_log_chans;
+=======
+	int				  num_memcpy_chans;
+	int				  num_phy_chans;
+	int				  num_log_chans;
+	struct device_dma_parameters	  dma_parms;
+>>>>>>> refs/remotes/origin/master
 	struct dma_device		  dma_both;
 	struct dma_device		  dma_slave;
 	struct dma_device		  dma_memcpy;
@@ -426,9 +778,13 @@ struct d40_base {
 	struct d40_chan			**lookup_phy_chans;
 	struct stedma40_platform_data	 *plat_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct regulator		 *lcpa_regulator;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct regulator		 *lcpa_regulator;
+>>>>>>> refs/remotes/origin/master
 	/* Physical half channels */
 	struct d40_phy_res		 *phy_res;
 	struct d40_lcla_pool		  lcla_pool;
@@ -436,6 +792,7 @@ struct d40_base {
 	dma_addr_t			  phy_lcpa;
 	resource_size_t			  lcpa_size;
 	struct kmem_cache		 *desc_slab;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	u32				  reg_val_backup[BACKUP_REGS_SZ];
@@ -471,6 +828,14 @@ struct d40_interrupt_lookup {
 struct d40_reg_val {
 	unsigned int reg;
 	unsigned int val;
+=======
+	u32				  reg_val_backup[BACKUP_REGS_SZ];
+	u32				  reg_val_backup_v4[BACKUP_REGS_SZ_MAX];
+	u32				 *reg_val_backup_chan;
+	u16				  gcc_pwr_off_mask;
+	bool				  initialized;
+	struct d40_gen_dmac		  gen_dmac;
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct device *chan2dev(struct d40_chan *d40c)
@@ -573,19 +938,32 @@ static int d40_lcla_alloc_one(struct d40_chan *d40c,
 	unsigned long flags;
 	int i;
 	int ret = -EINVAL;
+<<<<<<< HEAD
 	int p;
 
 	spin_lock_irqsave(&d40c->base->lcla_pool.lock, flags);
 
 	p = d40c->phy_chan->num * D40_LCLA_LINK_PER_EVENT_GRP;
 
+=======
+
+	spin_lock_irqsave(&d40c->base->lcla_pool.lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Allocate both src and dst at the same time, therefore the half
 	 * start on 1 since 0 can't be used since zero is used as end marker.
 	 */
 	for (i = 1 ; i < D40_LCLA_LINK_PER_EVENT_GRP / 2; i++) {
+<<<<<<< HEAD
 		if (!d40c->base->lcla_pool.alloc_map[p + i]) {
 			d40c->base->lcla_pool.alloc_map[p + i] = d40d;
+=======
+		int idx = d40c->phy_chan->num * D40_LCLA_LINK_PER_EVENT_GRP + i;
+
+		if (!d40c->base->lcla_pool.alloc_map[idx]) {
+			d40c->base->lcla_pool.alloc_map[idx] = d40d;
+>>>>>>> refs/remotes/origin/master
 			d40d->lcla_alloc++;
 			ret = i;
 			break;
@@ -610,10 +988,17 @@ static int d40_lcla_free_all(struct d40_chan *d40c,
 	spin_lock_irqsave(&d40c->base->lcla_pool.lock, flags);
 
 	for (i = 1 ; i < D40_LCLA_LINK_PER_EVENT_GRP / 2; i++) {
+<<<<<<< HEAD
 		if (d40c->base->lcla_pool.alloc_map[d40c->phy_chan->num *
 						    D40_LCLA_LINK_PER_EVENT_GRP + i] == d40d) {
 			d40c->base->lcla_pool.alloc_map[d40c->phy_chan->num *
 							D40_LCLA_LINK_PER_EVENT_GRP + i] = NULL;
+=======
+		int idx = d40c->phy_chan->num * D40_LCLA_LINK_PER_EVENT_GRP + i;
+
+		if (d40c->base->lcla_pool.alloc_map[idx] == d40d) {
+			d40c->base->lcla_pool.alloc_map[idx] = NULL;
+>>>>>>> refs/remotes/origin/master
 			d40d->lcla_alloc--;
 			if (d40d->lcla_alloc == 0) {
 				ret = 0;
@@ -642,6 +1027,7 @@ static struct d40_desc *d40_desc_get(struct d40_chan *d40c)
 		struct d40_desc *_d;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_for_each_entry_safe(d, _d, &d40c->client, node)
 			if (async_tx_test_ack(&d->txd)) {
 				d40_pool_lli_free(d40c, d);
@@ -649,15 +1035,23 @@ static struct d40_desc *d40_desc_get(struct d40_chan *d40c)
 		list_for_each_entry_safe(d, _d, &d40c->client, node) {
 			if (async_tx_test_ack(&d->txd)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_for_each_entry_safe(d, _d, &d40c->client, node) {
+			if (async_tx_test_ack(&d->txd)) {
+>>>>>>> refs/remotes/origin/master
 				d40_desc_remove(d);
 				desc = d;
 				memset(desc, 0, sizeof(*desc));
 				break;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!desc)
@@ -699,6 +1093,14 @@ static void d40_phy_lli_load(struct d40_chan *chan, struct d40_desc *desc)
 	writel(lli_dst->reg_lnk, base + D40_CHAN_REG_SDLNK);
 }
 
+<<<<<<< HEAD
+=======
+static void d40_desc_done(struct d40_chan *d40c, struct d40_desc *desc)
+{
+	list_add_tail(&desc->node, &d40c->done);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void d40_log_lli_to_lcxa(struct d40_chan *chan, struct d40_desc *desc)
 {
 	struct d40_lcla_pool *pool = &chan->base->lcla_pool;
@@ -709,9 +1111,13 @@ static void d40_log_lli_to_lcxa(struct d40_chan *chan, struct d40_desc *desc)
 	int curr_lcla = -EINVAL;
 	int first_lcla = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool use_esram_lcla = chan->base->plat_data->use_esram_lcla;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool use_esram_lcla = chan->base->plat_data->use_esram_lcla;
+>>>>>>> refs/remotes/origin/master
 	bool linkback;
 
 	/*
@@ -725,7 +1131,20 @@ static void d40_log_lli_to_lcxa(struct d40_chan *chan, struct d40_desc *desc)
 	 * can't link back to the one in LCPA space
 	 */
 	if (linkback || (lli_len - lli_current > 1)) {
+<<<<<<< HEAD
 		curr_lcla = d40_lcla_alloc_one(chan, desc);
+=======
+		/*
+		 * If the channel is expected to use only soft_lli don't
+		 * allocate a lcla. This is to avoid a HW issue that exists
+		 * in some controller during a peripheral to memory transfer
+		 * that uses linked lists.
+		 */
+		if (!(chan->phy_chan->use_soft_lli &&
+			chan->dma_cfg.dir == DMA_DEV_TO_MEM))
+			curr_lcla = d40_lcla_alloc_one(chan, desc);
+
+>>>>>>> refs/remotes/origin/master
 		first_lcla = curr_lcla;
 	}
 
@@ -785,12 +1204,15 @@ static void d40_log_lli_to_lcxa(struct d40_chan *chan, struct d40_desc *desc)
 				       next_lcla, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dma_sync_single_range_for_device(chan->base->dev,
 					pool->dma_addr, lcla_offset,
 					2 * sizeof(struct d40_log_lli),
 					DMA_TO_DEVICE);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Cache maintenance is not needed if lcla is
 		 * mapped in esram
@@ -801,7 +1223,10 @@ static void d40_log_lli_to_lcxa(struct d40_chan *chan, struct d40_desc *desc)
 						2 * sizeof(struct d40_log_lli),
 						DMA_TO_DEVICE);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		curr_lcla = next_lcla;
 
 		if (curr_lcla == -EINVAL || curr_lcla == first_lcla) {
@@ -837,10 +1262,13 @@ static struct d40_desc *d40_first_active_get(struct d40_chan *d40c)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void d40_desc_queue(struct d40_chan *d40c, struct d40_desc *desc)
 {
 	list_add_tail(&desc->node, &d40c->queue);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* remove desc from current queue and add it to the pending_queue */
 static void d40_desc_queue(struct d40_chan *d40c, struct d40_desc *desc)
 {
@@ -860,7 +1288,10 @@ static struct d40_desc *d40_first_pending(struct d40_chan *d40c)
 			     struct d40_desc,
 			     node);
 	return d;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct d40_desc *d40_first_queued(struct d40_chan *d40c)
@@ -876,6 +1307,17 @@ static struct d40_desc *d40_first_queued(struct d40_chan *d40c)
 	return d;
 }
 
+<<<<<<< HEAD
+=======
+static struct d40_desc *d40_first_done(struct d40_chan *d40c)
+{
+	if (list_empty(&d40c->done))
+		return NULL;
+
+	return list_first_entry(&d40c->done, struct d40_desc, node);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int d40_psize_2_burst_size(bool is_log, int psize)
 {
 	if (is_log) {
@@ -891,20 +1333,35 @@ static int d40_psize_2_burst_size(bool is_log, int psize)
 
 /*
  * The dma only supports transmitting packages up to
+<<<<<<< HEAD
  * STEDMA40_MAX_SEG_SIZE << data_width. Calculate the total number of
  * dma elements required to send the entire sg list
+=======
+ * STEDMA40_MAX_SEG_SIZE * data_width, where data_width is stored in Bytes.
+ *
+ * Calculate the total number of dma elements required to send the entire sg list.
+>>>>>>> refs/remotes/origin/master
  */
 static int d40_size_2_dmalen(int size, u32 data_width1, u32 data_width2)
 {
 	int dmalen;
 	u32 max_w = max(data_width1, data_width2);
 	u32 min_w = min(data_width1, data_width2);
+<<<<<<< HEAD
 	u32 seg_max = ALIGN(STEDMA40_MAX_SEG_SIZE << min_w, 1 << max_w);
 
 	if (seg_max > STEDMA40_MAX_SEG_SIZE)
 		seg_max -= (1 << max_w);
 
 	if (!IS_ALIGNED(size, 1 << max_w))
+=======
+	u32 seg_max = ALIGN(STEDMA40_MAX_SEG_SIZE * min_w, max_w);
+
+	if (seg_max > STEDMA40_MAX_SEG_SIZE)
+		seg_max -= max_w;
+
+	if (!IS_ALIGNED(size, max_w))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (size <= seg_max)
@@ -936,11 +1393,14 @@ static int d40_sg_2_dmalen(struct scatterlist *sgl, int sg_len,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Support functions for logical channels */
 
 static int d40_channel_execute_command(struct d40_chan *d40c,
 				       enum d40_command command)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PM
 static void dma40_backup(void __iomem *baseaddr, u32 *backup,
@@ -985,11 +1445,19 @@ static void d40_save_restore_registers(struct d40_base *base, bool save)
 		     save);
 
 	/* Save/Restore registers only existing on dma40 v3 and later */
+<<<<<<< HEAD
 	if (base->rev >= 3)
 		dma40_backup(base->virtbase, base->reg_val_backup_v3,
 			     d40_backup_regs_v3,
 			     ARRAY_SIZE(d40_backup_regs_v3),
 			     save);
+=======
+	if (base->gen_dmac.backup)
+		dma40_backup(base->virtbase, base->reg_val_backup_v4,
+			     base->gen_dmac.backup,
+			base->gen_dmac.backup_size,
+			save);
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static void d40_save_restore_registers(struct d40_base *base, bool save)
@@ -999,7 +1467,10 @@ static void d40_save_restore_registers(struct d40_base *base, bool save)
 
 static int __d40_execute_command_phy(struct d40_chan *d40c,
 				     enum d40_command command)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 status;
 	int i;
@@ -1009,14 +1480,20 @@ static int __d40_execute_command_phy(struct d40_chan *d40c,
 	u32 wmask;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (command == D40_DMA_STOP) {
 		ret = __d40_execute_command_phy(d40c, D40_DMA_SUSPEND_REQ);
 		if (ret)
 			return ret;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&d40c->base->execmd_lock, flags);
 
 	if (d40c->phy_chan->num % 2 == 0)
@@ -1075,9 +1552,19 @@ static void d40_term_all(struct d40_chan *d40c)
 {
 	struct d40_desc *d40d;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct d40_desc *_d;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct d40_desc *_d;
+
+	/* Release completed descriptors */
+	while ((d40d = d40_first_done(d40c))) {
+		d40_desc_remove(d40d);
+		d40_desc_free(d40c, d40d);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Release active descriptors */
 	while ((d40d = d40_first_active_get(d40c))) {
@@ -1091,6 +1578,7 @@ static void d40_term_all(struct d40_chan *d40c)
 		d40_desc_free(d40c, d40d);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	d40c->pending_tx = 0;
@@ -1110,6 +1598,8 @@ static void __d40_config_set_event(struct d40_chan *d40c, bool enable,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Release pending descriptors */
 	while ((d40d = d40_first_pending(d40c))) {
 		d40_desc_remove(d40d);
@@ -1186,12 +1676,16 @@ static void __d40_config_set_event(struct d40_chan *d40c,
 		break;
 
 	case D40_ACTIVATE_EVENTLINE:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The hardware sometimes doesn't register the enable when src and dst
 	 * event lines are active on the same logical channel.  Retry to ensure
 	 * it does.  Usually only one retry is sufficient.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tries = 100;
 	while (--tries) {
@@ -1218,6 +1712,8 @@ static void d40_config_set_event(struct d40_chan *d40c, bool do_enable)
 	spin_lock_irqsave(&d40c->phy_chan->lock, flags);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		tries = 100;
 		while (--tries) {
 			writel((D40_ACTIVATE_EVENTLINE <<
@@ -1247,6 +1743,7 @@ static void d40_config_set_event(struct d40_chan *d40c, bool do_enable)
 static void d40_config_set_event(struct d40_chan *d40c,
 				 enum d40_events event_type)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Enable event line connected to device (or memcpy) */
 	if ((d40c->dma_cfg.dir ==  STEDMA40_PERIPH_TO_MEM) ||
@@ -1275,6 +1772,19 @@ static void d40_config_set_event(struct d40_chan *d40c,
 				       D40_CHAN_REG_SDLNK);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 event = D40_TYPE_TO_EVENT(d40c->dma_cfg.dev_type);
+
+	/* Enable event line connected to device (or memcpy) */
+	if ((d40c->dma_cfg.dir == DMA_DEV_TO_MEM) ||
+	    (d40c->dma_cfg.dir == DMA_DEV_TO_DEV))
+		__d40_config_set_event(d40c, event_type, event,
+				       D40_CHAN_REG_SSLNK);
+
+	if (d40c->dma_cfg.dir !=  DMA_DEV_TO_MEM)
+		__d40_config_set_event(d40c, event_type, event,
+				       D40_CHAN_REG_SDLNK);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 d40_chan_has_events(struct d40_chan *d40c)
@@ -1289,7 +1799,10 @@ static u32 d40_chan_has_events(struct d40_chan *d40c)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 __d40_execute_command_log(struct d40_chan *d40c, enum d40_command command)
 {
@@ -1348,7 +1861,10 @@ static int d40_channel_execute_command(struct d40_chan *d40c,
 		return __d40_execute_command_phy(d40c, command);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 d40_get_prmo(struct d40_chan *d40c)
 {
 	static const unsigned int phy_map[] = {
@@ -1404,12 +1920,18 @@ static void d40_config_write(struct d40_chan *d40c)
 		writel(lidx, chanbase + D40_CHAN_REG_SSELT);
 		writel(lidx, chanbase + D40_CHAN_REG_SDELT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Clear LNK which will be used by d40_chan_has_events() */
 		writel(0, chanbase + D40_CHAN_REG_SSLNK);
 		writel(0, chanbase + D40_CHAN_REG_SDLNK);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1426,7 +1948,11 @@ static u32 d40_residue(struct d40_chan *d40c)
 			  >> D40_SREG_ELEM_PHY_ECNT_POS;
 	}
 
+<<<<<<< HEAD
 	return num_elt * (1 << d40c->dma_cfg.dst_info.data_width);
+=======
+	return num_elt * d40c->dma_cfg.dst_info.data_width;
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool d40_tx_is_linked(struct d40_chan *d40c)
@@ -1451,6 +1977,7 @@ static int d40_pause(struct d40_chan *d40c)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&d40c->lock, flags);
 
 	res = d40_channel_execute_command(d40c, D40_DMA_SUSPEND_REQ);
@@ -1465,6 +1992,8 @@ static int d40_pause(struct d40_chan *d40c)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_get_sync(d40c->base->dev);
 	spin_lock_irqsave(&d40c->lock, flags);
 
@@ -1472,7 +2001,10 @@ static int d40_pause(struct d40_chan *d40c)
 
 	pm_runtime_mark_last_busy(d40c->base->dev);
 	pm_runtime_put_autosuspend(d40c->base->dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&d40c->lock, flags);
 	return res;
 }
@@ -1486,6 +2018,7 @@ static int d40_resume(struct d40_chan *d40c)
 		return 0;
 
 	spin_lock_irqsave(&d40c->lock, flags);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	if (d40c->base->rev == 0)
@@ -1506,6 +2039,8 @@ static int d40_resume(struct d40_chan *d40c)
 
 no_suspend:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_get_sync(d40c->base->dev);
 
 	/* If bytes left to transfer or linked tx resume job */
@@ -1514,11 +2049,15 @@ no_suspend:
 
 	pm_runtime_mark_last_busy(d40c->base->dev);
 	pm_runtime_put_autosuspend(d40c->base->dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&d40c->lock, flags);
 	return res;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int d40_terminate_all(struct d40_chan *chan)
 {
@@ -1538,6 +2077,8 @@ static int d40_terminate_all(struct d40_chan *chan)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static dma_cookie_t d40_tx_submit(struct dma_async_tx_descriptor *tx)
 {
 	struct d40_chan *d40c = container_of(tx->chan,
@@ -1545,6 +2086,7 @@ static dma_cookie_t d40_tx_submit(struct dma_async_tx_descriptor *tx)
 					     chan);
 	struct d40_desc *d40d = container_of(tx, struct d40_desc, txd);
 	unsigned long flags;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	spin_lock_irqsave(&d40c->lock, flags);
@@ -1562,6 +2104,8 @@ static dma_cookie_t d40_tx_submit(struct dma_async_tx_descriptor *tx)
 
 	return tx->cookie;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dma_cookie_t cookie;
 
 	spin_lock_irqsave(&d40c->lock, flags);
@@ -1570,11 +2114,15 @@ static dma_cookie_t d40_tx_submit(struct dma_async_tx_descriptor *tx)
 	spin_unlock_irqrestore(&d40c->lock, flags);
 
 	return cookie;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int d40_start(struct d40_chan *d40c)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (d40c->base->rev == 0) {
 		int err;
@@ -1592,6 +2140,8 @@ static int d40_start(struct d40_chan *d40c)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return d40_channel_execute_command(d40c, D40_DMA_RUN);
 }
 
@@ -1605,13 +2155,19 @@ static struct d40_desc *d40_queue_start(struct d40_chan *d40c)
 
 	if (d40d != NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		d40c->busy = true;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!d40c->busy) {
 			d40c->busy = true;
 			pm_runtime_get_sync(d40c->base->dev);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Remove from queue */
 		d40_desc_remove(d40d);
@@ -1670,6 +2226,7 @@ static void dma_tc_handle(struct d40_chan *d40c)
 			return;
 		}
 
+<<<<<<< HEAD
 		if (d40_queue_start(d40c) == NULL)
 			d40c->busy = false;
 <<<<<<< HEAD
@@ -1677,6 +2234,17 @@ static void dma_tc_handle(struct d40_chan *d40c)
 		pm_runtime_mark_last_busy(d40c->base->dev);
 		pm_runtime_put_autosuspend(d40c->base->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (d40_queue_start(d40c) == NULL) {
+			d40c->busy = false;
+
+			pm_runtime_mark_last_busy(d40c->base->dev);
+			pm_runtime_put_autosuspend(d40c->base->dev);
+		}
+
+		d40_desc_remove(d40d);
+		d40_desc_done(d40c, d40d);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	d40c->pending_tx++;
@@ -1694,6 +2262,7 @@ static void dma_tasklet(unsigned long data)
 
 	spin_lock_irqsave(&d40c->lock, flags);
 
+<<<<<<< HEAD
 	/* Get first active entry from list */
 	d40d = d40_first_active_get(d40c);
 	if (d40d == NULL)
@@ -1705,6 +2274,19 @@ static void dma_tasklet(unsigned long data)
 =======
 		dma_cookie_complete(&d40d->txd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Get first entry from the done list */
+	d40d = d40_first_done(d40c);
+	if (d40d == NULL) {
+		/* Check if we have reached here for cyclic job */
+		d40d = d40_first_active_get(d40c);
+		if (d40d == NULL || !d40d->cyclic)
+			goto err;
+	}
+
+	if (!d40d->cyclic)
+		dma_cookie_complete(&d40d->txd);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If terminating a channel pending_tx is set to zero.
@@ -1722,6 +2304,7 @@ static void dma_tasklet(unsigned long data)
 	if (!d40d->cyclic) {
 		if (async_tx_test_ack(&d40d->txd)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			d40_pool_lli_free(d40c, d40d);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1734,6 +2317,15 @@ static void dma_tasklet(unsigned long data)
 				list_add_tail(&d40d->node, &d40c->client);
 				d40d->is_in_client_list = true;
 			}
+=======
+			d40_desc_remove(d40d);
+			d40_desc_free(d40c, d40d);
+		} else if (!d40d->is_in_client_list) {
+			d40_desc_remove(d40d);
+			d40_lcla_free_all(d40c, d40d);
+			list_add_tail(&d40d->node, &d40c->client);
+			d40d->is_in_client_list = true;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1750,12 +2342,17 @@ static void dma_tasklet(unsigned long data)
 	return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  err:
 	/* Rescue manoeuvre if receiving double interrupts */
 =======
 err:
 	/* Rescue manouver if receiving double interrupts */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err:
+	/* Rescue manouver if receiving double interrupts */
+>>>>>>> refs/remotes/origin/master
 	if (d40c->pending_tx > 0)
 		d40c->pending_tx--;
 	spin_unlock_irqrestore(&d40c->lock, flags);
@@ -1763,6 +2360,7 @@ err:
 
 static irqreturn_t d40_handle_interrupt(int irq, void *data)
 {
+<<<<<<< HEAD
 	static const struct d40_interrupt_lookup il[] = {
 		{D40_DREG_LCTIS0, D40_DREG_LCICR0, false,  0},
 		{D40_DREG_LCTIS1, D40_DREG_LCICR1, false, 32},
@@ -1778,38 +2376,76 @@ static irqreturn_t d40_handle_interrupt(int irq, void *data)
 
 	int i;
 	u32 regs[ARRAY_SIZE(il)];
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 	u32 idx;
 	u32 row;
 	long chan = -1;
 	struct d40_chan *d40c;
 	unsigned long flags;
 	struct d40_base *base = data;
+<<<<<<< HEAD
+=======
+	u32 regs[base->gen_dmac.il_size];
+	struct d40_interrupt_lookup *il = base->gen_dmac.il;
+	u32 il_size = base->gen_dmac.il_size;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&base->interrupt_lock, flags);
 
 	/* Read interrupt status of both logical and physical channels */
+<<<<<<< HEAD
 	for (i = 0; i < ARRAY_SIZE(il); i++)
+=======
+	for (i = 0; i < il_size; i++)
+>>>>>>> refs/remotes/origin/master
 		regs[i] = readl(base->virtbase + il[i].src);
 
 	for (;;) {
 
 		chan = find_next_bit((unsigned long *)regs,
+<<<<<<< HEAD
 				     BITS_PER_LONG * ARRAY_SIZE(il), chan + 1);
 
 		/* No more set bits found? */
 		if (chan == BITS_PER_LONG * ARRAY_SIZE(il))
+=======
+				     BITS_PER_LONG * il_size, chan + 1);
+
+		/* No more set bits found? */
+		if (chan == BITS_PER_LONG * il_size)
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		row = chan / BITS_PER_LONG;
 		idx = chan & (BITS_PER_LONG - 1);
 
+<<<<<<< HEAD
 		/* ACK interrupt */
 		writel(1 << idx, base->virtbase + il[row].clr);
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (il[row].offset == D40_PHY_CHAN)
 			d40c = base->lookup_phy_chans[idx];
 		else
 			d40c = base->lookup_log_chans[il[row].offset + idx];
+<<<<<<< HEAD
+=======
+
+		if (!d40c) {
+			/*
+			 * No error because this can happen if something else
+			 * in the system is using the channel.
+			 */
+			continue;
+		}
+
+		/* ACK interrupt */
+		writel(BIT(idx), base->virtbase + il[row].clr);
+
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&d40c->lock);
 
 		if (!il[row].is_error)
@@ -1830,8 +2466,11 @@ static int d40_validate_conf(struct d40_chan *d40c,
 			     struct stedma40_chan_cfg *conf)
 {
 	int res = 0;
+<<<<<<< HEAD
 	u32 dst_event_group = D40_TYPE_TO_GROUP(conf->dst_dev_type);
 	u32 src_event_group = D40_TYPE_TO_GROUP(conf->src_dev_type);
+=======
+>>>>>>> refs/remotes/origin/master
 	bool is_log = conf->mode == STEDMA40_MODE_LOGICAL;
 
 	if (!conf->dir) {
@@ -1839,6 +2478,7 @@ static int d40_validate_conf(struct d40_chan *d40c,
 		res = -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (conf->dst_dev_type != STEDMA40_DEV_DST_MEMORY &&
 	    d40c->base->plat_data->dev_tx[conf->dst_dev_type] == 0 &&
 	    d40c->runtime_addr == 0) {
@@ -1881,6 +2521,16 @@ static int d40_validate_conf(struct d40_chan *d40c,
 	}
 
 	if (conf->dir == STEDMA40_PERIPH_TO_PERIPH) {
+=======
+	if ((is_log && conf->dev_type > d40c->base->num_log_chans)  ||
+	    (!is_log && conf->dev_type > d40c->base->num_phy_chans) ||
+	    (conf->dev_type < 0)) {
+		chan_err(d40c, "Invalid device type (%d)\n", conf->dev_type);
+		res = -EINVAL;
+	}
+
+	if (conf->dir == DMA_DEV_TO_DEV) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * DMAC HW supports it. Will be added to this driver,
 		 * in case any dma client requires it.
@@ -1890,9 +2540,15 @@ static int d40_validate_conf(struct d40_chan *d40c,
 	}
 
 	if (d40_psize_2_burst_size(is_log, conf->src_info.psize) *
+<<<<<<< HEAD
 	    (1 << conf->src_info.data_width) !=
 	    d40_psize_2_burst_size(is_log, conf->dst_info.psize) *
 	    (1 << conf->dst_info.data_width)) {
+=======
+	    conf->src_info.data_width !=
+	    d40_psize_2_burst_size(is_log, conf->dst_info.psize) *
+	    conf->dst_info.data_width) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The DMAC hardware only supports
 		 * src (burst x width) == dst (burst x width)
@@ -1906,12 +2562,15 @@ static int d40_validate_conf(struct d40_chan *d40c,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static bool d40_alloc_mask_set(struct d40_phy_res *phy, bool is_src,
 			       int log_event_line, bool is_log)
 {
 	unsigned long flags;
 	spin_lock_irqsave(&phy->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool d40_alloc_mask_set(struct d40_phy_res *phy,
 			       bool is_src, int log_event_line, bool is_log,
 			       bool *first_user)
@@ -1922,7 +2581,10 @@ static bool d40_alloc_mask_set(struct d40_phy_res *phy,
 	*first_user = ((phy->allocated_src | phy->allocated_dst)
 			== D40_ALLOC_FREE);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!is_log) {
 		/* Physical interrupts are masked per physical full channel */
 		if (phy->allocated_src == D40_ALLOC_FREE &&
@@ -1942,8 +2604,13 @@ static bool d40_alloc_mask_set(struct d40_phy_res *phy,
 		if (phy->allocated_src == D40_ALLOC_FREE)
 			phy->allocated_src = D40_ALLOC_LOG_FREE;
 
+<<<<<<< HEAD
 		if (!(phy->allocated_src & (1 << log_event_line))) {
 			phy->allocated_src |= 1 << log_event_line;
+=======
+		if (!(phy->allocated_src & BIT(log_event_line))) {
+			phy->allocated_src |= BIT(log_event_line);
+>>>>>>> refs/remotes/origin/master
 			goto found;
 		} else
 			goto not_found;
@@ -1954,8 +2621,13 @@ static bool d40_alloc_mask_set(struct d40_phy_res *phy,
 		if (phy->allocated_dst == D40_ALLOC_FREE)
 			phy->allocated_dst = D40_ALLOC_LOG_FREE;
 
+<<<<<<< HEAD
 		if (!(phy->allocated_dst & (1 << log_event_line))) {
 			phy->allocated_dst |= 1 << log_event_line;
+=======
+		if (!(phy->allocated_dst & BIT(log_event_line))) {
+			phy->allocated_dst |= BIT(log_event_line);
+>>>>>>> refs/remotes/origin/master
 			goto found;
 		} else
 			goto not_found;
@@ -1985,11 +2657,19 @@ static bool d40_alloc_mask_free(struct d40_phy_res *phy, bool is_src,
 
 	/* Logical channel */
 	if (is_src) {
+<<<<<<< HEAD
 		phy->allocated_src &= ~(1 << log_event_line);
 		if (phy->allocated_src == D40_ALLOC_LOG_FREE)
 			phy->allocated_src = D40_ALLOC_FREE;
 	} else {
 		phy->allocated_dst &= ~(1 << log_event_line);
+=======
+		phy->allocated_src &= ~BIT(log_event_line);
+		if (phy->allocated_src == D40_ALLOC_LOG_FREE)
+			phy->allocated_src = D40_ALLOC_FREE;
+	} else {
+		phy->allocated_dst &= ~BIT(log_event_line);
+>>>>>>> refs/remotes/origin/master
 		if (phy->allocated_dst == D40_ALLOC_LOG_FREE)
 			phy->allocated_dst = D40_ALLOC_FREE;
 	}
@@ -2004,22 +2684,33 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int d40_allocate_channel(struct d40_chan *d40c)
 =======
 static int d40_allocate_channel(struct d40_chan *d40c, bool *first_phy_user)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	int dev_type;
+=======
+static int d40_allocate_channel(struct d40_chan *d40c, bool *first_phy_user)
+{
+	int dev_type = d40c->dma_cfg.dev_type;
+>>>>>>> refs/remotes/origin/master
 	int event_group;
 	int event_line;
 	struct d40_phy_res *phys;
 	int i;
 	int j;
 	int log_num;
+<<<<<<< HEAD
+=======
+	int num_phy_chans;
+>>>>>>> refs/remotes/origin/master
 	bool is_src;
 	bool is_log = d40c->dma_cfg.mode == STEDMA40_MODE_LOGICAL;
 
 	phys = d40c->base->phy_res;
+<<<<<<< HEAD
 
 	if (d40c->dma_cfg.dir == STEDMA40_PERIPH_TO_MEM) {
 		dev_type = d40c->dma_cfg.src_dev_type;
@@ -2029,6 +2720,16 @@ static int d40_allocate_channel(struct d40_chan *d40c, bool *first_phy_user)
 		   d40c->dma_cfg.dir == STEDMA40_MEM_TO_MEM) {
 		/* dst event lines are used for logical memcpy */
 		dev_type = d40c->dma_cfg.dst_dev_type;
+=======
+	num_phy_chans = d40c->base->num_phy_chans;
+
+	if (d40c->dma_cfg.dir == DMA_DEV_TO_MEM) {
+		log_num = 2 * dev_type;
+		is_src = true;
+	} else if (d40c->dma_cfg.dir == DMA_MEM_TO_DEV ||
+		   d40c->dma_cfg.dir == DMA_MEM_TO_MEM) {
+		/* dst event lines are used for logical memcpy */
+>>>>>>> refs/remotes/origin/master
 		log_num = 2 * dev_type + 1;
 		is_src = false;
 	} else
@@ -2038,6 +2739,7 @@ static int d40_allocate_channel(struct d40_chan *d40c, bool *first_phy_user)
 	event_line = D40_TYPE_TO_EVENT(dev_type);
 
 	if (!is_log) {
+<<<<<<< HEAD
 		if (d40c->dma_cfg.dir == STEDMA40_MEM_TO_MEM) {
 			/* Find physical half channel */
 			for (i = 0; i < d40c->base->num_phy_chans; i++) {
@@ -2050,6 +2752,23 @@ static int d40_allocate_channel(struct d40_chan *d40c, bool *first_phy_user)
 						       first_phy_user))
 >>>>>>> refs/remotes/origin/cm-10.0
 					goto found_phy;
+=======
+		if (d40c->dma_cfg.dir == DMA_MEM_TO_MEM) {
+			/* Find physical half channel */
+			if (d40c->dma_cfg.use_fixed_channel) {
+				i = d40c->dma_cfg.phy_channel;
+				if (d40_alloc_mask_set(&phys[i], is_src,
+						       0, is_log,
+						       first_phy_user))
+					goto found_phy;
+			} else {
+				for (i = 0; i < num_phy_chans; i++) {
+					if (d40_alloc_mask_set(&phys[i], is_src,
+						       0, is_log,
+						       first_phy_user))
+						goto found_phy;
+				}
+>>>>>>> refs/remotes/origin/master
 			}
 		} else
 			for (j = 0; j < d40c->base->num_phy_chans; j += 8) {
@@ -2059,11 +2778,16 @@ static int d40_allocate_channel(struct d40_chan *d40c, bool *first_phy_user)
 							       is_src,
 							       0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 							       is_log))
 =======
 							       is_log,
 							       first_phy_user))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							       is_log,
+							       first_phy_user))
+>>>>>>> refs/remotes/origin/master
 						goto found_phy;
 				}
 			}
@@ -2080,7 +2804,10 @@ found_phy:
 	for (j = 0; j < d40c->base->num_phy_chans; j += 8) {
 		int phy_num = j + event_group * 2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (d40c->dma_cfg.use_fixed_channel) {
 			i = d40c->dma_cfg.phy_channel;
@@ -2100,7 +2827,10 @@ found_phy:
 			return -EINVAL;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Spread logical channels across all available physical rather
 		 * than pack every logical channel at the first available phy
@@ -2110,22 +2840,32 @@ found_phy:
 			for (i = phy_num; i < phy_num + 2; i++) {
 				if (d40_alloc_mask_set(&phys[i], is_src,
 <<<<<<< HEAD
-						       event_line, is_log))
-=======
-						       event_line, is_log,
-						       first_phy_user))
->>>>>>> refs/remotes/origin/cm-10.0
-					goto found_log;
-			}
-		} else {
-			for (i = phy_num + 1; i >= phy_num; i--) {
-				if (d40_alloc_mask_set(&phys[i], is_src,
 <<<<<<< HEAD
 						       event_line, is_log))
 =======
 						       event_line, is_log,
 						       first_phy_user))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       event_line, is_log,
+						       first_phy_user))
+>>>>>>> refs/remotes/origin/master
+					goto found_log;
+			}
+		} else {
+			for (i = phy_num + 1; i >= phy_num; i--) {
+				if (d40_alloc_mask_set(&phys[i], is_src,
+<<<<<<< HEAD
+<<<<<<< HEAD
+						       event_line, is_log))
+=======
+						       event_line, is_log,
+						       first_phy_user))
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       event_line, is_log,
+						       first_phy_user))
+>>>>>>> refs/remotes/origin/master
 					goto found_log;
 			}
 		}
@@ -2151,6 +2891,7 @@ static int d40_config_memcpy(struct d40_chan *d40c)
 	dma_cap_mask_t cap = d40c->chan.device->cap_mask;
 
 	if (dma_has_cap(DMA_MEMCPY, cap) && !dma_has_cap(DMA_SLAVE, cap)) {
+<<<<<<< HEAD
 		d40c->dma_cfg = *d40c->base->plat_data->memcpy_conf_log;
 		d40c->dma_cfg.src_dev_type = STEDMA40_DEV_SRC_MEMORY;
 		d40c->dma_cfg.dst_dev_type = d40c->base->plat_data->
@@ -2159,6 +2900,25 @@ static int d40_config_memcpy(struct d40_chan *d40c)
 	} else if (dma_has_cap(DMA_MEMCPY, cap) &&
 		   dma_has_cap(DMA_SLAVE, cap)) {
 		d40c->dma_cfg = *d40c->base->plat_data->memcpy_conf_phy;
+=======
+		d40c->dma_cfg = dma40_memcpy_conf_log;
+		d40c->dma_cfg.dev_type = dma40_memcpy_channels[d40c->chan.chan_id];
+
+		d40_log_cfg(&d40c->dma_cfg,
+			    &d40c->log_def.lcsp1, &d40c->log_def.lcsp3);
+
+	} else if (dma_has_cap(DMA_MEMCPY, cap) &&
+		   dma_has_cap(DMA_SLAVE, cap)) {
+		d40c->dma_cfg = dma40_memcpy_conf_phy;
+
+		/* Generate interrrupt at end of transfer or relink. */
+		d40c->dst_def_cfg |= BIT(D40_SREG_CFG_TIM_POS);
+
+		/* Generate interrupt on error. */
+		d40c->src_def_cfg |= BIT(D40_SREG_CFG_EIM_POS);
+		d40c->dst_def_cfg |= BIT(D40_SREG_CFG_EIM_POS);
+
+>>>>>>> refs/remotes/origin/master
 	} else {
 		chan_err(d40c, "No memcpy\n");
 		return -EINVAL;
@@ -2168,13 +2928,17 @@ static int d40_config_memcpy(struct d40_chan *d40c)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int d40_free_dma(struct d40_chan *d40c)
 {
 
 	int res = 0;
+<<<<<<< HEAD
 	u32 event;
 	struct d40_phy_res *phy = d40c->phy_chan;
 	bool is_src;
@@ -2184,10 +2948,16 @@ static int d40_free_dma(struct d40_chan *d40c)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 event = D40_TYPE_TO_EVENT(d40c->dma_cfg.dev_type);
+	struct d40_phy_res *phy = d40c->phy_chan;
+	bool is_src;
+>>>>>>> refs/remotes/origin/master
 
 	/* Terminate all queued and active transfers */
 	d40_term_all(d40c);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Release client owned descriptors */
 	if (!list_empty(&d40c->client))
@@ -2199,6 +2969,8 @@ static int d40_free_dma(struct d40_chan *d40c)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (phy == NULL) {
 		chan_err(d40c, "phy == null\n");
 		return -EINVAL;
@@ -2210,6 +2982,7 @@ static int d40_free_dma(struct d40_chan *d40c)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (d40c->dma_cfg.dir == STEDMA40_MEM_TO_PERIPH ||
 	    d40c->dma_cfg.dir == STEDMA40_MEM_TO_MEM) {
 		event = D40_TYPE_TO_EVENT(d40c->dma_cfg.dst_dev_type);
@@ -2218,10 +2991,19 @@ static int d40_free_dma(struct d40_chan *d40c)
 		event = D40_TYPE_TO_EVENT(d40c->dma_cfg.src_dev_type);
 		is_src = true;
 	} else {
+=======
+	if (d40c->dma_cfg.dir == DMA_MEM_TO_DEV ||
+	    d40c->dma_cfg.dir == DMA_MEM_TO_MEM)
+		is_src = false;
+	else if (d40c->dma_cfg.dir == DMA_DEV_TO_MEM)
+		is_src = true;
+	else {
+>>>>>>> refs/remotes/origin/master
 		chan_err(d40c, "Unknown direction\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	res = d40_channel_execute_command(d40c, D40_DMA_SUSPEND_REQ);
 	if (res) {
@@ -2268,6 +3050,8 @@ static int d40_free_dma(struct d40_chan *d40c)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_get_sync(d40c->base->dev);
 	res = d40_channel_execute_command(d40c, D40_DMA_STOP);
 	if (res) {
@@ -2295,7 +3079,10 @@ out:
 	pm_runtime_mark_last_busy(d40c->base->dev);
 	pm_runtime_put_autosuspend(d40c->base->dev);
 	return res;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool d40_is_paused(struct d40_chan *d40c)
@@ -2305,7 +3092,11 @@ static bool d40_is_paused(struct d40_chan *d40c)
 	unsigned long flags;
 	void __iomem *active_reg;
 	u32 status;
+<<<<<<< HEAD
 	u32 event;
+=======
+	u32 event = D40_TYPE_TO_EVENT(d40c->dma_cfg.dev_type);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&d40c->lock, flags);
 
@@ -2324,12 +3115,19 @@ static bool d40_is_paused(struct d40_chan *d40c)
 		goto _exit;
 	}
 
+<<<<<<< HEAD
 	if (d40c->dma_cfg.dir == STEDMA40_MEM_TO_PERIPH ||
 	    d40c->dma_cfg.dir == STEDMA40_MEM_TO_MEM) {
 		event = D40_TYPE_TO_EVENT(d40c->dma_cfg.dst_dev_type);
 		status = readl(chanbase + D40_CHAN_REG_SDLNK);
 	} else if (d40c->dma_cfg.dir == STEDMA40_PERIPH_TO_MEM) {
 		event = D40_TYPE_TO_EVENT(d40c->dma_cfg.src_dev_type);
+=======
+	if (d40c->dma_cfg.dir == DMA_MEM_TO_DEV ||
+	    d40c->dma_cfg.dir == DMA_MEM_TO_MEM) {
+		status = readl(chanbase + D40_CHAN_REG_SDLNK);
+	} else if (d40c->dma_cfg.dir == DMA_DEV_TO_MEM) {
+>>>>>>> refs/remotes/origin/master
 		status = readl(chanbase + D40_CHAN_REG_SSLNK);
 	} else {
 		chan_err(d40c, "Unknown direction\n");
@@ -2347,7 +3145,10 @@ _exit:
 
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 stedma40_residue(struct dma_chan *chan)
 {
 	struct d40_chan *d40c =
@@ -2423,7 +3224,10 @@ d40_prep_sg_phy(struct d40_chan *chan, struct d40_desc *desc,
 	return ret < 0 ? ret : 0;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct d40_desc *
 d40_prep_desc(struct d40_chan *chan, struct scatterlist *sg,
 	      unsigned int sg_len, unsigned long dma_flags)
@@ -2449,7 +3253,10 @@ d40_prep_desc(struct d40_chan *chan, struct scatterlist *sg,
 		goto err;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	desc->lli_current = 0;
 	desc->txd.flags = dma_flags;
 	desc->txd.tx_submit = d40_tx_submit;
@@ -2463,6 +3270,7 @@ err:
 	return NULL;
 }
 
+<<<<<<< HEAD
 static dma_addr_t
 <<<<<<< HEAD
 d40_get_dev_addr(struct d40_chan *chan, enum dma_data_direction direction)
@@ -2499,6 +3307,12 @@ d40_prep_sg(struct dma_chan *dchan, struct scatterlist *sg_src,
 =======
 	    enum dma_transfer_direction direction, unsigned long dma_flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dma_async_tx_descriptor *
+d40_prep_sg(struct dma_chan *dchan, struct scatterlist *sg_src,
+	    struct scatterlist *sg_dst, unsigned int sg_len,
+	    enum dma_transfer_direction direction, unsigned long dma_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct d40_chan *chan = container_of(dchan, struct d40_chan, chan);
 	dma_addr_t src_dev_addr = 0;
@@ -2512,7 +3326,10 @@ d40_prep_sg(struct dma_chan *dchan, struct scatterlist *sg_src,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&chan->lock, flags);
 
 	desc = d40_prep_desc(chan, sg_src, sg_len, dma_flags);
@@ -2522,6 +3339,7 @@ d40_prep_sg(struct dma_chan *dchan, struct scatterlist *sg_src,
 	if (sg_next(&sg_src[sg_len - 1]) == sg_src)
 		desc->cyclic = true;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (direction != DMA_NONE) {
 		dma_addr_t dev_addr = d40_get_dev_addr(chan, direction);
@@ -2539,6 +3357,12 @@ d40_prep_sg(struct dma_chan *dchan, struct scatterlist *sg_src,
 >>>>>>> refs/remotes/origin/cm-10.0
 			dst_dev_addr = dev_addr;
 	}
+=======
+	if (direction == DMA_DEV_TO_MEM)
+		src_dev_addr = chan->runtime_addr;
+	else if (direction == DMA_MEM_TO_DEV)
+		dst_dev_addr = chan->runtime_addr;
+>>>>>>> refs/remotes/origin/master
 
 	if (chan_is_logical(chan))
 		ret = d40_prep_sg_log(chan, desc, sg_src, sg_dst,
@@ -2554,14 +3378,20 @@ d40_prep_sg(struct dma_chan *dchan, struct scatterlist *sg_src,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * add descriptor to the prepare queue in order to be able
 	 * to free them later in terminate_all
 	 */
 	list_add_tail(&desc->node, &chan->prepare_queue);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&chan->lock, flags);
 
 	return &desc->txd;
@@ -2598,11 +3428,34 @@ static void __d40_set_prio_rt(struct d40_chan *d40c, int dev_type, bool src)
 {
 	bool realtime = d40c->dma_cfg.realtime;
 	bool highprio = d40c->dma_cfg.high_priority;
+<<<<<<< HEAD
 	u32 prioreg = highprio ? D40_DREG_PSEG1 : D40_DREG_PCEG1;
 	u32 rtreg = realtime ? D40_DREG_RSEG1 : D40_DREG_RCEG1;
 	u32 event = D40_TYPE_TO_EVENT(dev_type);
 	u32 group = D40_TYPE_TO_GROUP(dev_type);
 	u32 bit = 1 << event;
+=======
+	u32 rtreg;
+	u32 event = D40_TYPE_TO_EVENT(dev_type);
+	u32 group = D40_TYPE_TO_GROUP(dev_type);
+	u32 bit = BIT(event);
+	u32 prioreg;
+	struct d40_gen_dmac *dmac = &d40c->base->gen_dmac;
+
+	rtreg = realtime ? dmac->realtime_en : dmac->realtime_clear;
+	/*
+	 * Due to a hardware bug, in some cases a logical channel triggered by
+	 * a high priority destination event line can generate extra packet
+	 * transactions.
+	 *
+	 * The workaround is to not set the high priority level for the
+	 * destination event lines that trigger logical channels.
+	 */
+	if (!src && chan_is_logical(d40c))
+		highprio = false;
+
+	prioreg = highprio ? dmac->high_prio_en : dmac->high_prio_clear;
+>>>>>>> refs/remotes/origin/master
 
 	/* Destination event lines are stored in the upper halfword */
 	if (!src)
@@ -2617,6 +3470,7 @@ static void d40_set_prio_realtime(struct d40_chan *d40c)
 	if (d40c->base->rev < 3)
 		return;
 
+<<<<<<< HEAD
 	if ((d40c->dma_cfg.dir ==  STEDMA40_PERIPH_TO_MEM) ||
 	    (d40c->dma_cfg.dir == STEDMA40_PERIPH_TO_PERIPH))
 		__d40_set_prio_rt(d40c, d40c->dma_cfg.src_dev_type, true);
@@ -2624,6 +3478,59 @@ static void d40_set_prio_realtime(struct d40_chan *d40c)
 	if ((d40c->dma_cfg.dir ==  STEDMA40_MEM_TO_PERIPH) ||
 	    (d40c->dma_cfg.dir == STEDMA40_PERIPH_TO_PERIPH))
 		__d40_set_prio_rt(d40c, d40c->dma_cfg.dst_dev_type, false);
+=======
+	if ((d40c->dma_cfg.dir ==  DMA_DEV_TO_MEM) ||
+	    (d40c->dma_cfg.dir == DMA_DEV_TO_DEV))
+		__d40_set_prio_rt(d40c, d40c->dma_cfg.dev_type, true);
+
+	if ((d40c->dma_cfg.dir ==  DMA_MEM_TO_DEV) ||
+	    (d40c->dma_cfg.dir == DMA_DEV_TO_DEV))
+		__d40_set_prio_rt(d40c, d40c->dma_cfg.dev_type, false);
+}
+
+#define D40_DT_FLAGS_MODE(flags)       ((flags >> 0) & 0x1)
+#define D40_DT_FLAGS_DIR(flags)        ((flags >> 1) & 0x1)
+#define D40_DT_FLAGS_BIG_ENDIAN(flags) ((flags >> 2) & 0x1)
+#define D40_DT_FLAGS_FIXED_CHAN(flags) ((flags >> 3) & 0x1)
+
+static struct dma_chan *d40_xlate(struct of_phandle_args *dma_spec,
+				  struct of_dma *ofdma)
+{
+	struct stedma40_chan_cfg cfg;
+	dma_cap_mask_t cap;
+	u32 flags;
+
+	memset(&cfg, 0, sizeof(struct stedma40_chan_cfg));
+
+	dma_cap_zero(cap);
+	dma_cap_set(DMA_SLAVE, cap);
+
+	cfg.dev_type = dma_spec->args[0];
+	flags = dma_spec->args[2];
+
+	switch (D40_DT_FLAGS_MODE(flags)) {
+	case 0: cfg.mode = STEDMA40_MODE_LOGICAL; break;
+	case 1: cfg.mode = STEDMA40_MODE_PHYSICAL; break;
+	}
+
+	switch (D40_DT_FLAGS_DIR(flags)) {
+	case 0:
+		cfg.dir = DMA_MEM_TO_DEV;
+		cfg.dst_info.big_endian = D40_DT_FLAGS_BIG_ENDIAN(flags);
+		break;
+	case 1:
+		cfg.dir = DMA_DEV_TO_MEM;
+		cfg.src_info.big_endian = D40_DT_FLAGS_BIG_ENDIAN(flags);
+		break;
+	}
+
+	if (D40_DT_FLAGS_FIXED_CHAN(flags)) {
+		cfg.phy_channel = dma_spec->args[1];
+		cfg.use_fixed_channel = true;
+	}
+
+	return dma_request_channel(cap, stedma40_filter, &cfg);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* DMA ENGINE functions */
@@ -2637,10 +3544,14 @@ static int d40_alloc_chan_resources(struct dma_chan *chan)
 	spin_lock_irqsave(&d40c->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	d40c->completed = chan->cookie = 1;
 =======
 	dma_cookie_init(chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_init(chan);
+>>>>>>> refs/remotes/origin/master
 
 	/* If no dma configuration is set use default configuration (memcpy) */
 	if (!d40c->configured) {
@@ -2651,6 +3562,7 @@ static int d40_alloc_chan_resources(struct dma_chan *chan)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	is_free_phy = (d40c->phy_chan == NULL);
 
 	err = d40_allocate_channel(d40c);
@@ -2660,6 +3572,8 @@ static int d40_alloc_chan_resources(struct dma_chan *chan)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = d40_allocate_channel(d40c, &is_free_phy);
 	if (err) {
@@ -2669,14 +3583,18 @@ static int d40_alloc_chan_resources(struct dma_chan *chan)
 	}
 
 	pm_runtime_get_sync(d40c->base->dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* Fill in basic CFG register values */
 	d40_phy_cfg(&d40c->dma_cfg, &d40c->src_def_cfg,
 		    &d40c->dst_def_cfg, chan_is_logical(d40c));
+=======
+>>>>>>> refs/remotes/origin/master
 
 	d40_set_prio_realtime(d40c);
 
 	if (chan_is_logical(d40c)) {
+<<<<<<< HEAD
 		d40_log_cfg(&d40c->dma_cfg,
 			    &d40c->log_def.lcsp1, &d40c->log_def.lcsp3);
 
@@ -2691,13 +3609,31 @@ static int d40_alloc_chan_resources(struct dma_chan *chan)
 
 <<<<<<< HEAD
 =======
+=======
+		if (d40c->dma_cfg.dir == DMA_DEV_TO_MEM)
+			d40c->lcpa = d40c->base->lcpa_base +
+				d40c->dma_cfg.dev_type * D40_LCPA_CHAN_SIZE;
+		else
+			d40c->lcpa = d40c->base->lcpa_base +
+				d40c->dma_cfg.dev_type *
+				D40_LCPA_CHAN_SIZE + D40_LCPA_CHAN_DST_DELTA;
+
+		/* Unmask the Global Interrupt Mask. */
+		d40c->src_def_cfg |= BIT(D40_SREG_CFG_LOG_GIM_POS);
+		d40c->dst_def_cfg |= BIT(D40_SREG_CFG_LOG_GIM_POS);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(chan2dev(d40c), "allocated %s channel (phy %d%s)\n",
 		 chan_is_logical(d40c) ? "logical" : "physical",
 		 d40c->phy_chan->num,
 		 d40c->dma_cfg.use_fixed_channel ? ", fixed" : "");
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Only write channel configuration to the DMA if the physical
 	 * resource is free. In case of multiple logical channels
@@ -2707,10 +3643,15 @@ static int d40_alloc_chan_resources(struct dma_chan *chan)
 		d40_config_write(d40c);
 fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pm_runtime_mark_last_busy(d40c->base->dev);
 	pm_runtime_put_autosuspend(d40c->base->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_mark_last_busy(d40c->base->dev);
+	pm_runtime_put_autosuspend(d40c->base->dev);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&d40c->lock, flags);
 	return err;
 }
@@ -2727,7 +3668,10 @@ static void d40_free_chan_resources(struct dma_chan *chan)
 		return;
 	}
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&d40c->lock, flags);
 
 	err = d40_free_dma(d40c);
@@ -2770,6 +3714,7 @@ d40_prep_memcpy_sg(struct dma_chan *chan,
 	return d40_prep_sg(chan, src_sg, dst_sg, src_nents, DMA_NONE, dma_flags);
 }
 
+<<<<<<< HEAD
 static struct dma_async_tx_descriptor *d40_prep_slave_sg(struct dma_chan *chan,
 							 struct scatterlist *sgl,
 							 unsigned int sg_len,
@@ -2785,6 +3730,14 @@ static struct dma_async_tx_descriptor *d40_prep_slave_sg(struct dma_chan *chan,
 {
 	if (direction != DMA_DEV_TO_MEM && direction != DMA_MEM_TO_DEV)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dma_async_tx_descriptor *
+d40_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
+		  unsigned int sg_len, enum dma_transfer_direction direction,
+		  unsigned long dma_flags, void *context)
+{
+	if (!is_slave_direction(direction))
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	return d40_prep_sg(chan, sgl, sgl, sg_len, direction, dma_flags);
@@ -2794,10 +3747,15 @@ static struct dma_async_tx_descriptor *
 dma40_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t dma_addr,
 		     size_t buf_len, size_t period_len,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     enum dma_data_direction direction)
 =======
 		     enum dma_transfer_direction direction, void *context)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     enum dma_transfer_direction direction, unsigned long flags,
+		     void *context)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int periods = buf_len / period_len;
 	struct dma_async_tx_descriptor *txd;
@@ -2805,10 +3763,17 @@ dma40_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t dma_addr,
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sg = kcalloc(periods + 1, sizeof(struct scatterlist), GFP_KERNEL);
 =======
 	sg = kcalloc(periods + 1, sizeof(struct scatterlist), GFP_NOWAIT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sg = kcalloc(periods + 1, sizeof(struct scatterlist), GFP_NOWAIT);
+	if (!sg)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < periods; i++) {
 		sg_dma_address(&sg[i]) = dma_addr;
 		sg_dma_len(&sg[i]) = period_len;
@@ -2816,7 +3781,11 @@ dma40_prep_dma_cyclic(struct dma_chan *chan, dma_addr_t dma_addr,
 	}
 
 	sg[periods].offset = 0;
+<<<<<<< HEAD
 	sg[periods].length = 0;
+=======
+	sg_dma_len(&sg[periods]) = 0;
+>>>>>>> refs/remotes/origin/master
 	sg[periods].page_link =
 		((unsigned long)sg | 0x01) & ~0x02;
 
@@ -2834,18 +3803,23 @@ static enum dma_status d40_tx_status(struct dma_chan *chan,
 {
 	struct d40_chan *d40c = container_of(chan, struct d40_chan, chan);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t last_used;
 	dma_cookie_t last_complete;
 	int ret;
 =======
 	enum dma_status ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum dma_status ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (d40c->phy_chan == NULL) {
 		chan_err(d40c, "Cannot read status of unallocated channel\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	last_complete = d40c->completed;
 	last_used = chan->cookie;
@@ -2860,11 +3834,18 @@ static enum dma_status d40_tx_status(struct dma_chan *chan,
 =======
 	ret = dma_cookie_status(chan, cookie, txstate);
 	if (ret != DMA_SUCCESS)
+=======
+	ret = dma_cookie_status(chan, cookie, txstate);
+	if (ret != DMA_COMPLETE)
+>>>>>>> refs/remotes/origin/master
 		dma_set_residue(txstate, stedma40_residue(chan));
 
 	if (d40_is_paused(d40c))
 		ret = DMA_PAUSED;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -2882,18 +3863,25 @@ static void d40_issue_pending(struct dma_chan *chan)
 	spin_lock_irqsave(&d40c->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Busy means that pending jobs are already being processed */
 =======
 	list_splice_tail_init(&d40c->pending_queue, &d40c->queue);
 
 	/* Busy means that queued jobs are already being processed */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_splice_tail_init(&d40c->pending_queue, &d40c->queue);
+
+	/* Busy means that queued jobs are already being processed */
+>>>>>>> refs/remotes/origin/master
 	if (!d40c->busy)
 		(void) d40_queue_start(d40c);
 
 	spin_unlock_irqrestore(&d40c->lock, flags);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Runtime reconfiguration extension */
 static void d40_set_runtime_config(struct dma_chan *chan,
@@ -2909,6 +3897,8 @@ static void d40_set_runtime_config(struct dma_chan *chan,
 
 	if (config->direction == DMA_FROM_DEVICE) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void d40_terminate_all(struct dma_chan *chan)
 {
 	unsigned long flags;
@@ -2937,6 +3927,7 @@ static void d40_terminate_all(struct dma_chan *chan)
 static int
 dma40_config_to_halfchannel(struct d40_chan *d40c,
 			    struct stedma40_half_channel_info *info,
+<<<<<<< HEAD
 			    enum dma_slave_buswidth width,
 			    u32 maxburst)
 {
@@ -2964,6 +3955,12 @@ dma40_config_to_halfchannel(struct d40_chan *d40c,
 		return -EINVAL;
 	}
 
+=======
+			    u32 maxburst)
+{
+	int psize;
+
+>>>>>>> refs/remotes/origin/master
 	if (chan_is_logical(d40c)) {
 		if (maxburst >= 16)
 			psize = STEDMA40_PSIZE_LOG_16;
@@ -2984,7 +3981,10 @@ dma40_config_to_halfchannel(struct d40_chan *d40c,
 			psize = STEDMA40_PSIZE_PHY_1;
 	}
 
+<<<<<<< HEAD
 	info->data_width = addr_width;
+=======
+>>>>>>> refs/remotes/origin/master
 	info->psize = psize;
 	info->flow_ctrl = STEDMA40_NO_FLOW_CTRL;
 
@@ -3008,6 +4008,7 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 	dst_maxburst = config->dst_maxburst;
 
 	if (config->direction == DMA_DEV_TO_MEM) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		dma_addr_t dev_addr_rx =
 			d40c->base->plat_data->dev_rx[cfg->src_dev_type];
@@ -3019,10 +4020,16 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 				"overriding with %08x\n",
 				dev_addr_rx, config_addr);
 		if (cfg->dir != STEDMA40_PERIPH_TO_MEM)
+=======
+		config_addr = config->src_addr;
+
+		if (cfg->dir != DMA_DEV_TO_MEM)
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(d40c->base->dev,
 				"channel was not configured for peripheral "
 				"to memory transfer (%d) overriding\n",
 				cfg->dir);
+<<<<<<< HEAD
 		cfg->dir = STEDMA40_PERIPH_TO_MEM;
 
 <<<<<<< HEAD
@@ -3031,6 +4038,10 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 
 	} else if (config->direction == DMA_TO_DEVICE) {
 =======
+=======
+		cfg->dir = DMA_DEV_TO_MEM;
+
+>>>>>>> refs/remotes/origin/master
 		/* Configure the memory side */
 		if (dst_addr_width == DMA_SLAVE_BUSWIDTH_UNDEFINED)
 			dst_addr_width = src_addr_width;
@@ -3038,6 +4049,7 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 			dst_maxburst = src_maxburst;
 
 	} else if (config->direction == DMA_MEM_TO_DEV) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		dma_addr_t dev_addr_tx =
 			d40c->base->plat_data->dev_tx[cfg->dst_dev_type];
@@ -3049,10 +4061,16 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 				"overriding with %08x\n",
 				dev_addr_tx, config_addr);
 		if (cfg->dir != STEDMA40_MEM_TO_PERIPH)
+=======
+		config_addr = config->dst_addr;
+
+		if (cfg->dir != DMA_MEM_TO_DEV)
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(d40c->base->dev,
 				"channel was not configured for memory "
 				"to peripheral transfer (%d) overriding\n",
 				cfg->dir);
+<<<<<<< HEAD
 		cfg->dir = STEDMA40_MEM_TO_PERIPH;
 
 <<<<<<< HEAD
@@ -3060,16 +4078,24 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 		config_maxburst = config->dst_maxburst;
 
 =======
+=======
+		cfg->dir = DMA_MEM_TO_DEV;
+
+>>>>>>> refs/remotes/origin/master
 		/* Configure the memory side */
 		if (src_addr_width == DMA_SLAVE_BUSWIDTH_UNDEFINED)
 			src_addr_width = dst_addr_width;
 		if (src_maxburst == 0)
 			src_maxburst = dst_maxburst;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		dev_err(d40c->base->dev,
 			"unrecognized channel direction %d\n",
 			config->direction);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return;
 	}
@@ -3127,6 +4153,13 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 	cfg->dst_info.big_endian = false;
 	cfg->dst_info.flow_ctrl = STEDMA40_NO_FLOW_CTRL;
 =======
+=======
+		return -EINVAL;
+	}
+
+	if (config_addr <= 0) {
+		dev_err(d40c->base->dev, "no address supplied\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -3140,30 +4173,65 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	ret = dma40_config_to_halfchannel(d40c, &cfg->src_info,
 					  src_addr_width,
+=======
+	if (src_maxburst > 16) {
+		src_maxburst = 16;
+		dst_maxburst = src_maxburst * src_addr_width / dst_addr_width;
+	} else if (dst_maxburst > 16) {
+		dst_maxburst = 16;
+		src_maxburst = dst_maxburst * dst_addr_width / src_addr_width;
+	}
+
+	/* Only valid widths are; 1, 2, 4 and 8. */
+	if (src_addr_width <= DMA_SLAVE_BUSWIDTH_UNDEFINED ||
+	    src_addr_width >  DMA_SLAVE_BUSWIDTH_8_BYTES   ||
+	    dst_addr_width <= DMA_SLAVE_BUSWIDTH_UNDEFINED ||
+	    dst_addr_width >  DMA_SLAVE_BUSWIDTH_8_BYTES   ||
+	    !is_power_of_2(src_addr_width) ||
+	    !is_power_of_2(dst_addr_width))
+		return -EINVAL;
+
+	cfg->src_info.data_width = src_addr_width;
+	cfg->dst_info.data_width = dst_addr_width;
+
+	ret = dma40_config_to_halfchannel(d40c, &cfg->src_info,
+>>>>>>> refs/remotes/origin/master
 					  src_maxburst);
 	if (ret)
 		return ret;
 
 	ret = dma40_config_to_halfchannel(d40c, &cfg->dst_info,
+<<<<<<< HEAD
 					  dst_addr_width,
 					  dst_maxburst);
 	if (ret)
 		return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  dst_maxburst);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* Fill in register values */
 	if (chan_is_logical(d40c))
 		d40_log_cfg(cfg, &d40c->log_def.lcsp1, &d40c->log_def.lcsp3);
 	else
+<<<<<<< HEAD
 		d40_phy_cfg(cfg, &d40c->src_def_cfg,
 			    &d40c->dst_def_cfg, false);
+=======
+		d40_phy_cfg(cfg, &d40c->src_def_cfg, &d40c->dst_def_cfg);
+>>>>>>> refs/remotes/origin/master
 
 	/* These settings will take precedence later */
 	d40c->runtime_addr = config_addr;
 	d40c->runtime_direction = config->direction;
 	dev_dbg(d40c->base->dev,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"configured channel %s for %s, data width %d, "
 		"maxburst %d bytes, LE, no flow control\n",
@@ -3172,6 +4240,8 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 		config_addr_width,
 		config_maxburst);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		"configured channel %s for %s, data width %d/%d, "
 		"maxburst %d/%d elements, LE, no flow control\n",
 		dma_chan_name(chan),
@@ -3180,7 +4250,10 @@ static int d40_set_runtime_config(struct dma_chan *chan,
 		src_maxburst, dst_maxburst);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int d40_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
@@ -3196,16 +4269,22 @@ static int d40_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 	switch (cmd) {
 	case DMA_TERMINATE_ALL:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return d40_terminate_all(d40c);
 =======
 		d40_terminate_all(chan);
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		d40_terminate_all(chan);
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	case DMA_PAUSE:
 		return d40_pause(d40c);
 	case DMA_RESUME:
 		return d40_resume(d40c);
 	case DMA_SLAVE_CONFIG:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		d40_set_runtime_config(chan,
 			(struct dma_slave_config *) arg);
@@ -3214,6 +4293,10 @@ static int d40_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		return d40_set_runtime_config(chan,
 			(struct dma_slave_config *) arg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return d40_set_runtime_config(chan,
+			(struct dma_slave_config *) arg);
+>>>>>>> refs/remotes/origin/master
 	default:
 		break;
 	}
@@ -3242,6 +4325,7 @@ static void __init d40_chan_init(struct d40_base *base, struct dma_device *dma,
 
 		d40c->log_num = D40_PHY_CHAN;
 
+<<<<<<< HEAD
 		INIT_LIST_HEAD(&d40c->active);
 		INIT_LIST_HEAD(&d40c->queue);
 <<<<<<< HEAD
@@ -3251,6 +4335,14 @@ static void __init d40_chan_init(struct d40_base *base, struct dma_device *dma,
 		INIT_LIST_HEAD(&d40c->client);
 		INIT_LIST_HEAD(&d40c->prepare_queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		INIT_LIST_HEAD(&d40c->done);
+		INIT_LIST_HEAD(&d40c->active);
+		INIT_LIST_HEAD(&d40c->queue);
+		INIT_LIST_HEAD(&d40c->pending_queue);
+		INIT_LIST_HEAD(&d40c->client);
+		INIT_LIST_HEAD(&d40c->prepare_queue);
+>>>>>>> refs/remotes/origin/master
 
 		tasklet_init(&d40c->tasklet, dma_tasklet,
 			     (unsigned long) d40c);
@@ -3311,7 +4403,11 @@ static int __init d40_dmaengine_init(struct d40_base *base,
 	}
 
 	d40_chan_init(base, &base->dma_memcpy, base->log_chans,
+<<<<<<< HEAD
 		      base->num_log_chans, base->plat_data->memcpy_len);
+=======
+		      base->num_log_chans, base->num_memcpy_chans);
+>>>>>>> refs/remotes/origin/master
 
 	dma_cap_zero(base->dma_memcpy.cap_mask);
 	dma_cap_set(DMA_MEMCPY, base->dma_memcpy.cap_mask);
@@ -3354,7 +4450,10 @@ failure1:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Suspend resume functionality */
 #ifdef CONFIG_PM
 static int dma40_pm_suspend(struct device *dev)
@@ -3362,8 +4461,11 @@ static int dma40_pm_suspend(struct device *dev)
 	struct platform_device *pdev = to_platform_device(dev);
 	struct d40_base *base = platform_get_drvdata(pdev);
 	int ret = 0;
+<<<<<<< HEAD
 	if (!pm_runtime_suspended(dev))
 		return -EBUSY;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (base->lcpa_regulator)
 		ret = regulator_disable(base->lcpa_regulator);
@@ -3421,7 +4523,10 @@ static const struct dev_pm_ops dma40_pm_ops = {
 #define DMA40_PM_OPS	NULL
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Initialization functions. */
 
 static int __init d40_phy_res_init(struct d40_base *base)
@@ -3431,9 +4536,13 @@ static int __init d40_phy_res_init(struct d40_base *base)
 	u32 val[2];
 	int odd_even_bit = -2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int gcc = D40_DREG_GCC_ENA;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int gcc = D40_DREG_GCC_ENA;
+>>>>>>> refs/remotes/origin/master
 
 	val[0] = readl(base->virtbase + D40_DREG_PRSME);
 	val[1] = readl(base->virtbase + D40_DREG_PRSMO);
@@ -3446,10 +4555,13 @@ static int __init d40_phy_res_init(struct d40_base *base)
 			base->phy_res[i].allocated_src = D40_ALLOC_PHY;
 			base->phy_res[i].allocated_dst = D40_ALLOC_PHY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else {
 			base->phy_res[i].allocated_src = D40_ALLOC_FREE;
 			base->phy_res[i].allocated_dst = D40_ALLOC_FREE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			base->phy_res[i].reserved = true;
 			gcc |= D40_DREG_GCC_EVTGRP_ENA(D40_PHYS_TO_GROUP(i),
 						       D40_DREG_GCC_SRC);
@@ -3461,7 +4573,10 @@ static int __init d40_phy_res_init(struct d40_base *base)
 			base->phy_res[i].allocated_src = D40_ALLOC_FREE;
 			base->phy_res[i].allocated_dst = D40_ALLOC_FREE;
 			base->phy_res[i].reserved = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			num_phy_chans_avail++;
 		}
 		spin_lock_init(&base->phy_res[i].lock);
@@ -3474,16 +4589,32 @@ static int __init d40_phy_res_init(struct d40_base *base)
 		base->phy_res[chan].allocated_src = D40_ALLOC_PHY;
 		base->phy_res[chan].allocated_dst = D40_ALLOC_PHY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		base->phy_res[chan].reserved = true;
 		gcc |= D40_DREG_GCC_EVTGRP_ENA(D40_PHYS_TO_GROUP(chan),
 					       D40_DREG_GCC_SRC);
 		gcc |= D40_DREG_GCC_EVTGRP_ENA(D40_PHYS_TO_GROUP(chan),
 					       D40_DREG_GCC_DST);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		num_phy_chans_avail--;
 	}
 
+=======
+		num_phy_chans_avail--;
+	}
+
+	/* Mark soft_lli channels */
+	for (i = 0; i < base->plat_data->num_of_soft_lli_chans; i++) {
+		int chan = base->plat_data->soft_lli_chans[i];
+
+		base->phy_res[chan].use_soft_lli = true;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(base->dev, "%d of %d physical DMA channels available\n",
 		 num_phy_chans_avail, base->num_phy_chans);
 
@@ -3502,7 +4633,10 @@ static int __init d40_phy_res_init(struct d40_base *base)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * To keep things simple, Enable all clocks initially.
 	 * The clocks will get managed later post channel allocation.
@@ -3512,12 +4646,16 @@ static int __init d40_phy_res_init(struct d40_base *base)
 	writel(D40_DREG_GCC_ENABLE_ALL, base->virtbase + D40_DREG_GCC);
 	base->gcc_pwr_off_mask = gcc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return num_phy_chans_avail;
 }
 
 static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	static const struct d40_reg_val dma_id_regs[] = {
 		/* Peripheral Id */
@@ -3541,12 +4679,16 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct stedma40_platform_data *plat_data;
+=======
+	struct stedma40_platform_data *plat_data = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct clk *clk = NULL;
 	void __iomem *virtbase = NULL;
 	struct resource *res = NULL;
 	struct d40_base *base = NULL;
 	int num_log_chans = 0;
 	int num_phy_chans;
+<<<<<<< HEAD
 	int i;
 <<<<<<< HEAD
 	u32 val;
@@ -3559,12 +4701,30 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 
 	clk = clk_get(&pdev->dev, NULL);
 
+=======
+	int num_memcpy_chans;
+	int clk_ret = -EINVAL;
+	int i;
+	u32 pid;
+	u32 cid;
+	u8 rev;
+
+	clk = clk_get(&pdev->dev, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(clk)) {
 		d40_err(&pdev->dev, "No matching clock found\n");
 		goto failure;
 	}
 
+<<<<<<< HEAD
 	clk_enable(clk);
+=======
+	clk_ret = clk_prepare_enable(clk);
+	if (clk_ret) {
+		d40_err(&pdev->dev, "Failed to prepare/enable clock\n");
+		goto failure;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Get IO for DMAC base address */
 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "base");
@@ -3579,6 +4739,7 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	if (!virtbase)
 		goto failure;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* HW version check */
 	for (i = 0; i < ARRAY_SIZE(dma_id_regs); i++) {
@@ -3607,6 +4768,8 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	rev = (val & D40_DREG_PERIPHID2_REV_MASK) >>
 		D40_DREG_PERIPHID2_REV_POS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* This is just a regular AMBA PrimeCell ID actually */
 	for (pid = 0, i = 0; i < 4; i++)
 		pid |= (readl(virtbase + resource_size(res) - 0x20 + 4 * i)
@@ -3631,6 +4794,7 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	 * ? has revision 1
 	 * DB8500v1 has revision 2
 	 * DB8500v2 has revision 3
+<<<<<<< HEAD
 	 */
 	rev = AMBA_REV_BITS(pid);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -3663,6 +4827,37 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 
 	base = kzalloc(ALIGN(sizeof(struct d40_base), 4) +
 		       (num_phy_chans + num_log_chans + plat_data->memcpy_len) *
+=======
+	 * AP9540v1 has revision 4
+	 * DB8540v1 has revision 4
+	 */
+	rev = AMBA_REV_BITS(pid);
+	if (rev < 2) {
+		d40_err(&pdev->dev, "hardware revision: %d is not supported", rev);
+		goto failure;
+	}
+
+	/* The number of physical channels on this HW */
+	if (plat_data->num_of_phy_chans)
+		num_phy_chans = plat_data->num_of_phy_chans;
+	else
+		num_phy_chans = 4 * (readl(virtbase + D40_DREG_ICFG) & 0x7) + 4;
+
+	/* The number of channels used for memcpy */
+	if (plat_data->num_of_memcpy_chans)
+		num_memcpy_chans = plat_data->num_of_memcpy_chans;
+	else
+		num_memcpy_chans = ARRAY_SIZE(dma40_memcpy_channels);
+
+	num_log_chans = num_phy_chans * D40_MAX_LOG_CHAN_PER_PHY;
+
+	dev_info(&pdev->dev,
+		 "hardware rev: %d @ %pa with %d physical and %d logical channels\n",
+		 rev, &res->start, num_phy_chans, num_log_chans);
+
+	base = kzalloc(ALIGN(sizeof(struct d40_base), 4) +
+		       (num_phy_chans + num_log_chans + num_memcpy_chans) *
+>>>>>>> refs/remotes/origin/master
 		       sizeof(struct d40_chan), GFP_KERNEL);
 
 	if (base == NULL) {
@@ -3672,6 +4867,10 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 
 	base->rev = rev;
 	base->clk = clk;
+<<<<<<< HEAD
+=======
+	base->num_memcpy_chans = num_memcpy_chans;
+>>>>>>> refs/remotes/origin/master
 	base->num_phy_chans = num_phy_chans;
 	base->num_log_chans = num_log_chans;
 	base->phy_start = res->start;
@@ -3682,6 +4881,39 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	base->phy_chans = ((void *)base) + ALIGN(sizeof(struct d40_base), 4);
 	base->log_chans = &base->phy_chans[num_phy_chans];
 
+<<<<<<< HEAD
+=======
+	if (base->plat_data->num_of_phy_chans == 14) {
+		base->gen_dmac.backup = d40_backup_regs_v4b;
+		base->gen_dmac.backup_size = BACKUP_REGS_SZ_V4B;
+		base->gen_dmac.interrupt_en = D40_DREG_CPCMIS;
+		base->gen_dmac.interrupt_clear = D40_DREG_CPCICR;
+		base->gen_dmac.realtime_en = D40_DREG_CRSEG1;
+		base->gen_dmac.realtime_clear = D40_DREG_CRCEG1;
+		base->gen_dmac.high_prio_en = D40_DREG_CPSEG1;
+		base->gen_dmac.high_prio_clear = D40_DREG_CPCEG1;
+		base->gen_dmac.il = il_v4b;
+		base->gen_dmac.il_size = ARRAY_SIZE(il_v4b);
+		base->gen_dmac.init_reg = dma_init_reg_v4b;
+		base->gen_dmac.init_reg_size = ARRAY_SIZE(dma_init_reg_v4b);
+	} else {
+		if (base->rev >= 3) {
+			base->gen_dmac.backup = d40_backup_regs_v4a;
+			base->gen_dmac.backup_size = BACKUP_REGS_SZ_V4A;
+		}
+		base->gen_dmac.interrupt_en = D40_DREG_PCMIS;
+		base->gen_dmac.interrupt_clear = D40_DREG_PCICR;
+		base->gen_dmac.realtime_en = D40_DREG_RSEG1;
+		base->gen_dmac.realtime_clear = D40_DREG_RCEG1;
+		base->gen_dmac.high_prio_en = D40_DREG_PSEG1;
+		base->gen_dmac.high_prio_clear = D40_DREG_PCEG1;
+		base->gen_dmac.il = il_v4a;
+		base->gen_dmac.il_size = ARRAY_SIZE(il_v4a);
+		base->gen_dmac.init_reg = dma_init_reg_v4a;
+		base->gen_dmac.init_reg_size = ARRAY_SIZE(dma_init_reg_v4a);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	base->phy_res = kzalloc(num_phy_chans * sizeof(struct d40_phy_res),
 				GFP_KERNEL);
 	if (!base->phy_res)
@@ -3693,6 +4925,7 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	if (!base->lookup_phy_chans)
 		goto failure;
 
+<<<<<<< HEAD
 	if (num_log_chans + plat_data->memcpy_len) {
 		/*
 		 * The max number of logical channels are event lines for all
@@ -3711,6 +4944,14 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 					    D40_LCLA_LINK_PER_EVENT_GRP,
 					    GFP_KERNEL);
 =======
+=======
+	base->lookup_log_chans = kzalloc(num_log_chans *
+					 sizeof(struct d40_chan *),
+					 GFP_KERNEL);
+	if (!base->lookup_log_chans)
+		goto failure;
+
+>>>>>>> refs/remotes/origin/master
 	base->reg_val_backup_chan = kmalloc(base->num_phy_chans *
 					    sizeof(d40_backup_regs_chan),
 					    GFP_KERNEL);
@@ -3720,7 +4961,10 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	base->lcla_pool.alloc_map =
 		kzalloc(num_phy_chans * sizeof(struct d40_desc *)
 			* D40_LCLA_LINK_PER_EVENT_GRP, GFP_KERNEL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!base->lcla_pool.alloc_map)
 		goto failure;
 
@@ -3733,10 +4977,17 @@ static struct d40_base * __init d40_hw_detect_init(struct platform_device *pdev)
 	return base;
 
 failure:
+<<<<<<< HEAD
 	if (!IS_ERR(clk)) {
 		clk_disable(clk);
 		clk_put(clk);
 	}
+=======
+	if (!clk_ret)
+		clk_disable_unprepare(clk);
+	if (!IS_ERR(clk))
+		clk_put(clk);
+>>>>>>> refs/remotes/origin/master
 	if (virtbase)
 		iounmap(virtbase);
 	if (res)
@@ -3748,9 +4999,13 @@ failure:
 	if (base) {
 		kfree(base->lcla_pool.alloc_map);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		kfree(base->reg_val_backup_chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree(base->reg_val_backup_chan);
+>>>>>>> refs/remotes/origin/master
 		kfree(base->lookup_log_chans);
 		kfree(base->lookup_phy_chans);
 		kfree(base->phy_res);
@@ -3763,6 +5018,7 @@ failure:
 static void __init d40_hw_init(struct d40_base *base)
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	static const struct d40_reg_val dma_init_reg[] = {
 		/* Clock every part of the DMA block from start */
@@ -3787,13 +5043,22 @@ static void __init d40_hw_init(struct d40_base *base)
 		{ .reg = D40_DREG_LCTIS2, .val = 0xFFFFFFFF},
 		{ .reg = D40_DREG_LCTIS3, .val = 0xFFFFFFFF}
 	};
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	u32 prmseo[2] = {0, 0};
 	u32 activeo[2] = {0xFFFFFFFF, 0xFFFFFFFF};
 	u32 pcmis = 0;
 	u32 pcicr = 0;
+<<<<<<< HEAD
 
 	for (i = 0; i < ARRAY_SIZE(dma_init_reg); i++)
+=======
+	struct d40_reg_val *dma_init_reg = base->gen_dmac.init_reg;
+	u32 reg_size = base->gen_dmac.init_reg_size;
+
+	for (i = 0; i < reg_size; i++)
+>>>>>>> refs/remotes/origin/master
 		writel(dma_init_reg[i].val,
 		       base->virtbase + dma_init_reg[i].reg);
 
@@ -3826,11 +5091,22 @@ static void __init d40_hw_init(struct d40_base *base)
 	writel(activeo[0], base->virtbase + D40_DREG_ACTIVO);
 
 	/* Write which interrupt to enable */
+<<<<<<< HEAD
 	writel(pcmis, base->virtbase + D40_DREG_PCMIS);
 
 	/* Write which interrupt to clear */
 	writel(pcicr, base->virtbase + D40_DREG_PCICR);
 
+=======
+	writel(pcmis, base->virtbase + base->gen_dmac.interrupt_en);
+
+	/* Write which interrupt to clear */
+	writel(pcicr, base->virtbase + base->gen_dmac.interrupt_clear);
+
+	/* These are __initdata and cannot be accessed after init */
+	base->gen_dmac.init_reg = NULL;
+	base->gen_dmac.init_reg_size = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init d40_lcla_allocate(struct d40_base *base)
@@ -3916,17 +5192,95 @@ failure:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __init d40_probe(struct platform_device *pdev)
 {
 	int err;
 	int ret = -ENOENT;
 	struct d40_base *base;
+=======
+static int __init d40_of_probe(struct platform_device *pdev,
+			       struct device_node *np)
+{
+	struct stedma40_platform_data *pdata;
+	int num_phy = 0, num_memcpy = 0, num_disabled = 0;
+	const __be32 *list;
+
+	pdata = devm_kzalloc(&pdev->dev,
+			     sizeof(struct stedma40_platform_data),
+			     GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	/* If absent this value will be obtained from h/w. */
+	of_property_read_u32(np, "dma-channels", &num_phy);
+	if (num_phy > 0)
+		pdata->num_of_phy_chans = num_phy;
+
+	list = of_get_property(np, "memcpy-channels", &num_memcpy);
+	num_memcpy /= sizeof(*list);
+
+	if (num_memcpy > D40_MEMCPY_MAX_CHANS || num_memcpy <= 0) {
+		d40_err(&pdev->dev,
+			"Invalid number of memcpy channels specified (%d)\n",
+			num_memcpy);
+		return -EINVAL;
+	}
+	pdata->num_of_memcpy_chans = num_memcpy;
+
+	of_property_read_u32_array(np, "memcpy-channels",
+				   dma40_memcpy_channels,
+				   num_memcpy);
+
+	list = of_get_property(np, "disabled-channels", &num_disabled);
+	num_disabled /= sizeof(*list);
+
+	if (num_disabled >= STEDMA40_MAX_PHYS || num_disabled < 0) {
+		d40_err(&pdev->dev,
+			"Invalid number of disabled channels specified (%d)\n",
+			num_disabled);
+		return -EINVAL;
+	}
+
+	of_property_read_u32_array(np, "disabled-channels",
+				   pdata->disabled_channels,
+				   num_disabled);
+	pdata->disabled_channels[num_disabled] = -1;
+
+	pdev->dev.platform_data = pdata;
+
+	return 0;
+}
+
+static int __init d40_probe(struct platform_device *pdev)
+{
+	struct stedma40_platform_data *plat_data = dev_get_platdata(&pdev->dev);
+	struct device_node *np = pdev->dev.of_node;
+	int ret = -ENOENT;
+	struct d40_base *base = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct resource *res = NULL;
 	int num_reserved_chans;
 	u32 val;
 
+<<<<<<< HEAD
 	base = d40_hw_detect_init(pdev);
 
+=======
+	if (!plat_data) {
+		if (np) {
+			if(d40_of_probe(pdev, np)) {
+				ret = -ENOMEM;
+				goto failure;
+			}
+		} else {
+			d40_err(&pdev->dev, "No pdata or Device Tree provided\n");
+			goto failure;
+		}
+	}
+
+	base = d40_hw_detect_init(pdev);
+>>>>>>> refs/remotes/origin/master
 	if (!base)
 		goto failure;
 
@@ -3950,9 +5304,13 @@ static int __init d40_probe(struct platform_device *pdev)
 	if (request_mem_region(res->start, resource_size(res),
 			       D40_NAME " I/O lcpa") == NULL) {
 		ret = -EBUSY;
+<<<<<<< HEAD
 		d40_err(&pdev->dev,
 			"Failed to request LCPA region 0x%x-0x%x\n",
 			res->start, res->end);
+=======
+		d40_err(&pdev->dev, "Failed to request LCPA region %pR\n", res);
+>>>>>>> refs/remotes/origin/master
 		goto failure;
 	}
 
@@ -3960,8 +5318,13 @@ static int __init d40_probe(struct platform_device *pdev)
 	val = readl(base->virtbase + D40_DREG_LCPA);
 	if (res->start != val && val != 0) {
 		dev_warn(&pdev->dev,
+<<<<<<< HEAD
 			 "[%s] Mismatch LCPA dma 0x%x, def 0x%x\n",
 			 __func__, val, res->start);
+=======
+			 "[%s] Mismatch LCPA dma 0x%x, def %pa\n",
+			 __func__, val, &res->start);
+>>>>>>> refs/remotes/origin/master
 	} else
 		writel(res->start, base->virtbase + D40_DREG_LCPA);
 
@@ -3972,12 +5335,15 @@ static int __init d40_probe(struct platform_device *pdev)
 		goto failure;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ret = d40_lcla_allocate(base);
 	if (ret) {
 		d40_err(&pdev->dev, "Failed to allocate LCLA area\n");
 		goto failure;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* If lcla has to be located in ESRAM we don't need to allocate */
 	if (base->plat_data->use_esram_lcla) {
 		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
@@ -4003,7 +5369,10 @@ static int __init d40_probe(struct platform_device *pdev)
 			d40_err(&pdev->dev, "Failed to allocate LCLA area\n");
 			goto failure;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_init(&base->lcla_pool.lock);
@@ -4017,7 +5386,10 @@ static int __init d40_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_irq_safe(base->dev);
 	pm_runtime_set_autosuspend_delay(base->dev, DMA40_AUTOSUSPEND_DELAY);
 	pm_runtime_use_autosuspend(base->dev);
@@ -4029,6 +5401,10 @@ static int __init d40_probe(struct platform_device *pdev)
 		base->lcpa_regulator = regulator_get(base->dev, "lcla_esram");
 		if (IS_ERR(base->lcpa_regulator)) {
 			d40_err(&pdev->dev, "Failed to get lcpa_regulator\n");
+<<<<<<< HEAD
+=======
+			ret = PTR_ERR(base->lcpa_regulator);
+>>>>>>> refs/remotes/origin/master
 			base->lcpa_regulator = NULL;
 			goto failure;
 		}
@@ -4044,6 +5420,7 @@ static int __init d40_probe(struct platform_device *pdev)
 	}
 
 	base->initialized = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	err = d40_dmaengine_init(base, num_reserved_chans);
 	if (err)
@@ -4051,6 +5428,28 @@ static int __init d40_probe(struct platform_device *pdev)
 
 	d40_hw_init(base);
 
+=======
+	ret = d40_dmaengine_init(base, num_reserved_chans);
+	if (ret)
+		goto failure;
+
+	base->dev->dma_parms = &base->dma_parms;
+	ret = dma_set_max_seg_size(base->dev, STEDMA40_MAX_SEG_SIZE);
+	if (ret) {
+		d40_err(&pdev->dev, "Failed to set dma max seg size\n");
+		goto failure;
+	}
+
+	d40_hw_init(base);
+
+	if (np) {
+		ret = of_dma_controller_register(np, d40_xlate, NULL);
+		if (ret)
+			dev_err(&pdev->dev,
+				"could not register of_dma_controller\n");
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(base->dev, "initialized\n");
 	return 0;
 
@@ -4062,13 +5461,19 @@ failure:
 			iounmap(base->virtbase);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (base->lcla_pool.base && base->plat_data->use_esram_lcla) {
 			iounmap(base->lcla_pool.base);
 			base->lcla_pool.base = NULL;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (base->lcla_pool.dma_addr)
 			dma_unmap_single(base->dev, base->lcla_pool.dma_addr,
 					 SZ_1K * base->num_phy_chans,
@@ -4087,18 +5492,28 @@ failure:
 			release_mem_region(base->phy_start,
 					   base->phy_size);
 		if (base->clk) {
+<<<<<<< HEAD
 			clk_disable(base->clk);
 			clk_put(base->clk);
 		}
 
 <<<<<<< HEAD
 =======
+=======
+			clk_disable_unprepare(base->clk);
+			clk_put(base->clk);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (base->lcpa_regulator) {
 			regulator_disable(base->lcpa_regulator);
 			regulator_put(base->lcpa_regulator);
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(base->lcla_pool.alloc_map);
 		kfree(base->lookup_log_chans);
 		kfree(base->lookup_phy_chans);
@@ -4110,14 +5525,27 @@ failure:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static const struct of_device_id d40_match[] = {
+        { .compatible = "stericsson,dma40", },
+        {}
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver d40_driver = {
 	.driver = {
 		.owner = THIS_MODULE,
 		.name  = D40_NAME,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.pm = DMA40_PM_OPS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm = DMA40_PM_OPS,
+		.of_match_table = d40_match,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

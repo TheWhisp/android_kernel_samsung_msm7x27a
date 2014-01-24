@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Name: acpixf.h - External interfaces to the ACPI subsystem
@@ -6,7 +9,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,6 +55,7 @@
 /* Current ACPICA subsystem version in YYYYMMDD format */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ACPI_CA_VERSION                 0x20110413
 
 =======
@@ -66,6 +74,34 @@ extern u8 acpi_gbl_permanent_mmap;
  */
 extern u32 acpi_dbg_level;
 extern u32 acpi_dbg_layer;
+=======
+#define ACPI_CA_VERSION                 0x20131115
+
+#include <acpi/acconfig.h>
+#include <acpi/actypes.h>
+#include <acpi/actbl.h>
+#include <acpi/acbuffer.h>
+
+extern u8 acpi_gbl_permanent_mmap;
+extern u32 acpi_rsdt_forced;
+
+/*
+ * Globals that are publically available
+ */
+extern u32 acpi_current_gpe_count;
+extern struct acpi_table_fadt acpi_gbl_FADT;
+extern u8 acpi_gbl_system_awake_and_running;
+extern u8 acpi_gbl_reduced_hardware;	/* ACPI 5.0 */
+extern u8 acpi_gbl_osi_data;
+
+/* Runtime configuration of debug print levels */
+
+extern u32 acpi_dbg_level;
+extern u32 acpi_dbg_layer;
+
+/* ACPICA runtime options */
+
+>>>>>>> refs/remotes/origin/master
 extern u8 acpi_gbl_enable_interpreter_slack;
 extern u8 acpi_gbl_all_methods_serialized;
 extern u8 acpi_gbl_create_osi_method;
@@ -73,14 +109,21 @@ extern u8 acpi_gbl_use_default_register_widths;
 extern acpi_name acpi_gbl_trace_method_name;
 extern u32 acpi_gbl_trace_flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern u32 acpi_gbl_enable_aml_debug_object;
 extern u8 acpi_gbl_copy_dsdt_locally;
 extern u8 acpi_gbl_truncate_io_addresses;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern bool acpi_gbl_enable_aml_debug_object;
 extern u8 acpi_gbl_copy_dsdt_locally;
 extern u8 acpi_gbl_truncate_io_addresses;
 extern u8 acpi_gbl_disable_auto_repair;
+<<<<<<< HEAD
+=======
+extern u8 acpi_gbl_disable_ssdt_table_load;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Hardware-reduced prototypes. All interfaces that use these macros will
@@ -105,6 +148,7 @@ extern u8 acpi_gbl_disable_auto_repair;
 	static ACPI_INLINE prototype {return(AE_OK);}
 
 #define ACPI_HW_DEPENDENT_RETURN_VOID(prototype) \
+<<<<<<< HEAD
 	static ACPI_INLINE prototype {}
 
 #endif				/* !ACPI_REDUCED_HARDWARE */
@@ -123,11 +167,22 @@ extern u32 acpi_rsdt_forced;
  * Global interfaces
  */
 acpi_status
+=======
+	static ACPI_INLINE prototype {return;}
+
+#endif				/* !ACPI_REDUCED_HARDWARE */
+
+/*
+ * Initialization
+ */
+acpi_status __init
+>>>>>>> refs/remotes/origin/master
 acpi_initialize_tables(struct acpi_table_desc *initial_storage,
 		       u32 initial_table_count, u8 allow_resize);
 
 acpi_status __init acpi_initialize_subsystem(void);
 
+<<<<<<< HEAD
 acpi_status acpi_enable_subsystem(u32 flags);
 
 acpi_status acpi_initialize_objects(u32 flags);
@@ -146,11 +201,33 @@ acpi_status acpi_disable(void);
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_enable(void))
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_disable(void))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+acpi_status __init acpi_enable_subsystem(u32 flags);
+
+acpi_status __init acpi_initialize_objects(u32 flags);
+
+acpi_status __init acpi_terminate(void);
+
+/*
+ * Miscellaneous global interfaces
+ */
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_enable(void))
+
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_disable(void))
+#ifdef ACPI_FUTURE_USAGE
+ acpi_status acpi_subsystem_status(void);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef ACPI_FUTURE_USAGE
 acpi_status acpi_get_system_info(struct acpi_buffer *ret_buffer);
 #endif
 
+<<<<<<< HEAD
+=======
+acpi_status acpi_get_statistics(struct acpi_statistics *stats);
+
+>>>>>>> refs/remotes/origin/master
 const char *acpi_format_exception(acpi_status exception);
 
 acpi_status acpi_purge_cached_objects(void);
@@ -160,12 +237,18 @@ acpi_status acpi_install_interface(acpi_string interface_name);
 acpi_status acpi_remove_interface(acpi_string interface_name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+acpi_status acpi_update_interfaces(u8 action);
+
+>>>>>>> refs/remotes/origin/master
 u32
 acpi_check_address_range(acpi_adr_space_type space_id,
 			 acpi_physical_address address,
 			 acpi_size length, u8 warn);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
  * ACPI Memory management
@@ -175,10 +258,25 @@ void *acpi_allocate(u32 size);
 void *acpi_callocate(u32 size);
 
 void acpi_free(void *address);
+=======
+acpi_status
+acpi_decode_pld_buffer(u8 *in_buffer,
+		       acpi_size length, struct acpi_pld_info **return_buffer);
+
+/*
+ * ACPI table load/unload interfaces
+ */
+acpi_status acpi_load_table(struct acpi_table_header *table);
+
+acpi_status acpi_unload_parent_table(acpi_handle object);
+
+acpi_status __init acpi_load_tables(void);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ACPI table manipulation interfaces
  */
+<<<<<<< HEAD
 acpi_status acpi_reallocate_root_table(void);
 
 acpi_status acpi_find_root_pointer(acpi_size *rsdp_address);
@@ -186,23 +284,37 @@ acpi_status acpi_find_root_pointer(acpi_size *rsdp_address);
 acpi_status acpi_load_tables(void);
 
 acpi_status acpi_load_table(struct acpi_table_header *table_ptr);
+=======
+acpi_status __init acpi_reallocate_root_table(void);
+
+acpi_status __init acpi_find_root_pointer(acpi_size *rsdp_address);
+>>>>>>> refs/remotes/origin/master
 
 acpi_status acpi_unload_table_id(acpi_owner_id id);
 
 acpi_status
 acpi_get_table_header(acpi_string signature,
+<<<<<<< HEAD
 		      u32 instance,
 		      struct acpi_table_header *out_table_header);
+=======
+		      u32 instance, struct acpi_table_header *out_table_header);
+>>>>>>> refs/remotes/origin/master
 
 acpi_status
 acpi_get_table_with_size(acpi_string signature,
 	       u32 instance, struct acpi_table_header **out_table,
 	       acpi_size *tbl_size);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 acpi_status
 acpi_get_table(acpi_string signature,
 	       u32 instance, struct acpi_table_header **out_table);
 
 acpi_status
+<<<<<<< HEAD
 acpi_get_table_by_index(u32 table_index,
 			struct acpi_table_header **out_table);
 
@@ -210,6 +322,14 @@ acpi_status
 acpi_install_table_handler(acpi_tbl_handler handler, void *context);
 
 acpi_status acpi_remove_table_handler(acpi_tbl_handler handler);
+=======
+acpi_get_table_by_index(u32 table_index, struct acpi_table_header **out_table);
+
+acpi_status
+acpi_install_table_handler(acpi_table_handler handler, void *context);
+
+acpi_status acpi_remove_table_handler(acpi_table_handler handler);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Namespace and name interfaces
@@ -218,8 +338,13 @@ acpi_status
 acpi_walk_namespace(acpi_object_type type,
 		    acpi_handle start_object,
 		    u32 max_depth,
+<<<<<<< HEAD
 		    acpi_walk_callback pre_order_visit,
 		    acpi_walk_callback post_order_visit,
+=======
+		    acpi_walk_callback descending_callback,
+		    acpi_walk_callback ascending_callback,
+>>>>>>> refs/remotes/origin/master
 		    void *context, void **return_value);
 
 acpi_status
@@ -286,6 +411,7 @@ acpi_status
 acpi_install_initialization_handler(acpi_init_handler handler, u32 function);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 acpi_status
 acpi_install_global_event_handler(ACPI_GBL_EVENT_HANDLER handler,
 				 void *context);
@@ -301,6 +427,21 @@ acpi_remove_fixed_event_handler(u32 acpi_event, acpi_event_handler handler);
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				acpi_install_global_event_handler
 				(ACPI_GBL_EVENT_HANDLER handler, void *context))
+=======
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
+				acpi_install_sci_handler(acpi_sci_handler
+							 address,
+							 void *context))
+
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
+				 acpi_remove_sci_handler(acpi_sci_handler
+							 address))
+
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
+				 acpi_install_global_event_handler
+				 (acpi_gbl_event_handler handler,
+				  void *context))
+>>>>>>> refs/remotes/origin/master
 
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				 acpi_install_fixed_event_handler(u32
@@ -309,10 +450,18 @@ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 								  handler,
 								  void
 								  *context))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				 acpi_remove_fixed_event_handler(u32 acpi_event,
 								 acpi_event_handler
 								 handler))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				 acpi_install_gpe_handler(acpi_handle
 							  gpe_device,
@@ -321,16 +470,26 @@ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 							  acpi_gpe_handler
 							  address,
 							  void *context))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				 acpi_remove_gpe_handler(acpi_handle gpe_device,
 							 u32 gpe_number,
 							 acpi_gpe_handler
 							 address))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 acpi_status
 acpi_install_notify_handler(acpi_handle device,
 			    u32 handler_type,
 			    acpi_notify_handler handler, void *context);
+=======
+acpi_status acpi_install_notify_handler(acpi_handle device, u32 handler_type,
+					acpi_notify_handler handler,
+					void *context);
+>>>>>>> refs/remotes/origin/master
 
 acpi_status
 acpi_remove_notify_handler(acpi_handle device,
@@ -348,6 +507,7 @@ acpi_remove_address_space_handler(acpi_handle device,
 				  acpi_adr_space_handler handler);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 acpi_status
 acpi_install_gpe_handler(acpi_handle gpe_device,
 			 u32 gpe_number,
@@ -359,6 +519,8 @@ acpi_remove_gpe_handler(acpi_handle gpe_device,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef ACPI_FUTURE_USAGE
 acpi_status acpi_install_exception_handler(acpi_exception_handler handler);
 #endif
@@ -366,6 +528,7 @@ acpi_status acpi_install_exception_handler(acpi_exception_handler handler);
 acpi_status acpi_install_interface_handler(acpi_interface_handler handler);
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Event interfaces
  */
@@ -415,11 +578,17 @@ acpi_status acpi_remove_gpe_block(acpi_handle gpe_device);
 
 acpi_status acpi_update_all_gpes(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Global Lock interfaces
  */
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				acpi_acquire_global_lock(u16 timeout,
 							 u32 *handle))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				acpi_release_global_lock(u32 handle))
 
@@ -446,6 +615,10 @@ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				acpi_get_event_status(u32 event,
 						      acpi_event_status
 						      *event_status))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*
  * General Purpose Event (GPE) Interfaces
  */
@@ -476,10 +649,18 @@ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 							parent_device,
 							acpi_handle gpe_device,
 							u32 gpe_number))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				 acpi_set_gpe_wake_mask(acpi_handle gpe_device,
 							u32 gpe_number,
 							u8 action))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				 acpi_get_gpe_status(acpi_handle gpe_device,
 						     u32 gpe_number,
@@ -501,9 +682,15 @@ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 						       *gpe_block_address,
 						       u32 register_count,
 						       u32 interrupt_number))
+<<<<<<< HEAD
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				 acpi_remove_gpe_block(acpi_handle gpe_device))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
+				 acpi_remove_gpe_block(acpi_handle gpe_device))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Resource interfaces
@@ -528,12 +715,23 @@ acpi_get_possible_resources(acpi_handle device, struct acpi_buffer *ret_buffer);
 
 acpi_status
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 acpi_get_event_resources(acpi_handle device_handle,
 			 struct acpi_buffer *ret_buffer);
 
 acpi_status
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+acpi_walk_resource_buffer(struct acpi_buffer *buffer,
+			  acpi_walk_resource_callback user_function,
+			  void *context);
+
+acpi_status
+>>>>>>> refs/remotes/origin/master
 acpi_walk_resources(acpi_handle device,
 		    char *name,
 		    acpi_walk_resource_callback user_function, void *context);
@@ -549,18 +747,25 @@ acpi_resource_to_address64(struct acpi_resource *resource,
 			   struct acpi_resource_address64 *out);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 acpi_status
 acpi_buffer_to_resource(u8 *aml_buffer,
 			u16 aml_buffer_length,
 			struct acpi_resource **resource_ptr);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Hardware (ACPI device) interfaces
  */
 acpi_status acpi_reset(void);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 acpi_status acpi_read_bit_register(u32 register_id, u32 *return_value);
 
@@ -571,6 +776,12 @@ acpi_status acpi_set_firmware_waking_vector(u32 physical_address);
 #if ACPI_MACHINE_WIDTH == 64
 acpi_status acpi_set_firmware_waking_vector64(u64 physical_address);
 =======
+=======
+acpi_status acpi_read(u64 *value, struct acpi_generic_address *reg);
+
+acpi_status acpi_write(u64 value, struct acpi_generic_address *reg);
+
+>>>>>>> refs/remotes/origin/master
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				acpi_read_bit_register(u32 register_id,
 						       u32 *return_value))
@@ -579,6 +790,7 @@ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				acpi_write_bit_register(u32 register_id,
 							u32 value))
 
+<<<<<<< HEAD
 ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 				acpi_set_firmware_waking_vector(u32
 								physical_address))
@@ -624,6 +836,33 @@ acpi_status acpi_leave_sleep_state(u8 sleep_state);
 /*
 <<<<<<< HEAD
 =======
+=======
+/*
+ * Sleep/Wake interfaces
+ */
+acpi_status
+acpi_get_sleep_type_data(u8 sleep_state, u8 *slp_typ_a, u8 *slp_typ_b);
+
+acpi_status acpi_enter_sleep_state_prep(u8 sleep_state);
+
+acpi_status acpi_enter_sleep_state(u8 sleep_state);
+
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status acpi_enter_sleep_state_s4bios(void))
+
+acpi_status acpi_leave_sleep_state_prep(u8 sleep_state);
+
+acpi_status acpi_leave_sleep_state(u8 sleep_state);
+
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
+				acpi_set_firmware_waking_vector(u32
+								physical_address))
+#if ACPI_MACHINE_WIDTH == 64
+ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
+				acpi_set_firmware_waking_vector64(u64
+								  physical_address))
+#endif
+/*
+>>>>>>> refs/remotes/origin/master
  * ACPI Timer interfaces
  */
 #ifdef ACPI_FUTURE_USAGE
@@ -639,6 +878,7 @@ ACPI_HW_DEPENDENT_RETURN_STATUS(acpi_status
 #endif				/* ACPI_FUTURE_USAGE */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  * Error/Warning output
  */
@@ -658,26 +898,70 @@ acpi_warning(const char *module_name,
 void ACPI_INTERNAL_VAR_XFACE
 acpi_info(const char *module_name,
 	  u32 line_number, const char *format, ...) ACPI_PRINTF_LIKE(3);
+=======
+ * Error/Warning output
+ */
+ACPI_PRINTF_LIKE(3)
+void ACPI_INTERNAL_VAR_XFACE
+acpi_error(const char *module_name, u32 line_number, const char *format, ...);
+
+ACPI_PRINTF_LIKE(4)
+void ACPI_INTERNAL_VAR_XFACE
+acpi_exception(const char *module_name,
+	       u32 line_number, acpi_status status, const char *format, ...);
+
+ACPI_PRINTF_LIKE(3)
+void ACPI_INTERNAL_VAR_XFACE
+acpi_warning(const char *module_name, u32 line_number, const char *format, ...);
+
+ACPI_PRINTF_LIKE(3)
+void ACPI_INTERNAL_VAR_XFACE
+acpi_info(const char *module_name, u32 line_number, const char *format, ...);
+
+ACPI_PRINTF_LIKE(3)
+void ACPI_INTERNAL_VAR_XFACE
+acpi_bios_error(const char *module_name,
+		u32 line_number, const char *format, ...);
+
+ACPI_PRINTF_LIKE(3)
+void ACPI_INTERNAL_VAR_XFACE
+acpi_bios_warning(const char *module_name,
+		  u32 line_number, const char *format, ...);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Debug output
  */
 #ifdef ACPI_DEBUG_OUTPUT
 
+<<<<<<< HEAD
+=======
+ACPI_PRINTF_LIKE(6)
+>>>>>>> refs/remotes/origin/master
 void ACPI_INTERNAL_VAR_XFACE
 acpi_debug_print(u32 requested_debug_level,
 		 u32 line_number,
 		 const char *function_name,
 		 const char *module_name,
+<<<<<<< HEAD
 		 u32 component_id, const char *format, ...) ACPI_PRINTF_LIKE(6);
 
+=======
+		 u32 component_id, const char *format, ...);
+
+ACPI_PRINTF_LIKE(6)
+>>>>>>> refs/remotes/origin/master
 void ACPI_INTERNAL_VAR_XFACE
 acpi_debug_print_raw(u32 requested_debug_level,
 		     u32 line_number,
 		     const char *function_name,
 		     const char *module_name,
+<<<<<<< HEAD
 		     u32 component_id,
 		     const char *format, ...) ACPI_PRINTF_LIKE(6);
+=======
+		     u32 component_id, const char *format, ...);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif				/* __ACXFACE_H__ */

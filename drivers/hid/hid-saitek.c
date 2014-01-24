@@ -54,6 +54,7 @@ static struct hid_driver saitek_driver = {
 	.id_table = saitek_devices,
 	.report_fixup = saitek_report_fixup
 };
+<<<<<<< HEAD
 
 static int __init saitek_init(void)
 {
@@ -67,4 +68,8 @@ static void __exit saitek_exit(void)
 
 module_init(saitek_init);
 module_exit(saitek_exit);
+=======
+module_hid_driver(saitek_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

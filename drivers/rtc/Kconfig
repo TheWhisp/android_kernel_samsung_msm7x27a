@@ -9,10 +9,14 @@ menuconfig RTC_CLASS
 	bool "Real Time Clock"
 	default n
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on !S390
 =======
 	depends on !S390 && !UML
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on !S390 && !UML
+>>>>>>> refs/remotes/origin/master
 	select RTC_LIB
 	help
 	  Generic RTC class support. If you say yes here, you will
@@ -23,16 +27,33 @@ if RTC_CLASS
 
 config RTC_HCTOSYS
 	bool "Set system time from RTC on startup and resume"
+<<<<<<< HEAD
 	depends on RTC_CLASS = y
+=======
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  If you say yes here, the system time (wall clock) will be set using
 	  the value read from a specified RTC device. This is useful to avoid
 	  unnecessary fsck runs at boot time, and to network better.
 
+<<<<<<< HEAD
 config RTC_HCTOSYS_DEVICE
 	string "RTC used to set the system time"
 	depends on RTC_HCTOSYS = y
+=======
+config RTC_SYSTOHC
+	bool "Set the RTC time based on NTP synchronization"
+	default y
+	help
+	  If you say yes here, the system time (wall clock) will be stored
+	  in the RTC specified by RTC_HCTOSYS_DEVICE approximately every 11
+	  minutes if userspace reports synchronized NTP status.
+
+config RTC_HCTOSYS_DEVICE
+	string "RTC used to set the system time"
+	depends on RTC_HCTOSYS = y || RTC_SYSTOHC = y
+>>>>>>> refs/remotes/origin/master
 	default "rtc0"
 	help
 	  The RTC device that will be used to (re)initialize the system
@@ -55,7 +76,10 @@ config RTC_HCTOSYS_DEVICE
 
 config RTC_DEBUG
 	bool "RTC debug support"
+<<<<<<< HEAD
 	depends on RTC_CLASS = y
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say yes here to enable debugging support in the RTC framework
 	  and individual RTC drivers.
@@ -73,6 +97,7 @@ config RTC_INTF_SYSFS
 	  If unsure, say Y.
 
 config RTC_INTF_PROC
+<<<<<<< HEAD
 	boolean "/proc/driver/rtc (procfs for rtc0)"
 	depends on PROC_FS
 	default RTC_CLASS
@@ -80,6 +105,17 @@ config RTC_INTF_PROC
 	  Say yes here if you want to use your first RTC through the proc
 	  interface, /proc/driver/rtc. Other RTCs will not be available
 	  through that API.
+=======
+	boolean "/proc/driver/rtc (procfs for rtcN)"
+	depends on PROC_FS
+	default RTC_CLASS
+	help
+	  Say yes here if you want to use your system clock RTC through
+	  the proc interface, /proc/driver/rtc.
+	  Other RTCs will not be available through that API.
+	  If there is no RTC for the system clock, then the first RTC(rtc0)
+	  is used by default.
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say Y.
 
@@ -98,6 +134,7 @@ config RTC_INTF_DEV
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config RTC_INTF_ALARM
 	bool "Android alarm driver"
 	depends on RTC_CLASS
@@ -115,6 +152,8 @@ config RTC_INTF_ALARM_DEV
 	help
 	  Exports the alarm interface to user-space.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config RTC_INTF_DEV_UIE_EMUL
 	bool "RTC UIE emulation on dev interface"
 	depends on RTC_INTF_DEV
@@ -127,6 +166,7 @@ config RTC_INTF_DEV_UIE_EMUL
 	  clock several times per second, please enable this option
 	  only if you know that you really need it.
 
+<<<<<<< HEAD
 config RTC_INTF_ALARM
 	bool "Android alarm driver"
 	depends on RTC_CLASS
@@ -145,6 +185,8 @@ config RTC_INTF_ALARM_DEV
 	  Exports the alarm interface to user-space.
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_TEST
 	tristate "Test driver/device"
 	help
@@ -166,7 +208,11 @@ if I2C
 
 config RTC_DRV_88PM860X
 	tristate "Marvell 88PM860x"
+<<<<<<< HEAD
 	depends on RTC_CLASS && I2C && MFD_88PM860X
+=======
+	depends on I2C && MFD_88PM860X
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for RTC function in Marvell
 	  88PM860x chips.
@@ -174,6 +220,29 @@ config RTC_DRV_88PM860X
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-88pm860x.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_88PM80X
+	tristate "Marvell 88PM80x"
+	depends on I2C && MFD_88PM800
+	help
+	  If you say yes here you get support for RTC function in Marvell
+	  88PM80x chips.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-88pm80x.
+
+config RTC_DRV_AS3722
+	tristate "ams AS3722 RTC driver"
+	depends on MFD_AS3722
+	help
+	  If you say yes here you get support for the RTC of ams AS3722 PMIC
+	  chips.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-as3722.
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_DS1307
 	tristate "Dallas/Maxim DS1307/37/38/39/40, ST M41T00, EPSON RX-8025"
 	help
@@ -194,7 +263,11 @@ config RTC_DRV_DS1307
 
 config RTC_DRV_DS1374
 	tristate "Dallas/Maxim DS1374"
+<<<<<<< HEAD
 	depends on RTC_CLASS && I2C
+=======
+	depends on I2C
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for Dallas Semiconductor
 	  DS1374 real-time clock chips. If an interrupt is associated
@@ -214,7 +287,11 @@ config RTC_DRV_DS1672
 
 config RTC_DRV_DS3232
 	tristate "Dallas/Maxim DS3232"
+<<<<<<< HEAD
 	depends on RTC_CLASS && I2C
+=======
+	depends on I2C
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for Dallas Semiconductor
 	  DS3232 real-time clock chips. If an interrupt is associated
@@ -223,6 +300,15 @@ config RTC_DRV_DS3232
 	  This driver can also be built as a module.  If so, the module
 	  will be called rtc-ds3232.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_LP8788
+	tristate "TI LP8788 RTC driver"
+	depends on MFD_LP8788
+	help
+	  Say Y to enable support for the LP8788 RTC/ALARM driver.
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_MAX6900
 	tristate "Maxim MAX6900"
 	help
@@ -232,6 +318,19 @@ config RTC_DRV_MAX6900
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-max6900.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_MAX8907
+	tristate "Maxim MAX8907"
+	depends on MFD_MAX8907
+	help
+	  If you say yes here you will get support for the
+	  RTC of Maxim MAX8907 PMIC.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-max8907.
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_MAX8925
 	tristate "Maxim MAX8925"
 	depends on MFD_MAX8925
@@ -252,6 +351,29 @@ config RTC_DRV_MAX8998
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-max8998.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_MAX8997
+	tristate "Maxim MAX8997"
+	depends on MFD_MAX8997
+	help
+	  If you say yes here you will get support for the
+	  RTC of Maxim MAX8997 PMIC.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-max8997.
+
+config RTC_DRV_MAX77686
+	tristate "Maxim MAX77686"
+	depends on MFD_MAX77686
+	help
+	  If you say yes here you will get support for the
+	  RTC of Maxim MAX77686 PMIC.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-max77686.
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_RS5C372
 	tristate "Ricoh R2025S/D, RS5C372A/B, RV5C386, RV5C387A"
 	help
@@ -288,6 +410,37 @@ config RTC_DRV_X1205
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-x1205.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_PALMAS
+	tristate "TI Palmas RTC driver"
+	depends on MFD_PALMAS
+	help
+	  If you say yes here you get support for the RTC of TI PALMA series PMIC
+	  chips.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-palma.
+
+config RTC_DRV_PCF2127
+	tristate "NXP PCF2127"
+	help
+	  If you say yes here you get support for the NXP PCF2127/29 RTC
+	  chips.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-pcf2127.
+
+config RTC_DRV_PCF8523
+	tristate "NXP PCF8523"
+	help
+	  If you say yes here you get support for the NXP PCF8523 RTC
+	  chips.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-pcf8523.
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_PCF8563
 	tristate "Philips PCF8563/Epson RTC8564"
 	help
@@ -354,7 +507,11 @@ config RTC_DRV_TWL92330
 
 config RTC_DRV_TWL4030
 	tristate "TI TWL4030/TWL5030/TWL6030/TPS659x0"
+<<<<<<< HEAD
 	depends on RTC_CLASS && TWL4030_CORE
+=======
+	depends on TWL4030_CORE
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for the RTC on the
 	  TWL4030/TWL5030/TWL6030 family chips, used mostly with OMAP3 platforms.
@@ -362,6 +519,45 @@ config RTC_DRV_TWL4030
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-twl.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_TPS6586X
+	tristate "TI TPS6586X RTC driver"
+	depends on MFD_TPS6586X
+	help
+	  TI Power Management IC TPS6586X supports RTC functionality
+	  along with alarm. This driver supports the RTC driver for
+	  the TPS6586X RTC module.
+
+config RTC_DRV_TPS65910
+	tristate "TI TPS65910 RTC driver"
+	depends on RTC_CLASS && MFD_TPS65910
+	help
+	  If you say yes here you get support for the RTC on the
+	  TPS65910 chips.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-tps65910.
+
+config RTC_DRV_TPS80031
+	tristate "TI TPS80031/TPS80032 RTC driver"
+	depends on MFD_TPS80031
+	help
+	  TI Power Management IC TPS80031 supports RTC functionality
+	  along with alarm. This driver supports the RTC driver for
+	  the TPS80031 RTC module.
+
+config RTC_DRV_RC5T583
+	tristate "RICOH 5T583 RTC driver"
+	depends on MFD_RC5T583
+	help
+	  If you say yes here you get support for the RTC on the
+	  RICOH 5T583 chips.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-rc5t583.
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_S35390A
 	tristate "Seiko Instruments S-35390A"
 	select BITREVERSE
@@ -418,6 +614,19 @@ config RTC_DRV_RV3029C2
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-rv3029c2.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_S5M
+	tristate "Samsung S5M series"
+	depends on MFD_SEC_CORE
+	help
+	  If you say yes here you will get support for the
+	  RTC of Samsung S5M PMIC series.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-s5m.
+
+>>>>>>> refs/remotes/origin/master
 endif # I2C
 
 comment "SPI RTC drivers"
@@ -509,6 +718,17 @@ config RTC_DRV_PCF2123
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-pcf2123.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_RX4581
+	tristate "Epson RX-4581"
+	help
+	  If you say yes here you will get support for the Epson RX-4581.
+
+	  This driver can also be built as a module. If so the module
+	  will be called rtc-rx4581.
+
+>>>>>>> refs/remotes/origin/master
 endif # SPI_MASTER
 
 comment "Platform RTC drivers"
@@ -519,7 +739,11 @@ comment "Platform RTC drivers"
 
 config RTC_DRV_CMOS
 	tristate "PC-style 'CMOS'"
+<<<<<<< HEAD
 	depends on X86 || ALPHA || ARM || M32R || ATARI || PPC || MIPS || SPARC64
+=======
+	depends on X86 || ARM || M32R || ATARI || PPC || MIPS || SPARC64
+>>>>>>> refs/remotes/origin/master
 	default y if X86
 	help
 	  Say "yes" here to get direct support for the real time clock
@@ -536,6 +760,7 @@ config RTC_DRV_CMOS
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-cmos.
 
+<<<<<<< HEAD
 config RTC_DRV_VRTC
 <<<<<<< HEAD
 	tristate "Virtual RTC for Moorestown platforms"
@@ -546,6 +771,20 @@ config RTC_DRV_VRTC
 	depends on X86_INTEL_MID
 	default y if X86_INTEL_MID
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config RTC_DRV_ALPHA
+	bool "Alpha PC-style CMOS"
+	depends on ALPHA
+	default y
+	help
+	  Direct support for the real-time clock found on every Alpha
+	  system, specifically MC146818 compatibles.  If in doubt, say Y.
+
+config RTC_DRV_VRTC
+	tristate "Virtual RTC for Intel MID platforms"
+	depends on X86_INTEL_MID
+	default y if X86_INTEL_MID
+>>>>>>> refs/remotes/origin/master
 
 	help
 	Say "yes" here to get direct support for the real time clock
@@ -573,7 +812,10 @@ config RTC_DRV_DS1302
 
 config RTC_DRV_DS1511
 	tristate "Dallas DS1511"
+<<<<<<< HEAD
 	depends on RTC_CLASS
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for the
 	  Dallas DS1511 timekeeping/watchdog chip.
@@ -600,7 +842,10 @@ config RTC_DRV_DS1742
 	  will be called rtc-ds1742.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_DA9052
 	tristate "Dialog DA9052/DA9053 RTC"
 	depends on PMIC_DA9052
@@ -608,7 +853,20 @@ config RTC_DRV_DA9052
 	  Say y here to support the RTC driver for Dialog Semiconductor
 	  DA9052-BC and DA9053-AA/Bx PMICs.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config RTC_DRV_DA9055
+	tristate "Dialog Semiconductor DA9055 RTC"
+	depends on MFD_DA9055
+	help
+	  If you say yes here you will get support for the
+	  RTC of the Dialog DA9055 PMIC.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-da9055
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_EFI
 	tristate "EFI RTC"
 	depends on IA64
@@ -621,7 +879,10 @@ config RTC_DRV_EFI
 
 config RTC_DRV_STK17TA8
 	tristate "Simtek STK17TA8"
+<<<<<<< HEAD
 	depends on RTC_CLASS
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for the
 	  Simtek STK17TA8 timekeeping chip.
@@ -668,6 +929,7 @@ config RTC_DRV_MSM6242
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-msm6242.
 
+<<<<<<< HEAD
 config RTC_DRV_IMXDI
 	tristate "Freescale IMX DryIce Real Time Clock"
 	depends on ARCH_MX25
@@ -689,6 +951,8 @@ config RTC_MXC
 	   This driver can also be built as a module, if so, the module
 	   will be called "rtc-mxc".
 
+=======
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_BQ4802
 	tristate "TI BQ4802"
 	help
@@ -717,6 +981,18 @@ config RTC_DRV_V3020
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-v3020.
 
+<<<<<<< HEAD
+=======
+config RTC_DRV_DS2404
+	tristate "Dallas DS2404"
+	help
+	  If you say yes here you get support for the
+	  Dallas DS2404 RTC chip.
+
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-ds2404.
+
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_WM831X
 	tristate "Wolfson Microelectronics WM831x RTC"
 	depends on MFD_WM831X
@@ -763,19 +1039,29 @@ config RTC_DRV_AB3100
 config RTC_DRV_AB8500
 	tristate "ST-Ericsson AB8500 RTC"
 	depends on AB8500_CORE
+<<<<<<< HEAD
+=======
+	select RTC_INTF_DEV
+	select RTC_INTF_DEV_UIE_EMUL
+>>>>>>> refs/remotes/origin/master
 	help
 	  Select this to enable the ST-Ericsson AB8500 power management IC RTC
 	  support. This chip contains a battery- and capacitor-backed RTC.
 
 config RTC_DRV_NUC900
 	tristate "NUC910/NUC920 RTC driver"
+<<<<<<< HEAD
 	depends on RTC_CLASS && ARCH_W90X900
+=======
+	depends on ARCH_W90X900
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for the RTC subsystem of the
 	  NUC910/NUC920 used in embedded systems.
 
 comment "on-CPU RTC drivers"
 
+<<<<<<< HEAD
 config RTC_DRV_MSM
 	tristate "RTC on Qualcomm Chipsets"
 	depends on ARCH_MSM
@@ -807,6 +1093,8 @@ config RTC_DRV_MSM7X00A
 	help
 	  RTC driver for Qualcomm MSM7K chipsets
 
+=======
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_DAVINCI
 	tristate "TI DaVinci RTC"
 	depends on ARCH_DAVINCI_DM365
@@ -817,6 +1105,7 @@ config RTC_DRV_DAVINCI
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-davinci.
 
+<<<<<<< HEAD
 config RTC_DRV_MSM7X00A
 	tristate "MSM7X00A"
 	depends on ARCH_MSM
@@ -831,6 +1120,26 @@ config RTC_DRV_OMAP
 	  Say "yes" here to support the real time clock on TI OMAP1 and
 	  DA8xx/OMAP-L13x chips.  This driver can also be built as a
 	  module called rtc-omap.
+=======
+config RTC_DRV_IMXDI
+	tristate "Freescale IMX DryIce Real Time Clock"
+	depends on ARCH_MXC
+	help
+	   Support for Freescale IMX DryIce RTC
+
+	   This driver can also be built as a module, if so, the module
+	   will be called "rtc-imxdi".
+
+config RTC_DRV_OMAP
+	tristate "TI OMAP1"
+	depends on ARCH_OMAP15XX || ARCH_OMAP16XX || ARCH_OMAP730 || ARCH_DAVINCI_DA8XX || SOC_AM33XX
+	help
+	  Say "yes" here to support the on chip real time clock
+	  present on TI OMAP1, AM33xx and DA8xx/OMAP-L13x.
+
+	  This driver can also be built as a module, if so, module
+	  will be called rtc-omap.
+>>>>>>> refs/remotes/origin/master
 
 config HAVE_S3C_RTC
 	bool
@@ -842,10 +1151,14 @@ config HAVE_S3C_RTC
 config RTC_DRV_S3C
 	tristate "Samsung S3C series SoC RTC"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARCH_S3C2410 || ARCH_S3C64XX || HAVE_S3C_RTC
 =======
 	depends on ARCH_S3C64XX || HAVE_S3C_RTC
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARCH_S3C64XX || HAVE_S3C_RTC
+>>>>>>> refs/remotes/origin/master
 	help
 	  RTC (Realtime Clock) driver for the clock inbuilt into the
 	  Samsung S3C24XX series of SoCs. This can provide periodic
@@ -871,12 +1184,17 @@ config RTC_DRV_EP93XX
 
 config RTC_DRV_SA1100
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "SA11x0/PXA2xx"
 	depends on ARCH_SA1100 || ARCH_PXA
 =======
 	tristate "SA11x0/PXA2xx/PXA910"
 	depends on ARCH_SA1100 || ARCH_PXA || ARCH_MMP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "SA11x0/PXA2xx/PXA910"
+	depends on ARCH_SA1100 || ARCH_PXA || ARCH_MMP
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say Y here you will get access to the real time clock
 	  built into your SA11x0 or PXA2xx CPU.
@@ -886,7 +1204,11 @@ config RTC_DRV_SA1100
 
 config RTC_DRV_SH
 	tristate "SuperH On-Chip RTC"
+<<<<<<< HEAD
 	depends on RTC_CLASS && SUPERH && HAVE_CLK
+=======
+	depends on SUPERH && HAVE_CLK
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here to enable support for the on-chip RTC found in
 	  most SuperH processors.
@@ -933,7 +1255,11 @@ config RTC_DRV_AT32AP700X
 
 config RTC_DRV_AT91RM9200
 	tristate "AT91RM9200 or some AT91SAM9 RTC"
+<<<<<<< HEAD
 	depends on ARCH_AT91RM9200 || ARCH_AT91SAM9RL || ARCH_AT91SAM9G45
+=======
+	depends on ARCH_AT91
+>>>>>>> refs/remotes/origin/master
 	help
 	  Driver for the internal RTC (Realtime Clock) module found on
 	  Atmel AT91RM9200's and some  AT91SAM9 chips. On AT91SAM9 chips
@@ -1052,7 +1378,11 @@ config RTC_DRV_TX4939
 
 config RTC_DRV_MV
 	tristate "Marvell SoC RTC"
+<<<<<<< HEAD
 	depends on ARCH_KIRKWOOD || ARCH_DOVE
+=======
+	depends on ARCH_KIRKWOOD || ARCH_DOVE || ARCH_MVEBU
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you will get support for the in-chip RTC
 	  that can be found in some of Marvell's SoC devices, such as
@@ -1084,18 +1414,24 @@ config RTC_DRV_COH901331
 
 config RTC_DRV_STMP
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Freescale STMP3xxx RTC"
 	depends on ARCH_STMP3XXX
 	help
 	  If you say yes here you will get support for the onboard
 	  STMP3xxx RTC.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tristate "Freescale STMP3xxx/i.MX23/i.MX28 RTC"
 	depends on ARCH_MXS
 	help
 	  If you say yes here you will get support for the onboard
 	  STMP3xxx/i.MX23/i.MX28 RTC.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-stmp3xxx.
@@ -1117,23 +1453,32 @@ config RTC_DRV_MC13XXX
 config RTC_DRV_MPC5121
 	tristate "Freescale MPC5121 built-in RTC"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on PPC_MPC512x && RTC_CLASS
 	help
 	  If you say yes here you will get support for the
 	  built-in RTC MPC5121.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	depends on PPC_MPC512x || PPC_MPC52xx
 	help
 	  If you say yes here you will get support for the
 	  built-in RTC on MPC5121 or on MPC5200.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-mpc5121.
 
 config RTC_DRV_JZ4740
 	tristate "Ingenic JZ4740 SoC"
+<<<<<<< HEAD
 	depends on RTC_CLASS
+=======
+>>>>>>> refs/remotes/origin/master
 	depends on MACH_JZ4740
 	help
 	  If you say yes here you get support for the Ingenic JZ4740 SoC RTC
@@ -1152,7 +1497,10 @@ config RTC_DRV_LPC32XX
 	  will be called rtc-lpc32xx.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_PM8XXX
 	tristate "Qualcomm PMIC8XXX RTC"
 	depends on MFD_PM8XXX
@@ -1163,10 +1511,16 @@ config RTC_DRV_PM8XXX
 	  To compile this driver as a module, choose M here: the
 	  module will be called rtc-pm8xxx.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config RTC_DRV_TEGRA
 	tristate "NVIDIA Tegra Internal RTC driver"
 	depends on RTC_CLASS && ARCH_TEGRA
+=======
+config RTC_DRV_TEGRA
+	tristate "NVIDIA Tegra Internal RTC driver"
+	depends on ARCH_TEGRA
+>>>>>>> refs/remotes/origin/master
 	help
 	  If you say yes here you get support for the
 	  Tegra 200 series internal RTC module.
@@ -1190,6 +1544,7 @@ config RTC_DRV_PUV3
 	  This drive can also be built as a module. If so, the module
 	  will be called rtc-puv3.
 
+<<<<<<< HEAD
 config RTC_DRV_PM8XXX
 	tristate "Qualcomm PMIC8XXX RTC"
 	depends on MFD_PM8XXX
@@ -1201,6 +1556,8 @@ config RTC_DRV_PM8XXX
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config RTC_DRV_LOONGSON1
 	tristate "loongson1 RTC support"
 	depends on MACH_LOONGSON1
@@ -1211,5 +1568,61 @@ config RTC_DRV_LOONGSON1
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-ls1x.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config RTC_DRV_MXC
+	tristate "Freescale MXC Real Time Clock"
+	depends on ARCH_MXC
+	help
+	   If you say yes here you get support for the Freescale MXC
+	   RTC module.
+
+	   This driver can also be built as a module, if so, the module
+	   will be called "rtc-mxc".
+
+config RTC_DRV_SNVS
+	tristate "Freescale SNVS RTC support"
+	depends on HAS_IOMEM
+	depends on OF
+	help
+	   If you say yes here you get support for the Freescale SNVS
+	   Low Power (LP) RTC module.
+
+	   This driver can also be built as a module, if so, the module
+	   will be called "rtc-snvs".
+
+config RTC_DRV_SIRFSOC
+	tristate "SiRFSOC RTC"
+	depends on ARCH_SIRF
+	help
+	  Say "yes" here to support the real time clock on SiRF SOC chips.
+	  This driver can also be built as a module called rtc-sirfsoc.
+
+config RTC_DRV_MOXART
+	tristate "MOXA ART RTC"
+	help
+	   If you say yes here you get support for the MOXA ART
+	   RTC module.
+
+	   This driver can also be built as a module. If so, the module
+	   will be called rtc-moxart
+
+comment "HID Sensor RTC drivers"
+
+config RTC_DRV_HID_SENSOR_TIME
+	tristate "HID Sensor Time"
+	depends on USB_HID
+	select IIO
+	select HID_SENSOR_HUB
+	select HID_SENSOR_IIO_COMMON
+	help
+	  Say yes here to build support for the HID Sensors of type Time.
+	  This drivers makes such sensors available as RTCs.
+
+	  If this driver is compiled as a module, it will be named
+	  rtc-hid-sensor-time.
+
+
+>>>>>>> refs/remotes/origin/master
 endif # RTC_CLASS

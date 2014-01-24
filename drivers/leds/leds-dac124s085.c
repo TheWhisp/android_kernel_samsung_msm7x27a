@@ -69,7 +69,11 @@ static int dac124s085_probe(struct spi_device *spi)
 	struct dac124s085_led	*led;
 	int i, ret;
 
+<<<<<<< HEAD
 	dac = kzalloc(sizeof(*dac), GFP_KERNEL);
+=======
+	dac = devm_kzalloc(&spi->dev, sizeof(*dac), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!dac)
 		return -ENOMEM;
 
@@ -101,8 +105,11 @@ eledcr:
 	while (i--)
 		led_classdev_unregister(&dac->leds[i].ldev);
 
+<<<<<<< HEAD
 	spi_set_drvdata(spi, NULL);
 	kfree(dac);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -116,9 +123,12 @@ static int dac124s085_remove(struct spi_device *spi)
 		cancel_work_sync(&dac->leds[i].work);
 	}
 
+<<<<<<< HEAD
 	spi_set_drvdata(spi, NULL);
 	kfree(dac);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -131,6 +141,7 @@ static struct spi_driver dac124s085_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init dac124s085_leds_init(void)
 {
@@ -147,6 +158,9 @@ module_exit(dac124s085_leds_exit);
 =======
 module_spi_driver(dac124s085_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_spi_driver(dac124s085_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Guennadi Liakhovetski <lg@denx.de>");
 MODULE_DESCRIPTION("DAC124S085 LED driver");

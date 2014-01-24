@@ -17,7 +17,11 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 #include <linux/bitops.h>
+=======
+#include <linux/idr.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/init.h>
@@ -32,7 +36,10 @@
 #include "ptp_private.h"
 
 #define PTP_MAX_ALARMS 4
+<<<<<<< HEAD
 #define PTP_MAX_CLOCKS 8
+=======
+>>>>>>> refs/remotes/origin/master
 #define PTP_PPS_DEFAULTS (PPS_CAPTUREASSERT | PPS_OFFSETASSERT)
 #define PTP_PPS_EVENT PPS_CAPTUREASSERT
 #define PTP_PPS_MODE (PTP_PPS_DEFAULTS | PPS_CANWAIT | PPS_TSFMT_TSPEC)
@@ -42,8 +49,12 @@
 static dev_t ptp_devt;
 static struct class *ptp_class;
 
+<<<<<<< HEAD
 static DECLARE_BITMAP(ptp_clocks_map, PTP_MAX_CLOCKS);
 static DEFINE_MUTEX(ptp_clocks_mutex); /* protects 'ptp_clocks_map' */
+=======
+static DEFINE_IDA(ptp_clocks_map);
+>>>>>>> refs/remotes/origin/master
 
 /* time stamp event queue operations */
 
@@ -143,10 +154,19 @@ static int ptp_clock_adjtime(struct posix_clock *pc, struct timex *tx)
 		kt = timespec_to_ktime(ts);
 		delta = ktime_to_ns(kt);
 		err = ops->adjtime(ops, delta);
+<<<<<<< HEAD
 
 	} else if (tx->modes & ADJ_FREQUENCY) {
 
 		err = ops->adjfreq(ops, scaled_ppm_to_ppb(tx->freq));
+=======
+	} else if (tx->modes & ADJ_FREQUENCY) {
+		err = ops->adjfreq(ops, scaled_ppm_to_ppb(tx->freq));
+		ptp->dialed_frequency = tx->freq;
+	} else if (tx->modes == 0) {
+		tx->freq = ptp->dialed_frequency;
+		err = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return err;
@@ -169,18 +189,27 @@ static void delete_ptp_clock(struct posix_clock *pc)
 	struct ptp_clock *ptp = container_of(pc, struct ptp_clock, clock);
 
 	mutex_destroy(&ptp->tsevq_mux);
+<<<<<<< HEAD
 
 	/* Remove the clock from the bit map. */
 	mutex_lock(&ptp_clocks_mutex);
 	clear_bit(ptp->index, ptp_clocks_map);
 	mutex_unlock(&ptp_clocks_mutex);
 
+=======
+	ida_simple_remove(&ptp_clocks_map, ptp->index);
+>>>>>>> refs/remotes/origin/master
 	kfree(ptp);
 }
 
 /* public interface */
 
+<<<<<<< HEAD
 struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info)
+=======
+struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+				     struct device *parent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ptp_clock *ptp;
 	int err = 0, index, major = MAJOR(ptp_devt);
@@ -188,6 +217,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info)
 	if (info->n_alarm > PTP_MAX_ALARMS)
 		return ERR_PTR(-EINVAL);
 
+<<<<<<< HEAD
 	/* Find a free clock slot and reserve it. */
 	err = -EBUSY;
 	mutex_lock(&ptp_clocks_mutex);
@@ -197,12 +227,23 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info)
 	else
 		goto no_slot;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize a clock structure. */
 	err = -ENOMEM;
 	ptp = kzalloc(sizeof(struct ptp_clock), GFP_KERNEL);
 	if (ptp == NULL)
 		goto no_memory;
 
+<<<<<<< HEAD
+=======
+	index = ida_simple_get(&ptp_clocks_map, 0, MINORMASK + 1, GFP_KERNEL);
+	if (index < 0) {
+		err = index;
+		goto no_slot;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ptp->clock.ops = ptp_clock_ops;
 	ptp->clock.release = delete_ptp_clock;
 	ptp->info = info;
@@ -213,7 +254,11 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info)
 	init_waitqueue_head(&ptp->tsev_wq);
 
 	/* Create a new device in our class. */
+<<<<<<< HEAD
 	ptp->dev = device_create(ptp_class, NULL, ptp->devid, ptp,
+=======
+	ptp->dev = device_create(ptp_class, parent, ptp->devid, ptp,
+>>>>>>> refs/remotes/origin/master
 				 "ptp%d", ptp->index);
 	if (IS_ERR(ptp->dev))
 		goto no_device;
@@ -245,7 +290,10 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info)
 		goto no_clock;
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&ptp_clocks_mutex);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ptp;
 
 no_clock:
@@ -257,11 +305,17 @@ no_sysfs:
 	device_destroy(ptp_class, ptp->devid);
 no_device:
 	mutex_destroy(&ptp->tsevq_mux);
+<<<<<<< HEAD
 	kfree(ptp);
 no_memory:
 	clear_bit(index, ptp_clocks_map);
 no_slot:
 	mutex_unlock(&ptp_clocks_mutex);
+=======
+no_slot:
+	kfree(ptp);
+no_memory:
+>>>>>>> refs/remotes/origin/master
 	return ERR_PTR(err);
 }
 EXPORT_SYMBOL(ptp_clock_register);
@@ -300,16 +354,38 @@ void ptp_clock_event(struct ptp_clock *ptp, struct ptp_clock_event *event)
 		pps_get_ts(&evt);
 		pps_event(ptp->pps_source, &evt, PTP_PPS_EVENT, NULL);
 		break;
+<<<<<<< HEAD
+=======
+
+	case PTP_CLOCK_PPSUSR:
+		pps_event(ptp->pps_source, &event->pps_times,
+			  PTP_PPS_EVENT, NULL);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(ptp_clock_event);
 
+<<<<<<< HEAD
+=======
+int ptp_clock_index(struct ptp_clock *ptp)
+{
+	return ptp->index;
+}
+EXPORT_SYMBOL(ptp_clock_index);
+
+>>>>>>> refs/remotes/origin/master
 /* module operations */
 
 static void __exit ptp_exit(void)
 {
 	class_destroy(ptp_class);
+<<<<<<< HEAD
 	unregister_chrdev_region(ptp_devt, PTP_MAX_CLOCKS);
+=======
+	unregister_chrdev_region(ptp_devt, MINORMASK + 1);
+	ida_destroy(&ptp_clocks_map);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init ptp_init(void)
@@ -322,13 +398,21 @@ static int __init ptp_init(void)
 		return PTR_ERR(ptp_class);
 	}
 
+<<<<<<< HEAD
 	err = alloc_chrdev_region(&ptp_devt, 0, PTP_MAX_CLOCKS, "ptp");
+=======
+	err = alloc_chrdev_region(&ptp_devt, 0, MINORMASK + 1, "ptp");
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		pr_err("ptp: failed to allocate device region\n");
 		goto no_region;
 	}
 
+<<<<<<< HEAD
 	ptp_class->dev_attrs = ptp_dev_attrs;
+=======
+	ptp_class->dev_groups = ptp_groups;
+>>>>>>> refs/remotes/origin/master
 	pr_info("PTP clock support registered\n");
 	return 0;
 
@@ -341,9 +425,13 @@ subsys_initcall(ptp_init);
 module_exit(ptp_exit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_AUTHOR("Richard Cochran <richard.cochran@omicron.at>");
 =======
 MODULE_AUTHOR("Richard Cochran <richardcochran@gmail.com>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_AUTHOR("Richard Cochran <richardcochran@gmail.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("PTP clocks support");
 MODULE_LICENSE("GPL");

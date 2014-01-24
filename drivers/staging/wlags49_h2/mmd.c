@@ -1,5 +1,8 @@
 
+<<<<<<< HEAD
 //   vim:tw=110:ts=4:
+=======
+>>>>>>> refs/remotes/origin/master
 /************************************************************************************************************
 *
 * FILE	  : mmd.c
@@ -36,10 +39,14 @@
 * not agree with these terms and conditions, do not use the software.
 *
 <<<<<<< HEAD
+<<<<<<< HEAD
 * COPYRIGHT � 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
 =======
 * COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+* COPYRIGHT © 2001 - 2004	by Agere Systems Inc.	All Rights Reserved
+>>>>>>> refs/remotes/origin/master
 * All rights reserved.
 *
 * Redistribution and use in source or binary forms, with or without
@@ -105,10 +112,17 @@
 *	supp	address of the supplier specification
 *
 *	Description: mmd_check_comp is a support routine to check the compatibility between an actor and a
+<<<<<<< HEAD
 *	supplier.  mmd_check_comp is independent of the endianess of the actp and supp structures. This is
 *	achieved by checking the "bottom" or "role" fields of these structures. Since these fields are restricted
 *	to a limited range, comparing the contents to a value with a known endian-ess gives a clue to their actual
 *	endianess.
+=======
+*	supplier.  mmd_check_comp is independent of the endianness of the actp and supp structures. This is
+*	achieved by checking the "bottom" or "role" fields of these structures. Since these fields are restricted
+*	to a limited range, comparing the contents to a value with a known endian-ess gives a clue to their actual
+*	endianness.
+>>>>>>> refs/remotes/origin/master
 *
 *.DIAGRAM
 *1a: The role-field of the actor structure has a known non-zero, not "byte symmetric" value (namely
@@ -118,16 +132,28 @@
 *	for a supplier. A supplier has always exactly 1 variant,top,bottom record with (officially, but see the
 *	note below) each of these 3 values in the range 1 through 99, so one byte of the word value of variant,
 *	top and bottom words is 0x00 and the other byte is non-zero. Whether the lowest address byte or the
+<<<<<<< HEAD
 *	highest address byte is non-zero depends on the Endianess of the LTV. If and only if the word value of
+=======
+*	highest address byte is non-zero depends on the Endianness of the LTV. If and only if the word value of
+>>>>>>> refs/remotes/origin/master
 *	bottom is less than 0x0100, the supplier is Native Endian.
 *	NOTE: the variant field of the supplier structure can not be used for the Endian Detection Algorithm,
 *	because a a zero-valued variant has been used as Controlled Deployment indication in the past.
 *	Note: An actor may have multiple sets of variant,top,bottom records, including dummy sets with variant,
+<<<<<<< HEAD
 *	top and bottom fields with a zero-value. As a consequence the endianess of the actor can not be determined
 *	based on its variant,top,bottom values.
 *
 *	Note: the L and T field of the structures are always in Native Endian format, so you can not draw
 *	conclusions concerning the Endianess of the structure based on these two fields.
+=======
+*	top and bottom fields with a zero-value. As a consequence the endianness of the actor can not be determined
+*	based on its variant,top,bottom values.
+*
+*	Note: the L and T field of the structures are always in Native Endian format, so you can not draw
+*	conclusions concerning the Endianness of the structure based on these two fields.
+>>>>>>> refs/remotes/origin/master
 *
 *1b/2b
 *	The only purpose of the CFG_RANGE_SPEC_BYTE_STRCT is to give easy access to the non-zero byte of the word
@@ -153,7 +179,11 @@
 *
 *	This is implemented as:
 *	#if HCF_BIG_ENDIAN == 0	//platform is LE
+<<<<<<< HEAD
 *		sup/act_endian becomes reverse of structure-endianess as determined in 1a/1b
+=======
+*		sup/act_endian becomes reverse of structure-endianness as determined in 1a/1b
+>>>>>>> refs/remotes/origin/master
 *	#endif
 *6:	Each of the actor variant-bottom-top records is checked against the (single) supplier variant-bottom-top
 *	range till either an acceptable match is found or all actor records are tried. As explained above, due to

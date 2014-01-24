@@ -11,9 +11,13 @@
  */
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/assembler.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/master
 
 		.text
 
@@ -23,6 +27,7 @@
  * references to these in a production kernel!
  */
 
+<<<<<<< HEAD
 #if defined(CONFIG_DEBUG_ICEDCC)
 		@@ debug using ARM EmbeddedICE DCC channel
 
@@ -123,6 +128,15 @@
 =======
 		addruart	\tmp1, \tmp2, \rx
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if !defined(CONFIG_DEBUG_SEMIHOSTING)
+#include CONFIG_DEBUG_LL_INCLUDE
+#endif
+
+#ifdef CONFIG_MMU
+		.macro	addruart_current, rx, tmp1, tmp2
+		addruart	\tmp1, \tmp2, \rx
+>>>>>>> refs/remotes/origin/master
 		mrc		p15, 0, \rx, c1, c0
 		tst		\rx, #1
 		moveq		\rx, \tmp1
@@ -168,16 +182,22 @@ printhex:	adr	r2, hexbuf
 ENDPROC(printhex2)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.ltorg
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 hexbuf:		.space 16
 
 		.ltorg
 
 #ifndef CONFIG_DEBUG_SEMIHOSTING
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(printascii)
 		addruart_current r3, r1, r2
 		b	2f
@@ -202,8 +222,20 @@ ENTRY(printch)
 ENDPROC(printch)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 hexbuf:		.space 16
 =======
+=======
+#ifdef CONFIG_MMU
+ENTRY(debug_ll_addr)
+		addruart r2, r3, ip
+		str	r2, [r0]
+		str	r3, [r1]
+		mov	pc, lr
+ENDPROC(debug_ll_addr)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #else
 
 ENTRY(printascii)
@@ -223,5 +255,16 @@ ENTRY(printch)
 		mov	pc, lr
 ENDPROC(printch)
 
+<<<<<<< HEAD
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(debug_ll_addr)
+		mov	r2, #0
+		str	r2, [r0]
+		str	r2, [r1]
+		mov	pc, lr
+ENDPROC(debug_ll_addr)
+
+#endif
+>>>>>>> refs/remotes/origin/master

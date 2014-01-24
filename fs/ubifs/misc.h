@@ -40,7 +40,10 @@ static inline int ubifs_zn_dirty(const struct ubifs_znode *znode)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ubifs_zn_obsolete - check if znode is obsolete.
  * @znode: znode to check
  *
@@ -64,7 +67,10 @@ static inline int ubifs_zn_cow(const struct ubifs_znode *znode)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ubifs_wake_up_bgt - wake up background thread.
  * @c: UBIFS file-system description object
  */
@@ -149,6 +155,7 @@ static inline int ubifs_wbuf_sync(struct ubifs_wbuf *wbuf)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ubifs_leb_unmap - unmap an LEB.
  * @c: UBIFS file-system description object
  * @lnum: LEB number to unmap
@@ -231,6 +238,8 @@ static inline int ubifs_leb_change(const struct ubifs_info *c, int lnum,
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ubifs_encode_dev - encode device node IDs.
  * @dev: UBIFS device node information
  * @rdev: device IDs to encode

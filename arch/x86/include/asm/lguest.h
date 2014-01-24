@@ -11,6 +11,7 @@
 
 #define GUEST_PL 1
 
+<<<<<<< HEAD
 /* Every guest maps the core switcher code. */
 #define SHARED_SWITCHER_PAGES \
 	DIV_ROUND_UP(end_switcher_text - start_switcher_text, PAGE_SIZE)
@@ -23,6 +24,13 @@
 #else
 #define SWITCHER_ADDR 0xFFC00000
 #endif
+=======
+/* Page for Switcher text itself, then two pages per cpu */
+#define TOTAL_SWITCHER_PAGES (1 + 2 * nr_cpu_ids)
+
+/* Where we map the Switcher, in both Host and Guest. */
+extern unsigned long switcher_addr;
+>>>>>>> refs/remotes/origin/master
 
 /* Found in switcher.S */
 extern unsigned long default_idt_entries[];

@@ -523,7 +523,11 @@ void *hashbin_remove_first( hashbin_t *hashbin)
 		 * Dequeue the entry...
 		 */
 		dequeue_general( (irda_queue_t**) &hashbin->hb_queue[ bin ],
+<<<<<<< HEAD
 				 (irda_queue_t*) entry );
+=======
+				 entry);
+>>>>>>> refs/remotes/origin/master
 		hashbin->hb_size--;
 		entry->q_next = NULL;
 		entry->q_prev = NULL;
@@ -615,7 +619,11 @@ void* hashbin_remove( hashbin_t* hashbin, long hashv, const char* name)
 	 */
 	if ( found ) {
 		dequeue_general( (irda_queue_t**) &hashbin->hb_queue[ bin ],
+<<<<<<< HEAD
 				 (irda_queue_t*) entry );
+=======
+				 entry);
+>>>>>>> refs/remotes/origin/master
 		hashbin->hb_size--;
 
 		/*
@@ -685,7 +693,11 @@ void* hashbin_remove_this( hashbin_t* hashbin, irda_queue_t* entry)
 	 * Dequeue the entry...
 	 */
 	dequeue_general( (irda_queue_t**) &hashbin->hb_queue[ bin ],
+<<<<<<< HEAD
 			 (irda_queue_t*) entry );
+=======
+			 entry);
+>>>>>>> refs/remotes/origin/master
 	hashbin->hb_size--;
 	entry->q_next = NULL;
 	entry->q_prev = NULL;
@@ -781,10 +793,14 @@ void* hashbin_lock_find( hashbin_t* hashbin, long hashv, const char* name )
 	 * Search for entry
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	entry = (irda_queue_t* ) hashbin_find( hashbin, hashv, name );
 =======
 	entry = hashbin_find(hashbin, hashv, name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry = hashbin_find(hashbin, hashv, name);
+>>>>>>> refs/remotes/origin/master
 
 	/* Release lock */
 	spin_unlock_irqrestore(&hashbin->hb_spinlock, flags);
@@ -818,10 +834,14 @@ void* hashbin_find_next( hashbin_t* hashbin, long hashv, const char* name,
 	 * hashbin or has been removed.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	entry = (irda_queue_t* ) hashbin_find( hashbin, hashv, name );
 =======
 	entry = hashbin_find(hashbin, hashv, name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry = hashbin_find(hashbin, hashv, name);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Trick hashbin_get_next() to return what we want

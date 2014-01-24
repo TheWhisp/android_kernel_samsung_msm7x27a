@@ -25,9 +25,13 @@
 #include <linux/mm.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mmu_context.h>
 #include <asm/tlbflush.h>

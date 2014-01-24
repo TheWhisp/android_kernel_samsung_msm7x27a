@@ -11,6 +11,7 @@
  *   NON INFRINGEMENT.  See the GNU General Public License for
  *   more details.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_TILE_SIGNAL_H
 #define _ASM_TILE_SIGNAL_H
@@ -29,6 +30,14 @@
 #if defined(__KERNEL__)
 #if !defined(__ASSEMBLY__)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef _ASM_TILE_SIGNAL_H
+#define _ASM_TILE_SIGNAL_H
+
+#include <uapi/asm/signal.h>
+
+#if !defined(__ASSEMBLY__)
+>>>>>>> refs/remotes/origin/master
 struct pt_regs;
 int restore_sigcontext(struct pt_regs *, struct sigcontext __user *);
 int setup_sigcontext(struct sigcontext __user *, struct pt_regs *);
@@ -39,8 +48,11 @@ void trace_unhandled_signal(const char *type, struct pt_regs *regs,
 			    unsigned long address, int signo);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TILE_SIGNAL_H */

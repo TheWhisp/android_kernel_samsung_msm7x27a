@@ -24,6 +24,7 @@
 #include <linux/errno.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/mutex.h>
 #include <linux/mfd/ucb1x00.h>
@@ -33,13 +34,18 @@
 #include <mach/dma.h>
 #include <mach/hardware.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq.h>
 #include <linux/device.h>
 #include <linux/mutex.h>
 #include <linux/mfd/ucb1x00.h>
 #include <linux/pm.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_MUTEX(ucb1x00_mutex);
 static LIST_HEAD(ucb1x00_drivers);
@@ -112,10 +118,14 @@ void ucb1x00_io_write(struct ucb1x00 *ucb, unsigned int set, unsigned int clear)
  *	before using this function.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	This function does not take any semaphores or spinlocks.
 =======
  *	This function does not take any mutexes or spinlocks.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	This function does not take any mutexes or spinlocks.
+>>>>>>> refs/remotes/origin/master
  */
 unsigned int ucb1x00_io_read(struct ucb1x00 *ucb)
 {
@@ -134,12 +144,18 @@ static void ucb1x00_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
 		ucb->io_out &= ~(1 << offset);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ucb1x00_reg_write(ucb, UCB_IO_DATA, ucb->io_out);
 =======
 	ucb1x00_enable(ucb);
 	ucb1x00_reg_write(ucb, UCB_IO_DATA, ucb->io_out);
 	ucb1x00_disable(ucb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ucb1x00_enable(ucb);
+	ucb1x00_reg_write(ucb, UCB_IO_DATA, ucb->io_out);
+	ucb1x00_disable(ucb);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&ucb->io_lock, flags);
 }
 
@@ -147,8 +163,11 @@ static int ucb1x00_gpio_get(struct gpio_chip *chip, unsigned offset)
 {
 	struct ucb1x00 *ucb = container_of(chip, struct ucb1x00, gpio);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ucb1x00_reg_read(ucb, UCB_IO_DATA) & (1 << offset);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned val;
 
 	ucb1x00_enable(ucb);
@@ -156,7 +175,10 @@ static int ucb1x00_gpio_get(struct gpio_chip *chip, unsigned offset)
 	ucb1x00_disable(ucb);
 
 	return val & (1 << offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ucb1x00_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
@@ -167,12 +189,18 @@ static int ucb1x00_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
 	spin_lock_irqsave(&ucb->io_lock, flags);
 	ucb->io_dir &= ~(1 << offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ucb1x00_reg_write(ucb, UCB_IO_DIR, ucb->io_dir);
 =======
 	ucb1x00_enable(ucb);
 	ucb1x00_reg_write(ucb, UCB_IO_DIR, ucb->io_dir);
 	ucb1x00_disable(ucb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ucb1x00_enable(ucb);
+	ucb1x00_reg_write(ucb, UCB_IO_DIR, ucb->io_dir);
+	ucb1x00_disable(ucb);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&ucb->io_lock, flags);
 
 	return 0;
@@ -183,6 +211,7 @@ static int ucb1x00_gpio_direction_output(struct gpio_chip *chip, unsigned offset
 {
 	struct ucb1x00 *ucb = container_of(chip, struct ucb1x00, gpio);
 	unsigned long flags;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	spin_lock_irqsave(&ucb->io_lock, flags);
@@ -195,6 +224,8 @@ static int ucb1x00_gpio_direction_output(struct gpio_chip *chip, unsigned offset
 		ucb->io_out &= ~(1 << offset);
 	ucb1x00_reg_write(ucb, UCB_IO_DATA, ucb->io_out);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned old, mask = 1 << offset;
 
 	spin_lock_irqsave(&ucb->io_lock, flags);
@@ -213,14 +244,20 @@ static int ucb1x00_gpio_direction_output(struct gpio_chip *chip, unsigned offset
 		ucb1x00_reg_write(ucb, UCB_IO_DIR, ucb->io_dir);
 	}
 	ucb1x00_disable(ucb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&ucb->io_lock, flags);
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ucb1x00_to_irq(struct gpio_chip *chip, unsigned offset)
 {
 	struct ucb1x00 *ucb = container_of(chip, struct ucb1x00, gpio);
@@ -228,7 +265,10 @@ static int ucb1x00_to_irq(struct gpio_chip *chip, unsigned offset)
 	return ucb->irq_base > 0 ? ucb->irq_base + offset : -ENXIO;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * UCB1300 data sheet says we must:
  *  1. enable ADC	=> 5us (including reference startup time)
@@ -247,10 +287,14 @@ static int ucb1x00_to_irq(struct gpio_chip *chip, unsigned offset)
  *	function prior to using it.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	This function takes the ADC semaphore to prevent two or more
 =======
  *	This function takes the ADC mutex to prevent two or more
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	This function takes the ADC mutex to prevent two or more
+>>>>>>> refs/remotes/origin/master
  *	concurrent uses, and therefore may sleep.  As a result, it
  *	can only be called from process context, not interrupt
  *	context.
@@ -261,10 +305,14 @@ static int ucb1x00_to_irq(struct gpio_chip *chip, unsigned offset)
 void ucb1x00_adc_enable(struct ucb1x00 *ucb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	down(&ucb->adc_sem);
 =======
 	mutex_lock(&ucb->adc_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&ucb->adc_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	ucb->adc_cr |= UCB_ADC_ENA;
 
@@ -287,10 +335,14 @@ void ucb1x00_adc_enable(struct ucb1x00 *ucb)
  *
  *	If called for a synchronised ADC conversion, it may sleep
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	with the ADC semaphore held.
 =======
  *	with the ADC mutex held.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	with the ADC mutex held.
+>>>>>>> refs/remotes/origin/master
  */
 unsigned int ucb1x00_adc_read(struct ucb1x00 *ucb, int adc_channel, int sync)
 {
@@ -319,10 +371,14 @@ unsigned int ucb1x00_adc_read(struct ucb1x00 *ucb, int adc_channel, int sync)
  *	@ucb: UCB1x00 structure describing chip
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	Disable the ADC converter and release the ADC semaphore.
 =======
  *	Disable the ADC converter and release the ADC mutex.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Disable the ADC converter and release the ADC mutex.
+>>>>>>> refs/remotes/origin/master
  */
 void ucb1x00_adc_disable(struct ucb1x00 *ucb)
 {
@@ -331,10 +387,14 @@ void ucb1x00_adc_disable(struct ucb1x00 *ucb)
 	ucb1x00_disable(ucb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	up(&ucb->adc_sem);
 =======
 	mutex_unlock(&ucb->adc_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&ucb->adc_mutex);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -346,6 +406,7 @@ void ucb1x00_adc_disable(struct ucb1x00 *ucb)
  * we have finished processing all interrupts from the chip.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static irqreturn_t ucb1x00_irq(int irqnr, void *devid)
 {
 	struct ucb1x00 *ucb = devid;
@@ -355,6 +416,11 @@ static void ucb1x00_irq(unsigned int irq, struct irq_desc *desc)
 {
 	struct ucb1x00 *ucb = irq_desc_get_handler_data(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ucb1x00_irq(unsigned int irq, struct irq_desc *desc)
+{
+	struct ucb1x00 *ucb = irq_desc_get_handler_data(desc);
+>>>>>>> refs/remotes/origin/master
 	unsigned int isr, i;
 
 	ucb1x00_enable(ucb);
@@ -362,6 +428,7 @@ static void ucb1x00_irq(unsigned int irq, struct irq_desc *desc)
 	ucb1x00_reg_write(ucb, UCB_IE_CLEAR, isr);
 	ucb1x00_reg_write(ucb, UCB_IE_CLEAR, 0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0, irq = ucb->irq_handler; i < 16 && isr; i++, isr >>= 1, irq++)
 		if (isr & 1 && irq->fn)
@@ -515,6 +582,8 @@ bad:
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 16 && isr; i++, isr >>= 1, irq++)
 		if (isr & 1)
 			generic_handle_irq(ucb->irq_base + i);
@@ -613,6 +682,7 @@ static struct irq_chip ucb1x00_irqchip = {
 	.irq_set_wake = ucb1x00_irq_set_wake,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int ucb1x00_add_dev(struct ucb1x00 *ucb, struct ucb1x00_driver *drv)
 {
@@ -638,6 +708,29 @@ static int ucb1x00_add_dev(struct ucb1x00 *ucb, struct ucb1x00_driver *drv)
 			kfree(dev);
 		}
 	}
+=======
+static int ucb1x00_add_dev(struct ucb1x00 *ucb, struct ucb1x00_driver *drv)
+{
+	struct ucb1x00_dev *dev;
+	int ret;
+
+	dev = kmalloc(sizeof(struct ucb1x00_dev), GFP_KERNEL);
+	if (!dev)
+		return -ENOMEM;
+
+	dev->ucb = ucb;
+	dev->drv = drv;
+
+	ret = drv->add(dev);
+	if (ret) {
+		kfree(dev);
+		return ret;
+	}
+
+	list_add_tail(&dev->dev_node, &ucb->devs);
+	list_add_tail(&dev->drv_node, &drv->devs);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -726,6 +819,7 @@ static struct class ucb1x00_class = {
 static int ucb1x00_probe(struct mcp *mcp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ucb1x00 *ucb;
 	struct ucb1x00_driver *drv;
 	unsigned int id;
@@ -739,6 +833,8 @@ static int ucb1x00_probe(struct mcp *mcp)
 		printk(KERN_WARNING "UCB1x00 ID not found: %04x\n", id);
 		goto err_disable;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ucb1x00_plat_data *pdata = mcp->attached_device.platform_data;
 	struct ucb1x00_driver *drv;
 	struct ucb1x00 *ucb;
@@ -756,12 +852,16 @@ static int ucb1x00_probe(struct mcp *mcp)
 	if (id != UCB_ID_1200 && id != UCB_ID_1300 && id != UCB_ID_TC35143) {
 		printk(KERN_WARNING "UCB1x00 ID not found: %04x\n", id);
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ucb = kzalloc(sizeof(struct ucb1x00), GFP_KERNEL);
 	ret = -ENOMEM;
 	if (!ucb)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto err_disable;
 
@@ -771,10 +871,16 @@ static int ucb1x00_probe(struct mcp *mcp)
 
 	device_initialize(&ucb->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+
+	device_initialize(&ucb->dev);
+>>>>>>> refs/remotes/origin/master
 	ucb->dev.class = &ucb1x00_class;
 	ucb->dev.parent = &mcp->attached_device;
 	dev_set_name(&ucb->dev, "ucb1x00");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_init(&ucb->lock);
 	spin_lock_init(&ucb->io_lock);
@@ -794,6 +900,8 @@ static int ucb1x00_probe(struct mcp *mcp)
 		ucb->gpio.label = dev_name(&ucb->dev);
 		ucb->gpio.base = mcp->gpio_base;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	raw_spin_lock_init(&ucb->irq_lock);
 	spin_lock_init(&ucb->io_lock);
 	mutex_init(&ucb->adc_mutex);
@@ -820,6 +928,10 @@ static int ucb1x00_probe(struct mcp *mcp)
 	if (ucb->irq_base < 0) {
 		dev_err(&ucb->dev, "unable to allocate 16 irqs: %d\n",
 			ucb->irq_base);
+<<<<<<< HEAD
+=======
+		ret = ucb->irq_base;
+>>>>>>> refs/remotes/origin/master
 		goto err_irq_alloc;
 	}
 
@@ -840,12 +952,16 @@ static int ucb1x00_probe(struct mcp *mcp)
 		ucb->gpio.dev = &ucb->dev;
 		ucb->gpio.owner = THIS_MODULE;
 		ucb->gpio.base = pdata->gpio_base;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ucb->gpio.ngpio = 10;
 		ucb->gpio.set = ucb1x00_gpio_set;
 		ucb->gpio.get = ucb1x00_gpio_get;
 		ucb->gpio.direction_input = ucb1x00_gpio_direction_input;
 		ucb->gpio.direction_output = ucb1x00_gpio_direction_output;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = gpiochip_add(&ucb->gpio);
 		if (ret)
@@ -872,6 +988,8 @@ static int ucb1x00_probe(struct mcp *mcp)
 	mutex_lock(&ucb1x00_mutex);
 	list_add(&ucb->node, &ucb1x00_devices);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ucb->gpio.to_irq = ucb1x00_to_irq;
 		ret = gpiochip_add(&ucb->gpio);
 		if (ret)
@@ -887,12 +1005,16 @@ static int ucb1x00_probe(struct mcp *mcp)
 	INIT_LIST_HEAD(&ucb->devs);
 	mutex_lock(&ucb1x00_mutex);
 	list_add_tail(&ucb->node, &ucb1x00_devices);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(drv, &ucb1x00_drivers, node) {
 		ucb1x00_add_dev(ucb, drv);
 	}
 	mutex_unlock(&ucb1x00_mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	goto out;
 
@@ -907,6 +1029,8 @@ static int ucb1x00_probe(struct mcp *mcp)
 	mcp_disable(mcp);
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 
  err_gpio_add:
@@ -921,16 +1045,23 @@ static int ucb1x00_probe(struct mcp *mcp)
  out:
 	if (pdata && pdata->reset)
 		pdata->reset(UCB_RST_PROBE_FAIL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static void ucb1x00_remove(struct mcp *mcp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct ucb1x00_plat_data *pdata = mcp->attached_device.platform_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ucb1x00_plat_data *pdata = mcp->attached_device.platform_data;
+>>>>>>> refs/remotes/origin/master
 	struct ucb1x00 *ucb = mcp_get_drvdata(mcp);
 	struct list_head *l, *n;
 	int ret;
@@ -950,16 +1081,22 @@ static void ucb1x00_remove(struct mcp *mcp)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_irq(ucb->irq, ucb);
 	device_unregister(&ucb->dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_set_chained_handler(ucb->irq, NULL);
 	irq_free_descs(ucb->irq_base, 16);
 	device_unregister(&ucb->dev);
 
 	if (pdata && pdata->reset)
 		pdata->reset(UCB_RST_REMOVE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int ucb1x00_register_driver(struct ucb1x00_driver *drv)
@@ -969,10 +1106,14 @@ int ucb1x00_register_driver(struct ucb1x00_driver *drv)
 	INIT_LIST_HEAD(&drv->devs);
 	mutex_lock(&ucb1x00_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_add(&drv->node, &ucb1x00_drivers);
 =======
 	list_add_tail(&drv->node, &ucb1x00_drivers);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_add_tail(&drv->node, &ucb1x00_drivers);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(ucb, &ucb1x00_devices, node) {
 		ucb1x00_add_dev(ucb, drv);
 	}
@@ -993,6 +1134,7 @@ void ucb1x00_unregister_driver(struct ucb1x00_driver *drv)
 	mutex_unlock(&ucb1x00_mutex);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ucb1x00_suspend(struct mcp *mcp, pm_message_t state)
 {
@@ -1022,6 +1164,12 @@ static int ucb1x00_resume(struct mcp *mcp)
 static int ucb1x00_suspend(struct device *dev)
 {
 	struct ucb1x00_plat_data *pdata = dev->platform_data;
+=======
+#ifdef CONFIG_PM_SLEEP
+static int ucb1x00_suspend(struct device *dev)
+{
+	struct ucb1x00_plat_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ucb1x00 *ucb = dev_get_drvdata(dev);
 	struct ucb1x00_dev *udev;
 
@@ -1053,7 +1201,11 @@ static int ucb1x00_suspend(struct device *dev)
 
 static int ucb1x00_resume(struct device *dev)
 {
+<<<<<<< HEAD
 	struct ucb1x00_plat_data *pdata = dev->platform_data;
+=======
+	struct ucb1x00_plat_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ucb1x00 *ucb = dev_get_drvdata(dev);
 	struct ucb1x00_dev *udev;
 
@@ -1082,11 +1234,15 @@ static int ucb1x00_resume(struct device *dev)
 	list_for_each_entry(udev, &ucb->devs, dev_node) {
 		if (udev->drv->resume)
 			udev->drv->resume(udev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&ucb1x00_mutex);
 	return 0;
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static struct mcp_driver ucb1x00_driver = {
@@ -1098,6 +1254,10 @@ static struct mcp_driver ucb1x00_driver = {
 	.suspend	= ucb1x00_suspend,
 	.resume		= ucb1x00_resume,
 =======
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static const struct dev_pm_ops ucb1x00_pm_ops = {
 	SET_SYSTEM_SLEEP_PM_OPS(ucb1x00_suspend, ucb1x00_resume)
 };
@@ -1110,7 +1270,10 @@ static struct mcp_driver ucb1x00_driver = {
 	},
 	.probe		= ucb1x00_probe,
 	.remove		= ucb1x00_remove,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ucb1x00_init(void)
@@ -1142,6 +1305,7 @@ EXPORT_SYMBOL(ucb1x00_adc_read);
 EXPORT_SYMBOL(ucb1x00_adc_disable);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(ucb1x00_hook_irq);
 EXPORT_SYMBOL(ucb1x00_free_irq);
 EXPORT_SYMBOL(ucb1x00_enable_irq);
@@ -1151,11 +1315,16 @@ EXPORT_SYMBOL(ucb1x00_register_driver);
 EXPORT_SYMBOL(ucb1x00_unregister_driver);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(ucb1x00_register_driver);
 EXPORT_SYMBOL(ucb1x00_unregister_driver);
 
 MODULE_ALIAS("mcp:ucb1x00");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
 MODULE_DESCRIPTION("UCB1x00 core driver");
 MODULE_LICENSE("GPL");

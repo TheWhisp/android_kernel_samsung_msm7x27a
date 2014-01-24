@@ -61,6 +61,7 @@
 #include "scu_task_context.h"
 
 /**
+<<<<<<< HEAD
  * struct isci_request_status - This enum defines the possible states of an I/O
  *    request.
  *
@@ -93,6 +94,8 @@ enum sci_request_protocol {
 }; /* XXX remove me, use sas_task.{dev|task_proto} instead */;
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * isci_stp_request - extra request infrastructure to handle pio/atapi protocol
  * @pio_len - number of bytes requested at PIO setup
  * @status - pio setup ending status value to tell us if we need
@@ -100,9 +103,12 @@ enum sci_request_protocol {
  *           receipt of a d2h fis this will be the status field of that fis.
  * @sgl - track pio transfer progress as we iterate through the sgl
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @device_cdb_len - atapi device advertises it's transfer constraints at setup
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct isci_stp_request {
 	u32 pio_len;
@@ -114,6 +120,7 @@ struct isci_stp_request {
 		u32 offset;
 	} sgl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 device_cdb_len;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -121,26 +128,43 @@ struct isci_stp_request {
 
 struct isci_request {
 	enum isci_request_status status;
+=======
+};
+
+struct isci_request {
+>>>>>>> refs/remotes/origin/master
 	#define IREQ_COMPLETE_IN_TARGET 0
 	#define IREQ_TERMINATED 1
 	#define IREQ_TMF 2
 	#define IREQ_ACTIVE 3
+<<<<<<< HEAD
 	unsigned long flags;
 	/* XXX kill ttype and ttype_ptr, allocate full sas_task */
 <<<<<<< HEAD
 	enum task_type ttype;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	#define IREQ_PENDING_ABORT 4 /* Set == device was not suspended yet */
+	#define IREQ_TC_ABORT_POSTED 5
+	#define IREQ_ABORT_PATH_ACTIVE 6
+	#define IREQ_NO_AUTO_FREE_TAG 7 /* Set when being explicitly managed */
+	unsigned long flags;
+	/* XXX kill ttype and ttype_ptr, allocate full sas_task */
+>>>>>>> refs/remotes/origin/master
 	union ttype_ptr_union {
 		struct sas_task *io_task_ptr;   /* When ttype==io_task  */
 		struct isci_tmf *tmf_task_ptr;  /* When ttype==tmf_task */
 	} ttype_ptr;
 	struct isci_host *isci_host;
+<<<<<<< HEAD
 	/* For use in the requests_to_{complete|abort} lists: */
 	struct list_head completed_node;
 	/* For use in the reqs_in_process list: */
 	struct list_head dev_node;
 	spinlock_t state_lock;
+=======
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t request_daddr;
 	dma_addr_t zero_scatter_daddr;
 	unsigned int num_sg_entries;
@@ -160,7 +184,11 @@ struct isci_request {
 	struct isci_host *owning_controller;
 	struct isci_remote_device *target_device;
 	u16 io_tag;
+<<<<<<< HEAD
 	enum sci_request_protocol protocol;
+=======
+	enum sas_protocol protocol;
+>>>>>>> refs/remotes/origin/master
 	u32 scu_status; /* hardware result */
 	u32 sci_status; /* upper layer disposition */
 	u32 post_context;
@@ -202,6 +230,7 @@ static inline struct isci_request *to_ireq(struct isci_stp_request *stp_req)
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * enum sci_base_request_states - This enumeration depicts all the states for
  *    the common request state machine.
@@ -310,6 +339,8 @@ enum sci_base_request_states {
 	SCI_REQ_FINAL,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * enum sci_base_request_states - request state machine states
  *
  * @SCI_REQ_INIT: Simply the initial state for the base request state machine.
@@ -407,7 +438,10 @@ enum sci_base_request_states {
 enum sci_base_request_states REQUEST_STATES;
 #undef C
 const char *req_state_name(enum sci_base_request_states state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum sci_status sci_request_start(struct isci_request *ireq);
 enum sci_status sci_io_request_terminate(struct isci_request *ireq);
@@ -438,6 +472,7 @@ sci_io_request_get_dma_addr(struct isci_request *ireq, void *virt_addr)
 	return ireq->request_daddr + (requested_addr - base_addr);
 }
 
+<<<<<<< HEAD
 /**
  * isci_request_change_state() - This function sets the status of the request
  *    object.
@@ -524,6 +559,8 @@ isci_request_change_started_to_aborted(struct isci_request *isci_request,
 						       aborted);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define isci_request_access_task(req) ((req)->ttype_ptr.io_task_ptr)
 
 #define isci_request_access_tmf(req) ((req)->ttype_ptr.tmf_task_ptr)
@@ -533,13 +570,17 @@ struct isci_request *isci_tmf_request_from_tag(struct isci_host *ihost,
 					       u16 tag);
 int isci_request_execute(struct isci_host *ihost, struct isci_remote_device *idev,
 			 struct sas_task *task, u16 tag);
+<<<<<<< HEAD
 void isci_terminate_pending_requests(struct isci_host *ihost,
 				     struct isci_remote_device *idev);
+=======
+>>>>>>> refs/remotes/origin/master
 enum sci_status
 sci_task_request_construct(struct isci_host *ihost,
 			    struct isci_remote_device *idev,
 			    u16 io_tag,
 			    struct isci_request *ireq);
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum sci_status
 sci_task_request_construct_ssp(struct isci_request *ireq);
@@ -548,6 +589,9 @@ sci_task_request_construct_sata(struct isci_request *ireq);
 =======
 enum sci_status sci_task_request_construct_ssp(struct isci_request *ireq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum sci_status sci_task_request_construct_ssp(struct isci_request *ireq);
+>>>>>>> refs/remotes/origin/master
 void sci_smp_request_copy_response(struct isci_request *ireq);
 
 static inline int isci_task_is_ncq_recovery(struct sas_task *task)
@@ -557,5 +601,8 @@ static inline int isci_task_is_ncq_recovery(struct sas_task *task)
 		task->ata_task.fis.lbal == ATA_LOG_SATA_NCQ);
 
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !defined(_ISCI_REQUEST_H_) */

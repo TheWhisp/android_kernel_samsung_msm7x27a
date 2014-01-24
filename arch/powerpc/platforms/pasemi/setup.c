@@ -27,18 +27,25 @@
 #include <linux/delay.h>
 #include <linux/console.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/of_platform.h>
 #include <linux/gfp.h>
 
 #include <asm/prom.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/iommu.h>
 #include <asm/machdep.h>
 #include <asm/mpic.h>
@@ -46,9 +53,13 @@
 #include <asm/time.h>
 #include <asm/mmu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/debug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/ss.h>
 #include <pcmcia/cistpl.h>
@@ -86,7 +97,11 @@ static void pas_restart(char *cmd)
 static arch_spinlock_t timebase_lock;
 static unsigned long timebase;
 
+<<<<<<< HEAD
 static void __devinit pas_give_timebase(void)
+=======
+static void pas_give_timebase(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -104,7 +119,11 @@ static void __devinit pas_give_timebase(void)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 static void __devinit pas_take_timebase(void)
+=======
+static void pas_take_timebase(void)
+>>>>>>> refs/remotes/origin/master
 {
 	while (!timebase)
 		smp_rmb();
@@ -235,10 +254,14 @@ static __init void pas_init_IRQ(void)
 	printk(KERN_DEBUG "OpenPIC addr: %lx\n", openpic_addr);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpic_flags = MPIC_PRIMARY | MPIC_LARGE_VECTORS | MPIC_NO_BIAS;
 =======
 	mpic_flags = MPIC_LARGE_VECTORS | MPIC_NO_BIAS | MPIC_NO_RESET;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpic_flags = MPIC_LARGE_VECTORS | MPIC_NO_BIAS | MPIC_NO_RESET;
+>>>>>>> refs/remotes/origin/master
 
 	nmiprop = of_get_property(mpic_node, "nmi-source", NULL);
 	if (nmiprop)
@@ -249,10 +272,14 @@ static __init void pas_init_IRQ(void)
 	BUG_ON(!mpic);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpic_assign_isu(mpic, 0, openpic_addr + 0x10000);
 =======
 	mpic_assign_isu(mpic, 0, mpic->paddr + 0x10000);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpic_assign_isu(mpic, 0, mpic->paddr + 0x10000);
+>>>>>>> refs/remotes/origin/master
 	mpic_init(mpic);
 	/* The NMI/MCK source needs to be prio 15 */
 	if (nmiprop) {

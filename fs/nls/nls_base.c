@@ -53,10 +53,14 @@ static const struct utf8_table utf8_table[] =
 #define SURROGATE_BITS	0x000003ff
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int utf8_to_utf32(const u8 *s, int len, unicode_t *pu)
 =======
 int utf8_to_utf32(const u8 *s, int inlen, unicode_t *pu)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int utf8_to_utf32(const u8 *s, int inlen, unicode_t *pu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long l;
 	int c0, c, nc;
@@ -76,10 +80,14 @@ int utf8_to_utf32(const u8 *s, int inlen, unicode_t *pu)
 			return nc;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (len <= nc)
 =======
 		if (inlen <= nc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (inlen <= nc)
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		s++;
 		c = (*s ^ 0x80) & 0xFF;
@@ -92,10 +100,14 @@ int utf8_to_utf32(const u8 *s, int inlen, unicode_t *pu)
 EXPORT_SYMBOL(utf8_to_utf32);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int utf32_to_utf8(unicode_t u, u8 *s, int maxlen)
 =======
 int utf32_to_utf8(unicode_t u, u8 *s, int maxout)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int utf32_to_utf8(unicode_t u, u8 *s, int maxout)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long l;
 	int c, nc;
@@ -110,10 +122,14 @@ int utf32_to_utf8(unicode_t u, u8 *s, int maxout)
 
 	nc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (t = utf8_table; t->cmask && maxlen; t++, maxlen--) {
 =======
 	for (t = utf8_table; t->cmask && maxout; t++, maxout--) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (t = utf8_table; t->cmask && maxout; t++, maxout--) {
+>>>>>>> refs/remotes/origin/master
 		nc++;
 		if (l <= t->lmask) {
 			c = t->shift;
@@ -146,18 +162,24 @@ static inline void put_utf16(wchar_t *s, unsigned c, enum utf16_endian endian)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int utf8s_to_utf16s(const u8 *s, int len, enum utf16_endian endian,
 		wchar_t *pwcs, int maxlen)
 =======
 int utf8s_to_utf16s(const u8 *s, int inlen, enum utf16_endian endian,
 		wchar_t *pwcs, int maxout)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int utf8s_to_utf16s(const u8 *s, int inlen, enum utf16_endian endian,
+		wchar_t *pwcs, int maxout)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 *op;
 	int size;
 	unicode_t u;
 
 	op = pwcs;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (len > 0 && maxlen > 0 && *s) {
 		if (*s & 0x80) {
@@ -170,6 +192,8 @@ int utf8s_to_utf16s(const u8 *s, int inlen, enum utf16_endian endian,
 			if (u >= PLANE_SIZE) {
 				if (maxlen < 2)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (inlen > 0 && maxout > 0 && *s) {
 		if (*s & 0x80) {
 			size = utf8_to_utf32(s, inlen, &u);
@@ -180,7 +204,10 @@ int utf8s_to_utf16s(const u8 *s, int inlen, enum utf16_endian endian,
 
 			if (u >= PLANE_SIZE) {
 				if (maxout < 2)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					break;
 				u -= PLANE_SIZE;
 				put_utf16(op++, SURROGATE_PAIR |
@@ -190,6 +217,7 @@ int utf8s_to_utf16s(const u8 *s, int inlen, enum utf16_endian endian,
 						SURROGATE_LOW |
 						(u & SURROGATE_BITS),
 						endian);
+<<<<<<< HEAD
 <<<<<<< HEAD
 				maxlen -= 2;
 			} else {
@@ -201,6 +229,8 @@ int utf8s_to_utf16s(const u8 *s, int inlen, enum utf16_endian endian,
 			len--;
 			maxlen--;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				maxout -= 2;
 			} else {
 				put_utf16(op++, u, endian);
@@ -210,7 +240,10 @@ int utf8s_to_utf16s(const u8 *s, int inlen, enum utf16_endian endian,
 			put_utf16(op++, *s++, endian);
 			inlen--;
 			maxout--;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return op - pwcs;
@@ -230,12 +263,17 @@ static inline unsigned long get_utf16(unsigned c, enum utf16_endian endian)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int utf16s_to_utf8s(const wchar_t *pwcs, int len, enum utf16_endian endian,
 		u8 *s, int maxlen)
 =======
 int utf16s_to_utf8s(const wchar_t *pwcs, int inlen, enum utf16_endian endian,
 		u8 *s, int maxout)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int utf16s_to_utf8s(const wchar_t *pwcs, int inlen, enum utf16_endian endian,
+		u8 *s, int maxout)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *op;
 	int size;
@@ -243,19 +281,27 @@ int utf16s_to_utf8s(const wchar_t *pwcs, int inlen, enum utf16_endian endian,
 
 	op = s;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (len > 0 && maxlen > 0) {
 =======
 	while (inlen > 0 && maxout > 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (inlen > 0 && maxout > 0) {
+>>>>>>> refs/remotes/origin/master
 		u = get_utf16(*pwcs, endian);
 		if (!u)
 			break;
 		pwcs++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len--;
 =======
 		inlen--;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		inlen--;
+>>>>>>> refs/remotes/origin/master
 		if (u > 0x7f) {
 			if ((u & SURROGATE_MASK) == SURROGATE_PAIR) {
 				if (u & SURROGATE_LOW) {
@@ -263,10 +309,14 @@ int utf16s_to_utf8s(const wchar_t *pwcs, int inlen, enum utf16_endian endian,
 					continue;
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (len <= 0)
 =======
 				if (inlen <= 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (inlen <= 0)
+>>>>>>> refs/remotes/origin/master
 					break;
 				v = get_utf16(*pwcs, endian);
 				if ((v & SURROGATE_MASK) != SURROGATE_PAIR ||
@@ -278,6 +328,7 @@ int utf16s_to_utf8s(const wchar_t *pwcs, int inlen, enum utf16_endian endian,
 						+ (v & SURROGATE_BITS);
 				pwcs++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				len--;
 			}
 			size = utf32_to_utf8(u, op, maxlen);
@@ -286,10 +337,16 @@ int utf16s_to_utf8s(const wchar_t *pwcs, int inlen, enum utf16_endian endian,
 			}
 			size = utf32_to_utf8(u, op, maxout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				inlen--;
+			}
+			size = utf32_to_utf8(u, op, maxout);
+>>>>>>> refs/remotes/origin/master
 			if (size == -1) {
 				/* Ignore character and move on */
 			} else {
 				op += size;
+<<<<<<< HEAD
 <<<<<<< HEAD
 				maxlen -= size;
 			}
@@ -297,12 +354,17 @@ int utf16s_to_utf8s(const wchar_t *pwcs, int inlen, enum utf16_endian endian,
 			*op++ = (u8) u;
 			maxlen--;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				maxout -= size;
 			}
 		} else {
 			*op++ = (u8) u;
 			maxout--;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return op - s;

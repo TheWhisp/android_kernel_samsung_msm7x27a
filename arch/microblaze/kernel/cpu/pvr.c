@@ -13,9 +13,12 @@
 #include <linux/kernel.h>
 #include <linux/compiler.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/exceptions.h>
 #include <asm/pvr.h>
 
@@ -31,7 +34,11 @@
 	tmp = 0x0;	/* Prevent warning about unused */	\
 	__asm__ __volatile__ (					\
 			"mfs	%0, rpvr" #pvrid ";"		\
+<<<<<<< HEAD
 			: "=r" (tmp) : : "memory"); 		\
+=======
+			: "=r" (tmp) : : "memory");		\
+>>>>>>> refs/remotes/origin/master
 	val = tmp;						\
 }
 

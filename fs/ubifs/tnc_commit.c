@@ -23,9 +23,13 @@
 /* This file implements TNC functions for committing */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/random.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/random.h>
+>>>>>>> refs/remotes/origin/master
 #include "ubifs.h"
 
 /**
@@ -57,18 +61,30 @@ static int make_idx_node(struct ubifs_info *c, struct ubifs_idx_node *idx,
 		br->len = cpu_to_le32(zbr->len);
 		if (!zbr->lnum || !zbr->len) {
 			ubifs_err("bad ref in znode");
+<<<<<<< HEAD
 			dbg_dump_znode(c, znode);
 			if (zbr->znode)
 				dbg_dump_znode(c, zbr->znode);
+=======
+			ubifs_dump_znode(c, znode);
+			if (zbr->znode)
+				ubifs_dump_znode(c, zbr->znode);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	ubifs_prepare_node(c, idx, len, 0);
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 	znode->lnum = lnum;
 	znode->offs = offs;
 	znode->len = len;
 #endif
+=======
+	znode->lnum = lnum;
+	znode->offs = offs;
+	znode->len = len;
+>>>>>>> refs/remotes/origin/master
 
 	err = insert_old_idx_znode(c, znode);
 
@@ -92,16 +108,22 @@ static int make_idx_node(struct ubifs_info *c, struct ubifs_idx_node *idx,
 
 	ubifs_assert(ubifs_zn_dirty(znode));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ubifs_assert(test_bit(COW_ZNODE, &znode->flags));
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(ubifs_zn_cow(znode));
 
 	/*
 	 * Note, unlike 'write_index()' we do not add memory barriers here
 	 * because this function is called with @c->tnc_mutex locked.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__clear_bit(DIRTY_ZNODE, &znode->flags);
 	__clear_bit(COW_ZNODE, &znode->flags);
 
@@ -330,8 +352,12 @@ static int layout_leb_in_gaps(struct ubifs_info *c, int *p)
 				  0, 0, 0);
 	if (err)
 		return err;
+<<<<<<< HEAD
 	err = ubifs_leb_change(c, lnum, c->ileb_buf, c->ileb_len,
 			       UBI_SHORTTERM);
+=======
+	err = ubifs_leb_change(c, lnum, c->ileb_buf, c->ileb_len);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 	dbg_gc("LEB %d wrote %d index nodes", lnum, tot_written);
@@ -391,17 +417,26 @@ static int layout_in_gaps(struct ubifs_info *c, int cnt)
 				return err;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (dbg_force_in_the_gaps_enabled()) {
 =======
 			if (!dbg_is_chk_index(c)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!dbg_is_chk_index(c)) {
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * Do not print scary warnings if the debugging
 				 * option which forces in-the-gaps is enabled.
 				 */
 				ubifs_warn("out of space");
+<<<<<<< HEAD
 				dbg_dump_budg(c, &c->bi);
 				dbg_dump_lprops(c);
+=======
+				ubifs_dump_budg(c, &c->bi);
+				ubifs_dump_lprops(c);
+>>>>>>> refs/remotes/origin/master
 			}
 			/* Try to commit anyway */
 			err = 0;
@@ -468,11 +503,17 @@ static int layout_in_empty_space(struct ubifs_info *c)
 
 		offs = buf_offs + used;
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 		znode->lnum = lnum;
 		znode->offs = offs;
 		znode->len = len;
 #endif
+=======
+		znode->lnum = lnum;
+		znode->offs = offs;
+		znode->len = len;
+>>>>>>> refs/remotes/origin/master
 
 		/* Update the parent */
 		zp = znode->parent;
@@ -509,6 +550,7 @@ static int layout_in_empty_space(struct ubifs_info *c)
 			next_len = ubifs_idx_node_sz(c, cnext->child_cnt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (c->min_io_size == 1) {
 			buf_offs += ALIGN(len, 8);
 			if (next_len) {
@@ -530,6 +572,8 @@ static int layout_in_empty_space(struct ubifs_info *c)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Update buffer positions */
 		wlen = used + len;
 		used += ALIGN(len, 8);
@@ -570,10 +614,15 @@ static int layout_in_empty_space(struct ubifs_info *c)
 		break;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 	c->dbg->new_ihead_lnum = lnum;
 	c->dbg->new_ihead_offs = buf_offs;
 #endif
+=======
+	c->dbg->new_ihead_lnum = lnum;
+	c->dbg->new_ihead_offs = buf_offs;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -679,10 +728,14 @@ static int get_znodes_to_commit(struct ubifs_info *c)
 	cnt += 1;
 	while (1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ubifs_assert(!test_bit(COW_ZNODE, &znode->flags));
 =======
 		ubifs_assert(!ubifs_zn_cow(znode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ubifs_assert(!ubifs_zn_cow(znode));
+>>>>>>> refs/remotes/origin/master
 		__set_bit(COW_ZNODE, &znode->flags);
 		znode->alt = 0;
 		cnext = find_next_dirty(znode);
@@ -729,10 +782,14 @@ static int alloc_idx_lebs(struct ubifs_info *c, int cnt)
 		dbg_cmt("LEB %d", lnum);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dbg_force_in_the_gaps())
 =======
 	if (dbg_is_chk_index(c) && !(random32() & 7))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dbg_is_chk_index(c) && !(prandom_u32() & 7))
+>>>>>>> refs/remotes/origin/master
 		return -ENOSPC;
 	return 0;
 }
@@ -859,10 +916,14 @@ static int write_index(struct ubifs_info *c)
 	struct ubifs_znode *znode, *cnext;
 	int i, lnum, offs, len, next_len, buf_len, buf_offs, used;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int avail, wlen, err, lnum_pos = 0;
 =======
 	int avail, wlen, err, lnum_pos = 0, blen, nxt_offs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int avail, wlen, err, lnum_pos = 0, blen, nxt_offs;
+>>>>>>> refs/remotes/origin/master
 
 	cnext = c->enext;
 	if (!cnext)
@@ -910,9 +971,15 @@ static int write_index(struct ubifs_info *c)
 			br->len = cpu_to_le32(zbr->len);
 			if (!zbr->lnum || !zbr->len) {
 				ubifs_err("bad ref in znode");
+<<<<<<< HEAD
 				dbg_dump_znode(c, znode);
 				if (zbr->znode)
 					dbg_dump_znode(c, zbr->znode);
+=======
+				ubifs_dump_znode(c, znode);
+				if (zbr->znode)
+					ubifs_dump_znode(c, zbr->znode);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		len = ubifs_idx_node_sz(c, znode->child_cnt);
@@ -927,23 +994,33 @@ static int write_index(struct ubifs_info *c)
 		}
 		offs = buf_offs + used;
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
+=======
+>>>>>>> refs/remotes/origin/master
 		if (lnum != znode->lnum || offs != znode->offs ||
 		    len != znode->len) {
 			ubifs_err("inconsistent znode posn");
 			return -EINVAL;
 		}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Grab some stuff from znode while we still can */
 		cnext = znode->cnext;
 
 		ubifs_assert(ubifs_zn_dirty(znode));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ubifs_assert(test_bit(COW_ZNODE, &znode->flags));
 =======
 		ubifs_assert(ubifs_zn_cow(znode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ubifs_assert(ubifs_zn_cow(znode));
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * It is important that other threads should see %DIRTY_ZNODE
@@ -959,7 +1036,10 @@ static int write_index(struct ubifs_info *c)
 		smp_mb__after_clear_bit();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We have marked the znode as clean but have not updated the
 		 * @c->clean_zn_cnt counter. If this znode becomes dirty again
@@ -982,7 +1062,10 @@ static int write_index(struct ubifs_info *c)
 		 *    have the mutex locked.
 		 */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Do not access znode from this point on */
 
 		/* Update buffer positions */
@@ -999,6 +1082,7 @@ static int write_index(struct ubifs_info *c)
 		else
 			next_len = ubifs_idx_node_sz(c, cnext->child_cnt);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (c->min_io_size == 1) {
 			/*
@@ -1060,6 +1144,8 @@ static int write_index(struct ubifs_info *c)
 				continue;
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		nxt_offs = buf_offs + used + next_len;
 		if (next_len && nxt_offs <= c->leb_size) {
 			if (avail > 0)
@@ -1073,8 +1159,12 @@ static int write_index(struct ubifs_info *c)
 		}
 
 		/* The buffer is full or there are no more znodes to do */
+<<<<<<< HEAD
 		err = ubifs_leb_write(c, lnum, c->cbuf, buf_offs, blen,
 				      UBI_SHORTTERM);
+=======
+		err = ubifs_leb_write(c, lnum, c->cbuf, buf_offs, blen);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 		buf_offs += blen;
@@ -1092,18 +1182,27 @@ static int write_index(struct ubifs_info *c)
 			avail = buf_len - used;
 			memmove(c->cbuf, c->cbuf + blen, used);
 			continue;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
+=======
+>>>>>>> refs/remotes/origin/master
 	if (lnum != c->dbg->new_ihead_lnum ||
 	    buf_offs != c->dbg->new_ihead_offs) {
 		ubifs_err("inconsistent ihead");
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	c->ihead_lnum = lnum;
 	c->ihead_offs = buf_offs;
@@ -1126,10 +1225,14 @@ static void free_obsolete_znodes(struct ubifs_info *c)
 		znode = cnext;
 		cnext = znode->cnext;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (test_bit(OBSOLETE_ZNODE, &znode->flags))
 =======
 		if (ubifs_zn_obsolete(znode))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ubifs_zn_obsolete(znode))
+>>>>>>> refs/remotes/origin/master
 			kfree(znode);
 		else {
 			znode->cnext = NULL;

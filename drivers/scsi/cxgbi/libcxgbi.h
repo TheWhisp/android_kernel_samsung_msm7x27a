@@ -575,10 +575,14 @@ struct cxgbi_endpoint {
 struct cxgbi_task_data {
 	unsigned short nr_frags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb_frag_t frags[MAX_PDU_FRAGS];
 =======
 	struct page_frag frags[MAX_PDU_FRAGS];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct page_frag frags[MAX_PDU_FRAGS];
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 	unsigned int offset;
 	unsigned int count;
@@ -662,11 +666,19 @@ static inline u32 cxgbi_tag_nonrsvd_bits(struct cxgbi_tag_format *tformat,
 static inline void *cxgbi_alloc_big_mem(unsigned int size,
 					gfp_t gfp)
 {
+<<<<<<< HEAD
 	void *p = kmalloc(size, gfp);
 	if (!p)
 		p = vmalloc(size);
 	if (p)
 		memset(p, 0, size);
+=======
+	void *p = kzalloc(size, gfp | __GFP_NOWARN);
+
+	if (!p)
+		p = vzalloc(size);
+
+>>>>>>> refs/remotes/origin/master
 	return p;
 }
 
@@ -714,9 +726,13 @@ int cxgbi_conn_xmit_pdu(struct iscsi_task *);
 void cxgbi_cleanup_task(struct iscsi_task *task);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 umode_t cxgbi_attr_is_visible(int param_type, int param);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+umode_t cxgbi_attr_is_visible(int param_type, int param);
+>>>>>>> refs/remotes/origin/master
 void cxgbi_get_conn_stats(struct iscsi_cls_conn *, struct iscsi_stats *);
 int cxgbi_set_conn_param(struct iscsi_cls_conn *,
 			enum iscsi_param, char *, int);

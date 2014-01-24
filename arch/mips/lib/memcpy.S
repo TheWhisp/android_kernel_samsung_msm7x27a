@@ -156,6 +156,7 @@
 
 #ifdef CONFIG_CPU_LITTLE_ENDIAN
 #define LDFIRST LOADR
+<<<<<<< HEAD
 #define LDREST  LOADL
 #define STFIRST STORER
 #define STREST  STOREL
@@ -165,6 +166,17 @@
 #define LDREST  LOADR
 #define STFIRST STOREL
 #define STREST  STORER
+=======
+#define LDREST	LOADL
+#define STFIRST STORER
+#define STREST	STOREL
+#define SHIFT_DISCARD SLLV
+#else
+#define LDFIRST LOADL
+#define LDREST	LOADR
+#define STFIRST STOREL
+#define STREST	STORER
+>>>>>>> refs/remotes/origin/master
 #define SHIFT_DISCARD SRLV
 #endif
 
@@ -183,6 +195,17 @@
 #endif
 
 /*
+<<<<<<< HEAD
+=======
+ * t6 is used as a flag to note inatomic mode.
+ */
+LEAF(__copy_user_inatomic)
+	b	__copy_user_common
+	 li	t6, 1
+	END(__copy_user_inatomic)
+
+/*
+>>>>>>> refs/remotes/origin/master
  * A combined memcpy/__copy_user
  * __copy_user sets len to 0 for success; else to an upper bound of
  * the number of uncopied bytes.
@@ -193,6 +216,11 @@ LEAF(memcpy)					/* a0=dst a1=src a2=len */
 	move	v0, dst				/* return value */
 .L__memcpy:
 FEXPORT(__copy_user)
+<<<<<<< HEAD
+=======
+	li	t6, 0	/* not inatomic */
+__copy_user_common:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Note: dst & src may be unaligned, len may be 0
 	 * Temps
@@ -225,7 +253,11 @@ FEXPORT(__copy_user)
 	 * src and dst are aligned; need to compute rem
 	 */
 .Lboth_aligned:
+<<<<<<< HEAD
 	 SRL	t0, len, LOG_NBYTES+3    # +3 for 8 units/iter
+=======
+	 SRL	t0, len, LOG_NBYTES+3	 # +3 for 8 units/iter
+>>>>>>> refs/remotes/origin/master
 	beqz	t0, .Lcleanup_both_aligned # len < 8*NBYTES
 	 and	rem, len, (8*NBYTES-1)	 # rem = len % (8*NBYTES)
 	PREF(	0, 3*32(src) )
@@ -303,7 +335,11 @@ EXC(	STORE	t0, 0(dst),		.Ls_exc_p1u)
 	/*
 	 * src and dst are aligned, need to copy rem bytes (rem < NBYTES)
 	 * A loop would do only a byte at a time with possible branch
+<<<<<<< HEAD
 	 * mispredicts.  Can't do an explicit LOAD dst,mask,or,STORE
+=======
+	 * mispredicts.	 Can't do an explicit LOAD dst,mask,or,STORE
+>>>>>>> refs/remotes/origin/master
 	 * because can't assume read-access to dst.  Instead, use
 	 * STREST dst, which doesn't require read access to dst.
 	 *
@@ -317,7 +353,11 @@ EXC(	STORE	t0, 0(dst),		.Ls_exc_p1u)
 	li	bits, 8*NBYTES
 	SLL	rem, len, 3	# rem = number of bits to keep
 EXC(	LOAD	t0, 0(src),		.Ll_exc)
+<<<<<<< HEAD
 	SUB	bits, bits, rem	# bits = number of bits to discard
+=======
+	SUB	bits, bits, rem # bits = number of bits to discard
+>>>>>>> refs/remotes/origin/master
 	SHIFT_DISCARD t0, t0, bits
 EXC(	STREST	t0, -1(t1),		.Ls_exc)
 	jr	ra
@@ -333,7 +373,11 @@ EXC(	STREST	t0, -1(t1),		.Ls_exc)
 	 * Set match = (src and dst have same alignment)
 	 */
 #define match rem
+<<<<<<< HEAD
 EXC(	LDFIRST	t3, FIRST(0)(src),	.Ll_exc)
+=======
+EXC(	LDFIRST t3, FIRST(0)(src),	.Ll_exc)
+>>>>>>> refs/remotes/origin/master
 	ADD	t2, zero, NBYTES
 EXC(	LDREST	t3, REST(0)(src),	.Ll_exc_copy)
 	SUB	t2, t2, t1	# t2 = number of bytes copied
@@ -347,10 +391,17 @@ EXC(	STFIRST t3, FIRST(0)(dst),	.Ls_exc)
 	 ADD	src, src, t2
 
 .Lsrc_unaligned_dst_aligned:
+<<<<<<< HEAD
 	SRL	t0, len, LOG_NBYTES+2    # +2 for 4 units/iter
 	PREF(	0, 3*32(src) )
 	beqz	t0, .Lcleanup_src_unaligned
 	 and	rem, len, (4*NBYTES-1)   # rem = len % 4*NBYTES
+=======
+	SRL	t0, len, LOG_NBYTES+2	 # +2 for 4 units/iter
+	PREF(	0, 3*32(src) )
+	beqz	t0, .Lcleanup_src_unaligned
+	 and	rem, len, (4*NBYTES-1)	 # rem = len % 4*NBYTES
+>>>>>>> refs/remotes/origin/master
 	PREF(	1, 3*32(dst) )
 1:
 /*
@@ -360,6 +411,7 @@ EXC(	STFIRST t3, FIRST(0)(dst),	.Ls_exc)
  * are to the same unit (unless src is aligned, but it's not).
  */
 	R10KCBARRIER(0(ra))
+<<<<<<< HEAD
 EXC(	LDFIRST	t0, FIRST(0)(src),	.Ll_exc)
 EXC(	LDFIRST	t1, FIRST(1)(src),	.Ll_exc_copy)
 	SUB     len, len, 4*NBYTES
@@ -367,6 +419,15 @@ EXC(	LDREST	t0, REST(0)(src),	.Ll_exc_copy)
 EXC(	LDREST	t1, REST(1)(src),	.Ll_exc_copy)
 EXC(	LDFIRST	t2, FIRST(2)(src),	.Ll_exc_copy)
 EXC(	LDFIRST	t3, FIRST(3)(src),	.Ll_exc_copy)
+=======
+EXC(	LDFIRST t0, FIRST(0)(src),	.Ll_exc)
+EXC(	LDFIRST t1, FIRST(1)(src),	.Ll_exc_copy)
+	SUB	len, len, 4*NBYTES
+EXC(	LDREST	t0, REST(0)(src),	.Ll_exc_copy)
+EXC(	LDREST	t1, REST(1)(src),	.Ll_exc_copy)
+EXC(	LDFIRST t2, FIRST(2)(src),	.Ll_exc_copy)
+EXC(	LDFIRST t3, FIRST(3)(src),	.Ll_exc_copy)
+>>>>>>> refs/remotes/origin/master
 EXC(	LDREST	t2, REST(2)(src),	.Ll_exc_copy)
 EXC(	LDREST	t3, REST(3)(src),	.Ll_exc_copy)
 	PREF(	0, 9*32(src) )		# 0 is PREF_LOAD  (not streamed)
@@ -378,7 +439,11 @@ EXC(	STORE	t0, UNIT(0)(dst),	.Ls_exc_p4u)
 EXC(	STORE	t1, UNIT(1)(dst),	.Ls_exc_p3u)
 EXC(	STORE	t2, UNIT(2)(dst),	.Ls_exc_p2u)
 EXC(	STORE	t3, UNIT(3)(dst),	.Ls_exc_p1u)
+<<<<<<< HEAD
 	PREF(	1, 9*32(dst) )     	# 1 is PREF_STORE (not streamed)
+=======
+	PREF(	1, 9*32(dst) )		# 1 is PREF_STORE (not streamed)
+>>>>>>> refs/remotes/origin/master
 	.set	reorder				/* DADDI_WAR */
 	ADD	dst, dst, 4*NBYTES
 	bne	len, rem, 1b
@@ -458,6 +523,10 @@ EXC(	lb	t1, 0(src),	.Ll_exc)
 	LOAD	t0, THREAD_BUADDR(t0)	# t0 is just past last good address
 	 nop
 	SUB	len, AT, t0		# len number of uncopied bytes
+<<<<<<< HEAD
+=======
+	bnez	t6, .Ldone	/* Skip the zeroing part if inatomic */
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Here's where we rely on src and dst being incremented in tandem,
 	 *   See (3) above.
@@ -491,7 +560,11 @@ EXC(	lb	t1, 0(src),	.Ll_exc)
 
 
 #define SEXC(n)							\
+<<<<<<< HEAD
 	.set	reorder;			/* DADDI_WAR */	\
+=======
+	.set	reorder;			/* DADDI_WAR */ \
+>>>>>>> refs/remotes/origin/master
 .Ls_exc_p ## n ## u:						\
 	ADD	len, len, n*NBYTES;				\
 	jr	ra;						\

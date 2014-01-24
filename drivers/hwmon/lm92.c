@@ -48,16 +48,24 @@
 #include <linux/hwmon-sysfs.h>
 #include <linux/err.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 /* The LM92 and MAX6635 have 2 two-state pins for address selection,
    resulting in 4 possible addresses. */
 =======
+=======
+#include <linux/jiffies.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The LM92 and MAX6635 have 2 two-state pins for address selection,
  * resulting in 4 possible addresses.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b,
 						I2C_CLIENT_END };
 
@@ -71,12 +79,15 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b,
 #define LM92_REG_MAN_ID			0x07 /* 16-bit, RO, LM92 only */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The LM92 uses signed 13-bit values with LSB = 0.0625 degree Celsius,
    left-justified in 16-bit registers. No rounding is done, with such
    a resolution it's just not worth it. Note that the MAX6635 doesn't
    make use of the 4 lower bits for limits (i.e. effective resolution
    for limits is 1 degree Celsius). */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The LM92 uses signed 13-bit values with LSB = 0.0625 degree Celsius,
  * left-justified in 16-bit registers. No rounding is done, with such
@@ -84,7 +95,10 @@ static const unsigned short normal_i2c[] = { 0x48, 0x49, 0x4a, 0x4b,
  * make use of the 4 lower bits for limits (i.e. effective resolution
  * for limits is 1 degree Celsius).
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int TEMP_FROM_REG(s16 reg)
 {
 	return reg / 8 * 625 / 10;
@@ -135,6 +149,7 @@ static struct lm92_data *lm92_update_device(struct device *dev)
 	 || !data->valid) {
 		dev_dbg(&client->dev, "Updating lm92 data\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		data->temp1_input = swab16(i2c_smbus_read_word_data(client,
 				    LM92_REG_TEMP));
 		data->temp1_hyst = swab16(i2c_smbus_read_word_data(client,
@@ -146,6 +161,8 @@ static struct lm92_data *lm92_update_device(struct device *dev)
 		data->temp1_max = swab16(i2c_smbus_read_word_data(client,
 				    LM92_REG_TEMP_HIGH));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		data->temp1_input = i2c_smbus_read_word_swapped(client,
 				    LM92_REG_TEMP);
 		data->temp1_hyst = i2c_smbus_read_word_swapped(client,
@@ -156,7 +173,10 @@ static struct lm92_data *lm92_update_device(struct device *dev)
 				    LM92_REG_TEMP_LOW);
 		data->temp1_max = i2c_smbus_read_word_swapped(client,
 				    LM92_REG_TEMP_HIGH);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		data->last_updated = jiffies;
 		data->valid = 1;
@@ -169,11 +189,16 @@ static struct lm92_data *lm92_update_device(struct device *dev)
 
 #define show_temp(value) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##value(struct device *dev, struct device_attribute *attr, char *buf) \
 =======
 static ssize_t show_##value(struct device *dev, struct device_attribute *attr, \
 			    char *buf) \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_##value(struct device *dev, struct device_attribute *attr, \
+			    char *buf) \
+>>>>>>> refs/remotes/origin/master
 { \
 	struct lm92_data *data = lm92_update_device(dev); \
 	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->value)); \
@@ -185,15 +210,21 @@ show_temp(temp1_max);
 
 #define set_temp(value, reg) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t set_##value(struct device *dev, struct device_attribute *attr, const char *buf, \
 =======
 static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
 			   const char *buf, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
+			   const char *buf, \
+>>>>>>> refs/remotes/origin/master
 	size_t count) \
 { \
 	struct i2c_client *client = to_i2c_client(dev); \
 	struct lm92_data *data = i2c_get_clientdata(client); \
+<<<<<<< HEAD
 <<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10); \
  \
@@ -201,6 +232,8 @@ static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
 	data->value = TEMP_TO_REG(val); \
 	i2c_smbus_write_word_data(client, reg, swab16(data->value)); \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val; \
 	int err = kstrtol(buf, 10, &val); \
 	if (err) \
@@ -209,7 +242,10 @@ static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
 	mutex_lock(&data->update_lock); \
 	data->value = TEMP_TO_REG(val); \
 	i2c_smbus_write_word_swapped(client, reg, data->value); \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock); \
 	return count; \
 }
@@ -218,39 +254,55 @@ set_temp(temp1_min, LM92_REG_TEMP_LOW);
 set_temp(temp1_max, LM92_REG_TEMP_HIGH);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_temp1_crit_hyst(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_temp1_crit_hyst(struct device *dev,
 				    struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_temp1_crit_hyst(struct device *dev,
+				    struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm92_data *data = lm92_update_device(dev);
 	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp1_crit)
 		       - TEMP_FROM_REG(data->temp1_hyst));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_temp1_max_hyst(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_temp1_max_hyst(struct device *dev,
 				   struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_temp1_max_hyst(struct device *dev,
+				   struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm92_data *data = lm92_update_device(dev);
 	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp1_max)
 		       - TEMP_FROM_REG(data->temp1_hyst));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_temp1_min_hyst(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_temp1_min_hyst(struct device *dev,
 				   struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_temp1_min_hyst(struct device *dev,
+				   struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm92_data *data = lm92_update_device(dev);
 	return sprintf(buf, "%d\n", TEMP_FROM_REG(data->temp1_min)
 		       + TEMP_FROM_REG(data->temp1_hyst));
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t set_temp1_crit_hyst(struct device *dev, struct device_attribute *attr, const char *buf,
 	size_t count)
@@ -264,6 +316,8 @@ static ssize_t set_temp1_crit_hyst(struct device *dev, struct device_attribute *
 	i2c_smbus_write_word_data(client, LM92_REG_TEMP_HYST,
 				  swab16(TEMP_TO_REG(data->temp1_hyst)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_temp1_crit_hyst(struct device *dev,
 				   struct device_attribute *attr,
 				   const char *buf, size_t count)
@@ -281,17 +335,25 @@ static ssize_t set_temp1_crit_hyst(struct device *dev,
 	data->temp1_hyst = TEMP_FROM_REG(data->temp1_crit) - val;
 	i2c_smbus_write_word_swapped(client, LM92_REG_TEMP_HYST,
 				     TEMP_TO_REG(data->temp1_hyst));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_alarms(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_alarms(struct device *dev, struct device_attribute *attr,
 			   char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_alarms(struct device *dev, struct device_attribute *attr,
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct lm92_data *data = lm92_update_device(dev);
 	return sprintf(buf, "%d\n", ALARMS_FROM_REG(data->temp1_input));
@@ -338,12 +400,15 @@ static void lm92_init_client(struct i2c_client *client)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The MAX6635 has no identification register, so we have to use tricks
    to identify it reliably. This is somewhat slow.
    Note that we do NOT rely on the 2 MSB of the configuration register
    always reading 0, as suggested by the datasheet, because it was once
    reported not to be true. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The MAX6635 has no identification register, so we have to use tricks
  * to identify it reliably. This is somewhat slow.
@@ -351,7 +416,10 @@ static void lm92_init_client(struct i2c_client *client)
  * always reading 0, as suggested by the datasheet, because it was once
  * reported not to be true.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int max6635_check(struct i2c_client *client)
 {
 	u16 temp_low, temp_high, temp_hyst, temp_crit;
@@ -359,14 +427,20 @@ static int max6635_check(struct i2c_client *client)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* No manufacturer ID register, so a read from this address will
 	   always return the last read value. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * No manufacturer ID register, so a read from this address will
 	 * always return the last read value.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	temp_low = i2c_smbus_read_word_data(client, LM92_REG_TEMP_LOW);
 	if (i2c_smbus_read_word_data(client, LM92_REG_MAN_ID) != temp_low)
 		return 0;
@@ -374,10 +448,14 @@ static int max6635_check(struct i2c_client *client)
 	if (i2c_smbus_read_word_data(client, LM92_REG_MAN_ID) != temp_high)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* Limits are stored as integer values (signed, 9-bit). */
 	if ((temp_low & 0x7f00) || (temp_high & 0x7f00))
 		return 0;
@@ -386,6 +464,7 @@ static int max6635_check(struct i2c_client *client)
 	if ((temp_hyst & 0x7f00) || (temp_crit & 0x7f00))
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Registers addresses were found to cycle over 16-byte boundaries.
 	   We don't test all registers with all offsets so as to save some
@@ -404,6 +483,8 @@ static int max6635_check(struct i2c_client *client)
 		 || conf != i2c_smbus_read_byte_data(client,
 		 	    LM92_REG_CONFIG + i))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Registers addresses were found to cycle over 16-byte boundaries.
 	 * We don't test all registers with all offsets so as to save some
@@ -422,7 +503,10 @@ static int max6635_check(struct i2c_client *client)
 				 LM92_REG_TEMP_HIGH + i + 32)
 		 || conf != i2c_smbus_read_byte_data(client,
 			    LM92_REG_CONFIG + i))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 0;
 	}
 
@@ -481,11 +565,18 @@ static int lm92_probe(struct i2c_client *new_client,
 	struct lm92_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct lm92_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&new_client->dev, sizeof(struct lm92_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(new_client, data);
 	data->valid = 0;
@@ -496,12 +587,18 @@ static int lm92_probe(struct i2c_client *new_client,
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&new_client->dev.kobj, &lm92_group)))
 =======
 	err = sysfs_create_group(&new_client->dev.kobj, &lm92_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto exit_free;
+=======
+	err = sysfs_create_group(&new_client->dev.kobj, &lm92_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -513,9 +610,12 @@ static int lm92_probe(struct i2c_client *new_client,
 
 exit_remove:
 	sysfs_remove_group(&new_client->dev.kobj, &lm92_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -526,7 +626,10 @@ static int lm92_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &lm92_group);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -555,6 +658,7 @@ static struct i2c_driver lm92_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_lm92_init(void)
 {
 	return i2c_add_driver(&lm92_driver);
@@ -567,13 +671,19 @@ static void __exit sensors_lm92_exit(void)
 =======
 module_i2c_driver(lm92_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(lm92_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jean Delvare <khali@linux-fr.org>");
 MODULE_DESCRIPTION("LM92/MAX6635 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(sensors_lm92_init);
 module_exit(sensors_lm92_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

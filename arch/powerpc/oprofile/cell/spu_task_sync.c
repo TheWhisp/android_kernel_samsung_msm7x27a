@@ -304,7 +304,11 @@ static inline unsigned long fast_get_dcookie(struct path *path)
 	return cookie;
 }
 
+<<<<<<< HEAD
 /* Look up the dcookie for the task's first VM_EXECUTABLE mapping,
+=======
+/* Look up the dcookie for the task's mm->exe_file,
+>>>>>>> refs/remotes/origin/master
  * which corresponds loosely to "application name". Also, determine
  * the offset for the SPU ELF object.  If computed offset is
  * non-zero, it implies an embedded SPU object; otherwise, it's a
@@ -321,7 +325,10 @@ get_exec_dcookie_and_offset(struct spu *spu, unsigned int *offsetp,
 {
 	unsigned long app_cookie = 0;
 	unsigned int my_offset = 0;
+<<<<<<< HEAD
 	struct file *app = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct vm_area_struct *vma;
 	struct mm_struct *mm = spu->mm;
 
@@ -330,6 +337,7 @@ get_exec_dcookie_and_offset(struct spu *spu, unsigned int *offsetp,
 
 	down_read(&mm->mmap_sem);
 
+<<<<<<< HEAD
 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
 		if (!vma->vm_file)
 			continue;
@@ -340,6 +348,12 @@ get_exec_dcookie_and_offset(struct spu *spu, unsigned int *offsetp,
 			 vma->vm_file->f_dentry->d_name.name);
 		app = vma->vm_file;
 		break;
+=======
+	if (mm->exe_file) {
+		app_cookie = fast_get_dcookie(&mm->exe_file->f_path);
+		pr_debug("got dcookie for %s\n",
+			 mm->exe_file->f_dentry->d_name.name);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (vma = mm->mmap; vma; vma = vma->vm_next) {

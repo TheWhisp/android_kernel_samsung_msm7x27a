@@ -31,9 +31,13 @@
 #include <linux/slab.h>
 #include <linux/ioport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/wss.h>
 #include <sound/pcm_params.h>
@@ -1459,7 +1463,10 @@ static struct snd_pcm_hardware snd_wss_playback =
 {
 	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
 				 SNDRV_PCM_INFO_MMAP_VALID |
+<<<<<<< HEAD
 				 SNDRV_PCM_INFO_RESUME |
+=======
+>>>>>>> refs/remotes/origin/master
 				 SNDRV_PCM_INFO_SYNC_START),
 	.formats =		(SNDRV_PCM_FMTBIT_MU_LAW | SNDRV_PCM_FMTBIT_A_LAW | SNDRV_PCM_FMTBIT_IMA_ADPCM |
 				 SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE),
@@ -1660,6 +1667,13 @@ static void snd_wss_resume(struct snd_wss *chip)
 			break;
 		}
 	}
+<<<<<<< HEAD
+=======
+	/* Yamaha needs this to resume properly */
+	if (chip->hardware == WSS_HW_OPL3SA2)
+		snd_wss_out(chip, CS4231_PLAYBK_FORMAT,
+			    chip->image[CS4231_PLAYBK_FORMAT]);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&chip->reg_lock, flags);
 #if 1
 	snd_wss_mce_down(chip);
@@ -1838,10 +1852,14 @@ int snd_wss_create(struct snd_card *card,
 	chip->cport = cport;
 	if (!(hwshare & WSS_HWSHARE_IRQ))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (request_irq(irq, snd_wss_interrupt, IRQF_DISABLED,
 =======
 		if (request_irq(irq, snd_wss_interrupt, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (request_irq(irq, snd_wss_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 				"WSS", (void *) chip)) {
 			snd_printk(KERN_ERR "wss: can't grab IRQ %d\n", irq);
 			snd_wss_free(chip);

@@ -29,6 +29,7 @@
 #include <linux/connector.h>
 #include <linux/gfp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/ptrace.h>
@@ -40,6 +41,29 @@
 #include <linux/cn_proc.h>
 
 #define CN_PROC_MSG_SIZE (sizeof(struct cn_msg) + sizeof(struct proc_event))
+=======
+#include <linux/ptrace.h>
+#include <linux/atomic.h>
+#include <linux/pid_namespace.h>
+
+#include <linux/cn_proc.h>
+
+/*
+ * Size of a cn_msg followed by a proc_event structure.  Since the
+ * sizeof struct cn_msg is a multiple of 4 bytes, but not 8 bytes, we
+ * add one 4-byte word to the size here, and then start the actual
+ * cn_msg structure 4 bytes into the stack buffer.  The result is that
+ * the immediately following proc_event structure is aligned to 8 bytes.
+ */
+#define CN_PROC_MSG_SIZE (sizeof(struct cn_msg) + sizeof(struct proc_event) + 4)
+
+/* See comment above; we test our assumption about sizeof struct cn_msg here. */
+static inline struct cn_msg *buffer_to_cn_msg(__u8 *buffer)
+{
+	BUILD_BUG_ON(sizeof(struct cn_msg) != 20);
+	return (struct cn_msg *)(buffer + 4);
+}
+>>>>>>> refs/remotes/origin/master
 
 static atomic_t proc_event_num_listeners = ATOMIC_INIT(0);
 static struct cb_id cn_proc_event_id = { CN_IDX_PROC, CN_VAL_PROC };
@@ -50,7 +74,11 @@ static DEFINE_PER_CPU(__u32, proc_event_counts) = { 0 };
 static inline void get_seq(__u32 *ts, int *cpu)
 {
 	preempt_disable();
+<<<<<<< HEAD
 	*ts = __this_cpu_inc_return(proc_event_counts) -1;
+=======
+	*ts = __this_cpu_inc_return(proc_event_counts) - 1;
+>>>>>>> refs/remotes/origin/master
 	*cpu = smp_processor_id();
 	preempt_enable();
 }
@@ -59,16 +87,23 @@ void proc_fork_connector(struct task_struct *task)
 {
 	struct cn_msg *msg;
 	struct proc_event *ev;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
 	struct timespec ts;
 <<<<<<< HEAD
 =======
 	struct task_struct *parent;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+	struct timespec ts;
+	struct task_struct *parent;
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg*)buffer;
 	ev = (struct proc_event*)msg->data;
 <<<<<<< HEAD
@@ -83,12 +118,24 @@ void proc_fork_connector(struct task_struct *task)
 	ev->event_data.fork.parent_pid = task->real_parent->pid;
 	ev->event_data.fork.parent_tgid = task->real_parent->tgid;
 =======
+=======
+	msg = buffer_to_cn_msg(buffer);
+	ev = (struct proc_event *)msg->data;
+	memset(&ev->event_data, 0, sizeof(ev->event_data));
+	get_seq(&msg->seq, &ev->cpu);
+	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+	ev->timestamp_ns = timespec_to_ns(&ts);
+	ev->what = PROC_EVENT_FORK;
+>>>>>>> refs/remotes/origin/master
 	rcu_read_lock();
 	parent = rcu_dereference(task->real_parent);
 	ev->event_data.fork.parent_pid = parent->pid;
 	ev->event_data.fork.parent_tgid = parent->tgid;
 	rcu_read_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ev->event_data.fork.child_pid = task->pid;
 	ev->event_data.fork.child_tgid = task->tgid;
 
@@ -96,9 +143,13 @@ void proc_fork_connector(struct task_struct *task)
 	msg->ack = 0; /* not used */
 	msg->len = sizeof(*ev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msg->flags = 0; /* not used */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg->flags = 0; /* not used */
+>>>>>>> refs/remotes/origin/master
 	/*  If cn_netlink_send() failed, the data is not sent */
 	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
 }
@@ -108,11 +159,16 @@ void proc_exec_connector(struct task_struct *task)
 	struct cn_msg *msg;
 	struct proc_event *ev;
 	struct timespec ts;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg*)buffer;
 	ev = (struct proc_event*)msg->data;
 <<<<<<< HEAD
@@ -122,6 +178,14 @@ void proc_exec_connector(struct task_struct *task)
 	get_seq(&msg->seq, &ev->cpu);
 	ktime_get_ts(&ts); /* get high res monotonic timestamp */
 	put_unaligned(timespec_to_ns(&ts), (__u64 *)&ev->timestamp_ns);
+=======
+	msg = buffer_to_cn_msg(buffer);
+	ev = (struct proc_event *)msg->data;
+	memset(&ev->event_data, 0, sizeof(ev->event_data));
+	get_seq(&msg->seq, &ev->cpu);
+	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+	ev->timestamp_ns = timespec_to_ns(&ts);
+>>>>>>> refs/remotes/origin/master
 	ev->what = PROC_EVENT_EXEC;
 	ev->event_data.exec.process_pid = task->pid;
 	ev->event_data.exec.process_tgid = task->tgid;
@@ -130,9 +194,13 @@ void proc_exec_connector(struct task_struct *task)
 	msg->ack = 0; /* not used */
 	msg->len = sizeof(*ev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msg->flags = 0; /* not used */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg->flags = 0; /* not used */
+>>>>>>> refs/remotes/origin/master
 	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
 }
 
@@ -140,25 +208,36 @@ void proc_id_connector(struct task_struct *task, int which_id)
 {
 	struct cn_msg *msg;
 	struct proc_event *ev;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+>>>>>>> refs/remotes/origin/master
 	struct timespec ts;
 	const struct cred *cred;
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg*)buffer;
 	ev = (struct proc_event*)msg->data;
 <<<<<<< HEAD
 =======
 	memset(&ev->event_data, 0, sizeof(ev->event_data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg = buffer_to_cn_msg(buffer);
+	ev = (struct proc_event *)msg->data;
+	memset(&ev->event_data, 0, sizeof(ev->event_data));
+>>>>>>> refs/remotes/origin/master
 	ev->what = which_id;
 	ev->event_data.id.process_pid = task->pid;
 	ev->event_data.id.process_tgid = task->tgid;
 	rcu_read_lock();
 	cred = __task_cred(task);
 	if (which_id == PROC_EVENT_UID) {
+<<<<<<< HEAD
 		ev->event_data.id.r.ruid = cred->uid;
 		ev->event_data.id.e.euid = cred->euid;
 	} else if (which_id == PROC_EVENT_GID) {
@@ -167,19 +246,37 @@ void proc_id_connector(struct task_struct *task, int which_id)
 	} else {
 		rcu_read_unlock();
 	     	return;
+=======
+		ev->event_data.id.r.ruid = from_kuid_munged(&init_user_ns, cred->uid);
+		ev->event_data.id.e.euid = from_kuid_munged(&init_user_ns, cred->euid);
+	} else if (which_id == PROC_EVENT_GID) {
+		ev->event_data.id.r.rgid = from_kgid_munged(&init_user_ns, cred->gid);
+		ev->event_data.id.e.egid = from_kgid_munged(&init_user_ns, cred->egid);
+	} else {
+		rcu_read_unlock();
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 	rcu_read_unlock();
 	get_seq(&msg->seq, &ev->cpu);
 	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+<<<<<<< HEAD
 	put_unaligned(timespec_to_ns(&ts), (__u64 *)&ev->timestamp_ns);
+=======
+	ev->timestamp_ns = timespec_to_ns(&ts);
+>>>>>>> refs/remotes/origin/master
 
 	memcpy(&msg->id, &cn_proc_event_id, sizeof(msg->id));
 	msg->ack = 0; /* not used */
 	msg->len = sizeof(*ev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msg->flags = 0; /* not used */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg->flags = 0; /* not used */
+>>>>>>> refs/remotes/origin/master
 	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
 }
 
@@ -188,11 +285,16 @@ void proc_sid_connector(struct task_struct *task)
 	struct cn_msg *msg;
 	struct proc_event *ev;
 	struct timespec ts;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg *)buffer;
 	ev = (struct proc_event *)msg->data;
 <<<<<<< HEAD
@@ -202,6 +304,14 @@ void proc_sid_connector(struct task_struct *task)
 	get_seq(&msg->seq, &ev->cpu);
 	ktime_get_ts(&ts); /* get high res monotonic timestamp */
 	put_unaligned(timespec_to_ns(&ts), (__u64 *)&ev->timestamp_ns);
+=======
+	msg = buffer_to_cn_msg(buffer);
+	ev = (struct proc_event *)msg->data;
+	memset(&ev->event_data, 0, sizeof(ev->event_data));
+	get_seq(&msg->seq, &ev->cpu);
+	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+	ev->timestamp_ns = timespec_to_ns(&ts);
+>>>>>>> refs/remotes/origin/master
 	ev->what = PROC_EVENT_SID;
 	ev->event_data.sid.process_pid = task->pid;
 	ev->event_data.sid.process_tgid = task->tgid;
@@ -210,7 +320,10 @@ void proc_sid_connector(struct task_struct *task)
 	msg->ack = 0; /* not used */
 	msg->len = sizeof(*ev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	msg->flags = 0; /* not used */
 	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
 }
@@ -220,17 +333,29 @@ void proc_ptrace_connector(struct task_struct *task, int ptrace_id)
 	struct cn_msg *msg;
 	struct proc_event *ev;
 	struct timespec ts;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg *)buffer;
+=======
+	msg = buffer_to_cn_msg(buffer);
+>>>>>>> refs/remotes/origin/master
 	ev = (struct proc_event *)msg->data;
 	memset(&ev->event_data, 0, sizeof(ev->event_data));
 	get_seq(&msg->seq, &ev->cpu);
 	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+<<<<<<< HEAD
 	put_unaligned(timespec_to_ns(&ts), (__u64 *)&ev->timestamp_ns);
+=======
+	ev->timestamp_ns = timespec_to_ns(&ts);
+>>>>>>> refs/remotes/origin/master
 	ev->what = PROC_EVENT_PTRACE;
 	ev->event_data.ptrace.process_pid  = task->pid;
 	ev->event_data.ptrace.process_tgid = task->tgid;
@@ -255,17 +380,29 @@ void proc_comm_connector(struct task_struct *task)
 	struct cn_msg *msg;
 	struct proc_event *ev;
 	struct timespec ts;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg *)buffer;
+=======
+	msg = buffer_to_cn_msg(buffer);
+>>>>>>> refs/remotes/origin/master
 	ev = (struct proc_event *)msg->data;
 	memset(&ev->event_data, 0, sizeof(ev->event_data));
 	get_seq(&msg->seq, &ev->cpu);
 	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+<<<<<<< HEAD
 	put_unaligned(timespec_to_ns(&ts), (__u64 *)&ev->timestamp_ns);
+=======
+	ev->timestamp_ns = timespec_to_ns(&ts);
+>>>>>>> refs/remotes/origin/master
 	ev->what = PROC_EVENT_COMM;
 	ev->event_data.comm.process_pid  = task->pid;
 	ev->event_data.comm.process_tgid = task->tgid;
@@ -275,7 +412,37 @@ void proc_comm_connector(struct task_struct *task)
 	msg->ack = 0; /* not used */
 	msg->len = sizeof(*ev);
 	msg->flags = 0; /* not used */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
+}
+
+void proc_coredump_connector(struct task_struct *task)
+{
+	struct cn_msg *msg;
+	struct proc_event *ev;
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+	struct timespec ts;
+
+	if (atomic_read(&proc_event_num_listeners) < 1)
+		return;
+
+	msg = buffer_to_cn_msg(buffer);
+	ev = (struct proc_event *)msg->data;
+	memset(&ev->event_data, 0, sizeof(ev->event_data));
+	get_seq(&msg->seq, &ev->cpu);
+	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+	ev->timestamp_ns = timespec_to_ns(&ts);
+	ev->what = PROC_EVENT_COREDUMP;
+	ev->event_data.coredump.process_pid = task->pid;
+	ev->event_data.coredump.process_tgid = task->tgid;
+
+	memcpy(&msg->id, &cn_proc_event_id, sizeof(msg->id));
+	msg->ack = 0; /* not used */
+	msg->len = sizeof(*ev);
+	msg->flags = 0; /* not used */
+>>>>>>> refs/remotes/origin/master
 	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
 }
 
@@ -283,12 +450,17 @@ void proc_exit_connector(struct task_struct *task)
 {
 	struct cn_msg *msg;
 	struct proc_event *ev;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+>>>>>>> refs/remotes/origin/master
 	struct timespec ts;
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg*)buffer;
 	ev = (struct proc_event*)msg->data;
 <<<<<<< HEAD
@@ -298,6 +470,14 @@ void proc_exit_connector(struct task_struct *task)
 	get_seq(&msg->seq, &ev->cpu);
 	ktime_get_ts(&ts); /* get high res monotonic timestamp */
 	put_unaligned(timespec_to_ns(&ts), (__u64 *)&ev->timestamp_ns);
+=======
+	msg = buffer_to_cn_msg(buffer);
+	ev = (struct proc_event *)msg->data;
+	memset(&ev->event_data, 0, sizeof(ev->event_data));
+	get_seq(&msg->seq, &ev->cpu);
+	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+	ev->timestamp_ns = timespec_to_ns(&ts);
+>>>>>>> refs/remotes/origin/master
 	ev->what = PROC_EVENT_EXIT;
 	ev->event_data.exit.process_pid = task->pid;
 	ev->event_data.exit.process_tgid = task->tgid;
@@ -308,9 +488,13 @@ void proc_exit_connector(struct task_struct *task)
 	msg->ack = 0; /* not used */
 	msg->len = sizeof(*ev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msg->flags = 0; /* not used */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg->flags = 0; /* not used */
+>>>>>>> refs/remotes/origin/master
 	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
 }
 
@@ -326,12 +510,17 @@ static void cn_proc_ack(int err, int rcvd_seq, int rcvd_ack)
 {
 	struct cn_msg *msg;
 	struct proc_event *ev;
+<<<<<<< HEAD
 	__u8 buffer[CN_PROC_MSG_SIZE];
+=======
+	__u8 buffer[CN_PROC_MSG_SIZE] __aligned(8);
+>>>>>>> refs/remotes/origin/master
 	struct timespec ts;
 
 	if (atomic_read(&proc_event_num_listeners) < 1)
 		return;
 
+<<<<<<< HEAD
 	msg = (struct cn_msg*)buffer;
 	ev = (struct proc_event*)msg->data;
 <<<<<<< HEAD
@@ -341,6 +530,14 @@ static void cn_proc_ack(int err, int rcvd_seq, int rcvd_ack)
 	msg->seq = rcvd_seq;
 	ktime_get_ts(&ts); /* get high res monotonic timestamp */
 	put_unaligned(timespec_to_ns(&ts), (__u64 *)&ev->timestamp_ns);
+=======
+	msg = buffer_to_cn_msg(buffer);
+	ev = (struct proc_event *)msg->data;
+	memset(&ev->event_data, 0, sizeof(ev->event_data));
+	msg->seq = rcvd_seq;
+	ktime_get_ts(&ts); /* get high res monotonic timestamp */
+	ev->timestamp_ns = timespec_to_ns(&ts);
+>>>>>>> refs/remotes/origin/master
 	ev->cpu = -1;
 	ev->what = PROC_EVENT_NONE;
 	ev->event_data.ack.err = err;
@@ -348,9 +545,13 @@ static void cn_proc_ack(int err, int rcvd_seq, int rcvd_ack)
 	msg->ack = rcvd_ack + 1;
 	msg->len = sizeof(*ev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	msg->flags = 0; /* not used */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msg->flags = 0; /* not used */
+>>>>>>> refs/remotes/origin/master
 	cn_netlink_send(msg, CN_IDX_PROC, GFP_KERNEL);
 }
 
@@ -367,7 +568,26 @@ static void cn_proc_mcast_ctl(struct cn_msg *msg,
 	if (msg->len != sizeof(*mc_op))
 		return;
 
+<<<<<<< HEAD
 	mc_op = (enum proc_cn_mcast_op*)msg->data;
+=======
+	/* 
+	 * Events are reported with respect to the initial pid
+	 * and user namespaces so ignore requestors from
+	 * other namespaces.
+	 */
+	if ((current_user_ns() != &init_user_ns) ||
+	    (task_active_pid_ns(current) != &init_pid_ns))
+		return;
+
+	/* Can only change if privileged. */
+	if (!capable(CAP_NET_ADMIN)) {
+		err = EPERM;
+		goto out;
+	}
+
+	mc_op = (enum proc_cn_mcast_op *)msg->data;
+>>>>>>> refs/remotes/origin/master
 	switch (*mc_op) {
 	case PROC_CN_MCAST_LISTEN:
 		atomic_inc(&proc_event_num_listeners);
@@ -379,6 +599,11 @@ static void cn_proc_mcast_ctl(struct cn_msg *msg,
 		err = EINVAL;
 		break;
 	}
+<<<<<<< HEAD
+=======
+
+out:
+>>>>>>> refs/remotes/origin/master
 	cn_proc_ack(err, msg->seq, msg->ack);
 }
 
@@ -389,11 +614,19 @@ static void cn_proc_mcast_ctl(struct cn_msg *msg,
  */
 static int __init cn_proc_init(void)
 {
+<<<<<<< HEAD
 	int err;
 
 	if ((err = cn_add_callback(&cn_proc_event_id, "cn_proc",
 	 			   &cn_proc_mcast_ctl))) {
 		printk(KERN_WARNING "cn_proc failed to register\n");
+=======
+	int err = cn_add_callback(&cn_proc_event_id,
+				  "cn_proc",
+				  &cn_proc_mcast_ctl);
+	if (err) {
+		pr_warn("cn_proc failed to register\n");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	return 0;

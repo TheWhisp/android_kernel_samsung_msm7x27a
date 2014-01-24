@@ -1,16 +1,22 @@
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/page-debug-flags.h>
 #include <linux/poison.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/mm.h>
 #include <linux/highmem.h>
 #include <linux/page-debug-flags.h>
 #include <linux/poison.h>
 #include <linux/ratelimit.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void set_page_poison(struct page *page)
 {
@@ -27,6 +33,7 @@ static inline bool page_poison(struct page *page)
 	return test_bit(PAGE_DEBUG_FLAG_POISON, &page->debug_flags);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void poison_highpage(struct page *page)
 {
@@ -51,6 +58,8 @@ static void poison_page(struct page *page)
 	addr = page_address(page);
 	memset(addr, PAGE_POISON, PAGE_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void poison_page(struct page *page)
 {
 	void *addr = kmap_atomic(page);
@@ -58,7 +67,10 @@ static void poison_page(struct page *page)
 	set_page_poison(page);
 	memset(addr, PAGE_POISON, PAGE_SIZE);
 	kunmap_atomic(addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void poison_pages(struct page *page, int n)
@@ -79,6 +91,7 @@ static bool single_bit_flip(unsigned char a, unsigned char b)
 static void check_poison_mem(unsigned char *mem, size_t bytes)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char *start;
 	unsigned char *end;
 
@@ -88,13 +101,18 @@ static void check_poison_mem(unsigned char *mem, size_t bytes)
 	}
 	if (start == mem + bytes)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static DEFINE_RATELIMIT_STATE(ratelimit, 5 * HZ, 10);
 	unsigned char *start;
 	unsigned char *end;
 
 	start = memchr_inv(mem, PAGE_POISON, bytes);
 	if (!start)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	for (end = mem + bytes - 1; end > start; end--) {
@@ -103,10 +121,14 @@ static void check_poison_mem(unsigned char *mem, size_t bytes)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printk_ratelimit())
 =======
 	if (!__ratelimit(&ratelimit))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!__ratelimit(&ratelimit))
+>>>>>>> refs/remotes/origin/master
 		return;
 	else if (start == end && single_bit_flip(*start, PAGE_POISON))
 		printk(KERN_ERR "pagealloc: single bit error\n");
@@ -118,6 +140,7 @@ static void check_poison_mem(unsigned char *mem, size_t bytes)
 	dump_stack();
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void unpoison_highpage(struct page *page)
 {
@@ -141,6 +164,8 @@ static void unpoison_page(struct page *page)
 		clear_page_poison(page);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void unpoison_page(struct page *page)
 {
 	void *addr;
@@ -152,7 +177,10 @@ static void unpoison_page(struct page *page)
 	check_poison_mem(addr, PAGE_SIZE);
 	clear_page_poison(page);
 	kunmap_atomic(addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void unpoison_pages(struct page *page, int n)
@@ -166,11 +194,14 @@ static void unpoison_pages(struct page *page, int n)
 void kernel_map_pages(struct page *page, int numpages, int enable)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!debug_pagealloc_enabled)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (enable)
 		unpoison_pages(page, numpages);
 	else

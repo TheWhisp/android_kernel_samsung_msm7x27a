@@ -9,11 +9,17 @@
  *	Alessandro Zummo <a.zummo@towertech.it>
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (c) 2012 H Hartley Sweeten <hsweeten@visionengravers.com>
  *	Convert to a platform device and use the watchdog framework API
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2012 H Hartley Sweeten <hsweeten@visionengravers.com>
+ *	Convert to a platform device and use the watchdog framework API
+ *
+>>>>>>> refs/remotes/origin/master
  * This file is licensed under the terms of the GNU General Public
  * License version 2. This program is licensed "as is" without any
  * warranty of any kind, whether express or implied.
@@ -30,6 +36,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
@@ -45,16 +52,24 @@
 #include <linux/platform_device.h>
 #include <linux/module.h>
 #include <linux/miscdevice.h>
+=======
+#include <linux/platform_device.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/watchdog.h>
 #include <linux/timer.h>
 #include <linux/io.h>
 
 #define WDT_VERSION	"0.4"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* default timeout (secs) */
 #define WDT_TIMEOUT 30
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 static int timeout = WDT_TIMEOUT;
@@ -241,6 +256,8 @@ static int __init ep93xx_wdt_init(void)
 		timeout = WDT_TIMEOUT;
 		printk(KERN_INFO PFX
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started");
@@ -315,7 +332,11 @@ static struct watchdog_device ep93xx_wdt_wdd = {
 	.ops		= &ep93xx_wdt_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit ep93xx_wdt_probe(struct platform_device *pdev)
+=======
+static int ep93xx_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	unsigned long val;
@@ -336,11 +357,15 @@ static int __devinit ep93xx_wdt_probe(struct platform_device *pdev)
 	if (timeout < 1 || timeout > 3600) {
 		timeout = WDT_TIMEOUT;
 		dev_warn(&pdev->dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"timeout value must be 1<=x<=3600, using %d\n",
 			timeout);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	setup_timer(&timer, ep93xx_timer_ping, 1);
 	return err;
@@ -366,6 +391,8 @@ MODULE_PARM_DESC(timeout,
 MODULE_AUTHOR("Ray Lehtiniemi <rayl@mail.com>,"
 		"Alessandro Zummo <a.zummo@towertech.it>");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	val = readl(mmio_base + EP93XX_WATCHDOG);
 	ep93xx_wdt_wdd.bootstatus = (val & 0x01) ? WDIOF_CARDRESET : 0;
 	ep93xx_wdt_wdd.timeout = timeout;
@@ -385,7 +412,11 @@ MODULE_AUTHOR("Ray Lehtiniemi <rayl@mail.com>,"
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit ep93xx_wdt_remove(struct platform_device *pdev)
+=======
+static int ep93xx_wdt_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	watchdog_unregister_device(&ep93xx_wdt_wdd);
 	return 0;
@@ -397,7 +428,11 @@ static struct platform_driver ep93xx_wdt_driver = {
 		.name	= "ep93xx-wdt",
 	},
 	.probe		= ep93xx_wdt_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ep93xx_wdt_remove),
+=======
+	.remove		= ep93xx_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(ep93xx_wdt_driver);
@@ -405,8 +440,14 @@ module_platform_driver(ep93xx_wdt_driver);
 MODULE_AUTHOR("Ray Lehtiniemi <rayl@mail.com>,"
 		"Alessandro Zummo <a.zummo@towertech.it>,"
 		"H Hartley Sweeten <hsweeten@visionengravers.com>");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 MODULE_DESCRIPTION("EP93xx Watchdog");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(WDT_VERSION);
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+MODULE_DESCRIPTION("EP93xx Watchdog");
+MODULE_LICENSE("GPL");
+MODULE_VERSION(WDT_VERSION);
+>>>>>>> refs/remotes/origin/master

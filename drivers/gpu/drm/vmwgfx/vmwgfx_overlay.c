@@ -26,15 +26,26 @@
  **************************************************************************/
 
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "vmwgfx_drv.h"
 
 #include "ttm/ttm_placement.h"
+=======
+#include <drm/drmP.h>
+#include "vmwgfx_drv.h"
+
+#include <drm/ttm/ttm_placement.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "svga_overlay.h"
 #include "svga_escape.h"
 
 #define VMW_MAX_NUM_STREAMS 1
+<<<<<<< HEAD
+=======
+#define VMW_OVERLAY_CAP_MASK (SVGA_FIFO_CAP_VIDEO | SVGA_FIFO_CAP_ESCAPE)
+>>>>>>> refs/remotes/origin/master
 
 struct vmw_stream {
 	struct vmw_dma_buffer *buf;
@@ -88,6 +99,7 @@ static inline void fill_flush(struct vmw_escape_video_flush *cmd,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Pin or unpin a buffer in vram.
  *
  * @dev_priv:  Driver private.
@@ -132,6 +144,8 @@ err:
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Send put command to hw.
  *
  * Returns
@@ -142,6 +156,7 @@ static int vmw_overlay_send_put(struct vmw_private *dev_priv,
 				struct drm_vmw_control_stream_arg *arg,
 				bool interruptible)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct {
 		struct vmw_escape_header escape;
@@ -206,6 +221,8 @@ static int vmw_overlay_send_put(struct vmw_private *dev_priv,
 
 	vmw_fifo_commit(dev_priv, sizeof(*cmds));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct vmw_escape_video_flush *flush;
 	size_t fifo_size;
 	bool have_so = dev_priv->sou_priv ? true : false;
@@ -280,7 +297,10 @@ static int vmw_overlay_send_put(struct vmw_private *dev_priv,
 	fill_flush(flush, arg->stream_id);
 
 	vmw_fifo_commit(dev_priv, fifo_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -329,7 +349,10 @@ static int vmw_overlay_send_stop(struct vmw_private *dev_priv,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Move a buffer to vram or gmr if @pin is set, else unpin the buffer.
  *
  * With the introduction of screen objects buffers could now be
@@ -349,7 +372,10 @@ static int vmw_overlay_move_buffer(struct vmw_private *dev_priv,
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Stop or pause a stream.
  *
  * If the stream is paused the no evict flag is removed from the buffer
@@ -382,12 +408,17 @@ static int vmw_overlay_stop(struct vmw_private *dev_priv,
 
 		/* We just remove the NO_EVICT flag so no -ENOMEM */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = vmw_dmabuf_pin_in_vram(dev_priv, stream->buf, false,
 					     interruptible);
 =======
 		ret = vmw_overlay_move_buffer(dev_priv, stream->buf, false,
 					      interruptible);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = vmw_overlay_move_buffer(dev_priv, stream->buf, false,
+					      interruptible);
+>>>>>>> refs/remotes/origin/master
 		if (interruptible && ret == -ERESTARTSYS)
 			return ret;
 		else
@@ -450,10 +481,14 @@ static int vmw_overlay_update_stream(struct vmw_private *dev_priv,
 	 * Might return -ENOMEM if it can't fit the buffer in vram.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = vmw_dmabuf_pin_in_vram(dev_priv, buf, true, interruptible);
 =======
 	ret = vmw_overlay_move_buffer(dev_priv, buf, true, interruptible);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = vmw_overlay_move_buffer(dev_priv, buf, true, interruptible);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -463,11 +498,16 @@ static int vmw_overlay_update_stream(struct vmw_private *dev_priv,
 		 * the NO_EVICT flag so this is safe from -ENOMEM.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		BUG_ON(vmw_dmabuf_pin_in_vram(dev_priv, buf, false, false) != 0);
 =======
 		BUG_ON(vmw_overlay_move_buffer(dev_priv, buf, false, false)
 		       != 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		BUG_ON(vmw_overlay_move_buffer(dev_priv, buf, false, false)
+		       != 0);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -575,6 +615,17 @@ int vmw_overlay_pause_all(struct vmw_private *dev_priv)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+
+static bool vmw_overlay_available(const struct vmw_private *dev_priv)
+{
+	return (dev_priv->overlay_priv != NULL && 
+		((dev_priv->fifo.capabilities & VMW_OVERLAY_CAP_MASK) ==
+		 VMW_OVERLAY_CAP_MASK));
+}
+
+>>>>>>> refs/remotes/origin/master
 int vmw_overlay_ioctl(struct drm_device *dev, void *data,
 		      struct drm_file *file_priv)
 {
@@ -587,7 +638,11 @@ int vmw_overlay_ioctl(struct drm_device *dev, void *data,
 	struct vmw_resource *res;
 	int ret;
 
+<<<<<<< HEAD
 	if (!overlay)
+=======
+	if (!vmw_overlay_available(dev_priv))
+>>>>>>> refs/remotes/origin/master
 		return -ENOSYS;
 
 	ret = vmw_user_stream_lookup(dev_priv, tfile, &arg->stream_id, &res);
@@ -618,7 +673,11 @@ out_unlock:
 
 int vmw_overlay_num_overlays(struct vmw_private *dev_priv)
 {
+<<<<<<< HEAD
 	if (!dev_priv->overlay_priv)
+=======
+	if (!vmw_overlay_available(dev_priv))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	return VMW_MAX_NUM_STREAMS;
@@ -629,7 +688,11 @@ int vmw_overlay_num_free_overlays(struct vmw_private *dev_priv)
 	struct vmw_overlay *overlay = dev_priv->overlay_priv;
 	int i, k;
 
+<<<<<<< HEAD
 	if (!overlay)
+=======
+	if (!vmw_overlay_available(dev_priv))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	mutex_lock(&overlay->mutex);
@@ -695,6 +758,7 @@ int vmw_overlay_init(struct vmw_private *dev_priv)
 	if (dev_priv->overlay_priv)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!(dev_priv->fifo.capabilities & SVGA_FIFO_CAP_VIDEO) &&
 	     (dev_priv->fifo.capabilities & SVGA_FIFO_CAP_ESCAPE)) {
 		DRM_INFO("hardware doesn't support overlays\n");
@@ -708,11 +772,16 @@ int vmw_overlay_init(struct vmw_private *dev_priv)
 
 	memset(overlay, 0, sizeof(*overlay));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	overlay = kzalloc(sizeof(*overlay), GFP_KERNEL);
 	if (!overlay)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&overlay->mutex);
 	for (i = 0; i < VMW_MAX_NUM_STREAMS; i++) {
 		overlay->stream[i].buf = NULL;

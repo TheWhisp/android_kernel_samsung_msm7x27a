@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -43,6 +47,10 @@
 #define MAX_POSTCMD_CNT			16
 
 #define RF90_PATH_MAX			4
+<<<<<<< HEAD
+=======
+#define RF6052_MAX_PATH			2
+>>>>>>> refs/remotes/origin/master
 
 enum version_8192s {
 	VERSION_8192S_ACUT,

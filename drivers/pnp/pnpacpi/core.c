@@ -20,9 +20,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/acpi.h>
 #include <linux/pnp.h>
 #include <linux/slab.h>
@@ -92,8 +96,13 @@ static int pnpacpi_set_resources(struct pnp_dev *dev)
 
 	pnp_dbg(&dev->dev, "set resources\n");
 
+<<<<<<< HEAD
 	handle = DEVICE_ACPI_HANDLE(&dev->dev);
 	if (!handle || ACPI_FAILURE(acpi_bus_get_device(handle, &acpi_dev))) {
+=======
+	handle = ACPI_HANDLE(&dev->dev);
+	if (!handle || acpi_bus_get_device(handle, &acpi_dev)) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&dev->dev, "ACPI device not found in %s!\n", __func__);
 		return -ENODEV;
 	}
@@ -125,8 +134,13 @@ static int pnpacpi_disable_resources(struct pnp_dev *dev)
 
 	dev_dbg(&dev->dev, "disable resources\n");
 
+<<<<<<< HEAD
 	handle = DEVICE_ACPI_HANDLE(&dev->dev);
 	if (!handle || ACPI_FAILURE(acpi_bus_get_device(handle, &acpi_dev))) {
+=======
+	handle = ACPI_HANDLE(&dev->dev);
+	if (!handle || acpi_bus_get_device(handle, &acpi_dev)) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&dev->dev, "ACPI device not found in %s!\n", __func__);
 		return 0;
 	}
@@ -134,7 +148,11 @@ static int pnpacpi_disable_resources(struct pnp_dev *dev)
 	/* acpi_unregister_gsi(pnp_irq(dev, 0)); */
 	ret = 0;
 	if (acpi_bus_power_manageable(handle))
+<<<<<<< HEAD
 		acpi_bus_set_power(handle, ACPI_STATE_D3);
+=======
+		acpi_bus_set_power(handle, ACPI_STATE_D3_COLD);
+>>>>>>> refs/remotes/origin/master
 		/* continue even if acpi_bus_set_power() fails */
 	if (ACPI_FAILURE(acpi_evaluate_object(handle, "_DIS", NULL, NULL)))
 		ret = -ENODEV;
@@ -147,8 +165,13 @@ static bool pnpacpi_can_wakeup(struct pnp_dev *dev)
 	struct acpi_device *acpi_dev;
 	acpi_handle handle;
 
+<<<<<<< HEAD
 	handle = DEVICE_ACPI_HANDLE(&dev->dev);
 	if (!handle || ACPI_FAILURE(acpi_bus_get_device(handle, &acpi_dev))) {
+=======
+	handle = ACPI_HANDLE(&dev->dev);
+	if (!handle || acpi_bus_get_device(handle, &acpi_dev)) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&dev->dev, "ACPI device not found in %s!\n", __func__);
 		return false;
 	}
@@ -162,8 +185,13 @@ static int pnpacpi_suspend(struct pnp_dev *dev, pm_message_t state)
 	acpi_handle handle;
 	int error = 0;
 
+<<<<<<< HEAD
 	handle = DEVICE_ACPI_HANDLE(&dev->dev);
 	if (!handle || ACPI_FAILURE(acpi_bus_get_device(handle, &acpi_dev))) {
+=======
+	handle = ACPI_HANDLE(&dev->dev);
+	if (!handle || acpi_bus_get_device(handle, &acpi_dev)) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&dev->dev, "ACPI device not found in %s!\n", __func__);
 		return 0;
 	}
@@ -176,11 +204,19 @@ static int pnpacpi_suspend(struct pnp_dev *dev, pm_message_t state)
 	}
 
 	if (acpi_bus_power_manageable(handle)) {
+<<<<<<< HEAD
 		int power_state = acpi_pm_device_sleep_state(&dev->dev, NULL);
 
 		if (power_state < 0)
 			power_state = (state.event == PM_EVENT_ON) ?
 					ACPI_STATE_D0 : ACPI_STATE_D3;
+=======
+		int power_state = acpi_pm_device_sleep_state(&dev->dev, NULL,
+							ACPI_STATE_D3_COLD);
+		if (power_state < 0)
+			power_state = (state.event == PM_EVENT_ON) ?
+					ACPI_STATE_D0 : ACPI_STATE_D3_COLD;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * acpi_bus_set_power() often fails (keyboard port can't be
@@ -197,10 +233,17 @@ static int pnpacpi_suspend(struct pnp_dev *dev, pm_message_t state)
 static int pnpacpi_resume(struct pnp_dev *dev)
 {
 	struct acpi_device *acpi_dev;
+<<<<<<< HEAD
 	acpi_handle handle = DEVICE_ACPI_HANDLE(&dev->dev);
 	int error = 0;
 
 	if (!handle || ACPI_FAILURE(acpi_bus_get_device(handle, &acpi_dev))) {
+=======
+	acpi_handle handle = ACPI_HANDLE(&dev->dev);
+	int error = 0;
+
+	if (!handle || acpi_bus_get_device(handle, &acpi_dev)) {
+>>>>>>> refs/remotes/origin/master
 		dev_dbg(&dev->dev, "ACPI device not found in %s!\n", __func__);
 		return -ENODEV;
 	}
@@ -242,18 +285,32 @@ static char *__init pnpacpi_get_id(struct acpi_device *device)
 
 static int __init pnpacpi_add_device(struct acpi_device *device)
 {
+<<<<<<< HEAD
 	acpi_handle temp = NULL;
 	acpi_status status;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pnp_dev *dev;
 	char *pnpid;
 	struct acpi_hardware_id *id;
 
+<<<<<<< HEAD
+=======
+	/* Skip devices that are already bound */
+	if (device->physical_node_count)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If a PnPacpi device is not present , the device
 	 * driver should not be loaded.
 	 */
+<<<<<<< HEAD
 	status = acpi_get_handle(device->handle, "_CRS", &temp);
 	if (ACPI_FAILURE(status))
+=======
+	if (!acpi_has_method(device->handle, "_CRS"))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	pnpid = pnpacpi_get_id(device);
@@ -270,16 +327,24 @@ static int __init pnpacpi_add_device(struct acpi_device *device)
 	dev->data = device;
 	/* .enabled means the device can decode the resources */
 	dev->active = device->status.enabled;
+<<<<<<< HEAD
 	status = acpi_get_handle(device->handle, "_SRS", &temp);
 	if (ACPI_SUCCESS(status))
+=======
+	if (acpi_has_method(device->handle, "_SRS"))
+>>>>>>> refs/remotes/origin/master
 		dev->capabilities |= PNP_CONFIGURABLE;
 	dev->capabilities |= PNP_READ;
 	if (device->flags.dynamic_status && (dev->capabilities & PNP_CONFIGURABLE))
 		dev->capabilities |= PNP_WRITE;
 	if (device->flags.removable)
 		dev->capabilities |= PNP_REMOVABLE;
+<<<<<<< HEAD
 	status = acpi_get_handle(device->handle, "_DIS", &temp);
 	if (ACPI_SUCCESS(status))
+=======
+	if (acpi_has_method(device->handle, "_DIS"))
+>>>>>>> refs/remotes/origin/master
 		dev->capabilities |= PNP_DISABLE;
 
 	if (strlen(acpi_device_name(device)))
@@ -327,6 +392,7 @@ static int __init acpi_pnp_match(struct device *dev, void *_pnp)
 {
 	struct acpi_device *acpi = to_acpi_device(dev);
 	struct pnp_dev *pnp = _pnp;
+<<<<<<< HEAD
 	struct device *physical_device;
 
 	physical_device = acpi_get_physical_device(acpi->handle);
@@ -335,6 +401,11 @@ static int __init acpi_pnp_match(struct device *dev, void *_pnp)
 
 	/* true means it matched */
 	return !physical_device
+=======
+
+	/* true means it matched */
+	return !acpi->physical_node_count
+>>>>>>> refs/remotes/origin/master
 	    && compare_pnp_id(pnp->id, acpi_device_hid(acpi));
 }
 
@@ -357,8 +428,19 @@ static int __init acpi_pnp_find_device(struct device *dev, acpi_handle * handle)
 /* complete initialization of a PNPACPI device includes having
  * pnpdev->dev.archdata.acpi_handle point to its ACPI sibling.
  */
+<<<<<<< HEAD
 static struct acpi_bus_type __initdata acpi_pnp_bus = {
 	.bus	     = &pnp_bus_type,
+=======
+static bool acpi_pnp_bus_match(struct device *dev)
+{
+	return dev->bus == &pnp_bus_type;
+}
+
+static struct acpi_bus_type __initdata acpi_pnp_bus = {
+	.name	     = "PNP",
+	.match	     = acpi_pnp_bus_match,
+>>>>>>> refs/remotes/origin/master
 	.find_device = acpi_pnp_find_device,
 };
 

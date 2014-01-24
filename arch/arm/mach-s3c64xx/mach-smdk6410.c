@@ -30,6 +30,10 @@
 #include <linux/regulator/fixed.h>
 #include <linux/regulator/machine.h>
 #include <linux/pwm_backlight.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/s3c-hsotg.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMDK6410_WM1190_EV1
 #include <linux/mfd/wm8350/core.h>
@@ -42,26 +46,35 @@
 #endif
 
 #include <video/platform_lcd.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 #include <asm/hardware/vic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <video/samsung_fimd.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
 #include <mach/hardware.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/regs-fb.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/map.h>
 
 #include <asm/irq.h>
 #include <asm/mach-types.h>
 
 #include <plat/regs-serial.h>
+<<<<<<< HEAD
 #include <mach/regs-modem.h>
 #include <mach/regs-gpio.h>
 #include <mach/regs-sys.h>
@@ -75,10 +88,20 @@
 #include <mach/s3c6410.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/regs-gpio.h>
+#include <mach/gpio-samsung.h>
+#include <linux/platform_data/ata-samsung_cf.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <plat/fb.h>
+#include <plat/gpio-cfg.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <plat/clock.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
 #include <plat/adc.h>
+<<<<<<< HEAD
 #include <plat/ts.h>
 #include <plat/keypad.h>
 <<<<<<< HEAD
@@ -89,6 +112,17 @@
 
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/touchscreen-s3c2410.h>
+#include <plat/keypad.h>
+#include <plat/backlight.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+#include "regs-modem.h"
+#include "regs-srom.h"
+#include "regs-sys.h"
+>>>>>>> refs/remotes/origin/master
 
 #define UCON S3C2410_UCON_DEFAULT | S3C2410_UCON_UCLK
 #define ULCON S3C2410_LCON_CS8 | S3C2410_LCON_PNONE | S3C2410_LCON_STOPB
@@ -160,6 +194,7 @@ static struct platform_device smdk6410_lcd_powerdev = {
 };
 
 static struct s3c_fb_pd_win smdk6410_fb_win0 = {
+<<<<<<< HEAD
 	/* this is to ensure we use win0 */
 	.win_mode	= {
 		.left_margin	= 8,
@@ -173,13 +208,37 @@ static struct s3c_fb_pd_win smdk6410_fb_win0 = {
 	},
 	.max_bpp	= 32,
 	.default_bpp	= 16,
+=======
+	.max_bpp	= 32,
+	.default_bpp	= 16,
+	.xres		= 800,
+	.yres		= 480,
+>>>>>>> refs/remotes/origin/master
 	.virtual_y	= 480 * 2,
 	.virtual_x	= 800,
+};
+
+<<<<<<< HEAD
+/* 405566 clocks per frame => 60Hz refresh requires 24333960Hz clock */
+static struct s3c_fb_platdata smdk6410_lcd_pdata __initdata = {
+	.setup_gpio	= s3c64xx_fb_gpio_setup_24bpp,
+=======
+static struct fb_videomode smdk6410_lcd_timing = {
+	.left_margin	= 8,
+	.right_margin	= 13,
+	.upper_margin	= 7,
+	.lower_margin	= 5,
+	.hsync_len	= 3,
+	.vsync_len	= 1,
+	.xres		= 800,
+	.yres		= 480,
 };
 
 /* 405566 clocks per frame => 60Hz refresh requires 24333960Hz clock */
 static struct s3c_fb_platdata smdk6410_lcd_pdata __initdata = {
 	.setup_gpio	= s3c64xx_fb_gpio_setup_24bpp,
+	.vtiming	= &smdk6410_lcd_timing,
+>>>>>>> refs/remotes/origin/master
 	.win[0]		= &smdk6410_fb_win0,
 	.vidcon0	= VIDCON0_VIDOUT_RGB | VIDCON0_PNRMODE_RGB,
 	.vidcon1	= VIDCON1_INV_HSYNC | VIDCON1_INV_VSYNC,
@@ -196,6 +255,7 @@ static struct s3c_fb_platdata smdk6410_lcd_pdata __initdata = {
  */
 
 static struct resource smdk6410_smsc911x_resources[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start = S3C64XX_PA_XM0CSN1,
 		.end   = S3C64XX_PA_XM0CSN1 + SZ_64K - 1,
@@ -206,6 +266,11 @@ static struct resource smdk6410_smsc911x_resources[] = {
 		.end   = S3C_EINT(10),
 		.flags = IORESOURCE_IRQ | IRQ_TYPE_LEVEL_LOW,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S3C64XX_PA_XM0CSN1, SZ_64K),
+	[1] = DEFINE_RES_NAMED(S3C_EINT(10), 1, NULL, IORESOURCE_IRQ \
+					| IRQ_TYPE_LEVEL_LOW),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct smsc911x_platform_config smdk6410_smsc911x_pdata = {
@@ -228,6 +293,7 @@ static struct platform_device smdk6410_smsc911x = {
 
 #ifdef CONFIG_REGULATOR
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct regulator_consumer_supply smdk6410_b_pwr_5v_consumers[] = {
 	{
 		/* WM8580 */
@@ -244,6 +310,11 @@ static struct regulator_consumer_supply smdk6410_b_pwr_5v_consumers[] __initdata
 	REGULATOR_SUPPLY("PVDD", "0-001b"),
 	REGULATOR_SUPPLY("AVDD", "0-001b"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct regulator_consumer_supply smdk6410_b_pwr_5v_consumers[] __initdata = {
+	REGULATOR_SUPPLY("PVDD", "0-001b"),
+	REGULATOR_SUPPLY("AVDD", "0-001b"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data smdk6410_b_pwr_5v_data = {
@@ -294,6 +365,7 @@ static struct samsung_keypad_platdata smdk6410_keypad_data __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int smdk6410_backlight_init(struct device *dev)
 {
 	int ret;
@@ -335,6 +407,8 @@ static struct platform_device smdk6410_backlight_device = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct map_desc smdk6410_iodesc[] = {};
 
 static struct platform_device *smdk6410_devices[] __initdata = {
@@ -348,8 +422,13 @@ static struct platform_device *smdk6410_devices[] __initdata = {
 	&s3c_device_i2c1,
 	&s3c_device_fb,
 	&s3c_device_ohci,
+<<<<<<< HEAD
 	&s3c_device_usb_hsotg,
 	&samsung_asoc_dma,
+=======
+	&samsung_device_pwm,
+	&s3c_device_usb_hsotg,
+>>>>>>> refs/remotes/origin/master
 	&s3c64xx_device_iisv4,
 	&samsung_device_keypad,
 
@@ -365,15 +444,19 @@ static struct platform_device *smdk6410_devices[] __initdata = {
 	&s3c_device_ts,
 	&s3c_device_wdt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&s3c_device_timer[1],
 	&smdk6410_backlight_device,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_REGULATOR
 /* ARM core */
 static struct regulator_consumer_supply smdk6410_vddarm_consumers[] = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{
 		.supply = "vddarm",
@@ -381,6 +464,9 @@ static struct regulator_consumer_supply smdk6410_vddarm_consumers[] = {
 =======
 	REGULATOR_SUPPLY("vddarm", NULL),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("vddarm", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 /* VDDARM, BUCK1 on J5 */
@@ -519,6 +605,7 @@ static struct regulator_init_data wm8350_dcdc3_data = {
 /* USB, EXT, PCM, ADC/DAC, USB, MMC */
 static struct regulator_consumer_supply wm8350_dcdc4_consumers[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{
 		/* WM8580 */
 		.supply = "DVDD",
@@ -527,6 +614,9 @@ static struct regulator_consumer_supply wm8350_dcdc4_consumers[] = {
 =======
 	REGULATOR_SUPPLY("DVDD", "0-001b"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("DVDD", "0-001b"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data wm8350_dcdc4_data = {
@@ -638,10 +728,14 @@ static struct regulator_init_data wm1192_dcdc3 = {
 
 static struct regulator_consumer_supply wm1192_ldo1_consumers[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ .supply = "DVDD", .dev_name = "0-001b", },   /* WM8580 */
 =======
 	REGULATOR_SUPPLY("DVDD", "0-001b"),   /* WM8580 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("DVDD", "0-001b"),   /* WM8580 */
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data wm1192_ldo1 = {
@@ -663,7 +757,10 @@ static struct wm831x_status_pdata wm1192_led8_pdata = {
 
 static struct wm831x_pdata smdk6410_wm1192_pdata = {
 	.pre_init = wm1192_pre_init,
+<<<<<<< HEAD
 	.irq_base = IRQ_BOARD_START,
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.backlight = &wm1192_backlight_pdata,
 	.dcdc = {
@@ -716,6 +813,7 @@ static struct i2c_board_info i2c_devs1[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 	.delay			= 10000,
 	.presc			= 49,
@@ -723,6 +821,8 @@ static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* LCD Backlight data */
 static struct samsung_bl_gpio_info smdk6410_bl_gpio_info = {
 	.no = S3C64XX_GPF(15),
@@ -731,18 +831,31 @@ static struct samsung_bl_gpio_info smdk6410_bl_gpio_info = {
 
 static struct platform_pwm_backlight_data smdk6410_bl_data = {
 	.pwm_id = 1,
+<<<<<<< HEAD
+=======
+	.enable_gpio = -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_hsotg_plat smdk6410_hsotg_pdata;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init smdk6410_map_io(void)
 {
 	u32 tmp;
 
 	s3c64xx_init_io(smdk6410_iodesc, ARRAY_SIZE(smdk6410_iodesc));
+<<<<<<< HEAD
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(smdk6410_uartcfgs, ARRAY_SIZE(smdk6410_uartcfgs));
+=======
+	s3c64xx_set_xtal_freq(12000000);
+	s3c24xx_init_uarts(smdk6410_uartcfgs, ARRAY_SIZE(smdk6410_uartcfgs));
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 
 	/* set the LCD type */
 
@@ -765,17 +878,23 @@ static void __init smdk6410_machine_init(void)
 	s3c_i2c1_set_platdata(NULL);
 	s3c_fb_set_platdata(&smdk6410_lcd_pdata);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	samsung_keypad_set_platdata(&smdk6410_keypad_data);
 
 	s3c24xx_ts_set_platdata(&s3c_ts_platform);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	s3c_hsotg_set_platdata(&smdk6410_hsotg_pdata);
 
 	samsung_keypad_set_platdata(&smdk6410_keypad_data);
 
 	s3c24xx_ts_set_platdata(NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* configure nCS1 width to 16 bits */
 
@@ -806,15 +925,22 @@ static void __init smdk6410_machine_init(void)
 	s3c_ide_set_platdata(&smdk6410_ide_pdata);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	samsung_bl_set(&smdk6410_bl_gpio_info, &smdk6410_bl_data);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(smdk6410_devices, ARRAY_SIZE(smdk6410_devices));
+=======
+	platform_add_devices(smdk6410_devices, ARRAY_SIZE(smdk6410_devices));
+
+	samsung_bl_set(&smdk6410_bl_gpio_info, &smdk6410_bl_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(SMDK6410, "SMDK6410")
 	/* Maintainer: Ben Dooks <ben-linux@fluff.org> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= S3C64XX_PA_SDRAM + 0x100,
 
@@ -832,4 +958,14 @@ MACHINE_START(SMDK6410, "SMDK6410")
 	.timer		= &s3c24xx_timer,
 	.restart	= s3c64xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+
+	.init_irq	= s3c6410_init_irq,
+	.map_io		= smdk6410_map_io,
+	.init_machine	= smdk6410_machine_init,
+	.init_late	= s3c64xx_init_late,
+	.init_time	= samsung_timer_init,
+	.restart	= s3c64xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

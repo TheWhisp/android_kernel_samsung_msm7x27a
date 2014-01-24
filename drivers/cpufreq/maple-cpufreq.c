@@ -24,7 +24,11 @@
 #include <linux/completion.h>
 #include <linux/mutex.h>
 #include <linux/time.h>
+<<<<<<< HEAD
 #include <linux/of.h>
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DBG(fmt...) pr_debug(fmt)
 
@@ -64,18 +68,24 @@ static struct cpufreq_frequency_table maple_cpu_freqs[] = {
 	{0,			CPUFREQ_TABLE_END},
 };
 
+<<<<<<< HEAD
 static struct freq_attr *maple_cpu_freqs_attr[] = {
 	&cpufreq_freq_attr_scaling_available_freqs,
 	NULL,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Power mode data is an array of the 32 bits PCR values to use for
  * the various frequencies, retrieved from the device-tree
  */
 static int maple_pmode_cur;
 
+<<<<<<< HEAD
 static DEFINE_MUTEX(maple_switch_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 *maple_pmode_data;
 static int maple_pmode_max;
 
@@ -135,6 +145,7 @@ static int maple_scom_query_freq(void)
  * Common interface to the cpufreq core
  */
 
+<<<<<<< HEAD
 static int maple_cpufreq_verify(struct cpufreq_policy *policy)
 {
 	return cpufreq_frequency_table_verify(policy, maple_cpu_freqs);
@@ -167,6 +178,12 @@ static int maple_cpufreq_target(struct cpufreq_policy *policy,
 	mutex_unlock(&maple_switch_mutex);
 
 	return rc;
+=======
+static int maple_cpufreq_target(struct cpufreq_policy *policy,
+	unsigned int index)
+{
+	return maple_scom_switch_freq(index);
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int maple_cpufreq_get_speed(unsigned int cpu)
@@ -176,6 +193,7 @@ static unsigned int maple_cpufreq_get_speed(unsigned int cpu)
 
 static int maple_cpufreq_cpu_init(struct cpufreq_policy *policy)
 {
+<<<<<<< HEAD
 	policy->cpuinfo.transition_latency = 12000;
 	policy->cur = maple_cpu_freqs[maple_scom_query_freq()].frequency;
 	/* secondary CPUs are tied to the primary one by the
@@ -198,11 +216,27 @@ static struct cpufreq_driver maple_cpufreq_driver = {
 	.target		= maple_cpufreq_target,
 	.get		= maple_cpufreq_get_speed,
 	.attr		= maple_cpu_freqs_attr,
+=======
+	return cpufreq_generic_init(policy, maple_cpu_freqs, 12000);
+}
+
+static struct cpufreq_driver maple_cpufreq_driver = {
+	.name		= "maple",
+	.flags		= CPUFREQ_CONST_LOOPS,
+	.init		= maple_cpufreq_cpu_init,
+	.verify		= cpufreq_generic_frequency_table_verify,
+	.target_index	= maple_cpufreq_target,
+	.get		= maple_cpufreq_get_speed,
+	.attr		= cpufreq_generic_attr,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init maple_cpufreq_init(void)
 {
+<<<<<<< HEAD
 	struct device_node *cpus;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct device_node *cpunode;
 	unsigned int psize;
 	unsigned long max_freq;
@@ -218,6 +252,7 @@ static int __init maple_cpufreq_init(void)
 	    !of_machine_is_compatible("Momentum,Apache"))
 		return 0;
 
+<<<<<<< HEAD
 	cpus = of_find_node_by_path("/cpus");
 	if (cpus == NULL) {
 		DBG("No /cpus node !\n");
@@ -236,6 +271,13 @@ static int __init maple_cpufreq_init(void)
 	if (cpunode == NULL) {
 		printk(KERN_ERR "cpufreq: Can't find any CPU 0 node\n");
 		goto bail_cpus;
+=======
+	/* Get first CPU node */
+	cpunode = of_cpu_device_node_get(0);
+	if (cpunode == NULL) {
+		printk(KERN_ERR "cpufreq: Can't find any CPU 0 node\n");
+		goto bail_noprops;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Check 970FX for now */
@@ -291,14 +333,20 @@ static int __init maple_cpufreq_init(void)
 	rc = cpufreq_register_driver(&maple_cpufreq_driver);
 
 	of_node_put(cpunode);
+<<<<<<< HEAD
 	of_node_put(cpus);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 
 bail_noprops:
 	of_node_put(cpunode);
+<<<<<<< HEAD
 bail_cpus:
 	of_node_put(cpus);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }

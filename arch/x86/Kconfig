@@ -1,21 +1,39 @@
 # Select 32 or 64 bit
 config 64BIT
 	bool "64-bit kernel" if ARCH = "x86"
+<<<<<<< HEAD
 	default ARCH = "x86_64"
+=======
+	default ARCH != "i386"
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say yes to build a 64-bit kernel - formerly known as x86_64
 	  Say no to build a 32-bit kernel - formerly known as i386
 
 config X86_32
+<<<<<<< HEAD
 	def_bool !64BIT
 	select CLKSRC_I8253
 
 config X86_64
 	def_bool 64BIT
+=======
+	def_bool y
+	depends on !64BIT
+	select CLKSRC_I8253
+	select HAVE_UID16
+
+config X86_64
+	def_bool y
+	depends on 64BIT
+	select X86_DEV_DMA_OPS
+	select ARCH_USE_CMPXCHG_LOCKREF
+>>>>>>> refs/remotes/origin/master
 
 ### Arch settings
 config X86
 	def_bool y
+<<<<<<< HEAD
 	select HAVE_AOUT if X86_32
 	select HAVE_UNSTABLE_SCHED_CLOCK
 	select HAVE_IDE
@@ -34,24 +52,56 @@ config X86
 	select ARCH_WANT_FRAME_POINTERS
 	select HAVE_DMA_ATTRS
 =======
+=======
+	select ARCH_HAS_DEBUG_STRICT_USER_COPY_CHECKS
+	select ARCH_MIGHT_HAVE_PC_PARPORT
+	select HAVE_AOUT if X86_32
+	select HAVE_UNSTABLE_SCHED_CLOCK
+	select ARCH_SUPPORTS_NUMA_BALANCING
+	select ARCH_SUPPORTS_INT128 if X86_64
+	select ARCH_WANTS_PROT_NUMA_PROT_NONE
+	select HAVE_IDE
+	select HAVE_OPROFILE
+	select HAVE_PCSPKR_PLATFORM
+	select HAVE_PERF_EVENTS
+	select HAVE_IOREMAP_PROT
+	select HAVE_KPROBES
+	select HAVE_MEMBLOCK
+>>>>>>> refs/remotes/origin/master
 	select HAVE_MEMBLOCK_NODE_MAP
 	select ARCH_DISCARD_MEMBLOCK
 	select ARCH_WANT_OPTIONAL_GPIOLIB
 	select ARCH_WANT_FRAME_POINTERS
 	select HAVE_DMA_ATTRS
 	select HAVE_DMA_CONTIGUOUS if !SWIOTLB
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	select HAVE_KRETPROBES
 	select HAVE_OPTPROBES
 	select HAVE_FTRACE_MCOUNT_RECORD
 	select HAVE_C_RECORDMCOUNT
 	select HAVE_DYNAMIC_FTRACE
+=======
+	select HAVE_KRETPROBES
+	select HAVE_OPTPROBES
+	select HAVE_KPROBES_ON_FTRACE
+	select HAVE_FTRACE_MCOUNT_RECORD
+	select HAVE_FENTRY if X86_64
+	select HAVE_C_RECORDMCOUNT
+	select HAVE_DYNAMIC_FTRACE
+	select HAVE_DYNAMIC_FTRACE_WITH_REGS
+>>>>>>> refs/remotes/origin/master
 	select HAVE_FUNCTION_TRACER
 	select HAVE_FUNCTION_GRAPH_TRACER
 	select HAVE_FUNCTION_GRAPH_FP_TEST
 	select HAVE_FUNCTION_TRACE_MCOUNT_TEST
+<<<<<<< HEAD
 	select HAVE_FTRACE_NMI_ENTER if DYNAMIC_FTRACE
 	select HAVE_SYSCALL_TRACEPOINTS
+=======
+	select HAVE_SYSCALL_TRACEPOINTS
+	select SYSCTL_EXCEPTION_TRACE
+>>>>>>> refs/remotes/origin/master
 	select HAVE_KVM
 	select HAVE_ARCH_KGDB
 	select HAVE_ARCH_TRACEHOOK
@@ -65,10 +115,15 @@ config X86
 	select HAVE_KERNEL_LZMA
 	select HAVE_KERNEL_XZ
 	select HAVE_KERNEL_LZO
+<<<<<<< HEAD
+=======
+	select HAVE_KERNEL_LZ4
+>>>>>>> refs/remotes/origin/master
 	select HAVE_HW_BREAKPOINT
 	select HAVE_MIXED_BREAKPOINTS_REGS
 	select PERF_EVENTS
 	select HAVE_PERF_EVENTS_NMI
+<<<<<<< HEAD
 	select ANON_INODES
 <<<<<<< HEAD
 	select HAVE_ARCH_KMEMCHECK
@@ -80,19 +135,33 @@ config X86
 =======
 	select HAVE_ALIGNED_STRUCT_PAGE if SLUB && !M386
 	select HAVE_CMPXCHG_LOCAL if !M386
+=======
+	select HAVE_PERF_REGS
+	select HAVE_PERF_USER_STACK_DUMP
+	select HAVE_DEBUG_KMEMLEAK
+	select ANON_INODES
+	select HAVE_ALIGNED_STRUCT_PAGE if SLUB
+	select HAVE_CMPXCHG_LOCAL
+>>>>>>> refs/remotes/origin/master
 	select HAVE_CMPXCHG_DOUBLE
 	select HAVE_ARCH_KMEMCHECK
 	select HAVE_USER_RETURN_NOTIFIER
 	select ARCH_BINFMT_ELF_RANDOMIZE_PIE
 	select HAVE_ARCH_JUMP_LABEL
+<<<<<<< HEAD
 	select HAVE_TEXT_POKE_SMP
 	select HAVE_GENERIC_HARDIRQS
 	select SPARSE_IRQ
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+	select SPARSE_IRQ
+>>>>>>> refs/remotes/origin/master
 	select GENERIC_FIND_FIRST_BIT
 	select GENERIC_IRQ_PROBE
 	select GENERIC_PENDING_IRQ if SMP
 	select GENERIC_IRQ_SHOW
+<<<<<<< HEAD
 <<<<<<< HEAD
 	select IRQ_FORCED_THREADING
 	select USE_GENERIC_SMP_HELPERS if SMP
@@ -102,14 +171,55 @@ config X86
 	select IRQ_FORCED_THREADING
 	select USE_GENERIC_SMP_HELPERS if SMP
 	select HAVE_BPF_JIT if (X86_64 && NET)
+=======
+	select GENERIC_CLOCKEVENTS_MIN_ADJUST
+	select IRQ_FORCED_THREADING
+	select HAVE_BPF_JIT if X86_64
+	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+>>>>>>> refs/remotes/origin/master
 	select CLKEVT_I8253
 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
 	select GENERIC_IOMAP
 	select DCACHE_WORD_ACCESS
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 config INSTRUCTION_DECODER
 	def_bool (KPROBES || PERF_EVENTS)
+=======
+	select GENERIC_SMP_IDLE_THREAD
+	select ARCH_WANT_IPC_PARSE_VERSION if X86_32
+	select HAVE_ARCH_SECCOMP_FILTER
+	select BUILDTIME_EXTABLE_SORT
+	select GENERIC_CMOS_UPDATE
+	select HAVE_ARCH_SOFT_DIRTY
+	select CLOCKSOURCE_WATCHDOG
+	select GENERIC_CLOCKEVENTS
+	select ARCH_CLOCKSOURCE_DATA if X86_64
+	select GENERIC_CLOCKEVENTS_BROADCAST if X86_64 || (X86_32 && X86_LOCAL_APIC)
+	select GENERIC_TIME_VSYSCALL if X86_64
+	select KTIME_SCALAR if X86_32
+	select GENERIC_STRNCPY_FROM_USER
+	select GENERIC_STRNLEN_USER
+	select HAVE_CONTEXT_TRACKING if X86_64
+	select HAVE_IRQ_TIME_ACCOUNTING
+	select VIRT_TO_BUS
+	select MODULES_USE_ELF_REL if X86_32
+	select MODULES_USE_ELF_RELA if X86_64
+	select CLONE_BACKWARDS if X86_32
+	select ARCH_USE_BUILTIN_BSWAP
+	select OLD_SIGSUSPEND3 if X86_32 || IA32_EMULATION
+	select OLD_SIGACTION if X86_32
+	select COMPAT_OLD_SIGACTION if IA32_EMULATION
+	select RTC_LIB
+	select HAVE_DEBUG_STACKOVERFLOW
+	select HAVE_IRQ_EXIT_ON_IRQ_STACK if X86_64
+	select HAVE_CC_STACKPROTECTOR
+
+config INSTRUCTION_DECODER
+	def_bool y
+	depends on KPROBES || PERF_EVENTS || UPROBES
+>>>>>>> refs/remotes/origin/master
 
 config OUTPUT_FORMAT
 	string
@@ -121,6 +231,7 @@ config ARCH_DEFCONFIG
 	default "arch/x86/configs/i386_defconfig" if X86_32
 	default "arch/x86/configs/x86_64_defconfig" if X86_64
 
+<<<<<<< HEAD
 config GENERIC_CMOS_UPDATE
 	def_bool y
 
@@ -141,6 +252,8 @@ config GENERIC_CLOCKEVENTS_BROADCAST
 	def_bool y
 	depends on X86_64 || (X86_32 && X86_LOCAL_APIC)
 
+=======
+>>>>>>> refs/remotes/origin/master
 config LOCKDEP_SUPPORT
 	def_bool y
 
@@ -154,6 +267,7 @@ config MMU
 	def_bool y
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config ZONE_DMA
 	bool "DMA memory allocation support" if EXPERT
 	default y
@@ -166,20 +280,28 @@ config ZONE_DMA
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config SBUS
 	bool
 
 config NEED_DMA_MAP_STATE
 <<<<<<< HEAD
+<<<<<<< HEAD
        def_bool (X86_64 || DMAR || DMA_API_DEBUG)
 =======
        def_bool (X86_64 || INTEL_IOMMU || DMA_API_DEBUG)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	def_bool y
+	depends on X86_64 || INTEL_IOMMU || DMA_API_DEBUG
+>>>>>>> refs/remotes/origin/master
 
 config NEED_SG_DMA_LENGTH
 	def_bool y
 
 config GENERIC_ISA_DMA
+<<<<<<< HEAD
 	def_bool ISA_DMA_API
 
 <<<<<<< HEAD
@@ -188,6 +310,11 @@ config GENERIC_IOMAP
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	def_bool y
+	depends on ISA_DMA_API
+
+>>>>>>> refs/remotes/origin/master
 config GENERIC_BUG
 	def_bool y
 	depends on BUG
@@ -199,6 +326,7 @@ config GENERIC_BUG_RELATIVE_POINTERS
 config GENERIC_HWEIGHT
 	def_bool y
 
+<<<<<<< HEAD
 config GENERIC_GPIO
 	bool
 
@@ -212,11 +340,19 @@ config RWSEM_XCHGADD_ALGORITHM
 	def_bool X86_XADD
 
 config ARCH_HAS_CPU_IDLE_WAIT
+=======
+config ARCH_MAY_HAVE_PC_FDC
+	def_bool y
+	depends on ISA_DMA_API
+
+config RWSEM_XCHGADD_ALGORITHM
+>>>>>>> refs/remotes/origin/master
 	def_bool y
 
 config GENERIC_CALIBRATE_DELAY
 	def_bool y
 
+<<<<<<< HEAD
 config GENERIC_TIME_VSYSCALL
 	bool
 	default X86_64
@@ -236,6 +372,17 @@ config ARCH_HAS_CPU_AUTOPROBE
 	def_bool y
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config ARCH_HAS_CPU_RELAX
+	def_bool y
+
+config ARCH_HAS_CACHE_LINE_SIZE
+	def_bool y
+
+config ARCH_HAS_CPU_AUTOPROBE
+	def_bool y
+
+>>>>>>> refs/remotes/origin/master
 config HAVE_SETUP_PER_CPU_AREA
 	def_bool y
 
@@ -246,27 +393,42 @@ config NEED_PER_CPU_PAGE_FIRST_CHUNK
 	def_bool y
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config HAVE_CPUMASK_OF_CPU_MAP
 	def_bool X86_64_SMP
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_HIBERNATION_POSSIBLE
 	def_bool y
 
 config ARCH_SUSPEND_POSSIBLE
 	def_bool y
 
+<<<<<<< HEAD
+=======
+config ARCH_WANT_HUGE_PMD_SHARE
+	def_bool y
+
+config ARCH_WANT_GENERAL_HUGETLB
+	def_bool y
+
+>>>>>>> refs/remotes/origin/master
 config ZONE_DMA32
 	bool
 	default X86_64
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config ARCH_POPULATES_NODE_MAP
 	def_bool y
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config AUDIT_ARCH
 	bool
 	default X86_64
@@ -280,10 +442,14 @@ config ARCH_SUPPORTS_DEBUG_PAGEALLOC
 config HAVE_INTEL_TXT
 	def_bool y
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on EXPERIMENTAL && DMAR && ACPI
 =======
 	depends on EXPERIMENTAL && INTEL_IOMMU && ACPI
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on INTEL_IOMMU && ACPI
+>>>>>>> refs/remotes/origin/master
 
 config X86_32_SMP
 	def_bool y
@@ -306,12 +472,17 @@ config ARCH_HWEIGHT_CFLAGS
 	default "-fcall-saved-ecx -fcall-saved-edx" if X86_32
 	default "-fcall-saved-rdi -fcall-saved-rsi -fcall-saved-rdx -fcall-saved-rcx -fcall-saved-r8 -fcall-saved-r9 -fcall-saved-r10 -fcall-saved-r11" if X86_64
 
+<<<<<<< HEAD
 config KTIME_SCALAR
 	def_bool X86_32
 
 config ARCH_CPU_PROBE_RELEASE
 	def_bool y
 	depends on HOTPLUG_CPU
+=======
+config ARCH_SUPPORTS_UPROBES
+	def_bool y
+>>>>>>> refs/remotes/origin/master
 
 source "init/Kconfig"
 source "kernel/Kconfig.freezer"
@@ -319,7 +490,10 @@ source "kernel/Kconfig.freezer"
 menu "Processor type and features"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config ZONE_DMA
 	bool "DMA memory allocation support" if EXPERT
 	default y
@@ -330,9 +504,12 @@ config ZONE_DMA
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 source "kernel/time/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SMP
 	bool "Symmetric multi-processing support"
 	---help---
@@ -356,10 +533,14 @@ config SMP
 	  Management" code will be disabled if you say Y here.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  See also <file:Documentation/i386/IO-APIC.txt>,
 =======
 	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  See also <file:Documentation/x86/i386/IO-APIC.txt>,
+>>>>>>> refs/remotes/origin/master
 	  <file:Documentation/nmi_watchdog.txt> and the SMP-HOWTO available at
 	  <http://www.tldp.org/docs.html#howto>.
 
@@ -368,10 +549,14 @@ config SMP
 config X86_X2APIC
 	bool "Support x2apic"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on X86_LOCAL_APIC && X86_64 && INTR_REMAP
 =======
 	depends on X86_LOCAL_APIC && X86_64 && IRQ_REMAP
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on X86_LOCAL_APIC && X86_64 && IRQ_REMAP
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This enables x2apic support on CPUs that have this feature.
 
@@ -381,7 +566,11 @@ config X86_X2APIC
 	  If you don't know what to do here, say N.
 
 config X86_MPPARSE
+<<<<<<< HEAD
 	bool "Enable MPS table" if ACPI
+=======
+	bool "Enable MPS table" if ACPI || SFI
+>>>>>>> refs/remotes/origin/master
 	default y
 	depends on X86_LOCAL_APIC
 	---help---
@@ -394,6 +583,13 @@ config X86_BIGSMP
 	---help---
 	  This option is needed for the systems that have more than 8 CPUs
 
+<<<<<<< HEAD
+=======
+config GOLDFISH
+       def_bool y
+       depends on X86_GOLDFISH
+
+>>>>>>> refs/remotes/origin/master
 if X86_32
 config X86_EXTENDED_PLATFORM
 	bool "Support for extended (non-PC) x86 platforms"
@@ -405,10 +601,18 @@ config X86_EXTENDED_PLATFORM
 
 	  If you enable this option then you'll be able to select support
 	  for the following (non-PC) 32 bit x86 platforms:
+<<<<<<< HEAD
+=======
+		Goldfish (Android emulator)
+>>>>>>> refs/remotes/origin/master
 		AMD Elan
 		NUMAQ (IBM/Sequent)
 		RDC R-321x SoC
 		SGI 320/540 (Visual Workstation)
+<<<<<<< HEAD
+=======
+		STA2X11-based (e.g. Northville)
+>>>>>>> refs/remotes/origin/master
 		Summit/EXA (IBM x440)
 		Unisys ES7000 IA32 series
 		Moorestown MID devices
@@ -429,9 +633,13 @@ config X86_EXTENDED_PLATFORM
 	  If you enable this option then you'll be able to select support
 	  for the following (non-PC) 64 bit x86 platforms:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		Numascale NumaChip
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		Numascale NumaChip
+>>>>>>> refs/remotes/origin/master
 		ScaleMP vSMP
 		SGI Ultraviolet
 
@@ -441,7 +649,10 @@ endif
 # This is an alphabetically sorted list of 64 bit extended platforms
 # Please maintain the alphabetic order if and when there are additions
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config X86_NUMACHIP
 	bool "Numascale NumaChip"
 	depends on X86_64
@@ -449,10 +660,15 @@ config X86_NUMACHIP
 	depends on NUMA
 	depends on SMP
 	depends on X86_X2APIC
+<<<<<<< HEAD
+=======
+	depends on PCI_MMCONFIG
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Adds support for Numascale NumaChip large-SMP systems. Needed to
 	  enable more than ~168 cores.
 	  If you don't have one of these, you should say N here.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 config X86_VSMP
@@ -461,6 +677,16 @@ config X86_VSMP
 	select PARAVIRT
 	depends on X86_64 && PCI
 	depends on X86_EXTENDED_PLATFORM
+=======
+
+config X86_VSMP
+	bool "ScaleMP vSMP"
+	select HYPERVISOR_GUEST
+	select PARAVIRT
+	depends on X86_64 && PCI
+	depends on X86_EXTENDED_PLATFORM
+	depends on SMP
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Support for ScaleMP vSMP systems.  Say 'Y' here if this kernel is
 	  supposed to run on these EM64T-based machines.  Only choose this option
@@ -479,6 +705,18 @@ config X86_UV
 # Following is an alphabetically sorted list of 32 bit extended platforms
 # Please maintain the alphabetic order if and when there are additions
 
+<<<<<<< HEAD
+=======
+config X86_GOLDFISH
+       bool "Goldfish (Virtual Platform)"
+       depends on X86_32
+       depends on X86_EXTENDED_PLATFORM
+       ---help---
+	 Enable support for the Goldfish virtual platform used primarily
+	 for Android development. Unless you are building for the Android
+	 Goldfish emulator say N here.
+
+>>>>>>> refs/remotes/origin/master
 config X86_INTEL_CE
 	bool "CE4100 TV platform"
 	depends on PCI
@@ -489,14 +727,19 @@ config X86_INTEL_CE
 	select OF
 	select OF_EARLY_FLATTREE
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select IRQ_DOMAIN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select IRQ_DOMAIN
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Select for the Intel CE media processor (CE4100) SOC.
 	  This option compiles in support for the CE4100 SOC for settop
 	  boxes and media devices.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config X86_MRST
        bool "Moorestown MID platform"
@@ -555,6 +798,40 @@ config X86_MDFLD
 endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config X86_INTEL_MID
+	bool "Intel MID platform support"
+	depends on X86_32
+	depends on X86_EXTENDED_PLATFORM
+	depends on PCI
+	depends on PCI_GOANY
+	depends on X86_IO_APIC
+	select SFI
+	select I2C
+	select DW_APB_TIMER
+	select APB_TIMER
+	select INTEL_SCU_IPC
+	select MFD_INTEL_MSIC
+	---help---
+	  Select to build a kernel capable of supporting Intel MID (Mobile
+	  Internet Device) platform systems which do not have the PCI legacy
+	  interfaces. If you are building for a PC class system say N here.
+
+	  Intel MID platforms are based on an Intel processor and chipset which
+	  consume less power than most of the x86 derivatives.
+
+config X86_INTEL_LPSS
+	bool "Intel Low Power Subsystem Support"
+	depends on ACPI
+	select COMMON_CLK
+	select PINCTRL
+	---help---
+	  Select to build support for Intel Low Power Subsystem such as
+	  found on Intel Lynxpoint PCH. Selecting this option enables
+	  things like clock tree (common clock framework) and pincontrol
+	  which are needed by the LPSS peripheral drivers.
+
+>>>>>>> refs/remotes/origin/master
 config X86_RDC321X
 	bool "RDC R-321x SoC"
 	depends on X86_32
@@ -571,10 +848,17 @@ config X86_32_NON_STANDARD
 	depends on X86_32 && SMP
 	depends on X86_EXTENDED_PLATFORM
 	---help---
+<<<<<<< HEAD
 	  This option compiles in the NUMAQ, Summit, bigsmp, ES7000, default
 	  subarchitectures.  It is intended for a generic binary kernel.
 	  if you select them all, kernel will probe it one by one. and will
 	  fallback to default.
+=======
+	  This option compiles in the NUMAQ, Summit, bigsmp, ES7000,
+	  STA2X11, default subarchitectures.  It is intended for a generic
+	  binary kernel. If you select them all, kernel will probe it
+	  one by one and will fallback to default.
+>>>>>>> refs/remotes/origin/master
 
 # Alphabetically sorted list of Non standard 32 bit platforms
 
@@ -614,6 +898,25 @@ config X86_VISWS
 	  A kernel compiled for the Visual Workstation will run on general
 	  PCs as well. See <file:Documentation/sgi-visws.txt> for details.
 
+<<<<<<< HEAD
+=======
+config STA2X11
+	bool "STA2X11 Companion Chip Support"
+	depends on X86_32_NON_STANDARD && PCI
+	select X86_DEV_DMA_OPS
+	select X86_DMA_REMAP
+	select SWIOTLB
+	select MFD_STA2X11
+	select ARCH_REQUIRE_GPIOLIB
+	default n
+	---help---
+	  This adds support for boards based on the STA2X11 IO-Hub,
+	  a.k.a. "ConneXt". The chip is used in place of the standard
+	  PC chipset, so all "standard" peripherals are missing. If this
+	  option is selected the kernel will still be able to boot on
+	  standard PC machines.
+
+>>>>>>> refs/remotes/origin/master
 config X86_SUMMIT
 	bool "Summit/EXA (IBM x440)"
 	depends on X86_32_NON_STANDARD
@@ -653,6 +956,7 @@ config SCHED_OMIT_FRAME_POINTER
 
 	  If in doubt, say "Y".
 
+<<<<<<< HEAD
 menuconfig PARAVIRT_GUEST
 	bool "Paravirtualized guest support"
 	---help---
@@ -699,6 +1003,19 @@ config KVM_GUEST
 	  hypervisor.
 
 source "arch/x86/lguest/Kconfig"
+=======
+menuconfig HYPERVISOR_GUEST
+	bool "Linux guest support"
+	---help---
+	  Say Y here to enable options for running Linux under various hyper-
+	  visors. This option enables basic hypervisor detection and platform
+	  setup.
+
+	  If you say N, all options in this submenu will be skipped and
+	  disabled, and Linux guest support won't be built in.
+
+if HYPERVISOR_GUEST
+>>>>>>> refs/remotes/origin/master
 
 config PARAVIRT
 	bool "Enable paravirtualization code"
@@ -708,14 +1025,29 @@ config PARAVIRT
 	  over full virtualization.  However, when run without a hypervisor
 	  the kernel is theoretically slower and slightly larger.
 
+<<<<<<< HEAD
 config PARAVIRT_SPINLOCKS
 	bool "Paravirtualization layer for spinlocks"
 	depends on PARAVIRT && SMP && EXPERIMENTAL
+=======
+config PARAVIRT_DEBUG
+	bool "paravirt-ops debugging"
+	depends on PARAVIRT && DEBUG_KERNEL
+	---help---
+	  Enable to debug paravirt_ops internals.  Specifically, BUG if
+	  a paravirt_op is missing when it is called.
+
+config PARAVIRT_SPINLOCKS
+	bool "Paravirtualization layer for spinlocks"
+	depends on PARAVIRT && SMP
+	select UNINLINE_SPIN_UNLOCK
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Paravirtualized spinlocks allow a pvops backend to replace the
 	  spinlock implementation with something virtualization-friendly
 	  (for example, block the virtual CPU rather than spinning).
 
+<<<<<<< HEAD
 	  Unfortunately the downside is an up to 5% performance hit on
 	  native kernels, with various workloads.
 
@@ -732,6 +1064,54 @@ config PARAVIRT_DEBUG
 	---help---
 	  Enable to debug paravirt_ops internals.  Specifically, BUG if
 	  a paravirt_op is missing when it is called.
+=======
+	  It has a minimal impact on native kernels and gives a nice performance
+	  benefit on paravirtualized KVM / Xen kernels.
+
+	  If you are unsure how to answer this question, answer Y.
+
+source "arch/x86/xen/Kconfig"
+
+config KVM_GUEST
+	bool "KVM Guest support (including kvmclock)"
+	depends on PARAVIRT
+	select PARAVIRT_CLOCK
+	default y
+	---help---
+	  This option enables various optimizations for running under the KVM
+	  hypervisor. It includes a paravirtualized clock, so that instead
+	  of relying on a PIT (or probably other) emulation by the
+	  underlying device model, the host provides the guest with
+	  timing infrastructure such as time of day, and system time
+
+config KVM_DEBUG_FS
+	bool "Enable debug information for KVM Guests in debugfs"
+	depends on KVM_GUEST && DEBUG_FS
+	default n
+	---help---
+	  This option enables collection of various statistics for KVM guest.
+	  Statistics are displayed in debugfs filesystem. Enabling this option
+	  may incur significant overhead.
+
+source "arch/x86/lguest/Kconfig"
+
+config PARAVIRT_TIME_ACCOUNTING
+	bool "Paravirtual steal time accounting"
+	depends on PARAVIRT
+	default n
+	---help---
+	  Select this option to enable fine granularity task steal time
+	  accounting. Time spent executing other tasks in parallel with
+	  the current vCPU is discounted from the vCPU power. To account for
+	  that, there can be a small performance impact.
+
+	  If in doubt, say N here.
+
+config PARAVIRT_CLOCK
+	bool
+
+endif #HYPERVISOR_GUEST
+>>>>>>> refs/remotes/origin/master
 
 config NO_BOOTMEM
 	def_bool y
@@ -754,10 +1134,14 @@ config X86_SUMMIT_NUMA
 config X86_CYCLONE_TIMER
 	def_bool y
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on X86_32_NON_STANDARD
 =======
 	depends on X86_SUMMIT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on X86_SUMMIT
+>>>>>>> refs/remotes/origin/master
 
 source "arch/x86/Kconfig.cpu"
 
@@ -786,14 +1170,20 @@ config HPET_EMULATE_RTC
 
 config APB_TIMER
 <<<<<<< HEAD
+<<<<<<< HEAD
        def_bool y if MRST
        prompt "Langwell APB Timer Support" if X86_MRST
 =======
+=======
+>>>>>>> refs/remotes/origin/master
        def_bool y if X86_INTEL_MID
        prompt "Intel MID APB Timer Support" if X86_INTEL_MID
        select DW_APB_TIMER
        depends on X86_INTEL_MID && SFI
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
        help
          APB timer is the replacement for 8254, HPET on X86 MID platforms.
          The APBT provides a stable time base on SMP
@@ -813,6 +1203,7 @@ config DMI
 	  BIOS code.
 
 config GART_IOMMU
+<<<<<<< HEAD
 	bool "GART IOMMU support" if EXPERT
 	default y
 	select SWIOTLB
@@ -827,11 +1218,36 @@ config GART_IOMMU
 	  The code is only active when needed (enough memory and limited
 	  device) unless CONFIG_IOMMU_DEBUG or iommu=force is specified
 	  too.
+=======
+	bool "Old AMD GART IOMMU support"
+	select SWIOTLB
+	depends on X86_64 && PCI && AMD_NB
+	---help---
+	  Provides a driver for older AMD Athlon64/Opteron/Turion/Sempron
+	  GART based hardware IOMMUs.
+
+	  The GART supports full DMA access for devices with 32-bit access
+	  limitations, on systems with more than 3 GB. This is usually needed
+	  for USB, sound, many IDE/SATA chipsets and some other devices.
+
+	  Newer systems typically have a modern AMD IOMMU, supported via
+	  the CONFIG_AMD_IOMMU=y config option.
+
+	  In normal configurations this driver is only active when needed:
+	  there's more than 3 GB of memory and the system contains a
+	  32-bit limited device.
+
+	  If unsure, say Y.
+>>>>>>> refs/remotes/origin/master
 
 config CALGARY_IOMMU
 	bool "IBM Calgary IOMMU support"
 	select SWIOTLB
+<<<<<<< HEAD
 	depends on X86_64 && PCI && EXPERIMENTAL
+=======
+	depends on X86_64 && PCI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Support for hardware IOMMUs in IBM's xSeries x366 and x460
 	  systems. Needed to run systems with more than 3GB of memory
@@ -857,6 +1273,7 @@ config CALGARY_IOMMU_ENABLED_BY_DEFAULT
 	  Calgary anyway, pass 'iommu=calgary' on the kernel command line.
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config AMD_IOMMU
 	bool "AMD IOMMU support"
@@ -887,11 +1304,14 @@ config AMD_IOMMU_STATS
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # need this always selected by IOMMU for the VIA workaround
 config SWIOTLB
 	def_bool y if X86_64
 	---help---
 	  Support for software bounce buffers used on x86-64 systems
+<<<<<<< HEAD
 	  which don't have a hardware IOMMU (e.g. the current generation
 	  of Intel's x86-64 CPUs). Using this PCI devices which can only
 	  access 32-bits of memory can be used on systems with more than
@@ -909,6 +1329,20 @@ config IOMMU_API
 config MAXSMP
 	bool "Enable Maximum number of SMP Processors and NUMA Nodes"
 	depends on X86_64 && SMP && DEBUG_KERNEL && EXPERIMENTAL
+=======
+	  which don't have a hardware IOMMU. Using this PCI devices
+	  which can only access 32-bits of memory can be used on systems
+	  with more than 3 GB of memory.
+	  If unsure, say Y.
+
+config IOMMU_HELPER
+	def_bool y
+	depends on CALGARY_IOMMU || GART_IOMMU || SWIOTLB || AMD_IOMMU
+
+config MAXSMP
+	bool "Enable Maximum number of SMP Processors and NUMA Nodes"
+	depends on X86_64 && SMP && DEBUG_KERNEL
+>>>>>>> refs/remotes/origin/master
 	select CPUMASK_OFFSTACK
 	---help---
 	  Enable maximum number of CPUS and NUMA Nodes for this architecture.
@@ -917,14 +1351,26 @@ config MAXSMP
 config NR_CPUS
 	int "Maximum number of CPUs" if SMP && !MAXSMP
 	range 2 8 if SMP && X86_32 && !X86_BIGSMP
+<<<<<<< HEAD
 	range 2 512 if SMP && !MAXSMP
 	default "1" if !SMP
 	default "4096" if MAXSMP
+=======
+	range 2 512 if SMP && !MAXSMP && !CPUMASK_OFFSTACK
+	range 2 8192 if SMP && !MAXSMP && CPUMASK_OFFSTACK && X86_64
+	default "1" if !SMP
+	default "8192" if MAXSMP
+>>>>>>> refs/remotes/origin/master
 	default "32" if SMP && (X86_NUMAQ || X86_SUMMIT || X86_BIGSMP || X86_ES7000)
 	default "8" if SMP
 	---help---
 	  This allows you to specify the maximum number of CPUs which this
+<<<<<<< HEAD
 	  kernel will support.  The maximum supported value is 512 and the
+=======
+	  kernel will support.  If CPUMASK_OFFSTACK is enabled, the maximum
+	  supported value is 4096, otherwise the maximum value is 512.  The
+>>>>>>> refs/remotes/origin/master
 	  minimum value which makes sense is 2.
 
 	  This is purely to save memory - each supported CPU adds
@@ -948,6 +1394,7 @@ config SCHED_MC
 	  making when dealing with multi-core CPU chips at a cost of slightly
 	  increased overhead in some places. If unsure say N here.
 
+<<<<<<< HEAD
 config IRQ_TIME_ACCOUNTING
 	bool "Fine granularity task level IRQ time accounting"
 	default n
@@ -959,11 +1406,17 @@ config IRQ_TIME_ACCOUNTING
 
 	  If in doubt, say N here.
 
+=======
+>>>>>>> refs/remotes/origin/master
 source "kernel/Kconfig.preempt"
 
 config X86_UP_APIC
 	bool "Local APIC support on uniprocessors"
+<<<<<<< HEAD
 	depends on X86_32 && !SMP && !X86_32_NON_STANDARD
+=======
+	depends on X86_32 && !SMP && !X86_32_NON_STANDARD && !PCI_MSI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  A local APIC (Advanced Programmable Interrupt Controller) is an
 	  integrated interrupt controller in the CPU. If you have a single-CPU
@@ -988,11 +1441,19 @@ config X86_UP_IOAPIC
 
 config X86_LOCAL_APIC
 	def_bool y
+<<<<<<< HEAD
 	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC
 
 config X86_IO_APIC
 	def_bool y
 	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_IOAPIC
+=======
+	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_APIC || PCI_MSI
+
+config X86_IO_APIC
+	def_bool y
+	depends on X86_64 || SMP || X86_32_NON_STANDARD || X86_UP_IOAPIC || PCI_MSI
+>>>>>>> refs/remotes/origin/master
 
 config X86_VISWS_APIC
 	def_bool y
@@ -1023,6 +1484,10 @@ config X86_REROUTE_FOR_BROKEN_BOOT_IRQS
 
 config X86_MCE
 	bool "Machine Check / overheating reporting"
+<<<<<<< HEAD
+=======
+	default y
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Machine Check support allows the processor to notify the
 	  kernel if it detects a problem (e.g. overheating, data corruption).
@@ -1134,6 +1599,7 @@ config X86_REBOOTFIXUPS
 	  Say N otherwise.
 
 config MICROCODE
+<<<<<<< HEAD
 	tristate "/dev/cpu/microcode - microcode support"
 	select FW_LOADER
 	---help---
@@ -1144,15 +1610,36 @@ config MICROCODE
 	  0x11 processors, e.g. Opteron, Phenom and Turion 64 Ultra.
 	  You will obviously need the actual microcode binary data itself
 	  which is not shipped with the Linux kernel.
+=======
+	tristate "CPU microcode loading support"
+	depends on CPU_SUP_AMD || CPU_SUP_INTEL
+	select FW_LOADER
+	---help---
+
+	  If you say Y here, you will be able to update the microcode on
+	  certain Intel and AMD processors. The Intel support is for the
+	  IA32 family, e.g. Pentium Pro, Pentium II, Pentium III, Pentium 4,
+	  Xeon etc. The AMD support is for families 0x10 and later. You will
+	  obviously need the actual microcode binary data itself which is not
+	  shipped with the Linux kernel.
+>>>>>>> refs/remotes/origin/master
 
 	  This option selects the general module only, you need to select
 	  at least one vendor specific module as well.
 
+<<<<<<< HEAD
 	  To compile this driver as a module, choose M here: the
 	  module will be called microcode.
 
 config MICROCODE_INTEL
 	bool "Intel microcode patch loading support"
+=======
+	  To compile this driver as a module, choose M here: the module
+	  will be called microcode.
+
+config MICROCODE_INTEL
+	bool "Intel microcode loading support"
+>>>>>>> refs/remotes/origin/master
 	depends on MICROCODE
 	default MICROCODE
 	select FW_LOADER
@@ -1165,7 +1652,11 @@ config MICROCODE_INTEL
 	  <http://www.urbanmyth.org/microcode/>.
 
 config MICROCODE_AMD
+<<<<<<< HEAD
 	bool "AMD microcode patch loading support"
+=======
+	bool "AMD microcode loading support"
+>>>>>>> refs/remotes/origin/master
 	depends on MICROCODE
 	select FW_LOADER
 	---help---
@@ -1176,6 +1667,27 @@ config MICROCODE_OLD_INTERFACE
 	def_bool y
 	depends on MICROCODE
 
+<<<<<<< HEAD
+=======
+config MICROCODE_INTEL_EARLY
+	def_bool n
+
+config MICROCODE_AMD_EARLY
+	def_bool n
+
+config MICROCODE_EARLY
+	bool "Early load microcode"
+	depends on MICROCODE=y && BLK_DEV_INITRD
+	select MICROCODE_INTEL_EARLY if MICROCODE_INTEL
+	select MICROCODE_AMD_EARLY if MICROCODE_AMD
+	default y
+	help
+	  This option provides functionality to read additional microcode data
+	  at the beginning of initrd image. The data tells kernel to load
+	  microcode to CPU's as early as possible. No functional change if no
+	  microcode data is glued to the initrd, therefore it's safe to say Y.
+
+>>>>>>> refs/remotes/origin/master
 config X86_MSR
 	tristate "/dev/cpu/*/msr - Model-specific register support"
 	---help---
@@ -1245,7 +1757,11 @@ config HIGHMEM4G
 
 config HIGHMEM64G
 	bool "64GB"
+<<<<<<< HEAD
 	depends on !M386 && !M486
+=======
+	depends on !M486
+>>>>>>> refs/remotes/origin/master
 	select X86_PAE
 	---help---
 	  Select this if you have a 32-bit processor and more than 4
@@ -1254,7 +1770,10 @@ config HIGHMEM64G
 endchoice
 
 choice
+<<<<<<< HEAD
 	depends on EXPERIMENTAL
+=======
+>>>>>>> refs/remotes/origin/master
 	prompt "Memory split" if EXPERT
 	default VMSPLIT_3G
 	depends on X86_32
@@ -1311,10 +1830,19 @@ config X86_PAE
 	  consumes more pagetable space per process.
 
 config ARCH_PHYS_ADDR_T_64BIT
+<<<<<<< HEAD
 	def_bool X86_64 || X86_PAE
 
 config ARCH_DMA_ADDR_T_64BIT
 	def_bool X86_64 || HIGHMEM64G
+=======
+	def_bool y
+	depends on X86_64 || X86_PAE
+
+config ARCH_DMA_ADDR_T_64BIT
+	def_bool y
+	depends on X86_64 || HIGHMEM64G
+>>>>>>> refs/remotes/origin/master
 
 config DIRECT_GBPAGES
 	bool "Enable 1GB pages for kernel pagetables" if EXPERT
@@ -1329,7 +1857,11 @@ config DIRECT_GBPAGES
 config NUMA
 	bool "Numa Memory Allocation and Scheduler Support"
 	depends on SMP
+<<<<<<< HEAD
 	depends on X86_64 || (X86_32 && HIGHMEM64G && (X86_NUMAQ || X86_BIGSMP || X86_SUMMIT && ACPI) && EXPERIMENTAL)
+=======
+	depends on X86_64 || (X86_32 && HIGHMEM64G && (X86_NUMAQ || X86_BIGSMP || X86_SUMMIT && ACPI))
+>>>>>>> refs/remotes/origin/master
 	default y if (X86_NUMAQ || X86_SUMMIT || X86_BIGSMP)
 	---help---
 	  Enable NUMA (Non Uniform Memory Access) support.
@@ -1398,10 +1930,13 @@ config NODES_SHIFT
 	  Specify the maximum number of NUMA Nodes available on the target
 	  system.  Increases memory reserved to accommodate various tables.
 
+<<<<<<< HEAD
 config HAVE_ARCH_BOOTMEM
 	def_bool y
 	depends on X86_32 && NUMA
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_HAVE_MEMORY_PRESENT
 	def_bool y
 	depends on X86_32 && DISCONTIGMEM
@@ -1424,7 +1959,11 @@ config ARCH_DISCONTIGMEM_DEFAULT
 
 config ARCH_SPARSEMEM_ENABLE
 	def_bool y
+<<<<<<< HEAD
 	depends on X86_64 || NUMA || (EXPERIMENTAL && X86_32) || X86_32_NON_STANDARD
+=======
+	depends on X86_64 || NUMA || X86_32 || X86_32_NON_STANDARD
+>>>>>>> refs/remotes/origin/master
 	select SPARSEMEM_STATIC if X86_32
 	select SPARSEMEM_VMEMMAP_ENABLE if X86_64
 
@@ -1437,8 +1976,17 @@ config ARCH_SELECT_MEMORY_MODEL
 	depends on ARCH_SPARSEMEM_ENABLE
 
 config ARCH_MEMORY_PROBE
+<<<<<<< HEAD
 	def_bool X86_64
 	depends on MEMORY_HOTPLUG
+=======
+	bool "Enable sysfs memory/probe interface"
+	depends on X86_64 && MEMORY_HOTPLUG
+	help
+	  This option enables a sysfs memory/probe interface for testing.
+	  See Documentation/memory-hotplug.txt for more information.
+	  If you are unsure how to answer this question, answer N.
+>>>>>>> refs/remotes/origin/master
 
 config ARCH_PROC_KCORE_TEXT
 	def_bool y
@@ -1639,9 +2187,27 @@ config ARCH_RANDOM
 	  If supported, this is a high bandwidth, cryptographically
 	  secure hardware random number generator.
 
+<<<<<<< HEAD
 config EFI
 	bool "EFI runtime service support"
 	depends on ACPI
+=======
+config X86_SMAP
+	def_bool y
+	prompt "Supervisor Mode Access Prevention" if EXPERT
+	---help---
+	  Supervisor Mode Access Prevention (SMAP) is a security
+	  feature in newer Intel processors.  There is a small
+	  performance cost if this enabled and turned on; there is
+	  also a small increase in the kernel size if this is enabled.
+
+	  If unsure, say Y.
+
+config EFI
+	bool "EFI runtime service support"
+	depends on ACPI
+	select UCS2_STRING
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This enables the kernel to use EFI runtime services that are
 	  available (such as the EFI variable services).
@@ -1654,7 +2220,10 @@ config EFI
 	  platforms.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config EFI_STUB
        bool "EFI stub support"
        depends on EFI
@@ -1662,7 +2231,12 @@ config EFI_STUB
           This kernel feature allows a bzImage to be loaded directly
 	  by EFI firmware without the use of a bootloader.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  See Documentation/efi-stub.txt for more information.
+
+>>>>>>> refs/remotes/origin/master
 config SECCOMP
 	def_bool y
 	prompt "Enable seccomp to safely compute untrusted bytecode"
@@ -1679,6 +2253,7 @@ config SECCOMP
 
 	  If unsure, say Y. Only embedded should say N here.
 
+<<<<<<< HEAD
 config CC_STACKPROTECTOR
 	bool "Enable -fstack-protector buffer overflow detection (EXPERIMENTAL)"
 	---help---
@@ -1695,6 +2270,8 @@ config CC_STACKPROTECTOR
 	  detected and for those versions, this configuration option is
 	  ignored. (and a warning is printed during bootup)
 
+=======
+>>>>>>> refs/remotes/origin/master
 source kernel/Kconfig.hz
 
 config KEXEC
@@ -1709,9 +2286,15 @@ config KEXEC
 
 	  It is an ongoing process to be certain the hardware in a machine
 	  is properly shutdown, so do not be surprised if this code does not
+<<<<<<< HEAD
 	  initially work for you.  It may help to enable device hotplugging
 	  support.  As of this writing the exact hardware interface is
 	  strongly in flux, so no good recommendation can be made.
+=======
+	  initially work for you.  As of this writing the exact hardware
+	  interface is strongly in flux, so no good recommendation can be
+	  made.
+>>>>>>> refs/remotes/origin/master
 
 config CRASH_DUMP
 	bool "kernel crash dumps"
@@ -1728,8 +2311,12 @@ config CRASH_DUMP
 	  For more details see Documentation/kdump/kdump.txt
 
 config KEXEC_JUMP
+<<<<<<< HEAD
 	bool "kexec jump (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	bool "kexec jump"
+>>>>>>> refs/remotes/origin/master
 	depends on KEXEC && HIBERNATION
 	---help---
 	  Jump between original kernel and kexeced kernel and invoke
@@ -1791,6 +2378,7 @@ config RELOCATABLE
 
 	  Note: If CONFIG_RELOCATABLE=y, then the kernel runs from the address
 	  it has been loaded at and the compile time physical address
+<<<<<<< HEAD
 	  (CONFIG_PHYSICAL_START) is ignored.
 
 # Relocation on x86-32 needs some additional build support
@@ -1802,6 +2390,71 @@ config PHYSICAL_ALIGN
 	hex "Alignment value to which kernel should be aligned" if X86_32
 	default "0x1000000"
 	range 0x2000 0x1000000
+=======
+	  (CONFIG_PHYSICAL_START) is used as the minimum location.
+
+config RANDOMIZE_BASE
+	bool "Randomize the address of the kernel image"
+	depends on RELOCATABLE
+	depends on !HIBERNATION
+	default n
+	---help---
+	   Randomizes the physical and virtual address at which the
+	   kernel image is decompressed, as a security feature that
+	   deters exploit attempts relying on knowledge of the location
+	   of kernel internals.
+
+	   Entropy is generated using the RDRAND instruction if it is
+	   supported. If RDTSC is supported, it is used as well. If
+	   neither RDRAND nor RDTSC are supported, then randomness is
+	   read from the i8254 timer.
+
+	   The kernel will be offset by up to RANDOMIZE_BASE_MAX_OFFSET,
+	   and aligned according to PHYSICAL_ALIGN. Since the kernel is
+	   built using 2GiB addressing, and PHYSICAL_ALGIN must be at a
+	   minimum of 2MiB, only 10 bits of entropy is theoretically
+	   possible. At best, due to page table layouts, 64-bit can use
+	   9 bits of entropy and 32-bit uses 8 bits.
+
+	   If unsure, say N.
+
+config RANDOMIZE_BASE_MAX_OFFSET
+	hex "Maximum kASLR offset allowed" if EXPERT
+	depends on RANDOMIZE_BASE
+	range 0x0 0x20000000 if X86_32
+	default "0x20000000" if X86_32
+	range 0x0 0x40000000 if X86_64
+	default "0x40000000" if X86_64
+	---help---
+	  The lesser of RANDOMIZE_BASE_MAX_OFFSET and available physical
+	  memory is used to determine the maximal offset in bytes that will
+	  be applied to the kernel when kernel Address Space Layout
+	  Randomization (kASLR) is active. This must be a multiple of
+	  PHYSICAL_ALIGN.
+
+	  On 32-bit this is limited to 512MiB by page table layouts. The
+	  default is 512MiB.
+
+	  On 64-bit this is limited by how the kernel fixmap page table is
+	  positioned, so this cannot be larger than 1GiB currently. Without
+	  RANDOMIZE_BASE, there is a 512MiB to 1.5GiB split between kernel
+	  and modules. When RANDOMIZE_BASE_MAX_OFFSET is above 512MiB, the
+	  modules area will shrink to compensate, up to the current maximum
+	  1GiB to 1GiB split. The default is 1GiB.
+
+	  If unsure, leave at the default value.
+
+# Relocation on x86 needs some additional build support
+config X86_NEED_RELOCS
+	def_bool y
+	depends on RANDOMIZE_BASE || (X86_32 && RELOCATABLE)
+
+config PHYSICAL_ALIGN
+	hex "Alignment value to which kernel should be aligned"
+	default "0x200000"
+	range 0x2000 0x1000000 if X86_32
+	range 0x200000 0x1000000 if X86_64
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This value puts the alignment restrictions on physical address
 	  where kernel is loaded and run from. Kernel is compiled for an
@@ -1819,11 +2472,21 @@ config PHYSICAL_ALIGN
 	  end result is that kernel runs from a physical address meeting
 	  above alignment restrictions.
 
+<<<<<<< HEAD
+=======
+	  On 32-bit this value must be a multiple of 0x2000. On 64-bit
+	  this value must be a multiple of 0x200000.
+
+>>>>>>> refs/remotes/origin/master
 	  Don't change this unless you know what you are doing.
 
 config HOTPLUG_CPU
 	bool "Support for hot-pluggable CPUs"
+<<<<<<< HEAD
 	depends on SMP && HOTPLUG
+=======
+	depends on SMP
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Say Y here to allow turning CPUs off and on. CPUs can be
 	  controlled through /sys/devices/system/cpu.
@@ -1831,6 +2494,53 @@ config HOTPLUG_CPU
 	    automatically on SMP systems. )
 	  Say N if you want to disable CPU hotplug.
 
+<<<<<<< HEAD
+=======
+config BOOTPARAM_HOTPLUG_CPU0
+	bool "Set default setting of cpu0_hotpluggable"
+	default n
+	depends on HOTPLUG_CPU
+	---help---
+	  Set whether default state of cpu0_hotpluggable is on or off.
+
+	  Say Y here to enable CPU0 hotplug by default. If this switch
+	  is turned on, there is no need to give cpu0_hotplug kernel
+	  parameter and the CPU0 hotplug feature is enabled by default.
+
+	  Please note: there are two known CPU0 dependencies if you want
+	  to enable the CPU0 hotplug feature either by this switch or by
+	  cpu0_hotplug kernel parameter.
+
+	  First, resume from hibernate or suspend always starts from CPU0.
+	  So hibernate and suspend are prevented if CPU0 is offline.
+
+	  Second dependency is PIC interrupts always go to CPU0. CPU0 can not
+	  offline if any interrupt can not migrate out of CPU0. There may
+	  be other CPU0 dependencies.
+
+	  Please make sure the dependencies are under your control before
+	  you enable this feature.
+
+	  Say N if you don't want to enable CPU0 hotplug feature by default.
+	  You still can enable the CPU0 hotplug feature at boot by kernel
+	  parameter cpu0_hotplug.
+
+config DEBUG_HOTPLUG_CPU0
+	def_bool n
+	prompt "Debug CPU0 hotplug"
+	depends on HOTPLUG_CPU
+	---help---
+	  Enabling this option offlines CPU0 (if CPU0 can be offlined) as
+	  soon as possible and boots up userspace with CPU0 offlined. User
+	  can online CPU0 back after boot time.
+
+	  To debug CPU0 hotplug, you need to enable CPU0 offline/online
+	  feature by either turning on CONFIG_BOOTPARAM_HOTPLUG_CPU0 during
+	  compilation or giving cpu0_hotplug kernel parameter at boot.
+
+	  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config COMPAT_VDSO
 	def_bool y
 	prompt "Compat VDSO support"
@@ -1901,6 +2611,13 @@ config USE_PERCPU_NUMA_NODE_ID
 	def_bool y
 	depends on NUMA
 
+<<<<<<< HEAD
+=======
+config ARCH_ENABLE_SPLIT_PMD_PTLOCK
+	def_bool y
+	depends on X86_64 || X86_PAE
+
+>>>>>>> refs/remotes/origin/master
 menu "Power management and ACPI options"
 
 config ARCH_HIBERNATION_HEADER
@@ -1916,10 +2633,14 @@ source "drivers/sfi/Kconfig"
 config X86_APM_BOOT
 	def_bool y
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on APM || APM_MODULE
 =======
 	depends on APM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on APM
+>>>>>>> refs/remotes/origin/master
 
 menuconfig APM
 	tristate "APM (Advanced Power Management) BIOS support"
@@ -1940,12 +2661,17 @@ menuconfig APM
 
 	  In order to use APM, you will need supporting software. For location
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  and more information, read <file:Documentation/power/pm.txt> and the
 	  Battery Powered Linux mini-HOWTO, available from
 =======
 	  and more information, read <file:Documentation/power/apm-acpi.txt>
 	  and the Battery Powered Linux mini-HOWTO, available from
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  and more information, read <file:Documentation/power/apm-acpi.txt>
+	  and the Battery Powered Linux mini-HOWTO, available from
+>>>>>>> refs/remotes/origin/master
 	  <http://www.tldp.org/docs.html#howto>.
 
 	  This driver does not spin down disk drives (see the hdparm(8)
@@ -2012,6 +2738,10 @@ config APM_DO_ENABLE
 	  this feature.
 
 config APM_CPU_IDLE
+<<<<<<< HEAD
+=======
+	depends on CPU_IDLE
+>>>>>>> refs/remotes/origin/master
 	bool "Make CPU Idle calls when idle"
 	---help---
 	  Enable calls to APM CPU Idle/CPU Busy inside the kernel's idle loop.
@@ -2061,7 +2791,10 @@ menu "Bus options (PCI etc.)"
 config PCI
 	bool "PCI support"
 	default y
+<<<<<<< HEAD
 	select ARCH_SUPPORTS_MSI if (X86_LOCAL_APIC && X86_IO_APIC)
+=======
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Find out whether you have a PCI motherboard. PCI is the name of a
 	  bus system, i.e. the way the CPU talks to the other stuff inside
@@ -2113,10 +2846,14 @@ config PCI_BIOS
 config PCI_DIRECT
 	def_bool y
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on PCI && (X86_64 || (PCI_GODIRECT || PCI_GOANY || PCI_GOOLPC))
 =======
 	depends on PCI && (X86_64 || (PCI_GODIRECT || PCI_GOANY || PCI_GOOLPC || PCI_GOMMCONFIG))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on PCI && (X86_64 || (PCI_GODIRECT || PCI_GOANY || PCI_GOOLPC || PCI_GOMMCONFIG))
+>>>>>>> refs/remotes/origin/master
 
 config PCI_MMCONFIG
 	def_bool y
@@ -2141,8 +2878,12 @@ config PCI_MMCONFIG
 
 config PCI_CNB20LE_QUIRK
 	bool "Read CNB20LE Host Bridge Windows" if EXPERT
+<<<<<<< HEAD
 	default n
 	depends on PCI && EXPERIMENTAL
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	help
 	  Read the PCI windows out of the CNB20LE host bridge. This allows
 	  PCI hotplug to work on systems with the CNB20LE chipset which do
@@ -2153,6 +2894,7 @@ config PCI_CNB20LE_QUIRK
 
 	  You should say N unless you know you need this.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config DMAR
 	bool "Support for DMA Remapping Devices (EXPERIMENTAL)"
@@ -2205,6 +2947,8 @@ config INTR_REMAP
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 source "drivers/pci/pcie/Kconfig"
 
 source "drivers/pci/Kconfig"
@@ -2246,6 +2990,7 @@ config EISA
 
 source "drivers/eisa/Kconfig"
 
+<<<<<<< HEAD
 config MCA
 	bool "MCA support"
 	---help---
@@ -2256,6 +3001,8 @@ config MCA
 
 source "drivers/mca/Kconfig"
 
+=======
+>>>>>>> refs/remotes/origin/master
 config SCx200
 	tristate "NatSemi SCx200 support"
 	---help---
@@ -2284,13 +3031,18 @@ config OLPC
 	select OF
 	select OF_PROMTREE
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select IRQ_DOMAIN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select IRQ_DOMAIN
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Add support for detecting the unique features of the OLPC
 	  XO hardware.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config OLPC_XO1
 	tristate "OLPC XO-1 support"
@@ -2298,6 +3050,8 @@ config OLPC_XO1
 	---help---
 	  Add support for non-essential features of the OLPC XO-1 laptop.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config OLPC_XO1_PM
 	bool "OLPC XO-1 Power Management"
 	depends on OLPC && MFD_CS5535 && PM_SLEEP
@@ -2315,6 +3069,10 @@ config OLPC_XO1_RTC
 config OLPC_XO1_SCI
 	bool "OLPC XO-1 SCI extras"
 	depends on OLPC && OLPC_XO1_PM
+<<<<<<< HEAD
+=======
+	depends on INPUT=y
+>>>>>>> refs/remotes/origin/master
 	select POWER_SUPPLY
 	select GPIO_CS5535
 	select MFD_CORE
@@ -2363,7 +3121,19 @@ config GEOS
 	depends on DMI
 	---help---
 	  This option enables system support for the Traverse Technologies GEOS.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+config TS5500
+	bool "Technologic Systems TS-5500 platform support"
+	depends on MELAN
+	select CHECK_SIGNATURE
+	select NEW_LEDS
+	select LEDS_CLASS
+	---help---
+	  This option enables system support for the Technologic Systems TS-5500.
+>>>>>>> refs/remotes/origin/master
 
 endif # X86_32
 
@@ -2376,15 +3146,52 @@ source "drivers/pcmcia/Kconfig"
 source "drivers/pci/hotplug/Kconfig"
 
 config RAPIDIO
+<<<<<<< HEAD
 	bool "RapidIO support"
 	depends on PCI
 	default n
 	help
 	  If you say Y here, the kernel will include drivers and
+=======
+	tristate "RapidIO support"
+	depends on PCI
+	default n
+	help
+	  If enabled this option will include drivers and the core
+>>>>>>> refs/remotes/origin/master
 	  infrastructure code to support RapidIO interconnect devices.
 
 source "drivers/rapidio/Kconfig"
 
+<<<<<<< HEAD
+=======
+config X86_SYSFB
+	bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
+	help
+	  Firmwares often provide initial graphics framebuffers so the BIOS,
+	  bootloader or kernel can show basic video-output during boot for
+	  user-guidance and debugging. Historically, x86 used the VESA BIOS
+	  Extensions and EFI-framebuffers for this, which are mostly limited
+	  to x86.
+	  This option, if enabled, marks VGA/VBE/EFI framebuffers as generic
+	  framebuffers so the new generic system-framebuffer drivers can be
+	  used on x86. If the framebuffer is not compatible with the generic
+	  modes, it is adverticed as fallback platform framebuffer so legacy
+	  drivers like efifb, vesafb and uvesafb can pick it up.
+	  If this option is not selected, all system framebuffers are always
+	  marked as fallback platform framebuffers as usual.
+
+	  Note: Legacy fbdev drivers, including vesafb, efifb, uvesafb, will
+	  not be able to pick up generic system framebuffers if this option
+	  is selected. You are highly encouraged to enable simplefb as
+	  replacement if you select this option. simplefb can correctly deal
+	  with generic system framebuffers. But you should still keep vesafb
+	  and others enabled as fallback if a system framebuffer is
+	  incompatible with simplefb.
+
+	  If unsure, say Y.
+
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 
@@ -2395,6 +3202,7 @@ source "fs/Kconfig.binfmt"
 config IA32_EMULATION
 	bool "IA32 Emulation"
 	depends on X86_64
+<<<<<<< HEAD
 	select COMPAT_BINFMT_ELF
 	---help---
 <<<<<<< HEAD
@@ -2406,6 +3214,15 @@ config IA32_EMULATION
 	  64-bit kernel. You should likely turn this on, unless you're
 	  100% sure that you don't have any 32-bit programs left.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select BINFMT_ELF
+	select COMPAT_BINFMT_ELF
+	select HAVE_UID16
+	---help---
+	  Include code to run legacy 32-bit programs under a
+	  64-bit kernel. You should likely turn this on, unless you're
+	  100% sure that you don't have any 32-bit programs left.
+>>>>>>> refs/remotes/origin/master
 
 config IA32_AOUT
 	tristate "IA32 a.out support"
@@ -2414,6 +3231,7 @@ config IA32_AOUT
 	  Support old a.out binaries in the 32bit emulation.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config COMPAT
 	def_bool y
 	depends on IA32_EMULATION
@@ -2421,6 +3239,11 @@ config COMPAT
 config X86_X32
 	bool "x32 ABI for 64-bit mode (EXPERIMENTAL)"
 	depends on X86_64 && IA32_EMULATION && EXPERIMENTAL
+=======
+config X86_X32
+	bool "x32 ABI for 64-bit mode"
+	depends on X86_64 && IA32_EMULATION
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Include code to run binaries for the x32 native 32-bit ABI
 	  for 64-bit processors.  An x32 process gets access to the
@@ -2435,6 +3258,7 @@ config COMPAT
 	def_bool y
 	depends on IA32_EMULATION || X86_X32
 	select ARCH_WANT_OLD_COMPAT_IPC
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 config COMPAT_FOR_U64_ALIGNMENT
@@ -2449,6 +3273,21 @@ config KEYS_COMPAT
 	bool
 	depends on COMPAT && KEYS
 	default y
+=======
+
+if COMPAT
+config COMPAT_FOR_U64_ALIGNMENT
+	def_bool y
+
+config SYSVIPC_COMPAT
+	def_bool y
+	depends on SYSVIPC
+
+config KEYS_COMPAT
+	def_bool y
+	depends on KEYS
+endif
+>>>>>>> refs/remotes/origin/master
 
 endmenu
 
@@ -2457,9 +3296,27 @@ config HAVE_ATOMIC_IOMAP
 	def_bool y
 	depends on X86_32
 
+<<<<<<< HEAD
 config HAVE_TEXT_POKE_SMP
 	bool
 	select STOP_MACHINE if SMP
+=======
+config X86_DEV_DMA_OPS
+	bool
+	depends on X86_64 || STA2X11
+
+config X86_DMA_REMAP
+	bool
+	depends on STA2X11
+
+config IOSF_MBI
+	bool
+	depends on PCI
+	---help---
+	  To be selected by modules requiring access to the Intel OnChip System
+	  Fabric (IOSF) Sideband MailBox Interface (MBI). For MBI platforms
+	  enumerable by PCI.
+>>>>>>> refs/remotes/origin/master
 
 source "net/Kconfig"
 

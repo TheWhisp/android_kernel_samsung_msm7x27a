@@ -3,6 +3,9 @@
 #
 
 obj-$(CONFIG_IIO_PERIODIC_RTC_TRIGGER) += iio-trig-periodic-rtc.o
+<<<<<<< HEAD
 obj-$(CONFIG_IIO_GPIO_TRIGGER) += iio-trig-gpio.o
 obj-$(CONFIG_IIO_SYSFS_TRIGGER) += iio-trig-sysfs.o
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_IIO_BFIN_TMR_TRIGGER) += iio-trig-bfin-timer.o

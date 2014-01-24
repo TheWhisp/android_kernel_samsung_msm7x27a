@@ -85,11 +85,19 @@ void __cvmx_interrupt_gmxx_enable(int interface)
 	if (OCTEON_IS_MODEL(OCTEON_CN56XX) || OCTEON_IS_MODEL(OCTEON_CN52XX)) {
 		if (mode.s.en) {
 			switch (mode.cn56xx.mode) {
+<<<<<<< HEAD
 			case 1:	/* XAUI */
 				num_ports = 1;
 				break;
 			case 2:	/* SGMII */
 			case 3:	/* PICMG */
+=======
+			case 1: /* XAUI */
+				num_ports = 1;
+				break;
+			case 2: /* SGMII */
+			case 3: /* PICMG */
+>>>>>>> refs/remotes/origin/master
 				num_ports = 4;
 				break;
 			default:	/* Disabled */
@@ -130,7 +138,11 @@ void __cvmx_interrupt_gmxx_enable(int interface)
 	if (num_ports) {
 		if (OCTEON_IS_MODEL(OCTEON_CN38XX)
 		    || OCTEON_IS_MODEL(OCTEON_CN58XX))
+<<<<<<< HEAD
 			gmx_tx_int_en.s.ncb_nxa = 1;
+=======
+			gmx_tx_int_en.cn38xx.ncb_nxa = 1;
+>>>>>>> refs/remotes/origin/master
 		gmx_tx_int_en.s.pko_nxa = 1;
 	}
 	gmx_tx_int_en.s.undflw = (1 << num_ports) - 1;

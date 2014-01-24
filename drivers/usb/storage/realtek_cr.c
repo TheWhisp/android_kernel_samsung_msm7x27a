@@ -25,12 +25,16 @@
 #include <linux/kthread.h>
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/workqueue.h>
 #include <linux/kernel.h>
 #include <linux/version.h>
 =======
 #include <linux/kernel.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <scsi/scsi.h>
 #include <scsi/scsi_cmnd.h>
@@ -56,7 +60,10 @@ module_param(auto_delink_en, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(auto_delink_en, "enable auto delink");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_REALTEK_AUTOPM
 static int ss_en = 1;
 module_param(ss_en, int, S_IRUGO | S_IWUSR);
@@ -86,7 +93,10 @@ enum RTS51X_STAT {
 
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct rts51x_status {
 	u16 vid;
 	u16 pid;
@@ -107,6 +117,7 @@ struct rts51x_status {
 
 struct rts51x_chip {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16			vendor_id;
 	u16			product_id;
 	char			max_lun;
@@ -116,6 +127,8 @@ struct rts51x_chip {
 
 	u32			flag;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 vendor_id;
 	u16 product_id;
 	char max_lun;
@@ -124,8 +137,14 @@ struct rts51x_chip {
 	int status_len;
 
 	u32 flag;
+<<<<<<< HEAD
 #ifdef CONFIG_REALTEK_AUTOPM
 	struct us_data *us;
+=======
+	struct us_data *us;
+
+#ifdef CONFIG_REALTEK_AUTOPM
+>>>>>>> refs/remotes/origin/master
 	struct timer_list rts51x_suspend_timer;
 	unsigned long timer_expires;
 	int pwr_state;
@@ -135,7 +154,10 @@ struct rts51x_chip {
 #endif
 	/* used to back up the protocal choosen in probe1 phase */
 	proto_cmnd proto_handler_backup;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* flag definition */
@@ -156,10 +178,13 @@ struct rts51x_chip {
 #define RTS51X_GET_PID(chip)		((chip)->product_id)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FW_VERSION(chip)		((chip)->status[0].fw_ver)
 #define STATUS_LEN(chip)		((chip)->status_len)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define VENDOR_ID(chip)			((chip)->status[0].vid)
 #define PRODUCT_ID(chip)		((chip)->status[0].pid)
 #define FW_VERSION(chip)		((chip)->status[0].fw_ver)
@@ -168,7 +193,10 @@ struct rts51x_chip {
 #define STATUS_SUCCESS		0
 #define STATUS_FAIL		1
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Check card reader function */
 #define SUPPORT_DETAILED_TYPE1(chip)	\
 		CHK_BIT((chip)->status[0].function[0], 1)
@@ -189,6 +217,7 @@ struct rts51x_chip {
 		(CHECK_PID((chip), (pid)) && CHECK_FW_VER((chip), (fw_ver)))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define wait_timeout_x(task_state, msecs)	\
 do {						\
 	set_current_state((task_state));	\
@@ -200,6 +229,8 @@ do {						\
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int init_realtek_cr(struct us_data *us);
 
 /*
@@ -210,11 +241,16 @@ static int init_realtek_cr(struct us_data *us);
 		    initFunction, flags) \
 {\
 	USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
 	.driver_info = (flags)|(USB_US_TYPE_STOR<<24)\
+=======
+	.driver_info = (flags) \
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct usb_device_id realtek_cr_ids[] = {
 #	include "unusual_realtek.h"
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{ }		/* Terminating entry */
 };
@@ -223,6 +259,11 @@ static const struct usb_device_id realtek_cr_ids[] = {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{}			/* Terminating entry */
+};
+
+>>>>>>> refs/remotes/origin/master
 MODULE_DEVICE_TABLE(usb, realtek_cr_ids);
 
 #undef UNUSUAL_DEV
@@ -244,10 +285,14 @@ MODULE_DEVICE_TABLE(usb, realtek_cr_ids);
 static struct us_unusual_dev realtek_cr_unusual_dev_list[] = {
 #	include "unusual_realtek.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ }		/* Terminating entry */
 =======
 	{}			/* Terminating entry */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{}			/* Terminating entry */
+>>>>>>> refs/remotes/origin/master
 };
 
 #undef UNUSUAL_DEV
@@ -257,12 +302,17 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 				 enum dma_data_direction dir, int *act_len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
 	struct bulk_cs_wrap *bcs = (struct bulk_cs_wrap *) us->iobuf;
 =======
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *)us->iobuf;
 	struct bulk_cs_wrap *bcs = (struct bulk_cs_wrap *)us->iobuf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *)us->iobuf;
+	struct bulk_cs_wrap *bcs = (struct bulk_cs_wrap *)us->iobuf;
+>>>>>>> refs/remotes/origin/master
 	int result;
 	unsigned int residue;
 	unsigned int cswlen;
@@ -272,10 +322,14 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
 	bcb->DataTransferLength = cpu_to_le32(buf_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->Flags = (dir == DMA_FROM_DEVICE) ? 1 << 7 : 0;
 =======
 	bcb->Flags = (dir == DMA_FROM_DEVICE) ? US_BULK_FLAG_IN : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcb->Flags = (dir == DMA_FROM_DEVICE) ? US_BULK_FLAG_IN : 0;
+>>>>>>> refs/remotes/origin/master
 	bcb->Tag = ++us->tag;
 	bcb->Lun = lun;
 	bcb->Length = cmd_len;
@@ -287,10 +341,14 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 	/* send it to out endpoint */
 	result = usb_stor_bulk_transfer_buf(us, us->send_bulk_pipe,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				bcb, cbwlen, NULL);
 =======
 					    bcb, cbwlen, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    bcb, cbwlen, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (result != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
 
@@ -300,6 +358,7 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 	if (buf && buf_len) {
 		unsigned int pipe = (dir == DMA_FROM_DEVICE) ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 				us->recv_bulk_pipe : us->send_bulk_pipe;
 		result = usb_stor_bulk_transfer_buf(us, pipe,
 				buf, buf_len, NULL);
@@ -308,6 +367,11 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 		result = usb_stor_bulk_transfer_buf(us, pipe,
 						    buf, buf_len, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    us->recv_bulk_pipe : us->send_bulk_pipe;
+		result = usb_stor_bulk_transfer_buf(us, pipe,
+						    buf, buf_len, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (result == USB_STOR_XFER_ERROR)
 			return USB_STOR_TRANSPORT_ERROR;
 	}
@@ -315,15 +379,20 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 	/* get CSW for device status */
 	result = usb_stor_bulk_transfer_buf(us, us->recv_bulk_pipe,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				bcs, US_BULK_CS_WRAP_LEN, &cswlen);
 =======
 					    bcs, US_BULK_CS_WRAP_LEN, &cswlen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    bcs, US_BULK_CS_WRAP_LEN, &cswlen);
+>>>>>>> refs/remotes/origin/master
 	if (result != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
 
 	/* check bulk status */
 	if (bcs->Signature != cpu_to_le32(US_BULK_CS_SIGN)) {
+<<<<<<< HEAD
 		US_DEBUGP("Signature mismatch: got %08X, expecting %08X\n",
 <<<<<<< HEAD
 			  le32_to_cpu(bcs->Signature),
@@ -331,6 +400,10 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 =======
 			  le32_to_cpu(bcs->Signature), US_BULK_CS_SIGN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_stor_dbg(us, "Signature mismatch: got %08X, expecting %08X\n",
+			     le32_to_cpu(bcs->Signature), US_BULK_CS_SIGN);
+>>>>>>> refs/remotes/origin/master
 		return USB_STOR_TRANSPORT_ERROR;
 	}
 
@@ -359,12 +432,17 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 	case US_BULK_STAT_PHASE:
 		/* phase error -- note that a transport reset will be
 <<<<<<< HEAD
+<<<<<<< HEAD
 			* invoked by the invoke_transport() function
 			*/
 =======
 		 * invoked by the invoke_transport() function
 		 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * invoked by the invoke_transport() function
+		 */
+>>>>>>> refs/remotes/origin/master
 		return USB_STOR_TRANSPORT_ERROR;
 	}
 
@@ -373,7 +451,10 @@ static int rts51x_bulk_transport(struct us_data *us, u8 lun,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int rts51x_bulk_transport_special(struct us_data *us, u8 lun,
 				 u8 *cmd, int cmd_len, u8 *buf, int buf_len,
 				 enum dma_data_direction dir, int *act_len)
@@ -420,7 +501,10 @@ static int rts51x_bulk_transport_special(struct us_data *us, u8 lun,
 	return result;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Determine what the maximum LUN supported is */
 static int rts51x_get_max_lun(struct us_data *us)
 {
@@ -430,19 +514,28 @@ static int rts51x_get_max_lun(struct us_data *us)
 	us->iobuf[0] = 0;
 	result = usb_stor_control_msg(us, us->recv_ctrl_pipe,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 US_BULK_GET_MAX_LUN,
 				 USB_DIR_IN | USB_TYPE_CLASS |
 				 USB_RECIP_INTERFACE,
 				 0, us->ifnum, us->iobuf, 1, 10*HZ);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				      US_BULK_GET_MAX_LUN,
 				      USB_DIR_IN | USB_TYPE_CLASS |
 				      USB_RECIP_INTERFACE,
 				      0, us->ifnum, us->iobuf, 1, 10 * HZ);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	US_DEBUGP("GetMaxLUN command result is %d, data is %d\n",
 		  result, us->iobuf[0]);
+=======
+
+	usb_stor_dbg(us, "GetMaxLUN command result is %d, data is %d\n",
+		     result, us->iobuf[0]);
+>>>>>>> refs/remotes/origin/master
 
 	/* if we have a successful request, return the result */
 	if (result > 0)
@@ -455,14 +548,18 @@ static int rts51x_read_mem(struct us_data *us, u16 addr, u8 *data, u16 len)
 {
 	int retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 cmnd[12] = {0};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 cmnd[12] = { 0 };
 	u8 *buf;
 
 	buf = kmalloc(len, GFP_NOIO);
 	if (buf == NULL)
 		return USB_STOR_TRANSPORT_ERROR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	US_DEBUGP("%s, addr = 0x%x, len = %d\n", __func__, addr, len);
@@ -481,6 +578,13 @@ static int rts51x_read_mem(struct us_data *us, u16 addr, u8 *data, u16 len)
 		return -EIO;
 
 =======
+=======
+
+	usb_stor_dbg(us, "addr = 0x%x, len = %d\n", addr, len);
+
+	cmnd[0] = 0xF0;
+	cmnd[1] = 0x0D;
+>>>>>>> refs/remotes/origin/master
 	cmnd[2] = (u8) (addr >> 8);
 	cmnd[3] = (u8) addr;
 	cmnd[4] = (u8) (len >> 8);
@@ -495,7 +599,10 @@ static int rts51x_read_mem(struct us_data *us, u16 addr, u8 *data, u16 len)
 
 	memcpy(data, buf, len);
 	kfree(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -503,14 +610,18 @@ static int rts51x_write_mem(struct us_data *us, u16 addr, u8 *data, u16 len)
 {
 	int retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 cmnd[12] = {0};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 cmnd[12] = { 0 };
 	u8 *buf;
 
 	buf = kmemdup(data, len, GFP_NOIO);
 	if (buf == NULL)
 		return USB_STOR_TRANSPORT_ERROR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	US_DEBUGP("%s, addr = 0x%x, len = %d\n", __func__, addr, len);
@@ -526,6 +637,13 @@ static int rts51x_write_mem(struct us_data *us, u16 addr, u8 *data, u16 len)
 	retval = rts51x_bulk_transport(us, 0, cmnd, 12,
 				       data, len, DMA_TO_DEVICE, NULL);
 =======
+=======
+
+	usb_stor_dbg(us, "addr = 0x%x, len = %d\n", addr, len);
+
+	cmnd[0] = 0xF0;
+	cmnd[1] = 0x0E;
+>>>>>>> refs/remotes/origin/master
 	cmnd[2] = (u8) (addr >> 8);
 	cmnd[3] = (u8) addr;
 	cmnd[4] = (u8) (len >> 8);
@@ -534,7 +652,10 @@ static int rts51x_write_mem(struct us_data *us, u16 addr, u8 *data, u16 len)
 	retval = rts51x_bulk_transport(us, 0, cmnd, 12,
 				       buf, len, DMA_TO_DEVICE, NULL);
 	kfree(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (retval != USB_STOR_TRANSPORT_GOOD)
 		return -EIO;
 
@@ -546,28 +667,39 @@ static int rts51x_read_status(struct us_data *us,
 {
 	int retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 cmnd[12] = {0};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 cmnd[12] = { 0 };
 	u8 *buf;
 
 	buf = kmalloc(len, GFP_NOIO);
 	if (buf == NULL)
 		return USB_STOR_TRANSPORT_ERROR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	US_DEBUGP("%s, lun = %d\n", __func__, lun);
+=======
+
+	usb_stor_dbg(us, "lun = %d\n", lun);
+>>>>>>> refs/remotes/origin/master
 
 	cmnd[0] = 0xF0;
 	cmnd[1] = 0x09;
 
 	retval = rts51x_bulk_transport(us, lun, cmnd, 12,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       status, len, DMA_FROM_DEVICE, actlen);
 	if (retval != USB_STOR_TRANSPORT_GOOD)
 		return -EIO;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				       buf, len, DMA_FROM_DEVICE, actlen);
 	if (retval != USB_STOR_TRANSPORT_GOOD) {
 		kfree(buf);
@@ -576,7 +708,10 @@ static int rts51x_read_status(struct us_data *us,
 
 	memcpy(status, buf, len);
 	kfree(buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -587,6 +722,7 @@ static int rts51x_check_status(struct us_data *us, u8 lun)
 	u8 buf[16];
 
 	retval = rts51x_read_status(us, lun, buf, 16, &(chip->status_len));
+<<<<<<< HEAD
 	if (retval < 0)
 		return -EIO;
 
@@ -600,13 +736,23 @@ static int rts51x_check_status(struct us_data *us, u8 lun)
 	chip->status[lun].total_lun = buf[6];
 	chip->status[lun].fw_ver = ((u16)buf[7] << 8) | buf[8];
 =======
+=======
+	if (retval != STATUS_SUCCESS)
+		return -EIO;
+
+	usb_stor_dbg(us, "chip->status_len = %d\n", chip->status_len);
+
+>>>>>>> refs/remotes/origin/master
 	chip->status[lun].vid = ((u16) buf[0] << 8) | buf[1];
 	chip->status[lun].pid = ((u16) buf[2] << 8) | buf[3];
 	chip->status[lun].cur_lun = buf[4];
 	chip->status[lun].card_type = buf[5];
 	chip->status[lun].total_lun = buf[6];
 	chip->status[lun].fw_ver = ((u16) buf[7] << 8) | buf[8];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	chip->status[lun].phy_exist = buf[9];
 	chip->status[lun].multi_flag = buf[10];
 	chip->status[lun].multi_card = buf[11];
@@ -645,14 +791,21 @@ static int enable_oscillator(struct us_data *us)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __do_config_autodelink(struct us_data *us, u8 *data, u16 len)
 {
 	int retval;
 	u8 cmnd[12] = {0};
 	u8 *buf;
 
+<<<<<<< HEAD
 	US_DEBUGP("%s, addr = 0xfe47, len = %d\n", __FUNCTION__, len);
+=======
+	usb_stor_dbg(us, "addr = 0xfe47, len = %d\n", len);
+>>>>>>> refs/remotes/origin/master
 
 	buf = kmemdup(data, len, GFP_NOIO);
 	if (!buf)
@@ -674,7 +827,10 @@ static int __do_config_autodelink(struct us_data *us, u8 *data, u16 len)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int do_config_autodelink(struct us_data *us, int enable, int force)
 {
 	int retval;
@@ -693,6 +849,7 @@ static int do_config_autodelink(struct us_data *us, int enable, int force)
 		value &= ~0x03;
 	}
 
+<<<<<<< HEAD
 	US_DEBUGP("In %s,set 0xfe47 to 0x%x\n", __func__, value);
 
 <<<<<<< HEAD
@@ -701,6 +858,12 @@ static int do_config_autodelink(struct us_data *us, int enable, int force)
 	/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
 	retval = __do_config_autodelink(us, &value, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_stor_dbg(us, "set 0xfe47 to 0x%x\n", value);
+
+	/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
+	retval = __do_config_autodelink(us, &value, 1);
+>>>>>>> refs/remotes/origin/master
 	if (retval < 0)
 		return -EIO;
 
@@ -714,10 +877,13 @@ static int config_autodelink_after_power_on(struct us_data *us)
 	u8 value;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	US_DEBUGP("%s: <---\n", __func__);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!CHK_AUTO_DELINK(chip))
 		return 0;
 
@@ -736,11 +902,16 @@ static int config_autodelink_after_power_on(struct us_data *us)
 		SET_BIT(value, 7);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		retval = rts51x_write_mem(us, 0xFE47, &value, 1);
 =======
 		/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
 		retval = __do_config_autodelink(us, &value, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
+		retval = __do_config_autodelink(us, &value, 1);
+>>>>>>> refs/remotes/origin/master
 		if (retval < 0)
 			return -EIO;
 
@@ -757,20 +928,29 @@ static int config_autodelink_after_power_on(struct us_data *us)
 
 		if (CHECK_ID(chip, 0x0159, 0x5889) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				CHECK_ID(chip, 0x0138, 0x3880)) {
 =======
 		    CHECK_ID(chip, 0x0138, 0x3880)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    CHECK_ID(chip, 0x0138, 0x3880)) {
+>>>>>>> refs/remotes/origin/master
 			CLR_BIT(value, 0);
 			CLR_BIT(value, 7);
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		retval = rts51x_write_mem(us, 0xFE47, &value, 1);
 =======
 		/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
 		retval = __do_config_autodelink(us, &value, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
+		retval = __do_config_autodelink(us, &value, 1);
+>>>>>>> refs/remotes/origin/master
 		if (retval < 0)
 			return -EIO;
 
@@ -788,10 +968,13 @@ static int config_autodelink_after_power_on(struct us_data *us)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	US_DEBUGP("%s: --->\n", __func__);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -802,10 +985,13 @@ static int config_autodelink_before_power_down(struct us_data *us)
 	u8 value;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	US_DEBUGP("%s: <---\n", __func__);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!CHK_AUTO_DELINK(chip))
 		return 0;
 
@@ -839,22 +1025,31 @@ static int config_autodelink_before_power_down(struct us_data *us)
 	} else {
 		if (CHECK_ID(chip, 0x0159, 0x5889) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 				CHECK_ID(chip, 0x0138, 0x3880) ||
 				CHECK_ID(chip, 0x0138, 0x3882)) {
 =======
 		    CHECK_ID(chip, 0x0138, 0x3880) ||
 		    CHECK_ID(chip, 0x0138, 0x3882)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    CHECK_ID(chip, 0x0138, 0x3880) ||
+		    CHECK_ID(chip, 0x0138, 0x3882)) {
+>>>>>>> refs/remotes/origin/master
 			retval = rts51x_read_mem(us, 0xFE47, &value, 1);
 			if (retval < 0)
 				return -EIO;
 
 			if (CHECK_ID(chip, 0x0159, 0x5889) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 					CHECK_ID(chip, 0x0138, 0x3880)) {
 =======
 			    CHECK_ID(chip, 0x0138, 0x3880)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    CHECK_ID(chip, 0x0138, 0x3880)) {
+>>>>>>> refs/remotes/origin/master
 				SET_BIT(value, 0);
 				SET_BIT(value, 7);
 			}
@@ -863,11 +1058,16 @@ static int config_autodelink_before_power_down(struct us_data *us)
 				SET_BIT(value, 2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			retval = rts51x_write_mem(us, 0xFE47, &value, 1);
 =======
 			/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
 			retval = __do_config_autodelink(us, &value, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* retval = rts51x_write_mem(us, 0xFE47, &value, 1); */
+			retval = __do_config_autodelink(us, &value, 1);
+>>>>>>> refs/remotes/origin/master
 			if (retval < 0)
 				return -EIO;
 		}
@@ -881,11 +1081,14 @@ static int config_autodelink_before_power_down(struct us_data *us)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 }
 =======
 	US_DEBUGP("%s: --->\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -895,16 +1098,22 @@ static void fw5895_init(struct us_data *us)
 	int retval;
 	u8 val;
 
+<<<<<<< HEAD
 	US_DEBUGP("%s: <---\n", __func__);
 
 	if ((PRODUCT_ID(chip) != 0x0158) || (FW_VERSION(chip) != 0x5895)) {
 		US_DEBUGP("Not the specified device, return immediately!\n");
+=======
+	if ((PRODUCT_ID(chip) != 0x0158) || (FW_VERSION(chip) != 0x5895)) {
+		usb_stor_dbg(us, "Not the specified device, return immediately!\n");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		retval = rts51x_read_mem(us, 0xFD6F, &val, 1);
 		if (retval == STATUS_SUCCESS && (val & 0x1F) == 0) {
 			val = 0x1F;
 			retval = rts51x_write_mem(us, 0xFD70, &val, 1);
 			if (retval != STATUS_SUCCESS)
+<<<<<<< HEAD
 				US_DEBUGP("Write memory fail\n");
 		} else {
 			US_DEBUGP("Read memory fail, OR (val & 0x1F) != 0\n");
@@ -912,6 +1121,13 @@ static void fw5895_init(struct us_data *us)
 	}
 
 	US_DEBUGP("%s: --->\n", __func__);
+=======
+				usb_stor_dbg(us, "Write memory fail\n");
+		} else {
+			usb_stor_dbg(us, "Read memory fail, OR (val & 0x1F) != 0\n");
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_REALTEK_AUTOPM
@@ -921,10 +1137,15 @@ static void fw5895_set_mmc_wp(struct us_data *us)
 	int retval;
 	u8 buf[13];
 
+<<<<<<< HEAD
 	US_DEBUGP("%s: <---\n", __func__);
 
 	if ((PRODUCT_ID(chip) != 0x0158) || (FW_VERSION(chip) != 0x5895)) {
 		US_DEBUGP("Not the specified device, return immediately!\n");
+=======
+	if ((PRODUCT_ID(chip) != 0x0158) || (FW_VERSION(chip) != 0x5895)) {
+		usb_stor_dbg(us, "Not the specified device, return immediately!\n");
+>>>>>>> refs/remotes/origin/master
 	} else {
 		retval = rts51x_read_mem(us, 0xFD6F, buf, 1);
 		if (retval == STATUS_SUCCESS && (buf[0] & 0x24) == 0x24) {
@@ -934,6 +1155,7 @@ static void fw5895_set_mmc_wp(struct us_data *us)
 				buf[0] |= 0x04;
 				retval = rts51x_write_mem(us, 0xFD70, buf, 1);
 				if (retval != STATUS_SUCCESS)
+<<<<<<< HEAD
 					US_DEBUGP("Write memory fail\n");
 			} else {
 				US_DEBUGP("Read memory fail\n");
@@ -944,16 +1166,35 @@ static void fw5895_set_mmc_wp(struct us_data *us)
 	}
 
 	US_DEBUGP("%s: --->\n", __func__);
+=======
+					usb_stor_dbg(us, "Write memory fail\n");
+			} else {
+				usb_stor_dbg(us, "Read memory fail\n");
+			}
+		} else {
+			usb_stor_dbg(us, "Read memory fail, OR (buf[0]&0x24)!=0x24\n");
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rts51x_modi_suspend_timer(struct rts51x_chip *chip)
 {
+<<<<<<< HEAD
 	US_DEBUGP("%s: <---, state:%d\n", __func__, rts51x_get_stat(chip));
 
 	chip->timer_expires = jiffies + msecs_to_jiffies(1000*ss_delay);
 	mod_timer(&chip->rts51x_suspend_timer, chip->timer_expires);
 
 	US_DEBUGP("%s: --->\n", __func__);
+=======
+	struct us_data *us = chip->us;
+
+	usb_stor_dbg(us, "state:%d\n", rts51x_get_stat(chip));
+
+	chip->timer_expires = jiffies + msecs_to_jiffies(1000*ss_delay);
+	mod_timer(&chip->rts51x_suspend_timer, chip->timer_expires);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rts51x_suspend_timer_fn(unsigned long data)
@@ -961,8 +1202,11 @@ static void rts51x_suspend_timer_fn(unsigned long data)
 	struct rts51x_chip *chip = (struct rts51x_chip *)data;
 	struct us_data *us = chip->us;
 
+<<<<<<< HEAD
 	US_DEBUGP("%s: <---\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (rts51x_get_stat(chip)) {
 	case RTS51X_STAT_INIT:
 	case RTS51X_STAT_RUN:
@@ -970,6 +1214,7 @@ static void rts51x_suspend_timer_fn(unsigned long data)
 		break;
 	case RTS51X_STAT_IDLE:
 	case RTS51X_STAT_SS:
+<<<<<<< HEAD
 		US_DEBUGP("%s: RTS51X_STAT_SS, intf->pm_usage_cnt:%d,"
 			"power.usage:%d\n", __func__,
 			atomic_read(&us->pusb_intf->pm_usage_cnt),
@@ -978,10 +1223,19 @@ static void rts51x_suspend_timer_fn(unsigned long data)
 		if (atomic_read(&us->pusb_intf->pm_usage_cnt) > 0) {
 			US_DEBUGP("%s: Ready to enter SS state.\n",
 				  __func__);
+=======
+		usb_stor_dbg(us, "RTS51X_STAT_SS, intf->pm_usage_cnt:%d, power.usage:%d\n",
+			     atomic_read(&us->pusb_intf->pm_usage_cnt),
+			     atomic_read(&us->pusb_intf->dev.power.usage_count));
+
+		if (atomic_read(&us->pusb_intf->pm_usage_cnt) > 0) {
+			usb_stor_dbg(us, "Ready to enter SS state\n");
+>>>>>>> refs/remotes/origin/master
 			rts51x_set_stat(chip, RTS51X_STAT_SS);
 			/* ignore mass storage interface's children */
 			pm_suspend_ignore_children(&us->pusb_intf->dev, true);
 			usb_autopm_put_interface_async(us->pusb_intf);
+<<<<<<< HEAD
 			US_DEBUGP("%s: RTS51X_STAT_SS 01,"
 				"intf->pm_usage_cnt:%d, power.usage:%d\n",
 				__func__,
@@ -996,6 +1250,17 @@ static void rts51x_suspend_timer_fn(unsigned long data)
 	}
 
 	US_DEBUGP("%s: --->\n", __func__);
+=======
+			usb_stor_dbg(us, "RTS51X_STAT_SS 01, intf->pm_usage_cnt:%d, power.usage:%d\n",
+				     atomic_read(&us->pusb_intf->pm_usage_cnt),
+				     atomic_read(&us->pusb_intf->dev.power.usage_count));
+		}
+		break;
+	default:
+		usb_stor_dbg(us, "Unknown state !!!\n");
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int working_scsi(struct scsi_cmnd *srb)
@@ -1020,6 +1285,7 @@ static void rts51x_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 	};
 	int ret;
 
+<<<<<<< HEAD
 	US_DEBUGP("%s: <---\n", __func__);
 
 	if (working_scsi(srb)) {
@@ -1031,13 +1297,27 @@ static void rts51x_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 		if (atomic_read(&us->pusb_intf->pm_usage_cnt) <= 0) {
 			ret = usb_autopm_get_interface(us->pusb_intf);
 			US_DEBUGP("%s: working scsi, ret=%d\n", __func__, ret);
+=======
+	if (working_scsi(srb)) {
+		usb_stor_dbg(us, "working scsi, intf->pm_usage_cnt:%d, power.usage:%d\n",
+			     atomic_read(&us->pusb_intf->pm_usage_cnt),
+			     atomic_read(&us->pusb_intf->dev.power.usage_count));
+
+		if (atomic_read(&us->pusb_intf->pm_usage_cnt) <= 0) {
+			ret = usb_autopm_get_interface(us->pusb_intf);
+			usb_stor_dbg(us, "working scsi, ret=%d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		}
 		if (rts51x_get_stat(chip) != RTS51X_STAT_RUN)
 			rts51x_set_stat(chip, RTS51X_STAT_RUN);
 		chip->proto_handler_backup(srb, us);
 	} else {
 		if (rts51x_get_stat(chip) == RTS51X_STAT_SS) {
+<<<<<<< HEAD
 			US_DEBUGP("%s: NOT working scsi\n", __func__);
+=======
+			usb_stor_dbg(us, "NOT working scsi\n");
+>>>>>>> refs/remotes/origin/master
 			if ((srb->cmnd[0] == TEST_UNIT_READY) &&
 			    (chip->pwr_state == US_SUSPEND)) {
 				if (TST_LUN_READY(chip, srb->device->lun)) {
@@ -1048,8 +1328,12 @@ static void rts51x_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 					       media_not_present,
 					       US_SENSE_SIZE);
 				}
+<<<<<<< HEAD
 				US_DEBUGP("%s: TEST_UNIT_READY--->\n",
 					  __func__);
+=======
+				usb_stor_dbg(us, "TEST_UNIT_READY\n");
+>>>>>>> refs/remotes/origin/master
 				goto out;
 			}
 			if (srb->cmnd[0] == ALLOW_MEDIUM_REMOVAL) {
@@ -1062,6 +1346,7 @@ static void rts51x_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 				} else {
 					srb->result = SAM_STAT_GOOD;
 				}
+<<<<<<< HEAD
 				US_DEBUGP("%s: ALLOW_MEDIUM_REMOVAL--->\n",
 					  __func__);
 				goto out;
@@ -1070,6 +1355,15 @@ static void rts51x_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 			US_DEBUGP("%s: NOT working scsi, not SS\n", __func__);
 			chip->proto_handler_backup(srb, us);
 			/* Check wether card is plugged in */
+=======
+				usb_stor_dbg(us, "ALLOW_MEDIUM_REMOVAL\n");
+				goto out;
+			}
+		} else {
+			usb_stor_dbg(us, "NOT working scsi, not SS\n");
+			chip->proto_handler_backup(srb, us);
+			/* Check whether card is plugged in */
+>>>>>>> refs/remotes/origin/master
 			if (srb->cmnd[0] == TEST_UNIT_READY) {
 				if (srb->result == SAM_STAT_GOOD) {
 					SET_LUN_READY(chip, srb->device->lun);
@@ -1087,11 +1381,17 @@ static void rts51x_invoke_transport(struct scsi_cmnd *srb, struct us_data *us)
 		}
 	}
 out:
+<<<<<<< HEAD
 	US_DEBUGP("%s: state:%d\n", __func__, rts51x_get_stat(chip));
 	if (rts51x_get_stat(chip) == RTS51X_STAT_RUN)
 		rts51x_modi_suspend_timer(chip);
 
 	US_DEBUGP("%s: --->\n", __func__);
+=======
+	usb_stor_dbg(us, "state:%d\n", rts51x_get_stat(chip));
+	if (rts51x_get_stat(chip) == RTS51X_STAT_RUN)
+		rts51x_modi_suspend_timer(chip);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int realtek_cr_autosuspend_setup(struct us_data *us)
@@ -1109,7 +1409,11 @@ static int realtek_cr_autosuspend_setup(struct us_data *us)
 
 	retval = rts51x_read_status(us, 0, buf, 16, &(chip->status_len));
 	if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 		US_DEBUGP("Read status fail\n");
+=======
+		usb_stor_dbg(us, "Read status fail\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 	status = chip->status;
@@ -1148,6 +1452,7 @@ static int realtek_cr_autosuspend_setup(struct us_data *us)
 	return 0;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static void realtek_cr_destructor(void *extra)
@@ -1163,17 +1468,31 @@ static void realtek_cr_destructor(void *extra)
 
 	if (!chip)
 		return;
+=======
+
+static void realtek_cr_destructor(void *extra)
+{
+	struct rts51x_chip *chip = extra;
+
+	if (!chip)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_REALTEK_AUTOPM
 	if (ss_en) {
 		del_timer(&chip->rts51x_suspend_timer);
 		chip->timer_expires = 0;
 	}
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(chip->status);
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void realtek_pm_hook(struct us_data *us, int pm_state)
 {
@@ -1181,12 +1500,17 @@ static void realtek_pm_hook(struct us_data *us, int pm_state)
 		(void)config_autodelink_before_power_down(us);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int realtek_cr_suspend(struct usb_interface *iface, pm_message_t message)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s: <---\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* wait until no command is running */
 	mutex_lock(&us->dev_mutex);
 
@@ -1194,8 +1518,11 @@ static int realtek_cr_suspend(struct usb_interface *iface, pm_message_t message)
 
 	mutex_unlock(&us->dev_mutex);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s: --->\n", __func__);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1203,6 +1530,7 @@ static int realtek_cr_resume(struct usb_interface *iface)
 {
 	struct us_data *us = usb_get_intfdata(iface);
 
+<<<<<<< HEAD
 	US_DEBUGP("%s: <---\n", __func__);
 
 	fw5895_init(us);
@@ -1210,12 +1538,20 @@ static int realtek_cr_resume(struct usb_interface *iface)
 
 	US_DEBUGP("%s: --->\n", __func__);
 
+=======
+	fw5895_init(us);
+	config_autodelink_after_power_on(us);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else
 #define realtek_cr_suspend	NULL
 #define realtek_cr_resume	NULL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static int init_realtek_cr(struct us_data *us)
@@ -1230,6 +1566,7 @@ static int init_realtek_cr(struct us_data *us)
 	us->extra = chip;
 	us->extra_destructor = realtek_cr_destructor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 	us->suspend_resume_hook = realtek_pm_hook;
 #endif
@@ -1239,6 +1576,12 @@ static int init_realtek_cr(struct us_data *us)
 	us->max_lun = chip->max_lun = rts51x_get_max_lun(us);
 
 	US_DEBUGP("chip->max_lun = %d\n", chip->max_lun);
+=======
+	us->max_lun = chip->max_lun = rts51x_get_max_lun(us);
+	chip->us = us;
+
+	usb_stor_dbg(us, "chip->max_lun = %d\n", chip->max_lun);
+>>>>>>> refs/remotes/origin/master
 
 	size = (chip->max_lun + 1) * sizeof(struct rts51x_status);
 	chip->status = kzalloc(size, GFP_KERNEL);
@@ -1247,25 +1590,34 @@ static int init_realtek_cr(struct us_data *us)
 
 	for (i = 0; i <= (int)(chip->max_lun); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		retval = rts51x_check_status(us, (u8)i);
 =======
 		retval = rts51x_check_status(us, (u8) i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		retval = rts51x_check_status(us, (u8) i);
+>>>>>>> refs/remotes/origin/master
 		if (retval < 0)
 			goto INIT_FAIL;
 	}
 
 	if (CHECK_FW_VER(chip, 0x5888) || CHECK_FW_VER(chip, 0x5889) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 			CHECK_FW_VER(chip, 0x5901))
 =======
 	    CHECK_FW_VER(chip, 0x5901))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    CHECK_FW_VER(chip, 0x5901))
+>>>>>>> refs/remotes/origin/master
 		SET_AUTO_DELINK(chip);
 	if (STATUS_LEN(chip) == 16) {
 		if (SUPPORT_AUTO_DELINK(chip))
 			SET_AUTO_DELINK(chip);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_REALTEK_AUTOPM
@@ -1277,6 +1629,14 @@ static int init_realtek_cr(struct us_data *us)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	US_DEBUGP("chip->flag = 0x%x\n", chip->flag);
+=======
+#ifdef CONFIG_REALTEK_AUTOPM
+	if (ss_en)
+		realtek_cr_autosuspend_setup(us);
+#endif
+
+	usb_stor_dbg(us, "chip->flag = 0x%x\n", chip->flag);
+>>>>>>> refs/remotes/origin/master
 
 	(void)config_autodelink_after_power_on(us);
 
@@ -1294,14 +1654,19 @@ INIT_FAIL:
 
 static int realtek_cr_probe(struct usb_interface *intf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 const struct usb_device_id *id)
 =======
 			    const struct usb_device_id *id)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    const struct usb_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct us_data *us;
 	int result;
 
+<<<<<<< HEAD
 	US_DEBUGP("Probe Realtek Card Reader!\n");
 
 	result = usb_stor_probe1(&us, intf, id,
@@ -1311,18 +1676,30 @@ static int realtek_cr_probe(struct usb_interface *intf,
 				 (id - realtek_cr_ids) +
 				 realtek_cr_unusual_dev_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&intf->dev, "Probe Realtek Card Reader!\n");
+
+	result = usb_stor_probe1(&us, intf, id,
+				 (id - realtek_cr_ids) +
+				 realtek_cr_unusual_dev_list);
+>>>>>>> refs/remotes/origin/master
 	if (result)
 		return result;
 
 	result = usb_stor_probe2(us);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
 static struct usb_driver realtek_cr_driver = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.name =		"ums-realtek",
 	.probe =	realtek_cr_probe,
@@ -1349,6 +1726,8 @@ static void __exit realtek_cr_exit(void)
 module_init(realtek_cr_init);
 module_exit(realtek_cr_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.name = "ums-realtek",
 	.probe = realtek_cr_probe,
 	.disconnect = usb_stor_disconnect,
@@ -1366,4 +1745,7 @@ module_exit(realtek_cr_exit);
 };
 
 module_usb_driver(realtek_cr_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

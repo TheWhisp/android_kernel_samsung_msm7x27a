@@ -34,6 +34,7 @@
 #define FALSE  0
 #endif
 
+<<<<<<< HEAD
 #ifdef SBE_INCLUDE_SYMBOLS
 #define STATIC
 #else
@@ -41,6 +42,8 @@
 #endif
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*------------------------------------------------------------------------
  *      EEPROM address definitions
  *------------------------------------------------------------------------
@@ -120,7 +123,11 @@ short       mfg_template[sizeof (FLD_TYPE2)] =
  *      (the MSB becomes the LSB etc.).
  */
 
+<<<<<<< HEAD
 STATIC void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 BuildByteReverse (void)
 {
     long        half;           /* Used to build by powers to 2 */
@@ -141,7 +148,11 @@ BuildByteReverse (void)
  *------------------------------------------------------------------------
  */
 
+<<<<<<< HEAD
 STATIC void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 eeprom_delay (void)
 {
     int         timeout;
@@ -224,7 +235,11 @@ eeprom_get_byte (long addr)
  *      Issue the EEPROM command to disable writes.
  */
 
+<<<<<<< HEAD
 STATIC void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 disable_pmc_eeprom (long addr)
 {
     eeprom_put_byte (addr, EPROM_EWDS, SIZE_ADDR_OP);
@@ -241,7 +256,11 @@ disable_pmc_eeprom (long addr)
  *      Issue the EEPROM command to enable writes.
  */
 
+<<<<<<< HEAD
 STATIC void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 enable_pmc_eeprom (long addr)
 {
     eeprom_put_byte (addr, EPROM_EWEN, SIZE_ADDR_OP);

@@ -39,15 +39,20 @@ static char *events[] = { "ISDN_STAT_STAVAIL",
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int indicate_status(int card, int event,ulong Channel,char *Data)
 =======
 int indicate_status(int card, int event, ulong Channel, char *Data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int indicate_status(int card, int event, ulong Channel, char *Data)
+>>>>>>> refs/remotes/origin/master
 {
 	isdn_ctrl cmd;
 
 #ifdef DEBUG
 	pr_debug("%s: Indicating event %s on Channel %d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sc_adapter[card]->devicename, events[event-256], Channel);
 #endif
@@ -64,6 +69,8 @@ int indicate_status(int card, int event, ulong Channel, char *Data)
 			default:
 				strcpy(cmd.parm.num, Data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 sc_adapter[card]->devicename, events[event - 256], Channel);
 #endif
 	if (Data != NULL) {
@@ -78,7 +85,10 @@ int indicate_status(int card, int event, ulong Channel, char *Data)
 			break;
 		default:
 			strcpy(cmd.parm.num, Data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 

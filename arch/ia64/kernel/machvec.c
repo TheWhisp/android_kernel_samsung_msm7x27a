@@ -2,9 +2,12 @@
 #include <linux/dma-mapping.h>
 #include <asm/machvec.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IA64_GENERIC
 

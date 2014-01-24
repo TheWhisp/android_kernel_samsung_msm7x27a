@@ -40,6 +40,7 @@
 
 /*---  PCMCIA  ---*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GPIO_CF_CD              GPIO_GPIO24
 #define GPIO_CF_IRQ             GPIO_GPIO1
 #define IRQ_GPIO_CF_IRQ         IRQ_GPIO1
@@ -48,11 +49,16 @@
 #define GPIO_CF_CD              24
 #define GPIO_CF_IRQ             1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GPIO_CF_CD              24
+#define GPIO_CF_IRQ             1
+>>>>>>> refs/remotes/origin/master
 
 /*--- SmartCard ---*/
 #define GPIO_SMART_CARD		GPIO_GPIO10
 #define IRQ_GPIO_SMARD_CARD	IRQ_GPIO10
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 // CS3 Latch is write only, a shadow is necessary
 
@@ -81,6 +87,8 @@
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*--- ucb1x00 GPIO ---*/
 #define SIMPAD_UCB1X00_GPIO_BASE	(GPIO_MAX + 1)
 #define SIMPAD_UCB1X00_GPIO_PROG1	(SIMPAD_UCB1X00_GPIO_BASE)
@@ -122,7 +130,11 @@
 #define SIMPAD_CS3_PCMCIA_SHORT		(SIMPAD_CS3_GPIO_BASE + 22)
 #define SIMPAD_CS3_GPIO_23		(SIMPAD_CS3_GPIO_BASE + 23)
 
+<<<<<<< HEAD
 #define CS3_BASE        0xf1000000
+=======
+#define CS3_BASE        IOMEM(0xf1000000)
+>>>>>>> refs/remotes/origin/master
 
 long simpad_get_cs3_ro(void);
 long simpad_get_cs3_shadow(void);
@@ -155,7 +167,10 @@ void simpad_clear_cs3_bit(int value);
 #define PCMCIA_SHORT	0x40
 
 /*--- Battery ---*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct simpad_battery {
 	unsigned char ac_status;	/* line connected yes/no */
 	unsigned char status;		/* battery loading yes/no */

@@ -31,10 +31,14 @@
 #include <linux/timer.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <net/neighbour.h>
 #include <net/dst.h>
@@ -149,6 +153,7 @@ static inline struct dn_fib_info *dn_fib_find_info(const struct dn_fib_info *nfi
 	return NULL;
 }
 
+<<<<<<< HEAD
 __le16 dn_fib_get_attr16(struct rtattr *attr, int attrlen, int type)
 {
 	while(RTA_OK(attr,attrlen)) {
@@ -165,6 +170,12 @@ static int dn_fib_count_nhs(struct rtattr *rta)
 	int nhs = 0;
 	struct rtnexthop *nhp = RTA_DATA(rta);
 	int nhlen = RTA_PAYLOAD(rta);
+=======
+static int dn_fib_count_nhs(const struct nlattr *attr)
+{
+	struct rtnexthop *nhp = nla_data(attr);
+	int nhs = 0, nhlen = nla_len(attr);
+>>>>>>> refs/remotes/origin/master
 
 	while(nhlen >= (int)sizeof(struct rtnexthop)) {
 		if ((nhlen -= nhp->rtnh_len) < 0)
@@ -176,10 +187,18 @@ static int dn_fib_count_nhs(struct rtattr *rta)
 	return nhs;
 }
 
+<<<<<<< HEAD
 static int dn_fib_get_nhs(struct dn_fib_info *fi, const struct rtattr *rta, const struct rtmsg *r)
 {
 	struct rtnexthop *nhp = RTA_DATA(rta);
 	int nhlen = RTA_PAYLOAD(rta);
+=======
+static int dn_fib_get_nhs(struct dn_fib_info *fi, const struct nlattr *attr,
+			  const struct rtmsg *r)
+{
+	struct rtnexthop *nhp = nla_data(attr);
+	int nhlen = nla_len(attr);
+>>>>>>> refs/remotes/origin/master
 
 	change_nexthops(fi) {
 		int attrlen = nhlen - sizeof(struct rtnexthop);
@@ -191,7 +210,14 @@ static int dn_fib_get_nhs(struct dn_fib_info *fi, const struct rtattr *rta, cons
 		nh->nh_weight = nhp->rtnh_hops + 1;
 
 		if (attrlen) {
+<<<<<<< HEAD
 			nh->nh_gw = dn_fib_get_attr16(RTNH_DATA(nhp), attrlen, RTA_GATEWAY);
+=======
+			struct nlattr *gw_attr;
+
+			gw_attr = nla_find((struct nlattr *) (nhp + 1), attrlen, RTA_GATEWAY);
+			nh->nh_gw = gw_attr ? nla_get_le16(gw_attr) : 0;
+>>>>>>> refs/remotes/origin/master
 		}
 		nhp = RTNH_NEXT(nhp);
 	} endfor_nexthops(fi);
@@ -272,7 +298,12 @@ out:
 }
 
 
+<<<<<<< HEAD
 struct dn_fib_info *dn_fib_create_info(const struct rtmsg *r, struct dn_kern_rta *rta, const struct nlmsghdr *nlh, int *errp)
+=======
+struct dn_fib_info *dn_fib_create_info(const struct rtmsg *r, struct nlattr *attrs[],
+				       const struct nlmsghdr *nlh, int *errp)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct dn_fib_info *fi = NULL;
@@ -285,11 +316,17 @@ struct dn_fib_info *dn_fib_create_info(const struct rtmsg *r, struct dn_kern_rta
 	if (dn_fib_props[r->rtm_type].scope > r->rtm_scope)
 		goto err_inval;
 
+<<<<<<< HEAD
 	if (rta->rta_mp) {
 		nhs = dn_fib_count_nhs(rta->rta_mp);
 		if (nhs == 0)
 			goto err_inval;
 	}
+=======
+	if (attrs[RTA_MULTIPATH] &&
+	    (nhs = dn_fib_count_nhs(attrs[RTA_MULTIPATH])) == 0)
+		goto err_inval;
+>>>>>>> refs/remotes/origin/master
 
 	fi = kzalloc(sizeof(*fi)+nhs*sizeof(struct dn_fib_nh), GFP_KERNEL);
 	err = -ENOBUFS;
@@ -299,6 +336,7 @@ struct dn_fib_info *dn_fib_create_info(const struct rtmsg *r, struct dn_kern_rta
 	fi->fib_protocol = r->rtm_protocol;
 	fi->fib_nhs = nhs;
 	fi->fib_flags = r->rtm_flags;
+<<<<<<< HEAD
 	if (rta->rta_priority)
 		fi->fib_priority = *rta->rta_priority;
 	if (rta->rta_mx) {
@@ -331,20 +369,78 @@ struct dn_fib_info *dn_fib_create_info(const struct rtmsg *r, struct dn_kern_rta
 			nh->nh_oif = *rta->rta_oif;
 		if (rta->rta_gw)
 			memcpy(&nh->nh_gw, rta->rta_gw, 2);
+=======
+
+	if (attrs[RTA_PRIORITY])
+		fi->fib_priority = nla_get_u32(attrs[RTA_PRIORITY]);
+
+	if (attrs[RTA_METRICS]) {
+		struct nlattr *attr;
+		int rem;
+
+		nla_for_each_nested(attr, attrs[RTA_METRICS], rem) {
+			int type = nla_type(attr);
+
+			if (type) {
+				if (type > RTAX_MAX || nla_len(attr) < 4)
+					goto err_inval;
+
+				fi->fib_metrics[type-1] = nla_get_u32(attr);
+			}
+		}
+	}
+
+	if (attrs[RTA_PREFSRC])
+		fi->fib_prefsrc = nla_get_le16(attrs[RTA_PREFSRC]);
+
+	if (attrs[RTA_MULTIPATH]) {
+		if ((err = dn_fib_get_nhs(fi, attrs[RTA_MULTIPATH], r)) != 0)
+			goto failure;
+
+		if (attrs[RTA_OIF] &&
+		    fi->fib_nh->nh_oif != nla_get_u32(attrs[RTA_OIF]))
+			goto err_inval;
+
+		if (attrs[RTA_GATEWAY] &&
+		    fi->fib_nh->nh_gw != nla_get_le16(attrs[RTA_GATEWAY]))
+			goto err_inval;
+	} else {
+		struct dn_fib_nh *nh = fi->fib_nh;
+
+		if (attrs[RTA_OIF])
+			nh->nh_oif = nla_get_u32(attrs[RTA_OIF]);
+
+		if (attrs[RTA_GATEWAY])
+			nh->nh_gw = nla_get_le16(attrs[RTA_GATEWAY]);
+
+>>>>>>> refs/remotes/origin/master
 		nh->nh_flags = r->rtm_flags;
 		nh->nh_weight = 1;
 	}
 
 	if (r->rtm_type == RTN_NAT) {
+<<<<<<< HEAD
 		if (rta->rta_gw == NULL || nhs != 1 || rta->rta_oif)
 			goto err_inval;
 		memcpy(&fi->fib_nh->nh_gw, rta->rta_gw, 2);
+=======
+		if (!attrs[RTA_GATEWAY] || nhs != 1 || attrs[RTA_OIF])
+			goto err_inval;
+
+		fi->fib_nh->nh_gw = nla_get_le16(attrs[RTA_GATEWAY]);
+>>>>>>> refs/remotes/origin/master
 		goto link_it;
 	}
 
 	if (dn_fib_props[r->rtm_type].error) {
+<<<<<<< HEAD
 		if (rta->rta_gw || rta->rta_oif || rta->rta_mp)
 			goto err_inval;
+=======
+		if (attrs[RTA_GATEWAY] || attrs[RTA_OIF] || attrs[RTA_MULTIPATH])
+			goto err_inval;
+
+>>>>>>> refs/remotes/origin/master
 		goto link_it;
 	}
 
@@ -370,8 +466,13 @@ struct dn_fib_info *dn_fib_create_info(const struct rtmsg *r, struct dn_kern_rta
 	}
 
 	if (fi->fib_prefsrc) {
+<<<<<<< HEAD
 		if (r->rtm_type != RTN_LOCAL || rta->rta_dst == NULL ||
 		    memcmp(&fi->fib_prefsrc, rta->rta_dst, 2))
+=======
+		if (r->rtm_type != RTN_LOCAL || !attrs[RTA_DST] ||
+		    fi->fib_prefsrc != nla_get_le16(attrs[RTA_DST]))
+>>>>>>> refs/remotes/origin/master
 			if (dnet_addr_type(fi->fib_prefsrc) != RTN_LOCAL)
 				goto err_inval;
 	}
@@ -419,6 +520,7 @@ int dn_fib_semantic_match(int type, struct dn_fib_info *fi, const struct flowidn
 		res->fi = fi;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		switch(type) {
 			case RTN_NAT:
 				DN_FIB_RES_RESET(*res);
@@ -447,6 +549,8 @@ int dn_fib_semantic_match(int type, struct dn_fib_info *fi, const struct flowidn
 				res->fi = NULL;
 				return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (type) {
 		case RTN_NAT:
 			DN_FIB_RES_RESET(*res);
@@ -470,12 +574,19 @@ int dn_fib_semantic_match(int type, struct dn_fib_info *fi, const struct flowidn
 			res->fi = NULL;
 			return 1;
 		default:
+<<<<<<< HEAD
 			if (net_ratelimit())
 				printk("DECnet: impossible routing event : dn_fib_semantic_match type=%d\n",
 				       type);
 			res->fi = NULL;
 			return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			net_err_ratelimited("DECnet: impossible routing event : dn_fib_semantic_match type=%d\n",
+					    type);
+			res->fi = NULL;
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return err;
@@ -520,6 +631,7 @@ void dn_fib_select_multipath(const struct flowidn *fld, struct dn_fib_res *res)
 	spin_unlock_bh(&dn_fib_multipath_lock);
 }
 
+<<<<<<< HEAD
 
 static int dn_fib_check_attr(struct rtmsg *r, struct rtattr **rta)
 {
@@ -545,10 +657,31 @@ static int dn_fib_rtm_delroute(struct sk_buff *skb, struct nlmsghdr *nlh, void *
 	struct dn_fib_table *tb;
 	struct rtattr **rta = arg;
 	struct rtmsg *r = NLMSG_DATA(nlh);
+=======
+static inline u32 rtm_get_table(struct nlattr *attrs[], u8 table)
+{
+	if (attrs[RTA_TABLE])
+		table = nla_get_u32(attrs[RTA_TABLE]);
+
+	return table;
+}
+
+static int dn_fib_rtm_delroute(struct sk_buff *skb, struct nlmsghdr *nlh)
+{
+	struct net *net = sock_net(skb->sk);
+	struct dn_fib_table *tb;
+	struct rtmsg *r = nlmsg_data(nlh);
+	struct nlattr *attrs[RTA_MAX+1];
+	int err;
+
+	if (!capable(CAP_NET_ADMIN))
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(net, &init_net))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (dn_fib_check_attr(r, rta))
 		return -EINVAL;
 
@@ -565,10 +698,34 @@ static int dn_fib_rtm_newroute(struct sk_buff *skb, struct nlmsghdr *nlh, void *
 	struct dn_fib_table *tb;
 	struct rtattr **rta = arg;
 	struct rtmsg *r = NLMSG_DATA(nlh);
+=======
+	err = nlmsg_parse(nlh, sizeof(*r), attrs, RTA_MAX, rtm_dn_policy);
+	if (err < 0)
+		return err;
+
+	tb = dn_fib_get_table(rtm_get_table(attrs, r->rtm_table), 0);
+	if (!tb)
+		return -ESRCH;
+
+	return tb->delete(tb, r, attrs, nlh, &NETLINK_CB(skb));
+}
+
+static int dn_fib_rtm_newroute(struct sk_buff *skb, struct nlmsghdr *nlh)
+{
+	struct net *net = sock_net(skb->sk);
+	struct dn_fib_table *tb;
+	struct rtmsg *r = nlmsg_data(nlh);
+	struct nlattr *attrs[RTA_MAX+1];
+	int err;
+
+	if (!capable(CAP_NET_ADMIN))
+		return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(net, &init_net))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (dn_fib_check_attr(r, rta))
 		return -EINVAL;
 
@@ -577,6 +734,17 @@ static int dn_fib_rtm_newroute(struct sk_buff *skb, struct nlmsghdr *nlh, void *
 		return tb->insert(tb, r, (struct dn_kern_rta *)rta, nlh, &NETLINK_CB(skb));
 
 	return -ENOBUFS;
+=======
+	err = nlmsg_parse(nlh, sizeof(*r), attrs, RTA_MAX, rtm_dn_policy);
+	if (err < 0)
+		return err;
+
+	tb = dn_fib_get_table(rtm_get_table(attrs, r->rtm_table), 1);
+	if (!tb)
+		return -ENOBUFS;
+
+	return tb->insert(tb, r, attrs, nlh, &NETLINK_CB(skb));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void fib_magic(int cmd, int type, __le16 dst, int dst_len, struct dn_ifaddr *ifa)
@@ -586,10 +754,38 @@ static void fib_magic(int cmd, int type, __le16 dst, int dst_len, struct dn_ifad
 		struct nlmsghdr nlh;
 		struct rtmsg rtm;
 	} req;
+<<<<<<< HEAD
 	struct dn_kern_rta rta;
 
 	memset(&req.rtm, 0, sizeof(req.rtm));
 	memset(&rta, 0, sizeof(rta));
+=======
+	struct {
+		struct nlattr hdr;
+		__le16 dst;
+	} dst_attr = {
+		.dst = dst,
+	};
+	struct {
+		struct nlattr hdr;
+		__le16 prefsrc;
+	} prefsrc_attr = {
+		.prefsrc = ifa->ifa_local,
+	};
+	struct {
+		struct nlattr hdr;
+		u32 oif;
+	} oif_attr = {
+		.oif = ifa->ifa_dev->dev->ifindex,
+	};
+	struct nlattr *attrs[RTA_MAX+1] = {
+		[RTA_DST] = (struct nlattr *) &dst_attr,
+		[RTA_PREFSRC] = (struct nlattr * ) &prefsrc_attr,
+		[RTA_OIF] = (struct nlattr *) &oif_attr,
+	};
+
+	memset(&req.rtm, 0, sizeof(req.rtm));
+>>>>>>> refs/remotes/origin/master
 
 	if (type == RTN_UNICAST)
 		tb = dn_fib_get_table(RT_MIN_TABLE, 1);
@@ -611,6 +807,7 @@ static void fib_magic(int cmd, int type, __le16 dst, int dst_len, struct dn_ifad
 	req.rtm.rtm_scope = (type != RTN_LOCAL ? RT_SCOPE_LINK : RT_SCOPE_HOST);
 	req.rtm.rtm_type = type;
 
+<<<<<<< HEAD
 	rta.rta_dst = &dst;
 	rta.rta_prefsrc = &ifa->ifa_local;
 	rta.rta_oif = &ifa->ifa_dev->dev->ifindex;
@@ -619,6 +816,12 @@ static void fib_magic(int cmd, int type, __le16 dst, int dst_len, struct dn_ifad
 		tb->insert(tb, &req.rtm, &rta, &req.nlh, NULL);
 	else
 		tb->delete(tb, &req.rtm, &rta, &req.nlh, NULL);
+=======
+	if (cmd == RTM_NEWROUTE)
+		tb->insert(tb, &req.rtm, attrs, &req.nlh, NULL);
+	else
+		tb->delete(tb, &req.rtm, attrs, &req.nlh, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void dn_fib_add_ifaddr(struct dn_ifaddr *ifa)
@@ -683,6 +886,7 @@ static int dn_fib_dnaddr_event(struct notifier_block *this, unsigned long event,
 	struct dn_ifaddr *ifa = (struct dn_ifaddr *)ptr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(event) {
 		case NETDEV_UP:
 			dn_fib_add_ifaddr(ifa);
@@ -698,6 +902,8 @@ static int dn_fib_dnaddr_event(struct notifier_block *this, unsigned long event,
 			}
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (event) {
 	case NETDEV_UP:
 		dn_fib_add_ifaddr(ifa);
@@ -712,7 +918,10 @@ static int dn_fib_dnaddr_event(struct notifier_block *this, unsigned long event,
 			dn_rt_cache_flush(-1);
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return NOTIFY_DONE;
 }

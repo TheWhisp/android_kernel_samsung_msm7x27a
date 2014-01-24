@@ -40,11 +40,18 @@
 #include "state.h"
 #include "nfsd.h"
 
+<<<<<<< HEAD
 #define NFSD4_MAX_TAGLEN	128
 #define XDR_LEN(n)                     (((n) + 3) & ~3)
 
 <<<<<<< HEAD
 =======
+=======
+#define NFSD4_MAX_SEC_LABEL_LEN	2048
+#define NFSD4_MAX_TAGLEN	128
+#define XDR_LEN(n)                     (((n) + 3) & ~3)
+
+>>>>>>> refs/remotes/origin/master
 #define CURRENT_STATE_ID_FLAG (1<<0)
 #define SAVED_STATE_ID_FLAG (1<<1)
 
@@ -52,7 +59,10 @@
 #define HAS_STATE_ID(c, f) ((c)->sid_flags & (f))
 #define CLEAR_STATE_ID(c, f) ((c)->sid_flags &= ~(f))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct nfsd4_compound_state {
 	struct svc_fh		current_fh;
 	struct svc_fh		save_fh;
@@ -63,14 +73,21 @@ struct nfsd4_compound_state {
 	__be32			*datap;
 	size_t			iovlen;
 	u32			minorversion;
+<<<<<<< HEAD
 	u32			status;
 <<<<<<< HEAD
 =======
+=======
+	__be32			status;
+>>>>>>> refs/remotes/origin/master
 	stateid_t	current_stateid;
 	stateid_t	save_stateid;
 	/* to indicate current and saved state id presents */
 	u32		sid_flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline bool nfsd4_has_session(struct nfsd4_compound_state *cs)
@@ -99,9 +116,12 @@ struct nfsd4_close {
 	u32		cl_seqid;           /* request */
 	stateid_t	cl_stateid;         /* request+response */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs4_stateowner * cl_stateowner;	/* response */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct nfsd4_commit {
@@ -128,6 +148,10 @@ struct nfsd4_create {
 	struct iattr	cr_iattr;           /* request */
 	struct nfsd4_change_info  cr_cinfo; /* response */
 	struct nfs4_acl *cr_acl;
+<<<<<<< HEAD
+=======
+	struct xdr_netobj cr_label;
+>>>>>>> refs/remotes/origin/master
 };
 #define cr_linklen	u.link.namelen
 #define cr_linkname	u.link.name
@@ -152,10 +176,14 @@ struct nfsd4_link {
 struct nfsd4_lock_denied {
 	clientid_t	ld_clientid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs4_stateowner   *ld_sop;
 =======
 	struct xdr_netobj	ld_owner;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xdr_netobj	ld_owner;
+>>>>>>> refs/remotes/origin/master
 	u64             ld_start;
 	u64             ld_length;
 	u32             ld_type;
@@ -190,11 +218,14 @@ struct nfsd4_lock {
 		struct nfsd4_lock_denied        denied;
 	} u;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* The lk_replay_owner is the open owner in the open_to_lock_owner
 	 * case and the lock owner otherwise: */
 	struct nfs4_stateowner *lk_replay_owner;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #define lk_new_open_seqid       v.new.open_seqid
 #define lk_new_open_stateid     v.new.open_stateid
@@ -204,7 +235,10 @@ struct nfsd4_lock {
 #define lk_old_lock_stateid     v.old.lock_stateid
 #define lk_old_lock_seqid       v.old.lock_seqid
 
+<<<<<<< HEAD
 #define lk_rflags       u.ok.rflags
+=======
+>>>>>>> refs/remotes/origin/master
 #define lk_resp_stateid u.ok.stateid
 #define lk_denied       u.denied
 
@@ -216,9 +250,12 @@ struct nfsd4_lockt {
 	u64				lt_offset;
 	u64				lt_length;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs4_stateowner * 	lt_stateowner;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct nfsd4_lock_denied  	lt_denied;
 };
 
@@ -230,9 +267,12 @@ struct nfsd4_locku {
 	u64             lu_offset;
 	u64             lu_length;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs4_stateowner  *lu_stateowner;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -252,24 +292,34 @@ struct nfsd4_open {
 	u32		op_delegate_type;   /* request - CLAIM_PREV only */
 	stateid_t       op_delegate_stateid; /* request - response */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32		op_why_no_deleg;    /* response - DELEG_NONE_EXT only */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32		op_why_no_deleg;    /* response - DELEG_NONE_EXT only */
+>>>>>>> refs/remotes/origin/master
 	u32		op_create;     	    /* request */
 	u32		op_createmode;      /* request */
 	u32		op_bmval[3];        /* request */
 	struct iattr	iattr;              /* UNCHECKED4, GUARDED4, EXCLUSIVE4_1 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nfs4_verifier	verf;               /* EXCLUSIVE4 */
 =======
 	nfs4_verifier	op_verf __attribute__((aligned(32)));
 					    /* EXCLUSIVE4 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nfs4_verifier	op_verf __attribute__((aligned(32)));
+					    /* EXCLUSIVE4 */
+>>>>>>> refs/remotes/origin/master
 	clientid_t	op_clientid;        /* request */
 	struct xdr_netobj op_owner;           /* request */
 	u32		op_seqid;           /* request */
 	u32		op_share_access;    /* request */
 	u32		op_share_deny;      /* request */
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	u32		op_deleg_want;      /* request */
@@ -286,29 +336,47 @@ struct nfsd4_open {
 #define op_iattr	iattr
 #define op_verf		verf
 =======
+=======
+	u32		op_deleg_want;      /* request */
+	stateid_t	op_stateid;         /* response */
+	__be32		op_xdr_error;       /* see nfsd4_open_omfg() */
+	u32		op_recall;          /* recall */
+	struct nfsd4_change_info  op_cinfo; /* response */
+	u32		op_rflags;          /* response */
+>>>>>>> refs/remotes/origin/master
 	bool		op_truncate;        /* used during processing */
 	bool		op_created;         /* used during processing */
 	struct nfs4_openowner *op_openowner; /* used during processing */
 	struct nfs4_file *op_file;          /* used during processing */
 	struct nfs4_ol_stateid *op_stp;	    /* used during processing */
 	struct nfs4_acl *op_acl;
+<<<<<<< HEAD
 };
 #define op_iattr	iattr
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xdr_netobj op_label;
+};
+#define op_iattr	iattr
+>>>>>>> refs/remotes/origin/master
 
 struct nfsd4_open_confirm {
 	stateid_t	oc_req_stateid		/* request */;
 	u32		oc_seqid    		/* request */;
 	stateid_t	oc_resp_stateid		/* response */;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nfs4_stateowner * oc_stateowner;	/* response */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct nfsd4_open_downgrade {
 	stateid_t       od_stateid;
 	u32             od_seqid;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32             od_share_access;
 	u32             od_share_deny;
@@ -318,6 +386,11 @@ struct nfsd4_open_downgrade {
 	u32		od_deleg_want;		/* request */
 	u32             od_share_deny;		/* request */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32             od_share_access;	/* request */
+	u32		od_deleg_want;		/* request */
+	u32             od_share_deny;		/* request */
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -387,16 +460,24 @@ struct nfsd4_setattr {
 	u32		sa_bmval[3];        /* request */
 	struct iattr	sa_iattr;           /* request */
 	struct nfs4_acl *sa_acl;
+<<<<<<< HEAD
+=======
+	struct xdr_netobj sa_label;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct nfsd4_setclientid {
 	nfs4_verifier	se_verf;            /* request */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32		se_namelen;         /* request */
 	char *		se_name;            /* request */
 =======
 	struct xdr_netobj se_name;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xdr_netobj se_name;
+>>>>>>> refs/remotes/origin/master
 	u32		se_callback_prog;   /* request */
 	u32		se_callback_netid_len;  /* request */
 	char *		se_callback_netid_val;  /* request */
@@ -413,7 +494,10 @@ struct nfsd4_setclientid_confirm {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct nfsd4_saved_compoundargs {
 	__be32 *p;
 	__be32 *end;
@@ -428,7 +512,11 @@ struct nfsd4_test_stateid_id {
 };
 
 struct nfsd4_test_stateid {
+<<<<<<< HEAD
 	__be32		ts_num_ids;
+=======
+	u32		ts_num_ids;
+>>>>>>> refs/remotes/origin/master
 	struct list_head ts_stateid_list;
 };
 
@@ -437,7 +525,10 @@ struct nfsd4_free_stateid {
 	__be32		fr_status;          /* response */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* also used for NVERIFY */
 struct nfsd4_verify {
 	u32		ve_bmval[3];        /* request */
@@ -450,7 +541,12 @@ struct nfsd4_write {
 	u64		wr_offset;          /* request */
 	u32		wr_stable_how;      /* request */
 	u32		wr_buflen;          /* request */
+<<<<<<< HEAD
 	int		wr_vlen;
+=======
+	struct kvec	wr_head;
+	struct page **	wr_pagelist;        /* request */
+>>>>>>> refs/remotes/origin/master
 
 	u32		wr_bytes_written;   /* response */
 	u32		wr_how_written;     /* response */
@@ -483,12 +579,18 @@ struct nfsd4_destroy_session {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct nfsd4_destroy_clientid {
 	clientid_t clientid;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct nfsd4_reclaim_complete {
 	u32 rca_one_fs;
 };
@@ -530,25 +632,39 @@ struct nfsd4_op {
 
 		/* NFSv4.1 */
 		struct nfsd4_exchange_id	exchange_id;
+<<<<<<< HEAD
+=======
+		struct nfsd4_backchannel_ctl	backchannel_ctl;
+>>>>>>> refs/remotes/origin/master
 		struct nfsd4_bind_conn_to_session bind_conn_to_session;
 		struct nfsd4_create_session	create_session;
 		struct nfsd4_destroy_session	destroy_session;
 		struct nfsd4_sequence		sequence;
 		struct nfsd4_reclaim_complete	reclaim_complete;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		struct nfsd4_test_stateid	test_stateid;
 		struct nfsd4_free_stateid	free_stateid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct nfsd4_test_stateid	test_stateid;
+		struct nfsd4_free_stateid	free_stateid;
+>>>>>>> refs/remotes/origin/master
 	} u;
 	struct nfs4_replay *			replay;
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 bool nfsd4_cache_this_op(struct nfsd4_op *);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool nfsd4_cache_this_op(struct nfsd4_op *);
+
+>>>>>>> refs/remotes/origin/master
 struct nfsd4_compoundargs {
 	/* scratch variables for XDR decode */
 	__be32 *			p;
@@ -572,9 +688,13 @@ struct nfsd4_compoundargs {
 	struct nfsd4_op			*ops;
 	struct nfsd4_op			iops[8];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int				cachetype;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int				cachetype;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct nfsd4_compoundres {
@@ -600,11 +720,24 @@ static inline bool nfsd4_is_solo_sequence(struct nfsd4_compoundres *resp)
 static inline bool nfsd4_not_cached(struct nfsd4_compoundres *resp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return !resp->cstate.slot->sl_cachethis || nfsd4_is_solo_sequence(resp);
 =======
 	return !(resp->cstate.slot->sl_flags & NFSD4_SLOT_CACHETHIS)
 		|| nfsd4_is_solo_sequence(resp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return !(resp->cstate.slot->sl_flags & NFSD4_SLOT_CACHETHIS)
+		|| nfsd4_is_solo_sequence(resp);
+}
+
+static inline bool nfsd4_last_compound_op(struct svc_rqst *rqstp)
+{
+	struct nfsd4_compoundres *resp = rqstp->rq_resp;
+	struct nfsd4_compoundargs *argp = rqstp->rq_argp;
+
+	return argp->opcnt == resp->opcnt;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define NFS4_SVC_XDRSIZE		sizeof(struct nfsd4_compoundargs)
@@ -631,6 +764,7 @@ int nfs4svc_decode_compoundargs(struct svc_rqst *, __be32 *,
 int nfs4svc_encode_compoundres(struct svc_rqst *, __be32 *,
 		struct nfsd4_compoundres *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int nfsd4_check_resp_size(struct nfsd4_compoundres *, u32);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -638,6 +772,13 @@ void nfsd4_encode_operation(struct nfsd4_compoundres *, struct nfsd4_op *);
 void nfsd4_encode_replay(struct nfsd4_compoundres *resp, struct nfsd4_op *op);
 __be32 nfsd4_encode_fattr(struct svc_fh *fhp, struct svc_export *exp,
 		       struct dentry *dentry, __be32 *buffer, int *countp,
+=======
+__be32 nfsd4_check_resp_size(struct nfsd4_compoundres *, u32);
+void nfsd4_encode_operation(struct nfsd4_compoundres *, struct nfsd4_op *);
+void nfsd4_encode_replay(struct nfsd4_compoundres *resp, struct nfsd4_op *op);
+__be32 nfsd4_encode_fattr(struct svc_fh *fhp, struct svc_export *exp,
+		       struct dentry *dentry, __be32 **buffer, int countp,
+>>>>>>> refs/remotes/origin/master
 		       u32 *bmval, struct svc_rqst *, int ignore_crossmnt);
 extern __be32 nfsd4_setclientid(struct svc_rqst *rqstp,
 		struct nfsd4_compound_state *,
@@ -650,6 +791,10 @@ extern __be32 nfsd4_replay_cache_entry(struct nfsd4_compoundres *resp,
 		struct nfsd4_sequence *seq);
 extern __be32 nfsd4_exchange_id(struct svc_rqst *rqstp,
 		struct nfsd4_compound_state *, struct nfsd4_exchange_id *);
+<<<<<<< HEAD
+=======
+extern __be32 nfsd4_backchannel_ctl(struct svc_rqst *, struct nfsd4_compound_state *, struct nfsd4_backchannel_ctl *);
+>>>>>>> refs/remotes/origin/master
 extern __be32 nfsd4_bind_conn_to_session(struct svc_rqst *, struct nfsd4_compound_state *, struct nfsd4_bind_conn_to_session *);
 extern __be32 nfsd4_create_session(struct svc_rqst *,
 		struct nfsd4_compound_state *,
@@ -660,6 +805,7 @@ extern __be32 nfsd4_sequence(struct svc_rqst *,
 extern __be32 nfsd4_destroy_session(struct svc_rqst *,
 		struct nfsd4_compound_state *,
 		struct nfsd4_destroy_session *);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 extern __be32 nfsd4_destroy_clientid(struct svc_rqst *, struct nfsd4_compound_state *, struct nfsd4_destroy_clientid *);
@@ -673,6 +819,15 @@ extern __be32 nfsd4_process_open2(struct svc_rqst *rqstp,
 =======
 extern void nfsd4_cleanup_open_state(struct nfsd4_open *open, __be32 status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern __be32 nfsd4_destroy_clientid(struct svc_rqst *, struct nfsd4_compound_state *, struct nfsd4_destroy_clientid *);
+__be32 nfsd4_reclaim_complete(struct svc_rqst *, struct nfsd4_compound_state *, struct nfsd4_reclaim_complete *);
+extern __be32 nfsd4_process_open1(struct nfsd4_compound_state *,
+		struct nfsd4_open *open, struct nfsd_net *nn);
+extern __be32 nfsd4_process_open2(struct svc_rqst *rqstp,
+		struct svc_fh *current_fh, struct nfsd4_open *open);
+extern void nfsd4_cleanup_open_state(struct nfsd4_open *open, __be32 status);
+>>>>>>> refs/remotes/origin/master
 extern __be32 nfsd4_open_confirm(struct svc_rqst *rqstp,
 		struct nfsd4_compound_state *, struct nfsd4_open_confirm *oc);
 extern __be32 nfsd4_close(struct svc_rqst *rqstp,
@@ -694,21 +849,32 @@ nfsd4_release_lockowner(struct svc_rqst *rqstp,
 		struct nfsd4_compound_state *,
 		struct nfsd4_release_lockowner *rlockowner);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void nfsd4_release_compoundargs(struct nfsd4_compoundargs *);
 =======
 extern int nfsd4_release_compoundargs(void *rq, __be32 *p, void *resp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int nfsd4_release_compoundargs(void *rq, __be32 *p, void *resp);
+>>>>>>> refs/remotes/origin/master
 extern __be32 nfsd4_delegreturn(struct svc_rqst *rqstp,
 		struct nfsd4_compound_state *, struct nfsd4_delegreturn *dr);
 extern __be32 nfsd4_renew(struct svc_rqst *rqstp,
 			  struct nfsd4_compound_state *, clientid_t *clid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern __be32 nfsd4_test_stateid(struct svc_rqst *rqstp,
 		struct nfsd4_compound_state *, struct nfsd4_test_stateid *test_stateid);
 extern __be32 nfsd4_free_stateid(struct svc_rqst *rqstp,
 		struct nfsd4_compound_state *, struct nfsd4_free_stateid *free_stateid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void nfsd4_bump_seqid(struct nfsd4_compound_state *, __be32 nfserr);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*

@@ -13,9 +13,13 @@
 #include <linux/completion.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mempool.h>
 #include <linux/slab.h>
 #include <linux/init.h>
@@ -112,7 +116,11 @@ static void scsi_unprep_request(struct request *req)
  * for a requeue after completion, which should only occur in this
  * file.
  */
+<<<<<<< HEAD
 static int __scsi_queue_insert(struct scsi_cmnd *cmd, int reason, int unbusy)
+=======
+static void __scsi_queue_insert(struct scsi_cmnd *cmd, int reason, int unbusy)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = cmd->device->host;
 	struct scsi_device *device = cmd->device;
@@ -142,9 +150,13 @@ static int __scsi_queue_insert(struct scsi_cmnd *cmd, int reason, int unbusy)
 		break;
 	case SCSI_MLQUEUE_DEVICE_BUSY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case SCSI_MLQUEUE_EH_RETRY:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SCSI_MLQUEUE_EH_RETRY:
+>>>>>>> refs/remotes/origin/master
 		device->device_blocked = device->max_device_blocked;
 		break;
 	case SCSI_MLQUEUE_TARGET_BUSY:
@@ -161,6 +173,7 @@ static int __scsi_queue_insert(struct scsi_cmnd *cmd, int reason, int unbusy)
 
 	/*
 	 * Requeue this command.  It will go before all other commands
+<<<<<<< HEAD
 	 * that are already in the queue.
 	 */
 	spin_lock_irqsave(q->queue_lock, flags);
@@ -170,6 +183,16 @@ static int __scsi_queue_insert(struct scsi_cmnd *cmd, int reason, int unbusy)
 	kblockd_schedule_work(q, &device->requeue_work);
 
 	return 0;
+=======
+	 * that are already in the queue. Schedule requeue work under
+	 * lock such that the kblockd_schedule_work() call happens
+	 * before blk_cleanup_queue() finishes.
+	 */
+	spin_lock_irqsave(q->queue_lock, flags);
+	blk_requeue_request(q, cmd->request);
+	kblockd_schedule_work(q, &device->requeue_work);
+	spin_unlock_irqrestore(q->queue_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -191,9 +214,15 @@ static int __scsi_queue_insert(struct scsi_cmnd *cmd, int reason, int unbusy)
  * Notes:       This could be called either from an interrupt context or a
  *              normal process context.
  */
+<<<<<<< HEAD
 int scsi_queue_insert(struct scsi_cmnd *cmd, int reason)
 {
 	return __scsi_queue_insert(cmd, reason, 1);
+=======
+void scsi_queue_insert(struct scsi_cmnd *cmd, int reason)
+{
+	__scsi_queue_insert(cmd, reason, 1);
+>>>>>>> refs/remotes/origin/master
 }
 /**
  * scsi_execute - insert request and wait for the result
@@ -261,11 +290,18 @@ int scsi_execute(struct scsi_device *sdev, const unsigned char *cmd,
 }
 EXPORT_SYMBOL(scsi_execute);
 
+<<<<<<< HEAD
 
 int scsi_execute_req(struct scsi_device *sdev, const unsigned char *cmd,
 		     int data_direction, void *buffer, unsigned bufflen,
 		     struct scsi_sense_hdr *sshdr, int timeout, int retries,
 		     int *resid)
+=======
+int scsi_execute_req_flags(struct scsi_device *sdev, const unsigned char *cmd,
+		     int data_direction, void *buffer, unsigned bufflen,
+		     struct scsi_sense_hdr *sshdr, int timeout, int retries,
+		     int *resid, int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	char *sense = NULL;
 	int result;
@@ -276,14 +312,22 @@ int scsi_execute_req(struct scsi_device *sdev, const unsigned char *cmd,
 			return DRIVER_ERROR << 24;
 	}
 	result = scsi_execute(sdev, cmd, data_direction, buffer, bufflen,
+<<<<<<< HEAD
 			      sense, timeout, retries, 0, resid);
+=======
+			      sense, timeout, retries, flags, resid);
+>>>>>>> refs/remotes/origin/master
 	if (sshdr)
 		scsi_normalize_sense(sense, SCSI_SENSE_BUFFERSIZE, sshdr);
 
 	kfree(sense);
 	return result;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(scsi_execute_req);
+=======
+EXPORT_SYMBOL(scsi_execute_req_flags);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Function:    scsi_init_cmd_errh()
@@ -413,12 +457,15 @@ static void scsi_run_queue(struct request_queue *q)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* if the device is dead, sdev will be NULL, so no queue to run */
 	if (!sdev)
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	shost = sdev->host;
 	if (scsi_target(sdev)->single_lun)
 		scsi_single_lun_run(sdev);
@@ -427,6 +474,11 @@ static void scsi_run_queue(struct request_queue *q)
 	list_splice_init(&shost->starved_list, &starved_list);
 
 	while (!list_empty(&starved_list)) {
+<<<<<<< HEAD
+=======
+		struct request_queue *slq;
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * As long as shost is accepting commands and we have
 		 * starved queues, call blk_run_queue. scsi_request_fn
@@ -449,11 +501,33 @@ static void scsi_run_queue(struct request_queue *q)
 			continue;
 		}
 
+<<<<<<< HEAD
 		spin_unlock(shost->host_lock);
 		spin_lock(sdev->request_queue->queue_lock);
 		__blk_run_queue(sdev->request_queue);
 		spin_unlock(sdev->request_queue->queue_lock);
 		spin_lock(shost->host_lock);
+=======
+		/*
+		 * Once we drop the host lock, a racing scsi_remove_device()
+		 * call may remove the sdev from the starved list and destroy
+		 * it and the queue.  Mitigate by taking a reference to the
+		 * queue and never touching the sdev again after we drop the
+		 * host lock.  Note: if __scsi_remove_device() invokes
+		 * blk_cleanup_queue() before the queue is run from this
+		 * function then blk_run_queue() will return immediately since
+		 * blk_cleanup_queue() marks the queue with QUEUE_FLAG_DYING.
+		 */
+		slq = sdev->request_queue;
+		if (!blk_get_queue(slq))
+			continue;
+		spin_unlock_irqrestore(shost->host_lock, flags);
+
+		blk_run_queue(slq);
+		blk_put_queue(slq);
+
+		spin_lock_irqsave(shost->host_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* put any unprocessed entries back */
 	list_splice(&starved_list, &shost->starved_list);
@@ -693,6 +767,23 @@ void scsi_release_buffers(struct scsi_cmnd *cmd)
 }
 EXPORT_SYMBOL(scsi_release_buffers);
 
+<<<<<<< HEAD
+=======
+/**
+ * __scsi_error_from_host_byte - translate SCSI error code into errno
+ * @cmd:	SCSI command (unused)
+ * @result:	scsi error code
+ *
+ * Translate SCSI error code into standard UNIX errno.
+ * Return values:
+ * -ENOLINK	temporary transport failure
+ * -EREMOTEIO	permanent target failure, do not retry
+ * -EBADE	permanent nexus failure, retry on other path
+ * -ENOSPC	No write space available
+ * -ENODATA	Medium error
+ * -EIO		unspecified I/O error
+ */
+>>>>>>> refs/remotes/origin/master
 static int __scsi_error_from_host_byte(struct scsi_cmnd *cmd, int result)
 {
 	int error = 0;
@@ -703,20 +794,36 @@ static int __scsi_error_from_host_byte(struct scsi_cmnd *cmd, int result)
 		break;
 	case DID_TARGET_FAILURE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd->result |= (DID_OK << 16);
 		error = -EREMOTEIO;
 		break;
 	case DID_NEXUS_FAILURE:
 		cmd->result |= (DID_OK << 16);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		set_host_byte(cmd, DID_OK);
 		error = -EREMOTEIO;
 		break;
 	case DID_NEXUS_FAILURE:
 		set_host_byte(cmd, DID_OK);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		error = -EBADE;
 		break;
+=======
+		error = -EBADE;
+		break;
+	case DID_ALLOC_FAILURE:
+		set_host_byte(cmd, DID_OK);
+		error = -ENOSPC;
+		break;
+	case DID_MEDIUM_ERROR:
+		set_host_byte(cmd, DID_OK);
+		error = -ENODATA;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		error = -EIO;
 		break;
@@ -782,9 +889,12 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 
 	if (req->cmd_type == REQ_TYPE_BLOCK_PC) { /* SG_IO ioctl from block level */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		req->errors = result;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (result) {
 			if (sense_valid && req->sense) {
 				/*
@@ -801,12 +911,18 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 				error = __scsi_error_from_host_byte(cmd, result);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * __scsi_error_from_host_byte may have reset the host_byte
 		 */
 		req->errors = cmd->result;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		req->resid_len = scsi_get_resid(cmd);
 
@@ -912,6 +1028,7 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 				action = ACTION_FAIL;
 				error = -EILSEQ;
 			/* INVALID COMMAND OPCODE or INVALID FIELD IN CDB */
+<<<<<<< HEAD
 			} else if ((sshdr.asc == 0x20 || sshdr.asc == 0x24) &&
 				   (cmd->cmnd[0] == UNMAP ||
 				    cmd->cmnd[0] == WRITE_SAME_16 ||
@@ -922,6 +1039,27 @@ void scsi_io_completion(struct scsi_cmnd *cmd, unsigned int good_bytes)
 =======
 				error = -EREMOTEIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else if (sshdr.asc == 0x20 || sshdr.asc == 0x24) {
+				switch (cmd->cmnd[0]) {
+				case UNMAP:
+					description = "Discard failure";
+					break;
+				case WRITE_SAME:
+				case WRITE_SAME_16:
+					if (cmd->cmnd[1] & 0x8)
+						description = "Discard failure";
+					else
+						description =
+							"Write same failure";
+					break;
+				default:
+					description = "Invalid command failure";
+					break;
+				}
+				action = ACTION_FAIL;
+				error = -EREMOTEIO;
+>>>>>>> refs/remotes/origin/master
 			} else
 				action = ACTION_FAIL;
 			break;
@@ -1214,6 +1352,10 @@ int scsi_prep_state_check(struct scsi_device *sdev, struct request *req)
 	if (unlikely(sdev->sdev_state != SDEV_RUNNING)) {
 		switch (sdev->sdev_state) {
 		case SDEV_OFFLINE:
+<<<<<<< HEAD
+=======
+		case SDEV_TRANSPORT_OFFLINE:
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * If the device is offline we refuse to process any
 			 * commands.  The device must be brought online
@@ -1359,6 +1501,7 @@ static inline int scsi_target_queue_ready(struct Scsi_Host *shost,
 
 	if (scsi_target_is_busy(starget)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (list_empty(&sdev->starved_entry))
 			list_add_tail(&sdev->starved_entry,
 				      &shost->starved_list);
@@ -1369,11 +1512,16 @@ static inline int scsi_target_queue_ready(struct Scsi_Host *shost,
 	if (!list_empty(&sdev->starved_entry))
 		list_del_init(&sdev->starved_entry);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		list_move_tail(&sdev->starved_entry, &shost->starved_list);
 		return 0;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -1424,6 +1572,7 @@ static inline int scsi_host_queue_ready(struct request_queue *q,
  * regardless of taking lock or not.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * When scsi can't dispatch I/Os anymore and needs to kill I/Os
  * (e.g. !sdev), scsi needs to return 'not busy'.
  * Otherwise, request stacking drivers may hold requests forever.
@@ -1432,6 +1581,11 @@ static inline int scsi_host_queue_ready(struct request_queue *q,
  * needs to return 'not busy'. Otherwise, request stacking drivers
  * may hold requests forever.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * When scsi can't dispatch I/Os anymore and needs to kill I/Os scsi
+ * needs to return 'not busy'. Otherwise, request stacking drivers
+ * may hold requests forever.
+>>>>>>> refs/remotes/origin/master
  */
 static int scsi_lld_busy(struct request_queue *q)
 {
@@ -1439,10 +1593,14 @@ static int scsi_lld_busy(struct request_queue *q)
 	struct Scsi_Host *shost;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sdev)
 =======
 	if (blk_queue_dead(q))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (blk_queue_dying(q))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	shost = sdev->host;
@@ -1554,6 +1712,7 @@ static void scsi_request_fn(struct request_queue *q)
 	struct request *req;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!sdev) {
 		while ((req = blk_peek_request(q)) != NULL)
 			scsi_kill_request(req, q);
@@ -1562,6 +1721,8 @@ static void scsi_request_fn(struct request_queue *q)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if(!get_device(&sdev->sdev_gendev))
 		/* We must be tearing the block queue down already */
 		return;
@@ -1697,7 +1858,11 @@ u64 scsi_calculate_bounce_limit(struct Scsi_Host *shost)
 
 	host_dev = scsi_get_device(shost);
 	if (host_dev && host_dev->dma_mask)
+<<<<<<< HEAD
 		bounce_limit = *host_dev->dma_mask;
+=======
+		bounce_limit = dma_max_pfn(host_dev) << PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	return bounce_limit;
 }
@@ -1708,10 +1873,14 @@ struct request_queue *__scsi_alloc_queue(struct Scsi_Host *shost,
 {
 	struct request_queue *q;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct device *dev = shost->shost_gendev.parent;
 =======
 	struct device *dev = shost->dma_dev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev = shost->dma_dev;
+>>>>>>> refs/remotes/origin/master
 
 	q = blk_init_queue(request_fn, NULL);
 	if (!q)
@@ -1768,6 +1937,7 @@ struct request_queue *scsi_alloc_queue(struct scsi_device *sdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void scsi_free_queue(struct request_queue *q)
 {
 	unsigned long flags;
@@ -1784,6 +1954,8 @@ void scsi_free_queue(struct request_queue *q)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Function:    scsi_block_requests()
  *
@@ -2154,6 +2326,10 @@ scsi_device_set_state(struct scsi_device *sdev, enum scsi_device_state state)
 		switch (oldstate) {
 		case SDEV_CREATED:
 		case SDEV_OFFLINE:
+<<<<<<< HEAD
+=======
+		case SDEV_TRANSPORT_OFFLINE:
+>>>>>>> refs/remotes/origin/master
 		case SDEV_QUIESCE:
 		case SDEV_BLOCK:
 			break;
@@ -2166,6 +2342,10 @@ scsi_device_set_state(struct scsi_device *sdev, enum scsi_device_state state)
 		switch (oldstate) {
 		case SDEV_RUNNING:
 		case SDEV_OFFLINE:
+<<<<<<< HEAD
+=======
+		case SDEV_TRANSPORT_OFFLINE:
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			goto illegal;
@@ -2173,6 +2353,10 @@ scsi_device_set_state(struct scsi_device *sdev, enum scsi_device_state state)
 		break;
 
 	case SDEV_OFFLINE:
+<<<<<<< HEAD
+=======
+	case SDEV_TRANSPORT_OFFLINE:
+>>>>>>> refs/remotes/origin/master
 		switch (oldstate) {
 		case SDEV_CREATED:
 		case SDEV_RUNNING:
@@ -2209,6 +2393,10 @@ scsi_device_set_state(struct scsi_device *sdev, enum scsi_device_state state)
 		case SDEV_RUNNING:
 		case SDEV_QUIESCE:
 		case SDEV_OFFLINE:
+<<<<<<< HEAD
+=======
+		case SDEV_TRANSPORT_OFFLINE:
+>>>>>>> refs/remotes/origin/master
 		case SDEV_BLOCK:
 			break;
 		default:
@@ -2221,7 +2409,13 @@ scsi_device_set_state(struct scsi_device *sdev, enum scsi_device_state state)
 		case SDEV_CREATED:
 		case SDEV_RUNNING:
 		case SDEV_OFFLINE:
+<<<<<<< HEAD
 		case SDEV_CANCEL:
+=======
+		case SDEV_TRANSPORT_OFFLINE:
+		case SDEV_CANCEL:
+		case SDEV_CREATED_BLOCK:
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			goto illegal;
@@ -2259,7 +2453,25 @@ static void scsi_evt_emit(struct scsi_device *sdev, struct scsi_event *evt)
 	case SDEV_EVT_MEDIA_CHANGE:
 		envp[idx++] = "SDEV_MEDIA_CHANGE=1";
 		break;
+<<<<<<< HEAD
 
+=======
+	case SDEV_EVT_INQUIRY_CHANGE_REPORTED:
+		envp[idx++] = "SDEV_UA=INQUIRY_DATA_HAS_CHANGED";
+		break;
+	case SDEV_EVT_CAPACITY_CHANGE_REPORTED:
+		envp[idx++] = "SDEV_UA=CAPACITY_DATA_HAS_CHANGED";
+		break;
+	case SDEV_EVT_SOFT_THRESHOLD_REACHED_REPORTED:
+	       envp[idx++] = "SDEV_UA=THIN_PROVISIONING_SOFT_THRESHOLD_REACHED";
+		break;
+	case SDEV_EVT_MODE_PARAMETER_CHANGE_REPORTED:
+		envp[idx++] = "SDEV_UA=MODE_PARAMETERS_CHANGED";
+		break;
+	case SDEV_EVT_LUN_CHANGE_REPORTED:
+		envp[idx++] = "SDEV_UA=REPORTED_LUNS_DATA_HAS_CHANGED";
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		/* do nothing */
 		break;
@@ -2280,10 +2492,21 @@ static void scsi_evt_emit(struct scsi_device *sdev, struct scsi_event *evt)
 void scsi_evt_thread(struct work_struct *work)
 {
 	struct scsi_device *sdev;
+<<<<<<< HEAD
+=======
+	enum scsi_device_event evt_type;
+>>>>>>> refs/remotes/origin/master
 	LIST_HEAD(event_list);
 
 	sdev = container_of(work, struct scsi_device, event_work);
 
+<<<<<<< HEAD
+=======
+	for (evt_type = SDEV_EVT_FIRST; evt_type <= SDEV_EVT_LAST; evt_type++)
+		if (test_and_clear_bit(evt_type, sdev->pending_events))
+			sdev_evt_send_simple(sdev, evt_type, GFP_KERNEL);
+
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		struct scsi_event *evt;
 		struct list_head *this, *tmp;
@@ -2353,6 +2576,14 @@ struct scsi_event *sdev_evt_alloc(enum scsi_device_event evt_type,
 	/* evt_type-specific initialization, if any */
 	switch (evt_type) {
 	case SDEV_EVT_MEDIA_CHANGE:
+<<<<<<< HEAD
+=======
+	case SDEV_EVT_INQUIRY_CHANGE_REPORTED:
+	case SDEV_EVT_CAPACITY_CHANGE_REPORTED:
+	case SDEV_EVT_SOFT_THRESHOLD_REACHED_REPORTED:
+	case SDEV_EVT_MODE_PARAMETER_CHANGE_REPORTED:
+	case SDEV_EVT_LUN_CHANGE_REPORTED:
+>>>>>>> refs/remotes/origin/master
 	default:
 		/* do nothing */
 		break;
@@ -2424,10 +2655,21 @@ EXPORT_SYMBOL(scsi_device_quiesce);
  *
  *	Must be called with user context, may sleep.
  */
+<<<<<<< HEAD
 void
 scsi_device_resume(struct scsi_device *sdev)
 {
 	if(scsi_device_set_state(sdev, SDEV_RUNNING))
+=======
+void scsi_device_resume(struct scsi_device *sdev)
+{
+	/* check if the device state was mutated prior to resume, and if
+	 * so assume the state is being managed elsewhere (for example
+	 * device deleted during suspend)
+	 */
+	if (sdev->sdev_state != SDEV_QUIESCE ||
+	    scsi_device_set_state(sdev, SDEV_RUNNING))
+>>>>>>> refs/remotes/origin/master
 		return;
 	scsi_run_queue(sdev->request_queue);
 }
@@ -2474,7 +2716,10 @@ EXPORT_SYMBOL(scsi_target_resume);
  *	(which must be a legal transition).  When the device is in this
  *	state, all commands are deferred until the scsi lld reenables
  *	the device with scsi_device_unblock or device_block_tmo fires.
+<<<<<<< HEAD
  *	This routine assumes the host_lock is held on entry.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 int
 scsi_internal_device_block(struct scsi_device *sdev)
@@ -2507,6 +2752,10 @@ EXPORT_SYMBOL_GPL(scsi_internal_device_block);
 /**
  * scsi_internal_device_unblock - resume a device after a block request
  * @sdev:	device to resume
+<<<<<<< HEAD
+=======
+ * @new_state:	state to set devices to after unblocking
+>>>>>>> refs/remotes/origin/master
  *
  * Called by scsi lld's or the midlayer to restart the device queue
  * for the previously suspended scsi device.  Called from interrupt or
@@ -2516,6 +2765,7 @@ EXPORT_SYMBOL_GPL(scsi_internal_device_block);
  *
  * Notes:       
  *	This routine transitions the device to the SDEV_RUNNING state
+<<<<<<< HEAD
  *	(which must be a legal transition) allowing the midlayer to
  *	goose the queue for this device.  This routine assumes the 
  *	host_lock is held upon entry.
@@ -2535,6 +2785,32 @@ scsi_internal_device_unblock(struct scsi_device *sdev)
 	else if (sdev->sdev_state == SDEV_CREATED_BLOCK)
 		sdev->sdev_state = SDEV_CREATED;
 	else if (sdev->sdev_state != SDEV_CANCEL &&
+=======
+ *	or to one of the offline states (which must be a legal transition)
+ *	allowing the midlayer to goose the queue for this device.
+ */
+int
+scsi_internal_device_unblock(struct scsi_device *sdev,
+			     enum scsi_device_state new_state)
+{
+	struct request_queue *q = sdev->request_queue; 
+	unsigned long flags;
+
+	/*
+	 * Try to transition the scsi device to SDEV_RUNNING or one of the
+	 * offlined states and goose the device queue if successful.
+	 */
+	if ((sdev->sdev_state == SDEV_BLOCK) ||
+	    (sdev->sdev_state == SDEV_TRANSPORT_OFFLINE))
+		sdev->sdev_state = new_state;
+	else if (sdev->sdev_state == SDEV_CREATED_BLOCK) {
+		if (new_state == SDEV_TRANSPORT_OFFLINE ||
+		    new_state == SDEV_OFFLINE)
+			sdev->sdev_state = new_state;
+		else
+			sdev->sdev_state = SDEV_CREATED;
+	} else if (sdev->sdev_state != SDEV_CANCEL &&
+>>>>>>> refs/remotes/origin/master
 		 sdev->sdev_state != SDEV_OFFLINE)
 		return -EINVAL;
 
@@ -2575,19 +2851,28 @@ EXPORT_SYMBOL_GPL(scsi_target_block);
 static void
 device_unblock(struct scsi_device *sdev, void *data)
 {
+<<<<<<< HEAD
 	scsi_internal_device_unblock(sdev);
+=======
+	scsi_internal_device_unblock(sdev, *(enum scsi_device_state *)data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 target_unblock(struct device *dev, void *data)
 {
 	if (scsi_is_target_device(dev))
+<<<<<<< HEAD
 		starget_for_each_device(to_scsi_target(dev), NULL,
+=======
+		starget_for_each_device(to_scsi_target(dev), data,
+>>>>>>> refs/remotes/origin/master
 					device_unblock);
 	return 0;
 }
 
 void
+<<<<<<< HEAD
 scsi_target_unblock(struct device *dev)
 {
 	if (scsi_is_target_device(dev))
@@ -2595,6 +2880,15 @@ scsi_target_unblock(struct device *dev)
 					device_unblock);
 	else
 		device_for_each_child(dev, NULL, target_unblock);
+=======
+scsi_target_unblock(struct device *dev, enum scsi_device_state new_state)
+{
+	if (scsi_is_target_device(dev))
+		starget_for_each_device(to_scsi_target(dev), &new_state,
+					device_unblock);
+	else
+		device_for_each_child(dev, &new_state, target_unblock);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(scsi_target_unblock);
 
@@ -2645,10 +2939,14 @@ void *scsi_kmap_atomic_sg(struct scatterlist *sgl, int sg_count,
 		*len = sg_len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return kmap_atomic(page, KM_BIO_SRC_IRQ);
 =======
 	return kmap_atomic(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return kmap_atomic(page);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(scsi_kmap_atomic_sg);
 
@@ -2659,9 +2957,29 @@ EXPORT_SYMBOL(scsi_kmap_atomic_sg);
 void scsi_kunmap_atomic_sg(void *virt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kunmap_atomic(virt, KM_BIO_SRC_IRQ);
 =======
 	kunmap_atomic(virt);
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 EXPORT_SYMBOL(scsi_kunmap_atomic_sg);
+=======
+	kunmap_atomic(virt);
+}
+EXPORT_SYMBOL(scsi_kunmap_atomic_sg);
+
+void sdev_disable_disk_events(struct scsi_device *sdev)
+{
+	atomic_inc(&sdev->disk_events_disable_depth);
+}
+EXPORT_SYMBOL(sdev_disable_disk_events);
+
+void sdev_enable_disk_events(struct scsi_device *sdev)
+{
+	if (WARN_ON_ONCE(atomic_read(&sdev->disk_events_disable_depth) <= 0))
+		return;
+	atomic_dec(&sdev->disk_events_disable_depth);
+}
+EXPORT_SYMBOL(sdev_enable_disk_events);
+>>>>>>> refs/remotes/origin/master

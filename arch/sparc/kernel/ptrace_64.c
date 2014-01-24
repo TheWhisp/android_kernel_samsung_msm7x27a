@@ -14,6 +14,10 @@
 #include <linux/sched.h>
 #include <linux/mm.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ptrace.h>
 #include <linux/user.h>
 #include <linux/smp.h>
@@ -26,6 +30,7 @@
 #include <trace/syscall.h>
 #include <linux/compat.h>
 #include <linux/elf.h>
+<<<<<<< HEAD
 
 #include <asm/asi.h>
 #include <asm/pgtable.h>
@@ -33,6 +38,12 @@
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/context_tracking.h>
+
+#include <asm/asi.h>
+#include <asm/pgtable.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/psrcompat.h>
 #include <asm/visasm.h>
@@ -120,6 +131,10 @@ void flush_ptrace_access(struct vm_area_struct *vma, struct page *page,
 
 	preempt_enable();
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(flush_ptrace_access);
+>>>>>>> refs/remotes/origin/master
 
 static int get_from_target(struct task_struct *target, unsigned long uaddr,
 			   void *kbuf, int len)
@@ -155,7 +170,11 @@ static int regwindow64_get(struct task_struct *target,
 {
 	unsigned long rw_addr = regs->u_regs[UREG_I6];
 
+<<<<<<< HEAD
 	if (test_tsk_thread_flag(current, TIF_32BIT)) {
+=======
+	if (!test_thread_64bit_stack(rw_addr)) {
+>>>>>>> refs/remotes/origin/master
 		struct reg_window32 win32;
 		int i;
 
@@ -180,7 +199,11 @@ static int regwindow64_set(struct task_struct *target,
 {
 	unsigned long rw_addr = regs->u_regs[UREG_I6];
 
+<<<<<<< HEAD
 	if (test_tsk_thread_flag(current, TIF_32BIT)) {
+=======
+	if (!test_thread_64bit_stack(rw_addr)) {
+>>>>>>> refs/remotes/origin/master
 		struct reg_window32 win32;
 		int i;
 
@@ -1066,7 +1089,14 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs)
 	int ret = 0;
 
 	/* do the secure computing check first */
+<<<<<<< HEAD
 	secure_computing(regs->u_regs[UREG_G1]);
+=======
+	secure_computing_strict(regs->u_regs[UREG_G1]);
+
+	if (test_thread_flag(TIF_NOHZ))
+		user_exit();
+>>>>>>> refs/remotes/origin/master
 
 	if (test_thread_flag(TIF_SYSCALL_TRACE))
 		ret = tracehook_report_syscall_entry(regs);
@@ -1074,6 +1104,7 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs)
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_enter(regs, regs->u_regs[UREG_G1]);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (unlikely(current->audit_context) && !ret)
 		audit_syscall_entry((test_thread_flag(TIF_32BIT) ?
@@ -1085,6 +1116,8 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs)
 				    regs->u_regs[UREG_I2],
 				    regs->u_regs[UREG_I3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	audit_syscall_entry((test_thread_flag(TIF_32BIT) ?
 			     AUDIT_ARCH_SPARC :
 			     AUDIT_ARCH_SPARC64),
@@ -1093,13 +1126,17 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs)
 			    regs->u_regs[UREG_I1],
 			    regs->u_regs[UREG_I2],
 			    regs->u_regs[UREG_I3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
 asmlinkage void syscall_trace_leave(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_AUDITSYSCALL
 	if (unlikely(current->audit_context)) {
@@ -1121,4 +1158,19 @@ asmlinkage void syscall_trace_leave(struct pt_regs *regs)
 
 	if (test_thread_flag(TIF_SYSCALL_TRACE))
 		tracehook_report_syscall_exit(regs, 0);
+=======
+	if (test_thread_flag(TIF_NOHZ))
+		user_exit();
+
+	audit_syscall_exit(regs);
+
+	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+		trace_sys_exit(regs, regs->u_regs[UREG_I0]);
+
+	if (test_thread_flag(TIF_SYSCALL_TRACE))
+		tracehook_report_syscall_exit(regs, 0);
+
+	if (test_thread_flag(TIF_NOHZ))
+		user_enter();
+>>>>>>> refs/remotes/origin/master
 }

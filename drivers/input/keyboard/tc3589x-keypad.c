@@ -70,6 +70,7 @@
 #define TC3589x_EVT_INT_CLR	0x2
 #define TC3589x_KBD_INT_CLR	0x1
 
+<<<<<<< HEAD
 #define TC3589x_KBD_KEYMAP_SIZE     64
 
 /**
@@ -87,6 +88,17 @@
 =======
  * @keypad_stopped: holds keypad status
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * struct tc_keypad - data structure used by keypad driver
+ * @tc3589x:    pointer to tc35893
+ * @input:      pointer to input device object
+ * @board:      keypad platform device
+ * @krow:	number of rows
+ * @kcol:	number of columns
+ * @keymap:     matrix scan code table for keycodes
+ * @keypad_stopped: holds keypad status
+>>>>>>> refs/remotes/origin/master
  */
 struct tc_keypad {
 	struct tc3589x *tc3589x;
@@ -94,6 +106,7 @@ struct tc_keypad {
 	const struct tc3589x_keypad_platform_data *board;
 	unsigned int krow;
 	unsigned int kcol;
+<<<<<<< HEAD
 	unsigned short keymap[TC3589x_KBD_KEYMAP_SIZE];
 	bool keypad_stopped;
 };
@@ -116,11 +129,29 @@ static int tc3589x_keypad_init_key_hardware(struct tc_keypad *keypad)
 	    keypad->board->krow > TC3589x_MAX_KPROW ||
 	    keypad->board->debounce_period > TC3589x_MAX_DEBOUNCE_SETTLE ||
 	    keypad->board->settle_time > TC3589x_MAX_DEBOUNCE_SETTLE)
+=======
+	unsigned short *keymap;
+	bool keypad_stopped;
+};
+
+static int tc3589x_keypad_init_key_hardware(struct tc_keypad *keypad)
+{
+	int ret;
+	struct tc3589x *tc3589x = keypad->tc3589x;
+	const struct tc3589x_keypad_platform_data *board = keypad->board;
+
+	/* validate platform configuration */
+	if (board->kcol > TC3589x_MAX_KPCOL || board->krow > TC3589x_MAX_KPROW)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/* configure KBDSIZE 4 LSbits for cols and 4 MSbits for rows */
 	ret = tc3589x_reg_write(tc3589x, TC3589x_KBDSIZE,
+<<<<<<< HEAD
 			(rows << KP_ROW_SHIFT) | column);
+=======
+			(board->krow << KP_ROW_SHIFT) | board->kcol);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -134,12 +165,22 @@ static int tc3589x_keypad_init_key_hardware(struct tc_keypad *keypad)
 		return ret;
 
 	/* Configure settle time */
+<<<<<<< HEAD
 	ret = tc3589x_reg_write(tc3589x, TC3589x_KBDSETTLE_REG, settle_time);
+=======
+	ret = tc3589x_reg_write(tc3589x, TC3589x_KBDSETTLE_REG,
+				board->settle_time);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
 	/* Configure debounce time */
+<<<<<<< HEAD
 	ret = tc3589x_reg_write(tc3589x, TC3589x_KBDBOUNCE, dbounce_period);
+=======
+	ret = tc3589x_reg_write(tc3589x, TC3589x_KBDBOUNCE,
+				board->debounce_period);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -313,7 +354,11 @@ static void tc3589x_keypad_close(struct input_dev *input)
 	tc3589x_keypad_disable(keypad);
 }
 
+<<<<<<< HEAD
 static int __devinit tc3589x_keypad_probe(struct platform_device *pdev)
+=======
+static int tc3589x_keypad_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tc3589x *tc3589x = dev_get_drvdata(pdev->dev.parent);
 	struct tc_keypad *keypad;
@@ -347,6 +392,7 @@ static int __devinit tc3589x_keypad_probe(struct platform_device *pdev)
 	input->name = pdev->name;
 	input->dev.parent = &pdev->dev;
 
+<<<<<<< HEAD
 	input->keycode = keypad->keymap;
 	input->keycodesize = sizeof(keypad->keymap[0]);
 	input->keycodemax = ARRAY_SIZE(keypad->keymap);
@@ -364,6 +410,26 @@ static int __devinit tc3589x_keypad_probe(struct platform_device *pdev)
 
 	matrix_keypad_build_keymap(plat->keymap_data, 0x3,
 			input->keycode, input->keybit);
+=======
+	input->open = tc3589x_keypad_open;
+	input->close = tc3589x_keypad_close;
+
+	error = matrix_keypad_build_keymap(plat->keymap_data, NULL,
+					   TC3589x_MAX_KPROW, TC3589x_MAX_KPCOL,
+					   NULL, input);
+	if (error) {
+		dev_err(&pdev->dev, "Failed to build keymap\n");
+		goto err_free_mem;
+	}
+
+	keypad->keymap = input->keycode;
+
+	input_set_capability(input, EV_MSC, MSC_SCAN);
+	if (!plat->no_autorepeat)
+		__set_bit(EV_REP, input->evbit);
+
+	input_set_drvdata(input, keypad);
+>>>>>>> refs/remotes/origin/master
 
 	error = request_threaded_irq(irq, NULL,
 			tc3589x_keypad_irq, plat->irqtype,
@@ -397,7 +463,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit tc3589x_keypad_remove(struct platform_device *pdev)
+=======
+static int tc3589x_keypad_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tc_keypad *keypad = platform_get_drvdata(pdev);
 	int irq = platform_get_irq(pdev, 0);
@@ -463,6 +533,7 @@ static struct platform_driver tc3589x_keypad_driver = {
 		.pm	= &tc3589x_keypad_dev_pm_ops,
 	},
 	.probe	= tc3589x_keypad_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(tc3589x_keypad_remove),
 };
 <<<<<<< HEAD
@@ -481,6 +552,11 @@ module_exit(tc3589x_keypad_exit);
 =======
 module_platform_driver(tc3589x_keypad_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= tc3589x_keypad_remove,
+};
+module_platform_driver(tc3589x_keypad_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR("Jayeeta Banerjee/Sundar Iyer");

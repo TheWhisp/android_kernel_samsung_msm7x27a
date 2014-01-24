@@ -13,7 +13,11 @@
 static int ceph_lock_message(u8 lock_type, u16 operation, struct file *file,
 			     int cmd, u8 wait, struct file_lock *fl)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct ceph_mds_client *mdsc =
 		ceph_sb_to_client(inode->i_sb)->mdsc;
 	struct ceph_mds_request *req;
@@ -169,7 +173,11 @@ int ceph_flock(struct file *file, int cmd, struct file_lock *fl)
 }
 
 /**
+<<<<<<< HEAD
  * Must be called with BKL already held. Fills in the passed
+=======
+ * Must be called with lock_flocks() already held. Fills in the passed
+>>>>>>> refs/remotes/origin/master
  * counter variables, so you can prepare pagelist metadata before calling
  * ceph_encode_locks.
  */
@@ -191,6 +199,7 @@ void ceph_count_locks(struct inode *inode, int *fcntl_count, int *flock_count)
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Encode the flock and fcntl locks for the given inode into the pagelist.
  * Format is: #fcntl locks, sequential fcntl locks, #flock locks,
@@ -216,6 +225,10 @@ int ceph_encode_locks(struct inode *inode, struct ceph_pagelist *pagelist,
 =======
  * Encode the flock and fcntl locks for the given inode into the ceph_filelock
  * array. Must be called with lock_flocks() already held.
+=======
+ * Encode the flock and fcntl locks for the given inode into the ceph_filelock
+ * array. Must be called with inode->i_lock already held.
+>>>>>>> refs/remotes/origin/master
  * If we encounter more of a specific lock type than expected, return -ENOSPC.
  */
 int ceph_encode_locks_to_buffer(struct inode *inode,
@@ -231,7 +244,10 @@ int ceph_encode_locks_to_buffer(struct inode *inode,
 	dout("encoding %d flock and %d fcntl locks", num_flock_locks,
 	     num_fcntl_locks);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (lock = inode->i_flock; lock != NULL; lock = lock->fl_next) {
 		if (lock->fl_flags & FL_POSIX) {
 			++seen_fcntl;
@@ -239,6 +255,7 @@ int ceph_encode_locks_to_buffer(struct inode *inode,
 				err = -ENOSPC;
 				goto fail;
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			err = lock_to_ceph_filelock(lock, &cephlock);
 			if (err)
@@ -254,13 +271,18 @@ int ceph_encode_locks_to_buffer(struct inode *inode,
 	if (err)
 		goto fail;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			err = lock_to_ceph_filelock(lock, &flocks[l]);
 			if (err)
 				goto fail;
 			++l;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (lock = inode->i_flock; lock != NULL; lock = lock->fl_next) {
 		if (lock->fl_flags & FL_FLOCK) {
 			++seen_flock;
@@ -268,6 +290,7 @@ int ceph_encode_locks_to_buffer(struct inode *inode,
 				err = -ENOSPC;
 				goto fail;
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			err = lock_to_ceph_filelock(lock, &cephlock);
 			if (err)
@@ -278,19 +301,27 @@ int ceph_encode_locks_to_buffer(struct inode *inode,
 		if (err)
 			goto fail;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			err = lock_to_ceph_filelock(lock, &flocks[l]);
 			if (err)
 				goto fail;
 			++l;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 fail:
 	return err;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Copy the encoded flock and fcntl locks into the pagelist.
  * Format is: #fcntl locks, sequential fcntl locks, #flock locks,
@@ -326,7 +357,10 @@ out_fail:
 	return err;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Given a pointer to a lock, convert it to a ceph filelock
  */

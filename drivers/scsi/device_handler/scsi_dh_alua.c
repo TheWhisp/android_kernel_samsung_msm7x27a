@@ -22,9 +22,13 @@
 #include <linux/slab.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_eh.h>
 #include <scsi/scsi_dh.h>
@@ -49,23 +53,47 @@
 #define TPGS_SUPPORT_OFFLINE		0x40
 #define TPGS_SUPPORT_TRANSITION		0x80
 
+<<<<<<< HEAD
+=======
+#define RTPG_FMT_MASK			0x70
+#define RTPG_FMT_EXT_HDR		0x10
+
+>>>>>>> refs/remotes/origin/master
 #define TPGS_MODE_UNINITIALIZED		 -1
 #define TPGS_MODE_NONE			0x0
 #define TPGS_MODE_IMPLICIT		0x1
 #define TPGS_MODE_EXPLICIT		0x2
 
 #define ALUA_INQUIRY_SIZE		36
+<<<<<<< HEAD
 #define ALUA_FAILOVER_TIMEOUT		(60 * HZ)
 #define ALUA_FAILOVER_RETRIES		5
 
+=======
+#define ALUA_FAILOVER_TIMEOUT		60
+#define ALUA_FAILOVER_RETRIES		5
+
+/* flags passed from user level */
+#define ALUA_OPTIMIZE_STPG		1
+
+>>>>>>> refs/remotes/origin/master
 struct alua_dh_data {
 	int			group_id;
 	int			rel_port;
 	int			tpgs;
 	int			state;
+<<<<<<< HEAD
 	unsigned char		inq[ALUA_INQUIRY_SIZE];
 	unsigned char		*buff;
 	int			bufflen;
+=======
+	int			pref;
+	unsigned		flags; /* used for optimizing STPG */
+	unsigned char		inq[ALUA_INQUIRY_SIZE];
+	unsigned char		*buff;
+	int			bufflen;
+	unsigned char		transition_tmo;
+>>>>>>> refs/remotes/origin/master
 	unsigned char		sense[SCSI_SENSE_BUFFERSIZE];
 	int			senselen;
 	struct scsi_device	*sdev;
@@ -126,12 +154,17 @@ static struct request *get_alua_req(struct scsi_device *sdev,
 	rq->cmd_flags |= REQ_FAILFAST_DEV | REQ_FAILFAST_TRANSPORT |
 			 REQ_FAILFAST_DRIVER;
 	rq->retries = ALUA_FAILOVER_RETRIES;
+<<<<<<< HEAD
 	rq->timeout = ALUA_FAILOVER_TIMEOUT;
+=======
+	rq->timeout = ALUA_FAILOVER_TIMEOUT * HZ;
+>>>>>>> refs/remotes/origin/master
 
 	return rq;
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * submit_std_inquiry - Issue a standard INQUIRY command
  * @sdev: sdev the command should be send to
@@ -172,6 +205,8 @@ done:
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * submit_vpd_inquiry - Issue an INQUIRY VPD page 0x83 command
  * @sdev: sdev the command should be sent to
  */
@@ -212,7 +247,12 @@ done:
  * submit_rtpg - Issue a REPORT TARGET GROUP STATES command
  * @sdev: sdev the command should be sent to
  */
+<<<<<<< HEAD
 static unsigned submit_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
+=======
+static unsigned submit_rtpg(struct scsi_device *sdev, struct alua_dh_data *h,
+			    bool rtpg_ext_hdr_req)
+>>>>>>> refs/remotes/origin/master
 {
 	struct request *rq;
 	int err = SCSI_DH_RES_TEMP_UNAVAIL;
@@ -223,7 +263,14 @@ static unsigned submit_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
 
 	/* Prepare the command. */
 	rq->cmd[0] = MAINTENANCE_IN;
+<<<<<<< HEAD
 	rq->cmd[1] = MI_REPORT_TARGET_PGS;
+=======
+	if (rtpg_ext_hdr_req)
+		rq->cmd[1] = MI_REPORT_TARGET_PGS | MI_EXT_HDR_PARAM_FMT;
+	else
+		rq->cmd[1] = MI_REPORT_TARGET_PGS;
+>>>>>>> refs/remotes/origin/master
 	rq->cmd[6] = (h->bufflen >> 24) & 0xff;
 	rq->cmd[7] = (h->bufflen >> 16) & 0xff;
 	rq->cmd[8] = (h->bufflen >>  8) & 0xff;
@@ -262,13 +309,22 @@ static void stpg_endio(struct request *req, int error)
 	struct scsi_sense_hdr sense_hdr;
 	unsigned err = SCSI_DH_OK;
 
+<<<<<<< HEAD
 	if (error || host_byte(req->errors) != DID_OK ||
 			msg_byte(req->errors) != COMMAND_COMPLETE) {
+=======
+	if (host_byte(req->errors) != DID_OK ||
+	    msg_byte(req->errors) != COMMAND_COMPLETE) {
+>>>>>>> refs/remotes/origin/master
 		err = SCSI_DH_IO;
 		goto done;
 	}
 
+<<<<<<< HEAD
 	if (h->senselen > 0) {
+=======
+	if (req->sense_len > 0) {
+>>>>>>> refs/remotes/origin/master
 		err = scsi_normalize_sense(h->sense, SCSI_SENSE_BUFFERSIZE,
 					   &sense_hdr);
 		if (!err) {
@@ -285,7 +341,13 @@ static void stpg_endio(struct request *req, int error)
 			    ALUA_DH_NAME, sense_hdr.sense_key,
 			    sense_hdr.asc, sense_hdr.ascq);
 		err = SCSI_DH_IO;
+<<<<<<< HEAD
 	}
+=======
+	} else if (error)
+		err = SCSI_DH_IO;
+
+>>>>>>> refs/remotes/origin/master
 	if (err == SCSI_DH_OK) {
 		h->state = TPGS_STATE_OPTIMIZED;
 		sdev_printk(KERN_INFO, h->sdev,
@@ -346,6 +408,7 @@ static unsigned submit_stpg(struct alua_dh_data *h)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * alua_std_inquiry - Evaluate standard INQUIRY command
  * @sdev: device to be checked
  *
@@ -364,6 +427,8 @@ static int alua_std_inquiry(struct scsi_device *sdev, struct alua_dh_data *h)
 	/* Check TPGS setting */
 	h->tpgs = (h->inq[5] >> 4) & 0x3;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * alua_check_tpgs - Evaluate TPGS setting
  * @sdev: device to be checked
  *
@@ -375,7 +440,10 @@ static int alua_check_tpgs(struct scsi_device *sdev, struct alua_dh_data *h)
 	int err = SCSI_DH_OK;
 
 	h->tpgs = scsi_device_tpgs(sdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (h->tpgs) {
 	case TPGS_MODE_EXPLICIT|TPGS_MODE_IMPLICIT:
 		sdev_printk(KERN_INFO, sdev,
@@ -530,40 +598,61 @@ static int alua_check_sense(struct scsi_device *sdev,
 			 */
 			return ADD_TO_MLQUEUE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (sense_hdr->asc == 0x2a && sense_hdr->ascq == 0x06) {
 =======
+=======
+		if (sense_hdr->asc == 0x29 && sense_hdr->ascq == 0x04)
+			/*
+			 * Device internal reset
+			 */
+			return ADD_TO_MLQUEUE;
+>>>>>>> refs/remotes/origin/master
 		if (sense_hdr->asc == 0x2a && sense_hdr->ascq == 0x01)
 			/*
 			 * Mode Parameters Changed
 			 */
 			return ADD_TO_MLQUEUE;
 		if (sense_hdr->asc == 0x2a && sense_hdr->ascq == 0x06)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * ALUA state changed
 			 */
 			return ADD_TO_MLQUEUE;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		}
 		if (sense_hdr->asc == 0x2a && sense_hdr->ascq == 0x07) {
 =======
 		if (sense_hdr->asc == 0x2a && sense_hdr->ascq == 0x07)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (sense_hdr->asc == 0x2a && sense_hdr->ascq == 0x07)
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Implicit ALUA state transition failed
 			 */
 			return ADD_TO_MLQUEUE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 		if (sense_hdr->asc == 0x3f && sense_hdr->ascq == 0x0e) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (sense_hdr->asc == 0x3f && sense_hdr->ascq == 0x03)
 			/*
 			 * Inquiry data has changed
 			 */
 			return ADD_TO_MLQUEUE;
 		if (sense_hdr->asc == 0x3f && sense_hdr->ascq == 0x0e)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * REPORTED_LUNS_DATA_HAS_CHANGED is reported
 			 * when switching controllers on targets like
@@ -571,10 +660,13 @@ static int alua_check_sense(struct scsi_device *sdev,
 			 */
 			return ADD_TO_MLQUEUE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		}
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -584,11 +676,16 @@ static int alua_check_sense(struct scsi_device *sdev,
 /*
  * alua_rtpg - Evaluate REPORT TARGET GROUP STATES
  * @sdev: the device to be evaluated.
+<<<<<<< HEAD
+=======
+ * @wait_for_transition: if nonzero, wait ALUA_FAILOVER_TIMEOUT seconds for device to exit transitioning state
+>>>>>>> refs/remotes/origin/master
  *
  * Evaluate the Target Port Group State.
  * Returns SCSI_DH_DEV_OFFLINED if the path is
  * found to be unusable.
  */
+<<<<<<< HEAD
 static int alua_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
 {
 	struct scsi_sense_hdr sense_hdr;
@@ -606,6 +703,26 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
 	expiry = round_jiffies_up(jiffies + ALUA_FAILOVER_TIMEOUT);
  retry:
 	err = submit_rtpg(sdev, h);
+=======
+static int alua_rtpg(struct scsi_device *sdev, struct alua_dh_data *h, int wait_for_transition)
+{
+	struct scsi_sense_hdr sense_hdr;
+	int len, k, off, valid_states = 0;
+	unsigned char *ucp;
+	unsigned err;
+	bool rtpg_ext_hdr_req = 1;
+	unsigned long expiry, interval = 0;
+	unsigned int tpg_desc_tbl_off;
+	unsigned char orig_transition_tmo;
+
+	if (!h->transition_tmo)
+		expiry = round_jiffies_up(jiffies + ALUA_FAILOVER_TIMEOUT * HZ);
+	else
+		expiry = round_jiffies_up(jiffies + h->transition_tmo * HZ);
+
+ retry:
+	err = submit_rtpg(sdev, h, rtpg_ext_hdr_req);
+>>>>>>> refs/remotes/origin/master
 
 	if (err == SCSI_DH_IO && h->senselen > 0) {
 		err = scsi_normalize_sense(h->sense, SCSI_SENSE_BUFFERSIZE,
@@ -613,6 +730,24 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
 		if (!err)
 			return SCSI_DH_IO;
 
+<<<<<<< HEAD
+=======
+		/*
+		 * submit_rtpg() has failed on existing arrays
+		 * when requesting extended header info, and
+		 * the array doesn't support extended headers,
+		 * even though it shouldn't according to T10.
+		 * The retry without rtpg_ext_hdr_req set
+		 * handles this.
+		 */
+		if (rtpg_ext_hdr_req == 1 &&
+		    sense_hdr.sense_key == ILLEGAL_REQUEST &&
+		    sense_hdr.asc == 0x24 && sense_hdr.ascq == 0) {
+			rtpg_ext_hdr_req = 0;
+			goto retry;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		err = alua_check_sense(sdev, &sense_hdr);
 		if (err == ADD_TO_MLQUEUE && time_before(jiffies, expiry))
 			goto retry;
@@ -639,17 +774,51 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
 		goto retry;
 	}
 
+<<<<<<< HEAD
 	for (k = 4, ucp = h->buff + 4; k < len; k += off, ucp += off) {
 		if (h->group_id == (ucp[2] << 8) + ucp[3]) {
 			h->state = ucp[0] & 0x0f;
+=======
+	orig_transition_tmo = h->transition_tmo;
+	if ((h->buff[4] & RTPG_FMT_MASK) == RTPG_FMT_EXT_HDR && h->buff[5] != 0)
+		h->transition_tmo = h->buff[5];
+	else
+		h->transition_tmo = ALUA_FAILOVER_TIMEOUT;
+
+	if (wait_for_transition && (orig_transition_tmo != h->transition_tmo)) {
+		sdev_printk(KERN_INFO, sdev,
+			    "%s: transition timeout set to %d seconds\n",
+			    ALUA_DH_NAME, h->transition_tmo);
+		expiry = jiffies + h->transition_tmo * HZ;
+	}
+
+	if ((h->buff[4] & RTPG_FMT_MASK) == RTPG_FMT_EXT_HDR)
+		tpg_desc_tbl_off = 8;
+	else
+		tpg_desc_tbl_off = 4;
+
+	for (k = tpg_desc_tbl_off, ucp = h->buff + tpg_desc_tbl_off;
+	     k < len;
+	     k += off, ucp += off) {
+
+		if (h->group_id == (ucp[2] << 8) + ucp[3]) {
+			h->state = ucp[0] & 0x0f;
+			h->pref = ucp[0] >> 7;
+>>>>>>> refs/remotes/origin/master
 			valid_states = ucp[1];
 		}
 		off = 8 + (ucp[7] * 4);
 	}
 
 	sdev_printk(KERN_INFO, sdev,
+<<<<<<< HEAD
 		    "%s: port group %02x state %c supports %c%c%c%c%c%c%c\n",
 		    ALUA_DH_NAME, h->group_id, print_alua_state(h->state),
+=======
+		    "%s: port group %02x state %c %s supports %c%c%c%c%c%c%c\n",
+		    ALUA_DH_NAME, h->group_id, print_alua_state(h->state),
+		    h->pref ? "preferred" : "non-preferred",
+>>>>>>> refs/remotes/origin/master
 		    valid_states&TPGS_SUPPORT_TRANSITION?'T':'t',
 		    valid_states&TPGS_SUPPORT_OFFLINE?'O':'o',
 		    valid_states&TPGS_SUPPORT_LBA_DEPENDENT?'L':'l',
@@ -660,6 +829,7 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
 
 	switch (h->state) {
 	case TPGS_STATE_TRANSITIONING:
+<<<<<<< HEAD
 		if (time_before(jiffies, expiry)) {
 			/* State transition, retry */
 <<<<<<< HEAD
@@ -672,6 +842,21 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_dh_data *h)
 		}
 		/* Transitioning time exceeded, set port to standby */
 		err = SCSI_DH_RETRY;
+=======
+		if (wait_for_transition) {
+			if (time_before(jiffies, expiry)) {
+				/* State transition, retry */
+				interval += 2000;
+				msleep(interval);
+				goto retry;
+			}
+			err = SCSI_DH_RETRY;
+		} else {
+			err = SCSI_DH_OK;
+		}
+
+		/* Transitioning time exceeded, set port to standby */
+>>>>>>> refs/remotes/origin/master
 		h->state = TPGS_STATE_STANDBY;
 		break;
 	case TPGS_STATE_OFFLINE:
@@ -698,10 +883,14 @@ static int alua_initialize(struct scsi_device *sdev, struct alua_dh_data *h)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = alua_std_inquiry(sdev, h);
 =======
 	err = alua_check_tpgs(sdev, h);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = alua_check_tpgs(sdev, h);
+>>>>>>> refs/remotes/origin/master
 	if (err != SCSI_DH_OK)
 		goto out;
 
@@ -709,13 +898,55 @@ static int alua_initialize(struct scsi_device *sdev, struct alua_dh_data *h)
 	if (err != SCSI_DH_OK)
 		goto out;
 
+<<<<<<< HEAD
 	err = alua_rtpg(sdev, h);
+=======
+	err = alua_rtpg(sdev, h, 0);
+>>>>>>> refs/remotes/origin/master
 	if (err != SCSI_DH_OK)
 		goto out;
 
 out:
 	return err;
 }
+<<<<<<< HEAD
+=======
+/*
+ * alua_set_params - set/unset the optimize flag
+ * @sdev: device on the path to be activated
+ * params - parameters in the following format
+ *      "no_of_params\0param1\0param2\0param3\0...\0"
+ * For example, to set the flag pass the following parameters
+ * from multipath.conf
+ *     hardware_handler        "2 alua 1"
+ */
+static int alua_set_params(struct scsi_device *sdev, const char *params)
+{
+	struct alua_dh_data *h = get_alua_data(sdev);
+	unsigned int optimize = 0, argc;
+	const char *p = params;
+	int result = SCSI_DH_OK;
+
+	if ((sscanf(params, "%u", &argc) != 1) || (argc != 1))
+		return -EINVAL;
+
+	while (*p++)
+		;
+	if ((sscanf(p, "%u", &optimize) != 1) || (optimize > 1))
+		return -EINVAL;
+
+	if (optimize)
+		h->flags |= ALUA_OPTIMIZE_STPG;
+	else
+		h->flags &= ~ALUA_OPTIMIZE_STPG;
+
+	return result;
+}
+
+static uint optimize_stpg;
+module_param(optimize_stpg, uint, S_IRUGO|S_IWUSR);
+MODULE_PARM_DESC(optimize_stpg, "Allow use of a non-optimized path, rather than sending a STPG, when implicit TPGS is supported (0=No,1=Yes). Default is 0.");
+>>>>>>> refs/remotes/origin/master
 
 /*
  * alua_activate - activate a path
@@ -732,6 +963,7 @@ static int alua_activate(struct scsi_device *sdev,
 {
 	struct alua_dh_data *h = get_alua_data(sdev);
 	int err = SCSI_DH_OK;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	if (h->group_id != -1) {
@@ -748,6 +980,42 @@ static int alua_activate(struct scsi_device *sdev,
 	if (h->tpgs & TPGS_MODE_EXPLICIT &&
 	    h->state != TPGS_STATE_OPTIMIZED &&
 	    h->state != TPGS_STATE_LBA_DEPENDENT) {
+=======
+	int stpg = 0;
+
+	err = alua_rtpg(sdev, h, 1);
+	if (err != SCSI_DH_OK)
+		goto out;
+
+	if (optimize_stpg)
+		h->flags |= ALUA_OPTIMIZE_STPG;
+
+	if (h->tpgs & TPGS_MODE_EXPLICIT) {
+		switch (h->state) {
+		case TPGS_STATE_NONOPTIMIZED:
+			stpg = 1;
+			if ((h->flags & ALUA_OPTIMIZE_STPG) &&
+			    (!h->pref) &&
+			    (h->tpgs & TPGS_MODE_IMPLICIT))
+				stpg = 0;
+			break;
+		case TPGS_STATE_STANDBY:
+		case TPGS_STATE_UNAVAILABLE:
+			stpg = 1;
+			break;
+		case TPGS_STATE_OFFLINE:
+			err = SCSI_DH_IO;
+			break;
+		case TPGS_STATE_TRANSITIONING:
+			err = SCSI_DH_RETRY;
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (stpg) {
+>>>>>>> refs/remotes/origin/master
 		h->callback_fn = fn;
 		h->callback_data = data;
 		err = submit_stpg(h);
@@ -786,6 +1054,7 @@ static int alua_prep_fn(struct scsi_device *sdev, struct request *req)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct scsi_dh_devlist alua_dev_list[] = {
 	{"HP", "MSA VOLUME" },
 	{"HP", "HSV101" },
@@ -804,11 +1073,16 @@ static const struct scsi_dh_devlist alua_dev_list[] = {
 	{NULL, NULL}
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool alua_match(struct scsi_device *sdev)
 {
 	return (scsi_device_tpgs(sdev) != 0);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int alua_bus_attach(struct scsi_device *sdev);
 static void alua_bus_detach(struct scsi_device *sdev);
@@ -817,18 +1091,26 @@ static struct scsi_device_handler alua_dh = {
 	.name = ALUA_DH_NAME,
 	.module = THIS_MODULE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.devlist = alua_dev_list,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.attach = alua_bus_attach,
 	.detach = alua_bus_detach,
 	.prep_fn = alua_prep_fn,
 	.check_sense = alua_check_sense,
 	.activate = alua_activate,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.match = alua_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_params = alua_set_params,
+	.match = alua_match,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -871,9 +1153,13 @@ static int alua_bus_attach(struct scsi_device *sdev)
 	sdev->scsi_dh_data = scsi_dh_data;
 	spin_unlock_irqrestore(sdev->request_queue->queue_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sdev_printk(KERN_NOTICE, sdev, "%s: Attached\n", ALUA_DH_NAME);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sdev_printk(KERN_NOTICE, sdev, "%s: Attached\n", ALUA_DH_NAME);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 

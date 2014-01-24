@@ -11,6 +11,10 @@
 #include <linux/leds.h>
 #include <linux/mtd/physmap.h>
 #include <linux/ssb/ssb.h>
+<<<<<<< HEAD
+=======
+#include <linux/ssb/ssb_embedded.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/reboot.h>
 #include <linux/gpio.h>
@@ -35,6 +39,7 @@ static struct gpio_led wgt634u_leds[] = {
 };
 
 static struct gpio_led_platform_data wgt634u_led_data = {
+<<<<<<< HEAD
 	.num_leds =     ARRAY_SIZE(wgt634u_leds),
 	.leds =         wgt634u_leds,
 };
@@ -42,6 +47,15 @@ static struct gpio_led_platform_data wgt634u_led_data = {
 static struct platform_device wgt634u_gpio_leds = {
 	.name =         "leds-gpio",
 	.id =           -1,
+=======
+	.num_leds =	ARRAY_SIZE(wgt634u_leds),
+	.leds =		wgt634u_leds,
+};
+
+static struct platform_device wgt634u_gpio_leds = {
+	.name =		"leds-gpio",
+	.id =		-1,
+>>>>>>> refs/remotes/origin/master
 	.dev = {
 		.platform_data = &wgt634u_led_data,
 	}
@@ -52,6 +66,7 @@ static struct platform_device wgt634u_gpio_leds = {
    firmware. */
 static struct mtd_partition wgt634u_partitions[] = {
 	{
+<<<<<<< HEAD
 		.name       = "cfe",
 		.offset     = 0,
 		.size       = 0x60000,		/* 384k */
@@ -76,11 +91,41 @@ static struct mtd_partition wgt634u_partitions[] = {
 		.name   = "nvram",
 		.offset = 0x7e0000,
 		.size   = 0x20000		/* 128k */
+=======
+		.name	    = "cfe",
+		.offset	    = 0,
+		.size	    = 0x60000,		/* 384k */
+		.mask_flags = MTD_WRITEABLE	/* force read-only */
+	},
+	{
+		.name	= "config",
+		.offset = 0x60000,
+		.size	= 0x20000		/* 128k */
+	},
+	{
+		.name	= "linux",
+		.offset = 0x80000,
+		.size	= 0x140000		/* 1280k */
+	},
+	{
+		.name	= "jffs",
+		.offset = 0x1c0000,
+		.size	= 0x620000		/* 6272k */
+	},
+	{
+		.name	= "nvram",
+		.offset = 0x7e0000,
+		.size	= 0x20000		/* 128k */
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 static struct physmap_flash_data wgt634u_flash_data = {
+<<<<<<< HEAD
 	.parts    = wgt634u_partitions,
+=======
+	.parts	  = wgt634u_partitions,
+>>>>>>> refs/remotes/origin/master
 	.nr_parts = ARRAY_SIZE(wgt634u_partitions)
 };
 
@@ -89,9 +134,15 @@ static struct resource wgt634u_flash_resource = {
 };
 
 static struct platform_device wgt634u_flash = {
+<<<<<<< HEAD
 	.name          = "physmap-flash",
 	.id            = 0,
 	.dev           = { .platform_data = &wgt634u_flash_data, },
+=======
+	.name	       = "physmap-flash",
+	.id	       = 0,
+	.dev	       = { .platform_data = &wgt634u_flash_data, },
+>>>>>>> refs/remotes/origin/master
 	.resource      = &wgt634u_flash_resource,
 	.num_resources = 1,
 };
@@ -109,10 +160,14 @@ static irqreturn_t gpio_interrupt(int irq, void *ignored)
 	/* Interrupts are shared, check if the current one is
 	   a GPIO interrupt. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ssb_chipco_irq_status(&ssb_bcm47xx.chipco,
 =======
 	if (!ssb_chipco_irq_status(&bcm47xx_bus.ssb.chipco,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ssb_chipco_irq_status(&bcm47xx_bus.ssb.chipco,
+>>>>>>> refs/remotes/origin/master
 				   SSB_CHIPCO_IRQ_GPIO))
 		return IRQ_NONE;
 
@@ -120,7 +175,12 @@ static irqreturn_t gpio_interrupt(int irq, void *ignored)
 
 	/* Interrupt are level triggered, revert the interrupt polarity
 	   to clear the interrupt. */
+<<<<<<< HEAD
 	gpio_polarity(WGT634U_GPIO_RESET, state);
+=======
+	ssb_gpio_polarity(&bcm47xx_bus.ssb, 1 << WGT634U_GPIO_RESET,
+			  state ? 1 << WGT634U_GPIO_RESET : 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (!state) {
 		printk(KERN_INFO "Reset button pressed");
@@ -137,30 +197,41 @@ static int __init wgt634u_init(void)
 	 * been allocated ranges 00:09:5b:xx:xx:xx and 00:0f:b5:xx:xx:xx.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	u8 *et0mac = ssb_bcm47xx.sprom.et0mac;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 *et0mac;
 
 	if (bcm47xx_bus_type != BCM47XX_BUS_TYPE_SSB)
 		return -ENODEV;
 
 	et0mac = bcm47xx_bus.ssb.sprom.et0mac;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (et0mac[0] == 0x00 &&
 	    ((et0mac[1] == 0x09 && et0mac[2] == 0x5b) ||
 	     (et0mac[1] == 0x0f && et0mac[2] == 0xb5))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct ssb_mipscore *mcore = &ssb_bcm47xx.mipscore;
 =======
 		struct ssb_mipscore *mcore = &bcm47xx_bus.ssb.mipscore;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct ssb_mipscore *mcore = &bcm47xx_bus.ssb.mipscore;
+>>>>>>> refs/remotes/origin/master
 
 		printk(KERN_INFO "WGT634U machine detected.\n");
 
 		if (!request_irq(gpio_to_irq(WGT634U_GPIO_RESET),
 				 gpio_interrupt, IRQF_SHARED,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 "WGT634U GPIO", &ssb_bcm47xx.chipco)) {
 			gpio_direction_input(WGT634U_GPIO_RESET);
@@ -172,14 +243,29 @@ static int __init wgt634u_init(void)
 			gpio_intmask(WGT634U_GPIO_RESET, 1);
 			ssb_chipco_irq_mask(&bcm47xx_bus.ssb.chipco,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "WGT634U GPIO", &bcm47xx_bus.ssb.chipco)) {
+			gpio_direction_input(WGT634U_GPIO_RESET);
+			ssb_gpio_intmask(&bcm47xx_bus.ssb,
+					 1 << WGT634U_GPIO_RESET,
+					 1 << WGT634U_GPIO_RESET);
+			ssb_chipco_irq_mask(&bcm47xx_bus.ssb.chipco,
+>>>>>>> refs/remotes/origin/master
 					    SSB_CHIPCO_IRQ_GPIO,
 					    SSB_CHIPCO_IRQ_GPIO);
 		}
 
+<<<<<<< HEAD
 		wgt634u_flash_data.width = mcore->flash_buswidth;
 		wgt634u_flash_resource.start = mcore->flash_window;
 		wgt634u_flash_resource.end = mcore->flash_window
 					   + mcore->flash_window_size
+=======
+		wgt634u_flash_data.width = mcore->pflash.buswidth;
+		wgt634u_flash_resource.start = mcore->pflash.window;
+		wgt634u_flash_resource.end = mcore->pflash.window
+					   + mcore->pflash.window_size
+>>>>>>> refs/remotes/origin/master
 					   - 1;
 		return platform_add_devices(wgt634u_devices,
 					    ARRAY_SIZE(wgt634u_devices));

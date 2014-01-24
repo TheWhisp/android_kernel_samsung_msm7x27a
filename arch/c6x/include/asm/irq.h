@@ -34,8 +34,11 @@
  */
 #define NR_PRIORITY_IRQS 16
 
+<<<<<<< HEAD
 #define NR_IRQS_LEGACY	NR_PRIORITY_IRQS
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Total number of virq in the platform */
 #define NR_IRQS		256
 

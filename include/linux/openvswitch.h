@@ -19,6 +19,7 @@
 #ifndef _LINUX_OPENVSWITCH_H
 #define _LINUX_OPENVSWITCH_H 1
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 /**
@@ -448,5 +449,8 @@ enum ovs_action_attr {
 };
 
 #define OVS_ACTION_ATTR_MAX (__OVS_ACTION_ATTR_MAX - 1)
+=======
+#include <uapi/linux/openvswitch.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_OPENVSWITCH_H */

@@ -1,6 +1,10 @@
 /* cnic.h: Broadcom CNIC core network driver.
  *
+<<<<<<< HEAD
  * Copyright (c) 2006-2011 Broadcom Corporation
+=======
+ * Copyright (c) 2006-2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,18 +84,30 @@
 #define CNIC_LOCAL_PORT_MAX	61024
 #define CNIC_LOCAL_PORT_RANGE	(CNIC_LOCAL_PORT_MAX - CNIC_LOCAL_PORT_MIN)
 
+<<<<<<< HEAD
 #define KWQE_CNT (BCM_PAGE_SIZE / sizeof(struct kwqe))
 #define KCQE_CNT (BCM_PAGE_SIZE / sizeof(struct kcqe))
+=======
+#define KWQE_CNT (BNX2_PAGE_SIZE / sizeof(struct kwqe))
+#define KCQE_CNT (BNX2_PAGE_SIZE / sizeof(struct kcqe))
+>>>>>>> refs/remotes/origin/master
 #define MAX_KWQE_CNT (KWQE_CNT - 1)
 #define MAX_KCQE_CNT (KCQE_CNT - 1)
 
 #define MAX_KWQ_IDX	((KWQ_PAGE_CNT * KWQE_CNT) - 1)
 #define MAX_KCQ_IDX	((KCQ_PAGE_CNT * KCQE_CNT) - 1)
 
+<<<<<<< HEAD
 #define KWQ_PG(x) (((x) & ~MAX_KWQE_CNT) >> (BCM_PAGE_BITS - 5))
 #define KWQ_IDX(x) ((x) & MAX_KWQE_CNT)
 
 #define KCQ_PG(x) (((x) & ~MAX_KCQE_CNT) >> (BCM_PAGE_BITS - 5))
+=======
+#define KWQ_PG(x) (((x) & ~MAX_KWQE_CNT) >> (BNX2_PAGE_BITS - 5))
+#define KWQ_IDX(x) ((x) & MAX_KWQE_CNT)
+
+#define KCQ_PG(x) (((x) & ~MAX_KCQE_CNT) >> (BNX2_PAGE_BITS - 5))
+>>>>>>> refs/remotes/origin/master
 #define KCQ_IDX(x) ((x) & MAX_KCQE_CNT)
 
 #define BNX2X_NEXT_KCQE(x) (((x) & (MAX_KCQE_CNT - 1)) ==		\
@@ -186,6 +202,7 @@ struct kcq_info {
 	u16		(*hw_idx)(u16);
 };
 
+<<<<<<< HEAD
 struct iro {
 	u32 base;
 	u16 m1;
@@ -194,6 +211,8 @@ struct iro {
 	u16 size;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct cnic_uio_dev {
 	struct uio_info		cnic_uinfo;
 	u32			uio_dev;
@@ -241,9 +260,12 @@ struct cnic_local {
 	u16		rx_cons;
 	u16		tx_cons;
 
+<<<<<<< HEAD
 	const struct iro	*iro_arr;
 #define IRO (((struct cnic_local *) dev->cnic_priv)->iro_arr)
 
+=======
+>>>>>>> refs/remotes/origin/master
 	struct cnic_dma		kwq_info;
 	struct kwqe		**kwq;
 
@@ -314,11 +336,14 @@ struct cnic_local {
 
 	u32			chip_id;
 	int			func;
+<<<<<<< HEAD
 	u32			pfid;
 	u8			port_mode;
 #define CHIP_4_PORT_MODE	0
 #define CHIP_2_PORT_MODE	1
 #define CHIP_PORT_MODE_NONE	2
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u32			shmem_base;
 
@@ -334,6 +359,10 @@ struct cnic_local {
 	void			(*enable_int)(struct cnic_dev *);
 	void			(*disable_int_sync)(struct cnic_dev *);
 	void			(*ack_int)(struct cnic_dev *);
+<<<<<<< HEAD
+=======
+	void			(*arm_int)(struct cnic_dev *, u32 index);
+>>>>>>> refs/remotes/origin/master
 	void			(*close_conn)(struct cnic_sock *, u32 opcode);
 };
 
@@ -377,6 +406,7 @@ struct bnx2x_bd_chain_next {
 
 #define BNX2X_FCOE_L5_CID_BASE		MAX_ISCSI_TBL_SZ
 
+<<<<<<< HEAD
 #define BNX2X_CHIP_NUM_57710		0x164e
 #define BNX2X_CHIP_NUM_57711		0x164f
 #define BNX2X_CHIP_NUM_57711E		0x1650
@@ -424,6 +454,15 @@ struct bnx2x_bd_chain_next {
 #define BNX2X_RX_DESC_CNT		(BCM_PAGE_SIZE / sizeof(struct eth_rx_bd))
 #define BNX2X_MAX_RX_DESC_CNT		(BNX2X_RX_DESC_CNT - 2)
 #define BNX2X_RCQ_DESC_CNT		(BCM_PAGE_SIZE / sizeof(union eth_rx_cqe))
+=======
+#define BNX2X_CHIP_IS_E2_PLUS(bp) (CHIP_IS_E2(bp) || CHIP_IS_E3(bp))
+
+#define BNX2X_RX_DESC_CNT		(BNX2_PAGE_SIZE / \
+					 sizeof(struct eth_rx_bd))
+#define BNX2X_MAX_RX_DESC_CNT		(BNX2X_RX_DESC_CNT - 2)
+#define BNX2X_RCQ_DESC_CNT		(BNX2_PAGE_SIZE / \
+					 sizeof(union eth_rx_cqe))
+>>>>>>> refs/remotes/origin/master
 #define BNX2X_MAX_RCQ_DESC_CNT		(BNX2X_RCQ_DESC_CNT - 1)
 
 #define BNX2X_NEXT_RCQE(x) (((x) & BNX2X_MAX_RCQ_DESC_CNT) ==		\
@@ -452,6 +491,7 @@ struct bnx2x_bd_chain_next {
 #define ETH_MAX_RX_CLIENTS_E2 		ETH_MAX_RX_CLIENTS_E1H
 #endif
 
+<<<<<<< HEAD
 #define CNIC_PORT(cp)			((cp)->pfid & 1)
 #define CNIC_FUNC(cp)			((cp)->func)
 #define CNIC_PATH(cp)			(!BNX2X_CHIP_IS_E2_PLUS(cp->chip_id) ? \
@@ -474,6 +514,29 @@ struct bnx2x_bd_chain_next {
 	  MAX_STAT_COUNTER_ID_E1))
 #endif
 
+=======
+#define CNIC_FUNC(cp)			((cp)->func)
+
+#define BNX2X_HW_CID(bp, x)		((BP_PORT(bp) << 23) | \
+					 (BP_VN(bp) << 17) | (x))
+
+#define BNX2X_SW_CID(x)			(x & 0x1ffff)
+
+#define BNX2X_CL_QZONE_ID(bp, cli)					\
+		(BNX2X_CHIP_IS_E2_PLUS(bp) ? cli :			\
+		 cli + (BP_PORT(bp) * ETH_MAX_RX_CLIENTS_E1H))
+
+#ifndef MAX_STAT_COUNTER_ID
+#define MAX_STAT_COUNTER_ID						\
+	(CHIP_IS_E1H(bp) ? MAX_STAT_COUNTER_ID_E1H :			\
+	 ((BNX2X_CHIP_IS_E2_PLUS(bp)) ? MAX_STAT_COUNTER_ID_E2 :	\
+	  MAX_STAT_COUNTER_ID_E1))
+#endif
+
+#define CNIC_SUPPORTS_FCOE(cp)						\
+	(BNX2X_CHIP_IS_E2_PLUS(bp) && !NO_FCOE(bp))
+
+>>>>>>> refs/remotes/origin/master
 #define CNIC_RAMROD_TMO			(HZ / 4)
 
 #endif

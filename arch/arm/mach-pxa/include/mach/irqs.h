@@ -84,6 +84,7 @@
 #define IRQ_PXA935_MMC0	PXA_IRQ(72)	/* MMC0 Controller (PXA935) */
 #define IRQ_PXA935_MMC1	PXA_IRQ(73)	/* MMC1 Controller (PXA935) */
 #define IRQ_PXA935_MMC2	PXA_IRQ(74)	/* MMC2 Controller (PXA935) */
+<<<<<<< HEAD
 #define IRQ_PXA955_MMC3	PXA_IRQ(75)	/* MMC3 Controller (PXA955) */
 #define IRQ_U2P		PXA_IRQ(93)	/* USB PHY D+/D- Lines (PXA935) */
 
@@ -97,6 +98,13 @@
 #define PXA_NR_BUILTIN_GPIO	(192)
 #define PXA_GPIO_TO_IRQ(x)	(PXA_GPIO_IRQ_BASE + (x))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IRQ_U2P		PXA_IRQ(93)	/* USB PHY D+/D- Lines (PXA935) */
+
+#define PXA_GPIO_IRQ_BASE	PXA_IRQ(96)
+#define PXA_NR_BUILTIN_GPIO	(192)
+#define PXA_GPIO_TO_IRQ(x)	(PXA_GPIO_IRQ_BASE + (x))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The following interrupts are for board specific purposes. Since
@@ -106,10 +114,13 @@
  * custom board since sparse IRQ is already enabled.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IRQ_BOARD_START		(PXA_GPIO_IRQ_BASE + PXA_GPIO_IRQ_NUM)
 
 #define NR_IRQS			(IRQ_BOARD_START)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define IRQ_BOARD_START		(PXA_GPIO_IRQ_BASE + PXA_NR_BUILTIN_GPIO)
 
 #define PXA_NR_IRQS		(IRQ_BOARD_START)
@@ -125,6 +136,9 @@ void ichp_handle_irq(struct pt_regs *);
 
 void pxa_init_irq(int irq_nr, int (*set_wake)(struct irq_data *, unsigned int));
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_MACH_IRQS_H */

@@ -24,10 +24,14 @@
 #include "hysdn_defs.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int hynet_enable = 0xffffffff; 
 =======
 unsigned int hynet_enable = 0xffffffff;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int hynet_enable = 0xffffffff;
+>>>>>>> refs/remotes/origin/master
 module_param(hynet_enable, uint, 0);
 
 #define MAX_SKB_BUFFERS 20	/* number of buffers for keeping TX-data */
@@ -160,10 +164,14 @@ net_send_packet(struct sk_buff *skb, struct net_device *dev)
 /***********************************************************************/
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 hysdn_tx_netack(hysdn_card * card)
 =======
 hysdn_tx_netack(hysdn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hysdn_tx_netack(hysdn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_local *lp = card->netif;
 
@@ -190,10 +198,14 @@ hysdn_tx_netack(hysdn_card *card)
 /*****************************************************/
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 hysdn_rx_netpkt(hysdn_card * card, unsigned char *buf, unsigned short len)
 =======
 hysdn_rx_netpkt(hysdn_card *card, unsigned char *buf, unsigned short len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hysdn_rx_netpkt(hysdn_card *card, unsigned char *buf, unsigned short len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_local *lp = card->netif;
 	struct net_device *dev;
@@ -228,10 +240,14 @@ hysdn_rx_netpkt(hysdn_card *card, unsigned char *buf, unsigned short len)
 /*****************************************************/
 struct sk_buff *
 <<<<<<< HEAD
+<<<<<<< HEAD
 hysdn_tx_netget(hysdn_card * card)
 =======
 hysdn_tx_netget(hysdn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hysdn_tx_netget(hysdn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_local *lp = card->netif;
 
@@ -246,18 +262,24 @@ hysdn_tx_netget(hysdn_card *card)
 
 static const struct net_device_ops hysdn_netdev_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_open 		= net_open,
 	.ndo_stop		= net_close,
 	.ndo_start_xmit		= net_send_packet,
 	.ndo_change_mtu		= eth_change_mtu,
 	.ndo_set_mac_address 	= eth_mac_addr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_open		= net_open,
 	.ndo_stop		= net_close,
 	.ndo_start_xmit		= net_send_packet,
 	.ndo_change_mtu		= eth_change_mtu,
 	.ndo_set_mac_address	= eth_mac_addr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
@@ -269,20 +291,28 @@ static const struct net_device_ops hysdn_netdev_ops = {
 /*****************************************************************************/
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 hysdn_net_create(hysdn_card * card)
 =======
 hysdn_net_create(hysdn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hysdn_net_create(hysdn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	int i;
 	struct net_local *lp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!card) {
 =======
 	if (!card) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!card) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "No card-pt in hysdn_net_create!\n");
 		return (-ENOMEM);
 	}
@@ -324,10 +354,14 @@ hysdn_net_create(hysdn_card *card)
 /***************************************************************************/
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 hysdn_net_release(hysdn_card * card)
 =======
 hysdn_net_release(hysdn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hysdn_net_release(hysdn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = card->netif;
 
@@ -353,10 +387,14 @@ hysdn_net_release(hysdn_card *card)
 /*****************************************************************************/
 char *
 <<<<<<< HEAD
+<<<<<<< HEAD
 hysdn_net_getname(hysdn_card * card)
 =======
 hysdn_net_getname(hysdn_card *card)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hysdn_net_getname(hysdn_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = card->netif;
 

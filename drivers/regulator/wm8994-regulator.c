@@ -18,6 +18,10 @@
 #include <linux/err.h>
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
+<<<<<<< HEAD
+=======
+#include <linux/regulator/machine.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio.h>
 #include <linux/slab.h>
 
@@ -26,15 +30,23 @@
 #include <linux/mfd/wm8994/pdata.h>
 
 struct wm8994_ldo {
+<<<<<<< HEAD
 	int enable;
 	bool is_enabled;
 	struct regulator_dev *regulator;
 	struct wm8994 *wm8994;
+=======
+	struct regulator_dev *regulator;
+	struct wm8994 *wm8994;
+	struct regulator_consumer_supply supply;
+	struct regulator_init_data init_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define WM8994_LDO1_MAX_SELECTOR 0x7
 #define WM8994_LDO2_MAX_SELECTOR 0x3
 
+<<<<<<< HEAD
 static int wm8994_ldo_enable(struct regulator_dev *rdev)
 {
 	struct wm8994_ldo *ldo = rdev_get_drvdata(rdev);
@@ -133,6 +145,13 @@ static struct regulator_ops wm8994_ldo1_ops = {
 	.list_voltage = wm8994_ldo1_list_voltage,
 	.get_voltage_sel = wm8994_ldo1_get_voltage_sel,
 	.set_voltage = wm8994_ldo1_set_voltage,
+=======
+static struct regulator_ops wm8994_ldo1_ops = {
+	.list_voltage = regulator_list_voltage_linear,
+	.map_voltage = regulator_map_voltage_linear,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int wm8994_ldo2_list_voltage(struct regulator_dev *rdev,
@@ -149,7 +168,10 @@ static int wm8994_ldo2_list_voltage(struct regulator_dev *rdev,
 	case WM8958:
 		return (selector * 100000) + 1000000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case WM1811:
 		switch (selector) {
 		case 0:
@@ -158,12 +180,16 @@ static int wm8994_ldo2_list_voltage(struct regulator_dev *rdev,
 			return (selector * 100000) + 950000;
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EINVAL;
 	}
 }
 
+<<<<<<< HEAD
 static int wm8994_ldo2_get_voltage_sel(struct regulator_dev *rdev)
 {
 	struct wm8994_ldo *ldo = rdev_get_drvdata(rdev);
@@ -224,12 +250,30 @@ static struct regulator_ops wm8994_ldo2_ops = {
 };
 
 static struct regulator_desc wm8994_ldo_desc[] = {
+=======
+static struct regulator_ops wm8994_ldo2_ops = {
+	.list_voltage = wm8994_ldo2_list_voltage,
+	.get_voltage_sel = regulator_get_voltage_sel_regmap,
+	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+};
+
+static const struct regulator_desc wm8994_ldo_desc[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "LDO1",
 		.id = 1,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8994_LDO1_MAX_SELECTOR + 1,
+<<<<<<< HEAD
 		.ops = &wm8994_ldo1_ops,
+=======
+		.vsel_reg = WM8994_LDO_1,
+		.vsel_mask = WM8994_LDO1_VSEL_MASK,
+		.ops = &wm8994_ldo1_ops,
+		.min_uV = 2400000,
+		.uV_step = 100000,
+		.enable_time = 3000,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 	{
@@ -237,21 +281,58 @@ static struct regulator_desc wm8994_ldo_desc[] = {
 		.id = 2,
 		.type = REGULATOR_VOLTAGE,
 		.n_voltages = WM8994_LDO2_MAX_SELECTOR + 1,
+<<<<<<< HEAD
 		.ops = &wm8994_ldo2_ops,
+=======
+		.vsel_reg = WM8994_LDO_2,
+		.vsel_mask = WM8994_LDO2_VSEL_MASK,
+		.ops = &wm8994_ldo2_ops,
+		.enable_time = 3000,
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static __devinit int wm8994_ldo_probe(struct platform_device *pdev)
 {
 	struct wm8994 *wm8994 = dev_get_drvdata(pdev->dev.parent);
 	struct wm8994_pdata *pdata = wm8994->dev->platform_data;
 	int id = pdev->id % ARRAY_SIZE(pdata->ldo);
+=======
+static const struct regulator_consumer_supply wm8994_ldo_consumer[] = {
+	{ .supply = "AVDD1" },
+	{ .supply = "DCVDD" },
+};
+
+static const struct regulator_init_data wm8994_ldo_default[] = {
+	{
+		.constraints = {
+			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+		},
+		.num_consumer_supplies = 1,
+	},
+	{
+		.constraints = {
+			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+		},
+		.num_consumer_supplies = 1,
+	},
+};
+
+static int wm8994_ldo_probe(struct platform_device *pdev)
+{
+	struct wm8994 *wm8994 = dev_get_drvdata(pdev->dev.parent);
+	struct wm8994_pdata *pdata = dev_get_platdata(wm8994->dev);
+	int id = pdev->id % ARRAY_SIZE(pdata->ldo);
+	struct regulator_config config = { };
+>>>>>>> refs/remotes/origin/master
 	struct wm8994_ldo *ldo;
 	int ret;
 
 	dev_dbg(&pdev->dev, "Probing LDO%d\n", id + 1);
 
+<<<<<<< HEAD
 	if (!pdata)
 		return -ENODEV;
 
@@ -260,12 +341,16 @@ static __devinit int wm8994_ldo_probe(struct platform_device *pdev)
 =======
 	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm8994_ldo), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ldo = devm_kzalloc(&pdev->dev, sizeof(struct wm8994_ldo), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (ldo == NULL) {
 		dev_err(&pdev->dev, "Unable to allocate private data\n");
 		return -ENOMEM;
 	}
 
 	ldo->wm8994 = wm8994;
+<<<<<<< HEAD
 
 	if (pdata->ldo[id].enable && gpio_is_valid(pdata->ldo[id].enable)) {
 		ldo->enable = pdata->ldo[id].enable;
@@ -292,17 +377,52 @@ static __devinit int wm8994_ldo_probe(struct platform_device *pdev)
 =======
 					     pdata->ldo[id].init_data, ldo, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ldo->supply = wm8994_ldo_consumer[id];
+	ldo->supply.dev_name = dev_name(wm8994->dev);
+
+	config.dev = wm8994->dev;
+	config.driver_data = ldo;
+	config.regmap = wm8994->regmap;
+	config.init_data = &ldo->init_data;
+	if (pdata)
+		config.ena_gpio = pdata->ldo[id].enable;
+	else if (wm8994->dev->of_node)
+		config.ena_gpio = wm8994->pdata.ldo[id].enable;
+
+	/* Use default constraints if none set up */
+	if (!pdata || !pdata->ldo[id].init_data || wm8994->dev->of_node) {
+		dev_dbg(wm8994->dev, "Using default init data, supply %s %s\n",
+			ldo->supply.dev_name, ldo->supply.supply);
+
+		ldo->init_data = wm8994_ldo_default[id];
+		ldo->init_data.consumer_supplies = &ldo->supply;
+		if (!config.ena_gpio)
+			ldo->init_data.constraints.valid_ops_mask = 0;
+	} else {
+		ldo->init_data = *pdata->ldo[id].init_data;
+	}
+
+	ldo->regulator = devm_regulator_register(&pdev->dev,
+						 &wm8994_ldo_desc[id],
+						 &config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(ldo->regulator)) {
 		ret = PTR_ERR(ldo->regulator);
 		dev_err(wm8994->dev, "Failed to register LDO%d: %d\n",
 			id + 1, ret);
+<<<<<<< HEAD
 		goto err_gpio;
+=======
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, ldo);
 
 	return 0;
 
+<<<<<<< HEAD
 err_gpio:
 	if (gpio_is_valid(ldo->enable))
 		gpio_free(ldo->enable);
@@ -334,12 +454,21 @@ static __devexit int wm8994_ldo_remove(struct platform_device *pdev)
 static struct platform_driver wm8994_ldo_driver = {
 	.probe = wm8994_ldo_probe,
 	.remove = __devexit_p(wm8994_ldo_remove),
+=======
+err:
+	return ret;
+}
+
+static struct platform_driver wm8994_ldo_driver = {
+	.probe = wm8994_ldo_probe,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm8994-ldo",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 static int __init wm8994_ldo_init(void)
 {
 	int ret;
@@ -357,6 +486,9 @@ static void __exit wm8994_ldo_exit(void)
 	platform_driver_unregister(&wm8994_ldo_driver);
 }
 module_exit(wm8994_ldo_exit);
+=======
+module_platform_driver(wm8994_ldo_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

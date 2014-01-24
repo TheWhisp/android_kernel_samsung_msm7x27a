@@ -190,10 +190,14 @@ struct compal_data{
 /* General globals */
 /* =============== */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int force;
 =======
 static bool force;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool force;
+>>>>>>> refs/remotes/origin/master
 module_param(force, bool, 0);
 MODULE_PARM_DESC(force, "Force driver load, ignore DMI data");
 
@@ -429,7 +433,12 @@ static ssize_t pwm_enable_store(struct device *dev,
 	struct compal_data *data = dev_get_drvdata(dev);
 	long val;
 	int err;
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 	if (val < 0)
@@ -467,7 +476,12 @@ static ssize_t pwm_store(struct device *dev, struct device_attribute *attr,
 	struct compal_data *data = dev_get_drvdata(dev);
 	long val;
 	int err;
+<<<<<<< HEAD
 	err = strict_strtol(buf, 10, &val);
+=======
+
+	err = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 	if (val < 0 || val > 255)
@@ -717,15 +731,24 @@ static struct attribute_group compal_attribute_group = {
 	.attrs = compal_attributes
 };
 
+<<<<<<< HEAD
 static int __devinit compal_probe(struct platform_device *);
 static int __devexit compal_remove(struct platform_device *);
+=======
+static int compal_probe(struct platform_device *);
+static int compal_remove(struct platform_device *);
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver compal_driver = {
 	.driver = {
 		.name = DRIVER_NAME,
 		.owner = THIS_MODULE,
 	},
 	.probe	= compal_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(compal_remove)
+=======
+	.remove	= compal_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static enum power_supply_property compal_bat_properties[] = {
@@ -887,9 +910,13 @@ static struct dmi_system_id __initdata compal_dmi_table[] = {
 	{ }
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_DEVICE_TABLE(dmi, compal_dmi_table);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DEVICE_TABLE(dmi, compal_dmi_table);
+>>>>>>> refs/remotes/origin/master
 
 static void initialize_power_supply_data(struct compal_data *data)
 {
@@ -1022,7 +1049,11 @@ err_backlight:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit compal_probe(struct platform_device *pdev)
+=======
+static int compal_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct compal_data *data;
@@ -1074,7 +1105,11 @@ static void __exit compal_cleanup(void)
 	pr_info("Driver unloaded\n");
 }
 
+<<<<<<< HEAD
 static int __devexit compal_remove(struct platform_device *pdev)
+=======
+static int compal_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct compal_data *data;
 
@@ -1088,7 +1123,10 @@ static int __devexit compal_remove(struct platform_device *pdev)
 	hwmon_device_unregister(data->hwmon_dev);
 	power_supply_unregister(&data->psy);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(data);
 
 	sysfs_remove_group(&pdev->dev.kobj, &compal_attribute_group);
@@ -1106,6 +1144,7 @@ MODULE_DESCRIPTION("Compal Laptop Support");
 MODULE_VERSION(DRIVER_VERSION);
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 MODULE_ALIAS("dmi:*:rnIFL90:rvrIFT00:*");
 MODULE_ALIAS("dmi:*:rnIFL90:rvrREFERENCE:*");
@@ -1121,3 +1160,5 @@ MODULE_ALIAS("dmi:*:svnDellInc.:pnInspiron1110:*");
 MODULE_ALIAS("dmi:*:svnDellInc.:pnInspiron1210:*");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

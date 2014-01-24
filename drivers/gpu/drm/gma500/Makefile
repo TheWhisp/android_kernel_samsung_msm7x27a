@@ -1,9 +1,15 @@
 #
 #	KMS driver for the GMA500
 #
+<<<<<<< HEAD
 ccflags-y += -Iinclude/drm
 
 gma500_gfx-y += gem_glue.o \
+=======
+ccflags-y += -I$(srctree)/include/drm
+
+gma500_gfx-y += \
+>>>>>>> refs/remotes/origin/master
 	  accel_2d.o \
 	  backlight.o \
 	  framebuffer.o \
@@ -12,10 +18,17 @@ gma500_gfx-y += gem_glue.o \
 	  intel_bios.o \
 	  intel_i2c.o \
 	  intel_gmbus.o \
+<<<<<<< HEAD
 	  intel_opregion.o \
 	  mmu.o \
 	  power.o \
 	  psb_drv.o \
+=======
+	  mmu.o \
+	  power.o \
+	  psb_drv.o \
+	  gma_display.o \
+>>>>>>> refs/remotes/origin/master
 	  psb_intel_display.o \
 	  psb_intel_lvds.o \
 	  psb_intel_modes.o \
@@ -25,11 +38,21 @@ gma500_gfx-y += gem_glue.o \
 	  psb_device.o \
 	  mid_bios.o
 
+<<<<<<< HEAD
+=======
+gma500_gfx-$(CONFIG_ACPI) +=  opregion.o \
+
+>>>>>>> refs/remotes/origin/master
 gma500_gfx-$(CONFIG_DRM_GMA3600) +=  cdv_device.o \
 	  cdv_intel_crt.o \
 	  cdv_intel_display.o \
 	  cdv_intel_hdmi.o \
+<<<<<<< HEAD
 	  cdv_intel_lvds.o
+=======
+	  cdv_intel_lvds.o \
+	  cdv_intel_dp.o
+>>>>>>> refs/remotes/origin/master
 
 gma500_gfx-$(CONFIG_DRM_GMA600) += oaktrail_device.o \
 	  oaktrail_crtc.o \

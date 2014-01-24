@@ -18,10 +18,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Maintained by: Alok N Kataria <akataria@vmware.com>
 =======
  * Maintained by: Arvind Kumar <arvindkumar@vmware.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Maintained by: Arvind Kumar <arvindkumar@vmware.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -31,10 +35,14 @@
 #include <linux/types.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PVSCSI_DRIVER_VERSION_STRING   "1.0.1.0-k"
 =======
 #define PVSCSI_DRIVER_VERSION_STRING   "1.0.2.0-k"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PVSCSI_DRIVER_VERSION_STRING   "1.0.2.0-k"
+>>>>>>> refs/remotes/origin/master
 
 #define PVSCSI_MAX_NUM_SG_ENTRIES_PER_SEGMENT 128
 
@@ -47,6 +55,7 @@
  * host adapter status/error codes
  */
 enum HostBusAdapterStatus {
+<<<<<<< HEAD
 <<<<<<< HEAD
    BTSTAT_SUCCESS       = 0x00,  /* CCB complete normally with no errors */
    BTSTAT_LINKED_COMMAND_COMPLETED           = 0x0a,
@@ -71,6 +80,8 @@ enum HostBusAdapterStatus {
    BTSTAT_HATIMEOUT     = 0x30,  /* host adapter hardware timeout error */
    BTSTAT_SCSIPARITY    = 0x34,  /* SCSI parity error detected */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BTSTAT_SUCCESS       = 0x00,  /* CCB complete normally with no errors */
 	BTSTAT_LINKED_COMMAND_COMPLETED           = 0x0a,
 	BTSTAT_LINKED_COMMAND_COMPLETED_WITH_FLAG = 0x0b,
@@ -110,7 +121,10 @@ enum HostBusAdapterStatus {
 enum ScsiDeviceStatus {
 	SDSTAT_GOOD  = 0x00, /* No errors. */
 	SDSTAT_CHECK = 0x02, /* Check condition. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -165,7 +179,10 @@ struct PVSCSICmdDescResetDevice {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Command descriptor for PVSCSI_CMD_CONFIG --
  */
 
@@ -189,7 +206,10 @@ enum PVSCSIConfigPageAddressType {
 };
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Command descriptor for PVSCSI_CMD_ABORT_CMD --
  *
  * - currently does not support specifying the LUN.
@@ -409,7 +429,10 @@ struct PVSCSIRingCmpDesc {
 } __packed;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct PVSCSIConfigPageHeader {
 	u32 pageNum;
 	u16 numDwords;
@@ -431,7 +454,10 @@ struct PVSCSIConfigPageController {
 	u8  reserved[3];
 } __packed;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Interrupt status / IRQ bits.
  */

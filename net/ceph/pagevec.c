@@ -12,7 +12,11 @@
 /*
  * build a vector of user pages
  */
+<<<<<<< HEAD
 struct page **ceph_get_direct_page_vector(const char __user *data,
+=======
+struct page **ceph_get_direct_page_vector(const void __user *data,
+>>>>>>> refs/remotes/origin/master
 					  int num_pages, bool write_page)
 {
 	struct page **pages;
@@ -93,7 +97,11 @@ EXPORT_SYMBOL(ceph_alloc_page_vector);
  * copy user data into a page vector
  */
 int ceph_copy_user_to_page_vector(struct page **pages,
+<<<<<<< HEAD
 					 const char __user *data,
+=======
+					 const void __user *data,
+>>>>>>> refs/remotes/origin/master
 					 loff_t off, size_t len)
 {
 	int i = 0;
@@ -118,17 +126,29 @@ int ceph_copy_user_to_page_vector(struct page **pages,
 }
 EXPORT_SYMBOL(ceph_copy_user_to_page_vector);
 
+<<<<<<< HEAD
 int ceph_copy_to_page_vector(struct page **pages,
 				    const char *data,
+=======
+void ceph_copy_to_page_vector(struct page **pages,
+				    const void *data,
+>>>>>>> refs/remotes/origin/master
 				    loff_t off, size_t len)
 {
 	int i = 0;
 	size_t po = off & ~PAGE_CACHE_MASK;
 	size_t left = len;
+<<<<<<< HEAD
 	size_t l;
 
 	while (left > 0) {
 		l = min_t(size_t, PAGE_CACHE_SIZE-po, left);
+=======
+
+	while (left > 0) {
+		size_t l = min_t(size_t, PAGE_CACHE_SIZE-po, left);
+
+>>>>>>> refs/remotes/origin/master
 		memcpy(page_address(pages[i]) + po, data, l);
 		data += l;
 		left -= l;
@@ -138,21 +158,36 @@ int ceph_copy_to_page_vector(struct page **pages,
 			i++;
 		}
 	}
+<<<<<<< HEAD
 	return len;
 }
 EXPORT_SYMBOL(ceph_copy_to_page_vector);
 
 int ceph_copy_from_page_vector(struct page **pages,
 				    char *data,
+=======
+}
+EXPORT_SYMBOL(ceph_copy_to_page_vector);
+
+void ceph_copy_from_page_vector(struct page **pages,
+				    void *data,
+>>>>>>> refs/remotes/origin/master
 				    loff_t off, size_t len)
 {
 	int i = 0;
 	size_t po = off & ~PAGE_CACHE_MASK;
 	size_t left = len;
+<<<<<<< HEAD
 	size_t l;
 
 	while (left > 0) {
 		l = min_t(size_t, PAGE_CACHE_SIZE-po, left);
+=======
+
+	while (left > 0) {
+		size_t l = min_t(size_t, PAGE_CACHE_SIZE-po, left);
+
+>>>>>>> refs/remotes/origin/master
 		memcpy(data, page_address(pages[i]) + po, l);
 		data += l;
 		left -= l;
@@ -162,7 +197,10 @@ int ceph_copy_from_page_vector(struct page **pages,
 			i++;
 		}
 	}
+<<<<<<< HEAD
 	return len;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ceph_copy_from_page_vector);
 
@@ -170,7 +208,11 @@ EXPORT_SYMBOL(ceph_copy_from_page_vector);
  * copy user data from a page vector into a user pointer
  */
 int ceph_copy_page_vector_to_user(struct page **pages,
+<<<<<<< HEAD
 					 char __user *data,
+=======
+					 void __user *data,
+>>>>>>> refs/remotes/origin/master
 					 loff_t off, size_t len)
 {
 	int i = 0;

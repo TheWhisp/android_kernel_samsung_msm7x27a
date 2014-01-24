@@ -7,10 +7,14 @@
  * Li Yang <leoli@freescale.com>
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006-2007, 2011 Freescale Semiconductor, Inc.
 =======
  * Copyright (c) 2006-2007, 2011-2012 Freescale Semiconductor, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006-2007, 2011-2012 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -28,10 +32,17 @@
 #include <scsi/scsi_cmnd.h>
 #include <linux/libata.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 
 <<<<<<< HEAD
 =======
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/of_platform.h>
+
+>>>>>>> refs/remotes/origin/master
 static unsigned int intr_coalescing_count;
 module_param(intr_coalescing_count, int, S_IRUGO);
 MODULE_PARM_DESC(intr_coalescing_count,
@@ -41,7 +52,10 @@ static unsigned int intr_coalescing_ticks;
 module_param(intr_coalescing_ticks, int, S_IRUGO);
 MODULE_PARM_DESC(intr_coalescing_ticks,
 				 "INT coalescing timer threshold in AHB ticks");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Controller information */
 enum {
 	SATA_FSL_QUEUE_DEPTH	= 16,
@@ -100,7 +114,10 @@ enum {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Interrupt Coalescing Control Register bitdefs  */
 enum {
 	ICC_MIN_INT_COUNT_THRESHOLD	= 1,
@@ -111,7 +128,10 @@ enum {
 };
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 * Host Controller command register set - per port
 */
 enum {
@@ -133,6 +153,10 @@ enum {
 	ONLINE = (1 << 31),
 	GOING_OFFLINE = (1 << 30),
 	BIST_ERR = (1 << 29),
+<<<<<<< HEAD
+=======
+	CLEAR_ERROR = (1 << 27),
+>>>>>>> refs/remotes/origin/master
 
 	FATAL_ERR_HC_MASTER_ERR = (1 << 18),
 	FATAL_ERR_PARITY_ERR_TX = (1 << 17),
@@ -153,6 +177,10 @@ enum {
 	    FATAL_ERR_CRC_ERR_RX |
 	    FATAL_ERR_FIFO_OVRFL_TX | FATAL_ERR_FIFO_OVRFL_RX,
 
+<<<<<<< HEAD
+=======
+	INT_ON_DATA_LENGTH_MISMATCH = (1 << 12),
+>>>>>>> refs/remotes/origin/master
 	INT_ON_FATAL_ERR = (1 << 5),
 	INT_ON_PHYRDY_CHG = (1 << 4),
 
@@ -170,9 +198,13 @@ enum {
 	HCONTROL_ONLINE_PHY_RST = (1 << 31),
 	HCONTROL_FORCE_OFFLINE = (1 << 30),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	HCONTROL_LEGACY = (1 << 28),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HCONTROL_LEGACY = (1 << 28),
+>>>>>>> refs/remotes/origin/master
 	HCONTROL_PARITY_PROT_MOD = (1 << 14),
 	HCONTROL_DPATH_PARITY = (1 << 12),
 	HCONTROL_SNOOP_ENABLE = (1 << 10),
@@ -296,10 +328,15 @@ struct sata_fsl_host_priv {
 	int irq;
 	int data_snoop;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
 	struct device_attribute intr_coalescing;
+=======
+	struct device_attribute intr_coalescing;
+	struct device_attribute rx_watermark;
+>>>>>>> refs/remotes/origin/master
 };
 
 static void fsl_sata_set_irq_coalescing(struct ata_host *host,
@@ -307,6 +344,10 @@ static void fsl_sata_set_irq_coalescing(struct ata_host *host,
 {
 	struct sata_fsl_host_priv *host_priv = host->private_data;
 	void __iomem *hcr_base = host_priv->hcr_base;
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	if (count > ICC_MAX_INT_COUNT_THRESHOLD)
 		count = ICC_MAX_INT_COUNT_THRESHOLD;
@@ -319,14 +360,24 @@ static void fsl_sata_set_irq_coalescing(struct ata_host *host,
 			(count > ICC_MIN_INT_COUNT_THRESHOLD))
 		ticks = ICC_SAFE_INT_TICKS;
 
+<<<<<<< HEAD
 	spin_lock(&host->lock);
+=======
+	spin_lock_irqsave(&host->lock, flags);
+>>>>>>> refs/remotes/origin/master
 	iowrite32((count << 24 | ticks), hcr_base + ICC);
 
 	intr_coalescing_count = count;
 	intr_coalescing_ticks = ticks;
+<<<<<<< HEAD
 	spin_unlock(&host->lock);
 
 	DPRINTK("intrrupt coalescing, count = 0x%x, ticks = %x\n",
+=======
+	spin_unlock_irqrestore(&host->lock, flags);
+
+	DPRINTK("interrupt coalescing, count = 0x%x, ticks = %x\n",
+>>>>>>> refs/remotes/origin/master
 			intr_coalescing_count, intr_coalescing_ticks);
 	DPRINTK("ICC register status: (hcr base: 0x%x) = 0x%x\n",
 			hcr_base, ioread32(hcr_base + ICC));
@@ -358,7 +409,52 @@ static ssize_t fsl_sata_intr_coalescing_store(struct device *dev,
 	return strlen(buf);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t fsl_sata_rx_watermark_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	unsigned int rx_watermark;
+	unsigned long flags;
+	struct ata_host *host = dev_get_drvdata(dev);
+	struct sata_fsl_host_priv *host_priv = host->private_data;
+	void __iomem *csr_base = host_priv->csr_base;
+
+	spin_lock_irqsave(&host->lock, flags);
+	rx_watermark = ioread32(csr_base + TRANSCFG);
+	rx_watermark &= 0x1f;
+
+	spin_unlock_irqrestore(&host->lock, flags);
+	return sprintf(buf, "%d\n", rx_watermark);
+}
+
+static ssize_t fsl_sata_rx_watermark_store(struct device *dev,
+		struct device_attribute *attr,
+		const char *buf, size_t count)
+{
+	unsigned int rx_watermark;
+	unsigned long flags;
+	struct ata_host *host = dev_get_drvdata(dev);
+	struct sata_fsl_host_priv *host_priv = host->private_data;
+	void __iomem *csr_base = host_priv->csr_base;
+	u32 temp;
+
+	if (sscanf(buf, "%d", &rx_watermark) != 1) {
+		printk(KERN_ERR "fsl-sata: wrong parameter format.\n");
+		return -EINVAL;
+	}
+
+	spin_lock_irqsave(&host->lock, flags);
+	temp = ioread32(csr_base + TRANSCFG);
+	temp &= 0xffffffe0;
+	iowrite32(temp | rx_watermark, csr_base + TRANSCFG);
+
+	spin_unlock_irqrestore(&host->lock, flags);
+	return strlen(buf);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned int sata_fsl_tag(unsigned int tag,
 					void __iomem *hcr_base)
 {
@@ -441,6 +537,7 @@ static unsigned int sata_fsl_fill_sg(struct ata_queued_cmd *qc, void *cmd_desc,
 
 		/* warn if each s/g element is not dword aligned */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (sg_addr & 0x03)
 			ata_port_printk(qc->ap, KERN_ERR,
 					"s/g addr unaligned : 0x%llx\n",
@@ -449,13 +546,18 @@ static unsigned int sata_fsl_fill_sg(struct ata_queued_cmd *qc, void *cmd_desc,
 			ata_port_printk(qc->ap, KERN_ERR,
 					"s/g len unaligned : 0x%x\n", sg_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(sg_addr & 0x03))
 			ata_port_err(qc->ap, "s/g addr unaligned : 0x%llx\n",
 				     (unsigned long long)sg_addr);
 		if (unlikely(sg_len & 0x03))
 			ata_port_err(qc->ap, "s/g len unaligned : 0x%x\n",
 				     sg_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (num_prde == (SATA_FSL_MAX_PRD_DIRECT - 1) &&
 		    sg_next(sg) != NULL) {
@@ -766,11 +868,15 @@ static int sata_fsl_port_start(struct ata_port *ap)
 
 	sata_fsl_scr_read(&ap->link, SCR_CONTROL, &temp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_printk(KERN_WARNING, dev, "scr_control, speed limited to %x\n",
 			temp);
 =======
 	dev_warn(dev, "scr_control, speed limited to %x\n", temp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_warn(dev, "scr_control, speed limited to %x\n", temp);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	return 0;
@@ -849,11 +955,15 @@ try_offline_again:
 
 	if (temp & ONLINE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_ERR,
 				"Hardreset failed, not off-lined %d\n", i);
 =======
 		ata_port_err(ap, "Hardreset failed, not off-lined %d\n", i);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_err(ap, "Hardreset failed, not off-lined %d\n", i);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Try to offline controller atleast twice
@@ -890,11 +1000,15 @@ try_offline_again:
 
 	if (!(temp & ONLINE)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_ERR,
 				"Hardreset failed, not on-lined\n");
 =======
 		ata_port_err(ap, "Hardreset failed, not on-lined\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_err(ap, "Hardreset failed, not on-lined\n");
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
@@ -911,6 +1025,7 @@ try_offline_again:
 	temp = ata_wait_register(ap, hcr_base + HSTATUS, 0xFF, 0, 1, 500);
 	if ((!(temp & 0x10)) || ata_link_offline(link)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING,
 				"No Device OR PHYRDY change,Hstatus = 0x%x\n",
 				ioread32(hcr_base + HSTATUS));
@@ -918,6 +1033,10 @@ try_offline_again:
 		ata_port_warn(ap, "No Device OR PHYRDY change,Hstatus = 0x%x\n",
 			      ioread32(hcr_base + HSTATUS));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap, "No Device OR PHYRDY change,Hstatus = 0x%x\n",
+			      ioread32(hcr_base + HSTATUS));
+>>>>>>> refs/remotes/origin/master
 		*class = ATA_DEV_NONE;
 		return 0;
 	}
@@ -931,6 +1050,7 @@ try_offline_again:
 
 	if ((temp & 0xFF) != 0x18) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING, "No Signature Update\n");
 		*class = ATA_DEV_NONE;
 		goto do_followup_srst;
@@ -939,13 +1059,18 @@ try_offline_again:
 				"Signature Update detected @ %d msecs\n",
 				jiffies_to_msecs(jiffies - start_jiffies));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ata_port_warn(ap, "No Signature Update\n");
 		*class = ATA_DEV_NONE;
 		goto do_followup_srst;
 	} else {
 		ata_port_info(ap, "Signature Update detected @ %d msecs\n",
 			      jiffies_to_msecs(jiffies - start_jiffies));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		*class = sata_fsl_dev_classify(ap);
 		return 0;
 	}
@@ -1021,10 +1146,14 @@ static int sata_fsl_softreset(struct ata_link *link, unsigned int *class,
 	temp = ata_wait_register(ap, CQ + hcr_base, 0x1, 0x1, 1, 5000);
 	if (temp & 0x1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING, "ATA_SRST issue failed\n");
 =======
 		ata_port_warn(ap, "ATA_SRST issue failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap, "ATA_SRST issue failed\n");
+>>>>>>> refs/remotes/origin/master
 
 		DPRINTK("Softreset@5000,CQ=0x%x,CA=0x%x,CC=0x%x\n",
 			ioread32(CQ + hcr_base),
@@ -1244,25 +1373,70 @@ static void sata_fsl_host_intr(struct ata_port *ap)
 	u32 hstatus, done_mask = 0;
 	struct ata_queued_cmd *qc;
 	u32 SError;
+<<<<<<< HEAD
+=======
+	u32 tag;
+	u32 status_mask = INT_ON_ERROR;
+>>>>>>> refs/remotes/origin/master
 
 	hstatus = ioread32(hcr_base + HSTATUS);
 
 	sata_fsl_scr_read(&ap->link, SCR_ERROR, &SError);
 
+<<<<<<< HEAD
+=======
+	/* Read command completed register */
+	done_mask = ioread32(hcr_base + CC);
+
+	/* Workaround for data length mismatch errata */
+	if (unlikely(hstatus & INT_ON_DATA_LENGTH_MISMATCH)) {
+		for (tag = 0; tag < ATA_MAX_QUEUE; tag++) {
+			qc = ata_qc_from_tag(ap, tag);
+			if (qc && ata_is_atapi(qc->tf.protocol)) {
+				u32 hcontrol;
+				/* Set HControl[27] to clear error registers */
+				hcontrol = ioread32(hcr_base + HCONTROL);
+				iowrite32(hcontrol | CLEAR_ERROR,
+						hcr_base + HCONTROL);
+
+				/* Clear HControl[27] */
+				iowrite32(hcontrol & ~CLEAR_ERROR,
+						hcr_base + HCONTROL);
+
+				/* Clear SError[E] bit */
+				sata_fsl_scr_write(&ap->link, SCR_ERROR,
+						SError);
+
+				/* Ignore fatal error and device error */
+				status_mask &= ~(INT_ON_SINGL_DEVICE_ERR
+						| INT_ON_FATAL_ERR);
+				break;
+			}
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(SError & 0xFFFF0000)) {
 		DPRINTK("serror @host_intr : 0x%x\n", SError);
 		sata_fsl_error_intr(ap);
 	}
 
+<<<<<<< HEAD
 	if (unlikely(hstatus & INT_ON_ERROR)) {
+=======
+	if (unlikely(hstatus & status_mask)) {
+>>>>>>> refs/remotes/origin/master
 		DPRINTK("error interrupt!!\n");
 		sata_fsl_error_intr(ap);
 		return;
 	}
 
+<<<<<<< HEAD
 	/* Read command completed register */
 	done_mask = ioread32(hcr_base + CC);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	VPRINTK("Status of all queues :\n");
 	VPRINTK("done_mask/CC = 0x%x, CA = 0x%x, CE=0x%x,CQ=0x%x,apqa=0x%x\n",
 		done_mask,
@@ -1337,11 +1511,15 @@ static irqreturn_t sata_fsl_interrupt(int irq, void *dev_instance)
 		sata_fsl_host_intr(ap);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_WARNING, host->dev,
 			   "interrupt on disabled port 0\n");
 =======
 		dev_warn(host->dev, "interrupt on disabled port 0\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_warn(host->dev, "interrupt on disabled port 0\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	iowrite32(interrupt_enables, hcr_base + HSTATUS);
@@ -1369,12 +1547,18 @@ static int sata_fsl_init_controller(struct ata_host *host)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* sata controller to operate in enterprise mode */
 	temp = ioread32(hcr_base + HCONTROL);
 	iowrite32(temp & ~HCONTROL_LEGACY, hcr_base + HCONTROL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* ack. any pending IRQs for this controller/port */
 	temp = ioread32(hcr_base + HSTATUS);
 	if (temp & 0x3F)
@@ -1393,7 +1577,10 @@ static int sata_fsl_init_controller(struct ata_host *host)
 	iowrite32(0x00000FFFF, hcr_base + DE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  	/*
 	 * reset the number of command complete bits which will cause the
 	 * interrupt to be signaled
@@ -1401,7 +1588,10 @@ static int sata_fsl_init_controller(struct ata_host *host)
 	fsl_sata_set_irq_coalescing(host, intr_coalescing_count,
 			intr_coalescing_ticks);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * host controller will be brought on-line, during xx_port_start()
 	 * callback, that should also initiate the OOB, COMINIT sequence
@@ -1467,21 +1657,29 @@ static int sata_fsl_probe(struct platform_device *ofdev)
 	struct sata_fsl_host_priv *host_priv = NULL;
 	int irq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ata_host *host;
 =======
 	struct ata_host *host = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ata_host *host = NULL;
+>>>>>>> refs/remotes/origin/master
 	u32 temp;
 
 	struct ata_port_info pi = sata_fsl_port_info[0];
 	const struct ata_port_info *ppi[] = { &pi, NULL };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_printk(KERN_INFO, &ofdev->dev,
 		   "Sata FSL Platform/CSB Driver init\n");
 =======
 	dev_info(&ofdev->dev, "Sata FSL Platform/CSB Driver init\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_info(&ofdev->dev, "Sata FSL Platform/CSB Driver init\n");
+>>>>>>> refs/remotes/origin/master
 
 	hcr_base = of_iomap(ofdev->dev.of_node, 0);
 	if (!hcr_base)
@@ -1511,10 +1709,14 @@ static int sata_fsl_probe(struct platform_device *ofdev)
 	irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
 	if (irq < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &ofdev->dev, "invalid irq from platform\n");
 =======
 		dev_err(&ofdev->dev, "invalid irq from platform\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&ofdev->dev, "invalid irq from platform\n");
+>>>>>>> refs/remotes/origin/master
 		goto error_exit_with_cleanup;
 	}
 	host_priv->irq = irq;
@@ -1527,12 +1729,18 @@ static int sata_fsl_probe(struct platform_device *ofdev)
 	/* allocate host structure */
 	host = ata_host_alloc_pinfo(&ofdev->dev, ppi, SATA_FSL_MAX_PORTS);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!host) {
 		retval = -ENOMEM;
 		goto error_exit_with_cleanup;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* host->iomap is not used currently */
 	host->private_data = host_priv;
@@ -1548,10 +1756,15 @@ static int sata_fsl_probe(struct platform_device *ofdev)
 	ata_host_activate(host, irq, sata_fsl_interrupt, SATA_FSL_IRQ_FLAG,
 			  &sata_fsl_sht);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, host);
 
 <<<<<<< HEAD
 =======
+=======
+	platform_set_drvdata(ofdev, host);
+
+>>>>>>> refs/remotes/origin/master
 	host_priv->intr_coalescing.show = fsl_sata_intr_coalescing_show;
 	host_priv->intr_coalescing.store = fsl_sata_intr_coalescing_store;
 	sysfs_attr_init(&host_priv->intr_coalescing.attr);
@@ -1561,11 +1774,26 @@ static int sata_fsl_probe(struct platform_device *ofdev)
 	if (retval)
 		goto error_exit_with_cleanup;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	host_priv->rx_watermark.show = fsl_sata_rx_watermark_show;
+	host_priv->rx_watermark.store = fsl_sata_rx_watermark_store;
+	sysfs_attr_init(&host_priv->rx_watermark.attr);
+	host_priv->rx_watermark.attr.name = "rx_watermark";
+	host_priv->rx_watermark.attr.mode = S_IRUGO | S_IWUSR;
+	retval = device_create_file(host->dev, &host_priv->rx_watermark);
+	if (retval) {
+		device_remove_file(&ofdev->dev, &host_priv->intr_coalescing);
+		goto error_exit_with_cleanup;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 error_exit_with_cleanup:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (host) {
@@ -1578,12 +1806,21 @@ error_exit_with_cleanup:
 		iounmap(hcr_base);
 	if (host_priv)
 		kfree(host_priv);
+=======
+	if (host)
+		ata_host_detach(host);
+
+	if (hcr_base)
+		iounmap(hcr_base);
+	kfree(host_priv);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
 
 static int sata_fsl_remove(struct platform_device *ofdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&ofdev->dev);
 	struct sata_fsl_host_priv *host_priv = host->private_data;
 
@@ -1596,6 +1833,16 @@ static int sata_fsl_remove(struct platform_device *ofdev)
 
 	dev_set_drvdata(&ofdev->dev, NULL);
 
+=======
+	struct ata_host *host = platform_get_drvdata(ofdev);
+	struct sata_fsl_host_priv *host_priv = host->private_data;
+
+	device_remove_file(&ofdev->dev, &host_priv->intr_coalescing);
+	device_remove_file(&ofdev->dev, &host_priv->rx_watermark);
+
+	ata_host_detach(host);
+
+>>>>>>> refs/remotes/origin/master
 	irq_dispose_mapping(host_priv->irq);
 	iounmap(host_priv->hcr_base);
 	kfree(host_priv);
@@ -1606,13 +1853,21 @@ static int sata_fsl_remove(struct platform_device *ofdev)
 #ifdef CONFIG_PM
 static int sata_fsl_suspend(struct platform_device *op, pm_message_t state)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&op->dev);
+=======
+	struct ata_host *host = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	return ata_host_suspend(host, state);
 }
 
 static int sata_fsl_resume(struct platform_device *op)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&op->dev);
+=======
+	struct ata_host *host = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	struct sata_fsl_host_priv *host_priv = host->private_data;
 	int ret;
 	void __iomem *hcr_base = host_priv->hcr_base;
@@ -1622,11 +1877,15 @@ static int sata_fsl_resume(struct platform_device *op)
 	ret = sata_fsl_init_controller(host);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &op->dev,
 			"Error initialize hardware\n");
 =======
 		dev_err(&op->dev, "Error initializing hardware\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&op->dev, "Error initializing hardware\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -1634,14 +1893,20 @@ static int sata_fsl_resume(struct platform_device *op)
 	iowrite32(pp->cmdslot_paddr & 0xffffffff, hcr_base + CHBA);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	iowrite32((ioread32(hcr_base + HCONTROL)
 				| HCONTROL_ONLINE_PHY_RST
 				| HCONTROL_SNOOP_ENABLE
 				| HCONTROL_PMP_ATTACHED),
 			hcr_base + HCONTROL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ata_host_resume(host);
 	return 0;
 }
@@ -1674,6 +1939,7 @@ static struct platform_driver fsl_sata_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sata_fsl_init(void)
 {
 	platform_driver_register(&fsl_sata_driver);
@@ -1687,14 +1953,20 @@ static void __exit sata_fsl_exit(void)
 =======
 module_platform_driver(fsl_sata_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(fsl_sata_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ashish Kalra, Freescale Semiconductor");
 MODULE_DESCRIPTION("Freescale 3.0Gbps SATA controller low level driver");
 MODULE_VERSION("1.10");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sata_fsl_init);
 module_exit(sata_fsl_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

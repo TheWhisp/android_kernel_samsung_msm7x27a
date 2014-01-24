@@ -163,7 +163,11 @@ struct ch7017_priv {
 };
 
 static void ch7017_dump_regs(struct intel_dvo_device *dvo);
+<<<<<<< HEAD
 static void ch7017_dpms(struct intel_dvo_device *dvo, int mode);
+=======
+static void ch7017_dpms(struct intel_dvo_device *dvo, bool enable);
+>>>>>>> refs/remotes/origin/master
 
 static bool ch7017_read(struct intel_dvo_device *dvo, u8 addr, u8 *val)
 {
@@ -228,10 +232,14 @@ static bool ch7017_init(struct intel_dvo_device *dvo,
 		DRM_DEBUG_KMS("ch701x not detected, got %d: from %s "
 			      "slave %d.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      val, adapter->name,dvo->slave_addr);
 =======
 			      val, adapter->name, dvo->slave_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      val, adapter->name, dvo->slave_addr);
+>>>>>>> refs/remotes/origin/master
 		goto fail;
 	}
 
@@ -313,7 +321,11 @@ static void ch7017_mode_set(struct intel_dvo_device *dvo,
 	lvds_power_down = CH7017_LVDS_POWER_DOWN_DEFAULT_RESERVED |
 			  (mode->hdisplay & 0x0700) >> 8;
 
+<<<<<<< HEAD
 	ch7017_dpms(dvo, DRM_MODE_DPMS_OFF);
+=======
+	ch7017_dpms(dvo, false);
+>>>>>>> refs/remotes/origin/master
 	ch7017_write(dvo, CH7017_HORIZONTAL_ACTIVE_PIXEL_INPUT,
 			horizontal_active_pixel_input);
 	ch7017_write(dvo, CH7017_HORIZONTAL_ACTIVE_PIXEL_OUTPUT,
@@ -335,7 +347,11 @@ static void ch7017_mode_set(struct intel_dvo_device *dvo,
 }
 
 /* set the CH7017 power state */
+<<<<<<< HEAD
 static void ch7017_dpms(struct intel_dvo_device *dvo, int mode)
+=======
+static void ch7017_dpms(struct intel_dvo_device *dvo, bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	uint8_t val;
 
@@ -349,7 +365,11 @@ static void ch7017_dpms(struct intel_dvo_device *dvo, int mode)
 			CH7017_DAC3_POWER_DOWN |
 			CH7017_TV_POWER_DOWN_EN);
 
+<<<<<<< HEAD
 	if (mode == DRM_MODE_DPMS_ON) {
+=======
+	if (enable) {
+>>>>>>> refs/remotes/origin/master
 		/* Turn on the LVDS */
 		ch7017_write(dvo, CH7017_LVDS_POWER_DOWN,
 			     val & ~CH7017_LVDS_POWER_DOWN_EN);
@@ -363,6 +383,21 @@ static void ch7017_dpms(struct intel_dvo_device *dvo, int mode)
 	msleep(20);
 }
 
+<<<<<<< HEAD
+=======
+static bool ch7017_get_hw_state(struct intel_dvo_device *dvo)
+{
+	uint8_t val;
+
+	ch7017_read(dvo, CH7017_LVDS_POWER_DOWN, &val);
+
+	if (val & CH7017_LVDS_POWER_DOWN_EN)
+		return false;
+	else
+		return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void ch7017_dump_regs(struct intel_dvo_device *dvo)
 {
 	uint8_t val;
@@ -400,6 +435,10 @@ struct intel_dvo_dev_ops ch7017_ops = {
 	.mode_valid = ch7017_mode_valid,
 	.mode_set = ch7017_mode_set,
 	.dpms = ch7017_dpms,
+<<<<<<< HEAD
+=======
+	.get_hw_state = ch7017_get_hw_state,
+>>>>>>> refs/remotes/origin/master
 	.dump_regs = ch7017_dump_regs,
 	.destroy = ch7017_destroy,
 };

@@ -26,12 +26,17 @@
 #define fd_disable_irq()        disable_irq(FLOPPY_IRQ)
 #define fd_cacheflush(addr,size) /* nothing */
 #define fd_request_irq()        request_irq(FLOPPY_IRQ, floppy_interrupt,\
+<<<<<<< HEAD
 					    IRQF_DISABLED, "floppy", NULL)
 <<<<<<< HEAD
 #define fd_free_irq()           free_irq(FLOPPY_IRQ, NULL);
 =======
 #define fd_free_irq()           free_irq(FLOPPY_IRQ, NULL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    0, "floppy", NULL)
+#define fd_free_irq()           free_irq(FLOPPY_IRQ, NULL)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PCI
 

@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -10,9 +14,13 @@
 #include <linux/skbuff.h>
 #include <linux/hardirq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/caif/cfpkt.h>
 
 #define PKT_PREFIX  48
@@ -67,9 +75,12 @@ static inline struct cfpkt *skb_to_pkt(struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct cfpkt *cfpkt_fromnative(enum caif_direction dir, void *nativepkt)
 {
 	struct cfpkt *pkt = skb_to_pkt(nativepkt);
@@ -112,9 +123,12 @@ void cfpkt_destroy(struct cfpkt *pkt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 inline bool cfpkt_more(struct cfpkt *pkt)
 {
 	struct sk_buff *skb = pkt_to_skb(pkt);
@@ -122,9 +136,12 @@ inline bool cfpkt_more(struct cfpkt *pkt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cfpkt_peek_head(struct cfpkt *pkt, void *data, u16 len)
 {
 	struct sk_buff *skb = pkt_to_skb(pkt);
@@ -157,16 +174,22 @@ int cfpkt_extr_head(struct cfpkt *pkt, void *data, u16 len)
 	from = skb_pull(skb, len);
 	from -= len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(data, from, len);
 	return 0;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (data)
 		memcpy(data, from, len);
 	return 0;
 }
 EXPORT_SYMBOL(cfpkt_extr_head);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int cfpkt_extr_trail(struct cfpkt *pkt, void *dta, u16 len)
 {
@@ -191,18 +214,24 @@ int cfpkt_extr_trail(struct cfpkt *pkt, void *dta, u16 len)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cfpkt_pad_trail(struct cfpkt *pkt, u16 len)
 {
 	return cfpkt_add_body(pkt, NULL, len);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cfpkt_add_body(struct cfpkt *pkt, const void *data, u16 len)
 {
 	struct sk_buff *skb = pkt_to_skb(pkt);
@@ -232,6 +261,7 @@ int cfpkt_add_body(struct cfpkt *pkt, const void *data, u16 len)
 			PKT_ERROR(pkt, "cow failed\n");
 			return -EPROTO;
 		}
+<<<<<<< HEAD
 		/*
 		 * Is the SKB non-linear after skb_cow_data()? If so, we are
 		 * going to add data to the last SKB, so we need to adjust
@@ -246,6 +276,12 @@ int cfpkt_add_body(struct cfpkt *pkt, const void *data, u16 len)
 
 	/* All set to put the last SKB and optionally write data there. */
 	to = skb_put(lastskb, len);
+=======
+	}
+
+	/* All set to put the last SKB and optionally write data there. */
+	to = pskb_put(skb, lastskb, len);
+>>>>>>> refs/remotes/origin/master
 	if (likely(data))
 		memcpy(to, data, len);
 	return 0;
@@ -282,10 +318,14 @@ int cfpkt_add_head(struct cfpkt *pkt, const void *data2, u16 len)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 EXPORT_SYMBOL(cfpkt_add_head);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(cfpkt_add_head);
+>>>>>>> refs/remotes/origin/master
 
 inline int cfpkt_add_trail(struct cfpkt *pkt, const void *data, u16 len)
 {
@@ -293,9 +333,12 @@ inline int cfpkt_add_trail(struct cfpkt *pkt, const void *data, u16 len)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 inline u16 cfpkt_getlen(struct cfpkt *pkt)
 {
 	struct sk_buff *skb = pkt_to_skb(pkt);
@@ -303,12 +346,18 @@ inline u16 cfpkt_getlen(struct cfpkt *pkt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 inline u16 cfpkt_iterate(struct cfpkt *pkt,
 			    u16 (*iter_func)(u16, void *, u16),
 			    u16 data)
+=======
+inline u16 cfpkt_iterate(struct cfpkt *pkt,
+			 u16 (*iter_func)(u16, void *, u16),
+			 u16 data)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Don't care about the performance hit of linearizing,
@@ -324,9 +373,12 @@ inline u16 cfpkt_iterate(struct cfpkt *pkt,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cfpkt_setlen(struct cfpkt *pkt, u16 len)
 {
 	struct sk_buff *skb = pkt_to_skb(pkt);
@@ -352,8 +404,13 @@ int cfpkt_setlen(struct cfpkt *pkt, u16 len)
 }
 
 struct cfpkt *cfpkt_append(struct cfpkt *dstpkt,
+<<<<<<< HEAD
 			     struct cfpkt *addpkt,
 			     u16 expectlen)
+=======
+			   struct cfpkt *addpkt,
+			   u16 expectlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *dst = pkt_to_skb(dstpkt);
 	struct sk_buff *add = pkt_to_skb(addpkt);
@@ -426,6 +483,10 @@ struct cfpkt *cfpkt_split(struct cfpkt *pkt, u16 pos)
 	memcpy(skb2->data, split, len2nd);
 	skb2->tail += len2nd;
 	skb2->len += len2nd;
+<<<<<<< HEAD
+=======
+	skb2->priority = skb->priority;
+>>>>>>> refs/remotes/origin/master
 	return skb_to_pkt(skb2);
 }
 
@@ -439,6 +500,16 @@ struct caif_payload_info *cfpkt_info(struct cfpkt *pkt)
 	return (struct caif_payload_info *)&pkt_to_skb(pkt)->cb;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(cfpkt_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(cfpkt_info);
+
+void cfpkt_set_prio(struct cfpkt *pkt, int prio)
+{
+	pkt_to_skb(pkt)->priority = prio;
+}
+EXPORT_SYMBOL(cfpkt_set_prio);
+>>>>>>> refs/remotes/origin/master

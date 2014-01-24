@@ -49,7 +49,12 @@ struct kmem_cache *ubifs_inode_slab;
 
 /* UBIFS TNC shrinker description */
 static struct shrinker ubifs_shrinker_info = {
+<<<<<<< HEAD
 	.shrink = ubifs_shrinker,
+=======
+	.scan_objects = ubifs_shrink_scan,
+	.count_objects = ubifs_shrink_count,
+>>>>>>> refs/remotes/origin/master
 	.seeks = DEFAULT_SEEKS,
 };
 
@@ -86,6 +91,7 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
 		return 4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ui->xattr && (inode->i_mode & S_IFMT) != S_IFREG)
 =======
 	if (ui->xattr && !S_ISREG(inode->i_mode))
@@ -103,6 +109,17 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
 =======
 	err = dbg_check_dir(c, inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ui->xattr && !S_ISREG(inode->i_mode))
+		return 5;
+
+	if (!ubifs_compr_present(ui->compr_type)) {
+		ubifs_warn("inode %lu uses '%s' compression, but it was not compiled in",
+			   inode->i_ino, ubifs_compr_name(ui->compr_type));
+	}
+
+	err = dbg_check_dir(c, inode);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -138,12 +155,18 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
 
 	inode->i_flags |= (S_NOCMTIME | S_NOATIME);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = le32_to_cpu(ino->nlink);
 =======
 	set_nlink(inode, le32_to_cpu(ino->nlink));
 >>>>>>> refs/remotes/origin/cm-10.0
 	inode->i_uid   = le32_to_cpu(ino->uid);
 	inode->i_gid   = le32_to_cpu(ino->gid);
+=======
+	set_nlink(inode, le32_to_cpu(ino->nlink));
+	i_uid_write(inode, le32_to_cpu(ino->uid));
+	i_gid_write(inode, le32_to_cpu(ino->gid));
+>>>>>>> refs/remotes/origin/master
 	inode->i_atime.tv_sec  = (int64_t)le64_to_cpu(ino->atime_sec);
 	inode->i_atime.tv_nsec = le32_to_cpu(ino->atime_nsec);
 	inode->i_mtime.tv_sec  = (int64_t)le64_to_cpu(ino->mtime_sec);
@@ -258,8 +281,13 @@ struct inode *ubifs_iget(struct super_block *sb, unsigned long inum)
 
 out_invalid:
 	ubifs_err("inode %lu validation failed, error %d", inode->i_ino, err);
+<<<<<<< HEAD
 	dbg_dump_node(c, ino);
 	dbg_dump_inode(c, inode);
+=======
+	ubifs_dump_node(c, ino);
+	ubifs_dump_inode(c, inode);
+>>>>>>> refs/remotes/origin/master
 	err = -EINVAL;
 out_ino:
 	kfree(ino);
@@ -289,9 +317,12 @@ static void ubifs_i_callback(struct rcu_head *head)
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 	struct ubifs_inode *ui = ubifs_inode(inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(ubifs_inode_slab, ui);
 }
 
@@ -319,7 +350,11 @@ static int ubifs_write_inode(struct inode *inode, struct writeback_control *wbc)
 	mutex_lock(&ui->ui_mutex);
 	/*
 	 * Due to races between write-back forced by budgeting
+<<<<<<< HEAD
 	 * (see 'sync_some_inodes()') and pdflush write-back, the inode may
+=======
+	 * (see 'sync_some_inodes()') and background write-back, the inode may
+>>>>>>> refs/remotes/origin/master
 	 * have already been synchronized, do not do this again. This might
 	 * also happen if it was synchronized in an VFS operation, e.g.
 	 * 'ubifs_link()'.
@@ -394,7 +429,11 @@ out:
 		smp_wmb();
 	}
 done:
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ubifs_dirty_inode(struct inode *inode, int flags)
@@ -436,6 +475,7 @@ static int ubifs_statfs(struct dentry *dentry, struct kstatfs *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ubifs_show_options(struct seq_file *s, struct vfsmount *mnt)
 {
 	struct ubifs_info *c = mnt->mnt_sb->s_fs_info;
@@ -444,6 +484,11 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
 {
 	struct ubifs_info *c = root->d_sb->s_fs_info;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ubifs_show_options(struct seq_file *s, struct dentry *root)
+{
+	struct ubifs_info *c = root->d_sb->s_fs_info;
+>>>>>>> refs/remotes/origin/master
 
 	if (c->mount_opts.unmount_mode == 2)
 		seq_printf(s, ",fast_unmount");
@@ -690,8 +735,13 @@ static int init_constants_sb(struct ubifs_info *c)
 	tmp = UBIFS_CS_NODE_SZ + UBIFS_REF_NODE_SZ * c->jhead_cnt;
 	tmp = ALIGN(tmp, c->min_io_size);
 	if (tmp > c->leb_size) {
+<<<<<<< HEAD
 		dbg_err("too small LEB size %d, at least %d needed",
 			c->leb_size, tmp);
+=======
+		ubifs_err("too small LEB size %d, at least %d needed",
+			  c->leb_size, tmp);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -705,8 +755,13 @@ static int init_constants_sb(struct ubifs_info *c)
 	tmp /= c->leb_size;
 	tmp += 1;
 	if (c->log_lebs < tmp) {
+<<<<<<< HEAD
 		dbg_err("too small log %d LEBs, required min. %d LEBs",
 			c->log_lebs, tmp);
+=======
+		ubifs_err("too small log %d LEBs, required min. %d LEBs",
+			  c->log_lebs, tmp);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -835,6 +890,7 @@ static int alloc_wbufs(struct ubifs_info *c)
 		c->jheads[i].grouped = 1;
 	}
 
+<<<<<<< HEAD
 	c->jheads[BASEHD].wbuf.dtype = UBI_SHORTTERM;
 	/*
 	 * Garbage Collector head likely contains long-term data and
@@ -842,6 +898,12 @@ static int alloc_wbufs(struct ubifs_info *c)
 	 * not grouped.
 	 */
 	c->jheads[GCHD].wbuf.dtype = UBI_LONGTERM;
+=======
+	/*
+	 * Garbage Collector head does not need to be synchronized by timer.
+	 * Also GC head nodes are not grouped.
+	 */
+>>>>>>> refs/remotes/origin/master
 	c->jheads[GCHD].wbuf.no_timer = 1;
 	c->jheads[GCHD].grouped = 0;
 
@@ -885,7 +947,11 @@ static void free_orphans(struct ubifs_info *c)
 		orph = list_entry(c->orph_list.next, struct ubifs_orphan, list);
 		list_del(&orph->list);
 		kfree(orph);
+<<<<<<< HEAD
 		dbg_err("orphan list not empty at unmount");
+=======
+		ubifs_err("orphan list not empty at unmount");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	vfree(c->orph_buf);
@@ -936,10 +1002,14 @@ static int check_volume_empty(struct ubifs_info *c)
 	c->empty = 1;
 	for (lnum = 0; lnum < c->leb_cnt; lnum++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_is_mapped(c->ubi, lnum);
 =======
 		err = ubifs_is_mapped(c, lnum);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_is_mapped(c, lnum);
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(err < 0))
 			return err;
 		if (err == 1) {
@@ -1090,8 +1160,13 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
 
 			flag = parse_standard_option(p);
 			if (!flag) {
+<<<<<<< HEAD
 				ubifs_err("unrecognized mount option \"%s\" "
 					  "or missing value", p);
+=======
+				ubifs_err("unrecognized mount option \"%s\" or missing value",
+					  p);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 			sb->s_flags |= flag;
@@ -1153,8 +1228,13 @@ again:
 		}
 
 		/* Just disable bulk-read */
+<<<<<<< HEAD
 		ubifs_warn("Cannot allocate %d bytes of memory for bulk-read, "
 			   "disabling it", c->max_bu_buf_len);
+=======
+		ubifs_warn("cannot allocate %d bytes of memory for bulk-read, disabling it",
+			   c->max_bu_buf_len);
+>>>>>>> refs/remotes/origin/master
 		c->mount_opts.bulk_read = 1;
 		c->bulk_read = 0;
 		return;
@@ -1173,8 +1253,13 @@ static int check_free_space(struct ubifs_info *c)
 	ubifs_assert(c->dark_wm > 0);
 	if (c->lst.total_free + c->lst.total_dirty < c->dark_wm) {
 		ubifs_err("insufficient free space to mount in R/W mode");
+<<<<<<< HEAD
 		dbg_dump_budg(c, &c->bi);
 		dbg_dump_lprops(c);
+=======
+		ubifs_dump_budg(c, &c->bi);
+		ubifs_dump_lprops(c);
+>>>>>>> refs/remotes/origin/master
 		return -ENOSPC;
 	}
 	return 0;
@@ -1186,14 +1271,21 @@ static int check_free_space(struct ubifs_info *c)
  *
  * This function mounts UBIFS file system. Returns zero in case of success and
  * a negative error code in case of failure.
+<<<<<<< HEAD
  *
  * Note, the function does not de-allocate resources it it fails half way
  * through, and the caller has to do this instead.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int mount_ubifs(struct ubifs_info *c)
 {
 	int err;
+<<<<<<< HEAD
 	long long x;
+=======
+	long long x, y;
+>>>>>>> refs/remotes/origin/master
 	size_t sz;
 
 	c->ro_mount = !!(c->vfs_sb->s_flags & MS_RDONLY);
@@ -1327,7 +1419,11 @@ static int mount_ubifs(struct ubifs_info *c)
 	if (!c->ro_mount && c->space_fixup) {
 		err = ubifs_fixup_free_space(c);
 		if (err)
+<<<<<<< HEAD
 			goto out_master;
+=======
+			goto out_lpt;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!c->ro_mount) {
@@ -1443,6 +1539,7 @@ static int mount_ubifs(struct ubifs_info *c)
 
 	c->mounting = 0;
 
+<<<<<<< HEAD
 	ubifs_msg("mounted UBI device %d, volume %d, name \"%s\"",
 		  c->vi.ubi_num, c->vi.vol_id, c->vi.name);
 	if (c->ro_mount)
@@ -1512,6 +1609,71 @@ static int mount_ubifs(struct ubifs_info *c)
 		c->bud_bytes, c->bud_bytes >> 10, c->bud_bytes >> 20);
 	dbg_msg("max. seq. number:    %llu", c->max_sqnum);
 	dbg_msg("commit number:       %llu", c->cmt_no);
+=======
+	ubifs_msg("mounted UBI device %d, volume %d, name \"%s\"%s",
+		  c->vi.ubi_num, c->vi.vol_id, c->vi.name,
+		  c->ro_mount ? ", R/O mode" : "");
+	x = (long long)c->main_lebs * c->leb_size;
+	y = (long long)c->log_lebs * c->leb_size + c->max_bud_bytes;
+	ubifs_msg("LEB size: %d bytes (%d KiB), min./max. I/O unit sizes: %d bytes/%d bytes",
+		  c->leb_size, c->leb_size >> 10, c->min_io_size,
+		  c->max_write_size);
+	ubifs_msg("FS size: %lld bytes (%lld MiB, %d LEBs), journal size %lld bytes (%lld MiB, %d LEBs)",
+		  x, x >> 20, c->main_lebs,
+		  y, y >> 20, c->log_lebs + c->max_bud_cnt);
+	ubifs_msg("reserved for root: %llu bytes (%llu KiB)",
+		  c->report_rp_size, c->report_rp_size >> 10);
+	ubifs_msg("media format: w%d/r%d (latest is w%d/r%d), UUID %pUB%s",
+		  c->fmt_version, c->ro_compat_version,
+		  UBIFS_FORMAT_VERSION, UBIFS_RO_COMPAT_VERSION, c->uuid,
+		  c->big_lpt ? ", big LPT model" : ", small LPT model");
+
+	dbg_gen("default compressor:  %s", ubifs_compr_name(c->default_compr));
+	dbg_gen("data journal heads:  %d",
+		c->jhead_cnt - NONDATA_JHEADS_CNT);
+	dbg_gen("log LEBs:            %d (%d - %d)",
+		c->log_lebs, UBIFS_LOG_LNUM, c->log_last);
+	dbg_gen("LPT area LEBs:       %d (%d - %d)",
+		c->lpt_lebs, c->lpt_first, c->lpt_last);
+	dbg_gen("orphan area LEBs:    %d (%d - %d)",
+		c->orph_lebs, c->orph_first, c->orph_last);
+	dbg_gen("main area LEBs:      %d (%d - %d)",
+		c->main_lebs, c->main_first, c->leb_cnt - 1);
+	dbg_gen("index LEBs:          %d", c->lst.idx_lebs);
+	dbg_gen("total index bytes:   %lld (%lld KiB, %lld MiB)",
+		c->bi.old_idx_sz, c->bi.old_idx_sz >> 10,
+		c->bi.old_idx_sz >> 20);
+	dbg_gen("key hash type:       %d", c->key_hash_type);
+	dbg_gen("tree fanout:         %d", c->fanout);
+	dbg_gen("reserved GC LEB:     %d", c->gc_lnum);
+	dbg_gen("max. znode size      %d", c->max_znode_sz);
+	dbg_gen("max. index node size %d", c->max_idx_node_sz);
+	dbg_gen("node sizes:          data %zu, inode %zu, dentry %zu",
+		UBIFS_DATA_NODE_SZ, UBIFS_INO_NODE_SZ, UBIFS_DENT_NODE_SZ);
+	dbg_gen("node sizes:          trun %zu, sb %zu, master %zu",
+		UBIFS_TRUN_NODE_SZ, UBIFS_SB_NODE_SZ, UBIFS_MST_NODE_SZ);
+	dbg_gen("node sizes:          ref %zu, cmt. start %zu, orph %zu",
+		UBIFS_REF_NODE_SZ, UBIFS_CS_NODE_SZ, UBIFS_ORPH_NODE_SZ);
+	dbg_gen("max. node sizes:     data %zu, inode %zu dentry %zu, idx %d",
+		UBIFS_MAX_DATA_NODE_SZ, UBIFS_MAX_INO_NODE_SZ,
+		UBIFS_MAX_DENT_NODE_SZ, ubifs_idx_node_sz(c, c->fanout));
+	dbg_gen("dead watermark:      %d", c->dead_wm);
+	dbg_gen("dark watermark:      %d", c->dark_wm);
+	dbg_gen("LEB overhead:        %d", c->leb_overhead);
+	x = (long long)c->main_lebs * c->dark_wm;
+	dbg_gen("max. dark space:     %lld (%lld KiB, %lld MiB)",
+		x, x >> 10, x >> 20);
+	dbg_gen("maximum bud bytes:   %lld (%lld KiB, %lld MiB)",
+		c->max_bud_bytes, c->max_bud_bytes >> 10,
+		c->max_bud_bytes >> 20);
+	dbg_gen("BG commit bud bytes: %lld (%lld KiB, %lld MiB)",
+		c->bg_bud_bytes, c->bg_bud_bytes >> 10,
+		c->bg_bud_bytes >> 20);
+	dbg_gen("current bud bytes    %lld (%lld KiB, %lld MiB)",
+		c->bud_bytes, c->bud_bytes >> 10, c->bud_bytes >> 20);
+	dbg_gen("max. seq. number:    %llu", c->max_sqnum);
+	dbg_gen("commit number:       %llu", c->cmt_no);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1596,10 +1758,16 @@ static int ubifs_remount_rw(struct ubifs_info *c)
 
 	if (c->rw_incompat) {
 		ubifs_err("the file-system is not R/W-compatible");
+<<<<<<< HEAD
 		ubifs_msg("on-flash format version is w%d/r%d, but software "
 			  "only supports up to version w%d/r%d", c->fmt_version,
 			  c->ro_compat_version, UBIFS_FORMAT_VERSION,
 			  UBIFS_RO_COMPAT_VERSION);
+=======
+		ubifs_msg("on-flash format version is w%d/r%d, but software only supports up to version w%d/r%d",
+			  c->fmt_version, c->ro_compat_version,
+			  UBIFS_FORMAT_VERSION, UBIFS_RO_COMPAT_VERSION);
+>>>>>>> refs/remotes/origin/master
 		return -EROFS;
 	}
 
@@ -1669,8 +1837,15 @@ static int ubifs_remount_rw(struct ubifs_info *c)
 	}
 
 	c->write_reserve_buf = kmalloc(COMPRESSED_DATA_NODE_BUF_SZ, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!c->write_reserve_buf)
 		goto out;
+=======
+	if (!c->write_reserve_buf) {
+		err = -ENOMEM;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	err = ubifs_lpt_init(c, 0, 1);
 	if (err)
@@ -1860,8 +2035,13 @@ static void ubifs_put_super(struct super_block *sb)
 				 * next mount, so we just print a message and
 				 * continue to unmount normally.
 				 */
+<<<<<<< HEAD
 				ubifs_err("failed to write master node, "
 					  "error %d", err);
+=======
+				ubifs_err("failed to write master node, error %d",
+					  err);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			for (i = 0; i < c->jhead_cnt; i++)
 				/* Make sure write-buffer timers are canceled */
@@ -2103,6 +2283,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root)
 		goto out_iput;
@@ -2111,15 +2292,25 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
 	if (!sb->s_root)
 		goto out_umount;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root) {
+		err = -ENOMEM;
+		goto out_umount;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&c->umount_mutex);
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 out_iput:
 	iput(root);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_umount:
 	ubifs_umount(c);
 out_unlock:
@@ -2163,8 +2354,13 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
 	 */
 	ubi = open_ubi(name, UBI_READONLY);
 	if (IS_ERR(ubi)) {
+<<<<<<< HEAD
 		dbg_err("cannot open \"%s\", error %d",
 			name, (int)PTR_ERR(ubi));
+=======
+		ubifs_err("cannot open \"%s\", error %d",
+			  name, (int)PTR_ERR(ubi));
+>>>>>>> refs/remotes/origin/master
 		return ERR_CAST(ubi);
 	}
 
@@ -2176,7 +2372,11 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
 
 	dbg_gen("opened ubi%d_%d", c->vi.ubi_num, c->vi.vol_id);
 
+<<<<<<< HEAD
 	sb = sget(fs_type, sb_test, sb_set, c);
+=======
+	sb = sget(fs_type, sb_test, sb_set, flags, c);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(sb)) {
 		err = PTR_ERR(sb);
 		kfree(c);
@@ -2193,7 +2393,10 @@ static struct dentry *ubifs_mount(struct file_system_type *fs_type, int flags,
 			goto out_deact;
 		}
 	} else {
+<<<<<<< HEAD
 		sb->s_flags = flags;
+=======
+>>>>>>> refs/remotes/origin/master
 		err = ubifs_fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
 		if (err)
 			goto out_deact;
@@ -2226,6 +2429,10 @@ static struct file_system_type ubifs_fs_type = {
 	.mount   = ubifs_mount,
 	.kill_sb = kill_ubifs_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("ubifs");
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Inode slab cache constructor.
@@ -2292,12 +2499,17 @@ static int __init ubifs_init(void)
 	 * UBIFS_BLOCK_SIZE. It is assumed that both are powers of 2.
 	 */
 	if (PAGE_CACHE_SIZE < UBIFS_BLOCK_SIZE) {
+<<<<<<< HEAD
 		ubifs_err("VFS page cache size is %u bytes, but UBIFS requires"
 			  " at least 4096 bytes",
+=======
+		ubifs_err("VFS page cache size is %u bytes, but UBIFS requires at least 4096 bytes",
+>>>>>>> refs/remotes/origin/master
 			  (unsigned int)PAGE_CACHE_SIZE);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = register_filesystem(&ubifs_fs_type);
 	if (err) {
@@ -2308,16 +2520,22 @@ static int __init ubifs_init(void)
 	err = -ENOMEM;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ubifs_inode_slab = kmem_cache_create("ubifs_inode_slab",
 				sizeof(struct ubifs_inode), 0,
 				SLAB_MEM_SPREAD | SLAB_RECLAIM_ACCOUNT,
 				&inode_slab_ctor);
 	if (!ubifs_inode_slab)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_reg;
 =======
 		return -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	register_shrinker(&ubifs_shrinker_info);
 
@@ -2330,9 +2548,12 @@ static int __init ubifs_init(void)
 		goto out_compr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = register_filesystem(&ubifs_fs_type);
 	if (err) {
 		ubifs_err("cannot register file system, error %d", err);
@@ -2342,17 +2563,23 @@ static int __init ubifs_init(void)
 
 out_dbg:
 	dbg_debugfs_exit();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_compr:
 	ubifs_compressors_exit();
 out_shrinker:
 	unregister_shrinker(&ubifs_shrinker_info);
 	kmem_cache_destroy(ubifs_inode_slab);
 <<<<<<< HEAD
+<<<<<<< HEAD
 out_reg:
 	unregister_filesystem(&ubifs_fs_type);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 /* late_initcall to let compressors initialize first */
@@ -2366,6 +2593,15 @@ static void __exit ubifs_exit(void)
 	dbg_debugfs_exit();
 	ubifs_compressors_exit();
 	unregister_shrinker(&ubifs_shrinker_info);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(ubifs_inode_slab);
 	unregister_filesystem(&ubifs_fs_type);
 }

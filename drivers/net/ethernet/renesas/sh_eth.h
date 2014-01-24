@@ -27,6 +27,13 @@
 #define TX_TIMEOUT	(5*HZ)
 #define TX_RING_SIZE	64	/* Tx ring size */
 #define RX_RING_SIZE	64	/* Rx ring size */
+<<<<<<< HEAD
+=======
+#define TX_RING_MIN	64
+#define RX_RING_MIN	64
+#define TX_RING_MAX	1024
+#define RX_RING_MAX	1024
+>>>>>>> refs/remotes/origin/master
 #define ETHERSMALL		60
 #define PKT_BUF_SZ		1538
 #define SH_ETH_TSU_TIMEOUT_MS	500
@@ -56,6 +63,10 @@ enum {
 	EDOCR,
 	TFUCR,
 	RFOCR,
+<<<<<<< HEAD
+=======
+	RMIIMODE,
+>>>>>>> refs/remotes/origin/master
 	FCFTR,
 	RPADIR,
 	TRIMD,
@@ -152,6 +163,7 @@ enum {
 	SH_ETH_MAX_REGISTER_OFFSET,
 };
 
+<<<<<<< HEAD
 static const u16 sh_eth_offset_gigabit[SH_ETH_MAX_REGISTER_OFFSET] = {
 	[EDSR]	= 0x0000,
 	[EDMR]	= 0x0400,
@@ -373,6 +385,17 @@ static const u16 sh_eth_offset_fast_sh3_sh2[SH_ETH_MAX_REGISTER_OFFSET] = {
 
 /* Driver's parameters */
 #if defined(CONFIG_CPU_SH4)
+=======
+enum {
+	SH_ETH_REG_GIGABIT,
+	SH_ETH_REG_FAST_RCAR,
+	SH_ETH_REG_FAST_SH4,
+	SH_ETH_REG_FAST_SH3_SH2
+};
+
+/* Driver's parameters */
+#if defined(CONFIG_CPU_SH4) || defined(CONFIG_ARCH_SHMOBILE)
+>>>>>>> refs/remotes/origin/master
 #define SH4_SKB_RX_ALIGN	32
 #else
 #define SH2_SH3_SKB_RX_ALIGN	2
@@ -381,18 +404,29 @@ static const u16 sh_eth_offset_fast_sh3_sh2[SH_ETH_MAX_REGISTER_OFFSET] = {
 /*
  * Register's bits
  */
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_SUBTYPE_SH7734) || defined(CONFIG_CPU_SUBTYPE_SH7763)
 /* EDSR */
+=======
+/* EDSR : sh7734, sh7757, sh7763, and r8a7740 only */
+>>>>>>> refs/remotes/origin/master
 enum EDSR_BIT {
 	EDSR_ENT = 0x01, EDSR_ENR = 0x02,
 };
 #define EDSR_ENALL (EDSR_ENT|EDSR_ENR)
 
+<<<<<<< HEAD
 /* GECMR */
 enum GECMR_BIT {
 	GECMR_10 = 0x0, GECMR_100 = 0x04, GECMR_1000 = 0x01,
 };
 #endif
+=======
+/* GECMR : sh7734, sh7763 and r8a7740 only */
+enum GECMR_BIT {
+	GECMR_10 = 0x0, GECMR_100 = 0x04, GECMR_1000 = 0x01,
+};
+>>>>>>> refs/remotes/origin/master
 
 /* EDMR */
 enum DMAC_M_BIT {
@@ -465,13 +499,27 @@ enum EESR_BIT {
 	EESR_CERF	= 0x00000001,
 };
 
+<<<<<<< HEAD
+=======
+#define EESR_RX_CHECK		(EESR_FRC  | /* Frame recv */		\
+				 EESR_RMAF | /* Multicast address recv */ \
+				 EESR_RRF  | /* Bit frame recv */	\
+				 EESR_RTLF | /* Long frame recv */	\
+				 EESR_RTSF | /* Short frame recv */	\
+				 EESR_PRE  | /* PHY-LSI recv error */	\
+				 EESR_CERF)  /* Recv frame CRC error */
+
+>>>>>>> refs/remotes/origin/master
 #define DEFAULT_TX_CHECK	(EESR_FTC | EESR_CND | EESR_DLC | EESR_CD | \
 				 EESR_RTO)
 #define DEFAULT_EESR_ERR_CHECK	(EESR_TWB | EESR_TABT | EESR_RABT | EESR_RFE | \
 				 EESR_RDE | EESR_RFRMER | EESR_ADE | \
 				 EESR_TFE | EESR_TDE | EESR_ECI)
+<<<<<<< HEAD
 #define DEFAULT_TX_ERROR_CHECK	(EESR_TWB | EESR_TABT | EESR_ADE | EESR_TDE | \
 				 EESR_TFE)
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* EESIPR */
 enum DMAC_IM_BIT {
@@ -513,17 +561,31 @@ enum FCFTR_BIT {
 #define DEFAULT_FIFO_F_D_RFF	(FCFTR_RFF2 | FCFTR_RFF1 | FCFTR_RFF0)
 #define DEFAULT_FIFO_F_D_RFD	(FCFTR_RFD2 | FCFTR_RFD1 | FCFTR_RFD0)
 
+<<<<<<< HEAD
 /* Transfer descriptor bit */
 enum TD_STS_BIT {
 	TD_TACT = 0x80000000,
 	TD_TDLE = 0x40000000, TD_TFP1 = 0x20000000,
 	TD_TFP0 = 0x10000000,
+=======
+/* Transmit descriptor bit */
+enum TD_STS_BIT {
+	TD_TACT = 0x80000000, TD_TDLE = 0x40000000,
+	TD_TFP1 = 0x20000000, TD_TFP0 = 0x10000000,
+	TD_TFE  = 0x08000000, TD_TWBI = 0x04000000,
+>>>>>>> refs/remotes/origin/master
 };
 #define TDF1ST	TD_TFP1
 #define TDFEND	TD_TFP0
 #define TD_TFP	(TD_TFP1|TD_TFP0)
 
 /* RMCR */
+<<<<<<< HEAD
+=======
+enum RMCR_BIT {
+	RMCR_RNC = 0x00000001,
+};
+>>>>>>> refs/remotes/origin/master
 #define DEFAULT_RMCR_VALUE	0x00000000
 
 /* ECMR */
@@ -584,6 +646,7 @@ enum RPADIR_BIT {
 /* FDR */
 #define DEFAULT_FDR_INIT	0x00000707
 
+<<<<<<< HEAD
 enum phy_offsets {
 	PHY_CTRL = 0, PHY_STAT = 1, PHY_IDT1 = 2, PHY_IDT2 = 3,
 	PHY_ANA = 4, PHY_ANL = 5, PHY_ANE = 6,
@@ -649,6 +712,8 @@ enum PHY_16_BIT {
 #define POST1_FW	(POST_FW >> 2)
 #define POST_ALL	(POST0_RX | POST0_FW | POST1_RX | POST1_FW)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* ARSTR */
 enum ARSTR_BIT { ARSTR_ARSTR = 0x00000001, };
 
@@ -729,6 +794,10 @@ struct sh_eth_cpu_data {
 	void (*set_rate)(struct net_device *ndev);
 
 	/* mandatory initialize value */
+<<<<<<< HEAD
+=======
+	int register_type;
+>>>>>>> refs/remotes/origin/master
 	unsigned long eesipr_value;
 
 	/* optional initialize value */
@@ -742,9 +811,15 @@ struct sh_eth_cpu_data {
 	/* interrupt checking mask */
 	unsigned long tx_check;
 	unsigned long eesr_err_check;
+<<<<<<< HEAD
 	unsigned long tx_error_check;
 
 	/* hardware features */
+=======
+
+	/* hardware features */
+	unsigned long irq_flags;	/* IRQ configuration flags */
+>>>>>>> refs/remotes/origin/master
 	unsigned no_psr:1;		/* EtherC DO NOT have PSR */
 	unsigned apr:1;			/* EtherC have APR */
 	unsigned mpr:1;			/* EtherC have MPR */
@@ -756,6 +831,12 @@ struct sh_eth_cpu_data {
 	unsigned no_trimd:1;		/* E-DMAC DO NOT have TRIMD */
 	unsigned no_ade:1;	/* E-DMAC DO NOT have ADE bit in EESR */
 	unsigned hw_crc:1;	/* E-DMAC have CSMR */
+<<<<<<< HEAD
+=======
+	unsigned select_mii:1;	/* EtherC have RMII_MII (MII select register) */
+	unsigned shift_rd0:1;	/* shift Rx descriptor word 0 right by 16 */
+	unsigned rmiimode:1;	/* EtherC has RMIIMODE register */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sh_eth_private {
@@ -764,31 +845,50 @@ struct sh_eth_private {
 	const u16 *reg_offset;
 	void __iomem *addr;
 	void __iomem *tsu_addr;
+<<<<<<< HEAD
+=======
+	u32 num_rx_ring;
+	u32 num_tx_ring;
+>>>>>>> refs/remotes/origin/master
 	dma_addr_t rx_desc_dma;
 	dma_addr_t tx_desc_dma;
 	struct sh_eth_rxdesc *rx_ring;
 	struct sh_eth_txdesc *tx_ring;
 	struct sk_buff **rx_skbuff;
 	struct sk_buff **tx_skbuff;
+<<<<<<< HEAD
 	struct timer_list timer;
+=======
+>>>>>>> refs/remotes/origin/master
 	spinlock_t lock;
 	u32 cur_rx, dirty_rx;	/* Producer/consumer ring indices */
 	u32 cur_tx, dirty_tx;
 	u32 rx_buf_sz;		/* Based on MTU+slack. */
 	int edmac_endian;
+<<<<<<< HEAD
+=======
+	struct napi_struct napi;
+>>>>>>> refs/remotes/origin/master
 	/* MII transceiver section. */
 	u32 phy_id;					/* PHY ID */
 	struct mii_bus *mii_bus;	/* MDIO bus control */
 	struct phy_device *phydev;	/* PHY device control */
+<<<<<<< HEAD
 	enum phy_state link;
+=======
+	int link;
+>>>>>>> refs/remotes/origin/master
 	phy_interface_t phy_interface;
 	int msg_enable;
 	int speed;
 	int duplex;
+<<<<<<< HEAD
 	u32 rx_int_var, tx_int_var;	/* interrupt control variables */
 	char post_rx;		/* POST receive */
 	char post_fw;		/* POST forward */
 	struct net_device_stats tsu_stats;	/* TSU forward status */
+=======
+>>>>>>> refs/remotes/origin/master
 	int port;		/* for TSU */
 	int vlan_num_ids;	/* for VLAN tag filter */
 

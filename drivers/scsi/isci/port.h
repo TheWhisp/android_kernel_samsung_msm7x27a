@@ -64,11 +64,17 @@
 #define SCIC_SDS_DUMMY_PORT   0xFF
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PF_NOTIFY (1 << 0)
 #define PF_RESUME (1 << 1)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PF_NOTIFY (1 << 0)
+#define PF_RESUME (1 << 1)
+
+>>>>>>> refs/remotes/origin/master
 struct isci_phy;
 struct isci_host;
 
@@ -84,9 +90,12 @@ enum isci_status {
 /**
  * struct isci_port - isci direct attached sas port object
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @event: counts bcns and port stop events (for bcn filtering)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @ready_exit: several states constitute 'ready'. When exiting ready we
  *              need to take extra port-teardown actions that are
  *              skipped when exiting to another 'ready' state.
@@ -94,10 +103,15 @@ enum isci_status {
  * @physical_port_index: hardware port index
  * @active_phy_mask: identifies phy members
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @enabled_phy_mask: phy mask for the port
  *                    that are already part of the port
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @enabled_phy_mask: phy mask for the port
+ *                    that are already part of the port
+>>>>>>> refs/remotes/origin/master
  * @reserved_tag:
  * @reserved_rni: reserver for port task scheduler workaround
  * @started_request_count: reference count for outstanding commands
@@ -105,6 +119,7 @@ enum isci_status {
  * @timer: timeout start/stop operations
  */
 struct isci_port {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	enum isci_status status;
 	#define IPORT_BCN_BLOCKED 0
@@ -125,6 +140,12 @@ struct isci_port {
 	#define IPORT_RESET_PENDING 0
 	unsigned long state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct isci_host *isci_host;
+	struct list_head remote_dev_list;
+	#define IPORT_RESET_PENDING 0
+	unsigned long state;
+>>>>>>> refs/remotes/origin/master
 	enum sci_status hard_reset_status;
 	struct sci_base_state_machine sm;
 	bool ready_exit;
@@ -132,14 +153,23 @@ struct isci_port {
 	u8 physical_port_index;
 	u8 active_phy_mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8 enabled_phy_mask;
 	u8 last_active_phy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 enabled_phy_mask;
+	u8 last_active_phy;
+>>>>>>> refs/remotes/origin/master
 	u16 reserved_rni;
 	u16 reserved_tag;
 	u32 started_request_count;
 	u32 assigned_device_count;
+<<<<<<< HEAD
+=======
+	u32 hang_detect_users;
+>>>>>>> refs/remotes/origin/master
 	u32 not_ready_reason;
 	struct isci_phy *phy_table[SCI_MAX_PHYS];
 	struct isci_host *owning_controller;
@@ -172,6 +202,7 @@ struct sci_port_properties {
 };
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * enum sci_port_states - This enumeration depicts all the states for the
  *    common port state machine.
@@ -238,6 +269,8 @@ enum sci_port_states {
 
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * enum sci_port_states - port state machine states
  * @SCI_PORT_STOPPED: port has successfully been stopped.  In this state
  *		      no new IO operations are permitted.  This state is
@@ -279,7 +312,10 @@ enum sci_port_states {
 #define C(a) SCI_##a
 enum sci_port_states PORT_STATES;
 #undef C
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void sci_port_decrement_request_count(struct isci_port *iport)
 {
@@ -326,12 +362,18 @@ bool sci_port_link_detected(
 	struct isci_phy *iphy);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum sci_status sci_port_get_properties(
 	struct isci_port *iport,
 	struct sci_port_properties *prop);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum sci_status sci_port_link_up(struct isci_port *iport,
 				      struct isci_phy *iphy);
 enum sci_status sci_port_link_down(struct isci_port *iport,
@@ -369,6 +411,7 @@ void sci_port_get_attached_sas_address(
 	struct sci_sas_address *sas_address);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum isci_status isci_port_get_state(
 	struct isci_port *isci_port);
 
@@ -388,4 +431,16 @@ int isci_port_perform_hard_reset(struct isci_host *ihost, struct isci_port *ipor
 =======
 int isci_ata_check_ready(struct domain_device *dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sci_port_set_hang_detection_timeout(
+	struct isci_port *isci_port,
+	u32 timeout);
+
+void isci_port_formed(struct asd_sas_phy *);
+void isci_port_deformed(struct asd_sas_phy *);
+
+int isci_port_perform_hard_reset(struct isci_host *ihost, struct isci_port *iport,
+				 struct isci_phy *iphy);
+int isci_ata_check_ready(struct domain_device *dev);
+>>>>>>> refs/remotes/origin/master
 #endif /* !defined(_ISCI_PORT_H_) */

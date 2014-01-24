@@ -40,6 +40,7 @@ _GLOBAL(call_do_softirq)
 	mtlr	r0
 	blr
 
+<<<<<<< HEAD
 _GLOBAL(call_handle_irq)
 	ld	r8,0(r6)
 	mflr	r0
@@ -48,6 +49,14 @@ _GLOBAL(call_handle_irq)
 	stdu	r1,THREAD_SIZE-STACK_FRAME_OVERHEAD(r5)
 	mr	r1,r5
 	bctrl
+=======
+_GLOBAL(call_do_irq)
+	mflr	r0
+	std	r0,16(r1)
+	stdu	r1,THREAD_SIZE-STACK_FRAME_OVERHEAD(r4)
+	mr	r1,r4
+	bl	.__do_irq
+>>>>>>> refs/remotes/origin/master
 	ld	r1,0(r1)
 	ld	r0,16(r1)
 	mtlr	r0
@@ -67,8 +76,15 @@ PPC64_CACHES:
  *   flush all bytes from start through stop-1 inclusive
  */
 
+<<<<<<< HEAD
 _KPROBE(__flush_icache_range)
 
+=======
+_KPROBE(flush_icache_range)
+BEGIN_FTR_SECTION
+	blr
+END_FTR_SECTION_IFSET(CPU_FTR_COHERENT_ICACHE)
+>>>>>>> refs/remotes/origin/master
 /*
  * Flush the data cache to memory 
  * 
@@ -234,8 +250,58 @@ _GLOBAL(__flush_dcache_icache)
 	isync
 	blr
 
+<<<<<<< HEAD
 
 #if defined(CONFIG_PPC_PMAC) || defined(CONFIG_PPC_MAPLE)
+=======
+_GLOBAL(__bswapdi2)
+	srdi	r8,r3,32
+	rlwinm	r7,r3,8,0xffffffff
+	rlwimi	r7,r3,24,0,7
+	rlwinm	r9,r8,8,0xffffffff
+	rlwimi	r7,r3,24,16,23
+	rlwimi	r9,r8,24,0,7
+	rlwimi	r9,r8,24,16,23
+	sldi	r7,r7,32
+	or	r3,r7,r9
+	blr
+
+
+#ifdef CONFIG_PPC_EARLY_DEBUG_BOOTX
+_GLOBAL(rmci_on)
+	sync
+	isync
+	li	r3,0x100
+	rldicl	r3,r3,32,0
+	mfspr	r5,SPRN_HID4
+	or	r5,r5,r3
+	sync
+	mtspr	SPRN_HID4,r5
+	isync
+	slbia
+	isync
+	sync
+	blr
+
+_GLOBAL(rmci_off)
+	sync
+	isync
+	li	r3,0x100
+	rldicl	r3,r3,32,0
+	mfspr	r5,SPRN_HID4
+	andc	r5,r5,r3
+	sync
+	mtspr	SPRN_HID4,r5
+	isync
+	slbia
+	isync
+	sync
+	blr
+#endif /* CONFIG_PPC_EARLY_DEBUG_BOOTX */
+
+#if defined(CONFIG_PPC_PMAC) || defined(CONFIG_PPC_MAPLE)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Do an IO access in real mode
  */
@@ -301,11 +367,14 @@ _GLOBAL(real_writeb)
 
 #ifdef CONFIG_PPC_PASEMI
 
+<<<<<<< HEAD
 /* No support in all binutils for these yet, so use defines */
 #define LBZCIX(RT,RA,RB)  .long (0x7c0006aa|(RT<<21)|(RA<<16)|(RB << 11))
 #define STBCIX(RS,RA,RB)  .long (0x7c0007aa|(RS<<21)|(RA<<16)|(RB << 11))
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(real_205_readb)
 	mfmsr	r7
 	ori	r0,r7,MSR_DR
@@ -314,7 +383,11 @@ _GLOBAL(real_205_readb)
 	mtmsrd	r0
 	sync
 	isync
+<<<<<<< HEAD
 	LBZCIX(r3,0,r3)
+=======
+	LBZCIX(R3,R0,R3)
+>>>>>>> refs/remotes/origin/master
 	isync
 	mtmsrd	r7
 	sync
@@ -329,7 +402,11 @@ _GLOBAL(real_205_writeb)
 	mtmsrd	r0
 	sync
 	isync
+<<<<<<< HEAD
 	STBCIX(r3,0,r4)
+=======
+	STBCIX(R3,R0,R4)
+>>>>>>> refs/remotes/origin/master
 	isync
 	mtmsrd	r7
 	sync
@@ -340,10 +417,14 @@ _GLOBAL(real_205_writeb)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_FREQ_PMAC64
 =======
 #if defined(CONFIG_CPU_FREQ_PMAC64) || defined(CONFIG_CPU_FREQ_MAPLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_CPU_FREQ_PMAC64) || defined(CONFIG_CPU_FREQ_MAPLE)
+>>>>>>> refs/remotes/origin/master
 /*
  * SCOM access functions for 970 (FX only for now)
  *
@@ -413,6 +494,7 @@ _GLOBAL(scom970_write)
 	mtmsrd	r5,1
 	blr
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_CPU_FREQ_PMAC64 */
 =======
 #endif /* CONFIG_CPU_FREQ_PMAC64 || CONFIG_CPU_FREQ_MAPLE */
@@ -464,6 +546,9 @@ _GLOBAL(disable_kernel_fp)
 	mtmsrd	r3			/* disable use of fpu now */
 	isync
 	blr
+=======
+#endif /* CONFIG_CPU_FREQ_PMAC64 || CONFIG_CPU_FREQ_MAPLE */
+>>>>>>> refs/remotes/origin/master
 
 /* kexec_wait(phys_cpu)
  *

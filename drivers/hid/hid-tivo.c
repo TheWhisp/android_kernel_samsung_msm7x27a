@@ -73,6 +73,7 @@ static struct hid_driver tivo_driver = {
 	.id_table = tivo_devices,
 	.input_mapping = tivo_input_mapping,
 };
+<<<<<<< HEAD
 
 static int __init tivo_init(void)
 {
@@ -86,5 +87,9 @@ static void __exit tivo_exit(void)
 
 module_init(tivo_init);
 module_exit(tivo_exit);
+=======
+module_hid_driver(tivo_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jarod Wilson <jarod@redhat.com>");

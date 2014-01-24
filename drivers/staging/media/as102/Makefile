@@ -3,4 +3,8 @@ dvb-as102-objs := as102_drv.o as102_fw.o as10x_cmd.o as10x_cmd_stream.o \
 
 obj-$(CONFIG_DVB_AS102) += dvb-as102.o
 
+<<<<<<< HEAD
 EXTRA_CFLAGS += -Idrivers/media/dvb/dvb-core
+=======
+ccflags-y += -Idrivers/media/dvb-core
+>>>>>>> refs/remotes/origin/master

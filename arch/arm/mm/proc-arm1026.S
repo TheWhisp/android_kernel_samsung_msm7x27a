@@ -85,9 +85,13 @@ ENTRY(cpu_arm1026_proc_fin)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pushsection	.idmap.text, "ax"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm1026_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -101,10 +105,15 @@ ENTRY(cpu_arm1026_reset)
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(cpu_arm1026_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm1026_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_arm1026_do_idle()
@@ -224,6 +233,10 @@ ENTRY(arm1026_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, ip, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -261,10 +274,14 @@ ENTRY(arm1026_flush_kern_dcache_area)
  * (same as v4wb)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm1026_dma_inv_range)
 =======
 arm1026_dma_inv_range:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+arm1026_dma_inv_range:
+>>>>>>> refs/remotes/origin/master
 	mov	ip, #0
 #ifndef CONFIG_CPU_DCACHE_DISABLE
 	tst	r0, #CACHE_DLINESIZE - 1
@@ -291,10 +308,14 @@ arm1026_dma_inv_range:
  * (same as v4wb)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm1026_dma_clean_range)
 =======
 arm1026_dma_clean_range:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+arm1026_dma_clean_range:
+>>>>>>> refs/remotes/origin/master
 	mov	ip, #0
 #ifndef CONFIG_CPU_DCACHE_DISABLE
 	bic	r0, r0, #CACHE_DLINESIZE - 1
@@ -351,6 +372,7 @@ ENTRY(arm1026_dma_unmap_area)
 ENDPROC(arm1026_dma_unmap_area)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm1026_cache_fns)
 	.long	arm1026_flush_icache_all
 	.long	arm1026_flush_kern_cache_all
@@ -368,6 +390,13 @@ ENTRY(arm1026_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions arm1026
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm1026_flush_kern_cache_louis
+	.equ	arm1026_flush_kern_cache_louis, arm1026_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm1026
+>>>>>>> refs/remotes/origin/master
 
 	.align	5
 ENTRY(cpu_arm1026_dcache_clean_area)
@@ -422,9 +451,12 @@ ENTRY(cpu_arm1026_set_pte_ext)
 #endif /* CONFIG_MMU */
 	mov	pc, lr
 
+<<<<<<< HEAD
 
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.type	__arm1026_setup, #function
 __arm1026_setup:
 	mov	r0, #0
@@ -460,6 +492,7 @@ arm1026_crval:
 	crval	clear=0x00007f3f, mmuset=0x00003935, ucset=0x00001934
 
 	__INITDATA
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*
@@ -501,6 +534,8 @@ cpu_arm1026_name:
 	.size	cpu_arm1026_name, . - cpu_arm1026_name
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions arm1026, dabort=v5t_early_abort, pabort=legacy_pabort
 
@@ -510,7 +545,10 @@ cpu_arm1026_name:
 	string	cpu_elf_name, "v5"
 	.align
 	string	cpu_arm1026_name, "ARM1026EJ-S"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.align
 
 	.section ".proc.info.init", #alloc, #execinstr

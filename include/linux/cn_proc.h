@@ -14,6 +14,7 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+<<<<<<< HEAD
 
 #ifndef CN_PROC_H
 #define CN_PROC_H
@@ -125,16 +126,29 @@ struct proc_event {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef CN_PROC_H
+#define CN_PROC_H
+
+#include <uapi/linux/cn_proc.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_EVENTS
 void proc_fork_connector(struct task_struct *task);
 void proc_exec_connector(struct task_struct *task);
 void proc_id_connector(struct task_struct *task, int which_id);
 void proc_sid_connector(struct task_struct *task);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void proc_ptrace_connector(struct task_struct *task, int which_id);
 void proc_comm_connector(struct task_struct *task);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void proc_ptrace_connector(struct task_struct *task, int which_id);
+void proc_comm_connector(struct task_struct *task);
+void proc_coredump_connector(struct task_struct *task);
+>>>>>>> refs/remotes/origin/master
 void proc_exit_connector(struct task_struct *task);
 #else
 static inline void proc_fork_connector(struct task_struct *task)
@@ -151,7 +165,10 @@ static inline void proc_sid_connector(struct task_struct *task)
 {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void proc_comm_connector(struct task_struct *task)
 {}
 
@@ -159,9 +176,18 @@ static inline void proc_ptrace_connector(struct task_struct *task,
 					 int ptrace_id)
 {}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static inline void proc_exit_connector(struct task_struct *task)
 {}
 #endif	/* CONFIG_PROC_EVENTS */
 #endif	/* __KERNEL__ */
+=======
+static inline void proc_coredump_connector(struct task_struct *task)
+{}
+
+static inline void proc_exit_connector(struct task_struct *task)
+{}
+#endif	/* CONFIG_PROC_EVENTS */
+>>>>>>> refs/remotes/origin/master
 #endif	/* CN_PROC_H */

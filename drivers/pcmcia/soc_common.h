@@ -51,7 +51,10 @@ struct soc_pcmcia_socket {
 	void __iomem		*virt_io;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct {
 		int		gpio;
 		unsigned int	irq;
@@ -62,7 +65,10 @@ struct soc_pcmcia_socket {
 #define SOC_STAT_BVD2		2	/* BATWARN / IOSPKR */
 #define SOC_STAT_RDY		3	/* Ready / Interrupt */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		irq_state;
 
 	struct timer_list	poll_timer;
@@ -129,6 +135,7 @@ struct pcmcia_low_level {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct pcmcia_irqs {
 	int sock;
 	int irq;
@@ -137,12 +144,15 @@ struct pcmcia_irqs {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct soc_pcmcia_timing {
 	unsigned short io;
 	unsigned short mem;
 	unsigned short attr;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int soc_pcmcia_request_irqs(struct soc_pcmcia_socket *skt, struct pcmcia_irqs *irqs, int nr);
 extern void soc_pcmcia_free_irqs(struct soc_pcmcia_socket *skt, struct pcmcia_irqs *irqs, int nr);
@@ -152,11 +162,16 @@ extern void soc_common_pcmcia_get_timing(struct soc_pcmcia_socket *, struct soc_
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void soc_common_pcmcia_get_timing(struct soc_pcmcia_socket *, struct soc_pcmcia_timing *);
 
 void soc_pcmcia_init_one(struct soc_pcmcia_socket *skt,
 	struct pcmcia_low_level *ops, struct device *dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void soc_pcmcia_remove_one(struct soc_pcmcia_socket *skt);
 int soc_pcmcia_add_one(struct soc_pcmcia_socket *skt);
 

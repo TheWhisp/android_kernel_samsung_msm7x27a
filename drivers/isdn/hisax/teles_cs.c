@@ -2,6 +2,7 @@
 /*======================================================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     A teles S0 PCMCIA client driver
 
     Based on skeleton by David Hinds, dhinds@allegro.stanford.edu
@@ -17,6 +18,8 @@
 
 ======================================================================*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   A teles S0 PCMCIA client driver
 
   Based on skeleton by David Hinds, dhinds@allegro.stanford.edu
@@ -31,7 +34,10 @@
   by Jan.Schubert@GMX.li
 
   ======================================================================*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -43,9 +49,12 @@
 #include <linux/ioport.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <pcmcia/cistpl.h>
 #include <pcmcia/cisreg.h>
@@ -65,6 +74,7 @@ static int protocol = 2;        /* EURO-ISDN Default */
 module_param(protocol, int, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int teles_cs_config(struct pcmcia_device *link) __devinit ;
 static void teles_cs_release(struct pcmcia_device *link);
 static void teles_detach(struct pcmcia_device *p_dev) __devexit ;
@@ -77,11 +87,17 @@ typedef struct local_info_t {
 static int teles_cs_config(struct pcmcia_device *link) __devinit;
 static void teles_cs_release(struct pcmcia_device *link);
 static void teles_detach(struct pcmcia_device *p_dev) __devexit;
+=======
+static int teles_cs_config(struct pcmcia_device *link);
+static void teles_cs_release(struct pcmcia_device *link);
+static void teles_detach(struct pcmcia_device *p_dev);
+>>>>>>> refs/remotes/origin/master
 
 typedef struct local_info_t {
 	struct pcmcia_device	*p_dev;
 	int                 busy;
 	int			cardnr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 } local_info_t;
 
@@ -104,6 +120,12 @@ static int __devinit teles_probe(struct pcmcia_device *link)
 
     return teles_cs_config(link);
 =======
+=======
+} local_info_t;
+
+static int teles_probe(struct pcmcia_device *link)
+{
+>>>>>>> refs/remotes/origin/master
 	local_info_t *local;
 
 	dev_dbg(&link->dev, "teles_attach()\n");
@@ -119,10 +141,16 @@ static int __devinit teles_probe(struct pcmcia_device *link)
 	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
 
 	return teles_cs_config(link);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 } /* teles_attach */
 
 static void __devexit teles_detach(struct pcmcia_device *link)
+=======
+} /* teles_attach */
+
+static void teles_detach(struct pcmcia_device *link)
+>>>>>>> refs/remotes/origin/master
 {
 	local_info_t *info = link->priv;
 
@@ -158,6 +186,7 @@ static int teles_cs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devinit teles_cs_config(struct pcmcia_device *link)
 {
 <<<<<<< HEAD
@@ -197,6 +226,10 @@ cs_failed:
     teles_cs_release(link);
     return -ENODEV;
 =======
+=======
+static int teles_cs_config(struct pcmcia_device *link)
+{
+>>>>>>> refs/remotes/origin/master
 	int i;
 	IsdnCard_t icard;
 
@@ -232,11 +265,15 @@ cs_failed:
 cs_failed:
 	teles_cs_release(link);
 	return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* teles_cs_config */
 
 static void teles_cs_release(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     local_info_t *local = link->priv;
 
@@ -251,6 +288,8 @@ static void teles_cs_release(struct pcmcia_device *link)
 
     pcmcia_disable_device(link);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	local_info_t *local = link->priv;
 
 	dev_dbg(&link->dev, "teles_cs_release(0x%p)\n", link);
@@ -263,7 +302,10 @@ static void teles_cs_release(struct pcmcia_device *link)
 	}
 
 	pcmcia_disable_device(link);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* teles_cs_release */
 
 static int teles_suspend(struct pcmcia_device *link)
@@ -271,10 +313,14 @@ static int teles_suspend(struct pcmcia_device *link)
 	local_info_t *dev = link->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         dev->busy = 1;
 =======
 	dev->busy = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->busy = 1;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -284,10 +330,14 @@ static int teles_resume(struct pcmcia_device *link)
 	local_info_t *dev = link->priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         dev->busy = 0;
 =======
 	dev->busy = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->busy = 0;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -303,11 +353,16 @@ static struct pcmcia_driver teles_cs_driver = {
 	.owner		= THIS_MODULE,
 	.name		= "teles_cs",
 	.probe		= teles_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(teles_detach),
+=======
+	.remove		= teles_detach,
+>>>>>>> refs/remotes/origin/master
 	.id_table       = teles_ids,
 	.suspend	= teles_suspend,
 	.resume		= teles_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_teles_cs(void)
 {
@@ -321,3 +376,6 @@ static void __exit exit_teles_cs(void)
 
 module_init(init_teles_cs);
 module_exit(exit_teles_cs);
+=======
+module_pcmcia_driver(teles_cs_driver);
+>>>>>>> refs/remotes/origin/master

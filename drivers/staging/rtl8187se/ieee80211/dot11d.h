@@ -3,9 +3,15 @@
 
 #include "ieee80211.h"
 
+<<<<<<< HEAD
 //#define ENABLE_DOT11D
 
 //#define DOT11D_MAX_CHNL_NUM 83
+=======
+/* #define ENABLE_DOT11D */
+
+/* #define DOT11D_MAX_CHNL_NUM 83 */
+>>>>>>> refs/remotes/origin/master
 
 typedef struct _CHNL_TXPOWER_TRIPLE {
 	u8 FirstChnl;
@@ -20,6 +26,7 @@ typedef enum _DOT11D_STATE {
 }DOT11D_STATE;
 
 typedef struct _RT_DOT11D_INFO {
+<<<<<<< HEAD
 	//DECLARE_RT_OBJECT(RT_DOT11D_INFO);
 
 	bool bEnabled; // dot11MultiDomainCapabilityEnabled
@@ -32,6 +39,20 @@ typedef struct _RT_DOT11D_INFO {
 	u8  channel_map[MAX_CHANNEL_NUMBER+1];  //!!!Value 0: Invalid, 1: Valid (active scan), 2: Valid (passive scan)
 	//u8  ChnlListLen; // #Bytes valid in ChnlList[].
 	//u8  ChnlList[DOT11D_MAX_CHNL_NUM];
+=======
+	/* DECLARE_RT_OBJECT(RT_DOT12D_INFO); */
+
+	bool bEnabled; /* dot11MultiDomainCapabilityEnabled */
+
+	u16 CountryIeLen; /* > 0 if CountryIeBuf[] contains valid country information element. */
+	u8  CountryIeBuf[MAX_IE_LEN];
+	u8  CountryIeSrcAddr[6]; /* Source AP of the country IE. */
+	u8  CountryIeWatchdog;
+
+	u8  channel_map[MAX_CHANNEL_NUMBER+1];  /* !!!Value 0: Invalid, 1: Valid (active scan), 2: Valid (passive scan) */
+	/* u8  ChnlListLen; // #Bytes valid in ChnlList[]. */
+	/* u8  ChnlList[DOT11D_MAX_CHNL_NUM]; */
+>>>>>>> refs/remotes/origin/master
 	u8  MaxTxPwrDbmList[MAX_CHANNEL_NUMBER+1];
 
 	DOT11D_STATE State;
@@ -58,6 +79,7 @@ typedef struct _RT_DOT11D_INFO {
 
 #define IS_DOT11D_STATE_DONE(__pIeeeDev) (GET_DOT11D_INFO(__pIeeeDev)->State == DOT11D_STATE_DONE)
 
+<<<<<<< HEAD
 
 void
 Dot11d_Init(
@@ -98,3 +120,15 @@ int ToLegalChannel(
 	u8 channel
 );
 #endif // #ifndef __INC_DOT11D_H
+=======
+void Dot11d_Init(struct ieee80211_device *dev);
+void Dot11d_Reset(struct ieee80211_device *dev);
+void Dot11d_UpdateCountryIe(struct ieee80211_device *dev, u8 *pTaddr,
+			    u16 CoutryIeLen, u8 *pCoutryIe);
+u8 DOT11D_GetMaxTxPwrInDbm(struct ieee80211_device *dev, u8 Channel);
+void DOT11D_ScanComplete(struct ieee80211_device *dev);
+int IsLegalChannel(struct ieee80211_device *dev, u8 channel);
+int ToLegalChannel(struct ieee80211_device *dev, u8 channel);
+
+#endif /*  #ifndef __INC_DOT11D_H */
+>>>>>>> refs/remotes/origin/master

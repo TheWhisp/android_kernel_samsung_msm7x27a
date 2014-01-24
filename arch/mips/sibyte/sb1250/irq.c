@@ -27,9 +27,12 @@
 #include <asm/errno.h>
 #include <asm/signal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/io.h>
 
@@ -127,7 +130,10 @@ static int sb1250_set_affinity(struct irq_data *d, const struct cpumask *mask,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void disable_sb1250_irq(struct irq_data *d)
 {
 	unsigned int irq = d->irq;
@@ -135,7 +141,10 @@ static void disable_sb1250_irq(struct irq_data *d)
 	sb1250_mask_irq(sb1250_irq_owner[irq], irq);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void enable_sb1250_irq(struct irq_data *d)
 {
 	unsigned int irq = d->irq;
@@ -194,9 +203,13 @@ static struct irq_chip sb1250_irq_type = {
 	.irq_mask_ack = ack_sb1250_irq,
 	.irq_unmask = enable_sb1250_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.irq_mask = disable_sb1250_irq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.irq_mask = disable_sb1250_irq,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 	.irq_set_affinity = sb1250_set_affinity
 #endif
@@ -274,7 +287,11 @@ void __init arch_init_irq(void)
 		     IOADDR(A_IMR_REGISTER(1, R_IMR_INTERRUPT_MAP_BASE) +
 			    (K_INT_MBOX_0 << 3)));
 
+<<<<<<< HEAD
 	/* Clear the mailboxes.  The firmware may leave them dirty */
+=======
+	/* Clear the mailboxes.	 The firmware may leave them dirty */
+>>>>>>> refs/remotes/origin/master
 	__raw_writeq(0xffffffffffffffffULL,
 		     IOADDR(A_IMR_REGISTER(0, R_IMR_MAILBOX_CLR_CPU)));
 	__raw_writeq(0xffffffffffffffffULL,
@@ -287,7 +304,11 @@ void __init arch_init_irq(void)
 
 	/*
 	 * Note that the timer interrupts are also mapped, but this is
+<<<<<<< HEAD
 	 * done in sb1250_time_init().  Also, the profiling driver
+=======
+	 * done in sb1250_time_init().	Also, the profiling driver
+>>>>>>> refs/remotes/origin/master
 	 * does its own management of IP7.
 	 */
 
@@ -304,7 +325,11 @@ static inline void dispatch_ip2(void)
 
 	/*
 	 * Default...we've hit an IP[2] interrupt, which means we've got to
+<<<<<<< HEAD
 	 * check the 1250 interrupt registers to figure out what to do.  Need
+=======
+	 * check the 1250 interrupt registers to figure out what to do.	 Need
+>>>>>>> refs/remotes/origin/master
 	 * to detect which CPU we're on, now that smp_affinity is supported.
 	 */
 	mask = __raw_readq(IOADDR(A_IMR_REGISTER(cpu,
@@ -333,7 +358,11 @@ asmlinkage void plat_irq_dispatch(void)
 	if (pending & CAUSEF_IP7) /* CPU performance counter interrupt */
 		do_IRQ(MIPS_CPU_IRQ_BASE + 7);
 	else if (pending & CAUSEF_IP4)
+<<<<<<< HEAD
 		do_IRQ(K_INT_TIMER_0 + cpu); 	/* sb1250_timer_interrupt() */
+=======
+		do_IRQ(K_INT_TIMER_0 + cpu);	/* sb1250_timer_interrupt() */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMP
 	else if (pending & CAUSEF_IP3)

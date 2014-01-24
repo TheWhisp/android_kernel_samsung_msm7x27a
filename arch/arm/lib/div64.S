@@ -14,9 +14,13 @@
 
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/unwind.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/unwind.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __ARMEB__
 #define xh r0
@@ -49,9 +53,13 @@
 
 ENTRY(__do_div64)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 UNWIND(.fnstart)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+UNWIND(.fnstart)
+>>>>>>> refs/remotes/origin/master
 
 	@ Test for easy paths first.
 	subs	ip, r4, #1
@@ -198,15 +206,21 @@ UNWIND(.fnstart)
 	moveq	xh, #0
 	moveq	pc, lr
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 UNWIND(.fnend)
 
 UNWIND(.fnstart)
 UNWIND(.pad #4)
 UNWIND(.save {lr})
 Ldiv0_64:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	@ Division by 0:
 	str	lr, [sp, #-8]!
 	bl	__div0
@@ -218,7 +232,11 @@ Ldiv0_64:
 	ldr	pc, [sp], #8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 UNWIND(.fnend)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+UNWIND(.fnend)
+>>>>>>> refs/remotes/origin/master
 ENDPROC(__do_div64)

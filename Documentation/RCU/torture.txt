@@ -43,14 +43,41 @@ fqs_stutter	Wait time (in seconds) between consecutive bursts
 		of calls to force_quiescent_state().
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 irqreaders	Says to invoke RCU readers from irq level.  This is currently
 =======
 irqreader	Says to invoke RCU readers from irq level.  This is currently
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+gp_normal	Make the fake writers use normal synchronous grace-period
+		primitives.
+
+gp_exp		Make the fake writers use expedited synchronous grace-period
+		primitives.  If both gp_normal and gp_exp are set, or
+		if neither gp_normal nor gp_exp are set, then randomly
+		choose the primitive so that about 50% are normal and
+		50% expedited.  By default, neither are set, which
+		gives best overall test coverage.
+
+irqreader	Says to invoke RCU readers from irq level.  This is currently
+>>>>>>> refs/remotes/origin/master
 		done via timers.  Defaults to "1" for variants of RCU that
 		permit this.  (Or, more accurately, variants of RCU that do
 		-not- permit this know to ignore this variable.)
 
+<<<<<<< HEAD
+=======
+n_barrier_cbs	If this is nonzero, RCU barrier testing will be conducted,
+		in which case n_barrier_cbs specifies the number of
+		RCU callbacks (and corresponding kthreads) to use for
+		this testing.  The value cannot be negative.  If you
+		specify this to be non-zero when torture_type indicates a
+		synchronous RCU implementation (one for which a member of
+		the synchronize_rcu() rather than the call_rcu() family is
+		used -- see the documentation for torture_type below), an
+		error will be reported and no testing will be carried out.
+
+>>>>>>> refs/remotes/origin/master
 nfakewriters	This is the number of RCU fake writer threads to run.  Fake
 		writer threads repeatedly use the synchronous "wait for
 		current readers" function of the interface selected by
@@ -66,7 +93,10 @@ nreaders	This is the number of RCU reading threads supported.
 		read-side critical sections.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 onoff_interval
 		The number of seconds between each attempt to execute a
 		randomly selected CPU-hotplug operation.  Defaults to
@@ -82,14 +112,20 @@ onoff_holdoff	The number of seconds to wait until starting CPU-hotplug
 		in order to avoid confusing boot-time code with CPUs
 		coming and going.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 shuffle_interval
 		The number of seconds to keep the test threads affinitied
 		to a particular subset of the CPUs, defaults to 3 seconds.
 		Used in conjunction with test_no_idle_hz.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 shutdown_secs	The number of seconds to run the test before terminating
 		the test and powering off the system.  The default is
 		zero, which disables test termination and system shutdown.
@@ -113,7 +149,10 @@ stall_cpu_holdoff
 		The number of seconds to wait after rcutorture starts
 		before stalling a CPU.  Defaults to 10 seconds.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 stat_interval	The number of seconds between output of torture
 		statistics (via printk()).  Regardless of the interval,
 		statistics are printed when the module is unloaded.
@@ -128,7 +167,10 @@ stutter		The length of time to run the test before pausing for this
 		without pausing, which is the old default behavior.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 test_boost	Whether or not to test the ability of RCU to do priority
 		boosting.  Defaults to "test_boost=1", which performs
 		RCU priority-inversion testing only if the selected
@@ -151,12 +193,16 @@ test_boost_duration
 		within any given "test_boost_interval".  Defaults to
 		"test_boost_duration=4".
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 test_no_idle_hz	Whether or not to test the ability of RCU to operate in
 		a kernel that disables the scheduling-clock interrupt to
 		idle CPUs.  Boolean parameter, "1" to test, "0" otherwise.
 		Defaults to omitting this test.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 torture_type	The type of RCU to test: "rcu" for the rcu_read_lock() API,
 		"rcu_sync" for rcu_read_lock() with synchronous reclamation,
@@ -167,6 +213,8 @@ torture_type	The type of RCU to test: "rcu" for the rcu_read_lock() API,
 		and "sched_expedited" for the use of preempt_disable()
 		with synchronize_sched_expedited().
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 torture_type	The type of RCU to test, with string values as follows:
 
 		"rcu":  rcu_read_lock(), rcu_read_unlock() and call_rcu().
@@ -187,6 +235,12 @@ torture_type	The type of RCU to test, with string values as follows:
 			and synchronize_rcu_bh_expedited().
 
 		"srcu": srcu_read_lock(), srcu_read_unlock() and
+<<<<<<< HEAD
+=======
+			call_srcu().
+
+		"srcu_sync": srcu_read_lock(), srcu_read_unlock() and
+>>>>>>> refs/remotes/origin/master
 			synchronize_srcu().
 
 		"srcu_expedited": srcu_read_lock(), srcu_read_unlock() and
@@ -202,7 +256,10 @@ torture_type	The type of RCU to test, with string values as follows:
 			synchronize_sched_expedited().
 
 		Defaults to "rcu".
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 verbose		Enable debug printk()s.  Default is disabled.
 
@@ -211,6 +268,7 @@ OUTPUT
 
 The statistics output is as follows:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rcu-torture: --- Start of test: nreaders=16 stat_interval=0 verbose=0
 	rcu-torture: rtc: 0000000000000000 ver: 1916 tfle: 0 rta: 1916 rtaf: 0 rtf: 1915
@@ -221,11 +279,18 @@ The statistics output is as follows:
 =======
 	rcu-torture:--- Start of test: nreaders=16 nfakewriters=4 stat_interval=30 verbose=0 test_no_idle_hz=1 shuffle_interval=3 stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 fqs_stutter=3 test_boost=1/0 test_boost_interval=7 test_boost_duration=4
 	rcu-torture: rtc:           (null) ver: 155441 tfle: 0 rta: 155441 rtaf: 8884 rtf: 155440 rtmbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 3055767
+=======
+	rcu-torture:--- Start of test: nreaders=16 nfakewriters=4 stat_interval=30 verbose=0 test_no_idle_hz=1 shuffle_interval=3 stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 fqs_stutter=3 test_boost=1/0 test_boost_interval=7 test_boost_duration=4
+	rcu-torture: rtc:           (null) ver: 155441 tfle: 0 rta: 155441 rtaf: 8884 rtf: 155440 rtmbe: 0 rtbe: 0 rtbke: 0 rtbre: 0 rtbf: 0 rtb: 0 nt: 3055767
+>>>>>>> refs/remotes/origin/master
 	rcu-torture: Reader Pipe:  727860534 34213 0 0 0 0 0 0 0 0 0
 	rcu-torture: Reader Batch:  727877838 17003 0 0 0 0 0 0 0 0 0
 	rcu-torture: Free-Block Circulation:  155440 155440 155440 155440 155440 155440 155440 155440 155440 155440 0
 	rcu-torture:--- End of test: SUCCESS: nreaders=16 nfakewriters=4 stat_interval=30 verbose=0 test_no_idle_hz=1 shuffle_interval=3 stutter=5 irqreader=1 fqs_duration=0 fqs_holdoff=0 fqs_stutter=3 test_boost=1/0 test_boost_interval=7 test_boost_duration=4
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 The command "dmesg | grep torture:" will extract this information on
 most systems.  On more esoteric configurations, it may be necessary to
@@ -234,17 +299,24 @@ the RCU torture test.  The printk()s use KERN_ALERT, so they should
 be evident.  ;-)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 The first and last lines show the rcutorture module parameters, and the
 last line shows either "SUCCESS" or "FAILURE", based on rcutorture's
 automatic determination as to whether RCU operated correctly.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 The entries are as follows:
 
 o	"rtc": The hexadecimal address of the structure currently visible
 	to readers.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 o	"ver": The number of times since boot that the rcutw writer task
 	has changed the structure visible to readers.
@@ -252,12 +324,17 @@ o	"ver": The number of times since boot that the rcutw writer task
 o	"tfle": If non-zero, indicates that the "torture freelist"
 	containing structure to be placed into the "rtc" area is empty.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 o	"ver": The number of times since boot that the RCU writer task
 	has changed the structure visible to readers.
 
 o	"tfle": If non-zero, indicates that the "torture freelist"
 	containing structures to be placed into the "rtc" area is empty.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	This condition is important, since it can fool you into thinking
 	that RCU is working when it is not.  :-/
 
@@ -265,11 +342,14 @@ o	"rta": Number of structures allocated from the torture freelist.
 
 o	"rtaf": Number of allocations from the torture freelist that have
 <<<<<<< HEAD
+<<<<<<< HEAD
 	failed due to the list being empty.
 
 o	"rtf": Number of frees into the torture freelist.
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	failed due to the list being empty.  It is not unusual for this
 	to be non-zero, but it is bad for it to be a large fraction of
 	the value indicated by "rta".
@@ -280,6 +360,12 @@ o	"rtmbe": A non-zero value indicates that rcutorture believes that
 	rcu_assign_pointer() and rcu_dereference() are not working
 	correctly.  This value should be zero.
 
+<<<<<<< HEAD
+=======
+o	"rtbe": A non-zero value indicates that one of the rcu_barrier()
+	family of functions is not working correctly.
+
+>>>>>>> refs/remotes/origin/master
 o	"rtbke": rcutorture was unable to create the real-time kthreads
 	used to force RCU priority inversion.  This value should be zero.
 
@@ -299,7 +385,10 @@ o	"nt": The number of times rcutorture ran RCU read-side code from
 	within a timer handler.  This value should be non-zero only
 	if you specified the "irqreader" module parameter.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 o	"Reader Pipe": Histogram of "ages" of structures seen by readers.
 	If any entries past the first two are non-zero, RCU is broken.
 	And rcutorture prints the error flag string "!!!" to make sure
@@ -330,6 +419,7 @@ o	"Free-Block Circulation": Shows the number of torture structures
 
 Different implementations of RCU can provide implementation-specific
 <<<<<<< HEAD
+<<<<<<< HEAD
 additional information.  For example, SRCU provides the following:
 
 	srcu-torture: rtc: f8cf46a8 ver: 355 tfle: 0 rta: 356 rtaf: 0 rtf: 346 rtmbe: 0
@@ -351,6 +441,8 @@ Similarly, sched_expedited RCU provides the following:
 	sched_expedited-torture: Reader Batch:  12660424885 0 0 0 0 0 0 0 0 0 0
 	sched_expedited-torture: Free-Block Circulation:  1090795 1090795 1090794 1090793 1090792 1090791 1090790 1090789 1090788 1090787 0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 additional information.  For example, SRCU provides the following
 additional line:
 
@@ -360,7 +452,10 @@ This line shows the per-CPU counter state.  The numbers in parentheses are
 the values of the "old" and "current" counters for the corresponding CPU.
 The "idx" value maps the "old" and "current" values to the underlying
 array, and is useful for debugging.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 USAGE
@@ -371,21 +466,31 @@ The following script may be used to torture RCU:
 
 	modprobe rcutorture
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sleep 100
 =======
 	sleep 3600
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sleep 3600
+>>>>>>> refs/remotes/origin/master
 	rmmod rcutorture
 	dmesg | grep torture:
 
 The output can be manually inspected for the error flag of "!!!".
 One could of course create a more elaborate script that automatically
 <<<<<<< HEAD
+<<<<<<< HEAD
 checked for such errors.  The "rmmod" command forces a "SUCCESS" or
 "FAILURE" indication to be printk()ed.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 checked for such errors.  The "rmmod" command forces a "SUCCESS",
 "FAILURE", or "RCU_HOTPLUG" indication to be printk()ed.  The first
 two are self-explanatory, while the last indicates that while there
 were no RCU failures, CPU-hotplug problems were detected.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -91,7 +91,11 @@ static inline void wdt_reset(void)
 static void wdt_timer_tick(unsigned long data)
 {
 	if (time_before(jiffies, next_heartbeat) ||
+<<<<<<< HEAD
 	   (!test_bit(WDOG_ACTIVE, &wdt_dev.status))) {
+=======
+	   (!watchdog_active(&wdt_dev))) {
+>>>>>>> refs/remotes/origin/master
 		wdt_reset();
 		mod_timer(&timer, jiffies + WDT_HEARTBEAT);
 	} else
@@ -155,7 +159,11 @@ static struct watchdog_device wdt_dev = {
 	.max_timeout =	WDT_TIMEOUT_MAX,
 };
 
+<<<<<<< HEAD
 static int __devinit wdt_probe(struct pci_dev *pdev,
+=======
+static int wdt_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 			       const struct pci_device_id *ent)
 {
 	unsigned char conf;
@@ -202,6 +210,12 @@ static int __devinit wdt_probe(struct pci_dev *pdev,
 		goto err_out_release;
 	}
 
+<<<<<<< HEAD
+=======
+	if (timeout < 1 || timeout > WDT_TIMEOUT_MAX)
+		timeout = WDT_TIMEOUT;
+
+>>>>>>> refs/remotes/origin/master
 	wdt_dev.timeout = timeout;
 	watchdog_set_nowayout(&wdt_dev, nowayout);
 	if (readl(wdt_mem) & VIA_WDT_FIRED)
@@ -226,7 +240,11 @@ err_out_disable_device:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit wdt_remove(struct pci_dev *pdev)
+=======
+static void wdt_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	watchdog_unregister_device(&wdt_dev);
 	del_timer(&timer);
@@ -247,6 +265,7 @@ static struct pci_driver wdt_driver = {
 	.name		= "via_wdt",
 	.id_table	= wdt_pci_table,
 	.probe		= wdt_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wdt_remove),
 };
 
@@ -264,6 +283,12 @@ static void __exit wdt_exit(void)
 
 module_init(wdt_init);
 module_exit(wdt_exit);
+=======
+	.remove		= wdt_remove,
+};
+
+module_pci_driver(wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Marc Vertes");
 MODULE_DESCRIPTION("Driver for watchdog timer on VIA chipset");

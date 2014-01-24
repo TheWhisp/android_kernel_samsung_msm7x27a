@@ -62,10 +62,14 @@ int v9fs_file_open(struct inode *inode, struct file *file)
 	int omode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, file);
 =======
 	p9_debug(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, file);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, file);
+>>>>>>> refs/remotes/origin/master
 	v9inode = V9FS_I(inode);
 	v9ses = v9fs_inode2v9ses(inode);
 	if (v9fs_proto_dotl(v9ses))
@@ -84,10 +88,13 @@ int v9fs_file_open(struct inode *inode, struct file *file)
 			p9_client_clunk(fid);
 			return err;
 		}
+<<<<<<< HEAD
 		if (file->f_flags & O_TRUNC) {
 			i_size_write(inode, 0);
 			inode->i_blocks = 0;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((file->f_flags & O_APPEND) &&
 			(!v9fs_proto_dotu(v9ses) && !v9fs_proto_dotl(v9ses)))
 			generic_file_llseek(file, 0, SEEK_END);
@@ -113,10 +120,15 @@ int v9fs_file_open(struct inode *inode, struct file *file)
 		v9inode->writeback_fid = (void *) fid;
 	}
 	mutex_unlock(&v9inode->v_mutex);
+<<<<<<< HEAD
 #ifdef CONFIG_9P_FSCACHE
 	if (v9ses->cache)
 		v9fs_cache_inode_set_cookie(inode, file);
 #endif
+=======
+	if (v9ses->cache)
+		v9fs_cache_inode_set_cookie(inode, file);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out_error:
 	p9_client_clunk(file->private_data);
@@ -137,6 +149,7 @@ out_error:
 static int v9fs_file_lock(struct file *filp, int cmd, struct file_lock *fl)
 {
 	int res = 0;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 
 <<<<<<< HEAD
@@ -144,6 +157,11 @@ static int v9fs_file_lock(struct file *filp, int cmd, struct file_lock *fl)
 =======
 	p9_debug(P9_DEBUG_VFS, "filp: %p lock: %p\n", filp, fl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = file_inode(filp);
+
+	p9_debug(P9_DEBUG_VFS, "filp: %p lock: %p\n", filp, fl);
+>>>>>>> refs/remotes/origin/master
 
 	/* No mandatory locks */
 	if (__mandatory_lock(inode) && fl->fl_type != F_UNLCK)
@@ -195,7 +213,11 @@ static int v9fs_file_do_lock(struct file *filp, int cmd, struct file_lock *fl)
 	else
 		flock.length = fl->fl_end - fl->fl_start + 1;
 	flock.proc_id = fl->fl_pid;
+<<<<<<< HEAD
 	flock.client_id = utsname()->nodename;
+=======
+	flock.client_id = fid->clnt->name;
+>>>>>>> refs/remotes/origin/master
 	if (IS_SETLKW(cmd))
 		flock.flags = P9_LOCK_FLAGS_BLOCK;
 
@@ -213,11 +235,16 @@ static int v9fs_file_do_lock(struct file *filp, int cmd, struct file_lock *fl)
 		if (status == P9_LOCK_BLOCKED && !IS_SETLKW(cmd))
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		schedule_timeout_interruptible(P9_LOCK_TIMEOUT);
 =======
 		if (schedule_timeout_interruptible(P9_LOCK_TIMEOUT) != 0)
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (schedule_timeout_interruptible(P9_LOCK_TIMEOUT) != 0)
+			break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* map 9p status to VFS status */
@@ -276,7 +303,11 @@ static int v9fs_file_getlock(struct file *filp, struct file_lock *fl)
 	else
 		glock.length = fl->fl_end - fl->fl_start + 1;
 	glock.proc_id = fl->fl_pid;
+<<<<<<< HEAD
 	glock.client_id = utsname()->nodename;
+=======
+	glock.client_id = fid->clnt->name;
+>>>>>>> refs/remotes/origin/master
 
 	res = p9_client_getlock_dotl(fid, &glock);
 	if (res < 0)
@@ -314,6 +345,7 @@ static int v9fs_file_getlock(struct file *filp, struct file_lock *fl)
 
 static int v9fs_file_lock_dotl(struct file *filp, int cmd, struct file_lock *fl)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 	int ret = -ENOLCK;
 
@@ -324,6 +356,13 @@ static int v9fs_file_lock_dotl(struct file *filp, int cmd, struct file_lock *fl)
 	p9_debug(P9_DEBUG_VFS, "filp: %p cmd:%d lock: %p name: %s\n",
 		 filp, cmd, fl, filp->f_path.dentry->d_name.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = file_inode(filp);
+	int ret = -ENOLCK;
+
+	p9_debug(P9_DEBUG_VFS, "filp: %p cmd:%d lock: %p name: %s\n",
+		 filp, cmd, fl, filp->f_path.dentry->d_name.name);
+>>>>>>> refs/remotes/origin/master
 
 	/* No mandatory locks */
 	if (__mandatory_lock(inode) && fl->fl_type != F_UNLCK)
@@ -355,6 +394,7 @@ out_err:
 static int v9fs_file_flock_dotl(struct file *filp, int cmd,
 	struct file_lock *fl)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 	int ret = -ENOLCK;
 
@@ -365,6 +405,13 @@ static int v9fs_file_flock_dotl(struct file *filp, int cmd,
 	p9_debug(P9_DEBUG_VFS, "filp: %p cmd:%d lock: %p name: %s\n",
 		 filp, cmd, fl, filp->f_path.dentry->d_name.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = file_inode(filp);
+	int ret = -ENOLCK;
+
+	p9_debug(P9_DEBUG_VFS, "filp: %p cmd:%d lock: %p name: %s\n",
+		 filp, cmd, fl, filp->f_path.dentry->d_name.name);
+>>>>>>> refs/remotes/origin/master
 
 	/* No mandatory locks */
 	if (__mandatory_lock(inode) && fl->fl_type != F_UNLCK)
@@ -408,12 +455,17 @@ v9fs_fid_readn(struct p9_fid *fid, char *data, char __user *udata, u32 count,
 	int n, total, size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "fid %d offset %llu count %d\n", fid->fid,
 		   (long long unsigned) offset, count);
 =======
 	p9_debug(P9_DEBUG_VFS, "fid %d offset %llu count %d\n",
 		 fid->fid, (long long unsigned)offset, count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "fid %d offset %llu count %d\n",
+		 fid->fid, (long long unsigned)offset, count);
+>>>>>>> refs/remotes/origin/master
 	n = 0;
 	total = 0;
 	size = fid->iounit ? fid->iounit : fid->clnt->msize - P9_IOHDRSZ;
@@ -472,10 +524,14 @@ v9fs_file_read(struct file *filp, char __user *udata, size_t count,
 	size_t size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "count %zu offset %lld\n", count, *offset);
 =======
 	p9_debug(P9_DEBUG_VFS, "count %zu offset %lld\n", count, *offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "count %zu offset %lld\n", count, *offset);
+>>>>>>> refs/remotes/origin/master
 	fid = filp->private_data;
 
 	size = fid->iounit ? fid->iounit : fid->clnt->msize - P9_IOHDRSZ;
@@ -503,12 +559,17 @@ v9fs_file_write_internal(struct inode *inode, struct p9_fid *fid,
 	unsigned long pg_start, pg_end;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "data %p count %d offset %x\n", data,
 		(int)count, (int)*offset);
 =======
 	p9_debug(P9_DEBUG_VFS, "data %p count %d offset %x\n",
 		 data, (int)count, (int)*offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "data %p count %d offset %x\n",
+		 data, (int)count, (int)*offset);
+>>>>>>> refs/remotes/origin/master
 
 	clnt = fid->clnt;
 	do {
@@ -565,7 +626,11 @@ v9fs_file_write(struct file *filp, const char __user * data,
 	if (!count)
 		goto out;
 
+<<<<<<< HEAD
 	retval = v9fs_file_write_internal(filp->f_path.dentry->d_inode,
+=======
+	retval = v9fs_file_write_internal(file_inode(filp),
+>>>>>>> refs/remotes/origin/master
 					filp->private_data,
 					data, count, &origin, 1);
 	/* update offset on successful write */
@@ -577,6 +642,7 @@ out:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int v9fs_file_fsync(struct file *filp, int datasync)
 {
 	struct p9_fid *fid;
@@ -585,6 +651,8 @@ static int v9fs_file_fsync(struct file *filp, int datasync)
 
 	P9_DPRINTK(P9_DEBUG_VFS, "filp %p datasync %x\n", filp, datasync);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int v9fs_file_fsync(struct file *filp, loff_t start, loff_t end,
 			   int datasync)
 {
@@ -599,12 +667,16 @@ static int v9fs_file_fsync(struct file *filp, loff_t start, loff_t end,
 
 	mutex_lock(&inode->i_mutex);
 	p9_debug(P9_DEBUG_VFS, "filp %p datasync %x\n", filp, datasync);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fid = filp->private_data;
 	v9fs_blank_wstat(&wstat);
 
 	retval = p9_client_wstat(fid, &wstat);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return retval;
 }
@@ -617,6 +689,8 @@ int v9fs_file_fsync_dotl(struct file *filp, int datasync)
 	P9_DPRINTK(P9_DEBUG_VFS, "v9fs_file_fsync_dotl: filp %p datasync %x\n",
 			filp, datasync);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&inode->i_mutex);
 
 	return retval;
@@ -635,16 +709,24 @@ int v9fs_file_fsync_dotl(struct file *filp, loff_t start, loff_t end,
 
 	mutex_lock(&inode->i_mutex);
 	p9_debug(P9_DEBUG_VFS, "filp %p datasync %x\n", filp, datasync);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fid = filp->private_data;
 
 	retval = p9_client_fsync(fid, datasync);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&inode->i_mutex);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&inode->i_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -666,6 +748,7 @@ v9fs_vm_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 	struct v9fs_inode *v9inode;
 	struct page *page = vmf->page;
 	struct file *filp = vma->vm_file;
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 
 
@@ -676,6 +759,16 @@ v9fs_vm_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 	p9_debug(P9_DEBUG_VFS, "page %p fid %lx\n",
 		 page, (unsigned long)filp->private_data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = file_inode(filp);
+
+
+	p9_debug(P9_DEBUG_VFS, "page %p fid %lx\n",
+		 page, (unsigned long)filp->private_data);
+
+	/* Update file times before taking page lock */
+	file_update_time(filp);
+>>>>>>> refs/remotes/origin/master
 
 	v9inode = V9FS_I(inode);
 	/* make sure the cache has finished storing the page */
@@ -684,6 +777,10 @@ v9fs_vm_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
 	lock_page(page);
 	if (page->mapping != inode->i_mapping)
 		goto out_unlock;
+<<<<<<< HEAD
+=======
+	wait_for_stable_page(page);
+>>>>>>> refs/remotes/origin/master
 
 	return VM_FAULT_LOCKED;
 out_unlock:
@@ -802,6 +899,10 @@ v9fs_cached_file_write(struct file *filp, const char __user * data,
 static const struct vm_operations_struct v9fs_file_vm_ops = {
 	.fault = filemap_fault,
 	.page_mkwrite = v9fs_vm_page_mkwrite,
+<<<<<<< HEAD
+=======
+	.remap_pages = generic_file_remap_pages,
+>>>>>>> refs/remotes/origin/master
 };
 
 

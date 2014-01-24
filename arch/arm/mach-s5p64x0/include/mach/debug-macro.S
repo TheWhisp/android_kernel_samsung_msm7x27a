@@ -16,10 +16,14 @@
 #include <plat/regs-serial.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.macro addruart, rp, rv
 =======
 	.macro addruart, rp, rv, tmp
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.macro addruart, rp, rv, tmp
+>>>>>>> refs/remotes/origin/master
 		mov	\rp, #0xE0000000
 		orr	\rp, \rp, #0x00100000
 		ldr	\rp, [\rp, #0x118 ]
@@ -34,4 +38,8 @@
 #endif
 	.endm
 
+<<<<<<< HEAD
 #include <plat/debug-macro.S>
+=======
+#include <debug/samsung.S>
+>>>>>>> refs/remotes/origin/master

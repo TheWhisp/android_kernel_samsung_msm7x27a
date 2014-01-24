@@ -237,6 +237,7 @@ static struct serio_driver spaceorb_drv = {
 	.disconnect	= spaceorb_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -253,3 +254,6 @@ static void __exit spaceorb_exit(void)
 
 module_init(spaceorb_init);
 module_exit(spaceorb_exit);
+=======
+module_serio_driver(spaceorb_drv);
+>>>>>>> refs/remotes/origin/master

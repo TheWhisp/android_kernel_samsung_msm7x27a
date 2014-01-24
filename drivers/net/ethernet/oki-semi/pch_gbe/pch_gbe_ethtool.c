@@ -77,7 +77,11 @@ static const struct pch_gbe_stats pch_gbe_gstrings_stats[] = {
  * pch_gbe_get_settings - Get device-specific settings
  * @netdev: Network interface device structure
  * @ecmd:   Ethtool command
+<<<<<<< HEAD
  * Returns
+=======
+ * Returns:
+>>>>>>> refs/remotes/origin/master
  *	0:			Successful.
  *	Negative value:		Failed.
  */
@@ -100,7 +104,11 @@ static int pch_gbe_get_settings(struct net_device *netdev,
  * pch_gbe_set_settings - Set device-specific settings
  * @netdev: Network interface device structure
  * @ecmd:   Ethtool command
+<<<<<<< HEAD
  * Returns
+=======
+ * Returns:
+>>>>>>> refs/remotes/origin/master
  *	0:			Successful.
  *	Negative value:		Failed.
  */
@@ -118,18 +126,29 @@ static int pch_gbe_set_settings(struct net_device *netdev,
 	 * filled by get_settings() on a down link, speed is -1: */
 	if (speed == UINT_MAX) {
 		speed = SPEED_1000;
+<<<<<<< HEAD
+=======
+		ethtool_cmd_speed_set(ecmd, speed);
+>>>>>>> refs/remotes/origin/master
 		ecmd->duplex = DUPLEX_FULL;
 	}
 	ret = mii_ethtool_sset(&adapter->mii, ecmd);
 	if (ret) {
+<<<<<<< HEAD
 		pr_err("Error: mii_ethtool_sset\n");
+=======
+		netdev_err(netdev, "Error: mii_ethtool_sset\n");
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 	hw->mac.link_speed = speed;
 	hw->mac.link_duplex = ecmd->duplex;
 	hw->phy.autoneg_advertised = ecmd->advertising;
 	hw->mac.autoneg = ecmd->autoneg;
+<<<<<<< HEAD
 	pch_gbe_hal_phy_sw_reset(hw);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* reset the link */
 	if (netif_running(adapter->netdev)) {
@@ -220,7 +239,11 @@ static void pch_gbe_get_wol(struct net_device *netdev,
  * pch_gbe_set_wol - Turn Wake-on-Lan on or off
  * @netdev: Network interface device structure
  * @wol:    Pointer of wake-on-Lan information straucture
+<<<<<<< HEAD
  * Returns
+=======
+ * Returns:
+>>>>>>> refs/remotes/origin/master
  *	0:			Successful.
  *	Negative value:		Failed.
  */
@@ -248,7 +271,11 @@ static int pch_gbe_set_wol(struct net_device *netdev,
 /**
  * pch_gbe_nway_reset - Restart autonegotiation
  * @netdev: Network interface device structure
+<<<<<<< HEAD
  * Returns
+=======
+ * Returns:
+>>>>>>> refs/remotes/origin/master
  *	0:			Successful.
  *	Negative value:		Failed.
  */
@@ -398,7 +425,11 @@ static void pch_gbe_get_pauseparam(struct net_device *netdev,
  * pch_gbe_set_pauseparam - Set pause paramters
  * @netdev:  Network interface device structure
  * @pause:   Pause parameters structure
+<<<<<<< HEAD
  * Returns
+=======
+ * Returns:
+>>>>>>> refs/remotes/origin/master
  *	0:			Successful.
  *	Negative value:		Failed.
  */

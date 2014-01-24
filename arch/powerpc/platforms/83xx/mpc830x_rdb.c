@@ -28,6 +28,7 @@
 static void __init mpc830x_rdb_setup_arch(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PCI
 	struct device_node *np;
 #endif
@@ -59,6 +60,8 @@ static void __init mpc830x_rdb_init_IRQ(void)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.progress)
 		ppc_md.progress("mpc830x_rdb_setup_arch()", 0);
 
@@ -66,7 +69,10 @@ static void __init mpc830x_rdb_init_IRQ(void)
 	mpc831x_usb_cfg();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *board[] __initdata = {
 	"MPC8308RDB",
 	"fsl,mpc8308rdb",
@@ -83,6 +89,7 @@ static int __init mpc830x_rdb_probe(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct of_device_id __initdata of_bus_ids[] = {
 	{ .compatible = "simple-bus" },
 	{ .compatible = "gianfar" },
@@ -98,16 +105,23 @@ machine_device_initcall(mpc830x_rdb, declare_of_platform_devices);
 =======
 machine_device_initcall(mpc830x_rdb, mpc83xx_declare_of_platform_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_device_initcall(mpc830x_rdb, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/master
 
 define_machine(mpc830x_rdb) {
 	.name			= "MPC830x RDB",
 	.probe			= mpc830x_rdb_probe,
 	.setup_arch		= mpc830x_rdb_setup_arch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_IRQ		= mpc830x_rdb_init_IRQ,
 =======
 	.init_IRQ		= mpc83xx_ipic_init_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_IRQ		= mpc83xx_ipic_init_IRQ,
+>>>>>>> refs/remotes/origin/master
 	.get_irq		= ipic_get_irq,
 	.restart		= mpc83xx_restart,
 	.time_init		= mpc83xx_time_init,

@@ -17,6 +17,7 @@
 #define coldfire_gpio_h
 
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <asm-generic/gpio.h>
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
@@ -181,6 +182,11 @@ static inline u32 __mcf_gpio_podr(unsigned gpio)
 #endif
 }
 
+=======
+#include <asm/coldfire.h>
+#include <asm/mcfsim.h>
+#include <asm/mcfgpio.h>
+>>>>>>> refs/remotes/origin/master
 /*
  * The Generic GPIO functions
  *
@@ -191,7 +197,11 @@ static inline u32 __mcf_gpio_podr(unsigned gpio)
 static inline int gpio_get_value(unsigned gpio)
 {
 	if (__builtin_constant_p(gpio) && gpio < MCFGPIO_PIN_MAX)
+<<<<<<< HEAD
 		return mcfgpio_read(__mcf_gpio_ppdr(gpio)) & mcfgpio_bit(gpio);
+=======
+		return mcfgpio_read(__mcfgpio_ppdr(gpio)) & mcfgpio_bit(gpio);
+>>>>>>> refs/remotes/origin/master
 	else
 		return __gpio_get_value(gpio);
 }
@@ -204,12 +214,20 @@ static inline void gpio_set_value(unsigned gpio, int value)
 			MCFGPIO_PORTTYPE data;
 
 			local_irq_save(flags);
+<<<<<<< HEAD
 			data = mcfgpio_read(__mcf_gpio_podr(gpio));
+=======
+			data = mcfgpio_read(__mcfgpio_podr(gpio));
+>>>>>>> refs/remotes/origin/master
 			if (value)
 				data |= mcfgpio_bit(gpio);
 			else
 				data &= ~mcfgpio_bit(gpio);
+<<<<<<< HEAD
 			mcfgpio_write(data, __mcf_gpio_podr(gpio));
+=======
+			mcfgpio_write(data, __mcfgpio_podr(gpio));
+>>>>>>> refs/remotes/origin/master
 			local_irq_restore(flags);
 		} else {
 			if (value)
@@ -226,11 +244,22 @@ static inline void gpio_set_value(unsigned gpio, int value)
 static inline int gpio_to_irq(unsigned gpio)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (gpio < MCFGPIO_IRQ_MAX) ? gpio + MCFGPIO_IRQ_VECBASE : -EINVAL;
 =======
 	return (gpio < MCFGPIO_IRQ_MAX) ? gpio + MCFGPIO_IRQ_VECBASE
 		: __gpio_to_irq(gpio);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(MCFGPIO_IRQ_MIN)
+	if ((gpio >= MCFGPIO_IRQ_MIN) && (gpio < MCFGPIO_IRQ_MAX))
+#else
+	if (gpio < MCFGPIO_IRQ_MAX)
+#endif
+		return gpio + MCFGPIO_IRQ_VECBASE;
+	else
+		return __gpio_to_irq(gpio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int irq_to_gpio(unsigned irq)
@@ -245,4 +274,28 @@ static inline int gpio_cansleep(unsigned gpio)
 	return gpio < MCFGPIO_PIN_MAX ? 0 : __gpio_cansleep(gpio);
 }
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_GPIOLIB
+static inline int gpio_request_one(unsigned gpio, unsigned long flags, const char *label)
+{
+	int err;
+
+	err = gpio_request(gpio, label);
+	if (err)
+		return err;
+
+	if (flags & GPIOF_DIR_IN)
+		err = gpio_direction_input(gpio);
+	else
+		err = gpio_direction_output(gpio,
+			(flags & GPIOF_INIT_HIGH) ? 1 : 0);
+
+	if (err)
+		gpio_free(gpio);
+
+	return err;
+}
+#endif /* !CONFIG_GPIOLIB */
+>>>>>>> refs/remotes/origin/master
 #endif

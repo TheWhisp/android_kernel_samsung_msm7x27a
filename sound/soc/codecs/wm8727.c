@@ -23,6 +23,19 @@
 #include <sound/initval.h>
 #include <sound/soc.h>
 
+<<<<<<< HEAD
+=======
+static const struct snd_soc_dapm_widget wm8727_dapm_widgets[] = {
+SND_SOC_DAPM_OUTPUT("VOUTL"),
+SND_SOC_DAPM_OUTPUT("VOUTR"),
+};
+
+static const struct snd_soc_dapm_route wm8727_dapm_routes[] = {
+	{ "VOUTL", NULL, "Playback" },
+	{ "VOUTR", NULL, "Playback" },
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Note this is a simple chip with no configuration interface, sample rate is
  * determined automatically by examining the Master clock and Bit clock ratios
@@ -43,15 +56,30 @@ static struct snd_soc_dai_driver wm8727_dai = {
 		},
 };
 
+<<<<<<< HEAD
 static struct snd_soc_codec_driver soc_codec_dev_wm8727;
 
 static __devinit int wm8727_probe(struct platform_device *pdev)
+=======
+static struct snd_soc_codec_driver soc_codec_dev_wm8727 = {
+	.dapm_widgets = wm8727_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8727_dapm_widgets),
+	.dapm_routes = wm8727_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8727_dapm_routes),
+};
+
+static int wm8727_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_codec(&pdev->dev,
 			&soc_codec_dev_wm8727, &wm8727_dai, 1);
 }
 
+<<<<<<< HEAD
 static int __devexit wm8727_remove(struct platform_device *pdev)
+=======
+static int wm8727_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -60,14 +88,19 @@ static int __devexit wm8727_remove(struct platform_device *pdev)
 static struct platform_driver wm8727_codec_driver = {
 	.driver = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.name = "wm8727-codec",
 =======
 			.name = "wm8727",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.name = "wm8727",
+>>>>>>> refs/remotes/origin/master
 			.owner = THIS_MODULE,
 	},
 
 	.probe = wm8727_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(wm8727_remove),
 };
 
@@ -86,6 +119,12 @@ module_exit(wm8727_exit);
 =======
 module_platform_driver(wm8727_codec_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = wm8727_remove,
+};
+
+module_platform_driver(wm8727_codec_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC wm8727 driver");
 MODULE_AUTHOR("Neil Jones");

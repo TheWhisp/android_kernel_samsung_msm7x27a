@@ -81,6 +81,7 @@ The limit on the length of lines is 80 columns and this is a strongly
 preferred limit.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Statements longer than 80 columns will be broken into sensible chunks.
 Descendants are always substantially shorter than the parent and are placed
 substantially to the right. The same applies to function headers with a long
@@ -98,6 +99,8 @@ void fun(int a, int b, int c)
 		next_statement;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Statements longer than 80 columns will be broken into sensible chunks, unless
 exceeding 80 columns significantly increases readability and does not hide
 information. Descendants are always substantially shorter than the parent and
@@ -105,7 +108,10 @@ are placed substantially to the right. The same applies to function headers
 with a long argument list. However, never break user-visible strings such as
 printk messages, because that breaks the ability to grep for them.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		Chapter 3: Placing Braces and Spaces
 
@@ -186,12 +192,17 @@ else
 	do_that();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 This does not apply if one branch of a conditional statement is a single
 statement. Use braces in both branches.
 =======
 This does not apply if only one branch of a conditional statement is a single
 statement; in the latter case use braces in both branches:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+This does not apply if only one branch of a conditional statement is a single
+statement; in the latter case use braces in both branches:
+>>>>>>> refs/remotes/origin/master
 
 if (condition) {
 	do_this();
@@ -413,7 +424,12 @@ Albeit deprecated by some people, the equivalent of the goto statement is
 used frequently by compilers in form of the unconditional jump instruction.
 
 The goto statement comes in handy when a function exits from multiple
+<<<<<<< HEAD
 locations and some common work such as cleanup has to be done.
+=======
+locations and some common work such as cleanup has to be done.  If there is no
+cleanup needed then just return directly.
+>>>>>>> refs/remotes/origin/master
 
 The rationale is:
 
@@ -478,6 +494,19 @@ The preferred style for long (multi-line) comments is:
 	 * with beginning and ending almost-blank lines.
 	 */
 
+<<<<<<< HEAD
+=======
+For files in net/ and drivers/net/ the preferred style for long (multi-line)
+comments is a little different.
+
+	/* The preferred comment style for files in net/ and drivers/net
+	 * looks like this.
+	 *
+	 * It is nearly the same as the generally preferred comment style,
+	 * but there is no initial almost-blank line.
+	 */
+
+>>>>>>> refs/remotes/origin/master
 It's also important to comment data, whether they are basic types or derived
 types.  To this end, use just one data declaration per line (no commas for
 multiple data declarations).  This leaves you room for a small comment on each
@@ -560,6 +589,7 @@ config AUDIT
 	  logging of avc messages output).  Does not do system-call
 	  auditing without CONFIG_AUDITSYSCALL.
 
+<<<<<<< HEAD
 Features that might still be considered unstable should be defined as
 dependent on "EXPERIMENTAL":
 
@@ -569,6 +599,9 @@ config SLUB
 	...
 
 while seriously dangerous features (such as write support for certain
+=======
+Seriously dangerous features (such as write support for certain
+>>>>>>> refs/remotes/origin/master
 filesystems) should advertise this prominently in their prompt string:
 
 config ADFS_FS_RW
@@ -695,8 +728,14 @@ ones already enabled by DEBUG.
 		Chapter 14: Allocating memory
 
 The kernel provides the following general purpose memory allocators:
+<<<<<<< HEAD
 kmalloc(), kzalloc(), kcalloc(), vmalloc(), and vzalloc().  Please refer to
 the API documentation for further information about them.
+=======
+kmalloc(), kzalloc(), kmalloc_array(), kcalloc(), vmalloc(), and
+vzalloc().  Please refer to the API documentation for further information
+about them.
+>>>>>>> refs/remotes/origin/master
 
 The preferred form for passing a size of a struct is the following:
 
@@ -710,6 +749,20 @@ Casting the return value which is a void pointer is redundant. The conversion
 from void pointer to any other pointer type is guaranteed by the C programming
 language.
 
+<<<<<<< HEAD
+=======
+The preferred form for allocating an array is the following:
+
+	p = kmalloc_array(n, sizeof(...), ...);
+
+The preferred form for allocating a zeroed array is the following:
+
+	p = kcalloc(n, sizeof(...), ...);
+
+Both forms check for overflow on the allocation size n * sizeof(...),
+and return NULL if that occurred.
+
+>>>>>>> refs/remotes/origin/master
 
 		Chapter 15: The inline disease
 
@@ -818,7 +871,10 @@ work correctly.
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		Chapter 19:  Inline assembly
 
 In architecture-specific code, you may need to use inline assembly to interface
@@ -848,7 +904,10 @@ next instruction in the assembly output:
 	     : /* outputs */ : /* inputs */ : /* clobbers */);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		Appendix I: References
 

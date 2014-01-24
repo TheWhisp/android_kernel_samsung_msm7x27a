@@ -13,10 +13,14 @@
  * refer to ACPI Specification version 4.0, section 17.3.2.6
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2010 Intel Corp.
 =======
  * Copyright 2010,2011 Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2010,2011 Intel Corp.
+>>>>>>> refs/remotes/origin/master
  *   Author: Huang Ying <ying.huang@intel.com>
  *
  * This program is free software; you can redistribute it and/or
@@ -38,9 +42,13 @@
 #include <linux/init.h>
 #include <linux/acpi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/acpi_io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/acpi_io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/interrupt.h>
 #include <linux/timer.h>
@@ -51,23 +59,34 @@
 #include <linux/ratelimit.h>
 #include <linux/vmalloc.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <acpi/apei.h>
 #include <acpi/atomicio.h>
 #include <acpi/hed.h>
 #include <asm/mce.h>
 #include <asm/tlbflush.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/irq_work.h>
 #include <linux/llist.h>
 #include <linux/genalloc.h>
 #include <linux/pci.h>
 #include <linux/aer.h>
+<<<<<<< HEAD
 #include <acpi/apei.h>
 #include <acpi/hed.h>
 #include <asm/mce.h>
 #include <asm/tlbflush.h>
 #include <asm/nmi.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include <acpi/ghes.h>
+#include <asm/mce.h>
+#include <asm/tlbflush.h>
+#include <asm/nmi.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "apei-internal.h"
 
@@ -75,7 +94,10 @@
 
 #define GHES_ESTATUS_MAX_SIZE		65536
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GHES_ESOURCE_PREALLOC_MAX_SIZE	65536
 
 #define GHES_ESTATUS_POOL_MIN_ALLOC_ORDER 3
@@ -92,11 +114,16 @@
 #define GHES_ESTATUS_CACHE_LEN(estatus_len)			\
 	(sizeof(struct ghes_estatus_cache) + (estatus_len))
 #define GHES_ESTATUS_FROM_CACHE(estatus_cache)			\
+<<<<<<< HEAD
 	((struct acpi_hest_generic_status *)			\
+=======
+	((struct acpi_generic_status *)				\
+>>>>>>> refs/remotes/origin/master
 	 ((struct ghes_estatus_cache *)(estatus_cache) + 1))
 
 #define GHES_ESTATUS_NODE_LEN(estatus_len)			\
 	(sizeof(struct ghes_estatus_node) + (estatus_len))
+<<<<<<< HEAD
 #define GHES_ESTATUS_FROM_NODE(estatus_node)				\
 	((struct acpi_hest_generic_status *)				\
 	 ((struct ghes_estatus_node *)(estatus_node) + 1))
@@ -139,11 +166,19 @@ struct ghes_estatus_cache {
 	unsigned long long time_in;
 	struct rcu_head rcu;
 };
+=======
+#define GHES_ESTATUS_FROM_NODE(estatus_node)			\
+	((struct acpi_generic_status *)				\
+	 ((struct ghes_estatus_node *)(estatus_node) + 1))
+>>>>>>> refs/remotes/origin/master
 
 bool ghes_disable;
 module_param_named(disable, ghes_disable, bool, 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ghes_panic_timeout	__read_mostly = 30;
 
 /*
@@ -189,7 +224,10 @@ static DEFINE_RAW_SPINLOCK(ghes_ioremap_lock_nmi);
 static DEFINE_SPINLOCK(ghes_ioremap_lock_irq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * printk is not safe in NMI context.  So in NMI handler, we allocate
  * required memory from lock-less memory allocator
@@ -206,7 +244,10 @@ static struct irq_work ghes_proc_irq_work;
 struct ghes_estatus_cache *ghes_estatus_caches[GHES_ESTATUS_CACHES_SIZE];
 static atomic_t ghes_estatus_cache_alloced;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ghes_ioremap_init(void)
 {
 	ghes_ioremap_area = __get_vm_area(PAGE_SIZE * GHES_IOREMAP_PAGES,
@@ -267,7 +308,10 @@ static void ghes_iounmap_irq(void __iomem *vaddr_ptr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ghes_estatus_pool_init(void)
 {
 	ghes_estatus_pool = gen_pool_create(GHES_ESTATUS_POOL_MIN_ALLOC_ORDER, -1);
@@ -317,7 +361,10 @@ static void ghes_estatus_pool_shrink(unsigned long len)
 	ghes_estatus_pool_size_request -= PAGE_ALIGN(len);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct ghes *ghes_new(struct acpi_hest_generic *generic)
 {
 	struct ghes *ghes;
@@ -329,10 +376,14 @@ static struct ghes *ghes_new(struct acpi_hest_generic *generic)
 		return ERR_PTR(-ENOMEM);
 	ghes->generic = generic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = acpi_pre_map_gar(&generic->error_status_address);
 =======
 	rc = apei_map_generic_address(&generic->error_status_address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = apei_map_generic_address(&generic->error_status_address);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		goto err_free;
 	error_block_length = generic->error_block_length;
@@ -353,10 +404,14 @@ static struct ghes *ghes_new(struct acpi_hest_generic *generic)
 
 err_unmap:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	acpi_post_unmap_gar(&generic->error_status_address);
 =======
 	apei_unmap_generic_address(&generic->error_status_address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	apei_unmap_generic_address(&generic->error_status_address);
+>>>>>>> refs/remotes/origin/master
 err_free:
 	kfree(ghes);
 	return ERR_PTR(rc);
@@ -365,6 +420,7 @@ err_free:
 static void ghes_fini(struct ghes *ghes)
 {
 	kfree(ghes->estatus);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	acpi_post_unmap_gar(&ghes->generic->error_status_address);
 =======
@@ -379,6 +435,11 @@ enum {
 	GHES_SEV_PANIC = 0x3,
 };
 
+=======
+	apei_unmap_generic_address(&ghes->generic->error_status_address);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int ghes_severity(int severity)
 {
 	switch (severity) {
@@ -441,10 +502,14 @@ static int ghes_read_estatus(struct ghes *ghes, int silent)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = acpi_atomic_read(&buf_paddr, &g->error_status_address);
 =======
 	rc = apei_read(&buf_paddr, &g->error_status_address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = apei_read(&buf_paddr, &g->error_status_address);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		if (!silent && printk_ratelimit())
 			pr_warning(FW_WARN GHES_PFX
@@ -464,17 +529,29 @@ static int ghes_read_estatus(struct ghes *ghes, int silent)
 	ghes->flags |= GHES_TO_CLEAR;
 
 	rc = -EIO;
+<<<<<<< HEAD
 	len = apei_estatus_len(ghes->estatus);
+=======
+	len = cper_estatus_len(ghes->estatus);
+>>>>>>> refs/remotes/origin/master
 	if (len < sizeof(*ghes->estatus))
 		goto err_read_block;
 	if (len > ghes->generic->error_block_length)
 		goto err_read_block;
+<<<<<<< HEAD
 	if (apei_estatus_check_header(ghes->estatus))
+=======
+	if (cper_estatus_check_header(ghes->estatus))
+>>>>>>> refs/remotes/origin/master
 		goto err_read_block;
 	ghes_copy_tofrom_phys(ghes->estatus + 1,
 			      buf_paddr + sizeof(*ghes->estatus),
 			      len - sizeof(*ghes->estatus), 1);
+<<<<<<< HEAD
 	if (apei_estatus_check(ghes->estatus))
+=======
+	if (cper_estatus_check(ghes->estatus))
+>>>>>>> refs/remotes/origin/master
 		goto err_read_block;
 	rc = 0;
 
@@ -496,6 +573,7 @@ static void ghes_clear_estatus(struct ghes *ghes)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ghes_do_proc(struct ghes *ghes)
 {
 	int sev, processed = 0;
@@ -515,6 +593,45 @@ static void ghes_do_proc(const struct acpi_hest_generic_status *estatus)
 {
 	int sev, sec_sev;
 	struct acpi_hest_generic_data *gdata;
+=======
+static void ghes_handle_memory_failure(struct acpi_generic_data *gdata, int sev)
+{
+#ifdef CONFIG_ACPI_APEI_MEMORY_FAILURE
+	unsigned long pfn;
+	int flags = -1;
+	int sec_sev = ghes_severity(gdata->error_severity);
+	struct cper_sec_mem_err *mem_err;
+	mem_err = (struct cper_sec_mem_err *)(gdata + 1);
+
+	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+		return;
+
+	pfn = mem_err->physical_addr >> PAGE_SHIFT;
+	if (!pfn_valid(pfn)) {
+		pr_warn_ratelimited(FW_WARN GHES_PFX
+		"Invalid address in generic error data: %#llx\n",
+		mem_err->physical_addr);
+		return;
+	}
+
+	/* iff following two events can be handled properly by now */
+	if (sec_sev == GHES_SEV_CORRECTED &&
+	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+		flags = MF_SOFT_OFFLINE;
+	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+		flags = 0;
+
+	if (flags != -1)
+		memory_failure_queue(pfn, 0, flags);
+#endif
+}
+
+static void ghes_do_proc(struct ghes *ghes,
+			 const struct acpi_generic_status *estatus)
+{
+	int sev, sec_sev;
+	struct acpi_generic_data *gdata;
+>>>>>>> refs/remotes/origin/master
 
 	sev = ghes_severity(estatus->error_severity);
 	apei_estatus_for_each_section(estatus, gdata) {
@@ -523,6 +640,7 @@ static void ghes_do_proc(const struct acpi_hest_generic_status *estatus)
 				 CPER_SEC_PLATFORM_MEM)) {
 			struct cper_sec_mem_err *mem_err;
 			mem_err = (struct cper_sec_mem_err *)(gdata+1);
+<<<<<<< HEAD
 #ifdef CONFIG_X86_MCE
 			apei_mce_report_mem_error(sev == GHES_SEV_CORRECTED,
 						  mem_err);
@@ -536,6 +654,14 @@ static void ghes_do_proc(const struct acpi_hest_generic_status *estatus)
 				memory_failure_queue(pfn, 0, 0);
 			}
 #endif
+=======
+			ghes_edac_report_mem_error(ghes, sev, mem_err);
+
+#ifdef CONFIG_X86_MCE
+			apei_mce_report_mem_error(sev, mem_err);
+#endif
+			ghes_handle_memory_failure(gdata, sev);
+>>>>>>> refs/remotes/origin/master
 		}
 #ifdef CONFIG_ACPI_APEI_PCIEAER
 		else if (!uuid_le_cmp(*(uuid_le *)gdata->section_type,
@@ -548,6 +674,7 @@ static void ghes_do_proc(const struct acpi_hest_generic_status *estatus)
 			    pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
 				unsigned int devfn;
 				int aer_severity;
+<<<<<<< HEAD
 				devfn = PCI_DEVFN(pcie_err->device_id.device,
 						  pcie_err->device_id.function);
 				aer_severity = cper_severity_to_aer(sev);
@@ -557,11 +684,34 @@ static void ghes_do_proc(const struct acpi_hest_generic_status *estatus)
 			}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+				devfn = PCI_DEVFN(pcie_err->device_id.device,
+						  pcie_err->device_id.function);
+				aer_severity = cper_severity_to_aer(sev);
+
+				/*
+				 * If firmware reset the component to contain
+				 * the error, we must reinitialize it before
+				 * use, so treat it as a fatal AER error.
+				 */
+				if (gdata->flags & CPER_SEC_RESET)
+					aer_severity = AER_FATAL;
+
+				aer_recover_queue(pcie_err->device_id.segment,
+						  pcie_err->device_id.bus,
+						  devfn, aer_severity,
+						  (struct aer_capability_regs *)
+						  pcie_err->aer_info);
+			}
+
+>>>>>>> refs/remotes/origin/master
 		}
 #endif
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ghes_print_estatus(const char *pfx, struct ghes *ghes)
 {
@@ -585,6 +735,11 @@ static void ghes_print_estatus(const char *pfx, struct ghes *ghes)
 static void __ghes_print_estatus(const char *pfx,
 				 const struct acpi_hest_generic *generic,
 				 const struct acpi_hest_generic_status *estatus)
+=======
+static void __ghes_print_estatus(const char *pfx,
+				 const struct acpi_hest_generic *generic,
+				 const struct acpi_generic_status *estatus)
+>>>>>>> refs/remotes/origin/master
 {
 	static atomic_t seqno;
 	unsigned int curr_seqno;
@@ -601,12 +756,20 @@ static void __ghes_print_estatus(const char *pfx,
 	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}" HW_ERR, pfx, curr_seqno);
 	printk("%s""Hardware error from APEI Generic Hardware Error Source: %d\n",
 	       pfx_seq, generic->header.source_id);
+<<<<<<< HEAD
 	apei_estatus_print(pfx_seq, estatus);
+=======
+	cper_estatus_print(pfx_seq, estatus);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ghes_print_estatus(const char *pfx,
 			      const struct acpi_hest_generic *generic,
+<<<<<<< HEAD
 			      const struct acpi_hest_generic_status *estatus)
+=======
+			      const struct acpi_generic_status *estatus)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Not more than 2 messages every 5 seconds */
 	static DEFINE_RATELIMIT_STATE(ratelimit_corrected, 5*HZ, 2);
@@ -628,15 +791,25 @@ static int ghes_print_estatus(const char *pfx,
  * GHES error status reporting throttle, to report more kinds of
  * errors, instead of just most frequently occurred errors.
  */
+<<<<<<< HEAD
 static int ghes_estatus_cached(struct acpi_hest_generic_status *estatus)
+=======
+static int ghes_estatus_cached(struct acpi_generic_status *estatus)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 len;
 	int i, cached = 0;
 	unsigned long long now;
 	struct ghes_estatus_cache *cache;
+<<<<<<< HEAD
 	struct acpi_hest_generic_status *cache_estatus;
 
 	len = apei_estatus_len(estatus);
+=======
+	struct acpi_generic_status *cache_estatus;
+
+	len = cper_estatus_len(estatus);
+>>>>>>> refs/remotes/origin/master
 	rcu_read_lock();
 	for (i = 0; i < GHES_ESTATUS_CACHES_SIZE; i++) {
 		cache = rcu_dereference(ghes_estatus_caches[i]);
@@ -659,19 +832,31 @@ static int ghes_estatus_cached(struct acpi_hest_generic_status *estatus)
 
 static struct ghes_estatus_cache *ghes_estatus_cache_alloc(
 	struct acpi_hest_generic *generic,
+<<<<<<< HEAD
 	struct acpi_hest_generic_status *estatus)
+=======
+	struct acpi_generic_status *estatus)
+>>>>>>> refs/remotes/origin/master
 {
 	int alloced;
 	u32 len, cache_len;
 	struct ghes_estatus_cache *cache;
+<<<<<<< HEAD
 	struct acpi_hest_generic_status *cache_estatus;
+=======
+	struct acpi_generic_status *cache_estatus;
+>>>>>>> refs/remotes/origin/master
 
 	alloced = atomic_add_return(1, &ghes_estatus_cache_alloced);
 	if (alloced > GHES_ESTATUS_CACHE_ALLOCED_MAX) {
 		atomic_dec(&ghes_estatus_cache_alloced);
 		return NULL;
 	}
+<<<<<<< HEAD
 	len = apei_estatus_len(estatus);
+=======
+	len = cper_estatus_len(estatus);
+>>>>>>> refs/remotes/origin/master
 	cache_len = GHES_ESTATUS_CACHE_LEN(len);
 	cache = (void *)gen_pool_alloc(ghes_estatus_pool, cache_len);
 	if (!cache) {
@@ -691,7 +876,11 @@ static void ghes_estatus_cache_free(struct ghes_estatus_cache *cache)
 {
 	u32 len;
 
+<<<<<<< HEAD
 	len = apei_estatus_len(GHES_ESTATUS_FROM_CACHE(cache));
+=======
+	len = cper_estatus_len(GHES_ESTATUS_FROM_CACHE(cache));
+>>>>>>> refs/remotes/origin/master
 	len = GHES_ESTATUS_CACHE_LEN(len);
 	gen_pool_free(ghes_estatus_pool, (unsigned long)cache, len);
 	atomic_dec(&ghes_estatus_cache_alloced);
@@ -707,7 +896,11 @@ static void ghes_estatus_cache_rcu_free(struct rcu_head *head)
 
 static void ghes_estatus_cache_add(
 	struct acpi_hest_generic *generic,
+<<<<<<< HEAD
 	struct acpi_hest_generic_status *estatus)
+=======
+	struct acpi_generic_status *estatus)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, slot = -1, count;
 	unsigned long long now, duration, period, max_period = 0;
@@ -749,7 +942,10 @@ static void ghes_estatus_cache_add(
 	} else
 		ghes_estatus_cache_free(new_cache);
 	rcu_read_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ghes_proc(struct ghes *ghes)
@@ -760,16 +956,23 @@ static int ghes_proc(struct ghes *ghes)
 	if (rc)
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ghes_print_estatus(NULL, ghes);
 	ghes_do_proc(ghes);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!ghes_estatus_cached(ghes->estatus)) {
 		if (ghes_print_estatus(NULL, ghes->generic, ghes->estatus))
 			ghes_estatus_cache_add(ghes->generic, ghes->estatus);
 	}
+<<<<<<< HEAD
 	ghes_do_proc(ghes->estatus);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ghes_do_proc(ghes, ghes->estatus);
+>>>>>>> refs/remotes/origin/master
 out:
 	ghes_clear_estatus(ghes);
 	return 0;
@@ -828,6 +1031,7 @@ static int ghes_notify_sci(struct notifier_block *this,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ghes_notify_nmi(struct notifier_block *this,
 				  unsigned long cmd, void *data)
 {
@@ -838,6 +1042,8 @@ static int ghes_notify_nmi(struct notifier_block *this,
 	if (cmd != DIE_NMI)
 		return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct llist_node *llist_nodes_reverse(struct llist_node *llnode)
 {
 	struct llist_node *next, *tail = NULL;
@@ -857,7 +1063,11 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
 	struct llist_node *llnode, *next;
 	struct ghes_estatus_node *estatus_node;
 	struct acpi_hest_generic *generic;
+<<<<<<< HEAD
 	struct acpi_hest_generic_status *estatus;
+=======
+	struct acpi_generic_status *estatus;
+>>>>>>> refs/remotes/origin/master
 	u32 len, node_len;
 
 	llnode = llist_del_all(&ghes_estatus_llist);
@@ -871,9 +1081,15 @@ static void ghes_proc_in_irq(struct irq_work *irq_work)
 		estatus_node = llist_entry(llnode, struct ghes_estatus_node,
 					   llnode);
 		estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
+<<<<<<< HEAD
 		len = apei_estatus_len(estatus);
 		node_len = GHES_ESTATUS_NODE_LEN(len);
 		ghes_do_proc(estatus);
+=======
+		len = cper_estatus_len(estatus);
+		node_len = GHES_ESTATUS_NODE_LEN(len);
+		ghes_do_proc(estatus_node->ghes, estatus);
+>>>>>>> refs/remotes/origin/master
 		if (!ghes_estatus_cached(estatus)) {
 			generic = estatus_node->generic;
 			if (ghes_print_estatus(NULL, generic, estatus))
@@ -890,7 +1106,11 @@ static void ghes_print_queued_estatus(void)
 	struct llist_node *llnode;
 	struct ghes_estatus_node *estatus_node;
 	struct acpi_hest_generic *generic;
+<<<<<<< HEAD
 	struct acpi_hest_generic_status *estatus;
+=======
+	struct acpi_generic_status *estatus;
+>>>>>>> refs/remotes/origin/master
 	u32 len, node_len;
 
 	llnode = llist_del_all(&ghes_estatus_llist);
@@ -903,7 +1123,11 @@ static void ghes_print_queued_estatus(void)
 		estatus_node = llist_entry(llnode, struct ghes_estatus_node,
 					   llnode);
 		estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
+<<<<<<< HEAD
 		len = apei_estatus_len(estatus);
+=======
+		len = cper_estatus_len(estatus);
+>>>>>>> refs/remotes/origin/master
 		node_len = GHES_ESTATUS_NODE_LEN(len);
 		generic = estatus_node->generic;
 		ghes_print_estatus(NULL, generic, estatus);
@@ -916,7 +1140,10 @@ static int ghes_notify_nmi(unsigned int cmd, struct pt_regs *regs)
 	struct ghes *ghes, *ghes_global = NULL;
 	int sev, sev_global = -1;
 	int ret = NMI_DONE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	raw_spin_lock(&ghes_nmi_lock);
 	list_for_each_entry_rcu(ghes, &ghes_nmi, list) {
@@ -930,20 +1157,27 @@ static int ghes_notify_nmi(unsigned int cmd, struct pt_regs *regs)
 			ghes_global = ghes;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = NOTIFY_STOP;
 	}
 
 	if (ret == NOTIFY_DONE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = NMI_HANDLED;
 	}
 
 	if (ret == NMI_DONE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	if (sev_global >= GHES_SEV_PANIC) {
 		oops_begin();
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ghes_print_estatus(KERN_EMERG HW_ERR, ghes_global);
 =======
@@ -951,6 +1185,11 @@ static int ghes_notify_nmi(unsigned int cmd, struct pt_regs *regs)
 		__ghes_print_estatus(KERN_EMERG, ghes_global->generic,
 				     ghes_global->estatus);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ghes_print_queued_estatus();
+		__ghes_print_estatus(KERN_EMERG, ghes_global->generic,
+				     ghes_global->estatus);
+>>>>>>> refs/remotes/origin/master
 		/* reboot to log the error! */
 		if (panic_timeout == 0)
 			panic_timeout = ghes_panic_timeout;
@@ -958,6 +1197,7 @@ static int ghes_notify_nmi(unsigned int cmd, struct pt_regs *regs)
 	}
 
 	list_for_each_entry_rcu(ghes, &ghes_nmi, list) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!(ghes->flags & GHES_TO_CLEAR))
 			continue;
@@ -970,6 +1210,12 @@ static int ghes_notify_nmi(unsigned int cmd, struct pt_regs *regs)
 		u32 len, node_len;
 		struct ghes_estatus_node *estatus_node;
 		struct acpi_hest_generic_status *estatus;
+=======
+#ifdef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+		u32 len, node_len;
+		struct ghes_estatus_node *estatus_node;
+		struct acpi_generic_status *estatus;
+>>>>>>> refs/remotes/origin/master
 #endif
 		if (!(ghes->flags & GHES_TO_CLEAR))
 			continue;
@@ -977,11 +1223,19 @@ static int ghes_notify_nmi(unsigned int cmd, struct pt_regs *regs)
 		if (ghes_estatus_cached(ghes->estatus))
 			goto next;
 		/* Save estatus for further processing in IRQ context */
+<<<<<<< HEAD
 		len = apei_estatus_len(ghes->estatus);
+=======
+		len = cper_estatus_len(ghes->estatus);
+>>>>>>> refs/remotes/origin/master
 		node_len = GHES_ESTATUS_NODE_LEN(len);
 		estatus_node = (void *)gen_pool_alloc(ghes_estatus_pool,
 						      node_len);
 		if (estatus_node) {
+<<<<<<< HEAD
+=======
+			estatus_node->ghes = ghes;
+>>>>>>> refs/remotes/origin/master
 			estatus_node->generic = ghes->generic;
 			estatus = GHES_ESTATUS_FROM_NODE(estatus_node);
 			memcpy(estatus, ghes->estatus, len);
@@ -994,7 +1248,10 @@ next:
 #ifdef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
 	irq_work_queue(&ghes_proc_irq_work);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 out:
 	raw_spin_unlock(&ghes_nmi_lock);
@@ -1006,10 +1263,13 @@ static struct notifier_block ghes_notifier_sci = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct notifier_block ghes_notifier_nmi = {
 	.notifier_call = ghes_notify_nmi,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned long ghes_esource_prealloc_size(
 	const struct acpi_hest_generic *generic)
 {
@@ -1024,6 +1284,7 @@ static unsigned long ghes_esource_prealloc_size(
 
 	return prealloc_size;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static int __devinit ghes_probe(struct platform_device *ghes_dev)
@@ -1034,6 +1295,14 @@ static int __devinit ghes_probe(struct platform_device *ghes_dev)
 =======
 	unsigned long len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static int ghes_probe(struct platform_device *ghes_dev)
+{
+	struct acpi_hest_generic *generic;
+	struct ghes *ghes = NULL;
+	unsigned long len;
+>>>>>>> refs/remotes/origin/master
 	int rc = -EINVAL;
 
 	generic = *(struct acpi_hest_generic **)ghes_dev->dev.platform_data;
@@ -1058,7 +1327,11 @@ static int __devinit ghes_probe(struct platform_device *ghes_dev)
 
 	rc = -EIO;
 	if (generic->error_block_length <
+<<<<<<< HEAD
 	    sizeof(struct acpi_hest_generic_status)) {
+=======
+	    sizeof(struct acpi_generic_status)) {
+>>>>>>> refs/remotes/origin/master
 		pr_warning(FW_BUG GHES_PFX "Invalid error block length: %u for generic hardware error source: %d\n",
 			   generic->error_block_length,
 			   generic->header.source_id);
@@ -1070,6 +1343,14 @@ static int __devinit ghes_probe(struct platform_device *ghes_dev)
 		ghes = NULL;
 		goto err;
 	}
+<<<<<<< HEAD
+=======
+
+	rc = ghes_edac_register(ghes, &ghes_dev->dev);
+	if (rc < 0)
+		goto err;
+
+>>>>>>> refs/remotes/origin/master
 	switch (generic->notify.type) {
 	case ACPI_HEST_NOTIFY_POLLED:
 		ghes->timer.function = ghes_poll_func;
@@ -1079,6 +1360,7 @@ static int __devinit ghes_probe(struct platform_device *ghes_dev)
 		break;
 	case ACPI_HEST_NOTIFY_EXTERNAL:
 		/* External interrupt vector is GSI */
+<<<<<<< HEAD
 		if (acpi_gsi_to_irq(generic->notify.vector, &ghes->irq)) {
 			pr_err(GHES_PFX "Failed to map GSI to IRQ for generic hardware error source: %d\n",
 			       generic->header.source_id);
@@ -1089,6 +1371,19 @@ static int __devinit ghes_probe(struct platform_device *ghes_dev)
 			pr_err(GHES_PFX "Failed to register IRQ for generic hardware error source: %d\n",
 			       generic->header.source_id);
 			goto err;
+=======
+		rc = acpi_gsi_to_irq(generic->notify.vector, &ghes->irq);
+		if (rc) {
+			pr_err(GHES_PFX "Failed to map GSI to IRQ for generic hardware error source: %d\n",
+			       generic->header.source_id);
+			goto err_edac_unreg;
+		}
+		rc = request_irq(ghes->irq, ghes_irq_func, 0, "GHES IRQ", ghes);
+		if (rc) {
+			pr_err(GHES_PFX "Failed to register IRQ for generic hardware error source: %d\n",
+			       generic->header.source_id);
+			goto err_edac_unreg;
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case ACPI_HEST_NOTIFY_SCI:
@@ -1100,17 +1395,23 @@ static int __devinit ghes_probe(struct platform_device *ghes_dev)
 		break;
 	case ACPI_HEST_NOTIFY_NMI:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_lock(&ghes_list_mutex);
 		if (list_empty(&ghes_nmi))
 			register_die_notifier(&ghes_notifier_nmi);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		len = ghes_esource_prealloc_size(generic);
 		ghes_estatus_pool_expand(len);
 		mutex_lock(&ghes_list_mutex);
 		if (list_empty(&ghes_nmi))
 			register_nmi_handler(NMI_LOCAL, ghes_notify_nmi, 0,
 						"ghes");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		list_add_rcu(&ghes->list, &ghes_nmi);
 		mutex_unlock(&ghes_list_mutex);
 		break;
@@ -1120,6 +1421,11 @@ static int __devinit ghes_probe(struct platform_device *ghes_dev)
 	platform_set_drvdata(ghes_dev, ghes);
 
 	return 0;
+<<<<<<< HEAD
+=======
+err_edac_unreg:
+	ghes_edac_unregister(ghes);
+>>>>>>> refs/remotes/origin/master
 err:
 	if (ghes) {
 		ghes_fini(ghes);
@@ -1128,6 +1434,7 @@ err:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devexit ghes_remove(struct platform_device *ghes_dev)
 {
 	struct ghes *ghes;
@@ -1136,6 +1443,13 @@ static int __devexit ghes_remove(struct platform_device *ghes_dev)
 =======
 	unsigned long len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ghes_remove(struct platform_device *ghes_dev)
+{
+	struct ghes *ghes;
+	struct acpi_hest_generic *generic;
+	unsigned long len;
+>>>>>>> refs/remotes/origin/master
 
 	ghes = platform_get_drvdata(ghes_dev);
 	generic = ghes->generic;
@@ -1160,10 +1474,14 @@ static int __devexit ghes_remove(struct platform_device *ghes_dev)
 		list_del_rcu(&ghes->list);
 		if (list_empty(&ghes_nmi))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unregister_die_notifier(&ghes_notifier_nmi);
 =======
 			unregister_nmi_handler(NMI_LOCAL, "ghes");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unregister_nmi_handler(NMI_LOCAL, "ghes");
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&ghes_list_mutex);
 		/*
 		 * To synchronize with NMI handler, ghes can only be
@@ -1171,10 +1489,15 @@ static int __devexit ghes_remove(struct platform_device *ghes_dev)
 		 */
 		synchronize_rcu();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		len = ghes_esource_prealloc_size(generic);
 		ghes_estatus_pool_shrink(len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		len = ghes_esource_prealloc_size(generic);
+		ghes_estatus_pool_shrink(len);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		BUG();
@@ -1182,6 +1505,12 @@ static int __devexit ghes_remove(struct platform_device *ghes_dev)
 	}
 
 	ghes_fini(ghes);
+<<<<<<< HEAD
+=======
+
+	ghes_edac_unregister(ghes);
+
+>>>>>>> refs/remotes/origin/master
 	kfree(ghes);
 
 	platform_set_drvdata(ghes_dev, NULL);
@@ -1211,7 +1540,10 @@ static int __init ghes_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ghes_disable) {
 		pr_info(GHES_PFX "GHES is not enabled!\n");
 		return -EINVAL;
@@ -1219,11 +1551,15 @@ static int __init ghes_init(void)
 
 	init_irq_work(&ghes_proc_irq_work, ghes_proc_in_irq);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = ghes_ioremap_init();
 	if (rc)
 		goto err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rc = platform_driver_register(&ghes_platform_driver);
 	if (rc)
@@ -1231,6 +1567,8 @@ static int __init ghes_init(void)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = ghes_estatus_pool_init();
 	if (rc)
 		goto err_ioremap_exit;
@@ -1257,7 +1595,10 @@ static int __init ghes_init(void)
 	return 0;
 err_pool_exit:
 	ghes_estatus_pool_exit();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_ioremap_exit:
 	ghes_ioremap_exit();
 err:
@@ -1268,9 +1609,13 @@ static void __exit ghes_exit(void)
 {
 	platform_driver_unregister(&ghes_platform_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ghes_estatus_pool_exit();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ghes_estatus_pool_exit();
+>>>>>>> refs/remotes/origin/master
 	ghes_ioremap_exit();
 }
 

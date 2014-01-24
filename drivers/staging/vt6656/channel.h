@@ -30,6 +30,7 @@
 #ifndef _CHANNEL_H_
 #define _CHANNEL_H_
 
+<<<<<<< HEAD
 #include "ttype.h"
 
 /*---------------------  Export Definitions -------------------------*/
@@ -51,5 +52,17 @@ void    CHvInitChannelTable(void *pDeviceHandler);
 BYTE    CHbyGetChannelMapping(BYTE byChannelNumber);
 
 BOOL CHvChannelGetList(unsigned int uCountryCodeIdx, PBYTE pbyChannelTable);
+=======
+#include "device.h"
+
+typedef struct tagSChannelTblElement {
+    u8    byChannelNumber;
+    unsigned int    uFrequency;
+    bool    bValid;
+} SChannelTblElement, *PSChannelTblElement;
+
+bool    ChannelValid(unsigned int CountryCode, unsigned int ChannelNum);
+void    CHvInitChannelTable(struct vnt_private *pDevice);
+>>>>>>> refs/remotes/origin/master
 
 #endif  /* _CHANNEL_H_ */

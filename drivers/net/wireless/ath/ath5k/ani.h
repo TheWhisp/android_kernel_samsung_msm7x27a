@@ -17,12 +17,18 @@
 #define ANI_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "../ath.h"
 
 enum ath5k_phy_error_code;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* these thresholds are relative to the ATH5K_ANI_LISTEN_PERIOD */
 #define ATH5K_ANI_LISTEN_PERIOD		100
 #define ATH5K_ANI_OFDM_TRIG_HIGH	500
@@ -44,6 +50,7 @@ enum ath5k_phy_error_code;
  *
  * @ATH5K_ANI_MODE_OFF: Turn ANI off. This can be useful to just stop the ANI
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	algorithm after it has been on auto mode.
  * ATH5K_ANI_MODE_MANUAL_LOW: Manually set all immunity parameters to low,
  *	maximizing sensitivity. ANI will not run.
@@ -52,6 +59,8 @@ enum ath5k_phy_error_code;
  * ATH5K_ANI_MODE_AUTO: Automatically control immunity parameters based on the
  *	amount of OFDM and CCK frame errors (default).
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *			algorithm after it has been on auto mode.
  * @ATH5K_ANI_MODE_MANUAL_LOW: Manually set all immunity parameters to low,
  *			maximizing sensitivity. ANI will not run.
@@ -59,7 +68,10 @@ enum ath5k_phy_error_code;
  *			minimizing sensitivity. ANI will not run.
  * @ATH5K_ANI_MODE_AUTO: Automatically control immunity parameters based on the
  *			amount of OFDM and CCK frame errors (default).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 enum ath5k_ani_mode {
 	ATH5K_ANI_MODE_OFF		= 0,
@@ -72,9 +84,12 @@ enum ath5k_ani_mode {
 /**
  * struct ath5k_ani_state - ANI state and associated counters
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * @max_spur_level: the maximum spur level is chip dependent
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @ani_mode: One of enum ath5k_ani_mode
  * @noise_imm_level: Noise immunity level
  * @spur_level: Spur immunity level
@@ -91,7 +106,10 @@ enum ath5k_ani_mode {
  * @last_cck_errors: CCK timing error count from previous run (for stats)
  * @sum_ofdm_errors: Sum of OFDM timing errors (for stats)
  * @sum_cck_errors: Sum of all CCK timing errors (for stats)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct ath5k_ani_state {
 	enum ath5k_ani_mode	ani_mode;

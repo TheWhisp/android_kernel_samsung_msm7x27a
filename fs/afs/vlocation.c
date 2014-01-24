@@ -308,7 +308,12 @@ static int afs_vlocation_fill_in_record(struct afs_vlocation *vl,
 	/* see if we have an in-cache copy (will set vl->valid if there is) */
 #ifdef CONFIG_AFS_FSCACHE
 	vl->cache = fscache_acquire_cookie(vl->cell->cache,
+<<<<<<< HEAD
 					   &afs_vlocation_cache_index_def, vl);
+=======
+					   &afs_vlocation_cache_index_def, vl,
+					   true);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	if (vl->valid) {
@@ -561,12 +566,16 @@ static void afs_vlocation_reaper(struct work_struct *work)
 		if (expiry > now) {
 			delay = (expiry - now) * HZ;
 			_debug("delay %lu", delay);
+<<<<<<< HEAD
 			if (!queue_delayed_work(afs_wq, &afs_vlocation_reap,
 						delay)) {
 				cancel_delayed_work(&afs_vlocation_reap);
 				queue_delayed_work(afs_wq, &afs_vlocation_reap,
 						   delay);
 			}
+=======
+			mod_delayed_work(afs_wq, &afs_vlocation_reap, delay);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -614,6 +623,7 @@ void afs_vlocation_purge(void)
 	spin_lock(&afs_vlocation_updates_lock);
 	list_del_init(&afs_vlocation_updates);
 	spin_unlock(&afs_vlocation_updates_lock);
+<<<<<<< HEAD
 	cancel_delayed_work(&afs_vlocation_update);
 	queue_delayed_work(afs_vlocation_update_worker,
 			   &afs_vlocation_update, 0);
@@ -621,6 +631,12 @@ void afs_vlocation_purge(void)
 
 	cancel_delayed_work(&afs_vlocation_reap);
 	queue_delayed_work(afs_wq, &afs_vlocation_reap, 0);
+=======
+	mod_delayed_work(afs_vlocation_update_worker, &afs_vlocation_update, 0);
+	destroy_workqueue(afs_vlocation_update_worker);
+
+	mod_delayed_work(afs_wq, &afs_vlocation_reap, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

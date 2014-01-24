@@ -20,19 +20,30 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/sh_intc.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/sh_intc.h>
+<<<<<<< HEAD
 #include <mach/intc.h>
 #include <mach/irqs.h>
 #include <mach/sh73a0.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/hardware/gic.h>
+=======
+#include <linux/irqchip.h>
+#include <linux/irqchip/arm-gic.h>
+#include <mach/intc.h>
+#include <mach/irqs.h>
+#include <mach/sh73a0.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
@@ -266,6 +277,7 @@ static int sh73a0_set_wake(struct irq_data *data, unsigned int on)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init sh73a0_init_irq(void)
 {
 	void __iomem *gic_dist_base = __io(0xf0001000);
@@ -383,6 +395,14 @@ static struct irqaction sh73a0_irq_pin_cascade[32];
 #define PINTER1 0xe69000a4
 #define PINTRR0 0xe69000d0
 #define PINTRR1 0xe69000d4
+=======
+#define PINTER0_PHYS 0xe69000a0
+#define PINTER1_PHYS 0xe69000a4
+#define PINTER0_VIRT IOMEM(0xe69000a0)
+#define PINTER1_VIRT IOMEM(0xe69000a4)
+#define PINTRR0 IOMEM(0xe69000d0)
+#define PINTRR1 IOMEM(0xe69000d4)
+>>>>>>> refs/remotes/origin/master
 
 #define PINT0A_IRQ(n, irq) INTC_IRQ((n), SH73A0_PINT0_IRQ(irq))
 #define PINT0B_IRQ(n, irq) INTC_IRQ((n), SH73A0_PINT0_IRQ(irq + 8))
@@ -390,14 +410,22 @@ static struct irqaction sh73a0_irq_pin_cascade[32];
 #define PINT0D_IRQ(n, irq) INTC_IRQ((n), SH73A0_PINT0_IRQ(irq + 24))
 #define PINT1E_IRQ(n, irq) INTC_IRQ((n), SH73A0_PINT1_IRQ(irq))
 
+<<<<<<< HEAD
 INTC_PINT(intc_pint0, PINTER0, 0xe69000b0, "sh73a0-pint0",		\
+=======
+INTC_PINT(intc_pint0, PINTER0_PHYS, 0xe69000b0, "sh73a0-pint0",		\
+>>>>>>> refs/remotes/origin/master
   INTC_PINT_E(A), INTC_PINT_E(B), INTC_PINT_E(C), INTC_PINT_E(D),	\
   INTC_PINT_V(A, PINT0A_IRQ), INTC_PINT_V(B, PINT0B_IRQ),		\
   INTC_PINT_V(C, PINT0C_IRQ), INTC_PINT_V(D, PINT0D_IRQ),		\
   INTC_PINT_E(A), INTC_PINT_E(B), INTC_PINT_E(C), INTC_PINT_E(D),	\
   INTC_PINT_E(A), INTC_PINT_E(B), INTC_PINT_E(C), INTC_PINT_E(D));
 
+<<<<<<< HEAD
 INTC_PINT(intc_pint1, PINTER1, 0xe69000c0, "sh73a0-pint1",		\
+=======
+INTC_PINT(intc_pint1, PINTER1_PHYS, 0xe69000c0, "sh73a0-pint1",		\
+>>>>>>> refs/remotes/origin/master
   INTC_PINT_E(E), INTC_PINT_E_EMPTY, INTC_PINT_E_EMPTY, INTC_PINT_E_EMPTY, \
   INTC_PINT_V(E, PINT1E_IRQ), INTC_PINT_V_NONE,				\
   INTC_PINT_V_NONE, INTC_PINT_V_NONE,					\
@@ -407,7 +435,11 @@ INTC_PINT(intc_pint1, PINTER1, 0xe69000c0, "sh73a0-pint1",		\
 static struct irqaction sh73a0_pint0_cascade;
 static struct irqaction sh73a0_pint1_cascade;
 
+<<<<<<< HEAD
 static void pint_demux(unsigned long rr, unsigned long er, int base_irq)
+=======
+static void pint_demux(void __iomem *rr, void __iomem *er, int base_irq)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long value =  ioread32(rr) & ioread32(er);
 	int k;
@@ -422,13 +454,21 @@ static void pint_demux(unsigned long rr, unsigned long er, int base_irq)
 
 static irqreturn_t sh73a0_pint0_demux(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	pint_demux(PINTRR0, PINTER0, SH73A0_PINT0_IRQ(0));
+=======
+	pint_demux(PINTRR0, PINTER0_VIRT, SH73A0_PINT0_IRQ(0));
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
 static irqreturn_t sh73a0_pint1_demux(int irq, void *dev_id)
 {
+<<<<<<< HEAD
 	pint_demux(PINTRR1, PINTER1, SH73A0_PINT1_IRQ(0));
+=======
+	pint_demux(PINTRR1, PINTER1_VIRT, SH73A0_PINT1_IRQ(0));
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -437,25 +477,34 @@ void __init sh73a0_init_irq(void)
 	void __iomem *gic_dist_base = IOMEM(0xf0001000);
 	void __iomem *gic_cpu_base = IOMEM(0xf0000100);
 	void __iomem *intevtsa = ioremap_nocache(0xffd20100, PAGE_SIZE);
+<<<<<<< HEAD
 	int k, n;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	gic_init(0, 29, gic_dist_base, gic_cpu_base);
 	gic_arch_extn.irq_set_wake = sh73a0_set_wake;
 
 	register_intc_controller(&intcs_desc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	register_intc_controller(&intca_irq_pins_desc);
 	register_intc_controller(&intc_pint0_desc);
 	register_intc_controller(&intc_pint1_desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	register_intc_controller(&intc_pint0_desc);
+	register_intc_controller(&intc_pint1_desc);
+>>>>>>> refs/remotes/origin/master
 
 	/* demux using INTEVTSA */
 	sh73a0_intcs_cascade.name = "INTCS cascade";
 	sh73a0_intcs_cascade.handler = sh73a0_intcs_demux;
 	sh73a0_intcs_cascade.dev_id = intevtsa;
 	setup_irq(gic_spi(50), &sh73a0_intcs_cascade);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -471,6 +520,8 @@ void __init sh73a0_init_irq(void)
 					      handle_level_irq, "level");
 		set_irq_flags(n, IRQF_VALID); /* yuck */
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* PINT pins are sanely tied to the GIC as SPI */
 	sh73a0_pint0_cascade.name = "PINT0 cascade";
@@ -480,5 +531,8 @@ void __init sh73a0_init_irq(void)
 	sh73a0_pint1_cascade.name = "PINT1 cascade";
 	sh73a0_pint1_cascade.handler = sh73a0_pint1_demux;
 	setup_irq(gic_spi(34), &sh73a0_pint1_cascade);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

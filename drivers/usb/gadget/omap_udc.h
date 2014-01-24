@@ -140,7 +140,10 @@ struct omap_ep {
 	struct list_head		queue;
 	unsigned long			irqs;
 	struct list_head		iso;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	char				name[14];
 	u16				maxpacket;
 	u8				bEndpointAddress;
@@ -165,10 +168,14 @@ struct omap_udc {
 	u16				devstat;
 	u16				clr_halt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver		*transceiver;
 =======
 	struct usb_phy			*transceiver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_phy			*transceiver;
+>>>>>>> refs/remotes/origin/master
 	struct list_head		iso;
 	unsigned			softconnect:1;
 	unsigned			vbus_active:1;

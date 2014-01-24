@@ -53,9 +53,15 @@ static const char version[] =
 #define WORDSWAP(a)     ((((a)>>8)&0xff) | ((a)<<8))
 
 
+<<<<<<< HEAD
 static int __devinit hydra_init_one(struct zorro_dev *z,
 				    const struct zorro_device_id *ent);
 static int __devinit hydra_init(struct zorro_dev *z);
+=======
+static int hydra_init_one(struct zorro_dev *z,
+				    const struct zorro_device_id *ent);
+static int hydra_init(struct zorro_dev *z);
+>>>>>>> refs/remotes/origin/master
 static int hydra_open(struct net_device *dev);
 static int hydra_close(struct net_device *dev);
 static void hydra_reset_8390(struct net_device *dev);
@@ -65,9 +71,15 @@ static void hydra_block_input(struct net_device *dev, int count,
 			      struct sk_buff *skb, int ring_offset);
 static void hydra_block_output(struct net_device *dev, int count,
 			       const unsigned char *buf, int start_page);
+<<<<<<< HEAD
 static void __devexit hydra_remove_one(struct zorro_dev *z);
 
 static struct zorro_device_id hydra_zorro_tbl[] __devinitdata = {
+=======
+static void hydra_remove_one(struct zorro_dev *z);
+
+static struct zorro_device_id hydra_zorro_tbl[] = {
+>>>>>>> refs/remotes/origin/master
     { ZORRO_PROD_HYDRA_SYSTEMS_AMIGANET },
     { 0 }
 };
@@ -77,11 +89,19 @@ static struct zorro_driver hydra_driver = {
     .name	= "hydra",
     .id_table	= hydra_zorro_tbl,
     .probe	= hydra_init_one,
+<<<<<<< HEAD
     .remove	= __devexit_p(hydra_remove_one),
 };
 
 static int __devinit hydra_init_one(struct zorro_dev *z,
 				    const struct zorro_device_id *ent)
+=======
+    .remove	= hydra_remove_one,
+};
+
+static int hydra_init_one(struct zorro_dev *z,
+			  const struct zorro_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
     int err;
 
@@ -110,10 +130,17 @@ static const struct net_device_ops hydra_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit hydra_init(struct zorro_dev *z)
 {
     struct net_device *dev;
     unsigned long board = ZTWO_VADDR(z->resource.start);
+=======
+static int hydra_init(struct zorro_dev *z)
+{
+    struct net_device *dev;
+    unsigned long board = (unsigned long)ZTWO_VADDR(z->resource.start);
+>>>>>>> refs/remotes/origin/master
     unsigned long ioaddr = board+HYDRA_NIC_BASE;
     const char name[] = "NE2000";
     int start_page, stop_page;
@@ -247,7 +274,11 @@ static void hydra_block_output(struct net_device *dev, int count,
     z_memcpy_toio(mem_base+((start_page - NESM_START_PG)<<8), buf, count);
 }
 
+<<<<<<< HEAD
 static void __devexit hydra_remove_one(struct zorro_dev *z)
+=======
+static void hydra_remove_one(struct zorro_dev *z)
+>>>>>>> refs/remotes/origin/master
 {
     struct net_device *dev = zorro_get_drvdata(z);
 

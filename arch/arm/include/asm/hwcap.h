@@ -1,6 +1,7 @@
 #ifndef __ASMARM_HWCAP_H
 #define __ASMARM_HWCAP_H
 
+<<<<<<< HEAD
 /*
  * HWCAP flags - for elf_hwcap (in kernel) and AT_HWCAP
  */
@@ -38,6 +39,11 @@
 #if defined(__KERNEL__)
 #if !defined(__ASSEMBLY__)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/asm/hwcap.h>
+
+#if !defined(__ASSEMBLY__)
+>>>>>>> refs/remotes/origin/master
 /*
  * This yields a mask that user programs can use to figure out what
  * instruction set this cpu supports.
@@ -46,8 +52,11 @@
 extern unsigned int elf_hwcap;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

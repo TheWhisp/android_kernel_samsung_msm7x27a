@@ -2,11 +2,20 @@
 # D. J. Bernstein
 # Public domain.
 
+<<<<<<< HEAD
 # enter ECRYPT_encrypt_bytes
 .text
 .p2align 5
 .globl ECRYPT_encrypt_bytes
 ECRYPT_encrypt_bytes:
+=======
+#include <linux/linkage.h>
+
+.text
+
+# enter salsa20_encrypt_bytes
+ENTRY(salsa20_encrypt_bytes)
+>>>>>>> refs/remotes/origin/master
 	mov	%esp,%eax
 	and	$31,%eax
 	add	$256,%eax
@@ -933,11 +942,18 @@ ECRYPT_encrypt_bytes:
 	add	$64,%esi
 	# goto bytesatleast1
 	jmp	._bytesatleast1
+<<<<<<< HEAD
 # enter ECRYPT_keysetup
 .text
 .p2align 5
 .globl ECRYPT_keysetup
 ECRYPT_keysetup:
+=======
+ENDPROC(salsa20_encrypt_bytes)
+
+# enter salsa20_keysetup
+ENTRY(salsa20_keysetup)
+>>>>>>> refs/remotes/origin/master
 	mov	%esp,%eax
 	and	$31,%eax
 	add	$256,%eax
@@ -1060,11 +1076,18 @@ ECRYPT_keysetup:
 	# leave
 	add	%eax,%esp
 	ret
+<<<<<<< HEAD
 # enter ECRYPT_ivsetup
 .text
 .p2align 5
 .globl ECRYPT_ivsetup
 ECRYPT_ivsetup:
+=======
+ENDPROC(salsa20_keysetup)
+
+# enter salsa20_ivsetup
+ENTRY(salsa20_ivsetup)
+>>>>>>> refs/remotes/origin/master
 	mov	%esp,%eax
 	and	$31,%eax
 	add	$256,%eax
@@ -1112,3 +1135,7 @@ ECRYPT_ivsetup:
 	# leave
 	add	%eax,%esp
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(salsa20_ivsetup)
+>>>>>>> refs/remotes/origin/master

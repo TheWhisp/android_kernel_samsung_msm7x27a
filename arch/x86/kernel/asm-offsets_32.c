@@ -4,13 +4,19 @@
 #include "../../../drivers/lguest/lg.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define __SYSCALL_I386(nr, sym, compat) [nr] = 1,
 static char syscalls[] = {
 #include <asm/syscalls_32.h>
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* workaround for a warning with -Wmissing-prototypes */
 void foo(void);
 
@@ -31,7 +37,10 @@ void foo(void)
 	OFFSET(CPUINFO_x86_vendor, cpuinfo_x86, x86_vendor);
 	OFFSET(CPUINFO_x86_model, cpuinfo_x86, x86_model);
 	OFFSET(CPUINFO_x86_mask, cpuinfo_x86, x86_mask);
+<<<<<<< HEAD
 	OFFSET(CPUINFO_hard_math, cpuinfo_x86, hard_math);
+=======
+>>>>>>> refs/remotes/origin/master
 	OFFSET(CPUINFO_cpuid_level, cpuinfo_x86, cpuid_level);
 	OFFSET(CPUINFO_x86_capability, cpuinfo_x86, x86_capability);
 	OFFSET(CPUINFO_x86_vendor_id, cpuinfo_x86, x86_vendor_id);
@@ -63,6 +72,12 @@ void foo(void)
 	OFFSET(IA32_RT_SIGFRAME_sigcontext, rt_sigframe, uc.uc_mcontext);
 	BLANK();
 
+<<<<<<< HEAD
+=======
+	OFFSET(saved_context_gdt_desc, saved_context, gdt_desc);
+	BLANK();
+
+>>>>>>> refs/remotes/origin/master
 	/* Offset from the sysenter stack to tss.sp0 */
 	DEFINE(TSS_sysenter_sp0, offsetof(struct tss_struct, x86_tss.sp0) -
 		 sizeof(struct tss_struct));
@@ -72,9 +87,12 @@ void foo(void)
 	OFFSET(LGUEST_DATA_irq_enabled, lguest_data, irq_enabled);
 	OFFSET(LGUEST_DATA_irq_pending, lguest_data, irq_pending);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	OFFSET(LGUEST_DATA_pgdir, lguest_data, pgdir);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	BLANK();
 	OFFSET(LGUEST_PAGES_host_gdt_desc, lguest_pages, state.host_gdt_desc);
@@ -89,9 +107,15 @@ void foo(void)
 	OFFSET(LGUEST_PAGES_regs, lguest_pages, regs);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BLANK();
 	DEFINE(__NR_syscall_max, sizeof(syscalls) - 1);
 	DEFINE(NR_syscalls, sizeof(syscalls));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	BLANK();
+	DEFINE(__NR_syscall_max, sizeof(syscalls) - 1);
+	DEFINE(NR_syscalls, sizeof(syscalls));
+>>>>>>> refs/remotes/origin/master
 }

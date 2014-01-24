@@ -10,9 +10,13 @@
 #include <asm/dwarf2.h>
 #include <asm/cpufeature.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/alternative-asm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/alternative-asm.h>
+>>>>>>> refs/remotes/origin/master
 
 #undef memmove
 
@@ -30,7 +34,11 @@
 ENTRY(memmove)
 	CFI_STARTPROC
 
+<<<<<<< HEAD
 	/* Handle more 32bytes in loop */
+=======
+	/* Handle more 32 bytes in loop */
+>>>>>>> refs/remotes/origin/master
 	mov %rdi, %rax
 	cmp $0x20, %rdx
 	jb	1f
@@ -59,7 +67,11 @@ ENTRY(memmove)
 3:
 	sub $0x20, %rdx
 	/*
+<<<<<<< HEAD
 	 * We gobble 32byts forward in each loop.
+=======
+	 * We gobble 32 bytes forward in each loop.
+>>>>>>> refs/remotes/origin/master
 	 */
 5:
 	sub $0x20, %rdx
@@ -125,7 +137,11 @@ ENTRY(memmove)
 	addq %rdx, %rdi
 	subq $0x20, %rdx
 	/*
+<<<<<<< HEAD
 	 * We gobble 32byts backward in each loop.
+=======
+	 * We gobble 32 bytes backward in each loop.
+>>>>>>> refs/remotes/origin/master
 	 */
 8:
 	subq $0x20, %rdx
@@ -219,6 +235,7 @@ ENTRY(memmove)
 
 	.section .altinstructions,"a"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.align 8
 	.quad .Lmemmove_begin_forward
 	.quad .Lmemmove_begin_forward_efs
@@ -226,10 +243,15 @@ ENTRY(memmove)
 	.byte .Lmemmove_end_forward-.Lmemmove_begin_forward
 	.byte .Lmemmove_end_forward_efs-.Lmemmove_begin_forward_efs
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	altinstruction_entry .Lmemmove_begin_forward,		\
 		.Lmemmove_begin_forward_efs,X86_FEATURE_ERMS,	\
 		.Lmemmove_end_forward-.Lmemmove_begin_forward,	\
 		.Lmemmove_end_forward_efs-.Lmemmove_begin_forward_efs
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.previous
 ENDPROC(memmove)

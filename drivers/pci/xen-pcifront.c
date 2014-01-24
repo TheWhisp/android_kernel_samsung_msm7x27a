@@ -17,14 +17,22 @@
 #include <asm/xen/pci.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/bitops.h>
 #include <linux/time.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/xen/swiotlb-xen.h>
+>>>>>>> refs/remotes/origin/master
 #define INVALID_GRANT_REF (0)
 #define INVALID_EVTCHN    (-1)
 
@@ -194,10 +202,14 @@ static int pcifront_bus_read(struct pci_bus *bus, unsigned int devfn,
 	if (verbose_request)
 		dev_info(&pdev->xdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 "read dev=%04x:%02x:%02x.%01x - offset %x size %d\n",
 =======
 			 "read dev=%04x:%02x:%02x.%d - offset %x size %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "read dev=%04x:%02x:%02x.%d - offset %x size %d\n",
+>>>>>>> refs/remotes/origin/master
 			 pci_domain_nr(bus), bus->number, PCI_SLOT(devfn),
 			 PCI_FUNC(devfn), where, size);
 
@@ -237,10 +249,14 @@ static int pcifront_bus_write(struct pci_bus *bus, unsigned int devfn,
 	if (verbose_request)
 		dev_info(&pdev->xdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 "write dev=%04x:%02x:%02x.%01x - "
 =======
 			 "write dev=%04x:%02x:%02x.%d - "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 "write dev=%04x:%02x:%02x.%d - "
+>>>>>>> refs/remotes/origin/master
 			 "offset %x size %d val %x\n",
 			 pci_domain_nr(bus), bus->number,
 			 PCI_SLOT(devfn), PCI_FUNC(devfn), where, size, val);
@@ -248,7 +264,11 @@ static int pcifront_bus_write(struct pci_bus *bus, unsigned int devfn,
 	return errno_to_pcibios_err(do_pci_op(pdev, &op));
 }
 
+<<<<<<< HEAD
 struct pci_ops pcifront_bus_ops = {
+=======
+static struct pci_ops pcifront_bus_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read = pcifront_bus_read,
 	.write = pcifront_bus_write,
 };
@@ -303,9 +323,13 @@ static int pci_frontend_enable_msix(struct pci_dev *dev,
 			printk(KERN_DEBUG "enable msix get value %x\n",
 				op.value);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			err = op.value;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = op.value;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		dev_err(&dev->dev, "enable msix get err %x\n", err);
@@ -426,7 +450,11 @@ static int pcifront_claim_resource(struct pci_dev *dev, void *data)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pcifront_scan_bus(struct pcifront_device *pdev,
+=======
+static int pcifront_scan_bus(struct pcifront_device *pdev,
+>>>>>>> refs/remotes/origin/master
 				unsigned int domain, unsigned int bus,
 				struct pci_bus *b)
 {
@@ -449,17 +477,25 @@ static int __devinit pcifront_scan_bus(struct pcifront_device *pdev,
 		if (d)
 			dev_info(&pdev->xdev->dev, "New device on "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 "%04x:%02x:%02x.%02x found.\n", domain, bus,
 =======
 				 "%04x:%02x:%02x.%d found.\n", domain, bus,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "%04x:%02x:%02x.%d found.\n", domain, bus,
+>>>>>>> refs/remotes/origin/master
 				 PCI_SLOT(devfn), PCI_FUNC(devfn));
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pcifront_scan_root(struct pcifront_device *pdev,
+=======
+static int pcifront_scan_root(struct pcifront_device *pdev,
+>>>>>>> refs/remotes/origin/master
 				 unsigned int domain, unsigned int bus)
 {
 	struct pci_bus *b;
@@ -521,7 +557,11 @@ err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit pcifront_rescan_root(struct pcifront_device *pdev,
+=======
+static int pcifront_rescan_root(struct pcifront_device *pdev,
+>>>>>>> refs/remotes/origin/master
 				   unsigned int domain, unsigned int bus)
 {
 	int err;
@@ -565,10 +605,14 @@ static void free_root_bus_devs(struct pci_bus *bus)
 				   bus_list);
 		dev_dbg(&dev->dev, "removing device\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pci_remove_bus_device(dev);
 =======
 		pci_stop_and_remove_bus_device(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pci_stop_and_remove_bus_device(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -618,10 +662,14 @@ static pci_ers_result_t pcifront_common_process(int cmd,
 	pdrv = pcidev->driver;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (get_driver(&pdrv->driver)) {
 =======
 	if (pdrv) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (pdrv) {
+>>>>>>> refs/remotes/origin/master
 		if (pdrv->err_handler && pdrv->err_handler->error_detected) {
 			dev_dbg(&pcidev->dev,
 				"trying to call AER service\n");
@@ -652,9 +700,12 @@ static pci_ers_result_t pcifront_common_process(int cmd,
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		put_driver(&pdrv->driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!flag)
 		result = PCI_ERS_RESULT_NONE;
@@ -699,7 +750,11 @@ static irqreturn_t pcifront_handler_aer(int irq, void *dev)
 	schedule_pcifront_aer_op(pdev);
 	return IRQ_HANDLED;
 }
+<<<<<<< HEAD
 static int pcifront_connect(struct pcifront_device *pdev)
+=======
+static int pcifront_connect_and_init_dma(struct pcifront_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 
@@ -708,6 +763,7 @@ static int pcifront_connect(struct pcifront_device *pdev)
 	if (!pcifront_dev) {
 		dev_info(&pdev->xdev->dev, "Installing PCI frontend\n");
 		pcifront_dev = pdev;
+<<<<<<< HEAD
 	} else {
 		dev_err(&pdev->xdev->dev, "PCI frontend already installed!\n");
 		err = -EEXIST;
@@ -715,6 +771,18 @@ static int pcifront_connect(struct pcifront_device *pdev)
 
 	spin_unlock(&pcifront_dev_lock);
 
+=======
+	} else
+		err = -EEXIST;
+
+	spin_unlock(&pcifront_dev_lock);
+
+	if (!err && !swiotlb_nr_tbl()) {
+		err = pci_xen_swiotlb_init_late();
+		if (err)
+			dev_err(&pdev->xdev->dev, "Could not setup SWIOTLB!\n");
+	}
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -860,7 +928,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit pcifront_try_connect(struct pcifront_device *pdev)
+=======
+static int pcifront_try_connect(struct pcifront_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -EFAULT;
 	int i, num_roots, len;
@@ -873,10 +945,17 @@ static int __devinit pcifront_try_connect(struct pcifront_device *pdev)
 	    XenbusStateInitialised)
 		goto out;
 
+<<<<<<< HEAD
 	err = pcifront_connect(pdev);
 	if (err) {
 		xenbus_dev_fatal(pdev->xdev, err,
 				 "Error connecting PCI Frontend");
+=======
+	err = pcifront_connect_and_init_dma(pdev);
+	if (err && err != -EEXIST) {
+		xenbus_dev_fatal(pdev->xdev, err,
+				 "Error setting up PCI Frontend");
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -950,7 +1029,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit pcifront_attach_devices(struct pcifront_device *pdev)
+=======
+static int pcifront_attach_devices(struct pcifront_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -EFAULT;
 	int i, num_roots, len;
@@ -1013,7 +1096,10 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
 	int err = 0;
 	int i, num_devs;
 	unsigned int domain, bus, slot, func;
+<<<<<<< HEAD
 	struct pci_bus *pci_bus;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pci_dev;
 	char str[64];
 
@@ -1063,6 +1149,7 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
 			goto out;
 		}
 
+<<<<<<< HEAD
 		pci_bus = pci_find_bus(domain, bus);
 		if (!pci_bus) {
 			dev_dbg(&pdev->xdev->dev, "Cannot get bus %04x:%02x\n",
@@ -1083,6 +1170,12 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
 		dev_dbg(&pdev->xdev->dev,
 			"PCI device %04x:%02x:%02x.%02x removed.\n",
 =======
+=======
+		pci_dev = pci_get_domain_bus_and_slot(domain, bus,
+				PCI_DEVFN(slot, func));
+		if (!pci_dev) {
+			dev_dbg(&pdev->xdev->dev,
+>>>>>>> refs/remotes/origin/master
 				"Cannot get PCI device %04x:%02x:%02x.%d\n",
 				domain, bus, slot, func);
 			continue;
@@ -1092,7 +1185,10 @@ static int pcifront_detach_devices(struct pcifront_device *pdev)
 
 		dev_dbg(&pdev->xdev->dev,
 			"PCI device %04x:%02x:%02x.%d removed.\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			domain, bus, slot, func);
 	}
 
@@ -1112,13 +1208,23 @@ static void __init_refok pcifront_backend_changed(struct xenbus_device *xdev,
 	case XenbusStateInitialising:
 	case XenbusStateInitWait:
 	case XenbusStateInitialised:
+<<<<<<< HEAD
 	case XenbusStateClosed:
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case XenbusStateConnected:
 		pcifront_try_connect(pdev);
 		break;
 
+<<<<<<< HEAD
+=======
+	case XenbusStateClosed:
+		if (xdev->state == XenbusStateClosed)
+			break;
+		/* Missed the backend's CLOSING state -- fallthrough */
+>>>>>>> refs/remotes/origin/master
 	case XenbusStateClosing:
 		dev_warn(&xdev->dev, "backend going away!\n");
 		pcifront_try_disconnect(pdev);
@@ -1170,6 +1276,7 @@ static const struct xenbus_device_id xenpci_ids[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct xenbus_driver xenbus_pcifront_driver = {
 	.name			= "pcifront",
 	.owner			= THIS_MODULE,
@@ -1179,12 +1286,17 @@ static struct xenbus_driver xenbus_pcifront_driver = {
 	.otherend_changed	= pcifront_backend_changed,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_XENBUS_DRIVER(xenpci, "pcifront",
 	.probe			= pcifront_xenbus_probe,
 	.remove			= pcifront_xenbus_remove,
 	.otherend_changed	= pcifront_backend_changed,
 );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int __init pcifront_init(void)
 {
@@ -1194,19 +1306,27 @@ static int __init pcifront_init(void)
 	pci_frontend_registrar(1 /* enable */);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return xenbus_register_frontend(&xenbus_pcifront_driver);
 =======
 	return xenbus_register_frontend(&xenpci_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return xenbus_register_frontend(&xenpci_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit pcifront_cleanup(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xenbus_unregister_driver(&xenbus_pcifront_driver);
 =======
 	xenbus_unregister_driver(&xenpci_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xenbus_unregister_driver(&xenpci_driver);
+>>>>>>> refs/remotes/origin/master
 	pci_frontend_registrar(0 /* disable */);
 }
 module_init(pcifront_init);

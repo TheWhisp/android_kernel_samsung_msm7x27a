@@ -37,6 +37,7 @@ static void __init asp834x_setup_arch(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init asp834x_init_IRQ(void)
 {
 	struct device_node *np;
@@ -72,6 +73,9 @@ machine_device_initcall(asp834x, asp8347_declare_of_platform_devices);
 =======
 machine_device_initcall(asp834x, mpc83xx_declare_of_platform_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_device_initcall(asp834x, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, MMU is off, device-tree isn't unflattened
@@ -87,10 +91,14 @@ define_machine(asp834x) {
 	.probe			= asp834x_probe,
 	.setup_arch		= asp834x_setup_arch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_IRQ		= asp834x_init_IRQ,
 =======
 	.init_IRQ		= mpc83xx_ipic_init_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_IRQ		= mpc83xx_ipic_init_IRQ,
+>>>>>>> refs/remotes/origin/master
 	.get_irq		= ipic_get_irq,
 	.restart		= mpc83xx_restart,
 	.time_init		= mpc83xx_time_init,

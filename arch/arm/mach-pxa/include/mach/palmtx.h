@@ -63,26 +63,36 @@
 
 /* INTERRUPTS */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IRQ_GPIO_PALMTX_SD_DETECT_N	IRQ_GPIO(GPIO_NR_PALMTX_SD_DETECT_N)
 #define IRQ_GPIO_PALMTX_WM9712_IRQ	IRQ_GPIO(GPIO_NR_PALMTX_WM9712_IRQ)
 #define IRQ_GPIO_PALMTX_USB_DETECT	IRQ_GPIO(GPIO_NR_PALMTX_USB_DETECT)
 #define IRQ_GPIO_PALMTX_GPIO_RESET	IRQ_GPIO(GPIO_NR_PALMTX_GPIO_RESET)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define IRQ_GPIO_PALMTX_SD_DETECT_N	PXA_GPIO_TO_IRQ(GPIO_NR_PALMTX_SD_DETECT_N)
 #define IRQ_GPIO_PALMTX_WM9712_IRQ	PXA_GPIO_TO_IRQ(GPIO_NR_PALMTX_WM9712_IRQ)
 #define IRQ_GPIO_PALMTX_USB_DETECT	PXA_GPIO_TO_IRQ(GPIO_NR_PALMTX_USB_DETECT)
 #define IRQ_GPIO_PALMTX_GPIO_RESET	PXA_GPIO_TO_IRQ(GPIO_NR_PALMTX_GPIO_RESET)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /** HERE ARE INIT VALUES **/
 
 /* Various addresses  */
 #define PALMTX_PCMCIA_PHYS	0x28000000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PALMTX_PCMCIA_VIRT	0xf0000000
 =======
 #define PALMTX_PCMCIA_VIRT	IOMEM(0xf0000000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PALMTX_PCMCIA_VIRT	IOMEM(0xf0000000)
+>>>>>>> refs/remotes/origin/master
 #define PALMTX_PCMCIA_SIZE	0x100000
 
 #define PALMTX_PHYS_RAM_START	0xa0000000
@@ -96,12 +106,17 @@
 #define PALMTX_NAND_ALE_PHYS	(PALMTX_PHYS_NAND_START | (1 << 24))
 #define PALMTX_NAND_CLE_PHYS	(PALMTX_PHYS_NAND_START | (1 << 25))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PALMTX_NAND_ALE_VIRT	0xff100000
 #define PALMTX_NAND_CLE_VIRT	0xff200000
 =======
 #define PALMTX_NAND_ALE_VIRT	IOMEM(0xff100000)
 #define PALMTX_NAND_CLE_VIRT	IOMEM(0xff200000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PALMTX_NAND_ALE_VIRT	IOMEM(0xff100000)
+#define PALMTX_NAND_CLE_VIRT	IOMEM(0xff200000)
+>>>>>>> refs/remotes/origin/master
 
 /* TOUCHSCREEN */
 #define AC97_LINK_FRAME			21

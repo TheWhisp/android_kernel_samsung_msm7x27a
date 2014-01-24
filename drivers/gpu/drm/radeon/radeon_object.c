@@ -32,7 +32,11 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 #include <drm/drmP.h>
+<<<<<<< HEAD
 #include "radeon_drm.h"
+=======
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon.h"
 #include "radeon_trace.h"
 
@@ -47,13 +51,17 @@ static void radeon_bo_clear_surface_reg(struct radeon_bo *bo);
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void radeon_bo_clear_va(struct radeon_bo *bo)
 {
 	struct radeon_bo_va *bo_va, *tmp;
 
 	list_for_each_entry_safe(bo_va, tmp, &bo->va, bo_list) {
 		/* remove from all vm address space */
+<<<<<<< HEAD
 		mutex_lock(&bo_va->vm->mutex);
 		list_del(&bo_va->vm_list);
 		mutex_unlock(&bo_va->vm->mutex);
@@ -63,6 +71,12 @@ void radeon_bo_clear_va(struct radeon_bo *bo)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		radeon_vm_bo_rmv(bo->rdev, bo_va);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static void radeon_ttm_bo_destroy(struct ttm_buffer_object *tbo)
 {
 	struct radeon_bo *bo;
@@ -73,9 +87,13 @@ static void radeon_ttm_bo_destroy(struct ttm_buffer_object *tbo)
 	mutex_unlock(&bo->rdev->gem.mutex);
 	radeon_bo_clear_surface_reg(bo);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	radeon_bo_clear_va(bo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	radeon_bo_clear_va(bo);
+>>>>>>> refs/remotes/origin/master
 	drm_gem_object_release(&bo->gem_base);
 	kfree(bo);
 }
@@ -98,10 +116,27 @@ void radeon_ttm_placement_from_domain(struct radeon_bo *rbo, u32 domain)
 	if (domain & RADEON_GEM_DOMAIN_VRAM)
 		rbo->placements[c++] = TTM_PL_FLAG_WC | TTM_PL_FLAG_UNCACHED |
 					TTM_PL_FLAG_VRAM;
+<<<<<<< HEAD
 	if (domain & RADEON_GEM_DOMAIN_GTT)
 		rbo->placements[c++] = TTM_PL_MASK_CACHING | TTM_PL_FLAG_TT;
 	if (domain & RADEON_GEM_DOMAIN_CPU)
 		rbo->placements[c++] = TTM_PL_MASK_CACHING | TTM_PL_FLAG_SYSTEM;
+=======
+	if (domain & RADEON_GEM_DOMAIN_GTT) {
+		if (rbo->rdev->flags & RADEON_IS_AGP) {
+			rbo->placements[c++] = TTM_PL_FLAG_WC | TTM_PL_FLAG_TT;
+		} else {
+			rbo->placements[c++] = TTM_PL_FLAG_CACHED | TTM_PL_FLAG_TT;
+		}
+	}
+	if (domain & RADEON_GEM_DOMAIN_CPU) {
+		if (rbo->rdev->flags & RADEON_IS_AGP) {
+			rbo->placements[c++] = TTM_PL_FLAG_WC | TTM_PL_FLAG_SYSTEM;
+		} else {
+			rbo->placements[c++] = TTM_PL_FLAG_CACHED | TTM_PL_FLAG_SYSTEM;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	if (!c)
 		rbo->placements[c++] = TTM_PL_MASK_CACHING | TTM_PL_FLAG_SYSTEM;
 	rbo->placement.num_placement = c;
@@ -110,30 +145,47 @@ void radeon_ttm_placement_from_domain(struct radeon_bo *rbo, u32 domain)
 
 int radeon_bo_create(struct radeon_device *rdev,
 		     unsigned long size, int byte_align, bool kernel, u32 domain,
+<<<<<<< HEAD
 		     struct radeon_bo **bo_ptr)
+=======
+		     struct sg_table *sg, struct radeon_bo **bo_ptr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct radeon_bo *bo;
 	enum ttm_bo_type type;
 	unsigned long page_align = roundup(byte_align, PAGE_SIZE) >> PAGE_SHIFT;
+<<<<<<< HEAD
 	unsigned long max_size = 0;
 <<<<<<< HEAD
 =======
 	size_t acc_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size_t acc_size;
+>>>>>>> refs/remotes/origin/master
 	int r;
 
 	size = ALIGN(size, PAGE_SIZE);
 
+<<<<<<< HEAD
 	if (unlikely(rdev->mman.bdev.dev_mapping == NULL)) {
 		rdev->mman.bdev.dev_mapping = rdev->ddev->dev_mapping;
 	}
 	if (kernel) {
 		type = ttm_bo_type_kernel;
+=======
+	rdev->mman.bdev.dev_mapping = rdev->ddev->dev_mapping;
+	if (kernel) {
+		type = ttm_bo_type_kernel;
+	} else if (sg) {
+		type = ttm_bo_type_sg;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		type = ttm_bo_type_device;
 	}
 	*bo_ptr = NULL;
 
+<<<<<<< HEAD
 	/* maximun bo size is the minimun btw visible vram and gtt size */
 	max_size = min(rdev->mc.visible_vram_size, rdev->mc.gtt_size);
 	if ((page_align << PAGE_SHIFT) >= max_size) {
@@ -149,6 +201,11 @@ int radeon_bo_create(struct radeon_device *rdev,
 
 >>>>>>> refs/remotes/origin/cm-10.0
 retry:
+=======
+	acc_size = ttm_bo_dma_acc_size(&rdev->mman.bdev, size,
+				       sizeof(struct radeon_bo));
+
+>>>>>>> refs/remotes/origin/master
 	bo = kzalloc(sizeof(struct radeon_bo), GFP_KERNEL);
 	if (bo == NULL)
 		return -ENOMEM;
@@ -158,6 +215,7 @@ retry:
 		return r;
 	}
 	bo->rdev = rdev;
+<<<<<<< HEAD
 	bo->gem_base.driver_private = NULL;
 	bo->surface_reg = -1;
 	INIT_LIST_HEAD(&bo->list);
@@ -187,6 +245,19 @@ retry:
 				"object_init failed for (%lu, 0x%08X)\n",
 				size, domain);
 		}
+=======
+	bo->surface_reg = -1;
+	INIT_LIST_HEAD(&bo->list);
+	INIT_LIST_HEAD(&bo->va);
+	radeon_ttm_placement_from_domain(bo, domain);
+	/* Kernel allocation are uninterruptible */
+	down_read(&rdev->pm.mclk_lock);
+	r = ttm_bo_init(&rdev->mman.bdev, &bo->tbo, size, type,
+			&bo->placement, page_align, !kernel, NULL,
+			acc_size, sg, &radeon_ttm_bo_destroy);
+	up_read(&rdev->pm.mclk_lock);
+	if (unlikely(r != 0)) {
+>>>>>>> refs/remotes/origin/master
 		return r;
 	}
 	*bo_ptr = bo;
@@ -237,9 +308,15 @@ void radeon_bo_unref(struct radeon_bo **bo)
 		return;
 	rdev = (*bo)->rdev;
 	tbo = &((*bo)->tbo);
+<<<<<<< HEAD
 	mutex_lock(&rdev->vram_mutex);
 	ttm_bo_unref(&tbo);
 	mutex_unlock(&rdev->vram_mutex);
+=======
+	down_read(&rdev->pm.mclk_lock);
+	ttm_bo_unref(&tbo);
+	up_read(&rdev->pm.mclk_lock);
+>>>>>>> refs/remotes/origin/master
 	if (tbo == NULL)
 		*bo = NULL;
 }
@@ -254,8 +331,11 @@ int radeon_bo_pin_restricted(struct radeon_bo *bo, u32 domain, u64 max_offset,
 		if (gpu_addr)
 			*gpu_addr = radeon_bo_gpu_offset(bo);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		WARN_ON_ONCE(max_offset != 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (max_offset != 0) {
 			u64 domain_start;
@@ -268,7 +348,10 @@ int radeon_bo_pin_restricted(struct radeon_bo *bo, u32 domain, u64 max_offset,
 				     (radeon_bo_gpu_offset(bo) - domain_start));
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	radeon_ttm_placement_from_domain(bo, domain);
@@ -287,7 +370,11 @@ int radeon_bo_pin_restricted(struct radeon_bo *bo, u32 domain, u64 max_offset,
 	}
 	for (i = 0; i < bo->placement.num_placement; i++)
 		bo->placements[i] |= TTM_PL_FLAG_NO_EVICT;
+<<<<<<< HEAD
 	r = ttm_bo_validate(&bo->tbo, &bo->placement, false, false, false);
+=======
+	r = ttm_bo_validate(&bo->tbo, &bo->placement, false, false);
+>>>>>>> refs/remotes/origin/master
 	if (likely(r == 0)) {
 		bo->pin_count = 1;
 		if (gpu_addr != NULL)
@@ -316,7 +403,11 @@ int radeon_bo_unpin(struct radeon_bo *bo)
 		return 0;
 	for (i = 0; i < bo->placement.num_placement; i++)
 		bo->placements[i] &= ~TTM_PL_FLAG_NO_EVICT;
+<<<<<<< HEAD
 	r = ttm_bo_validate(&bo->tbo, &bo->placement, false, false, false);
+=======
+	r = ttm_bo_validate(&bo->tbo, &bo->placement, false, false);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(r != 0))
 		dev_err(bo->rdev->dev, "%p validate failed for unpin\n", bo);
 	return r;
@@ -358,8 +449,15 @@ void radeon_bo_force_delete(struct radeon_device *rdev)
 int radeon_bo_init(struct radeon_device *rdev)
 {
 	/* Add an MTRR for the VRAM */
+<<<<<<< HEAD
 	rdev->mc.vram_mtrr = mtrr_add(rdev->mc.aper_base, rdev->mc.aper_size,
 			MTRR_TYPE_WRCOMB, 1);
+=======
+	if (!rdev->fastfb_working) {
+		rdev->mc.vram_mtrr = arch_phys_wc_add(rdev->mc.aper_base,
+						      rdev->mc.aper_size);
+	}
+>>>>>>> refs/remotes/origin/master
 	DRM_INFO("Detected VRAM RAM=%lluM, BAR=%lluM\n",
 		rdev->mc.mc_vram_size >> 20,
 		(unsigned long long)rdev->mc.aper_size >> 20);
@@ -371,32 +469,50 @@ int radeon_bo_init(struct radeon_device *rdev)
 void radeon_bo_fini(struct radeon_device *rdev)
 {
 	radeon_ttm_fini(rdev);
+<<<<<<< HEAD
+=======
+	arch_phys_wc_del(rdev->mc.vram_mtrr);
+>>>>>>> refs/remotes/origin/master
 }
 
 void radeon_bo_list_add_object(struct radeon_bo_list *lobj,
 				struct list_head *head)
 {
+<<<<<<< HEAD
 	if (lobj->wdomain) {
+=======
+	if (lobj->written) {
+>>>>>>> refs/remotes/origin/master
 		list_add(&lobj->tv.head, head);
 	} else {
 		list_add_tail(&lobj->tv.head, head);
 	}
 }
 
+<<<<<<< HEAD
 int radeon_bo_list_validate(struct list_head *head)
+=======
+int radeon_bo_list_validate(struct ww_acquire_ctx *ticket,
+			    struct list_head *head, int ring)
+>>>>>>> refs/remotes/origin/master
 {
 	struct radeon_bo_list *lobj;
 	struct radeon_bo *bo;
 	u32 domain;
 	int r;
 
+<<<<<<< HEAD
 	r = ttm_eu_reserve_buffers(head);
+=======
+	r = ttm_eu_reserve_buffers(ticket, head);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(r != 0)) {
 		return r;
 	}
 	list_for_each_entry(lobj, head, tv.head) {
 		bo = lobj->bo;
 		if (!bo->pin_count) {
+<<<<<<< HEAD
 			domain = lobj->wdomain ? lobj->wdomain : lobj->rdomain;
 			
 		retry:
@@ -408,6 +524,22 @@ int radeon_bo_list_validate(struct list_head *head)
 					domain |= RADEON_GEM_DOMAIN_GTT;
 					goto retry;
 				}
+=======
+			domain = lobj->domain;
+			
+		retry:
+			radeon_ttm_placement_from_domain(bo, domain);
+			if (ring == R600_RING_TYPE_UVD_INDEX)
+				radeon_uvd_force_into_uvd_segment(bo);
+			r = ttm_bo_validate(&bo->tbo, &bo->placement,
+						true, false);
+			if (unlikely(r)) {
+				if (r != -ERESTARTSYS && domain != lobj->alt_domain) {
+					domain = lobj->alt_domain;
+					goto retry;
+				}
+				ttm_eu_backoff_reservation(ticket, head);
+>>>>>>> refs/remotes/origin/master
 				return r;
 			}
 		}
@@ -431,7 +563,11 @@ int radeon_bo_get_surface_reg(struct radeon_bo *bo)
 	int steal;
 	int i;
 
+<<<<<<< HEAD
 	BUG_ON(!atomic_read(&bo->tbo.reserved));
+=======
+	lockdep_assert_held(&bo->tbo.resv->lock.base);
+>>>>>>> refs/remotes/origin/master
 
 	if (!bo->tiling_flags)
 		return 0;
@@ -497,9 +633,12 @@ int radeon_bo_set_tiling_flags(struct radeon_bo *bo,
 				uint32_t tiling_flags, uint32_t pitch)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int r;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct radeon_device *rdev = bo->rdev;
 	int r;
 
@@ -548,7 +687,10 @@ int radeon_bo_set_tiling_flags(struct radeon_bo *bo,
 			return -EINVAL;
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r = radeon_bo_reserve(bo, false);
 	if (unlikely(r != 0))
 		return r;
@@ -562,7 +704,12 @@ void radeon_bo_get_tiling_flags(struct radeon_bo *bo,
 				uint32_t *tiling_flags,
 				uint32_t *pitch)
 {
+<<<<<<< HEAD
 	BUG_ON(!atomic_read(&bo->tbo.reserved));
+=======
+	lockdep_assert_held(&bo->tbo.resv->lock.base);
+
+>>>>>>> refs/remotes/origin/master
 	if (tiling_flags)
 		*tiling_flags = bo->tiling_flags;
 	if (pitch)
@@ -572,7 +719,12 @@ void radeon_bo_get_tiling_flags(struct radeon_bo *bo,
 int radeon_bo_check_tiling(struct radeon_bo *bo, bool has_moved,
 				bool force_drop)
 {
+<<<<<<< HEAD
 	BUG_ON(!atomic_read(&bo->tbo.reserved));
+=======
+	if (!force_drop)
+		lockdep_assert_held(&bo->tbo.resv->lock.base);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(bo->tiling_flags & RADEON_TILING_SURFACE))
 		return 0;
@@ -606,9 +758,13 @@ void radeon_bo_move_notify(struct ttm_buffer_object *bo,
 	rbo = container_of(bo, struct radeon_bo, tbo);
 	radeon_bo_check_tiling(rbo, 0, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	radeon_vm_bo_invalidate(rbo->rdev, rbo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	radeon_vm_bo_invalidate(rbo->rdev, rbo);
+>>>>>>> refs/remotes/origin/master
 }
 
 int radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo)
@@ -630,7 +786,11 @@ int radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo)
 			/* hurrah the memory is not visible ! */
 			radeon_ttm_placement_from_domain(rbo, RADEON_GEM_DOMAIN_VRAM);
 			rbo->placement.lpfn = rdev->mc.visible_vram_size >> PAGE_SHIFT;
+<<<<<<< HEAD
 			r = ttm_bo_validate(bo, &rbo->placement, false, true, false);
+=======
+			r = ttm_bo_validate(bo, &rbo->placement, false, false);
+>>>>>>> refs/remotes/origin/master
 			if (unlikely(r != 0))
 				return r;
 			offset = bo->mem.start << PAGE_SHIFT;
@@ -642,7 +802,10 @@ int radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 int radeon_bo_wait(struct radeon_bo *bo, u32 *mem_type, bool no_wait)
 {
@@ -660,6 +823,7 @@ int radeon_bo_wait(struct radeon_bo *bo, u32 *mem_type, bool no_wait)
 	ttm_bo_unreserve(&bo->tbo);
 	return r;
 }
+<<<<<<< HEAD
 
 
 /**
@@ -698,3 +862,5 @@ struct radeon_bo_va *radeon_bo_va(struct radeon_bo *rbo, struct radeon_vm *vm)
 	return NULL;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

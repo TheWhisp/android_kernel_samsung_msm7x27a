@@ -20,6 +20,7 @@
 #endif
 
 #ifdef CONFIG_32BIT
+<<<<<<< HEAD
 
 #define CAC_BASE		_AC(0x80000000, UL)
 #define IO_BASE			_AC(0xa0000000, UL)
@@ -28,6 +29,27 @@
 #ifndef MAP_BASE
 #define MAP_BASE		_AC(0xc0000000, UL)
 #endif
+=======
+#ifdef CONFIG_KVM_GUEST
+#define CAC_BASE		_AC(0x40000000, UL)
+#else
+#define CAC_BASE		_AC(0x80000000, UL)
+#endif
+#ifndef IO_BASE
+#define IO_BASE			_AC(0xa0000000, UL)
+#endif
+#ifndef UNCAC_BASE
+#define UNCAC_BASE		_AC(0xa0000000, UL)
+#endif
+
+#ifndef MAP_BASE
+#ifdef CONFIG_KVM_GUEST
+#define MAP_BASE		_AC(0x60000000, UL)
+#else
+#define MAP_BASE		_AC(0xc0000000, UL)
+#endif
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Memory above this physical address will be considered highmem.
@@ -69,7 +91,11 @@
 #define HIGHMEM_START		(_AC(1, UL) << _AC(59, UL))
 #endif
 
+<<<<<<< HEAD
 #define TO_PHYS(x)		(             ((x) & TO_PHYS_MASK))
+=======
+#define TO_PHYS(x)		(	      ((x) & TO_PHYS_MASK))
+>>>>>>> refs/remotes/origin/master
 #define TO_CAC(x)		(CAC_BASE   | ((x) & TO_PHYS_MASK))
 #define TO_UNCAC(x)		(UNCAC_BASE | ((x) & TO_PHYS_MASK))
 
@@ -83,10 +109,16 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef FIXADDR_TOP
 #define FIXADDR_TOP		((unsigned long)(long)(int)0xfffe0000)
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_MACH_GENERIC_SPACES_H */

@@ -40,12 +40,17 @@
 ENTRY(cpu_v7_switch_mm)
 #ifdef CONFIG_MMU
 	mov	r2, #0
+<<<<<<< HEAD
 	ldr	r1, [r1, #MM_CONTEXT_ID]	@ get mm->context.id
+=======
+	mmid	r1, r1				@ get mm->context.id
+>>>>>>> refs/remotes/origin/master
 	ALT_SMP(orr	r0, r0, #TTB_FLAGS_SMP)
 	ALT_UP(orr	r0, r0, #TTB_FLAGS_UP)
 #ifdef CONFIG_ARM_ERRATA_430973
 	mcr	p15, 0, r2, c7, c5, 6		@ flush BTAC/BTB
 #endif
+<<<<<<< HEAD
 #ifdef CONFIG_ARM_ERRATA_754322
 	dsb
 #endif
@@ -59,11 +64,23 @@ ENTRY(cpu_v7_switch_mm)
 	isb
 1:	mcr	p15, 0, r0, c2, c0, 0		@ set TTB 0
 	isb
+=======
+#ifdef CONFIG_PID_IN_CONTEXTIDR
+	mrc	p15, 0, r2, c13, c0, 1		@ read current context ID
+	lsr	r2, r2, #8			@ extract the PID
+	bfi	r1, r2, #8, #24			@ insert into new context ID
+#endif
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARM_ERRATA_754322
 	dsb
 #endif
 	mcr	p15, 0, r1, c13, c0, 1		@ set context ID
 	isb
+<<<<<<< HEAD
+=======
+	mcr	p15, 0, r0, c2, c0, 0		@ set TTB 0
+	isb
+>>>>>>> refs/remotes/origin/master
 #endif
 	mov	pc, lr
 ENDPROC(cpu_v7_switch_mm)
@@ -106,13 +123,26 @@ ENTRY(cpu_v7_set_pte_ext)
 	orrne	r3, r3, #PTE_EXT_XN
 
 	tst	r1, #L_PTE_YOUNG
+<<<<<<< HEAD
 	tstne	r1, #L_PTE_PRESENT
+=======
+	tstne	r1, #L_PTE_VALID
+#ifndef CONFIG_CPU_USE_DOMAINS
+	eorne	r1, r1, #L_PTE_NONE
+	tstne	r1, #L_PTE_NONE
+#endif
+>>>>>>> refs/remotes/origin/master
 	moveq	r3, #0
 
  ARM(	str	r3, [r0, #2048]! )
  THUMB(	add	r0, r0, #2048 )
  THUMB(	str	r3, [r0] )
+<<<<<<< HEAD
 	mcr	p15, 0, r0, c7, c10, 1		@ flush_pte
+=======
+	ALT_SMP(W(nop))
+	ALT_UP (mcr	p15, 0, r0, c7, c10, 1)		@ flush_pte
+>>>>>>> refs/remotes/origin/master
 #endif
 	mov	pc, lr
 ENDPROC(cpu_v7_set_pte_ext)
@@ -146,11 +176,15 @@ ENDPROC(cpu_v7_set_pte_ext)
 	 *   NOS = PRRR[24+n] = 1	- not outer shareable
 	 */
 .equ	PRRR,	0xff0a81a8
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_MSM_SCORPIONMP
 .equ	NMRR,	0x40e080e0
 #else
 .equ	NMRR,	0x40e040e0
 #endif
+=======
+.equ	NMRR,	0x40e040e0
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Macro for setting up the TTBRx and TTBCR registers.
@@ -165,17 +199,28 @@ ENDPROC(cpu_v7_set_pte_ext)
 	mcr	p15, 0, \ttbr1, c2, c0, 1	@ load TTB1
 	.endm
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*   AT
 	 *  TFR   EV X F   I D LR    S
 	 * .EEE ..EE PUI. .T.T 4RVI ZWRS BLDP WCAM
 	 * rxxx rrxx xxx0 0101 xxxx xxxx x111 xxxx < forced
+<<<<<<< HEAD
 	 *    1    0 110       0011 1100 .111 1101 < we want
+=======
+	 *   01    0 110       0011 1100 .111 1101 < we want
+>>>>>>> refs/remotes/origin/master
 	 */
 	.align	2
 	.type	v7_crval, #object
 v7_crval:
+<<<<<<< HEAD
 	crval	clear=0x0120c302, mmuset=0x10c03c7d, ucset=0x00c01c7c
 
 	.previous
+=======
+	crval	clear=0x2120c302, mmuset=0x10c03c7d, ucset=0x00c01c7c
+>>>>>>> refs/remotes/origin/master

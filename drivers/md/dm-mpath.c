@@ -7,6 +7,10 @@
 
 #include <linux/device-mapper.h>
 
+<<<<<<< HEAD
+=======
+#include "dm.h"
+>>>>>>> refs/remotes/origin/master
 #include "dm-path-selector.h"
 #include "dm-uevent.h"
 
@@ -18,6 +22,7 @@
 #include <linux/slab.h>
 #include <linux/time.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include <scsi/scsi_dh.h>
 <<<<<<< HEAD
 #include <asm/atomic.h>
@@ -29,6 +34,13 @@
 
 #define DM_MSG_PREFIX "multipath"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/delay.h>
+#include <scsi/scsi_dh.h>
+#include <linux/atomic.h>
+
+#define DM_MSG_PREFIX "multipath"
+>>>>>>> refs/remotes/origin/master
 #define DM_PG_INIT_DELAY_MSECS 2000
 #define DM_PG_INIT_DELAY_DEFAULT ((unsigned) -1)
 
@@ -68,11 +80,19 @@ struct multipath {
 	struct list_head list;
 	struct dm_target *ti;
 
+<<<<<<< HEAD
 	spinlock_t lock;
 
 	const char *hw_handler_name;
 	char *hw_handler_params;
 
+=======
+	const char *hw_handler_name;
+	char *hw_handler_params;
+
+	spinlock_t lock;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned nr_priority_groups;
 	struct list_head priority_groups;
 
@@ -88,16 +108,31 @@ struct multipath {
 	struct priority_group *next_pg;	/* Switch to this PG if set */
 	unsigned repeat_count;		/* I/Os left before calling PS again */
 
+<<<<<<< HEAD
 	unsigned queue_io;		/* Must we queue all I/O? */
 	unsigned queue_if_no_path;	/* Queue I/O if last path fails? */
 	unsigned saved_queue_if_no_path;/* Saved state during suspension */
+=======
+	unsigned queue_io:1;		/* Must we queue all I/O? */
+	unsigned queue_if_no_path:1;	/* Queue I/O if last path fails? */
+	unsigned saved_queue_if_no_path:1; /* Saved state during suspension */
+	unsigned retain_attached_hw_handler:1; /* If there's already a hw_handler present, don't change it. */
+	unsigned pg_init_disabled:1;	/* pg_init is not currently allowed */
+
+>>>>>>> refs/remotes/origin/master
 	unsigned pg_init_retries;	/* Number of times to retry pg_init */
 	unsigned pg_init_count;		/* Number of times pg_init called */
 	unsigned pg_init_delay_msecs;	/* Number of msecs before pg_init retry */
 
+<<<<<<< HEAD
 	struct work_struct process_queued_ios;
 	struct list_head queued_ios;
 	unsigned queue_size;
+=======
+	unsigned queue_size;
+	struct work_struct process_queued_ios;
+	struct list_head queued_ios;
+>>>>>>> refs/remotes/origin/master
 
 	struct work_struct trigger_event;
 
@@ -120,8 +155,11 @@ struct dm_mpath_io {
 
 typedef int (*action_fn) (struct pgpath *pgpath);
 
+<<<<<<< HEAD
 #define MIN_IOS 256	/* Mempool size */
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct kmem_cache *_mpio_cache;
 
 static struct workqueue_struct *kmultipathd, *kmpath_handlerd;
@@ -194,6 +232,10 @@ static void free_priority_group(struct priority_group *pg,
 static struct multipath *alloc_multipath(struct dm_target *ti)
 {
 	struct multipath *m;
+<<<<<<< HEAD
+=======
+	unsigned min_ios = dm_get_reserved_rq_based_ios();
+>>>>>>> refs/remotes/origin/master
 
 	m = kzalloc(sizeof(*m), GFP_KERNEL);
 	if (m) {
@@ -206,7 +248,11 @@ static struct multipath *alloc_multipath(struct dm_target *ti)
 		INIT_WORK(&m->trigger_event, trigger_event);
 		init_waitqueue_head(&m->pg_init_wait);
 		mutex_init(&m->work_mutex);
+<<<<<<< HEAD
 		m->mpio_pool = mempool_create_slab_pool(MIN_IOS, _mpio_cache);
+=======
+		m->mpio_pool = mempool_create_slab_pool(min_ios, _mpio_cache);
+>>>>>>> refs/remotes/origin/master
 		if (!m->mpio_pool) {
 			kfree(m);
 			return NULL;
@@ -234,7 +280,10 @@ static void free_multipath(struct multipath *m)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int set_mapinfo(struct multipath *m, union map_info *info)
 {
 	struct dm_mpath_io *mpio;
@@ -256,7 +305,10 @@ static void clear_mapinfo(struct multipath *m, union map_info *info)
 	info->ptr = NULL;
 	mempool_free(mpio, m->mpio_pool);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*-----------------------------------------------
  * Path selection
@@ -338,14 +390,27 @@ static void __choose_pgpath(struct multipath *m, size_t nr_bytes)
 	/*
 	 * Loop through priority groups until we find a valid path.
 	 * First time we skip PGs marked 'bypassed'.
+<<<<<<< HEAD
 	 * Second time we only try the ones we skipped.
+=======
+	 * Second time we only try the ones we skipped, but set
+	 * pg_init_delay_retry so we do not hammer controllers.
+>>>>>>> refs/remotes/origin/master
 	 */
 	do {
 		list_for_each_entry(pg, &m->priority_groups, list) {
 			if (pg->bypassed == bypassed)
 				continue;
+<<<<<<< HEAD
 			if (!__choose_path_in_pg(m, pg, nr_bytes))
 				return;
+=======
+			if (!__choose_path_in_pg(m, pg, nr_bytes)) {
+				if (!bypassed)
+					m->pg_init_delay_retry = 1;
+				return;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	} while (bypassed--);
 
@@ -373,10 +438,14 @@ static int __must_push_back(struct multipath *m)
 
 static int map_io(struct multipath *m, struct request *clone,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		  struct dm_mpath_io *mpio, unsigned was_queued)
 =======
 		  union map_info *map_context, unsigned was_queued)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  union map_info *map_context, unsigned was_queued)
+>>>>>>> refs/remotes/origin/master
 {
 	int r = DM_MAPIO_REMAPPED;
 	size_t nr_bytes = blk_rq_bytes(clone);
@@ -384,9 +453,13 @@ static int map_io(struct multipath *m, struct request *clone,
 	struct pgpath *pgpath;
 	struct block_device *bdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct dm_mpath_io *mpio = map_context->ptr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dm_mpath_io *mpio = map_context->ptr;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&m->lock, flags);
 
@@ -400,6 +473,7 @@ static int map_io(struct multipath *m, struct request *clone,
 	if (was_queued)
 		m->queue_size--;
 
+<<<<<<< HEAD
 	if ((pgpath && m->queue_io) ||
 	    (!pgpath && m->queue_if_no_path)) {
 		/* Queue for the daemon to resubmit */
@@ -407,6 +481,18 @@ static int map_io(struct multipath *m, struct request *clone,
 		m->queue_size++;
 		if ((m->pg_init_required && !m->pg_init_in_progress) ||
 		    !m->queue_io)
+=======
+	if (m->pg_init_required) {
+		if (!m->pg_init_in_progress)
+			queue_work(kmultipathd, &m->process_queued_ios);
+		r = DM_MAPIO_REQUEUE;
+	} else if ((pgpath && m->queue_io) ||
+		   (!pgpath && m->queue_if_no_path)) {
+		/* Queue for the daemon to resubmit */
+		list_add_tail(&clone->queuelist, &m->queued_ios);
+		m->queue_size++;
+		if (!m->queue_io)
+>>>>>>> refs/remotes/origin/master
 			queue_work(kmultipathd, &m->process_queued_ios);
 		pgpath = NULL;
 		r = DM_MAPIO_SUBMITTED;
@@ -463,9 +549,12 @@ static void dispatch_queued_ios(struct multipath *m)
 	int r;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dm_mpath_io *mpio;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	union map_info *info;
 	struct request *clone, *n;
 	LIST_HEAD(cl);
@@ -479,26 +568,36 @@ static void dispatch_queued_ios(struct multipath *m)
 
 		info = dm_get_rq_mapinfo(clone);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mpio = info->ptr;
 
 		r = map_io(m, clone, mpio, 1);
 		if (r < 0) {
 			mempool_free(mpio, m->mpio_pool);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		r = map_io(m, clone, info, 1);
 		if (r < 0) {
 			clear_mapinfo(m, info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			dm_kill_unmapped_request(clone, r);
 		} else if (r == DM_MAPIO_REMAPPED)
 			dm_dispatch_request(clone);
 		else if (r == DM_MAPIO_REQUEUE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mempool_free(mpio, m->mpio_pool);
 =======
 			clear_mapinfo(m, info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			clear_mapinfo(m, info);
+>>>>>>> refs/remotes/origin/master
 			dm_requeue_unmapped_request(clone);
 		}
 	}
@@ -514,9 +613,12 @@ static void process_queued_ios(struct work_struct *work)
 
 	spin_lock_irqsave(&m->lock, flags);
 
+<<<<<<< HEAD
 	if (!m->queue_size)
 		goto out;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!m->current_pgpath)
 		__choose_pgpath(m, 0);
 
@@ -526,10 +628,17 @@ static void process_queued_ios(struct work_struct *work)
 	    (!pgpath && !m->queue_if_no_path))
 		must_queue = 0;
 
+<<<<<<< HEAD
 	if (m->pg_init_required && !m->pg_init_in_progress && pgpath)
 		__pg_init_all_paths(m);
 
 out:
+=======
+	if (m->pg_init_required && !m->pg_init_in_progress && pgpath &&
+	    !m->pg_init_disabled)
+		__pg_init_all_paths(m);
+
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&m->lock, flags);
 	if (!must_queue)
 		dispatch_queued_ios(m);
@@ -557,6 +666,7 @@ static void trigger_event(struct work_struct *work)
  *      <#paths> <#per-path selector args>
  *         [<path> [<arg>]* ]+ ]+
  *---------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct param {
 	unsigned min;
@@ -607,6 +717,9 @@ static int parse_path_selector(struct arg_set *as, struct priority_group *pg,
 =======
 static int parse_path_selector(struct dm_arg_set *as, struct priority_group *pg,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int parse_path_selector(struct dm_arg_set *as, struct priority_group *pg,
+>>>>>>> refs/remotes/origin/master
 			       struct dm_target *ti)
 {
 	int r;
@@ -614,33 +727,44 @@ static int parse_path_selector(struct dm_arg_set *as, struct priority_group *pg,
 	unsigned ps_argc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static struct param _params[] = {
 		{0, 1024, "invalid number of path selector args"},
 	};
 
 	pst = dm_get_path_selector(shift(as));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static struct dm_arg _args[] = {
 		{0, 1024, "invalid number of path selector args"},
 	};
 
 	pst = dm_get_path_selector(dm_shift_arg(as));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pst) {
 		ti->error = "unknown path selector type";
 		return -EINVAL;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = read_param(_params, shift(as), &ps_argc, &ti->error);
 =======
 	r = dm_read_arg_group(_args, as, &ps_argc, &ti->error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r = dm_read_arg_group(_args, as, &ps_argc, &ti->error);
+>>>>>>> refs/remotes/origin/master
 	if (r) {
 		dm_put_path_selector(pst);
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ps_argc > as->argc) {
 		dm_put_path_selector(pst);
@@ -650,6 +774,8 @@ static int parse_path_selector(struct dm_arg_set *as, struct priority_group *pg,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r = pst->create(&pg->ps, ps_argc, as->argv);
 	if (r) {
 		dm_put_path_selector(pst);
@@ -659,24 +785,37 @@ static int parse_path_selector(struct dm_arg_set *as, struct priority_group *pg,
 
 	pg->ps.type = pst;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	consume(as, ps_argc);
 =======
 	dm_consume_args(as, ps_argc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dm_consume_args(as, ps_argc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pgpath *parse_path(struct arg_set *as, struct path_selector *ps,
 =======
 static struct pgpath *parse_path(struct dm_arg_set *as, struct path_selector *ps,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct pgpath *parse_path(struct dm_arg_set *as, struct path_selector *ps,
+>>>>>>> refs/remotes/origin/master
 			       struct dm_target *ti)
 {
 	int r;
 	struct pgpath *p;
 	struct multipath *m = ti->private;
+<<<<<<< HEAD
+=======
+	struct request_queue *q = NULL;
+	const char *attached_handler_name;
+>>>>>>> refs/remotes/origin/master
 
 	/* we need at least a path arg */
 	if (as->argc < 1) {
@@ -689,16 +828,21 @@ static struct pgpath *parse_path(struct dm_arg_set *as, struct path_selector *ps
 		return ERR_PTR(-ENOMEM);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = dm_get_device(ti, shift(as), dm_table_get_mode(ti->table),
 =======
 	r = dm_get_device(ti, dm_shift_arg(as), dm_table_get_mode(ti->table),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r = dm_get_device(ti, dm_shift_arg(as), dm_table_get_mode(ti->table),
+>>>>>>> refs/remotes/origin/master
 			  &p->path.dev);
 	if (r) {
 		ti->error = "error getting device";
 		goto bad;
 	}
 
+<<<<<<< HEAD
 	if (m->hw_handler_name) {
 		struct request_queue *q = bdev_get_queue(p->path.dev->bdev);
 
@@ -706,6 +850,39 @@ static struct pgpath *parse_path(struct dm_arg_set *as, struct path_selector *ps
 		if (r == -EBUSY) {
 			/*
 			 * Already attached to different hw_handler,
+=======
+	if (m->retain_attached_hw_handler || m->hw_handler_name)
+		q = bdev_get_queue(p->path.dev->bdev);
+
+	if (m->retain_attached_hw_handler) {
+		attached_handler_name = scsi_dh_attached_handler_name(q, GFP_KERNEL);
+		if (attached_handler_name) {
+			/*
+			 * Reset hw_handler_name to match the attached handler
+			 * and clear any hw_handler_params associated with the
+			 * ignored handler.
+			 *
+			 * NB. This modifies the table line to show the actual
+			 * handler instead of the original table passed in.
+			 */
+			kfree(m->hw_handler_name);
+			m->hw_handler_name = attached_handler_name;
+
+			kfree(m->hw_handler_params);
+			m->hw_handler_params = NULL;
+		}
+	}
+
+	if (m->hw_handler_name) {
+		/*
+		 * Increments scsi_dh reference, even when using an
+		 * already-attached handler.
+		 */
+		r = scsi_dh_attach(q, m->hw_handler_name);
+		if (r == -EBUSY) {
+			/*
+			 * Already attached to different hw_handler:
+>>>>>>> refs/remotes/origin/master
 			 * try to reattach with correct one.
 			 */
 			scsi_dh_detach(q);
@@ -744,26 +921,36 @@ static struct pgpath *parse_path(struct dm_arg_set *as, struct path_selector *ps
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct priority_group *parse_priority_group(struct arg_set *as,
 						   struct multipath *m)
 {
 	static struct param _params[] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct priority_group *parse_priority_group(struct dm_arg_set *as,
 						   struct multipath *m)
 {
 	static struct dm_arg _args[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		{1, 1024, "invalid number of paths"},
 		{0, 1024, "invalid number of selector args"}
 	};
 
 	int r;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned i, nr_selector_args, nr_params;
 =======
 	unsigned i, nr_selector_args, nr_args;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned i, nr_selector_args, nr_args;
+>>>>>>> refs/remotes/origin/master
 	struct priority_group *pg;
 	struct dm_target *ti = m->ti;
 
@@ -788,6 +975,7 @@ static struct priority_group *parse_priority_group(struct dm_arg_set *as,
 	 * read the paths
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = read_param(_params, shift(as), &pg->nr_pgpaths, &ti->error);
 	if (r)
 		goto bad;
@@ -803,6 +991,8 @@ static struct priority_group *parse_priority_group(struct dm_arg_set *as,
 
 		if (as->argc < nr_params) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	r = dm_read_arg(_args, as, &pg->nr_pgpaths, &ti->error);
 	if (r)
 		goto bad;
@@ -817,17 +1007,24 @@ static struct priority_group *parse_priority_group(struct dm_arg_set *as,
 		struct dm_arg_set path_args;
 
 		if (as->argc < nr_args) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ti->error = "not enough path parameters";
 			r = -EINVAL;
 			goto bad;
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		path_args.argc = nr_params;
 =======
 		path_args.argc = nr_args;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		path_args.argc = nr_args;
+>>>>>>> refs/remotes/origin/master
 		path_args.argv = as->argv;
 
 		pgpath = parse_path(&path_args, &pg->ps, ti);
@@ -839,10 +1036,14 @@ static struct priority_group *parse_priority_group(struct dm_arg_set *as,
 		pgpath->pg = pg;
 		list_add_tail(&pgpath->list, &pg->pgpaths);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		consume(as, nr_params);
 =======
 		dm_consume_args(as, nr_args);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dm_consume_args(as, nr_args);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return pg;
@@ -853,15 +1054,20 @@ static struct priority_group *parse_priority_group(struct dm_arg_set *as,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int parse_hw_handler(struct arg_set *as, struct multipath *m)
 =======
 static int parse_hw_handler(struct dm_arg_set *as, struct multipath *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int parse_hw_handler(struct dm_arg_set *as, struct multipath *m)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned hw_argc;
 	int ret;
 	struct dm_target *ti = m->ti;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	static struct param _params[] = {
 		{0, 1024, "invalid number of hardware handler args"},
@@ -869,17 +1075,23 @@ static int parse_hw_handler(struct dm_arg_set *as, struct multipath *m)
 
 	if (read_param(_params, shift(as), &hw_argc, &ti->error))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static struct dm_arg _args[] = {
 		{0, 1024, "invalid number of hardware handler args"},
 	};
 
 	if (dm_read_arg_group(_args, as, &hw_argc, &ti->error))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (!hw_argc)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (hw_argc > as->argc) {
 		ti->error = "not enough arguments for hardware handler";
@@ -894,6 +1106,11 @@ static int parse_hw_handler(struct dm_arg_set *as, struct multipath *m)
 	if (!try_then_request_module(scsi_dh_handler_exist(m->hw_handler_name),
 				     "scsi_dh_%s", m->hw_handler_name)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m->hw_handler_name = kstrdup(dm_shift_arg(as), GFP_KERNEL);
+	if (!try_then_request_module(scsi_dh_handler_exist(m->hw_handler_name),
+				     "scsi_dh_%s", m->hw_handler_name)) {
+>>>>>>> refs/remotes/origin/master
 		ti->error = "unknown hardware handler type";
 		ret = -EINVAL;
 		goto fail;
@@ -916,10 +1133,14 @@ static int parse_hw_handler(struct dm_arg_set *as, struct multipath *m)
 			j = sprintf(p, "%s", as->argv[i]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	consume(as, hw_argc - 1);
 =======
 	dm_consume_args(as, hw_argc - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dm_consume_args(as, hw_argc - 1);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 fail:
@@ -929,14 +1150,19 @@ fail:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int parse_features(struct arg_set *as, struct multipath *m)
 =======
 static int parse_features(struct dm_arg_set *as, struct multipath *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int parse_features(struct dm_arg_set *as, struct multipath *m)
+>>>>>>> refs/remotes/origin/master
 {
 	int r;
 	unsigned argc;
 	struct dm_target *ti = m->ti;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	const char *param_name;
 
@@ -947,21 +1173,32 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
 	static struct dm_arg _args[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		{0, 5, "invalid number of feature args"},
+=======
+	const char *arg_name;
+
+	static struct dm_arg _args[] = {
+		{0, 6, "invalid number of feature args"},
+>>>>>>> refs/remotes/origin/master
 		{1, 50, "pg_init_retries must be between 1 and 50"},
 		{0, 60000, "pg_init_delay_msecs must be between 0 and 60000"},
 	};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = read_param(_params, shift(as), &argc, &ti->error);
 =======
 	r = dm_read_arg_group(_args, as, &argc, &ti->error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r = dm_read_arg_group(_args, as, &argc, &ti->error);
+>>>>>>> refs/remotes/origin/master
 	if (r)
 		return -EINVAL;
 
 	if (!argc)
 		return 0;
 
+<<<<<<< HEAD
 	if (argc > as->argc) {
 		ti->error = "not enough arguments for features";
 		return -EINVAL;
@@ -974,15 +1211,22 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
 
 		if (!strnicmp(param_name, MESG_STR("queue_if_no_path"))) {
 =======
+=======
+	do {
+>>>>>>> refs/remotes/origin/master
 		arg_name = dm_shift_arg(as);
 		argc--;
 
 		if (!strcasecmp(arg_name, "queue_if_no_path")) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			r = queue_if_no_path(m, 1, 0);
 			continue;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!strnicmp(param_name, MESG_STR("pg_init_retries")) &&
 		    (argc >= 1)) {
@@ -993,10 +1237,21 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
 		    (argc >= 1)) {
 			r = dm_read_arg(_args + 1, as, &m->pg_init_retries, &ti->error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!strcasecmp(arg_name, "retain_attached_hw_handler")) {
+			m->retain_attached_hw_handler = 1;
+			continue;
+		}
+
+		if (!strcasecmp(arg_name, "pg_init_retries") &&
+		    (argc >= 1)) {
+			r = dm_read_arg(_args + 1, as, &m->pg_init_retries, &ti->error);
+>>>>>>> refs/remotes/origin/master
 			argc--;
 			continue;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!strnicmp(param_name, MESG_STR("pg_init_delay_msecs")) &&
 		    (argc >= 1)) {
@@ -1007,6 +1262,11 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
 		    (argc >= 1)) {
 			r = dm_read_arg(_args + 2, as, &m->pg_init_delay_msecs, &ti->error);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!strcasecmp(arg_name, "pg_init_delay_msecs") &&
+		    (argc >= 1)) {
+			r = dm_read_arg(_args + 2, as, &m->pg_init_delay_msecs, &ti->error);
+>>>>>>> refs/remotes/origin/master
 			argc--;
 			continue;
 		}
@@ -1022,12 +1282,17 @@ static int multipath_ctr(struct dm_target *ti, unsigned int argc,
 			 char **argv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* target parameters */
 	static struct param _params[] = {
 =======
 	/* target arguments */
 	static struct dm_arg _args[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* target arguments */
+	static struct dm_arg _args[] = {
+>>>>>>> refs/remotes/origin/master
 		{0, 1024, "invalid number of priority groups"},
 		{0, 1024, "invalid initial priority group number"},
 	};
@@ -1035,10 +1300,14 @@ static int multipath_ctr(struct dm_target *ti, unsigned int argc,
 	int r;
 	struct multipath *m;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct arg_set as;
 =======
 	struct dm_arg_set as;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dm_arg_set as;
+>>>>>>> refs/remotes/origin/master
 	unsigned pg_count = 0;
 	unsigned next_pg_num;
 
@@ -1060,18 +1329,24 @@ static int multipath_ctr(struct dm_target *ti, unsigned int argc,
 		goto bad;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = read_param(_params, shift(&as), &m->nr_priority_groups, &ti->error);
 	if (r)
 		goto bad;
 
 	r = read_param(_params + 1, shift(&as), &next_pg_num, &ti->error);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	r = dm_read_arg(_args, &as, &m->nr_priority_groups, &ti->error);
 	if (r)
 		goto bad;
 
 	r = dm_read_arg(_args + 1, &as, &next_pg_num, &ti->error);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (r)
 		goto bad;
 
@@ -1106,8 +1381,14 @@ static int multipath_ctr(struct dm_target *ti, unsigned int argc,
 		goto bad;
 	}
 
+<<<<<<< HEAD
 	ti->num_flush_requests = 1;
 	ti->num_discard_requests = 1;
+=======
+	ti->num_flush_bios = 1;
+	ti->num_discard_bios = 1;
+	ti->num_write_same_bios = 1;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -1142,10 +1423,27 @@ static void multipath_wait_for_pg_init_completion(struct multipath *m)
 
 static void flush_multipath_work(struct multipath *m)
 {
+<<<<<<< HEAD
 	flush_workqueue(kmpath_handlerd);
 	multipath_wait_for_pg_init_completion(m);
 	flush_workqueue(kmultipathd);
 	flush_work_sync(&m->trigger_event);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&m->lock, flags);
+	m->pg_init_disabled = 1;
+	spin_unlock_irqrestore(&m->lock, flags);
+
+	flush_workqueue(kmpath_handlerd);
+	multipath_wait_for_pg_init_completion(m);
+	flush_workqueue(kmultipathd);
+	flush_work(&m->trigger_event);
+
+	spin_lock_irqsave(&m->lock, flags);
+	m->pg_init_disabled = 0;
+	spin_unlock_irqrestore(&m->lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void multipath_dtr(struct dm_target *ti)
@@ -1164,6 +1462,7 @@ static int multipath_map(struct dm_target *ti, struct request *clone,
 {
 	int r;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dm_mpath_io *mpio;
 	struct multipath *m = (struct multipath *) ti->private;
 
@@ -1179,6 +1478,8 @@ static int multipath_map(struct dm_target *ti, struct request *clone,
 	if (r < 0 || r == DM_MAPIO_REQUEUE)
 		mempool_free(mpio, m->mpio_pool);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct multipath *m = (struct multipath *) ti->private;
 
 	if (set_mapinfo(m, map_context) < 0)
@@ -1189,7 +1490,10 @@ static int multipath_map(struct dm_target *ti, struct request *clone,
 	r = map_io(m, clone, map_context, 0);
 	if (r < 0 || r == DM_MAPIO_REQUEUE)
 		clear_mapinfo(m, map_context);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return r;
 }
@@ -1323,6 +1627,7 @@ static int switch_pg_num(struct multipath *m, const char *pgstr)
 	unsigned pgnum;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!pgstr || (sscanf(pgstr, "%u", &pgnum) != 1) || !pgnum ||
 =======
@@ -1330,6 +1635,11 @@ static int switch_pg_num(struct multipath *m, const char *pgstr)
 
 	if (!pgstr || (sscanf(pgstr, "%u%c", &pgnum, &dummy) != 1) || !pgnum ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+
+	if (!pgstr || (sscanf(pgstr, "%u%c", &pgnum, &dummy) != 1) || !pgnum ||
+>>>>>>> refs/remotes/origin/master
 	    (pgnum > m->nr_priority_groups)) {
 		DMWARN("invalid PG number supplied to switch_pg_num");
 		return -EINVAL;
@@ -1360,6 +1670,7 @@ static int bypass_pg_num(struct multipath *m, const char *pgstr, int bypassed)
 	struct priority_group *pg;
 	unsigned pgnum;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!pgstr || (sscanf(pgstr, "%u", &pgnum) != 1) || !pgnum ||
 =======
@@ -1367,6 +1678,11 @@ static int bypass_pg_num(struct multipath *m, const char *pgstr, int bypassed)
 
 	if (!pgstr || (sscanf(pgstr, "%u%c", &pgnum, &dummy) != 1) || !pgnum ||
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+
+	if (!pgstr || (sscanf(pgstr, "%u%c", &pgnum, &dummy) != 1) || !pgnum ||
+>>>>>>> refs/remotes/origin/master
 	    (pgnum > m->nr_priority_groups)) {
 		DMWARN("invalid PG number supplied to bypass_pg");
 		return -EINVAL;
@@ -1391,7 +1707,11 @@ static int pg_init_limit_reached(struct multipath *m, struct pgpath *pgpath)
 
 	spin_lock_irqsave(&m->lock, flags);
 
+<<<<<<< HEAD
 	if (m->pg_init_count <= m->pg_init_retries)
+=======
+	if (m->pg_init_count <= m->pg_init_retries && !m->pg_init_disabled)
+>>>>>>> refs/remotes/origin/master
 		m->pg_init_required = 1;
 	else
 		limit_reached = 1;
@@ -1488,6 +1808,24 @@ static void activate_path(struct work_struct *work)
 				pg_init_done, pgpath);
 }
 
+<<<<<<< HEAD
+=======
+static int noretry_error(int error)
+{
+	switch (error) {
+	case -EOPNOTSUPP:
+	case -EREMOTEIO:
+	case -EILSEQ:
+	case -ENODATA:
+	case -ENOSPC:
+		return 1;
+	}
+
+	/* Anything else could be a path failure, so should be retried */
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * end_io handling
  */
@@ -1511,8 +1849,22 @@ static int do_end_io(struct multipath *m, struct request *clone,
 	if (!error && !clone->errors)
 		return 0;	/* I/O complete */
 
+<<<<<<< HEAD
 	if (error == -EOPNOTSUPP || error == -EREMOTEIO || error == -EILSEQ)
 		return error;
+=======
+	if (noretry_error(error)) {
+		if ((clone->cmd_flags & REQ_WRITE_SAME) &&
+		    !clone->q->limits.max_write_same_sectors) {
+			struct queue_limits *limits;
+
+			/* device doesn't really support WRITE SAME, disable it */
+			limits = dm_get_queue_limits(dm_table_get_md(m->ti->table));
+			limits->max_write_same_sectors = 0;
+		}
+		return error;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (mpio->pgpath)
 		fail_path(mpio->pgpath);
@@ -1537,6 +1889,7 @@ static int multipath_end_io(struct dm_target *ti, struct request *clone,
 {
 	struct multipath *m = ti->private;
 	struct dm_mpath_io *mpio = map_context->ptr;
+<<<<<<< HEAD
 	struct pgpath *pgpath = mpio->pgpath;
 	struct path_selector *ps;
 	int r;
@@ -1547,16 +1900,30 @@ static int multipath_end_io(struct dm_target *ti, struct request *clone,
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	r  = do_end_io(m, clone, error, mpio);
+=======
+	struct pgpath *pgpath;
+	struct path_selector *ps;
+	int r;
+
+	BUG_ON(!mpio);
+
+	r  = do_end_io(m, clone, error, mpio);
+	pgpath = mpio->pgpath;
+>>>>>>> refs/remotes/origin/master
 	if (pgpath) {
 		ps = &pgpath->pg->ps;
 		if (ps->type->end_io)
 			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mempool_free(mpio, m->mpio_pool);
 =======
 	clear_mapinfo(m, map_context);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clear_mapinfo(m, map_context);
+>>>>>>> refs/remotes/origin/master
 
 	return r;
 }
@@ -1612,8 +1979,13 @@ static void multipath_resume(struct dm_target *ti)
  *     [priority selector-name num_ps_args [ps_args]*
  *      num_paths num_selector_args [path_dev [selector_args]* ]+ ]+
  */
+<<<<<<< HEAD
 static int multipath_status(struct dm_target *ti, status_type_t type,
 			    char *result, unsigned int maxlen)
+=======
+static void multipath_status(struct dm_target *ti, status_type_t type,
+			     unsigned status_flags, char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/master
 {
 	int sz = 0;
 	unsigned long flags;
@@ -1631,13 +2003,23 @@ static int multipath_status(struct dm_target *ti, status_type_t type,
 	else {
 		DMEMIT("%u ", m->queue_if_no_path +
 			      (m->pg_init_retries > 0) * 2 +
+<<<<<<< HEAD
 			      (m->pg_init_delay_msecs != DM_PG_INIT_DELAY_DEFAULT) * 2);
+=======
+			      (m->pg_init_delay_msecs != DM_PG_INIT_DELAY_DEFAULT) * 2 +
+			      m->retain_attached_hw_handler);
+>>>>>>> refs/remotes/origin/master
 		if (m->queue_if_no_path)
 			DMEMIT("queue_if_no_path ");
 		if (m->pg_init_retries)
 			DMEMIT("pg_init_retries %u ", m->pg_init_retries);
 		if (m->pg_init_delay_msecs != DM_PG_INIT_DELAY_DEFAULT)
 			DMEMIT("pg_init_delay_msecs %u ", m->pg_init_delay_msecs);
+<<<<<<< HEAD
+=======
+		if (m->retain_attached_hw_handler)
+			DMEMIT("retain_attached_hw_handler ");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!m->hw_handler_name || type == STATUSTYPE_INFO)
@@ -1716,8 +2098,11 @@ static int multipath_status(struct dm_target *ti, status_type_t type,
 	}
 
 	spin_unlock_irqrestore(&m->lock, flags);
+<<<<<<< HEAD
 
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
@@ -1736,16 +2121,22 @@ static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
 
 	if (argc == 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!strnicmp(argv[0], MESG_STR("queue_if_no_path"))) {
 			r = queue_if_no_path(m, 1, 0);
 			goto out;
 		} else if (!strnicmp(argv[0], MESG_STR("fail_if_no_path"))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!strcasecmp(argv[0], "queue_if_no_path")) {
 			r = queue_if_no_path(m, 1, 0);
 			goto out;
 		} else if (!strcasecmp(argv[0], "fail_if_no_path")) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			r = queue_if_no_path(m, 0, 0);
 			goto out;
 		}
@@ -1756,6 +2147,7 @@ static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
 		goto out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!strnicmp(argv[0], MESG_STR("disable_group"))) {
 		r = bypass_pg_num(m, argv[1], 1);
@@ -1770,6 +2162,8 @@ static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
 		action = reinstate_path;
 	else if (!strnicmp(argv[0], MESG_STR("fail_path")))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!strcasecmp(argv[0], "disable_group")) {
 		r = bypass_pg_num(m, argv[1], 1);
 		goto out;
@@ -1782,7 +2176,10 @@ static int multipath_message(struct dm_target *ti, unsigned argc, char **argv)
 	} else if (!strcasecmp(argv[0], "reinstate_path"))
 		action = reinstate_path;
 	else if (!strcasecmp(argv[0], "fail_path"))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		action = fail_path;
 	else {
 		DMWARN("Unrecognised multipath message received.");
@@ -1808,17 +2205,31 @@ out:
 static int multipath_ioctl(struct dm_target *ti, unsigned int cmd,
 			   unsigned long arg)
 {
+<<<<<<< HEAD
 	struct multipath *m = (struct multipath *) ti->private;
 	struct block_device *bdev = NULL;
 	fmode_t mode = 0;
 	unsigned long flags;
 	int r = 0;
+=======
+	struct multipath *m = ti->private;
+	struct pgpath *pgpath;
+	struct block_device *bdev;
+	fmode_t mode;
+	unsigned long flags;
+	int r;
+
+	bdev = NULL;
+	mode = 0;
+	r = 0;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&m->lock, flags);
 
 	if (!m->current_pgpath)
 		__choose_pgpath(m, 0);
 
+<<<<<<< HEAD
 	if (m->current_pgpath) {
 		bdev = m->current_pgpath->path.dev->bdev;
 		mode = m->current_pgpath->path.dev->mode;
@@ -1826,6 +2237,17 @@ static int multipath_ioctl(struct dm_target *ti, unsigned int cmd,
 
 	if (m->queue_io)
 		r = -EAGAIN;
+=======
+	pgpath = m->current_pgpath;
+
+	if (pgpath) {
+		bdev = pgpath->path.dev->bdev;
+		mode = pgpath->path.dev->mode;
+	}
+
+	if ((pgpath && m->queue_io) || (!pgpath && m->queue_if_no_path))
+		r = -ENOTCONN;
+>>>>>>> refs/remotes/origin/master
 	else if (!bdev)
 		r = -EIO;
 
@@ -1837,6 +2259,12 @@ static int multipath_ioctl(struct dm_target *ti, unsigned int cmd,
 	if (!r && ti->len != i_size_read(bdev->bd_inode) >> SECTOR_SHIFT)
 		r = scsi_verify_blk_ioctl(NULL, cmd);
 
+<<<<<<< HEAD
+=======
+	if (r == -ENOTCONN && !fatal_signal_pending(current))
+		queue_work(kmultipathd, &m->process_queued_ios);
+
+>>>>>>> refs/remotes/origin/master
 	return r ? : __blkdev_driver_ioctl(bdev, mode, cmd, arg);
 }
 
@@ -1885,6 +2313,14 @@ static int multipath_busy(struct dm_target *ti)
 
 	spin_lock_irqsave(&m->lock, flags);
 
+<<<<<<< HEAD
+=======
+	/* pg_init in progress, requeue until done */
+	if (m->pg_init_in_progress) {
+		busy = 1;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 	/* Guess which priority_group will be used at next mapping time */
 	if (unlikely(!m->current_pgpath && m->next_pg))
 		pg = m->next_pg;
@@ -1934,7 +2370,11 @@ out:
  *---------------------------------------------------------------*/
 static struct target_type multipath_target = {
 	.name = "multipath",
+<<<<<<< HEAD
 	.version = {1, 3, 0},
+=======
+	.version = {1, 6, 0},
+>>>>>>> refs/remotes/origin/master
 	.module = THIS_MODULE,
 	.ctr = multipath_ctr,
 	.dtr = multipath_dtr,

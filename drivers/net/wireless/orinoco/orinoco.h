@@ -50,18 +50,24 @@ enum orinoco_alg {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef enum {
 	FIRMWARE_TYPE_AGERE,
 	FIRMWARE_TYPE_INTERSIL,
 	FIRMWARE_TYPE_SYMBOL
 } fwtype_t;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum fwtype {
 	FIRMWARE_TYPE_AGERE,
 	FIRMWARE_TYPE_INTERSIL,
 	FIRMWARE_TYPE_SYMBOL
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct firmware;
 
@@ -97,18 +103,24 @@ struct orinoco_private {
 
 	/* Hardware control variables */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t hw;
 	u16 txfid;
 
 	/* Capabilities of the hardware/firmware */
 	fwtype_t firmware_type;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hermes hw;
 	u16 txfid;
 
 	/* Capabilities of the hardware/firmware */
 	enum fwtype firmware_type;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ibss_port;
 	int nicbuf_size;
 	u16 channel_mask;
@@ -139,12 +151,17 @@ struct orinoco_private {
 
 	int bitratemode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char nick[IW_ESSID_MAX_SIZE+1];
 	char desired_essid[IW_ESSID_MAX_SIZE+1];
 =======
 	char nick[IW_ESSID_MAX_SIZE + 1];
 	char desired_essid[IW_ESSID_MAX_SIZE + 1];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char nick[IW_ESSID_MAX_SIZE + 1];
+	char desired_essid[IW_ESSID_MAX_SIZE + 1];
+>>>>>>> refs/remotes/origin/master
 	char desired_bssid[ETH_ALEN];
 	int bssid_fixed;
 	u16 frag_thresh, mwo_robust;
@@ -203,6 +220,7 @@ extern int orinoco_debug;
 /* Exported prototypes                                              */
 /********************************************************************/
 
+<<<<<<< HEAD
 extern struct orinoco_private *alloc_orinocodev(
 	int sizeof_card, struct device *device,
 	int (*hard_reset)(struct orinoco_private *),
@@ -225,6 +243,22 @@ extern void __orinoco_ev_rx(struct net_device *dev, hermes_t *hw);
 extern void __orinoco_ev_info(struct net_device *dev, struct hermes *hw);
 extern void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct orinoco_private *alloc_orinocodev(int sizeof_card, struct device *device,
+					 int (*hard_reset)(struct orinoco_private *),
+					 int (*stop_fw)(struct orinoco_private *, int));
+void free_orinocodev(struct orinoco_private *priv);
+int orinoco_init(struct orinoco_private *priv);
+int orinoco_if_add(struct orinoco_private *priv, unsigned long base_addr,
+		   unsigned int irq, const struct net_device_ops *ops);
+void orinoco_if_del(struct orinoco_private *priv);
+int orinoco_up(struct orinoco_private *priv);
+void orinoco_down(struct orinoco_private *priv);
+irqreturn_t orinoco_interrupt(int irq, void *dev_id);
+
+void __orinoco_ev_info(struct net_device *dev, struct hermes *hw);
+void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw);
+>>>>>>> refs/remotes/origin/master
 
 int orinoco_process_xmit_skb(struct sk_buff *skb,
 			     struct net_device *dev,

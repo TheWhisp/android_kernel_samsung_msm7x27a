@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * Tmis program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -45,8 +49,13 @@
 
 extern const struct ieee80211_ops rtl_ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void rtl_fw_cb(const struct firmware *firmware, void *context);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void rtl_fw_cb(const struct firmware *firmware, void *context);
+
+>>>>>>> refs/remotes/origin/master
 #endif

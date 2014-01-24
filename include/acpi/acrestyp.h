@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +52,11 @@
  * Definitions for Resource Attributes
  */
 typedef u16 acpi_rs_length;	/* Resource Length field is fixed at 16 bits */
+<<<<<<< HEAD
 typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (64_k-1)+3 */
+=======
+typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (64K-1)+3 */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Memory Attributes
@@ -62,12 +70,15 @@ typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (6
 #define ACPI_PREFETCHABLE_MEMORY        (u8) 0x03
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * IO Attributes
  * The ISA IO ranges are:     n000-n0_fFh, n400-n4_fFh, n800-n8_fFh, n_c00-n_cFFh.
  * The non-ISA IO ranges are: n100-n3_fFh, n500-n7_fFh, n900-n_bFFh, n_cd0-n_fFFh.
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*! [Begin] no source code translation */
 /*
  * IO Attributes
@@ -76,7 +87,10 @@ typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (6
  */
 /*! [End] no source code translation !*/
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_NON_ISA_ONLY_RANGES        (u8) 0x01
 #define ACPI_ISA_ONLY_RANGES            (u8) 0x02
 #define ACPI_ENTIRE_RANGE               (ACPI_NON_ISA_ONLY_RANGES | ACPI_ISA_ONLY_RANGES)
@@ -93,6 +107,7 @@ typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (6
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * IRQ Attributes
  */
 #define ACPI_LEVEL_SENSITIVE            (u8) 0x00
@@ -104,6 +119,8 @@ typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (6
 #define ACPI_EXCLUSIVE                  (u8) 0x00
 #define ACPI_SHARED                     (u8) 0x01
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Interrupt attributes - used in multiple descriptors
  */
 
@@ -122,9 +139,17 @@ typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (6
 
 #define ACPI_EXCLUSIVE                  (u8) 0x00
 #define ACPI_SHARED                     (u8) 0x01
+<<<<<<< HEAD
 #define ACPI_EXCLUSIVE_AND_WAKE         (u8) 0x02
 #define ACPI_SHARED_AND_WAKE            (u8) 0x03
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Wake */
+
+#define ACPI_NOT_WAKE_CAPABLE           (u8) 0x00
+#define ACPI_WAKE_CAPABLE               (u8) 0x01
+>>>>>>> refs/remotes/origin/master
 
 /*
  * DMA Attributes
@@ -162,10 +187,15 @@ typedef u32 acpi_rsdesc_size;	/* Max Resource Descriptor size is (Length+3) = (6
 #define ACPI_SUB_DECODE                 (u8) 0x01
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Producer/Consumer */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Producer/Consumer */
+
+>>>>>>> refs/remotes/origin/master
 #define ACPI_PRODUCER                   (u8) 0x00
 #define ACPI_CONSUMER                   (u8) 0x01
 
@@ -195,6 +225,10 @@ struct acpi_resource_irq {
 	u8 triggering;
 	u8 polarity;
 	u8 sharable;
+<<<<<<< HEAD
+=======
+	u8 wake_capable;
+>>>>>>> refs/remotes/origin/master
 	u8 interrupt_count;
 	u8 interrupts[1];
 };
@@ -232,7 +266,10 @@ struct acpi_resource_fixed_io {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct acpi_resource_fixed_dma {
 	u16 request_lines;
 	u16 channels;
@@ -248,7 +285,10 @@ struct acpi_resource_fixed_dma {
 #define ACPI_DMA_WIDTH128                       4
 #define ACPI_DMA_WIDTH256                       5
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct acpi_resource_vendor {
 	u16 byte_length;
 	u8 byte_data[1];
@@ -359,7 +399,11 @@ struct acpi_resource_address64 {
 };
 
 struct acpi_resource_extended_address64 {
+<<<<<<< HEAD
 	ACPI_RESOURCE_ADDRESS_COMMON u8 revision_iD;
+=======
+	ACPI_RESOURCE_ADDRESS_COMMON u8 revision_ID;
+>>>>>>> refs/remotes/origin/master
 	u64 granularity;
 	u64 minimum;
 	u64 maximum;
@@ -373,6 +417,10 @@ struct acpi_resource_extended_irq {
 	u8 triggering;
 	u8 polarity;
 	u8 sharable;
+<<<<<<< HEAD
+=======
+	u8 wake_capable;
+>>>>>>> refs/remotes/origin/master
 	u8 interrupt_count;
 	struct acpi_resource_source resource_source;
 	u32 interrupts[1];
@@ -387,13 +435,20 @@ struct acpi_resource_generic_register {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct acpi_resource_gpio {
 	u8 revision_id;
 	u8 connection_type;
 	u8 producer_consumer;	/* For values, see Producer/Consumer above */
 	u8 pin_config;
 	u8 sharable;		/* For values, see Interrupt Attributes above */
+<<<<<<< HEAD
+=======
+	u8 wake_capable;	/* For values, see Interrupt Attributes above */
+>>>>>>> refs/remotes/origin/master
 	u8 io_restriction;
 	u8 triggering;		/* For values, see Interrupt Attributes above */
 	u8 polarity;		/* For values, see Interrupt Attributes above */
@@ -548,7 +603,10 @@ struct acpi_resource_uart_serialbus {
 #define ACPI_UART_CLEAR_TO_SEND                 (1<<6)
 #define ACPI_UART_REQUEST_TO_SEND               (1<<7)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* ACPI_RESOURCE_TYPEs */
 
 #define ACPI_RESOURCE_TYPE_IRQ                  0
@@ -569,13 +627,19 @@ struct acpi_resource_uart_serialbus {
 #define ACPI_RESOURCE_TYPE_EXTENDED_IRQ         15
 #define ACPI_RESOURCE_TYPE_GENERIC_REGISTER     16
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ACPI_RESOURCE_TYPE_MAX                  16
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_RESOURCE_TYPE_GPIO                 17	/* ACPI 5.0 */
 #define ACPI_RESOURCE_TYPE_FIXED_DMA            18	/* ACPI 5.0 */
 #define ACPI_RESOURCE_TYPE_SERIAL_BUS           19	/* ACPI 5.0 */
 #define ACPI_RESOURCE_TYPE_MAX                  19
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Master union for resource descriptors */
 
@@ -586,9 +650,13 @@ union acpi_resource_data {
 	struct acpi_resource_io io;
 	struct acpi_resource_fixed_io fixed_io;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct acpi_resource_fixed_dma fixed_dma;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct acpi_resource_fixed_dma fixed_dma;
+>>>>>>> refs/remotes/origin/master
 	struct acpi_resource_vendor vendor;
 	struct acpi_resource_vendor_typed vendor_typed;
 	struct acpi_resource_end_tag end_tag;
@@ -602,13 +670,19 @@ union acpi_resource_data {
 	struct acpi_resource_extended_irq extended_irq;
 	struct acpi_resource_generic_register generic_reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct acpi_resource_gpio gpio;
 	struct acpi_resource_i2c_serialbus i2c_serial_bus;
 	struct acpi_resource_spi_serialbus spi_serial_bus;
 	struct acpi_resource_uart_serialbus uart_serial_bus;
 	struct acpi_resource_common_serialbus common_serial_bus;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Common fields */
 
@@ -631,7 +705,14 @@ struct acpi_resource {
 #define ACPI_RS_SIZE_MIN                    (u32) ACPI_ROUND_UP_TO_NATIVE_WORD (12)
 #define ACPI_RS_SIZE(type)                  (u32) (ACPI_RS_SIZE_NO_DATA + sizeof (type))
 
+<<<<<<< HEAD
 #define ACPI_NEXT_RESOURCE(res)             (struct acpi_resource *)((u8 *) res + res->length)
+=======
+/* Macro for walking resource templates with multiple descriptors */
+
+#define ACPI_NEXT_RESOURCE(res) \
+	ACPI_ADD_PTR (struct acpi_resource, (res), (res)->length)
+>>>>>>> refs/remotes/origin/master
 
 struct acpi_pci_routing_table {
 	u32 length;

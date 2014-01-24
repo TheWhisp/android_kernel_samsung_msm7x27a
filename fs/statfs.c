@@ -1,9 +1,13 @@
 #include <linux/syscalls.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/file.h>
 #include <linux/mount.h>
@@ -12,9 +16,13 @@
 #include <linux/security.h>
 #include <linux/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "internal.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "internal.h"
+>>>>>>> refs/remotes/origin/master
 
 static int flags_by_mnt(int mnt_flags)
 {
@@ -54,10 +62,14 @@ static int calculate_f_flags(struct vfsmount *mnt)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int statfs_by_dentry(struct dentry *dentry, struct kstatfs *buf)
 =======
 static int statfs_by_dentry(struct dentry *dentry, struct kstatfs *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int statfs_by_dentry(struct dentry *dentry, struct kstatfs *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 
@@ -88,21 +100,43 @@ EXPORT_SYMBOL(vfs_statfs);
 int user_statfs(const char __user *pathname, struct kstatfs *st)
 {
 	struct path path;
+<<<<<<< HEAD
 	int error = user_path_at(AT_FDCWD, pathname, LOOKUP_FOLLOW|LOOKUP_AUTOMOUNT, &path);
 	if (!error) {
 		error = vfs_statfs(&path, st);
 		path_put(&path);
+=======
+	int error;
+	unsigned int lookup_flags = LOOKUP_FOLLOW|LOOKUP_AUTOMOUNT;
+retry:
+	error = user_path_at(AT_FDCWD, pathname, lookup_flags, &path);
+	if (!error) {
+		error = vfs_statfs(&path, st);
+		path_put(&path);
+		if (retry_estale(error, lookup_flags)) {
+			lookup_flags |= LOOKUP_REVAL;
+			goto retry;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	return error;
 }
 
 int fd_statfs(int fd, struct kstatfs *st)
 {
+<<<<<<< HEAD
 	struct file *file = fget_raw(fd);
 	int error = -EBADF;
 	if (file) {
 		error = vfs_statfs(&file->f_path, st);
 		fput(file);
+=======
+	struct fd f = fdget_raw(fd);
+	int error = -EBADF;
+	if (f.file) {
+		error = vfs_statfs(&f.file->f_path, st);
+		fdput(f);
+>>>>>>> refs/remotes/origin/master
 	}
 	return error;
 }
@@ -218,6 +252,7 @@ SYSCALL_DEFINE3(fstatfs64, unsigned int, fd, size_t, sz, struct statfs64 __user 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 SYSCALL_DEFINE2(ustat, unsigned, dev, struct ustat __user *, ubuf)
 {
 	struct super_block *s;
@@ -232,6 +267,8 @@ SYSCALL_DEFINE2(ustat, unsigned, dev, struct ustat __user *, ubuf)
 	err = statfs_by_dentry(s->s_root, &sbuf);
 	drop_super(s);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int vfs_ustat(dev_t dev, struct kstatfs *sbuf)
 {
 	struct super_block *s = user_get_super(dev);
@@ -249,7 +286,10 @@ SYSCALL_DEFINE2(ustat, unsigned, dev, struct ustat __user *, ubuf)
 	struct ustat tmp;
 	struct kstatfs sbuf;
 	int err = vfs_ustat(new_decode_dev(dev), &sbuf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return err;
 

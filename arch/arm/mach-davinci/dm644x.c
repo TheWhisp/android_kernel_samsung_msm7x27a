@@ -13,6 +13,7 @@
 #include <linux/serial_8250.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 
 #include <asm/mach/map.h>
@@ -25,12 +26,21 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/cputype.h>
 #include <mach/edma.h>
+=======
+#include <linux/platform_data/edma.h>
+#include <linux/platform_data/gpio-davinci.h>
+
+#include <asm/mach/map.h>
+
+#include <mach/cputype.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 #include <mach/psc.h>
 #include <mach/mux.h>
 #include <mach/time.h>
 #include <mach/serial.h>
 #include <mach/common.h>
+<<<<<<< HEAD
 #include <mach/asp.h>
 <<<<<<< HEAD
 
@@ -41,6 +51,13 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "clock.h"
 #include "mux.h"
+=======
+
+#include "davinci.h"
+#include "clock.h"
+#include "mux.h"
+#include "asp.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Device specific clocks
@@ -48,7 +65,10 @@
 #define DM644X_REF_FREQ		27000000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DM644X_EMAC_BASE		0x01c80000
 #define DM644X_EMAC_MDIO_BASE		(DM644X_EMAC_BASE + 0x4000)
 #define DM644X_EMAC_CNTRL_OFFSET	0x0000
@@ -56,7 +76,10 @@
 #define DM644X_EMAC_CNTRL_RAM_OFFSET	0x2000
 #define DM644X_EMAC_CNTRL_RAM_SIZE	0x2000
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pll_data pll1_data = {
 	.num       = 1,
 	.phys_base = DAVINCI_PLL1_BASE,
@@ -153,10 +176,14 @@ static struct clk dsp_clk = {
 	.parent = &pll1_sysclk1,
 	.lpsc = DAVINCI_LPSC_GEM,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = PSC_DSP,
 =======
 	.domain = DAVINCI_GPSC_DSPDOMAIN,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.domain = DAVINCI_GPSC_DSPDOMAIN,
+>>>>>>> refs/remotes/origin/master
 	.usecount = 1,			/* REVISIT how to disable? */
 };
 
@@ -172,10 +199,14 @@ static struct clk vicp_clk = {
 	.parent = &pll1_sysclk2,
 	.lpsc = DAVINCI_LPSC_IMCOP,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = PSC_DSP,
 =======
 	.domain = DAVINCI_GPSC_DSPDOMAIN,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.domain = DAVINCI_GPSC_DSPDOMAIN,
+>>>>>>> refs/remotes/origin/master
 	.usecount = 1,			/* REVISIT how to disable? */
 };
 
@@ -323,6 +354,7 @@ static struct clk_lookup dm644x_clks[] = {
 	CLK(NULL, "dsp", &dsp_clk),
 	CLK(NULL, "arm", &arm_clk),
 	CLK(NULL, "vicp", &vicp_clk),
+<<<<<<< HEAD
 	CLK(NULL, "vpss_master", &vpss_master_clk),
 	CLK(NULL, "vpss_slave", &vpss_slave_clk),
 	CLK(NULL, "arm", &arm_clk),
@@ -334,6 +366,20 @@ static struct clk_lookup dm644x_clks[] = {
 	CLK("palm_bk3710", NULL, &ide_clk),
 	CLK("davinci-mcbsp", NULL, &asp_clk),
 	CLK("davinci_mmc.0", NULL, &mmcsd_clk),
+=======
+	CLK("vpss", "master", &vpss_master_clk),
+	CLK("vpss", "slave", &vpss_slave_clk),
+	CLK(NULL, "arm", &arm_clk),
+	CLK("serial8250.0", NULL, &uart0_clk),
+	CLK("serial8250.1", NULL, &uart1_clk),
+	CLK("serial8250.2", NULL, &uart2_clk),
+	CLK("davinci_emac.1", NULL, &emac_clk),
+	CLK("davinci_mdio.0", "fck", &emac_clk),
+	CLK("i2c_davinci.1", NULL, &i2c_clk),
+	CLK("palm_bk3710", NULL, &ide_clk),
+	CLK("davinci-mcbsp", NULL, &asp_clk),
+	CLK("dm6441-mmc.0", NULL, &mmcsd_clk),
+>>>>>>> refs/remotes/origin/master
 	CLK(NULL, "spi", &spi_clk),
 	CLK(NULL, "gpio", &gpio_clk),
 	CLK(NULL, "usb", &usb_clk),
@@ -520,7 +566,11 @@ static u8 dm644x_default_priorities[DAVINCI_N_AINTC_IRQ] = {
 
 /*----------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static const s8
+=======
+static s8
+>>>>>>> refs/remotes/origin/master
 queue_tc_mapping[][2] = {
 	/* {event queue no, TC no} */
 	{0, 0},
@@ -528,7 +578,11 @@ queue_tc_mapping[][2] = {
 	{-1, -1},
 };
 
+<<<<<<< HEAD
 static const s8
+=======
+static s8
+>>>>>>> refs/remotes/origin/master
 queue_priority_mapping[][2] = {
 	/* {event queue no, Priority} */
 	{0, 3},
@@ -545,9 +599,13 @@ static struct edma_soc_info edma_cc0_info = {
 	.queue_tc_mapping	= queue_tc_mapping,
 	.queue_priority_mapping	= queue_priority_mapping,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.default_queue		= EVENTQ_1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.default_queue		= EVENTQ_1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct edma_soc_info *dm644x_edma_info[EDMA_MAX_CC] = {
@@ -597,6 +655,10 @@ static struct platform_device dm644x_edma_device = {
 /* DM6446 EVM uses ASP0; line-out is a pair of RCA jacks */
 static struct resource dm644x_asp_resources[] = {
 	{
+<<<<<<< HEAD
+=======
+		.name	= "mpu",
+>>>>>>> refs/remotes/origin/master
 		.start	= DAVINCI_ASP0_BASE,
 		.end	= DAVINCI_ASP0_BASE + SZ_8K - 1,
 		.flags	= IORESOURCE_MEM,
@@ -621,14 +683,20 @@ static struct platform_device dm644x_asp_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DM644X_VPSS_BASE	0x01c73400
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DM644X_VPSS_BASE	0x01c73400
+
+>>>>>>> refs/remotes/origin/master
 static struct resource dm644x_vpss_resources[] = {
 	{
 		/* VPSS Base address */
 		.name		= "vpss",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.start          = 0x01c73400,
 		.end            = 0x01c73400 + 0xff,
@@ -638,6 +706,11 @@ static struct resource dm644x_vpss_resources[] = {
 		.end		= DM644X_VPSS_BASE + 0xff,
 		.flags		= IORESOURCE_MEM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start		= DM644X_VPSS_BASE,
+		.end		= DM644X_VPSS_BASE + 0xff,
+		.flags		= IORESOURCE_MEM,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -650,10 +723,14 @@ static struct platform_device dm644x_vpss_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct resource vpfe_resources[] = {
 =======
 static struct resource dm644x_vpfe_resources[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct resource dm644x_vpfe_resources[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.start          = IRQ_VDINT0,
 		.end            = IRQ_VDINT0,
@@ -667,10 +744,14 @@ static struct resource dm644x_vpfe_resources[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u64 vpfe_capture_dma_mask = DMA_BIT_MASK(32);
 =======
 static u64 dm644x_video_dma_mask = DMA_BIT_MASK(32);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u64 dm644x_video_dma_mask = DMA_BIT_MASK(32);
+>>>>>>> refs/remotes/origin/master
 static struct resource dm644x_ccdc_resource[] = {
 	/* CCDC Base address */
 	{
@@ -687,14 +768,19 @@ static struct platform_device dm644x_ccdc_dev = {
 	.resource       = dm644x_ccdc_resource,
 	.dev = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.dma_mask               = &vpfe_capture_dma_mask,
 =======
 		.dma_mask               = &dm644x_video_dma_mask,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.dma_mask               = &dm644x_video_dma_mask,
+>>>>>>> refs/remotes/origin/master
 		.coherent_dma_mask      = DMA_BIT_MASK(32),
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_device vpfe_capture_dev = {
 	.name		= CAPTURE_DRV_NAME,
@@ -713,6 +799,8 @@ void dm644x_set_vpfe_config(struct vpfe_config *cfg)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device dm644x_vpfe_dev = {
 	.name		= CAPTURE_DRV_NAME,
 	.id		= -1,
@@ -734,19 +822,27 @@ static struct resource dm644x_osd_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct osd_platform_data dm644x_osd_data = {
 	.vpbe_type     = VPBE_VERSION_1,
 };
 
 static struct platform_device dm644x_osd_dev = {
 	.name		= VPBE_OSD_SUBDEV_NAME,
+=======
+static struct platform_device dm644x_osd_dev = {
+	.name		= DM644X_VPBE_OSD_SUBDEV_NAME,
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(dm644x_osd_resources),
 	.resource	= dm644x_osd_resources,
 	.dev		= {
 		.dma_mask		= &dm644x_video_dma_mask,
 		.coherent_dma_mask	= DMA_BIT_MASK(32),
+<<<<<<< HEAD
 		.platform_data		= &dm644x_osd_data,
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -766,7 +862,11 @@ static struct resource dm644x_venc_resources[] = {
 #define DM644X_VPSS_DACCLKEN                  BIT(4)
 
 static int dm644x_venc_setup_clock(enum vpbe_enc_timings_type type,
+<<<<<<< HEAD
 				   unsigned int mode)
+=======
+				   unsigned int pclock)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	u32 v = DM644X_VPSS_VENCLKEN;
@@ -776,6 +876,7 @@ static int dm644x_venc_setup_clock(enum vpbe_enc_timings_type type,
 		v |= DM644X_VPSS_DACCLKEN;
 		writel(v, DAVINCI_SYSMOD_VIRT(SYSMOD_VPSS_CLKCTL));
 		break;
+<<<<<<< HEAD
 	case VPBE_ENC_DV_PRESET:
 		switch (mode) {
 		case V4L2_DV_480P59_94:
@@ -787,16 +888,26 @@ static int dm644x_venc_setup_clock(enum vpbe_enc_timings_type type,
 		case V4L2_DV_720P60:
 		case V4L2_DV_1080I60:
 		case V4L2_DV_1080P30:
+=======
+	case VPBE_ENC_DV_TIMINGS:
+		if (pclock <= 27000000) {
+			v |= DM644X_VPSS_DACCLKEN;
+			writel(v, DAVINCI_SYSMOD_VIRT(SYSMOD_VPSS_CLKCTL));
+		} else {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * For HD, use external clock source since
 			 * HD requires higher clock rate
 			 */
 			v |= DM644X_VPSS_MUXSEL_VPBECLK_MODE;
 			writel(v, DAVINCI_SYSMOD_VIRT(SYSMOD_VPSS_CLKCTL));
+<<<<<<< HEAD
 			break;
 		default:
 			ret = -EINVAL;
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	default:
@@ -826,12 +937,19 @@ static struct platform_device dm644x_vpbe_display = {
 };
 
 static struct venc_platform_data dm644x_venc_pdata = {
+<<<<<<< HEAD
 	.venc_type	= VPBE_VERSION_1,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setup_clock	= dm644x_venc_setup_clock,
 };
 
 static struct platform_device dm644x_venc_dev = {
+<<<<<<< HEAD
 	.name		= VPBE_VENC_SUBDEV_NAME,
+=======
+	.name		= DM644X_VPBE_VENC_SUBDEV_NAME,
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(dm644x_venc_resources),
 	.resource	= dm644x_venc_resources,
@@ -851,7 +969,34 @@ static struct platform_device dm644x_vpbe_dev = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct resource dm644_gpio_resources[] = {
+	{	/* registers */
+		.start	= DAVINCI_GPIO_BASE,
+		.end	= DAVINCI_GPIO_BASE + SZ_4K - 1,
+		.flags	= IORESOURCE_MEM,
+	},
+	{	/* interrupt */
+		.start	= IRQ_GPIOBNK0,
+		.end	= IRQ_GPIOBNK4,
+		.flags	= IORESOURCE_IRQ,
+	},
+};
+
+static struct davinci_gpio_platform_data dm644_gpio_platform_data = {
+	.ngpio		= 71,
+	.intc_irq_num	= DAVINCI_N_AINTC_IRQ,
+};
+
+int __init dm644x_gpio_register(void)
+{
+	return davinci_gpio_register(dm644_gpio_resources,
+				     ARRAY_SIZE(dm644_gpio_resources),
+				     &dm644_gpio_platform_data);
+}
+>>>>>>> refs/remotes/origin/master
 /*----------------------------------------------------------------------*/
 
 static struct map_desc dm644x_io_desc[] = {
@@ -861,12 +1006,15 @@ static struct map_desc dm644x_io_desc[] = {
 		.length		= IO_SIZE,
 		.type		= MT_DEVICE
 	},
+<<<<<<< HEAD
 	{
 		.virtual	= SRAM_VIRT,
 		.pfn		= __phys_to_pfn(0x00008000),
 		.length		= SZ_16K,
 		.type		= MT_MEMORY_NONCACHED,
 	},
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Contents of JTAG ID register used to identify exact cpu type */
@@ -901,7 +1049,11 @@ static struct davinci_timer_info dm644x_timer_info = {
 	.clocksource_id	= T0_TOP,
 };
 
+<<<<<<< HEAD
 static struct plat_serial8250_port dm644x_serial_platform_data[] = {
+=======
+static struct plat_serial8250_port dm644x_serial0_platform_data[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.mapbase	= DAVINCI_UART0_BASE,
 		.irq		= IRQ_UARTINT0,
@@ -911,6 +1063,14 @@ static struct plat_serial8250_port dm644x_serial_platform_data[] = {
 		.regshift	= 2,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.flags	= 0,
+	}
+};
+static struct plat_serial8250_port dm644x_serial1_platform_data[] = {
+	{
+>>>>>>> refs/remotes/origin/master
 		.mapbase	= DAVINCI_UART1_BASE,
 		.irq		= IRQ_UARTINT1,
 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
@@ -919,6 +1079,14 @@ static struct plat_serial8250_port dm644x_serial_platform_data[] = {
 		.regshift	= 2,
 	},
 	{
+<<<<<<< HEAD
+=======
+		.flags	= 0,
+	}
+};
+static struct plat_serial8250_port dm644x_serial2_platform_data[] = {
+	{
+>>>>>>> refs/remotes/origin/master
 		.mapbase	= DAVINCI_UART2_BASE,
 		.irq		= IRQ_UARTINT2,
 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
@@ -927,6 +1095,7 @@ static struct plat_serial8250_port dm644x_serial_platform_data[] = {
 		.regshift	= 2,
 	},
 	{
+<<<<<<< HEAD
 		.flags		= 0
 	},
 };
@@ -937,6 +1106,36 @@ static struct platform_device dm644x_serial_device = {
 	.dev			= {
 		.platform_data	= dm644x_serial_platform_data,
 	},
+=======
+		.flags	= 0,
+	}
+};
+
+struct platform_device dm644x_serial_device[] = {
+	{
+		.name			= "serial8250",
+		.id			= PLAT8250_DEV_PLATFORM,
+		.dev			= {
+			.platform_data	= dm644x_serial0_platform_data,
+		}
+	},
+	{
+		.name			= "serial8250",
+		.id			= PLAT8250_DEV_PLATFORM1,
+		.dev			= {
+			.platform_data	= dm644x_serial1_platform_data,
+		}
+	},
+	{
+		.name			= "serial8250",
+		.id			= PLAT8250_DEV_PLATFORM2,
+		.dev			= {
+			.platform_data	= dm644x_serial2_platform_data,
+		}
+	},
+	{
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct davinci_soc_info davinci_soc_info_dm644x = {
@@ -956,6 +1155,7 @@ static struct davinci_soc_info davinci_soc_info_dm644x = {
 	.intc_irq_prios 	= dm644x_default_priorities,
 	.intc_irq_num		= DAVINCI_N_AINTC_IRQ,
 	.timer_info		= &dm644x_timer_info,
+<<<<<<< HEAD
 	.gpio_type		= GPIO_TYPE_DAVINCI,
 	.gpio_base		= DAVINCI_GPIO_BASE,
 	.gpio_num		= 71,
@@ -968,6 +1168,11 @@ static struct davinci_soc_info davinci_soc_info_dm644x = {
 	.reset_device		= &davinci_wdt_device,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.emac_pdata		= &dm644x_emac_pdata,
+	.sram_dma		= 0x00008000,
+	.sram_len		= SZ_16K,
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init dm644x_init_asp(struct snd_platform_data *pdata)
@@ -981,7 +1186,10 @@ void __init dm644x_init(void)
 {
 	davinci_common_init(&davinci_soc_info_dm644x);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	davinci_map_sysmod();
 }
 
@@ -995,11 +1203,14 @@ int __init dm644x_init_video(struct vpfe_config *vpfe_cfg,
 		dm644x_vpfe_dev.dev.platform_data = vpfe_cfg;
 		platform_device_register(&dm644x_ccdc_dev);
 		platform_device_register(&dm644x_vpfe_dev);
+<<<<<<< HEAD
 		/* Add ccdc clock aliases */
 		clk_add_alias("master", dm644x_ccdc_dev.name,
 			      "vpss_master", NULL);
 		clk_add_alias("slave", dm644x_ccdc_dev.name,
 			      "vpss_slave", NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (vpbe_cfg) {
@@ -1011,7 +1222,10 @@ int __init dm644x_init_video(struct vpfe_config *vpfe_cfg,
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init dm644x_init_devices(void)
@@ -1020,15 +1234,19 @@ static int __init dm644x_init_devices(void)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add ccdc clock aliases */
 	clk_add_alias("master", dm644x_ccdc_dev.name, "vpss_master", NULL);
 	clk_add_alias("slave", dm644x_ccdc_dev.name, "vpss_slave", NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&dm644x_edma_device);
 
 	platform_device_register(&dm644x_mdio_device);
 	platform_device_register(&dm644x_emac_device);
+<<<<<<< HEAD
 	clk_add_alias(NULL, dev_name(&dm644x_mdio_device.dev),
 		      NULL, &dm644x_emac_device.dev);
 
@@ -1039,6 +1257,9 @@ static int __init dm644x_init_devices(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 postcore_initcall(dm644x_init_devices);

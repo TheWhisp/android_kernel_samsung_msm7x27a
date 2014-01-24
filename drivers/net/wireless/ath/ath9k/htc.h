@@ -22,6 +22,10 @@
 #include <linux/firmware.h>
 #include <linux/skbuff.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
+=======
+#include <linux/etherdevice.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/leds.h>
 #include <linux/slab.h>
 #include <net/mac80211.h>
@@ -141,6 +145,10 @@ struct ath9k_htc_target_aggr {
 #define WLAN_RC_40_FLAG  0x02
 #define WLAN_RC_SGI_FLAG 0x04
 #define WLAN_RC_HT_FLAG  0x08
+<<<<<<< HEAD
+=======
+#define ATH_RC_TX_STBC_FLAG 0x20
+>>>>>>> refs/remotes/origin/master
 
 struct ath9k_htc_rateset {
 	u8 rs_nrates;
@@ -207,6 +215,12 @@ struct ath9k_htc_target_rx_stats {
 		case NL80211_IFTYPE_AP:		\
 			_priv->num_ap_vif++;	\
 			break;			\
+<<<<<<< HEAD
+=======
+		case NL80211_IFTYPE_MESH_POINT:	\
+			_priv->num_mbss_vif++;	\
+			break;			\
+>>>>>>> refs/remotes/origin/master
 		default:			\
 			break;			\
 		}				\
@@ -223,6 +237,12 @@ struct ath9k_htc_target_rx_stats {
 		case NL80211_IFTYPE_AP:		\
 			_priv->num_ap_vif--;	\
 			break;			\
+<<<<<<< HEAD
+=======
+		case NL80211_IFTYPE_MESH_POINT:	\
+			_priv->num_mbss_vif--;	\
+			break;			\
+>>>>>>> refs/remotes/origin/master
 		default:			\
 			break;			\
 		}				\
@@ -316,7 +336,13 @@ static inline struct ath9k_htc_tx_ctl *HTC_SKB_CB(struct sk_buff *skb)
 #ifdef CONFIG_ATH9K_HTC_DEBUGFS
 
 #define TX_STAT_INC(c) (hif_dev->htc_handle->drv_priv->debug.tx_stats.c++)
+<<<<<<< HEAD
 #define RX_STAT_INC(c) (hif_dev->htc_handle->drv_priv->debug.rx_stats.c++)
+=======
+#define TX_STAT_ADD(c, a) (hif_dev->htc_handle->drv_priv->debug.tx_stats.c += a)
+#define RX_STAT_INC(c) (hif_dev->htc_handle->drv_priv->debug.rx_stats.c++)
+#define RX_STAT_ADD(c, a) (hif_dev->htc_handle->drv_priv->debug.rx_stats.c += a)
+>>>>>>> refs/remotes/origin/master
 #define CAB_STAT_INC   priv->debug.tx_stats.cab_queued++
 
 #define TX_QSTAT_INC(q) (priv->debug.tx_stats.queue_stats[q]++)
@@ -329,14 +355,25 @@ struct ath_tx_stats {
 	u32 buf_completed;
 	u32 skb_queued;
 	u32 skb_success;
+<<<<<<< HEAD
 	u32 skb_failed;
 	u32 cab_queued;
 	u32 queue_stats[WME_NUM_AC];
+=======
+	u32 skb_success_bytes;
+	u32 skb_failed;
+	u32 cab_queued;
+	u32 queue_stats[IEEE80211_NUM_ACS];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ath_rx_stats {
 	u32 skb_allocated;
 	u32 skb_completed;
+<<<<<<< HEAD
+=======
+	u32 skb_completed_bytes;
+>>>>>>> refs/remotes/origin/master
 	u32 skb_dropped;
 	u32 err_crc;
 	u32 err_decrypt_crc;
@@ -354,10 +391,27 @@ struct ath9k_debug {
 	struct ath_rx_stats rx_stats;
 };
 
+<<<<<<< HEAD
 #else
 
 #define TX_STAT_INC(c) do { } while (0)
 #define RX_STAT_INC(c) do { } while (0)
+=======
+void ath9k_htc_get_et_strings(struct ieee80211_hw *hw,
+			      struct ieee80211_vif *vif,
+			      u32 sset, u8 *data);
+int ath9k_htc_get_et_sset_count(struct ieee80211_hw *hw,
+				struct ieee80211_vif *vif, int sset);
+void ath9k_htc_get_et_stats(struct ieee80211_hw *hw,
+			    struct ieee80211_vif *vif,
+			    struct ethtool_stats *stats, u64 *data);
+#else
+
+#define TX_STAT_INC(c) do { } while (0)
+#define TX_STAT_ADD(c, a) do { } while (0)
+#define RX_STAT_INC(c) do { } while (0)
+#define RX_STAT_ADD(c, a) do { } while (0)
+>>>>>>> refs/remotes/origin/master
 #define CAB_STAT_INC   do { } while (0)
 
 #define TX_QSTAT_INC(c) do { } while (0)
@@ -401,10 +455,13 @@ struct ath_btcoex {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ath_htc_init_btcoex_work(struct ath9k_htc_priv *priv);
 void ath_htc_resume_btcoex_work(struct ath9k_htc_priv *priv);
 void ath_htc_cancel_btcoex_work(struct ath9k_htc_priv *priv);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
 void ath9k_htc_init_btcoex(struct ath9k_htc_priv *priv, char *product);
 void ath9k_htc_start_btcoex(struct ath9k_htc_priv *priv);
@@ -420,7 +477,10 @@ static inline void ath9k_htc_stop_btcoex(struct ath9k_htc_priv *priv)
 {
 }
 #endif /* CONFIG_ATH9K_BTCOEX_SUPPORT */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define OP_INVALID		   BIT(0)
 #define OP_SCANNING		   BIT(1)
@@ -455,11 +515,18 @@ struct ath9k_htc_priv {
 	u8 sta_slot;
 	u8 vif_sta_pos[ATH9K_HTC_MAX_VIF];
 	u8 num_ibss_vif;
+<<<<<<< HEAD
+=======
+	u8 num_mbss_vif;
+>>>>>>> refs/remotes/origin/master
 	u8 num_sta_vif;
 	u8 num_sta_assoc_vif;
 	u8 num_ap_vif;
 
+<<<<<<< HEAD
 	u16 op_flags;
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 curtxpow;
 	u16 txpowlimit;
 	u16 nvifs;
@@ -467,6 +534,10 @@ struct ath9k_htc_priv {
 	bool rearm_ani;
 	bool reconfig_beacon;
 	unsigned int rxfilter;
+<<<<<<< HEAD
+=======
+	unsigned long op_flags;
+>>>>>>> refs/remotes/origin/master
 
 	struct ath9k_hw_cal_data caldata;
 	struct ieee80211_supported_band sbands[IEEE80211_NUM_BANDS];
@@ -499,16 +570,24 @@ struct ath9k_htc_priv {
 
 	int beaconq;
 	int cabq;
+<<<<<<< HEAD
 	int hwq_map[WME_NUM_AC];
 
 <<<<<<< HEAD
 	struct ath_btcoex btcoex;
 =======
+=======
+	int hwq_map[IEEE80211_NUM_ACS];
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ATH9K_BTCOEX_SUPPORT
 	struct ath_btcoex btcoex;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct delayed_work coex_period_work;
 	struct delayed_work duty_cycle_work;
 #ifdef CONFIG_ATH9K_HTC_DEBUGFS
@@ -547,16 +626,23 @@ void ath9k_htc_beaconep(void *drv_priv, struct sk_buff *skb,
 int ath9k_htc_update_cap_target(struct ath9k_htc_priv *priv,
 				u8 enable_coex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ath9k_htc_station_work(struct work_struct *work);
 void ath9k_htc_aggr_work(struct work_struct *work);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void ath9k_htc_ani_work(struct work_struct *work);
 void ath9k_htc_start_ani(struct ath9k_htc_priv *priv);
 void ath9k_htc_stop_ani(struct ath9k_htc_priv *priv);
 
 int ath9k_tx_init(struct ath9k_htc_priv *priv);
 int ath9k_htc_tx_start(struct ath9k_htc_priv *priv,
+<<<<<<< HEAD
+=======
+		       struct ieee80211_sta *sta,
+>>>>>>> refs/remotes/origin/master
 		       struct sk_buff *skb, u8 slot, bool is_cab);
 void ath9k_tx_cleanup(struct ath9k_htc_priv *priv);
 bool ath9k_htc_txq_setup(struct ath9k_htc_priv *priv, int subtype);
@@ -571,9 +657,12 @@ void ath9k_htc_tx_clear_slot(struct ath9k_htc_priv *priv, int slot);
 void ath9k_htc_tx_drain(struct ath9k_htc_priv *priv);
 void ath9k_htc_txstatus(struct ath9k_htc_priv *priv, void *wmi_event);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ath9k_htc_tx_failed(struct ath9k_htc_priv *priv);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void ath9k_tx_failed_tasklet(unsigned long data);
 void ath9k_htc_tx_cleanup_timer(unsigned long data);
 
@@ -591,8 +680,13 @@ bool ath9k_htc_setpower(struct ath9k_htc_priv *priv,
 
 void ath9k_start_rfkill_poll(struct ath9k_htc_priv *priv);
 void ath9k_htc_rfkill_poll_state(struct ieee80211_hw *hw);
+<<<<<<< HEAD
 void ath9k_htc_radio_enable(struct ieee80211_hw *hw);
 void ath9k_htc_radio_disable(struct ieee80211_hw *hw);
+=======
+
+struct base_eep_header *ath9k_htc_get_eeprom_base(struct ath9k_htc_priv *priv);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MAC80211_LEDS
 void ath9k_init_leds(struct ath9k_htc_priv *priv);

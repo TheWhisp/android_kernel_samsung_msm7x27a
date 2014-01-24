@@ -1,7 +1,11 @@
 /*
  *  Linux MegaRAID driver for SAS based RAID controllers
  *
+<<<<<<< HEAD
  *  Copyright (c) 2009-2011  LSI Corporation.
+=======
+ *  Copyright (c) 2009-2012  LSI Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
@@ -44,8 +48,12 @@
 #define HOST_DIAG_RESET_ADAPTER			    0x4
 #define MEGASAS_FUSION_MAX_RESET_TRIES		    3
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MAX_MSIX_QUEUES_FUSION			    16
+=======
+#define MAX_MSIX_QUEUES_FUSION			    128
+>>>>>>> refs/remotes/origin/master
 
 /* Invader defines */
 #define MPI2_TYPE_CUDA				    0x2
@@ -54,7 +62,10 @@
 #define	MR_RL_FLAGS_GRANT_DESTINATION_CPU1	    0x10
 #define	MR_RL_FLAGS_GRANT_DESTINATION_CUDA	    0x80
 #define MR_RL_FLAGS_SEQ_NUM_ENABLE		    0x8
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* T10 PI defines */
 #define MR_PROT_INFO_TYPE_CONTROLLER                0x8
@@ -64,7 +75,13 @@
 #define MEGASAS_SCSI_ADDL_CDB_LEN                   0x18
 #define MEGASAS_RD_WR_PROTECT_CHECK_ALL		    0x20
 #define MEGASAS_RD_WR_PROTECT_CHECK_NONE	    0x60
+<<<<<<< HEAD
 #define MEGASAS_EEDPBLOCKSIZE			    512
+=======
+
+#define MPI2_SUP_REPLY_POST_HOST_INDEX_OFFSET   (0x0000030C)
+#define MPI2_REPLY_POST_HOST_INDEX_OFFSET	(0x0000006C)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Raid context flags
@@ -83,21 +100,30 @@ enum MR_RAID_FLAGS_IO_SUB_TYPE {
 #define MEGASAS_REQ_DESCRIPT_FLAGS_LD_IO           0x7
 #define MEGASAS_REQ_DESCRIPT_FLAGS_MFA             0x1
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #define MEGASAS_REQ_DESCRIPT_FLAGS_NO_LOCK	   0x2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MEGASAS_REQ_DESCRIPT_FLAGS_NO_LOCK	   0x2
+>>>>>>> refs/remotes/origin/master
 #define MEGASAS_REQ_DESCRIPT_FLAGS_TYPE_SHIFT      1
 
 #define MEGASAS_FP_CMD_LEN	16
 #define MEGASAS_FUSION_IN_RESET 0
 
 /*
+<<<<<<< HEAD
  * Raid Context structure which describes MegaRAID specific IO Paramenters
+=======
+ * Raid Context structure which describes MegaRAID specific IO Parameters
+>>>>>>> refs/remotes/origin/master
  * This resides at offset 0x60 where the SGL normally starts in MPT IO Frames
  */
 
 struct RAID_CONTEXT {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u16     resvd0;
 =======
@@ -105,6 +131,16 @@ struct RAID_CONTEXT {
 	u8	nseg:4;
 	u8	resvd0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if   defined(__BIG_ENDIAN_BITFIELD)
+	u8	nseg:4;
+	u8	Type:4;
+#else
+	u8	Type:4;
+	u8	nseg:4;
+#endif
+	u8	resvd0;
+>>>>>>> refs/remotes/origin/master
 	u16     timeoutValue;
 	u8      regLockFlags;
 	u8      resvd1;
@@ -307,8 +343,18 @@ struct MPI2_RAID_SCSI_IO_REQUEST {
  * MPT RAID MFA IO Descriptor.
  */
 struct MEGASAS_RAID_MFA_IO_REQUEST_DESCRIPTOR {
+<<<<<<< HEAD
 	u32     RequestFlags:8;
 	u32     MessageAddress1:24; /* bits 31:8*/
+=======
+#if   defined(__BIG_ENDIAN_BITFIELD)
+	u32     MessageAddress1:24; /* bits 31:8*/
+	u32     RequestFlags:8;
+#else
+	u32     RequestFlags:8;
+	u32     MessageAddress1:24; /* bits 31:8*/
+#endif
+>>>>>>> refs/remotes/origin/master
 	u32     MessageAddress2;      /* bits 61:32 */
 };
 
@@ -472,6 +518,10 @@ struct MPI2_IOC_INIT_REQUEST {
 /* mrpriv defines */
 #define MR_PD_INVALID 0xFFFF
 #define MAX_SPAN_DEPTH 8
+<<<<<<< HEAD
+=======
+#define MAX_QUAD_DEPTH	MAX_SPAN_DEPTH
+>>>>>>> refs/remotes/origin/master
 #define MAX_RAIDMAP_SPAN_DEPTH (MAX_SPAN_DEPTH)
 #define MAX_ROW_SIZE 32
 #define MAX_RAIDMAP_ROW_SIZE (MAX_ROW_SIZE)
@@ -513,7 +563,13 @@ struct MR_LD_SPAN {
 	u64      startBlk;
 	u64      numBlks;
 	u16      arrayRef;
+<<<<<<< HEAD
 	u8       reserved[6];
+=======
+	u8       spanRowSize;
+	u8       spanRowDataSize;
+	u8       reserved[4];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct MR_SPAN_BLOCK_INFO {
@@ -524,6 +580,22 @@ struct MR_SPAN_BLOCK_INFO {
 
 struct MR_LD_RAID {
 	struct {
+<<<<<<< HEAD
+=======
+#if   defined(__BIG_ENDIAN_BITFIELD)
+		u32     reserved4:7;
+		u32	fpNonRWCapable:1;
+		u32     fpReadAcrossStripe:1;
+		u32     fpWriteAcrossStripe:1;
+		u32     fpReadCapable:1;
+		u32     fpWriteCapable:1;
+		u32     encryptionType:8;
+		u32     pdPiMode:4;
+		u32     ldPiMode:4;
+		u32     reserved5:3;
+		u32     fpCapable:1;
+#else
+>>>>>>> refs/remotes/origin/master
 		u32     fpCapable:1;
 		u32     reserved5:3;
 		u32     ldPiMode:4;
@@ -533,7 +605,13 @@ struct MR_LD_RAID {
 		u32     fpReadCapable:1;
 		u32     fpWriteAcrossStripe:1;
 		u32     fpReadAcrossStripe:1;
+<<<<<<< HEAD
 		u32     reserved4:8;
+=======
+		u32	fpNonRWCapable:1;
+		u32     reserved4:7;
+#endif
+>>>>>>> refs/remotes/origin/master
 	} capability;
 	u32     reserved6;
 	u64     size;
@@ -550,10 +628,14 @@ struct MR_LD_RAID {
 	u8      regTypeReqOnWrite;
 	u8      modFactor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8      reserved2[1];
 =======
 	u8	regTypeReqOnRead;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8	regTypeReqOnRead;
+>>>>>>> refs/remotes/origin/master
 	u16     seqNum;
 
 	struct {
@@ -561,7 +643,13 @@ struct MR_LD_RAID {
 		u32 reserved:31;
 	} flags;
 
+<<<<<<< HEAD
 	u8      reserved3[0x5C];
+=======
+	u8	LUN[8]; /* 0x24 8 byte LUN field used for SCSI IO's */
+	u8	fpIoTimeoutForLd;/*0x2C timeout value used by driver in FP IO*/
+	u8      reserved3[0x80-0x2D]; /* 0x2D */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct MR_LD_SPAN_MAP {
@@ -603,6 +691,13 @@ struct IO_REQUEST_INFO {
 	u16 devHandle;
 	u64 pdBlock;
 	u8 fpOkForIo;
+<<<<<<< HEAD
+=======
+	u8 IoforUnevenSpan;
+	u8 start_span;
+	u8 reserved;
+	u64 start_row;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct MR_LD_TARGET_SYNC {
@@ -664,6 +759,29 @@ struct LD_LOAD_BALANCE_INFO {
 	u64     last_accessed_block[2];
 };
 
+<<<<<<< HEAD
+=======
+/* SPAN_SET is info caclulated from span info from Raid map per LD */
+typedef struct _LD_SPAN_SET {
+	u64  log_start_lba;
+	u64  log_end_lba;
+	u64  span_row_start;
+	u64  span_row_end;
+	u64  data_strip_start;
+	u64  data_strip_end;
+	u64  data_row_start;
+	u64  data_row_end;
+	u8   strip_offset[MAX_SPAN_DEPTH];
+	u32    span_row_data_width;
+	u32    diff;
+	u32    reserved[2];
+} LD_SPAN_SET, *PLD_SPAN_SET;
+
+typedef struct LOG_BLOCK_SPAN_INFO {
+	LD_SPAN_SET  span_set[MAX_SPAN_DEPTH];
+} LD_SPAN_INFO, *PLD_SPAN_INFO;
+
+>>>>>>> refs/remotes/origin/master
 struct MR_FW_RAID_MAP_ALL {
 	struct MR_FW_RAID_MAP raidMap;
 	struct MR_LD_SPAN_MAP ldSpanMap[MAX_LOGICAL_DRIVES - 1];
@@ -690,10 +808,14 @@ struct fusion_context {
 	struct dma_pool *reply_frames_desc_pool;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 last_reply_idx;
 =======
 	u16 last_reply_idx[MAX_MSIX_QUEUES_FUSION];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 last_reply_idx[MAX_MSIX_QUEUES_FUSION];
+>>>>>>> refs/remotes/origin/master
 
 	u32 reply_q_depth;
 	u32 request_alloc_sz;
@@ -712,6 +834,10 @@ struct fusion_context {
 	u32 map_sz;
 	u8 fast_path_io;
 	struct LD_LOAD_BALANCE_INFO load_balance_info[MAX_LOGICAL_DRIVES];
+<<<<<<< HEAD
+=======
+	LD_SPAN_INFO log_to_span[MAX_LOGICAL_DRIVES];
+>>>>>>> refs/remotes/origin/master
 };
 
 union desc_value {

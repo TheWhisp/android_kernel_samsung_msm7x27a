@@ -9,6 +9,7 @@
 #include <linux/fs.h>
 #include <linux/sysctl.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/nfs4.h>
 #include <linux/nfs_idmap.h>
 #include <linux/nfs_fs.h>
@@ -48,6 +49,13 @@ static ctl_table nfs_cb_sysctls[] = {
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+#include <linux/nfs_fs.h>
+
+static struct ctl_table_header *nfs_callback_sysctl_table;
+
+static ctl_table nfs_cb_sysctls[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.procname	= "nfs_mountpoint_timeout",
 		.data		= &nfs_mountpoint_expiry_timeout,

@@ -7,9 +7,14 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+#include <linux/mmdebug.h>
+>>>>>>> refs/remotes/origin/master
 #ifndef __GENERATING_BOUNDS_H
 #include <linux/mm_types.h>
 #include <generated/bounds.h>
@@ -129,11 +134,14 @@ enum pageflags {
 	/* SLOB */
 	PG_slob_free = PG_private,
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* SLUB */
 	PG_slub_frozen = PG_active,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifndef __GENERATING_BOUNDS_H
@@ -143,10 +151,14 @@ enum pageflags {
  */
 #define TESTPAGEFLAG(uname, lname)					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int Page##uname(struct page *page) 			\
 =======
 static inline int Page##uname(const struct page *page)			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int Page##uname(const struct page *page)			\
+>>>>>>> refs/remotes/origin/master
 			{ return test_bit(PG_##lname, &page->flags); }
 
 #define SETPAGEFLAG(uname, lname)					\
@@ -185,10 +197,14 @@ static inline int __TestClearPage##uname(struct page *page)		\
 
 #define PAGEFLAG_FALSE(uname) 						\
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int Page##uname(struct page *page) 			\
 =======
 static inline int Page##uname(const struct page *page)			\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int Page##uname(const struct page *page)			\
+>>>>>>> refs/remotes/origin/master
 			{ return 0; }
 
 #define TESTSCFLAG(uname, lname)					\
@@ -228,10 +244,13 @@ PAGEFLAG(SwapBacked, swapbacked) __CLEARPAGEFLAG(SwapBacked, swapbacked)
 __PAGEFLAG(SlobFree, slob_free)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 __PAGEFLAG(SlubFrozen, slub_frozen)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Private page markings that may be used by the filesystem that owns the page
  * for its own purposes.
@@ -324,14 +343,18 @@ static inline void __SetPageUptodate(struct page *page)
 
 static inline void SetPageUptodate(struct page *page)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_S390
 	if (!test_and_set_bit(PG_uptodate, &page->flags))
 		page_set_storage_key(page_to_phys(page), PAGE_DEFAULT_KEY, 0);
 #else
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Memory barrier must be issued before setting the PG_uptodate bit,
 	 * so that all previous stores issued in order to bring the page
 	 * uptodate are actually visible before PageUptodate becomes true.
+<<<<<<< HEAD
 	 *
 	 * s390 doesn't need an explicit smp_wmb here because the test and
 	 * set bit already provides full barriers.
@@ -339,6 +362,11 @@ static inline void SetPageUptodate(struct page *page)
 	smp_wmb();
 	set_bit(PG_uptodate, &(page)->flags);
 #endif
+=======
+	 */
+	smp_wmb();
+	set_bit(PG_uptodate, &(page)->flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 CLEARPAGEFLAG(Uptodate, uptodate)
@@ -358,7 +386,13 @@ static inline void set_page_writeback(struct page *page)
  * System with lots of page flags available. This allows separate
  * flags for PageHead() and PageTail() checks of compound pages so that bit
  * tests can be used in performance sensitive paths. PageCompound is
+<<<<<<< HEAD
  * generally not used in hot code paths.
+=======
+ * generally not used in hot code paths except arch/powerpc/mm/init_64.c
+ * and arch/powerpc/kvm/book3s_64_vio_hv.c which use it to detect huge pages
+ * and avoid handling those in real mode.
+>>>>>>> refs/remotes/origin/master
  */
 __PAGEFLAG(Head, head) CLEARPAGEFLAG(Head, head)
 __PAGEFLAG(Tail, tail)
@@ -444,20 +478,29 @@ static inline int PageTransHuge(struct page *page)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PageTransCompound returns true for both transparent huge pages
  * and hugetlbfs pages, so it should only be called when it's known
  * that hugetlbfs pages aren't involved.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int PageTransCompound(struct page *page)
 {
 	return PageCompound(page);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PageTransTail returns true for both transparent huge pages
  * and hugetlbfs pages, so it should only be called when it's known
@@ -468,7 +511,10 @@ static inline int PageTransTail(struct page *page)
 	return PageTail(page);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 
 static inline int PageTransHuge(struct page *page)
@@ -481,15 +527,51 @@ static inline int PageTransCompound(struct page *page)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline int PageTransTail(struct page *page)
 {
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+#endif
+
+/*
+ * If network-based swap is enabled, sl*b must keep track of whether pages
+ * were allocated from pfmemalloc reserves.
+ */
+static inline int PageSlabPfmemalloc(struct page *page)
+{
+	VM_BUG_ON(!PageSlab(page));
+	return PageActive(page);
+}
+
+static inline void SetPageSlabPfmemalloc(struct page *page)
+{
+	VM_BUG_ON(!PageSlab(page));
+	SetPageActive(page);
+}
+
+static inline void __ClearPageSlabPfmemalloc(struct page *page)
+{
+	VM_BUG_ON(!PageSlab(page));
+	__ClearPageActive(page);
+}
+
+static inline void ClearPageSlabPfmemalloc(struct page *page)
+{
+	VM_BUG_ON(!PageSlab(page));
+	ClearPageActive(page);
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 #define __PG_MLOCKED		(1 << PG_mlocked)
 #else

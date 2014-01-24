@@ -199,13 +199,20 @@ static void mousevsc_on_receive_device_info(struct mousevsc_dev *input_device,
 	if (desc->bLength == 0)
 		goto cleanup;
 
+<<<<<<< HEAD
 	input_device->hid_desc = kzalloc(desc->bLength, GFP_ATOMIC);
+=======
+	input_device->hid_desc = kmemdup(desc, desc->bLength, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 
 	if (!input_device->hid_desc)
 		goto cleanup;
 
+<<<<<<< HEAD
 	memcpy(input_device->hid_desc, desc, desc->bLength);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	input_device->report_desc_size = desc->desc[0].wDescriptorLength;
 	if (input_device->report_desc_size == 0) {
 		input_device->dev_info_status = -EINVAL;
@@ -430,6 +437,18 @@ cleanup:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+static int mousevsc_hid_parse(struct hid_device *hid)
+{
+	struct hv_device *dev = hid_get_drvdata(hid);
+	struct mousevsc_dev *input_dev = hv_get_drvdata(dev);
+
+	return hid_parse_report(hid, input_dev->report_desc,
+				input_dev->report_desc_size);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int mousevsc_hid_open(struct hid_device *hid)
 {
 	return 0;
@@ -449,6 +468,10 @@ static void mousevsc_hid_stop(struct hid_device *hid)
 }
 
 static struct hid_ll_driver mousevsc_ll_driver = {
+<<<<<<< HEAD
+=======
+	.parse = mousevsc_hid_parse,
+>>>>>>> refs/remotes/origin/master
 	.open = mousevsc_hid_open,
 	.close = mousevsc_hid_close,
 	.start = mousevsc_hid_start,
@@ -506,13 +529,23 @@ static int mousevsc_probe(struct hv_device *device,
 
 	sprintf(hid_dev->name, "%s", "Microsoft Vmbus HID-compliant Mouse");
 
+<<<<<<< HEAD
+=======
+	hid_set_drvdata(hid_dev, device);
+
+>>>>>>> refs/remotes/origin/master
 	ret = hid_add_device(hid_dev);
 	if (ret)
 		goto probe_err1;
 
+<<<<<<< HEAD
 	ret = hid_parse_report(hid_dev, input_dev->report_desc,
 				input_dev->report_desc_size);
 
+=======
+
+	ret = hid_parse(hid_dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		hid_err(hid_dev, "parse failed\n");
 		goto probe_err2;
@@ -557,8 +590,12 @@ static int mousevsc_remove(struct hv_device *dev)
 
 static const struct hv_vmbus_device_id id_table[] = {
 	/* Mouse guid */
+<<<<<<< HEAD
 	{ VMBUS_DEVICE(0x9E, 0xB6, 0xA8, 0xCF, 0x4A, 0x5B, 0xc0, 0x4c,
 		       0xB9, 0x8B, 0x8B, 0xA1, 0xA1, 0xF3, 0xF9, 0x5A) },
+=======
+	{ HV_MOUSE_GUID, },
+>>>>>>> refs/remotes/origin/master
 	{ },
 };
 
@@ -582,6 +619,9 @@ static void __exit mousevsc_exit(void)
 }
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_VERSION(HV_DRV_VERSION);
+=======
+>>>>>>> refs/remotes/origin/master
 module_init(mousevsc_init);
 module_exit(mousevsc_exit);

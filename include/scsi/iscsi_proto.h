@@ -30,20 +30,29 @@
 #define ISCSI_LISTEN_PORT	3260
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* iSCSI header length */
 #define ISCSI_HDR_LEN		48
 
 /* iSCSI CRC32C length */
 #define ISCSI_CRC_LEN		4
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Padding word length */
 #define ISCSI_PAD_LEN		4
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Serial Number Arithmetic, 32 bits, RFC1982
  */
 
@@ -68,7 +77,10 @@ static inline int iscsi_sna_gte(u32 n1, u32 n2)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * useful common(control and data pathes) macro
  */
 #define ntoh24(p) (((p)[0] << 16) | ((p)[1] << 8) | ((p)[2]))
@@ -97,10 +109,14 @@ struct iscsi_hdr {
 	uint8_t		hlength;	/* AHSs total length */
 	uint8_t		dlength[3];	/* Data length */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t		lun[8];
 =======
 	struct scsi_lun	lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t		itt;		/* Initiator Task Tag, opaque for target */
 	__be32		ttt;		/* Target Task Tag */
 	__be32		statsn;
@@ -157,20 +173,28 @@ struct iscsi_ahs_hdr {
 
 /* iSCSI PDU Header */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct iscsi_cmd {
 =======
 struct iscsi_scsi_req {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct iscsi_scsi_req {
+>>>>>>> refs/remotes/origin/master
 	uint8_t opcode;
 	uint8_t flags;
 	__be16 rsvd2;
 	uint8_t hlength;
 	uint8_t dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t	 itt;	/* Initiator Task Tag */
 	__be32 data_length;
 	__be32 cmdsn;
@@ -210,10 +234,14 @@ struct iscsi_ecdb_ahdr {
 
 /* SCSI Response Header */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct iscsi_cmd_rsp {
 =======
 struct iscsi_scsi_rsp {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct iscsi_scsi_rsp {
+>>>>>>> refs/remotes/origin/master
 	uint8_t opcode;
 	uint8_t flags;
 	uint8_t response;
@@ -251,10 +279,14 @@ struct iscsi_async {
 	uint8_t rsvd3;
 	uint8_t dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun	lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	lun;
+>>>>>>> refs/remotes/origin/master
 	uint8_t rsvd4[8];
 	__be32	statsn;
 	__be32	exp_cmdsn;
@@ -283,10 +315,14 @@ struct iscsi_nopout {
 	uint8_t rsvd3;
 	uint8_t dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun	lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t	 itt;	/* Initiator Task Tag */
 	__be32	ttt;	/* Target Transfer Tag */
 	__be32	cmdsn;
@@ -302,10 +338,14 @@ struct iscsi_nopin {
 	uint8_t rsvd3;
 	uint8_t dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun	lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t	 itt;	/* Initiator Task Tag */
 	__be32	ttt;	/* Target Transfer Tag */
 	__be32	statsn;
@@ -322,10 +362,14 @@ struct iscsi_tm {
 	uint8_t hlength;
 	uint8_t dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t	 itt;	/* Initiator Task Tag */
 	itt_t	 rtt;	/* Reference Task Tag */
 	__be32	cmdsn;
@@ -384,10 +428,14 @@ struct iscsi_r2t_rsp {
 	uint8_t	hlength;
 	uint8_t	dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun	lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t	 itt;	/* Initiator Task Tag */
 	__be32	ttt;	/* Target Transfer Tag */
 	__be32	statsn;
@@ -406,10 +454,14 @@ struct iscsi_data {
 	uint8_t rsvd3;
 	uint8_t dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t	 itt;
 	__be32	ttt;
 	__be32	rsvd4;
@@ -430,10 +482,14 @@ struct iscsi_data_rsp {
 	uint8_t hlength;
 	uint8_t dlength[3];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t lun[8];
 =======
 	struct scsi_lun	lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun	lun;
+>>>>>>> refs/remotes/origin/master
 	itt_t	 itt;
 	__be32	ttt;
 	__be32	statsn;
@@ -487,10 +543,14 @@ struct iscsi_text_rsp {
 
 /* Login Header */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct iscsi_login {
 =======
 struct iscsi_login_req {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct iscsi_login_req {
+>>>>>>> refs/remotes/origin/master
 	uint8_t opcode;
 	uint8_t flags;
 	uint8_t max_version;	/* Max. version supported */
@@ -512,8 +572,11 @@ struct iscsi_login_req {
 #define ISCSI_FLAG_LOGIN_CONTINUE		0x40
 #define ISCSI_FLAG_LOGIN_CURRENT_STAGE_MASK	0x0C	/* 2 bits */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ISCSI_FLAG_LOGIN_NEXT_STAGE_MASK	0x03	/* 2 bits */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ISCSI_FLAG_LOGIN_CURRENT_STAGE1		0x04
 #define ISCSI_FLAG_LOGIN_CURRENT_STAGE2		0x08
 #define ISCSI_FLAG_LOGIN_CURRENT_STAGE3		0x0C
@@ -521,7 +584,10 @@ struct iscsi_login_req {
 #define ISCSI_FLAG_LOGIN_NEXT_STAGE1		0x01
 #define ISCSI_FLAG_LOGIN_NEXT_STAGE2		0x02
 #define ISCSI_FLAG_LOGIN_NEXT_STAGE3		0x03
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define ISCSI_LOGIN_CURRENT_STAGE(flags) \
 	((flags & ISCSI_FLAG_LOGIN_CURRENT_STAGE_MASK) >> 2)
@@ -645,6 +711,7 @@ struct iscsi_snack {
 	uint8_t opcode;
 	uint8_t flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t rsvd2[14];
 	itt_t	 itt;
 	__be32	begrun;
@@ -657,6 +724,8 @@ struct iscsi_snack {
 
 /* SNACK PDU flags */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint8_t rsvd2[2];
 	uint8_t hlength;
 	uint8_t dlength[3];
@@ -676,7 +745,10 @@ struct iscsi_snack {
 #define ISCSI_FLAG_SNACK_TYPE_STATUS		1
 #define ISCSI_FLAG_SNACK_TYPE_DATA_ACK		2
 #define ISCSI_FLAG_SNACK_TYPE_RDATA		3
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ISCSI_FLAG_SNACK_TYPE_MASK	0x0F	/* 4 bits */
 
 /* Reject Message Header */
@@ -733,6 +805,11 @@ struct iscsi_reject {
 
 #define ISCSI_DEF_TIME2WAIT			2
 
+<<<<<<< HEAD
+=======
+#define ISCSI_NAME_LEN				224
+
+>>>>>>> refs/remotes/origin/master
 /************************* RFC 3720 End *****************************/
 
 #endif /* ISCSI_PROTO_H */

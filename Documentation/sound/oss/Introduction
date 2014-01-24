@@ -168,12 +168,17 @@ MODPROBE:
 =========
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 If loading via modprobe, these common files are automatically loaded 
 when requested by modprobe.  For example, my /etc/modprobe.conf contains:
 =======
 If loading via modprobe, these common files are automatically loaded when
 requested by modprobe.  For example, my /etc/modprobe.d/oss.conf contains:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+If loading via modprobe, these common files are automatically loaded when
+requested by modprobe.  For example, my /etc/modprobe.d/oss.conf contains:
+>>>>>>> refs/remotes/origin/master
 
 alias sound sb 
 options sb io=0x240 irq=9 dma=3 dma16=5 mpu_io=0x300
@@ -234,10 +239,14 @@ driver, you should do the following:
 
 1.  remove sound modules (detailed above)
 <<<<<<< HEAD
+<<<<<<< HEAD
 2.  remove the sound modules from /etc/modprobe.conf
 =======
 2.  remove the sound modules from /etc/modprobe.d/*.conf
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+2.  remove the sound modules from /etc/modprobe.d/*.conf
+>>>>>>> refs/remotes/origin/master
 3.  move the sound modules from /lib/modules/<kernel>/misc
     (for example, I make a /lib/modules/<kernel>/misc/tmp
     directory and copy the sound module files to that 
@@ -275,10 +284,14 @@ twice, you need to do the following:
     second SoundBlaster.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 2.  Make a second entry in /etc/modprobe.conf, for example,
 =======
 2.  Make a second entry in /etc/modprobe.d/*conf, for example,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+2.  Make a second entry in /etc/modprobe.d/*conf, for example,
+>>>>>>> refs/remotes/origin/master
     sound1 or sb1.  This second entry should refer to the
     new module names for example sb1, and should include
     the I/O, etc. for the second sound card.
@@ -383,10 +396,14 @@ There are several ways of configuring your sound:
     using command line calls to load sound.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 3)  In /etc/modprobe.conf when using modprobe.
 =======
 3)  In /etc/modprobe.d/*conf when using modprobe.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+3)  In /etc/modprobe.d/*conf when using modprobe.
+>>>>>>> refs/remotes/origin/master
 
 4)  Via Red Hat's GPL'd /usr/sbin/sndconfig program (text based).
 

@@ -19,9 +19,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/xfrm.h>
 
 u32 xfrm_replay_seqhi(struct xfrm_state *x, __be32 net_seq)
@@ -64,9 +68,15 @@ static void xfrm_replay_notify(struct xfrm_state *x, int event)
 
 	switch (event) {
 	case XFRM_REPLAY_UPDATE:
+<<<<<<< HEAD
 		if (x->replay_maxdiff &&
 		    (x->replay.seq - x->preplay.seq < x->replay_maxdiff) &&
 		    (x->replay.oseq - x->preplay.oseq < x->replay_maxdiff)) {
+=======
+		if (!x->replay_maxdiff ||
+		    ((x->replay.seq - x->preplay.seq < x->replay_maxdiff) &&
+		    (x->replay.oseq - x->preplay.oseq < x->replay_maxdiff))) {
+>>>>>>> refs/remotes/origin/master
 			if (x->xflags & XFRM_TIME_DEFER)
 				event = XFRM_REPLAY_TIMEOUT;
 			else
@@ -132,8 +142,12 @@ static int xfrm_replay_check(struct xfrm_state *x,
 		return 0;
 
 	diff = x->replay.seq - seq;
+<<<<<<< HEAD
 	if (diff >= min_t(unsigned int, x->props.replay_window,
 			  sizeof(x->replay.bitmap) * 8)) {
+=======
+	if (diff >= x->props.replay_window) {
+>>>>>>> refs/remotes/origin/master
 		x->stats.replay_window++;
 		goto err;
 	}
@@ -208,10 +222,13 @@ static int xfrm_replay_check_bmp(struct xfrm_state *x,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pos = (replay_esn->seq - 1) % replay_esn->replay_window;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(seq == 0))
 		goto err;
 
@@ -223,6 +240,7 @@ static int xfrm_replay_check_bmp(struct xfrm_state *x,
 		goto err;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (pos >= diff) {
 		bitnr = (pos - diff) % replay_esn->replay_window;
@@ -238,6 +256,8 @@ static int xfrm_replay_check_bmp(struct xfrm_state *x,
 			goto err_replay;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pos = (replay_esn->seq - 1) % replay_esn->replay_window;
 
 	if (pos >= diff)
@@ -250,7 +270,10 @@ static int xfrm_replay_check_bmp(struct xfrm_state *x,
 	if (replay_esn->bmp[nr] & (1U << bitnr))
 		goto err_replay;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_replay:
@@ -266,11 +289,20 @@ static void xfrm_replay_advance_bmp(struct xfrm_state *x, __be32 net_seq)
 	u32 diff;
 	struct xfrm_replay_state_esn *replay_esn = x->replay_esn;
 	u32 seq = ntohl(net_seq);
+<<<<<<< HEAD
 	u32 pos = (replay_esn->seq - 1) % replay_esn->replay_window;
+=======
+	u32 pos;
+>>>>>>> refs/remotes/origin/master
 
 	if (!replay_esn->replay_window)
 		return;
 
+<<<<<<< HEAD
+=======
+	pos = (replay_esn->seq - 1) % replay_esn->replay_window;
+
+>>>>>>> refs/remotes/origin/master
 	if (seq > replay_esn->seq) {
 		diff = seq - replay_esn->seq;
 
@@ -282,6 +314,7 @@ static void xfrm_replay_advance_bmp(struct xfrm_state *x, __be32 net_seq)
 				replay_esn->bmp[nr] &=  ~(1U << bitnr);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			bitnr = (pos + diff) % replay_esn->replay_window;
 			nr = bitnr >> 5;
@@ -289,10 +322,13 @@ static void xfrm_replay_advance_bmp(struct xfrm_state *x, __be32 net_seq)
 			replay_esn->bmp[nr] |= (1U << bitnr);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			nr = (replay_esn->replay_window - 1) >> 5;
 			for (i = 0; i <= nr; i++)
 				replay_esn->bmp[i] = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			bitnr = (pos + diff) % replay_esn->replay_window;
@@ -306,10 +342,16 @@ static void xfrm_replay_advance_bmp(struct xfrm_state *x, __be32 net_seq)
 
 		bitnr = (pos + diff) % replay_esn->replay_window;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+
+		bitnr = (pos + diff) % replay_esn->replay_window;
+>>>>>>> refs/remotes/origin/master
 		replay_esn->seq = seq;
 	} else {
 		diff = replay_esn->seq - seq;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pos >= diff) {
 			bitnr = (pos - diff) % replay_esn->replay_window;
@@ -325,6 +367,8 @@ static void xfrm_replay_advance_bmp(struct xfrm_state *x, __be32 net_seq)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pos >= diff)
 			bitnr = (pos - diff) % replay_esn->replay_window;
 		else
@@ -335,7 +379,10 @@ static void xfrm_replay_advance_bmp(struct xfrm_state *x, __be32 net_seq)
 	bitnr = bitnr & 0x1F;
 	replay_esn->bmp[nr] |= (1U << bitnr);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (xfrm_aevent_is_on(xs_net(x)))
 		x->repl->notify(x, XFRM_REPLAY_UPDATE);
 }
@@ -358,9 +405,16 @@ static void xfrm_replay_notify_bmp(struct xfrm_state *x, int event)
 
 	switch (event) {
 	case XFRM_REPLAY_UPDATE:
+<<<<<<< HEAD
 		if (x->replay_maxdiff &&
 		    (replay_esn->seq - preplay_esn->seq < x->replay_maxdiff) &&
 		    (replay_esn->oseq - preplay_esn->oseq < x->replay_maxdiff)) {
+=======
+		if (!x->replay_maxdiff ||
+		    ((replay_esn->seq - preplay_esn->seq < x->replay_maxdiff) &&
+		    (replay_esn->oseq - preplay_esn->oseq
+		     < x->replay_maxdiff))) {
+>>>>>>> refs/remotes/origin/master
 			if (x->xflags & XFRM_TIME_DEFER)
 				event = XFRM_REPLAY_TIMEOUT;
 			else
@@ -390,6 +444,75 @@ static void xfrm_replay_notify_bmp(struct xfrm_state *x, int event)
 		x->xflags &= ~XFRM_TIME_DEFER;
 }
 
+<<<<<<< HEAD
+=======
+static void xfrm_replay_notify_esn(struct xfrm_state *x, int event)
+{
+	u32 seq_diff, oseq_diff;
+	struct km_event c;
+	struct xfrm_replay_state_esn *replay_esn = x->replay_esn;
+	struct xfrm_replay_state_esn *preplay_esn = x->preplay_esn;
+
+	/* we send notify messages in case
+	 *  1. we updated on of the sequence numbers, and the seqno difference
+	 *     is at least x->replay_maxdiff, in this case we also update the
+	 *     timeout of our timer function
+	 *  2. if x->replay_maxage has elapsed since last update,
+	 *     and there were changes
+	 *
+	 *  The state structure must be locked!
+	 */
+
+	switch (event) {
+	case XFRM_REPLAY_UPDATE:
+		if (x->replay_maxdiff) {
+			if (replay_esn->seq_hi == preplay_esn->seq_hi)
+				seq_diff = replay_esn->seq - preplay_esn->seq;
+			else
+				seq_diff = ~preplay_esn->seq + replay_esn->seq
+					   + 1;
+
+			if (replay_esn->oseq_hi == preplay_esn->oseq_hi)
+				oseq_diff = replay_esn->oseq
+					    - preplay_esn->oseq;
+			else
+				oseq_diff = ~preplay_esn->oseq
+					    + replay_esn->oseq + 1;
+
+			if (seq_diff >= x->replay_maxdiff ||
+			    oseq_diff >= x->replay_maxdiff)
+				break;
+		}
+
+		if (x->xflags & XFRM_TIME_DEFER)
+			event = XFRM_REPLAY_TIMEOUT;
+		else
+			return;
+
+		break;
+
+	case XFRM_REPLAY_TIMEOUT:
+		if (memcmp(x->replay_esn, x->preplay_esn,
+			   xfrm_replay_state_esn_len(replay_esn)) == 0) {
+			x->xflags |= XFRM_TIME_DEFER;
+			return;
+		}
+
+		break;
+	}
+
+	memcpy(x->preplay_esn, x->replay_esn,
+	       xfrm_replay_state_esn_len(replay_esn));
+	c.event = XFRM_MSG_NEWAE;
+	c.data.aevent = event;
+	km_state_notify(x, &c);
+
+	if (x->replay_maxage &&
+	    !mod_timer(&x->rtimer, jiffies + x->replay_maxage))
+		x->xflags &= ~XFRM_TIME_DEFER;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int xfrm_replay_overflow_esn(struct xfrm_state *x, struct sk_buff *skb)
 {
 	int err = 0;
@@ -435,10 +558,13 @@ static int xfrm_replay_check_esn(struct xfrm_state *x,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pos = (replay_esn->seq - 1) % replay_esn->replay_window;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(seq == 0 && replay_esn->seq_hi == 0 &&
 		     (replay_esn->seq < replay_esn->replay_window - 1)))
 		goto err;
@@ -463,6 +589,7 @@ static int xfrm_replay_check_esn(struct xfrm_state *x,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pos >= diff) {
 		bitnr = (pos - diff) % replay_esn->replay_window;
 		nr = bitnr >> 5;
@@ -477,6 +604,8 @@ static int xfrm_replay_check_esn(struct xfrm_state *x,
 			goto err_replay;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pos = (replay_esn->seq - 1) % replay_esn->replay_window;
 
 	if (pos >= diff)
@@ -489,7 +618,10 @@ static int xfrm_replay_check_esn(struct xfrm_state *x,
 	if (replay_esn->bmp[nr] & (1U << bitnr))
 		goto err_replay;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_replay:
@@ -540,6 +672,7 @@ static void xfrm_replay_advance_esn(struct xfrm_state *x, __be32 net_seq)
 				replay_esn->bmp[nr] &=  ~(1U << bitnr);
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			bitnr = (pos + diff) % replay_esn->replay_window;
 			nr = bitnr >> 5;
@@ -547,10 +680,13 @@ static void xfrm_replay_advance_esn(struct xfrm_state *x, __be32 net_seq)
 			replay_esn->bmp[nr] |= (1U << bitnr);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			nr = (replay_esn->replay_window - 1) >> 5;
 			for (i = 0; i <= nr; i++)
 				replay_esn->bmp[i] = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			bitnr = (pos + diff) % replay_esn->replay_window;
@@ -564,6 +700,11 @@ static void xfrm_replay_advance_esn(struct xfrm_state *x, __be32 net_seq)
 
 		bitnr = (pos + diff) % replay_esn->replay_window;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+
+		bitnr = (pos + diff) % replay_esn->replay_window;
+>>>>>>> refs/remotes/origin/master
 		replay_esn->seq = seq;
 
 		if (unlikely(wrap > 0))
@@ -571,6 +712,7 @@ static void xfrm_replay_advance_esn(struct xfrm_state *x, __be32 net_seq)
 	} else {
 		diff = replay_esn->seq - seq;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pos >= diff) {
 			bitnr = (pos - diff) % replay_esn->replay_window;
@@ -586,6 +728,8 @@ static void xfrm_replay_advance_esn(struct xfrm_state *x, __be32 net_seq)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pos >= diff)
 			bitnr = (pos - diff) % replay_esn->replay_window;
 		else
@@ -596,7 +740,10 @@ static void xfrm_replay_advance_esn(struct xfrm_state *x, __be32 net_seq)
 	bitnr = bitnr & 0x1F;
 	replay_esn->bmp[nr] |= (1U << bitnr);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (xfrm_aevent_is_on(xs_net(x)))
 		x->repl->notify(x, XFRM_REPLAY_UPDATE);
 }
@@ -621,7 +768,11 @@ static struct xfrm_replay xfrm_replay_esn = {
 	.advance	= xfrm_replay_advance_esn,
 	.check		= xfrm_replay_check_esn,
 	.recheck	= xfrm_replay_recheck_esn,
+<<<<<<< HEAD
 	.notify		= xfrm_replay_notify_bmp,
+=======
+	.notify		= xfrm_replay_notify_esn,
+>>>>>>> refs/remotes/origin/master
 	.overflow	= xfrm_replay_overflow_esn,
 };
 
@@ -634,6 +785,7 @@ int xfrm_init_replay(struct xfrm_state *x)
 		    replay_esn->bmp_len * sizeof(__u32) * 8)
 			return -EINVAL;
 
+<<<<<<< HEAD
 	if ((x->props.flags & XFRM_STATE_ESN) && replay_esn->replay_window == 0)
 		return -EINVAL;
 
@@ -641,6 +793,14 @@ int xfrm_init_replay(struct xfrm_state *x)
 		x->repl = &xfrm_replay_esn;
 	else
 		x->repl = &xfrm_replay_bmp;
+=======
+		if (x->props.flags & XFRM_STATE_ESN) {
+			if (replay_esn->replay_window == 0)
+				return -EINVAL;
+			x->repl = &xfrm_replay_esn;
+		} else
+			x->repl = &xfrm_replay_bmp;
+>>>>>>> refs/remotes/origin/master
 	} else
 		x->repl = &xfrm_replay_legacy;
 

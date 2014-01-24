@@ -7,6 +7,7 @@
  * License. See the file "COPYING" in the main directory of this archive
  * for more details.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_MICROBLAZE_SETUP_H
 #define _ASM_MICROBLAZE_SETUP_H
@@ -16,10 +17,19 @@
 # ifndef __ASSEMBLY__
 
 #  ifdef __KERNEL__
+=======
+#ifndef _ASM_MICROBLAZE_SETUP_H
+#define _ASM_MICROBLAZE_SETUP_H
+
+#include <uapi/asm/setup.h>
+
+# ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 extern unsigned int boot_cpuid; /* move to smp.h */
 
 extern char cmd_line[COMMAND_LINE_SIZE];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void early_printk(const char *fmt, ...);
 
@@ -33,6 +43,8 @@ void disable_early_printk(void);
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern char *klimit;
 
 void early_printk(const char *fmt, ...);
@@ -41,7 +53,10 @@ int setup_early_printk(char *opt);
 void remap_early_printk(void);
 void disable_early_printk(void);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void heartbeat(void);
 void setup_heartbeat(void);
 
@@ -56,17 +71,23 @@ void time_init(void);
 void init_IRQ(void);
 void machine_early_init(const char *cmdline, unsigned int ram,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			unsigned int fdt, unsigned int msr);
 =======
 		unsigned int fdt, unsigned int msr, unsigned int tlb0,
 		unsigned int tlb1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned int fdt, unsigned int msr, unsigned int tlb0,
+		unsigned int tlb1);
+>>>>>>> refs/remotes/origin/master
 
 void machine_restart(char *cmd);
 void machine_shutdown(void);
 void machine_halt(void);
 void machine_power_off(void);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 void free_init_pages(char *what, unsigned long begin, unsigned long end);
@@ -75,5 +96,10 @@ extern void *zalloc_maybe_bootmem(size_t size, gfp_t mask);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #  endif/* __KERNEL__ */
+=======
+extern void *alloc_maybe_bootmem(size_t size, gfp_t mask);
+extern void *zalloc_maybe_bootmem(size_t size, gfp_t mask);
+
+>>>>>>> refs/remotes/origin/master
 # endif /* __ASSEMBLY__ */
 #endif /* _ASM_MICROBLAZE_SETUP_H */

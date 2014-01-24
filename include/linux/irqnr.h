@@ -1,6 +1,7 @@
 #ifndef _LINUX_IRQNR_H
 #define _LINUX_IRQNR_H
 
+<<<<<<< HEAD
 /*
  * Generic irq_desc iterators:
  */
@@ -22,6 +23,10 @@
 	for (irq = nr_irqs - 1; irq >= 0; irq--)
 
 #else /* CONFIG_GENERIC_HARDIRQS */
+=======
+#include <uapi/linux/irqnr.h>
+
+>>>>>>> refs/remotes/origin/master
 
 extern int nr_irqs;
 extern struct irq_desc *irq_to_desc(unsigned int irq);
@@ -52,6 +57,7 @@ unsigned int irq_get_next_irq(unsigned int offset);
 	for (irq = irq_get_next_irq(0); irq < nr_irqs;	\
 	     irq = irq_get_next_irq(irq + 1))
 
+<<<<<<< HEAD
 #endif /* CONFIG_GENERIC_HARDIRQS */
 
 #define for_each_irq_nr(irq)                   \
@@ -59,4 +65,9 @@ unsigned int irq_get_next_irq(unsigned int offset);
 
 #endif /* __KERNEL__ */
 
+=======
+#define for_each_irq_nr(irq)                   \
+       for (irq = 0; irq < nr_irqs; irq++)
+
+>>>>>>> refs/remotes/origin/master
 #endif

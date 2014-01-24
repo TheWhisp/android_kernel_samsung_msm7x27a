@@ -23,9 +23,12 @@
 #include <linux/skbuff.h>
 #include <net/sock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
@@ -270,6 +273,7 @@ void rose_transmit_link(struct sk_buff *skb, struct rose_neigh *neigh)
 	unsigned char *dptr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 	if (call_fw_firewall(PF_ROSE, skb->dev, skb->data, NULL, &skb) != FW_ACCEPT) {
 		kfree_skb(skb);
@@ -279,6 +283,8 @@ void rose_transmit_link(struct sk_buff *skb, struct rose_neigh *neigh)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (neigh->loopback) {
 		rose_loopback_queue(skb, neigh);
 		return;

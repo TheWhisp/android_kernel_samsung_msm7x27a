@@ -42,18 +42,24 @@ static struct mtd_info *map_rom_probe(struct map_info *map)
 	mtd->type = MTD_ROM;
 	mtd->size = map->size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mtd->get_unmapped_area = maprom_unmapped_area;
 	mtd->read = maprom_read;
 	mtd->write = maprom_write;
 	mtd->sync = maprom_nop;
 	mtd->erase = maprom_erase;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mtd->_get_unmapped_area = maprom_unmapped_area;
 	mtd->_read = maprom_read;
 	mtd->_write = maprom_write;
 	mtd->_sync = maprom_nop;
 	mtd->_erase = maprom_erase;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mtd->flags = MTD_CAP_ROM;
 	mtd->erasesize = map->size;
 	mtd->writesize = 1;
@@ -94,11 +100,15 @@ static void maprom_nop(struct mtd_info *mtd)
 static int maprom_write (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_NOTICE "maprom_write called\n");
 	return -EIO;
 =======
 	return -EROFS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return -EROFS;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int maprom_erase (struct mtd_info *mtd, struct erase_info *info)

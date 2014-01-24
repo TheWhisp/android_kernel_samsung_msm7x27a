@@ -9,8 +9,11 @@ static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
 
 #ifdef CONFIG_MMU
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_COLDFIRE)
 
@@ -211,7 +214,10 @@ static inline void activate_mm(struct mm_struct *prev_mm,
 }
 
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/setup.h>
 #include <asm/page.h>
@@ -307,6 +313,7 @@ static inline void activate_mm(struct mm_struct *prev_mm,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else  /* CONFIG_SUN3 */
 #include <asm/sun3mmu.h>
 #include <linux/sched.h>
@@ -360,6 +367,10 @@ static inline void activate_mm(struct mm_struct *prev_mm,
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_MMU */
 
 static inline int init_new_context(struct task_struct *tsk, struct mm_struct *mm)

@@ -29,6 +29,7 @@ static struct proc_dir_entry *isapnp_proc_bus_dir = NULL;
 
 static loff_t isapnp_proc_bus_lseek(struct file *file, loff_t off, int whence)
 {
+<<<<<<< HEAD
 	loff_t new = -1;
 	struct inode *inode = file->f_path.dentry->d_inode;
 
@@ -50,14 +51,21 @@ static loff_t isapnp_proc_bus_lseek(struct file *file, loff_t off, int whence)
 		file->f_pos = new;
 	mutex_unlock(&inode->i_mutex);
 	return new;
+=======
+	return fixed_size_llseek(file, off, whence, 256);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t isapnp_proc_bus_read(struct file *file, char __user * buf,
 				    size_t nbytes, loff_t * ppos)
 {
+<<<<<<< HEAD
 	struct inode *ino = file->f_path.dentry->d_inode;
 	struct proc_dir_entry *dp = PDE(ino);
 	struct pnp_dev *dev = dp->data;
+=======
+	struct pnp_dev *dev = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	int pos = *ppos;
 	int cnt, size = 256;
 
@@ -107,7 +115,11 @@ static int isapnp_proc_attach_device(struct pnp_dev *dev)
 			&isapnp_proc_bus_file_operations, dev);
 	if (!e)
 		return -ENOMEM;
+<<<<<<< HEAD
 	e->size = 256;
+=======
+	proc_set_size(e, 256);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

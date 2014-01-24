@@ -20,7 +20,11 @@
 #include <asm/mach/map.h>
 #include <asm/mach-types.h>
 #include <mach/map.h>
+<<<<<<< HEAD
 #include <mach/fb.h>
+=======
+#include <linux/platform_data/video-nuc900fb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "nuc950.h"
 
@@ -38,6 +42,7 @@ static void __init nuc950evb_init(void)
 MACHINE_START(W90P950EVB, "W90P950EVB")
 	/* Maintainer: Wan ZongShun */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -49,4 +54,11 @@ MACHINE_START(W90P950EVB, "W90P950EVB")
 =======
 	.restart	= nuc9xx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.map_io		= nuc950evb_map_io,
+	.init_irq	= nuc900_init_irq,
+	.init_machine	= nuc950evb_init,
+	.init_time	= nuc900_timer_init,
+	.restart	= nuc9xx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

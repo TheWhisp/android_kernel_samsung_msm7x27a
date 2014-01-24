@@ -99,7 +99,11 @@ static int crypto_info_open(struct inode *inode, struct file *file)
 	return seq_open(file, &crypto_seq_ops);
 }
 
+<<<<<<< HEAD
 static struct file_operations proc_crypto_ops = {
+=======
+static const struct file_operations proc_crypto_ops = {
+>>>>>>> refs/remotes/origin/master
 	.open		= crypto_info_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
@@ -108,9 +112,13 @@ static struct file_operations proc_crypto_ops = {
 
 void __init crypto_init_proc(void)
 {
+<<<<<<< HEAD
 	struct proc_dir_entry *proc;
 
 	proc = create_proc_entry("crypto", 0, NULL);
 	if (proc)
 		proc->proc_fops = &proc_crypto_ops;
+=======
+	proc_create("crypto", 0, NULL, &proc_crypto_ops);
+>>>>>>> refs/remotes/origin/master
 }

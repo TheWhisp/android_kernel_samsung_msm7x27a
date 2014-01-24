@@ -1,10 +1,14 @@
 /* bnx2i.h: Broadcom NetXtreme II iSCSI driver.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2006 - 2010 Broadcom Corporation
 =======
  * Copyright (c) 2006 - 2011 Broadcom Corporation
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2006 - 2013 Broadcom Corporation
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2007, 2008 Red Hat, Inc.  All rights reserved.
  * Copyright (c) 2007, 2008 Mike Christie
  *
@@ -27,19 +31,28 @@
 #include <linux/spinlock.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/delay.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/in.h>
 #include <linux/kfifo.h>
 #include <linux/netdevice.h>
 #include <linux/completion.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kthread.h>
 #include <linux/cpu.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kthread.h>
+#include <linux/cpu.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <scsi/scsi_cmnd.h>
 #include <scsi/scsi_device.h>
@@ -51,6 +64,7 @@
 #include <scsi/scsi_transport_iscsi.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "../../net/cnic_if.h"
 =======
 #include "../../net/ethernet/broadcom/cnic_if.h"
@@ -58,6 +72,14 @@
 #include "57xx_iscsi_hsi.h"
 #include "57xx_iscsi_constants.h"
 
+=======
+#include "../../net/ethernet/broadcom/cnic_if.h"
+#include "57xx_iscsi_hsi.h"
+#include "57xx_iscsi_constants.h"
+
+#include "../../net/ethernet/broadcom/bnx2x/bnx2x_mfw_req.h"
+
+>>>>>>> refs/remotes/origin/master
 #define BNX2_ISCSI_DRIVER_NAME		"bnx2i"
 
 #define BNX2I_MAX_ADAPTERS		8
@@ -76,7 +98,11 @@
 #define MAX_PAGES_PER_CTRL_STRUCT_POOL	8
 #define BNX2I_RESERVED_SLOW_PATH_CMD_SLOTS	4
 
+<<<<<<< HEAD
 #define BNX2I_5771X_DBELL_PAGE_SIZE	128
+=======
+#define BNX2X_DB_SHIFT			3
+>>>>>>> refs/remotes/origin/master
 
 /* 5706/08 hardware has limit on maximum buffer size per BD it can handle */
 #define MAX_BD_LENGTH			65535
@@ -140,6 +166,46 @@
 #define REG_WR(__hba, offset, val)			\
 		writel(val, __hba->regview + offset)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_32BIT
+#define GET_STATS_64(__hba, dst, field)				\
+	do {							\
+		spin_lock_bh(&__hba->stat_lock);		\
+		dst->field##_lo = __hba->stats.field##_lo;	\
+		dst->field##_hi = __hba->stats.field##_hi;	\
+		spin_unlock_bh(&__hba->stat_lock);		\
+	} while (0)
+
+#define ADD_STATS_64(__hba, field, len)				\
+	do {							\
+		if (spin_trylock(&__hba->stat_lock)) {		\
+			if (__hba->stats.field##_lo + len <	\
+			    __hba->stats.field##_lo)		\
+				__hba->stats.field##_hi++;	\
+			__hba->stats.field##_lo += len;		\
+			spin_unlock(&__hba->stat_lock);		\
+		}						\
+	} while (0)
+
+#else
+#define GET_STATS_64(__hba, dst, field)				\
+	do {							\
+		u64 val, *out;					\
+								\
+		val = __hba->bnx2i_stats.field;			\
+		out = (u64 *)&__hba->stats.field##_lo;		\
+		*out = cpu_to_le64(val);			\
+		out = (u64 *)&dst->field##_lo;			\
+		*out = cpu_to_le64(val);			\
+	} while (0)
+
+#define ADD_STATS_64(__hba, field, len)				\
+	do {							\
+		__hba->bnx2i_stats.field += len;		\
+	} while (0)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  * struct generic_pdu_resc - login pdu resource structure
@@ -220,18 +286,27 @@ struct io_bdt {
  * bnx2i_cmd - iscsi command structure
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @hdr:                iSCSI header
  * @conn:               iscsi_conn pointer
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @hdr:                iSCSI header
+ * @conn:               iscsi_conn pointer
+>>>>>>> refs/remotes/origin/master
  * @scsi_cmd:           SCSI-ML task pointer corresponding to this iscsi cmd
  * @sg:                 SG list
  * @io_tbl:             buffer descriptor (BD) table
  * @bd_tbl_dma:         buffer descriptor (BD) table's dma address
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @req:                bnx2i specific command request struct
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @req:                bnx2i specific command request struct
+>>>>>>> refs/remotes/origin/master
  */
 struct bnx2i_cmd {
 	struct iscsi_hdr hdr;
@@ -256,9 +331,13 @@ struct bnx2i_cmd {
  * @violation_notified:    bit mask used to track iscsi error/warning messages
  *                         already printed out
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @work_cnt:              keeps track of the number of outstanding work
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @work_cnt:              keeps track of the number of outstanding work
+>>>>>>> refs/remotes/origin/master
  *
  * iSCSI connection structure
  */
@@ -283,10 +362,15 @@ struct bnx2i_conn {
 	struct generic_pdu_resc gen_pdu;
 	u64 violation_notified;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	atomic_t work_cnt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	atomic_t work_cnt;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -314,6 +398,18 @@ struct iscsi_cid_queue {
 	struct bnx2i_conn **conn_cid_tbl;
 };
 
+<<<<<<< HEAD
+=======
+
+struct bnx2i_stats_info {
+	u64 rx_pdus;
+	u64 rx_bytes;
+	u64 tx_pdus;
+	u64 tx_bytes;
+};
+
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct bnx2i_hba - bnx2i adapter structure
  *
@@ -367,6 +463,11 @@ struct iscsi_cid_queue {
  * @ctx_ccell_tasks:       captures number of ccells and tasks supported by
  *                         currently offloaded connection, used to decode
  *                         context memory
+<<<<<<< HEAD
+=======
+ * @stat_lock:		   spin lock used by the statistic collector (32 bit)
+ * @stats:		   local iSCSI statistic collection place holder
+>>>>>>> refs/remotes/origin/master
  *
  * Adapter Data Structure
  */
@@ -376,6 +477,10 @@ struct bnx2i_hba {
 	struct pci_dev *pcidev;
 	struct net_device *netdev;
 	void __iomem *regview;
+<<<<<<< HEAD
+=======
+	resource_size_t reg_base;
+>>>>>>> refs/remotes/origin/master
 
 	u32 age;
 	unsigned long cnic_dev_type;
@@ -452,6 +557,15 @@ struct bnx2i_hba {
 	u32 num_sess_opened;
 	u32 num_conn_opened;
 	unsigned int ctx_ccell_tasks;
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_32BIT
+	spinlock_t stat_lock;
+#endif
+	struct bnx2i_stats_info bnx2i_stats;
+	struct iscsi_stats_info stats;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -514,10 +628,14 @@ struct bnx2i_5771x_cq_db {
 struct bnx2i_5771x_sq_rq_db {
 	u16 prod_idx;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 reserved0[14]; /* Pad structure size to 16 bytes */
 =======
 	u8 reserved0[62]; /* Pad structure size to 64 bytes */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 reserved0[62]; /* Pad structure size to 64 bytes */
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -553,8 +671,13 @@ struct bnx2i_5771x_dbell {
  * @sq_mem_size:        SQ size
  * @sq_prod_qe:         SQ producer entry pointer
  * @sq_cons_qe:         SQ consumer entry pointer
+<<<<<<< HEAD
  * @sq_first_qe:        virtaul address of first entry in SQ
  * @sq_last_qe:         virtaul address of last entry in SQ
+=======
+ * @sq_first_qe:        virtual address of first entry in SQ
+ * @sq_last_qe:         virtual address of last entry in SQ
+>>>>>>> refs/remotes/origin/master
  * @sq_prod_idx:        SQ producer index
  * @sq_cons_idx:        SQ consumer index
  * @sqe_left:           number sq entry left
@@ -566,8 +689,13 @@ struct bnx2i_5771x_dbell {
  * @cq_mem_size:        CQ size
  * @cq_prod_qe:         CQ producer entry pointer
  * @cq_cons_qe:         CQ consumer entry pointer
+<<<<<<< HEAD
  * @cq_first_qe:        virtaul address of first entry in CQ
  * @cq_last_qe:         virtaul address of last entry in CQ
+=======
+ * @cq_first_qe:        virtual address of first entry in CQ
+ * @cq_last_qe:         virtual address of last entry in CQ
+>>>>>>> refs/remotes/origin/master
  * @cq_prod_idx:        CQ producer index
  * @cq_cons_idx:        CQ consumer index
  * @cqe_left:           number cq entry left
@@ -581,8 +709,13 @@ struct bnx2i_5771x_dbell {
  * @rq_mem_size:        RQ size
  * @rq_prod_qe:         RQ producer entry pointer
  * @rq_cons_qe:         RQ consumer entry pointer
+<<<<<<< HEAD
  * @rq_first_qe:        virtaul address of first entry in RQ
  * @rq_last_qe:         virtaul address of last entry in RQ
+=======
+ * @rq_first_qe:        virtual address of first entry in RQ
+ * @rq_last_qe:         virtual address of last entry in RQ
+>>>>>>> refs/remotes/origin/master
  * @rq_prod_idx:        RQ producer index
  * @rq_cons_idx:        RQ consumer index
  * @rqe_left:           number rq entry left
@@ -701,9 +834,12 @@ enum {
  * @conn:               iscsi connection this EP is linked to
  * @cls_ep:             associated iSCSI endpoint pointer
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @sess:               iscsi session this EP is linked to
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @cm_sk:              cnic sock struct
  * @hba_age:            age to detect if 'iscsid' issues ep_disconnect()
  *                      after HBA reset is completed by bnx2i/cnic/bnx2
@@ -730,10 +866,14 @@ struct bnx2i_endpoint {
 	u32 state;
 	unsigned long timestamp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int num_active_cmds;
 =======
 	atomic_t num_active_cmds;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atomic_t num_active_cmds;
+>>>>>>> refs/remotes/origin/master
 	u32 ec_shift;
 
 	struct qp_info qp;
@@ -747,7 +887,10 @@ struct bnx2i_endpoint {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct bnx2i_work {
 	struct list_head list;
 	struct iscsi_session *session;
@@ -761,7 +904,10 @@ struct bnx2i_percpu_s {
 	spinlock_t p_work_lock;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Global variables */
 extern unsigned int error_mask1, error_mask2;
@@ -784,12 +930,21 @@ extern struct device_attribute *bnx2i_dev_attributes[];
 /*
  * Function Prototypes
  */
+<<<<<<< HEAD
 extern void bnx2i_identify_device(struct bnx2i_hba *hba);
+=======
+extern void bnx2i_identify_device(struct bnx2i_hba *hba, struct cnic_dev *dev);
+>>>>>>> refs/remotes/origin/master
 
 extern void bnx2i_ulp_init(struct cnic_dev *dev);
 extern void bnx2i_ulp_exit(struct cnic_dev *dev);
 extern void bnx2i_start(void *handle);
 extern void bnx2i_stop(void *handle);
+<<<<<<< HEAD
+=======
+extern int bnx2i_get_stats(void *handle);
+
+>>>>>>> refs/remotes/origin/master
 extern struct bnx2i_hba *get_adapter_list_head(void);
 
 struct bnx2i_conn *bnx2i_get_conn_from_id(struct bnx2i_hba *hba,
@@ -846,10 +1001,14 @@ extern struct bnx2i_endpoint *bnx2i_find_ep_in_destroy_list(
 
 extern int bnx2i_map_ep_dbell_regs(struct bnx2i_endpoint *ep);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action);
 =======
 extern int bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int bnx2i_arm_cq_event_coalescing(struct bnx2i_endpoint *ep, u8 action);
+>>>>>>> refs/remotes/origin/master
 
 extern int bnx2i_hw_ep_disconnect(struct bnx2i_endpoint *bnx2i_ep);
 
@@ -860,10 +1019,16 @@ extern void bnx2i_print_xmit_pdu_queue(struct bnx2i_conn *conn);
 extern void bnx2i_print_recv_state(struct bnx2i_conn *conn);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int bnx2i_percpu_io_thread(void *arg);
 extern int bnx2i_process_scsi_cmd_resp(struct iscsi_session *session,
 				       struct bnx2i_conn *bnx2i_conn,
 				       struct cqe *cqe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

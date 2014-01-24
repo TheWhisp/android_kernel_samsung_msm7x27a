@@ -11,9 +11,13 @@
 #include <linux/clk.h>
 #include <linux/debugfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/fs.h>
 #include <linux/platform_device.h>
 #include <linux/irq.h>
@@ -466,10 +470,14 @@ void __init at32_init_pio(struct platform_device *pdev)
 
 	pio->pdev = pdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pio->regs = ioremap(regs->start, regs->end - regs->start + 1);
 =======
 	pio->regs = ioremap(regs->start, resource_size(regs));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pio->regs = ioremap(regs->start, resource_size(regs));
+>>>>>>> refs/remotes/origin/master
 
 	/* start with irqs disabled and acked */
 	pio_writel(pio, IDR, ~0UL);

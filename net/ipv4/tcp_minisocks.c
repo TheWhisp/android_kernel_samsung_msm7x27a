@@ -49,6 +49,7 @@ struct inet_timewait_death_row tcp_death_row = {
 };
 EXPORT_SYMBOL_GPL(tcp_death_row);
 
+<<<<<<< HEAD
 /* VJ's idea. Save last timestamp seen from this destination
  * and hold it at least for normal timewait interval to use for duplicate
  * segment detection in subsequent connections, before they enter synchronized
@@ -105,6 +106,14 @@ static __inline__ int tcp_in_window(u32 seq, u32 end_seq, u32 s_win, u32 e_win)
 		return 1;
 	if (after(end_seq, s_win) && before(seq, e_win))
 		return 1;
+=======
+static bool tcp_in_window(u32 seq, u32 end_seq, u32 s_win, u32 e_win)
+{
+	if (seq == s_win)
+		return true;
+	if (after(end_seq, s_win) && before(seq, e_win))
+		return true;
+>>>>>>> refs/remotes/origin/master
 	return seq == e_win && seq == end_seq;
 }
 
@@ -135,12 +144,18 @@ static __inline__ int tcp_in_window(u32 seq, u32 end_seq, u32 s_win, u32 e_win)
  * spinlock it. I do not want! Well, probability of misbehaviour
  * is ridiculously low and, seems, we could use some mb() tricks
  * to avoid misread sequence numbers, states etc.  --ANK
+<<<<<<< HEAD
+=======
+ *
+ * We don't need to initialize tmp_out.sack_ok as we don't use the results
+>>>>>>> refs/remotes/origin/master
  */
 enum tcp_tw_status
 tcp_timewait_state_process(struct inet_timewait_sock *tw, struct sk_buff *skb,
 			   const struct tcphdr *th)
 {
 	struct tcp_options_received tmp_opt;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u8 *hash_location;
 =======
@@ -154,6 +169,17 @@ tcp_timewait_state_process(struct inet_timewait_sock *tw, struct sk_buff *skb,
 		tcp_parse_options(skb, &tmp_opt, &hash_location, 0);
 
 		if (tmp_opt.saw_tstamp) {
+=======
+	struct tcp_timewait_sock *tcptw = tcp_twsk((struct sock *)tw);
+	bool paws_reject = false;
+
+	tmp_opt.saw_tstamp = 0;
+	if (th->doff > (sizeof(*th) >> 2) && tcptw->tw_ts_recent_stamp) {
+		tcp_parse_options(skb, &tmp_opt, 0, NULL);
+
+		if (tmp_opt.saw_tstamp) {
+			tmp_opt.rcv_tsecr	-= tcptw->tw_ts_offset;
+>>>>>>> refs/remotes/origin/master
 			tmp_opt.ts_recent	= tcptw->tw_ts_recent;
 			tmp_opt.ts_recent_stamp	= tcptw->tw_ts_recent_stamp;
 			paws_reject = tcp_paws_reject(&tmp_opt, th->rst);
@@ -320,7 +346,11 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
 	struct inet_timewait_sock *tw = NULL;
 	const struct inet_connection_sock *icsk = inet_csk(sk);
 	const struct tcp_sock *tp = tcp_sk(sk);
+<<<<<<< HEAD
 	int recycle_ok = 0;
+=======
+	bool recycle_ok = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (tcp_death_row.sysctl_tw_recycle && tp->rx_opt.ts_recent_stamp)
 		recycle_ok = tcp_remember_stamp(sk);
@@ -331,17 +361,24 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
 	if (tw != NULL) {
 		struct tcp_timewait_sock *tcptw = tcp_twsk((struct sock *)tw);
 		const int rto = (icsk->icsk_rto << 2) - (icsk->icsk_rto >> 1);
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 		tw->tw_transparent	= inet_sk(sk)->transparent;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct inet_sock *inet = inet_sk(sk);
+
+		tw->tw_transparent	= inet->transparent;
+>>>>>>> refs/remotes/origin/master
 		tw->tw_rcv_wscale	= tp->rx_opt.rcv_wscale;
 		tcptw->tw_rcv_nxt	= tp->rcv_nxt;
 		tcptw->tw_snd_nxt	= tp->snd_nxt;
 		tcptw->tw_rcv_wnd	= tcp_receive_window(tp);
 		tcptw->tw_ts_recent	= tp->rx_opt.ts_recent;
 		tcptw->tw_ts_recent_stamp = tp->rx_opt.ts_recent_stamp;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
@@ -362,6 +399,17 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
 			tw6->tw_v6_rcv_saddr = np->rcv_saddr;
 			tw->tw_tclass = np->tclass;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tcptw->tw_ts_offset	= tp->tsoffset;
+
+#if IS_ENABLED(CONFIG_IPV6)
+		if (tw->tw_family == PF_INET6) {
+			struct ipv6_pinfo *np = inet6_sk(sk);
+
+			tw->tw_v6_daddr = sk->sk_v6_daddr;
+			tw->tw_v6_rcv_saddr = sk->sk_v6_rcv_saddr;
+			tw->tw_tclass = np->tclass;
+>>>>>>> refs/remotes/origin/master
 			tw->tw_ipv6only = np->ipv6only;
 		}
 #endif
@@ -376,6 +424,7 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
 		do {
 			struct tcp_md5sig_key *key;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			memset(tcptw->tw_md5_key, 0, sizeof(tcptw->tw_md5_key));
 			tcptw->tw_md5_keylen = 0;
 			key = tp->af_specific->md5_lookup(sk, sk);
@@ -384,12 +433,18 @@ void tcp_time_wait(struct sock *sk, int state, int timeo)
 				tcptw->tw_md5_keylen = key->keylen;
 				if (tcp_alloc_md5sig_pool(sk) == NULL)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			tcptw->tw_md5_key = NULL;
 			key = tp->af_specific->md5_lookup(sk, sk);
 			if (key != NULL) {
 				tcptw->tw_md5_key = kmemdup(key, sizeof(*key), GFP_ATOMIC);
+<<<<<<< HEAD
 				if (tcptw->tw_md5_key && tcp_alloc_md5sig_pool(sk) == NULL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (tcptw->tw_md5_key && !tcp_alloc_md5sig_pool())
+>>>>>>> refs/remotes/origin/master
 					BUG();
 			}
 		} while (0);
@@ -430,6 +485,7 @@ void tcp_twsk_destructor(struct sock *sk)
 #ifdef CONFIG_TCP_MD5SIG
 	struct tcp_timewait_sock *twsk = tcp_twsk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (twsk->tw_md5_keylen)
 		tcp_free_md5sig_pool();
 =======
@@ -438,6 +494,11 @@ void tcp_twsk_destructor(struct sock *sk)
 		kfree_rcu(twsk->tw_md5_key, rcu);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (twsk->tw_md5_key)
+		kfree_rcu(twsk->tw_md5_key, rcu);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 EXPORT_SYMBOL_GPL(tcp_twsk_destructor);
@@ -457,16 +518,21 @@ static inline void TCP_ECN_openreq_child(struct tcp_sock *tp,
 struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req, struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sock *newsk = inet_csk_clone(sk, req, GFP_ATOMIC);
 =======
 	struct sock *newsk = inet_csk_clone_lock(sk, req, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sock *newsk = inet_csk_clone_lock(sk, req, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 
 	if (newsk != NULL) {
 		const struct inet_request_sock *ireq = inet_rsk(req);
 		struct tcp_request_sock *treq = tcp_rsk(req);
 		struct inet_connection_sock *newicsk = inet_csk(newsk);
 		struct tcp_sock *newtp = tcp_sk(newsk);
+<<<<<<< HEAD
 		struct tcp_sock *oldtp = tcp_sk(sk);
 		struct tcp_cookie_values *oldcvp = oldtp->cookie_values;
 
@@ -493,6 +559,8 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
 				newtp->cookie_values = NULL;
 			}
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Now setup tcp_sock */
 		newtp->pred_flags = 0;
@@ -501,10 +569,17 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
 		newtp->rcv_nxt = treq->rcv_isn + 1;
 
 		newtp->snd_sml = newtp->snd_una =
+<<<<<<< HEAD
 		newtp->snd_nxt = newtp->snd_up =
 			treq->snt_isn + 1 + tcp_s_data_size(oldtp);
 
 		tcp_prequeue_init(newtp);
+=======
+		newtp->snd_nxt = newtp->snd_up = treq->snt_isn + 1;
+
+		tcp_prequeue_init(newtp);
+		INIT_LIST_HEAD(&newtp->tsq_node);
+>>>>>>> refs/remotes/origin/master
 
 		tcp_init_wl(newtp, treq->rcv_isn);
 
@@ -517,12 +592,20 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
 		newtp->sacked_out = 0;
 		newtp->fackets_out = 0;
 		newtp->snd_ssthresh = TCP_INFINITE_SSTHRESH;
+<<<<<<< HEAD
+=======
+		tcp_enable_early_retrans(newtp);
+		newtp->tlp_high_seq = 0;
+		newtp->lsndtime = treq->snt_synack;
+		newtp->total_retrans = req->num_retrans;
+>>>>>>> refs/remotes/origin/master
 
 		/* So many TCP implementations out there (incorrectly) count the
 		 * initial SYN frame in their delayed-ACK and congestion control
 		 * algorithms that we must have the following bandaid to talk
 		 * efficiently to them.  -DaveM
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		newtp->snd_cwnd = 2;
 =======
@@ -541,12 +624,24 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
 		    !try_module_get(newicsk->icsk_ca_ops->owner))
 			newicsk->icsk_ca_ops = &tcp_init_congestion_ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		newtp->snd_cwnd = TCP_INIT_CWND;
+		newtp->snd_cwnd_cnt = 0;
+
+		if (newicsk->icsk_ca_ops != &tcp_init_congestion_ops &&
+		    !try_module_get(newicsk->icsk_ca_ops->owner))
+			newicsk->icsk_ca_ops = &tcp_init_congestion_ops;
+>>>>>>> refs/remotes/origin/master
 
 		tcp_set_ca_state(newsk, TCP_CA_Open);
 		tcp_init_xmit_timers(newsk);
 		skb_queue_head_init(&newtp->out_of_order_queue);
+<<<<<<< HEAD
 		newtp->write_seq = newtp->pushed_seq =
 			treq->snt_isn + 1 + tcp_s_data_size(oldtp);
+=======
+		newtp->write_seq = newtp->pushed_seq = treq->snt_isn + 1;
+>>>>>>> refs/remotes/origin/master
 
 		newtp->rx_opt.saw_tstamp = 0;
 
@@ -587,6 +682,10 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
 			newtp->rx_opt.ts_recent_stamp = 0;
 			newtp->tcp_header_len = sizeof(struct tcphdr);
 		}
+<<<<<<< HEAD
+=======
+		newtp->tsoffset = 0;
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_TCP_MD5SIG
 		newtp->md5sig_info = NULL;	/*XXX*/
 		if (newtp->af_specific->md5_lookup(sk, newsk))
@@ -596,6 +695,11 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
 			newicsk->icsk_ack.last_seg_size = skb->len - newtp->tcp_header_len;
 		newtp->rx_opt.mss_clamp = req->mss;
 		TCP_ECN_openreq_child(newtp, req);
+<<<<<<< HEAD
+=======
+		newtp->fastopen_rsk = NULL;
+		newtp->syn_data_acked = 0;
+>>>>>>> refs/remotes/origin/master
 
 		TCP_INC_STATS_BH(sock_net(sk), TCP_MIB_PASSIVEOPENS);
 	}
@@ -604,12 +708,24 @@ struct sock *tcp_create_openreq_child(struct sock *sk, struct request_sock *req,
 EXPORT_SYMBOL(tcp_create_openreq_child);
 
 /*
+<<<<<<< HEAD
  *	Process an incoming packet for SYN_RECV sockets represented
  *	as a request_sock.
+=======
+ * Process an incoming packet for SYN_RECV sockets represented as a
+ * request_sock. Normally sk is the listener socket but for TFO it
+ * points to the child socket.
+ *
+ * XXX (TFO) - The current impl contains a special check for ack
+ * validation and inside tcp_v4_reqsk_send_ack(). Can we do better?
+ *
+ * We don't need to initialize tmp_opt.sack_ok as we don't use the results
+>>>>>>> refs/remotes/origin/master
  */
 
 struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 			   struct request_sock *req,
+<<<<<<< HEAD
 			   struct request_sock **prev)
 {
 	struct tcp_options_received tmp_opt;
@@ -626,6 +742,22 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 	tmp_opt.saw_tstamp = 0;
 	if (th->doff > (sizeof(struct tcphdr)>>2)) {
 		tcp_parse_options(skb, &tmp_opt, &hash_location, 0);
+=======
+			   struct request_sock **prev,
+			   bool fastopen)
+{
+	struct tcp_options_received tmp_opt;
+	struct sock *child;
+	const struct tcphdr *th = tcp_hdr(skb);
+	__be32 flg = tcp_flag_word(th) & (TCP_FLAG_RST|TCP_FLAG_SYN|TCP_FLAG_ACK);
+	bool paws_reject = false;
+
+	BUG_ON(fastopen == (sk->sk_state == TCP_LISTEN));
+
+	tmp_opt.saw_tstamp = 0;
+	if (th->doff > (sizeof(struct tcphdr)>>2)) {
+		tcp_parse_options(skb, &tmp_opt, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		if (tmp_opt.saw_tstamp) {
 			tmp_opt.ts_recent = req->ts_recent;
@@ -633,7 +765,11 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 			 * it can be estimated (approximately)
 			 * from another data.
 			 */
+<<<<<<< HEAD
 			tmp_opt.ts_recent_stamp = get_seconds() - ((TCP_TIMEOUT_INIT/HZ)<<req->retrans);
+=======
+			tmp_opt.ts_recent_stamp = get_seconds() - ((TCP_TIMEOUT_INIT/HZ)<<req->num_timeout);
+>>>>>>> refs/remotes/origin/master
 			paws_reject = tcp_paws_reject(&tmp_opt, th->rst);
 		}
 	}
@@ -658,8 +794,21 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 		 *
 		 * Enforce "SYN-ACK" according to figure 8, figure 6
 		 * of RFC793, fixed by RFC1122.
+<<<<<<< HEAD
 		 */
 		req->rsk_ops->rtx_syn_ack(sk, req, NULL);
+=======
+		 *
+		 * Note that even if there is new data in the SYN packet
+		 * they will be thrown away too.
+		 *
+		 * Reset timer after retransmitting SYNACK, similar to
+		 * the idea of fast retransmit in recovery.
+		 */
+		if (!inet_rtx_syn_ack(sk, req))
+			req->expires = min(TCP_TIMEOUT_INIT << req->num_timeout,
+					   TCP_RTO_MAX) + jiffies;
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -715,11 +864,22 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 	 *                  sent (the segment carries an unacceptable ACK) ...
 	 *                  a reset is sent."
 	 *
+<<<<<<< HEAD
 	 * Invalid ACK: reset will be sent by listening socket
 	 */
 	if ((flg & TCP_FLAG_ACK) &&
 	    (TCP_SKB_CB(skb)->ack_seq !=
 	     tcp_rsk(req)->snt_isn + 1 + tcp_s_data_size(tcp_sk(sk))))
+=======
+	 * Invalid ACK: reset will be sent by listening socket.
+	 * Note that the ACK validity check for a Fast Open socket is done
+	 * elsewhere and is checked directly against the child socket rather
+	 * than req because user data may have been sent out.
+	 */
+	if ((flg & TCP_FLAG_ACK) && !fastopen &&
+	    (TCP_SKB_CB(skb)->ack_seq !=
+	     tcp_rsk(req)->snt_isn + 1))
+>>>>>>> refs/remotes/origin/master
 		return sk;
 
 	/* Also, it would be not so bad idea to check rcv_tsecr, which
@@ -730,7 +890,11 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 	/* RFC793: "first check sequence number". */
 
 	if (paws_reject || !tcp_in_window(TCP_SKB_CB(skb)->seq, TCP_SKB_CB(skb)->end_seq,
+<<<<<<< HEAD
 					  tcp_rsk(req)->rcv_isn + 1, tcp_rsk(req)->rcv_isn + 1 + req->rcv_wnd)) {
+=======
+					  tcp_rsk(req)->rcv_nxt, tcp_rsk(req)->rcv_nxt + req->rcv_wnd)) {
+>>>>>>> refs/remotes/origin/master
 		/* Out of window: send ACK and drop. */
 		if (!(flg & TCP_FLAG_RST))
 			req->rsk_ops->send_ack(sk, skb, req);
@@ -741,7 +905,11 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 
 	/* In sequence, PAWS is OK. */
 
+<<<<<<< HEAD
 	if (tmp_opt.saw_tstamp && !after(TCP_SKB_CB(skb)->seq, tcp_rsk(req)->rcv_isn + 1))
+=======
+	if (tmp_opt.saw_tstamp && !after(TCP_SKB_CB(skb)->seq, tcp_rsk(req)->rcv_nxt))
+>>>>>>> refs/remotes/origin/master
 		req->ts_recent = tmp_opt.rcv_tsval;
 
 	if (TCP_SKB_CB(skb)->seq == tcp_rsk(req)->rcv_isn) {
@@ -760,17 +928,35 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 
 	/* ACK sequence verified above, just make sure ACK is
 	 * set.  If ACK not set, just silently drop the packet.
+<<<<<<< HEAD
+=======
+	 *
+	 * XXX (TFO) - if we ever allow "data after SYN", the
+	 * following check needs to be removed.
+>>>>>>> refs/remotes/origin/master
 	 */
 	if (!(flg & TCP_FLAG_ACK))
 		return NULL;
 
+<<<<<<< HEAD
 	/* While TCP_DEFER_ACCEPT is active, drop bare ACK. */
 	if (req->retrans < inet_csk(sk)->icsk_accept_queue.rskq_defer_accept &&
+=======
+	/* For Fast Open no more processing is needed (sk is the
+	 * child socket).
+	 */
+	if (fastopen)
+		return sk;
+
+	/* While TCP_DEFER_ACCEPT is active, drop bare ACK. */
+	if (req->num_timeout < inet_csk(sk)->icsk_accept_queue.rskq_defer_accept &&
+>>>>>>> refs/remotes/origin/master
 	    TCP_SKB_CB(skb)->end_seq == tcp_rsk(req)->rcv_isn + 1) {
 		inet_rsk(req)->acked = 1;
 		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_TCPDEFERACCEPTDROP);
 		return NULL;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (tmp_opt.saw_tstamp && tmp_opt.rcv_tsecr)
@@ -778,6 +964,8 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
 	else if (req->retrans) /* don't take RTT sample if retrans && ~TS */
 		tcp_rsk(req)->snt_synack = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* OK, ACK is valid, create big socket and
 	 * feed this segment to it. It will repeat all
@@ -802,11 +990,29 @@ listen_overflow:
 	}
 
 embryonic_reset:
+<<<<<<< HEAD
 	NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
 	if (!(flg & TCP_FLAG_RST))
 		req->rsk_ops->send_reset(sk, skb);
 
 	inet_csk_reqsk_queue_drop(sk, req, prev);
+=======
+	if (!(flg & TCP_FLAG_RST)) {
+		/* Received a bad SYN pkt - for TFO We try not to reset
+		 * the local connection unless it's really necessary to
+		 * avoid becoming vulnerable to outside attack aiming at
+		 * resetting legit local connections.
+		 */
+		req->rsk_ops->send_reset(sk, skb);
+	} else if (fastopen) { /* received a valid RST pkt */
+		reqsk_fastopen_remove(sk, req, true);
+		tcp_reset(sk);
+	}
+	if (!fastopen) {
+		inet_csk_reqsk_queue_drop(sk, req, prev);
+		NET_INC_STATS_BH(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
+	}
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 EXPORT_SYMBOL(tcp_check_req);
@@ -815,6 +1021,15 @@ EXPORT_SYMBOL(tcp_check_req);
  * Queue segment on the new socket if the new socket is active,
  * otherwise we just shortcircuit this and continue with
  * the new socket.
+<<<<<<< HEAD
+=======
+ *
+ * For the vast majority of cases child->sk_state will be TCP_SYN_RECV
+ * when entering. But other states are possible due to a race condition
+ * where after __inet_lookup_established() fails but before the listener
+ * locked is obtained, other packets cause the same connection to
+ * be created.
+>>>>>>> refs/remotes/origin/master
  */
 
 int tcp_child_process(struct sock *parent, struct sock *child,

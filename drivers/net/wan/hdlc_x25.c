@@ -35,10 +35,14 @@ static void x25_connect_disconnect(struct net_device *dev, int reason, int code)
 
 	if ((skb = dev_alloc_skb(1)) == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: out of memory\n", dev->name);
 =======
 		netdev_err(dev, "out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_err(dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -111,6 +115,7 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
 				x25_connected(dev, 0);
 			else
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "%s: LAPB connect request "
 				       "failed, error code = %i\n",
 				       dev->name, result);
@@ -118,6 +123,10 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
 				netdev_err(dev, "LAPB connect request failed, error code = %i\n",
 					   result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_err(dev, "LAPB connect request failed, error code = %i\n",
+					   result);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -128,6 +137,7 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
 				x25_disconnected(dev, 0);
 			else
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "%s: LAPB disconnect request "
 				       "failed, error code = %i\n",
 				       dev->name, result);
@@ -135,6 +145,10 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
 				netdev_err(dev, "LAPB disconnect request failed, error code = %i\n",
 					   result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_err(dev, "LAPB disconnect request failed, error code = %i\n",
+					   result);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -151,6 +165,7 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
 static int x25_open(struct net_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct lapb_register_struct cb;
 	int result;
 
@@ -161,6 +176,8 @@ static int x25_open(struct net_device *dev)
 	cb.data_indication = x25_data_indication;
 	cb.data_transmit = x25_data_transmit;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int result;
 	static const struct lapb_register_struct cb = {
 		.connect_confirmation = x25_connected,
@@ -170,7 +187,10 @@ static int x25_open(struct net_device *dev)
 		.data_indication = x25_data_indication,
 		.data_transmit = x25_data_transmit,
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	result = lapb_register(dev, &cb);
 	if (result != LAPB_OK)

@@ -5,10 +5,14 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/reboot.h>
@@ -27,7 +31,11 @@ static irqreturn_t power_handler(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit has_button_interrupt(unsigned int irq, struct device_node *dp)
+=======
+static int has_button_interrupt(unsigned int irq, struct device_node *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	if (irq == 0xffffffff)
 		return 0;
@@ -37,7 +45,11 @@ static int __devinit has_button_interrupt(unsigned int irq, struct device_node *
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit power_probe(struct platform_device *op)
+=======
+static int power_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res = &op->resource[0];
 	unsigned int irq = op->archdata.irqs[0];

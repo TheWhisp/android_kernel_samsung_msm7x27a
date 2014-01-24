@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -313,10 +317,20 @@ acpi_ds_obj_stack_push(void *object, struct acpi_walk_state *walk_state);
 acpi_status
 acpi_ds_obj_stack_pop(u32 pop_count, struct acpi_walk_state *walk_state);
 
+<<<<<<< HEAD
 struct acpi_walk_state *acpi_ds_create_walk_state(acpi_owner_id owner_id, union acpi_parse_object
 						  *origin, union acpi_operand_object
 						  *mth_desc, struct acpi_thread_state
 						  *thread);
+=======
+struct acpi_walk_state * acpi_ds_create_walk_state(acpi_owner_id owner_id,
+						   union acpi_parse_object
+						   *origin,
+						   union acpi_operand_object
+						   *mth_desc,
+						   struct acpi_thread_state
+						   *thread);
+>>>>>>> refs/remotes/origin/master
 
 acpi_status
 acpi_ds_init_aml_walk(struct acpi_walk_state *walk_state,

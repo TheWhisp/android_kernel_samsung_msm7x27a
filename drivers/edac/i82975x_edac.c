@@ -29,7 +29,12 @@
 #define PCI_DEVICE_ID_INTEL_82975_0	0x277c
 #endif				/* PCI_DEVICE_ID_INTEL_82975_0 */
 
+<<<<<<< HEAD
 #define I82975X_NR_CSROWS(nr_chans)		(8/(nr_chans))
+=======
+#define I82975X_NR_DIMMS		8
+#define I82975X_NR_CSROWS(nr_chans)	(I82975X_NR_DIMMS / (nr_chans))
+>>>>>>> refs/remotes/origin/master
 
 /* Intel 82975X register addresses - device 0 function 0 - DRAM Controller */
 #define I82975X_EAP		0x58	/* Dram Error Address Pointer (32b)
@@ -240,7 +245,11 @@ static void i82975x_get_error_info(struct mem_ctl_info *mci,
 {
 	struct pci_dev *pdev;
 
+<<<<<<< HEAD
 	pdev = to_pci_dev(mci->dev);
+=======
+	pdev = to_pci_dev(mci->pdev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * This is a mess because there is no atomic way to read all the
@@ -278,6 +287,7 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 		struct i82975x_error_info *info, int handle_errors)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int row, multi_chan, chan;
 	unsigned long offst, page;
 
@@ -288,6 +298,11 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 	unsigned long offst, page;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int row, chan;
+	unsigned long offst, page;
+
+>>>>>>> refs/remotes/origin/master
 	if (!(info->errsts2 & 0x0003))
 		return 0;
 
@@ -295,11 +310,17 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 		return 1;
 
 	if ((info->errsts ^ info->errsts2) & 0x0003) {
+<<<<<<< HEAD
 		edac_mc_handle_ce_no_info(mci, "UE overwrote CE");
+=======
+		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, 1, 0, 0, 0,
+				     -1, -1, -1, "UE overwrote CE", "");
+>>>>>>> refs/remotes/origin/master
 		info->errsts = info->errsts2;
 	}
 
 	page = (unsigned long) info->eap;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (info->xeap & 1)
 		page |= 0x100000000ul;
@@ -310,6 +331,8 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 	row = edac_mc_find_csrow_by_page(mci, page);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	page >>= 1;
 	if (info->xeap & 1)
 		page |= 0x80000000;
@@ -324,6 +347,7 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 			(info->xeap & 1) ? 1 : 0, info->eap, (unsigned int) page);
 		return 0;
 	}
+<<<<<<< HEAD
 	chan = (mci->csrows[row].nr_channels == 1) ? 0 : info->eap & 1;
 	offst = info->eap
 			& ((1 << PAGE_SHIFT) -
@@ -340,6 +364,23 @@ static int i82975x_process_error_info(struct mem_ctl_info *mci,
 =======
 				chan, "i82975x CE");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chan = (mci->csrows[row]->nr_channels == 1) ? 0 : info->eap & 1;
+	offst = info->eap
+			& ((1 << PAGE_SHIFT) -
+			   (1 << mci->csrows[row]->channels[chan]->dimm->grain));
+
+	if (info->errsts & 0x0002)
+		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci, 1,
+				     page, offst, 0,
+				     row, -1, -1,
+				     "i82975x UE", "");
+	else
+		edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci, 1,
+				     page, offst, info->derrsyn,
+				     row, chan ? chan : 0, -1,
+				     "i82975x CE", "");
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }
@@ -348,7 +389,11 @@ static void i82975x_check(struct mem_ctl_info *mci)
 {
 	struct i82975x_error_info info;
 
+<<<<<<< HEAD
 	debugf1("MC%d: %s()\n", mci->mc_idx, __func__);
+=======
+	edac_dbg(1, "MC%d\n", mci->mc_idx);
+>>>>>>> refs/remotes/origin/master
 	i82975x_get_error_info(mci, &info);
 	i82975x_process_error_info(mci, &info, 1);
 }
@@ -387,6 +432,7 @@ static enum dev_type i82975x_dram_type(void __iomem *mch_window, int rank)
 static void i82975x_init_csrows(struct mem_ctl_info *mci,
 		struct pci_dev *pdev, void __iomem *mch_window)
 {
+<<<<<<< HEAD
 	static const char *labels[4] = {
 							"DIMM A1", "DIMM A2",
 							"DIMM B1", "DIMM B2"
@@ -396,6 +442,15 @@ static void i82975x_init_csrows(struct mem_ctl_info *mci,
 	u8 value;
 	u32 cumul_size;
 	int index, chan;
+=======
+	struct csrow_info *csrow;
+	unsigned long last_cumul_size;
+	u8 value;
+	u32 cumul_size, nr_pages;
+	int index, chan;
+	struct dimm_info *dimm;
+	enum dev_type dtype;
+>>>>>>> refs/remotes/origin/master
 
 	last_cumul_size = 0;
 
@@ -409,7 +464,11 @@ static void i82975x_init_csrows(struct mem_ctl_info *mci,
 	 */
 
 	for (index = 0; index < mci->nr_csrows; index++) {
+<<<<<<< HEAD
 		csrow = &mci->csrows[index];
+=======
+		csrow = mci->csrows[index];
+>>>>>>> refs/remotes/origin/master
 
 		value = readb(mch_window + I82975X_DRB + index +
 					((index >= 4) ? 0x80 : 0));
@@ -421,8 +480,16 @@ static void i82975x_init_csrows(struct mem_ctl_info *mci,
 		 */
 		if (csrow->nr_channels > 1)
 			cumul_size <<= 1;
+<<<<<<< HEAD
 		debugf3("%s(): (%d) cumul_size 0x%x\n", __func__, index,
 			cumul_size);
+=======
+		edac_dbg(3, "(%d) cumul_size 0x%x\n", index, cumul_size);
+
+		nr_pages = cumul_size - last_cumul_size;
+		if (!nr_pages)
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Initialise dram labels
@@ -430,6 +497,7 @@ static void i82975x_init_csrows(struct mem_ctl_info *mci,
 		 *   [0-7] for single-channel; i.e. csrow->nr_channels = 1
 		 *   [0-3] for dual-channel; i.e. csrow->nr_channels = 2
 		 */
+<<<<<<< HEAD
 		for (chan = 0; chan < csrow->nr_channels; chan++)
 			strncpy(csrow->channels[chan].label,
 					labels[(index >> 1) + (chan * 2)],
@@ -450,6 +518,26 @@ static void i82975x_init_csrows(struct mem_ctl_info *mci,
 		csrow->mtype = MEM_DDR2; /* I82975x supports only DDR2 */
 		csrow->dtype = i82975x_dram_type(mch_window, index);
 		csrow->edac_mode = EDAC_SECDED; /* only supported */
+=======
+		dtype = i82975x_dram_type(mch_window, index);
+		for (chan = 0; chan < csrow->nr_channels; chan++) {
+			dimm = mci->csrows[index]->channels[chan]->dimm;
+
+			dimm->nr_pages = nr_pages / csrow->nr_channels;
+
+			snprintf(csrow->channels[chan]->dimm->label, EDAC_MC_LABEL_LEN, "DIMM %c%d",
+				 (chan == 0) ? 'A' : 'B',
+				 index);
+			dimm->grain = 1 << 7;	/* 128Byte cache-line resolution */
+			dimm->dtype = i82975x_dram_type(mch_window, index);
+			dimm->mtype = MEM_DDR2; /* I82975x supports only DDR2 */
+			dimm->edac_mode = EDAC_SECDED; /* only supported */
+		}
+
+		csrow->first_page = last_cumul_size;
+		csrow->last_page = cumul_size - 1;
+		last_cumul_size = cumul_size;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -491,6 +579,10 @@ static int i82975x_probe1(struct pci_dev *pdev, int dev_idx)
 {
 	int rc = -ENODEV;
 	struct mem_ctl_info *mci;
+<<<<<<< HEAD
+=======
+	struct edac_mc_layer layers[2];
+>>>>>>> refs/remotes/origin/master
 	struct i82975x_pvt *pvt;
 	void __iomem *mch_window;
 	u32 mchbar;
@@ -502,11 +594,19 @@ static int i82975x_probe1(struct pci_dev *pdev, int dev_idx)
 	u8 c1drb[4];
 #endif
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
 
 	pci_read_config_dword(pdev, I82975X_MCHBAR, &mchbar);
 	if (!(mchbar & 1)) {
 		debugf3("%s(): failed, MCHBAR disabled!\n", __func__);
+=======
+	edac_dbg(0, "\n");
+
+	pci_read_config_dword(pdev, I82975X_MCHBAR, &mchbar);
+	if (!(mchbar & 1)) {
+		edac_dbg(3, "failed, MCHBAR disabled!\n");
+>>>>>>> refs/remotes/origin/master
 		goto fail0;
 	}
 	mchbar &= 0xffffc000;	/* bits 31:14 used for 16K window */
@@ -559,15 +659,30 @@ static int i82975x_probe1(struct pci_dev *pdev, int dev_idx)
 	chans = dual_channel_active(mch_window) + 1;
 
 	/* assuming only one controller, index thus is 0 */
+<<<<<<< HEAD
 	mci = edac_mc_alloc(sizeof(*pvt), I82975X_NR_CSROWS(chans),
 					chans, 0);
+=======
+	layers[0].type = EDAC_MC_LAYER_CHIP_SELECT;
+	layers[0].size = I82975X_NR_DIMMS;
+	layers[0].is_virt_csrow = true;
+	layers[1].type = EDAC_MC_LAYER_CHANNEL;
+	layers[1].size = I82975X_NR_CSROWS(chans);
+	layers[1].is_virt_csrow = false;
+	mci = edac_mc_alloc(0, ARRAY_SIZE(layers), layers, sizeof(*pvt));
+>>>>>>> refs/remotes/origin/master
 	if (!mci) {
 		rc = -ENOMEM;
 		goto fail1;
 	}
 
+<<<<<<< HEAD
 	debugf3("%s(): init mci\n", __func__);
 	mci->dev = &pdev->dev;
+=======
+	edac_dbg(3, "init mci\n");
+	mci->pdev = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	mci->mtype_cap = MEM_FLAG_DDR2;
 	mci->edac_ctl_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
 	mci->edac_cap = EDAC_FLAG_NONE | EDAC_FLAG_SECDED;
@@ -577,7 +692,11 @@ static int i82975x_probe1(struct pci_dev *pdev, int dev_idx)
 	mci->dev_name = pci_name(pdev);
 	mci->edac_check = i82975x_check;
 	mci->ctl_page_to_phys = NULL;
+<<<<<<< HEAD
 	debugf3("%s(): init pvt\n", __func__);
+=======
+	edac_dbg(3, "init pvt\n");
+>>>>>>> refs/remotes/origin/master
 	pvt = (struct i82975x_pvt *) mci->pvt_info;
 	pvt->mch_window = mch_window;
 	i82975x_init_csrows(mci, pdev, mch_window);
@@ -586,12 +705,20 @@ static int i82975x_probe1(struct pci_dev *pdev, int dev_idx)
 
 	/* finalize this instance of memory controller with edac core */
 	if (edac_mc_add_mc(mci)) {
+<<<<<<< HEAD
 		debugf3("%s(): failed edac_mc_add_mc()\n", __func__);
+=======
+		edac_dbg(3, "failed edac_mc_add_mc()\n");
+>>>>>>> refs/remotes/origin/master
 		goto fail2;
 	}
 
 	/* get this far and it's successful */
+<<<<<<< HEAD
 	debugf3("%s(): success\n", __func__);
+=======
+	edac_dbg(3, "success\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 fail2:
@@ -604,12 +731,21 @@ fail0:
 }
 
 /* returns count (>= 0), or negative on error */
+<<<<<<< HEAD
 static int __devinit i82975x_init_one(struct pci_dev *pdev,
 		const struct pci_device_id *ent)
 {
 	int rc;
 
 	debugf0("%s()\n", __func__);
+=======
+static int i82975x_init_one(struct pci_dev *pdev,
+			    const struct pci_device_id *ent)
+{
+	int rc;
+
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (pci_enable_device(pdev) < 0)
 		return -EIO;
@@ -622,12 +758,20 @@ static int __devinit i82975x_init_one(struct pci_dev *pdev,
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devexit i82975x_remove_one(struct pci_dev *pdev)
+=======
+static void i82975x_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mem_ctl_info *mci;
 	struct i82975x_pvt *pvt;
 
+<<<<<<< HEAD
 	debugf0("%s()\n", __func__);
+=======
+	edac_dbg(0, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	mci = edac_mc_del_mc(&pdev->dev);
 	if (mci  == NULL)
@@ -641,10 +785,14 @@ static void __devexit i82975x_remove_one(struct pci_dev *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id i82975x_pci_tbl[] __devinitdata = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(i82975x_pci_tbl) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id i82975x_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		PCI_VEND_DEV(INTEL, 82975_0), PCI_ANY_ID, PCI_ANY_ID, 0, 0,
 		I82975X
@@ -659,7 +807,11 @@ MODULE_DEVICE_TABLE(pci, i82975x_pci_tbl);
 static struct pci_driver i82975x_driver = {
 	.name = EDAC_MOD_STR,
 	.probe = i82975x_init_one,
+<<<<<<< HEAD
 	.remove = __devexit_p(i82975x_remove_one),
+=======
+	.remove = i82975x_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table = i82975x_pci_tbl,
 };
 
@@ -667,7 +819,11 @@ static int __init i82975x_init(void)
 {
 	int pci_rc;
 
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 
        /* Ensure that the OPSTATE is set correctly for POLL or NMI */
        opstate_init();
@@ -681,7 +837,11 @@ static int __init i82975x_init(void)
 				PCI_DEVICE_ID_INTEL_82975_0, NULL);
 
 		if (!mci_pdev) {
+<<<<<<< HEAD
 			debugf0("i82975x pci_get_device fail\n");
+=======
+			edac_dbg(0, "i82975x pci_get_device fail\n");
+>>>>>>> refs/remotes/origin/master
 			pci_rc = -ENODEV;
 			goto fail1;
 		}
@@ -689,7 +849,11 @@ static int __init i82975x_init(void)
 		pci_rc = i82975x_init_one(mci_pdev, i82975x_pci_tbl);
 
 		if (pci_rc < 0) {
+<<<<<<< HEAD
 			debugf0("i82975x init fail\n");
+=======
+			edac_dbg(0, "i82975x init fail\n");
+>>>>>>> refs/remotes/origin/master
 			pci_rc = -ENODEV;
 			goto fail1;
 		}
@@ -709,7 +873,11 @@ fail0:
 
 static void __exit i82975x_exit(void)
 {
+<<<<<<< HEAD
 	debugf3("%s()\n", __func__);
+=======
+	edac_dbg(3, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	pci_unregister_driver(&i82975x_driver);
 

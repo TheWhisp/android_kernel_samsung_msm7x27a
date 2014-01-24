@@ -24,14 +24,20 @@
 
 #include <linux/amba/bus.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of_platform.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_platform.h>
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void __init versatile_init(void);
 extern void __init versatile_init_early(void);
 extern void __init versatile_init_irq(void);
 extern void __init versatile_map_io(void);
+<<<<<<< HEAD
 extern struct sys_timer versatile_timer;
 <<<<<<< HEAD
 extern unsigned int mmc_status(struct device *dev);
@@ -53,6 +59,10 @@ static struct amba_device name##_device = {			\
 }
 =======
 extern void versatile_restart(char, const char *);
+=======
+extern void versatile_timer_init(void);
+extern void versatile_restart(enum reboot_mode, const char *);
+>>>>>>> refs/remotes/origin/master
 extern unsigned int mmc_status(struct device *dev);
 #ifdef CONFIG_OF
 extern struct of_dev_auxdata versatile_auxdata_lookup[];
@@ -63,6 +73,9 @@ static AMBA_APB_DEVICE(name, busid, 0, VERSATILE_##base##_BASE, base##_IRQ, plat
 
 #define AHB_DEVICE(name, busid, base, plat)	\
 static AMBA_AHB_DEVICE(name, busid, 0, VERSATILE_##base##_BASE, base##_IRQ, plat)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

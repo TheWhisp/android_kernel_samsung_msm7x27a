@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,10 +79,15 @@ acpi_rs_convert_aml_to_resources(u8 * aml,
 	    ACPI_CAST_INDIRECT_PTR(struct acpi_resource, context);
 	struct acpi_resource *resource;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	union aml_resource *aml_resource;
 	struct acpi_rsconvert_info *conversion_table;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	union aml_resource *aml_resource;
+	struct acpi_rsconvert_info *conversion_table;
+>>>>>>> refs/remotes/origin/master
 	acpi_status status;
 
 	ACPI_FUNCTION_TRACE(rs_convert_aml_to_resources);
@@ -94,6 +103,7 @@ acpi_rs_convert_aml_to_resources(u8 * aml,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Convert the AML byte stream resource to a local resource struct */
 
 	status =
@@ -103,6 +113,8 @@ acpi_rs_convert_aml_to_resources(u8 * aml,
 					    acpi_gbl_get_resource_dispatch
 					    [resource_index]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Get the appropriate conversion info table */
 
 	aml_resource = ACPI_CAST_PTR(union aml_resource, aml);
@@ -126,7 +138,11 @@ acpi_rs_convert_aml_to_resources(u8 * aml,
 		ACPI_ERROR((AE_INFO,
 			    "Invalid/unsupported resource descriptor: Type 0x%2.2X",
 			    resource_index));
+<<<<<<< HEAD
 		return (AE_AML_INVALID_RESOURCE_TYPE);
+=======
+		return_ACPI_STATUS(AE_AML_INVALID_RESOURCE_TYPE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Convert the AML byte stream resource to a local resource struct */
@@ -134,7 +150,10 @@ acpi_rs_convert_aml_to_resources(u8 * aml,
 	status =
 	    acpi_rs_convert_aml_to_resource(resource, aml_resource,
 					    conversion_table);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		ACPI_EXCEPTION((AE_INFO, status,
 				"Could not convert AML resource (Type 0x%X)",
@@ -150,10 +169,14 @@ acpi_rs_convert_aml_to_resources(u8 * aml,
 	/* Point to the next structure in the output buffer */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*resource_ptr = ACPI_ADD_PTR(void, resource, resource->length);
 =======
 	*resource_ptr = ACPI_NEXT_RESOURCE(resource);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*resource_ptr = ACPI_NEXT_RESOURCE(resource);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(AE_OK);
 }
 
@@ -161,7 +184,11 @@ acpi_rs_convert_aml_to_resources(u8 * aml,
  *
  * FUNCTION:    acpi_rs_convert_resources_to_aml
  *
+<<<<<<< HEAD
  * PARAMETERS:  Resource            - Pointer to the resource linked list
+=======
+ * PARAMETERS:  resource            - Pointer to the resource linked list
+>>>>>>> refs/remotes/origin/master
  *              aml_size_needed     - Calculated size of the byte stream
  *                                    needed from calling acpi_rs_get_aml_length()
  *                                    The size of the output_buffer is
@@ -183,9 +210,13 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
 	u8 *aml = output_buffer;
 	u8 *end_aml = output_buffer + aml_size_needed;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct acpi_rsconvert_info *conversion_table;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct acpi_rsconvert_info *conversion_table;
+>>>>>>> refs/remotes/origin/master
 	acpi_status status;
 
 	ACPI_FUNCTION_TRACE(rs_convert_resources_to_aml);
@@ -203,6 +234,7 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
 			return_ACPI_STATUS(AE_BAD_DATA);
 		}
 
+<<<<<<< HEAD
 		/* Perform the conversion */
 
 <<<<<<< HEAD
@@ -212,6 +244,18 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
 							 acpi_gbl_set_resource_dispatch
 							 [resource->type]);
 =======
+=======
+		/* Sanity check the length. It must not be zero, or we loop forever */
+
+		if (!resource->length) {
+			ACPI_ERROR((AE_INFO,
+				    "Invalid zero length descriptor in resource list\n"));
+			return_ACPI_STATUS(AE_AML_BAD_RESOURCE_LENGTH);
+		}
+
+		/* Perform the conversion */
+
+>>>>>>> refs/remotes/origin/master
 		if (resource->type == ACPI_RESOURCE_TYPE_SERIAL_BUS) {
 			if (resource->data.common_serial_bus.type >
 			    AML_RESOURCE_MAX_SERIALBUSTYPE) {
@@ -232,7 +276,11 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
 			ACPI_ERROR((AE_INFO,
 				    "Invalid/unsupported resource descriptor: Type 0x%2.2X",
 				    resource->type));
+<<<<<<< HEAD
 			return (AE_AML_INVALID_RESOURCE_TYPE);
+=======
+			return_ACPI_STATUS(AE_AML_INVALID_RESOURCE_TYPE);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		status = acpi_rs_convert_resource_to_aml(resource,
@@ -240,7 +288,10 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
 								       aml_resource,
 								       aml),
 							 conversion_table);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_FAILURE(status)) {
 			ACPI_EXCEPTION((AE_INFO, status,
 					"Could not convert resource (type 0x%X) to AML",
@@ -250,9 +301,16 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
 
 		/* Perform final sanity check on the new AML resource descriptor */
 
+<<<<<<< HEAD
 		status =
 		    acpi_ut_validate_resource(ACPI_CAST_PTR
 					      (union aml_resource, aml), NULL);
+=======
+		status = acpi_ut_validate_resource(NULL,
+						   ACPI_CAST_PTR(union
+								 aml_resource,
+								 aml), NULL);
+>>>>>>> refs/remotes/origin/master
 		if (ACPI_FAILURE(status)) {
 			return_ACPI_STATUS(status);
 		}
@@ -275,12 +333,16 @@ acpi_rs_convert_resources_to_aml(struct acpi_resource *resource,
 		/* Point to the next input resource descriptor */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		resource =
 		    ACPI_ADD_PTR(struct acpi_resource, resource,
 				 resource->length);
 =======
 		resource = ACPI_NEXT_RESOURCE(resource);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		resource = ACPI_NEXT_RESOURCE(resource);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Completed buffer, but did not find an end_tag resource descriptor */

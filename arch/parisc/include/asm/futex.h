@@ -9,7 +9,10 @@
 #include <asm/errno.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* The following has to match the LWS code in syscall.S.  We have
    sixteen four-word locks. */
 
@@ -33,7 +36,10 @@ _futex_spin_unlock_irqrestore(u32 __user *uaddr, unsigned long int *flags)
 	local_irq_restore(*flags);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
 {
@@ -53,10 +59,14 @@ futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
 	pagefault_disable();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_atomic_spin_lock_irqsave(uaddr, flags);
 =======
 	_futex_spin_lock_irqsave(uaddr, &flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_futex_spin_lock_irqsave(uaddr, &flags);
+>>>>>>> refs/remotes/origin/master
 
 	switch (op) {
 	case FUTEX_OP_SET:
@@ -102,10 +112,14 @@ futex_atomic_op_inuser (int encoded_op, u32 __user *uaddr)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_atomic_spin_unlock_irqrestore(uaddr, flags);
 =======
 	_futex_spin_unlock_irqrestore(uaddr, &flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_futex_spin_unlock_irqrestore(uaddr, &flags);
+>>>>>>> refs/remotes/origin/master
 
 	pagefault_enable();
 
@@ -148,10 +162,14 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_atomic_spin_lock_irqsave(uaddr, flags);
 =======
 	_futex_spin_lock_irqsave(uaddr, &flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_futex_spin_lock_irqsave(uaddr, &flags);
+>>>>>>> refs/remotes/origin/master
 
 	ret = get_user(val, uaddr);
 
@@ -161,10 +179,14 @@ futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
 	*uval = val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_atomic_spin_unlock_irqrestore(uaddr, flags);
 =======
 	_futex_spin_unlock_irqrestore(uaddr, &flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_futex_spin_unlock_irqrestore(uaddr, &flags);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }

@@ -29,7 +29,10 @@ static int show_console_dev(struct seq_file *m, void *v)
 	char flags[ARRAY_SIZE(con_flags) + 1];
 	struct console *con = v;
 	unsigned int a;
+<<<<<<< HEAD
 	int len;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_t dev = 0;
 
 	if (con->device) {
@@ -47,11 +50,18 @@ static int show_console_dev(struct seq_file *m, void *v)
 			con_flags[a].name : ' ';
 	flags[a] = 0;
 
+<<<<<<< HEAD
 	seq_printf(m, "%s%d%n", con->name, con->index, &len);
 	len = 21 - len;
 	if (len < 1)
 		len = 1;
 	seq_printf(m, "%*c%c%c%c (%s)", len, ' ', con->read ? 'R' : '-',
+=======
+	seq_setwidth(m, 21 - 1);
+	seq_printf(m, "%s%d", con->name, con->index);
+	seq_pad(m, ' ');
+	seq_printf(m, "%c%c%c (%s)", con->read ? 'R' : '-',
+>>>>>>> refs/remotes/origin/master
 			con->write ? 'W' : '-', con->unblank ? 'U' : '-',
 			flags);
 	if (dev)

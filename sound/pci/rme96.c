@@ -28,10 +28,15 @@
 #include <linux/interrupt.h>
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/vmalloc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/info.h>
@@ -58,10 +63,14 @@ MODULE_SUPPORTED_DEVICE("{{RME,Digi96},"
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for RME Digi96 soundcard.");
@@ -206,6 +215,34 @@ MODULE_PARM_DESC(enable, "Enable RME Digi96 soundcard.");
 #define RME96_AD1852_VOL_BITS 14
 #define RME96_AD1855_VOL_BITS 10
 
+<<<<<<< HEAD
+=======
+/* Defines for snd_rme96_trigger */
+#define RME96_TB_START_PLAYBACK 1
+#define RME96_TB_START_CAPTURE 2
+#define RME96_TB_STOP_PLAYBACK 4
+#define RME96_TB_STOP_CAPTURE 8
+#define RME96_TB_RESET_PLAYPOS 16
+#define RME96_TB_RESET_CAPTUREPOS 32
+#define RME96_TB_CLEAR_PLAYBACK_IRQ 64
+#define RME96_TB_CLEAR_CAPTURE_IRQ 128
+#define RME96_RESUME_PLAYBACK	(RME96_TB_START_PLAYBACK)
+#define RME96_RESUME_CAPTURE	(RME96_TB_START_CAPTURE)
+#define RME96_RESUME_BOTH	(RME96_RESUME_PLAYBACK \
+				| RME96_RESUME_CAPTURE)
+#define RME96_START_PLAYBACK	(RME96_TB_START_PLAYBACK \
+				| RME96_TB_RESET_PLAYPOS)
+#define RME96_START_CAPTURE	(RME96_TB_START_CAPTURE \
+				| RME96_TB_RESET_CAPTUREPOS)
+#define RME96_START_BOTH	(RME96_START_PLAYBACK \
+				| RME96_START_CAPTURE)
+#define RME96_STOP_PLAYBACK	(RME96_TB_STOP_PLAYBACK \
+				| RME96_TB_CLEAR_PLAYBACK_IRQ)
+#define RME96_STOP_CAPTURE	(RME96_TB_STOP_CAPTURE \
+				| RME96_TB_CLEAR_CAPTURE_IRQ)
+#define RME96_STOP_BOTH		(RME96_STOP_PLAYBACK \
+				| RME96_STOP_CAPTURE)
+>>>>>>> refs/remotes/origin/master
 
 struct rme96 {
 	spinlock_t    lock;
@@ -222,6 +259,16 @@ struct rme96 {
 
 	u8 rev; /* card revision number */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+	u32 playback_pointer;
+	u32 capture_pointer;
+	void *playback_suspend_buffer;
+	void *capture_suspend_buffer;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	struct snd_pcm_substream *playback_substream;
 	struct snd_pcm_substream *capture_substream;
 
@@ -278,8 +325,12 @@ snd_rme96_playback_pointer(struct snd_pcm_substream *substream);
 static snd_pcm_uframes_t
 snd_rme96_capture_pointer(struct snd_pcm_substream *substream);
 
+<<<<<<< HEAD
 static void __devinit 
 snd_rme96_proc_init(struct rme96 *rme96);
+=======
+static void snd_rme96_proc_init(struct rme96 *rme96);
+>>>>>>> refs/remotes/origin/master
 
 static int
 snd_rme96_create_switches(struct snd_card *card,
@@ -326,9 +377,14 @@ snd_rme96_playback_copy(struct snd_pcm_substream *substream,
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
 	count <<= rme96->playback_frlog;
 	pos <<= rme96->playback_frlog;
+<<<<<<< HEAD
 	copy_from_user_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos, src,
 			    count);
 	return 0;
+=======
+	return copy_from_user_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos, src,
+				   count);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -341,9 +397,14 @@ snd_rme96_capture_copy(struct snd_pcm_substream *substream,
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
 	count <<= rme96->capture_frlog;
 	pos <<= rme96->capture_frlog;
+<<<<<<< HEAD
 	copy_to_user_fromio(dst, rme96->iobase + RME96_IO_REC_BUFFER + pos,
 			    count);
         return 0;
+=======
+	return copy_to_user_fromio(dst, rme96->iobase + RME96_IO_REC_BUFFER + pos,
+				   count);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -353,6 +414,11 @@ static struct snd_pcm_hardware snd_rme96_playback_spdif_info =
 {
 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
 			      SNDRV_PCM_INFO_MMAP_VALID |
+<<<<<<< HEAD
+=======
+			      SNDRV_PCM_INFO_SYNC_START |
+			      SNDRV_PCM_INFO_RESUME |
+>>>>>>> refs/remotes/origin/master
 			      SNDRV_PCM_INFO_INTERLEAVED |
 			      SNDRV_PCM_INFO_PAUSE),
 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
@@ -382,6 +448,11 @@ static struct snd_pcm_hardware snd_rme96_capture_spdif_info =
 {
 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
 			      SNDRV_PCM_INFO_MMAP_VALID |
+<<<<<<< HEAD
+=======
+			      SNDRV_PCM_INFO_SYNC_START |
+			      SNDRV_PCM_INFO_RESUME |
+>>>>>>> refs/remotes/origin/master
 			      SNDRV_PCM_INFO_INTERLEAVED |
 			      SNDRV_PCM_INFO_PAUSE),
 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
@@ -411,6 +482,11 @@ static struct snd_pcm_hardware snd_rme96_playback_adat_info =
 {
 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
 			      SNDRV_PCM_INFO_MMAP_VALID |
+<<<<<<< HEAD
+=======
+			      SNDRV_PCM_INFO_SYNC_START |
+			      SNDRV_PCM_INFO_RESUME |
+>>>>>>> refs/remotes/origin/master
 			      SNDRV_PCM_INFO_INTERLEAVED |
 			      SNDRV_PCM_INFO_PAUSE),
 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
@@ -436,6 +512,11 @@ static struct snd_pcm_hardware snd_rme96_capture_adat_info =
 {
 	.info =		     (SNDRV_PCM_INFO_MMAP_IOMEM |
 			      SNDRV_PCM_INFO_MMAP_VALID |
+<<<<<<< HEAD
+=======
+			      SNDRV_PCM_INFO_SYNC_START |
+			      SNDRV_PCM_INFO_RESUME |
+>>>>>>> refs/remotes/origin/master
 			      SNDRV_PCM_INFO_INTERLEAVED |
 			      SNDRV_PCM_INFO_PAUSE),
 	.formats =	     (SNDRV_PCM_FMTBIT_S16_LE |
@@ -1054,6 +1135,7 @@ snd_rme96_capture_hw_params(struct snd_pcm_substream *substream,
 }
 
 static void
+<<<<<<< HEAD
 snd_rme96_playback_start(struct rme96 *rme96,
 			 int from_pause)
 {
@@ -1102,6 +1184,37 @@ snd_rme96_capture_stop(struct rme96 *rme96)
 	rme96->wcreg &= ~RME96_WCR_START_2;
 	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
 }
+=======
+snd_rme96_trigger(struct rme96 *rme96,
+		  int op)
+{
+	if (op & RME96_TB_RESET_PLAYPOS)
+		writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
+	if (op & RME96_TB_RESET_CAPTUREPOS)
+		writel(0, rme96->iobase + RME96_IO_RESET_REC_POS);
+	if (op & RME96_TB_CLEAR_PLAYBACK_IRQ) {
+		rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
+		if (rme96->rcreg & RME96_RCR_IRQ)
+			writel(0, rme96->iobase + RME96_IO_CONFIRM_PLAY_IRQ);
+	}
+	if (op & RME96_TB_CLEAR_CAPTURE_IRQ) {
+		rme96->rcreg = readl(rme96->iobase + RME96_IO_CONTROL_REGISTER);
+		if (rme96->rcreg & RME96_RCR_IRQ_2)
+			writel(0, rme96->iobase + RME96_IO_CONFIRM_REC_IRQ);
+	}
+	if (op & RME96_TB_START_PLAYBACK)
+		rme96->wcreg |= RME96_WCR_START;
+	if (op & RME96_TB_STOP_PLAYBACK)
+		rme96->wcreg &= ~RME96_WCR_START;
+	if (op & RME96_TB_START_CAPTURE)
+		rme96->wcreg |= RME96_WCR_START_2;
+	if (op & RME96_TB_STOP_CAPTURE)
+		rme96->wcreg &= ~RME96_WCR_START_2;
+	writel(rme96->wcreg, rme96->iobase + RME96_IO_CONTROL_REGISTER);
+}
+
+
+>>>>>>> refs/remotes/origin/master
 
 static irqreturn_t
 snd_rme96_interrupt(int irq,
@@ -1164,6 +1277,10 @@ snd_rme96_playback_spdif_open(struct snd_pcm_substream *substream)
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
 	struct snd_pcm_runtime *runtime = substream->runtime;
 
+<<<<<<< HEAD
+=======
+	snd_pcm_set_sync(substream);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&rme96->lock);	
         if (rme96->playback_substream != NULL) {
 		spin_unlock_irq(&rme96->lock);
@@ -1200,6 +1317,10 @@ snd_rme96_capture_spdif_open(struct snd_pcm_substream *substream)
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
 	struct snd_pcm_runtime *runtime = substream->runtime;
 
+<<<<<<< HEAD
+=======
+	snd_pcm_set_sync(substream);
+>>>>>>> refs/remotes/origin/master
 	runtime->hw = snd_rme96_capture_spdif_info;
         if (snd_rme96_getinputtype(rme96) != RME96_INPUT_ANALOG &&
             (rate = snd_rme96_capture_getrate(rme96, &isadat)) > 0)
@@ -1231,6 +1352,10 @@ snd_rme96_playback_adat_open(struct snd_pcm_substream *substream)
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
 	struct snd_pcm_runtime *runtime = substream->runtime;        
 	
+<<<<<<< HEAD
+=======
+	snd_pcm_set_sync(substream);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&rme96->lock);	
         if (rme96->playback_substream != NULL) {
 		spin_unlock_irq(&rme96->lock);
@@ -1262,6 +1387,10 @@ snd_rme96_capture_adat_open(struct snd_pcm_substream *substream)
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
 	struct snd_pcm_runtime *runtime = substream->runtime;
 
+<<<<<<< HEAD
+=======
+	snd_pcm_set_sync(substream);
+>>>>>>> refs/remotes/origin/master
 	runtime->hw = snd_rme96_capture_adat_info;
         if (snd_rme96_getinputtype(rme96) == RME96_INPUT_ANALOG) {
                 /* makes no sense to use analog input. Note that analog
@@ -1297,7 +1426,11 @@ snd_rme96_playback_close(struct snd_pcm_substream *substream)
 
 	spin_lock_irq(&rme96->lock);	
 	if (RME96_ISPLAYING(rme96)) {
+<<<<<<< HEAD
 		snd_rme96_playback_stop(rme96);
+=======
+		snd_rme96_trigger(rme96, RME96_STOP_PLAYBACK);
+>>>>>>> refs/remotes/origin/master
 	}
 	rme96->playback_substream = NULL;
 	rme96->playback_periodsize = 0;
@@ -1318,7 +1451,11 @@ snd_rme96_capture_close(struct snd_pcm_substream *substream)
 	
 	spin_lock_irq(&rme96->lock);	
 	if (RME96_ISRECORDING(rme96)) {
+<<<<<<< HEAD
 		snd_rme96_capture_stop(rme96);
+=======
+		snd_rme96_trigger(rme96, RME96_STOP_CAPTURE);
+>>>>>>> refs/remotes/origin/master
 	}
 	rme96->capture_substream = NULL;
 	rme96->capture_periodsize = 0;
@@ -1333,7 +1470,11 @@ snd_rme96_playback_prepare(struct snd_pcm_substream *substream)
 	
 	spin_lock_irq(&rme96->lock);	
 	if (RME96_ISPLAYING(rme96)) {
+<<<<<<< HEAD
 		snd_rme96_playback_stop(rme96);
+=======
+		snd_rme96_trigger(rme96, RME96_STOP_PLAYBACK);
+>>>>>>> refs/remotes/origin/master
 	}
 	writel(0, rme96->iobase + RME96_IO_RESET_PLAY_POS);
 	spin_unlock_irq(&rme96->lock);
@@ -1347,7 +1488,11 @@ snd_rme96_capture_prepare(struct snd_pcm_substream *substream)
 	
 	spin_lock_irq(&rme96->lock);	
 	if (RME96_ISRECORDING(rme96)) {
+<<<<<<< HEAD
 		snd_rme96_capture_stop(rme96);
+=======
+		snd_rme96_trigger(rme96, RME96_STOP_CAPTURE);
+>>>>>>> refs/remotes/origin/master
 	}
 	writel(0, rme96->iobase + RME96_IO_RESET_REC_POS);
 	spin_unlock_irq(&rme96->lock);
@@ -1359,10 +1504,25 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
 			   int cmd)
 {
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+<<<<<<< HEAD
+=======
+	struct snd_pcm_substream *s;
+	bool sync;
+
+	snd_pcm_group_for_each_entry(s, substream) {
+		if (snd_pcm_substream_chip(s) == rme96)
+			snd_pcm_trigger_done(s, substream);
+	}
+
+	sync = (rme96->playback_substream && rme96->capture_substream) &&
+	       (rme96->playback_substream->group ==
+		rme96->capture_substream->group);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
 		if (!RME96_ISPLAYING(rme96)) {
+<<<<<<< HEAD
 			if (substream != rme96->playback_substream) {
 				return -EBUSY;
 			}
@@ -1376,10 +1536,27 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
 				return -EBUSY;
 			}
 			snd_rme96_playback_stop(rme96);
+=======
+			if (substream != rme96->playback_substream)
+				return -EBUSY;
+			snd_rme96_trigger(rme96, sync ? RME96_START_BOTH
+						 : RME96_START_PLAYBACK);
+		}
+		break;
+
+	case SNDRV_PCM_TRIGGER_SUSPEND:
+	case SNDRV_PCM_TRIGGER_STOP:
+		if (RME96_ISPLAYING(rme96)) {
+			if (substream != rme96->playback_substream)
+				return -EBUSY;
+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH
+						 :  RME96_STOP_PLAYBACK);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+<<<<<<< HEAD
 		if (RME96_ISPLAYING(rme96)) {
 			snd_rme96_playback_stop(rme96);
 		}
@@ -1394,6 +1571,24 @@ snd_rme96_playback_trigger(struct snd_pcm_substream *substream,
 	default:
 		return -EINVAL;
 	}
+=======
+		if (RME96_ISPLAYING(rme96))
+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH
+						 : RME96_STOP_PLAYBACK);
+		break;
+
+	case SNDRV_PCM_TRIGGER_RESUME:
+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		if (!RME96_ISPLAYING(rme96))
+			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH
+						 : RME96_RESUME_PLAYBACK);
+		break;
+
+	default:
+		return -EINVAL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1402,10 +1597,25 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
 			  int cmd)
 {
 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+<<<<<<< HEAD
+=======
+	struct snd_pcm_substream *s;
+	bool sync;
+
+	snd_pcm_group_for_each_entry(s, substream) {
+		if (snd_pcm_substream_chip(s) == rme96)
+			snd_pcm_trigger_done(s, substream);
+	}
+
+	sync = (rme96->playback_substream && rme96->capture_substream) &&
+	       (rme96->playback_substream->group ==
+		rme96->capture_substream->group);
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case SNDRV_PCM_TRIGGER_START:
 		if (!RME96_ISRECORDING(rme96)) {
+<<<<<<< HEAD
 			if (substream != rme96->capture_substream) {
 				return -EBUSY;
 			}
@@ -1419,10 +1629,27 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
 				return -EBUSY;
 			}
 			snd_rme96_capture_stop(rme96);
+=======
+			if (substream != rme96->capture_substream)
+				return -EBUSY;
+			snd_rme96_trigger(rme96, sync ? RME96_START_BOTH
+						 : RME96_START_CAPTURE);
+		}
+		break;
+
+	case SNDRV_PCM_TRIGGER_SUSPEND:
+	case SNDRV_PCM_TRIGGER_STOP:
+		if (RME96_ISRECORDING(rme96)) {
+			if (substream != rme96->capture_substream)
+				return -EBUSY;
+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH
+						 : RME96_STOP_CAPTURE);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+<<<<<<< HEAD
 		if (RME96_ISRECORDING(rme96)) {
 			snd_rme96_capture_stop(rme96);
 		}
@@ -1434,6 +1661,20 @@ snd_rme96_capture_trigger(struct snd_pcm_substream *substream,
 		}
 		break;
 		
+=======
+		if (RME96_ISRECORDING(rme96))
+			snd_rme96_trigger(rme96, sync ? RME96_STOP_BOTH
+						 : RME96_STOP_CAPTURE);
+		break;
+
+	case SNDRV_PCM_TRIGGER_RESUME:
+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+		if (!RME96_ISRECORDING(rme96))
+			snd_rme96_trigger(rme96, sync ? RME96_RESUME_BOTH
+						 : RME96_RESUME_CAPTURE);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EINVAL;
 	}
@@ -1514,8 +1755,12 @@ snd_rme96_free(void *private_data)
 	        return;
 	}
 	if (rme96->irq >= 0) {
+<<<<<<< HEAD
 		snd_rme96_playback_stop(rme96);
 		snd_rme96_capture_stop(rme96);
+=======
+		snd_rme96_trigger(rme96, RME96_STOP_BOTH);
+>>>>>>> refs/remotes/origin/master
 		rme96->areg &= ~RME96_AR_DAC_EN;
 		writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
 		free_irq(rme96->irq, (void *)rme96);
@@ -1529,6 +1774,13 @@ snd_rme96_free(void *private_data)
 		pci_release_regions(rme96->pci);
 		rme96->port = 0;
 	}
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+	vfree(rme96->playback_suspend_buffer);
+	vfree(rme96->capture_suspend_buffer);
+#endif
+>>>>>>> refs/remotes/origin/master
 	pci_disable_device(rme96->pci);
 }
 
@@ -1546,7 +1798,11 @@ snd_rme96_free_adat_pcm(struct snd_pcm *pcm)
 	rme96->adat_pcm = NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_rme96_create(struct rme96 *rme96)
 {
 	struct pci_dev *pci = rme96->pci;
@@ -1570,10 +1826,14 @@ snd_rme96_create(struct rme96 *rme96)
 
 	if (request_irq(pci->irq, snd_rme96_interrupt, IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"RME96", rme96)) {
 =======
 			KBUILD_MODNAME, rme96)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, rme96)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		return -EBUSY;
 	}
@@ -1619,8 +1879,12 @@ snd_rme96_create(struct rme96 *rme96)
 	rme96->capture_periodsize = 0;
 	
 	/* make sure playback/capture is stopped, if by some reason active */
+<<<<<<< HEAD
 	snd_rme96_playback_stop(rme96);
 	snd_rme96_capture_stop(rme96);
+=======
+	snd_rme96_trigger(rme96, RME96_STOP_BOTH);
+>>>>>>> refs/remotes/origin/master
 	
 	/* set default values in registers */
 	rme96->wcreg =
@@ -1798,8 +2062,12 @@ snd_rme96_proc_read(struct snd_info_entry *entry, struct snd_info_buffer *buffer
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit 
 snd_rme96_proc_init(struct rme96 *rme96)
+=======
+static void snd_rme96_proc_init(struct rme96 *rme96)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -2333,12 +2601,100 @@ snd_rme96_create_switches(struct snd_card *card,
  * Card initialisation
  */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+
+static int
+snd_rme96_suspend(struct pci_dev *pci,
+		  pm_message_t state)
+{
+	struct snd_card *card = pci_get_drvdata(pci);
+	struct rme96 *rme96 = card->private_data;
+
+	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+	snd_pcm_suspend(rme96->playback_substream);
+	snd_pcm_suspend(rme96->capture_substream);
+
+	/* save capture & playback pointers */
+	rme96->playback_pointer = readl(rme96->iobase + RME96_IO_GET_PLAY_POS)
+				  & RME96_RCR_AUDIO_ADDR_MASK;
+	rme96->capture_pointer = readl(rme96->iobase + RME96_IO_GET_REC_POS)
+				 & RME96_RCR_AUDIO_ADDR_MASK;
+
+	/* save playback and capture buffers */
+	memcpy_fromio(rme96->playback_suspend_buffer,
+		      rme96->iobase + RME96_IO_PLAY_BUFFER, RME96_BUFFER_SIZE);
+	memcpy_fromio(rme96->capture_suspend_buffer,
+		      rme96->iobase + RME96_IO_REC_BUFFER, RME96_BUFFER_SIZE);
+
+	/* disable the DAC  */
+	rme96->areg &= ~RME96_AR_DAC_EN;
+	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
+
+	pci_disable_device(pci);
+	pci_save_state(pci);
+
+	return 0;
+}
+
+static int
+snd_rme96_resume(struct pci_dev *pci)
+{
+	struct snd_card *card = pci_get_drvdata(pci);
+	struct rme96 *rme96 = card->private_data;
+
+	pci_restore_state(pci);
+	if (pci_enable_device(pci) < 0) {
+		printk(KERN_ERR "rme96: pci_enable_device failed, disabling device\n");
+		snd_card_disconnect(card);
+		return -EIO;
+	}
+
+	/* reset playback and record buffer pointers */
+	writel(0, rme96->iobase + RME96_IO_SET_PLAY_POS
+		  + rme96->playback_pointer);
+	writel(0, rme96->iobase + RME96_IO_SET_REC_POS
+		  + rme96->capture_pointer);
+
+	/* restore playback and capture buffers */
+	memcpy_toio(rme96->iobase + RME96_IO_PLAY_BUFFER,
+		    rme96->playback_suspend_buffer, RME96_BUFFER_SIZE);
+	memcpy_toio(rme96->iobase + RME96_IO_REC_BUFFER,
+		    rme96->capture_suspend_buffer, RME96_BUFFER_SIZE);
+
+	/* reset the ADC */
+	writel(rme96->areg | RME96_AR_PD2,
+	       rme96->iobase + RME96_IO_ADDITIONAL_REG);
+	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
+
+	/* reset and enable DAC, restore analog volume */
+	snd_rme96_reset_dac(rme96);
+	rme96->areg |= RME96_AR_DAC_EN;
+	writel(rme96->areg, rme96->iobase + RME96_IO_ADDITIONAL_REG);
+	if (RME96_HAS_ANALOG_OUT(rme96)) {
+		usleep_range(3000, 10000);
+		snd_rme96_apply_dac_volume(rme96);
+	}
+
+	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+
+	return 0;
+}
+
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static void snd_rme96_card_free(struct snd_card *card)
 {
 	snd_rme96_free(card->private_data);
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 snd_rme96_probe(struct pci_dev *pci,
 		const struct pci_device_id *pci_id)
 {
@@ -2369,6 +2725,26 @@ snd_rme96_probe(struct pci_dev *pci,
 		return err;
 	}
 	
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+	rme96->playback_suspend_buffer = vmalloc(RME96_BUFFER_SIZE);
+	if (!rme96->playback_suspend_buffer) {
+		snd_printk(KERN_ERR
+			   "Failed to allocate playback suspend buffer!\n");
+		snd_card_free(card);
+		return -ENOMEM;
+	}
+	rme96->capture_suspend_buffer = vmalloc(RME96_BUFFER_SIZE);
+	if (!rme96->capture_suspend_buffer) {
+		snd_printk(KERN_ERR
+			   "Failed to allocate capture suspend buffer!\n");
+		snd_card_free(card);
+		return -ENOMEM;
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	strcpy(card->driver, "Digi96");
 	switch (rme96->pci->device) {
 	case PCI_DEVICE_ID_RME_DIGI96:
@@ -2401,6 +2777,7 @@ snd_rme96_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_rme96_remove(struct pci_dev *pci)
 {
 	snd_card_free(pci_get_drvdata(pci));
@@ -2430,3 +2807,22 @@ static void __exit alsa_card_rme96_exit(void)
 
 module_init(alsa_card_rme96_init)
 module_exit(alsa_card_rme96_exit)
+=======
+static void snd_rme96_remove(struct pci_dev *pci)
+{
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver rme96_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_rme96_ids,
+	.probe = snd_rme96_probe,
+	.remove = snd_rme96_remove,
+#ifdef CONFIG_PM
+	.suspend = snd_rme96_suspend,
+	.resume = snd_rme96_resume,
+#endif
+};
+
+module_pci_driver(rme96_driver);
+>>>>>>> refs/remotes/origin/master

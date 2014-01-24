@@ -1,11 +1,19 @@
 #ifndef __KERNEL_PRINTK__
 #define __KERNEL_PRINTK__
 
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+#include <stdarg.h>
+#include <linux/init.h>
+#include <linux/kern_levels.h>
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 
 extern const char linux_banner[];
 extern const char linux_proc_banner[];
 
+<<<<<<< HEAD
 #define KERN_EMERG	"<0>"	/* system is unusable			*/
 #define KERN_ALERT	"<1>"	/* action must be taken immediately	*/
 #define KERN_CRIT	"<2>"	/* critical conditions			*/
@@ -23,6 +31,31 @@ extern const char linux_proc_banner[];
  * during early bootup (a continued line is not SMP-safe otherwise).
  */
 #define KERN_CONT	"<c>"
+=======
+static inline int printk_get_level(const char *buffer)
+{
+	if (buffer[0] == KERN_SOH_ASCII && buffer[1]) {
+		switch (buffer[1]) {
+		case '0' ... '7':
+		case 'd':	/* KERN_DEFAULT */
+			return buffer[1];
+		}
+	}
+	return 0;
+}
+
+static inline const char *printk_skip_level(const char *buffer)
+{
+	if (printk_get_level(buffer)) {
+		switch (buffer[1]) {
+		case '0' ... '7':
+		case 'd':	/* KERN_DEFAULT */
+			return buffer + 2;
+		}
+	}
+	return buffer;
+}
+>>>>>>> refs/remotes/origin/master
 
 extern int console_printk[];
 
@@ -83,15 +116,20 @@ struct va_format {
  * gcc's format and side-effect checking.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline __attribute__ ((format (printf, 1, 2)))
 =======
 static inline __printf(1, 2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline __printf(1, 2)
+>>>>>>> refs/remotes/origin/master
 int no_printk(const char *fmt, ...)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern asmlinkage __attribute__ ((format (printf, 1, 2)))
 =======
@@ -113,6 +151,31 @@ int printk(const char *fmt, ...);
 =======
 asmlinkage __printf(1, 0)
 int vprintk(const char *fmt, va_list args);
+=======
+#ifdef CONFIG_EARLY_PRINTK
+extern asmlinkage __printf(1, 2)
+void early_printk(const char *fmt, ...);
+void early_vprintk(const char *fmt, va_list ap);
+#else
+static inline __printf(1, 2) __cold
+void early_printk(const char *s, ...) { }
+#endif
+
+#ifdef CONFIG_PRINTK
+asmlinkage __printf(5, 0)
+int vprintk_emit(int facility, int level,
+		 const char *dict, size_t dictlen,
+		 const char *fmt, va_list args);
+
+asmlinkage __printf(1, 0)
+int vprintk(const char *fmt, va_list args);
+
+asmlinkage __printf(5, 6) __cold
+asmlinkage int printk_emit(int facility, int level,
+			   const char *dict, size_t dictlen,
+			   const char *fmt, ...);
+
+>>>>>>> refs/remotes/origin/master
 asmlinkage __printf(1, 2) __cold
 int printk(const char *fmt, ...);
 
@@ -122,7 +185,10 @@ int printk(const char *fmt, ...);
 __printf(1, 2) __cold int printk_sched(const char *fmt, ...);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Please don't use printk_ratelimit(), because it shares ratelimiting state
  * with all other unrelated printk_ratelimit() callsites.  Instead use
  * printk_ratelimited() or plain old __ratelimit().
@@ -136,6 +202,7 @@ extern int printk_delay_msec;
 extern int dmesg_restrict;
 extern int kptr_restrict;
 
+<<<<<<< HEAD
 void log_buf_kexec_setup(void);
 void __init setup_log_buf(int early);
 #else
@@ -144,27 +211,48 @@ static inline __attribute__ ((format (printf, 1, 0)))
 =======
 static inline __printf(1, 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void wake_up_klogd(void);
+
+void log_buf_kexec_setup(void);
+void __init setup_log_buf(int early);
+void dump_stack_set_arch_desc(const char *fmt, ...);
+void dump_stack_print_info(const char *log_lvl);
+void show_regs_print_info(const char *log_lvl);
+#else
+static inline __printf(1, 0)
+>>>>>>> refs/remotes/origin/master
 int vprintk(const char *s, va_list args)
 {
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline __attribute__ ((format (printf, 1, 2))) __cold
 =======
 static inline __printf(1, 2) __cold
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline __printf(1, 2) __cold
+>>>>>>> refs/remotes/origin/master
 int printk(const char *s, ...)
 {
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline __printf(1, 2) __cold
 int printk_sched(const char *s, ...)
 {
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int printk_ratelimit(void)
 {
 	return 0;
@@ -175,6 +263,13 @@ static inline bool printk_timed_ratelimit(unsigned long *caller_jiffies,
 	return false;
 }
 
+<<<<<<< HEAD
+=======
+static inline void wake_up_klogd(void)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void log_buf_kexec_setup(void)
 {
 }
@@ -182,9 +277,27 @@ static inline void log_buf_kexec_setup(void)
 static inline void setup_log_buf(int early)
 {
 }
+<<<<<<< HEAD
 #endif
 
 extern void dump_stack(void) __cold;
+=======
+
+static inline void dump_stack_set_arch_desc(const char *fmt, ...)
+{
+}
+
+static inline void dump_stack_print_info(const char *log_lvl)
+{
+}
+
+static inline void show_regs_print_info(const char *log_lvl)
+{
+}
+#endif
+
+extern asmlinkage void dump_stack(void) __cold;
+>>>>>>> refs/remotes/origin/master
 
 #ifndef pr_fmt
 #define pr_fmt(fmt) fmt
@@ -217,6 +330,7 @@ extern void dump_stack(void) __cold;
 	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 #endif
 
+<<<<<<< HEAD
 /* If you are writing a driver, please use dev_dbg instead */
 <<<<<<< HEAD
 #if defined(DEBUG)
@@ -227,6 +341,11 @@ extern void dump_stack(void) __cold;
 #define pr_debug(fmt, ...) \
 	dynamic_pr_debug(fmt, ##__VA_ARGS__)
 =======
+=======
+#include <linux/dynamic_debug.h>
+
+/* If you are writing a driver, please use dev_dbg instead */
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_DYNAMIC_DEBUG)
 /* dynamic_pr_debug() uses pr_fmt() internally so we don't need it here */
 #define pr_debug(fmt, ...) \
@@ -234,7 +353,10 @@ extern void dump_stack(void) __cold;
 #elif defined(DEBUG)
 #define pr_debug(fmt, ...) \
 	printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define pr_debug(fmt, ...) \
 	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
@@ -275,6 +397,18 @@ extern void dump_stack(void) __cold;
 	printk_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
 #define pr_cont_once(fmt, ...)					\
 	printk_once(KERN_CONT pr_fmt(fmt), ##__VA_ARGS__)
+<<<<<<< HEAD
+=======
+
+#if defined(DEBUG)
+#define pr_devel_once(fmt, ...)					\
+	printk_once(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+#else
+#define pr_devel_once(fmt, ...)					\
+	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* If you are writing a driver, please use dev_dbg instead */
 #if defined(DEBUG)
 #define pr_debug_once(fmt, ...)					\
@@ -318,8 +452,34 @@ extern void dump_stack(void) __cold;
 #define pr_info_ratelimited(fmt, ...)					\
 	printk_ratelimited(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
 /* no pr_cont_ratelimited, don't do that... */
+<<<<<<< HEAD
 /* If you are writing a driver, please use dev_dbg instead */
 #if defined(DEBUG)
+=======
+
+#if defined(DEBUG)
+#define pr_devel_ratelimited(fmt, ...)					\
+	printk_ratelimited(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+#else
+#define pr_devel_ratelimited(fmt, ...)					\
+	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+#endif
+
+/* If you are writing a driver, please use dev_dbg instead */
+#if defined(CONFIG_DYNAMIC_DEBUG)
+/* descriptor check is first to prevent flooding with "callbacks suppressed" */
+#define pr_debug_ratelimited(fmt, ...)					\
+do {									\
+	static DEFINE_RATELIMIT_STATE(_rs,				\
+				      DEFAULT_RATELIMIT_INTERVAL,	\
+				      DEFAULT_RATELIMIT_BURST);		\
+	DEFINE_DYNAMIC_DEBUG_METADATA(descriptor, fmt);			\
+	if (unlikely(descriptor.flags & _DPRINTK_FLAGS_PRINT) &&	\
+	    __ratelimit(&_rs))						\
+		__dynamic_pr_debug(&descriptor, fmt, ##__VA_ARGS__);	\
+} while (0)
+#elif defined(DEBUG)
+>>>>>>> refs/remotes/origin/master
 #define pr_debug_ratelimited(fmt, ...)					\
 	printk_ratelimited(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 #else
@@ -327,6 +487,11 @@ extern void dump_stack(void) __cold;
 	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
 #endif
 
+<<<<<<< HEAD
+=======
+extern const struct file_operations kmsg_fops;
+
+>>>>>>> refs/remotes/origin/master
 enum {
 	DUMP_PREFIX_NONE,
 	DUMP_PREFIX_ADDRESS,
@@ -339,8 +504,18 @@ extern void hex_dump_to_buffer(const void *buf, size_t len,
 extern void print_hex_dump(const char *level, const char *prefix_str,
 			   int prefix_type, int rowsize, int groupsize,
 			   const void *buf, size_t len, bool ascii);
+<<<<<<< HEAD
 extern void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
 				 const void *buf, size_t len);
+=======
+#if defined(CONFIG_DYNAMIC_DEBUG)
+#define print_hex_dump_bytes(prefix_str, prefix_type, buf, len)	\
+	dynamic_hex_dump(prefix_str, prefix_type, 16, 1, buf, len, true)
+#else
+extern void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
+				 const void *buf, size_t len);
+#endif /* defined(CONFIG_DYNAMIC_DEBUG) */
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void print_hex_dump(const char *level, const char *prefix_str,
 				  int prefix_type, int rowsize, int groupsize,
@@ -354,4 +529,19 @@ static inline void print_hex_dump_bytes(const char *prefix_str, int prefix_type,
 
 #endif
 
+<<<<<<< HEAD
+=======
+#if defined(CONFIG_DYNAMIC_DEBUG)
+#define print_hex_dump_debug(prefix_str, prefix_type, rowsize,	\
+			     groupsize, buf, len, ascii)	\
+	dynamic_hex_dump(prefix_str, prefix_type, rowsize,	\
+			 groupsize, buf, len, ascii)
+#else
+#define print_hex_dump_debug(prefix_str, prefix_type, rowsize,		\
+			     groupsize, buf, len, ascii)		\
+	print_hex_dump(KERN_DEBUG, prefix_str, prefix_type, rowsize,	\
+		       groupsize, buf, len, ascii)
+#endif /* defined(CONFIG_DYNAMIC_DEBUG) */
+
+>>>>>>> refs/remotes/origin/master
 #endif

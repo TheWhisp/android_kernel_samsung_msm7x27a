@@ -24,12 +24,18 @@
 
 /* Bluetooth kernel library. */
 
+<<<<<<< HEAD
 #include <linux/module.h>
 
 #include <linux/kernel.h>
 #include <linux/stddef.h>
 #include <linux/string.h>
 #include <asm/errno.h>
+=======
+#define pr_fmt(fmt) "Bluetooth: " fmt
+
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/bluetooth/bluetooth.h>
 
@@ -44,6 +50,7 @@ void baswap(bdaddr_t *dst, bdaddr_t *src)
 }
 EXPORT_SYMBOL(baswap);
 
+<<<<<<< HEAD
 char *batostr(bdaddr_t *ba)
 {
 	static char str[2][18];
@@ -60,6 +67,10 @@ EXPORT_SYMBOL(batostr);
 
 /* Bluetooth error codes to Unix errno mapping */
 int bt_err(__u16 code)
+=======
+/* Bluetooth error codes to Unix errno mapping */
+int bt_to_errno(__u16 code)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (code) {
 	case 0:
@@ -149,4 +160,45 @@ int bt_err(__u16 code)
 		return ENOSYS;
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(bt_to_errno);
+
+int bt_info(const char *format, ...)
+{
+	struct va_format vaf;
+	va_list args;
+	int r;
+
+	va_start(args, format);
+
+	vaf.fmt = format;
+	vaf.va = &args;
+
+	r = pr_info("%pV", &vaf);
+
+	va_end(args);
+
+	return r;
+}
+EXPORT_SYMBOL(bt_info);
+
+int bt_err(const char *format, ...)
+{
+	struct va_format vaf;
+	va_list args;
+	int r;
+
+	va_start(args, format);
+
+	vaf.fmt = format;
+	vaf.va = &args;
+
+	r = pr_err("%pV", &vaf);
+
+	va_end(args);
+
+	return r;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(bt_err);

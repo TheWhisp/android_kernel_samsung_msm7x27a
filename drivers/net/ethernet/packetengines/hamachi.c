@@ -166,7 +166,11 @@ static int tx_params[MAX_UNITS] = {-1, -1, -1, -1, -1, -1, -1, -1};
 #include <asm/unaligned.h>
 #include <asm/cache.h>
 
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 KERN_INFO DRV_NAME ".c:v" DRV_VERSION " " DRV_RELDATE "  Written by Donald Becker\n"
 "   Some modifications by Eric kasten <kasten@nscl.msu.edu>\n"
 "   Further modifications by Keith Underwood <keithu@parl.clemson.edu>\n";
@@ -576,8 +580,13 @@ static const struct net_device_ops hamachi_netdev_ops = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit hamachi_init_one (struct pci_dev *pdev,
 				    const struct pci_device_id *ent)
+=======
+static int hamachi_init_one(struct pci_dev *pdev,
+			    const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hamachi_private *hmp;
 	int option, i, rx_int_var, tx_int_var, boguscnt;
@@ -683,8 +692,11 @@ static int __devinit hamachi_init_one (struct pci_dev *pdev,
 	}
 
 	hmp->base = ioaddr;
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long)ioaddr;
 	dev->irq = irq;
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_set_drvdata(pdev, dev);
 
 	hmp->chip_id = chip_id;
@@ -793,7 +805,11 @@ err_out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit read_eeprom(void __iomem *ioaddr, int location)
+=======
+static int read_eeprom(void __iomem *ioaddr, int location)
+>>>>>>> refs/remotes/origin/master
 {
 	int bogus_cnt = 1000;
 
@@ -859,6 +875,7 @@ static int hamachi_open(struct net_device *dev)
 	u32 rx_int_var, tx_int_var;
 	u16 fifo_info;
 
+<<<<<<< HEAD
 	i = request_irq(dev->irq, hamachi_interrupt, IRQF_SHARED, dev->name, dev);
 	if (i)
 		return i;
@@ -867,6 +884,13 @@ static int hamachi_open(struct net_device *dev)
 		printk(KERN_DEBUG "%s: hamachi_open() irq %d.\n",
 			   dev->name, dev->irq);
 
+=======
+	i = request_irq(hmp->pci_dev->irq, hamachi_interrupt, IRQF_SHARED,
+			dev->name, dev);
+	if (i)
+		return i;
+
+>>>>>>> refs/remotes/origin/master
 	hamachi_init_ring(dev);
 
 #if ADDRLEN == 64
@@ -1705,7 +1729,11 @@ static int hamachi_close(struct net_device *dev)
 	}
 #endif /* __i386__ debugging only */
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(hmp->pci_dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	del_timer_sync(&hmp->timer);
 
@@ -1813,9 +1841,16 @@ static int check_if_running(struct net_device *dev)
 static void hamachi_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
 	struct hamachi_private *np = netdev_priv(dev);
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->bus_info, pci_name(np->pci_dev));
+=======
+
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, pci_name(np->pci_dev), sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hamachi_get_settings(struct net_device *dev, struct ethtool_cmd *ecmd)
@@ -1899,7 +1934,11 @@ static int netdev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
 }
 
 
+<<<<<<< HEAD
 static void __devexit hamachi_remove_one (struct pci_dev *pdev)
+=======
+static void hamachi_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
@@ -1914,7 +1953,10 @@ static void __devexit hamachi_remove_one (struct pci_dev *pdev)
 		iounmap(hmp->base);
 		free_netdev(dev);
 		pci_release_regions(pdev);
+<<<<<<< HEAD
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1928,7 +1970,11 @@ static struct pci_driver hamachi_driver = {
 	.name		= DRV_NAME,
 	.id_table	= hamachi_pci_tbl,
 	.probe		= hamachi_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(hamachi_remove_one),
+=======
+	.remove		= hamachi_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init hamachi_init (void)

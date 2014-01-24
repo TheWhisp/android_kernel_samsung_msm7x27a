@@ -9,8 +9,13 @@
 #ifdef __i386__
 #include <sys/user.h>
 #endif
+<<<<<<< HEAD
 #include "longjmp.h"
 #include "sysdep/ptrace_user.h"
+=======
+#include <longjmp.h>
+#include <sysdep/ptrace_user.h>
+>>>>>>> refs/remotes/origin/master
 
 int save_fp_registers(int pid, unsigned long *fp_regs)
 {

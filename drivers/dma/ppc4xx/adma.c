@@ -42,14 +42,23 @@
 #include <linux/uaccess.h>
 #include <linux/proc_fs.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <asm/dcr.h>
 #include <asm/dcr-regs.h>
 #include "adma.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "../dmaengine.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "../dmaengine.h"
+>>>>>>> refs/remotes/origin/master
 
 enum ppc_adma_init_code {
 	PPC_ADMA_INIT_OK = 0,
@@ -534,6 +543,7 @@ static void ppc440spe_desc_init_memcpy(struct ppc440spe_adma_desc_slot *desc,
 }
 
 /**
+<<<<<<< HEAD
  * ppc440spe_desc_init_memset - initialize the descriptor for MEMSET operation
  */
 static void ppc440spe_desc_init_memset(struct ppc440spe_adma_desc_slot *desc,
@@ -557,6 +567,8 @@ static void ppc440spe_desc_init_memset(struct ppc440spe_adma_desc_slot *desc,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ppc440spe_desc_set_src_addr - set source address into the descriptor
  */
 static void ppc440spe_desc_set_src_addr(struct ppc440spe_adma_desc_slot *desc,
@@ -805,6 +817,7 @@ static void ppc440spe_desc_set_link(struct ppc440spe_adma_chan *chan,
 }
 
 /**
+<<<<<<< HEAD
  * ppc440spe_desc_get_src_addr - extract the source address from the descriptor
  */
 static u32 ppc440spe_desc_get_src_addr(struct ppc440spe_adma_desc_slot *desc,
@@ -1017,6 +1030,8 @@ static u32 ppc440spe_desc_get_dst_num(struct ppc440spe_adma_desc_slot *desc,
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ppc440spe_desc_get_link - get the address of the descriptor that
  * follows this one
  */
@@ -1708,6 +1723,7 @@ static void ppc440spe_adma_free_slots(struct ppc440spe_adma_desc_slot *slot,
 	}
 }
 
+<<<<<<< HEAD
 static void ppc440spe_adma_unmap(struct ppc440spe_adma_chan *chan,
 				 struct ppc440spe_adma_desc_slot *desc)
 {
@@ -1745,6 +1761,8 @@ static void ppc440spe_adma_unmap(struct ppc440spe_adma_chan *chan,
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ppc440spe_adma_run_tx_complete_actions - call functions to be called
  * upon completion
@@ -1754,8 +1772,11 @@ static dma_cookie_t ppc440spe_adma_run_tx_complete_actions(
 		struct ppc440spe_adma_chan *chan,
 		dma_cookie_t cookie)
 {
+<<<<<<< HEAD
 	int i;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(desc->async_tx.cookie < 0);
 	if (desc->async_tx.cookie > 0) {
 		cookie = desc->async_tx.cookie;
@@ -1768,6 +1789,7 @@ static dma_cookie_t ppc440spe_adma_run_tx_complete_actions(
 			desc->async_tx.callback(
 				desc->async_tx.callback_param);
 
+<<<<<<< HEAD
 		/* unmap dma addresses
 		 * (unmap_single vs unmap_page?)
 		 *
@@ -1788,6 +1810,9 @@ static dma_cookie_t ppc440spe_adma_run_tx_complete_actions(
 				unmap = unmap->hw_next;
 			}
 		}
+=======
+		dma_descriptor_unmap(&desc->async_tx);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* run dependent operations */
@@ -1935,10 +1960,14 @@ static void __ppc440spe_adma_slot_cleanup(struct ppc440spe_adma_chan *chan)
 					/* Should wait for ZeroSum completion */
 					if (cookie > 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 						chan->completed_cookie = cookie;
 =======
 						chan->common.completed_cookie = cookie;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						chan->common.completed_cookie = cookie;
+>>>>>>> refs/remotes/origin/master
 					return;
 				}
 
@@ -1969,10 +1998,14 @@ static void __ppc440spe_adma_slot_cleanup(struct ppc440spe_adma_chan *chan)
 
 	if (cookie > 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		chan->completed_cookie = cookie;
 =======
 		chan->common.completed_cookie = cookie;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		chan->common.completed_cookie = cookie;
+>>>>>>> refs/remotes/origin/master
 		pr_debug("\tcompleted cookie %d\n", cookie);
 	}
 
@@ -2163,6 +2196,7 @@ static int ppc440spe_adma_alloc_chan_resources(struct dma_chan *chan)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ppc440spe_desc_assign_cookie - assign a cookie
  */
 static dma_cookie_t ppc440spe_desc_assign_cookie(
@@ -2181,6 +2215,8 @@ static dma_cookie_t ppc440spe_desc_assign_cookie(
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ppc440spe_rxor_set_region_data -
  */
 static void ppc440spe_rxor_set_region(struct ppc440spe_adma_desc_slot *desc,
@@ -2251,11 +2287,15 @@ static dma_cookie_t ppc440spe_adma_tx_submit(struct dma_async_tx_descriptor *tx)
 
 	spin_lock_bh(&chan->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	cookie = ppc440spe_desc_assign_cookie(chan, sw_desc);
 =======
 	cookie = dma_cookie_assign(tx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cookie = dma_cookie_assign(tx);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(list_empty(&chan->chain))) {
 		/* first peer */
@@ -2358,6 +2398,7 @@ static struct dma_async_tx_descriptor *ppc440spe_adma_prep_dma_memcpy(
 }
 
 /**
+<<<<<<< HEAD
  * ppc440spe_adma_prep_dma_memset - prepare CDB for a MEMSET operation
  */
 static struct dma_async_tx_descriptor *ppc440spe_adma_prep_dma_memset(
@@ -2399,6 +2440,8 @@ static struct dma_async_tx_descriptor *ppc440spe_adma_prep_dma_memset(
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * ppc440spe_adma_prep_dma_xor - prepare CDB for a XOR operation
  */
 static struct dma_async_tx_descriptor *ppc440spe_adma_prep_dma_xor(
@@ -3964,6 +4007,7 @@ static enum dma_status ppc440spe_adma_tx_status(struct dma_chan *chan,
 {
 	struct ppc440spe_adma_chan *ppc440spe_chan;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dma_cookie_t last_used;
 	dma_cookie_t last_complete;
 	enum dma_status ret;
@@ -3976,16 +4020,23 @@ static enum dma_status ppc440spe_adma_tx_status(struct dma_chan *chan,
 
 	ret = dma_async_is_complete(cookie, last_complete, last_used);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	enum dma_status ret;
 
 	ppc440spe_chan = to_ppc440spe_adma_chan(chan);
 	ret = dma_cookie_status(chan, cookie, txstate);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (ret == DMA_SUCCESS)
+=======
+	if (ret == DMA_COMPLETE)
+>>>>>>> refs/remotes/origin/master
 		return ret;
 
 	ppc440spe_adma_slot_cleanup(ppc440spe_chan);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	last_used = chan->cookie;
 	last_complete = ppc440spe_chan->completed_cookie;
@@ -3996,6 +4047,9 @@ static enum dma_status ppc440spe_adma_tx_status(struct dma_chan *chan,
 =======
 	return dma_cookie_status(chan, cookie, txstate);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return dma_cookie_status(chan, cookie, txstate);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -4081,6 +4135,7 @@ static void ppc440spe_chan_start_null_xor(struct ppc440spe_adma_chan *chan)
 		ppc440spe_desc_init_null_xor(group_start);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cookie = chan->common.cookie;
 		cookie++;
 		if (cookie <= 1)
@@ -4088,16 +4143,23 @@ static void ppc440spe_chan_start_null_xor(struct ppc440spe_adma_chan *chan)
 =======
 		cookie = dma_cookie_assign(&sw_desc->async_tx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cookie = dma_cookie_assign(&sw_desc->async_tx);
+>>>>>>> refs/remotes/origin/master
 
 		/* initialize the completed cookie to be less than
 		 * the most recently used cookie
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		chan->completed_cookie = cookie - 1;
 		chan->common.cookie = sw_desc->async_tx.cookie = cookie;
 =======
 		chan->common.completed_cookie = cookie - 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		chan->common.completed_cookie = cookie - 1;
+>>>>>>> refs/remotes/origin/master
 
 		/* channel should not be busy */
 		BUG_ON(ppc440spe_chan_is_busy(chan));
@@ -4195,7 +4257,10 @@ static void ppc440spe_adma_init_capabilities(struct ppc440spe_adma_device *adev)
 	case PPC440SPE_DMA1_ID:
 		dma_cap_set(DMA_MEMCPY, adev->common.cap_mask);
 		dma_cap_set(DMA_INTERRUPT, adev->common.cap_mask);
+<<<<<<< HEAD
 		dma_cap_set(DMA_MEMSET, adev->common.cap_mask);
+=======
+>>>>>>> refs/remotes/origin/master
 		dma_cap_set(DMA_PQ, adev->common.cap_mask);
 		dma_cap_set(DMA_PQ_VAL, adev->common.cap_mask);
 		dma_cap_set(DMA_XOR_VAL, adev->common.cap_mask);
@@ -4221,10 +4286,13 @@ static void ppc440spe_adma_init_capabilities(struct ppc440spe_adma_device *adev)
 		adev->common.device_prep_dma_memcpy =
 			ppc440spe_adma_prep_dma_memcpy;
 	}
+<<<<<<< HEAD
 	if (dma_has_cap(DMA_MEMSET, adev->common.cap_mask)) {
 		adev->common.device_prep_dma_memset =
 			ppc440spe_adma_prep_dma_memset;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dma_has_cap(DMA_XOR, adev->common.cap_mask)) {
 		adev->common.max_xor = XOR_MAX_OPS;
 		adev->common.device_prep_dma_xor =
@@ -4280,14 +4348,21 @@ static void ppc440spe_adma_init_capabilities(struct ppc440spe_adma_device *adev)
 			ppc440spe_adma_prep_dma_interrupt;
 	}
 	pr_info("%s: AMCC(R) PPC440SP(E) ADMA Engine: "
+<<<<<<< HEAD
 	  "( %s%s%s%s%s%s%s)\n",
+=======
+	  "( %s%s%s%s%s%s)\n",
+>>>>>>> refs/remotes/origin/master
 	  dev_name(adev->dev),
 	  dma_has_cap(DMA_PQ, adev->common.cap_mask) ? "pq " : "",
 	  dma_has_cap(DMA_PQ_VAL, adev->common.cap_mask) ? "pq_val " : "",
 	  dma_has_cap(DMA_XOR, adev->common.cap_mask) ? "xor " : "",
 	  dma_has_cap(DMA_XOR_VAL, adev->common.cap_mask) ? "xor_val " : "",
 	  dma_has_cap(DMA_MEMCPY, adev->common.cap_mask) ? "memcpy " : "",
+<<<<<<< HEAD
 	  dma_has_cap(DMA_MEMSET, adev->common.cap_mask)  ? "memset " : "",
+=======
+>>>>>>> refs/remotes/origin/master
 	  dma_has_cap(DMA_INTERRUPT, adev->common.cap_mask) ? "intr " : "");
 }
 
@@ -4431,7 +4506,11 @@ static void ppc440spe_adma_release_irqs(struct ppc440spe_adma_device *adev,
 /**
  * ppc440spe_adma_probe - probe the asynch device
  */
+<<<<<<< HEAD
 static int __devinit ppc440spe_adma_probe(struct platform_device *ofdev)
+=======
+static int ppc440spe_adma_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = ofdev->dev.of_node;
 	struct resource res;
@@ -4516,7 +4595,11 @@ static int __devinit ppc440spe_adma_probe(struct platform_device *ofdev)
 		ret = -ENOMEM;
 		goto err_dma_alloc;
 	}
+<<<<<<< HEAD
 	dev_dbg(&ofdev->dev, "allocted descriptor pool virt 0x%p phys 0x%llx\n",
+=======
+	dev_dbg(&ofdev->dev, "allocated descriptor pool virt 0x%p phys 0x%llx\n",
+>>>>>>> refs/remotes/origin/master
 		adev->dma_desc_pool_virt, (u64)adev->dma_desc_pool);
 
 	regs = ioremap(res.start, resource_size(&res));
@@ -4551,7 +4634,11 @@ static int __devinit ppc440spe_adma_probe(struct platform_device *ofdev)
 	adev->dev = &ofdev->dev;
 	adev->common.dev = &ofdev->dev;
 	INIT_LIST_HEAD(&adev->common.channels);
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, adev);
+=======
+	platform_set_drvdata(ofdev, adev);
+>>>>>>> refs/remotes/origin/master
 
 	/* create a channel */
 	chan = kzalloc(sizeof(*chan), GFP_KERNEL);
@@ -4568,9 +4655,13 @@ static int __devinit ppc440spe_adma_probe(struct platform_device *ofdev)
 	chan->device = adev;
 	chan->common.device = &adev->common;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dma_cookie_init(&chan->common);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_cookie_init(&chan->common);
+>>>>>>> refs/remotes/origin/master
 	list_add_tail(&chan->common.device_node, &adev->common.channels);
 	tasklet_init(&chan->irq_tasklet, ppc440spe_adma_tasklet,
 		     (unsigned long)chan);
@@ -4665,16 +4756,25 @@ out:
 /**
  * ppc440spe_adma_remove - remove the asynch device
  */
+<<<<<<< HEAD
 static int __devexit ppc440spe_adma_remove(struct platform_device *ofdev)
 {
 	struct ppc440spe_adma_device *adev = dev_get_drvdata(&ofdev->dev);
+=======
+static int ppc440spe_adma_remove(struct platform_device *ofdev)
+{
+	struct ppc440spe_adma_device *adev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	struct device_node *np = ofdev->dev.of_node;
 	struct resource res;
 	struct dma_chan *chan, *_chan;
 	struct ppc_dma_chan_ref *ref, *_ref;
 	struct ppc440spe_adma_chan *ppc440spe_chan;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (adev->id < PPC440SPE_ADMA_ENGINES_NUM)
 		ppc440spe_adma_devices[adev->id] = -1;
 
@@ -4978,7 +5078,11 @@ out_free:
 	return ret;
 }
 
+<<<<<<< HEAD
 static const struct of_device_id ppc440spe_adma_of_match[] __devinitconst = {
+=======
+static const struct of_device_id ppc440spe_adma_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible	= "ibm,dma-440spe", },
 	{ .compatible	= "amcc,xor-accelerator", },
 	{},
@@ -4987,7 +5091,11 @@ MODULE_DEVICE_TABLE(of, ppc440spe_adma_of_match);
 
 static struct platform_driver ppc440spe_adma_driver = {
 	.probe = ppc440spe_adma_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ppc440spe_adma_remove),
+=======
+	.remove = ppc440spe_adma_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "PPC440SP(E)-ADMA",
 		.owner = THIS_MODULE,

@@ -9,14 +9,23 @@
 #include <linux/nfs_fs.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/rcupdate.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
 #include "nfs4_fs.h"
 #include "callback.h"
 #include "delegation.h"
 #include "internal.h"
 #include "pnfs.h"
+<<<<<<< HEAD
+=======
+#include "nfs4session.h"
+#include "nfs4trace.h"
+>>>>>>> refs/remotes/origin/master
 
 #ifdef NFS_DEBUG
 #define NFSDBG_FACILITY NFSDBG_CALLBACK
@@ -38,10 +47,14 @@ __be32 nfs4_callback_getattr(struct cb_getattrargs *args,
 	res->status = htonl(NFS4ERR_BADHANDLE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dprintk("NFS: GETATTR callback request from %s\n",
 =======
 	dprintk_rcu("NFS: GETATTR callback request from %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dprintk_rcu("NFS: GETATTR callback request from %s\n",
+>>>>>>> refs/remotes/origin/master
 		rpc_peeraddr2str(cps->clp->cl_rpcclient, RPC_DISPLAY_ADDR));
 
 	inode = nfs_delegation_find_inode(cps->clp, &args->fh);
@@ -82,10 +95,14 @@ __be32 nfs4_callback_recall(struct cb_recallargs *args, void *dummy,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dprintk("NFS: RECALL callback request from %s\n",
 =======
 	dprintk_rcu("NFS: RECALL callback request from %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dprintk_rcu("NFS: RECALL callback request from %s\n",
+>>>>>>> refs/remotes/origin/master
 		rpc_peeraddr2str(cps->clp->cl_rpcclient, RPC_DISPLAY_ADDR));
 
 	res = htonl(NFS4ERR_BADHANDLE);
@@ -99,21 +116,30 @@ __be32 nfs4_callback_recall(struct cb_recallargs *args, void *dummy,
 		break;
 	case -ENOENT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (res != 0)
 			res = htonl(NFS4ERR_BAD_STATEID);
 =======
 		res = htonl(NFS4ERR_BAD_STATEID);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		res = htonl(NFS4ERR_BAD_STATEID);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		res = htonl(NFS4ERR_RESOURCE);
 	}
+<<<<<<< HEAD
+=======
+	trace_nfs4_recall_delegation(inode, -ntohl(res));
+>>>>>>> refs/remotes/origin/master
 	iput(inode);
 out:
 	dprintk("%s: exit with status = %d\n", __func__, ntohl(res));
 	return res;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int nfs4_validate_delegation_stateid(struct nfs_delegation *delegation, const nfs4_stateid *stateid)
 {
@@ -125,6 +151,8 @@ int nfs4_validate_delegation_stateid(struct nfs_delegation *delegation, const nf
 
 #if defined(CONFIG_NFS_V4_1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_NFS_V4_1)
 
 /*
@@ -149,7 +177,19 @@ static struct pnfs_layout_hdr * get_layout_by_fh_locked(struct nfs_client *clp, 
 			ino = igrab(lo->plh_inode);
 			if (!ino)
 				continue;
+<<<<<<< HEAD
 			get_layout_hdr(lo);
+=======
+			spin_lock(&ino->i_lock);
+			/* Is this layout in the process of being freed? */
+			if (NFS_I(ino)->layout != lo) {
+				spin_unlock(&ino->i_lock);
+				iput(ino);
+				continue;
+			}
+			pnfs_get_layout_hdr(lo);
+			spin_unlock(&ino->i_lock);
+>>>>>>> refs/remotes/origin/master
 			return lo;
 		}
 	}
@@ -169,11 +209,15 @@ static struct pnfs_layout_hdr * get_layout_by_fh(struct nfs_client *clp, struct 
 
 	return lo;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static u32 initiate_file_draining(struct nfs_client *clp,
 				  struct cb_layoutrecallargs *args)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pnfs_layout_hdr *lo;
 	struct inode *ino;
@@ -201,6 +245,8 @@ static u32 initiate_file_draining(struct nfs_client *clp,
 		return NFS4ERR_NOMATCHING_LAYOUT;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inode *ino;
 	struct pnfs_layout_hdr *lo;
 	u32 rv = NFS4ERR_NOMATCHING_LAYOUT;
@@ -211,10 +257,16 @@ static u32 initiate_file_draining(struct nfs_client *clp,
 		return NFS4ERR_NOMATCHING_LAYOUT;
 
 	ino = lo->plh_inode;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	spin_lock(&ino->i_lock);
 	if (test_bit(NFS_LAYOUT_BULK_RECALL, &lo->plh_flags) ||
 	    mark_matching_lsegs_invalid(lo, &free_me_list,
+=======
+	spin_lock(&ino->i_lock);
+	if (test_bit(NFS_LAYOUT_BULK_RECALL, &lo->plh_flags) ||
+	    pnfs_mark_matching_lsegs_invalid(lo, &free_me_list,
+>>>>>>> refs/remotes/origin/master
 					&args->cbl_range))
 		rv = NFS4ERR_DELAY;
 	else
@@ -222,7 +274,11 @@ static u32 initiate_file_draining(struct nfs_client *clp,
 	pnfs_set_layout_stateid(lo, &args->cbl_stateid, true);
 	spin_unlock(&ino->i_lock);
 	pnfs_free_lseg_list(&free_me_list);
+<<<<<<< HEAD
 	put_layout_hdr(lo);
+=======
+	pnfs_put_layout_hdr(lo);
+>>>>>>> refs/remotes/origin/master
 	iput(ino);
 	return rv;
 }
@@ -230,6 +286,7 @@ static u32 initiate_file_draining(struct nfs_client *clp,
 static u32 initiate_bulk_draining(struct nfs_client *clp,
 				  struct cb_layoutrecallargs *args)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	struct nfs_server *server;
@@ -294,11 +351,23 @@ static u32 initiate_bulk_draining(struct nfs_client *clp,
 		iput(ino);
 	}
 	return rv;
+=======
+	int stat;
+
+	if (args->cbl_recall_type == RETURN_FSID)
+		stat = pnfs_destroy_layouts_byfsid(clp, &args->cbl_fsid, true);
+	else
+		stat = pnfs_destroy_layouts_byclid(clp, true);
+	if (stat != 0)
+		return NFS4ERR_DELAY;
+	return NFS4ERR_NOMATCHING_LAYOUT;
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 do_callback_layoutrecall(struct nfs_client *clp,
 				    struct cb_layoutrecallargs *args)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 res = NFS4ERR_DELAY;
 
@@ -310,15 +379,23 @@ static u32 do_callback_layoutrecall(struct nfs_client *clp,
 
 	dprintk("%s enter, type=%i\n", __func__, args->cbl_recall_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 res;
+
+	dprintk("%s enter, type=%i\n", __func__, args->cbl_recall_type);
+>>>>>>> refs/remotes/origin/master
 	if (args->cbl_recall_type == RETURN_FILE)
 		res = initiate_file_draining(clp, args);
 	else
 		res = initiate_bulk_draining(clp, args);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clear_bit(NFS4CLNT_LAYOUTRECALL, &clp->cl_state);
 out:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dprintk("%s returning %i\n", __func__, res);
 	return res;
 
@@ -399,6 +476,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int nfs41_validate_delegation_stateid(struct nfs_delegation *delegation, const nfs4_stateid *stateid)
 {
 	if (delegation == NULL)
@@ -416,6 +494,8 @@ int nfs41_validate_delegation_stateid(struct nfs_delegation *delegation, const n
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Validate the sequenceID sent by the server.
  * Return success if the sequenceID is one more than what we last saw on
@@ -434,14 +514,22 @@ validate_seqid(struct nfs4_slot_table *tbl, struct cb_sequenceargs * args)
 {
 	struct nfs4_slot *slot;
 
+<<<<<<< HEAD
 	dprintk("%s enter. slotid %d seqid %d\n",
+=======
+	dprintk("%s enter. slotid %u seqid %u\n",
+>>>>>>> refs/remotes/origin/master
 		__func__, args->csa_slotid, args->csa_sequenceid);
 
 	if (args->csa_slotid >= NFS41_BC_MAX_CALLBACKS)
 		return htonl(NFS4ERR_BADSLOT);
 
 	slot = tbl->slots + args->csa_slotid;
+<<<<<<< HEAD
 	dprintk("%s slot table seqid: %d\n", __func__, slot->seq_nr);
+=======
+	dprintk("%s slot table seqid: %u\n", __func__, slot->seq_nr);
+>>>>>>> refs/remotes/origin/master
 
 	/* Normal */
 	if (likely(args->csa_sequenceid == slot->seq_nr + 1)) {
@@ -451,7 +539,11 @@ validate_seqid(struct nfs4_slot_table *tbl, struct cb_sequenceargs * args)
 
 	/* Replay */
 	if (args->csa_sequenceid == slot->seq_nr) {
+<<<<<<< HEAD
 		dprintk("%s seqid %d is a replay\n",
+=======
+		dprintk("%s seqid %u is a replay\n",
+>>>>>>> refs/remotes/origin/master
 			__func__, args->csa_sequenceid);
 		/* Signal process_op to set this error on next op */
 		if (args->csa_cachethis == 0)
@@ -540,10 +632,15 @@ __be32 nfs4_callback_sequence(struct cb_sequenceargs *args,
 	__be32 status = htonl(NFS4ERR_BADSESSION);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clp = nfs4_find_client_sessionid(args->csa_addr, &args->csa_sessionid);
 =======
 	clp = nfs4_find_client_sessionid(cps->net, args->csa_addr, &args->csa_sessionid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clp = nfs4_find_client_sessionid(cps->net, args->csa_addr,
+					 &args->csa_sessionid, cps->minorversion);
+>>>>>>> refs/remotes/origin/master
 	if (clp == NULL)
 		goto out;
 
@@ -551,7 +648,11 @@ __be32 nfs4_callback_sequence(struct cb_sequenceargs *args,
 
 	spin_lock(&tbl->slot_tbl_lock);
 	/* state manager is resetting the session */
+<<<<<<< HEAD
 	if (test_bit(NFS4_SESSION_DRAINING, &clp->cl_session->session_state)) {
+=======
+	if (test_bit(NFS4_SLOT_TBL_DRAINING, &tbl->slot_tbl_state)) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&tbl->slot_tbl_lock);
 		status = htonl(NFS4ERR_DELAY);
 		/* Return NFS4ERR_BADSESSION if we're draining the session
@@ -598,6 +699,10 @@ out:
 	} else
 		res->csr_status = status;
 
+<<<<<<< HEAD
+=======
+	trace_nfs4_cb_sequence(args, res, status);
+>>>>>>> refs/remotes/origin/master
 	dprintk("%s: exit with status = %d res->csr_status %d\n", __func__,
 		ntohl(status), ntohl(res->csr_status));
 	return status;
@@ -620,10 +725,14 @@ __be32 nfs4_callback_recallany(struct cb_recallanyargs *args, void *dummy,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dprintk("NFS: RECALL_ANY callback request from %s\n",
 =======
 	dprintk_rcu("NFS: RECALL_ANY callback request from %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dprintk_rcu("NFS: RECALL_ANY callback request from %s\n",
+>>>>>>> refs/remotes/origin/master
 		rpc_peeraddr2str(cps->clp->cl_rpcclient, RPC_DISPLAY_ADDR));
 
 	status = cpu_to_be32(NFS4ERR_INVAL);
@@ -641,7 +750,11 @@ __be32 nfs4_callback_recallany(struct cb_recallanyargs *args, void *dummy,
 		     &args->craa_type_mask))
 		pnfs_recall_all_layouts(cps->clp);
 	if (flags)
+<<<<<<< HEAD
 		nfs_expire_all_delegation_types(cps->clp, flags);
+=======
+		nfs_expire_unused_delegation_types(cps->clp, flags);
+>>>>>>> refs/remotes/origin/master
 out:
 	dprintk("%s: exit with status = %d\n", __func__, ntohl(status));
 	return status;
@@ -658,6 +771,7 @@ __be32 nfs4_callback_recallslot(struct cb_recallslotargs *args, void *dummy,
 	if (!cps->clp) /* set in cb_sequence */
 		goto out;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dprintk("NFS: CB_RECALL_SLOT request from %s target max slots %d\n",
 =======
@@ -679,6 +793,18 @@ __be32 nfs4_callback_recallslot(struct cb_recallslotargs *args, void *dummy,
 
 	fc_tbl->target_max_slots = args->crsa_target_max_slots;
 	nfs41_handle_recall_slot(cps->clp);
+=======
+	dprintk_rcu("NFS: CB_RECALL_SLOT request from %s target highest slotid %u\n",
+		rpc_peeraddr2str(cps->clp->cl_rpcclient, RPC_DISPLAY_ADDR),
+		args->crsa_target_highest_slotid);
+
+	fc_tbl = &cps->clp->cl_session->fc_slot_table;
+
+	status = htonl(NFS4_OK);
+
+	nfs41_set_target_slotid(fc_tbl, args->crsa_target_highest_slotid);
+	nfs41_server_notify_target_slotid_update(cps->clp);
+>>>>>>> refs/remotes/origin/master
 out:
 	dprintk("%s: exit with status = %d\n", __func__, ntohl(status));
 	return status;

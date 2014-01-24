@@ -17,26 +17,36 @@
  * need be.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 
 #include <mach/hardware.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/map.h>
 #include <asm/mach-types.h>
 
 #include <mach/reset.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/smemc.h>
 #include <mach/pxa3xx-regs.h>
 

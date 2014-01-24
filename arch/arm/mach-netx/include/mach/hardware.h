@@ -34,10 +34,14 @@
 #define SRAM_MEM_SIZE 0x8000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define io_p2v(x) ((x) - NETX_IO_PHYS + NETX_IO_VIRT)
 =======
 #define io_p2v(x) IOMEM((x) - NETX_IO_PHYS + NETX_IO_VIRT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define io_p2v(x) IOMEM((x) - NETX_IO_PHYS + NETX_IO_VIRT)
+>>>>>>> refs/remotes/origin/master
 #define io_v2p(x) ((x) - NETX_IO_VIRT + NETX_IO_PHYS)
 
 #endif

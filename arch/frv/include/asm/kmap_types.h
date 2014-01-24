@@ -2,6 +2,7 @@
 #ifndef _ASM_KMAP_TYPES_H
 #define _ASM_KMAP_TYPES_H
 
+<<<<<<< HEAD
 enum km_type {
 	/* arch specific kmaps - change the numbers attached to these at your peril */
 	__KM_CACHE,		/* cache flush page attachment point */
@@ -25,5 +26,8 @@ enum km_type {
 	KM_SOFTIRQ1,
 	KM_TYPE_NR
 };
+=======
+#define KM_TYPE_NR 17
+>>>>>>> refs/remotes/origin/master
 
 #endif

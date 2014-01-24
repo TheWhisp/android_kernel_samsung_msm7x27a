@@ -2,9 +2,13 @@
  * pata_cs5536.c	- CS5536 PATA for new ATA layer
  *			  (C) 2007 Martin K. Petersen <mkp@mkp.net>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *			  (C) 2011 Bartlomiej Zolnierkiewicz
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *			  (C) 2011 Bartlomiej Zolnierkiewicz
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -41,6 +45,10 @@
 #include <linux/delay.h>
 #include <linux/libata.h>
 #include <scsi/scsi_host.h>
+<<<<<<< HEAD
+=======
+#include <linux/dmi.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_32
 #include <asm/msr.h>
@@ -59,6 +67,7 @@ MODULE_PARM_DESC(msr, "Force using MSR to configure IDE function (Default: 0)");
 #define DRV_VERSION	"0.0.8"
 
 enum {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	CFG			= 0,
 	DTC			= 1,
@@ -79,6 +88,8 @@ enum {
 	IDE_CFG_CHANEN		= 0x2,
 	IDE_CFG_CABLE		= 0x10000,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	MSR_IDE_CFG		= 0x51300010,
 	PCI_IDE_CFG		= 0x40,
 
@@ -89,7 +100,10 @@ enum {
 
 	IDE_CFG_CHANEN		= (1 << 1),
 	IDE_CFG_CABLE		= (1 << 17) | (1 << 16),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	IDE_D0_SHIFT		= 24,
 	IDE_D1_SHIFT		= 16,
@@ -101,6 +115,7 @@ enum {
 	IDE_CAST_CMD_MASK	= 0xff,
 	IDE_CAST_CMD_SHIFT	= 24,
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	IDE_ETC_NODMA		= 0x03,
 };
@@ -120,10 +135,32 @@ static inline int cs5536_read(struct pci_dev *pdev, int reg, u32 *val)
 
 static int cs5536_read(struct pci_dev *pdev, int reg, u32 *val)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IDE_ETC_UDMA_MASK	= 0xc0,
+};
+
+/* Some Bachmann OT200 devices have a non working UDMA support due a
+ * missing resistor.
+ */
+static const struct dmi_system_id udma_quirk_dmi_table[] = {
+	{
+		.ident = "Bachmann electronic OT200",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "Bachmann electronic"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "OT200"),
+			DMI_MATCH(DMI_PRODUCT_VERSION, "1")
+		},
+	},
+	{ }
+};
+
+static int cs5536_read(struct pci_dev *pdev, int reg, u32 *val)
+>>>>>>> refs/remotes/origin/master
 {
 	if (unlikely(use_msr)) {
 		u32 dummy __maybe_unused;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		rdmsr(msr_reg[reg], *val, dummy);
 		return 0;
@@ -141,6 +178,8 @@ static inline int cs5536_write(struct pci_dev *pdev, int reg, int val)
 
 	return pci_write_config_dword(pdev, pci_reg[reg], val);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		rdmsr(MSR_IDE_CFG + reg, *val, dummy);
 		return 0;
 	}
@@ -168,13 +207,17 @@ static void cs5536_program_dtc(struct ata_device *adev, u8 tim)
 	dtc &= ~(IDE_DRV_MASK << dshift);
 	dtc |= tim << dshift;
 	cs5536_write(pdev, DTC, dtc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  *	cs5536_cable_detect	-	detect cable type
  *	@ap: Port to detect on
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  *	Perform cable detection for ATA66 capable cable. Return a libata
  *	cable type.
@@ -183,6 +226,11 @@ static void cs5536_program_dtc(struct ata_device *adev, u8 tim)
  *
  *	Returns a cable type.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Perform cable detection for ATA66 capable cable.
+ *
+ *	Returns a cable type.
+>>>>>>> refs/remotes/origin/master
  */
 
 static int cs5536_cable_detect(struct ata_port *ap)
@@ -193,10 +241,14 @@ static int cs5536_cable_detect(struct ata_port *ap)
 	cs5536_read(pdev, CFG, &cfg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cfg & (IDE_CFG_CABLE << ap->port_no))
 =======
 	if (cfg & IDE_CFG_CABLE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cfg & IDE_CFG_CABLE)
+>>>>>>> refs/remotes/origin/master
 		return ATA_CBL_PATA80;
 	else
 		return ATA_CBL_PATA40;
@@ -227,6 +279,7 @@ static void cs5536_set_piomode(struct ata_port *ap, struct ata_device *adev)
 	int mode = adev->pio_mode - XFER_PIO_0;
 	int cmdmode = mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int dshift = adev->devno ? IDE_D1_SHIFT : IDE_D0_SHIFT;
 	int cshift = adev->devno ? IDE_CAST_D1_SHIFT : IDE_CAST_D0_SHIFT;
 	u32 dtc, cast, etc;
@@ -234,10 +287,15 @@ static void cs5536_set_piomode(struct ata_port *ap, struct ata_device *adev)
 	int cshift = adev->devno ? IDE_CAST_D1_SHIFT : IDE_CAST_D0_SHIFT;
 	u32 cast;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cshift = adev->devno ? IDE_CAST_D1_SHIFT : IDE_CAST_D0_SHIFT;
+	u32 cast;
+>>>>>>> refs/remotes/origin/master
 
 	if (pair)
 		cmdmode = min(mode, pair->pio_mode - XFER_PIO_0);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cs5536_read(pdev, DTC, &dtc);
 	cs5536_read(pdev, CAST, &cast);
@@ -250,6 +308,11 @@ static void cs5536_set_piomode(struct ata_port *ap, struct ata_device *adev)
 
 	cs5536_read(pdev, CAST, &cast);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs5536_program_dtc(adev, drv_timings[mode]);
+
+	cs5536_read(pdev, CAST, &cast);
+>>>>>>> refs/remotes/origin/master
 
 	cast &= ~(IDE_CAST_DRV_MASK << cshift);
 	cast |= addr_timings[mode] << cshift;
@@ -257,6 +320,7 @@ static void cs5536_set_piomode(struct ata_port *ap, struct ata_device *adev)
 	cast &= ~(IDE_CAST_CMD_MASK << IDE_CAST_CMD_SHIFT);
 	cast |= cmd_timings[cmdmode] << IDE_CAST_CMD_SHIFT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	etc &= ~(IDE_DRV_MASK << dshift);
 	etc |= IDE_ETC_NODMA << dshift;
@@ -267,6 +331,9 @@ static void cs5536_set_piomode(struct ata_port *ap, struct ata_device *adev)
 =======
 	cs5536_write(pdev, CAST, cast);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs5536_write(pdev, CAST, cast);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -288,6 +355,7 @@ static void cs5536_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 dtc, etc;
 	int mode = adev->dma_mode;
 	int dshift = adev->devno ? IDE_D1_SHIFT : IDE_D0_SHIFT;
@@ -308,6 +376,8 @@ static void cs5536_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 		cs5536_write(pdev, DTC, dtc);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 etc;
 	int mode = adev->dma_mode;
 	int dshift = adev->devno ? IDE_D1_SHIFT : IDE_D0_SHIFT;
@@ -323,7 +393,10 @@ static void cs5536_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 	}
 
 	cs5536_write(pdev, ETC, etc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct scsi_host_template cs5536_sht = {
@@ -354,9 +427,29 @@ static int cs5536_init_one(struct pci_dev *dev, const struct pci_device_id *id)
 		.port_ops = &cs5536_port_ops,
 	};
 
+<<<<<<< HEAD
 	const struct ata_port_info *ppi[] = { &info, &ata_dummy_port_info };
 	u32 cfg;
 
+=======
+	static const struct ata_port_info no_udma_info = {
+		.flags = ATA_FLAG_SLAVE_POSS,
+		.pio_mask = ATA_PIO4,
+		.port_ops = &cs5536_port_ops,
+	};
+
+
+	const struct ata_port_info *ppi[2];
+	u32 cfg;
+
+	if (dmi_check_system(udma_quirk_dmi_table))
+		ppi[0] = &no_udma_info;
+	else
+		ppi[0] = &info;
+
+	ppi[1] = &ata_dummy_port_info;
+
+>>>>>>> refs/remotes/origin/master
 	if (use_msr)
 		printk(KERN_ERR DRV_NAME ": Using MSR regs instead of PCI\n");
 
@@ -386,6 +479,7 @@ static struct pci_driver cs5536_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init cs5536_init(void)
 {
 	return pci_register_driver(&cs5536_pci_driver);
@@ -395,12 +489,18 @@ static void __exit cs5536_exit(void)
 {
 	pci_unregister_driver(&cs5536_pci_driver);
 }
+=======
+module_pci_driver(cs5536_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Martin K. Petersen");
 MODULE_DESCRIPTION("low-level driver for the CS5536 IDE controller");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, cs5536);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(cs5536_init);
 module_exit(cs5536_exit);
+=======
+>>>>>>> refs/remotes/origin/master

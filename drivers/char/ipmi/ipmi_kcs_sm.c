@@ -119,12 +119,17 @@ enum kcs_states {
 
 /* Timeouts in microseconds. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IBF_RETRY_TIMEOUT 1000000
 #define OBF_RETRY_TIMEOUT 1000000
 =======
 #define IBF_RETRY_TIMEOUT 5000000
 #define OBF_RETRY_TIMEOUT 5000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IBF_RETRY_TIMEOUT 5000000
+#define OBF_RETRY_TIMEOUT 5000000
+>>>>>>> refs/remotes/origin/master
 #define MAX_ERROR_RETRIES 10
 #define ERROR0_OBF_WAIT_JIFFIES (2*HZ)
 

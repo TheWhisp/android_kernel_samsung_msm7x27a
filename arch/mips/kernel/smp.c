@@ -35,6 +35,7 @@
 #include <linux/ftrace.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/cpu.h>
 #include <asm/processor.h>
@@ -46,11 +47,20 @@
 #include <linux/atomic.h>
 #include <asm/cpu.h>
 #include <asm/processor.h>
+=======
+#include <linux/atomic.h>
+#include <asm/cpu.h>
+#include <asm/processor.h>
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/r4k-timer.h>
 #include <asm/mmu_context.h>
 #include <asm/time.h>
 #include <asm/setup.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MIPS_MT_SMTC
 #include <asm/mipsmtregs.h>
@@ -93,8 +103,14 @@ static inline void set_cpu_sibling_map(int cpu)
 }
 
 struct plat_smp_ops *mp_ops;
+<<<<<<< HEAD
 
 __cpuinit void register_smp_ops(struct plat_smp_ops *ops)
+=======
+EXPORT_SYMBOL(mp_ops);
+
+void register_smp_ops(struct plat_smp_ops *ops)
+>>>>>>> refs/remotes/origin/master
 {
 	if (mp_ops)
 		printk(KERN_WARNING "Overriding previously set SMP ops\n");
@@ -106,17 +122,31 @@ __cpuinit void register_smp_ops(struct plat_smp_ops *ops)
  * First C code run on the secondary CPUs after being started up by
  * the master.
  */
+<<<<<<< HEAD
 asmlinkage __cpuinit void start_secondary(void)
+=======
+asmlinkage void start_secondary(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu;
 
 #ifdef CONFIG_MIPS_MT_SMTC
 	/* Only do cpu_probe for first TC of CPU */
+<<<<<<< HEAD
 	if ((read_c0_tcbind() & TCBIND_CURTC) == 0)
 #endif /* CONFIG_MIPS_MT_SMTC */
 	cpu_probe();
 	cpu_report();
 	per_cpu_trap_init();
+=======
+	if ((read_c0_tcbind() & TCBIND_CURTC) != 0)
+		__cpu_name[smp_processor_id()] = __cpu_name[0];
+	else
+#endif /* CONFIG_MIPS_MT_SMTC */
+	cpu_probe();
+	cpu_report();
+	per_cpu_trap_init(false);
+>>>>>>> refs/remotes/origin/master
 	mips_clockevent_init();
 	mp_ops->init_secondary();
 
@@ -132,14 +162,32 @@ asmlinkage __cpuinit void start_secondary(void)
 
 	notify_cpu_starting(cpu);
 
+<<<<<<< HEAD
 	mp_ops->smp_finish();
+=======
+	set_cpu_online(cpu, true);
+
+>>>>>>> refs/remotes/origin/master
 	set_cpu_sibling_map(cpu);
 
 	cpu_set(cpu, cpu_callin_map);
 
+<<<<<<< HEAD
 	synchronise_count_slave();
 
 	cpu_idle();
+=======
+	synchronise_count_slave(cpu);
+
+	/*
+	 * irq will be enabled in ->smp_finish(), enabling it too early
+	 * is dangerous.
+	 */
+	WARN_ON_ONCE(!irqs_disabled());
+	mp_ops->smp_finish();
+
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -148,7 +196,10 @@ asmlinkage __cpuinit void start_secondary(void)
 void __irq_entry smp_call_function_interrupt(void)
 {
 	irq_enter();
+<<<<<<< HEAD
 	generic_smp_call_function_single_interrupt();
+=======
+>>>>>>> refs/remotes/origin/master
 	generic_smp_call_function_interrupt();
 	irq_exit();
 }
@@ -159,10 +210,14 @@ static void stop_this_cpu(void *dummy)
 	 * Remove this CPU:
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_clear(smp_processor_id(), cpu_online_map);
 =======
 	set_cpu_online(smp_processor_id(), false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_online(smp_processor_id(), false);
+>>>>>>> refs/remotes/origin/master
 	for (;;) {
 		if (cpu_wait)
 			(*cpu_wait)();		/* Wait if available. */
@@ -177,7 +232,10 @@ void smp_send_stop(void)
 void __init smp_cpus_done(unsigned int max_cpus)
 {
 	mp_ops->cpus_done();
+<<<<<<< HEAD
 	synchronise_count_master();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* called from main before smp_init() */
@@ -189,21 +247,30 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	set_cpu_sibling_map(0);
 #ifndef CONFIG_HOTPLUG_CPU
 <<<<<<< HEAD
+<<<<<<< HEAD
 	init_cpu_present(&cpu_possible_map);
 =======
 	init_cpu_present(cpu_possible_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_cpu_present(cpu_possible_mask);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* preload SMP state for boot cpu */
+<<<<<<< HEAD
 void __devinit smp_prepare_boot_cpu(void)
+=======
+void smp_prepare_boot_cpu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	set_cpu_possible(0, true);
 	set_cpu_online(0, true);
 	cpu_set(0, cpu_callin_map);
 }
 
+<<<<<<< HEAD
 /*
  * Called once for each "cpu_possible(cpu)".  Needs to spin up the cpu
  * and keep control until "cpu_online(cpu)" is set.  Note: cpu is
@@ -259,6 +326,11 @@ int __cpuinit __cpu_up(unsigned int cpu)
 	}
 
 	mp_ops->boot_secondary(cpu, idle);
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+	mp_ops->boot_secondary(cpu, tidle);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Trust is futile.  We should really have timeouts ...
@@ -267,11 +339,15 @@ int __cpuinit __cpu_up(unsigned int cpu)
 		udelay(100);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_set(cpu, cpu_online_map);
 =======
 	set_cpu_online(cpu, true);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	synchronise_count_master(cpu);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -343,6 +419,7 @@ void flush_tlb_mm(struct mm_struct *mm)
 		smp_on_other_tlbs(flush_tlb_mm_ipi, mm);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cpumask_t mask = cpu_online_map;
 		unsigned int cpu;
 
@@ -351,13 +428,18 @@ void flush_tlb_mm(struct mm_struct *mm)
 			if (cpu_context(cpu, mm))
 				cpu_context(cpu, mm) = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned int cpu;
 
 		for_each_online_cpu(cpu) {
 			if (cpu != smp_processor_id() && cpu_context(cpu, mm))
 				cpu_context(cpu, mm) = 0;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	local_flush_tlb_mm(mm);
 
@@ -392,6 +474,7 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start, unsigned l
 		smp_on_other_tlbs(flush_tlb_range_ipi, &fd);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cpumask_t mask = cpu_online_map;
 		unsigned int cpu;
 
@@ -400,13 +483,18 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start, unsigned l
 			if (cpu_context(cpu, mm))
 				cpu_context(cpu, mm) = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned int cpu;
 
 		for_each_online_cpu(cpu) {
 			if (cpu != smp_processor_id() && cpu_context(cpu, mm))
 				cpu_context(cpu, mm) = 0;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	local_flush_tlb_range(vma, start, end);
 	preempt_enable();
@@ -448,6 +536,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
 		smp_on_other_tlbs(flush_tlb_page_ipi, &fd);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cpumask_t mask = cpu_online_map;
 		unsigned int cpu;
 
@@ -456,13 +545,18 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
 			if (cpu_context(cpu, vma->vm_mm))
 				cpu_context(cpu, vma->vm_mm) = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		unsigned int cpu;
 
 		for_each_online_cpu(cpu) {
 			if (cpu != smp_processor_id() && cpu_context(cpu, vma->vm_mm))
 				cpu_context(cpu, vma->vm_mm) = 0;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	local_flush_tlb_page(vma, page);
 	preempt_enable();
@@ -482,3 +576,23 @@ void flush_tlb_one(unsigned long vaddr)
 
 EXPORT_SYMBOL(flush_tlb_page);
 EXPORT_SYMBOL(flush_tlb_one);
+<<<<<<< HEAD
+=======
+
+#if defined(CONFIG_KEXEC)
+void (*dump_ipi_function_ptr)(void *) = NULL;
+void dump_send_ipi(void (*dump_ipi_callback)(void *))
+{
+	int i;
+	int cpu = smp_processor_id();
+
+	dump_ipi_function_ptr = dump_ipi_callback;
+	smp_mb();
+	for_each_online_cpu(i)
+		if (i != cpu)
+			mp_ops->send_ipi_single(i, SMP_DUMP);
+
+}
+EXPORT_SYMBOL(dump_send_ipi);
+#endif
+>>>>>>> refs/remotes/origin/master

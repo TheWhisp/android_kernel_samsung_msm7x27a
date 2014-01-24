@@ -10,7 +10,11 @@
 
 #include "numa_internal.h"
 
+<<<<<<< HEAD
 static int emu_nid_to_phys[MAX_NUMNODES] __cpuinitdata;
+=======
+static int emu_nid_to_phys[MAX_NUMNODES];
+>>>>>>> refs/remotes/origin/master
 static char *emu_cmdline __initdata;
 
 void __init numa_emu_cmdline(char *str)
@@ -29,7 +33,10 @@ static int __init emu_find_memblk_by_nid(int nid, const struct numa_meminfo *mi)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u64 __init mem_hole_size(u64 start, u64 end)
 {
 	unsigned long start_pfn = PFN_UP(start);
@@ -40,7 +47,10 @@ static u64 __init mem_hole_size(u64 start, u64 end)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Sets up nid to range from @start to @end.  The return value is -errno if
  * something went wrong, 0 otherwise.
@@ -64,10 +74,14 @@ static int __init emu_setup_memblk(struct numa_meminfo *ei,
 
 	if (emu_nid_to_phys[nid] == NUMA_NO_NODE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		emu_nid_to_phys[nid] = pb->nid;
 =======
 		emu_nid_to_phys[nid] = nid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		emu_nid_to_phys[nid] = nid;
+>>>>>>> refs/remotes/origin/master
 
 	pb->start += size;
 	if (pb->start >= pb->end) {
@@ -75,8 +89,13 @@ static int __init emu_setup_memblk(struct numa_meminfo *ei,
 		numa_remove_memblk_from(phys_blk, pi);
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO "Faking node %d at %016Lx-%016Lx (%LuMB)\n", nid,
 	       eb->start, eb->end, (eb->end - eb->start) >> 20);
+=======
+	printk(KERN_INFO "Faking node %d at [mem %#018Lx-%#018Lx] (%LuMB)\n",
+	       nid, eb->start, eb->end - 1, (eb->end - eb->start) >> 20);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -107,10 +126,14 @@ static int __init split_nodes_interleave(struct numa_meminfo *ei,
 	 * the division in ulong number of pages and convert back.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	size = max_addr - addr - memblock_x86_hole_size(addr, max_addr);
 =======
 	size = max_addr - addr - mem_hole_size(addr, max_addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size = max_addr - addr - mem_hole_size(addr, max_addr);
+>>>>>>> refs/remotes/origin/master
 	size = PFN_PHYS((unsigned long)(size >> PAGE_SHIFT) / nr_nodes);
 
 	/*
@@ -157,11 +180,15 @@ static int __init split_nodes_interleave(struct numa_meminfo *ei,
 			 * non-reserved memory is less than the per-node size.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			while (end - start -
 			       memblock_x86_hole_size(start, end) < size) {
 =======
 			while (end - start - mem_hole_size(start, end) < size) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			while (end - start - mem_hole_size(start, end) < size) {
+>>>>>>> refs/remotes/origin/master
 				end += FAKE_NODE_MIN_SIZE;
 				if (end > limit) {
 					end = limit;
@@ -176,10 +203,14 @@ static int __init split_nodes_interleave(struct numa_meminfo *ei,
 			 */
 			if (end < dma32_end && dma32_end - end -
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    memblock_x86_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
 =======
 			    mem_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    mem_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
+>>>>>>> refs/remotes/origin/master
 				end = dma32_end;
 
 			/*
@@ -188,11 +219,15 @@ static int __init split_nodes_interleave(struct numa_meminfo *ei,
 			 * physical node.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (limit - end -
 			    memblock_x86_hole_size(end, limit) < size)
 =======
 			if (limit - end - mem_hole_size(end, limit) < size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (limit - end - mem_hole_size(end, limit) < size)
+>>>>>>> refs/remotes/origin/master
 				end = limit;
 
 			ret = emu_setup_memblk(ei, pi, nid++ % nr_nodes,
@@ -214,10 +249,14 @@ static u64 __init find_end_of_node(u64 start, u64 max_addr, u64 size)
 	u64 end = start + size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (end - start - memblock_x86_hole_size(start, end) < size) {
 =======
 	while (end - start - mem_hole_size(start, end) < size) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (end - start - mem_hole_size(start, end) < size) {
+>>>>>>> refs/remotes/origin/master
 		end += FAKE_NODE_MIN_SIZE;
 		if (end > max_addr) {
 			end = max_addr;
@@ -249,11 +288,15 @@ static int __init split_nodes_size_interleave(struct numa_meminfo *ei,
 	 * machine (but not necessarily over physical nodes).
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	min_size = (max_addr - addr - memblock_x86_hole_size(addr, max_addr)) /
 						MAX_NUMNODES;
 =======
 	min_size = (max_addr - addr - mem_hole_size(addr, max_addr)) / MAX_NUMNODES;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	min_size = (max_addr - addr - mem_hole_size(addr, max_addr)) / MAX_NUMNODES;
+>>>>>>> refs/remotes/origin/master
 	min_size = max(min_size, FAKE_NODE_MIN_SIZE);
 	if ((min_size & FAKE_NODE_MIN_HASH_MASK) < min_size)
 		min_size = (min_size + FAKE_NODE_MIN_SIZE) &
@@ -294,10 +337,14 @@ static int __init split_nodes_size_interleave(struct numa_meminfo *ei,
 			 */
 			if (end < dma32_end && dma32_end - end -
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    memblock_x86_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
 =======
 			    mem_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    mem_hole_size(end, dma32_end) < FAKE_NODE_MIN_SIZE)
+>>>>>>> refs/remotes/origin/master
 				end = dma32_end;
 
 			/*
@@ -306,11 +353,15 @@ static int __init split_nodes_size_interleave(struct numa_meminfo *ei,
 			 * physical node.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (limit - end -
 			    memblock_x86_hole_size(end, limit) < size)
 =======
 			if (limit - end - mem_hole_size(end, limit) < size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (limit - end - mem_hole_size(end, limit) < size)
+>>>>>>> refs/remotes/origin/master
 				end = limit;
 
 			ret = emu_setup_memblk(ei, pi, nid++ % MAX_NUMNODES,
@@ -382,9 +433,17 @@ void __init numa_emulation(struct numa_meminfo *numa_meminfo, int numa_dist_cnt)
 	} else {
 		unsigned long n;
 
+<<<<<<< HEAD
 		n = simple_strtoul(emu_cmdline, NULL, 0);
 		ret = split_nodes_interleave(&ei, &pi, 0, max_addr, n);
 	}
+=======
+		n = simple_strtoul(emu_cmdline, &emu_cmdline, 0);
+		ret = split_nodes_interleave(&ei, &pi, 0, max_addr, n);
+	}
+	if (*emu_cmdline == ':')
+		emu_cmdline++;
+>>>>>>> refs/remotes/origin/master
 
 	if (ret < 0)
 		goto no_emu;
@@ -401,18 +460,24 @@ void __init numa_emulation(struct numa_meminfo *numa_meminfo, int numa_dist_cnt)
 		phys = memblock_find_in_range(0, PFN_PHYS(max_pfn_mapped),
 					      phys_size, PAGE_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (phys == MEMBLOCK_ERROR) {
 			pr_warning("NUMA: Warning: can't allocate copy of distance table, disabling emulation\n");
 			goto no_emu;
 		}
 		memblock_x86_reserve_range(phys, phys + phys_size, "TMP NUMA DIST");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!phys) {
 			pr_warning("NUMA: Warning: can't allocate copy of distance table, disabling emulation\n");
 			goto no_emu;
 		}
 		memblock_reserve(phys, phys_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		phys_dist = __va(phys);
 
 		for (i = 0; i < numa_dist_cnt; i++)
@@ -469,7 +534,13 @@ void __init numa_emulation(struct numa_meminfo *numa_meminfo, int numa_dist_cnt)
 			int physj = emu_nid_to_phys[j];
 			int dist;
 
+<<<<<<< HEAD
 			if (physi >= numa_dist_cnt || physj >= numa_dist_cnt)
+=======
+			if (get_option(&emu_cmdline, &dist) == 2)
+				;
+			else if (physi >= numa_dist_cnt || physj >= numa_dist_cnt)
+>>>>>>> refs/remotes/origin/master
 				dist = physi == physj ?
 					LOCAL_DISTANCE : REMOTE_DISTANCE;
 			else
@@ -482,10 +553,14 @@ void __init numa_emulation(struct numa_meminfo *numa_meminfo, int numa_dist_cnt)
 	/* free the copied physical distance table */
 	if (phys_dist)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		memblock_x86_free_range(__pa(phys_dist), __pa(phys_dist) + phys_size);
 =======
 		memblock_free(__pa(phys_dist), phys_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memblock_free(__pa(phys_dist), phys_size);
+>>>>>>> refs/remotes/origin/master
 	return;
 
 no_emu:
@@ -495,7 +570,11 @@ no_emu:
 }
 
 #ifndef CONFIG_DEBUG_PER_CPU_MAPS
+<<<<<<< HEAD
 void __cpuinit numa_add_cpu(int cpu)
+=======
+void numa_add_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int physnid, nid;
 
@@ -513,7 +592,11 @@ void __cpuinit numa_add_cpu(int cpu)
 			cpumask_set_cpu(cpu, node_to_cpumask_map[nid]);
 }
 
+<<<<<<< HEAD
 void __cpuinit numa_remove_cpu(int cpu)
+=======
+void numa_remove_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -521,7 +604,11 @@ void __cpuinit numa_remove_cpu(int cpu)
 		cpumask_clear_cpu(cpu, node_to_cpumask_map[i]);
 }
 #else	/* !CONFIG_DEBUG_PER_CPU_MAPS */
+<<<<<<< HEAD
 static void __cpuinit numa_set_cpumask(int cpu, bool enable)
+=======
+static void numa_set_cpumask(int cpu, bool enable)
+>>>>>>> refs/remotes/origin/master
 {
 	int nid, physnid;
 
@@ -541,12 +628,20 @@ static void __cpuinit numa_set_cpumask(int cpu, bool enable)
 	}
 }
 
+<<<<<<< HEAD
 void __cpuinit numa_add_cpu(int cpu)
+=======
+void numa_add_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	numa_set_cpumask(cpu, true);
 }
 
+<<<<<<< HEAD
 void __cpuinit numa_remove_cpu(int cpu)
+=======
+void numa_remove_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	numa_set_cpumask(cpu, false);
 }

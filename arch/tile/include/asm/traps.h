@@ -15,12 +15,20 @@
 #ifndef _ASM_TILE_TRAPS_H
 #define _ASM_TILE_TRAPS_H
 
+<<<<<<< HEAD
+=======
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 #include <arch/chip.h>
 
 /* mm/fault.c */
 void do_page_fault(struct pt_regs *, int fault_num,
 		   unsigned long address, unsigned long write);
+<<<<<<< HEAD
 #if CHIP_HAS_TILE_DMA() || CHIP_HAS_SN_PROC()
+=======
+#if CHIP_HAS_TILE_DMA()
+>>>>>>> refs/remotes/origin/master
 void do_async_page_fault(struct pt_regs *);
 #endif
 
@@ -65,17 +73,36 @@ void do_breakpoint(struct pt_regs *, int fault_num);
 
 #ifdef __tilegx__
 <<<<<<< HEAD
+<<<<<<< HEAD
 void gx_singlestep_handle(struct pt_regs *, int fault_num);
 #endif
 
 #endif /* _ASM_TILE_SYSCALLS_H */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* kernel/single_step.c */
 void gx_singlestep_handle(struct pt_regs *, int fault_num);
 
 /* kernel/intvec_64.S */
 void fill_ra_stack(void);
+<<<<<<< HEAD
 #endif
 
 #endif /* _ASM_TILE_TRAPS_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* Handle unalign data fixup. */
+extern void do_unaligned(struct pt_regs *regs, int vecnum);
+#endif
+
+#endif /* __ASSEMBLY__ */
+
+#ifdef __tilegx__
+/* 128 byte JIT per unalign fixup. */
+#define UNALIGN_JIT_SHIFT    7
+#endif
+
+#endif /* _ASM_TILE_TRAPS_H */
+>>>>>>> refs/remotes/origin/master

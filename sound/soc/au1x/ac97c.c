@@ -179,13 +179,20 @@ static void au1xac97c_ac97_cold_reset(struct snd_ac97 *ac97)
 }
 
 /* AC97 controller operations */
+<<<<<<< HEAD
 struct snd_ac97_bus_ops soc_ac97_ops = {
+=======
+static struct snd_ac97_bus_ops ac97c_bus_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read		= au1xac97c_ac97_read,
 	.write		= au1xac97c_ac97_write,
 	.reset		= au1xac97c_ac97_cold_reset,
 	.warm_reset	= au1xac97c_ac97_warm_reset,
 };
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(soc_ac97_ops);	/* globals be gone! */
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int alchemy_ac97c_startup(struct snd_pcm_substream *substream,
 				 struct snd_soc_dai *dai)
@@ -223,7 +230,15 @@ static struct snd_soc_dai_driver au1xac97c_dai_driver = {
 	.ops			= &alchemy_ac97c_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit au1xac97c_drvprobe(struct platform_device *pdev)
+=======
+static const struct snd_soc_component_driver au1xac97c_component = {
+	.name		= "au1xac97c",
+};
+
+static int au1xac97c_drvprobe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct resource *iores, *dmares;
@@ -268,7 +283,16 @@ static int __devinit au1xac97c_drvprobe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, ctx);
 
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &au1xac97c_dai_driver);
+=======
+	ret = snd_soc_set_ac97_ops(&ac97c_bus_ops);
+	if (ret)
+		return ret;
+
+	ret = snd_soc_register_component(&pdev->dev, &au1xac97c_component,
+					 &au1xac97c_dai_driver, 1);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -276,11 +300,19 @@ static int __devinit au1xac97c_drvprobe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit au1xac97c_drvremove(struct platform_device *pdev)
 {
 	struct au1xpsc_audio_data *ctx = platform_get_drvdata(pdev);
 
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+static int au1xac97c_drvremove(struct platform_device *pdev)
+{
+	struct au1xpsc_audio_data *ctx = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	WR(ctx, AC97_ENABLE, EN_D);	/* clock off, disable */
 
@@ -330,6 +362,7 @@ static struct platform_driver au1xac97c_driver = {
 		.pm	= AU1XPSCAC97_PMOPS,
 	},
 	.probe		= au1xac97c_drvprobe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(au1xac97c_drvremove),
 };
 
@@ -346,6 +379,12 @@ static void __exit au1xac97c_unload(void)
 
 module_init(au1xac97c_load);
 module_exit(au1xac97c_unload);
+=======
+	.remove		= au1xac97c_drvremove,
+};
+
+module_platform_driver(au1xac97c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Au1000/1500/1100 AC97C ASoC driver");

@@ -33,6 +33,7 @@
 #include <linux/kobject.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/workqueue.h>
 
@@ -41,12 +42,17 @@
 #define EDAC_ATTRIB_VALUE_LEN	15
 #define MC_PROC_NAME_MAX_LEN	7
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/workqueue.h>
 #include <linux/edac.h>
 
 #define EDAC_DEVICE_NAME_LEN	31
 #define EDAC_ATTRIB_VALUE_LEN	15
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if PAGE_SHIFT < 20
 #define PAGES_TO_MiB(pages)	((pages) >> (20 - PAGE_SHIFT))
@@ -81,6 +87,7 @@ extern const char *edac_mem_types[];
 #ifdef CONFIG_EDAC_DEBUG
 extern int edac_debug_level;
 
+<<<<<<< HEAD
 #define edac_debug_printk(level, fmt, arg...)                           \
 	do {                                                            \
 		if (level <= edac_debug_level)                          \
@@ -101,6 +108,23 @@ extern int edac_debug_level;
 #define debugf2( ... )
 #define debugf3( ... )
 #define debugf4( ... )
+=======
+#define edac_dbg(level, fmt, ...)					\
+do {									\
+	if (level <= edac_debug_level)					\
+		edac_printk(KERN_DEBUG, EDAC_DEBUG,			\
+			    "%s: " fmt, __func__, ##__VA_ARGS__);	\
+} while (0)
+
+#else				/* !CONFIG_EDAC_DEBUG */
+
+#define edac_dbg(level, fmt, ...)					\
+do {									\
+	if (0)								\
+		edac_printk(KERN_DEBUG, EDAC_DEBUG,			\
+			    "%s: " fmt, __func__, ##__VA_ARGS__);	\
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* !CONFIG_EDAC_DEBUG */
 
@@ -109,6 +133,7 @@ extern int edac_debug_level;
 
 #define edac_dev_name(dev) (dev)->dev_name
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* memory devices */
 enum dev_type {
@@ -459,6 +484,8 @@ struct mem_ctl_info {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The following are the structures to provide for a generic
  * or abstract 'edac_device'. This set of structures and the
@@ -467,13 +494,21 @@ struct mem_ctl_info {
  *
  * CPU caches (L1 and L2)
  * DMA engines
+<<<<<<< HEAD
  * Core CPU swithces
+=======
+ * Core CPU switches
+>>>>>>> refs/remotes/origin/master
  * Fabric switch units
  * PCIe interface controllers
  * other EDAC/ECC type devices that can be monitored for
  * errors, etc.
  *
+<<<<<<< HEAD
  * It allows for a 2 level set of hiearchry. For example:
+=======
+ * It allows for a 2 level set of hierarchy. For example:
+>>>>>>> refs/remotes/origin/master
  *
  * cache could be composed of L1, L2 and L3 levels of cache.
  * Each CPU core would have its own L1 cache, while sharing
@@ -603,12 +638,17 @@ struct edac_device_ctl_info {
 	struct edac_dev_sysfs_attribute *sysfs_attributes;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* pointer to main 'edac' class in sysfs */
 	struct sysdev_class *edac_class;
 =======
 	/* pointer to main 'edac' subsys in sysfs */
 	struct bus_type *edac_subsys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* pointer to main 'edac' subsys in sysfs */
+	struct bus_type *edac_subsys;
+>>>>>>> refs/remotes/origin/master
 
 	/* the internal state of this controller instance */
 	int op_state;
@@ -707,10 +747,14 @@ struct edac_pci_ctl_info {
 	int pci_idx;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sysdev_class *edac_class;	/* pointer to class */
 =======
 	struct bus_type *edac_subsys;	/* pointer to subsystem */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bus_type *edac_subsys;	/* pointer to subsystem */
+>>>>>>> refs/remotes/origin/master
 
 	/* the internal state of this controller instance */
 	int op_state;
@@ -816,8 +860,15 @@ static inline void pci_write_bits32(struct pci_dev *pdev, int offset,
 
 #endif				/* CONFIG_PCI */
 
+<<<<<<< HEAD
 extern struct mem_ctl_info *edac_mc_alloc(unsigned sz_pvt, unsigned nr_csrows,
 					  unsigned nr_chans, int edac_index);
+=======
+struct mem_ctl_info *edac_mc_alloc(unsigned mc_num,
+				   unsigned n_layers,
+				   struct edac_mc_layer *layers,
+				   unsigned sz_pvt);
+>>>>>>> refs/remotes/origin/master
 extern int edac_mc_add_mc(struct mem_ctl_info *mci);
 extern void edac_mc_free(struct mem_ctl_info *mci);
 extern struct mem_ctl_info *edac_mc_find(int idx);
@@ -826,6 +877,7 @@ extern struct mem_ctl_info *edac_mc_del_mc(struct device *dev);
 extern int edac_mc_find_csrow_by_page(struct mem_ctl_info *mci,
 				      unsigned long page);
 
+<<<<<<< HEAD
 /*
  * The no info errors are used when error overflows are reported.
  * There are a limited number of error logging registers that can
@@ -854,6 +906,23 @@ extern void edac_mc_handle_fbd_ue(struct mem_ctl_info *mci, unsigned int csrow,
 				  char *msg);
 extern void edac_mc_handle_fbd_ce(struct mem_ctl_info *mci, unsigned int csrow,
 				  unsigned int channel, char *msg);
+=======
+void edac_raw_mc_handle_error(const enum hw_event_mc_err_type type,
+			      struct mem_ctl_info *mci,
+			      struct edac_raw_error_desc *e);
+
+void edac_mc_handle_error(const enum hw_event_mc_err_type type,
+			  struct mem_ctl_info *mci,
+			  const u16 error_count,
+			  const unsigned long page_frame_number,
+			  const unsigned long offset_in_page,
+			  const unsigned long syndrome,
+			  const int top_layer,
+			  const int mid_layer,
+			  const int low_layer,
+			  const char *msg,
+			  const char *other_detail);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * edac_device APIs
@@ -865,6 +934,10 @@ extern void edac_device_handle_ue(struct edac_device_ctl_info *edac_dev,
 extern void edac_device_handle_ce(struct edac_device_ctl_info *edac_dev,
 				int inst_nr, int block_nr, const char *msg);
 extern int edac_device_alloc_index(void);
+<<<<<<< HEAD
+=======
+extern const char *edac_layer_name[];
+>>>>>>> refs/remotes/origin/master
 
 /*
  * edac_pci APIs

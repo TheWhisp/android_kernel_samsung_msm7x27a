@@ -29,7 +29,11 @@
 #include <linux/mutex.h>
 
 #include <sound/core.h>
+<<<<<<< HEAD
 #include <sound/trident.h>
+=======
+#include "trident.h"
+>>>>>>> refs/remotes/origin/master
 
 /* page arguments of these two macros are Trident page (4096 bytes), not like
  * aligned pages in others

@@ -25,7 +25,11 @@
 #define DRV_MODULE_VERSION	"1.0"
 #define DRV_MODULE_RELDATE	"June 25, 2007"
 
+<<<<<<< HEAD
 static char version[] __devinitdata =
+=======
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 	DRV_MODULE_NAME ".c:v" DRV_MODULE_VERSION " (" DRV_MODULE_RELDATE ")\n";
 MODULE_AUTHOR("David S. Miller (davem@davemloft.net)");
 MODULE_DESCRIPTION("Sun LDOM virtual network driver");
@@ -614,11 +618,18 @@ struct vnet_port *__tx_port_find(struct vnet *vp, struct sk_buff *skb)
 {
 	unsigned int hash = vnet_hashfn(skb->data);
 	struct hlist_head *hp = &vp->port_hash[hash];
+<<<<<<< HEAD
 	struct hlist_node *n;
 	struct vnet_port *port;
 
 	hlist_for_each_entry(port, n, hp, hash) {
 		if (!compare_ether_addr(port->raddr, skb->data))
+=======
+	struct vnet_port *port;
+
+	hlist_for_each_entry(port, hp, hash) {
+		if (ether_addr_equal(port->raddr, skb->data))
+>>>>>>> refs/remotes/origin/master
 			return port;
 	}
 	port = NULL;
@@ -882,8 +893,13 @@ static int vnet_set_mac_addr(struct net_device *dev, void *p)
 static void vnet_get_drvinfo(struct net_device *dev,
 			     struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_MODULE_NAME);
 	strcpy(info->version, DRV_MODULE_VERSION);
+=======
+	strlcpy(info->driver, DRV_MODULE_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_MODULE_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 vnet_get_msglevel(struct net_device *dev)
@@ -937,7 +953,11 @@ static void vnet_port_free_tx_bufs(struct vnet_port *port)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit vnet_port_alloc_tx_bufs(struct vnet_port *port)
+=======
+static int vnet_port_alloc_tx_bufs(struct vnet_port *port)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vio_dring_state *dr;
 	unsigned long len;
@@ -1019,7 +1039,11 @@ static const struct net_device_ops vnet_ops = {
 	.ndo_start_xmit		= vnet_start_xmit,
 };
 
+<<<<<<< HEAD
 static struct vnet * __devinit vnet_new(const u64 *local_mac)
+=======
+static struct vnet *vnet_new(const u64 *local_mac)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct vnet *vp;
@@ -1032,8 +1056,11 @@ static struct vnet * __devinit vnet_new(const u64 *local_mac)
 	for (i = 0; i < ETH_ALEN; i++)
 		dev->dev_addr[i] = (*local_mac >> (5 - i) * 8) & 0xff;
 
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, dev->dev_addr, dev->addr_len);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	vp = netdev_priv(dev);
 
 	spin_lock_init(&vp->lock);
@@ -1067,7 +1094,11 @@ err_out_free_dev:
 	return ERR_PTR(err);
 }
 
+<<<<<<< HEAD
 static struct vnet * __devinit vnet_find_or_create(const u64 *local_mac)
+=======
+static struct vnet *vnet_find_or_create(const u64 *local_mac)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vnet *iter, *vp;
 
@@ -1088,7 +1119,11 @@ static struct vnet * __devinit vnet_find_or_create(const u64 *local_mac)
 
 static const char *local_mac_prop = "local-mac-address";
 
+<<<<<<< HEAD
 static struct vnet * __devinit vnet_find_parent(struct mdesc_handle *hp,
+=======
+static struct vnet *vnet_find_parent(struct mdesc_handle *hp,
+>>>>>>> refs/remotes/origin/master
 						u64 port_node)
 {
 	const u64 *local_mac = NULL;
@@ -1125,15 +1160,23 @@ static struct vio_driver_ops vnet_vio_ops = {
 	.handshake_complete	= vnet_handshake_complete,
 };
 
+<<<<<<< HEAD
 static void __devinit print_version(void)
+=======
+static void print_version(void)
+>>>>>>> refs/remotes/origin/master
 {
 	printk_once(KERN_INFO "%s", version);
 }
 
 const char *remote_macaddr_prop = "remote-mac-address";
 
+<<<<<<< HEAD
 static int __devinit vnet_port_probe(struct vio_dev *vdev,
 				     const struct vio_device_id *id)
+=======
+static int vnet_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mdesc_handle *hp;
 	struct vnet_port *port;

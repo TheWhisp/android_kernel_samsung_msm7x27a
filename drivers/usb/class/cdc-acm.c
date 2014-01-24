@@ -40,9 +40,12 @@
 #include <linux/tty_driver.h>
 #include <linux/tty_flip.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/serial.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/uaccess.h>
@@ -63,6 +66,7 @@ static struct tty_driver *acm_tty_driver;
 static struct acm *acm_table[ACM_TTY_MINORS];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_MUTEX(open_mutex);
 
 #define ACM_READY(acm)	(acm && acm->dev && acm->port.count)
@@ -70,6 +74,8 @@ static DEFINE_MUTEX(open_mutex);
 static const struct tty_port_operations acm_port_ops = {
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_MUTEX(acm_table_lock);
 
 /*
@@ -126,7 +132,10 @@ static void acm_release_minor(struct acm *acm)
 	acm_table[acm->minor] = NULL;
 	mutex_unlock(&acm_table_lock);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Functions for ACM control messages.
@@ -229,6 +238,7 @@ static int acm_start_wb(struct acm *acm, struct acm_wb *wb)
 	return rc;
 }
 
+<<<<<<< HEAD
 static int acm_write_start(struct acm *acm, int wbn)
 {
 	unsigned long flags;
@@ -261,6 +271,8 @@ static int acm_write_start(struct acm *acm, int wbn)
 	return rc;
 
 }
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * attributes exported through sysfs
  */
@@ -305,9 +317,15 @@ static void acm_ctrl_irq(struct urb *urb)
 {
 	struct acm *acm = urb->context;
 	struct usb_cdc_notification *dr = urb->transfer_buffer;
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	unsigned char *data;
 	int newctrl;
+=======
+	unsigned char *data;
+	int newctrl;
+	int difference;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 	int status = urb->status;
 
@@ -331,11 +349,14 @@ static void acm_ctrl_irq(struct urb *urb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		goto exit;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	usb_mark_last_busy(acm->dev);
 
 	data = (unsigned char *)(dr + 1);
@@ -346,6 +367,7 @@ static void acm_ctrl_irq(struct urb *urb)
 		break;
 
 	case USB_CDC_NOTIFY_SERIAL_STATE:
+<<<<<<< HEAD
 		tty = tty_port_tty_get(&acm->port);
 		newctrl = get_unaligned_le16(data);
 
@@ -373,6 +395,41 @@ static void acm_ctrl_irq(struct urb *urb)
 			acm->ctrlin & ACM_CTRL_PARITY ? '+' : '-',
 			acm->ctrlin & ACM_CTRL_OVERRUN ? '+' : '-');
 			break;
+=======
+		newctrl = get_unaligned_le16(data);
+
+		if (!acm->clocal && (acm->ctrlin & ~newctrl & ACM_CTRL_DCD)) {
+			dev_dbg(&acm->control->dev, "%s - calling hangup\n",
+					__func__);
+			tty_port_tty_hangup(&acm->port, false);
+		}
+
+		difference = acm->ctrlin ^ newctrl;
+		spin_lock(&acm->read_lock);
+		acm->ctrlin = newctrl;
+		acm->oldcount = acm->iocount;
+
+		if (difference & ACM_CTRL_DSR)
+			acm->iocount.dsr++;
+		if (difference & ACM_CTRL_BRK)
+			acm->iocount.brk++;
+		if (difference & ACM_CTRL_RI)
+			acm->iocount.rng++;
+		if (difference & ACM_CTRL_DCD)
+			acm->iocount.dcd++;
+		if (difference & ACM_CTRL_FRAMING)
+			acm->iocount.frame++;
+		if (difference & ACM_CTRL_PARITY)
+			acm->iocount.parity++;
+		if (difference & ACM_CTRL_OVERRUN)
+			acm->iocount.overrun++;
+		spin_unlock(&acm->read_lock);
+
+		if (difference)
+			wake_up_all(&acm->wioctl);
+
+		break;
+>>>>>>> refs/remotes/origin/master
 
 	default:
 		dev_dbg(&acm->control->dev,
@@ -429,6 +486,7 @@ static int acm_submit_read_urbs(struct acm *acm, gfp_t mem_flags)
 
 static void acm_process_read_urb(struct acm *acm, struct urb *urb)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty;
 
 	if (!urb->actual_length)
@@ -442,6 +500,14 @@ static void acm_process_read_urb(struct acm *acm, struct urb *urb)
 	tty_flip_buffer_push(tty);
 
 	tty_kref_put(tty);
+=======
+	if (!urb->actual_length)
+		return;
+
+	tty_insert_flip_string(&acm->port, urb->transfer_buffer,
+			urb->actual_length);
+	tty_flip_buffer_push(&acm->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void acm_read_bulk_callback(struct urb *urb)
@@ -496,16 +562,21 @@ static void acm_write_bulk(struct urb *urb)
 	acm_write_done(acm, wb);
 	spin_unlock_irqrestore(&acm->write_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ACM_READY(acm))
 		schedule_work(&acm->work);
 =======
 	schedule_work(&acm->work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	schedule_work(&acm->work);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void acm_softint(struct work_struct *work)
 {
 	struct acm *acm = container_of(work, struct acm, work);
+<<<<<<< HEAD
 	struct tty_struct *tty;
 
 	dev_vdbg(&acm->data->dev, "%s\n", __func__);
@@ -520,12 +591,19 @@ static void acm_softint(struct work_struct *work)
 		return;
 	tty_wakeup(tty);
 	tty_kref_put(tty);
+=======
+
+	dev_vdbg(&acm->data->dev, "%s\n", __func__);
+
+	tty_port_tty_wakeup(&acm->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * TTY handlers
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int acm_tty_open(struct tty_struct *tty, struct file *filp)
 {
@@ -559,6 +637,8 @@ static int acm_tty_open(struct tty_struct *tty, struct file *filp)
 		goto out;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int acm_tty_install(struct tty_driver *driver, struct tty_struct *tty)
 {
 	struct acm *acm;
@@ -613,12 +693,16 @@ static int acm_port_activate(struct tty_port *port, struct tty_struct *tty)
 	 */
 	set_bit(TTY_NO_WRITE_SPLIT, &tty->flags);
 	acm->control->needs_remote_wakeup = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	acm->ctrlurb->dev = acm->dev;
 	if (usb_submit_urb(acm->ctrlurb, GFP_KERNEL)) {
 		dev_err(&acm->control->dev,
 			"%s - usb_submit_urb(ctrl irq) failed\n", __func__);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto bail_out;
 	}
@@ -627,6 +711,8 @@ static int acm_port_activate(struct tty_port *port, struct tty_struct *tty)
 	    (acm->ctrl_caps & USB_CDC_CAP_LINE))
 		goto bail_out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto error_submit_urb;
 	}
 
@@ -634,7 +720,10 @@ static int acm_port_activate(struct tty_port *port, struct tty_struct *tty)
 	if (acm_set_control(acm, acm->ctrlout) < 0 &&
 	    (acm->ctrl_caps & USB_CDC_CAP_LINE))
 		goto error_set_control;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	usb_autopm_put_interface(acm->control);
 
@@ -647,6 +736,7 @@ static int acm_port_activate(struct tty_port *port, struct tty_struct *tty)
 	spin_unlock_irq(&acm->read_lock);
 
 	if (acm_submit_read_urbs(acm, GFP_KERNEL))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto bail_out;
 
@@ -681,6 +771,8 @@ static void acm_tty_unregister(struct acm *acm)
 	for (i = 0; i < acm->rx_buflimit; i++)
 		usb_free_urb(acm->read_urbs[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto error_submit_read_urbs;
 
 	mutex_unlock(&acm->mutex);
@@ -708,11 +800,15 @@ static void acm_port_destruct(struct tty_port *port)
 
 	acm_release_minor(acm);
 	usb_put_intf(acm->control);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(acm->country_codes);
 	kfree(acm);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void acm_port_down(struct acm *acm)
 {
@@ -720,6 +816,8 @@ static void acm_port_down(struct acm *acm)
 
 	if (acm->dev) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void acm_port_shutdown(struct tty_port *port)
 {
 	struct acm *acm = container_of(port, struct acm, port);
@@ -729,7 +827,10 @@ static void acm_port_shutdown(struct tty_port *port)
 
 	mutex_lock(&acm->mutex);
 	if (!acm->disconnected) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		usb_autopm_get_interface(acm->control);
 		acm_set_control(acm, acm->ctrlout = 0);
 		usb_kill_urb(acm->ctrlurb);
@@ -740,6 +841,7 @@ static void acm_port_shutdown(struct tty_port *port)
 		acm->control->needs_remote_wakeup = 0;
 		usb_autopm_put_interface(acm->control);
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -759,6 +861,8 @@ static void acm_tty_hangup(struct tty_struct *tty)
 out:
 	mutex_unlock(&open_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&acm->mutex);
 }
 
@@ -774,12 +878,16 @@ static void acm_tty_hangup(struct tty_struct *tty)
 	struct acm *acm = tty->driver_data;
 	dev_dbg(&acm->control->dev, "%s\n", __func__);
 	tty_port_hangup(&acm->port);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void acm_tty_close(struct tty_struct *tty, struct file *filp)
 {
 	struct acm *acm = tty->driver_data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* Perform the closing process and see if we need to do the hardware
@@ -805,6 +913,10 @@ static void acm_tty_close(struct tty_struct *tty, struct file *filp)
 	dev_dbg(&acm->control->dev, "%s\n", __func__);
 	tty_port_close(&acm->port, tty, filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_dbg(&acm->control->dev, "%s\n", __func__);
+	tty_port_close(&acm->port, tty, filp);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int acm_tty_write(struct tty_struct *tty,
@@ -817,10 +929,13 @@ static int acm_tty_write(struct tty_struct *tty,
 	struct acm_wb *wb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		return -EINVAL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!count)
 		return 0;
 
@@ -834,13 +949,40 @@ static int acm_tty_write(struct tty_struct *tty,
 	}
 	wb = &acm->wb[wbn];
 
+<<<<<<< HEAD
+=======
+	if (!acm->dev) {
+		wb->use = 0;
+		spin_unlock_irqrestore(&acm->write_lock, flags);
+		return -ENODEV;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	count = (count > acm->writesize) ? acm->writesize : count;
 	dev_vdbg(&acm->data->dev, "%s - write %d\n", __func__, count);
 	memcpy(wb->buf, buf, count);
 	wb->len = count;
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&acm->write_lock, flags);
 
 	stat = acm_write_start(acm, wbn);
+=======
+
+	usb_autopm_get_interface_async(acm->control);
+	if (acm->susp_count) {
+		if (!acm->delayed_wb)
+			acm->delayed_wb = wb;
+		else
+			usb_autopm_put_interface_async(acm->control);
+		spin_unlock_irqrestore(&acm->write_lock, flags);
+		return count;	/* A white lie */
+	}
+	usb_mark_last_busy(acm->dev);
+
+	stat = acm_start_wb(acm, wb);
+	spin_unlock_irqrestore(&acm->write_lock, flags);
+
+>>>>>>> refs/remotes/origin/master
 	if (stat < 0)
 		return stat;
 	return count;
@@ -850,10 +992,13 @@ static int acm_tty_write_room(struct tty_struct *tty)
 {
 	struct acm *acm = tty->driver_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		return -EINVAL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Do not let the line discipline to know that we have a reserve,
 	 * or it might get too enthusiastic.
@@ -865,14 +1010,20 @@ static int acm_tty_chars_in_buffer(struct tty_struct *tty)
 {
 	struct acm *acm = tty->driver_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * if the device was unplugged then any remaining characters fell out
 	 * of the connector ;)
 	 */
 	if (acm->disconnected)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	/*
 	 * This is inaccurate (overcounts), but it works.
@@ -885,11 +1036,14 @@ static void acm_tty_throttle(struct tty_struct *tty)
 	struct acm *acm = tty->driver_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&acm->read_lock);
 	acm->throttle_req = 1;
 	spin_unlock_irq(&acm->read_lock);
@@ -901,11 +1055,14 @@ static void acm_tty_unthrottle(struct tty_struct *tty)
 	unsigned int was_throttled;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		return;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&acm->read_lock);
 	was_throttled = acm->throttled;
 	acm->throttled = 0;
@@ -921,11 +1078,15 @@ static int acm_tty_break_ctl(struct tty_struct *tty, int state)
 	struct acm *acm = tty->driver_data;
 	int retval;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		return -EINVAL;
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	retval = acm_send_break(acm, state ? 0xffff : 0);
 	if (retval < 0)
 		dev_dbg(&acm->control->dev, "%s - send break failed\n",
@@ -938,11 +1099,14 @@ static int acm_tty_tiocmget(struct tty_struct *tty)
 	struct acm *acm = tty->driver_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		return -EINVAL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return (acm->ctrlout & ACM_CTRL_DTR ? TIOCM_DTR : 0) |
 	       (acm->ctrlout & ACM_CTRL_RTS ? TIOCM_RTS : 0) |
 	       (acm->ctrlin  & ACM_CTRL_DSR ? TIOCM_DSR : 0) |
@@ -958,11 +1122,14 @@ static int acm_tty_tiocmset(struct tty_struct *tty,
 	unsigned int newctrl;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ACM_READY(acm))
 		return -EINVAL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	newctrl = acm->ctrlout;
 	set = (set & TIOCM_DTR ? ACM_CTRL_DTR : 0) |
 					(set & TIOCM_RTS ? ACM_CTRL_RTS : 0);
@@ -977,7 +1144,10 @@ static int acm_tty_tiocmset(struct tty_struct *tty,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int get_serial_info(struct acm *acm, struct serial_struct __user *info)
 {
 	struct serial_struct tmp;
@@ -1031,6 +1201,7 @@ static int set_serial_info(struct acm *acm,
 	return retval;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int acm_tty_ioctl(struct tty_struct *tty,
 					unsigned int cmd, unsigned long arg)
@@ -1043,6 +1214,78 @@ static int acm_tty_ioctl(struct tty_struct *tty,
 
 	return -ENOIOCTLCMD;
 =======
+=======
+static int wait_serial_change(struct acm *acm, unsigned long arg)
+{
+	int rv = 0;
+	DECLARE_WAITQUEUE(wait, current);
+	struct async_icount old, new;
+
+	if (arg & (TIOCM_DSR | TIOCM_RI | TIOCM_CD ))
+		return -EINVAL;
+	do {
+		spin_lock_irq(&acm->read_lock);
+		old = acm->oldcount;
+		new = acm->iocount;
+		acm->oldcount = new;
+		spin_unlock_irq(&acm->read_lock);
+
+		if ((arg & TIOCM_DSR) &&
+			old.dsr != new.dsr)
+			break;
+		if ((arg & TIOCM_CD)  &&
+			old.dcd != new.dcd)
+			break;
+		if ((arg & TIOCM_RI) &&
+			old.rng != new.rng)
+			break;
+
+		add_wait_queue(&acm->wioctl, &wait);
+		set_current_state(TASK_INTERRUPTIBLE);
+		schedule();
+		remove_wait_queue(&acm->wioctl, &wait);
+		if (acm->disconnected) {
+			if (arg & TIOCM_CD)
+				break;
+			else
+				rv = -ENODEV;
+		} else {
+			if (signal_pending(current))
+				rv = -ERESTARTSYS;
+		}
+	} while (!rv);
+
+	
+
+	return rv;
+}
+
+static int get_serial_usage(struct acm *acm,
+			    struct serial_icounter_struct __user *count)
+{
+	struct serial_icounter_struct icount;
+	int rv = 0;
+
+	memset(&icount, 0, sizeof(icount));
+	icount.dsr = acm->iocount.dsr;
+	icount.rng = acm->iocount.rng;
+	icount.dcd = acm->iocount.dcd;
+	icount.frame = acm->iocount.frame;
+	icount.overrun = acm->iocount.overrun;
+	icount.parity = acm->iocount.parity;
+	icount.brk = acm->iocount.brk;
+
+	if (copy_to_user(count, &icount, sizeof(icount)) > 0)
+		rv = -EFAULT;
+
+	return rv;
+}
+
+static int acm_tty_ioctl(struct tty_struct *tty,
+					unsigned int cmd, unsigned long arg)
+{
+	struct acm *acm = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	int rv = -ENOIOCTLCMD;
 
 	switch (cmd) {
@@ -1052,6 +1295,7 @@ static int acm_tty_ioctl(struct tty_struct *tty,
 	case TIOCSSERIAL:
 		rv = set_serial_info(acm, (struct serial_struct __user *) arg);
 		break;
+<<<<<<< HEAD
 	}
 
 	return rv;
@@ -1066,10 +1310,30 @@ static const __u32 acm_tty_speed[] = {
 	2500000, 3000000, 3500000, 4000000
 };
 
+=======
+	case TIOCMIWAIT:
+		rv = usb_autopm_get_interface(acm->control);
+		if (rv < 0) {
+			rv = -EIO;
+			break;
+		}
+		rv = wait_serial_change(acm, arg);
+		usb_autopm_put_interface(acm->control);
+		break;
+	case TIOCGICOUNT:
+		rv = get_serial_usage(acm, (struct serial_icounter_struct __user *) arg);
+		break;
+	}
+
+	return rv;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void acm_tty_set_termios(struct tty_struct *tty,
 						struct ktermios *termios_old)
 {
 	struct acm *acm = tty->driver_data;
+<<<<<<< HEAD
 	struct ktermios *termios = tty->termios;
 	struct usb_cdc_line_coding newline;
 	int newctrl = acm->ctrlout;
@@ -1080,6 +1344,12 @@ static void acm_tty_set_termios(struct tty_struct *tty,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ktermios *termios = &tty->termios;
+	struct usb_cdc_line_coding newline;
+	int newctrl = acm->ctrlout;
+
+>>>>>>> refs/remotes/origin/master
 	newline.dwDTERate = cpu_to_le32(tty_get_baud_rate(tty));
 	newline.bCharFormat = termios->c_cflag & CSTOPB ? 2 : 0;
 	newline.bParityType = termios->c_cflag & PARENB ?
@@ -1124,14 +1394,20 @@ static void acm_tty_set_termios(struct tty_struct *tty,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct tty_port_operations acm_port_ops = {
 	.shutdown = acm_port_shutdown,
 	.activate = acm_port_activate,
 	.destruct = acm_port_destruct,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * USB probe and disconnect routines.
  */
@@ -1204,9 +1480,21 @@ static int acm_probe(struct usb_interface *intf,
 	int num_rx_buf;
 	int i;
 	int combined_interfaces = 0;
+<<<<<<< HEAD
 
 	/* normal quirks */
 	quirks = (unsigned long)id->driver_info;
+=======
+	struct device *tty_dev;
+	int rv = -ENOMEM;
+
+	/* normal quirks */
+	quirks = (unsigned long)id->driver_info;
+
+	if (quirks == IGNORE_DEVICE)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	num_rx_buf = (quirks == SINGLE_RX_URB) ? 1 : ACM_NR;
 
 	/* handle quirks deadly to normal probing*/
@@ -1263,7 +1551,11 @@ static int acm_probe(struct usb_interface *intf,
 		case USB_CDC_CALL_MANAGEMENT_TYPE:
 			call_management_function = buffer[3];
 			call_interface_num = buffer[4];
+<<<<<<< HEAD
 			if ( (quirks & NOT_A_MODEM) == 0 && (call_management_function & 3) != 3)
+=======
+			if ((quirks & NOT_A_MODEM) == 0 && (call_management_function & 3) != 3)
+>>>>>>> refs/remotes/origin/master
 				dev_err(&intf->dev, "This device cannot do calls on its own. It is not a modem.\n");
 			break;
 		default:
@@ -1393,6 +1685,7 @@ skip_normal_probe:
 made_compressed_probe:
 	dev_dbg(&intf->dev, "interfaces are valid\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (minor = 0; minor < ACM_TTY_MINORS && acm_table[minor]; minor++);
 
 	if (minor == ACM_TTY_MINORS) {
@@ -1401,6 +1694,8 @@ made_compressed_probe:
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	acm = kzalloc(sizeof(struct acm), GFP_KERNEL);
 	if (acm == NULL) {
@@ -1409,12 +1704,15 @@ made_compressed_probe:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ctrlsize = le16_to_cpu(epctrl->wMaxPacketSize);
 	readsize = le16_to_cpu(epread->wMaxPacketSize) *
 				(quirks == SINGLE_RX_URB ? 1 : 2);
 	acm->combined_interfaces = combined_interfaces;
 	acm->writesize = le16_to_cpu(epwrite->wMaxPacketSize) * 20;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	minor = acm_alloc_minor(acm);
 	if (minor == ACM_TTY_MINORS) {
 		dev_err(&intf->dev, "no more free acm devices\n");
@@ -1427,7 +1725,10 @@ made_compressed_probe:
 				(quirks == SINGLE_RX_URB ? 1 : 2);
 	acm->combined_interfaces = combined_interfaces;
 	acm->writesize = usb_endpoint_maxp(epwrite) * 20;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	acm->control = control_interface;
 	acm->data = data_interface;
 	acm->minor = minor;
@@ -1439,6 +1740,10 @@ made_compressed_probe:
 	acm->readsize = readsize;
 	acm->rx_buflimit = num_rx_buf;
 	INIT_WORK(&acm->work, acm_softint);
+<<<<<<< HEAD
+=======
+	init_waitqueue_head(&acm->wioctl);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&acm->write_lock);
 	spin_lock_init(&acm->read_lock);
 	mutex_init(&acm->mutex);
@@ -1567,7 +1872,11 @@ skip_countries:
 			 usb_rcvintpipe(usb_dev, epctrl->bEndpointAddress),
 			 acm->ctrl_buffer, ctrlsize, acm_ctrl_irq, acm,
 			 /* works around buggy devices */
+<<<<<<< HEAD
 			 epctrl->bInterval ? epctrl->bInterval : 0xff);
+=======
+			 epctrl->bInterval ? epctrl->bInterval : 16);
+>>>>>>> refs/remotes/origin/master
 	acm->ctrlurb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
 	acm->ctrlurb->transfer_dma = acm->ctrl_dma;
 
@@ -1583,6 +1892,7 @@ skip_countries:
 	usb_set_intfdata(data_interface, acm);
 
 	usb_get_intf(control_interface);
+<<<<<<< HEAD
 	tty_register_device(acm_tty_driver, minor, &control_interface->dev);
 
 <<<<<<< HEAD
@@ -1592,6 +1902,26 @@ skip_countries:
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 alloc_fail7:
+=======
+	tty_dev = tty_port_register_device(&acm->port, acm_tty_driver, minor,
+			&control_interface->dev);
+	if (IS_ERR(tty_dev)) {
+		rv = PTR_ERR(tty_dev);
+		goto alloc_fail8;
+	}
+
+	return 0;
+alloc_fail8:
+	if (acm->country_codes) {
+		device_remove_file(&acm->control->dev,
+				&dev_attr_wCountryCodes);
+		device_remove_file(&acm->control->dev,
+				&dev_attr_iCountryCodeRelDate);
+	}
+	device_remove_file(&acm->control->dev, &dev_attr_bmCapabilities);
+alloc_fail7:
+	usb_set_intfdata(intf, NULL);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ACM_NW; i++)
 		usb_free_urb(acm->wb[i].urb);
 alloc_fail6:
@@ -1605,12 +1935,19 @@ alloc_fail4:
 	usb_free_coherent(usb_dev, ctrlsize, acm->ctrl_buffer, acm->ctrl_dma);
 alloc_fail2:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	acm_release_minor(acm);
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(acm);
 alloc_fail:
 	return -ENOMEM;
+=======
+	acm_release_minor(acm);
+	kfree(acm);
+alloc_fail:
+	return rv;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void stop_data_traffic(struct acm *acm)
@@ -1634,28 +1971,40 @@ static void acm_disconnect(struct usb_interface *intf)
 	struct usb_device *usb_dev = interface_to_usbdev(intf);
 	struct tty_struct *tty;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int i;
 
 	dev_dbg(&intf->dev, "%s\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+
+	dev_dbg(&intf->dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* sibling interface is already cleaning up */
 	if (!acm)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&open_mutex);
 =======
 	mutex_lock(&acm->mutex);
 	acm->disconnected = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&acm->mutex);
+	acm->disconnected = true;
+>>>>>>> refs/remotes/origin/master
 	if (acm->country_codes) {
 		device_remove_file(&acm->control->dev,
 				&dev_attr_wCountryCodes);
 		device_remove_file(&acm->control->dev,
 				&dev_attr_iCountryCodeRelDate);
 	}
+<<<<<<< HEAD
 	device_remove_file(&acm->control->dev, &dev_attr_bmCapabilities);
 <<<<<<< HEAD
 	acm->dev = NULL;
@@ -1668,6 +2017,10 @@ static void acm_disconnect(struct usb_interface *intf)
 	usb_free_coherent(usb_dev, acm->ctrlsize, acm->ctrl_buffer,
 			  acm->ctrl_dma);
 =======
+=======
+	wake_up_all(&acm->wioctl);
+	device_remove_file(&acm->control->dev, &dev_attr_bmCapabilities);
+>>>>>>> refs/remotes/origin/master
 	usb_set_intfdata(acm->control, NULL);
 	usb_set_intfdata(acm->data, NULL);
 	mutex_unlock(&acm->mutex);
@@ -1689,13 +2042,17 @@ static void acm_disconnect(struct usb_interface *intf)
 		usb_free_urb(acm->read_urbs[i]);
 	acm_write_buffers_free(acm);
 	usb_free_coherent(usb_dev, acm->ctrlsize, acm->ctrl_buffer, acm->ctrl_dma);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	acm_read_buffers_free(acm);
 
 	if (!acm->combined_interfaces)
 		usb_driver_release_interface(&acm_driver, intf == acm->control ?
 					acm->data : acm->control);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (acm->port.count == 0) {
 		acm_tty_unregister(acm);
@@ -1712,6 +2069,9 @@ static void acm_disconnect(struct usb_interface *intf)
 =======
 	tty_port_put(&acm->port);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_port_put(&acm->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PM
@@ -1721,10 +2081,14 @@ static int acm_suspend(struct usb_interface *intf, pm_message_t message)
 	int cnt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (message.event & PM_EVENT_AUTO) {
 =======
 	if (PMSG_IS_AUTO(message)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (PMSG_IS_AUTO(message)) {
+>>>>>>> refs/remotes/origin/master
 		int b;
 
 		spin_lock_irq(&acm->write_lock);
@@ -1743,6 +2107,7 @@ static int acm_suspend(struct usb_interface *intf, pm_message_t message)
 	if (cnt)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	we treat opened interfaces differently,
 	we must guard against open
@@ -1754,11 +2119,16 @@ static int acm_suspend(struct usb_interface *intf, pm_message_t message)
 
 	mutex_unlock(&acm->mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(ASYNCB_INITIALIZED, &acm->port.flags))
 		stop_data_traffic(acm);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1778,11 +2148,15 @@ static int acm_resume(struct usb_interface *intf)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&acm->mutex);
 	if (acm->port.count) {
 =======
 	if (test_bit(ASYNCB_INITIALIZED, &acm->port.flags)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(ASYNCB_INITIALIZED, &acm->port.flags)) {
+>>>>>>> refs/remotes/origin/master
 		rv = usb_submit_urb(acm->ctrlurb, GFP_NOIO);
 
 		spin_lock_irq(&acm->write_lock);
@@ -1807,15 +2181,19 @@ static int acm_resume(struct usb_interface *intf)
 
 err_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&acm->mutex);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rv;
 }
 
 static int acm_reset_resume(struct usb_interface *intf)
 {
 	struct acm *acm = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	struct tty_struct *tty;
 
 <<<<<<< HEAD
@@ -1835,6 +2213,12 @@ static int acm_reset_resume(struct usb_interface *intf)
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (test_bit(ASYNCB_INITIALIZED, &acm->port.flags))
+		tty_port_tty_hangup(&acm->port, false);
+
+>>>>>>> refs/remotes/origin/master
 	return acm_resume(intf);
 }
 
@@ -1856,6 +2240,11 @@ static int acm_reset_resume(struct usb_interface *intf)
 
 static const struct usb_device_id acm_ids[] = {
 	/* quirky and broken devices */
+<<<<<<< HEAD
+=======
+	{ USB_DEVICE(0x17ef, 0x7000), /* Lenovo USB modem */
+	.driver_info = NO_UNION_NORMAL, },/* has no union descriptor */
+>>>>>>> refs/remotes/origin/master
 	{ USB_DEVICE(0x0870, 0x0001), /* Metricom GS Modem */
 	.driver_info = NO_UNION_NORMAL, /* has no union descriptor */
 	},
@@ -2006,6 +2395,18 @@ static const struct usb_device_id acm_ids[] = {
 	.driver_info = NO_DATA_INTERFACE,
 	},
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_INPUT_IMS_PCU)
+	{ USB_DEVICE(0x04d8, 0x0082),	/* Application mode */
+	.driver_info = IGNORE_DEVICE,
+	},
+	{ USB_DEVICE(0x04d8, 0x0083),	/* Bootloader mode */
+	.driver_info = IGNORE_DEVICE,
+	},
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/* control interfaces without any protocol set */
 	{ USB_INTERFACE_INFO(USB_CLASS_COMM, USB_CDC_SUBCLASS_ACM,
 		USB_CDC_PROTO_NONE) },
@@ -2042,6 +2443,10 @@ static struct usb_driver acm_driver = {
 #ifdef CONFIG_PM
 	.supports_autosuspend = 1,
 #endif
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -2050,14 +2455,20 @@ static struct usb_driver acm_driver = {
 
 static const struct tty_operations acm_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.open =			acm_tty_open,
 	.close =		acm_tty_close,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.install =		acm_tty_install,
 	.open =			acm_tty_open,
 	.close =		acm_tty_close,
 	.cleanup =		acm_tty_cleanup,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.hangup =		acm_tty_hangup,
 	.write =		acm_tty_write,
 	.write_room =		acm_tty_write_room,
@@ -2082,9 +2493,12 @@ static int __init acm_init(void)
 	if (!acm_tty_driver)
 		return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	acm_tty_driver->owner = THIS_MODULE,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	acm_tty_driver->driver_name = "acm",
 	acm_tty_driver->name = "ttyACM",
 	acm_tty_driver->major = ACM_TTY_MAJOR,

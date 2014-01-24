@@ -12,6 +12,7 @@ comment "Alternative Multiplexing Scheme"
 
 choice
 <<<<<<< HEAD
+<<<<<<< HEAD
 	prompt "SPORT0"
 	default BF518_SPORT0_PORTG
 	help
@@ -62,6 +63,8 @@ config BF518_UART1_PORTG
 	help
 	  PORT G
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	prompt "PWM Channel Pins"
 	default BF518_PWM_ALL_PORTF
 	help
@@ -131,7 +134,10 @@ config BF518_PPI_TMR_PG12
 	help
 	  PG{12,13,14} <-> {PPICLK/TMRCLK,TMR0/PPIFS1,TMR1/PPIFS2}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endchoice
 
 comment "Hysteresis/Schmitt Trigger Control"

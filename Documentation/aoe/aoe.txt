@@ -1,8 +1,24 @@
+<<<<<<< HEAD
 The EtherDrive (R) HOWTO for users of 2.6 kernels is found at ...
 
   http://www.coraid.com/SUPPORT/EtherDrive-HBA  
 
   It has many tips and hints!
+=======
+ATA over Ethernet is a network protocol that provides simple access to
+block storage on the LAN.
+
+  http://support.coraid.com/documents/AoEr11.txt
+
+The EtherDrive (R) HOWTO for 2.6 and 3.x kernels is found at ...
+
+  http://support.coraid.com/support/linux/EtherDrive-2.6-HOWTO.html
+
+It has many tips and hints!  Please see, especially, recommended
+tunings for virtual memory:
+
+  http://support.coraid.com/support/linux/EtherDrive-2.6-HOWTO-5.html#ss5.19
+>>>>>>> refs/remotes/origin/master
 
 The aoetools are userland programs that are designed to work with this
 driver.  The aoetools are on sourceforge.
@@ -23,6 +39,7 @@ CREATING DEVICE NODES
   There is a udev-install.sh script that shows how to install these
   rules on your system.
 
+<<<<<<< HEAD
   If you are not using udev, two scripts are provided in
   Documentation/aoe as examples of static device node creation for
   using the aoe driver.
@@ -41,6 +58,14 @@ CREATING DEVICE NODES
   /etc/modprobe.d/aoe.conf to ensure that the aoe module is loaded when
 >>>>>>> refs/remotes/origin/cm-10.0
   necessary.
+=======
+  There is also an autoload script that shows how to edit
+  /etc/modprobe.d/aoe.conf to ensure that the aoe module is loaded when
+  necessary.  Preloading the aoe module is preferable to autoloading,
+  however, because AoE discovery takes a few seconds.  It can be
+  confusing when an AoE device is not present the first time the a
+  command is run but appears a second later.
+>>>>>>> refs/remotes/origin/master
 
 USING DEVICE NODES
 
@@ -55,9 +80,15 @@ USING DEVICE NODES
   "echo > /dev/etherd/discover" tells the driver to find out what AoE
   devices are available.
 
+<<<<<<< HEAD
   These character devices may disappear and be replaced by sysfs
   counterparts.  Using the commands in aoetools insulates users from
   these implementation details.
+=======
+  In the future these character devices may disappear and be replaced
+  by sysfs counterparts.  Using the commands in aoetools insulates
+  users from these implementation details.
+>>>>>>> refs/remotes/origin/master
 
   The block devices are named like this:
 
@@ -80,8 +111,13 @@ USING SYSFS
   The netif attribute is the network interface on the localhost
   through which we are communicating with the remote AoE device.
 
+<<<<<<< HEAD
   There is a script in this directory that formats this information
   in a convenient way.  Users with aoetools can use the aoe-stat
+=======
+  There is a script in this directory that formats this information in
+  a convenient way.  Users with aoetools should use the aoe-stat
+>>>>>>> refs/remotes/origin/master
   command.
 
   root@makki root# sh Documentation/aoe/status.sh 
@@ -125,3 +161,26 @@ DRIVER OPTIONS
   usage example for the module parameter.
 
     modprobe aoe_iflist="eth1 eth3"
+<<<<<<< HEAD
+=======
+
+  The aoe_deadsecs module parameter determines the maximum number of
+  seconds that the driver will wait for an AoE device to provide a
+  response to an AoE command.  After aoe_deadsecs seconds have
+  elapsed, the AoE device will be marked as "down".  A value of zero
+  is supported for testing purposes and makes the aoe driver keep
+  trying AoE commands forever.
+
+  The aoe_maxout module parameter has a default of 128.  This is the
+  maximum number of unresponded packets that will be sent to an AoE
+  target at one time.
+
+  The aoe_dyndevs module parameter defaults to 1, meaning that the
+  driver will assign a block device minor number to a discovered AoE
+  target based on the order of its discovery.  With dynamic minor
+  device numbers in use, a greater range of AoE shelf and slot
+  addresses can be supported.  Users with udev will never have to
+  think about minor numbers.  Using aoe_dyndevs=0 allows device nodes
+  to be pre-created using a static minor-number scheme with the
+  aoe-mkshelf script in the aoetools.
+>>>>>>> refs/remotes/origin/master

@@ -183,6 +183,7 @@ static struct serio_driver tw_drv = {
 	.disconnect	= tw_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -199,3 +200,6 @@ static void __exit tw_exit(void)
 
 module_init(tw_init);
 module_exit(tw_exit);
+=======
+module_serio_driver(tw_drv);
+>>>>>>> refs/remotes/origin/master

@@ -14,6 +14,7 @@
 #define _POWERPC_SYSDEV_FSL_MSI_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -36,6 +37,17 @@ struct fsl_msi {
 	u32 msi_addr_lo;
 	u32 msi_addr_hi;
 =======
+=======
+#include <linux/of.h>
+#include <asm/msi_bitmap.h>
+
+#define NR_MSI_REG_MSIIR	8  /* MSIIR can index 8 MSI registers */
+#define NR_MSI_REG_MSIIR1	16 /* MSIIR1 can index 16 MSI registers */
+#define NR_MSI_REG_MAX		NR_MSI_REG_MSIIR1
+#define IRQS_PER_MSI_REG	32
+#define NR_MSI_IRQS_MAX	(NR_MSI_REG_MAX * IRQS_PER_MSI_REG)
+
+>>>>>>> refs/remotes/origin/master
 #define FSL_PIC_IP_MASK   0x0000000F
 #define FSL_PIC_IP_MPIC   0x00000001
 #define FSL_PIC_IP_IPIC   0x00000002
@@ -47,19 +59,32 @@ struct fsl_msi {
 	unsigned long cascade_irq;
 
 	u32 msiir_offset; /* Offset of MSIIR, relative to start of CCSR */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	void __iomem *msi_regs;
 	u32 feature;
 	int msi_virqs[NR_MSI_REG];
+=======
+	u32 ibs_shift; /* Shift of interrupt bit select */
+	u32 srs_shift; /* Shift of the shared interrupt register select */
+	void __iomem *msi_regs;
+	u32 feature;
+	int msi_virqs[NR_MSI_REG_MAX];
+>>>>>>> refs/remotes/origin/master
 
 	struct msi_bitmap bitmap;
 
 	struct list_head list;          /* support multiple MSI banks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	phandle phandle;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	phandle phandle;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* _POWERPC_SYSDEV_FSL_MSI_H */

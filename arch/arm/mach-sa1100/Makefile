@@ -4,6 +4,7 @@
 
 # Common support
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-y := clock.o generic.o gpio.o irq.o dma.o time.o #nmi-oopser.o
 =======
 obj-y := clock.o generic.o irq.o time.o #nmi-oopser.o
@@ -26,6 +27,20 @@ led-$(CONFIG_SA1100_BADGE4)		+= leds-badge4.o
 
 obj-$(CONFIG_SA1100_CERF)		+= cerf.o
 led-$(CONFIG_SA1100_CERF)		+= leds-cerf.o
+=======
+obj-y := clock.o generic.o irq.o time.o #nmi-oopser.o
+obj-m :=
+obj-n :=
+obj-  :=
+
+# Specific board support
+obj-$(CONFIG_SA1100_ASSABET)		+= assabet.o
+obj-$(CONFIG_ASSABET_NEPONSET)		+= neponset.o
+
+obj-$(CONFIG_SA1100_BADGE4)		+= badge4.o
+
+obj-$(CONFIG_SA1100_CERF)		+= cerf.o
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_SA1100_COLLIE)		+= collie.o
 
@@ -33,13 +48,19 @@ obj-$(CONFIG_SA1100_H3100)		+= h3100.o h3xxx.o
 obj-$(CONFIG_SA1100_H3600)		+= h3600.o h3xxx.o
 
 obj-$(CONFIG_SA1100_HACKKIT)		+= hackkit.o
+<<<<<<< HEAD
 led-$(CONFIG_SA1100_HACKKIT)		+= leds-hackkit.o
+=======
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_SA1100_JORNADA720)		+= jornada720.o
 obj-$(CONFIG_SA1100_JORNADA720_SSP)	+= jornada720_ssp.o
 
 obj-$(CONFIG_SA1100_LART)		+= lart.o
+<<<<<<< HEAD
 led-$(CONFIG_SA1100_LART)		+= leds-lart.o
+=======
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_SA1100_NANOENGINE)		+= nanoengine.o
 obj-$(CONFIG_PCI_NANOENGINE)		+= pci-nanoengine.o
@@ -50,12 +71,15 @@ obj-$(CONFIG_SA1100_SHANNON)		+= shannon.o
 
 obj-$(CONFIG_SA1100_SIMPAD)		+= simpad.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 led-$(CONFIG_SA1100_SIMPAD)		+= leds-simpad.o
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
 # LEDs support
 obj-$(CONFIG_LEDS) += $(led-y)
+=======
+>>>>>>> refs/remotes/origin/master
 
 # Miscellaneous functions
 obj-$(CONFIG_PM)			+= pm.o sleep.o

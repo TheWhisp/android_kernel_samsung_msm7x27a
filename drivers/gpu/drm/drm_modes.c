@@ -33,12 +33,20 @@
 #include <linux/list.h>
 #include <linux/list_sort.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "drm.h"
 #include "drm_crtc.h"
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+#include <drm/drm_crtc.h>
+#include <video/of_videomode.h>
+#include <video/videomode.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * drm_mode_debug_printmodeline - debug print a mode
@@ -50,7 +58,11 @@
  *
  * Describe @mode using DRM_DEBUG.
  */
+<<<<<<< HEAD
 void drm_mode_debug_printmodeline(struct drm_display_mode *mode)
+=======
+void drm_mode_debug_printmodeline(const struct drm_display_mode *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	DRM_DEBUG_KMS("Modeline %d:\"%s\" %d %d %d %d %d %d %d %d %d %d "
 			"0x%x 0x%x\n",
@@ -508,6 +520,79 @@ drm_gtf_mode(struct drm_device *dev, int hdisplay, int vdisplay, int vrefresh,
 }
 EXPORT_SYMBOL(drm_gtf_mode);
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_VIDEOMODE_HELPERS
+int drm_display_mode_from_videomode(const struct videomode *vm,
+				    struct drm_display_mode *dmode)
+{
+	dmode->hdisplay = vm->hactive;
+	dmode->hsync_start = dmode->hdisplay + vm->hfront_porch;
+	dmode->hsync_end = dmode->hsync_start + vm->hsync_len;
+	dmode->htotal = dmode->hsync_end + vm->hback_porch;
+
+	dmode->vdisplay = vm->vactive;
+	dmode->vsync_start = dmode->vdisplay + vm->vfront_porch;
+	dmode->vsync_end = dmode->vsync_start + vm->vsync_len;
+	dmode->vtotal = dmode->vsync_end + vm->vback_porch;
+
+	dmode->clock = vm->pixelclock / 1000;
+
+	dmode->flags = 0;
+	if (vm->flags & DISPLAY_FLAGS_HSYNC_HIGH)
+		dmode->flags |= DRM_MODE_FLAG_PHSYNC;
+	else if (vm->flags & DISPLAY_FLAGS_HSYNC_LOW)
+		dmode->flags |= DRM_MODE_FLAG_NHSYNC;
+	if (vm->flags & DISPLAY_FLAGS_VSYNC_HIGH)
+		dmode->flags |= DRM_MODE_FLAG_PVSYNC;
+	else if (vm->flags & DISPLAY_FLAGS_VSYNC_LOW)
+		dmode->flags |= DRM_MODE_FLAG_NVSYNC;
+	if (vm->flags & DISPLAY_FLAGS_INTERLACED)
+		dmode->flags |= DRM_MODE_FLAG_INTERLACE;
+	if (vm->flags & DISPLAY_FLAGS_DOUBLESCAN)
+		dmode->flags |= DRM_MODE_FLAG_DBLSCAN;
+	if (vm->flags & DISPLAY_FLAGS_DOUBLECLK)
+		dmode->flags |= DRM_MODE_FLAG_DBLCLK;
+	drm_mode_set_name(dmode);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(drm_display_mode_from_videomode);
+
+#ifdef CONFIG_OF
+/**
+ * of_get_drm_display_mode - get a drm_display_mode from devicetree
+ * @np: device_node with the timing specification
+ * @dmode: will be set to the return value
+ * @index: index into the list of display timings in devicetree
+ *
+ * This function is expensive and should only be used, if only one mode is to be
+ * read from DT. To get multiple modes start with of_get_display_timings and
+ * work with that instead.
+ */
+int of_get_drm_display_mode(struct device_node *np,
+			    struct drm_display_mode *dmode, int index)
+{
+	struct videomode vm;
+	int ret;
+
+	ret = of_get_videomode(np, &vm, index);
+	if (ret)
+		return ret;
+
+	drm_display_mode_from_videomode(&vm, dmode);
+
+	pr_debug("%s: got %dx%d display mode from %s\n",
+		of_node_full_name(np), vm.hactive, vm.vactive, np->name);
+	drm_mode_debug_printmodeline(dmode);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(of_get_drm_display_mode);
+#endif /* CONFIG_OF */
+#endif /* CONFIG_VIDEOMODE_HELPERS */
+
+>>>>>>> refs/remotes/origin/master
 /**
  * drm_mode_set_name - set the name on a mode
  * @mode: name will be set in this mode
@@ -528,6 +613,7 @@ void drm_mode_set_name(struct drm_display_mode *mode)
 EXPORT_SYMBOL(drm_mode_set_name);
 
 /**
+<<<<<<< HEAD
  * drm_mode_list_concat - move modes from one list to another
  * @head: source list
  * @new: dst list
@@ -549,6 +635,8 @@ void drm_mode_list_concat(struct list_head *head, struct list_head *new)
 EXPORT_SYMBOL(drm_mode_list_concat);
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * drm_mode_width - get the width of a mode
  * @mode: mode
  *
@@ -562,7 +650,11 @@ EXPORT_SYMBOL(drm_mode_list_concat);
  * RETURNS:
  * @mode->hdisplay
  */
+<<<<<<< HEAD
 int drm_mode_width(struct drm_display_mode *mode)
+=======
+int drm_mode_width(const struct drm_display_mode *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return mode->hdisplay;
 
@@ -583,7 +675,11 @@ EXPORT_SYMBOL(drm_mode_width);
  * RETURNS:
  * @mode->vdisplay
  */
+<<<<<<< HEAD
 int drm_mode_height(struct drm_display_mode *mode)
+=======
+int drm_mode_height(const struct drm_display_mode *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return mode->vdisplay;
 }
@@ -660,18 +756,35 @@ EXPORT_SYMBOL(drm_mode_vrefresh);
 /**
  * drm_mode_set_crtcinfo - set CRTC modesetting parameters
  * @p: mode
+<<<<<<< HEAD
  * @adjust_flags: unused? (FIXME)
+=======
+ * @adjust_flags: a combination of adjustment flags
+>>>>>>> refs/remotes/origin/master
  *
  * LOCKING:
  * None.
  *
  * Setup the CRTC modesetting parameters for @p, adjusting if necessary.
+<<<<<<< HEAD
+=======
+ *
+ * - The CRTC_INTERLACE_HALVE_V flag can be used to halve vertical timings of
+ *   interlaced modes.
+ * - The CRTC_STEREO_DOUBLE flag can be used to compute the timings for
+ *   buffers containing two eyes (only adjust the timings when needed, eg. for
+ *   "frame packing" or "side by side full").
+>>>>>>> refs/remotes/origin/master
  */
 void drm_mode_set_crtcinfo(struct drm_display_mode *p, int adjust_flags)
 {
 	if ((p == NULL) || ((p->type & DRM_MODE_TYPE_CRTC_C) == DRM_MODE_TYPE_BUILTIN))
 		return;
 
+<<<<<<< HEAD
+=======
+	p->crtc_clock = p->clock;
+>>>>>>> refs/remotes/origin/master
 	p->crtc_hdisplay = p->hdisplay;
 	p->crtc_hsync_start = p->hsync_start;
 	p->crtc_hsync_end = p->hsync_end;
@@ -690,10 +803,13 @@ void drm_mode_set_crtcinfo(struct drm_display_mode *p, int adjust_flags)
 			p->crtc_vtotal /= 2;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		p->crtc_vtotal |= 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (p->flags & DRM_MODE_FLAG_DBLSCAN) {
@@ -710,20 +826,43 @@ void drm_mode_set_crtcinfo(struct drm_display_mode *p, int adjust_flags)
 		p->crtc_vtotal *= p->vscan;
 	}
 
+<<<<<<< HEAD
+=======
+	if (adjust_flags & CRTC_STEREO_DOUBLE) {
+		unsigned int layout = p->flags & DRM_MODE_FLAG_3D_MASK;
+
+		switch (layout) {
+		case DRM_MODE_FLAG_3D_FRAME_PACKING:
+			p->crtc_clock *= 2;
+			p->crtc_vdisplay += p->crtc_vtotal;
+			p->crtc_vsync_start += p->crtc_vtotal;
+			p->crtc_vsync_end += p->crtc_vtotal;
+			p->crtc_vtotal += p->crtc_vtotal;
+			break;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	p->crtc_vblank_start = min(p->crtc_vsync_start, p->crtc_vdisplay);
 	p->crtc_vblank_end = max(p->crtc_vsync_end, p->crtc_vtotal);
 	p->crtc_hblank_start = min(p->crtc_hsync_start, p->crtc_hdisplay);
 	p->crtc_hblank_end = max(p->crtc_hsync_end, p->crtc_htotal);
+<<<<<<< HEAD
 
 	p->crtc_hadjusted = false;
 	p->crtc_vadjusted = false;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(drm_mode_set_crtcinfo);
 
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * drm_mode_copy - copy the mode
  * @dst: mode to overwrite
  * @src: mode to copy
@@ -731,21 +870,37 @@ EXPORT_SYMBOL(drm_mode_set_crtcinfo);
  * LOCKING:
  * None.
  *
+<<<<<<< HEAD
  * Copy an existing mode into another mode, preserving the object id
  * of the destination mode.
+=======
+ * Copy an existing mode into another mode, preserving the object id and
+ * list head of the destination mode.
+>>>>>>> refs/remotes/origin/master
  */
 void drm_mode_copy(struct drm_display_mode *dst, const struct drm_display_mode *src)
 {
 	int id = dst->base.id;
+<<<<<<< HEAD
 
 	*dst = *src;
 	dst->base.id = id;
 	INIT_LIST_HEAD(&dst->head);
+=======
+	struct list_head head = dst->head;
+
+	*dst = *src;
+	dst->base.id = id;
+	dst->head = head;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(drm_mode_copy);
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * drm_mode_duplicate - allocate and duplicate an existing mode
  * @m: mode to duplicate
  *
@@ -760,14 +915,18 @@ struct drm_display_mode *drm_mode_duplicate(struct drm_device *dev,
 {
 	struct drm_display_mode *nmode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int new_id;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	nmode = drm_mode_create(dev);
 	if (!nmode)
 		return NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	new_id = nmode->base.id;
 	*nmode = *mode;
@@ -777,6 +936,10 @@ struct drm_display_mode *drm_mode_duplicate(struct drm_device *dev,
 	drm_mode_copy(nmode, mode);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	drm_mode_copy(nmode, mode);
+
+>>>>>>> refs/remotes/origin/master
 	return nmode;
 }
 EXPORT_SYMBOL(drm_mode_duplicate);
@@ -794,7 +957,11 @@ EXPORT_SYMBOL(drm_mode_duplicate);
  * RETURNS:
  * True if the modes are equal, false otherwise.
  */
+<<<<<<< HEAD
 bool drm_mode_equal(struct drm_display_mode *mode1, struct drm_display_mode *mode2)
+=======
+bool drm_mode_equal(const struct drm_display_mode *mode1, const struct drm_display_mode *mode2)
+>>>>>>> refs/remotes/origin/master
 {
 	/* do clock check convert to PICOS so fb modes get matched
 	 * the same */
@@ -804,6 +971,34 @@ bool drm_mode_equal(struct drm_display_mode *mode1, struct drm_display_mode *mod
 	} else if (mode1->clock != mode2->clock)
 		return false;
 
+<<<<<<< HEAD
+=======
+	if ((mode1->flags & DRM_MODE_FLAG_3D_MASK) !=
+	    (mode2->flags & DRM_MODE_FLAG_3D_MASK))
+		return false;
+
+	return drm_mode_equal_no_clocks_no_stereo(mode1, mode2);
+}
+EXPORT_SYMBOL(drm_mode_equal);
+
+/**
+ * drm_mode_equal_no_clocks_no_stereo - test modes for equality
+ * @mode1: first mode
+ * @mode2: second mode
+ *
+ * LOCKING:
+ * None.
+ *
+ * Check to see if @mode1 and @mode2 are equivalent, but
+ * don't check the pixel clocks nor the stereo layout.
+ *
+ * RETURNS:
+ * True if the modes are equal, false otherwise.
+ */
+bool drm_mode_equal_no_clocks_no_stereo(const struct drm_display_mode *mode1,
+					const struct drm_display_mode *mode2)
+{
+>>>>>>> refs/remotes/origin/master
 	if (mode1->hdisplay == mode2->hdisplay &&
 	    mode1->hsync_start == mode2->hsync_start &&
 	    mode1->hsync_end == mode2->hsync_end &&
@@ -814,12 +1009,21 @@ bool drm_mode_equal(struct drm_display_mode *mode1, struct drm_display_mode *mod
 	    mode1->vsync_end == mode2->vsync_end &&
 	    mode1->vtotal == mode2->vtotal &&
 	    mode1->vscan == mode2->vscan &&
+<<<<<<< HEAD
 	    mode1->flags == mode2->flags)
+=======
+	    (mode1->flags & ~DRM_MODE_FLAG_3D_MASK) ==
+	     (mode2->flags & ~DRM_MODE_FLAG_3D_MASK))
+>>>>>>> refs/remotes/origin/master
 		return true;
 
 	return false;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(drm_mode_equal);
+=======
+EXPORT_SYMBOL(drm_mode_equal_no_clocks_no_stereo);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * drm_mode_validate_size - make sure modes adhere to size constraints
@@ -856,6 +1060,7 @@ void drm_mode_validate_size(struct drm_device *dev,
 EXPORT_SYMBOL(drm_mode_validate_size);
 
 /**
+<<<<<<< HEAD
  * drm_mode_validate_clocks - validate modes against clock limits
  * @dev: DRM device
  * @mode_list: list of modes to check
@@ -893,6 +1098,8 @@ void drm_mode_validate_clocks(struct drm_device *dev,
 EXPORT_SYMBOL(drm_mode_validate_clocks);
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * drm_mode_prune_invalid - remove invalid modes from mode list
  * @dev: DRM device
  * @mode_list: list of modes to check
@@ -953,6 +1160,14 @@ static int drm_mode_compare(void *priv, struct list_head *lh_a, struct list_head
 	diff = b->hdisplay * b->vdisplay - a->hdisplay * a->vdisplay;
 	if (diff)
 		return diff;
+<<<<<<< HEAD
+=======
+
+	diff = b->vrefresh - a->vrefresh;
+	if (diff)
+		return diff;
+
+>>>>>>> refs/remotes/origin/master
 	diff = b->clock - a->clock;
 	return diff;
 }
@@ -1034,15 +1249,21 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 	const char *name;
 	unsigned int namelen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int res_specified = 0, bpp_specified = 0, refresh_specified = 0;
 	unsigned int xres = 0, yres = 0, bpp = 32, refresh = 0;
 	int yres_specified = 0, cvt = 0, rb = 0, interlace = 0, margins = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool res_specified = false, bpp_specified = false, refresh_specified = false;
 	unsigned int xres = 0, yres = 0, bpp = 32, refresh = 0;
 	bool yres_specified = false, cvt = false, rb = false;
 	bool interlace = false, margins = false, was_digit = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	enum drm_connector_force force = DRM_FORCE_UNSPECIFIED;
 
@@ -1062,6 +1283,7 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 		switch (name[i]) {
 		case '@':
 <<<<<<< HEAD
+<<<<<<< HEAD
 			namelen = i;
 			if (!refresh_specified && !bpp_specified &&
 			    !yres_specified) {
@@ -1070,16 +1292,22 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 				if (cvt || rb)
 					cvt = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!refresh_specified && !bpp_specified &&
 			    !yres_specified && !cvt && !rb && was_digit) {
 				refresh = simple_strtol(&name[i+1], NULL, 10);
 				refresh_specified = true;
 				was_digit = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			} else
 				goto done;
 			break;
 		case '-':
+<<<<<<< HEAD
 <<<<<<< HEAD
 			namelen = i;
 			if (!bpp_specified && !yres_specified) {
@@ -1088,16 +1316,22 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 				if (cvt || rb)
 					cvt = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!bpp_specified && !yres_specified && !cvt &&
 			    !rb && was_digit) {
 				bpp = simple_strtol(&name[i+1], NULL, 10);
 				bpp_specified = true;
 				was_digit = false;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			} else
 				goto done;
 			break;
 		case 'x':
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (!yres_specified) {
 				yres = simple_strtol(&name[i+1], NULL, 10);
@@ -1127,12 +1361,18 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 			break;
 		case 'D':
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!yres_specified && was_digit) {
 				yres = simple_strtol(&name[i+1], NULL, 10);
 				yres_specified = true;
 				was_digit = false;
 			} else
 				goto done;
+<<<<<<< HEAD
+=======
+			break;
+>>>>>>> refs/remotes/origin/master
 		case '0' ... '9':
 			was_digit = true;
 			break;
@@ -1168,7 +1408,10 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 			    was_digit || (force != DRM_FORCE_UNSPECIFIED))
 				goto done;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if ((connector->connector_type != DRM_MODE_CONNECTOR_DVII) &&
 			    (connector->connector_type != DRM_MODE_CONNECTOR_HDMIB))
 				force = DRM_FORCE_ON;
@@ -1177,12 +1420,18 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 			break;
 		case 'd':
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (yres_specified || bpp_specified || refresh_specified ||
 			    was_digit || (force != DRM_FORCE_UNSPECIFIED))
 				goto done;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			force = DRM_FORCE_OFF;
 			break;
 		default:
@@ -1190,12 +1439,15 @@ bool drm_mode_parse_command_line_for_connector(const char *mode_option,
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (i < 0 && yres_specified) {
 		xres = simple_strtol(name, NULL, 10);
 		res_specified = 1;
 	}
 done:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (i < 0 && yres_specified) {
 		char *ch;
@@ -1217,7 +1469,10 @@ done:
 		return false;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (res_specified) {
 		mode->specified = true;
 		mode->xres = xres;
@@ -1234,15 +1489,21 @@ done:
 		mode->bpp = bpp;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode->rb = rb ? true : false;
 	mode->cvt = cvt  ? true : false;
 	mode->interlace = interlace ? true : false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mode->rb = rb;
 	mode->cvt = cvt;
 	mode->interlace = interlace;
 	mode->margins = margins;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mode->force = force;
 
 	return true;

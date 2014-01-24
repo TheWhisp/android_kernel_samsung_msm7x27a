@@ -55,10 +55,14 @@ typedef struct icn_cdef {
 /* some useful macros for debugging */
 #ifdef ICN_DEBUG_PORT
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define OUTB_P(v,p) {printk(KERN_DEBUG "icn: outb_p(0x%02x,0x%03x)\n",v,p); outb_p(v,p);}
 =======
 #define OUTB_P(v, p) {printk(KERN_DEBUG "icn: outb_p(0x%02x,0x%03x)\n", v, p); outb_p(v, p);}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define OUTB_P(v, p) {printk(KERN_DEBUG "icn: outb_p(0x%02x,0x%03x)\n", v, p); outb_p(v, p);}
+>>>>>>> refs/remotes/origin/master
 #else
 #define OUTB_P outb
 #endif
@@ -76,12 +80,17 @@ typedef struct icn_cdef {
 #define ICN_BOOT_TIMEOUT1  1000 /* Delay for Boot-download (msecs)         */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ICN_TIMER_BCREAD (HZ/100)	/* B-Channel poll-cycle                    */
 #define ICN_TIMER_DCREAD (HZ/2) /* D-Channel poll-cycle                    */
 =======
 #define ICN_TIMER_BCREAD (HZ / 100)	/* B-Channel poll-cycle                    */
 #define ICN_TIMER_DCREAD (HZ / 2) /* D-Channel poll-cycle                    */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ICN_TIMER_BCREAD (HZ / 100)	/* B-Channel poll-cycle                    */
+#define ICN_TIMER_DCREAD (HZ / 2) /* D-Channel poll-cycle                    */
+>>>>>>> refs/remotes/origin/master
 
 #define ICN_CODE_STAGE1 4096    /* Size of bootcode                        */
 #define ICN_CODE_STAGE2 65536   /* Size of protocol-code                   */
@@ -150,10 +159,14 @@ typedef struct icn_card {
 	int rvalid;             /* IO-portregion has been requested */
 	int leased;             /* Flag: This Adapter is connected  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	                        /*       to a leased line           */
 =======
 				/*       to a leased line           */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				/*       to a leased line           */
+>>>>>>> refs/remotes/origin/master
 	unsigned short flags;   /* Statusflags                      */
 	int doubleS0;           /* Flag: ICN4B                      */
 	int secondhalf;         /* Flag: Second half of a doubleS0  */
@@ -211,6 +224,7 @@ static icn_dev dev;
 /* Macros for accessing ports */
 #define ICN_CFG    (card->port)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ICN_MAPRAM (card->port+1)
 #define ICN_RUN    (card->port+2)
 #define ICN_BANK   (card->port+3)
@@ -222,6 +236,8 @@ static icn_dev dev;
 /* Switch to next transmit-buffer */
 #define sbnext (writeb((readb(&dev.shmem->data_control.scns)+1) & 0xf, \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ICN_MAPRAM (card->port + 1)
 #define ICN_RUN    (card->port + 2)
 #define ICN_BANK   (card->port + 3)
@@ -232,7 +248,10 @@ static icn_dev dev;
 
 /* Switch to next transmit-buffer */
 #define sbnext (writeb((readb(&dev.shmem->data_control.scns) + 1) & 0xf,	\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       &dev.shmem->data_control.scns))
 
 /* Shortcuts for transmit-buffer-access */
@@ -247,10 +266,14 @@ static icn_dev dev;
 
 /* Switch to next receive-buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define rbnext (writeb((readb(&dev.shmem->data_control.ecnr)+1) & 0xf, \
 =======
 #define rbnext (writeb((readb(&dev.shmem->data_control.ecnr) + 1) & 0xf,	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define rbnext (writeb((readb(&dev.shmem->data_control.ecnr) + 1) & 0xf,	\
+>>>>>>> refs/remotes/origin/master
 		       &dev.shmem->data_control.ecnr))
 
 /* Shortcuts for receive-buffer-access */
@@ -265,6 +288,7 @@ static icn_dev dev;
 
 /* Return free space in command-buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define cmd_free ((readb(&cmd_i)>=readb(&cmd_o))? \
 		  0x100-readb(&cmd_i)+readb(&cmd_o): \
 		  readb(&cmd_o)-readb(&cmd_i))
@@ -273,12 +297,18 @@ static icn_dev dev;
 		  0x100 - readb(&cmd_i) + readb(&cmd_o) :	\
 		  readb(&cmd_o) - readb(&cmd_i))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define cmd_free ((readb(&cmd_i) >= readb(&cmd_o)) ?		\
+		  0x100 - readb(&cmd_i) + readb(&cmd_o) :	\
+		  readb(&cmd_o) - readb(&cmd_i))
+>>>>>>> refs/remotes/origin/master
 
 /* Shortcuts for message-buffer-access */
 #define msg_o (dev.shmem->comm_control.iopc_o)
 #define msg_i (dev.shmem->comm_control.iopc_i)
 
 /* Return length of Message, if avail. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define msg_avail ((readb(&msg_o)>readb(&msg_i))? \
 		   0x100-readb(&msg_o)+readb(&msg_i): \
@@ -288,6 +318,11 @@ static icn_dev dev;
 		   0x100 - readb(&msg_o) + readb(&msg_i) :	\
 		   readb(&msg_i) - readb(&msg_o))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define msg_avail ((readb(&msg_o) > readb(&msg_i)) ?		\
+		   0x100 - readb(&msg_o) + readb(&msg_i) :	\
+		   readb(&msg_i) - readb(&msg_o))
+>>>>>>> refs/remotes/origin/master
 
 #define CID (card->interface.id)
 

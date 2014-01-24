@@ -22,7 +22,11 @@
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <mach/board.h>
+=======
+#include <linux/platform_data/atmel.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/cpu.h>
 
 /* Register definitions based on AT91SAM9RL64 preliminary draft datasheet */
@@ -177,16 +181,30 @@ static irqreturn_t atmel_tsadcc_interrupt(int irq, void *dev)
  * The functions for inserting/removing us as a module.
  */
 
+<<<<<<< HEAD
 static int __devinit atmel_tsadcc_probe(struct platform_device *pdev)
+=======
+static int atmel_tsadcc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atmel_tsadcc	*ts_dev;
 	struct input_dev	*input_dev;
 	struct resource		*res;
 	struct at91_tsadcc_data *pdata = pdev->dev.platform_data;
+<<<<<<< HEAD
 	int		err = 0;
 	unsigned int	prsc;
 	unsigned int	reg;
 
+=======
+	int		err;
+	unsigned int	prsc;
+	unsigned int	reg;
+
+	if (!pdata)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
 		dev_err(&pdev->dev, "no mmio resource defined.\n");
@@ -230,10 +248,14 @@ static int __devinit atmel_tsadcc_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(ts_dev->irq, atmel_tsadcc_interrupt, IRQF_DISABLED,
 =======
 	err = request_irq(ts_dev->irq, atmel_tsadcc_interrupt, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = request_irq(ts_dev->irq, atmel_tsadcc_interrupt, 0,
+>>>>>>> refs/remotes/origin/master
 			pdev->dev.driver->name, ts_dev);
 	if (err) {
 		dev_err(&pdev->dev, "failed to allocate irq.\n");
@@ -269,9 +291,12 @@ static int __devinit atmel_tsadcc_probe(struct platform_device *pdev)
 	prsc = clk_get_rate(ts_dev->clk);
 	dev_info(&pdev->dev, "Master clock is set at: %d Hz\n", prsc);
 
+<<<<<<< HEAD
 	if (!pdata)
 		goto err_fail;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pdata->adc_clock)
 		pdata->adc_clock = ADC_DEFAULT_CLOCK;
 
@@ -327,9 +352,15 @@ err_free_mem:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit atmel_tsadcc_remove(struct platform_device *pdev)
 {
 	struct atmel_tsadcc *ts_dev = dev_get_drvdata(&pdev->dev);
+=======
+static int atmel_tsadcc_remove(struct platform_device *pdev)
+{
+	struct atmel_tsadcc *ts_dev = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 
 	free_irq(ts_dev->irq, ts_dev);
@@ -350,11 +381,16 @@ static int __devexit atmel_tsadcc_remove(struct platform_device *pdev)
 
 static struct platform_driver atmel_tsadcc_driver = {
 	.probe		= atmel_tsadcc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(atmel_tsadcc_remove),
+=======
+	.remove		= atmel_tsadcc_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "atmel_tsadcc",
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init atmel_tsadcc_init(void)
@@ -373,6 +409,9 @@ module_exit(atmel_tsadcc_exit);
 =======
 module_platform_driver(atmel_tsadcc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(atmel_tsadcc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Atmel TouchScreen Driver");

@@ -22,18 +22,27 @@
 #include <linux/if_vlan.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/pkt_cls.h>
 #include <net/ip.h>
 #include <net/route.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/flow_keys.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/flow_keys.h>
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
 #include <net/netfilter/nf_conntrack.h>
 #endif
@@ -74,6 +83,7 @@ static inline u32 addr_fold(void *addr)
 	return (a & 0xFFFFFFFF) ^ (BITS_PER_LONG > 32 ? a >> 32 : 0);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u32 flow_get_src(struct sk_buff *skb)
 {
@@ -160,6 +170,8 @@ static u32 flow_get_proto_src(struct sk_buff *skb)
 	}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 flow_get_src(const struct sk_buff *skb, const struct flow_keys *flow)
 {
 	if (flow->src)
@@ -183,11 +195,15 @@ static u32 flow_get_proto_src(const struct sk_buff *skb, const struct flow_keys 
 {
 	if (flow->ports)
 		return ntohs(flow->port16[0]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return addr_fold(skb->sk);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u32 flow_get_proto_dst(struct sk_buff *skb)
 {
@@ -228,11 +244,16 @@ static u32 flow_get_proto_dst(struct sk_buff *skb)
 	}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 flow_get_proto_dst(const struct sk_buff *skb, const struct flow_keys *flow)
 {
 	if (flow->ports)
 		return ntohs(flow->port16[1]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return addr_fold(skb_dst(skb)) ^ (__force u16)skb->protocol;
 }
@@ -266,10 +287,14 @@ static u32 flow_get_nfct(const struct sk_buff *skb)
 ({									\
 	enum ip_conntrack_info ctinfo;					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);			\
 =======
 	const struct nf_conn *ct = nf_ct_get(skb, &ctinfo);		\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct nf_conn *ct = nf_ct_get(skb, &ctinfo);		\
+>>>>>>> refs/remotes/origin/master
 	if (ct == NULL)							\
 		goto fallback;						\
 	ct->tuplehash[CTINFO2DIR(ctinfo)].tuple.member;			\
@@ -283,10 +308,14 @@ static u32 flow_get_nfct(const struct sk_buff *skb)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 flow_get_nfct_src(struct sk_buff *skb)
 =======
 static u32 flow_get_nfct_src(const struct sk_buff *skb, const struct flow_keys *flow)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 flow_get_nfct_src(const struct sk_buff *skb, const struct flow_keys *flow)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (skb->protocol) {
 	case htons(ETH_P_IP):
@@ -296,16 +325,22 @@ static u32 flow_get_nfct_src(const struct sk_buff *skb, const struct flow_keys *
 	}
 fallback:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return flow_get_src(skb);
 }
 
 static u32 flow_get_nfct_dst(struct sk_buff *skb)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return flow_get_src(skb, flow);
 }
 
 static u32 flow_get_nfct_dst(const struct sk_buff *skb, const struct flow_keys *flow)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (skb->protocol) {
 	case htons(ETH_P_IP):
@@ -314,6 +349,7 @@ static u32 flow_get_nfct_dst(const struct sk_buff *skb, const struct flow_keys *
 		return ntohl(CTTUPLE(skb, dst.u3.ip6[3]));
 	}
 fallback:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return flow_get_dst(skb);
 }
@@ -331,6 +367,8 @@ static u32 flow_get_nfct_proto_dst(struct sk_buff *skb)
 fallback:
 	return flow_get_proto_dst(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return flow_get_dst(skb, flow);
 }
 
@@ -346,7 +384,10 @@ static u32 flow_get_nfct_proto_dst(const struct sk_buff *skb, const struct flow_
 	return ntohs(CTTUPLE(skb, dst.u.all));
 fallback:
 	return flow_get_proto_dst(skb, flow);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 flow_get_rtclassid(const struct sk_buff *skb)
@@ -360,15 +401,29 @@ static u32 flow_get_rtclassid(const struct sk_buff *skb)
 
 static u32 flow_get_skuid(const struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	if (skb->sk && skb->sk->sk_socket && skb->sk->sk_socket->file)
 		return skb->sk->sk_socket->file->f_cred->fsuid;
+=======
+	if (skb->sk && skb->sk->sk_socket && skb->sk->sk_socket->file) {
+		kuid_t skuid = skb->sk->sk_socket->file->f_cred->fsuid;
+		return from_kuid(&init_user_ns, skuid);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static u32 flow_get_skgid(const struct sk_buff *skb)
 {
+<<<<<<< HEAD
 	if (skb->sk && skb->sk->sk_socket && skb->sk->sk_socket->file)
 		return skb->sk->sk_socket->file->f_cred->fsgid;
+=======
+	if (skb->sk && skb->sk->sk_socket && skb->sk->sk_socket->file) {
+		kgid_t skgid = skb->sk->sk_socket->file->f_cred->fsgid;
+		return from_kgid(&init_user_ns, skgid);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -387,6 +442,7 @@ static u32 flow_get_rxhash(struct sk_buff *skb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u32 flow_key_get(struct sk_buff *skb, int key)
 {
 	switch (key) {
@@ -401,6 +457,8 @@ static u32 flow_key_get(struct sk_buff *skb, int key)
 	case FLOW_KEY_PROTO_DST:
 		return flow_get_proto_dst(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 flow_key_get(struct sk_buff *skb, int key, struct flow_keys *flow)
 {
 	switch (key) {
@@ -414,7 +472,10 @@ static u32 flow_key_get(struct sk_buff *skb, int key, struct flow_keys *flow)
 		return flow_get_proto_src(skb, flow);
 	case FLOW_KEY_PROTO_DST:
 		return flow_get_proto_dst(skb, flow);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case FLOW_KEY_IIF:
 		return flow_get_iif(skb);
 	case FLOW_KEY_PRIORITY:
@@ -425,6 +486,7 @@ static u32 flow_key_get(struct sk_buff *skb, int key, struct flow_keys *flow)
 		return flow_get_nfct(skb);
 	case FLOW_KEY_NFCT_SRC:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return flow_get_nfct_src(skb);
 	case FLOW_KEY_NFCT_DST:
 		return flow_get_nfct_dst(skb);
@@ -433,6 +495,8 @@ static u32 flow_key_get(struct sk_buff *skb, int key, struct flow_keys *flow)
 	case FLOW_KEY_NFCT_PROTO_DST:
 		return flow_get_nfct_proto_dst(skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return flow_get_nfct_src(skb, flow);
 	case FLOW_KEY_NFCT_DST:
 		return flow_get_nfct_dst(skb, flow);
@@ -440,7 +504,10 @@ static u32 flow_key_get(struct sk_buff *skb, int key, struct flow_keys *flow)
 		return flow_get_nfct_proto_src(skb, flow);
 	case FLOW_KEY_NFCT_PROTO_DST:
 		return flow_get_nfct_proto_dst(skb, flow);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case FLOW_KEY_RTCLASSID:
 		return flow_get_rtclassid(skb);
 	case FLOW_KEY_SKUID:
@@ -458,8 +525,11 @@ static u32 flow_key_get(struct sk_buff *skb, int key, struct flow_keys *flow)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int flow_classify(struct sk_buff *skb, struct tcf_proto *tp,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define FLOW_KEYS_NEEDED ((1 << FLOW_KEY_SRC) | 		\
 			  (1 << FLOW_KEY_DST) |			\
 			  (1 << FLOW_KEY_PROTO) |		\
@@ -471,7 +541,10 @@ static int flow_classify(struct sk_buff *skb, struct tcf_proto *tp,
 			  (1 << FLOW_KEY_NFCT_PROTO_DST))
 
 static int flow_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			 struct tcf_result *res)
 {
 	struct flow_head *head = tp->root;
@@ -483,30 +556,44 @@ static int flow_classify(struct sk_buff *skb, const struct tcf_proto *tp,
 
 	list_for_each_entry(f, &head->filters, list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		u32 keys[f->nkeys];
 =======
 		u32 keys[FLOW_KEY_MAX + 1];
 		struct flow_keys flow_keys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		u32 keys[FLOW_KEY_MAX + 1];
+		struct flow_keys flow_keys;
+>>>>>>> refs/remotes/origin/master
 
 		if (!tcf_em_tree_match(skb, &f->ematches, NULL))
 			continue;
 
 		keymask = f->keymask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (keymask & FLOW_KEYS_NEEDED)
 			skb_flow_dissect(skb, &flow_keys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (keymask & FLOW_KEYS_NEEDED)
+			skb_flow_dissect(skb, &flow_keys);
+>>>>>>> refs/remotes/origin/master
 
 		for (n = 0; n < f->nkeys; n++) {
 			key = ffs(keymask) - 1;
 			keymask &= ~(1 << key);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			keys[n] = flow_key_get(skb, key);
 =======
 			keys[n] = flow_key_get(skb, key, &flow_keys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			keys[n] = flow_key_get(skb, key, &flow_keys);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (f->mode == FLOW_MODE_HASH)
@@ -555,7 +642,12 @@ static const struct nla_policy flow_policy[TCA_FLOW_MAX + 1] = {
 	[TCA_FLOW_PERTURB]	= { .type = NLA_U32 },
 };
 
+<<<<<<< HEAD
 static int flow_change(struct tcf_proto *tp, unsigned long base,
+=======
+static int flow_change(struct net *net, struct sk_buff *in_skb,
+		       struct tcf_proto *tp, unsigned long base,
+>>>>>>> refs/remotes/origin/master
 		       u32 handle, struct nlattr **tca,
 		       unsigned long *arg)
 {
@@ -594,9 +686,19 @@ static int flow_change(struct tcf_proto *tp, unsigned long base,
 
 		if (fls(keymask) - 1 > FLOW_KEY_MAX)
 			return -EOPNOTSUPP;
+<<<<<<< HEAD
 	}
 
 	err = tcf_exts_validate(tp, tb, tca[TCA_RATE], &e, &flow_ext_map);
+=======
+
+		if ((keymask & (FLOW_KEY_SKUID|FLOW_KEY_SKGID)) &&
+		    sk_user_ns(NETLINK_CB(in_skb).sk) != &init_user_ns)
+			return -EOPNOTSUPP;
+	}
+
+	err = tcf_exts_validate(net, tp, tb, tca[TCA_RATE], &e, &flow_ext_map);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -780,6 +882,7 @@ static int flow_dump(struct tcf_proto *tp, unsigned long fh,
 	if (nest == NULL)
 		goto nla_put_failure;
 
+<<<<<<< HEAD
 	NLA_PUT_U32(skb, TCA_FLOW_KEYS, f->keymask);
 	NLA_PUT_U32(skb, TCA_FLOW_MODE, f->mode);
 
@@ -799,6 +902,34 @@ static int flow_dump(struct tcf_proto *tp, unsigned long fh,
 
 	if (f->perturb_period)
 		NLA_PUT_U32(skb, TCA_FLOW_PERTURB, f->perturb_period / HZ);
+=======
+	if (nla_put_u32(skb, TCA_FLOW_KEYS, f->keymask) ||
+	    nla_put_u32(skb, TCA_FLOW_MODE, f->mode))
+		goto nla_put_failure;
+
+	if (f->mask != ~0 || f->xor != 0) {
+		if (nla_put_u32(skb, TCA_FLOW_MASK, f->mask) ||
+		    nla_put_u32(skb, TCA_FLOW_XOR, f->xor))
+			goto nla_put_failure;
+	}
+	if (f->rshift &&
+	    nla_put_u32(skb, TCA_FLOW_RSHIFT, f->rshift))
+		goto nla_put_failure;
+	if (f->addend &&
+	    nla_put_u32(skb, TCA_FLOW_ADDEND, f->addend))
+		goto nla_put_failure;
+
+	if (f->divisor &&
+	    nla_put_u32(skb, TCA_FLOW_DIVISOR, f->divisor))
+		goto nla_put_failure;
+	if (f->baseclass &&
+	    nla_put_u32(skb, TCA_FLOW_BASECLASS, f->baseclass))
+		goto nla_put_failure;
+
+	if (f->perturb_period &&
+	    nla_put_u32(skb, TCA_FLOW_PERTURB, f->perturb_period / HZ))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	if (tcf_exts_dump(skb, &f->exts, &flow_ext_map) < 0)
 		goto nla_put_failure;

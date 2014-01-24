@@ -35,6 +35,7 @@
 #include <mach/regs-gpio.h>
 #include <mach/regs-lcd.h>
 
+<<<<<<< HEAD
 #include <mach/idle.h>
 #include <mach/fb.h>
 #include <plat/iic.h>
@@ -46,6 +47,18 @@
 #include <plat/cpu.h>
 
 #include <plat/common-smdk.h>
+=======
+#include <mach/fb.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+
+#include <plat/clock.h>
+#include <plat/devs.h>
+#include <plat/cpu.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+#include "common-smdk.h"
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc smdk2443_iodesc[] __initdata = {
 	/* ISA IO Space map (memory space selected by A24) */
@@ -116,6 +129,10 @@ static struct platform_device *smdk2443_devices[] __initdata = {
 #ifdef CONFIG_SND_SOC_SMDK2443_WM9710
 	&s3c_device_ac97,
 #endif
+<<<<<<< HEAD
+=======
+	&s3c2443_device_dma,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init smdk2443_map_io(void)
@@ -123,6 +140,10 @@ static void __init smdk2443_map_io(void)
 	s3c24xx_init_io(smdk2443_iodesc, ARRAY_SIZE(smdk2443_iodesc));
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(smdk2443_uartcfgs, ARRAY_SIZE(smdk2443_uartcfgs));
+<<<<<<< HEAD
+=======
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init smdk2443_machine_init(void)
@@ -141,9 +162,16 @@ MACHINE_START(SMDK2443, "SMDK2443")
 	/* Maintainer: Ben Dooks <ben-linux@fluff.org> */
 	.atag_offset	= 0x100,
 
+<<<<<<< HEAD
 	.init_irq	= s3c24xx_init_irq,
 	.map_io		= smdk2443_map_io,
 	.init_machine	= smdk2443_machine_init,
 	.timer		= &s3c24xx_timer,
+=======
+	.init_irq	= s3c2443_init_irq,
+	.map_io		= smdk2443_map_io,
+	.init_machine	= smdk2443_machine_init,
+	.init_time	= samsung_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.restart	= s3c2443_restart,
 MACHINE_END

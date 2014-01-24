@@ -25,18 +25,24 @@
 
    DSP detection/validation by Anthony Booth (Eicon Networks, www.eicon.com)
 <<<<<<< HEAD
+<<<<<<< HEAD
 -------------------------------------------------------------------------- */
 
 #define DIVA_PRI_NO_PCI_BIOS_WORKAROUND 1
 
 extern int diva_card_read_xlog(diva_os_xdi_adapter_t * a);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    -------------------------------------------------------------------------- */
 
 #define DIVA_PRI_NO_PCI_BIOS_WORKAROUND 1
 
 extern int diva_card_read_xlog(diva_os_xdi_adapter_t *a);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
 **  IMPORTS
@@ -46,6 +52,7 @@ extern void prepare_pri2_functions(PISDN_ADAPTER IoAdapter);
 extern void diva_xdi_display_adapter_features(int card);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t * a);
 static int diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 				  diva_xdi_um_cfg_cmd_t * cmd, int length);
@@ -53,13 +60,18 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t * a);
 static int diva_pri_stop_adapter(diva_os_xdi_adapter_t * a);
 static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t * a);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a);
 static int diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 				  diva_xdi_um_cfg_cmd_t *cmd, int length);
 static int pri_get_serial_number(diva_os_xdi_adapter_t *a);
 static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a);
 static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t *a);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
 **  Check card revision
@@ -75,10 +87,14 @@ static int pri_is_rev_2_card(int card_ordinal)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void diva_pri_set_addresses(diva_os_xdi_adapter_t * a)
 =======
 static void diva_pri_set_addresses(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void diva_pri_set_addresses(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	a->resources.pci.mem_type_id[MEM_TYPE_ADDRESS] = 0;
 	a->resources.pci.mem_type_id[MEM_TYPE_CONTROL] = 2;
@@ -88,10 +104,14 @@ static void diva_pri_set_addresses(diva_os_xdi_adapter_t *a)
 	a->resources.pci.mem_type_id[MEM_TYPE_CFG] = 4;
 	a->resources.pci.mem_type_id[MEM_TYPE_PROM] = 3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	a->xdi_adapter.Address = a->resources.pci.addr[0];
 	a->xdi_adapter.Control = a->resources.pci.addr[2];
 	a->xdi_adapter.Config = a->resources.pci.addr[4];
@@ -118,10 +138,14 @@ static void diva_pri_set_addresses(diva_os_xdi_adapter_t *a)
 **  BAR4 - CONFIG (CFG),	0x1000
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int diva_pri_init_card(diva_os_xdi_adapter_t * a)
 =======
 int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int diva_pri_init_card(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	int bar = 0;
 	int pri_rev_2;
@@ -139,6 +163,7 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 		bar_length[0] = MP2_MEMORY_SIZE;
 	}
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   Set properties
 	 */
@@ -166,6 +191,8 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 				      a->resources.pci.func,
 				      a->resources.pci.hdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  Set properties
 	*/
 	a->xdi_adapter.Properties = CardProperties[a->CardOrdinal];
@@ -191,13 +218,17 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 		(byte) divasa_get_pci_irq(a->resources.pci.bus,
 					  a->resources.pci.func,
 					  a->resources.pci.hdev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!a->resources.pci.irq) {
 		DBG_ERR(("A: invalid irq"));
 		return (-1);
 	}
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   Map all BAR's
 	 */
@@ -210,6 +241,8 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 				 a->controller, bar))
 			diva_pri_cleanup_adapter(a);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  Map all BAR's
 	*/
 	for (bar = 0; bar < 5; bar++) {
@@ -220,12 +253,16 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 			DBG_ERR(("A: A(%d), can't map bar[%d]",
 				 a->controller, bar))
 				diva_pri_cleanup_adapter(a);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return (-1);
 		}
 	}
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   Set all memory areas
 	 */
@@ -235,6 +272,8 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 	   Get Serial Number of this adapter
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  Set all memory areas
 	*/
 	diva_pri_set_addresses(a);
@@ -242,7 +281,10 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 	/*
 	  Get Serial Number of this adapter
 	*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pri_get_serial_number(a)) {
 		dword serNo;
 		serNo = a->resources.pci.bar[1] & 0xffff0000;
@@ -252,6 +294,7 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 		DBG_ERR(("A: A(%d) can't get Serial Number, generated serNo=%ld",
 			 a->controller, a->xdi_adapter.serialNo))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 
@@ -259,13 +302,18 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 	   Initialize os objects
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 
 
 	/*
 	  Initialize os objects
 	*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (diva_os_initialize_spin_lock(&a->xdi_adapter.isr_spin_lock, "isr")) {
 		diva_pri_cleanup_adapter(a);
 		return (-1);
@@ -286,6 +334,7 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Do not initialize second DPC - only one thread will be created
 	 */
 	a->xdi_adapter.isr_soft_isr.object =
@@ -296,6 +345,8 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 	   set up all interface pointers
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  Do not initialize second DPC - only one thread will be created
 	*/
 	a->xdi_adapter.isr_soft_isr.object =
@@ -305,16 +356,23 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 	  Next step of card initialization:
 	  set up all interface pointers
 	*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	a->xdi_adapter.Channels = CardProperties[a->CardOrdinal].Channels;
 	a->xdi_adapter.e_max = CardProperties[a->CardOrdinal].E_info;
 
 	a->xdi_adapter.e_tbl =
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    diva_os_malloc(0, a->xdi_adapter.e_max * sizeof(E_INFO));
 =======
 		diva_os_malloc(0, a->xdi_adapter.e_max * sizeof(E_INFO));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		diva_os_malloc(0, a->xdi_adapter.e_max * sizeof(E_INFO));
+>>>>>>> refs/remotes/origin/master
 	if (!a->xdi_adapter.e_tbl) {
 		diva_pri_cleanup_adapter(a);
 		return (-1);
@@ -336,12 +394,17 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Allocate DMA map
 	 */
 =======
 	  Allocate DMA map
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Allocate DMA map
+	*/
+>>>>>>> refs/remotes/origin/master
 	if (pri_rev_2) {
 		diva_init_dma_map(a->resources.pci.hdev,
 				  (struct _diva_dma_map_entry **) &a->xdi_adapter.dma_map, 32);
@@ -349,12 +412,17 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Set IRQ handler
 	 */
 =======
 	  Set IRQ handler
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Set IRQ handler
+	*/
+>>>>>>> refs/remotes/origin/master
 	a->xdi_adapter.irq_info.irq_nr = a->resources.pci.irq;
 	sprintf(a->xdi_adapter.irq_info.irq_name,
 		"DIVA PRI %ld", (long) a->xdi_adapter.serialNo);
@@ -373,14 +441,19 @@ int diva_pri_init_card(diva_os_xdi_adapter_t *a)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t * a)
 =======
 static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	int bar = 0;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   Stop Adapter if adapter is running
 	 */
@@ -388,11 +461,16 @@ static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 	  Stop Adapter if adapter is running
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Stop Adapter if adapter is running
+	*/
+>>>>>>> refs/remotes/origin/master
 	if (a->xdi_adapter.Initialized) {
 		diva_pri_stop_adapter(a);
 	}
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   Remove ISR Handler
 	 */
@@ -400,6 +478,10 @@ static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 	  Remove ISR Handler
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Remove ISR Handler
+	*/
+>>>>>>> refs/remotes/origin/master
 	if (a->xdi_adapter.irq_info.registered) {
 		diva_os_remove_irq(a, a->xdi_adapter.irq_info.irq_nr);
 	}
@@ -407,12 +489,17 @@ static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Step 1: unmap all BAR's, if any was mapped
 	 */
 =======
 	  Step 1: unmap all BAR's, if any was mapped
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Step 1: unmap all BAR's, if any was mapped
+	*/
+>>>>>>> refs/remotes/origin/master
 	for (bar = 0; bar < 5; bar++) {
 		if (a->resources.pci.bar[bar]
 		    && a->resources.pci.addr[bar]) {
@@ -424,12 +511,17 @@ static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Free OS objects
 	 */
 =======
 	  Free OS objects
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Free OS objects
+	*/
+>>>>>>> refs/remotes/origin/master
 	diva_os_cancel_soft_isr(&a->xdi_adapter.isr_soft_isr);
 	diva_os_cancel_soft_isr(&a->xdi_adapter.req_soft_isr);
 
@@ -441,12 +533,17 @@ static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Free memory accupied by XDI adapter
 	 */
 =======
 	  Free memory accupied by XDI adapter
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Free memory accupied by XDI adapter
+	*/
+>>>>>>> refs/remotes/origin/master
 	if (a->xdi_adapter.e_tbl) {
 		diva_os_free(0, a->xdi_adapter.e_tbl);
 		a->xdi_adapter.e_tbl = NULL;
@@ -457,12 +554,17 @@ static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Free adapter DMA map
 	 */
 =======
 	  Free adapter DMA map
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Free adapter DMA map
+	*/
+>>>>>>> refs/remotes/origin/master
 	diva_free_dma_map(a->resources.pci.hdev,
 			  (struct _diva_dma_map_entry *) a->xdi_adapter.
 			  dma_map);
@@ -471,12 +573,17 @@ static int diva_pri_cleanup_adapter(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Detach this adapter from debug driver
 	 */
 =======
 	  Detach this adapter from debug driver
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Detach this adapter from debug driver
+	*/
+>>>>>>> refs/remotes/origin/master
 
 	return (0);
 }
@@ -496,10 +603,14 @@ static int diva_pri_reset_adapter(PISDN_ADAPTER IoAdapter)
 		DBG_ERR(("A: A(%d) can't reset PRI adapter - please stop first",
 			 IoAdapter->ANum))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);
 =======
 			return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	boot = (struct mp_load __iomem *) DIVA_OS_MEM_ATTACH_ADDRESS(IoAdapter);
@@ -519,25 +630,34 @@ static int diva_pri_reset_adapter(PISDN_ADAPTER IoAdapter)
 		DBG_ERR(("A: A(%d) CPU on PRI %ld is not alive!",
 			 IoAdapter->ANum, IoAdapter->serialNo))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);
 =======
 			return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (READ_DWORD(&boot->err)) {
 		DBG_ERR(("A: A(%d) PRI %ld Board Selftest failed, error=%08lx",
 			 IoAdapter->ANum, IoAdapter->serialNo,
 			 READ_DWORD(&boot->err)))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
 =======
 			DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
+>>>>>>> refs/remotes/origin/master
 		return (-1);
 	}
 	DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   Forget all outstanding entities
 	 */
@@ -545,6 +665,10 @@ static int diva_pri_reset_adapter(PISDN_ADAPTER IoAdapter)
 	  Forget all outstanding entities
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Forget all outstanding entities
+	*/
+>>>>>>> refs/remotes/origin/master
 	IoAdapter->e_count = 0;
 	if (IoAdapter->e_tbl) {
 		memset(IoAdapter->e_tbl, 0x00,
@@ -579,10 +703,14 @@ static int
 diva_pri_write_sdram_block(PISDN_ADAPTER IoAdapter,
 			   dword address,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   const byte * data, dword length, dword limit)
 =======
 			   const byte *data, dword length, dword limit)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   const byte *data, dword length, dword limit)
+>>>>>>> refs/remotes/origin/master
 {
 	byte __iomem *p = DIVA_OS_MEM_ATTACH_ADDRESS(IoAdapter);
 	byte __iomem *mem = p;
@@ -592,10 +720,14 @@ diva_pri_write_sdram_block(PISDN_ADAPTER IoAdapter,
 		DBG_ERR(("A: A(%d) write PRI address=0x%08lx",
 			 IoAdapter->ANum, address + length))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);
 =======
 			return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/master
 	}
 	mem += address;
 
@@ -623,20 +755,28 @@ diva_pri_start_adapter(PISDN_ADAPTER IoAdapter,
 		DBG_ERR(("A: A(%d) pri_start_adapter, adapter already running",
 			 IoAdapter->ANum))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);
 =======
 			return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!boot) {
 		DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
 		DBG_ERR(("A: PRI %ld can't start, adapter not mapped",
 			 IoAdapter->serialNo))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);
 =======
 			return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sprintf(IoAdapter->Name, "A(%d)", (int) IoAdapter->ANum);
@@ -644,10 +784,14 @@ diva_pri_start_adapter(PISDN_ADAPTER IoAdapter,
 		 start_address))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WRITE_DWORD(&boot->addr, start_address);
 =======
 		WRITE_DWORD(&boot->addr, start_address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		WRITE_DWORD(&boot->addr, start_address);
+>>>>>>> refs/remotes/origin/master
 	WRITE_DWORD(&boot->cmd, 3);
 
 	for (i = 0; i < 300; ++i) {
@@ -656,10 +800,14 @@ diva_pri_start_adapter(PISDN_ADAPTER IoAdapter,
 			DBG_LOG(("A(%d) Protocol startup time %d.%02d seconds",
 				 IoAdapter->ANum, (i / 100), (i % 100)))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			started = 1;
 =======
 				started = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				started = 1;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -674,10 +822,14 @@ diva_pri_start_adapter(PISDN_ADAPTER IoAdapter,
 			 IoAdapter->ANum, READ_DWORD(&boot->signature),
 			 TrapId, debug))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
 =======
 			DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DIVA_OS_MEM_DETACH_ADDRESS(IoAdapter, boot);
+>>>>>>> refs/remotes/origin/master
 		if (IoAdapter->trapFnc) {
 			(*(IoAdapter->trapFnc)) (IoAdapter);
 		}
@@ -690,18 +842,24 @@ diva_pri_start_adapter(PISDN_ADAPTER IoAdapter,
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Check Interrupt
 	 */
 	IoAdapter->IrqCount = 0;
 	p = DIVA_OS_MEM_ATTACH_CFG(IoAdapter);
 	WRITE_DWORD(p, (dword) ~ 0x03E00000);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  Check Interrupt
 	*/
 	IoAdapter->IrqCount = 0;
 	p = DIVA_OS_MEM_ATTACH_CFG(IoAdapter);
 	WRITE_DWORD(p, (dword)~0x03E00000);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DIVA_OS_MEM_DETACH_CFG(IoAdapter, p);
 	a->ReadyInt = 1;
 	a->ram_out(a, &PR_RAM->ReadyInt, 1);
@@ -712,10 +870,14 @@ diva_pri_start_adapter(PISDN_ADAPTER IoAdapter,
 		DBG_ERR(("A: A(%d) interrupt test failed",
 			 IoAdapter->ANum))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IoAdapter->Initialized = false;
 =======
 			IoAdapter->Initialized = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IoAdapter->Initialized = false;
+>>>>>>> refs/remotes/origin/master
 		IoAdapter->stop(IoAdapter);
 		return (-1);
 	}
@@ -726,29 +888,40 @@ diva_pri_start_adapter(PISDN_ADAPTER IoAdapter,
 
 	DBG_LOG(("A(%d) PRI adapter successfully started", IoAdapter->ANum))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	   Register with DIDD
 	 */
 	diva_xdi_didd_register_adapter(IoAdapter->ANum);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		  Register with DIDD
 		*/
 		diva_xdi_didd_register_adapter(IoAdapter->ANum);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return (0);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void diva_pri_clear_interrupts(diva_os_xdi_adapter_t * a)
 =======
 static void diva_pri_clear_interrupts(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void diva_pri_clear_interrupts(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	PISDN_ADAPTER IoAdapter = &a->xdi_adapter;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   clear any pending interrupt
 	 */
@@ -756,6 +929,10 @@ static void diva_pri_clear_interrupts(diva_os_xdi_adapter_t *a)
 	  clear any pending interrupt
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  clear any pending interrupt
+	*/
+>>>>>>> refs/remotes/origin/master
 	IoAdapter->disIrq(IoAdapter);
 
 	IoAdapter->tst_irq(&IoAdapter->a);
@@ -764,12 +941,17 @@ static void diva_pri_clear_interrupts(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   kill pending dpcs
 	 */
 =======
 	  kill pending dpcs
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  kill pending dpcs
+	*/
+>>>>>>> refs/remotes/origin/master
 	diva_os_cancel_soft_isr(&IoAdapter->req_soft_isr);
 	diva_os_cancel_soft_isr(&IoAdapter->isr_soft_isr);
 }
@@ -779,10 +961,14 @@ static void diva_pri_clear_interrupts(diva_os_xdi_adapter_t *a)
 **  will be restarted later
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int diva_pri_stop_adapter(diva_os_xdi_adapter_t * a)
 =======
 static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	PISDN_ADAPTER IoAdapter = &a->xdi_adapter;
 	int i = 100;
@@ -794,14 +980,19 @@ static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
 		DBG_ERR(("A: A(%d) can't stop PRI adapter - not running",
 			 IoAdapter->ANum))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);	/* nothing to stop */
 =======
 			return (-1);	/* nothing to stop */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);	/* nothing to stop */
+>>>>>>> refs/remotes/origin/master
 	}
 	IoAdapter->Initialized = 0;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   Disconnect Adapter from DIDD
 	 */
@@ -811,6 +1002,8 @@ static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
 	   Stop interrupts
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  Disconnect Adapter from DIDD
 	*/
 	diva_xdi_didd_remove_adapter(IoAdapter->ANum);
@@ -818,7 +1011,10 @@ static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
 	/*
 	  Stop interrupts
 	*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	a->clear_interrupts_proc = diva_pri_clear_interrupts;
 	IoAdapter->a.ReadyInt = 1;
 	IoAdapter->a.ram_inc(&IoAdapter->a, &PR_RAM->ReadyInt);
@@ -832,6 +1028,7 @@ static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
 		DBG_ERR(("A: A(%d) no final interrupt from PRI adapter",
 			 IoAdapter->ANum))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 	IoAdapter->a.ReadyInt = 0;
 
@@ -839,13 +1036,18 @@ static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
 	   Stop and reset adapter
 	 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 	IoAdapter->a.ReadyInt = 0;
 
 	/*
 	  Stop and reset adapter
 	*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	IoAdapter->stop(IoAdapter);
 
 	return (0);
@@ -860,10 +1062,14 @@ static int diva_pri_stop_adapter(diva_os_xdi_adapter_t *a)
 static int
 diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       diva_xdi_um_cfg_cmd_t * cmd, int length)
 =======
 		       diva_xdi_um_cfg_cmd_t *cmd, int length)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       diva_xdi_um_cfg_cmd_t *cmd, int length)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -1;
 
@@ -871,10 +1077,14 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 		DBG_ERR(("A: pri_cmd, invalid controller=%d != %d",
 			 cmd->adapter, a->controller))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);
 =======
 			return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (cmd->command) {
@@ -882,16 +1092,22 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 		a->xdi_mbox.data_length = sizeof(dword);
 		a->xdi_mbox.data =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    diva_os_malloc(0, a->xdi_mbox.data_length);
 		if (a->xdi_mbox.data) {
 			*(dword *) a->xdi_mbox.data =
 			    (dword) a->CardOrdinal;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			diva_os_malloc(0, a->xdi_mbox.data_length);
 		if (a->xdi_mbox.data) {
 			*(dword *) a->xdi_mbox.data =
 				(dword) a->CardOrdinal;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			a->xdi_mbox.status = DIVA_XDI_MBOX_BUSY;
 			ret = 0;
 		}
@@ -901,16 +1117,22 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 		a->xdi_mbox.data_length = sizeof(dword);
 		a->xdi_mbox.data =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    diva_os_malloc(0, a->xdi_mbox.data_length);
 		if (a->xdi_mbox.data) {
 			*(dword *) a->xdi_mbox.data =
 			    (dword) a->xdi_adapter.serialNo;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			diva_os_malloc(0, a->xdi_mbox.data_length);
 		if (a->xdi_mbox.data) {
 			*(dword *) a->xdi_mbox.data =
 				(dword) a->xdi_adapter.serialNo;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			a->xdi_mbox.status = DIVA_XDI_MBOX_BUSY;
 			ret = 0;
 		}
@@ -920,10 +1142,14 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 		a->xdi_mbox.data_length = sizeof(dword) * 9;
 		a->xdi_mbox.data =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    diva_os_malloc(0, a->xdi_mbox.data_length);
 =======
 			diva_os_malloc(0, a->xdi_mbox.data_length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			diva_os_malloc(0, a->xdi_mbox.data_length);
+>>>>>>> refs/remotes/origin/master
 		if (a->xdi_mbox.data) {
 			int i;
 			dword *data = (dword *) a->xdi_mbox.data;
@@ -946,10 +1172,14 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 						 cmd->command_data.
 						 write_sdram.offset,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						 (byte *) & cmd[1],
 =======
 						 (byte *)&cmd[1],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 (byte *)&cmd[1],
+>>>>>>> refs/remotes/origin/master
 						 cmd->command_data.
 						 write_sdram.length,
 						 pri_is_rev_2_card(a->
@@ -973,6 +1203,7 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 	case DIVA_XDI_UM_CMD_SET_PROTOCOL_FEATURES:
 		a->xdi_adapter.features =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    cmd->command_data.features.features;
 		a->xdi_adapter.a.protocol_capabilities =
 		    a->xdi_adapter.features;
@@ -980,18 +1211,24 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 			 a->xdi_adapter.features))
 		ret = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			cmd->command_data.features.features;
 		a->xdi_adapter.a.protocol_capabilities =
 			a->xdi_adapter.features;
 		DBG_TRC(("Set raw protocol features (%08x)",
 			 a->xdi_adapter.features))
 			ret = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case DIVA_XDI_UM_CMD_GET_CARD_STATE:
 		a->xdi_mbox.data_length = sizeof(dword);
 		a->xdi_mbox.data =
+<<<<<<< HEAD
 <<<<<<< HEAD
 		    diva_os_malloc(0, a->xdi_mbox.data_length);
 		if (a->xdi_mbox.data) {
@@ -999,12 +1236,17 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 			if (!a->xdi_adapter.ram ||
 				!a->xdi_adapter.reset ||
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			diva_os_malloc(0, a->xdi_mbox.data_length);
 		if (a->xdi_mbox.data) {
 			dword *data = (dword *) a->xdi_mbox.data;
 			if (!a->xdi_adapter.ram ||
 			    !a->xdi_adapter.reset ||
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			    !a->xdi_adapter.cfg) {
 				*data = 3;
 			} else if (a->xdi_adapter.trapped) {
@@ -1027,6 +1269,7 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 		if (a->xdi_adapter.Address) {
 			if (
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    (a->xdi_mbox.data_length =
 			     cmd->command_data.read_sdram.length)) {
 				if (
@@ -1038,6 +1281,8 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 							   a->xdi_mbox.
 							   data_length);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				(a->xdi_mbox.data_length =
 				 cmd->command_data.read_sdram.length)) {
 				if (
@@ -1048,7 +1293,10 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 						diva_os_malloc(0,
 							       a->xdi_mbox.
 							       data_length);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					if (a->xdi_mbox.data) {
 						byte __iomem *p = DIVA_OS_MEM_ATTACH_ADDRESS(&a->xdi_adapter);
 						byte __iomem *src = p;
@@ -1073,10 +1321,14 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 		DBG_ERR(("A: A(%d) invalid cmd=%d", a->controller,
 			 cmd->command))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
 			}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 
 	return (ret);
 }
@@ -1085,10 +1337,14 @@ diva_pri_cmd_card_proc(struct _diva_os_xdi_adapter *a,
 **  Get Serial Number
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pri_get_serial_number(diva_os_xdi_adapter_t * a)
 =======
 static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	byte data[64];
 	int i;
@@ -1101,10 +1357,14 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
  *  First set some GT6401x config registers before accessing the BOOT-ROM
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
  	config = DIVA_OS_MEM_ATTACH_CONFIG(&a->xdi_adapter);
 =======
 	config = DIVA_OS_MEM_ATTACH_CONFIG(&a->xdi_adapter);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	config = DIVA_OS_MEM_ATTACH_CONFIG(&a->xdi_adapter);
+>>>>>>> refs/remotes/origin/master
 	c = READ_BYTE(&config[0xc3c]);
 	if (!(c & 0x08)) {
 		WRITE_BYTE(&config[0xc3c], c);	/* Base Address enable register */
@@ -1112,14 +1372,19 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 	WRITE_BYTE(&config[LOW_BOOTCS_DREG], 0x00);
 	WRITE_BYTE(&config[HI_BOOTCS_DREG], 0xFF);
 <<<<<<< HEAD
+<<<<<<< HEAD
  	DIVA_OS_MEM_DETACH_CONFIG(&a->xdi_adapter, config);
 =======
 	DIVA_OS_MEM_DETACH_CONFIG(&a->xdi_adapter, config);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DIVA_OS_MEM_DETACH_CONFIG(&a->xdi_adapter, config);
+>>>>>>> refs/remotes/origin/master
 /*
  *  Read only the last 64 bytes of manufacturing data
  */
 	memset(data, '\0', len);
+<<<<<<< HEAD
 <<<<<<< HEAD
  	flash = DIVA_OS_MEM_ATTACH_PROM(&a->xdi_adapter);
 	for (i = 0; i < len; i++) {
@@ -1132,6 +1397,8 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 	WRITE_BYTE(&config[HI_BOOTCS_DREG], 0xFF);
  	DIVA_OS_MEM_DETACH_CONFIG(&a->xdi_adapter, config);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	flash = DIVA_OS_MEM_ATTACH_PROM(&a->xdi_adapter);
 	for (i = 0; i < len; i++) {
 		data[i] = READ_BYTE(&flash[0x8000 - len + i]);
@@ -1142,7 +1409,10 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 	WRITE_BYTE(&config[LOW_BOOTCS_DREG], 0xFC);	/* Disable FLASH EPROM access */
 	WRITE_BYTE(&config[HI_BOOTCS_DREG], 0xFF);
 	DIVA_OS_MEM_DETACH_CONFIG(&a->xdi_adapter, config);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (memcmp(&data[48], "DIVAserverPR", 12)) {
 #if !defined(DIVA_PRI_NO_PCI_BIOS_WORKAROUND)	/* { */
@@ -1157,18 +1427,24 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 
 		DBG_ERR(("A: apply Compaq BIOS workaround"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DBG_LOG(("%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
 			     data[0], data[1], data[2], data[3],
 			     data[4], data[5], data[6], data[7]))
 
 		Bus = a->resources.pci.bus;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			DBG_LOG(("%02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x",
 				 data[0], data[1], data[2], data[3],
 				 data[4], data[5], data[6], data[7]))
 
 			Bus = a->resources.pci.bus;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		Slot = a->resources.pci.func;
 		hdev = a->resources.pci.hdev;
 		PCIread(Bus, Slot, 0x04, &cmd_org, sizeof(cmd_org), hdev);
@@ -1189,23 +1465,30 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   Try to read Flash again
 		 */
 		len = sizeof(data);
 
  		config = DIVA_OS_MEM_ATTACH_CONFIG(&a->xdi_adapter);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		  Try to read Flash again
 		*/
 		len = sizeof(data);
 
 		config = DIVA_OS_MEM_ATTACH_CONFIG(&a->xdi_adapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!(config[0xc3c] & 0x08)) {
 			config[0xc3c] |= 0x08;	/* Base Address enable register */
 		}
 		config[LOW_BOOTCS_DREG] = 0x00;
 		config[HI_BOOTCS_DREG] = 0xFF;
+<<<<<<< HEAD
 <<<<<<< HEAD
  		DIVA_OS_MEM_DETACH_CONFIG(&a->xdi_adapter, config);
 
@@ -1241,6 +1524,8 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 	    (data[47] << 24) | (data[46] << 16) | (data[45] << 8) |
 	    data[44];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		DIVA_OS_MEM_DETACH_CONFIG(&a->xdi_adapter, config);
 
 		memset(data, '\0', len);
@@ -1274,11 +1559,15 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 	a->xdi_adapter.serialNo =
 		(data[47] << 24) | (data[46] << 16) | (data[45] << 8) |
 		data[44];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!a->xdi_adapter.serialNo
 	    || (a->xdi_adapter.serialNo == 0xffffffff)) {
 		a->xdi_adapter.serialNo = 0;
 		DBG_ERR(("A: failed to read serial number"))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return (-1);
 	}
@@ -1297,6 +1586,8 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 
 	return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return (-1);
 	}
 
@@ -1313,7 +1604,10 @@ static int pri_get_serial_number(diva_os_xdi_adapter_t *a)
 			 (int) data[28], (int) data[29], (int) data[30]))
 
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void diva_os_prepare_pri2_functions(PISDN_ADAPTER IoAdapter)
@@ -1329,10 +1623,14 @@ void diva_os_prepare_pri_functions(PISDN_ADAPTER IoAdapter)
 */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 dsp_check_presence(volatile byte __iomem * addr, volatile byte __iomem * data, int dsp)
 =======
 dsp_check_presence(volatile byte __iomem *addr, volatile byte __iomem *data, int dsp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+dsp_check_presence(volatile byte __iomem *addr, volatile byte __iomem *data, int dsp)
+>>>>>>> refs/remotes/origin/master
 {
 	word pattern;
 
@@ -1346,10 +1644,14 @@ dsp_check_presence(volatile byte __iomem *addr, volatile byte __iomem *data, int
 		DBG_TRC(("W: DSP[%d] %04x(is) != %04x(should)",
 			 dsp, pattern, DSP_SIGNATURE_PROBE_WORD))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return (-1);
 =======
 			return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return (-1);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	WRITE_WORD(addr, 0x4000);
@@ -1359,25 +1661,35 @@ dsp_check_presence(volatile byte __iomem *addr, volatile byte __iomem *data, int
 	pattern = READ_WORD(data);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (pattern != (word) ~ DSP_SIGNATURE_PROBE_WORD) {
 		DBG_ERR(("A: DSP[%d] %04x(is) != %04x(should)",
 			 dsp, pattern, (word) ~ DSP_SIGNATURE_PROBE_WORD))
 		return (-2);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pattern != (word)~DSP_SIGNATURE_PROBE_WORD) {
 		DBG_ERR(("A: DSP[%d] %04x(is) != %04x(should)",
 			 dsp, pattern, (word)~DSP_SIGNATURE_PROBE_WORD))
 			return (-2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	DBG_TRC(("DSP[%d] present", dsp))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1391,10 +1703,14 @@ dsp_check_presence(volatile byte __iomem *addr, volatile byte __iomem *data, int
 **  Bit 29 - DSP30
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t * a)
 =======
 static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	byte __iomem *base;
 	byte __iomem *p;
@@ -1451,12 +1767,17 @@ static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t *a)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   Verify modules
 	 */
 =======
 	  Verify modules
 	*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Verify modules
+	*/
+>>>>>>> refs/remotes/origin/master
 	for (dsp_row = 0; dsp_row < 4; dsp_row++) {
 		row_state = ((ret >> (dsp_row * 7)) & 0x7F);
 		if (row_state && (row_state != 0x7F)) {
@@ -1466,16 +1787,21 @@ static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t *a)
 						 dsp_row + 1,
 						 dsp_index + 1))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				}
 =======
 						}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						}
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
 
 	if (!(ret & 0x10000000)) {
 		DBG_ERR(("A: ON BOARD-DSP[1] failed"))
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 	if (!(ret & 0x20000000)) {
@@ -1502,6 +1828,8 @@ static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t *a)
 
 	return (ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 	if (!(ret & 0x20000000)) {
 		DBG_ERR(("A: ON BOARD-DSP[2] failed"))
@@ -1526,5 +1854,8 @@ static dword diva_pri_detect_dsps(diva_os_xdi_adapter_t *a)
 			 ~ret & 0x3fffffff))
 
 		return (ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

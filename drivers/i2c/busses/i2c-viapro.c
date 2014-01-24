@@ -92,10 +92,14 @@ static unsigned short SMBHSTCFG = 0xD2;
 /* If force is set to anything different from 0, we forcibly enable the
    VT596. DANGEROUS! */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int force;
 =======
 static bool force;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool force;
+>>>>>>> refs/remotes/origin/master
 module_param(force, bool, 0);
 MODULE_PARM_DESC(force, "Forcibly enable the SMBus. DANGEROUS!");
 
@@ -324,8 +328,13 @@ static struct i2c_adapter vt596_adapter = {
 	.algo		= &smbus_algorithm,
 };
 
+<<<<<<< HEAD
 static int __devinit vt596_probe(struct pci_dev *pdev,
 				 const struct pci_device_id *id)
+=======
+static int vt596_probe(struct pci_dev *pdev,
+		       const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char temp;
 	int error;
@@ -405,6 +414,10 @@ found:
 	case PCI_DEVICE_ID_VIA_CX700:
 	case PCI_DEVICE_ID_VIA_VX800:
 	case PCI_DEVICE_ID_VIA_VX855:
+<<<<<<< HEAD
+=======
+	case PCI_DEVICE_ID_VIA_VX900:
+>>>>>>> refs/remotes/origin/master
 	case PCI_DEVICE_ID_VIA_8251:
 	case PCI_DEVICE_ID_VIA_8237:
 	case PCI_DEVICE_ID_VIA_8237A:
@@ -446,10 +459,14 @@ release_region:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id vt596_ids[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(vt596_ids) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(vt596_ids) = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C596_3),
 	  .driver_data = SMBBA1 },
 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_82C596B_3),
@@ -478,6 +495,11 @@ static DEFINE_PCI_DEVICE_TABLE(vt596_ids) = {
 	  .driver_data = SMBBA3 },
 	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX855),
 	  .driver_data = SMBBA3 },
+<<<<<<< HEAD
+=======
+	{ PCI_DEVICE(PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_VX900),
+	  .driver_data = SMBBA3 },
+>>>>>>> refs/remotes/origin/master
 	{ 0, }
 };
 

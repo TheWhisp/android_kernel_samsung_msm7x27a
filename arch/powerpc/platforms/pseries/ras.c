@@ -17,6 +17,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Change Activity:
  * 2001/09/21 : engebret : Created with minimal EPOW and HW exception support.
  * End Change Activity
@@ -49,6 +50,8 @@
 #include <asm/rtas.h>
 #include <asm/udbg.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -58,7 +61,10 @@
 
 #include <asm/machdep.h>
 #include <asm/rtas.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/firmware.h>
 
 #include "pseries.h"
@@ -70,9 +76,12 @@ static char global_mce_data_buf[RTAS_ERROR_LOG_MAX];
 static DEFINE_PER_CPU(__u64, mce_data_buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ras_get_sensor_state_token;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ras_check_exception_token;
 
 #define EPOW_SENSOR_TOKEN	9
@@ -91,9 +100,12 @@ static int __init init_ras_IRQ(void)
 	struct device_node *np;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ras_get_sensor_state_token = rtas_token("get-sensor-state");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ras_check_exception_token = rtas_token("check-exception");
 
 	/* Internal Errors */
@@ -113,6 +125,7 @@ static int __init init_ras_IRQ(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 __initcall(init_ras_IRQ);
 
@@ -135,6 +148,8 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 	if (state > 3)
 		critical = 1;  /* Time Critical */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 subsys_initcall(init_ras_IRQ);
 
 #define EPOW_SHUTDOWN_NORMAL				1
@@ -147,7 +162,11 @@ static void handle_system_shutdown(char event_modifier)
 	switch (event_modifier) {
 	case EPOW_SHUTDOWN_NORMAL:
 		pr_emerg("Firmware initiated power off");
+<<<<<<< HEAD
 		orderly_poweroff(1);
+=======
+		orderly_poweroff(true);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case EPOW_SHUTDOWN_ON_UPS:
@@ -159,13 +178,21 @@ static void handle_system_shutdown(char event_modifier)
 		pr_emerg("Loss of system critical functions reported by "
 			"firmware");
 		pr_emerg("Check RTAS error log for details");
+<<<<<<< HEAD
 		orderly_poweroff(1);
+=======
+		orderly_poweroff(true);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case EPOW_SHUTDOWN_AMBIENT_TEMPERATURE_TOO_HIGH:
 		pr_emerg("Ambient temperature too high reported by firmware");
 		pr_emerg("Check RTAS error log for details");
+<<<<<<< HEAD
 		orderly_poweroff(1);
+=======
+		orderly_poweroff(true);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -226,7 +253,11 @@ void rtas_parse_epow_errlog(struct rtas_error_log *log)
 
 	case EPOW_SYSTEM_HALT:
 		pr_emerg("Firmware initiated power off");
+<<<<<<< HEAD
 		orderly_poweroff(1);
+=======
+		orderly_poweroff(true);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case EPOW_MAIN_ENCLOSURE:
@@ -255,7 +286,10 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 
 	if (state > 3)
 		critical = 1;		/* Time Critical */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		critical = 0;
 
@@ -264,6 +298,7 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 	status = rtas_call(ras_check_exception_token, 6, 1, NULL,
 			   RTAS_VECTOR_EXTERNAL_INTERRUPT,
 			   virq_to_hw(irq),
+<<<<<<< HEAD
 <<<<<<< HEAD
 			   RTAS_EPOW_WARNING | RTAS_POWERMGM_EVENTS,
 			   critical, __pa(&ras_log_buf),
@@ -278,6 +313,8 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 	log_error(ras_log_buf, ERR_TYPE_RTAS_LOG, 0);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			   RTAS_EPOW_WARNING,
 			   critical, __pa(&ras_log_buf),
 				rtas_get_error_log_max());
@@ -286,7 +323,10 @@ static irqreturn_t ras_epow_interrupt(int irq, void *dev_id)
 
 	rtas_parse_epow_errlog((struct rtas_error_log *)ras_log_buf);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&ras_log_buf_lock);
 	return IRQ_HANDLED;
 }
@@ -303,10 +343,14 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 {
 	struct rtas_error_log *rtas_elog;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int status = 0xdeadbeef;
 =======
 	int status;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int status;
+>>>>>>> refs/remotes/origin/master
 	int fatal;
 
 	spin_lock(&ras_log_buf_lock);
@@ -315,10 +359,14 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 			   RTAS_VECTOR_EXTERNAL_INTERRUPT,
 			   virq_to_hw(irq),
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   RTAS_INTERNAL_ERROR, 1 /*Time Critical */,
 =======
 			   RTAS_INTERNAL_ERROR, 1 /* Time Critical */,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   RTAS_INTERNAL_ERROR, 1 /* Time Critical */,
+>>>>>>> refs/remotes/origin/master
 			   __pa(&ras_log_buf),
 				rtas_get_error_log_max());
 
@@ -333,6 +381,7 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 	log_error(ras_log_buf, ERR_TYPE_RTAS_LOG, fatal);
 
 	if (fatal) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		udbg_printf("Fatal HW Error <0x%lx 0x%x>\n",
 			    *((unsigned long *)&ras_log_buf), status);
@@ -353,6 +402,8 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 		       "Warning: Recoverable hardware error <0x%lx 0x%x>\n",
 		       *((unsigned long *)&ras_log_buf), status);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_emerg("Fatal hardware error reported by firmware");
 		pr_emerg("Check RTAS error log for details");
 		pr_emerg("Immediate power off");
@@ -360,7 +411,10 @@ static irqreturn_t ras_error_interrupt(int irq, void *dev_id)
 		kernel_power_off();
 	} else {
 		pr_err("Recoverable hardware error reported by firmware");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock(&ras_log_buf_lock);
@@ -396,6 +450,12 @@ static struct rtas_error_log *fwnmi_get_errinfo(struct pt_regs *regs)
 	unsigned long *savep;
 	struct rtas_error_log *h, *errhdr = NULL;
 
+<<<<<<< HEAD
+=======
+	/* Mask top two bits */
+	regs->gpr[3] &= ~(0x3UL << 62);
+
+>>>>>>> refs/remotes/origin/master
 	if (!VALID_FWNMI_BUFFER(regs->gpr[3])) {
 		printk(KERN_ERR "FWNMI: corrupt r3 0x%016lx\n", regs->gpr[3]);
 		return NULL;

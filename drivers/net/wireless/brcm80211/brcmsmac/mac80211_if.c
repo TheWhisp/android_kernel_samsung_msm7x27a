@@ -1,5 +1,9 @@
 /*
  * Copyright (c) 2010 Broadcom Corporation
+<<<<<<< HEAD
+=======
+ * Copyright (c) 2013 Hauke Mehrtens <hauke@hauke-m.de>
+>>>>>>> refs/remotes/origin/master
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,7 +29,10 @@
 #include <linux/bcma/bcma.h>
 #include <net/mac80211.h>
 #include <defs.h>
+<<<<<<< HEAD
 #include "nicpci.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "phy/phy_int.h"
 #include "d11.h"
 #include "channel.h"
@@ -34,8 +41,16 @@
 #include "ucode_loader.h"
 #include "mac80211_if.h"
 #include "main.h"
+<<<<<<< HEAD
 
 #define N_TX_QUEUES	4 /* #tx queues on mac80211<->driver interface */
+=======
+#include "debug.h"
+#include "led.h"
+
+#define N_TX_QUEUES	4 /* #tx queues on mac80211<->driver interface */
+#define BRCMS_FLUSH_TIMEOUT	500 /* msec */
+>>>>>>> refs/remotes/origin/master
 
 /* Flags we support */
 #define MAC_FILTERS (FIF_PROMISC_IN_BSS | \
@@ -87,20 +102,41 @@ MODULE_AUTHOR("Broadcom Corporation");
 MODULE_DESCRIPTION("Broadcom 802.11n wireless LAN driver.");
 MODULE_SUPPORTED_DEVICE("Broadcom 802.11n WLAN cards");
 MODULE_LICENSE("Dual BSD/GPL");
+<<<<<<< HEAD
 
 
 /* recognized BCMA Core IDs */
 static struct bcma_device_id brcms_coreid_table[] = {
+=======
+/* This needs to be adjusted when brcms_firmwares changes */
+MODULE_FIRMWARE("brcm/bcm43xx-0.fw");
+MODULE_FIRMWARE("brcm/bcm43xx_hdr-0.fw");
+
+/* recognized BCMA Core IDs */
+static struct bcma_device_id brcms_coreid_table[] = {
+	BCMA_CORE(BCMA_MANUF_BCM, BCMA_CORE_80211, 17, BCMA_ANY_CLASS),
+>>>>>>> refs/remotes/origin/master
 	BCMA_CORE(BCMA_MANUF_BCM, BCMA_CORE_80211, 23, BCMA_ANY_CLASS),
 	BCMA_CORE(BCMA_MANUF_BCM, BCMA_CORE_80211, 24, BCMA_ANY_CLASS),
 	BCMA_CORETABLE_END
 };
 MODULE_DEVICE_TABLE(bcma, brcms_coreid_table);
 
+<<<<<<< HEAD
 #ifdef DEBUG
 static int msglevel = 0xdeadbeef;
 module_param(msglevel, int, 0);
 #endif				/* DEBUG */
+=======
+#if defined(CONFIG_BRCMDBG)
+/*
+ * Module parameter for setting the debug message level. Available
+ * flags are specified by the BRCM_DL_* macros in
+ * drivers/net/wireless/brcm80211/include/defs.h.
+ */
+module_param_named(debug, brcm_msg_level, uint, S_IRUGO | S_IWUSR);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static struct ieee80211_channel brcms_2ghz_chantable[] = {
 	CHAN2GHZ(1, 2412, IEEE80211_CHAN_NO_HT40MINUS),
@@ -122,7 +158,12 @@ static struct ieee80211_channel brcms_2ghz_chantable[] = {
 		 IEEE80211_CHAN_NO_HT40PLUS),
 	CHAN2GHZ(14, 2484,
 		 IEEE80211_CHAN_PASSIVE_SCAN | IEEE80211_CHAN_NO_IBSS |
+<<<<<<< HEAD
 		 IEEE80211_CHAN_NO_HT40PLUS | IEEE80211_CHAN_NO_HT40MINUS)
+=======
+		 IEEE80211_CHAN_NO_HT40PLUS | IEEE80211_CHAN_NO_HT40MINUS |
+		 IEEE80211_CHAN_NO_OFDM)
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct ieee80211_channel brcms_5ghz_nphy_chantable[] = {
@@ -265,6 +306,7 @@ static void brcms_set_basic_rate(struct brcm_rateset *rs, u16 rate, bool is_br)
 	}
 }
 
+<<<<<<< HEAD
 static void brcms_ops_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 {
 	struct brcms_info *wl = hw->priv;
@@ -276,6 +318,148 @@ static void brcms_ops_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 		goto done;
 	}
 	brcms_c_sendpkt_mac80211(wl->wlc, skb, hw);
+=======
+/**
+ * This function frees the WL per-device resources.
+ *
+ * This function frees resources owned by the WL device pointed to
+ * by the wl parameter.
+ *
+ * precondition: can both be called locked and unlocked
+ *
+ */
+static void brcms_free(struct brcms_info *wl)
+{
+	struct brcms_timer *t, *next;
+
+	/* free ucode data */
+	if (wl->fw.fw_cnt)
+		brcms_ucode_data_free(&wl->ucode);
+	if (wl->irq)
+		free_irq(wl->irq, wl);
+
+	/* kill dpc */
+	tasklet_kill(&wl->tasklet);
+
+	if (wl->pub) {
+		brcms_debugfs_detach(wl->pub);
+		brcms_c_module_unregister(wl->pub, "linux", wl);
+	}
+
+	/* free common resources */
+	if (wl->wlc) {
+		brcms_c_detach(wl->wlc);
+		wl->wlc = NULL;
+		wl->pub = NULL;
+	}
+
+	/* virtual interface deletion is deferred so we cannot spinwait */
+
+	/* wait for all pending callbacks to complete */
+	while (atomic_read(&wl->callbacks) > 0)
+		schedule();
+
+	/* free timers */
+	for (t = wl->timers; t; t = next) {
+		next = t->next;
+#ifdef DEBUG
+		kfree(t->name);
+#endif
+		kfree(t);
+	}
+}
+
+/*
+* called from both kernel as from this kernel module (error flow on attach)
+* precondition: perimeter lock is not acquired.
+*/
+static void brcms_remove(struct bcma_device *pdev)
+{
+	struct ieee80211_hw *hw = bcma_get_drvdata(pdev);
+	struct brcms_info *wl = hw->priv;
+
+	if (wl->wlc) {
+		brcms_led_unregister(wl);
+		wiphy_rfkill_set_hw_state(wl->pub->ieee_hw->wiphy, false);
+		wiphy_rfkill_stop_polling(wl->pub->ieee_hw->wiphy);
+		ieee80211_unregister_hw(hw);
+	}
+
+	brcms_free(wl);
+
+	bcma_set_drvdata(pdev, NULL);
+	ieee80211_free_hw(hw);
+}
+
+/*
+ * Precondition: Since this function is called in brcms_pci_probe() context,
+ * no locking is required.
+ */
+static void brcms_release_fw(struct brcms_info *wl)
+{
+	int i;
+	for (i = 0; i < MAX_FW_IMAGES; i++) {
+		release_firmware(wl->fw.fw_bin[i]);
+		release_firmware(wl->fw.fw_hdr[i]);
+	}
+}
+
+/*
+ * Precondition: Since this function is called in brcms_pci_probe() context,
+ * no locking is required.
+ */
+static int brcms_request_fw(struct brcms_info *wl, struct bcma_device *pdev)
+{
+	int status;
+	struct device *device = &pdev->dev;
+	char fw_name[100];
+	int i;
+
+	memset(&wl->fw, 0, sizeof(struct brcms_firmware));
+	for (i = 0; i < MAX_FW_IMAGES; i++) {
+		if (brcms_firmwares[i] == NULL)
+			break;
+		sprintf(fw_name, "%s-%d.fw", brcms_firmwares[i],
+			UCODE_LOADER_API_VER);
+		status = request_firmware(&wl->fw.fw_bin[i], fw_name, device);
+		if (status) {
+			wiphy_err(wl->wiphy, "%s: fail to load firmware %s\n",
+				  KBUILD_MODNAME, fw_name);
+			return status;
+		}
+		sprintf(fw_name, "%s_hdr-%d.fw", brcms_firmwares[i],
+			UCODE_LOADER_API_VER);
+		status = request_firmware(&wl->fw.fw_hdr[i], fw_name, device);
+		if (status) {
+			wiphy_err(wl->wiphy, "%s: fail to load firmware %s\n",
+				  KBUILD_MODNAME, fw_name);
+			return status;
+		}
+		wl->fw.hdr_num_entries[i] =
+		    wl->fw.fw_hdr[i]->size / (sizeof(struct firmware_hdr));
+	}
+	wl->fw.fw_cnt = i;
+	status = brcms_ucode_data_init(wl, &wl->ucode);
+	brcms_release_fw(wl);
+	return status;
+}
+
+static void brcms_ops_tx(struct ieee80211_hw *hw,
+			 struct ieee80211_tx_control *control,
+			 struct sk_buff *skb)
+{
+	struct brcms_info *wl = hw->priv;
+	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+
+	spin_lock_bh(&wl->lock);
+	if (!wl->pub->up) {
+		brcms_err(wl->wlc->hw->d11core, "ops->tx called while down\n");
+		kfree_skb(skb);
+		goto done;
+	}
+	if (brcms_c_sendpkt_mac80211(wl->wlc, skb, hw))
+		tx_info->rate_driver_data[0] = control->sta;
+>>>>>>> refs/remotes/origin/master
  done:
 	spin_unlock_bh(&wl->lock);
 }
@@ -293,19 +477,44 @@ static int brcms_ops_start(struct ieee80211_hw *hw)
 	if (!blocked)
 		wiphy_rfkill_stop_polling(wl->pub->ieee_hw->wiphy);
 
+<<<<<<< HEAD
+=======
+	if (!wl->ucode.bcm43xx_bomminor) {
+		err = brcms_request_fw(wl, wl->wlc->hw->d11core);
+		if (err) {
+			brcms_remove(wl->wlc->hw->d11core);
+			return -ENOENT;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_bh(&wl->lock);
 	/* avoid acknowledging frames before a non-monitor device is added */
 	wl->mute_tx = true;
 
 	if (!wl->pub->up)
+<<<<<<< HEAD
 		err = brcms_up(wl);
+=======
+		if (!blocked)
+			err = brcms_up(wl);
+		else
+			err = -ERFKILL;
+>>>>>>> refs/remotes/origin/master
 	else
 		err = -ENODEV;
 	spin_unlock_bh(&wl->lock);
 
 	if (err != 0)
+<<<<<<< HEAD
 		wiphy_err(hw->wiphy, "%s: brcms_up() returned %d\n", __func__,
 			  err);
+=======
+		brcms_err(wl->wlc->hw->d11core, "%s: brcms_up() returned %d\n",
+			  __func__, err);
+
+	bcma_core_pci_power_save(wl->wlc->hw->d11core->bus, true);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -320,15 +529,27 @@ static void brcms_ops_stop(struct ieee80211_hw *hw)
 		return;
 
 	spin_lock_bh(&wl->lock);
+<<<<<<< HEAD
 	status = brcms_c_chipmatch(wl->wlc->hw->vendorid,
 				   wl->wlc->hw->deviceid);
 	spin_unlock_bh(&wl->lock);
 	if (!status) {
 		wiphy_err(wl->wiphy,
+=======
+	status = brcms_c_chipmatch(wl->wlc->hw->d11core);
+	spin_unlock_bh(&wl->lock);
+	if (!status) {
+		brcms_err(wl->wlc->hw->d11core,
+>>>>>>> refs/remotes/origin/master
 			  "wl: brcms_ops_stop: chipmatch failed\n");
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	bcma_core_pci_power_save(wl->wlc->hw->d11core->bus, false);
+
+>>>>>>> refs/remotes/origin/master
 	/* put driver in down state */
 	spin_lock_bh(&wl->lock);
 	brcms_down(wl);
@@ -340,6 +561,7 @@ brcms_ops_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 {
 	struct brcms_info *wl = hw->priv;
 
+<<<<<<< HEAD
 	/* Just STA for now */
 	if (vif->type != NL80211_IFTYPE_STATION) {
 		wiphy_err(hw->wiphy, "%s: Attempt to add type %d, only"
@@ -349,6 +571,29 @@ brcms_ops_add_interface(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
 
 	wl->mute_tx = false;
 	brcms_c_mute(wl->wlc, false);
+=======
+	/* Just STA, AP and ADHOC for now */
+	if (vif->type != NL80211_IFTYPE_STATION &&
+	    vif->type != NL80211_IFTYPE_AP &&
+	    vif->type != NL80211_IFTYPE_ADHOC) {
+		brcms_err(wl->wlc->hw->d11core,
+			  "%s: Attempt to add type %d, only STA, AP and AdHoc for now\n",
+			  __func__, vif->type);
+		return -EOPNOTSUPP;
+	}
+
+	spin_lock_bh(&wl->lock);
+	wl->mute_tx = false;
+	brcms_c_mute(wl->wlc, false);
+	if (vif->type == NL80211_IFTYPE_STATION)
+		brcms_c_start_station(wl->wlc, vif->addr);
+	else if (vif->type == NL80211_IFTYPE_AP)
+		brcms_c_start_ap(wl->wlc, vif->addr, vif->bss_conf.bssid,
+				 vif->bss_conf.ssid, vif->bss_conf.ssid_len);
+	else if (vif->type == NL80211_IFTYPE_ADHOC)
+		brcms_c_start_adhoc(wl->wlc, vif->addr);
+	spin_unlock_bh(&wl->lock);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -362,9 +607,15 @@ static int brcms_ops_config(struct ieee80211_hw *hw, u32 changed)
 {
 	struct ieee80211_conf *conf = &hw->conf;
 	struct brcms_info *wl = hw->priv;
+<<<<<<< HEAD
 	int err = 0;
 	int new_int;
 	struct wiphy *wiphy = hw->wiphy;
+=======
+	struct bcma_device *core = wl->wlc->hw->d11core;
+	int err = 0;
+	int new_int;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_bh(&wl->lock);
 	if (changed & IEEE80211_CONF_CHANGE_LISTEN_INTERVAL) {
@@ -372,23 +623,36 @@ static int brcms_ops_config(struct ieee80211_hw *hw, u32 changed)
 						   conf->listen_interval);
 	}
 	if (changed & IEEE80211_CONF_CHANGE_MONITOR)
+<<<<<<< HEAD
 		wiphy_dbg(wiphy, "%s: change monitor mode: %s\n",
 			  __func__, conf->flags & IEEE80211_CONF_MONITOR ?
 			  "true" : "false");
 	if (changed & IEEE80211_CONF_CHANGE_PS)
 		wiphy_err(wiphy, "%s: change power-save mode: %s (implement)\n",
+=======
+		brcms_dbg_info(core, "%s: change monitor mode: %s\n",
+			       __func__, conf->flags & IEEE80211_CONF_MONITOR ?
+			       "true" : "false");
+	if (changed & IEEE80211_CONF_CHANGE_PS)
+		brcms_err(core, "%s: change power-save mode: %s (implement)\n",
+>>>>>>> refs/remotes/origin/master
 			  __func__, conf->flags & IEEE80211_CONF_PS ?
 			  "true" : "false");
 
 	if (changed & IEEE80211_CONF_CHANGE_POWER) {
 		err = brcms_c_set_tx_power(wl->wlc, conf->power_level);
 		if (err < 0) {
+<<<<<<< HEAD
 			wiphy_err(wiphy, "%s: Error setting power_level\n",
+=======
+			brcms_err(core, "%s: Error setting power_level\n",
+>>>>>>> refs/remotes/origin/master
 				  __func__);
 			goto config_out;
 		}
 		new_int = brcms_c_get_tx_power(wl->wlc);
 		if (new_int != conf->power_level)
+<<<<<<< HEAD
 			wiphy_err(wiphy, "%s: Power level req != actual, %d %d"
 				  "\n", __func__, conf->power_level,
 				  new_int);
@@ -398,6 +662,18 @@ static int brcms_ops_config(struct ieee80211_hw *hw, u32 changed)
 		    conf->channel_type == NL80211_CHAN_NO_HT)
 			err = brcms_c_set_channel(wl->wlc,
 						  conf->channel->hw_value);
+=======
+			brcms_err(core,
+				  "%s: Power level req != actual, %d %d\n",
+				  __func__, conf->power_level,
+				  new_int);
+	}
+	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
+		if (conf->chandef.width == NL80211_CHAN_WIDTH_20 ||
+		    conf->chandef.width == NL80211_CHAN_WIDTH_20_NOHT)
+			err = brcms_c_set_channel(wl->wlc,
+						  conf->chandef.chan->hw_value);
+>>>>>>> refs/remotes/origin/master
 		else
 			err = -ENOTSUPP;
 	}
@@ -417,13 +693,21 @@ brcms_ops_bss_info_changed(struct ieee80211_hw *hw,
 			struct ieee80211_bss_conf *info, u32 changed)
 {
 	struct brcms_info *wl = hw->priv;
+<<<<<<< HEAD
 	struct wiphy *wiphy = hw->wiphy;
+=======
+	struct bcma_device *core = wl->wlc->hw->d11core;
+>>>>>>> refs/remotes/origin/master
 
 	if (changed & BSS_CHANGED_ASSOC) {
 		/* association status changed (associated/disassociated)
 		 * also implies a change in the AID.
 		 */
+<<<<<<< HEAD
 		wiphy_err(wiphy, "%s: %s: %sassociated\n", KBUILD_MODNAME,
+=======
+		brcms_err(core, "%s: %s: %sassociated\n", KBUILD_MODNAME,
+>>>>>>> refs/remotes/origin/master
 			  __func__, info->assoc ? "" : "dis");
 		spin_lock_bh(&wl->lock);
 		brcms_c_associate_upd(wl->wlc, info->assoc);
@@ -483,7 +767,11 @@ brcms_ops_bss_info_changed(struct ieee80211_hw *hw,
 		error = brcms_c_set_rateset(wl->wlc, &rs);
 		spin_unlock_bh(&wl->lock);
 		if (error)
+<<<<<<< HEAD
 			wiphy_err(wiphy, "changing basic rates failed: %d\n",
+=======
+			brcms_err(core, "changing basic rates failed: %d\n",
+>>>>>>> refs/remotes/origin/master
 				  error);
 	}
 	if (changed & BSS_CHANGED_BEACON_INT) {
@@ -498,6 +786,7 @@ brcms_ops_bss_info_changed(struct ieee80211_hw *hw,
 		brcms_c_set_addrmatch(wl->wlc, RCM_BSSID_OFFSET, info->bssid);
 		spin_unlock_bh(&wl->lock);
 	}
+<<<<<<< HEAD
 	if (changed & BSS_CHANGED_BEACON)
 		/* Beacon data changed, retrieve new beacon (beaconing modes) */
 		wiphy_err(wiphy, "%s: beacon changed\n", __func__);
@@ -506,26 +795,79 @@ brcms_ops_bss_info_changed(struct ieee80211_hw *hw,
 		/* Beaconing should be enabled/disabled (beaconing modes) */
 		wiphy_err(wiphy, "%s: Beacon enabled: %s\n", __func__,
 			  info->enable_beacon ? "true" : "false");
+=======
+	if (changed & BSS_CHANGED_SSID) {
+		/* BSSID changed, for whatever reason (IBSS and managed mode) */
+		spin_lock_bh(&wl->lock);
+		brcms_c_set_ssid(wl->wlc, info->ssid, info->ssid_len);
+		spin_unlock_bh(&wl->lock);
+	}
+	if (changed & BSS_CHANGED_BEACON) {
+		/* Beacon data changed, retrieve new beacon (beaconing modes) */
+		struct sk_buff *beacon;
+		u16 tim_offset = 0;
+
+		spin_lock_bh(&wl->lock);
+		beacon = ieee80211_beacon_get_tim(hw, vif, &tim_offset, NULL);
+		brcms_c_set_new_beacon(wl->wlc, beacon, tim_offset,
+				       info->dtim_period);
+		spin_unlock_bh(&wl->lock);
+	}
+
+	if (changed & BSS_CHANGED_AP_PROBE_RESP) {
+		struct sk_buff *probe_resp;
+
+		spin_lock_bh(&wl->lock);
+		probe_resp = ieee80211_proberesp_get(hw, vif);
+		brcms_c_set_new_probe_resp(wl->wlc, probe_resp);
+		spin_unlock_bh(&wl->lock);
+	}
+
+	if (changed & BSS_CHANGED_BEACON_ENABLED) {
+		/* Beaconing should be enabled/disabled (beaconing modes) */
+		brcms_err(core, "%s: Beacon enabled: %s\n", __func__,
+			  info->enable_beacon ? "true" : "false");
+		if (info->enable_beacon &&
+		    hw->wiphy->flags & WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD) {
+			brcms_c_enable_probe_resp(wl->wlc, true);
+		} else {
+			brcms_c_enable_probe_resp(wl->wlc, false);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (changed & BSS_CHANGED_CQM) {
 		/* Connection quality monitor config changed */
+<<<<<<< HEAD
 		wiphy_err(wiphy, "%s: cqm change: threshold %d, hys %d "
+=======
+		brcms_err(core, "%s: cqm change: threshold %d, hys %d "
+>>>>>>> refs/remotes/origin/master
 			  " (implement)\n", __func__, info->cqm_rssi_thold,
 			  info->cqm_rssi_hyst);
 	}
 
 	if (changed & BSS_CHANGED_IBSS) {
 		/* IBSS join status changed */
+<<<<<<< HEAD
 		wiphy_err(wiphy, "%s: IBSS joined: %s (implement)\n", __func__,
 			  info->ibss_joined ? "true" : "false");
+=======
+		brcms_err(core, "%s: IBSS joined: %s (implement)\n",
+			  __func__, info->ibss_joined ? "true" : "false");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (changed & BSS_CHANGED_ARP_FILTER) {
 		/* Hardware ARP filter address list or state changed */
+<<<<<<< HEAD
 		wiphy_err(wiphy, "%s: arp filtering: enabled %s, count %d"
 			  " (implement)\n", __func__, info->arp_filter_enabled ?
 			  "true" : "false", info->arp_addr_cnt);
+=======
+		brcms_err(core, "%s: arp filtering: %d addresses"
+			  " (implement)\n", __func__, info->arp_addr_cnt);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (changed & BSS_CHANGED_QOS) {
@@ -533,8 +875,13 @@ brcms_ops_bss_info_changed(struct ieee80211_hw *hw,
 		 * QoS for this association was enabled/disabled.
 		 * Note that it is only ever disabled for station mode.
 		 */
+<<<<<<< HEAD
 		wiphy_err(wiphy, "%s: qos enabled: %s (implement)\n", __func__,
 			  info->qos ? "true" : "false");
+=======
+		brcms_err(core, "%s: qos enabled: %s (implement)\n",
+			  __func__, info->qos ? "true" : "false");
+>>>>>>> refs/remotes/origin/master
 	}
 	return;
 }
@@ -545,12 +892,17 @@ brcms_ops_configure_filter(struct ieee80211_hw *hw,
 			unsigned int *total_flags, u64 multicast)
 {
 	struct brcms_info *wl = hw->priv;
+<<<<<<< HEAD
 	struct wiphy *wiphy = hw->wiphy;
+=======
+	struct bcma_device *core = wl->wlc->hw->d11core;
+>>>>>>> refs/remotes/origin/master
 
 	changed_flags &= MAC_FILTERS;
 	*total_flags &= MAC_FILTERS;
 
 	if (changed_flags & FIF_PROMISC_IN_BSS)
+<<<<<<< HEAD
 		wiphy_dbg(wiphy, "FIF_PROMISC_IN_BSS\n");
 	if (changed_flags & FIF_ALLMULTI)
 		wiphy_dbg(wiphy, "FIF_ALLMULTI\n");
@@ -564,6 +916,21 @@ brcms_ops_configure_filter(struct ieee80211_hw *hw,
 		wiphy_dbg(wiphy, "FIF_PSPOLL\n");
 	if (changed_flags & FIF_BCN_PRBRESP_PROMISC)
 		wiphy_dbg(wiphy, "FIF_BCN_PRBRESP_PROMISC\n");
+=======
+		brcms_dbg_info(core, "FIF_PROMISC_IN_BSS\n");
+	if (changed_flags & FIF_ALLMULTI)
+		brcms_dbg_info(core, "FIF_ALLMULTI\n");
+	if (changed_flags & FIF_FCSFAIL)
+		brcms_dbg_info(core, "FIF_FCSFAIL\n");
+	if (changed_flags & FIF_CONTROL)
+		brcms_dbg_info(core, "FIF_CONTROL\n");
+	if (changed_flags & FIF_OTHER_BSS)
+		brcms_dbg_info(core, "FIF_OTHER_BSS\n");
+	if (changed_flags & FIF_PSPOLL)
+		brcms_dbg_info(core, "FIF_PSPOLL\n");
+	if (changed_flags & FIF_BCN_PRBRESP_PROMISC)
+		brcms_dbg_info(core, "FIF_BCN_PRBRESP_PROMISC\n");
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_bh(&wl->lock);
 	brcms_c_mac_promisc(wl->wlc, *total_flags);
@@ -645,14 +1012,25 @@ brcms_ops_ampdu_action(struct ieee80211_hw *hw,
 		status = brcms_c_aggregatable(wl->wlc, tid);
 		spin_unlock_bh(&wl->lock);
 		if (!status) {
+<<<<<<< HEAD
 			wiphy_err(wl->wiphy, "START: tid %d is not agg\'able\n",
 				  tid);
+=======
+			brcms_err(wl->wlc->hw->d11core,
+				  "START: tid %d is not agg\'able\n", tid);
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 		ieee80211_start_tx_ba_cb_irqsafe(vif, sta->addr, tid);
 		break;
 
+<<<<<<< HEAD
 	case IEEE80211_AMPDU_TX_STOP:
+=======
+	case IEEE80211_AMPDU_TX_STOP_CONT:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+>>>>>>> refs/remotes/origin/master
 		spin_lock_bh(&wl->lock);
 		brcms_c_ampdu_flush(wl->wlc, sta, tid);
 		spin_unlock_bh(&wl->lock);
@@ -673,8 +1051,13 @@ brcms_ops_ampdu_action(struct ieee80211_hw *hw,
 		/* Power save wakeup */
 		break;
 	default:
+<<<<<<< HEAD
 		wiphy_err(wl->wiphy, "%s: Invalid command, ignoring\n",
 			  __func__);
+=======
+		brcms_err(wl->wlc->hw->d11core,
+			  "%s: Invalid command, ignoring\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -692,6 +1075,7 @@ static void brcms_ops_rfkill_poll(struct ieee80211_hw *hw)
 	wiphy_rfkill_set_hw_state(wl->pub->ieee_hw->wiphy, blocked);
 }
 
+<<<<<<< HEAD
 static void brcms_ops_flush(struct ieee80211_hw *hw, bool drop)
 {
 	struct brcms_info *wl = hw->priv;
@@ -701,6 +1085,52 @@ static void brcms_ops_flush(struct ieee80211_hw *hw, bool drop)
 	/* wait for packet queue and dma fifos to run empty */
 	spin_lock_bh(&wl->lock);
 	brcms_c_wait_for_tx_completion(wl->wlc, drop);
+=======
+static bool brcms_tx_flush_completed(struct brcms_info *wl)
+{
+	bool result;
+
+	spin_lock_bh(&wl->lock);
+	result = brcms_c_tx_flush_completed(wl->wlc);
+	spin_unlock_bh(&wl->lock);
+	return result;
+}
+
+static void brcms_ops_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
+{
+	struct brcms_info *wl = hw->priv;
+	int ret;
+
+	no_printk("%s: drop = %s\n", __func__, drop ? "true" : "false");
+
+	ret = wait_event_timeout(wl->tx_flush_wq,
+				 brcms_tx_flush_completed(wl),
+				 msecs_to_jiffies(BRCMS_FLUSH_TIMEOUT));
+
+	brcms_dbg_mac80211(wl->wlc->hw->d11core,
+			   "ret=%d\n", jiffies_to_msecs(ret));
+}
+
+static u64 brcms_ops_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+{
+	struct brcms_info *wl = hw->priv;
+	u64 tsf;
+
+	spin_lock_bh(&wl->lock);
+	tsf = brcms_c_tsf_get(wl->wlc);
+	spin_unlock_bh(&wl->lock);
+
+	return tsf;
+}
+
+static void brcms_ops_set_tsf(struct ieee80211_hw *hw,
+			   struct ieee80211_vif *vif, u64 tsf)
+{
+	struct brcms_info *wl = hw->priv;
+
+	spin_lock_bh(&wl->lock);
+	brcms_c_tsf_set(wl->wlc, tsf);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_bh(&wl->lock);
 }
 
@@ -720,6 +1150,7 @@ static const struct ieee80211_ops brcms_ops = {
 	.ampdu_action = brcms_ops_ampdu_action,
 	.rfkill_poll = brcms_ops_rfkill_poll,
 	.flush = brcms_ops_flush,
+<<<<<<< HEAD
 };
 
 /*
@@ -730,6 +1161,12 @@ static int brcms_set_hint(struct brcms_info *wl, char *abbrev)
 	return regulatory_hint(wl->pub->ieee_hw->wiphy, abbrev);
 }
 
+=======
+	.get_tsf = brcms_ops_get_tsf,
+	.set_tsf = brcms_ops_set_tsf,
+};
+
+>>>>>>> refs/remotes/origin/master
 void brcms_dpc(unsigned long data)
 {
 	struct brcms_info *wl;
@@ -764,6 +1201,7 @@ void brcms_dpc(unsigned long data)
 
  done:
 	spin_unlock_bh(&wl->lock);
+<<<<<<< HEAD
 }
 
 /*
@@ -884,18 +1322,26 @@ static void brcms_remove(struct bcma_device *pdev)
 
 	bcma_set_drvdata(pdev, NULL);
 	ieee80211_free_hw(hw);
+=======
+	wake_up(&wl->tx_flush_wq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t brcms_isr(int irq, void *dev_id)
 {
 	struct brcms_info *wl;
+<<<<<<< HEAD
 	bool ours, wantdpc;
+=======
+	irqreturn_t ret = IRQ_NONE;
+>>>>>>> refs/remotes/origin/master
 
 	wl = (struct brcms_info *) dev_id;
 
 	spin_lock(&wl->isr_lock);
 
 	/* call common first level interrupt handler */
+<<<<<<< HEAD
 	ours = brcms_c_isr(wl->wlc, &wantdpc);
 	if (ours) {
 		/* if more to do... */
@@ -905,11 +1351,21 @@ static irqreturn_t brcms_isr(int irq, void *dev_id)
 			/* schedule dpc */
 			tasklet_schedule(&wl->tasklet);
 		}
+=======
+	if (brcms_c_isr(wl->wlc)) {
+		/* schedule second level handler */
+		tasklet_schedule(&wl->tasklet);
+		ret = IRQ_HANDLED;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_unlock(&wl->isr_lock);
 
+<<<<<<< HEAD
 	return IRQ_RETVAL(ours);
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -970,7 +1426,20 @@ static int ieee_hw_init(struct ieee80211_hw *hw)
 
 	/* channel change time is dependent on chip and band  */
 	hw->channel_change_time = 7 * 1000;
+<<<<<<< HEAD
 	hw->wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION);
+=======
+	hw->wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION) |
+				     BIT(NL80211_IFTYPE_AP) |
+				     BIT(NL80211_IFTYPE_ADHOC);
+
+	/*
+	 * deactivate sending probe responses by ucude, because this will
+	 * cause problems when WPS is used.
+	 *
+	 * hw->wiphy->flags |= WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD;
+	 */
+>>>>>>> refs/remotes/origin/master
 
 	hw->rate_control_algorithm = "minstrel_ht";
 
@@ -1015,12 +1484,18 @@ static struct brcms_info *brcms_attach(struct bcma_device *pdev)
 
 	atomic_set(&wl->callbacks, 0);
 
+<<<<<<< HEAD
+=======
+	init_waitqueue_head(&wl->tx_flush_wq);
+
+>>>>>>> refs/remotes/origin/master
 	/* setup the bottom half handler */
 	tasklet_init(&wl->tasklet, brcms_dpc, (unsigned long) wl);
 
 	spin_lock_init(&wl->lock);
 	spin_lock_init(&wl->isr_lock);
 
+<<<<<<< HEAD
 	/* prepare ucode */
 	if (brcms_request_fw(wl, pdev->bus->host_pci) < 0) {
 		wiphy_err(wl->wiphy, "%s: Failed to find firmware usually in "
@@ -1033,6 +1508,10 @@ static struct brcms_info *brcms_attach(struct bcma_device *pdev)
 	/* common load-time initialization */
 	wl->wlc = brcms_c_attach((void *)wl, pdev, unit, false, &err);
 	brcms_release_fw(wl);
+=======
+	/* common load-time initialization */
+	wl->wlc = brcms_c_attach((void *)wl, pdev, unit, false, &err);
+>>>>>>> refs/remotes/origin/master
 	if (!wl->wlc) {
 		wiphy_err(wl->wiphy, "%s: attach() failed with code %d\n",
 			  KBUILD_MODNAME, err);
@@ -1043,12 +1522,20 @@ static struct brcms_info *brcms_attach(struct bcma_device *pdev)
 	wl->pub->ieee_hw = hw;
 
 	/* register our interrupt handler */
+<<<<<<< HEAD
 	if (request_irq(pdev->bus->host_pci->irq, brcms_isr,
+=======
+	if (request_irq(pdev->irq, brcms_isr,
+>>>>>>> refs/remotes/origin/master
 			IRQF_SHARED, KBUILD_MODNAME, wl)) {
 		wiphy_err(wl->wiphy, "wl%d: request_irq() failed\n", unit);
 		goto fail;
 	}
+<<<<<<< HEAD
 	wl->irq = pdev->bus->host_pci->irq;
+=======
+	wl->irq = pdev->irq;
+>>>>>>> refs/remotes/origin/master
 
 	/* register module */
 	brcms_c_module_register(wl->pub, "linux", wl, NULL);
@@ -1059,6 +1546,11 @@ static struct brcms_info *brcms_attach(struct bcma_device *pdev)
 		goto fail;
 	}
 
+<<<<<<< HEAD
+=======
+	brcms_c_regd_init(wl->wlc);
+
+>>>>>>> refs/remotes/origin/master
 	memcpy(perm, &wl->pub->cur_etheraddr, ETH_ALEN);
 	if (WARN_ON(!is_valid_ether_addr(perm)))
 		goto fail;
@@ -1069,6 +1561,7 @@ static struct brcms_info *brcms_attach(struct bcma_device *pdev)
 		wiphy_err(wl->wiphy, "%s: ieee80211_register_hw failed, status"
 			  "%d\n", __func__, err);
 
+<<<<<<< HEAD
 	if (wl->pub->srom_ccode[0])
 		err = brcms_set_hint(wl, wl->pub->srom_ccode);
 	else
@@ -1077,6 +1570,14 @@ static struct brcms_info *brcms_attach(struct bcma_device *pdev)
 		wiphy_err(wl->wiphy, "%s: regulatory_hint failed, status %d\n",
 			  __func__, err);
 
+=======
+	if (wl->pub->srom_ccode[0] &&
+	    regulatory_hint(wl->wiphy, wl->pub->srom_ccode))
+		wiphy_err(wl->wiphy, "%s: regulatory hint failed\n", __func__);
+
+	brcms_debugfs_attach(wl->pub);
+	brcms_debugfs_create_files(wl->pub);
+>>>>>>> refs/remotes/origin/master
 	n_adapters_found++;
 	return wl;
 
@@ -1095,14 +1596,22 @@ fail:
  *
  * Perimeter lock is initialized in the course of this function.
  */
+<<<<<<< HEAD
 static int __devinit brcms_bcma_probe(struct bcma_device *pdev)
+=======
+static int brcms_bcma_probe(struct bcma_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct brcms_info *wl;
 	struct ieee80211_hw *hw;
 
 	dev_info(&pdev->dev, "mfg %x core %x rev %d class %d irq %d\n",
 		 pdev->id.manuf, pdev->id.id, pdev->id.rev, pdev->id.class,
+<<<<<<< HEAD
 		 pdev->bus->host_pci->irq);
+=======
+		 pdev->irq);
+>>>>>>> refs/remotes/origin/master
 
 	if ((pdev->id.manuf != BCMA_MANUF_BCM) ||
 	    (pdev->id.id != BCMA_CORE_80211))
@@ -1125,6 +1634,11 @@ static int __devinit brcms_bcma_probe(struct bcma_device *pdev)
 		pr_err("%s: brcms_attach failed!\n", __func__);
 		return -ENODEV;
 	}
+<<<<<<< HEAD
+=======
+	brcms_led_register(wl);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1146,14 +1660,21 @@ static int brcms_suspend(struct bcma_device *pdev)
 	wl->pub->hw_up = false;
 	spin_unlock_bh(&wl->lock);
 
+<<<<<<< HEAD
 	pr_debug("brcms_suspend ok\n");
+=======
+	brcms_dbg_info(wl->wlc->hw->d11core, "brcms_suspend ok\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int brcms_resume(struct bcma_device *pdev)
 {
+<<<<<<< HEAD
 	pr_debug("brcms_resume ok\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1162,7 +1683,11 @@ static struct bcma_driver brcms_bcma_driver = {
 	.probe    = brcms_bcma_probe,
 	.suspend  = brcms_suspend,
 	.resume   = brcms_resume,
+<<<<<<< HEAD
 	.remove   = __devexit_p(brcms_remove),
+=======
+	.remove   = brcms_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = brcms_coreid_table,
 };
 
@@ -1186,10 +1711,14 @@ static DECLARE_WORK(brcms_driver_work, brcms_driver_init);
 
 static int __init brcms_module_init(void)
 {
+<<<<<<< HEAD
 #ifdef DEBUG
 	if (msglevel != 0xdeadbeef)
 		brcm_msg_level = msglevel;
 #endif
+=======
+	brcms_debugfs_init();
+>>>>>>> refs/remotes/origin/master
 	if (!schedule_work(&brcms_driver_work))
 		return -EBUSY;
 
@@ -1207,6 +1736,10 @@ static void __exit brcms_module_exit(void)
 {
 	cancel_work_sync(&brcms_driver_work);
 	bcma_driver_unregister(&brcms_bcma_driver);
+<<<<<<< HEAD
+=======
+	brcms_debugfs_exit();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(brcms_module_init);
@@ -1218,7 +1751,11 @@ module_exit(brcms_module_exit);
 void brcms_txflowcontrol(struct brcms_info *wl, struct brcms_if *wlif,
 			 bool state, int prio)
 {
+<<<<<<< HEAD
 	wiphy_err(wl->wiphy, "Shouldn't be here %s\n", __func__);
+=======
+	brcms_err(wl->wlc->hw->d11core, "Shouldn't be here %s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1226,7 +1763,12 @@ void brcms_txflowcontrol(struct brcms_info *wl, struct brcms_if *wlif,
  */
 void brcms_init(struct brcms_info *wl)
 {
+<<<<<<< HEAD
 	BCMMSG(wl->pub->ieee_hw->wiphy, "wl%d\n", wl->pub->unit);
+=======
+	brcms_dbg_info(wl->wlc->hw->d11core, "Initializing wl%d\n",
+		       wl->pub->unit);
+>>>>>>> refs/remotes/origin/master
 	brcms_reset(wl);
 	brcms_c_init(wl->wlc, wl->mute_tx);
 }
@@ -1236,18 +1778,32 @@ void brcms_init(struct brcms_info *wl)
  */
 uint brcms_reset(struct brcms_info *wl)
 {
+<<<<<<< HEAD
 	BCMMSG(wl->pub->ieee_hw->wiphy, "wl%d\n", wl->pub->unit);
+=======
+	brcms_dbg_info(wl->wlc->hw->d11core, "Resetting wl%d\n", wl->pub->unit);
+>>>>>>> refs/remotes/origin/master
 	brcms_c_reset(wl->wlc);
 
 	/* dpc will not be rescheduled */
 	wl->resched = false;
 
+<<<<<<< HEAD
+=======
+	/* inform publicly that interface is down */
+	wl->pub->up = false;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 void brcms_fatal_error(struct brcms_info *wl)
 {
+<<<<<<< HEAD
 	wiphy_err(wl->wlc->wiphy, "wl%d: fatal error, reinitializing\n",
+=======
+	brcms_err(wl->wlc->hw->d11core, "wl%d: fatal error, reinitializing\n",
+>>>>>>> refs/remotes/origin/master
 		  wl->wlc->pub->unit);
 	brcms_reset(wl);
 	ieee80211_restart_hw(wl->pub->ieee_hw);
@@ -1395,8 +1951,14 @@ void brcms_add_timer(struct brcms_timer *t, uint ms, int periodic)
 
 #ifdef DEBUG
 	if (t->set)
+<<<<<<< HEAD
 		wiphy_err(hw->wiphy, "%s: Already set. Name: %s, per %d\n",
 			  __func__, t->name, periodic);
+=======
+		brcms_dbg_info(t->wl->wlc->hw->d11core,
+			       "%s: Already set. Name: %s, per %d\n",
+			       __func__, t->name, periodic);
+>>>>>>> refs/remotes/origin/master
 #endif
 	t->ms = ms;
 	t->periodic = (bool) periodic;
@@ -1486,8 +2048,13 @@ int brcms_ucode_init_buf(struct brcms_info *wl, void **pbuf, u32 idx)
 			}
 		}
 	}
+<<<<<<< HEAD
 	wiphy_err(wl->wiphy, "ERROR: ucode buf tag:%d can not be found!\n",
 		  idx);
+=======
+	brcms_err(wl->wlc->hw->d11core,
+		  "ERROR: ucode buf tag:%d can not be found!\n", idx);
+>>>>>>> refs/remotes/origin/master
 	*pbuf = NULL;
 fail:
 	return -ENODATA;
@@ -1510,7 +2077,11 @@ int brcms_ucode_init_uint(struct brcms_info *wl, size_t *n_bytes, u32 idx)
 				pdata = wl->fw.fw_bin[i]->data +
 					le32_to_cpu(hdr->offset);
 				if (le32_to_cpu(hdr->len) != 4) {
+<<<<<<< HEAD
 					wiphy_err(wl->wiphy,
+=======
+					brcms_err(wl->wlc->hw->d11core,
+>>>>>>> refs/remotes/origin/master
 						  "ERROR: fw hdr len\n");
 					return -ENOMSG;
 				}
@@ -1519,7 +2090,12 @@ int brcms_ucode_init_uint(struct brcms_info *wl, size_t *n_bytes, u32 idx)
 			}
 		}
 	}
+<<<<<<< HEAD
 	wiphy_err(wl->wiphy, "ERROR: ucode tag:%d can not be found!\n", idx);
+=======
+	brcms_err(wl->wlc->hw->d11core,
+		  "ERROR: ucode tag:%d can not be found!\n", idx);
+>>>>>>> refs/remotes/origin/master
 	return -ENOMSG;
 }
 
@@ -1560,8 +2136,13 @@ int brcms_check_firmwares(struct brcms_info *wl)
 				sizeof(struct firmware_hdr));
 			rc = -EBADF;
 		} else if (fw->size < MIN_FW_SIZE || fw->size > MAX_FW_SIZE) {
+<<<<<<< HEAD
 			wiphy_err(wl->wiphy, "%s: out of bounds fw file size "
 				  "%zu\n", __func__, fw->size);
+=======
+			wiphy_err(wl->wiphy, "%s: out of bounds fw file size %zu\n",
+				  __func__, fw->size);
+>>>>>>> refs/remotes/origin/master
 			rc = -EBADF;
 		} else {
 			/* check if ucode section overruns firmware image */
@@ -1601,6 +2182,7 @@ bool brcms_rfkill_set_hw_state(struct brcms_info *wl)
 	spin_lock_bh(&wl->lock);
 	return blocked;
 }
+<<<<<<< HEAD
 
 /*
  * precondition: perimeter lock has been acquired
@@ -1611,3 +2193,5 @@ void brcms_msleep(struct brcms_info *wl, uint ms)
 	msleep(ms);
 	spin_lock_bh(&wl->lock);
 }
+=======
+>>>>>>> refs/remotes/origin/master

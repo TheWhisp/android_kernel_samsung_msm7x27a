@@ -56,10 +56,14 @@ typedef struct isdnloop_sdef {
 #define ISDNLOOP_TIMER_BCREAD 1 /* B-Channel poll-cycle          */
 #define ISDNLOOP_TIMER_DCREAD (HZ/2)	/* D-Channel poll-cycle          */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ISDNLOOP_TIMER_ALERTWAIT (10*HZ)	/* Alert timeout                 */
 =======
 #define ISDNLOOP_TIMER_ALERTWAIT (10 * HZ)	/* Alert timeout                 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ISDNLOOP_TIMER_ALERTWAIT (10 * HZ)	/* Alert timeout                 */
+>>>>>>> refs/remotes/origin/master
 #define ISDNLOOP_MAX_SQUEUE 65536	/* Max. outstanding send-data    */
 #define ISDNLOOP_BCH 2          /* channels per card             */
 
@@ -84,10 +88,14 @@ typedef struct isdnloop_card {
 	struct timer_list rb_timer;	/* Timer for B-Channel-Polls        */
 	struct timer_list
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 c_timer[ISDNLOOP_BCH]; /* Timer for Alerting               */
 =======
 	c_timer[ISDNLOOP_BCH]; /* Timer for Alerting               */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	c_timer[ISDNLOOP_BCH]; /* Timer for Alerting               */
+>>>>>>> refs/remotes/origin/master
 	int l2_proto[ISDNLOOP_BCH];	/* Current layer-2-protocol         */
 	isdn_if interface;      /* Interface to upper layer         */
 	int iptr;               /* Index to imsg-buffer             */
@@ -101,10 +109,14 @@ typedef struct isdnloop_card {
 	int sndcount[ISDNLOOP_BCH];	/* Byte-counters for B-Ch.-send     */
 	struct sk_buff_head
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 bqueue[ISDNLOOP_BCH];  /* B-Channel queues                 */
 =======
 	bqueue[ISDNLOOP_BCH];  /* B-Channel queues                 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bqueue[ISDNLOOP_BCH];  /* B-Channel queues                 */
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff_head dqueue;	/* D-Channel queue                  */
 	spinlock_t isdnloop_lock;
 } isdnloop_card;

@@ -2,6 +2,7 @@
 # Atmel device configuration
 #
 
+<<<<<<< HEAD
 config HAVE_NET_MACB
 	bool
 
@@ -9,6 +10,12 @@ config NET_CADENCE
 	bool "Cadence devices"
 	default y
 	depends on HAVE_NET_MACB || (ARM && ARCH_AT91RM9200)
+=======
+config NET_CADENCE
+	bool "Cadence devices"
+	depends on HAS_IOMEM
+	default y
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y.
 	  Make sure you know the name of your card. Read the Ethernet-HOWTO,
@@ -25,16 +32,25 @@ if NET_CADENCE
 
 config ARM_AT91_ETHER
 	tristate "AT91RM9200 Ethernet support"
+<<<<<<< HEAD
 	depends on ARM && ARCH_AT91RM9200
 	select NET_CORE
 	select MII
+=======
+	depends on HAS_DMA
+	select MACB
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you wish to compile a kernel for the AT91RM9200 and enable
 	  ethernet support, then you should always answer Y to this.
 
 config MACB
 	tristate "Cadence MACB/GEM support"
+<<<<<<< HEAD
 	depends on HAVE_NET_MACB
+=======
+	depends on HAS_DMA
+>>>>>>> refs/remotes/origin/master
 	select PHYLIB
 	---help---
 	  The Cadence MACB ethernet interface is found on many Atmel AT32 and

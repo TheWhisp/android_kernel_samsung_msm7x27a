@@ -18,7 +18,11 @@ if VIRTUALIZATION
 
 config KVM
 	tristate "Kernel-based Virtual Machine (KVM) support"
+<<<<<<< HEAD
 	depends on HAVE_KVM && MODULES && EXPERIMENTAL
+=======
+	depends on HAVE_KVM && MODULES
+>>>>>>> refs/remotes/origin/master
 	select PREEMPT_NOTIFIERS
 	select ANON_INODES
 	---help---
@@ -34,8 +38,11 @@ config KVM
 
 source drivers/vhost/Kconfig
 <<<<<<< HEAD
+<<<<<<< HEAD
 source drivers/virtio/Kconfig
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 endif # VIRTUALIZATION

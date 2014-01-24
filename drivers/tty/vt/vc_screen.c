@@ -23,9 +23,13 @@
 #include <linux/major.h>
 #include <linux/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty.h>
 #include <linux/interrupt.h>
 #include <linux/mm.h>
@@ -104,7 +108,11 @@ vcs_poll_data_get(struct file *file)
 	poll = kzalloc(sizeof(*poll), GFP_KERNEL);
 	if (!poll)
 		return NULL;
+<<<<<<< HEAD
 	poll->cons_num = iminor(file->f_path.dentry->d_inode) & 127;
+=======
+	poll->cons_num = iminor(file_inode(file)) & 127;
+>>>>>>> refs/remotes/origin/master
 	init_waitqueue_head(&poll->waitq);
 	poll->notifier.notifier_call = vcs_notifier;
 	if (register_vt_notifier(&poll->notifier) != 0) {
@@ -187,6 +195,7 @@ static loff_t vcs_lseek(struct file *file, loff_t offset, int orig)
 	int size;
 
 	console_lock();
+<<<<<<< HEAD
 	size = vcs_size(file->f_path.dentry->d_inode);
 	console_unlock();
 	if (size < 0)
@@ -207,13 +216,24 @@ static loff_t vcs_lseek(struct file *file, loff_t offset, int orig)
 	}
 	file->f_pos = offset;
 	return file->f_pos;
+=======
+	size = vcs_size(file_inode(file));
+	console_unlock();
+	if (size < 0)
+		return size;
+	return fixed_size_llseek(file, offset, orig, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static ssize_t
 vcs_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	unsigned int currcons = iminor(inode);
 	struct vc_data *vc;
 	struct vcs_poll_data *poll;
@@ -391,7 +411,11 @@ unlock_out:
 static ssize_t
 vcs_write(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	unsigned int currcons = iminor(inode);
 	struct vc_data *vc;
 	long pos;
@@ -614,16 +638,22 @@ vcs_open(struct inode *inode, struct file *filp)
 	int ret = 0;
 	
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_lock();
 	if(currcons && !vc_cons_allocated(currcons-1))
 		ret = -ENXIO;
 	tty_unlock();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	console_lock();
 	if(currcons && !vc_cons_allocated(currcons-1))
 		ret = -ENXIO;
 	console_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 

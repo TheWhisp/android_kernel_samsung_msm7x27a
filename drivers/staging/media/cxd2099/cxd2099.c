@@ -26,7 +26,10 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c.h>
 #include <linux/wait.h>
 #include <linux/delay.h>
@@ -66,8 +69,14 @@ static int i2c_write_reg(struct i2c_adapter *adapter, u8 adr,
 	struct i2c_msg msg = {.addr = adr, .flags = 0, .buf = m, .len = 2};
 
 	if (i2c_transfer(adapter, &msg, 1) != 1) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to write to I2C register %02x@%02x!\n",
 		       reg, adr);
+=======
+		dev_err(&adapter->dev,
+			"Failed to write to I2C register %02x@%02x!\n",
+			reg, adr);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	return 0;
@@ -79,7 +88,11 @@ static int i2c_write(struct i2c_adapter *adapter, u8 adr,
 	struct i2c_msg msg = {.addr = adr, .flags = 0, .buf = data, .len = len};
 
 	if (i2c_transfer(adapter, &msg, 1) != 1) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Failed to write to I2C!\n");
+=======
+		dev_err(&adapter->dev, "Failed to write to I2C!\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	return 0;
@@ -94,7 +107,11 @@ static int i2c_read_reg(struct i2c_adapter *adapter, u8 adr,
 				   .buf = val, .len = 1} };
 
 	if (i2c_transfer(adapter, msgs, 2) != 2) {
+<<<<<<< HEAD
 		printk(KERN_ERR "error in i2c_read_reg\n");
+=======
+		dev_err(&adapter->dev, "error in i2c_read_reg\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	return 0;
@@ -109,7 +126,11 @@ static int i2c_read(struct i2c_adapter *adapter, u8 adr,
 				 .buf = data, .len = n} };
 
 	if (i2c_transfer(adapter, msgs, 2) != 2) {
+<<<<<<< HEAD
 		printk(KERN_ERR "error in i2c_read\n");
+=======
+		dev_err(&adapter->dev, "error in i2c_read\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	return 0;
@@ -277,7 +298,11 @@ static void cam_mode(struct cxd *ci, int mode)
 #ifdef BUFFER_MODE
 		if (!ci->en.read_data)
 			return;
+<<<<<<< HEAD
 		printk(KERN_INFO "enable cam buffer mode\n");
+=======
+		dev_info(&ci->i2c->dev, "enable cam buffer mode\n");
+>>>>>>> refs/remotes/origin/master
 		/* write_reg(ci, 0x0d, 0x00); */
 		/* write_reg(ci, 0x0e, 0x01); */
 		write_regm(ci, 0x08, 0x40, 0x40);
@@ -524,7 +549,11 @@ static int slot_reset(struct dvb_ca_en50221 *ca, int slot)
 			msleep(10);
 #if 0
 			read_reg(ci, 0x06, &val);
+<<<<<<< HEAD
 			printk(KERN_INFO "%d:%02x\n", i, val);
+=======
+			dev_info(&ci->i2c->dev, "%d:%02x\n", i, val);
+>>>>>>> refs/remotes/origin/master
 			if (!(val&0x10))
 				break;
 #else
@@ -542,7 +571,11 @@ static int slot_shutdown(struct dvb_ca_en50221 *ca, int slot)
 {
 	struct cxd *ci = ca->data;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "slot_shutdown\n");
+=======
+	dev_info(&ci->i2c->dev, "slot_shutdown\n");
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&ci->lock);
 	write_regm(ci, 0x09, 0x08, 0x08);
 	write_regm(ci, 0x20, 0x80, 0x80); /* Reset CAM Mode */
@@ -578,10 +611,17 @@ static int campoll(struct cxd *ci)
 
 	if (istat&0x40) {
 		ci->dr = 1;
+<<<<<<< HEAD
 		printk(KERN_INFO "DR\n");
 	}
 	if (istat&0x20)
 		printk(KERN_INFO "WC\n");
+=======
+		dev_info(&ci->i2c->dev, "DR\n");
+	}
+	if (istat&0x20)
+		dev_info(&ci->i2c->dev, "WC\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (istat&2) {
 		u8 slotstat;
@@ -597,7 +637,11 @@ static int campoll(struct cxd *ci)
 			if (ci->slot_stat) {
 				ci->slot_stat = 0;
 				write_regm(ci, 0x03, 0x00, 0x08);
+<<<<<<< HEAD
 				printk(KERN_INFO "NO CAM\n");
+=======
+				dev_info(&ci->i2c->dev, "NO CAM\n");
+>>>>>>> refs/remotes/origin/master
 				ci->ready = 0;
 			}
 		}
@@ -634,7 +678,11 @@ static int read_data(struct dvb_ca_en50221 *ca, int slot, u8 *ebuf, int ecount)
 	campoll(ci);
 	mutex_unlock(&ci->lock);
 
+<<<<<<< HEAD
 	printk(KERN_INFO "read_data\n");
+=======
+	dev_info(&ci->i2c->dev, "read_data\n");
+>>>>>>> refs/remotes/origin/master
 	if (!ci->dr)
 		return 0;
 
@@ -683,6 +731,7 @@ struct dvb_ca_en50221 *cxd2099_attach(struct cxd2099_cfg *cfg,
 				      void *priv,
 				      struct i2c_adapter *i2c)
 {
+<<<<<<< HEAD
 	struct cxd *ci = 0;
 	u8 val;
 
@@ -698,15 +747,38 @@ struct dvb_ca_en50221 *cxd2099_attach(struct cxd2099_cfg *cfg,
 
 	mutex_init(&ci->lock);
 	memcpy(&ci->cfg, cfg, sizeof(struct cxd2099_cfg));
+=======
+	struct cxd *ci;
+	u8 val;
+
+	if (i2c_read_reg(i2c, cfg->adr, 0, &val) < 0) {
+		dev_info(&i2c->dev, "No CXD2099 detected at %02x\n", cfg->adr);
+		return NULL;
+	}
+
+	ci = kzalloc(sizeof(struct cxd), GFP_KERNEL);
+	if (!ci)
+		return NULL;
+
+	mutex_init(&ci->lock);
+	ci->cfg = *cfg;
+>>>>>>> refs/remotes/origin/master
 	ci->i2c = i2c;
 	ci->lastaddress = 0xff;
 	ci->clk_reg_b = 0x4a;
 	ci->clk_reg_f = 0x1b;
 
+<<<<<<< HEAD
 	memcpy(&ci->en, &en_templ, sizeof(en_templ));
 	ci->en.data = ci;
 	init(ci);
 	printk(KERN_INFO "Attached CXD2099AR at %02x\n", ci->cfg.adr);
+=======
+	ci->en = en_templ;
+	ci->en.data = ci;
+	init(ci);
+	dev_info(&i2c->dev, "Attached CXD2099AR at %02x\n", ci->cfg.adr);
+>>>>>>> refs/remotes/origin/master
 	return &ci->en;
 }
 EXPORT_SYMBOL(cxd2099_attach);

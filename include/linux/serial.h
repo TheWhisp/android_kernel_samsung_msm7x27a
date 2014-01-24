@@ -6,6 +6,7 @@
  * Redistribution of this file is permitted under the terms of the GNU 
  * Public License (GPL)
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_SERIAL_H
 #define _LINUX_SERIAL_H
@@ -14,6 +15,14 @@
 
 #ifdef __KERNEL__
 #include <asm/page.h>
+=======
+#ifndef _LINUX_SERIAL_H
+#define _LINUX_SERIAL_H
+
+#include <asm/page.h>
+#include <uapi/linux/serial.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Counters of the input lines (CTS, DSR, RI, CD) interrupts
@@ -30,6 +39,7 @@ struct async_icount {
  */
 #define SERIAL_XMIT_SIZE PAGE_SIZE
 
+<<<<<<< HEAD
 #endif
 
 struct serial_struct {
@@ -238,4 +248,8 @@ struct serial_rs485 {
 #include <linux/compiler.h>
 
 #endif /* __KERNEL__ */
+=======
+#include <linux/compiler.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_SERIAL_H */

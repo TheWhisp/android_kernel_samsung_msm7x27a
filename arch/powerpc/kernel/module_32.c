@@ -26,8 +26,12 @@
 #include <linux/cache.h>
 #include <linux/bug.h>
 #include <linux/sort.h>
+<<<<<<< HEAD
 
 #include "setup.h"
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #if 0
 #define DEBUGP printk
@@ -175,6 +179,7 @@ int module_frob_arch_sections(Elf32_Ehdr *hdr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int apply_relocate(Elf32_Shdr *sechdrs,
 		   const char *strtab,
 		   unsigned int symindex,
@@ -188,6 +193,8 @@ int apply_relocate(Elf32_Shdr *sechdrs,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int entry_matches(struct ppc_plt_entry *entry, Elf32_Addr val)
 {
 	if (entry->jump[0] == 0x3d800000 + ((val + 0x8000) >> 16)

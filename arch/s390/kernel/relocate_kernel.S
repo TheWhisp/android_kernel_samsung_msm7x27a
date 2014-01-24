@@ -1,7 +1,11 @@
 /*
+<<<<<<< HEAD
  * arch/s390/kernel/relocate_kernel.S
  *
  * (C) Copyright IBM Corp. 2005
+=======
+ * Copyright IBM Corp. 2005
+>>>>>>> refs/remotes/origin/master
  *
  * Author(s): Rolf Adelsberger,
  *	      Heiko Carstens <heiko.carstens@de.ibm.com>
@@ -9,10 +13,16 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/linkage.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+#include <asm/sigp.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * moves the new kernel to its destination...
  * %r2 = pointer to first kimage_entry_t
@@ -28,11 +38,15 @@
 
 	.text
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.globl		relocate_kernel
 	relocate_kernel:
 =======
 ENTRY(relocate_kernel)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(relocate_kernel)
+>>>>>>> refs/remotes/origin/master
 		basr	%r13,0		# base address
 	.base:
 		stnsm	sys_msk-.base(%r13),0xfb	# disable DAT
@@ -101,7 +115,11 @@ ENTRY(relocate_kernel)
 	.no_diag308:
 		sr	%r1,%r1		# clear %r1
 		sr	%r2,%r2		# clear %r2
+<<<<<<< HEAD
 		sigp	%r1,%r2,0x12	# set cpuid to zero
+=======
+		sigp	%r1,%r2,SIGP_SET_ARCHITECTURE # set cpuid to zero
+>>>>>>> refs/remotes/origin/master
 		lpsw	0		# hopefully start new kernel...
 
 		.align	8
@@ -122,9 +140,13 @@ ENTRY(relocate_kernel)
 		.align	8
 	relocate_kernel_end:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.align 8
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.align 8
+>>>>>>> refs/remotes/origin/master
 	.globl	relocate_kernel_len
 	relocate_kernel_len:
 		.quad	relocate_kernel_end - relocate_kernel

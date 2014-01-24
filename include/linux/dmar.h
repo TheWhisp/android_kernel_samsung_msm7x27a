@@ -27,9 +27,12 @@
 #include <linux/irqreturn.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct intel_iommu;
 #if defined(CONFIG_DMAR) || defined(CONFIG_INTR_REMAP)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct acpi_dmar_header;
 
 /* DMAR Flags */
@@ -39,7 +42,10 @@ struct acpi_dmar_header;
 struct intel_iommu;
 #ifdef CONFIG_DMAR_TABLE
 extern struct acpi_table_header *dmar_tbl;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct dmar_drhd_unit {
 	struct list_head list;		/* list of drhd units	*/
 	struct  acpi_dmar_header *hdr;	/* ACPI header		*/
@@ -89,10 +95,14 @@ static inline int enable_drhd_fault_handling(void)
 	return -1;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* !CONFIG_DMAR && !CONFIG_INTR_REMAP */
 =======
 #endif /* !CONFIG_DMAR_TABLE */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* !CONFIG_DMAR_TABLE */
+>>>>>>> refs/remotes/origin/master
 
 struct irte {
 	union {
@@ -123,6 +133,7 @@ struct irte {
 	};
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_INTR_REMAP
 extern int intr_remapping_enabled;
@@ -221,12 +232,17 @@ static inline int reenable_intr_remapping(int eim)
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum {
 	IRQ_REMAP_XAPIC_MODE,
 	IRQ_REMAP_X2APIC_MODE,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Can't use the common MSI interrupt functions
  * since DMAR is not a pci device
  */
@@ -240,10 +256,14 @@ extern irqreturn_t dmar_fault(int irq, void *dev_id);
 extern int arch_setup_dmar_msi(unsigned int irq);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DMAR
 =======
 #ifdef CONFIG_INTEL_IOMMU
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/master
 extern int iommu_detected, no_iommu;
 extern struct list_head dmar_rmrr_units;
 struct dmar_rmrr_unit {
@@ -267,11 +287,14 @@ struct dmar_atsr_unit {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int intel_iommu_init(void);
 #else /* !CONFIG_DMAR: */
 static inline int intel_iommu_init(void) { return -ENODEV; }
 #endif /* CONFIG_DMAR */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int dmar_parse_rmrr_atsr_dev(void);
 extern int dmar_parse_one_rmrr(struct acpi_dmar_header *header);
 extern int dmar_parse_one_atsr(struct acpi_dmar_header *header);
@@ -293,6 +316,9 @@ static inline int dmar_parse_rmrr_atsr_dev(void)
 	return 0;
 }
 #endif /* CONFIG_INTEL_IOMMU */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __DMAR_H__ */

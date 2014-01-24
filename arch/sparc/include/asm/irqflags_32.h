@@ -14,9 +14,13 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/psr.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/psr.h>
+>>>>>>> refs/remotes/origin/master
 
 extern void arch_local_irq_restore(unsigned long);
 extern unsigned long arch_local_irq_save(void);

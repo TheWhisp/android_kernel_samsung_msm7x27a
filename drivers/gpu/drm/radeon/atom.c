@@ -666,10 +666,15 @@ static void atom_op_delay(atom_exec_context *ctx, int *ptr, int arg)
 	if (arg == ATOM_UNIT_MICROSEC)
 		udelay(count);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (!drm_can_sleep())
 		mdelay(count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (!drm_can_sleep())
+		mdelay(count);
+>>>>>>> refs/remotes/origin/master
 	else
 		msleep(count);
 }
@@ -1246,6 +1251,11 @@ static int atom_iio_len[] = { 1, 2, 3, 3, 3, 3, 4, 4, 4, 3 };
 static void atom_index_iio(struct atom_context *ctx, int base)
 {
 	ctx->iio = kzalloc(2 * 256, GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (!ctx->iio)
+		return;
+>>>>>>> refs/remotes/origin/master
 	while (CU8(base) == ATOM_IIO_START) {
 		ctx->iio[CU8(base + 1)] = base + 2;
 		base += 2;
@@ -1265,11 +1275,17 @@ struct atom_context *atom_parse(struct card_info *card, void *bios)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!ctx)
 		return NULL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ctx)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	ctx->card = card;
 	ctx->bios = bios;
 
@@ -1298,6 +1314,13 @@ struct atom_context *atom_parse(struct card_info *card, void *bios)
 	ctx->cmd_table = CU16(base + ATOM_ROM_CMD_PTR);
 	ctx->data_table = CU16(base + ATOM_ROM_DATA_PTR);
 	atom_index_iio(ctx, CU16(ctx->data_table + ATOM_DATA_IIO_PTR) + 4);
+<<<<<<< HEAD
+=======
+	if (!ctx->iio) {
+		atom_destroy(ctx);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	str = CSTR(CU16(base + ATOM_ROM_MSG_PTR));
 	while (*str && ((*str == '\n') || (*str == '\r')))
@@ -1346,8 +1369,12 @@ int atom_asic_init(struct atom_context *ctx)
 
 void atom_destroy(struct atom_context *ctx)
 {
+<<<<<<< HEAD
 	if (ctx->iio)
 		kfree(ctx->iio);
+=======
+	kfree(ctx->iio);
+>>>>>>> refs/remotes/origin/master
 	kfree(ctx);
 }
 

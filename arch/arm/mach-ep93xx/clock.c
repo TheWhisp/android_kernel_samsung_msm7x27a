@@ -26,9 +26,13 @@
 #include <asm/div64.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "soc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 
 struct clk {
 	struct clk	*parent;
@@ -215,7 +219,11 @@ static struct clk_lookup clocks[] = {
 	INIT_CK(NULL,			"hclk",		&clk_h),
 	INIT_CK(NULL,			"apb_pclk",	&clk_p),
 	INIT_CK(NULL,			"pll2",		&clk_pll2),
+<<<<<<< HEAD
 	INIT_CK("ep93xx-ohci",		NULL,		&clk_usb_host),
+=======
+	INIT_CK("ohci-platform",	NULL,		&clk_usb_host),
+>>>>>>> refs/remotes/origin/master
 	INIT_CK("ep93xx-keypad",	NULL,		&clk_keypad),
 	INIT_CK("ep93xx-fb",		NULL,		&clk_video),
 	INIT_CK("ep93xx-spi.0",		NULL,		&clk_spi),

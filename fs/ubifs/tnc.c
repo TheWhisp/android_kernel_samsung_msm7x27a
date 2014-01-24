@@ -224,10 +224,14 @@ static struct ubifs_znode *copy_znode(struct ubifs_info *c,
 	__clear_bit(COW_ZNODE, &zn->flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ubifs_assert(!test_bit(OBSOLETE_ZNODE, &znode->flags));
 =======
 	ubifs_assert(!ubifs_zn_obsolete(znode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ubifs_assert(!ubifs_zn_obsolete(znode));
+>>>>>>> refs/remotes/origin/master
 	__set_bit(OBSOLETE_ZNODE, &znode->flags);
 
 	if (znode->level != 0) {
@@ -276,10 +280,14 @@ static struct ubifs_znode *dirty_cow_znode(struct ubifs_info *c,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!test_bit(COW_ZNODE, &znode->flags)) {
 =======
 	if (!ubifs_zn_cow(znode)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ubifs_zn_cow(znode)) {
+>>>>>>> refs/remotes/origin/master
 		/* znode is not being committed */
 		if (!test_and_set_bit(DIRTY_ZNODE, &znode->flags)) {
 			atomic_long_inc(&c->dirty_zn_cnt);
@@ -347,6 +355,7 @@ static int lnc_add(struct ubifs_info *c, struct ubifs_zbranch *zbr,
 
 	err = ubifs_validate_entry(c, dent);
 	if (err) {
+<<<<<<< HEAD
 		dbg_dump_stack();
 		dbg_dump_node(c, dent);
 		return err;
@@ -357,14 +366,25 @@ static int lnc_add(struct ubifs_info *c, struct ubifs_zbranch *zbr,
 =======
 	lnc_node = kmemdup(node, zbr->len, GFP_NOFS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dump_stack();
+		ubifs_dump_node(c, dent);
+		return err;
+	}
+
+	lnc_node = kmemdup(node, zbr->len, GFP_NOFS);
+>>>>>>> refs/remotes/origin/master
 	if (!lnc_node)
 		/* We don't have to have the cache, so no error */
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(lnc_node, node, zbr->len);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	zbr->leaf = lnc_node;
 	return 0;
 }
@@ -388,8 +408,13 @@ static int lnc_add_directly(struct ubifs_info *c, struct ubifs_zbranch *zbr,
 
 	err = ubifs_validate_entry(c, node);
 	if (err) {
+<<<<<<< HEAD
 		dbg_dump_stack();
 		dbg_dump_node(c, node);
+=======
+		dump_stack();
+		ubifs_dump_node(c, node);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -478,10 +503,14 @@ static int try_read_node(const struct ubifs_info *c, void *buf, int type,
 	dbg_io("LEB %d:%d, %s, length %d", lnum, offs, dbg_ntype(type), len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, offs, len);
 =======
 	err = ubifs_leb_read(c, lnum, buf, offs, len, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, lnum, buf, offs, len, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		ubifs_err("cannot read node type %d from LEB %d:%d, error %d",
 			  type, lnum, offs, err);
@@ -526,10 +555,14 @@ static int fallible_read_node(struct ubifs_info *c, const union ubifs_key *key,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("LEB %d:%d, key %s", zbr->lnum, zbr->offs, DBGKEY(key));
 =======
 	dbg_tnck(key, "LEB %d:%d, key ", zbr->lnum, zbr->offs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "LEB %d:%d, key ", zbr->lnum, zbr->offs);
+>>>>>>> refs/remotes/origin/master
 
 	ret = try_read_node(c, node, key_type(c, key), zbr->len, zbr->lnum,
 			    zbr->offs);
@@ -544,12 +577,17 @@ static int fallible_read_node(struct ubifs_info *c, const union ubifs_key *key,
 	}
 	if (ret == 0 && c->replaying)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbg_mnt("dangling branch LEB %d:%d len %d, key %s",
 			zbr->lnum, zbr->offs, zbr->len, DBGKEY(key));
 =======
 		dbg_mntk(key, "dangling branch LEB %d:%d len %d, key ",
 			zbr->lnum, zbr->offs, zbr->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg_mntk(key, "dangling branch LEB %d:%d len %d, key ",
+			zbr->lnum, zbr->offs, zbr->len);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1025,6 +1063,7 @@ static int fallible_resolve_collision(struct ubifs_info *c,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_mnt("dangling match LEB %d:%d len %d %s",
 		o_znode->zbranch[o_n].lnum, o_znode->zbranch[o_n].offs,
 		o_znode->zbranch[o_n].len, DBGKEY(key));
@@ -1033,6 +1072,11 @@ static int fallible_resolve_collision(struct ubifs_info *c,
 		o_znode->zbranch[o_n].lnum, o_znode->zbranch[o_n].offs,
 		o_znode->zbranch[o_n].len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_mntk(key, "dangling match LEB %d:%d len %d key ",
+		o_znode->zbranch[o_n].lnum, o_znode->zbranch[o_n].offs,
+		o_znode->zbranch[o_n].len);
+>>>>>>> refs/remotes/origin/master
 	*zn = o_znode;
 	*n = o_n;
 	return 1;
@@ -1215,10 +1259,14 @@ int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
 	unsigned long time = get_seconds();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("search key %s", DBGKEY(key));
 =======
 	dbg_tnck(key, "search key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "search key ");
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(key_type(c, key) < UBIFS_INVALID_KEY);
 
 	znode = c->zroot.znode;
@@ -1355,10 +1403,14 @@ static int lookup_level0_dirty(struct ubifs_info *c, const union ubifs_key *key,
 	unsigned long time = get_seconds();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("search and dirty key %s", DBGKEY(key));
 =======
 	dbg_tnck(key, "search and dirty key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "search and dirty key ");
+>>>>>>> refs/remotes/origin/master
 
 	znode = c->zroot.znode;
 	if (unlikely(!znode)) {
@@ -1709,10 +1761,14 @@ static int read_wbuf(struct ubifs_wbuf *wbuf, void *buf, int len, int lnum,
 		/* We may safely unlock the write-buffer and read the data */
 		spin_unlock(&wbuf->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ubi_read(c->ubi, lnum, buf, offs, len);
 =======
 		return ubifs_leb_read(c, lnum, buf, offs, len, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ubifs_leb_read(c, lnum, buf, offs, len, 0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Don't read under wbuf */
@@ -1727,10 +1783,14 @@ static int read_wbuf(struct ubifs_wbuf *wbuf, void *buf, int len, int lnum,
 	if (rlen > 0)
 		/* Read everything that goes before write-buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ubi_read(c->ubi, lnum, buf, offs, rlen);
 =======
 		return ubifs_leb_read(c, lnum, buf, offs, rlen, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ubifs_leb_read(c, lnum, buf, offs, rlen, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1774,12 +1834,17 @@ static int validate_data_node(struct ubifs_info *c, void *buf,
 		ubifs_err("bad key in node at LEB %d:%d",
 			  zbr->lnum, zbr->offs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbg_tnc("looked for key %s found node's key %s",
 			DBGKEY(&zbr->key), DBGKEY1(&key1));
 =======
 		dbg_tnck(&zbr->key, "looked for key ");
 		dbg_tnck(&key1, "found node's key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg_tnck(&zbr->key, "looked for key ");
+		dbg_tnck(&key1, "found node's key ");
+>>>>>>> refs/remotes/origin/master
 		goto out_err;
 	}
 
@@ -1789,8 +1854,13 @@ out_err:
 	err = -EINVAL;
 out:
 	ubifs_err("bad node at LEB %d:%d", zbr->lnum, zbr->offs);
+<<<<<<< HEAD
 	dbg_dump_node(c, buf);
 	dbg_dump_stack();
+=======
+	ubifs_dump_node(c, buf);
+	dump_stack();
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -1823,10 +1893,14 @@ int ubifs_tnc_bulk_read(struct ubifs_info *c, struct bu_info *bu)
 		err = read_wbuf(wbuf, bu->buf, len, lnum, offs);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_read(c->ubi, lnum, bu->buf, offs, len);
 =======
 		err = ubifs_leb_read(c, lnum, bu->buf, offs, len, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_read(c, lnum, bu->buf, offs, len, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Check for a race with GC */
 	if (maybe_leb_gced(c, lnum, bu->gc_seq))
@@ -1835,12 +1909,17 @@ int ubifs_tnc_bulk_read(struct ubifs_info *c, struct bu_info *bu)
 	if (err && err != -EBADMSG) {
 		ubifs_err("failed to read from LEB %d:%d, error %d",
 			  lnum, offs, err);
+<<<<<<< HEAD
 		dbg_dump_stack();
 <<<<<<< HEAD
 		dbg_tnc("key %s", DBGKEY(&bu->key));
 =======
 		dbg_tnck(&bu->key, "key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dump_stack();
+		dbg_tnck(&bu->key, "key ");
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -1876,10 +1955,14 @@ static int do_lookup_nm(struct ubifs_info *c, const union ubifs_key *key,
 	struct ubifs_znode *znode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("name '%.*s' key %s", nm->len, nm->name, DBGKEY(key));
 =======
 	dbg_tnck(key, "name '%.*s' key ", nm->len, nm->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "name '%.*s' key ", nm->len, nm->name);
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&c->tnc_mutex);
 	found = ubifs_lookup_level0(c, key, &znode, &n);
 	if (!found) {
@@ -2054,11 +2137,15 @@ again:
 	if (znode->child_cnt < c->fanout) {
 		ubifs_assert(n != c->fanout);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbg_tnc("inserted at %d level %d, key %s", n, znode->level,
 			DBGKEY(key));
 =======
 		dbg_tnck(key, "inserted at %d level %d, key ", n, znode->level);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dbg_tnck(key, "inserted at %d level %d, key ", n, znode->level);
+>>>>>>> refs/remotes/origin/master
 
 		insert_zbranch(znode, zbr, n);
 
@@ -2074,10 +2161,14 @@ again:
 	 * split it.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("splitting level %d, key %s", znode->level, DBGKEY(key));
 =======
 	dbg_tnck(key, "splitting level %d, key ", znode->level);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "splitting level %d, key ", znode->level);
+>>>>>>> refs/remotes/origin/master
 
 	if (znode->alt)
 		/*
@@ -2172,10 +2263,14 @@ do_split:
 
 	/* Insert new key and branch */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("inserting at %d level %d, key %s", n, zn->level, DBGKEY(key));
 =======
 	dbg_tnck(key, "inserting at %d level %d, key ", n, zn->level);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "inserting at %d level %d, key ", n, zn->level);
+>>>>>>> refs/remotes/origin/master
 
 	insert_zbranch(zi, zbr, n);
 
@@ -2252,10 +2347,14 @@ int ubifs_tnc_add(struct ubifs_info *c, const union ubifs_key *key, int lnum,
 
 	mutex_lock(&c->tnc_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("%d:%d, len %d, key %s", lnum, offs, len, DBGKEY(key));
 =======
 	dbg_tnck(key, "%d:%d, len %d, key ", lnum, offs, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "%d:%d, len %d, key ", lnum, offs, len);
+>>>>>>> refs/remotes/origin/master
 	found = lookup_level0_dirty(c, key, &znode, &n);
 	if (!found) {
 		struct ubifs_zbranch zbr;
@@ -2305,12 +2404,17 @@ int ubifs_tnc_replace(struct ubifs_info *c, const union ubifs_key *key,
 
 	mutex_lock(&c->tnc_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("old LEB %d:%d, new LEB %d:%d, len %d, key %s", old_lnum,
 		old_offs, lnum, offs, len, DBGKEY(key));
 =======
 	dbg_tnck(key, "old LEB %d:%d, new LEB %d:%d, len %d, key ", old_lnum,
 		 old_offs, lnum, offs, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "old LEB %d:%d, new LEB %d:%d, len %d, key ", old_lnum,
+		 old_offs, lnum, offs, len);
+>>>>>>> refs/remotes/origin/master
 	found = lookup_level0_dirty(c, key, &znode, &n);
 	if (found < 0) {
 		err = found;
@@ -2393,12 +2497,17 @@ int ubifs_tnc_add_nm(struct ubifs_info *c, const union ubifs_key *key,
 
 	mutex_lock(&c->tnc_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("LEB %d:%d, name '%.*s', key %s", lnum, offs, nm->len, nm->name,
 		DBGKEY(key));
 =======
 	dbg_tnck(key, "LEB %d:%d, name '%.*s', key ",
 		 lnum, offs, nm->len, nm->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "LEB %d:%d, name '%.*s', key ",
+		 lnum, offs, nm->len, nm->name);
+>>>>>>> refs/remotes/origin/master
 	found = lookup_level0_dirty(c, key, &znode, &n);
 	if (found < 0) {
 		err = found;
@@ -2456,7 +2565,11 @@ int ubifs_tnc_add_nm(struct ubifs_info *c, const union ubifs_key *key,
 			 * by passing 'ubifs_tnc_remove_nm()' the same key but
 			 * an unmatchable name.
 			 */
+<<<<<<< HEAD
 			struct qstr noname = { .len = 0, .name = "" };
+=======
+			struct qstr noname = { .name = "" };
+>>>>>>> refs/remotes/origin/master
 
 			err = dbg_check_tnc(c, 0);
 			mutex_unlock(&c->tnc_mutex);
@@ -2492,17 +2605,25 @@ static int tnc_delete(struct ubifs_info *c, struct ubifs_znode *znode, int n)
 	ubifs_assert(znode->level == 0);
 	ubifs_assert(n >= 0 && n < c->fanout);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("deleting %s", DBGKEY(&znode->zbranch[n].key));
 =======
 	dbg_tnck(&znode->zbranch[n].key, "deleting key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(&znode->zbranch[n].key, "deleting key ");
+>>>>>>> refs/remotes/origin/master
 
 	zbr = &znode->zbranch[n];
 	lnc_free(zbr);
 
 	err = ubifs_add_dirt(c, zbr->lnum, zbr->len);
 	if (err) {
+<<<<<<< HEAD
 		dbg_dump_znode(c, znode);
+=======
+		ubifs_dump_znode(c, znode);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 
@@ -2521,10 +2642,14 @@ static int tnc_delete(struct ubifs_info *c, struct ubifs_znode *znode, int n)
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ubifs_assert(!test_bit(OBSOLETE_ZNODE, &znode->flags));
 =======
 		ubifs_assert(!ubifs_zn_obsolete(znode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ubifs_assert(!ubifs_zn_obsolete(znode));
+>>>>>>> refs/remotes/origin/master
 		ubifs_assert(ubifs_zn_dirty(znode));
 
 		zp = znode->parent;
@@ -2581,6 +2706,7 @@ static int tnc_delete(struct ubifs_info *c, struct ubifs_znode *znode, int n)
 			c->zroot.len = zbr->len;
 			c->zroot.znode = znode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ubifs_assert(!test_bit(OBSOLETE_ZNODE,
 				     &zp->flags));
 			ubifs_assert(test_bit(DIRTY_ZNODE, &zp->flags));
@@ -2588,6 +2714,10 @@ static int tnc_delete(struct ubifs_info *c, struct ubifs_znode *znode, int n)
 			ubifs_assert(!ubifs_zn_obsolete(zp));
 			ubifs_assert(ubifs_zn_dirty(zp));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ubifs_assert(!ubifs_zn_obsolete(zp));
+			ubifs_assert(ubifs_zn_dirty(zp));
+>>>>>>> refs/remotes/origin/master
 			atomic_long_dec(&c->dirty_zn_cnt);
 
 			if (zp->cnext) {
@@ -2616,10 +2746,14 @@ int ubifs_tnc_remove(struct ubifs_info *c, const union ubifs_key *key)
 
 	mutex_lock(&c->tnc_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("key %s", DBGKEY(key));
 =======
 	dbg_tnck(key, "key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "key ");
+>>>>>>> refs/remotes/origin/master
 	found = lookup_level0_dirty(c, key, &znode, &n);
 	if (found < 0) {
 		err = found;
@@ -2651,10 +2785,14 @@ int ubifs_tnc_remove_nm(struct ubifs_info *c, const union ubifs_key *key,
 
 	mutex_lock(&c->tnc_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("%.*s, key %s", nm->len, nm->name, DBGKEY(key));
 =======
 	dbg_tnck(key, "%.*s, key ", nm->len, nm->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "%.*s, key ", nm->len, nm->name);
+>>>>>>> refs/remotes/origin/master
 	err = lookup_level0_dirty(c, key, &znode, &n);
 	if (err < 0)
 		goto out_unlock;
@@ -2766,6 +2904,7 @@ int ubifs_tnc_remove_range(struct ubifs_info *c, union ubifs_key *from_key,
 			err = ubifs_add_dirt(c, znode->zbranch[i].lnum,
 					     znode->zbranch[i].len);
 			if (err) {
+<<<<<<< HEAD
 				dbg_dump_znode(c, znode);
 				goto out_unlock;
 			}
@@ -2774,6 +2913,12 @@ int ubifs_tnc_remove_range(struct ubifs_info *c, union ubifs_key *from_key,
 =======
 			dbg_tnck(key, "removing key ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ubifs_dump_znode(c, znode);
+				goto out_unlock;
+			}
+			dbg_tnck(key, "removing key ");
+>>>>>>> refs/remotes/origin/master
 		}
 		if (k) {
 			for (i = n + 1 + k; i < znode->child_cnt; i++)
@@ -2894,10 +3039,14 @@ struct ubifs_dent_node *ubifs_tnc_next_ent(struct ubifs_info *c,
 	union ubifs_key *dkey;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_tnc("%s %s", nm->name ? (char *)nm->name : "(lowest)", DBGKEY(key));
 =======
 	dbg_tnck(key, "%s ", nm->name ? (char *)nm->name : "(lowest)");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_tnck(key, "%s ", nm->name ? (char *)nm->name : "(lowest)");
+>>>>>>> refs/remotes/origin/master
 	ubifs_assert(is_hash_key(c, key));
 
 	mutex_lock(&c->tnc_mutex);
@@ -2988,10 +3137,14 @@ static void tnc_destroy_cnext(struct ubifs_info *c)
 
 		cnext = cnext->cnext;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (test_bit(OBSOLETE_ZNODE, &znode->flags))
 =======
 		if (ubifs_zn_obsolete(znode))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ubifs_zn_obsolete(znode))
+>>>>>>> refs/remotes/origin/master
 			kfree(znode);
 	} while (cnext && cnext != c->cnext);
 }
@@ -3404,8 +3557,11 @@ out_unlock:
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_UBIFS_FS_DEBUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * dbg_check_inode_size - check if inode size is correct.
  * @c: UBIFS file-system description object
@@ -3428,10 +3584,14 @@ int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
 	if (!S_ISREG(inode->i_mode))
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
 =======
 	if (!dbg_is_chk_gen(c))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!dbg_is_chk_gen(c))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	block = (size + UBIFS_BLOCK_SIZE - 1) >> UBIFS_BLOCK_SHIFT;
@@ -3465,6 +3625,7 @@ int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
 out_dump:
 	block = key_block(c, key);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ubifs_err("inode %lu has size %lld, but there are data at offset %lld "
 		  "(data key %s)", (unsigned long)inode->i_ino, size,
 		  ((loff_t)block) << UBIFS_BLOCK_SHIFT, DBGKEY(key));
@@ -3472,18 +3633,29 @@ out_dump:
 	dbg_dump_stack();
 	err = -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ubifs_err("inode %lu has size %lld, but there are data at offset %lld",
 		  (unsigned long)inode->i_ino, size,
 		  ((loff_t)block) << UBIFS_BLOCK_SHIFT);
 	mutex_unlock(&c->tnc_mutex);
+<<<<<<< HEAD
 	dbg_dump_inode(c, inode);
 	dbg_dump_stack();
 	return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ubifs_dump_inode(c, inode);
+	dump_stack();
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 out_unlock:
 	mutex_unlock(&c->tnc_mutex);
 	return err;
 }
+<<<<<<< HEAD
 
 #endif /* CONFIG_UBIFS_FS_DEBUG */
+=======
+>>>>>>> refs/remotes/origin/master

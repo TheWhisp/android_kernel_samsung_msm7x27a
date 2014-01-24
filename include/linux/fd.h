@@ -1,6 +1,7 @@
 #ifndef _LINUX_FD_H
 #define _LINUX_FD_H
 
+<<<<<<< HEAD
 #include <linux/ioctl.h>
 #include <linux/compiler.h>
 
@@ -381,6 +382,10 @@ struct floppy_raw_cmd {
 =======
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/fd.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 #include <linux/compat.h>
 
@@ -400,6 +405,9 @@ struct compat_floppy_struct {
 #define FDGETPRM32 _IOR(2, 0x04, struct compat_floppy_struct)
 #endif
 #endif
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

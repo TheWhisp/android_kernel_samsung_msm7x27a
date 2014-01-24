@@ -1214,8 +1214,11 @@ struct ucc_geth_private {
 	/* index of the first skb which hasn't been transmitted yet. */
 	u16 skb_dirtytx[NUM_TX_QUEUES];
 
+<<<<<<< HEAD
 	struct sk_buff_head rx_recycle;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ugeth_mii_info *mii_info;
 	struct phy_device *phydev;
 	phy_interface_t phy_interface;

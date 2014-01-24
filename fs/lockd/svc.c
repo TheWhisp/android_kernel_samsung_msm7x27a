@@ -36,10 +36,15 @@
 #include <linux/nfs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "netns.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "netns.h"
+
+>>>>>>> refs/remotes/origin/master
 #define NLMDBG_FACILITY		NLMDBG_SVC
 #define LOCKD_BUFSIZE		(1024 + NLMSVC_XDRSIZE)
 #define ALLOWED_SIGS		(sigmask(SIGKILL))
@@ -56,10 +61,15 @@ static struct svc_rqst		*nlmsvc_rqst;
 unsigned long			nlmsvc_timeout;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int lockd_net_id;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int lockd_net_id;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * These can be set at insmod time (useful for NFS as root filesystem),
  * and also changed through the sysctl interface.  -- Jamie Lokier, Aug 2003
@@ -93,6 +103,7 @@ static unsigned long get_lockd_grace_period(void)
 		return nlm_timeout * 5 * HZ;
 }
 
+<<<<<<< HEAD
 static struct lock_manager lockd_manager = {
 };
 
@@ -110,15 +121,45 @@ static void set_grace_period(void)
 	locks_start_grace(&lockd_manager);
 	cancel_delayed_work_sync(&grace_period_end);
 	schedule_delayed_work(&grace_period_end, grace_period);
+=======
+static void grace_ender(struct work_struct *grace)
+{
+	struct delayed_work *dwork = container_of(grace, struct delayed_work,
+						  work);
+	struct lockd_net *ln = container_of(dwork, struct lockd_net,
+					    grace_period_end);
+
+	locks_end_grace(&ln->lockd_manager);
+}
+
+static void set_grace_period(struct net *net)
+{
+	unsigned long grace_period = get_lockd_grace_period();
+	struct lockd_net *ln = net_generic(net, lockd_net_id);
+
+	locks_start_grace(net, &ln->lockd_manager);
+	cancel_delayed_work_sync(&ln->grace_period_end);
+	schedule_delayed_work(&ln->grace_period_end, grace_period);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void restart_grace(void)
 {
 	if (nlmsvc_ops) {
+<<<<<<< HEAD
 		cancel_delayed_work_sync(&grace_period_end);
 		locks_end_grace(&lockd_manager);
 		nlmsvc_invalidate_all();
 		set_grace_period();
+=======
+		struct net *net = &init_net;
+		struct lockd_net *ln = net_generic(net, lockd_net_id);
+
+		cancel_delayed_work_sync(&ln->grace_period_end);
+		locks_end_grace(&ln->lockd_manager);
+		nlmsvc_invalidate_all();
+		set_grace_period(net);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -128,7 +169,11 @@ static void restart_grace(void)
 static int
 lockd(void *vrqstp)
 {
+<<<<<<< HEAD
 	int		err = 0, preverr = 0;
+=======
+	int		err = 0;
+>>>>>>> refs/remotes/origin/master
 	struct svc_rqst *rqstp = vrqstp;
 
 	/* try_to_freeze() is called from svc_recv() */
@@ -143,8 +188,11 @@ lockd(void *vrqstp)
 		nlm_timeout = LOCKD_DFLT_TIMEO;
 	nlmsvc_timeout = nlm_timeout * HZ;
 
+<<<<<<< HEAD
 	set_grace_period();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The main request loop. We don't terminate until the last
 	 * NFS mount or NFS daemon has gone away.
@@ -169,6 +217,7 @@ lockd(void *vrqstp)
 		 * recvfrom routine.
 		 */
 		err = svc_recv(rqstp, timeout);
+<<<<<<< HEAD
 		if (err == -EAGAIN || err == -EINTR) {
 			preverr = err;
 			continue;
@@ -184,14 +233,21 @@ lockd(void *vrqstp)
 		}
 		preverr = err;
 
+=======
+		if (err == -EAGAIN || err == -EINTR)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		dprintk("lockd: request from %s\n",
 				svc_print_addr(rqstp, buf, sizeof(buf)));
 
 		svc_process(rqstp);
 	}
 	flush_signals(current);
+<<<<<<< HEAD
 	cancel_delayed_work_sync(&grace_period_end);
 	locks_end_grace(&lockd_manager);
+=======
+>>>>>>> refs/remotes/origin/master
 	if (nlmsvc_ops)
 		nlmsvc_invalidate_all();
 	nlm_shutdown_hosts();
@@ -199,6 +255,7 @@ lockd(void *vrqstp)
 }
 
 static int create_lockd_listener(struct svc_serv *serv, const char *name,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 const int family, const unsigned short port)
 {
@@ -208,6 +265,8 @@ static int create_lockd_listener(struct svc_serv *serv, const char *name,
 	if (xprt == NULL)
 		return svc_create_xprt(serv, name, &init_net, family, port,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 struct net *net, const int family,
 				 const unsigned short port)
 {
@@ -216,12 +275,16 @@ static int create_lockd_listener(struct svc_serv *serv, const char *name,
 	xprt = svc_find_xprt(serv, name, net, family, 0);
 	if (xprt == NULL)
 		return svc_create_xprt(serv, name, net, family, port,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						SVC_SOCK_DEFAULTS);
 	svc_xprt_put(xprt);
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int create_lockd_family(struct svc_serv *serv, const int family)
 {
@@ -233,6 +296,8 @@ static int create_lockd_family(struct svc_serv *serv, const int family)
 
 	return create_lockd_listener(serv, "tcp", family, nlm_tcpport);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int create_lockd_family(struct svc_serv *serv, struct net *net,
 			       const int family)
 {
@@ -243,7 +308,10 @@ static int create_lockd_family(struct svc_serv *serv, struct net *net,
 		return err;
 
 	return create_lockd_listener(serv, "tcp", net, family, nlm_tcpport);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -257,14 +325,19 @@ static int create_lockd_family(struct svc_serv *serv, struct net *net,
  * negative errno value is returned.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int make_socks(struct svc_serv *serv)
 =======
 static int make_socks(struct svc_serv *serv, struct net *net)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int make_socks(struct svc_serv *serv, struct net *net)
+>>>>>>> refs/remotes/origin/master
 {
 	static int warned;
 	int err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = create_lockd_family(serv, PF_INET);
 	if (err < 0)
@@ -272,12 +345,17 @@ static int make_socks(struct svc_serv *serv, struct net *net)
 
 	err = create_lockd_family(serv, PF_INET6);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = create_lockd_family(serv, net, PF_INET);
 	if (err < 0)
 		goto out_err;
 
 	err = create_lockd_family(serv, net, PF_INET6);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0 && err != -EAFNOSUPPORT)
 		goto out_err;
 
@@ -292,6 +370,7 @@ out_err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Bring up the lockd process if it's not already up.
  */
@@ -300,6 +379,8 @@ int lockd_up(void)
 	struct svc_serv *serv;
 	int		error = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int lockd_up_net(struct svc_serv *serv, struct net *net)
 {
 	struct lockd_net *ln = net_generic(net, lockd_net_id);
@@ -308,18 +389,33 @@ static int lockd_up_net(struct svc_serv *serv, struct net *net)
 	if (ln->nlmsvc_users++)
 		return 0;
 
+<<<<<<< HEAD
 	error = svc_rpcb_setup(serv, net);
 	if (error)
 		goto err_rpcb;
+=======
+	error = svc_bind(serv, net);
+	if (error)
+		goto err_bind;
+>>>>>>> refs/remotes/origin/master
 
 	error = make_socks(serv, net);
 	if (error < 0)
 		goto err_socks;
+<<<<<<< HEAD
+=======
+	set_grace_period(net);
+	dprintk("lockd_up_net: per-net data created; net=%p\n", net);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_socks:
 	svc_rpcb_cleanup(serv, net);
+<<<<<<< HEAD
 err_rpcb:
+=======
+err_bind:
+>>>>>>> refs/remotes/origin/master
 	ln->nlmsvc_users--;
 	return error;
 }
@@ -331,7 +427,14 @@ static void lockd_down_net(struct svc_serv *serv, struct net *net)
 	if (ln->nlmsvc_users) {
 		if (--ln->nlmsvc_users == 0) {
 			nlm_shutdown_hosts_net(net);
+<<<<<<< HEAD
 			svc_shutdown_net(serv, net);
+=======
+			cancel_delayed_work_sync(&ln->grace_period_end);
+			locks_end_grace(&ln->lockd_manager);
+			svc_shutdown_net(serv, net);
+			dprintk("lockd_down_net: per-net data destroyed; net=%p\n", net);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		printk(KERN_ERR "lockd_down_net: no users! task=%p, net=%p\n",
@@ -340,6 +443,7 @@ static void lockd_down_net(struct svc_serv *serv, struct net *net)
 	}
 }
 
+<<<<<<< HEAD
 /*
  * Bring up the lockd process if it's not already up.
  */
@@ -363,6 +467,63 @@ int lockd_up(struct net *net)
 		goto out;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int lockd_start_svc(struct svc_serv *serv)
+{
+	int error;
+
+	if (nlmsvc_rqst)
+		return 0;
+
+	/*
+	 * Create the kernel thread and wait for it to start.
+	 */
+	nlmsvc_rqst = svc_prepare_thread(serv, &serv->sv_pools[0], NUMA_NO_NODE);
+	if (IS_ERR(nlmsvc_rqst)) {
+		error = PTR_ERR(nlmsvc_rqst);
+		printk(KERN_WARNING
+			"lockd_up: svc_rqst allocation failed, error=%d\n",
+			error);
+		goto out_rqst;
+	}
+
+	svc_sock_update_bufs(serv);
+	serv->sv_maxconn = nlm_max_connections;
+
+	nlmsvc_task = kthread_run(lockd, nlmsvc_rqst, "%s", serv->sv_name);
+	if (IS_ERR(nlmsvc_task)) {
+		error = PTR_ERR(nlmsvc_task);
+		printk(KERN_WARNING
+			"lockd_up: kthread_run failed, error=%d\n", error);
+		goto out_task;
+	}
+	dprintk("lockd_up: service started\n");
+	return 0;
+
+out_task:
+	svc_exit_thread(nlmsvc_rqst);
+	nlmsvc_task = NULL;
+out_rqst:
+	nlmsvc_rqst = NULL;
+	return error;
+}
+
+static struct svc_serv *lockd_create_svc(void)
+{
+	struct svc_serv *serv;
+
+	/*
+	 * Check whether we're already up and running.
+	 */
+	if (nlmsvc_rqst) {
+		/*
+		 * Note: increase service usage, because later in case of error
+		 * svc_destroy() will be called.
+		 */
+		svc_get(nlmsvc_rqst->rq_server);
+		return nlmsvc_rqst->rq_server;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Sanity check: if there's no pid,
@@ -372,6 +533,7 @@ int lockd_up(struct net *net)
 		printk(KERN_WARNING
 			"lockd_up: no pid, %d users??\n", nlmsvc_users);
 
+<<<<<<< HEAD
 	error = -ENOMEM;
 	serv = svc_create(&nlmsvc_program, LOCKD_BUFSIZE, NULL);
 	if (!serv) {
@@ -436,10 +598,47 @@ int lockd_up(struct net *net)
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
+=======
+	serv = svc_create(&nlmsvc_program, LOCKD_BUFSIZE, NULL);
+	if (!serv) {
+		printk(KERN_WARNING "lockd_up: create service failed\n");
+		return ERR_PTR(-ENOMEM);
+	}
+	dprintk("lockd_up: service created\n");
+	return serv;
+}
+
+/*
+ * Bring up the lockd process if it's not already up.
+ */
+int lockd_up(struct net *net)
+{
+	struct svc_serv *serv;
+	int error;
+
+	mutex_lock(&nlmsvc_mutex);
+
+	serv = lockd_create_svc();
+	if (IS_ERR(serv)) {
+		error = PTR_ERR(serv);
+		goto err_create;
+	}
+
+	error = lockd_up_net(serv, net);
+	if (error < 0)
+		goto err_net;
+
+	error = lockd_start_svc(serv);
+	if (error < 0)
+		goto err_start;
+
+	nlmsvc_users++;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Note: svc_serv structures have an initial use count of 1,
 	 * so we exit through here on both success and failure.
 	 */
+<<<<<<< HEAD
 destroy_and_out:
 	svc_destroy(serv);
 out:
@@ -454,6 +653,17 @@ err_start:
 	lockd_down_net(serv, net);
 	goto destroy_and_out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err_net:
+	svc_destroy(serv);
+err_create:
+	mutex_unlock(&nlmsvc_mutex);
+	return error;
+
+err_start:
+	lockd_down_net(serv, net);
+	goto err_net;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(lockd_up);
 
@@ -462,15 +672,21 @@ EXPORT_SYMBOL_GPL(lockd_up);
  */
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 lockd_down(void)
 {
 	mutex_lock(&nlmsvc_mutex);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 lockd_down(struct net *net)
 {
 	mutex_lock(&nlmsvc_mutex);
 	lockd_down_net(nlmsvc_rqst->rq_server, net);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (nlmsvc_users) {
 		if (--nlmsvc_users)
 			goto out;
@@ -485,7 +701,13 @@ lockd_down(struct net *net)
 		BUG();
 	}
 	kthread_stop(nlmsvc_task);
+<<<<<<< HEAD
 	svc_exit_thread(nlmsvc_rqst);
+=======
+	dprintk("lockd_down: service stopped\n");
+	svc_exit_thread(nlmsvc_rqst);
+	dprintk("lockd_down: service destroyed\n");
+>>>>>>> refs/remotes/origin/master
 	nlmsvc_task = NULL;
 	nlmsvc_rqst = NULL;
 out:
@@ -642,9 +864,19 @@ module_param(nsm_use_hostnames, bool, 0644);
 module_param(nlm_max_connections, uint, 0644);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int lockd_init_net(struct net *net)
 {
+=======
+static int lockd_init_net(struct net *net)
+{
+	struct lockd_net *ln = net_generic(net, lockd_net_id);
+
+	INIT_DELAYED_WORK(&ln->grace_period_end, grace_ender);
+	INIT_LIST_HEAD(&ln->grace_list);
+	spin_lock_init(&ln->nsm_clnt_lock);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -660,13 +892,17 @@ static struct pernet_operations lockd_net_ops = {
 };
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialising and terminating the module.
  */
 
 static int __init init_nlm(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SYSCTL
 	nlm_sysctl_table = register_sysctl_table(nlm_sysctl_root);
@@ -675,6 +911,8 @@ static int __init init_nlm(void)
 	return 0;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 #ifdef CONFIG_SYSCTL
@@ -694,7 +932,10 @@ err_pernet:
 #endif
 err_sysctl:
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit exit_nlm(void)
@@ -702,9 +943,13 @@ static void __exit exit_nlm(void)
 	/* FIXME: delete all NLM clients */
 	nlm_shutdown_hosts();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unregister_pernet_subsys(&lockd_net_ops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unregister_pernet_subsys(&lockd_net_ops);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SYSCTL
 	unregister_sysctl_table(nlm_sysctl_table);
 #endif

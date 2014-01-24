@@ -22,10 +22,23 @@ struct regulator_init_data;
 /**
  * struct fixed_voltage_config - fixed_voltage_config structure
  * @supply_name:	Name of the regulator supply
+<<<<<<< HEAD
+=======
+ * @input_supply:	Name of the input regulator supply
+>>>>>>> refs/remotes/origin/master
  * @microvolts:		Output voltage of regulator
  * @gpio:		GPIO to use for enable control
  * 			set to -EINVAL if not used
  * @startup_delay:	Start-up time in microseconds
+<<<<<<< HEAD
+=======
+ * @gpio_is_open_drain: Gpio pin is open drain or normal type.
+ *			If it is open drain type then HIGH will be set
+ *			through PULL-UP with setting gpio as input
+ *			and low will be set as gpio-output with driven
+ *			to low. For non-open-drain case, the gpio will
+ *			will be in output and drive to low/high accordingly.
+>>>>>>> refs/remotes/origin/master
  * @enable_high:	Polarity of enable GPIO
  *			1 = Active high, 0 = Active low
  * @enabled_at_boot:	Whether regulator has been enabled at
@@ -40,14 +53,23 @@ struct regulator_init_data;
  */
 struct fixed_voltage_config {
 	const char *supply_name;
+<<<<<<< HEAD
 	int microvolts;
 	int gpio;
 	unsigned startup_delay;
+=======
+	const char *input_supply;
+	int microvolts;
+	int gpio;
+	unsigned startup_delay;
+	unsigned gpio_is_open_drain:1;
+>>>>>>> refs/remotes/origin/master
 	unsigned enable_high:1;
 	unsigned enabled_at_boot:1;
 	struct regulator_init_data *init_data;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 struct regulator_consumer_supply;
@@ -58,10 +80,26 @@ struct platform_device *regulator_register_fixed(int id,
 #else
 static inline struct platform_device *regulator_register_fixed(int id,
 		struct regulator_consumer_supply *supplies, int num_supplies)
+=======
+struct regulator_consumer_supply;
+
+#if IS_ENABLED(CONFIG_REGULATOR)
+struct platform_device *regulator_register_always_on(int id, const char *name,
+		struct regulator_consumer_supply *supplies, int num_supplies, int uv);
+#else
+static inline struct platform_device *regulator_register_always_on(int id, const char *name,
+		struct regulator_consumer_supply *supplies, int num_supplies, int uv)
+>>>>>>> refs/remotes/origin/master
 {
 	return NULL;
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define regulator_register_fixed(id, s, ns) regulator_register_always_on(id, \
+						"fixed-dummy", s, ns, 0)
+
+>>>>>>> refs/remotes/origin/master
 #endif

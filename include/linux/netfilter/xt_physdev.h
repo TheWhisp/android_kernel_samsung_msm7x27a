@@ -1,6 +1,7 @@
 #ifndef _XT_PHYSDEV_H
 #define _XT_PHYSDEV_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #ifdef __KERNEL__
@@ -22,5 +23,9 @@ struct xt_physdev_info {
 	__u8 invert;
 	__u8 bitmask;
 };
+=======
+#include <linux/if.h>
+#include <uapi/linux/netfilter/xt_physdev.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /*_XT_PHYSDEV_H*/

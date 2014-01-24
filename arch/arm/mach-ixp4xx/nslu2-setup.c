@@ -17,10 +17,14 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/if_ether.h>
 #include <linux/irq.h>
 #include <linux/serial.h>
@@ -35,9 +39,12 @@
 #include <asm/mach/flash.h>
 #include <asm/mach/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NSLU2_SDA_PIN		7
 #define NSLU2_SCL_PIN		6
@@ -205,11 +212,16 @@ static void nslu2_power_off(void)
 {
 	/* This causes the box to drop the power and go dead. */
 
+<<<<<<< HEAD
 	/* enable the pwr cntl gpio */
 	gpio_line_config(NSLU2_PO_GPIO, IXP4XX_GPIO_OUT);
 
 	/* do the deed */
 	gpio_line_set(NSLU2_PO_GPIO, IXP4XX_GPIO_HIGH);
+=======
+	/* enable the pwr cntl gpio and assert power off */
+	gpio_direction_output(NSLU2_PO_GPIO, 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t nslu2_power_handler(int irq, void *dev_id)
@@ -231,6 +243,19 @@ static irqreturn_t nslu2_reset_handler(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
+=======
+static int __init nslu2_gpio_init(void)
+{
+	if (!machine_is_nslu2())
+		return 0;
+
+	/* Request the power off GPIO */
+	return gpio_request(NSLU2_PO_GPIO, "power off");
+}
+device_initcall(nslu2_gpio_init);
+
+>>>>>>> refs/remotes/origin/master
 static void __init nslu2_timer_init(void)
 {
     /* The xtal on this machine is non-standard. */
@@ -240,10 +265,13 @@ static void __init nslu2_timer_init(void)
     ixp4xx_timer_init();
 }
 
+<<<<<<< HEAD
 static struct sys_timer nslu2_timer = {
     .init   = nslu2_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init nslu2_init(void)
 {
 	uint8_t __iomem *f;
@@ -308,21 +336,31 @@ static void __init nslu2_init(void)
 MACHINE_START(NSLU2, "Linksys NSLU2")
 	/* Maintainer: www.nslu2-linux.org */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 	.map_io		= ixp4xx_map_io,
 	.init_irq	= ixp4xx_init_irq,
 	.timer          = &nslu2_timer,
 	.init_machine	= nslu2_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= ixp4xx_map_io,
 	.init_early	= ixp4xx_init_early,
 	.init_irq	= ixp4xx_init_irq,
+<<<<<<< HEAD
 	.timer          = &nslu2_timer,
+=======
+	.init_time	= nslu2_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= nslu2_init,
 #if defined(CONFIG_PCI)
 	.dma_zone_size	= SZ_64M,
 #endif
 	.restart	= ixp4xx_restart,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

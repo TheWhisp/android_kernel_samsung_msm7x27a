@@ -1,8 +1,14 @@
 #ifndef LINUX_KEXEC_H
 #define LINUX_KEXEC_H
 
+<<<<<<< HEAD
 #ifdef CONFIG_KEXEC
 #include <linux/types.h>
+=======
+#include <uapi/linux/kexec.h>
+
+#ifdef CONFIG_KEXEC
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/linkage.h>
 #include <linux/compat.h>
@@ -34,7 +40,10 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef KEXEC_CRASH_CONTROL_MEMORY_LIMIT
 #define KEXEC_CRASH_CONTROL_MEMORY_LIMIT KEXEC_CONTROL_MEMORY_LIMIT
 #endif
@@ -43,7 +52,10 @@
 #define KEXEC_CRASH_MEM_ALIGN PAGE_SIZE
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define KEXEC_NOTE_HEAD_BYTES ALIGN(sizeof(struct elf_note), 4)
 #define KEXEC_CORE_NOTE_NAME "CORE"
 #define KEXEC_CORE_NOTE_NAME_BYTES ALIGN(sizeof(KEXEC_CORE_NOTE_NAME), 4)
@@ -54,16 +66,22 @@
  * of the second kernel to combine them into one note.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define KEXEC_NOTE_BYTES ( (KEXEC_NOTE_HEAD_BYTES * 2) +		\
 			    KEXEC_CORE_NOTE_NAME_BYTES +		\
 			    KEXEC_CORE_NOTE_DESC_BYTES )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef KEXEC_NOTE_BYTES
 #define KEXEC_NOTE_BYTES ( (KEXEC_NOTE_HEAD_BYTES * 2) +		\
 			    KEXEC_CORE_NOTE_NAME_BYTES +		\
 			    KEXEC_CORE_NOTE_DESC_BYTES )
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This structure is used to hold the arguments that are used when loading
@@ -76,11 +94,18 @@ typedef unsigned long kimage_entry_t;
 #define IND_DONE         0x4
 #define IND_SOURCE       0x8
 
+<<<<<<< HEAD
 #define KEXEC_SEGMENT_MAX 16
 struct kexec_segment {
 	void __user *buf;
 	size_t bufsz;
 	unsigned long mem;	/* User space sees this as a (void *) ... */
+=======
+struct kexec_segment {
+	void __user *buf;
+	size_t bufsz;
+	unsigned long mem;
+>>>>>>> refs/remotes/origin/master
 	size_t memsz;
 };
 
@@ -135,7 +160,10 @@ extern asmlinkage long sys_kexec_load(unsigned long entry,
 					unsigned long nr_segments,
 					struct kexec_segment __user *segments,
 					unsigned long flags);
+<<<<<<< HEAD
 extern void __weak arch_kexec(void);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int kernel_kexec(void);
 #ifdef CONFIG_COMPAT
 extern asmlinkage long compat_sys_kexec_load(unsigned long entry,
@@ -150,16 +178,22 @@ int kexec_should_crash(struct task_struct *);
 void crash_save_cpu(struct pt_regs *regs, int cpu);
 void crash_save_vmcoreinfo(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void arch_crash_save_vmcoreinfo(void);
 void vmcoreinfo_append_str(const char *fmt, ...)
 	__attribute__ ((format (printf, 1, 2)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void crash_map_reserved_pages(void);
 void crash_unmap_reserved_pages(void);
 void arch_crash_save_vmcoreinfo(void);
 __printf(1, 2)
 void vmcoreinfo_append_str(const char *fmt, ...);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long paddr_vmcoreinfo_note(void);
 
 #define VMCOREINFO_OSRELEASE(value) \
@@ -191,6 +225,7 @@ extern struct kimage *kexec_crash_image;
 #define kexec_flush_icache_page(page)
 #endif
 
+<<<<<<< HEAD
 #define KEXEC_ON_CRASH		0x00000001
 #define KEXEC_PRESERVE_CONTEXT	0x00000002
 #define KEXEC_ARCH_MASK		0xffff0000
@@ -210,6 +245,8 @@ extern struct kimage *kexec_crash_image;
 #define KEXEC_ARCH_MIPS_LE (10 << 16)
 #define KEXEC_ARCH_MIPS    ( 8 << 16)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* List of defined/legal kexec flags */
 #ifndef CONFIG_KEXEC_JUMP
 #define KEXEC_FLAGS    KEXEC_ON_CRASH
@@ -226,14 +263,30 @@ extern struct kimage *kexec_crash_image;
 /* Location of a reserved region to hold the crash kernel.
  */
 extern struct resource crashk_res;
+<<<<<<< HEAD
+=======
+extern struct resource crashk_low_res;
+>>>>>>> refs/remotes/origin/master
 typedef u32 note_buf_t[KEXEC_NOTE_BYTES/4];
 extern note_buf_t __percpu *crash_notes;
 extern u32 vmcoreinfo_note[VMCOREINFO_NOTE_SIZE/4];
 extern size_t vmcoreinfo_size;
 extern size_t vmcoreinfo_max_size;
 
+<<<<<<< HEAD
 int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
 		unsigned long long *crash_size, unsigned long long *crash_base);
+=======
+/* flag to track if kexec reboot is in progress */
+extern bool kexec_in_progress;
+
+int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
+		unsigned long long *crash_size, unsigned long long *crash_base);
+int parse_crashkernel_high(char *cmdline, unsigned long long system_ram,
+		unsigned long long *crash_size, unsigned long long *crash_base);
+int parse_crashkernel_low(char *cmdline, unsigned long long system_ram,
+		unsigned long long *crash_size, unsigned long long *crash_base);
+>>>>>>> refs/remotes/origin/master
 int crash_shrink_memory(unsigned long new_size);
 size_t crash_get_memory_size(void);
 void crash_free_reserved_phys_range(unsigned long begin, unsigned long end);

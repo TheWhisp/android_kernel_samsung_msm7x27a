@@ -1,6 +1,7 @@
 #ifndef _ASM_TERMIOS_H
 #define _ASM_TERMIOS_H
 
+<<<<<<< HEAD
 #include <asm/termbits.h>
 #include <asm/ioctls.h>
 
@@ -22,6 +23,10 @@ struct termio {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/termios.h>
+
+>>>>>>> refs/remotes/origin/master
 /*	intr=^C		quit=^|		erase=del	kill=^U
 	eof=^D		vtime=\0	vmin=\1		sxtc=\0
 	start=^Q	stop=^S		susp=^Z		eol=\0
@@ -29,6 +34,7 @@ struct termio {
 	eol2=\0
 */
 #define INIT_C_CC "\003\034\177\025\004\0\1\0\021\023\032\0\022\017\027\026\0"
+<<<<<<< HEAD
 #endif
 
 /* modem lines */
@@ -55,4 +61,7 @@ struct termio {
 #include <asm-generic/termios-base.h>
 #endif
 
+=======
+#include <asm-generic/termios-base.h>
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TERMIOS_H */

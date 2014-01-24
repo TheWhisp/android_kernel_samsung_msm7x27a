@@ -9,6 +9,7 @@
  * Copyright (C) 2000 Oleg Drokin <green@crimea.edu>
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 2005-2006 (c) MontaVista Software, Inc. This file is licensed under
  * the terms of the GNU General Public License version 2. This program
  * is licensed "as is" without any warranty of any kind, whether express
@@ -16,6 +17,8 @@
  */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * 2005-2006 (c) MontaVista Software, Inc.
  *
  * (C) 2012 Wolfram Sang, Pengutronix
@@ -27,11 +30,15 @@
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
@@ -52,6 +59,8 @@
 
 =======
 #include <linux/miscdevice.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/watchdog.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -60,9 +69,15 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <mach/hardware.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <mach/hardware.h>
+
+>>>>>>> refs/remotes/origin/master
 /* WatchDog Timer - Chapter 23 Page 207 */
 
 #define DEFAULT_HEARTBEAT 19
@@ -106,6 +121,7 @@
 #define WDOG_COUNTER_RATE 13000000	/*the counter clock is 13 MHz fixed */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 static int heartbeat = DEFAULT_HEARTBEAT;
 
@@ -124,6 +140,8 @@ struct clk		*wdt_clk;
 
 static void wdt_enable(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool nowayout = WATCHDOG_NOWAYOUT;
 static unsigned int heartbeat = DEFAULT_HEARTBEAT;
 
@@ -132,11 +150,15 @@ static void __iomem	*wdt_base;
 struct clk		*wdt_clk;
 
 static int pnx4008_wdt_start(struct watchdog_device *wdd)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock(&io_lock);
 
 	/* stop counter, initiate counter reset */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__raw_writel(RESET_COUNT, WDTIM_CTRL(wdt_base));
 	/*wait for reset to complete. 100% guarantee event */
@@ -213,6 +235,8 @@ static ssize_t pnx4008_wdt_write(struct file *file, const char *data,
 
 static const struct watchdog_info ident = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	writel(RESET_COUNT, WDTIM_CTRL(wdt_base));
 	/*wait for reset to complete. 100% guarantee event */
 	while (readl(WDTIM_COUNTER(wdt_base)))
@@ -251,12 +275,16 @@ static int pnx4008_wdt_set_timeout(struct watchdog_device *wdd,
 }
 
 static const struct watchdog_info pnx4008_wdt_ident = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.options = WDIOF_CARDRESET | WDIOF_MAGICCLOSE |
 	    WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING,
 	.identity = "PNX4008 Watchdog",
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static long pnx4008_wdt_ioctl(struct file *file, unsigned int cmd,
 				unsigned long arg)
@@ -331,6 +359,8 @@ static struct miscdevice pnx4008_wdt_miscdev = {
 	.name = "watchdog",
 	.fops = &pnx4008_wdt_fops,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct watchdog_ops pnx4008_wdt_ops = {
 	.owner = THIS_MODULE,
 	.start = pnx4008_wdt_start,
@@ -341,6 +371,7 @@ static const struct watchdog_ops pnx4008_wdt_ops = {
 static struct watchdog_device pnx4008_wdd = {
 	.info = &pnx4008_wdt_ident,
 	.ops = &pnx4008_wdt_ops,
+<<<<<<< HEAD
 	.min_timeout = 1,
 	.max_timeout = MAX_HEARTBEAT,
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -416,14 +447,39 @@ out:
 		return -EADDRINUSE;
 
 	wdt_clk = clk_get(&pdev->dev, NULL);
+=======
+	.timeout = DEFAULT_HEARTBEAT,
+	.min_timeout = 1,
+	.max_timeout = MAX_HEARTBEAT,
+};
+
+static int pnx4008_wdt_probe(struct platform_device *pdev)
+{
+	struct resource *r;
+	int ret = 0;
+
+	watchdog_init_timeout(&pnx4008_wdd, heartbeat, &pdev->dev);
+
+	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	wdt_base = devm_ioremap_resource(&pdev->dev, r);
+	if (IS_ERR(wdt_base))
+		return PTR_ERR(wdt_base);
+
+	wdt_clk = devm_clk_get(&pdev->dev, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wdt_clk))
 		return PTR_ERR(wdt_clk);
 
 	ret = clk_enable(wdt_clk);
 	if (ret)
+<<<<<<< HEAD
 		goto out;
 
 	pnx4008_wdd.timeout = heartbeat;
+=======
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	pnx4008_wdd.bootstatus = (readl(WDTIM_RES(wdt_base)) & WDOG_RESET) ?
 			WDIOF_CARDRESET : 0;
 	watchdog_set_nowayout(&pnx4008_wdd, nowayout);
@@ -437,12 +493,17 @@ out:
 	}
 
 	dev_info(&pdev->dev, "PNX4008 Watchdog Timer: heartbeat %d sec\n",
+<<<<<<< HEAD
 			heartbeat);
+=======
+		 pnx4008_wdd.timeout);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 disable_clk:
 	clk_disable(wdt_clk);
+<<<<<<< HEAD
 out:
 	clk_put(wdt_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -470,10 +531,33 @@ static int __devexit pnx4008_wdt_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+	return ret;
+}
+
+static int pnx4008_wdt_remove(struct platform_device *pdev)
+{
+	watchdog_unregister_device(&pnx4008_wdd);
+
+	clk_disable(wdt_clk);
+
+	return 0;
+}
+
+#ifdef CONFIG_OF
+static const struct of_device_id pnx4008_wdt_match[] = {
+	{ .compatible = "nxp,pnx4008-wdt" },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, pnx4008_wdt_match);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver platform_wdt_driver = {
 	.driver = {
 		.name = "pnx4008-watchdog",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe = pnx4008_wdt_probe,
 	.remove = __devexit_p(pnx4008_wdt_remove),
@@ -498,6 +582,14 @@ MODULE_DESCRIPTION("PNX4008 Watchdog Driver");
 
 module_param(heartbeat, int, 0);
 =======
+=======
+		.of_match_table = of_match_ptr(pnx4008_wdt_match),
+	},
+	.probe = pnx4008_wdt_probe,
+	.remove = pnx4008_wdt_remove,
+};
+
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(platform_wdt_driver);
 
 MODULE_AUTHOR("MontaVista Software, Inc. <source@mvista.com>");
@@ -505,20 +597,30 @@ MODULE_AUTHOR("Wolfram Sang <w.sang@pengutronix.de>");
 MODULE_DESCRIPTION("PNX4008 Watchdog Driver");
 
 module_param(heartbeat, uint, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(heartbeat,
 		 "Watchdog heartbeat period in seconds from 1 to "
 		 __MODULE_STRING(MAX_HEARTBEAT) ", default "
 		 __MODULE_STRING(DEFAULT_HEARTBEAT));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
 =======
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		 "Set to 1 to keep watchdog running after device release");
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:pnx4008-watchdog");

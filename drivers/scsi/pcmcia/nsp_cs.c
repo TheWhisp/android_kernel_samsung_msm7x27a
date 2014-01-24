@@ -71,16 +71,24 @@ MODULE_PARM_DESC(nsp_burst_mode, "Burst transfer mode (0=io8, 1=io32, 2=mem32(de
 
 /* Release IO ports after configuration? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int       free_ports = 0;
 =======
 static bool       free_ports = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool       free_ports = 0;
+>>>>>>> refs/remotes/origin/master
 module_param(free_ports, bool, 0);
 MODULE_PARM_DESC(free_ports, "Release IO ports after configuration? (default: 0 (=no))");
 
 static struct scsi_host_template nsp_driver_template = {
 	.proc_name	         = "nsp_cs",
+<<<<<<< HEAD
 	.proc_info		 = nsp_proc_info,
+=======
+	.show_info		 = nsp_show_info,
+>>>>>>> refs/remotes/origin/master
 	.name			 = "WorkBit NinjaSCSI-3/32Bi(16bit)",
 	.info			 = nsp_info,
 	.queuecommand		 = nsp_queuecommand,
@@ -1369,6 +1377,7 @@ static const char *nsp_info(struct Scsi_Host *shpnt)
 }
 
 #undef SPRINTF
+<<<<<<< HEAD
 #define SPRINTF(args...) \
         do { \
 		if(length > (pos - buffer)) { \
@@ -1383,11 +1392,19 @@ static int nsp_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 	int id;
 	char *pos = buffer;
 	int thislength;
+=======
+#define SPRINTF(args...) seq_printf(m, ##args)
+
+static int nsp_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	int id;
+>>>>>>> refs/remotes/origin/master
 	int speed;
 	unsigned long flags;
 	nsp_hw_data *data;
 	int hostno;
 
+<<<<<<< HEAD
 	if (inout) {
 		return -EINVAL;
 	}
@@ -1396,6 +1413,11 @@ static int nsp_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 	data = (nsp_hw_data *)host->hostdata;
 
 
+=======
+	hostno = host->host_no;
+	data = (nsp_hw_data *)host->hostdata;
+
+>>>>>>> refs/remotes/origin/master
 	SPRINTF("NinjaSCSI status\n\n");
 	SPRINTF("Driver version:        $Revision: 1.23 $\n");
 	SPRINTF("SCSI host No.:         %d\n",          hostno);
@@ -1462,6 +1484,7 @@ static int nsp_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 		}
 		SPRINTF("\n");
 	}
+<<<<<<< HEAD
 
 	thislength = pos - (buffer + offset);
 
@@ -1475,6 +1498,9 @@ static int nsp_proc_info(struct Scsi_Host *host, char *buffer, char **start,
 	*start = buffer + offset;
 
 	return thislength;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 #undef SPRINTF
 

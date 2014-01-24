@@ -199,11 +199,19 @@ static void pcf50633_adc_irq(int irq, void *data)
 	kfree(req);
 }
 
+<<<<<<< HEAD
 static int __devinit pcf50633_adc_probe(struct platform_device *pdev)
 {
 	struct pcf50633_adc *adc;
 
 	adc = kzalloc(sizeof(*adc), GFP_KERNEL);
+=======
+static int pcf50633_adc_probe(struct platform_device *pdev)
+{
+	struct pcf50633_adc *adc;
+
+	adc = devm_kzalloc(&pdev->dev, sizeof(*adc), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!adc)
 		return -ENOMEM;
 
@@ -218,7 +226,11 @@ static int __devinit pcf50633_adc_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit pcf50633_adc_remove(struct platform_device *pdev)
+=======
+static int pcf50633_adc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcf50633_adc *adc = platform_get_drvdata(pdev);
 	int i, head;
@@ -236,7 +248,10 @@ static int __devexit pcf50633_adc_remove(struct platform_device *pdev)
 		kfree(adc->queue[i]);
 
 	mutex_unlock(&adc->queue_mutex);
+<<<<<<< HEAD
 	kfree(adc);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -246,6 +261,7 @@ static struct platform_driver pcf50633_adc_driver = {
 		.name = "pcf50633-adc",
 	},
 	.probe = pcf50633_adc_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pcf50633_adc_remove),
 };
 
@@ -264,6 +280,12 @@ module_exit(pcf50633_adc_exit);
 =======
 module_platform_driver(pcf50633_adc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = pcf50633_adc_remove,
+};
+
+module_platform_driver(pcf50633_adc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Balaji Rao <balajirrao@openmoko.org>");
 MODULE_DESCRIPTION("PCF50633 adc driver");

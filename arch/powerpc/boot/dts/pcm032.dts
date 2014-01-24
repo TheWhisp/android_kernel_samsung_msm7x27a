@@ -14,6 +14,17 @@
 
 /include/ "mpc5200b.dtsi"
 
+<<<<<<< HEAD
+=======
+&gpt0 { fsl,has-wdt; };
+&gpt2 { gpio-controller; };
+&gpt3 { gpio-controller; };
+&gpt4 { gpio-controller; };
+&gpt5 { gpio-controller; };
+&gpt6 { gpio-controller; };
+&gpt7 { gpio-controller; };
+
+>>>>>>> refs/remotes/origin/master
 / {
 	model = "phytec,pcm032";
 	compatible = "phytec,pcm032";
@@ -23,6 +34,7 @@
 	};
 
 	soc5200@f0000000 {
+<<<<<<< HEAD
 		timer@600 {		// General Purpose Timer
 			fsl,has-wdt;
 		};
@@ -60,6 +72,8 @@
 			#gpio-cells = <2>;
 		};
 
+=======
+>>>>>>> refs/remotes/origin/master
 		psc@2000 {	/* PSC1 is ac97 */
 			compatible = "fsl,mpc5200b-psc-ac97","fsl,mpc5200-psc-ac97";
 			cell-index = <0>;

@@ -25,8 +25,11 @@
 #define Q40_IRQ14_MASK       (1<<6)
 #define Q40_IRQ15_MASK       (1<<7)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 extern unsigned long q40_probe_irq_on (void);
 extern int q40_probe_irq_off (unsigned long irqs);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

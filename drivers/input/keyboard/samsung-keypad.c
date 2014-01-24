@@ -21,18 +21,26 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/sched.h>
 #include <plat/keypad.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm.h>
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
 #include <linux/of.h>
+<<<<<<< HEAD
 #include <linux/of_gpio.h>
 #include <linux/sched.h>
 #include <linux/input/samsung-keypad.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sched.h>
+#include <linux/input/samsung-keypad.h>
+>>>>>>> refs/remotes/origin/master
 
 #define SAMSUNG_KEYIFCON			0x00
 #define SAMSUNG_KEYIFSTSCLR			0x04
@@ -74,13 +82,18 @@ enum samsung_keypad_type {
 struct samsung_keypad {
 	struct input_dev *input_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct platform_device *pdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct platform_device *pdev;
+>>>>>>> refs/remotes/origin/master
 	struct clk *clk;
 	void __iomem *base;
 	wait_queue_head_t wait;
 	bool stopped;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int irq;
 =======
@@ -88,10 +101,16 @@ struct samsung_keypad {
 	int irq;
 	enum samsung_keypad_type type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool wake_enabled;
+	int irq;
+	enum samsung_keypad_type type;
+>>>>>>> refs/remotes/origin/master
 	unsigned int row_shift;
 	unsigned int rows;
 	unsigned int cols;
 	unsigned int row_state[SAMSUNG_MAX_COLS];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned short keycodes[];
 };
@@ -121,15 +140,27 @@ static void samsung_keypad_scan(struct samsung_keypad *keypad,
 				unsigned int *row_state)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short keycodes[];
+};
+
+static void samsung_keypad_scan(struct samsung_keypad *keypad,
+				unsigned int *row_state)
+{
+>>>>>>> refs/remotes/origin/master
 	unsigned int col;
 	unsigned int val;
 
 	for (col = 0; col < keypad->cols; col++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (samsung_keypad_is_s5pv210(dev)) {
 =======
 		if (keypad->type == KEYPAD_TYPE_S5PV210) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (keypad->type == KEYPAD_TYPE_S5PV210) {
+>>>>>>> refs/remotes/origin/master
 			val = S5PV210_KEYIFCOLEN_MASK;
 			val &= ~(1 << col) << 8;
 		} else {
@@ -196,10 +227,15 @@ static irqreturn_t samsung_keypad_irq(int irq, void *dev_id)
 	bool key_down;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pm_runtime_get_sync(&keypad->pdev->dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_get_sync(&keypad->pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	do {
 		val = readl(keypad->base + SAMSUNG_KEYIFSTSCLR);
 		/* Clear interrupt. */
@@ -215,10 +251,15 @@ static irqreturn_t samsung_keypad_irq(int irq, void *dev_id)
 	} while (key_down && !keypad->stopped);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pm_runtime_put(&keypad->pdev->dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_put(&keypad->pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -227,10 +268,15 @@ static void samsung_keypad_start(struct samsung_keypad *keypad)
 	unsigned int val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pm_runtime_get_sync(&keypad->pdev->dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_get_sync(&keypad->pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	/* Tell IRQ thread that it may poll the device. */
 	keypad->stopped = false;
 
@@ -244,10 +290,15 @@ static void samsung_keypad_start(struct samsung_keypad *keypad)
 	/* KEYIFCOL reg clear. */
 	writel(0, keypad->base + SAMSUNG_KEYIFCOL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	pm_runtime_put(&keypad->pdev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pm_runtime_put(&keypad->pdev->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void samsung_keypad_stop(struct samsung_keypad *keypad)
@@ -255,10 +306,15 @@ static void samsung_keypad_stop(struct samsung_keypad *keypad)
 	unsigned int val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pm_runtime_get_sync(&keypad->pdev->dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_get_sync(&keypad->pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	/* Signal IRQ thread to stop polling and disable the handler. */
 	keypad->stopped = true;
 	wake_up(&keypad->wait);
@@ -280,10 +336,15 @@ static void samsung_keypad_stop(struct samsung_keypad *keypad)
 	 */
 	enable_irq(keypad->irq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	pm_runtime_put(&keypad->pdev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pm_runtime_put(&keypad->pdev->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int samsung_keypad_open(struct input_dev *input_dev)
@@ -303,7 +364,10 @@ static void samsung_keypad_close(struct input_dev *input_dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_OF
 static struct samsung_keypad_platdata *samsung_keypad_parse_dt(
 				struct device *dev)
@@ -312,7 +376,11 @@ static struct samsung_keypad_platdata *samsung_keypad_parse_dt(
 	struct matrix_keymap_data *keymap_data;
 	uint32_t *keymap, num_rows = 0, num_cols = 0;
 	struct device_node *np = dev->of_node, *key_np;
+<<<<<<< HEAD
 	unsigned int key_count = 0;
+=======
+	unsigned int key_count;
+>>>>>>> refs/remotes/origin/master
 
 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
 	if (!pdata) {
@@ -336,9 +404,13 @@ static struct samsung_keypad_platdata *samsung_keypad_parse_dt(
 	}
 	pdata->keymap_data = keymap_data;
 
+<<<<<<< HEAD
 	for_each_child_of_node(np, key_np)
 		key_count++;
 
+=======
+	key_count = of_get_child_count(np);
+>>>>>>> refs/remotes/origin/master
 	keymap_data->keymap_size = key_count;
 	keymap = devm_kzalloc(dev, sizeof(uint32_t) * key_count, GFP_KERNEL);
 	if (!keymap) {
@@ -362,6 +434,7 @@ static struct samsung_keypad_platdata *samsung_keypad_parse_dt(
 
 	return pdata;
 }
+<<<<<<< HEAD
 
 static void samsung_keypad_parse_dt_gpio(struct device *dev,
 				struct samsung_keypad *keypad)
@@ -412,12 +485,15 @@ static void samsung_keypad_dt_gpio_free(struct samsung_keypad *keypad)
 		if (gpio_is_valid(keypad->col_gpios[cnt]))
 			gpio_free(keypad->col_gpios[cnt]);
 }
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 static
 struct samsung_keypad_platdata *samsung_keypad_parse_dt(struct device *dev)
 {
 	return NULL;
 }
+<<<<<<< HEAD
 
 static void samsung_keypad_dt_gpio_free(struct samsung_keypad *keypad)
 {
@@ -426,6 +502,11 @@ static void samsung_keypad_dt_gpio_free(struct samsung_keypad *keypad)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit samsung_keypad_probe(struct platform_device *pdev)
+=======
+#endif
+
+static int samsung_keypad_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct samsung_keypad_platdata *pdata;
 	const struct matrix_keymap_data *keymap_data;
@@ -437,13 +518,19 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdev->dev.of_node)
 		pdata = samsung_keypad_parse_dt(&pdev->dev);
 	else
 		pdata = pdev->dev.platform_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "no platform data defined\n");
 		return -EINVAL;
@@ -468,6 +555,7 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 	row_shift = get_count_order(pdata->cols);
 	keymap_size = (pdata->rows << row_shift) * sizeof(keypad->keycodes[0]);
 
+<<<<<<< HEAD
 	keypad = kzalloc(sizeof(*keypad) + keymap_size, GFP_KERNEL);
 	input_dev = input_allocate_device();
 	if (!keypad || !input_dev) {
@@ -502,6 +590,35 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 	init_waitqueue_head(&keypad->wait);
 
 =======
+=======
+	keypad = devm_kzalloc(&pdev->dev, sizeof(*keypad) + keymap_size,
+			      GFP_KERNEL);
+	input_dev = devm_input_allocate_device(&pdev->dev);
+	if (!keypad || !input_dev)
+		return -ENOMEM;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res)
+		return -ENODEV;
+
+	keypad->base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+	if (!keypad->base)
+		return -EBUSY;
+
+	keypad->clk = devm_clk_get(&pdev->dev, "keypad");
+	if (IS_ERR(keypad->clk)) {
+		dev_err(&pdev->dev, "failed to get keypad clk\n");
+		return PTR_ERR(keypad->clk);
+	}
+
+	error = clk_prepare(keypad->clk);
+	if (error) {
+		dev_err(&pdev->dev, "keypad clock prepare failed\n");
+		return error;
+	}
+
+	keypad->input_dev = input_dev;
+>>>>>>> refs/remotes/origin/master
 	keypad->pdev = pdev;
 	keypad->row_shift = row_shift;
 	keypad->rows = pdata->rows;
@@ -509,6 +626,7 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 	keypad->stopped = true;
 	init_waitqueue_head(&keypad->wait);
 
+<<<<<<< HEAD
 	if (pdev->dev.of_node) {
 #ifdef CONFIG_OF
 		samsung_keypad_parse_dt_gpio(&pdev->dev, keypad);
@@ -524,10 +642,22 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 	input_dev->id.bustype = BUS_HOST;
 	input_dev->dev.parent = &pdev->dev;
 	input_set_drvdata(input_dev, keypad);
+=======
+	if (pdev->dev.of_node)
+		keypad->type = of_device_is_compatible(pdev->dev.of_node,
+					"samsung,s5pv210-keypad");
+	else
+		keypad->type = platform_get_device_id(pdev)->driver_data;
+
+	input_dev->name = pdev->name;
+	input_dev->id.bustype = BUS_HOST;
+	input_dev->dev.parent = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 
 	input_dev->open = samsung_keypad_open;
 	input_dev->close = samsung_keypad_close;
 
+<<<<<<< HEAD
 	input_dev->evbit[0] = BIT_MASK(EV_KEY);
 	if (!pdata->no_autorepeat)
 		input_dev->evbit[0] |= BIT_MASK(EV_REP);
@@ -540,10 +670,26 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 
 	matrix_keypad_build_keymap(keymap_data, row_shift,
 			input_dev->keycode, input_dev->keybit);
+=======
+	error = matrix_keypad_build_keymap(keymap_data, NULL,
+					   pdata->rows, pdata->cols,
+					   keypad->keycodes, input_dev);
+	if (error) {
+		dev_err(&pdev->dev, "failed to build keymap\n");
+		goto err_unprepare_clk;
+	}
+
+	input_set_capability(input_dev, EV_MSC, MSC_SCAN);
+	if (!pdata->no_autorepeat)
+		__set_bit(EV_REP, input_dev->evbit);
+
+	input_set_drvdata(input_dev, keypad);
+>>>>>>> refs/remotes/origin/master
 
 	keypad->irq = platform_get_irq(pdev, 0);
 	if (keypad->irq < 0) {
 		error = keypad->irq;
+<<<<<<< HEAD
 		goto err_put_clk;
 	}
 
@@ -556,10 +702,24 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 
 <<<<<<< HEAD
 =======
+=======
+		goto err_unprepare_clk;
+	}
+
+	error = devm_request_threaded_irq(&pdev->dev, keypad->irq, NULL,
+					  samsung_keypad_irq, IRQF_ONESHOT,
+					  dev_name(&pdev->dev), keypad);
+	if (error) {
+		dev_err(&pdev->dev, "failed to register keypad interrupt\n");
+		goto err_unprepare_clk;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	device_init_wakeup(&pdev->dev, pdata->wakeup);
 	platform_set_drvdata(pdev, keypad);
 	pm_runtime_enable(&pdev->dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	error = input_register_device(keypad->input_dev);
 	if (error)
@@ -569,11 +729,18 @@ static int __devinit samsung_keypad_probe(struct platform_device *pdev)
 	device_init_wakeup(&pdev->dev, pdata->wakeup);
 	platform_set_drvdata(pdev, keypad);
 =======
+=======
+	error = input_register_device(keypad->input_dev);
+	if (error)
+		goto err_disable_runtime_pm;
+
+>>>>>>> refs/remotes/origin/master
 	if (pdev->dev.of_node) {
 		devm_kfree(&pdev->dev, (void *)pdata->keymap_data->keymap);
 		devm_kfree(&pdev->dev, (void *)pdata->keymap_data);
 		devm_kfree(&pdev->dev, (void *)pdata);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
@@ -626,10 +793,33 @@ static int __devexit samsung_keypad_remove(struct platform_device *pdev)
 
 	iounmap(keypad->base);
 	kfree(keypad);
+=======
+	return 0;
+
+err_disable_runtime_pm:
+	pm_runtime_disable(&pdev->dev);
+	device_init_wakeup(&pdev->dev, 0);
+err_unprepare_clk:
+	clk_unprepare(keypad->clk);
+	return error;
+}
+
+static int samsung_keypad_remove(struct platform_device *pdev)
+{
+	struct samsung_keypad *keypad = platform_get_drvdata(pdev);
+
+	pm_runtime_disable(&pdev->dev);
+	device_init_wakeup(&pdev->dev, 0);
+
+	input_unregister_device(keypad->input_dev);
+
+	clk_unprepare(keypad->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM
 static void samsung_keypad_toggle_wakeup(struct samsung_keypad *keypad,
@@ -637,6 +827,8 @@ static void samsung_keypad_toggle_wakeup(struct samsung_keypad *keypad,
 {
 	struct device *dev = keypad->input_dev->dev.parent;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_RUNTIME
 static int samsung_keypad_runtime_suspend(struct device *dev)
 {
@@ -688,7 +880,10 @@ static int samsung_keypad_runtime_resume(struct device *dev)
 static void samsung_keypad_toggle_wakeup(struct samsung_keypad *keypad,
 					 bool enable)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int val;
 
 	clk_enable(keypad->clk);
@@ -697,18 +892,24 @@ static void samsung_keypad_toggle_wakeup(struct samsung_keypad *keypad,
 	if (enable) {
 		val |= SAMSUNG_KEYIFCON_WAKEUPEN;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (device_may_wakeup(dev))
 			enable_irq_wake(keypad->irq);
 	} else {
 		val &= ~SAMSUNG_KEYIFCON_WAKEUPEN;
 		if (device_may_wakeup(dev))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (device_may_wakeup(&keypad->pdev->dev))
 			enable_irq_wake(keypad->irq);
 	} else {
 		val &= ~SAMSUNG_KEYIFCON_WAKEUPEN;
 		if (device_may_wakeup(&keypad->pdev->dev))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			disable_irq_wake(keypad->irq);
 	}
 	writel(val, keypad->base + SAMSUNG_KEYIFCON);
@@ -752,12 +953,15 @@ static int samsung_keypad_resume(struct device *dev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 static const struct dev_pm_ops samsung_keypad_pm_ops = {
 	.suspend	= samsung_keypad_suspend,
 	.resume		= samsung_keypad_resume,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static const struct dev_pm_ops samsung_keypad_pm_ops = {
@@ -773,9 +977,12 @@ static const struct of_device_id samsung_keypad_dt_match[] = {
 	{},
 };
 MODULE_DEVICE_TABLE(of, samsung_keypad_dt_match);
+<<<<<<< HEAD
 #else
 #define samsung_keypad_dt_match NULL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct platform_device_id samsung_keypad_driver_ids[] = {
@@ -792,6 +999,7 @@ MODULE_DEVICE_TABLE(platform, samsung_keypad_driver_ids);
 
 static struct platform_driver samsung_keypad_driver = {
 	.probe		= samsung_keypad_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(samsung_keypad_remove),
 	.driver		= {
 		.name	= "samsung-keypad",
@@ -817,18 +1025,31 @@ static void __exit samsung_keypad_exit(void)
 module_exit(samsung_keypad_exit);
 =======
 		.of_match_table = samsung_keypad_dt_match,
+=======
+	.remove		= samsung_keypad_remove,
+	.driver		= {
+		.name	= "samsung-keypad",
+		.owner	= THIS_MODULE,
+		.of_match_table = of_match_ptr(samsung_keypad_dt_match),
+>>>>>>> refs/remotes/origin/master
 		.pm	= &samsung_keypad_pm_ops,
 	},
 	.id_table	= samsung_keypad_driver_ids,
 };
 module_platform_driver(samsung_keypad_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Samsung keypad driver");
 MODULE_AUTHOR("Joonyoung Shim <jy0922.shim@samsung.com>");
 MODULE_AUTHOR("Donghwa Lee <dh09.lee@samsung.com>");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("platform:samsung-keypad");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

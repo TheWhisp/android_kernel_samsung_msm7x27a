@@ -407,7 +407,11 @@ static void ace_dump_regs(struct ace_device *ace)
 		 ace_in32(ace, ACE_CFGLBA), ace_in(ace, ACE_FATSTAT));
 }
 
+<<<<<<< HEAD
 void ace_fix_driveid(u16 *id)
+=======
+static void ace_fix_driveid(u16 *id)
+>>>>>>> refs/remotes/origin/master
 {
 #if defined(__BIG_ENDIAN)
 	int i;
@@ -457,17 +461,25 @@ static inline void ace_fsm_yieldirq(struct ace_device *ace)
 	dev_dbg(ace->dev, "ace_fsm_yieldirq()\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ace->irq == NO_IRQ)
 =======
 	if (!ace->irq)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!ace->irq)
+>>>>>>> refs/remotes/origin/master
 		/* No IRQ assigned, so need to poll */
 		tasklet_schedule(&ace->fsm_tasklet);
 	ace->fsm_continue_flag = 0;
 }
 
 /* Get the next read/write request; ending requests that we don't handle */
+<<<<<<< HEAD
 struct request *ace_get_next_request(struct request_queue * q)
+=======
+static struct request *ace_get_next_request(struct request_queue *q)
+>>>>>>> refs/remotes/origin/master
 {
 	struct request *req;
 
@@ -919,7 +931,11 @@ static int ace_open(struct block_device *bdev, fmode_t mode)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ace_release(struct gendisk *disk, fmode_t mode)
+=======
+static void ace_release(struct gendisk *disk, fmode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ace_device *ace = disk->private_data;
 	unsigned long flags;
@@ -936,7 +952,10 @@ static int ace_release(struct gendisk *disk, fmode_t mode)
 	}
 	spin_unlock_irqrestore(&ace->lock, flags);
 	mutex_unlock(&xsysace_mutex);
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ace_getgeo(struct block_device *bdev, struct hd_geometry *geo)
@@ -965,7 +984,11 @@ static const struct block_device_operations ace_fops = {
 /* --------------------------------------------------------------------
  * SystemACE device setup/teardown code
  */
+<<<<<<< HEAD
 static int __devinit ace_setup(struct ace_device *ace)
+=======
+static int ace_setup(struct ace_device *ace)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 version;
 	u16 val;
@@ -1039,19 +1062,27 @@ static int __devinit ace_setup(struct ace_device *ace)
 
 	/* Now we can hook up the irq handler */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ace->irq != NO_IRQ) {
 =======
 	if (ace->irq) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ace->irq) {
+>>>>>>> refs/remotes/origin/master
 		rc = request_irq(ace->irq, ace_interrupt, 0, "systemace", ace);
 		if (rc) {
 			/* Failure - fall back to polled mode */
 			dev_err(ace->dev, "request_irq failed\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ace->irq = NO_IRQ;
 =======
 			ace->irq = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ace->irq = 0;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1086,7 +1117,11 @@ err_ioremap:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static void __devexit ace_teardown(struct ace_device *ace)
+=======
+static void ace_teardown(struct ace_device *ace)
+>>>>>>> refs/remotes/origin/master
 {
 	if (ace->gd) {
 		del_gendisk(ace->gd);
@@ -1099,18 +1134,27 @@ static void __devexit ace_teardown(struct ace_device *ace)
 	tasklet_kill(&ace->fsm_tasklet);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ace->irq != NO_IRQ)
 =======
 	if (ace->irq)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ace->irq)
+>>>>>>> refs/remotes/origin/master
 		free_irq(ace->irq, ace);
 
 	iounmap(ace->baseaddr);
 }
 
+<<<<<<< HEAD
 static int __devinit
 ace_alloc(struct device *dev, int id, resource_size_t physaddr,
 	  int irq, int bus_width)
+=======
+static int ace_alloc(struct device *dev, int id, resource_size_t physaddr,
+		     int irq, int bus_width)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ace_device *ace;
 	int rc;
@@ -1151,7 +1195,11 @@ err_noreg:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devexit ace_free(struct device *dev)
+=======
+static void ace_free(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ace_device *ace = dev_get_drvdata(dev);
 	dev_dbg(dev, "ace_free(%p)\n", dev);
@@ -1167,23 +1215,35 @@ static void __devexit ace_free(struct device *dev)
  * Platform Bus Support
  */
 
+<<<<<<< HEAD
 static int __devinit ace_probe(struct platform_device *dev)
+=======
+static int ace_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	resource_size_t physaddr = 0;
 	int bus_width = ACE_BUS_WIDTH_16; /* FIXME: should not be hard coded */
 	u32 id = dev->id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int irq = NO_IRQ;
 =======
 	int irq = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int irq = 0;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	dev_dbg(&dev->dev, "ace_probe(%p)\n", dev);
 
 	/* device id and bus width */
+<<<<<<< HEAD
 	of_property_read_u32(dev->dev.of_node, "port-number", &id);
 	if (id < 0)
+=======
+	if (of_property_read_u32(dev->dev.of_node, "port-number", &id))
+>>>>>>> refs/remotes/origin/master
 		id = 0;
 	if (of_find_property(dev->dev.of_node, "8-bit", NULL))
 		bus_width = ACE_BUS_WIDTH_8;
@@ -1202,7 +1262,11 @@ static int __devinit ace_probe(struct platform_device *dev)
 /*
  * Platform bus remove() method
  */
+<<<<<<< HEAD
 static int __devexit ace_remove(struct platform_device *dev)
+=======
+static int ace_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	ace_free(&dev->dev);
 	return 0;
@@ -1210,7 +1274,11 @@ static int __devexit ace_remove(struct platform_device *dev)
 
 #if defined(CONFIG_OF)
 /* Match table for of_platform binding */
+<<<<<<< HEAD
 static const struct of_device_id ace_of_match[] __devinitconst = {
+=======
+static const struct of_device_id ace_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "xlnx,opb-sysace-1.00.b", },
 	{ .compatible = "xlnx,opb-sysace-1.00.c", },
 	{ .compatible = "xlnx,xps-sysace-1.00.a", },
@@ -1224,7 +1292,11 @@ MODULE_DEVICE_TABLE(of, ace_of_match);
 
 static struct platform_driver ace_platform_driver = {
 	.probe = ace_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ace_remove),
+=======
+	.remove = ace_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = "xsysace",

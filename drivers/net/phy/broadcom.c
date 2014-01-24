@@ -356,11 +356,15 @@ static void bcm54xx_adjust_rxrefclk(struct phy_device *phydev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk125en == false ||
 	    (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE))
 =======
 	if (!clk125en || (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!clk125en || (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE))
+>>>>>>> refs/remotes/origin/master
 		val &= ~BCM54XX_SHD_SCR3_DLLAPD_DIS;
 	else
 		val |= BCM54XX_SHD_SCR3_DLLAPD_DIS;
@@ -378,11 +382,15 @@ static void bcm54xx_adjust_rxrefclk(struct phy_device *phydev)
 	orig = val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk125en == false ||
 	    (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE))
 =======
 	if (!clk125en || (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!clk125en || (phydev->dev_flags & PHY_BRCM_AUTO_PWRDWN_ENABLE))
+>>>>>>> refs/remotes/origin/master
 		val |= BCM54XX_SHD_APD_EN;
 	else
 		val &= ~BCM54XX_SHD_APD_EN;
@@ -562,10 +570,14 @@ static int bcm5481_config_aneg(struct phy_device *phydev)
 		 * There is no BCM5481 specification available, so down
 		 * here is everything we know about "register 0x18". This
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * at least helps BCM5481 to successfuly receive packets
 =======
 		 * at least helps BCM5481 to successfully receive packets
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * at least helps BCM5481 to successfully receive packets
+>>>>>>> refs/remotes/origin/master
 		 * on MPC8360E-RDK board. Peter Barada <peterb@logicpd.com>
 		 * says: "This sets delay between the RXD and RXC signals
 		 * instead of using trace lengths to achieve timing".
@@ -696,7 +708,12 @@ static int brcm_fet_config_intr(struct phy_device *phydev)
 	return err;
 }
 
+<<<<<<< HEAD
 static struct phy_driver bcm5411_driver = {
+=======
+static struct phy_driver broadcom_drivers[] = {
+{
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM5411,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM5411",
@@ -709,9 +726,13 @@ static struct phy_driver bcm5411_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm5421_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM5421,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM5421",
@@ -724,9 +745,13 @@ static struct phy_driver bcm5421_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm5461_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM5461,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM5461",
@@ -739,9 +764,13 @@ static struct phy_driver bcm5461_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm5464_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM5464,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM5464",
@@ -754,9 +783,13 @@ static struct phy_driver bcm5464_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm5481_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM5481,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM5481",
@@ -769,9 +802,13 @@ static struct phy_driver bcm5481_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm5482_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM5482,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM5482",
@@ -784,9 +821,13 @@ static struct phy_driver bcm5482_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm50610_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM50610,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM50610",
@@ -799,9 +840,13 @@ static struct phy_driver bcm50610_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm50610m_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM50610M,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM50610M",
@@ -814,9 +859,13 @@ static struct phy_driver bcm50610m_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm57780_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM57780,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM57780",
@@ -829,9 +878,13 @@ static struct phy_driver bcm57780_driver = {
 	.ack_interrupt	= bcm54xx_ack_interrupt,
 	.config_intr	= bcm54xx_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcmac131_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCMAC131,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCMAC131",
@@ -844,9 +897,13 @@ static struct phy_driver bcmac131_driver = {
 	.ack_interrupt	= brcm_fet_ack_interrupt,
 	.config_intr	= brcm_fet_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static struct phy_driver bcm5241_driver = {
+=======
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= PHY_ID_BCM5241,
 	.phy_id_mask	= 0xfffffff0,
 	.name		= "Broadcom BCM5241",
@@ -859,6 +916,7 @@ static struct phy_driver bcm5241_driver = {
 	.ack_interrupt	= brcm_fet_ack_interrupt,
 	.config_intr	= brcm_fet_config_intr,
 	.driver		= { .owner = THIS_MODULE },
+<<<<<<< HEAD
 };
 
 static int __init broadcom_init(void)
@@ -922,10 +980,19 @@ out_5421:
 	phy_driver_unregister(&bcm5411_driver);
 out_5411:
 	return ret;
+=======
+} };
+
+static int __init broadcom_init(void)
+{
+	return phy_drivers_register(broadcom_drivers,
+		ARRAY_SIZE(broadcom_drivers));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit broadcom_exit(void)
 {
+<<<<<<< HEAD
 	phy_driver_unregister(&bcm5241_driver);
 	phy_driver_unregister(&bcmac131_driver);
 	phy_driver_unregister(&bcm57780_driver);
@@ -937,6 +1004,10 @@ static void __exit broadcom_exit(void)
 	phy_driver_unregister(&bcm5461_driver);
 	phy_driver_unregister(&bcm5421_driver);
 	phy_driver_unregister(&bcm5411_driver);
+=======
+	phy_drivers_unregister(broadcom_drivers,
+		ARRAY_SIZE(broadcom_drivers));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(broadcom_init);

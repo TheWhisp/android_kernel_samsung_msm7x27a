@@ -54,12 +54,25 @@ static int usb_write(struct i2c_adapter *adapter, int cmd,
 
 static int usb_xfer(struct i2c_adapter *adapter, struct i2c_msg *msgs, int num)
 {
+<<<<<<< HEAD
 	unsigned char status;
 	struct i2c_msg *pmsg;
 	int i;
 
 	dev_dbg(&adapter->dev, "master xfer %d messages:\n", num);
 
+=======
+	unsigned char *pstatus;
+	struct i2c_msg *pmsg;
+	int i, ret;
+
+	dev_dbg(&adapter->dev, "master xfer %d messages:\n", num);
+
+	pstatus = kmalloc(sizeof(*pstatus), GFP_KERNEL);
+	if (!pstatus)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0 ; i < num ; i++) {
 		int cmd = CMD_I2C_IO;
 
@@ -84,7 +97,12 @@ static int usb_xfer(struct i2c_adapter *adapter, struct i2c_msg *msgs, int num)
 				     pmsg->buf, pmsg->len) != pmsg->len) {
 				dev_err(&adapter->dev,
 					"failure reading data\n");
+<<<<<<< HEAD
 				return -EREMOTEIO;
+=======
+				ret = -EREMOTEIO;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			/* write data */
@@ -93,11 +111,17 @@ static int usb_xfer(struct i2c_adapter *adapter, struct i2c_msg *msgs, int num)
 				      pmsg->buf, pmsg->len) != pmsg->len) {
 				dev_err(&adapter->dev,
 					"failure writing data\n");
+<<<<<<< HEAD
 				return -EREMOTEIO;
+=======
+				ret = -EREMOTEIO;
+				goto out;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
 		/* read status */
+<<<<<<< HEAD
 		if (usb_read(adapter, CMD_GET_STATUS, 0, 0, &status, 1) != 1) {
 			dev_err(&adapter->dev, "failure reading status\n");
 			return -EREMOTEIO;
@@ -109,10 +133,30 @@ static int usb_xfer(struct i2c_adapter *adapter, struct i2c_msg *msgs, int num)
 	}
 
 	return i;
+=======
+		if (usb_read(adapter, CMD_GET_STATUS, 0, 0, pstatus, 1) != 1) {
+			dev_err(&adapter->dev, "failure reading status\n");
+			ret = -EREMOTEIO;
+			goto out;
+		}
+
+		dev_dbg(&adapter->dev, "  status = %d\n", *pstatus);
+		if (*pstatus == STATUS_ADDRESS_NAK) {
+			ret = -EREMOTEIO;
+			goto out;
+		}
+	}
+
+	ret = i;
+out:
+	kfree(pstatus);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static u32 usb_func(struct i2c_adapter *adapter)
 {
+<<<<<<< HEAD
 	__le32 func;
 
 	/* get functionality from adapter */
@@ -123,6 +167,25 @@ static u32 usb_func(struct i2c_adapter *adapter)
 	}
 
 	return le32_to_cpu(func);
+=======
+	__le32 *pfunc;
+	u32 ret;
+
+	pfunc = kmalloc(sizeof(*pfunc), GFP_KERNEL);
+
+	/* get functionality from adapter */
+	if (!pfunc || usb_read(adapter, CMD_GET_FUNC, 0, 0, pfunc,
+			       sizeof(*pfunc)) != sizeof(*pfunc)) {
+		dev_err(&adapter->dev, "failure reading functionality\n");
+		ret = 0;
+		goto out;
+	}
+
+	ret = le32_to_cpup(pfunc);
+out:
+	kfree(pfunc);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* This is the actual algorithm we define */
@@ -263,6 +326,7 @@ static struct usb_driver i2c_tiny_usb_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_i2c_tiny_usb_init(void)
 {
 	/* register this driver with the USB subsystem */
@@ -280,6 +344,9 @@ module_exit(usb_i2c_tiny_usb_exit);
 =======
 module_usb_driver(i2c_tiny_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(i2c_tiny_usb_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* ----- end of usb layer ------------------------------------------------ */
 

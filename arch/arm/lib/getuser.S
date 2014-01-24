@@ -17,6 +17,7 @@
  *
  * Inputs:	r0 contains the address
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Outputs:	r0 is the error code
  *		r2, r3 contains the zero-extended value
 =======
@@ -24,6 +25,11 @@
  * Outputs:	r0 is the error code
  *		r2 contains the zero-extended value
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *		r1 contains the address limit, which must be preserved
+ * Outputs:	r0 is the error code
+ *		r2 contains the zero-extended value
+>>>>>>> refs/remotes/origin/master
  *		lr corrupted
  *
  * No other registers must be altered.  (see <asm/uaccess.h>
@@ -34,24 +40,34 @@
  */
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/assembler.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/assembler.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/errno.h>
 #include <asm/domain.h>
 
 ENTRY(__get_user_1)
+<<<<<<< HEAD
 <<<<<<< HEAD
 1:	T(ldrb)	r2, [r0]
 =======
 	check_uaccess r0, 1, r1, r2, __get_user_bad
 1: TUSER(ldrb)	r2, [r0]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	check_uaccess r0, 1, r1, r2, __get_user_bad
+1: TUSER(ldrb)	r2, [r0]
+>>>>>>> refs/remotes/origin/master
 	mov	r0, #0
 	mov	pc, lr
 ENDPROC(__get_user_1)
 
 ENTRY(__get_user_2)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_THUMB2_KERNEL
 2:	T(ldrb)	r2, [r0]
@@ -65,6 +81,8 @@ ENTRY(__get_user_2)
 #else
 	orr	r2, r3, r2, lsl #8
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	check_uaccess r0, 2, r1, r2, __get_user_bad
 #ifdef CONFIG_CPU_USE_DOMAINS
 rb	.req	ip
@@ -79,7 +97,10 @@ rb	.req	r0
 	orr	r2, r2, rb, lsl #8
 #else
 	orr	r2, rb, r2, lsl #8
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	mov	r0, #0
 	mov	pc, lr
@@ -87,11 +108,16 @@ ENDPROC(__get_user_2)
 
 ENTRY(__get_user_4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 4:	T(ldr)	r2, [r0]
 =======
 	check_uaccess r0, 4, r1, r2, __get_user_bad
 4: TUSER(ldr)	r2, [r0]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	check_uaccess r0, 4, r1, r2, __get_user_bad
+4: TUSER(ldr)	r2, [r0]
+>>>>>>> refs/remotes/origin/master
 	mov	r0, #0
 	mov	pc, lr
 ENDPROC(__get_user_4)

@@ -13,9 +13,13 @@
 #include <linux/sched.h>
 #include <linux/mm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/elf.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/elf.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/smp.h>
 #include <linux/ptrace.h>
 #include <linux/user.h>
@@ -27,6 +31,7 @@
 #include <linux/hw_breakpoint.h>
 #include <linux/regset.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/pgtable.h>
 #include <asm/system.h>
@@ -37,6 +42,18 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 
+=======
+#include <linux/audit.h>
+#include <linux/tracehook.h>
+#include <linux/unistd.h>
+
+#include <asm/pgtable.h>
+#include <asm/traps.h>
+
+#define CREATE_TRACE_POINTS
+#include <trace/events/syscalls.h>
+
+>>>>>>> refs/remotes/origin/master
 #define REG_PC	15
 #define REG_PSR	16
 /*
@@ -239,6 +256,7 @@ static struct undef_hook thumb_break_hook = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int thumb2_break_trap(struct pt_regs *regs, unsigned int instr)
 {
 	unsigned int instr2;
@@ -268,13 +286,18 @@ static struct undef_hook thumb2_break_hook = {
 	.cpsr_val	= PSR_T_BIT,
 	.fn		= thumb2_break_trap,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct undef_hook thumb2_break_hook = {
 	.instr_mask	= 0xffffffff,
 	.instr_val	= 0xf7f0a000,
 	.cpsr_mask	= PSR_T_BIT,
 	.cpsr_val	= PSR_T_BIT,
 	.fn		= break_trap,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ptrace_break_init(void)
@@ -297,10 +320,14 @@ static int ptrace_read_user(struct task_struct *tsk, unsigned long off,
 	unsigned long tmp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (off & 3 || off >= sizeof(struct user))
 =======
 	if (off & 3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (off & 3)
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 
 	tmp = 0;
@@ -313,10 +340,15 @@ static int ptrace_read_user(struct task_struct *tsk, unsigned long off,
 	else if (off < sizeof(struct pt_regs))
 		tmp = get_user_reg(tsk, off >> 2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	else if (off >= sizeof(struct user))
 		return -EIO;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (off >= sizeof(struct user))
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 
 	return put_user(tmp, ret);
 }
@@ -425,10 +457,14 @@ static long ptrace_hbp_idx_to_num(int idx)
  * Handle hitting a HW-breakpoint.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ptrace_hbptriggered(struct perf_event *bp, int unused,
 =======
 static void ptrace_hbptriggered(struct perf_event *bp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ptrace_hbptriggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/master
 				     struct perf_sample_data *data,
 				     struct pt_regs *regs)
 {
@@ -512,11 +548,16 @@ static struct perf_event *ptrace_hbp_create(struct task_struct *tsk, int type)
 	attr.disabled	= 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return register_user_hw_breakpoint(&attr, ptrace_hbptriggered, tsk);
 =======
 	return register_user_hw_breakpoint(&attr, ptrace_hbptriggered, NULL,
 					   tsk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return register_user_hw_breakpoint(&attr, ptrace_hbptriggered, NULL,
+					   tsk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ptrace_gethbpregs(struct task_struct *tsk, long num,
@@ -899,7 +940,11 @@ long arch_ptrace(struct task_struct *child, long request,
 #endif
 
 		case PTRACE_GET_THREAD_AREA:
+<<<<<<< HEAD
 			ret = put_user(task_thread_info(child)->tp_value,
+=======
+			ret = put_user(task_thread_info(child)->tp_value[0],
+>>>>>>> refs/remotes/origin/master
 				       datap);
 			break;
 
@@ -936,6 +981,7 @@ long arch_ptrace(struct task_struct *child, long request,
 
 #ifdef CONFIG_HAVE_HW_BREAKPOINT
 		case PTRACE_GETHBPREGS:
+<<<<<<< HEAD
 			if (ptrace_get_breakpoints(child) < 0)
 				return -ESRCH;
 
@@ -950,6 +996,14 @@ long arch_ptrace(struct task_struct *child, long request,
 			ret = ptrace_sethbpregs(child, addr,
 						(unsigned long __user *)data);
 			ptrace_put_breakpoints(child);
+=======
+			ret = ptrace_gethbpregs(child, addr,
+						(unsigned long __user *)data);
+			break;
+		case PTRACE_SETHBPREGS:
+			ret = ptrace_sethbpregs(child, addr,
+						(unsigned long __user *)data);
+>>>>>>> refs/remotes/origin/master
 			break;
 #endif
 
@@ -961,6 +1015,7 @@ long arch_ptrace(struct task_struct *child, long request,
 	return ret;
 }
 
+<<<<<<< HEAD
 asmlinkage int syscall_trace(int why, struct pt_regs *regs, int scno)
 {
 	unsigned long ip;
@@ -1015,4 +1070,71 @@ asmlinkage int syscall_trace(int why, struct pt_regs *regs, int scno)
 	regs->ARM_ip = ip;
 
 	return current_thread_info()->syscall;
+=======
+enum ptrace_syscall_dir {
+	PTRACE_SYSCALL_ENTER = 0,
+	PTRACE_SYSCALL_EXIT,
+};
+
+static int tracehook_report_syscall(struct pt_regs *regs,
+				    enum ptrace_syscall_dir dir)
+{
+	unsigned long ip;
+
+	/*
+	 * IP is used to denote syscall entry/exit:
+	 * IP = 0 -> entry, =1 -> exit
+	 */
+	ip = regs->ARM_ip;
+	regs->ARM_ip = dir;
+
+	if (dir == PTRACE_SYSCALL_EXIT)
+		tracehook_report_syscall_exit(regs, 0);
+	else if (tracehook_report_syscall_entry(regs))
+		current_thread_info()->syscall = -1;
+
+	regs->ARM_ip = ip;
+	return current_thread_info()->syscall;
+}
+
+asmlinkage int syscall_trace_enter(struct pt_regs *regs, int scno)
+{
+	current_thread_info()->syscall = scno;
+
+	/* Do the secure computing check first; failures should be fast. */
+	if (secure_computing(scno) == -1)
+		return -1;
+
+	if (test_thread_flag(TIF_SYSCALL_TRACE))
+		scno = tracehook_report_syscall(regs, PTRACE_SYSCALL_ENTER);
+
+	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+		trace_sys_enter(regs, scno);
+
+	audit_syscall_entry(AUDIT_ARCH_ARM, scno, regs->ARM_r0, regs->ARM_r1,
+			    regs->ARM_r2, regs->ARM_r3);
+
+	return scno;
+}
+
+asmlinkage void syscall_trace_exit(struct pt_regs *regs)
+{
+	/*
+	 * Audit the syscall before anything else, as a debugger may
+	 * come in and change the current registers.
+	 */
+	audit_syscall_exit(regs);
+
+	/*
+	 * Note that we haven't updated the ->syscall field for the
+	 * current thread. This isn't a problem because it will have
+	 * been set on syscall entry and there hasn't been an opportunity
+	 * for a PTRACE_SET_SYSCALL since then.
+	 */
+	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+		trace_sys_exit(regs, regs_return_value(regs));
+
+	if (test_thread_flag(TIF_SYSCALL_TRACE))
+		tracehook_report_syscall(regs, PTRACE_SYSCALL_EXIT);
+>>>>>>> refs/remotes/origin/master
 }

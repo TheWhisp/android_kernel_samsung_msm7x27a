@@ -74,6 +74,18 @@
 #define MII_SR_100X_FD_CAPS      0x4000	/* 100X  Full Duplex Capable */
 #define MII_SR_100T4_CAPS        0x8000	/* 100T4 Capable */
 
+<<<<<<< HEAD
+=======
+/* AR8031 PHY Debug Registers */
+#define PHY_AR803X_ID           0x00001374
+#define PHY_AR8031_DBG_OFF      0x1D
+#define PHY_AR8031_DBG_DAT      0x1E
+#define PHY_AR8031_SERDES       0x05
+#define PHY_AR8031_HIBERNATE    0x0B
+#define PHY_AR8031_SERDES_TX_CLK_DLY   0x0100 /* TX clock delay of 2.0ns */
+#define PHY_AR8031_PS_HIB_EN           0x8000 /* Hibernate enable */
+
+>>>>>>> refs/remotes/origin/master
 /* Phy Id Register (word 2) */
 #define PHY_REVISION_MASK        0x000F
 
@@ -97,6 +109,10 @@
  */
 s32 pch_gbe_phy_get_id(struct pch_gbe_hw *hw)
 {
+<<<<<<< HEAD
+=======
+	struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+>>>>>>> refs/remotes/origin/master
 	struct pch_gbe_phy_info *phy = &hw->phy;
 	s32 ret;
 	u16 phy_id1;
@@ -115,8 +131,14 @@ s32 pch_gbe_phy_get_id(struct pch_gbe_hw *hw)
 	phy->id = (u32)phy_id1;
 	phy->id = ((phy->id << 6) | ((phy_id2 & 0xFC00) >> 10));
 	phy->revision = (u32) (phy_id2 & 0x000F);
+<<<<<<< HEAD
 	pr_debug("phy->id : 0x%08x  phy->revision : 0x%08x\n",
 		 phy->id, phy->revision);
+=======
+	netdev_dbg(adapter->netdev,
+		   "phy->id : 0x%08x  phy->revision : 0x%08x\n",
+		   phy->id, phy->revision);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -134,7 +156,14 @@ s32 pch_gbe_phy_read_reg_miic(struct pch_gbe_hw *hw, u32 offset, u16 *data)
 	struct pch_gbe_phy_info *phy = &hw->phy;
 
 	if (offset > PHY_MAX_REG_ADDRESS) {
+<<<<<<< HEAD
 		pr_err("PHY Address %d is out of range\n", offset);
+=======
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "PHY Address %d is out of range\n",
+			   offset);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	*data = pch_gbe_mac_ctrl_miim(hw, phy->addr, PCH_GBE_HAL_MIIM_READ,
@@ -156,7 +185,14 @@ s32 pch_gbe_phy_write_reg_miic(struct pch_gbe_hw *hw, u32 offset, u16 data)
 	struct pch_gbe_phy_info *phy = &hw->phy;
 
 	if (offset > PHY_MAX_REG_ADDRESS) {
+<<<<<<< HEAD
 		pr_err("PHY Address %d is out of range\n", offset);
+=======
+		struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+
+		netdev_err(adapter->netdev, "PHY Address %d is out of range\n",
+			   offset);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	pch_gbe_mac_ctrl_miim(hw, phy->addr, PCH_GBE_HAL_MIIM_WRITE,
@@ -235,26 +271,88 @@ void pch_gbe_phy_power_down(struct pch_gbe_hw *hw)
  * pch_gbe_phy_set_rgmii - RGMII interface setting
  * @hw:	            Pointer to the HW structure
  */
+<<<<<<< HEAD
 inline void pch_gbe_phy_set_rgmii(struct pch_gbe_hw *hw)
+=======
+void pch_gbe_phy_set_rgmii(struct pch_gbe_hw *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	pch_gbe_phy_sw_reset(hw);
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * pch_gbe_phy_tx_clk_delay - Setup TX clock delay via the PHY
+ * @hw:	            Pointer to the HW structure
+ * Returns
+ *	0:		Successful.
+ *	-EINVAL:	Invalid argument.
+ */
+static int pch_gbe_phy_tx_clk_delay(struct pch_gbe_hw *hw)
+{
+	/* The RGMII interface requires a ~2ns TX clock delay. This is typically
+	 * done in layout with a longer trace or via PHY strapping, but can also
+	 * be done via PHY configuration registers.
+	 */
+	struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+	u16 mii_reg;
+	int ret = 0;
+
+	switch (hw->phy.id) {
+	case PHY_AR803X_ID:
+		netdev_dbg(adapter->netdev,
+			   "Configuring AR803X PHY for 2ns TX clock delay\n");
+		pch_gbe_phy_read_reg_miic(hw, PHY_AR8031_DBG_OFF, &mii_reg);
+		ret = pch_gbe_phy_write_reg_miic(hw, PHY_AR8031_DBG_OFF,
+						 PHY_AR8031_SERDES);
+		if (ret)
+			break;
+
+		pch_gbe_phy_read_reg_miic(hw, PHY_AR8031_DBG_DAT, &mii_reg);
+		mii_reg |= PHY_AR8031_SERDES_TX_CLK_DLY;
+		ret = pch_gbe_phy_write_reg_miic(hw, PHY_AR8031_DBG_DAT,
+						 mii_reg);
+		break;
+	default:
+		netdev_err(adapter->netdev,
+			   "Unknown PHY (%x), could not set TX clock delay\n",
+			   hw->phy.id);
+		return -EINVAL;
+	}
+
+	if (ret)
+		netdev_err(adapter->netdev,
+			   "Could not configure tx clock delay for PHY\n");
+	return ret;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * pch_gbe_phy_init_setting - PHY initial setting
  * @hw:	            Pointer to the HW structure
  */
 void pch_gbe_phy_init_setting(struct pch_gbe_hw *hw)
 {
+<<<<<<< HEAD
 	struct pch_gbe_adapter *adapter;
+=======
+	struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+>>>>>>> refs/remotes/origin/master
 	struct ethtool_cmd     cmd = { .cmd = ETHTOOL_GSET };
 	int ret;
 	u16 mii_reg;
 
+<<<<<<< HEAD
 	adapter = container_of(hw, struct pch_gbe_adapter, hw);
 	ret = mii_ethtool_gset(&adapter->mii, &cmd);
 	if (ret)
 		pr_err("Error: mii_ethtool_gset\n");
+=======
+	ret = mii_ethtool_gset(&adapter->mii, &cmd);
+	if (ret)
+		netdev_err(adapter->netdev, "Error: mii_ethtool_gset\n");
+>>>>>>> refs/remotes/origin/master
 
 	ethtool_cmd_speed_set(&cmd, hw->mac.link_speed);
 	cmd.duplex = hw->mac.link_duplex;
@@ -263,7 +361,11 @@ void pch_gbe_phy_init_setting(struct pch_gbe_hw *hw)
 	pch_gbe_phy_write_reg_miic(hw, MII_BMCR, BMCR_RESET);
 	ret = mii_ethtool_sset(&adapter->mii, &cmd);
 	if (ret)
+<<<<<<< HEAD
 		pr_err("Error: mii_ethtool_sset\n");
+=======
+		netdev_err(adapter->netdev, "Error: mii_ethtool_sset\n");
+>>>>>>> refs/remotes/origin/master
 
 	pch_gbe_phy_sw_reset(hw);
 
@@ -271,4 +373,50 @@ void pch_gbe_phy_init_setting(struct pch_gbe_hw *hw)
 	mii_reg |= PHYSP_CTRL_ASSERT_CRS_TX;
 	pch_gbe_phy_write_reg_miic(hw, PHY_PHYSP_CONTROL, mii_reg);
 
+<<<<<<< HEAD
+=======
+	/* Setup a TX clock delay on certain platforms */
+	if (adapter->pdata && adapter->pdata->phy_tx_clk_delay)
+		pch_gbe_phy_tx_clk_delay(hw);
+}
+
+/**
+ * pch_gbe_phy_disable_hibernate - Disable the PHY low power state
+ * @hw:	            Pointer to the HW structure
+ * Returns
+ *	0:		Successful.
+ *	-EINVAL:	Invalid argument.
+ */
+int pch_gbe_phy_disable_hibernate(struct pch_gbe_hw *hw)
+{
+	struct pch_gbe_adapter *adapter = pch_gbe_hw_to_adapter(hw);
+	u16 mii_reg;
+	int ret = 0;
+
+	switch (hw->phy.id) {
+	case PHY_AR803X_ID:
+		netdev_dbg(adapter->netdev,
+			   "Disabling hibernation for AR803X PHY\n");
+		ret = pch_gbe_phy_write_reg_miic(hw, PHY_AR8031_DBG_OFF,
+						 PHY_AR8031_HIBERNATE);
+		if (ret)
+			break;
+
+		pch_gbe_phy_read_reg_miic(hw, PHY_AR8031_DBG_DAT, &mii_reg);
+		mii_reg &= ~PHY_AR8031_PS_HIB_EN;
+		ret = pch_gbe_phy_write_reg_miic(hw, PHY_AR8031_DBG_DAT,
+						 mii_reg);
+		break;
+	default:
+		netdev_err(adapter->netdev,
+			   "Unknown PHY (%x), could not disable hibernation\n",
+			   hw->phy.id);
+		return -EINVAL;
+	}
+
+	if (ret)
+		netdev_err(adapter->netdev,
+			   "Could not disable PHY hibernation\n");
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }

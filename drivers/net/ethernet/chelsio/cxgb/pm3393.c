@@ -499,7 +499,11 @@ static const struct cmac_statistics *pm3393_update_statistics(struct cmac *mac,
 
 static int pm3393_macaddress_get(struct cmac *cmac, u8 mac_addr[6])
 {
+<<<<<<< HEAD
 	memcpy(mac_addr, cmac->instance->mac_addr, 6);
+=======
+	memcpy(mac_addr, cmac->instance->mac_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -526,7 +530,11 @@ static int pm3393_macaddress_set(struct cmac *cmac, u8 ma[6])
 	 */
 
 	/* Store local copy */
+<<<<<<< HEAD
 	memcpy(cmac->instance->mac_addr, ma, 6);
+=======
+	memcpy(cmac->instance->mac_addr, ma, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	lo  = ((u32) ma[1] << 8) | (u32) ma[0];
 	mid = ((u32) ma[3] << 8) | (u32) ma[2];

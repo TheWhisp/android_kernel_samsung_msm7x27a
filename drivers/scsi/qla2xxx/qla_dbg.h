@@ -1,6 +1,10 @@
 /*
  * QLogic Fibre Channel HBA Driver
+<<<<<<< HEAD
  * Copyright (c)  2003-2011 QLogic Corporation
+=======
+ * Copyright (c)  2003-2013 QLogic Corporation
+>>>>>>> refs/remotes/origin/master
  *
  * See LICENSE.qla2xxx for copyright and licensing details.
  */
@@ -8,6 +12,7 @@
 #include "qla_def.h"
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Driver debug definitions.
  */
@@ -151,6 +156,8 @@
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Firmware Dump structure definition
  */
 
@@ -309,7 +316,10 @@ struct qla81xx_fw_dump {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct qla83xx_fw_dump {
 	uint32_t host_status;
 	uint32_t host_risc_reg[48];
@@ -358,7 +368,10 @@ struct qla83xx_fw_dump {
 	uint32_t ext_mem[1];
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define EFT_NUM_BUFFERS		4
 #define EFT_BYTES_PER_BUFFER	0x4000
 #define EFT_SIZE		((EFT_BYTES_PER_BUFFER) * (EFT_NUM_BUFFERS))
@@ -387,14 +400,21 @@ struct qla2xxx_mq_chain {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DUMP_CHAIN_VARIANT	0x80000000
 #define DUMP_CHAIN_FCE		0x7FFFFAF0
 #define DUMP_CHAIN_MQ		0x7FFFFAF1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct qla2xxx_mqueue_header {
 	uint32_t queue;
 #define TYPE_REQUEST_QUEUE	0x1
 #define TYPE_RESPONSE_QUEUE	0x2
+<<<<<<< HEAD
+=======
+#define TYPE_ATIO_QUEUE		0x3
+>>>>>>> refs/remotes/origin/master
 	uint32_t number;
 	uint32_t size;
 };
@@ -408,7 +428,10 @@ struct qla2xxx_mqueue_chain {
 #define DUMP_CHAIN_FCE		0x7FFFFAF0
 #define DUMP_CHAIN_MQ		0x7FFFFAF1
 #define DUMP_CHAIN_QUEUE	0x7FFFFAF2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DUMP_CHAIN_LAST		0x80000000
 
 struct qla2xxx_fw_dump {
@@ -443,9 +466,12 @@ struct qla2xxx_fw_dump {
 		struct qla25xx_fw_dump isp25;
 		struct qla81xx_fw_dump isp81;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} isp;
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct qla83xx_fw_dump isp83;
 	} isp;
 };
@@ -495,4 +521,15 @@ ql_log_pci(uint32_t, struct pci_dev *pdev, int32_t, const char *fmt, ...);
 #define ql_dbg_misc	0x00010000 /* For dumping everything that is not
 				    * not covered by upper categories
 				    */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ql_dbg_verbose	0x00008000 /* More verbosity for each level
+				    * This is to be used with other levels where
+				    * more verbosity is required. It might not
+				    * be applicable to all the levels.
+				    */
+#define ql_dbg_tgt	0x00004000 /* Target mode */
+#define ql_dbg_tgt_mgt	0x00002000 /* Target mode management */
+#define ql_dbg_tgt_tmr	0x00001000 /* Target mode task management */
+>>>>>>> refs/remotes/origin/master

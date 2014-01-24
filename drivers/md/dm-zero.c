@@ -25,7 +25,11 @@ static int zero_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	/*
 	 * Silently drop discards, avoiding -EOPNOTSUPP.
 	 */
+<<<<<<< HEAD
 	ti->num_discard_requests = 1;
+=======
+	ti->num_discard_bios = 1;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -33,8 +37,12 @@ static int zero_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 /*
  * Return zeros only on reads
  */
+<<<<<<< HEAD
 static int zero_map(struct dm_target *ti, struct bio *bio,
 		      union map_info *map_context)
+=======
+static int zero_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	switch(bio_rw(bio)) {
 	case READ:
@@ -56,7 +64,11 @@ static int zero_map(struct dm_target *ti, struct bio *bio,
 
 static struct target_type zero_target = {
 	.name   = "zero",
+<<<<<<< HEAD
 	.version = {1, 0, 0},
+=======
+	.version = {1, 1, 0},
+>>>>>>> refs/remotes/origin/master
 	.module = THIS_MODULE,
 	.ctr    = zero_ctr,
 	.map    = zero_map,

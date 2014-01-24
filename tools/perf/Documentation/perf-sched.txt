@@ -9,10 +9,14 @@ SYNOPSIS
 --------
 [verse]
 <<<<<<< HEAD
+<<<<<<< HEAD
 'perf sched' {record|latency|map|replay|trace}
 =======
 'perf sched' {record|latency|map|replay|script}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+'perf sched' {record|latency|map|replay|script}
+>>>>>>> refs/remotes/origin/master
 
 DESCRIPTION
 -----------
@@ -25,12 +29,17 @@ There are five variants of perf sched:
   and other scheduling properties of the workload.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   'perf sched trace' to see a detailed trace of the workload that
   was recorded.
 =======
   'perf sched script' to see a detailed trace of the workload that
    was recorded (aliased to 'perf script' for now).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  'perf sched script' to see a detailed trace of the workload that
+   was recorded (aliased to 'perf script' for now).
+>>>>>>> refs/remotes/origin/master
 
   'perf sched replay' to simulate the workload that was recorded
   via perf sched record. (this is done by starting up mockup threads
@@ -50,10 +59,14 @@ OPTIONS
 -i::
 --input=<file>::
 <<<<<<< HEAD
+<<<<<<< HEAD
         Input file name. (default: perf.data)
 =======
         Input file name. (default: perf.data unless stdin is a fifo)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        Input file name. (default: perf.data unless stdin is a fifo)
+>>>>>>> refs/remotes/origin/master
 
 -v::
 --verbose::

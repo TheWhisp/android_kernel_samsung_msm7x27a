@@ -10,6 +10,7 @@ void __init initmem_init(void)
 {
 	x86_numa_init();
 }
+<<<<<<< HEAD
 
 unsigned long __init numa_free_all_bootmem(void)
 {
@@ -27,3 +28,5 @@ unsigned long __init numa_free_all_bootmem(void)
 
 	return pages;
 }
+=======
+>>>>>>> refs/remotes/origin/master

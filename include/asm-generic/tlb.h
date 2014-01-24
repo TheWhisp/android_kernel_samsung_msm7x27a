@@ -94,10 +94,22 @@ struct mmu_gather {
 #ifdef CONFIG_HAVE_RCU_TABLE_FREE
 	struct mmu_table_batch	*batch;
 #endif
+<<<<<<< HEAD
 	unsigned int		need_flush : 1,	/* Did free PTEs */
 				fast_mode  : 1; /* No batching   */
 
 	unsigned int		fullmm;
+=======
+	unsigned long		start;
+	unsigned long		end;
+	unsigned int		need_flush : 1,	/* Did free PTEs */
+	/* we are in the middle of an operation to clear
+	 * a full mm and can make some optimizations */
+				fullmm : 1,
+	/* we have performed an operation which
+	 * requires a complete flush of the tlb */
+				need_flush_all : 1;
+>>>>>>> refs/remotes/origin/master
 
 	struct mmu_gather_batch *active;
 	struct mmu_gather_batch	local;
@@ -107,6 +119,7 @@ struct mmu_gather {
 
 #define HAVE_GENERIC_MMU_GATHER
 
+<<<<<<< HEAD
 static inline int tlb_fast_mode(struct mmu_gather *tlb)
 {
 #ifdef CONFIG_SMP
@@ -123,6 +136,12 @@ static inline int tlb_fast_mode(struct mmu_gather *tlb)
 void tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm, bool fullmm);
 void tlb_flush_mmu(struct mmu_gather *tlb);
 void tlb_finish_mmu(struct mmu_gather *tlb, unsigned long start, unsigned long end);
+=======
+void tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm, unsigned long start, unsigned long end);
+void tlb_flush_mmu(struct mmu_gather *tlb);
+void tlb_finish_mmu(struct mmu_gather *tlb, unsigned long start,
+							unsigned long end);
+>>>>>>> refs/remotes/origin/master
 int __tlb_remove_page(struct mmu_gather *tlb, struct page *page);
 
 /* tlb_remove_page
@@ -149,7 +168,10 @@ static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
 	} while (0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tlb_remove_pmd_tlb_entry - remember a pmd mapping for later tlb invalidation
  * This is a nop so far, because only x86 needs it.
@@ -164,7 +186,10 @@ static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page)
 		__tlb_remove_pmd_tlb_entry(tlb, pmdp, address);	\
 	} while (0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define pte_free_tlb(tlb, ptep, address)			\
 	do {							\
 		tlb->need_flush = 1;				\

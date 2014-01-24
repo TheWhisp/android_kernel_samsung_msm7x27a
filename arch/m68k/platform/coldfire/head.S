@@ -4,10 +4,14 @@
  *	head.S -- common startup code for ColdFire CPUs.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	(C) Copyright 1999-2010, Greg Ungerer <gerg@snapgear.com>.
 =======
  *	(C) Copyright 1999-2011, Greg Ungerer <gerg@snapgear.com>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	(C) Copyright 1999-2011, Greg Ungerer <gerg@snapgear.com>.
+>>>>>>> refs/remotes/origin/master
  */
 
 /*****************************************************************************/
@@ -18,9 +22,13 @@
 #include <asm/coldfire.h>
 #include <asm/mcfsim.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/mcfmmu.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/mcfmmu.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/thread_info.h>
 
 /*****************************************************************************/
@@ -38,9 +46,15 @@
 .endm
 
 #elif defined(CONFIG_M5206) || defined(CONFIG_M5206e) || \
+<<<<<<< HEAD
       defined(CONFIG_M5249) || defined(CONFIG_M527x) || \
       defined(CONFIG_M528x) || defined(CONFIG_M5307) || \
       defined(CONFIG_M5407)
+=======
+      defined(CONFIG_M5249) || defined(CONFIG_M525x) || \
+      defined(CONFIG_M527x) || defined(CONFIG_M528x) || \
+      defined(CONFIG_M5307) || defined(CONFIG_M5407)
+>>>>>>> refs/remotes/origin/master
 /*
  *	Not all these devices have exactly the same DRAM controller,
  *	but the DCMR register is virtually identical - give or take
@@ -67,7 +81,11 @@
 
 #elif defined(CONFIG_M5272)
 .macro GET_MEM_SIZE
+<<<<<<< HEAD
 	movel	MCF_MBAR+MCFSIM_CSOR7,%d0 /* get SDRAM address mask */
+=======
+	movel	MCFSIM_CSOR7,%d0	/* get SDRAM address mask */
+>>>>>>> refs/remotes/origin/master
 	andil	#0xfffff000,%d0		/* mask out chip select options */
 	negl	%d0			/* negate bits */
 .endm
@@ -144,7 +162,10 @@ _init_sp:
 __HEAD
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 _start0:
 	jmp	_start
@@ -153,7 +174,10 @@ _start0:
 .equ	.,_start0+0x1000
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	This is the codes first entry point. This is where it all
  *	begins...
@@ -163,10 +187,13 @@ _start:
 	nop					/* filler */
 	movew	#0x2700, %sr			/* no interrupts */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_UBOOT)
 	movel	%sp,_init_sp			/* save initial stack pointer */
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	movel	#CACHE_INIT,%d0			/* disable cache */
 	movec	%d0,%CACR
 	nop
@@ -177,7 +204,10 @@ _start:
 	movel	#CONFIG_MBAR+1,%d0		/* configured MBAR address */
 	movec	%d0,%MBAR			/* set it */
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 *	Do any platform or board specific setup now. Most boards
@@ -209,11 +239,14 @@ _start:
 	 *	then the code here is the same for all.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	movel	#CACHE_INIT,%d0			/* invalidate whole cache */
 	movec	%d0,%CACR
 	nop
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	movel	#ACR0_MODE,%d0			/* set RAM region for caching */
 	movec	%d0,%ACR0
 	movel	#ACR1_MODE,%d0			/* anything else to cache? */
@@ -229,7 +262,10 @@ _start:
 	nop
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 	/*
 	 *	Identity mapping for the kernel region.
@@ -250,13 +286,21 @@ _start:
 _vstart:
 #endif /* CONFIG_MMU */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ROMFS_FS
 	/*
 	 *	Move ROM filesystem above bss :-)
 	 */
+<<<<<<< HEAD
 	lea	_sbss,%a0			/* get start of bss */
 	lea	_ebss,%a1			/* set up destination  */
+=======
+	lea	__bss_start,%a0			/* get start of bss */
+	lea	__bss_stop,%a1			/* set up destination  */
+>>>>>>> refs/remotes/origin/master
 	movel	%a0,%a2				/* copy of bss start */
 
 	movel	8(%a0),%d0			/* get size of ROMFS */
@@ -274,7 +318,11 @@ _copy_romfs:
 	bne	_copy_romfs
 
 #else /* CONFIG_ROMFS_FS */
+<<<<<<< HEAD
 	lea	_ebss,%a1
+=======
+	lea	__bss_stop,%a1
+>>>>>>> refs/remotes/origin/master
 	movel	%a1,_ramstart
 #endif /* CONFIG_ROMFS_FS */
 
@@ -282,8 +330,13 @@ _copy_romfs:
 	/*
 	 *	Zero out the bss region.
 	 */
+<<<<<<< HEAD
 	lea	_sbss,%a0			/* get start of bss */
 	lea	_ebss,%a1			/* get end of bss */
+=======
+	lea	__bss_start,%a0			/* get start of bss */
+	lea	__bss_stop,%a1			/* get end of bss */
+>>>>>>> refs/remotes/origin/master
 	clrl	%d0				/* set value */
 _clear_bss:
 	movel	%d0,(%a0)+			/* clear each word */
@@ -297,7 +350,10 @@ _clear_bss:
 	lea	THREAD_SIZE(%a0),%sp
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 .global m68k_cputype
 .global m68k_mmutype
@@ -314,7 +370,10 @@ _clear_bss:
 	lea	init_task,%a2			/* Set "current" init task */
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 *	Assember start up done, start code proper.
 	 */

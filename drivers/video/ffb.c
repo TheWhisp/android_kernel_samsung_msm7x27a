@@ -893,7 +893,11 @@ static void ffb_init_fix(struct fb_info *info)
 	info->fix.accel = FB_ACCEL_SUN_CREATOR;
 }
 
+<<<<<<< HEAD
 static int __devinit ffb_probe(struct platform_device *op)
+=======
+static int ffb_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = op->dev.of_node;
 	struct ffb_fbc __iomem *fbc;
@@ -1022,7 +1026,11 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ffb_remove(struct platform_device *op)
+=======
+static int ffb_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = dev_get_drvdata(&op->dev);
 	struct ffb_par *par = info->par;
@@ -1035,8 +1043,11 @@ static int __devexit ffb_remove(struct platform_device *op)
 
 	framebuffer_release(info);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1058,7 +1069,11 @@ static struct platform_driver ffb_driver = {
 		.of_match_table = ffb_match,
 	},
 	.probe		= ffb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ffb_remove),
+=======
+	.remove		= ffb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ffb_init(void)

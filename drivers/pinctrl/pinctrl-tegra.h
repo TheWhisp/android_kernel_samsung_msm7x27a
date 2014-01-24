@@ -16,6 +16,57 @@
 #ifndef __PINMUX_TEGRA_H__
 #define __PINMUX_TEGRA_H__
 
+<<<<<<< HEAD
+=======
+enum tegra_pinconf_param {
+	/* argument: tegra_pinconf_pull */
+	TEGRA_PINCONF_PARAM_PULL,
+	/* argument: tegra_pinconf_tristate */
+	TEGRA_PINCONF_PARAM_TRISTATE,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_ENABLE_INPUT,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_OPEN_DRAIN,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_LOCK,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_IORESET,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_RCV_SEL,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_HIGH_SPEED_MODE,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_SCHMITT,
+	/* argument: Boolean */
+	TEGRA_PINCONF_PARAM_LOW_POWER_MODE,
+	/* argument: Integer, range is HW-dependant */
+	TEGRA_PINCONF_PARAM_DRIVE_DOWN_STRENGTH,
+	/* argument: Integer, range is HW-dependant */
+	TEGRA_PINCONF_PARAM_DRIVE_UP_STRENGTH,
+	/* argument: Integer, range is HW-dependant */
+	TEGRA_PINCONF_PARAM_SLEW_RATE_FALLING,
+	/* argument: Integer, range is HW-dependant */
+	TEGRA_PINCONF_PARAM_SLEW_RATE_RISING,
+	/* argument: Integer, range is HW-dependant */
+	TEGRA_PINCONF_PARAM_DRIVE_TYPE,
+};
+
+enum tegra_pinconf_pull {
+	TEGRA_PINCONFIG_PULL_NONE,
+	TEGRA_PINCONFIG_PULL_DOWN,
+	TEGRA_PINCONFIG_PULL_UP,
+};
+
+enum tegra_pinconf_tristate {
+	TEGRA_PINCONFIG_DRIVEN,
+	TEGRA_PINCONFIG_TRISTATE,
+};
+
+#define TEGRA_PINCONF_PACK(_param_, _arg_) ((_param_) << 16 | (_arg_))
+#define TEGRA_PINCONF_UNPACK_PARAM(_conf_) ((_conf_) >> 16)
+#define TEGRA_PINCONF_UNPACK_ARG(_conf_) ((_conf_) & 0xffff)
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct tegra_function - Tegra pinctrl mux function
  * @name: The name of the function, exported to pinctrl core.
@@ -51,6 +102,12 @@ struct tegra_function {
  * @ioreset_reg:	IO reset register offset. -1 if unsupported.
  * @ioreset_bank:	IO reset register bank. 0 if unsupported.
  * @ioreset_bit:	IO reset register bit. 0 if unsupported.
+<<<<<<< HEAD
+=======
+ * @rcv_sel_reg:	Receiver select offset. -1 if unsupported.
+ * @rcv_sel_bank:	Receiver select bank. 0 if unsupported.
+ * @rcv_sel_bit:	Receiver select bit. 0 if unsupported.
+>>>>>>> refs/remotes/origin/master
  * @drv_reg:		Drive fields register offset. -1 if unsupported.
  *			This register contains the hsm, schmitt, lpmd, drvdn,
  *			drvup, slwr, and slwf parameters.
@@ -66,6 +123,12 @@ struct tegra_function {
  * @slwr_width:		Slew Rising field width. 0 if unsupported.
  * @slwf_bit:		Slew Falling register bit. 0 if unsupported.
  * @slwf_width:		Slew Falling field width. 0 if unsupported.
+<<<<<<< HEAD
+=======
+ * @drvtype_reg:	Drive type fields register offset. -1 if unsupported.
+ * @drvtype_bank:	Drive type fields register bank. 0 if unsupported.
+ * @drvtype_bit:	Drive type register bit. 0 if unsupported.
+>>>>>>> refs/remotes/origin/master
  *
  * A representation of a group of pins (possibly just one pin) in the Tegra
  * pin controller. Each group allows some parameter or parameters to be
@@ -87,15 +150,28 @@ struct tegra_pingroup {
 	s16 odrain_reg;
 	s16 lock_reg;
 	s16 ioreset_reg;
+<<<<<<< HEAD
 	s16 drv_reg;
+=======
+	s16 rcv_sel_reg;
+	s16 drv_reg;
+	s16 drvtype_reg;
+>>>>>>> refs/remotes/origin/master
 	u32 mux_bank:2;
 	u32 pupd_bank:2;
 	u32 tri_bank:2;
 	u32 einput_bank:2;
 	u32 odrain_bank:2;
 	u32 ioreset_bank:2;
+<<<<<<< HEAD
 	u32 lock_bank:2;
 	u32 drv_bank:2;
+=======
+	u32 rcv_sel_bank:2;
+	u32 lock_bank:2;
+	u32 drv_bank:2;
+	u32 drvtype_bank:2;
+>>>>>>> refs/remotes/origin/master
 	u32 mux_bit:5;
 	u32 pupd_bit:5;
 	u32 tri_bit:5;
@@ -103,6 +179,10 @@ struct tegra_pingroup {
 	u32 odrain_bit:5;
 	u32 lock_bit:5;
 	u32 ioreset_bit:5;
+<<<<<<< HEAD
+=======
+	u32 rcv_sel_bit:5;
+>>>>>>> refs/remotes/origin/master
 	u32 hsm_bit:5;
 	u32 schmitt_bit:5;
 	u32 lpmd_bit:5;
@@ -110,6 +190,10 @@ struct tegra_pingroup {
 	u32 drvup_bit:5;
 	u32 slwr_bit:5;
 	u32 slwf_bit:5;
+<<<<<<< HEAD
+=======
+	u32 drvtype_bit:5;
+>>>>>>> refs/remotes/origin/master
 	u32 drvdn_width:6;
 	u32 drvup_width:6;
 	u32 slwr_width:6;
@@ -139,6 +223,7 @@ struct tegra_pinctrl_soc_data {
 	unsigned ngroups;
 };
 
+<<<<<<< HEAD
 /**
  * tegra_pinctrl_soc_initf() - Retrieve pin controller details for a SoC.
  * @soc_data:	This pointer must be updated to point at a struct containing
@@ -159,5 +244,10 @@ void tegra20_pinctrl_init(const struct tegra_pinctrl_soc_data **soc_data);
  *		details of Tegra30's pin controller.
  */
 void tegra30_pinctrl_init(const struct tegra_pinctrl_soc_data **soc_data);
+=======
+int tegra_pinctrl_probe(struct platform_device *pdev,
+			const struct tegra_pinctrl_soc_data *soc_data);
+int tegra_pinctrl_remove(struct platform_device *pdev);
+>>>>>>> refs/remotes/origin/master
 
 #endif

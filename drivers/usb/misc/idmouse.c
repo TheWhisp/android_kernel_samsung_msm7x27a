@@ -19,7 +19,10 @@
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/completion.h>
@@ -200,7 +203,12 @@ reset:
 			return -EAGAIN;
 
 	/* should be IMGSIZE == 65040 */
+<<<<<<< HEAD
 	dbg("read %d bytes fingerprint data", bytes_read);
+=======
+	dev_dbg(&dev->interface->dev, "read %d bytes fingerprint data\n",
+		bytes_read);
+>>>>>>> refs/remotes/origin/master
 	return result;
 }
 
@@ -360,24 +368,36 @@ static int idmouse_probe(struct usb_interface *interface,
 	if (!dev->bulk_in_endpointAddr && usb_endpoint_is_bulk_in(endpoint)) {
 		/* we found a bulk in endpoint */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev->orig_bi_size = le16_to_cpu(endpoint->wMaxPacketSize);
 =======
 		dev->orig_bi_size = usb_endpoint_maxp(endpoint);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev->orig_bi_size = usb_endpoint_maxp(endpoint);
+>>>>>>> refs/remotes/origin/master
 		dev->bulk_in_size = 0x200; /* works _much_ faster */
 		dev->bulk_in_endpointAddr = endpoint->bEndpointAddress;
 		dev->bulk_in_buffer =
 			kmalloc(IMGSIZE + dev->bulk_in_size, GFP_KERNEL);
 
 		if (!dev->bulk_in_buffer) {
+<<<<<<< HEAD
 			err("Unable to allocate input buffer.");
+=======
+			dev_err(&interface->dev, "Unable to allocate input buffer.\n");
+>>>>>>> refs/remotes/origin/master
 			idmouse_delete(dev);
 			return -ENOMEM;
 		}
 	}
 
 	if (!(dev->bulk_in_endpointAddr)) {
+<<<<<<< HEAD
 		err("Unable to find bulk-in endpoint.");
+=======
+		dev_err(&interface->dev, "Unable to find bulk-in endpoint.\n");
+>>>>>>> refs/remotes/origin/master
 		idmouse_delete(dev);
 		return -ENODEV;
 	}
@@ -389,7 +409,11 @@ static int idmouse_probe(struct usb_interface *interface,
 	result = usb_register_dev(interface, &idmouse_class);
 	if (result) {
 		/* something prevented us from registering this device */
+<<<<<<< HEAD
 		err("Unble to allocate minor number.");
+=======
+		dev_err(&interface->dev, "Unable to allocate minor number.\n");
+>>>>>>> refs/remotes/origin/master
 		usb_set_intfdata(interface, NULL);
 		idmouse_delete(dev);
 		return result;
@@ -433,6 +457,7 @@ static void idmouse_disconnect(struct usb_interface *interface)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_idmouse_init(void)
 {
 	int result;
@@ -459,6 +484,9 @@ module_exit(usb_idmouse_exit);
 =======
 module_usb_driver(idmouse_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(idmouse_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

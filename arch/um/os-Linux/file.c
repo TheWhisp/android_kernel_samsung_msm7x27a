@@ -14,12 +14,16 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "user.h"
 =======
 #include "os.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 static void copy_stat(struct uml_stat *dst, const struct stat64 *src)
 {
@@ -272,6 +276,18 @@ int os_write_file(int fd, const void *buf, int len)
 	return n;
 }
 
+<<<<<<< HEAD
+=======
+int os_sync_file(int fd)
+{
+	int n = fsync(fd);
+
+	if (n < 0)
+		return -errno;
+	return n;
+}
+
+>>>>>>> refs/remotes/origin/master
 int os_file_size(const char *file, unsigned long long *size_out)
 {
 	struct uml_stat buf;

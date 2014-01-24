@@ -29,10 +29,17 @@ struct sgimc_regs {
 #define SGIMC_CCTRL0_IENAB	0x00002000 /* Allow interrupts from MC */
 #define SGIMC_CCTRL0_ESNOOP	0x00004000 /* Snooping I/O enable */
 #define SGIMC_CCTRL0_EPROMWR	0x00008000 /* Prom writes from cpu enable */
+<<<<<<< HEAD
 #define SGIMC_CCTRL0_WRESETPMEM	0x00010000 /* Perform warm reset, preserves mem */
 #define SGIMC_CCTRL0_LENDIAN	0x00020000 /* Put MC in little-endian mode */
 #define SGIMC_CCTRL0_WRESETDMEM	0x00040000 /* Warm reset, destroys mem contents */
 #define SGIMC_CCTRL0_CMEMBADPAR	0x02000000 /* Generate bad perr from cpu to mem */
+=======
+#define SGIMC_CCTRL0_WRESETPMEM 0x00010000 /* Perform warm reset, preserves mem */
+#define SGIMC_CCTRL0_LENDIAN	0x00020000 /* Put MC in little-endian mode */
+#define SGIMC_CCTRL0_WRESETDMEM 0x00040000 /* Warm reset, destroys mem contents */
+#define SGIMC_CCTRL0_CMEMBADPAR 0x02000000 /* Generate bad perr from cpu to mem */
+>>>>>>> refs/remotes/origin/master
 #define SGIMC_CCTRL0_R4KNOCHKPARR 0x04000000 /* Don't chk parity on mem data reads */
 #define SGIMC_CCTRL0_GIOBTOB	0x08000000 /* Allow GIO back to back writes */
 	u32 _unused1;
@@ -40,6 +47,7 @@ struct sgimc_regs {
 #define SGIMC_CCTRL1_EGIOTIMEO	0x00000010 /* GIO bus timeout enable */
 #define SGIMC_CCTRL1_FIXEDEHPC	0x00001000 /* Fixed HPC endianness */
 #define SGIMC_CCTRL1_LITTLEHPC	0x00002000 /* Little endian HPC */
+<<<<<<< HEAD
 #define SGIMC_CCTRL1_FIXEDEEXP0	0x00004000 /* Fixed EXP0 endianness */
 #define SGIMC_CCTRL1_LITTLEEXP0	0x00008000 /* Little endian EXP0 */
 #define SGIMC_CCTRL1_FIXEDEEXP1	0x00010000 /* Fixed EXP1 endianness */
@@ -47,6 +55,15 @@ struct sgimc_regs {
 
 	u32 _unused2;
 	volatile u32 watchdogt;	/* Watchdog reg rdonly, write clears */
+=======
+#define SGIMC_CCTRL1_FIXEDEEXP0 0x00004000 /* Fixed EXP0 endianness */
+#define SGIMC_CCTRL1_LITTLEEXP0 0x00008000 /* Little endian EXP0 */
+#define SGIMC_CCTRL1_FIXEDEEXP1 0x00010000 /* Fixed EXP1 endianness */
+#define SGIMC_CCTRL1_LITTLEEXP1 0x00020000 /* Little endian EXP1 */
+
+	u32 _unused2;
+	volatile u32 watchdogt; /* Watchdog reg rdonly, write clears */
+>>>>>>> refs/remotes/origin/master
 
 	u32 _unused3;
 	volatile u32 systemid;	/* MC system ID register, readonly */
@@ -81,11 +98,19 @@ struct sgimc_regs {
 #define SGIMC_GIOPAR_RTIMEGFX	0x00000040 /* GFX device has realtime attr */
 #define SGIMC_GIOPAR_RTIMEEXP0	0x00000080 /* EXP(slot0) has realtime attr */
 #define SGIMC_GIOPAR_RTIMEEXP1	0x00000100 /* EXP(slot1) has realtime attr */
+<<<<<<< HEAD
 #define SGIMC_GIOPAR_MASTEREISA	0x00000200 /* EISA bus can act as bus master */
 #define SGIMC_GIOPAR_ONEBUS	0x00000400 /* Exists one GIO64 pipelined bus */
 #define SGIMC_GIOPAR_MASTERGFX	0x00000800 /* GFX can act as a bus master */
 #define SGIMC_GIOPAR_MASTEREXP0	0x00001000 /* EXP(slot0) can bus master */
 #define SGIMC_GIOPAR_MASTEREXP1	0x00002000 /* EXP(slot1) can bus master */
+=======
+#define SGIMC_GIOPAR_MASTEREISA 0x00000200 /* EISA bus can act as bus master */
+#define SGIMC_GIOPAR_ONEBUS	0x00000400 /* Exists one GIO64 pipelined bus */
+#define SGIMC_GIOPAR_MASTERGFX	0x00000800 /* GFX can act as a bus master */
+#define SGIMC_GIOPAR_MASTEREXP0 0x00001000 /* EXP(slot0) can bus master */
+#define SGIMC_GIOPAR_MASTEREXP1 0x00002000 /* EXP(slot1) can bus master */
+>>>>>>> refs/remotes/origin/master
 #define SGIMC_GIOPAR_PLINEEXP0	0x00004000 /* EXP(slot0) has pipeline attr */
 #define SGIMC_GIOPAR_PLINEEXP1	0x00008000 /* EXP(slot1) has pipeline attr */
 
@@ -107,9 +132,15 @@ struct sgimc_regs {
 #define SGIMC_MCONFIG_SBANKS	0x00004000 /* Number of subbanks */
 
 	u32 _unused13;
+<<<<<<< HEAD
 	volatile u32 cmacc;        /* Mem access config for CPU */
 	u32 _unused14;
 	volatile u32 gmacc;        /* Mem access config for GIO */
+=======
+	volatile u32 cmacc;	   /* Mem access config for CPU */
+	u32 _unused14;
+	volatile u32 gmacc;	   /* Mem access config for GIO */
+>>>>>>> refs/remotes/origin/master
 
 	/* This define applies to both cmacc and gmacc registers above. */
 #define SGIMC_MACC_ALIASBIG	0x20000000 /* 512MB home for alias */

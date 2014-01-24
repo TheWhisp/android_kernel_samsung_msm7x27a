@@ -22,6 +22,11 @@
 #include <asm/prom.h>
 #include <asm/pci-bridge.h>
 
+<<<<<<< HEAD
+=======
+#include <asm-generic/pci-dma-compat.h>
+
+>>>>>>> refs/remotes/origin/master
 #define PCIBIOS_MIN_IO		0x1000
 #define PCIBIOS_MIN_MEM		0x10000000
 
@@ -41,6 +46,7 @@ struct pci_dev;
  * bus numbers (don't do that on ppc64 yet !)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pcibios_assign_all_busses() \
 	(pci_has_flag(PCI_REASSIGN_ALL_BUS))
 
@@ -51,6 +57,9 @@ static inline void pcibios_set_master(struct pci_dev *dev)
 =======
 #define pcibios_assign_all_busses()	0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pcibios_assign_all_busses()	0
+>>>>>>> refs/remotes/origin/master
 
 static inline void pcibios_penalize_isa_irq(int irq, int active)
 {
@@ -105,6 +114,7 @@ extern int pci_mmap_legacy_page_range(struct pci_bus *bus,
 #define PCI_DMA_BUS_IS_PHYS     (1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void pcibios_resource_to_bus(struct pci_dev *dev,
 			struct pci_bus_region *region,
 			struct resource *res);
@@ -115,6 +125,8 @@ extern void pcibios_bus_to_resource(struct pci_dev *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct resource *pcibios_select_root(struct pci_dev *pdev,
 			struct resource *res)
 {
@@ -146,8 +158,11 @@ extern void of_scan_pci_bridge(struct device_node *node,
 extern void of_scan_bus(struct device_node *node, struct pci_bus *bus);
 extern void of_rescan_bus(struct device_node *node, struct pci_bus *bus);
 
+<<<<<<< HEAD
 extern int pci_read_irq_line(struct pci_dev *dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern int pci_bus_find_capability(struct pci_bus *bus,
 						unsigned int devfn, int cap);
 
@@ -172,7 +187,10 @@ extern void __init xilinx_pci_init(void);
 static inline void __init xilinx_pci_init(void) { return; }
 #endif
 
+<<<<<<< HEAD
 #include <asm-generic/pci-dma-compat.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __KERNEL__ */
 #endif /* __ASM_MICROBLAZE_PCI_H */

@@ -3,6 +3,10 @@
 
 #include <asm/types.h>
 #include <linux/fb.h>
+<<<<<<< HEAD
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 
     /*
      *  Compose two values, using a bitmask as decision value
@@ -41,7 +45,12 @@ pixel_to_pat( u32 bpp, u32 pixel)
 	case 32:
 		return 0x0000000100000001ul*pixel;
 	default:
+<<<<<<< HEAD
 		panic("pixel_to_pat(): unsupported pixelformat\n");
+=======
+		WARN(1, "pixel_to_pat(): unsupported pixelformat %d\n", bpp);
+		return 0;
+>>>>>>> refs/remotes/origin/master
     }
 }
 #else
@@ -66,7 +75,12 @@ pixel_to_pat( u32 bpp, u32 pixel)
 	case 32:
 		return 0x00000001ul*pixel;
 	default:
+<<<<<<< HEAD
 		panic("pixel_to_pat(): unsupported pixelformat\n");
+=======
+		WARN(1, "pixel_to_pat(): unsupported pixelformat %d\n", bpp);
+		return 0;
+>>>>>>> refs/remotes/origin/master
     }
 }
 #endif

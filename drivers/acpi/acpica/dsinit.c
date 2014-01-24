@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,8 +68,13 @@ acpi_ds_init_one_object(acpi_handle obj_handle,
  * FUNCTION:    acpi_ds_init_one_object
  *
  * PARAMETERS:  obj_handle      - Node for the object
+<<<<<<< HEAD
  *              Level           - Current nesting level
  *              Context         - Points to a init info struct
+=======
+ *              level           - Current nesting level
+ *              context         - Points to a init info struct
+>>>>>>> refs/remotes/origin/master
  *              return_value    - Not used
  *
  * RETURN:      Status
@@ -131,6 +140,10 @@ acpi_ds_init_one_object(acpi_handle obj_handle,
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 

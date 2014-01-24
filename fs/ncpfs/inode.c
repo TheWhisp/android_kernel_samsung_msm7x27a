@@ -12,9 +12,12 @@
 #include <linux/module.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/byteorder.h>
 
@@ -48,10 +51,14 @@ static void ncp_evict_inode(struct inode *);
 static void ncp_put_super(struct super_block *);
 static int  ncp_statfs(struct dentry *, struct kstatfs *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int  ncp_show_options(struct seq_file *, struct vfsmount *);
 =======
 static int  ncp_show_options(struct seq_file *, struct dentry *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int  ncp_show_options(struct seq_file *, struct dentry *);
+>>>>>>> refs/remotes/origin/master
 
 static struct kmem_cache * ncp_inode_cachep;
 
@@ -68,9 +75,12 @@ static void ncp_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(ncp_inode_cachep, NCP_FINFO(inode));
 }
 
@@ -101,6 +111,14 @@ static int init_inodecache(void)
 
 static void destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(ncp_inode_cachep);
 }
 
@@ -239,10 +257,14 @@ static void ncp_set_attr(struct inode *inode, struct ncp_entry_info *nwinfo)
 	DDPRINTK("ncp_read_inode: inode->i_mode = %u\n", inode->i_mode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 1;
 =======
 	set_nlink(inode, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, 1);
+>>>>>>> refs/remotes/origin/master
 	inode->i_uid = server->m.uid;
 	inode->i_gid = server->m.gid;
 
@@ -308,7 +330,11 @@ static void
 ncp_evict_inode(struct inode *inode)
 {
 	truncate_inode_pages(&inode->i_data, 0);
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 
 	if (S_ISDIR(inode->i_mode)) {
 		DDPRINTK("ncp_evict_inode: put directory %ld\n", inode->i_ino);
@@ -330,6 +356,7 @@ static void ncp_stop_tasks(struct ncp_server *server) {
 	release_sock(sk);
 	del_timer_sync(&server->timeout_tm);
 
+<<<<<<< HEAD
 	flush_work_sync(&server->rcv.tq);
 	if (sk->sk_socket->type == SOCK_STREAM)
 		flush_work_sync(&server->tx.tq);
@@ -354,6 +381,29 @@ static int  ncp_show_options(struct seq_file *seq, struct dentry *root)
 		seq_printf(seq, ",gid=%u", server->m.gid);
 	if (server->m.mounted_uid != 0)
 		seq_printf(seq, ",owner=%u", server->m.mounted_uid);
+=======
+	flush_work(&server->rcv.tq);
+	if (sk->sk_socket->type == SOCK_STREAM)
+		flush_work(&server->tx.tq);
+	else
+		flush_work(&server->timeout_tq);
+}
+
+static int  ncp_show_options(struct seq_file *seq, struct dentry *root)
+{
+	struct ncp_server *server = NCP_SBP(root->d_sb);
+	unsigned int tmp;
+
+	if (!uid_eq(server->m.uid, GLOBAL_ROOT_UID))
+		seq_printf(seq, ",uid=%u",
+			   from_kuid_munged(&init_user_ns, server->m.uid));
+	if (!gid_eq(server->m.gid, GLOBAL_ROOT_GID))
+		seq_printf(seq, ",gid=%u",
+			   from_kgid_munged(&init_user_ns, server->m.gid));
+	if (!uid_eq(server->m.mounted_uid, GLOBAL_ROOT_UID))
+		seq_printf(seq, ",owner=%u",
+			   from_kuid_munged(&init_user_ns, server->m.mounted_uid));
+>>>>>>> refs/remotes/origin/master
 	tmp = server->m.file_mode & S_IALLUGO;
 	if (tmp != NCP_DEFAULT_FILE_MODE)
 		seq_printf(seq, ",mode=0%o", tmp);
@@ -398,13 +448,22 @@ static int ncp_parse_options(struct ncp_mount_data_kernel *data, char *options) 
 
 	data->flags = 0;
 	data->int_flags = 0;
+<<<<<<< HEAD
 	data->mounted_uid = 0;
+=======
+	data->mounted_uid = GLOBAL_ROOT_UID;
+>>>>>>> refs/remotes/origin/master
 	data->wdog_pid = NULL;
 	data->ncp_fd = ~0;
 	data->time_out = NCP_DEFAULT_TIME_OUT;
 	data->retry_count = NCP_DEFAULT_RETRY_COUNT;
+<<<<<<< HEAD
 	data->uid = 0;
 	data->gid = 0;
+=======
+	data->uid = GLOBAL_ROOT_UID;
+	data->gid = GLOBAL_ROOT_GID;
+>>>>>>> refs/remotes/origin/master
 	data->file_mode = NCP_DEFAULT_FILE_MODE;
 	data->dir_mode = NCP_DEFAULT_DIR_MODE;
 	data->info_fd = -1;
@@ -416,6 +475,7 @@ static int ncp_parse_options(struct ncp_mount_data_kernel *data, char *options) 
 			goto err;
 		switch (optval) {
 			case 'u':
+<<<<<<< HEAD
 				data->uid = optint;
 				break;
 			case 'g':
@@ -423,6 +483,27 @@ static int ncp_parse_options(struct ncp_mount_data_kernel *data, char *options) 
 				break;
 			case 'o':
 				data->mounted_uid = optint;
+=======
+				data->uid = make_kuid(current_user_ns(), optint);
+				if (!uid_valid(data->uid)) {
+					ret = -EINVAL;
+					goto err;
+				}
+				break;
+			case 'g':
+				data->gid = make_kgid(current_user_ns(), optint);
+				if (!gid_valid(data->gid)) {
+					ret = -EINVAL;
+					goto err;
+				}
+				break;
+			case 'o':
+				data->mounted_uid = make_kuid(current_user_ns(), optint);
+				if (!uid_valid(data->mounted_uid)) {
+					ret = -EINVAL;
+					goto err;
+				}
+>>>>>>> refs/remotes/origin/master
 				break;
 			case 'm':
 				data->file_mode = optint;
@@ -497,13 +578,22 @@ static int ncp_fill_super(struct super_block *sb, void *raw_data, int silent)
 
 				data.flags = md->flags;
 				data.int_flags = NCP_IMOUNT_LOGGEDIN_POSSIBLE;
+<<<<<<< HEAD
 				data.mounted_uid = md->mounted_uid;
+=======
+				data.mounted_uid = make_kuid(current_user_ns(), md->mounted_uid);
+>>>>>>> refs/remotes/origin/master
 				data.wdog_pid = find_get_pid(md->wdog_pid);
 				data.ncp_fd = md->ncp_fd;
 				data.time_out = md->time_out;
 				data.retry_count = md->retry_count;
+<<<<<<< HEAD
 				data.uid = md->uid;
 				data.gid = md->gid;
+=======
+				data.uid = make_kuid(current_user_ns(), md->uid);
+				data.gid = make_kgid(current_user_ns(), md->gid);
+>>>>>>> refs/remotes/origin/master
 				data.file_mode = md->file_mode;
 				data.dir_mode = md->dir_mode;
 				data.info_fd = -1;
@@ -516,13 +606,22 @@ static int ncp_fill_super(struct super_block *sb, void *raw_data, int silent)
 				struct ncp_mount_data_v4* md = (struct ncp_mount_data_v4*)raw_data;
 
 				data.flags = md->flags;
+<<<<<<< HEAD
 				data.mounted_uid = md->mounted_uid;
+=======
+				data.mounted_uid = make_kuid(current_user_ns(), md->mounted_uid);
+>>>>>>> refs/remotes/origin/master
 				data.wdog_pid = find_get_pid(md->wdog_pid);
 				data.ncp_fd = md->ncp_fd;
 				data.time_out = md->time_out;
 				data.retry_count = md->retry_count;
+<<<<<<< HEAD
 				data.uid = md->uid;
 				data.gid = md->gid;
+=======
+				data.uid = make_kuid(current_user_ns(), md->uid);
+				data.gid = make_kgid(current_user_ns(), md->gid);
+>>>>>>> refs/remotes/origin/master
 				data.file_mode = md->file_mode;
 				data.dir_mode = md->dir_mode;
 				data.info_fd = -1;
@@ -537,12 +636,23 @@ static int ncp_fill_super(struct super_block *sb, void *raw_data, int silent)
 				goto out;
 			break;
 	}
+<<<<<<< HEAD
+=======
+	error = -EINVAL;
+	if (!uid_valid(data.mounted_uid) || !uid_valid(data.uid) ||
+	    !gid_valid(data.gid))
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	error = -EBADF;
 	ncp_filp = fget(data.ncp_fd);
 	if (!ncp_filp)
 		goto out;
 	error = -ENOTSOCK;
+<<<<<<< HEAD
 	sock_inode = ncp_filp->f_path.dentry->d_inode;
+=======
+	sock_inode = file_inode(ncp_filp);
+>>>>>>> refs/remotes/origin/master
 	if (!S_ISSOCK(sock_inode->i_mode))
 		goto out_fput;
 	sock = SOCKET_I(sock_inode);
@@ -569,10 +679,14 @@ static int ncp_fill_super(struct super_block *sb, void *raw_data, int silent)
 	error = bdi_setup_and_register(&server->bdi, "ncpfs", BDI_CAP_MAP_COPY);
 	if (error)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_bdi;
 =======
 		goto out_fput;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_fput;
+>>>>>>> refs/remotes/origin/master
 
 	server->ncp_filp = ncp_filp;
 	server->ncp_sock = sock;
@@ -584,12 +698,18 @@ static int ncp_fill_super(struct super_block *sb, void *raw_data, int silent)
 		server->info_filp = fget(data.info_fd);
 		if (!server->info_filp)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto out_fput;
 =======
 			goto out_bdi;
 >>>>>>> refs/remotes/origin/cm-10.0
 		error = -ENOTSOCK;
 		sock_inode = server->info_filp->f_path.dentry->d_inode;
+=======
+			goto out_bdi;
+		error = -ENOTSOCK;
+		sock_inode = file_inode(server->info_filp);
+>>>>>>> refs/remotes/origin/master
 		if (!S_ISSOCK(sock_inode->i_mode))
 			goto out_fput2;
 		info_sock = SOCKET_I(sock_inode);
@@ -746,6 +866,7 @@ static int ncp_fill_super(struct super_block *sb, void *raw_data, int silent)
 		goto out_disconnect;
 	DPRINTK("ncp_fill_super: root vol=%d\n", NCP_FINFO(root_inode)->volNumber);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root_inode);
         if (!sb->s_root)
 		goto out_no_root;
@@ -754,12 +875,17 @@ static int ncp_fill_super(struct super_block *sb, void *raw_data, int silent)
 out_no_root:
 	iput(root_inode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sb->s_root = d_make_root(root_inode);
         if (!sb->s_root)
 		goto out_disconnect;
 	return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out_disconnect:
 	ncp_lock_server(server);
 	ncp_disconnect(server);
@@ -783,6 +909,7 @@ out_fput2:
 	if (server->info_filp)
 		fput(server->info_filp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 out_fput:
 	bdi_destroy(&server->bdi);
 out_bdi:
@@ -791,6 +918,11 @@ out_bdi:
 	bdi_destroy(&server->bdi);
 out_fput:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_bdi:
+	bdi_destroy(&server->bdi);
+out_fput:
+>>>>>>> refs/remotes/origin/master
 	/* 23/12/1998 Marcin Dalecki <dalecki@cs.net.pl>:
 	 * 
 	 * The previously used put_filp(ncp_filp); was bogus, since
@@ -804,6 +936,20 @@ out:
 	return error;
 }
 
+<<<<<<< HEAD
+=======
+static void delayed_free(struct rcu_head *p)
+{
+	struct ncp_server *server = container_of(p, struct ncp_server, rcu);
+#ifdef CONFIG_NCPFS_NLS
+	/* unload the NLS charsets */
+	unload_nls(server->nls_vol);
+	unload_nls(server->nls_io);
+#endif /* CONFIG_NCPFS_NLS */
+	kfree(server);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void ncp_put_super(struct super_block *sb)
 {
 	struct ncp_server *server = NCP_SBP(sb);
@@ -814,11 +960,14 @@ static void ncp_put_super(struct super_block *sb)
 
 	ncp_stop_tasks(server);
 
+<<<<<<< HEAD
 #ifdef CONFIG_NCPFS_NLS
 	/* unload the NLS charsets */
 	unload_nls(server->nls_vol);
 	unload_nls(server->nls_io);
 #endif /* CONFIG_NCPFS_NLS */
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_destroy(&server->rcv.creq_mutex);
 	mutex_destroy(&server->root_setup_lock);
 	mutex_destroy(&server->mutex);
@@ -835,8 +984,12 @@ static void ncp_put_super(struct super_block *sb)
 	vfree(server->rxbuf);
 	vfree(server->txbuf);
 	vfree(server->packet);
+<<<<<<< HEAD
 	sb->s_fs_info = NULL;
 	kfree(server);
+=======
+	call_rcu(&server->rcu, delayed_free);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ncp_statfs(struct dentry *dentry, struct kstatfs *buf)
@@ -919,6 +1072,13 @@ int ncp_notify_change(struct dentry *dentry, struct iattr *attr)
 	if (!server)	/* How this could happen? */
 		goto out;
 
+<<<<<<< HEAD
+=======
+	result = -EPERM;
+	if (IS_DEADDIR(dentry->d_inode))
+		goto out;
+
+>>>>>>> refs/remotes/origin/master
 	/* ageing the dentry to force validation */
 	ncp_age_dentry(server, dentry);
 
@@ -927,12 +1087,19 @@ int ncp_notify_change(struct dentry *dentry, struct iattr *attr)
 		goto out;
 
 	result = -EPERM;
+<<<<<<< HEAD
 	if (((attr->ia_valid & ATTR_UID) &&
 	     (attr->ia_uid != server->m.uid)))
 		goto out;
 
 	if (((attr->ia_valid & ATTR_GID) &&
 	     (attr->ia_gid != server->m.gid)))
+=======
+	if ((attr->ia_valid & ATTR_UID) && !uid_eq(attr->ia_uid, server->m.uid))
+		goto out;
+
+	if ((attr->ia_valid & ATTR_GID) && !gid_eq(attr->ia_gid, server->m.gid))
+>>>>>>> refs/remotes/origin/master
 		goto out;
 
 	if (((attr->ia_valid & ATTR_MODE) &&
@@ -1017,9 +1184,13 @@ int ncp_notify_change(struct dentry *dentry, struct iattr *attr)
 			goto out;
 
 		if (attr->ia_size != i_size_read(inode)) {
+<<<<<<< HEAD
 			result = vmtruncate(inode, attr->ia_size);
 			if (result)
 				goto out;
+=======
+			truncate_setsize(inode, attr->ia_size);
+>>>>>>> refs/remotes/origin/master
 			mark_inode_dirty(inode);
 		}
 	}
@@ -1083,6 +1254,10 @@ static struct file_system_type ncp_fs_type = {
 	.kill_sb	= kill_anon_super,
 	.fs_flags	= FS_BINARY_MOUNTDATA,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("ncpfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_ncp_fs(void)
 {

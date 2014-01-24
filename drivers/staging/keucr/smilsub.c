@@ -3,6 +3,7 @@
 #include "scsiglue.h"
 #include "transport.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 //#include "init.h"
 
 //#include "stdlib.h"
@@ -94,6 +95,22 @@ extern WORD  WriteBlock;
 //----- Check_D_DataBlank() --------------------------------------------
 =======
 
+=======
+
+#include "smcommon.h"
+#include "smil.h"
+
+static BYTE   _Check_D_DevCode(BYTE);
+static DWORD	ErrXDCode;
+static BYTE	IsSSFDCCompliance;
+static BYTE	IsXDCompliance;
+
+struct keucr_media_info         Ssfdc;
+struct keucr_media_address      Media;
+struct keucr_media_area         CisArea;
+
+static BYTE                            EccBuf[6];
+>>>>>>> refs/remotes/origin/master
 
 #define EVEN                    0             /* Even Page for 256byte/page */
 #define ODD                     1             /* Odd Page for 256byte/page */
@@ -102,11 +119,15 @@ extern WORD  WriteBlock;
 /* SmartMedia Redundant buffer data Control Subroutine
  *----- Check_D_DataBlank() --------------------------------------------
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int Check_D_DataBlank(BYTE *redundant)
 {
 	char i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for(i=0; i<REDTSIZE; i++)
 		if (*redundant++!=0xFF)
@@ -180,6 +201,8 @@ int Load_D_LogBlockAddr(BYTE *redundant)
 
 //----- Clr_D_RedundantData() ------------------------------------------
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < REDTSIZE; i++)
 		if (*redundant++ != 0xFF)
 			return  ERROR;
@@ -226,8 +249,15 @@ int Load_D_LogBlockAddr(BYTE *redundant)
 {
 	WORD addr1, addr2;
 
+<<<<<<< HEAD
 	addr1 = (WORD)*(redundant + REDT_ADDR1H)*0x0100 + (WORD)*(redundant + REDT_ADDR1L);
 	addr2 = (WORD)*(redundant + REDT_ADDR2H)*0x0100 + (WORD)*(redundant + REDT_ADDR2L);
+=======
+	addr1 = (WORD)*(redundant + REDT_ADDR1H)*0x0100 +
+					(WORD)*(redundant + REDT_ADDR1L);
+	addr2 = (WORD)*(redundant + REDT_ADDR2H)*0x0100 +
+					(WORD)*(redundant + REDT_ADDR2L);
+>>>>>>> refs/remotes/origin/master
 
 	if (addr1 == addr2)
 		if ((addr1 & 0xF000) == 0x1000) {
@@ -254,11 +284,15 @@ int Load_D_LogBlockAddr(BYTE *redundant)
 }
 
 /* ----- Clr_D_RedundantData() ------------------------------------------ */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void Clr_D_RedundantData(BYTE *redundant)
 {
 	char i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for(i=0; i<REDTSIZE; i++)
 	*(redundant+i)=0xFF;
@@ -266,16 +300,22 @@ void Clr_D_RedundantData(BYTE *redundant)
 
 //----- Set_D_LogBlockAddr() -------------------------------------------
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < REDTSIZE; i++)
 		*(redundant + i) = 0xFF;
 }
 
 /* ----- Set_D_LogBlockAddr() ------------------------------------------- */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void Set_D_LogBlockAddr(BYTE *redundant)
 {
 	WORD addr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	*(redundant+REDT_BLOCK)=0xFF;
 	*(redundant+REDT_DATA) =0xFF;
@@ -381,6 +421,8 @@ int Ssfdc_D_ReadCisSect(struct us_data *us, BYTE *buf,BYTE *redundant)
 //----- Ssfdc_D_ReadSect() ---------------------------------------------
 int Ssfdc_D_ReadSect(struct us_data *us, BYTE *buf,BYTE *redundant)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*(redundant + REDT_BLOCK) = 0xFF;
 	*(redundant + REDT_DATA) = 0xFF;
 	addr = Media.LogBlock*2 + 0x1000;
@@ -388,7 +430,12 @@ int Ssfdc_D_ReadSect(struct us_data *us, BYTE *buf,BYTE *redundant)
 	if ((hweight16(addr) % 2))
 		addr++;
 
+<<<<<<< HEAD
 	*(redundant + REDT_ADDR1H) = *(redundant + REDT_ADDR2H) = (BYTE)(addr / 0x0100);
+=======
+	*(redundant + REDT_ADDR1H) = *(redundant + REDT_ADDR2H) =
+							(BYTE)(addr / 0x0100);
+>>>>>>> refs/remotes/origin/master
 	*(redundant + REDT_ADDR1L) = *(redundant + REDT_ADDR2L) = (BYTE)addr;
 }
 
@@ -428,7 +475,13 @@ int Ssfdc_D_ReadCisSect(struct us_data *us, BYTE *buf, BYTE *redundant)
 	Media.Sector = CisArea.Sector;
 
 	if (Ssfdc_D_ReadSect(us, buf, redundant)) {
+<<<<<<< HEAD
 		Media.Zone = zone; Media.PhyBlock = block; Media.Sector = sector;
+=======
+		Media.Zone = zone;
+		Media.PhyBlock = block;
+		Media.Sector = sector;
+>>>>>>> refs/remotes/origin/master
 		return ERROR;
 	}
 
@@ -439,13 +492,17 @@ int Ssfdc_D_ReadCisSect(struct us_data *us, BYTE *buf, BYTE *redundant)
 /* 6250 CMD 1 */
 /* ----- Ssfdc_D_ReadSect() --------------------------------------------- */
 int Ssfdc_D_ReadSect(struct us_data *us, BYTE *buf, BYTE *redundant)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
 	int	result;
 	WORD	addr;
 
 	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (result != USB_STOR_XFER_GOOD)
 	{
@@ -462,11 +519,22 @@ int Ssfdc_D_ReadSect(struct us_data *us, BYTE *buf, BYTE *redundant)
 
 	// Read sect data
 =======
+=======
+	if (result != USB_STOR_XFER_GOOD) {
+		dev_err(&us->pusb_dev->dev,
+			"Failed to load SmartMedia read/write code\n");
+		return USB_STOR_TRANSPORT_ERROR;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
 	addr = addr*(WORD)Ssfdc.MaxSectors + Media.Sector;
 
 	/* Read sect data */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
 	bcb->DataTransferLength	= 0x200;
@@ -475,22 +543,31 @@ int Ssfdc_D_ReadSect(struct us_data *us, BYTE *buf, BYTE *redundant)
 	bcb->CDB[1]			= 0x02;
 	bcb->CDB[4]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[3]			= (BYTE)(addr/0x0100);
 	bcb->CDB[2]			= Media.Zone/2;
 =======
 	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[2]			= Media.Zone / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
+	bcb->CDB[2]			= Media.Zone / 2;
+>>>>>>> refs/remotes/origin/master
 
 	result = ENE_SendScsiCmd(us, FDIR_READ, buf, 0);
 	if (result != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// Read redundant
 =======
 	/* Read redundant */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Read redundant */
+>>>>>>> refs/remotes/origin/master
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
 	bcb->DataTransferLength	= 0x10;
@@ -499,12 +576,17 @@ int Ssfdc_D_ReadSect(struct us_data *us, BYTE *buf, BYTE *redundant)
 	bcb->CDB[1]			= 0x03;
 	bcb->CDB[4]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[3]			= (BYTE)(addr/0x0100);
 	bcb->CDB[2]			= Media.Zone/2;
 =======
 	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[2]			= Media.Zone / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
+	bcb->CDB[2]			= Media.Zone / 2;
+>>>>>>> refs/remotes/origin/master
 	bcb->CDB[8]			= 0;
 	bcb->CDB[9]			= 1;
 
@@ -516,17 +598,24 @@ int Ssfdc_D_ReadSect(struct us_data *us, BYTE *buf, BYTE *redundant)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //----- Ssfdc_D_ReadBlock() ---------------------------------------------
 int Ssfdc_D_ReadBlock(struct us_data *us, WORD count, BYTE *buf,BYTE *redundant)
 =======
 /* ----- Ssfdc_D_ReadBlock() --------------------------------------------- */
 int Ssfdc_D_ReadBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ----- Ssfdc_D_ReadBlock() --------------------------------------------- */
+int Ssfdc_D_ReadBlock(struct us_data *us, WORD count, BYTE *buf,
+							BYTE *redundant)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
 	int	result;
 	WORD	addr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	//printk("Ssfdc_D_ReadBlock\n");
 	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
@@ -546,11 +635,23 @@ int Ssfdc_D_ReadBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 
 	// Read sect data
 =======
+=======
+	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
+	if (result != USB_STOR_XFER_GOOD) {
+		dev_err(&us->pusb_dev->dev,
+			"Failed to load SmartMedia read/write code\n");
+		return USB_STOR_TRANSPORT_ERROR;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
 	addr = addr*(WORD)Ssfdc.MaxSectors + Media.Sector;
 
 	/* Read sect data */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
 	bcb->DataTransferLength	= 0x200*count;
@@ -559,22 +660,31 @@ int Ssfdc_D_ReadBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 	bcb->CDB[1]			= 0x02;
 	bcb->CDB[4]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[3]			= (BYTE)(addr/0x0100);
 	bcb->CDB[2]			= Media.Zone/2;
 =======
 	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[2]			= Media.Zone / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
+	bcb->CDB[2]			= Media.Zone / 2;
+>>>>>>> refs/remotes/origin/master
 
 	result = ENE_SendScsiCmd(us, FDIR_READ, buf, 0);
 	if (result != USB_STOR_XFER_GOOD)
 		return USB_STOR_TRANSPORT_ERROR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// Read redundant
 =======
 	/* Read redundant */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Read redundant */
+>>>>>>> refs/remotes/origin/master
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
 	bcb->DataTransferLength	= 0x10;
@@ -583,12 +693,17 @@ int Ssfdc_D_ReadBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 	bcb->CDB[1]			= 0x03;
 	bcb->CDB[4]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[3]			= (BYTE)(addr/0x0100);
 	bcb->CDB[2]			= Media.Zone/2;
 =======
 	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[2]			= Media.Zone / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
+	bcb->CDB[2]			= Media.Zone / 2;
+>>>>>>> refs/remotes/origin/master
 	bcb->CDB[8]			= 0;
 	bcb->CDB[9]			= 1;
 
@@ -598,6 +713,7 @@ int Ssfdc_D_ReadBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 
 	return USB_STOR_TRANSPORT_GOOD;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
 ////----- Ssfdc_D_ReadSect_DMA() ---------------------------------------------
@@ -778,6 +894,13 @@ int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf,BYTE *redundant)
 
 /* ----- Ssfdc_D_CopyBlock() -------------------------------------------- */
 int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant)
+=======
+
+
+/* ----- Ssfdc_D_CopyBlock() -------------------------------------------- */
+int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf,
+							BYTE *redundant)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
 	int	result;
@@ -785,6 +908,7 @@ int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 
 	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
 	if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		printk("Load SM RW Code Fail !!\n");
 		return USB_STOR_TRANSPORT_ERROR;
@@ -798,13 +922,23 @@ int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 
 	// Write sect data
 =======
+=======
+		dev_err(&us->pusb_dev->dev,
+			"Failed to load SmartMedia read/write code\n");
+		return USB_STOR_TRANSPORT_ERROR;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ReadAddr = (WORD)Media.Zone*Ssfdc.MaxBlocks + ReadBlock;
 	ReadAddr = ReadAddr*(WORD)Ssfdc.MaxSectors;
 	WriteAddr = (WORD)Media.Zone*Ssfdc.MaxBlocks + WriteBlock;
 	WriteAddr = WriteAddr*(WORD)Ssfdc.MaxSectors;
 
 	/* Write sect data */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
 	bcb->DataTransferLength	= 0x200*count;
@@ -812,6 +946,7 @@ int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 	bcb->CDB[0]			= 0xF0;
 	bcb->CDB[1]			= 0x08;
 	bcb->CDB[7]			= (BYTE)WriteAddr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bcb->CDB[6]			= (BYTE)(WriteAddr/0x0100);
 	bcb->CDB[5]			= Media.Zone/2;
@@ -827,6 +962,8 @@ int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 	}
 	else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bcb->CDB[6]			= (BYTE)(WriteAddr / 0x0100);
 	bcb->CDB[5]			= Media.Zone / 2;
 	bcb->CDB[8]			= *(redundant + REDT_ADDR1H);
@@ -838,7 +975,10 @@ int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 		bcb->CDB[3]		= (BYTE)(ReadAddr / 0x0100);
 		bcb->CDB[2]		= Media.Zone / 2;
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		bcb->CDB[11]	= 1;
 
 	result = ENE_SendScsiCmd(us, FDIR_WRITE, buf, 0);
@@ -847,6 +987,7 @@ int Ssfdc_D_CopyBlock(struct us_data *us, WORD count, BYTE *buf, BYTE *redundant
 
 	return USB_STOR_TRANSPORT_GOOD;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
 //----- Ssfdc_D_WriteBlock() --------------------------------------------
@@ -1021,10 +1162,15 @@ int Ssfdc_D_WriteBlock(PFDO_DEVICE_EXTENSION fdoExt, WORD count, BYTE *buf,BYTE 
 
 /* ----- Ssfdc_D_WriteSectForCopy() ------------------------------------- */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/* ----- Ssfdc_D_WriteSectForCopy() ------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 int Ssfdc_D_WriteSectForCopy(struct us_data *us, BYTE *buf, BYTE *redundant)
 {
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
 	int	result;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	//PBULK_CBW               pBulkCbw = fdoExt->pBulkCbw;
 	//NTSTATUS                ntStatus;
@@ -1035,27 +1181,40 @@ int Ssfdc_D_WriteSectForCopy(struct us_data *us, BYTE *buf, BYTE *redundant)
 	if (result != USB_STOR_XFER_GOOD)
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WORD	addr;
 
 	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
 	if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		printk("Load SM RW Code Fail !!\n");
+=======
+		dev_err(&us->pusb_dev->dev,
+			"Failed to load SmartMedia read/write code\n");
+>>>>>>> refs/remotes/origin/master
 		return USB_STOR_TRANSPORT_ERROR;
 	}
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks+Media.PhyBlock;
 	addr = addr*(WORD)Ssfdc.MaxSectors+Media.Sector;
 
 	// Write sect data
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
 	addr = addr*(WORD)Ssfdc.MaxSectors + Media.Sector;
 
 	/* Write sect data */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
 	bcb->DataTransferLength	= 0x200;
@@ -1064,16 +1223,22 @@ int Ssfdc_D_WriteSectForCopy(struct us_data *us, BYTE *buf, BYTE *redundant)
 	bcb->CDB[1]			= 0x04;
 	bcb->CDB[7]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[6]			= (BYTE)(addr/0x0100);
 	bcb->CDB[5]			= Media.Zone/2;
 	bcb->CDB[8]			= *(redundant+REDT_ADDR1H);
 	bcb->CDB[9]			= *(redundant+REDT_ADDR1L);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bcb->CDB[6]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[5]			= Media.Zone / 2;
 	bcb->CDB[8]			= *(redundant + REDT_ADDR1H);
 	bcb->CDB[9]			= *(redundant + REDT_ADDR1L);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	result = ENE_SendScsiCmd(us, FDIR_WRITE, buf, 0);
 	if (result != USB_STOR_XFER_GOOD)
@@ -1083,12 +1248,17 @@ int Ssfdc_D_WriteSectForCopy(struct us_data *us, BYTE *buf, BYTE *redundant)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // 6250 CMD 5
 //----- Ssfdc_D_EraseBlock() -------------------------------------------
 =======
 /* 6250 CMD 5 */
 /* ----- Ssfdc_D_EraseBlock() ------------------------------------------- */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* 6250 CMD 5 */
+/* ----- Ssfdc_D_EraseBlock() ------------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 int Ssfdc_D_EraseBlock(struct us_data *us)
 {
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
@@ -1096,6 +1266,7 @@ int Ssfdc_D_EraseBlock(struct us_data *us)
 	WORD	addr;
 
 	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (result != USB_STOR_XFER_GOOD)
 	{
@@ -1113,6 +1284,16 @@ int Ssfdc_D_EraseBlock(struct us_data *us)
 	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
 	addr = addr*(WORD)Ssfdc.MaxSectors;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (result != USB_STOR_XFER_GOOD) {
+		dev_err(&us->pusb_dev->dev,
+			"Failed to load SmartMedia read/write code\n");
+		return USB_STOR_TRANSPORT_ERROR;
+	}
+
+	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
+	addr = addr*(WORD)Ssfdc.MaxSectors;
+>>>>>>> refs/remotes/origin/master
 
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
@@ -1122,12 +1303,17 @@ int Ssfdc_D_EraseBlock(struct us_data *us)
 	bcb->CDB[1]			= 0x06;
 	bcb->CDB[7]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[6]			= (BYTE)(addr/0x0100);
 	bcb->CDB[5]			= Media.Zone/2;
 =======
 	bcb->CDB[6]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[5]			= Media.Zone / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcb->CDB[6]			= (BYTE)(addr / 0x0100);
+	bcb->CDB[5]			= Media.Zone / 2;
+>>>>>>> refs/remotes/origin/master
 
 	result = ENE_SendScsiCmd(us, FDIR_READ, NULL, 0);
 	if (result != USB_STOR_XFER_GOOD)
@@ -1137,17 +1323,23 @@ int Ssfdc_D_EraseBlock(struct us_data *us)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // 6250 CMD 2
 //----- Ssfdc_D_ReadRedtData() -----------------------------------------
 =======
 /* 6250 CMD 2 */
 /*----- Ssfdc_D_ReadRedtData() ----------------------------------------- */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* 6250 CMD 2 */
+/*----- Ssfdc_D_ReadRedtData() ----------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 int Ssfdc_D_ReadRedtData(struct us_data *us, BYTE *redundant)
 {
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
 	int	result;
 	WORD	addr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	BYTE  *buf;
 
@@ -1155,10 +1347,13 @@ int Ssfdc_D_ReadRedtData(struct us_data *us, BYTE *redundant)
 	if (result != USB_STOR_XFER_GOOD)
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BYTE	*buf;
 
 	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
 	if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		printk("Load SM RW Code Fail !!\n");
 		return USB_STOR_TRANSPORT_ERROR;
@@ -1171,6 +1366,15 @@ int Ssfdc_D_ReadRedtData(struct us_data *us, BYTE *redundant)
 	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
 	addr = addr*(WORD)Ssfdc.MaxSectors + Media.Sector;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&us->pusb_dev->dev,
+			"Failed to load SmartMedia read/write code\n");
+		return USB_STOR_TRANSPORT_ERROR;
+	}
+
+	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
+	addr = addr*(WORD)Ssfdc.MaxSectors + Media.Sector;
+>>>>>>> refs/remotes/origin/master
 
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
@@ -1180,20 +1384,28 @@ int Ssfdc_D_ReadRedtData(struct us_data *us, BYTE *redundant)
 	bcb->CDB[1]			= 0x03;
 	bcb->CDB[4]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[3]			= (BYTE)(addr/0x0100);
 	bcb->CDB[2]			= Media.Zone/2;
 =======
 	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[2]			= Media.Zone / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bcb->CDB[3]			= (BYTE)(addr / 0x0100);
+	bcb->CDB[2]			= Media.Zone / 2;
+>>>>>>> refs/remotes/origin/master
 	bcb->CDB[8]			= 0;
 	bcb->CDB[9]			= 1;
 
 	buf = kmalloc(0x10, GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	//result = ENE_SendScsiCmd(us, FDIR_READ, redundant, 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	result = ENE_SendScsiCmd(us, FDIR_READ, buf, 0);
 	memcpy(redundant, buf, 0x10);
 	kfree(buf);
@@ -1204,16 +1416,22 @@ int Ssfdc_D_ReadRedtData(struct us_data *us, BYTE *redundant)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // 6250 CMD 4
 //----- Ssfdc_D_WriteRedtData() ----------------------------------------
 =======
 /* 6250 CMD 4 */
 /* ----- Ssfdc_D_WriteRedtData() ---------------------------------------- */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* 6250 CMD 4 */
+/* ----- Ssfdc_D_WriteRedtData() ---------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 int Ssfdc_D_WriteRedtData(struct us_data *us, BYTE *redundant)
 {
 	struct bulk_cb_wrap *bcb = (struct bulk_cb_wrap *) us->iobuf;
 	int	result;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	//PBULK_CBW               pBulkCbw = fdoExt->pBulkCbw;
 	//NTSTATUS                ntStatus;
@@ -1223,10 +1441,13 @@ int Ssfdc_D_WriteRedtData(struct us_data *us, BYTE *redundant)
 	if (result != USB_STOR_XFER_GOOD)
 	{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WORD                    addr;
 
 	result = ENE_LoadBinCode(us, SM_RW_PATTERN);
 	if (result != USB_STOR_XFER_GOOD) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		printk("Load SM RW Code Fail !!\n");
 		return USB_STOR_TRANSPORT_ERROR;
@@ -1239,6 +1460,15 @@ int Ssfdc_D_WriteRedtData(struct us_data *us, BYTE *redundant)
 	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
 	addr = addr*(WORD)Ssfdc.MaxSectors + Media.Sector;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&us->pusb_dev->dev,
+			"Failed to load SmartMedia read/write code\n");
+		return USB_STOR_TRANSPORT_ERROR;
+	}
+
+	addr = (WORD)Media.Zone*Ssfdc.MaxBlocks + Media.PhyBlock;
+	addr = addr*(WORD)Ssfdc.MaxSectors + Media.Sector;
+>>>>>>> refs/remotes/origin/master
 
 	memset(bcb, 0, sizeof(struct bulk_cb_wrap));
 	bcb->Signature = cpu_to_le32(US_BULK_CB_SIGN);
@@ -1248,16 +1478,22 @@ int Ssfdc_D_WriteRedtData(struct us_data *us, BYTE *redundant)
 	bcb->CDB[1]			= 0x05;
 	bcb->CDB[7]			= (BYTE)addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bcb->CDB[6]			= (BYTE)(addr/0x0100);
 	bcb->CDB[5]			= Media.Zone/2;
 	bcb->CDB[8]			= *(redundant+REDT_ADDR1H);
 	bcb->CDB[9]			= *(redundant+REDT_ADDR1L);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bcb->CDB[6]			= (BYTE)(addr / 0x0100);
 	bcb->CDB[5]			= Media.Zone / 2;
 	bcb->CDB[8]			= *(redundant + REDT_ADDR1H);
 	bcb->CDB[9]			= *(redundant + REDT_ADDR1L);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	result = ENE_SendScsiCmd(us, FDIR_READ, NULL, 0);
 	if (result != USB_STOR_XFER_GOOD)
@@ -1266,6 +1502,7 @@ int Ssfdc_D_WriteRedtData(struct us_data *us, BYTE *redundant)
 	return USB_STOR_TRANSPORT_GOOD;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 //----- Ssfdc_D_CheckStatus() ------------------------------------------
 int Ssfdc_D_CheckStatus(void)
@@ -1859,6 +2096,8 @@ BYTE _Check_D_DevCode(BYTE dcode)
 //SmartMedia ECC Control Subroutine
 //----- Check_D_ReadError() ----------------------------------------------
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* ----- Ssfdc_D_CheckStatus() ------------------------------------------ */
 int Ssfdc_D_CheckStatus(void)
 {
@@ -1974,7 +2213,11 @@ int Set_D_SsfdcModel(BYTE dcode)
 		return ERROR;
 	}
 
+<<<<<<< HEAD
     return SMSUCCESS;
+=======
+	return SMSUCCESS;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ----- _Check_D_DevCode() --------------------------------------------- */
@@ -2008,12 +2251,16 @@ BYTE _Check_D_DevCode(BYTE dcode)
 /* SmartMedia ECC Control Subroutine
  * ----- Check_D_ReadError() ----------------------------------------------
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int Check_D_ReadError(BYTE *redundant)
 {
 	return SMSUCCESS;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 //----- Check_D_Correct() ----------------------------------------------
 int Check_D_Correct(BYTE *buf,BYTE *redundant)
@@ -2021,15 +2268,23 @@ int Check_D_Correct(BYTE *buf,BYTE *redundant)
 /* ----- Check_D_Correct() ---------------------------------------------- */
 int Check_D_Correct(BYTE *buf, BYTE *redundant)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ----- Check_D_Correct() ---------------------------------------------- */
+int Check_D_Correct(BYTE *buf, BYTE *redundant)
+>>>>>>> refs/remotes/origin/master
 {
 	return SMSUCCESS;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //----- Check_D_CISdata() ----------------------------------------------
 =======
 /* ----- Check_D_CISdata() ---------------------------------------------- */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ----- Check_D_CISdata() ---------------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 int Check_D_CISdata(BYTE *buf, BYTE *redundant)
 {
 	BYTE cis[] = {0x01, 0x03, 0xD9, 0x01, 0xFF, 0x18, 0x02,
@@ -2056,6 +2311,7 @@ int Check_D_CISdata(BYTE *buf, BYTE *redundant)
 	return ERROR;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 //----- Set_D_RightECC() ----------------------------------------------
 void Set_D_RightECC(BYTE *redundant)
@@ -2150,3 +2406,13 @@ void Set_D_RightECC(BYTE *redundant)
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ----- Set_D_RightECC() ---------------------------------------------- */
+void Set_D_RightECC(BYTE *redundant)
+{
+	/* Driver ECC Check */
+	return;
+}
+
+
+>>>>>>> refs/remotes/origin/master

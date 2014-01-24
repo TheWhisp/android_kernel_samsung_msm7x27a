@@ -45,23 +45,39 @@ unsigned char mcf_irq2imr[NR_IRQS];
 void mcf_setimr(int index)
 {
 	u16 imr;
+<<<<<<< HEAD
 	imr = __raw_readw(MCF_MBAR + MCFSIM_IMR);
 	__raw_writew(imr | (0x1 << index), MCF_MBAR + MCFSIM_IMR);
+=======
+	imr = __raw_readw(MCFSIM_IMR);
+	__raw_writew(imr | (0x1 << index), MCFSIM_IMR);
+>>>>>>> refs/remotes/origin/master
 }
 
 void mcf_clrimr(int index)
 {
 	u16 imr;
+<<<<<<< HEAD
 	imr = __raw_readw(MCF_MBAR + MCFSIM_IMR);
 	__raw_writew(imr & ~(0x1 << index), MCF_MBAR + MCFSIM_IMR);
+=======
+	imr = __raw_readw(MCFSIM_IMR);
+	__raw_writew(imr & ~(0x1 << index), MCFSIM_IMR);
+>>>>>>> refs/remotes/origin/master
 }
 
 void mcf_maskimr(unsigned int mask)
 {
 	u16 imr;
+<<<<<<< HEAD
 	imr = __raw_readw(MCF_MBAR + MCFSIM_IMR);
 	imr |= mask;
 	__raw_writew(imr, MCF_MBAR + MCFSIM_IMR);
+=======
+	imr = __raw_readw(MCFSIM_IMR);
+	imr |= mask;
+	__raw_writew(imr, MCFSIM_IMR);
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
@@ -69,23 +85,39 @@ void mcf_maskimr(unsigned int mask)
 void mcf_setimr(int index)
 {
 	u32 imr;
+<<<<<<< HEAD
 	imr = __raw_readl(MCF_MBAR + MCFSIM_IMR);
 	__raw_writel(imr | (0x1 << index), MCF_MBAR + MCFSIM_IMR);
+=======
+	imr = __raw_readl(MCFSIM_IMR);
+	__raw_writel(imr | (0x1 << index), MCFSIM_IMR);
+>>>>>>> refs/remotes/origin/master
 }
 
 void mcf_clrimr(int index)
 {
 	u32 imr;
+<<<<<<< HEAD
 	imr = __raw_readl(MCF_MBAR + MCFSIM_IMR);
 	__raw_writel(imr & ~(0x1 << index), MCF_MBAR + MCFSIM_IMR);
+=======
+	imr = __raw_readl(MCFSIM_IMR);
+	__raw_writel(imr & ~(0x1 << index), MCFSIM_IMR);
+>>>>>>> refs/remotes/origin/master
 }
 
 void mcf_maskimr(unsigned int mask)
 {
 	u32 imr;
+<<<<<<< HEAD
 	imr = __raw_readl(MCF_MBAR + MCFSIM_IMR);
 	imr |= mask;
 	__raw_writel(imr, MCF_MBAR + MCFSIM_IMR);
+=======
+	imr = __raw_readl(MCFSIM_IMR);
+	imr |= mask;
+	__raw_writel(imr, MCFSIM_IMR);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
@@ -104,9 +136,15 @@ void mcf_autovector(int irq)
 #ifdef MCFSIM_AVR
 	if ((irq >= EIRQ1) && (irq <= EIRQ7)) {
 		u8 avec;
+<<<<<<< HEAD
 		avec = __raw_readb(MCF_MBAR + MCFSIM_AVR);
 		avec |= (0x1 << (irq - EIRQ1 + 1));
 		__raw_writeb(avec, MCF_MBAR + MCFSIM_AVR);
+=======
+		avec = __raw_readb(MCFSIM_AVR);
+		avec |= (0x1 << (irq - EIRQ1 + 1));
+		__raw_writeb(avec, MCFSIM_AVR);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 }
@@ -140,9 +178,12 @@ void __init init_IRQ(void)
 	int irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	init_vectors();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mcf_maskimr(0xffffffff);
 
 	for (irq = 0; (irq < NR_IRQS); irq++) {

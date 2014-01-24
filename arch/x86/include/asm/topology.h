@@ -92,6 +92,7 @@ extern void setup_node_to_cpumask_map(void);
 
 #define pcibus_to_node(bus) __pcibus_to_node(bus)
 
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 # define SD_CACHE_NICE_TRIES	1
 # define SD_IDLE_IDX		1
@@ -139,6 +140,10 @@ extern int __node_distance(int, int);
 extern int __node_distance(int, int);
 #define node_distance(a, b) __node_distance(a, b)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int __node_distance(int, int);
+#define node_distance(a, b) __node_distance(a, b)
+>>>>>>> refs/remotes/origin/master
 
 #else /* !CONFIG_NUMA */
 
@@ -169,9 +174,12 @@ extern const struct cpumask *cpu_coregroup_mask(int cpu);
 #define topology_core_id(cpu)			(cpu_data(cpu).cpu_core_id)
 #define topology_core_cpumask(cpu)		(per_cpu(cpu_core_map, cpu))
 #define topology_thread_cpumask(cpu)		(per_cpu(cpu_sibling_map, cpu))
+<<<<<<< HEAD
 
 /* indicates that pointers to the topology cpumask_t maps are valid */
 #define arch_provides_topology_pointers		yes
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static inline void arch_fix_phys_package_id(int num, u32 slot)
@@ -180,10 +188,14 @@ static inline void arch_fix_phys_package_id(int num, u32 slot)
 
 struct pci_bus;
 <<<<<<< HEAD
+<<<<<<< HEAD
 void x86_pci_root_bus_res_quirks(struct pci_bus *b);
 =======
 void x86_pci_root_bus_resources(int bus, struct list_head *resources);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void x86_pci_root_bus_resources(int bus, struct list_head *resources);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMP
 #define mc_capable()	((boot_cpu_data.x86_max_cores > 1) && \

@@ -23,9 +23,12 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/soc.h>
@@ -46,9 +49,12 @@ enum master_slave_mode {
 struct cs42l51_private {
 	enum snd_soc_control_type control_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *control_data;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int mclk;
 	unsigned int audio_mode;	/* The mode (I2S or left-justified) */
 	enum master_slave_mode func;
@@ -64,10 +70,14 @@ static int cs42l51_fill_cache(struct snd_soc_codec *codec)
 {
 	u8 *cache = codec->reg_cache + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct i2c_client *i2c_client = codec->control_data;
 =======
 	struct i2c_client *i2c_client = to_i2c_client(codec->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct i2c_client *i2c_client = to_i2c_client(codec->dev);
+>>>>>>> refs/remotes/origin/master
 	s32 length;
 
 	length = i2c_smbus_read_i2c_block_data(i2c_client,
@@ -153,15 +163,26 @@ static const struct soc_enum cs42l51_chan_mix =
 static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
 	SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
 			CS42L51_PCMA_VOL, CS42L51_PCMB_VOL,
+<<<<<<< HEAD
 			7, 0xffffff99, 0x18, adc_pcm_tlv),
+=======
+			6, 0x19, 0x7F, adc_pcm_tlv),
+>>>>>>> refs/remotes/origin/master
 	SOC_DOUBLE_R("PCM Playback Switch",
 			CS42L51_PCMA_VOL, CS42L51_PCMB_VOL, 7, 1, 1),
 	SOC_DOUBLE_R_SX_TLV("Analog Playback Volume",
 			CS42L51_AOUTA_VOL, CS42L51_AOUTB_VOL,
+<<<<<<< HEAD
 			8, 0xffffff19, 0x18, aout_tlv),
 	SOC_DOUBLE_R_SX_TLV("ADC Mixer Volume",
 			CS42L51_ADCA_VOL, CS42L51_ADCB_VOL,
 			7, 0xffffff99, 0x18, adc_pcm_tlv),
+=======
+			0, 0x34, 0xE4, aout_tlv),
+	SOC_DOUBLE_R_SX_TLV("ADC Mixer Volume",
+			CS42L51_ADCA_VOL, CS42L51_ADCB_VOL,
+			6, 0x19, 0x7F, adc_pcm_tlv),
+>>>>>>> refs/remotes/origin/master
 	SOC_DOUBLE_R("ADC Mixer Switch",
 			CS42L51_ADCA_VOL, CS42L51_ADCB_VOL, 7, 1, 1),
 	SOC_SINGLE("Playback Deemphasis Switch", CS42L51_DAC_CTL, 3, 1, 0),
@@ -187,6 +208,7 @@ static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
 		struct snd_kcontrol *kcontrol, int event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 
 	value = snd_soc_read(w->codec, CS42L51_POWER_CTL1);
@@ -203,6 +225,8 @@ static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
 	snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
 		CS42L51_POWER_CTL1_PDN, value);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (event) {
 	case SND_SOC_DAPM_PRE_PMD:
 		snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
@@ -215,7 +239,10 @@ static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
 				    CS42L51_POWER_CTL1_PDN, 0);
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -315,9 +342,12 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	struct snd_soc_codec *codec = codec_dai->codec;
 	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
 	case SND_SOC_DAIFMT_I2S:
@@ -328,10 +358,14 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
 	default:
 		dev_err(codec->dev, "invalid DAI format\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -EINVAL;
 =======
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
@@ -343,18 +377,24 @@ static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
 		break;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -EINVAL;
 		break;
 	}
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_err(codec->dev, "Unknown master/slave configuration\n");
 		return -EINVAL;
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 struct cs42l51_ratios {
@@ -402,8 +442,12 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
 		struct snd_pcm_hw_params *params,
 		struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
 	int ret;
 	unsigned int i;
@@ -470,6 +514,7 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
 		intf_ctl |= CS42L51_INTF_CTL_DAC_FORMAT(CS42L51_DAC_DIF_LJ24);
 		break;
 	case SND_SOC_DAIFMT_RIGHT_J:
+<<<<<<< HEAD
 		switch (params_format(params)) {
 		case SNDRV_PCM_FORMAT_S16_LE:
 		case SNDRV_PCM_FORMAT_S16_BE:
@@ -485,6 +530,19 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
 			break;
 		case SNDRV_PCM_FORMAT_S24_LE:
 		case SNDRV_PCM_FORMAT_S24_BE:
+=======
+		switch (params_width(params)) {
+		case 16:
+			fmt = CS42L51_DAC_DIF_RJ16;
+			break;
+		case 18:
+			fmt = CS42L51_DAC_DIF_RJ18;
+			break;
+		case 20:
+			fmt = CS42L51_DAC_DIF_RJ20;
+			break;
+		case 24:
+>>>>>>> refs/remotes/origin/master
 			fmt = CS42L51_DAC_DIF_RJ24;
 			break;
 		default:
@@ -529,10 +587,14 @@ static int cs42l51_dai_mute(struct snd_soc_dai *dai, int mute)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops cs42l51_dai_ops = {
 =======
 static const struct snd_soc_dai_ops cs42l51_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops cs42l51_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params      = cs42l51_hw_params,
 	.set_sysclk     = cs42l51_set_dai_sysclk,
 	.set_fmt        = cs42l51_set_dai_fmt,
@@ -562,6 +624,7 @@ static int cs42l51_probe(struct snd_soc_codec *codec)
 {
 	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
 	int ret, reg;
 
@@ -571,6 +634,10 @@ static int cs42l51_probe(struct snd_soc_codec *codec)
 	int ret, reg;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, reg;
+
+>>>>>>> refs/remotes/origin/master
 	ret = cs42l51_fill_cache(codec);
 	if (ret < 0) {
 		dev_err(codec->dev, "failed to fill register cache\n");
@@ -597,6 +664,7 @@ static int cs42l51_probe(struct snd_soc_codec *codec)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, cs42l51_snd_controls,
 		ARRAY_SIZE(cs42l51_snd_controls));
 	snd_soc_dapm_new_controls(dapm, cs42l51_dapm_widgets,
@@ -606,15 +674,20 @@ static int cs42l51_probe(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct snd_soc_codec_driver soc_codec_device_cs42l51 = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.probe =	cs42l51_probe,
 	.reg_cache_size = CS42L51_NUMREGS,
 	.reg_word_size = sizeof(u8),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe = cs42l51_probe,
 	.reg_cache_size = CS42L51_NUMREGS + 1,
 	.reg_word_size = sizeof(u8),
@@ -625,7 +698,10 @@ static struct snd_soc_codec_driver soc_codec_device_cs42l51 = {
 	.num_dapm_widgets = ARRAY_SIZE(cs42l51_dapm_widgets),
 	.dapm_routes = cs42l51_routes,
 	.num_dapm_routes = ARRAY_SIZE(cs42l51_routes),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
@@ -652,11 +728,16 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
 				ret & 7);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cs42l51 = kzalloc(sizeof(struct cs42l51_private), GFP_KERNEL);
 =======
 	cs42l51 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l51_private),
 			       GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs42l51 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l51_private),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!cs42l51) {
 		dev_err(&i2c_client->dev, "could not allocate codec\n");
 		return -ENOMEM;
@@ -664,24 +745,31 @@ static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
 
 	i2c_set_clientdata(i2c_client, cs42l51);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cs42l51->control_data = i2c_client;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cs42l51->control_type = SND_SOC_I2C;
 
 	ret =  snd_soc_register_codec(&i2c_client->dev,
 			&soc_codec_device_cs42l51, &cs42l51_dai, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		kfree(cs42l51);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error:
 	return ret;
 }
 
 static int cs42l51_i2c_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cs42l51_private *cs42l51 = i2c_get_clientdata(client);
 
@@ -690,6 +778,9 @@ static int cs42l51_i2c_remove(struct i2c_client *client)
 =======
 	snd_soc_unregister_codec(&client->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -709,6 +800,7 @@ static struct i2c_driver cs42l51_i2c_driver = {
 	.remove = cs42l51_i2c_remove,
 };
 
+<<<<<<< HEAD
 static int __init cs42l51_init(void)
 {
 	int ret;
@@ -727,6 +819,9 @@ static void __exit cs42l51_exit(void)
 	i2c_del_driver(&cs42l51_i2c_driver);
 }
 module_exit(cs42l51_exit);
+=======
+module_i2c_driver(cs42l51_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
 MODULE_DESCRIPTION("Cirrus Logic CS42L51 ALSA SoC Codec Driver");

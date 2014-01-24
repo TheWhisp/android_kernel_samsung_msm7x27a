@@ -5,7 +5,11 @@
  * DMA register definition.
  *
  * Author : ryan.holmQVist@idt.com
+<<<<<<< HEAD
  * Date   : 20011005
+=======
+ * Date	  : 20011005
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _ASM_RC32434_DMA_V_H_
@@ -49,4 +53,8 @@ static inline void rc32434_chain_dma(struct dma_reg *ch, u32 dma_addr)
 	__raw_writel(dma_addr, &ch->dmandptr);
 }
 
+<<<<<<< HEAD
 #endif  /* _ASM_RC32434_DMA_V_H_ */
+=======
+#endif	/* _ASM_RC32434_DMA_V_H_ */
+>>>>>>> refs/remotes/origin/master

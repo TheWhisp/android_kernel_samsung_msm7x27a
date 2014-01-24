@@ -29,19 +29,33 @@
  */
 
 _F(void, setup, (char** cmd), { });
+<<<<<<< HEAD
 _F(void, init_irq, (void), { });
+=======
+>>>>>>> refs/remotes/origin/master
 _F(void, restart, (void), { while(1); });
 _F(void, halt, (void), { while(1); });
 _F(void, power_off, (void), { while(1); });
 _F(void, idle, (void), { __asm__ __volatile__ ("waiti 0" ::: "memory"); });
 _F(void, heartbeat, (void), { });
 _F(int,  pcibios_fixup, (void), { return 0; });
+<<<<<<< HEAD
+=======
+_F(void, pcibios_init, (void), { });
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_XTENSA_CALIBRATE_CCOUNT
 _F(void, calibrate_ccount, (void),
 {
+<<<<<<< HEAD
   printk ("ERROR: Cannot calibrate cpu frequency! Assuming 100MHz.\n");
   ccount_per_jiffy = 100 * (1000000UL/HZ);
 });
 #endif
 
+=======
+	pr_err("ERROR: Cannot calibrate cpu frequency! Assuming 10MHz.\n");
+	ccount_freq = 10 * 1000000UL;
+});
+#endif
+>>>>>>> refs/remotes/origin/master

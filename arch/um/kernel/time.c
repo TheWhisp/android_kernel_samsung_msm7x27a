@@ -10,10 +10,17 @@
 #include <linux/threads.h>
 #include <asm/irq.h>
 #include <asm/param.h>
+<<<<<<< HEAD
 #include "kern_util.h"
 #include "os.h"
 
 void timer_handler(int sig, struct uml_pt_regs *regs)
+=======
+#include <kern_util.h>
+#include <os.h>
+
+void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -76,10 +83,13 @@ static struct clocksource itimer_clocksource = {
 	.read		= itimer_read,
 	.mask		= CLOCKSOURCE_MASK(64),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.mult		= 1000,
 	.shift		= 0,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
@@ -88,10 +98,14 @@ static void __init setup_itimer(void)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = request_irq(TIMER_IRQ, um_timer, IRQF_DISABLED, "timer", NULL);
 =======
 	err = request_irq(TIMER_IRQ, um_timer, 0, "timer", NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = request_irq(TIMER_IRQ, um_timer, 0, "timer", NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err != 0)
 		printk(KERN_ERR "register_timer : request_irq failed - "
 		       "errno = %d\n", -err);
@@ -102,6 +116,7 @@ static void __init setup_itimer(void)
 	itimer_clockevent.min_delta_ns =
 		clockevent_delta2ns(1, &itimer_clockevent);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = clocksource_register(&itimer_clocksource);
 	if (err) {
 		printk(KERN_ERR "clocksource_register returned %d\n", err);
@@ -110,6 +125,11 @@ static void __init setup_itimer(void)
 	if (err) {
 		printk(KERN_ERR "clocksource_register_hz returned %d\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = clocksource_register_hz(&itimer_clocksource, USEC_PER_SEC);
+	if (err) {
+		printk(KERN_ERR "clocksource_register_hz returned %d\n", err);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	clockevents_register_device(&itimer_clockevent);

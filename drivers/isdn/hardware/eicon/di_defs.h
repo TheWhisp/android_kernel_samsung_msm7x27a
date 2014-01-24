@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -28,6 +29,8 @@
 #define _DI_DEFS_
         /* typedefs for our data structures                         */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -53,7 +56,10 @@
 #ifndef _DI_DEFS_
 #define _DI_DEFS_
 /* typedefs for our data structures                         */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct get_name_s GET_NAME;
 /*  The entity_s structure is used to pass all
     parameters between application and IDI   */
@@ -66,6 +72,7 @@ typedef struct get_para_s GET_PARA;
 #define IDI_CALL_ENTITY_T
 /* typedef void ( * IDI_CALL)(ENTITY *); */
 /* --------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
     IDI_CALL
    -------------------------------------------------------- */
@@ -84,6 +91,8 @@ struct postcall_s {
   void      (  * callback)(void   *);      /* call back */
   void    *context;                          /* context pointer */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    IDI_CALL
    -------------------------------------------------------- */
 typedef void (IDI_CALL_LINK_T *IDI_CALL)(ENTITY IDI_CALL_ENTITY_T *);
@@ -100,13 +109,17 @@ struct postcall_s {
 	word      dummy;                             /* not used */
 	void      (*callback)(void *);      /* call back */
 	void      *context;                          /* context pointer */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #define REQ_PARA            0x0600   /* request command line parameters */
 #define REQ_PARA_LEN             1   /* number of data bytes */
 #define L1_STARTUP_DOWN_POS      0   /* '-y' command line parameter in......*/
 #define L1_STARTUP_DOWN_MSK   0x01   /* first byte position (index 0) with value 0x01 */
 struct get_para_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word  command;            /* command = 0x0600 */
   byte  len;                /* max length of para field in bytes */
@@ -153,6 +166,8 @@ typedef struct {
 } DESCRIPTOR;
         /* descriptor type field coding */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word  command;            /* command = 0x0600 */
 	byte  len;                /* max length of para field in bytes */
 	byte  para[REQ_PARA_LEN]; /* parameter field */
@@ -197,7 +212,10 @@ typedef struct {
 	IDI_CALL              request;
 } DESCRIPTOR;
 /* descriptor type field coding */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define IDI_ADAPTER_S           1
 #define IDI_ADAPTER_PR          2
 #define IDI_ADAPTER_DIVA        3
@@ -208,10 +226,14 @@ typedef struct {
 #define IDI_DIDDPNP             0xfe
 #define IDI_DIMAINT             0xff
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* Hardware IDs ISA PNP */
 =======
 /* Hardware IDs ISA PNP */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Hardware IDs ISA PNP */
+>>>>>>> refs/remotes/origin/master
 #define HW_ID_DIVA_PRO     3    /* same as IDI_ADAPTER_DIVA    */
 #define HW_ID_MAESTRA      4    /* same as IDI_ADAPTER_MAESTRA */
 #define HW_ID_PICCOLA      5
@@ -222,10 +244,14 @@ typedef struct {
 #define HW_ID_DIVA30       10
 #define HW_ID_DIVA30_U     11
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* Hardware IDs PCI */
 =======
 /* Hardware IDs PCI */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Hardware IDs PCI */
+>>>>>>> refs/remotes/origin/master
 #define HW_ID_EICON_PCI              0x1133
 #define HW_ID_SIEMENS_PCI            0x8001 /* unused SubVendor ID for Siemens Cornet-N cards */
 #define HW_ID_PROTTYPE_CORNETN       0x0014 /* SubDevice ID for Siemens Cornet-N cards */
@@ -256,16 +282,21 @@ typedef struct {
 #define HW_ID_DSRV_B2F_PCI           0xe01a
 #define HW_ID_DSRV_VOICE_B2M_V2_PCI  0xe01b
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* Hardware IDs USB */
 =======
 /* Hardware IDs USB */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Hardware IDs USB */
+>>>>>>> refs/remotes/origin/master
 #define EICON_USB_VENDOR_ID          0x071D
 #define HW_ID_DIVA_USB_REV1          0x1000
 #define HW_ID_DIVA_USB_REV2          0x1003
 #define HW_ID_TELEDAT_SURF_USB_REV2  0x1004
 #define HW_ID_TELEDAT_SURF_USB_REV1  0x2000
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
   Adapter array change notification framework
   -------------------------------------------------------------------------- */
@@ -275,6 +306,11 @@ typedef void (IDI_CALL_LINK_T* didd_adapter_change_callback_t)(     void IDI_CAL
    -------------------------------------------------------------------------- */
 typedef void (IDI_CALL_LINK_T *didd_adapter_change_callback_t)(void IDI_CALL_ENTITY_T *context, DESCRIPTOR *adapter, int removal);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   Adapter array change notification framework
+   -------------------------------------------------------------------------- */
+typedef void (IDI_CALL_LINK_T *didd_adapter_change_callback_t)(void IDI_CALL_ENTITY_T *context, DESCRIPTOR *adapter, int removal);
+>>>>>>> refs/remotes/origin/master
 /* -------------------------------------------------------------------------- */
 #define DI_VOICE          0x0 /* obsolete define */
 #define DI_FAX3           0x1
@@ -290,9 +326,14 @@ typedef void (IDI_CALL_LINK_T *didd_adapter_change_callback_t)(void IDI_CALL_ENT
 #define DI_AT_PARSER      0x0400 /* Build-in AT Parser in the L2 */
 #define DI_VOICE_OVER_IP  0x0800 /* Voice over IP support */
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef void (IDI_CALL_LINK_T* _IDI_CALL)(void*, ENTITY*);  
 #endif  
 =======
 typedef void (IDI_CALL_LINK_T *_IDI_CALL)(void *, ENTITY *);
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+typedef void (IDI_CALL_LINK_T *_IDI_CALL)(void *, ENTITY *);
+#endif
+>>>>>>> refs/remotes/origin/master

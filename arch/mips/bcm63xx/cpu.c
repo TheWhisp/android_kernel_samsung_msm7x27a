@@ -25,6 +25,7 @@ const int *bcm63xx_irqs;
 EXPORT_SYMBOL(bcm63xx_irqs);
 
 static u16 bcm63xx_cpu_id;
+<<<<<<< HEAD
 static u16 bcm63xx_cpu_rev;
 static unsigned int bcm63xx_cpu_freq;
 static unsigned int bcm63xx_memory_size;
@@ -191,6 +192,28 @@ static const int bcm96358_irqs[] = {
 	[IRQ_ENET1_TXDMA]	= BCM_6358_ENET1_TXDMA_IRQ,
 	[IRQ_PCI]		= BCM_6358_PCI_IRQ,
 =======
+=======
+static u8 bcm63xx_cpu_rev;
+static unsigned int bcm63xx_cpu_freq;
+static unsigned int bcm63xx_memory_size;
+
+static const unsigned long bcm3368_regs_base[] = {
+	__GEN_CPU_REGS_TABLE(3368)
+};
+
+static const int bcm3368_irqs[] = {
+	__GEN_CPU_IRQ_TABLE(3368)
+};
+
+static const unsigned long bcm6328_regs_base[] = {
+	__GEN_CPU_REGS_TABLE(6328)
+};
+
+static const int bcm6328_irqs[] = {
+	__GEN_CPU_IRQ_TABLE(6328)
+};
+
+>>>>>>> refs/remotes/origin/master
 static const unsigned long bcm6338_regs_base[] = {
 	__GEN_CPU_REGS_TABLE(6338)
 };
@@ -225,6 +248,18 @@ static const int bcm6358_irqs[] = {
 
 };
 
+<<<<<<< HEAD
+=======
+static const unsigned long bcm6362_regs_base[] = {
+	__GEN_CPU_REGS_TABLE(6362)
+};
+
+static const int bcm6362_irqs[] = {
+	__GEN_CPU_IRQ_TABLE(6362)
+
+};
+
+>>>>>>> refs/remotes/origin/master
 static const unsigned long bcm6368_regs_base[] = {
 	__GEN_CPU_REGS_TABLE(6368)
 };
@@ -232,7 +267,10 @@ static const unsigned long bcm6368_regs_base[] = {
 static const int bcm6368_irqs[] = {
 	__GEN_CPU_IRQ_TABLE(6368)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 u16 __bcm63xx_get_cpu_id(void)
@@ -242,7 +280,11 @@ u16 __bcm63xx_get_cpu_id(void)
 
 EXPORT_SYMBOL(__bcm63xx_get_cpu_id);
 
+<<<<<<< HEAD
 u16 bcm63xx_get_cpu_rev(void)
+=======
+u8 bcm63xx_get_cpu_rev(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return bcm63xx_cpu_rev;
 }
@@ -262,6 +304,7 @@ unsigned int bcm63xx_get_memory_size(void)
 static unsigned int detect_cpu_clock(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int tmp, n1 = 0, n2 = 0, m1 = 0;
 
 	/* BCM6338 has a fixed 240 Mhz frequency */
@@ -278,6 +321,39 @@ static unsigned int detect_cpu_clock(void)
 	if (BCMCPU_IS_6348()) {
 =======
 	switch (bcm63xx_get_cpu_id()) {
+=======
+	switch (bcm63xx_get_cpu_id()) {
+	case BCM3368_CPU_ID:
+		return 300000000;
+
+	case BCM6328_CPU_ID:
+	{
+		unsigned int tmp, mips_pll_fcvo;
+
+		tmp = bcm_misc_readl(MISC_STRAPBUS_6328_REG);
+		mips_pll_fcvo = (tmp & STRAPBUS_6328_FCVO_MASK)
+				>> STRAPBUS_6328_FCVO_SHIFT;
+
+		switch (mips_pll_fcvo) {
+		case 0x12:
+		case 0x14:
+		case 0x19:
+			return 160000000;
+		case 0x1c:
+			return 192000000;
+		case 0x13:
+		case 0x15:
+			return 200000000;
+		case 0x1a:
+			return 384000000;
+		case 0x16:
+			return 400000000;
+		default:
+			return 320000000;
+		}
+
+	}
+>>>>>>> refs/remotes/origin/master
 	case BCM6338_CPU_ID:
 		/* BCM6338 has a fixed 240 Mhz frequency */
 		return 240000000;
@@ -290,7 +366,10 @@ static unsigned int detect_cpu_clock(void)
 	{
 		unsigned int tmp, n1, n2, m1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* 16MHz * (N1 + 1) * (N2 + 2) / (M1_CPU + 1) */
 		tmp = bcm_perf_readl(PERF_MIPSPLLCTL_REG);
 		n1 = (tmp & MIPSPLLCTL_N1_MASK) >> MIPSPLLCTL_N1_SHIFT;
@@ -300,10 +379,13 @@ static unsigned int detect_cpu_clock(void)
 		n2 += 2;
 		m1 += 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 
 	if (BCMCPU_IS_6358()) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return (16 * 1000000 * n1 * n2) / m1;
 	}
 
@@ -311,12 +393,16 @@ static unsigned int detect_cpu_clock(void)
 	{
 		unsigned int tmp, n1, n2, m1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* 16MHz * N1 * N2 / M1_CPU */
 		tmp = bcm_ddr_readl(DDR_DMIPSPLLCFG_REG);
 		n1 = (tmp & DMIPSPLLCFG_N1_MASK) >> DMIPSPLLCFG_N1_SHIFT;
 		n2 = (tmp & DMIPSPLLCFG_N2_MASK) >> DMIPSPLLCFG_N2_SHIFT;
 		m1 = (tmp & DMIPSPLLCFG_M1_MASK) >> DMIPSPLLCFG_M1_SHIFT;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}
 
@@ -325,6 +411,47 @@ static unsigned int detect_cpu_clock(void)
 		return (16 * 1000000 * n1 * n2) / m1;
 	}
 
+=======
+		return (16 * 1000000 * n1 * n2) / m1;
+	}
+
+	case BCM6362_CPU_ID:
+	{
+		unsigned int tmp, mips_pll_fcvo;
+
+		tmp = bcm_misc_readl(MISC_STRAPBUS_6362_REG);
+		mips_pll_fcvo = (tmp & STRAPBUS_6362_FCVO_MASK)
+				>> STRAPBUS_6362_FCVO_SHIFT;
+		switch (mips_pll_fcvo) {
+		case 0x03:
+		case 0x0b:
+		case 0x13:
+		case 0x1b:
+			return 240000000;
+		case 0x04:
+		case 0x0c:
+		case 0x14:
+		case 0x1c:
+			return 160000000;
+		case 0x05:
+		case 0x0e:
+		case 0x16:
+		case 0x1e:
+		case 0x1f:
+			return 400000000;
+		case 0x06:
+			return 440000000;
+		case 0x07:
+		case 0x17:
+			return 384000000;
+		case 0x15:
+		case 0x1d:
+			return 200000000;
+		default:
+			return 320000000;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 	case BCM6368_CPU_ID:
 	{
 		unsigned int tmp, p1, p2, ndiv, m1;
@@ -351,7 +478,10 @@ static unsigned int detect_cpu_clock(void)
 	default:
 		BUG();
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -363,14 +493,23 @@ static unsigned int detect_memory_size(void)
 	u32 val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (BCMCPU_IS_6345())
 		return (8 * 1024 * 1024);
 =======
+=======
+	if (BCMCPU_IS_6328() || BCMCPU_IS_6362())
+		return bcm_ddr_readl(DDR_CSEND_REG) << 24;
+
+>>>>>>> refs/remotes/origin/master
 	if (BCMCPU_IS_6345()) {
 		val = bcm_sdram_readl(SDRAM_MBASE_REG);
 		return (val * 8 * 1024 * 1024);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (BCMCPU_IS_6338() || BCMCPU_IS_6348()) {
 		val = bcm_sdram_readl(SDRAM_CFG_REG);
@@ -381,10 +520,14 @@ static unsigned int detect_memory_size(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (BCMCPU_IS_6358()) {
 =======
 	if (BCMCPU_IS_6358() || BCMCPU_IS_6368()) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (BCMCPU_IS_3368() || BCMCPU_IS_6358() || BCMCPU_IS_6368()) {
+>>>>>>> refs/remotes/origin/master
 		val = bcm_memc_readl(MEMC_CFG_REG);
 		rows = (val & MEMC_CFG_ROW_MASK) >> MEMC_CFG_ROW_SHIFT;
 		cols = (val & MEMC_CFG_COL_MASK) >> MEMC_CFG_COL_SHIFT;
@@ -403,6 +546,7 @@ static unsigned int detect_memory_size(void)
 
 void __init bcm63xx_cpu_init(void)
 {
+<<<<<<< HEAD
 	unsigned int tmp, expected_cpu_id;
 	struct cpuinfo_mips *c = &current_cpu_data;
 	unsigned int cpu = smp_processor_id();
@@ -461,6 +605,36 @@ void __init bcm63xx_cpu_init(void)
 			break;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int tmp;
+	struct cpuinfo_mips *c = &current_cpu_data;
+	unsigned int cpu = smp_processor_id();
+	u32 chipid_reg;
+
+	/* soc registers location depends on cpu type */
+	chipid_reg = 0;
+
+	switch (c->cputype) {
+	case CPU_BMIPS3300:
+		if ((read_c0_prid() & PRID_IMP_MASK) != PRID_IMP_BMIPS3300_ALT)
+			__cpu_name[cpu] = "Broadcom BCM6338";
+		/* fall-through */
+	case CPU_BMIPS32:
+		chipid_reg = BCM_6345_PERF_BASE;
+		break;
+	case CPU_BMIPS4350:
+		switch ((read_c0_prid() & PRID_REV_MASK)) {
+		case 0x04:
+			chipid_reg = BCM_3368_PERF_BASE;
+			break;
+		case 0x10:
+			chipid_reg = BCM_6345_PERF_BASE;
+			break;
+		default:
+			chipid_reg = BCM_6368_PERF_BASE;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -468,6 +642,7 @@ void __init bcm63xx_cpu_init(void)
 	 * really early to panic, but delaying panic would not help since we
 	 * will never get any working console
 	 */
+<<<<<<< HEAD
 	if (!expected_cpu_id)
 		panic("unsupported Broadcom CPU");
 
@@ -482,6 +657,53 @@ void __init bcm63xx_cpu_init(void)
 
 	if (bcm63xx_cpu_id != expected_cpu_id)
 		panic("bcm63xx CPU id mismatch");
+=======
+	if (!chipid_reg)
+		panic("unsupported Broadcom CPU");
+
+	/* read out CPU type */
+	tmp = bcm_readl(chipid_reg);
+	bcm63xx_cpu_id = (tmp & REV_CHIPID_MASK) >> REV_CHIPID_SHIFT;
+	bcm63xx_cpu_rev = (tmp & REV_REVID_MASK) >> REV_REVID_SHIFT;
+
+	switch (bcm63xx_cpu_id) {
+	case BCM3368_CPU_ID:
+		bcm63xx_regs_base = bcm3368_regs_base;
+		bcm63xx_irqs = bcm3368_irqs;
+		break;
+	case BCM6328_CPU_ID:
+		bcm63xx_regs_base = bcm6328_regs_base;
+		bcm63xx_irqs = bcm6328_irqs;
+		break;
+	case BCM6338_CPU_ID:
+		bcm63xx_regs_base = bcm6338_regs_base;
+		bcm63xx_irqs = bcm6338_irqs;
+		break;
+	case BCM6345_CPU_ID:
+		bcm63xx_regs_base = bcm6345_regs_base;
+		bcm63xx_irqs = bcm6345_irqs;
+		break;
+	case BCM6348_CPU_ID:
+		bcm63xx_regs_base = bcm6348_regs_base;
+		bcm63xx_irqs = bcm6348_irqs;
+		break;
+	case BCM6358_CPU_ID:
+		bcm63xx_regs_base = bcm6358_regs_base;
+		bcm63xx_irqs = bcm6358_irqs;
+		break;
+	case BCM6362_CPU_ID:
+		bcm63xx_regs_base = bcm6362_regs_base;
+		bcm63xx_irqs = bcm6362_irqs;
+		break;
+	case BCM6368_CPU_ID:
+		bcm63xx_regs_base = bcm6368_regs_base;
+		bcm63xx_irqs = bcm6368_irqs;
+		break;
+	default:
+		panic("unsupported broadcom CPU %x", bcm63xx_cpu_id);
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	bcm63xx_cpu_freq = detect_cpu_clock();
 	bcm63xx_memory_size = detect_memory_size();

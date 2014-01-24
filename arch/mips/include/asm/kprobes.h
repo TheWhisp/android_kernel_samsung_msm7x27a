@@ -29,7 +29,11 @@
 #include <asm/kdebug.h>
 #include <asm/inst.h>
 
+<<<<<<< HEAD
 #define  __ARCH_WANT_KPROBES_INSN_SLOT
+=======
+#define	 __ARCH_WANT_KPROBES_INSN_SLOT
+>>>>>>> refs/remotes/origin/master
 
 struct kprobe;
 struct pt_regs;
@@ -75,10 +79,15 @@ struct prev_kprobe {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SKIP_DELAYSLOT 0x0001
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SKIP_DELAYSLOT 0x0001
+
+>>>>>>> refs/remotes/origin/master
 /* per-cpu kprobe control block */
 struct kprobe_ctlblk {
 	unsigned long kprobe_status;
@@ -88,11 +97,17 @@ struct kprobe_ctlblk {
 	unsigned long jprobe_saved_sp;
 	struct pt_regs jprobe_saved_regs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Per-thread fields, used while emulating branches */
 	unsigned long flags;
 	unsigned long target_epc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Per-thread fields, used while emulating branches */
+	unsigned long flags;
+	unsigned long target_epc;
+>>>>>>> refs/remotes/origin/master
 	u8 jprobes_stack[MAX_JPROBES_STACK_SIZE];
 	struct prev_kprobe prev_kprobe;
 };

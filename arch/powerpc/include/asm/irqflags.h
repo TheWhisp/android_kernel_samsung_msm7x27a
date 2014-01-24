@@ -40,6 +40,7 @@
 #define TRACE_DISABLE_INTS	TRACE_WITH_FRAME_BUFFER(.trace_hardirqs_off)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TRACE_AND_RESTORE_IRQ_PARTIAL(en,skip)		\
 	cmpdi	en,0;					\
 	bne	95f;					\
@@ -63,6 +64,13 @@
  * This is used by assembly code to soft-disable interrupts
  */
 #define SOFT_DISABLE_INTS(__rA, __rB)		\
+=======
+/*
+ * This is used by assembly code to soft-disable interrupts first and
+ * reconcile irq state.
+ */
+#define RECONCILE_IRQ_STATE(__rA, __rB)		\
+>>>>>>> refs/remotes/origin/master
 	lbz	__rA,PACASOFTIRQEN(r13);	\
 	lbz	__rB,PACAIRQHAPPENED(r13);	\
 	cmpwi	cr0,__rA,0;			\
@@ -78,13 +86,20 @@
 #define TRACE_ENABLE_INTS
 #define TRACE_DISABLE_INTS
 
+<<<<<<< HEAD
 #define SOFT_DISABLE_INTS(__rA, __rB)		\
+=======
+#define RECONCILE_IRQ_STATE(__rA, __rB)		\
+>>>>>>> refs/remotes/origin/master
 	lbz	__rA,PACAIRQHAPPENED(r13);	\
 	li	__rB,0;				\
 	ori	__rA,__rA,PACA_IRQ_HARD_DIS;	\
 	stb	__rB,PACASOFTIRQEN(r13);	\
 	stb	__rA,PACAIRQHAPPENED(r13)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif
 

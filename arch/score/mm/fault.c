@@ -47,6 +47,10 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
 	struct task_struct *tsk = current;
 	struct mm_struct *mm = tsk->mm;
 	const int field = sizeof(unsigned long) * 2;
+<<<<<<< HEAD
+=======
+	unsigned long flags = 0;
+>>>>>>> refs/remotes/origin/master
 	siginfo_t info;
 	int fault;
 
@@ -75,6 +79,12 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
 	if (in_atomic() || !mm)
 		goto bad_area_nosemaphore;
 
+<<<<<<< HEAD
+=======
+	if (user_mode(regs))
+		flags |= FAULT_FLAG_USER;
+
+>>>>>>> refs/remotes/origin/master
 	down_read(&mm->mmap_sem);
 	vma = find_vma(mm, address);
 	if (!vma)
@@ -95,18 +105,29 @@ good_area:
 	if (write) {
 		if (!(vma->vm_flags & VM_WRITE))
 			goto bad_area;
+<<<<<<< HEAD
+=======
+		flags |= FAULT_FLAG_WRITE;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (!(vma->vm_flags & (VM_READ | VM_WRITE | VM_EXEC)))
 			goto bad_area;
 	}
 
+<<<<<<< HEAD
 survive:
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	* If for any reason at all we couldn't handle the fault,
 	* make sure we exit gracefully rather than endlessly redo
 	* the fault.
 	*/
+<<<<<<< HEAD
 	fault = handle_mm_fault(mm, vma, address, write);
+=======
+	fault = handle_mm_fault(mm, vma, address, flags);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fault & VM_FAULT_ERROR)) {
 		if (fault & VM_FAULT_OOM)
 			goto out_of_memory;
@@ -167,6 +188,7 @@ no_context:
 	*/
 out_of_memory:
 	up_read(&mm->mmap_sem);
+<<<<<<< HEAD
 	if (is_global_init(tsk)) {
 		yield();
 		down_read(&mm->mmap_sem);
@@ -176,6 +198,12 @@ out_of_memory:
 	if (user_mode(regs))
 		do_group_exit(SIGKILL);
 	goto no_context;
+=======
+	if (!user_mode(regs))
+		goto no_context;
+	pagefault_out_of_memory();
+	return;
+>>>>>>> refs/remotes/origin/master
 
 do_sigbus:
 	up_read(&mm->mmap_sem);

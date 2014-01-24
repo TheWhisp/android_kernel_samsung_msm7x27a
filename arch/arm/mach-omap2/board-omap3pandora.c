@@ -35,11 +35,17 @@
 #include <linux/mmc/host.h>
 #include <linux/mmc/card.h>
 #include <linux/regulator/fixed.h>
+<<<<<<< HEAD
+=======
+#include <linux/usb/phy.h>
+#include <linux/platform_data/spi-omap2-mcspi.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <plat/board.h>
 <<<<<<< HEAD
 #include <plat/common.h>
@@ -51,11 +57,21 @@
 #include <plat/usb.h>
 #include <video/omapdss.h>
 #include <plat/nand.h>
+=======
+#include "common.h"
+#include <video/omapdss.h>
+#include <video/omap-panel-data.h>
+#include <linux/platform_data/mtd-nand-omap2.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mux.h"
 #include "sdram-micron-mt46h32m32lf-6.h"
 #include "hsmmc.h"
 #include "common-board-devices.h"
+<<<<<<< HEAD
+=======
+#include "gpmc-nand.h"
+>>>>>>> refs/remotes/origin/master
 
 #define PANDORA_WIFI_IRQ_GPIO		21
 #define PANDORA_WIFI_NRESET_GPIO	23
@@ -126,13 +142,19 @@ static struct platform_device pandora_leds_gpio = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device pandora_backlight = {
 	.name	= "pandora-backlight",
 	.id	= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define GPIO_BUTTON(gpio_num, ev_type, ev_code, act_low, descr)	\
 {								\
 	.gpio		= gpio_num,				\
@@ -238,6 +260,7 @@ static struct twl4030_keypad_data pandora_kp_data = {
 	.rep		= 1,
 };
 
+<<<<<<< HEAD
 static struct omap_dss_device pandora_lcd_device = {
 	.name			= "lcd",
 	.driver_name		= "tpo_td043mtea1_panel",
@@ -262,6 +285,23 @@ static struct omap_dss_board_info pandora_dss_data = {
 	.num_devices	= ARRAY_SIZE(pandora_dss_devices),
 	.devices	= pandora_dss_devices,
 	.default_device	= &pandora_lcd_device,
+=======
+static struct connector_atv_platform_data pandora_tv_pdata = {
+	.name = "tv",
+	.source = "venc.0",
+	.connector_type = OMAP_DSS_VENC_TYPE_SVIDEO,
+	.invert_polarity = false,
+};
+
+static struct platform_device pandora_tv_connector_device = {
+	.name                   = "connector-analog-tv",
+	.id                     = 0,
+	.dev.platform_data      = &pandora_tv_pdata,
+};
+
+static struct omap_dss_board_info pandora_dss_data = {
+	.default_display_name = "lcd",
+>>>>>>> refs/remotes/origin/master
 };
 
 static void pandora_wl1251_init_card(struct mmc_card *card)
@@ -286,9 +326,13 @@ static struct omap2_hsmmc_info omap3pandora_mmc[] = {
 		.gpio_wp	= 126,
 		.ext_clock	= 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.deferred	= true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.mmc		= 2,
@@ -298,9 +342,13 @@ static struct omap2_hsmmc_info omap3pandora_mmc[] = {
 		.ext_clock	= 1,
 		.transceiver	= true,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.deferred	= true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.deferred	= true,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.mmc		= 3,
@@ -321,10 +369,14 @@ static int omap3pandora_twl_gpio_setup(struct device *dev,
 	omap3pandora_mmc[0].gpio_cd = gpio + 0;
 	omap3pandora_mmc[1].gpio_cd = gpio + 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap2_hsmmc_init(omap3pandora_mmc);
 =======
 	omap_hsmmc_late_init(omap3pandora_mmc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_hsmmc_late_init(omap3pandora_mmc);
+>>>>>>> refs/remotes/origin/master
 
 	/* gpio + 13 drives 32kHz buffer for wifi module */
 	gpio_32khz = gpio + 13;
@@ -338,6 +390,7 @@ static int omap3pandora_twl_gpio_setup(struct device *dev,
 }
 
 static struct twl4030_gpio_platform_data omap3pandora_gpio_data = {
+<<<<<<< HEAD
 	.gpio_base	= OMAP_MAX_GPIO_LINES,
 	.irq_base	= TWL4030_GPIO_IRQ_BASE,
 	.irq_end	= TWL4030_GPIO_IRQ_END,
@@ -354,6 +407,11 @@ static struct regulator_consumer_supply pandora_vmmc2_supply =
 static struct regulator_consumer_supply pandora_vmmc3_supply =
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.2");
 =======
+=======
+	.setup		= omap3pandora_twl_gpio_setup,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct regulator_consumer_supply pandora_vmmc1_supply[] = {
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0"),
 };
@@ -365,11 +423,15 @@ static struct regulator_consumer_supply pandora_vmmc2_supply[] = {
 static struct regulator_consumer_supply pandora_vmmc3_supply[] = {
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.2"),
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct regulator_consumer_supply pandora_vdds_supplies[] = {
 	REGULATOR_SUPPLY("vdds_sdi", "omapdss"),
 	REGULATOR_SUPPLY("vdds_dsi", "omapdss"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi1"),
 };
@@ -380,10 +442,14 @@ static struct regulator_consumer_supply pandora_vcc_lcd_supply =
 static struct regulator_consumer_supply pandora_usb_phy_supply =
 	REGULATOR_SUPPLY("hsusb0", "ehci-omap.0");
 =======
+=======
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dpi.0"),
+>>>>>>> refs/remotes/origin/master
 	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi.0"),
 };
 
 static struct regulator_consumer_supply pandora_vcc_lcd_supply[] = {
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("vcc", "display0"),
 };
 
@@ -391,6 +457,14 @@ static struct regulator_consumer_supply pandora_usb_phy_supply[] = {
 	REGULATOR_SUPPLY("hsusb1", "ehci-omap.0"),
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("vcc", "spi1.1"),
+};
+
+static struct regulator_consumer_supply pandora_usb_phy_supply[] = {
+	REGULATOR_SUPPLY("vcc", "usb_phy_gen_xceiv.2"),	/* hsusb port 2 */
+};
+>>>>>>> refs/remotes/origin/master
 
 /* ads7846 on SPI and 2 nub controllers on I2C */
 static struct regulator_consumer_supply pandora_vaux4_supplies[] = {
@@ -400,6 +474,7 @@ static struct regulator_consumer_supply pandora_vaux4_supplies[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct regulator_consumer_supply pandora_adac_supply =
 	REGULATOR_SUPPLY("vcc", "soc-audio");
 =======
@@ -407,6 +482,11 @@ static struct regulator_consumer_supply pandora_adac_supply[] = {
 	REGULATOR_SUPPLY("vcc", "soc-audio"),
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct regulator_consumer_supply pandora_adac_supply[] = {
+	REGULATOR_SUPPLY("vcc", "soc-audio"),
+};
+>>>>>>> refs/remotes/origin/master
 
 /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
 static struct regulator_init_data pandora_vmmc1 = {
@@ -420,12 +500,17 @@ static struct regulator_init_data pandora_vmmc1 = {
 					| REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &pandora_vmmc1_supply,
 =======
 	.num_consumer_supplies	= ARRAY_SIZE(pandora_vmmc1_supply),
 	.consumer_supplies	= pandora_vmmc1_supply,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(pandora_vmmc1_supply),
+	.consumer_supplies	= pandora_vmmc1_supply,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* VMMC2 for MMC2 pins CMD, CLK, DAT0..DAT3 (max 100 mA) */
@@ -440,12 +525,17 @@ static struct regulator_init_data pandora_vmmc2 = {
 					| REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &pandora_vmmc2_supply,
 =======
 	.num_consumer_supplies	= ARRAY_SIZE(pandora_vmmc2_supply),
 	.consumer_supplies	= pandora_vmmc2_supply,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(pandora_vmmc2_supply),
+	.consumer_supplies	= pandora_vmmc2_supply,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* VAUX1 for LCD */
@@ -460,12 +550,17 @@ static struct regulator_init_data pandora_vaux1 = {
 					| REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &pandora_vcc_lcd_supply,
 =======
 	.num_consumer_supplies	= ARRAY_SIZE(pandora_vcc_lcd_supply),
 	.consumer_supplies	= pandora_vcc_lcd_supply,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(pandora_vcc_lcd_supply),
+	.consumer_supplies	= pandora_vcc_lcd_supply,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* VAUX2 for USB host PHY */
@@ -480,12 +575,17 @@ static struct regulator_init_data pandora_vaux2 = {
 					| REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &pandora_usb_phy_supply,
 =======
 	.num_consumer_supplies	= ARRAY_SIZE(pandora_usb_phy_supply),
 	.consumer_supplies	= pandora_usb_phy_supply,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(pandora_usb_phy_supply),
+	.consumer_supplies	= pandora_usb_phy_supply,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* VAUX4 for ads7846 and nubs */
@@ -515,12 +615,17 @@ static struct regulator_init_data pandora_vsim = {
 					| REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &pandora_adac_supply,
 =======
 	.num_consumer_supplies	= ARRAY_SIZE(pandora_adac_supply),
 	.consumer_supplies	= pandora_adac_supply,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(pandora_adac_supply),
+	.consumer_supplies	= pandora_adac_supply,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Fixed regulator internal to Wifi module */
@@ -529,12 +634,17 @@ static struct regulator_init_data pandora_vmmc3 = {
 		.valid_ops_mask		= REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &pandora_vmmc3_supply,
 =======
 	.num_consumer_supplies	= ARRAY_SIZE(pandora_vmmc3_supply),
 	.consumer_supplies	= pandora_vmmc3_supply,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(pandora_vmmc3_supply),
+	.consumer_supplies	= pandora_vmmc3_supply,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct fixed_voltage_config pandora_vwlan = {
@@ -558,12 +668,18 @@ static struct platform_device pandora_vwlan_device = {
 static struct twl4030_bci_platform_data pandora_bci_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct twl4030_power_data pandora_power_data = {
 	.use_poweroff	= true,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct twl4030_platform_data omap3pandora_twldata = {
 	.gpio		= &omap3pandora_gpio_data,
 	.vmmc1		= &pandora_vmmc1,
@@ -575,9 +691,13 @@ static struct twl4030_platform_data omap3pandora_twldata = {
 	.keypad		= &pandora_kp_data,
 	.bci		= &pandora_bci_data,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.power		= &pandora_power_data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.power		= &pandora_power_data,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct i2c_board_info __initdata omap3pandora_i2c3_boardinfo[] = {
@@ -593,12 +713,18 @@ static int __init omap3pandora_i2c_init(void)
 			TWL_COMMON_PDATA_USB | TWL_COMMON_PDATA_AUDIO,
 			TWL_COMMON_REGULATOR_VDAC | TWL_COMMON_REGULATOR_VPLL2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap3pandora_twldata.vdac->constraints.apply_uV = true;
 =======
 
 	omap3pandora_twldata.vdac->constraints.apply_uV = true;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	omap3pandora_twldata.vdac->constraints.apply_uV = true;
+
+>>>>>>> refs/remotes/origin/master
 	omap3pandora_twldata.vpll2->constraints.apply_uV = true;
 	omap3pandora_twldata.vpll2->num_consumer_supplies =
 					ARRAY_SIZE(pandora_vdds_supplies);
@@ -611,6 +737,7 @@ static int __init omap3pandora_i2c_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct spi_board_info omap3pandora_spi_board_info[] __initdata = {
 	{
 		.modalias		= "tpo_td043mtea1_panel_spi",
@@ -631,6 +758,26 @@ static void __init omap3pandora_init_early(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct panel_tpo_td043mtea1_platform_data pandora_lcd_pdata = {
+	.name                   = "lcd",
+	.source                 = "dpi.0",
+
+	.data_lines		= 24,
+	.nreset_gpio		= 157,
+};
+
+static struct spi_board_info omap3pandora_spi_board_info[] __initdata = {
+	{
+		.modalias		= "panel-tpo-td043mtea1",
+		.bus_num		= 1,
+		.chip_select		= 1,
+		.max_speed_hz		= 375000,
+		.platform_data		= &pandora_lcd_pdata,
+	}
+};
+
+>>>>>>> refs/remotes/origin/master
 static void __init pandora_wl1251_init(void)
 {
 	struct wl12xx_platform_data pandora_wl1251_pdata;
@@ -659,10 +806,22 @@ fail:
 	printk(KERN_ERR "wl1251 board initialisation failed\n");
 }
 
+<<<<<<< HEAD
+=======
+static struct usbhs_phy_data phy_data[] __initdata = {
+	{
+		.port = 2,
+		.reset_gpio = 16,
+		.vcc_gpio = -EINVAL,
+	},
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *omap3pandora_devices[] __initdata = {
 	&pandora_leds_gpio,
 	&pandora_keys_gpio,
 	&pandora_vwlan_device,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	&pandora_backlight,
@@ -689,6 +848,14 @@ static const struct usbhs_omap_board_data usbhs_bdata __initconst = {
 	.reset_gpio_port[1]  = 16,
 >>>>>>> refs/remotes/origin/cm-10.0
 	.reset_gpio_port[2]  = -EINVAL
+=======
+	&pandora_backlight,
+	&pandora_tv_connector_device,
+};
+
+static struct usbhs_omap_platform_data usbhs_bdata __initdata = {
+	.port_mode[1] = OMAP_EHCI_PORT_MODE_PHY,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_OMAP_MUX
@@ -701,15 +868,20 @@ static void __init omap3pandora_init(void)
 {
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	omap_hsmmc_init(omap3pandora_mmc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap_hsmmc_init(omap3pandora_mmc);
+>>>>>>> refs/remotes/origin/master
 	omap3pandora_i2c_init();
 	pandora_wl1251_init();
 	platform_add_devices(omap3pandora_devices,
 			ARRAY_SIZE(omap3pandora_devices));
 	omap_display_init(&pandora_dss_data);
 	omap_serial_init();
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	omap_sdrc_init(mt46h32m32lf6_sdrc_params,
@@ -721,6 +893,20 @@ static void __init omap3pandora_init(void)
 	usbhs_init(&usbhs_bdata);
 	usb_musb_init(NULL);
 	gpmc_nand_init(&pandora_nand_data);
+=======
+	omap_sdrc_init(mt46h32m32lf6_sdrc_params,
+				  mt46h32m32lf6_sdrc_params);
+	spi_register_board_info(omap3pandora_spi_board_info,
+			ARRAY_SIZE(omap3pandora_spi_board_info));
+	omap_ads7846_init(1, OMAP3_PANDORA_TS_GPIO, 0, NULL);
+
+	usbhs_init_phys(phy_data, ARRAY_SIZE(phy_data));
+	usbhs_init(&usbhs_bdata);
+
+	usb_bind_phy("musb-hdrc.0.auto", 0, "twl4030_usb");
+	usb_musb_init(NULL);
+	gpmc_nand_init(&pandora_nand_data, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* Ensure SDRC pins are mux'd for self-refresh */
 	omap_mux_init_signal("sdrc_cke0", OMAP_PIN_OUTPUT);
@@ -728,6 +914,7 @@ static void __init omap3pandora_init(void)
 }
 
 MACHINE_START(OMAP3_PANDORA, "Pandora Handheld Console")
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.reserve	= omap_reserve,
@@ -737,6 +924,8 @@ MACHINE_START(OMAP3_PANDORA, "Pandora Handheld Console")
 	.init_machine	= omap3pandora_init,
 	.timer		= &omap_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.reserve	= omap_reserve,
 	.map_io		= omap3_map_io,
@@ -744,7 +933,13 @@ MACHINE_START(OMAP3_PANDORA, "Pandora Handheld Console")
 	.init_irq	= omap3_init_irq,
 	.handle_irq	= omap3_intc_handle_irq,
 	.init_machine	= omap3pandora_init,
+<<<<<<< HEAD
 	.timer		= &omap3_timer,
 	.restart	= omap_prcm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= omap35xx_init_late,
+	.init_time	= omap3_sync32k_timer_init,
+	.restart	= omap3xxx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

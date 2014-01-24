@@ -15,8 +15,11 @@
 
 /* string functions */
 EXPORT_SYMBOL(strlen);
+<<<<<<< HEAD
 EXPORT_SYMBOL(__strlen_user);
 EXPORT_SYMBOL(__strnlen_user);
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(strncmp);
 
 /* mem* functions */
@@ -33,9 +36,12 @@ EXPORT_SYMBOL(memset);
 EXPORT_SYMBOL(memmove);
 EXPORT_SYMBOL(__bzero);
 
+<<<<<<< HEAD
 /* Moving data to/from/in userspace. */
 EXPORT_SYMBOL(__strncpy_from_user);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Networking helper routines. */
 EXPORT_SYMBOL(csum_partial);
 
@@ -56,12 +62,16 @@ extern int __divdi3(int, int);
 extern void (*__copy_1page)(void *, const void *);
 extern void (*bzero_1page)(void *);
 
+<<<<<<< HEAD
 extern int __strncmp(const char *, const char *, __kernel_size_t);
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern void ___rw_read_enter(void);
 extern void ___rw_read_try(void);
 extern void ___rw_read_exit(void);
 extern void ___rw_write_enter(void);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern void ___atomic24_add(void);
 extern void ___atomic24_sub(void);
@@ -77,6 +87,8 @@ extern int _Rem(int, int);
 extern unsigned _Udiv(unsigned, unsigned);
 extern unsigned _Umul(unsigned, unsigned);
 extern unsigned _Urem(unsigned, unsigned);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Networking helper routines. */
 EXPORT_SYMBOL(__csum_partial_copy_sparc_generic);
@@ -86,9 +98,12 @@ EXPORT_SYMBOL(__copy_1page);
 EXPORT_SYMBOL(__memmove);
 EXPORT_SYMBOL(bzero_1page);
 
+<<<<<<< HEAD
 /* string functions */
 EXPORT_SYMBOL(__strncmp);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Moving data to/from/in userspace. */
 EXPORT_SYMBOL(__copy_user);
 
@@ -101,17 +116,21 @@ EXPORT_SYMBOL(___rw_write_enter);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Atomic operations. */
 EXPORT_SYMBOL(___atomic24_add);
 EXPORT_SYMBOL(___atomic24_sub);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(__ashrdi3);
 EXPORT_SYMBOL(__ashldi3);
 EXPORT_SYMBOL(__lshrdi3);
 EXPORT_SYMBOL(__muldi3);
 EXPORT_SYMBOL(__divdi3);
+<<<<<<< HEAD
 
 EXPORT_SYMBOL(_Rem);
 EXPORT_SYMBOL(_Urem);
@@ -119,6 +138,8 @@ EXPORT_SYMBOL(_Mul);
 EXPORT_SYMBOL(_Umul);
 EXPORT_SYMBOL(_Div);
 EXPORT_SYMBOL(_Udiv);
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -146,6 +167,10 @@ EXPORT_SYMBOL(atomic64_add);
 EXPORT_SYMBOL(atomic64_add_ret);
 EXPORT_SYMBOL(atomic64_sub);
 EXPORT_SYMBOL(atomic64_sub_ret);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(atomic64_dec_if_positive);
+>>>>>>> refs/remotes/origin/master
 
 /* Atomic bit operations. */
 EXPORT_SYMBOL(test_and_set_bit);
@@ -164,6 +189,13 @@ EXPORT_SYMBOL(copy_user_page);
 void VISenter(void);
 EXPORT_SYMBOL(VISenter);
 
+<<<<<<< HEAD
+=======
+/* CRYPTO code needs this */
+void VISenterhalf(void);
+EXPORT_SYMBOL(VISenterhalf);
+
+>>>>>>> refs/remotes/origin/master
 extern void xor_vis_2(unsigned long, unsigned long *, unsigned long *);
 extern void xor_vis_3(unsigned long, unsigned long *, unsigned long *,
 		unsigned long *);

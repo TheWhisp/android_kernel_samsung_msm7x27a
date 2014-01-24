@@ -30,9 +30,13 @@ static int linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	struct linear_c *lc;
 	unsigned long long tmp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char dummy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char dummy;
+>>>>>>> refs/remotes/origin/master
 
 	if (argc != 2) {
 		ti->error = "Invalid argument count";
@@ -46,10 +50,14 @@ static int linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sscanf(argv[1], "%llu", &tmp) != 1) {
 =======
 	if (sscanf(argv[1], "%llu%c", &tmp, &dummy) != 1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sscanf(argv[1], "%llu%c", &tmp, &dummy) != 1) {
+>>>>>>> refs/remotes/origin/master
 		ti->error = "dm-linear: Invalid device sector";
 		goto bad;
 	}
@@ -60,8 +68,14 @@ static int linear_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 		goto bad;
 	}
 
+<<<<<<< HEAD
 	ti->num_flush_requests = 1;
 	ti->num_discard_requests = 1;
+=======
+	ti->num_flush_bios = 1;
+	ti->num_discard_bios = 1;
+	ti->num_write_same_bios = 1;
+>>>>>>> refs/remotes/origin/master
 	ti->private = lc;
 	return 0;
 
@@ -94,16 +108,25 @@ static void linear_map_bio(struct dm_target *ti, struct bio *bio)
 		bio->bi_sector = linear_map_sector(ti, bio->bi_sector);
 }
 
+<<<<<<< HEAD
 static int linear_map(struct dm_target *ti, struct bio *bio,
 		      union map_info *map_context)
+=======
+static int linear_map(struct dm_target *ti, struct bio *bio)
+>>>>>>> refs/remotes/origin/master
 {
 	linear_map_bio(ti, bio);
 
 	return DM_MAPIO_REMAPPED;
 }
 
+<<<<<<< HEAD
 static int linear_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned int maxlen)
+=======
+static void linear_status(struct dm_target *ti, status_type_t type,
+			  unsigned status_flags, char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct linear_c *lc = (struct linear_c *) ti->private;
 
@@ -117,7 +140,10 @@ static int linear_status(struct dm_target *ti, status_type_t type,
 				(unsigned long long)lc->start);
 		break;
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int linear_ioctl(struct dm_target *ti, unsigned int cmd,
@@ -162,7 +188,11 @@ static int linear_iterate_devices(struct dm_target *ti,
 
 static struct target_type linear_target = {
 	.name   = "linear",
+<<<<<<< HEAD
 	.version = {1, 1, 0},
+=======
+	.version = {1, 2, 1},
+>>>>>>> refs/remotes/origin/master
 	.module = THIS_MODULE,
 	.ctr    = linear_ctr,
 	.dtr    = linear_dtr,

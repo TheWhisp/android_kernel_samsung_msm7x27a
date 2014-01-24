@@ -77,6 +77,12 @@ enum {
 	ATA_ID_EIDE_PIO_IORDY	= 68,
 	ATA_ID_ADDITIONAL_SUPP	= 69,
 	ATA_ID_QUEUE_DEPTH	= 75,
+<<<<<<< HEAD
+=======
+	ATA_ID_SATA_CAPABILITY	= 76,
+	ATA_ID_SATA_CAPABILITY_2	= 77,
+	ATA_ID_FEATURE_SUPP	= 78,
+>>>>>>> refs/remotes/origin/master
 	ATA_ID_MAJOR_VER	= 80,
 	ATA_ID_COMMAND_SET_1	= 82,
 	ATA_ID_COMMAND_SET_2	= 83,
@@ -216,6 +222,10 @@ enum {
 	ATA_CMD_IDLE		= 0xE3, /* place in idle power mode */
 	ATA_CMD_EDD		= 0x90,	/* execute device diagnostic */
 	ATA_CMD_DOWNLOAD_MICRO  = 0x92,
+<<<<<<< HEAD
+=======
+	ATA_CMD_DOWNLOAD_MICRO_DMA = 0x93,
+>>>>>>> refs/remotes/origin/master
 	ATA_CMD_NOP		= 0x00,
 	ATA_CMD_FLUSH		= 0xE7,
 	ATA_CMD_FLUSH_EXT	= 0xEA,
@@ -236,6 +246,11 @@ enum {
 	ATA_CMD_WRITE_QUEUED_FUA_EXT = 0x3E,
 	ATA_CMD_FPDMA_READ	= 0x60,
 	ATA_CMD_FPDMA_WRITE	= 0x61,
+<<<<<<< HEAD
+=======
+	ATA_CMD_FPDMA_SEND	= 0x64,
+	ATA_CMD_FPDMA_RECV	= 0x65,
+>>>>>>> refs/remotes/origin/master
 	ATA_CMD_PIO_READ	= 0x20,
 	ATA_CMD_PIO_READ_EXT	= 0x24,
 	ATA_CMD_PIO_WRITE	= 0x30,
@@ -263,12 +278,22 @@ enum {
 	ATA_CMD_WRITE_LOG_EXT	= 0x3F,
 	ATA_CMD_READ_LOG_DMA_EXT = 0x47,
 	ATA_CMD_WRITE_LOG_DMA_EXT = 0x57,
+<<<<<<< HEAD
+=======
+	ATA_CMD_TRUSTED_NONDATA	= 0x5B,
+>>>>>>> refs/remotes/origin/master
 	ATA_CMD_TRUSTED_RCV	= 0x5C,
 	ATA_CMD_TRUSTED_RCV_DMA = 0x5D,
 	ATA_CMD_TRUSTED_SND	= 0x5E,
 	ATA_CMD_TRUSTED_SND_DMA = 0x5F,
 	ATA_CMD_PMP_READ	= 0xE4,
+<<<<<<< HEAD
 	ATA_CMD_PMP_WRITE	= 0xE8,
+=======
+	ATA_CMD_PMP_READ_DMA	= 0xE9,
+	ATA_CMD_PMP_WRITE	= 0xE8,
+	ATA_CMD_PMP_WRITE_DMA	= 0xEB,
+>>>>>>> refs/remotes/origin/master
 	ATA_CMD_CONF_OVERLAY	= 0xB1,
 	ATA_CMD_SEC_SET_PASS	= 0xF1,
 	ATA_CMD_SEC_UNLOCK	= 0xF2,
@@ -287,11 +312,45 @@ enum {
 	ATA_CMD_CFA_TRANS_SECT	= 0x87,
 	ATA_CMD_CFA_ERASE	= 0xC0,
 	ATA_CMD_CFA_WRITE_MULT_NE = 0xCD,
+<<<<<<< HEAD
 	/* marked obsolete in the ATA/ATAPI-7 spec */
 	ATA_CMD_RESTORE		= 0x10,
 
 	/* READ_LOG_EXT pages */
 	ATA_LOG_SATA_NCQ	= 0x10,
+=======
+	ATA_CMD_REQ_SENSE_DATA  = 0x0B,
+	ATA_CMD_SANITIZE_DEVICE = 0xB4,
+
+	/* marked obsolete in the ATA/ATAPI-7 spec */
+	ATA_CMD_RESTORE		= 0x10,
+
+	/* Subcmds for ATA_CMD_FPDMA_SEND */
+	ATA_SUBCMD_FPDMA_SEND_DSM            = 0x00,
+	ATA_SUBCMD_FPDMA_SEND_WR_LOG_DMA_EXT = 0x02,
+
+	/* READ_LOG_EXT pages */
+	ATA_LOG_SATA_NCQ	= 0x10,
+	ATA_LOG_NCQ_SEND_RECV	  = 0x13,
+	ATA_LOG_SATA_ID_DEV_DATA  = 0x30,
+	ATA_LOG_SATA_SETTINGS	  = 0x08,
+	ATA_LOG_DEVSLP_OFFSET	  = 0x30,
+	ATA_LOG_DEVSLP_SIZE	  = 0x08,
+	ATA_LOG_DEVSLP_MDAT	  = 0x00,
+	ATA_LOG_DEVSLP_MDAT_MASK  = 0x1F,
+	ATA_LOG_DEVSLP_DETO	  = 0x01,
+	ATA_LOG_DEVSLP_VALID	  = 0x07,
+	ATA_LOG_DEVSLP_VALID_MASK = 0x80,
+
+	/* NCQ send and receive log */
+	ATA_LOG_NCQ_SEND_RECV_SUBCMDS_OFFSET	= 0x00,
+	ATA_LOG_NCQ_SEND_RECV_SUBCMDS_DSM	= (1 << 0),
+	ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET	= 0x04,
+	ATA_LOG_NCQ_SEND_RECV_DSM_TRIM		= (1 << 0),
+	ATA_LOG_NCQ_SEND_RECV_RD_LOG_OFFSET	= 0x08,
+	ATA_LOG_NCQ_SEND_RECV_WR_LOG_OFFSET	= 0x0C,
+	ATA_LOG_NCQ_SEND_RECV_SIZE		= 0x10,
+>>>>>>> refs/remotes/origin/master
 
 	/* READ/WRITE LONG (obsolete) */
 	ATA_CMD_READ_LONG	= 0x22,
@@ -345,6 +404,10 @@ enum {
 	SATA_FPDMA_IN_ORDER	= 0x04,	/* FPDMA in-order data delivery */
 	SATA_AN			= 0x05,	/* Asynchronous Notification */
 	SATA_SSP		= 0x06,	/* Software Settings Preservation */
+<<<<<<< HEAD
+=======
+	SATA_DEVSLP		= 0x09,	/* Device Sleep */
+>>>>>>> refs/remotes/origin/master
 
 	/* feature values for SET_MAX */
 	ATA_SET_MAX_ADDR	= 0x00,
@@ -433,6 +496,7 @@ enum {
 	SERR_TRANS_ST_ERROR	= (1 << 24), /* Transport state trans. error */
 	SERR_UNRECOG_FIS	= (1 << 25), /* Unrecognized FIS */
 	SERR_DEV_XCHG		= (1 << 26), /* device exchanged */
+<<<<<<< HEAD
 
 	/* struct ata_taskfile flags */
 	ATA_TFLAG_LBA48		= (1 << 0), /* enable 48-bit LBA and "HOB" */
@@ -449,6 +513,8 @@ enum {
 	ATA_PROT_FLAG_DATA	= ATA_PROT_FLAG_PIO | ATA_PROT_FLAG_DMA,
 	ATA_PROT_FLAG_NCQ	= (1 << 2), /* is NCQ */
 	ATA_PROT_FLAG_ATAPI	= (1 << 3), /* is ATAPI */
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum ata_tf_protocols {
@@ -475,6 +541,7 @@ struct ata_bmdma_prd {
 	__le32			flags_len;
 };
 
+<<<<<<< HEAD
 struct ata_taskfile {
 	unsigned long		flags;		/* ATA_TFLAG_xxx */
 	u8			protocol;	/* ATA_PROT_xxx */
@@ -552,12 +619,15 @@ static inline int ata_is_data(u8 prot)
 	return ata_prot_flags(prot) & ATA_PROT_FLAG_DATA;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * id tests
  */
 #define ata_id_is_ata(id)	(((id)[ATA_ID_CONFIG] & (1 << 15)) == 0)
 #define ata_id_has_lba(id)	((id)[ATA_ID_CAPABILITY] & (1 << 9))
 #define ata_id_has_dma(id)	((id)[ATA_ID_CAPABILITY] & (1 << 8))
+<<<<<<< HEAD
 #define ata_id_has_ncq(id)	((id)[76] & (1 << 8))
 #define ata_id_queue_depth(id)	(((id)[ATA_ID_QUEUE_DEPTH] & 0x1f) + 1)
 #define ata_id_removeable(id)	((id)[ATA_ID_CONFIG] & (1 << 7))
@@ -567,6 +637,19 @@ static inline int ata_is_data(u8 prot)
 #define ata_id_has_fpdma_aa(id)	\
 	( (((id)[76] != 0x0000) && ((id)[76] != 0xffff)) && \
 	  ((id)[78] & (1 << 2)) )
+=======
+#define ata_id_has_ncq(id)	((id)[ATA_ID_SATA_CAPABILITY] & (1 << 8))
+#define ata_id_queue_depth(id)	(((id)[ATA_ID_QUEUE_DEPTH] & 0x1f) + 1)
+#define ata_id_removeable(id)	((id)[ATA_ID_CONFIG] & (1 << 7))
+#define ata_id_has_atapi_AN(id)	\
+	((((id)[ATA_ID_SATA_CAPABILITY] != 0x0000) && \
+	  ((id)[ATA_ID_SATA_CAPABILITY] != 0xffff)) && \
+	 ((id)[ATA_ID_FEATURE_SUPP] & (1 << 5)))
+#define ata_id_has_fpdma_aa(id)	\
+	((((id)[ATA_ID_SATA_CAPABILITY] != 0x0000) && \
+	  ((id)[ATA_ID_SATA_CAPABILITY] != 0xffff)) && \
+	 ((id)[ATA_ID_FEATURE_SUPP] & (1 << 2)))
+>>>>>>> refs/remotes/origin/master
 #define ata_id_iordy_disable(id) ((id)[ATA_ID_CAPABILITY] & (1 << 10))
 #define ata_id_has_iordy(id) ((id)[ATA_ID_CAPABILITY] & (1 << 11))
 #define ata_id_u32(id,n)	\
@@ -578,10 +661,19 @@ static inline int ata_is_data(u8 prot)
 	  ((u64) (id)[(n) + 0]) )
 
 #define ata_id_cdb_intr(id)	(((id)[ATA_ID_CONFIG] & 0x60) == 0x20)
+<<<<<<< HEAD
 
 static inline bool ata_id_has_hipm(const u16 *id)
 {
 	u16 val = id[76];
+=======
+#define ata_id_has_da(id)	((id)[ATA_ID_SATA_CAPABILITY_2] & (1 << 4))
+#define ata_id_has_devslp(id)	((id)[ATA_ID_FEATURE_SUPP] & (1 << 8))
+
+static inline bool ata_id_has_hipm(const u16 *id)
+{
+	u16 val = id[ATA_ID_SATA_CAPABILITY];
+>>>>>>> refs/remotes/origin/master
 
 	if (val == 0 || val == 0xffff)
 		return false;
@@ -591,7 +683,11 @@ static inline bool ata_id_has_hipm(const u16 *id)
 
 static inline bool ata_id_has_dipm(const u16 *id)
 {
+<<<<<<< HEAD
 	u16 val = id[78];
+=======
+	u16 val = id[ATA_ID_FEATURE_SUPP];
+>>>>>>> refs/remotes/origin/master
 
 	if (val == 0 || val == 0xffff)
 		return false;
@@ -848,6 +944,14 @@ static inline int ata_id_rotation_rate(const u16 *id)
 	return val;
 }
 
+<<<<<<< HEAD
+=======
+static inline bool ata_id_has_ncq_send_and_recv(const u16 *id)
+{
+	return id[ATA_ID_SATA_CAPABILITY_2] & BIT(6);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline bool ata_id_has_trim(const u16 *id)
 {
 	if (ata_id_major_version(id) >= 7 &&
@@ -1043,6 +1147,7 @@ static inline unsigned ata_set_lba_range_entries(void *_buffer,
 	return used_bytes;
 }
 
+<<<<<<< HEAD
 static inline int is_multi_taskfile(struct ata_taskfile *tf)
 {
 	return (tf->command == ATA_CMD_READ_MULTI) ||
@@ -1052,6 +1157,8 @@ static inline int is_multi_taskfile(struct ata_taskfile *tf)
 	       (tf->command == ATA_CMD_WRITE_MULTI_FUA_EXT);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool ata_ok(u8 status)
 {
 	return ((status & (ATA_BUSY | ATA_DRDY | ATA_DF | ATA_DRQ | ATA_ERR))

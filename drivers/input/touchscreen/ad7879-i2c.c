@@ -17,6 +17,7 @@
 #define AD7879_DEVID		0x79	/* AD7879-1/AD7889-1 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int ad7879_i2c_suspend(struct device *dev)
 {
@@ -43,6 +44,8 @@ static SIMPLE_DEV_PM_OPS(ad7879_i2c_pm, ad7879_i2c_suspend, ad7879_i2c_resume);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* All registers are word-sized.
  * AD7879 uses a high-byte first convention.
  */
@@ -51,10 +54,14 @@ static int ad7879_i2c_read(struct device *dev, u8 reg)
 	struct i2c_client *client = to_i2c_client(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return swab16(i2c_smbus_read_word_data(client, reg));
 =======
 	return i2c_smbus_read_word_swapped(client, reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return i2c_smbus_read_word_swapped(client, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ad7879_i2c_multi_read(struct device *dev,
@@ -76,10 +83,14 @@ static int ad7879_i2c_write(struct device *dev, u8 reg, u16 val)
 	struct i2c_client *client = to_i2c_client(dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return i2c_smbus_write_word_data(client, reg, swab16(val));
 =======
 	return i2c_smbus_write_word_swapped(client, reg, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return i2c_smbus_write_word_swapped(client, reg, val);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ad7879_bus_ops ad7879_i2c_bus_ops = {
@@ -89,7 +100,11 @@ static const struct ad7879_bus_ops ad7879_i2c_bus_ops = {
 	.write		= ad7879_i2c_write,
 };
 
+<<<<<<< HEAD
 static int __devinit ad7879_i2c_probe(struct i2c_client *client,
+=======
+static int ad7879_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				      const struct i2c_device_id *id)
 {
 	struct ad7879 *ts;
@@ -110,7 +125,11 @@ static int __devinit ad7879_i2c_probe(struct i2c_client *client,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit ad7879_i2c_remove(struct i2c_client *client)
+=======
+static int ad7879_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ad7879 *ts = i2c_get_clientdata(client);
 
@@ -130,6 +149,7 @@ static struct i2c_driver ad7879_i2c_driver = {
 	.driver = {
 		.name	= "ad7879",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm	= &ad7879_i2c_pm,
@@ -158,11 +178,24 @@ module_exit(ad7879_i2c_exit);
 =======
 module_i2c_driver(ad7879_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &ad7879_pm_ops,
+	},
+	.probe		= ad7879_i2c_probe,
+	.remove		= ad7879_i2c_remove,
+	.id_table	= ad7879_id,
+};
+
+module_i2c_driver(ad7879_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("AD7879(-1) touchscreen I2C bus driver");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("i2c:ad7879");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

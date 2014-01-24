@@ -1,8 +1,11 @@
 #include <dirent.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <stdlib.h>
 #include <stdio.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -12,8 +15,13 @@
 #include <unistd.h>
 #include "strlist.h"
 #include <string.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "thread_map.h"
+=======
+#include "thread_map.h"
+#include "util.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Skip "." and ".." directories */
 static int filter(const struct dirent *dir)
@@ -36,10 +44,14 @@ struct thread_map *thread_map__new_by_pid(pid_t pid)
 	items = scandir(name, &namelist, filter, NULL);
 	if (items <= 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
                 return NULL;
 =======
 		return NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	threads = malloc(sizeof(*threads) + sizeof(pid_t) * items);
 	if (threads != NULL) {
@@ -49,7 +61,11 @@ struct thread_map *thread_map__new_by_pid(pid_t pid)
 	}
 
 	for (i=0; i<items; i++)
+<<<<<<< HEAD
 		free(namelist[i]);
+=======
+		zfree(&namelist[i]);
+>>>>>>> refs/remotes/origin/master
 	free(namelist);
 
 	return threads;
@@ -68,6 +84,7 @@ struct thread_map *thread_map__new_by_tid(pid_t tid)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct thread_map *thread_map__new(pid_t pid, pid_t tid)
 {
 	if (pid != -1)
@@ -76,6 +93,8 @@ struct thread_map *thread_map__new(pid_t pid, pid_t tid)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct thread_map *thread_map__new_by_uid(uid_t uid)
 {
 	DIR *proc;
@@ -135,7 +154,11 @@ struct thread_map *thread_map__new_by_uid(uid_t uid)
 			threads->map[threads->nr + i] = atoi(namelist[i]->d_name);
 
 		for (i = 0; i < items; i++)
+<<<<<<< HEAD
 			free(namelist[i]);
+=======
+			zfree(&namelist[i]);
+>>>>>>> refs/remotes/origin/master
 		free(namelist);
 
 		threads->nr += items;
@@ -152,12 +175,20 @@ out_free_threads:
 
 out_free_namelist:
 	for (i = 0; i < items; i++)
+<<<<<<< HEAD
 		free(namelist[i]);
 	free(namelist);
 
 out_free_closedir:
 	free(threads);
 	threads = NULL;
+=======
+		zfree(&namelist[i]);
+	free(namelist);
+
+out_free_closedir:
+	zfree(&threads);
+>>>>>>> refs/remotes/origin/master
 	goto out_closedir;
 }
 
@@ -206,6 +237,7 @@ static struct thread_map *thread_map__new_by_pid_str(const char *pid_str)
 		nt = realloc(threads, (sizeof(*threads) +
 				       sizeof(pid_t) * total_tasks));
 		if (nt == NULL)
+<<<<<<< HEAD
 			goto out_free_threads;
 
 		threads = nt;
@@ -222,15 +254,37 @@ static struct thread_map *thread_map__new_by_pid_str(const char *pid_str)
 
 		if (!threads)
 			break;
+=======
+			goto out_free_namelist;
+
+		threads = nt;
+
+		for (i = 0; i < items; i++) {
+			threads->map[j++] = atoi(namelist[i]->d_name);
+			zfree(&namelist[i]);
+		}
+		threads->nr = total_tasks;
+		free(namelist);
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
 	strlist__delete(slist);
 	return threads;
 
+<<<<<<< HEAD
 out_free_threads:
 	free(threads);
 	threads = NULL;
+=======
+out_free_namelist:
+	for (i = 0; i < items; i++)
+		zfree(&namelist[i]);
+	free(namelist);
+
+out_free_threads:
+	zfree(&threads);
+>>>>>>> refs/remotes/origin/master
 	goto out;
 }
 
@@ -281,8 +335,12 @@ out:
 	return threads;
 
 out_free_threads:
+<<<<<<< HEAD
 	free(threads);
 	threads = NULL;
+=======
+	zfree(&threads);
+>>>>>>> refs/remotes/origin/master
 	goto out;
 }
 
@@ -298,13 +356,19 @@ struct thread_map *thread_map__new_str(const char *pid, const char *tid,
 	return thread_map__new_by_tid_str(tid);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void thread_map__delete(struct thread_map *threads)
 {
 	free(threads);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 size_t thread_map__fprintf(struct thread_map *threads, FILE *fp)
 {
@@ -316,4 +380,7 @@ size_t thread_map__fprintf(struct thread_map *threads, FILE *fp)
 
 	return printed + fprintf(fp, "\n");
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

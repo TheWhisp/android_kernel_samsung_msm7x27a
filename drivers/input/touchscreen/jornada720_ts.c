@@ -19,6 +19,7 @@
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/jornada720.h>
@@ -26,6 +27,13 @@
 =======
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+
+#include <mach/hardware.h>
+#include <mach/jornada720.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kristoffer Ericson <kristoffer.ericson@gmail.com>");
 MODULE_DESCRIPTION("HP Jornada 710/720/728 touchscreen driver");
@@ -101,7 +109,11 @@ static irqreturn_t jornada720_ts_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit jornada720_ts_probe(struct platform_device *pdev)
+=======
+static int jornada720_ts_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jornada_ts *jornada_ts;
 	struct input_dev *input_dev;
@@ -132,10 +144,14 @@ static int __devinit jornada720_ts_probe(struct platform_device *pdev)
 	error = request_irq(IRQ_GPIO9,
 			jornada720_ts_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_DISABLED | IRQF_TRIGGER_RISING,
 =======
 			IRQF_TRIGGER_RISING,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_TRIGGER_RISING,
+>>>>>>> refs/remotes/origin/master
 			"HP7XX Touchscreen driver", pdev);
 	if (error) {
 		printk(KERN_INFO "HP7XX TS : Unable to acquire irq!\n");
@@ -151,18 +167,28 @@ static int __devinit jornada720_ts_probe(struct platform_device *pdev)
  fail2:
 	free_irq(IRQ_GPIO9, pdev);
  fail1:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	input_free_device(input_dev);
 	kfree(jornada_ts);
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit jornada720_ts_remove(struct platform_device *pdev)
+=======
+static int jornada720_ts_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jornada_ts *jornada_ts = platform_get_drvdata(pdev);
 
 	free_irq(IRQ_GPIO9, pdev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	input_unregister_device(jornada_ts->dev);
 	kfree(jornada_ts);
 
@@ -174,12 +200,17 @@ MODULE_ALIAS("platform:jornada_ts");
 
 static struct platform_driver jornada720_ts_driver = {
 	.probe		= jornada720_ts_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(jornada720_ts_remove),
+=======
+	.remove		= jornada720_ts_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "jornada_ts",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init jornada720_ts_init(void)
@@ -197,3 +228,6 @@ module_exit(jornada720_ts_exit);
 =======
 module_platform_driver(jornada720_ts_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(jornada720_ts_driver);
+>>>>>>> refs/remotes/origin/master

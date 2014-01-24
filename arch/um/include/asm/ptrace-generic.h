@@ -10,10 +10,14 @@
 
 #include <asm/ptrace-abi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/user.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "sysdep/ptrace.h"
+=======
+#include <sysdep/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 struct pt_regs {
 	struct uml_pt_regs regs;
@@ -27,6 +31,7 @@ struct pt_regs {
 #define PT_REGS_SP(r) UPT_SP(&(r)->regs)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PT_REG(r, reg) UPT_REG(&(r)->regs, reg)
 #define PT_REGS_SET(r, reg, val) UPT_SET(&(r)->regs, reg, val)
 
@@ -34,15 +39,20 @@ struct pt_regs {
 	UPT_SET_SYSCALL_RETURN(&(r)->regs, res)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define PT_REGS_RESTART_SYSCALL(r) UPT_RESTART_SYSCALL(&(r)->regs)
 
 #define PT_REGS_SYSCALL_NR(r) UPT_SYSCALL_NR(&(r)->regs)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PT_REGS_SC(r) UPT_SC(&(r)->regs)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define instruction_pointer(regs) PT_REGS_IP(regs)
 
 struct task_struct;
@@ -51,6 +61,7 @@ extern long subarch_ptrace(struct task_struct *child, long request,
 	unsigned long addr, unsigned long data);
 extern unsigned long getreg(struct task_struct *child, int regno);
 extern int putreg(struct task_struct *child, int regno, unsigned long value);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int get_fpregs(struct user_i387_struct __user *buf,
 		      struct task_struct *child);
@@ -63,6 +74,13 @@ extern void show_regs(struct pt_regs *regs);
 
 extern int arch_copy_tls(struct task_struct *new);
 extern void clear_flushed_tls(struct task_struct *task);
+=======
+
+extern int arch_copy_tls(struct task_struct *new);
+extern void clear_flushed_tls(struct task_struct *task);
+extern void syscall_trace_enter(struct pt_regs *regs);
+extern void syscall_trace_leave(struct pt_regs *regs);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

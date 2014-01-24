@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) Freescale Semicondutor, Inc. 2006. All rights reserved.
+=======
+ * Copyright 2006 Freescale Semiconductor, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * Description:
  * MPC832xE MDS board specific routines.
@@ -27,11 +31,15 @@
 #include <linux/of_device.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/time.h>
 #include <asm/io.h>
 #include <asm/machdep.h>
@@ -73,6 +81,7 @@ static void __init mpc832x_sys_setup_arch(void)
 
 		of_address_to_resource(np, 0, &res);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bcsr_regs = ioremap(res.start, res.end - res.start +1);
 		of_node_put(np);
 	}
@@ -82,12 +91,17 @@ static void __init mpc832x_sys_setup_arch(void)
 		mpc83xx_add_bridge(np);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		bcsr_regs = ioremap(res.start, resource_size(&res));
 		of_node_put(np);
 	}
 
 	mpc83xx_setup_pci();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_QUICC_ENGINE
 	qe_reset();
@@ -113,6 +127,7 @@ static void __init mpc832x_sys_setup_arch(void)
 #endif				/* CONFIG_QUICC_ENGINE */
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct of_device_id mpc832x_ids[] = {
 	{ .type = "soc", },
@@ -162,6 +177,9 @@ static void __init mpc832x_sys_init_IRQ(void)
 =======
 machine_device_initcall(mpc832x_mds, mpc83xx_declare_of_platform_devices);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+machine_device_initcall(mpc832x_mds, mpc83xx_declare_of_platform_devices);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Called very early, MMU is off, device-tree isn't unflattened
@@ -178,10 +196,14 @@ define_machine(mpc832x_mds) {
 	.probe 		= mpc832x_sys_probe,
 	.setup_arch 	= mpc832x_sys_setup_arch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_IRQ 	= mpc832x_sys_init_IRQ,
 =======
 	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_IRQ	= mpc83xx_ipic_and_qe_init_IRQ,
+>>>>>>> refs/remotes/origin/master
 	.get_irq 	= ipic_get_irq,
 	.restart 	= mpc83xx_restart,
 	.time_init 	= mpc83xx_time_init,

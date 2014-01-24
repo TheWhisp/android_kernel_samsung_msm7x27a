@@ -9,11 +9,34 @@
 #include <linux/module.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/i2c.h>
 #include <linux/mfd/core.h>
 #include <linux/mfd/tc3589x.h>
 
+=======
+#include <linux/irqdomain.h>
+#include <linux/slab.h>
+#include <linux/i2c.h>
+#include <linux/of.h>
+#include <linux/mfd/core.h>
+#include <linux/mfd/tc3589x.h>
+
+/**
+ * enum tc3589x_version - indicates the TC3589x version
+ */
+enum tc3589x_version {
+	TC3589X_TC35890,
+	TC3589X_TC35892,
+	TC3589X_TC35893,
+	TC3589X_TC35894,
+	TC3589X_TC35895,
+	TC3589X_TC35896,
+	TC3589X_UNKNOWN,
+};
+
+>>>>>>> refs/remotes/origin/master
 #define TC3589x_CLKMODE_MODCTL_SLEEP		0x0
 #define TC3589x_CLKMODE_MODCTL_OPERATION	(1 << 0)
 
@@ -140,19 +163,35 @@ static struct resource keypad_resources[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct mfd_cell tc3589x_dev_gpio[] = {
+=======
+static const struct mfd_cell tc3589x_dev_gpio[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name		= "tc3589x-gpio",
 		.num_resources	= ARRAY_SIZE(gpio_resources),
 		.resources	= &gpio_resources[0],
+<<<<<<< HEAD
 	},
 };
 
 static struct mfd_cell tc3589x_dev_keypad[] = {
+=======
+		.of_compatible	= "tc3589x-gpio",
+	},
+};
+
+static const struct mfd_cell tc3589x_dev_keypad[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name           = "tc3589x-keypad",
 		.num_resources  = ARRAY_SIZE(keypad_resources),
 		.resources      = &keypad_resources[0],
+<<<<<<< HEAD
+=======
+		.of_compatible	= "tc3589x-keypad",
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -168,8 +207,14 @@ again:
 
 	while (status) {
 		int bit = __ffs(status);
+<<<<<<< HEAD
 
 		handle_nested_irq(tc3589x->irq_base + bit);
+=======
+		int virq = irq_create_mapping(tc3589x->domain, bit);
+
+		handle_nested_irq(virq);
+>>>>>>> refs/remotes/origin/master
 		status &= ~(1 << bit);
 	}
 
@@ -186,6 +231,7 @@ again:
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int tc3589x_irq_init(struct tc3589x *tc3589x)
 {
 	int base = tc3589x->irq_base;
@@ -202,10 +248,27 @@ static int tc3589x_irq_init(struct tc3589x *tc3589x)
 		irq_set_noprobe(irq);
 #endif
 	}
+=======
+static int tc3589x_irq_map(struct irq_domain *d, unsigned int virq,
+				irq_hw_number_t hwirq)
+{
+	struct tc3589x *tc3589x = d->host_data;
+
+	irq_set_chip_data(virq, tc3589x);
+	irq_set_chip_and_handler(virq, &dummy_irq_chip,
+				handle_edge_irq);
+	irq_set_nested_thread(virq, 1);
+#ifdef CONFIG_ARM
+	set_irq_flags(virq, IRQF_VALID);
+#else
+	irq_set_noprobe(virq);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void tc3589x_irq_remove(struct tc3589x *tc3589x)
 {
 	int base = tc3589x->irq_base;
@@ -218,6 +281,37 @@ static void tc3589x_irq_remove(struct tc3589x *tc3589x)
 		irq_set_chip_and_handler(irq, NULL, NULL);
 		irq_set_chip_data(irq, NULL);
 	}
+=======
+static void tc3589x_irq_unmap(struct irq_domain *d, unsigned int virq)
+{
+#ifdef CONFIG_ARM
+	set_irq_flags(virq, 0);
+#endif
+	irq_set_chip_and_handler(virq, NULL, NULL);
+	irq_set_chip_data(virq, NULL);
+}
+
+static struct irq_domain_ops tc3589x_irq_ops = {
+	.map    = tc3589x_irq_map,
+	.unmap  = tc3589x_irq_unmap,
+	.xlate  = irq_domain_xlate_twocell,
+};
+
+static int tc3589x_irq_init(struct tc3589x *tc3589x, struct device_node *np)
+{
+	int base = tc3589x->irq_base;
+
+	tc3589x->domain = irq_domain_add_simple(
+		np, TC3589x_NR_INTERNAL_IRQS, base,
+		&tc3589x_irq_ops, tc3589x);
+
+	if (!tc3589x->domain) {
+		dev_err(tc3589x->dev, "Failed to create irqdomain\n");
+		return -ENOSYS;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int tc3589x_chip_init(struct tc3589x *tc3589x)
@@ -255,15 +349,24 @@ static int tc3589x_chip_init(struct tc3589x *tc3589x)
 	return tc3589x_reg_write(tc3589x, TC3589x_RSTINTCLR, 0x1);
 }
 
+<<<<<<< HEAD
 static int __devinit tc3589x_device_init(struct tc3589x *tc3589x)
+=======
+static int tc3589x_device_init(struct tc3589x *tc3589x)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	unsigned int blocks = tc3589x->pdata->block;
 
 	if (blocks & TC3589x_BLOCK_GPIO) {
 		ret = mfd_add_devices(tc3589x->dev, -1, tc3589x_dev_gpio,
+<<<<<<< HEAD
 				ARRAY_SIZE(tc3589x_dev_gpio), NULL,
 				tc3589x->irq_base);
+=======
+				      ARRAY_SIZE(tc3589x_dev_gpio), NULL,
+				      tc3589x->irq_base, tc3589x->domain);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			dev_err(tc3589x->dev, "failed to add gpio child\n");
 			return ret;
@@ -273,8 +376,13 @@ static int __devinit tc3589x_device_init(struct tc3589x *tc3589x)
 
 	if (blocks & TC3589x_BLOCK_KEYPAD) {
 		ret = mfd_add_devices(tc3589x->dev, -1, tc3589x_dev_keypad,
+<<<<<<< HEAD
 				ARRAY_SIZE(tc3589x_dev_keypad), NULL,
 				tc3589x->irq_base);
+=======
+				      ARRAY_SIZE(tc3589x_dev_keypad), NULL,
+				      tc3589x->irq_base, tc3589x->domain);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			dev_err(tc3589x->dev, "failed to keypad child\n");
 			return ret;
@@ -285,6 +393,7 @@ static int __devinit tc3589x_device_init(struct tc3589x *tc3589x)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit tc3589x_probe(struct i2c_client *i2c,
 				   const struct i2c_device_id *id)
 {
@@ -292,11 +401,59 @@ static int __devinit tc3589x_probe(struct i2c_client *i2c,
 	struct tc3589x *tc3589x;
 	int ret;
 
+=======
+static int tc3589x_of_probe(struct device_node *np,
+			struct tc3589x_platform_data *pdata)
+{
+	struct device_node *child;
+
+	for_each_child_of_node(np, child) {
+		if (!strcmp(child->name, "tc3589x_gpio")) {
+			pdata->block |= TC3589x_BLOCK_GPIO;
+		}
+		if (!strcmp(child->name, "tc3589x_keypad")) {
+			pdata->block |= TC3589x_BLOCK_KEYPAD;
+		}
+	}
+
+	return 0;
+}
+
+static int tc3589x_probe(struct i2c_client *i2c,
+				   const struct i2c_device_id *id)
+{
+	struct tc3589x_platform_data *pdata = dev_get_platdata(&i2c->dev);
+	struct device_node *np = i2c->dev.of_node;
+	struct tc3589x *tc3589x;
+	int ret;
+
+	if (!pdata) {
+		if (np) {
+			pdata = devm_kzalloc(&i2c->dev, sizeof(*pdata), GFP_KERNEL);
+			if (!pdata)
+				return -ENOMEM;
+
+			ret = tc3589x_of_probe(np, pdata);
+			if (ret)
+				return ret;
+		}
+		else {
+			dev_err(&i2c->dev, "No platform data or DT found\n");
+			return -EINVAL;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA
 				     | I2C_FUNC_SMBUS_I2C_BLOCK))
 		return -EIO;
 
+<<<<<<< HEAD
 	tc3589x = kzalloc(sizeof(struct tc3589x), GFP_KERNEL);
+=======
+	tc3589x = devm_kzalloc(&i2c->dev, sizeof(struct tc3589x),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!tc3589x)
 		return -ENOMEM;
 
@@ -306,29 +463,60 @@ static int __devinit tc3589x_probe(struct i2c_client *i2c,
 	tc3589x->i2c = i2c;
 	tc3589x->pdata = pdata;
 	tc3589x->irq_base = pdata->irq_base;
+<<<<<<< HEAD
 	tc3589x->num_gpio = id->driver_data;
+=======
+
+	switch (id->driver_data) {
+	case TC3589X_TC35893:
+	case TC3589X_TC35895:
+	case TC3589X_TC35896:
+		tc3589x->num_gpio = 20;
+		break;
+	case TC3589X_TC35890:
+	case TC3589X_TC35892:
+	case TC3589X_TC35894:
+	case TC3589X_UNKNOWN:
+	default:
+		tc3589x->num_gpio = 24;
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(i2c, tc3589x);
 
 	ret = tc3589x_chip_init(tc3589x);
 	if (ret)
+<<<<<<< HEAD
 		goto out_free;
 
 	ret = tc3589x_irq_init(tc3589x);
 	if (ret)
 		goto out_free;
+=======
+		return ret;
+
+	ret = tc3589x_irq_init(tc3589x, np);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	ret = request_threaded_irq(tc3589x->i2c->irq, NULL, tc3589x_irq,
 				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
 				   "tc3589x", tc3589x);
 	if (ret) {
 		dev_err(tc3589x->dev, "failed to request IRQ: %d\n", ret);
+<<<<<<< HEAD
 		goto out_removeirq;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = tc3589x_device_init(tc3589x);
 	if (ret) {
 		dev_err(tc3589x->dev, "failed to add child devices\n");
+<<<<<<< HEAD
 		goto out_freeirq;
 	}
 
@@ -344,11 +532,21 @@ out_free:
 }
 
 static int __devexit tc3589x_remove(struct i2c_client *client)
+=======
+		return ret;
+	}
+
+	return 0;
+}
+
+static int tc3589x_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tc3589x *tc3589x = i2c_get_clientdata(client);
 
 	mfd_remove_devices(tc3589x->dev);
 
+<<<<<<< HEAD
 	free_irq(tc3589x->i2c->irq, tc3589x);
 	tc3589x_irq_remove(tc3589x);
 
@@ -361,6 +559,12 @@ static int __devexit tc3589x_remove(struct i2c_client *client)
 =======
 #ifdef CONFIG_PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int tc3589x_suspend(struct device *dev)
 {
 	struct tc3589x *tc3589x = dev_get_drvdata(dev);
@@ -388,6 +592,7 @@ static int tc3589x_resume(struct device *dev)
 
 	return ret;
 }
+<<<<<<< HEAD
 
 static const SIMPLE_DEV_PM_OPS(tc3589x_dev_pm_ops, tc3589x_suspend,
 						tc3589x_resume);
@@ -398,6 +603,20 @@ static const SIMPLE_DEV_PM_OPS(tc3589x_dev_pm_ops, tc3589x_suspend,
 
 static const struct i2c_device_id tc3589x_id[] = {
 	{ "tc3589x", 24 },
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(tc3589x_dev_pm_ops, tc3589x_suspend, tc3589x_resume);
+
+static const struct i2c_device_id tc3589x_id[] = {
+	{ "tc35890", TC3589X_TC35890 },
+	{ "tc35892", TC3589X_TC35892 },
+	{ "tc35893", TC3589X_TC35893 },
+	{ "tc35894", TC3589X_TC35894 },
+	{ "tc35895", TC3589X_TC35895 },
+	{ "tc35896", TC3589X_TC35896 },
+	{ "tc3589x", TC3589X_UNKNOWN },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, tc3589x_id);
@@ -405,11 +624,17 @@ MODULE_DEVICE_TABLE(i2c, tc3589x_id);
 static struct i2c_driver tc3589x_driver = {
 	.driver.name	= "tc3589x",
 	.driver.owner	= THIS_MODULE,
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 	.driver.pm	= &tc3589x_dev_pm_ops,
 #endif
 	.probe		= tc3589x_probe,
 	.remove		= __devexit_p(tc3589x_remove),
+=======
+	.driver.pm	= &tc3589x_dev_pm_ops,
+	.probe		= tc3589x_probe,
+	.remove		= tc3589x_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= tc3589x_id,
 };
 

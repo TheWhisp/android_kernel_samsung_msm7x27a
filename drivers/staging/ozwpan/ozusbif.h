@@ -21,7 +21,11 @@ int oz_usb_stream_delete(void *hpd, u8 ep_num);
 /* Request functions.
  */
 int oz_usb_control_req(void *hpd, u8 req_id, struct usb_ctrlrequest *setup,
+<<<<<<< HEAD
 		u8 *data, int data_len);
+=======
+		const u8 *data, int data_len);
+>>>>>>> refs/remotes/origin/master
 int oz_usb_get_desc_req(void *hpd, u8 req_id, u8 req_type, u8 desc_type,
 	u8 index, u16 windex, int offset, int len);
 int oz_usb_send_isoc(void *hpd, u8 ep_num, struct urb *urb);
@@ -30,6 +34,7 @@ void oz_usb_request_heartbeat(void *hpd);
 /* Confirmation functions.
  */
 void oz_hcd_get_desc_cnf(void *hport, u8 req_id, int status,
+<<<<<<< HEAD
 	u8 *desc, int length, int offset, int total_size);
 void oz_hcd_control_cnf(void *hport, u8 req_id, u8 rcode,
 	u8 *data, int data_len);
@@ -37,6 +42,15 @@ void oz_hcd_control_cnf(void *hport, u8 req_id, u8 rcode,
 /* Indication functions.
  */
 void oz_hcd_data_ind(void *hport, u8 endpoint, u8 *data, int data_len);
+=======
+	const u8 *desc, int length, int offset, int total_size);
+void oz_hcd_control_cnf(void *hport, u8 req_id, u8 rcode,
+	const u8 *data, int data_len);
+
+/* Indication functions.
+ */
+void oz_hcd_data_ind(void *hport, u8 endpoint, const u8 *data, int data_len);
+>>>>>>> refs/remotes/origin/master
 
 int oz_hcd_heartbeat(void *hport);
 

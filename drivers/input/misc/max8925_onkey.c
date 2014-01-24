@@ -1,9 +1,13 @@
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * max8925_onkey.c - MAX8925 ONKEY driver
 =======
  * MAX8925 ONKEY driver
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * MAX8925 ONKEY driver
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) 2009 Marvell International Ltd.
  *      Haojian Zhuang <haojian.zhuang@marvell.com>
@@ -40,10 +44,14 @@ struct max8925_onkey_info {
 	struct i2c_client	*i2c;
 	struct device		*dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int			irq[2];
 =======
 	unsigned int		irq[2];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		irq[2];
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -54,6 +62,7 @@ struct max8925_onkey_info {
 static irqreturn_t max8925_onkey_handler(int irq, void *data)
 {
 	struct max8925_onkey_info *info = data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret, event;
 
@@ -67,6 +76,8 @@ static irqreturn_t max8925_onkey_handler(int irq, void *data)
 
 	dev_dbg(info->dev, "onkey event:%d\n", event);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int state;
 
 	state = max8925_reg_read(info->i2c, MAX8925_ON_OFF_STATUS);
@@ -75,7 +86,10 @@ static irqreturn_t max8925_onkey_handler(int irq, void *data)
 	input_sync(info->idev);
 
 	dev_dbg(info->dev, "onkey state:%d\n", state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable hardreset to halt if system isn't shutdown on time */
 	max8925_set_bits(info->i2c, MAX8925_SYSENSEL,
@@ -84,6 +98,7 @@ static irqreturn_t max8925_onkey_handler(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit max8925_onkey_probe(struct platform_device *pdev)
 {
 	struct max8925_chip *chip = dev_get_drvdata(pdev->dev.parent);
@@ -92,6 +107,13 @@ static int __devinit max8925_onkey_probe(struct platform_device *pdev)
 =======
 	struct input_dev *input;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int max8925_onkey_probe(struct platform_device *pdev)
+{
+	struct max8925_chip *chip = dev_get_drvdata(pdev->dev.parent);
+	struct max8925_onkey_info *info;
+	struct input_dev *input;
+>>>>>>> refs/remotes/origin/master
 	int irq[2], error;
 
 	irq[0] = platform_get_irq(pdev, 0);
@@ -100,9 +122,13 @@ static int __devinit max8925_onkey_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	irq[1] = platform_get_irq(pdev, 1);
 	if (irq[1] < 0) {
 		dev_err(&pdev->dev, "No IRQ resource!\n");
@@ -111,12 +137,15 @@ static int __devinit max8925_onkey_probe(struct platform_device *pdev)
 
 	info = kzalloc(sizeof(struct max8925_onkey_info), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!info)
 		return -ENOMEM;
 
 	info->i2c = chip->i2c;
 	info->dev = &pdev->dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	input = input_allocate_device();
 	if (!info || !input) {
 		error = -ENOMEM;
@@ -135,15 +164,19 @@ static int __devinit max8925_onkey_probe(struct platform_device *pdev)
 	input->dev.parent = &pdev->dev;
 	input_set_capability(input, EV_KEY, KEY_POWER);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	irq[0] += chip->irq_base;
 	irq[1] += chip->irq_base;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	error = request_threaded_irq(irq[0], NULL, max8925_onkey_handler,
 				     IRQF_ONESHOT, "onkey-down", info);
 	if (error < 0) {
 		dev_err(chip->dev, "Failed to request IRQ: #%d: %d\n",
 			irq[0], error);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto out;
 	}
@@ -152,11 +185,17 @@ static int __devinit max8925_onkey_probe(struct platform_device *pdev)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_free_mem;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	error = request_threaded_irq(irq[1], NULL, max8925_onkey_handler,
 				     IRQF_ONESHOT, "onkey-up", info);
 	if (error < 0) {
 		dev_err(chip->dev, "Failed to request IRQ: #%d: %d\n",
 			irq[1], error);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		goto out_irq;
 	}
@@ -197,6 +236,8 @@ out_irq:
 out:
 	kfree(info);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err_free_irq0;
 	}
 
@@ -219,6 +260,7 @@ err_free_mem:
 	input_free_device(input);
 	kfree(info);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return error;
 }
@@ -231,10 +273,19 @@ static int __devexit max8925_onkey_remove(struct platform_device *pdev)
 	free_irq(info->irq[0], info);
 	free_irq(info->irq[1], info);
 =======
+=======
+	return error;
+}
+
+static int max8925_onkey_remove(struct platform_device *pdev)
+{
+	struct max8925_onkey_info *info = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct max8925_chip *chip = dev_get_drvdata(pdev->dev.parent);
 
 	free_irq(info->irq[0] + chip->irq_base, info);
 	free_irq(info->irq[1] + chip->irq_base, info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	input_unregister_device(info->idev);
 	kfree(info);
@@ -246,6 +297,14 @@ static int __devexit max8925_onkey_remove(struct platform_device *pdev)
 
 <<<<<<< HEAD
 =======
+=======
+	input_unregister_device(info->idev);
+	kfree(info);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_SLEEP
 static int max8925_onkey_suspend(struct device *dev)
 {
@@ -278,11 +337,15 @@ static int max8925_onkey_resume(struct device *dev)
 
 static SIMPLE_DEV_PM_OPS(max8925_onkey_pm_ops, max8925_onkey_suspend, max8925_onkey_resume);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver max8925_onkey_driver = {
 	.driver		= {
 		.name	= "max8925-onkey",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.pm	= &max8925_onkey_pm_ops,
@@ -307,6 +370,14 @@ module_exit(max8925_onkey_exit);
 =======
 module_platform_driver(max8925_onkey_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &max8925_onkey_pm_ops,
+	},
+	.probe		= max8925_onkey_probe,
+	.remove		= max8925_onkey_remove,
+};
+module_platform_driver(max8925_onkey_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Maxim MAX8925 ONKEY driver");
 MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");

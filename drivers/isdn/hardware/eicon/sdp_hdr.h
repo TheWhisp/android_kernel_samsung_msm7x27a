@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,12 +46,16 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_SOFT_DSP_TASK_ENTRY_H__
 #define __DIVA_SOFT_DSP_TASK_ENTRY_H__
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  The soft DSP image is described by binary header contained on begin of this
  image:
@@ -68,6 +75,8 @@ OFFSET FROM IMAGE START |  VARIABLE
   ----------------------------------------------------------------------
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   The soft DSP image is described by binary header contained on begin of this
   image:
   OFFSET FROM IMAGE START |  VARIABLE
@@ -85,7 +94,10 @@ OFFSET FROM IMAGE START |  VARIABLE
   DIVA_MIPS_TASK_IMAGE_ID_STRING_OFFS |  image id string char[...];
   ----------------------------------------------------------------------
 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DIVA_MIPS_TASK_IMAGE_LINK_OFFS   0x6C
 #define DIVA_MIPS_TASK_IMAGE_GP_OFFS    0x70
 #define DIVA_MIPS_TASK_IMAGE_ENTRY_OFFS   0x74
@@ -93,6 +105,7 @@ OFFSET FROM IMAGE START |  VARIABLE
 #define DIVA_MIPS_TASK_IMAGE_END_ADDR_OFFS 0x7c
 #define DIVA_MIPS_TASK_IMAGE_ID_STRING_OFFS 0x80
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  This function is called in order to set GP register of this task
  This function should be always called before any function of the
@@ -152,6 +165,8 @@ typedef struct _diva_mips_sw_task {
   void*                       sdp_gp_reg;
   void*                       own_gp_reg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   This function is called in order to set GP register of this task
   This function should be always called before any function of the
   task is called
@@ -209,7 +224,10 @@ typedef struct _diva_mips_sw_task {
 	diva_mips_sdp_task_entry_t  sdp_entry;
 	void *sdp_gp_reg;
 	void *own_gp_reg;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } diva_mips_sw_task_t;
 #if !defined(DIVA_BRI2F_SDP_1_NAME)
 #define DIVA_BRI2F_SDP_1_NAME "sdp0.2q0"

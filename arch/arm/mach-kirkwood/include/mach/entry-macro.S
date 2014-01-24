@@ -11,6 +11,7 @@
 #include <mach/bridge-regs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.macro  disable_fiq
 	.endm
 
@@ -19,6 +20,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.macro  get_irqnr_preamble, base, tmp
 	ldr	\base, =IRQ_VIRT_BASE
 	.endm

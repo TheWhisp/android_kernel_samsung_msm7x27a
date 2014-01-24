@@ -3,10 +3,14 @@
  * Common SPROM support routines
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2005-2008 Michael Buesch <mb@bu3sch.de>
 =======
  * Copyright (C) 2005-2008 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2008 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2005 Martin Langer <martin-langer@gmx.de>
  * Copyright (C) 2005 Stefano Brivio <st3@riseup.net>
  * Copyright (C) 2005 Danny van Dyk <kugelfang@gentoo.org>
@@ -58,7 +62,11 @@ static int hex2sprom(u16 *sprom, const char *dump, size_t len,
 	while (cnt < sprom_size_words) {
 		memcpy(tmp, dump, 4);
 		dump += 4;
+<<<<<<< HEAD
 		err = strict_strtoul(tmp, 16, &parsed);
+=======
+		err = kstrtoul(tmp, 16, &parsed);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 		sprom[cnt++] = swab16((u16)parsed);
@@ -131,13 +139,21 @@ ssize_t ssb_attr_sprom_store(struct ssb_bus *bus,
 		goto out_kfree;
 	err = ssb_devices_freeze(bus, &freeze);
 	if (err) {
+<<<<<<< HEAD
 		ssb_printk(KERN_ERR PFX "SPROM write: Could not freeze all devices\n");
+=======
+		ssb_err("SPROM write: Could not freeze all devices\n");
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 	}
 	res = sprom_write(bus, sprom);
 	err = ssb_devices_thaw(&freeze);
 	if (err)
+<<<<<<< HEAD
 		ssb_printk(KERN_ERR PFX "SPROM write: Could not thaw all devices\n");
+=======
+		ssb_err("SPROM write: Could not thaw all devices\n");
+>>>>>>> refs/remotes/origin/master
 out_unlock:
 	mutex_unlock(&bus->sprom_mutex);
 out_kfree:

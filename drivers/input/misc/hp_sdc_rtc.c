@@ -41,6 +41,10 @@
 #include <linux/time.h>
 #include <linux/miscdevice.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/poll.h>
 #include <linux/rtc.h>
 #include <linux/mutex.h>
@@ -74,9 +78,12 @@ static unsigned int hp_sdc_rtc_poll(struct file *file, poll_table *wait);
 static int hp_sdc_rtc_open(struct inode *inode, struct file *file);
 static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on);
 
+<<<<<<< HEAD
 static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
 				int count, int *eof, void *data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void hp_sdc_rtc_isr (int irq, void *dev_id, 
 			    uint8_t status, uint8_t data) 
 {
@@ -109,7 +116,13 @@ static int hp_sdc_rtc_do_read_bbrtc (struct rtc_time *rtctm)
 	
 	if (hp_sdc_enqueue_transaction(&t)) return -1;
 	
+<<<<<<< HEAD
 	down_interruptible(&tsem);  /* Put ourselves to sleep for results. */
+=======
+	/* Put ourselves to sleep for results. */
+	if (WARN_ON(down_interruptible(&tsem)))
+		return -1;
+>>>>>>> refs/remotes/origin/master
 	
 	/* Check for nonpresence of BBRTC */
 	if (!((tseq[83] | tseq[90] | tseq[69] | tseq[76] |
@@ -176,11 +189,27 @@ static int64_t hp_sdc_rtc_read_i8042timer (uint8_t loadcmd, int numreg)
 	t.seq =			tseq;
 	t.act.semaphore =	&i8042tregs;
 
+<<<<<<< HEAD
 	down_interruptible(&i8042tregs);  /* Sleep if output regs in use. */
 
 	if (hp_sdc_enqueue_transaction(&t)) return -1;
 	
 	down_interruptible(&i8042tregs);  /* Sleep until results come back. */
+=======
+	/* Sleep if output regs in use. */
+	if (WARN_ON(down_interruptible(&i8042tregs)))
+		return -1;
+
+	if (hp_sdc_enqueue_transaction(&t)) {
+		up(&i8042tregs);
+		return -1;
+	}
+	
+	/* Sleep until results come back. */
+	if (WARN_ON(down_interruptible(&i8042tregs)))
+		return -1;
+
+>>>>>>> refs/remotes/origin/master
 	up(&i8042tregs);
 
 	return (tseq[5] | 
@@ -276,6 +305,10 @@ static inline int hp_sdc_rtc_read_ct(struct timeval *res) {
 }
 
 
+<<<<<<< HEAD
+=======
+#if 0 /* not used yet */
+>>>>>>> refs/remotes/origin/master
 /* Set the i8042 real-time clock */
 static int hp_sdc_rtc_set_rt (struct timeval *setto)
 {
@@ -386,6 +419,10 @@ static int hp_sdc_rtc_set_i8042timer (struct timeval *setto, uint8_t setcmd)
 	}
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t hp_sdc_rtc_read(struct file *file, char __user *buf,
 			       size_t count, loff_t *ppos) {
@@ -418,22 +455,36 @@ static int hp_sdc_rtc_fasync (int fd, struct file *filp, int on)
         return fasync_helper (fd, filp, on, &hp_sdc_rtc_async_queue);
 }
 
+<<<<<<< HEAD
 static int hp_sdc_rtc_proc_output (char *buf)
 {
 #define YN(bit) ("no")
 #define NY(bit) ("yes")
         char *p;
+=======
+static int hp_sdc_rtc_proc_show(struct seq_file *m, void *v)
+{
+#define YN(bit) ("no")
+#define NY(bit) ("yes")
+>>>>>>> refs/remotes/origin/master
         struct rtc_time tm;
 	struct timeval tv;
 
 	memset(&tm, 0, sizeof(struct rtc_time));
 
+<<<<<<< HEAD
 	p = buf;
 
 	if (hp_sdc_rtc_read_bbrtc(&tm)) {
 		p += sprintf(p, "BBRTC\t\t: READ FAILED!\n");
 	} else {
 		p += sprintf(p,
+=======
+	if (hp_sdc_rtc_read_bbrtc(&tm)) {
+		seq_puts(m, "BBRTC\t\t: READ FAILED!\n");
+	} else {
+		seq_printf(m,
+>>>>>>> refs/remotes/origin/master
 			     "rtc_time\t: %02d:%02d:%02d\n"
 			     "rtc_date\t: %04d-%02d-%02d\n"
 			     "rtc_epoch\t: %04lu\n",
@@ -443,34 +494,59 @@ static int hp_sdc_rtc_proc_output (char *buf)
 	}
 
 	if (hp_sdc_rtc_read_rt(&tv)) {
+<<<<<<< HEAD
 		p += sprintf(p, "i8042 rtc\t: READ FAILED!\n");
 	} else {
 		p += sprintf(p, "i8042 rtc\t: %ld.%02d seconds\n", 
+=======
+		seq_puts(m, "i8042 rtc\t: READ FAILED!\n");
+	} else {
+		seq_printf(m, "i8042 rtc\t: %ld.%02d seconds\n", 
+>>>>>>> refs/remotes/origin/master
 			     tv.tv_sec, (int)tv.tv_usec/1000);
 	}
 
 	if (hp_sdc_rtc_read_fhs(&tv)) {
+<<<<<<< HEAD
 		p += sprintf(p, "handshake\t: READ FAILED!\n");
 	} else {
         	p += sprintf(p, "handshake\t: %ld.%02d seconds\n", 
+=======
+		seq_puts(m, "handshake\t: READ FAILED!\n");
+	} else {
+        	seq_printf(m, "handshake\t: %ld.%02d seconds\n", 
+>>>>>>> refs/remotes/origin/master
 			     tv.tv_sec, (int)tv.tv_usec/1000);
 	}
 
 	if (hp_sdc_rtc_read_mt(&tv)) {
+<<<<<<< HEAD
 		p += sprintf(p, "alarm\t\t: READ FAILED!\n");
 	} else {
 		p += sprintf(p, "alarm\t\t: %ld.%02d seconds\n", 
+=======
+		seq_puts(m, "alarm\t\t: READ FAILED!\n");
+	} else {
+		seq_printf(m, "alarm\t\t: %ld.%02d seconds\n", 
+>>>>>>> refs/remotes/origin/master
 			     tv.tv_sec, (int)tv.tv_usec/1000);
 	}
 
 	if (hp_sdc_rtc_read_dt(&tv)) {
+<<<<<<< HEAD
 		p += sprintf(p, "delay\t\t: READ FAILED!\n");
 	} else {
 		p += sprintf(p, "delay\t\t: %ld.%02d seconds\n", 
+=======
+		seq_puts(m, "delay\t\t: READ FAILED!\n");
+	} else {
+		seq_printf(m, "delay\t\t: %ld.%02d seconds\n", 
+>>>>>>> refs/remotes/origin/master
 			     tv.tv_sec, (int)tv.tv_usec/1000);
 	}
 
 	if (hp_sdc_rtc_read_ct(&tv)) {
+<<<<<<< HEAD
 		p += sprintf(p, "periodic\t: READ FAILED!\n");
 	} else {
 		p += sprintf(p, "periodic\t: %ld.%02d seconds\n", 
@@ -478,6 +554,15 @@ static int hp_sdc_rtc_proc_output (char *buf)
 	}
 
         p += sprintf(p,
+=======
+		seq_puts(m, "periodic\t: READ FAILED!\n");
+	} else {
+		seq_printf(m, "periodic\t: %ld.%02d seconds\n", 
+			     tv.tv_sec, (int)tv.tv_usec/1000);
+	}
+
+        seq_printf(m,
+>>>>>>> refs/remotes/origin/master
                      "DST_enable\t: %s\n"
                      "BCD\t\t: %s\n"
                      "24hr\t\t: %s\n"
@@ -497,11 +582,16 @@ static int hp_sdc_rtc_proc_output (char *buf)
                      1UL,
                      1 ? "okay" : "dead");
 
+<<<<<<< HEAD
         return  p - buf;
+=======
+        return 0;
+>>>>>>> refs/remotes/origin/master
 #undef YN
 #undef NY
 }
 
+<<<<<<< HEAD
 static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
                          int count, int *eof, void *data)
 {
@@ -514,6 +604,20 @@ static int hp_sdc_rtc_read_proc(char *page, char **start, off_t off,
         return len;
 }
 
+=======
+static int hp_sdc_rtc_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, hp_sdc_rtc_proc_show, NULL);
+}
+
+static const struct file_operations hp_sdc_rtc_proc_fops = {
+	.open		= hp_sdc_rtc_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int hp_sdc_rtc_ioctl(struct file *file, 
 			    unsigned int cmd, unsigned long arg)
 {
@@ -706,8 +810,12 @@ static int __init hp_sdc_rtc_init(void)
 	if (misc_register(&hp_sdc_rtc_dev) != 0)
 		printk(KERN_INFO "Could not register misc. dev for i8042 rtc\n");
 
+<<<<<<< HEAD
         create_proc_read_entry ("driver/rtc", 0, NULL,
 				hp_sdc_rtc_read_proc, NULL);
+=======
+        proc_create("driver/rtc", 0, NULL, &hp_sdc_rtc_proc_fops);
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "HP i8042 SDC + MSM-58321 RTC support loaded "
 			 "(RTC v " RTC_VERSION ")\n");

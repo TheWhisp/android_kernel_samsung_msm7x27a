@@ -2,6 +2,10 @@
  * x_tables core - Backend for {ip,ip6,arp}_tables
  *
  * Copyright (C) 2006-2006 Harald Welte <laforge@netfilter.org>
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2006-2012 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * Based on existing ip_tables code which is
  *   Copyright (C) 1999 Paul `Rusty' Russell & Michael J. Neuling
@@ -15,9 +19,13 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/socket.h>
 #include <linux/net.h>
 #include <linux/proc_fs.h>
@@ -348,6 +356,7 @@ int xt_find_revision(u8 af, const char *name, u8 revision, int target,
 }
 EXPORT_SYMBOL_GPL(xt_find_revision);
 
+<<<<<<< HEAD
 static char *textify_hooks(char *buf, size_t size, unsigned int mask)
 {
 	static const char *const names[] = {
@@ -355,12 +364,34 @@ static char *textify_hooks(char *buf, size_t size, unsigned int mask)
 		"OUTPUT", "POSTROUTING", "BROUTING",
 	};
 	unsigned int i;
+=======
+static char *
+textify_hooks(char *buf, size_t size, unsigned int mask, uint8_t nfproto)
+{
+	static const char *const inetbr_names[] = {
+		"PREROUTING", "INPUT", "FORWARD",
+		"OUTPUT", "POSTROUTING", "BROUTING",
+	};
+	static const char *const arp_names[] = {
+		"INPUT", "FORWARD", "OUTPUT",
+	};
+	const char *const *names;
+	unsigned int i, max;
+>>>>>>> refs/remotes/origin/master
 	char *p = buf;
 	bool np = false;
 	int res;
 
+<<<<<<< HEAD
 	*p = '\0';
 	for (i = 0; i < ARRAY_SIZE(names); ++i) {
+=======
+	names = (nfproto == NFPROTO_ARP) ? arp_names : inetbr_names;
+	max   = (nfproto == NFPROTO_ARP) ? ARRAY_SIZE(arp_names) :
+	                                   ARRAY_SIZE(inetbr_names);
+	*p = '\0';
+	for (i = 0; i < max; ++i) {
+>>>>>>> refs/remotes/origin/master
 		if (!(mask & (1 << i)))
 			continue;
 		res = snprintf(p, size, "%s%s", np ? "/" : "", names[i]);
@@ -405,8 +436,15 @@ int xt_check_match(struct xt_mtchk_param *par,
 		pr_err("%s_tables: %s match: used from hooks %s, but only "
 		       "valid from %s\n",
 		       xt_prefix[par->family], par->match->name,
+<<<<<<< HEAD
 		       textify_hooks(used, sizeof(used), par->hook_mask),
 		       textify_hooks(allow, sizeof(allow), par->match->hooks));
+=======
+		       textify_hooks(used, sizeof(used), par->hook_mask,
+		                     par->family),
+		       textify_hooks(allow, sizeof(allow), par->match->hooks,
+		                     par->family));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	if (par->match->proto && (par->match->proto != proto || inv_proto)) {
@@ -578,8 +616,15 @@ int xt_check_target(struct xt_tgchk_param *par,
 		pr_err("%s_tables: %s target: used from hooks %s, but only "
 		       "usable from %s\n",
 		       xt_prefix[par->family], par->target->name,
+<<<<<<< HEAD
 		       textify_hooks(used, sizeof(used), par->hook_mask),
 		       textify_hooks(allow, sizeof(allow), par->target->hooks));
+=======
+		       textify_hooks(used, sizeof(used), par->hook_mask,
+		                     par->family),
+		       textify_hooks(allow, sizeof(allow), par->target->hooks,
+		                     par->family));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	if (par->target->proto && (par->target->proto != proto || inv_proto)) {
@@ -781,6 +826,7 @@ static int xt_jumpstack_alloc(struct xt_table_info *i)
 	size = sizeof(void **) * nr_cpu_ids;
 	if (size > PAGE_SIZE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i->jumpstack = vmalloc(size);
 	else
 		i->jumpstack = kmalloc(size, GFP_KERNEL);
@@ -788,12 +834,17 @@ static int xt_jumpstack_alloc(struct xt_table_info *i)
 		return -ENOMEM;
 	memset(i->jumpstack, 0, size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		i->jumpstack = vzalloc(size);
 	else
 		i->jumpstack = kzalloc(size, GFP_KERNEL);
 	if (i->jumpstack == NULL)
 		return -ENOMEM;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	i->stacksize *= xt_jumpstack_multiplier;
 	size = sizeof(void *) * i->stacksize;
@@ -844,8 +895,18 @@ xt_replace_table(struct xt_table *table,
 		return NULL;
 	}
 
+<<<<<<< HEAD
 	table->private = newinfo;
 	newinfo->initial_entries = private->initial_entries;
+=======
+	newinfo->initial_entries = private->initial_entries;
+	/*
+	 * Ensure contents of newinfo are visible before assigning to
+	 * private.
+	 */
+	smp_wmb();
+	table->private = newinfo;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Even though table entries have now been swapped, other CPU's
@@ -999,7 +1060,11 @@ static int xt_table_open(struct inode *inode, struct file *file)
 			   sizeof(struct xt_names_priv));
 	if (!ret) {
 		priv = ((struct seq_file *)file->private_data)->private;
+<<<<<<< HEAD
 		priv->af = (unsigned long)PDE(inode)->data;
+=======
+		priv->af = (unsigned long)PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -1147,7 +1212,11 @@ static int xt_match_open(struct inode *inode, struct file *file)
 
 	seq = file->private_data;
 	seq->private = trav;
+<<<<<<< HEAD
 	trav->nfproto = (unsigned long)PDE(inode)->data;
+=======
+	trav->nfproto = (unsigned long)PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1211,7 +1280,11 @@ static int xt_target_open(struct inode *inode, struct file *file)
 
 	seq = file->private_data;
 	seq->private = trav;
+<<<<<<< HEAD
 	trav->nfproto = (unsigned long)PDE(inode)->data;
+=======
+	trav->nfproto = (unsigned long)PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1323,12 +1396,20 @@ int xt_proto_init(struct net *net, u_int8_t af)
 out_remove_matches:
 	strlcpy(buf, xt_prefix[af], sizeof(buf));
 	strlcat(buf, FORMAT_MATCHES, sizeof(buf));
+<<<<<<< HEAD
 	proc_net_remove(net, buf);
+=======
+	remove_proc_entry(buf, net->proc_net);
+>>>>>>> refs/remotes/origin/master
 
 out_remove_tables:
 	strlcpy(buf, xt_prefix[af], sizeof(buf));
 	strlcat(buf, FORMAT_TABLES, sizeof(buf));
+<<<<<<< HEAD
 	proc_net_remove(net, buf);
+=======
+	remove_proc_entry(buf, net->proc_net);
+>>>>>>> refs/remotes/origin/master
 out:
 	return -1;
 #endif
@@ -1342,6 +1423,7 @@ void xt_proto_fini(struct net *net, u_int8_t af)
 
 	strlcpy(buf, xt_prefix[af], sizeof(buf));
 	strlcat(buf, FORMAT_TABLES, sizeof(buf));
+<<<<<<< HEAD
 	proc_net_remove(net, buf);
 
 	strlcpy(buf, xt_prefix[af], sizeof(buf));
@@ -1351,6 +1433,17 @@ void xt_proto_fini(struct net *net, u_int8_t af)
 	strlcpy(buf, xt_prefix[af], sizeof(buf));
 	strlcat(buf, FORMAT_MATCHES, sizeof(buf));
 	proc_net_remove(net, buf);
+=======
+	remove_proc_entry(buf, net->proc_net);
+
+	strlcpy(buf, xt_prefix[af], sizeof(buf));
+	strlcat(buf, FORMAT_TARGETS, sizeof(buf));
+	remove_proc_entry(buf, net->proc_net);
+
+	strlcpy(buf, xt_prefix[af], sizeof(buf));
+	strlcat(buf, FORMAT_MATCHES, sizeof(buf));
+	remove_proc_entry(buf, net->proc_net);
+>>>>>>> refs/remotes/origin/master
 #endif /*CONFIG_PROC_FS*/
 }
 EXPORT_SYMBOL_GPL(xt_proto_fini);

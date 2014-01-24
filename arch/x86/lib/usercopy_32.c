@@ -13,6 +13,10 @@
 #include <linux/interrupt.h>
 #include <asm/uaccess.h>
 #include <asm/mmx.h>
+<<<<<<< HEAD
+=======
+#include <asm/asm.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_INTEL_USERCOPY
 /*
@@ -33,6 +37,7 @@ static inline int __movsl_is_ok(unsigned long a1, unsigned long a2, unsigned lon
 	__movsl_is_ok((unsigned long)(a1), (unsigned long)(a2), (n))
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Copy a null terminated string from userspace.
  */
@@ -123,6 +128,8 @@ EXPORT_SYMBOL(strncpy_from_user);
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Zero Userspace
  */
 
@@ -131,10 +138,18 @@ do {									\
 	int __d0;							\
 	might_fault();							\
 	__asm__ __volatile__(						\
+<<<<<<< HEAD
 		"0:	rep; stosl\n"					\
 		"	movl %2,%0\n"					\
 		"1:	rep; stosb\n"					\
 		"2:\n"							\
+=======
+		ASM_STAC "\n"						\
+		"0:	rep; stosl\n"					\
+		"	movl %2,%0\n"					\
+		"1:	rep; stosb\n"					\
+		"2: " ASM_CLAC "\n"					\
+>>>>>>> refs/remotes/origin/master
 		".section .fixup,\"ax\"\n"				\
 		"3:	lea 0(%2,%0,4),%0\n"				\
 		"	jmp 2b\n"					\
@@ -184,6 +199,7 @@ __clear_user(void __user *to, unsigned long n)
 }
 EXPORT_SYMBOL(__clear_user);
 
+<<<<<<< HEAD
 /**
  * strnlen_user: - Get the size of a string in user space.
  * @s: The string to measure.
@@ -228,6 +244,8 @@ long strnlen_user(const char __user *s, long n)
 }
 EXPORT_SYMBOL(strnlen_user);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_INTEL_USERCOPY
 static unsigned long
 __copy_user_intel(void __user *to, const void *from, unsigned long size)
@@ -289,6 +307,7 @@ __copy_user_intel(void __user *to, const void *from, unsigned long size)
 		       "101:   lea 0(%%eax,%0,4),%0\n"
 		       "       jmp 100b\n"
 		       ".previous\n"
+<<<<<<< HEAD
 		       ".section __ex_table,\"a\"\n"
 		       "       .align 4\n"
 		       "       .long 1b,100b\n"
@@ -330,6 +349,46 @@ __copy_user_intel(void __user *to, const void *from, unsigned long size)
 		       "       .long 37b,100b\n"
 		       "       .long 99b,101b\n"
 		       ".previous"
+=======
+		       _ASM_EXTABLE(1b,100b)
+		       _ASM_EXTABLE(2b,100b)
+		       _ASM_EXTABLE(3b,100b)
+		       _ASM_EXTABLE(4b,100b)
+		       _ASM_EXTABLE(5b,100b)
+		       _ASM_EXTABLE(6b,100b)
+		       _ASM_EXTABLE(7b,100b)
+		       _ASM_EXTABLE(8b,100b)
+		       _ASM_EXTABLE(9b,100b)
+		       _ASM_EXTABLE(10b,100b)
+		       _ASM_EXTABLE(11b,100b)
+		       _ASM_EXTABLE(12b,100b)
+		       _ASM_EXTABLE(13b,100b)
+		       _ASM_EXTABLE(14b,100b)
+		       _ASM_EXTABLE(15b,100b)
+		       _ASM_EXTABLE(16b,100b)
+		       _ASM_EXTABLE(17b,100b)
+		       _ASM_EXTABLE(18b,100b)
+		       _ASM_EXTABLE(19b,100b)
+		       _ASM_EXTABLE(20b,100b)
+		       _ASM_EXTABLE(21b,100b)
+		       _ASM_EXTABLE(22b,100b)
+		       _ASM_EXTABLE(23b,100b)
+		       _ASM_EXTABLE(24b,100b)
+		       _ASM_EXTABLE(25b,100b)
+		       _ASM_EXTABLE(26b,100b)
+		       _ASM_EXTABLE(27b,100b)
+		       _ASM_EXTABLE(28b,100b)
+		       _ASM_EXTABLE(29b,100b)
+		       _ASM_EXTABLE(30b,100b)
+		       _ASM_EXTABLE(31b,100b)
+		       _ASM_EXTABLE(32b,100b)
+		       _ASM_EXTABLE(33b,100b)
+		       _ASM_EXTABLE(34b,100b)
+		       _ASM_EXTABLE(35b,100b)
+		       _ASM_EXTABLE(36b,100b)
+		       _ASM_EXTABLE(37b,100b)
+		       _ASM_EXTABLE(99b,101b)
+>>>>>>> refs/remotes/origin/master
 		       : "=&c"(size), "=&D" (d0), "=&S" (d1)
 		       :  "1"(to), "2"(from), "0"(size)
 		       : "eax", "edx", "memory");
@@ -402,6 +461,7 @@ __copy_user_zeroing_intel(void *to, const void __user *from, unsigned long size)
 		       "        popl %0\n"
 		       "        jmp 8b\n"
 		       ".previous\n"
+<<<<<<< HEAD
 		       ".section __ex_table,\"a\"\n"
 		       "	.align 4\n"
 		       "	.long 0b,16b\n"
@@ -425,6 +485,28 @@ __copy_user_zeroing_intel(void *to, const void __user *from, unsigned long size)
 		       "	.long 6b,9b\n"
 		       "        .long 7b,16b\n"
 		       ".previous"
+=======
+		       _ASM_EXTABLE(0b,16b)
+		       _ASM_EXTABLE(1b,16b)
+		       _ASM_EXTABLE(2b,16b)
+		       _ASM_EXTABLE(21b,16b)
+		       _ASM_EXTABLE(3b,16b)
+		       _ASM_EXTABLE(31b,16b)
+		       _ASM_EXTABLE(4b,16b)
+		       _ASM_EXTABLE(41b,16b)
+		       _ASM_EXTABLE(10b,16b)
+		       _ASM_EXTABLE(51b,16b)
+		       _ASM_EXTABLE(11b,16b)
+		       _ASM_EXTABLE(61b,16b)
+		       _ASM_EXTABLE(12b,16b)
+		       _ASM_EXTABLE(71b,16b)
+		       _ASM_EXTABLE(13b,16b)
+		       _ASM_EXTABLE(81b,16b)
+		       _ASM_EXTABLE(14b,16b)
+		       _ASM_EXTABLE(91b,16b)
+		       _ASM_EXTABLE(6b,9b)
+		       _ASM_EXTABLE(7b,16b)
+>>>>>>> refs/remotes/origin/master
 		       : "=&c"(size), "=&D" (d0), "=&S" (d1)
 		       :  "1"(to), "2"(from), "0"(size)
 		       : "eax", "edx", "memory");
@@ -504,6 +586,7 @@ static unsigned long __copy_user_zeroing_intel_nocache(void *to,
 	       "        popl %0\n"
 	       "        jmp 8b\n"
 	       ".previous\n"
+<<<<<<< HEAD
 	       ".section __ex_table,\"a\"\n"
 	       "	.align 4\n"
 	       "	.long 0b,16b\n"
@@ -527,6 +610,28 @@ static unsigned long __copy_user_zeroing_intel_nocache(void *to,
 	       "	.long 6b,9b\n"
 	       "        .long 7b,16b\n"
 	       ".previous"
+=======
+	       _ASM_EXTABLE(0b,16b)
+	       _ASM_EXTABLE(1b,16b)
+	       _ASM_EXTABLE(2b,16b)
+	       _ASM_EXTABLE(21b,16b)
+	       _ASM_EXTABLE(3b,16b)
+	       _ASM_EXTABLE(31b,16b)
+	       _ASM_EXTABLE(4b,16b)
+	       _ASM_EXTABLE(41b,16b)
+	       _ASM_EXTABLE(10b,16b)
+	       _ASM_EXTABLE(51b,16b)
+	       _ASM_EXTABLE(11b,16b)
+	       _ASM_EXTABLE(61b,16b)
+	       _ASM_EXTABLE(12b,16b)
+	       _ASM_EXTABLE(71b,16b)
+	       _ASM_EXTABLE(13b,16b)
+	       _ASM_EXTABLE(81b,16b)
+	       _ASM_EXTABLE(14b,16b)
+	       _ASM_EXTABLE(91b,16b)
+	       _ASM_EXTABLE(6b,9b)
+	       _ASM_EXTABLE(7b,16b)
+>>>>>>> refs/remotes/origin/master
 	       : "=&c"(size), "=&D" (d0), "=&S" (d1)
 	       :  "1"(to), "2"(from), "0"(size)
 	       : "eax", "edx", "memory");
@@ -595,6 +700,7 @@ static unsigned long __copy_user_intel_nocache(void *to,
 	       "9:      lea 0(%%eax,%0,4),%0\n"
 	       "16:     jmp 8b\n"
 	       ".previous\n"
+<<<<<<< HEAD
 	       ".section __ex_table,\"a\"\n"
 	       "	.align 4\n"
 	       "	.long 0b,16b\n"
@@ -618,6 +724,28 @@ static unsigned long __copy_user_intel_nocache(void *to,
 	       "	.long 6b,9b\n"
 	       "        .long 7b,16b\n"
 	       ".previous"
+=======
+	       _ASM_EXTABLE(0b,16b)
+	       _ASM_EXTABLE(1b,16b)
+	       _ASM_EXTABLE(2b,16b)
+	       _ASM_EXTABLE(21b,16b)
+	       _ASM_EXTABLE(3b,16b)
+	       _ASM_EXTABLE(31b,16b)
+	       _ASM_EXTABLE(4b,16b)
+	       _ASM_EXTABLE(41b,16b)
+	       _ASM_EXTABLE(10b,16b)
+	       _ASM_EXTABLE(51b,16b)
+	       _ASM_EXTABLE(11b,16b)
+	       _ASM_EXTABLE(61b,16b)
+	       _ASM_EXTABLE(12b,16b)
+	       _ASM_EXTABLE(71b,16b)
+	       _ASM_EXTABLE(13b,16b)
+	       _ASM_EXTABLE(81b,16b)
+	       _ASM_EXTABLE(14b,16b)
+	       _ASM_EXTABLE(91b,16b)
+	       _ASM_EXTABLE(6b,9b)
+	       _ASM_EXTABLE(7b,16b)
+>>>>>>> refs/remotes/origin/master
 	       : "=&c"(size), "=&D" (d0), "=&S" (d1)
 	       :  "1"(to), "2"(from), "0"(size)
 	       : "eax", "edx", "memory");
@@ -664,12 +792,18 @@ do {									\
 		"3:	lea 0(%3,%0,4),%0\n"				\
 		"	jmp 2b\n"					\
 		".previous\n"						\
+<<<<<<< HEAD
 		".section __ex_table,\"a\"\n"				\
 		"	.align 4\n"					\
 		"	.long 4b,5b\n"					\
 		"	.long 0b,3b\n"					\
 		"	.long 1b,2b\n"					\
 		".previous"						\
+=======
+		_ASM_EXTABLE(4b,5b)					\
+		_ASM_EXTABLE(0b,3b)					\
+		_ASM_EXTABLE(1b,2b)					\
+>>>>>>> refs/remotes/origin/master
 		: "=&c"(size), "=&D" (__d0), "=&S" (__d1), "=r"(__d2)	\
 		: "3"(size), "0"(size), "1"(to), "2"(from)		\
 		: "memory");						\
@@ -706,12 +840,18 @@ do {									\
 		"	popl %0\n"					\
 		"	jmp 2b\n"					\
 		".previous\n"						\
+<<<<<<< HEAD
 		".section __ex_table,\"a\"\n"				\
 		"	.align 4\n"					\
 		"	.long 4b,5b\n"					\
 		"	.long 0b,3b\n"					\
 		"	.long 1b,6b\n"					\
 		".previous"						\
+=======
+		_ASM_EXTABLE(4b,5b)					\
+		_ASM_EXTABLE(0b,3b)					\
+		_ASM_EXTABLE(1b,6b)					\
+>>>>>>> refs/remotes/origin/master
 		: "=&c"(size), "=&D" (__d0), "=&S" (__d1), "=r"(__d2)	\
 		: "3"(size), "0"(size), "1"(to), "2"(from)		\
 		: "memory");						\
@@ -720,6 +860,7 @@ do {									\
 unsigned long __copy_to_user_ll(void __user *to, const void *from,
 				unsigned long n)
 {
+<<<<<<< HEAD
 #ifndef CONFIG_X86_WP_WORKS_OK
 	if (unlikely(boot_cpu_data.wp_works_ok == 0) &&
 			((unsigned long)to) < TASK_SIZE) {
@@ -783,10 +924,17 @@ survive:
 		return n;
 	}
 #endif
+=======
+	stac();
+>>>>>>> refs/remotes/origin/master
 	if (movsl_is_ok(to, from, n))
 		__copy_user(to, from, n);
 	else
 		n = __copy_user_intel(to, from, n);
+<<<<<<< HEAD
+=======
+	clac();
+>>>>>>> refs/remotes/origin/master
 	return n;
 }
 EXPORT_SYMBOL(__copy_to_user_ll);
@@ -794,10 +942,18 @@ EXPORT_SYMBOL(__copy_to_user_ll);
 unsigned long __copy_from_user_ll(void *to, const void __user *from,
 					unsigned long n)
 {
+<<<<<<< HEAD
+=======
+	stac();
+>>>>>>> refs/remotes/origin/master
 	if (movsl_is_ok(to, from, n))
 		__copy_user_zeroing(to, from, n);
 	else
 		n = __copy_user_zeroing_intel(to, from, n);
+<<<<<<< HEAD
+=======
+	clac();
+>>>>>>> refs/remotes/origin/master
 	return n;
 }
 EXPORT_SYMBOL(__copy_from_user_ll);
@@ -805,11 +961,19 @@ EXPORT_SYMBOL(__copy_from_user_ll);
 unsigned long __copy_from_user_ll_nozero(void *to, const void __user *from,
 					 unsigned long n)
 {
+<<<<<<< HEAD
+=======
+	stac();
+>>>>>>> refs/remotes/origin/master
 	if (movsl_is_ok(to, from, n))
 		__copy_user(to, from, n);
 	else
 		n = __copy_user_intel((void __user *)to,
 				      (const void *)from, n);
+<<<<<<< HEAD
+=======
+	clac();
+>>>>>>> refs/remotes/origin/master
 	return n;
 }
 EXPORT_SYMBOL(__copy_from_user_ll_nozero);
@@ -817,6 +981,10 @@ EXPORT_SYMBOL(__copy_from_user_ll_nozero);
 unsigned long __copy_from_user_ll_nocache(void *to, const void __user *from,
 					unsigned long n)
 {
+<<<<<<< HEAD
+=======
+	stac();
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_INTEL_USERCOPY
 	if (n > 64 && cpu_has_xmm2)
 		n = __copy_user_zeroing_intel_nocache(to, from, n);
@@ -825,6 +993,10 @@ unsigned long __copy_from_user_ll_nocache(void *to, const void __user *from,
 #else
 	__copy_user_zeroing(to, from, n);
 #endif
+<<<<<<< HEAD
+=======
+	clac();
+>>>>>>> refs/remotes/origin/master
 	return n;
 }
 EXPORT_SYMBOL(__copy_from_user_ll_nocache);
@@ -832,6 +1004,10 @@ EXPORT_SYMBOL(__copy_from_user_ll_nocache);
 unsigned long __copy_from_user_ll_nocache_nozero(void *to, const void __user *from,
 					unsigned long n)
 {
+<<<<<<< HEAD
+=======
+	stac();
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_INTEL_USERCOPY
 	if (n > 64 && cpu_has_xmm2)
 		n = __copy_user_intel_nocache(to, from, n);
@@ -840,6 +1016,10 @@ unsigned long __copy_from_user_ll_nocache_nozero(void *to, const void __user *fr
 #else
 	__copy_user(to, from, n);
 #endif
+<<<<<<< HEAD
+=======
+	clac();
+>>>>>>> refs/remotes/origin/master
 	return n;
 }
 EXPORT_SYMBOL(__copy_from_user_ll_nocache_nozero);
@@ -857,14 +1037,22 @@ EXPORT_SYMBOL(__copy_from_user_ll_nocache_nozero);
  * Returns number of bytes that could not be copied.
  * On success, this will be zero.
  */
+<<<<<<< HEAD
 unsigned long
 copy_to_user(void __user *to, const void *from, unsigned long n)
+=======
+unsigned long _copy_to_user(void __user *to, const void *from, unsigned n)
+>>>>>>> refs/remotes/origin/master
 {
 	if (access_ok(VERIFY_WRITE, to, n))
 		n = __copy_to_user(to, from, n);
 	return n;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(copy_to_user);
+=======
+EXPORT_SYMBOL(_copy_to_user);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * copy_from_user: - Copy a block of data from user space.
@@ -882,8 +1070,12 @@ EXPORT_SYMBOL(copy_to_user);
  * If some data could not be copied, this function will pad the copied
  * data to the requested size using zero bytes.
  */
+<<<<<<< HEAD
 unsigned long
 _copy_from_user(void *to, const void __user *from, unsigned long n)
+=======
+unsigned long _copy_from_user(void *to, const void __user *from, unsigned n)
+>>>>>>> refs/remotes/origin/master
 {
 	if (access_ok(VERIFY_READ, from, n))
 		n = __copy_from_user(to, from, n);
@@ -892,9 +1084,12 @@ _copy_from_user(void *to, const void __user *from, unsigned long n)
 	return n;
 }
 EXPORT_SYMBOL(_copy_from_user);
+<<<<<<< HEAD
 
 void copy_from_user_overflow(void)
 {
 	WARN(1, "Buffer overflow detected!\n");
 }
 EXPORT_SYMBOL(copy_from_user_overflow);
+=======
+>>>>>>> refs/remotes/origin/master

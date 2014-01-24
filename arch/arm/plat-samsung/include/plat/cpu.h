@@ -1,11 +1,14 @@
 /* linux/arch/arm/plat-samsung/include/plat/cpu.h
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2004-2005 Simtec Electronics
  *	Ben Dooks <ben@simtec.co.uk>
  *
  * Header file for S3C24XX CPU support
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2011 Samsung Electronics Co., Ltd.
  *		http://www.samsung.com/
  *
@@ -13,7 +16,10 @@
  *	Ben Dooks <ben@simtec.co.uk>
  *
  * Header file for Samsung CPU support
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -26,12 +32,21 @@
 #define __SAMSUNG_PLAT_CPU_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long samsung_cpu_id;
 
 #define S3C24XX_CPU_ID		0x32400000
 #define S3C24XX_CPU_MASK	0xFFF00000
 
+<<<<<<< HEAD
+=======
+#define S3C2412_CPU_ID		0x32412000
+#define S3C2412_CPU_MASK	0xFFFFF000
+
+>>>>>>> refs/remotes/origin/master
 #define S3C6400_CPU_ID		0x36400000
 #define S3C6410_CPU_ID		0x36410000
 #define S3C64XX_CPU_MASK	0xFFFFF000
@@ -52,6 +67,11 @@ extern unsigned long samsung_cpu_id;
 #define EXYNOS4_CPU_MASK	0xFFFE0000
 
 #define EXYNOS5250_SOC_ID	0x43520000
+<<<<<<< HEAD
+=======
+#define EXYNOS5420_SOC_ID	0xE5420000
+#define EXYNOS5440_SOC_ID	0xE5440000
+>>>>>>> refs/remotes/origin/master
 #define EXYNOS5_SOC_MASK	0xFFFFF000
 
 #define IS_SAMSUNG_CPU(name, id, mask)		\
@@ -61,6 +81,10 @@ static inline int is_samsung_##name(void)	\
 }
 
 IS_SAMSUNG_CPU(s3c24xx, S3C24XX_CPU_ID, S3C24XX_CPU_MASK)
+<<<<<<< HEAD
+=======
+IS_SAMSUNG_CPU(s3c2412, S3C2412_CPU_ID, S3C2412_CPU_MASK)
+>>>>>>> refs/remotes/origin/master
 IS_SAMSUNG_CPU(s3c6400, S3C6400_CPU_ID, S3C64XX_CPU_MASK)
 IS_SAMSUNG_CPU(s3c6410, S3C6410_CPU_ID, S3C64XX_CPU_MASK)
 IS_SAMSUNG_CPU(s5p6440, S5P6440_CPU_ID, S5P64XX_CPU_MASK)
@@ -71,6 +95,11 @@ IS_SAMSUNG_CPU(exynos4210, EXYNOS4210_CPU_ID, EXYNOS4_CPU_MASK)
 IS_SAMSUNG_CPU(exynos4212, EXYNOS4212_CPU_ID, EXYNOS4_CPU_MASK)
 IS_SAMSUNG_CPU(exynos4412, EXYNOS4412_CPU_ID, EXYNOS4_CPU_MASK)
 IS_SAMSUNG_CPU(exynos5250, EXYNOS5250_SOC_ID, EXYNOS5_SOC_MASK)
+<<<<<<< HEAD
+=======
+IS_SAMSUNG_CPU(exynos5420, EXYNOS5420_SOC_ID, EXYNOS5_SOC_MASK)
+IS_SAMSUNG_CPU(exynos5440, EXYNOS5440_SOC_ID, EXYNOS5_SOC_MASK)
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_CPU_S3C2410) || defined(CONFIG_CPU_S3C2412) || \
     defined(CONFIG_CPU_S3C2416) || defined(CONFIG_CPU_S3C2440) || \
@@ -81,9 +110,25 @@ IS_SAMSUNG_CPU(exynos5250, EXYNOS5250_SOC_ID, EXYNOS5_SOC_MASK)
 # define soc_is_s3c24xx()	0
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_S3C6400) || defined(CONFIG_CPU_S3C6410)
 # define soc_is_s3c64xx()	(is_samsung_s3c6400() || is_samsung_s3c6410())
 #else
+=======
+#if defined(CONFIG_CPU_S3C2412)
+# define soc_is_s3c2412()	is_samsung_s3c2412()
+#else
+# define soc_is_s3c2412()	0
+#endif
+
+#if defined(CONFIG_CPU_S3C6400) || defined(CONFIG_CPU_S3C6410)
+# define soc_is_s3c6400()	is_samsung_s3c6400()
+# define soc_is_s3c6410()	is_samsung_s3c6410()
+# define soc_is_s3c64xx()	(is_samsung_s3c6400() || is_samsung_s3c6410())
+#else
+# define soc_is_s3c6400()	0
+# define soc_is_s3c6410()	0
+>>>>>>> refs/remotes/origin/master
 # define soc_is_s3c64xx()	0
 #endif
 
@@ -139,9 +184,30 @@ IS_SAMSUNG_CPU(exynos5250, EXYNOS5250_SOC_ID, EXYNOS5_SOC_MASK)
 # define soc_is_exynos5250()	0
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define IODESC_ENT(x) { (unsigned long)S3C24XX_VA_##x, __phys_to_pfn(S3C24XX_PA_##x), S3C24XX_SZ_##x, MT_DEVICE }
 
+=======
+#if defined(CONFIG_SOC_EXYNOS5420)
+# define soc_is_exynos5420()	is_samsung_exynos5420()
+#else
+# define soc_is_exynos5420()	0
+#endif
+
+#if defined(CONFIG_SOC_EXYNOS5440)
+# define soc_is_exynos5440()	is_samsung_exynos5440()
+#else
+# define soc_is_exynos5440()	0
+#endif
+
+#define IODESC_ENT(x) { (unsigned long)S3C24XX_VA_##x, __phys_to_pfn(S3C24XX_PA_##x), S3C24XX_SZ_##x, MT_DEVICE }
+
+#ifndef KHZ
+#define KHZ (1000)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifndef MHZ
 #define MHZ (1000*1000)
 #endif
@@ -171,6 +237,7 @@ extern void s3c_init_cpu(unsigned long idcode,
 
 /* core initialisation functions */
 
+<<<<<<< HEAD
 extern void s3c24xx_init_irq(void);
 <<<<<<< HEAD
 extern void s3c64xx_init_irq(u32 vic0, u32 vic1);
@@ -181,6 +248,8 @@ extern void s3c64xx_init_io(struct map_desc *mach_desc, int size);
 extern void s5p_init_io(struct map_desc *mach_desc,
 			int size, void __iomem *cpuid_addr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern void s5p_init_irq(u32 *vic, u32 num_vic);
 
 extern void s3c24xx_init_io(struct map_desc *mach_desc, int size);
@@ -190,7 +259,10 @@ extern void s3c64xx_init_cpu(void);
 extern void s5p_init_cpu(void __iomem *cpuid_addr);
 
 extern unsigned int samsung_rev(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void s3c24xx_init_uarts(struct s3c2410_uartcfg *cfg, int no);
 
@@ -200,15 +272,19 @@ extern void s3c24xx_init_uartdevs(char *name,
 				  struct s3c24xx_uart_resources *res,
 				  struct s3c2410_uartcfg *cfg, int no);
 
+<<<<<<< HEAD
 /* timer for 2410/2440 */
 
 struct sys_timer;
 extern struct sys_timer s3c24xx_timer;
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct syscore_ops s3c2410_pm_syscore_ops;
 extern struct syscore_ops s3c2412_pm_syscore_ops;
 extern struct syscore_ops s3c2416_pm_syscore_ops;
 extern struct syscore_ops s3c244x_pm_syscore_ops;
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern struct syscore_ops s3c64xx_irq_syscore_ops;
 
@@ -227,6 +303,8 @@ extern struct sysdev_class s5p64x0_sysclass;
 extern struct sysdev_class s5pv210_sysclass;
 extern struct sysdev_class exynos4_sysclass;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* system device subsystems */
 
@@ -240,8 +318,12 @@ extern struct bus_type s3c2443_subsys;
 extern struct bus_type s3c6410_subsys;
 extern struct bus_type s5p64x0_subsys;
 extern struct bus_type s5pv210_subsys;
+<<<<<<< HEAD
 extern struct bus_type exynos4_subsys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct bus_type exynos_subsys;
+>>>>>>> refs/remotes/origin/master
 
 extern void (*s5pc1xx_idle)(void);
 

@@ -271,7 +271,11 @@ int emulate_altivec(struct pt_regs *regs)
 	vb = (instr >> 11) & 0x1f;
 	vc = (instr >> 6) & 0x1f;
 
+<<<<<<< HEAD
 	vrs = current->thread.vr;
+=======
+	vrs = current->thread.vr_state.vr;
+>>>>>>> refs/remotes/origin/master
 	switch (instr & 0x3f) {
 	case 10:
 		switch (vc) {
@@ -320,12 +324,20 @@ int emulate_altivec(struct pt_regs *regs)
 		case 14:	/* vctuxs */
 			for (i = 0; i < 4; ++i)
 				vrs[vd].u[i] = ctuxs(vrs[vb].u[i], va,
+<<<<<<< HEAD
 						&current->thread.vscr.u[3]);
+=======
+					&current->thread.vr_state.vscr.u[3]);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 15:	/* vctsxs */
 			for (i = 0; i < 4; ++i)
 				vrs[vd].u[i] = ctsxs(vrs[vb].u[i], va,
+<<<<<<< HEAD
 						&current->thread.vscr.u[3]);
+=======
+					&current->thread.vr_state.vscr.u[3]);
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			return -EINVAL;

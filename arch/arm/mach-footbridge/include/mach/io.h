@@ -14,6 +14,7 @@
 #ifndef __ASM_ARM_ARCH_IO_H
 #define __ASM_ARM_ARCH_IO_H
 
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 #define MMU_IO(a, b)	(a)
 #else
@@ -48,5 +49,12 @@ static inline void __iomem *___mem_pci(void __iomem *p)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Translation of various i/o addresses to host addresses for !CONFIG_MMU
+ */
+#define PCIO_BASE       0x7c000000
+#define __io(a)			((void __iomem *)(PCIO_BASE + (a)))
+>>>>>>> refs/remotes/origin/master
 
 #endif

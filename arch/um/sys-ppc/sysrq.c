@@ -3,14 +3,24 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "linux/kernel.h"
 #include "linux/smp.h"
+=======
+#include <linux/kernel.h>
+#include <linux/smp.h>
+>>>>>>> refs/remotes/origin/master
 #include "asm/ptrace.h"
 #include "sysrq.h"
 
 void show_regs(struct pt_regs_subarch *regs)
 {
 	printk("\n");
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
 	printk("show_regs(): insert regs here.\n");
 #if 0
         printk("\n");

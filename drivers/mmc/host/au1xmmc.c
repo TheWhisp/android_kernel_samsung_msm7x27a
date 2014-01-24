@@ -56,10 +56,14 @@
 #ifdef DEBUG
 #define DBG(fmt, idx, args...)	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG "au1xmmc(%d): DEBUG: " fmt, idx, ##args)
 =======
 	pr_debug("au1xmmc(%d): DEBUG: " fmt, idx, ##args)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("au1xmmc(%d): DEBUG: " fmt, idx, ##args)
+>>>>>>> refs/remotes/origin/master
 #else
 #define DBG(fmt, idx, args...) do {} while (0)
 #endif
@@ -68,6 +72,7 @@
 #define AU1XMMC_DESCRIPTOR_COUNT 1
 
 /* max DMA seg size: 64KB on Au1100, 4MB on Au1200 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SOC_AU1100
 #define AU1XMMC_DESCRIPTOR_SIZE 0x0000ffff
@@ -78,6 +83,10 @@
 #define AU1100_MMC_DESCRIPTOR_SIZE 0x0000ffff
 #define AU1200_MMC_DESCRIPTOR_SIZE 0x003fffff
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AU1100_MMC_DESCRIPTOR_SIZE 0x0000ffff
+#define AU1200_MMC_DESCRIPTOR_SIZE 0x003fffff
+>>>>>>> refs/remotes/origin/master
 
 #define AU1XMMC_OCR (MMC_VDD_27_28 | MMC_VDD_28_29 | MMC_VDD_29_30 | \
 		     MMC_VDD_30_31 | MMC_VDD_31_32 | MMC_VDD_32_33 | \
@@ -137,9 +146,13 @@ struct au1xmmc_host {
 #define HOST_F_RECV	0x0002
 #define HOST_F_DMA	0x0010
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HOST_F_DBDMA	0x0020
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HOST_F_DBDMA	0x0020
+>>>>>>> refs/remotes/origin/master
 #define HOST_F_ACTIVE	0x0100
 #define HOST_F_STOP	0x1000
 
@@ -165,7 +178,10 @@ struct au1xmmc_host {
 	(((h)->flags & HOST_F_XMIT) ? (h)->tx_chan : (h)->rx_chan)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int has_dbdma(void)
 {
 	switch (alchemy_get_cputype()) {
@@ -177,7 +193,10 @@ static inline int has_dbdma(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void IRQ_ON(struct au1xmmc_host *host, u32 mask)
 {
 	u32 val = au_readl(HOST_CONFIG(host));
@@ -296,10 +315,14 @@ static int au1xmmc_send_command(struct au1xmmc_host *host, int wait,
 		break;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "au1xmmc: unhandled response type %02x\n",
 =======
 		pr_info("au1xmmc: unhandled response type %02x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("au1xmmc: unhandled response type %02x\n",
+>>>>>>> refs/remotes/origin/master
 			mmc_resp_type(cmd));
 		return -EINVAL;
 	}
@@ -385,20 +408,27 @@ static void au1xmmc_data_complete(struct au1xmmc_host *host, u32 status)
 
 	if (!data->error) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (host->flags & HOST_F_DMA) {
 #ifdef CONFIG_SOC_AU1200	/* DBDMA */
 =======
 		if (host->flags & (HOST_F_DMA | HOST_F_DBDMA)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (host->flags & (HOST_F_DMA | HOST_F_DBDMA)) {
+>>>>>>> refs/remotes/origin/master
 			u32 chan = DMA_CHANNEL(host);
 
 			chan_tab_t *c = *((chan_tab_t **)chan);
 			au1x_dma_chan_t *cp = c->chan_ptr;
 			data->bytes_xfered = cp->ddma_bytecnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else
 			data->bytes_xfered =
 				(data->blocks * data->blksz) - host->pio.len;
@@ -609,17 +639,23 @@ static void au1xmmc_cmd_complete(struct au1xmmc_host *host, u32 status)
 	host->status = HOST_S_DATA;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (host->flags & HOST_F_DMA) {
 #ifdef CONFIG_SOC_AU1200	/* DBDMA */
 		u32 channel = DMA_CHANNEL(host);
 
 		/* Start the DMA as soon as the buffer gets something in it */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((host->flags & (HOST_F_DMA | HOST_F_DBDMA))) {
 		u32 channel = DMA_CHANNEL(host);
 
 		/* Start the DBDMA as soon as the buffer gets something in it */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (host->flags & HOST_F_RECV) {
 			u32 mask = SD_STATUS_DB | SD_STATUS_NE;
@@ -630,9 +666,12 @@ static void au1xmmc_cmd_complete(struct au1xmmc_host *host, u32 status)
 
 		au1xxx_dbdma_start(channel);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -682,11 +721,15 @@ static int au1xmmc_prepare_data(struct au1xmmc_host *host,
 	au_writel(data->blksz - 1, HOST_BLKSIZE(host));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (host->flags & HOST_F_DMA) {
 #ifdef CONFIG_SOC_AU1200	/* DBDMA */
 =======
 	if (host->flags & (HOST_F_DMA | HOST_F_DBDMA)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (host->flags & (HOST_F_DMA | HOST_F_DBDMA)) {
+>>>>>>> refs/remotes/origin/master
 		int i;
 		u32 channel = DMA_CHANNEL(host);
 
@@ -716,9 +759,12 @@ static int au1xmmc_prepare_data(struct au1xmmc_host *host,
 			datalen -= len;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		host->pio.index = 0;
 		host->pio.offset = 0;
@@ -822,12 +868,15 @@ static void au1xmmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	config2 = au_readl(HOST_CONFIG2(host));
 	switch (ios->bus_width) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case MMC_BUS_WIDTH_4:
 		config2 |= SD_CONFIG2_WB;
 		break;
 	case MMC_BUS_WIDTH_1:
 		config2 &= ~SD_CONFIG2_WB;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case MMC_BUS_WIDTH_8:
 		config2 |= SD_CONFIG2_BB;
 		break;
@@ -837,7 +886,10 @@ static void au1xmmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		break;
 	case MMC_BUS_WIDTH_1:
 		config2 &= ~(SD_CONFIG2_WB | SD_CONFIG2_BB);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	au_writel(config2, HOST_CONFIG2(host));
@@ -906,9 +958,12 @@ static irqreturn_t au1xmmc_irq(int irq, void *dev_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_AU1200
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* 8bit memory DMA device */
 static dbdev_tab_t au1xmmc_mem_dbdev = {
 	.dev_id		= DSCR_CMD0_ALWAYS,
@@ -976,10 +1031,14 @@ static int au1xmmc_dbdma_init(struct au1xmmc_host *host)
 
 	/* DBDMA is good to go */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	host->flags |= HOST_F_DMA;
 =======
 	host->flags |= HOST_F_DMA | HOST_F_DBDMA;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	host->flags |= HOST_F_DMA | HOST_F_DBDMA;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -993,9 +1052,12 @@ static void au1xmmc_dbdma_shutdown(struct au1xmmc_host *host)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void au1xmmc_enable_sdio_irq(struct mmc_host *mmc, int en)
 {
@@ -1015,16 +1077,24 @@ static const struct mmc_host_ops au1xmmc_ops = {
 	.enable_sdio_irq = au1xmmc_enable_sdio_irq,
 };
 
+<<<<<<< HEAD
 static int __devinit au1xmmc_probe(struct platform_device *pdev)
+=======
+static int au1xmmc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mmc_host *mmc;
 	struct au1xmmc_host *host;
 	struct resource *r;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	int ret, iflag;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret, iflag;
+>>>>>>> refs/remotes/origin/master
 
 	mmc = mmc_alloc_host(sizeof(struct au1xmmc_host), &pdev->dev);
 	if (!mmc) {
@@ -1064,6 +1134,7 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
 		goto out3;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	host->irq = r->start;
 	/* IRQ is shared among both SD controllers */
@@ -1076,6 +1147,9 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
 =======
 	host->irq = r->start;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	host->irq = r->start;
+>>>>>>> refs/remotes/origin/master
 
 	mmc->ops = &au1xmmc_ops;
 
@@ -1083,18 +1157,24 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
 	mmc->f_max = 24000000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mmc->max_seg_size = AU1XMMC_DESCRIPTOR_SIZE;
 	mmc->max_segs = AU1XMMC_DESCRIPTOR_COUNT;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mmc->max_blk_size = 2048;
 	mmc->max_blk_count = 512;
 
 	mmc->ocr_avail = AU1XMMC_OCR;
 	mmc->caps = MMC_CAP_4_BIT_DATA | MMC_CAP_SDIO_IRQ;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mmc->max_segs = AU1XMMC_DESCRIPTOR_COUNT;
 
 	iflag = IRQF_SHARED;	/* Au1100/Au1200: one int for both ctrls */
@@ -1120,7 +1200,10 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "cannot grab IRQ\n");
 		goto out3;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	host->status = HOST_S_IDLE;
 
@@ -1145,18 +1228,24 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
 			(unsigned long)host);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_AU1200
 	ret = au1xmmc_dbdma_init(host);
 	if (ret)
 		printk(KERN_INFO DRIVER_NAME ": DBDMA init failed; using PIO\n");
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (has_dbdma()) {
 		ret = au1xmmc_dbdma_init(host);
 		if (ret)
 			pr_info(DRIVER_NAME ": DBDMA init failed; using PIO\n");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_LEDS_CLASS
 	if (host->platdata && host->platdata->led) {
@@ -1181,10 +1270,14 @@ static int __devinit au1xmmc_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, host);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO DRIVER_NAME ": MMC Controller %d set up at %8.8X"
 =======
 	pr_info(DRIVER_NAME ": MMC Controller %d set up at %8.8X"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info(DRIVER_NAME ": MMC Controller %d set up at %8.8X"
+>>>>>>> refs/remotes/origin/master
 		" (mode=%s)\n", pdev->id, host->iobase,
 		host->flags & HOST_F_DMA ? "dma" : "pio");
 
@@ -1202,6 +1295,7 @@ out5:
 	au_sync();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_AU1200
 	au1xmmc_dbdma_shutdown(host);
 #endif
@@ -1209,6 +1303,10 @@ out5:
 	if (host->flags & HOST_F_DBDMA)
 		au1xmmc_dbdma_shutdown(host);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (host->flags & HOST_F_DBDMA)
+		au1xmmc_dbdma_shutdown(host);
+>>>>>>> refs/remotes/origin/master
 
 	tasklet_kill(&host->data_task);
 	tasklet_kill(&host->finish_task);
@@ -1229,7 +1327,11 @@ out0:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit au1xmmc_remove(struct platform_device *pdev)
+=======
+static int au1xmmc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct au1xmmc_host *host = platform_get_drvdata(pdev);
 
@@ -1254,6 +1356,7 @@ static int __devexit au1xmmc_remove(struct platform_device *pdev)
 		tasklet_kill(&host->finish_task);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_AU1200
 		au1xmmc_dbdma_shutdown(host);
 #endif
@@ -1262,6 +1365,11 @@ static int __devexit au1xmmc_remove(struct platform_device *pdev)
 			au1xmmc_dbdma_shutdown(host);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (host->flags & HOST_F_DBDMA)
+			au1xmmc_dbdma_shutdown(host);
+
+>>>>>>> refs/remotes/origin/master
 		au1xmmc_set_power(host, 0);
 
 		free_irq(host->irq, host);
@@ -1270,7 +1378,10 @@ static int __devexit au1xmmc_remove(struct platform_device *pdev)
 		kfree(host->ioarea);
 
 		mmc_free_host(host->mmc);
+<<<<<<< HEAD
 		platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1279,11 +1390,14 @@ static int __devexit au1xmmc_remove(struct platform_device *pdev)
 static int au1xmmc_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct au1xmmc_host *host = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	int ret;
 
 	ret = mmc_suspend_host(host->mmc);
 	if (ret)
 		return ret;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	au_writel(0, HOST_CONFIG2(host));
 	au_writel(0, HOST_CONFIG(host));
@@ -1300,7 +1414,11 @@ static int au1xmmc_resume(struct platform_device *pdev)
 
 	au1xmmc_reset_controller(host);
 
+<<<<<<< HEAD
 	return mmc_resume_host(host->mmc);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 #else
 #define au1xmmc_suspend NULL
@@ -1321,6 +1439,7 @@ static struct platform_driver au1xmmc_driver = {
 static int __init au1xmmc_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SOC_AU1200
 	/* DSCR_CMD0_ALWAYS has a stride of 32 bits, we need a stride
 	 * of 8 bits.  And since devices are shared, we need to create
@@ -1331,6 +1450,8 @@ static int __init au1xmmc_init(void)
 		printk(KERN_ERR "au1xmmc: cannot add memory dbdma dev\n");
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (has_dbdma()) {
 		/* DSCR_CMD0_ALWAYS has a stride of 32 bits, we need a stride
 		* of 8 bits.  And since devices are shared, we need to create
@@ -1340,12 +1461,16 @@ static int __init au1xmmc_init(void)
 		if (!memid)
 			pr_err("au1xmmc: cannot add memory dbdma\n");
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return platform_driver_register(&au1xmmc_driver);
 }
 
 static void __exit au1xmmc_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_SOC_AU1200
 	if (memid)
@@ -1356,6 +1481,11 @@ static void __exit au1xmmc_exit(void)
 		au1xxx_ddma_del_device(memid);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (has_dbdma() && memid)
+		au1xxx_ddma_del_device(memid);
+
+>>>>>>> refs/remotes/origin/master
 	platform_driver_unregister(&au1xmmc_driver);
 }
 

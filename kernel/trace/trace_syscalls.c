@@ -1,11 +1,18 @@
 #include <trace/syscall.h>
 #include <trace/events/syscalls.h>
+<<<<<<< HEAD
 #include <linux/slab.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
 =======
 #include <linux/module.h>	/* for MODULE_NAME_LEN via KSYM_SYMBOL_LEN */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/syscalls.h>
+#include <linux/slab.h>
+#include <linux/kernel.h>
+#include <linux/module.h>	/* for MODULE_NAME_LEN via KSYM_SYMBOL_LEN */
+>>>>>>> refs/remotes/origin/master
 #include <linux/ftrace.h>
 #include <linux/perf_event.h>
 #include <asm/syscall.h>
@@ -14,6 +21,7 @@
 #include "trace.h"
 
 static DEFINE_MUTEX(syscall_trace_lock);
+<<<<<<< HEAD
 static int sys_refcount_enter;
 static int sys_refcount_exit;
 static DECLARE_BITMAP(enabled_enter_syscalls, NR_syscalls);
@@ -32,6 +40,13 @@ static int syscall_exit_register(struct ftrace_event_call *event,
 
 static int syscall_enter_define_fields(struct ftrace_event_call *call);
 static int syscall_exit_define_fields(struct ftrace_event_call *call);
+=======
+
+static int syscall_enter_register(struct ftrace_event_call *event,
+				 enum trace_reg type, void *data);
+static int syscall_exit_register(struct ftrace_event_call *event,
+				 enum trace_reg type, void *data);
+>>>>>>> refs/remotes/origin/master
 
 static struct list_head *
 syscall_get_enter_fields(struct ftrace_event_call *call)
@@ -41,6 +56,7 @@ syscall_get_enter_fields(struct ftrace_event_call *call)
 	return &entry->enter_fields;
 }
 
+<<<<<<< HEAD
 struct trace_event_functions enter_syscall_print_funcs = {
 	.trace		= print_syscall_enter,
 };
@@ -65,6 +81,8 @@ struct ftrace_event_class event_class_syscall_exit = {
 	.raw_init	= init_syscall_trace,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct syscall_metadata *__start_syscalls_metadata[];
 extern struct syscall_metadata *__stop_syscalls_metadata[];
 
@@ -76,13 +94,52 @@ static inline bool arch_syscall_match_sym_name(const char *sym, const char *name
 	/*
 	 * Only compare after the "sys" prefix. Archs that use
 	 * syscall wrappers may have syscalls symbols aliases prefixed
+<<<<<<< HEAD
 	 * with "SyS" instead of "sys", leading to an unwanted
+=======
+	 * with ".SyS" or ".sys" instead of "sys", leading to an unwanted
+>>>>>>> refs/remotes/origin/master
 	 * mismatch.
 	 */
 	return !strcmp(sym + 3, name + 3);
 }
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef ARCH_TRACE_IGNORE_COMPAT_SYSCALLS
+/*
+ * Some architectures that allow for 32bit applications
+ * to run on a 64bit kernel, do not map the syscalls for
+ * the 32bit tasks the same as they do for 64bit tasks.
+ *
+ *     *cough*x86*cough*
+ *
+ * In such a case, instead of reporting the wrong syscalls,
+ * simply ignore them.
+ *
+ * For an arch to ignore the compat syscalls it needs to
+ * define ARCH_TRACE_IGNORE_COMPAT_SYSCALLS as well as
+ * define the function arch_trace_is_compat_syscall() to let
+ * the tracing system know that it should ignore it.
+ */
+static int
+trace_get_syscall_nr(struct task_struct *task, struct pt_regs *regs)
+{
+	if (unlikely(arch_trace_is_compat_syscall(regs)))
+		return -1;
+
+	return syscall_get_nr(task, regs);
+}
+#else
+static inline int
+trace_get_syscall_nr(struct task_struct *task, struct pt_regs *regs)
+{
+	return syscall_get_nr(task, regs);
+}
+#endif /* ARCH_TRACE_IGNORE_COMPAT_SYSCALLS */
+
+>>>>>>> refs/remotes/origin/master
 static __init struct syscall_metadata *
 find_syscall_meta(unsigned long syscall)
 {
@@ -113,7 +170,11 @@ static struct syscall_metadata *syscall_nr_to_meta(int nr)
 	return syscalls_metadata[nr];
 }
 
+<<<<<<< HEAD
 enum print_line_t
+=======
+static enum print_line_t
+>>>>>>> refs/remotes/origin/master
 print_syscall_enter(struct trace_iterator *iter, int flags,
 		    struct trace_event *event)
 {
@@ -166,7 +227,11 @@ end:
 	return TRACE_TYPE_HANDLED;
 }
 
+<<<<<<< HEAD
 enum print_line_t
+=======
+static enum print_line_t
+>>>>>>> refs/remotes/origin/master
 print_syscall_exit(struct trace_iterator *iter, int flags,
 		   struct trace_event *event)
 {
@@ -182,7 +247,11 @@ print_syscall_exit(struct trace_iterator *iter, int flags,
 	entry = syscall_nr_to_meta(syscall);
 
 	if (!entry) {
+<<<<<<< HEAD
 		trace_seq_printf(s, "\n");
+=======
+		trace_seq_putc(s, '\n');
+>>>>>>> refs/remotes/origin/master
 		return TRACE_TYPE_HANDLED;
 	}
 
@@ -207,8 +276,13 @@ extern char *__bad_type_size(void);
 		#type, #name, offsetof(typeof(trace), name),		\
 		sizeof(trace.name), is_signed_type(type)
 
+<<<<<<< HEAD
 static
 int  __set_enter_print_fmt(struct syscall_metadata *entry, char *buf, int len)
+=======
+static int __init
+__set_enter_print_fmt(struct syscall_metadata *entry, char *buf, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int pos = 0;
@@ -235,7 +309,11 @@ int  __set_enter_print_fmt(struct syscall_metadata *entry, char *buf, int len)
 	return pos;
 }
 
+<<<<<<< HEAD
 static int set_syscall_print_fmt(struct ftrace_event_call *call)
+=======
+static int __init set_syscall_print_fmt(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	char *print_fmt;
 	int len;
@@ -260,7 +338,11 @@ static int set_syscall_print_fmt(struct ftrace_event_call *call)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void free_syscall_print_fmt(struct ftrace_event_call *call)
+=======
+static void __init free_syscall_print_fmt(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	struct syscall_metadata *entry = call->data;
 
@@ -268,7 +350,11 @@ static void free_syscall_print_fmt(struct ftrace_event_call *call)
 		kfree(call->print_fmt);
 }
 
+<<<<<<< HEAD
 static int syscall_enter_define_fields(struct ftrace_event_call *call)
+=======
+static int __init syscall_enter_define_fields(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	struct syscall_trace_enter trace;
 	struct syscall_metadata *meta = call->data;
@@ -291,7 +377,11 @@ static int syscall_enter_define_fields(struct ftrace_event_call *call)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int syscall_exit_define_fields(struct ftrace_event_call *call)
+=======
+static int __init syscall_exit_define_fields(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	struct syscall_trace_exit trace;
 	int ret;
@@ -306,12 +396,20 @@ static int syscall_exit_define_fields(struct ftrace_event_call *call)
 	return ret;
 }
 
+<<<<<<< HEAD
 void ftrace_syscall_enter(void *ignore, struct pt_regs *regs, long id)
 {
+=======
+static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+{
+	struct trace_array *tr = data;
+	struct ftrace_event_file *ftrace_file;
+>>>>>>> refs/remotes/origin/master
 	struct syscall_trace_enter *entry;
 	struct syscall_metadata *sys_data;
 	struct ring_buffer_event *event;
 	struct ring_buffer *buffer;
+<<<<<<< HEAD
 	int size;
 	int syscall_nr;
 	unsigned long irq_flags;
@@ -321,6 +419,23 @@ void ftrace_syscall_enter(void *ignore, struct pt_regs *regs, long id)
 	if (syscall_nr < 0)
 		return;
 	if (!test_bit(syscall_nr, enabled_enter_syscalls))
+=======
+	unsigned long irq_flags;
+	int pc;
+	int syscall_nr;
+	int size;
+
+	syscall_nr = trace_get_syscall_nr(current, regs);
+	if (syscall_nr < 0)
+		return;
+
+	/* Here we're inside tp handler's rcu_read_lock_sched (__DO_TRACE) */
+	ftrace_file = rcu_dereference_sched(tr->enter_syscall_files[syscall_nr]);
+	if (!ftrace_file)
+		return;
+
+	if (test_bit(FTRACE_EVENT_FL_SOFT_DISABLED_BIT, &ftrace_file->flags))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	sys_data = syscall_nr_to_meta(syscall_nr);
@@ -332,7 +447,12 @@ void ftrace_syscall_enter(void *ignore, struct pt_regs *regs, long id)
 	local_save_flags(irq_flags);
 	pc = preempt_count();
 
+<<<<<<< HEAD
 	event = trace_current_buffer_lock_reserve(&buffer,
+=======
+	buffer = tr->trace_buffer.buffer;
+	event = trace_buffer_lock_reserve(buffer,
+>>>>>>> refs/remotes/origin/master
 			sys_data->enter_event->event.type, size, irq_flags, pc);
 	if (!event)
 		return;
@@ -341,18 +461,30 @@ void ftrace_syscall_enter(void *ignore, struct pt_regs *regs, long id)
 	entry->nr = syscall_nr;
 	syscall_get_arguments(current, regs, 0, sys_data->nb_args, entry->args);
 
+<<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, sys_data->enter_event,
 					  entry, event))
+=======
+	if (!filter_check_discard(ftrace_file, entry, buffer, event))
+>>>>>>> refs/remotes/origin/master
 		trace_current_buffer_unlock_commit(buffer, event,
 						   irq_flags, pc);
 }
 
+<<<<<<< HEAD
 void ftrace_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 {
+=======
+static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
+{
+	struct trace_array *tr = data;
+	struct ftrace_event_file *ftrace_file;
+>>>>>>> refs/remotes/origin/master
 	struct syscall_trace_exit *entry;
 	struct syscall_metadata *sys_data;
 	struct ring_buffer_event *event;
 	struct ring_buffer *buffer;
+<<<<<<< HEAD
 	int syscall_nr;
 	unsigned long irq_flags;
 	int pc;
@@ -361,6 +493,22 @@ void ftrace_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 	if (syscall_nr < 0)
 		return;
 	if (!test_bit(syscall_nr, enabled_exit_syscalls))
+=======
+	unsigned long irq_flags;
+	int pc;
+	int syscall_nr;
+
+	syscall_nr = trace_get_syscall_nr(current, regs);
+	if (syscall_nr < 0)
+		return;
+
+	/* Here we're inside tp handler's rcu_read_lock_sched (__DO_TRACE()) */
+	ftrace_file = rcu_dereference_sched(tr->exit_syscall_files[syscall_nr]);
+	if (!ftrace_file)
+		return;
+
+	if (test_bit(FTRACE_EVENT_FL_SOFT_DISABLED_BIT, &ftrace_file->flags))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	sys_data = syscall_nr_to_meta(syscall_nr);
@@ -370,7 +518,12 @@ void ftrace_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 	local_save_flags(irq_flags);
 	pc = preempt_count();
 
+<<<<<<< HEAD
 	event = trace_current_buffer_lock_reserve(&buffer,
+=======
+	buffer = tr->trace_buffer.buffer;
+	event = trace_buffer_lock_reserve(buffer,
+>>>>>>> refs/remotes/origin/master
 			sys_data->exit_event->event.type, sizeof(*entry),
 			irq_flags, pc);
 	if (!event)
@@ -380,14 +533,25 @@ void ftrace_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 	entry->nr = syscall_nr;
 	entry->ret = syscall_get_return_value(current, regs);
 
+<<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, sys_data->exit_event,
 					  entry, event))
+=======
+	if (!filter_check_discard(ftrace_file, entry, buffer, event))
+>>>>>>> refs/remotes/origin/master
 		trace_current_buffer_unlock_commit(buffer, event,
 						   irq_flags, pc);
 }
 
+<<<<<<< HEAD
 int reg_event_syscall_enter(struct ftrace_event_call *call)
 {
+=======
+static int reg_event_syscall_enter(struct ftrace_event_file *file,
+				   struct ftrace_event_call *call)
+{
+	struct trace_array *tr = file->tr;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	int num;
 
@@ -395,24 +559,40 @@ int reg_event_syscall_enter(struct ftrace_event_call *call)
 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
 		return -ENOSYS;
 	mutex_lock(&syscall_trace_lock);
+<<<<<<< HEAD
 	if (!sys_refcount_enter)
 		ret = register_trace_sys_enter(ftrace_syscall_enter, NULL);
 	if (!ret) {
 		set_bit(num, enabled_enter_syscalls);
 		sys_refcount_enter++;
+=======
+	if (!tr->sys_refcount_enter)
+		ret = register_trace_sys_enter(ftrace_syscall_enter, tr);
+	if (!ret) {
+		rcu_assign_pointer(tr->enter_syscall_files[num], file);
+		tr->sys_refcount_enter++;
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&syscall_trace_lock);
 	return ret;
 }
 
+<<<<<<< HEAD
 void unreg_event_syscall_enter(struct ftrace_event_call *call)
 {
+=======
+static void unreg_event_syscall_enter(struct ftrace_event_file *file,
+				      struct ftrace_event_call *call)
+{
+	struct trace_array *tr = file->tr;
+>>>>>>> refs/remotes/origin/master
 	int num;
 
 	num = ((struct syscall_metadata *)call->data)->syscall_nr;
 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
 		return;
 	mutex_lock(&syscall_trace_lock);
+<<<<<<< HEAD
 	sys_refcount_enter--;
 	clear_bit(num, enabled_enter_syscalls);
 	if (!sys_refcount_enter)
@@ -422,6 +602,19 @@ void unreg_event_syscall_enter(struct ftrace_event_call *call)
 
 int reg_event_syscall_exit(struct ftrace_event_call *call)
 {
+=======
+	tr->sys_refcount_enter--;
+	rcu_assign_pointer(tr->enter_syscall_files[num], NULL);
+	if (!tr->sys_refcount_enter)
+		unregister_trace_sys_enter(ftrace_syscall_enter, tr);
+	mutex_unlock(&syscall_trace_lock);
+}
+
+static int reg_event_syscall_exit(struct ftrace_event_file *file,
+				  struct ftrace_event_call *call)
+{
+	struct trace_array *tr = file->tr;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	int num;
 
@@ -429,24 +622,40 @@ int reg_event_syscall_exit(struct ftrace_event_call *call)
 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
 		return -ENOSYS;
 	mutex_lock(&syscall_trace_lock);
+<<<<<<< HEAD
 	if (!sys_refcount_exit)
 		ret = register_trace_sys_exit(ftrace_syscall_exit, NULL);
 	if (!ret) {
 		set_bit(num, enabled_exit_syscalls);
 		sys_refcount_exit++;
+=======
+	if (!tr->sys_refcount_exit)
+		ret = register_trace_sys_exit(ftrace_syscall_exit, tr);
+	if (!ret) {
+		rcu_assign_pointer(tr->exit_syscall_files[num], file);
+		tr->sys_refcount_exit++;
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&syscall_trace_lock);
 	return ret;
 }
 
+<<<<<<< HEAD
 void unreg_event_syscall_exit(struct ftrace_event_call *call)
 {
+=======
+static void unreg_event_syscall_exit(struct ftrace_event_file *file,
+				     struct ftrace_event_call *call)
+{
+	struct trace_array *tr = file->tr;
+>>>>>>> refs/remotes/origin/master
 	int num;
 
 	num = ((struct syscall_metadata *)call->data)->syscall_nr;
 	if (WARN_ON_ONCE(num < 0 || num >= NR_syscalls))
 		return;
 	mutex_lock(&syscall_trace_lock);
+<<<<<<< HEAD
 	sys_refcount_exit--;
 	clear_bit(num, enabled_exit_syscalls);
 	if (!sys_refcount_exit)
@@ -455,6 +664,16 @@ void unreg_event_syscall_exit(struct ftrace_event_call *call)
 }
 
 int init_syscall_trace(struct ftrace_event_call *call)
+=======
+	tr->sys_refcount_exit--;
+	rcu_assign_pointer(tr->exit_syscall_files[num], NULL);
+	if (!tr->sys_refcount_exit)
+		unregister_trace_sys_exit(ftrace_syscall_exit, tr);
+	mutex_unlock(&syscall_trace_lock);
+}
+
+static int __init init_syscall_trace(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	int id;
 	int num;
@@ -479,17 +698,49 @@ int init_syscall_trace(struct ftrace_event_call *call)
 	return id;
 }
 
+<<<<<<< HEAD
+=======
+struct trace_event_functions enter_syscall_print_funcs = {
+	.trace		= print_syscall_enter,
+};
+
+struct trace_event_functions exit_syscall_print_funcs = {
+	.trace		= print_syscall_exit,
+};
+
+struct ftrace_event_class __refdata event_class_syscall_enter = {
+	.system		= "syscalls",
+	.reg		= syscall_enter_register,
+	.define_fields	= syscall_enter_define_fields,
+	.get_fields	= syscall_get_enter_fields,
+	.raw_init	= init_syscall_trace,
+};
+
+struct ftrace_event_class __refdata event_class_syscall_exit = {
+	.system		= "syscalls",
+	.reg		= syscall_exit_register,
+	.define_fields	= syscall_exit_define_fields,
+	.fields		= LIST_HEAD_INIT(event_class_syscall_exit.fields),
+	.raw_init	= init_syscall_trace,
+};
+
+>>>>>>> refs/remotes/origin/master
 unsigned long __init __weak arch_syscall_addr(int nr)
 {
 	return (unsigned long)sys_call_table[nr];
 }
 
+<<<<<<< HEAD
 int __init init_ftrace_syscalls(void)
+=======
+static int __init init_ftrace_syscalls(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct syscall_metadata *meta;
 	unsigned long addr;
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	syscalls_metadata = kzalloc(sizeof(*syscalls_metadata) *
 					NR_syscalls, GFP_KERNEL);
@@ -497,6 +748,10 @@ int __init init_ftrace_syscalls(void)
 	syscalls_metadata = kcalloc(NR_syscalls, sizeof(*syscalls_metadata),
 				    GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	syscalls_metadata = kcalloc(NR_syscalls, sizeof(*syscalls_metadata),
+				    GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!syscalls_metadata) {
 		WARN_ON(1);
 		return -ENOMEM;
@@ -514,7 +769,11 @@ int __init init_ftrace_syscalls(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 core_initcall(init_ftrace_syscalls);
+=======
+early_initcall(init_ftrace_syscalls);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PERF_EVENTS
 
@@ -532,7 +791,13 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
 	int rctx;
 	int size;
 
+<<<<<<< HEAD
 	syscall_nr = syscall_get_nr(current, regs);
+=======
+	syscall_nr = trace_get_syscall_nr(current, regs);
+	if (syscall_nr < 0)
+		return;
+>>>>>>> refs/remotes/origin/master
 	if (!test_bit(syscall_nr, enabled_perf_enter_syscalls))
 		return;
 
@@ -540,15 +805,25 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
 	if (!sys_data)
 		return;
 
+<<<<<<< HEAD
+=======
+	head = this_cpu_ptr(sys_data->enter_event->perf_events);
+	if (hlist_empty(head))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	/* get the size after alignment with the u32 buffer size field */
 	size = sizeof(unsigned long) * sys_data->nb_args + sizeof(*rec);
 	size = ALIGN(size + sizeof(u32), sizeof(u64));
 	size -= sizeof(u32);
 
+<<<<<<< HEAD
 	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
 		      "perf buffer not large enough"))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	rec = (struct syscall_trace_enter *)perf_trace_buf_prepare(size,
 				sys_data->enter_event->event.type, regs, &rctx);
 	if (!rec)
@@ -557,12 +832,19 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
 	rec->nr = syscall_nr;
 	syscall_get_arguments(current, regs, 0, sys_data->nb_args,
 			       (unsigned long *)&rec->args);
+<<<<<<< HEAD
 
 	head = this_cpu_ptr(sys_data->enter_event->perf_events);
 	perf_trace_buf_submit(rec, size, rctx, 0, 1, regs, head);
 }
 
 int perf_sysenter_enable(struct ftrace_event_call *call)
+=======
+	perf_trace_buf_submit(rec, size, rctx, 0, 1, regs, head, NULL);
+}
+
+static int perf_sysenter_enable(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	int num;
@@ -583,7 +865,11 @@ int perf_sysenter_enable(struct ftrace_event_call *call)
 	return ret;
 }
 
+<<<<<<< HEAD
 void perf_sysenter_disable(struct ftrace_event_call *call)
+=======
+static void perf_sysenter_disable(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	int num;
 
@@ -606,7 +892,13 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 	int rctx;
 	int size;
 
+<<<<<<< HEAD
 	syscall_nr = syscall_get_nr(current, regs);
+=======
+	syscall_nr = trace_get_syscall_nr(current, regs);
+	if (syscall_nr < 0)
+		return;
+>>>>>>> refs/remotes/origin/master
 	if (!test_bit(syscall_nr, enabled_perf_exit_syscalls))
 		return;
 
@@ -614,10 +906,18 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 	if (!sys_data)
 		return;
 
+<<<<<<< HEAD
+=======
+	head = this_cpu_ptr(sys_data->exit_event->perf_events);
+	if (hlist_empty(head))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	/* We can probably do that at build time */
 	size = ALIGN(sizeof(*rec) + sizeof(u32), sizeof(u64));
 	size -= sizeof(u32);
 
+<<<<<<< HEAD
 	/*
 	 * Impossible, but be paranoid with the future
 	 * How to put this check outside runtime?
@@ -626,6 +926,8 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 		"exit event has grown above perf buffer size"))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	rec = (struct syscall_trace_exit *)perf_trace_buf_prepare(size,
 				sys_data->exit_event->event.type, regs, &rctx);
 	if (!rec)
@@ -633,12 +935,19 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
 
 	rec->nr = syscall_nr;
 	rec->ret = syscall_get_return_value(current, regs);
+<<<<<<< HEAD
 
 	head = this_cpu_ptr(sys_data->exit_event->perf_events);
 	perf_trace_buf_submit(rec, size, rctx, 0, 1, regs, head);
 }
 
 int perf_sysexit_enable(struct ftrace_event_call *call)
+=======
+	perf_trace_buf_submit(rec, size, rctx, 0, 1, regs, head, NULL);
+}
+
+static int perf_sysexit_enable(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	int num;
@@ -659,7 +968,11 @@ int perf_sysexit_enable(struct ftrace_event_call *call)
 	return ret;
 }
 
+<<<<<<< HEAD
 void perf_sysexit_disable(struct ftrace_event_call *call)
+=======
+static void perf_sysexit_disable(struct ftrace_event_call *call)
+>>>>>>> refs/remotes/origin/master
 {
 	int num;
 
@@ -677,6 +990,7 @@ void perf_sysexit_disable(struct ftrace_event_call *call)
 
 static int syscall_enter_register(struct ftrace_event_call *event,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 enum trace_reg type)
 =======
 				 enum trace_reg type, void *data)
@@ -687,6 +1001,17 @@ static int syscall_enter_register(struct ftrace_event_call *event,
 		return reg_event_syscall_enter(event);
 	case TRACE_REG_UNREGISTER:
 		unreg_event_syscall_enter(event);
+=======
+				 enum trace_reg type, void *data)
+{
+	struct ftrace_event_file *file = data;
+
+	switch (type) {
+	case TRACE_REG_REGISTER:
+		return reg_event_syscall_enter(file, event);
+	case TRACE_REG_UNREGISTER:
+		unreg_event_syscall_enter(file, event);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 #ifdef CONFIG_PERF_EVENTS
@@ -696,19 +1021,26 @@ static int syscall_enter_register(struct ftrace_event_call *event,
 		perf_sysenter_disable(event);
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case TRACE_REG_PERF_OPEN:
 	case TRACE_REG_PERF_CLOSE:
 	case TRACE_REG_PERF_ADD:
 	case TRACE_REG_PERF_DEL:
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 	return 0;
 }
 
 static int syscall_exit_register(struct ftrace_event_call *event,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 enum trace_reg type)
 =======
@@ -720,6 +1052,17 @@ static int syscall_exit_register(struct ftrace_event_call *event,
 		return reg_event_syscall_exit(event);
 	case TRACE_REG_UNREGISTER:
 		unreg_event_syscall_exit(event);
+=======
+				 enum trace_reg type, void *data)
+{
+	struct ftrace_event_file *file = data;
+
+	switch (type) {
+	case TRACE_REG_REGISTER:
+		return reg_event_syscall_exit(file, event);
+	case TRACE_REG_UNREGISTER:
+		unreg_event_syscall_exit(file, event);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 #ifdef CONFIG_PERF_EVENTS
@@ -729,13 +1072,19 @@ static int syscall_exit_register(struct ftrace_event_call *event,
 		perf_sysexit_disable(event);
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case TRACE_REG_PERF_OPEN:
 	case TRACE_REG_PERF_CLOSE:
 	case TRACE_REG_PERF_ADD:
 	case TRACE_REG_PERF_DEL:
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 	return 0;

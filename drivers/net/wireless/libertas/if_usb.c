@@ -6,14 +6,22 @@
 
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/firmware.h>
 #include <linux/netdevice.h>
 #include <linux/slab.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
+=======
+#include <linux/olpc-ec.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OLPC
 #include <asm/olpc.h>
@@ -33,9 +41,12 @@
 
 #define MESSAGE_HEADER_LEN	4
 
+<<<<<<< HEAD
 static char *lbs_fw_name = NULL;
 module_param_named(fw_name, lbs_fw_name, charp, 0644);
 
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_FIRMWARE("libertas/usb8388_v9.bin");
 MODULE_FIRMWARE("libertas/usb8388_v5.bin");
 MODULE_FIRMWARE("libertas/usb8388.bin");
@@ -48,6 +59,19 @@ enum {
 	MODEL_8682 = 0x2
 };
 
+<<<<<<< HEAD
+=======
+/* table of firmware file names */
+static const struct lbs_fw_table fw_table[] = {
+	{ MODEL_8388, "libertas/usb8388_olpc.bin", NULL },
+	{ MODEL_8388, "libertas/usb8388_v9.bin", NULL },
+	{ MODEL_8388, "libertas/usb8388_v5.bin", NULL },
+	{ MODEL_8388, "libertas/usb8388.bin", NULL },
+	{ MODEL_8388, "usb8388.bin", NULL },
+	{ MODEL_8682, "libertas/usb8682.bin", NULL }
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct usb_device_id if_usb_table[] = {
 	/* Enter the device signature inside */
 	{ USB_DEVICE(0x1286, 0x2001), .driver_info = MODEL_8388 },
@@ -59,10 +83,16 @@ MODULE_DEVICE_TABLE(usb, if_usb_table);
 
 static void if_usb_receive(struct urb *urb);
 static void if_usb_receive_fwload(struct urb *urb);
+<<<<<<< HEAD
 static int __if_usb_prog_firmware(struct if_usb_card *cardp,
 					const char *fwname, int cmd);
 static int if_usb_prog_firmware(struct if_usb_card *cardp,
 					const char *fwname, int cmd);
+=======
+static void if_usb_prog_firmware(struct lbs_private *priv, int ret,
+				 const struct firmware *fw,
+				 const struct firmware *unused);
+>>>>>>> refs/remotes/origin/master
 static int if_usb_host_to_card(struct lbs_private *priv, uint8_t type,
 			       uint8_t *payload, uint16_t nb);
 static int usb_tx_block(struct if_usb_card *cardp, uint8_t *payload,
@@ -71,6 +101,7 @@ static void if_usb_free(struct if_usb_card *cardp);
 static int if_usb_submit_rx_urb(struct if_usb_card *cardp);
 static int if_usb_reset_device(struct if_usb_card *cardp);
 
+<<<<<<< HEAD
 /* sysfs hooks */
 
 /*
@@ -134,6 +165,8 @@ static ssize_t if_usb_boot2_set(struct device *dev,
  */
 static DEVICE_ATTR(lbs_flash_boot2, 0200, NULL, if_usb_boot2_set);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * if_usb_write_bulk_callback - callback function to handle the status
  * of the URB
@@ -260,11 +293,16 @@ static int if_usb_probe(struct usb_interface *intf,
 	struct usb_endpoint_descriptor *endpoint;
 	struct lbs_private *priv;
 	struct if_usb_card *cardp;
+<<<<<<< HEAD
+=======
+	int r = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	udev = interface_to_usbdev(intf);
 
 	cardp = kzalloc(sizeof(struct if_usb_card), GFP_KERNEL);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!cardp) {
 		pr_err("Out of memory allocating private data\n");
@@ -274,6 +312,10 @@ static int if_usb_probe(struct usb_interface *intf,
 	if (!cardp)
 		goto error;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!cardp)
+		goto error;
+>>>>>>> refs/remotes/origin/master
 
 	setup_timer(&cardp->fw_timeout, if_usb_fw_timeo, (unsigned long)cardp);
 	init_waitqueue_head(&cardp->fw_wq);
@@ -324,6 +366,7 @@ static int if_usb_probe(struct usb_interface *intf,
 		goto dealloc;
 	}
 
+<<<<<<< HEAD
 	/* Upload firmware */
 	kparam_block_sysfs_write(fw_name);
 	if (__if_usb_prog_firmware(cardp, lbs_fw_name, BOOT_CMD_FW_BY_USB)) {
@@ -342,6 +385,12 @@ static int if_usb_probe(struct usb_interface *intf,
 
 	cardp->priv = priv;
 	cardp->priv->fw_ready = 1;
+=======
+	if (!(priv = lbs_add_card(cardp, &intf->dev)))
+		goto err_add_card;
+
+	cardp->priv = priv;
+>>>>>>> refs/remotes/origin/master
 
 	priv->hw_host_to_card = if_usb_host_to_card;
 	priv->enter_deep_sleep = NULL;
@@ -354,6 +403,7 @@ static int if_usb_probe(struct usb_interface *intf,
 
 	cardp->boot2_version = udev->descriptor.bcdDevice;
 
+<<<<<<< HEAD
 	if_usb_submit_rx_urb(cardp);
 
 	if (lbs_start_card(priv))
@@ -384,12 +434,31 @@ static int if_usb_probe(struct usb_interface *intf,
 err_start_card:
 	lbs_remove_card(priv);
 err_prog_firmware:
+=======
+	usb_get_dev(udev);
+	usb_set_intfdata(intf, cardp);
+
+	r = lbs_get_firmware_async(priv, &udev->dev, cardp->model,
+				   fw_table, if_usb_prog_firmware);
+	if (r)
+		goto err_get_fw;
+
+	return 0;
+
+err_get_fw:
+	lbs_remove_card(priv);
+err_add_card:
+>>>>>>> refs/remotes/origin/master
 	if_usb_reset_device(cardp);
 dealloc:
 	if_usb_free(cardp);
 
 error:
+<<<<<<< HEAD
 	return -ENOMEM;
+=======
+	return r;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -400,6 +469,7 @@ error:
 static void if_usb_disconnect(struct usb_interface *intf)
 {
 	struct if_usb_card *cardp = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	struct lbs_private *priv = (struct lbs_private *) cardp->priv;
 
 	lbs_deb_enter(LBS_DEB_MAIN);
@@ -411,6 +481,15 @@ static void if_usb_disconnect(struct usb_interface *intf)
 
 	if (priv) {
 		priv->surpriseremoved = 1;
+=======
+	struct lbs_private *priv = cardp->priv;
+
+	lbs_deb_enter(LBS_DEB_MAIN);
+
+	cardp->surprise_removed = 1;
+
+	if (priv) {
+>>>>>>> refs/remotes/origin/master
 		lbs_stop_card(priv);
 		lbs_remove_card(priv);
 	}
@@ -927,6 +1006,7 @@ static int check_fwfile_format(const uint8_t *data, uint32_t totlen)
 	return ret;
 }
 
+<<<<<<< HEAD
 
 /**
 *  if_usb_prog_firmware - programs the firmware subject to cmd
@@ -1047,14 +1127,33 @@ static int __if_usb_prog_firmware(struct if_usb_card *cardp,
 	lbs_deb_enter(LBS_DEB_USB);
 
 	ret = get_fw(cardp, fwname);
+=======
+static void if_usb_prog_firmware(struct lbs_private *priv, int ret,
+				 const struct firmware *fw,
+				 const struct firmware *unused)
+{
+	struct if_usb_card *cardp = priv->card;
+	int i = 0;
+	static int reset_count = 10;
+
+	lbs_deb_enter(LBS_DEB_USB);
+
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		pr_err("failed to find firmware (%d)\n", ret);
 		goto done;
 	}
 
+<<<<<<< HEAD
 	if (check_fwfile_format(cardp->fw->data, cardp->fw->size)) {
 		ret = -EINVAL;
 		goto release_fw;
+=======
+	cardp->fw = fw;
+	if (check_fwfile_format(cardp->fw->data, cardp->fw->size)) {
+		ret = -EINVAL;
+		goto done;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Cancel any pending usb business */
@@ -1071,14 +1170,22 @@ restart:
 	if (if_usb_submit_rx_urb_fwload(cardp) < 0) {
 		lbs_deb_usbd(&cardp->udev->dev, "URB submission is failed\n");
 		ret = -EIO;
+<<<<<<< HEAD
 		goto release_fw;
+=======
+		goto done;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cardp->bootcmdresp = 0;
 	do {
 		int j = 0;
 		i++;
+<<<<<<< HEAD
 		if_usb_issue_boot_command(cardp, cmd);
+=======
+		if_usb_issue_boot_command(cardp, BOOT_CMD_FW_BY_USB);
+>>>>>>> refs/remotes/origin/master
 		/* wait for command response */
 		do {
 			j++;
@@ -1093,14 +1200,22 @@ restart:
 		usb_kill_urb(cardp->tx_urb);
 		if (if_usb_submit_rx_urb(cardp) < 0)
 			ret = -EIO;
+<<<<<<< HEAD
 		goto release_fw;
+=======
+		goto done;
+>>>>>>> refs/remotes/origin/master
 	} else if (cardp->bootcmdresp <= 0) {
 		if (--reset_count >= 0) {
 			if_usb_reset_device(cardp);
 			goto restart;
 		}
 		ret = -EIO;
+<<<<<<< HEAD
 		goto release_fw;
+=======
+		goto done;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	i = 0;
@@ -1131,6 +1246,7 @@ restart:
 
 		pr_info("FW download failure, time = %d ms\n", i * 100);
 		ret = -EIO;
+<<<<<<< HEAD
 		goto release_fw;
 	}
 
@@ -1141,6 +1257,29 @@ restart:
  done:
 	lbs_deb_leave_args(LBS_DEB_USB, "ret %d", ret);
 	return ret;
+=======
+		goto done;
+	}
+
+	cardp->priv->fw_ready = 1;
+	if_usb_submit_rx_urb(cardp);
+
+	if (lbs_start_card(priv))
+		goto done;
+
+	if_usb_setup_firmware(priv);
+
+	/*
+	 * EHS_REMOVE_WAKEUP is not supported on all versions of the firmware.
+	 */
+	priv->wol_criteria = EHS_REMOVE_WAKEUP;
+	if (lbs_host_sleep_cfg(priv, priv->wol_criteria, NULL))
+		priv->ehs_remove_supported = false;
+
+ done:
+	cardp->fw = NULL;
+	lbs_deb_leave(LBS_DEB_USB);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1153,11 +1292,19 @@ static int if_usb_suspend(struct usb_interface *intf, pm_message_t message)
 
 	lbs_deb_enter(LBS_DEB_USB);
 
+<<<<<<< HEAD
 	if (priv->psstate != PS_STATE_FULL_POWER)
 		return -1;
 
 <<<<<<< HEAD
 =======
+=======
+	if (priv->psstate != PS_STATE_FULL_POWER) {
+		ret = -1;
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_OLPC
 	if (machine_is_olpc()) {
 		if (priv->wol_criteria == EHS_REMOVE_WAKEUP)
@@ -1167,7 +1314,10 @@ static int if_usb_suspend(struct usb_interface *intf, pm_message_t message)
 	}
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = lbs_suspend(priv);
 	if (ret)
 		goto out;
@@ -1208,6 +1358,7 @@ static struct usb_driver if_usb_driver = {
 	.suspend = if_usb_suspend,
 	.resume = if_usb_resume,
 	.reset_resume = if_usb_resume,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -1237,6 +1388,12 @@ module_exit(if_usb_exit_module);
 =======
 module_usb_driver(if_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(if_usb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("8388 USB WLAN Driver");
 MODULE_AUTHOR("Marvell International Ltd. and Red Hat, Inc.");

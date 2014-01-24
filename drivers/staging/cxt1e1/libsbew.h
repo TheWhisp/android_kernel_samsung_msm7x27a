@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: libsbew.h,v 2.1 2005/10/27 18:54:19 rickd PMCC4_3_1B $
  */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_LIBSBEW_H_
 #define _INC_LIBSBEW_H_
 
@@ -28,6 +31,7 @@
  * For further information, contact via email: support@sbei.com
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 2.1 $
@@ -59,6 +63,10 @@ extern      "C"
  */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+>>>>>>> refs/remotes/origin/master
 /********************************/
 /**  set driver logging level  **/
 /********************************/
@@ -332,10 +340,14 @@ struct sbecom_port_param
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Posssible resettable chipsets/functions */
 =======
 /* Possible resettable chipsets/functions */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Possible resettable chipsets/functions */
+>>>>>>> refs/remotes/origin/master
 #define RESET_DEV_TEMUX     1
 #define RESET_DEV_TECT3     RESET_DEV_TEMUX
 #define RESET_DEV_PLL       2
@@ -587,10 +599,13 @@ struct sbecom_port_param
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __cplusplus
 }
 #endif
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif                          /*** _INC_LIBSBEW_H_ ***/

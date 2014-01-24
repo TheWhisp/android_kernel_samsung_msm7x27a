@@ -148,9 +148,15 @@ static int full_duplex[MAX_UNITS] = {-1, -1, -1, -1, -1, -1, -1, -1};
 
 /* Whether to use MMIO or PIO. Default to MMIO. */
 #ifdef CONFIG_8139TOO_PIO
+<<<<<<< HEAD
 static int use_io = 1;
 #else
 static int use_io = 0;
+=======
+static bool use_io = true;
+#else
+static bool use_io = false;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Maximum number of multicast addresses to filter (vs. Rx-all-multicast).
@@ -228,7 +234,11 @@ typedef enum {
 static const struct {
 	const char *name;
 	u32 hw_flags;
+<<<<<<< HEAD
 } board_info[] __devinitdata = {
+=======
+} board_info[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "RealTek RTL8139", RTL8139_CAPS },
 	{ "RealTek RTL8129", RTL8129_CAPS },
 };
@@ -620,7 +630,11 @@ MODULE_DESCRIPTION ("RealTek RTL-8139 Fast Ethernet driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
 
+<<<<<<< HEAD
 module_param(use_io, int, 0);
+=======
+module_param(use_io, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(use_io, "Force use of I/O access mode. 0=MMIO 1=PIO");
 module_param(multicast_filter_limit, int, 0);
 module_param_array(media, int, NULL, 0);
@@ -727,7 +741,10 @@ static void __rtl8139_cleanup_dev (struct net_device *dev)
 	pci_release_regions (pdev);
 
 	free_netdev(dev);
+<<<<<<< HEAD
 	pci_set_drvdata (pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -748,17 +765,36 @@ static void rtl8139_chip_reset (void __iomem *ioaddr)
 }
 
 
+<<<<<<< HEAD
 static __devinit struct net_device * rtl8139_init_board (struct pci_dev *pdev)
 {
+=======
+static struct net_device *rtl8139_init_board(struct pci_dev *pdev)
+{
+	struct device *d = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *ioaddr;
 	struct net_device *dev;
 	struct rtl8139_private *tp;
 	u8 tmp8;
 	int rc, disable_dev_on_err = 0;
+<<<<<<< HEAD
 	unsigned int i;
 	unsigned long pio_start, pio_end, pio_flags, pio_len;
 	unsigned long mmio_start, mmio_end, mmio_flags, mmio_len;
 	u32 version;
+=======
+	unsigned int i, bar;
+	unsigned long io_len;
+	u32 version;
+	static const struct {
+		unsigned long mask;
+		char *type;
+	} res[] = {
+		{ IORESOURCE_IO,  "PIO" },
+		{ IORESOURCE_MEM, "MMIO" }
+	};
+>>>>>>> refs/remotes/origin/master
 
 	assert (pdev != NULL);
 
@@ -777,6 +813,7 @@ static __devinit struct net_device * rtl8139_init_board (struct pci_dev *pdev)
 	if (rc)
 		goto err_out;
 
+<<<<<<< HEAD
 	pio_start = pci_resource_start (pdev, 0);
 	pio_end = pci_resource_end (pdev, 0);
 	pio_flags = pci_resource_flags (pdev, 0);
@@ -820,11 +857,14 @@ retry:
 		}
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = pci_request_regions (pdev, DRV_NAME);
 	if (rc)
 		goto err_out;
 	disable_dev_on_err = 1;
 
+<<<<<<< HEAD
 	/* enable PCI bus-mastering */
 	pci_set_master (pdev);
 
@@ -849,6 +889,45 @@ retry:
 		dev->base_addr = (long) ioaddr;
 		tp->regs_len = mmio_len;
 	}
+=======
+	pci_set_master (pdev);
+
+	u64_stats_init(&tp->rx_stats.syncp);
+	u64_stats_init(&tp->tx_stats.syncp);
+
+retry:
+	/* PIO bar register comes first. */
+	bar = !use_io;
+
+	io_len = pci_resource_len(pdev, bar);
+
+	dev_dbg(d, "%s region size = 0x%02lX\n", res[bar].type, io_len);
+
+	if (!(pci_resource_flags(pdev, bar) & res[bar].mask)) {
+		dev_err(d, "region #%d not a %s resource, aborting\n", bar,
+			res[bar].type);
+		rc = -ENODEV;
+		goto err_out;
+	}
+	if (io_len < RTL_MIN_IO_SIZE) {
+		dev_err(d, "Invalid PCI %s region size(s), aborting\n",
+			res[bar].type);
+		rc = -ENODEV;
+		goto err_out;
+	}
+
+	ioaddr = pci_iomap(pdev, bar, 0);
+	if (!ioaddr) {
+		dev_err(d, "cannot map %s\n", res[bar].type);
+		if (!use_io) {
+			use_io = true;
+			goto retry;
+		}
+		rc = -ENODEV;
+		goto err_out;
+	}
+	tp->regs_len = io_len;
+>>>>>>> refs/remotes/origin/master
 	tp->mmio_addr = ioaddr;
 
 	/* Bring old chips out of low-power mode. */
@@ -961,8 +1040,13 @@ static const struct net_device_ops rtl8139_netdev_ops = {
 	.ndo_set_features	= rtl8139_set_features,
 };
 
+<<<<<<< HEAD
 static int __devinit rtl8139_init_one (struct pci_dev *pdev,
 				       const struct pci_device_id *ent)
+=======
+static int rtl8139_init_one(struct pci_dev *pdev,
+			    const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = NULL;
 	struct rtl8139_private *tp;
@@ -1017,7 +1101,10 @@ static int __devinit rtl8139_init_one (struct pci_dev *pdev,
 	for (i = 0; i < 3; i++)
 		((__le16 *) (dev->dev_addr))[i] =
 		    cpu_to_le16(read_eeprom (ioaddr, i + 7, addr_len));
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, dev->dev_addr, dev->addr_len);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* The Rtl8139-specific entries in the device structure. */
 	dev->netdev_ops = &rtl8139_netdev_ops;
@@ -1035,8 +1122,11 @@ static int __devinit rtl8139_init_one (struct pci_dev *pdev,
 	dev->hw_features |= NETIF_F_RXALL;
 	dev->hw_features |= NETIF_F_RXFCS;
 
+<<<<<<< HEAD
 	dev->irq = pdev->irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* tp zeroed and aligned in alloc_etherdev */
 	tp = netdev_priv(dev);
 
@@ -1062,9 +1152,15 @@ static int __devinit rtl8139_init_one (struct pci_dev *pdev,
 
 	pci_set_drvdata (pdev, dev);
 
+<<<<<<< HEAD
 	netdev_info(dev, "%s at 0x%lx, %pM, IRQ %d\n",
 		    board_info[ent->driver_data].name,
 		    dev->base_addr, dev->dev_addr, dev->irq);
+=======
+	netdev_info(dev, "%s at 0x%p, %pM, IRQ %d\n",
+		    board_info[ent->driver_data].name,
+		    ioaddr, dev->dev_addr, pdev->irq);
+>>>>>>> refs/remotes/origin/master
 
 	netdev_dbg(dev, "Identified 8139 chip type '%s'\n",
 		   rtl_chip_info[tp->chipset].name);
@@ -1131,7 +1227,11 @@ err_out:
 }
 
 
+<<<<<<< HEAD
 static void __devexit rtl8139_remove_one (struct pci_dev *pdev)
+=======
+static void rtl8139_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata (pdev);
 	struct rtl8139_private *tp = netdev_priv(dev);
@@ -1169,7 +1269,11 @@ static void __devexit rtl8139_remove_one (struct pci_dev *pdev)
 #define EE_READ_CMD		(6)
 #define EE_ERASE_CMD	(7)
 
+<<<<<<< HEAD
 static int __devinit read_eeprom (void __iomem *ioaddr, int location, int addr_len)
+=======
+static int read_eeprom(void __iomem *ioaddr, int location, int addr_len)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	unsigned retval = 0;
@@ -1201,7 +1305,11 @@ static int __devinit read_eeprom (void __iomem *ioaddr, int location, int addr_l
 	}
 
 	/* Terminate the EEPROM access. */
+<<<<<<< HEAD
 	RTL_W8 (Cfg9346, ~EE_CS);
+=======
+	RTL_W8(Cfg9346, 0);
+>>>>>>> refs/remotes/origin/master
 	eeprom_delay ();
 
 	return retval;
@@ -1339,10 +1447,18 @@ static void mdio_write (struct net_device *dev, int phy_id, int location,
 static int rtl8139_open (struct net_device *dev)
 {
 	struct rtl8139_private *tp = netdev_priv(dev);
+<<<<<<< HEAD
 	int retval;
 	void __iomem *ioaddr = tp->mmio_addr;
 
 	retval = request_irq (dev->irq, rtl8139_interrupt, IRQF_SHARED, dev->name, dev);
+=======
+	void __iomem *ioaddr = tp->mmio_addr;
+	const int irq = tp->pci_dev->irq;
+	int retval;
+
+	retval = request_irq(irq, rtl8139_interrupt, IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
@@ -1351,7 +1467,11 @@ static int rtl8139_open (struct net_device *dev)
 	tp->rx_ring = dma_alloc_coherent(&tp->pci_dev->dev, RX_BUF_TOT_LEN,
 					   &tp->rx_ring_dma, GFP_KERNEL);
 	if (tp->tx_bufs == NULL || tp->rx_ring == NULL) {
+<<<<<<< HEAD
 		free_irq(dev->irq, dev);
+=======
+		free_irq(irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 		if (tp->tx_bufs)
 			dma_free_coherent(&tp->pci_dev->dev, TX_BUF_TOT_LEN,
@@ -1377,7 +1497,11 @@ static int rtl8139_open (struct net_device *dev)
 		  "%s() ioaddr %#llx IRQ %d GP Pins %02x %s-duplex\n",
 		  __func__,
 		  (unsigned long long)pci_resource_start (tp->pci_dev, 1),
+<<<<<<< HEAD
 		  dev->irq, RTL_R8 (MediaStatus),
+=======
+		  irq, RTL_R8 (MediaStatus),
+>>>>>>> refs/remotes/origin/master
 		  tp->mii.full_duplex ? "full" : "half");
 
 	rtl8139_start_thread(tp);
@@ -2069,8 +2193,11 @@ keep_pkt:
 
 			netif_receive_skb (skb);
 		} else {
+<<<<<<< HEAD
 			if (net_ratelimit())
 				netdev_warn(dev, "Memory squeeze, dropping packet\n");
+=======
+>>>>>>> refs/remotes/origin/master
 			dev->stats.rx_dropped++;
 		}
 		received++;
@@ -2240,9 +2367,18 @@ static irqreturn_t rtl8139_interrupt (int irq, void *dev_instance)
  */
 static void rtl8139_poll_controller(struct net_device *dev)
 {
+<<<<<<< HEAD
 	disable_irq(dev->irq);
 	rtl8139_interrupt(dev->irq, dev);
 	enable_irq(dev->irq);
+=======
+	struct rtl8139_private *tp = netdev_priv(dev);
+	const int irq = tp->pci_dev->irq;
+
+	disable_irq(irq);
+	rtl8139_interrupt(irq, dev);
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -2295,7 +2431,11 @@ static int rtl8139_close (struct net_device *dev)
 
 	spin_unlock_irqrestore (&tp->lock, flags);
 
+<<<<<<< HEAD
 	free_irq (dev->irq, dev);
+=======
+	free_irq(tp->pci_dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 
 	rtl8139_tx_clear (tp);
 
@@ -2676,7 +2816,11 @@ static struct pci_driver rtl8139_pci_driver = {
 	.name		= DRV_NAME,
 	.id_table	= rtl8139_pci_tbl,
 	.probe		= rtl8139_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rtl8139_remove_one),
+=======
+	.remove		= rtl8139_remove_one,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= rtl8139_suspend,
 	.resume		= rtl8139_resume,

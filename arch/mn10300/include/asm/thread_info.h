@@ -16,12 +16,21 @@
 
 #include <asm/page.h>
 
+<<<<<<< HEAD
 #define PREEMPT_ACTIVE		0x10000000
 
 #ifdef CONFIG_4KSTACKS
 #define THREAD_SIZE		(4096)
 #else
 #define THREAD_SIZE		(8192)
+=======
+#ifdef CONFIG_4KSTACKS
+#define THREAD_SIZE		(4096)
+#define THREAD_SIZE_ORDER	(0)
+#else
+#define THREAD_SIZE		(8192)
+#define THREAD_SIZE_ORDER	(1)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define STACK_WARN		(THREAD_SIZE / 8)
@@ -120,6 +129,7 @@ static inline unsigned long current_stack_pointer(void)
 	return sp;
 }
 
+<<<<<<< HEAD
 #define __HAVE_ARCH_THREAD_INFO_ALLOCATOR
 
 /* thread information allocation */
@@ -135,6 +145,10 @@ static inline unsigned long current_stack_pointer(void)
 #define free_thread_info(ti)	kfree((ti))
 #else
 extern void free_thread_info(struct thread_info *);
+=======
+#ifndef CONFIG_KGDB
+void arch_release_thread_info(struct thread_info *ti);
+>>>>>>> refs/remotes/origin/master
 #endif
 #define get_thread_info(ti)	get_task_struct((ti)->task)
 #define put_thread_info(ti)	put_task_struct((ti)->task)
@@ -166,21 +180,28 @@ extern void free_thread_info(struct thread_info *);
 #define TIF_POLLING_NRFLAG	16	/* true if poll_idle() is polling TIF_NEED_RESCHED */
 #define TIF_MEMDIE		17	/* is terminating due to OOM killer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		18	/* freezing for suspend */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define _TIF_SYSCALL_TRACE	+(1 << TIF_SYSCALL_TRACE)
 #define _TIF_NOTIFY_RESUME	+(1 << TIF_NOTIFY_RESUME)
 #define _TIF_SIGPENDING		+(1 << TIF_SIGPENDING)
 #define _TIF_NEED_RESCHED	+(1 << TIF_NEED_RESCHED)
 #define _TIF_SINGLESTEP		+(1 << TIF_SINGLESTEP)
+<<<<<<< HEAD
 #define _TIF_RESTORE_SIGMASK	+(1 << TIF_RESTORE_SIGMASK)
 #define _TIF_POLLING_NRFLAG	+(1 << TIF_POLLING_NRFLAG)
 <<<<<<< HEAD
 #define _TIF_FREEZE		+(1 << TIF_FREEZE)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _TIF_POLLING_NRFLAG	+(1 << TIF_POLLING_NRFLAG)
+>>>>>>> refs/remotes/origin/master
 
 #define _TIF_WORK_MASK		0x0000FFFE	/* work to do on interrupt/exception return */
 #define _TIF_ALLWORK_MASK	0x0000FFFF	/* work to do on any return to u-space */

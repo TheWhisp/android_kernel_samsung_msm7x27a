@@ -40,6 +40,10 @@
 #include <linux/usb/input.h>
 #include <linux/hid.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <linux/input/mt.h>
+>>>>>>> refs/remotes/origin/master
 
 #define USB_VENDOR_ID_APPLE		0x05ac
 
@@ -68,7 +72,10 @@
 #define USB_DEVICE_ID_APPLE_WELLSPRING5_ISO	0x0246
 #define USB_DEVICE_ID_APPLE_WELLSPRING5_JIS	0x0247
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* MacbookAir4,1 (unibody, July 2011) */
 #define USB_DEVICE_ID_APPLE_WELLSPRING6A_ANSI	0x0249
 #define USB_DEVICE_ID_APPLE_WELLSPRING6A_ISO	0x024a
@@ -85,7 +92,18 @@
 #define USB_DEVICE_ID_APPLE_WELLSPRING7_ANSI	0x0262
 #define USB_DEVICE_ID_APPLE_WELLSPRING7_ISO	0x0263
 #define USB_DEVICE_ID_APPLE_WELLSPRING7_JIS	0x0264
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* MacbookPro10,2 (unibody, October 2012) */
+#define USB_DEVICE_ID_APPLE_WELLSPRING7A_ANSI	0x0259
+#define USB_DEVICE_ID_APPLE_WELLSPRING7A_ISO	0x025a
+#define USB_DEVICE_ID_APPLE_WELLSPRING7A_JIS	0x025b
+/* MacbookAir6,2 (unibody, June 2013) */
+#define USB_DEVICE_ID_APPLE_WELLSPRING8_ANSI	0x0290
+#define USB_DEVICE_ID_APPLE_WELLSPRING8_ISO	0x0291
+#define USB_DEVICE_ID_APPLE_WELLSPRING8_JIS	0x0292
+>>>>>>> refs/remotes/origin/master
 
 #define BCM5974_DEVICE(prod) {					\
 	.match_flags = (USB_DEVICE_ID_MATCH_DEVICE |		\
@@ -124,7 +142,10 @@ static const struct usb_device_id bcm5974_table[] = {
 	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING5_ISO),
 	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING5_JIS),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* MacbookAir4,1 */
 	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING6A_ANSI),
 	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING6A_ISO),
@@ -141,7 +162,18 @@ static const struct usb_device_id bcm5974_table[] = {
 	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING7_ANSI),
 	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING7_ISO),
 	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING7_JIS),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* MacbookPro10,2 */
+	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING7A_ANSI),
+	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING7A_ISO),
+	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING7A_JIS),
+	/* MacbookAir6,2 */
+	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING8_ANSI),
+	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING8_ISO),
+	BCM5974_DEVICE(USB_DEVICE_ID_APPLE_WELLSPRING8_JIS),
+>>>>>>> refs/remotes/origin/master
 	/* Terminating entry */
 	{}
 };
@@ -169,15 +201,28 @@ struct bt_data {
 /* trackpad header types */
 enum tp_type {
 	TYPE1,			/* plain trackpad */
+<<<<<<< HEAD
 	TYPE2			/* button integrated in trackpad */
+=======
+	TYPE2,			/* button integrated in trackpad */
+	TYPE3			/* additional header fields since June 2013 */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* trackpad finger data offsets, le16-aligned */
 #define FINGER_TYPE1		(13 * sizeof(__le16))
 #define FINGER_TYPE2		(15 * sizeof(__le16))
+<<<<<<< HEAD
 
 /* trackpad button data offsets */
 #define BUTTON_TYPE2		15
+=======
+#define FINGER_TYPE3		(19 * sizeof(__le16))
+
+/* trackpad button data offsets */
+#define BUTTON_TYPE2		15
+#define BUTTON_TYPE3		23
+>>>>>>> refs/remotes/origin/master
 
 /* list of device capability bits */
 #define HAS_INTEGRATED_BUTTON	1
@@ -189,26 +234,46 @@ struct tp_finger {
 	__le16 abs_y;		/* absolute y coodinate */
 	__le16 rel_x;		/* relative x coodinate */
 	__le16 rel_y;		/* relative y coodinate */
+<<<<<<< HEAD
 	__le16 size_major;	/* finger size, major axis? */
 	__le16 size_minor;	/* finger size, minor axis? */
 	__le16 orientation;	/* 16384 when point, else 15 bit angle */
 	__le16 force_major;	/* trackpad force, major axis? */
 	__le16 force_minor;	/* trackpad force, minor axis? */
+=======
+	__le16 tool_major;	/* tool area, major axis */
+	__le16 tool_minor;	/* tool area, minor axis */
+	__le16 orientation;	/* 16384 when point, else 15 bit angle */
+	__le16 touch_major;	/* touch area, major axis */
+	__le16 touch_minor;	/* touch area, minor axis */
+>>>>>>> refs/remotes/origin/master
 	__le16 unused[3];	/* zeros */
 	__le16 multi;		/* one finger: varies, more fingers: constant */
 } __attribute__((packed,aligned(2)));
 
 /* trackpad finger data size, empirically at least ten fingers */
+<<<<<<< HEAD
 #define SIZEOF_FINGER		sizeof(struct tp_finger)
 #define SIZEOF_ALL_FINGERS	(16 * SIZEOF_FINGER)
+=======
+#define MAX_FINGERS		16
+#define SIZEOF_FINGER		sizeof(struct tp_finger)
+#define SIZEOF_ALL_FINGERS	(MAX_FINGERS * SIZEOF_FINGER)
+>>>>>>> refs/remotes/origin/master
 #define MAX_FINGER_ORIENTATION	16384
 
 /* device-specific parameters */
 struct bcm5974_param {
+<<<<<<< HEAD
 	int dim;		/* logical dimension */
 	int fuzz;		/* logical noise value */
 	int devmin;		/* device minimum reading */
 	int devmax;		/* device maximum reading */
+=======
+	int snratio;		/* signal-to-noise ratio */
+	int min;		/* device minimum reading */
+	int max;		/* device maximum reading */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* device-specific configuration */
@@ -225,6 +290,10 @@ struct bcm5974_config {
 	struct bcm5974_param w;	/* finger width limits */
 	struct bcm5974_param x;	/* horizontal limits */
 	struct bcm5974_param y;	/* vertical limits */
+<<<<<<< HEAD
+=======
+	struct bcm5974_param o;	/* orientation limits */
+>>>>>>> refs/remotes/origin/master
 };
 
 /* logical device structure */
@@ -240,6 +309,7 @@ struct bcm5974 {
 	struct bt_data *bt_data;	/* button transferred data */
 	struct urb *tp_urb;		/* trackpad usb request block */
 	u8 *tp_data;			/* trackpad transferred data */
+<<<<<<< HEAD
 	int fingers;			/* number of fingers on trackpad */
 };
 
@@ -257,6 +327,18 @@ struct bcm5974 {
 /* pressure thresholds */
 #define PRESSURE_LOW	(2 * DIM_PRESSURE / SN_PRESSURE)
 #define PRESSURE_HIGH	(3 * PRESSURE_LOW)
+=======
+	const struct tp_finger *index[MAX_FINGERS];	/* finger index data */
+	struct input_mt_pos pos[MAX_FINGERS];		/* position array */
+	int slots[MAX_FINGERS];				/* slot assignments */
+};
+
+/* logical signal quality */
+#define SN_PRESSURE	45		/* pressure signal-to-noise ratio */
+#define SN_WIDTH	25		/* width signal-to-noise ratio */
+#define SN_COORD	250		/* coordinate signal-to-noise ratio */
+#define SN_ORIENT	10		/* orientation signal-to-noise ratio */
+>>>>>>> refs/remotes/origin/master
 
 /* device constants */
 static const struct bcm5974_config bcm5974_config_table[] = {
@@ -267,10 +349,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		0,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE1, FINGER_TYPE1, FINGER_TYPE1 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 256 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4824, 5342 },
 		{ DIM_Y, DIM_Y / SN_COORD, -172, 5820 }
+=======
+		{ SN_PRESSURE, 0, 256 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4824, 5342 },
+		{ SN_COORD, -172, 5820 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING2_ANSI,
@@ -279,10 +369,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		0,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE1, FINGER_TYPE1, FINGER_TYPE1 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 256 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4824, 4824 },
 		{ DIM_Y, DIM_Y / SN_COORD, -172, 4290 }
+=======
+		{ SN_PRESSURE, 0, 256 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4824, 4824 },
+		{ SN_COORD, -172, 4290 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING3_ANSI,
@@ -291,10 +389,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4460, 5166 },
 		{ DIM_Y, DIM_Y / SN_COORD, -75, 6700 }
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4460, 5166 },
+		{ SN_COORD, -75, 6700 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING4_ANSI,
@@ -303,10 +409,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4620, 5140 },
 		{ DIM_Y, DIM_Y / SN_COORD, -150, 6600 }
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4620, 5140 },
+		{ SN_COORD, -150, 6600 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING4A_ANSI,
@@ -315,10 +429,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4616, 5112 },
 		{ DIM_Y, DIM_Y / SN_COORD, -142, 5234 }
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4616, 5112 },
+		{ SN_COORD, -142, 5234 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING5_ANSI,
@@ -327,6 +449,7 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4415, 5050 },
@@ -334,6 +457,14 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 	},
 <<<<<<< HEAD
 =======
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4415, 5050 },
+		{ SN_COORD, -55, 6680 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+	},
+>>>>>>> refs/remotes/origin/master
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING6_ANSI,
 		USB_DEVICE_ID_APPLE_WELLSPRING6_ISO,
@@ -341,10 +472,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4620, 5140 },
 		{ DIM_Y, DIM_Y / SN_COORD, -150, 6600 }
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4620, 5140 },
+		{ SN_COORD, -150, 6600 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING5A_ANSI,
@@ -353,10 +492,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4750, 5280 },
 		{ DIM_Y, DIM_Y / SN_COORD, -150, 6730 }
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4750, 5280 },
+		{ SN_COORD, -150, 6730 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING6A_ANSI,
@@ -365,10 +512,18 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4620, 5140 },
 		{ DIM_Y, DIM_Y / SN_COORD, -150, 6600 }
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4620, 5140 },
+		{ SN_COORD, -150, 6600 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		USB_DEVICE_ID_APPLE_WELLSPRING7_ANSI,
@@ -377,12 +532,47 @@ static const struct bcm5974_config bcm5974_config_table[] = {
 		HAS_INTEGRATED_BUTTON,
 		0x84, sizeof(struct bt_data),
 		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+<<<<<<< HEAD
 		{ DIM_PRESSURE, DIM_PRESSURE / SN_PRESSURE, 0, 300 },
 		{ DIM_WIDTH, DIM_WIDTH / SN_WIDTH, 0, 2048 },
 		{ DIM_X, DIM_X / SN_COORD, -4750, 5280 },
 		{ DIM_Y, DIM_Y / SN_COORD, -150, 6730 }
 	},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4750, 5280 },
+		{ SN_COORD, -150, 6730 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+	},
+	{
+		USB_DEVICE_ID_APPLE_WELLSPRING7A_ANSI,
+		USB_DEVICE_ID_APPLE_WELLSPRING7A_ISO,
+		USB_DEVICE_ID_APPLE_WELLSPRING7A_JIS,
+		HAS_INTEGRATED_BUTTON,
+		0x84, sizeof(struct bt_data),
+		0x81, TYPE2, FINGER_TYPE2, FINGER_TYPE2 + SIZEOF_ALL_FINGERS,
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4750, 5280 },
+		{ SN_COORD, -150, 6730 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+	},
+	{
+		USB_DEVICE_ID_APPLE_WELLSPRING8_ANSI,
+		USB_DEVICE_ID_APPLE_WELLSPRING8_ISO,
+		USB_DEVICE_ID_APPLE_WELLSPRING8_JIS,
+		HAS_INTEGRATED_BUTTON,
+		0, sizeof(struct bt_data),
+		0x83, TYPE3, FINGER_TYPE3, FINGER_TYPE3 + SIZEOF_ALL_FINGERS,
+		{ SN_PRESSURE, 0, 300 },
+		{ SN_WIDTH, 0, 2048 },
+		{ SN_COORD, -4620, 5140 },
+		{ SN_COORD, -150, 6600 },
+		{ SN_ORIENT, -MAX_FINGER_ORIENTATION, MAX_FINGER_ORIENTATION }
+	},
+>>>>>>> refs/remotes/origin/master
 	{}
 };
 
@@ -405,6 +595,7 @@ static inline int raw2int(__le16 x)
 	return (signed short)le16_to_cpu(x);
 }
 
+<<<<<<< HEAD
 /* scale device data to logical dimensions (asserts devmin < devmax) */
 static inline int int2scale(const struct bcm5974_param *p, int x)
 {
@@ -417,6 +608,13 @@ static inline int int2bound(const struct bcm5974_param *p, int x)
 	int s = int2scale(p, x);
 
 	return clamp_val(s, 0, p->dim - 1);
+=======
+static void set_abs(struct input_dev *input, unsigned int code,
+		    const struct bcm5974_param *p)
+{
+	int fuzz = p->snratio ? (p->max - p->min) / p->snratio : 0;
+	input_set_abs_params(input, code, p->min, p->max, fuzz, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* setup which logical events to report */
@@ -425,6 +623,7 @@ static void setup_events_to_report(struct input_dev *input_dev,
 {
 	__set_bit(EV_ABS, input_dev->evbit);
 
+<<<<<<< HEAD
 	input_set_abs_params(input_dev, ABS_PRESSURE,
 				0, cfg->p.dim, cfg->p.fuzz, 0);
 	input_set_abs_params(input_dev, ABS_TOOL_WIDTH,
@@ -470,6 +669,32 @@ static void setup_events_to_report(struct input_dev *input_dev,
 		__set_bit(INPUT_PROP_BUTTONPAD, input_dev->propbit);
 
 	input_set_events_per_packet(input_dev, 60);
+=======
+	/* for synaptics only */
+	input_set_abs_params(input_dev, ABS_PRESSURE, 0, 256, 5, 0);
+	input_set_abs_params(input_dev, ABS_TOOL_WIDTH, 0, 16, 0, 0);
+
+	/* finger touch area */
+	set_abs(input_dev, ABS_MT_TOUCH_MAJOR, &cfg->w);
+	set_abs(input_dev, ABS_MT_TOUCH_MINOR, &cfg->w);
+	/* finger approach area */
+	set_abs(input_dev, ABS_MT_WIDTH_MAJOR, &cfg->w);
+	set_abs(input_dev, ABS_MT_WIDTH_MINOR, &cfg->w);
+	/* finger orientation */
+	set_abs(input_dev, ABS_MT_ORIENTATION, &cfg->o);
+	/* finger position */
+	set_abs(input_dev, ABS_MT_POSITION_X, &cfg->x);
+	set_abs(input_dev, ABS_MT_POSITION_Y, &cfg->y);
+
+	__set_bit(EV_KEY, input_dev->evbit);
+	__set_bit(BTN_LEFT, input_dev->keybit);
+
+	if (cfg->caps & HAS_INTEGRATED_BUTTON)
+		__set_bit(INPUT_PROP_BUTTONPAD, input_dev->propbit);
+
+	input_mt_init_slots(input_dev, MAX_FINGERS,
+		INPUT_MT_POINTER | INPUT_MT_DROP_UNUSED | INPUT_MT_TRACK);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* report button data as logical button state */
@@ -489,6 +714,7 @@ static int report_bt_state(struct bcm5974 *dev, int size)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void report_finger_data(struct input_dev *input,
 			       const struct bcm5974_config *cfg,
 			       const struct tp_finger *f)
@@ -507,6 +733,46 @@ static void report_finger_data(struct input_dev *input,
 	input_report_abs(input, ABS_MT_POSITION_Y,
 			 cfg->y.devmin + cfg->y.devmax - raw2int(f->abs_y));
 	input_mt_sync(input);
+=======
+static void report_finger_data(struct input_dev *input, int slot,
+			       const struct input_mt_pos *pos,
+			       const struct tp_finger *f)
+{
+	input_mt_slot(input, slot);
+	input_mt_report_slot_state(input, MT_TOOL_FINGER, true);
+
+	input_report_abs(input, ABS_MT_TOUCH_MAJOR,
+			 raw2int(f->touch_major) << 1);
+	input_report_abs(input, ABS_MT_TOUCH_MINOR,
+			 raw2int(f->touch_minor) << 1);
+	input_report_abs(input, ABS_MT_WIDTH_MAJOR,
+			 raw2int(f->tool_major) << 1);
+	input_report_abs(input, ABS_MT_WIDTH_MINOR,
+			 raw2int(f->tool_minor) << 1);
+	input_report_abs(input, ABS_MT_ORIENTATION,
+			 MAX_FINGER_ORIENTATION - raw2int(f->orientation));
+	input_report_abs(input, ABS_MT_POSITION_X, pos->x);
+	input_report_abs(input, ABS_MT_POSITION_Y, pos->y);
+}
+
+static void report_synaptics_data(struct input_dev *input,
+				  const struct bcm5974_config *cfg,
+				  const struct tp_finger *f, int raw_n)
+{
+	int abs_p = 0, abs_w = 0;
+
+	if (raw_n) {
+		int p = raw2int(f->touch_major);
+		int w = raw2int(f->tool_major);
+		if (p > 0 && raw2int(f->origin)) {
+			abs_p = clamp_val(256 * p / cfg->p.max, 0, 255);
+			abs_w = clamp_val(16 * w / cfg->w.max, 0, 15);
+		}
+	}
+
+	input_report_abs(input, ABS_PRESSURE, abs_p);
+	input_report_abs(input, ABS_TOOL_WIDTH, abs_w);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* report trackpad data as logical trackpad state */
@@ -515,9 +781,13 @@ static int report_tp_state(struct bcm5974 *dev, int size)
 	const struct bcm5974_config *c = &dev->cfg;
 	const struct tp_finger *f;
 	struct input_dev *input = dev->input;
+<<<<<<< HEAD
 	int raw_p, raw_w, raw_x, raw_y, raw_n, i;
 	int ptest, origin, ibt = 0, nmin = 0, nmax = 0;
 	int abs_p = 0, abs_w = 0, abs_x = 0, abs_y = 0;
+=======
+	int raw_n, i, n = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (size < c->tp_offset || (size - c->tp_offset) % SIZEOF_FINGER != 0)
 		return -EIO;
@@ -526,6 +796,7 @@ static int report_tp_state(struct bcm5974 *dev, int size)
 	f = (const struct tp_finger *)(dev->tp_data + c->tp_offset);
 	raw_n = (size - c->tp_offset) / SIZEOF_FINGER;
 
+<<<<<<< HEAD
 	/* always track the first finger; when detached, start over */
 	if (raw_n) {
 
@@ -596,6 +867,34 @@ static int report_tp_state(struct bcm5974 *dev, int size)
 	/* type 2 reports button events via ibt only */
 	if (c->tp_type == TYPE2)
 		input_report_key(input, BTN_LEFT, ibt);
+=======
+	for (i = 0; i < raw_n; i++) {
+		if (raw2int(f[i].touch_major) == 0)
+			continue;
+		dev->pos[n].x = raw2int(f[i].abs_x);
+		dev->pos[n].y = c->y.min + c->y.max - raw2int(f[i].abs_y);
+		dev->index[n++] = &f[i];
+	}
+
+	input_mt_assign_slots(input, dev->slots, dev->pos, n);
+
+	for (i = 0; i < n; i++)
+		report_finger_data(input, dev->slots[i],
+				   &dev->pos[i], dev->index[i]);
+
+	input_mt_sync_frame(input);
+
+	report_synaptics_data(input, c, f, raw_n);
+
+	/* type 2 reports button events via ibt only */
+	if (c->tp_type == TYPE2) {
+		int ibt = raw2int(dev->tp_data[BUTTON_TYPE2]);
+		input_report_key(input, BTN_LEFT, ibt);
+	}
+
+	if (c->tp_type == TYPE3)
+		input_report_key(input, BTN_LEFT, dev->tp_data[BUTTON_TYPE3]);
+>>>>>>> refs/remotes/origin/master
 
 	input_sync(input);
 
@@ -612,11 +911,24 @@ static int report_tp_state(struct bcm5974 *dev, int size)
 
 static int bcm5974_wellspring_mode(struct bcm5974 *dev, bool on)
 {
+<<<<<<< HEAD
 	char *data = kmalloc(8, GFP_KERNEL);
 	int retval = 0, size;
 
 	if (!data) {
 		err("bcm5974: out of memory");
+=======
+	int retval = 0, size;
+	char *data;
+
+	/* Type 3 does not require a mode switch */
+	if (dev->cfg.tp_type == TYPE3)
+		return 0;
+
+	data = kmalloc(8, GFP_KERNEL);
+	if (!data) {
+		dev_err(&dev->intf->dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -ENOMEM;
 		goto out;
 	}
@@ -629,7 +941,11 @@ static int bcm5974_wellspring_mode(struct bcm5974 *dev, bool on)
 			BCM5974_WELLSPRING_MODE_REQUEST_INDEX, data, 8, 5000);
 
 	if (size != 8) {
+<<<<<<< HEAD
 		err("bcm5974: could not read from device");
+=======
+		dev_err(&dev->intf->dev, "could not read from device\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -EIO;
 		goto out;
 	}
@@ -647,7 +963,11 @@ static int bcm5974_wellspring_mode(struct bcm5974 *dev, bool on)
 			BCM5974_WELLSPRING_MODE_REQUEST_INDEX, data, 8, 5000);
 
 	if (size != 8) {
+<<<<<<< HEAD
 		err("bcm5974: could not write to device");
+=======
+		dev_err(&dev->intf->dev, "could not write to device\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -EIO;
 		goto out;
 	}
@@ -663,6 +983,10 @@ static int bcm5974_wellspring_mode(struct bcm5974 *dev, bool on)
 static void bcm5974_irq_button(struct urb *urb)
 {
 	struct bcm5974 *dev = urb->context;
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf = dev->intf;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	switch (urb->status) {
@@ -672,10 +996,18 @@ static void bcm5974_irq_button(struct urb *urb)
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
+<<<<<<< HEAD
 		dbg("bcm5974: button urb shutting down: %d", urb->status);
 		return;
 	default:
 		dbg("bcm5974: button urb status: %d", urb->status);
+=======
+		dev_dbg(&intf->dev, "button urb shutting down: %d\n",
+			urb->status);
+		return;
+	default:
+		dev_dbg(&intf->dev, "button urb status: %d\n", urb->status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -686,12 +1018,20 @@ static void bcm5974_irq_button(struct urb *urb)
 exit:
 	error = usb_submit_urb(dev->bt_urb, GFP_ATOMIC);
 	if (error)
+<<<<<<< HEAD
 		err("bcm5974: button urb failed: %d", error);
+=======
+		dev_err(&intf->dev, "button urb failed: %d\n", error);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bcm5974_irq_trackpad(struct urb *urb)
 {
 	struct bcm5974 *dev = urb->context;
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf = dev->intf;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	switch (urb->status) {
@@ -701,10 +1041,18 @@ static void bcm5974_irq_trackpad(struct urb *urb)
 	case -ECONNRESET:
 	case -ENOENT:
 	case -ESHUTDOWN:
+<<<<<<< HEAD
 		dbg("bcm5974: trackpad urb shutting down: %d", urb->status);
 		return;
 	default:
 		dbg("bcm5974: trackpad urb status: %d", urb->status);
+=======
+		dev_dbg(&intf->dev, "trackpad urb shutting down: %d\n",
+			urb->status);
+		return;
+	default:
+		dev_dbg(&intf->dev, "trackpad urb status: %d\n", urb->status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -719,7 +1067,11 @@ static void bcm5974_irq_trackpad(struct urb *urb)
 exit:
 	error = usb_submit_urb(dev->tp_urb, GFP_ATOMIC);
 	if (error)
+<<<<<<< HEAD
 		err("bcm5974: trackpad urb failed: %d", error);
+=======
+		dev_err(&intf->dev, "trackpad urb failed: %d\n", error);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -750,9 +1102,17 @@ static int bcm5974_start_traffic(struct bcm5974 *dev)
 		goto err_out;
 	}
 
+<<<<<<< HEAD
 	error = usb_submit_urb(dev->bt_urb, GFP_KERNEL);
 	if (error)
 		goto err_reset_mode;
+=======
+	if (dev->bt_urb) {
+		error = usb_submit_urb(dev->bt_urb, GFP_KERNEL);
+		if (error)
+			goto err_reset_mode;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	error = usb_submit_urb(dev->tp_urb, GFP_KERNEL);
 	if (error)
@@ -865,7 +1225,11 @@ static int bcm5974_probe(struct usb_interface *iface,
 	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
 	input_dev = input_allocate_device();
 	if (!dev || !input_dev) {
+<<<<<<< HEAD
 		err("bcm5974: out of memory");
+=======
+		dev_err(&iface->dev, "out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_free_devs;
 	}
 
@@ -876,19 +1240,37 @@ static int bcm5974_probe(struct usb_interface *iface,
 	mutex_init(&dev->pm_mutex);
 
 	/* setup urbs */
+<<<<<<< HEAD
 	dev->bt_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->bt_urb)
 		goto err_free_devs;
+=======
+	if (cfg->tp_type == TYPE1) {
+		dev->bt_urb = usb_alloc_urb(0, GFP_KERNEL);
+		if (!dev->bt_urb)
+			goto err_free_devs;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dev->tp_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!dev->tp_urb)
 		goto err_free_bt_urb;
 
+<<<<<<< HEAD
 	dev->bt_data = usb_alloc_coherent(dev->udev,
 					  dev->cfg.bt_datalen, GFP_KERNEL,
 					  &dev->bt_urb->transfer_dma);
 	if (!dev->bt_data)
 		goto err_free_urb;
+=======
+	if (dev->bt_urb) {
+		dev->bt_data = usb_alloc_coherent(dev->udev,
+					  dev->cfg.bt_datalen, GFP_KERNEL,
+					  &dev->bt_urb->transfer_dma);
+		if (!dev->bt_data)
+			goto err_free_urb;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dev->tp_data = usb_alloc_coherent(dev->udev,
 					  dev->cfg.tp_datalen, GFP_KERNEL,
@@ -896,10 +1278,18 @@ static int bcm5974_probe(struct usb_interface *iface,
 	if (!dev->tp_data)
 		goto err_free_bt_buffer;
 
+<<<<<<< HEAD
 	usb_fill_int_urb(dev->bt_urb, udev,
 			 usb_rcvintpipe(udev, cfg->bt_ep),
 			 dev->bt_data, dev->cfg.bt_datalen,
 			 bcm5974_irq_button, dev, 1);
+=======
+	if (dev->bt_urb)
+		usb_fill_int_urb(dev->bt_urb, udev,
+				 usb_rcvintpipe(udev, cfg->bt_ep),
+				 dev->bt_data, dev->cfg.bt_datalen,
+				 bcm5974_irq_button, dev, 1);
+>>>>>>> refs/remotes/origin/master
 
 	usb_fill_int_urb(dev->tp_urb, udev,
 			 usb_rcvintpipe(udev, cfg->tp_ep),
@@ -937,8 +1327,14 @@ err_free_buffer:
 	usb_free_coherent(dev->udev, dev->cfg.tp_datalen,
 		dev->tp_data, dev->tp_urb->transfer_dma);
 err_free_bt_buffer:
+<<<<<<< HEAD
 	usb_free_coherent(dev->udev, dev->cfg.bt_datalen,
 		dev->bt_data, dev->bt_urb->transfer_dma);
+=======
+	if (dev->bt_urb)
+		usb_free_coherent(dev->udev, dev->cfg.bt_datalen,
+				  dev->bt_data, dev->bt_urb->transfer_dma);
+>>>>>>> refs/remotes/origin/master
 err_free_urb:
 	usb_free_urb(dev->tp_urb);
 err_free_bt_urb:
@@ -959,8 +1355,14 @@ static void bcm5974_disconnect(struct usb_interface *iface)
 	input_unregister_device(dev->input);
 	usb_free_coherent(dev->udev, dev->cfg.tp_datalen,
 			  dev->tp_data, dev->tp_urb->transfer_dma);
+<<<<<<< HEAD
 	usb_free_coherent(dev->udev, dev->cfg.bt_datalen,
 			  dev->bt_data, dev->bt_urb->transfer_dma);
+=======
+	if (dev->bt_urb)
+		usb_free_coherent(dev->udev, dev->cfg.bt_datalen,
+				  dev->bt_data, dev->bt_urb->transfer_dma);
+>>>>>>> refs/remotes/origin/master
 	usb_free_urb(dev->tp_urb);
 	usb_free_urb(dev->bt_urb);
 	kfree(dev);
@@ -976,6 +1378,7 @@ static struct usb_driver bcm5974_driver = {
 	.supports_autosuspend	= 1,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init bcm5974_init(void)
 {
@@ -993,3 +1396,6 @@ module_exit(bcm5974_exit);
 =======
 module_usb_driver(bcm5974_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(bcm5974_driver);
+>>>>>>> refs/remotes/origin/master

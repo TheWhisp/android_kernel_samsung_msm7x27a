@@ -30,7 +30,10 @@
 
 #include "osdep_service.h"
 #include "drv_types.h"
+<<<<<<< HEAD
 #include "rtl871x_byteorder.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "wifi.h"
 #include "osdep_intf.h"
 #include "usb_ops.h"
@@ -72,12 +75,17 @@ sint _r8712_init_xmit_priv(struct xmit_priv *pxmitpriv,
 	memset((unsigned char *)pxmitpriv, 0, sizeof(struct xmit_priv));
 	spin_lock_init(&pxmitpriv->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sema_init(&pxmitpriv->xmit_sema, 0);
 	sema_init(&pxmitpriv->terminate_xmitthread_sema, 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	/*
 	Please insert all the queue initializaiton using _init_queue below
+=======
+	/*
+	Please insert all the queue initialization using _init_queue below
+>>>>>>> refs/remotes/origin/master
 	*/
 	pxmitpriv->adapter = padapter;
 	_init_queue(&pxmitpriv->be_pending);
@@ -125,9 +133,12 @@ sint _r8712_init_xmit_priv(struct xmit_priv *pxmitpriv,
 	pxmitpriv->frag_len = MAX_FRAG_THRESHOLD;
 	pxmitpriv->txirp_cnt = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sema_init(&(pxmitpriv->tx_retevt), 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*per AC pending irp*/
 	pxmitpriv->beq_cnt = 0;
 	pxmitpriv->bkq_cnt = 0;
@@ -159,19 +170,25 @@ sint _r8712_init_xmit_priv(struct xmit_priv *pxmitpriv,
 	}
 	pxmitpriv->free_xmitbuf_cnt = NR_XMITBUFF;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	alloc_hwxmits(padapter);
 	init_hwxmits(pxmitpriv->hwxmits, pxmitpriv->hwxmit_entry);
 	tasklet_init(&pxmitpriv->xmit_tasklet,
 	     (void(*)(addr_t))r8712_xmit_bh,
 	     (addr_t)padapter);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	_init_workitem(&padapter->wkFilterRxFF0, r8712_SetFilter, padapter);
 	alloc_hwxmits(padapter);
 	init_hwxmits(pxmitpriv->hwxmits, pxmitpriv->hwxmit_entry);
 	tasklet_init(&pxmitpriv->xmit_tasklet,
 		(void(*)(unsigned long))r8712_xmit_bh,
 		(unsigned long)padapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return _SUCCESS;
 }
 
@@ -628,10 +645,14 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
 		return _FAIL;
 	_r8712_open_pktfile(pkt, &pktfile);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_r8712_pktfile_read(&pktfile, NULL, pattrib->pkt_hdrlen);
 =======
 	_r8712_pktfile_read(&pktfile, NULL, (uint) pattrib->pkt_hdrlen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	_r8712_pktfile_read(&pktfile, NULL, (uint) pattrib->pkt_hdrlen);
+>>>>>>> refs/remotes/origin/master
 	if (check_fwstate(pmlmepriv, WIFI_MP_STATE) == true) {
 		/* truncate TXDESC_SIZE bytes txcmd if at mp mode for 871x */
 		if (pattrib->ether_type == 0x8712) {
@@ -846,6 +867,7 @@ void r8712_free_xmitframe(struct xmit_priv *pxmitpriv,
 	struct  __queue *pfree_xmit_queue = &pxmitpriv->free_xmit_queue;
 	struct _adapter *padapter = pxmitpriv->adapter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (pxmitframe == NULL)
 		return;
@@ -854,6 +876,8 @@ void r8712_free_xmitframe(struct xmit_priv *pxmitpriv,
 	spin_lock_irqsave(&pfree_xmit_queue->lock, irqL);
 	list_delete(&pxmitframe->list);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *pndis_pkt = NULL;
 
 	if (pxmitframe == NULL)
@@ -864,7 +888,10 @@ void r8712_free_xmitframe(struct xmit_priv *pxmitpriv,
 		pndis_pkt = pxmitframe->pkt;
 		pxmitframe->pkt = NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_insert_tail(&pxmitframe->list, get_list_head(pfree_xmit_queue));
 	pxmitpriv->free_xmitframe_cnt++;
 	spin_unlock_irqrestore(&pfree_xmit_queue->lock, irqL);
@@ -1044,7 +1071,10 @@ static void init_hwxmits(struct hw_xmit *phwxmit, sint entry)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void xmitframe_xmitbuf_attach(struct xmit_frame *pxmitframe,
 			struct xmit_buf *pxmitbuf)
 {
@@ -1058,7 +1088,10 @@ void xmitframe_xmitbuf_attach(struct xmit_frame *pxmitframe,
 	pxmitbuf->priv_data = pxmitframe;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * tx_action == 0 == no frames to transmit
  * tx_action > 0 ==> we have frames to transmit
@@ -1091,12 +1124,16 @@ int r8712_pre_xmit(struct _adapter *padapter, struct xmit_frame *pxmitframe)
 		spin_unlock_irqrestore(&pxmitpriv->lock, irqL);
 		ret = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pxmitframe->pxmitbuf = pxmitbuf;
 		pxmitframe->pxmit_urb[0] = pxmitbuf->pxmit_urb[0];
 		pxmitframe->buf_addr = pxmitbuf->pbuf;
 =======
 		xmitframe_xmitbuf_attach(pxmitframe, pxmitbuf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		xmitframe_xmitbuf_attach(pxmitframe, pxmitbuf);
+>>>>>>> refs/remotes/origin/master
 		r8712_xmit_direct(padapter, pxmitframe);
 	}
 	return ret;

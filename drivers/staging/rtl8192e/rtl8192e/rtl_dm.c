@@ -202,7 +202,11 @@ static void dm_check_ac_dc_power(struct net_device *dev)
 
 	if (priv->ResetProgress == RESET_TYPE_SILENT) {
 		RT_TRACE((COMP_INIT | COMP_POWER | COMP_RF),
+<<<<<<< HEAD
 			 "GPIOChangeRFWorkItemCallBack(): Silent Reseting!!!!!!!\n");
+=======
+			 "GPIOChangeRFWorkItemCallBack(): Silent Reset!!!!!!!\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -493,7 +497,11 @@ static void dm_TXPowerTrackingCallback_TSSI(struct net_device *dev)
 
 				if (priv->bResetInProgress) {
 					RT_TRACE(COMP_POWER_TRACKING,
+<<<<<<< HEAD
 						 "we are in slient reset progress, so return\n");
+=======
+						 "we are in silent reset progress, so return\n");
+>>>>>>> refs/remotes/origin/master
 					write_nic_byte(dev, Pw_Track_Flag, 0);
 					write_nic_byte(dev, FW_Busy_Flag, 0);
 					return;
@@ -535,7 +543,11 @@ static void dm_TXPowerTrackingCallback_TSSI(struct net_device *dev)
 				}
 			}
 
+<<<<<<< HEAD
 			if (viviflag == true) {
+=======
+			if (viviflag) {
+>>>>>>> refs/remotes/origin/master
 				write_nic_byte(dev, Pw_Track_Flag, 0);
 				viviflag = false;
 				RT_TRACE(COMP_POWER_TRACKING, "we filted this data\n");
@@ -2265,7 +2277,11 @@ void dm_CheckRfCtrlGPIO(void *data)
 		return;
 
 	if (priv->bfirst_after_down) {
+<<<<<<< HEAD
 		priv->bfirst_after_down = 1;
+=======
+		priv->bfirst_after_down = true;
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -2273,12 +2289,20 @@ void dm_CheckRfCtrlGPIO(void *data)
 
 	eRfPowerStateToSet = (tmp1byte&BIT1) ?  eRfOn : eRfOff;
 
+<<<<<<< HEAD
 	if ((priv->bHwRadioOff == true) && (eRfPowerStateToSet == eRfOn)) {
+=======
+	if (priv->bHwRadioOff && (eRfPowerStateToSet == eRfOn)) {
+>>>>>>> refs/remotes/origin/master
 		RT_TRACE(COMP_RF, "gpiochangeRF  - HW Radio ON\n");
 		printk(KERN_INFO "gpiochangeRF  - HW Radio ON\n");
 		priv->bHwRadioOff = false;
 		bActuallySet = true;
+<<<<<<< HEAD
 	} else if ((priv->bHwRadioOff == false) && (eRfPowerStateToSet == eRfOff)) {
+=======
+	} else if (!priv->bHwRadioOff && (eRfPowerStateToSet == eRfOff)) {
+>>>>>>> refs/remotes/origin/master
 		RT_TRACE(COMP_RF, "gpiochangeRF  - HW Radio OFF\n");
 		printk(KERN_INFO "gpiochangeRF  - HW Radio OFF\n");
 		priv->bHwRadioOff = true;
@@ -2289,7 +2313,11 @@ void dm_CheckRfCtrlGPIO(void *data)
 		mdelay(1000);
 		priv->bHwRfOffAction = 1;
 		MgntActSet_RF_State(dev, eRfPowerStateToSet, RF_CHANGE_BY_HW, true);
+<<<<<<< HEAD
 		if (priv->bHwRadioOff == true)
+=======
+		if (priv->bHwRadioOff)
+>>>>>>> refs/remotes/origin/master
 			argv[1] = "RFOFF";
 		else
 			argv[1] = "RFON";
@@ -2312,9 +2340,15 @@ void	dm_rf_pathcheck_workitemcallback(void *data)
 
 	for (i = 0; i < RF90_PATH_MAX; i++) {
 		if (rfpath & (0x01<<i))
+<<<<<<< HEAD
 			priv->brfpath_rxenable[i] = 1;
 		else
 			priv->brfpath_rxenable[i] = 0;
+=======
+			priv->brfpath_rxenable[i] = true;
+		else
+			priv->brfpath_rxenable[i] = false;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!DM_RxPathSelTable.Enable)
 		return;
@@ -2615,6 +2649,7 @@ void dm_fsync_timer_callback(unsigned long data)
 				      rate_count_diff;
 			if (DiffNum >=
 			    priv->rtllib->fsync_seconddiff_ratethreshold)
+<<<<<<< HEAD
 				priv->ContiuneDiffCount++;
 			else
 				priv->ContiuneDiffCount = 0;
@@ -2625,12 +2660,28 @@ void dm_fsync_timer_callback(unsigned long data)
 			}
 		} else {
 			priv->ContiuneDiffCount = 0;
+=======
+				priv->ContinueDiffCount++;
+			else
+				priv->ContinueDiffCount = 0;
+
+			if (priv->ContinueDiffCount >= 2) {
+				bSwitchFromCountDiff = true;
+				priv->ContinueDiffCount = 0;
+			}
+		} else {
+			priv->ContinueDiffCount = 0;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (rate_count_diff <=
 		    priv->rtllib->fsync_firstdiff_ratethreshold) {
 			bSwitchFromCountDiff = true;
+<<<<<<< HEAD
 			priv->ContiuneDiffCount = 0;
+=======
+			priv->ContinueDiffCount = 0;
+>>>>>>> refs/remotes/origin/master
 		}
 		priv->rate_record = rate_count;
 		priv->rateCountDiffRecord = rate_count_diff;
@@ -2677,10 +2728,17 @@ void dm_fsync_timer_callback(unsigned long data)
 			write_nic_byte(dev, 0xC36, 0x5c);
 			write_nic_byte(dev, 0xC3e, 0x96);
 		}
+<<<<<<< HEAD
 		priv->ContiuneDiffCount = 0;
 		write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c52cd);
 	}
 	RT_TRACE(COMP_HALDM, "ContiuneDiffCount %d\n", priv->ContiuneDiffCount);
+=======
+		priv->ContinueDiffCount = 0;
+		write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c52cd);
+	}
+	RT_TRACE(COMP_HALDM, "ContinueDiffCount %d\n", priv->ContinueDiffCount);
+>>>>>>> refs/remotes/origin/master
 	RT_TRACE(COMP_HALDM, "rateRecord %d rateCount %d, rateCountdiff %d "
 		 "bSwitchFsync %d\n", priv->rate_record, rate_count,
 		 rate_count_diff, priv->bswitch_fsync);
@@ -2723,7 +2781,11 @@ static void dm_EndSWFsync(struct net_device *dev)
 		write_nic_byte(dev, 0xC3e, 0x96);
 	}
 
+<<<<<<< HEAD
 	priv->ContiuneDiffCount = 0;
+=======
+	priv->ContinueDiffCount = 0;
+>>>>>>> refs/remotes/origin/master
 	write_nic_dword(dev, rOFDM0_RxDetector2, 0x465c52cd);
 }
 
@@ -2735,7 +2797,11 @@ static void dm_StartSWFsync(struct net_device *dev)
 
 	RT_TRACE(COMP_HALDM, "%s\n", __func__);
 	priv->rate_record = 0;
+<<<<<<< HEAD
 	priv->ContiuneDiffCount = 0;
+=======
+	priv->ContinueDiffCount = 0;
+>>>>>>> refs/remotes/origin/master
 	priv->rateCountDiffRecord = 0;
 	priv->bswitch_fsync  = false;
 
@@ -2946,8 +3012,12 @@ static void dm_dynamic_txpower(struct net_device *dev)
 			priv->bDynamicTxLowPower = false;
 		} else {
 			if (priv->undecorated_smoothed_pwdb <
+<<<<<<< HEAD
 			    txlowpower_threshold &&
 			    priv->bDynamicTxHighPower == true)
+=======
+			    txlowpower_threshold && priv->bDynamicTxHighPower)
+>>>>>>> refs/remotes/origin/master
 				priv->bDynamicTxHighPower = false;
 			if (priv->undecorated_smoothed_pwdb < 35)
 				priv->bDynamicTxLowPower = true;

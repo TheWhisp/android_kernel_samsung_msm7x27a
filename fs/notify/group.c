@@ -27,19 +27,26 @@
 #include "fsnotify.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Final freeing of a group
  */
 void fsnotify_final_destroy_group(struct fsnotify_group *group)
 {
+<<<<<<< HEAD
 	/* clear the notification queue of all events */
 	fsnotify_flush_notify(group);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (group->ops->free_group_priv)
 		group->ops->free_group_priv(group);
 
@@ -47,6 +54,7 @@ void fsnotify_final_destroy_group(struct fsnotify_group *group)
 }
 
 /*
+<<<<<<< HEAD
  * Trying to get rid of a group.  We need to first get rid of any outstanding
  * allocations and then free the group.  Remember that fsnotify_clear_marks_by_group
  * could miss marks that are being freed by inode and those marks could still
@@ -55,15 +63,38 @@ void fsnotify_final_destroy_group(struct fsnotify_group *group)
  * mark is freed.
  */
 static void fsnotify_destroy_group(struct fsnotify_group *group)
+=======
+ * Trying to get rid of a group. Remove all marks, flush all events and release
+ * the group reference.
+ * Note that another thread calling fsnotify_clear_marks_by_group() may still
+ * hold a ref to the group.
+ */
+void fsnotify_destroy_group(struct fsnotify_group *group)
+>>>>>>> refs/remotes/origin/master
 {
 	/* clear all inode marks for this group */
 	fsnotify_clear_marks_by_group(group);
 
 	synchronize_srcu(&fsnotify_mark_srcu);
 
+<<<<<<< HEAD
 	/* past the point of no return, matches the initial value of 1 */
 	if (atomic_dec_and_test(&group->num_marks))
 		fsnotify_final_destroy_group(group);
+=======
+	/* clear the notification queue of all events */
+	fsnotify_flush_notify(group);
+
+	fsnotify_put_group(group);
+}
+
+/*
+ * Get reference to a group.
+ */
+void fsnotify_get_group(struct fsnotify_group *group)
+{
+	atomic_inc(&group->refcnt);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -72,7 +103,11 @@ static void fsnotify_destroy_group(struct fsnotify_group *group)
 void fsnotify_put_group(struct fsnotify_group *group)
 {
 	if (atomic_dec_and_test(&group->refcnt))
+<<<<<<< HEAD
 		fsnotify_destroy_group(group);
+=======
+		fsnotify_final_destroy_group(group);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -88,17 +123,22 @@ struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
 
 	/* set to 0 when there a no external references to this group */
 	atomic_set(&group->refcnt, 1);
+<<<<<<< HEAD
 	/*
 	 * hits 0 when there are no external references AND no marks for
 	 * this group
 	 */
 	atomic_set(&group->num_marks, 1);
+=======
+	atomic_set(&group->num_marks, 0);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&group->notification_mutex);
 	INIT_LIST_HEAD(&group->notification_list);
 	init_waitqueue_head(&group->notification_waitq);
 	group->max_events = UINT_MAX;
 
+<<<<<<< HEAD
 	spin_lock_init(&group->mark_lock);
 	INIT_LIST_HEAD(&group->marks_list);
 
@@ -106,3 +146,20 @@ struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
 
 	return group;
 }
+=======
+	mutex_init(&group->mark_mutex);
+	INIT_LIST_HEAD(&group->marks_list);
+
+	group->ops = ops;
+	fsnotify_init_event(&group->overflow_event, NULL, FS_Q_OVERFLOW);
+
+	return group;
+}
+
+int fsnotify_fasync(int fd, struct file *file, int on)
+{
+	struct fsnotify_group *group = file->private_data;
+
+	return fasync_helper(fd, file, on, &group->fsn_fa) >= 0 ? 0 : -EIO;
+}
+>>>>>>> refs/remotes/origin/master

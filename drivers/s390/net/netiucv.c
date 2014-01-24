@@ -64,9 +64,13 @@
 #include <asm/io.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/ebcdic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/ebcdic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/iucv/iucv.h>
 #include "fsm.h"
@@ -80,10 +84,14 @@ MODULE_DESCRIPTION ("Linux for S/390 IUCV network driver");
  */
 #define IUCV_DBF_SETUP_NAME "iucv_setup"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IUCV_DBF_SETUP_LEN 32
 =======
 #define IUCV_DBF_SETUP_LEN 64
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IUCV_DBF_SETUP_LEN 64
+>>>>>>> refs/remotes/origin/master
 #define IUCV_DBF_SETUP_PAGES 2
 #define IUCV_DBF_SETUP_NR_AREAS 1
 #define IUCV_DBF_SETUP_LEVEL 3
@@ -112,6 +120,7 @@ MODULE_DESCRIPTION ("Linux for S/390 IUCV network driver");
 
 DECLARE_PER_CPU(char[256], iucv_dbf_txt_buf);
 
+<<<<<<< HEAD
 /* Allow to sort out low debug levels early to avoid wasted sprints */
 static inline int iucv_dbf_passes(debug_info_t *dbf_grp, int level)
 {
@@ -121,6 +130,11 @@ static inline int iucv_dbf_passes(debug_info_t *dbf_grp, int level)
 #define IUCV_DBF_TEXT_(name, level, text...) \
 	do { \
 		if (iucv_dbf_passes(iucv_dbf_##name, level)) { \
+=======
+#define IUCV_DBF_TEXT_(name, level, text...) \
+	do { \
+		if (debug_level_enabled(iucv_dbf_##name, level)) { \
+>>>>>>> refs/remotes/origin/master
 			char* __buf = get_cpu_var(iucv_dbf_txt_buf); \
 			sprintf(__buf, text); \
 			debug_text_event(iucv_dbf_##name, level, __buf); \
@@ -137,6 +151,7 @@ static inline int iucv_dbf_passes(debug_info_t *dbf_grp, int level)
 /**
  * some more debug stuff
  */
+<<<<<<< HEAD
 #define IUCV_HEXDUMP16(importance,header,ptr) \
 PRINT_##importance(header "%02x %02x %02x %02x  %02x %02x %02x %02x  " \
 		   "%02x %02x %02x %02x  %02x %02x %02x %02x\n", \
@@ -157,6 +172,8 @@ PRINT_##importance(header "%02x %02x %02x %02x  %02x %02x %02x %02x  " \
 		   *(((char*)ptr)+28),*(((char*)ptr)+29), \
 		   *(((char*)ptr)+30),*(((char*)ptr)+31));
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PRINTK_HEADER " iucv: "       /* for debugging */
 
 /* dummy device to make sure netiucv_pm functions are called */
@@ -235,9 +252,13 @@ struct iucv_connection {
 	struct connection_profile prof;
 	char                      userid[9];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char			  userdata[17];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char			  userdata[17];
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -276,10 +297,14 @@ struct ll_header {
 
 #define NETIUCV_HDRLEN		 (sizeof(struct ll_header))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETIUCV_BUFSIZE_MAX      32768
 =======
 #define NETIUCV_BUFSIZE_MAX	 65537
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETIUCV_BUFSIZE_MAX	 65537
+>>>>>>> refs/remotes/origin/master
 #define NETIUCV_BUFSIZE_DEFAULT  NETIUCV_BUFSIZE_MAX
 #define NETIUCV_MTU_MAX          (NETIUCV_BUFSIZE_MAX - NETIUCV_HDRLEN)
 #define NETIUCV_MTU_DEFAULT      9216
@@ -305,15 +330,21 @@ static inline int netiucv_test_and_set_busy(struct net_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u8 iucvMagic[16] = {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 iucvMagic_ascii[16] = {
 	0x30, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
 	0x30, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20
 };
 
 static u8 iucvMagic_ebcdic[16] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	0xF0, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40,
 	0xF0, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40
 };
@@ -327,6 +358,7 @@ static u8 iucvMagic_ebcdic[16] = {
  * @returns The printable string (static data!!)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *netiucv_printname(char *name)
 {
 	static char tmp[9];
@@ -335,6 +367,8 @@ static char *netiucv_printname(char *name)
 	tmp[8] = '\0';
 	while (*p && (!isspace(*p)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static char *netiucv_printname(char *name, int len)
 {
 	static char tmp[17];
@@ -342,14 +376,20 @@ static char *netiucv_printname(char *name, int len)
 	memcpy(tmp, name, len);
 	tmp[len] = '\0';
 	while (*p && ((p - tmp) < len) && (!isspace(*p)))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		p++;
 	*p = '\0';
 	return tmp;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static char *netiucv_printuser(struct iucv_connection *conn)
 {
 	static char tmp_uid[9];
@@ -370,7 +410,10 @@ static char *netiucv_printuser(struct iucv_connection *conn)
 		return netiucv_printname(conn->userid, 8);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * States of the interface statemachine.
  */
@@ -622,6 +665,7 @@ static int netiucv_callback_connreq(struct iucv_path *path,
 	struct iucv_connection *conn = path->private;
 	struct iucv_event ev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc;
 
 	if (memcmp(iucvMagic, ipuser, 16))
@@ -632,6 +676,8 @@ static int netiucv_callback_connreq(struct iucv_path *path,
 	list_for_each_entry(conn, &iucv_connection_list, list) {
 		if (strncmp(ipvmid, conn->userid, 8))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static char tmp_user[9];
 	static char tmp_udat[17];
 	int rc;
@@ -644,7 +690,10 @@ static int netiucv_callback_connreq(struct iucv_path *path,
 	list_for_each_entry(conn, &iucv_connection_list, list) {
 		if (strncmp(ipvmid, conn->userid, 8) ||
 		    strncmp(ipuser, conn->userdata, 16))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			continue;
 		/* Found a matching connection for this path. */
 		conn->path = path;
@@ -654,10 +703,15 @@ static int netiucv_callback_connreq(struct iucv_path *path,
 		rc = 0;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	IUCV_DBF_TEXT_(setup, 2, "Connection requested for %s.%s\n",
 		       tmp_user, netiucv_printname(tmp_udat, 16));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IUCV_DBF_TEXT_(setup, 2, "Connection requested for %s.%s\n",
+		       tmp_user, netiucv_printname(tmp_udat, 16));
+>>>>>>> refs/remotes/origin/master
 	read_unlock_bh(&iucv_connection_rwlock);
 	return rc;
 }
@@ -895,10 +949,14 @@ static void conn_action_connaccept(fsm_instance *fi, int event, void *arg)
 	path->msglim = NETIUCV_QUEUELEN_DEFAULT;
 	path->flags = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = iucv_path_accept(path, &netiucv_handler, NULL, conn);
 =======
 	rc = iucv_path_accept(path, &netiucv_handler, conn->userdata , conn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = iucv_path_accept(path, &netiucv_handler, conn->userdata , conn);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		IUCV_DBF_TEXT_(setup, 2, "rc %d from iucv_accept", rc);
 		return;
@@ -937,10 +995,14 @@ static void conn_action_conntimsev(fsm_instance *fi, int event, void *arg)
 	IUCV_DBF_TEXT(trace, 3, __func__);
 	fsm_deltimer(&conn->timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iucv_path_sever(conn->path, NULL);
 =======
 	iucv_path_sever(conn->path, conn->userdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iucv_path_sever(conn->path, conn->userdata);
+>>>>>>> refs/remotes/origin/master
 	fsm_newstate(fi, CONN_STATE_STARTWAIT);
 }
 
@@ -954,6 +1016,7 @@ static void conn_action_connsever(fsm_instance *fi, int event, void *arg)
 
 	fsm_deltimer(&conn->timer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	iucv_path_sever(conn->path, NULL);
 	dev_info(privptr->dev, "The peer interface of the IUCV device"
 		" has closed the connection\n");
@@ -962,6 +1025,11 @@ static void conn_action_connsever(fsm_instance *fi, int event, void *arg)
 	dev_info(privptr->dev, "The peer z/VM guest %s has closed the "
 			       "connection\n", netiucv_printuser(conn));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iucv_path_sever(conn->path, conn->userdata);
+	dev_info(privptr->dev, "The peer z/VM guest %s has closed the "
+			       "connection\n", netiucv_printuser(conn));
+>>>>>>> refs/remotes/origin/master
 	IUCV_DBF_TEXT(data, 2,
 		      "conn_action_connsever: Remote dropped connection\n");
 	fsm_newstate(fi, CONN_STATE_STARTWAIT);
@@ -979,10 +1047,13 @@ static void conn_action_start(fsm_instance *fi, int event, void *arg)
 
 	fsm_newstate(fi, CONN_STATE_STARTWAIT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	IUCV_DBF_TEXT_(setup, 2, "%s('%s'): connecting ...\n",
 		netdev->name, conn->userid);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We must set the state before calling iucv_connect because the
@@ -993,15 +1064,21 @@ static void conn_action_start(fsm_instance *fi, int event, void *arg)
 	fsm_newstate(fi, CONN_STATE_SETUPWAIT);
 	conn->path = iucv_path_alloc(NETIUCV_QUEUELEN_DEFAULT, 0, GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = iucv_path_connect(conn->path, &netiucv_handler, conn->userid,
 			       NULL, iucvMagic, conn);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	IUCV_DBF_TEXT_(setup, 2, "%s: connecting to %s ...\n",
 		netdev->name, netiucv_printuser(conn));
 
 	rc = iucv_path_connect(conn->path, &netiucv_handler, conn->userid,
 			       NULL, conn->userdata, conn);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (rc) {
 	case 0:
 		netdev->tx_queue_len = conn->path->msglim;
@@ -1012,20 +1089,28 @@ static void conn_action_start(fsm_instance *fi, int event, void *arg)
 		dev_warn(privptr->dev,
 			"The IUCV device failed to connect to z/VM guest %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			netiucv_printname(conn->userid));
 =======
 			netiucv_printname(conn->userid, 8));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netiucv_printname(conn->userid, 8));
+>>>>>>> refs/remotes/origin/master
 		fsm_newstate(fi, CONN_STATE_STARTWAIT);
 		break;
 	case 12:
 		dev_warn(privptr->dev,
 			"The IUCV device failed to connect to the peer on z/VM"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			" guest %s\n", netiucv_printname(conn->userid));
 =======
 			" guest %s\n", netiucv_printname(conn->userid, 8));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			" guest %s\n", netiucv_printname(conn->userid, 8));
+>>>>>>> refs/remotes/origin/master
 		fsm_newstate(fi, CONN_STATE_STARTWAIT);
 		break;
 	case 13:
@@ -1039,10 +1124,14 @@ static void conn_action_start(fsm_instance *fi, int event, void *arg)
 			"z/VM guest %s has too many IUCV connections"
 			" to connect with the IUCV device\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			netiucv_printname(conn->userid));
 =======
 			netiucv_printname(conn->userid, 8));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netiucv_printname(conn->userid, 8));
+>>>>>>> refs/remotes/origin/master
 		fsm_newstate(fi, CONN_STATE_CONNERR);
 		break;
 	case 15:
@@ -1088,10 +1177,14 @@ static void conn_action_stop(fsm_instance *fi, int event, void *arg)
 	if (conn->path) {
 		IUCV_DBF_TEXT(trace, 5, "calling iucv_path_sever\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iucv_path_sever(conn->path, iucvMagic);
 =======
 		iucv_path_sever(conn->path, conn->userdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iucv_path_sever(conn->path, conn->userdata);
+>>>>>>> refs/remotes/origin/master
 		kfree(conn->path);
 		conn->path = NULL;
 	}
@@ -1210,11 +1303,16 @@ dev_action_connup(fsm_instance *fi, int event, void *arg)
 			dev_info(privptr->dev,
 				"The IUCV device has been connected"
 <<<<<<< HEAD
+<<<<<<< HEAD
 				" successfully to %s\n", privptr->conn->userid);
 =======
 				" successfully to %s\n",
 				netiucv_printuser(privptr->conn));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				" successfully to %s\n",
+				netiucv_printuser(privptr->conn));
+>>>>>>> refs/remotes/origin/master
 			IUCV_DBF_TEXT(setup, 3,
 				"connection is up and running\n");
 			break;
@@ -1577,6 +1675,7 @@ static ssize_t user_show(struct device *dev, struct device_attribute *attr,
 
 	IUCV_DBF_TEXT(trace, 5, __func__);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%s\n", netiucv_printname(priv->conn->userid));
 }
 
@@ -1611,6 +1710,8 @@ static ssize_t user_write(struct device *dev, struct device_attribute *attr,
 		IUCV_DBF_TEXT_(setup, 2,
 			       "username: invalid character %c\n", *p);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%s\n", netiucv_printuser(priv->conn));
 }
 
@@ -1639,7 +1740,10 @@ static int netiucv_check_user(const char *buf, size_t count, char *username,
 			break;
 		IUCV_DBF_TEXT_(setup, 2,
 			       "conn_write: invalid character %02x\n", *p);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	while (i < 8)
@@ -1647,7 +1751,10 @@ static int netiucv_check_user(const char *buf, size_t count, char *username,
 	username[8] = '\0';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (*p == '.') {
 		p++;
 		for (i = 0; i < 16 && *p; i++, p++) {
@@ -1680,7 +1787,10 @@ static ssize_t user_write(struct device *dev, struct device_attribute *attr,
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (memcmp(username, priv->conn->userid, 9) &&
 	    (ndev->flags & (IFF_UP | IFF_RUNNING))) {
 		/* username changed while the interface is active. */
@@ -1690,26 +1800,36 @@ static ssize_t user_write(struct device *dev, struct device_attribute *attr,
 	read_lock_bh(&iucv_connection_rwlock);
 	list_for_each_entry(cp, &iucv_connection_list, list) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!strncmp(username, cp->userid, 9) && cp->netdev != ndev) {
 			read_unlock_bh(&iucv_connection_rwlock);
 			IUCV_DBF_TEXT_(setup, 2, "user_write: Connection "
 				"to %s already exists\n", username);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!strncmp(username, cp->userid, 9) &&
 		   !strncmp(userdata, cp->userdata, 17) && cp->netdev != ndev) {
 			read_unlock_bh(&iucv_connection_rwlock);
 			IUCV_DBF_TEXT_(setup, 2, "user_write: Connection to %s "
 				"already exists\n", netiucv_printuser(cp));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return -EEXIST;
 		}
 	}
 	read_unlock_bh(&iucv_connection_rwlock);
 	memcpy(priv->conn->userid, username, 9);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	memcpy(priv->conn->userdata, userdata, 17);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(priv->conn->userdata, userdata, 17);
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -1740,11 +1860,16 @@ static ssize_t buffer_write (struct device *dev, struct device_attribute *attr,
 
 	if (e && (!isspace(*e))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IUCV_DBF_TEXT_(setup, 2, "buffer_write: invalid char %c\n", *e);
 =======
 		IUCV_DBF_TEXT_(setup, 2, "buffer_write: invalid char %02x\n",
 			*e);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		IUCV_DBF_TEXT_(setup, 2, "buffer_write: invalid char %02x\n",
+			*e);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	if (bs1 > NETIUCV_BUFSIZE_MAX) {
@@ -1997,6 +2122,7 @@ static struct attribute_group netiucv_stat_attr_group = {
 	.attrs = netiucv_stat_attrs,
 };
 
+<<<<<<< HEAD
 static int netiucv_add_files(struct device *dev)
 {
 	int ret;
@@ -2017,6 +2143,13 @@ static void netiucv_remove_files(struct device *dev)
 	sysfs_remove_group(&dev->kobj, &netiucv_stat_attr_group);
 	sysfs_remove_group(&dev->kobj, &netiucv_attr_group);
 }
+=======
+static const struct attribute_group *netiucv_attr_groups[] = {
+	&netiucv_stat_attr_group,
+	&netiucv_attr_group,
+	NULL,
+};
+>>>>>>> refs/remotes/origin/master
 
 static int netiucv_register_device(struct net_device *ndev)
 {
@@ -2030,6 +2163,10 @@ static int netiucv_register_device(struct net_device *ndev)
 		dev_set_name(dev, "net%s", ndev->name);
 		dev->bus = &iucv_bus;
 		dev->parent = iucv_root;
+<<<<<<< HEAD
+=======
+		dev->groups = netiucv_attr_groups;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The release function could be called after the
 		 * module has been unloaded. It's _only_ task is to
@@ -2047,6 +2184,7 @@ static int netiucv_register_device(struct net_device *ndev)
 		put_device(dev);
 		return ret;
 	}
+<<<<<<< HEAD
 	ret = netiucv_add_files(dev);
 	if (ret)
 		goto out_unreg;
@@ -2057,12 +2195,20 @@ static int netiucv_register_device(struct net_device *ndev)
 out_unreg:
 	device_unregister(dev);
 	return ret;
+=======
+	priv->dev = dev;
+	dev_set_drvdata(dev, priv);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void netiucv_unregister_device(struct device *dev)
 {
 	IUCV_DBF_TEXT(trace, 3, __func__);
+<<<<<<< HEAD
 	netiucv_remove_files(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 	device_unregister(dev);
 }
 
@@ -2072,11 +2218,16 @@ static void netiucv_unregister_device(struct device *dev)
  */
 static struct iucv_connection *netiucv_new_connection(struct net_device *dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						      char *username)
 =======
 						      char *username,
 						      char *userdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						      char *username,
+						      char *userdata)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iucv_connection *conn;
 
@@ -2106,10 +2257,15 @@ static struct iucv_connection *netiucv_new_connection(struct net_device *dev,
 	fsm_newstate(conn->fsm, CONN_STATE_INVALID);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (userdata)
 		memcpy(conn->userdata, userdata, 17);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (userdata)
+		memcpy(conn->userdata, userdata, 17);
+>>>>>>> refs/remotes/origin/master
 	if (username) {
 		memcpy(conn->userid, username, 9);
 		fsm_newstate(conn->fsm, CONN_STATE_STOPPED);
@@ -2137,9 +2293,13 @@ out:
 static void netiucv_remove_connection(struct iucv_connection *conn)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	IUCV_DBF_TEXT(trace, 3, __func__);
 	write_lock_bh(&iucv_connection_rwlock);
 	list_del_init(&conn->list);
@@ -2148,10 +2308,14 @@ static void netiucv_remove_connection(struct iucv_connection *conn)
 	netiucv_purge_skb_queue(&conn->collect_queue);
 	if (conn->path) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iucv_path_sever(conn->path, iucvMagic);
 =======
 		iucv_path_sever(conn->path, conn->userdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iucv_path_sever(conn->path, conn->userdata);
+>>>>>>> refs/remotes/origin/master
 		kfree(conn->path);
 		conn->path = NULL;
 	}
@@ -2211,10 +2375,14 @@ static void netiucv_setup_netdevice(struct net_device *dev)
  * Allocate and initialize everything of a net device.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct net_device *netiucv_init_netdevice(char *username)
 =======
 static struct net_device *netiucv_init_netdevice(char *username, char *userdata)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct net_device *netiucv_init_netdevice(char *username, char *userdata)
+>>>>>>> refs/remotes/origin/master
 {
 	struct netiucv_priv *privptr;
 	struct net_device *dev;
@@ -2224,10 +2392,16 @@ static struct net_device *netiucv_init_netdevice(char *username, char *userdata)
 	if (!dev)
 		return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (dev_alloc_name(dev, dev->name) < 0)
 		goto out_netdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rtnl_lock();
+	if (dev_alloc_name(dev, dev->name) < 0)
+		goto out_netdev;
+>>>>>>> refs/remotes/origin/master
 
 	privptr = netdev_priv(dev);
 	privptr->fsm = init_fsm("netiucvdev", dev_state_names,
@@ -2237,10 +2411,14 @@ static struct net_device *netiucv_init_netdevice(char *username, char *userdata)
 		goto out_netdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	privptr->conn = netiucv_new_connection(dev, username);
 =======
 	privptr->conn = netiucv_new_connection(dev, username, userdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	privptr->conn = netiucv_new_connection(dev, username, userdata);
+>>>>>>> refs/remotes/origin/master
 	if (!privptr->conn) {
 		IUCV_DBF_TEXT(setup, 2, "NULL from netiucv_new_connection\n");
 		goto out_fsm;
@@ -2251,6 +2429,10 @@ static struct net_device *netiucv_init_netdevice(char *username, char *userdata)
 out_fsm:
 	kfree_fsm(privptr->fsm);
 out_netdev:
+<<<<<<< HEAD
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 	free_netdev(dev);
 	return NULL;
 }
@@ -2258,6 +2440,7 @@ out_netdev:
 static ssize_t conn_write(struct device_driver *drv,
 			  const char *buf, size_t count)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	const char *p;
 	char username[9];
@@ -2267,11 +2450,17 @@ static ssize_t conn_write(struct device_driver *drv,
 	char userdata[17];
 	int rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char username[9];
+	char userdata[17];
+	int rc;
+>>>>>>> refs/remotes/origin/master
 	struct net_device *dev;
 	struct netiucv_priv *priv;
 	struct iucv_connection *cp;
 
 	IUCV_DBF_TEXT(trace, 3, __func__);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (count>9) {
 		IUCV_DBF_TEXT(setup, 2, "conn_write: too long\n");
@@ -2301,6 +2490,8 @@ static ssize_t conn_write(struct device_driver *drv,
 			IUCV_DBF_TEXT_(setup, 2, "conn_write: Connection "
 				"to %s already exists\n", username);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = netiucv_check_user(buf, count, username, userdata);
 	if (rc)
 		return rc;
@@ -2312,17 +2503,24 @@ static ssize_t conn_write(struct device_driver *drv,
 			read_unlock_bh(&iucv_connection_rwlock);
 			IUCV_DBF_TEXT_(setup, 2, "conn_write: Connection to %s "
 				"already exists\n", netiucv_printuser(cp));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return -EEXIST;
 		}
 	}
 	read_unlock_bh(&iucv_connection_rwlock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev = netiucv_init_netdevice(username);
 =======
 	dev = netiucv_init_netdevice(username, userdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev = netiucv_init_netdevice(username, userdata);
+>>>>>>> refs/remotes/origin/master
 	if (!dev) {
 		IUCV_DBF_TEXT(setup, 2, "NULL from netiucv_init_netdevice\n");
 		return -ENODEV;
@@ -2330,6 +2528,10 @@ static ssize_t conn_write(struct device_driver *drv,
 
 	rc = netiucv_register_device(dev);
 	if (rc) {
+<<<<<<< HEAD
+=======
+		rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 		IUCV_DBF_TEXT_(setup, 2,
 			"ret %d from netiucv_register_device\n", rc);
 		goto out_free_ndev;
@@ -2339,6 +2541,7 @@ static ssize_t conn_write(struct device_driver *drv,
 	priv = netdev_priv(dev);
 	SET_NETDEV_DEV(dev, priv->dev);
 
+<<<<<<< HEAD
 	rc = register_netdev(dev);
 	if (rc)
 		goto out_unreg;
@@ -2351,6 +2554,16 @@ static ssize_t conn_write(struct device_driver *drv,
 			    "successfully\n",
 		netiucv_printuser(priv->conn));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = register_netdevice(dev);
+	rtnl_unlock();
+	if (rc)
+		goto out_unreg;
+
+	dev_info(priv->dev, "The IUCV interface to %s has been established "
+			    "successfully\n",
+		netiucv_printuser(priv->conn));
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 

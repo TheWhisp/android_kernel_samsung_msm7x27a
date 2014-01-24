@@ -27,6 +27,7 @@ struct xfs_btree_cur;
 struct xfs_mount;
 
 /*
+<<<<<<< HEAD
  * There are two on-disk btrees, one sorted by blockno and one sorted
  * by blockcount and blockno.  All blocks look the same to make the code
  * simpler; if we have time later, we'll make the optimizations.
@@ -77,6 +78,13 @@ typedef __be32 xfs_alloc_ptr_t;
  * (not quite yet, but soon)
  */
 #define XFS_ALLOC_BLOCK_LEN(mp)	XFS_BTREE_SBLOCK_LEN
+=======
+ * Btree block header size depends on a superblock flag.
+ */
+#define XFS_ALLOC_BLOCK_LEN(mp) \
+	(xfs_sb_version_hascrc(&((mp)->m_sb)) ? \
+		XFS_BTREE_SBLOCK_CRC_LEN : XFS_BTREE_SBLOCK_LEN)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Record, key, and pointer address macros for btree blocks.

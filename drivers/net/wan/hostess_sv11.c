@@ -21,10 +21,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
@@ -198,11 +203,15 @@ static struct z8530_dev *sv11_init(int iobase, int irq)
 
 	if (!request_region(iobase, 8, "Comtrol SV11")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "hostess: I/O 0x%X already in use.\n",
 		       iobase);
 =======
 		pr_warn("I/O 0x%X already in use\n", iobase);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("I/O 0x%X already in use\n", iobase);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -228,6 +237,7 @@ static struct z8530_dev *sv11_init(int iobase, int irq)
 	/* We want a fast IRQ for this device. Actually we'd like an even faster
 	   IRQ ;) - This is one driver RtLinux is made for */
 
+<<<<<<< HEAD
 	if (request_irq(irq, z8530_interrupt, IRQF_DISABLED,
 			"Hostess SV11", sv) < 0) {
 <<<<<<< HEAD
@@ -235,6 +245,11 @@ static struct z8530_dev *sv11_init(int iobase, int irq)
 =======
 		pr_warn("IRQ %d already in use\n", irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (request_irq(irq, z8530_interrupt, 0,
+			"Hostess SV11", sv) < 0) {
+		pr_warn("IRQ %d already in use\n", irq);
+>>>>>>> refs/remotes/origin/master
 		goto err_irq;
 	}
 
@@ -269,10 +284,14 @@ static struct z8530_dev *sv11_init(int iobase, int irq)
 
 	if (z8530_init(sv)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Z8530 series device not found.\n");
 =======
 		pr_err("Z8530 series device not found\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Z8530 series device not found\n");
+>>>>>>> refs/remotes/origin/master
 		enable_irq(irq);
 		goto free_dma;
 	}
@@ -300,10 +319,14 @@ static struct z8530_dev *sv11_init(int iobase, int irq)
 
 	if (register_hdlc_device(netdev)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "hostess: unable to register HDLC device.\n");
 =======
 		pr_err("unable to register HDLC device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unable to register HDLC device\n");
+>>>>>>> refs/remotes/origin/master
 		free_netdev(netdev);
 		goto free_dma;
 	}

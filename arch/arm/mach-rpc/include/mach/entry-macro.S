@@ -11,9 +11,12 @@
 	.endif
 	.endm
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	.macro  arch_ret_to_user, tmp1, tmp2
 	.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

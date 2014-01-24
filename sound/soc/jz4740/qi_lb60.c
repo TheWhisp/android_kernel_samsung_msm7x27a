@@ -73,7 +73,11 @@ static struct snd_soc_dai_link qi_lb60_dai = {
 	.name = "jz4740",
 	.stream_name = "jz4740",
 	.cpu_dai_name = "jz4740-i2s",
+<<<<<<< HEAD
 	.platform_name = "jz4740-pcm-audio",
+=======
+	.platform_name = "jz4740-i2s",
+>>>>>>> refs/remotes/origin/master
 	.codec_dai_name = "jz4740-hifi",
 	.codec_name = "jz4740-codec",
 	.init = qi_lb60_codec_init,
@@ -82,9 +86,13 @@ static struct snd_soc_dai_link qi_lb60_dai = {
 static struct snd_soc_card qi_lb60 = {
 	.name = "QI LB60",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = &qi_lb60_dai,
 	.num_links = 1,
 
@@ -95,15 +103,19 @@ static struct snd_soc_card qi_lb60 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device *qi_lb60_snd_device;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct gpio qi_lb60_gpios[] = {
 	{ QI_LB60_SND_GPIO, GPIOF_OUT_INIT_LOW, "SND" },
 	{ QI_LB60_AMP_GPIO, GPIOF_OUT_INIT_LOW, "AMP" },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init qi_lb60_init(void)
 {
@@ -149,6 +161,9 @@ static void __exit qi_lb60_exit(void)
 module_exit(qi_lb60_exit);
 =======
 static int __devinit qi_lb60_probe(struct platform_device *pdev)
+=======
+static int qi_lb60_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &qi_lb60;
 	int ret;
@@ -168,7 +183,11 @@ static int __devinit qi_lb60_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit qi_lb60_remove(struct platform_device *pdev)
+=======
+static int qi_lb60_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -183,16 +202,27 @@ static struct platform_driver qi_lb60_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= qi_lb60_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(qi_lb60_remove),
 };
 
 module_platform_driver(qi_lb60_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= qi_lb60_remove,
+};
+
+module_platform_driver(qi_lb60_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 MODULE_DESCRIPTION("ALSA SoC QI LB60 Audio support");
 MODULE_LICENSE("GPL v2");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:qi-lb60-audio");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:qi-lb60-audio");
+>>>>>>> refs/remotes/origin/master

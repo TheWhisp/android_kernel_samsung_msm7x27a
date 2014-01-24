@@ -31,17 +31,28 @@
 #ifndef __WPA2_H__
 #define __WPA2_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "80211mgr.h"
 #include "80211hdr.h"
 #include "bssdb.h"
 
+<<<<<<< HEAD
 /*---------------------  Export Definitions -------------------------*/
 #define MAX_PMKID_CACHE         16
 
 typedef struct tagsPMKIDInfo {
     BYTE    abyBSSID[6];
     BYTE    abyPMKID[16];
+=======
+#define MAX_PMKID_CACHE         16
+
+typedef struct tagsPMKIDInfo {
+    u8    abyBSSID[6];
+    u8    abyPMKID[16];
+>>>>>>> refs/remotes/origin/master
 } PMKIDInfo, *PPMKIDInfo;
 
 typedef struct tagSPMKIDCache {
@@ -49,6 +60,7 @@ typedef struct tagSPMKIDCache {
 	PMKIDInfo BSSIDInfo[MAX_PMKID_CACHE];
 } SPMKIDCache, *PSPMKIDCache;
 
+<<<<<<< HEAD
 
 /*---------------------  Export Classes  ----------------------------*/
 
@@ -63,4 +75,9 @@ void WPA2vParseRSN(PKnownBSS pBSSNode, PWLAN_IE_RSN pRSN);
 
 unsigned int WPA2uSetIEs(void *pMgmtHandle, PWLAN_IE_RSN pRSNIEs);
 
+=======
+void WPA2_ClearRSN(PKnownBSS pBSSNode);
+void WPA2vParseRSN(PKnownBSS pBSSNode, PWLAN_IE_RSN pRSN);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __WPA2_H__ */

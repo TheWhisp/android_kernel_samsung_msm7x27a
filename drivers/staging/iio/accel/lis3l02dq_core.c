@@ -2,7 +2,11 @@
  * lis3l02dq.c	support STMicroelectronics LISD02DQ
  *		3d 2g Linear Accelerometers via SPI
  *
+<<<<<<< HEAD
  * Copyright (c) 2007 Jonathan Cameron <jic23@cam.ac.uk>
+=======
+ * Copyright (c) 2007 Jonathan Cameron <jic23@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -15,12 +19,17 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/spi/spi.h>
 #include <linux/slab.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include "../iio.h"
@@ -36,6 +45,14 @@
 #include "../events.h"
 #include "../buffer.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/events.h>
+#include <linux/iio/buffer.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "lis3l02dq.h"
 
@@ -45,12 +62,17 @@
  */
 /* direct copy of the irq_default_primary_handler */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_IIO_RING_BUFFER
 static irqreturn_t lis3l02dq_noring(int irq, void *private)
 =======
 #ifndef CONFIG_IIO_BUFFER
 static irqreturn_t lis3l02dq_nobuffer(int irq, void *private)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef CONFIG_IIO_BUFFER
+static irqreturn_t lis3l02dq_nobuffer(int irq, void *private)
+>>>>>>> refs/remotes/origin/master
 {
 	return IRQ_WAKE_THREAD;
 }
@@ -66,7 +88,10 @@ int lis3l02dq_spi_read_reg_8(struct iio_dev *indio_dev,
 			     u8 reg_address, u8 *val)
 {
 	struct lis3l02dq_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
 	struct spi_message msg;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct spi_transfer xfer = {
 		.tx_buf = st->tx,
@@ -79,9 +104,13 @@ int lis3l02dq_spi_read_reg_8(struct iio_dev *indio_dev,
 	st->tx[0] = LIS3L02DQ_READ_REG(reg_address);
 	st->tx[1] = 0;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfer, &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, &xfer, 1);
+>>>>>>> refs/remotes/origin/master
 	*val = st->rx[1];
 	mutex_unlock(&st->buf_lock);
 
@@ -122,7 +151,10 @@ static int lis3l02dq_spi_write_reg_s16(struct iio_dev *indio_dev,
 				       s16 value)
 {
 	int ret;
+<<<<<<< HEAD
 	struct spi_message msg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct lis3l02dq_state *st = iio_priv(indio_dev);
 	struct spi_transfer xfers[] = { {
 			.tx_buf = st->tx,
@@ -142,10 +174,14 @@ static int lis3l02dq_spi_write_reg_s16(struct iio_dev *indio_dev,
 	st->tx[2] = LIS3L02DQ_WRITE_REG(lower_reg_address + 1);
 	st->tx[3] = (value >> 8) & 0xFF;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&st->buf_lock);
 
 	return ret;
@@ -156,8 +192,11 @@ static int lis3l02dq_read_reg_s16(struct iio_dev *indio_dev,
 				  int *val)
 {
 	struct lis3l02dq_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
 
 	struct spi_message msg;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	s16 tempval;
 	struct spi_transfer xfers[] = { {
@@ -180,10 +219,14 @@ static int lis3l02dq_read_reg_s16(struct iio_dev *indio_dev,
 	st->tx[2] = LIS3L02DQ_READ_REG(lower_reg_address + 1);
 	st->tx[3] = 0;
 
+<<<<<<< HEAD
 	spi_message_init(&msg);
 	spi_message_add_tail(&xfers[0], &msg);
 	spi_message_add_tail(&xfers[1], &msg);
 	ret = spi_sync(st->us, &msg);
+=======
+	ret = spi_sync_transfer(st->us, xfers, ARRAY_SIZE(xfers));
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&st->us->dev, "problem when reading 16 bit register");
 		goto error_ret;
@@ -216,6 +259,7 @@ static u8 lis3l02dq_axis_map[3][3] = {
 
 static int lis3l02dq_read_thresh(struct iio_dev *indio_dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 int e,
 =======
 				 u64 e,
@@ -232,6 +276,28 @@ static int lis3l02dq_write_thresh(struct iio_dev *indio_dev,
 				  u64 event_code,
 >>>>>>> refs/remotes/origin/cm-10.0
 				  int val)
+=======
+				 const struct iio_chan_spec *chan,
+				 enum iio_event_type type,
+				 enum iio_event_direction dir,
+				 enum iio_event_info info,
+				 int *val, int *val2)
+{
+	int ret;
+
+	ret = lis3l02dq_read_reg_s16(indio_dev, LIS3L02DQ_REG_THS_L_ADDR, val);
+	if (ret)
+		return ret;
+	return IIO_VAL_INT;
+}
+
+static int lis3l02dq_write_thresh(struct iio_dev *indio_dev,
+				  const struct iio_chan_spec *chan,
+				  enum iio_event_type type,
+				  enum iio_event_direction dir,
+				  enum iio_event_info info,
+				  int val, int val2)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 value = val;
 	return lis3l02dq_spi_write_reg_s16(indio_dev,
@@ -250,10 +316,14 @@ static int lis3l02dq_write_raw(struct iio_dev *indio_dev,
 	s8 sval;
 	switch (mask) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE):
 =======
 	case IIO_CHAN_INFO_CALIBBIAS:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case IIO_CHAN_INFO_CALIBBIAS:
+>>>>>>> refs/remotes/origin/master
 		if (val > 255 || val < -256)
 			return -EINVAL;
 		sval = val;
@@ -261,10 +331,14 @@ static int lis3l02dq_write_raw(struct iio_dev *indio_dev,
 		ret = lis3l02dq_spi_write_reg_8(indio_dev, reg, sval);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_CALIBSCALE_SEPARATE):
 =======
 	case IIO_CHAN_INFO_CALIBSCALE:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case IIO_CHAN_INFO_CALIBSCALE:
+>>>>>>> refs/remotes/origin/master
 		if (val & ~0xFF)
 			return -EINVAL;
 		uval = val;
@@ -287,6 +361,7 @@ static int lis3l02dq_read_raw(struct iio_dev *indio_dev,
 	u8 reg;
 
 	switch (mask) {
+<<<<<<< HEAD
 	case 0:
 		/* Take the iio_dev status lock */
 		mutex_lock(&indio_dev->mlock);
@@ -301,11 +376,20 @@ static int lis3l02dq_read_raw(struct iio_dev *indio_dev,
 			ret = -EBUSY;
 		} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case IIO_CHAN_INFO_RAW:
+		/* Take the iio_dev status lock */
+		mutex_lock(&indio_dev->mlock);
+		if (indio_dev->currentmode == INDIO_BUFFER_TRIGGERED) {
+			ret = -EBUSY;
+		} else {
+>>>>>>> refs/remotes/origin/master
 			reg = lis3l02dq_axis_map
 				[LIS3L02DQ_ACCEL][chan->address];
 			ret = lis3l02dq_read_reg_s16(indio_dev, reg, val);
 		}
 		mutex_unlock(&indio_dev->mlock);
+<<<<<<< HEAD
 		return IIO_VAL_INT;
 <<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_SCALE_SHARED):
@@ -314,12 +398,20 @@ static int lis3l02dq_read_raw(struct iio_dev *indio_dev,
 		return IIO_VAL_INT_PLUS_MICRO;
 	case (1 << IIO_CHAN_INFO_CALIBSCALE_SEPARATE):
 =======
+=======
+		if (ret < 0)
+			goto error_ret;
+		return IIO_VAL_INT;
+>>>>>>> refs/remotes/origin/master
 	case IIO_CHAN_INFO_SCALE:
 		*val = 0;
 		*val2 = 9580;
 		return IIO_VAL_INT_PLUS_MICRO;
 	case IIO_CHAN_INFO_CALIBSCALE:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		reg = lis3l02dq_axis_map[LIS3L02DQ_GAIN][chan->address];
 		ret = lis3l02dq_spi_read_reg_8(indio_dev, reg, &utemp);
 		if (ret)
@@ -329,10 +421,14 @@ static int lis3l02dq_read_raw(struct iio_dev *indio_dev,
 		return IIO_VAL_INT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case (1 << IIO_CHAN_INFO_CALIBBIAS_SEPARATE):
 =======
 	case IIO_CHAN_INFO_CALIBBIAS:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case IIO_CHAN_INFO_CALIBBIAS:
+>>>>>>> refs/remotes/origin/master
 		reg = lis3l02dq_axis_map[LIS3L02DQ_BIAS][chan->address];
 		ret = lis3l02dq_spi_read_reg_8(indio_dev, reg, (u8 *)&stemp);
 		/* to match with what previous code does */
@@ -347,7 +443,11 @@ static ssize_t lis3l02dq_read_frequency(struct device *dev,
 					struct device_attribute *attr,
 					char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	int ret, len = 0;
 	s8 t;
 	ret = lis3l02dq_spi_read_reg_8(indio_dev,
@@ -378,6 +478,7 @@ static ssize_t lis3l02dq_write_frequency(struct device *dev,
 					 const char *buf,
 					 size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 <<<<<<< HEAD
 	long val;
@@ -386,12 +487,18 @@ static ssize_t lis3l02dq_write_frequency(struct device *dev,
 
 	ret = strict_strtol(buf, 10, &val);
 =======
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int ret;
 	u8 t;
 
 	ret = kstrtoul(buf, 10, &val);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -450,7 +557,11 @@ static int lis3l02dq_initial_setup(struct iio_dev *indio_dev)
 		dev_err(&st->us->dev, "problem with setup control register 1");
 		goto err_ret;
 	}
+<<<<<<< HEAD
 	/* Repeat as sometimes doesn't work first time?*/
+=======
+	/* Repeat as sometimes doesn't work first time? */
+>>>>>>> refs/remotes/origin/master
 	ret = lis3l02dq_spi_write_reg_8(indio_dev,
 					LIS3L02DQ_REG_CTRL_1_ADDR,
 					val);
@@ -510,96 +621,132 @@ static irqreturn_t lis3l02dq_event_handler(int irq, void *private)
 
 	if (t & LIS3L02DQ_REG_WAKE_UP_SRC_INTERRUPT_Z_HIGH)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_Z,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_Z,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_THRESH,
 						  IIO_EV_DIR_RISING),
 			       timestamp);
 
 	if (t & LIS3L02DQ_REG_WAKE_UP_SRC_INTERRUPT_Z_LOW)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_Z,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_Z,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_THRESH,
 						  IIO_EV_DIR_FALLING),
 			       timestamp);
 
 	if (t & LIS3L02DQ_REG_WAKE_UP_SRC_INTERRUPT_Y_HIGH)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_Y,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_Y,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_THRESH,
 						  IIO_EV_DIR_RISING),
 			       timestamp);
 
 	if (t & LIS3L02DQ_REG_WAKE_UP_SRC_INTERRUPT_Y_LOW)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_Y,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_Y,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_THRESH,
 						  IIO_EV_DIR_FALLING),
 			       timestamp);
 
 	if (t & LIS3L02DQ_REG_WAKE_UP_SRC_INTERRUPT_X_HIGH)
 <<<<<<< HEAD
-		iio_push_event(indio_dev, 0,
-			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
-						  0,
-						  IIO_EV_MOD_X,
-=======
-		iio_push_event(indio_dev,
-			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
-						  0,
-						  IIO_MOD_X,
->>>>>>> refs/remotes/origin/cm-10.0
-						  IIO_EV_TYPE_THRESH,
-						  IIO_EV_DIR_RISING),
-			       timestamp);
-
-	if (t & LIS3L02DQ_REG_WAKE_UP_SRC_INTERRUPT_X_LOW)
 <<<<<<< HEAD
 		iio_push_event(indio_dev, 0,
 			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
 						  0,
 						  IIO_EV_MOD_X,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		iio_push_event(indio_dev,
 			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
 						  0,
 						  IIO_MOD_X,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
+						  IIO_EV_TYPE_THRESH,
+						  IIO_EV_DIR_RISING),
+			       timestamp);
+
+	if (t & LIS3L02DQ_REG_WAKE_UP_SRC_INTERRUPT_X_LOW)
+<<<<<<< HEAD
+<<<<<<< HEAD
+		iio_push_event(indio_dev, 0,
+			       IIO_MOD_EVENT_CODE(IIO_EV_CLASS_ACCEL,
+						  0,
+						  IIO_EV_MOD_X,
+=======
+=======
+>>>>>>> refs/remotes/origin/master
+		iio_push_event(indio_dev,
+			       IIO_MOD_EVENT_CODE(IIO_ACCEL,
+						  0,
+						  IIO_MOD_X,
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						  IIO_EV_TYPE_THRESH,
 						  IIO_EV_DIR_FALLING),
 			       timestamp);
@@ -612,6 +759,7 @@ static irqreturn_t lis3l02dq_event_handler(int irq, void *private)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 #define LIS3L02DQ_INFO_MASK				\
 <<<<<<< HEAD
 	((1 << IIO_CHAN_INFO_SCALE_SHARED) |		\
@@ -634,10 +782,51 @@ static struct iio_chan_spec lis3l02dq_channels[] = {
 		 1, 1, IIO_ST('s', 12, 16, 0), LIS3L02DQ_EVENT_MASK),
 	IIO_CHAN(IIO_ACCEL, 1, 0, 0, NULL, 0, IIO_MOD_Z, LIS3L02DQ_INFO_MASK,
 		 2, 2, IIO_ST('s', 12, 16, 0), LIS3L02DQ_EVENT_MASK),
+=======
+static const struct iio_event_spec lis3l02dq_event[] = {
+	{
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_RISING,
+		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
+		.mask_shared_by_type = BIT(IIO_EV_INFO_VALUE),
+	}, {
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_FALLING,
+		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
+		.mask_shared_by_type = BIT(IIO_EV_INFO_VALUE),
+	}
+};
+
+#define LIS3L02DQ_CHAN(index, mod)				\
+	{							\
+		.type = IIO_ACCEL,				\
+		.modified = 1,					\
+		.channel2 = mod,				\
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |	\
+			BIT(IIO_CHAN_INFO_CALIBSCALE) |		\
+			BIT(IIO_CHAN_INFO_CALIBBIAS),		\
+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE), \
+		.address = index,				\
+		.scan_index = index,				\
+		.scan_type = {					\
+			.sign = 's',				\
+			.realbits = 12,				\
+			.storagebits = 16,			\
+		},						\
+		.event_spec = lis3l02dq_event,			\
+		.num_event_specs = ARRAY_SIZE(lis3l02dq_event),	\
+	 }
+
+static const struct iio_chan_spec lis3l02dq_channels[] = {
+	LIS3L02DQ_CHAN(0, IIO_MOD_X),
+	LIS3L02DQ_CHAN(1, IIO_MOD_Y),
+	LIS3L02DQ_CHAN(2, IIO_MOD_Z),
+>>>>>>> refs/remotes/origin/master
 	IIO_CHAN_SOFT_TIMESTAMP(3)
 };
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t lis3l02dq_read_event_config(struct iio_dev *indio_dev,
 					   int event_code)
@@ -645,13 +834,23 @@ static ssize_t lis3l02dq_read_event_config(struct iio_dev *indio_dev,
 static int lis3l02dq_read_event_config(struct iio_dev *indio_dev,
 					   u64 event_code)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int lis3l02dq_read_event_config(struct iio_dev *indio_dev,
+				       const struct iio_chan_spec *chan,
+				       enum iio_event_type type,
+				       enum iio_event_direction dir)
+>>>>>>> refs/remotes/origin/master
 {
 
 	u8 val;
 	int ret;
+<<<<<<< HEAD
 	u8 mask = (1 << (IIO_EVENT_CODE_EXTRACT_MODIFIER(event_code)*2 +
 			 (IIO_EVENT_CODE_EXTRACT_DIR(event_code) ==
 			  IIO_EV_DIR_RISING)));
+=======
+	u8 mask = (1 << (chan->channel2*2 + (dir == IIO_EV_DIR_RISING)));
+>>>>>>> refs/remotes/origin/master
 	ret = lis3l02dq_spi_read_reg_8(indio_dev,
 				       LIS3L02DQ_REG_WAKE_UP_CFG_ADDR,
 				       &val);
@@ -697,19 +896,29 @@ error_ret:
 
 static int lis3l02dq_write_event_config(struct iio_dev *indio_dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					int event_code,
 =======
 					u64 event_code,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					const struct iio_chan_spec *chan,
+					enum iio_event_type type,
+					enum iio_event_direction dir,
+>>>>>>> refs/remotes/origin/master
 					int state)
 {
 	int ret = 0;
 	u8 val, control;
 	u8 currentlyset;
 	bool changed = false;
+<<<<<<< HEAD
 	u8 mask = (1 << (IIO_EVENT_CODE_EXTRACT_MODIFIER(event_code)*2 +
 			 (IIO_EVENT_CODE_EXTRACT_DIR(event_code) ==
 			  IIO_EV_DIR_RISING)));
+=======
+	u8 mask = (1 << (chan->channel2*2 + (dir == IIO_EV_DIR_RISING)));
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&indio_dev->mlock);
 	/* read current control */
@@ -766,9 +975,12 @@ static const struct attribute_group lis3l02dq_attribute_group = {
 
 static const struct iio_info lis3l02dq_info = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_interrupt_lines = 1,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.read_raw = &lis3l02dq_read_raw,
 	.write_raw = &lis3l02dq_write_raw,
 	.read_event_value = &lis3l02dq_read_thresh,
@@ -779,6 +991,7 @@ static const struct iio_info lis3l02dq_info = {
 	.attrs = &lis3l02dq_attribute_group,
 };
 
+<<<<<<< HEAD
 static int __devinit lis3l02dq_probe(struct spi_device *spi)
 {
 <<<<<<< HEAD
@@ -803,6 +1016,23 @@ static int __devinit lis3l02dq_probe(struct spi_device *spi)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	st->us = spi;
+=======
+static int lis3l02dq_probe(struct spi_device *spi)
+{
+	int ret;
+	struct lis3l02dq_state *st;
+	struct iio_dev *indio_dev;
+
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+	st = iio_priv(indio_dev);
+	/* this is only used for removal purposes */
+	spi_set_drvdata(spi, indio_dev);
+
+	st->us = spi;
+	st->gpio = of_get_gpio(spi->dev.of_node, 0);
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&st->buf_lock);
 	indio_dev->name = spi->dev.driver->name;
 	indio_dev->dev.parent = &spi->dev;
@@ -812,6 +1042,7 @@ static int __devinit lis3l02dq_probe(struct spi_device *spi)
 
 	indio_dev->modes = INDIO_DIRECT_MODE;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = lis3l02dq_configure_ring(indio_dev);
 	if (ret)
@@ -832,17 +1063,30 @@ static int __devinit lis3l02dq_probe(struct spi_device *spi)
 	ret = lis3l02dq_configure_buffer(indio_dev);
 	if (ret)
 		goto error_free_dev;
+=======
+	ret = lis3l02dq_configure_buffer(indio_dev);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	ret = iio_buffer_register(indio_dev,
 				  lis3l02dq_channels,
 				  ARRAY_SIZE(lis3l02dq_channels));
 	if (ret) {
+<<<<<<< HEAD
 		printk(KERN_ERR "failed to initialize the buffer\n");
 		goto error_unreg_buffer_funcs;
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	if (spi->irq && gpio_is_valid(irq_to_gpio(spi->irq)) > 0) {
+=======
+		dev_err(&spi->dev, "failed to initialize the buffer\n");
+		goto error_unreg_buffer_funcs;
+	}
+
+	if (spi->irq) {
+>>>>>>> refs/remotes/origin/master
 		ret = request_threaded_irq(st->us->irq,
 					   &lis3l02dq_th,
 					   &lis3l02dq_event_handler,
@@ -851,10 +1095,14 @@ static int __devinit lis3l02dq_probe(struct spi_device *spi)
 					   indio_dev);
 		if (ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto error_uninitialize_ring;
 =======
 			goto error_uninitialize_buffer;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto error_uninitialize_buffer;
+>>>>>>> refs/remotes/origin/master
 
 		ret = lis3l02dq_probe_trigger(indio_dev);
 		if (ret)
@@ -866,11 +1114,14 @@ static int __devinit lis3l02dq_probe(struct spi_device *spi)
 	if (ret)
 		goto error_remove_trigger;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 
 error_remove_trigger:
 	if (indio_dev->modes & INDIO_RING_TRIGGERED)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = iio_device_register(indio_dev);
 	if (ret)
@@ -879,6 +1130,7 @@ error_remove_trigger:
 	return 0;
 
 error_remove_trigger:
+<<<<<<< HEAD
 	if (indio_dev->modes & INDIO_BUFFER_TRIGGERED)
 >>>>>>> refs/remotes/origin/cm-10.0
 		lis3l02dq_remove_trigger(indio_dev);
@@ -896,14 +1148,24 @@ error_free_dev:
 	else
 		iio_free_device(indio_dev);
 =======
+=======
+	if (spi->irq)
+		lis3l02dq_remove_trigger(indio_dev);
+error_free_interrupt:
+	if (spi->irq)
+		free_irq(st->us->irq, indio_dev);
+>>>>>>> refs/remotes/origin/master
 error_uninitialize_buffer:
 	iio_buffer_unregister(indio_dev);
 error_unreg_buffer_funcs:
 	lis3l02dq_unconfigure_buffer(indio_dev);
+<<<<<<< HEAD
 error_free_dev:
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 error_ret:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -936,6 +1198,7 @@ err_ret:
 /* fixme, confirm ordering in this function */
 static int lis3l02dq_remove(struct spi_device *spi)
 {
+<<<<<<< HEAD
 	int ret;
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 	struct lis3l02dq_state *st = iio_priv(indio_dev);
@@ -972,6 +1235,24 @@ static int lis3l02dq_remove(struct spi_device *spi)
 >>>>>>> refs/remotes/origin/cm-10.0
 err_ret:
 	return ret;
+=======
+	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+	struct lis3l02dq_state *st = iio_priv(indio_dev);
+
+	iio_device_unregister(indio_dev);
+
+	lis3l02dq_disable_all_events(indio_dev);
+	lis3l02dq_stop_device(indio_dev);
+
+	if (spi->irq)
+		free_irq(st->us->irq, indio_dev);
+
+	lis3l02dq_remove_trigger(indio_dev);
+	iio_buffer_unregister(indio_dev);
+	lis3l02dq_unconfigure_buffer(indio_dev);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct spi_driver lis3l02dq_driver = {
@@ -980,6 +1261,7 @@ static struct spi_driver lis3l02dq_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = lis3l02dq_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(lis3l02dq_remove),
 };
 <<<<<<< HEAD
@@ -1006,3 +1288,13 @@ MODULE_LICENSE("GPL v2");
 =======
 MODULE_ALIAS("spi:lis3l02dq");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = lis3l02dq_remove,
+};
+module_spi_driver(lis3l02dq_driver);
+
+MODULE_AUTHOR("Jonathan Cameron <jic23@kernel.org>");
+MODULE_DESCRIPTION("ST LIS3L02DQ Accelerometer SPI driver");
+MODULE_LICENSE("GPL v2");
+MODULE_ALIAS("spi:lis3l02dq");
+>>>>>>> refs/remotes/origin/master

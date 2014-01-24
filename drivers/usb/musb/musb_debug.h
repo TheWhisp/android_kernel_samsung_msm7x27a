@@ -44,12 +44,17 @@
 
 #ifdef CONFIG_DEBUG_FS
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int musb_init_debugfs(struct musb *musb);
 extern void musb_exit_debugfs(struct musb *musb);
 =======
 int musb_init_debugfs(struct musb *musb);
 void musb_exit_debugfs(struct musb *musb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int musb_init_debugfs(struct musb *musb);
+void musb_exit_debugfs(struct musb *musb);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline int musb_init_debugfs(struct musb *musb)
 {

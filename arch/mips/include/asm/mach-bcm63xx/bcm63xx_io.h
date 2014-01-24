@@ -1,7 +1,11 @@
 #ifndef BCM63XX_IO_H_
 #define BCM63XX_IO_H_
 
+<<<<<<< HEAD
 #include "bcm63xx_cpu.h"
+=======
+#include <asm/mach-bcm63xx/bcm63xx_cpu.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Physical memory map, RAM is mapped at 0x0.
@@ -40,6 +44,13 @@
 #define BCM_CB_MEM_END_PA		(BCM_CB_MEM_BASE_PA +		\
 					BCM_CB_MEM_SIZE - 1)
 
+<<<<<<< HEAD
+=======
+#define BCM_PCIE_MEM_BASE_PA		0x10f00000
+#define BCM_PCIE_MEM_SIZE		(16 * 1024 * 1024)
+#define BCM_PCIE_MEM_END_PA		(BCM_PCIE_MEM_BASE_PA +		\
+					BCM_PCIE_MEM_SIZE - 1)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Internal registers are accessed through KSEG3
@@ -50,16 +61,22 @@
 #define bcm_readw(a)	(*(volatile unsigned short *)	BCM_REGS_VA(a))
 #define bcm_readl(a)	(*(volatile unsigned int *)	BCM_REGS_VA(a))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define bcm_writeb(v, a) (*(volatile unsigned char *) BCM_REGS_VA((a)) = (v))
 #define bcm_writew(v, a) (*(volatile unsigned short *) BCM_REGS_VA((a)) = (v))
 #define bcm_writel(v, a) (*(volatile unsigned int *) BCM_REGS_VA((a)) = (v))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define bcm_readq(a)	(*(volatile u64 *)		BCM_REGS_VA(a))
 #define bcm_writeb(v, a) (*(volatile unsigned char *) BCM_REGS_VA((a)) = (v))
 #define bcm_writew(v, a) (*(volatile unsigned short *) BCM_REGS_VA((a)) = (v))
 #define bcm_writel(v, a) (*(volatile unsigned int *) BCM_REGS_VA((a)) = (v))
 #define bcm_writeq(v, a) (*(volatile u64 *) BCM_REGS_VA((a)) = (v))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * IO helpers to access register set for current CPU
@@ -90,12 +107,23 @@
 #define bcm_mpi_readl(o)	bcm_rset_readl(RSET_MPI, (o))
 #define bcm_mpi_writel(v, o)	bcm_rset_writel(RSET_MPI, (v), (o))
 #define bcm_pcmcia_readl(o)	bcm_rset_readl(RSET_PCMCIA, (o))
+<<<<<<< HEAD
 #define bcm_pcmcia_writel(v, o)	bcm_rset_writel(RSET_PCMCIA, (v), (o))
+=======
+#define bcm_pcmcia_writel(v, o) bcm_rset_writel(RSET_PCMCIA, (v), (o))
+#define bcm_pcie_readl(o)	bcm_rset_readl(RSET_PCIE, (o))
+#define bcm_pcie_writel(v, o)	bcm_rset_writel(RSET_PCIE, (v), (o))
+>>>>>>> refs/remotes/origin/master
 #define bcm_sdram_readl(o)	bcm_rset_readl(RSET_SDRAM, (o))
 #define bcm_sdram_writel(v, o)	bcm_rset_writel(RSET_SDRAM, (v), (o))
 #define bcm_memc_readl(o)	bcm_rset_readl(RSET_MEMC, (o))
 #define bcm_memc_writel(v, o)	bcm_rset_writel(RSET_MEMC, (v), (o))
 #define bcm_ddr_readl(o)	bcm_rset_readl(RSET_DDR, (o))
 #define bcm_ddr_writel(v, o)	bcm_rset_writel(RSET_DDR, (v), (o))
+<<<<<<< HEAD
+=======
+#define bcm_misc_readl(o)	bcm_rset_readl(RSET_MISC, (o))
+#define bcm_misc_writel(v, o)	bcm_rset_writel(RSET_MISC, (v), (o))
+>>>>>>> refs/remotes/origin/master
 
 #endif /* ! BCM63XX_IO_H_ */

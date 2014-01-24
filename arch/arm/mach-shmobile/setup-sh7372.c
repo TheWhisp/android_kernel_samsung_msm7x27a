@@ -22,6 +22,10 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_platform.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/uio_driver.h>
 #include <linux/delay.h>
 #include <linux/input.h>
@@ -31,6 +35,7 @@
 #include <linux/sh_intc.h>
 #include <linux/sh_timer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/sh7372.h>
 #include <asm/mach-types.h>
@@ -39,6 +44,12 @@
 #include <linux/pm_domain.h>
 #include <linux/dma-mapping.h>
 #include <mach/hardware.h>
+=======
+#include <linux/pm_domain.h>
+#include <linux/dma-mapping.h>
+#include <linux/platform_data/sh_ipmmu.h>
+#include <mach/dma-register.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 #include <mach/sh7372.h>
 #include <mach/common.h>
@@ -62,6 +73,7 @@ static struct map_desc sh7372_io_desc[] __initdata = {
 void __init sh7372_map_io(void)
 {
 	iotable_init(sh7372_io_desc, ARRAY_SIZE(sh7372_io_desc));
+<<<<<<< HEAD
 
 	/*
 	 * DMA memory at 0xff200000 - 0xffdfffff. The default 2MB size isn't
@@ -70,6 +82,35 @@ void __init sh7372_map_io(void)
 	init_consistent_dma_size(12 << 20);
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+/* PFC */
+static struct resource sh7372_pfc_resources[] = {
+	[0] = {
+		.start	= 0xe6050000,
+		.end	= 0xe6057fff,
+		.flags	= IORESOURCE_MEM,
+	},
+	[1] = {
+		.start	= 0xe605800c,
+		.end	= 0xe6058027,
+		.flags	= IORESOURCE_MEM,
+	}
+};
+
+static struct platform_device sh7372_pfc_device = {
+	.name		= "pfc-sh7372",
+	.id		= -1,
+	.resource	= sh7372_pfc_resources,
+	.num_resources	= ARRAY_SIZE(sh7372_pfc_resources),
+};
+
+void __init sh7372_pinmux_init(void)
+{
+	platform_device_register(&sh7372_pfc_device);
+}
+>>>>>>> refs/remotes/origin/master
 
 /* SCIFA0 */
 static struct plat_sci_port scif0_platform_data = {
@@ -206,20 +247,27 @@ static struct platform_device scif6_device = {
 
 /* CMT */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sh_timer_config cmt10_platform_data = {
 	.name = "CMT10",
 	.channel_offset = 0x10,
 	.timer_bit = 0,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sh_timer_config cmt2_platform_data = {
 	.name = "CMT2",
 	.channel_offset = 0x40,
 	.timer_bit = 5,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.clockevent_rating = 125,
 	.clocksource_rating = 125,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct resource cmt10_resources[] = {
 	[0] = {
@@ -231,6 +279,8 @@ static struct resource cmt10_resources[] = {
 	[1] = {
 		.start	= evt2irq(0x0b00), /* CMT1_CMT10 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource cmt2_resources[] = {
 	[0] = {
 		.name	= "CMT2",
@@ -240,11 +290,15 @@ static struct resource cmt2_resources[] = {
 	},
 	[1] = {
 		.start	= evt2irq(0x0b80), /* CMT2 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_device cmt10_device = {
 	.name		= "sh_cmt",
@@ -255,6 +309,8 @@ static struct platform_device cmt10_device = {
 	.resource	= cmt10_resources,
 	.num_resources	= ARRAY_SIZE(cmt10_resources),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device cmt2_device = {
 	.name		= "sh_cmt",
 	.id		= 2,
@@ -263,7 +319,10 @@ static struct platform_device cmt2_device = {
 	},
 	.resource	= cmt2_resources,
 	.num_resources	= ARRAY_SIZE(cmt2_resources),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* TMU */
@@ -371,6 +430,7 @@ static struct platform_device iic1_device = {
 };
 
 /* DMA */
+<<<<<<< HEAD
 /* Transmit sizes and respective CHCR register values */
 enum {
 	XMIT_SZ_8BIT		= 0,
@@ -396,170 +456,318 @@ enum {
 #define TS_INDEX2VAL(i) ((((i) & 3) << 3) | \
 			 (((i) & 0xc) << (20 - 2)))
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct sh_dmae_slave_config sh7372_dmae_slaves[] = {
 	{
 		.slave_id	= SHDMA_SLAVE_SCIF0_TX,
 		.addr		= 0xe6c40020,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x21,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF0_RX,
 		.addr		= 0xe6c40024,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x22,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF1_TX,
 		.addr		= 0xe6c50020,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x25,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF1_RX,
 		.addr		= 0xe6c50024,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x26,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF2_TX,
 		.addr		= 0xe6c60020,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x29,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF2_RX,
 		.addr		= 0xe6c60024,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x2a,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF3_TX,
 		.addr		= 0xe6c70020,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x2d,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF3_RX,
 		.addr		= 0xe6c70024,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x2e,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF4_TX,
 		.addr		= 0xe6c80020,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x39,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF4_RX,
 		.addr		= 0xe6c80024,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x3a,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF5_TX,
 		.addr		= 0xe6cb0020,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x35,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF5_RX,
 		.addr		= 0xe6cb0024,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x36,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF6_TX,
 		.addr		= 0xe6c30040,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_8BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0x3d,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SCIF6_RX,
 		.addr		= 0xe6c30060,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
 		.mid_rid	= 0x3e,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SDHI0_TX,
 		.addr		= 0xe6850030,
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_16BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_8BIT),
+		.mid_rid	= 0x3e,
+	}, {
+		.slave_id	= SHDMA_SLAVE_FLCTL0_TX,
+		.addr		= 0xe6a30050,
+		.chcr		= CHCR_TX(XMIT_SZ_32BIT),
+		.mid_rid	= 0x83,
+	}, {
+		.slave_id	= SHDMA_SLAVE_FLCTL0_RX,
+		.addr		= 0xe6a30050,
+		.chcr		= CHCR_RX(XMIT_SZ_32BIT),
+		.mid_rid	= 0x83,
+	}, {
+		.slave_id	= SHDMA_SLAVE_FLCTL1_TX,
+		.addr		= 0xe6a30060,
+		.chcr		= CHCR_TX(XMIT_SZ_32BIT),
+		.mid_rid	= 0x87,
+	}, {
+		.slave_id	= SHDMA_SLAVE_FLCTL1_RX,
+		.addr		= 0xe6a30060,
+		.chcr		= CHCR_RX(XMIT_SZ_32BIT),
+		.mid_rid	= 0x87,
+	}, {
+		.slave_id	= SHDMA_SLAVE_SDHI0_TX,
+		.addr		= 0xe6850030,
+		.chcr		= CHCR_TX(XMIT_SZ_16BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0xc1,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SDHI0_RX,
 		.addr		= 0xe6850030,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_16BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_16BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0xc2,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SDHI1_TX,
 		.addr		= 0xe6860030,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_16BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_16BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0xc9,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SDHI1_RX,
 		.addr		= 0xe6860030,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_16BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_16BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0xca,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SDHI2_TX,
 		.addr		= 0xe6870030,
+<<<<<<< HEAD
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_16BIT),
+=======
+		.chcr		= CHCR_TX(XMIT_SZ_16BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0xcd,
 	}, {
 		.slave_id	= SHDMA_SLAVE_SDHI2_RX,
 		.addr		= 0xe6870030,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_16BIT),
 		.mid_rid	= 0xce,
 	}, {
 		.slave_id	= SHDMA_SLAVE_MMCIF_TX,
 		.addr		= 0xe6bd0034,
 		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_32BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_16BIT),
+		.mid_rid	= 0xce,
+	}, {
+		.slave_id	= SHDMA_SLAVE_FSIA_TX,
+		.addr		= 0xfe1f0024,
+		.chcr		= CHCR_TX(XMIT_SZ_32BIT),
+		.mid_rid	= 0xb1,
+	}, {
+		.slave_id	= SHDMA_SLAVE_FSIA_RX,
+		.addr		= 0xfe1f0020,
+		.chcr		= CHCR_RX(XMIT_SZ_32BIT),
+		.mid_rid	= 0xb2,
+	}, {
+		.slave_id	= SHDMA_SLAVE_MMCIF_TX,
+		.addr		= 0xe6bd0034,
+		.chcr		= CHCR_TX(XMIT_SZ_32BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0xd1,
 	}, {
 		.slave_id	= SHDMA_SLAVE_MMCIF_RX,
 		.addr		= 0xe6bd0034,
+<<<<<<< HEAD
 		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_32BIT),
+=======
+		.chcr		= CHCR_RX(XMIT_SZ_32BIT),
+>>>>>>> refs/remotes/origin/master
 		.mid_rid	= 0xd2,
 	},
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SH7372_CHCLR 0x220
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SH7372_CHCLR (0x220 - 0x20)
+
+>>>>>>> refs/remotes/origin/master
 static const struct sh_dmae_channel sh7372_dmae_channels[] = {
 	{
 		.offset = 0,
 		.dmars = 0,
 		.dmars_bit = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.chclr_offset = SH7372_CHCLR + 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.chclr_offset = SH7372_CHCLR + 0,
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.offset = 0x10,
 		.dmars = 0,
 		.dmars_bit = 8,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.chclr_offset = SH7372_CHCLR + 0x10,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.chclr_offset = SH7372_CHCLR + 0x10,
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.offset = 0x20,
 		.dmars = 4,
 		.dmars_bit = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.chclr_offset = SH7372_CHCLR + 0x20,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.chclr_offset = SH7372_CHCLR + 0x20,
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.offset = 0x30,
 		.dmars = 4,
 		.dmars_bit = 8,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.chclr_offset = SH7372_CHCLR + 0x30,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.chclr_offset = SH7372_CHCLR + 0x30,
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.offset = 0x50,
 		.dmars = 8,
 		.dmars_bit = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.chclr_offset = SH7372_CHCLR + 0x50,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.chclr_offset = SH7372_CHCLR + 0x50,
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.offset = 0x60,
 		.dmars = 8,
 		.dmars_bit = 8,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.chclr_offset = SH7372_CHCLR + 0x60,
@@ -569,11 +777,18 @@ static const struct sh_dmae_channel sh7372_dmae_channels[] = {
 
 static const unsigned int ts_shift[] = TS_SHIFT;
 
+=======
+		.chclr_offset = SH7372_CHCLR + 0x60,
+	}
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct sh_dmae_pdata dma_platform_data = {
 	.slave		= sh7372_dmae_slaves,
 	.slave_num	= ARRAY_SIZE(sh7372_dmae_slaves),
 	.channel	= sh7372_dmae_channels,
 	.channel_num	= ARRAY_SIZE(sh7372_dmae_channels),
+<<<<<<< HEAD
 	.ts_low_shift	= 3,
 	.ts_low_mask	= 0x18,
 	.ts_high_shift	= (20 - 2),	/* 2 bits for shifted low TS */
@@ -585,6 +800,16 @@ static struct sh_dmae_pdata dma_platform_data = {
 =======
 	.chclr_present	= 1,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ts_low_shift	= TS_LOW_SHIFT,
+	.ts_low_mask	= TS_LOW_BIT << TS_LOW_SHIFT,
+	.ts_high_shift	= TS_HI_SHIFT,
+	.ts_high_mask	= TS_HI_BIT << TS_HI_SHIFT,
+	.ts_shift	= dma_ts_shift,
+	.ts_shift_num	= ARRAY_SIZE(dma_ts_shift),
+	.dmaor_init	= DMAOR_DME,
+	.chclr_present	= 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Resource order important! */
@@ -593,10 +818,14 @@ static struct resource sh7372_dmae0_resources[] = {
 		/* Channel registers and DMAOR */
 		.start	= 0xfe008020,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.end	= 0xfe00808f,
 =======
 		.end	= 0xfe00828f,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.end	= 0xfe00828f,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -607,10 +836,14 @@ static struct resource sh7372_dmae0_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* DMA error IRQ */
 =======
 		.name	= "error_irq",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/master
 		.start	= evt2irq(0x20c0),
 		.end	= evt2irq(0x20c0),
 		.flags	= IORESOURCE_IRQ,
@@ -629,10 +862,14 @@ static struct resource sh7372_dmae1_resources[] = {
 		/* Channel registers and DMAOR */
 		.start	= 0xfe018020,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.end	= 0xfe01808f,
 =======
 		.end	= 0xfe01828f,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.end	= 0xfe01828f,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -643,10 +880,14 @@ static struct resource sh7372_dmae1_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* DMA error IRQ */
 =======
 		.name	= "error_irq",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/master
 		.start	= evt2irq(0x21c0),
 		.end	= evt2irq(0x21c0),
 		.flags	= IORESOURCE_IRQ,
@@ -665,10 +906,14 @@ static struct resource sh7372_dmae2_resources[] = {
 		/* Channel registers and DMAOR */
 		.start	= 0xfe028020,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.end	= 0xfe02808f,
 =======
 		.end	= 0xfe02828f,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.end	= 0xfe02828f,
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_MEM,
 	},
 	{
@@ -679,10 +924,14 @@ static struct resource sh7372_dmae2_resources[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* DMA error IRQ */
 =======
 		.name	= "error_irq",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= "error_irq",
+>>>>>>> refs/remotes/origin/master
 		.start	= evt2irq(0x22c0),
 		.end	= evt2irq(0x22c0),
 		.flags	= IORESOURCE_IRQ,
@@ -726,6 +975,7 @@ static struct platform_device dma2_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*
  * USB-DMAC
@@ -741,6 +991,11 @@ enum {
 
 #define USBTS_INDEX2VAL(i) (((i) & 3) << 6)
 
+=======
+/*
+ * USB-DMAC
+ */
+>>>>>>> refs/remotes/origin/master
 static const struct sh_dmae_channel sh7372_usb_dmae_channels[] = {
 	{
 		.offset = 0,
@@ -753,10 +1008,17 @@ static const struct sh_dmae_channel sh7372_usb_dmae_channels[] = {
 static const struct sh_dmae_slave_config sh7372_usb_dmae0_slaves[] = {
 	{
 		.slave_id	= SHDMA_SLAVE_USB0_TX,
+<<<<<<< HEAD
 		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
 	}, {
 		.slave_id	= SHDMA_SLAVE_USB0_RX,
 		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
+=======
+		.chcr		= USBTS_INDEX2VAL(USBTS_XMIT_SZ_8BYTE),
+	}, {
+		.slave_id	= SHDMA_SLAVE_USB0_RX,
+		.chcr		= USBTS_INDEX2VAL(USBTS_XMIT_SZ_8BYTE),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -765,12 +1027,21 @@ static struct sh_dmae_pdata usb_dma0_platform_data = {
 	.slave_num	= ARRAY_SIZE(sh7372_usb_dmae0_slaves),
 	.channel	= sh7372_usb_dmae_channels,
 	.channel_num	= ARRAY_SIZE(sh7372_usb_dmae_channels),
+<<<<<<< HEAD
 	.ts_low_shift	= 6,
 	.ts_low_mask	= 0xc0,
 	.ts_high_shift	= 0,
 	.ts_high_mask	= 0,
 	.ts_shift	= usbts_shift,
 	.ts_shift_num	= ARRAY_SIZE(usbts_shift),
+=======
+	.ts_low_shift	= USBTS_LOW_SHIFT,
+	.ts_low_mask	= USBTS_LOW_BIT << USBTS_LOW_SHIFT,
+	.ts_high_shift	= USBTS_HI_SHIFT,
+	.ts_high_mask	= USBTS_HI_BIT << USBTS_HI_SHIFT,
+	.ts_shift	= dma_usbts_shift,
+	.ts_shift_num	= ARRAY_SIZE(dma_usbts_shift),
+>>>>>>> refs/remotes/origin/master
 	.dmaor_init	= DMAOR_DME,
 	.chcr_offset	= 0x14,
 	.chcr_ie_bit	= 1 << 5,
@@ -815,10 +1086,17 @@ static struct platform_device usb_dma0_device = {
 static const struct sh_dmae_slave_config sh7372_usb_dmae1_slaves[] = {
 	{
 		.slave_id	= SHDMA_SLAVE_USB1_TX,
+<<<<<<< HEAD
 		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
 	}, {
 		.slave_id	= SHDMA_SLAVE_USB1_RX,
 		.chcr		= USBTS_INDEX2VAL(XMIT_SZ_8BYTE),
+=======
+		.chcr		= USBTS_INDEX2VAL(USBTS_XMIT_SZ_8BYTE),
+	}, {
+		.slave_id	= SHDMA_SLAVE_USB1_RX,
+		.chcr		= USBTS_INDEX2VAL(USBTS_XMIT_SZ_8BYTE),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -827,12 +1105,21 @@ static struct sh_dmae_pdata usb_dma1_platform_data = {
 	.slave_num	= ARRAY_SIZE(sh7372_usb_dmae1_slaves),
 	.channel	= sh7372_usb_dmae_channels,
 	.channel_num	= ARRAY_SIZE(sh7372_usb_dmae_channels),
+<<<<<<< HEAD
 	.ts_low_shift	= 6,
 	.ts_low_mask	= 0xc0,
 	.ts_high_shift	= 0,
 	.ts_high_mask	= 0,
 	.ts_shift	= usbts_shift,
 	.ts_shift_num	= ARRAY_SIZE(usbts_shift),
+=======
+	.ts_low_shift	= USBTS_LOW_SHIFT,
+	.ts_low_mask	= USBTS_LOW_BIT << USBTS_LOW_SHIFT,
+	.ts_high_shift	= USBTS_HI_SHIFT,
+	.ts_high_mask	= USBTS_HI_BIT << USBTS_HI_SHIFT,
+	.ts_shift	= dma_usbts_shift,
+	.ts_shift_num	= ARRAY_SIZE(dma_usbts_shift),
+>>>>>>> refs/remotes/origin/master
 	.dmaor_init	= DMAOR_DME,
 	.chcr_offset	= 0x14,
 	.chcr_ie_bit	= 1 << 5,
@@ -873,7 +1160,10 @@ static struct platform_device usb_dma1_device = {
 	},
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* VPU */
 static struct uio_info vpu_platform_data = {
 	.name = "VPU5HG",
@@ -1082,6 +1372,46 @@ static struct platform_device spu1_device = {
 	.num_resources	= ARRAY_SIZE(spu1_resources),
 };
 
+<<<<<<< HEAD
+=======
+/* IPMMUI (an IPMMU module for ICB/LMB) */
+static struct resource ipmmu_resources[] = {
+	[0] = {
+		.name	= "IPMMUI",
+		.start	= 0xfe951000,
+		.end	= 0xfe9510ff,
+		.flags	= IORESOURCE_MEM,
+	},
+};
+
+static const char * const ipmmu_dev_names[] = {
+	"sh_mobile_lcdc_fb.0",
+	"sh_mobile_lcdc_fb.1",
+	"sh_mobile_ceu.0",
+	"uio_pdrv_genirq.0",
+	"uio_pdrv_genirq.1",
+	"uio_pdrv_genirq.2",
+	"uio_pdrv_genirq.3",
+	"uio_pdrv_genirq.4",
+	"uio_pdrv_genirq.5",
+};
+
+static struct shmobile_ipmmu_platform_data ipmmu_platform_data = {
+	.dev_names = ipmmu_dev_names,
+	.num_dev_names = ARRAY_SIZE(ipmmu_dev_names),
+};
+
+static struct platform_device ipmmu_device = {
+	.name           = "ipmmu",
+	.id             = -1,
+	.dev = {
+		.platform_data = &ipmmu_platform_data,
+	},
+	.resource       = ipmmu_resources,
+	.num_resources  = ARRAY_SIZE(ipmmu_resources),
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *sh7372_early_devices[] __initdata = {
 	&scif0_device,
 	&scif1_device,
@@ -1091,12 +1421,19 @@ static struct platform_device *sh7372_early_devices[] __initdata = {
 	&scif5_device,
 	&scif6_device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&cmt10_device,
 =======
 	&cmt2_device,
 >>>>>>> refs/remotes/origin/cm-10.0
 	&tmu00_device,
 	&tmu01_device,
+=======
+	&cmt2_device,
+	&tmu00_device,
+	&tmu01_device,
+	&ipmmu_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *sh7372_late_devices[] __initdata = {
@@ -1106,10 +1443,15 @@ static struct platform_device *sh7372_late_devices[] __initdata = {
 	&dma1_device,
 	&dma2_device,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&usb_dma0_device,
 	&usb_dma1_device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&usb_dma0_device,
+	&usb_dma1_device,
+>>>>>>> refs/remotes/origin/master
 	&vpu_device,
 	&veu0_device,
 	&veu1_device,
@@ -1122,6 +1464,7 @@ static struct platform_device *sh7372_late_devices[] __initdata = {
 
 void __init sh7372_add_standard_devices(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	sh7372_init_pm_domain(&sh7372_a4lc);
@@ -1141,11 +1484,43 @@ void __init sh7372_add_standard_devices(void)
 	sh7372_pm_add_subdomain(&sh7372_a4s, &sh7372_a3sp);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pm_domain_device domain_devices[] = {
+		{ "A3RV", &vpu_device, },
+		{ "A4MP", &spu0_device, },
+		{ "A4MP", &spu1_device, },
+		{ "A3SP", &scif0_device, },
+		{ "A3SP", &scif1_device, },
+		{ "A3SP", &scif2_device, },
+		{ "A3SP", &scif3_device, },
+		{ "A3SP", &scif4_device, },
+		{ "A3SP", &scif5_device, },
+		{ "A3SP", &scif6_device, },
+		{ "A3SP", &iic1_device, },
+		{ "A3SP", &dma0_device, },
+		{ "A3SP", &dma1_device, },
+		{ "A3SP", &dma2_device, },
+		{ "A3SP", &usb_dma0_device, },
+		{ "A3SP", &usb_dma1_device, },
+		{ "A4R", &iic0_device, },
+		{ "A4R", &veu0_device, },
+		{ "A4R", &veu1_device, },
+		{ "A4R", &veu2_device, },
+		{ "A4R", &veu3_device, },
+		{ "A4R", &jpu_device, },
+		{ "A4R", &tmu00_device, },
+		{ "A4R", &tmu01_device, },
+	};
+
+	sh7372_init_pm_domains();
+
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(sh7372_early_devices,
 			    ARRAY_SIZE(sh7372_early_devices));
 
 	platform_add_devices(sh7372_late_devices,
 			    ARRAY_SIZE(sh7372_late_devices));
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -1180,12 +1555,24 @@ static void __init sh7372_earlytimer_init(void)
 	sh7372_clock_init();
 	shmobile_earlytimer_init();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	rmobile_add_devices_to_domains(domain_devices,
+				       ARRAY_SIZE(domain_devices));
+}
+
+void __init sh7372_earlytimer_init(void)
+{
+	sh7372_clock_init();
+	shmobile_earlytimer_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init sh7372_add_early_devices(void)
 {
 	early_platform_add_devices(sh7372_early_devices,
 				   ARRAY_SIZE(sh7372_early_devices));
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -1196,3 +1583,50 @@ void __init sh7372_add_early_devices(void)
 	shmobile_timer.init = sh7372_earlytimer_init;
 >>>>>>> refs/remotes/origin/cm-10.0
 }
+=======
+
+	/* setup early console here as well */
+	shmobile_setup_console();
+}
+
+#ifdef CONFIG_USE_OF
+
+void __init sh7372_add_early_devices_dt(void)
+{
+	shmobile_setup_delay(800, 1, 3); /* Cortex-A8 @ 800MHz */
+
+	early_platform_add_devices(sh7372_early_devices,
+				   ARRAY_SIZE(sh7372_early_devices));
+
+	/* setup early console here as well */
+	shmobile_setup_console();
+}
+
+void __init sh7372_add_standard_devices_dt(void)
+{
+	/* clocks are setup late during boot in the case of DT */
+	sh7372_clock_init();
+
+	platform_add_devices(sh7372_early_devices,
+			    ARRAY_SIZE(sh7372_early_devices));
+
+	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+}
+
+static const char *sh7372_boards_compat_dt[] __initdata = {
+	"renesas,sh7372",
+	NULL,
+};
+
+DT_MACHINE_START(SH7372_DT, "Generic SH7372 (Flattened Device Tree)")
+	.map_io		= sh7372_map_io,
+	.init_early	= sh7372_add_early_devices_dt,
+	.nr_irqs	= NR_IRQS_LEGACY,
+	.init_irq	= sh7372_init_irq,
+	.handle_irq	= shmobile_handle_irq_intc,
+	.init_machine	= sh7372_add_standard_devices_dt,
+	.dt_compat	= sh7372_boards_compat_dt,
+MACHINE_END
+
+#endif /* CONFIG_USE_OF */
+>>>>>>> refs/remotes/origin/master

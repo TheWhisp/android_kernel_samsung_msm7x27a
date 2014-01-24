@@ -37,6 +37,7 @@
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/mach-au1x00/au1xxx.h>
 #include <asm/mach-au1x00/au1xxx_psc.h>
 
@@ -45,6 +46,8 @@ struct i2c_au1550_data {
 	int	xfer_timeout;
 	int	ack_timeout;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-au1x00/au1000.h>
 #include <asm/mach-au1x00/au1xxx_psc.h>
 
@@ -61,11 +64,15 @@ struct i2c_au1550_data {
 struct i2c_au1550_data {
 	void __iomem *psc_base;
 	int	xfer_timeout;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct i2c_adapter adap;
 	struct resource *ioarea;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 wait_xfer_done(struct i2c_au1550_data *adap)
@@ -83,6 +90,8 @@ wait_xfer_done(struct i2c_au1550_data *adap)
 		au_sync();
 		if ((stat & PSC_SMBSTAT_TE) != 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void WR(struct i2c_au1550_data *a, int r, unsigned long v)
 {
 	__raw_writel(v, a->psc_base + r);
@@ -101,7 +110,10 @@ static int wait_xfer_done(struct i2c_au1550_data *adap)
 	/* Wait for Tx Buffer Empty */
 	for (i = 0; i < adap->xfer_timeout; i++) {
 		if (RD(adap, PSC_SMBSTAT) & PSC_SMBSTAT_TE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 0;
 
 		udelay(1);
@@ -110,6 +122,7 @@ static int wait_xfer_done(struct i2c_au1550_data *adap)
 	return -ETIMEDOUT;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 wait_ack(struct i2c_au1550_data *adap)
@@ -121,10 +134,16 @@ static int wait_ack(struct i2c_au1550_data *adap)
 {
 	unsigned long stat;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wait_ack(struct i2c_au1550_data *adap)
+{
+	unsigned long stat;
+>>>>>>> refs/remotes/origin/master
 
 	if (wait_xfer_done(adap))
 		return -ETIMEDOUT;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sp = (volatile psc_smb_t *)(adap->psc_base);
 
@@ -134,12 +153,16 @@ static int wait_ack(struct i2c_au1550_data *adap)
 =======
 	stat = RD(adap, PSC_SMBEVNT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stat = RD(adap, PSC_SMBEVNT);
+>>>>>>> refs/remotes/origin/master
 	if ((stat & (PSC_SMBEVNT_DN | PSC_SMBEVNT_AN | PSC_SMBEVNT_AL)) != 0)
 		return -ETIMEDOUT;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 wait_master_done(struct i2c_au1550_data *adap)
@@ -157,6 +180,8 @@ wait_master_done(struct i2c_au1550_data *adap)
 		au_sync();
 		if ((stat & PSC_SMBEVNT_MD) != 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wait_master_done(struct i2c_au1550_data *adap)
 {
 	int i;
@@ -164,7 +189,10 @@ static int wait_master_done(struct i2c_au1550_data *adap)
 	/* Wait for Master Done. */
 	for (i = 0; i < 2 * adap->xfer_timeout; i++) {
 		if ((RD(adap, PSC_SMBEVNT) & PSC_SMBEVNT_MD) != 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		udelay(1);
 	}
@@ -175,6 +203,7 @@ static int wait_master_done(struct i2c_au1550_data *adap)
 static int
 do_address(struct i2c_au1550_data *adap, unsigned int addr, int rd, int q)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	volatile psc_smb_t	*sp;
 	u32			stat;
@@ -200,6 +229,8 @@ do_address(struct i2c_au1550_data *adap, unsigned int addr, int rd, int q)
 	/* Write out the i2c chip address and specify operation
 	*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long stat;
 
 	/* Reset the FIFOs, clear events. */
@@ -214,7 +245,10 @@ do_address(struct i2c_au1550_data *adap, unsigned int addr, int rd, int q)
 	}
 
 	/* Write out the i2c chip address and specify operation */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	addr <<= 1;
 	if (rd)
 		addr |= 1;
@@ -223,6 +257,7 @@ do_address(struct i2c_au1550_data *adap, unsigned int addr, int rd, int q)
 	if (q)
 		addr |= PSC_SMBTXRX_STP;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Put byte into fifo, start up master.
 	*/
@@ -235,11 +270,17 @@ do_address(struct i2c_au1550_data *adap, unsigned int addr, int rd, int q)
 	WR(adap, PSC_SMBTXRX, addr);
 	WR(adap, PSC_SMBPCR, PSC_SMBPCR_MS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Put byte into fifo, start up master. */
+	WR(adap, PSC_SMBTXRX, addr);
+	WR(adap, PSC_SMBPCR, PSC_SMBPCR_MS);
+>>>>>>> refs/remotes/origin/master
 	if (wait_ack(adap))
 		return -EIO;
 	return (q) ? wait_master_done(adap) : 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u32
 wait_for_rx_byte(struct i2c_au1550_data *adap, u32 *ret_data)
@@ -252,15 +293,23 @@ static int wait_for_rx_byte(struct i2c_au1550_data *adap, unsigned char *out)
 {
 	int j;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wait_for_rx_byte(struct i2c_au1550_data *adap, unsigned char *out)
+{
+	int j;
+>>>>>>> refs/remotes/origin/master
 
 	if (wait_xfer_done(adap))
 		return -EIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sp = (volatile psc_smb_t *)(adap->psc_base);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	j =  adap->xfer_timeout * 100;
 	do {
 		j--;
@@ -268,16 +317,21 @@ static int wait_for_rx_byte(struct i2c_au1550_data *adap, unsigned char *out)
 			return -EIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		stat = sp->psc_smbstat;
 		au_sync();
 		if ((stat & PSC_SMBSTAT_RE) == 0)
 =======
 		if ((RD(adap, PSC_SMBSTAT) & PSC_SMBSTAT_RE) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if ((RD(adap, PSC_SMBSTAT) & PSC_SMBSTAT_RE) == 0)
+>>>>>>> refs/remotes/origin/master
 			j = 0;
 		else
 			udelay(1);
 	} while (j > 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	data = sp->psc_smbtxrx;
 	au_sync();
@@ -286,10 +340,15 @@ static int wait_for_rx_byte(struct i2c_au1550_data *adap, unsigned char *out)
 
 	*out = RD(adap, PSC_SMBTXRX);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	*out = RD(adap, PSC_SMBTXRX);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 i2c_read(struct i2c_au1550_data *adap, unsigned char *buf,
@@ -299,11 +358,16 @@ i2c_read(struct i2c_au1550_data *adap, unsigned char *buf,
 	u32	data;
 	volatile psc_smb_t	*sp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int i2c_read(struct i2c_au1550_data *adap, unsigned char *buf,
 		    unsigned int len)
 {
 	int i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (len == 0)
 		return 0;
@@ -312,6 +376,7 @@ static int i2c_read(struct i2c_au1550_data *adap, unsigned char *buf,
 	 * zero bytes for timing, waiting for bytes to appear in the
 	 * receive fifo, then reading the bytes.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	sp = (volatile psc_smb_t *)(adap->psc_base);
@@ -348,6 +413,8 @@ i2c_write(struct i2c_au1550_data *adap, unsigned char *buf,
 	u32	data;
 	volatile psc_smb_t	*sp;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	i = 0;
 	while (i < (len - 1)) {
 		WR(adap, PSC_SMBTXRX, 0);
@@ -371,11 +438,15 @@ static int i2c_write(struct i2c_au1550_data *adap, unsigned char *buf,
 {
 	int i;
 	unsigned long data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (len == 0)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sp = (volatile psc_smb_t *)(adap->psc_base);
 
@@ -385,16 +456,22 @@ static int i2c_write(struct i2c_au1550_data *adap, unsigned char *buf,
 		sp->psc_smbtxrx = data;
 		au_sync();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	i = 0;
 	while (i < (len-1)) {
 		data = buf[i];
 		WR(adap, PSC_SMBTXRX, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (wait_ack(adap))
 			return -EIO;
 		i++;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* The last byte has to indicate transfer done.
 	*/
@@ -403,11 +480,16 @@ static int i2c_write(struct i2c_au1550_data *adap, unsigned char *buf,
 	sp->psc_smbtxrx = data;
 	au_sync();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* The last byte has to indicate transfer done. */
 	data = buf[i];
 	data |= PSC_SMBTXRX_STP;
 	WR(adap, PSC_SMBTXRX, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (wait_master_done(adap))
 		return -EIO;
 	return 0;
@@ -418,6 +500,7 @@ au1550_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs, int num)
 {
 	struct i2c_au1550_data *adap = i2c_adap->algo_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	volatile psc_smb_t *sp = (volatile psc_smb_t *)adap->psc_base;
 	struct i2c_msg *p;
 	int i, err = 0;
@@ -425,11 +508,16 @@ au1550_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs, int num)
 	sp->psc_ctrl = PSC_CTRL_ENABLE;
 	au_sync();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct i2c_msg *p;
 	int i, err = 0;
 
 	WR(adap, PSC_CTRL, PSC_CTRL_ENABLE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; !err && i < num; i++) {
 		p = &msgs[i];
@@ -449,21 +537,29 @@ au1550_xfer(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs, int num)
 		err = num;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sp->psc_ctrl = PSC_CTRL_SUSPEND;
 	au_sync();
 =======
 	WR(adap, PSC_CTRL, PSC_CTRL_SUSPEND);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WR(adap, PSC_CTRL, PSC_CTRL_SUSPEND);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u32
 au1550_func(struct i2c_adapter *adap)
 =======
 static u32 au1550_func(struct i2c_adapter *adap)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 au1550_func(struct i2c_adapter *adap)
+>>>>>>> refs/remotes/origin/master
 {
 	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL;
 }
@@ -475,6 +571,7 @@ static const struct i2c_algorithm au1550_algo = {
 
 static void i2c_au1550_setup(struct i2c_au1550_data *priv)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	volatile psc_smb_t *sp = (volatile psc_smb_t *)priv->psc_base;
 	u32 stat;
@@ -494,6 +591,8 @@ static void i2c_au1550_setup(struct i2c_au1550_data *priv)
 	sp->psc_smbcfg = (PSC_SMBCFG_RT_FIFO8 | PSC_SMBCFG_TT_FIFO8 |
 				PSC_SMBCFG_DD_DISABLE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long cfg;
 
 	WR(priv, PSC_CTRL, PSC_CTRL_DISABLE);
@@ -505,11 +604,15 @@ static void i2c_au1550_setup(struct i2c_au1550_data *priv)
 
 	cfg = PSC_SMBCFG_RT_FIFO8 | PSC_SMBCFG_TT_FIFO8 | PSC_SMBCFG_DD_DISABLE;
 	WR(priv, PSC_SMBCFG, cfg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Divide by 8 to get a 6.25 MHz clock.  The later protocol
 	 * timings are based on this clock.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sp->psc_smbcfg |= PSC_SMBCFG_SET_DIV(PSC_SMBCFG_DIV8);
 	sp->psc_smbmsk = PSC_SMBMSK_ALLMASK;
@@ -519,10 +622,16 @@ static void i2c_au1550_setup(struct i2c_au1550_data *priv)
 	WR(priv, PSC_SMBCFG, cfg);
 	WR(priv, PSC_SMBMSK, PSC_SMBMSK_ALLMASK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cfg |= PSC_SMBCFG_SET_DIV(PSC_SMBCFG_DIV8);
+	WR(priv, PSC_SMBCFG, cfg);
+	WR(priv, PSC_SMBMSK, PSC_SMBMSK_ALLMASK);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set the protocol timer values.  See Table 71 in the
 	 * Au1550 Data Book for standard timing values.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sp->psc_smbtmr = PSC_SMBTMR_SET_TH(0) | PSC_SMBTMR_SET_PS(15) | \
 		PSC_SMBTMR_SET_PU(15) | PSC_SMBTMR_SET_SH(15) | \
@@ -539,6 +648,8 @@ static void i2c_au1550_setup(struct i2c_au1550_data *priv)
 	sp->psc_ctrl = PSC_CTRL_SUSPEND;
 	au_sync();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WR(priv, PSC_SMBTMR, PSC_SMBTMR_SET_TH(0) | PSC_SMBTMR_SET_PS(15) | \
 		PSC_SMBTMR_SET_PU(15) | PSC_SMBTMR_SET_SH(15) | \
 		PSC_SMBTMR_SET_SU(15) | PSC_SMBTMR_SET_CL(15) | \
@@ -550,11 +661,15 @@ static void i2c_au1550_setup(struct i2c_au1550_data *priv)
 		cpu_relax();
 
 	WR(priv, PSC_CTRL, PSC_CTRL_SUSPEND);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void i2c_au1550_disable(struct i2c_au1550_data *priv)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	volatile psc_smb_t *sp = (volatile psc_smb_t *)priv->psc_base;
 
@@ -565,6 +680,10 @@ static void i2c_au1550_disable(struct i2c_au1550_data *priv)
 	WR(priv, PSC_SMBCFG, 0);
 	WR(priv, PSC_CTRL, PSC_CTRL_DISABLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WR(priv, PSC_SMBCFG, 0);
+	WR(priv, PSC_CTRL, PSC_CTRL_DISABLE);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -572,7 +691,11 @@ static void i2c_au1550_disable(struct i2c_au1550_data *priv)
  * Prior to calling us, the 50MHz clock frequency and routing
  * must have been set up for the PSC indicated by the adapter.
  */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 i2c_au1550_probe(struct platform_device *pdev)
 {
 	struct i2c_au1550_data *priv;
@@ -599,17 +722,23 @@ i2c_au1550_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	priv->psc_base = CKSEG1ADDR(r->start);
 	priv->xfer_timeout = 200;
 	priv->ack_timeout = 200;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->psc_base = ioremap(r->start, resource_size(r));
 	if (!priv->psc_base) {
 		ret = -EIO;
 		goto out_map;
 	}
 	priv->xfer_timeout = 200;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	priv->adap.nr = pdev->id;
 	priv->adap.algo = &au1550_algo;
@@ -618,11 +747,15 @@ i2c_au1550_probe(struct platform_device *pdev)
 	strlcpy(priv->adap.name, "Au1xxx PSC I2C", sizeof(priv->adap.name));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Now, set up the PSC for SMBus PIO mode.
 	*/
 =======
 	/* Now, set up the PSC for SMBus PIO mode. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Now, set up the PSC for SMBus PIO mode. */
+>>>>>>> refs/remotes/origin/master
 	i2c_au1550_setup(priv);
 
 	ret = i2c_add_numbered_adapter(&priv->adap);
@@ -633,11 +766,16 @@ i2c_au1550_probe(struct platform_device *pdev)
 
 	i2c_au1550_disable(priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 	iounmap(priv->psc_base);
 out_map:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	iounmap(priv->psc_base);
+out_map:
+>>>>>>> refs/remotes/origin/master
 	release_resource(priv->ioarea);
 	kfree(priv->ioarea);
 out_mem:
@@ -646,6 +784,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __devexit
 i2c_au1550_remove(struct platform_device *pdev)
@@ -662,6 +801,15 @@ static int __devexit i2c_au1550_remove(struct platform_device *pdev)
 =======
 	iounmap(priv->psc_base);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i2c_au1550_remove(struct platform_device *pdev)
+{
+	struct i2c_au1550_data *priv = platform_get_drvdata(pdev);
+
+	i2c_del_adapter(&priv->adap);
+	i2c_au1550_disable(priv);
+	iounmap(priv->psc_base);
+>>>>>>> refs/remotes/origin/master
 	release_resource(priv->ioarea);
 	kfree(priv->ioarea);
 	kfree(priv);
@@ -669,6 +817,7 @@ static int __devexit i2c_au1550_remove(struct platform_device *pdev)
 }
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 i2c_au1550_suspend(struct platform_device *pdev, pm_message_t state)
@@ -679,12 +828,18 @@ static int i2c_au1550_suspend(struct device *dev)
 {
 	struct i2c_au1550_data *priv = dev_get_drvdata(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i2c_au1550_suspend(struct device *dev)
+{
+	struct i2c_au1550_data *priv = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_au1550_disable(priv);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 i2c_au1550_resume(struct platform_device *pdev)
@@ -695,16 +850,24 @@ static int i2c_au1550_resume(struct device *dev)
 {
 	struct i2c_au1550_data *priv = dev_get_drvdata(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i2c_au1550_resume(struct device *dev)
+{
+	struct i2c_au1550_data *priv = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	i2c_au1550_setup(priv);
 
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else
 #define i2c_au1550_suspend	NULL
 #define i2c_au1550_resume	NULL
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const struct dev_pm_ops i2c_au1550_pmops = {
 	.suspend	= i2c_au1550_suspend,
@@ -715,13 +878,17 @@ static const struct dev_pm_ops i2c_au1550_pmops = {
 
 #else
 #define AU1XPSC_SMBUS_PMOPS NULL
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct platform_driver au1xpsc_smbus_driver = {
 	.driver = {
 		.name	= "au1xpsc_smbus",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	},
 	.probe		= i2c_au1550_probe,
@@ -750,14 +917,26 @@ i2c_au1550_exit(void)
 
 module_platform_driver(au1xpsc_smbus_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= AU1XPSC_SMBUS_PMOPS,
+	},
+	.probe		= i2c_au1550_probe,
+	.remove		= i2c_au1550_remove,
+};
+
+module_platform_driver(au1xpsc_smbus_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Dan Malek, Embedded Edge, LLC.");
 MODULE_DESCRIPTION("SMBus adapter Alchemy pb1550");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:au1xpsc_smbus");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init (i2c_au1550_init);
 module_exit (i2c_au1550_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

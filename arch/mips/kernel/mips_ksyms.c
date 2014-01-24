@@ -5,6 +5,7 @@
  * License.  See the file "COPYING" in the main directory of this archive
  * for more details.
  *
+<<<<<<< HEAD
  * Copyright (C) 1996, 97, 98, 99, 2000, 01, 03, 04, 05 by Ralf Baechle
  * Copyright (C) 1999, 2000, 01 Silicon Graphics, Inc.
  */
@@ -16,14 +17,29 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/checksum.h>
 #include <asm/pgtable.h>
+=======
+ * Copyright (C) 1996, 97, 98, 99, 2000, 01, 03, 04, 05, 12 by Ralf Baechle
+ * Copyright (C) 1999, 2000, 01 Silicon Graphics, Inc.
+ */
+#include <linux/interrupt.h>
+#include <linux/export.h>
+#include <asm/checksum.h>
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/ftrace.h>
 
 extern void *__bzero(void *__s, size_t __count);
 extern long __strncpy_from_user_nocheck_asm(char *__to,
+<<<<<<< HEAD
                                             const char *__from, long __len);
 extern long __strncpy_from_user_asm(char *__to, const char *__from,
                                     long __len);
+=======
+					    const char *__from, long __len);
+extern long __strncpy_from_user_asm(char *__to, const char *__from,
+				    long __len);
+>>>>>>> refs/remotes/origin/master
 extern long __strlen_user_nocheck_asm(const char *s);
 extern long __strlen_user_asm(const char *s);
 extern long __strnlen_user_nocheck_asm(const char *s);
@@ -36,7 +52,15 @@ EXPORT_SYMBOL(memset);
 EXPORT_SYMBOL(memcpy);
 EXPORT_SYMBOL(memmove);
 
+<<<<<<< HEAD
 EXPORT_SYMBOL(kernel_thread);
+=======
+/*
+ * Functions that operate on entire pages.  Mostly used by memory management.
+ */
+EXPORT_SYMBOL(clear_page);
+EXPORT_SYMBOL(copy_page);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Userspace access stuff.

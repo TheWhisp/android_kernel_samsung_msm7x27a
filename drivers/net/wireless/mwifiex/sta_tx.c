@@ -48,6 +48,7 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
 	struct txpd *local_tx_pd;
 	struct mwifiex_txinfo *tx_info = MWIFIEX_SKB_TXCB(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!skb->len) {
 		dev_err(adapter->dev, "Tx: bad packet length: %d\n",
@@ -58,26 +59,42 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
 	if (!skb->len) {
 		dev_err(adapter->dev, "Tx: bad packet length: %d\n", skb->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 pad;
+	u16 pkt_type, pkt_offset;
+
+	if (!skb->len) {
+		dev_err(adapter->dev, "Tx: bad packet length: %d\n", skb->len);
+>>>>>>> refs/remotes/origin/master
 		tx_info->status_code = -1;
 		return skb->data;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	BUG_ON(skb_headroom(skb) < (sizeof(*local_tx_pd) + INTF_HEADER_LEN));
 	skb_push(skb, sizeof(*local_tx_pd));
 =======
+=======
+	pkt_type = mwifiex_is_skb_mgmt_frame(skb) ? PKT_TYPE_MGMT : 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* If skb->data is not aligned; add padding */
 	pad = (4 - (((void *)skb->data - NULL) & 0x3)) % 4;
 
 	BUG_ON(skb_headroom(skb) < (sizeof(*local_tx_pd) + INTF_HEADER_LEN
 				    + pad));
 	skb_push(skb, sizeof(*local_tx_pd) + pad);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	local_tx_pd = (struct txpd *) skb->data;
 	memset(local_tx_pd, 0, sizeof(struct txpd));
 	local_tx_pd->bss_num = priv->bss_num;
 	local_tx_pd->bss_type = priv->bss_type;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	local_tx_pd->tx_pkt_length = cpu_to_le16((u16) (skb->len -
 							sizeof(struct txpd)));
@@ -86,6 +103,8 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
 	local_tx_pd->pkt_delay_2ms =
 		mwifiex_wmm_compute_drv_pkt_delay(priv, skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	local_tx_pd->tx_pkt_length = cpu_to_le16((u16)(skb->len -
 						       (sizeof(struct txpd)
 							+ pad)));
@@ -93,7 +112,10 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
 	local_tx_pd->priority = (u8) skb->priority;
 	local_tx_pd->pkt_delay_2ms =
 				mwifiex_wmm_compute_drv_pkt_delay(priv, skb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (local_tx_pd->priority <
 	    ARRAY_SIZE(priv->wmm.user_pri_pkt_tx_ctrl))
@@ -104,10 +126,14 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
 		local_tx_pd->tx_control =
 			cpu_to_le32(priv->wmm.user_pri_pkt_tx_ctrl[local_tx_pd->
 <<<<<<< HEAD
+<<<<<<< HEAD
 							 priority]);
 =======
 								   priority]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+								   priority]);
+>>>>>>> refs/remotes/origin/master
 
 	if (adapter->pps_uapsd_mode) {
 		if (mwifiex_check_last_packet_indication(priv)) {
@@ -119,10 +145,21 @@ void *mwifiex_process_sta_txpd(struct mwifiex_private *priv,
 
 	/* Offset of actual data */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	local_tx_pd->tx_pkt_offset = cpu_to_le16(sizeof(struct txpd));
 =======
 	local_tx_pd->tx_pkt_offset = cpu_to_le16(sizeof(struct txpd) + pad);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pkt_offset = sizeof(struct txpd) + pad;
+	if (pkt_type == PKT_TYPE_MGMT) {
+		/* Set the packet type and add header for management frame */
+		local_tx_pd->tx_pkt_type = cpu_to_le16(pkt_type);
+		pkt_offset += MWIFIEX_MGMT_FRAME_HEADER_SIZE;
+	}
+
+	local_tx_pd->tx_pkt_offset = cpu_to_le16(pkt_offset);
+>>>>>>> refs/remotes/origin/master
 
 	/* make space for INTF_HEADER_LEN */
 	skb_push(skb, INTF_HEADER_LEN);
@@ -166,11 +203,16 @@ int mwifiex_send_null_packet(struct mwifiex_private *priv, u8 flags)
 
 	tx_info = MWIFIEX_SKB_TXCB(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tx_info->bss_index = priv->bss_index;
 =======
 	tx_info->bss_num = priv->bss_num;
 	tx_info->bss_type = priv->bss_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tx_info->bss_num = priv->bss_num;
+	tx_info->bss_type = priv->bss_type;
+>>>>>>> refs/remotes/origin/master
 	skb_reserve(skb, sizeof(struct txpd) + INTF_HEADER_LEN);
 	skb_push(skb, sizeof(struct txpd));
 
@@ -182,6 +224,7 @@ int mwifiex_send_null_packet(struct mwifiex_private *priv, u8 flags)
 	local_tx_pd->bss_num = priv->bss_num;
 	local_tx_pd->bss_type = priv->bss_type;
 
+<<<<<<< HEAD
 	skb_push(skb, INTF_HEADER_LEN);
 
 	ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_DATA,
@@ -190,6 +233,16 @@ int mwifiex_send_null_packet(struct mwifiex_private *priv, u8 flags)
 =======
 					   skb, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (adapter->iface_type == MWIFIEX_USB) {
+		ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_USB_EP_DATA,
+						   skb, NULL);
+	} else {
+		skb_push(skb, INTF_HEADER_LEN);
+		ret = adapter->if_ops.host_to_card(adapter, MWIFIEX_TYPE_DATA,
+						   skb, NULL);
+	}
+>>>>>>> refs/remotes/origin/master
 	switch (ret) {
 	case -EBUSY:
 		adapter->data_sent = true;
@@ -198,20 +251,28 @@ int mwifiex_send_null_packet(struct mwifiex_private *priv, u8 flags)
 		dev_kfree_skb_any(skb);
 		dev_err(adapter->dev, "%s: host_to_card failed: ret=%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 						__func__, ret);
 =======
 			__func__, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__func__, ret);
+>>>>>>> refs/remotes/origin/master
 		adapter->dbg.num_tx_host_to_card_failure++;
 		break;
 	case 0:
 		dev_kfree_skb_any(skb);
 		dev_dbg(adapter->dev, "data: %s: host_to_card succeeded\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 						__func__);
 =======
 			__func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		adapter->tx_lock_flag = true;
 		break;
 	case -EINPROGRESS:
@@ -238,12 +299,17 @@ mwifiex_check_last_packet_indication(struct mwifiex_private *priv)
 			ret = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret && !adapter->cmd_sent && !adapter->curr_cmd
 	    && !is_command_pending(adapter)) {
 =======
 	if (ret && !adapter->cmd_sent && !adapter->curr_cmd &&
 	    !is_command_pending(adapter)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret && !adapter->cmd_sent && !adapter->curr_cmd &&
+	    !is_command_pending(adapter)) {
+>>>>>>> refs/remotes/origin/master
 		adapter->delay_null_pkt = false;
 		ret = true;
 	} else {

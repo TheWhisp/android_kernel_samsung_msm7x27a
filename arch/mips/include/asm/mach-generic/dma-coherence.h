@@ -47,6 +47,7 @@ static inline int plat_dma_supported(struct device *dev, u64 mask)
 	return 1;
 }
 
+<<<<<<< HEAD
 static inline void plat_extra_sync_for_device(struct device *dev)
 {
 <<<<<<< HEAD
@@ -70,5 +71,27 @@ static inline int plat_device_is_coherent(struct device *dev)
 	return 0;
 #endif
 }
+=======
+static inline int plat_device_is_coherent(struct device *dev)
+{
+#ifdef CONFIG_DMA_COHERENT
+	return 1;
+#else
+	return coherentio;
+#endif
+}
+
+#ifdef CONFIG_SWIOTLB
+static inline dma_addr_t phys_to_dma(struct device *dev, phys_addr_t paddr)
+{
+	return paddr;
+}
+
+static inline phys_addr_t dma_to_phys(struct device *dev, dma_addr_t daddr)
+{
+	return daddr;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_MACH_GENERIC_DMA_COHERENCE_H */

@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -26,6 +27,8 @@
  */
 #ifndef CAPIDTMF_H_  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -49,7 +52,10 @@
  *
  */
 #ifndef CAPIDTMF_H_
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CAPIDTMF_H_
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
@@ -74,6 +80,7 @@
 #define CAPIDTMF_RECV_STATE_DTMF_ACTIVE      0x01
 typedef struct tag_capidtmf_recv_state
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   byte digit_buffer[CAPIDTMF_RECV_DIGIT_BUFFER_SIZE];
   word digit_write_pos;
@@ -105,6 +112,8 @@ void capidtmf_recv_disable (t_capidtmf_state   *p_state);
 /*---------------------------------------------------------------------------*/
 #endif  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte digit_buffer[CAPIDTMF_RECV_DIGIT_BUFFER_SIZE];
 	word digit_write_pos;
 	word digit_read_pos;
@@ -134,4 +143,7 @@ void capidtmf_recv_disable(t_capidtmf_state *p_state);
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

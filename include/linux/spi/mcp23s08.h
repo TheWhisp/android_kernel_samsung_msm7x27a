@@ -23,6 +23,7 @@ struct mcp23s08_platform_data {
 	 */
 	unsigned	base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	void		*context;	/* param to setup/teardown */
 
@@ -34,4 +35,6 @@ struct mcp23s08_platform_data {
 					void *context);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };

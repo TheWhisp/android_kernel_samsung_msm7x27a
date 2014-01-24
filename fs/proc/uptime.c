@@ -12,16 +12,21 @@ static int uptime_proc_show(struct seq_file *m, void *v)
 	struct timespec uptime;
 	struct timespec idle;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cputime64_t idletime;
 =======
 	u64 idletime;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 idletime;
+>>>>>>> refs/remotes/origin/master
 	u64 nsec;
 	u32 rem;
 	int i;
 
 	idletime = 0;
 	for_each_possible_cpu(i)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		idletime = cputime64_add(idletime, kstat_cpu(i).cpustat.idle);
 =======
@@ -30,6 +35,11 @@ static int uptime_proc_show(struct seq_file *m, void *v)
 
 	do_posix_clock_monotonic_gettime(&uptime);
 	monotonic_to_bootbased(&uptime);
+=======
+		idletime += (__force u64) kcpustat_cpu(i).cpustat[CPUTIME_IDLE];
+
+	get_monotonic_boottime(&uptime);
+>>>>>>> refs/remotes/origin/master
 	nsec = cputime64_to_jiffies64(idletime) * TICK_NSEC;
 	idle.tv_sec = div_u64_rem(nsec, NSEC_PER_SEC, &rem);
 	idle.tv_nsec = rem;

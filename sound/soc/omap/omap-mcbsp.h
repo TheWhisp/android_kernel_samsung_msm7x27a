@@ -4,10 +4,14 @@
  * Copyright (C) 2008 Nokia Corporation
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Contact: Jarkko Nikula <jhnikula@gmail.com>
 =======
  * Contact: Jarkko Nikula <jarkko.nikula@bitmer.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Contact: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>>>>>>> refs/remotes/origin/master
  *          Peter Ujfalusi <peter.ujfalusi@ti.com>
  *
  * This program is free software; you can redistribute it and/or
@@ -36,10 +40,13 @@ enum omap_mcbsp_clksrg_clk {
 	OMAP_MCBSP_SYSCLK_CLK,		/* Internal ICLK */
 	OMAP_MCBSP_SYSCLK_CLKX_EXT,	/* External CLKX pin */
 	OMAP_MCBSP_SYSCLK_CLKR_EXT,	/* External CLKR pin */
+<<<<<<< HEAD
 	OMAP_MCBSP_CLKR_SRC_CLKR,	/* CLKR from CLKR pin */
 	OMAP_MCBSP_CLKR_SRC_CLKX,	/* CLKR from CLKX pin */
 	OMAP_MCBSP_FSR_SRC_FSR,		/* FSR from FSR pin */
 	OMAP_MCBSP_FSR_SRC_FSX,		/* FSR from FSX pin */
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* McBSP dividers */
@@ -47,6 +54,7 @@ enum omap_mcbsp_div {
 	OMAP_MCBSP_CLKGDV,		/* Sample rate generator divider */
 };
 
+<<<<<<< HEAD
 #if defined(CONFIG_SOC_OMAP2420)
 #define NUM_LINKS	2
 #endif
@@ -68,5 +76,8 @@ int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, int mcbsp_id);
 =======
 int omap_mcbsp_st_add_controls(struct snd_soc_pcm_runtime *rtd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int omap_mcbsp_st_add_controls(struct snd_soc_pcm_runtime *rtd);
+>>>>>>> refs/remotes/origin/master
 
 #endif

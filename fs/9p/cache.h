@@ -101,6 +101,21 @@ static inline void v9fs_fscache_wait_on_page_write(struct inode *inode,
 
 #else /* CONFIG_9P_FSCACHE */
 
+<<<<<<< HEAD
+=======
+static inline void v9fs_cache_inode_get_cookie(struct inode *inode)
+{
+}
+
+static inline void v9fs_cache_inode_put_cookie(struct inode *inode)
+{
+}
+
+static inline void v9fs_cache_inode_set_cookie(struct inode *inode, struct file *file)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int v9fs_fscache_release_page(struct page *page,
 					    gfp_t gfp) {
 	return 1;

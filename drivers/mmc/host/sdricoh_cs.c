@@ -27,9 +27,13 @@
 #include <linux/delay.h>
 #include <linux/highmem.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pci.h>
 #include <linux/ioport.h>
 #include <linux/scatterlist.h>
@@ -519,9 +523,13 @@ static void sdricoh_pcmcia_detach(struct pcmcia_device *link)
 #ifdef CONFIG_PM
 static int sdricoh_pcmcia_suspend(struct pcmcia_device *link)
 {
+<<<<<<< HEAD
 	struct mmc_host *mmc = link->priv;
 	dev_dbg(&link->dev, "suspend\n");
 	mmc_suspend_host(mmc);
+=======
+	dev_dbg(&link->dev, "suspend\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -530,7 +538,10 @@ static int sdricoh_pcmcia_resume(struct pcmcia_device *link)
 	struct mmc_host *mmc = link->priv;
 	dev_dbg(&link->dev, "resume\n");
 	sdricoh_reset(mmc_priv(mmc));
+<<<<<<< HEAD
 	mmc_resume_host(mmc);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 #else
@@ -546,6 +557,7 @@ static struct pcmcia_driver sdricoh_driver = {
 	.suspend = sdricoh_pcmcia_suspend,
 	.resume = sdricoh_pcmcia_resume,
 };
+<<<<<<< HEAD
 
 /*****************************************************************************\
  *                                                                           *
@@ -565,6 +577,9 @@ static void __exit sdricoh_drv_exit(void)
 
 module_init(sdricoh_drv_init);
 module_exit(sdricoh_drv_exit);
+=======
+module_pcmcia_driver(sdricoh_driver);
+>>>>>>> refs/remotes/origin/master
 
 module_param(switchlocked, uint, 0444);
 

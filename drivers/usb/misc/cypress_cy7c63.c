@@ -29,7 +29,10 @@
 *	published by the Free Software Foundation, version 2.
 */
 
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
@@ -272,6 +275,7 @@ static struct usb_driver cypress_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init cypress_init(void)
 {
 	int result;
@@ -296,6 +300,9 @@ module_exit(cypress_exit);
 =======
 module_usb_driver(cypress_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(cypress_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

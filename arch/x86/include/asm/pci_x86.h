@@ -7,9 +7,19 @@
 #undef DEBUG
 
 #ifdef DEBUG
+<<<<<<< HEAD
 #define DBG(x...) printk(x)
 #else
 #define DBG(x...)
+=======
+#define DBG(fmt, ...) printk(fmt, ##__VA_ARGS__)
+#else
+#define DBG(fmt, ...)				\
+do {						\
+	if (0)					\
+		printk(fmt, ##__VA_ARGS__);	\
+} while (0)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define PCI_PROBE_BIOS		0x0001
@@ -45,17 +55,23 @@ enum pci_bf_sort_state {
 /* pci-i386.c */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern unsigned int pcibios_max_latency;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void pcibios_resource_survey(void);
 void pcibios_set_cache_line_size(void);
 
 /* pci-pc.c */
 
 extern int pcibios_last_bus;
+<<<<<<< HEAD
 extern struct pci_bus *pci_root_bus;
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct pci_ops pci_root_ops;
 
 void pcibios_scan_specific_bus(int busn);
@@ -103,6 +119,7 @@ struct pci_raw_ops {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct pci_raw_ops *raw_pci_ops;
 extern struct pci_raw_ops *raw_pci_ext_ops;
 
@@ -113,6 +130,13 @@ extern const struct pci_raw_ops *raw_pci_ext_ops;
 
 extern const struct pci_raw_ops pci_direct_conf1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern const struct pci_raw_ops *raw_pci_ops;
+extern const struct pci_raw_ops *raw_pci_ext_ops;
+
+extern const struct pci_raw_ops pci_mmcfg;
+extern const struct pci_raw_ops pci_direct_conf1;
+>>>>>>> refs/remotes/origin/master
 extern bool port_cf9_safe;
 
 /* arch_initcall level */
@@ -147,6 +171,14 @@ struct pci_mmcfg_region {
 
 extern int __init pci_mmcfg_arch_init(void);
 extern void __init pci_mmcfg_arch_free(void);
+<<<<<<< HEAD
+=======
+extern int pci_mmcfg_arch_map(struct pci_mmcfg_region *cfg);
+extern void pci_mmcfg_arch_unmap(struct pci_mmcfg_region *cfg);
+extern int pci_mmconfig_insert(struct device *dev, u16 seg, u8 start, u8 end,
+			       phys_addr_t addr);
+extern int pci_mmconfig_delete(u16 seg, u8 start, u8 end);
+>>>>>>> refs/remotes/origin/master
 extern struct pci_mmcfg_region *pci_mmconfig_lookup(int segment, int bus);
 
 extern struct list_head pci_mmcfg_list;

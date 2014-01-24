@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,14 +72,21 @@
 #define ACPI_SIG_PCCT           "PCCT"	/* Platform Communications Channel Table */
 #define ACPI_SIG_PMTT           "PMTT"	/* Platform Memory Topology Table */
 #define ACPI_SIG_RASF           "RASF"	/* RAS Feature table */
+<<<<<<< HEAD
+=======
+#define ACPI_SIG_TPM2           "TPM2"	/* Trusted Platform Module 2.0 H/W interface table */
+>>>>>>> refs/remotes/origin/master
 
 #define ACPI_SIG_S3PT           "S3PT"	/* S3 Performance (sub)Table */
 #define ACPI_SIG_PCCS           "PCC"	/* PCC Shared Memory Region */
 
 /* Reserved table signatures */
 
+<<<<<<< HEAD
 #define ACPI_SIG_CSRT           "CSRT"	/* Core System Resources Table */
 #define ACPI_SIG_DBG2           "DBG2"	/* Debug Port table 2 */
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_SIG_MATR           "MATR"	/* Memory Address Translation Table */
 #define ACPI_SIG_MSDM           "MSDM"	/* Microsoft Data Management Table */
 #define ACPI_SIG_WPBT           "WPBT"	/* Windows Platform Binary Table */
@@ -87,9 +98,21 @@
 #pragma pack(1)
 
 /*
+<<<<<<< HEAD
  * Note about bitfields: The u8 type is used for bitfields in ACPI tables.
  * This is the only type that is even remotely portable. Anything else is not
  * portable, so do not use any other bitfield types.
+=======
+ * Note: C bitfields are not used for this reason:
+ *
+ * "Bitfields are great and easy to read, but unfortunately the C language
+ * does not specify the layout of bitfields in memory, which means they are
+ * essentially useless for dealing with packed data in on-disk formats or
+ * binary wire protocols." (Or ACPI tables and buffers.) "If you ask me,
+ * this decision was a design error in C. Ritchie could have picked an order
+ * and stuck with it." Norman Ramsey.
+ * See http://stackoverflow.com/a/1053662/41661
+>>>>>>> refs/remotes/origin/master
  */
 
 /*******************************************************************************
@@ -169,7 +192,11 @@ struct acpi_fpdt_header {
 
 enum acpi_fpdt_type {
 	ACPI_FPDT_TYPE_BOOT = 0,
+<<<<<<< HEAD
 	ACPI_FPDT_TYPE_S3PERF = 1,
+=======
+	ACPI_FPDT_TYPE_S3PERF = 1
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -218,7 +245,11 @@ struct acpi_s3pt_header {
 
 enum acpi_s3pt_type {
 	ACPI_S3PT_TYPE_RESUME = 0,
+<<<<<<< HEAD
 	ACPI_S3PT_TYPE_SUSPEND = 1,
+=======
+	ACPI_S3PT_TYPE_SUSPEND = 1
+>>>>>>> refs/remotes/origin/master
 };
 
 struct acpi_s3pt_resume {
@@ -272,10 +303,17 @@ struct acpi_table_gtdt {
  ******************************************************************************/
 
 #define ACPI_MPST_CHANNEL_INFO \
+<<<<<<< HEAD
 	u16                             reserved1; \
 	u8                              channel_id; \
 	u8                              reserved2; \
 	u16                             power_node_count;
+=======
+	u8                              channel_id; \
+	u8                              reserved1[3]; \
+	u16                             power_node_count; \
+	u16                             reserved2;
+>>>>>>> refs/remotes/origin/master
 
 /* Main table */
 
@@ -299,9 +337,14 @@ struct acpi_mpst_power_node {
 	u32 length;
 	u64 range_address;
 	u64 range_length;
+<<<<<<< HEAD
 	u8 num_power_states;
 	u8 num_physical_components;
 	u16 reserved2;
+=======
+	u32 num_power_states;
+	u32 num_physical_components;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Values for Flags field above */
@@ -327,10 +370,18 @@ struct acpi_mpst_component {
 
 struct acpi_mpst_data_hdr {
 	u16 characteristics_count;
+<<<<<<< HEAD
 };
 
 struct acpi_mpst_power_data {
 	u8 revision;
+=======
+	u16 reserved;
+};
+
+struct acpi_mpst_power_data {
+	u8 structure_id;
+>>>>>>> refs/remotes/origin/master
 	u8 flags;
 	u16 reserved1;
 	u32 average_power;
@@ -351,10 +402,17 @@ struct acpi_mpst_shared {
 	u32 signature;
 	u16 pcc_command;
 	u16 pcc_status;
+<<<<<<< HEAD
 	u16 command_register;
 	u16 status_register;
 	u16 power_state_id;
 	u16 power_node_id;
+=======
+	u32 command_register;
+	u32 status_register;
+	u32 power_state_id;
+	u32 power_node_id;
+>>>>>>> refs/remotes/origin/master
 	u64 energy_consumed;
 	u64 average_power;
 };
@@ -500,26 +558,78 @@ struct acpi_rasf_shared_memory {
 	u32 signature;
 	u16 command;
 	u16 status;
+<<<<<<< HEAD
 	u64 requested_address;
 	u64 requested_length;
 	u64 actual_address;
 	u64 actual_length;
 	u16 flags;
 	u8 speed;
+=======
+	u16 version;
+	u8 capabilities[16];
+	u8 set_capabilities[16];
+	u16 num_parameter_blocks;
+	u32 set_capabilities_status;
+};
+
+/* RASF Parameter Block Structure Header */
+
+struct acpi_rasf_parameter_block {
+	u16 type;
+	u16 version;
+	u16 length;
+};
+
+/* RASF Parameter Block Structure for PATROL_SCRUB */
+
+struct acpi_rasf_patrol_scrub_parameter {
+	struct acpi_rasf_parameter_block header;
+	u16 patrol_scrub_command;
+	u64 requested_address_range[2];
+	u64 actual_address_range[2];
+	u16 flags;
+	u8 requested_speed;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Masks for Flags and Speed fields above */
 
 #define ACPI_RASF_SCRUBBER_RUNNING      1
 #define ACPI_RASF_SPEED                 (7<<1)
+<<<<<<< HEAD
+=======
+#define ACPI_RASF_SPEED_SLOW            (0<<1)
+#define ACPI_RASF_SPEED_MEDIUM          (4<<1)
+#define ACPI_RASF_SPEED_FAST            (7<<1)
+>>>>>>> refs/remotes/origin/master
 
 /* Channel Commands */
 
 enum acpi_rasf_commands {
+<<<<<<< HEAD
 	ACPI_RASF_GET_RAS_CAPABILITIES = 1,
 	ACPI_RASF_GET_PATROL_PARAMETERS = 2,
 	ACPI_RASF_START_PATROL_SCRUBBER = 3,
 	ACPI_RASF_STOP_PATROL_SCRUBBER = 4
+=======
+	ACPI_RASF_EXECUTE_RASF_COMMAND = 1
+};
+
+/* Platform RAS Capabilities */
+
+enum acpi_rasf_capabiliities {
+	ACPI_HW_PATROL_SCRUB_SUPPORTED = 0,
+	ACPI_SW_PATROL_SCRUB_EXPOSED = 1
+};
+
+/* Patrol Scrub Commands */
+
+enum acpi_rasf_patrol_scrub_commands {
+	ACPI_RASF_GET_PATROL_PARAMETERS = 1,
+	ACPI_RASF_START_PATROL_SCRUBBER = 2,
+	ACPI_RASF_STOP_PATROL_SCRUBBER = 3
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Channel Command flags */
@@ -545,6 +655,39 @@ enum acpi_rasf_status {
 #define ACPI_RASF_ERROR                 (1<<2)
 #define ACPI_RASF_STATUS                (0x1F<<3)
 
+<<<<<<< HEAD
+=======
+/*******************************************************************************
+ *
+ * TPM2 - Trusted Platform Module (TPM) 2.0 Hardware Interface Table
+ *        Version 3
+ *
+ * Conforms to "TPM 2.0 Hardware Interface Table (TPM2)" 29 November 2011
+ *
+ ******************************************************************************/
+
+struct acpi_table_tpm2 {
+	struct acpi_table_header header;	/* Common ACPI table header */
+	u32 flags;
+	u64 control_address;
+	u32 start_method;
+};
+
+/* Control area structure (not part of table, pointed to by control_address) */
+
+struct acpi_tpm2_control {
+	u32 reserved;
+	u32 error;
+	u32 cancel;
+	u32 start;
+	u64 interrupt_control;
+	u32 command_size;
+	u64 command_address;
+	u32 response_size;
+	u64 response_address;
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Reset to default packing */
 
 #pragma pack()

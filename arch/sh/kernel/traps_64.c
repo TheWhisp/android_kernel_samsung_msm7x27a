@@ -26,6 +26,7 @@
 #include <linux/module.h>
 #include <linux/perf_event.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/uaccess.h>
 #include <asm/io.h>
@@ -35,10 +36,16 @@
 #include <asm/io.h>
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/uaccess.h>
+#include <asm/io.h>
+#include <asm/alignment.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/pgtable.h>
 #include <asm/fpu.h>
 
+<<<<<<< HEAD
 #undef DEBUG_EXCEPTION
 #ifdef DEBUG_EXCEPTION
 /* implemented in ../lib/dbg.c */
@@ -304,15 +311,29 @@ static int read_opcode(unsigned long long pc, unsigned long *result_opcode, int 
 	int get_user_error;
 	unsigned long aligned_pc;
 	unsigned long opcode;
+=======
+static int read_opcode(reg_size_t pc, insn_size_t *result_opcode, int from_user_mode)
+{
+	int get_user_error;
+	unsigned long aligned_pc;
+	insn_size_t opcode;
+>>>>>>> refs/remotes/origin/master
 
 	if ((pc & 3) == 1) {
 		/* SHmedia */
 		aligned_pc = pc & ~3;
 		if (from_user_mode) {
+<<<<<<< HEAD
 			if (!access_ok(VERIFY_READ, aligned_pc, sizeof(unsigned long))) {
 				get_user_error = -EFAULT;
 			} else {
 				get_user_error = __get_user(opcode, (unsigned long *)aligned_pc);
+=======
+			if (!access_ok(VERIFY_READ, aligned_pc, sizeof(insn_size_t))) {
+				get_user_error = -EFAULT;
+			} else {
+				get_user_error = __get_user(opcode, (insn_size_t *)aligned_pc);
+>>>>>>> refs/remotes/origin/master
 				*result_opcode = opcode;
 			}
 			return get_user_error;
@@ -320,7 +341,11 @@ static int read_opcode(unsigned long long pc, unsigned long *result_opcode, int 
 			/* If the fault was in the kernel, we can either read
 			 * this directly, or if not, we fault.
 			*/
+<<<<<<< HEAD
 			*result_opcode = *(unsigned long *) aligned_pc;
+=======
+			*result_opcode = *(insn_size_t *)aligned_pc;
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	} else if ((pc & 1) == 0) {
@@ -346,17 +371,36 @@ static int address_is_sign_extended(__u64 a)
 #endif
 }
 
+<<<<<<< HEAD
 static int generate_and_check_address(struct pt_regs *regs,
 				      __u32 opcode,
+=======
+/* return -1 for fault, 0 for OK */
+static int generate_and_check_address(struct pt_regs *regs,
+				      insn_size_t opcode,
+>>>>>>> refs/remotes/origin/master
 				      int displacement_not_indexed,
 				      int width_shift,
 				      __u64 *address)
 {
+<<<<<<< HEAD
 	/* return -1 for fault, 0 for OK */
 
 	__u64 base_address, addr;
 	int basereg;
 
+=======
+	__u64 base_address, addr;
+	int basereg;
+
+	switch (1 << width_shift) {
+	case 1: inc_unaligned_byte_access(); break;
+	case 2: inc_unaligned_word_access(); break;
+	case 4: inc_unaligned_dword_access(); break;
+	case 8: inc_unaligned_multi_access(); break;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	basereg = (opcode >> 20) & 0x3f;
 	base_address = regs->regs[basereg];
 	if (displacement_not_indexed) {
@@ -373,14 +417,20 @@ static int generate_and_check_address(struct pt_regs *regs,
 	}
 
 	/* Check sign extended */
+<<<<<<< HEAD
 	if (!address_is_sign_extended(addr)) {
 		return -1;
 	}
+=======
+	if (!address_is_sign_extended(addr))
+		return -1;
+>>>>>>> refs/remotes/origin/master
 
 	/* Check accessible.  For misaligned access in the kernel, assume the
 	   address is always accessible (and if not, just fault when the
 	   load/store gets done.) */
 	if (user_mode(regs)) {
+<<<<<<< HEAD
 		if (addr >= TASK_SIZE) {
 			return -1;
 		}
@@ -395,6 +445,23 @@ static int user_mode_unaligned_fixup_count = 10;
 static int user_mode_unaligned_fixup_enable = 1;
 static int kernel_mode_unaligned_fixup_count = 32;
 
+=======
+		inc_unaligned_user_access();
+
+		if (addr >= TASK_SIZE)
+			return -1;
+	} else
+		inc_unaligned_kernel_access();
+
+	*address = addr;
+
+	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, addr);
+	unaligned_fixups_notify(current, opcode, regs);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void misaligned_kernel_word_load(__u64 address, int do_sign_extend, __u64 *result)
 {
 	unsigned short x;
@@ -424,7 +491,11 @@ static void misaligned_kernel_word_store(__u64 address, __u64 value)
 }
 
 static int misaligned_load(struct pt_regs *regs,
+<<<<<<< HEAD
 			   __u32 opcode,
+=======
+			   insn_size_t opcode,
+>>>>>>> refs/remotes/origin/master
 			   int displacement_not_indexed,
 			   int width_shift,
 			   int do_sign_extend)
@@ -436,6 +507,7 @@ static int misaligned_load(struct pt_regs *regs,
 
 	error = generate_and_check_address(regs, opcode,
 			displacement_not_indexed, width_shift, &address);
+<<<<<<< HEAD
 	if (error < 0) {
 		return error;
 	}
@@ -445,6 +517,10 @@ static int misaligned_load(struct pt_regs *regs,
 =======
 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (error < 0)
+		return error;
+>>>>>>> refs/remotes/origin/master
 
 	destreg = (opcode >> 4) & 0x3f;
 	if (user_mode(regs)) {
@@ -503,11 +579,18 @@ static int misaligned_load(struct pt_regs *regs,
 	}
 
 	return 0;
+<<<<<<< HEAD
 
 }
 
 static int misaligned_store(struct pt_regs *regs,
 			    __u32 opcode,
+=======
+}
+
+static int misaligned_store(struct pt_regs *regs,
+			    insn_size_t opcode,
+>>>>>>> refs/remotes/origin/master
 			    int displacement_not_indexed,
 			    int width_shift)
 {
@@ -518,6 +601,7 @@ static int misaligned_store(struct pt_regs *regs,
 
 	error = generate_and_check_address(regs, opcode,
 			displacement_not_indexed, width_shift, &address);
+<<<<<<< HEAD
 	if (error < 0) {
 		return error;
 	}
@@ -527,6 +611,10 @@ static int misaligned_store(struct pt_regs *regs,
 =======
 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS, 1, regs, address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (error < 0)
+		return error;
+>>>>>>> refs/remotes/origin/master
 
 	srcreg = (opcode >> 4) & 0x3f;
 	if (user_mode(regs)) {
@@ -580,13 +668,20 @@ static int misaligned_store(struct pt_regs *regs,
 	}
 
 	return 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Never need to fix up misaligned FPU accesses within the kernel since that's a real
    error. */
 static int misaligned_fpu_load(struct pt_regs *regs,
+<<<<<<< HEAD
 			   __u32 opcode,
+=======
+			   insn_size_t opcode,
+>>>>>>> refs/remotes/origin/master
 			   int displacement_not_indexed,
 			   int width_shift,
 			   int do_paired_load)
@@ -598,6 +693,7 @@ static int misaligned_fpu_load(struct pt_regs *regs,
 
 	error = generate_and_check_address(regs, opcode,
 			displacement_not_indexed, width_shift, &address);
+<<<<<<< HEAD
 	if (error < 0) {
 		return error;
 	}
@@ -607,6 +703,10 @@ static int misaligned_fpu_load(struct pt_regs *regs,
 =======
 	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (error < 0)
+		return error;
+>>>>>>> refs/remotes/origin/master
 
 	destreg = (opcode >> 4) & 0x3f;
 	if (user_mode(regs)) {
@@ -662,12 +762,19 @@ static int misaligned_fpu_load(struct pt_regs *regs,
 		die ("Misaligned FPU load inside kernel", regs, 0);
 		return -1;
 	}
+<<<<<<< HEAD
 
 
 }
 
 static int misaligned_fpu_store(struct pt_regs *regs,
 			   __u32 opcode,
+=======
+}
+
+static int misaligned_fpu_store(struct pt_regs *regs,
+			   insn_size_t opcode,
+>>>>>>> refs/remotes/origin/master
 			   int displacement_not_indexed,
 			   int width_shift,
 			   int do_paired_load)
@@ -679,6 +786,7 @@ static int misaligned_fpu_store(struct pt_regs *regs,
 
 	error = generate_and_check_address(regs, opcode,
 			displacement_not_indexed, width_shift, &address);
+<<<<<<< HEAD
 	if (error < 0) {
 		return error;
 	}
@@ -688,6 +796,10 @@ static int misaligned_fpu_store(struct pt_regs *regs,
 =======
 	perf_sw_event(PERF_COUNT_SW_EMULATION_FAULTS, 1, regs, address);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (error < 0)
+		return error;
+>>>>>>> refs/remotes/origin/master
 
 	srcreg = (opcode >> 4) & 0x3f;
 	if (user_mode(regs)) {
@@ -748,11 +860,21 @@ static int misaligned_fpu_store(struct pt_regs *regs,
 
 static int misaligned_fixup(struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	unsigned long opcode;
 	int error;
 	int major, minor;
 
 	if (!user_mode_unaligned_fixup_enable)
+=======
+	insn_size_t opcode;
+	int error;
+	int major, minor;
+	unsigned int user_action;
+
+	user_action = unaligned_user_action();
+	if (!(user_action & UM_FIXUP))
+>>>>>>> refs/remotes/origin/master
 		return -1;
 
 	error = read_opcode(regs->pc, &opcode, user_mode(regs));
@@ -762,6 +884,7 @@ static int misaligned_fixup(struct pt_regs *regs)
 	major = (opcode >> 26) & 0x3f;
 	minor = (opcode >> 16) & 0xf;
 
+<<<<<<< HEAD
 	if (user_mode(regs) && (user_mode_unaligned_fixup_count > 0)) {
 		--user_mode_unaligned_fixup_count;
 		/* Only do 'count' worth of these reports, to remove a potential DoS against syslog */
@@ -779,6 +902,8 @@ static int misaligned_fixup(struct pt_regs *regs)
 	}
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (major) {
 		case (0x84>>2): /* LD.W */
 			error = misaligned_load(regs, opcode, 1, 1, 1);
@@ -903,6 +1028,7 @@ static int misaligned_fixup(struct pt_regs *regs)
 		regs->pc += 4; /* Skip the instruction that's just been emulated */
 		return 0;
 	}
+<<<<<<< HEAD
 
 }
 
@@ -956,6 +1082,204 @@ static int __init init_sysctl(void)
 
 __initcall(init_sysctl);
 
+=======
+}
+
+static void do_unhandled_exception(int signr, char *str, unsigned long error,
+				   struct pt_regs *regs)
+{
+	if (user_mode(regs))
+		force_sig(signr, current);
+
+	die_if_no_fixup(str, regs, error);
+}
+
+#define DO_ERROR(signr, str, name) \
+asmlinkage void do_##name(unsigned long error_code, struct pt_regs *regs) \
+{ \
+	do_unhandled_exception(signr, str, error_code, regs); \
+}
+
+DO_ERROR(SIGILL,  "illegal slot instruction", illegal_slot_inst)
+DO_ERROR(SIGSEGV, "address error (exec)", address_error_exec)
+
+#if defined(CONFIG_SH64_ID2815_WORKAROUND)
+
+#define OPCODE_INVALID      0
+#define OPCODE_USER_VALID   1
+#define OPCODE_PRIV_VALID   2
+
+/* getcon/putcon - requires checking which control register is referenced. */
+#define OPCODE_CTRL_REG     3
+
+/* Table of valid opcodes for SHmedia mode.
+   Form a 10-bit value by concatenating the major/minor opcodes i.e.
+   opcode[31:26,20:16].  The 6 MSBs of this value index into the following
+   array.  The 4 LSBs select the bit-pair in the entry (bits 1:0 correspond to
+   LSBs==4'b0000 etc). */
+static unsigned long shmedia_opcode_table[64] = {
+	0x55554044,0x54445055,0x15141514,0x14541414,0x00000000,0x10001000,0x01110055,0x04050015,
+	0x00000444,0xc0000000,0x44545515,0x40405555,0x55550015,0x10005555,0x55555505,0x04050000,
+	0x00000555,0x00000404,0x00040445,0x15151414,0x00000000,0x00000000,0x00000000,0x00000000,
+	0x00000055,0x40404444,0x00000404,0xc0009495,0x00000000,0x00000000,0x00000000,0x00000000,
+	0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,
+	0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,
+	0x80005050,0x04005055,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,0x55555555,
+	0x81055554,0x00000404,0x55555555,0x55555555,0x00000000,0x00000000,0x00000000,0x00000000
+};
+
+/* Workaround SH5-101 cut2 silicon defect #2815 :
+   in some situations, inter-mode branches from SHcompact -> SHmedia
+   which should take ITLBMISS or EXECPROT exceptions at the target
+   falsely take RESINST at the target instead. */
+void do_reserved_inst(unsigned long error_code, struct pt_regs *regs)
+{
+	insn_size_t opcode = 0x6ff4fff0; /* guaranteed reserved opcode */
+	unsigned long pc, aligned_pc;
+	unsigned long index, shift;
+	unsigned long major, minor, combined;
+	unsigned long reserved_field;
+	int opcode_state;
+	int get_user_error;
+	int signr = SIGILL;
+	char *exception_name = "reserved_instruction";
+
+	pc = regs->pc;
+
+	/* SHcompact is not handled */
+	if (unlikely((pc & 3) == 0))
+		goto out;
+
+	/* SHmedia : check for defect.  This requires executable vmas
+	   to be readable too. */
+	aligned_pc = pc & ~3;
+	if (!access_ok(VERIFY_READ, aligned_pc, sizeof(insn_size_t)))
+		get_user_error = -EFAULT;
+	else
+		get_user_error = __get_user(opcode, (insn_size_t *)aligned_pc);
+
+	if (get_user_error < 0) {
+		/*
+		 * Error trying to read opcode.  This typically means a
+		 * real fault, not a RESINST any more.  So change the
+		 * codes.
+		 */
+		exception_name = "address error (exec)";
+		signr = SIGSEGV;
+		goto out;
+	}
+
+	/* These bits are currently reserved as zero in all valid opcodes */
+	reserved_field = opcode & 0xf;
+	if (unlikely(reserved_field))
+		goto out;	/* invalid opcode */
+
+	major = (opcode >> 26) & 0x3f;
+	minor = (opcode >> 16) & 0xf;
+	combined = (major << 4) | minor;
+	index = major;
+	shift = minor << 1;
+	opcode_state = (shmedia_opcode_table[index] >> shift) & 0x3;
+	switch (opcode_state) {
+	case OPCODE_INVALID:
+		/* Trap. */
+		break;
+	case OPCODE_USER_VALID:
+		/*
+		 * Restart the instruction: the branch to the instruction
+		 * will now be from an RTE not from SHcompact so the
+		 * silicon defect won't be triggered.
+		 */
+		return;
+	case OPCODE_PRIV_VALID:
+		if (!user_mode(regs)) {
+			/*
+			 * Should only ever get here if a module has
+			 * SHcompact code inside it. If so, the same fix
+			 * up is needed.
+			 */
+			return; /* same reason */
+		}
+
+		/*
+		 * Otherwise, user mode trying to execute a privileged
+		 * instruction - fall through to trap.
+		 */
+		break;
+	case OPCODE_CTRL_REG:
+		/* If in privileged mode, return as above. */
+		if (!user_mode(regs))
+			return;
+
+		/* In user mode ... */
+		if (combined == 0x9f) { /* GETCON */
+			unsigned long regno = (opcode >> 20) & 0x3f;
+
+			if (regno >= 62)
+				return;
+
+			/* reserved/privileged control register => trap */
+		} else if (combined == 0x1bf) { /* PUTCON */
+			unsigned long regno = (opcode >> 4) & 0x3f;
+
+			if (regno >= 62)
+				return;
+
+			/* reserved/privileged control register => trap */
+		}
+
+		break;
+	default:
+		/* Fall through to trap. */
+		break;
+	}
+
+out:
+	do_unhandled_exception(signr, exception_name, error_code, regs);
+}
+
+#else /* CONFIG_SH64_ID2815_WORKAROUND */
+
+/* If the workaround isn't needed, this is just a straightforward reserved
+   instruction */
+DO_ERROR(SIGILL, "reserved instruction", reserved_inst)
+
+#endif /* CONFIG_SH64_ID2815_WORKAROUND */
+
+/* Called with interrupts disabled */
+asmlinkage void do_exception_error(unsigned long ex, struct pt_regs *regs)
+{
+	die_if_kernel("exception", regs, ex);
+}
+
+asmlinkage int do_unknown_trapa(unsigned long scId, struct pt_regs *regs)
+{
+	/* Syscall debug */
+	printk("System call ID error: [0x1#args:8 #syscall:16  0x%lx]\n", scId);
+
+	die_if_kernel("unknown trapa", regs, scId);
+
+	return -ENOSYS;
+}
+
+/* Implement misaligned load/store handling for kernel (and optionally for user
+   mode too).  Limitation : only SHmedia mode code is handled - there is no
+   handling at all for misaligned accesses occurring in SHcompact code yet. */
+
+asmlinkage void do_address_error_load(unsigned long error_code, struct pt_regs *regs)
+{
+	if (misaligned_fixup(regs) < 0)
+		do_unhandled_exception(SIGSEGV, "address error(load)",
+				       error_code, regs);
+}
+
+asmlinkage void do_address_error_store(unsigned long error_code, struct pt_regs *regs)
+{
+	if (misaligned_fixup(regs) < 0)
+		do_unhandled_exception(SIGSEGV, "address error(store)",
+				error_code, regs);
+}
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage void do_debug_interrupt(unsigned long code, struct pt_regs *regs)
 {
@@ -967,16 +1291,26 @@ asmlinkage void do_debug_interrupt(unsigned long code, struct pt_regs *regs)
 	   of access we make to them - just go direct to their physical
 	   addresses. */
 	exp_cause = peek_real_address_q(DM_EXP_CAUSE_PHY);
+<<<<<<< HEAD
 	if (exp_cause & ~4) {
 		printk("DM.EXP_CAUSE had unexpected bits set (=%08lx)\n",
 			(unsigned long)(exp_cause & 0xffffffff));
 	}
+=======
+	if (exp_cause & ~4)
+		printk("DM.EXP_CAUSE had unexpected bits set (=%08lx)\n",
+			(unsigned long)(exp_cause & 0xffffffff));
+>>>>>>> refs/remotes/origin/master
 	show_state();
 	/* Clear all DEBUGINT causes */
 	poke_real_address_q(DM_EXP_CAUSE_PHY, 0x0);
 }
 
+<<<<<<< HEAD
 void __cpuinit per_cpu_trap_init(void)
+=======
+void per_cpu_trap_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Nothing to do for now, VBR initialization later. */
 }

@@ -1,7 +1,11 @@
 /*
  * MPC5121E ADS Device Tree Source
  *
+<<<<<<< HEAD
  * Copyright 2007,2008 Freescale Semiconductor Inc.
+=======
+ * Copyright 2007-2008 Freescale Semiconductor Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -9,6 +13,7 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
 /dts-v1/;
 
 / {
@@ -68,15 +73,36 @@
 		nand@0 {
 			label = "nand";
 			reg = <0x00000000 0x40000000>;	// 512MB + 512MB
+=======
+#include <mpc5121.dtsi>
+
+/ {
+	model = "mpc5121ads";
+	compatible = "fsl,mpc5121ads", "fsl,mpc5121";
+
+	nfc@40000000 {
+		/*
+		 * ADS has two Hynix 512MB Nand flash chips in a single
+		 * stacked package.
+		 */
+		chips = <2>;
+
+		nand@0 {
+			label = "nand";
+			reg = <0x00000000 0x40000000>;	/* 512MB + 512MB */
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 
 	localbus@80000020 {
+<<<<<<< HEAD
 		compatible = "fsl,mpc5121-localbus";
 		#address-cells = <2>;
 		#size-cells = <1>;
 		reg = <0x80000020 0x40>;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		ranges = <0x0 0x0 0xfc000000 0x04000000
 			  0x2 0x0 0x82000000 0x00008000>;
 
@@ -87,6 +113,10 @@
 			#size-cells = <1>;
 			bank-width = <4>;
 			device-width = <2>;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			protected@0 {
 				label = "protected";
 				reg = <0x00000000 0x00040000>;  // first sector is protected
@@ -121,16 +151,25 @@
 			interrupt-controller;
 			#interrupt-cells = <2>;
 			reg = <0x2 0xa 0x5>;
+<<<<<<< HEAD
 			interrupt-parent = < &ipic >;
 			// irq routing
 			//	all irqs but touch screen are routed to irq0 (ipic 48)
 			//	touch screen is statically routed to irq1 (ipic 17)
 			//	so don't use it here
+=======
+			/* irq routing:
+			 * all irqs but touch screen are routed to irq0 (ipic 48)
+			 * touch screen is statically routed to irq1 (ipic 17)
+			 * so don't use it here
+			 */
+>>>>>>> refs/remotes/origin/master
 			interrupts = <48 0x8>;
 		};
 	};
 
 	soc@80000000 {
+<<<<<<< HEAD
 		compatible = "fsl,mpc5121-immr";
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -206,6 +245,10 @@
 			reg = <0x1700 0x20>;
 			interrupts = <9 0x8>;
 			interrupt-parent = < &ipic >;
+=======
+
+		i2c@1700 {
+>>>>>>> refs/remotes/origin/master
 			fsl,preserve-clocking;
 
 			hwmon@4a {
@@ -224,6 +267,7 @@
 			};
 		};
 
+<<<<<<< HEAD
 		i2c@1720 {
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -308,10 +352,43 @@
 			interrupts = <44 0x8>;
 			dr_mode = "otg";
 			phy_type = "utmi_wide";
+=======
+		eth0: ethernet@2800 {
+			phy-handle = <&phy0>;
+		};
+
+		can@2300 {
+			status = "disabled";
+		};
+
+		can@2380 {
+			status = "disabled";
+		};
+
+		viu@2400 {
+			status = "disabled";
+		};
+
+		mdio@2800 {
+			phy0: ethernet-phy@0 {
+				reg = <1>;
+			};
+		};
+
+		/* mpc5121ads only uses USB0 */
+		usb@3000 {
+			status = "disabled";
+		};
+
+		/* USB0 using internal UTMI PHY */
+		usb@4000 {
+			dr_mode = "host";
+>>>>>>> refs/remotes/origin/master
 			fsl,invert-drvvbus;
 			fsl,invert-pwr-fault;
 		};
 
+<<<<<<< HEAD
 		// IO control
 		ioctl@a000 {
 			compatible = "fsl,mpc5121-ioctl";
@@ -382,17 +459,41 @@
 			interrupt-parent = < &ipic >;
 		};
 
+=======
+		/* PSC3 serial port A aka ttyPSC0 */
+		psc@11300 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		/* PSC4 serial port B aka ttyPSC1 */
+		psc@11400 {
+			compatible = "fsl,mpc5121-psc-uart", "fsl,mpc5121-psc";
+		};
+
+		/* PSC5 in ac97 mode */
+		ac97: psc@11500 {
+			compatible = "fsl,mpc5121-psc-ac97", "fsl,mpc5121-psc";
+			fsl,mode = "ac97-slave";
+			fsl,rx-fifo-size = <384>;
+			fsl,tx-fifo-size = <384>;
+		};
+>>>>>>> refs/remotes/origin/master
 	};
 
 	pci: pci@80008500 {
 		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
 		interrupt-map = <
+<<<<<<< HEAD
 				// IDSEL 0x15 - Slot 1 PCI
+=======
+				/* IDSEL 0x15 - Slot 1 PCI */
+>>>>>>> refs/remotes/origin/master
 				 0xa800 0x0 0x0 0x1 &cpld_pic 0x0 0x8
 				 0xa800 0x0 0x0 0x2 &cpld_pic 0x1 0x8
 				 0xa800 0x0 0x0 0x3 &cpld_pic 0x2 0x8
 				 0xa800 0x0 0x0 0x4 &cpld_pic 0x3 0x8
 
+<<<<<<< HEAD
 				// IDSEL 0x16 - Slot 2 MiniPCI
 				 0xb000 0x0 0x0 0x1 &cpld_pic 0x4 0x8
 				 0xb000 0x0 0x0 0x2 &cpld_pic 0x5 0x8
@@ -415,5 +516,15 @@
 		       0x80008300 0x8>;		/* config space access registers */
 		compatible = "fsl,mpc5121-pci";
 		device_type = "pci";
+=======
+				/* IDSEL 0x16 - Slot 2 MiniPCI */
+				 0xb000 0x0 0x0 0x1 &cpld_pic 0x4 0x8
+				 0xb000 0x0 0x0 0x2 &cpld_pic 0x5 0x8
+
+				/* IDSEL 0x17 - Slot 3 MiniPCI */
+				 0xb800 0x0 0x0 0x1 &cpld_pic 0x6 0x8
+				 0xb800 0x0 0x0 0x2 &cpld_pic 0x7 0x8
+				>;
+>>>>>>> refs/remotes/origin/master
 	};
 };

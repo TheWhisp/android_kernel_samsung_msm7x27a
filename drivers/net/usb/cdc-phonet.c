@@ -22,9 +22,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/mm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mm.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/gfp.h>
 #include <linux/usb.h>
@@ -134,10 +138,14 @@ static int rx_submit(struct usbpn_dev *pnd, struct urb *req, gfp_t gfp_flags)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	page = __netdev_alloc_page(dev, gfp_flags);
 =======
 	page = alloc_page(gfp_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	page = __skb_alloc_page(gfp_flags | __GFP_NOMEMALLOC, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (!page)
 		return -ENOMEM;
 
@@ -148,10 +156,14 @@ static int rx_submit(struct usbpn_dev *pnd, struct urb *req, gfp_t gfp_flags)
 	if (unlikely(err)) {
 		dev_dbg(&dev->dev, "RX submit error (%d)\n", err);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		netdev_free_page(dev, page);
 =======
 		put_page(page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		put_page(page);
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -176,21 +188,31 @@ static void rx_complete(struct urb *req)
 				memcpy(skb_put(skb, 1), page_address(page), 1);
 				skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						page, 1, req->actual_length);
 =======
 						page, 1, req->actual_length,
 						PAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						page, 1, req->actual_length,
+						PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 				page = NULL;
 			}
 		} else {
 			skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					page, 0, req->actual_length);
 =======
 					page, 0, req->actual_length,
 					PAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					page, 0, req->actual_length,
+					PAGE_SIZE);
+>>>>>>> refs/remotes/origin/master
 			page = NULL;
 		}
 		if (req->actual_length < PAGE_SIZE)
@@ -230,6 +252,7 @@ static void rx_complete(struct urb *req)
 resubmit:
 	if (page)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		netdev_free_page(dev, page);
 	if (req)
 		rx_submit(pnd, req, GFP_ATOMIC);
@@ -238,6 +261,11 @@ resubmit:
 	if (req)
 		rx_submit(pnd, req, GFP_ATOMIC | __GFP_COLD);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		put_page(page);
+	if (req)
+		rx_submit(pnd, req, GFP_ATOMIC | __GFP_COLD);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usbpn_close(struct net_device *dev);
@@ -257,10 +285,15 @@ static int usbpn_open(struct net_device *dev)
 		struct urb *req = usb_alloc_urb(0, GFP_KERNEL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!req || rx_submit(pnd, req, GFP_KERNEL)) {
 =======
 		if (!req || rx_submit(pnd, req, GFP_KERNEL | __GFP_COLD)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!req || rx_submit(pnd, req, GFP_KERNEL | __GFP_COLD)) {
+			usb_free_urb(req);
+>>>>>>> refs/remotes/origin/master
 			usbpn_close(dev);
 			return -ENOMEM;
 		}
@@ -356,7 +389,11 @@ MODULE_DEVICE_TABLE(usb, usbpn_ids);
 
 static struct usb_driver usbpn_driver;
 
+<<<<<<< HEAD
 int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *id)
+=======
+static int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	static const char ifname[] = "usbpn%d";
 	const struct usb_cdc_union_desc *union_header = NULL;
@@ -423,7 +460,11 @@ int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	SET_NETDEV_DEV(dev, &intf->dev);
 
 	pnd->dev = dev;
+<<<<<<< HEAD
 	pnd->usb = usb_get_dev(usbdev);
+=======
+	pnd->usb = usbdev;
+>>>>>>> refs/remotes/origin/master
 	pnd->intf = intf;
 	pnd->data_intf = data_intf;
 	spin_lock_init(&pnd->tx_lock);
@@ -469,7 +510,10 @@ out:
 static void usbpn_disconnect(struct usb_interface *intf)
 {
 	struct usbpn_dev *pnd = usb_get_intfdata(intf);
+<<<<<<< HEAD
 	struct usb_device *usb = pnd->usb;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (pnd->disconnected)
 		return;
@@ -478,7 +522,10 @@ static void usbpn_disconnect(struct usb_interface *intf)
 	usb_driver_release_interface(&usbpn_driver,
 			(pnd->intf == intf) ? pnd->data_intf : pnd->intf);
 	unregister_netdev(pnd->dev);
+<<<<<<< HEAD
 	usb_put_dev(usb);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_driver usbpn_driver = {
@@ -486,6 +533,7 @@ static struct usb_driver usbpn_driver = {
 	.probe =	usbpn_probe,
 	.disconnect =	usbpn_disconnect,
 	.id_table =	usbpn_ids,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -504,6 +552,12 @@ module_exit(usbpn_exit);
 =======
 module_usb_driver(usbpn_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(usbpn_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Remi Denis-Courmont");
 MODULE_DESCRIPTION("USB CDC Phonet host interface");

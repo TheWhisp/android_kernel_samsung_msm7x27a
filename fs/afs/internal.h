@@ -628,10 +628,14 @@ extern void afs_cache_permit(struct afs_vnode *, struct key *, long);
 extern void afs_zap_permits(struct rcu_head *);
 extern struct key *afs_request_key(struct afs_cell *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int afs_permission(struct inode *, int, unsigned int);
 =======
 extern int afs_permission(struct inode *, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int afs_permission(struct inode *, int);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * server.c
@@ -755,10 +759,14 @@ extern ssize_t afs_file_write(struct kiocb *, const struct iovec *,
 			      unsigned long, loff_t);
 extern int afs_writeback_all(struct afs_vnode *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int afs_fsync(struct file *, int);
 =======
 extern int afs_fsync(struct file *, loff_t, loff_t, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int afs_fsync(struct file *, loff_t, loff_t, int);
+>>>>>>> refs/remotes/origin/master
 
 
 /*****************************************************************************/

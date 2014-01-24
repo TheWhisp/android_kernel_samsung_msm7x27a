@@ -43,7 +43,11 @@
 
 int __init pcmcia_collie_init(struct device *dev);
 
+<<<<<<< HEAD
 static int (*sa11x0_pcmcia_hw_init[])(struct device *dev) __devinitdata = {
+=======
+static int (*sa11x0_pcmcia_hw_init[])(struct device *dev) = {
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SA1100_ASSABET
 	pcmcia_assabet_init,
 #endif
@@ -67,7 +71,11 @@ static int (*sa11x0_pcmcia_hw_init[])(struct device *dev) __devinitdata = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit sa11x0_drv_pcmcia_probe(struct platform_device *dev)
+=======
+static int sa11x0_drv_pcmcia_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ret = -ENODEV;
 

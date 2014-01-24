@@ -96,5 +96,9 @@ static inline int evm_inode_init_security(struct inode *inode,
 	return 0;
 }
 
+<<<<<<< HEAD
 #endif /* CONFIG_EVM_H */
+=======
+#endif /* CONFIG_EVM */
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_EVM_H */

@@ -13,9 +13,13 @@
 #include <linux/mISDNif.h>
 #include <linux/mISDNdsp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "core.h"
 #include "dsp.h"
 
@@ -65,10 +69,14 @@ static inline unsigned char linear2alaw(short int linear)
 
 	/* Convert the scaled magnitude to segment number. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (seg = 0;  seg < 8;  seg++) {
 =======
 	for (seg = 0; seg < 8; seg++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (seg = 0; seg < 8; seg++) {
+>>>>>>> refs/remotes/origin/master
 		if (pcm_val <= seg_end[seg])
 			break;
 	}
@@ -271,10 +279,14 @@ dsp_audio_generate_mix_table(void)
 			if (sample < -32768)
 				sample = -32768;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dsp_audio_mix_law[(i<<8)|j] =
 =======
 			dsp_audio_mix_law[(i << 8) | j] =
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dsp_audio_mix_law[(i << 8) | j] =
+>>>>>>> refs/remotes/origin/master
 				dsp_audio_s16_to_law[sample & 0xffff];
 			j++;
 		}
@@ -443,6 +455,9 @@ dsp_change_volume(struct sk_buff *skb, int volume)
 	}
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -58,16 +58,25 @@ int w1_ds2781_io(struct device *dev, char *buf, int addr, size_t count,
 	if (!dev)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	mutex_lock(&sl->master->mutex);
 
 	ret = w1_ds2781_do_io(dev, buf, addr, count, io);
 
 	mutex_unlock(&sl->master->mutex);
+=======
+	mutex_lock(&sl->master->bus_mutex);
+
+	ret = w1_ds2781_do_io(dev, buf, addr, count, io);
+
+	mutex_unlock(&sl->master->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 EXPORT_SYMBOL(w1_ds2781_io);
 
+<<<<<<< HEAD
 int w1_ds2781_io_nolock(struct device *dev, char *buf, int addr, size_t count,
 			int io)
 {
@@ -82,6 +91,8 @@ int w1_ds2781_io_nolock(struct device *dev, char *buf, int addr, size_t count,
 }
 EXPORT_SYMBOL(w1_ds2781_io_nolock);
 
+=======
+>>>>>>> refs/remotes/origin/master
 int w1_ds2781_eeprom_cmd(struct device *dev, int addr, int cmd)
 {
 	struct w1_slave *sl = container_of(dev, struct w1_slave, dev);
@@ -89,27 +100,42 @@ int w1_ds2781_eeprom_cmd(struct device *dev, int addr, int cmd)
 	if (!dev)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	mutex_lock(&sl->master->mutex);
+=======
+	mutex_lock(&sl->master->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	if (w1_reset_select_slave(sl) == 0) {
 		w1_write_8(sl->master, cmd);
 		w1_write_8(sl->master, addr);
 	}
 
+<<<<<<< HEAD
 	mutex_unlock(&sl->master->mutex);
+=======
+	mutex_unlock(&sl->master->bus_mutex);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(w1_ds2781_eeprom_cmd);
 
+<<<<<<< HEAD
 static ssize_t w1_ds2781_read_bin(struct file *filp,
 				  struct kobject *kobj,
 				  struct bin_attribute *bin_attr,
 				  char *buf, loff_t off, size_t count)
+=======
+static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
+			     struct bin_attribute *bin_attr, char *buf,
+			     loff_t off, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = container_of(kobj, struct device, kobj);
 	return w1_ds2781_io(dev, buf, off, count, 0);
 }
 
+<<<<<<< HEAD
 static struct bin_attribute w1_ds2781_bin_attr = {
 	.attr = {
 		.name = "w1_slave",
@@ -117,6 +143,22 @@ static struct bin_attribute w1_ds2781_bin_attr = {
 	},
 	.size = DS2781_DATA_SIZE,
 	.read = w1_ds2781_read_bin,
+=======
+static BIN_ATTR_RO(w1_slave, DS2781_DATA_SIZE);
+
+static struct bin_attribute *w1_ds2781_bin_attrs[] = {
+	&bin_attr_w1_slave,
+	NULL,
+};
+
+static const struct attribute_group w1_ds2781_group = {
+	.bin_attrs = w1_ds2781_bin_attrs,
+};
+
+static const struct attribute_group *w1_ds2781_groups[] = {
+	&w1_ds2781_group,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_IDA(bat_ida);
@@ -144,17 +186,25 @@ static int w1_ds2781_add_slave(struct w1_slave *sl)
 	if (ret)
 		goto pdev_add_failed;
 
+<<<<<<< HEAD
 	ret = sysfs_create_bin_file(&sl->dev.kobj, &w1_ds2781_bin_attr);
 	if (ret)
 		goto bin_attr_failed;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&sl->dev, pdev);
 
 	return 0;
 
+<<<<<<< HEAD
 bin_attr_failed:
 pdev_add_failed:
 	platform_device_unregister(pdev);
+=======
+pdev_add_failed:
+	platform_device_put(pdev);
+>>>>>>> refs/remotes/origin/master
 pdev_alloc_failed:
 	ida_simple_remove(&bat_ida, id);
 noid:
@@ -168,12 +218,19 @@ static void w1_ds2781_remove_slave(struct w1_slave *sl)
 
 	platform_device_unregister(pdev);
 	ida_simple_remove(&bat_ida, id);
+<<<<<<< HEAD
 	sysfs_remove_bin_file(&sl->dev.kobj, &w1_ds2781_bin_attr);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct w1_family_ops w1_ds2781_fops = {
 	.add_slave    = w1_ds2781_add_slave,
 	.remove_slave = w1_ds2781_remove_slave,
+<<<<<<< HEAD
+=======
+	.groups       = w1_ds2781_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct w1_family w1_ds2781_family = {
@@ -199,3 +256,7 @@ module_exit(w1_ds2781_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Renata Sayakhova <renata@oktetlabs.ru>");
 MODULE_DESCRIPTION("1-wire Driver for Maxim/Dallas DS2781 Stand-Alone Fuel Gauge IC");
+<<<<<<< HEAD
+=======
+MODULE_ALIAS("w1-family-" __stringify(W1_FAMILY_DS2781));
+>>>>>>> refs/remotes/origin/master

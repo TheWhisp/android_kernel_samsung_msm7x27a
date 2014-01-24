@@ -12,6 +12,10 @@
 #include <linux/linkage.h>
 #include <linux/init.h>
 #include <asm/assembler.h>
+<<<<<<< HEAD
+=======
+#include <asm/errno.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unwind.h>
 
 #include "proc-macros.S"
@@ -135,7 +139,10 @@ ENTRY(v6_coherent_user_range)
 1:
  USER(	mcr	p15, 0, r0, c7, c10, 1	)	@ clean D line
 	add	r0, r0, #CACHE_LINE_SIZE
+<<<<<<< HEAD
 2:
+=======
+>>>>>>> refs/remotes/origin/master
 	cmp	r0, r1
 	blo	1b
 #endif
@@ -154,6 +161,7 @@ ENTRY(v6_coherent_user_range)
 
 /*
  * Fault handling for the cache operation above. If the virtual address in r0
+<<<<<<< HEAD
  * isn't mapped, just try the next page.
  */
 9001:
@@ -161,6 +169,13 @@ ENTRY(v6_coherent_user_range)
 	mov	r0, r0, lsl #12
 	add	r0, r0, #4096
 	b	2b
+=======
+ * isn't mapped, fail with -EFAULT.
+ */
+9001:
+	mov	r0, #-EFAULT
+	mov	pc, lr
+>>>>>>> refs/remotes/origin/master
  UNWIND(.fnend		)
 ENDPROC(v6_coherent_user_range)
 ENDPROC(v6_coherent_kern_range)
@@ -204,10 +219,14 @@ ENTRY(v6_flush_kern_dcache_area)
  *	- end     - virtual end address of region
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(v6_dma_inv_range)
 =======
 v6_dma_inv_range:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+v6_dma_inv_range:
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DMA_CACHE_RWFO
 	ldrb	r2, [r0]			@ read for ownership
 	strb	r2, [r0]			@ write for ownership
@@ -253,10 +272,14 @@ v6_dma_inv_range:
  *	- end     - virtual end address of region
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(v6_dma_clean_range)
 =======
 v6_dma_clean_range:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+v6_dma_clean_range:
+>>>>>>> refs/remotes/origin/master
 	bic	r0, r0, #D_CACHE_LINE_SIZE - 1
 1:
 #ifdef CONFIG_DMA_CACHE_RWFO
@@ -280,11 +303,14 @@ v6_dma_clean_range:
  *	- end     - virtual end address of region
  */
 ENTRY(v6_dma_flush_range)
+<<<<<<< HEAD
 #ifdef CONFIG_CACHE_FLUSH_RANGE_LIMIT
 	sub	r2, r1, r0
 	cmp	r2, #CONFIG_CACHE_FLUSH_RANGE_LIMIT
 	bhi	v6_dma_flush_dcache_all
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DMA_CACHE_RWFO
 	ldrb	r2, [r0]		@ read for ownership
 	strb	r2, [r0]		@ write for ownership
@@ -307,6 +333,7 @@ ENTRY(v6_dma_flush_range)
 	mcr	p15, 0, r0, c7, c10, 4		@ drain write buffer
 	mov	pc, lr
 
+<<<<<<< HEAD
 #ifdef CONFIG_CACHE_FLUSH_RANGE_LIMIT
 v6_dma_flush_dcache_all:
 	mov	r0, #0
@@ -319,6 +346,8 @@ v6_dma_flush_dcache_all:
 	mov	pc, lr
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	dma_map_area(start, size, dir)
  *	- start	- kernel virtual start address
@@ -353,6 +382,7 @@ ENTRY(v6_dma_unmap_area)
 	mov	pc, lr
 ENDPROC(v6_dma_unmap_area)
 
+<<<<<<< HEAD
 	__INITDATA
 
 <<<<<<< HEAD
@@ -375,3 +405,12 @@ ENTRY(v6_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions v6
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	v6_flush_kern_cache_louis
+	.equ	v6_flush_kern_cache_louis, v6_flush_kern_cache_all
+
+	__INITDATA
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions v6
+>>>>>>> refs/remotes/origin/master

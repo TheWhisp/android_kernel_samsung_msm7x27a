@@ -364,7 +364,11 @@ static int synusb_probe(struct usb_interface *intf,
 			 le16_to_cpu(udev->descriptor.idProduct));
 
 	if (synusb->flags & SYNUSB_STICK)
+<<<<<<< HEAD
 		strlcat(synusb->name, " (Stick) ", sizeof(synusb->name));
+=======
+		strlcat(synusb->name, " (Stick)", sizeof(synusb->name));
+>>>>>>> refs/remotes/origin/master
 
 	usb_make_path(udev, synusb->phys, sizeof(synusb->phys));
 	strlcat(synusb->phys, "/input0", sizeof(synusb->phys));

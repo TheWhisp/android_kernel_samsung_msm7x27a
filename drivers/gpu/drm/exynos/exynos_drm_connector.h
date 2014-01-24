@@ -5,6 +5,7 @@
  *	Joonyoung Shim <jy0922.shim@samsung.com>
  *	Seung-Woo Kim <sw0312.kim@samsung.com>
  *
+<<<<<<< HEAD
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -23,6 +24,12 @@
  * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
+=======
+ * This program is free software; you can redistribute  it and/or modify it
+ * under  the terms of  the GNU General  Public License as published by the
+ * Free Software Foundation;  either version 2 of the  License, or (at your
+ * option) any later version.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _EXYNOS_DRM_CONNECTOR_H_
@@ -31,4 +38,11 @@
 struct drm_connector *exynos_drm_connector_create(struct drm_device *dev,
 						   struct drm_encoder *encoder);
 
+<<<<<<< HEAD
+=======
+struct drm_encoder *exynos_drm_best_encoder(struct drm_connector *connector);
+
+void exynos_drm_display_power(struct drm_connector *connector, int mode);
+
+>>>>>>> refs/remotes/origin/master
 #endif

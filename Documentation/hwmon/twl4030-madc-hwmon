@@ -41,5 +41,9 @@ Channel Signal
 
 The Sysfs nodes will represent the voltage in the units of mV,
 the temperature channel shows the converted temperature in
+<<<<<<< HEAD
 degree celcius. The Battery charging current channel represents
+=======
+degree Celsius. The Battery charging current channel represents
+>>>>>>> refs/remotes/origin/master
 battery charging current in mA.

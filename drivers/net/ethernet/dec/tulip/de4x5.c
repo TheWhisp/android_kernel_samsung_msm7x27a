@@ -479,7 +479,11 @@
 
 #include "de4x5.h"
 
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 	KERN_INFO "de4x5.c:V0.546 2001/02/22 davies@maniac.ultranet.com\n";
 
 #define c_char const char
@@ -1092,7 +1096,11 @@ static const struct net_device_ops de4x5_netdev_ops = {
 };
 
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 de4x5_hw_init(struct net_device *dev, u_long iobase, struct device *gendev)
 {
     char name[DE4X5_NAME_LENGTH + 1];
@@ -1321,7 +1329,11 @@ de4x5_open(struct net_device *dev)
     if (request_irq(dev->irq, de4x5_interrupt, IRQF_SHARED,
 		                                     lp->adapter_name, dev)) {
 	printk("de4x5_open(): Requested IRQ%d is busy - attemping FAST/SHARE...", dev->irq);
+<<<<<<< HEAD
 	if (request_irq(dev->irq, de4x5_interrupt, IRQF_DISABLED | IRQF_SHARED,
+=======
+	if (request_irq(dev->irq, de4x5_interrupt, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 			                             lp->adapter_name, dev)) {
 	    printk("\n              Cannot get IRQ- reconfigure your hardware.\n");
 	    disable_ast(dev);
@@ -1874,7 +1886,11 @@ de4x5_local_stats(struct net_device *dev, char *buf, int pkt_len)
 	} else {
 	    lp->pktStats.multicast++;
 	}
+<<<<<<< HEAD
     } else if (compare_ether_addr(buf, dev->dev_addr) == 0) {
+=======
+    } else if (ether_addr_equal(buf, dev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
         lp->pktStats.unicast++;
     }
 
@@ -2077,7 +2093,11 @@ static int __init de4x5_eisa_probe (struct device *gendev)
 	return status;
 }
 
+<<<<<<< HEAD
 static int __devexit de4x5_eisa_remove (struct device *device)
+=======
+static int de4x5_eisa_remove(struct device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	u_long iobase;
@@ -2104,7 +2124,11 @@ static struct eisa_driver de4x5_eisa_driver = {
         .driver   = {
                 .name    = "de4x5",
                 .probe   = de4x5_eisa_probe,
+<<<<<<< HEAD
                 .remove  = __devexit_p (de4x5_eisa_remove),
+=======
+		.remove  = de4x5_eisa_remove,
+>>>>>>> refs/remotes/origin/master
         }
 };
 MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
@@ -2118,7 +2142,11 @@ MODULE_DEVICE_TABLE(eisa, de4x5_eisa_ids);
 ** DECchips, we can find the base SROM irrespective of the BIOS scan direction.
 ** For single port cards this is a time waster...
 */
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 srom_search(struct net_device *dev, struct pci_dev *pdev)
 {
     u_char pb;
@@ -2192,8 +2220,13 @@ srom_search(struct net_device *dev, struct pci_dev *pdev)
 ** kernels use the V0.535[n] drivers.
 */
 
+<<<<<<< HEAD
 static int __devinit de4x5_pci_probe (struct pci_dev *pdev,
 				   const struct pci_device_id *ent)
+=======
+static int de4x5_pci_probe(struct pci_dev *pdev,
+			   const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char pb, pbus = 0, dev_num, dnum = 0, timer;
 	u_short vendor, status;
@@ -2314,12 +2347,20 @@ static int __devinit de4x5_pci_probe (struct pci_dev *pdev,
 	return error;
 }
 
+<<<<<<< HEAD
 static void __devexit de4x5_pci_remove (struct pci_dev *pdev)
+=======
+static void de4x5_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	u_long iobase;
 
+<<<<<<< HEAD
 	dev = dev_get_drvdata(&pdev->dev);
+=======
+	dev = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	iobase = dev->base_addr;
 
 	unregister_netdev (dev);
@@ -2328,7 +2369,11 @@ static void __devexit de4x5_pci_remove (struct pci_dev *pdev)
 	pci_disable_device (pdev);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id de4x5_pci_tbl[] = {
+=======
+static DEFINE_PCI_DEVICE_TABLE(de4x5_pci_tbl) = {
+>>>>>>> refs/remotes/origin/master
         { PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_TULIP,
           PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
         { PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_TULIP_PLUS,
@@ -2344,7 +2389,11 @@ static struct pci_driver de4x5_pci_driver = {
         .name           = "de4x5",
         .id_table       = de4x5_pci_tbl,
         .probe          = de4x5_pci_probe,
+<<<<<<< HEAD
 	.remove         = __devexit_p (de4x5_pci_remove),
+=======
+	.remove         = de4x5_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif
@@ -3973,7 +4022,11 @@ DevicePresent(struct net_device *dev, u_long aprom_addr)
 	    tmp = srom_rd(aprom_addr, i);
 	    *p++ = cpu_to_le16(tmp);
 	}
+<<<<<<< HEAD
 	de4x5_dbg_srom((struct de4x5_srom *)&lp->srom);
+=======
+	de4x5_dbg_srom(&lp->srom);
+>>>>>>> refs/remotes/origin/master
     }
 }
 

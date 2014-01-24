@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 config DEFCONFIG_LIST
 	string
 	option defconfig_list
@@ -13,6 +14,17 @@ config UML
 	select GENERIC_CPU_DEVICES
 	select GENERIC_IO
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config UML
+	bool
+	default y
+	select HAVE_UID16
+	select GENERIC_IRQ_SHOW
+	select GENERIC_CPU_DEVICES
+	select GENERIC_IO
+	select GENERIC_CLOCKEVENTS
+	select TTY # Needed for line.c
+>>>>>>> refs/remotes/origin/master
 
 config MMU
 	bool
@@ -55,6 +67,7 @@ config GENERIC_BUG
 	default y
 	depends on BUG
 
+<<<<<<< HEAD
 config GENERIC_CLOCKEVENTS
 	bool
 	default y
@@ -64,6 +77,8 @@ config IRQ_RELEASE_METHOD
 	bool
 	default y
 
+=======
+>>>>>>> refs/remotes/origin/master
 config HZ
 	int
 	default 100

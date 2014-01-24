@@ -4,6 +4,7 @@
 
 adis16060-y             := adis16060_core.o
 obj-$(CONFIG_ADIS16060) += adis16060.o
+<<<<<<< HEAD
 
 adis16080-y             := adis16080_core.o
 obj-$(CONFIG_ADIS16080) += adis16080.o
@@ -24,3 +25,5 @@ obj-$(CONFIG_ADIS16251) += adis16251.o
 
 adxrs450-y             := adxrs450_core.o
 obj-$(CONFIG_ADXRS450) += adxrs450.o
+=======
+>>>>>>> refs/remotes/origin/master

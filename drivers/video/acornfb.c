@@ -38,6 +38,7 @@
 #include "acornfb.h"
 
 /*
+<<<<<<< HEAD
  * VIDC machines can't do 16 or 32BPP modes.
  */
 #ifdef HAS_VIDC
@@ -46,6 +47,8 @@
 #endif
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Default resolution.
  * NOTE that it has to be supported in the table towards
  * the end of this file.
@@ -66,7 +69,11 @@
  * have.  Allow 1% either way on the nominal for TVs.
  */
 #define NR_MONTYPES	6
+<<<<<<< HEAD
 static struct fb_monspecs monspecs[NR_MONTYPES] __devinitdata = {
+=======
+static struct fb_monspecs monspecs[NR_MONTYPES] = {
+>>>>>>> refs/remotes/origin/master
 	{	/* TV		*/
 		.hfmin	= 15469,
 		.hfmax	= 15781,
@@ -106,6 +113,7 @@ static struct vidc_timing current_vidc;
 
 extern unsigned int vram_size;	/* set by setup.c */
 
+<<<<<<< HEAD
 #ifdef HAS_VIDC
 
 #define MAX_SIZE	480*1024
@@ -338,6 +346,8 @@ acornfb_setcolreg(u_int regno, u_int red, u_int green, u_int blue,
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef HAS_VIDC20
 #include <mach/acornfb.h>
 
@@ -634,6 +644,7 @@ acornfb_adjust_timing(struct fb_info *info, struct fb_var_screeninfo *var, u_int
 	/* hsync_len must be even */
 	var->hsync_len = (var->hsync_len + 1) & ~1;
 
+<<<<<<< HEAD
 #ifdef HAS_VIDC
 	/* left_margin must be odd */
 	if ((var->left_margin & 1) == 0) {
@@ -644,6 +655,9 @@ acornfb_adjust_timing(struct fb_info *info, struct fb_var_screeninfo *var, u_int
 	/* right_margin must be odd */
 	var->right_margin |= 1;
 #elif defined(HAS_VIDC20)
+=======
+#if defined(HAS_VIDC20)
+>>>>>>> refs/remotes/origin/master
 	/* left_margin must be even */
 	if (var->left_margin & 1) {
 		var->left_margin += 1;
@@ -787,11 +801,15 @@ static int acornfb_set_par(struct fb_info *info)
 		break;
 	case 8:
 		current_par.palette_size = VIDC_PALETTE_SIZE;
+<<<<<<< HEAD
 #ifdef HAS_VIDC
 		info->fix.visual = FB_VISUAL_STATIC_PSEUDOCOLOR;
 #else
 		info->fix.visual = FB_VISUAL_PSEUDOCOLOR;
 #endif
+=======
+		info->fix.visual = FB_VISUAL_PSEUDOCOLOR;
+>>>>>>> refs/remotes/origin/master
 		break;
 #ifdef HAS_VIDC20
 	case 16:
@@ -851,15 +869,21 @@ acornfb_pan_display(struct fb_var_screeninfo *var, struct fb_info *info)
 
 	if (!(var->vmode & FB_VMODE_YWRAP))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		y_bottom += var->yres;
 
 	BUG_ON(y_bottom > var->yres_virtual);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		y_bottom += info->var.yres;
 
 	if (y_bottom > info->var.yres_virtual)
 		return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	acornfb_update_dma(info, var);
 
@@ -880,7 +904,11 @@ static struct fb_ops acornfb_ops = {
 /*
  * Everything after here is initialisation!!!
  */
+<<<<<<< HEAD
 static struct fb_videomode modedb[] __devinitdata = {
+=======
+static struct fb_videomode modedb[] = {
+>>>>>>> refs/remotes/origin/master
 	{	/* 320x256 @ 50Hz */
 		NULL, 50,  320,  256, 125000,  92,  62,  35, 19,  38, 2,
 		FB_SYNC_COMP_HIGH_ACT,
@@ -932,7 +960,11 @@ static struct fb_videomode modedb[] __devinitdata = {
 	}
 };
 
+<<<<<<< HEAD
 static struct fb_videomode acornfb_default_mode __devinitdata = {
+=======
+static struct fb_videomode acornfb_default_mode = {
+>>>>>>> refs/remotes/origin/master
 	.name =		NULL,
 	.refresh =	60,
 	.xres =		640,
@@ -948,7 +980,11 @@ static struct fb_videomode acornfb_default_mode __devinitdata = {
 	.vmode =	FB_VMODE_NONINTERLACED
 };
 
+<<<<<<< HEAD
 static void __devinit acornfb_init_fbinfo(void)
+=======
+static void acornfb_init_fbinfo(void)
+>>>>>>> refs/remotes/origin/master
 {
 	static int first = 1;
 
@@ -977,9 +1013,12 @@ static void __devinit acornfb_init_fbinfo(void)
 #if defined(HAS_VIDC20)
 	fb_info.var.red.length	   = 8;
 	fb_info.var.transp.length  = 4;
+<<<<<<< HEAD
 #elif defined(HAS_VIDC)
 	fb_info.var.red.length	   = 4;
 	fb_info.var.transp.length  = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	fb_info.var.green	   = fb_info.var.red;
 	fb_info.var.blue	   = fb_info.var.red;
@@ -1024,7 +1063,11 @@ static void __devinit acornfb_init_fbinfo(void)
  *	size can optionally be followed by 'M' or 'K' for
  *	MB or KB respectively.
  */
+<<<<<<< HEAD
 static void __devinit acornfb_parse_mon(char *opt)
+=======
+static void acornfb_parse_mon(char *opt)
+>>>>>>> refs/remotes/origin/master
 {
 	char *p = opt;
 
@@ -1071,7 +1114,11 @@ bad:
 	current_par.montype = -1;
 }
 
+<<<<<<< HEAD
 static void __devinit acornfb_parse_montype(char *opt)
+=======
+static void acornfb_parse_montype(char *opt)
+>>>>>>> refs/remotes/origin/master
 {
 	current_par.montype = -2;
 
@@ -1112,7 +1159,11 @@ static void __devinit acornfb_parse_montype(char *opt)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit acornfb_parse_dram(char *opt)
+=======
+static void acornfb_parse_dram(char *opt)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int size;
 
@@ -1137,14 +1188,22 @@ static void __devinit acornfb_parse_dram(char *opt)
 static struct options {
 	char *name;
 	void (*parse)(char *opt);
+<<<<<<< HEAD
 } opt_table[] __devinitdata = {
+=======
+} opt_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "mon",     acornfb_parse_mon     },
 	{ "montype", acornfb_parse_montype },
 	{ "dram",    acornfb_parse_dram    },
 	{ NULL, NULL }
 };
 
+<<<<<<< HEAD
 static int __devinit acornfb_setup(char *options)
+=======
+static int acornfb_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	struct options *optp;
 	char *opt;
@@ -1181,7 +1240,11 @@ static int __devinit acornfb_setup(char *options)
  * Detect type of monitor connected
  *  For now, we just assume SVGA
  */
+<<<<<<< HEAD
 static int __devinit acornfb_detect_monitortype(void)
+=======
+static int acornfb_detect_monitortype(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return 4;
 }
@@ -1211,9 +1274,13 @@ free_unused_pages(unsigned int virtual_start, unsigned int virtual_end)
 		 * the page.
 		 */
 		page = virt_to_page(virtual_start);
+<<<<<<< HEAD
 		ClearPageReserved(page);
 		init_page_count(page);
 		free_page(virtual_start);
+=======
+		__free_reserved_page(page);
+>>>>>>> refs/remotes/origin/master
 
 		virtual_start += PAGE_SIZE;
 		mb_freed += PAGE_SIZE / 1024;
@@ -1222,7 +1289,11 @@ free_unused_pages(unsigned int virtual_start, unsigned int virtual_end)
 	printk("acornfb: freed %dK memory\n", mb_freed);
 }
 
+<<<<<<< HEAD
 static int __devinit acornfb_probe(struct platform_device *dev)
+=======
+static int acornfb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long size;
 	u_int h_sync, v_sync;
@@ -1316,6 +1387,7 @@ static int __devinit acornfb_probe(struct platform_device *dev)
 		fb_info.fix.smem_start = handle;
 	}
 #endif
+<<<<<<< HEAD
 #if defined(HAS_VIDC)
 	/*
 	 * Archimedes/A5000 machines use a fixed address for their
@@ -1324,6 +1396,8 @@ static int __devinit acornfb_probe(struct platform_device *dev)
 	free_unused_pages(PAGE_OFFSET + size, PAGE_OFFSET + MAX_SIZE);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	fb_info.fix.smem_len = size;
 	current_par.palette_size   = VIDC_PALETTE_SIZE;
 

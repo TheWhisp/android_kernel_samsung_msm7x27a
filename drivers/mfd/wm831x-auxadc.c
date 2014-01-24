@@ -280,11 +280,19 @@ void wm831x_auxadc_init(struct wm831x *wm831x)
 	mutex_init(&wm831x->auxadc_lock);
 	INIT_LIST_HEAD(&wm831x->auxadc_pending);
 
+<<<<<<< HEAD
 	if (wm831x->irq && wm831x->irq_base) {
 		wm831x->auxadc_read = wm831x_auxadc_read_irq;
 
 		ret = request_threaded_irq(wm831x->irq_base +
 					   WM831X_IRQ_AUXADC_DATA,
+=======
+	if (wm831x->irq) {
+		wm831x->auxadc_read = wm831x_auxadc_read_irq;
+
+		ret = request_threaded_irq(wm831x_irq(wm831x,
+						      WM831X_IRQ_AUXADC_DATA),
+>>>>>>> refs/remotes/origin/master
 					   NULL, wm831x_auxadc_irq, 0,
 					   "auxadc", wm831x);
 		if (ret < 0) {

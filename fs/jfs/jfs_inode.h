@@ -22,10 +22,14 @@ struct fid;
 
 extern struct inode *ialloc(struct inode *, umode_t);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int jfs_fsync(struct file *, int);
 =======
 extern int jfs_fsync(struct file *, loff_t, loff_t, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int jfs_fsync(struct file *, loff_t, loff_t, int);
+>>>>>>> refs/remotes/origin/master
 extern long jfs_ioctl(struct file *, unsigned int, unsigned long);
 extern long jfs_compat_ioctl(struct file *, unsigned int, unsigned long);
 extern struct inode *jfs_iget(struct super_block *, unsigned long);

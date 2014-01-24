@@ -25,10 +25,14 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *   La Monte H.P. Yarroll <piggy@acm.org>
@@ -39,9 +43,12 @@
  *   Xingang Guo           <xingang.guo@intel.com>
  *   Sridhar Samudrala     <samudrala@us.ibm.com>
  *   Daisy Chang           <daisyc@us.ibm.com>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __sctp_constants_h__
@@ -49,7 +56,10 @@
 
 #include <linux/sctp.h>
 #include <linux/ipv6.h> /* For ipv6hdr. */
+<<<<<<< HEAD
 #include <net/sctp/user.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <net/tcp_states.h>  /* For TCP states used in sctp_sock_state_t */
 
 /* Value used for stream negotiation. */
@@ -303,7 +313,11 @@ enum { SCTP_MAX_GABS = 16 };
                                          * to which we will raise the P-MTU.
 					 */
 #define SCTP_DEFAULT_MINSEGMENT 512	/* MTU size ... if no mtu disc */
+<<<<<<< HEAD
 #define SCTP_HOW_MANY_SECRETS 2		/* How many secrets I keep */
+=======
+
+>>>>>>> refs/remotes/origin/master
 #define SCTP_SECRET_SIZE 32		/* Number of octets in a 256 bits. */
 
 #define SCTP_SIGNATURE_SIZE 20	        /* size of a SLA-1 signature */
@@ -312,6 +326,7 @@ enum { SCTP_MAX_GABS = 16 };
 				 * functions simpler to write.
 				 */
 
+<<<<<<< HEAD
 #if defined (CONFIG_SCTP_HMAC_MD5)
 #define SCTP_COOKIE_HMAC_ALG "hmac(md5)"
 #elif defined (CONFIG_SCTP_HMAC_SHA1)
@@ -320,6 +335,8 @@ enum { SCTP_MAX_GABS = 16 };
 #define SCTP_COOKIE_HMAC_ALG NULL
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* These return values describe the success or failure of a number of
  * routines which form the lower interface to SCTP_outqueue.
  */
@@ -334,6 +351,10 @@ typedef enum {
 typedef enum {
 	SCTP_TRANSPORT_UP,
 	SCTP_TRANSPORT_DOWN,
+<<<<<<< HEAD
+=======
+	SCTP_TRANSPORT_PF,
+>>>>>>> refs/remotes/origin/master
 } sctp_transport_cmd_t;
 
 /* These are the address scopes defined mainly for IPv4 addresses

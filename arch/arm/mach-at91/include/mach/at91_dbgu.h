@@ -17,6 +17,7 @@
 #define AT91_DBGU_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef AT91_DBGU
 #define AT91_DBGU_CR		(AT91_DBGU + 0x00)	/* Control Register */
 #define AT91_DBGU_MR		(AT91_DBGU + 0x04)	/* Mode Register */
@@ -37,6 +38,8 @@
 #define dbgu_readl(dbgu, field) \
 	__raw_readl(AT91_VA_BASE_SYS + dbgu + AT91_DBGU_ ## field)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if !defined(CONFIG_ARCH_AT91X40)
 #define AT91_DBGU_CR		(0x00)	/* Control Register */
 #define AT91_DBGU_MR		(0x04)	/* Mode Register */
@@ -53,7 +56,10 @@
 #define AT91_DBGU_CIDR		(0x40)	/* Chip ID Register */
 #define AT91_DBGU_EXID		(0x44)	/* Chip ID Extension Register */
 #define AT91_DBGU_FNR		(0x48)	/* Force NTRST Register [SAM9 only] */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define		AT91_DBGU_FNTRST	(1 << 0)		/* Force NTRST */
 
 #endif /* AT91_DBGU */

@@ -1,6 +1,7 @@
 #ifndef _ASM_SCORE_PTRACE_H
 #define _ASM_SCORE_PTRACE_H
 
+<<<<<<< HEAD
 #define PTRACE_GETREGS		12
 #define PTRACE_SETREGS		13
 
@@ -73,6 +74,10 @@ struct pt_regs {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/ptrace.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct task_struct;
 
@@ -83,6 +88,10 @@ struct task_struct;
 
 #define instruction_pointer(regs)	((unsigned long)(regs)->cp0_epc)
 #define profile_pc(regs)		instruction_pointer(regs)
+<<<<<<< HEAD
+=======
+#define user_stack_pointer(r)		((unsigned long)(r)->regs[0])
+>>>>>>> refs/remotes/origin/master
 
 extern void do_syscall_trace(struct pt_regs *regs, int entryexit);
 extern int read_tsk_long(struct task_struct *, unsigned long, unsigned long *);
@@ -91,6 +100,9 @@ extern int read_tsk_short(struct task_struct *, unsigned long,
 
 #define arch_has_single_step()	(1)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SCORE_PTRACE_H */

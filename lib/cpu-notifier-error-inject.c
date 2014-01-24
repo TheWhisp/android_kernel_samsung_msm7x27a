@@ -1,4 +1,5 @@
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/cpu.h>
 #include <linux/module.h>
 #include <linux/notifier.h>
@@ -48,11 +49,53 @@ static int err_inject_init(void)
 	err_inject_cpu_notifier.priority = priority;
 
 	return register_hotcpu_notifier(&err_inject_cpu_notifier);
+=======
+#include <linux/module.h>
+#include <linux/cpu.h>
+
+#include "notifier-error-inject.h"
+
+static int priority;
+module_param(priority, int, 0);
+MODULE_PARM_DESC(priority, "specify cpu notifier priority");
+
+static struct notifier_err_inject cpu_notifier_err_inject = {
+	.actions = {
+		{ NOTIFIER_ERR_INJECT_ACTION(CPU_UP_PREPARE) },
+		{ NOTIFIER_ERR_INJECT_ACTION(CPU_UP_PREPARE_FROZEN) },
+		{ NOTIFIER_ERR_INJECT_ACTION(CPU_DOWN_PREPARE) },
+		{ NOTIFIER_ERR_INJECT_ACTION(CPU_DOWN_PREPARE_FROZEN) },
+		{}
+	}
+};
+
+static struct dentry *dir;
+
+static int err_inject_init(void)
+{
+	int err;
+
+	dir = notifier_err_inject_init("cpu", notifier_err_inject_dir,
+					&cpu_notifier_err_inject, priority);
+	if (IS_ERR(dir))
+		return PTR_ERR(dir);
+
+	err = register_hotcpu_notifier(&cpu_notifier_err_inject.nb);
+	if (err)
+		debugfs_remove_recursive(dir);
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void err_inject_exit(void)
 {
+<<<<<<< HEAD
 	unregister_hotcpu_notifier(&err_inject_cpu_notifier);
+=======
+	unregister_hotcpu_notifier(&cpu_notifier_err_inject.nb);
+	debugfs_remove_recursive(dir);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(err_inject_init);

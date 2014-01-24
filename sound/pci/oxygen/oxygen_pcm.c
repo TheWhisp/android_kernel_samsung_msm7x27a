@@ -169,6 +169,7 @@ static int oxygen_open(struct snd_pcm_substream *substream,
 			return err;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (channel == PCM_MULTICH) {
 		err = snd_pcm_hw_constraint_minmax
 			(runtime, SNDRV_PCM_HW_PARAM_PERIOD_TIME, 0, 8192000);
@@ -177,6 +178,8 @@ static int oxygen_open(struct snd_pcm_substream *substream,
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_pcm_set_sync(substream);
 	chip->streams[channel] = substream;
 

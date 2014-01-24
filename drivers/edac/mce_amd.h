@@ -5,8 +5,11 @@
 
 #include <asm/mce.h>
 
+<<<<<<< HEAD
 #define BIT_64(n)			(U64_C(1) << (n))
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define EC(x)				((x) & 0xffff)
 #define XEC(x, mask)			(((x) >> 16) & mask)
 
@@ -16,6 +19,10 @@
 #define TLB_ERROR(x)			(((x) & 0xFFF0) == 0x0010)
 #define MEM_ERROR(x)			(((x) & 0xFF00) == 0x0100)
 #define BUS_ERROR(x)			(((x) & 0xF800) == 0x0800)
+<<<<<<< HEAD
+=======
+#define INT_ERROR(x)			(((x) & 0xF4FF) == 0x0400)
+>>>>>>> refs/remotes/origin/master
 
 #define TT(x)				(((x) >> 2) & 0x3)
 #define TT_MSG(x)			tt_msgs[TT(x)]
@@ -27,14 +34,26 @@
 #define TO_MSG(x)			to_msgs[TO(x)]
 #define PP(x)				(((x) >> 9) & 0x3)
 #define PP_MSG(x)			pp_msgs[PP(x)]
+<<<<<<< HEAD
+=======
+#define UU(x)				(((x) >> 8) & 0x3)
+#define UU_MSG(x)			uu_msgs[UU(x)]
+>>>>>>> refs/remotes/origin/master
 
 #define R4(x)				(((x) >> 4) & 0xf)
 #define R4_MSG(x)			((R4(x) < 9) ?  rrrr_msgs[R4(x)] : "Wrong R4!")
 
+<<<<<<< HEAD
 /*
  * F3x4C bits (MCi_STATUS' high half)
  */
 #define NBSH_ERR_CPU_VAL		BIT(24)
+=======
+#define MCI_STATUS_DEFERRED		BIT_64(44)
+#define MCI_STATUS_POISON		BIT_64(43)
+
+extern const char * const pp_msgs[];
+>>>>>>> refs/remotes/origin/master
 
 enum tt_ids {
 	TT_INSTR = 0,
@@ -70,6 +89,7 @@ enum rrrr_ids {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern const char *tt_msgs[];
 extern const char *ll_msgs[];
 extern const char *rrrr_msgs[];
@@ -85,10 +105,13 @@ extern const char * const to_msgs[];
 extern const char * const ii_msgs[];
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * per-family decoder ops
  */
 struct amd_decoder_ops {
+<<<<<<< HEAD
 	bool (*dc_mce)(u16, u8);
 	bool (*ic_mce)(u16, u8);
 <<<<<<< HEAD
@@ -100,13 +123,21 @@ void amd_register_ecc_decoder(void (*f)(int, struct mce *, u32));
 void amd_unregister_ecc_decoder(void (*f)(int, struct mce *, u32));
 void amd_decode_nb_mce(int, struct mce *, u32);
 =======
+=======
+	bool (*mc0_mce)(u16, u8);
+	bool (*mc1_mce)(u16, u8);
+	bool (*mc2_mce)(u16, u8);
+>>>>>>> refs/remotes/origin/master
 };
 
 void amd_report_gart_errors(bool);
 void amd_register_ecc_decoder(void (*f)(int, struct mce *));
 void amd_unregister_ecc_decoder(void (*f)(int, struct mce *));
+<<<<<<< HEAD
 void amd_decode_nb_mce(struct mce *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int amd_decode_mce(struct notifier_block *nb, unsigned long val, void *data);
 
 #endif /* _EDAC_MCE_AMD_H */

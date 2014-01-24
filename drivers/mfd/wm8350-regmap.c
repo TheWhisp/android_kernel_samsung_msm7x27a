@@ -14,6 +14,7 @@
 
 #include <linux/mfd/wm8350/core.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_MFD_WM8350_CONFIG_MODE_0
 
 #undef WM8350_HAVE_CONFIG_MODE
@@ -3170,14 +3171,27 @@ const u16 wm8352_mode3_defaults[] = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Access masks.
  */
 
+<<<<<<< HEAD
 const struct wm8350_reg_access wm8350_reg_io_map[] = {
 	/*  read    write volatile */
 	{ 0xFFFF, 0xFFFF, 0xFFFF }, /* R0   - Reset/ID */
 	{ 0x7CFF, 0x0C00, 0x7FFF }, /* R1   - ID */
+=======
+static const struct wm8350_reg_access {
+	u16 readable;		/* Mask of readable bits */
+	u16 writable;		/* Mask of writable bits */
+	u16 vol;		/* Mask of volatile bits */
+} wm8350_reg_io_map[] = {
+	/*  read    write volatile */
+	{ 0xFFFF, 0xFFFF, 0x0000 }, /* R0   - Reset/ID */
+	{ 0x7CFF, 0x0C00, 0x0000 }, /* R1   - ID */
+>>>>>>> refs/remotes/origin/master
 	{ 0x007F, 0x0000, 0x0000 }, /* R2   - ROM Mask ID */
 	{ 0xBE3B, 0xBE3B, 0x8000 }, /* R3   - System Control 1 */
 	{ 0xFEF7, 0xFEF7, 0xF800 }, /* R4   - System Control 2 */
@@ -3433,3 +3447,62 @@ const struct wm8350_reg_access wm8350_reg_io_map[] = {
 	{ 0x0000, 0x0000, 0x0000 }, /* R254 */
 	{ 0x0000, 0x0000, 0x0000 }, /* R255 */
 };
+<<<<<<< HEAD
+=======
+
+static bool wm8350_readable(struct device *dev, unsigned int reg)
+{
+	return wm8350_reg_io_map[reg].readable;
+}
+
+static bool wm8350_writeable(struct device *dev, unsigned int reg)
+{
+	struct wm8350 *wm8350 = dev_get_drvdata(dev);
+
+	if (!wm8350->unlocked) {
+		if ((reg >= WM8350_GPIO_FUNCTION_SELECT_1 &&
+		     reg <= WM8350_GPIO_FUNCTION_SELECT_4) ||
+		    (reg >= WM8350_BATTERY_CHARGER_CONTROL_1 &&
+		     reg <= WM8350_BATTERY_CHARGER_CONTROL_3))
+			return false;
+	}
+
+	return wm8350_reg_io_map[reg].writable;
+}
+
+static bool wm8350_volatile(struct device *dev, unsigned int reg)
+{
+	return wm8350_reg_io_map[reg].vol;
+}
+
+static bool wm8350_precious(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8350_SYSTEM_INTERRUPTS:
+	case WM8350_INT_STATUS_1:
+	case WM8350_INT_STATUS_2:
+	case WM8350_POWER_UP_INT_STATUS:
+	case WM8350_UNDER_VOLTAGE_INT_STATUS:
+	case WM8350_OVER_CURRENT_INT_STATUS:
+	case WM8350_GPIO_INT_STATUS:
+	case WM8350_COMPARATOR_INT_STATUS:
+		return true;
+
+	default:
+		return false;
+	}
+}
+
+const struct regmap_config wm8350_regmap = {
+	.reg_bits = 8,
+	.val_bits = 16,
+
+	.cache_type = REGCACHE_RBTREE,
+
+	.max_register = WM8350_MAX_REGISTER,
+	.readable_reg = wm8350_readable,
+	.writeable_reg = wm8350_writeable,
+	.volatile_reg = wm8350_volatile,
+	.precious_reg = wm8350_precious,
+};
+>>>>>>> refs/remotes/origin/master

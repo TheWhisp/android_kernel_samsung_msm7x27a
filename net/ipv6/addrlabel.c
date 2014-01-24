@@ -57,7 +57,11 @@ struct net *ip6addrlbl_net(const struct ip6addrlbl_entry *lbl)
 }
 
 /*
+<<<<<<< HEAD
  * Default policy table (RFC3484 + extensions)
+=======
+ * Default policy table (RFC6724 + extensions)
+>>>>>>> refs/remotes/origin/master
  *
  * prefix		addr_type	label
  * -------------------------------------------------------------------------
@@ -69,13 +73,26 @@ struct net *ip6addrlbl_net(const struct ip6addrlbl_entry *lbl)
  * fc00::/7		N/A		5		ULA (RFC 4193)
  * 2001::/32		N/A		6		Teredo (RFC 4380)
  * 2001:10::/28		N/A		7		ORCHID (RFC 4843)
+<<<<<<< HEAD
  *
  * Note: 0xffffffff is used if we do not have any policies.
+=======
+ * fec0::/10		N/A		11		Site-local
+ *							(deprecated by RFC3879)
+ * 3ffe::/16		N/A		12		6bone
+ *
+ * Note: 0xffffffff is used if we do not have any policies.
+ * Note: Labels for ULA and 6to4 are different from labels listed in RFC6724.
+>>>>>>> refs/remotes/origin/master
  */
 
 #define IPV6_ADDR_LABEL_DEFAULT	0xffffffffUL
 
+<<<<<<< HEAD
 static const __net_initdata struct ip6addrlbl_init_table
+=======
+static const __net_initconst struct ip6addrlbl_init_table
+>>>>>>> refs/remotes/origin/master
 {
 	const struct in6_addr *prefix;
 	int prefixlen;
@@ -88,10 +105,24 @@ static const __net_initdata struct ip6addrlbl_init_table
 		.prefix = &(struct in6_addr){{{ 0xfc }}},
 		.prefixlen = 7,
 		.label = 5,
+<<<<<<< HEAD
+=======
+	},{	/* fec0::/10 */
+		.prefix = &(struct in6_addr){{{ 0xfe, 0xc0 }}},
+		.prefixlen = 10,
+		.label = 11,
+>>>>>>> refs/remotes/origin/master
 	},{	/* 2002::/16 */
 		.prefix = &(struct in6_addr){{{ 0x20, 0x02 }}},
 		.prefixlen = 16,
 		.label = 2,
+<<<<<<< HEAD
+=======
+	},{	/* 3ffe::/16 */
+		.prefix = &(struct in6_addr){{{ 0x3f, 0xfe }}},
+		.prefixlen = 16,
+		.label = 12,
+>>>>>>> refs/remotes/origin/master
 	},{	/* 2001::/32 */
 		.prefix = &(struct in6_addr){{{ 0x20, 0x01 }}},
 		.prefixlen = 32,
@@ -129,7 +160,11 @@ static void ip6addrlbl_free_rcu(struct rcu_head *h)
 	ip6addrlbl_free(container_of(h, struct ip6addrlbl_entry, rcu));
 }
 
+<<<<<<< HEAD
 static inline int ip6addrlbl_hold(struct ip6addrlbl_entry *p)
+=======
+static bool ip6addrlbl_hold(struct ip6addrlbl_entry *p)
+>>>>>>> refs/remotes/origin/master
 {
 	return atomic_inc_not_zero(&p->refcnt);
 }
@@ -141,6 +176,7 @@ static inline void ip6addrlbl_put(struct ip6addrlbl_entry *p)
 }
 
 /* Find label */
+<<<<<<< HEAD
 static int __ip6addrlbl_match(struct net *net,
 			      struct ip6addrlbl_entry *p,
 			      const struct in6_addr *addr,
@@ -155,15 +191,36 @@ static int __ip6addrlbl_match(struct net *net,
 	if (!ipv6_prefix_equal(addr, &p->prefix, p->prefixlen))
 		return 0;
 	return 1;
+=======
+static bool __ip6addrlbl_match(struct net *net,
+			       const struct ip6addrlbl_entry *p,
+			       const struct in6_addr *addr,
+			       int addrtype, int ifindex)
+{
+	if (!net_eq(ip6addrlbl_net(p), net))
+		return false;
+	if (p->ifindex && p->ifindex != ifindex)
+		return false;
+	if (p->addrtype && p->addrtype != addrtype)
+		return false;
+	if (!ipv6_prefix_equal(addr, &p->prefix, p->prefixlen))
+		return false;
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct ip6addrlbl_entry *__ipv6_addr_label(struct net *net,
 						  const struct in6_addr *addr,
 						  int type, int ifindex)
 {
+<<<<<<< HEAD
 	struct hlist_node *pos;
 	struct ip6addrlbl_entry *p;
 	hlist_for_each_entry_rcu(p, pos, &ip6addrlbl_table.head, list) {
+=======
+	struct ip6addrlbl_entry *p;
+	hlist_for_each_entry_rcu(p, &ip6addrlbl_table.head, list) {
+>>>>>>> refs/remotes/origin/master
 		if (__ip6addrlbl_match(net, p, addr, type, ifindex))
 			return p;
 	}
@@ -240,6 +297,7 @@ static struct ip6addrlbl_entry *ip6addrlbl_alloc(struct net *net,
 /* add a label */
 static int __ip6addrlbl_add(struct ip6addrlbl_entry *newp, int replace)
 {
+<<<<<<< HEAD
 	int ret = 0;
 
 	ADDRLABEL(KERN_DEBUG "%s(newp=%p, replace=%d)\n",
@@ -272,6 +330,38 @@ static int __ip6addrlbl_add(struct ip6addrlbl_entry *newp, int replace)
 		}
 		hlist_add_after_rcu(&p->list, &newp->list);
 	}
+=======
+	struct hlist_node *n;
+	struct ip6addrlbl_entry *last = NULL, *p = NULL;
+	int ret = 0;
+
+	ADDRLABEL(KERN_DEBUG "%s(newp=%p, replace=%d)\n", __func__, newp,
+		  replace);
+
+	hlist_for_each_entry_safe(p, n,	&ip6addrlbl_table.head, list) {
+		if (p->prefixlen == newp->prefixlen &&
+		    net_eq(ip6addrlbl_net(p), ip6addrlbl_net(newp)) &&
+		    p->ifindex == newp->ifindex &&
+		    ipv6_addr_equal(&p->prefix, &newp->prefix)) {
+			if (!replace) {
+				ret = -EEXIST;
+				goto out;
+			}
+			hlist_replace_rcu(&p->list, &newp->list);
+			ip6addrlbl_put(p);
+			goto out;
+		} else if ((p->prefixlen == newp->prefixlen && !p->ifindex) ||
+			   (p->prefixlen < newp->prefixlen)) {
+			hlist_add_before_rcu(&newp->list, &p->list);
+			goto out;
+		}
+		last = p;
+	}
+	if (last)
+		hlist_add_after_rcu(&last->list, &newp->list);
+	else
+		hlist_add_head_rcu(&newp->list, &ip6addrlbl_table.head);
+>>>>>>> refs/remotes/origin/master
 out:
 	if (!ret)
 		ip6addrlbl_table.seq++;
@@ -307,13 +397,21 @@ static int __ip6addrlbl_del(struct net *net,
 			    int ifindex)
 {
 	struct ip6addrlbl_entry *p = NULL;
+<<<<<<< HEAD
 	struct hlist_node *pos, *n;
+=======
+	struct hlist_node *n;
+>>>>>>> refs/remotes/origin/master
 	int ret = -ESRCH;
 
 	ADDRLABEL(KERN_DEBUG "%s(prefix=%pI6, prefixlen=%d, ifindex=%d)\n",
 		  __func__, prefix, prefixlen, ifindex);
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(p, pos, n, &ip6addrlbl_table.head, list) {
+=======
+	hlist_for_each_entry_safe(p, n, &ip6addrlbl_table.head, list) {
+>>>>>>> refs/remotes/origin/master
 		if (p->prefixlen == prefixlen &&
 		    net_eq(ip6addrlbl_net(p), net) &&
 		    p->ifindex == ifindex &&
@@ -350,7 +448,11 @@ static int __net_init ip6addrlbl_net_init(struct net *net)
 	int err = 0;
 	int i;
 
+<<<<<<< HEAD
 	ADDRLABEL(KERN_DEBUG "%s()\n", __func__);
+=======
+	ADDRLABEL(KERN_DEBUG "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(ip6addrlbl_init_table); i++) {
 		int ret = ip6addrlbl_add(net,
@@ -368,11 +470,19 @@ static int __net_init ip6addrlbl_net_init(struct net *net)
 static void __net_exit ip6addrlbl_net_exit(struct net *net)
 {
 	struct ip6addrlbl_entry *p = NULL;
+<<<<<<< HEAD
 	struct hlist_node *pos, *n;
 
 	/* Remove all labels belonging to the exiting net */
 	spin_lock(&ip6addrlbl_table.lock);
 	hlist_for_each_entry_safe(p, pos, n, &ip6addrlbl_table.head, list) {
+=======
+	struct hlist_node *n;
+
+	/* Remove all labels belonging to the exiting net */
+	spin_lock(&ip6addrlbl_table.lock);
+	hlist_for_each_entry_safe(p, n, &ip6addrlbl_table.head, list) {
+>>>>>>> refs/remotes/origin/master
 		if (net_eq(ip6addrlbl_net(p), net)) {
 			hlist_del_rcu(&p->list);
 			ip6addrlbl_put(p);
@@ -403,8 +513,12 @@ static const struct nla_policy ifal_policy[IFAL_MAX+1] = {
 	[IFAL_LABEL]		= { .len = sizeof(u32), },
 };
 
+<<<<<<< HEAD
 static int ip6addrlbl_newdel(struct sk_buff *skb, struct nlmsghdr *nlh,
 			     void *arg)
+=======
+static int ip6addrlbl_newdel(struct sk_buff *skb, struct nlmsghdr *nlh)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net = sock_net(skb->sk);
 	struct ifaddrlblmsg *ifal;
@@ -425,10 +539,14 @@ static int ip6addrlbl_newdel(struct sk_buff *skb, struct nlmsghdr *nlh,
 
 	if (!tb[IFAL_ADDRESS])
 		return -EINVAL;
+<<<<<<< HEAD
 
 	pfx = nla_data(tb[IFAL_ADDRESS]);
 	if (!pfx)
 		return -EINVAL;
+=======
+	pfx = nla_data(tb[IFAL_ADDRESS]);
+>>>>>>> refs/remotes/origin/master
 
 	if (!tb[IFAL_LABEL])
 		return -EINVAL;
@@ -456,8 +574,13 @@ static int ip6addrlbl_newdel(struct sk_buff *skb, struct nlmsghdr *nlh,
 	return err;
 }
 
+<<<<<<< HEAD
 static inline void ip6addrlbl_putmsg(struct nlmsghdr *nlh,
 				     int prefixlen, int ifindex, u32 lseq)
+=======
+static void ip6addrlbl_putmsg(struct nlmsghdr *nlh,
+			      int prefixlen, int ifindex, u32 lseq)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ifaddrlblmsg *ifal = nlmsg_data(nlh);
 	ifal->ifal_family = AF_INET6;
@@ -470,10 +593,17 @@ static inline void ip6addrlbl_putmsg(struct nlmsghdr *nlh,
 static int ip6addrlbl_fill(struct sk_buff *skb,
 			   struct ip6addrlbl_entry *p,
 			   u32 lseq,
+<<<<<<< HEAD
 			   u32 pid, u32 seq, int event,
 			   unsigned int flags)
 {
 	struct nlmsghdr *nlh = nlmsg_put(skb, pid, seq, event,
+=======
+			   u32 portid, u32 seq, int event,
+			   unsigned int flags)
+{
+	struct nlmsghdr *nlh = nlmsg_put(skb, portid, seq, event,
+>>>>>>> refs/remotes/origin/master
 					 sizeof(struct ifaddrlblmsg), flags);
 	if (!nlh)
 		return -EMSGSIZE;
@@ -493,17 +623,28 @@ static int ip6addrlbl_dump(struct sk_buff *skb, struct netlink_callback *cb)
 {
 	struct net *net = sock_net(skb->sk);
 	struct ip6addrlbl_entry *p;
+<<<<<<< HEAD
 	struct hlist_node *pos;
+=======
+>>>>>>> refs/remotes/origin/master
 	int idx = 0, s_idx = cb->args[0];
 	int err;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(p, pos, &ip6addrlbl_table.head, list) {
+=======
+	hlist_for_each_entry_rcu(p, &ip6addrlbl_table.head, list) {
+>>>>>>> refs/remotes/origin/master
 		if (idx >= s_idx &&
 		    net_eq(ip6addrlbl_net(p), net)) {
 			if ((err = ip6addrlbl_fill(skb, p,
 						   ip6addrlbl_table.seq,
+<<<<<<< HEAD
 						   NETLINK_CB(cb->skb).pid,
+=======
+						   NETLINK_CB(cb->skb).portid,
+>>>>>>> refs/remotes/origin/master
 						   cb->nlh->nlmsg_seq,
 						   RTM_NEWADDRLABEL,
 						   NLM_F_MULTI)) <= 0)
@@ -523,8 +664,12 @@ static inline int ip6addrlbl_msgsize(void)
 		+ nla_total_size(4);	/* IFAL_LABEL */
 }
 
+<<<<<<< HEAD
 static int ip6addrlbl_get(struct sk_buff *in_skb, struct nlmsghdr* nlh,
 			  void *arg)
+=======
+static int ip6addrlbl_get(struct sk_buff *in_skb, struct nlmsghdr* nlh)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net *net = sock_net(in_skb->sk);
 	struct ifaddrlblmsg *ifal;
@@ -551,10 +696,14 @@ static int ip6addrlbl_get(struct sk_buff *in_skb, struct nlmsghdr* nlh,
 
 	if (!tb[IFAL_ADDRESS])
 		return -EINVAL;
+<<<<<<< HEAD
 
 	addr = nla_data(tb[IFAL_ADDRESS]);
 	if (!addr)
 		return -EINVAL;
+=======
+	addr = nla_data(tb[IFAL_ADDRESS]);
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	p = __ipv6_addr_label(net, addr, ipv6_addr_type(addr), ifal->ifal_index);
@@ -574,7 +723,11 @@ static int ip6addrlbl_get(struct sk_buff *in_skb, struct nlmsghdr* nlh,
 	}
 
 	err = ip6addrlbl_fill(skb, p, lseq,
+<<<<<<< HEAD
 			      NETLINK_CB(in_skb).pid, nlh->nlmsg_seq,
+=======
+			      NETLINK_CB(in_skb).portid, nlh->nlmsg_seq,
+>>>>>>> refs/remotes/origin/master
 			      RTM_NEWADDRLABEL, 0);
 
 	ip6addrlbl_put(p);
@@ -585,7 +738,11 @@ static int ip6addrlbl_get(struct sk_buff *in_skb, struct nlmsghdr* nlh,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	err = rtnl_unicast(skb, net, NETLINK_CB(in_skb).pid);
+=======
+	err = rtnl_unicast(skb, net, NETLINK_CB(in_skb).portid);
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }

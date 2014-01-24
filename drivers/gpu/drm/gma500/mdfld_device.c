@@ -163,6 +163,7 @@ struct backlight_device *mdfld_get_backlight_device(void)
  *
  * Notes: FIXME_JLIU7 need to add the support for DPI MIPI & HDMI audio
  */
+<<<<<<< HEAD
 static int mdfld_save_display_registers(struct drm_device *dev, int pipe)
 {
 	struct drm_psb_private *dev_priv = dev->dev_private;
@@ -299,6 +300,32 @@ static int mdfld_save_display_registers(struct drm_device *dev, int pipe)
 		dspcntr_val = &regs->saveDSPCCNTR;
 		dspstatus_val = &regs->saveDSPCSTATUS;
 		palette_val = regs->save_palette_c;
+=======
+static int mdfld_save_display_registers(struct drm_device *dev, int pipenum)
+{
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	struct medfield_state *regs = &dev_priv->regs.mdfld;
+	struct psb_pipe *pipe = &dev_priv->regs.pipe[pipenum];
+	const struct psb_offset *map = &dev_priv->regmap[pipenum];
+	int i;
+	u32 *mipi_val;
+
+	/* register */
+	u32 mipi_reg = MIPI;
+
+	switch (pipenum) {
+	case 0:
+		mipi_val = &regs->saveMIPI;
+		break;
+	case 1:
+		mipi_val = &regs->saveMIPI;
+		break;
+	case 2:
+		/* register */
+		mipi_reg = MIPI_C;
+		/* pointer to values */
+		mipi_val = &regs->saveMIPI_C;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		DRM_ERROR("%s, invalid pipe number.\n", __func__);
@@ -306,6 +333,7 @@ static int mdfld_save_display_registers(struct drm_device *dev, int pipe)
 	}
 
 	/* Pipe & plane A info */
+<<<<<<< HEAD
 	*dpll_val = PSB_RVDC32(dpll_reg);
 	*fp_val = PSB_RVDC32(fp_reg);
 	*pipeconf_val = PSB_RVDC32(pipeconf_reg);
@@ -330,6 +358,32 @@ static int mdfld_save_display_registers(struct drm_device *dev, int pipe)
 		palette_val[i] = PSB_RVDC32(palette_reg + (i << 2));
 
 	if (pipe == 1) {
+=======
+	pipe->dpll = PSB_RVDC32(map->dpll);
+	pipe->fp0 = PSB_RVDC32(map->fp0);
+	pipe->conf = PSB_RVDC32(map->conf);
+	pipe->htotal = PSB_RVDC32(map->htotal);
+	pipe->hblank = PSB_RVDC32(map->hblank);
+	pipe->hsync = PSB_RVDC32(map->hsync);
+	pipe->vtotal = PSB_RVDC32(map->vtotal);
+	pipe->vblank = PSB_RVDC32(map->vblank);
+	pipe->vsync = PSB_RVDC32(map->vsync);
+	pipe->src = PSB_RVDC32(map->src);
+	pipe->stride = PSB_RVDC32(map->stride);
+	pipe->linoff = PSB_RVDC32(map->linoff);
+	pipe->tileoff = PSB_RVDC32(map->tileoff);
+	pipe->size = PSB_RVDC32(map->size);
+	pipe->pos = PSB_RVDC32(map->pos);
+	pipe->surf = PSB_RVDC32(map->surf);
+	pipe->cntr = PSB_RVDC32(map->cntr);
+	pipe->status = PSB_RVDC32(map->status);
+
+	/*save palette (gamma) */
+	for (i = 0; i < 256; i++)
+		pipe->palette[i] = PSB_RVDC32(map->palette + (i << 2));
+
+	if (pipenum == 1) {
+>>>>>>> refs/remotes/origin/master
 		regs->savePFIT_CONTROL = PSB_RVDC32(PFIT_CONTROL);
 		regs->savePFIT_PGM_RATIOS = PSB_RVDC32(PFIT_PGM_RATIOS);
 
@@ -349,7 +403,11 @@ static int mdfld_save_display_registers(struct drm_device *dev, int pipe)
  *
  * Notes: FIXME_JLIU7 need to add the support for DPI MIPI & HDMI audio
  */
+<<<<<<< HEAD
 static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
+=======
+static int mdfld_restore_display_registers(struct drm_device *dev, int pipenum)
+>>>>>>> refs/remotes/origin/master
 {
 	/* To get  panel out of ULPS mode. */
 	u32 temp = 0;
@@ -357,6 +415,7 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 	struct drm_psb_private *dev_priv = dev->dev_private;
 	struct mdfld_dsi_config *dsi_config = NULL;
 	struct medfield_state *regs = &dev_priv->regs.mdfld;
+<<<<<<< HEAD
 	u32 i = 0;
 	u32 dpll = 0;
 	u32 timeout = 0;
@@ -493,6 +552,32 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 		dspstatus_val = regs->saveDSPCSTATUS;
 		palette_val = regs->save_palette_c;
 
+=======
+	struct psb_pipe *pipe = &dev_priv->regs.pipe[pipenum];
+	const struct psb_offset *map = &dev_priv->regmap[pipenum];
+	u32 i;
+	u32 dpll;
+	u32 timeout = 0;
+
+	/* register */
+	u32 mipi_reg = MIPI;
+
+	/* values */
+	u32 dpll_val = pipe->dpll;
+	u32 mipi_val = regs->saveMIPI;
+
+	switch (pipenum) {
+	case 0:
+		dpll_val &= ~DPLL_VCO_ENABLE;
+		dsi_config = dev_priv->dsi_configs[0];
+		break;
+	case 1:
+		dpll_val &= ~DPLL_VCO_ENABLE;
+		break;
+	case 2:
+		mipi_reg = MIPI_C;
+		mipi_val = regs->saveMIPI_C;
+>>>>>>> refs/remotes/origin/master
 		dsi_config = dev_priv->dsi_configs[1];
 		break;
 	default:
@@ -503,6 +588,7 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 	/*make sure VGA plane is off. it initializes to on after reset!*/
 	PSB_WVDC32(0x80000000, VGACNTRL);
 
+<<<<<<< HEAD
 	if (pipe == 1) {
 		PSB_WVDC32(dpll_val & ~DPLL_VCO_ENABLE, dpll_reg);
 		PSB_RVDC32(dpll_reg);
@@ -511,6 +597,16 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 	} else {
 
 		dpll = PSB_RVDC32(dpll_reg);
+=======
+	if (pipenum == 1) {
+		PSB_WVDC32(dpll_val & ~DPLL_VCO_ENABLE, map->dpll);
+		PSB_RVDC32(map->dpll);
+
+		PSB_WVDC32(pipe->fp0, map->fp0);
+	} else {
+
+		dpll = PSB_RVDC32(map->dpll);
+>>>>>>> refs/remotes/origin/master
 
 		if (!(dpll & DPLL_VCO_ENABLE)) {
 
@@ -518,23 +614,41 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 			   before enable the VCO */
 			if (dpll & MDFLD_PWR_GATE_EN) {
 				dpll &= ~MDFLD_PWR_GATE_EN;
+<<<<<<< HEAD
 				PSB_WVDC32(dpll, dpll_reg);
+=======
+				PSB_WVDC32(dpll, map->dpll);
+>>>>>>> refs/remotes/origin/master
 				/* FIXME_MDFLD PO - change 500 to 1 after PO */
 				udelay(500);
 			}
 
+<<<<<<< HEAD
 			PSB_WVDC32(fp_val, fp_reg);
 			PSB_WVDC32(dpll_val, dpll_reg);
+=======
+			PSB_WVDC32(pipe->fp0, map->fp0);
+			PSB_WVDC32(dpll_val, map->dpll);
+>>>>>>> refs/remotes/origin/master
 			/* FIXME_MDFLD PO - change 500 to 1 after PO */
 			udelay(500);
 
 			dpll_val |= DPLL_VCO_ENABLE;
+<<<<<<< HEAD
 			PSB_WVDC32(dpll_val, dpll_reg);
 			PSB_RVDC32(dpll_reg);
 
 			/* wait for DSI PLL to lock */
 			while (timeout < 20000 &&
 			  !(PSB_RVDC32(pipeconf_reg) & PIPECONF_DSIPLL_LOCK)) {
+=======
+			PSB_WVDC32(dpll_val, map->dpll);
+			PSB_RVDC32(map->dpll);
+
+			/* wait for DSI PLL to lock */
+			while (timeout < 20000 &&
+			  !(PSB_RVDC32(map->conf) & PIPECONF_DSIPLL_LOCK)) {
+>>>>>>> refs/remotes/origin/master
 				udelay(150);
 				timeout++;
 			}
@@ -547,6 +661,7 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 		}
 	}
 	/* Restore mode */
+<<<<<<< HEAD
 	PSB_WVDC32(htot_val, htot_reg);
 	PSB_WVDC32(hblank_val, hblank_reg);
 	PSB_WVDC32(hsync_val, hsync_reg);
@@ -569,6 +684,30 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 		/*DRM_UDELAY(50000); */
 		for (i = 0; i < 256; i++)
 			PSB_WVDC32(palette_val[i], palette_reg + (i << 2));
+=======
+	PSB_WVDC32(pipe->htotal, map->htotal);
+	PSB_WVDC32(pipe->hblank, map->hblank);
+	PSB_WVDC32(pipe->hsync, map->hsync);
+	PSB_WVDC32(pipe->vtotal, map->vtotal);
+	PSB_WVDC32(pipe->vblank, map->vblank);
+	PSB_WVDC32(pipe->vsync, map->vsync);
+	PSB_WVDC32(pipe->src, map->src);
+	PSB_WVDC32(pipe->status, map->status);
+
+	/*set up the plane*/
+	PSB_WVDC32(pipe->stride, map->stride);
+	PSB_WVDC32(pipe->linoff, map->linoff);
+	PSB_WVDC32(pipe->tileoff, map->tileoff);
+	PSB_WVDC32(pipe->size, map->size);
+	PSB_WVDC32(pipe->pos, map->pos);
+	PSB_WVDC32(pipe->surf, map->surf);
+
+	if (pipenum == 1) {
+		/* restore palette (gamma) */
+		/*DRM_UDELAY(50000); */
+		for (i = 0; i < 256; i++)
+			PSB_WVDC32(pipe->palette[i], map->palette + (i << 2));
+>>>>>>> refs/remotes/origin/master
 
 		PSB_WVDC32(regs->savePFIT_CONTROL, PFIT_CONTROL);
 		PSB_WVDC32(regs->savePFIT_PGM_RATIOS, PFIT_PGM_RATIOS);
@@ -578,7 +717,11 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 		/*TODO: resume pipe*/
 
 		/*enable the plane*/
+<<<<<<< HEAD
 		PSB_WVDC32(dspcntr_val & ~DISPLAY_PLANE_ENABLE, dspcntr_reg);
+=======
+		PSB_WVDC32(pipe->cntr & ~DISPLAY_PLANE_ENABLE, map->cntr);
+>>>>>>> refs/remotes/origin/master
 
 		return 0;
 	}
@@ -588,7 +731,11 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 
 	/*setup MIPI adapter + MIPI IP registers*/
 	if (dsi_config)
+<<<<<<< HEAD
 		mdfld_dsi_controller_init(dsi_config, pipe);
+=======
+		mdfld_dsi_controller_init(dsi_config, pipenum);
+>>>>>>> refs/remotes/origin/master
 
 	if (in_atomic() || in_interrupt())
 		mdelay(20);
@@ -596,7 +743,11 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 		msleep(20);
 
 	/*enable the plane*/
+<<<<<<< HEAD
 	PSB_WVDC32(dspcntr_val, dspcntr_reg);
+=======
+	PSB_WVDC32(pipe->cntr, map->cntr);
+>>>>>>> refs/remotes/origin/master
 
 	if (in_atomic() || in_interrupt())
 		mdelay(20);
@@ -625,12 +776,20 @@ static int mdfld_restore_display_registers(struct drm_device *dev, int pipe)
 	mdelay(1);
 
 	/*enable the pipe*/
+<<<<<<< HEAD
 	PSB_WVDC32(pipeconf_val, pipeconf_reg);
+=======
+	PSB_WVDC32(pipe->conf, map->conf);
+>>>>>>> refs/remotes/origin/master
 
 	/* restore palette (gamma) */
 	/*DRM_UDELAY(50000); */
 	for (i = 0; i < 256; i++)
+<<<<<<< HEAD
 		PSB_WVDC32(palette_val[i], palette_reg + (i << 2));
+=======
+		PSB_WVDC32(pipe->palette[i], map->palette + (i << 2));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -667,14 +826,107 @@ static int mdfld_power_up(struct drm_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* Medfield  */
+static const struct psb_offset mdfld_regmap[3] = {
+	{
+		.fp0 = MRST_FPA0,
+		.fp1 = MRST_FPA1,
+		.cntr = DSPACNTR,
+		.conf = PIPEACONF,
+		.src = PIPEASRC,
+		.dpll = MRST_DPLL_A,
+		.htotal = HTOTAL_A,
+		.hblank = HBLANK_A,
+		.hsync = HSYNC_A,
+		.vtotal = VTOTAL_A,
+		.vblank = VBLANK_A,
+		.vsync = VSYNC_A,
+		.stride = DSPASTRIDE,
+		.size = DSPASIZE,
+		.pos = DSPAPOS,
+		.surf = DSPASURF,
+		.addr = MRST_DSPABASE,
+		.status = PIPEASTAT,
+		.linoff = DSPALINOFF,
+		.tileoff = DSPATILEOFF,
+		.palette = PALETTE_A,
+	},
+	{
+		.fp0 = MDFLD_DPLL_DIV0,
+		.cntr = DSPBCNTR,
+		.conf = PIPEBCONF,
+		.src = PIPEBSRC,
+		.dpll = MDFLD_DPLL_B,
+		.htotal = HTOTAL_B,
+		.hblank = HBLANK_B,
+		.hsync = HSYNC_B,
+		.vtotal = VTOTAL_B,
+		.vblank = VBLANK_B,
+		.vsync = VSYNC_B,
+		.stride = DSPBSTRIDE,
+		.size = DSPBSIZE,
+		.pos = DSPBPOS,
+		.surf = DSPBSURF,
+		.addr = MRST_DSPBBASE,
+		.status = PIPEBSTAT,
+		.linoff = DSPBLINOFF,
+		.tileoff = DSPBTILEOFF,
+		.palette = PALETTE_B,
+	},
+	{
+		.fp0 = MRST_FPA0,	/* This is what the old code did ?? */
+		.cntr = DSPCCNTR,
+		.conf = PIPECCONF,
+		.src = PIPECSRC,
+		/* No DPLL_C */
+		.dpll = MRST_DPLL_A,
+		.htotal = HTOTAL_C,
+		.hblank = HBLANK_C,
+		.hsync = HSYNC_C,
+		.vtotal = VTOTAL_C,
+		.vblank = VBLANK_C,
+		.vsync = VSYNC_C,
+		.stride = DSPCSTRIDE,
+		.size = DSPBSIZE,
+		.pos = DSPCPOS,
+		.surf = DSPCSURF,
+		.addr = MDFLD_DSPCBASE,
+		.status = PIPECSTAT,
+		.linoff = DSPCLINOFF,
+		.tileoff = DSPCTILEOFF,
+		.palette = PALETTE_C,
+	},
+};
+
+static int mdfld_chip_setup(struct drm_device *dev)
+{
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	if (pci_enable_msi(dev->pdev))
+		dev_warn(dev->dev, "Enabling MSI failed!\n");
+	dev_priv->regmap = mdfld_regmap;
+	return mid_chip_setup(dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 const struct psb_ops mdfld_chip_ops = {
 	.name = "mdfld",
 	.accel_2d = 0,
 	.pipes = 3,
 	.crtcs = 3,
+<<<<<<< HEAD
 	.sgx_offset = MRST_SGX_OFFSET,
 
 	.chip_setup = mid_chip_setup,
+=======
+	.lvds_mask = (1 << 1),
+	.hdmi_mask = (1 << 1),
+	.cursor_needs_phys = 0,
+	.sgx_offset = MRST_SGX_OFFSET,
+
+	.chip_setup = mdfld_chip_setup,
+>>>>>>> refs/remotes/origin/master
 	.crtc_helper = &mdfld_helper_funcs,
 	.crtc_funcs = &psb_intel_crtc_funcs,
 

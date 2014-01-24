@@ -18,10 +18,15 @@ struct twofish_ctx {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int __twofish_setkey(struct twofish_ctx *ctx, const u8 *key,
 		     unsigned int key_len, u32 *flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __twofish_setkey(struct twofish_ctx *ctx, const u8 *key,
+		     unsigned int key_len, u32 *flags);
+>>>>>>> refs/remotes/origin/master
 int twofish_setkey(struct crypto_tfm *tfm, const u8 *key, unsigned int key_len);
 
 #endif

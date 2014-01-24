@@ -17,13 +17,18 @@
 
 static struct kmem_cache *lkb_cache;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct kmem_cache *rsb_cache;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct kmem_cache *rsb_cache;
+>>>>>>> refs/remotes/origin/master
 
 
 int __init dlm_memory_init(void)
 {
+<<<<<<< HEAD
 	int ret = 0;
 
 	lkb_cache = kmem_cache_create("dlm_lkb", sizeof(struct dlm_lkb),
@@ -32,16 +37,29 @@ int __init dlm_memory_init(void)
 		ret = -ENOMEM;
 <<<<<<< HEAD
 =======
+=======
+	lkb_cache = kmem_cache_create("dlm_lkb", sizeof(struct dlm_lkb),
+				__alignof__(struct dlm_lkb), 0, NULL);
+	if (!lkb_cache)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	rsb_cache = kmem_cache_create("dlm_rsb", sizeof(struct dlm_rsb),
 				__alignof__(struct dlm_rsb), 0, NULL);
 	if (!rsb_cache) {
 		kmem_cache_destroy(lkb_cache);
+<<<<<<< HEAD
 		ret = -ENOMEM;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
+=======
+		return -ENOMEM;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void dlm_memory_exit(void)
@@ -49,10 +67,15 @@ void dlm_memory_exit(void)
 	if (lkb_cache)
 		kmem_cache_destroy(lkb_cache);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (rsb_cache)
 		kmem_cache_destroy(rsb_cache);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rsb_cache)
+		kmem_cache_destroy(rsb_cache);
+>>>>>>> refs/remotes/origin/master
 }
 
 char *dlm_allocate_lvb(struct dlm_ls *ls)
@@ -69,6 +92,7 @@ void dlm_free_lvb(char *p)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* FIXME: have some minimal space built-in to rsb for the name and
    kmalloc a separate name if needed, like dentries are done */
 
@@ -80,12 +104,17 @@ struct dlm_rsb *dlm_allocate_rsb(struct dlm_ls *ls, int namelen)
 
 	r = kzalloc(sizeof(*r) + namelen, GFP_NOFS);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct dlm_rsb *dlm_allocate_rsb(struct dlm_ls *ls)
 {
 	struct dlm_rsb *r;
 
 	r = kmem_cache_zalloc(rsb_cache, GFP_NOFS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -94,10 +123,14 @@ void dlm_free_rsb(struct dlm_rsb *r)
 	if (r->res_lvbptr)
 		dlm_free_lvb(r->res_lvbptr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(r);
 =======
 	kmem_cache_free(rsb_cache, r);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kmem_cache_free(rsb_cache, r);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct dlm_lkb *dlm_allocate_lkb(struct dlm_ls *ls)

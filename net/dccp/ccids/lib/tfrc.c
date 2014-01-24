@@ -5,17 +5,23 @@
  * Copyright (c) 2007 Arnaldo Carvalho de Melo <acme@redhat.com>
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "tfrc.h"
 
 #ifdef CONFIG_IP_DCCP_TFRC_DEBUG
 int tfrc_debug;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/moduleparam.h>
 #include "tfrc.h"
 
 #ifdef CONFIG_IP_DCCP_TFRC_DEBUG
 bool tfrc_debug;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 module_param(tfrc_debug, bool, 0644);
 MODULE_PARM_DESC(tfrc_debug, "Enable TFRC debug messages");
 #endif

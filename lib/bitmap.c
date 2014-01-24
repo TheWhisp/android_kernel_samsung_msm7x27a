@@ -6,19 +6,28 @@
  * Version 2.  See the file COPYING for more details.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 #include <linux/thread_info.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/thread_info.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ctype.h>
 #include <linux/errno.h>
 #include <linux/bitmap.h>
 #include <linux/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 /*
@@ -281,10 +290,13 @@ int __bitmap_weight(const unsigned long *bitmap, int bits)
 EXPORT_SYMBOL(__bitmap_weight);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) % BITS_PER_LONG))
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void bitmap_set(unsigned long *map, int start, int nr)
 {
 	unsigned long *p = map + BIT_WORD(start);
@@ -327,13 +339,18 @@ void bitmap_clear(unsigned long *map, int start, int nr)
 }
 EXPORT_SYMBOL(bitmap_clear);
 
+<<<<<<< HEAD
 /**
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * bitmap_find_next_zero_area - find a contiguous aligned zero area
  * @map: The address to base the search on
  * @size: The bitmap size in bits
  * @start: The bitnumber to start searching at
  * @nr: The number of zeroed bits we're looking for
  * @align_mask: Alignment mask for zero area
+<<<<<<< HEAD
  * @align_offset: Alignment offset for zero area.
  *
  * The @align_mask should be one less than a power of 2; the effect is that
@@ -346,13 +363,29 @@ unsigned long bitmap_find_next_zero_area_off(unsigned long *map,
 					     unsigned int nr,
 					     unsigned long align_mask,
 					     unsigned long align_offset)
+=======
+ *
+ * The @align_mask should be one less than a power of 2; the effect is that
+ * the bit offset of all zero areas this function finds is multiples of that
+ * power of 2. A @align_mask of 0 means no alignment is required.
+ */
+unsigned long bitmap_find_next_zero_area(unsigned long *map,
+					 unsigned long size,
+					 unsigned long start,
+					 unsigned int nr,
+					 unsigned long align_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long index, end, i;
 again:
 	index = find_next_zero_bit(map, size, start);
 
 	/* Align allocation */
+<<<<<<< HEAD
 	index = __ALIGN_MASK(index + align_offset, align_mask) - align_offset;
+=======
+	index = __ALIGN_MASK(index, align_mask);
+>>>>>>> refs/remotes/origin/master
 
 	end = index + nr;
 	if (end > size)
@@ -364,10 +397,17 @@ again:
 	}
 	return index;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(bitmap_find_next_zero_area_off);
 
 /*
  * Bitmap printing & parsing functions: first version by Bill Irwin,
+=======
+EXPORT_SYMBOL(bitmap_find_next_zero_area);
+
+/*
+ * Bitmap printing & parsing functions: first version by Nadia Yvette Chambers,
+>>>>>>> refs/remotes/origin/master
  * second version by Paul Jackson, third by Joe Korty.
  */
 
@@ -383,7 +423,12 @@ EXPORT_SYMBOL(bitmap_find_next_zero_area_off);
  * @nmaskbits: size of bitmap, in bits
  *
  * Exactly @nmaskbits bits are displayed.  Hex digits are grouped into
+<<<<<<< HEAD
  * comma-separated sets of eight digits per set.
+=======
+ * comma-separated sets of eight digits per set.  Returns the number of
+ * characters which were written to *buf, excluding the trailing \0.
+>>>>>>> refs/remotes/origin/master
  */
 int bitmap_scnprintf(char *buf, unsigned int buflen,
 	const unsigned long *maskp, int nmaskbits)
@@ -436,10 +481,14 @@ int __bitmap_parse(const char *buf, unsigned int buflen,
 	int c, old_c, totaldigits, ndigits, nchunks, nbits;
 	u32 chunk;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const char __user *ubuf = buf;
 =======
 	const char __user __force *ubuf = (const char __user __force *)buf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char __user __force *ubuf = (const char __user __force *)buf;
+>>>>>>> refs/remotes/origin/master
 
 	bitmap_zero(maskp, nmaskbits);
 
@@ -525,12 +574,18 @@ int bitmap_parse_user(const char __user *ubuf,
 	if (!access_ok(VERIFY_READ, ubuf, ulen))
 		return -EFAULT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return __bitmap_parse((const char *)ubuf, ulen, 1, maskp, nmaskbits);
 =======
 	return __bitmap_parse((const char __force *)ubuf,
 				ulen, 1, maskp, nmaskbits);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return __bitmap_parse((const char __force *)ubuf,
+				ulen, 1, maskp, nmaskbits);
+
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(bitmap_parse_user);
 
@@ -539,8 +594,13 @@ EXPORT_SYMBOL(bitmap_parse_user);
  *
  * Helper routine for bitmap_scnlistprintf().  Write decimal number
  * or range to buf, suppressing output past buf+buflen, with optional
+<<<<<<< HEAD
  * comma-prefix.  Return len of what would be written to buf, if it
  * all fit.
+=======
+ * comma-prefix.  Return len of what was written to *buf, excluding the
+ * trailing \0.
+>>>>>>> refs/remotes/origin/master
  */
 static inline int bscnl_emit(char *buf, int buflen, int rbot, int rtop, int len)
 {
@@ -566,9 +626,14 @@ static inline int bscnl_emit(char *buf, int buflen, int rbot, int rtop, int len)
  * the range.  Output format is compatible with the format
  * accepted as input by bitmap_parselist().
  *
+<<<<<<< HEAD
  * The return value is the number of characters which would be
  * generated for the given input, excluding the trailing '\0', as
  * per ISO C99.
+=======
+ * The return value is the number of characters which were written to *buf
+ * excluding the trailing '\0', as per ISO C99's scnprintf.
+>>>>>>> refs/remotes/origin/master
  */
 int bitmap_scnlistprintf(char *buf, unsigned int buflen,
 	const unsigned long *maskp, int nmaskbits)
@@ -621,10 +686,14 @@ static int __bitmap_parselist(const char *buf, unsigned int buflen,
 	unsigned a, b;
 	int c, old_c, totaldigits;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const char __user *ubuf = buf;
 =======
 	const char __user __force *ubuf = (const char __user __force *)buf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char __user __force *ubuf = (const char __user __force *)buf;
+>>>>>>> refs/remotes/origin/master
 	int exp_digit, in_range;
 
 	totaldigits = c = 0;
@@ -725,10 +794,14 @@ int bitmap_parselist_user(const char __user *ubuf,
 	if (!access_ok(VERIFY_READ, ubuf, ulen))
 		return -EFAULT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return __bitmap_parselist((const char *)ubuf,
 =======
 	return __bitmap_parselist((const char __force *)ubuf,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return __bitmap_parselist((const char __force *)ubuf,
+>>>>>>> refs/remotes/origin/master
 					ulen, 1, maskp, nmaskbits);
 }
 EXPORT_SYMBOL(bitmap_parselist_user);
@@ -789,10 +862,14 @@ static int bitmap_pos_to_ord(const unsigned long *buf, int pos, int bits)
  * The bit positions 0 through @bits are valid positions in @buf.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int bitmap_ord_to_pos(const unsigned long *buf, int ord, int bits)
 =======
 int bitmap_ord_to_pos(const unsigned long *buf, int ord, int bits)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int bitmap_ord_to_pos(const unsigned long *buf, int ord, int bits)
+>>>>>>> refs/remotes/origin/master
 {
 	int pos = 0;
 

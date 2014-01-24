@@ -28,9 +28,15 @@
 #include <linux/bitops.h>
 #include <linux/device.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include "pcm.h"
 #include "control.h"
 #include "info.h"
+=======
+#include <sound/pcm.h>
+#include <sound/control.h>
+#include <sound/info.h>
+>>>>>>> refs/remotes/origin/master
 
 /* maximum number of devices on the AC97 bus */
 #define	AC97_BUS_MAX_DEVICES	4
@@ -422,6 +428,10 @@
  */
 
 struct snd_ac97;
+<<<<<<< HEAD
+=======
+struct snd_pcm_chmap;
+>>>>>>> refs/remotes/origin/master
 
 struct snd_ac97_build_ops {
 	int (*build_3d) (struct snd_ac97 *ac97);
@@ -528,6 +538,11 @@ struct snd_ac97 {
 	struct delayed_work power_work;
 #endif
 	struct device dev;
+<<<<<<< HEAD
+=======
+
+	struct snd_pcm_chmap *chmaps[2]; /* channel-maps (optional) */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define to_ac97_t(d) container_of(d, struct snd_ac97, dev)

@@ -15,6 +15,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef __ASM_OPENRISC_ELF_H
 #define __ASM_OPENRISC_ELF_H
@@ -61,6 +62,14 @@ typedef unsigned long elf_fpregset_t;
 #define ELF_DATA	ELFDATA2MSB
 
 #ifdef __KERNEL__
+=======
+#ifndef __ASM_OPENRISC_ELF_H
+#define __ASM_OPENRISC_ELF_H
+
+
+#include <linux/types.h>
+#include <uapi/asm/elf.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is used to ensure we don't load something for the wrong architecture.
@@ -102,7 +111,10 @@ extern void dump_elf_thread(elf_greg_t *dest, struct pt_regs *pt);
 
 #define ELF_PLATFORM	(NULL)
 
+<<<<<<< HEAD
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
 
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

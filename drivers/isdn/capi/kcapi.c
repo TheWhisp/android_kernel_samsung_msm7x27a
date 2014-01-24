@@ -1,5 +1,6 @@
 /* $Id: kcapi.c,v 1.1.2.8 2004/03/26 19:57:20 armin Exp $
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Kernel CAPI 2.0 Module
  * 
@@ -7,13 +8,18 @@
  * Copyright 2002 by Kai Germaschewski <kai@germaschewski.name>
  * 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Kernel CAPI 2.0 Module
  *
  * Copyright 1999 by Carsten Paeth <calle@calle.de>
  * Copyright 2002 by Kai Germaschewski <kai@germaschewski.name>
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -65,10 +71,14 @@ struct capictr_event {
 /* ------------------------------------------------------------- */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct capi_version driver_version = {2, 0, 1, 1<<4};
 =======
 static struct capi_version driver_version = {2, 0, 1, 1 << 4};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct capi_version driver_version = {2, 0, 1, 1 << 4};
+>>>>>>> refs/remotes/origin/master
 static char driver_serial[CAPI_SERIAL_LEN] = "0004711";
 static char capi_manufakturer[64] = "AVM Berlin";
 
@@ -106,7 +116,11 @@ capi_ctr_put(struct capi_ctr *ctr)
 
 static inline struct capi_ctr *get_capi_ctr_by_nr(u16 contr)
 {
+<<<<<<< HEAD
 	if (contr - 1 >= CAPI_MAXCONTR)
+=======
+	if (contr < 1 || contr - 1 >= CAPI_MAXCONTR)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	return capi_controller[contr - 1];
@@ -116,7 +130,11 @@ static inline struct capi20_appl *__get_capi_appl_by_nr(u16 applid)
 {
 	lockdep_assert_held(&capi_controller_lock);
 
+<<<<<<< HEAD
 	if (applid - 1 >= CAPI_MAXAPPL)
+=======
+	if (applid < 1 || applid - 1 >= CAPI_MAXAPPL)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	return capi_applications[applid - 1];
@@ -124,7 +142,11 @@ static inline struct capi20_appl *__get_capi_appl_by_nr(u16 applid)
 
 static inline struct capi20_appl *get_capi_appl_by_nr(u16 applid)
 {
+<<<<<<< HEAD
 	if (applid - 1 >= CAPI_MAXAPPL)
+=======
+	if (applid < 1 || applid - 1 >= CAPI_MAXAPPL)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	return rcu_dereference(capi_applications[applid - 1]);
@@ -186,10 +208,14 @@ static void release_appl(struct capi_ctr *ctr, u16 applid)
 {
 	DBG("applid %#x", applid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ctr->release_appl(ctr, applid);
 	capi_ctr_put(ctr);
 }
@@ -204,10 +230,14 @@ static void notify_up(u32 contr)
 
 	if (showcapimsgs & 1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        printk(KERN_DEBUG "kcapi: notify up contr %d\n", contr);
 =======
 		printk(KERN_DEBUG "kcapi: notify up contr %d\n", contr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_DEBUG "kcapi: notify up contr %d\n", contr);
+>>>>>>> refs/remotes/origin/master
 
 	ctr = get_capi_ctr_by_nr(contr);
 	if (ctr) {
@@ -374,27 +404,37 @@ void capi_ctr_handle_message(struct capi_ctr *ctr, u16 appl,
 		if (cdb) {
 			printk(KERN_INFO "kcapi: controller [%03d] not active, got: %s",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ctr->cnr, cdb->buf);
 			cdebbuf_free(cdb);
 		} else
 			printk(KERN_INFO "kcapi: controller [%03d] not active, cannot trace\n",
 				ctr->cnr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			       ctr->cnr, cdb->buf);
 			cdebbuf_free(cdb);
 		} else
 			printk(KERN_INFO "kcapi: controller [%03d] not active, cannot trace\n",
 			       ctr->cnr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
 	cmd = CAPIMSG_COMMAND(skb->data);
 <<<<<<< HEAD
+<<<<<<< HEAD
         subcmd = CAPIMSG_SUBCOMMAND(skb->data);
 =======
 	subcmd = CAPIMSG_SUBCOMMAND(skb->data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subcmd = CAPIMSG_SUBCOMMAND(skb->data);
+>>>>>>> refs/remotes/origin/master
 	if (cmd == CAPI_DATA_B3 && subcmd == CAPI_IND) {
 		ctr->nrecvdatapkt++;
 		if (ctr->traceflag > 2)
@@ -416,6 +456,7 @@ void capi_ctr_handle_message(struct capi_ctr *ctr, u16 appl,
 			if (cdb) {
 				printk(KERN_DEBUG "kcapi: got [%03d] %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					ctr->cnr, cdb->buf);
 				cdebbuf_free(cdb);
 			} else
@@ -424,6 +465,8 @@ void capi_ctr_handle_message(struct capi_ctr *ctr, u16 appl,
 					capi_cmd2str(cmd, subcmd),
 					CAPIMSG_LEN(skb->data));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				       ctr->cnr, cdb->buf);
 				cdebbuf_free(cdb);
 			} else
@@ -431,7 +474,10 @@ void capi_ctr_handle_message(struct capi_ctr *ctr, u16 appl,
 				       ctr->cnr, CAPIMSG_APPID(skb->data),
 				       capi_cmd2str(cmd, subcmd),
 				       CAPIMSG_LEN(skb->data));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 	}
@@ -444,6 +490,7 @@ void capi_ctr_handle_message(struct capi_ctr *ctr, u16 appl,
 		if (cdb) {
 			printk(KERN_ERR "kcapi: handle_message: applid %d state released (%s)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			CAPIMSG_APPID(skb->data), cdb->buf);
 			cdebbuf_free(cdb);
 		} else
@@ -451,13 +498,18 @@ void capi_ctr_handle_message(struct capi_ctr *ctr, u16 appl,
 				CAPIMSG_APPID(skb->data),
 				capi_cmd2str(cmd, subcmd));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			       CAPIMSG_APPID(skb->data), cdb->buf);
 			cdebbuf_free(cdb);
 		} else
 			printk(KERN_ERR "kcapi: handle_message: applid %d state released (%s) cannot trace\n",
 			       CAPIMSG_APPID(skb->data),
 			       capi_cmd2str(cmd, subcmd));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 	skb_queue_tail(&ap->recv_queue, skb);
@@ -572,10 +624,14 @@ int attach_capi_ctr(struct capi_ctr *ctr)
 		mutex_unlock(&capi_controller_lock);
 		printk(KERN_ERR "kcapi: out of controller slots\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   	return -EBUSY;
 =======
 		return -EBUSY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 	}
 	capi_controller[i] = ctr;
 
@@ -598,10 +654,14 @@ int attach_capi_ctr(struct capi_ctr *ctr)
 
 	printk(KERN_NOTICE "kcapi: controller [%03d]: %s attached\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ctr->cnr, ctr->name);
 =======
 	       ctr->cnr, ctr->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       ctr->cnr, ctr->name);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -833,10 +893,14 @@ u16 capi20_put_message(struct capi20_appl *ap, struct sk_buff *skb)
 
 	DBG("applid %#x", ap->applid);
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (ncontrollers == 0)
 		return CAPI_REGNOTINSTALLED;
 	if ((ap->applid == 0) || ap->release_in_progress)
@@ -859,6 +923,7 @@ u16 capi20_put_message(struct capi20_appl *ap, struct sk_buff *skb)
 
 	cmd = CAPIMSG_COMMAND(skb->data);
 <<<<<<< HEAD
+<<<<<<< HEAD
         subcmd = CAPIMSG_SUBCOMMAND(skb->data);
 
 	if (cmd == CAPI_DATA_B3 && subcmd== CAPI_REQ) {
@@ -867,6 +932,11 @@ u16 capi20_put_message(struct capi20_appl *ap, struct sk_buff *skb)
 
 	if (cmd == CAPI_DATA_B3 && subcmd == CAPI_REQ) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	subcmd = CAPIMSG_SUBCOMMAND(skb->data);
+
+	if (cmd == CAPI_DATA_B3 && subcmd == CAPI_REQ) {
+>>>>>>> refs/remotes/origin/master
 		ctr->nsentdatapkt++;
 		ap->nsentdatapkt++;
 		if (ctr->traceflag > 2)
@@ -890,6 +960,7 @@ u16 capi20_put_message(struct capi20_appl *ap, struct sk_buff *skb)
 			if (cdb) {
 				printk(KERN_DEBUG "kcapi: put [%03d] %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					CAPIMSG_CONTROLLER(skb->data),
 					cdb->buf);
 				cdebbuf_free(cdb);
@@ -900,6 +971,8 @@ u16 capi20_put_message(struct capi20_appl *ap, struct sk_buff *skb)
 					capi_cmd2str(cmd, subcmd),
 					CAPIMSG_LEN(skb->data));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				       CAPIMSG_CONTROLLER(skb->data),
 				       cdb->buf);
 				cdebbuf_free(cdb);
@@ -909,7 +982,10 @@ u16 capi20_put_message(struct capi20_appl *ap, struct sk_buff *skb)
 				       CAPIMSG_APPID(skb->data),
 				       capi_cmd2str(cmd, subcmd),
 				       CAPIMSG_LEN(skb->data));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return ctr->send_message(ctr, skb);
@@ -1111,6 +1187,7 @@ static int old_capi_manufacturer(unsigned int cmd, void __user *data)
 	case AVMB1_ADDCARD_WITH_TYPE:
 		if (cmd == AVMB1_ADDCARD) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   if ((retval = copy_from_user(&cdef, data,
 					    sizeof(avmb1_carddef))))
 			   return -EFAULT;
@@ -1120,6 +1197,8 @@ static int old_capi_manufacturer(unsigned int cmd, void __user *data)
 					    sizeof(avmb1_extcarddef))))
 			   return -EFAULT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if ((retval = copy_from_user(&cdef, data,
 						     sizeof(avmb1_carddef))))
 				return -EFAULT;
@@ -1128,7 +1207,10 @@ static int old_capi_manufacturer(unsigned int cmd, void __user *data)
 			if ((retval = copy_from_user(&cdef, data,
 						     sizeof(avmb1_extcarddef))))
 				return -EFAULT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		cparams.port = cdef.port;
 		cparams.irq = cdef.irq;
@@ -1136,6 +1218,7 @@ static int old_capi_manufacturer(unsigned int cmd, void __user *data)
 
 		mutex_lock(&capi_drivers_lock);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 switch (cdef.cardtype) {
 			case AVM_CARDTYPE_B1:
@@ -1156,6 +1239,8 @@ static int old_capi_manufacturer(unsigned int cmd, void __user *data)
 				driver = NULL;
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (cdef.cardtype) {
 		case AVM_CARDTYPE_B1:
 			list_for_each(l, &capi_drivers) {
@@ -1174,7 +1259,10 @@ static int old_capi_manufacturer(unsigned int cmd, void __user *data)
 		default:
 			driver = NULL;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!driver) {
 			printk(KERN_ERR "kcapi: driver not loaded.\n");
@@ -1251,10 +1339,14 @@ static int old_capi_manufacturer(unsigned int cmd, void __user *data)
 		retval = wait_on_ctr_state(ctr, CAPI_CTR_RUNNING);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 load_unlock_out:
 =======
 	load_unlock_out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	load_unlock_out:
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&capi_controller_lock);
 		return retval;
 
@@ -1286,10 +1378,14 @@ load_unlock_out:
 		retval = wait_on_ctr_state(ctr, CAPI_CTR_DETECTED);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 reset_unlock_out:
 =======
 	reset_unlock_out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	reset_unlock_out:
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&capi_controller_lock);
 		return retval;
 	}
@@ -1358,10 +1454,14 @@ int capi20_manufacturer(unsigned int cmd, void __user *data)
 		cparams.cardnr = cdef.cardnr;
 		cparams.cardtype = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cdef.driver[sizeof(cdef.driver)-1] = 0;
 =======
 		cdef.driver[sizeof(cdef.driver) - 1] = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cdef.driver[sizeof(cdef.driver) - 1] = 0;
+>>>>>>> refs/remotes/origin/master
 
 		mutex_lock(&capi_drivers_lock);
 
@@ -1373,10 +1473,14 @@ int capi20_manufacturer(unsigned int cmd, void __user *data)
 		if (driver == NULL) {
 			printk(KERN_ERR "kcapi: driver \"%s\" not loaded.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					cdef.driver);
 =======
 			       cdef.driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       cdef.driver);
+>>>>>>> refs/remotes/origin/master
 			retval = -ESRCH;
 		} else if (!driver->add_card) {
 			printk(KERN_ERR "kcapi: driver \"%s\" has no add card function.\n", cdef.driver);
@@ -1391,10 +1495,14 @@ int capi20_manufacturer(unsigned int cmd, void __user *data)
 	default:
 		printk(KERN_ERR "kcapi: manufacturer command %d unknown.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 					cmd);
 =======
 		       cmd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       cmd);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	}
@@ -1440,10 +1548,14 @@ static int __init kcapi_init(void)
 static void __exit kcapi_exit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         kcapi_proc_exit();
 =======
 	kcapi_proc_exit();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kcapi_proc_exit();
+>>>>>>> refs/remotes/origin/master
 
 	unregister_capictr_notifier(&capictr_nb);
 	cdebug_exit();

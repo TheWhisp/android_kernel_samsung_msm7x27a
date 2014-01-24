@@ -18,6 +18,10 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <mach/jornada720.h>
@@ -129,7 +133,11 @@ void jornada_ssp_end(void)
 };
 EXPORT_SYMBOL(jornada_ssp_end);
 
+<<<<<<< HEAD
 static int __devinit jornada_ssp_probe(struct platform_device *dev)
+=======
+static int jornada_ssp_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -199,7 +207,12 @@ static int __init jornada_ssp_init(void)
 	return platform_driver_register(&jornadassp_driver);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 module_init(jornada_ssp_init);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+module_init(jornada_ssp_init);
+>>>>>>> refs/remotes/origin/master

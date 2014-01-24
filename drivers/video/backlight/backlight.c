@@ -5,6 +5,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/device.h>
@@ -20,10 +25,17 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char const *backlight_types[] = {
 =======
 static const char *const backlight_types[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct list_head backlight_dev_list;
+static struct mutex backlight_dev_list_mutex;
+
+static const char *const backlight_types[] = {
+>>>>>>> refs/remotes/origin/master
 	[BACKLIGHT_RAW] = "raw",
 	[BACKLIGHT_PLATFORM] = "platform",
 	[BACKLIGHT_FIRMWARE] = "firmware",
@@ -105,37 +117,55 @@ static void backlight_generate_event(struct backlight_device *bd,
 	sysfs_notify(&bd->dev.kobj, NULL, "actual_brightness");
 }
 
+<<<<<<< HEAD
 static ssize_t backlight_show_power(struct device *dev,
 <<<<<<< HEAD
 		struct device_attribute *attr,char *buf)
 =======
 		struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t bl_power_show(struct device *dev, struct device_attribute *attr,
+		char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_device *bd = to_backlight_device(dev);
 
 	return sprintf(buf, "%d\n", bd->props.power);
 }
 
+<<<<<<< HEAD
 static ssize_t backlight_store_power(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
+=======
+static ssize_t bl_power_store(struct device *dev, struct device_attribute *attr,
+		const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 	struct backlight_device *bd = to_backlight_device(dev);
 	unsigned long power;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 0, &power);
 =======
 	rc = kstrtoul(buf, 0, &power);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = kstrtoul(buf, 0, &power);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return rc;
 
 	rc = -ENXIO;
 	mutex_lock(&bd->ops_lock);
 	if (bd->ops) {
+<<<<<<< HEAD
 		pr_debug("backlight: set power to %lu\n", power);
+=======
+		pr_debug("set power to %lu\n", power);
+>>>>>>> refs/remotes/origin/master
 		if (bd->props.power != power) {
 			bd->props.power = power;
 			backlight_update_status(bd);
@@ -146,8 +176,14 @@ static ssize_t backlight_store_power(struct device *dev,
 
 	return rc;
 }
+<<<<<<< HEAD
 
 static ssize_t backlight_show_brightness(struct device *dev,
+=======
+static DEVICE_ATTR_RW(bl_power);
+
+static ssize_t brightness_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)
 {
 	struct backlight_device *bd = to_backlight_device(dev);
@@ -155,7 +191,11 @@ static ssize_t backlight_show_brightness(struct device *dev,
 	return sprintf(buf, "%d\n", bd->props.brightness);
 }
 
+<<<<<<< HEAD
 static ssize_t backlight_store_brightness(struct device *dev,
+=======
+static ssize_t brightness_store(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, const char *buf, size_t count)
 {
 	int rc;
@@ -163,10 +203,14 @@ static ssize_t backlight_store_brightness(struct device *dev,
 	unsigned long brightness;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = strict_strtoul(buf, 0, &brightness);
 =======
 	rc = kstrtoul(buf, 0, &brightness);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = kstrtoul(buf, 0, &brightness);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return rc;
 
@@ -177,8 +221,12 @@ static ssize_t backlight_store_brightness(struct device *dev,
 		if (brightness > bd->props.max_brightness)
 			rc = -EINVAL;
 		else {
+<<<<<<< HEAD
 			pr_debug("backlight: set brightness to %lu\n",
 				 brightness);
+=======
+			pr_debug("set brightness to %lu\n", brightness);
+>>>>>>> refs/remotes/origin/master
 			bd->props.brightness = brightness;
 			backlight_update_status(bd);
 			rc = count;
@@ -190,24 +238,43 @@ static ssize_t backlight_store_brightness(struct device *dev,
 
 	return rc;
 }
+<<<<<<< HEAD
 
 static ssize_t backlight_show_type(struct device *dev,
 		struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RW(brightness);
+
+static ssize_t type_show(struct device *dev, struct device_attribute *attr,
+		char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_device *bd = to_backlight_device(dev);
 
 	return sprintf(buf, "%s\n", backlight_types[bd->props.type]);
 }
+<<<<<<< HEAD
 
 static ssize_t backlight_show_max_brightness(struct device *dev,
+=======
+static DEVICE_ATTR_RO(type);
+
+static ssize_t max_brightness_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)
 {
 	struct backlight_device *bd = to_backlight_device(dev);
 
 	return sprintf(buf, "%d\n", bd->props.max_brightness);
 }
+<<<<<<< HEAD
 
 static ssize_t backlight_show_actual_brightness(struct device *dev,
+=======
+static DEVICE_ATTR_RO(max_brightness);
+
+static ssize_t actual_brightness_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 		struct device_attribute *attr, char *buf)
 {
 	int rc = -ENXIO;
@@ -220,10 +287,19 @@ static ssize_t backlight_show_actual_brightness(struct device *dev,
 
 	return rc;
 }
+<<<<<<< HEAD
 
 static struct class *backlight_class;
 
 static int backlight_suspend(struct device *dev, pm_message_t state)
+=======
+static DEVICE_ATTR_RO(actual_brightness);
+
+static struct class *backlight_class;
+
+#ifdef CONFIG_PM_SLEEP
+static int backlight_suspend(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_device *bd = to_backlight_device(dev);
 
@@ -250,6 +326,13 @@ static int backlight_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(backlight_class_dev_pm_ops, backlight_suspend,
+			 backlight_resume);
+>>>>>>> refs/remotes/origin/master
 
 static void bl_device_release(struct device *dev)
 {
@@ -257,6 +340,7 @@ static void bl_device_release(struct device *dev)
 	kfree(bd);
 }
 
+<<<<<<< HEAD
 static struct device_attribute bl_device_attributes[] = {
 	__ATTR(bl_power, 0644, backlight_show_power, backlight_store_power),
 	__ATTR(brightness, 0644, backlight_show_brightness,
@@ -267,6 +351,17 @@ static struct device_attribute bl_device_attributes[] = {
 	__ATTR(type, 0444, backlight_show_type, NULL),
 	__ATTR_NULL,
 };
+=======
+static struct attribute *bl_device_attrs[] = {
+	&dev_attr_bl_power.attr,
+	&dev_attr_brightness.attr,
+	&dev_attr_actual_brightness.attr,
+	&dev_attr_max_brightness.attr,
+	&dev_attr_type.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(bl_device);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * backlight_force_update - tell the backlight subsystem that hardware state
@@ -319,7 +414,11 @@ struct backlight_device *backlight_device_register(const char *name,
 	new_bd->dev.class = backlight_class;
 	new_bd->dev.parent = parent;
 	new_bd->dev.release = bl_device_release;
+<<<<<<< HEAD
 	dev_set_name(&new_bd->dev, name);
+=======
+	dev_set_name(&new_bd->dev, "%s", name);
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&new_bd->dev, devdata);
 
 	/* Set default properties */
@@ -355,10 +454,38 @@ struct backlight_device *backlight_device_register(const char *name,
 	mutex_unlock(&pmac_backlight_mutex);
 #endif
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&backlight_dev_list_mutex);
+	list_add(&new_bd->entry, &backlight_dev_list);
+	mutex_unlock(&backlight_dev_list_mutex);
+
+>>>>>>> refs/remotes/origin/master
 	return new_bd;
 }
 EXPORT_SYMBOL(backlight_device_register);
 
+<<<<<<< HEAD
+=======
+bool backlight_device_registered(enum backlight_type type)
+{
+	bool found = false;
+	struct backlight_device *bd;
+
+	mutex_lock(&backlight_dev_list_mutex);
+	list_for_each_entry(bd, &backlight_dev_list, entry) {
+		if (bd->props.type == type) {
+			found = true;
+			break;
+		}
+	}
+	mutex_unlock(&backlight_dev_list_mutex);
+
+	return found;
+}
+EXPORT_SYMBOL(backlight_device_registered);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * backlight_device_unregister - unregisters a backlight device object.
  * @bd: the backlight device object to be unregistered and freed.
@@ -370,6 +497,13 @@ void backlight_device_unregister(struct backlight_device *bd)
 	if (!bd)
 		return;
 
+<<<<<<< HEAD
+=======
+	mutex_lock(&backlight_dev_list_mutex);
+	list_del(&bd->entry);
+	mutex_unlock(&backlight_dev_list_mutex);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PMAC_BACKLIGHT
 	mutex_lock(&pmac_backlight_mutex);
 	if (pmac_backlight == bd)
@@ -385,6 +519,113 @@ void backlight_device_unregister(struct backlight_device *bd)
 }
 EXPORT_SYMBOL(backlight_device_unregister);
 
+<<<<<<< HEAD
+=======
+static void devm_backlight_device_release(struct device *dev, void *res)
+{
+	struct backlight_device *backlight = *(struct backlight_device **)res;
+
+	backlight_device_unregister(backlight);
+}
+
+static int devm_backlight_device_match(struct device *dev, void *res,
+					void *data)
+{
+	struct backlight_device **r = res;
+
+	return *r == data;
+}
+
+/**
+ * devm_backlight_device_register - resource managed backlight_device_register()
+ * @dev: the device to register
+ * @name: the name of the device
+ * @parent: a pointer to the parent device
+ * @devdata: an optional pointer to be stored for private driver use
+ * @ops: the backlight operations structure
+ * @props: the backlight properties
+ *
+ * @return a struct backlight on success, or an ERR_PTR on error
+ *
+ * Managed backlight_device_register(). The backlight_device returned
+ * from this function are automatically freed on driver detach.
+ * See backlight_device_register() for more information.
+ */
+struct backlight_device *devm_backlight_device_register(struct device *dev,
+	const char *name, struct device *parent, void *devdata,
+	const struct backlight_ops *ops,
+	const struct backlight_properties *props)
+{
+	struct backlight_device **ptr, *backlight;
+
+	ptr = devres_alloc(devm_backlight_device_release, sizeof(*ptr),
+			GFP_KERNEL);
+	if (!ptr)
+		return ERR_PTR(-ENOMEM);
+
+	backlight = backlight_device_register(name, parent, devdata, ops,
+						props);
+	if (!IS_ERR(backlight)) {
+		*ptr = backlight;
+		devres_add(dev, ptr);
+	} else {
+		devres_free(ptr);
+	}
+
+	return backlight;
+}
+EXPORT_SYMBOL(devm_backlight_device_register);
+
+/**
+ * devm_backlight_device_unregister - resource managed backlight_device_unregister()
+ * @dev: the device to unregister
+ * @bd: the backlight device to unregister
+ *
+ * Deallocated a backlight allocated with devm_backlight_device_register().
+ * Normally this function will not need to be called and the resource management
+ * code will ensure that the resource is freed.
+ */
+void devm_backlight_device_unregister(struct device *dev,
+				struct backlight_device *bd)
+{
+	int rc;
+
+	rc = devres_release(dev, devm_backlight_device_release,
+				devm_backlight_device_match, bd);
+	WARN_ON(rc);
+}
+EXPORT_SYMBOL(devm_backlight_device_unregister);
+
+#ifdef CONFIG_OF
+static int of_parent_match(struct device *dev, const void *data)
+{
+	return dev->parent && dev->parent->of_node == data;
+}
+
+/**
+ * of_find_backlight_by_node() - find backlight device by device-tree node
+ * @node: device-tree node of the backlight device
+ *
+ * Returns a pointer to the backlight device corresponding to the given DT
+ * node or NULL if no such backlight device exists or if the device hasn't
+ * been probed yet.
+ *
+ * This function obtains a reference on the backlight device and it is the
+ * caller's responsibility to drop the reference by calling put_device() on
+ * the backlight device's .dev field.
+ */
+struct backlight_device *of_find_backlight_by_node(struct device_node *node)
+{
+	struct device *dev;
+
+	dev = class_find_device(backlight_class, NULL, node, of_parent_match);
+
+	return dev ? to_backlight_device(dev) : NULL;
+}
+EXPORT_SYMBOL(of_find_backlight_by_node);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static void __exit backlight_class_exit(void)
 {
 	class_destroy(backlight_class);
@@ -394,6 +635,7 @@ static int __init backlight_class_init(void)
 {
 	backlight_class = class_create(THIS_MODULE, "backlight");
 	if (IS_ERR(backlight_class)) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "Unable to create backlight class; errno = %ld\n",
 				PTR_ERR(backlight_class));
 		return PTR_ERR(backlight_class);
@@ -402,6 +644,17 @@ static int __init backlight_class_init(void)
 	backlight_class->dev_attrs = bl_device_attributes;
 	backlight_class->suspend = backlight_suspend;
 	backlight_class->resume = backlight_resume;
+=======
+		pr_warn("Unable to create backlight class; errno = %ld\n",
+			PTR_ERR(backlight_class));
+		return PTR_ERR(backlight_class);
+	}
+
+	backlight_class->dev_groups = bl_device_groups;
+	backlight_class->pm = &backlight_class_dev_pm_ops;
+	INIT_LIST_HEAD(&backlight_dev_list);
+	mutex_init(&backlight_dev_list_mutex);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

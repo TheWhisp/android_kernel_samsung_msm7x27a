@@ -28,7 +28,11 @@ static bool ebt_mac_wormhash_contains(const struct ebt_mac_wormhash *wh,
 	uint32_t cmp[2] = { 0, 0 };
 	int key = ((const unsigned char *)mac)[5];
 
+<<<<<<< HEAD
 	memcpy(((char *) cmp) + 2, mac, 6);
+=======
+	memcpy(((char *) cmp) + 2, mac, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	start = wh->table[key];
 	limit = wh->table[key + 1];
 	if (ip) {

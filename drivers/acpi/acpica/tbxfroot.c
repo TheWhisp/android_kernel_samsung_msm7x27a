@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,26 +56,38 @@
 #define _COMPONENT          ACPI_TABLES
 ACPI_MODULE_NAME("tbxfroot")
 
+<<<<<<< HEAD
 /* Local prototypes */
 static u8 *acpi_tb_scan_memory_for_rsdp(u8 * start_address, u32 length);
 
 static acpi_status acpi_tb_validate_rsdp(struct acpi_table_rsdp *rsdp);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_tb_validate_rsdp
  *
+<<<<<<< HEAD
  * PARAMETERS:  Rsdp                - Pointer to unvalidated RSDP
+=======
+ * PARAMETERS:  rsdp                - Pointer to unvalidated RSDP
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Validate the RSDP (ptr)
  *
  ******************************************************************************/
+<<<<<<< HEAD
 
 static acpi_status acpi_tb_validate_rsdp(struct acpi_table_rsdp *rsdp)
 {
 	ACPI_FUNCTION_ENTRY();
+=======
+acpi_status acpi_tb_validate_rsdp(struct acpi_table_rsdp *rsdp)
+{
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The signature and checksum must both be correct
@@ -79,8 +95,12 @@ static acpi_status acpi_tb_validate_rsdp(struct acpi_table_rsdp *rsdp)
 	 * Note: Sometimes there exists more than one RSDP in memory; the valid
 	 * RSDP has a valid checksum, all others have an invalid checksum.
 	 */
+<<<<<<< HEAD
 	if (ACPI_STRNCMP((char *)rsdp, ACPI_SIG_RSDP,
 			 sizeof(ACPI_SIG_RSDP) - 1) != 0) {
+=======
+	if (!ACPI_VALIDATE_RSDP_SIG(rsdp->signature)) {
+>>>>>>> refs/remotes/origin/master
 
 		/* Nope, BAD Signature */
 
@@ -111,10 +131,17 @@ static acpi_status acpi_tb_validate_rsdp(struct acpi_table_rsdp *rsdp)
  *
  * RETURN:      Status, RSDP physical address
  *
+<<<<<<< HEAD
  * DESCRIPTION: Search lower 1_mbyte of memory for the root system descriptor
  *              pointer structure.  If it is found, set *RSDP to point to it.
  *
  * NOTE1:       The RSDP must be either in the first 1_k of the Extended
+=======
+ * DESCRIPTION: Search lower 1Mbyte of memory for the root system descriptor
+ *              pointer structure. If it is found, set *RSDP to point to it.
+ *
+ * NOTE1:       The RSDP must be either in the first 1K of the Extended
+>>>>>>> refs/remotes/origin/master
  *              BIOS Data Area or between E0000 and FFFFF (From ACPI Spec.)
  *              Only a 32-bit physical address is necessary.
  *
@@ -123,7 +150,11 @@ static acpi_status acpi_tb_validate_rsdp(struct acpi_table_rsdp *rsdp)
  *
  ******************************************************************************/
 
+<<<<<<< HEAD
 acpi_status acpi_find_root_pointer(acpi_size *table_address)
+=======
+acpi_status __init acpi_find_root_pointer(acpi_size *table_address)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 *table_ptr;
 	u8 *mem_rover;
@@ -156,7 +187,11 @@ acpi_status acpi_find_root_pointer(acpi_size *table_address)
 	if (physical_address > 0x400) {
 		/*
 		 * 1b) Search EBDA paragraphs (EBDA is required to be a
+<<<<<<< HEAD
 		 *     minimum of 1_k length)
+=======
+		 *     minimum of 1K length)
+>>>>>>> refs/remotes/origin/master
 		 */
 		table_ptr = acpi_os_map_memory((acpi_physical_address)
 					       physical_address,
@@ -220,7 +255,11 @@ acpi_status acpi_find_root_pointer(acpi_size *table_address)
 
 	/* A valid RSDP was not found */
 
+<<<<<<< HEAD
 	ACPI_ERROR((AE_INFO, "A valid RSDP was not found"));
+=======
+	ACPI_BIOS_ERROR((AE_INFO, "A valid RSDP was not found"));
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(AE_NOT_FOUND);
 }
 
@@ -229,14 +268,22 @@ acpi_status acpi_find_root_pointer(acpi_size *table_address)
  * FUNCTION:    acpi_tb_scan_memory_for_rsdp
  *
  * PARAMETERS:  start_address       - Starting pointer for search
+<<<<<<< HEAD
  *              Length              - Maximum length to search
+=======
+ *              length              - Maximum length to search
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Pointer to the RSDP if found, otherwise NULL.
  *
  * DESCRIPTION: Search a block of memory for the RSDP signature
  *
  ******************************************************************************/
+<<<<<<< HEAD
 static u8 *acpi_tb_scan_memory_for_rsdp(u8 * start_address, u32 length)
+=======
+u8 *acpi_tb_scan_memory_for_rsdp(u8 *start_address, u32 length)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 	u8 *mem_rover;

@@ -12,10 +12,14 @@
  * 2 of the License, or (at your option) any later version.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -30,9 +34,12 @@
 #include <linux/serial_reg.h>
 #include <asm/mach-types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/pci.h>
 #include <mach/orion5x.h>
@@ -129,11 +136,16 @@ static struct platform_device qnap_ts409_nor_flash = {
  ****************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init qnap_ts409_pci_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init qnap_ts409_pci_map_irq(const struct pci_dev *dev, u8 slot,
 	u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init qnap_ts409_pci_map_irq(const struct pci_dev *dev, u8 slot,
+	u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 
@@ -152,7 +164,10 @@ static int __init qnap_ts409_pci_map_irq(const struct pci_dev *dev, u8 slot,
 
 static struct hw_pci qnap_ts409_pci __initdata = {
 	.nr_controllers	= 2,
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setup		= orion5x_pci_sys_setup,
 	.scan		= orion5x_pci_sys_scan_bus,
 	.map_irq	= qnap_ts409_pci_map_irq,
@@ -290,8 +305,15 @@ static void __init qnap_ts409_init(void)
 	/*
 	 * Configure peripherals.
 	 */
+<<<<<<< HEAD
 	orion5x_setup_dev_boot_win(QNAP_TS409_NOR_BOOT_BASE,
 				   QNAP_TS409_NOR_BOOT_SIZE);
+=======
+	mvebu_mbus_add_window_by_id(ORION_MBUS_DEVBUS_BOOT_TARGET,
+				    ORION_MBUS_DEVBUS_BOOT_ATTR,
+				    QNAP_TS409_NOR_BOOT_BASE,
+				    QNAP_TS409_NOR_BOOT_SIZE);
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(&qnap_ts409_nor_flash);
 
 	orion5x_ehci0_init();
@@ -324,18 +346,28 @@ static void __init qnap_ts409_init(void)
 MACHINE_START(TS409, "QNAP TS-409")
 	/* Maintainer:  Sylver Bruneau <sylver.bruneau@gmail.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= qnap_ts409_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
 <<<<<<< HEAD
 =======
 	.restart	= orion5x_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

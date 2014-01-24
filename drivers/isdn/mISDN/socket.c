@@ -18,9 +18,13 @@
 #include <linux/mISDNif.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "core.h"
 
 static u_int	*debug;
@@ -117,6 +121,7 @@ mISDN_sock_cmsg(struct sock *sk, struct msghdr *msg, struct sk_buff *skb)
 static int
 mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 <<<<<<< HEAD
+<<<<<<< HEAD
     struct msghdr *msg, size_t len, int flags)
 =======
 		   struct msghdr *msg, size_t len, int flags)
@@ -125,11 +130,18 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sk_buff		*skb;
 	struct sock		*sk = sock->sk;
 	struct sockaddr_mISDN	*maddr;
+=======
+		   struct msghdr *msg, size_t len, int flags)
+{
+	struct sk_buff		*skb;
+	struct sock		*sk = sock->sk;
+>>>>>>> refs/remotes/origin/master
 
 	int		copied, err;
 
 	if (*debug & DEBUG_SOCKET)
 		printk(KERN_DEBUG "%s: len %d, flags %x ch.nr %d, proto %x\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			__func__, (int)len, flags, _pms(sk)->ch.nr,
 			sk->sk_protocol);
@@ -137,6 +149,10 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 		       __func__, (int)len, flags, _pms(sk)->ch.nr,
 		       sk->sk_protocol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, (int)len, flags, _pms(sk)->ch.nr,
+		       sk->sk_protocol);
+>>>>>>> refs/remotes/origin/master
 	if (flags & (MSG_OOB))
 		return -EOPNOTSUPP;
 
@@ -147,9 +163,15 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (!skb)
 		return err;
 
+<<<<<<< HEAD
 	if (msg->msg_namelen >= sizeof(struct sockaddr_mISDN)) {
 		msg->msg_namelen = sizeof(struct sockaddr_mISDN);
 		maddr = (struct sockaddr_mISDN *)msg->msg_name;
+=======
+	if (msg->msg_name) {
+		struct sockaddr_mISDN *maddr = msg->msg_name;
+
+>>>>>>> refs/remotes/origin/master
 		maddr->family = AF_ISDN;
 		maddr->dev = _pms(sk)->dev->id;
 		if ((sk->sk_protocol == ISDN_P_LAPD_TE) ||
@@ -162,6 +184,7 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 			maddr->sapi = _pms(sk)->ch.addr & 0xFF;
 			maddr->tei =  (_pms(sk)->ch.addr >> 8) & 0xFF;
 		}
+<<<<<<< HEAD
 	} else {
 		if (msg->msg_namelen)
 			printk(KERN_WARNING "%s: too small namelen %d\n",
@@ -171,6 +194,9 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 			       __func__, msg->msg_namelen);
 >>>>>>> refs/remotes/origin/cm-10.0
 		msg->msg_namelen = 0;
+=======
+		msg->msg_namelen = sizeof(*maddr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	copied = skb->len + MISDN_HEADER_LEN;
@@ -183,10 +209,14 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 	}
 	memcpy(skb_push(skb, MISDN_HEADER_LEN), mISDN_HEAD_P(skb),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    MISDN_HEADER_LEN);
 =======
 	       MISDN_HEADER_LEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       MISDN_HEADER_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	err = skb_copy_datagram_iovec(skb, 0, msg->msg_iov, copied);
 
@@ -200,10 +230,14 @@ mISDN_sock_recvmsg(struct kiocb *iocb, struct socket *sock,
 static int
 mISDN_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 <<<<<<< HEAD
+<<<<<<< HEAD
     struct msghdr *msg, size_t len)
 =======
 		   struct msghdr *msg, size_t len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   struct msghdr *msg, size_t len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock		*sk = sock->sk;
 	struct sk_buff		*skb;
@@ -213,21 +247,30 @@ mISDN_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 	if (*debug & DEBUG_SOCKET)
 		printk(KERN_DEBUG "%s: len %d flags %x ch %d proto %x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     __func__, (int)len, msg->msg_flags, _pms(sk)->ch.nr,
 		     sk->sk_protocol);
 =======
 		       __func__, (int)len, msg->msg_flags, _pms(sk)->ch.nr,
 		       sk->sk_protocol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, (int)len, msg->msg_flags, _pms(sk)->ch.nr,
+		       sk->sk_protocol);
+>>>>>>> refs/remotes/origin/master
 
 	if (msg->msg_flags & MSG_OOB)
 		return -EOPNOTSUPP;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (msg->msg_flags & ~(MSG_DONTWAIT|MSG_NOSIGNAL|MSG_ERRQUEUE))
 =======
 	if (msg->msg_flags & ~(MSG_DONTWAIT | MSG_NOSIGNAL | MSG_ERRQUEUE))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (msg->msg_flags & ~(MSG_DONTWAIT | MSG_NOSIGNAL | MSG_ERRQUEUE))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (len < MISDN_HEADER_LEN)
@@ -263,10 +306,14 @@ mISDN_sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 	if (*debug & DEBUG_SOCKET)
 		printk(KERN_DEBUG "%s: ID:%x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     __func__, mISDN_HEAD_ID(skb));
 =======
 		       __func__, mISDN_HEAD_ID(skb));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, mISDN_HEAD_ID(skb));
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENODEV;
 	if (!_pms(sk)->ch.peer)
@@ -350,26 +397,36 @@ data_sock_ioctl_bound(struct sock *sk, unsigned int cmd, void __user *p)
 		if ((sk->sk_protocol & ~ISDN_P_B_MASK) == ISDN_P_B_START) {
 			list_for_each_entry_safe(bchan, next,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				&_pms(sk)->dev->bchannels, list) {
 				if (bchan->nr == cq.channel) {
 					err = bchan->ctrl(bchan,
 						CONTROL_CHANNEL, &cq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						 &_pms(sk)->dev->bchannels, list) {
 				if (bchan->nr == cq.channel) {
 					err = bchan->ctrl(bchan,
 							  CONTROL_CHANNEL, &cq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					break;
 				}
 			}
 		} else
 			err = _pms(sk)->dev->D.ctrl(&_pms(sk)->dev->D,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				CONTROL_CHANNEL, &cq);
 =======
 						    CONTROL_CHANNEL, &cq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						    CONTROL_CHANNEL, &cq);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			break;
 		if (copy_to_user(p, &cq, sizeof(cq)))
@@ -387,18 +444,24 @@ data_sock_ioctl_bound(struct sock *sk, unsigned int cmd, void __user *p)
 		}
 		err = _pms(sk)->dev->teimgr->ctrl(_pms(sk)->dev->teimgr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    CONTROL_CHANNEL, val);
 		break;
 	case IMHOLD_L1:
 		if (sk->sk_protocol != ISDN_P_LAPD_NT
 		 && sk->sk_protocol != ISDN_P_LAPD_TE) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						  CONTROL_CHANNEL, val);
 		break;
 	case IMHOLD_L1:
 		if (sk->sk_protocol != ISDN_P_LAPD_NT
 		    && sk->sk_protocol != ISDN_P_LAPD_TE) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			err = -EINVAL;
 			break;
 		}
@@ -409,10 +472,14 @@ data_sock_ioctl_bound(struct sock *sk, unsigned int cmd, void __user *p)
 		}
 		err = _pms(sk)->dev->teimgr->ctrl(_pms(sk)->dev->teimgr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    CONTROL_CHANNEL, val);
 =======
 						  CONTROL_CHANNEL, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						  CONTROL_CHANNEL, val);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		err = -EINVAL;
@@ -427,10 +494,14 @@ static int
 data_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int 			err = 0, id;
 =======
 	int			err = 0, id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			err = 0, id;
+>>>>>>> refs/remotes/origin/master
 	struct sock		*sk = sock->sk;
 	struct mISDNdevice	*dev;
 	struct mISDNversion	ver;
@@ -464,10 +535,14 @@ data_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 			di.protocol = dev->D.protocol;
 			memcpy(di.channelmap, dev->channelmap,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sizeof(di.channelmap));
 =======
 			       sizeof(di.channelmap));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       sizeof(di.channelmap));
+>>>>>>> refs/remotes/origin/master
 			di.nrbchan = dev->nrbchan;
 			strcpy(di.name, dev_name(&dev->dev));
 			if (copy_to_user((void __user *)arg, &di, sizeof(di)))
@@ -479,10 +554,14 @@ data_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 		if (sk->sk_state == MISDN_BOUND)
 			err = data_sock_ioctl_bound(sk, cmd,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				(void __user *)arg);
 =======
 						    (void __user *)arg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						    (void __user *)arg);
+>>>>>>> refs/remotes/origin/master
 		else
 			err = -ENOTCONN;
 	}
@@ -491,10 +570,14 @@ data_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 
 static int data_sock_setsockopt(struct socket *sock, int level, int optname,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char __user *optval, unsigned int len)
 =======
 				char __user *optval, unsigned int len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				char __user *optval, unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = sock->sk;
 	int err = 0, opt = 0;
@@ -502,10 +585,14 @@ static int data_sock_setsockopt(struct socket *sock, int level, int optname,
 	if (*debug & DEBUG_SOCKET)
 		printk(KERN_DEBUG "%s(%p, %d, %x, %p, %d)\n", __func__, sock,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    level, optname, optval, len);
 =======
 		       level, optname, optval, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       level, optname, optval, len);
+>>>>>>> refs/remotes/origin/master
 
 	lock_sock(sk);
 
@@ -531,10 +618,14 @@ static int data_sock_setsockopt(struct socket *sock, int level, int optname,
 
 static int data_sock_getsockopt(struct socket *sock, int level, int optname,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char __user *optval, int __user *optlen)
 =======
 				char __user *optval, int __user *optlen)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				char __user *optval, int __user *optlen)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = sock->sk;
 	int len, opt;
@@ -567,7 +658,10 @@ data_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
 {
 	struct sockaddr_mISDN *maddr = (struct sockaddr_mISDN *) addr;
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sock *csk;
 	int err = 0;
 
@@ -592,7 +686,11 @@ data_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
 
 	if (sk->sk_protocol < ISDN_P_B_START) {
 		read_lock_bh(&data_sockets.lock);
+<<<<<<< HEAD
 		sk_for_each(csk, node, &data_sockets.head) {
+=======
+		sk_for_each(csk, &data_sockets.head) {
+>>>>>>> refs/remotes/origin/master
 			if (sk == csk)
 				continue;
 			if (_pms(csk)->dev != _pms(sk)->dev)
@@ -601,10 +699,14 @@ data_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
 				continue;
 			if (IS_ISDN_P_TE(csk->sk_protocol)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					== IS_ISDN_P_TE(sk->sk_protocol))
 =======
 			    == IS_ISDN_P_TE(sk->sk_protocol))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    == IS_ISDN_P_TE(sk->sk_protocol))
+>>>>>>> refs/remotes/origin/master
 				continue;
 			read_unlock_bh(&data_sockets.lock);
 			err = -EBUSY;
@@ -624,10 +726,14 @@ data_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
 		mISDN_sock_unlink(&data_sockets, sk);
 		err = connect_layer1(_pms(sk)->dev, &_pms(sk)->ch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    sk->sk_protocol, maddr);
 =======
 				     sk->sk_protocol, maddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     sk->sk_protocol, maddr);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			mISDN_sock_link(&data_sockets, sk);
 		break;
@@ -635,10 +741,14 @@ data_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
 	case ISDN_P_LAPD_NT:
 		err = create_l2entity(_pms(sk)->dev, &_pms(sk)->ch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    sk->sk_protocol, maddr);
 =======
 				      sk->sk_protocol, maddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      sk->sk_protocol, maddr);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case ISDN_P_B_RAW:
 	case ISDN_P_B_HDLC:
@@ -648,10 +758,14 @@ data_sock_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
 	case ISDN_P_B_L2DSPHDLC:
 		err = connect_Bstack(_pms(sk)->dev, &_pms(sk)->ch,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    sk->sk_protocol, maddr);
 =======
 				     sk->sk_protocol, maddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     sk->sk_protocol, maddr);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		err = -EPROTONOSUPPORT;
@@ -669,6 +783,7 @@ done:
 static int
 data_sock_getname(struct socket *sock, struct sockaddr *addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
     int *addr_len, int peer)
 {
 	struct sockaddr_mISDN 	*maddr = (struct sockaddr_mISDN *) addr;
@@ -677,6 +792,11 @@ data_sock_getname(struct socket *sock, struct sockaddr *addr,
 {
 	struct sockaddr_mISDN	*maddr = (struct sockaddr_mISDN *) addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  int *addr_len, int peer)
+{
+	struct sockaddr_mISDN	*maddr = (struct sockaddr_mISDN *) addr;
+>>>>>>> refs/remotes/origin/master
 	struct sock		*sk = sock->sk;
 
 	if (!_pms(sk)->dev)
@@ -685,6 +805,10 @@ data_sock_getname(struct socket *sock, struct sockaddr *addr,
 	lock_sock(sk);
 
 	*addr_len = sizeof(*maddr);
+<<<<<<< HEAD
+=======
+	maddr->family = AF_ISDN;
+>>>>>>> refs/remotes/origin/master
 	maddr->dev = _pms(sk)->dev->id;
 	maddr->channel = _pms(sk)->ch.nr;
 	maddr->sapi = _pms(sk)->ch.addr & 0xff;
@@ -758,10 +882,14 @@ static int
 base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int 			err = 0, id;
 =======
 	int			err = 0, id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			err = 0, id;
+>>>>>>> refs/remotes/origin/master
 	struct mISDNdevice	*dev;
 	struct mISDNversion	ver;
 
@@ -794,10 +922,14 @@ base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 			di.protocol = dev->D.protocol;
 			memcpy(di.channelmap, dev->channelmap,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sizeof(di.channelmap));
 =======
 			       sizeof(di.channelmap));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       sizeof(di.channelmap));
+>>>>>>> refs/remotes/origin/master
 			di.nrbchan = dev->nrbchan;
 			strcpy(di.name, dev_name(&dev->dev));
 			if (copy_to_user((void __user *)arg, &di, sizeof(di)))
@@ -806,6 +938,7 @@ base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 			err = -ENODEV;
 		break;
 	case IMSETDEVNAME:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		{
 			struct mISDN_devrename dn;
@@ -822,6 +955,8 @@ base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 		}
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		struct mISDN_devrename dn;
 		if (copy_from_user(&dn, (void __user *)arg,
@@ -836,7 +971,10 @@ base_sock_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 			err = -ENODEV;
 	}
 	break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		err = -EINVAL;
 	}
@@ -922,10 +1060,14 @@ mISDN_sock_create(struct net *net, struct socket *sock, int proto, int kern)
 	int err = -EPROTONOSUPPORT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch	(proto) {
 =======
 	switch (proto) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (proto) {
+>>>>>>> refs/remotes/origin/master
 	case ISDN_P_BASE:
 		err = base_sock_create(net, sock, proto);
 		break;
@@ -974,6 +1116,9 @@ misdn_sock_cleanup(void)
 	sock_unregister(PF_ISDN);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

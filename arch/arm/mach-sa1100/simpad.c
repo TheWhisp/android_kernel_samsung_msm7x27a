@@ -8,6 +8,7 @@
 #include <linux/tty.h>
 #include <linux/proc_fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/string.h> 
 #include <linux/pm.h>
 #include <linux/platform_device.h>
@@ -19,6 +20,11 @@
 =======
 #include <linux/string.h>
 #include <linux/pm.h>
+=======
+#include <linux/string.h>
+#include <linux/pm.h>
+#include <linux/platform_data/sa11x0-serial.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/mfd/ucb1x00.h>
 #include <linux/mtd/mtd.h>
@@ -26,14 +32,21 @@
 #include <linux/io.h>
 #include <linux/gpio.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/hardware.h>
 #include <asm/setup.h>
+=======
+#include <mach/hardware.h>
+#include <asm/setup.h>
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <asm/mach/serial_sa1100.h>
 #include <mach/mcp.h>
 #include <mach/simpad.h>
@@ -71,6 +84,10 @@ void clear_cs3_bit(int value)
 EXPORT_SYMBOL(set_cs3_bit);
 EXPORT_SYMBOL(clear_cs3_bit);
 =======
+=======
+#include <linux/platform_data/mfd-mcp-sa11x0.h>
+#include <mach/simpad.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 
 #include <linux/serial_core.h>
@@ -161,7 +178,10 @@ static int cs3_gpio_direction_output(struct gpio_chip *chip, unsigned offset,
 	cs3_gpio_set(chip, offset, value);
 	return 0;
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct map_desc simpad_io_desc[] __initdata = {
 	{	/* MQ200 */
@@ -169,6 +189,7 @@ static struct map_desc simpad_io_desc[] __initdata = {
 		.pfn		= __phys_to_pfn(0x4b800000),
 		.length		= 0x00800000,
 		.type		= MT_DEVICE
+<<<<<<< HEAD
 <<<<<<< HEAD
 	}, {	/* Paules CS3, write only */
 		.virtual	=  0xf1000000,
@@ -178,6 +199,11 @@ static struct map_desc simpad_io_desc[] __initdata = {
 		.virtual	= CS3_BASE,
 		.pfn		= __phys_to_pfn(SA1100_CS3_PHYS),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}, {	/* Simpad CS3 */
+		.virtual	= (unsigned long)CS3_BASE,
+		.pfn		= __phys_to_pfn(SA1100_CS3_PHYS),
+>>>>>>> refs/remotes/origin/master
 		.length		= 0x00100000,
 		.type		= MT_DEVICE
 	},
@@ -190,6 +216,7 @@ static void simpad_uart_pm(struct uart_port *port, u_int state, u_int oldstate)
 		if (state)
 		{
 <<<<<<< HEAD
+<<<<<<< HEAD
 			clear_cs3_bit(RS232_ON);
 			clear_cs3_bit(DECT_POWER_ON);
 		}else
@@ -197,13 +224,18 @@ static void simpad_uart_pm(struct uart_port *port, u_int state, u_int oldstate)
 			set_cs3_bit(RS232_ON);
 			set_cs3_bit(DECT_POWER_ON);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			simpad_clear_cs3_bit(RS232_ON);
 			simpad_clear_cs3_bit(DECT_POWER_ON);
 		}else
 		{
 			simpad_set_cs3_bit(RS232_ON);
 			simpad_set_cs3_bit(DECT_POWER_ON);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -239,6 +271,7 @@ static struct flash_platform_data simpad_flash_data = {
 
 static struct resource simpad_flash_resources [] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{
 		.start     = SA1100_CS0_PHYS,
 		.end       = SA1100_CS0_PHYS + SZ_16M -1,
@@ -249,22 +282,31 @@ static struct resource simpad_flash_resources [] = {
 		.flags     = IORESOURCE_MEM,
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_16M),
 	DEFINE_RES_MEM(SA1100_CS1_PHYS, SZ_16M),
 };
 
 static struct ucb1x00_plat_data simpad_ucb1x00_data = {
 	.gpio_base	= SIMPAD_UCB1X00_GPIO_BASE,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct mcp_plat_data simpad_mcp_data = {
 	.mccr0		= MCCR0_ADM,
 	.sclk_rate	= 11981000,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.codec_pdata	= &simpad_ucb1x00_data,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.codec_pdata	= &simpad_ucb1x00_data,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -276,15 +318,21 @@ static void __init simpad_map_io(void)
 	iotable_init(simpad_io_desc, ARRAY_SIZE(simpad_io_desc));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_cs3_bit (EN1 | EN0 | LED2_ON | DISPLAY_ON | RS232_ON |
 		      ENABLE_5V | RESET_SIMCARD | DECT_POWER_ON);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Initialize CS3 */
 	cs3_shadow = (EN1 | EN0 | LED2_ON | DISPLAY_ON |
 		RS232_ON | ENABLE_5V | RESET_SIMCARD | DECT_POWER_ON);
 	__simpad_write_cs3(); /* Spinlocks not yet initialized */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
         sa1100_register_uart_fns(&simpad_port_fns);
 	sa1100_register_uart(0, 3);  /* serial interface */
@@ -311,6 +359,7 @@ static void __init simpad_map_io(void)
 static void simpad_power_off(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_disable(); // was cli
 	set_cs3(0x800);        /* only SD_MEDIAQ */
 
@@ -319,6 +368,8 @@ static void simpad_power_off(void)
 	/* enable wake-up on GPIO0 (Assabet...) */
 	PWER = GFER = GRER = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_disable();
 	cs3_shadow = SD_MEDIAQ;
 	__simpad_write_cs3(); /* Bypass spinlock here */
@@ -327,7 +378,10 @@ static void simpad_power_off(void)
 	PCFR = (PCFR_OPDE | PCFR_FP | PCFR_FS);
 	/* enable wake-up on GPIO0 */
 	PWER = GFER = GRER = PWER_GPIO0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * set scratchpad to zero, just in case it is used as a
 	 * restart address by the bootloader.
@@ -344,7 +398,10 @@ static void simpad_power_off(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * gpio_keys
 */
@@ -430,7 +487,10 @@ static struct platform_device simpad_i2c = {
 		.platform_data = &simpad_i2c_data,
 	},
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * MediaQ Video Device
@@ -442,14 +502,20 @@ static struct platform_device simpad_mq200fb = {
 
 static struct platform_device *devices[] __initdata = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&simpad_mq200fb
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	&simpad_keys,
 	&simpad_polled_keys,
 	&simpad_mq200fb,
 	&simpad_gpio_leds,
 	&simpad_i2c,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -459,9 +525,12 @@ static int __init simpad_init(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pm_power_off = simpad_power_off;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&cs3_lock);
 
 	cs3_gpio.label = "simpad_cs3";
@@ -478,7 +547,10 @@ static int __init simpad_init(void)
 	pm_power_off = simpad_power_off;
 
 	sa11x0_ppc_configure_mcp();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sa11x0_register_mtd(&simpad_flash_data, simpad_flash_resources,
 			      ARRAY_SIZE(simpad_flash_resources));
 	sa11x0_register_mcp(&simpad_mcp_data);
@@ -496,16 +568,25 @@ arch_initcall(simpad_init);
 MACHINE_START(SIMPAD, "Simpad")
 	/* Maintainer: Holger Freyther */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xc0000100,
 	.map_io		= simpad_map_io,
 	.init_irq	= sa1100_init_irq,
 	.timer		= &sa1100_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= simpad_map_io,
 	.nr_irqs	= SA1100_NR_IRQS,
 	.init_irq	= sa1100_init_irq,
+<<<<<<< HEAD
 	.timer		= &sa1100_timer,
 	.restart	= sa11x0_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= sa11x0_init_late,
+	.init_time	= sa1100_timer_init,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -20,7 +20,14 @@ Supported adapters:
     Datasheet: available on http://linux.via.com.tw
 
   * VIA Technologies, Inc. VX855/VX875
+<<<<<<< HEAD
     Datasheet: Availability unknown
+=======
+    Datasheet: available on http://linux.via.com.tw
+
+  * VIA Technologies, Inc. VX900
+    Datasheet: available on http://linux.via.com.tw
+>>>>>>> refs/remotes/origin/master
 
 Authors:
 	Kyösti Mälkki <kmalkki@cc.hut.fi>,
@@ -57,6 +64,10 @@ Your lspci -n listing must show one of these :
  device 1106:8324   (CX700)
  device 1106:8353   (VX800/VX820)
  device 1106:8409   (VX855/VX875)
+<<<<<<< HEAD
+=======
+ device 1106:8410   (VX900)
+>>>>>>> refs/remotes/origin/master
 
 If none of these show up, you should look in the BIOS for settings like
 enable ACPI / SMBus or even USB.

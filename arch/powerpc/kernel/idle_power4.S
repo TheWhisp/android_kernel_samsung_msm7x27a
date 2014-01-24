@@ -15,9 +15,13 @@
 #include <asm/ppc_asm.h>
 #include <asm/asm-offsets.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/irqflags.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/irqflags.h>
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG
 
@@ -34,6 +38,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_CAN_NAP)
 	beqlr
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Go to NAP now */
 	mfmsr	r7
 	rldicl	r0,r7,48,1
@@ -43,6 +48,8 @@ END_FTR_SECTION_IFCLR(CPU_FTR_CAN_NAP)
 	stb	r0,PACASOFTIRQEN(r13)	/* we'll hard-enable shortly */
 	stb	r0,PACAHARDIRQEN(r13)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Hard disable interrupts */
 	mfmsr	r7
 	rldicl	r0,r7,48,1
@@ -68,12 +75,19 @@ END_FTR_SECTION_IFCLR(CPU_FTR_CAN_NAP)
 
 	li	r0,1
 	stb	r0,PACASOFTIRQEN(r13)	/* we'll hard-enable shortly */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 BEGIN_FTR_SECTION
 	DSSALL
 	sync
 END_FTR_SECTION_IFSET(CPU_FTR_ALTIVEC)
+<<<<<<< HEAD
 	clrrdi	r9,r1,THREAD_SHIFT	/* current thread_info */
+=======
+	CURRENT_THREAD_INFO(r9, r1)
+>>>>>>> refs/remotes/origin/master
 	ld	r8,TI_LOCAL_FLAGS(r9)	/* set napping bit */
 	ori	r8,r8,_TLF_NAPPING	/* so when we take an exception */
 	std	r8,TI_LOCAL_FLAGS(r9)	/* it will return to our caller */

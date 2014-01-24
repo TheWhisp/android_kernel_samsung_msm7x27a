@@ -3,10 +3,16 @@
 
 #include <linux/tracepoint.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/vmx.h>
 #include <asm/svm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/vmx.h>
+#include <asm/svm.h>
+#include <asm/clocksource.h>
+>>>>>>> refs/remotes/origin/master
 
 #undef TRACE_SYSTEM
 #define TRACE_SYSTEM kvm
@@ -187,6 +193,7 @@ TRACE_EVENT(kvm_apic,
 #define KVM_ISA_SVM   2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define VMX_EXIT_REASONS \
 	{ EXIT_REASON_EXCEPTION_NMI,		"EXCEPTION_NMI" }, \
@@ -278,6 +285,8 @@ TRACE_EVENT(kvm_apic,
 	{ SVM_EXIT_NPF,				"npf" }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Tracepoint for kvm guest exit:
  */
@@ -303,6 +312,7 @@ TRACE_EVENT(kvm_exit,
 
 	TP_printk("reason %s rip 0x%lx info %llx %llx",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 ftrace_print_symbols_seq(p, __entry->exit_reason,
 					  kvm_x86_ops->exit_reasons_str),
 =======
@@ -310,6 +320,11 @@ TRACE_EVENT(kvm_exit,
 		 __print_symbolic(__entry->exit_reason, VMX_EXIT_REASONS) :
 		 __print_symbolic(__entry->exit_reason, SVM_EXIT_REASONS),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 (__entry->isa == KVM_ISA_VMX) ?
+		 __print_symbolic(__entry->exit_reason, VMX_EXIT_REASONS) :
+		 __print_symbolic(__entry->exit_reason, SVM_EXIT_REASONS),
+>>>>>>> refs/remotes/origin/master
 		 __entry->guest_rip, __entry->info1, __entry->info2)
 );
 
@@ -528,6 +543,43 @@ TRACE_EVENT(kvm_apic_accept_irq,
 		  __entry->coalesced ? " (coalesced)" : "")
 );
 
+<<<<<<< HEAD
+=======
+TRACE_EVENT(kvm_eoi,
+	    TP_PROTO(struct kvm_lapic *apic, int vector),
+	    TP_ARGS(apic, vector),
+
+	TP_STRUCT__entry(
+		__field(	__u32,		apicid		)
+		__field(	int,		vector		)
+	),
+
+	TP_fast_assign(
+		__entry->apicid		= apic->vcpu->vcpu_id;
+		__entry->vector		= vector;
+	),
+
+	TP_printk("apicid %x vector %d", __entry->apicid, __entry->vector)
+);
+
+TRACE_EVENT(kvm_pv_eoi,
+	    TP_PROTO(struct kvm_lapic *apic, int vector),
+	    TP_ARGS(apic, vector),
+
+	TP_STRUCT__entry(
+		__field(	__u32,		apicid		)
+		__field(	int,		vector		)
+	),
+
+	TP_fast_assign(
+		__entry->apicid		= apic->vcpu->vcpu_id;
+		__entry->vector		= vector;
+	),
+
+	TP_printk("apicid %x vector %d", __entry->apicid, __entry->vector)
+);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Tracepoint for nested VMRUN
  */
@@ -590,6 +642,7 @@ TRACE_EVENT(kvm_nested_vmexit,
 	    TP_PROTO(__u64 rip, __u32 exit_code,
 		     __u64 exit_info1, __u64 exit_info2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     __u32 exit_int_info, __u32 exit_int_info_err),
 	    TP_ARGS(rip, exit_code, exit_info1, exit_info2,
 		    exit_int_info, exit_int_info_err),
@@ -598,6 +651,11 @@ TRACE_EVENT(kvm_nested_vmexit,
 	    TP_ARGS(rip, exit_code, exit_info1, exit_info2,
 		    exit_int_info, exit_int_info_err, isa),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     __u32 exit_int_info, __u32 exit_int_info_err, __u32 isa),
+	    TP_ARGS(rip, exit_code, exit_info1, exit_info2,
+		    exit_int_info, exit_int_info_err, isa),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__field(	__u64,		rip			)
@@ -607,9 +665,13 @@ TRACE_EVENT(kvm_nested_vmexit,
 		__field(	__u32,		exit_int_info		)
 		__field(	__u32,		exit_int_info_err	)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		__field(	__u32,		isa			)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__field(	__u32,		isa			)
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_fast_assign(
@@ -620,13 +682,18 @@ TRACE_EVENT(kvm_nested_vmexit,
 		__entry->exit_int_info		= exit_int_info;
 		__entry->exit_int_info_err	= exit_int_info_err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		__entry->isa			= isa;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__entry->isa			= isa;
+>>>>>>> refs/remotes/origin/master
 	),
 	TP_printk("rip: 0x%016llx reason: %s ext_inf1: 0x%016llx "
 		  "ext_inf2: 0x%016llx ext_int: 0x%08x ext_int_err: 0x%08x",
 		  __entry->rip,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		  ftrace_print_symbols_seq(p, __entry->exit_code,
 					   kvm_x86_ops->exit_reasons_str),
@@ -635,6 +702,11 @@ TRACE_EVENT(kvm_nested_vmexit,
 		 __print_symbolic(__entry->exit_code, VMX_EXIT_REASONS) :
 		 __print_symbolic(__entry->exit_code, SVM_EXIT_REASONS),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 (__entry->isa == KVM_ISA_VMX) ?
+		 __print_symbolic(__entry->exit_code, VMX_EXIT_REASONS) :
+		 __print_symbolic(__entry->exit_code, SVM_EXIT_REASONS),
+>>>>>>> refs/remotes/origin/master
 		  __entry->exit_info1, __entry->exit_info2,
 		  __entry->exit_int_info, __entry->exit_int_info_err)
 );
@@ -646,6 +718,7 @@ TRACE_EVENT(kvm_nested_vmexit_inject,
 	    TP_PROTO(__u32 exit_code,
 		     __u64 exit_info1, __u64 exit_info2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     __u32 exit_int_info, __u32 exit_int_info_err),
 	    TP_ARGS(exit_code, exit_info1, exit_info2,
 		    exit_int_info, exit_int_info_err),
@@ -654,6 +727,11 @@ TRACE_EVENT(kvm_nested_vmexit_inject,
 	    TP_ARGS(exit_code, exit_info1, exit_info2,
 		    exit_int_info, exit_int_info_err, isa),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     __u32 exit_int_info, __u32 exit_int_info_err, __u32 isa),
+	    TP_ARGS(exit_code, exit_info1, exit_info2,
+		    exit_int_info, exit_int_info_err, isa),
+>>>>>>> refs/remotes/origin/master
 
 	TP_STRUCT__entry(
 		__field(	__u32,		exit_code		)
@@ -662,9 +740,13 @@ TRACE_EVENT(kvm_nested_vmexit_inject,
 		__field(	__u32,		exit_int_info		)
 		__field(	__u32,		exit_int_info_err	)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		__field(	__u32,		isa			)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__field(	__u32,		isa			)
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_fast_assign(
@@ -674,13 +756,18 @@ TRACE_EVENT(kvm_nested_vmexit_inject,
 		__entry->exit_int_info		= exit_int_info;
 		__entry->exit_int_info_err	= exit_int_info_err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		__entry->isa			= isa;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__entry->isa			= isa;
+>>>>>>> refs/remotes/origin/master
 	),
 
 	TP_printk("reason: %s ext_inf1: 0x%016llx "
 		  "ext_inf2: 0x%016llx ext_int: 0x%08x ext_int_err: 0x%08x",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		  ftrace_print_symbols_seq(p, __entry->exit_code,
 					   kvm_x86_ops->exit_reasons_str),
@@ -689,6 +776,11 @@ TRACE_EVENT(kvm_nested_vmexit_inject,
 		 __print_symbolic(__entry->exit_code, VMX_EXIT_REASONS) :
 		 __print_symbolic(__entry->exit_code, SVM_EXIT_REASONS),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 (__entry->isa == KVM_ISA_VMX) ?
+		 __print_symbolic(__entry->exit_code, VMX_EXIT_REASONS) :
+		 __print_symbolic(__entry->exit_code, SVM_EXIT_REASONS),
+>>>>>>> refs/remotes/origin/master
 		__entry->exit_info1, __entry->exit_info2,
 		__entry->exit_int_info, __entry->exit_int_info_err)
 );
@@ -755,6 +847,7 @@ TRACE_EVENT(kvm_skinit,
 		  __entry->rip, __entry->slb)
 );
 
+<<<<<<< HEAD
 #define __print_insn(insn, ilen) ({		                 \
 	int i;							 \
 	const char *ret = p->buffer + p->len;			 \
@@ -765,6 +858,8 @@ TRACE_EVENT(kvm_skinit,
 	ret;							 \
 	})
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define KVM_EMUL_INSN_F_CR0_PE (1 << 0)
 #define KVM_EMUL_INSN_F_EFL_VM (1 << 1)
 #define KVM_EMUL_INSN_F_CS_D   (1 << 2)
@@ -819,6 +914,7 @@ TRACE_EVENT(kvm_emulate_insn,
 
 	TP_fast_assign(
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__entry->rip = vcpu->arch.emulate_ctxt.decode.fetch.start;
 		__entry->csbase = kvm_x86_ops->get_segment_base(vcpu, VCPU_SREG_CS);
 		__entry->len = vcpu->arch.emulate_ctxt.decode.eip
@@ -826,13 +922,18 @@ TRACE_EVENT(kvm_emulate_insn,
 		memcpy(__entry->insn,
 		       vcpu->arch.emulate_ctxt.decode.fetch.data,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		__entry->rip = vcpu->arch.emulate_ctxt.fetch.start;
 		__entry->csbase = kvm_x86_ops->get_segment_base(vcpu, VCPU_SREG_CS);
 		__entry->len = vcpu->arch.emulate_ctxt._eip
 			       - vcpu->arch.emulate_ctxt.fetch.start;
 		memcpy(__entry->insn,
 		       vcpu->arch.emulate_ctxt.fetch.data,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       15);
 		__entry->flags = kei_decode_mode(vcpu->arch.emulate_ctxt.mode);
 		__entry->failed = failed;
@@ -840,7 +941,11 @@ TRACE_EVENT(kvm_emulate_insn,
 
 	TP_printk("%x:%llx:%s (%s)%s",
 		  __entry->csbase, __entry->rip,
+<<<<<<< HEAD
 		  __print_insn(__entry->insn, __entry->len),
+=======
+		  __print_hex(__entry->insn, __entry->len),
+>>>>>>> refs/remotes/origin/master
 		  __print_symbolic(__entry->flags,
 				   kvm_trace_symbol_emul_flags),
 		  __entry->failed ? " failed" : ""
@@ -851,7 +956,10 @@ TRACE_EVENT(kvm_emulate_insn,
 #define trace_kvm_emulate_insn_failed(vcpu) trace_kvm_emulate_insn(vcpu, 1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 TRACE_EVENT(
 	vcpu_match_mmio,
 	TP_PROTO(gva_t gva, gpa_t gpa, bool write, bool gpa_match),
@@ -875,7 +983,93 @@ TRACE_EVENT(
 		  __entry->write ? "Write" : "Read",
 		  __entry->gpa_match ? "GPA" : "GVA")
 );
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+TRACE_EVENT(kvm_write_tsc_offset,
+	TP_PROTO(unsigned int vcpu_id, __u64 previous_tsc_offset,
+		 __u64 next_tsc_offset),
+	TP_ARGS(vcpu_id, previous_tsc_offset, next_tsc_offset),
+
+	TP_STRUCT__entry(
+		__field( unsigned int,	vcpu_id				)
+		__field(	__u64,	previous_tsc_offset		)
+		__field(	__u64,	next_tsc_offset			)
+	),
+
+	TP_fast_assign(
+		__entry->vcpu_id		= vcpu_id;
+		__entry->previous_tsc_offset	= previous_tsc_offset;
+		__entry->next_tsc_offset	= next_tsc_offset;
+	),
+
+	TP_printk("vcpu=%u prev=%llu next=%llu", __entry->vcpu_id,
+		  __entry->previous_tsc_offset, __entry->next_tsc_offset)
+);
+
+#ifdef CONFIG_X86_64
+
+#define host_clocks					\
+	{VCLOCK_NONE, "none"},				\
+	{VCLOCK_TSC,  "tsc"},				\
+	{VCLOCK_HPET, "hpet"}				\
+
+TRACE_EVENT(kvm_update_master_clock,
+	TP_PROTO(bool use_master_clock, unsigned int host_clock, bool offset_matched),
+	TP_ARGS(use_master_clock, host_clock, offset_matched),
+
+	TP_STRUCT__entry(
+		__field(		bool,	use_master_clock	)
+		__field(	unsigned int,	host_clock		)
+		__field(		bool,	offset_matched		)
+	),
+
+	TP_fast_assign(
+		__entry->use_master_clock	= use_master_clock;
+		__entry->host_clock		= host_clock;
+		__entry->offset_matched		= offset_matched;
+	),
+
+	TP_printk("masterclock %d hostclock %s offsetmatched %u",
+		  __entry->use_master_clock,
+		  __print_symbolic(__entry->host_clock, host_clocks),
+		  __entry->offset_matched)
+);
+
+TRACE_EVENT(kvm_track_tsc,
+	TP_PROTO(unsigned int vcpu_id, unsigned int nr_matched,
+		 unsigned int online_vcpus, bool use_master_clock,
+		 unsigned int host_clock),
+	TP_ARGS(vcpu_id, nr_matched, online_vcpus, use_master_clock,
+		host_clock),
+
+	TP_STRUCT__entry(
+		__field(	unsigned int,	vcpu_id			)
+		__field(	unsigned int,	nr_vcpus_matched_tsc	)
+		__field(	unsigned int,	online_vcpus		)
+		__field(	bool,		use_master_clock	)
+		__field(	unsigned int,	host_clock		)
+	),
+
+	TP_fast_assign(
+		__entry->vcpu_id		= vcpu_id;
+		__entry->nr_vcpus_matched_tsc	= nr_matched;
+		__entry->online_vcpus		= online_vcpus;
+		__entry->use_master_clock	= use_master_clock;
+		__entry->host_clock		= host_clock;
+	),
+
+	TP_printk("vcpu_id %u masterclock %u offsetmatched %u nr_online %u"
+		  " hostclock %s",
+		  __entry->vcpu_id, __entry->use_master_clock,
+		  __entry->nr_vcpus_matched_tsc, __entry->online_vcpus,
+		  __print_symbolic(__entry->host_clock, host_clocks))
+);
+
+#endif /* CONFIG_X86_64 */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _TRACE_KVM_H */
 
 #undef TRACE_INCLUDE_PATH

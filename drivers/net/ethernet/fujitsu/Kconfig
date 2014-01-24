@@ -5,7 +5,11 @@
 config NET_VENDOR_FUJITSU
 	bool "Fujitsu devices"
 	default y
+<<<<<<< HEAD
 	depends on ISA || PCMCIA || ((ISA || MCA_LEGACY) && EXPERIMENTAL)
+=======
+	depends on PCMCIA
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from
@@ -17,6 +21,7 @@ config NET_VENDOR_FUJITSU
 
 if NET_VENDOR_FUJITSU
 
+<<<<<<< HEAD
 config AT1700
 	tristate "AT1700/1720 support (EXPERIMENTAL)"
 	depends on (ISA || MCA_LEGACY) && EXPERIMENTAL
@@ -29,6 +34,8 @@ config AT1700
 	  To compile this driver as a module, choose M here. The module
 	  will be called at1700.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config PCMCIA_FMVJ18X
 	tristate "Fujitsu FMV-J18x PCMCIA support"
 	depends on PCMCIA
@@ -40,6 +47,7 @@ config PCMCIA_FMVJ18X
 	  To compile this driver as a module, choose M here: the module will be
 	  called fmvj18x_cs.  If unsure, say N.
 
+<<<<<<< HEAD
 config ETH16I
 	tristate "ICL EtherTeam 16i/32 support"
 	depends on ISA
@@ -51,4 +59,6 @@ config ETH16I
 	  To compile this driver as a module, choose M here. The module
 	  will be called eth16i.
 
+=======
+>>>>>>> refs/remotes/origin/master
 endif # NET_VENDOR_FUJITSU

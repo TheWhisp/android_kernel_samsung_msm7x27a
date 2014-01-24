@@ -96,10 +96,14 @@ struct mace_video {
  */
 struct mace_ethernet {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	volatile unsigned long mac_ctrl;
 =======
 	volatile u64 mac_ctrl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	volatile u64 mac_ctrl;
+>>>>>>> refs/remotes/origin/master
 	volatile unsigned long int_stat;
 	volatile unsigned long dma_ctrl;
 	volatile unsigned long timer;
@@ -254,12 +258,21 @@ struct mace_ps2 {
  * -> drivers/i2c/algos/i2c-algo-sgi.c */
 struct mace_i2c {
 	volatile unsigned long config;
+<<<<<<< HEAD
 #define MACEI2C_RESET           BIT(0)
 #define MACEI2C_FAST            BIT(1)
 #define MACEI2C_DATA_OVERRIDE   BIT(2)
 #define MACEI2C_CLOCK_OVERRIDE  BIT(3)
 #define MACEI2C_DATA_STATUS     BIT(4)
 #define MACEI2C_CLOCK_STATUS    BIT(5)
+=======
+#define MACEI2C_RESET		BIT(0)
+#define MACEI2C_FAST		BIT(1)
+#define MACEI2C_DATA_OVERRIDE	BIT(2)
+#define MACEI2C_CLOCK_OVERRIDE	BIT(3)
+#define MACEI2C_DATA_STATUS	BIT(4)
+#define MACEI2C_CLOCK_STATUS	BIT(5)
+>>>>>>> refs/remotes/origin/master
 	volatile unsigned long control;
 	volatile unsigned long data;
 };

@@ -19,18 +19,33 @@
 #include <linux/errno.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/clk.h>
 #include <linux/mutex.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <linux/of_platform.h>
 #include <asm/mpc5xxx.h>
 #include <asm/clk_interface.h>
 
+=======
+#include <linux/of_address.h>
+#include <linux/of_platform.h>
+#include <asm/mpc5xxx.h>
+#include <asm/mpc5121.h>
+#include <asm/clk_interface.h>
+
+#include "mpc512x.h"
+
+>>>>>>> refs/remotes/origin/master
 #undef CLK_DEBUG
 
 static int clocks_initialized;
@@ -57,14 +72,24 @@ static DEFINE_MUTEX(clocks_mutex);
 static struct clk *mpc5121_clk_get(struct device *dev, const char *id)
 {
 	struct clk *p, *clk = ERR_PTR(-ENOENT);
+<<<<<<< HEAD
 	int dev_match = 0;
 	int id_match = 0;
+=======
+	int dev_match;
+	int id_match;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev == NULL || id == NULL)
 		return clk;
 
 	mutex_lock(&clocks_mutex);
 	list_for_each_entry(p, &clocks, node) {
+<<<<<<< HEAD
+=======
+		dev_match = id_match = 0;
+
+>>>>>>> refs/remotes/origin/master
 		if (dev == p->dev)
 			dev_match++;
 		if (strcmp(id, p->name) == 0)
@@ -123,7 +148,11 @@ struct mpc512x_clockctl {
 	u32 dccr;		/* DIU Clk Cnfg Reg */
 };
 
+<<<<<<< HEAD
 struct mpc512x_clockctl __iomem *clockctl;
+=======
+static struct mpc512x_clockctl __iomem *clockctl;
+>>>>>>> refs/remotes/origin/master
 
 static int mpc5121_clk_enable(struct clk *clk)
 {
@@ -185,7 +214,11 @@ static unsigned long spmf_mult(void)
 		36, 40, 44, 48,
 		52, 56, 60, 64
 	};
+<<<<<<< HEAD
 	int spmf = (clockctl->spmr >> 24) & 0xf;
+=======
+	int spmf = (in_be32(&clockctl->spmr) >> 24) & 0xf;
+>>>>>>> refs/remotes/origin/master
 	return spmf_to_mult[spmf];
 }
 
@@ -207,7 +240,11 @@ static unsigned long sysdiv_div_x_2(void)
 		52, 56, 58, 62,
 		60, 64, 66,
 	};
+<<<<<<< HEAD
 	int sysdiv = (clockctl->scfr2 >> 26) & 0x3f;
+=======
+	int sysdiv = (in_be32(&clockctl->scfr2) >> 26) & 0x3f;
+>>>>>>> refs/remotes/origin/master
 	return sysdiv_to_div_x_2[sysdiv];
 }
 
@@ -231,7 +268,11 @@ static unsigned long sys_to_ref(unsigned long rate)
 
 static long ips_to_ref(unsigned long rate)
 {
+<<<<<<< HEAD
 	int ips_div = (clockctl->scfr1 >> 23) & 0x7;
+=======
+	int ips_div = (in_be32(&clockctl->scfr1) >> 23) & 0x7;
+>>>>>>> refs/remotes/origin/master
 
 	rate *= ips_div;	/* csb_clk = ips_clk * ips_div */
 	rate *= 2;		/* sys_clk = csb_clk * 2 */
@@ -285,7 +326,11 @@ static struct clk sys_clk = {
 
 static void diu_clk_calc(struct clk *clk)
 {
+<<<<<<< HEAD
 	int diudiv_x_2 = clockctl->scfr1 & 0xff;
+=======
+	int diudiv_x_2 = in_be32(&clockctl->scfr1) & 0xff;
+>>>>>>> refs/remotes/origin/master
 	unsigned long rate;
 
 	rate = sys_clk.rate;
@@ -312,7 +357,11 @@ static void half_clk_calc(struct clk *clk)
 
 static void generic_div_clk_calc(struct clk *clk)
 {
+<<<<<<< HEAD
 	int div = (clockctl->scfr1 >> clk->div_shift) & 0x7;
+=======
+	int div = (in_be32(&clockctl->scfr1) >> clk->div_shift) & 0x7;
+>>>>>>> refs/remotes/origin/master
 
 	clk->rate = clk->parent->rate / div;
 }
@@ -330,7 +379,11 @@ static struct clk csb_clk = {
 
 static void e300_clk_calc(struct clk *clk)
 {
+<<<<<<< HEAD
 	int spmf = (clockctl->spmr >> 16) & 0xf;
+=======
+	int spmf = (in_be32(&clockctl->spmr) >> 16) & 0xf;
+>>>>>>> refs/remotes/origin/master
 	int ratex2 = clk->parent->rate * spmf;
 
 	clk->rate = ratex2 / 2;
@@ -552,7 +605,11 @@ static struct clk ac97_clk = {
 	.calc = ac97_clk_calc,
 };
 
+<<<<<<< HEAD
 struct clk *rate_clks[] = {
+=======
+static struct clk *rate_clks[] = {
+>>>>>>> refs/remotes/origin/master
 	&ref_clk,
 	&sys_clk,
 	&diu_clk,
@@ -608,7 +665,11 @@ static void rate_clks_init(void)
  * There are two clk enable registers with 32 enable bits each
  * psc clocks and device clocks are all stored in dev_clks
  */
+<<<<<<< HEAD
 struct clk dev_clks[2][32];
+=======
+static struct clk dev_clks[2][32];
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Given a psc number return the dev_clk
@@ -649,12 +710,20 @@ static void psc_calc_rate(struct clk *clk, int pscnum, struct device_node *np)
 	out_be32(&clockctl->pccr[pscnum], 0x00020000);
 	out_be32(&clockctl->pccr[pscnum], 0x00030000);
 
+<<<<<<< HEAD
 	if (clockctl->pccr[pscnum] & 0x80) {
+=======
+	if (in_be32(&clockctl->pccr[pscnum]) & 0x80) {
+>>>>>>> refs/remotes/origin/master
 		clk->rate = spdif_rxclk.rate;
 		return;
 	}
 
+<<<<<<< HEAD
 	switch ((clockctl->pccr[pscnum] >> 14) & 0x3) {
+=======
+	switch ((in_be32(&clockctl->pccr[pscnum]) >> 14) & 0x3) {
+>>>>>>> refs/remotes/origin/master
 	case 0:
 		mclk_src = sys_clk.rate;
 		break;
@@ -669,7 +738,11 @@ static void psc_calc_rate(struct clk *clk, int pscnum, struct device_node *np)
 		break;
 	}
 
+<<<<<<< HEAD
 	mclk_div = ((clockctl->pccr[pscnum] >> 17) & 0x7fff) + 1;
+=======
+	mclk_div = ((in_be32(&clockctl->pccr[pscnum]) >> 17) & 0x7fff) + 1;
+>>>>>>> refs/remotes/origin/master
 	clk->rate = mclk_src / mclk_div;
 }
 
@@ -681,6 +754,7 @@ static void psc_calc_rate(struct clk *clk, int pscnum, struct device_node *np)
 static void psc_clks_init(void)
 {
 	struct device_node *np;
+<<<<<<< HEAD
 	const u32 *cell_index;
 	struct platform_device *ofdev;
 
@@ -688,6 +762,19 @@ static void psc_clks_init(void)
 		cell_index = of_get_property(np, "cell-index", NULL);
 		if (cell_index) {
 			int pscnum = *cell_index;
+=======
+	struct platform_device *ofdev;
+	u32 reg;
+	const char *psc_compat;
+
+	psc_compat = mpc512x_select_psc_compat();
+	if (!psc_compat)
+		return;
+
+	for_each_compatible_node(np, NULL, psc_compat) {
+		if (!of_property_read_u32(np, "reg", &reg)) {
+			int pscnum = (reg & 0xf00) >> 8;
+>>>>>>> refs/remotes/origin/master
 			struct clk *clk = psc_dev_clk(pscnum);
 
 			clk->flags = CLK_HAS_RATE | CLK_HAS_CTRL;
@@ -697,7 +784,11 @@ static void psc_clks_init(void)
 			 * AC97 is special rate clock does
 			 * not go through normal path
 			 */
+<<<<<<< HEAD
 			if (strcmp("ac97", np->name) == 0)
+=======
+			if (of_device_is_compatible(np, "fsl,mpc5121-psc-ac97"))
+>>>>>>> refs/remotes/origin/master
 				clk->rate = ac97_clk.rate;
 			else
 				psc_calc_rate(clk, pscnum, np);

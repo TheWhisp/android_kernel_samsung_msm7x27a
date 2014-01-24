@@ -34,18 +34,24 @@
 #include <net/route.h> /* for struct rtable and routing */
 #include <net/icmp.h> /* icmp_send */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/param.h> /* for HZ */
 #include <linux/uaccess.h>
 #include <asm/byteorder.h> /* for htons etc. */
 #include <asm/system.h> /* save/restore_flags */
 #include <asm/atomic.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <net/arp.h>
 #include <linux/param.h> /* for HZ */
 #include <linux/uaccess.h>
 #include <asm/byteorder.h> /* for htons etc. */
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 #include "resources.h"
@@ -54,12 +60,17 @@
 static struct net_device *clip_devs;
 static struct atm_vcc *atmarpd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct neigh_table clip_tbl;
 static struct timer_list idle_timer;
 =======
 static struct timer_list idle_timer;
 static const struct neigh_ops clip_neigh_ops;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct timer_list idle_timer;
+static const struct neigh_ops clip_neigh_ops;
+>>>>>>> refs/remotes/origin/master
 
 static int to_atmarpd(enum atmarp_ctrl_type type, int itf, __be32 ip)
 {
@@ -133,16 +144,22 @@ out:
 static int neigh_check_cb(struct neighbour *n)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct atmarp_entry *entry = NEIGH2ENTRY(n);
 	struct clip_vcc *cv;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct atmarp_entry *entry = neighbour_priv(n);
 	struct clip_vcc *cv;
 
 	if (n->ops != &clip_neigh_ops)
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (cv = entry->vccs; cv; cv = cv->next) {
 		unsigned long exp = cv->last_use + cv->idle_timeout;
 
@@ -175,16 +192,22 @@ static int neigh_check_cb(struct neighbour *n)
 static void idle_timer_check(unsigned long dummy)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	write_lock(&clip_tbl.lock);
 	__neigh_for_each_release(&clip_tbl, neigh_check_cb);
 	mod_timer(&idle_timer, jiffies + CLIP_CHECK_INTERVAL * HZ);
 	write_unlock(&clip_tbl.lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	write_lock(&arp_tbl.lock);
 	__neigh_for_each_release(&arp_tbl, neigh_check_cb);
 	mod_timer(&idle_timer, jiffies + CLIP_CHECK_INTERVAL * HZ);
 	write_unlock(&arp_tbl.lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int clip_arp_rcv(struct sk_buff *skb)
@@ -218,7 +241,10 @@ static void clip_push(struct atm_vcc *vcc, struct sk_buff *skb)
 
 	pr_debug("\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!clip_devs) {
 		atm_return(vcc, skb->truesize);
@@ -226,7 +252,10 @@ static void clip_push(struct atm_vcc *vcc, struct sk_buff *skb)
 		return;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		pr_debug("removing VCC %p\n", clip_vcc);
 		if (clip_vcc->entry)
@@ -294,14 +323,20 @@ static void clip_pop(struct atm_vcc *vcc, struct sk_buff *skb)
 static void clip_neigh_solicit(struct neighbour *neigh, struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_debug("(neigh %p, skb %p)\n", neigh, skb);
 	to_atmarpd(act_need, PRIV(neigh->dev)->number, NEIGH2ENTRY(neigh)->ip);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__be32 *ip = (__be32 *) neigh->primary_key;
 
 	pr_debug("(neigh %p, skb %p)\n", neigh, skb);
 	to_atmarpd(act_need, PRIV(neigh->dev)->number, *ip);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void clip_neigh_error(struct neighbour *neigh, struct sk_buff *skb)
@@ -317,6 +352,7 @@ static const struct neigh_ops clip_neigh_ops = {
 	.solicit =		clip_neigh_solicit,
 	.error_report =		clip_neigh_error,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.output =		dev_queue_xmit,
 	.connected_output =	dev_queue_xmit,
 	.hh_output =		dev_queue_xmit,
@@ -325,10 +361,15 @@ static const struct neigh_ops clip_neigh_ops = {
 	.output =		neigh_direct_output,
 	.connected_output =	neigh_direct_output,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.output =		neigh_direct_output,
+	.connected_output =	neigh_direct_output,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int clip_constructor(struct neighbour *neigh)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct atmarp_entry *entry = NEIGH2ENTRY(neigh);
 	struct net_device *dev = neigh->dev;
@@ -397,6 +438,8 @@ static struct neigh_table clip_tbl = {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct atmarp_entry *entry = neighbour_priv(neigh);
 
 	if (neigh->tbl->family != AF_INET)
@@ -415,7 +458,10 @@ static struct neigh_table clip_tbl = {
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* @@@ copy bh locking from arp.c -- need to bh-enable atm code before */
 
 /*
@@ -440,10 +486,15 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 	struct neighbour *n;
 	struct atm_vcc *vcc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct rtable *rt;
 	__be32 *daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct rtable *rt;
+	__be32 *daddr;
+>>>>>>> refs/remotes/origin/master
 	int old;
 	unsigned long flags;
 
@@ -454,6 +505,7 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 		dev->stats.tx_dropped++;
 		return NETDEV_TX_OK;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	n = dst_get_neighbour(dst);
 	if (!n) {
@@ -467,6 +519,8 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 		dst_set_neighbour(dst, n);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rt = (struct rtable *) dst;
 	if (rt->rt_gateway)
 		daddr = &rt->rt_gateway;
@@ -474,26 +528,37 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 		daddr = &ip_hdr(skb)->daddr;
 	n = dst_neigh_lookup(dst, daddr);
 	if (!n) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("NO NEIGHBOUR !\n");
 		dev_kfree_skb(skb);
 		dev->stats.tx_dropped++;
 		return NETDEV_TX_OK;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	entry = NEIGH2ENTRY(n);
 =======
 	entry = neighbour_priv(n);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	entry = neighbour_priv(n);
+>>>>>>> refs/remotes/origin/master
 	if (!entry->vccs) {
 		if (time_after(jiffies, entry->expires)) {
 			/* should be resolved */
 			entry->expires = jiffies + ATMARP_RETRY_DELAY * HZ;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			to_atmarpd(act_need, PRIV(dev)->number, entry->ip);
 =======
 			to_atmarpd(act_need, PRIV(dev)->number, *((__be32 *)n->primary_key));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			to_atmarpd(act_need, PRIV(dev)->number, *((__be32 *)n->primary_key));
+>>>>>>> refs/remotes/origin/master
 		}
 		if (entry->neigh->arp_queue.qlen < ATMARP_MAX_UNRES_PACKETS)
 			skb_queue_tail(&entry->neigh->arp_queue, skb);
@@ -502,10 +567,14 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 			dev->stats.tx_dropped++;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NETDEV_TX_OK;
 =======
 		goto out_release_neigh;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_release_neigh;
+>>>>>>> refs/remotes/origin/master
 	}
 	pr_debug("neigh %p, vccs %p\n", entry, entry->vccs);
 	ATM_SKB(skb)->vcc = vcc = entry->vccs->vcc;
@@ -525,10 +594,14 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 	if (old) {
 		pr_warning("XOFF->XOFF transition\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NETDEV_TX_OK;
 =======
 		goto out_release_neigh;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_release_neigh;
+>>>>>>> refs/remotes/origin/master
 	}
 	dev->stats.tx_packets++;
 	dev->stats.tx_bytes += skb->len;
@@ -536,10 +609,14 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 	if (atm_may_send(vcc, 0)) {
 		entry->vccs->xoff = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NETDEV_TX_OK;
 =======
 		goto out_release_neigh;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out_release_neigh;
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_lock_irqsave(&clip_priv->xoff_lock, flags);
 	netif_stop_queue(dev);	/* XOFF -> throttle immediately */
@@ -552,15 +629,21 @@ static netdev_tx_t clip_start_xmit(struct sk_buff *skb,
 	   changes, use netif_wake_queue instead. */
 	spin_unlock_irqrestore(&clip_priv->xoff_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 out_release_neigh:
 	neigh_release(n);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_release_neigh:
+	neigh_release(n);
+>>>>>>> refs/remotes/origin/master
 	return NETDEV_TX_OK;
 }
 
 static int clip_mkip(struct atm_vcc *vcc, int timeout)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct sk_buff_head *rq, queue;
 	struct clip_vcc *clip_vcc;
@@ -569,6 +652,9 @@ static int clip_mkip(struct atm_vcc *vcc, int timeout)
 =======
 	struct clip_vcc *clip_vcc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct clip_vcc *clip_vcc;
+>>>>>>> refs/remotes/origin/master
 
 	if (!vcc->push)
 		return -EBADFD;
@@ -589,6 +675,7 @@ static int clip_mkip(struct atm_vcc *vcc, int timeout)
 	vcc->push = clip_push;
 	vcc->pop = clip_pop;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__skb_queue_head_init(&queue);
 	rq = &sk_atm(vcc)->sk_receive_queue;
@@ -618,6 +705,11 @@ static int clip_mkip(struct atm_vcc *vcc, int timeout)
 	vcc_process_recv_queue(vcc);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* re-process everything received between connection setup and MKIP */
+	vcc_process_recv_queue(vcc);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -647,18 +739,24 @@ static int clip_setentry(struct atm_vcc *vcc, __be32 ip)
 	if (IS_ERR(rt))
 		return PTR_ERR(rt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	neigh = __neigh_lookup(&clip_tbl, &ip, rt->dst.dev, 1);
 	ip_rt_put(rt);
 	if (!neigh)
 		return -ENOMEM;
 	entry = NEIGH2ENTRY(neigh);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	neigh = __neigh_lookup(&arp_tbl, &ip, rt->dst.dev, 1);
 	ip_rt_put(rt);
 	if (!neigh)
 		return -ENOMEM;
 	entry = neighbour_priv(neigh);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (entry != clip_vcc->entry) {
 		if (!clip_vcc->entry)
 			pr_debug("add\n");
@@ -676,11 +774,16 @@ static int clip_setentry(struct atm_vcc *vcc, __be32 ip)
 
 static const struct net_device_ops clip_netdev_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_start_xmit = clip_start_xmit,
 =======
 	.ndo_start_xmit		= clip_start_xmit,
 	.ndo_neigh_construct	= clip_constructor,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_start_xmit		= clip_start_xmit,
+	.ndo_neigh_construct	= clip_constructor,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void clip_setup(struct net_device *dev)
@@ -688,9 +791,13 @@ static void clip_setup(struct net_device *dev)
 	dev->netdev_ops = &clip_netdev_ops;
 	dev->type = ARPHRD_ATM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->neigh_priv_len = sizeof(struct atmarp_entry);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->neigh_priv_len = sizeof(struct atmarp_entry);
+>>>>>>> refs/remotes/origin/master
 	dev->hard_header_len = RFC1483LLC_LEN;
 	dev->mtu = RFC1626_MTU;
 	dev->tx_queue_len = 100;	/* "normal" queue (packets) */
@@ -737,13 +844,20 @@ static int clip_create(int number)
 }
 
 static int clip_device_event(struct notifier_block *this, unsigned long event,
+<<<<<<< HEAD
 			     void *arg)
 {
 	struct net_device *dev = arg;
+=======
+			     void *ptr)
+{
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), &init_net))
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (event == NETDEV_UNREGISTER) {
 		neigh_ifdown(&clip_tbl, dev);
@@ -753,6 +867,10 @@ static int clip_device_event(struct notifier_block *this, unsigned long event,
 	if (event == NETDEV_UNREGISTER)
 		return NOTIFY_DONE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (event == NETDEV_UNREGISTER)
+		return NOTIFY_DONE;
+>>>>>>> refs/remotes/origin/master
 
 	/* ignore non-CLIP devices */
 	if (dev->type != ARPHRD_ATM || dev->netdev_ops != &clip_netdev_ops)
@@ -780,6 +898,10 @@ static int clip_inet_event(struct notifier_block *this, unsigned long event,
 			   void *ifa)
 {
 	struct in_device *in_dev;
+<<<<<<< HEAD
+=======
+	struct netdev_notifier_info info;
+>>>>>>> refs/remotes/origin/master
 
 	in_dev = ((struct in_ifaddr *)ifa)->ifa_dev;
 	/*
@@ -788,7 +910,12 @@ static int clip_inet_event(struct notifier_block *this, unsigned long event,
 	 */
 	if (event != NETDEV_UP)
 		return NOTIFY_DONE;
+<<<<<<< HEAD
 	return clip_device_event(this, NETDEV_CHANGE, in_dev->dev);
+=======
+	netdev_notifier_info_init(&info, in_dev->dev);
+	return clip_device_event(this, NETDEV_CHANGE, &info);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct notifier_block clip_dev_notifier = {
@@ -933,15 +1060,21 @@ static void svc_addr(struct seq_file *seq, struct sockaddr_atmsvc *addr)
 #define SEQ_NO_VCC_TOKEN	((void *) 2)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void atmarp_info(struct seq_file *seq, struct net_device *dev,
 			struct atmarp_entry *entry, struct clip_vcc *clip_vcc)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void atmarp_info(struct seq_file *seq, struct neighbour *n,
 			struct atmarp_entry *entry, struct clip_vcc *clip_vcc)
 {
 	struct net_device *dev = n->dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long exp;
 	char buf[17];
 	int svc, llc, off;
@@ -962,11 +1095,15 @@ static void atmarp_info(struct seq_file *seq, struct neighbour *n,
 		   dev->name, svc ? "SVC" : "PVC", llc ? "LLC" : "NULL", exp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	off = scnprintf(buf, sizeof(buf) - 1, "%pI4",
 			&entry->ip);
 =======
 	off = scnprintf(buf, sizeof(buf) - 1, "%pI4", n->primary_key);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	off = scnprintf(buf, sizeof(buf) - 1, "%pI4", n->primary_key);
+>>>>>>> refs/remotes/origin/master
 	while (off < 16)
 		buf[off++] = ' ';
 	buf[off] = '\0';
@@ -1038,13 +1175,19 @@ static void *clip_seq_sub_iter(struct neigh_seq_state *_state,
 	struct clip_seq_state *state = (struct clip_seq_state *)_state;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return clip_seq_vcc_walk(state, NEIGH2ENTRY(n), pos);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (n->dev->type != ARPHRD_ATM)
 		return NULL;
 
 	return clip_seq_vcc_walk(state, neighbour_priv(n), pos);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *clip_seq_start(struct seq_file *seq, loff_t * pos)
@@ -1052,10 +1195,14 @@ static void *clip_seq_start(struct seq_file *seq, loff_t * pos)
 	struct clip_seq_state *state = seq->private;
 	state->ns.neigh_sub_iter = clip_seq_sub_iter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return neigh_seq_start(seq, pos, &clip_tbl, NEIGH_SEQ_NEIGH_ONLY);
 =======
 	return neigh_seq_start(seq, pos, &arp_tbl, NEIGH_SEQ_NEIGH_ONLY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return neigh_seq_start(seq, pos, &arp_tbl, NEIGH_SEQ_NEIGH_ONLY);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int clip_seq_show(struct seq_file *seq, void *v)
@@ -1068,16 +1215,22 @@ static int clip_seq_show(struct seq_file *seq, void *v)
 	} else {
 		struct clip_seq_state *state = seq->private;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct neighbour *n = v;
 		struct clip_vcc *vcc = state->vcc;
 
 		atmarp_info(seq, n->dev, NEIGH2ENTRY(n), vcc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct clip_vcc *vcc = state->vcc;
 		struct neighbour *n = v;
 
 		atmarp_info(seq, n, neighbour_priv(n), vcc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1109,11 +1262,14 @@ static void atm_clip_exit_noproc(void);
 static int __init atm_clip_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	neigh_table_init_no_netlink(&clip_tbl);
 
 	clip_tbl_hook = &clip_tbl;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	register_atm_ioctl(&clip_ioctl_ops);
 	register_netdevice_notifier(&clip_dev_notifier);
 	register_inetaddr_notifier(&clip_inet_notifier);
@@ -1151,6 +1307,7 @@ static void atm_clip_exit_noproc(void)
 	del_timer_sync(&idle_timer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Next, purge the table, so that the device
 	 * unregister loop below does not hang due to
 	 * device references remaining in the table.
@@ -1159,6 +1316,8 @@ static void atm_clip_exit_noproc(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev = clip_devs;
 	while (dev) {
 		next = PRIV(dev)->next;
@@ -1167,6 +1326,7 @@ static void atm_clip_exit_noproc(void)
 		dev = next;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Now it is safe to fully shutdown whole table. */
 	neigh_table_clear(&clip_tbl);
@@ -1174,6 +1334,8 @@ static void atm_clip_exit_noproc(void)
 	clip_tbl_hook = NULL;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit atm_clip_exit(void)

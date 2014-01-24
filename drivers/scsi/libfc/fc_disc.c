@@ -36,9 +36,13 @@
 #include <linux/slab.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 #include <scsi/fc/fc_gs.h>
@@ -65,10 +69,14 @@ static void fc_disc_restart(struct fc_disc *);
  * calling it.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void fc_disc_stop_rports(struct fc_disc *disc)
 =======
 static void fc_disc_stop_rports(struct fc_disc *disc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fc_disc_stop_rports(struct fc_disc *disc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fc_lport *lport;
 	struct fc_rport_priv *rdata;
@@ -345,7 +353,10 @@ static void fc_disc_error(struct fc_disc *disc, struct fc_frame *fp)
 		} else
 			fc_disc_done(disc, DISC_EV_FAILED);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if (PTR_ERR(fp) == -FC_EX_CLOSED) {
 		/*
 		 * if discovery fails due to lport reset, clear
@@ -353,7 +364,10 @@ static void fc_disc_error(struct fc_disc *disc, struct fc_frame *fp)
 		 * continue
 		 */
 		disc->pending = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -700,10 +714,14 @@ static int fc_disc_single(struct fc_lport *lport, struct fc_disc_port *dp)
  * @lport: The local port that discovery should stop on
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void fc_disc_stop(struct fc_lport *lport)
 =======
 static void fc_disc_stop(struct fc_lport *lport)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fc_disc_stop(struct fc_lport *lport)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fc_disc *disc = &lport->disc;
 
@@ -720,22 +738,36 @@ static void fc_disc_stop(struct fc_lport *lport)
  * completely stopped and all rports have been deleted.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void fc_disc_stop_final(struct fc_lport *lport)
 =======
 static void fc_disc_stop_final(struct fc_lport *lport)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void fc_disc_stop_final(struct fc_lport *lport)
+>>>>>>> refs/remotes/origin/master
 {
 	fc_disc_stop(lport);
 	lport->tt.rport_flush_queue();
 }
 
 /**
+<<<<<<< HEAD
  * fc_disc_init() - Initialize the discovery layer for a local port
  * @lport: The local port that needs the discovery layer to be initialized
  */
 int fc_disc_init(struct fc_lport *lport)
 {
 	struct fc_disc *disc;
+=======
+ * fc_disc_config() - Configure the discovery layer for a local port
+ * @lport: The local port that needs the discovery layer to be configured
+ * @priv: Private data structre for users of the discovery layer
+ */
+void fc_disc_config(struct fc_lport *lport, void *priv)
+{
+	struct fc_disc *disc = &lport->disc;
+>>>>>>> refs/remotes/origin/master
 
 	if (!lport->tt.disc_start)
 		lport->tt.disc_start = fc_disc_start;
@@ -750,6 +782,7 @@ int fc_disc_init(struct fc_lport *lport)
 		lport->tt.disc_recv_req = fc_disc_recv_req;
 
 	disc = &lport->disc;
+<<<<<<< HEAD
 	INIT_DELAYED_WORK(&disc->disc_work, fc_disc_timeout);
 	mutex_init(&disc->disc_mutex);
 	INIT_LIST_HEAD(&disc->rports);
@@ -757,5 +790,23 @@ int fc_disc_init(struct fc_lport *lport)
 	disc->priv = lport;
 
 	return 0;
+=======
+
+	disc->priv = priv;
+}
+EXPORT_SYMBOL(fc_disc_config);
+
+/**
+ * fc_disc_init() - Initialize the discovery layer for a local port
+ * @lport: The local port that needs the discovery layer to be initialized
+ */
+void fc_disc_init(struct fc_lport *lport)
+{
+	struct fc_disc *disc = &lport->disc;
+
+	INIT_DELAYED_WORK(&disc->disc_work, fc_disc_timeout);
+	mutex_init(&disc->disc_mutex);
+	INIT_LIST_HEAD(&disc->rports);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(fc_disc_init);

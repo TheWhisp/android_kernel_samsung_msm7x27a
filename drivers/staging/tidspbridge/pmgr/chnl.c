@@ -25,11 +25,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- OS Adaptation Layer */
 #include <dspbridge/sync.h>
 
@@ -45,11 +48,14 @@
 #include <dspbridge/chnl.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Globals */
 static u32 refs;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  ======== chnl_create ========
  *  Purpose:
@@ -65,12 +71,15 @@ int chnl_create(struct chnl_mgr **channel_mgr,
 	struct chnl_mgr_ *chnl_mgr_obj = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(channel_mgr != NULL);
 	DBC_REQUIRE(mgr_attrts != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*channel_mgr = NULL;
 
 	/* Validate args: */
@@ -109,10 +118,13 @@ int chnl_create(struct chnl_mgr **channel_mgr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_ENSURE(status || chnl_mgr_obj);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -128,10 +140,13 @@ int chnl_destroy(struct chnl_mgr *hchnl_mgr)
 	int status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (chnl_mgr_obj) {
 		intf_fxns = chnl_mgr_obj->intf_fxns;
 		/* Let Bridge channel module destroy the chnl_mgr: */
@@ -142,6 +157,7 @@ int chnl_destroy(struct chnl_mgr *hchnl_mgr)
 
 	return status;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*
@@ -178,3 +194,5 @@ bool chnl_init(void)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

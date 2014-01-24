@@ -27,7 +27,10 @@
 #include <linux/device.h>
 #include <linux/errno.h>
 #include <linux/firmware.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -74,6 +77,7 @@ static const char speedtch_driver_name[] = "speedtch";
 
 static unsigned int altsetting = 0; /* zero means: use the default */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int dl_512_first = DEFAULT_DL_512_FIRST;
 static int enable_isoc = DEFAULT_ENABLE_ISOC;
 static int sw_buffering = DEFAULT_SW_BUFFERING;
@@ -82,6 +86,11 @@ static bool dl_512_first = DEFAULT_DL_512_FIRST;
 static bool enable_isoc = DEFAULT_ENABLE_ISOC;
 static bool sw_buffering = DEFAULT_SW_BUFFERING;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool dl_512_first = DEFAULT_DL_512_FIRST;
+static bool enable_isoc = DEFAULT_ENABLE_ISOC;
+static bool sw_buffering = DEFAULT_SW_BUFFERING;
+>>>>>>> refs/remotes/origin/master
 
 #define DEFAULT_B_MAX_DSL	8128
 #define DEFAULT_MODEM_MODE	11
@@ -176,7 +185,11 @@ static void speedtch_set_swbuff(struct speedtch_instance_data *instance, int sta
 			 "%sabling SW buffering: usb_control_msg returned %d\n",
 			 state ? "En" : "Dis", ret);
 	else
+<<<<<<< HEAD
 		dbg("speedtch_set_swbuff: %sbled SW buffering", state ? "En" : "Dis");
+=======
+		usb_dbg(usbatm, "speedtch_set_swbuff: %sbled SW buffering\n", state ? "En" : "Dis");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void speedtch_test_sequence(struct speedtch_instance_data *instance)
@@ -724,7 +737,11 @@ static void speedtch_atm_stop(struct usbatm_data *usbatm, struct atm_dev *atm_de
 	del_timer_sync(&instance->resubmit_timer);
 	usb_free_urb(int_urb);
 
+<<<<<<< HEAD
 	flush_work_sync(&instance->status_check_work);
+=======
+	flush_work(&instance->status_check_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int speedtch_pre_reset(struct usb_interface *intf)
@@ -894,7 +911,11 @@ static int speedtch_bind(struct usbatm_data *usbatm,
 		usb_fill_int_urb(instance->int_urb, usb_dev,
 				 usb_rcvintpipe(usb_dev, ENDPOINT_INT),
 				 instance->int_data, sizeof(instance->int_data),
+<<<<<<< HEAD
 				 speedtch_handle_int, instance, 50);
+=======
+				 speedtch_handle_int, instance, 16);
+>>>>>>> refs/remotes/origin/master
 	else
 		usb_dbg(usbatm, "%s: no memory for interrupt urb!\n", __func__);
 
@@ -960,6 +981,7 @@ static int speedtch_usb_probe(struct usb_interface *intf, const struct usb_devic
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init speedtch_usb_init(void)
 {
 	dbg("%s: driver version %s", __func__, DRIVER_VERSION);
@@ -979,6 +1001,9 @@ module_exit(speedtch_usb_cleanup);
 =======
 module_usb_driver(speedtch_usb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(speedtch_usb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);

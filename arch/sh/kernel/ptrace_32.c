@@ -29,9 +29,12 @@
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/mmu_context.h>
 #include <asm/syscalls.h>
@@ -67,10 +70,14 @@ static inline int put_stack_long(struct task_struct *task, int offset,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void ptrace_triggered(struct perf_event *bp, int nmi,
 =======
 void ptrace_triggered(struct perf_event *bp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ptrace_triggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/master
 		      struct perf_sample_data *data, struct pt_regs *regs)
 {
 	struct perf_event_attr attr;
@@ -99,11 +106,16 @@ static int set_single_step(struct task_struct *tsk, unsigned long addr)
 		attr.bp_type = HW_BREAKPOINT_R;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bp = register_user_hw_breakpoint(&attr, ptrace_triggered, tsk);
 =======
 		bp = register_user_hw_breakpoint(&attr, ptrace_triggered,
 						 NULL, tsk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bp = register_user_hw_breakpoint(&attr, ptrace_triggered,
+						 NULL, tsk);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(bp))
 			return PTR_ERR(bp);
 
@@ -129,11 +141,15 @@ void user_enable_single_step(struct task_struct *child)
 
 	set_tsk_thread_flag(child, TIF_SINGLESTEP);
 
+<<<<<<< HEAD
 	if (ptrace_get_breakpoints(child) < 0)
 		return;
 
 	set_single_step(child, pc);
 	ptrace_put_breakpoints(child);
+=======
+	set_single_step(child, pc);
+>>>>>>> refs/remotes/origin/master
 }
 
 void user_disable_single_step(struct task_struct *child)
@@ -515,7 +531,11 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
 {
 	long ret = 0;
 
+<<<<<<< HEAD
 	secure_computing(regs->regs[0]);
+=======
+	secure_computing_strict(regs->regs[0]);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
 	    tracehook_report_syscall_entry(regs))
@@ -530,6 +550,7 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
 		trace_sys_enter(regs, regs->regs[0]);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_entry(audit_arch(), regs->regs[3],
 				    regs->regs[4], regs->regs[5],
@@ -539,6 +560,11 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
 			    regs->regs[4], regs->regs[5],
 			    regs->regs[6], regs->regs[7]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_entry(audit_arch(), regs->regs[3],
+			    regs->regs[4], regs->regs[5],
+			    regs->regs[6], regs->regs[7]);
+>>>>>>> refs/remotes/origin/master
 
 	return ret ?: regs->regs[0];
 }
@@ -548,12 +574,16 @@ asmlinkage void do_syscall_trace_leave(struct pt_regs *regs)
 	int step;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit(AUDITSC_RESULT(regs->regs[0]),
 				   regs->regs[0]);
 =======
 	audit_syscall_exit(regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
 		trace_sys_exit(regs, regs->regs[0]);

@@ -48,7 +48,11 @@ static irqreturn_t pcap_keys_handler(int irq, void *_pcap_keys)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit pcap_keys_probe(struct platform_device *pdev)
+=======
+static int pcap_keys_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -ENOMEM;
 	struct pcap_keys *pcap_keys;
@@ -104,7 +108,11 @@ fail:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit pcap_keys_remove(struct platform_device *pdev)
+=======
+static int pcap_keys_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcap_keys *pcap_keys = platform_get_drvdata(pdev);
 
@@ -119,12 +127,17 @@ static int __devexit pcap_keys_remove(struct platform_device *pdev)
 
 static struct platform_driver pcap_keys_device_driver = {
 	.probe		= pcap_keys_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pcap_keys_remove),
+=======
+	.remove		= pcap_keys_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "pcap-keys",
 		.owner	= THIS_MODULE,
 	}
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init pcap_keys_init(void)
@@ -142,6 +155,9 @@ module_exit(pcap_keys_exit);
 =======
 module_platform_driver(pcap_keys_device_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(pcap_keys_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Motorola PCAP2 input events driver");
 MODULE_AUTHOR("Ilya Petrov <ilya.muromec@gmail.com>");

@@ -230,11 +230,19 @@ remainder:
 	 */
 	if (byte_count < DEFAULT_BLK_SZ) {
 empty_rbuf:
+<<<<<<< HEAD
 		for (; ctx->rand_data_valid < DEFAULT_BLK_SZ;
 			ctx->rand_data_valid++) {
 			*ptr = ctx->rand_data[ctx->rand_data_valid];
 			ptr++;
 			byte_count--;
+=======
+		while (ctx->rand_data_valid < DEFAULT_BLK_SZ) {
+			*ptr = ctx->rand_data[ctx->rand_data_valid];
+			ptr++;
+			byte_count--;
+			ctx->rand_data_valid++;
+>>>>>>> refs/remotes/origin/master
 			if (byte_count == 0)
 				goto done;
 		}
@@ -382,6 +390,7 @@ static int cprng_reset(struct crypto_rng *tfm, u8 *seed, unsigned int slen)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct crypto_alg rng_alg = {
 	.cra_name		= "stdrng",
 	.cra_driver_name	= "ansi_cprng",
@@ -402,6 +411,8 @@ static struct crypto_alg rng_alg = {
 	}
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CRYPTO_FIPS
 static int fips_cprng_get_random(struct crypto_rng *tfm, u8 *rdata,
 			    unsigned int dlen)
@@ -415,15 +426,22 @@ static int fips_cprng_reset(struct crypto_rng *tfm, u8 *seed, unsigned int slen)
 {
 	u8 rdata[DEFAULT_BLK_SZ];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8 *key = seed + DEFAULT_BLK_SZ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 *key = seed + DEFAULT_BLK_SZ;
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	struct prng_context *prng = crypto_rng_ctx(tfm);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (slen < DEFAULT_PRNG_KSZ + DEFAULT_BLK_SZ)
 		return -EINVAL;
 
@@ -431,7 +449,10 @@ static int fips_cprng_reset(struct crypto_rng *tfm, u8 *seed, unsigned int slen)
 	if (!memcmp(seed, key, DEFAULT_PRNG_KSZ))
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rc = cprng_reset(tfm, seed, slen);
 
 	if (!rc)
@@ -444,8 +465,32 @@ static int fips_cprng_reset(struct crypto_rng *tfm, u8 *seed, unsigned int slen)
 out:
 	return rc;
 }
+<<<<<<< HEAD
 
 static struct crypto_alg fips_rng_alg = {
+=======
+#endif
+
+static struct crypto_alg rng_algs[] = { {
+	.cra_name		= "stdrng",
+	.cra_driver_name	= "ansi_cprng",
+	.cra_priority		= 100,
+	.cra_flags		= CRYPTO_ALG_TYPE_RNG,
+	.cra_ctxsize		= sizeof(struct prng_context),
+	.cra_type		= &crypto_rng_type,
+	.cra_module		= THIS_MODULE,
+	.cra_init		= cprng_init,
+	.cra_exit		= cprng_exit,
+	.cra_u			= {
+		.rng = {
+			.rng_make_random	= cprng_get_random,
+			.rng_reset		= cprng_reset,
+			.seedsize = DEFAULT_PRNG_KSZ + 2*DEFAULT_BLK_SZ,
+		}
+	}
+#ifdef CONFIG_CRYPTO_FIPS
+}, {
+>>>>>>> refs/remotes/origin/master
 	.cra_name		= "fips(ansi_cprng)",
 	.cra_driver_name	= "fips_ansi_cprng",
 	.cra_priority		= 300,
@@ -453,7 +498,10 @@ static struct crypto_alg fips_rng_alg = {
 	.cra_ctxsize		= sizeof(struct prng_context),
 	.cra_type		= &crypto_rng_type,
 	.cra_module		= THIS_MODULE,
+<<<<<<< HEAD
 	.cra_list		= LIST_HEAD_INIT(rng_alg.cra_list),
+=======
+>>>>>>> refs/remotes/origin/master
 	.cra_init		= cprng_init,
 	.cra_exit		= cprng_exit,
 	.cra_u			= {
@@ -463,12 +511,18 @@ static struct crypto_alg fips_rng_alg = {
 			.seedsize = DEFAULT_PRNG_KSZ + 2*DEFAULT_BLK_SZ,
 		}
 	}
+<<<<<<< HEAD
 };
 #endif
+=======
+#endif
+} };
+>>>>>>> refs/remotes/origin/master
 
 /* Module initalization */
 static int __init prng_mod_init(void)
 {
+<<<<<<< HEAD
 	int rc = 0;
 
 	rc = crypto_register_alg(&rng_alg);
@@ -481,15 +535,22 @@ static int __init prng_mod_init(void)
 out:
 #endif
 	return rc;
+=======
+	return crypto_register_algs(rng_algs, ARRAY_SIZE(rng_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit prng_mod_fini(void)
 {
+<<<<<<< HEAD
 	crypto_unregister_alg(&rng_alg);
 #ifdef CONFIG_CRYPTO_FIPS
 	crypto_unregister_alg(&fips_rng_alg);
 #endif
 	return;
+=======
+	crypto_unregister_algs(rng_algs, ARRAY_SIZE(rng_algs));
+>>>>>>> refs/remotes/origin/master
 }
 
 MODULE_LICENSE("GPL");

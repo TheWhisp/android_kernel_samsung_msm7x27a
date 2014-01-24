@@ -5,11 +5,16 @@ config SCSI_BNX2_ISCSI
 	select SCSI_ISCSI_ATTRS
 	select NETDEVICES
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select NETDEV_1000
 =======
 	select ETHERNET
 	select NET_VENDOR_BROADCOM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select ETHERNET
+	select NET_VENDOR_BROADCOM
+>>>>>>> refs/remotes/origin/master
 	select CNIC
 	---help---
 	This driver supports iSCSI offload for the Broadcom NetXtreme II

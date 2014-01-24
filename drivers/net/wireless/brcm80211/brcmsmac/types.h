@@ -246,7 +246,11 @@
 
 #define BCMMSG(dev, fmt, args...)		\
 do {						\
+<<<<<<< HEAD
 	if (brcm_msg_level & LOG_TRACE_VAL)	\
+=======
+	if (brcm_msg_level & BRCM_DL_INFO)	\
+>>>>>>> refs/remotes/origin/master
 		wiphy_err(dev, "%s: " fmt, __func__, ##args);	\
 } while (0)
 
@@ -281,7 +285,10 @@ struct ieee80211_tx_queue_params;
 struct brcms_info;
 struct brcms_c_info;
 struct brcms_hardware;
+<<<<<<< HEAD
 struct brcms_txq_info;
+=======
+>>>>>>> refs/remotes/origin/master
 struct brcms_band;
 struct dma_pub;
 struct si_pub;

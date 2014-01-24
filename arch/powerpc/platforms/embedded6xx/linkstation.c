@@ -82,6 +82,7 @@ static void __init linkstation_init_IRQ(void)
 {
 	struct mpic *mpic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct device_node *dnp;
 	const u32 *prop;
 	int size;
@@ -106,6 +107,8 @@ static void __init linkstation_init_IRQ(void)
 	/* ttyS0, ttyS1 */
 	mpic_assign_isu(mpic, 2, paddr + 0x11100);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mpic = mpic_alloc(NULL, 0, 0, 4, 0, " EPIC     ");
 	BUG_ON(mpic == NULL);
@@ -118,7 +121,10 @@ static void __init linkstation_init_IRQ(void)
 
 	/* ttyS0, ttyS1 */
 	mpic_assign_isu(mpic, 2, mpic->paddr + 0x11100);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mpic_init(mpic);
 }

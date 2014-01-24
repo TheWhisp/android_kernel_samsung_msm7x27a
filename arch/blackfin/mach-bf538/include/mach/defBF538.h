@@ -1,7 +1,11 @@
 /*
  * Copyright 2008-2010 Analog Devices Inc.
  *
+<<<<<<< HEAD
  * Licensed under the ADI BSD license or the GPL-2 (or later)
+=======
+ * Licensed under the Clear BSD license or the GPL-2 (or later)
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _DEF_BF538_H
@@ -1746,6 +1750,7 @@
 #define	SDEASE			0x00000010 /* SDRAM EAB	sticky error status - W1C */
 #define	BGSTAT			0x00000020 /* Bus granted */
 
+<<<<<<< HEAD
 
 /*  ********************  TWO-WIRE INTERFACE (TWIx) MASKS  ***********************/
 /* TWIx_CLKDIV Macros (Use: *pTWIx_CLKDIV = CLKLOW(x)|CLKHI(y);	 ) */
@@ -1822,4 +1827,6 @@
 #define	RCV_HALF	0x0004		/*		Receive	FIFO Has 1 Byte	To Read */
 #define	RCV_FULL	0x000C		/*		Receive	FIFO Full (2 Bytes To Read) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

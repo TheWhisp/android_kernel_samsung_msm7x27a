@@ -77,10 +77,14 @@ static inline unsigned long macio_resource_len(struct macio_dev *dev, int resour
 	if (res->start == 0 || res->end == 0 || res->end < res->start)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return res->end - res->start + 1;
 =======
 	return resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return resource_size(res);
+>>>>>>> refs/remotes/origin/master
 }
 
 extern int macio_enable_devres(struct macio_dev *dev);

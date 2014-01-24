@@ -1,6 +1,7 @@
 #ifndef _LINUX_BYTEORDER_LITTLE_ENDIAN_H
 #define _LINUX_BYTEORDER_LITTLE_ENDIAN_H
 
+<<<<<<< HEAD
 #ifndef __LITTLE_ENDIAN
 #define __LITTLE_ENDIAN 1234
 #endif
@@ -105,4 +106,9 @@ static inline __u16 __be16_to_cpup(const __be16 *p)
 #include <linux/byteorder/generic.h>
 #endif
 
+=======
+#include <uapi/linux/byteorder/little_endian.h>
+
+#include <linux/byteorder/generic.h>
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_BYTEORDER_LITTLE_ENDIAN_H */

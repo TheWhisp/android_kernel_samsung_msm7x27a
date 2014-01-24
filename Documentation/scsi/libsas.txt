@@ -399,6 +399,7 @@ struct sas_task {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 When an external entity, entity other than the LLDD or the
 SAS Layer, wants to work with a struct domain_device, it
 _must_ call kobject_get() when getting a handle on the
@@ -416,6 +417,8 @@ This does two things:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 DISCOVERY
 ---------
 

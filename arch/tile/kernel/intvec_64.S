@@ -17,28 +17,53 @@
 #include <linux/linkage.h>
 #include <linux/errno.h>
 #include <linux/unistd.h>
+<<<<<<< HEAD
+=======
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/ptrace.h>
 #include <asm/thread_info.h>
 #include <asm/irqflags.h>
 #include <asm/asm-offsets.h>
 #include <asm/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/signal.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/traps.h>
+#include <asm/signal.h>
+>>>>>>> refs/remotes/origin/master
 #include <hv/hypervisor.h>
 #include <arch/abi.h>
 #include <arch/interrupts.h>
 #include <arch/spr_def.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
 # error "No support for kernel preemption currently"
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define PTREGS_PTR(reg, ptreg) addli reg, sp, C_ABI_SAVE_AREA_SIZE + (ptreg)
 
 #define PTREGS_OFFSET_SYSCALL PTREGS_OFFSET_REG(TREG_SYSCALL_NR)
 
+<<<<<<< HEAD
+=======
+#if CONFIG_KERNEL_PL == 1 || CONFIG_KERNEL_PL == 2
+/*
+ * Set "result" non-zero if ex1 holds the PL of the kernel
+ * (with or without ICS being set).  Note this works only
+ * because we never find the PL at level 3.
+ */
+# define IS_KERNEL_EX1(result, ex1) andi result, ex1, CONFIG_KERNEL_PL
+#else
+# error Recode IS_KERNEL_EX1 for CONFIG_KERNEL_PL
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	.macro  push_reg reg, ptr=sp, delta=-8
 	{
@@ -101,6 +126,188 @@
 	}
 	.endm
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Unalign data exception fast handling: In order to handle
+	 * unaligned data access, a fast JIT version is generated and stored
+	 * in a specific area in user space. We first need to do a quick poke
+	 * to see if the JIT is available. We use certain bits in the fault
+	 * PC (3 to 9 is used for 16KB page size) as index to address the JIT
+	 * code area. The first 64bit word is the fault PC, and the 2nd one is
+	 * the fault bundle itself. If these 2 words both match, then we
+	 * directly "iret" to JIT code. If not, a slow path is invoked to
+	 * generate new JIT code. Note: the current JIT code WILL be
+	 * overwritten if it existed. So, ideally we can handle 128 unalign
+	 * fixups via JIT. For lookup efficiency and to effectively support
+	 * tight loops with multiple unaligned reference, a simple
+	 * direct-mapped cache is used.
+	 *
+	 * SPR_EX_CONTEXT_K_0 is modified to return to JIT code.
+	 * SPR_EX_CONTEXT_K_1 has ICS set.
+	 * SPR_EX_CONTEXT_0_0 is setup to user program's next PC.
+	 * SPR_EX_CONTEXT_0_1 = 0.
+	 */
+	.macro int_hand_unalign_fast  vecnum, vecname
+	.org  (\vecnum << 8)
+intvec_\vecname:
+	/* Put r3 in SPR_SYSTEM_SAVE_K_1.  */
+	mtspr   SPR_SYSTEM_SAVE_K_1, r3
+
+	mfspr   r3, SPR_EX_CONTEXT_K_1
+	/*
+	 * Examine if exception comes from user without ICS set.
+	 * If not, just go directly to the slow path.
+	 */
+	bnez    r3, hand_unalign_slow_nonuser
+
+	mfspr   r3, SPR_SYSTEM_SAVE_K_0
+
+	/* Get &thread_info->unalign_jit_tmp[0] in r3. */
+	bfexts  r3, r3, 0, CPU_SHIFT-1
+	mm      r3, zero, LOG2_THREAD_SIZE, 63
+	addli   r3, r3, THREAD_INFO_UNALIGN_JIT_TMP_OFFSET
+
+	/*
+	 * Save r0, r1, r2 into thread_info array r3 points to
+	 * from low to high memory in order.
+	 */
+	st_add  r3, r0, 8
+	st_add  r3, r1, 8
+	{
+	 st_add r3, r2, 8
+	 andi   r2, sp, 7
+	}
+
+	/* Save stored r3 value so we can revert it on a page fault. */
+	mfspr   r1, SPR_SYSTEM_SAVE_K_1
+	st      r3, r1
+
+	{
+	 /* Generate a SIGBUS if sp is not 8-byte aligned. */
+	 bnez   r2, hand_unalign_slow_badsp
+	}
+
+	/*
+	 * Get the thread_info in r0; load r1 with pc. Set the low bit of sp
+	 * as an indicator to the page fault code in case we fault.
+	 */
+	{
+	 ori    sp, sp, 1
+	 mfspr  r1, SPR_EX_CONTEXT_K_0
+	}
+
+	/* Add the jit_info offset in thread_info; extract r1 [3:9] into r2. */
+	{
+	 addli  r0, r3, THREAD_INFO_UNALIGN_JIT_BASE_OFFSET - \
+	  (THREAD_INFO_UNALIGN_JIT_TMP_OFFSET + (3 * 8))
+	 bfextu r2, r1, 3, (2 + PAGE_SHIFT - UNALIGN_JIT_SHIFT)
+	}
+
+	/* Load the jit_info; multiply r2 by 128. */
+	{
+	 ld     r0, r0
+	 shli   r2, r2, UNALIGN_JIT_SHIFT
+	}
+
+	/*
+	 * If r0 is NULL, the JIT page is not mapped, so go to slow path;
+	 * add offset r2 to r0 at the same time.
+	 */
+	{
+	 beqz   r0, hand_unalign_slow
+	 add    r2, r0, r2
+	}
+
+        /*
+	 * We are loading from userspace (both the JIT info PC and
+	 * instruction word, and the instruction word we executed)
+	 * and since either could fault while holding the interrupt
+	 * critical section, we must tag this region and check it in
+	 * do_page_fault() to handle it properly.
+	 */
+ENTRY(__start_unalign_asm_code)
+
+	/* Load first word of JIT in r0 and increment r2 by 8. */
+	ld_add  r0, r2, 8
+
+	/*
+	 * Compare the PC with the 1st word in JIT; load the fault bundle
+	 * into r1.
+	 */
+	{
+	 cmpeq  r0, r0, r1
+	 ld     r1, r1
+	}
+
+	/* Go to slow path if PC doesn't match. */
+	beqz    r0, hand_unalign_slow
+
+	/*
+	 * Load the 2nd word of JIT, which is supposed to be the fault
+	 * bundle for a cache hit. Increment r2; after this bundle r2 will
+	 * point to the potential start of the JIT code we want to run.
+	 */
+	ld_add  r0, r2, 8
+
+	/* No further accesses to userspace are done after this point. */
+ENTRY(__end_unalign_asm_code)
+
+	/* Compare the real bundle with what is saved in the JIT area. */
+	{
+	 cmpeq  r0, r1, r0
+	 mtspr  SPR_EX_CONTEXT_0_1, zero
+	}
+
+	/* Go to slow path if the fault bundle does not match. */
+	beqz    r0, hand_unalign_slow
+
+	/*
+	 * A cache hit is found.
+	 * r2 points to start of JIT code (3rd word).
+	 * r0 is the fault pc.
+	 * r1 is the fault bundle.
+	 * Reset the low bit of sp.
+	 */
+	{
+	 mfspr  r0, SPR_EX_CONTEXT_K_0
+	 andi   sp, sp, ~1
+	}
+
+	/* Write r2 into EX_CONTEXT_K_0 and increment PC. */
+	{
+	 mtspr  SPR_EX_CONTEXT_K_0, r2
+	 addi   r0, r0, 8
+	}
+
+	/*
+	 * Set ICS on kernel EX_CONTEXT_K_1 in order to "iret" to
+	 * user with ICS set. This way, if the JIT fixup causes another
+	 * unalign exception (which shouldn't be possible) the user
+	 * process will be terminated with SIGBUS. Also, our fixup will
+	 * run without interleaving with external interrupts.
+	 * Each fixup is at most 14 bundles, so it won't hold ICS for long.
+	 */
+	{
+	 movei  r1, PL_ICS_EX1(USER_PL, 1)
+	 mtspr  SPR_EX_CONTEXT_0_0, r0
+	}
+
+	{
+	 mtspr  SPR_EX_CONTEXT_K_1, r1
+	 addi   r3, r3, -(3 * 8)
+	}
+
+	/* Restore r0..r3. */
+	ld_add  r0, r3, 8
+	ld_add  r1, r3, 8
+	ld_add  r2, r3, 8
+	ld      r3, r3
+
+	iret
+	ENDPROC(intvec_\vecname)
+	.endm
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __COLLECT_LINKER_FEEDBACK__
 	.pushsection .text.intvec_feedback,"ax"
@@ -121,15 +328,30 @@ intvec_feedback:
 	 * The "processing" argument specifies the code for processing
 	 * the interrupt. Defaults to "handle_interrupt".
 	 */
+<<<<<<< HEAD
 	.macro  int_hand vecnum, vecname, c_routine, processing=handle_interrupt
 	.org    (\vecnum << 8)
+=======
+	.macro __int_hand vecnum, vecname, c_routine,processing=handle_interrupt
+>>>>>>> refs/remotes/origin/master
 intvec_\vecname:
 	/* Temporarily save a register so we have somewhere to work. */
 
 	mtspr   SPR_SYSTEM_SAVE_K_1, r0
 	mfspr   r0, SPR_EX_CONTEXT_K_1
 
+<<<<<<< HEAD
 	andi    r0, r0, SPR_EX_CONTEXT_1_1__PL_MASK  /* mask off ICS */
+=======
+	/*
+	 * The unalign data fastpath code sets the low bit in sp to
+	 * force us to reset it here on fault.
+	 */
+	{
+	 blbs   sp, 2f
+	 IS_KERNEL_EX1(r0, r0)
+	}
+>>>>>>> refs/remotes/origin/master
 
 	.ifc    \vecnum, INT_DOUBLE_FAULT
 	/*
@@ -179,6 +401,7 @@ intvec_\vecname:
 	}
 	.endif
 
+<<<<<<< HEAD
 
 	/*
 	 * SYSTEM_SAVE_K_0 holds the cpu number in the low bits, and
@@ -188,6 +411,17 @@ intvec_\vecname:
 	 */
 	mfspr   r0, SPR_SYSTEM_SAVE_K_0
 	mm      r0, zero, LOG2_THREAD_SIZE, 63
+=======
+2:
+	/*
+	 * SYSTEM_SAVE_K_0 holds the cpu number in the high bits, and
+	 * the current stack top in the lower bits.  So we recover
+	 * our starting stack value by sign-extending the low bits, then
+	 * point sp at the top aligned address on the actual stack page.
+	 */
+	mfspr   r0, SPR_SYSTEM_SAVE_K_0
+	bfexts  r0, r0, 0, CPU_SHIFT-1
+>>>>>>> refs/remotes/origin/master
 
 0:
 	/*
@@ -209,6 +443,12 @@ intvec_\vecname:
 	 *    cache line 1: r6...r13
 	 *    cache line 0: 2 x frame, r0..r5
 	 */
+<<<<<<< HEAD
+=======
+#if STACK_TOP_DELTA != 64
+#error STACK_TOP_DELTA must be 64 for assumptions here and in task_pt_regs()
+#endif
+>>>>>>> refs/remotes/origin/master
 	andi    r0, r0, -64
 
 	/*
@@ -223,7 +463,13 @@ intvec_\vecname:
 	 * This routine saves just the first four registers, plus the
 	 * stack context so we can do proper backtracing right away,
 	 * and defers to handle_interrupt to save the rest.
+<<<<<<< HEAD
 	 * The backtracer needs pc, ex1, lr, sp, r52, and faultnum.
+=======
+	 * The backtracer needs pc, ex1, lr, sp, r52, and faultnum,
+	 * and needs sp set to its final location at the bottom of
+	 * the stack frame.
+>>>>>>> refs/remotes/origin/master
 	 */
 	addli   r0, r0, PTREGS_OFFSET_LR - (PTREGS_SIZE + KSTK_PTREGS_GAP)
 	wh64    r0   /* cache line 7 */
@@ -306,7 +552,11 @@ intvec_\vecname:
 	mfspr   r3, SPR_SYSTEM_SAVE_K_2   /* info about page fault */
 	.else
 	.ifc \vecnum, INT_ILL_TRANS
+<<<<<<< HEAD
 	mfspr   r2, ILL_TRANS_REASON
+=======
+	mfspr   r2, ILL_VA_PC
+>>>>>>> refs/remotes/origin/master
 	.else
 	.ifc \vecnum, INT_DOUBLE_FAULT
 	mfspr   r2, SPR_SYSTEM_SAVE_K_2   /* double fault info from HV */
@@ -316,12 +566,18 @@ intvec_\vecname:
 	.else
 	.ifc \c_routine, op_handle_perf_interrupt
 	mfspr   r2, PERF_COUNT_STS
+<<<<<<< HEAD
 #if CHIP_HAS_AUX_PERF_COUNTERS()
+=======
+>>>>>>> refs/remotes/origin/master
 	.else
 	.ifc \c_routine, op_handle_aux_perf_interrupt
 	mfspr   r2, AUX_PERF_COUNT_STS
 	.endif
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	.endif
 	.endif
 	.endif
@@ -340,7 +596,11 @@ intvec_\vecname:
 #ifdef __COLLECT_LINKER_FEEDBACK__
 	.pushsection .text.intvec_feedback,"ax"
 	.org    (\vecnum << 5)
+<<<<<<< HEAD
 	FEEDBACK_ENTER_EXPLICIT(intvec_\vecname, .intrpt1, 1 << 8)
+=======
+	FEEDBACK_ENTER_EXPLICIT(intvec_\vecname, .intrpt, 1 << 8)
+>>>>>>> refs/remotes/origin/master
 	jrp     lr
 	.popsection
 #endif
@@ -453,6 +713,7 @@ intvec_\vecname:
 	push_reg r5, r52
 	st      r52, r4
 
+<<<<<<< HEAD
 	/* Load tp with our per-cpu offset. */
 #ifdef CONFIG_SMP
 	{
@@ -478,6 +739,17 @@ intvec_\vecname:
 	mfspr   r32, SPR_EX_CONTEXT_K_1
 	{
 	 andi   r32, r32, SPR_EX_CONTEXT_1_1__PL_MASK  /* mask off ICS */
+=======
+	/*
+	 * If we will be returning to the kernel, we will need to
+	 * reset the interrupt masks to the state they had before.
+	 * Set DISABLE_IRQ in flags iff we came from kernel pl with
+	 * irqs disabled.
+	 */
+	mfspr   r32, SPR_EX_CONTEXT_K_1
+	{
+	 IS_KERNEL_EX1(r22, r22)
+>>>>>>> refs/remotes/origin/master
 	 PTREGS_PTR(r21, PTREGS_OFFSET_FLAGS)
 	}
 	beqzt   r32, 1f       /* zero if from user space */
@@ -492,6 +764,47 @@ intvec_\vecname:
 	.endif
 	st      r21, r32
 
+<<<<<<< HEAD
+=======
+	/*
+	 * we've captured enough state to the stack (including in
+	 * particular our EX_CONTEXT state) that we can now release
+	 * the interrupt critical section and replace it with our
+	 * standard "interrupts disabled" mask value.  This allows
+	 * synchronous interrupts (and profile interrupts) to punch
+	 * through from this point onwards.
+	 *
+	 * It's important that no code before this point touch memory
+	 * other than our own stack (to keep the invariant that this
+	 * is all that gets touched under ICS), and that no code after
+	 * this point reference any interrupt-specific SPR, in particular
+	 * the EX_CONTEXT_K_ values.
+	 */
+	.ifc \function,handle_nmi
+	IRQ_DISABLE_ALL(r20)
+	.else
+	IRQ_DISABLE(r20, r21)
+	.endif
+	mtspr   INTERRUPT_CRITICAL_SECTION, zero
+
+	/* Load tp with our per-cpu offset. */
+#ifdef CONFIG_SMP
+	{
+	 mfspr  r20, SPR_SYSTEM_SAVE_K_0
+	 moveli r21, hw2_last(__per_cpu_offset)
+	}
+	{
+	 shl16insli r21, r21, hw1(__per_cpu_offset)
+	 bfextu r20, r20, CPU_SHIFT, 63
+	}
+	shl16insli r21, r21, hw0(__per_cpu_offset)
+	shl3add r20, r20, r21
+	ld      tp, r20
+#else
+	move    tp, zero
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef __COLLECT_LINKER_FEEDBACK__
 	/*
 	 * Notify the feedback routines that we were in the
@@ -516,6 +829,7 @@ intvec_\vecname:
 #endif
 
 	/*
+<<<<<<< HEAD
 	 * we've captured enough state to the stack (including in
 	 * particular our EX_CONTEXT state) that we can now release
 	 * the interrupt critical section and replace it with our
@@ -531,6 +845,8 @@ intvec_\vecname:
 	mtspr   INTERRUPT_CRITICAL_SECTION, zero
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Prepare the first 256 stack bytes to be rapidly accessible
 	 * without having to fetch the background data.
 	 */
@@ -580,7 +896,11 @@ intvec_\vecname:
 	.macro  dc_dispatch vecnum, vecname
 	.org    (\vecnum << 8)
 intvec_\vecname:
+<<<<<<< HEAD
 	j       hv_downcall_dispatch
+=======
+	j       _hv_downcall_dispatch
+>>>>>>> refs/remotes/origin/master
 	ENDPROC(intvec_\vecname)
 	.endm
 
@@ -610,12 +930,18 @@ handle_interrupt:
  * If so, we also expect a boolean in r31 indicating whether to
  * re-enable the oprofile interrupts.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Note that .Lresume_userspace is jumped to directly in several
  * places, and we need to make sure r30 is set correctly in those
  * callers as well.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 STD_ENTRY(interrupt_return)
 	/* If we're resuming to kernel space, don't check thread flags. */
@@ -624,6 +950,7 @@ STD_ENTRY(interrupt_return)
 	 PTREGS_PTR(r29, PTREGS_OFFSET_EX1)
 	}
 	ld      r29, r29
+<<<<<<< HEAD
 	andi    r29, r29, SPR_EX_CONTEXT_1_1__PL_MASK  /* mask off ICS */
 	{
 	 beqzt  r29, .Lresume_userspace
@@ -632,6 +959,41 @@ STD_ENTRY(interrupt_return)
 
 	/* If we're resuming to _cpu_idle_nap, bump PC forward by 8. */
 	moveli  r27, hw2_last(_cpu_idle_nap)
+=======
+	IS_KERNEL_EX1(r29, r29)
+	{
+	 beqzt  r29, .Lresume_userspace
+	 move   r29, sp
+	}
+
+#ifdef CONFIG_PREEMPT
+	/* Returning to kernel space. Check if we need preemption. */
+	EXTRACT_THREAD_INFO(r29)
+	addli   r28, r29, THREAD_INFO_FLAGS_OFFSET
+	{
+	 ld     r28, r28
+	 addli  r29, r29, THREAD_INFO_PREEMPT_COUNT_OFFSET
+	}
+	{
+	 andi   r28, r28, _TIF_NEED_RESCHED
+	 ld4s   r29, r29
+	}
+	beqzt   r28, 1f
+	bnez    r29, 1f
+	/* Disable interrupts explicitly for preemption. */
+	IRQ_DISABLE(r20,r21)
+	TRACE_IRQS_OFF
+	jal     preempt_schedule_irq
+	FEEDBACK_REENTER(interrupt_return)
+1:
+#endif
+
+	/* If we're resuming to _cpu_idle_nap, bump PC forward by 8. */
+	{
+	 moveli r27, hw2_last(_cpu_idle_nap)
+	 PTREGS_PTR(r29, PTREGS_OFFSET_PC)
+	}
+>>>>>>> refs/remotes/origin/master
 	{
 	 ld     r28, r29
 	 shl16insli r27, r27, hw1(_cpu_idle_nap)
@@ -654,7 +1016,10 @@ STD_ENTRY(interrupt_return)
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Use r33 to hold whether we have already loaded the callee-saves
 	 * into ptregs.  We don't want to do it twice in this loop, since
 	 * then we'd clobber whatever changes are made by ptrace, etc.
@@ -669,7 +1034,10 @@ STD_ENTRY(interrupt_return)
 
 .Lretry_work_pending:
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Disable interrupts so as to make sure we don't
 	 * miss an interrupt that sets any of the thread flags (like
 	 * need_resched or sigpending) between sampling and the iret.
@@ -680,11 +1048,14 @@ STD_ENTRY(interrupt_return)
 	TRACE_IRQS_OFF  /* Note: clobbers registers r0-r29 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Get base of stack in r32; note r30/31 are used as arguments here. */
 	GET_THREAD_INFO(r32)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Check to see if there is any work to do before returning to user. */
 	{
@@ -701,6 +1072,7 @@ STD_ENTRY(interrupt_return)
 	/*
 	 * Make sure we have all the registers saved for signal
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * handling or single-step.  Call out to C code to figure out
 	 * exactly what we need to do for each flag bit, then if
 	 * necessary, reload the flags and recheck.
@@ -712,6 +1084,8 @@ STD_ENTRY(interrupt_return)
 	}
 	bnez    r0, .Lresume_userspace
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * handling or notify-resume.  Call out to C code to figure out
 	 * exactly what we need to do for each flag bit, then if
 	 * necessary, reload the flags and recheck.
@@ -724,7 +1098,10 @@ STD_ENTRY(interrupt_return)
 	movei   r33, 1
 1:	jal     do_work_pending
 	bnez    r0, .Lretry_work_pending
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * In the NMI case we
@@ -748,7 +1125,11 @@ STD_ENTRY(interrupt_return)
 	 PTREGS_PTR(r32, PTREGS_OFFSET_FLAGS)
 	}
 	{
+<<<<<<< HEAD
 	 andi   r0, r0, SPR_EX_CONTEXT_1_1__PL_MASK
+=======
+	 IS_KERNEL_EX1(r0, r0)
+>>>>>>> refs/remotes/origin/master
 	 ld     r32, r32
 	}
 	bnez    r0, 1f
@@ -764,9 +1145,16 @@ STD_ENTRY(interrupt_return)
 	beqzt   r30, .Lrestore_regs
 	j       3f
 2:	TRACE_IRQS_ON
+<<<<<<< HEAD
 	movei   r0, 1
 	mtspr   INTERRUPT_CRITICAL_SECTION, r0
 	IRQ_ENABLE(r20, r21)
+=======
+	IRQ_ENABLE_LOAD(r20, r21)
+	movei   r0, 1
+	mtspr   INTERRUPT_CRITICAL_SECTION, r0
+	IRQ_ENABLE_APPLY(r20, r21)
+>>>>>>> refs/remotes/origin/master
 	beqzt   r30, .Lrestore_regs
 3:
 
@@ -783,7 +1171,10 @@ STD_ENTRY(interrupt_return)
 	 * that will save some cycles if this turns out to be a syscall.
 	 */
 .Lrestore_regs:
+<<<<<<< HEAD
 	FEEDBACK_REENTER(interrupt_return)   /* called from elsewhere */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Rotate so we have one high bit and one low bit to test.
@@ -819,7 +1210,11 @@ STD_ENTRY(interrupt_return)
 	pop_reg r21, sp, PTREGS_OFFSET_REG(31) - PTREGS_OFFSET_PC
 	{
 	 mtspr  SPR_EX_CONTEXT_K_1, lr
+<<<<<<< HEAD
 	 andi   lr, lr, SPR_EX_CONTEXT_1_1__PL_MASK  /* mask off ICS */
+=======
+	 IS_KERNEL_EX1(lr, lr)
+>>>>>>> refs/remotes/origin/master
 	}
 	{
 	 mtspr  SPR_EX_CONTEXT_K_0, r21
@@ -1010,12 +1405,15 @@ handle_syscall:
 	add     r20, r20, tp
 	ld4s    r21, r20
 <<<<<<< HEAD
+<<<<<<< HEAD
 	addi    r21, r21, 1
 	st4     r20, r21
 
 	/* Trace syscalls, if requested. */
 	GET_THREAD_INFO(r31)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 addi   r21, r21, 1
 	 move   r31, sp
@@ -1026,15 +1424,31 @@ handle_syscall:
 	}
 
 	/* Trace syscalls, if requested. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	addi	r31, r31, THREAD_INFO_FLAGS_OFFSET
 	ld	r30, r31
 	andi    r30, r30, _TIF_SYSCALL_TRACE
+=======
+	addi	r31, r31, THREAD_INFO_FLAGS_OFFSET
+	{
+	 ld     r30, r31
+	 moveli r32, _TIF_SYSCALL_ENTRY_WORK
+	}
+	and     r30, r30, r32
+>>>>>>> refs/remotes/origin/master
 	{
 	 addi   r30, r31, THREAD_INFO_STATUS_OFFSET - THREAD_INFO_FLAGS_OFFSET
 	 beqzt	r30, .Lrestore_syscall_regs
 	}
+<<<<<<< HEAD
 	jal	do_syscall_trace
+=======
+	{
+	 PTREGS_PTR(r0, PTREGS_OFFSET_BASE)
+	 jal    do_syscall_trace_enter
+	}
+>>>>>>> refs/remotes/origin/master
 	FEEDBACK_REENTER(handle_syscall)
 
 	/*
@@ -1063,7 +1477,13 @@ handle_syscall:
 	/* Ensure that the syscall number is within the legal range. */
 	{
 	 moveli r20, hw2(sys_call_table)
+<<<<<<< HEAD
 	 blbs   r30, .Lcompat_syscall
+=======
+#ifdef CONFIG_COMPAT
+	 blbs   r30, .Lcompat_syscall
+#endif
+>>>>>>> refs/remotes/origin/master
 	}
 	{
 	 cmpltu r21, TREG_SYSCALL_NR_NAME, r21
@@ -1097,6 +1517,7 @@ handle_syscall:
 	FEEDBACK_REENTER(handle_syscall)
 
 	/* Do syscall trace again, if requested. */
+<<<<<<< HEAD
 	ld	r30, r31
 <<<<<<< HEAD
 	andi    r30, r30, _TIF_SYSCALL_TRACE
@@ -1106,11 +1527,25 @@ handle_syscall:
 1:	j       .Lresume_userspace   /* jump into middle of interrupt_return */
 =======
 	andi    r0, r30, _TIF_SYSCALL_TRACE
+=======
+	{
+	 ld      r30, r31
+	 moveli  r32, _TIF_SYSCALL_EXIT_WORK
+	}
+	and      r0, r30, r32
+>>>>>>> refs/remotes/origin/master
 	{
 	 andi    r0, r30, _TIF_SINGLESTEP
 	 beqzt   r0, 1f
 	}
+<<<<<<< HEAD
 	jal	do_syscall_trace
+=======
+	{
+	 PTREGS_PTR(r0, PTREGS_OFFSET_BASE)
+	 jal    do_syscall_trace_exit
+	}
+>>>>>>> refs/remotes/origin/master
 	FEEDBACK_REENTER(handle_syscall)
 	andi    r0, r30, _TIF_SINGLESTEP
 
@@ -1127,8 +1562,13 @@ handle_syscall:
 	 movei  r30, 0               /* not an NMI */
 	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+#ifdef CONFIG_COMPAT
+>>>>>>> refs/remotes/origin/master
 .Lcompat_syscall:
 	/*
 	 * Load the base of the compat syscall table in r20, and
@@ -1153,6 +1593,10 @@ handle_syscall:
 	{ move r15, r4; addxi r4, r4, 0 }
 	{ move r16, r5; addxi r5, r5, 0 }
 	j .Lload_syscall_pointer
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 .Linvalid_syscall:
 	/* Report an invalid syscall back to the user program */
@@ -1162,13 +1606,19 @@ handle_syscall:
 	}
 	st      r29, r28
 <<<<<<< HEAD
+<<<<<<< HEAD
 	j       .Lresume_userspace   /* jump into middle of interrupt_return */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 movei  r30, 0               /* not an NMI */
 	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	STD_ENDPROC(handle_syscall)
 
 	/* Return the address for oprofile to suppress in backtraces. */
@@ -1185,15 +1635,38 @@ STD_ENTRY(ret_from_fork)
 	jal     schedule_tail
 	FEEDBACK_REENTER(ret_from_fork)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	j       .Lresume_userspace
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 	 movei  r30, 0               /* not an NMI */
 	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	STD_ENDPROC(ret_from_fork)
 
+=======
+	STD_ENDPROC(ret_from_fork)
+
+STD_ENTRY(ret_from_kernel_thread)
+	jal     sim_notify_fork
+	jal     schedule_tail
+	FEEDBACK_REENTER(ret_from_fork)
+	{
+	 move   r0, r31
+	 jalr   r30
+	}
+	FEEDBACK_REENTER(ret_from_kernel_thread)
+	{
+	 movei  r30, 0               /* not an NMI */
+	 j      .Lresume_userspace   /* jump into middle of interrupt_return */
+	}
+	STD_ENDPROC(ret_from_kernel_thread)
+
+>>>>>>> refs/remotes/origin/master
 /* Various stub interrupt handlers and syscall handlers */
 
 STD_ENTRY_LOCAL(_kernel_double_fault)
@@ -1210,6 +1683,7 @@ STD_ENTRY_LOCAL(bad_intr)
 	panic   "Unhandled interrupt %#x: PC %#lx"
 	STD_ENDPROC(bad_intr)
 
+<<<<<<< HEAD
 /* Put address of pt_regs in reg and jump. */
 #define PTREGS_SYSCALL(x, reg)                          \
 	STD_ENTRY(_##x);                                \
@@ -1219,6 +1693,8 @@ STD_ENTRY_LOCAL(bad_intr)
 	};                                              \
 	STD_ENDPROC(_##x)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Special-case sigreturn to not write r0 to the stack on return.
  * This is technically more efficient, but it also avoids difficulties
@@ -1234,6 +1710,7 @@ STD_ENTRY_LOCAL(bad_intr)
 	};                                              \
 	STD_ENDPROC(_##x)
 
+<<<<<<< HEAD
 PTREGS_SYSCALL(sys_execve, r3)
 PTREGS_SYSCALL(sys_sigaltstack, r2)
 PTREGS_SYSCALL_SIGRETURN(sys_rt_sigreturn, r0)
@@ -1244,11 +1721,20 @@ PTREGS_SYSCALL_SIGRETURN(compat_sys_rt_sigreturn, r0)
 #endif
 
 /* Save additional callee-saves to pt_regs, put address in r4 and jump. */
+=======
+PTREGS_SYSCALL_SIGRETURN(sys_rt_sigreturn, r0)
+#ifdef CONFIG_COMPAT
+PTREGS_SYSCALL_SIGRETURN(compat_sys_rt_sigreturn, r0)
+#endif
+
+/* Save additional callee-saves to pt_regs and jump to standard function. */
+>>>>>>> refs/remotes/origin/master
 STD_ENTRY(_sys_clone)
 	push_extra_callee_saves r4
 	j       sys_clone
 	STD_ENDPROC(_sys_clone)
 
+<<<<<<< HEAD
 /* The single-step support may need to read all the registers. */
 int_unalign:
 	push_extra_callee_saves r0
@@ -1256,6 +1742,34 @@ int_unalign:
 
 <<<<<<< HEAD
 =======
+=======
+	/*
+	 * Recover r3, r2, r1 and r0 here saved by unalign fast vector.
+	 * The vector area limit is 32 bundles, so we handle the reload here.
+	 * r0, r1, r2 are in thread_info from low to high memory in order.
+	 * r3 points to location the original r3 was saved.
+	 * We put this code in the __HEAD section so it can be reached
+	 * via a conditional branch from the fast path.
+	 */
+	__HEAD
+hand_unalign_slow:
+	andi    sp, sp, ~1
+hand_unalign_slow_badsp:
+	addi    r3, r3, -(3 * 8)
+	ld_add  r0, r3, 8
+	ld_add  r1, r3, 8
+	ld      r2, r3
+hand_unalign_slow_nonuser:
+	mfspr   r3, SPR_SYSTEM_SAVE_K_1
+	__int_hand     INT_UNALIGN_DATA, UNALIGN_DATA_SLOW, int_unalign
+
+/* The unaligned data support needs to read all the registers. */
+int_unalign:
+	push_extra_callee_saves r0
+	j       do_unaligned
+ENDPROC(hand_unalign_slow)
+
+>>>>>>> refs/remotes/origin/master
 /* Fill the return address stack with nonzero entries. */
 STD_ENTRY(fill_ra_stack)
 	{
@@ -1268,9 +1782,21 @@ STD_ENTRY(fill_ra_stack)
 4:	jrp	r0
 	STD_ENDPROC(fill_ra_stack)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* Include .intrpt1 array of interrupt vectors */
 	.section ".intrpt1", "ax"
+=======
+	.macro int_hand  vecnum, vecname, c_routine, processing=handle_interrupt
+	.org   (\vecnum << 8)
+		__int_hand   \vecnum, \vecname, \c_routine, \processing
+	.endm
+
+/* Include .intrpt array of interrupt vectors */
+	.section ".intrpt", "ax"
+	.global intrpt_start
+intrpt_start:
+>>>>>>> refs/remotes/origin/master
 
 #define op_handle_perf_interrupt bad_intr
 #define op_handle_aux_perf_interrupt bad_intr
@@ -1280,10 +1806,14 @@ STD_ENTRY(fill_ra_stack)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int_hand     INT_MEM_ERROR, MEM_ERROR, bad_intr
 =======
 	int_hand     INT_MEM_ERROR, MEM_ERROR, do_trap
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int_hand     INT_MEM_ERROR, MEM_ERROR, do_trap
+>>>>>>> refs/remotes/origin/master
 	int_hand     INT_SINGLE_STEP_3, SINGLE_STEP_3, bad_intr
 #if CONFIG_KERNEL_PL == 2
 	int_hand     INT_SINGLE_STEP_2, SINGLE_STEP_2, gx_singlestep_handle
@@ -1305,10 +1835,17 @@ STD_ENTRY(fill_ra_stack)
 	int_hand     INT_SWINT_1, SWINT_1, SYSCALL, handle_syscall
 	int_hand     INT_SWINT_0, SWINT_0, do_trap
 	int_hand     INT_ILL_TRANS, ILL_TRANS, do_trap
+<<<<<<< HEAD
 	int_hand     INT_UNALIGN_DATA, UNALIGN_DATA, int_unalign
 	int_hand     INT_DTLB_MISS, DTLB_MISS, do_page_fault
 	int_hand     INT_DTLB_ACCESS, DTLB_ACCESS, do_page_fault
 	int_hand     INT_IDN_FIREWALL, IDN_FIREWALL, bad_intr
+=======
+	int_hand_unalign_fast INT_UNALIGN_DATA, UNALIGN_DATA
+	int_hand     INT_DTLB_MISS, DTLB_MISS, do_page_fault
+	int_hand     INT_DTLB_ACCESS, DTLB_ACCESS, do_page_fault
+	int_hand     INT_IDN_FIREWALL, IDN_FIREWALL, do_hardwall_trap
+>>>>>>> refs/remotes/origin/master
 	int_hand     INT_UDN_FIREWALL, UDN_FIREWALL, do_hardwall_trap
 	int_hand     INT_TILE_TIMER, TILE_TIMER, do_timer_interrupt
 	int_hand     INT_IDN_TIMER, IDN_TIMER, bad_intr

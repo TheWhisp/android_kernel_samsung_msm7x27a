@@ -13,21 +13,32 @@
 
 #include <linux/clk.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/mmc/sdhci-pltfm.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include "sdhci.h"
 
 struct sdhci_pltfm_data {
+<<<<<<< HEAD
 	struct sdhci_ops *ops;
 	unsigned int quirks;
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct sdhci_ops *ops;
+	unsigned int quirks;
+	unsigned int quirks2;
+};
+>>>>>>> refs/remotes/origin/master
 
 struct sdhci_pltfm_host {
 	struct clk *clk;
 	void *priv; /* to handle quirks across io-accessor calls */
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -36,10 +47,17 @@ extern struct sdhci_pltfm_data sdhci_esdhc_imx_pdata;
 extern struct sdhci_pltfm_data sdhci_dove_pdata;
 extern struct sdhci_pltfm_data sdhci_tegra_pdata;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* migrate from sdhci_of_host */
 	unsigned int clock;
 	u16 xfer_mode_shadow;
+<<<<<<< HEAD
+=======
+
+	unsigned long private[0] ____cacheline_aligned;
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
@@ -104,6 +122,7 @@ static inline void sdhci_be32bs_writeb(struct sdhci_host *host, u8 val, int reg)
 extern void sdhci_get_of_property(struct platform_device *pdev);
 
 extern struct sdhci_host *sdhci_pltfm_init(struct platform_device *pdev,
+<<<<<<< HEAD
 					   struct sdhci_pltfm_data *pdata);
 extern void sdhci_pltfm_free(struct platform_device *pdev);
 
@@ -111,12 +130,33 @@ extern int sdhci_pltfm_register(struct platform_device *pdev,
 				struct sdhci_pltfm_data *pdata);
 extern int sdhci_pltfm_unregister(struct platform_device *pdev);
 
+=======
+					  const struct sdhci_pltfm_data *pdata,
+					  size_t priv_size);
+extern void sdhci_pltfm_free(struct platform_device *pdev);
+
+extern int sdhci_pltfm_register(struct platform_device *pdev,
+				const struct sdhci_pltfm_data *pdata,
+				size_t priv_size);
+extern int sdhci_pltfm_unregister(struct platform_device *pdev);
+
+extern unsigned int sdhci_pltfm_clk_get_max_clock(struct sdhci_host *host);
+
+static inline void *sdhci_pltfm_priv(struct sdhci_pltfm_host *host)
+{
+	return (void *)host->private;
+}
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 extern const struct dev_pm_ops sdhci_pltfm_pmops;
 #define SDHCI_PLTFM_PMOPS (&sdhci_pltfm_pmops)
 #else
 #define SDHCI_PLTFM_PMOPS NULL
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _DRIVERS_MMC_SDHCI_PLTFM_H */

@@ -26,6 +26,7 @@
 #include <linux/io.h>
 #include <mach/hardware.h>
 #include <asm/mach/time.h>
+<<<<<<< HEAD
 #include <mach/at91_tc.h>
 
 <<<<<<< HEAD
@@ -37,6 +38,17 @@
 	__raw_writel(value, AT91_TC + field);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include "at91_tc.h"
+
+#define at91_tc_read(field) \
+	__raw_readl(AT91_IO_P2V(AT91_TC) + field)
+
+#define at91_tc_write(field, value) \
+	__raw_writel(value, AT91_IO_P2V(AT91_TC) + field)
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	3 counter/timer units present.
  */
@@ -44,6 +56,7 @@
 #define	AT91_TC_CLK1BASE	0x40
 #define	AT91_TC_CLK2BASE	0x80
 
+<<<<<<< HEAD
 static unsigned long at91x40_gettimeoffset(void)
 {
 <<<<<<< HEAD
@@ -51,22 +64,36 @@ static unsigned long at91x40_gettimeoffset(void)
 =======
 	return (at91_tc_read(AT91_TC_CLK1BASE + AT91_TC_CV) * 1000000 / (AT91X40_MASTER_CLOCK / 128));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32 at91x40_gettimeoffset(void)
+{
+	return (at91_tc_read(AT91_TC_CLK1BASE + AT91_TC_CV) * 1000000 /
+		(AT91X40_MASTER_CLOCK / 128)) * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t at91x40_timer_interrupt(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_read(AT91_TC + AT91_TC_CLK1BASE + AT91_TC_SR);
 =======
 	at91_tc_read(AT91_TC_CLK1BASE + AT91_TC_SR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_tc_read(AT91_TC_CLK1BASE + AT91_TC_SR);
+>>>>>>> refs/remotes/origin/master
 	timer_tick();
 	return IRQ_HANDLED;
 }
 
 static struct irqaction at91x40_timer_irq = {
 	.name		= "at91_tick",
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER,
+=======
+	.flags		= IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.handler	= at91x40_timer_interrupt
 };
 
@@ -74,6 +101,7 @@ void __init at91x40_timer_init(void)
 {
 	unsigned int v;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	at91_sys_write(AT91_TC + AT91_TC_BCR, 0);
 	v = at91_sys_read(AT91_TC + AT91_TC_BMR);
@@ -90,6 +118,10 @@ void __init at91x40_timer_init(void)
 
 	at91_sys_write(AT91_TC + AT91_TC_CLK1BASE + AT91_TC_CCR, (AT91_TC_SWTRG | AT91_TC_CLKEN));
 =======
+=======
+	arch_gettimeoffset = at91x40_gettimeoffset;
+
+>>>>>>> refs/remotes/origin/master
 	at91_tc_write(AT91_TC_BCR, 0);
 	v = at91_tc_read(AT91_TC_BMR);
 	v = (v & ~AT91_TC_TC1XC1S) | AT91_TC_TC1XC1S_NONE;
@@ -104,6 +136,7 @@ void __init at91x40_timer_init(void)
 	setup_irq(AT91X40_ID_TC1, &at91x40_timer_irq);
 
 	at91_tc_write(AT91_TC_CLK1BASE + AT91_TC_CCR, (AT91_TC_SWTRG | AT91_TC_CLKEN));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -112,3 +145,6 @@ struct sys_timer at91x40_timer = {
 	.offset	= at91x40_gettimeoffset,
 };
 
+=======
+}
+>>>>>>> refs/remotes/origin/master

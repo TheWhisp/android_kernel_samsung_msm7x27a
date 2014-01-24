@@ -57,27 +57,36 @@ extern void iowrite16_rep(void __iomem *port, const void *buf, unsigned long cou
 extern void iowrite32_rep(void __iomem *port, const void *buf, unsigned long count);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Create a virtual mapping cookie for an IO port range */
 extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
 extern void ioport_unmap(void __iomem *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HAS_IOPORT
 /* Create a virtual mapping cookie for an IO port range */
 extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
 extern void ioport_unmap(void __iomem *);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef ARCH_HAS_IOREMAP_WC
 #define ioremap_wc ioremap_nocache
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
 struct pci_dev;
 extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
 extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PCI
 /* Destroy a virtual mapping cookie for a PCI BAR (memory or IO) */
 struct pci_dev;
@@ -89,6 +98,9 @@ static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 #endif
 
 #include <asm-generic/pci_iomap.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

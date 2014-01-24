@@ -8,6 +8,10 @@
 #define VCLOCK_NONE 0  /* No vDSO clock available.	*/
 #define VCLOCK_TSC  1  /* vDSO should use vread_tsc.	*/
 #define VCLOCK_HPET 2  /* vDSO should use vread_hpet.	*/
+<<<<<<< HEAD
+=======
+#define VCLOCK_PVCLOCK 3 /* vDSO should use vread_pvclock. */
+>>>>>>> refs/remotes/origin/master
 
 struct arch_clocksource_data {
 	int vclock_mode;

@@ -23,10 +23,14 @@
 #define _ASM_MMU_CONTEXT_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgalloc.h>
 #include <asm/tlbflush.h>
 #include <asm-generic/mm_hooks.h>
@@ -75,7 +79,11 @@ static inline unsigned long allocate_mmu_context(struct mm_struct *mm)
 		local_flush_tlb_all();
 
 		/* fix the TLB version if needed (we avoid version #0 so as to
+<<<<<<< HEAD
 		 * distingush MMU_NO_CONTEXT) */
+=======
+		 * distinguish MMU_NO_CONTEXT) */
+>>>>>>> refs/remotes/origin/master
 		if (!mc)
 			*pmc = mc = MMU_CONTEXT_FIRST_VERSION;
 	}

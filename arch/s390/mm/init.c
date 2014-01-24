@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/mm/init.c
  *
  *  S390 version
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Hartmut Penner (hp@de.ibm.com)
  *
  *  Derived from "arch/i386/mm/init.c"
@@ -23,6 +28,7 @@
 #include <linux/init.h>
 #include <linux/pagemap.h>
 #include <linux/bootmem.h>
+<<<<<<< HEAD
 #include <linux/pfn.h>
 #include <linux/poison.h>
 #include <linux/initrd.h>
@@ -35,6 +41,15 @@
 #include <linux/gfp.h>
 #include <asm/processor.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/memory.h>
+#include <linux/pfn.h>
+#include <linux/poison.h>
+#include <linux/initrd.h>
+#include <linux/export.h>
+#include <linux/gfp.h>
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -44,20 +59,32 @@
 #include <asm/tlbflush.h>
 #include <asm/sections.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/ctl_reg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/ctl_reg.h>
+#include <asm/sclp.h>
+>>>>>>> refs/remotes/origin/master
 
 pgd_t swapper_pg_dir[PTRS_PER_PGD] __attribute__((__aligned__(PAGE_SIZE)));
 
 unsigned long empty_zero_page, zero_page_mask;
 EXPORT_SYMBOL(empty_zero_page);
 
+<<<<<<< HEAD
 static unsigned long setup_zero_pages(void)
 {
 	struct cpuid cpu_id;
 	unsigned int order;
 	unsigned long size;
+=======
+static void __init setup_zero_pages(void)
+{
+	struct cpuid cpu_id;
+	unsigned int order;
+>>>>>>> refs/remotes/origin/master
 	struct page *page;
 	int i;
 
@@ -74,10 +101,26 @@ static unsigned long setup_zero_pages(void)
 		break;
 	case 0x2097:	/* z10 */
 	case 0x2098:	/* z10 */
+<<<<<<< HEAD
 	default:
 		order = 2;
 		break;
 	}
+=======
+	case 0x2817:	/* z196 */
+	case 0x2818:	/* z196 */
+		order = 2;
+		break;
+	case 0x2827:	/* zEC12 */
+	case 0x2828:	/* zEC12 */
+	default:
+		order = 5;
+		break;
+	}
+	/* Limit number of empty zero pages for small memory sizes */
+	if (order > 2 && totalram_pages <= 16384)
+		order = 2;
+>>>>>>> refs/remotes/origin/master
 
 	empty_zero_page = __get_free_pages(GFP_KERNEL | __GFP_ZERO, order);
 	if (!empty_zero_page)
@@ -86,6 +129,7 @@ static unsigned long setup_zero_pages(void)
 	page = virt_to_page((void *) empty_zero_page);
 	split_page(page, order);
 	for (i = 1 << order; i > 0; i--) {
+<<<<<<< HEAD
 		SetPageReserved(page);
 		page++;
 	}
@@ -94,6 +138,13 @@ static unsigned long setup_zero_pages(void)
 	zero_page_mask = (size - 1) & PAGE_MASK;
 
 	return 1UL << order;
+=======
+		mark_page_reserved(page);
+		page++;
+	}
+
+	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -102,6 +153,7 @@ static unsigned long setup_zero_pages(void)
 void __init paging_init(void)
 {
 	unsigned long max_zone_pfns[MAX_NR_ZONES];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long pgd_type;
 
@@ -116,6 +168,8 @@ void __init paging_init(void)
 	pgd_type = _SEGMENT_ENTRY_EMPTY;
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long pgd_type, asce_bits;
 
 	init_mm.pgd = swapper_pg_dir;
@@ -132,7 +186,10 @@ void __init paging_init(void)
 	pgd_type = _SEGMENT_ENTRY_EMPTY;
 #endif
 	S390_lowcore.kernel_asce = (__pa(init_mm.pgd) & PAGE_MASK) | asce_bits;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	clear_table((unsigned long *) init_mm.pgd, pgd_type,
 		    sizeof(unsigned long)*2048);
 	vmem_map_init();
@@ -151,20 +208,28 @@ void __init paging_init(void)
 	max_zone_pfns[ZONE_DMA] = PFN_DOWN(MAX_DMA_ADDRESS);
 	max_zone_pfns[ZONE_NORMAL] = max_low_pfn;
 	free_area_init_nodes(max_zone_pfns);
+<<<<<<< HEAD
 	fault_init();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init mem_init(void)
 {
+<<<<<<< HEAD
 	unsigned long codesize, reservedpages, datasize, initsize;
 
         max_mapnr = num_physpages = max_low_pfn;
+=======
+        max_mapnr = max_low_pfn;
+>>>>>>> refs/remotes/origin/master
         high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
 
 	/* Setup guest page hinting */
 	cmma_init();
 
 	/* this will put all low memory onto the freelists */
+<<<<<<< HEAD
 	totalram_pages += free_all_bootmem();
 	totalram_pages -= setup_zero_pages();	/* Setup zeroed pages. */
 
@@ -180,11 +245,18 @@ void __init mem_init(void)
                 reservedpages << (PAGE_SHIFT-10),
                 datasize >>10,
                 initsize >> 10);
+=======
+	free_all_bootmem();
+	setup_zero_pages();	/* Setup zeroed pages. */
+
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 	printk("Write protected kernel read-only data: %#lx - %#lx\n",
 	       (unsigned long)&_stext,
 	       PFN_ALIGN((unsigned long)&_eshared) - 1);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_DEBUG_PAGEALLOC
 void kernel_map_pages(struct page *page, int numpages, int enable)
 {
@@ -241,12 +313,25 @@ void free_initmem(void)
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
 	free_init_pages("initrd memory", start, end);
+=======
+void free_initmem(void)
+{
+	free_initmem_default(POISON_FREE_INITMEM);
+}
+
+#ifdef CONFIG_BLK_DEV_INITRD
+void __init free_initrd_mem(unsigned long start, unsigned long end)
+{
+	free_reserved_area((void *)start, (void *)end, POISON_FREE_INITMEM,
+			   "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 #ifdef CONFIG_MEMORY_HOTPLUG
 int arch_add_memory(int nid, u64 start, u64 size)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pglist_data *pgdat;
 	struct zone *zone;
@@ -259,6 +344,8 @@ int arch_add_memory(int nid, u64 start, u64 size)
 		return rc;
 	rc = __add_pages(nid, zone, PFN_DOWN(start), PFN_DOWN(size));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long zone_start_pfn, zone_end_pfn, nr_pages;
 	unsigned long start_pfn = PFN_DOWN(start);
 	unsigned long size_pages = PFN_DOWN(size);
@@ -291,9 +378,36 @@ int arch_add_memory(int nid, u64 start, u64 size)
 		if (!size_pages)
 			break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		vmem_remove_mapping(start, size);
 	return rc;
 }
+<<<<<<< HEAD
+=======
+
+unsigned long memory_block_size_bytes(void)
+{
+	/*
+	 * Make sure the memory block size is always greater
+	 * or equal than the memory increment size.
+	 */
+	return max_t(unsigned long, MIN_MEMORY_BLOCK_SIZE, sclp_get_rzm());
+}
+
+#ifdef CONFIG_MEMORY_HOTREMOVE
+int arch_remove_memory(u64 start, u64 size)
+{
+	/*
+	 * There is no hardware or firmware interface which could trigger a
+	 * hot memory remove on s390. So there is nothing that needs to be
+	 * implemented.
+	 */
+	return -EBUSY;
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MEMORY_HOTPLUG */

@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (C) 2006 Freescale Semicondutor, Inc. All rights reserved.
+=======
+ * Copyright (C) 2006 Freescale Semiconductor, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * Authors: 	Shlomi Gridish <gridish@freescale.com>
  * 		Li Yang <leoli@freescale.com>

@@ -10,6 +10,11 @@
  * This code is based on a driver written by SBE Inc.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/delay.h>
@@ -50,7 +55,11 @@ static void t3e3_remove_channel(struct channel *channel)
 	pci_set_drvdata(pdev, NULL);
 }
 
+<<<<<<< HEAD
 static int __devinit t3e3_init_channel(struct channel *channel, struct pci_dev *pdev, struct card *card)
+=======
+static int t3e3_init_channel(struct channel *channel, struct pci_dev *pdev, struct card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	unsigned int val;
@@ -66,7 +75,12 @@ static int __devinit t3e3_init_channel(struct channel *channel, struct pci_dev *
 
 	dev = alloc_hdlcdev(channel);
 	if (!dev) {
+<<<<<<< HEAD
 		printk(KERN_ERR "SBE 2T3E3" ": Out of memory\n");
+=======
+		pr_err("Out of memory\n");
+		err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto free_regions;
 	}
 
@@ -82,8 +96,14 @@ static int __devinit t3e3_init_channel(struct channel *channel, struct pci_dev *
 	else
 		channel->h.slot = 0;
 
+<<<<<<< HEAD
 	if (setup_device(dev, channel))
 		goto free_regions;
+=======
+	err = setup_device(dev, channel);
+	if (err)
+		goto free_dev;
+>>>>>>> refs/remotes/origin/master
 
 	pci_read_config_dword(channel->pdev, 0x40, &val); /* mask sleep mode */
 	pci_write_config_dword(channel->pdev, 0x40, val & 0x3FFFFFFF);
@@ -92,14 +112,29 @@ static int __devinit t3e3_init_channel(struct channel *channel, struct pci_dev *
 	pci_read_config_dword(channel->pdev, PCI_COMMAND, &channel->h.command);
 	t3e3_init(channel);
 
+<<<<<<< HEAD
 	if (request_irq(dev->irq, &t3e3_intr, IRQF_SHARED, dev->name, dev)) {
 		printk(KERN_WARNING "%s: could not get irq: %d\n", dev->name, dev->irq);
 		goto free_regions;
+=======
+	err = request_irq(dev->irq, &t3e3_intr, IRQF_SHARED, dev->name, dev);
+	if (err) {
+		netdev_warn(channel->dev, "%s: could not get irq: %d\n",
+			    dev->name, dev->irq);
+		goto unregister_dev;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_set_drvdata(pdev, channel);
 	return 0;
 
+<<<<<<< HEAD
+=======
+unregister_dev:
+	unregister_hdlc_device(dev);
+free_dev:
+	free_netdev(dev);
+>>>>>>> refs/remotes/origin/master
 free_regions:
 	pci_release_regions(pdev);
 disable:
@@ -107,7 +142,11 @@ disable:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit t3e3_remove_card(struct pci_dev *pdev)
+=======
+static void t3e3_remove_card(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct channel *channel0 = pci_get_drvdata(pdev);
 	struct card *card = channel0->card;
@@ -121,7 +160,11 @@ static void __devexit t3e3_remove_card(struct pci_dev *pdev)
 	kfree(card);
 }
 
+<<<<<<< HEAD
 static int __devinit t3e3_init_card(struct pci_dev *pdev, const struct pci_device_id *ent)
+=======
+static int t3e3_init_card(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	/* pdev points to channel #0 */
 	struct pci_dev *pdev1 = NULL;
@@ -137,18 +180,29 @@ static int __devinit t3e3_init_card(struct pci_dev *pdev, const struct pci_devic
 				break; /* found the second channel */
 
 		if (!pdev1) {
+<<<<<<< HEAD
 			printk(KERN_ERR "SBE 2T3E3" ": Can't find the second channel\n");
+=======
+			dev_err(&pdev->dev, "Can't find the second channel\n");
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 		}
 		channels = 2;
 		/* holds the reference for pdev1 */
 	}
 
+<<<<<<< HEAD
 	card = kzalloc(sizeof(struct card) + channels * sizeof(struct channel), GFP_KERNEL);
 	if (!card) {
 		printk(KERN_ERR "SBE 2T3E3" ": Out of memory\n");
 		return -ENOBUFS;
 	}
+=======
+	card = kzalloc(sizeof(struct card) + channels * sizeof(struct channel),
+		       GFP_KERNEL);
+	if (!card)
+		return -ENOBUFS;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&card->bootrom_lock);
 	card->bootrom_addr = pci_resource_start(pdev, 0);
@@ -178,7 +232,11 @@ free_card:
 	return err;
 }
 
+<<<<<<< HEAD
 static struct pci_device_id t3e3_pci_tbl[] __devinitdata = {
+=======
+static struct pci_device_id t3e3_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_21142,
 	  PCI_VENDOR_ID_SBE, PCI_SUBDEVICE_ID_SBE_T3E3, 0, 0, 0 },
 	{ PCI_VENDOR_ID_DEC, PCI_DEVICE_ID_DEC_21142,
@@ -194,6 +252,7 @@ static struct pci_driver t3e3_pci_driver = {
 	.remove   = t3e3_remove_card,
 };
 
+<<<<<<< HEAD
 static int __init t3e3_init_module(void)
 {
 	return pci_register_driver(&t3e3_pci_driver);
@@ -206,5 +265,8 @@ static void __exit t3e3_cleanup_module(void)
 
 module_init(t3e3_init_module);
 module_exit(t3e3_cleanup_module);
+=======
+module_pci_driver(t3e3_pci_driver);
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, t3e3_pci_tbl);

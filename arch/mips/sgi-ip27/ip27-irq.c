@@ -28,12 +28,17 @@
 #include <asm/io.h>
 #include <asm/mipsregs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <asm/processor.h>
 #include <asm/pci/bridge.h>
+=======
+
+#include <asm/processor.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sn/addrs.h>
 #include <asm/sn/agent.h>
 #include <asm/sn/arch.h>
@@ -58,6 +63,7 @@
 
 extern asmlinkage void ip27_irq(void);
 
+<<<<<<< HEAD
 extern struct bridge_controller *irq_to_bridge[];
 extern int irq_to_slot[];
 
@@ -110,6 +116,8 @@ static inline int find_level(cpuid_t *cpunum, int irq)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Find first bit set
  */
@@ -128,10 +136,14 @@ static int ms1bit(unsigned long x)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This code is unnecessarily complex, because we do IRQF_DISABLED
 =======
  * This code is unnecessarily complex, because we do
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This code is unnecessarily complex, because we do
+>>>>>>> refs/remotes/origin/master
  * intr enabling. Basically, once we grab the set of intrs we need
  * to service, we must mask _all_ these interrupts; firstly, to make
  * sure the same intr does not intr again, causing recursion that
@@ -220,6 +232,7 @@ static void ip27_hub_error(void)
 	panic("CPU %d got a hub error interrupt", smp_processor_id());
 }
 
+<<<<<<< HEAD
 static int intr_connect_level(int cpu, int bit)
 {
 	nasid_t nasid = COMPACT_TO_NASID_NODEID(cpu_to_node(cpu));
@@ -397,6 +410,8 @@ int request_bridge_irq(struct bridge_controller *bc)
 	return irq;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 asmlinkage void plat_irq_dispatch(void)
 {
 	unsigned long pending = read_c0_cause() & read_c0_status();

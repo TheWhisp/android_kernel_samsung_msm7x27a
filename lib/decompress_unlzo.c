@@ -31,7 +31,11 @@
  */
 
 #ifdef STATIC
+<<<<<<< HEAD
 #include "lzo/lzo1x_decompress.c"
+=======
+#include "lzo/lzo1x_decompress_safe.c"
+>>>>>>> refs/remotes/origin/master
 #else
 #include <linux/decompress/unlzo.h>
 #endif
@@ -280,10 +284,14 @@ STATIC inline int INIT unlzo(u8 *input, int in_len,
 exit_2:
 	if (!input)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		free(in_buf);
 =======
 		free(in_buf_save);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		free(in_buf_save);
+>>>>>>> refs/remotes/origin/master
 exit_1:
 	if (!output)
 		free(out_buf);

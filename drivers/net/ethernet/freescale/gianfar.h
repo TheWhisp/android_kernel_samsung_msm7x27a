@@ -146,6 +146,13 @@ extern const char gfar_driver_version[];
 		| SUPPORTED_Autoneg \
 		| SUPPORTED_MII)
 
+<<<<<<< HEAD
+=======
+#define GFAR_SUPPORTED_GBIT (SUPPORTED_1000baseT_Full \
+		| SUPPORTED_Pause \
+		| SUPPORTED_Asym_Pause)
+
+>>>>>>> refs/remotes/origin/master
 /* TBI register addresses */
 #define MII_TBICON		0x11
 
@@ -291,7 +298,13 @@ extern const char gfar_driver_version[];
 #define RCTRL_PADDING(x)	((x << 16) & RCTRL_PAL_MASK)
 
 
+<<<<<<< HEAD
 #define RSTAT_CLEAR_RHALT       0x00800000
+=======
+#define RSTAT_CLEAR_RHALT	0x00800000
+#define RSTAT_CLEAR_RXF0	0x00000080
+#define RSTAT_RXF_MASK		0x000000ff
+>>>>>>> refs/remotes/origin/master
 
 #define TCTRL_IPCSEN		0x00004000
 #define TCTRL_TUCSEN		0x00002000
@@ -569,7 +582,11 @@ struct rxfcb {
 };
 
 struct gianfar_skb_cb {
+<<<<<<< HEAD
 	int alignamount;
+=======
+	unsigned int bytes_sent; /* bytes-on-wire (i.e. no FCB) */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define GFAR_CB(skb) ((struct gianfar_skb_cb *)((skb)->cb))
@@ -627,6 +644,7 @@ struct rmon_mib
 };
 
 struct gfar_extra_stats {
+<<<<<<< HEAD
 	u64 kernel_dropped;
 	u64 rx_large;
 	u64 rx_short;
@@ -657,6 +675,30 @@ struct gfar_stats {
 };
 
 
+=======
+	atomic64_t rx_large;
+	atomic64_t rx_short;
+	atomic64_t rx_nonoctet;
+	atomic64_t rx_crcerr;
+	atomic64_t rx_overrun;
+	atomic64_t rx_bsy;
+	atomic64_t rx_babr;
+	atomic64_t rx_trunc;
+	atomic64_t eberr;
+	atomic64_t tx_babt;
+	atomic64_t tx_underrun;
+	atomic64_t rx_skbmissing;
+	atomic64_t tx_timeout;
+};
+
+#define GFAR_RMON_LEN ((sizeof(struct rmon_mib) - 16)/sizeof(u32))
+#define GFAR_EXTRA_STATS_LEN \
+	(sizeof(struct gfar_extra_stats)/sizeof(atomic64_t))
+
+/* Number of stats exported via ethtool */
+#define GFAR_STATS_LEN (GFAR_RMON_LEN + GFAR_EXTRA_STATS_LEN)
+
+>>>>>>> refs/remotes/origin/master
 struct gfar {
 	u32	tsec_id;	/* 0x.000 - Controller ID register */
 	u32	tsec_id2;	/* 0x.004 - Controller ID2 register */
@@ -937,6 +979,7 @@ struct tx_q_stats {
  *	@txtime: coalescing value if based on time
  */
 struct gfar_priv_tx_q {
+<<<<<<< HEAD
 	spinlock_t txlock __attribute__ ((aligned (SMP_CACHE_BYTES)));
 	struct sk_buff ** tx_skbuff;
 	/* Buffer descriptor pointers */
@@ -957,6 +1000,27 @@ struct gfar_priv_tx_q {
 	unsigned long txic;
 	unsigned short txcount;
 	unsigned short txtime;
+=======
+	/* cacheline 1 */
+	spinlock_t txlock __attribute__ ((aligned (SMP_CACHE_BYTES)));
+	struct	txbd8 *tx_bd_base;
+	struct	txbd8 *cur_tx;
+	unsigned int num_txbdfree;
+	unsigned short skb_curtx;
+	unsigned short tx_ring_size;
+	struct tx_q_stats stats;
+	struct gfar_priv_grp *grp;
+	/* cacheline 2 */
+	struct net_device *dev;
+	struct sk_buff **tx_skbuff;
+	struct	txbd8 *dirty_tx;
+	unsigned short skb_dirtytx;
+	unsigned short qindex;
+	/* Configuration info for the coalescing features */
+	unsigned int txcoalescing;
+	unsigned long txic;
+	dma_addr_t tx_bd_dma_base;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -999,11 +1063,27 @@ struct gfar_priv_rx_q {
 	unsigned long rxic;
 };
 
+<<<<<<< HEAD
+=======
+enum gfar_irqinfo_id {
+	GFAR_TX = 0,
+	GFAR_RX = 1,
+	GFAR_ER = 2,
+	GFAR_NUM_IRQS = 3
+};
+
+struct gfar_irqinfo {
+	unsigned int irq;
+	char name[GFAR_INT_NAME_MAX];
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	struct gfar_priv_grp - per group structure
  *	@napi: the napi poll function
  *	@priv: back pointer to the priv structure
  *	@regs: the ioremapped register space for this group
+<<<<<<< HEAD
  *	@grp_id: group id for this group
  *	@interruptTransmit: The TX interrupt number for this group
  *	@interruptReceive: The RX interrupt number for this group
@@ -1011,6 +1091,9 @@ struct gfar_priv_rx_q {
  *	@int_name_tx: tx interrupt name for this group
  *	@int_name_rx: rx interrupt name for this group
  *	@int_name_er: er interrupt name for this group
+=======
+ *	@irqinfo: TX/RX/ER irq data for this group
+>>>>>>> refs/remotes/origin/master
  */
 
 struct gfar_priv_grp {
@@ -1018,6 +1101,7 @@ struct gfar_priv_grp {
 	struct	napi_struct napi;
 	struct gfar_private *priv;
 	struct gfar __iomem *regs;
+<<<<<<< HEAD
 	unsigned int grp_id;
 	unsigned long rx_bit_map;
 	unsigned long tx_bit_map;
@@ -1036,6 +1120,22 @@ struct gfar_priv_grp {
 	char int_name_er[GFAR_INT_NAME_MAX];
 };
 
+=======
+	unsigned int rstat;
+	unsigned long num_rx_queues;
+	unsigned long rx_bit_map;
+	/* cacheline 3 */
+	unsigned int tstat;
+	unsigned long num_tx_queues;
+	unsigned long tx_bit_map;
+
+	struct gfar_irqinfo *irqinfo[GFAR_NUM_IRQS];
+};
+
+#define gfar_irq(grp, ID) \
+	((grp)->irqinfo[GFAR_##ID])
+
+>>>>>>> refs/remotes/origin/master
 enum gfar_errata {
 	GFAR_ERRATA_74		= 0x01,
 	GFAR_ERRATA_76		= 0x02,
@@ -1053,6 +1153,7 @@ enum gfar_errata {
  * the buffer descriptor determines the actual condition.
  */
 struct gfar_private {
+<<<<<<< HEAD
 
 	/* Indicates how many tx, rx queues are enabled */
 	unsigned int num_tx_queues;
@@ -1111,22 +1212,100 @@ struct gfar_private {
 	unsigned short padding;
 
 	/* PHY stuff */
+=======
+	unsigned int num_rx_queues;
+
+	struct device *dev;
+	struct net_device *ndev;
+	enum gfar_errata errata;
+	unsigned int rx_buffer_size;
+
+	u16 uses_rxfcb;
+	u16 padding;
+
+	/* HW time stamping enabled flag */
+	int hwts_rx_en;
+	int hwts_tx_en;
+
+	struct gfar_priv_tx_q *tx_queue[MAX_TX_QS];
+	struct gfar_priv_rx_q *rx_queue[MAX_RX_QS];
+	struct gfar_priv_grp gfargrp[MAXGROUPS];
+
+	u32 device_flags;
+
+	unsigned int mode;
+	unsigned int num_tx_queues;
+	unsigned int num_grps;
+
+	/* Network Statistics */
+	struct gfar_extra_stats extra_stats;
+
+	/* PHY stuff */
+	phy_interface_t interface;
+	struct device_node *phy_node;
+	struct device_node *tbi_node;
+>>>>>>> refs/remotes/origin/master
 	struct phy_device *phydev;
 	struct mii_bus *mii_bus;
 	int oldspeed;
 	int oldduplex;
 	int oldlink;
 
+<<<<<<< HEAD
+=======
+	/* Bitfield update lock */
+	spinlock_t bflock;
+
+>>>>>>> refs/remotes/origin/master
 	uint32_t msg_enable;
 
 	struct work_struct reset_task;
 
+<<<<<<< HEAD
 	/* Network Statistics */
 	struct gfar_extra_stats extra_stats;
 
 	/* HW time stamping enabled flag */
 	int hwts_rx_en;
 	int hwts_tx_en;
+=======
+	struct platform_device *ofdev;
+	unsigned char
+		extended_hash:1,
+		bd_stash_en:1,
+		rx_filer_enable:1,
+		/* Wake-on-LAN enabled */
+		wol_en:1,
+		/* Enable priorty based Tx scheduling in Hw */
+		prio_sched_en:1,
+		/* Flow control flags */
+		pause_aneg_en:1,
+		tx_pause_en:1,
+		rx_pause_en:1;
+
+	/* The total tx and rx ring size for the enabled queues */
+	unsigned int total_tx_ring_size;
+	unsigned int total_rx_ring_size;
+
+	/* RX per device parameters */
+	unsigned int rx_stash_size;
+	unsigned int rx_stash_index;
+
+	u32 cur_filer_idx;
+
+	/* RX queue filer rule set*/
+	struct ethtool_rx_list rx_list;
+	struct mutex rx_queue_access;
+
+	/* Hash registers and their width */
+	u32 __iomem *hash_regs[16];
+	int hash_width;
+
+	/* global parameters */
+	unsigned int fifo_threshold;
+	unsigned int fifo_starve;
+	unsigned int fifo_starve_off;
+>>>>>>> refs/remotes/origin/master
 
 	/*Filer table*/
 	unsigned int ftp_rqfpr[MAX_FILER_IDX + 1];
@@ -1140,6 +1319,7 @@ static inline int gfar_has_errata(struct gfar_private *priv,
 	return priv->errata & err;
 }
 
+<<<<<<< HEAD
 static inline u32 gfar_read(volatile unsigned __iomem *addr)
 {
 	u32 val;
@@ -1150,6 +1330,18 @@ static inline u32 gfar_read(volatile unsigned __iomem *addr)
 static inline void gfar_write(volatile unsigned __iomem *addr, u32 val)
 {
 	out_be32(addr, val);
+=======
+static inline u32 gfar_read(unsigned __iomem *addr)
+{
+	u32 val;
+	val = ioread32be(addr);
+	return val;
+}
+
+static inline void gfar_write(unsigned __iomem *addr, u32 val)
+{
+	iowrite32be(val, addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void gfar_write_filer(struct gfar_private *priv,
@@ -1172,6 +1364,7 @@ static inline void gfar_read_filer(struct gfar_private *priv,
 	*fpr = gfar_read(&regs->rqfpr);
 }
 
+<<<<<<< HEAD
 extern void lock_rx_qs(struct gfar_private *priv);
 extern void lock_tx_qs(struct gfar_private *priv);
 extern void unlock_rx_qs(struct gfar_private *priv);
@@ -1188,6 +1381,23 @@ void gfar_init_sysfs(struct net_device *dev);
 int gfar_set_features(struct net_device *dev, netdev_features_t features);
 extern void gfar_check_rx_parser_mode(struct gfar_private *priv);
 extern void gfar_vlan_mode(struct net_device *dev, netdev_features_t features);
+=======
+void lock_rx_qs(struct gfar_private *priv);
+void lock_tx_qs(struct gfar_private *priv);
+void unlock_rx_qs(struct gfar_private *priv);
+void unlock_tx_qs(struct gfar_private *priv);
+irqreturn_t gfar_receive(int irq, void *dev_id);
+int startup_gfar(struct net_device *dev);
+void stop_gfar(struct net_device *dev);
+void gfar_halt(struct net_device *dev);
+void gfar_phy_test(struct mii_bus *bus, struct phy_device *phydev, int enable,
+		   u32 regnum, u32 read);
+void gfar_configure_coalescing_all(struct gfar_private *priv);
+void gfar_init_sysfs(struct net_device *dev);
+int gfar_set_features(struct net_device *dev, netdev_features_t features);
+void gfar_check_rx_parser_mode(struct gfar_private *priv);
+void gfar_vlan_mode(struct net_device *dev, netdev_features_t features);
+>>>>>>> refs/remotes/origin/master
 
 extern const struct ethtool_ops gfar_ethtool_ops;
 
@@ -1219,4 +1429,10 @@ struct filer_table {
 	struct gfar_filer_entry fe[MAX_FILER_CACHE_IDX + 20];
 };
 
+<<<<<<< HEAD
+=======
+/* The gianfar_ptp module will set this variable */
+extern int gfar_phc_index;
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __GIANFAR_H */

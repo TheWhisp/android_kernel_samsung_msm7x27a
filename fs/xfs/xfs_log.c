@@ -17,15 +17,23 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
 #include "xfs_inum.h"
 #include "xfs_trans.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_sb.h"
 #include "xfs_ag.h"
 #include "xfs_mount.h"
 #include "xfs_error.h"
+<<<<<<< HEAD
 #include "xfs_log_priv.h"
 #include "xfs_buf_item.h"
 #include "xfs_bmap_btree.h"
@@ -37,10 +45,22 @@
 #include "xfs_inode.h"
 #include "xfs_rw.h"
 #include "xfs_trace.h"
+=======
+#include "xfs_trans.h"
+#include "xfs_trans_priv.h"
+#include "xfs_log.h"
+#include "xfs_log_priv.h"
+#include "xfs_log_recover.h"
+#include "xfs_inode.h"
+#include "xfs_trace.h"
+#include "xfs_fsops.h"
+#include "xfs_cksum.h"
+>>>>>>> refs/remotes/origin/master
 
 kmem_zone_t	*xfs_log_ticket_zone;
 
 /* Local miscellaneous function prototypes */
+<<<<<<< HEAD
 STATIC int	 xlog_commit_record(struct log *log, struct xlog_ticket *ticket,
 				    xlog_in_core_t **, xfs_lsn_t *);
 STATIC xlog_t *  xlog_alloc_log(xfs_mount_t	*mp,
@@ -92,6 +112,94 @@ STATIC void	xlog_verify_iclog(xlog_t *log, xlog_in_core_t *iclog,
 				  int count, boolean_t syncing);
 STATIC void	xlog_verify_tail_lsn(xlog_t *log, xlog_in_core_t *iclog,
 				     xfs_lsn_t tail_lsn);
+=======
+STATIC int
+xlog_commit_record(
+	struct xlog		*log,
+	struct xlog_ticket	*ticket,
+	struct xlog_in_core	**iclog,
+	xfs_lsn_t		*commitlsnp);
+
+STATIC struct xlog *
+xlog_alloc_log(
+	struct xfs_mount	*mp,
+	struct xfs_buftarg	*log_target,
+	xfs_daddr_t		blk_offset,
+	int			num_bblks);
+STATIC int
+xlog_space_left(
+	struct xlog		*log,
+	atomic64_t		*head);
+STATIC int
+xlog_sync(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog);
+STATIC void
+xlog_dealloc_log(
+	struct xlog		*log);
+
+/* local state machine functions */
+STATIC void xlog_state_done_syncing(xlog_in_core_t *iclog, int);
+STATIC void
+xlog_state_do_callback(
+	struct xlog		*log,
+	int			aborted,
+	struct xlog_in_core	*iclog);
+STATIC int
+xlog_state_get_iclog_space(
+	struct xlog		*log,
+	int			len,
+	struct xlog_in_core	**iclog,
+	struct xlog_ticket	*ticket,
+	int			*continued_write,
+	int			*logoffsetp);
+STATIC int
+xlog_state_release_iclog(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog);
+STATIC void
+xlog_state_switch_iclogs(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	int			eventual_size);
+STATIC void
+xlog_state_want_sync(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog);
+
+STATIC void
+xlog_grant_push_ail(
+	struct xlog		*log,
+	int			need_bytes);
+STATIC void
+xlog_regrant_reserve_log_space(
+	struct xlog		*log,
+	struct xlog_ticket	*ticket);
+STATIC void
+xlog_ungrant_log_space(
+	struct xlog		*log,
+	struct xlog_ticket	*ticket);
+
+#if defined(DEBUG)
+STATIC void
+xlog_verify_dest_ptr(
+	struct xlog		*log,
+	char			*ptr);
+STATIC void
+xlog_verify_grant_tail(
+	struct xlog *log);
+STATIC void
+xlog_verify_iclog(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	int			count,
+	bool                    syncing);
+STATIC void
+xlog_verify_tail_lsn(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	xfs_lsn_t		tail_lsn);
+>>>>>>> refs/remotes/origin/master
 #else
 #define xlog_verify_dest_ptr(a,b)
 #define xlog_verify_grant_tail(a)
@@ -99,6 +207,7 @@ STATIC void	xlog_verify_tail_lsn(xlog_t *log, xlog_in_core_t *iclog,
 #define xlog_verify_tail_lsn(a,b,c)
 #endif
 
+<<<<<<< HEAD
 STATIC int	xlog_iclogs_empty(xlog_t *log);
 
 static void
@@ -106,6 +215,17 @@ xlog_grant_sub_space(
 	struct log	*log,
 	atomic64_t	*head,
 	int		bytes)
+=======
+STATIC int
+xlog_iclogs_empty(
+	struct xlog		*log);
+
+static void
+xlog_grant_sub_space(
+	struct xlog		*log,
+	atomic64_t		*head,
+	int			bytes)
+>>>>>>> refs/remotes/origin/master
 {
 	int64_t	head_val = atomic64_read(head);
 	int64_t new, old;
@@ -129,9 +249,15 @@ xlog_grant_sub_space(
 
 static void
 xlog_grant_add_space(
+<<<<<<< HEAD
 	struct log	*log,
 	atomic64_t	*head,
 	int		bytes)
+=======
+	struct xlog		*log,
+	atomic64_t		*head,
+	int			bytes)
+>>>>>>> refs/remotes/origin/master
 {
 	int64_t	head_val = atomic64_read(head);
 	int64_t new, old;
@@ -157,7 +283,10 @@ xlog_grant_add_space(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 STATIC void
 xlog_grant_head_init(
 	struct xlog_grant_head	*head)
@@ -181,7 +310,11 @@ xlog_grant_head_wake_all(
 
 static inline int
 xlog_ticket_reservation(
+<<<<<<< HEAD
 	struct log		*log,
+=======
+	struct xlog		*log,
+>>>>>>> refs/remotes/origin/master
 	struct xlog_grant_head	*head,
 	struct xlog_ticket	*tic)
 {
@@ -198,7 +331,11 @@ xlog_ticket_reservation(
 
 STATIC bool
 xlog_grant_head_wake(
+<<<<<<< HEAD
 	struct log		*log,
+=======
+	struct xlog		*log,
+>>>>>>> refs/remotes/origin/master
 	struct xlog_grant_head	*head,
 	int			*free_bytes)
 {
@@ -220,10 +357,18 @@ xlog_grant_head_wake(
 
 STATIC int
 xlog_grant_head_wait(
+<<<<<<< HEAD
 	struct log		*log,
 	struct xlog_grant_head	*head,
 	struct xlog_ticket	*tic,
 	int			need_bytes)
+=======
+	struct xlog		*log,
+	struct xlog_grant_head	*head,
+	struct xlog_ticket	*tic,
+	int			need_bytes) __releases(&head->lock)
+					    __acquires(&head->lock)
+>>>>>>> refs/remotes/origin/master
 {
 	list_add_tail(&tic->t_queue, &head->waiters);
 
@@ -272,7 +417,11 @@ shutdown:
  */
 STATIC int
 xlog_grant_head_check(
+<<<<<<< HEAD
 	struct log		*log,
+=======
+	struct xlog		*log,
+>>>>>>> refs/remotes/origin/master
 	struct xlog_grant_head	*head,
 	struct xlog_ticket	*tic,
 	int			*need_bytes)
@@ -307,7 +456,10 @@ xlog_grant_head_check(
 	return error;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 xlog_tic_reset_res(xlog_ticket_t *tic)
 {
@@ -334,7 +486,10 @@ xlog_tic_add_region(xlog_ticket_t *tic, uint len, uint type)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Replenish the byte reservation required by moving the grant write head.
  */
 int
@@ -342,7 +497,11 @@ xfs_log_regrant(
 	struct xfs_mount	*mp,
 	struct xlog_ticket	*tic)
 {
+<<<<<<< HEAD
 	struct log		*log = mp->m_log;
+=======
+	struct xlog		*log = mp->m_log;
+>>>>>>> refs/remotes/origin/master
 	int			need_bytes;
 	int			error = 0;
 
@@ -408,7 +567,11 @@ xfs_log_reserve(
 	bool			permanent,
 	uint		 	t_type)
 {
+<<<<<<< HEAD
 	struct log		*log = mp->m_log;
+=======
+	struct xlog		*log = mp->m_log;
+>>>>>>> refs/remotes/origin/master
 	struct xlog_ticket	*tic;
 	int			need_bytes;
 	int			error = 0;
@@ -429,7 +592,12 @@ xfs_log_reserve(
 	tic->t_trans_type = t_type;
 	*ticp = tic;
 
+<<<<<<< HEAD
 	xlog_grant_push_ail(log, tic->t_unit_res * tic->t_cnt);
+=======
+	xlog_grant_push_ail(log, tic->t_cnt ? tic->t_unit_res * tic->t_cnt
+					    : tic->t_unit_res);
+>>>>>>> refs/remotes/origin/master
 
 	trace_xfs_log_reserve(log, tic);
 
@@ -457,7 +625,10 @@ out_error:
 
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * NOTES:
  *
  *	1. currblock field gets updated at startup and after in-core logs
@@ -485,7 +656,11 @@ xfs_log_done(
 	struct xlog_in_core	**iclog,
 	uint			flags)
 {
+<<<<<<< HEAD
 	struct log		*log = mp->m_log;
+=======
+	struct xlog		*log = mp->m_log;
+>>>>>>> refs/remotes/origin/master
 	xfs_lsn_t		lsn = 0;
 
 	if (XLOG_FORCED_SHUTDOWN(log) ||
@@ -568,6 +743,7 @@ xfs_log_release_iclog(
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  1. Reserve an amount of on-disk log space and return a ticket corresponding
  *	to the reservation.
  *  2. Potentially, push buffers at tail of log to disk.
@@ -641,6 +817,8 @@ xfs_log_reserve(
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Mount a log filesystem
  *
  * mp		- ubiquitous xfs mount point structure
@@ -657,7 +835,12 @@ xfs_log_mount(
 	xfs_daddr_t	blk_offset,
 	int		num_bblks)
 {
+<<<<<<< HEAD
 	int		error;
+=======
+	int		error = 0;
+	int		min_logfsbs;
+>>>>>>> refs/remotes/origin/master
 
 	if (!(mp->m_flags & XFS_MOUNT_NORECOVERY))
 		xfs_notice(mp, "Mounting Filesystem");
@@ -674,6 +857,53 @@ xfs_log_mount(
 	}
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Validate the given log space and drop a critical message via syslog
+	 * if the log size is too small that would lead to some unexpected
+	 * situations in transaction log space reservation stage.
+	 *
+	 * Note: we can't just reject the mount if the validation fails.  This
+	 * would mean that people would have to downgrade their kernel just to
+	 * remedy the situation as there is no way to grow the log (short of
+	 * black magic surgery with xfs_db).
+	 *
+	 * We can, however, reject mounts for CRC format filesystems, as the
+	 * mkfs binary being used to make the filesystem should never create a
+	 * filesystem with a log that is too small.
+	 */
+	min_logfsbs = xfs_log_calc_minimum_size(mp);
+
+	if (mp->m_sb.sb_logblocks < min_logfsbs) {
+		xfs_warn(mp,
+		"Log size %d blocks too small, minimum size is %d blocks",
+			 mp->m_sb.sb_logblocks, min_logfsbs);
+		error = EINVAL;
+	} else if (mp->m_sb.sb_logblocks > XFS_MAX_LOG_BLOCKS) {
+		xfs_warn(mp,
+		"Log size %d blocks too large, maximum size is %lld blocks",
+			 mp->m_sb.sb_logblocks, XFS_MAX_LOG_BLOCKS);
+		error = EINVAL;
+	} else if (XFS_FSB_TO_B(mp, mp->m_sb.sb_logblocks) > XFS_MAX_LOG_BYTES) {
+		xfs_warn(mp,
+		"log size %lld bytes too large, maximum size is %lld bytes",
+			 XFS_FSB_TO_B(mp, mp->m_sb.sb_logblocks),
+			 XFS_MAX_LOG_BYTES);
+		error = EINVAL;
+	}
+	if (error) {
+		if (xfs_sb_version_hascrc(&mp->m_sb)) {
+			xfs_crit(mp, "AAIEEE! Log failed size checks. Abort!");
+			ASSERT(0);
+			goto out_free_log;
+		}
+		xfs_crit(mp,
+"Log size out of supported range. Continuing onwards, but if log hangs are\n"
+"experienced then please report this message in the bug report.");
+	}
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * Initialize the AIL now we have a log.
 	 */
 	error = xfs_trans_ail_init(mp);
@@ -725,16 +955,28 @@ out:
 }
 
 /*
+<<<<<<< HEAD
  * Finish the recovery of the file system.  This is separate from
  * the xfs_log_mount() call, because it depends on the code in
  * xfs_mountfs() to read in the root and real-time bitmap inodes
  * between calling xfs_log_mount() and here.
  *
  * mp		- ubiquitous xfs mount point structure
+=======
+ * Finish the recovery of the file system.  This is separate from the
+ * xfs_log_mount() call, because it depends on the code in xfs_mountfs() to read
+ * in the root and real-time bitmap inodes between calling xfs_log_mount() and
+ * here.
+ *
+ * If we finish recovery successfully, start the background log work. If we are
+ * not doing recovery, then we have a RO filesystem and we don't need to start
+ * it.
+>>>>>>> refs/remotes/origin/master
  */
 int
 xfs_log_mount_finish(xfs_mount_t *mp)
 {
+<<<<<<< HEAD
 	int	error;
 
 	if (!(mp->m_flags & XFS_MOUNT_NORECOVERY))
@@ -744,6 +986,19 @@ xfs_log_mount_finish(xfs_mount_t *mp)
 		ASSERT(mp->m_flags & XFS_MOUNT_RDONLY);
 	}
 
+=======
+	int	error = 0;
+
+	if (!(mp->m_flags & XFS_MOUNT_NORECOVERY)) {
+		error = xlog_recover_finish(mp->m_log);
+		if (!error)
+			xfs_log_work_queue(mp);
+	} else {
+		ASSERT(mp->m_flags & XFS_MOUNT_RDONLY);
+	}
+
+
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -759,14 +1014,22 @@ xfs_log_mount_finish(xfs_mount_t *mp)
  * Unmount record used to have a string "Unmount filesystem--" in the
  * data section where the "Un" was really a magic number (XLOG_UNMOUNT_TYPE).
  * We just write the magic number now since that particular field isn't
+<<<<<<< HEAD
  * currently architecture converted and "nUmount" is a bit foo.
+=======
+ * currently architecture converted and "Unmount" is a bit foo.
+>>>>>>> refs/remotes/origin/master
  * As far as I know, there weren't any dependencies on the old behaviour.
  */
 
 int
 xfs_log_unmount_write(xfs_mount_t *mp)
 {
+<<<<<<< HEAD
 	xlog_t		 *log = mp->m_log;
+=======
+	struct xlog	 *log = mp->m_log;
+>>>>>>> refs/remotes/origin/master
 	xlog_in_core_t	 *iclog;
 #ifdef DEBUG
 	xlog_in_core_t	 *first_iclog;
@@ -818,6 +1081,7 @@ xfs_log_unmount_write(xfs_mount_t *mp)
 			};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* remove inited flag */
 			tic->t_flags = 0;
 =======
@@ -825,6 +1089,11 @@ xfs_log_unmount_write(xfs_mount_t *mp)
 			tic->t_flags = 0;
 			tic->t_curr_res -= sizeof(magic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* remove inited flag, and account for space used */
+			tic->t_flags = 0;
+			tic->t_curr_res -= sizeof(magic);
+>>>>>>> refs/remotes/origin/master
 			error = xlog_write(log, &vec, tic, &lsn,
 					   NULL, XLOG_UNMOUNT_TRANS);
 			/*
@@ -901,6 +1170,7 @@ xfs_log_unmount_write(xfs_mount_t *mp)
 }	/* xfs_log_unmount_write */
 
 /*
+<<<<<<< HEAD
  * Deallocate log structures for unmount/relocation.
  *
  * We need to stop the aild from running before we destroy
@@ -909,6 +1179,51 @@ xfs_log_unmount_write(xfs_mount_t *mp)
 void
 xfs_log_unmount(xfs_mount_t *mp)
 {
+=======
+ * Empty the log for unmount/freeze.
+ *
+ * To do this, we first need to shut down the background log work so it is not
+ * trying to cover the log as we clean up. We then need to unpin all objects in
+ * the log so we can then flush them out. Once they have completed their IO and
+ * run the callbacks removing themselves from the AIL, we can write the unmount
+ * record.
+ */
+void
+xfs_log_quiesce(
+	struct xfs_mount	*mp)
+{
+	cancel_delayed_work_sync(&mp->m_log->l_work);
+	xfs_log_force(mp, XFS_LOG_SYNC);
+
+	/*
+	 * The superblock buffer is uncached and while xfs_ail_push_all_sync()
+	 * will push it, xfs_wait_buftarg() will not wait for it. Further,
+	 * xfs_buf_iowait() cannot be used because it was pushed with the
+	 * XBF_ASYNC flag set, so we need to use a lock/unlock pair to wait for
+	 * the IO to complete.
+	 */
+	xfs_ail_push_all_sync(mp->m_ail);
+	xfs_wait_buftarg(mp->m_ddev_targp);
+	xfs_buf_lock(mp->m_sb_bp);
+	xfs_buf_unlock(mp->m_sb_bp);
+
+	xfs_log_unmount_write(mp);
+}
+
+/*
+ * Shut down and release the AIL and Log.
+ *
+ * During unmount, we need to ensure we flush all the dirty metadata objects
+ * from the AIL so that the log is empty before we write the unmount record to
+ * the log. Once this is done, we can tear down the AIL and the log.
+ */
+void
+xfs_log_unmount(
+	struct xfs_mount	*mp)
+{
+	xfs_log_quiesce(mp);
+
+>>>>>>> refs/remotes/origin/master
 	xfs_trans_ail_destroy(mp);
 	xlog_dealloc_log(mp->m_log);
 }
@@ -919,10 +1234,14 @@ xfs_log_item_init(
 	struct xfs_log_item	*item,
 	int			type,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct xfs_item_ops	*ops)
 =======
 	const struct xfs_item_ops *ops)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct xfs_item_ops *ops)
+>>>>>>> refs/remotes/origin/master
 {
 	item->li_mountp = mp;
 	item->li_ailp = mp->m_ail;
@@ -935,6 +1254,7 @@ xfs_log_item_init(
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Write region vectors to log.  The write happens using the space reservation
  * of the ticket (tic).  It is not a requirement that all writes for a given
@@ -975,19 +1295,27 @@ xfs_log_move_tail(xfs_mount_t	*mp,
 	xlog_t		*log = mp->m_log;
 	int		need_bytes, free_bytes;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Wake up processes waiting for log space after we have moved the log tail.
  */
 void
 xfs_log_space_wake(
 	struct xfs_mount	*mp)
 {
+<<<<<<< HEAD
 	struct log		*log = mp->m_log;
 	int			free_bytes;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xlog		*log = mp->m_log;
+	int			free_bytes;
+>>>>>>> refs/remotes/origin/master
 
 	if (XLOG_FORCED_SHUTDOWN(log))
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (tail_lsn == 0)
 		tail_lsn = atomic64_read(&log->l_last_sync_lsn);
@@ -1037,6 +1365,8 @@ xfs_log_space_wake(
 		}
 		spin_unlock(&log->l_grant_reserve_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!list_empty_careful(&log->l_write_head.waiters)) {
 		ASSERT(!(log->l_flags & XLOG_ACTIVE_RECOVERY));
 
@@ -1053,11 +1383,15 @@ xfs_log_space_wake(
 		free_bytes = xlog_space_left(log, &log->l_reserve_head.grant);
 		xlog_grant_head_wake(log, &log->l_reserve_head, &free_bytes);
 		spin_unlock(&log->l_reserve_head.lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /*
+<<<<<<< HEAD
  * Determine if we have a transaction that has gone to disk
  * that needs to be covered. To begin the transition to the idle state
  * firstly the log needs to be idle (no AIL and nothing in the iclogs).
@@ -1069,16 +1403,44 @@ xfs_log_space_wake(
  * idle states. This ensures that the log tail is accurately reflected in
  * the log at the end of the sync, hence if a crash occurrs avoids replay
  * of transactions where the metadata is already on disk.
+=======
+ * Determine if we have a transaction that has gone to disk that needs to be
+ * covered. To begin the transition to the idle state firstly the log needs to
+ * be idle. That means the CIL, the AIL and the iclogs needs to be empty before
+ * we start attempting to cover the log.
+ *
+ * Only if we are then in a state where covering is needed, the caller is
+ * informed that dummy transactions are required to move the log into the idle
+ * state.
+ *
+ * If there are any items in the AIl or CIL, then we do not want to attempt to
+ * cover the log as we may be in a situation where there isn't log space
+ * available to run a dummy transaction and this can lead to deadlocks when the
+ * tail of the log is pinned by an item that is modified in the CIL.  Hence
+ * there's no point in running a dummy transaction at this point because we
+ * can't start trying to idle the log until both the CIL and AIL are empty.
+>>>>>>> refs/remotes/origin/master
  */
 int
 xfs_log_need_covered(xfs_mount_t *mp)
 {
+<<<<<<< HEAD
 	int		needed = 0;
 	xlog_t		*log = mp->m_log;
+=======
+	struct xlog	*log = mp->m_log;
+	int		needed = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!xfs_fs_writable(mp))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	if (!xlog_cil_empty(log))
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock(&log->l_icloglock);
 	switch (log->l_covered_state) {
 	case XLOG_STATE_COVER_DONE:
@@ -1087,6 +1449,7 @@ xfs_log_need_covered(xfs_mount_t *mp)
 		break;
 	case XLOG_STATE_COVER_NEED:
 	case XLOG_STATE_COVER_NEED2:
+<<<<<<< HEAD
 		if (!xfs_ail_min_lsn(log->l_ailp) &&
 		    xlog_iclogs_empty(log)) {
 			if (log->l_covered_state == XLOG_STATE_COVER_NEED)
@@ -1095,6 +1458,19 @@ xfs_log_need_covered(xfs_mount_t *mp)
 				log->l_covered_state = XLOG_STATE_COVER_DONE2;
 		}
 		/* FALLTHRU */
+=======
+		if (xfs_ail_min_lsn(log->l_ailp))
+			break;
+		if (!xlog_iclogs_empty(log))
+			break;
+
+		needed = 1;
+		if (log->l_covered_state == XLOG_STATE_COVER_NEED)
+			log->l_covered_state = XLOG_STATE_COVER_DONE;
+		else
+			log->l_covered_state = XLOG_STATE_COVER_DONE2;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		needed = 1;
 		break;
@@ -1103,6 +1479,7 @@ xfs_log_need_covered(xfs_mount_t *mp)
 	return needed;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /******************************************************************************
  *
@@ -1149,10 +1526,52 @@ xlog_assign_tail_lsn(
 	if (!tail_lsn)
 		tail_lsn = atomic64_read(&log->l_last_sync_lsn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * We may be holding the log iclog lock upon entering this routine.
+ */
+xfs_lsn_t
+xlog_assign_tail_lsn_locked(
+	struct xfs_mount	*mp)
+{
+	struct xlog		*log = mp->m_log;
+	struct xfs_log_item	*lip;
+	xfs_lsn_t		tail_lsn;
+
+	assert_spin_locked(&mp->m_ail->xa_lock);
+
+	/*
+	 * To make sure we always have a valid LSN for the log tail we keep
+	 * track of the last LSN which was committed in log->l_last_sync_lsn,
+	 * and use that when the AIL was empty.
+	 */
+	lip = xfs_ail_min(mp->m_ail);
+	if (lip)
+		tail_lsn = lip->li_lsn;
+	else
+		tail_lsn = atomic64_read(&log->l_last_sync_lsn);
+	trace_xfs_log_assign_tail_lsn(log, tail_lsn);
+>>>>>>> refs/remotes/origin/master
 	atomic64_set(&log->l_tail_lsn, tail_lsn);
 	return tail_lsn;
 }
 
+<<<<<<< HEAD
+=======
+xfs_lsn_t
+xlog_assign_tail_lsn(
+	struct xfs_mount	*mp)
+{
+	xfs_lsn_t		tail_lsn;
+
+	spin_lock(&mp->m_ail->xa_lock);
+	tail_lsn = xlog_assign_tail_lsn_locked(mp);
+	spin_unlock(&mp->m_ail->xa_lock);
+
+	return tail_lsn;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Return the space in the log between the tail and the head.  The head
  * is passed in the cycle/bytes formal parms.  In the special case where
@@ -1169,7 +1588,11 @@ xlog_assign_tail_lsn(
  */
 STATIC int
 xlog_space_left(
+<<<<<<< HEAD
 	struct log	*log,
+=======
+	struct xlog	*log,
+>>>>>>> refs/remotes/origin/master
 	atomic64_t	*head)
 {
 	int		free_bytes;
@@ -1216,6 +1639,7 @@ void
 xlog_iodone(xfs_buf_t *bp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xlog_in_core_t	*iclog;
 	xlog_t		*l;
 	int		aborted;
@@ -1230,21 +1654,32 @@ xlog_iodone(xfs_buf_t *bp)
 	xlog_t		*l = iclog->ic_log;
 	int		aborted = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct xlog_in_core	*iclog = bp->b_fspriv;
+	struct xlog		*l = iclog->ic_log;
+	int			aborted = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Race to shutdown the filesystem if we see an error.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (XFS_TEST_ERROR((XFS_BUF_GETERROR(bp)), l->l_mp,
 			XFS_ERRTAG_IODONE_IOERR, XFS_RANDOM_IODONE_IOERR)) {
 		xfs_ioerror_alert("xlog_iodone", l->l_mp, bp, XFS_BUF_ADDR(bp));
 		XFS_BUF_STALE(bp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (XFS_TEST_ERROR((xfs_buf_geterror(bp)), l->l_mp,
 			XFS_ERRTAG_IODONE_IOERR, XFS_RANDOM_IODONE_IOERR)) {
 		xfs_buf_ioerror_alert(bp, __func__);
 		xfs_buf_stale(bp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xfs_force_shutdown(l->l_mp, SHUTDOWN_LOG_IO_ERROR);
 		/*
 		 * This flag will be propagated to the trans-committed
@@ -1264,8 +1699,12 @@ xlog_iodone(xfs_buf_t *bp)
 	 * with it being freed after writing the unmount record to the
 	 * log.
 	 */
+<<<<<<< HEAD
 
 }	/* xlog_iodone */
+=======
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Return size of each in-core log record buffer.
@@ -1277,8 +1716,14 @@ xlog_iodone(xfs_buf_t *bp)
  */
 
 STATIC void
+<<<<<<< HEAD
 xlog_get_iclog_buffer_size(xfs_mount_t	*mp,
 			   xlog_t	*log)
+=======
+xlog_get_iclog_buffer_size(
+	struct xfs_mount	*mp,
+	struct xlog		*log)
+>>>>>>> refs/remotes/origin/master
 {
 	int size;
 	int xhdrs;
@@ -1334,11 +1779,49 @@ done:
 }	/* xlog_get_iclog_buffer_size */
 
 
+<<<<<<< HEAD
+=======
+void
+xfs_log_work_queue(
+	struct xfs_mount        *mp)
+{
+	queue_delayed_work(mp->m_log_workqueue, &mp->m_log->l_work,
+				msecs_to_jiffies(xfs_syncd_centisecs * 10));
+}
+
+/*
+ * Every sync period we need to unpin all items in the AIL and push them to
+ * disk. If there is nothing dirty, then we might need to cover the log to
+ * indicate that the filesystem is idle.
+ */
+void
+xfs_log_worker(
+	struct work_struct	*work)
+{
+	struct xlog		*log = container_of(to_delayed_work(work),
+						struct xlog, l_work);
+	struct xfs_mount	*mp = log->l_mp;
+
+	/* dgc: errors ignored - not fatal and nowhere to report them */
+	if (xfs_log_need_covered(mp))
+		xfs_fs_log_dummy(mp);
+	else
+		xfs_log_force(mp, 0);
+
+	/* start pushing all the metadata that is currently dirty */
+	xfs_ail_push_all(mp->m_ail);
+
+	/* queue us up again */
+	xfs_log_work_queue(mp);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * This routine initializes some of the log structure for a given mount point.
  * Its primary purpose is to fill in enough, so recovery can occur.  However,
  * some other stuff may be filled in too.
  */
+<<<<<<< HEAD
 STATIC xlog_t *
 xlog_alloc_log(xfs_mount_t	*mp,
 	       xfs_buftarg_t	*log_target,
@@ -1346,6 +1829,16 @@ xlog_alloc_log(xfs_mount_t	*mp,
 	       int		num_bblks)
 {
 	xlog_t			*log;
+=======
+STATIC struct xlog *
+xlog_alloc_log(
+	struct xfs_mount	*mp,
+	struct xfs_buftarg	*log_target,
+	xfs_daddr_t		blk_offset,
+	int			num_bblks)
+{
+	struct xlog		*log;
+>>>>>>> refs/remotes/origin/master
 	xlog_rec_header_t	*head;
 	xlog_in_core_t		**iclogp;
 	xlog_in_core_t		*iclog, *prev_iclog=NULL;
@@ -1354,7 +1847,11 @@ xlog_alloc_log(xfs_mount_t	*mp,
 	int			error = ENOMEM;
 	uint			log2_size = 0;
 
+<<<<<<< HEAD
 	log = kmem_zalloc(sizeof(xlog_t), KM_MAYFAIL);
+=======
+	log = kmem_zalloc(sizeof(struct xlog), KM_MAYFAIL);
+>>>>>>> refs/remotes/origin/master
 	if (!log) {
 		xfs_warn(mp, "Log allocation failed: No memory!");
 		goto out;
@@ -1367,12 +1864,17 @@ xlog_alloc_log(xfs_mount_t	*mp,
 	log->l_logBBsize   = num_bblks;
 	log->l_covered_state = XLOG_STATE_COVER_IDLE;
 	log->l_flags	   |= XLOG_ACTIVE_RECOVERY;
+<<<<<<< HEAD
+=======
+	INIT_DELAYED_WORK(&log->l_work, xfs_log_worker);
+>>>>>>> refs/remotes/origin/master
 
 	log->l_prev_block  = -1;
 	/* log->l_tail_lsn = 0x100000000LL; cycle = 1; current block = 0 */
 	xlog_assign_atomic_lsn(&log->l_tail_lsn, 1, 0);
 	xlog_assign_atomic_lsn(&log->l_last_sync_lsn, 1, 0);
 	log->l_curr_cycle  = 1;	    /* 0 is bad since this is initial value */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xlog_assign_grant_head(&log->l_grant_reserve_head, 1, 0);
 	xlog_assign_grant_head(&log->l_grant_write_head, 1, 0);
@@ -1385,6 +1887,11 @@ xlog_alloc_log(xfs_mount_t	*mp,
 	xlog_grant_head_init(&log->l_reserve_head);
 	xlog_grant_head_init(&log->l_write_head);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	xlog_grant_head_init(&log->l_reserve_head);
+	xlog_grant_head_init(&log->l_write_head);
+>>>>>>> refs/remotes/origin/master
 
 	error = EFSCORRUPTED;
 	if (xfs_sb_version_hassector(&mp->m_sb)) {
@@ -1417,6 +1924,7 @@ xlog_alloc_log(xfs_mount_t	*mp,
 
 	error = ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bp = xfs_buf_get_empty(log->l_iclog_size, mp->m_logdev_targp);
 	if (!bp)
 		goto out_free_log;
@@ -1426,19 +1934,28 @@ xlog_alloc_log(xfs_mount_t	*mp,
 	ASSERT(XFS_BUF_VALUSEMA(bp) <= 0);
 =======
 	bp = xfs_buf_alloc(mp->m_logdev_targp, 0, log->l_iclog_size, 0);
+=======
+	bp = xfs_buf_alloc(mp->m_logdev_targp, 0, BTOBB(log->l_iclog_size), 0);
+>>>>>>> refs/remotes/origin/master
 	if (!bp)
 		goto out_free_log;
 	bp->b_iodone = xlog_iodone;
 	ASSERT(xfs_buf_islocked(bp));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	log->l_xbuf = bp;
 
 	spin_lock_init(&log->l_icloglock);
 	init_waitqueue_head(&log->l_flush_wait);
 
+<<<<<<< HEAD
 	/* log record size must be multiple of BBSIZE; see xlog_rec_header_t */
 	ASSERT((XFS_BUF_SIZE(bp) & BBMASK) == 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	iclogp = &log->l_iclog;
 	/*
 	 * The amount of memory to allocate for the iclog structure is
@@ -1458,6 +1975,7 @@ xlog_alloc_log(xfs_mount_t	*mp,
 		prev_iclog = iclog;
 
 		bp = xfs_buf_get_uncached(mp->m_logdev_targp,
+<<<<<<< HEAD
 						log->l_iclog_size, 0);
 		if (!bp)
 			goto out_free_iclog;
@@ -1470,6 +1988,13 @@ xlog_alloc_log(xfs_mount_t	*mp,
 
 		bp->b_iodone = xlog_iodone;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						BTOBB(log->l_iclog_size), 0);
+		if (!bp)
+			goto out_free_iclog;
+
+		bp->b_iodone = xlog_iodone;
+>>>>>>> refs/remotes/origin/master
 		iclog->ic_bp = bp;
 		iclog->ic_data = bp->b_addr;
 #ifdef DEBUG
@@ -1485,7 +2010,11 @@ xlog_alloc_log(xfs_mount_t	*mp,
 		head->h_fmt = cpu_to_be32(XLOG_FMT);
 		memcpy(&head->h_fs_uuid, &mp->m_sb.sb_uuid, sizeof(uuid_t));
 
+<<<<<<< HEAD
 		iclog->ic_size = XFS_BUF_SIZE(bp) - log->l_iclog_hsize;
+=======
+		iclog->ic_size = BBTOB(bp->b_length) - log->l_iclog_hsize;
+>>>>>>> refs/remotes/origin/master
 		iclog->ic_state = XLOG_STATE_ACTIVE;
 		iclog->ic_log = log;
 		atomic_set(&iclog->ic_refcnt, 0);
@@ -1494,11 +2023,15 @@ xlog_alloc_log(xfs_mount_t	*mp,
 		iclog->ic_datap = (char *)iclog->ic_data + log->l_iclog_hsize;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ASSERT(XFS_BUF_ISBUSY(iclog->ic_bp));
 		ASSERT(XFS_BUF_VALUSEMA(iclog->ic_bp) <= 0);
 =======
 		ASSERT(xfs_buf_islocked(iclog->ic_bp));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ASSERT(xfs_buf_islocked(iclog->ic_bp));
+>>>>>>> refs/remotes/origin/master
 		init_waitqueue_head(&iclog->ic_force_wait);
 		init_waitqueue_head(&iclog->ic_write_wait);
 
@@ -1534,7 +2067,11 @@ out:
  */
 STATIC int
 xlog_commit_record(
+<<<<<<< HEAD
 	struct log		*log,
+=======
+	struct xlog		*log,
+>>>>>>> refs/remotes/origin/master
 	struct xlog_ticket	*ticket,
 	struct xlog_in_core	**iclog,
 	xfs_lsn_t		*commitlsnp)
@@ -1568,7 +2105,11 @@ xlog_commit_record(
  */
 STATIC void
 xlog_grant_push_ail(
+<<<<<<< HEAD
 	struct log	*log,
+=======
+	struct xlog	*log,
+>>>>>>> refs/remotes/origin/master
 	int		need_bytes)
 {
 	xfs_lsn_t	threshold_lsn = 0;
@@ -1582,10 +2123,14 @@ xlog_grant_push_ail(
 	ASSERT(BTOBB(need_bytes) < log->l_logBBsize);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	free_bytes = xlog_space_left(log, &log->l_grant_reserve_head);
 =======
 	free_bytes = xlog_space_left(log, &log->l_reserve_head.grant);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_bytes = xlog_space_left(log, &log->l_reserve_head.grant);
+>>>>>>> refs/remotes/origin/master
 	free_blocks = BTOBBT(free_bytes);
 
 	/*
@@ -1627,6 +2172,87 @@ xlog_grant_push_ail(
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Stamp cycle number in every block
+ */
+STATIC void
+xlog_pack_data(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	int			roundoff)
+{
+	int			i, j, k;
+	int			size = iclog->ic_offset + roundoff;
+	__be32			cycle_lsn;
+	xfs_caddr_t		dp;
+
+	cycle_lsn = CYCLE_LSN_DISK(iclog->ic_header.h_lsn);
+
+	dp = iclog->ic_datap;
+	for (i = 0; i < BTOBB(size); i++) {
+		if (i >= (XLOG_HEADER_CYCLE_SIZE / BBSIZE))
+			break;
+		iclog->ic_header.h_cycle_data[i] = *(__be32 *)dp;
+		*(__be32 *)dp = cycle_lsn;
+		dp += BBSIZE;
+	}
+
+	if (xfs_sb_version_haslogv2(&log->l_mp->m_sb)) {
+		xlog_in_core_2_t *xhdr = iclog->ic_data;
+
+		for ( ; i < BTOBB(size); i++) {
+			j = i / (XLOG_HEADER_CYCLE_SIZE / BBSIZE);
+			k = i % (XLOG_HEADER_CYCLE_SIZE / BBSIZE);
+			xhdr[j].hic_xheader.xh_cycle_data[k] = *(__be32 *)dp;
+			*(__be32 *)dp = cycle_lsn;
+			dp += BBSIZE;
+		}
+
+		for (i = 1; i < log->l_iclog_heads; i++)
+			xhdr[i].hic_xheader.xh_cycle = cycle_lsn;
+	}
+}
+
+/*
+ * Calculate the checksum for a log buffer.
+ *
+ * This is a little more complicated than it should be because the various
+ * headers and the actual data are non-contiguous.
+ */
+__le32
+xlog_cksum(
+	struct xlog		*log,
+	struct xlog_rec_header	*rhead,
+	char			*dp,
+	int			size)
+{
+	__uint32_t		crc;
+
+	/* first generate the crc for the record header ... */
+	crc = xfs_start_cksum((char *)rhead,
+			      sizeof(struct xlog_rec_header),
+			      offsetof(struct xlog_rec_header, h_crc));
+
+	/* ... then for additional cycle data for v2 logs ... */
+	if (xfs_sb_version_haslogv2(&log->l_mp->m_sb)) {
+		union xlog_in_core2 *xhdr = (union xlog_in_core2 *)rhead;
+		int		i;
+
+		for (i = 1; i < log->l_iclog_heads; i++) {
+			crc = crc32c(crc, &xhdr[i].hic_xheader,
+				     sizeof(struct xlog_rec_ext_header));
+		}
+	}
+
+	/* ... and finally for the payload */
+	crc = crc32c(crc, dp, size);
+
+	return xfs_end_cksum(crc);
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * The bdstrat callback function for log bufs. This gives us a central
  * place to trap bufs in case we get hit by a log I/O error and need to
  * shutdown. Actually, in practice, even when we didn't get a log error,
@@ -1639,6 +2265,7 @@ xlog_bdstrat(
 	struct xfs_buf		*bp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct xlog_in_core	*iclog;
 
 	iclog = XFS_BUF_FSPRIVATE(bp, xlog_in_core_t *);
@@ -1646,12 +2273,17 @@ xlog_bdstrat(
 		XFS_BUF_ERROR(bp, EIO);
 		XFS_BUF_STALE(bp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct xlog_in_core	*iclog = bp->b_fspriv;
 
 	if (iclog->ic_state & XLOG_STATE_IOERROR) {
 		xfs_buf_ioerror(bp, EIO);
 		xfs_buf_stale(bp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		xfs_buf_ioend(bp, 0);
 		/*
 		 * It would seem logical to return EIO here, but we rely on
@@ -1662,9 +2294,12 @@ xlog_bdstrat(
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bp->b_flags |= _XBF_RUN_QUEUES;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_iorequest(bp);
 	return 0;
 }
@@ -1695,10 +2330,17 @@ xlog_bdstrat(
  */
 
 STATIC int
+<<<<<<< HEAD
 xlog_sync(xlog_t		*log,
 	  xlog_in_core_t	*iclog)
 {
 	xfs_caddr_t	dptr;		/* pointer to byte sized element */
+=======
+xlog_sync(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog)
+{
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_t	*bp;
 	int		i;
 	uint		count;		/* byte count of bwrite */
@@ -1707,6 +2349,10 @@ xlog_sync(xlog_t		*log,
 	int		split = 0;	/* split write into two regions */
 	int		error;
 	int		v2 = xfs_sb_version_haslogv2(&log->l_mp->m_sb);
+<<<<<<< HEAD
+=======
+	int		size;
+>>>>>>> refs/remotes/origin/master
 
 	XFS_STATS_INC(xs_log_writes);
 	ASSERT(atomic_read(&iclog->ic_refcnt) == 0);
@@ -1731,17 +2377,23 @@ xlog_sync(xlog_t		*log,
 
 	/* move grant heads by roundoff in sync */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xlog_grant_add_space(log, &log->l_grant_reserve_head, roundoff);
 	xlog_grant_add_space(log, &log->l_grant_write_head, roundoff);
 =======
 	xlog_grant_add_space(log, &log->l_reserve_head.grant, roundoff);
 	xlog_grant_add_space(log, &log->l_write_head.grant, roundoff);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xlog_grant_add_space(log, &log->l_reserve_head.grant, roundoff);
+	xlog_grant_add_space(log, &log->l_write_head.grant, roundoff);
+>>>>>>> refs/remotes/origin/master
 
 	/* put cycle number in every block */
 	xlog_pack_data(log, iclog, roundoff); 
 
 	/* real byte length */
+<<<<<<< HEAD
 	if (v2) {
 		iclog->ic_header.h_len =
 			cpu_to_be32(iclog->ic_offset + roundoff);
@@ -1756,12 +2408,21 @@ xlog_sync(xlog_t		*log,
 	XFS_BUF_SET_FSPRIVATE2(bp, (unsigned long)2);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	size = iclog->ic_offset;
+	if (v2)
+		size += roundoff;
+	iclog->ic_header.h_len = cpu_to_be32(size);
+
+	bp = iclog->ic_bp;
+>>>>>>> refs/remotes/origin/master
 	XFS_BUF_SET_ADDR(bp, BLOCK_LSN(be64_to_cpu(iclog->ic_header.h_lsn)));
 
 	XFS_STATS_ADD(xs_log_blocks, BTOBB(count));
 
 	/* Do we need to split this write into 2 parts? */
 	if (XFS_BUF_ADDR(bp) + BTOBB(count) > log->l_logBBsize) {
+<<<<<<< HEAD
 		split = count - (BBTOB(log->l_logBBsize - XFS_BUF_ADDR(bp)));
 		count = BBTOB(log->l_logBBsize - XFS_BUF_ADDR(bp));
 		iclog->ic_bwritecnt = 2;	/* split into 2 writes */
@@ -1787,6 +2448,39 @@ xlog_sync(xlog_t		*log,
 			xfs_blkdev_issue_flush(log->l_mp->m_ddev_targp);
 		XFS_BUF_ORDERED(bp);
 =======
+=======
+		char		*dptr;
+
+		split = count - (BBTOB(log->l_logBBsize - XFS_BUF_ADDR(bp)));
+		count = BBTOB(log->l_logBBsize - XFS_BUF_ADDR(bp));
+		iclog->ic_bwritecnt = 2;
+
+		/*
+		 * Bump the cycle numbers at the start of each block in the
+		 * part of the iclog that ends up in the buffer that gets
+		 * written to the start of the log.
+		 *
+		 * Watch out for the header magic number case, though.
+		 */
+		dptr = (char *)&iclog->ic_header + count;
+		for (i = 0; i < split; i += BBSIZE) {
+			__uint32_t cycle = be32_to_cpu(*(__be32 *)dptr);
+			if (++cycle == XLOG_HEADER_MAGIC_NUM)
+				cycle++;
+			*(__be32 *)dptr = cpu_to_be32(cycle);
+
+			dptr += BBSIZE;
+		}
+	} else {
+		iclog->ic_bwritecnt = 1;
+	}
+
+	/* calculcate the checksum */
+	iclog->ic_header.h_crc = xlog_cksum(log, &iclog->ic_header,
+					    iclog->ic_datap, size);
+
+	bp->b_io_length = BTOBB(count);
+>>>>>>> refs/remotes/origin/master
 	bp->b_fspriv = iclog;
 	XFS_BUF_ZEROFLAGS(bp);
 	XFS_BUF_ASYNC(bp);
@@ -1808,13 +2502,20 @@ xlog_sync(xlog_t		*log,
 			xfs_blkdev_issue_flush(log->l_mp->m_ddev_targp);
 		else
 			bp->b_flags |= XBF_FLUSH;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ASSERT(XFS_BUF_ADDR(bp) <= log->l_logBBsize-1);
 	ASSERT(XFS_BUF_ADDR(bp) + BTOBB(count) <= log->l_logBBsize);
 
+<<<<<<< HEAD
 	xlog_verify_iclog(log, iclog, count, B_TRUE);
+=======
+	xlog_verify_iclog(log, iclog, count, true);
+>>>>>>> refs/remotes/origin/master
 
 	/* account for log which doesn't start at block #0 */
 	XFS_BUF_SET_ADDR(bp, XFS_BUF_ADDR(bp) + log->l_logBBstart);
@@ -1825,6 +2526,7 @@ xlog_sync(xlog_t		*log,
 	XFS_BUF_WRITE(bp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((error = xlog_bdstrat(bp))) {
 		xfs_ioerror_alert("xlog_sync", log->l_mp, bp,
 				  XFS_BUF_ADDR(bp));
@@ -1833,10 +2535,16 @@ xlog_sync(xlog_t		*log,
 	if (error) {
 		xfs_buf_ioerror_alert(bp, "xlog_sync");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = xlog_bdstrat(bp);
+	if (error) {
+		xfs_buf_ioerror_alert(bp, "xlog_sync");
+>>>>>>> refs/remotes/origin/master
 		return error;
 	}
 	if (split) {
 		bp = iclog->ic_log->l_xbuf;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ASSERT(XFS_BUF_FSPRIVATE2(bp, unsigned long) ==
 							(unsigned long)1);
@@ -1853,6 +2561,8 @@ xlog_sync(xlog_t		*log,
 			XFS_BUF_ORDERED(bp);
 		dptr = XFS_BUF_PTR(bp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		XFS_BUF_SET_ADDR(bp, 0);	     /* logical 0 */
 		xfs_buf_associate_memory(bp,
 				(char *)&iclog->ic_header + count, split);
@@ -1862,6 +2572,7 @@ xlog_sync(xlog_t		*log,
 		bp->b_flags |= XBF_SYNCIO;
 		if (log->l_mp->m_flags & XFS_MOUNT_BARRIER)
 			bp->b_flags |= XBF_FUA;
+<<<<<<< HEAD
 		dptr = bp->b_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
 		/*
@@ -1876,6 +2587,8 @@ xlog_sync(xlog_t		*log,
 				be32_add_cpu((__be32 *)dptr, 1);
 			dptr += BBSIZE;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ASSERT(XFS_BUF_ADDR(bp) <= log->l_logBBsize-1);
 		ASSERT(XFS_BUF_ADDR(bp) + BTOBB(count) <= log->l_logBBsize);
@@ -1883,6 +2596,7 @@ xlog_sync(xlog_t		*log,
 		/* account for internal log which doesn't start at block #0 */
 		XFS_BUF_SET_ADDR(bp, XFS_BUF_ADDR(bp) + log->l_logBBstart);
 		XFS_BUF_WRITE(bp);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if ((error = xlog_bdstrat(bp))) {
 			xfs_ioerror_alert("xlog_sync (split)", log->l_mp,
@@ -1892,18 +2606,31 @@ xlog_sync(xlog_t		*log,
 		if (error) {
 			xfs_buf_ioerror_alert(bp, "xlog_sync (split)");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		error = xlog_bdstrat(bp);
+		if (error) {
+			xfs_buf_ioerror_alert(bp, "xlog_sync (split)");
+>>>>>>> refs/remotes/origin/master
 			return error;
 		}
 	}
 	return 0;
 }	/* xlog_sync */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Deallocate a log structure
  */
 STATIC void
+<<<<<<< HEAD
 xlog_dealloc_log(xlog_t *log)
+=======
+xlog_dealloc_log(
+	struct xlog	*log)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_in_core_t	*iclog, *next_iclog;
 	int		i;
@@ -1914,7 +2641,11 @@ xlog_dealloc_log(xlog_t *log)
 	 * always need to ensure that the extra buffer does not point to memory
 	 * owned by another log buffer before we free it.
 	 */
+<<<<<<< HEAD
 	xfs_buf_set_empty(log->l_xbuf, log->l_iclog_size);
+=======
+	xfs_buf_set_empty(log->l_xbuf, BTOBB(log->l_iclog_size));
+>>>>>>> refs/remotes/origin/master
 	xfs_buf_free(log->l_xbuf);
 
 	iclog = log->l_iclog;
@@ -1935,10 +2666,18 @@ xlog_dealloc_log(xlog_t *log)
  */
 /* ARGSUSED */
 static inline void
+<<<<<<< HEAD
 xlog_state_finish_copy(xlog_t		*log,
 		       xlog_in_core_t	*iclog,
 		       int		record_cnt,
 		       int		copy_bytes)
+=======
+xlog_state_finish_copy(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	int			record_cnt,
+	int			copy_bytes)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock(&log->l_icloglock);
 
@@ -2030,10 +2769,14 @@ xlog_print_tic_res(
 
 	xfs_warn(mp,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"xfs_log_write: reservation summary:\n"
 =======
 		"xlog_write: reservation summary:\n"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"xlog_write: reservation summary:\n"
+>>>>>>> refs/remotes/origin/master
 		"  trans type  = %s (%u)\n"
 		"  unit res    = %d bytes\n"
 		"  current res = %d bytes\n"
@@ -2055,7 +2798,11 @@ xlog_print_tic_res(
 
 	for (i = 0; i < ticket->t_res_num; i++) {
 		uint r_type = ticket->t_res_arr[i].r_type;
+<<<<<<< HEAD
 		xfs_warn(mp, "region[%u]: %s - %u bytes\n", i,
+=======
+		xfs_warn(mp, "region[%u]: %s - %u bytes", i,
+>>>>>>> refs/remotes/origin/master
 			    ((r_type <= 0 || r_type > XLOG_REG_TYPE_MAX) ?
 			    "bad-rtype" : res_type_str[r_type-1]),
 			    ticket->t_res_arr[i].r_len);
@@ -2063,11 +2810,16 @@ xlog_print_tic_res(
 
 	xfs_alert_tag(mp, XFS_PTAG_LOGRES,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"xfs_log_write: reservation ran out. Need to up reservation");
 =======
 		"xlog_write: reservation ran out. Need to up reservation");
 >>>>>>> refs/remotes/origin/cm-10.0
 	xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_INCORE);
+=======
+		"xlog_write: reservation ran out. Need to up reservation");
+	xfs_force_shutdown(mp, SHUTDOWN_LOG_IO_ERROR);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -2089,6 +2841,13 @@ xlog_write_calc_vec_length(
 		headers++;
 
 	for (lv = log_vector; lv; lv = lv->lv_next) {
+<<<<<<< HEAD
+=======
+		/* we don't write ordered log vectors */
+		if (lv->lv_buf_len == XFS_LOG_VEC_ORDERED)
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		headers += lv->lv_niovecs;
 
 		for (i = 0; i < lv->lv_niovecs; i++) {
@@ -2130,7 +2889,11 @@ xlog_write_start_rec(
 
 static xlog_op_header_t *
 xlog_write_setup_ophdr(
+<<<<<<< HEAD
 	struct log		*log,
+=======
+	struct xlog		*log,
+>>>>>>> refs/remotes/origin/master
 	struct xlog_op_header	*ophdr,
 	struct xlog_ticket	*ticket,
 	uint			flags)
@@ -2166,7 +2929,11 @@ xlog_write_setup_ophdr(
  * Set up the parameters of the region copy into the log. This has
  * to handle region write split across multiple log buffers - this
  * state is kept external to this function so that this code can
+<<<<<<< HEAD
  * can be written in an obvious, self documenting manner.
+=======
+ * be written in an obvious, self documenting manner.
+>>>>>>> refs/remotes/origin/master
  */
 static int
 xlog_write_setup_copy(
@@ -2213,7 +2980,11 @@ xlog_write_setup_copy(
 
 static int
 xlog_write_copy_finish(
+<<<<<<< HEAD
 	struct log		*log,
+=======
+	struct xlog		*log,
+>>>>>>> refs/remotes/origin/master
 	struct xlog_in_core	*iclog,
 	uint			flags,
 	int			*record_cnt,
@@ -2298,7 +3069,11 @@ xlog_write_copy_finish(
  */
 int
 xlog_write(
+<<<<<<< HEAD
 	struct log		*log,
+=======
+	struct xlog		*log,
+>>>>>>> refs/remotes/origin/master
 	struct xfs_log_vec	*log_vector,
 	struct xlog_ticket	*ticket,
 	xfs_lsn_t		*start_lsn,
@@ -2321,6 +3096,7 @@ xlog_write(
 
 	len = xlog_write_calc_vec_length(ticket, log_vector);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (log->l_cilp) {
 		/*
 		 * Region headers and bytes are already accounted for.
@@ -2339,6 +3115,8 @@ xlog_write(
 	} else
 		ticket->t_curr_res -= len;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Region headers and bytes are already accounted for.
@@ -2354,7 +3132,10 @@ xlog_write(
 	 */
 	if (flags & (XLOG_COMMIT_TRANS | XLOG_UNMOUNT_TRANS))
 		ticket->t_curr_res -= sizeof(xlog_op_header_t);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (ticket->t_curr_res < 0)
 		xlog_print_tic_res(log->l_mp, ticket);
@@ -2362,7 +3143,11 @@ xlog_write(
 	index = 0;
 	lv = log_vector;
 	vecp = lv->lv_iovecp;
+<<<<<<< HEAD
 	while (lv && index < lv->lv_niovecs) {
+=======
+	while (lv && (!lv->lv_niovecs || index < lv->lv_niovecs)) {
+>>>>>>> refs/remotes/origin/master
 		void		*ptr;
 		int		log_offset;
 
@@ -2382,13 +3167,31 @@ xlog_write(
 		 * This loop writes out as many regions as can fit in the amount
 		 * of space which was allocated by xlog_state_get_iclog_space().
 		 */
+<<<<<<< HEAD
 		while (lv && index < lv->lv_niovecs) {
 			struct xfs_log_iovec	*reg = &vecp[index];
+=======
+		while (lv && (!lv->lv_niovecs || index < lv->lv_niovecs)) {
+			struct xfs_log_iovec	*reg;
+>>>>>>> refs/remotes/origin/master
 			struct xlog_op_header	*ophdr;
 			int			start_rec_copy;
 			int			copy_len;
 			int			copy_off;
+<<<<<<< HEAD
 
+=======
+			bool			ordered = false;
+
+			/* ordered log vectors have no regions to write */
+			if (lv->lv_buf_len == XFS_LOG_VEC_ORDERED) {
+				ASSERT(lv->lv_niovecs == 0);
+				ordered = true;
+				goto next_lv;
+			}
+
+			reg = &vecp[index];
+>>>>>>> refs/remotes/origin/master
 			ASSERT(reg->i_len % sizeof(__int32_t) == 0);
 			ASSERT((unsigned long)ptr % sizeof(__int32_t) == 0);
 
@@ -2448,12 +3251,20 @@ xlog_write(
 				break;
 
 			if (++index == lv->lv_niovecs) {
+<<<<<<< HEAD
+=======
+next_lv:
+>>>>>>> refs/remotes/origin/master
 				lv = lv->lv_next;
 				index = 0;
 				if (lv)
 					vecp = lv->lv_iovecp;
 			}
+<<<<<<< HEAD
 			if (record_cnt == 0) {
+=======
+			if (record_cnt == 0 && ordered == false) {
+>>>>>>> refs/remotes/origin/master
 				if (!lv)
 					return 0;
 				break;
@@ -2489,7 +3300,12 @@ xlog_write(
  * State Change: DIRTY -> ACTIVE
  */
 STATIC void
+<<<<<<< HEAD
 xlog_state_clean_log(xlog_t *log)
+=======
+xlog_state_clean_log(
+	struct xlog *log)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_in_core_t	*iclog;
 	int changed = 0;
@@ -2569,7 +3385,11 @@ xlog_state_clean_log(xlog_t *log)
 
 STATIC xfs_lsn_t
 xlog_get_lowest_lsn(
+<<<<<<< HEAD
 	xlog_t		*log)
+=======
+	struct xlog	*log)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_in_core_t  *lsn_log;
 	xfs_lsn_t	lowest_lsn, lsn;
@@ -2592,9 +3412,15 @@ xlog_get_lowest_lsn(
 
 STATIC void
 xlog_state_do_callback(
+<<<<<<< HEAD
 	xlog_t		*log,
 	int		aborted,
 	xlog_in_core_t	*ciclog)
+=======
+	struct xlog		*log,
+	int			aborted,
+	struct xlog_in_core	*ciclog)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_in_core_t	   *iclog;
 	xlog_in_core_t	   *first_iclog;	/* used to know when we've
@@ -2692,14 +3518,36 @@ xlog_state_do_callback(
 
 
 				/*
+<<<<<<< HEAD
 				 * update the last_sync_lsn before we drop the
+=======
+				 * Completion of a iclog IO does not imply that
+				 * a transaction has completed, as transactions
+				 * can be large enough to span many iclogs. We
+				 * cannot change the tail of the log half way
+				 * through a transaction as this may be the only
+				 * transaction in the log and moving th etail to
+				 * point to the middle of it will prevent
+				 * recovery from finding the start of the
+				 * transaction. Hence we should only update the
+				 * last_sync_lsn if this iclog contains
+				 * transaction completion callbacks on it.
+				 *
+				 * We have to do this before we drop the
+>>>>>>> refs/remotes/origin/master
 				 * icloglock to ensure we are the only one that
 				 * can update it.
 				 */
 				ASSERT(XFS_LSN_CMP(atomic64_read(&log->l_last_sync_lsn),
 					be64_to_cpu(iclog->ic_header.h_lsn)) <= 0);
+<<<<<<< HEAD
 				atomic64_set(&log->l_last_sync_lsn,
 					be64_to_cpu(iclog->ic_header.h_lsn));
+=======
+				if (iclog->ic_callback)
+					atomic64_set(&log->l_last_sync_lsn,
+						be64_to_cpu(iclog->ic_header.h_lsn));
+>>>>>>> refs/remotes/origin/master
 
 			} else
 				ioerrors++;
@@ -2814,7 +3662,11 @@ xlog_state_done_syncing(
 	xlog_in_core_t	*iclog,
 	int		aborted)
 {
+<<<<<<< HEAD
 	xlog_t		   *log = iclog->ic_log;
+=======
+	struct xlog	   *log = iclog->ic_log;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&log->l_icloglock);
 
@@ -2868,12 +3720,22 @@ xlog_state_done_syncing(
  *		is copied.
  */
 STATIC int
+<<<<<<< HEAD
 xlog_state_get_iclog_space(xlog_t	  *log,
 			   int		  len,
 			   xlog_in_core_t **iclogp,
 			   xlog_ticket_t  *ticket,
 			   int		  *continued_write,
 			   int		  *logoffsetp)
+=======
+xlog_state_get_iclog_space(
+	struct xlog		*log,
+	int			len,
+	struct xlog_in_core	**iclogp,
+	struct xlog_ticket	*ticket,
+	int			*continued_write,
+	int			*logoffsetp)
+>>>>>>> refs/remotes/origin/master
 {
 	int		  log_offset;
 	xlog_rec_header_t *head;
@@ -2970,6 +3832,7 @@ restart:
 	return 0;
 }	/* xlog_state_get_iclog_space */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Atomically get the log space required for a log ticket.
@@ -3210,6 +4073,8 @@ redo:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* The first cnt-1 times through here we don't need to
  * move the grant write head because the permanent
  * reservation has reserved cnt times the unit amount.
@@ -3218,14 +4083,21 @@ redo:
  * move grant reservation head forward.
  */
 STATIC void
+<<<<<<< HEAD
 xlog_regrant_reserve_log_space(xlog_t	     *log,
 			       xlog_ticket_t *ticket)
+=======
+xlog_regrant_reserve_log_space(
+	struct xlog		*log,
+	struct xlog_ticket	*ticket)
+>>>>>>> refs/remotes/origin/master
 {
 	trace_xfs_log_regrant_reserve_enter(log, ticket);
 
 	if (ticket->t_cnt > 0)
 		ticket->t_cnt--;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xlog_grant_sub_space(log, &log->l_grant_reserve_head,
 					ticket->t_curr_res);
@@ -3235,6 +4107,11 @@ xlog_regrant_reserve_log_space(xlog_t	     *log,
 					ticket->t_curr_res);
 	xlog_grant_sub_space(log, &log->l_write_head.grant,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xlog_grant_sub_space(log, &log->l_reserve_head.grant,
+					ticket->t_curr_res);
+	xlog_grant_sub_space(log, &log->l_write_head.grant,
+>>>>>>> refs/remotes/origin/master
 					ticket->t_curr_res);
 	ticket->t_curr_res = ticket->t_unit_res;
 	xlog_tic_reset_res(ticket);
@@ -3246,10 +4123,14 @@ xlog_regrant_reserve_log_space(xlog_t	     *log,
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xlog_grant_add_space(log, &log->l_grant_reserve_head,
 =======
 	xlog_grant_add_space(log, &log->l_reserve_head.grant,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xlog_grant_add_space(log, &log->l_reserve_head.grant,
+>>>>>>> refs/remotes/origin/master
 					ticket->t_unit_res);
 
 	trace_xfs_log_regrant_reserve_exit(log, ticket);
@@ -3274,8 +4155,14 @@ xlog_regrant_reserve_log_space(xlog_t	     *log,
  * in the current reservation field.
  */
 STATIC void
+<<<<<<< HEAD
 xlog_ungrant_log_space(xlog_t	     *log,
 		       xlog_ticket_t *ticket)
+=======
+xlog_ungrant_log_space(
+	struct xlog		*log,
+	struct xlog_ticket	*ticket)
+>>>>>>> refs/remotes/origin/master
 {
 	int	bytes;
 
@@ -3296,6 +4183,7 @@ xlog_ungrant_log_space(xlog_t	     *log,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xlog_grant_sub_space(log, &log->l_grant_reserve_head, bytes);
 	xlog_grant_sub_space(log, &log->l_grant_write_head, bytes);
 
@@ -3305,6 +4193,8 @@ xlog_ungrant_log_space(xlog_t	     *log,
 }	/* xlog_ungrant_log_space */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	xlog_grant_sub_space(log, &log->l_reserve_head.grant, bytes);
 	xlog_grant_sub_space(log, &log->l_write_head.grant, bytes);
 
@@ -3312,7 +4202,10 @@ xlog_ungrant_log_space(xlog_t	     *log,
 
 	xfs_log_space_wake(log->l_mp);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Flush iclog to disk if this is the last reference to the given iclog and
@@ -3325,8 +4218,13 @@ xlog_ungrant_log_space(xlog_t	     *log,
  */
 STATIC int
 xlog_state_release_iclog(
+<<<<<<< HEAD
 	xlog_t		*log,
 	xlog_in_core_t	*iclog)
+=======
+	struct xlog		*log,
+	struct xlog_in_core	*iclog)
+>>>>>>> refs/remotes/origin/master
 {
 	int		sync = 0;	/* do we sync? */
 
@@ -3376,9 +4274,16 @@ xlog_state_release_iclog(
  * that every data block.  We have run out of space in this log record.
  */
 STATIC void
+<<<<<<< HEAD
 xlog_state_switch_iclogs(xlog_t		*log,
 			 xlog_in_core_t *iclog,
 			 int		eventual_size)
+=======
+xlog_state_switch_iclogs(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	int			eventual_size)
+>>>>>>> refs/remotes/origin/master
 {
 	ASSERT(iclog->ic_state == XLOG_STATE_ACTIVE);
 	if (!eventual_size)
@@ -3442,18 +4347,26 @@ _xfs_log_force(
 	uint			flags,
 	int			*log_flushed)
 {
+<<<<<<< HEAD
 	struct log		*log = mp->m_log;
+=======
+	struct xlog		*log = mp->m_log;
+>>>>>>> refs/remotes/origin/master
 	struct xlog_in_core	*iclog;
 	xfs_lsn_t		lsn;
 
 	XFS_STATS_INC(xs_log_force);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (log->l_cilp)
 		xlog_cil_force(log);
 =======
 	xlog_cil_force(log);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xlog_cil_force(log);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&log->l_icloglock);
 
@@ -3567,6 +4480,10 @@ xfs_log_force(
 {
 	int	error;
 
+<<<<<<< HEAD
+=======
+	trace_xfs_log_force(mp, 0);
+>>>>>>> refs/remotes/origin/master
 	error = _xfs_log_force(mp, flags, NULL);
 	if (error)
 		xfs_warn(mp, "%s: error %d returned.", __func__, error);
@@ -3594,7 +4511,11 @@ _xfs_log_force_lsn(
 	uint			flags,
 	int			*log_flushed)
 {
+<<<<<<< HEAD
 	struct log		*log = mp->m_log;
+=======
+	struct xlog		*log = mp->m_log;
+>>>>>>> refs/remotes/origin/master
 	struct xlog_in_core	*iclog;
 	int			already_slept = 0;
 
@@ -3602,6 +4523,7 @@ _xfs_log_force_lsn(
 
 	XFS_STATS_INC(xs_log_force);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (log->l_cilp) {
 		lsn = xlog_cil_force_lsn(log, lsn);
@@ -3613,6 +4535,11 @@ _xfs_log_force_lsn(
 	if (lsn == NULLCOMMITLSN)
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lsn = xlog_cil_force_lsn(log, lsn);
+	if (lsn == NULLCOMMITLSN)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 try_again:
 	spin_lock(&log->l_icloglock);
@@ -3723,6 +4650,10 @@ xfs_log_force_lsn(
 {
 	int	error;
 
+<<<<<<< HEAD
+=======
+	trace_xfs_log_force(mp, lsn);
+>>>>>>> refs/remotes/origin/master
 	error = _xfs_log_force_lsn(mp, lsn, flags, NULL);
 	if (error)
 		xfs_warn(mp, "%s: error %d returned.", __func__, error);
@@ -3733,7 +4664,13 @@ xfs_log_force_lsn(
  * disk.
  */
 STATIC void
+<<<<<<< HEAD
 xlog_state_want_sync(xlog_t *log, xlog_in_core_t *iclog)
+=======
+xlog_state_want_sync(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog)
+>>>>>>> refs/remotes/origin/master
 {
 	assert_spin_locked(&log->l_icloglock);
 
@@ -3775,6 +4712,7 @@ xfs_log_ticket_get(
 }
 
 /*
+<<<<<<< HEAD
  * Allocate and initialise a new log ticket.
  */
 xlog_ticket_t *
@@ -3797,6 +4735,19 @@ xlog_ticket_alloc(
 	tic = kmem_zone_zalloc(xfs_log_ticket_zone, alloc_flags);
 	if (!tic)
 		return NULL;
+=======
+ * Figure out the total log space unit (in bytes) that would be
+ * required for a log ticket.
+ */
+int
+xfs_log_calc_unit_res(
+	struct xfs_mount	*mp,
+	int			unit_bytes)
+{
+	struct xlog		*log = mp->m_log;
+	int			iclog_space;
+	uint			num_headers;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Permanent reservations have up to 'cnt'-1 active log operations
@@ -3871,6 +4822,7 @@ xlog_ticket_alloc(
 	unit_bytes += log->l_iclog_hsize;
 
 	/* for roundoff padding for transaction data and one for commit record */
+<<<<<<< HEAD
 	if (xfs_sb_version_haslogv2(&log->l_mp->m_sb) &&
 	    log->l_mp->m_sb.sb_logsunit > 1) {
 		/* log su roundoff */
@@ -3902,6 +4854,53 @@ xlog_ticket_alloc(
 	if (permanent)
 		tic->t_flags |= XLOG_TIC_PERM_RESERV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xfs_sb_version_haslogv2(&mp->m_sb) && mp->m_sb.sb_logsunit > 1) {
+		/* log su roundoff */
+		unit_bytes += 2 * mp->m_sb.sb_logsunit;
+	} else {
+		/* BB roundoff */
+		unit_bytes += 2 * BBSIZE;
+        }
+
+	return unit_bytes;
+}
+
+/*
+ * Allocate and initialise a new log ticket.
+ */
+struct xlog_ticket *
+xlog_ticket_alloc(
+	struct xlog		*log,
+	int			unit_bytes,
+	int			cnt,
+	char			client,
+	bool			permanent,
+	xfs_km_flags_t		alloc_flags)
+{
+	struct xlog_ticket	*tic;
+	int			unit_res;
+
+	tic = kmem_zone_zalloc(xfs_log_ticket_zone, alloc_flags);
+	if (!tic)
+		return NULL;
+
+	unit_res = xfs_log_calc_unit_res(log->l_mp, unit_bytes);
+
+	atomic_set(&tic->t_ref, 1);
+	tic->t_task		= current;
+	INIT_LIST_HEAD(&tic->t_queue);
+	tic->t_unit_res		= unit_res;
+	tic->t_curr_res		= unit_res;
+	tic->t_cnt		= cnt;
+	tic->t_ocnt		= cnt;
+	tic->t_tid		= prandom_u32();
+	tic->t_clientid		= client;
+	tic->t_flags		= XLOG_TIC_INITED;
+	tic->t_trans_type	= 0;
+	if (permanent)
+		tic->t_flags |= XLOG_TIC_PERM_RESERV;
+>>>>>>> refs/remotes/origin/master
 
 	xlog_tic_reset_res(tic);
 
@@ -3923,7 +4922,11 @@ xlog_ticket_alloc(
  */
 void
 xlog_verify_dest_ptr(
+<<<<<<< HEAD
 	struct log	*log,
+=======
+	struct xlog	*log,
+>>>>>>> refs/remotes/origin/master
 	char		*ptr)
 {
 	int i;
@@ -3952,16 +4955,24 @@ xlog_verify_dest_ptr(
  */
 STATIC void
 xlog_verify_grant_tail(
+<<<<<<< HEAD
 	struct log	*log)
+=======
+	struct xlog	*log)
+>>>>>>> refs/remotes/origin/master
 {
 	int		tail_cycle, tail_blocks;
 	int		cycle, space;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xlog_crack_grant_head(&log->l_grant_write_head, &cycle, &space);
 =======
 	xlog_crack_grant_head(&log->l_write_head.grant, &cycle, &space);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xlog_crack_grant_head(&log->l_write_head.grant, &cycle, &space);
+>>>>>>> refs/remotes/origin/master
 	xlog_crack_atomic_lsn(&log->l_tail_lsn, &tail_cycle, &tail_blocks);
 	if (tail_cycle != cycle) {
 		if (cycle - 1 != tail_cycle &&
@@ -3982,9 +4993,16 @@ xlog_verify_grant_tail(
 
 /* check if it will fit */
 STATIC void
+<<<<<<< HEAD
 xlog_verify_tail_lsn(xlog_t	    *log,
 		     xlog_in_core_t *iclog,
 		     xfs_lsn_t	    tail_lsn)
+=======
+xlog_verify_tail_lsn(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	xfs_lsn_t		tail_lsn)
+>>>>>>> refs/remotes/origin/master
 {
     int blocks;
 
@@ -4021,10 +5039,18 @@ xlog_verify_tail_lsn(xlog_t	    *log,
  *	the cycle numbers agree with the current cycle number.
  */
 STATIC void
+<<<<<<< HEAD
 xlog_verify_iclog(xlog_t	 *log,
 		  xlog_in_core_t *iclog,
 		  int		 count,
 		  boolean_t	 syncing)
+=======
+xlog_verify_iclog(
+	struct xlog		*log,
+	struct xlog_in_core	*iclog,
+	int			count,
+	bool                    syncing)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_op_header_t	*ophead;
 	xlog_in_core_t		*icptr;
@@ -4039,31 +5065,45 @@ xlog_verify_iclog(xlog_t	 *log,
 	/* check validity of iclog pointers */
 	spin_lock(&log->l_icloglock);
 	icptr = log->l_iclog;
+<<<<<<< HEAD
 	for (i=0; i < log->l_iclog_bufs; i++) {
 		if (icptr == NULL)
 			xfs_emerg(log->l_mp, "%s: invalid ptr", __func__);
 		icptr = icptr->ic_next;
 	}
+=======
+	for (i = 0; i < log->l_iclog_bufs; i++, icptr = icptr->ic_next)
+		ASSERT(icptr);
+
+>>>>>>> refs/remotes/origin/master
 	if (icptr != log->l_iclog)
 		xfs_emerg(log->l_mp, "%s: corrupt iclog ring", __func__);
 	spin_unlock(&log->l_icloglock);
 
 	/* check log magic numbers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (be32_to_cpu(iclog->ic_header.h_magicno) != XLOG_HEADER_MAGIC_NUM)
 =======
 	if (iclog->ic_header.h_magicno != cpu_to_be32(XLOG_HEADER_MAGIC_NUM))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (iclog->ic_header.h_magicno != cpu_to_be32(XLOG_HEADER_MAGIC_NUM))
+>>>>>>> refs/remotes/origin/master
 		xfs_emerg(log->l_mp, "%s: invalid magic num", __func__);
 
 	ptr = (xfs_caddr_t) &iclog->ic_header;
 	for (ptr += BBSIZE; ptr < ((xfs_caddr_t)&iclog->ic_header) + count;
 	     ptr += BBSIZE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (be32_to_cpu(*(__be32 *)ptr) == XLOG_HEADER_MAGIC_NUM)
 =======
 		if (*(__be32 *)ptr == cpu_to_be32(XLOG_HEADER_MAGIC_NUM))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (*(__be32 *)ptr == cpu_to_be32(XLOG_HEADER_MAGIC_NUM))
+>>>>>>> refs/remotes/origin/master
 			xfs_emerg(log->l_mp, "%s: unexpected magic num",
 				__func__);
 	}
@@ -4080,7 +5120,11 @@ xlog_verify_iclog(xlog_t	 *log,
 		/* clientid is only 1 byte */
 		field_offset = (__psint_t)
 			       ((xfs_caddr_t)&(ophead->oh_clientid) - base_ptr);
+<<<<<<< HEAD
 		if (syncing == B_FALSE || (field_offset & 0x1ff)) {
+=======
+		if (!syncing || (field_offset & 0x1ff)) {
+>>>>>>> refs/remotes/origin/master
 			clientid = ophead->oh_clientid;
 		} else {
 			idx = BTOBBT((xfs_caddr_t)&(ophead->oh_clientid) - iclog->ic_datap);
@@ -4103,7 +5147,11 @@ xlog_verify_iclog(xlog_t	 *log,
 		/* check length */
 		field_offset = (__psint_t)
 			       ((xfs_caddr_t)&(ophead->oh_len) - base_ptr);
+<<<<<<< HEAD
 		if (syncing == B_FALSE || (field_offset & 0x1ff)) {
+=======
+		if (!syncing || (field_offset & 0x1ff)) {
+>>>>>>> refs/remotes/origin/master
 			op_len = be32_to_cpu(ophead->oh_len);
 		} else {
 			idx = BTOBBT((__psint_t)&ophead->oh_len -
@@ -4126,7 +5174,11 @@ xlog_verify_iclog(xlog_t	 *log,
  */
 STATIC int
 xlog_state_ioerror(
+<<<<<<< HEAD
 	xlog_t	*log)
+=======
+	struct xlog	*log)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_in_core_t	*iclog, *ic;
 
@@ -4172,10 +5224,14 @@ xfs_log_force_umount(
 	int			logerror)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xlog_ticket_t	*tic;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	xlog_t		*log;
+=======
+	struct xlog	*log;
+>>>>>>> refs/remotes/origin/master
 	int		retval;
 
 	log = mp->m_log;
@@ -4209,10 +5265,14 @@ xfs_log_force_umount(
 	 * call below.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!logerror && (mp->m_flags & XFS_MOUNT_DELAYLOG))
 =======
 	if (!logerror)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!logerror)
+>>>>>>> refs/remotes/origin/master
 		xlog_cil_force(log);
 
 	/*
@@ -4247,6 +5307,7 @@ xfs_log_force_umount(
 	 * action is protected by the grant locks.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&log->l_grant_reserve_lock);
 	list_for_each_entry(tic, &log->l_reserveq, t_queue)
 		wake_up(&tic->t_wait);
@@ -4260,6 +5321,10 @@ xfs_log_force_umount(
 	xlog_grant_head_wake_all(&log->l_reserve_head);
 	xlog_grant_head_wake_all(&log->l_write_head);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xlog_grant_head_wake_all(&log->l_reserve_head);
+	xlog_grant_head_wake_all(&log->l_write_head);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(log->l_iclog->ic_state & XLOG_STATE_IOERROR)) {
 		ASSERT(!logerror);
@@ -4298,7 +5363,12 @@ xfs_log_force_umount(
 }
 
 STATIC int
+<<<<<<< HEAD
 xlog_iclogs_empty(xlog_t *log)
+=======
+xlog_iclogs_empty(
+	struct xlog	*log)
+>>>>>>> refs/remotes/origin/master
 {
 	xlog_in_core_t	*iclog;
 
@@ -4313,3 +5383,7 @@ xlog_iclogs_empty(xlog_t *log)
 	} while (iclog != log->l_iclog);
 	return 1;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master

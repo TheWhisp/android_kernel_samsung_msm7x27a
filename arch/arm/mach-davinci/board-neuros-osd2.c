@@ -26,10 +26,19 @@
 #include <linux/platform_device.h>
 #include <linux/gpio.h>
 #include <linux/mtd/partitions.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/gpio-davinci.h>
+#include <linux/platform_data/i2c-davinci.h>
+#include <linux/platform_data/mmc-davinci.h>
+#include <linux/platform_data/mtd-davinci.h>
+#include <linux/platform_data/usb-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/dm644x.h>
 =======
@@ -49,6 +58,15 @@
 
 #define NEUROS_OSD2_PHY_ID		"davinci_mdio-0:01"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/common.h>
+#include <mach/serial.h>
+#include <mach/mux.h>
+
+#include "davinci.h"
+
+#define NEUROS_OSD2_PHY_ID		"davinci_mdio-0:01"
+>>>>>>> refs/remotes/origin/master
 #define LXT971_PHY_ID			0x001378e2
 #define LXT971_PHY_MASK			0xfffffff0
 
@@ -97,10 +115,15 @@ static struct davinci_nand_pdata davinci_ntosd2_nandflash_data = {
 	.nr_parts	= ARRAY_SIZE(davinci_ntosd2_nandflash_partition),
 	.ecc_mode	= NAND_ECC_HW,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.options	= NAND_USE_FLASH_BBT,
 =======
 	.bbt_options	= NAND_BBT_USE_FLASH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ecc_bits	= 1,
+	.bbt_options	= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource davinci_ntosd2_nandflash_resource[] = {
@@ -165,15 +188,19 @@ static struct platform_device *davinci_ntosd2_devices[] __initdata = {
 	&ntosd2_leds_dev,
 };
 
+<<<<<<< HEAD
 static struct davinci_uart_config uart_config __initdata = {
 	.enabled_uarts = (1 << 0),
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init davinci_ntosd2_map_io(void)
 {
 	dm644x_init();
 }
 
+<<<<<<< HEAD
 /*
  I2C initialization
 */
@@ -234,6 +261,28 @@ static __init void davinci_ntosd2_init(void)
 
 	aemif_clk = clk_get(NULL, "aemif");
 	clk_enable(aemif_clk);
+=======
+static struct davinci_mmc_config davinci_ntosd2_mmc_config = {
+	.wires		= 4,
+};
+
+#define HAS_ATA		IS_ENABLED(CONFIG_BLK_DEV_PALMCHIP_BK3710)
+
+#define HAS_NAND	IS_ENABLED(CONFIG_MTD_NAND_DAVINCI)
+
+static __init void davinci_ntosd2_init(void)
+{
+	int ret;
+	struct clk *aemif_clk;
+	struct davinci_soc_info *soc_info = &davinci_soc_info;
+
+	ret = dm644x_gpio_register();
+	if (ret)
+		pr_warn("%s: GPIO init failed: %d\n", __func__, ret);
+
+	aemif_clk = clk_get(NULL, "aemif");
+	clk_prepare_enable(aemif_clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (HAS_ATA) {
 		if (HAS_NAND)
@@ -254,6 +303,7 @@ static __init void davinci_ntosd2_init(void)
 	platform_add_devices(davinci_ntosd2_devices,
 				ARRAY_SIZE(davinci_ntosd2_devices));
 
+<<<<<<< HEAD
 	/* Initialize I2C interface specific for this board */
 	status = ntosd2_init_i2c();
 	if (status < 0)
@@ -261,6 +311,9 @@ static __init void davinci_ntosd2_init(void)
 						"	 %d\n", status);
 
 	davinci_serial_init(&uart_config);
+=======
+	davinci_serial_init(dm644x_serial_device);
+>>>>>>> refs/remotes/origin/master
 	dm644x_init_asp(&dm644x_ntosd2_snd_data);
 
 	soc_info->emac_pdata->phy_id = NEUROS_OSD2_PHY_ID;
@@ -286,6 +339,7 @@ static __init void davinci_ntosd2_init(void)
 MACHINE_START(NEUROS_OSD2, "Neuros OSD2")
 	/* Maintainer: Neuros Technologies <neuros@groups.google.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= (DAVINCI_DDR_BASE + 0x100),
 =======
 	.atag_offset	= 0x100,
@@ -299,4 +353,14 @@ MACHINE_START(NEUROS_OSD2, "Neuros OSD2")
 	.dma_zone_size	= SZ_128M,
 	.restart	= davinci_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		 = davinci_ntosd2_map_io,
+	.init_irq	= davinci_irq_init,
+	.init_time	= davinci_timer_init,
+	.init_machine = davinci_ntosd2_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

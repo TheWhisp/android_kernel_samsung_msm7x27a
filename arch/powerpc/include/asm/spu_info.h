@@ -19,6 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
 
 #ifndef _SPU_INFO_H
 #define _SPU_INFO_H
@@ -51,5 +52,12 @@ struct spu_proxydma_info {
 	__u64 proxydma_info_status;
 	struct mfc_cq_sr proxydma_info_command_data[8];
 };
+=======
+#ifndef _SPU_INFO_H
+#define _SPU_INFO_H
+
+#include <asm/spu.h>
+#include <uapi/asm/spu_info.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -19,12 +19,17 @@
 #include <linux/init.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/common.h>
 =======
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/cpu.h>
 
+=======
+#include "soc.h"
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 #include "prm-regbits-34xx.h"
 #include "omap_opp_data.h"
 #include "voltage.h"
@@ -35,6 +40,7 @@
  * VDD data
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static const struct omap_vfsm_instance_data omap3_vdd1_vfsm_data = {
 	.voltsetup_reg = OMAP3_PRM_VOLTSETUP1_OFFSET,
@@ -81,6 +87,8 @@ static int __init omap3xxx_voltage_early_init(void)
 	if (!cpu_is_omap34xx())
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* OMAP3-common voltagedomain data */
 
 static struct voltagedomain omap3_voltdm_wkup = {
@@ -153,12 +161,16 @@ void __init omap3xxx_voltagedomains_init(void)
 	struct voltagedomain *voltdm;
 	struct voltagedomain **voltdms;
 	int i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * XXX Will depend on the process, validation, and binning
 	 * for the currently-running IC
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cpu_is_omap3630()) {
 		omap3_vdd1_info.volt_data = omap36xx_vddmpu_volt_data;
@@ -174,6 +186,8 @@ void __init omap3xxx_voltagedomains_init(void)
 };
 core_initcall(omap3xxx_voltage_early_init);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_OPP
 	if (cpu_is_omap3630()) {
 		omap3_voltdm_mpu.volt_data = omap36xx_vddmpu_volt_data;
@@ -184,7 +198,16 @@ core_initcall(omap3xxx_voltage_early_init);
 	}
 #endif
 
+<<<<<<< HEAD
 	if (cpu_is_omap3517() || cpu_is_omap3505())
+=======
+	omap3_voltdm_mpu.vp_param = &omap3_mpu_vp_data;
+	omap3_voltdm_core.vp_param = &omap3_core_vp_data;
+	omap3_voltdm_mpu.vc_param = &omap3_mpu_vc_data;
+	omap3_voltdm_core.vc_param = &omap3_core_vc_data;
+
+	if (soc_is_am35xx())
+>>>>>>> refs/remotes/origin/master
 		voltdms = voltagedomains_am35xx;
 	else
 		voltdms = voltagedomains_omap3;
@@ -194,4 +217,7 @@ core_initcall(omap3xxx_voltage_early_init);
 
 	voltdm_init(voltdms);
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

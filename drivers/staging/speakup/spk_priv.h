@@ -45,12 +45,18 @@
 #define KT_SPKUP 15
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct serial_state *spk_serial_init(int index);
 =======
 extern const struct old_serial_port *spk_serial_init(int index);
 >>>>>>> refs/remotes/origin/cm-10.0
 extern void stop_serial_interrupt(void);
 extern int wait_for_xmitr(void);
+=======
+extern const struct old_serial_port *spk_serial_init(int index);
+extern void spk_stop_serial_interrupt(void);
+extern int spk_wait_for_xmitr(void);
+>>>>>>> refs/remotes/origin/master
 extern unsigned char spk_serial_in(void);
 extern unsigned char spk_serial_in_nowait(void);
 extern int spk_serial_out(const char ch);
@@ -59,13 +65,21 @@ extern void spk_serial_release(void);
 extern char synth_buffer_getc(void);
 extern char synth_buffer_peek(void);
 extern int synth_buffer_empty(void);
+<<<<<<< HEAD
 extern struct var_t *get_var(enum var_id_t var_id);
+=======
+extern struct var_t *spk_get_var(enum var_id_t var_id);
+>>>>>>> refs/remotes/origin/master
 extern ssize_t spk_var_show(struct kobject *kobj, struct kobj_attribute *attr,
 	char *buf);
 extern ssize_t spk_var_store(struct kobject *kobj, struct kobj_attribute *attr,
 	const char *buf, size_t count);
 
+<<<<<<< HEAD
 extern int serial_synth_probe(struct spk_synth *synth);
+=======
+extern int spk_serial_synth_probe(struct spk_synth *synth);
+>>>>>>> refs/remotes/origin/master
 extern const char *spk_synth_immediate(struct spk_synth *synth, const char *buff);
 extern void spk_do_catch_up(struct spk_synth *synth);
 extern void spk_synth_flush(struct spk_synth *synth);
@@ -81,6 +95,7 @@ extern struct speakup_info_t speakup_info;
 
 extern struct var_t synth_time_vars[];
 
+<<<<<<< HEAD
 /* Protect the whole speakup machinery, must be taken at each kernel->speakup
  * transition and released at all corresponding speakup->kernel transitions
  * (flags must be the same variable between lock/trylock and unlock).
@@ -94,4 +109,6 @@ extern struct var_t synth_time_vars[];
 #define spk_trylock(flags) spin_trylock_irqsave(&speakup_info.spinlock, flags)
 #define spk_unlock(flags) spin_unlock_irqrestore(&speakup_info.spinlock, flags)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -23,12 +23,17 @@
 #include <linux/io.h>
 #include <linux/clkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/clock.h>
 #include <asm/hwblk.h>
 =======
 #include <linux/sh_clk.h>
 #include <asm/clock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/sh_clk.h>
+#include <asm/clock.h>
+>>>>>>> refs/remotes/origin/master
 #include <cpu/sh7722.h>
 
 /* SH7722 registers */
@@ -39,11 +44,17 @@
 #define IRDACLKCR	0xa4150018
 #define PLLCR		0xa4150024
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define MSTPCR0		0xa4150030
 #define MSTPCR1		0xa4150034
 #define MSTPCR2		0xa4150038
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MSTPCR0		0xa4150030
+#define MSTPCR1		0xa4150034
+#define MSTPCR2		0xa4150038
+>>>>>>> refs/remotes/origin/master
 #define DLLFRQ		0xa4150050
 
 /* Fixed 32 KHz root clock for RTC and Power Management purposes */
@@ -73,10 +84,14 @@ static unsigned long dll_recalc(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_ops dll_clk_ops = {
 =======
 static struct sh_clk_ops dll_clk_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_clk_ops dll_clk_ops = {
+>>>>>>> refs/remotes/origin/master
 	.recalc		= dll_recalc,
 };
 
@@ -100,10 +115,14 @@ static unsigned long pll_recalc(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk_ops pll_clk_ops = {
 =======
 static struct sh_clk_ops pll_clk_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sh_clk_ops pll_clk_ops = {
+>>>>>>> refs/remotes/origin/master
 	.recalc		= pll_recalc,
 };
 
@@ -168,6 +187,7 @@ struct clk div6_clks[DIV6_NR] = {
 
 static struct clk mstp_clks[HWBLK_NR] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SH_HWBLK_CLK(HWBLK_URAM, &div4_clks[DIV4_U], CLK_ENABLE_ON_INIT),
 	SH_HWBLK_CLK(HWBLK_XYMEM, &div4_clks[DIV4_B], CLK_ENABLE_ON_INIT),
 	SH_HWBLK_CLK(HWBLK_TMU, &div4_clks[DIV4_P], 0),
@@ -198,6 +218,8 @@ static struct clk mstp_clks[HWBLK_NR] = {
 #define CLKDEV_CON_ID(_id, _clk) { .con_id = _id, .clk = _clk }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	[HWBLK_URAM]  = SH_CLK_MSTP32(&div4_clks[DIV4_U], MSTPCR0, 28, CLK_ENABLE_ON_INIT),
 	[HWBLK_XYMEM] = SH_CLK_MSTP32(&div4_clks[DIV4_B], MSTPCR0, 26, CLK_ENABLE_ON_INIT),
 	[HWBLK_TMU]   = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR0, 15, 0),
@@ -225,7 +247,10 @@ static struct clk mstp_clks[HWBLK_NR] = {
 	[HWBLK_LCDC]  = SH_CLK_MSTP32(&div4_clks[DIV4_P], MSTPCR2, 0, 0),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clk_lookup lookups[] = {
 	/* main clocks */
 	CLKDEV_CON_ID("rclk", &r_clk),
@@ -250,6 +275,7 @@ static struct clk_lookup lookups[] = {
 	/* MSTP clocks */
 	CLKDEV_CON_ID("uram0", &mstp_clks[HWBLK_URAM]),
 	CLKDEV_CON_ID("xymem0", &mstp_clks[HWBLK_XYMEM]),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{
 		/* TMU0 */
@@ -301,6 +327,8 @@ static struct clk_lookup lookups[] = {
 	CLKDEV_CON_ID("vpu0", &mstp_clks[HWBLK_VPU]),
 	CLKDEV_CON_ID("lcdc0", &mstp_clks[HWBLK_LCDC]),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	CLKDEV_ICK_ID("tmu_fck", "sh_tmu.0", &mstp_clks[HWBLK_TMU]),
 	CLKDEV_ICK_ID("tmu_fck", "sh_tmu.1", &mstp_clks[HWBLK_TMU]),
@@ -328,7 +356,10 @@ static struct clk_lookup lookups[] = {
 	CLKDEV_CON_ID("veu0", &mstp_clks[HWBLK_VEU]),
 	CLKDEV_CON_ID("vpu0", &mstp_clks[HWBLK_VPU]),
 	CLKDEV_DEV_ID("sh_mobile_lcdc_fb.0", &mstp_clks[HWBLK_LCDC]),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init arch_clk_init(void)
@@ -362,10 +393,14 @@ int __init arch_clk_init(void)
 
 	if (!ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = sh_hwblk_clk_register(mstp_clks, HWBLK_NR);
 =======
 		ret = sh_clk_mstp32_register(mstp_clks, HWBLK_NR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = sh_clk_mstp_register(mstp_clks, HWBLK_NR);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }

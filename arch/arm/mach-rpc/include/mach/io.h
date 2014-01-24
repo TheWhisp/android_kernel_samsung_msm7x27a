@@ -16,6 +16,7 @@
 #include <mach/hardware.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IO_SPACE_LIMIT 0xffffffff
 
 /*
@@ -211,6 +212,8 @@ DECLARE_IO(int,l,"")
  */
 #define __mem_pci(x)	(x)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define IO_SPACE_LIMIT 0xffff
 
 /*
@@ -223,6 +226,9 @@ DECLARE_IO(int,l,"")
  * like an ISA bus, but with registers at the low byte of each word.
  */
 #define __io(a)		(PCIO_BASE + ((a) << 2))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

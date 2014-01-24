@@ -19,13 +19,17 @@
  */
 
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <drm/drmP.h>
 #include "framebuffer.h"
 #include "psb_drv.h"
 #include "psb_intel_drv.h"
 #include "psb_intel_reg.h"
+<<<<<<< HEAD
 #include "psb_intel_display.h"
 #include "power.h"
 
@@ -171,15 +175,63 @@ static const struct psb_intel_limit_t *psb_intel_limit(struct drm_crtc *crtc)
 	const struct psb_intel_limit_t *limit;
 
 	if (psb_intel_pipe_has_type(crtc, INTEL_OUTPUT_LVDS))
+=======
+#include "gma_display.h"
+#include "power.h"
+
+#define INTEL_LIMIT_I9XX_SDVO_DAC   0
+#define INTEL_LIMIT_I9XX_LVDS	    1
+
+static const struct gma_limit_t psb_intel_limits[] = {
+	{			/* INTEL_LIMIT_I9XX_SDVO_DAC */
+	 .dot = {.min = 20000, .max = 400000},
+	 .vco = {.min = 1400000, .max = 2800000},
+	 .n = {.min = 1, .max = 6},
+	 .m = {.min = 70, .max = 120},
+	 .m1 = {.min = 8, .max = 18},
+	 .m2 = {.min = 3, .max = 7},
+	 .p = {.min = 5, .max = 80},
+	 .p1 = {.min = 1, .max = 8},
+	 .p2 = {.dot_limit = 200000, .p2_slow = 10, .p2_fast = 5},
+	 .find_pll = gma_find_best_pll,
+	 },
+	{			/* INTEL_LIMIT_I9XX_LVDS */
+	 .dot = {.min = 20000, .max = 400000},
+	 .vco = {.min = 1400000, .max = 2800000},
+	 .n = {.min = 1, .max = 6},
+	 .m = {.min = 70, .max = 120},
+	 .m1 = {.min = 8, .max = 18},
+	 .m2 = {.min = 3, .max = 7},
+	 .p = {.min = 7, .max = 98},
+	 .p1 = {.min = 1, .max = 8},
+	 /* The single-channel range is 25-112Mhz, and dual-channel
+	  * is 80-224Mhz.  Prefer single channel as much as possible.
+	  */
+	 .p2 = {.dot_limit = 112000, .p2_slow = 14, .p2_fast = 7},
+	 .find_pll = gma_find_best_pll,
+	 },
+};
+
+static const struct gma_limit_t *psb_intel_limit(struct drm_crtc *crtc,
+						 int refclk)
+{
+	const struct gma_limit_t *limit;
+
+	if (gma_pipe_has_type(crtc, INTEL_OUTPUT_LVDS))
+>>>>>>> refs/remotes/origin/master
 		limit = &psb_intel_limits[INTEL_LIMIT_I9XX_LVDS];
 	else
 		limit = &psb_intel_limits[INTEL_LIMIT_I9XX_SDVO_DAC];
 	return limit;
 }
 
+<<<<<<< HEAD
 /** Derive the pixel clock for the given refclk and divisors for 8xx chips. */
 
 static void i8xx_clock(int refclk, struct psb_intel_clock_t *clock)
+=======
+static void psb_intel_clock(int refclk, struct gma_clock_t *clock)
+>>>>>>> refs/remotes/origin/master
 {
 	clock->m = 5 * (clock->m1 + 2) + (clock->m2 + 2);
 	clock->p = clock->p1 * clock->p2;
@@ -187,6 +239,7 @@ static void i8xx_clock(int refclk, struct psb_intel_clock_t *clock)
 	clock->dot = clock->vco / clock->p;
 }
 
+<<<<<<< HEAD
 /** Derive the pixel clock for the given refclk and divisors for 9xx chips. */
 
 static void i9xx_clock(int refclk, struct psb_intel_clock_t *clock)
@@ -565,6 +618,8 @@ static bool psb_intel_crtc_mode_fixup(struct drm_crtc *crtc,
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Return the pipe currently connected to the panel fitter,
  * or -1 if the panel fitter is not present or not in use
@@ -589,6 +644,7 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 			       struct drm_framebuffer *old_fb)
 {
 	struct drm_device *dev = crtc->dev;
+<<<<<<< HEAD
 	struct psb_intel_crtc *psb_intel_crtc = to_psb_intel_crtc(crtc);
 	struct drm_crtc_helper_funcs *crtc_funcs = crtc->helper_private;
 	int pipe = psb_intel_crtc->pipe;
@@ -607,11 +663,24 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 	int pipesrc_reg = (pipe == 0) ? PIPEASRC : PIPEBSRC;
 	int refclk;
 	struct psb_intel_clock_t clock;
+=======
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
+	struct drm_crtc_helper_funcs *crtc_funcs = crtc->helper_private;
+	int pipe = gma_crtc->pipe;
+	const struct psb_offset *map = &dev_priv->regmap[pipe];
+	int refclk;
+	struct gma_clock_t clock;
+>>>>>>> refs/remotes/origin/master
 	u32 dpll = 0, fp = 0, dspcntr, pipeconf;
 	bool ok, is_sdvo = false;
 	bool is_lvds = false, is_tv = false;
 	struct drm_mode_config *mode_config = &dev->mode_config;
 	struct drm_connector *connector;
+<<<<<<< HEAD
+=======
+	const struct gma_limit_t *limit;
+>>>>>>> refs/remotes/origin/master
 
 	/* No scan out no play */
 	if (crtc->fb == NULL) {
@@ -620,14 +689,22 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 	}
 
 	list_for_each_entry(connector, &mode_config->connector_list, head) {
+<<<<<<< HEAD
 		struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
+=======
+		struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+>>>>>>> refs/remotes/origin/master
 
 		if (!connector->encoder
 		    || connector->encoder->crtc != crtc)
 			continue;
 
+<<<<<<< HEAD
 		switch (psb_intel_encoder->type) {
+=======
+		switch (gma_encoder->type) {
+>>>>>>> refs/remotes/origin/master
 		case INTEL_OUTPUT_LVDS:
 			is_lvds = true;
 			break;
@@ -642,10 +719,20 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 
 	refclk = 96000;
 
+<<<<<<< HEAD
 	ok = psb_intel_find_best_PLL(crtc, adjusted_mode->clock, refclk,
 				 &clock);
 	if (!ok) {
 		dev_err(dev->dev, "Couldn't find PLL settings for mode!\n");
+=======
+	limit = gma_crtc->clock_funcs->limit(crtc, refclk);
+
+	ok = limit->find_pll(limit, crtc, adjusted_mode->clock, refclk,
+				 &clock);
+	if (!ok) {
+		DRM_ERROR("Couldn't find PLL settings for mode! target: %d, actual: %d",
+			  adjusted_mode->clock, clock.dot);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -690,7 +777,11 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 	dpll |= PLL_REF_INPUT_DREFCLK;
 
 	/* setup pipeconf */
+<<<<<<< HEAD
 	pipeconf = REG_READ(pipeconf_reg);
+=======
+	pipeconf = REG_READ(map->conf);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up the display plane register */
 	dspcntr = DISPPLANE_GAMMA_ENABLE;
@@ -712,9 +803,15 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 	drm_mode_debug_printmodeline(mode);
 
 	if (dpll & DPLL_VCO_ENABLE) {
+<<<<<<< HEAD
 		REG_WRITE(fp_reg, fp);
 		REG_WRITE(dpll_reg, dpll & ~DPLL_VCO_ENABLE);
 		REG_READ(dpll_reg);
+=======
+		REG_WRITE(map->fp0, fp);
+		REG_WRITE(map->dpll, dpll & ~DPLL_VCO_ENABLE);
+		REG_READ(map->dpll);
+>>>>>>> refs/remotes/origin/master
 		udelay(150);
 	}
 
@@ -747,13 +844,20 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 		REG_READ(LVDS);
 	}
 
+<<<<<<< HEAD
 	REG_WRITE(fp_reg, fp);
 	REG_WRITE(dpll_reg, dpll);
 	REG_READ(dpll_reg);
+=======
+	REG_WRITE(map->fp0, fp);
+	REG_WRITE(map->dpll, dpll);
+	REG_READ(map->dpll);
+>>>>>>> refs/remotes/origin/master
 	/* Wait for the clocks to stabilize. */
 	udelay(150);
 
 	/* write it again -- the BIOS does, after all */
+<<<<<<< HEAD
 	REG_WRITE(dpll_reg, dpll);
 
 	REG_READ(dpll_reg);
@@ -771,10 +875,30 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 	REG_WRITE(vblank_reg, (adjusted_mode->crtc_vblank_start - 1) |
 		  ((adjusted_mode->crtc_vblank_end - 1) << 16));
 	REG_WRITE(vsync_reg, (adjusted_mode->crtc_vsync_start - 1) |
+=======
+	REG_WRITE(map->dpll, dpll);
+
+	REG_READ(map->dpll);
+	/* Wait for the clocks to stabilize. */
+	udelay(150);
+
+	REG_WRITE(map->htotal, (adjusted_mode->crtc_hdisplay - 1) |
+		  ((adjusted_mode->crtc_htotal - 1) << 16));
+	REG_WRITE(map->hblank, (adjusted_mode->crtc_hblank_start - 1) |
+		  ((adjusted_mode->crtc_hblank_end - 1) << 16));
+	REG_WRITE(map->hsync, (adjusted_mode->crtc_hsync_start - 1) |
+		  ((adjusted_mode->crtc_hsync_end - 1) << 16));
+	REG_WRITE(map->vtotal, (adjusted_mode->crtc_vdisplay - 1) |
+		  ((adjusted_mode->crtc_vtotal - 1) << 16));
+	REG_WRITE(map->vblank, (adjusted_mode->crtc_vblank_start - 1) |
+		  ((adjusted_mode->crtc_vblank_end - 1) << 16));
+	REG_WRITE(map->vsync, (adjusted_mode->crtc_vsync_start - 1) |
+>>>>>>> refs/remotes/origin/master
 		  ((adjusted_mode->crtc_vsync_end - 1) << 16));
 	/* pipesrc and dspsize control the size that is scaled from,
 	 * which should always be the user's requested size.
 	 */
+<<<<<<< HEAD
 	REG_WRITE(dspsize_reg,
 		  ((mode->vdisplay - 1) << 16) | (mode->hdisplay - 1));
 	REG_WRITE(dsppos_reg, 0);
@@ -786,15 +910,33 @@ static int psb_intel_crtc_mode_set(struct drm_crtc *crtc,
 	psb_intel_wait_for_vblank(dev);
 
 	REG_WRITE(dspcntr_reg, dspcntr);
+=======
+	REG_WRITE(map->size,
+		  ((mode->vdisplay - 1) << 16) | (mode->hdisplay - 1));
+	REG_WRITE(map->pos, 0);
+	REG_WRITE(map->src,
+		  ((mode->hdisplay - 1) << 16) | (mode->vdisplay - 1));
+	REG_WRITE(map->conf, pipeconf);
+	REG_READ(map->conf);
+
+	gma_wait_for_vblank(dev);
+
+	REG_WRITE(map->cntr, dspcntr);
+>>>>>>> refs/remotes/origin/master
 
 	/* Flush the plane changes */
 	crtc_funcs->mode_set_base(crtc, x, y, old_fb);
 
+<<<<<<< HEAD
 	psb_intel_wait_for_vblank(dev);
+=======
+	gma_wait_for_vblank(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /** Loads the palette/gamma unit for the CRTC with the prepared values */
 void psb_intel_crtc_load_lut(struct drm_crtc *crtc)
 {
@@ -1110,10 +1252,13 @@ static int psb_crtc_set_config(struct drm_mode_set *set)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Returns the clock of the currently programmed mode of the given pipe. */
 static int psb_intel_crtc_clock_get(struct drm_device *dev,
 				struct drm_crtc *crtc)
 {
+<<<<<<< HEAD
 	struct psb_intel_crtc *psb_intel_crtc = to_psb_intel_crtc(crtc);
 	int pipe = psb_intel_crtc->pipe;
 	u32 dpll;
@@ -1143,6 +1288,33 @@ static int psb_intel_crtc_clock_get(struct drm_device *dev,
 			fp = (pipe == 0) ?
 				dev_priv->regs.psb.saveFPA1 :
 				dev_priv->regs.psb.saveFPB1;
+=======
+	struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	int pipe = gma_crtc->pipe;
+	const struct psb_offset *map = &dev_priv->regmap[pipe];
+	u32 dpll;
+	u32 fp;
+	struct gma_clock_t clock;
+	bool is_lvds;
+	struct psb_pipe *p = &dev_priv->regs.pipe[pipe];
+
+	if (gma_power_begin(dev, false)) {
+		dpll = REG_READ(map->dpll);
+		if ((dpll & DISPLAY_RATE_SELECT_FPA1) == 0)
+			fp = REG_READ(map->fp0);
+		else
+			fp = REG_READ(map->fp1);
+		is_lvds = (pipe == 1) && (REG_READ(LVDS) & LVDS_PORT_EN);
+		gma_power_end(dev);
+	} else {
+		dpll = p->dpll;
+
+		if ((dpll & DISPLAY_RATE_SELECT_FPA1) == 0)
+			fp = p->fp0;
+		else
+		        fp = p->fp1;
+>>>>>>> refs/remotes/origin/master
 
 		is_lvds = (pipe == 1) && (dev_priv->regs.psb.saveLVDS &
 								LVDS_PORT_EN);
@@ -1162,9 +1334,15 @@ static int psb_intel_crtc_clock_get(struct drm_device *dev,
 		if ((dpll & PLL_REF_INPUT_MASK) ==
 		    PLLB_REF_INPUT_SPREADSPECTRUMIN) {
 			/* XXX: might not be 66MHz */
+<<<<<<< HEAD
 			i8xx_clock(66000, &clock);
 		} else
 			i8xx_clock(48000, &clock);
+=======
+			psb_intel_clock(66000, &clock);
+		} else
+			psb_intel_clock(48000, &clock);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (dpll & PLL_P1_DIVIDE_BY_TWO)
 			clock.p1 = 2;
@@ -1179,7 +1357,11 @@ static int psb_intel_crtc_clock_get(struct drm_device *dev,
 		else
 			clock.p2 = 2;
 
+<<<<<<< HEAD
 		i8xx_clock(48000, &clock);
+=======
+		psb_intel_clock(48000, &clock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* XXX: It would be nice to validate the clocks, but we can't reuse
@@ -1194,14 +1376,20 @@ static int psb_intel_crtc_clock_get(struct drm_device *dev,
 struct drm_display_mode *psb_intel_crtc_mode_get(struct drm_device *dev,
 					     struct drm_crtc *crtc)
 {
+<<<<<<< HEAD
 	struct psb_intel_crtc *psb_intel_crtc = to_psb_intel_crtc(crtc);
 	int pipe = psb_intel_crtc->pipe;
+=======
+	struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
+	int pipe = gma_crtc->pipe;
+>>>>>>> refs/remotes/origin/master
 	struct drm_display_mode *mode;
 	int htot;
 	int hsync;
 	int vtot;
 	int vsync;
 	struct drm_psb_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 
 	if (gma_power_begin(dev, false)) {
 		htot = REG_READ((pipe == 0) ? HTOTAL_A : HTOTAL_B);
@@ -1222,6 +1410,22 @@ struct drm_display_mode *psb_intel_crtc_mode_get(struct drm_device *dev,
 		vsync = (pipe == 0) ?
 			dev_priv->regs.psb.saveVSYNC_A :
 			dev_priv->regs.psb.saveVSYNC_B;
+=======
+	struct psb_pipe *p = &dev_priv->regs.pipe[pipe];
+	const struct psb_offset *map = &dev_priv->regmap[pipe];
+
+	if (gma_power_begin(dev, false)) {
+		htot = REG_READ(map->htotal);
+		hsync = REG_READ(map->hsync);
+		vtot = REG_READ(map->vtotal);
+		vsync = REG_READ(map->vsync);
+		gma_power_end(dev);
+	} else {
+		htot = p->htotal;
+		hsync = p->hsync;
+		vtot = p->vtotal;
+		vsync = p->vsync;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mode = kzalloc(sizeof(*mode), GFP_KERNEL);
@@ -1244,6 +1448,7 @@ struct drm_display_mode *psb_intel_crtc_mode_get(struct drm_device *dev,
 	return mode;
 }
 
+<<<<<<< HEAD
 void psb_intel_crtc_destroy(struct drm_crtc *crtc)
 {
 	struct psb_intel_crtc *psb_intel_crtc = to_psb_intel_crtc(crtc);
@@ -1293,12 +1498,39 @@ const struct drm_crtc_funcs psb_intel_crtc_funcs = {
 	.gamma_set = psb_intel_crtc_gamma_set,
 	.set_config = psb_crtc_set_config,
 	.destroy = psb_intel_crtc_destroy,
+=======
+const struct drm_crtc_helper_funcs psb_intel_helper_funcs = {
+	.dpms = gma_crtc_dpms,
+	.mode_fixup = gma_crtc_mode_fixup,
+	.mode_set = psb_intel_crtc_mode_set,
+	.mode_set_base = gma_pipe_set_base,
+	.prepare = gma_crtc_prepare,
+	.commit = gma_crtc_commit,
+	.disable = gma_crtc_disable,
+};
+
+const struct drm_crtc_funcs psb_intel_crtc_funcs = {
+	.save = gma_crtc_save,
+	.restore = gma_crtc_restore,
+	.cursor_set = gma_crtc_cursor_set,
+	.cursor_move = gma_crtc_cursor_move,
+	.gamma_set = gma_crtc_gamma_set,
+	.set_config = gma_crtc_set_config,
+	.destroy = gma_crtc_destroy,
+};
+
+const struct gma_clock_funcs psb_clock_funcs = {
+	.clock = psb_intel_clock,
+	.limit = psb_intel_limit,
+	.pll_is_valid = gma_pll_is_valid,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * Set the default value of cursor control and base register
  * to zero. This is a workaround for h/w defect on Oaktrail
  */
+<<<<<<< HEAD
 static void psb_intel_cursor_init(struct drm_device *dev, int pipe)
 {
 	u32 control[3] = { CURACNTR, CURBCNTR, CURCCNTR };
@@ -1306,18 +1538,52 @@ static void psb_intel_cursor_init(struct drm_device *dev, int pipe)
 
 	REG_WRITE(control[pipe], 0);
 	REG_WRITE(base[pipe], 0);
+=======
+static void psb_intel_cursor_init(struct drm_device *dev,
+				  struct gma_crtc *gma_crtc)
+{
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	u32 control[3] = { CURACNTR, CURBCNTR, CURCCNTR };
+	u32 base[3] = { CURABASE, CURBBASE, CURCBASE };
+	struct gtt_range *cursor_gt;
+
+	if (dev_priv->ops->cursor_needs_phys) {
+		/* Allocate 4 pages of stolen mem for a hardware cursor. That
+		 * is enough for the 64 x 64 ARGB cursors we support.
+		 */
+		cursor_gt = psb_gtt_alloc_range(dev, 4 * PAGE_SIZE, "cursor", 1);
+		if (!cursor_gt) {
+			gma_crtc->cursor_gt = NULL;
+			goto out;
+		}
+		gma_crtc->cursor_gt = cursor_gt;
+		gma_crtc->cursor_addr = dev_priv->stolen_base +
+							cursor_gt->offset;
+	} else {
+		gma_crtc->cursor_gt = NULL;
+	}
+
+out:
+	REG_WRITE(control[gma_crtc->pipe], 0);
+	REG_WRITE(base[gma_crtc->pipe], 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 void psb_intel_crtc_init(struct drm_device *dev, int pipe,
 		     struct psb_intel_mode_device *mode_dev)
 {
 	struct drm_psb_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	struct psb_intel_crtc *psb_intel_crtc;
+=======
+	struct gma_crtc *gma_crtc;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	uint16_t *r_base, *g_base, *b_base;
 
 	/* We allocate a extra array of drm_connector pointers
 	 * for fbdev after the crtc */
+<<<<<<< HEAD
 	psb_intel_crtc =
 	    kzalloc(sizeof(struct psb_intel_crtc) +
 		    (INTELFB_CONN_LIMIT * sizeof(struct drm_connector *)),
@@ -1330,10 +1596,24 @@ void psb_intel_crtc_init(struct drm_device *dev, int pipe,
 	if (!psb_intel_crtc->crtc_state) {
 		dev_err(dev->dev, "Crtc state error: No memory\n");
 		kfree(psb_intel_crtc);
+=======
+	gma_crtc = kzalloc(sizeof(struct gma_crtc) +
+			(INTELFB_CONN_LIMIT * sizeof(struct drm_connector *)),
+			GFP_KERNEL);
+	if (gma_crtc == NULL)
+		return;
+
+	gma_crtc->crtc_state =
+		kzalloc(sizeof(struct psb_intel_crtc_state), GFP_KERNEL);
+	if (!gma_crtc->crtc_state) {
+		dev_err(dev->dev, "Crtc state error: No memory\n");
+		kfree(gma_crtc);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* Set the CRTC operations from the chip specific data */
+<<<<<<< HEAD
 	drm_crtc_init(dev, &psb_intel_crtc->base, dev_priv->ops->crtc_funcs);
 
 	drm_mode_crtc_set_gamma_size(&psb_intel_crtc->base, 256);
@@ -1347,10 +1627,29 @@ void psb_intel_crtc_init(struct drm_device *dev, int pipe,
 		psb_intel_crtc->lut_r[i] = i;
 		psb_intel_crtc->lut_g[i] = i;
 		psb_intel_crtc->lut_b[i] = i;
+=======
+	drm_crtc_init(dev, &gma_crtc->base, dev_priv->ops->crtc_funcs);
+
+	/* Set the CRTC clock functions from chip specific data */
+	gma_crtc->clock_funcs = dev_priv->ops->clock_funcs;
+
+	drm_mode_crtc_set_gamma_size(&gma_crtc->base, 256);
+	gma_crtc->pipe = pipe;
+	gma_crtc->plane = pipe;
+
+	r_base = gma_crtc->base.gamma_store;
+	g_base = r_base + 256;
+	b_base = g_base + 256;
+	for (i = 0; i < 256; i++) {
+		gma_crtc->lut_r[i] = i;
+		gma_crtc->lut_g[i] = i;
+		gma_crtc->lut_b[i] = i;
+>>>>>>> refs/remotes/origin/master
 		r_base[i] = i << 8;
 		g_base[i] = i << 8;
 		b_base[i] = i << 8;
 
+<<<<<<< HEAD
 		psb_intel_crtc->lut_adj[i] = 0;
 	}
 
@@ -1372,6 +1671,29 @@ void psb_intel_crtc_init(struct drm_device *dev, int pipe,
 	    (struct drm_connector **) (psb_intel_crtc + 1);
 	psb_intel_crtc->mode_set.num_connectors = 0;
 	psb_intel_cursor_init(dev, pipe);
+=======
+		gma_crtc->lut_adj[i] = 0;
+	}
+
+	gma_crtc->mode_dev = mode_dev;
+	gma_crtc->cursor_addr = 0;
+
+	drm_crtc_helper_add(&gma_crtc->base,
+						dev_priv->ops->crtc_helper);
+
+	/* Setup the array of drm_connector pointer array */
+	gma_crtc->mode_set.crtc = &gma_crtc->base;
+	BUG_ON(pipe >= ARRAY_SIZE(dev_priv->plane_to_crtc_mapping) ||
+	       dev_priv->plane_to_crtc_mapping[gma_crtc->plane] != NULL);
+	dev_priv->plane_to_crtc_mapping[gma_crtc->plane] = &gma_crtc->base;
+	dev_priv->pipe_to_crtc_mapping[gma_crtc->pipe] = &gma_crtc->base;
+	gma_crtc->mode_set.connectors = (struct drm_connector **)(gma_crtc + 1);
+	gma_crtc->mode_set.num_connectors = 0;
+	psb_intel_cursor_init(dev, gma_crtc);
+
+	/* Set to true so that the pipe is forced off on initial config. */
+	gma_crtc->active = true;
+>>>>>>> refs/remotes/origin/master
 }
 
 int psb_intel_get_pipe_from_crtc_id(struct drm_device *dev, void *data,
@@ -1380,7 +1702,11 @@ int psb_intel_get_pipe_from_crtc_id(struct drm_device *dev, void *data,
 	struct drm_psb_private *dev_priv = dev->dev_private;
 	struct drm_psb_get_pipe_from_crtc_id_arg *pipe_from_crtc_id = data;
 	struct drm_mode_object *drmmode_obj;
+<<<<<<< HEAD
 	struct psb_intel_crtc *crtc;
+=======
+	struct gma_crtc *crtc;
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev_priv) {
 		dev_err(dev->dev, "called with no initialization\n");
@@ -1392,10 +1718,17 @@ int psb_intel_get_pipe_from_crtc_id(struct drm_device *dev, void *data,
 
 	if (!drmmode_obj) {
 		dev_err(dev->dev, "no such CRTC id\n");
+<<<<<<< HEAD
 		return -EINVAL;
 	}
 
 	crtc = to_psb_intel_crtc(obj_to_crtc(drmmode_obj));
+=======
+		return -ENOENT;
+	}
+
+	crtc = to_gma_crtc(obj_to_crtc(drmmode_obj));
+>>>>>>> refs/remotes/origin/master
 	pipe_from_crtc_id->pipe = crtc->pipe;
 
 	return 0;
@@ -1406,14 +1739,23 @@ struct drm_crtc *psb_intel_get_crtc_from_pipe(struct drm_device *dev, int pipe)
 	struct drm_crtc *crtc = NULL;
 
 	list_for_each_entry(crtc, &dev->mode_config.crtc_list, head) {
+<<<<<<< HEAD
 		struct psb_intel_crtc *psb_intel_crtc = to_psb_intel_crtc(crtc);
 		if (psb_intel_crtc->pipe == pipe)
+=======
+		struct gma_crtc *gma_crtc = to_gma_crtc(crtc);
+		if (gma_crtc->pipe == pipe)
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 	return crtc;
 }
 
+<<<<<<< HEAD
 int psb_intel_connector_clones(struct drm_device *dev, int type_mask)
+=======
+int gma_connector_clones(struct drm_device *dev, int type_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	int index_mask = 0;
 	struct drm_connector *connector;
@@ -1421,14 +1763,20 @@ int psb_intel_connector_clones(struct drm_device *dev, int type_mask)
 
 	list_for_each_entry(connector, &dev->mode_config.connector_list,
 			    head) {
+<<<<<<< HEAD
 		struct psb_intel_encoder *psb_intel_encoder =
 					psb_intel_attached_encoder(connector);
 		if (type_mask & (1 << psb_intel_encoder->type))
+=======
+		struct gma_encoder *gma_encoder = gma_attached_encoder(connector);
+		if (type_mask & (1 << gma_encoder->type))
+>>>>>>> refs/remotes/origin/master
 			index_mask |= (1 << entry);
 		entry++;
 	}
 	return index_mask;
 }
+<<<<<<< HEAD
 
 /* current intel driver doesn't take advantage of encoders
    always give back the encoder for the connector
@@ -1448,3 +1796,5 @@ void psb_intel_connector_attach_encoder(struct psb_intel_connector *connector,
 	drm_mode_connector_attach_encoder(&connector->base,
 					  &encoder->base);
 }
+=======
+>>>>>>> refs/remotes/origin/master

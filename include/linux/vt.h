@@ -1,6 +1,7 @@
 #ifndef _LINUX_VT_H
 #define _LINUX_VT_H
 
+<<<<<<< HEAD
 
 /*
  * These constants are also useful for user-level apps (e.g., VC
@@ -88,6 +89,11 @@ struct vt_setactivate {
 
 <<<<<<< HEAD
 =======
+=======
+#include <uapi/linux/vt.h>
+
+
+>>>>>>> refs/remotes/origin/master
 /* Virtual Terminal events. */
 #define VT_ALLOCATE		0x0001 /* Console got allocated */
 #define VT_DEALLOCATE		0x0002 /* Console will be deallocated */
@@ -95,7 +101,10 @@ struct vt_setactivate {
 #define VT_UPDATE		0x0004 /* A bigger update occurred */
 #define VT_PREWRITE		0x0005 /* A char is about to be written to the console */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_VT_CONSOLE
 
 extern int vt_kmsg_redirect(int new);
@@ -109,8 +118,11 @@ static inline int vt_kmsg_redirect(int new)
 
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #define vt_get_kmsg_redirect() vt_kmsg_redirect(-1)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_VT_H */

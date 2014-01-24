@@ -12,9 +12,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "gigaset.h"
 
 void gigaset_skb_sent(struct bc_state *bcs, struct sk_buff *skb)
@@ -63,7 +67,11 @@ void gigaset_isdn_stop(struct cardstate *cs)
 
 int gigaset_isdn_regdev(struct cardstate *cs, const char *isdnid)
 {
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 void gigaset_isdn_unregdev(struct cardstate *cs)

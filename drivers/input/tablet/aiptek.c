@@ -226,9 +226,12 @@
 	 */
 #define AIPTEK_TOOL_BUTTON_PEN_MODE			BTN_TOOL_PEN
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AIPTEK_TOOL_BUTTON_PEN_MODE			BTN_TOOL_PEN
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AIPTEK_TOOL_BUTTON_PENCIL_MODE			BTN_TOOL_PENCIL
 #define AIPTEK_TOOL_BUTTON_BRUSH_MODE			BTN_TOOL_BRUSH
 #define AIPTEK_TOOL_BUTTON_AIRBRUSH_MODE		BTN_TOOL_AIRBRUSH
@@ -313,6 +316,10 @@ struct aiptek_settings {
 struct aiptek {
 	struct input_dev *inputdev;		/* input device struct           */
 	struct usb_device *usbdev;		/* usb device struct             */
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf;		/* usb interface struct          */
+>>>>>>> refs/remotes/origin/master
 	struct urb *urb;			/* urb for incoming reports      */
 	dma_addr_t data_dma;			/* our dma stuffage              */
 	struct aiptek_features features;	/* tablet's array of features    */
@@ -439,6 +446,10 @@ static void aiptek_irq(struct urb *urb)
 	struct aiptek *aiptek = urb->context;
 	unsigned char *data = aiptek->data;
 	struct input_dev *inputdev = aiptek->inputdev;
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf = aiptek->intf;
+>>>>>>> refs/remotes/origin/master
 	int jitterable = 0;
 	int retval, macro, x, y, z, left, right, middle, p, dv, tip, bs, pck;
 
@@ -451,6 +462,7 @@ static void aiptek_irq(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* This urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d",
 		    __func__, urb->status);
 		return;
@@ -458,6 +470,15 @@ static void aiptek_irq(struct urb *urb)
 	default:
 		dbg("%s - nonzero urb status received: %d",
 		    __func__, urb->status);
+=======
+		dev_dbg(&intf->dev, "%s - urb shutting down with status: %d\n",
+			__func__, urb->status);
+		return;
+
+	default:
+		dev_dbg(&intf->dev, "%s - nonzero urb status received: %d\n",
+			__func__, urb->status);
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -789,7 +810,11 @@ static void aiptek_irq(struct urb *urb)
 				 1 | AIPTEK_REPORT_TOOL_UNKNOWN);
 		input_sync(inputdev);
 	} else {
+<<<<<<< HEAD
 		dbg("Unknown report %d", data[0]);
+=======
+		dev_dbg(&intf->dev, "Unknown report %d\n", data[0]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Jitter may occur when the user presses a button on the stlyus
@@ -815,8 +840,14 @@ static void aiptek_irq(struct urb *urb)
 exit:
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
 	if (retval != 0) {
+<<<<<<< HEAD
 		err("%s - usb_submit_urb failed with result %d",
 		    __func__, retval);
+=======
+		dev_err(&intf->dev,
+			"%s - usb_submit_urb failed with result %d\n",
+			__func__, retval);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -916,8 +947,14 @@ aiptek_command(struct aiptek *aiptek, unsigned char command, unsigned char data)
 
 	if ((ret =
 	     aiptek_set_report(aiptek, 3, 2, buf, sizeof_buf)) != sizeof_buf) {
+<<<<<<< HEAD
 		dbg("aiptek_program: failed, tried to send: 0x%02x 0x%02x",
 		    command, data);
+=======
+		dev_dbg(&aiptek->intf->dev,
+			"aiptek_program: failed, tried to send: 0x%02x 0x%02x\n",
+			command, data);
+>>>>>>> refs/remotes/origin/master
 	}
 	kfree(buf);
 	return ret < 0 ? ret : 0;
@@ -951,8 +988,14 @@ aiptek_query(struct aiptek *aiptek, unsigned char command, unsigned char data)
 
 	if ((ret =
 	     aiptek_get_report(aiptek, 3, 2, buf, sizeof_buf)) != sizeof_buf) {
+<<<<<<< HEAD
 		dbg("aiptek_query failed: returned 0x%02x 0x%02x 0x%02x",
 		    buf[0], buf[1], buf[2]);
+=======
+		dev_dbg(&aiptek->intf->dev,
+			"aiptek_query failed: returned 0x%02x 0x%02x 0x%02x\n",
+			buf[0], buf[1], buf[2]);
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 	} else {
 		ret = get_unaligned_le16(buf + 1);
@@ -1203,6 +1246,7 @@ store_tabletXtilt(struct device *dev, struct device_attribute *attr, const char 
 {
 	struct aiptek *aiptek = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long x;
 
 	if (strict_strtol(buf, 10, &x)) {
@@ -1211,6 +1255,11 @@ store_tabletXtilt(struct device *dev, struct device_attribute *attr, const char 
 
 	if (kstrtoint(buf, 10, &x)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int x;
+
+	if (kstrtoint(buf, 10, &x)) {
+>>>>>>> refs/remotes/origin/master
 		size_t len = buf[count - 1] == '\n' ? count - 1 : count;
 
 		if (strncmp(buf, "disable", len))
@@ -1251,6 +1300,7 @@ store_tabletYtilt(struct device *dev, struct device_attribute *attr, const char 
 {
 	struct aiptek *aiptek = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long y;
 
 	if (strict_strtol(buf, 10, &y)) {
@@ -1259,6 +1309,11 @@ store_tabletYtilt(struct device *dev, struct device_attribute *attr, const char 
 
 	if (kstrtoint(buf, 10, &y)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int y;
+
+	if (kstrtoint(buf, 10, &y)) {
+>>>>>>> refs/remotes/origin/master
 		size_t len = buf[count - 1] == '\n' ? count - 1 : count;
 
 		if (strncmp(buf, "disable", len))
@@ -1294,6 +1349,7 @@ store_tabletJitterDelay(struct device *dev, struct device_attribute *attr, const
 {
 	struct aiptek *aiptek = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long j;
 
 	if (strict_strtol(buf, 10, &j))
@@ -1301,6 +1357,8 @@ store_tabletJitterDelay(struct device *dev, struct device_attribute *attr, const
 
 	aiptek->newSetting.jitterDelay = (int)j;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err, j;
 
 	err = kstrtoint(buf, 10, &j);
@@ -1308,7 +1366,10 @@ store_tabletJitterDelay(struct device *dev, struct device_attribute *attr, const
 		return err;
 
 	aiptek->newSetting.jitterDelay = j;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -1333,6 +1394,7 @@ store_tabletProgrammableDelay(struct device *dev, struct device_attribute *attr,
 {
 	struct aiptek *aiptek = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long d;
 
 	if (strict_strtol(buf, 10, &d))
@@ -1340,6 +1402,8 @@ store_tabletProgrammableDelay(struct device *dev, struct device_attribute *attr,
 
 	aiptek->newSetting.programmableDelay = (int)d;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err, d;
 
 	err = kstrtoint(buf, 10, &d);
@@ -1347,7 +1411,10 @@ store_tabletProgrammableDelay(struct device *dev, struct device_attribute *attr,
 		return err;
 
 	aiptek->newSetting.programmableDelay = d;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -1594,12 +1661,15 @@ store_tabletWheel(struct device *dev, struct device_attribute *attr, const char 
 {
 	struct aiptek *aiptek = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long w;
 
 	if (strict_strtol(buf, 10, &w)) return -EINVAL;
 
 	aiptek->newSetting.wheel = (int)w;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err, w;
 
 	err = kstrtoint(buf, 10, &w);
@@ -1607,7 +1677,10 @@ store_tabletWheel(struct device *dev, struct device_attribute *attr, const char 
 		return err;
 
 	aiptek->newSetting.wheel = w;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -1768,6 +1841,10 @@ aiptek_probe(struct usb_interface *intf, const struct usb_device_id *id)
 
 	aiptek->inputdev = inputdev;
 	aiptek->usbdev = usbdev;
+<<<<<<< HEAD
+=======
+	aiptek->intf = intf;
+>>>>>>> refs/remotes/origin/master
 	aiptek->ifnum = intf->altsetting[0].desc.bInterfaceNumber;
 	aiptek->inDelay = 0;
 	aiptek->endDelay = 0;
@@ -1898,7 +1975,11 @@ aiptek_probe(struct usb_interface *intf, const struct usb_device_id *id)
 	if (i == ARRAY_SIZE(speeds)) {
 		dev_info(&intf->dev,
 			 "Aiptek tried all speeds, no sane response\n");
+<<<<<<< HEAD
 		goto fail2;
+=======
+		goto fail3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Associate this driver's struct with the usb interface.
@@ -1966,6 +2047,7 @@ static struct usb_driver aiptek_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init aiptek_init(void)
 {
 	int result = usb_register(&aiptek_driver);
@@ -1984,6 +2066,9 @@ static void __exit aiptek_exit(void)
 =======
 module_usb_driver(aiptek_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(aiptek_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
@@ -1994,8 +2079,11 @@ MODULE_PARM_DESC(programmableDelay, "delay used during tablet programming");
 module_param(jitterDelay, int, 0);
 MODULE_PARM_DESC(jitterDelay, "stylus/mouse settlement delay");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(aiptek_init);
 module_exit(aiptek_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

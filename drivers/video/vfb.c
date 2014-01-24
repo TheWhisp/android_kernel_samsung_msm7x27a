@@ -35,6 +35,7 @@
 static void *videomemory;
 static u_long videomemorysize = VIDEOMEMSIZE;
 module_param(videomemorysize, ulong, 0);
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
 static int bpp __devinitdata = 8;
 
@@ -42,6 +43,8 @@ module_param(mode_option, charp, 0);
 MODULE_PARM_DESC(mode_option, "Initial video mode e.g. '648x480-8@60'");
 module_param(bpp, int, 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**********************************************************************
  *
@@ -85,7 +88,11 @@ static void rvfree(void *mem, unsigned long size)
 	vfree(mem);
 }
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo vfb_default __devinitdata = {
+=======
+static struct fb_var_screeninfo vfb_default = {
+>>>>>>> refs/remotes/origin/master
 	.xres =		640,
 	.yres =		480,
 	.xres_virtual =	640,
@@ -107,7 +114,11 @@ static struct fb_var_screeninfo vfb_default __devinitdata = {
       	.vmode =	FB_VMODE_NONINTERLACED,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo vfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo vfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id =		"Virtual FB",
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_PSEUDOCOLOR,
@@ -118,10 +129,14 @@ static struct fb_fix_screeninfo vfb_fix __devinitdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int vfb_enable __initdata = 0;	/* disabled by default */
 =======
 static bool vfb_enable __initdata = 0;	/* disabled by default */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool vfb_enable __initdata = 0;	/* disabled by default */
+>>>>>>> refs/remotes/origin/master
 module_param(vfb_enable, bool, 0);
 
 static int vfb_check_var(struct fb_var_screeninfo *var,
@@ -401,6 +416,7 @@ static int vfb_pan_display(struct fb_var_screeninfo *var,
 			   struct fb_info *info)
 {
 	if (var->vmode & FB_VMODE_YWRAP) {
+<<<<<<< HEAD
 		if (var->yoffset < 0
 		    || var->yoffset >= info->var.yres_virtual
 		    || var->xoffset)
@@ -413,6 +429,14 @@ static int vfb_pan_display(struct fb_var_screeninfo *var,
 		if (var->xoffset + info->var.xres > info->var.xres_virtual ||
 		    var->yoffset + info->var.yres > info->var.yres_virtual)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (var->yoffset >= info->var.yres_virtual ||
+		    var->xoffset)
+			return -EINVAL;
+	} else {
+		if (var->xoffset + info->var.xres > info->var.xres_virtual ||
+		    var->yoffset + info->var.yres > info->var.yres_virtual)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 	}
 	info->var.xoffset = var->xoffset;
@@ -436,9 +460,18 @@ static int vfb_mmap(struct fb_info *info,
 	unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
 	unsigned long page, pos;
 
+<<<<<<< HEAD
 	if (offset + size > info->fix.smem_len) {
 		return -EINVAL;
 	}
+=======
+	if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT))
+		return -EINVAL;
+	if (size > info->fix.smem_len)
+		return -EINVAL;
+	if (offset > info->fix.smem_len - size)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	pos = (unsigned long)info->fix.smem_start + offset;
 
@@ -455,7 +488,10 @@ static int vfb_mmap(struct fb_info *info,
 			size = 0;
 	}
 
+<<<<<<< HEAD
 	vma->vm_flags |= VM_RESERVED;	/* avoid to swap out this VMA */
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 }
@@ -485,6 +521,7 @@ static int __init vfb_setup(char *options)
 		/* Test disable for backwards compatibility */
 		if (!strcmp(this_opt, "disable"))
 			vfb_enable = 0;
+<<<<<<< HEAD
 		else if (!strncmp(this_opt, "bpp=", 4)) {
 			if (kstrtoint(this_opt + 4, 0, &bpp) < 0)
 				bpp = 8;
@@ -493,6 +530,8 @@ static int __init vfb_setup(char *options)
 				videomemorysize = VIDEOMEMSIZE;
 		} else
 			mode_option = this_opt;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 1;
 }
@@ -502,7 +541,11 @@ static int __init vfb_setup(char *options)
      *  Initialisation
      */
 
+<<<<<<< HEAD
 static int __devinit vfb_probe(struct platform_device *dev)
+=======
+static int vfb_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	int retval = -ENOMEM;
@@ -528,8 +571,13 @@ static int __devinit vfb_probe(struct platform_device *dev)
 	info->screen_base = (char __iomem *)videomemory;
 	info->fbops = &vfb_ops;
 
+<<<<<<< HEAD
 	retval = fb_find_mode(&info->var, info, mode_option,
 			      NULL, 0, NULL, bpp);
+=======
+	retval = fb_find_mode(&info->var, info, NULL,
+			      NULL, 0, NULL, 8);
+>>>>>>> refs/remotes/origin/master
 
 	if (!retval || (retval == 4))
 		info->var = vfb_default;
@@ -549,9 +597,14 @@ static int __devinit vfb_probe(struct platform_device *dev)
 		goto err2;
 	platform_set_drvdata(dev, info);
 
+<<<<<<< HEAD
 	printk(KERN_INFO
 	       "fb%d: Virtual frame buffer device, using %ldK of video memory\n",
 	       info->node, videomemorysize >> 10);
+=======
+	fb_info(info, "Virtual frame buffer device, using %ldK of video memory\n",
+		videomemorysize >> 10);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 err2:
 	fb_dealloc_cmap(&info->cmap);

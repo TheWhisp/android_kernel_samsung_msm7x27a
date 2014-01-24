@@ -19,10 +19,18 @@
 #include <linux/clk.h>
 #include <linux/spi/spi.h>
 #include <linux/spi/eeprom.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/i2c-davinci.h>
+#include <linux/platform_data/mmc-davinci.h>
+#include <linux/platform_data/mtd-davinci.h>
+#include <linux/platform_data/usb-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/dm355.h>
 =======
@@ -38,6 +46,13 @@
 #include "davinci.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/common.h>
+#include <mach/serial.h>
+
+#include "davinci.h"
+
+>>>>>>> refs/remotes/origin/master
 /* NOTE:  this is geared for the standard config, with a socketed
  * 2 GByte Micron NAND (MT29F16G08FAA) using 128KB sectors.  If you
  * swap chips, maybe with a different block size, partitioning may
@@ -83,10 +98,15 @@ static struct davinci_nand_pdata davinci_nand_data = {
 	.nr_parts		= ARRAY_SIZE(davinci_nand_partitions),
 	.ecc_mode		= NAND_ECC_HW_SYNDROME,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.options		= NAND_USE_FLASH_BBT,
 =======
 	.bbt_options		= NAND_BBT_USE_FLASH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ecc_bits		= 4,
+	.bbt_options		= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource davinci_nand_resources[] = {
@@ -183,10 +203,13 @@ static struct platform_device *davinci_leopard_devices[] __initdata = {
 	&davinci_nand_device,
 };
 
+<<<<<<< HEAD
 static struct davinci_uart_config uart_config __initdata = {
 	.enabled_uarts = (1 << 0),
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init dm355_leopard_map_io(void)
 {
 	dm355_init();
@@ -248,6 +271,14 @@ static struct spi_board_info dm355_leopard_spi_info[] __initconst = {
 static __init void dm355_leopard_init(void)
 {
 	struct clk *aemif;
+<<<<<<< HEAD
+=======
+	int ret;
+
+	ret = dm355_gpio_register();
+	if (ret)
+		pr_warn("%s: GPIO init failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 
 	gpio_request(9, "dm9000");
 	gpio_direction_input(9);
@@ -257,12 +288,20 @@ static __init void dm355_leopard_init(void)
 	if (IS_ERR(aemif))
 		WARN("%s: unable to get AEMIF clock\n", __func__);
 	else
+<<<<<<< HEAD
 		clk_enable(aemif);
+=======
+		clk_prepare_enable(aemif);
+>>>>>>> refs/remotes/origin/master
 
 	platform_add_devices(davinci_leopard_devices,
 			     ARRAY_SIZE(davinci_leopard_devices));
 	leopard_init_i2c();
+<<<<<<< HEAD
 	davinci_serial_init(&uart_config);
+=======
+	davinci_serial_init(dm355_serial_device);
+>>>>>>> refs/remotes/origin/master
 
 	/* NOTE:  NAND flash timings set by the UBL are slower than
 	 * needed by MT29F16G08FAA chips ... EMIF.A1CR is 0x40400204
@@ -283,6 +322,7 @@ static __init void dm355_leopard_init(void)
 
 MACHINE_START(DM355_LEOPARD, "DaVinci DM355 leopard")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params  = (0x80000100),
 =======
 	.atag_offset  = 0x100,
@@ -296,4 +336,14 @@ MACHINE_START(DM355_LEOPARD, "DaVinci DM355 leopard")
 	.dma_zone_size	= SZ_128M,
 	.restart	= davinci_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset  = 0x100,
+	.map_io	      = dm355_leopard_map_io,
+	.init_irq     = davinci_irq_init,
+	.init_time	= davinci_timer_init,
+	.init_machine = dm355_leopard_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

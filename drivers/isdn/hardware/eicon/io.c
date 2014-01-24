@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #include "platform.h"
@@ -57,6 +63,7 @@
 #include "mi_pc.h"
 #include "io.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern ADAPTER * adapter[MAX_ADAPTER];
 extern PISDN_ADAPTER IoAdapters[MAX_ADAPTER];
 void request (PISDN_ADAPTER, ENTITY *);
@@ -68,6 +75,8 @@ static void pcm_req (PISDN_ADAPTER, ENTITY *);
 static void Request##N(ENTITY *e) \
 { if ( IoAdapters[N] ) (* IoAdapters[N]->DIRequest)(IoAdapters[N], e) ; }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern ADAPTER *adapter[MAX_ADAPTER];
 extern PISDN_ADAPTER IoAdapters[MAX_ADAPTER];
 void request(PISDN_ADAPTER, ENTITY *);
@@ -78,7 +87,10 @@ static void pcm_req(PISDN_ADAPTER, ENTITY *);
 #define ReqFunc(N)							\
 	static void Request##N(ENTITY *e)				\
 	{ if (IoAdapters[N]) (*IoAdapters[N]->DIRequest)(IoAdapters[N], e); }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ReqFunc(0)
 ReqFunc(1)
 ReqFunc(2)
@@ -98,6 +110,7 @@ ReqFunc(15)
 IDI_CALL Requests[MAX_ADAPTER] =
 { &Request0, &Request1, &Request2, &Request3,
 <<<<<<< HEAD
+<<<<<<< HEAD
  &Request4, &Request5, &Request6, &Request7,
  &Request8, &Request9, &Request10, &Request11,
  &Request12, &Request13, &Request14, &Request15
@@ -106,11 +119,17 @@ IDI_CALL Requests[MAX_ADAPTER] =
   &Request8, &Request9, &Request10, &Request11,
   &Request12, &Request13, &Request14, &Request15
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  &Request4, &Request5, &Request6, &Request7,
+  &Request8, &Request9, &Request10, &Request11,
+  &Request12, &Request13, &Request14, &Request15
+>>>>>>> refs/remotes/origin/master
 };
 /*****************************************************************************/
 /*
   This array should indicate all new services, that this version of XDI
   is able to provide to his clients
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 static byte extended_xdi_features[DIVA_XDI_EXTENDED_FEATURES_MAX_SZ+1] = {
@@ -161,6 +180,8 @@ dump_xlog_buffer (PISDN_ADAPTER IoAdapter, Xdesc *xlogDesc)
           &IoAdapter->Name[0]))
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static byte extended_xdi_features[DIVA_XDI_EXTENDED_FEATURES_MAX_SZ + 1] = {
 	(DIVA_XDI_EXTENDED_FEATURES_VALID       |
@@ -209,11 +230,15 @@ dump_xlog_buffer(PISDN_ADAPTER IoAdapter, Xdesc *xlogDesc)
 	DBG_FTL(("%s: ***************** end of XLOG *****************",
 		 &IoAdapter->Name[0]))
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************/
 #if defined(XDI_USE_XLOG)
 static char *(ExceptionCauseTable[]) =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
  "Interrupt",
  "TLB mod /IBOUND",
@@ -299,6 +324,8 @@ void request(PISDN_ADAPTER IoAdapter, ENTITY * e)
  byte i;
  diva_os_spin_lock_magic_t irql;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	"Interrupt",
 	"TLB mod /IBOUND",
 	"TLB load /DBOUND",
@@ -382,11 +409,15 @@ void request(PISDN_ADAPTER IoAdapter, ENTITY *e)
 {
 	byte i;
 	diva_os_spin_lock_magic_t irql;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * if the Req field in the entity structure is 0,
  * we treat this request as a special function call
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
  if ( !e->Req )
  {
@@ -686,6 +717,8 @@ pcm_req (PISDN_ADAPTER IoAdapter, ENTITY *e)
  ADAPTER         *a = &IoAdapter->a ;
  struct pc_maint *pcm = (struct pc_maint *)&e->Ind ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!e->Req)
 	{
 		IDI_SYNC_REQ *syncReq = (IDI_SYNC_REQ *)e;
@@ -983,11 +1016,15 @@ pcm_req(PISDN_ADAPTER IoAdapter, ENTITY *e)
 	int              i, rc;
 	ADAPTER         *a = &IoAdapter->a;
 	struct pc_maint *pcm = (struct pc_maint *)&e->Ind;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * special handling of I/O based card interface
  * the memory access isn't an atomic operation !
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
  if ( IoAdapter->Properties.Card == CARD_MAE )
  {
@@ -1033,6 +1070,8 @@ pcm_req(PISDN_ADAPTER IoAdapter, ENTITY *e)
   goto Trapped ;
  }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (IoAdapter->Properties.Card == CARD_MAE)
 	{
 		diva_os_enter_spin_lock(&IoAdapter->data_spin_lock,
@@ -1076,11 +1115,15 @@ pcm_req(PISDN_ADAPTER IoAdapter, ENTITY *e)
 					"data_pcm_4");
 		goto Trapped;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * memory based shared ram is accessible from different
  * processors without disturbing concurrent processes.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
  a->ram_out (a, &IoAdapter->pcm->rc, 0) ;
  a->ram_out (a, &IoAdapter->pcm->req, pcm->req) ;
@@ -1107,6 +1150,8 @@ Trapped:
     }
  }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	a->ram_out(a, &IoAdapter->pcm->rc, 0);
 	a->ram_out(a, &IoAdapter->pcm->req, pcm->req);
 	for (i = (IoAdapter->trapped ? 3000 : 250); --i > 0;)
@@ -1131,11 +1176,15 @@ Trapped:
 			(*(IoAdapter->os_trap_nfy_Fnc))(IoAdapter, IoAdapter->ANum);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*------------------------------------------------------------------*/
 /* ram access functions for memory mapped cards                     */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 byte mem_in (ADAPTER *a, void *addr)
 {
@@ -1211,6 +1260,8 @@ void mem_inc (ADAPTER *a, void *addr)
  WRITE_BYTE(Base + (unsigned long)addr, x + 1);
  DIVA_OS_MEM_DETACH_RAM((PISDN_ADAPTER)a->io, Base);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 byte mem_in(ADAPTER *a, void *addr)
 {
 	byte val;
@@ -1284,11 +1335,15 @@ void mem_inc(ADAPTER *a, void *addr)
 	byte  x = READ_BYTE(Base + (unsigned long)addr);
 	WRITE_BYTE(Base + (unsigned long)addr, x + 1);
 	DIVA_OS_MEM_DETACH_RAM((PISDN_ADAPTER)a->io, Base);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*------------------------------------------------------------------*/
 /* ram access functions for io-mapped cards                         */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 byte io_in(ADAPTER * a, void * adr)
 {
@@ -1379,6 +1434,8 @@ void io_inc(ADAPTER * a, void * adr)
   outpp(Port, x+1);
   DIVA_OS_MEM_DETACH_PORT((PISDN_ADAPTER)a->io, Port);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 byte io_in(ADAPTER *a, void *adr)
 {
 	byte val;
@@ -1467,11 +1524,15 @@ void io_inc(ADAPTER *a, void *adr)
 	outppw(Port + 4, (word)(unsigned long)adr);
 	outpp(Port, x + 1);
 	DIVA_OS_MEM_DETACH_PORT((PISDN_ADAPTER)a->io, Port);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*------------------------------------------------------------------*/
 /* OS specific functions related to queuing of entities             */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 void free_entity(ADAPTER * a, byte e_no)
 {
@@ -1544,6 +1605,8 @@ void next_req(ADAPTER * a)
   if(!IoAdapter->head) IoAdapter->tail = 0;
  diva_os_leave_spin_lock (&IoAdapter->data_spin_lock, &irql, "data_req_next");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void free_entity(ADAPTER *a, byte e_no)
 {
 	PISDN_ADAPTER IoAdapter;
@@ -1614,11 +1677,15 @@ void next_req(ADAPTER *a)
 	IoAdapter->head = IoAdapter->e_tbl[IoAdapter->head].next;
 	if (!IoAdapter->head) IoAdapter->tail = 0;
 	diva_os_leave_spin_lock(&IoAdapter->data_spin_lock, &irql, "data_req_next");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*------------------------------------------------------------------*/
 /* memory map functions                                             */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 ENTITY * entity_ptr(ADAPTER * a, byte e_no)
 {
@@ -1643,6 +1710,8 @@ void CALLBACK(ADAPTER * a, ENTITY * e)
  if ( e && e->callback )
   e->callback (e) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 ENTITY *entity_ptr(ADAPTER *a, byte e_no)
 {
 	PISDN_ADAPTER IoAdapter;
@@ -1665,5 +1734,8 @@ void CALLBACK(ADAPTER *a, ENTITY *e)
 {
 	if (e && e->callback)
 		e->callback(e);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

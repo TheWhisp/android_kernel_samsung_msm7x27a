@@ -137,6 +137,7 @@ static void print_eth_id(struct net_device *ndev)
 #define bdx_disable_interrupts(priv)	\
 	do { WRITE_REG(priv, regIMR, 0); } while (0)
 
+<<<<<<< HEAD
 /* bdx_fifo_init
  * create TX/RX descriptor fifo for host-NIC communication.
  * 1K extra space is allocated at the end of the fifo to simplify
@@ -145,6 +146,17 @@ static void print_eth_id(struct net_device *ndev)
  * @f - fifo to initialize
  * @fsz_type - fifo size type: 0-4KB, 1-8KB, 2-16KB, 3-32KB
  * @reg_XXX - offsets of registers relative to base address
+=======
+/**
+ * bdx_fifo_init - create TX/RX descriptor fifo for host-NIC communication.
+ * @priv: NIC private structure
+ * @f: fifo to initialize
+ * @fsz_type: fifo size type: 0-4KB, 1-8KB, 2-16KB, 3-32KB
+ * @reg_XXX: offsets of registers relative to base address
+ *
+ * 1K extra space is allocated at the end of the fifo to simplify
+ * processing of descriptors that wraps around fifo's end
+>>>>>>> refs/remotes/origin/master
  *
  * Returns 0 on success, negative value on failure
  *
@@ -177,9 +189,16 @@ bdx_fifo_init(struct bdx_priv *priv, struct fifo *f, int fsz_type,
 	RET(0);
 }
 
+<<<<<<< HEAD
 /* bdx_fifo_free - free all resources used by fifo
  * @priv - NIC private structure
  * @f - fifo to release
+=======
+/**
+ * bdx_fifo_free - free all resources used by fifo
+ * @priv: NIC private structure
+ * @f: fifo to release
+>>>>>>> refs/remotes/origin/master
  */
 static void bdx_fifo_free(struct bdx_priv *priv, struct fifo *f)
 {
@@ -192,9 +211,15 @@ static void bdx_fifo_free(struct bdx_priv *priv, struct fifo *f)
 	RET();
 }
 
+<<<<<<< HEAD
 /*
  * bdx_link_changed - notifies OS about hw link state.
  * @bdx_priv - hw adapter structure
+=======
+/**
+ * bdx_link_changed - notifies OS about hw link state.
+ * @priv: hw adapter structure
+>>>>>>> refs/remotes/origin/master
  */
 static void bdx_link_changed(struct bdx_priv *priv)
 {
@@ -233,10 +258,17 @@ static void bdx_isr_extra(struct bdx_priv *priv, u32 isr)
 
 }
 
+<<<<<<< HEAD
 /* bdx_isr - Interrupt Service Routine for Bordeaux NIC
  * @irq - interrupt number
  * @ndev - network device
  * @regs - CPU registers
+=======
+/**
+ * bdx_isr_napi - Interrupt Service Routine for Bordeaux NIC
+ * @irq: interrupt number
+ * @dev: network device
+>>>>>>> refs/remotes/origin/master
  *
  * Return IRQ_NONE if it was not our interrupt, IRQ_HANDLED - otherwise
  *
@@ -307,8 +339,15 @@ static int bdx_poll(struct napi_struct *napi, int budget)
 	return work_done;
 }
 
+<<<<<<< HEAD
 /* bdx_fw_load - loads firmware to NIC
  * @priv - NIC private structure
+=======
+/**
+ * bdx_fw_load - loads firmware to NIC
+ * @priv: NIC private structure
+ *
+>>>>>>> refs/remotes/origin/master
  * Firmware is loaded via TXD fifo, so it must be initialized first.
  * Firware must be loaded once per NIC not per PCI device provided by NIC (NIC
  * can have few of them). So all drivers use semaphore register to choose one
@@ -341,8 +380,13 @@ static int bdx_fw_load(struct bdx_priv *priv)
 out:
 	if (master)
 		WRITE_REG(priv, regINIT_SEMAPHORE, 1);
+<<<<<<< HEAD
 	if (fw)
 		release_firmware(fw);
+=======
+
+	release_firmware(fw);
+>>>>>>> refs/remotes/origin/master
 
 	if (rc) {
 		netdev_err(priv->ndev, "firmware loading failed\n");
@@ -380,8 +424,14 @@ static void bdx_restore_mac(struct net_device *ndev, struct bdx_priv *priv)
 	RET();
 }
 
+<<<<<<< HEAD
 /* bdx_hw_start - inits registers and starts HW's Rx and Tx engines
  * @priv - NIC private structure
+=======
+/**
+ * bdx_hw_start - inits registers and starts HW's Rx and Tx engines
+ * @priv: NIC private structure
+>>>>>>> refs/remotes/origin/master
  */
 static int bdx_hw_start(struct bdx_priv *priv)
 {
@@ -691,12 +741,22 @@ static int bdx_ioctl(struct net_device *ndev, struct ifreq *ifr, int cmd)
 		RET(-EOPNOTSUPP);
 }
 
+<<<<<<< HEAD
 /*
  * __bdx_vlan_rx_vid - private helper for adding/killing VLAN vid
  *                     by passing VLAN filter table to hardware
  * @ndev network device
  * @vid  VLAN vid
  * @op   add or kill operation
+=======
+/**
+ * __bdx_vlan_rx_vid - private helper for adding/killing VLAN vid
+ * @ndev: network device
+ * @vid:  VLAN vid
+ * @op:   add or kill operation
+ *
+ * Passes VLAN filter table to hardware
+>>>>>>> refs/remotes/origin/master
  */
 static void __bdx_vlan_rx_vid(struct net_device *ndev, uint16_t vid, int enable)
 {
@@ -722,23 +782,41 @@ static void __bdx_vlan_rx_vid(struct net_device *ndev, uint16_t vid, int enable)
 	RET();
 }
 
+<<<<<<< HEAD
 /*
  * bdx_vlan_rx_add_vid - kernel hook for adding VLAN vid to hw filtering table
  * @ndev network device
  * @vid  VLAN vid to add
  */
 static int bdx_vlan_rx_add_vid(struct net_device *ndev, uint16_t vid)
+=======
+/**
+ * bdx_vlan_rx_add_vid - kernel hook for adding VLAN vid to hw filtering table
+ * @ndev: network device
+ * @vid:  VLAN vid to add
+ */
+static int bdx_vlan_rx_add_vid(struct net_device *ndev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	__bdx_vlan_rx_vid(ndev, vid, 1);
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * bdx_vlan_rx_kill_vid - kernel hook for killing VLAN vid in hw filtering table
  * @ndev network device
  * @vid  VLAN vid to kill
  */
 static int bdx_vlan_rx_kill_vid(struct net_device *ndev, unsigned short vid)
+=======
+/**
+ * bdx_vlan_rx_kill_vid - kernel hook for killing VLAN vid in hw filtering table
+ * @ndev: network device
+ * @vid:  VLAN vid to kill
+ */
+static int bdx_vlan_rx_kill_vid(struct net_device *ndev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	__bdx_vlan_rx_vid(ndev, vid, 0);
 	return 0;
@@ -974,8 +1052,14 @@ static inline void bdx_rxdb_free_elem(struct rxdb *db, int n)
  *     Rx Init                                                           *
  *************************************************************************/
 
+<<<<<<< HEAD
 /* bdx_rx_init - initialize RX all related HW and SW resources
  * @priv - NIC private structure
+=======
+/**
+ * bdx_rx_init - initialize RX all related HW and SW resources
+ * @priv: NIC private structure
+>>>>>>> refs/remotes/origin/master
  *
  * Returns 0 on success, negative value on failure
  *
@@ -1016,9 +1100,16 @@ err_mem:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 /* bdx_rx_free_skbs - frees and unmaps all skbs allocated for the fifo
  * @priv - NIC private structure
  * @f - RXF fifo
+=======
+/**
+ * bdx_rx_free_skbs - frees and unmaps all skbs allocated for the fifo
+ * @priv: NIC private structure
+ * @f: RXF fifo
+>>>>>>> refs/remotes/origin/master
  */
 static void bdx_rx_free_skbs(struct bdx_priv *priv, struct rxf_fifo *f)
 {
@@ -1045,8 +1136,15 @@ static void bdx_rx_free_skbs(struct bdx_priv *priv, struct rxf_fifo *f)
 	}
 }
 
+<<<<<<< HEAD
 /* bdx_rx_free - release all Rx resources
  * @priv - NIC private structure
+=======
+/**
+ * bdx_rx_free - release all Rx resources
+ * @priv: NIC private structure
+ *
+>>>>>>> refs/remotes/origin/master
  * It assumes that Rx is desabled in HW
  */
 static void bdx_rx_free(struct bdx_priv *priv)
@@ -1067,9 +1165,17 @@ static void bdx_rx_free(struct bdx_priv *priv)
  *     Rx Engine                                                         *
  *************************************************************************/
 
+<<<<<<< HEAD
 /* bdx_rx_alloc_skbs - fill rxf fifo with new skbs
  * @priv - nic's private structure
  * @f - RXF fifo that needs skbs
+=======
+/**
+ * bdx_rx_alloc_skbs - fill rxf fifo with new skbs
+ * @priv: nic's private structure
+ * @f: RXF fifo that needs skbs
+ *
+>>>>>>> refs/remotes/origin/master
  * It allocates skbs, build rxf descs and push it (rxf descr) into rxf fifo.
  * skb's virtual and physical addresses are stored in skb db.
  * To calculate free space, func uses cached values of RPTR and WPTR
@@ -1090,10 +1196,16 @@ static void bdx_rx_alloc_skbs(struct bdx_priv *priv, struct rxf_fifo *f)
 	dno = bdx_rxdb_available(db) - 1;
 	while (dno > 0) {
 		skb = netdev_alloc_skb(priv->ndev, f->m.pktsz + NET_IP_ALIGN);
+<<<<<<< HEAD
 		if (!skb) {
 			pr_err("NO MEM: netdev_alloc_skb failed\n");
 			break;
 		}
+=======
+		if (!skb)
+			break;
+
+>>>>>>> refs/remotes/origin/master
 		skb_reserve(skb, NET_IP_ALIGN);
 
 		idx = bdx_rxdb_alloc_elem(db);
@@ -1137,7 +1249,11 @@ NETIF_RX_MUX(struct bdx_priv *priv, u32 rxd_val1, u16 rxd_vlan,
 		    priv->ndev->name,
 		    GET_RXD_VLAN_ID(rxd_vlan),
 		    GET_RXD_VTAG(rxd_val1));
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, GET_RXD_VLAN_TCI(rxd_vlan));
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), GET_RXD_VLAN_TCI(rxd_vlan));
+>>>>>>> refs/remotes/origin/master
 	}
 	netif_receive_skb(skb);
 }
@@ -1179,13 +1295,24 @@ static void bdx_recycle_skb(struct bdx_priv *priv, struct rxd_desc *rxdd)
 	RET();
 }
 
+<<<<<<< HEAD
 /* bdx_rx_receive - receives full packets from RXD fifo and pass them to OS
+=======
+/**
+ * bdx_rx_receive - receives full packets from RXD fifo and pass them to OS
+>>>>>>> refs/remotes/origin/master
  * NOTE: a special treatment is given to non-continuous descriptors
  * that start near the end, wraps around and continue at the beginning. a second
  * part is copied right after the first, and then descriptor is interpreted as
  * normal. fifo has an extra space to allow such operations
+<<<<<<< HEAD
  * @priv - nic's private structure
  * @f - RXF fifo that needs skbs
+=======
+ * @priv: nic's private structure
+ * @f: RXF fifo that needs skbs
+ * @budget: maximum number of packets to receive
+>>>>>>> refs/remotes/origin/master
  */
 
 /* TBD: replace memcpy func call by explicite inline asm */
@@ -1317,7 +1444,11 @@ static void print_rxdd(struct rxd_desc *rxdd, u32 rxd_val1, u16 len,
 
 static void print_rxfd(struct rxf_desc *rxfd)
 {
+<<<<<<< HEAD
 	DBG("=== RxF desc CHIP ORDER/ENDIANESS =============\n"
+=======
+	DBG("=== RxF desc CHIP ORDER/ENDIANNESS =============\n"
+>>>>>>> refs/remotes/origin/master
 	    "info 0x%x va_lo %u pa_lo 0x%x pa_hi 0x%x len 0x%x\n",
 	    rxfd->info, rxfd->va_lo, rxfd->pa_lo, rxfd->pa_hi, rxfd->len);
 }
@@ -1375,9 +1506,16 @@ static inline int bdx_tx_db_size(struct txdb *db)
 	return db->size - taken;
 }
 
+<<<<<<< HEAD
 /* __bdx_tx_ptr_next - helper function, increment read/write pointer + wrap
  * @d   - tx data base
  * @ptr - read or write pointer
+=======
+/**
+ * __bdx_tx_db_ptr_next - helper function, increment read/write pointer + wrap
+ * @db: tx data base
+ * @pptr: read or write pointer
+>>>>>>> refs/remotes/origin/master
  */
 static inline void __bdx_tx_db_ptr_next(struct txdb *db, struct tx_map **pptr)
 {
@@ -1394,8 +1532,14 @@ static inline void __bdx_tx_db_ptr_next(struct txdb *db, struct tx_map **pptr)
 		*pptr = db->start;
 }
 
+<<<<<<< HEAD
 /* bdx_tx_db_inc_rptr - increment read pointer
  * @d   - tx data base
+=======
+/**
+ * bdx_tx_db_inc_rptr - increment read pointer
+ * @db: tx data base
+>>>>>>> refs/remotes/origin/master
  */
 static inline void bdx_tx_db_inc_rptr(struct txdb *db)
 {
@@ -1403,8 +1547,14 @@ static inline void bdx_tx_db_inc_rptr(struct txdb *db)
 	__bdx_tx_db_ptr_next(db, &db->rptr);
 }
 
+<<<<<<< HEAD
 /* bdx_tx_db_inc_rptr - increment write pointer
  * @d   - tx data base
+=======
+/**
+ * bdx_tx_db_inc_wptr - increment write pointer
+ * @db: tx data base
+>>>>>>> refs/remotes/origin/master
  */
 static inline void bdx_tx_db_inc_wptr(struct txdb *db)
 {
@@ -1413,9 +1563,17 @@ static inline void bdx_tx_db_inc_wptr(struct txdb *db)
 						   a result of write */
 }
 
+<<<<<<< HEAD
 /* bdx_tx_db_init - creates and initializes tx db
  * @d       - tx data base
  * @sz_type - size of tx fifo
+=======
+/**
+ * bdx_tx_db_init - creates and initializes tx db
+ * @d: tx data base
+ * @sz_type: size of tx fifo
+ *
+>>>>>>> refs/remotes/origin/master
  * Returns 0 on success, error code otherwise
  */
 static int bdx_tx_db_init(struct txdb *d, int sz_type)
@@ -1441,8 +1599,14 @@ static int bdx_tx_db_init(struct txdb *d, int sz_type)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* bdx_tx_db_close - closes tx db and frees all memory
  * @d - tx data base
+=======
+/**
+ * bdx_tx_db_close - closes tx db and frees all memory
+ * @d: tx data base
+>>>>>>> refs/remotes/origin/master
  */
 static void bdx_tx_db_close(struct txdb *d)
 {
@@ -1463,9 +1627,17 @@ static struct {
 	u16 qwords;		/* qword = 64 bit */
 } txd_sizes[MAX_SKB_FRAGS + 1];
 
+<<<<<<< HEAD
 /* txdb_map_skb - creates and stores dma mappings for skb's data blocks
  * @priv - NIC private structure
  * @skb  - socket buffer to map
+=======
+/**
+ * bdx_tx_map_skb - creates and stores dma mappings for skb's data blocks
+ * @priv: NIC private structure
+ * @skb: socket buffer to map
+ * @txdd: TX descriptor to use
+>>>>>>> refs/remotes/origin/master
  *
  * It makes dma mappings for skb's data blocks and writes them to PBL of
  * new tx descriptor. It also stores them in the tx db, so they could be
@@ -1562,9 +1734,16 @@ err_mem:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 /*
  * bdx_tx_space - calculates available space in TX fifo
  * @priv - NIC private structure
+=======
+/**
+ * bdx_tx_space - calculates available space in TX fifo
+ * @priv: NIC private structure
+ *
+>>>>>>> refs/remotes/origin/master
  * Returns available space in TX fifo in bytes
  */
 static inline int bdx_tx_space(struct bdx_priv *priv)
@@ -1579,9 +1758,16 @@ static inline int bdx_tx_space(struct bdx_priv *priv)
 	return fsize;
 }
 
+<<<<<<< HEAD
 /* bdx_tx_transmit - send packet to NIC
  * @skb - packet to send
  * ndev - network device assigned to NIC
+=======
+/**
+ * bdx_tx_transmit - send packet to NIC
+ * @skb: packet to send
+ * @ndev: network device assigned to NIC
+>>>>>>> refs/remotes/origin/master
  * Return codes:
  * o NETDEV_TX_OK everything ok.
  * o NETDEV_TX_BUSY Cannot transmit packet, try later
@@ -1699,8 +1885,15 @@ static netdev_tx_t bdx_tx_transmit(struct sk_buff *skb,
 	return NETDEV_TX_OK;
 }
 
+<<<<<<< HEAD
 /* bdx_tx_cleanup - clean TXF fifo, run in the context of IRQ.
  * @priv - bdx adapter
+=======
+/**
+ * bdx_tx_cleanup - clean TXF fifo, run in the context of IRQ.
+ * @priv: bdx adapter
+ *
+>>>>>>> refs/remotes/origin/master
  * It scans TXF fifo for descriptors, frees DMA mappings and reports to OS
  * that those packets were sent
  */
@@ -1761,7 +1954,12 @@ static void bdx_tx_cleanup(struct bdx_priv *priv)
 	spin_unlock(&priv->tx_lock);
 }
 
+<<<<<<< HEAD
 /* bdx_tx_free_skbs - frees all skbs from TXD fifo.
+=======
+/**
+ * bdx_tx_free_skbs - frees all skbs from TXD fifo.
+>>>>>>> refs/remotes/origin/master
  * It gets called when OS stops this dev, eg upon "ifconfig down" or rmmod
  */
 static void bdx_tx_free_skbs(struct bdx_priv *priv)
@@ -1790,10 +1988,18 @@ static void bdx_tx_free(struct bdx_priv *priv)
 	bdx_tx_db_close(&priv->txdb);
 }
 
+<<<<<<< HEAD
 /* bdx_tx_push_desc - push descriptor to TxD fifo
  * @priv - NIC private structure
  * @data - desc's data
  * @size - desc's size
+=======
+/**
+ * bdx_tx_push_desc - push descriptor to TxD fifo
+ * @priv: NIC private structure
+ * @data: desc's data
+ * @size: desc's size
+>>>>>>> refs/remotes/origin/master
  *
  * Pushes desc to TxD fifo and overlaps it if needed.
  * NOTE: this func does not check for available space. this is responsibility
@@ -1819,10 +2025,18 @@ static void bdx_tx_push_desc(struct bdx_priv *priv, void *data, int size)
 	WRITE_REG(priv, f->m.reg_WPTR, f->m.wptr & TXF_WPTR_WR_PTR);
 }
 
+<<<<<<< HEAD
 /* bdx_tx_push_desc_safe - push descriptor to TxD fifo in a safe way
  * @priv - NIC private structure
  * @data - desc's data
  * @size - desc's size
+=======
+/**
+ * bdx_tx_push_desc_safe - push descriptor to TxD fifo in a safe way
+ * @priv: NIC private structure
+ * @data: desc's data
+ * @size: desc's size
+>>>>>>> refs/remotes/origin/master
  *
  * NOTE: this func does check for available space and, if necessary, waits for
  *   NIC to read existing data before writing new one.
@@ -1885,7 +2099,11 @@ static const struct net_device_ops bdx_netdev_ops = {
  */
 
 /* TBD: netif_msg should be checked and implemented. I disable it for now */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	struct net_device *ndev;
@@ -1988,6 +2206,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		/* these fields are used for info purposes only
 		 * so we can have them same for all ports of the board */
 		ndev->if_port = port;
+<<<<<<< HEAD
 		ndev->base_addr = pciaddr;
 		ndev->mem_start = pciaddr;
 		ndev->mem_end = pciaddr + regionSize;
@@ -1999,6 +2218,14 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		    ;
 		ndev->hw_features = NETIF_F_IP_CSUM | NETIF_F_SG |
 			NETIF_F_TSO | NETIF_F_HW_VLAN_TX;
+=======
+		ndev->features = NETIF_F_IP_CSUM | NETIF_F_SG | NETIF_F_TSO
+		    | NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX |
+		    NETIF_F_HW_VLAN_CTAG_FILTER | NETIF_F_RXCSUM
+		    ;
+		ndev->hw_features = NETIF_F_IP_CSUM | NETIF_F_SG |
+			NETIF_F_TSO | NETIF_F_HW_VLAN_CTAG_TX;
+>>>>>>> refs/remotes/origin/master
 
 		if (pci_using_dac)
 			ndev->features |= NETIF_F_HIGHDMA;
@@ -2154,10 +2381,17 @@ bdx_get_drvinfo(struct net_device *netdev, struct ethtool_drvinfo *drvinfo)
 {
 	struct bdx_priv *priv = netdev_priv(netdev);
 
+<<<<<<< HEAD
 	strlcat(drvinfo->driver, BDX_DRV_NAME, sizeof(drvinfo->driver));
 	strlcat(drvinfo->version, BDX_DRV_VERSION, sizeof(drvinfo->version));
 	strlcat(drvinfo->fw_version, "N/A", sizeof(drvinfo->fw_version));
 	strlcat(drvinfo->bus_info, pci_name(priv->pdev),
+=======
+	strlcpy(drvinfo->driver, BDX_DRV_NAME, sizeof(drvinfo->driver));
+	strlcpy(drvinfo->version, BDX_DRV_VERSION, sizeof(drvinfo->version));
+	strlcpy(drvinfo->fw_version, "N/A", sizeof(drvinfo->fw_version));
+	strlcpy(drvinfo->bus_info, pci_name(priv->pdev),
+>>>>>>> refs/remotes/origin/master
 		sizeof(drvinfo->bus_info));
 
 	drvinfo->n_stats = ((priv->stats_flag) ? ARRAY_SIZE(bdx_stat_names) : 0);
@@ -2402,7 +2636,11 @@ static void bdx_set_ethtool_ops(struct net_device *netdev)
  * Hot-Plug event, or because the driver is going to be removed from
  * memory.
  **/
+<<<<<<< HEAD
 static void __devexit bdx_remove(struct pci_dev *pdev)
+=======
+static void bdx_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_nic *nic = pci_get_drvdata(pdev);
 	struct net_device *ndev;
@@ -2423,7 +2661,10 @@ static void __devexit bdx_remove(struct pci_dev *pdev)
 	iounmap(nic->regs);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	vfree(nic);
 
 	RET();
@@ -2433,7 +2674,11 @@ static struct pci_driver bdx_pci_driver = {
 	.name = BDX_DRV_NAME,
 	.id_table = bdx_pci_tbl,
 	.probe = bdx_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(bdx_remove),
+=======
+	.remove = bdx_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*

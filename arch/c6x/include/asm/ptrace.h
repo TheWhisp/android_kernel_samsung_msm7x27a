@@ -11,6 +11,7 @@
 #ifndef _ASM_C6X_PTRACE_H
 #define _ASM_C6X_PTRACE_H
 
+<<<<<<< HEAD
 #define BKPT_OPCODE	0x56454314	/* illegal opcode */
 
 #ifdef _BIG_ENDIAN
@@ -156,6 +157,15 @@ struct pt_regs {
 
 #ifdef __KERNEL__
 
+=======
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+#ifdef _BIG_ENDIAN
+#else
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/linkage.h>
 
 #define user_mode(regs)	((((regs)->tsr) & 0x40) != 0)
@@ -169,6 +179,9 @@ extern void show_regs(struct pt_regs *);
 extern asmlinkage unsigned long syscall_trace_entry(struct pt_regs *regs);
 extern asmlinkage void syscall_trace_exit(struct pt_regs *regs);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 #endif /* _ASM_C6X_PTRACE_H */

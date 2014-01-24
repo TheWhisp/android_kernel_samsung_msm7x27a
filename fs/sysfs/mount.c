@@ -10,6 +10,7 @@
  * Please see Documentation/filesystems/sysfs.txt for more information.
  */
 
+<<<<<<< HEAD
 #define DEBUG 
 
 #include <linux/fs.h>
@@ -144,26 +145,71 @@ static struct dentry *sysfs_mount(struct file_system_type *fs_type,
 	}
 
 	return dget(sb->s_root);
+=======
+#define DEBUG
+
+#include <linux/fs.h>
+#include <linux/mount.h>
+#include <linux/init.h>
+#include <linux/user_namespace.h>
+
+#include "sysfs.h"
+
+static struct kernfs_root *sysfs_root;
+struct kernfs_node *sysfs_root_kn;
+
+static struct dentry *sysfs_mount(struct file_system_type *fs_type,
+	int flags, const char *dev_name, void *data)
+{
+	struct dentry *root;
+	void *ns;
+
+	if (!(flags & MS_KERNMOUNT)) {
+		if (!capable(CAP_SYS_ADMIN) && !fs_fully_visible(fs_type))
+			return ERR_PTR(-EPERM);
+
+		if (!kobj_ns_current_may_mount(KOBJ_NS_TYPE_NET))
+			return ERR_PTR(-EPERM);
+	}
+
+	ns = kobj_ns_grab_current(KOBJ_NS_TYPE_NET);
+	root = kernfs_mount_ns(fs_type, flags, sysfs_root, ns);
+	if (IS_ERR(root))
+		kobj_ns_drop(KOBJ_NS_TYPE_NET, ns);
+	return root;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sysfs_kill_sb(struct super_block *sb)
 {
+<<<<<<< HEAD
 	struct sysfs_super_info *info = sysfs_info(sb);
 	/* Remove the superblock from fs_supers/s_instances
 	 * so we can't find it, before freeing sysfs_super_info.
 	 */
 	kill_anon_super(sb);
 	free_sysfs_super_info(info);
+=======
+	void *ns = (void *)kernfs_super_ns(sb);
+
+	kernfs_kill_sb(sb);
+	kobj_ns_drop(KOBJ_NS_TYPE_NET, ns);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct file_system_type sysfs_fs_type = {
 	.name		= "sysfs",
 	.mount		= sysfs_mount,
 	.kill_sb	= sysfs_kill_sb,
+<<<<<<< HEAD
+=======
+	.fs_flags	= FS_USERNS_MOUNT,
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init sysfs_init(void)
 {
+<<<<<<< HEAD
 	int err = -ENOMEM;
 
 	sysfs_dir_cachep = kmem_cache_create("sysfs_dir_cache",
@@ -209,3 +255,21 @@ void sysfs_put(struct sysfs_dirent *sd)
 	__sysfs_put(sd);
 }
 EXPORT_SYMBOL_GPL(sysfs_put);
+=======
+	int err;
+
+	sysfs_root = kernfs_create_root(NULL, NULL);
+	if (IS_ERR(sysfs_root))
+		return PTR_ERR(sysfs_root);
+
+	sysfs_root_kn = sysfs_root->kn;
+
+	err = register_filesystem(&sysfs_fs_type);
+	if (err) {
+		kernfs_destroy_root(sysfs_root);
+		return err;
+	}
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master

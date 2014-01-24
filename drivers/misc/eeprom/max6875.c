@@ -209,6 +209,7 @@ static struct i2c_driver max6875_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init max6875_init(void)
 {
 	return i2c_add_driver(&max6875_driver);
@@ -222,13 +223,19 @@ static void __exit max6875_exit(void)
 =======
 module_i2c_driver(max6875_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(max6875_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ben Gardner <bgardner@wabtec.com>");
 MODULE_DESCRIPTION("MAX6875 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(max6875_init);
 module_exit(max6875_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

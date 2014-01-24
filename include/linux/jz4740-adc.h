@@ -3,10 +3,14 @@
 #define __LINUX_JZ4740_ADC
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 =======
 struct device;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct device;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * jz4740_adc_set_config - Configure a JZ4740 adc device

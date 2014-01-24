@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2009, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2009, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -25,6 +29,7 @@ enum clk_reset_action {
 
 struct clk;
 
+<<<<<<< HEAD
 /* Rate is maximum clock rate in Hz */
 int clk_set_max_rate(struct clk *clk, unsigned long rate);
 
@@ -34,4 +39,9 @@ int clk_reset(struct clk *clk, enum clk_reset_action action);
 /* Set clock-specific configuration parameters */
 int clk_set_flags(struct clk *clk, unsigned long flags);
 
+=======
+/* Assert/Deassert reset to a hardware block associated with a clock */
+int clk_reset(struct clk *clk, enum clk_reset_action action);
+
+>>>>>>> refs/remotes/origin/master
 #endif

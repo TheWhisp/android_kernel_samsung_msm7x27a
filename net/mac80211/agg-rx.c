@@ -39,9 +39,13 @@
 #include <linux/ieee80211.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/mac80211.h>
 #include "ieee80211_i.h"
 #include "driver-ops.h"
@@ -76,6 +80,7 @@ void ___ieee80211_stop_rx_ba_session(struct sta_info *sta, u16 tid,
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(sta->ampdu_mlme.tid_rx[tid], NULL);
 
 #ifdef CONFIG_MAC80211_HT_DEBUG
@@ -86,10 +91,16 @@ void ___ieee80211_stop_rx_ba_session(struct sta_info *sta, u16 tid,
 
 #ifdef CONFIG_MAC80211_HT_DEBUG
 	printk(KERN_DEBUG
+=======
+	RCU_INIT_POINTER(sta->ampdu_mlme.tid_rx[tid], NULL);
+
+	ht_dbg(sta->sdata,
+>>>>>>> refs/remotes/origin/master
 	       "Rx BA session stop requested for %pM tid %u %s reason: %d\n",
 	       sta->sta.addr, tid,
 	       initiator == WLAN_BACK_RECIPIENT ? "recipient" : "inititator",
 	       (int)reason);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif /* CONFIG_MAC80211_HT_DEBUG */
 
@@ -97,15 +108,27 @@ void ___ieee80211_stop_rx_ba_session(struct sta_info *sta, u16 tid,
 			     &sta->sta, tid, NULL, 0))
 		printk(KERN_DEBUG "HW problem - can not stop rx "
 				"aggregation for tid %d\n", tid);
+=======
+
+	if (drv_ampdu_action(local, sta->sdata, IEEE80211_AMPDU_RX_STOP,
+			     &sta->sta, tid, NULL, 0))
+		sdata_info(sta->sdata,
+			   "HW problem - can not stop rx aggregation for %pM tid %d\n",
+			   sta->sta.addr, tid);
+>>>>>>> refs/remotes/origin/master
 
 	/* check if this is a self generated aggregation halt */
 	if (initiator == WLAN_BACK_RECIPIENT && tx)
 		ieee80211_send_delba(sta->sdata, sta->sta.addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				     tid, 0, reason);
 =======
 				     tid, WLAN_BACK_RECIPIENT, reason);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     tid, WLAN_BACK_RECIPIENT, reason);
+>>>>>>> refs/remotes/origin/master
 
 	del_timer_sync(&tid_rx->session_timer);
 
@@ -121,7 +144,10 @@ void __ieee80211_stop_rx_ba_session(struct sta_info *sta, u16 tid,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void ieee80211_stop_rx_ba_session(struct ieee80211_vif *vif, u16 ba_rx_bitmap,
 				  const u8 *addr)
 {
@@ -136,7 +162,11 @@ void ieee80211_stop_rx_ba_session(struct ieee80211_vif *vif, u16 ba_rx_bitmap,
 		return;
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < STA_TID_NUM; i++)
+=======
+	for (i = 0; i < IEEE80211_NUM_TIDS; i++)
+>>>>>>> refs/remotes/origin/master
 		if (ba_rx_bitmap & BIT(i))
 			set_bit(i, sta->ampdu_mlme.tid_rx_stop_requested);
 
@@ -145,7 +175,10 @@ void ieee80211_stop_rx_ba_session(struct ieee80211_vif *vif, u16 ba_rx_bitmap,
 }
 EXPORT_SYMBOL(ieee80211_stop_rx_ba_session);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * After accepting the AddBA Request we activated a timer,
  * resetting it after each frame that arrives from the originator.
@@ -160,10 +193,34 @@ static void sta_rx_agg_session_timer_expired(unsigned long data)
 	u8 *timer_to_id = ptid - *ptid;
 	struct sta_info *sta = container_of(timer_to_id, struct sta_info,
 					 timer_to_tid[0]);
+<<<<<<< HEAD
 
 #ifdef CONFIG_MAC80211_HT_DEBUG
 	printk(KERN_DEBUG "rx session timer expired on tid %d\n", (u16)*ptid);
 #endif
+=======
+	struct tid_ampdu_rx *tid_rx;
+	unsigned long timeout;
+
+	rcu_read_lock();
+	tid_rx = rcu_dereference(sta->ampdu_mlme.tid_rx[*ptid]);
+	if (!tid_rx) {
+		rcu_read_unlock();
+		return;
+	}
+
+	timeout = tid_rx->last_rx + TU_TO_JIFFIES(tid_rx->timeout);
+	if (time_is_after_jiffies(timeout)) {
+		mod_timer(&tid_rx->session_timer, timeout);
+		rcu_read_unlock();
+		return;
+	}
+	rcu_read_unlock();
+
+	ht_dbg(sta->sdata, "RX session timer expired on %pM tid %d\n",
+	       sta->sta.addr, (u16)*ptid);
+
+>>>>>>> refs/remotes/origin/master
 	set_bit(*ptid, sta->ampdu_mlme.tid_rx_timer_expired);
 	ieee80211_queue_work(&sta->local->hw, &sta->ampdu_mlme.work);
 }
@@ -191,6 +248,7 @@ static void ieee80211_send_addba_resp(struct ieee80211_sub_if_data *sdata, u8 *d
 
 	skb = dev_alloc_skb(sizeof(*mgmt) + local->hw.extra_tx_headroom);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!skb) {
 		printk(KERN_DEBUG "%s: failed to allocate buffer "
@@ -201,6 +259,10 @@ static void ieee80211_send_addba_resp(struct ieee80211_sub_if_data *sdata, u8 *d
 	if (!skb)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!skb)
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	skb_reserve(skb, local->hw.extra_tx_headroom);
 	mgmt = (struct ieee80211_mgmt *) skb_put(skb, 24);
@@ -209,11 +271,14 @@ static void ieee80211_send_addba_resp(struct ieee80211_sub_if_data *sdata, u8 *d
 	memcpy(mgmt->sa, sdata->vif.addr, ETH_ALEN);
 	if (sdata->vif.type == NL80211_IFTYPE_AP ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    sdata->vif.type == NL80211_IFTYPE_AP_VLAN)
 		memcpy(mgmt->bssid, sdata->vif.addr, ETH_ALEN);
 	else if (sdata->vif.type == NL80211_IFTYPE_STATION)
 		memcpy(mgmt->bssid, sdata->u.mgd.bssid, ETH_ALEN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	    sdata->vif.type == NL80211_IFTYPE_AP_VLAN ||
 	    sdata->vif.type == NL80211_IFTYPE_MESH_POINT)
 		memcpy(mgmt->bssid, sdata->vif.addr, ETH_ALEN);
@@ -221,7 +286,10 @@ static void ieee80211_send_addba_resp(struct ieee80211_sub_if_data *sdata, u8 *d
 		memcpy(mgmt->bssid, sdata->u.mgd.bssid, ETH_ALEN);
 	else if (sdata->vif.type == NL80211_IFTYPE_ADHOC)
 		memcpy(mgmt->bssid, sdata->u.ibss.bssid, ETH_ALEN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
 					  IEEE80211_STYPE_ACTION);
@@ -266,6 +334,7 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 	status = WLAN_STATUS_REQUEST_DECLINED;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (test_sta_flags(sta, WLAN_STA_BLOCK_BA)) {
 =======
 	if (test_sta_flag(sta, WLAN_STA_BLOCK_BA)) {
@@ -274,6 +343,12 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 		printk(KERN_DEBUG "Suspend in progress. "
 		       "Denying ADDBA request\n");
 #endif
+=======
+	if (test_sta_flag(sta, WLAN_STA_BLOCK_BA)) {
+		ht_dbg(sta->sdata,
+		       "Suspend in progress - Denying ADDBA request (%pM tid %d)\n",
+		       sta->sta.addr, tid);
+>>>>>>> refs/remotes/origin/master
 		goto end_no_lock;
 	}
 
@@ -285,6 +360,7 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 	     (!(sta->sta.ht_cap.cap & IEEE80211_HT_CAP_DELAY_BA))) ||
 	    (buf_size > IEEE80211_MAX_AMPDU_BUF)) {
 		status = WLAN_STATUS_INVALID_QOS_PARAM;
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_HT_DEBUG
 		if (net_ratelimit())
 			printk(KERN_DEBUG "AddBA Req with bad params from "
@@ -292,6 +368,11 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 				mgmt->sa, tid, ba_policy,
 				buf_size);
 #endif /* CONFIG_MAC80211_HT_DEBUG */
+=======
+		ht_dbg_ratelimited(sta->sdata,
+				   "AddBA Req with bad params from %pM on tid %u. policy %d, buffer size %d\n",
+				   mgmt->sa, tid, ba_policy, buf_size);
+>>>>>>> refs/remotes/origin/master
 		goto end_no_lock;
 	}
 	/* determine default buffer size */
@@ -306,6 +387,7 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 	mutex_lock(&sta->ampdu_mlme.mtx);
 
 	if (sta->ampdu_mlme.tid_rx[tid]) {
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_HT_DEBUG
 		if (net_ratelimit())
 			printk(KERN_DEBUG "unexpected AddBA Req from "
@@ -315,16 +397,25 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 <<<<<<< HEAD
 		goto end;
 =======
+=======
+		ht_dbg_ratelimited(sta->sdata,
+				   "unexpected AddBA Req from %pM on tid %u\n",
+				   mgmt->sa, tid);
+>>>>>>> refs/remotes/origin/master
 
 		/* delete existing Rx BA session on the same tid */
 		___ieee80211_stop_rx_ba_session(sta, tid, WLAN_BACK_RECIPIENT,
 						WLAN_STATUS_UNSPECIFIED_QOS,
 						false);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* prepare A-MPDU MLME for Rx aggregation */
 	tid_agg_rx = kmalloc(sizeof(struct tid_ampdu_rx), GFP_KERNEL);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!tid_agg_rx) {
 #ifdef CONFIG_MAC80211_HT_DEBUG
@@ -338,13 +429,21 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 	if (!tid_agg_rx)
 		goto end;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tid_agg_rx)
+		goto end;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&tid_agg_rx->reorder_lock);
 
 	/* rx timer */
 	tid_agg_rx->session_timer.function = sta_rx_agg_session_timer_expired;
 	tid_agg_rx->session_timer.data = (unsigned long)&sta->timer_to_tid[tid];
+<<<<<<< HEAD
 	init_timer(&tid_agg_rx->session_timer);
+=======
+	init_timer_deferrable(&tid_agg_rx->session_timer);
+>>>>>>> refs/remotes/origin/master
 
 	/* rx reorder timer */
 	tid_agg_rx->reorder_timer.function = sta_rx_agg_reorder_timer_expired;
@@ -358,6 +457,7 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 		kcalloc(buf_size, sizeof(unsigned long), GFP_KERNEL);
 	if (!tid_agg_rx->reorder_buf || !tid_agg_rx->reorder_time) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_HT_DEBUG
 		if (net_ratelimit())
 			printk(KERN_ERR "can not allocate reordering buffer "
@@ -365,6 +465,8 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		kfree(tid_agg_rx->reorder_buf);
 		kfree(tid_agg_rx->reorder_time);
 		kfree(tid_agg_rx);
@@ -373,10 +475,15 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 
 	ret = drv_ampdu_action(local, sta->sdata, IEEE80211_AMPDU_RX_START,
 			       &sta->sta, tid, &start_seq_num, 0);
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_HT_DEBUG
 	printk(KERN_DEBUG "Rx A-MPDU request on tid %d result %d\n", tid, ret);
 #endif /* CONFIG_MAC80211_HT_DEBUG */
 
+=======
+	ht_dbg(sta->sdata, "Rx A-MPDU request on %pM tid %d result %d\n",
+	       sta->sta.addr, tid, ret);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		kfree(tid_agg_rx->reorder_buf);
 		kfree(tid_agg_rx->reorder_time);
@@ -396,8 +503,15 @@ void ieee80211_process_addba_request(struct ieee80211_local *local,
 	/* activate it for RX */
 	rcu_assign_pointer(sta->ampdu_mlme.tid_rx[tid], tid_agg_rx);
 
+<<<<<<< HEAD
 	if (timeout)
 		mod_timer(&tid_agg_rx->session_timer, TU_TO_EXP_TIME(timeout));
+=======
+	if (timeout) {
+		mod_timer(&tid_agg_rx->session_timer, TU_TO_EXP_TIME(timeout));
+		tid_agg_rx->last_rx = jiffies;
+	}
+>>>>>>> refs/remotes/origin/master
 
 end:
 	mutex_unlock(&sta->ampdu_mlme.mtx);

@@ -15,6 +15,10 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/gpio-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/common.h>
 #include <mach/tnetv107x.h>
@@ -175,7 +179,11 @@ static int __init tnetv107x_gpio_setup(void)
 		ctlr = &chips[i];
 
 		ctlr->chip.label	= "tnetv107x";
+<<<<<<< HEAD
 		ctlr->chip.can_sleep	= 0;
+=======
+		ctlr->chip.can_sleep	= false;
+>>>>>>> refs/remotes/origin/master
 		ctlr->chip.base		= base;
 		ctlr->chip.ngpio	= ngpio - base;
 		if (ctlr->chip.ngpio > 32)

@@ -32,7 +32,11 @@ enum ocfs2_xattr_type {
 
 struct ocfs2_security_xattr_info {
 	int enable;
+<<<<<<< HEAD
 	char *name;
+=======
+	const char *name;
+>>>>>>> refs/remotes/origin/master
 	void *value;
 	size_t value_len;
 };
@@ -69,10 +73,14 @@ int ocfs2_calc_security_init(struct inode *,
 			     int *, int *, struct ocfs2_alloc_context **);
 int ocfs2_calc_xattr_init(struct inode *, struct buffer_head *,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  int, struct ocfs2_security_xattr_info *,
 =======
 			  umode_t, struct ocfs2_security_xattr_info *,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  umode_t, struct ocfs2_security_xattr_info *,
+>>>>>>> refs/remotes/origin/master
 			  int *, int *, int *);
 
 /*

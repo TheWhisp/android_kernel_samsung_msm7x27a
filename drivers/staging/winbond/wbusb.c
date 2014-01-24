@@ -12,9 +12,13 @@
 #include <net/mac80211.h>
 #include <linux/usb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "core.h"
 #include "mds_f.h"
@@ -82,18 +86,27 @@ static int wbsoft_add_interface(struct ieee80211_hw *dev,
 static void wbsoft_remove_interface(struct ieee80211_hw *dev,
 				    struct ieee80211_vif *vif)
 {
+<<<<<<< HEAD
 	printk("wbsoft_remove interface called\n");
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wbsoft_stop(struct ieee80211_hw *hw)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "%s called\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wbsoft_get_stats(struct ieee80211_hw *hw,
 			    struct ieee80211_low_level_stats *stats)
 {
+<<<<<<< HEAD
 	printk(KERN_INFO "%s called\n", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -122,20 +135,37 @@ static void wbsoft_configure_filter(struct ieee80211_hw *dev,
 	*total_flags = new_flags;
 }
 
+<<<<<<< HEAD
 static void wbsoft_tx(struct ieee80211_hw *dev, struct sk_buff *skb)
 {
 	struct wbsoft_priv *priv = dev->priv;
 
 	if (priv->sMlmeFrame.IsInUsed != PACKET_FREE_TO_USE) {
+=======
+static void wbsoft_tx(struct ieee80211_hw *dev,
+		      struct ieee80211_tx_control *control,
+		      struct sk_buff *skb)
+{
+	struct wbsoft_priv *priv = dev->priv;
+
+	if (priv->sMlmeFrame.is_in_used != PACKET_FREE_TO_USE) {
+>>>>>>> refs/remotes/origin/master
 		priv->sMlmeFrame.wNumTxMMPDUDiscarded++;
 		kfree_skb(skb);
 		return;
 	}
 
+<<<<<<< HEAD
 	priv->sMlmeFrame.IsInUsed = PACKET_COME_FROM_MLME;
 
 	priv->sMlmeFrame.pMMPDU		= skb->data;
 	priv->sMlmeFrame.DataType	= FRAME_TYPE_802_11_MANAGEMENT;
+=======
+	priv->sMlmeFrame.is_in_used = PACKET_COME_FROM_MLME;
+
+	priv->sMlmeFrame.pMMPDU		= skb->data;
+	priv->sMlmeFrame.data_type	= FRAME_TYPE_802_11_MANAGEMENT;
+>>>>>>> refs/remotes/origin/master
 	priv->sMlmeFrame.len		= skb->len;
 	priv->sMlmeFrame.wNumTxMMPDU++;
 
@@ -180,12 +210,18 @@ static void hal_set_current_channel_ex(struct hw_data *pHwData, struct chan_info
 	if (pHwData->SurpriseRemove)
 		return;
 
+<<<<<<< HEAD
 	printk("Going to channel: %d/%d\n", channel.band, channel.ChanNo);
 
 	RFSynthesizer_SwitchingChannel(pHwData, channel); /* Switch channel */
 	pHwData->Channel = channel.ChanNo;
 	pHwData->band = channel.band;
 	pr_debug("Set channel is %d, band =%d\n", pHwData->Channel, pHwData->band);
+=======
+	RFSynthesizer_SwitchingChannel(pHwData, channel); /* Switch channel */
+	pHwData->Channel = channel.ChanNo;
+	pHwData->band = channel.band;
+>>>>>>> refs/remotes/origin/master
 	reg->M28_MacControl &= ~0xff;	/* Clean channel information field */
 	reg->M28_MacControl |= channel.ChanNo;
 	Wb35Reg_WriteWithCallbackValue(pHwData, 0x0828, reg->M28_MacControl,
@@ -265,8 +301,11 @@ static int wbsoft_config(struct ieee80211_hw *dev, u32 changed)
 	struct wbsoft_priv *priv = dev->priv;
 	struct chan_info ch;
 
+<<<<<<< HEAD
 	printk("wbsoft_config called\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Should use channel_num, or something, as that is already pre-translated */
 	ch.band = 1;
 	ch.ChanNo = 1;
@@ -282,12 +321,17 @@ static int wbsoft_config(struct ieee80211_hw *dev, u32 changed)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u64 wbsoft_get_tsf(struct ieee80211_hw *dev)
 =======
 static u64 wbsoft_get_tsf(struct ieee80211_hw *dev, struct ieee80211_vif *vif)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	printk("wbsoft_get_tsf called\n");
+=======
+static u64 wbsoft_get_tsf(struct ieee80211_hw *dev, struct ieee80211_vif *vif)
+{
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -721,7 +765,10 @@ static int wb35_hw_init(struct ieee80211_hw *hw)
 	}
 
 	priv->sLocalPara.bAntennaNo = hal_get_antenna_number(pHwData);
+<<<<<<< HEAD
 	pr_debug("Driver init, antenna no = %d\n", priv->sLocalPara.bAntennaNo);
+=======
+>>>>>>> refs/remotes/origin/master
 	hal_get_hw_radio_off(pHwData);
 
 	/* Waiting for HAL setting OK */
@@ -754,12 +801,17 @@ static int wb35_probe(struct usb_interface *intf,
 	struct usb_host_interface *interface;
 	struct ieee80211_hw *dev;
 	struct wbsoft_priv *priv;
+<<<<<<< HEAD
 	int nr, err;
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 	u32 ltmp;
 
 	usb_get_dev(udev);
 
 	/* Check the device if it already be opened */
+<<<<<<< HEAD
 	nr = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
 			     0x01,
 			     USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
@@ -768,6 +820,14 @@ static int wb35_probe(struct usb_interface *intf,
 		err = nr;
 		goto error;
 	}
+=======
+	err = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
+			     0x01,
+			     USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+			     0x0, 0x400, &ltmp, 4, HZ * 100);
+	if (err < 0)
+		goto error;
+>>>>>>> refs/remotes/origin/master
 
 	/* Is already initialized? */
 	ltmp = cpu_to_le32(ltmp);
@@ -789,9 +849,12 @@ static int wb35_probe(struct usb_interface *intf,
 	interface = intf->cur_altsetting;
 	endpoint = &interface->endpoint[0].desc;
 
+<<<<<<< HEAD
 	if (endpoint[2].wMaxPacketSize == 512)
 		printk("[w35und] Working on USB 2.0\n");
 
+=======
+>>>>>>> refs/remotes/origin/master
 	err = wb35_hw_init(dev);
 	if (err)
 		goto error_free_hw;
@@ -843,7 +906,10 @@ static void wb35_hw_halt(struct wbsoft_priv *adapter)
 {
 	/* Turn off Rx and Tx hardware ability */
 	hal_stop(&adapter->sHwData);
+<<<<<<< HEAD
 	pr_debug("[w35und] Hal_stop O.K.\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Waiting Irp completed */
 	msleep(100);
 
@@ -873,6 +939,7 @@ static struct usb_driver wb35_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init wb35_init(void)
 {
 	return usb_register(&wb35_driver);
@@ -888,3 +955,6 @@ module_exit(wb35_exit);
 =======
 module_usb_driver(wb35_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(wb35_driver);
+>>>>>>> refs/remotes/origin/master

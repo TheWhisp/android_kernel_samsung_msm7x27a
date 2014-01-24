@@ -447,6 +447,7 @@ static netdev_tx_t pvc_xmit(struct sk_buff *skb, struct net_device *dev)
 static inline void fr_log_dlci_active(pvc_device *pvc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s: DLCI %d [%s%s%s]%s %s\n",
 	       pvc->frad->name,
 	       pvc->dlci,
@@ -457,6 +458,8 @@ static inline void fr_log_dlci_active(pvc_device *pvc)
 	       !pvc->state.exist ? "deleted" :
 	       pvc->state.active ? "active" : "inactive");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	netdev_info(pvc->frad, "DLCI %d [%s%s%s]%s %s\n",
 		    pvc->dlci,
 		    pvc->main ? pvc->main->name : "",
@@ -465,7 +468,10 @@ static inline void fr_log_dlci_active(pvc_device *pvc)
 		    pvc->state.new ? " new" : "",
 		    !pvc->state.exist ? "deleted" :
 		    pvc->state.active ? "active" : "inactive");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -493,11 +499,15 @@ static void fr_lmi_send(struct net_device *dev, int fullrep)
 		len += state(hdlc)->dce_pvc_count * (2 + stat_len);
 		if (len > HDLC_MAX_MRU) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "%s: Too many PVCs while sending "
 			       "LMI full report\n", dev->name);
 =======
 			netdev_warn(dev, "Too many PVCs while sending LMI full report\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_warn(dev, "Too many PVCs while sending LMI full report\n");
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 	}
@@ -505,11 +515,15 @@ static void fr_lmi_send(struct net_device *dev, int fullrep)
 	skb = dev_alloc_skb(len);
 	if (!skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Memory squeeze on fr_lmi_send()\n",
 		       dev->name);
 =======
 		netdev_warn(dev, "Memory squeeze on fr_lmi_send()\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(dev, "Memory squeeze on fr_lmi_send()\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	memset(skb->data, 0, len);
@@ -635,11 +649,15 @@ static void fr_timer(unsigned long arg)
 		if (state(hdlc)->request) {
 			if (state(hdlc)->reliable)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_INFO "%s: No LMI status reply "
 				       "received\n", dev->name);
 =======
 				netdev_info(dev, "No LMI status reply received\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				netdev_info(dev, "No LMI status reply received\n");
+>>>>>>> refs/remotes/origin/master
 			state(hdlc)->last_errors |= 1;
 		}
 
@@ -652,11 +670,15 @@ static void fr_timer(unsigned long arg)
 
 	if (state(hdlc)->reliable != reliable) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Link %sreliable\n", dev->name,
 		       reliable ? "" : "un");
 =======
 		netdev_info(dev, "Link %sreliable\n", reliable ? "" : "un");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Link %sreliable\n", reliable ? "" : "un");
+>>>>>>> refs/remotes/origin/master
 		fr_set_link_state(reliable, dev);
 	}
 
@@ -693,25 +715,34 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 	if (skb->len < (lmi == LMI_ANSI ? LMI_ANSI_LENGTH :
 			LMI_CCITT_CISCO_LENGTH)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Short LMI frame\n", dev->name);
 =======
 		netdev_info(dev, "Short LMI frame\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Short LMI frame\n");
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	if (skb->data[3] != (lmi == LMI_CISCO ? NLPID_CISCO_LMI :
 			     NLPID_CCITT_ANSI_LMI)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Received non-LMI frame with LMI DLCI\n",
 		       dev->name);
 =======
 		netdev_info(dev, "Received non-LMI frame with LMI DLCI\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Received non-LMI frame with LMI DLCI\n");
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	if (skb->data[4] != LMI_CALLREF) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: Invalid LMI Call reference (0x%02X)\n",
 		       dev->name, skb->data[4]);
@@ -719,10 +750,15 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 		netdev_info(dev, "Invalid LMI Call reference (0x%02X)\n",
 			    skb->data[4]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Invalid LMI Call reference (0x%02X)\n",
+			    skb->data[4]);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	if (skb->data[5] != (dce ? LMI_STATUS_ENQUIRY : LMI_STATUS)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: Invalid LMI Message type (0x%02X)\n",
 		       dev->name, skb->data[5]);
@@ -730,11 +766,16 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 		netdev_info(dev, "Invalid LMI Message type (0x%02X)\n",
 			    skb->data[5]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Invalid LMI Message type (0x%02X)\n",
+			    skb->data[5]);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	if (lmi == LMI_ANSI) {
 		if (skb->data[6] != LMI_ANSI_LOCKSHIFT) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_INFO "%s: Not ANSI locking shift in LMI"
 			       " message (0x%02X)\n", dev->name, skb->data[6]);
@@ -742,6 +783,10 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 			netdev_info(dev, "Not ANSI locking shift in LMI message (0x%02X)\n",
 				    skb->data[6]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Not ANSI locking shift in LMI message (0x%02X)\n",
+				    skb->data[6]);
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		}
 		i = 7;
@@ -751,16 +796,22 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 	if (skb->data[i] != (lmi == LMI_CCITT ? LMI_CCITT_REPTYPE :
 			     LMI_ANSI_CISCO_REPTYPE)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: Not an LMI Report type IE (0x%02X)\n",
 		       dev->name, skb->data[i]);
 =======
 		netdev_info(dev, "Not an LMI Report type IE (0x%02X)\n",
 			    skb->data[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Not an LMI Report type IE (0x%02X)\n",
+			    skb->data[i]);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	if (skb->data[++i] != LMI_REPT_LEN) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: Invalid LMI Report type IE length"
 		       " (%u)\n", dev->name, skb->data[i]);
@@ -768,11 +819,16 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 		netdev_info(dev, "Invalid LMI Report type IE length (%u)\n",
 			    skb->data[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Invalid LMI Report type IE length (%u)\n",
+			    skb->data[i]);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	reptype = skb->data[++i];
 	if (reptype != LMI_INTEGRITY && reptype != LMI_FULLREP) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: Unsupported LMI Report type (0x%02X)\n",
 		       dev->name, reptype);
@@ -780,11 +836,16 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 		netdev_info(dev, "Unsupported LMI Report type (0x%02X)\n",
 			    reptype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Unsupported LMI Report type (0x%02X)\n",
+			    reptype);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	if (skb->data[++i] != (lmi == LMI_CCITT ? LMI_CCITT_ALIVE :
 			       LMI_ANSI_CISCO_ALIVE)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: Not an LMI Link integrity verification"
 		       " IE (0x%02X)\n", dev->name, skb->data[i]);
@@ -792,10 +853,15 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 		netdev_info(dev, "Not an LMI Link integrity verification IE (0x%02X)\n",
 			    skb->data[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Not an LMI Link integrity verification IE (0x%02X)\n",
+			    skb->data[i]);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 
 	if (skb->data[++i] != LMI_INTEG_LEN) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: Invalid LMI Link integrity verification"
 		       " IE length (%u)\n", dev->name, skb->data[i]);
@@ -803,6 +869,10 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 		netdev_info(dev, "Invalid LMI Link integrity verification IE length (%u)\n",
 			    skb->data[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(dev, "Invalid LMI Link integrity verification IE length (%u)\n",
+			    skb->data[i]);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	i++;
@@ -877,16 +947,22 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 		if (skb->data[i] != (lmi == LMI_CCITT ? LMI_CCITT_PVCSTAT :
 				       LMI_ANSI_CISCO_PVCSTAT)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Not an LMI PVC status IE"
 			       " (0x%02X)\n", dev->name, skb->data[i]);
 =======
 			netdev_info(dev, "Not an LMI PVC status IE (0x%02X)\n",
 				    skb->data[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Not an LMI PVC status IE (0x%02X)\n",
+				    skb->data[i]);
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		}
 
 		if (skb->data[++i] != stat_len) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_INFO "%s: Invalid LMI PVC status IE length"
 			       " (%u)\n", dev->name, skb->data[i]);
@@ -894,6 +970,10 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 			netdev_info(dev, "Invalid LMI PVC status IE length (%u)\n",
 				    skb->data[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(dev, "Invalid LMI PVC status IE length (%u)\n",
+				    skb->data[i]);
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		}
 		i++;
@@ -915,12 +995,16 @@ static int fr_lmi_recv(struct net_device *dev, struct sk_buff *skb)
 
 		if (!pvc && !no_ram) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING
 			       "%s: Memory squeeze on fr_lmi_recv()\n",
 			       dev->name);
 =======
 			netdev_warn(dev, "Memory squeeze on fr_lmi_recv()\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_warn(dev, "Memory squeeze on fr_lmi_recv()\n");
+>>>>>>> refs/remotes/origin/master
 			no_ram = 1;
 		}
 
@@ -992,12 +1076,17 @@ static int fr_rx(struct sk_buff *skb)
 	if (!pvc) {
 #ifdef DEBUG_PKT
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "%s: No PVC for received frame's DLCI %d\n",
 		       frad->name, dlci);
 =======
 		netdev_info(frad, "No PVC for received frame's DLCI %d\n",
 			    dlci);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(frad, "No PVC for received frame's DLCI %d\n",
+			    dlci);
+>>>>>>> refs/remotes/origin/master
 #endif
 		dev_kfree_skb_any(skb);
 		return NET_RX_DROP;
@@ -1057,16 +1146,22 @@ static int fr_rx(struct sk_buff *skb)
 
 		default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: Unsupported protocol, OUI=%x "
 			       "PID=%x\n", frad->name, oui, pid);
 =======
 			netdev_info(frad, "Unsupported protocol, OUI=%x PID=%x\n",
 				    oui, pid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			netdev_info(frad, "Unsupported protocol, OUI=%x PID=%x\n",
+				    oui, pid);
+>>>>>>> refs/remotes/origin/master
 			dev_kfree_skb_any(skb);
 			return NET_RX_DROP;
 		}
 	} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: Unsupported protocol, NLPID=%x "
 		       "length = %i\n", frad->name, data[3], skb->len);
@@ -1074,6 +1169,10 @@ static int fr_rx(struct sk_buff *skb)
 		netdev_info(frad, "Unsupported protocol, NLPID=%x length=%i\n",
 			    data[3], skb->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_info(frad, "Unsupported protocol, NLPID=%x length=%i\n",
+			    data[3], skb->len);
+>>>>>>> refs/remotes/origin/master
 		dev_kfree_skb_any(skb);
 		return NET_RX_DROP;
 	}
@@ -1178,11 +1277,15 @@ static int fr_add_pvc(struct net_device *frad, unsigned int dlci, int type)
 
 	if ((pvc = add_pvc(frad, dlci)) == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Memory squeeze on fr_add_pvc()\n",
 		       frad->name);
 =======
 		netdev_warn(frad, "Memory squeeze on fr_add_pvc()\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(frad, "Memory squeeze on fr_add_pvc()\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOBUFS;
 	}
 
@@ -1199,21 +1302,29 @@ static int fr_add_pvc(struct net_device *frad, unsigned int dlci, int type)
 
 	if (!dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Memory squeeze on fr_pvc()\n",
 		       frad->name);
 =======
 		netdev_warn(frad, "Memory squeeze on fr_pvc()\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		netdev_warn(frad, "Memory squeeze on fr_pvc()\n");
+>>>>>>> refs/remotes/origin/master
 		delete_unused_pvcs(hdlc);
 		return -ENOBUFS;
 	}
 
 	if (type == ARPHRD_ETHER)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		random_ether_addr(dev->dev_addr);
 =======
 		eth_hw_addr_random(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/master
 	else {
 		*(__be16*)dev->dev_addr = htons(dlci);
 		dlci_to_q922(dev->broadcast, dlci);

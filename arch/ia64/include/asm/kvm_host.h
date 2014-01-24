@@ -23,11 +23,18 @@
 #ifndef __ASM_KVM_HOST_H
 #define __ASM_KVM_HOST_H
 
+<<<<<<< HEAD
 #define KVM_MEMORY_SLOTS 32
 /* memory slots that does not exposed to userspace */
 #define KVM_PRIVATE_MEM_SLOTS 4
 
 #define KVM_COALESCED_MMIO_PAGE_OFFSET 1
+=======
+#define KVM_USER_MEM_SLOTS 32
+
+#define KVM_COALESCED_MMIO_PAGE_OFFSET 1
+#define KVM_IRQCHIP_NUM_PINS  KVM_IOAPIC_NUM_PINS
+>>>>>>> refs/remotes/origin/master
 
 /* define exit reasons from vmm to kvm*/
 #define EXIT_REASON_VM_PANIC		0
@@ -235,10 +242,13 @@ struct kvm_vm_data {
 #define KVM_REQ_PTC_G		32
 #define KVM_REQ_RESUME		33
 
+<<<<<<< HEAD
 #define KVM_HPAGE_GFN_SHIFT(x)	0
 #define KVM_NR_PAGE_SIZES	1
 #define KVM_PAGES_PER_HPAGE(x)	1
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct kvm;
 struct kvm_vcpu;
 
@@ -365,6 +375,10 @@ struct thash_cb {
 };
 
 struct kvm_vcpu_stat {
+<<<<<<< HEAD
+=======
+	u32 halt_wakeup;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct kvm_vcpu_arch {
@@ -448,6 +462,11 @@ struct kvm_vcpu_arch {
 	char log_buf[VMM_LOG_LEN];
 	union context host;
 	union context guest;
+<<<<<<< HEAD
+=======
+
+	char mmio_data[8];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct kvm_vm_stat {
@@ -460,11 +479,17 @@ struct kvm_sal_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct kvm_arch_memory_slot {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct kvm_arch_memory_slot {
+};
+
+>>>>>>> refs/remotes/origin/master
 struct kvm_arch {
 	spinlock_t dirty_log_lock;
 
@@ -481,7 +506,11 @@ struct kvm_arch {
 
 	struct list_head assigned_dev_head;
 	struct iommu_domain *iommu_domain;
+<<<<<<< HEAD
 	int iommu_flags;
+=======
+	bool iommu_noncoherent;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long irq_sources_bitmap;
 	unsigned long irq_states[KVM_IOAPIC_NUM_PINS];

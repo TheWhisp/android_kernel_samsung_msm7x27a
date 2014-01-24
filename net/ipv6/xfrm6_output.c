@@ -29,15 +29,25 @@ int xfrm6_find_1stfragopt(struct xfrm_state *x, struct sk_buff *skb,
 EXPORT_SYMBOL(xfrm6_find_1stfragopt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int xfrm6_local_dontfrag(struct sk_buff *skb)
 {
 	int proto;
 	struct sock *sk = skb->sk;
 
 	if (sk) {
+<<<<<<< HEAD
 		proto = sk->sk_protocol;
 
+=======
+		if (sk->sk_family != AF_INET6)
+			return 0;
+
+		proto = sk->sk_protocol;
+>>>>>>> refs/remotes/origin/master
 		if (proto == IPPROTO_UDP || proto == IPPROTO_RAW)
 			return inet6_sk(sk)->dontfrag;
 	}
@@ -56,6 +66,7 @@ static void xfrm6_local_rxpmtu(struct sk_buff *skb, u32 mtu)
 	ipv6_local_rxpmtu(sk, &fl6, mtu);
 }
 
+<<<<<<< HEAD
 static void xfrm6_local_error(struct sk_buff *skb, u32 mtu)
 {
 	struct flowi6 fl6;
@@ -63,11 +74,25 @@ static void xfrm6_local_error(struct sk_buff *skb, u32 mtu)
 
 	fl6.fl6_dport = inet_sk(sk)->inet_dport;
 	fl6.daddr = ipv6_hdr(skb)->daddr;
+=======
+void xfrm6_local_error(struct sk_buff *skb, u32 mtu)
+{
+	struct flowi6 fl6;
+	const struct ipv6hdr *hdr;
+	struct sock *sk = skb->sk;
+
+	hdr = skb->encapsulation ? inner_ipv6_hdr(skb) : ipv6_hdr(skb);
+	fl6.fl6_dport = inet_sk(sk)->inet_dport;
+	fl6.daddr = hdr->daddr;
+>>>>>>> refs/remotes/origin/master
 
 	ipv6_local_error(sk, EMSGSIZE, &fl6, mtu);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int xfrm6_tunnel_check_size(struct sk_buff *skb)
 {
 	int mtu, ret = 0;
@@ -80,16 +105,25 @@ static int xfrm6_tunnel_check_size(struct sk_buff *skb)
 	if (!skb->local_df && skb->len > mtu) {
 		skb->dev = dst->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (xfrm6_local_dontfrag(skb))
 			xfrm6_local_rxpmtu(skb, mtu);
 		else if (skb->sk)
+<<<<<<< HEAD
 			xfrm6_local_error(skb, mtu);
 		else
 			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			xfrm_local_error(skb, mtu);
+		else
+			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
+>>>>>>> refs/remotes/origin/master
 		ret = -EMSGSIZE;
 	}
 
@@ -144,23 +178,39 @@ static int __xfrm6_output(struct sk_buff *skb)
 	struct dst_entry *dst = skb_dst(skb);
 	struct xfrm_state *x = dst->xfrm;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if ((x && x->props.mode == XFRM_MODE_TUNNEL) &&
 	    ((skb->len > ip6_skb_dst_mtu(skb) && !skb_is_gso(skb)) ||
 =======
 	int mtu = ip6_skb_dst_mtu(skb);
+=======
+	int mtu;
+
+	if (skb->protocol == htons(ETH_P_IPV6))
+		mtu = ip6_skb_dst_mtu(skb);
+	else
+		mtu = dst_mtu(skb_dst(skb));
+>>>>>>> refs/remotes/origin/master
 
 	if (skb->len > mtu && xfrm6_local_dontfrag(skb)) {
 		xfrm6_local_rxpmtu(skb, mtu);
 		return -EMSGSIZE;
 	} else if (!skb->local_df && skb->len > mtu && skb->sk) {
+<<<<<<< HEAD
 		xfrm6_local_error(skb, mtu);
+=======
+		xfrm_local_error(skb, mtu);
+>>>>>>> refs/remotes/origin/master
 		return -EMSGSIZE;
 	}
 
 	if (x->props.mode == XFRM_MODE_TUNNEL &&
 	    ((skb->len > mtu && !skb_is_gso(skb)) ||
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dst_allfrag(skb_dst(skb)))) {
 			return ip6_fragment(skb, x->outer_mode->afinfo->output_finish);
 	}

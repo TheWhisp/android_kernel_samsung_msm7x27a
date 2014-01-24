@@ -25,6 +25,10 @@
 #include "usbaudio.h"
 #include "helper.h"
 #include "card.h"
+<<<<<<< HEAD
+=======
+#include "endpoint.h"
+>>>>>>> refs/remotes/origin/master
 #include "proc.h"
 
 /* convert our full speed USB rate into sampling rate in Hz */
@@ -72,20 +76,34 @@ void snd_usb_audio_create_proc(struct snd_usb_audio *chip)
  */
 static void proc_dump_substream_formats(struct snd_usb_substream *subs, struct snd_info_buffer *buffer)
 {
+<<<<<<< HEAD
 	struct list_head *p;
+=======
+	struct audioformat *fp;
+>>>>>>> refs/remotes/origin/master
 	static char *sync_types[4] = {
 		"NONE", "ASYNC", "ADAPTIVE", "SYNC"
 	};
 
+<<<<<<< HEAD
 	list_for_each(p, &subs->fmt_list) {
 		struct audioformat *fp;
 		snd_pcm_format_t fmt;
 		fp = list_entry(p, struct audioformat, list);
+=======
+	list_for_each_entry(fp, &subs->fmt_list, list) {
+		snd_pcm_format_t fmt;
+
+>>>>>>> refs/remotes/origin/master
 		snd_iprintf(buffer, "  Interface %d\n", fp->iface);
 		snd_iprintf(buffer, "    Altset %d\n", fp->altsetting);
 		snd_iprintf(buffer, "    Format:");
 		for (fmt = 0; fmt <= SNDRV_PCM_FORMAT_LAST; ++fmt)
+<<<<<<< HEAD
 			if (fp->formats & (1uLL << fmt))
+=======
+			if (fp->formats & pcm_format_to_bits(fmt))
+>>>>>>> refs/remotes/origin/master
 				snd_iprintf(buffer, " %s",
 					    snd_pcm_format_name(fmt));
 		snd_iprintf(buffer, "\n");
@@ -115,6 +133,7 @@ static void proc_dump_substream_formats(struct snd_usb_substream *subs, struct s
 	}
 }
 
+<<<<<<< HEAD
 static void proc_dump_substream_status(struct snd_usb_substream *subs, struct snd_info_buffer *buffer)
 {
 	if (subs->running) {
@@ -137,6 +156,35 @@ static void proc_dump_substream_status(struct snd_usb_substream *subs, struct sn
 				    (subs->syncmaxsize > 3 ? 32 : 24)
 						- (16 - subs->freqshift),
 				    16 - subs->freqshift);
+=======
+static void proc_dump_ep_status(struct snd_usb_substream *subs,
+				struct snd_usb_endpoint *data_ep,
+				struct snd_usb_endpoint *sync_ep,
+				struct snd_info_buffer *buffer)
+{
+	if (!data_ep)
+		return;
+	snd_iprintf(buffer, "    Packet Size = %d\n", data_ep->curpacksize);
+	snd_iprintf(buffer, "    Momentary freq = %u Hz (%#x.%04x)\n",
+		    subs->speed == USB_SPEED_FULL
+		    ? get_full_speed_hz(data_ep->freqm)
+		    : get_high_speed_hz(data_ep->freqm),
+		    data_ep->freqm >> 16, data_ep->freqm & 0xffff);
+	if (sync_ep && data_ep->freqshift != INT_MIN) {
+		int res = 16 - data_ep->freqshift;
+		snd_iprintf(buffer, "    Feedback Format = %d.%d\n",
+			    (sync_ep->syncmaxsize > 3 ? 32 : 24) - res, res);
+	}
+}
+
+static void proc_dump_substream_status(struct snd_usb_substream *subs, struct snd_info_buffer *buffer)
+{
+	if (subs->running) {
+		snd_iprintf(buffer, "  Status: Running\n");
+		snd_iprintf(buffer, "    Interface = %d\n", subs->interface);
+		snd_iprintf(buffer, "    Altset = %d\n", subs->altset_idx);
+		proc_dump_ep_status(subs, subs->data_endpoint, subs->sync_endpoint, buffer);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		snd_iprintf(buffer, "  Status: Stop\n");
 	}

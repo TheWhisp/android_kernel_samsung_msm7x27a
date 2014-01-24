@@ -1,12 +1,18 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * GIT - The information manager from hell
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * config.c
  *
  * Helper functions for parsing config items.
  * Originally copied from GIT source.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (C) Linus Torvalds, 2005
  * Copyright (C) Johannes Schindelin, 2005
@@ -124,7 +130,11 @@ static char *parse_value(void)
 
 static inline int iskeychar(int c)
 {
+<<<<<<< HEAD
 	return isalnum(c) || c == '-';
+=======
+	return isalnum(c) || c == '-' || c == '_';
+>>>>>>> refs/remotes/origin/master
 }
 
 static int get_value(config_fn_t fn, void *data, char *name, unsigned int len)
@@ -346,6 +356,7 @@ const char *perf_config_dirname(const char *name, const char *value)
 	return value;
 }
 
+<<<<<<< HEAD
 static int perf_default_core_config(const char *var __used, const char *value __used)
 {
 <<<<<<< HEAD
@@ -357,15 +368,30 @@ static int perf_default_core_config(const char *var __used, const char *value __
 }
 
 int perf_default_config(const char *var, const char *value, void *dummy __used)
+=======
+static int perf_default_core_config(const char *var __maybe_unused,
+				    const char *value __maybe_unused)
+{
+	/* Add other config variables here. */
+	return 0;
+}
+
+int perf_default_config(const char *var, const char *value,
+			void *dummy __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!prefixcmp(var, "core."))
 		return perf_default_core_config(var, value);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add other config variables here and to Documentation/config.txt. */
 =======
 	/* Add other config variables here. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Add other config variables here. */
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -429,6 +455,7 @@ int perf_config(config_fn_t fn, void *data)
 	if (perf_config_global() && home) {
 		char *user_config = strdup(mkpath("%s/.perfconfig", home));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!access(user_config, R_OK)) {
 			ret += perf_config_from_file(fn, user_config, data);
 			found += 1;
@@ -437,6 +464,8 @@ int perf_config(config_fn_t fn, void *data)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct stat st;
 
 		if (user_config == NULL) {
@@ -463,7 +492,10 @@ out_free:
 		free(user_config);
 	}
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (found == 0)
 		return -1;
 	return ret;

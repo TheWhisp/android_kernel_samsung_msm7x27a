@@ -53,7 +53,11 @@ struct dma_buf_attachment;
  * @begin_cpu_access: [optional] called before cpu access to invalidate cpu
  * 		      caches and allocate backing storage (if not yet done)
  * 		      respectively pin the objet into memory.
+<<<<<<< HEAD
  * @end_cpu_access: [optional] called after cpu access to flush cashes.
+=======
+ * @end_cpu_access: [optional] called after cpu access to flush caches.
+>>>>>>> refs/remotes/origin/master
  * @kmap_atomic: maps a page from the buffer into kernel address
  * 		 space, users may not block until the subsequent unmap call.
  * 		 This callback must not sleep.
@@ -65,6 +69,12 @@ struct dma_buf_attachment;
  * 	  mapping needs to be coherent - if the exporter doesn't directly
  * 	  support this, it needs to fake coherency by shooting down any ptes
  * 	  when transitioning away from the cpu domain.
+<<<<<<< HEAD
+=======
+ * @vmap: [optional] creates a virtual mapping for the buffer into kernel
+ *	  address space. Same restrictions as for vmap and friends apply.
+ * @vunmap: [optional] unmaps a vmap from the buffer
+>>>>>>> refs/remotes/origin/master
  */
 struct dma_buf_ops {
 	int (*attach)(struct dma_buf *, struct device *,
@@ -98,6 +108,12 @@ struct dma_buf_ops {
 	void (*kunmap)(struct dma_buf *, unsigned long, void *);
 
 	int (*mmap)(struct dma_buf *, struct vm_area_struct *vma);
+<<<<<<< HEAD
+=======
+
+	void *(*vmap)(struct dma_buf *);
+	void (*vunmap)(struct dma_buf *, void *vaddr);
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -106,6 +122,11 @@ struct dma_buf_ops {
  * @file: file pointer used for sharing buffers across, and for refcounting.
  * @attachments: list of dma_buf_attachment that denotes all devices attached.
  * @ops: dma_buf_ops associated with this buffer object.
+<<<<<<< HEAD
+=======
+ * @exp_name: name of the exporter; useful for debugging.
+ * @list_node: node for dma_buf accounting and debugging.
+>>>>>>> refs/remotes/origin/master
  * @priv: exporter specific private data for this buffer object.
  */
 struct dma_buf {
@@ -113,8 +134,17 @@ struct dma_buf {
 	struct file *file;
 	struct list_head attachments;
 	const struct dma_buf_ops *ops;
+<<<<<<< HEAD
 	/* mutex to serialize list manipulation and attach/detach */
 	struct mutex lock;
+=======
+	/* mutex to serialize list manipulation, attach/detach and vmap/unmap */
+	struct mutex lock;
+	unsigned vmapping_counter;
+	void *vmap_ptr;
+	const char *exp_name;
+	struct list_head list_node;
+>>>>>>> refs/remotes/origin/master
 	void *priv;
 };
 
@@ -150,13 +180,26 @@ static inline void get_dma_buf(struct dma_buf *dmabuf)
 	get_file(dmabuf->file);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_DMA_SHARED_BUFFER
+=======
+>>>>>>> refs/remotes/origin/master
 struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,
 							struct device *dev);
 void dma_buf_detach(struct dma_buf *dmabuf,
 				struct dma_buf_attachment *dmabuf_attach);
+<<<<<<< HEAD
 struct dma_buf *dma_buf_export(void *priv, const struct dma_buf_ops *ops,
 			       size_t size, int flags);
+=======
+
+struct dma_buf *dma_buf_export_named(void *priv, const struct dma_buf_ops *ops,
+			       size_t size, int flags, const char *);
+
+#define dma_buf_export(priv, ops, size, flags)	\
+	dma_buf_export_named(priv, ops, size, flags, __FILE__)
+
+>>>>>>> refs/remotes/origin/master
 int dma_buf_fd(struct dma_buf *dmabuf, int flags);
 struct dma_buf *dma_buf_get(int fd);
 void dma_buf_put(struct dma_buf *dmabuf);
@@ -176,6 +219,7 @@ void dma_buf_kunmap(struct dma_buf *, unsigned long, void *);
 
 int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
 		 unsigned long);
+<<<<<<< HEAD
 #else
 
 static inline struct dma_buf_attachment *dma_buf_attach(struct dma_buf *dmabuf,
@@ -266,4 +310,10 @@ static inline int dma_buf_mmap(struct dma_buf *dmabuf,
 }
 #endif /* CONFIG_DMA_SHARED_BUFFER */
 
+=======
+void *dma_buf_vmap(struct dma_buf *);
+void dma_buf_vunmap(struct dma_buf *, void *vaddr);
+int dma_buf_debugfs_create_file(const char *name,
+				int (*write)(struct seq_file *));
+>>>>>>> refs/remotes/origin/master
 #endif /* __DMA_BUF_H__ */

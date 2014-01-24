@@ -162,7 +162,11 @@ static void bit_putcs(struct vc_data *vc, struct fb_info *info,
 	image.depth = 1;
 
 	if (attribute) {
+<<<<<<< HEAD
 		buf = kmalloc(cellsize, GFP_KERNEL);
+=======
+		buf = kmalloc(cellsize, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (!buf)
 			return;
 	}

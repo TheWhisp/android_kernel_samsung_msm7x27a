@@ -43,9 +43,13 @@ int	nlmclt_encode_cancargs(struct rpc_rqst *, u32 *, struct nlm_args *);
 int	nlmclt_encode_unlockargs(struct rpc_rqst *, u32 *, struct nlm_args *);
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct rpc_version nlm_version4;
 =======
 extern const struct rpc_version nlm_version4;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern const struct rpc_version nlm_version4;
+>>>>>>> refs/remotes/origin/master
 
 #endif /* LOCKD_XDR4_H */

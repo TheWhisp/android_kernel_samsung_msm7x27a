@@ -5,9 +5,13 @@
 struct usb_hcd *isp1760_register(phys_addr_t res_start, resource_size_t res_len,
 				 int irq, unsigned long irqflags,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				 int rst_gpio,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 int rst_gpio,
+>>>>>>> refs/remotes/origin/master
 				 struct device *dev, const char *busname,
 				 unsigned int devflags);
 int init_kmem_once(void);
@@ -78,9 +82,12 @@ void deinit_kmem_cache(void);
 #define HC_SOT_INT		(1 << 1)
 #define INTERRUPT_ENABLE_MASK	(HC_INTL_INT | HC_ATL_INT)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define INTERRUPT_ENABLE_SOT_MASK	(HC_SOT_INT)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define HC_ISO_IRQ_MASK_OR_REG	0x318
 #define HC_INT_IRQ_MASK_OR_REG	0x31C
@@ -115,9 +122,13 @@ struct slotinfo {
 	struct isp1760_qh *qh;
 	struct isp1760_qtd *qtd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long timestamp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long timestamp;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -138,9 +149,13 @@ typedef void (packet_enqueue)(struct usb_hcd *hcd, struct isp1760_qh *qh,
 #define ISP1760_FLAG_INTR_POL_HIGH	0x00000080 /* Interrupt polarity active high */
 #define ISP1760_FLAG_INTR_EDGE_TRIG	0x00000100 /* Interrupt edge triggered */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ISP1760_FLAG_RESET_ACTIVE_HIGH	0x80000000 /* RESET GPIO active high */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ISP1760_FLAG_RESET_ACTIVE_HIGH	0x80000000 /* RESET GPIO active high */
+>>>>>>> refs/remotes/origin/master
 
 /* chip memory management */
 struct memory_chunk {
@@ -204,9 +219,13 @@ struct memory_chunk {
 #define DW3_HALT_BIT			(1 << 30)
 #define DW3_ACTIVE_BIT			(1 << 31)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define FROM_DW3_ACTIVE(x)		(((x) >> 31) & 0x01)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FROM_DW3_ACTIVE(x)		(((x) >> 31) & 0x01)
+>>>>>>> refs/remotes/origin/master
 
 #define INT_UNDERRUN			(1 << 2)
 #define INT_BABBLE			(1 << 1)

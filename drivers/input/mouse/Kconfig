@@ -68,6 +68,19 @@ config MOUSE_PS2_SYNAPTICS
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
+=======
+config MOUSE_PS2_CYPRESS
+       bool "Cypress PS/2 mouse protocol extension" if EXPERT
+       default y
+       depends on MOUSE_PS2
+       help
+         Say Y here if you have a Cypress PS/2 Trackpad connected to
+         your system.
+
+         If unsure, say Y.
+
+>>>>>>> refs/remotes/origin/master
 config MOUSE_PS2_LIFEBOOK
 	bool "Fujitsu Lifebook PS/2 mouse protocol extension" if EXPERT
 	default y
@@ -193,6 +206,21 @@ config MOUSE_BCM5974
 	  To compile this driver as a module, choose M here: the
 	  module will be called bcm5974.
 
+<<<<<<< HEAD
+=======
+config MOUSE_CYAPA
+	tristate "Cypress APA I2C Trackpad support"
+	depends on I2C
+	help
+	  This driver adds support for Cypress All Points Addressable (APA)
+	  I2C Trackpads, including the ones used in 2012 Samsung Chromebooks.
+
+	  Say Y here if you have a Cypress APA I2C Trackpad.
+
+	  To compile this driver as a module, choose M here: the module will be
+	  called cyapa.
+
+>>>>>>> refs/remotes/origin/master
 config MOUSE_INPORT
 	tristate "InPort/MS/ATIXL busmouse"
 	depends on ISA
@@ -273,7 +301,11 @@ config MOUSE_VSXXXAA
 
 config MOUSE_GPIO
 	tristate "GPIO mouse"
+<<<<<<< HEAD
 	depends on GENERIC_GPIO
+=======
+	depends on GPIOLIB
+>>>>>>> refs/remotes/origin/master
 	select INPUT_POLLDEV
 	help
 	  This driver simulates a mouse on GPIO lines of various CPUs (and some
@@ -322,6 +354,7 @@ config MOUSE_SYNAPTICS_I2C
 	  To compile this driver as a module, choose M here: the
 	  module will be called synaptics_i2c.
 
+<<<<<<< HEAD
 config MOUSE_QCITP
 	tristate "Quanta Computer Inc. Touchpad"
 	depends on I2C
@@ -332,6 +365,8 @@ config MOUSE_QCITP
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config MOUSE_SYNAPTICS_USB
 	tristate "Synaptics USB device support"
 	depends on USB_ARCH_HAS_HCD
@@ -348,6 +383,21 @@ config MOUSE_SYNAPTICS_USB
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called synaptics_usb.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+config MOUSE_NAVPOINT_PXA27x
+	tristate "Synaptics NavPoint (PXA27x SSP/SPI)"
+	depends on PXA27x && PXA_SSP
+	help
+	  This driver adds support for the Synaptics NavPoint touchpad connected
+	  to a PXA27x SSP port in SPI slave mode. The device emulates a mouse;
+	  a tap or tap-and-a-half drag gesture emulates the left mouse button.
+	  For example, use the xf86-input-evdev driver for an X pointing device.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called navpoint.
+>>>>>>> refs/remotes/origin/master
 
 endif

@@ -7,7 +7,11 @@
  * From code in the latency_tracer, that is:
  *
  *  Copyright (C) 2004-2006 Ingo Molnar
+<<<<<<< HEAD
  *  Copyright (C) 2004 William Lee Irwin III
+=======
+ *  Copyright (C) 2004 Nadia Yvette Chambers
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/kallsyms.h>
 #include <linux/debugfs.h>
@@ -24,10 +28,14 @@ static int				tracer_enabled __read_mostly;
 static DEFINE_PER_CPU(int, tracing_cpu);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(max_trace_lock);
 =======
 static DEFINE_RAW_SPINLOCK(max_trace_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_RAW_SPINLOCK(max_trace_lock);
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	TRACER_IRQS_OFF		= (1 << 1),
@@ -37,6 +45,10 @@ enum {
 static int trace_type __read_mostly;
 
 static int save_flags;
+<<<<<<< HEAD
+=======
+static bool function_enabled;
+>>>>>>> refs/remotes/origin/master
 
 static void stop_irqsoff_tracer(struct trace_array *tr, int graph);
 static int start_irqsoff_tracer(struct trace_array *tr, int graph);
@@ -125,7 +137,11 @@ static int func_prolog_dec(struct trace_array *tr,
 	if (!irqs_disabled_flags(*flags))
 		return 0;
 
+<<<<<<< HEAD
 	*data = tr->data[cpu];
+=======
+	*data = per_cpu_ptr(tr->trace_buffer.data, cpu);
+>>>>>>> refs/remotes/origin/master
 	disabled = atomic_inc_return(&(*data)->disabled);
 
 	if (likely(disabled == 1))
@@ -140,7 +156,12 @@ static int func_prolog_dec(struct trace_array *tr,
  * irqsoff uses its own tracer function to keep the overhead down:
  */
 static void
+<<<<<<< HEAD
 irqsoff_tracer_call(unsigned long ip, unsigned long parent_ip)
+=======
+irqsoff_tracer_call(unsigned long ip, unsigned long parent_ip,
+		    struct ftrace_ops *op, struct pt_regs *pt_regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct trace_array *tr = irqsoff_trace;
 	struct trace_array_cpu *data;
@@ -157,7 +178,11 @@ irqsoff_tracer_call(unsigned long ip, unsigned long parent_ip)
 static struct ftrace_ops trace_ops __read_mostly =
 {
 	.func = irqsoff_tracer_call,
+<<<<<<< HEAD
 	.flags = FTRACE_OPS_FL_GLOBAL,
+=======
+	.flags = FTRACE_OPS_FL_GLOBAL | FTRACE_OPS_FL_RECURSION_SAFE,
+>>>>>>> refs/remotes/origin/master
 };
 #endif /* CONFIG_FUNCTION_TRACER */
 
@@ -178,7 +203,11 @@ static int irqsoff_set_flag(u32 old_flags, u32 bit, int set)
 		per_cpu(tracing_cpu, cpu) = 0;
 
 	tracing_max_latency = 0;
+<<<<<<< HEAD
 	tracing_reset_online_cpus(irqsoff_trace);
+=======
+	tracing_reset_online_cpus(&irqsoff_trace->trace_buffer);
+>>>>>>> refs/remotes/origin/master
 
 	return start_irqsoff_tracer(irqsoff_trace, set);
 }
@@ -231,12 +260,18 @@ static void irqsoff_trace_close(struct trace_iterator *iter)
 
 #define GRAPH_TRACER_FLAGS (TRACE_GRAPH_PRINT_CPU | \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    TRACE_GRAPH_PRINT_PROC)
 =======
 			    TRACE_GRAPH_PRINT_PROC | \
 			    TRACE_GRAPH_PRINT_ABS_TIME | \
 			    TRACE_GRAPH_PRINT_DURATION)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    TRACE_GRAPH_PRINT_PROC | \
+			    TRACE_GRAPH_PRINT_ABS_TIME | \
+			    TRACE_GRAPH_PRINT_DURATION)
+>>>>>>> refs/remotes/origin/master
 
 static enum print_line_t irqsoff_print_line(struct trace_iterator *iter)
 {
@@ -289,10 +324,13 @@ static enum print_line_t irqsoff_print_line(struct trace_iterator *iter)
 
 static void irqsoff_graph_return(struct ftrace_graph_ret *trace) { }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void irqsoff_print_header(struct seq_file *s) { }
 static void irqsoff_trace_open(struct trace_iterator *iter) { }
 static void irqsoff_trace_close(struct trace_iterator *iter) { }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void irqsoff_trace_open(struct trace_iterator *iter) { }
 static void irqsoff_trace_close(struct trace_iterator *iter) { }
 
@@ -307,7 +345,10 @@ static void irqsoff_print_header(struct seq_file *s)
 	trace_latency_header(s);
 }
 #endif /* CONFIG_FUNCTION_TRACER */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
 
 /*
@@ -347,10 +388,14 @@ check_critical_timing(struct trace_array *tr,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&max_trace_lock, flags);
 =======
 	raw_spin_lock_irqsave(&max_trace_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_lock_irqsave(&max_trace_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* check if we are still the max latency */
 	if (!report_latency(delta))
@@ -374,10 +419,14 @@ check_critical_timing(struct trace_array *tr,
 
 out_unlock:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&max_trace_lock, flags);
 =======
 	raw_spin_unlock_irqrestore(&max_trace_lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	raw_spin_unlock_irqrestore(&max_trace_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	data->critical_sequence = max_sequence;
@@ -393,7 +442,11 @@ start_critical_timing(unsigned long ip, unsigned long parent_ip)
 	struct trace_array_cpu *data;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (likely(!tracer_enabled))
+=======
+	if (!tracer_enabled || !tracing_is_enabled())
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	cpu = raw_smp_processor_id();
@@ -401,7 +454,11 @@ start_critical_timing(unsigned long ip, unsigned long parent_ip)
 	if (per_cpu(tracing_cpu, cpu))
 		return;
 
+<<<<<<< HEAD
 	data = tr->data[cpu];
+=======
+	data = per_cpu_ptr(tr->trace_buffer.data, cpu);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(!data) || atomic_read(&data->disabled))
 		return;
@@ -436,10 +493,17 @@ stop_critical_timing(unsigned long ip, unsigned long parent_ip)
 	else
 		return;
 
+<<<<<<< HEAD
 	if (!tracer_enabled)
 		return;
 
 	data = tr->data[cpu];
+=======
+	if (!tracer_enabled || !tracing_is_enabled())
+		return;
+
+	data = per_cpu_ptr(tr->trace_buffer.data, cpu);
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(!data) ||
 	    !data->critical_start || atomic_read(&data->disabled))
@@ -539,24 +603,33 @@ EXPORT_SYMBOL(trace_hardirqs_off_caller);
 void trace_preempt_on(unsigned long a0, unsigned long a1)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (preempt_trace())
 =======
 	if (preempt_trace() && !irq_trace())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (preempt_trace() && !irq_trace())
+>>>>>>> refs/remotes/origin/master
 		stop_critical_timing(a0, a1);
 }
 
 void trace_preempt_off(unsigned long a0, unsigned long a1)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (preempt_trace())
 =======
 	if (preempt_trace() && !irq_trace())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (preempt_trace() && !irq_trace())
+>>>>>>> refs/remotes/origin/master
 		start_critical_timing(a0, a1);
 }
 #endif /* CONFIG_PREEMPT_TRACER */
 
+<<<<<<< HEAD
 static int start_irqsoff_tracer(struct trace_array *tr, int graph)
 {
 	int ret = 0;
@@ -566,6 +639,62 @@ static int start_irqsoff_tracer(struct trace_array *tr, int graph)
 	else
 		ret = register_ftrace_graph(&irqsoff_graph_return,
 					    &irqsoff_graph_entry);
+=======
+static int register_irqsoff_function(int graph, int set)
+{
+	int ret;
+
+	/* 'set' is set if TRACE_ITER_FUNCTION is about to be set */
+	if (function_enabled || (!set && !(trace_flags & TRACE_ITER_FUNCTION)))
+		return 0;
+
+	if (graph)
+		ret = register_ftrace_graph(&irqsoff_graph_return,
+					    &irqsoff_graph_entry);
+	else
+		ret = register_ftrace_function(&trace_ops);
+
+	if (!ret)
+		function_enabled = true;
+
+	return ret;
+}
+
+static void unregister_irqsoff_function(int graph)
+{
+	if (!function_enabled)
+		return;
+
+	if (graph)
+		unregister_ftrace_graph();
+	else
+		unregister_ftrace_function(&trace_ops);
+
+	function_enabled = false;
+}
+
+static void irqsoff_function_set(int set)
+{
+	if (set)
+		register_irqsoff_function(is_graph(), 1);
+	else
+		unregister_irqsoff_function(is_graph());
+}
+
+static int irqsoff_flag_changed(struct tracer *tracer, u32 mask, int set)
+{
+	if (mask & TRACE_ITER_FUNCTION)
+		irqsoff_function_set(set);
+
+	return trace_keep_overwrite(tracer, mask, set);
+}
+
+static int start_irqsoff_tracer(struct trace_array *tr, int graph)
+{
+	int ret;
+
+	ret = register_irqsoff_function(graph, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret && tracing_is_enabled())
 		tracer_enabled = 1;
@@ -579,10 +708,14 @@ static void stop_irqsoff_tracer(struct trace_array *tr, int graph)
 {
 	tracer_enabled = 0;
 
+<<<<<<< HEAD
 	if (!graph)
 		unregister_ftrace_function(&trace_ops);
 	else
 		unregister_ftrace_graph();
+=======
+	unregister_irqsoff_function(graph);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __irqsoff_tracer_init(struct trace_array *tr)
@@ -590,14 +723,23 @@ static void __irqsoff_tracer_init(struct trace_array *tr)
 	save_flags = trace_flags;
 
 	/* non overwrite screws up the latency tracers */
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_OVERWRITE, 1);
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, 1);
+=======
+	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, 1);
+	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, 1);
+>>>>>>> refs/remotes/origin/master
 
 	tracing_max_latency = 0;
 	irqsoff_trace = tr;
 	/* make sure that the tracer is visible */
 	smp_wmb();
+<<<<<<< HEAD
 	tracing_reset_online_cpus(tr);
+=======
+	tracing_reset_online_cpus(&tr->trace_buffer);
+>>>>>>> refs/remotes/origin/master
 
 	if (start_irqsoff_tracer(tr, is_graph()))
 		printk(KERN_ERR "failed to start irqsoff tracer\n");
@@ -610,8 +752,13 @@ static void irqsoff_tracer_reset(struct trace_array *tr)
 
 	stop_irqsoff_tracer(tr, is_graph());
 
+<<<<<<< HEAD
 	set_tracer_flag(TRACE_ITER_LATENCY_FMT, lat_flag);
 	set_tracer_flag(TRACE_ITER_OVERWRITE, overwrite_flag);
+=======
+	set_tracer_flag(tr, TRACE_ITER_LATENCY_FMT, lat_flag);
+	set_tracer_flag(tr, TRACE_ITER_OVERWRITE, overwrite_flag);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void irqsoff_tracer_start(struct trace_array *tr)
@@ -639,18 +786,30 @@ static struct tracer irqsoff_tracer __read_mostly =
 	.reset		= irqsoff_tracer_reset,
 	.start		= irqsoff_tracer_start,
 	.stop		= irqsoff_tracer_stop,
+<<<<<<< HEAD
 	.print_max	= 1,
+=======
+	.print_max	= true,
+>>>>>>> refs/remotes/origin/master
 	.print_header   = irqsoff_print_header,
 	.print_line     = irqsoff_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
+=======
+	.flag_changed	= irqsoff_flag_changed,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_irqsoff,
 #endif
 	.open           = irqsoff_trace_open,
 	.close          = irqsoff_trace_close,
+<<<<<<< HEAD
 	.use_max_tr	= 1,
+=======
+	.use_max_tr	= true,
+>>>>>>> refs/remotes/origin/master
 };
 # define register_irqsoff(trace) register_tracer(&trace)
 #else
@@ -673,18 +832,30 @@ static struct tracer preemptoff_tracer __read_mostly =
 	.reset		= irqsoff_tracer_reset,
 	.start		= irqsoff_tracer_start,
 	.stop		= irqsoff_tracer_stop,
+<<<<<<< HEAD
 	.print_max	= 1,
+=======
+	.print_max	= true,
+>>>>>>> refs/remotes/origin/master
 	.print_header   = irqsoff_print_header,
 	.print_line     = irqsoff_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
+=======
+	.flag_changed	= irqsoff_flag_changed,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_preemptoff,
 #endif
 	.open		= irqsoff_trace_open,
 	.close		= irqsoff_trace_close,
+<<<<<<< HEAD
 	.use_max_tr	= 1,
+=======
+	.use_max_tr	= true,
+>>>>>>> refs/remotes/origin/master
 };
 # define register_preemptoff(trace) register_tracer(&trace)
 #else
@@ -709,18 +880,30 @@ static struct tracer preemptirqsoff_tracer __read_mostly =
 	.reset		= irqsoff_tracer_reset,
 	.start		= irqsoff_tracer_start,
 	.stop		= irqsoff_tracer_stop,
+<<<<<<< HEAD
 	.print_max	= 1,
+=======
+	.print_max	= true,
+>>>>>>> refs/remotes/origin/master
 	.print_header   = irqsoff_print_header,
 	.print_line     = irqsoff_print_line,
 	.flags		= &tracer_flags,
 	.set_flag	= irqsoff_set_flag,
+<<<<<<< HEAD
 	.flag_changed	= trace_keep_overwrite,
+=======
+	.flag_changed	= irqsoff_flag_changed,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FTRACE_SELFTEST
 	.selftest    = trace_selftest_startup_preemptirqsoff,
 #endif
 	.open		= irqsoff_trace_open,
 	.close		= irqsoff_trace_close,
+<<<<<<< HEAD
 	.use_max_tr	= 1,
+=======
+	.use_max_tr	= true,
+>>>>>>> refs/remotes/origin/master
 };
 
 # define register_preemptirqsoff(trace) register_tracer(&trace)
@@ -736,4 +919,8 @@ __init static int init_irqsoff_tracer(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 device_initcall(init_irqsoff_tracer);
+=======
+core_initcall(init_irqsoff_tracer);
+>>>>>>> refs/remotes/origin/master

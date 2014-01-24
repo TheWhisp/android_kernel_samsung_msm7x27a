@@ -277,6 +277,11 @@ work_rescheduled:
  [A1]	BNOP	.S1	work_resched,5
 
 work_notifysig:
+<<<<<<< HEAD
+=======
+	;; enable interrupts for do_notify_resume()
+	UNMASK_INT B2
+>>>>>>> refs/remotes/origin/master
 	B	.S2	do_notify_resume
 	LDW	.D2T1	*+SP(REGS__END+8),A6 ; syscall flag
 	ADDKPC	.S2	resume_userspace,B3,1
@@ -400,9 +405,30 @@ ret_from_fork_2:
 	STW	.D2T2	B0,*+SP(REGS_A4+8)
 ENDPROC(ret_from_fork)
 
+<<<<<<< HEAD
 	;;
 	;; These are the interrupt handlers, responsible for calling __do_IRQ()
 	;; int6 is used for syscalls (see _system_call entry)
+=======
+ENTRY(ret_from_kernel_thread)
+#ifdef CONFIG_C6X_BIG_KERNEL
+	MVKL	.S1	schedule_tail,A0
+	MVKH	.S1	schedule_tail,A0
+	B	.S2X	A0
+#else
+	B	.S2	schedule_tail
+#endif
+	LDW	.D2T2	*+SP(REGS_A0+8),B10 /* get fn  */
+	ADDKPC	.S2	0f,B3,3
+0:
+	B	.S2	B10		   /* call fn */
+	LDW	.D2T1	*+SP(REGS_A1+8),A4 /* get arg */
+	ADDKPC	.S2	ret_from_fork_2,B3,3
+ENDPROC(ret_from_kernel_thread)
+
+	;;
+	;; These are the interrupt handlers, responsible for calling c6x_do_IRQ()
+>>>>>>> refs/remotes/origin/master
 	;;
 	.macro SAVE_ALL_INT
 	SAVE_ALL IRP,ITSR
@@ -581,6 +607,7 @@ ENTRY(enable_exception)
 	NOP	5
 ENDPROC(enable_exception)
 
+<<<<<<< HEAD
 ENTRY(sys_sigaltstack)
 #ifdef CONFIG_C6X_BIG_KERNEL
 	MVKL	.S1	do_sigaltstack,A0	; branch to do_sigaltstack
@@ -600,10 +627,13 @@ ENTRY(kernel_execve)
 	BNOP	.S2	B3,5
 ENDPROC(kernel_execve)
 
+=======
+>>>>>>> refs/remotes/origin/master
 	;;
 	;; Special system calls
 	;; return address is in B3
 	;;
+<<<<<<< HEAD
 ENTRY(sys_clone)
 	ADD	.D1X	SP,8,A4
 #ifdef CONFIG_C6X_BIG_KERNEL
@@ -616,6 +646,8 @@ ENTRY(sys_clone)
 #endif
 ENDPROC(sys_clone)
 
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(sys_rt_sigreturn)
 	ADD	.D1X	SP,8,A4
 #ifdef CONFIG_C6X_BIG_KERNEL
@@ -628,6 +660,7 @@ ENTRY(sys_rt_sigreturn)
 #endif
 ENDPROC(sys_rt_sigreturn)
 
+<<<<<<< HEAD
 ENTRY(sys_execve)
 	ADDAW	.D2	SP,2,B6		; put regs addr in 4th parameter
 					; & adjust regs stack addr
@@ -651,6 +684,8 @@ ret_from_c6x_execve:
 	BNOP	.S2	B3,5
 ENDPROC(sys_execve)
 
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(sys_pread_c6x)
 	MV	.D2X	A8,B7
 #ifdef CONFIG_C6X_BIG_KERNEL

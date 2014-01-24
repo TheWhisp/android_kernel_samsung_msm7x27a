@@ -83,7 +83,11 @@ static u32 hfsplus_ext_lastblock(struct hfsplus_extent *ext)
 	return be32_to_cpu(ext->start_block) + be32_to_cpu(ext->block_count);
 }
 
+<<<<<<< HEAD
 static void __hfsplus_ext_write_extent(struct inode *inode,
+=======
+static int __hfsplus_ext_write_extent(struct inode *inode,
+>>>>>>> refs/remotes/origin/master
 		struct hfs_find_data *fd)
 {
 	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
@@ -95,16 +99,27 @@ static void __hfsplus_ext_write_extent(struct inode *inode,
 			      HFSPLUS_IS_RSRC(inode) ?
 				HFSPLUS_TYPE_RSRC : HFSPLUS_TYPE_DATA);
 
+<<<<<<< HEAD
 	res = hfs_brec_find(fd);
 	if (hip->extent_state & HFSPLUS_EXT_NEW) {
 		if (res != -ENOENT)
 			return;
+=======
+	res = hfs_brec_find(fd, hfs_find_rec_by_key);
+	if (hip->extent_state & HFSPLUS_EXT_NEW) {
+		if (res != -ENOENT)
+			return res;
+>>>>>>> refs/remotes/origin/master
 		hfs_brec_insert(fd, hip->cached_extents,
 				sizeof(hfsplus_extent_rec));
 		hip->extent_state &= ~(HFSPLUS_EXT_DIRTY | HFSPLUS_EXT_NEW);
 	} else {
 		if (res)
+<<<<<<< HEAD
 			return;
+=======
+			return res;
+>>>>>>> refs/remotes/origin/master
 		hfs_bnode_write(fd->bnode, hip->cached_extents,
 				fd->entryoffset, fd->entrylength);
 		hip->extent_state &= ~HFSPLUS_EXT_DIRTY;
@@ -117,6 +132,7 @@ static void __hfsplus_ext_write_extent(struct inode *inode,
 	 * to explicily mark the inode dirty, too.
 	 */
 	set_bit(HFSPLUS_I_EXT_DIRTY, &hip->flags);
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
@@ -140,6 +156,15 @@ void hfsplus_ext_write_extent(struct inode *inode)
 static int hfsplus_ext_write_extent_locked(struct inode *inode)
 {
 	int res;
+=======
+
+	return 0;
+}
+
+static int hfsplus_ext_write_extent_locked(struct inode *inode)
+{
+	int res = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (HFSPLUS_I(inode)->extent_state & HFSPLUS_EXT_DIRTY) {
 		struct hfs_find_data fd;
@@ -147,10 +172,17 @@ static int hfsplus_ext_write_extent_locked(struct inode *inode)
 		res = hfs_find_init(HFSPLUS_SB(inode->i_sb)->ext_tree, &fd);
 		if (res)
 			return res;
+<<<<<<< HEAD
 		__hfsplus_ext_write_extent(inode, &fd);
 		hfs_find_exit(&fd);
 	}
 	return 0;
+=======
+		res = __hfsplus_ext_write_extent(inode, &fd);
+		hfs_find_exit(&fd);
+	}
+	return res;
+>>>>>>> refs/remotes/origin/master
 }
 
 int hfsplus_ext_write_extent(struct inode *inode)
@@ -162,7 +194,10 @@ int hfsplus_ext_write_extent(struct inode *inode)
 	mutex_unlock(&HFSPLUS_I(inode)->extents_lock);
 
 	return res;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int __hfsplus_ext_read_extent(struct hfs_find_data *fd,
@@ -173,7 +208,11 @@ static inline int __hfsplus_ext_read_extent(struct hfs_find_data *fd,
 
 	hfsplus_ext_build_key(fd->search_key, cnid, block, type);
 	fd->key->ext.cnid = 0;
+<<<<<<< HEAD
 	res = hfs_brec_find(fd);
+=======
+	res = hfs_brec_find(fd, hfs_find_rec_by_key);
+>>>>>>> refs/remotes/origin/master
 	if (res && res != -ENOENT)
 		return res;
 	if (fd->key->ext.cnid != fd->search_key->ext.cnid ||
@@ -194,8 +233,16 @@ static inline int __hfsplus_ext_cache_extent(struct hfs_find_data *fd,
 
 	WARN_ON(!mutex_is_locked(&hip->extents_lock));
 
+<<<<<<< HEAD
 	if (hip->extent_state & HFSPLUS_EXT_DIRTY)
 		__hfsplus_ext_write_extent(inode, fd);
+=======
+	if (hip->extent_state & HFSPLUS_EXT_DIRTY) {
+		res = __hfsplus_ext_write_extent(inode, fd);
+		if (res)
+			return res;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	res = __hfsplus_ext_read_extent(fd, hip->cached_extents, inode->i_ino,
 					block, HFSPLUS_IS_RSRC(inode) ?
@@ -223,16 +270,22 @@ static int hfsplus_ext_read_extent(struct inode *inode, u32 block)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hfs_find_init(HFSPLUS_SB(inode->i_sb)->ext_tree, &fd);
 	res = __hfsplus_ext_cache_extent(&fd, inode, block);
 	hfs_find_exit(&fd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	res = hfs_find_init(HFSPLUS_SB(inode->i_sb)->ext_tree, &fd);
 	if (!res) {
 		res = __hfsplus_ext_cache_extent(&fd, inode, block);
 		hfs_find_exit(&fd);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -246,9 +299,13 @@ int hfsplus_get_block(struct inode *inode, sector_t iblock,
 	int res = -EIO;
 	u32 ablock, dblock, mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sector_t sector;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sector_t sector;
+>>>>>>> refs/remotes/origin/master
 	int was_dirty = 0;
 	int shift;
 
@@ -293,6 +350,7 @@ int hfsplus_get_block(struct inode *inode, sector_t iblock,
 	mutex_unlock(&hip->extents_lock);
 
 done:
+<<<<<<< HEAD
 	dprint(DBG_EXTENT, "get_block(%lu): %llu - %u\n",
 		inode->i_ino, (long long)iblock, dblock);
 <<<<<<< HEAD
@@ -301,13 +359,20 @@ done:
 		(dblock << sbi->fs_shift) + sbi->blockoffset +
 			(iblock & mask));
 =======
+=======
+	hfs_dbg(EXTENT, "get_block(%lu): %llu - %u\n",
+		inode->i_ino, (long long)iblock, dblock);
+>>>>>>> refs/remotes/origin/master
 
 	mask = (1 << sbi->fs_shift) - 1;
 	sector = ((sector_t)dblock << sbi->fs_shift) +
 		  sbi->blockoffset + (iblock & mask);
 	map_bh(bh_result, sb, sector);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (create) {
 		set_buffer_new(bh_result);
 		hip->phys_size += sb->s_blocksize;
@@ -323,11 +388,20 @@ static void hfsplus_dump_extent(struct hfsplus_extent *extent)
 {
 	int i;
 
+<<<<<<< HEAD
 	dprint(DBG_EXTENT, "   ");
 	for (i = 0; i < 8; i++)
 		dprint(DBG_EXTENT, " %u:%u", be32_to_cpu(extent[i].start_block),
 				 be32_to_cpu(extent[i].block_count));
 	dprint(DBG_EXTENT, "\n");
+=======
+	hfs_dbg(EXTENT, "   ");
+	for (i = 0; i < 8; i++)
+		hfs_dbg_cont(EXTENT, " %u:%u",
+			     be32_to_cpu(extent[i].start_block),
+			     be32_to_cpu(extent[i].block_count));
+	hfs_dbg_cont(EXTENT, "\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hfsplus_add_extent(struct hfsplus_extent *extent, u32 offset,
@@ -364,6 +438,10 @@ static int hfsplus_free_extents(struct super_block *sb,
 {
 	u32 count, start;
 	int i;
+<<<<<<< HEAD
+=======
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	hfsplus_dump_extent(extent);
 	for (i = 0; i < 8; extent++, i++) {
@@ -380,18 +458,46 @@ found:
 	for (;;) {
 		start = be32_to_cpu(extent->start_block);
 		if (count <= block_nr) {
+<<<<<<< HEAD
 			hfsplus_block_free(sb, start, count);
+=======
+			err = hfsplus_block_free(sb, start, count);
+			if (err) {
+				pr_err("can't free extent\n");
+				hfs_dbg(EXTENT, " start: %u count: %u\n",
+					start, count);
+			}
+>>>>>>> refs/remotes/origin/master
 			extent->block_count = 0;
 			extent->start_block = 0;
 			block_nr -= count;
 		} else {
 			count -= block_nr;
+<<<<<<< HEAD
 			hfsplus_block_free(sb, start + count, block_nr);
 			extent->block_count = cpu_to_be32(count);
 			block_nr = 0;
 		}
 		if (!block_nr || !i)
 			return 0;
+=======
+			err = hfsplus_block_free(sb, start + count, block_nr);
+			if (err) {
+				pr_err("can't free extent\n");
+				hfs_dbg(EXTENT, " start: %u count: %u\n",
+					start, count);
+			}
+			extent->block_count = cpu_to_be32(count);
+			block_nr = 0;
+		}
+		if (!block_nr || !i) {
+			/*
+			 * Try to free all extents and
+			 * return only last error
+			 */
+			return err;
+		}
+>>>>>>> refs/remotes/origin/master
 		i--;
 		extent--;
 		count = be32_to_cpu(extent->block_count);
@@ -421,12 +527,18 @@ int hfsplus_free_fork(struct super_block *sb, u32 cnid,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hfs_find_init(HFSPLUS_SB(sb)->ext_tree, &fd);
 =======
 	res = hfs_find_init(HFSPLUS_SB(sb)->ext_tree, &fd);
 	if (res)
 		return res;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = hfs_find_init(HFSPLUS_SB(sb)->ext_tree, &fd);
+	if (res)
+		return res;
+>>>>>>> refs/remotes/origin/master
 	do {
 		res = __hfsplus_ext_read_extent(&fd, ext_entry, cnid,
 						total_blocks, type);
@@ -455,7 +567,11 @@ int hfsplus_file_extend(struct inode *inode)
 	if (sbi->alloc_file->i_size * 8 <
 	    sbi->total_blocks - sbi->free_blocks + 8) {
 		/* extend alloc file */
+<<<<<<< HEAD
 		printk(KERN_ERR "hfs: extend alloc file! "
+=======
+		pr_err("extend alloc file! "
+>>>>>>> refs/remotes/origin/master
 				"(%llu,%u,%u)\n",
 			sbi->alloc_file->i_size * 8,
 			sbi->total_blocks, sbi->free_blocks);
@@ -482,11 +598,19 @@ int hfsplus_file_extend(struct inode *inode)
 		}
 	}
 
+<<<<<<< HEAD
 	dprint(DBG_EXTENT, "extend %lu: %u,%u\n", inode->i_ino, start, len);
 
 	if (hip->alloc_blocks <= hip->first_blocks) {
 		if (!hip->first_blocks) {
 			dprint(DBG_EXTENT, "first extents\n");
+=======
+	hfs_dbg(EXTENT, "extend %lu: %u,%u\n", inode->i_ino, start, len);
+
+	if (hip->alloc_blocks <= hip->first_blocks) {
+		if (!hip->first_blocks) {
+			hfs_dbg(EXTENT, "first extents\n");
+>>>>>>> refs/remotes/origin/master
 			/* no extents yet */
 			hip->first_extents[0].start_block = cpu_to_be32(start);
 			hip->first_extents[0].block_count = cpu_to_be32(len);
@@ -523,6 +647,7 @@ out:
 	return res;
 
 insert_extent:
+<<<<<<< HEAD
 	dprint(DBG_EXTENT, "insert new extent\n");
 <<<<<<< HEAD
 	hfsplus_ext_write_extent_locked(inode);
@@ -531,6 +656,12 @@ insert_extent:
 	if (res)
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hfs_dbg(EXTENT, "insert new extent\n");
+	res = hfsplus_ext_write_extent_locked(inode);
+	if (res)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	memset(hip->cached_extents, 0, sizeof(hfsplus_extent_rec));
 	hip->cached_extents[0].start_block = cpu_to_be32(start);
@@ -552,9 +683,14 @@ void hfsplus_file_truncate(struct inode *inode)
 	u32 alloc_cnt, blk_cnt, start;
 	int res;
 
+<<<<<<< HEAD
 	dprint(DBG_INODE, "truncate: %lu, %llu -> %llu\n",
 		inode->i_ino, (long long)hip->phys_size,
 		inode->i_size);
+=======
+	hfs_dbg(INODE, "truncate: %lu, %llu -> %llu\n",
+		inode->i_ino, (long long)hip->phys_size, inode->i_size);
+>>>>>>> refs/remotes/origin/master
 
 	if (inode->i_size > hip->phys_size) {
 		struct address_space *mapping = inode->i_mapping;
@@ -562,9 +698,12 @@ void hfsplus_file_truncate(struct inode *inode)
 		void *fsdata;
 		loff_t size = inode->i_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int res;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		res = pagecache_write_begin(NULL, mapping, size, 0,
 						AOP_FLAG_UNINTERRUPTIBLE,
@@ -588,15 +727,21 @@ void hfsplus_file_truncate(struct inode *inode)
 
 	mutex_lock(&hip->extents_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hfs_find_init(HFSPLUS_SB(sb)->ext_tree, &fd);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	res = hfs_find_init(HFSPLUS_SB(sb)->ext_tree, &fd);
 	if (res) {
 		mutex_unlock(&hip->extents_lock);
 		/* XXX: We lack error handling of hfsplus_file_truncate() */
 		return;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		if (alloc_cnt == hip->first_blocks) {
 			hfsplus_free_extents(sb, hip->first_extents,

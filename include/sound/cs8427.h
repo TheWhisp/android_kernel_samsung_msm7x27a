@@ -109,9 +109,12 @@
 #define CS8427_SISPOL		(1<<1)	/* ICLK clock polarity, 0 = rising edge of ISCLK, 1 = falling edge of ISCLK */
 #define CS8427_SILRPOL		(1<<0)	/* ILRCK clock polarity, 0 = SDIN data left channel when ILRCK is high, 1 = SDIN right when ILRCK is high */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CS8427_BITWIDTH_MASK	0xCF
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* CS8427_REG_SERIALOUTPUT */
 #define CS8427_SOMS		(1<<7)	/* 0 = slave, 1 = master mode */
@@ -191,6 +194,7 @@
 #define CS8427_VER8427A		0x71
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* possible address cs8427 can take
  * based on the below combinations the upper four bits of 7bit
@@ -218,6 +222,8 @@ struct cs8427_platform_data {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct snd_pcm_substream;
 
 int snd_cs8427_create(struct snd_i2c_bus *bus, unsigned char addr,
@@ -230,7 +236,11 @@ int snd_cs8427_iec958_build(struct snd_i2c_device *cs8427,
 int snd_cs8427_iec958_active(struct snd_i2c_device *cs8427, int active);
 int snd_cs8427_iec958_pcm(struct snd_i2c_device *cs8427, unsigned int rate);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __SOUND_CS8427_H */

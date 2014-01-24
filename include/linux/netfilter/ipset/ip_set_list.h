@@ -1,6 +1,7 @@
 #ifndef __IP_SET_LIST_H
 #define __IP_SET_LIST_H
 
+<<<<<<< HEAD
 /* List type specific error codes */
 enum {
 	/* Set name to be added/deleted/tested does not exist. */
@@ -18,10 +19,17 @@ enum {
 };
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/netfilter/ipset/ip_set_list.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define IP_SET_LIST_DEFAULT_SIZE	8
 #define IP_SET_LIST_MIN_SIZE		4
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __IP_SET_LIST_H */

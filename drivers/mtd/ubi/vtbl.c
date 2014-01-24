@@ -37,16 +37,27 @@
  * LEB 1. This scheme guarantees recoverability from unclean reboots.
  *
  * In this UBI implementation the on-flash volume table does not contain any
+<<<<<<< HEAD
  * information about how many data static volumes contain. This information may
  * be found from the scanning data.
+=======
+ * information about how much data static volumes contain.
+>>>>>>> refs/remotes/origin/master
  *
  * But it would still be beneficial to store this information in the volume
  * table. For example, suppose we have a static volume X, and all its physical
  * eraseblocks became bad for some reasons. Suppose we are attaching the
+<<<<<<< HEAD
  * corresponding MTD device, the scanning has found no logical eraseblocks
  * corresponding to the volume X. According to the volume table volume X does
  * exist. So we don't know whether it is just empty or all its physical
  * eraseblocks went bad. So we cannot alarm the user about this corruption.
+=======
+ * corresponding MTD device, for some reason we find no logical eraseblocks
+ * corresponding to the volume X. According to the volume table volume X does
+ * exist. So we don't know whether it is just empty or all its physical
+ * eraseblocks went bad. So we cannot alarm the user properly.
+>>>>>>> refs/remotes/origin/master
  *
  * The volume table also stores so-called "update marker", which is used for
  * volume updates. Before updating the volume, the update marker is set, and
@@ -62,11 +73,15 @@
 #include <asm/div64.h>
 #include "ubi.h"
 
+<<<<<<< HEAD
 #ifdef CONFIG_MTD_UBI_DEBUG
 static void paranoid_vtbl_check(const struct ubi_device *ubi);
 #else
 #define paranoid_vtbl_check(ubi)
 #endif
+=======
+static void self_vtbl_check(const struct ubi_device *ubi);
+>>>>>>> refs/remotes/origin/master
 
 /* Empty volume table record */
 static struct ubi_vtbl_record empty_vtbl_record;
@@ -106,12 +121,20 @@ int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
 			return err;
 
 		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
+<<<<<<< HEAD
 					ubi->vtbl_size, UBI_LONGTERM);
+=======
+					ubi->vtbl_size);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 	}
 
+<<<<<<< HEAD
 	paranoid_vtbl_check(ubi);
+=======
+	self_vtbl_check(ubi);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -158,7 +181,11 @@ int ubi_vtbl_rename_volumes(struct ubi_device *ubi,
 			return err;
 
 		err = ubi_eba_write_leb(ubi, layout_vol, i, ubi->vtbl, 0,
+<<<<<<< HEAD
 					ubi->vtbl_size, UBI_LONGTERM);
+=======
+					ubi->vtbl_size);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 	}
@@ -197,7 +224,11 @@ static int vtbl_check(const struct ubi_device *ubi,
 		if (be32_to_cpu(vtbl[i].crc) != crc) {
 			ubi_err("bad CRC at record %u: %#08x, not %#08x",
 				 i, crc, be32_to_cpu(vtbl[i].crc));
+<<<<<<< HEAD
 			ubi_dbg_dump_vtbl_record(&vtbl[i], i);
+=======
+			ubi_dump_vtbl_record(&vtbl[i], i);
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		}
 
@@ -229,7 +260,11 @@ static int vtbl_check(const struct ubi_device *ubi,
 
 		n = ubi->leb_size % alignment;
 		if (data_pad != n) {
+<<<<<<< HEAD
 			dbg_err("bad data_pad, has to be %d", n);
+=======
+			ubi_err("bad data_pad, has to be %d", n);
+>>>>>>> refs/remotes/origin/master
 			err = 6;
 			goto bad;
 		}
@@ -245,7 +280,11 @@ static int vtbl_check(const struct ubi_device *ubi,
 		}
 
 		if (reserved_pebs > ubi->good_peb_count) {
+<<<<<<< HEAD
 			dbg_err("too large reserved_pebs %d, good PEBs %d",
+=======
+			ubi_err("too large reserved_pebs %d, good PEBs %d",
+>>>>>>> refs/remotes/origin/master
 				reserved_pebs, ubi->good_peb_count);
 			err = 9;
 			goto bad;
@@ -275,10 +314,17 @@ static int vtbl_check(const struct ubi_device *ubi,
 
 			if (len1 > 0 && len1 == len2 &&
 			    !strncmp(vtbl[i].name, vtbl[n].name, len1)) {
+<<<<<<< HEAD
 				ubi_err("volumes %d and %d have the same name"
 					" \"%s\"", i, n, vtbl[i].name);
 				ubi_dbg_dump_vtbl_record(&vtbl[i], i);
 				ubi_dbg_dump_vtbl_record(&vtbl[n], n);
+=======
+				ubi_err("volumes %d and %d have the same name \"%s\"",
+					i, n, vtbl[i].name);
+				ubi_dump_vtbl_record(&vtbl[i], i);
+				ubi_dump_vtbl_record(&vtbl[n], n);
+>>>>>>> refs/remotes/origin/master
 				return -EINVAL;
 			}
 		}
@@ -288,20 +334,29 @@ static int vtbl_check(const struct ubi_device *ubi,
 
 bad:
 	ubi_err("volume table check failed: record %d, error %d", i, err);
+<<<<<<< HEAD
 	ubi_dbg_dump_vtbl_record(&vtbl[i], i);
+=======
+	ubi_dump_vtbl_record(&vtbl[i], i);
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 
 /**
  * create_vtbl - create a copy of volume table.
  * @ubi: UBI device description object
+<<<<<<< HEAD
  * @si: scanning information
+=======
+ * @ai: attaching information
+>>>>>>> refs/remotes/origin/master
  * @copy: number of the volume table copy
  * @vtbl: contents of the volume table
  *
  * This function returns zero in case of success and a negative error code in
  * case of failure.
  */
+<<<<<<< HEAD
 static int create_vtbl(struct ubi_device *ubi, struct ubi_scan_info *si,
 		       int copy, void *vtbl)
 {
@@ -316,11 +371,22 @@ static int create_vtbl(struct ubi_device *ubi, struct ubi_scan_info *si,
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	ubi_msg("create volume table (copy #%d)", copy + 1);
+=======
+static int create_vtbl(struct ubi_device *ubi, struct ubi_attach_info *ai,
+		       int copy, void *vtbl)
+{
+	int err, tries = 0;
+	struct ubi_vid_hdr *vid_hdr;
+	struct ubi_ainf_peb *new_aeb;
+
+	dbg_gen("create volume table (copy #%d)", copy + 1);
+>>>>>>> refs/remotes/origin/master
 
 	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
 	if (!vid_hdr)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * Check if there is a logical eraseblock which would have to contain
@@ -345,24 +411,46 @@ retry:
 =======
 	vid_hdr->vol_type = UBI_LAYOUT_VOLUME_TYPE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+retry:
+	new_aeb = ubi_early_get_peb(ubi, ai);
+	if (IS_ERR(new_aeb)) {
+		err = PTR_ERR(new_aeb);
+		goto out_free;
+	}
+
+	vid_hdr->vol_type = UBI_LAYOUT_VOLUME_TYPE;
+>>>>>>> refs/remotes/origin/master
 	vid_hdr->vol_id = cpu_to_be32(UBI_LAYOUT_VOLUME_ID);
 	vid_hdr->compat = UBI_LAYOUT_VOLUME_COMPAT;
 	vid_hdr->data_size = vid_hdr->used_ebs =
 			     vid_hdr->data_pad = cpu_to_be32(0);
 	vid_hdr->lnum = cpu_to_be32(copy);
+<<<<<<< HEAD
 	vid_hdr->sqnum = cpu_to_be64(++si->max_sqnum);
 
 	/* The EC header is already there, write the VID header */
 	err = ubi_io_write_vid_hdr(ubi, new_seb->pnum, vid_hdr);
+=======
+	vid_hdr->sqnum = cpu_to_be64(++ai->max_sqnum);
+
+	/* The EC header is already there, write the VID header */
+	err = ubi_io_write_vid_hdr(ubi, new_aeb->pnum, vid_hdr);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto write_error;
 
 	/* Write the layout volume contents */
+<<<<<<< HEAD
 	err = ubi_io_write_data(ubi, vtbl, new_seb->pnum, 0, ubi->vtbl_size);
+=======
+	err = ubi_io_write_data(ubi, vtbl, new_aeb->pnum, 0, ubi->vtbl_size);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto write_error;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * And add it to the scanning information. Don't delete the old
 	 * @old_seb as it will be deleted and freed in 'ubi_scan_add_used()'.
@@ -374,6 +462,13 @@ retry:
 	err = ubi_scan_add_used(ubi, si, new_seb->pnum, new_seb->ec,
 				vid_hdr, 0);
 	kmem_cache_free(si->scan_leb_slab, new_seb);
+=======
+	 * And add it to the attaching information. Don't delete the old version
+	 * of this LEB as it will be deleted and freed in 'ubi_add_to_av()'.
+	 */
+	err = ubi_add_to_av(ubi, ai, new_aeb->pnum, new_aeb->ec, vid_hdr, 0);
+	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
+>>>>>>> refs/remotes/origin/master
 	ubi_free_vid_hdr(ubi, vid_hdr);
 	return err;
 
@@ -383,10 +478,17 @@ write_error:
 		 * Probably this physical eraseblock went bad, try to pick
 		 * another one.
 		 */
+<<<<<<< HEAD
 		list_add(&new_seb->u.list, &si->erase);
 		goto retry;
 	}
 	kmem_cache_free(si->scan_leb_slab, new_seb);
+=======
+		list_add(&new_aeb->u.list, &ai->erase);
+		goto retry;
+	}
+	kmem_cache_free(ai->aeb_slab_cache, new_aeb);
+>>>>>>> refs/remotes/origin/master
 out_free:
 	ubi_free_vid_hdr(ubi, vid_hdr);
 	return err;
@@ -396,20 +498,34 @@ out_free:
 /**
  * process_lvol - process the layout volume.
  * @ubi: UBI device description object
+<<<<<<< HEAD
  * @si: scanning information
  * @sv: layout volume scanning information
+=======
+ * @ai: attaching information
+ * @av: layout volume attaching information
+>>>>>>> refs/remotes/origin/master
  *
  * This function is responsible for reading the layout volume, ensuring it is
  * not corrupted, and recovering from corruptions if needed. Returns volume
  * table in case of success and a negative error code in case of failure.
  */
 static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
+<<<<<<< HEAD
 					    struct ubi_scan_info *si,
 					    struct ubi_scan_volume *sv)
 {
 	int err;
 	struct rb_node *rb;
 	struct ubi_scan_leb *seb;
+=======
+					    struct ubi_attach_info *ai,
+					    struct ubi_ainf_volume *av)
+{
+	int err;
+	struct rb_node *rb;
+	struct ubi_ainf_peb *aeb;
+>>>>>>> refs/remotes/origin/master
 	struct ubi_vtbl_record *leb[UBI_LAYOUT_VOLUME_EBS] = { NULL, NULL };
 	int leb_corrupted[UBI_LAYOUT_VOLUME_EBS] = {1, 1};
 
@@ -441,13 +557,20 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
 	dbg_gen("check layout volume");
 
 	/* Read both LEB 0 and LEB 1 into memory */
+<<<<<<< HEAD
 	ubi_rb_for_each_entry(rb, seb, &sv->root, u.rb) {
 		leb[seb->lnum] = vzalloc(ubi->vtbl_size);
 		if (!leb[seb->lnum]) {
+=======
+	ubi_rb_for_each_entry(rb, aeb, &av->root, u.rb) {
+		leb[aeb->lnum] = vzalloc(ubi->vtbl_size);
+		if (!leb[aeb->lnum]) {
+>>>>>>> refs/remotes/origin/master
 			err = -ENOMEM;
 			goto out_free;
 		}
 
+<<<<<<< HEAD
 		err = ubi_io_read_data(ubi, leb[seb->lnum], seb->pnum, 0,
 				       ubi->vtbl_size);
 <<<<<<< HEAD
@@ -455,17 +578,31 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
 =======
 		if (err == UBI_IO_BITFLIPS || mtd_is_eccerr(err))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubi_io_read_data(ubi, leb[aeb->lnum], aeb->pnum, 0,
+				       ubi->vtbl_size);
+		if (err == UBI_IO_BITFLIPS || mtd_is_eccerr(err))
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Scrub the PEB later. Note, -EBADMSG indicates an
 			 * uncorrectable ECC error, but we have our own CRC and
 			 * the data will be checked later. If the data is OK,
 			 * the PEB will be scrubbed (because we set
+<<<<<<< HEAD
 			 * seb->scrub). If the data is not OK, the contents of
 			 * the PEB will be recovered from the second copy, and
 			 * seb->scrub will be cleared in
 			 * 'ubi_scan_add_used()'.
 			 */
 			seb->scrub = 1;
+=======
+			 * aeb->scrub). If the data is not OK, the contents of
+			 * the PEB will be recovered from the second copy, and
+			 * aeb->scrub will be cleared in
+			 * 'ubi_add_to_av()'.
+			 */
+			aeb->scrub = 1;
+>>>>>>> refs/remotes/origin/master
 		else if (err)
 			goto out_free;
 	}
@@ -484,7 +621,11 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
 						  ubi->vtbl_size);
 		if (leb_corrupted[1]) {
 			ubi_warn("volume table copy #2 is corrupted");
+<<<<<<< HEAD
 			err = create_vtbl(ubi, si, 1, leb[0]);
+=======
+			err = create_vtbl(ubi, ai, 1, leb[0]);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				goto out_free;
 			ubi_msg("volume table was restored");
@@ -507,7 +648,11 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
 		}
 
 		ubi_warn("volume table copy #1 is corrupted");
+<<<<<<< HEAD
 		err = create_vtbl(ubi, si, 0, leb[1]);
+=======
+		err = create_vtbl(ubi, ai, 0, leb[1]);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out_free;
 		ubi_msg("volume table was restored");
@@ -525,13 +670,21 @@ out_free:
 /**
  * create_empty_lvol - create empty layout volume.
  * @ubi: UBI device description object
+<<<<<<< HEAD
  * @si: scanning information
+=======
+ * @ai: attaching information
+>>>>>>> refs/remotes/origin/master
  *
  * This function returns volume table contents in case of success and a
  * negative error code in case of failure.
  */
 static struct ubi_vtbl_record *create_empty_lvol(struct ubi_device *ubi,
+<<<<<<< HEAD
 						 struct ubi_scan_info *si)
+=======
+						 struct ubi_attach_info *ai)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct ubi_vtbl_record *vtbl;
@@ -546,7 +699,11 @@ static struct ubi_vtbl_record *create_empty_lvol(struct ubi_device *ubi,
 	for (i = 0; i < UBI_LAYOUT_VOLUME_EBS; i++) {
 		int err;
 
+<<<<<<< HEAD
 		err = create_vtbl(ubi, si, i, vtbl);
+=======
+		err = create_vtbl(ubi, ai, i, vtbl);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			vfree(vtbl);
 			return ERR_PTR(err);
@@ -559,18 +716,31 @@ static struct ubi_vtbl_record *create_empty_lvol(struct ubi_device *ubi,
 /**
  * init_volumes - initialize volume information for existing volumes.
  * @ubi: UBI device description object
+<<<<<<< HEAD
  * @si: scanning information
+=======
+ * @ai: scanning information
+>>>>>>> refs/remotes/origin/master
  * @vtbl: volume table
  *
  * This function allocates volume description objects for existing volumes.
  * Returns zero in case of success and a negative error code in case of
  * failure.
  */
+<<<<<<< HEAD
 static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
 			const struct ubi_vtbl_record *vtbl)
 {
 	int i, reserved_pebs = 0;
 	struct ubi_scan_volume *sv;
+=======
+static int init_volumes(struct ubi_device *ubi,
+			const struct ubi_attach_info *ai,
+			const struct ubi_vtbl_record *vtbl)
+{
+	int i, reserved_pebs = 0;
+	struct ubi_ainf_volume *av;
+>>>>>>> refs/remotes/origin/master
 	struct ubi_volume *vol;
 
 	for (i = 0; i < ubi->vtbl_slots; i++) {
@@ -598,8 +768,13 @@ static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
 		if (vtbl[i].flags & UBI_VTBL_AUTORESIZE_FLG) {
 			/* Auto re-size flag may be set only for one volume */
 			if (ubi->autoresize_vol_id != -1) {
+<<<<<<< HEAD
 				ubi_err("more than one auto-resize volume (%d "
 					"and %d)", ubi->autoresize_vol_id, i);
+=======
+				ubi_err("more than one auto-resize volume (%d and %d)",
+					ubi->autoresize_vol_id, i);
+>>>>>>> refs/remotes/origin/master
 				kfree(vol);
 				return -EINVAL;
 			}
@@ -626,8 +801,13 @@ static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
 		}
 
 		/* Static volumes only */
+<<<<<<< HEAD
 		sv = ubi_scan_find_sv(si, i);
 		if (!sv) {
+=======
+		av = ubi_find_av(ai, i);
+		if (!av) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * No eraseblocks belonging to this volume found. We
 			 * don't actually know whether this static volume is
@@ -639,22 +819,38 @@ static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
 			continue;
 		}
 
+<<<<<<< HEAD
 		if (sv->leb_count != sv->used_ebs) {
+=======
+		if (av->leb_count != av->used_ebs) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * We found a static volume which misses several
 			 * eraseblocks. Treat it as corrupted.
 			 */
 			ubi_warn("static volume %d misses %d LEBs - corrupted",
+<<<<<<< HEAD
 				 sv->vol_id, sv->used_ebs - sv->leb_count);
+=======
+				 av->vol_id, av->used_ebs - av->leb_count);
+>>>>>>> refs/remotes/origin/master
 			vol->corrupted = 1;
 			continue;
 		}
 
+<<<<<<< HEAD
 		vol->used_ebs = sv->used_ebs;
 		vol->used_bytes =
 			(long long)(vol->used_ebs - 1) * vol->usable_leb_size;
 		vol->used_bytes += sv->last_data_size;
 		vol->last_eb_bytes = sv->last_data_size;
+=======
+		vol->used_ebs = av->used_ebs;
+		vol->used_bytes =
+			(long long)(vol->used_ebs - 1) * vol->usable_leb_size;
+		vol->used_bytes += av->last_data_size;
+		vol->last_eb_bytes = av->last_data_size;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* And add the layout volume */
@@ -664,10 +860,14 @@ static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
 
 	vol->reserved_pebs = UBI_LAYOUT_VOLUME_EBS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vol->alignment = 1;
 =======
 	vol->alignment = UBI_LAYOUT_VOLUME_ALIGN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vol->alignment = UBI_LAYOUT_VOLUME_ALIGN;
+>>>>>>> refs/remotes/origin/master
 	vol->vol_type = UBI_DYNAMIC_VOLUME;
 	vol->name_len = sizeof(UBI_LAYOUT_VOLUME_NAME) - 1;
 	memcpy(vol->name, UBI_LAYOUT_VOLUME_NAME, vol->name_len + 1);
@@ -699,6 +899,7 @@ static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
 }
 
 /**
+<<<<<<< HEAD
  * check_sv - check volume scanning information.
  * @vol: UBI volume description object
  * @sv: volume scanning information
@@ -728,19 +929,57 @@ static int check_sv(const struct ubi_volume *vol,
 		goto bad;
 	}
 	if (sv->data_pad != vol->data_pad) {
+=======
+ * check_av - check volume attaching information.
+ * @vol: UBI volume description object
+ * @av: volume attaching information
+ *
+ * This function returns zero if the volume attaching information is consistent
+ * to the data read from the volume tabla, and %-EINVAL if not.
+ */
+static int check_av(const struct ubi_volume *vol,
+		    const struct ubi_ainf_volume *av)
+{
+	int err;
+
+	if (av->highest_lnum >= vol->reserved_pebs) {
+		err = 1;
+		goto bad;
+	}
+	if (av->leb_count > vol->reserved_pebs) {
+		err = 2;
+		goto bad;
+	}
+	if (av->vol_type != vol->vol_type) {
+		err = 3;
+		goto bad;
+	}
+	if (av->used_ebs > vol->reserved_pebs) {
+		err = 4;
+		goto bad;
+	}
+	if (av->data_pad != vol->data_pad) {
+>>>>>>> refs/remotes/origin/master
 		err = 5;
 		goto bad;
 	}
 	return 0;
 
 bad:
+<<<<<<< HEAD
 	ubi_err("bad scanning information, error %d", err);
 	ubi_dbg_dump_sv(sv);
 	ubi_dbg_dump_vol_info(vol);
+=======
+	ubi_err("bad attaching information, error %d", err);
+	ubi_dump_av(av);
+	ubi_dump_vol_info(vol);
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 
 /**
+<<<<<<< HEAD
  * check_scanning_info - check that scanning information.
  * @ubi: UBI device description object
  * @si: scanning information
@@ -767,37 +1006,87 @@ static int check_scanning_info(const struct ubi_device *ubi,
 	    si->highest_vol_id < UBI_INTERNAL_VOL_START) {
 		ubi_err("too large volume ID %d found by scanning",
 			si->highest_vol_id);
+=======
+ * check_attaching_info - check that attaching information.
+ * @ubi: UBI device description object
+ * @ai: attaching information
+ *
+ * Even though we protect on-flash data by CRC checksums, we still don't trust
+ * the media. This function ensures that attaching information is consistent to
+ * the information read from the volume table. Returns zero if the attaching
+ * information is OK and %-EINVAL if it is not.
+ */
+static int check_attaching_info(const struct ubi_device *ubi,
+			       struct ubi_attach_info *ai)
+{
+	int err, i;
+	struct ubi_ainf_volume *av;
+	struct ubi_volume *vol;
+
+	if (ai->vols_found > UBI_INT_VOL_COUNT + ubi->vtbl_slots) {
+		ubi_err("found %d volumes while attaching, maximum is %d + %d",
+			ai->vols_found, UBI_INT_VOL_COUNT, ubi->vtbl_slots);
+		return -EINVAL;
+	}
+
+	if (ai->highest_vol_id >= ubi->vtbl_slots + UBI_INT_VOL_COUNT &&
+	    ai->highest_vol_id < UBI_INTERNAL_VOL_START) {
+		ubi_err("too large volume ID %d found", ai->highest_vol_id);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	for (i = 0; i < ubi->vtbl_slots + UBI_INT_VOL_COUNT; i++) {
 		cond_resched();
 
+<<<<<<< HEAD
 		sv = ubi_scan_find_sv(si, i);
 		vol = ubi->volumes[i];
 		if (!vol) {
 			if (sv)
 				ubi_scan_rm_volume(si, sv);
+=======
+		av = ubi_find_av(ai, i);
+		vol = ubi->volumes[i];
+		if (!vol) {
+			if (av)
+				ubi_remove_av(ai, av);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
 		if (vol->reserved_pebs == 0) {
 			ubi_assert(i < ubi->vtbl_slots);
 
+<<<<<<< HEAD
 			if (!sv)
 				continue;
 
 			/*
 			 * During scanning we found a volume which does not
+=======
+			if (!av)
+				continue;
+
+			/*
+			 * During attaching we found a volume which does not
+>>>>>>> refs/remotes/origin/master
 			 * exist according to the information in the volume
 			 * table. This must have happened due to an unclean
 			 * reboot while the volume was being removed. Discard
 			 * these eraseblocks.
 			 */
+<<<<<<< HEAD
 			ubi_msg("finish volume %d removal", sv->vol_id);
 			ubi_scan_rm_volume(si, sv);
 		} else if (sv) {
 			err = check_sv(vol, sv);
+=======
+			ubi_msg("finish volume %d removal", av->vol_id);
+			ubi_remove_av(ai, av);
+		} else if (av) {
+			err = check_av(vol, av);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				return err;
 		}
@@ -809,16 +1098,27 @@ static int check_scanning_info(const struct ubi_device *ubi,
 /**
  * ubi_read_volume_table - read the volume table.
  * @ubi: UBI device description object
+<<<<<<< HEAD
  * @si: scanning information
+=======
+ * @ai: attaching information
+>>>>>>> refs/remotes/origin/master
  *
  * This function reads volume table, checks it, recover from errors if needed,
  * or creates it if needed. Returns zero in case of success and a negative
  * error code in case of failure.
  */
+<<<<<<< HEAD
 int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si)
 {
 	int i, err;
 	struct ubi_scan_volume *sv;
+=======
+int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_attach_info *ai)
+{
+	int i, err;
+	struct ubi_ainf_volume *av;
+>>>>>>> refs/remotes/origin/master
 
 	empty_vtbl_record.crc = cpu_to_be32(0xf116c36b);
 
@@ -833,8 +1133,13 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si)
 	ubi->vtbl_size = ubi->vtbl_slots * UBI_VTBL_RECORD_SIZE;
 	ubi->vtbl_size = ALIGN(ubi->vtbl_size, ubi->min_io_size);
 
+<<<<<<< HEAD
 	sv = ubi_scan_find_sv(si, UBI_LAYOUT_VOLUME_ID);
 	if (!sv) {
+=======
+	av = ubi_find_av(ai, UBI_LAYOUT_VOLUME_ID);
+	if (!av) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * No logical eraseblocks belonging to the layout volume were
 		 * found. This could mean that the flash is just empty. In
@@ -843,8 +1148,13 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si)
 		 * But if flash is not empty this must be a corruption or the
 		 * MTD device just contains garbage.
 		 */
+<<<<<<< HEAD
 		if (si->is_empty) {
 			ubi->vtbl = create_empty_lvol(ubi, si);
+=======
+		if (ai->is_empty) {
+			ubi->vtbl = create_empty_lvol(ubi, ai);
+>>>>>>> refs/remotes/origin/master
 			if (IS_ERR(ubi->vtbl))
 				return PTR_ERR(ubi->vtbl);
 		} else {
@@ -852,6 +1162,7 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si)
 			return -EINVAL;
 		}
 	} else {
+<<<<<<< HEAD
 		if (sv->leb_count > UBI_LAYOUT_VOLUME_EBS) {
 			/* This must not happen with proper UBI images */
 			dbg_err("too many LEBs (%d) in layout volume",
@@ -860,6 +1171,16 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si)
 		}
 
 		ubi->vtbl = process_lvol(ubi, si, sv);
+=======
+		if (av->leb_count > UBI_LAYOUT_VOLUME_EBS) {
+			/* This must not happen with proper UBI images */
+			ubi_err("too many LEBs (%d) in layout volume",
+				av->leb_count);
+			return -EINVAL;
+		}
+
+		ubi->vtbl = process_lvol(ubi, ai, av);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(ubi->vtbl))
 			return PTR_ERR(ubi->vtbl);
 	}
@@ -870,15 +1191,26 @@ int ubi_read_volume_table(struct ubi_device *ubi, struct ubi_scan_info *si)
 	 * The layout volume is OK, initialize the corresponding in-RAM data
 	 * structures.
 	 */
+<<<<<<< HEAD
 	err = init_volumes(ubi, si, ubi->vtbl);
+=======
+	err = init_volumes(ubi, ai, ubi->vtbl);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out_free;
 
 	/*
+<<<<<<< HEAD
 	 * Make sure that the scanning information is consistent to the
 	 * information stored in the volume table.
 	 */
 	err = check_scanning_info(ubi, si);
+=======
+	 * Make sure that the attaching information is consistent to the
+	 * information stored in the volume table.
+	 */
+	err = check_attaching_info(ubi, ai);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out_free;
 
@@ -893,6 +1225,7 @@ out_free:
 	return err;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_MTD_UBI_DEBUG
 
 /**
@@ -915,3 +1248,19 @@ static void paranoid_vtbl_check(const struct ubi_device *ubi)
 }
 
 #endif /* CONFIG_MTD_UBI_DEBUG */
+=======
+/**
+ * self_vtbl_check - check volume table.
+ * @ubi: UBI device description object
+ */
+static void self_vtbl_check(const struct ubi_device *ubi)
+{
+	if (!ubi_dbg_chk_gen(ubi))
+		return;
+
+	if (vtbl_check(ubi, ubi->vtbl)) {
+		ubi_err("self-check failed");
+		BUG();
+	}
+}
+>>>>>>> refs/remotes/origin/master

@@ -424,7 +424,10 @@ static void sonic_rx(struct net_device *dev)
 			/* Malloc up new buffer. */
 			new_skb = netdev_alloc_skb(dev, SONIC_RBSIZE + 2);
 			if (new_skb == NULL) {
+<<<<<<< HEAD
 				printk(KERN_ERR "%s: Memory squeeze, dropping packet.\n", dev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 				lp->stats.rx_dropped++;
 				break;
 			}

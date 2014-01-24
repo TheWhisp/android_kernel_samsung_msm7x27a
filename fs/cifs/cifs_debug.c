@@ -57,6 +57,7 @@ cifs_dump_mem(char *label, void *data, int length)
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_CIFS_DEBUG2
 <<<<<<< HEAD
 void cifs_dump_detail(struct smb_hdr *smb)
@@ -79,12 +80,47 @@ void cifs_dump_detail(void *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
 void cifs_dump_mids(struct TCP_Server_Info *server)
 {
+=======
+#ifdef CONFIG_CIFS_DEBUG
+void cifs_vfs_err(const char *fmt, ...)
+{
+	struct va_format vaf;
+	va_list args;
+
+	va_start(args, fmt);
+
+	vaf.fmt = fmt;
+	vaf.va = &args;
+
+	printk(KERN_ERR "CIFS VFS: %pV", &vaf);
+
+	va_end(args);
+}
+#endif
+
+void cifs_dump_detail(void *buf)
+{
+#ifdef CONFIG_CIFS_DEBUG2
+	struct smb_hdr *smb = (struct smb_hdr *)buf;
+
+	cifs_dbg(VFS, "Cmd: %d Err: 0x%x Flags: 0x%x Flgs2: 0x%x Mid: %d Pid: %d\n",
+		 smb->Command, smb->Status.CifsError,
+		 smb->Flags, smb->Flags2, smb->Mid, smb->Pid);
+	cifs_dbg(VFS, "smb buf %p len %u\n", smb, smbCalcSize(smb));
+#endif /* CONFIG_CIFS_DEBUG2 */
+}
+
+void cifs_dump_mids(struct TCP_Server_Info *server)
+{
+#ifdef CONFIG_CIFS_DEBUG2
+>>>>>>> refs/remotes/origin/master
 	struct list_head *tmp;
 	struct mid_q_entry *mid_entry;
 
 	if (server == NULL)
 		return;
 
+<<<<<<< HEAD
 	cERROR(1, "Dump pending requests:");
 	spin_lock(&GlobalMid_Lock);
 	list_for_each(tmp, &server->pending_mid_q) {
@@ -114,6 +150,27 @@ void cifs_dump_mids(struct TCP_Server_Info *server)
 #endif /* STATS2 */
 		cERROR(1, "IsMult: %d IsEnd: %d", mid_entry->multiRsp,
 			  mid_entry->multiEnd);
+=======
+	cifs_dbg(VFS, "Dump pending requests:\n");
+	spin_lock(&GlobalMid_Lock);
+	list_for_each(tmp, &server->pending_mid_q) {
+		mid_entry = list_entry(tmp, struct mid_q_entry, qhead);
+		cifs_dbg(VFS, "State: %d Cmd: %d Pid: %d Cbdata: %p Mid %llu\n",
+			 mid_entry->mid_state,
+			 le16_to_cpu(mid_entry->command),
+			 mid_entry->pid,
+			 mid_entry->callback_data,
+			 mid_entry->mid);
+#ifdef CONFIG_CIFS_STATS2
+		cifs_dbg(VFS, "IsLarge: %d buf: %p time rcv: %ld now: %ld\n",
+			 mid_entry->large_buf,
+			 mid_entry->resp_buf,
+			 mid_entry->when_received,
+			 jiffies);
+#endif /* STATS2 */
+		cifs_dbg(VFS, "IsMult: %d IsEnd: %d\n",
+			 mid_entry->multiRsp, mid_entry->multiEnd);
+>>>>>>> refs/remotes/origin/master
 		if (mid_entry->resp_buf) {
 			cifs_dump_detail(mid_entry->resp_buf);
 			cifs_dump_mem("existing buf: ",
@@ -121,8 +178,13 @@ void cifs_dump_mids(struct TCP_Server_Info *server)
 		}
 	}
 	spin_unlock(&GlobalMid_Lock);
+<<<<<<< HEAD
 }
 #endif /* CONFIG_CIFS_DEBUG2 */
+=======
+#endif /* CONFIG_CIFS_DEBUG2 */
+}
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PROC_FS
 static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
@@ -192,6 +254,7 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
 				   "Server: %d SecMode: 0x%x Req On Wire: %d",
 				   server->tcpStatus, server->srv_count,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   server->sec_mode,
 				   atomic_read(&server->inFlight));
 
@@ -199,12 +262,17 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
 			seq_printf(m, " In Send: %d In MaxReq Wait: %d",
 				atomic_read(&server->inSend),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				   server->sec_mode, in_flight(server));
 
 #ifdef CONFIG_CIFS_STATS2
 			seq_printf(m, " In Send: %d In MaxReq Wait: %d",
 				atomic_read(&server->in_send),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				atomic_read(&server->num_waiters));
 #endif
 
@@ -222,7 +290,11 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
 						   tcon->nativeFileSystem);
 				}
 				seq_printf(m, "DevInfo: 0x%x Attributes: 0x%x"
+<<<<<<< HEAD
 					"\nPathComponentMax: %d Status: 0x%d",
+=======
+					"\n\tPathComponentMax: %d Status: 0x%d",
+>>>>>>> refs/remotes/origin/master
 					le32_to_cpu(tcon->fsDevInfo.DeviceCharacteristics),
 					le32_to_cpu(tcon->fsAttrInfo.Attributes),
 					le32_to_cpu(tcon->fsAttrInfo.MaxPathNameComponentLength),
@@ -233,6 +305,11 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
 					seq_puts(m, " type: CDROM ");
 				else
 					seq_printf(m, " type: %d ", dev_type);
+<<<<<<< HEAD
+=======
+				if (server->ops->dump_share_caps)
+					server->ops->dump_share_caps(m, tcon);
+>>>>>>> refs/remotes/origin/master
 
 				if (tcon->need_reconnect)
 					seq_puts(m, "\tDISCONNECTED ");
@@ -247,6 +324,7 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
 					qhead);
 				seq_printf(m, "\tState: %d com: %d pid:"
 <<<<<<< HEAD
+<<<<<<< HEAD
 						" %d cbdata: %p mid %d\n",
 						mid_entry->midState,
 						(int)mid_entry->command,
@@ -254,13 +332,18 @@ static int cifs_debug_data_proc_show(struct seq_file *m, void *v)
 						mid_entry->callback_data,
 						mid_entry->mid);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      " %d cbdata: %p mid %llu\n",
 					      mid_entry->mid_state,
 					      le16_to_cpu(mid_entry->command),
 					      mid_entry->pid,
 					      mid_entry->callback_data,
 					      mid_entry->mid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			spin_unlock(&GlobalMid_Lock);
 		}
@@ -317,6 +400,7 @@ static ssize_t cifs_stats_proc_write(struct file *file,
 							  struct cifs_tcon,
 							  tcon_list);
 					atomic_set(&tcon->num_smbs_sent, 0);
+<<<<<<< HEAD
 					atomic_set(&tcon->num_writes, 0);
 					atomic_set(&tcon->num_reads, 0);
 					atomic_set(&tcon->num_oplock_brks, 0);
@@ -335,6 +419,10 @@ static ssize_t cifs_stats_proc_write(struct file *file,
 					atomic_set(&tcon->num_hardlinks, 0);
 					atomic_set(&tcon->num_symlinks, 0);
 					atomic_set(&tcon->num_locks, 0);
+=======
+					if (server->ops->clear_stats)
+						server->ops->clear_stats(tcon);
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		}
@@ -393,6 +481,7 @@ static int cifs_stats_proc_show(struct seq_file *m, void *v)
 				seq_printf(m, "\n%d) %s", i, tcon->treeName);
 				if (tcon->need_reconnect)
 					seq_puts(m, "\tDISCONNECTED ");
+<<<<<<< HEAD
 				seq_printf(m, "\nSMBs: %d Oplock Breaks: %d",
 					atomic_read(&tcon->num_smbs_sent),
 					atomic_read(&tcon->num_oplock_brks));
@@ -429,6 +518,12 @@ static int cifs_stats_proc_show(struct seq_file *m, void *v)
 					atomic_read(&tcon->num_ffirst),
 					atomic_read(&tcon->num_fnext),
 					atomic_read(&tcon->num_fclose));
+=======
+				seq_printf(m, "\nSMBs: %d",
+					   atomic_read(&tcon->num_smbs_sent));
+				if (server->ops->print_stats)
+					server->ops->print_stats(m, tcon);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -456,12 +551,17 @@ static const struct file_operations cifs_stats_proc_fops = {
 static struct proc_dir_entry *proc_fs_cifs;
 static const struct file_operations cifsFYI_proc_fops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct file_operations cifs_oplock_proc_fops;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 static const struct file_operations cifs_lookup_cache_proc_fops;
 static const struct file_operations traceSMB_proc_fops;
 static const struct file_operations cifs_multiuser_mount_proc_fops;
+=======
+static const struct file_operations cifs_lookup_cache_proc_fops;
+static const struct file_operations traceSMB_proc_fops;
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations cifs_security_flags_proc_fops;
 static const struct file_operations cifs_linux_ext_proc_fops;
 
@@ -480,6 +580,7 @@ cifs_proc_init(void)
 	proc_create("cifsFYI", 0, proc_fs_cifs, &cifsFYI_proc_fops);
 	proc_create("traceSMB", 0, proc_fs_cifs, &traceSMB_proc_fops);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	proc_create("OplockEnabled", 0, proc_fs_cifs, &cifs_oplock_proc_fops);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -487,6 +588,10 @@ cifs_proc_init(void)
 		    &cifs_linux_ext_proc_fops);
 	proc_create("MultiuserMount", 0, proc_fs_cifs,
 		    &cifs_multiuser_mount_proc_fops);
+=======
+	proc_create("LinuxExtensionsEnabled", 0, proc_fs_cifs,
+		    &cifs_linux_ext_proc_fops);
+>>>>>>> refs/remotes/origin/master
 	proc_create("SecurityFlags", 0, proc_fs_cifs,
 		    &cifs_security_flags_proc_fops);
 	proc_create("LookupCacheEnabled", 0, proc_fs_cifs,
@@ -505,11 +610,14 @@ cifs_proc_clean(void)
 #ifdef CONFIG_CIFS_STATS
 	remove_proc_entry("Stats", proc_fs_cifs);
 #endif
+<<<<<<< HEAD
 	remove_proc_entry("MultiuserMount", proc_fs_cifs);
 <<<<<<< HEAD
 	remove_proc_entry("OplockEnabled", proc_fs_cifs);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	remove_proc_entry("SecurityFlags", proc_fs_cifs);
 	remove_proc_entry("LinuxExtensionsEnabled", proc_fs_cifs);
 	remove_proc_entry("LookupCacheEnabled", proc_fs_cifs);
@@ -556,6 +664,7 @@ static const struct file_operations cifsFYI_proc_fops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int cifs_oplock_proc_show(struct seq_file *m, void *v)
 {
 	seq_printf(m, "%d\n", oplockEnabled);
@@ -595,6 +704,8 @@ static const struct file_operations cifs_oplock_proc_fops = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int cifs_linux_ext_proc_show(struct seq_file *m, void *v)
 {
 	seq_printf(m, "%d\n", linuxExtEnabled);
@@ -706,6 +817,7 @@ static const struct file_operations traceSMB_proc_fops = {
 	.write		= traceSMB_proc_write,
 };
 
+<<<<<<< HEAD
 static int cifs_multiuser_mount_proc_show(struct seq_file *m, void *v)
 {
 	seq_printf(m, "%d\n", multiuser_mount);
@@ -769,11 +881,52 @@ static int cifs_security_flags_proc_show(struct seq_file *m, void *v)
 static int cifs_security_flags_proc_open(struct inode *inode, struct file *file)
 {
 	return single_open(file, cifs_security_flags_proc_show, NULL);
+=======
+static int cifs_security_flags_proc_show(struct seq_file *m, void *v)
+{
+	seq_printf(m, "0x%x\n", global_secflags);
+	return 0;
+}
+
+static int cifs_security_flags_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, cifs_security_flags_proc_show, NULL);
+}
+
+/*
+ * Ensure that if someone sets a MUST flag, that we disable all other MAY
+ * flags except for the ones corresponding to the given MUST flag. If there are
+ * multiple MUST flags, then try to prefer more secure ones.
+ */
+static void
+cifs_security_flags_handle_must_flags(unsigned int *flags)
+{
+	unsigned int signflags = *flags & CIFSSEC_MUST_SIGN;
+
+	if ((*flags & CIFSSEC_MUST_KRB5) == CIFSSEC_MUST_KRB5)
+		*flags = CIFSSEC_MUST_KRB5;
+	else if ((*flags & CIFSSEC_MUST_NTLMSSP) == CIFSSEC_MUST_NTLMSSP)
+		*flags = CIFSSEC_MUST_NTLMSSP;
+	else if ((*flags & CIFSSEC_MUST_NTLMV2) == CIFSSEC_MUST_NTLMV2)
+		*flags = CIFSSEC_MUST_NTLMV2;
+	else if ((*flags & CIFSSEC_MUST_NTLM) == CIFSSEC_MUST_NTLM)
+		*flags = CIFSSEC_MUST_NTLM;
+	else if ((*flags & CIFSSEC_MUST_LANMAN) == CIFSSEC_MUST_LANMAN)
+		*flags = CIFSSEC_MUST_LANMAN;
+	else if ((*flags & CIFSSEC_MUST_PLNTXT) == CIFSSEC_MUST_PLNTXT)
+		*flags = CIFSSEC_MUST_PLNTXT;
+
+	*flags |= signflags;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t cifs_security_flags_proc_write(struct file *file,
 		const char __user *buffer, size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 	unsigned int flags;
 	char flags_string[12];
 	char c;
@@ -796,6 +949,7 @@ static ssize_t cifs_security_flags_proc_write(struct file *file,
 			global_secflags = CIFSSEC_MAX;
 			return count;
 		} else if (!isdigit(c)) {
+<<<<<<< HEAD
 			cERROR(1, "invalid flag %c", c);
 			return -EINVAL;
 		}
@@ -808,22 +962,58 @@ static ssize_t cifs_security_flags_proc_write(struct file *file,
 
 	if (flags <= 0)  {
 		cERROR(1, "invalid security flags %s", flags_string);
+=======
+			cifs_dbg(VFS, "Invalid SecurityFlags: %s\n",
+					flags_string);
+			return -EINVAL;
+		}
+	}
+
+	/* else we have a number */
+	rc = kstrtouint(flags_string, 0, &flags);
+	if (rc) {
+		cifs_dbg(VFS, "Invalid SecurityFlags: %s\n",
+				flags_string);
+		return rc;
+	}
+
+	cifs_dbg(FYI, "sec flags 0x%x\n", flags);
+
+	if (flags == 0)  {
+		cifs_dbg(VFS, "Invalid SecurityFlags: %s\n", flags_string);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	if (flags & ~CIFSSEC_MASK) {
+<<<<<<< HEAD
 		cERROR(1, "attempt to set unsupported security flags 0x%x",
 			flags & ~CIFSSEC_MASK);
 		return -EINVAL;
 	}
+=======
+		cifs_dbg(VFS, "Unsupported security flags: 0x%x\n",
+			 flags & ~CIFSSEC_MASK);
+		return -EINVAL;
+	}
+
+	cifs_security_flags_handle_must_flags(&flags);
+
+>>>>>>> refs/remotes/origin/master
 	/* flags look ok - update the global security flags for cifs module */
 	global_secflags = flags;
 	if (global_secflags & CIFSSEC_MUST_SIGN) {
 		/* requiring signing implies signing is allowed */
 		global_secflags |= CIFSSEC_MAY_SIGN;
+<<<<<<< HEAD
 		cFYI(1, "packet signing now required");
 	} else if ((global_secflags & CIFSSEC_MAY_SIGN) == 0) {
 		cFYI(1, "packet signing disabled");
+=======
+		cifs_dbg(FYI, "packet signing now required\n");
+	} else if ((global_secflags & CIFSSEC_MAY_SIGN) == 0) {
+		cifs_dbg(FYI, "packet signing disabled\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	/* BB should we turn on MAY flags for other MUST options? */
 	return count;

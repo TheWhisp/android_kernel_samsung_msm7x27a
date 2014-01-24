@@ -12,6 +12,7 @@
  */
 #include <linux/pci.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include "pci-sh4.h"
 
 static char irq_tab[] __initdata = {
@@ -25,4 +26,12 @@ int __init pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	return irq_tab[slot];
+=======
+#include <linux/sh_intc.h>
+#include "pci-sh4.h"
+
+int __init pcibios_map_platform_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
+{
+	return evt2irq(0xa20) + slot;
+>>>>>>> refs/remotes/origin/master
 }

@@ -54,10 +54,14 @@ MODULE_DESCRIPTION("FTDI ELAN driver");
 MODULE_LICENSE("GPL");
 #define INT_MODULE_PARM(n, v) static int n = v;module_param(n, int, 0444)
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int distrust_firmware = 1;
 =======
 static bool distrust_firmware = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool distrust_firmware = 1;
+>>>>>>> refs/remotes/origin/master
 module_param(distrust_firmware, bool, 0);
 MODULE_PARM_DESC(distrust_firmware, "true to distrust firmware power/overcurren"
         "t setup");
@@ -192,10 +196,14 @@ struct usb_ftdi {
         u8 response[4 + 1024];
         int expected;
 <<<<<<< HEAD
+<<<<<<< HEAD
         int recieved;
 =======
         int received;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        int received;
+>>>>>>> refs/remotes/origin/master
         int ed_found;
 };
 #define kref_to_usb_ftdi(d) container_of(d, struct usb_ftdi, kref)
@@ -362,10 +370,14 @@ static void ftdi_elan_abandon_targets(struct usb_ftdi *ftdi)
                 }
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         ftdi->recieved = 0;
 =======
         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
         ftdi->expected = 4;
         ftdi->ed_found = 0;
         mutex_unlock(&ftdi->u132_lock);
@@ -424,10 +436,14 @@ static void ftdi_elan_flush_targets(struct usb_ftdi *ftdi)
                 }
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         ftdi->recieved = 0;
 =======
         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
         ftdi->expected = 4;
         ftdi->ed_found = 0;
         mutex_unlock(&ftdi->u132_lock);
@@ -464,10 +480,14 @@ static void ftdi_elan_cancel_targets(struct usb_ftdi *ftdi)
                 }
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
         ftdi->recieved = 0;
 =======
         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
         ftdi->expected = 4;
         ftdi->ed_found = 0;
         mutex_unlock(&ftdi->u132_lock);
@@ -895,10 +915,14 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
                         ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
                                 payload);
 <<<<<<< HEAD
+<<<<<<< HEAD
                         ftdi->recieved = 0;
 =======
                         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
                         ftdi->expected = 4;
                         ftdi->ed_found = 0;
                         return ftdi->response;
@@ -915,10 +939,14 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
                         ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
                                 payload);
 <<<<<<< HEAD
+<<<<<<< HEAD
                         ftdi->recieved = 0;
 =======
                         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
                         ftdi->expected = 4;
                         ftdi->ed_found = 0;
                         return ftdi->response;
@@ -934,10 +962,14 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
                 ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
                         payload);
 <<<<<<< HEAD
+<<<<<<< HEAD
                 ftdi->recieved = 0;
 =======
                 ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
                 ftdi->expected = 4;
                 ftdi->ed_found = 0;
                 return ftdi->response;
@@ -947,10 +979,14 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
                 ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
                         payload);
 <<<<<<< HEAD
+<<<<<<< HEAD
                 ftdi->recieved = 0;
 =======
                 ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
                 ftdi->expected = 4;
                 ftdi->ed_found = 0;
                 return ftdi->response;
@@ -971,10 +1007,14 @@ static char *have_ed_get_response(struct usb_ftdi *ftdi,
                 ftdi_elan_do_callback(ftdi, target, NULL, 0);
         target->abandoning = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
         ftdi->recieved = 0;
 =======
         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
         ftdi->expected = 4;
         ftdi->ed_found = 0;
         return ftdi->response;
@@ -992,10 +1032,14 @@ static char *have_ed_get_response(struct usb_ftdi *ftdi,
 static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         u8 *b = ftdi->response + ftdi->recieved;
 =======
         u8 *b = ftdi->response + ftdi->received;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        u8 *b = ftdi->response + ftdi->received;
+>>>>>>> refs/remotes/origin/master
         int bytes_read = 0;
         int retry_on_empty = 1;
         int retry_on_timeout = 3;
@@ -1088,18 +1132,24 @@ static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
                 bytes_read += 1;
                 ftdi->bulk_in_left -= 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (ftdi->recieved == 0 && c == 0xFF) {
                         goto have;
                 } else
                         *b++ = c;
                 if (++ftdi->recieved < ftdi->expected) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
                 if (ftdi->received == 0 && c == 0xFF) {
                         goto have;
                 } else
                         *b++ = c;
                 if (++ftdi->received < ftdi->expected) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
                         goto have;
                 } else if (ftdi->ed_found) {
                         int ed_number = (ftdi->response[0] >> 5) & 0x03;
@@ -1122,10 +1172,14 @@ static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
                         ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
                                 payload);
 <<<<<<< HEAD
+<<<<<<< HEAD
                         ftdi->recieved = 0;
 =======
                         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
                         ftdi->expected = 4;
                         ftdi->ed_found = 0;
                         b = ftdi->response;
@@ -1146,10 +1200,14 @@ static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
                         *respond->result = 0;
                         complete(&respond->wait_completion);
 <<<<<<< HEAD
+<<<<<<< HEAD
                         ftdi->recieved = 0;
 =======
                         ftdi->received = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                        ftdi->received = 0;
+>>>>>>> refs/remotes/origin/master
                         ftdi->expected = 4;
                         ftdi->ed_found = 0;
                         b = ftdi->response;
@@ -2838,10 +2896,14 @@ static int ftdi_elan_probe(struct usb_interface *interface,
                 if (!ftdi->bulk_in_endpointAddr &&
 		    usb_endpoint_is_bulk_in(endpoint)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                         buffer_size = le16_to_cpu(endpoint->wMaxPacketSize);
 =======
                         buffer_size = usb_endpoint_maxp(endpoint);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+                        buffer_size = usb_endpoint_maxp(endpoint);
+>>>>>>> refs/remotes/origin/master
                         ftdi->bulk_in_size = buffer_size;
                         ftdi->bulk_in_endpointAddr = endpoint->bEndpointAddress;
                         ftdi->bulk_in_buffer = kmalloc(buffer_size, GFP_KERNEL);

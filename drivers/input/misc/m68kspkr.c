@@ -48,7 +48,11 @@ static int m68kspkr_event(struct input_dev *dev, unsigned int type, unsigned int
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit m68kspkr_probe(struct platform_device *dev)
+=======
+static int m68kspkr_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input_dev;
 	int err;
@@ -80,12 +84,19 @@ static int __devinit m68kspkr_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit m68kspkr_remove(struct platform_device *dev)
+=======
+static int m68kspkr_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input_dev = platform_get_drvdata(dev);
 
 	input_unregister_device(input_dev);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	/* turn off the speaker */
 	m68kspkr_event(NULL, EV_SND, SND_BELL, 0);
 
@@ -104,7 +115,11 @@ static struct platform_driver m68kspkr_platform_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= m68kspkr_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(m68kspkr_remove),
+=======
+	.remove		= m68kspkr_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= m68kspkr_shutdown,
 };
 

@@ -9,10 +9,18 @@
  * http://www.gnu.org/copyleft/gpl.html
  */
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
 #include <mach/devices-common.h>
 #include "crmregs-imx3.h"
+=======
+
+#include "common.h"
+#include "crmregs-imx3.h"
+#include "devices/devices-common.h"
+#include "hardware.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Set cpu low power mode before WFI instruction. This function is called
@@ -21,14 +29,22 @@
  */
 void mx3_cpu_lp_set(enum mx3_cpu_pwr_mode mode)
 {
+<<<<<<< HEAD
 	int reg = __raw_readl(MXC_CCM_CCMR);
+=======
+	int reg = __raw_readl(mx3_ccm_base + MXC_CCM_CCMR);
+>>>>>>> refs/remotes/origin/master
 	reg &= ~MXC_CCM_CCMR_LPM_MASK;
 
 	switch (mode) {
 	case MX3_WAIT:
 		if (cpu_is_mx35())
 			reg |= MXC_CCM_CCMR_LPM_WAIT_MX35;
+<<<<<<< HEAD
 		__raw_writel(reg, MXC_CCM_CCMR);
+=======
+		__raw_writel(reg, mx3_ccm_base + MXC_CCM_CCMR);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		pr_err("Unknown cpu power mode: %d\n", mode);

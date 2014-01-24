@@ -8,10 +8,14 @@
 /* This is a fairly generic PCMCIA socket driver suitable for the
  * following Alchemy Development boards:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Db1000, Db/Pb1500, Db/Pb1100, Db/Pb1550, Db/Pb1200.
 =======
  *  Db1000, Db/Pb1500, Db/Pb1100, Db/Pb1550, Db/Pb1200, Db1300
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Db1000, Db/Pb1500, Db/Pb1100, Db/Pb1550, Db/Pb1200, Db1300
+>>>>>>> refs/remotes/origin/master
  *
  * The Db1000 is used as a reference:  Per-socket card-, carddetect- and
  *  statuschange IRQs connected to SoC GPIOs, control and status register
@@ -23,9 +27,13 @@
  *			  at STATUS[5:4] (instead of STATUS[1:0]).
  *	- Au1200-based:	  additional card-eject irqs, irqs not gpios!
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *	- Db1300:	  Db1200-like, no pwr ctrl, single socket (#1).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	- Db1300:	  Db1200-like, no pwr ctrl, single socket (#1).
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/delay.h>
@@ -33,9 +41,13 @@
 #include <linux/interrupt.h>
 #include <linux/pm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/resource.h>
 #include <linux/slab.h>
@@ -71,22 +83,32 @@ struct db1x_pcmcia_sock {
 #define BOARD_TYPE_DB1200	1	/* IRQs aren't gpios */
 #define BOARD_TYPE_PB1100	2	/* VS bits slightly different */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define BOARD_TYPE_DB1300	3	/* no power control */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BOARD_TYPE_DB1300	3	/* no power control */
+>>>>>>> refs/remotes/origin/master
 	int	board_type;
 };
 
 #define to_db1x_socket(x) container_of(x, struct db1x_pcmcia_sock, socket)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int db1300_card_inserted(struct db1x_pcmcia_sock *sock)
 {
 	return bcsr_read(BCSR_SIGSTAT) & (1 << 8);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* DB/PB1200: check CPLD SIGSTATUS register bit 10/12 */
 static int db1200_card_inserted(struct db1x_pcmcia_sock *sock)
 {
@@ -108,10 +130,15 @@ static int db1x_card_inserted(struct db1x_pcmcia_sock *sock)
 	case BOARD_TYPE_DB1200:
 		return db1200_card_inserted(sock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case BOARD_TYPE_DB1300:
 		return db1300_card_inserted(sock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case BOARD_TYPE_DB1300:
+		return db1300_card_inserted(sock);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return db1000_card_inserted(sock);
 	}
@@ -189,24 +216,34 @@ static int db1x_pcmcia_setup_irqs(struct db1x_pcmcia_sock *sock)
 	 * active one disabled.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sock->board_type == BOARD_TYPE_DB1200) {
 		ret = request_irq(sock->insert_irq, db1200_pcmcia_cdirq,
 				  IRQF_DISABLED, "pcmcia_insert", sock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((sock->board_type == BOARD_TYPE_DB1200) ||
 	    (sock->board_type == BOARD_TYPE_DB1300)) {
 		ret = request_irq(sock->insert_irq, db1200_pcmcia_cdirq,
 				  0, "pcmcia_insert", sock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ret)
 			goto out1;
 
 		ret = request_irq(sock->eject_irq, db1200_pcmcia_cdirq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  IRQF_DISABLED, "pcmcia_eject", sock);
 =======
 				  0, "pcmcia_eject", sock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  0, "pcmcia_eject", sock);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			free_irq(sock->insert_irq, sock);
 			goto out1;
@@ -214,10 +251,14 @@ static int db1x_pcmcia_setup_irqs(struct db1x_pcmcia_sock *sock)
 
 		/* enable the currently silent one */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (db1200_card_inserted(sock))
 =======
 		if (db1x_card_inserted(sock))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (db1x_card_inserted(sock))
+>>>>>>> refs/remotes/origin/master
 			enable_irq(sock->eject_irq);
 		else
 			enable_irq(sock->insert_irq);
@@ -314,11 +355,16 @@ static int db1x_pcmcia_configure(struct pcmcia_socket *skt,
 
 	/* create new voltage code */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cr_set |= ((v << 2) | p) << (sock->nr * 8);
 =======
 	if (sock->board_type != BOARD_TYPE_DB1300)
 		cr_set |= ((v << 2) | p) << (sock->nr * 8);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sock->board_type != BOARD_TYPE_DB1300)
+		cr_set |= ((v << 2) | p) << (sock->nr * 8);
+>>>>>>> refs/remotes/origin/master
 
 	changed = state->flags ^ sock->old_flags;
 
@@ -392,12 +438,18 @@ static int db1x_pcmcia_get_status(struct pcmcia_socket *skt,
 	status |= GET_VCC(cr, sock->nr) ? SS_POWERON : 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* DB1300: power always on, but don't tell when no card present */
 	if ((sock->board_type == BOARD_TYPE_DB1300) && (status & SS_DETECT))
 		status = SS_POWERON | SS_3VCARD | SS_DETECT;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* reset de-asserted? then we're ready */
 	status |= (GET_RESET(cr, sock->nr)) ? SS_READY : SS_RESET;
 
@@ -449,7 +501,11 @@ static struct pccard_operations db1x_pcmcia_operations = {
 	.set_mem_map		= au1x00_pcmcia_set_mem_map,
 };
 
+<<<<<<< HEAD
 static int __devinit db1x_pcmcia_socket_probe(struct platform_device *pdev)
+=======
+static int db1x_pcmcia_socket_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct db1x_pcmcia_sock *sock;
 	struct resource *r;
@@ -475,11 +531,17 @@ static int __devinit db1x_pcmcia_socket_probe(struct platform_device *pdev)
 		sock->board_type = BOARD_TYPE_DB1200;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case BCSR_WHOAMI_DB1300:
 		sock->board_type = BOARD_TYPE_DB1300;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case BCSR_WHOAMI_DB1300:
+		sock->board_type = BOARD_TYPE_DB1300;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		printk(KERN_INFO "db1xxx-ss: unknown board %d!\n", bid);
 		ret = -ENODEV;
@@ -602,7 +664,11 @@ out0:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit db1x_pcmcia_socket_remove(struct platform_device *pdev)
+=======
+static int db1x_pcmcia_socket_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct db1x_pcmcia_sock *sock = platform_get_drvdata(pdev);
 
@@ -620,6 +686,7 @@ static struct platform_driver db1x_pcmcia_socket_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= db1x_pcmcia_socket_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(db1x_pcmcia_socket_remove),
 };
 
@@ -639,6 +706,12 @@ module_exit(db1x_pcmcia_socket_unload);
 =======
 module_platform_driver(db1x_pcmcia_socket_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= db1x_pcmcia_socket_remove,
+};
+
+module_platform_driver(db1x_pcmcia_socket_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("PCMCIA Socket Services for Alchemy Db/Pb1x00 boards");

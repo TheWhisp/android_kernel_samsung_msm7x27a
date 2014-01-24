@@ -66,10 +66,15 @@ struct sk_buff *tipc_cfg_do_cmd(u32 orig_node, u16 cmd,
 				int headroom);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void tipc_cfg_link_event(u32 addr, char *name, int up);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 int  tipc_cfg_init(void);
+=======
+int  tipc_cfg_init(void);
+void tipc_cfg_reinit(void);
+>>>>>>> refs/remotes/origin/master
 void tipc_cfg_stop(void);
 
 #endif

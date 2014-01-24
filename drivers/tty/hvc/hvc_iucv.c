@@ -656,21 +656,76 @@ static void hvc_iucv_notifier_hangup(struct hvc_struct *hp, int id)
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * hvc_iucv_dtr_rts() - HVC notifier for handling DTR/RTS
+ * @hp:		Pointer the HVC device (struct hvc_struct)
+ * @raise:	Non-zero to raise or zero to lower DTR/RTS lines
+ *
+ * This routine notifies the HVC back-end to raise or lower DTR/RTS
+ * lines.  Raising DTR/RTS is ignored.  Lowering DTR/RTS indicates to
+ * drop the IUCV connection (similar to hang up the modem).
+ */
+static void hvc_iucv_dtr_rts(struct hvc_struct *hp, int raise)
+{
+	struct hvc_iucv_private *priv;
+	struct iucv_path        *path;
+
+	/* Raising the DTR/RTS is ignored as IUCV connections can be
+	 * established at any times.
+	 */
+	if (raise)
+		return;
+
+	priv = hvc_iucv_get_private(hp->vtermno);
+	if (!priv)
+		return;
+
+	/* Lowering the DTR/RTS lines disconnects an established IUCV
+	 * connection.
+	 */
+	flush_sndbuf_sync(priv);
+
+	spin_lock_bh(&priv->lock);
+	path = priv->path;		/* save reference to IUCV path */
+	priv->path = NULL;
+	priv->iucv_state = IUCV_DISCONN;
+	spin_unlock_bh(&priv->lock);
+
+	/* Sever IUCV path outside of priv->lock due to lock ordering of:
+	 * priv->lock <--> iucv_table_lock */
+	if (path) {
+		iucv_path_sever(path, NULL);
+		iucv_path_free(path);
+	}
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * hvc_iucv_notifier_del() - HVC notifier for closing a TTY for the last time.
  * @hp:		Pointer to the HVC device (struct hvc_struct)
  * @id:		Additional data (originally passed to hvc_alloc):
  *		the index of an struct hvc_iucv_private instance.
  *
  * This routine notifies the HVC back-end that the last tty device fd has been
+<<<<<<< HEAD
  * closed.  The function calls hvc_iucv_cleanup() to clean up the struct
  * hvc_iucv_private instance.
+=======
+ * closed.  The function cleans up tty resources.  The clean-up of the IUCV
+ * connection is done in hvc_iucv_dtr_rts() and depends on the HUPCL termios
+ * control setting.
+>>>>>>> refs/remotes/origin/master
  *
  * Locking:	struct hvc_iucv_private->lock
  */
 static void hvc_iucv_notifier_del(struct hvc_struct *hp, int id)
 {
 	struct hvc_iucv_private *priv;
+<<<<<<< HEAD
 	struct iucv_path	*path;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	priv = hvc_iucv_get_private(id);
 	if (!priv)
@@ -679,6 +734,7 @@ static void hvc_iucv_notifier_del(struct hvc_struct *hp, int id)
 	flush_sndbuf_sync(priv);
 
 	spin_lock_bh(&priv->lock);
+<<<<<<< HEAD
 	path = priv->path;		/* save reference to IUCV path */
 	priv->path = NULL;
 	hvc_iucv_cleanup(priv);
@@ -690,6 +746,13 @@ static void hvc_iucv_notifier_del(struct hvc_struct *hp, int id)
 		iucv_path_sever(path, NULL);
 		iucv_path_free(path);
 	}
+=======
+	destroy_tty_buffer_list(&priv->tty_outqueue);
+	destroy_tty_buffer_list(&priv->tty_inqueue);
+	priv->tty_state = TTY_CLOSED;
+	priv->sndbuf_len = 0;
+	spin_unlock_bh(&priv->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -931,6 +994,10 @@ static const struct hv_ops hvc_iucv_ops = {
 	.notifier_add = hvc_iucv_notifier_add,
 	.notifier_del = hvc_iucv_notifier_del,
 	.notifier_hangup = hvc_iucv_notifier_hangup,
+<<<<<<< HEAD
+=======
+	.dtr_rts = hvc_iucv_dtr_rts,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Suspend / resume device operations */
@@ -1316,8 +1383,12 @@ out_error_memory:
 	mempool_destroy(hvc_iucv_mempool);
 	kmem_cache_destroy(hvc_iucv_buffer_cache);
 out_error:
+<<<<<<< HEAD
 	if (hvc_iucv_filter)
 		kfree(hvc_iucv_filter);
+=======
+	kfree(hvc_iucv_filter);
+>>>>>>> refs/remotes/origin/master
 	hvc_iucv_devices = 0; /* ensure that we do not provide any device */
 	return rc;
 }
@@ -1328,7 +1399,11 @@ out_error:
  */
 static	int __init hvc_iucv_config(char *val)
 {
+<<<<<<< HEAD
 	 return strict_strtoul(val, 10, &hvc_iucv_devices);
+=======
+	 return kstrtoul(val, 10, &hvc_iucv_devices);
+>>>>>>> refs/remotes/origin/master
 }
 
 

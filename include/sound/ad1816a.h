@@ -20,9 +20,15 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 */
 
+<<<<<<< HEAD
 #include "control.h"
 #include "pcm.h"
 #include "timer.h"
+=======
+#include <sound/control.h>
+#include <sound/pcm.h>
+#include <sound/timer.h>
+>>>>>>> refs/remotes/origin/master
 
 #define AD1816A_REG(r)			(chip->port + r)
 
@@ -147,6 +153,12 @@ struct snd_ad1816a {
 	unsigned int c_dma_size;
 
 	struct snd_timer *timer;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+	unsigned short image[48];
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -165,11 +177,22 @@ struct snd_ad1816a {
 
 extern int snd_ad1816a_create(struct snd_card *card, unsigned long port,
 			      int irq, int dma1, int dma2,
+<<<<<<< HEAD
 			      struct snd_ad1816a **chip);
+=======
+			      struct snd_ad1816a *chip);
+>>>>>>> refs/remotes/origin/master
 
 extern int snd_ad1816a_pcm(struct snd_ad1816a *chip, int device, struct snd_pcm **rpcm);
 extern int snd_ad1816a_mixer(struct snd_ad1816a *chip);
 extern int snd_ad1816a_timer(struct snd_ad1816a *chip, int device,
 			     struct snd_timer **rtimer);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+extern void snd_ad1816a_suspend(struct snd_ad1816a *chip);
+extern void snd_ad1816a_resume(struct snd_ad1816a *chip);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __SOUND_AD1816A_H */

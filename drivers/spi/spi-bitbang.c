@@ -40,7 +40,11 @@
  * to glue code.  These bitbang setup() and cleanup() routines are always
  * used, though maybe they're called from controller-aware code.
  *
+<<<<<<< HEAD
  * chipselect() and friends may use use spi_device->controller_data and
+=======
+ * chipselect() and friends may use spi_device->controller_data and
+>>>>>>> refs/remotes/origin/master
  * controller registers as appropriate.
  *
  *
@@ -69,7 +73,11 @@ static unsigned bitbang_txrx_8(
 	unsigned		ns,
 	struct spi_transfer	*t
 ) {
+<<<<<<< HEAD
 	unsigned		bits = t->bits_per_word ? : spi->bits_per_word;
+=======
+	unsigned		bits = t->bits_per_word;
+>>>>>>> refs/remotes/origin/master
 	unsigned		count = t->len;
 	const u8		*tx = t->tx_buf;
 	u8			*rx = t->rx_buf;
@@ -95,7 +103,11 @@ static unsigned bitbang_txrx_16(
 	unsigned		ns,
 	struct spi_transfer	*t
 ) {
+<<<<<<< HEAD
 	unsigned		bits = t->bits_per_word ? : spi->bits_per_word;
+=======
+	unsigned		bits = t->bits_per_word;
+>>>>>>> refs/remotes/origin/master
 	unsigned		count = t->len;
 	const u16		*tx = t->tx_buf;
 	u16			*rx = t->rx_buf;
@@ -121,7 +133,11 @@ static unsigned bitbang_txrx_32(
 	unsigned		ns,
 	struct spi_transfer	*t
 ) {
+<<<<<<< HEAD
 	unsigned		bits = t->bits_per_word ? : spi->bits_per_word;
+=======
+	unsigned		bits = t->bits_per_word;
+>>>>>>> refs/remotes/origin/master
 	unsigned		count = t->len;
 	const u32		*tx = t->tx_buf;
 	u32			*rx = t->rx_buf;
@@ -191,7 +207,11 @@ int spi_bitbang_setup(struct spi_device *spi)
 	bitbang = spi_master_get_devdata(spi->master);
 
 	if (!cs) {
+<<<<<<< HEAD
 		cs = kzalloc(sizeof *cs, GFP_KERNEL);
+=======
+		cs = kzalloc(sizeof(*cs), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!cs)
 			return -ENOMEM;
 		spi->controller_state = cs;
@@ -255,6 +275,7 @@ static int spi_bitbang_bufs(struct spi_device *spi, struct spi_transfer *t)
  * Drivers can provide word-at-a-time i/o primitives, or provide
  * transfer-at-a-time ones to leverage dma or fifo hardware.
  */
+<<<<<<< HEAD
 static void bitbang_work(struct work_struct *work)
 {
 	struct spi_bitbang	*bitbang =
@@ -367,10 +388,112 @@ static void bitbang_work(struct work_struct *work)
 		 * be for this chip too.
 		 */
 		if (!(status == 0 && cs_change)) {
+=======
+
+static int spi_bitbang_prepare_hardware(struct spi_master *spi)
+{
+	struct spi_bitbang	*bitbang;
+	unsigned long		flags;
+
+	bitbang = spi_master_get_devdata(spi);
+
+	spin_lock_irqsave(&bitbang->lock, flags);
+	bitbang->busy = 1;
+	spin_unlock_irqrestore(&bitbang->lock, flags);
+
+	return 0;
+}
+
+static int spi_bitbang_transfer_one(struct spi_master *master,
+				    struct spi_message *m)
+{
+	struct spi_bitbang	*bitbang;
+	unsigned		nsecs;
+	struct spi_transfer	*t = NULL;
+	unsigned		cs_change;
+	int			status;
+	int			do_setup = -1;
+	struct spi_device	*spi = m->spi;
+
+	bitbang = spi_master_get_devdata(master);
+
+	/* FIXME this is made-up ... the correct value is known to
+	 * word-at-a-time bitbang code, and presumably chipselect()
+	 * should enforce these requirements too?
+	 */
+	nsecs = 100;
+
+	cs_change = 1;
+	status = 0;
+
+	list_for_each_entry(t, &m->transfers, transfer_list) {
+
+		/* override speed or wordsize? */
+		if (t->speed_hz || t->bits_per_word)
+			do_setup = 1;
+
+		/* init (-1) or override (1) transfer params */
+		if (do_setup != 0) {
+			status = bitbang->setup_transfer(spi, t);
+			if (status < 0)
+				break;
+			if (do_setup == -1)
+				do_setup = 0;
+		}
+
+		/* set up default clock polarity, and activate chip;
+		 * this implicitly updates clock and spi modes as
+		 * previously recorded for this device via setup().
+		 * (and also deselects any other chip that might be
+		 * selected ...)
+		 */
+		if (cs_change) {
+			bitbang->chipselect(spi, BITBANG_CS_ACTIVE);
+			ndelay(nsecs);
+		}
+		cs_change = t->cs_change;
+		if (!t->tx_buf && !t->rx_buf && t->len) {
+			status = -EINVAL;
+			break;
+		}
+
+		/* transfer data.  the lower level code handles any
+		 * new dma mappings it needs. our caller always gave
+		 * us dma-safe buffers.
+		 */
+		if (t->len) {
+			/* REVISIT dma API still needs a designated
+			 * DMA_ADDR_INVALID; ~0 might be better.
+			 */
+			if (!m->is_dma_mapped)
+				t->rx_dma = t->tx_dma = 0;
+			status = bitbang->txrx_bufs(spi, t);
+		}
+		if (status > 0)
+			m->actual_length += status;
+		if (status != t->len) {
+			/* always report some kind of error */
+			if (status >= 0)
+				status = -EREMOTEIO;
+			break;
+		}
+		status = 0;
+
+		/* protocol tweaks before next transfer */
+		if (t->delay_usecs)
+			udelay(t->delay_usecs);
+
+		if (cs_change &&
+		    !list_is_last(&t->transfer_list, &m->transfers)) {
+			/* sometimes a short mid-message deselect of the chip
+			 * may be needed to terminate a mode or command
+			 */
+>>>>>>> refs/remotes/origin/master
 			ndelay(nsecs);
 			bitbang->chipselect(spi, BITBANG_CS_INACTIVE);
 			ndelay(nsecs);
 		}
+<<<<<<< HEAD
 
 		spin_lock_irqsave(&bitbang->lock, flags);
 	}
@@ -404,6 +527,40 @@ int spi_bitbang_transfer(struct spi_device *spi, struct spi_message *m)
 	return status;
 }
 EXPORT_SYMBOL_GPL(spi_bitbang_transfer);
+=======
+	}
+
+	m->status = status;
+
+	/* normally deactivate chipselect ... unless no error and
+	 * cs_change has hinted that the next message will probably
+	 * be for this chip too.
+	 */
+	if (!(status == 0 && cs_change)) {
+		ndelay(nsecs);
+		bitbang->chipselect(spi, BITBANG_CS_INACTIVE);
+		ndelay(nsecs);
+	}
+
+	spi_finalize_current_message(master);
+
+	return status;
+}
+
+static int spi_bitbang_unprepare_hardware(struct spi_master *spi)
+{
+	struct spi_bitbang	*bitbang;
+	unsigned long		flags;
+
+	bitbang = spi_master_get_devdata(spi);
+
+	spin_lock_irqsave(&bitbang->lock, flags);
+	bitbang->busy = 0;
+	spin_unlock_irqrestore(&bitbang->lock, flags);
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*----------------------------------------------------------------------*/
 
@@ -429,6 +586,7 @@ EXPORT_SYMBOL_GPL(spi_bitbang_transfer);
  * This routine registers the spi_master, which will process requests in a
  * dedicated task, keeping IRQs unblocked most of the time.  To stop
  * processing those requests, call spi_bitbang_stop().
+<<<<<<< HEAD
  */
 int spi_bitbang_start(struct spi_bitbang *bitbang)
 {
@@ -469,11 +627,50 @@ int spi_bitbang_start(struct spi_bitbang *bitbang)
 	if (bitbang->workqueue == NULL) {
 		status = -EBUSY;
 		goto err1;
+=======
+ *
+ * On success, this routine will take a reference to master. The caller is
+ * responsible for calling spi_bitbang_stop() to decrement the reference and
+ * spi_master_put() as counterpart of spi_alloc_master() to prevent a memory
+ * leak.
+ */
+int spi_bitbang_start(struct spi_bitbang *bitbang)
+{
+	struct spi_master *master = bitbang->master;
+	int ret;
+
+	if (!master || !bitbang->chipselect)
+		return -EINVAL;
+
+	spin_lock_init(&bitbang->lock);
+
+	if (!master->mode_bits)
+		master->mode_bits = SPI_CPOL | SPI_CPHA | bitbang->flags;
+
+	if (master->transfer || master->transfer_one_message)
+		return -EINVAL;
+
+	master->prepare_transfer_hardware = spi_bitbang_prepare_hardware;
+	master->unprepare_transfer_hardware = spi_bitbang_unprepare_hardware;
+	master->transfer_one_message = spi_bitbang_transfer_one;
+
+	if (!bitbang->txrx_bufs) {
+		bitbang->use_dma = 0;
+		bitbang->txrx_bufs = spi_bitbang_bufs;
+		if (!master->setup) {
+			if (!bitbang->setup_transfer)
+				bitbang->setup_transfer =
+					 spi_bitbang_setup_transfer;
+			master->setup = spi_bitbang_setup;
+			master->cleanup = spi_bitbang_cleanup;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* driver may get busy before register() returns, especially
 	 * if someone registered boardinfo for devices
 	 */
+<<<<<<< HEAD
 	status = spi_register_master(bitbang->master);
 	if (status < 0)
 		goto err2;
@@ -484,6 +681,13 @@ err2:
 	destroy_workqueue(bitbang->workqueue);
 err1:
 	return status;
+=======
+	ret = spi_register_master(spi_master_get(master));
+	if (ret)
+		spi_master_put(master);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(spi_bitbang_start);
 
@@ -494,10 +698,13 @@ int spi_bitbang_stop(struct spi_bitbang *bitbang)
 {
 	spi_unregister_master(bitbang->master);
 
+<<<<<<< HEAD
 	WARN_ON(!list_empty(&bitbang->queue));
 
 	destroy_workqueue(bitbang->workqueue);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL_GPL(spi_bitbang_stop);

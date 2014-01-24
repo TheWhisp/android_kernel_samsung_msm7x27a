@@ -31,6 +31,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 
@@ -41,13 +42,25 @@
 #include "i810_drv.h"
 
 #include "drm_pciids.h"
+=======
+#include <linux/module.h>
+
+#include <drm/drmP.h>
+#include <drm/i810_drm.h>
+#include "i810_drv.h"
+
+#include <drm/drm_pciids.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_device_id pciidlist[] = {
 	i810_PCI_IDS
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations i810_driver_fops = {
 	.owner = THIS_MODULE,
 	.open = drm_open,
@@ -55,6 +68,7 @@ static const struct file_operations i810_driver_fops = {
 	.unlocked_ioctl = drm_ioctl,
 	.mmap = drm_mmap,
 	.poll = drm_poll,
+<<<<<<< HEAD
 	.fasync = drm_fasync,
 	.llseek = noop_llseek,
 };
@@ -64,11 +78,24 @@ static struct drm_driver driver = {
 	.driver_features =
 	    DRIVER_USE_AGP | DRIVER_REQUIRE_AGP | DRIVER_USE_MTRR |
 	    DRIVER_HAVE_DMA | DRIVER_DMA_QUEUE,
+=======
+#ifdef CONFIG_COMPAT
+	.compat_ioctl = drm_compat_ioctl,
+#endif
+	.llseek = noop_llseek,
+};
+
+static struct drm_driver driver = {
+	.driver_features =
+	    DRIVER_USE_AGP | DRIVER_REQUIRE_AGP |
+	    DRIVER_HAVE_DMA,
+>>>>>>> refs/remotes/origin/master
 	.dev_priv_size = sizeof(drm_i810_buf_priv_t),
 	.load = i810_driver_load,
 	.lastclose = i810_driver_lastclose,
 	.preclose = i810_driver_preclose,
 	.device_is_agp = i810_driver_device_is_agp,
+<<<<<<< HEAD
 	.reclaim_buffers_locked = i810_driver_reclaim_buffers_locked,
 	.dma_quiescent = i810_driver_dma_quiescent,
 	.ioctls = i810_ioctls,
@@ -87,6 +114,11 @@ static struct drm_driver driver = {
 =======
 	.fops = &i810_driver_fops,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dma_quiescent = i810_driver_dma_quiescent,
+	.ioctls = i810_ioctls,
+	.fops = &i810_driver_fops,
+>>>>>>> refs/remotes/origin/master
 	.name = DRIVER_NAME,
 	.desc = DRIVER_DESC,
 	.date = DRIVER_DATE,

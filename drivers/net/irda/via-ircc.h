@@ -211,10 +211,14 @@ static void DisableDmaChannel(unsigned int channel)
 	default:
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	};			//Switch
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned char ReadLPCReg(int iRegNum)

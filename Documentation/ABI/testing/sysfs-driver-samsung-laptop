@@ -2,10 +2,14 @@ What:		/sys/devices/platform/samsung/performance_level
 Date:		January 1, 2010
 KernelVersion:	2.6.33
 <<<<<<< HEAD
+<<<<<<< HEAD
 Contact:	Greg Kroah-Hartman <gregkh@suse.de>
 =======
 Contact:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Contact:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>>>> refs/remotes/origin/master
 Description:	Some Samsung laptops have different "performance levels"
 		that are can be modified by a function key, and by this
 		sysfs file.  These values don't always make a whole lot
@@ -22,7 +26,10 @@ Description:	Some Samsung laptops have different "performance levels"
 		and it's still unknown if this value even changes
 		anything, other than making the user feel a bit better.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 What:		/sys/devices/platform/samsung/battery_life_extender
 Date:		December 1, 2011
@@ -41,4 +48,7 @@ Contact:	Corentin Chary <corentin.chary@gmail.com>
 Description:	Use your USB ports to charge devices, even
 		when your laptop is powered off.
 		1 means enabled, 0 means disabled.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

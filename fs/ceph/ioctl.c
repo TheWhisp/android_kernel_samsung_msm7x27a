@@ -16,18 +16,30 @@
  */
 static long ceph_ioctl_get_layout(struct file *file, void __user *arg)
 {
+<<<<<<< HEAD
 	struct ceph_inode_info *ci = ceph_inode(file->f_dentry->d_inode);
 	struct ceph_ioctl_layout l;
 	int err;
 
 	err = ceph_do_getattr(file->f_dentry->d_inode, CEPH_STAT_CAP_LAYOUT);
+=======
+	struct ceph_inode_info *ci = ceph_inode(file_inode(file));
+	struct ceph_ioctl_layout l;
+	int err;
+
+	err = ceph_do_getattr(file_inode(file), CEPH_STAT_CAP_LAYOUT);
+>>>>>>> refs/remotes/origin/master
 	if (!err) {
 		l.stripe_unit = ceph_file_layout_su(ci->i_layout);
 		l.stripe_count = ceph_file_layout_stripe_count(ci->i_layout);
 		l.object_size = ceph_file_layout_object_size(ci->i_layout);
 		l.data_pool = le32_to_cpu(ci->i_layout.fl_pg_pool);
+<<<<<<< HEAD
 		l.preferred_osd =
 			(s32)le32_to_cpu(ci->i_layout.fl_pg_preferred);
+=======
+		l.preferred_osd = (s32)-1;
+>>>>>>> refs/remotes/origin/master
 		if (copy_to_user(arg, &l, sizeof(l)))
 			return -EFAULT;
 	}
@@ -35,6 +47,7 @@ static long ceph_ioctl_get_layout(struct file *file, void __user *arg)
 	return err;
 }
 
+<<<<<<< HEAD
 static long ceph_ioctl_set_layout(struct file *file, void __user *arg)
 {
 	struct inode *inode = file->f_dentry->d_inode;
@@ -55,18 +68,57 @@ static long ceph_ioctl_set_layout(struct file *file, void __user *arg)
 	    (l.object_size &&
 	     (unsigned)l.object_size % (unsigned)l.stripe_unit))
 =======
+=======
+static long __validate_layout(struct ceph_mds_client *mdsc,
+			      struct ceph_ioctl_layout *l)
+{
+	int i, err;
+
+	/* validate striping parameters */
+	if ((l->object_size & ~PAGE_MASK) ||
+	    (l->stripe_unit & ~PAGE_MASK) ||
+	    (l->stripe_unit != 0 &&
+	     ((unsigned)l->object_size % (unsigned)l->stripe_unit)))
+		return -EINVAL;
+
+	/* make sure it's a valid data pool */
+	mutex_lock(&mdsc->mutex);
+	err = -EINVAL;
+	for (i = 0; i < mdsc->mdsmap->m_num_data_pg_pools; i++)
+		if (mdsc->mdsmap->m_data_pg_pools[i] == l->data_pool) {
+			err = 0;
+			break;
+		}
+	mutex_unlock(&mdsc->mutex);
+	if (err)
+		return err;
+
+	return 0;
+}
+
+static long ceph_ioctl_set_layout(struct file *file, void __user *arg)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct inode *parent_inode;
 	struct ceph_mds_client *mdsc = ceph_sb_to_client(inode->i_sb)->mdsc;
 	struct ceph_mds_request *req;
 	struct ceph_ioctl_layout l;
+<<<<<<< HEAD
 	struct ceph_inode_info *ci = ceph_inode(file->f_dentry->d_inode);
 	struct ceph_ioctl_layout nl;
 	int err, i;
+=======
+	struct ceph_inode_info *ci = ceph_inode(file_inode(file));
+	struct ceph_ioctl_layout nl;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	if (copy_from_user(&l, arg, sizeof(l)))
 		return -EFAULT;
 
 	/* validate changed params against current layout */
+<<<<<<< HEAD
 	err = ceph_do_getattr(file->f_dentry->d_inode, CEPH_STAT_CAP_LAYOUT);
 	if (!err) {
 		nl.stripe_unit = ceph_file_layout_su(ci->i_layout);
@@ -108,6 +160,36 @@ static long ceph_ioctl_set_layout(struct file *file, void __user *arg)
 		if (err)
 			return err;
 	}
+=======
+	err = ceph_do_getattr(file_inode(file), CEPH_STAT_CAP_LAYOUT);
+	if (err)
+		return err;
+
+	memset(&nl, 0, sizeof(nl));
+	if (l.stripe_count)
+		nl.stripe_count = l.stripe_count;
+	else
+		nl.stripe_count = ceph_file_layout_stripe_count(ci->i_layout);
+	if (l.stripe_unit)
+		nl.stripe_unit = l.stripe_unit;
+	else
+		nl.stripe_unit = ceph_file_layout_su(ci->i_layout);
+	if (l.object_size)
+		nl.object_size = l.object_size;
+	else
+		nl.object_size = ceph_file_layout_object_size(ci->i_layout);
+	if (l.data_pool)
+		nl.data_pool = l.data_pool;
+	else
+		nl.data_pool = ceph_file_layout_pg_pool(ci->i_layout);
+
+	/* this is obsolete, and always -1 */
+	nl.preferred_osd = le64_to_cpu(-1);
+
+	err = __validate_layout(mdsc, &nl);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	req = ceph_mdsc_create_request(mdsc, CEPH_MDS_OP_SETLAYOUT,
 				       USE_AUTH_MDS);
@@ -124,6 +206,7 @@ static long ceph_ioctl_set_layout(struct file *file, void __user *arg)
 	req->r_args.setlayout.layout.fl_object_size =
 		cpu_to_le32(l.object_size);
 	req->r_args.setlayout.layout.fl_pg_pool = cpu_to_le32(l.data_pool);
+<<<<<<< HEAD
 	req->r_args.setlayout.layout.fl_pg_preferred =
 		cpu_to_le32(l.preferred_osd);
 
@@ -134,6 +217,12 @@ static long ceph_ioctl_set_layout(struct file *file, void __user *arg)
 	err = ceph_mdsc_do_request(mdsc, parent_inode, req);
 	iput(parent_inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	parent_inode = ceph_get_dentry_parent_inode(file->f_dentry);
+	err = ceph_mdsc_do_request(mdsc, parent_inode, req);
+	iput(parent_inode);
+>>>>>>> refs/remotes/origin/master
 	ceph_mdsc_put_request(req);
 	return err;
 }
@@ -146,16 +235,24 @@ static long ceph_ioctl_set_layout(struct file *file, void __user *arg)
  */
 static long ceph_ioctl_set_layout_policy (struct file *file, void __user *arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
 	struct ceph_mds_request *req;
 	struct ceph_ioctl_layout l;
 	int err, i;
+=======
+	struct inode *inode = file_inode(file);
+	struct ceph_mds_request *req;
+	struct ceph_ioctl_layout l;
+	int err;
+>>>>>>> refs/remotes/origin/master
 	struct ceph_mds_client *mdsc = ceph_sb_to_client(inode->i_sb)->mdsc;
 
 	/* copy and validate */
 	if (copy_from_user(&l, arg, sizeof(l)))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	if ((l.object_size & ~PAGE_MASK) ||
 	    (l.stripe_unit & ~PAGE_MASK) ||
 	    !l.stripe_unit ||
@@ -176,6 +273,11 @@ static long ceph_ioctl_set_layout_policy (struct file *file, void __user *arg)
 		if (err)
 			return err;
 	}
+=======
+	err = __validate_layout(mdsc, &l);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	req = ceph_mdsc_create_request(mdsc, CEPH_MDS_OP_SETDIRLAYOUT,
 				       USE_AUTH_MDS);
@@ -193,8 +295,11 @@ static long ceph_ioctl_set_layout_policy (struct file *file, void __user *arg)
 			cpu_to_le32(l.object_size);
 	req->r_args.setlayout.layout.fl_pg_pool =
 			cpu_to_le32(l.data_pool);
+<<<<<<< HEAD
 	req->r_args.setlayout.layout.fl_pg_preferred =
 			cpu_to_le32(l.preferred_osd);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = ceph_mdsc_do_request(mdsc, inode, req);
 	ceph_mdsc_put_request(req);
@@ -208,22 +313,41 @@ static long ceph_ioctl_set_layout_policy (struct file *file, void __user *arg)
 static long ceph_ioctl_get_dataloc(struct file *file, void __user *arg)
 {
 	struct ceph_ioctl_dataloc dl;
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct ceph_inode_info *ci = ceph_inode(inode);
 	struct ceph_osd_client *osdc =
 		&ceph_sb_to_client(inode->i_sb)->client->osdc;
 	u64 len = 1, olen;
 	u64 tmp;
+<<<<<<< HEAD
 	struct ceph_object_layout ol;
 	struct ceph_pg pgid;
+=======
+	struct ceph_pg pgid;
+	int r;
+>>>>>>> refs/remotes/origin/master
 
 	/* copy and validate */
 	if (copy_from_user(&dl, arg, sizeof(dl)))
 		return -EFAULT;
 
 	down_read(&osdc->map_sem);
+<<<<<<< HEAD
 	ceph_calc_file_object_mapping(&ci->i_layout, dl.file_offset, &len,
 				      &dl.object_no, &dl.object_offset, &olen);
+=======
+	r = ceph_calc_file_object_mapping(&ci->i_layout, dl.file_offset, len,
+					  &dl.object_no, &dl.object_offset,
+					  &olen);
+	if (r < 0) {
+		up_read(&osdc->map_sem);
+		return -EIO;
+	}
+>>>>>>> refs/remotes/origin/master
 	dl.file_offset -= dl.object_offset;
 	dl.object_size = ceph_file_layout_object_size(ci->i_layout);
 	dl.block_size = ceph_file_layout_su(ci->i_layout);
@@ -234,10 +358,21 @@ static long ceph_ioctl_get_dataloc(struct file *file, void __user *arg)
 
 	snprintf(dl.object_name, sizeof(dl.object_name), "%llx.%08llx",
 		 ceph_ino(inode), dl.object_no);
+<<<<<<< HEAD
 	ceph_calc_object_layout(&ol, dl.object_name, &ci->i_layout,
 				osdc->osdmap);
 
 	pgid = ol.ol_pgid;
+=======
+
+	r = ceph_calc_ceph_pg(&pgid, dl.object_name, osdc->osdmap,
+				ceph_file_layout_pg_pool(ci->i_layout));
+	if (r < 0) {
+		up_read(&osdc->map_sem);
+		return r;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dl.osd = ceph_calc_pg_primary(osdc->osdmap, pgid);
 	if (dl.osd >= 0) {
 		struct ceph_entity_addr *a =
@@ -259,6 +394,7 @@ static long ceph_ioctl_get_dataloc(struct file *file, void __user *arg)
 static long ceph_ioctl_lazyio(struct file *file)
 {
 	struct ceph_file_info *fi = file->private_data;
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
 	struct ceph_inode_info *ci = ceph_inode(inode);
 
@@ -270,12 +406,21 @@ static long ceph_ioctl_lazyio(struct file *file)
 		ci->i_nr_by_mode[fi->fmode]++;
 		spin_unlock(&inode->i_lock);
 =======
+=======
+	struct inode *inode = file_inode(file);
+	struct ceph_inode_info *ci = ceph_inode(inode);
+
+	if ((fi->fmode & CEPH_FILE_MODE_LAZY) == 0) {
+>>>>>>> refs/remotes/origin/master
 		spin_lock(&ci->i_ceph_lock);
 		ci->i_nr_by_mode[fi->fmode]--;
 		fi->fmode |= CEPH_FILE_MODE_LAZY;
 		ci->i_nr_by_mode[fi->fmode]++;
 		spin_unlock(&ci->i_ceph_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dout("ioctl_layzio: file %p marked lazy\n", file);
 
 		ceph_check_caps(ci, 0, NULL);
@@ -286,7 +431,10 @@ static long ceph_ioctl_lazyio(struct file *file)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static long ceph_ioctl_syncio(struct file *file)
 {
 	struct ceph_file_info *fi = file->private_data;
@@ -295,7 +443,10 @@ static long ceph_ioctl_syncio(struct file *file)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 long ceph_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	dout("ioctl file %p cmd %u arg %lu\n", file, cmd, arg);
@@ -315,11 +466,17 @@ long ceph_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case CEPH_IOC_LAZYIO:
 		return ceph_ioctl_lazyio(file);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	case CEPH_IOC_SYNCIO:
 		return ceph_ioctl_syncio(file);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	case CEPH_IOC_SYNCIO:
+		return ceph_ioctl_syncio(file);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ENOTTY;

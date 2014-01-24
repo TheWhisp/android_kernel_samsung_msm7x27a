@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 * algif_skcipher: User-space interface for skcipher algorithms
 *
 * This file provides the user-space API for symmetric key ciphers.
@@ -13,6 +14,8 @@
 *
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * algif_skcipher: User-space interface for skcipher algorithms
  *
  * This file provides the user-space API for symmetric key ciphers.
@@ -25,7 +28,10 @@
  * any later version.
  *
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <crypto/scatterwalk.h>
 #include <crypto/skcipher.h>
@@ -39,6 +45,7 @@
 #include <net/sock.h>
 
 struct skcipher_sg_list {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct list_head list;
 
@@ -76,6 +83,8 @@ static inline int skcipher_sndbuf(struct sock *sk)
         return max_t(int, max_t(int, sk->sk_sndbuf & PAGE_MASK, PAGE_SIZE) -
                          ctx->used, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head list;
 
 	int cur;
@@ -111,20 +120,28 @@ static inline int skcipher_sndbuf(struct sock *sk)
 
 	return max_t(int, max_t(int, sk->sk_sndbuf & PAGE_MASK, PAGE_SIZE) -
 			  ctx->used, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline bool skcipher_writable(struct sock *sk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return PAGE_SIZE <= skcipher_sndbuf(sk);
 =======
 	return PAGE_SIZE <= skcipher_sndbuf(sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return PAGE_SIZE <= skcipher_sndbuf(sk);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int skcipher_alloc_sgl(struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct alg_sock *ask = alg_sk(sk);
         struct skcipher_ctx *ctx = ask->private;
@@ -153,6 +170,8 @@ static int skcipher_alloc_sgl(struct sock *sk)
 
         return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct alg_sock *ask = alg_sk(sk);
 	struct skcipher_ctx *ctx = ask->private;
 	struct skcipher_sg_list *sgl;
@@ -179,11 +198,15 @@ static int skcipher_alloc_sgl(struct sock *sk)
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void skcipher_pull_sgl(struct sock *sk, int used)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct alg_sock *ask = alg_sk(sk);
         struct skcipher_ctx *ctx = ask->private;
@@ -224,6 +247,8 @@ static void skcipher_pull_sgl(struct sock *sk, int used)
         if (!ctx->used)
                 ctx->merge = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct alg_sock *ask = alg_sk(sk);
 	struct skcipher_ctx *ctx = ask->private;
 	struct skcipher_sg_list *sgl;
@@ -262,26 +287,36 @@ static void skcipher_pull_sgl(struct sock *sk, int used)
 
 	if (!ctx->used)
 		ctx->merge = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void skcipher_free_sgl(struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct alg_sock *ask = alg_sk(sk);
         struct skcipher_ctx *ctx = ask->private;
 
         skcipher_pull_sgl(sk, ctx->used);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct alg_sock *ask = alg_sk(sk);
 	struct skcipher_ctx *ctx = ask->private;
 
 	skcipher_pull_sgl(sk, ctx->used);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int skcipher_wait_for_wmem(struct sock *sk, unsigned flags)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         long timeout;
         DEFINE_WAIT(wait);
@@ -306,6 +341,8 @@ static int skcipher_wait_for_wmem(struct sock *sk, unsigned flags)
 
         return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long timeout;
 	DEFINE_WAIT(wait);
 	int err = -ERESTARTSYS;
@@ -328,11 +365,15 @@ static int skcipher_wait_for_wmem(struct sock *sk, unsigned flags)
 	finish_wait(sk_sleep(sk), &wait);
 
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void skcipher_wmem_wakeup(struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct socket_wq *wq;
 
@@ -348,6 +389,8 @@ static void skcipher_wmem_wakeup(struct sock *sk)
         sk_wake_async(sk, SOCK_WAKE_WAITD, POLL_IN);
         rcu_read_unlock();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct socket_wq *wq;
 
 	if (!skcipher_writable(sk))
@@ -361,11 +404,15 @@ static void skcipher_wmem_wakeup(struct sock *sk)
 							   POLLRDBAND);
 	sk_wake_async(sk, SOCK_WAKE_WAITD, POLL_IN);
 	rcu_read_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int skcipher_wait_for_data(struct sock *sk, unsigned flags)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct alg_sock *ask = alg_sk(sk);
         struct skcipher_ctx *ctx = ask->private;
@@ -395,6 +442,8 @@ static int skcipher_wait_for_data(struct sock *sk, unsigned flags)
 
         return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct alg_sock *ask = alg_sk(sk);
 	struct skcipher_ctx *ctx = ask->private;
 	long timeout;
@@ -422,11 +471,15 @@ static int skcipher_wait_for_data(struct sock *sk, unsigned flags)
 	clear_bit(SOCK_ASYNC_WAITDATA, &sk->sk_socket->flags);
 
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void skcipher_data_wakeup(struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct alg_sock *ask = alg_sk(sk);
         struct skcipher_ctx *ctx = ask->private;
@@ -715,6 +768,8 @@ unlock:
 
         return copied ?: err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct alg_sock *ask = alg_sk(sk);
 	struct skcipher_ctx *ctx = ask->private;
 	struct socket_wq *wq;
@@ -871,6 +926,12 @@ static ssize_t skcipher_sendpage(struct socket *sock, struct page *page,
 	struct skcipher_sg_list *sgl;
 	int err = -EINVAL;
 
+<<<<<<< HEAD
+=======
+	if (flags & MSG_SENDPAGE_NOTLAST)
+		flags |= MSG_MORE;
+
+>>>>>>> refs/remotes/origin/master
 	lock_sock(sk);
 	if (!ctx->more && ctx->used)
 		goto unlock;
@@ -925,7 +986,10 @@ static int skcipher_recvmsg(struct kiocb *unused, struct socket *sock,
 	long copied = 0;
 
 	lock_sock(sk);
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	for (iov = msg->msg_iov, iovlen = msg->msg_iovlen; iovlen > 0;
 	     iovlen--, iov++) {
 		unsigned long seglen = iov->iov_len;
@@ -990,11 +1054,15 @@ unlock:
 	release_sock(sk);
 
 	return copied ?: err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 static unsigned int skcipher_poll(struct file *file, struct socket *sock,
+<<<<<<< HEAD
 <<<<<<< HEAD
                                  poll_table *wait)
 {
@@ -1036,6 +1104,8 @@ static struct proto_ops algif_skcipher_ops = {
         .recvmsg        =        skcipher_recvmsg,
         .poll                =        skcipher_poll,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				  poll_table *wait)
 {
 	struct sock *sk = sock->sk;
@@ -1075,38 +1145,54 @@ static struct proto_ops algif_skcipher_ops = {
 	.sendpage	=	skcipher_sendpage,
 	.recvmsg	=	skcipher_recvmsg,
 	.poll		=	skcipher_poll,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void *skcipher_bind(const char *name, u32 type, u32 mask)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return crypto_alloc_ablkcipher(name, type, mask);
 =======
 	return crypto_alloc_ablkcipher(name, type, mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return crypto_alloc_ablkcipher(name, type, mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void skcipher_release(void *private)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         crypto_free_ablkcipher(private);
 =======
 	crypto_free_ablkcipher(private);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	crypto_free_ablkcipher(private);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int skcipher_setkey(void *private, const u8 *key, unsigned int keylen)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return crypto_ablkcipher_setkey(private, key, keylen);
 =======
 	return crypto_ablkcipher_setkey(private, key, keylen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return crypto_ablkcipher_setkey(private, key, keylen);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void skcipher_sock_destruct(struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct alg_sock *ask = alg_sk(sk);
         struct skcipher_ctx *ctx = ask->private;
@@ -1117,6 +1203,8 @@ static void skcipher_sock_destruct(struct sock *sk)
         sock_kfree_s(sk, ctx, ctx->len);
         af_alg_release_parent(sk);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct alg_sock *ask = alg_sk(sk);
 	struct skcipher_ctx *ctx = ask->private;
 	struct crypto_ablkcipher *tfm = crypto_ablkcipher_reqtfm(&ctx->req);
@@ -1125,11 +1213,15 @@ static void skcipher_sock_destruct(struct sock *sk)
 	sock_kfree_s(sk, ctx->iv, crypto_ablkcipher_ivsize(tfm));
 	sock_kfree_s(sk, ctx, ctx->len);
 	af_alg_release_parent(sk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int skcipher_accept_parent(void *private, struct sock *sk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct skcipher_ctx *ctx;
         struct alg_sock *ask = alg_sk(sk);
@@ -1176,6 +1268,8 @@ static const struct af_alg_type algif_type_skcipher = {
         .name                =        "skcipher",
         .owner                =        THIS_MODULE
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct skcipher_ctx *ctx;
 	struct alg_sock *ask = alg_sk(sk);
 	unsigned int len = sizeof(*ctx) + crypto_ablkcipher_reqsize(private);
@@ -1220,20 +1314,28 @@ static const struct af_alg_type algif_type_skcipher = {
 	.ops		=	&algif_skcipher_ops,
 	.name		=	"skcipher",
 	.owner		=	THIS_MODULE
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init algif_skcipher_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return af_alg_register_type(&algif_type_skcipher);
 =======
 	return af_alg_register_type(&algif_type_skcipher);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return af_alg_register_type(&algif_type_skcipher);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit algif_skcipher_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         int err = af_alg_unregister_type(&algif_type_skcipher);
         BUG_ON(err);
@@ -1241,12 +1343,19 @@ static void __exit algif_skcipher_exit(void)
 	int err = af_alg_unregister_type(&algif_type_skcipher);
 	BUG_ON(err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err = af_alg_unregister_type(&algif_type_skcipher);
+	BUG_ON(err);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(algif_skcipher_init);
 module_exit(algif_skcipher_exit);
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

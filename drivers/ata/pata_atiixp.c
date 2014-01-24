@@ -20,6 +20,10 @@
 #include <linux/delay.h>
 #include <scsi/scsi_host.h>
 #include <linux/libata.h>
+<<<<<<< HEAD
+=======
+#include <linux/dmi.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME "pata_atiixp"
 #define DRV_VERSION "0.4.6"
@@ -33,11 +37,32 @@ enum {
 	ATIIXP_IDE_UDMA_MODE 	= 0x56
 };
 
+<<<<<<< HEAD
+=======
+static const struct dmi_system_id attixp_cable_override_dmi_table[] = {
+	{
+		/* Board has onboard PATA<->SATA converters */
+		.ident = "MSI E350DM-E33",
+		.matches = {
+			DMI_MATCH(DMI_BOARD_VENDOR, "MSI"),
+			DMI_MATCH(DMI_BOARD_NAME, "E350DM-E33(MS-7720)"),
+		},
+	},
+	{ }
+};
+
+>>>>>>> refs/remotes/origin/master
 static int atiixp_cable_detect(struct ata_port *ap)
 {
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	u8 udma;
 
+<<<<<<< HEAD
+=======
+	if (dmi_check_system(attixp_cable_override_dmi_table))
+		return ATA_CBL_PATA40_SHORT;
+
+>>>>>>> refs/remotes/origin/master
 	/* Hack from drivers/ide/pci. Really we want to know how to do the
 	   raw detection not play follow the bios mode guess */
 	pci_read_config_byte(pdev, ATIIXP_IDE_UDMA_MODE + ap->port_no, &udma);
@@ -50,7 +75,10 @@ static DEFINE_SPINLOCK(atiixp_lock);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	atiixp_prereset	-	perform reset handling
  *	@link: ATA link
  *	@deadline: deadline jiffies for the operation
@@ -76,7 +104,10 @@ static int atiixp_prereset(struct ata_link *link, unsigned long deadline)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	atiixp_set_pio_timing	-	set initial PIO mode data
  *	@ap: ATA interface
  *	@adev: ATA device
@@ -250,9 +281,13 @@ static struct ata_port_operations atiixp_port_ops = {
 	.bmdma_stop	= atiixp_bmdma_stop,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.prereset	= atiixp_prereset,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.prereset	= atiixp_prereset,
+>>>>>>> refs/remotes/origin/master
 	.cable_detect	= atiixp_cable_detect,
 	.set_piomode	= atiixp_set_piomode,
 	.set_dmamode	= atiixp_set_dmamode,
@@ -268,6 +303,7 @@ static int atiixp_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 		.port_ops = &atiixp_port_ops
 	};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const struct pci_bits atiixp_enable_bits[] = {
 		{ 0x48, 1, 0x01, 0x00 },
 		{ 0x48, 1, 0x08, 0x00 }
@@ -281,6 +317,9 @@ static int atiixp_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 =======
 	const struct ata_port_info *ppi[] = { &info, &info };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct ata_port_info *ppi[] = { &info, &info };
+>>>>>>> refs/remotes/origin/master
 
 	return ata_pci_bmdma_init_one(pdev, ppi, &atiixp_sht, NULL,
 				      ATA_HOST_PARALLEL_SCAN);
@@ -308,6 +347,7 @@ static struct pci_driver atiixp_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init atiixp_init(void)
 {
 	return pci_register_driver(&atiixp_pci_driver);
@@ -318,12 +358,18 @@ static void __exit atiixp_exit(void)
 {
 	pci_unregister_driver(&atiixp_pci_driver);
 }
+=======
+module_pci_driver(atiixp_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for ATI IXP200/300/400");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, atiixp);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(atiixp_init);
 module_exit(atiixp_exit);
+=======
+>>>>>>> refs/remotes/origin/master

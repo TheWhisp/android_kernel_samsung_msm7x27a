@@ -38,8 +38,13 @@
 
 #define SGI_SOFT_0_IRQ	SGINT_CPU + 0
 #define SGI_SOFT_1_IRQ	SGINT_CPU + 1
+<<<<<<< HEAD
 #define SGI_LOCAL_0_IRQ	SGINT_CPU + 2
 #define SGI_LOCAL_1_IRQ	SGINT_CPU + 3
+=======
+#define SGI_LOCAL_0_IRQ SGINT_CPU + 2
+#define SGI_LOCAL_1_IRQ SGINT_CPU + 3
+>>>>>>> refs/remotes/origin/master
 #define SGI_8254_0_IRQ	SGINT_CPU + 4
 #define SGI_8254_1_IRQ	SGINT_CPU + 5
 #define SGI_BUSERR_IRQ	SGINT_CPU + 6
@@ -51,7 +56,11 @@
 #define SGI_WD93_1_IRQ	SGINT_LOCAL0 + 2	/* 2nd onboard WD93 */
 #define SGI_ENET_IRQ	SGINT_LOCAL0 + 3	/* onboard ethernet */
 #define SGI_MCDMA_IRQ	SGINT_LOCAL0 + 4	/* MC DMA done */
+<<<<<<< HEAD
 #define SGI_PARPORT_IRQ	SGINT_LOCAL0 + 5	/* Parallel port */
+=======
+#define SGI_PARPORT_IRQ SGINT_LOCAL0 + 5	/* Parallel port */
+>>>>>>> refs/remotes/origin/master
 #define SGI_GIO_1_IRQ	SGINT_LOCAL0 + 6	/* GE / GIO-1 / 2nd-HPC */
 #define SGI_MAP_0_IRQ	SGINT_LOCAL0 + 7	/* Mappable interrupt 0 */
 

@@ -65,9 +65,12 @@ config ZCRYPT
 	tristate "Support for PCI-attached cryptographic adapters"
 	depends on S390
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select ZCRYPT_MONOLITHIC if ZCRYPT="y"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select HW_RANDOM
 	help
 	  Select this option if you want to use a PCI-attached cryptographic
@@ -81,6 +84,7 @@ config ZCRYPT
 	  + Crypto Express3 Accelerator (CEX3A)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config ZCRYPT_MONOLITHIC
 	bool "Monolithic zcrypt module"
 	depends on ZCRYPT
@@ -91,6 +95,8 @@ config ZCRYPT_MONOLITHIC
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config CRYPTO_SHA1_S390
 	tristate "SHA1 digest algorithm"
 	depends on S390
@@ -126,6 +132,10 @@ config CRYPTO_DES_S390
 	depends on S390
 	select CRYPTO_ALGAPI
 	select CRYPTO_BLKCIPHER
+<<<<<<< HEAD
+=======
+	select CRYPTO_DES
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the s390 hardware accelerated implementation of the
 	  DES cipher algorithm (FIPS 46-2), and Triple DES EDE (FIPS 46-3).
@@ -208,9 +218,13 @@ config CRYPTO_DEV_HIFN_795X
 	select HW_RANDOM if CRYPTO_DEV_HIFN_795X_RNG
 	depends on PCI
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	depends on !ARCH_DMA_ADDR_T_64BIT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on !ARCH_DMA_ADDR_T_64BIT
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option allows you to have support for HIFN 795x crypto adapters.
 
@@ -241,7 +255,11 @@ config CRYPTO_DEV_TALITOS
 
 config CRYPTO_DEV_IXP4XX
 	tristate "Driver for IXP4xx crypto hardware acceleration"
+<<<<<<< HEAD
 	depends on ARCH_IXP4XX
+=======
+	depends on ARCH_IXP4XX && IXP4XX_QMGR && IXP4XX_NPE
+>>>>>>> refs/remotes/origin/master
 	select CRYPTO_DES
 	select CRYPTO_ALGAPI
 	select CRYPTO_AUTHENC
@@ -259,6 +277,7 @@ config CRYPTO_DEV_PPC4XX
 	  This option allows you to have support for AMCC crypto acceleration.
 
 config CRYPTO_DEV_OMAP_SHAM
+<<<<<<< HEAD
 	tristate "Support for OMAP SHA1/MD5 hw accelerator"
 	depends on ARCH_OMAP2 || ARCH_OMAP3
 	select CRYPTO_SHA1
@@ -271,6 +290,24 @@ config CRYPTO_DEV_OMAP_AES
 	tristate "Support for OMAP AES hw engine"
 	depends on ARCH_OMAP2 || ARCH_OMAP3
 	select CRYPTO_AES
+=======
+	tristate "Support for OMAP MD5/SHA1/SHA2 hw accelerator"
+	depends on ARCH_OMAP2PLUS
+	select CRYPTO_SHA1
+	select CRYPTO_MD5
+	select CRYPTO_SHA256
+	select CRYPTO_SHA512
+	select CRYPTO_HMAC
+	help
+	  OMAP processors have MD5/SHA1/SHA2 hw accelerator. Select this if you
+	  want to use the OMAP module for MD5/SHA1/SHA2 algorithms.
+
+config CRYPTO_DEV_OMAP_AES
+	tristate "Support for OMAP AES hw engine"
+	depends on ARCH_OMAP2 || ARCH_OMAP3 || ARCH_OMAP2PLUS
+	select CRYPTO_AES
+	select CRYPTO_BLKCIPHER2
+>>>>>>> refs/remotes/origin/master
 	help
 	  OMAP processors have AES module accelerator. Select this if you
 	  want to use the OMAP module for AES algorithms.
@@ -278,10 +315,14 @@ config CRYPTO_DEV_OMAP_AES
 config CRYPTO_DEV_PICOXCELL
 	tristate "Support for picoXcell IPSEC and Layer2 crypto engines"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARCH_PICOXCELL
 =======
 	depends on ARCH_PICOXCELL && HAVE_CLK
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARCH_PICOXCELL && HAVE_CLK
+>>>>>>> refs/remotes/origin/master
 	select CRYPTO_AES
 	select CRYPTO_AUTHENC
 	select CRYPTO_ALGAPI
@@ -296,6 +337,29 @@ config CRYPTO_DEV_PICOXCELL
 
 	  Saying m here will build a module named pipcoxcell_crypto.
 
+<<<<<<< HEAD
+=======
+config CRYPTO_DEV_SAHARA
+	tristate "Support for SAHARA crypto accelerator"
+	depends on ARCH_MXC && OF
+	select CRYPTO_BLKCIPHER
+	select CRYPTO_AES
+	select CRYPTO_ECB
+	help
+	  This option enables support for the SAHARA HW crypto accelerator
+	  found in some Freescale i.MX chips.
+
+config CRYPTO_DEV_DCP
+	tristate "Support for the DCP engine"
+	depends on ARCH_MXS && OF
+	select CRYPTO_BLKCIPHER
+	select CRYPTO_AES
+	select CRYPTO_CBC
+	help
+	  This options enables support for the hardware crypto-acceleration
+	  capabilities of the DCP co-processor
+
+>>>>>>> refs/remotes/origin/master
 config CRYPTO_DEV_S5P
 	tristate "Support for Samsung S5PV210 crypto accelerator"
 	depends on ARCH_S5PV210
@@ -307,6 +371,7 @@ config CRYPTO_DEV_S5P
 	  Select this to offload Samsung S5PV210 or S5PC110 from AES
 	  algorithms execution.
 
+<<<<<<< HEAD
 config CRYPTO_DEV_QCE40
 	bool
 
@@ -364,4 +429,95 @@ config CRYPTO_DEV_TEGRA_AES
 	  will be called tegra-aes.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config CRYPTO_DEV_TEGRA_AES
+	tristate "Support for TEGRA AES hw engine"
+	depends on ARCH_TEGRA
+	select CRYPTO_AES
+	help
+	  TEGRA processors have AES module accelerator. Select this if you
+	  want to use the TEGRA module for AES algorithms.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called tegra-aes.
+
+config CRYPTO_DEV_NX
+	bool "Support for IBM Power7+ in-Nest cryptographic acceleration"
+	depends on PPC64 && IBMVIO
+	default n
+	help
+	  Support for Power7+ in-Nest cryptographic acceleration.
+
+if CRYPTO_DEV_NX
+	source "drivers/crypto/nx/Kconfig"
+endif
+
+config CRYPTO_DEV_UX500
+	tristate "Driver for ST-Ericsson UX500 crypto hardware acceleration"
+	depends on ARCH_U8500
+	select CRYPTO_ALGAPI
+	help
+	  Driver for ST-Ericsson UX500 crypto engine.
+
+if CRYPTO_DEV_UX500
+	source "drivers/crypto/ux500/Kconfig"
+endif # if CRYPTO_DEV_UX500
+
+config CRYPTO_DEV_BFIN_CRC
+	tristate "Support for Blackfin CRC hardware"
+	depends on BF60x
+	help
+	  Newer Blackfin processors have CRC hardware. Select this if you
+	  want to use the Blackfin CRC module.
+
+config CRYPTO_DEV_ATMEL_AES
+	tristate "Support for Atmel AES hw accelerator"
+	depends on ARCH_AT91
+	select CRYPTO_CBC
+	select CRYPTO_ECB
+	select CRYPTO_AES
+	select CRYPTO_ALGAPI
+	select CRYPTO_BLKCIPHER
+	select AT_HDMAC
+	help
+	  Some Atmel processors have AES hw accelerator.
+	  Select this if you want to use the Atmel module for
+	  AES algorithms.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called atmel-aes.
+
+config CRYPTO_DEV_ATMEL_TDES
+	tristate "Support for Atmel DES/TDES hw accelerator"
+	depends on ARCH_AT91
+	select CRYPTO_DES
+	select CRYPTO_CBC
+	select CRYPTO_ECB
+	select CRYPTO_ALGAPI
+	select CRYPTO_BLKCIPHER
+	help
+	  Some Atmel processors have DES/TDES hw accelerator.
+	  Select this if you want to use the Atmel module for
+	  DES/TDES algorithms.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called atmel-tdes.
+
+config CRYPTO_DEV_ATMEL_SHA
+	tristate "Support for Atmel SHA hw accelerator"
+	depends on ARCH_AT91
+	select CRYPTO_SHA1
+	select CRYPTO_SHA256
+	select CRYPTO_SHA512
+	select CRYPTO_ALGAPI
+	help
+	  Some Atmel processors have SHA1/SHA224/SHA256/SHA384/SHA512
+	  hw accelerator.
+	  Select this if you want to use the Atmel module for
+	  SHA1/SHA224/SHA256/SHA384/SHA512 algorithms.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called atmel-sha.
+
+>>>>>>> refs/remotes/origin/master
 endif # CRYPTO_HW

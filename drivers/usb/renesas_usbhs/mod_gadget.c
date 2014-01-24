@@ -15,10 +15,15 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/delay.h>
 #include <linux/dma-mapping.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/delay.h>
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
@@ -32,14 +37,19 @@
 struct usbhsg_request {
 	struct usb_request	req;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head	node;
 =======
 	struct usbhs_pkt	pkt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usbhs_pkt	pkt;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define EP_NAME_SIZE 8
 struct usbhsg_gpriv;
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct usbhsg_pipe_handle;
 struct usbhsg_uep {
@@ -51,14 +61,22 @@ struct usbhsg_uep {
 	struct usb_ep		 ep;
 	struct usbhs_pipe	*pipe;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct usbhsg_uep {
+	struct usb_ep		 ep;
+	struct usbhs_pipe	*pipe;
+>>>>>>> refs/remotes/origin/master
 
 	char ep_name[EP_NAME_SIZE];
 
 	struct usbhsg_gpriv *gpriv;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usbhsg_pipe_handle *handler;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct usbhsg_gpriv {
@@ -74,6 +92,7 @@ struct usbhsg_gpriv {
 #define USBHSG_STATUS_STARTED		(1 << 0)
 #define USBHSG_STATUS_REGISTERD		(1 << 1)
 #define USBHSG_STATUS_WEDGE		(1 << 2)
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -85,6 +104,11 @@ struct usbhsg_pipe_handle {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define USBHSG_STATUS_SELF_POWERED	(1 << 3)
+};
+
+>>>>>>> refs/remotes/origin/master
 struct usbhsg_recip_handle {
 	char *name;
 	int (*device)(struct usbhs_priv *priv, struct usbhsg_uep *uep,
@@ -105,12 +129,18 @@ struct usbhsg_recip_handle {
 
 #define __usbhsg_for_each_uep(start, pos, g, i)	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = start, pos = (g)->uep;		\
 =======
 	for (i = start, pos = (g)->uep + i;	\
 >>>>>>> refs/remotes/origin/cm-10.0
 	     i < (g)->uep_size;			\
 	     i++, pos = (g)->uep + i)
+=======
+	for ((i) = start;					\
+	     ((i) < (g)->uep_size) && ((pos) = (g)->uep + (i));	\
+	     (i)++)
+>>>>>>> refs/remotes/origin/master
 
 #define usbhsg_for_each_uep(pos, gpriv, i)	\
 	__usbhsg_for_each_uep(1, pos, gpriv, i)
@@ -126,9 +156,12 @@ struct usbhsg_recip_handle {
 
 #define usbhsg_ep_to_uep(e)		container_of(e, struct usbhsg_uep, ep)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define usbhsg_gpriv_to_lock(gp)	usbhs_priv_to_lock((gp)->mod.priv)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define usbhsg_gpriv_to_dev(gp)		usbhs_priv_to_dev((gp)->mod.priv)
 #define usbhsg_gpriv_to_priv(gp)	((gp)->mod.priv)
 #define usbhsg_gpriv_to_dcp(gp)		((gp)->uep)
@@ -139,12 +172,18 @@ struct usbhsg_recip_handle {
 #define usbhsg_is_dcp(u)		((u) == usbhsg_gpriv_to_dcp((u)->gpriv))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define usbhsg_ureq_to_pkt(u)		(&(u)->pkt)
 #define usbhsg_pkt_to_ureq(i)	\
 	container_of(i, struct usbhsg_request, pkt)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define usbhsg_is_not_connected(gp) ((gp)->gadget.speed == USB_SPEED_UNKNOWN)
 
 /* status */
@@ -154,6 +193,7 @@ struct usbhsg_recip_handle {
 #define usbhsg_status_has(gp, b) (gp->status &   b)
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  *		usbhsg_trylock
  *
@@ -187,6 +227,8 @@ static void usbhsg_unlock(spinlock_t *lock, unsigned long *flags)
  *		list push/pop
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *		queue push/pop
  */
 static void usbhsg_queue_pop(struct usbhsg_uep *uep,
@@ -214,13 +256,17 @@ static void usbhsg_queue_done(struct usbhs_priv *priv, struct usbhs_pkt *pkt)
 	usbhsg_queue_pop(uep, ureq, 0);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void usbhsg_queue_push(struct usbhsg_uep *uep,
 			      struct usbhsg_request *ureq)
 {
 	struct usbhsg_gpriv *gpriv = usbhsg_uep_to_gpriv(uep);
 	struct device *dev = usbhsg_gpriv_to_dev(gpriv);
 	struct usbhs_pipe *pipe = usbhsg_uep_to_pipe(uep);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/*
@@ -294,6 +340,8 @@ static int __usbhsg_queue_handler(struct usbhsg_uep *uep, int prepare)
 	usbhsg_unlock(lock, &flags);
 	/********************  spin unlock ******************/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usbhs_pkt *pkt = usbhsg_ureq_to_pkt(ureq);
 	struct usb_request *req = &ureq->req;
 
@@ -335,11 +383,15 @@ static int usbhsg_dma_map_ctrl(struct usbhs_pkt *pkt, int map)
 	} else {
 		usb_gadget_unmap_request(&gpriv->gadget, req, dir);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void usbhsg_queue_pop(struct usbhsg_uep *uep,
 			     struct usbhsg_request *ureq,
@@ -426,6 +478,8 @@ static int usbhsg_try_run_ctrl_stage_end(struct usbhsg_uep *uep,
 	usbhs_dcp_control_transfer_done(pipe);
 	usbhsg_queue_pop(uep, ureq, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *		USB_TYPE_STANDARD / clear feature functions
  */
@@ -438,11 +492,15 @@ static int usbhsg_recip_handler_std_control_done(struct usbhs_priv *priv,
 	struct usbhs_pipe *pipe = usbhsg_uep_to_pipe(dcp);
 
 	usbhs_dcp_control_transfer_done(pipe);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int usbhsg_try_run_send_packet(struct usbhsg_uep *uep,
 				      struct usbhsg_request *ureq)
@@ -514,6 +572,8 @@ static int usbhsg_try_run_send_packet(struct usbhsg_uep *uep,
 
 		usbhsg_queue_pop(uep, ureq, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int usbhsg_recip_handler_std_clear_endpoint(struct usbhs_priv *priv,
 						   struct usbhsg_uep *uep,
 						   struct usb_ctrlrequest *ctrl)
@@ -534,7 +594,11 @@ static int usbhsg_recip_handler_std_clear_endpoint(struct usbhs_priv *priv,
 	return 0;
 }
 
+<<<<<<< HEAD
 struct usbhsg_recip_handle req_clear_feature = {
+=======
+static struct usbhsg_recip_handle req_clear_feature = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "clear feature",
 	.device		= usbhsg_recip_handler_std_control_done,
 	.interface	= usbhsg_recip_handler_std_control_done,
@@ -557,12 +621,16 @@ static int usbhsg_recip_handler_std_set_device(struct usbhs_priv *priv,
 	default:
 		usbhsg_recip_handler_std_control_done(priv, uep, ctrl);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int usbhsg_prepare_send_packet(struct usbhsg_uep *uep,
 				      struct usbhsg_request *ureq)
@@ -576,6 +644,8 @@ static int usbhsg_prepare_send_packet(struct usbhsg_uep *uep,
 	usbhs_fifo_prepare_write(pipe);
 	usbhsg_try_run_send_packet(uep, ureq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int usbhsg_recip_handler_std_set_endpoint(struct usbhs_priv *priv,
 						 struct usbhsg_uep *uep,
 						 struct usb_ctrlrequest *ctrl)
@@ -585,6 +655,7 @@ static int usbhsg_recip_handler_std_set_endpoint(struct usbhs_priv *priv,
 	usbhs_pipe_stall(pipe);
 
 	usbhsg_recip_handler_std_control_done(priv, uep, ctrl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
@@ -640,10 +711,13 @@ static int usbhsg_try_run_receive_packet(struct usbhsg_uep *uep,
 		usbhs_fifo_disable(pipe);
 		usbhsg_queue_pop(uep, ureq, 0);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int usbhsg_prepare_receive_packet(struct usbhsg_uep *uep,
 					 struct usbhsg_request *ureq)
 {
@@ -719,6 +793,9 @@ static int usbhsg_recip_handler_std_control_done(struct usbhs_priv *priv,
 	usbhs_dcp_control_transfer_done(pipe);
 =======
 struct usbhsg_recip_handle req_set_feature = {
+=======
+static struct usbhsg_recip_handle req_set_feature = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "set feature",
 	.device		= usbhsg_recip_handler_std_set_device,
 	.interface	= usbhsg_recip_handler_std_control_done,
@@ -781,7 +858,14 @@ static int usbhsg_recip_handler_std_get_device(struct usbhs_priv *priv,
 					       struct usb_ctrlrequest *ctrl)
 {
 	struct usbhsg_gpriv *gpriv = usbhsg_uep_to_gpriv(uep);
+<<<<<<< HEAD
 	unsigned short status = 1 << USB_DEVICE_SELF_POWERED;
+=======
+	unsigned short status = 0;
+
+	if (usbhsg_status_has(gpriv, USBHSG_STATUS_SELF_POWERED))
+		status = 1 << USB_DEVICE_SELF_POWERED;
+>>>>>>> refs/remotes/origin/master
 
 	__usbhsg_recip_send_status(gpriv, status);
 
@@ -796,11 +880,15 @@ static int usbhsg_recip_handler_std_get_interface(struct usbhs_priv *priv,
 	unsigned short status = 0;
 
 	__usbhsg_recip_send_status(gpriv, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int usbhsg_recip_handler_std_clear_endpoint(struct usbhs_priv *priv,
 						   struct usbhsg_uep *uep,
@@ -819,6 +907,8 @@ static int usbhsg_recip_handler_std_clear_endpoint(struct usbhs_priv *priv,
 
 	usbhsg_queue_prepare(uep);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int usbhsg_recip_handler_std_get_endpoint(struct usbhs_priv *priv,
 						 struct usbhsg_uep *uep,
 						 struct usb_ctrlrequest *ctrl)
@@ -831,11 +921,15 @@ static int usbhsg_recip_handler_std_get_endpoint(struct usbhs_priv *priv,
 		status = 1 << USB_ENDPOINT_HALT;
 
 	__usbhsg_recip_send_status(gpriv, status);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct usbhsg_recip_handle req_clear_feature = {
 	.name		= "clear feature",
@@ -844,11 +938,17 @@ struct usbhsg_recip_handle req_clear_feature = {
 	.endpoint	= usbhsg_recip_handler_std_clear_endpoint,
 =======
 struct usbhsg_recip_handle req_get_status = {
+=======
+static struct usbhsg_recip_handle req_get_status = {
+>>>>>>> refs/remotes/origin/master
 	.name		= "get status",
 	.device		= usbhsg_recip_handler_std_get_device,
 	.interface	= usbhsg_recip_handler_std_get_interface,
 	.endpoint	= usbhsg_recip_handler_std_get_endpoint,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -862,26 +962,37 @@ static int usbhsg_recip_run_handle(struct usbhs_priv *priv,
 	struct device *dev = usbhsg_gpriv_to_dev(gpriv);
 	struct usbhsg_uep *uep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int recip = ctrl->bRequestType & USB_RECIP_MASK;
 	int nth = le16_to_cpu(ctrl->wIndex) & USB_ENDPOINT_NUMBER_MASK;
 	int ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usbhs_pipe *pipe;
 	int recip = ctrl->bRequestType & USB_RECIP_MASK;
 	int nth = le16_to_cpu(ctrl->wIndex) & USB_ENDPOINT_NUMBER_MASK;
 	int ret = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int (*func)(struct usbhs_priv *priv, struct usbhsg_uep *uep,
 		    struct usb_ctrlrequest *ctrl);
 	char *msg;
 
 	uep = usbhsg_gpriv_to_nth_uep(gpriv, nth);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!usbhsg_uep_to_pipe(uep)) {
 =======
 	pipe = usbhsg_uep_to_pipe(uep);
 	if (!pipe) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pipe = usbhsg_uep_to_pipe(uep);
+	if (!pipe) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "wrong recip request\n");
 		return -EINVAL;
 	}
@@ -925,10 +1036,14 @@ static int usbhsg_irq_dev_state(struct usbhs_priv *priv,
 	struct device *dev = usbhsg_gpriv_to_dev(gpriv);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gpriv->gadget.speed = usbhs_status_get_usb_speed(irq_state);
 =======
 	gpriv->gadget.speed = usbhs_bus_get_speed(priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpriv->gadget.speed = usbhs_bus_get_speed(priv);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(dev, "state = %x : speed : %d\n",
 		usbhs_status_get_device_state(irq_state),
@@ -963,6 +1078,7 @@ static int usbhsg_irq_ctrl_stage(struct usbhs_priv *priv,
 	switch (stage) {
 	case READ_DATA_STAGE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dcp->handler = &usbhsg_handler_send_ctrl;
 		break;
 	case WRITE_DATA_STAGE:
@@ -971,6 +1087,8 @@ static int usbhsg_irq_ctrl_stage(struct usbhs_priv *priv,
 	case NODATA_STATUS_STAGE:
 		dcp->handler = &usbhsg_handler_ctrl_stage_end;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pipe->handler = &usbhs_fifo_pio_push_handler;
 		break;
 	case WRITE_DATA_STAGE:
@@ -978,7 +1096,10 @@ static int usbhsg_irq_ctrl_stage(struct usbhs_priv *priv,
 		break;
 	case NODATA_STATUS_STAGE:
 		pipe->handler = &usbhs_ctrl_stage_end_handler;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return ret;
@@ -996,14 +1117,20 @@ static int usbhsg_irq_ctrl_stage(struct usbhs_priv *priv,
 			recip_handler = &req_clear_feature;
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case USB_REQ_SET_FEATURE:
 			recip_handler = &req_set_feature;
 			break;
 		case USB_REQ_GET_STATUS:
 			recip_handler = &req_get_status;
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1017,14 +1144,19 @@ static int usbhsg_irq_ctrl_stage(struct usbhs_priv *priv,
 
 	if (ret < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		usbhs_fifo_stall(pipe);
 =======
 		usbhs_pipe_stall(pipe);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usbhs_pipe_stall(pipe);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int usbhsg_irq_empty(struct usbhs_priv *priv,
 			    struct usbhs_irq_state *irq_state)
@@ -1094,11 +1226,14 @@ static int usbhsg_irq_ready(struct usbhs_priv *priv,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *
  *		usb_dcp_ops
  *
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int usbhsg_dcp_enable(struct usbhsg_uep *uep)
 {
@@ -1149,6 +1284,8 @@ static int usbhsg_pipe_disable(struct usbhsg_uep *uep)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int usbhsg_pipe_disable(struct usbhsg_uep *uep)
 {
 	struct usbhs_pipe *pipe = usbhsg_uep_to_pipe(uep);
@@ -1164,6 +1301,7 @@ static int usbhsg_pipe_disable(struct usbhsg_uep *uep)
 
 	usbhs_pipe_disable(pipe);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
@@ -1177,6 +1315,11 @@ static void usbhsg_uep_init(struct usbhsg_gpriv *gpriv)
 		uep->pipe = NULL;
 }
 
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *
  *		usb_ep_ops
@@ -1190,16 +1333,20 @@ static int usbhsg_ep_enable(struct usb_ep *ep,
 	struct usbhs_priv *priv = usbhsg_gpriv_to_priv(gpriv);
 	struct usbhs_pipe *pipe;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t *lock;
 	unsigned long flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = -EIO;
 
 	/*
 	 * if it already have pipe,
 	 * nothing to do
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (uep->pipe)
 		return 0;
@@ -1218,6 +1365,8 @@ static int usbhsg_ep_enable(struct usb_ep *ep,
 		else
 			uep->handler = &usbhsg_handler_recv_packet;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (uep->pipe) {
 		usbhs_pipe_clear(uep->pipe);
 		usbhs_pipe_sequence_data0(uep->pipe);
@@ -1245,23 +1394,30 @@ static int usbhsg_ep_enable(struct usb_ep *ep,
 			pipe->handler = &usbhs_fifo_dma_push_handler;
 		else
 			pipe->handler = &usbhs_fifo_dma_pop_handler;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ret = 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	usbhsg_unlock(lock, &flags);
 	/********************  spin unlock ******************/
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static int usbhsg_ep_disable(struct usb_ep *ep)
 {
 	struct usbhsg_uep *uep = usbhsg_ep_to_uep(ep);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct usbhsg_gpriv *gpriv = usbhsg_uep_to_gpriv(uep);
 	spinlock_t *lock;
@@ -1281,6 +1437,15 @@ static int usbhsg_ep_disable(struct usb_ep *ep)
 
 	return usbhsg_pipe_disable(uep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	usbhsg_pipe_disable(uep);
+
+	uep->pipe->mod_private	= NULL;
+	uep->pipe		= NULL;
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct usb_request *usbhsg_ep_alloc_request(struct usb_ep *ep,
@@ -1293,11 +1458,16 @@ static struct usb_request *usbhsg_ep_alloc_request(struct usb_ep *ep,
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&ureq->node);
 =======
 	usbhs_pkt_init(usbhsg_ureq_to_pkt(ureq));
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usbhs_pkt_init(usbhsg_ureq_to_pkt(ureq));
+
+>>>>>>> refs/remotes/origin/master
 	return &ureq->req;
 }
 
@@ -1307,10 +1477,14 @@ static void usbhsg_ep_free_request(struct usb_ep *ep,
 	struct usbhsg_request *ureq = usbhsg_req_to_ureq(req);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON(!list_empty(&ureq->node));
 =======
 	WARN_ON(!list_empty(&ureq->pkt.node));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(!list_empty(&ureq->pkt.node));
+>>>>>>> refs/remotes/origin/master
 	kfree(ureq);
 }
 
@@ -1321,6 +1495,7 @@ static int usbhsg_ep_queue(struct usb_ep *ep, struct usb_request *req,
 	struct usbhsg_gpriv *gpriv = usbhsg_uep_to_gpriv(uep);
 	struct usbhsg_request *ureq = usbhsg_req_to_ureq(req);
 	struct usbhs_pipe *pipe = usbhsg_uep_to_pipe(uep);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spinlock_t *lock;
 	unsigned long flags;
@@ -1347,11 +1522,14 @@ static int usbhsg_ep_queue(struct usb_ep *ep, struct usb_request *req,
 	lock = usbhsg_trylock(gpriv, &flags);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* param check */
 	if (usbhsg_is_not_connected(gpriv)	||
 	    unlikely(!gpriv->driver)		||
 	    unlikely(!pipe))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = -ESHUTDOWN;
 	else
@@ -1364,18 +1542,24 @@ static int usbhsg_ep_queue(struct usb_ep *ep, struct usb_request *req,
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ESHUTDOWN;
 
 	usbhsg_queue_push(uep, ureq);
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usbhsg_ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 {
 	struct usbhsg_uep *uep = usbhsg_ep_to_uep(ep);
 	struct usbhsg_request *ureq = usbhsg_req_to_ureq(req);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct usbhsg_gpriv *gpriv = usbhsg_uep_to_gpriv(uep);
 	spinlock_t *lock;
@@ -1397,12 +1581,17 @@ static int usbhsg_ep_dequeue(struct usb_ep *ep, struct usb_request *req)
 	/********************  spin unlock ******************/
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usbhs_pipe *pipe = usbhsg_uep_to_pipe(uep);
 
 	usbhs_pkt_pop(pipe, usbhsg_ureq_to_pkt(ureq));
 	usbhsg_queue_pop(uep, ureq, -ECONNRESET);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1411,6 +1600,7 @@ static int __usbhsg_ep_set_halt_wedge(struct usb_ep *ep, int halt, int wedge)
 	struct usbhsg_uep *uep = usbhsg_ep_to_uep(ep);
 	struct usbhs_pipe *pipe = usbhsg_uep_to_pipe(uep);
 	struct usbhsg_gpriv *gpriv = usbhsg_uep_to_gpriv(uep);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct device *dev = usbhsg_gpriv_to_dev(gpriv);
 	spinlock_t *lock;
@@ -1449,6 +1639,8 @@ static int __usbhsg_ep_set_halt_wedge(struct usb_ep *ep, int halt, int wedge)
 
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usbhs_priv *priv = usbhsg_gpriv_to_priv(gpriv);
 	struct device *dev = usbhsg_gpriv_to_dev(gpriv);
 	unsigned long flags;
@@ -1475,7 +1667,10 @@ static int __usbhsg_ep_set_halt_wedge(struct usb_ep *ep, int halt, int wedge)
 	/********************  spin unlock ******************/
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usbhsg_ep_set_halt(struct usb_ep *ep, int value)
@@ -1512,6 +1707,7 @@ static int usbhsg_try_start(struct usbhs_priv *priv, u32 status)
 	struct usbhs_mod *mod = usbhs_mod_get_current(priv);
 	struct device *dev = usbhs_priv_to_dev(priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t *lock;
 	unsigned long flags;
 
@@ -1527,6 +1723,8 @@ static int usbhsg_try_start(struct usbhs_priv *priv, u32 status)
 		goto usbhsg_try_start_unlock;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int ret = 0;
 
@@ -1547,12 +1745,16 @@ static int usbhsg_try_start(struct usbhs_priv *priv, u32 status)
 	/*
 	 * enable interrupt and systems if ready
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(dev, "start gadget\n");
 
 	/*
 	 * pipe initialize and enable DCP
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	usbhs_pipe_init(priv);
 	usbhsg_uep_init(gpriv);
@@ -1568,6 +1770,16 @@ static int usbhsg_try_start(struct usbhs_priv *priv, u32 status)
 	dcp->pipe->mod_private	= dcp;
 	usbhs_pipe_config_update(dcp->pipe, 0, 0, 64);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usbhs_pipe_init(priv,
+			usbhsg_dma_map_ctrl);
+	usbhs_fifo_init(priv);
+
+	/* dcp init instead of usbhsg_ep_enable() */
+	dcp->pipe		= usbhs_dcp_malloc(priv);
+	dcp->pipe->mod_private	= dcp;
+	usbhs_pipe_config_update(dcp->pipe, 0, 0, 64);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * system config enble
@@ -1576,18 +1788,23 @@ static int usbhsg_try_start(struct usbhs_priv *priv, u32 status)
 	 * - usb module
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	usbhs_sys_hispeed_ctrl(priv, 1);
 	usbhs_sys_function_ctrl(priv, 1);
 	usbhs_sys_usb_ctrl(priv, 1);
 =======
 	usbhs_sys_function_ctrl(priv, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usbhs_sys_function_ctrl(priv, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * enable irq callback
 	 */
 	mod->irq_dev_state	= usbhsg_irq_dev_state;
 	mod->irq_ctrl_stage	= usbhsg_irq_ctrl_stage;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mod->irq_empty		= usbhsg_irq_empty;
 	mod->irq_ready		= usbhsg_irq_ready;
@@ -1603,6 +1820,10 @@ usbhsg_try_start_unlock:
 	usbhs_irq_callback_update(priv, mod);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usbhs_irq_callback_update(priv, mod);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1612,6 +1833,7 @@ static int usbhsg_try_stop(struct usbhs_priv *priv, u32 status)
 	struct usbhs_mod *mod = usbhs_mod_get_current(priv);
 	struct usbhsg_uep *dcp = usbhsg_gpriv_to_dcp(gpriv);
 	struct device *dev = usbhs_priv_to_dev(priv);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spinlock_t *lock;
 	unsigned long flags;
@@ -1627,6 +1849,8 @@ static int usbhsg_try_stop(struct usbhs_priv *priv, u32 status)
 	    !usbhsg_status_has(gpriv, USBHSG_STATUS_REGISTERD))
 		goto usbhsg_try_stop_unlock;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int ret = 0;
 
@@ -1648,11 +1872,15 @@ static int usbhsg_try_stop(struct usbhs_priv *priv, u32 status)
 	 * disable interrupt and systems if 1st try
 	 */
 	usbhs_fifo_quit(priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* disable all irq */
 	mod->irq_dev_state	= NULL;
 	mod->irq_ctrl_stage	= NULL;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mod->irq_empty		= NULL;
 	mod->irq_ready		= NULL;
@@ -1676,6 +1904,8 @@ static int usbhsg_try_stop(struct usbhs_priv *priv, u32 status)
 	    gpriv->driver->disconnect)
 		gpriv->driver->disconnect(&gpriv->gadget);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	usbhs_irq_callback_update(priv, mod);
 
 	gpriv->gadget.speed = USB_SPEED_UNKNOWN;
@@ -1684,12 +1914,17 @@ static int usbhsg_try_stop(struct usbhs_priv *priv, u32 status)
 	usbhs_sys_set_test_mode(priv, 0);
 	usbhs_sys_function_ctrl(priv, 0);
 
+<<<<<<< HEAD
 	usbhsg_pipe_disable(dcp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usbhsg_ep_disable(&dcp->ep);
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(dev, "stop gadget\n");
 
 	return 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 usbhsg_try_stop_unlock:
@@ -1698,6 +1933,8 @@ usbhsg_try_stop_unlock:
 	return 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1705,6 +1942,7 @@ usbhsg_try_stop_unlock:
  *		linux usb function
  *
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct usbhsg_gpriv *the_controller;
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
@@ -1728,6 +1966,8 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 	dev  = usbhsg_gpriv_to_dev(gpriv);
 	priv = usbhsg_gpriv_to_priv(gpriv);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int usbhsg_gadget_start(struct usb_gadget *gadget,
 		struct usb_gadget_driver *driver)
 {
@@ -1738,6 +1978,7 @@ static int usbhsg_gadget_start(struct usb_gadget *gadget,
 	    !driver->setup	||
 	    driver->max_speed < USB_SPEED_FULL)
 		return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	/* first hook up the driver ... */
@@ -1803,6 +2044,12 @@ int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 }
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 =======
+=======
+
+	/* first hook up the driver ... */
+	gpriv->driver = driver;
+
+>>>>>>> refs/remotes/origin/master
 	return usbhsg_try_start(priv, USBHSG_STATUS_REGISTERD);
 }
 
@@ -1812,17 +2059,24 @@ static int usbhsg_gadget_stop(struct usb_gadget *gadget,
 	struct usbhsg_gpriv *gpriv = usbhsg_gadget_to_gpriv(gadget);
 	struct usbhs_priv *priv = usbhsg_gpriv_to_priv(gpriv);
 
+<<<<<<< HEAD
 	if (!driver		||
 	    !driver->unbind)
 		return -EINVAL;
 
 	usbhsg_try_stop(priv, USBHSG_STATUS_REGISTERD);
 	gpriv->gadget.dev.driver = NULL;
+=======
+	usbhsg_try_stop(priv, USBHSG_STATUS_REGISTERD);
+>>>>>>> refs/remotes/origin/master
 	gpriv->driver = NULL;
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  *		usb gadget ops
@@ -1835,6 +2089,7 @@ static int usbhsg_get_frame(struct usb_gadget *gadget)
 	return usbhs_frame_get_num(priv);
 }
 
+<<<<<<< HEAD
 static struct usb_gadget_ops usbhsg_gadget_ops = {
 	.get_frame		= usbhsg_get_frame,
 <<<<<<< HEAD
@@ -1842,6 +2097,36 @@ static struct usb_gadget_ops usbhsg_gadget_ops = {
 	.udc_start		= usbhsg_gadget_start,
 	.udc_stop		= usbhsg_gadget_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int usbhsg_pullup(struct usb_gadget *gadget, int is_on)
+{
+	struct usbhsg_gpriv *gpriv = usbhsg_gadget_to_gpriv(gadget);
+	struct usbhs_priv *priv = usbhsg_gpriv_to_priv(gpriv);
+
+	usbhs_sys_function_pullup(priv, is_on);
+
+	return 0;
+}
+
+static int usbhsg_set_selfpowered(struct usb_gadget *gadget, int is_self)
+{
+	struct usbhsg_gpriv *gpriv = usbhsg_gadget_to_gpriv(gadget);
+
+	if (is_self)
+		usbhsg_status_set(gpriv, USBHSG_STATUS_SELF_POWERED);
+	else
+		usbhsg_status_clr(gpriv, USBHSG_STATUS_SELF_POWERED);
+
+	return 0;
+}
+
+static const struct usb_gadget_ops usbhsg_gadget_ops = {
+	.get_frame		= usbhsg_get_frame,
+	.set_selfpowered	= usbhsg_set_selfpowered,
+	.udc_start		= usbhsg_gadget_start,
+	.udc_stop		= usbhsg_gadget_stop,
+	.pullup			= usbhsg_pullup,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int usbhsg_start(struct usbhs_priv *priv)
@@ -1852,11 +2137,14 @@ static int usbhsg_start(struct usbhs_priv *priv)
 static int usbhsg_stop(struct usbhs_priv *priv)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return usbhsg_try_stop(priv, USBHSG_STATUS_STARTED);
 }
 
 int __devinit usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usbhsg_gpriv *gpriv = usbhsg_priv_to_gpriv(priv);
 
 	/* cable disconnect */
@@ -1867,6 +2155,7 @@ int __devinit usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 	return usbhsg_try_stop(priv, USBHSG_STATUS_STARTED);
 }
 
+<<<<<<< HEAD
 static void usbhs_mod_gadget_release(struct device *pdev)
 {
 	/* do nothing */
@@ -1874,6 +2163,9 @@ static void usbhs_mod_gadget_release(struct device *pdev)
 
 int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usbhsg_gpriv *gpriv;
 	struct usbhsg_uep *uep;
@@ -1881,9 +2173,13 @@ int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 	int pipe_size = usbhs_get_dparam(priv, pipe_size);
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	gpriv = kzalloc(sizeof(struct usbhsg_gpriv), GFP_KERNEL);
 	if (!gpriv) {
@@ -1895,9 +2191,13 @@ int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 	if (!uep) {
 		dev_err(dev, "Could not allocate ep\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ret = -ENOMEM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto usbhs_mod_gadget_probe_err_gpriv;
 	}
 
@@ -1926,6 +2226,7 @@ int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 	 * init gadget
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	device_initialize(&gpriv->gadget.dev);
 	dev_set_name(&gpriv->gadget.dev, "gadget");
 	gpriv->gadget.dev.parent	= dev;
@@ -1943,6 +2244,12 @@ int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 	if (ret < 0)
 		goto err_add_udc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpriv->gadget.dev.parent	= dev;
+	gpriv->gadget.name		= "renesas_usbhs_udc";
+	gpriv->gadget.ops		= &usbhsg_gadget_ops;
+	gpriv->gadget.max_speed		= USB_SPEED_HIGH;
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&gpriv->gadget.ep_list);
 
@@ -1951,28 +2258,44 @@ int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 	 */
 	usbhsg_for_each_uep_with_dcp(uep, gpriv, i) {
 		uep->gpriv	= gpriv;
+<<<<<<< HEAD
+=======
+		uep->pipe	= NULL;
+>>>>>>> refs/remotes/origin/master
 		snprintf(uep->ep_name, EP_NAME_SIZE, "ep%d", i);
 
 		uep->ep.name		= uep->ep_name;
 		uep->ep.ops		= &usbhsg_ep_ops;
 		INIT_LIST_HEAD(&uep->ep.ep_list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		INIT_LIST_HEAD(&uep->list);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* init DCP */
 		if (usbhsg_is_dcp(uep)) {
 			gpriv->gadget.ep0 = &uep->ep;
+<<<<<<< HEAD
 			uep->ep.maxpacket = 64;
 		}
 		/* init normal pipe */
 		else {
 			uep->ep.maxpacket = 512;
+=======
+			usb_ep_set_maxpacket_limit(&uep->ep, 64);
+		}
+		/* init normal pipe */
+		else {
+			usb_ep_set_maxpacket_limit(&uep->ep, 512);
+>>>>>>> refs/remotes/origin/master
 			list_add_tail(&uep->ep.ep_list, &gpriv->gadget.ep_list);
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	the_controller = gpriv;
 =======
@@ -1981,11 +2304,18 @@ int usbhs_mod_gadget_probe(struct usbhs_priv *priv)
 		goto err_register;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_add_gadget_udc(dev, &gpriv->gadget);
+	if (ret)
+		goto err_add_udc;
+
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(dev, "gadget probed\n");
 
 	return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 usbhs_mod_gadget_probe_err_gpriv:
 	kfree(gpriv);
@@ -2000,6 +2330,8 @@ void __devexit usbhs_mod_gadget_remove(struct usbhs_priv *priv)
 =======
 err_register:
 	device_unregister(&gpriv->gadget.dev);
+=======
+>>>>>>> refs/remotes/origin/master
 err_add_udc:
 	kfree(gpriv->uep);
 
@@ -2015,9 +2347,12 @@ void usbhs_mod_gadget_remove(struct usbhs_priv *priv)
 
 	usb_del_gadget_udc(&gpriv->gadget);
 
+<<<<<<< HEAD
 	device_unregister(&gpriv->gadget.dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(gpriv->uep);
 	kfree(gpriv);
 }

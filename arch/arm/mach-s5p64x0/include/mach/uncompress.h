@@ -14,6 +14,7 @@
 #define __ASM_ARCH_UNCOMPRESS_H
 
 #include <mach/map.h>
+<<<<<<< HEAD
 
 /*
  * cannot use commonly <plat/uncompress.h>
@@ -46,11 +47,17 @@ static void arch_detect_cpu(void);
 unsigned long uart_base;
 
 static __inline__ void get_uart_base(void)
+=======
+#include <plat/uncompress.h>
+
+static void arch_detect_cpu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int chipid;
 
 	chipid = *(const volatile unsigned int __force *) 0xE0100118;
 
+<<<<<<< HEAD
 	uart_base = S3C_UART_OFFSET * CONFIG_S3C_LOWLEVEL_UART_PORT;
 
 	if ((chipid & 0xff000) == 0x50000)
@@ -207,6 +214,15 @@ static void arch_decomp_setup(void)
 static void arch_detect_cpu(void)
 {
 	/* we do not need to do any cpu detection here at the moment. */
+=======
+	if ((chipid & 0xff000) == 0x50000)
+		uart_base = (volatile u8 *)S5P6450_PA_UART(CONFIG_S3C_LOWLEVEL_UART_PORT);
+	else
+		uart_base = (volatile u8 *)S5P6440_PA_UART(CONFIG_S3C_LOWLEVEL_UART_PORT);
+
+	fifo_mask = S3C2440_UFSTAT_TXMASK;
+	fifo_max = 63 << S3C2440_UFSTAT_TXSHIFT;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __ASM_ARCH_UNCOMPRESS_H */

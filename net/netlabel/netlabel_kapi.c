@@ -6,10 +6,14 @@
  * as CIPSO and RIPSO.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
 =======
  * Author: Paul Moore <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -44,10 +48,14 @@
 #include <net/cipso_ipv4.h>
 #include <asm/bug.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "netlabel_domainhash.h"
 #include "netlabel_unlabeled.h"
@@ -120,10 +128,13 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 	struct netlbl_domaddr4_map *map4 = NULL;
 	struct netlbl_domaddr6_map *map6 = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const struct in_addr *addr4, *mask4;
 	const struct in6_addr *addr6, *mask6;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	entry = kzalloc(sizeof(*entry), GFP_ATOMIC);
 	if (entry == NULL)
@@ -135,7 +146,11 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 	}
 
 	if (addr == NULL && mask == NULL)
+<<<<<<< HEAD
 		entry->type = NETLBL_NLTYPE_UNLABELED;
+=======
+		entry->def.type = NETLBL_NLTYPE_UNLABELED;
+>>>>>>> refs/remotes/origin/master
 	else if (addr != NULL && mask != NULL) {
 		addrmap = kzalloc(sizeof(*addrmap), GFP_ATOMIC);
 		if (addrmap == NULL)
@@ -144,6 +159,7 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 		INIT_LIST_HEAD(&addrmap->list6);
 
 		switch (family) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case AF_INET:
 			addr4 = addr;
@@ -157,6 +173,15 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 			if (map4 == NULL)
 				goto cfg_unlbl_map_add_failure;
 			map4->type = NETLBL_NLTYPE_UNLABELED;
+=======
+		case AF_INET: {
+			const struct in_addr *addr4 = addr;
+			const struct in_addr *mask4 = mask;
+			map4 = kzalloc(sizeof(*map4), GFP_ATOMIC);
+			if (map4 == NULL)
+				goto cfg_unlbl_map_add_failure;
+			map4->def.type = NETLBL_NLTYPE_UNLABELED;
+>>>>>>> refs/remotes/origin/master
 			map4->list.addr = addr4->s_addr & mask4->s_addr;
 			map4->list.mask = mask4->s_addr;
 			map4->list.valid = 1;
@@ -166,15 +191,19 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 				goto cfg_unlbl_map_add_failure;
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case AF_INET6:
 			addr6 = addr;
 			mask6 = mask;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 #if IS_ENABLED(CONFIG_IPV6)
 		case AF_INET6: {
 			const struct in6_addr *addr6 = addr;
 			const struct in6_addr *mask6 = mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			map6 = kzalloc(sizeof(*map6), GFP_ATOMIC);
 			if (map6 == NULL)
@@ -185,10 +214,18 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 =======
 			map6->list.addr = *addr6;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			map6 = kzalloc(sizeof(*map6), GFP_ATOMIC);
+			if (map6 == NULL)
+				goto cfg_unlbl_map_add_failure;
+			map6->def.type = NETLBL_NLTYPE_UNLABELED;
+			map6->list.addr = *addr6;
+>>>>>>> refs/remotes/origin/master
 			map6->list.addr.s6_addr32[0] &= mask6->s6_addr32[0];
 			map6->list.addr.s6_addr32[1] &= mask6->s6_addr32[1];
 			map6->list.addr.s6_addr32[2] &= mask6->s6_addr32[2];
 			map6->list.addr.s6_addr32[3] &= mask6->s6_addr32[3];
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ipv6_addr_copy(&map6->list.mask, mask6);
 			map6->list.valid = 1;
@@ -198,6 +235,8 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 				goto cfg_unlbl_map_add_failure;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			map6->list.mask = *mask6;
 			map6->list.valid = 1;
 			ret_val = netlbl_af6list_add(&map6->list,
@@ -207,14 +246,22 @@ int netlbl_cfg_unlbl_map_add(const char *domain,
 			break;
 			}
 #endif /* IPv6 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		default:
 			goto cfg_unlbl_map_add_failure;
 			break;
 		}
 
+<<<<<<< HEAD
 		entry->type_def.addrsel = addrmap;
 		entry->type = NETLBL_NLTYPE_ADDRSELECT;
+=======
+		entry->def.addrsel = addrmap;
+		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		ret_val = -EINVAL;
 		goto cfg_unlbl_map_add_failure;
@@ -267,16 +314,22 @@ int netlbl_cfg_unlbl_static_add(struct net *net,
 		addr_len = sizeof(struct in_addr);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case AF_INET6:
 		addr_len = sizeof(struct in6_addr);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if IS_ENABLED(CONFIG_IPV6)
 	case AF_INET6:
 		addr_len = sizeof(struct in6_addr);
 		break;
 #endif /* IPv6 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EPFNOSUPPORT;
 	}
@@ -316,16 +369,22 @@ int netlbl_cfg_unlbl_static_del(struct net *net,
 		addr_len = sizeof(struct in_addr);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	case AF_INET6:
 		addr_len = sizeof(struct in6_addr);
 		break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if IS_ENABLED(CONFIG_IPV6)
 	case AF_INET6:
 		addr_len = sizeof(struct in6_addr);
 		break;
 #endif /* IPv6 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -EPFNOSUPPORT;
 	}
@@ -399,17 +458,21 @@ int netlbl_cfg_cipsov4_map_add(u32 doi,
 	entry = kzalloc(sizeof(*entry), GFP_ATOMIC);
 	if (entry == NULL)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -ENOMEM;
 	if (domain != NULL) {
 		entry->domain = kstrdup(domain, GFP_ATOMIC);
 		if (entry->domain == NULL)
 			goto cfg_cipsov4_map_add_failure;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out_entry;
 	if (domain != NULL) {
 		entry->domain = kstrdup(domain, GFP_ATOMIC);
 		if (entry->domain == NULL)
 			goto out_domain;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
@@ -424,11 +487,23 @@ int netlbl_cfg_cipsov4_map_add(u32 doi,
 =======
 			goto out_addrmap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+	if (addr == NULL && mask == NULL) {
+		entry->def.cipso = doi_def;
+		entry->def.type = NETLBL_NLTYPE_CIPSOV4;
+	} else if (addr != NULL && mask != NULL) {
+		addrmap = kzalloc(sizeof(*addrmap), GFP_ATOMIC);
+		if (addrmap == NULL)
+			goto out_addrmap;
+>>>>>>> refs/remotes/origin/master
 		INIT_LIST_HEAD(&addrmap->list4);
 		INIT_LIST_HEAD(&addrmap->list6);
 
 		addrinfo = kzalloc(sizeof(*addrinfo), GFP_ATOMIC);
 		if (addrinfo == NULL)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			goto cfg_cipsov4_map_add_failure;
 =======
@@ -436,6 +511,11 @@ int netlbl_cfg_cipsov4_map_add(u32 doi,
 >>>>>>> refs/remotes/origin/cm-10.0
 		addrinfo->type_def.cipsov4 = doi_def;
 		addrinfo->type = NETLBL_NLTYPE_CIPSOV4;
+=======
+			goto out_addrinfo;
+		addrinfo->def.cipso = doi_def;
+		addrinfo->def.type = NETLBL_NLTYPE_CIPSOV4;
+>>>>>>> refs/remotes/origin/master
 		addrinfo->list.addr = addr->s_addr & mask->s_addr;
 		addrinfo->list.mask = mask->s_addr;
 		addrinfo->list.valid = 1;
@@ -443,6 +523,7 @@ int netlbl_cfg_cipsov4_map_add(u32 doi,
 		if (ret_val != 0)
 			goto cfg_cipsov4_map_add_failure;
 
+<<<<<<< HEAD
 		entry->type_def.addrsel = addrmap;
 		entry->type = NETLBL_NLTYPE_ADDRSELECT;
 	} else {
@@ -452,6 +533,13 @@ int netlbl_cfg_cipsov4_map_add(u32 doi,
 =======
 		goto out_addrmap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		entry->def.addrsel = addrmap;
+		entry->def.type = NETLBL_NLTYPE_ADDRSELECT;
+	} else {
+		ret_val = -EINVAL;
+		goto out_addrmap;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret_val = netlbl_domhsh_add(entry, audit_info);
@@ -462,12 +550,15 @@ int netlbl_cfg_cipsov4_map_add(u32 doi,
 
 cfg_cipsov4_map_add_failure:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cipso_v4_doi_putdef(doi_def);
 	kfree(entry->domain);
 	kfree(entry);
 	kfree(addrmap);
 	kfree(addrinfo);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(addrinfo);
 out_addrinfo:
 	kfree(addrmap);
@@ -477,7 +568,10 @@ out_domain:
 	kfree(entry);
 out_entry:
 	cipso_v4_doi_putdef(doi_def);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret_val;
 }
 
@@ -677,10 +771,14 @@ int netlbl_secattr_catmap_setrng(struct netlbl_lsm_secattr_catmap *catmap,
 			iter_max_spot = iter->startbit + NETLBL_CATMAP_SIZE;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret_val = netlbl_secattr_catmap_setbit(iter, spot, GFP_ATOMIC);
 =======
 		ret_val = netlbl_secattr_catmap_setbit(iter, spot, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret_val = netlbl_secattr_catmap_setbit(iter, spot, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret_val;
@@ -740,14 +838,23 @@ int netlbl_sock_setattr(struct sock *sk,
 	}
 	switch (family) {
 	case AF_INET:
+<<<<<<< HEAD
 		switch (dom_entry->type) {
+=======
+		switch (dom_entry->def.type) {
+>>>>>>> refs/remotes/origin/master
 		case NETLBL_NLTYPE_ADDRSELECT:
 			ret_val = -EDESTADDRREQ;
 			break;
 		case NETLBL_NLTYPE_CIPSOV4:
 			ret_val = cipso_v4_sock_setattr(sk,
+<<<<<<< HEAD
 						    dom_entry->type_def.cipsov4,
 						    secattr);
+=======
+							dom_entry->def.cipso,
+							secattr);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case NETLBL_NLTYPE_UNLABELED:
 			ret_val = 0;
@@ -757,10 +864,14 @@ int netlbl_sock_setattr(struct sock *sk,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		/* since we don't support any IPv6 labeling protocols right
 		 * now we can optimize everything away until we do */
@@ -812,10 +923,14 @@ int netlbl_sock_getattr(struct sock *sk,
 		ret_val = cipso_v4_sock_getattr(sk, secattr);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		ret_val = -ENOMSG;
 		break;
@@ -845,12 +960,17 @@ int netlbl_conn_setattr(struct sock *sk,
 {
 	int ret_val;
 	struct sockaddr_in *addr4;
+<<<<<<< HEAD
 	struct netlbl_domaddr4_map *af4_entry;
+=======
+	struct netlbl_dommap_def *entry;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	switch (addr->sa_family) {
 	case AF_INET:
 		addr4 = (struct sockaddr_in *)addr;
+<<<<<<< HEAD
 		af4_entry = netlbl_domhsh_getentry_af4(secattr->domain,
 						       addr4->sin_addr.s_addr);
 		if (af4_entry == NULL) {
@@ -862,6 +982,18 @@ int netlbl_conn_setattr(struct sock *sk,
 			ret_val = cipso_v4_sock_setattr(sk,
 						   af4_entry->type_def.cipsov4,
 						   secattr);
+=======
+		entry = netlbl_domhsh_getentry_af4(secattr->domain,
+						   addr4->sin_addr.s_addr);
+		if (entry == NULL) {
+			ret_val = -ENOENT;
+			goto conn_setattr_return;
+		}
+		switch (entry->type) {
+		case NETLBL_NLTYPE_CIPSOV4:
+			ret_val = cipso_v4_sock_setattr(sk,
+							entry->cipso, secattr);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case NETLBL_NLTYPE_UNLABELED:
 			/* just delete the protocols we support for right now
@@ -874,10 +1006,14 @@ int netlbl_conn_setattr(struct sock *sk,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		/* since we don't support any IPv6 labeling protocols right
 		 * now we can optimize everything away until we do */
@@ -907,6 +1043,7 @@ int netlbl_req_setattr(struct request_sock *req,
 		       const struct netlbl_lsm_secattr *secattr)
 {
 	int ret_val;
+<<<<<<< HEAD
 	struct netlbl_dom_map *dom_entry;
 	struct netlbl_domaddr4_map *af4_entry;
 	u32 proto_type;
@@ -937,6 +1074,23 @@ int netlbl_req_setattr(struct request_sock *req,
 		switch (proto_type) {
 		case NETLBL_NLTYPE_CIPSOV4:
 			ret_val = cipso_v4_req_setattr(req, proto_cv4, secattr);
+=======
+	struct netlbl_dommap_def *entry;
+
+	rcu_read_lock();
+	switch (req->rsk_ops->family) {
+	case AF_INET:
+		entry = netlbl_domhsh_getentry_af4(secattr->domain,
+						   inet_rsk(req)->ir_rmt_addr);
+		if (entry == NULL) {
+			ret_val = -ENOENT;
+			goto req_setattr_return;
+		}
+		switch (entry->type) {
+		case NETLBL_NLTYPE_CIPSOV4:
+			ret_val = cipso_v4_req_setattr(req,
+						       entry->cipso, secattr);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case NETLBL_NLTYPE_UNLABELED:
 			/* just delete the protocols we support for right now
@@ -949,10 +1103,14 @@ int netlbl_req_setattr(struct request_sock *req,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		/* since we don't support any IPv6 labeling protocols right
 		 * now we can optimize everything away until we do */
@@ -998,12 +1156,17 @@ int netlbl_skbuff_setattr(struct sk_buff *skb,
 {
 	int ret_val;
 	struct iphdr *hdr4;
+<<<<<<< HEAD
 	struct netlbl_domaddr4_map *af4_entry;
+=======
+	struct netlbl_dommap_def *entry;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	switch (family) {
 	case AF_INET:
 		hdr4 = ip_hdr(skb);
+<<<<<<< HEAD
 		af4_entry = netlbl_domhsh_getentry_af4(secattr->domain,
 						       hdr4->daddr);
 		if (af4_entry == NULL) {
@@ -1015,6 +1178,17 @@ int netlbl_skbuff_setattr(struct sk_buff *skb,
 			ret_val = cipso_v4_skbuff_setattr(skb,
 						   af4_entry->type_def.cipsov4,
 						   secattr);
+=======
+		entry = netlbl_domhsh_getentry_af4(secattr->domain,hdr4->daddr);
+		if (entry == NULL) {
+			ret_val = -ENOENT;
+			goto skbuff_setattr_return;
+		}
+		switch (entry->type) {
+		case NETLBL_NLTYPE_CIPSOV4:
+			ret_val = cipso_v4_skbuff_setattr(skb, entry->cipso,
+							  secattr);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case NETLBL_NLTYPE_UNLABELED:
 			/* just delete the protocols we support for right now
@@ -1026,10 +1200,14 @@ int netlbl_skbuff_setattr(struct sk_buff *skb,
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		/* since we don't support any IPv6 labeling protocols right
 		 * now we can optimize everything away until we do */
@@ -1069,10 +1247,14 @@ int netlbl_skbuff_getattr(const struct sk_buff *skb,
 			return 0;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		break;
 #endif /* IPv6 */

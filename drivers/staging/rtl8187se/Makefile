@@ -1,5 +1,6 @@
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #EXTRA_CFLAGS += -DCONFIG_IEEE80211_NOWEP=y
 #EXTRA_CFLAGS += -std=gnu89
 #EXTRA_CFLAGS += -O2
@@ -8,6 +9,11 @@
 #ccflags-y += -std=gnu89
 #ccflags-y += -O2
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ccflags-y += -DCONFIG_IEEE80211_NOWEP=y
+#ccflags-y += -std=gnu89
+#ccflags-y += -O2
+>>>>>>> refs/remotes/origin/master
 #CC            = gcc
 
 ccflags-y := -DSW_ANTE
@@ -16,7 +22,11 @@ ccflags-y += -DHIGH_POWER
 ccflags-y += -DSW_DIG
 ccflags-y += -DRATE_ADAPT
 
+<<<<<<< HEAD
 #enable it for legacy power save, disable it for leisure  power save
+=======
+#enable it for legacy power save, disable it for leisure power save
+>>>>>>> refs/remotes/origin/master
 ccflags-y += -DENABLE_LPS
 
 

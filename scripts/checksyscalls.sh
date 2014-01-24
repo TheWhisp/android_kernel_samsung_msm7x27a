@@ -199,6 +199,7 @@ EOF
 
 syscall_list() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 sed -n -e '/^\#define/ s/[^_]*__NR_\([^[:space:]]*\).*/\
 \#if !defined \(__NR_\1\) \&\& !defined \(__IGNORE_\1\)\
 \#warning syscall \1 not implemented\
@@ -210,6 +211,11 @@ sed -n -e '/^\#define/ s/[^_]*__NR_\([^[:space:]]*\).*/\
     grep '^[0-9]' "$1" | sort -n | (
 	while read nr abi name entry ; do
 	    echo <<EOF
+=======
+    grep '^[0-9]' "$1" | sort -n | (
+	while read nr abi name entry ; do
+	    cat <<EOF
+>>>>>>> refs/remotes/origin/master
 #if !defined(__NR_${name}) && !defined(__IGNORE_${name})
 #warning syscall ${name} not implemented
 #endif
@@ -219,5 +225,8 @@ EOF
 }
 
 (ignore_list && syscall_list $(dirname $0)/../arch/x86/syscalls/syscall_32.tbl) | \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 $* -E -x c - > /dev/null

@@ -17,6 +17,13 @@
 
 struct page;
 
+<<<<<<< HEAD
+=======
+#include <linux/range.h>
+extern struct range pfn_mapped[];
+extern int nr_pfn_mapped;
+
+>>>>>>> refs/remotes/origin/master
 static inline void clear_user_page(void *page, unsigned long vaddr,
 				   struct page *pg)
 {
@@ -44,7 +51,12 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
  * case properly. Once all supported versions of gcc understand it, we can
  * remove this Voodoo magic stuff. (i.e. once gcc3.x is deprecated)
  */
+<<<<<<< HEAD
 #define __pa_symbol(x)	__pa(__phys_reloc_hide((unsigned long)(x)))
+=======
+#define __pa_symbol(x) \
+	__phys_addr_symbol(__phys_reloc_hide((unsigned long)(x)))
+>>>>>>> refs/remotes/origin/master
 
 #define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
 
@@ -66,6 +78,10 @@ extern bool __virt_addr_valid(unsigned long kaddr);
 #include <asm-generic/getorder.h>
 
 #define __HAVE_ARCH_GATE_AREA 1
+<<<<<<< HEAD
+=======
+#define HAVE_ARCH_HUGETLB_UNMAPPED_AREA
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __KERNEL__ */
 #endif /* _ASM_X86_PAGE_H */

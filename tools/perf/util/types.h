@@ -16,4 +16,12 @@ typedef signed short	   s16;
 typedef unsigned char	   u8;
 typedef signed char	   s8;
 
+<<<<<<< HEAD
+=======
+union u64_swap {
+	u64 val64;
+	u32 val32[2];
+};
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __PERF_TYPES_H */

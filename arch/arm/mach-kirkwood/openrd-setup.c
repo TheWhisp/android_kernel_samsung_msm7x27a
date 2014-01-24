@@ -20,7 +20,11 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <mach/kirkwood.h>
+<<<<<<< HEAD
 #include <plat/mvsdio.h>
+=======
+#include <linux/platform_data/mmc-mvsdio.h>
+>>>>>>> refs/remotes/origin/master
 #include "common.h"
 #include "mpp.h"
 
@@ -55,6 +59,10 @@ static struct mv_sata_platform_data openrd_sata_data = {
 
 static struct mvsdio_platform_data openrd_mvsdio_data = {
 	.gpio_card_detect = 29,	/* MPP29 used as SD card detect */
+<<<<<<< HEAD
+=======
+	.gpio_write_protect = -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static unsigned int openrd_mpp_config[] __initdata = {
@@ -84,13 +92,19 @@ static struct i2c_board_info i2c_board_info[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device openrd_client_audio_device = {
 	.name		= "openrd-client-audio",
 	.id		= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __initdata uart1;
 
 static int __init sd_uart_selection(char *str)
@@ -124,14 +138,22 @@ static int __init uart1_mpp_config(void)
 	kirkwood_mpp_conf(openrd_uart1_mpp_config);
 
 	if (gpio_request(34, "SD_UART1_SEL")) {
+<<<<<<< HEAD
 		printk(KERN_ERR "GPIO request failed for SD/UART1 selection"
 				", gpio: 34\n");
+=======
+		pr_err("GPIO request 34 failed for SD/UART1 selection\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
 	if (gpio_request(28, "RS232_RS485_SEL")) {
+<<<<<<< HEAD
 		printk(KERN_ERR "GPIO request failed for RS232/RS485 selection"
 				", gpio# 28\n");
+=======
+		pr_err("GPIO request 28 failed for RS232/RS485 selection\n");
+>>>>>>> refs/remotes/origin/master
 		gpio_free(34);
 		return -EIO;
 	}
@@ -162,7 +184,12 @@ static void __init openrd_init(void)
 	kirkwood_mpp_conf(openrd_mpp_config);
 
 	kirkwood_uart0_init();
+<<<<<<< HEAD
 	kirkwood_nand_init(ARRAY_AND_SIZE(openrd_nand_parts), 25);
+=======
+	kirkwood_nand_init(openrd_nand_parts, ARRAY_SIZE(openrd_nand_parts),
+			   25);
+>>>>>>> refs/remotes/origin/master
 
 	kirkwood_ehci_init();
 
@@ -181,9 +208,13 @@ static void __init openrd_init(void)
 
 	if (machine_is_openrd_client() || machine_is_openrd_ultimate()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		platform_device_register(&openrd_client_audio_device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		platform_device_register(&openrd_client_audio_device);
+>>>>>>> refs/remotes/origin/master
 		i2c_register_board_info(0, i2c_board_info,
 			ARRAY_SIZE(i2c_board_info));
 		kirkwood_audio_init();
@@ -191,15 +222,24 @@ static void __init openrd_init(void)
 
 	if (uart1 <= 0) {
 		if (uart1 < 0)
+<<<<<<< HEAD
 			printk(KERN_ERR "Invalid kernel parameter to select "
 				"UART1. Defaulting to SD. ERROR CODE: %d\n",
 				uart1);
+=======
+			pr_err("Invalid kernel parameter to select UART1. Defaulting to SD. ERROR CODE: %d\n",
+			       uart1);
+>>>>>>> refs/remotes/origin/master
 
 		/* Select SD
 		 * Pin # 34: 0 => UART1, 1 => SD */
 		if (gpio_request(34, "SD_UART1_SEL")) {
+<<<<<<< HEAD
 			printk(KERN_ERR "GPIO request failed for SD/UART1 "
 					"selection, gpio: 34\n");
+=======
+			pr_err("GPIO request 34 failed for SD/UART1 selection\n");
+>>>>>>> refs/remotes/origin/master
 		} else {
 
 			gpio_direction_output(34, 1);
@@ -227,19 +267,28 @@ subsys_initcall(openrd_pci_init);
 MACHINE_START(OPENRD_BASE, "Marvell OpenRD Base Board")
 	/* Maintainer: Dhaval Vasa <dhaval.vasa@einfochips.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= openrd_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
 <<<<<<< HEAD
 =======
 	.restart	= kirkwood_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -247,19 +296,28 @@ MACHINE_END
 MACHINE_START(OPENRD_CLIENT, "Marvell OpenRD Client Board")
 	/* Maintainer: Dhaval Vasa <dhaval.vasa@einfochips.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= openrd_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
 <<<<<<< HEAD
 =======
 	.restart	= kirkwood_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif
 
@@ -267,18 +325,27 @@ MACHINE_END
 MACHINE_START(OPENRD_ULTIMATE, "Marvell OpenRD Ultimate Board")
 	/* Maintainer: Dhaval Vasa <dhaval.vasa@einfochips.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= openrd_init,
 	.map_io		= kirkwood_map_io,
 	.init_early	= kirkwood_init_early,
 	.init_irq	= kirkwood_init_irq,
+<<<<<<< HEAD
 	.timer		= &kirkwood_timer,
 <<<<<<< HEAD
 =======
 	.restart	= kirkwood_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= kirkwood_timer_init,
+	.restart	= kirkwood_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END
 #endif

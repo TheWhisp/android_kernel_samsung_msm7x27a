@@ -83,6 +83,7 @@ struct pci_hba_data {
 #ifdef CONFIG_64BIT
 #define PCI_F_EXTEND		0xffffffff00000000UL
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PCI_IS_LMMIO(hba,a)	pci_is_lmmio(hba,a)
 
 /* We need to know if an address is LMMMIO or GMMIO.
@@ -119,6 +120,10 @@ static __inline__  int pci_is_lmmio(struct pci_hba_data *hba, unsigned long a)
 #else	/* !CONFIG_64BIT */
 #define PCI_F_EXTEND		0UL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else	/* !CONFIG_64BIT */
+#define PCI_F_EXTEND		0UL
+>>>>>>> refs/remotes/origin/master
 #endif /* !CONFIG_64BIT */
 
 /*
@@ -251,6 +256,7 @@ static inline void pci_dma_burst_advice(struct pci_dev *pdev,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void
 pcibios_resource_to_bus(struct pci_dev *dev, struct pci_bus_region *region,
 			 struct resource *res);
@@ -261,6 +267,8 @@ pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void pcibios_penalize_isa_irq(int irq, int active)
 {
 	/* We don't need to penalize isa irq's */
@@ -271,4 +279,12 @@ static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
 	return channel ? 15 : 14;
 }
 
+<<<<<<< HEAD
+=======
+#define HAVE_PCI_MMAP
+
+extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
+	enum pci_mmap_state mmap_state, int write_combine);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_PARISC_PCI_H */

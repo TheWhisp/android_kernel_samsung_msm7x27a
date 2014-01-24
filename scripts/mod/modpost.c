@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+<<<<<<< HEAD
 #include "modpost.h"
 #include "../../include/generated/autoconf.h"
 #include "../../include/linux/license.h"
@@ -26,6 +27,15 @@
 #define MODULE_SYMBOL_PREFIX ""
 #endif
 
+=======
+#include <limits.h>
+#include <stdbool.h>
+#include <errno.h>
+#include "modpost.h"
+#include "../../include/generated/autoconf.h"
+#include "../../include/linux/license.h"
+#include "../../include/linux/export.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Are we using CONFIG_MODVERSIONS? */
 int modversions = 0;
@@ -37,13 +47,21 @@ static int all_versions = 0;
 static int external_module = 0;
 /* Warn about section mismatch in vmlinux if set to 1 */
 static int vmlinux_section_warnings = 1;
+<<<<<<< HEAD
 /* Exit with an error when there is a section mismatch if set to 1 */
 static int section_error_on_mismatch;
+=======
+>>>>>>> refs/remotes/origin/master
 /* Only warn about unresolved symbols */
 static int warn_unresolved = 0;
 /* How a symbol is exported */
 static int sec_mismatch_count = 0;
 static int sec_mismatch_verbose = 1;
+<<<<<<< HEAD
+=======
+/* ignore missing files */
+static int ignore_missing_files;
+>>>>>>> refs/remotes/origin/master
 
 enum export {
 	export_plain,      export_unused,     export_gpl,
@@ -87,6 +105,17 @@ PRINTF void merror(const char *fmt, ...)
 	va_end(arglist);
 }
 
+<<<<<<< HEAD
+=======
+static inline bool strends(const char *str, const char *postfix)
+{
+	if (strlen(str) < strlen(postfix))
+		return false;
+
+	return strcmp(str + strlen(str) - strlen(postfix), postfix) == 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int is_vmlinux(const char *modname)
 {
 	const char *myname;
@@ -122,22 +151,36 @@ static struct module *find_module(char *modname)
 	return mod;
 }
 
+<<<<<<< HEAD
 static struct module *new_module(char *modname)
 {
 	struct module *mod;
 	char *p, *s;
+=======
+static struct module *new_module(const char *modname)
+{
+	struct module *mod;
+	char *p;
+>>>>>>> refs/remotes/origin/master
 
 	mod = NOFAIL(malloc(sizeof(*mod)));
 	memset(mod, 0, sizeof(*mod));
 	p = NOFAIL(strdup(modname));
 
 	/* strip trailing .o */
+<<<<<<< HEAD
 	s = strrchr(p, '.');
 	if (s != NULL)
 		if (strcmp(s, ".o") == 0) {
 			*s = '\0';
 			mod->is_dot_o = 1;
 		}
+=======
+	if (strends(p, ".o")) {
+		p[strlen(p) - 2] = '\0';
+		mod->is_dot_o = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* add to list */
 	mod->name = p;
@@ -162,7 +205,11 @@ struct symbol {
 	unsigned int vmlinux:1;    /* 1 if symbol is defined in vmlinux */
 	unsigned int kernel:1;     /* 1 if symbol is from kernel
 				    *  (only for external modules) **/
+<<<<<<< HEAD
 	unsigned int preloaded:1;  /* 1 if symbol from Module.symvers */
+=======
+	unsigned int preloaded:1;  /* 1 if symbol from Module.symvers, or crc */
+>>>>>>> refs/remotes/origin/master
 	enum export  export;       /* Type of export */
 	char name[0];
 };
@@ -330,8 +377,16 @@ static void sym_update_crc(const char *name, struct module *mod,
 {
 	struct symbol *s = find_symbol(name);
 
+<<<<<<< HEAD
 	if (!s)
 		s = new_symbol(name, mod, export);
+=======
+	if (!s) {
+		s = new_symbol(name, mod, export);
+		/* Don't complain when we find it later. */
+		s->preloaded = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 	s->crc = crc;
 	s->crc_valid = 1;
 }
@@ -339,6 +394,7 @@ static void sym_update_crc(const char *name, struct module *mod,
 void *grab_file(const char *filename, unsigned long *size)
 {
 	struct stat st;
+<<<<<<< HEAD
 	void *map;
 	int fd;
 
@@ -350,6 +406,22 @@ void *grab_file(const char *filename, unsigned long *size)
 	map = mmap(NULL, *size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
 	close(fd);
 
+=======
+	void *map = MAP_FAILED;
+	int fd;
+
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return NULL;
+	if (fstat(fd, &st))
+		goto failed;
+
+	*size = st.st_size;
+	map = mmap(NULL, *size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+
+failed:
+	close(fd);
+>>>>>>> refs/remotes/origin/master
 	if (map == MAP_FAILED)
 		return NULL;
 	return map;
@@ -405,6 +477,14 @@ static int parse_elf(struct elf_info *info, const char *filename)
 
 	hdr = grab_file(filename, &info->size);
 	if (!hdr) {
+<<<<<<< HEAD
+=======
+		if (ignore_missing_files) {
+			fprintf(stderr, "%s: %s (ignored)\n", filename,
+				strerror(errno));
+			return 0;
+		}
+>>>>>>> refs/remotes/origin/master
 		perror(filename);
 		exit(1);
 	}
@@ -561,7 +641,11 @@ static void parse_elf_finish(struct elf_info *info)
 static int ignore_undef_symbol(struct elf_info *info, const char *symname)
 {
 	/* ignore __this_module, it will be resolved shortly */
+<<<<<<< HEAD
 	if (strcmp(symname, MODULE_SYMBOL_PREFIX "__this_module") == 0)
+=======
+	if (strcmp(symname, VMLINUX_SYMBOL_STR(__this_module)) == 0)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	/* ignore global offset table */
 	if (strcmp(symname, "_GLOBAL_OFFSET_TABLE_") == 0)
@@ -582,8 +666,13 @@ static int ignore_undef_symbol(struct elf_info *info, const char *symname)
 	return 0;
 }
 
+<<<<<<< HEAD
 #define CRC_PFX     MODULE_SYMBOL_PREFIX "__crc_"
 #define KSYMTAB_PFX MODULE_SYMBOL_PREFIX "__ksymtab_"
+=======
+#define CRC_PFX     VMLINUX_SYMBOL_STR(__crc_)
+#define KSYMTAB_PFX VMLINUX_SYMBOL_STR(__ksymtab_)
+>>>>>>> refs/remotes/origin/master
 
 static void handle_modversions(struct module *mod, struct elf_info *info,
 			       Elf_Sym *sym, const char *symname)
@@ -597,10 +686,21 @@ static void handle_modversions(struct module *mod, struct elf_info *info,
 	else
 		export = export_from_sec(info, get_secindex(info, sym));
 
+<<<<<<< HEAD
+=======
+	/* CRC'd symbol */
+	if (strncmp(symname, CRC_PFX, strlen(CRC_PFX)) == 0) {
+		crc = (unsigned int) sym->st_value;
+		sym_update_crc(symname + strlen(CRC_PFX), mod, crc,
+				export);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	switch (sym->st_shndx) {
 	case SHN_COMMON:
 		warn("\"%s\" [%s] is COMMON symbol\n", symname, mod->name);
 		break;
+<<<<<<< HEAD
 	case SHN_ABS:
 		/* CRC'd symbol */
 		if (strncmp(symname, CRC_PFX, strlen(CRC_PFX)) == 0) {
@@ -609,6 +709,8 @@ static void handle_modversions(struct module *mod, struct elf_info *info,
 					export);
 		}
 		break;
+=======
+>>>>>>> refs/remotes/origin/master
 	case SHN_UNDEF:
 		/* undefined symbol */
 		if (ELF_ST_BIND(sym->st_info) != STB_GLOBAL &&
@@ -636,6 +738,7 @@ static void handle_modversions(struct module *mod, struct elf_info *info,
 		}
 #endif
 
+<<<<<<< HEAD
 		if (memcmp(symname, MODULE_SYMBOL_PREFIX,
 			   strlen(MODULE_SYMBOL_PREFIX)) == 0) {
 			mod->unres =
@@ -644,6 +747,17 @@ static void handle_modversions(struct module *mod, struct elf_info *info,
 			               ELF_ST_BIND(sym->st_info) == STB_WEAK,
 			               mod->unres);
 		}
+=======
+#ifdef CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX
+		if (symname[0] != '_')
+			break;
+		else
+			symname++;
+#endif
+		mod->unres = alloc_symbol(symname,
+					  ELF_ST_BIND(sym->st_info) == STB_WEAK,
+					  mod->unres);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		/* All exported symbols */
@@ -651,9 +765,15 @@ static void handle_modversions(struct module *mod, struct elf_info *info,
 			sym_add_exported(symname + strlen(KSYMTAB_PFX), mod,
 					export);
 		}
+<<<<<<< HEAD
 		if (strcmp(symname, MODULE_SYMBOL_PREFIX "init_module") == 0)
 			mod->has_init = 1;
 		if (strcmp(symname, MODULE_SYMBOL_PREFIX "cleanup_module") == 0)
+=======
+		if (strcmp(symname, VMLINUX_SYMBOL_STR(init_module)) == 0)
+			mod->has_init = 1;
+		if (strcmp(symname, VMLINUX_SYMBOL_STR(cleanup_module)) == 0)
+>>>>>>> refs/remotes/origin/master
 			mod->has_cleanup = 1;
 		break;
 	}
@@ -818,14 +938,28 @@ static const char *section_white_list[] =
 {
 	".comment*",
 	".debug*",
+<<<<<<< HEAD
 	".zdebug*",		/* Compressed debug sections. */
 	".GCC-command-line",	/* mn10300 */
+=======
+	".cranges",		/* sh64 */
+	".zdebug*",		/* Compressed debug sections. */
+	".GCC-command-line",	/* mn10300 */
+	".GCC.command.line",	/* record-gcc-switches, non mn10300 */
+>>>>>>> refs/remotes/origin/master
 	".mdebug*",        /* alpha, score, mips etc. */
 	".pdr",            /* alpha, score, mips etc. */
 	".stab*",
 	".note*",
 	".got*",
 	".toc*",
+<<<<<<< HEAD
+=======
+	".xt.prop",				 /* xtensa */
+	".xt.lit",         /* xtensa */
+	".arcextmap*",			/* arc */
+	".gnu.linkonce.arcext*",	/* arc : modules */
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
@@ -853,6 +987,7 @@ static void check_section(const char *modname, struct elf_info *elf,
 
 
 #define ALL_INIT_DATA_SECTIONS \
+<<<<<<< HEAD
 	".init.setup$", ".init.rodata$", \
 	".devinit.rodata$", ".cpuinit.rodata$", ".meminit.rodata$", \
 	".init.data$", ".devinit.data$", ".cpuinit.data$", ".meminit.data$"
@@ -868,11 +1003,31 @@ static void check_section(const char *modname, struct elf_info *elf,
 	MEM_INIT_SECTIONS
 #define ALL_XXXEXIT_SECTIONS DEV_EXIT_SECTIONS, CPU_EXIT_SECTIONS, \
 	MEM_EXIT_SECTIONS
+=======
+	".init.setup$", ".init.rodata$", ".meminit.rodata$", \
+	".init.data$", ".meminit.data$"
+#define ALL_EXIT_DATA_SECTIONS \
+	".exit.data$", ".memexit.data$"
+
+#define ALL_INIT_TEXT_SECTIONS \
+	".init.text$", ".meminit.text$"
+#define ALL_EXIT_TEXT_SECTIONS \
+	".exit.text$", ".memexit.text$"
+
+#define ALL_PCI_INIT_SECTIONS	\
+	".pci_fixup_early$", ".pci_fixup_header$", ".pci_fixup_final$", \
+	".pci_fixup_enable$", ".pci_fixup_resume$", \
+	".pci_fixup_resume_early$", ".pci_fixup_suspend$"
+
+#define ALL_XXXINIT_SECTIONS MEM_INIT_SECTIONS
+#define ALL_XXXEXIT_SECTIONS MEM_EXIT_SECTIONS
+>>>>>>> refs/remotes/origin/master
 
 #define ALL_INIT_SECTIONS INIT_SECTIONS, ALL_XXXINIT_SECTIONS
 #define ALL_EXIT_SECTIONS EXIT_SECTIONS, ALL_XXXEXIT_SECTIONS
 
 #define DATA_SECTIONS ".data$", ".data.rel$"
+<<<<<<< HEAD
 #define TEXT_SECTIONS ".text$"
 
 #define INIT_SECTIONS      ".init.*"
@@ -883,6 +1038,14 @@ static void check_section(const char *modname, struct elf_info *elf,
 #define EXIT_SECTIONS      ".exit.*"
 #define DEV_EXIT_SECTIONS  ".devexit.*"
 #define CPU_EXIT_SECTIONS  ".cpuexit.*"
+=======
+#define TEXT_SECTIONS ".text$", ".text.unlikely$"
+
+#define INIT_SECTIONS      ".init.*"
+#define MEM_INIT_SECTIONS  ".meminit.*"
+
+#define EXIT_SECTIONS      ".exit.*"
+>>>>>>> refs/remotes/origin/master
 #define MEM_EXIT_SECTIONS  ".memexit.*"
 
 /* init data sections */
@@ -970,13 +1133,18 @@ const struct sectioncheck sectioncheck[] = {
 	.mismatch = DATA_TO_ANY_EXIT,
 	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
 },
+<<<<<<< HEAD
 /* Do not reference init code/data from devinit/cpuinit/meminit code/data */
+=======
+/* Do not reference init code/data from meminit code/data */
+>>>>>>> refs/remotes/origin/master
 {
 	.fromsec = { ALL_XXXINIT_SECTIONS, NULL },
 	.tosec   = { INIT_SECTIONS, NULL },
 	.mismatch = XXXINIT_TO_SOME_INIT,
 	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
 },
+<<<<<<< HEAD
 /* Do not reference cpuinit code/data from meminit code/data */
 {
 	.fromsec = { MEM_INIT_SECTIONS, NULL },
@@ -992,12 +1160,16 @@ const struct sectioncheck sectioncheck[] = {
 	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
 },
 /* Do not reference exit code/data from devexit/cpuexit/memexit code/data */
+=======
+/* Do not reference exit code/data from memexit code/data */
+>>>>>>> refs/remotes/origin/master
 {
 	.fromsec = { ALL_XXXEXIT_SECTIONS, NULL },
 	.tosec   = { EXIT_SECTIONS, NULL },
 	.mismatch = XXXEXIT_TO_SOME_EXIT,
 	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
 },
+<<<<<<< HEAD
 /* Do not reference cpuexit code/data from memexit code/data */
 {
 	.fromsec = { MEM_EXIT_SECTIONS, NULL },
@@ -1012,6 +1184,8 @@ const struct sectioncheck sectioncheck[] = {
 	.mismatch = XXXEXIT_TO_SOME_EXIT,
 	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
 },
+=======
+>>>>>>> refs/remotes/origin/master
 /* Do not use exit code/data from init code */
 {
 	.fromsec = { ALL_INIT_SECTIONS, NULL },
@@ -1026,6 +1200,15 @@ const struct sectioncheck sectioncheck[] = {
 	.mismatch = ANY_EXIT_TO_ANY_INIT,
 	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
 },
+<<<<<<< HEAD
+=======
+{
+	.fromsec = { ALL_PCI_INIT_SECTIONS, NULL },
+	.tosec   = { INIT_SECTIONS, NULL },
+	.mismatch = ANY_INIT_TO_ANY_EXIT,
+	.symbol_white_list = { NULL },
+},
+>>>>>>> refs/remotes/origin/master
 /* Do not export init/exit functions or data */
 {
 	.fromsec = { "__ksymtab*", NULL },
@@ -1074,8 +1257,11 @@ static const struct sectioncheck *section_mismatch(
  * Pattern 2:
  *   Many drivers utilise a *driver container with references to
  *   add, remove, probe functions etc.
+<<<<<<< HEAD
  *   These functions may often be marked __devinit and we do not want to
  *   warn here.
+=======
+>>>>>>> refs/remotes/origin/master
  *   the pattern is identified by:
  *   tosec   = init or exit section
  *   fromsec = data section
@@ -1234,7 +1420,10 @@ static Elf_Sym *find_elf_symbol2(struct elf_info *elf, Elf_Addr addr,
 /*
  * Convert a section name to the function/data attribute
  * .init.text => __init
+<<<<<<< HEAD
  * .cpuinit.data => __cpudata
+=======
+>>>>>>> refs/remotes/origin/master
  * .memexitconst => __memconst
  * etc.
  *
@@ -1500,7 +1689,10 @@ static int addend_386_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef R_ARM_CALL
 #define R_ARM_CALL	28
 #endif
@@ -1508,7 +1700,10 @@ static int addend_386_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 #define R_ARM_JUMP24	29
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int addend_arm_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 {
 	unsigned int r_typ = ELF_R_TYPE(r->r_info);
@@ -1521,10 +1716,15 @@ static int addend_arm_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 		break;
 	case R_ARM_PC24:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case R_ARM_CALL:
 	case R_ARM_JUMP24:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case R_ARM_CALL:
+	case R_ARM_JUMP24:
+>>>>>>> refs/remotes/origin/master
 		/* From ARM ABI: ((S + A) | T) - P */
 		r->r_addend = (int)(long)(elf->hdr +
 		              sechdr->sh_offset +
@@ -1755,6 +1955,30 @@ static void read_symbols(char *modname)
 		mod->unres = alloc_symbol("module_layout", 0, mod->unres);
 }
 
+<<<<<<< HEAD
+=======
+static void read_symbols_from_files(const char *filename)
+{
+	FILE *in = stdin;
+	char fname[PATH_MAX];
+
+	if (strcmp(filename, "-") != 0) {
+		in = fopen(filename, "r");
+		if (!in)
+			fatal("Can't open filenames file %s: %m", filename);
+	}
+
+	while (fgets(fname, PATH_MAX, in) != NULL) {
+		if (strends(fname, "\n"))
+			fname[strlen(fname)-1] = '\0';
+		read_symbols(fname);
+	}
+
+	if (in != stdin)
+		fclose(in);
+}
+
+>>>>>>> refs/remotes/origin/master
 #define SZ 500
 
 /* We first write the generated file into memory using the
@@ -1856,6 +2080,7 @@ static void add_header(struct buffer *b, struct module *mod)
 	buf_printf(b, "\n");
 	buf_printf(b, "MODULE_INFO(vermagic, VERMAGIC_STRING);\n");
 	buf_printf(b, "\n");
+<<<<<<< HEAD
 	buf_printf(b, "struct module __this_module\n");
 	buf_printf(b, "__attribute__((section(\".gnu.linkonce.this_module\"))) = {\n");
 	buf_printf(b, " .name = KBUILD_MODNAME,\n");
@@ -1871,13 +2096,31 @@ static void add_header(struct buffer *b, struct module *mod)
 
 <<<<<<< HEAD
 =======
+=======
+	buf_printf(b, "__visible struct module __this_module\n");
+	buf_printf(b, "__attribute__((section(\".gnu.linkonce.this_module\"))) = {\n");
+	buf_printf(b, "\t.name = KBUILD_MODNAME,\n");
+	if (mod->has_init)
+		buf_printf(b, "\t.init = init_module,\n");
+	if (mod->has_cleanup)
+		buf_printf(b, "#ifdef CONFIG_MODULE_UNLOAD\n"
+			      "\t.exit = cleanup_module,\n"
+			      "#endif\n");
+	buf_printf(b, "\t.arch = MODULE_ARCH_INIT,\n");
+	buf_printf(b, "};\n");
+}
+
+>>>>>>> refs/remotes/origin/master
 static void add_intree_flag(struct buffer *b, int is_intree)
 {
 	if (is_intree)
 		buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void add_staging_flag(struct buffer *b, const char *name)
 {
 	static const char *staging_dir = "drivers/staging";
@@ -1930,7 +2173,12 @@ static int add_versions(struct buffer *b, struct module *mod)
 				s->name, mod->name);
 			continue;
 		}
+<<<<<<< HEAD
 		buf_printf(b, "\t{ %#8x, \"%s\" },\n", s->crc, s->name);
+=======
+		buf_printf(b, "\t{ %#8x, __VMLINUX_SYMBOL_STR(%s) },\n",
+			   s->crc, s->name);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	buf_printf(b, "};\n");
@@ -2118,13 +2366,21 @@ int main(int argc, char **argv)
 	struct module *mod;
 	struct buffer buf = { };
 	char *kernel_read = NULL, *module_read = NULL;
+<<<<<<< HEAD
 	char *dump_write = NULL;
+=======
+	char *dump_write = NULL, *files_source = NULL;
+>>>>>>> refs/remotes/origin/master
 	int opt;
 	int err;
 	struct ext_sym_list *extsym_iter;
 	struct ext_sym_list *extsym_start = NULL;
 
+<<<<<<< HEAD
 	while ((opt = getopt(argc, argv, "i:I:e:cmsSo:awM:K:E")) != -1) {
+=======
+	while ((opt = getopt(argc, argv, "i:I:e:mnsST:o:awM:K:")) != -1) {
+>>>>>>> refs/remotes/origin/master
 		switch (opt) {
 		case 'i':
 			kernel_read = optarg;
@@ -2133,9 +2389,12 @@ int main(int argc, char **argv)
 			module_read = optarg;
 			external_module = 1;
 			break;
+<<<<<<< HEAD
 		case 'c':
 			cross_build = 1;
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		case 'e':
 			external_module = 1;
 			extsym_iter =
@@ -2147,6 +2406,12 @@ int main(int argc, char **argv)
 		case 'm':
 			modversions = 1;
 			break;
+<<<<<<< HEAD
+=======
+		case 'n':
+			ignore_missing_files = 1;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case 'o':
 			dump_write = optarg;
 			break;
@@ -2159,12 +2424,21 @@ int main(int argc, char **argv)
 		case 'S':
 			sec_mismatch_verbose = 0;
 			break;
+<<<<<<< HEAD
 		case 'w':
 			warn_unresolved = 1;
 			break;
 		case 'E':
 			section_error_on_mismatch = 1;
 			break;
+=======
+		case 'T':
+			files_source = optarg;
+			break;
+		case 'w':
+			warn_unresolved = 1;
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			exit(1);
 		}
@@ -2184,6 +2458,12 @@ int main(int argc, char **argv)
 	while (optind < argc)
 		read_symbols(argv[optind++]);
 
+<<<<<<< HEAD
+=======
+	if (files_source)
+		read_symbols_from_files(files_source);
+
+>>>>>>> refs/remotes/origin/master
 	for (mod = modules; mod; mod = mod->next) {
 		if (mod->skip)
 			continue;
@@ -2202,9 +2482,13 @@ int main(int argc, char **argv)
 
 		add_header(&buf, mod);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		add_intree_flag(&buf, !external_module);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		add_intree_flag(&buf, !external_module);
+>>>>>>> refs/remotes/origin/master
 		add_staging_flag(&buf, mod->name);
 		err |= add_versions(&buf, mod);
 		add_depends(&buf, mod, modules);
@@ -2217,6 +2501,7 @@ int main(int argc, char **argv)
 
 	if (dump_write)
 		write_dump(dump_write);
+<<<<<<< HEAD
 
 	if (sec_mismatch_count && !sec_mismatch_verbose) {
 		merror(
@@ -2234,6 +2519,13 @@ int main(int argc, char **argv)
 		"build with:\n'make CONFIG_NO_ERROR_ON_MISMATCH=y'\n"
 		"(NOTE: This is not recommended)\n");
 	}
+=======
+	if (sec_mismatch_count && !sec_mismatch_verbose)
+		warn("modpost: Found %d section mismatch(es).\n"
+		     "To see full details build your kernel with:\n"
+		     "'make CONFIG_DEBUG_SECTION_MISMATCH=y'\n",
+		     sec_mismatch_count);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

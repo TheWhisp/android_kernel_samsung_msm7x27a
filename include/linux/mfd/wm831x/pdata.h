@@ -26,7 +26,11 @@ struct wm831x_backlight_pdata {
 struct wm831x_backup_pdata {
 	int charger_enable;
 	int no_constant_voltage;  /** Disable constant voltage charging */
+<<<<<<< HEAD
 	int vlim;   /** Voltage limit in milivolts */
+=======
+	int vlim;   /** Voltage limit in millivolts */
+>>>>>>> refs/remotes/origin/master
 	int ilim;   /** Current limit in microamps */
 };
 
@@ -121,14 +125,20 @@ struct wm831x_pdata {
 	bool irq_cmos;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/** Disable the touchscreen */
 	bool disable_touch;
 
 	/** The driver should initiate a power off sequence during shutdown */
 	bool soft_shutdown;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int irq_base;
 	int gpio_base;
 	int gpio_defaults[WM831X_GPIO_NUM];

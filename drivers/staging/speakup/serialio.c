@@ -6,6 +6,7 @@
 #include "spk_priv.h"
 #include "serialio.h"
 
+<<<<<<< HEAD
 static void start_serial_interrupt(int irq);
 
 <<<<<<< HEAD
@@ -17,6 +18,14 @@ static int timeouts;
 
 struct serial_state *spk_serial_init(int index)
 =======
+=======
+#ifndef SERIAL_PORT_DFNS
+#define SERIAL_PORT_DFNS
+#endif
+
+static void start_serial_interrupt(int irq);
+
+>>>>>>> refs/remotes/origin/master
 static const struct old_serial_port rs_table[] = {
 	SERIAL_PORT_DFNS
 };
@@ -24,11 +33,15 @@ static const struct old_serial_port *serstate;
 static int timeouts;
 
 const struct old_serial_port *spk_serial_init(int index)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int baud = 9600, quot = 0;
 	unsigned int cval = 0;
 	int cflag = CREAD | HUPCL | CLOCAL | B9600 | CS8;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct serial_state *ser = NULL;
 	int err;
@@ -39,6 +52,11 @@ const struct old_serial_port *spk_serial_init(int index)
 	int err;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const struct old_serial_port *ser = rs_table + index;
+	int err;
+
+>>>>>>> refs/remotes/origin/master
 	/*	Divisor, bytesize and parity */
 	quot = ser->baud_base / baud;
 	cval = cflag & (CSIZE | CSTOPB);
@@ -58,10 +76,14 @@ const struct old_serial_port *spk_serial_init(int index)
 		err = synth_request_region(ser->port, 8);
 		if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pr_warn("Unable to allocate port at %lx, errno %i",
 =======
 			pr_warn("Unable to allocate port at %x, errno %i",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_warn("Unable to allocate port at %x, errno %i",
+>>>>>>> refs/remotes/origin/master
 				ser->port, err);
 			return NULL;
 		}
@@ -100,7 +122,11 @@ static irqreturn_t synth_readbuf_handler(int irq, void *dev_id)
 /*printk(KERN_ERR "in irq\n"); */
 /*pr_warn("in IRQ\n"); */
 	int c;
+<<<<<<< HEAD
 	spk_lock(flags);
+=======
+	spin_lock_irqsave(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 	while (inb_p(speakup_info.port_tts + UART_LSR) & UART_LSR_DR) {
 
 		c = inb_p(speakup_info.port_tts+UART_RX);
@@ -108,7 +134,11 @@ static irqreturn_t synth_readbuf_handler(int irq, void *dev_id)
 /*printk(KERN_ERR "c = %d\n", c); */
 /*pr_warn("C = %d\n", c); */
 	}
+<<<<<<< HEAD
 	spk_unlock(flags);
+=======
+	spin_unlock_irqrestore(&speakup_info.spinlock, flags);
+>>>>>>> refs/remotes/origin/master
 	return IRQ_HANDLED;
 }
 
@@ -137,7 +167,11 @@ static void start_serial_interrupt(int irq)
 	outb(1, speakup_info.port_tts + UART_FCR);	/* Turn FIFO On */
 }
 
+<<<<<<< HEAD
 void stop_serial_interrupt(void)
+=======
+void spk_stop_serial_interrupt(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (speakup_info.port_tts == 0)
 		return;
@@ -151,7 +185,11 @@ void stop_serial_interrupt(void)
 	free_irq(serstate->irq, (void *) synth_readbuf_handler);
 }
 
+<<<<<<< HEAD
 int wait_for_xmitr(void)
+=======
+int spk_wait_for_xmitr(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int tmout = SPK_XMITR_TIMEOUT;
 	if ((synth->alive) && (timeouts >= NUM_DISABLE_TIMEOUTS)) {
@@ -216,7 +254,11 @@ EXPORT_SYMBOL_GPL(spk_serial_in_nowait);
 
 int spk_serial_out(const char ch)
 {
+<<<<<<< HEAD
 	if (synth->alive && wait_for_xmitr()) {
+=======
+	if (synth->alive && spk_wait_for_xmitr()) {
+>>>>>>> refs/remotes/origin/master
 		outb_p(ch, speakup_info.port_tts);
 		return 1;
 	}

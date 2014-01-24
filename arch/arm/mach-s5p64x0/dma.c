@@ -22,19 +22,26 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/amba/bus.h>
 #include <linux/amba/pl330.h>
 
 #include <asm/irq.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/map.h>
 #include <mach/irqs.h>
 #include <mach/regs-clock.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include <plat/devs.h>
@@ -153,14 +160,19 @@ static int __init s5p64x0_dma_init(void)
 
 	platform_device_register(&s5p64x0_device_pdma);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/dma.h>
 
 #include <plat/cpu.h>
 #include <plat/devs.h>
 #include <plat/irqs.h>
 
+<<<<<<< HEAD
 static u64 dma_dmamask = DMA_BIT_MASK(32);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 s5p6440_pdma_peri[] = {
 	DMACH_UART0_RX,
 	DMACH_UART0_TX,
@@ -247,7 +259,10 @@ static int __init s5p64x0_dma_init(void)
 	}
 
 	amba_device_register(&s5p64x0_pdma_device, &iomem_resource);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

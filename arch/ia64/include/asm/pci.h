@@ -12,7 +12,10 @@
 #include <asm/hw_irq.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct pci_vector_struct {
 	__u16 segment;	/* PCI Segment number */
 	__u16 bus;	/* PCI Bus number */
@@ -21,7 +24,10 @@ struct pci_vector_struct {
 	__u32 irq;	/* IRQ assigned */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Can be used to override the logic in pci_scan_bus for skipping already-configured bus
  * numbers - to be used for buggy BIOSes or architectures with incomplete PCI setup by the
@@ -55,6 +61,7 @@ extern unsigned long ia64_max_iommu_merge_mask;
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 pcibios_set_master (struct pci_dev *dev)
 {
 	/* No special bus mastering setup handling */
@@ -63,6 +70,8 @@ pcibios_set_master (struct pci_dev *dev)
 static inline void
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 pcibios_penalize_isa_irq (int irq, int active)
 {
 	/* We don't do dynamic PCI IRQ allocation */
@@ -101,6 +110,7 @@ extern int pci_mmap_legacy_page_range(struct pci_bus *bus,
 #define pci_legacy_read platform_pci_legacy_read
 #define pci_legacy_write platform_pci_legacy_write
 
+<<<<<<< HEAD
 struct pci_window {
 	struct resource resource;
 	u64 offset;
@@ -108,16 +118,32 @@ struct pci_window {
 
 struct pci_controller {
 	void *acpi_handle;
+=======
+struct iospace_resource {
+	struct list_head list;
+	struct resource res;
+};
+
+struct pci_controller {
+	struct acpi_device *companion;
+>>>>>>> refs/remotes/origin/master
 	void *iommu;
 	int segment;
 	int node;		/* nearest node with memory or -1 for global allocation */
 
+<<<<<<< HEAD
 	unsigned int windows;
 	struct pci_window *window;
 
 	void *platform_data;
 };
 
+=======
+	void *platform_data;
+};
+
+
+>>>>>>> refs/remotes/origin/master
 #define PCI_CONTROLLER(busdev) ((struct pci_controller *) busdev->sysdata)
 #define pci_domain_nr(busdev)    (PCI_CONTROLLER(busdev)->segment)
 
@@ -129,6 +155,7 @@ static inline int pci_proc_domain(struct pci_bus *bus)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void pcibios_resource_to_bus(struct pci_dev *dev,
 		struct pci_bus_region *region, struct resource *res);
 
@@ -137,6 +164,8 @@ extern void pcibios_bus_to_resource(struct pci_dev *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct resource *
 pcibios_select_root(struct pci_dev *pdev, struct resource *res)
 {
@@ -157,10 +186,14 @@ static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DMAR
 =======
 #ifdef CONFIG_INTEL_IOMMU
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_INTEL_IOMMU
+>>>>>>> refs/remotes/origin/master
 extern void pci_iommu_alloc(void);
 #endif
 #endif /* _ASM_IA64_PCI_H */

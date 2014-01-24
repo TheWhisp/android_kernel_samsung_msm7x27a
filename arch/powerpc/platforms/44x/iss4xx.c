@@ -72,11 +72,15 @@ static void __init iss4xx_init_irq(void)
 		 * device-tree, just pass 0 to all arguments
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct mpic *mpic = mpic_alloc(np, 0, MPIC_PRIMARY, 0, 0,
 					       " MPIC     ");
 =======
 		struct mpic *mpic = mpic_alloc(np, 0, MPIC_NO_RESET, 0, 0, " MPIC     ");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct mpic *mpic = mpic_alloc(np, 0, MPIC_NO_RESET, 0, 0, " MPIC     ");
+>>>>>>> refs/remotes/origin/master
 		BUG_ON(mpic == NULL);
 		mpic_init(mpic);
 		ppc_md.get_irq = mpic_get_irq;
@@ -86,12 +90,20 @@ static void __init iss4xx_init_irq(void)
 }
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 static void __cpuinit smp_iss4xx_setup_cpu(int cpu)
+=======
+static void smp_iss4xx_setup_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	mpic_setup_this_cpu();
 }
 
+<<<<<<< HEAD
 static int __cpuinit smp_iss4xx_kick_cpu(int cpu)
+=======
+static int smp_iss4xx_kick_cpu(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *cpunode = of_get_cpu_node(cpu, NULL);
 	const u64 *spin_table_addr_prop;

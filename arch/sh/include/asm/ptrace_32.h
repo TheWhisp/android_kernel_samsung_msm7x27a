@@ -1,6 +1,7 @@
 #ifndef __ASM_SH_PTRACE_32_H
 #define __ASM_SH_PTRACE_32_H
 
+<<<<<<< HEAD
 /*
  * GCC defines register number like this:
  * -----------------------------
@@ -79,12 +80,21 @@ struct pt_dspregs {
 <<<<<<< HEAD
 #define regs_return_value(_regs)	((_regs)->regs[0])
 =======
+=======
+#include <uapi/asm/ptrace_32.h>
+
+
+#define MAX_REG_OFFSET		offsetof(struct pt_regs, tra)
+>>>>>>> refs/remotes/origin/master
 static inline long regs_return_value(struct pt_regs *regs)
 {
 	return regs->regs[0];
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_SH_PTRACE_32_H */

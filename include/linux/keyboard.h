@@ -1,6 +1,7 @@
 #ifndef __LINUX_KEYBOARD_H
 #define __LINUX_KEYBOARD_H
 
+<<<<<<< HEAD
 #include <linux/wait.h>
 
 #define KG_SHIFT	0
@@ -29,6 +30,11 @@ extern const int NR_TYPES;
 extern const int max_vals[];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/linux/keyboard.h>
+
+struct notifier_block;
+>>>>>>> refs/remotes/origin/master
 extern unsigned short *key_maps[MAX_NR_KEYMAPS];
 extern unsigned short plain_map[NR_KEYS];
 
@@ -43,6 +49,7 @@ struct keyboard_notifier_param {
 extern int register_keyboard_notifier(struct notifier_block *nb);
 extern int unregister_keyboard_notifier(struct notifier_block *nb);
 #endif
+<<<<<<< HEAD
 
 #define MAX_NR_FUNC	256	/* max nr of strings assigned to keys */
 
@@ -462,3 +469,5 @@ extern int unregister_keyboard_notifier(struct notifier_block *nb);
 
 #define MAX_DIACR	256
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

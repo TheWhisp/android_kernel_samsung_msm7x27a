@@ -12,6 +12,7 @@
 #include <linux/spinlock.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 
@@ -24,6 +25,8 @@ struct clk {
 
 static void clk_gpio27_enable(void)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/clkdev.h>
 
@@ -47,7 +50,10 @@ struct clk clk_##_name = {				\
 static DEFINE_SPINLOCK(clocks_lock);
 
 static void clk_gpio27_enable(struct clk *clk)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * First, set up the 3.6864MHz clock on GPIO 27 for the SA-1111:
@@ -59,16 +65,21 @@ static void clk_gpio27_enable(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void clk_gpio27_disable(void)
 =======
 static void clk_gpio27_disable(struct clk *clk)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void clk_gpio27_disable(struct clk *clk)
+>>>>>>> refs/remotes/origin/master
 {
 	TUCR = 0;
 	GPDR &= ~GPIO_32_768kHz;
 	GAFR &= ~GPIO_32_768kHz;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct clk clk_gpio27;
 
@@ -89,16 +100,21 @@ EXPORT_SYMBOL(clk_put);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int clk_enable(struct clk *clk)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&clocks_lock, flags);
 	if (clk->enabled++ == 0)
 		clk_gpio27_enable();
 	spin_unlock_irqrestore(&clocks_lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (clk) {
 		spin_lock_irqsave(&clocks_lock, flags);
 		if (clk->enabled++ == 0)
@@ -106,7 +122,10 @@ int clk_enable(struct clk *clk)
 		spin_unlock_irqrestore(&clocks_lock, flags);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(clk_enable);
@@ -115,6 +134,7 @@ void clk_disable(struct clk *clk)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	WARN_ON(clk->enabled == 0);
 
@@ -131,6 +151,8 @@ unsigned long clk_get_rate(struct clk *clk)
 }
 EXPORT_SYMBOL(clk_get_rate);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (clk) {
 		WARN_ON(clk->enabled == 0);
 		spin_lock_irqsave(&clocks_lock, flags);
@@ -159,4 +181,7 @@ static int __init sa11xx_clk_init(void)
 	return 0;
 }
 core_initcall(sa11xx_clk_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -23,6 +23,7 @@
 #include <linux/kref.h>
 
 #include <drm/drmP.h>
+<<<<<<< HEAD
 #include "drm_global.h"
 #include "gem_glue.h"
 #include "gma_drm.h"
@@ -30,6 +31,17 @@
 #include "psb_intel_drv.h"
 #include "gtt.h"
 #include "power.h"
+=======
+#include <drm/drm_global.h>
+#include <drm/gma_drm.h>
+#include "psb_reg.h"
+#include "psb_intel_drv.h"
+#include "gma_display.h"
+#include "intel_bios.h"
+#include "gtt.h"
+#include "power.h"
+#include "opregion.h"
+>>>>>>> refs/remotes/origin/master
 #include "oaktrail.h"
 
 /* Append new drm mode definition here, align with libdrm definition */
@@ -42,9 +54,16 @@ enum {
 	CHIP_MFLD_0130 = 3,		/* Medfield */
 };
 
+<<<<<<< HEAD
 #define IS_PSB(dev) (((dev)->pci_device & 0xfffe) == 0x8108)
 #define IS_MRST(dev) (((dev)->pci_device & 0xfffc) == 0x4100)
 #define IS_MFLD(dev) (((dev)->pci_device & 0xfff8) == 0x0130)
+=======
+#define IS_PSB(dev) (((dev)->pdev->device & 0xfffe) == 0x8108)
+#define IS_MRST(dev) (((dev)->pdev->device & 0xfff0) == 0x4100)
+#define IS_MFLD(dev) (((dev)->pdev->device & 0xfff8) == 0x0130)
+#define IS_CDV(dev) (((dev)->pdev->device & 0xfff0) == 0x0be0)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Driver definitions
@@ -72,6 +91,10 @@ enum {
  *	PCI resource identifiers
  */
 #define PSB_MMIO_RESOURCE	 0
+<<<<<<< HEAD
+=======
+#define PSB_AUX_RESOURCE	 0
+>>>>>>> refs/remotes/origin/master
 #define PSB_GATT_RESOURCE	 2
 #define PSB_GTT_RESOURCE	 3
 /*
@@ -120,6 +143,10 @@ enum {
 #define PSB_HWSTAM		  0x2098
 #define PSB_INSTPM		  0x20C0
 #define PSB_INT_IDENTITY_R        0x20A4
+<<<<<<< HEAD
+=======
+#define _PSB_IRQ_ASLE		  (1<<0)
+>>>>>>> refs/remotes/origin/master
 #define _MDFLD_PIPEC_EVENT_FLAG   (1<<2)
 #define _MDFLD_PIPEC_VBLANK_FLAG  (1<<3)
 #define _PSB_DPST_PIPEB_FLAG      (1<<4)
@@ -130,6 +157,10 @@ enum {
 #define _PSB_VSYNC_PIPEA_FLAG	  (1<<7)
 #define _MDFLD_MIPIA_FLAG	  (1<<16)
 #define _MDFLD_MIPIC_FLAG	  (1<<17)
+<<<<<<< HEAD
+=======
+#define _PSB_IRQ_DISP_HOTSYNC	  (1<<17)
+>>>>>>> refs/remotes/origin/master
 #define _PSB_IRQ_SGX_FLAG	  (1<<18)
 #define _PSB_IRQ_MSVDX_FLAG	  (1<<19)
 #define _LNC_IRQ_TOPAZ_FLAG	  (1<<20)
@@ -257,7 +288,12 @@ struct psb_intel_opregion {
 	struct opregion_acpi *acpi;
 	struct opregion_swsci *swsci;
 	struct opregion_asle *asle;
+<<<<<<< HEAD
 	int enabled;
+=======
+	void *vbt;
+	u32 __iomem *lid_state;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct sdvo_device_mapping {
@@ -277,11 +313,45 @@ struct intel_gmbus {
 };
 
 /*
+<<<<<<< HEAD
+=======
+ *	Register offset maps
+ */
+
+struct psb_offset {
+	u32	fp0;
+	u32	fp1;
+	u32	cntr;
+	u32	conf;
+	u32	src;
+	u32	dpll;
+	u32	dpll_md;
+	u32	htotal;
+	u32	hblank;
+	u32	hsync;
+	u32	vtotal;
+	u32	vblank;
+	u32	vsync;
+	u32	stride;
+	u32	size;
+	u32	pos;
+	u32	surf;
+	u32	addr;
+	u32	base;
+	u32	status;
+	u32	linoff;
+	u32	tileoff;
+	u32	palette;
+};
+
+/*
+>>>>>>> refs/remotes/origin/master
  *	Register save state. This is used to hold the context when the
  *	device is powered off. In the case of Oaktrail this can (but does not
  *	yet) include screen blank. Operations occuring during the save
  *	update the register cache instead.
  */
+<<<<<<< HEAD
 struct psb_state {
 	uint32_t saveDSPACNTR;
 	uint32_t saveDSPBCNTR;
@@ -321,6 +391,39 @@ struct psb_state {
 	uint32_t saveDSPBBASE;
 	uint32_t saveDSPBSURF;
 	uint32_t saveDSPBSTATUS;
+=======
+
+/*
+ *	Common status for pipes.
+ */
+struct psb_pipe {
+	u32	fp0;
+	u32	fp1;
+	u32	cntr;
+	u32	conf;
+	u32	src;
+	u32	dpll;
+	u32	dpll_md;
+	u32	htotal;
+	u32	hblank;
+	u32	hsync;
+	u32	vtotal;
+	u32	vblank;
+	u32	vsync;
+	u32	stride;
+	u32	size;
+	u32	pos;
+	u32	base;
+	u32	surf;
+	u32	addr;
+	u32	status;
+	u32	linoff;
+	u32	tileoff;
+	u32	palette[256];
+};
+
+struct psb_state {
+>>>>>>> refs/remotes/origin/master
 	uint32_t saveVCLK_DIVISOR_VGA0;
 	uint32_t saveVCLK_DIVISOR_VGA1;
 	uint32_t saveVCLK_POST_DIV;
@@ -335,6 +438,7 @@ struct psb_state {
 	uint32_t savePP_CONTROL;
 	uint32_t savePP_CYCLE;
 	uint32_t savePFIT_CONTROL;
+<<<<<<< HEAD
 	uint32_t savePaletteA[256];
 	uint32_t savePaletteB[256];
 	uint32_t saveCLOCKGATING;
@@ -343,6 +447,10 @@ struct psb_state {
 	uint32_t saveDSPBTILEOFF;
 	uint32_t saveDSPAADDR;
 	uint32_t saveDSPBADDR;
+=======
+	uint32_t saveCLOCKGATING;
+	uint32_t saveDSPARB;
+>>>>>>> refs/remotes/origin/master
 	uint32_t savePFIT_AUTO_RATIOS;
 	uint32_t savePFIT_PGM_RATIOS;
 	uint32_t savePP_ON_DELAYS;
@@ -350,8 +458,11 @@ struct psb_state {
 	uint32_t savePP_DIVISOR;
 	uint32_t saveBCLRPAT_A;
 	uint32_t saveBCLRPAT_B;
+<<<<<<< HEAD
 	uint32_t saveDSPALINOFF;
 	uint32_t saveDSPBLINOFF;
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t savePERF_MODE;
 	uint32_t saveDSPFW1;
 	uint32_t saveDSPFW2;
@@ -366,8 +477,11 @@ struct psb_state {
 	uint32_t saveDSPBCURSOR_BASE;
 	uint32_t saveDSPACURSOR_POS;
 	uint32_t saveDSPBCURSOR_POS;
+<<<<<<< HEAD
 	uint32_t save_palette_a[256];
 	uint32_t save_palette_b[256];
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t saveOV_OVADD;
 	uint32_t saveOV_OGAMC0;
 	uint32_t saveOV_OGAMC1;
@@ -390,6 +504,7 @@ struct psb_state {
 };
 
 struct medfield_state {
+<<<<<<< HEAD
 	uint32_t saveDPLL_A;
 	uint32_t saveFPA0;
 	uint32_t savePIPEACONF;
@@ -448,6 +563,9 @@ struct medfield_state {
 	uint32_t saveDSPCCNTR;
 	uint32_t saveDSPCSTATUS;
 	uint32_t save_palette_c[256];
+=======
+	uint32_t saveMIPI;
+>>>>>>> refs/remotes/origin/master
 	uint32_t saveMIPI_C;
 
 	uint32_t savePFIT_CONTROL;
@@ -476,6 +594,10 @@ struct cdv_state {
 };
 
 struct psb_save_area {
+<<<<<<< HEAD
+=======
+	struct psb_pipe pipe[3];
+>>>>>>> refs/remotes/origin/master
 	uint32_t saveBSM;
 	uint32_t saveVBT;
 	union {
@@ -493,16 +615,31 @@ struct psb_ops;
 
 struct drm_psb_private {
 	struct drm_device *dev;
+<<<<<<< HEAD
 	const struct psb_ops *ops;
+=======
+	struct pci_dev *aux_pdev; /* Currently only used by mrst */
+	const struct psb_ops *ops;
+	const struct psb_offset *regmap;
+	
+	struct child_device_config *child_dev;
+	int child_dev_num;
+>>>>>>> refs/remotes/origin/master
 
 	struct psb_gtt gtt;
 
 	/* GTT Memory manager */
 	struct psb_gtt_mm *gtt_mm;
 	struct page *scratch_page;
+<<<<<<< HEAD
 	u32 *gtt_map;
 	uint32_t stolen_base;
 	void *vram_addr;
+=======
+	u32 __iomem *gtt_map;
+	uint32_t stolen_base;
+	u8 __iomem *vram_addr;
+>>>>>>> refs/remotes/origin/master
 	unsigned long vram_stolen_size;
 	int gtt_initialized;
 	u16 gmch_ctrl;		/* Saved GTT setup */
@@ -518,8 +655,14 @@ struct drm_psb_private {
 	 * Register base
 	 */
 
+<<<<<<< HEAD
 	uint8_t *sgx_reg;
 	uint8_t *vdc_reg;
+=======
+	uint8_t __iomem *sgx_reg;
+	uint8_t __iomem *vdc_reg;
+	uint8_t __iomem *aux_reg; /* Auxillary vdc pipe regs */
+>>>>>>> refs/remotes/origin/master
 	uint32_t gatt_free_offset;
 
 	/*
@@ -543,6 +686,10 @@ struct drm_psb_private {
 	 * Modesetting
 	 */
 	struct psb_intel_mode_device mode_dev;
+<<<<<<< HEAD
+=======
+	bool modeset;	/* true if we have done the mode_device setup */
+>>>>>>> refs/remotes/origin/master
 
 	struct drm_crtc *plane_to_crtc_mapping[PSB_NUM_PIPE];
 	struct drm_crtc *pipe_to_crtc_mapping[PSB_NUM_PIPE];
@@ -565,6 +712,10 @@ struct drm_psb_private {
 
 	/* gmbus */
 	struct intel_gmbus *gmbus;
+<<<<<<< HEAD
+=======
+	uint8_t __iomem *gmbus_reg;
+>>>>>>> refs/remotes/origin/master
 
 	/* Used by SDVO */
 	int crt_ddc_pin;
@@ -605,7 +756,11 @@ struct drm_psb_private {
 	int rpm_enabled;
 
 	/* MID specific */
+<<<<<<< HEAD
 	struct oaktrail_vbt vbt_data;
+=======
+	bool has_gct;
+>>>>>>> refs/remotes/origin/master
 	struct oaktrail_gct_data gct_data;
 
 	/* Oaktrail HDMI state */
@@ -621,6 +776,14 @@ struct drm_psb_private {
 	uint32_t msi_addr;
 	uint32_t msi_data;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Hotplug handling
+	 */
+
+	struct work_struct hotplug_work;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * LID-Switch
@@ -628,7 +791,10 @@ struct drm_psb_private {
 	spinlock_t lid_lock;
 	struct timer_list lid_timer;
 	struct psb_intel_opregion opregion;
+<<<<<<< HEAD
 	u32 *lid_state;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 lid_last_state;
 
 	/*
@@ -644,6 +810,11 @@ struct drm_psb_private {
 	 */
 	struct backlight_device *backlight_device;
 	struct drm_property *backlight_property;
+<<<<<<< HEAD
+=======
+	bool backlight_enabled;
+	int backlight_level;
+>>>>>>> refs/remotes/origin/master
 	uint32_t blc_adj1;
 	uint32_t blc_adj2;
 
@@ -669,6 +840,24 @@ struct drm_psb_private {
 	u32 dspcntr[3];
 
 	int mdfld_panel_id;
+<<<<<<< HEAD
+=======
+
+	bool dplla_96mhz;	/* DPLL data from the VBT */
+
+	struct {
+		int rate;
+		int lanes;
+		int preemphasis;
+		int vswing;
+
+		bool initialized;
+		bool support;
+		int bpp;
+		struct edp_power_seq pps;
+	} edp;
+	uint8_t panel_type;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -682,23 +871,49 @@ struct psb_ops {
 	int pipes;		/* Number of output pipes */
 	int crtcs;		/* Number of CRTCs */
 	int sgx_offset;		/* Base offset of SGX device */
+<<<<<<< HEAD
+=======
+	int hdmi_mask;		/* Mask of HDMI CRTCs */
+	int lvds_mask;		/* Mask of LVDS CRTCs */
+	int sdvo_mask;		/* Mask of SDVO CRTCs */
+	int cursor_needs_phys;  /* If cursor base reg need physical address */
+>>>>>>> refs/remotes/origin/master
 
 	/* Sub functions */
 	struct drm_crtc_helper_funcs const *crtc_helper;
 	struct drm_crtc_funcs const *crtc_funcs;
+<<<<<<< HEAD
+=======
+	const struct gma_clock_funcs *clock_funcs;
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup hooks */
 	int (*chip_setup)(struct drm_device *dev);
 	void (*chip_teardown)(struct drm_device *dev);
+<<<<<<< HEAD
 
 	/* Display management hooks */
 	int (*output_init)(struct drm_device *dev);
+=======
+	/* Optional helper caller after modeset */
+	void (*errata)(struct drm_device *dev);
+
+	/* Display management hooks */
+	int (*output_init)(struct drm_device *dev);
+	int (*hotplug)(struct drm_device *dev);
+	void (*hotplug_enable)(struct drm_device *dev, bool on);
+>>>>>>> refs/remotes/origin/master
 	/* Power management hooks */
 	void (*init_pm)(struct drm_device *dev);
 	int (*save_regs)(struct drm_device *dev);
 	int (*restore_regs)(struct drm_device *dev);
 	int (*power_up)(struct drm_device *dev);
 	int (*power_down)(struct drm_device *dev);
+<<<<<<< HEAD
+=======
+	void (*update_wm)(struct drm_device *dev, struct drm_crtc *crtc);
+	void (*disable_sr)(struct drm_device *dev);
+>>>>>>> refs/remotes/origin/master
 
 	void (*lvds_bl_power)(struct drm_device *dev, bool on);
 #ifdef CONFIG_BACKLIGHT_CLASS_DEVICE
@@ -789,12 +1004,15 @@ psb_disable_pipestat(struct drm_psb_private *dev_priv, int pipe, u32 mask);
 extern u32 psb_get_vblank_counter(struct drm_device *dev, int crtc);
 
 /*
+<<<<<<< HEAD
  * intel_opregion.c
  */
 extern int gma_intel_opregion_init(struct drm_device *dev);
 extern int gma_intel_opregion_exit(struct drm_device *dev);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * framebuffer.c
  */
 extern int psbfb_probed(struct drm_device *dev);
@@ -824,6 +1042,12 @@ extern int psb_fbdev_init(struct drm_device *dev);
 /* backlight.c */
 int gma_backlight_init(struct drm_device *dev);
 void gma_backlight_exit(struct drm_device *dev);
+<<<<<<< HEAD
+=======
+void gma_backlight_disable(struct drm_device *dev);
+void gma_backlight_enable(struct drm_device *dev);
+void gma_backlight_set(struct drm_device *dev, int v);
+>>>>>>> refs/remotes/origin/master
 
 /* oaktrail_crtc.c */
 extern const struct drm_crtc_helper_funcs oaktrail_helper_funcs;
@@ -842,14 +1066,20 @@ extern const struct drm_connector_helper_funcs
 extern const struct drm_connector_funcs psb_intel_lvds_connector_funcs;
 
 /* gem.c */
+<<<<<<< HEAD
 extern int psb_gem_init_object(struct drm_gem_object *obj);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void psb_gem_free_object(struct drm_gem_object *obj);
 extern int psb_gem_get_aperture(struct drm_device *dev, void *data,
 			struct drm_file *file);
 extern int psb_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
 			struct drm_mode_create_dumb *args);
+<<<<<<< HEAD
 extern int psb_gem_dumb_destroy(struct drm_file *file, struct drm_device *dev,
 			uint32_t handle);
+=======
+>>>>>>> refs/remotes/origin/master
 extern int psb_gem_dumb_map_gtt(struct drm_file *file, struct drm_device *dev,
 			uint32_t handle, uint64_t *offset);
 extern int psb_gem_fault(struct vm_area_struct *vma, struct vm_fault *vmf);
@@ -886,7 +1116,10 @@ extern const struct psb_ops cdv_chip_ops;
 #define PSB_D_MSVDX   (1 << 9)
 #define PSB_D_TOPAZ   (1 << 10)
 
+<<<<<<< HEAD
 extern int drm_psb_no_fb;
+=======
+>>>>>>> refs/remotes/origin/master
 extern int drm_idle_check_interval;
 
 /*
@@ -936,16 +1169,69 @@ static inline uint32_t REGISTER_READ(struct drm_device *dev, uint32_t reg)
 	return ioread32(dev_priv->vdc_reg + reg);
 }
 
+<<<<<<< HEAD
 #define REG_READ(reg)	       REGISTER_READ(dev, (reg))
 
 static inline void REGISTER_WRITE(struct drm_device *dev, uint32_t reg,
 				      uint32_t val)
+=======
+static inline uint32_t REGISTER_READ_AUX(struct drm_device *dev, uint32_t reg)
+{
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	return ioread32(dev_priv->aux_reg + reg);
+}
+
+#define REG_READ(reg)	       REGISTER_READ(dev, (reg))
+#define REG_READ_AUX(reg)      REGISTER_READ_AUX(dev, (reg))
+
+/* Useful for post reads */
+static inline uint32_t REGISTER_READ_WITH_AUX(struct drm_device *dev,
+					      uint32_t reg, int aux)
+{
+	uint32_t val;
+
+	if (aux)
+		val = REG_READ_AUX(reg);
+	else
+		val = REG_READ(reg);
+
+	return val;
+}
+
+#define REG_READ_WITH_AUX(reg, aux) REGISTER_READ_WITH_AUX(dev, (reg), (aux))
+
+static inline void REGISTER_WRITE(struct drm_device *dev, uint32_t reg,
+				  uint32_t val)
+>>>>>>> refs/remotes/origin/master
 {
 	struct drm_psb_private *dev_priv = dev->dev_private;
 	iowrite32((val), dev_priv->vdc_reg + (reg));
 }
 
+<<<<<<< HEAD
 #define REG_WRITE(reg, val)	REGISTER_WRITE(dev, (reg), (val))
+=======
+static inline void REGISTER_WRITE_AUX(struct drm_device *dev, uint32_t reg,
+				      uint32_t val)
+{
+	struct drm_psb_private *dev_priv = dev->dev_private;
+	iowrite32((val), dev_priv->aux_reg + (reg));
+}
+
+#define REG_WRITE(reg, val)	REGISTER_WRITE(dev, (reg), (val))
+#define REG_WRITE_AUX(reg, val)	REGISTER_WRITE_AUX(dev, (reg), (val))
+
+static inline void REGISTER_WRITE_WITH_AUX(struct drm_device *dev, uint32_t reg,
+				      uint32_t val, int aux)
+{
+	if (aux)
+		REG_WRITE_AUX(reg, val);
+	else
+		REG_WRITE(reg, val);
+}
+
+#define REG_WRITE_WITH_AUX(reg, val, aux) REGISTER_WRITE_WITH_AUX(dev, (reg), (val), (aux))
+>>>>>>> refs/remotes/origin/master
 
 static inline void REGISTER_WRITE16(struct drm_device *dev,
 					uint32_t reg, uint32_t val)

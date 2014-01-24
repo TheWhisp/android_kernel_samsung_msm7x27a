@@ -363,10 +363,17 @@ static irqreturn_t mpc52xx_psc_spi_isr(int irq, void *dev_id)
 }
 
 /* bus_num is used only for the case dev->platform_data == NULL */
+<<<<<<< HEAD
 static int __devinit mpc52xx_psc_spi_do_probe(struct device *dev, u32 regaddr,
 				u32 size, unsigned int irq, s16 bus_num)
 {
 	struct fsl_spi_platform_data *pdata = dev->platform_data;
+=======
+static int mpc52xx_psc_spi_do_probe(struct device *dev, u32 regaddr,
+				u32 size, unsigned int irq, s16 bus_num)
+{
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc52xx_psc_spi *mps;
 	struct spi_master *master;
 	int ret;
@@ -383,8 +390,13 @@ static int __devinit mpc52xx_psc_spi_do_probe(struct device *dev, u32 regaddr,
 
 	mps->irq = irq;
 	if (pdata == NULL) {
+<<<<<<< HEAD
 		dev_warn(dev, "probe called without platform data, no "
 				"cs_control function will be called\n");
+=======
+		dev_warn(dev,
+			 "probe called without platform data, no cs_control function will be called\n");
+>>>>>>> refs/remotes/origin/master
 		mps->cs_control = NULL;
 		mps->sysclk = 0;
 		master->bus_num = bus_num;
@@ -450,7 +462,11 @@ free_master:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit mpc52xx_psc_spi_of_probe(struct platform_device *op)
+=======
+static int mpc52xx_psc_spi_of_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	const u32 *regaddr_p;
 	u64 regaddr64, size64;
@@ -479,9 +495,15 @@ static int __devinit mpc52xx_psc_spi_of_probe(struct platform_device *op)
 				irq_of_parse_and_map(op->dev.of_node, 0), id);
 }
 
+<<<<<<< HEAD
 static int __devexit mpc52xx_psc_spi_of_remove(struct platform_device *op)
 {
 	struct spi_master *master = dev_get_drvdata(&op->dev);
+=======
+static int mpc52xx_psc_spi_of_remove(struct platform_device *op)
+{
+	struct spi_master *master = spi_master_get(platform_get_drvdata(op));
+>>>>>>> refs/remotes/origin/master
 	struct mpc52xx_psc_spi *mps = spi_master_get_devdata(master);
 
 	flush_workqueue(mps->workqueue);
@@ -490,6 +512,10 @@ static int __devexit mpc52xx_psc_spi_of_remove(struct platform_device *op)
 	free_irq(mps->irq, mps);
 	if (mps->psc)
 		iounmap(mps->psc);
+<<<<<<< HEAD
+=======
+	spi_master_put(master);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -504,7 +530,11 @@ MODULE_DEVICE_TABLE(of, mpc52xx_psc_spi_of_match);
 
 static struct platform_driver mpc52xx_psc_spi_of_driver = {
 	.probe = mpc52xx_psc_spi_of_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(mpc52xx_psc_spi_of_remove),
+=======
+	.remove = mpc52xx_psc_spi_of_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "mpc52xx-psc-spi",
 		.owner = THIS_MODULE,

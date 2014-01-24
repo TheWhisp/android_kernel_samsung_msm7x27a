@@ -48,6 +48,7 @@ enum {
  */
 struct flat_binder_object {
 	/* 8 bytes for large_flat_header. */
+<<<<<<< HEAD
 	unsigned long		type;
 	unsigned long		flags;
 
@@ -59,10 +60,24 @@ struct flat_binder_object {
 
 	/* extra data associated with local object */
 	void			*cookie;
+=======
+	__u32		type;
+	__u32		flags;
+
+	/* 8 bytes of data. */
+	union {
+		void __user	*binder;	/* local object */
+		__u32	    handle;		/* remote object */
+	};
+
+	/* extra data associated with local object */
+	void __user		*cookie;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * On 64-bit platforms where user code may run in 32-bits the driver must
+<<<<<<< HEAD
  * translate the buffer (and local binder) addresses apropriately.
  */
 
@@ -72,18 +87,34 @@ struct binder_write_read {
 	unsigned long	write_buffer;
 	signed long	read_size;	/* bytes to read */
 	signed long	read_consumed;	/* bytes consumed by driver */
+=======
+ * translate the buffer (and local binder) addresses appropriately.
+ */
+
+struct binder_write_read {
+	size_t write_size;	/* bytes to write */
+	size_t write_consumed;	/* bytes consumed by driver */
+	unsigned long	write_buffer;
+	size_t read_size;	/* bytes to read */
+	size_t read_consumed;	/* bytes consumed by driver */
+>>>>>>> refs/remotes/origin/master
 	unsigned long	read_buffer;
 };
 
 /* Use with BINDER_VERSION, driver fills in fields. */
 struct binder_version {
 	/* driver protocol version -- increment with incompatible change */
+<<<<<<< HEAD
 	signed long	protocol_version;
+=======
+	__s32       protocol_version;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This is the current protocol version. */
 #define BINDER_CURRENT_PROTOCOL_VERSION 7
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define BINDER_WRITE_READ   		_IOWR('b', 1, struct binder_write_read)
 =======
@@ -94,6 +125,14 @@ struct binder_version {
 #define	BINDER_SET_IDLE_PRIORITY	_IOW('b', 6, int)
 #define	BINDER_SET_CONTEXT_MGR		_IOW('b', 7, int)
 #define	BINDER_THREAD_EXIT		_IOW('b', 8, int)
+=======
+#define BINDER_WRITE_READ		_IOWR('b', 1, struct binder_write_read)
+#define	BINDER_SET_IDLE_TIMEOUT		_IOW('b', 3, __s64)
+#define	BINDER_SET_MAX_THREADS		_IOW('b', 5, __u32)
+#define	BINDER_SET_IDLE_PRIORITY	_IOW('b', 6, __s32)
+#define	BINDER_SET_CONTEXT_MGR		_IOW('b', 7, __s32)
+#define	BINDER_THREAD_EXIT		_IOW('b', 8, __s32)
+>>>>>>> refs/remotes/origin/master
 #define BINDER_VERSION			_IOWR('b', 9, struct binder_version)
 
 /*
@@ -123,6 +162,7 @@ struct binder_transaction_data {
 	 * identifying the target and contents of the transaction.
 	 */
 	union {
+<<<<<<< HEAD
 		size_t	handle;	/* target descriptor of command transaction */
 		void	*ptr;	/* target descriptor of return transaction */
 	} target;
@@ -131,6 +171,16 @@ struct binder_transaction_data {
 
 	/* General information about the transaction. */
 	unsigned int	flags;
+=======
+		__u32	handle;	/* target descriptor of command transaction */
+		void	*ptr;	/* target descriptor of return transaction */
+	} target;
+	void		*cookie;	/* target object cookie */
+	__u32		code;		/* transaction command */
+
+	/* General information about the transaction. */
+	__u32	        flags;
+>>>>>>> refs/remotes/origin/master
 	pid_t		sender_pid;
 	uid_t		sender_euid;
 	size_t		data_size;	/* number of bytes of data */
@@ -143,11 +193,19 @@ struct binder_transaction_data {
 	union {
 		struct {
 			/* transaction data */
+<<<<<<< HEAD
 			const void	*buffer;
 			/* offsets from buffer to flat_binder_object structs */
 			const void	*offsets;
 		} ptr;
 		uint8_t	buf[8];
+=======
+			const void __user	*buffer;
+			/* offsets from buffer to flat_binder_object structs */
+			const void __user	*offsets;
+		} ptr;
+		__u8	buf[8];
+>>>>>>> refs/remotes/origin/master
 	} data;
 };
 
@@ -157,18 +215,32 @@ struct binder_ptr_cookie {
 };
 
 struct binder_pri_desc {
+<<<<<<< HEAD
 	int priority;
 	int desc;
 };
 
 struct binder_pri_ptr_cookie {
 	int priority;
+=======
+	__s32 priority;
+	__u32 desc;
+};
+
+struct binder_pri_ptr_cookie {
+	__s32 priority;
+>>>>>>> refs/remotes/origin/master
 	void *ptr;
 	void *cookie;
 };
 
+<<<<<<< HEAD
 enum BinderDriverReturnProtocol {
 	BR_ERROR = _IOR('r', 0, int),
+=======
+enum binder_driver_return_protocol {
+	BR_ERROR = _IOR('r', 0, __s32),
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * int: error code
 	 */
@@ -182,7 +254,11 @@ enum BinderDriverReturnProtocol {
 	 * binder_transaction_data: the received command.
 	 */
 
+<<<<<<< HEAD
 	BR_ACQUIRE_RESULT = _IOR('r', 4, int),
+=======
+	BR_ACQUIRE_RESULT = _IOR('r', 4, __s32),
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * not currently supported
 	 * int: 0 if the last bcATTEMPT_ACQUIRE was not successful.
@@ -228,7 +304,11 @@ enum BinderDriverReturnProtocol {
 	BR_SPAWN_LOOPER = _IO('r', 13),
 	/*
 	 * No parameters.  The driver has determined that a process has no
+<<<<<<< HEAD
 	 * threads waiting to service incomming transactions.  When a process
+=======
+	 * threads waiting to service incoming transactions.  When a process
+>>>>>>> refs/remotes/origin/master
 	 * receives this command, it must spawn a new service thread and
 	 * register it via bcENTER_LOOPER.
 	 */
@@ -255,29 +335,48 @@ enum BinderDriverReturnProtocol {
 	 */
 };
 
+<<<<<<< HEAD
 enum BinderDriverCommandProtocol {
+=======
+enum binder_driver_command_protocol {
+>>>>>>> refs/remotes/origin/master
 	BC_TRANSACTION = _IOW('c', 0, struct binder_transaction_data),
 	BC_REPLY = _IOW('c', 1, struct binder_transaction_data),
 	/*
 	 * binder_transaction_data: the sent command.
 	 */
 
+<<<<<<< HEAD
 	BC_ACQUIRE_RESULT = _IOW('c', 2, int),
+=======
+	BC_ACQUIRE_RESULT = _IOW('c', 2, __s32),
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * not currently supported
 	 * int:  0 if the last BR_ATTEMPT_ACQUIRE was not successful.
 	 * Else you have acquired a primary reference on the object.
 	 */
 
+<<<<<<< HEAD
 	BC_FREE_BUFFER = _IOW('c', 3, int),
+=======
+	BC_FREE_BUFFER = _IOW('c', 3, void *),
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * void *: ptr to transaction data received on a read
 	 */
 
+<<<<<<< HEAD
 	BC_INCREFS = _IOW('c', 4, int),
 	BC_ACQUIRE = _IOW('c', 5, int),
 	BC_RELEASE = _IOW('c', 6, int),
 	BC_DECREFS = _IOW('c', 7, int),
+=======
+	BC_INCREFS = _IOW('c', 4, __u32),
+	BC_ACQUIRE = _IOW('c', 5, __u32),
+	BC_RELEASE = _IOW('c', 6, __u32),
+	BC_DECREFS = _IOW('c', 7, __u32),
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * int:	descriptor
 	 */

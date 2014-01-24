@@ -238,10 +238,14 @@ struct spufs_tree_descr {
 	const char *name;
 	const struct file_operations *ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 	size_t size;
 };
 
@@ -251,6 +255,7 @@ extern const struct spufs_tree_descr spufs_dir_debug_contents[];
 
 /* system call implementation */
 extern struct spufs_calls spufs_calls;
+<<<<<<< HEAD
 long spufs_run_spu(struct spu_context *ctx, u32 *npc, u32 *status);
 <<<<<<< HEAD
 long spufs_create(struct nameidata *nd, unsigned int flags,
@@ -262,6 +267,15 @@ long spufs_create(struct path *nd, struct dentry *dentry, unsigned int flags,
 /* ELF coredump callbacks for writing SPU ELF notes */
 extern int spufs_coredump_extra_notes_size(void);
 extern int spufs_coredump_extra_notes_write(struct file *file, loff_t *foffset);
+=======
+struct coredump_params;
+long spufs_run_spu(struct spu_context *ctx, u32 *npc, u32 *status);
+long spufs_create(struct path *nd, struct dentry *dentry, unsigned int flags,
+			umode_t mode, struct file *filp);
+/* ELF coredump callbacks for writing SPU ELF notes */
+extern int spufs_coredump_extra_notes_size(void);
+extern int spufs_coredump_extra_notes_write(struct coredump_params *cprm);
+>>>>>>> refs/remotes/origin/master
 
 extern const struct file_operations spufs_context_fops;
 

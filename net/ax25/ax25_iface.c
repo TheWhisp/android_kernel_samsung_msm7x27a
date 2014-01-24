@@ -25,9 +25,12 @@
 #include <net/sock.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/mm.h>
 #include <linux/interrupt.h>
@@ -197,10 +200,16 @@ int ax25_listen_mine(ax25_address *callsign, struct net_device *dev)
 void ax25_link_failed(ax25_cb *ax25, int reason)
 {
 	struct ax25_linkfail *lf;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&linkfail_lock);
 	hlist_for_each_entry(lf, node, &ax25_linkfail_list, lf_node)
+=======
+
+	spin_lock_bh(&linkfail_lock);
+	hlist_for_each_entry(lf, &ax25_linkfail_list, lf_node)
+>>>>>>> refs/remotes/origin/master
 		lf->func(ax25, reason);
 	spin_unlock_bh(&linkfail_lock);
 }

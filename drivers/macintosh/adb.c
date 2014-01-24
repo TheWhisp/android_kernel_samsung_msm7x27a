@@ -697,7 +697,11 @@ static ssize_t adb_read(struct file *file, char __user *buf,
 	int ret = 0;
 	struct adbdev_state *state = file->private_data;
 	struct adb_request *req;
+<<<<<<< HEAD
 	wait_queue_t wait = __WAITQUEUE_INITIALIZER(wait,current);
+=======
+	DECLARE_WAITQUEUE(wait,current);
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (count < 2)
@@ -711,10 +715,14 @@ static ssize_t adb_read(struct file *file, char __user *buf,
 	spin_lock_irqsave(&state->lock, flags);
 	add_wait_queue(&state->wait_queue, &wait);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current->state = TASK_INTERRUPTIBLE;
 =======
 	set_current_state(TASK_INTERRUPTIBLE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_state(TASK_INTERRUPTIBLE);
+>>>>>>> refs/remotes/origin/master
 
 	for (;;) {
 		req = state->completed;
@@ -739,10 +747,14 @@ static ssize_t adb_read(struct file *file, char __user *buf,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	current->state = TASK_RUNNING;
 =======
 	set_current_state(TASK_RUNNING);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_state(TASK_RUNNING);
+>>>>>>> refs/remotes/origin/master
 	remove_wait_queue(&state->wait_queue, &wait);
 	spin_unlock_irqrestore(&state->lock, flags);
 	

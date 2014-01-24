@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include "linux/sched.h"
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/master
 #include "asm/ptrace.h"
 
 int putreg(struct task_struct *child, unsigned long regno, 

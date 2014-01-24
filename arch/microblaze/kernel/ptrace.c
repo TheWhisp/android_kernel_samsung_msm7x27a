@@ -40,7 +40,11 @@
 #include <asm/asm-offsets.h>
 #include <asm/cacheflush.h>
 #include <asm/syscall.h>
+<<<<<<< HEAD
 #include <asm/io.h>
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Returns the address where the register at REG_OFFS in P is stashed away. */
 static microblaze_reg_t *reg_save_addr(unsigned reg_offs,
@@ -136,7 +140,11 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
 {
 	long ret = 0;
 
+<<<<<<< HEAD
 	secure_computing(regs->r12);
+=======
+	secure_computing_strict(regs->r12);
+>>>>>>> refs/remotes/origin/master
 
 	if (test_thread_flag(TIF_SYSCALL_TRACE) &&
 	    tracehook_report_syscall_entry(regs))
@@ -148,6 +156,7 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
 		ret = -1L;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_entry(EM_XILINX_MICROBLAZE, regs->r12,
 				    regs->r5, regs->r6,
@@ -156,6 +165,10 @@ asmlinkage long do_syscall_trace_enter(struct pt_regs *regs)
 	audit_syscall_entry(EM_MICROBLAZE, regs->r12, regs->r5, regs->r6,
 			    regs->r7, regs->r8);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_entry(EM_MICROBLAZE, regs->r12, regs->r5, regs->r6,
+			    regs->r7, regs->r8);
+>>>>>>> refs/remotes/origin/master
 
 	return ret ?: regs->r12;
 }
@@ -165,17 +178,22 @@ asmlinkage void do_syscall_trace_leave(struct pt_regs *regs)
 	int step;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(current->audit_context))
 		audit_syscall_exit(AUDITSC_RESULT(regs->r3), regs->r3);
 =======
 	audit_syscall_exit(regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	audit_syscall_exit(regs);
+>>>>>>> refs/remotes/origin/master
 
 	step = test_thread_flag(TIF_SINGLESTEP);
 	if (step || test_thread_flag(TIF_SYSCALL_TRACE))
 		tracehook_report_syscall_exit(regs, step);
 }
 
+<<<<<<< HEAD
 #if 0
 static asmlinkage void syscall_trace(void)
 {
@@ -199,6 +217,8 @@ static asmlinkage void syscall_trace(void)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 void ptrace_disable(struct task_struct *child)
 {
 	/* nothing to do */

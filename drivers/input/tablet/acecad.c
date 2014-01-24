@@ -51,6 +51,10 @@ struct usb_acecad {
 	char name[128];
 	char phys[64];
 	struct usb_device *usbdev;
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf;
+>>>>>>> refs/remotes/origin/master
 	struct input_dev *input;
 	struct urb *irq;
 
@@ -63,6 +67,10 @@ static void usb_acecad_irq(struct urb *urb)
 	struct usb_acecad *acecad = urb->context;
 	unsigned char *data = acecad->data;
 	struct input_dev *dev = acecad->input;
+<<<<<<< HEAD
+=======
+	struct usb_interface *intf = acecad->intf;
+>>>>>>> refs/remotes/origin/master
 	int prox, status;
 
 	switch (urb->status) {
@@ -73,10 +81,19 @@ static void usb_acecad_irq(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d", __func__, urb->status);
 		return;
 	default:
 		dbg("%s - nonzero urb status received: %d", __func__, urb->status);
+=======
+		dev_dbg(&intf->dev, "%s - urb shutting down with status: %d\n",
+			__func__, urb->status);
+		return;
+	default:
+		dev_dbg(&intf->dev, "%s - nonzero urb status received: %d\n",
+			__func__, urb->status);
+>>>>>>> refs/remotes/origin/master
 		goto resubmit;
 	}
 
@@ -105,8 +122,15 @@ static void usb_acecad_irq(struct urb *urb)
 resubmit:
 	status = usb_submit_urb(urb, GFP_ATOMIC);
 	if (status)
+<<<<<<< HEAD
 		err("can't resubmit intr, %s-%s/input0, status %d",
 			acecad->usbdev->bus->bus_name, acecad->usbdev->devpath, status);
+=======
+		dev_err(&intf->dev,
+			"can't resubmit intr, %s-%s/input0, status %d\n",
+			acecad->usbdev->bus->bus_name,
+			acecad->usbdev->devpath, status);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usb_acecad_open(struct input_dev *dev)
@@ -168,6 +192,10 @@ static int usb_acecad_probe(struct usb_interface *intf, const struct usb_device_
 	}
 
 	acecad->usbdev = dev;
+<<<<<<< HEAD
+=======
+	acecad->intf = intf;
+>>>>>>> refs/remotes/origin/master
 	acecad->input = input_dev;
 
 	if (dev->manufacturer)
@@ -270,6 +298,7 @@ static struct usb_driver usb_acecad_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_acecad_init(void)
 {
 	int result = usb_register(&usb_acecad_driver);
@@ -289,3 +318,6 @@ module_exit(usb_acecad_exit);
 =======
 module_usb_driver(usb_acecad_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(usb_acecad_driver);
+>>>>>>> refs/remotes/origin/master

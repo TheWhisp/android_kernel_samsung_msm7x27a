@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * SHA transform algorithm, originally taken from code written by
  * Peter Gutmann, and placed in the public domain.
  */
@@ -21,6 +22,8 @@
 #define K3  0x8F1BBCDCL			/* Rounds 40-59: sqrt(5) * 2^30 */
 #define K4  0xCA62C1D6L			/* Rounds 60-79: sqrt(10) * 2^30 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * SHA1 routine optimized to do word accesses rather than byte accesses,
  * and to avoid unnecessary copies into the context array.
  *
@@ -83,7 +86,10 @@
 #define T_20_39(t, A, B, C, D, E) SHA_ROUND(t, SHA_MIX, (B^C^D) , 0x6ed9eba1, A, B, C, D, E )
 #define T_40_59(t, A, B, C, D, E) SHA_ROUND(t, SHA_MIX, ((B&C)+(D&(B^C))) , 0x8f1bbcdc, A, B, C, D, E )
 #define T_60_79(t, A, B, C, D, E) SHA_ROUND(t, SHA_MIX, (B^C^D) ,  0xca62c1d6, A, B, C, D, E )
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * sha_transform - single block SHA1 transform
@@ -91,10 +97,14 @@
  * @digest: 160 bit digest to update
  * @data:   512 bits of data to hash
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @W:      80 words of workspace (see note)
 =======
  * @array:  16 words of workspace (see note)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @array:  16 words of workspace (see note)
+>>>>>>> refs/remotes/origin/master
  *
  * This function generates a SHA1 digest for a single 512-bit block.
  * Be warned, it does not handle padding and message digest, do not
@@ -105,6 +115,7 @@
  * to clear the workspace. This is left to the caller to avoid
  * unnecessary clears between chained hashing operations.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void sha_transform(__u32 *digest, const char *in, __u32 *W)
 {
@@ -148,6 +159,8 @@ void sha_transform(__u32 *digest, const char *in, __u32 *W)
 	digest[3] += d;
 	digest[4] += e;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void sha_transform(__u32 *digest, const char *data, __u32 *array)
 {
 	__u32 A, B, C, D, E;
@@ -253,7 +266,10 @@ void sha_transform(__u32 *digest, const char *data, __u32 *array)
 	digest[2] += C;
 	digest[3] += D;
 	digest[4] += E;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(sha_transform);
 
@@ -270,6 +286,9 @@ void sha_init(__u32 *buf)
 	buf[4] = 0xc3d2e1f0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

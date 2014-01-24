@@ -6,6 +6,7 @@
 
 config PLAT_SAMSUNG
 	bool
+<<<<<<< HEAD
 	depends on PLAT_S3C24XX || ARCH_S3C64XX || PLAT_S5P
 	select NO_IOPORT
 	select GENERIC_IRQ_CHIP
@@ -13,12 +14,44 @@ config PLAT_SAMSUNG
 	help
 	  Base platform code for all Samsung SoC based systems
 
+=======
+	depends on PLAT_S3C24XX || ARCH_S3C64XX || PLAT_S5P || ARCH_EXYNOS
+	default y
+	select GENERIC_IRQ_CHIP
+	select NO_IOPORT
+	help
+	  Base platform code for all Samsung SoC based systems
+
+config PLAT_S5P
+	bool
+	depends on (ARCH_S5P64X0 || ARCH_S5PC100 || ARCH_S5PV210)
+	default y
+	select ARCH_REQUIRE_GPIOLIB
+	select ARM_VIC
+	select NO_IOPORT
+	select PLAT_SAMSUNG
+	select S3C_GPIO_TRACK
+	select S5P_GPIO_DRVSTR
+	select SAMSUNG_CLKSRC if !COMMON_CLK
+	select SAMSUNG_GPIOLIB_4BIT
+	help
+	  Base platform code for Samsung's S5P series SoC.
+
+config SAMSUNG_PM
+	bool
+	depends on PM && (PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5P64X0 || S5P_PM)
+	default y
+	help
+	  Base platform power management code for samsung code
+
+>>>>>>> refs/remotes/origin/master
 if PLAT_SAMSUNG
 
 # boot configurations
 
 comment "Boot options"
 
+<<<<<<< HEAD
 config S3C_BOOT_WATCHDOG
 	bool "S3C Initialisation watchdog"
 	depends on S3C2410_WATCHDOG
@@ -27,6 +60,8 @@ config S3C_BOOT_WATCHDOG
 	  stage. If the kernel fails to uncompress, then the watchdog
 	  will trigger a reset and the system should restart.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config S3C_BOOT_ERROR_RESET
 	bool "S3C Reboot on decompression error"
 	help
@@ -50,6 +85,7 @@ config S3C_LOWLEVEL_UART_PORT
 	  this configuration should be between zero and two. The port
 	  must have been initialised by the boot-loader before use.
 
+<<<<<<< HEAD
 # clock options
 
 config SAMSUNG_CLKSRC
@@ -121,6 +157,66 @@ config S3C_GPIO_PULL_UP
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config SAMSUNG_ATAGS
+	def_bool n
+	depends on !ARCH_MULTIPLATFORM
+	depends on ATAGS
+	help
+	   This option enables ATAGS based boot support code for
+	   Samsung platforms, including static platform devices, legacy
+	   clock, timer and interrupt initialization, etc.
+
+	   Platforms that support only DT based boot need not to select
+	   this option.
+
+if SAMSUNG_ATAGS
+
+# clock options
+
+config SAMSUNG_CLOCK
+	bool
+	default y if !COMMON_CLK
+
+config SAMSUNG_CLKSRC
+	bool
+	help
+	  Select the clock code for the clksrc implementation
+	  used by newer systems such as the S3C64XX.
+
+config S5P_CLOCK
+	def_bool (ARCH_S5P64X0 || ARCH_S5PC100 || ARCH_S5PV210)
+	help
+	  Support common clock part for ARCH_S5P and ARCH_EXYNOS SoCs
+
+# options for IRQ support
+
+config S5P_IRQ
+	def_bool (ARCH_S5P64X0 || ARCH_S5PC100 || ARCH_S5PV210)
+	help
+	  Support common interrupt part for ARCH_S5P SoCs
+
+config S5P_EXT_INT
+	bool
+	help
+	  Use the external interrupts (other than GPIO interrupts.)
+	  Note: Do not choose this for S5P6440 and S5P6450.
+
+config S5P_GPIO_INT
+	bool
+	help
+	  Common code for the GPIO interrupts (other than external interrupts.)
+
+# options for gpio configuration support
+
+config SAMSUNG_GPIOLIB_4BIT
+	bool
+	help
+	  GPIOlib file contains the 4 bit modification functions for gpio
+	  configuration. GPIOlib shall be compiled only for S3C64XX and S5P
+	  series of processors.
+
+>>>>>>> refs/remotes/origin/master
 config S5P_GPIO_DRVSTR
 	bool
 	help
@@ -130,10 +226,15 @@ config S5P_GPIO_DRVSTR
 config SAMSUNG_GPIO_EXTRA
 	int "Number of additional GPIO pins"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	default 128 if SAMSUNG_GPIO_EXTRA128
 	default 64 if SAMSUNG_GPIO_EXTRA64
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default 128 if SAMSUNG_GPIO_EXTRA128
+	default 64 if SAMSUNG_GPIO_EXTRA64
+>>>>>>> refs/remotes/origin/master
 	default 0
 	help
 	  Use additional GPIO space in addition to the GPIO's the SOC
@@ -141,14 +242,20 @@ config SAMSUNG_GPIO_EXTRA
 	  GPIO expanders.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config SAMSUNG_GPIO_EXTRA64
 	bool
 
 config SAMSUNG_GPIO_EXTRA128
 	bool
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config S3C_GPIO_SPACE
 	int "Space between gpio banks"
 	default 0
@@ -164,6 +271,15 @@ config S3C_GPIO_TRACK
 	  Internal configuration option to enable the s3c specific gpio
 	  chip tracking if the platform requires it.
 
+<<<<<<< HEAD
+=======
+# uart options
+
+config S5P_DEV_UART
+	def_bool y
+	depends on (ARCH_S5P64X0 || ARCH_S5PC100 || ARCH_S5PV210)
+
+>>>>>>> refs/remotes/origin/master
 # ADC driver
 
 config S3C_ADC
@@ -253,10 +369,14 @@ config S3C_DEV_USB_HSOTG
 config S3C_DEV_WDT
 	bool
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default y if ARCH_S3C2410
 =======
 	default y if ARCH_S3C24XX
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default y if ARCH_S3C24XX
+>>>>>>> refs/remotes/origin/master
 	help
 	  Complie in platform device definition for Watchdog Timer
 
@@ -286,12 +406,15 @@ config SAMSUNG_DEV_IDE
 	  Compile in platform device definitions for IDE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config S3C64XX_DEV_SPI
 	bool
 	help
 	  Compile in platform device definitions for S3C64XX's type
 	  SPI controllers.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config S3C64XX_DEV_SPI0
 	bool
 	help
@@ -309,7 +432,10 @@ config S3C64XX_DEV_SPI2
 	help
 	  Compile in platform device definitions for S3C64XX's type
 	  SPI controller 2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config SAMSUNG_DEV_TS
 	bool
@@ -324,11 +450,14 @@ config SAMSUNG_DEV_KEYPAD
 config SAMSUNG_DEV_PWM
 	bool
 <<<<<<< HEAD
+<<<<<<< HEAD
 	default y if ARCH_S3C2410
 	help
 	  Compile in platform device definition for PWM Timer
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	default y if ARCH_S3C24XX
 	help
 	  Compile in platform device definition for PWM Timer
@@ -339,14 +468,89 @@ config SAMSUNG_DEV_BACKLIGHT
 	help
 	  Compile in platform device definition LCD backlight with PWM Timer
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config S3C24XX_PWM
 	bool "PWM device support"
 	select HAVE_PWM
+=======
+config S5P_DEV_CSIS0
+	bool
+	help
+	  Compile in platform device definitions for MIPI-CSIS channel 0
+
+config S5P_DEV_CSIS1
+	bool
+	help
+	  Compile in platform device definitions for MIPI-CSIS channel 1
+
+config S5P_DEV_FIMC0
+	bool
+	help
+	  Compile in platform device definitions for FIMC controller 0
+
+config S5P_DEV_FIMC1
+	bool
+	help
+	  Compile in platform device definitions for FIMC controller 1
+
+config S5P_DEV_FIMC2
+	bool
+	help
+	  Compile in platform device definitions for FIMC controller 2
+
+config S5P_DEV_FIMC3
+	bool
+	help
+	  Compile in platform device definitions for FIMC controller 3
+
+config S5P_DEV_FIMD0
+	bool
+	help
+	  Compile in platform device definitions for FIMD controller 0
+
+config S5P_DEV_G2D
+	bool
+	help
+	  Compile in platform device definitions for G2D device
+
+config S5P_DEV_I2C_HDMIPHY
+	bool
+	help
+	  Compile in platform device definitions for I2C HDMIPHY controller
+
+config S5P_DEV_JPEG
+	bool
+	help
+	  Compile in platform device definitions for JPEG codec
+
+config S5P_DEV_ONENAND
+	bool
+	help
+	  Compile in platform device definition for OneNAND controller
+
+config S5P_DEV_TV
+	bool
+	help
+	  Compile in platform device definition for TV interface
+
+config S3C24XX_PWM
+	bool "PWM device support"
+	select PWM
+	select PWM_SAMSUNG
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support for exporting the PWM timer blocks via the pwm device
 	  system
 
+<<<<<<< HEAD
+=======
+config S3C_SETUP_CAMIF
+	bool
+	help
+	  Compile in common setup code for S3C CAMIF devices
+
+>>>>>>> refs/remotes/origin/master
 # DMA
 
 config S3C_DMA
@@ -354,6 +558,7 @@ config S3C_DMA
 	help
 	  Internal configuration for S3C DMA core
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config S3C_PL330_DMA
 	bool
@@ -370,6 +575,36 @@ config SAMSUNG_DMADEV
 	help
 	  Use DMA device engine for PL330 DMAC.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config S5P_IRQ_PM
+	bool
+	default y if S5P_PM
+	help
+	  Legacy IRQ power management for S5P platforms
+
+config SAMSUNG_PM_GPIO
+	bool
+	default y if GPIO_SAMSUNG && PM
+	help
+	  Include legacy GPIO power management code for platforms not using
+	  pinctrl-samsung driver.
+
+endif
+
+config SAMSUNG_DMADEV
+	bool
+	select ARM_AMBA
+	select DMADEVICES
+	select PL330_DMA if (ARCH_EXYNOS5 || ARCH_EXYNOS4 || CPU_S5PV210 || CPU_S5PC100 || \
+					CPU_S5P6450 || CPU_S5P6440)
+	help
+	  Use DMA device engine for PL330 DMAC.
+
+config S5P_DEV_MFC
+	bool
+	help
+	  Compile in setup memory (init) code for MFC
+>>>>>>> refs/remotes/origin/master
 
 comment "Power management"
 
@@ -377,9 +612,13 @@ config SAMSUNG_PM_DEBUG
 	bool "S3C2410 PM Suspend debug"
 	depends on PM
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select DEBUG_LL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select DEBUG_LL
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you want verbose debugging from the PM Suspend and
 	  Resume code. See <file:Documentation/arm/Samsung-S3C24XX/Suspend.txt>
@@ -428,6 +667,7 @@ config SAMSUNG_WAKEMASK
 	  and above. This code allows a set of interrupt to wakeup-mask
 	  mappings. See <plat/wakeup-mask.h>
 
+<<<<<<< HEAD
 comment "Power Domain"
 
 config SAMSUNG_PD
@@ -438,12 +678,37 @@ config SAMSUNG_PD
 
 <<<<<<< HEAD
 =======
+=======
+config SAMSUNG_WDT_RESET
+	bool
+	help
+	  Compile support for system restart by triggering watchdog reset.
+	  Used on SoCs that do not provide dedicated reset control.
+
+config S5P_PM
+	bool
+	help
+	  Common code for power management support on S5P and newer SoCs
+	  Note: Do not select this for S5P6440 and S5P6450.
+
+config S5P_SLEEP
+	bool
+	help
+	  Internal config node to apply common S5P sleep management code.
+	  Can be selected by S5P and newer SoCs with similar sleep procedure.
+
+>>>>>>> refs/remotes/origin/master
 config DEBUG_S3C_UART
 	depends on PLAT_SAMSUNG
 	int
 	default "0" if DEBUG_S3C_UART0
 	default "1" if DEBUG_S3C_UART1
 	default "2" if DEBUG_S3C_UART2
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	default "3" if DEBUG_S3C_UART3
+
+>>>>>>> refs/remotes/origin/master
 endif

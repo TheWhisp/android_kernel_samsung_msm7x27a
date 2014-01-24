@@ -25,19 +25,29 @@
 #include <linux/delay.h>
 #include <linux/regulator/consumer.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/soc.h>
 
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <plat/mcbsp.h>
 
 #include "omap-mcbsp.h"
 #include "omap-pcm.h"
+=======
+#include <linux/platform_data/asoc-ti-mcbsp.h>
+
+#include "omap-mcbsp.h"
+>>>>>>> refs/remotes/origin/master
 
 #define OMAP3_PANDORA_DAC_POWER_GPIO	118
 #define OMAP3_PANDORA_AMP_POWER_GPIO	14
@@ -52,6 +62,7 @@ static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 		  SND_SOC_DAIFMT_CBS_CFS;
@@ -75,6 +86,10 @@ static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
 	int ret;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	/* Set the codec system clock for DAC and ADC */
 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
 					    SND_SOC_CLOCK_IN);
@@ -104,12 +119,25 @@ static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
 static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *k, int event)
 {
+<<<<<<< HEAD
+=======
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The PCM1773 DAC datasheet requires 1ms delay between switching
 	 * VCC power on/off and /PD pin high/low
 	 */
 	if (SND_SOC_DAPM_EVENT_ON(event)) {
+<<<<<<< HEAD
 		regulator_enable(omap3pandora_dac_reg);
+=======
+		ret = regulator_enable(omap3pandora_dac_reg);
+		if (ret) {
+			dev_err(w->dapm->dev, "Failed to power DAC: %d\n", ret);
+			return ret;
+		}
+>>>>>>> refs/remotes/origin/master
 		mdelay(1);
 		gpio_set_value(OMAP3_PANDORA_DAC_POWER_GPIO, 1);
 	} else {
@@ -168,11 +196,19 @@ static const struct snd_soc_dapm_route omap3pandora_in_map[] = {
 	{"AUXL", NULL, "Line In"},
 	{"AUXR", NULL, "Line In"},
 
+<<<<<<< HEAD
 	{"MAINMIC", NULL, "Mic Bias 1"},
 	{"Mic Bias 1", NULL, "Mic (internal)"},
 
 	{"SUBMIC", NULL, "Mic Bias 2"},
 	{"Mic Bias 2", NULL, "Mic (external)"},
+=======
+	{"MAINMIC", NULL, "Mic (internal)"},
+	{"Mic (internal)", NULL, "Mic Bias 1"},
+
+	{"SUBMIC", NULL, "Mic (external)"},
+	{"Mic (external)", NULL, "Mic Bias 2"},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
@@ -199,6 +235,7 @@ static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_add_routes(dapm, omap3pandora_out_map,
 		ARRAY_SIZE(omap3pandora_out_map));
 
@@ -207,6 +244,10 @@ static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
 	return snd_soc_dapm_add_routes(dapm, omap3pandora_out_map,
 		ARRAY_SIZE(omap3pandora_out_map));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return snd_soc_dapm_add_routes(dapm, omap3pandora_out_map,
+		ARRAY_SIZE(omap3pandora_out_map));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
@@ -227,6 +268,7 @@ static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
 		return ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_add_routes(dapm, omap3pandora_in_map,
 		ARRAY_SIZE(omap3pandora_in_map));
 
@@ -235,6 +277,10 @@ static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
 	return snd_soc_dapm_add_routes(dapm, omap3pandora_in_map,
 		ARRAY_SIZE(omap3pandora_in_map));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return snd_soc_dapm_add_routes(dapm, omap3pandora_in_map,
+		ARRAY_SIZE(omap3pandora_in_map));
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct snd_soc_ops omap3pandora_ops = {
@@ -247,36 +293,48 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
 		.name = "PCM1773",
 		.stream_name = "HiFi Out",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.cpu_dai_name = "omap-mcbsp-dai.1",
 		.codec_dai_name = "twl4030-hifi",
 		.platform_name = "omap-pcm-audio",
 		.codec_name = "twl4030-codec",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.cpu_dai_name = "omap-mcbsp.2",
 		.codec_dai_name = "twl4030-hifi",
 		.platform_name = "omap-pcm-audio",
 		.codec_name = "twl4030-codec",
 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 			   SND_SOC_DAIFMT_CBS_CFS,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.ops = &omap3pandora_ops,
 		.init = omap3pandora_out_init,
 	}, {
 		.name = "TWL4030",
 		.stream_name = "Line/Mic In",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.cpu_dai_name = "omap-mcbsp-dai.3",
 		.codec_dai_name = "twl4030-hifi",
 		.platform_name = "omap-pcm-audio",
 		.codec_name = "twl4030-codec",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.cpu_dai_name = "omap-mcbsp.4",
 		.codec_dai_name = "twl4030-hifi",
 		.platform_name = "omap-pcm-audio",
 		.codec_name = "twl4030-codec",
 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
 			   SND_SOC_DAIFMT_CBS_CFS,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.ops = &omap3pandora_ops,
 		.init = omap3pandora_in_init,
 	}
@@ -286,9 +344,13 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
 static struct snd_soc_card snd_soc_card_omap3pandora = {
 	.name = "omap3pandora",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = omap3pandora_dai,
 	.num_links = ARRAY_SIZE(omap3pandora_dai),
 };

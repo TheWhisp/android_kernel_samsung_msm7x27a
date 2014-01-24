@@ -1,6 +1,11 @@
 config BEFS_FS
+<<<<<<< HEAD
 	tristate "BeOS file system (BeFS) support (read only) (EXPERIMENTAL)"
 	depends on BLOCK && EXPERIMENTAL
+=======
+	tristate "BeOS file system (BeFS) support (read only)"
+	depends on BLOCK
+>>>>>>> refs/remotes/origin/master
 	select NLS
 	help
 	  The BeOS File System (BeFS) is the native file system of Be, Inc's

@@ -1,15 +1,22 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* RadioTrack II driver for Linux radio support (C) 1998 Ben Pfaff
 =======
 /*
  * RadioTrack II driver
  * Copyright 1998 Ben Pfaff
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * RadioTrack II driver
+ * Copyright 1998 Ben Pfaff
+>>>>>>> refs/remotes/origin/master
  *
  * Based on RadioTrack I/RadioReveal (C) 1997 M. Kirkwood
  * Converted to new API by Alan Cox <alan@lxorguk.ukuu.org.uk>
  * Various bugfixes and enhancements by Russell Kroll <rkroll@exploits.org>
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * TODO: Allow for more than one of these foolish entities :-)
  *
@@ -17,6 +24,12 @@
  * Converted to the radio-isa framework by Hans Verkuil <hans.verkuil@cisco.com>
 >>>>>>> refs/remotes/origin/cm-10.0
  * Converted to V4L2 API by Mauro Carvalho Chehab <mchehab@infradead.org>
+=======
+ * Converted to the radio-isa framework by Hans Verkuil <hans.verkuil@cisco.com>
+ * Converted to V4L2 API by Mauro Carvalho Chehab <mchehab@infradead.org>
+ *
+ * Fully tested with actual hardware and the v4l2-compliance tool.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>	/* Modules 			*/
@@ -25,6 +38,7 @@
 #include <linux/delay.h>	/* udelay			*/
 #include <linux/videodev2.h>	/* kernel radio structs		*/
 #include <linux/mutex.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/version.h>      /* for KERNEL_VERSION MACRO     */
 #include <linux/io.h>		/* outb, outb_p			*/
@@ -36,19 +50,31 @@
 #include <media/v4l2-ioctl.h>
 #include "radio-isa.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>		/* outb, outb_p			*/
+#include <linux/slab.h>
+#include <media/v4l2-device.h>
+#include <media/v4l2-ioctl.h>
+#include "radio-isa.h"
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ben Pfaff");
 MODULE_DESCRIPTION("A driver for the RadioTrack II radio card.");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_VERSION("0.1.99");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_VERSION("0.1.99");
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_RADIO_RTRACK2_PORT
 #define CONFIG_RADIO_RTRACK2_PORT -1
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int io = CONFIG_RADIO_RTRACK2_PORT;
 static int radio_nr = -1;
@@ -305,6 +331,8 @@ static const struct v4l2_ioctl_ops rtrack2_ioctl_ops = {
 	.vidioc_g_input     = vidioc_g_input,
 	.vidioc_s_input     = vidioc_s_input,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define RTRACK2_MAX 2
 
 static int io[RTRACK2_MAX] = { [0] = CONFIG_RADIO_RTRACK2_PORT,
@@ -355,8 +383,12 @@ static int rtrack2_s_frequency(struct radio_isa_card *isa, u32 freq)
 			zero(isa);
 
 	outb_p(0xc8, isa->io);
+<<<<<<< HEAD
 	if (!v4l2_ctrl_g_ctrl(isa->mute))
 		outb_p(0, isa->io);
+=======
+	outb_p(v4l2_ctrl_g_ctrl(isa->mute), isa->io);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -398,11 +430,15 @@ static struct radio_isa_driver rtrack2_driver = {
 	.card = "AIMSlab RadioTrack II",
 	.ops = &rtrack2_ops,
 	.has_stereo = true,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init rtrack2_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct rtrack2 *dev = &rtrack2_card;
 	struct v4l2_device *v4l2_dev = &dev->v4l2_dev;
@@ -450,10 +486,14 @@ static int __init rtrack2_init(void)
 =======
 	return isa_register_driver(&rtrack2_driver.driver, RTRACK2_MAX);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return isa_register_driver(&rtrack2_driver.driver, RTRACK2_MAX);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit rtrack2_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct rtrack2 *dev = &rtrack2_card;
 
@@ -463,6 +503,9 @@ static void __exit rtrack2_exit(void)
 =======
 	isa_unregister_driver(&rtrack2_driver.driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isa_unregister_driver(&rtrack2_driver.driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(rtrack2_init);

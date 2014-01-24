@@ -107,10 +107,15 @@ int o2net_register_handler(u32 msg_type, u32 key, u32 max_len,
 void o2net_unregister_handler_list(struct list_head *list);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void o2net_fill_node_map(unsigned long *map, unsigned bytes);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void o2net_fill_node_map(unsigned long *map, unsigned bytes);
+
+>>>>>>> refs/remotes/origin/master
 struct o2nm_node;
 int o2net_register_hb_callbacks(void);
 void o2net_unregister_hb_callbacks(void);

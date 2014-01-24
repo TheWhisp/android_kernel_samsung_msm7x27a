@@ -17,6 +17,12 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/hrtimer.h>
 #include <linux/init.h>
@@ -449,7 +455,13 @@ static int gianfar_ptp_probe(struct platform_device *dev)
 	err = -ENODEV;
 
 	etsects->caps = ptp_gianfar_caps;
+<<<<<<< HEAD
 	etsects->cksel = DEFAULT_CKSEL;
+=======
+
+	if (get_of_u32(node, "fsl,cksel", &etsects->cksel))
+		etsects->cksel = DEFAULT_CKSEL;
+>>>>>>> refs/remotes/origin/master
 
 	if (get_of_u32(node, "fsl,tclk-period", &etsects->tclk_period) ||
 	    get_of_u32(node, "fsl,tmr-prsc", &etsects->tmr_prsc) ||
@@ -477,7 +489,11 @@ static int gianfar_ptp_probe(struct platform_device *dev)
 		pr_err("no resource\n");
 		goto no_resource;
 	}
+<<<<<<< HEAD
 	if (request_resource(&ioport_resource, etsects->rsrc)) {
+=======
+	if (request_resource(&iomem_resource, etsects->rsrc)) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("resource busy\n");
 		goto no_resource;
 	}
@@ -509,13 +525,23 @@ static int gianfar_ptp_probe(struct platform_device *dev)
 
 	spin_unlock_irqrestore(&etsects->lock, flags);
 
+<<<<<<< HEAD
 	etsects->clock = ptp_clock_register(&etsects->caps);
+=======
+	etsects->clock = ptp_clock_register(&etsects->caps, &dev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(etsects->clock)) {
 		err = PTR_ERR(etsects->clock);
 		goto no_clock;
 	}
+<<<<<<< HEAD
 
 	dev_set_drvdata(&dev->dev, etsects);
+=======
+	gfar_phc_index = ptp_clock_index(etsects->clock);
+
+	platform_set_drvdata(dev, etsects);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -533,11 +559,19 @@ no_memory:
 
 static int gianfar_ptp_remove(struct platform_device *dev)
 {
+<<<<<<< HEAD
 	struct etsects *etsects = dev_get_drvdata(&dev->dev);
+=======
+	struct etsects *etsects = platform_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	gfar_write(&etsects->regs->tmr_temask, 0);
 	gfar_write(&etsects->regs->tmr_ctrl,   0);
 
+<<<<<<< HEAD
+=======
+	gfar_phc_index = -1;
+>>>>>>> refs/remotes/origin/master
 	ptp_clock_unregister(etsects->clock);
 	iounmap(etsects->regs);
 	release_resource(etsects->rsrc);

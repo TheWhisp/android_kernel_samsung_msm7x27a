@@ -26,6 +26,7 @@ static int bigsmp_apic_id_registered(void)
 	return 1;
 }
 
+<<<<<<< HEAD
 static const struct cpumask *bigsmp_target_cpus(void)
 {
 #ifdef CONFIG_SMP
@@ -35,6 +36,8 @@ static const struct cpumask *bigsmp_target_cpus(void)
 #endif
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned long bigsmp_check_apicid_used(physid_mask_t *map, int apicid)
 {
 	return 0;
@@ -105,6 +108,7 @@ static int bigsmp_check_phys_apicid_present(int phys_apicid)
 	return 1;
 }
 
+<<<<<<< HEAD
 /* As we are using single CPU as destination, pick only one CPU here */
 static unsigned int bigsmp_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
@@ -131,6 +135,8 @@ static unsigned int bigsmp_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 	return BAD_APICID;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int bigsmp_phys_pkg_id(int cpuid_apic, int index_msb)
 {
 	return cpuid_apic >> index_msb;
@@ -177,12 +183,15 @@ static const struct dmi_system_id bigsmp_dmi_table[] = {
 	{ } /* NULL entry stops DMI scanning */
 };
 
+<<<<<<< HEAD
 static void bigsmp_vector_allocation_domain(int cpu, struct cpumask *retmask)
 {
 	cpumask_clear(retmask);
 	cpumask_set_cpu(cpu, retmask);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int probe_bigsmp(void)
 {
 	if (def_to_bigsmp)
@@ -199,22 +208,34 @@ static struct apic apic_bigsmp = {
 	.probe				= probe_bigsmp,
 	.acpi_madt_oem_check		= NULL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.apic_id_valid			= default_apic_id_valid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= bigsmp_apic_id_registered,
 
 	.irq_delivery_mode		= dest_Fixed,
 	/* phys delivery to target CPU: */
 	.irq_dest_mode			= 0,
 
+<<<<<<< HEAD
 	.target_cpus			= bigsmp_target_cpus,
+=======
+	.target_cpus			= default_target_cpus,
+>>>>>>> refs/remotes/origin/master
 	.disable_esr			= 1,
 	.dest_logical			= 0,
 	.check_apicid_used		= bigsmp_check_apicid_used,
 	.check_apicid_present		= bigsmp_check_apicid_present,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= bigsmp_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= default_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= bigsmp_init_apic_ldr,
 
 	.ioapic_phys_id_map		= bigsmp_ioapic_phys_id_map,
@@ -232,8 +253,12 @@ static struct apic apic_bigsmp = {
 	.set_apic_id			= NULL,
 	.apic_id_mask			= 0xFF << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= bigsmp_cpu_mask_to_apicid,
 	.cpu_mask_to_apicid_and		= bigsmp_cpu_mask_to_apicid_and,
+=======
+	.cpu_mask_to_apicid_and		= default_cpu_mask_to_apicid_and,
+>>>>>>> refs/remotes/origin/master
 
 	.send_IPI_mask			= bigsmp_send_IPI_mask,
 	.send_IPI_mask_allbutself	= NULL,
@@ -251,6 +276,10 @@ static struct apic apic_bigsmp = {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,

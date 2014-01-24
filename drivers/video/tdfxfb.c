@@ -100,7 +100,11 @@ static inline int mtrr_del(int reg, unsigned long base,
 #define VOODOO3_MAX_PIXCLOCK 300000
 #define VOODOO5_MAX_PIXCLOCK 350000
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo tdfx_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo tdfx_fix = {
+>>>>>>> refs/remotes/origin/master
 	.type =		FB_TYPE_PACKED_PIXELS,
 	.visual =	FB_VISUAL_PSEUDOCOLOR,
 	.ypanstep =	1,
@@ -108,7 +112,11 @@ static struct fb_fix_screeninfo tdfx_fix __devinitdata = {
 	.accel =	FB_ACCEL_3DFX_BANSHEE
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo tdfx_var __devinitdata = {
+=======
+static struct fb_var_screeninfo tdfx_var = {
+>>>>>>> refs/remotes/origin/master
 	/* "640x480, 8 bpp @ 60 Hz */
 	.xres =		640,
 	.yres =		480,
@@ -135,9 +143,14 @@ static struct fb_var_screeninfo tdfx_var __devinitdata = {
 /*
  * PCI driver prototypes
  */
+<<<<<<< HEAD
 static int __devinit tdfxfb_probe(struct pci_dev *pdev,
 				  const struct pci_device_id *id);
 static void __devexit tdfxfb_remove(struct pci_dev *pdev);
+=======
+static int tdfxfb_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+static void tdfxfb_remove(struct pci_dev *pdev);
+>>>>>>> refs/remotes/origin/master
 
 static struct pci_device_id tdfxfb_id_table[] = {
 	{ PCI_VENDOR_ID_3DFX, PCI_DEVICE_ID_3DFX_BANSHEE,
@@ -156,7 +169,11 @@ static struct pci_driver tdfxfb_driver = {
 	.name		= "tdfxfb",
 	.id_table	= tdfxfb_id_table,
 	.probe		= tdfxfb_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(tdfxfb_remove),
+=======
+	.remove		= tdfxfb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_DEVICE_TABLE(pci, tdfxfb_id_table);
@@ -167,6 +184,7 @@ MODULE_DEVICE_TABLE(pci, tdfxfb_id_table);
 static int nopan;
 static int nowrap = 1;      /* not implemented (yet) */
 static int hwcursor = 1;
+<<<<<<< HEAD
 static char *mode_option __devinitdata;
 /* mtrr option */
 <<<<<<< HEAD
@@ -174,6 +192,11 @@ static int nomtrr __devinitdata;
 =======
 static bool nomtrr __devinitdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *mode_option;
+/* mtrr option */
+static bool nomtrr;
+>>>>>>> refs/remotes/origin/master
 
 /* -------------------------------------------------------------------------
  *			Hardware-specific funcions
@@ -1283,8 +1306,13 @@ static int tdfxfb_ddc_getsda(void *data)
 	return (0 != (tdfx_inl(par, VIDSERPARPORT) & DDC_SDA_IN));
 }
 
+<<<<<<< HEAD
 static int __devinit tdfxfb_setup_ddc_bus(struct tdfxfb_i2c_chan *chan,
 					  const char *name, struct device *dev)
+=======
+static int tdfxfb_setup_ddc_bus(struct tdfxfb_i2c_chan *chan, const char *name,
+				struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -1312,8 +1340,13 @@ static int __devinit tdfxfb_setup_ddc_bus(struct tdfxfb_i2c_chan *chan,
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devinit tdfxfb_setup_i2c_bus(struct tdfxfb_i2c_chan *chan,
 					  const char *name, struct device *dev)
+=======
+static int tdfxfb_setup_i2c_bus(struct tdfxfb_i2c_chan *chan, const char *name,
+				struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc;
 
@@ -1340,7 +1373,11 @@ static int __devinit tdfxfb_setup_i2c_bus(struct tdfxfb_i2c_chan *chan,
 	return rc;
 }
 
+<<<<<<< HEAD
 static void __devinit tdfxfb_create_i2c_busses(struct fb_info *info)
+=======
+static void tdfxfb_create_i2c_busses(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tdfx_par *par = info->par;
 
@@ -1392,8 +1429,12 @@ static int tdfxfb_probe_i2c_connector(struct tdfx_par *par,
  *      Initializes and allocates resources for PCI device @pdev.
  *
  */
+<<<<<<< HEAD
 static int __devinit tdfxfb_probe(struct pci_dev *pdev,
 				  const struct pci_device_id *id)
+=======
+static int tdfxfb_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tdfx_par *default_par;
 	struct fb_info *info;
@@ -1630,7 +1671,11 @@ static void __init tdfxfb_setup(char *options)
  *      lifetime for the PCI device @pdev.
  *
  */
+<<<<<<< HEAD
 static void __devexit tdfxfb_remove(struct pci_dev *pdev)
+=======
+static void tdfxfb_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pdev);
 	struct tdfx_par *par = info->par;
@@ -1652,7 +1697,10 @@ static void __devexit tdfxfb_remove(struct pci_dev *pdev)
 			   pci_resource_len(pdev, 1));
 	release_mem_region(pci_resource_start(pdev, 0),
 			   pci_resource_len(pdev, 0));
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	fb_dealloc_cmap(&info->cmap);
 	framebuffer_release(info);
 }

@@ -2,21 +2,35 @@
  * Universal Flash Storage Host controller driver
  *
  * This code is based on drivers/scsi/ufs/ufshci.h
+<<<<<<< HEAD
  * Copyright (C) 2011-2012 Samsung India Software Operations
  *
  * Santosh Yaraganavi <santosh.sy@samsung.com>
  * Vinayak Holikatti <h.vinayak@samsung.com>
+=======
+ * Copyright (C) 2011-2013 Samsung India Software Operations
+ *
+ * Authors:
+ *	Santosh Yaraganavi <santosh.sy@samsung.com>
+ *	Vinayak Holikatti <h.vinayak@samsung.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
+<<<<<<< HEAD
+=======
+ * See the COPYING file in the top-level directory or visit
+ * <http://www.gnu.org/licenses/gpl-2.0.html>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+<<<<<<< HEAD
  * NO WARRANTY
  * THE PROGRAM IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR
  * CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED INCLUDING, WITHOUT
@@ -41,6 +55,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
+=======
+ * This program is provided "AS IS" and "WITH ALL FAULTS" and
+ * without warranty of any kind. You are solely responsible for
+ * determining the appropriateness of using and distributing
+ * the program and assume all risks associated with your exercise
+ * of rights with respect to the program, including but not limited
+ * to infringement of third party rights, the risks and costs of
+ * program errors, damage to or loss of data, programs or equipment,
+ * and unavailability or interruption of operations. Under no
+ * circumstances will the contributor of this Program be liable for
+ * any damages of any kind arising from your use or distribution of
+ * this program.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _UFSHCI_H
@@ -49,7 +76,11 @@
 enum {
 	TASK_REQ_UPIU_SIZE_DWORDS	= 8,
 	TASK_RSP_UPIU_SIZE_DWORDS	= 8,
+<<<<<<< HEAD
 	ALIGNED_UPIU_SIZE		= 128,
+=======
+	ALIGNED_UPIU_SIZE		= 512,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* UFSHCI Registers */
@@ -134,6 +165,12 @@ enum {
 #define CONTROLLER_FATAL_ERROR			UFS_BIT(16)
 #define SYSTEM_BUS_FATAL_ERROR			UFS_BIT(17)
 
+<<<<<<< HEAD
+=======
+#define UFSHCD_UIC_MASK		(UIC_COMMAND_COMPL |\
+				 UIC_POWER_MODE)
+
+>>>>>>> refs/remotes/origin/master
 #define UFSHCD_ERROR_MASK	(UIC_ERROR |\
 				DEVICE_FATAL_ERROR |\
 				CONTROLLER_FATAL_ERROR |\
@@ -152,6 +189,18 @@ enum {
 #define DEVICE_ERROR_INDICATOR			UFS_BIT(5)
 #define UIC_POWER_MODE_CHANGE_REQ_STATUS_MASK	UFS_MASK(0x7, 8)
 
+<<<<<<< HEAD
+=======
+enum {
+	PWR_OK		= 0x0,
+	PWR_LOCAL	= 0x01,
+	PWR_REMOTE	= 0x02,
+	PWR_BUSY	= 0x03,
+	PWR_ERROR_CAP	= 0x04,
+	PWR_FATAL_ERROR	= 0x05,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* HCE - Host Controller Enable 34h */
 #define CONTROLLER_ENABLE	UFS_BIT(0)
 #define CONTROLLER_DISABLE	0x0
@@ -201,6 +250,15 @@ enum {
 #define CONFIG_RESULT_CODE_MASK		0xFF
 #define GENERIC_ERROR_CODE_MASK		0xFF
 
+<<<<<<< HEAD
+=======
+#define UIC_ARG_MIB_SEL(attr, sel)	((((attr) & 0xFFFF) << 16) |\
+					 ((sel) & 0xFFFF))
+#define UIC_ARG_MIB(attr)		UIC_ARG_MIB_SEL(attr, 0)
+#define UIC_ARG_ATTR_TYPE(t)		(((t) & 0xFF) << 16)
+#define UIC_GET_ATTR_ID(v)		(((v) >> 16) & 0xFFFF)
+
+>>>>>>> refs/remotes/origin/master
 /* UIC Commands */
 enum {
 	UIC_CMD_DME_GET			= 0x01,
@@ -236,16 +294,29 @@ enum {
 
 #define MASK_UIC_COMMAND_RESULT			0xFF
 
+<<<<<<< HEAD
 #define INT_AGGR_COUNTER_THRESHOLD_VALUE	(0x1F << 8)
 #define INT_AGGR_TIMEOUT_VALUE			(0x02)
+=======
+#define INT_AGGR_COUNTER_THLD_VAL(c)	(((c) & 0x1F) << 8)
+#define INT_AGGR_TIMEOUT_VAL(t)		(((t) & 0xFF) << 0)
+>>>>>>> refs/remotes/origin/master
 
 /* Interrupt disable masks */
 enum {
 	/* Interrupt disable mask for UFSHCI v1.0 */
+<<<<<<< HEAD
 	INTERRUPT_DISABLE_MASK_10	= 0xFFFF,
 
 	/* Interrupt disable mask for UFSHCI v1.1 */
 	INTERRUPT_DISABLE_MASK_11	= 0x0,
+=======
+	INTERRUPT_MASK_ALL_VER_10	= 0x30FFF,
+	INTERRUPT_MASK_RW_VER_10	= 0x30000,
+
+	/* Interrupt disable mask for UFSHCI v1.1 */
+	INTERRUPT_MASK_ALL_VER_11	= 0x31FFF,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*

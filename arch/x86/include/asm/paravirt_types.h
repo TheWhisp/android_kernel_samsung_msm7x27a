@@ -42,9 +42,13 @@
 #include <asm/desc_defs.h>
 #include <asm/kmap_types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/pgtable_types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/pgtable_types.h>
+>>>>>>> refs/remotes/origin/master
 
 struct page;
 struct thread_struct;
@@ -68,13 +72,19 @@ struct pv_info {
 	unsigned int kernel_rpl;
 	int shared_kernel_pmd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_64
 	u16 extra_user_64bit_cs;  /* __USER_CS if none */
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int paravirt_enabled;
 	const char *name;
 };
@@ -103,9 +113,13 @@ struct pv_lazy_ops {
 struct pv_time_ops {
 	unsigned long long (*sched_clock)(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long long (*steal_clock)(int cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long long (*steal_clock)(int cpu);
+>>>>>>> refs/remotes/origin/master
 	unsigned long (*get_tsc_khz)(void);
 };
 
@@ -132,7 +146,11 @@ struct pv_cpu_ops {
 	void (*load_tr_desc)(void);
 	void (*load_gdt)(const struct desc_ptr *);
 	void (*load_idt)(const struct desc_ptr *);
+<<<<<<< HEAD
 	void (*store_gdt)(struct desc_ptr *);
+=======
+	/* store_gdt has been removed. */
+>>>>>>> refs/remotes/origin/master
 	void (*store_idt)(struct desc_ptr *);
 	void (*set_ldt)(const void *desc, unsigned entries);
 	unsigned long (*store_tr)(void);
@@ -163,9 +181,13 @@ struct pv_cpu_ops {
 	/* MSR, PMC and TSR operations.
 	   err = 0/-EFAULT.  wrmsr returns 0/-EFAULT. */
 	u64 (*read_msr)(unsigned int msr, int *err);
+<<<<<<< HEAD
 	int (*rdmsr_regs)(u32 *regs);
 	int (*write_msr)(unsigned int msr, unsigned low, unsigned high);
 	int (*wrmsr_regs)(u32 *regs);
+=======
+	int (*write_msr)(unsigned int msr, unsigned low, unsigned high);
+>>>>>>> refs/remotes/origin/master
 
 	u64 (*read_tsc)(void);
 	u64 (*read_pmc)(int counter);
@@ -260,7 +282,12 @@ struct pv_mmu_ops {
 	void (*flush_tlb_single)(unsigned long addr);
 	void (*flush_tlb_others)(const struct cpumask *cpus,
 				 struct mm_struct *mm,
+<<<<<<< HEAD
 				 unsigned long va);
+=======
+				 unsigned long start,
+				 unsigned long end);
+>>>>>>> refs/remotes/origin/master
 
 	/* Hooks for allocating and freeing a pagetable top-level */
 	int  (*pgd_alloc)(struct mm_struct *mm);
@@ -337,6 +364,7 @@ struct pv_mmu_ops {
 };
 
 struct arch_spinlock;
+<<<<<<< HEAD
 struct pv_lock_ops {
 	int (*spin_is_locked)(struct arch_spinlock *lock);
 	int (*spin_is_contended)(struct arch_spinlock *lock);
@@ -344,6 +372,17 @@ struct pv_lock_ops {
 	void (*spin_lock_flags)(struct arch_spinlock *lock, unsigned long flags);
 	int (*spin_trylock)(struct arch_spinlock *lock);
 	void (*spin_unlock)(struct arch_spinlock *lock);
+=======
+#ifdef CONFIG_SMP
+#include <asm/spinlock_types.h>
+#else
+typedef u16 __ticket_t;
+#endif
+
+struct pv_lock_ops {
+	struct paravirt_callee_save lock_spinning;
+	void (*unlock_kick)(struct arch_spinlock *lock, __ticket_t ticket);
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This contains all the paravirt structures: we get a convenient
@@ -397,7 +436,12 @@ extern struct pv_lock_ops pv_lock_ops;
 
 /* Simple instruction patching code. */
 #define DEF_NATIVE(ops, name, code) 					\
+<<<<<<< HEAD
 	extern const char start_##ops##_##name[], end_##ops##_##name[];	\
+=======
+	extern const char start_##ops##_##name[] __visible,		\
+			  end_##ops##_##name[] __visible;		\
+>>>>>>> refs/remotes/origin/master
 	asm("start_" #ops "_" #name ": " code "; end_" #ops "_" #name ":")
 
 unsigned paravirt_patch_nop(void);

@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * nvec_power: power supply driver for a NVIDIA compliant embedded controller
  *
@@ -14,7 +17,10 @@
  *
  */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/err.h>
@@ -22,6 +28,7 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include "nvec.h"
 
@@ -33,6 +40,14 @@ struct nvec_power
 
 struct nvec_power {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#include "nvec.h"
+
+#define GET_SYSTEM_STATUS 0x00
+
+struct nvec_power {
+>>>>>>> refs/remotes/origin/master
 	struct notifier_block notifier;
 	struct delayed_work poller;
 	struct nvec_chip *nvec;
@@ -83,11 +98,16 @@ struct bat_response {
 	u8 sub_type;
 	u8 status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	union { /* payload */
 =======
 	/* payload */
 	union {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* payload */
+	union {
+>>>>>>> refs/remotes/origin/master
 		char plc[30];
 		u16 plu;
 		s16 pls;
@@ -99,20 +119,27 @@ static struct power_supply nvec_psy;
 
 static int nvec_power_notifier(struct notifier_block *nb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 unsigned long event_type, void *data)
 {
 	struct nvec_power *power = container_of(nb, struct nvec_power, notifier);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			       unsigned long event_type, void *data)
 {
 	struct nvec_power *power =
 	    container_of(nb, struct nvec_power, notifier);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bat_response *res = (struct bat_response *)data;
 
 	if (event_type != NVEC_SYS)
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(res->sub_type == 0)
 	{
@@ -122,6 +149,10 @@ static int nvec_power_notifier(struct notifier_block *nb,
 	if (res->sub_type == 0) {
 		if (power->on != res->plu) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (res->sub_type == 0) {
+		if (power->on != res->plu) {
+>>>>>>> refs/remotes/origin/master
 			power->on = res->plu;
 			power_supply_changed(&nvec_psy);
 		}
@@ -131,11 +162,15 @@ static int nvec_power_notifier(struct notifier_block *nb,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const int bat_init[] =
 {
 =======
 static const int bat_init[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const int bat_init[] = {
+>>>>>>> refs/remotes/origin/master
 	LAST_FULL_CHARGE_CAPACITY, DESIGN_CAPACITY, CRITICAL_CAPACITY,
 	MANUFACTURER, MODEL, TYPE,
 };
@@ -143,6 +178,7 @@ static const int bat_init[] = {
 static void get_bat_mfg_data(struct nvec_power *power)
 {
 	int i;
+<<<<<<< HEAD
 	char buf[] = { '\x02', '\x00' };
 
 <<<<<<< HEAD
@@ -151,6 +187,11 @@ static void get_bat_mfg_data(struct nvec_power *power)
 =======
 	for (i = 0; i < ARRAY_SIZE(bat_init); i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char buf[] = { NVEC_BAT, SLOT_STATUS };
+
+	for (i = 0; i < ARRAY_SIZE(bat_init); i++) {
+>>>>>>> refs/remotes/origin/master
 		buf[1] = bat_init[i];
 		nvec_write_async(power->nvec, buf, 2);
 	}
@@ -158,21 +199,28 @@ static void get_bat_mfg_data(struct nvec_power *power)
 
 static int nvec_power_bat_notifier(struct notifier_block *nb,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 unsigned long event_type, void *data)
 {
 	struct nvec_power *power = container_of(nb, struct nvec_power, notifier);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				   unsigned long event_type, void *data)
 {
 	struct nvec_power *power =
 	    container_of(nb, struct nvec_power, notifier);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct bat_response *res = (struct bat_response *)data;
 	int status_changed = 0;
 
 	if (event_type != NVEC_BAT)
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch(res->sub_type)
 	{
@@ -260,6 +308,8 @@ static int nvec_power_bat_notifier(struct notifier_block *nb,
 		default:
 			return NOTIFY_STOP;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (res->sub_type) {
 	case SLOT_STATUS:
 		if (res->plc[0] & 1) {
@@ -344,7 +394,10 @@ static int nvec_power_bat_notifier(struct notifier_block *nb,
 		break;
 	default:
 		return NOTIFY_STOP;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return NOTIFY_STOP;
@@ -352,12 +405,17 @@ static int nvec_power_bat_notifier(struct notifier_block *nb,
 
 static int nvec_power_get_property(struct power_supply *psy,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				enum power_supply_property psp,
 				union power_supply_propval *val)
 =======
 				   enum power_supply_property psp,
 				   union power_supply_propval *val)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   enum power_supply_property psp,
+				   union power_supply_propval *val)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nvec_power *power = dev_get_drvdata(psy->dev->parent);
 	switch (psp) {
@@ -371,6 +429,7 @@ static int nvec_power_get_property(struct power_supply *psy,
 }
 
 static int nvec_battery_get_property(struct power_supply *psy,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				enum power_supply_property psp,
 				union power_supply_propval *val)
@@ -428,6 +487,8 @@ static int nvec_battery_get_property(struct power_supply *psy,
 			return -EINVAL;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				     enum power_supply_property psp,
 				     union power_supply_propval *val)
 {
@@ -482,7 +543,10 @@ static int nvec_battery_get_property(struct power_supply *psy,
 	default:
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -516,18 +580,24 @@ static char *nvec_power_supplied_to[] = {
 
 static struct power_supply nvec_bat_psy = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.name		= "battery",
 	.type		= POWER_SUPPLY_TYPE_BATTERY,
 	.properties	= nvec_battery_props,
 	.num_properties	= ARRAY_SIZE(nvec_battery_props),
 	.get_property	= nvec_battery_get_property,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.name = "battery",
 	.type = POWER_SUPPLY_TYPE_BATTERY,
 	.properties = nvec_battery_props,
 	.num_properties = ARRAY_SIZE(nvec_battery_props),
 	.get_property = nvec_battery_get_property,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct power_supply nvec_psy = {
@@ -541,6 +611,7 @@ static struct power_supply nvec_psy = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int counter = 0;
 static int const bat_iter[] =
 {
@@ -548,6 +619,10 @@ static int const bat_iter[] =
 static int counter;
 static int const bat_iter[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int counter;
+static int const bat_iter[] = {
+>>>>>>> refs/remotes/origin/master
 	SLOT_STATUS, VOLTAGE, CURRENT, CAPACITY_REMAINING,
 #ifdef EC_FULL_DIAG
 	AVERAGE_CURRENT, TEMPERATURE, TIME_REMAINING,
@@ -556,6 +631,7 @@ static int const bat_iter[] = {
 
 static void nvec_power_poll(struct work_struct *work)
 {
+<<<<<<< HEAD
 	char buf[] = { '\x01', '\x00' };
 	struct nvec_power *power = container_of(work, struct nvec_power,
 <<<<<<< HEAD
@@ -563,6 +639,11 @@ static void nvec_power_poll(struct work_struct *work)
 =======
 						poller.work);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char buf[] = { NVEC_SYS, GET_SYSTEM_STATUS };
+	struct nvec_power *power = container_of(work, struct nvec_power,
+						poller.work);
+>>>>>>> refs/remotes/origin/master
 
 	if (counter >= ARRAY_SIZE(bat_iter))
 		counter = 0;
@@ -573,6 +654,7 @@ static void nvec_power_poll(struct work_struct *work)
 
 /* select a battery request function via round robin
    doing it all at once seems to overload the power supply */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	buf[0] = '\x02'; /* battery */
         buf[1] = bat_iter[counter++];
@@ -600,6 +682,25 @@ static int __devinit nvec_power_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct nvec_chip *nvec = dev_get_drvdata(pdev->dev.parent);
 
+=======
+	buf[0] = NVEC_BAT;
+	buf[1] = bat_iter[counter++];
+	nvec_write_async(power->nvec, buf, 2);
+
+	schedule_delayed_work(to_delayed_work(work), msecs_to_jiffies(5000));
+};
+
+static int nvec_power_probe(struct platform_device *pdev)
+{
+	struct power_supply *psy;
+	struct nvec_power *power;
+	struct nvec_chip *nvec = dev_get_drvdata(pdev->dev.parent);
+
+	power = devm_kzalloc(&pdev->dev, sizeof(struct nvec_power), GFP_NOWAIT);
+	if (power == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&pdev->dev, power);
 	power->nvec = nvec;
 
@@ -616,6 +717,7 @@ static int __devinit nvec_power_probe(struct platform_device *pdev)
 		psy = &nvec_bat_psy;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 power->notifier.notifier_call = nvec_power_bat_notifier;
 =======
 		power->notifier.notifier_call = nvec_power_bat_notifier;
@@ -623,6 +725,11 @@ static int __devinit nvec_power_probe(struct platform_device *pdev)
 		break;
 	default:
 		kfree(power);
+=======
+		power->notifier.notifier_call = nvec_power_bat_notifier;
+		break;
+	default:
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -634,6 +741,7 @@ static int __devinit nvec_power_probe(struct platform_device *pdev)
 	return power_supply_register(&pdev->dev, psy);
 }
 
+<<<<<<< HEAD
 static struct platform_driver nvec_power_driver = {
 	.probe = nvec_power_probe,
 <<<<<<< HEAD
@@ -646,12 +754,35 @@ static struct platform_driver nvec_power_driver = {
 
 static int __init nvec_power_init(void) 
 =======
+=======
+static int nvec_power_remove(struct platform_device *pdev)
+{
+	struct nvec_power *power = platform_get_drvdata(pdev);
+
+	cancel_delayed_work_sync(&power->poller);
+	nvec_unregister_notifier(power->nvec, &power->notifier);
+	switch (pdev->id) {
+	case AC:
+		power_supply_unregister(&nvec_psy);
+		break;
+	case BAT:
+		power_supply_unregister(&nvec_bat_psy);
+	}
+
+	return 0;
+}
+
+static struct platform_driver nvec_power_driver = {
+	.probe = nvec_power_probe,
+	.remove = nvec_power_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		   .name = "nvec-power",
 		   .owner = THIS_MODULE,
 		   }
 };
 
+<<<<<<< HEAD
 static int __init nvec_power_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
@@ -659,6 +790,9 @@ static int __init nvec_power_init(void)
 }
 
 module_init(nvec_power_init);
+=======
+module_platform_driver(nvec_power_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ilya Petrov <ilya.muromec@gmail.com>");
 MODULE_LICENSE("GPL");

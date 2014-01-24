@@ -48,8 +48,13 @@ int apparmor_initialized __initdata;
  */
 static void apparmor_cred_free(struct cred *cred)
 {
+<<<<<<< HEAD
 	aa_free_task_context(cred->security);
 	cred->security = NULL;
+=======
+	aa_free_task_context(cred_cxt(cred));
+	cred_cxt(cred) = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -62,7 +67,11 @@ static int apparmor_cred_alloc_blank(struct cred *cred, gfp_t gfp)
 	if (!cxt)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	cred->security = cxt;
+=======
+	cred_cxt(cred) = cxt;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -77,8 +86,13 @@ static int apparmor_cred_prepare(struct cred *new, const struct cred *old,
 	if (!cxt)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	aa_dup_task_context(cxt, old->security);
 	new->security = cxt;
+=======
+	aa_dup_task_context(cxt, cred_cxt(old));
+	cred_cxt(new) = cxt;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -87,8 +101,13 @@ static int apparmor_cred_prepare(struct cred *new, const struct cred *old,
  */
 static void apparmor_cred_transfer(struct cred *new, const struct cred *old)
 {
+<<<<<<< HEAD
 	const struct aa_task_cxt *old_cxt = old->security;
 	struct aa_task_cxt *new_cxt = new->security;
+=======
+	const struct aa_task_cxt *old_cxt = cred_cxt(old);
+	struct aa_task_cxt *new_cxt = cred_cxt(new);
+>>>>>>> refs/remotes/origin/master
 
 	aa_dup_task_context(new_cxt, old_cxt);
 }
@@ -137,6 +156,7 @@ static int apparmor_capget(struct task_struct *target, kernel_cap_t *effective,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int apparmor_capable(struct task_struct *task, const struct cred *cred,
 			    struct user_namespace *ns, int cap, int audit)
 {
@@ -148,6 +168,8 @@ static int apparmor_capable(struct task_struct *task, const struct cred *cred,
 		if (!unconfined(profile))
 			error = aa_capable(task, profile, cap, audit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int apparmor_capable(const struct cred *cred, struct user_namespace *ns,
 			    int cap, int audit)
 {
@@ -157,8 +179,12 @@ static int apparmor_capable(const struct cred *cred, struct user_namespace *ns,
 	if (!error) {
 		profile = aa_cred_profile(cred);
 		if (!unconfined(profile))
+<<<<<<< HEAD
 			error = aa_capable(current, profile, cap, audit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			error = aa_capable(profile, cap, audit);
+>>>>>>> refs/remotes/origin/master
 	}
 	return error;
 }
@@ -276,10 +302,14 @@ static int apparmor_path_unlink(struct path *dir, struct dentry *dentry)
 
 static int apparmor_path_mkdir(struct path *dir, struct dentry *dentry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       int mode)
 =======
 			       umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	return common_perm_create(OP_MKDIR, dir, dentry, AA_MAY_CREATE,
 				  S_IFDIR);
@@ -292,10 +322,14 @@ static int apparmor_path_rmdir(struct path *dir, struct dentry *dentry)
 
 static int apparmor_path_mknod(struct path *dir, struct dentry *dentry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       int mode, unsigned int dev)
 =======
 			       umode_t mode, unsigned int dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       umode_t mode, unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return common_perm_create(OP_MKNOD, dir, dentry, AA_MAY_CREATE, mode);
 }
@@ -366,6 +400,7 @@ static int apparmor_path_rename(struct path *old_dir, struct dentry *old_dentry,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int apparmor_path_chmod(struct dentry *dentry, struct vfsmount *mnt,
 			       mode_t mode)
 {
@@ -374,16 +409,24 @@ static int apparmor_path_chmod(struct dentry *dentry, struct vfsmount *mnt,
 
 	return common_perm_mnt_dentry(OP_CHMOD, mnt, dentry, AA_MAY_CHMOD);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int apparmor_path_chmod(struct path *path, umode_t mode)
 {
 	if (!mediated_filesystem(path->dentry->d_inode))
 		return 0;
 
 	return common_perm_mnt_dentry(OP_CHMOD, path->mnt, path->dentry, AA_MAY_CHMOD);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int apparmor_path_chown(struct path *path, uid_t uid, gid_t gid)
+=======
+}
+
+static int apparmor_path_chown(struct path *path, kuid_t uid, kgid_t gid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct path_cond cond =  { path->dentry->d_inode->i_uid,
 				   path->dentry->d_inode->i_mode
@@ -404,13 +447,21 @@ static int apparmor_inode_getattr(struct vfsmount *mnt, struct dentry *dentry)
 				      AA_MAY_META_READ);
 }
 
+<<<<<<< HEAD
 static int apparmor_dentry_open(struct file *file, const struct cred *cred)
+=======
+static int apparmor_file_open(struct file *file, const struct cred *cred)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aa_file_cxt *fcxt = file->f_security;
 	struct aa_profile *profile;
 	int error = 0;
 
+<<<<<<< HEAD
 	if (!mediated_filesystem(file->f_path.dentry->d_inode))
+=======
+	if (!mediated_filesystem(file_inode(file)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/* If in exec, permission is handled by bprm hooks.
@@ -425,7 +476,11 @@ static int apparmor_dentry_open(struct file *file, const struct cred *cred)
 
 	profile = aa_cred_profile(cred);
 	if (!unconfined(profile)) {
+<<<<<<< HEAD
 		struct inode *inode = file->f_path.dentry->d_inode;
+=======
+		struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 		struct path_cond cond = { inode->i_uid, inode->i_mode };
 
 		error = aa_path_perm(OP_OPEN, profile, &file->f_path, 0,
@@ -463,7 +518,11 @@ static int common_file_perm(int op, struct file *file, u32 mask)
 	BUG_ON(!fprofile);
 
 	if (!file->f_path.mnt ||
+<<<<<<< HEAD
 	    !mediated_filesystem(file->f_path.dentry->d_inode))
+=======
+	    !mediated_filesystem(file_inode(file)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	profile = __aa_current_profile();
@@ -500,7 +559,10 @@ static int apparmor_file_lock(struct file *file, unsigned int cmd)
 static int common_mmap(int op, struct file *file, unsigned long prot,
 		       unsigned long flags)
 {
+<<<<<<< HEAD
 	struct dentry *dentry;
+=======
+>>>>>>> refs/remotes/origin/master
 	int mask = 0;
 
 	if (!file || !file->f_security)
@@ -517,6 +579,7 @@ static int common_mmap(int op, struct file *file, unsigned long prot,
 	if (prot & PROT_EXEC)
 		mask |= AA_EXEC_MMAP;
 
+<<<<<<< HEAD
 	dentry = file->f_path.dentry;
 	return common_file_perm(op, file, mask);
 }
@@ -532,6 +595,14 @@ static int apparmor_file_mmap(struct file *file, unsigned long reqprot,
 	if (rc || addr_only)
 		return rc;
 
+=======
+	return common_file_perm(op, file, mask);
+}
+
+static int apparmor_mmap_file(struct file *file, unsigned long reqprot,
+			      unsigned long prot, unsigned long flags)
+{
+>>>>>>> refs/remotes/origin/master
 	return common_mmap(OP_FMMAP, file, prot, flags);
 }
 
@@ -546,6 +617,7 @@ static int apparmor_getprocattr(struct task_struct *task, char *name,
 				char **value)
 {
 	int error = -ENOENT;
+<<<<<<< HEAD
 	struct aa_profile *profile;
 	/* released below */
 	const struct cred *cred = get_task_cred(task);
@@ -564,6 +636,26 @@ static int apparmor_getprocattr(struct task_struct *task, char *name,
 	else
 		error = -EINVAL;
 
+=======
+	/* released below */
+	const struct cred *cred = get_task_cred(task);
+	struct aa_task_cxt *cxt = cred_cxt(cred);
+	struct aa_profile *profile = NULL;
+
+	if (strcmp(name, "current") == 0)
+		profile = aa_get_newest_profile(cxt->profile);
+	else if (strcmp(name, "prev") == 0  && cxt->previous)
+		profile = aa_get_newest_profile(cxt->previous);
+	else if (strcmp(name, "exec") == 0 && cxt->onexec)
+		profile = aa_get_newest_profile(cxt->onexec);
+	else
+		error = -EINVAL;
+
+	if (profile)
+		error = aa_getprocattr(profile, value);
+
+	aa_put_profile(profile);
+>>>>>>> refs/remotes/origin/master
 	put_cred(cred);
 
 	return error;
@@ -572,6 +664,11 @@ static int apparmor_getprocattr(struct task_struct *task, char *name,
 static int apparmor_setprocattr(struct task_struct *task, char *name,
 				void *value, size_t size)
 {
+<<<<<<< HEAD
+=======
+	struct common_audit_data sa;
+	struct apparmor_audit_data aad = {0,};
+>>>>>>> refs/remotes/origin/master
 	char *command, *args = value;
 	size_t arg_size;
 	int error;
@@ -615,6 +712,7 @@ static int apparmor_setprocattr(struct task_struct *task, char *name,
 		} else if (strcmp(command, "permprofile") == 0) {
 			error = aa_setprocattr_changeprofile(args, !AA_ONEXEC,
 							     AA_DO_TEST);
+<<<<<<< HEAD
 		} else if (strcmp(command, "permipc") == 0) {
 			error = aa_setprocattr_permipc(args);
 		} else {
@@ -646,6 +744,33 @@ static int apparmor_setprocattr(struct task_struct *task, char *name,
 	if (!error)
 		error = size;
 	return error;
+=======
+		} else
+			goto fail;
+	} else if (strcmp(name, "exec") == 0) {
+		if (strcmp(command, "exec") == 0)
+			error = aa_setprocattr_changeprofile(args, AA_ONEXEC,
+							     !AA_DO_TEST);
+		else
+			goto fail;
+	} else
+		/* only support the "current" and "exec" process attributes */
+		return -EINVAL;
+
+	if (!error)
+		error = size;
+	return error;
+
+fail:
+	sa.type = LSM_AUDIT_DATA_NONE;
+	sa.aad = &aad;
+	aad.profile = aa_current_profile();
+	aad.op = OP_SETPROCATTR;
+	aad.info = name;
+	aad.error = -EINVAL;
+	aa_audit_msg(AUDIT_APPARMOR_DENIED, &sa, NULL);
+	return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int apparmor_task_setrlimit(struct task_struct *task,
@@ -678,6 +803,7 @@ static struct security_operations apparmor_ops = {
 	.path_chmod =			apparmor_path_chmod,
 	.path_chown =			apparmor_path_chown,
 	.path_truncate =		apparmor_path_truncate,
+<<<<<<< HEAD
 	.dentry_open =			apparmor_dentry_open,
 	.inode_getattr =                apparmor_inode_getattr,
 
@@ -685,6 +811,16 @@ static struct security_operations apparmor_ops = {
 	.file_alloc_security =		apparmor_file_alloc_security,
 	.file_free_security =		apparmor_file_free_security,
 	.file_mmap =			apparmor_file_mmap,
+=======
+	.inode_getattr =                apparmor_inode_getattr,
+
+	.file_open =			apparmor_file_open,
+	.file_permission =		apparmor_file_permission,
+	.file_alloc_security =		apparmor_file_alloc_security,
+	.file_free_security =		apparmor_file_free_security,
+	.mmap_file =			apparmor_mmap_file,
+	.mmap_addr =			cap_mmap_addr,
+>>>>>>> refs/remotes/origin/master
 	.file_mprotect =		apparmor_file_mprotect,
 	.file_lock =			apparmor_file_lock,
 
@@ -711,11 +847,17 @@ static struct security_operations apparmor_ops = {
 static int param_set_aabool(const char *val, const struct kernel_param *kp);
 static int param_get_aabool(char *buffer, const struct kernel_param *kp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define param_check_aabool(name, p) __param_check(name, p, int)
 =======
 #define param_check_aabool param_check_bool
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct kernel_param_ops param_ops_aabool = {
+=======
+#define param_check_aabool param_check_bool
+static struct kernel_param_ops param_ops_aabool = {
+	.flags = KERNEL_PARAM_FL_NOARG,
+>>>>>>> refs/remotes/origin/master
 	.set = param_set_aabool,
 	.get = param_get_aabool
 };
@@ -723,10 +865,14 @@ static struct kernel_param_ops param_ops_aabool = {
 static int param_set_aauint(const char *val, const struct kernel_param *kp);
 static int param_get_aauint(char *buffer, const struct kernel_param *kp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define param_check_aauint(name, p) __param_check(name, p, int)
 =======
 #define param_check_aauint param_check_uint
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define param_check_aauint param_check_uint
+>>>>>>> refs/remotes/origin/master
 static struct kernel_param_ops param_ops_aauint = {
 	.set = param_set_aauint,
 	.get = param_get_aauint
@@ -735,11 +881,17 @@ static struct kernel_param_ops param_ops_aauint = {
 static int param_set_aalockpolicy(const char *val, const struct kernel_param *kp);
 static int param_get_aalockpolicy(char *buffer, const struct kernel_param *kp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define param_check_aalockpolicy(name, p) __param_check(name, p, int)
 =======
 #define param_check_aalockpolicy param_check_bool
 >>>>>>> refs/remotes/origin/cm-10.0
 static struct kernel_param_ops param_ops_aalockpolicy = {
+=======
+#define param_check_aalockpolicy param_check_bool
+static struct kernel_param_ops param_ops_aalockpolicy = {
+	.flags = KERNEL_PARAM_FL_NOARG,
+>>>>>>> refs/remotes/origin/master
 	.set = param_set_aalockpolicy,
 	.get = param_get_aalockpolicy
 };
@@ -761,10 +913,14 @@ module_param_call(mode, param_set_mode, param_get_mode,
 
 /* Debug mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int aa_g_debug;
 =======
 bool aa_g_debug;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool aa_g_debug;
+>>>>>>> refs/remotes/origin/master
 module_param_named(debug, aa_g_debug, aabool, S_IRUSR | S_IWUSR);
 
 /* Audit mode */
@@ -776,10 +932,14 @@ module_param_call(audit, param_set_audit, param_get_audit,
  * provides more context if the audit daemon is not running
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int aa_g_audit_header = 1;
 =======
 bool aa_g_audit_header = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool aa_g_audit_header = 1;
+>>>>>>> refs/remotes/origin/master
 module_param_named(audit_header, aa_g_audit_header, aabool,
 		   S_IRUSR | S_IWUSR);
 
@@ -788,19 +948,27 @@ module_param_named(audit_header, aa_g_audit_header, aabool,
  *       load policy, if lock_policy is set
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int aa_g_lock_policy;
 =======
 bool aa_g_lock_policy;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool aa_g_lock_policy;
+>>>>>>> refs/remotes/origin/master
 module_param_named(lock_policy, aa_g_lock_policy, aalockpolicy,
 		   S_IRUSR | S_IWUSR);
 
 /* Syscall logging mode */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int aa_g_logsyscall;
 =======
 bool aa_g_logsyscall;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool aa_g_logsyscall;
+>>>>>>> refs/remotes/origin/master
 module_param_named(logsyscall, aa_g_logsyscall, aabool, S_IRUSR | S_IWUSR);
 
 /* Maximum pathname length before accesses will start getting rejected */
@@ -811,20 +979,29 @@ module_param_named(path_max, aa_g_path_max, aauint, S_IRUSR | S_IWUSR);
  * on the loaded policy is done.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int aa_g_paranoid_load = 1;
 =======
 bool aa_g_paranoid_load = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool aa_g_paranoid_load = 1;
+>>>>>>> refs/remotes/origin/master
 module_param_named(paranoid_load, aa_g_paranoid_load, aabool,
 		   S_IRUSR | S_IWUSR);
 
 /* Boot time disable flag */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static unsigned int apparmor_enabled = CONFIG_SECURITY_APPARMOR_BOOTPARAM_VALUE;
 =======
 static bool apparmor_enabled = CONFIG_SECURITY_APPARMOR_BOOTPARAM_VALUE;
 >>>>>>> refs/remotes/origin/cm-10.0
 module_param_named(enabled, apparmor_enabled, aabool, S_IRUSR);
+=======
+static bool apparmor_enabled = CONFIG_SECURITY_APPARMOR_BOOTPARAM_VALUE;
+module_param_named(enabled, apparmor_enabled, bool, S_IRUGO);
+>>>>>>> refs/remotes/origin/master
 
 static int __init apparmor_enabled_setup(char *str)
 {
@@ -923,7 +1100,11 @@ static int param_get_mode(char *buffer, struct kernel_param *kp)
 	if (!apparmor_enabled)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	return sprintf(buffer, "%s", profile_mode_names[aa_g_profile_mode]);
+=======
+	return sprintf(buffer, "%s", aa_profile_mode_names[aa_g_profile_mode]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int param_set_mode(const char *val, struct kernel_param *kp)
@@ -938,8 +1119,13 @@ static int param_set_mode(const char *val, struct kernel_param *kp)
 	if (!val)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	for (i = 0; i < APPARMOR_NAMES_MAX_INDEX; i++) {
 		if (strcmp(val, profile_mode_names[i]) == 0) {
+=======
+	for (i = 0; i < APPARMOR_MODE_NAMES_MAX_INDEX; i++) {
+		if (strcmp(val, aa_profile_mode_names[i]) == 0) {
+>>>>>>> refs/remotes/origin/master
 			aa_g_profile_mode = i;
 			return 0;
 		}
@@ -967,7 +1153,11 @@ static int __init set_init_cxt(void)
 		return -ENOMEM;
 
 	cxt->profile = aa_get_profile(root_ns->unconfined);
+<<<<<<< HEAD
 	cred->security = cxt;
+=======
+	cred_cxt(cred) = cxt;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -996,8 +1186,16 @@ static int __init apparmor_init(void)
 
 	error = register_security(&apparmor_ops);
 	if (error) {
+<<<<<<< HEAD
 		AA_ERROR("Unable to register AppArmor\n");
 		goto set_init_cxt_out;
+=======
+		struct cred *cred = (struct cred *)current->real_cred;
+		aa_free_task_context(cred_cxt(cred));
+		cred_cxt(cred) = NULL;
+		AA_ERROR("Unable to register AppArmor\n");
+		goto register_security_out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Report that AppArmor successfully initialized */
@@ -1011,9 +1209,12 @@ static int __init apparmor_init(void)
 
 	return error;
 
+<<<<<<< HEAD
 set_init_cxt_out:
 	aa_free_task_context(current->real_cred->security);
 
+=======
+>>>>>>> refs/remotes/origin/master
 register_security_out:
 	aa_free_root_ns();
 

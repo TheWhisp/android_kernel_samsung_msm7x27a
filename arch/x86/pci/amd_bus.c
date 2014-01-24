@@ -32,6 +32,30 @@ static struct pci_hostbridge_probe pci_probes[] __initdata = {
 
 #define RANGE_NUM 16
 
+<<<<<<< HEAD
+=======
+static struct pci_root_info __init *find_pci_root_info(int node, int link)
+{
+	struct pci_root_info *info;
+
+	/* find the position */
+	list_for_each_entry(info, &pci_root_infos, list)
+		if (info->node == node && info->link == link)
+			return info;
+
+	return NULL;
+}
+
+static void __init set_mp_bus_range_to_node(int min_bus, int max_bus, int node)
+{
+#ifdef CONFIG_NUMA
+	int j;
+
+	for (j = min_bus; j <= max_bus; j++)
+		set_mp_bus_to_node(j, node);
+#endif
+}
+>>>>>>> refs/remotes/origin/master
 /**
  * early_fill_mp_bus_to_node()
  * called before pcibios_scan_root and pci_scan_bus
@@ -41,7 +65,10 @@ static struct pci_hostbridge_probe pci_probes[] __initdata = {
 static int __init early_fill_mp_bus_info(void)
 {
 	int i;
+<<<<<<< HEAD
 	int j;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned bus;
 	unsigned slot;
 	int node;
@@ -50,7 +77,10 @@ static int __init early_fill_mp_bus_info(void)
 	int def_link;
 	struct pci_root_info *info;
 	u32 reg;
+<<<<<<< HEAD
 	struct resource *res;
+=======
+>>>>>>> refs/remotes/origin/master
 	u64 start;
 	u64 end;
 	struct range range[RANGE_NUM];
@@ -86,7 +116,10 @@ static int __init early_fill_mp_bus_info(void)
 	if (!found)
 		return 0;
 
+<<<<<<< HEAD
 	pci_root_num = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 4; i++) {
 		int min_bus;
 		int max_bus;
@@ -99,6 +132,7 @@ static int __init early_fill_mp_bus_info(void)
 		min_bus = (reg >> 16) & 0xff;
 		max_bus = (reg >> 24) & 0xff;
 		node = (reg >> 4) & 0x07;
+<<<<<<< HEAD
 #ifdef CONFIG_NUMA
 		for (j = min_bus; j <= max_bus; j++)
 			set_mp_bus_to_node(j, node);
@@ -112,6 +146,12 @@ static int __init early_fill_mp_bus_info(void)
 		info->link = link;
 		sprintf(info->name, "PCI Bus #%02x", min_bus);
 		pci_root_num++;
+=======
+		set_mp_bus_range_to_node(min_bus, max_bus, node);
+		link = (reg >> 8) & 0x03;
+
+		info = alloc_pci_root_info(min_bus, max_bus, node, link);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* get the default node and link for left over res */
@@ -134,6 +174,7 @@ static int __init early_fill_mp_bus_info(void)
 		link = (reg >> 4) & 0x03;
 		end = (reg & 0xfff000) | 0xfff;
 
+<<<<<<< HEAD
 		/* find the position */
 		for (j = 0; j < pci_root_num; j++) {
 			info = &pci_root_info[j];
@@ -144,6 +185,12 @@ static int __init early_fill_mp_bus_info(void)
 			continue; /* not found */
 
 		info = &pci_root_info[j];
+=======
+		info = find_pci_root_info(node, link);
+		if (!info)
+			continue; /* not found */
+
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_DEBUG "node %d link %d: io port [%llx, %llx]\n",
 		       node, link, start, end);
 
@@ -155,6 +202,7 @@ static int __init early_fill_mp_bus_info(void)
 	}
 	/* add left over io port range to def node/link, [0, 0xffff] */
 	/* find the position */
+<<<<<<< HEAD
 	for (j = 0; j < pci_root_num; j++) {
 		info = &pci_root_info[j];
 		if (info->node == def_node && info->link == def_link)
@@ -162,6 +210,10 @@ static int __init early_fill_mp_bus_info(void)
 	}
 	if (j < pci_root_num) {
 		info = &pci_root_info[j];
+=======
+	info = find_pci_root_info(def_node, def_link);
+	if (info) {
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < RANGE_NUM; i++) {
 			if (!range[i].end)
 				continue;
@@ -214,6 +266,7 @@ static int __init early_fill_mp_bus_info(void)
 		end <<= 8;
 		end |= 0xffff;
 
+<<<<<<< HEAD
 		/* find the position */
 		for (j = 0; j < pci_root_num; j++) {
 			info = &pci_root_info[j];
@@ -224,6 +277,12 @@ static int __init early_fill_mp_bus_info(void)
 			continue; /* not found */
 
 		info = &pci_root_info[j];
+=======
+		info = find_pci_root_info(node, link);
+
+		if (!info)
+			continue;
+>>>>>>> refs/remotes/origin/master
 
 		printk(KERN_DEBUG "node %d link %d: mmio [%llx, %llx]",
 		       node, link, start, end);
@@ -291,6 +350,7 @@ static int __init early_fill_mp_bus_info(void)
 	 * add left over mmio range to def node/link ?
 	 * that is tricky, just record range in from start_min to 4G
 	 */
+<<<<<<< HEAD
 	for (j = 0; j < pci_root_num; j++) {
 		info = &pci_root_info[j];
 		if (info->node == def_node && info->link == def_link)
@@ -299,6 +359,10 @@ static int __init early_fill_mp_bus_info(void)
 	if (j < pci_root_num) {
 		info = &pci_root_info[j];
 
+=======
+	info = find_pci_root_info(def_node, def_link);
+	if (info) {
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < RANGE_NUM; i++) {
 			if (!range[i].end)
 				continue;
@@ -309,6 +373,7 @@ static int __init early_fill_mp_bus_info(void)
 		}
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i < pci_root_num; i++) {
 		int res_num;
 		int busnum;
@@ -323,6 +388,18 @@ static int __init early_fill_mp_bus_info(void)
 			printk(KERN_DEBUG "bus: %02x index %x %pR\n",
 				       busnum, j, res);
 		}
+=======
+	list_for_each_entry(info, &pci_root_infos, list) {
+		int busnum;
+		struct pci_root_res *root_res;
+
+		busnum = info->busn.start;
+		printk(KERN_DEBUG "bus: %pR on node %x link %x\n",
+		       &info->busn, info->node, info->link);
+		list_for_each_entry(root_res, &info->resources, list)
+			printk(KERN_DEBUG "bus: %02x %pR\n",
+				       busnum, &root_res->res);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -330,7 +407,11 @@ static int __init early_fill_mp_bus_info(void)
 
 #define ENABLE_CF8_EXT_CFG      (1ULL << 46)
 
+<<<<<<< HEAD
 static void __cpuinit enable_pci_io_ecs(void *unused)
+=======
+static void enable_pci_io_ecs(void *unused)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 reg;
 	rdmsrl(MSR_AMD64_NB_CFG, reg);
@@ -340,8 +421,13 @@ static void __cpuinit enable_pci_io_ecs(void *unused)
 	}
 }
 
+<<<<<<< HEAD
 static int __cpuinit amd_cpu_notify(struct notifier_block *self,
 				    unsigned long action, void *hcpu)
+=======
+static int amd_cpu_notify(struct notifier_block *self, unsigned long action,
+			  void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu = (long)hcpu;
 	switch (action) {
@@ -355,7 +441,11 @@ static int __cpuinit amd_cpu_notify(struct notifier_block *self,
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata amd_cpu_notifier = {
+=======
+static struct notifier_block amd_cpu_notifier = {
+>>>>>>> refs/remotes/origin/master
 	.notifier_call	= amd_cpu_notify,
 };
 
@@ -384,9 +474,12 @@ static void __init pci_enable_pci_io_ecs(void)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pr_info("Extended Config Space enabled on %u nodes\n", n);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 

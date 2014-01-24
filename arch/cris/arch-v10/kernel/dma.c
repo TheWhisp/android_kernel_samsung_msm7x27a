@@ -9,9 +9,13 @@
 #include <asm/dma.h>
 #include <arch/svinto.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <arch/system.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <arch/system.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Macro to access ETRAX 100 registers */
 #define SETS(var, reg, field, val) var = (var & ~IO_MASK_(reg##_, field##_)) | \

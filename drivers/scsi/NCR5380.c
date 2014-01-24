@@ -695,6 +695,7 @@ static void NCR5380_print_status(struct Scsi_Host *instance)
  * Return the number of bytes read from or written
  */
 
+<<<<<<< HEAD
 #undef SPRINTF
 #define SPRINTF(args...) do { if(pos < buffer + length-80) pos += sprintf(pos, ## args); } while(0)
 static
@@ -708,11 +709,38 @@ static int __maybe_unused NCR5380_proc_info(struct Scsi_Host *instance,
 	char *buffer, char **start, off_t offset, int length, int inout)
 {
 	char *pos = buffer;
+=======
+static int __maybe_unused NCR5380_write_info(struct Scsi_Host *instance,
+	char *buffer, int length)
+{
+#ifdef DTC_PUBLIC_RELEASE
+	dtc_wmaxi = dtc_maxi = 0;
+#endif
+#ifdef PAS16_PUBLIC_RELEASE
+	pas_wmaxi = pas_maxi = 0;
+#endif
+	return (-ENOSYS);	/* Currently this is a no-op */
+}
+
+#undef SPRINTF
+#define SPRINTF(args...) seq_printf(m, ## args)
+static
+void lprint_Scsi_Cmnd(Scsi_Cmnd * cmd, struct seq_file *m);
+static
+void lprint_command(unsigned char *cmd, struct seq_file *m);
+static
+void lprint_opcode(int opcode, struct seq_file *m);
+
+static int __maybe_unused NCR5380_show_info(struct seq_file *m,
+	struct Scsi_Host *instance)
+{
+>>>>>>> refs/remotes/origin/master
 	struct NCR5380_hostdata *hostdata;
 	Scsi_Cmnd *ptr;
 
 	hostdata = (struct NCR5380_hostdata *) instance->hostdata;
 
+<<<<<<< HEAD
 	if (inout) {		/* Has data been written to the file ? */
 #ifdef DTC_PUBLIC_RELEASE
 		dtc_wmaxi = dtc_maxi = 0;
@@ -722,6 +750,8 @@ static int __maybe_unused NCR5380_proc_info(struct Scsi_Host *instance,
 #endif
 		return (-ENOSYS);	/* Currently this is a no-op */
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	SPRINTF("NCR5380 core release=%d.   ", NCR5380_PUBLIC_RELEASE);
 	if (((struct NCR5380_hostdata *) instance->hostdata)->flags & FLAG_NCR53C400)
 		SPRINTF("ncr53c400 release=%d.  ", NCR53C400_PUBLIC_RELEASE);
@@ -755,6 +785,7 @@ static int __maybe_unused NCR5380_proc_info(struct Scsi_Host *instance,
 	if (!hostdata->connected)
 		SPRINTF("scsi%d: no currently connected command\n", instance->host_no);
 	else
+<<<<<<< HEAD
 		pos = lprint_Scsi_Cmnd((Scsi_Cmnd *) hostdata->connected, pos, buffer, length);
 	SPRINTF("scsi%d: issue_queue\n", instance->host_no);
 	for (ptr = (Scsi_Cmnd *) hostdata->issue_queue; ptr; ptr = (Scsi_Cmnd *) ptr->host_scribble)
@@ -795,6 +826,39 @@ static char *lprint_opcode(int opcode, char *pos, char *buffer, int length)
 {
 	SPRINTF("%2d (0x%02x)", opcode, opcode);
 	return (pos);
+=======
+		lprint_Scsi_Cmnd((Scsi_Cmnd *) hostdata->connected, m);
+	SPRINTF("scsi%d: issue_queue\n", instance->host_no);
+	for (ptr = (Scsi_Cmnd *) hostdata->issue_queue; ptr; ptr = (Scsi_Cmnd *) ptr->host_scribble)
+		lprint_Scsi_Cmnd(ptr, m);
+
+	SPRINTF("scsi%d: disconnected_queue\n", instance->host_no);
+	for (ptr = (Scsi_Cmnd *) hostdata->disconnected_queue; ptr; ptr = (Scsi_Cmnd *) ptr->host_scribble)
+		lprint_Scsi_Cmnd(ptr, m);
+	spin_unlock_irq(instance->host_lock);
+	return 0;
+}
+
+static void lprint_Scsi_Cmnd(Scsi_Cmnd * cmd, struct seq_file *m)
+{
+	SPRINTF("scsi%d : destination target %d, lun %d\n", cmd->device->host->host_no, cmd->device->id, cmd->device->lun);
+	SPRINTF("        command = ");
+	lprint_command(cmd->cmnd, m);
+}
+
+static void lprint_command(unsigned char *command, struct seq_file *m)
+{
+	int i, s;
+	lprint_opcode(command[0], m);
+	for (i = 1, s = COMMAND_SIZE(command[0]); i < s; ++i)
+		SPRINTF("%02x ", command[i]);
+	SPRINTF("\n");
+}
+
+static void lprint_opcode(int opcode, struct seq_file *m)
+{
+	SPRINTF("%2d (0x%02x)", opcode, opcode);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -814,7 +878,11 @@ static char *lprint_opcode(int opcode, char *pos, char *buffer, int length)
  *	Locks: interrupts must be enabled when we are called 
  */
 
+<<<<<<< HEAD
 static int __devinit NCR5380_init(struct Scsi_Host *instance, int flags)
+=======
+static int NCR5380_init(struct Scsi_Host *instance, int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	NCR5380_local_declare();
 	int i, pass;

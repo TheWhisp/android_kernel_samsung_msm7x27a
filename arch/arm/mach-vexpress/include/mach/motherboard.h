@@ -40,6 +40,7 @@
 #define V2M_CLCD		(V2M_PA_CS7 + 0x0001f000)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define V2M_SYS_ID		(V2M_SYSREGS + 0x000)
 #define V2M_SYS_SW		(V2M_SYSREGS + 0x004)
 #define V2M_SYS_LED		(V2M_SYSREGS + 0x008)
@@ -94,6 +95,8 @@
 #define V2M_SYS_CFGSTAT		0x0a8
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Interrupts.  Those in {} are for AMBA devices
@@ -119,6 +122,7 @@
 
 
 /*
+<<<<<<< HEAD
  * Configuration
  */
 #define SYS_CFG_START		(1 << 31)
@@ -156,6 +160,8 @@ void v2m_flags_set(u32 data);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Core tile IDs
  */
 #define V2M_CT_ID_CA9		0x0c000191

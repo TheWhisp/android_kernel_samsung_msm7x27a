@@ -10,9 +10,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/sched.h>
 #include <linux/kernel.h>
@@ -29,9 +32,12 @@
 
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/mmu.h>
 #include <asm/mmu_context.h>
@@ -42,8 +48,12 @@
 #include <asm/firmware.h>
 #include <asm/vdso.h>
 #include <asm/vdso_datapage.h>
+<<<<<<< HEAD
 
 #include "setup.h"
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG
 
@@ -121,6 +131,13 @@ static struct vdso_patch_def vdso_patches[] = {
 		CPU_FTR_USE_TB, 0,
 		"__kernel_get_tbfreq", NULL
 	},
+<<<<<<< HEAD
+=======
+	{
+		CPU_FTR_USE_TB, 0,
+		"__kernel_time", NULL
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -271,6 +288,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 	 * and your nice userland gettimeofday will be totally dead.
 	 * It's fine to use that for setting breakpoints in the vDSO code
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * pages though
 	 *
 	 * Make sure the vDSO gets into every core dump.
@@ -283,12 +301,17 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
 				     VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC|
 				     VM_ALWAYSDUMP,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * pages though.
 	 */
 	rc = install_special_mapping(mm, vdso_base, vdso_pages << PAGE_SHIFT,
 				     VM_READ|VM_EXEC|
 				     VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     vdso_pagelist);
 	if (rc) {
 		current->mm->context.vdso_base = 0;
@@ -728,6 +751,35 @@ static void __init vdso_setup_syscall_map(void)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC64
+int vdso_getcpu_init(void)
+{
+	unsigned long cpu, node, val;
+
+	/*
+	 * SPRG3 contains the CPU in the bottom 16 bits and the NUMA node in
+	 * the next 16 bits. The VDSO uses this to implement getcpu().
+	 */
+	cpu = get_cpu();
+	WARN_ON_ONCE(cpu > 0xffff);
+
+	node = cpu_to_node(cpu);
+	WARN_ON_ONCE(node > 0xffff);
+
+	val = (cpu & 0xfff) | ((node & 0xffff) << 16);
+	mtspr(SPRN_SPRG3, val);
+	get_paca()->sprg3 = val;
+
+	put_cpu();
+
+	return 0;
+}
+/* We need to call this before SMP init */
+early_initcall(vdso_getcpu_init);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static int __init vdso_init(void)
 {
@@ -743,16 +795,22 @@ static int __init vdso_init(void)
 	vdso_data->processor = mfspr(SPRN_PVR);
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Fake the old platform number for pSeries and iSeries and add
 	 * in LPAR bit if necessary
 	 */
 	vdso_data->platform = machine_is(iseries) ? 0x200 : 0x100;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Fake the old platform number for pSeries and add
 	 * in LPAR bit if necessary
 	 */
 	vdso_data->platform = 0x100;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (firmware_has_feature(FW_FEATURE_LPAR))
 		vdso_data->platform |= 1;
 	vdso_data->physicalMemorySize = memblock_phys_mem_size();

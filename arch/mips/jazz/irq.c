@@ -8,9 +8,13 @@
  */
 #include <linux/clockchips.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/i8253.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/i8253.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/kernel.h>
@@ -20,17 +24,24 @@
 
 #include <asm/irq_cpu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/i8253.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/i8259.h>
 #include <asm/io.h>
 #include <asm/jazz.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/tlbmisc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/tlbmisc.h>
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_RAW_SPINLOCK(r4030_lock);
 
@@ -121,7 +132,11 @@ asmlinkage void plat_irq_dispatch(void)
 }
 
 static void r4030_set_mode(enum clock_event_mode mode,
+<<<<<<< HEAD
                            struct clock_event_device *evt)
+=======
+			   struct clock_event_device *evt)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Nothing to do ...  */
 }
@@ -145,10 +160,14 @@ static irqreturn_t r4030_timer_interrupt(int irq, void *dev_id)
 static struct irqaction r4030_timer_irqaction = {
 	.handler	= r4030_timer_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED | IRQF_TIMER,
 =======
 	.flags		= IRQF_TIMER,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= IRQF_TIMER,
+>>>>>>> refs/remotes/origin/master
 	.name		= "R4030 timer",
 };
 
@@ -160,7 +179,11 @@ void __init plat_time_init(void)
 
 	BUG_ON(HZ != 100);
 
+<<<<<<< HEAD
 	cd->cpumask             = cpumask_of(cpu);
+=======
+	cd->cpumask		= cpumask_of(cpu);
+>>>>>>> refs/remotes/origin/master
 	clockevents_register_device(cd);
 	action->dev_id = cd;
 	setup_irq(JAZZ_TIMER_IRQ, action);

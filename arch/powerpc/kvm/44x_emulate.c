@@ -27,12 +27,19 @@
 #include "booke.h"
 #include "44x_tlb.h"
 
+<<<<<<< HEAD
 #define XOP_MFDCR   323
+=======
+#define XOP_MFDCRX  259
+#define XOP_MFDCR   323
+#define XOP_MTDCRX  387
+>>>>>>> refs/remotes/origin/master
 #define XOP_MTDCR   451
 #define XOP_TLBSX   914
 #define XOP_ICCCI   966
 #define XOP_TLBWE   978
 
+<<<<<<< HEAD
 int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
                            unsigned int inst, int *advance)
 {
@@ -44,12 +51,82 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 	int rs;
 	int rt;
 	int ws;
+=======
+static int emulate_mtdcr(struct kvm_vcpu *vcpu, int rs, int dcrn)
+{
+	/* emulate some access in kernel */
+	switch (dcrn) {
+	case DCRN_CPR0_CONFIG_ADDR:
+		vcpu->arch.cpr0_cfgaddr = kvmppc_get_gpr(vcpu, rs);
+		return EMULATE_DONE;
+	default:
+		vcpu->run->dcr.dcrn = dcrn;
+		vcpu->run->dcr.data = kvmppc_get_gpr(vcpu, rs);
+		vcpu->run->dcr.is_write = 1;
+		vcpu->arch.dcr_is_write = 1;
+		vcpu->arch.dcr_needed = 1;
+		kvmppc_account_exit(vcpu, DCR_EXITS);
+		return EMULATE_DO_DCR;
+	}
+}
+
+static int emulate_mfdcr(struct kvm_vcpu *vcpu, int rt, int dcrn)
+{
+	/* The guest may access CPR0 registers to determine the timebase
+	 * frequency, and it must know the real host frequency because it
+	 * can directly access the timebase registers.
+	 *
+	 * It would be possible to emulate those accesses in userspace,
+	 * but userspace can really only figure out the end frequency.
+	 * We could decompose that into the factors that compute it, but
+	 * that's tricky math, and it's easier to just report the real
+	 * CPR0 values.
+	 */
+	switch (dcrn) {
+	case DCRN_CPR0_CONFIG_ADDR:
+		kvmppc_set_gpr(vcpu, rt, vcpu->arch.cpr0_cfgaddr);
+		break;
+	case DCRN_CPR0_CONFIG_DATA:
+		local_irq_disable();
+		mtdcr(DCRN_CPR0_CONFIG_ADDR,
+			  vcpu->arch.cpr0_cfgaddr);
+		kvmppc_set_gpr(vcpu, rt,
+			       mfdcr(DCRN_CPR0_CONFIG_DATA));
+		local_irq_enable();
+		break;
+	default:
+		vcpu->run->dcr.dcrn = dcrn;
+		vcpu->run->dcr.data =  0;
+		vcpu->run->dcr.is_write = 0;
+		vcpu->arch.dcr_is_write = 0;
+		vcpu->arch.io_gpr = rt;
+		vcpu->arch.dcr_needed = 1;
+		kvmppc_account_exit(vcpu, DCR_EXITS);
+		return EMULATE_DO_DCR;
+	}
+
+	return EMULATE_DONE;
+}
+
+int kvmppc_core_emulate_op_44x(struct kvm_run *run, struct kvm_vcpu *vcpu,
+			       unsigned int inst, int *advance)
+{
+	int emulated = EMULATE_DONE;
+	int dcrn = get_dcrn(inst);
+	int ra = get_ra(inst);
+	int rb = get_rb(inst);
+	int rc = get_rc(inst);
+	int rs = get_rs(inst);
+	int rt = get_rt(inst);
+	int ws = get_ws(inst);
+>>>>>>> refs/remotes/origin/master
 
 	switch (get_op(inst)) {
 	case 31:
 		switch (get_xop(inst)) {
 
 		case XOP_MFDCR:
+<<<<<<< HEAD
 			dcrn = get_dcrn(inst);
 			rt = get_rt(inst);
 
@@ -113,14 +190,37 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 			ra = get_ra(inst);
 			rs = get_rs(inst);
 			ws = get_ws(inst);
+=======
+			emulated = emulate_mfdcr(vcpu, rt, dcrn);
+			break;
+
+		case XOP_MFDCRX:
+			emulated = emulate_mfdcr(vcpu, rt,
+					kvmppc_get_gpr(vcpu, ra));
+			break;
+
+		case XOP_MTDCR:
+			emulated = emulate_mtdcr(vcpu, rs, dcrn);
+			break;
+
+		case XOP_MTDCRX:
+			emulated = emulate_mtdcr(vcpu, rs,
+					kvmppc_get_gpr(vcpu, ra));
+			break;
+
+		case XOP_TLBWE:
+>>>>>>> refs/remotes/origin/master
 			emulated = kvmppc_44x_emul_tlbwe(vcpu, ra, rs, ws);
 			break;
 
 		case XOP_TLBSX:
+<<<<<<< HEAD
 			rt = get_rt(inst);
 			ra = get_ra(inst);
 			rb = get_rb(inst);
 			rc = get_rc(inst);
+=======
+>>>>>>> refs/remotes/origin/master
 			emulated = kvmppc_44x_emul_tlbsx(vcpu, rt, ra, rb, rc);
 			break;
 
@@ -143,12 +243,17 @@ int kvmppc_core_emulate_op(struct kvm_run *run, struct kvm_vcpu *vcpu,
 	return emulated;
 }
 
+<<<<<<< HEAD
 int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
+=======
+int kvmppc_core_emulate_mtspr_44x(struct kvm_vcpu *vcpu, int sprn, ulong spr_val)
+>>>>>>> refs/remotes/origin/master
 {
 	int emulated = EMULATE_DONE;
 
 	switch (sprn) {
 	case SPRN_PID:
+<<<<<<< HEAD
 		kvmppc_set_pid(vcpu, kvmppc_get_gpr(vcpu, rs)); break;
 	case SPRN_MMUCR:
 		vcpu->arch.mmucr = kvmppc_get_gpr(vcpu, rs); break;
@@ -158,17 +263,33 @@ int kvmppc_core_emulate_mtspr(struct kvm_vcpu *vcpu, int sprn, int rs)
 		vcpu->arch.ccr1 = kvmppc_get_gpr(vcpu, rs); break;
 	default:
 		emulated = kvmppc_booke_emulate_mtspr(vcpu, sprn, rs);
+=======
+		kvmppc_set_pid(vcpu, spr_val); break;
+	case SPRN_MMUCR:
+		vcpu->arch.mmucr = spr_val; break;
+	case SPRN_CCR0:
+		vcpu->arch.ccr0 = spr_val; break;
+	case SPRN_CCR1:
+		vcpu->arch.ccr1 = spr_val; break;
+	default:
+		emulated = kvmppc_booke_emulate_mtspr(vcpu, sprn, spr_val);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return emulated;
 }
 
+<<<<<<< HEAD
 int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
+=======
+int kvmppc_core_emulate_mfspr_44x(struct kvm_vcpu *vcpu, int sprn, ulong *spr_val)
+>>>>>>> refs/remotes/origin/master
 {
 	int emulated = EMULATE_DONE;
 
 	switch (sprn) {
 	case SPRN_PID:
+<<<<<<< HEAD
 		kvmppc_set_gpr(vcpu, rt, vcpu->arch.pid); break;
 	case SPRN_MMUCR:
 		kvmppc_set_gpr(vcpu, rt, vcpu->arch.mmucr); break;
@@ -178,6 +299,17 @@ int kvmppc_core_emulate_mfspr(struct kvm_vcpu *vcpu, int sprn, int rt)
 		kvmppc_set_gpr(vcpu, rt, vcpu->arch.ccr1); break;
 	default:
 		emulated = kvmppc_booke_emulate_mfspr(vcpu, sprn, rt);
+=======
+		*spr_val = vcpu->arch.pid; break;
+	case SPRN_MMUCR:
+		*spr_val = vcpu->arch.mmucr; break;
+	case SPRN_CCR0:
+		*spr_val = vcpu->arch.ccr0; break;
+	case SPRN_CCR1:
+		*spr_val = vcpu->arch.ccr1; break;
+	default:
+		emulated = kvmppc_booke_emulate_mfspr(vcpu, sprn, spr_val);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return emulated;

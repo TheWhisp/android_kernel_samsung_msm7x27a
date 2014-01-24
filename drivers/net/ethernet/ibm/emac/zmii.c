@@ -24,6 +24,10 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <linux/ethtool.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 
 #include "emac.h"
@@ -82,9 +86,15 @@ static inline u32 zmii_mode_mask(int mode, int input)
 	}
 }
 
+<<<<<<< HEAD
 int __devinit zmii_attach(struct platform_device *ofdev, int input, int *mode)
 {
 	struct zmii_instance *dev = dev_get_drvdata(&ofdev->dev);
+=======
+int zmii_attach(struct platform_device *ofdev, int input, int *mode)
+{
+	struct zmii_instance *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	struct zmii_regs __iomem *p = dev->base;
 
 	ZMII_DBG(dev, "init(%d, %d)" NL, input, *mode);
@@ -150,7 +160,11 @@ int __devinit zmii_attach(struct platform_device *ofdev, int input, int *mode)
 
 void zmii_get_mdio(struct platform_device *ofdev, int input)
 {
+<<<<<<< HEAD
 	struct zmii_instance *dev = dev_get_drvdata(&ofdev->dev);
+=======
+	struct zmii_instance *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	u32 fer;
 
 	ZMII_DBG2(dev, "get_mdio(%d)" NL, input);
@@ -163,7 +177,11 @@ void zmii_get_mdio(struct platform_device *ofdev, int input)
 
 void zmii_put_mdio(struct platform_device *ofdev, int input)
 {
+<<<<<<< HEAD
 	struct zmii_instance *dev = dev_get_drvdata(&ofdev->dev);
+=======
+	struct zmii_instance *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 
 	ZMII_DBG2(dev, "put_mdio(%d)" NL, input);
 	mutex_unlock(&dev->lock);
@@ -172,7 +190,11 @@ void zmii_put_mdio(struct platform_device *ofdev, int input)
 
 void zmii_set_speed(struct platform_device *ofdev, int input, int speed)
 {
+<<<<<<< HEAD
 	struct zmii_instance *dev = dev_get_drvdata(&ofdev->dev);
+=======
+	struct zmii_instance *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	u32 ssr;
 
 	mutex_lock(&dev->lock);
@@ -193,7 +215,11 @@ void zmii_set_speed(struct platform_device *ofdev, int input, int speed)
 
 void zmii_detach(struct platform_device *ofdev, int input)
 {
+<<<<<<< HEAD
 	struct zmii_instance *dev = dev_get_drvdata(&ofdev->dev);
+=======
+	struct zmii_instance *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!dev || dev->users == 0);
 
@@ -218,7 +244,11 @@ int zmii_get_regs_len(struct platform_device *ofdev)
 
 void *zmii_dump_regs(struct platform_device *ofdev, void *buf)
 {
+<<<<<<< HEAD
 	struct zmii_instance *dev = dev_get_drvdata(&ofdev->dev);
+=======
+	struct zmii_instance *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	struct emac_ethtool_regs_subhdr *hdr = buf;
 	struct zmii_regs *regs = (struct zmii_regs *)(hdr + 1);
 
@@ -231,7 +261,11 @@ void *zmii_dump_regs(struct platform_device *ofdev, void *buf)
 	return regs + 1;
 }
 
+<<<<<<< HEAD
 static int __devinit zmii_probe(struct platform_device *ofdev)
+=======
+static int zmii_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = ofdev->dev.of_node;
 	struct zmii_instance *dev;
@@ -272,7 +306,11 @@ static int __devinit zmii_probe(struct platform_device *ofdev)
 	printk(KERN_INFO
 	       "ZMII %s initialized\n", ofdev->dev.of_node->full_name);
 	wmb();
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, dev);
+=======
+	platform_set_drvdata(ofdev, dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -282,11 +320,17 @@ static int __devinit zmii_probe(struct platform_device *ofdev)
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devexit zmii_remove(struct platform_device *ofdev)
 {
 	struct zmii_instance *dev = dev_get_drvdata(&ofdev->dev);
 
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+static int zmii_remove(struct platform_device *ofdev)
+{
+	struct zmii_instance *dev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 
 	WARN_ON(dev->users != 0);
 

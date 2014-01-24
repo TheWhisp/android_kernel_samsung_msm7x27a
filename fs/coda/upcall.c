@@ -15,9 +15,12 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/signal.h>
 #include <linux/sched.h>
 #include <linux/types.h>
@@ -54,9 +57,15 @@ static void *alloc_upcall(int opcode, int size)
 		return ERR_PTR(-ENOMEM);
 
         inp->ih.opcode = opcode;
+<<<<<<< HEAD
 	inp->ih.pid = current->pid;
 	inp->ih.pgid = task_pgrp_nr(current);
 	inp->ih.uid = current_fsuid();
+=======
+	inp->ih.pid = task_pid_nr_ns(current, &init_pid_ns);
+	inp->ih.pgid = task_pgrp_nr_ns(current, &init_pid_ns);
+	inp->ih.uid = from_kuid(&init_user_ns, current_fsuid());
+>>>>>>> refs/remotes/origin/master
 
 	return (void*)inp;
 }
@@ -161,7 +170,11 @@ int venus_lookup(struct super_block *sb, struct CodaFid *fid,
 }
 
 int venus_close(struct super_block *sb, struct CodaFid *fid, int flags,
+<<<<<<< HEAD
 		vuid_t uid)
+=======
+		kuid_t uid)
+>>>>>>> refs/remotes/origin/master
 {
 	union inputArgs *inp;
 	union outputArgs *outp;
@@ -170,7 +183,11 @@ int venus_close(struct super_block *sb, struct CodaFid *fid, int flags,
 	insize = SIZE(release);
 	UPARG(CODA_CLOSE);
 	
+<<<<<<< HEAD
 	inp->ih.uid = uid;
+=======
+	inp->ih.uid = from_kuid(&init_user_ns, uid);
+>>>>>>> refs/remotes/origin/master
         inp->coda_close.VFid = *fid;
         inp->coda_close.flags = flags;
 

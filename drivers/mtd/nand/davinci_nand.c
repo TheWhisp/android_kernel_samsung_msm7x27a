@@ -33,9 +33,17 @@
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 
 #include <mach/nand.h>
 #include <mach/aemif.h>
+=======
+#include <linux/of_device.h>
+#include <linux/of.h>
+
+#include <linux/platform_data/mtd-davinci.h>
+#include <linux/platform_data/mtd-davinci-aemif.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is a device driver for the NAND flash controller found on the
@@ -58,9 +66,12 @@ struct davinci_nand_info {
 	struct device		*dev;
 	struct clk		*clk;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool			partitioned;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bool			is_readmode;
 
@@ -522,9 +533,80 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init nand_davinci_probe(struct platform_device *pdev)
 {
 	struct davinci_nand_pdata	*pdata = pdev->dev.platform_data;
+=======
+#if defined(CONFIG_OF)
+static const struct of_device_id davinci_nand_of_match[] = {
+	{.compatible = "ti,davinci-nand", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
+
+static struct davinci_nand_pdata
+	*nand_davinci_get_pdata(struct platform_device *pdev)
+{
+	if (!dev_get_platdata(&pdev->dev) && pdev->dev.of_node) {
+		struct davinci_nand_pdata *pdata;
+		const char *mode;
+		u32 prop;
+		int len;
+
+		pdata =  devm_kzalloc(&pdev->dev,
+				sizeof(struct davinci_nand_pdata),
+				GFP_KERNEL);
+		pdev->dev.platform_data = pdata;
+		if (!pdata)
+			return NULL;
+		if (!of_property_read_u32(pdev->dev.of_node,
+			"ti,davinci-chipselect", &prop))
+			pdev->id = prop;
+		if (!of_property_read_u32(pdev->dev.of_node,
+			"ti,davinci-mask-ale", &prop))
+			pdata->mask_ale = prop;
+		if (!of_property_read_u32(pdev->dev.of_node,
+			"ti,davinci-mask-cle", &prop))
+			pdata->mask_cle = prop;
+		if (!of_property_read_u32(pdev->dev.of_node,
+			"ti,davinci-mask-chipsel", &prop))
+			pdata->mask_chipsel = prop;
+		if (!of_property_read_string(pdev->dev.of_node,
+			"ti,davinci-ecc-mode", &mode)) {
+			if (!strncmp("none", mode, 4))
+				pdata->ecc_mode = NAND_ECC_NONE;
+			if (!strncmp("soft", mode, 4))
+				pdata->ecc_mode = NAND_ECC_SOFT;
+			if (!strncmp("hw", mode, 2))
+				pdata->ecc_mode = NAND_ECC_HW;
+		}
+		if (!of_property_read_u32(pdev->dev.of_node,
+			"ti,davinci-ecc-bits", &prop))
+			pdata->ecc_bits = prop;
+		if (!of_property_read_u32(pdev->dev.of_node,
+			"ti,davinci-nand-buswidth", &prop))
+			if (prop == 16)
+				pdata->options |= NAND_BUSWIDTH_16;
+		if (of_find_property(pdev->dev.of_node,
+			"ti,davinci-nand-use-bbt", &len))
+			pdata->bbt_options = NAND_BBT_USE_FLASH;
+	}
+
+	return dev_get_platdata(&pdev->dev);
+}
+#else
+static struct davinci_nand_pdata
+	*nand_davinci_get_pdata(struct platform_device *pdev)
+{
+	return dev_get_platdata(&pdev->dev);
+}
+#endif
+
+static int __init nand_davinci_probe(struct platform_device *pdev)
+{
+	struct davinci_nand_pdata	*pdata;
+>>>>>>> refs/remotes/origin/master
 	struct davinci_nand_info	*info;
 	struct resource			*res1;
 	struct resource			*res2;
@@ -534,11 +616,16 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
 	uint32_t			val;
 	nand_ecc_modes_t		ecc_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mtd_partition		*mtd_parts = NULL;
 	int				mtd_parts_nb = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+	pdata = nand_davinci_get_pdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	/* insist on board-specific configuration */
 	if (!pdata)
 		return -ENODEV;
@@ -547,7 +634,11 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
 	if (pdev->id < 0 || pdev->id > 3)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info) {
 		dev_err(&pdev->dev, "unable to allocate memory\n");
 		ret = -ENOMEM;
@@ -564,11 +655,22 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
 		goto err_nomem;
 	}
 
+<<<<<<< HEAD
 	vaddr = ioremap(res1->start, resource_size(res1));
 	base = ioremap(res2->start, resource_size(res2));
 	if (!vaddr || !base) {
 		dev_err(&pdev->dev, "ioremap failed\n");
 		ret = -EINVAL;
+=======
+	vaddr = devm_ioremap_resource(&pdev->dev, res1);
+	if (IS_ERR(vaddr)) {
+		ret = PTR_ERR(vaddr);
+		goto err_ioremap;
+	}
+	base = devm_ioremap_resource(&pdev->dev, res2);
+	if (IS_ERR(base)) {
+		ret = PTR_ERR(base);
+>>>>>>> refs/remotes/origin/master
 		goto err_ioremap;
 	}
 
@@ -588,12 +690,18 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
 	info->chip.select_chip	= nand_davinci_select_chip;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* options such as NAND_USE_FLASH_BBT or 16-bit widths */
 =======
 	/* options such as NAND_BBT_USE_FLASH */
 	info->chip.bbt_options	= pdata->bbt_options;
 	/* options such as 16-bit widths */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* options such as NAND_BBT_USE_FLASH */
+	info->chip.bbt_options	= pdata->bbt_options;
+	/* options such as 16-bit widths */
+>>>>>>> refs/remotes/origin/master
 	info->chip.options	= pdata->options;
 	info->chip.bbt_td	= pdata->bbt_td;
 	info->chip.bbt_md	= pdata->bbt_md;
@@ -655,9 +763,13 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
 		}
 		info->chip.ecc.size = 512;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		info->chip.ecc.strength = pdata->ecc_bits;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info->chip.ecc.strength = pdata->ecc_bits;
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		ret = -EINVAL;
@@ -665,14 +777,22 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
 	}
 	info->chip.ecc.mode = ecc_mode;
 
+<<<<<<< HEAD
 	info->clk = clk_get(&pdev->dev, "aemif");
+=======
+	info->clk = devm_clk_get(&pdev->dev, "aemif");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(info->clk)) {
 		ret = PTR_ERR(info->clk);
 		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
 		goto err_clk;
 	}
 
+<<<<<<< HEAD
 	ret = clk_enable(info->clk);
+=======
+	ret = clk_prepare_enable(info->clk);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d\n",
 			ret);
@@ -693,12 +813,18 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
 	davinci_nand_writel(info, A1CR_OFFSET + info->core_chipsel * 4, val);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = davinci_aemif_setup_timing(info->timing, info->base,
 =======
 	ret = 0;
 	if (info->timing)
 		ret = davinci_aemif_setup_timing(info->timing, info->base,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = 0;
+	if (info->timing)
+		ret = davinci_aemif_setup_timing(info->timing, info->base,
+>>>>>>> refs/remotes/origin/master
 							info->core_chipsel);
 	if (ret < 0) {
 		dev_dbg(&pdev->dev, "NAND timing values setup fail\n");
@@ -774,6 +900,7 @@ syndrome_done:
 		goto err_scan;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mtd_has_cmdlinepart()) {
 		static const char *probes[] __initconst = {
 			"cmdlinepart", NULL
@@ -806,6 +933,18 @@ syndrome_done:
 					pdata->nr_parts);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	if (pdata->parts)
+		ret = mtd_device_parse_register(&info->mtd, NULL, NULL,
+					pdata->parts, pdata->nr_parts);
+	else {
+		struct mtd_part_parser_data	ppdata;
+
+		ppdata.of_node = pdev->dev.of_node;
+		ret = mtd_device_parse_register(&info->mtd, NULL, &ppdata,
+						NULL, 0);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto err_scan;
 
@@ -817,11 +956,17 @@ syndrome_done:
 
 err_scan:
 err_timing:
+<<<<<<< HEAD
 	clk_disable(info->clk);
 
 err_clk_enable:
 	clk_put(info->clk);
 
+=======
+	clk_disable_unprepare(info->clk);
+
+err_clk_enable:
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&davinci_nand_lock);
 	if (ecc_mode == NAND_ECC_HW_SYNDROME)
 		ecc4_busy = false;
@@ -830,6 +975,7 @@ err_clk_enable:
 err_ecc:
 err_clk:
 err_ioremap:
+<<<<<<< HEAD
 	if (base)
 		iounmap(base);
 	if (vaddr)
@@ -837,6 +983,9 @@ err_ioremap:
 
 err_nomem:
 	kfree(info);
+=======
+err_nomem:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -844,17 +993,21 @@ static int __exit nand_davinci_remove(struct platform_device *pdev)
 {
 	struct davinci_nand_info *info = platform_get_drvdata(pdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int status;
 
 	status = mtd_device_unregister(&info->mtd);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&davinci_nand_lock);
 	if (info->chip.ecc.mode == NAND_ECC_HW_SYNDROME)
 		ecc4_busy = false;
 	spin_unlock_irq(&davinci_nand_lock);
 
+<<<<<<< HEAD
 	iounmap(info->base);
 	iounmap(info->vaddr);
 
@@ -864,6 +1017,11 @@ static int __exit nand_davinci_remove(struct platform_device *pdev)
 	clk_put(info->clk);
 
 	kfree(info);
+=======
+	nand_release(&info->mtd);
+
+	clk_disable_unprepare(info->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -872,10 +1030,16 @@ static struct platform_driver nand_davinci_driver = {
 	.remove		= __exit_p(nand_davinci_remove),
 	.driver		= {
 		.name	= "davinci_nand",
+<<<<<<< HEAD
+=======
+		.owner	= THIS_MODULE,
+		.of_match_table = of_match_ptr(davinci_nand_of_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 MODULE_ALIAS("platform:davinci_nand");
 
+<<<<<<< HEAD
 static int __init nand_davinci_init(void)
 {
 	return platform_driver_probe(&nand_davinci_driver, nand_davinci_probe);
@@ -887,6 +1051,9 @@ static void __exit nand_davinci_exit(void)
 	platform_driver_unregister(&nand_davinci_driver);
 }
 module_exit(nand_davinci_exit);
+=======
+module_platform_driver_probe(nand_davinci_driver, nand_davinci_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Texas Instruments");

@@ -20,10 +20,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -40,12 +45,15 @@
 #include <linux/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #define OUR_NAME "alim7101_wdt"
 #define PFX OUR_NAME ": "
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define WDT_ENABLE 0x9C
 #define WDT_DISABLE 0x8C
@@ -88,12 +96,17 @@ static char wdt_expect_close;
 static struct pci_dev *alim7101_pmu;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -126,11 +139,15 @@ static void wdt_timer_ping(unsigned long data)
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING PFX
 			"Heartbeat lost! Will not ping the watchdog\n");
 =======
 		pr_warn("Heartbeat lost! Will not ping the watchdog\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Heartbeat lost! Will not ping the watchdog\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	/* Re-set the timer interval */
 	mod_timer(&timer, jiffies + WDT_INTERVAL);
@@ -180,10 +197,14 @@ static void wdt_startup(void)
 	mod_timer(&timer, jiffies + WDT_INTERVAL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog timer is now enabled.\n");
 =======
 	pr_info("Watchdog timer is now enabled\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog timer is now enabled\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wdt_turnoff(void)
@@ -192,10 +213,14 @@ static void wdt_turnoff(void)
 	del_timer_sync(&timer);
 	wdt_change(WDT_DISABLE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Watchdog timer is now disabled...\n");
 =======
 	pr_info("Watchdog timer is now disabled...\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Watchdog timer is now disabled...\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wdt_keepalive(void)
@@ -252,11 +277,15 @@ static int fop_close(struct inode *inode, struct file *file)
 	else {
 		/* wim: shouldn't there be a: del_timer(&timer); */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 		  "device file closed unexpectedly. Will not stop the WDT!\n");
 =======
 		pr_crit("device file closed unexpectedly. Will not stop the WDT!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("device file closed unexpectedly. Will not stop the WDT!\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	clear_bit(0, &wdt_is_open);
 	wdt_expect_close = 0;
@@ -352,11 +381,15 @@ static int wdt_notify_sys(struct notifier_block *this,
 		 */
 		wdt_change(WDT_ENABLE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "Watchdog timer is now enabled "
 			"with no heartbeat - should reboot in ~1 second.\n");
 =======
 		pr_info("Watchdog timer is now enabled with no heartbeat - should reboot in ~1 second\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Watchdog timer is now enabled with no heartbeat - should reboot in ~1 second\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	return NOTIFY_DONE;
 }
@@ -386,6 +419,7 @@ static int __init alim7101_wdt_init(void)
 	char tmp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Steve Hill <steve@navaho.co.uk>.\n");
 	alim7101_pmu = pci_get_device(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M7101,
 		NULL);
@@ -393,12 +427,17 @@ static int __init alim7101_wdt_init(void)
 		printk(KERN_INFO PFX
 			"ALi M7101 PMU not present - WDT not set\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Steve Hill <steve@navaho.co.uk>\n");
 	alim7101_pmu = pci_get_device(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M7101,
 		NULL);
 	if (!alim7101_pmu) {
 		pr_info("ALi M7101 PMU not present - WDT not set\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EBUSY;
 	}
 
@@ -409,17 +448,22 @@ static int __init alim7101_wdt_init(void)
 		NULL);
 	if (!ali1543_south) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"ALi 1543 South-Bridge not present - WDT not set\n");
 =======
 		pr_info("ALi 1543 South-Bridge not present - WDT not set\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("ALi 1543 South-Bridge not present - WDT not set\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 	}
 	pci_read_config_byte(ali1543_south, 0x5e, &tmp);
 	pci_dev_put(ali1543_south);
 	if ((tmp & 0x1e) == 0x00) {
 		if (!use_gpio) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_INFO PFX
 				"Detected old alim7101 revision 'a1d'.  "
@@ -428,10 +472,14 @@ static int __init alim7101_wdt_init(void)
 =======
 			pr_info("Detected old alim7101 revision 'a1d'.  If this is a cobalt board, set the 'use_gpio' module parameter.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_info("Detected old alim7101 revision 'a1d'.  If this is a cobalt board, set the 'use_gpio' module parameter.\n");
+>>>>>>> refs/remotes/origin/master
 			goto err_out;
 		}
 		nowayout = 1;
 	} else if ((tmp & 0x1e) != 0x12 && (tmp & 0x1e) != 0x00) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"ALi 1543 South-Bridge does not have the correct "
@@ -439,12 +487,16 @@ static int __init alim7101_wdt_init(void)
 =======
 		pr_info("ALi 1543 South-Bridge does not have the correct revision number (???1001?) - WDT not set\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("ALi 1543 South-Bridge does not have the correct revision number (???1001?) - WDT not set\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 	}
 
 	if (timeout < 1 || timeout > 3600) {
 		/* arbitrary upper limit */
 		timeout = WATCHDOG_TIMEOUT;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"timeout value must be 1 <= x <= 3600, using %d\n",
@@ -453,21 +505,30 @@ static int __init alim7101_wdt_init(void)
 		pr_info("timeout value must be 1 <= x <= 3600, using %d\n",
 			timeout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("timeout value must be 1 <= x <= 3600, using %d\n",
+			timeout);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = register_reboot_notifier(&wdt_notifier);
 	if (rc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", rc);
 =======
 		pr_err("cannot register reboot notifier (err=%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 	}
 
 	rc = misc_register(&wdt_miscdev);
 	if (rc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -476,6 +537,10 @@ static int __init alim7101_wdt_init(void)
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       wdt_miscdev.minor, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       wdt_miscdev.minor, rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_reboot;
 	}
 
@@ -483,11 +548,15 @@ static int __init alim7101_wdt_init(void)
 		__module_get(THIS_MODULE);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "WDT driver for ALi M7101 initialised. "
 					"timeout=%d sec (nowayout=%d)\n",
 =======
 	pr_info("WDT driver for ALi M7101 initialised. timeout=%d sec (nowayout=%d)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("WDT driver for ALi M7101 initialised. timeout=%d sec (nowayout=%d)\n",
+>>>>>>> refs/remotes/origin/master
 		timeout, nowayout);
 	return 0;
 
@@ -512,4 +581,7 @@ MODULE_DEVICE_TABLE(pci, alim7101_pci_tbl);
 MODULE_AUTHOR("Steve Hill");
 MODULE_DESCRIPTION("ALi M7101 PMU Computer Watchdog Timer driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -17,6 +17,10 @@
 
 #ifndef ATH9K_DFS_H
 #define ATH9K_DFS_H
+<<<<<<< HEAD
+=======
+#include "../dfs_pattern_detector.h"
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_ATH9K_DFS_CERTIFIED)
 /**
@@ -31,13 +35,23 @@
  *
  * The radar information provided as raw payload data is validated and
  * filtered for false pulses. Events passing all tests are forwarded to
+<<<<<<< HEAD
  * the upper layer for pattern detection.
+=======
+ * the DFS detector for pattern detection.
+>>>>>>> refs/remotes/origin/master
  */
 void ath9k_dfs_process_phyerr(struct ath_softc *sc, void *data,
 			      struct ath_rx_status *rs, u64 mactime);
 #else
+<<<<<<< HEAD
 static inline void ath9k_dfs_process_phyerr(struct ath_softc *sc, void *data,
 					    struct ath_rx_status *rs, u64 mactime) { }
+=======
+static inline void
+ath9k_dfs_process_phyerr(struct ath_softc *sc, void *data,
+			 struct ath_rx_status *rs, u64 mactime) { }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* ATH9K_DFS_H */

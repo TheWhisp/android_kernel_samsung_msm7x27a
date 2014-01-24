@@ -1,8 +1,13 @@
 /*
  *  sata_promise.c - Promise SATA
  *
+<<<<<<< HEAD
  *  Maintained by:  Jeff Garzik <jgarzik@pobox.com>
  *		    Mikael Pettersson <mikpe@it.uu.se>
+=======
+ *  Maintained by:  Tejun Heo <tj@kernel.org>
+ *		    Mikael Pettersson
+>>>>>>> refs/remotes/origin/master
  *  		    Please ALWAYS copy linux-ide@vger.kernel.org
  *		    on emails.
  *
@@ -1185,9 +1190,12 @@ static int pdc_ata_init_one(struct pci_dev *pdev,
 			    const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct ata_port_info *pi = &pdc_port_info[ent->driver_data];
 	const struct ata_port_info *ppi[PDC_MAX_PORTS];
 	struct ata_host *host;
@@ -1197,11 +1205,15 @@ static int pdc_ata_init_one(struct pci_dev *pdev,
 	int is_sataii_tx4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/* enable and acquire resources */
 	rc = pcim_enable_device(pdev);
@@ -1231,10 +1243,14 @@ static int pdc_ata_init_one(struct pci_dev *pdev,
 	host = ata_host_alloc_pinfo(&pdev->dev, ppi, n_ports);
 	if (!host) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev, "failed to allocate host\n");
 =======
 		dev_err(&pdev->dev, "failed to allocate host\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "failed to allocate host\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	hpriv = devm_kzalloc(&pdev->dev, sizeof *hpriv, GFP_KERNEL);
@@ -1273,6 +1289,7 @@ static int pdc_ata_init_one(struct pci_dev *pdev,
 				 &pdc_ata_sht);
 }
 
+<<<<<<< HEAD
 static int __init pdc_ata_init(void)
 {
 	return pci_register_driver(&pdc_ata_pci_driver);
@@ -1282,12 +1299,18 @@ static void __exit pdc_ata_exit(void)
 {
 	pci_unregister_driver(&pdc_ata_pci_driver);
 }
+=======
+module_pci_driver(pdc_ata_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jeff Garzik");
 MODULE_DESCRIPTION("Promise ATA TX2/TX4/TX4000 low-level driver");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, pdc_ata_pci_tbl);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(pdc_ata_init);
 module_exit(pdc_ata_exit);
+=======
+>>>>>>> refs/remotes/origin/master

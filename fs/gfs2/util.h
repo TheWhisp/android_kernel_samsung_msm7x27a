@@ -11,10 +11,15 @@
 #define __UTIL_DOT_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/mempool.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mempool.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "incore.h"
 
 #define fs_printk(level, fs, fmt, arg...) \
@@ -82,6 +87,7 @@ int gfs2_meta_check_ii(struct gfs2_sbd *sdp, struct buffer_head *bh,
 		       const char *type, const char *function,
 		       char *file, unsigned int line);
 
+<<<<<<< HEAD
 static inline int gfs2_meta_check_i(struct gfs2_sbd *sdp,
 				    struct buffer_head *bh,
 				    const char *function,
@@ -99,6 +105,21 @@ static inline int gfs2_meta_check_i(struct gfs2_sbd *sdp,
 gfs2_meta_check_i((sdp), (bh), __func__, __FILE__, __LINE__)
 
 
+=======
+static inline int gfs2_meta_check(struct gfs2_sbd *sdp,
+				    struct buffer_head *bh)
+{
+	struct gfs2_meta_header *mh = (struct gfs2_meta_header *)bh->b_data;
+	u32 magic = be32_to_cpu(mh->mh_magic);
+	if (unlikely(magic != GFS2_MAGIC)) {
+		printk(KERN_ERR "GFS2: Magic number missing at %llu\n",
+		       (unsigned long long)bh->b_blocknr);
+		return -EIO;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 int gfs2_metatype_check_ii(struct gfs2_sbd *sdp, struct buffer_head *bh,
 			   u16 type, u16 t,
 			   const char *function,
@@ -156,9 +177,14 @@ extern struct kmem_cache *gfs2_bufdata_cachep;
 extern struct kmem_cache *gfs2_rgrpd_cachep;
 extern struct kmem_cache *gfs2_quotad_cachep;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern mempool_t *gfs2_bh_pool;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct kmem_cache *gfs2_rsrv_cachep;
+extern mempool_t *gfs2_page_pool;
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned int gfs2_tune_get_i(struct gfs2_tune *gt,
 					   unsigned int *p)
@@ -173,8 +199,11 @@ static inline unsigned int gfs2_tune_get_i(struct gfs2_tune *gt,
 #define gfs2_tune_get(sdp, field) \
 gfs2_tune_get_i(&(sdp)->sd_tune, &(sdp)->sd_tune.field)
 
+<<<<<<< HEAD
 void gfs2_icbit_munge(struct gfs2_sbd *sdp, unsigned char **bitmap,
 		      unsigned int bit, int new_value);
+=======
+>>>>>>> refs/remotes/origin/master
 int gfs2_lm_withdraw(struct gfs2_sbd *sdp, char *fmt, ...);
 
 #endif /* __UTIL_DOT_H__ */

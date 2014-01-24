@@ -21,7 +21,11 @@
 #include <asm/cpu.h>
 #include <asm/stackprotector.h>
 
+<<<<<<< HEAD
 DEFINE_PER_CPU(int, cpu_number);
+=======
+DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number);
+>>>>>>> refs/remotes/origin/master
 EXPORT_PER_CPU_SYMBOL(cpu_number);
 
 #ifdef CONFIG_X86_64

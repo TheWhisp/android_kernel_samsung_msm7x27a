@@ -65,14 +65,18 @@
 #define AT91SAM9RL_BASE_UDPHS	0xfffd4000
 #define AT91SAM9RL_BASE_AC97C	0xfffd8000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AT91_BASE_SYS		0xffffc000
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*
  * System Peripherals (offset from AT91_BASE_SYS)
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define AT91_DMA	(0xffffe600 - AT91_BASE_SYS)
 #define AT91_ECC	(0xffffe800 - AT91_BASE_SYS)
@@ -96,6 +100,8 @@
 #define AT91_GPBR	(0xfffffd60 - AT91_BASE_SYS)
 #define AT91_RTC	(0xfffffe00 - AT91_BASE_SYS)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AT91_SCKCR	(0xfffffd50 - AT91_BASE_SYS)
 
 #define AT91SAM9RL_BASE_DMA	0xffffe600
@@ -115,12 +121,15 @@
 #define AT91SAM9RL_BASE_WDT	0xfffffd40
 #define AT91SAM9RL_BASE_GPBR	0xfffffd60
 #define AT91SAM9RL_BASE_RTC	0xfffffe00
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define AT91_USART0	AT91SAM9RL_BASE_US0
 #define AT91_USART1	AT91SAM9RL_BASE_US1
 #define AT91_USART2	AT91SAM9RL_BASE_US2
 #define AT91_USART3	AT91SAM9RL_BASE_US3
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /*

@@ -15,6 +15,12 @@ menuconfig BLK_DEV
 
 if BLK_DEV
 
+<<<<<<< HEAD
+=======
+config BLK_DEV_NULL_BLK
+	tristate "Null test block driver"
+
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_FD
 	tristate "Normal floppy disk support"
 	depends on ARCH_MAY_HAVE_PC_FDC
@@ -63,6 +69,7 @@ config AMIGA_Z2RAM
 	  To compile this driver as a module, choose M here: the
 	  module will be called z2ram.
 
+<<<<<<< HEAD
 config BLK_DEV_XD
 	tristate "XT hard disk support"
 	depends on ISA && ISA_DMA_API
@@ -76,6 +83,8 @@ config BLK_DEV_XD
 
 	  It's pretty unlikely that you have one of these: say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config GDROM
 	tristate "SEGA Dreamcast GD-ROM drive"
 	depends on SH_DREAMCAST
@@ -117,6 +126,7 @@ config PARIDE
 source "drivers/block/paride/Kconfig"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 source "drivers/block/mtip32xx/Kconfig"
 
@@ -124,6 +134,13 @@ source "drivers/block/mtip32xx/Kconfig"
 config BLK_CPQ_DA
 	tristate "Compaq SMART2 support"
 	depends on PCI && VIRT_TO_BUS
+=======
+source "drivers/block/mtip32xx/Kconfig"
+
+config BLK_CPQ_DA
+	tristate "Compaq SMART2 support"
+	depends on PCI && VIRT_TO_BUS && 0
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the driver for Compaq Smart Array controllers.  Everyone
 	  using these boards should say Y here.  See the file
@@ -134,6 +151,10 @@ config BLK_CPQ_DA
 config BLK_CPQ_CISS_DA
 	tristate "Compaq Smart Array 5xxx support"
 	depends on PCI
+<<<<<<< HEAD
+=======
+	select CHECK_SIGNATURE
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the driver for Compaq Smart Array 5xxx controllers.
 	  Everyone using these boards should say Y here.
@@ -169,8 +190,13 @@ config BLK_DEV_DAC960
 	  module will be called DAC960.
 
 config BLK_DEV_UMEM
+<<<<<<< HEAD
 	tristate "Micro Memory MM5415 Battery Backed RAM support (EXPERIMENTAL)"
 	depends on PCI && EXPERIMENTAL
+=======
+	tristate "Micro Memory MM5415 Battery Backed RAM support"
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Saying Y here will include support for the MM5415 family of
 	  battery backed (Non-volatile) RAM cards.
@@ -262,7 +288,10 @@ config BLK_DEV_LOOP
 	  Most users will answer N here.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_LOOP_MIN_COUNT
 	int "Number of loop devices to pre-create at init time"
 	depends on BLK_DEV_LOOP
@@ -278,7 +307,10 @@ config BLK_DEV_LOOP_MIN_COUNT
 	  is used, it can be set to 0, since needed loop devices can be
 	  dynamically allocated with the /dev/loop-control interface.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_CRYPTOLOOP
 	tristate "Cryptoloop Support"
 	select CRYPTO
@@ -324,7 +356,10 @@ config BLK_DEV_NBD
 	  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_NVME
 	tristate "NVM Express block device"
 	depends on PCI
@@ -336,7 +371,20 @@ config BLK_DEV_NVME
 	  To compile this driver as a module, choose M here: the
 	  module will be called nvme.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config BLK_DEV_SKD
+	tristate "STEC S1120 Block Driver"
+	depends on PCI
+	depends on 64BIT
+	---help---
+	Saying Y or M here will enable support for the
+	STEC, Inc. S1120 PCIe SSD.
+
+	Use device /dev/skd$N amd /dev/skd$Np$M.
+
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_OSD
 	tristate "OSD object-as-blkdev support"
 	depends on SCSI_OSD_ULD
@@ -362,6 +410,7 @@ config BLK_DEV_SX8
 
 	  Use devices /dev/sx8/$N and /dev/sx8/$Np$M.
 
+<<<<<<< HEAD
 config BLK_DEV_UB
 <<<<<<< HEAD
 	tristate "Low Performance USB Block driver"
@@ -378,6 +427,8 @@ config BLK_DEV_UB
 
 	  If unsure, say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_RAM
 	tristate "RAM block device support"
 	---help---
@@ -455,8 +506,13 @@ config CDROM_PKTCDVD_BUFFERS
 	  a disc is opened for writing.
 
 config CDROM_PKTCDVD_WCACHE
+<<<<<<< HEAD
 	bool "Enable write caching (EXPERIMENTAL)"
 	depends on CDROM_PKTCDVD && EXPERIMENTAL
+=======
+	bool "Enable write caching"
+	depends on CDROM_PKTCDVD
+>>>>>>> refs/remotes/origin/master
 	help
 	  If enabled, write caching will be set for the CD-R/W device. For now
 	  this option is dangerous unless the CD-RW media is known good, as we
@@ -513,10 +569,14 @@ config XEN_BLKDEV_FRONTEND
 
 config XEN_BLKDEV_BACKEND
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Block-device backend driver"
 =======
 	tristate "Xen block-device backend driver"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "Xen block-device backend driver"
+>>>>>>> refs/remotes/origin/master
 	depends on XEN_BACKEND
 	help
 	  The block-device backend driver allows the kernel to export its
@@ -537,8 +597,13 @@ config XEN_BLKDEV_BACKEND
 
 
 config VIRTIO_BLK
+<<<<<<< HEAD
 	tristate "Virtio block driver (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && VIRTIO
+=======
+	tristate "Virtio block driver"
+	depends on VIRTIO
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This is the virtual block driver for virtio.  It can be used with
           lguest or QEMU based VMMs (like KVM or Xen).  Say Y or M.
@@ -546,7 +611,11 @@ config VIRTIO_BLK
 config BLK_DEV_HD
 	bool "Very old hard disk (MFM/RLL/IDE) driver"
 	depends on HAVE_IDE
+<<<<<<< HEAD
 	depends on !ARM || ARCH_RPC || ARCH_SHARK || BROKEN
+=======
+	depends on !ARM || ARCH_RPC || BROKEN
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is a very old hard disk driver that lacks the enhanced
 	  functionality of the newer ones.
@@ -557,7 +626,11 @@ config BLK_DEV_HD
 
 config BLK_DEV_RBD
 	tristate "Rados block device (RBD)"
+<<<<<<< HEAD
 	depends on INET && EXPERIMENTAL && BLOCK
+=======
+	depends on INET && BLOCK
+>>>>>>> refs/remotes/origin/master
 	select CEPH_LIB
 	select LIBCRC32C
 	select CRYPTO_AES
@@ -572,4 +645,17 @@ config BLK_DEV_RBD
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config BLK_DEV_RSXX
+	tristate "IBM Flash Adapter 900GB Full Height PCIe Device Driver"
+	depends on PCI
+	help
+	  Device driver for IBM's high speed PCIe SSD
+	  storage device: Flash Adapter 900GB Full Height.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called rsxx.
+
+>>>>>>> refs/remotes/origin/master
 endif # BLK_DEV

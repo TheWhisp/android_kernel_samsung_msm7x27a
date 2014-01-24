@@ -17,6 +17,10 @@
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/cpu.h>
+<<<<<<< HEAD
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/page.h>
 #include <asm/current.h>
@@ -75,11 +79,15 @@ int default_machine_kexec_prepare(struct kimage *image)
 
 	/* We also should not overwrite the tce tables */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (node = of_find_node_by_type(NULL, "pci"); node != NULL;
 			node = of_find_node_by_type(node, "pci")) {
 =======
 	for_each_node_by_type(node, "pci") {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for_each_node_by_type(node, "pci") {
+>>>>>>> refs/remotes/origin/master
 		basep = of_get_property(node, "linux,tce-base", NULL);
 		sizep = of_get_property(node, "linux,tce-size", NULL);
 		if (basep == NULL || sizep == NULL)
@@ -316,6 +324,7 @@ static union thread_union kexec_stack __init_task_data =
  */
 struct paca_struct kexec_paca;
 
+<<<<<<< HEAD
 /* Our assembly helper, in kexec_stub.S */
 <<<<<<< HEAD
 extern NORET_TYPE void kexec_sequence(void *newstack, unsigned long start,
@@ -326,6 +335,12 @@ extern void kexec_sequence(void *newstack, unsigned long start,
 			   void *image, void *control,
 			   void (*clear_all)(void)) __noreturn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Our assembly helper, in misc_64.S */
+extern void kexec_sequence(void *newstack, unsigned long start,
+			   void *image, void *control,
+			   void (*clear_all)(void)) __noreturn;
+>>>>>>> refs/remotes/origin/master
 
 /* too late to fail here */
 void default_machine_kexec(struct kimage *image)
@@ -346,10 +361,19 @@ void default_machine_kexec(struct kimage *image)
 	pr_debug("kexec: Starting switchover sequence.\n");
 
 	/* switch to a staticly allocated stack.  Based on irq stack code.
+<<<<<<< HEAD
+=======
+	 * We setup preempt_count to avoid using VMX in memcpy.
+>>>>>>> refs/remotes/origin/master
 	 * XXX: the task struct will likely be invalid once we do the copy!
 	 */
 	kexec_stack.thread_info.task = current_thread_info()->task;
 	kexec_stack.thread_info.flags = 0;
+<<<<<<< HEAD
+=======
+	kexec_stack.thread_info.preempt_count = HARDIRQ_OFFSET;
+	kexec_stack.thread_info.cpu = current_thread_info()->cpu;
+>>>>>>> refs/remotes/origin/master
 
 	/* We need a static PACA, too; copy this CPU's PACA over and switch to
 	 * it.  Also poison per_cpu_offset to catch anyone using non-static
@@ -405,6 +429,7 @@ static int __init export_htab_values(void)
 	/* remove any stale propertys so ours can be found */
 	prop = of_find_property(node, htab_base_prop.name, NULL);
 	if (prop)
+<<<<<<< HEAD
 		prom_remove_property(node, prop);
 	prop = of_find_property(node, htab_size_prop.name, NULL);
 	if (prop)
@@ -413,6 +438,16 @@ static int __init export_htab_values(void)
 	htab_base = __pa(htab_address);
 	prom_add_property(node, &htab_base_prop);
 	prom_add_property(node, &htab_size_prop);
+=======
+		of_remove_property(node, prop);
+	prop = of_find_property(node, htab_size_prop.name, NULL);
+	if (prop)
+		of_remove_property(node, prop);
+
+	htab_base = __pa(htab_address);
+	of_add_property(node, &htab_base_prop);
+	of_add_property(node, &htab_size_prop);
+>>>>>>> refs/remotes/origin/master
 
 	of_node_put(node);
 	return 0;

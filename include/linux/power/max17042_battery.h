@@ -24,9 +24,12 @@
 #define __MAX17042_BATTERY_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct max17042_platform_data {
 	bool enable_current_sense;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX17042_STATUS_BattAbsent	(1 << 3)
 #define MAX17042_BATTERY_FULL	(100)
 #define MAX17042_DEFAULT_SNS_RESISTOR	(10000)
@@ -120,6 +123,21 @@ enum max17042_register {
 	MAX17042_VFSOC		= 0xFF,
 };
 
+<<<<<<< HEAD
+=======
+/* Registers specific to max17047/50 */
+enum max17047_register {
+	MAX17047_QRTbl00	= 0x12,
+	MAX17047_FullSOCThr	= 0x13,
+	MAX17047_QRTbl10	= 0x22,
+	MAX17047_QRTbl20	= 0x32,
+	MAX17047_V_empty	= 0x3A,
+	MAX17047_QRTbl30	= 0x42,
+};
+
+enum max170xx_chip_type {MAX17042, MAX17047};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * used for setting a register to a desired value
  * addr : address for a register
@@ -148,6 +166,10 @@ struct max17042_config_data {
 	u16	shdntimer;	/* 0x03F */
 
 	/* App data */
+<<<<<<< HEAD
+=======
+	u16	full_soc_thresh;	/* 0x13 */
+>>>>>>> refs/remotes/origin/master
 	u16	design_cap;	/* 0x18 */
 	u16	ichgt_term;	/* 0x1E */
 
@@ -166,6 +188,13 @@ struct max17042_config_data {
 	u16	lavg_empty;	/* 0x36 */
 	u16	dqacc;		/* 0x45 */
 	u16	dpacc;		/* 0x46 */
+<<<<<<< HEAD
+=======
+	u16	qrtbl00;	/* 0x12 */
+	u16	qrtbl10;	/* 0x22 */
+	u16	qrtbl20;	/* 0x32 */
+	u16	qrtbl30;	/* 0x42 */
+>>>>>>> refs/remotes/origin/master
 
 	/* Cell technology from power_supply.h */
 	u16	cell_technology;
@@ -195,7 +224,10 @@ struct max17042_platform_data {
 	 * the datasheet although it can be changed by board designers.
 	 */
 	unsigned int r_sns;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* __MAX17042_BATTERY_H_ */

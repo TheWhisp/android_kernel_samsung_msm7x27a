@@ -34,10 +34,15 @@
 #include <mach/regs-timer.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "nuc9xx.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "nuc9xx.h"
+
+>>>>>>> refs/remotes/origin/master
 #define RESETINT	0x1f
 #define PERIOD		(0x01 << 27)
 #define ONESHOT		(0x00 << 27)
@@ -94,7 +99,10 @@ static int nuc900_clockevent_setnextevent(unsigned long evt,
 
 static struct clock_event_device nuc900_clockevent_device = {
 	.name		= "nuc900-timer0",
+<<<<<<< HEAD
 	.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/master
 	.features	= CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.set_mode	= nuc900_clockevent_setmode,
 	.set_next_event	= nuc900_clockevent_setnextevent,
@@ -136,6 +144,7 @@ static void __init nuc900_clockevents_init(void)
 	__raw_writel(RESETINT, REG_TISR);
 	setup_irq(IRQ_TIMER0, &nuc900_timer0_irq);
 
+<<<<<<< HEAD
 	nuc900_clockevent_device.mult = div_sc(rate, NSEC_PER_SEC,
 					nuc900_clockevent_device.shift);
 	nuc900_clockevent_device.max_delta_ns = clockevent_delta2ns(0xffffffff,
@@ -145,6 +154,12 @@ static void __init nuc900_clockevents_init(void)
 	nuc900_clockevent_device.cpumask = cpumask_of(0);
 
 	clockevents_register_device(&nuc900_clockevent_device);
+=======
+	nuc900_clockevent_device.cpumask = cpumask_of(0);
+
+	clockevents_config_and_register(&nuc900_clockevent_device, rate,
+					0xf, 0xffffffff);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init nuc900_clocksource_init(void)
@@ -170,12 +185,19 @@ static void __init nuc900_clocksource_init(void)
 		TDR_SHIFT, clocksource_mmio_readl_down);
 }
 
+<<<<<<< HEAD
 static void __init nuc900_timer_init(void)
+=======
+void __init nuc900_timer_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	nuc900_clocksource_init();
 	nuc900_clockevents_init();
 }
+<<<<<<< HEAD
 
 struct sys_timer nuc900_timer = {
 	.init		= nuc900_timer_init,
 };
+=======
+>>>>>>> refs/remotes/origin/master

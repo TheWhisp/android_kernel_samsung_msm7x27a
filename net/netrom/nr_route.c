@@ -27,9 +27,12 @@
 #include <net/sock.h>
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/fcntl.h>
 #include <linux/termios.h>	/* For TIOCINQ/OUTQ */
 #include <linux/mm.h>
@@ -41,9 +44,13 @@
 #include <net/netrom.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 static unsigned int nr_neigh_no = 1;
 
@@ -56,10 +63,16 @@ static struct nr_node *nr_node_get(ax25_address *callsign)
 {
 	struct nr_node *found = NULL;
 	struct nr_node *nr_node;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&nr_node_list_lock);
 	nr_node_for_each(nr_node, node, &nr_node_list)
+=======
+
+	spin_lock_bh(&nr_node_list_lock);
+	nr_node_for_each(nr_node, &nr_node_list)
+>>>>>>> refs/remotes/origin/master
 		if (ax25cmp(callsign, &nr_node->callsign) == 0) {
 			nr_node_hold(nr_node);
 			found = nr_node;
@@ -74,10 +87,16 @@ static struct nr_neigh *nr_neigh_get_dev(ax25_address *callsign,
 {
 	struct nr_neigh *found = NULL;
 	struct nr_neigh *nr_neigh;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock_bh(&nr_neigh_list_lock);
 	nr_neigh_for_each(nr_neigh, node, &nr_neigh_list)
+=======
+
+	spin_lock_bh(&nr_neigh_list_lock);
+	nr_neigh_for_each(nr_neigh, &nr_neigh_list)
+>>>>>>> refs/remotes/origin/master
 		if (ax25cmp(callsign, &nr_neigh->callsign) == 0 &&
 		    nr_neigh->dev == dev) {
 			nr_neigh_hold(nr_neigh);
@@ -121,10 +140,16 @@ static int __must_check nr_add_node(ax25_address *nr, const char *mnemonic,
 	 */
 	if (nr_neigh != NULL && nr_neigh->failed != 0 && quality == 0) {
 		struct nr_node *nr_nodet;
+<<<<<<< HEAD
 		struct hlist_node *node;
 
 		spin_lock_bh(&nr_node_list_lock);
 		nr_node_for_each(nr_nodet, node, &nr_node_list) {
+=======
+
+		spin_lock_bh(&nr_node_list_lock);
+		nr_node_for_each(nr_nodet, &nr_node_list) {
+>>>>>>> refs/remotes/origin/master
 			nr_node_lock(nr_nodet);
 			for (i = 0; i < nr_nodet->count; i++)
 				if (nr_nodet->routes[i].neighbour == nr_neigh)
@@ -265,17 +290,23 @@ static int __must_check nr_add_node(ax25_address *nr, const char *mnemonic,
 		if (nr_node->routes[1].quality > nr_node->routes[0].quality) {
 			switch (nr_node->which) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				case 0:  nr_node->which = 1; break;
 				case 1:  nr_node->which = 0; break;
 				default: break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case 0:
 				nr_node->which = 1;
 				break;
 			case 1:
 				nr_node->which = 0;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			nr_route           = nr_node->routes[0];
 			nr_node->routes[0] = nr_node->routes[1];
@@ -498,11 +529,19 @@ static int nr_dec_obs(void)
 {
 	struct nr_neigh *nr_neigh;
 	struct nr_node  *s;
+<<<<<<< HEAD
 	struct hlist_node *node, *nodet;
 	int i;
 
 	spin_lock_bh(&nr_node_list_lock);
 	nr_node_for_each_safe(s, node, nodet, &nr_node_list) {
+=======
+	struct hlist_node *nodet;
+	int i;
+
+	spin_lock_bh(&nr_node_list_lock);
+	nr_node_for_each_safe(s, nodet, &nr_node_list) {
+>>>>>>> refs/remotes/origin/master
 		nr_node_lock(s);
 		for (i = 0; i < s->count; i++) {
 			switch (s->routes[i].obs_count) {
@@ -522,6 +561,7 @@ static int nr_dec_obs(void)
 
 				switch (i) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					case 0:
 						s->routes[0] = s->routes[1];
 					case 1:
@@ -529,6 +569,8 @@ static int nr_dec_obs(void)
 					case 2:
 						break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				case 0:
 					s->routes[0] = s->routes[1];
 					/* Fallthrough */
@@ -536,7 +578,10 @@ static int nr_dec_obs(void)
 					s->routes[1] = s->routes[2];
 				case 2:
 					break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 				break;
 
@@ -562,15 +607,26 @@ static int nr_dec_obs(void)
 void nr_rt_device_down(struct net_device *dev)
 {
 	struct nr_neigh *s;
+<<<<<<< HEAD
 	struct hlist_node *node, *nodet, *node2, *node2t;
+=======
+	struct hlist_node *nodet, *node2t;
+>>>>>>> refs/remotes/origin/master
 	struct nr_node  *t;
 	int i;
 
 	spin_lock_bh(&nr_neigh_list_lock);
+<<<<<<< HEAD
 	nr_neigh_for_each_safe(s, node, nodet, &nr_neigh_list) {
 		if (s->dev == dev) {
 			spin_lock_bh(&nr_node_list_lock);
 			nr_node_for_each_safe(t, node2, node2t, &nr_node_list) {
+=======
+	nr_neigh_for_each_safe(s, nodet, &nr_neigh_list) {
+		if (s->dev == dev) {
+			spin_lock_bh(&nr_node_list_lock);
+			nr_node_for_each_safe(t, node2t, &nr_node_list) {
+>>>>>>> refs/remotes/origin/master
 				nr_node_lock(t);
 				for (i = 0; i < t->count; i++) {
 					if (t->routes[i].neighbour == s) {
@@ -692,6 +748,7 @@ int nr_rt_ioctl(unsigned int cmd, void __user *arg)
 		if (copy_from_user(&nr_route, arg, sizeof(struct nr_route_struct)))
 			return -EFAULT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ((dev = nr_ax25_dev_get(nr_route.device)) == NULL)
 			return -EINVAL;
 		if (nr_route.ndigis < 0 || nr_route.ndigis > AX25_MAX_DIGIS) {
@@ -701,6 +758,8 @@ int nr_rt_ioctl(unsigned int cmd, void __user *arg)
 		switch (nr_route.type) {
 		case NETROM_NODE:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (nr_route.ndigis > AX25_MAX_DIGIS)
 			return -EINVAL;
 		if ((dev = nr_ax25_dev_get(nr_route.device)) == NULL)
@@ -712,7 +771,10 @@ int nr_rt_ioctl(unsigned int cmd, void __user *arg)
 				break;
 			}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ret = nr_add_node(&nr_route.callsign,
 				nr_route.mnemonic,
 				&nr_route.neighbour,
@@ -770,11 +832,18 @@ int nr_rt_ioctl(unsigned int cmd, void __user *arg)
 void nr_link_failed(ax25_cb *ax25, int reason)
 {
 	struct nr_neigh *s, *nr_neigh = NULL;
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct nr_node  *nr_node = NULL;
 
 	spin_lock_bh(&nr_neigh_list_lock);
 	nr_neigh_for_each(s, node, &nr_neigh_list) {
+=======
+	struct nr_node  *nr_node = NULL;
+
+	spin_lock_bh(&nr_neigh_list_lock);
+	nr_neigh_for_each(s, &nr_neigh_list) {
+>>>>>>> refs/remotes/origin/master
 		if (s->ax25 == ax25) {
 			nr_neigh_hold(s);
 			nr_neigh = s;
@@ -794,7 +863,11 @@ void nr_link_failed(ax25_cb *ax25, int reason)
 		return;
 	}
 	spin_lock_bh(&nr_node_list_lock);
+<<<<<<< HEAD
 	nr_node_for_each(nr_node, node, &nr_node_list) {
+=======
+	nr_node_for_each(nr_node, &nr_node_list) {
+>>>>>>> refs/remotes/origin/master
 		nr_node_lock(nr_node);
 		if (nr_node->which < nr_node->count &&
 		    nr_node->routes[nr_node->which].neighbour == nr_neigh)
@@ -1046,16 +1119,28 @@ void __exit nr_rt_free(void)
 {
 	struct nr_neigh *s = NULL;
 	struct nr_node  *t = NULL;
+<<<<<<< HEAD
 	struct hlist_node *node, *nodet;
 
 	spin_lock_bh(&nr_neigh_list_lock);
 	spin_lock_bh(&nr_node_list_lock);
 	nr_node_for_each_safe(t, node, nodet, &nr_node_list) {
+=======
+	struct hlist_node *nodet;
+
+	spin_lock_bh(&nr_neigh_list_lock);
+	spin_lock_bh(&nr_node_list_lock);
+	nr_node_for_each_safe(t, nodet, &nr_node_list) {
+>>>>>>> refs/remotes/origin/master
 		nr_node_lock(t);
 		nr_remove_node_locked(t);
 		nr_node_unlock(t);
 	}
+<<<<<<< HEAD
 	nr_neigh_for_each_safe(s, node, nodet, &nr_neigh_list) {
+=======
+	nr_neigh_for_each_safe(s, nodet, &nr_neigh_list) {
+>>>>>>> refs/remotes/origin/master
 		while(s->count) {
 			s->count--;
 			nr_neigh_put(s);

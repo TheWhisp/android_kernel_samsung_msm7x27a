@@ -507,10 +507,14 @@ to e.g. the Internet:
      make clean; make zImage; make modules; make modules_install
 2. Install the new kernel
 <<<<<<< HEAD
+<<<<<<< HEAD
      cp /usr/src/linux/arch/i386/boot/zImage /etc/kernel/linux.isdn
 =======
      cp /usr/src/linux/arch/x86/boot/zImage /etc/kernel/linux.isdn
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+     cp /usr/src/linux/arch/x86/boot/zImage /etc/kernel/linux.isdn
+>>>>>>> refs/remotes/origin/master
      vi /etc/lilo.conf
      <add new kernel in the bootable image section>
      lilo

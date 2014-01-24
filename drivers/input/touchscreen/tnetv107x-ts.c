@@ -14,9 +14,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/err.h>
 #include <linux/errno.h>
@@ -246,7 +250,11 @@ static void tsc_stop(struct input_dev *dev)
 	clk_disable(ts->clk);
 }
 
+<<<<<<< HEAD
 static int __devinit tsc_probe(struct platform_device *pdev)
+=======
+static int tsc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	struct tsc_data *ts;
@@ -300,7 +308,11 @@ static int __devinit tsc_probe(struct platform_device *pdev)
 		goto error_clk;
 	}
 
+<<<<<<< HEAD
 	error = request_threaded_irq(ts->tsc_irq, NULL, tsc_irq, 0,
+=======
+	error = request_threaded_irq(ts->tsc_irq, NULL, tsc_irq, IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				     dev_name(dev), ts);
 	if (error < 0) {
 		dev_err(ts->dev, "Could not allocate ts irq\n");
@@ -354,13 +366,20 @@ error_clk:
 error_map:
 	release_mem_region(ts->res->start, resource_size(ts->res));
 error_res:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(ts);
 
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit tsc_remove(struct platform_device *pdev)
+=======
+static int tsc_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tsc_data *ts = platform_get_drvdata(pdev);
 
@@ -369,7 +388,10 @@ static int __devexit tsc_remove(struct platform_device *pdev)
 	clk_put(ts->clk);
 	iounmap(ts->regs);
 	release_mem_region(ts->res->start, resource_size(ts->res));
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(ts);
 
 	return 0;
@@ -377,6 +399,7 @@ static int __devexit tsc_remove(struct platform_device *pdev)
 
 static struct platform_driver tsc_driver = {
 	.probe		= tsc_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(tsc_remove),
 	.driver.name	= "tnetv107x-ts",
 	.driver.owner	= THIS_MODULE,
@@ -400,10 +423,19 @@ MODULE_AUTHOR("Cyril Chemparathy");
 MODULE_DESCRIPTION("TNETV107X Touchscreen Driver");
 MODULE_ALIAS("platform: tnetv107x-ts");
 =======
+=======
+	.remove		= tsc_remove,
+	.driver.name	= "tnetv107x-ts",
+	.driver.owner	= THIS_MODULE,
+};
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(tsc_driver);
 
 MODULE_AUTHOR("Cyril Chemparathy");
 MODULE_DESCRIPTION("TNETV107X Touchscreen Driver");
 MODULE_ALIAS("platform:tnetv107x-ts");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

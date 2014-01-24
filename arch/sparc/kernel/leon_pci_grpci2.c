@@ -10,10 +10,14 @@
 #include <linux/pci.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/leon.h>
 #include <asm/vaddrs.h>
@@ -190,6 +194,11 @@ struct grpci2_cap_first {
 #define CAP9_IOMAP_OFS 0x20
 #define CAP9_BARSIZE_OFS 0x24
 
+<<<<<<< HEAD
+=======
+#define TGT 256
+
+>>>>>>> refs/remotes/origin/master
 struct grpci2_priv {
 	struct leon_pci_info	info; /* must be on top of this structure */
 	struct grpci2_regs	*regs;
@@ -220,10 +229,14 @@ DEFINE_SPINLOCK(grpci2_dev_lock);
 struct grpci2_priv *grpci2priv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int grpci2_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 int grpci2_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int grpci2_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	struct grpci2_priv *priv = dev->bus->sysdata;
 	int irq_group;
@@ -245,8 +258,17 @@ static int grpci2_cfg_r32(struct grpci2_priv *priv, unsigned int bus,
 	if (where & 0x3)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (bus == 0 && PCI_SLOT(devfn) != 0)
 		devfn += (0x8 * 6);
+=======
+	if (bus == 0) {
+		devfn += (0x8 * 6); /* start at AD16=Device0 */
+	} else if (bus == TGT) {
+		bus = 0;
+		devfn = 0; /* special case: bridge controller itself */
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Select bus */
 	spin_lock_irqsave(&grpci2_dev_lock, flags);
@@ -311,8 +333,17 @@ static int grpci2_cfg_w32(struct grpci2_priv *priv, unsigned int bus,
 	if (where & 0x3)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (bus == 0 && PCI_SLOT(devfn) != 0)
 		devfn += (0x8 * 6);
+=======
+	if (bus == 0) {
+		devfn += (0x8 * 6); /* start at AD16=Device0 */
+	} else if (bus == TGT) {
+		bus = 0;
+		devfn = 0; /* special case: bridge controller itself */
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Select bus */
 	spin_lock_irqsave(&grpci2_dev_lock, flags);
@@ -376,7 +407,11 @@ static int grpci2_read_config(struct pci_bus *bus, unsigned int devfn,
 	unsigned int busno = bus->number;
 	int ret;
 
+<<<<<<< HEAD
 	if (PCI_SLOT(devfn) > 15 || (PCI_SLOT(devfn) == 0 && busno == 0)) {
+=======
+	if (PCI_SLOT(devfn) > 15 || busno > 255) {
+>>>>>>> refs/remotes/origin/master
 		*val = ~0;
 		return 0;
 	}
@@ -414,7 +449,11 @@ static int grpci2_write_config(struct pci_bus *bus, unsigned int devfn,
 	struct grpci2_priv *priv = grpci2priv;
 	unsigned int busno = bus->number;
 
+<<<<<<< HEAD
 	if (PCI_SLOT(devfn) > 15 || (PCI_SLOT(devfn) == 0 && busno == 0))
+=======
+	if (PCI_SLOT(devfn) > 15 || busno > 255)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 #ifdef GRPCI2_DEBUG_CFGACCESS
@@ -586,6 +625,7 @@ void grpci2_hw_init(struct grpci2_priv *priv)
 		REGSTORE(regs->ahbmst_map[i], priv->pci_area);
 
 	/* Get the GRPCI2 Host PCI ID */
+<<<<<<< HEAD
 	grpci2_cfg_r32(priv, 0, 0, PCI_VENDOR_ID, &priv->pciid);
 
 	/* Get address to first (always defined) capability structure */
@@ -595,6 +635,17 @@ void grpci2_hw_init(struct grpci2_priv *priv)
 	grpci2_cfg_r32(priv, 0, 0, capptr+CAP9_IOMAP_OFS, &io_map);
 	io_map = (io_map & ~0x1) | (priv->bt_enabled ? 1 : 0);
 	grpci2_cfg_w32(priv, 0, 0, capptr+CAP9_IOMAP_OFS, io_map);
+=======
+	grpci2_cfg_r32(priv, TGT, 0, PCI_VENDOR_ID, &priv->pciid);
+
+	/* Get address to first (always defined) capability structure */
+	grpci2_cfg_r8(priv, TGT, 0, PCI_CAPABILITY_LIST, &capptr);
+
+	/* Enable/Disable Byte twisting */
+	grpci2_cfg_r32(priv, TGT, 0, capptr+CAP9_IOMAP_OFS, &io_map);
+	io_map = (io_map & ~0x1) | (priv->bt_enabled ? 1 : 0);
+	grpci2_cfg_w32(priv, TGT, 0, capptr+CAP9_IOMAP_OFS, io_map);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the Host's PCI Target BARs for other peripherals to access,
 	 * and do DMA to the host's memory. The target BARs can be sized and
@@ -625,17 +676,30 @@ void grpci2_hw_init(struct grpci2_priv *priv)
 				pciadr = 0;
 			}
 		}
+<<<<<<< HEAD
 		grpci2_cfg_w32(priv, 0, 0, capptr+CAP9_BARSIZE_OFS+i*4, bar_sz);
 		grpci2_cfg_w32(priv, 0, 0, PCI_BASE_ADDRESS_0+i*4, pciadr);
 		grpci2_cfg_w32(priv, 0, 0, capptr+CAP9_BAR_OFS+i*4, ahbadr);
+=======
+		grpci2_cfg_w32(priv, TGT, 0, capptr+CAP9_BARSIZE_OFS+i*4,
+				bar_sz);
+		grpci2_cfg_w32(priv, TGT, 0, PCI_BASE_ADDRESS_0+i*4, pciadr);
+		grpci2_cfg_w32(priv, TGT, 0, capptr+CAP9_BAR_OFS+i*4, ahbadr);
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_INFO "        TGT BAR[%d]: 0x%08x (PCI)-> 0x%08x\n",
 			i, pciadr, ahbadr);
 	}
 
 	/* set as bus master and enable pci memory responses */
+<<<<<<< HEAD
 	grpci2_cfg_r32(priv, 0, 0, PCI_COMMAND, &data);
 	data |= (PCI_COMMAND_MEMORY | PCI_COMMAND_MASTER);
 	grpci2_cfg_w32(priv, 0, 0, PCI_COMMAND, data);
+=======
+	grpci2_cfg_r32(priv, TGT, 0, PCI_COMMAND, &data);
+	data |= (PCI_COMMAND_MEMORY | PCI_COMMAND_MASTER);
+	grpci2_cfg_w32(priv, TGT, 0, PCI_COMMAND, data);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enable Error respone (CPU-TRAP) on illegal memory access. */
 	REGSTORE(regs->ctrl, CTRL_ER | CTRL_PE);
@@ -676,7 +740,11 @@ static irqreturn_t grpci2_err_interrupt(int irq, void *arg)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit grpci2_of_probe(struct platform_device *ofdev)
+=======
+static int grpci2_of_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct grpci2_regs *regs;
 	struct grpci2_priv *priv;
@@ -796,6 +864,14 @@ static int __devinit grpci2_of_probe(struct platform_device *ofdev)
 	if (request_resource(&ioport_resource, &priv->info.io_space) < 0)
 		goto err4;
 
+<<<<<<< HEAD
+=======
+	/* setup maximum supported PCI buses */
+	priv->info.busn.name = "GRPCI2 busn";
+	priv->info.busn.start = 0;
+	priv->info.busn.end = 255;
+
+>>>>>>> refs/remotes/origin/master
 	grpci2_hw_init(priv);
 
 	/*

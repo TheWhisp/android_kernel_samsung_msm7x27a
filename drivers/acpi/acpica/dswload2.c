@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -226,7 +230,11 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
 			 */
 			ACPI_WARNING((AE_INFO,
 				      "Type override - [%4.4s] had invalid type (%s) "
+<<<<<<< HEAD
 				      "for Scope operator, changed to type ANY\n",
+=======
+				      "for Scope operator, changed to type ANY",
+>>>>>>> refs/remotes/origin/master
 				      acpi_ut_get_node_name(node),
 				      acpi_ut_get_type_name(node->type)));
 
@@ -234,6 +242,23 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
 			walk_state->scope_info->common.value = ACPI_TYPE_ANY;
 			break;
 
+<<<<<<< HEAD
+=======
+		case ACPI_TYPE_METHOD:
+
+			/*
+			 * Allow scope change to root during execution of module-level
+			 * code. Root is typed METHOD during this time.
+			 */
+			if ((node == acpi_gbl_root_node) &&
+			    (walk_state->
+			     parse_flags & ACPI_PARSE_MODULE_LEVEL)) {
+				break;
+			}
+
+			/*lint -fallthrough */
+
+>>>>>>> refs/remotes/origin/master
 		default:
 
 			/* All other types are an error */
@@ -244,7 +269,11 @@ acpi_ds_load2_begin_op(struct acpi_walk_state *walk_state,
 				    acpi_ut_get_type_name(node->type),
 				    acpi_ut_get_node_name(node)));
 
+<<<<<<< HEAD
 			return (AE_AML_OPERAND_TYPE);
+=======
+			return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -499,6 +528,10 @@ acpi_status acpi_ds_load2_end_op(struct acpi_walk_state *walk_state)
 			break;
 
 		default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			/* All NAMED_FIELD opcodes must be handled above */
 			break;
 		}
@@ -538,6 +571,10 @@ acpi_status acpi_ds_load2_end_op(struct acpi_walk_state *walk_state)
 			break;
 
 		default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			/* Unknown opcode */
 
 			status = AE_OK;
@@ -592,7 +629,11 @@ acpi_status acpi_ds_load2_end_op(struct acpi_walk_state *walk_state)
 							  region_space,
 							  walk_state);
 				if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 					return (status);
+=======
+					return_ACPI_STATUS(status);
+>>>>>>> refs/remotes/origin/master
 				}
 
 				acpi_ex_exit_interpreter();
@@ -664,6 +705,10 @@ acpi_status acpi_ds_load2_end_op(struct acpi_walk_state *walk_state)
 #endif				/* ACPI_NO_METHOD_EXECUTION */
 
 		default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 			/* All NAMED_COMPLEX opcodes must be handled above */
 			break;
 		}
@@ -711,10 +756,18 @@ acpi_status acpi_ds_load2_end_op(struct acpi_walk_state *walk_state)
 		break;
 
 	default:
+<<<<<<< HEAD
 		break;
 	}
 
       cleanup:
+=======
+
+		break;
+	}
+
+cleanup:
+>>>>>>> refs/remotes/origin/master
 
 	/* Remove the Node pushed at the very beginning */
 

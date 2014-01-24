@@ -79,7 +79,11 @@ static int __init ikconfig_init(void)
 	if (!entry)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	entry->size = kernel_config_data_size;
+=======
+	proc_set_size(entry, kernel_config_data_size);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -93,15 +97,21 @@ module_init(ikconfig_init);
 module_exit(ikconfig_cleanup);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Randy Dunlap");
 MODULE_DESCRIPTION("Echo the kernel .config file used to build the kernel");
 
 #endif /* CONFIG_IKCONFIG_PROC */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_IKCONFIG_PROC */
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Randy Dunlap");
 MODULE_DESCRIPTION("Echo the kernel .config file used to build the kernel");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

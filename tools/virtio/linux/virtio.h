@@ -1,5 +1,6 @@
 #ifndef LINUX_VIRTIO_H
 #define LINUX_VIRTIO_H
+<<<<<<< HEAD
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -122,6 +123,10 @@ static inline void kfree(void *p)
 #endif
 #define dev_err(dev, format, ...) fprintf (stderr, format, ## __VA_ARGS__)
 #define dev_warn(dev, format, ...) fprintf (stderr, format, ## __VA_ARGS__)
+=======
+#include <linux/scatterlist.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 
 /* TODO: empty stubs for now. Broken but enough for virtio_ring.c */
 #define list_add_tail(a, b) do {} while (0)
@@ -131,6 +136,10 @@ static inline void kfree(void *p)
 #define BITS_PER_BYTE		8
 #define BITS_PER_LONG (sizeof(long) * BITS_PER_BYTE)
 #define BIT_MASK(nr)		(1UL << ((nr) % BITS_PER_LONG))
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 /* TODO: Not atomic as it should be:
  * we don't use this for anything important. */
 static inline void clear_bit(int nr, volatile unsigned long *addr)
@@ -145,10 +154,13 @@ static inline int test_bit(int nr, const volatile unsigned long *addr)
 {
         return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
 }
+<<<<<<< HEAD
 
 /* The only feature we care to support */
 #define virtio_has_feature(dev, feature) \
 	test_bit((feature), (dev)->features)
+=======
+>>>>>>> refs/remotes/origin/master
 /* end of stubs */
 
 struct virtio_device {
@@ -163,6 +175,7 @@ struct virtqueue {
 	void (*callback)(struct virtqueue *vq);
 	const char *name;
 	struct virtio_device *vdev;
+<<<<<<< HEAD
 	void *priv;
 };
 
@@ -216,6 +229,30 @@ int virtqueue_add_buf(struct virtqueue *vq,
 		      void *data,
 		      gfp_t gfp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        unsigned int index;
+        unsigned int num_free;
+	void *priv;
+};
+
+/* Interfaces exported by virtio_ring. */
+int virtqueue_add_sgs(struct virtqueue *vq,
+		      struct scatterlist *sgs[],
+		      unsigned int out_sgs,
+		      unsigned int in_sgs,
+		      void *data,
+		      gfp_t gfp);
+
+int virtqueue_add_outbuf(struct virtqueue *vq,
+			 struct scatterlist sg[], unsigned int num,
+			 void *data,
+			 gfp_t gfp);
+
+int virtqueue_add_inbuf(struct virtqueue *vq,
+			struct scatterlist sg[], unsigned int num,
+			void *data,
+			gfp_t gfp);
+>>>>>>> refs/remotes/origin/master
 
 void virtqueue_kick(struct virtqueue *vq);
 
@@ -224,6 +261,7 @@ void *virtqueue_get_buf(struct virtqueue *vq, unsigned int *len);
 void virtqueue_disable_cb(struct virtqueue *vq);
 
 bool virtqueue_enable_cb(struct virtqueue *vq);
+<<<<<<< HEAD
 
 void *virtqueue_detach_unused_buf(struct virtqueue *vq);
 struct virtqueue *vring_new_virtqueue(unsigned int num,
@@ -233,6 +271,16 @@ struct virtqueue *vring_new_virtqueue(unsigned int num,
 =======
 				      bool weak_barriers,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
+
+void *virtqueue_detach_unused_buf(struct virtqueue *vq);
+struct virtqueue *vring_new_virtqueue(unsigned int index,
+				      unsigned int num,
+				      unsigned int vring_align,
+				      struct virtio_device *vdev,
+				      bool weak_barriers,
+>>>>>>> refs/remotes/origin/master
 				      void *pages,
 				      void (*notify)(struct virtqueue *vq),
 				      void (*callback)(struct virtqueue *vq),

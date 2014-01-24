@@ -19,19 +19,27 @@ extern unsigned long bfin_irq_flags;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void bfin_sti(unsigned long flags)
 =======
 static inline notrace void bfin_sti(unsigned long flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void bfin_sti(unsigned long flags)
+>>>>>>> refs/remotes/origin/master
 {
 	asm volatile("sti %0;" : : "d" (flags));
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long bfin_cli(void)
 =======
 static inline notrace unsigned long bfin_cli(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace unsigned long bfin_cli(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	asm volatile("cli %0;" : "=d" (flags));
@@ -49,37 +57,53 @@ static inline notrace unsigned long bfin_cli(void)
  * Hard, untraced CPU interrupt flag manipulation and access.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __hard_local_irq_disable(void)
 =======
 static inline notrace void __hard_local_irq_disable(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void __hard_local_irq_disable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	bfin_cli();
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __hard_local_irq_enable(void)
 =======
 static inline notrace void __hard_local_irq_enable(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void __hard_local_irq_enable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	bfin_sti(bfin_irq_flags);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long hard_local_save_flags(void)
 =======
 static inline notrace unsigned long hard_local_save_flags(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace unsigned long hard_local_save_flags(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return bfin_read_IMASK();
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long __hard_local_irq_save(void)
 =======
 static inline notrace unsigned long __hard_local_irq_save(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace unsigned long __hard_local_irq_save(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	flags = bfin_cli();
@@ -89,6 +113,7 @@ static inline notrace unsigned long __hard_local_irq_save(void)
 	return flags;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int hard_irqs_disabled_flags(unsigned long flags)
 =======
@@ -103,16 +128,32 @@ static inline int hard_irqs_disabled(void)
 =======
 static inline notrace int hard_irqs_disabled(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace int hard_irqs_disabled_flags(unsigned long flags)
+{
+#ifdef CONFIG_BF60x
+	return (flags & IMASK_IVG11) == 0;
+#else
+	return (flags & ~0x3f) == 0;
+#endif
+}
+
+static inline notrace int hard_irqs_disabled(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags = hard_local_save_flags();
 	return hard_irqs_disabled_flags(flags);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __hard_local_irq_restore(unsigned long flags)
 =======
 static inline notrace void __hard_local_irq_restore(unsigned long flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void __hard_local_irq_restore(unsigned long flags)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!hard_irqs_disabled_flags(flags))
 		__hard_local_irq_enable();
@@ -150,10 +191,14 @@ void ipipe_check_context(struct ipipe_domain *ipd);
  * Interrupt pipe interface to linux/irqflags.h.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void arch_local_irq_disable(void)
 =======
 static inline notrace void arch_local_irq_disable(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void arch_local_irq_disable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	__check_irqop_context();
 	__ipipe_stall_root();
@@ -161,10 +206,14 @@ static inline notrace void arch_local_irq_disable(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void arch_local_irq_enable(void)
 =======
 static inline notrace void arch_local_irq_enable(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void arch_local_irq_enable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	barrier();
 	__check_irqop_context();
@@ -172,28 +221,40 @@ static inline notrace void arch_local_irq_enable(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long arch_local_save_flags(void)
 =======
 static inline notrace unsigned long arch_local_save_flags(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace unsigned long arch_local_save_flags(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return __ipipe_test_root() ? bfin_no_irqs : bfin_irq_flags;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int arch_irqs_disabled_flags(unsigned long flags)
 =======
 static inline notrace int arch_irqs_disabled_flags(unsigned long flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace int arch_irqs_disabled_flags(unsigned long flags)
+>>>>>>> refs/remotes/origin/master
 {
 	return flags == bfin_no_irqs;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long arch_local_irq_save(void)
 =======
 static inline notrace unsigned long arch_local_irq_save(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace unsigned long arch_local_irq_save(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -205,20 +266,28 @@ static inline notrace unsigned long arch_local_irq_save(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void arch_local_irq_restore(unsigned long flags)
 =======
 static inline notrace void arch_local_irq_restore(unsigned long flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void arch_local_irq_restore(unsigned long flags)
+>>>>>>> refs/remotes/origin/master
 {
 	__check_irqop_context();
 	__ipipe_restore_root(flags == bfin_no_irqs);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long arch_mangle_irq_bits(int virt, unsigned long real)
 =======
 static inline notrace unsigned long arch_mangle_irq_bits(int virt, unsigned long real)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace unsigned long arch_mangle_irq_bits(int virt, unsigned long real)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Merge virtual and real interrupt mask bits into a single
@@ -228,10 +297,14 @@ static inline notrace unsigned long arch_mangle_irq_bits(int virt, unsigned long
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int arch_demangle_irq_bits(unsigned long *x)
 =======
 static inline notrace int arch_demangle_irq_bits(unsigned long *x)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace int arch_demangle_irq_bits(unsigned long *x)
+>>>>>>> refs/remotes/origin/master
 {
 	int virt = (*x & (1 << 31)) != 0;
 	*x &= ~(1L << 31);
@@ -243,10 +316,14 @@ static inline notrace int arch_demangle_irq_bits(unsigned long *x)
  */
 #ifdef CONFIG_IPIPE_TRACE_IRQSOFF
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void hard_local_irq_disable(void)
 =======
 static inline notrace void hard_local_irq_disable(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void hard_local_irq_disable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!hard_irqs_disabled()) {
 		__hard_local_irq_disable();
@@ -255,10 +332,14 @@ static inline notrace void hard_local_irq_disable(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void hard_local_irq_enable(void)
 =======
 static inline notrace void hard_local_irq_enable(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void hard_local_irq_enable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (hard_irqs_disabled()) {
 		ipipe_trace_end(0x80000000);
@@ -267,10 +348,14 @@ static inline notrace void hard_local_irq_enable(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long hard_local_irq_save(void)
 =======
 static inline notrace unsigned long hard_local_irq_save(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace unsigned long hard_local_irq_save(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags = hard_local_save_flags();
 	if (!hard_irqs_disabled_flags(flags)) {
@@ -281,10 +366,14 @@ static inline notrace unsigned long hard_local_irq_save(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void hard_local_irq_restore(unsigned long flags)
 =======
 static inline notrace void hard_local_irq_restore(unsigned long flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline notrace void hard_local_irq_restore(unsigned long flags)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!hard_irqs_disabled_flags(flags)) {
 		ipipe_trace_end(0x80000001);
@@ -308,7 +397,11 @@ static inline notrace void hard_local_irq_restore(unsigned long flags)
  * Direct interface to linux/irqflags.h.
  */
 #define arch_local_save_flags()		hard_local_save_flags()
+<<<<<<< HEAD
 #define arch_local_irq_save(flags)	__hard_local_irq_save()
+=======
+#define arch_local_irq_save()		__hard_local_irq_save()
+>>>>>>> refs/remotes/origin/master
 #define arch_local_irq_restore(flags)	__hard_local_irq_restore(flags)
 #define arch_local_irq_enable()		__hard_local_irq_enable()
 #define arch_local_irq_disable()	__hard_local_irq_disable()

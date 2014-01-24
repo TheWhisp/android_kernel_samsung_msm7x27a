@@ -14,9 +14,13 @@
 #include <linux/string.h>
 #include <linux/fb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/init.h>
 #include <linux/types.h>
@@ -140,7 +144,11 @@ static int lq035q1_control(struct spi_device *spi, unsigned char reg, unsigned s
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit lq035q1_spidev_probe(struct spi_device *spi)
+=======
+static int lq035q1_spidev_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct spi_control *ctl;
@@ -173,6 +181,7 @@ static int lq035q1_spidev_remove(struct spi_device *spi)
 	return lq035q1_control(spi, LQ035_SHUT_CTL, LQ035_SHUT);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int lq035q1_spidev_suspend(struct spi_device *spi, pm_message_t state)
 {
@@ -183,6 +192,21 @@ static int lq035q1_spidev_resume(struct spi_device *spi)
 {
 	int ret;
 	struct spi_control *ctl = spi_get_drvdata(spi);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int lq035q1_spidev_suspend(struct device *dev)
+{
+	struct spi_device *spi = to_spi_device(dev);
+
+	return lq035q1_control(spi, LQ035_SHUT_CTL, LQ035_SHUT);
+}
+
+static int lq035q1_spidev_resume(struct device *dev)
+{
+	struct spi_device *spi = to_spi_device(dev);
+	struct spi_control *ctl = spi_get_drvdata(spi);
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	ret = lq035q1_control(spi, LQ035_DRIVER_OUTPUT_CTL, ctl->mode);
 	if (ret)
@@ -190,9 +214,19 @@ static int lq035q1_spidev_resume(struct spi_device *spi)
 
 	return lq035q1_control(spi, LQ035_SHUT_CTL, LQ035_ON);
 }
+<<<<<<< HEAD
 #else
 # define lq035q1_spidev_suspend NULL
 # define lq035q1_spidev_resume  NULL
+=======
+
+static SIMPLE_DEV_PM_OPS(lq035q1_spidev_pm_ops, lq035q1_spidev_suspend,
+	lq035q1_spidev_resume);
+#define LQ035Q1_SPIDEV_PM_OPS (&lq035q1_spidev_pm_ops)
+
+#else
+#define LQ035Q1_SPIDEV_PM_OPS NULL
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* Power down all displays on reboot, poweroff or halt */
@@ -361,8 +395,13 @@ static inline void bfin_lq035q1_free_ports(unsigned ppi16)
 		gpio_free(P_IDENT(P_PPI0_FS3));
 }
 
+<<<<<<< HEAD
 static int __devinit bfin_lq035q1_request_ports(struct platform_device *pdev,
 						unsigned ppi16)
+=======
+static int bfin_lq035q1_request_ports(struct platform_device *pdev,
+				      unsigned ppi16)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	/* ANOMALY_05000400 - PPI Does Not Start Properly In Specific Mode:
@@ -370,16 +409,22 @@ static int __devinit bfin_lq035q1_request_ports(struct platform_device *pdev,
 	 */
 	if (ANOMALY_05000400) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		int ret = gpio_request(P_IDENT(P_PPI0_FS3), "PPI_FS3");
 		if (ret)
 			return ret;
 		gpio_direction_output(P_IDENT(P_PPI0_FS3), 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int ret = gpio_request_one(P_IDENT(P_PPI0_FS3),
 					GPIOF_OUT_INIT_LOW, "PPI_FS3");
 		if (ret)
 			return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ppi16)
@@ -565,7 +610,11 @@ static irqreturn_t bfin_lq035q1_irq_error(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
+=======
+static int bfin_lq035q1_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bfin_lq035q1fb_info *info;
 	struct fb_info *fbinfo;
@@ -587,6 +636,10 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
 	info = fbinfo->par;
 	info->fb = fbinfo;
 	info->dev = &pdev->dev;
+<<<<<<< HEAD
+=======
+	spin_lock_init(&info->lock);
+>>>>>>> refs/remotes/origin/master
 
 	info->disp_info = pdev->dev.platform_data;
 
@@ -707,10 +760,14 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(info->irq, bfin_lq035q1_irq_error, IRQF_DISABLED,
 =======
 	ret = request_irq(info->irq, bfin_lq035q1_irq_error, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(info->irq, bfin_lq035q1_irq_error, 0,
+>>>>>>> refs/remotes/origin/master
 			DRIVER_NAME" PPI ERROR", info);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "unable to request PPI ERROR IRQ\n");
@@ -719,10 +776,16 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
 
 	info->spidrv.driver.name = DRIVER_NAME"-spi";
 	info->spidrv.probe    = lq035q1_spidev_probe;
+<<<<<<< HEAD
 	info->spidrv.remove   = __devexit_p(lq035q1_spidev_remove);
 	info->spidrv.shutdown = lq035q1_spidev_shutdown;
 	info->spidrv.suspend  = lq035q1_spidev_suspend;
 	info->spidrv.resume   = lq035q1_spidev_resume;
+=======
+	info->spidrv.remove   = lq035q1_spidev_remove;
+	info->spidrv.shutdown = lq035q1_spidev_shutdown;
+	info->spidrv.driver.pm = LQ035Q1_SPIDEV_PM_OPS;
+>>>>>>> refs/remotes/origin/master
 
 	ret = spi_register_driver(&info->spidrv);
 	if (ret < 0) {
@@ -732,11 +795,16 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
 
 	if (info->disp_info->use_bl) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = gpio_request(info->disp_info->gpio_bl, "LQ035 Backlight");
 =======
 		ret = gpio_request_one(info->disp_info->gpio_bl,
 					GPIOF_OUT_INIT_LOW, "LQ035 Backlight");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = gpio_request_one(info->disp_info->gpio_bl,
+					GPIOF_OUT_INIT_LOW, "LQ035 Backlight");
+>>>>>>> refs/remotes/origin/master
 
 		if (ret) {
 			dev_err(&pdev->dev, "failed to request GPIO %d\n",
@@ -744,9 +812,12 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
 			goto out9;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gpio_direction_output(info->disp_info->gpio_bl, 0);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = register_framebuffer(fbinfo);
@@ -780,12 +851,19 @@ static int __devinit bfin_lq035q1_probe(struct platform_device *pdev)
  out2:
 	free_dma(CH_PPI);
  out1:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit bfin_lq035q1_remove(struct platform_device *pdev)
+=======
+static int bfin_lq035q1_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *fbinfo = platform_get_drvdata(pdev);
 	struct bfin_lq035q1fb_info *info = fbinfo->par;
@@ -809,7 +887,10 @@ static int __devexit bfin_lq035q1_remove(struct platform_device *pdev)
 	bfin_lq035q1_free_ports(info->disp_info->ppi_mode ==
 				USE_RGB565_16_BIT_PPI);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	framebuffer_release(fbinfo);
 
 	dev_info(&pdev->dev, "unregistered LCD driver\n");
@@ -866,7 +947,11 @@ static struct dev_pm_ops bfin_lq035q1_dev_pm_ops = {
 
 static struct platform_driver bfin_lq035q1_driver = {
 	.probe   = bfin_lq035q1_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(bfin_lq035q1_remove),
+=======
+	.remove  = bfin_lq035q1_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = DRIVER_NAME,
 #ifdef CONFIG_PM
@@ -875,6 +960,7 @@ static struct platform_driver bfin_lq035q1_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init bfin_lq035q1_driver_init(void)
 {
 	return platform_driver_register(&bfin_lq035q1_driver);
@@ -886,6 +972,9 @@ static void __exit bfin_lq035q1_driver_cleanup(void)
 	platform_driver_unregister(&bfin_lq035q1_driver);
 }
 module_exit(bfin_lq035q1_driver_cleanup);
+=======
+module_platform_driver(bfin_lq035q1_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Blackfin TFT LCD Driver");
 MODULE_LICENSE("GPL");

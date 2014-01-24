@@ -23,6 +23,10 @@
 #include <linux/mmu_notifier.h>
 #include <linux/migrate.h>
 #include <linux/perf_event.h>
+<<<<<<< HEAD
+=======
+#include <linux/ksm.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/cacheflush.h>
@@ -35,12 +39,23 @@ static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
 }
 #endif
 
+<<<<<<< HEAD
 static void change_pte_range(struct mm_struct *mm, pmd_t *pmd,
 		unsigned long addr, unsigned long end, pgprot_t newprot,
 		int dirty_accountable)
 {
 	pte_t *pte, oldpte;
 	spinlock_t *ptl;
+=======
+static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+		unsigned long addr, unsigned long end, pgprot_t newprot,
+		int dirty_accountable, int prot_numa)
+{
+	struct mm_struct *mm = vma->vm_mm;
+	pte_t *pte, oldpte;
+	spinlock_t *ptl;
+	unsigned long pages = 0;
+>>>>>>> refs/remotes/origin/master
 
 	pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
 	arch_enter_lazy_mmu_mode();
@@ -48,14 +63,39 @@ static void change_pte_range(struct mm_struct *mm, pmd_t *pmd,
 		oldpte = *pte;
 		if (pte_present(oldpte)) {
 			pte_t ptent;
+<<<<<<< HEAD
 
 			ptent = ptep_modify_prot_start(mm, addr, pte);
 			ptent = pte_modify(ptent, newprot);
+=======
+			bool updated = false;
+
+			if (!prot_numa) {
+				ptent = ptep_modify_prot_start(mm, addr, pte);
+				if (pte_numa(ptent))
+					ptent = pte_mknonnuma(ptent);
+				ptent = pte_modify(ptent, newprot);
+				updated = true;
+			} else {
+				struct page *page;
+
+				ptent = *pte;
+				page = vm_normal_page(vma, addr, oldpte);
+				if (page && !PageKsm(page)) {
+					if (!pte_numa(oldpte)) {
+						ptent = pte_mknuma(ptent);
+						set_pte_at(mm, addr, pte, ptent);
+						updated = true;
+					}
+				}
+			}
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * Avoid taking write faults for pages we know to be
 			 * dirty.
 			 */
+<<<<<<< HEAD
 			if (dirty_accountable && pte_dirty(ptent))
 				ptent = pte_mkwrite(ptent);
 
@@ -68,18 +108,46 @@ static void change_pte_range(struct mm_struct *mm, pmd_t *pmd,
 			swp_entry_t entry = pte_to_swp_entry(oldpte);
 
 			if (is_write_migration_entry(entry)) {
+=======
+			if (dirty_accountable && pte_dirty(ptent)) {
+				ptent = pte_mkwrite(ptent);
+				updated = true;
+			}
+
+			if (updated)
+				pages++;
+
+			/* Only !prot_numa always clears the pte */
+			if (!prot_numa)
+				ptep_modify_prot_commit(mm, addr, pte, ptent);
+		} else if (IS_ENABLED(CONFIG_MIGRATION) && !pte_file(oldpte)) {
+			swp_entry_t entry = pte_to_swp_entry(oldpte);
+
+			if (is_write_migration_entry(entry)) {
+				pte_t newpte;
+>>>>>>> refs/remotes/origin/master
 				/*
 				 * A protection check is difficult so
 				 * just be safe and disable write
 				 */
 				make_migration_entry_read(&entry);
+<<<<<<< HEAD
 				set_pte_at(mm, addr, pte,
 					swp_entry_to_pte(entry));
+=======
+				newpte = swp_entry_to_pte(entry);
+				if (pte_swp_soft_dirty(oldpte))
+					newpte = pte_swp_mksoft_dirty(newpte);
+				set_pte_at(mm, addr, pte, newpte);
+
+				pages++;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	} while (pte++, addr += PAGE_SIZE, addr != end);
 	arch_leave_lazy_mmu_mode();
 	pte_unmap_unlock(pte - 1, ptl);
+<<<<<<< HEAD
 }
 
 static inline void change_pmd_range(struct vm_area_struct *vma, pud_t *pud,
@@ -97,10 +165,46 @@ static inline void change_pmd_range(struct vm_area_struct *vma, pud_t *pud,
 				split_huge_page_pmd(vma->vm_mm, pmd);
 			else if (change_huge_pmd(vma, pmd, addr, newprot))
 				continue;
+=======
+
+	return pages;
+}
+
+static inline unsigned long change_pmd_range(struct vm_area_struct *vma,
+		pud_t *pud, unsigned long addr, unsigned long end,
+		pgprot_t newprot, int dirty_accountable, int prot_numa)
+{
+	pmd_t *pmd;
+	unsigned long next;
+	unsigned long pages = 0;
+	unsigned long nr_huge_updates = 0;
+
+	pmd = pmd_offset(pud, addr);
+	do {
+		unsigned long this_pages;
+
+		next = pmd_addr_end(addr, end);
+		if (pmd_trans_huge(*pmd)) {
+			if (next - addr != HPAGE_PMD_SIZE)
+				split_huge_page_pmd(vma, addr, pmd);
+			else {
+				int nr_ptes = change_huge_pmd(vma, pmd, addr,
+						newprot, prot_numa);
+
+				if (nr_ptes) {
+					if (nr_ptes == HPAGE_PMD_NR) {
+						pages += HPAGE_PMD_NR;
+						nr_huge_updates++;
+					}
+					continue;
+				}
+			}
+>>>>>>> refs/remotes/origin/master
 			/* fall through */
 		}
 		if (pmd_none_or_clear_bad(pmd))
 			continue;
+<<<<<<< HEAD
 		change_pte_range(vma->vm_mm, pmd, addr, next, newprot,
 				 dirty_accountable);
 	} while (pmd++, addr = next, addr != end);
@@ -112,12 +216,32 @@ static inline void change_pud_range(struct vm_area_struct *vma, pgd_t *pgd,
 {
 	pud_t *pud;
 	unsigned long next;
+=======
+		this_pages = change_pte_range(vma, pmd, addr, next, newprot,
+				 dirty_accountable, prot_numa);
+		pages += this_pages;
+	} while (pmd++, addr = next, addr != end);
+
+	if (nr_huge_updates)
+		count_vm_numa_events(NUMA_HUGE_PTE_UPDATES, nr_huge_updates);
+	return pages;
+}
+
+static inline unsigned long change_pud_range(struct vm_area_struct *vma,
+		pgd_t *pgd, unsigned long addr, unsigned long end,
+		pgprot_t newprot, int dirty_accountable, int prot_numa)
+{
+	pud_t *pud;
+	unsigned long next;
+	unsigned long pages = 0;
+>>>>>>> refs/remotes/origin/master
 
 	pud = pud_offset(pgd, addr);
 	do {
 		next = pud_addr_end(addr, end);
 		if (pud_none_or_clear_bad(pud))
 			continue;
+<<<<<<< HEAD
 		change_pmd_range(vma, pud, addr, next, newprot,
 				 dirty_accountable);
 	} while (pud++, addr = next, addr != end);
@@ -126,23 +250,73 @@ static inline void change_pud_range(struct vm_area_struct *vma, pgd_t *pgd,
 static void change_protection(struct vm_area_struct *vma,
 		unsigned long addr, unsigned long end, pgprot_t newprot,
 		int dirty_accountable)
+=======
+		pages += change_pmd_range(vma, pud, addr, next, newprot,
+				 dirty_accountable, prot_numa);
+	} while (pud++, addr = next, addr != end);
+
+	return pages;
+}
+
+static unsigned long change_protection_range(struct vm_area_struct *vma,
+		unsigned long addr, unsigned long end, pgprot_t newprot,
+		int dirty_accountable, int prot_numa)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mm_struct *mm = vma->vm_mm;
 	pgd_t *pgd;
 	unsigned long next;
 	unsigned long start = addr;
+<<<<<<< HEAD
+=======
+	unsigned long pages = 0;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(addr >= end);
 	pgd = pgd_offset(mm, addr);
 	flush_cache_range(vma, addr, end);
+<<<<<<< HEAD
+=======
+	set_tlb_flush_pending(mm);
+>>>>>>> refs/remotes/origin/master
 	do {
 		next = pgd_addr_end(addr, end);
 		if (pgd_none_or_clear_bad(pgd))
 			continue;
+<<<<<<< HEAD
 		change_pud_range(vma, pgd, addr, next, newprot,
 				 dirty_accountable);
 	} while (pgd++, addr = next, addr != end);
 	flush_tlb_range(vma, start, end);
+=======
+		pages += change_pud_range(vma, pgd, addr, next, newprot,
+				 dirty_accountable, prot_numa);
+	} while (pgd++, addr = next, addr != end);
+
+	/* Only flush the TLB if we actually modified any entries: */
+	if (pages)
+		flush_tlb_range(vma, start, end);
+	clear_tlb_flush_pending(mm);
+
+	return pages;
+}
+
+unsigned long change_protection(struct vm_area_struct *vma, unsigned long start,
+		       unsigned long end, pgprot_t newprot,
+		       int dirty_accountable, int prot_numa)
+{
+	struct mm_struct *mm = vma->vm_mm;
+	unsigned long pages;
+
+	mmu_notifier_invalidate_range_start(mm, start, end);
+	if (is_vm_hugetlb_page(vma))
+		pages = hugetlb_change_protection(vma, start, end, newprot);
+	else
+		pages = change_protection_range(vma, start, end, newprot, dirty_accountable, prot_numa);
+	mmu_notifier_invalidate_range_end(mm, start, end);
+
+	return pages;
+>>>>>>> refs/remotes/origin/master
 }
 
 int
@@ -173,10 +347,14 @@ mprotect_fixup(struct vm_area_struct *vma, struct vm_area_struct **pprev,
 						VM_SHARED|VM_NORESERVE))) {
 			charged = nrpages;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (security_vm_enough_memory(charged))
 =======
 			if (security_vm_enough_memory_mm(mm, charged))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (security_vm_enough_memory_mm(mm, charged))
+>>>>>>> refs/remotes/origin/master
 				return -ENOMEM;
 			newflags |= VM_ACCOUNT;
 		}
@@ -221,12 +399,18 @@ success:
 		dirty_accountable = 1;
 	}
 
+<<<<<<< HEAD
 	mmu_notifier_invalidate_range_start(mm, start, end);
 	if (is_vm_hugetlb_page(vma))
 		hugetlb_change_protection(vma, start, end, vma->vm_page_prot);
 	else
 		change_protection(vma, start, end, vma->vm_page_prot, dirty_accountable);
 	mmu_notifier_invalidate_range_end(mm, start, end);
+=======
+	change_protection(vma, start, end, vma->vm_page_prot,
+			  dirty_accountable, 0);
+
+>>>>>>> refs/remotes/origin/master
 	vm_stat_account(mm, oldflags, vma->vm_file, -nrpages);
 	vm_stat_account(mm, newflags, vma->vm_file, nrpages);
 	perf_event_mmap(vma);
@@ -271,17 +455,23 @@ SYSCALL_DEFINE3(mprotect, unsigned long, start, size_t, len,
 	down_write(&current->mm->mmap_sem);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vma = find_vma_prev(current->mm, start, &prev);
 	error = -ENOMEM;
 	if (!vma)
 		goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	vma = find_vma(current->mm, start);
 	error = -ENOMEM;
 	if (!vma)
 		goto out;
 	prev = vma->vm_prev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(grows & PROT_GROWSDOWN)) {
 		if (vma->vm_start >= end)
 			goto out;
@@ -289,8 +479,12 @@ SYSCALL_DEFINE3(mprotect, unsigned long, start, size_t, len,
 		error = -EINVAL;
 		if (!(vma->vm_flags & VM_GROWSDOWN))
 			goto out;
+<<<<<<< HEAD
 	}
 	else {
+=======
+	} else {
+>>>>>>> refs/remotes/origin/master
 		if (vma->vm_start > start)
 			goto out;
 		if (unlikely(grows & PROT_GROWSUP)) {
@@ -306,9 +500,16 @@ SYSCALL_DEFINE3(mprotect, unsigned long, start, size_t, len,
 	for (nstart = start ; ; ) {
 		unsigned long newflags;
 
+<<<<<<< HEAD
 		/* Here we know that  vma->vm_start <= nstart < vma->vm_end. */
 
 		newflags = vm_flags | (vma->vm_flags & ~(VM_READ | VM_WRITE | VM_EXEC));
+=======
+		/* Here we know that vma->vm_start <= nstart < vma->vm_end. */
+
+		newflags = vm_flags;
+		newflags |= (vma->vm_flags & ~(VM_READ | VM_WRITE | VM_EXEC));
+>>>>>>> refs/remotes/origin/master
 
 		/* newflags >> 4 shift VM_MAY% in place of VM_% */
 		if ((newflags & ~(newflags >> 4)) & (VM_READ | VM_WRITE | VM_EXEC)) {

@@ -234,10 +234,14 @@ int ehca_query_port(struct ib_device *ibdev,
 		props->state           = rblock->state;
 		props->active_width    = IB_WIDTH_12X;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		props->active_speed    = 0x1;
 =======
 		props->active_speed    = IB_SPEED_SDR;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		props->active_speed    = IB_SPEED_SDR;
+>>>>>>> refs/remotes/origin/master
 	}
 
 query_port1:

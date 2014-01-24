@@ -16,6 +16,7 @@
 #include <asm/tlb.h>
 #include <asm/mach/map.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/mux.h>
 #include <plat/tc.h>
 
@@ -27,14 +28,23 @@ extern void omap_sram_init(void);
 
 #include <plat/mux.h>
 #include <plat/tc.h>
+=======
+
+#include <mach/mux.h>
+#include <mach/tc.h>
+#include <linux/omap-dma.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "iomap.h"
 #include "common.h"
 #include "clock.h"
 
+<<<<<<< HEAD
 extern void omap_check_revision(void);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The machine specific code may provide the extra mapping besides the
  * default mapping provided here.
@@ -98,6 +108,7 @@ static struct map_desc omap16xx_io_desc[] __initdata = {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Maps common IO regions for omap1. This should only get called from
  * board specific init.
  */
@@ -143,6 +154,8 @@ void __init omap1_map_common_io(void)
 void __init omap1_init_common_hw(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Maps common IO regions for omap1
  */
 static void __init omap1_map_common_io(void)
@@ -181,7 +194,10 @@ void __init omap1_init_early(void)
 {
 	omap_check_revision();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* REVISIT: Refer to OMAP5910 Errata, Advisory SYS_1: "Timeout Abort
 	 * on a Posted Write in the TIPB Bridge".
 	 */
@@ -192,12 +208,21 @@ void __init omap1_init_early(void)
 	 */
 	omap1_clk_init();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	omap1_mux_init();
 =======
 	omap1_mux_init();
 	omap_init_consistent_dma_size();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	omap1_mux_init();
+}
+
+void __init omap1_init_late(void)
+{
+	omap_serial_wakeup_init();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

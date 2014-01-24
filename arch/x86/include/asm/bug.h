@@ -37,10 +37,14 @@ do {								\
 
 #include <asm-generic/bug.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 extern void show_regs_common(void);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_BUG_H */

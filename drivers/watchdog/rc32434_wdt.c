@@ -18,23 +18,33 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>		/* For module specific items */
 #include <linux/moduleparam.h>		/* For new moduleparam's */
 #include <linux/types.h>		/* For standard types (like size_t) */
 #include <linux/errno.h>		/* For the -ENODEV/... values */
 #include <linux/kernel.h>		/* For printk/panic/... */
 #include <linux/fs.h>			/* For file operations */
+<<<<<<< HEAD
 #include <linux/miscdevice.h>		/* For MODULE_ALIAS_MISCDEV
 							(WATCHDOG_MINOR) */
+=======
+#include <linux/miscdevice.h>		/* For struct miscdevice */
+>>>>>>> refs/remotes/origin/master
 #include <linux/watchdog.h>		/* For the watchdog specific items */
 #include <linux/init.h>			/* For __init/__exit/... */
 #include <linux/platform_device.h>	/* For platform_driver framework */
 #include <linux/spinlock.h>		/* For spin_lock/spin_unlock/... */
 #include <linux/uaccess.h>		/* For copy_to_user/put_user/... */
+<<<<<<< HEAD
 
 #include <asm/mach-rc32434/integ.h>	/* For the Watchdog registers */
 
@@ -43,6 +53,12 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>			/* For devm_ioremap_nocache */
+
+#include <asm/mach-rc32434/integ.h>	/* For the Watchdog registers */
+
+>>>>>>> refs/remotes/origin/master
 #define VERSION "1.0"
 
 static struct {
@@ -73,12 +89,17 @@ MODULE_PARM_DESC(timeout, "Watchdog timeout value, in seconds (default="
 		__MODULE_STRING(WATCHDOG_TIMEOUT) ")");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 	__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -92,11 +113,15 @@ static int rc32434_wdt_set(int new_timeout)
 
 	if (new_timeout < 0 || new_timeout > max_to) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "timeout value must be between 0 and %d",
 			max_to);
 =======
 		pr_err("timeout value must be between 0 and %d\n", max_to);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("timeout value must be between 0 and %d\n", max_to);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	timeout = new_timeout;
@@ -137,10 +162,14 @@ static void rc32434_wdt_start(void)
 
 	spin_unlock(&rc32434_wdt_device.io_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Started watchdog timer.\n");
 =======
 	pr_info("Started watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Started watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rc32434_wdt_stop(void)
@@ -152,10 +181,14 @@ static void rc32434_wdt_stop(void)
 
 	spin_unlock(&rc32434_wdt_device.io_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Stopped watchdog timer.\n");
 =======
 	pr_info("Stopped watchdog timer\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Stopped watchdog timer\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rc32434_wdt_ping(void)
@@ -186,11 +219,15 @@ static int rc32434_wdt_release(struct inode *inode, struct file *file)
 		module_put(THIS_MODULE);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"device closed unexpectedly. WDT will not stop!\n");
 =======
 		pr_crit("device closed unexpectedly. WDT will not stop!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("device closed unexpectedly. WDT will not stop!\n");
+>>>>>>> refs/remotes/origin/master
 		rc32434_wdt_ping();
 	}
 	clear_bit(0, &rc32434_wdt_device.inuse);
@@ -292,18 +329,23 @@ static struct miscdevice rc32434_wdt_miscdev = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char banner[] __devinitdata = KERN_INFO PFX
 		"Watchdog Timer version " VERSION ", timer margin: %d sec\n";
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit rc32434_wdt_probe(struct platform_device *pdev)
+=======
+static int rc32434_wdt_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct resource *r;
 
 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rb532_wdt_res");
 	if (!r) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to retrieve resources\n");
 =======
@@ -319,6 +361,15 @@ static int __devinit rc32434_wdt_probe(struct platform_device *pdev)
 =======
 		pr_err("failed to remap I/O resources\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("failed to retrieve resources\n");
+		return -ENODEV;
+	}
+
+	wdt_reg = devm_ioremap_nocache(&pdev->dev, r->start, resource_size(r));
+	if (!wdt_reg) {
+		pr_err("failed to remap I/O resources\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 	}
 
@@ -332,16 +383,21 @@ static int __devinit rc32434_wdt_probe(struct platform_device *pdev)
 	if (rc32434_wdt_set(timeout)) {
 		rc32434_wdt_set(WATCHDOG_TIMEOUT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"timeout value must be between 0 and %d\n",
 =======
 		pr_info("timeout value must be between 0 and %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("timeout value must be between 0 and %d\n",
+>>>>>>> refs/remotes/origin/master
 			WTCOMP2SEC((u32)-1));
 	}
 
 	ret = misc_register(&rc32434_wdt_miscdev);
 	if (ret < 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX "failed to register watchdog device\n");
 		goto unmap;
@@ -351,10 +407,15 @@ static int __devinit rc32434_wdt_probe(struct platform_device *pdev)
 =======
 		pr_err("failed to register watchdog device\n");
 		goto unmap;
+=======
+		pr_err("failed to register watchdog device\n");
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pr_info("Watchdog Timer version " VERSION ", timer margin: %d sec\n",
 		timeout);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
@@ -368,6 +429,15 @@ static int __devexit rc32434_wdt_remove(struct platform_device *pdev)
 {
 	misc_deregister(&rc32434_wdt_miscdev);
 	iounmap(wdt_reg);
+=======
+
+	return 0;
+}
+
+static int rc32434_wdt_remove(struct platform_device *pdev)
+{
+	misc_deregister(&rc32434_wdt_miscdev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -378,13 +448,18 @@ static void rc32434_wdt_shutdown(struct platform_device *pdev)
 
 static struct platform_driver rc32434_wdt_driver = {
 	.probe		= rc32434_wdt_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rc32434_wdt_remove),
+=======
+	.remove		= rc32434_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= rc32434_wdt_shutdown,
 	.driver		= {
 			.name = "rc32434_wdt",
 	}
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init rc32434_wdt_init(void)
 {
@@ -401,9 +476,15 @@ module_exit(rc32434_wdt_exit);
 =======
 module_platform_driver(rc32434_wdt_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(rc32434_wdt_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Ondrej Zajicek <santiago@crfreenet.org>,"
 		"Florian Fainelli <florian@openwrt.org>");
 MODULE_DESCRIPTION("Driver for the IDT RC32434 SoC watchdog");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

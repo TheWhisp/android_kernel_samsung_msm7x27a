@@ -113,7 +113,11 @@ static const int multicast_filter_limit = 32;
 #include <linux/dmi.h>
 
 /* These identify the driver base version and may not be removed. */
+<<<<<<< HEAD
 static const char version[] __devinitconst =
+=======
+static const char version[] =
+>>>>>>> refs/remotes/origin/master
 	"v1.10-LK" DRV_VERSION " " DRV_RELDATE " Written by Donald Becker";
 
 /* This driver was written to use PCI memory space. Some early versions
@@ -417,6 +421,15 @@ enum chip_cmd_bits {
 	Cmd1NoTxPoll=0x08, Cmd1Reset=0x80,
 };
 
+<<<<<<< HEAD
+=======
+struct rhine_stats {
+	u64		packets;
+	u64		bytes;
+	struct u64_stats_sync syncp;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct rhine_private {
 	/* Bit mask for configured VLAN ids */
 	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
@@ -458,6 +471,11 @@ struct rhine_private {
 	unsigned int cur_rx, dirty_rx;	/* Producer/consumer ring indices */
 	unsigned int cur_tx, dirty_tx;
 	unsigned int rx_buf_sz;		/* Based on MTU+slack. */
+<<<<<<< HEAD
+=======
+	struct rhine_stats rx_stats;
+	struct rhine_stats tx_stats;
+>>>>>>> refs/remotes/origin/master
 	u8 wolopts;
 
 	u8 tx_thresh, rx_thresh;
@@ -495,12 +513,24 @@ static irqreturn_t rhine_interrupt(int irq, void *dev_instance);
 static void rhine_tx(struct net_device *dev);
 static int rhine_rx(struct net_device *dev, int limit);
 static void rhine_set_rx_mode(struct net_device *dev);
+<<<<<<< HEAD
 static struct net_device_stats *rhine_get_stats(struct net_device *dev);
 static int netdev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
 static const struct ethtool_ops netdev_ethtool_ops;
 static int  rhine_close(struct net_device *dev);
 static int rhine_vlan_rx_add_vid(struct net_device *dev, unsigned short vid);
 static int rhine_vlan_rx_kill_vid(struct net_device *dev, unsigned short vid);
+=======
+static struct rtnl_link_stats64 *rhine_get_stats64(struct net_device *dev,
+	       struct rtnl_link_stats64 *stats);
+static int netdev_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
+static const struct ethtool_ops netdev_ethtool_ops;
+static int  rhine_close(struct net_device *dev);
+static int rhine_vlan_rx_add_vid(struct net_device *dev,
+				 __be16 proto, u16 vid);
+static int rhine_vlan_rx_kill_vid(struct net_device *dev,
+				  __be16 proto, u16 vid);
+>>>>>>> refs/remotes/origin/master
 static void rhine_restart_tx(struct net_device *dev);
 
 static void rhine_wait_bit(struct rhine_private *rp, u8 reg, u8 mask, bool low)
@@ -657,7 +687,11 @@ static void enable_mmio(long pioaddr, u32 quirks)
  * Loads bytes 0x00-0x05, 0x6E-0x6F, 0x78-0x7B from EEPROM
  * (plus 0x6C for Rhine-I/II)
  */
+<<<<<<< HEAD
 static void __devinit rhine_reload_eeprom(long pioaddr, struct net_device *dev)
+=======
+static void rhine_reload_eeprom(long pioaddr, struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rhine_private *rp = netdev_priv(dev);
 	void __iomem *ioaddr = rp->base;
@@ -689,9 +723,18 @@ static void __devinit rhine_reload_eeprom(long pioaddr, struct net_device *dev)
 #ifdef CONFIG_NET_POLL_CONTROLLER
 static void rhine_poll(struct net_device *dev)
 {
+<<<<<<< HEAD
 	disable_irq(dev->irq);
 	rhine_interrupt(dev->irq, (void *)dev);
 	enable_irq(dev->irq);
+=======
+	struct rhine_private *rp = netdev_priv(dev);
+	const int irq = rp->pdev->irq;
+
+	disable_irq(irq);
+	rhine_interrupt(irq, dev);
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -820,7 +863,11 @@ static int rhine_napipoll(struct napi_struct *napi, int budget)
 	return work_done;
 }
 
+<<<<<<< HEAD
 static void __devinit rhine_hw_init(struct net_device *dev, long pioaddr)
+=======
+static void rhine_hw_init(struct net_device *dev, long pioaddr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rhine_private *rp = netdev_priv(dev);
 
@@ -839,7 +886,11 @@ static const struct net_device_ops rhine_netdev_ops = {
 	.ndo_open		 = rhine_open,
 	.ndo_stop		 = rhine_close,
 	.ndo_start_xmit		 = rhine_start_tx,
+<<<<<<< HEAD
 	.ndo_get_stats		 = rhine_get_stats,
+=======
+	.ndo_get_stats64	 = rhine_get_stats64,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_rx_mode	 = rhine_set_rx_mode,
 	.ndo_change_mtu		 = eth_change_mtu,
 	.ndo_validate_addr	 = eth_validate_addr,
@@ -853,8 +904,12 @@ static const struct net_device_ops rhine_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit rhine_init_one(struct pci_dev *pdev,
 				    const struct pci_device_id *ent)
+=======
+static int rhine_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct rhine_private *rp;
@@ -972,9 +1027,17 @@ static int __devinit rhine_init_one(struct pci_dev *pdev,
 	}
 #endif /* USE_MMIO */
 
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long)ioaddr;
 	rp->base = ioaddr;
 
+=======
+	rp->base = ioaddr;
+
+	u64_stats_init(&rp->tx_stats.syncp);
+	u64_stats_init(&rp->rx_stats.syncp);
+
+>>>>>>> refs/remotes/origin/master
 	/* Get chip registers into a sane state */
 	rhine_power_init(dev);
 	rhine_hw_init(dev, pioaddr);
@@ -989,14 +1052,20 @@ static int __devinit rhine_init_one(struct pci_dev *pdev,
 		netdev_info(dev, "Using random MAC address: %pM\n",
 			    dev->dev_addr);
 	}
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, dev->dev_addr, dev->addr_len);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* For Rhine-I/II, phy_id is loaded from EEPROM */
 	if (!phy_id)
 		phy_id = ioread8(ioaddr + 0x6C);
 
+<<<<<<< HEAD
 	dev->irq = pdev->irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&rp->lock);
 	mutex_init(&rp->task_lock);
 	INIT_WORK(&rp->reset_task, rhine_reset_task);
@@ -1019,8 +1088,14 @@ static int __devinit rhine_init_one(struct pci_dev *pdev,
 		dev->features |= NETIF_F_SG|NETIF_F_HW_CSUM;
 
 	if (pdev->revision >= VT6105M)
+<<<<<<< HEAD
 		dev->features |= NETIF_F_HW_VLAN_TX | NETIF_F_HW_VLAN_RX |
 		NETIF_F_HW_VLAN_FILTER;
+=======
+		dev->features |= NETIF_F_HW_VLAN_CTAG_TX |
+				 NETIF_F_HW_VLAN_CTAG_RX |
+				 NETIF_F_HW_VLAN_CTAG_FILTER;
+>>>>>>> refs/remotes/origin/master
 
 	/* dev->name not defined before register_netdev()! */
 	rc = register_netdev(dev);
@@ -1161,7 +1236,15 @@ static void alloc_rbufs(struct net_device *dev)
 		rp->rx_skbuff_dma[i] =
 			pci_map_single(rp->pdev, skb->data, rp->rx_buf_sz,
 				       PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
 
+=======
+		if (dma_mapping_error(&rp->pdev->dev, rp->rx_skbuff_dma[i])) {
+			rp->rx_skbuff_dma[i] = 0;
+			dev_kfree_skb(skb);
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 		rp->rx_ring[i].addr = cpu_to_le32(rp->rx_skbuff_dma[i]);
 		rp->rx_ring[i].rx_status = cpu_to_le32(DescOwn);
 	}
@@ -1407,7 +1490,11 @@ static void rhine_update_vcam(struct net_device *dev)
 	rhine_set_vlan_cam_mask(ioaddr, vCAMmask);
 }
 
+<<<<<<< HEAD
 static int rhine_vlan_rx_add_vid(struct net_device *dev, unsigned short vid)
+=======
+static int rhine_vlan_rx_add_vid(struct net_device *dev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rhine_private *rp = netdev_priv(dev);
 
@@ -1418,7 +1505,11 @@ static int rhine_vlan_rx_add_vid(struct net_device *dev, unsigned short vid)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int rhine_vlan_rx_kill_vid(struct net_device *dev, unsigned short vid)
+=======
+static int rhine_vlan_rx_kill_vid(struct net_device *dev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rhine_private *rp = netdev_priv(dev);
 
@@ -1601,6 +1692,10 @@ static void rhine_reset_task(struct work_struct *work)
 		goto out_unlock;
 
 	napi_disable(&rp->napi);
+<<<<<<< HEAD
+=======
+	netif_tx_disable(dev);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_bh(&rp->lock);
 
 	/* clear all descriptors */
@@ -1677,6 +1772,15 @@ static netdev_tx_t rhine_start_tx(struct sk_buff *skb,
 		rp->tx_skbuff_dma[entry] =
 			pci_map_single(rp->pdev, skb->data, skb->len,
 				       PCI_DMA_TODEVICE);
+<<<<<<< HEAD
+=======
+		if (dma_mapping_error(&rp->pdev->dev, rp->tx_skbuff_dma[entry])) {
+			dev_kfree_skb(skb);
+			rp->tx_skbuff_dma[entry] = 0;
+			dev->stats.tx_dropped++;
+			return NETDEV_TX_OK;
+		}
+>>>>>>> refs/remotes/origin/master
 		rp->tx_ring[entry].addr = cpu_to_le32(rp->tx_skbuff_dma[entry]);
 	}
 
@@ -1797,8 +1901,16 @@ static void rhine_tx(struct net_device *dev)
 				dev->stats.collisions += txstatus & 0x0F;
 			netif_dbg(rp, tx_done, dev, "collisions: %1.1x:%1.1x\n",
 				  (txstatus >> 3) & 0xF, txstatus & 0xF);
+<<<<<<< HEAD
 			dev->stats.tx_bytes += rp->tx_skbuff[entry]->len;
 			dev->stats.tx_packets++;
+=======
+
+			u64_stats_update_begin(&rp->tx_stats.syncp);
+			rp->tx_stats.bytes += rp->tx_skbuff[entry]->len;
+			rp->tx_stats.packets++;
+			u64_stats_update_end(&rp->tx_stats.syncp);
+>>>>>>> refs/remotes/origin/master
 		}
 		/* Free the original skb. */
 		if (rp->tx_skbuff_dma[entry]) {
@@ -1928,10 +2040,20 @@ static int rhine_rx(struct net_device *dev, int limit)
 			skb->protocol = eth_type_trans(skb, dev);
 
 			if (unlikely(desc_length & DescTag))
+<<<<<<< HEAD
 				__vlan_hwaccel_put_tag(skb, vlan_tci);
 			netif_receive_skb(skb);
 			dev->stats.rx_bytes += pkt_len;
 			dev->stats.rx_packets++;
+=======
+				__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tci);
+			netif_receive_skb(skb);
+
+			u64_stats_update_begin(&rp->rx_stats.syncp);
+			rp->rx_stats.bytes += pkt_len;
+			rp->rx_stats.packets++;
+			u64_stats_update_end(&rp->rx_stats.syncp);
+>>>>>>> refs/remotes/origin/master
 		}
 		entry = (++rp->cur_rx) % RX_RING_SIZE;
 		rp->rx_head_desc = &rp->rx_ring[entry];
@@ -1950,6 +2072,14 @@ static int rhine_rx(struct net_device *dev, int limit)
 				pci_map_single(rp->pdev, skb->data,
 					       rp->rx_buf_sz,
 					       PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
+=======
+			if (dma_mapping_error(&rp->pdev->dev, rp->rx_skbuff_dma[entry])) {
+				dev_kfree_skb(skb);
+				rp->rx_skbuff_dma[entry] = 0;
+				break;
+			}
+>>>>>>> refs/remotes/origin/master
 			rp->rx_ring[entry].addr = cpu_to_le32(rp->rx_skbuff_dma[entry]);
 		}
 		rp->rx_ring[entry].rx_status = cpu_to_le32(DescOwn);
@@ -2022,15 +2152,41 @@ out_unlock:
 	mutex_unlock(&rp->task_lock);
 }
 
+<<<<<<< HEAD
 static struct net_device_stats *rhine_get_stats(struct net_device *dev)
 {
 	struct rhine_private *rp = netdev_priv(dev);
+=======
+static struct rtnl_link_stats64 *
+rhine_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats)
+{
+	struct rhine_private *rp = netdev_priv(dev);
+	unsigned int start;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_bh(&rp->lock);
 	rhine_update_rx_crc_and_missed_errord(rp);
 	spin_unlock_bh(&rp->lock);
 
+<<<<<<< HEAD
 	return &dev->stats;
+=======
+	netdev_stats_to_stats64(stats, &dev->stats);
+
+	do {
+		start = u64_stats_fetch_begin_bh(&rp->rx_stats.syncp);
+		stats->rx_packets = rp->rx_stats.packets;
+		stats->rx_bytes = rp->rx_stats.bytes;
+	} while (u64_stats_fetch_retry_bh(&rp->rx_stats.syncp, start));
+
+	do {
+		start = u64_stats_fetch_begin_bh(&rp->tx_stats.syncp);
+		stats->tx_packets = rp->tx_stats.packets;
+		stats->tx_bytes = rp->tx_stats.bytes;
+	} while (u64_stats_fetch_retry_bh(&rp->tx_stats.syncp, start));
+
+	return stats;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rhine_set_rx_mode(struct net_device *dev)
@@ -2233,7 +2389,11 @@ static int rhine_close(struct net_device *dev)
 }
 
 
+<<<<<<< HEAD
 static void __devexit rhine_remove_one(struct pci_dev *pdev)
+=======
+static void rhine_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct rhine_private *rp = netdev_priv(dev);
@@ -2245,7 +2405,10 @@ static void __devexit rhine_remove_one(struct pci_dev *pdev)
 
 	free_netdev(dev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void rhine_shutdown (struct pci_dev *pdev)
@@ -2360,12 +2523,20 @@ static struct pci_driver rhine_driver = {
 	.name		= DRV_NAME,
 	.id_table	= rhine_pci_tbl,
 	.probe		= rhine_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rhine_remove_one),
+=======
+	.remove		= rhine_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= rhine_shutdown,
 	.driver.pm	= RHINE_PM_OPS,
 };
 
+<<<<<<< HEAD
 static struct dmi_system_id __initdata rhine_dmi_table[] = {
+=======
+static struct dmi_system_id rhine_dmi_table[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.ident = "EPIA-M",
 		.matches = {

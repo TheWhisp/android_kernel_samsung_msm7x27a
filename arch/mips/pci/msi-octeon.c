@@ -163,10 +163,14 @@ msi_irq_allocated:
 		break;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		panic("arch_setup_msi_irq: Invalid octeon_dma_bar_type\n");
 =======
 		panic("arch_setup_msi_irq: Invalid octeon_dma_bar_type");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		panic("arch_setup_msi_irq: Invalid octeon_dma_bar_type");
+>>>>>>> refs/remotes/origin/master
 	}
 	msg.data = irq - OCTEON_IRQ_MSI_BIT0;
 

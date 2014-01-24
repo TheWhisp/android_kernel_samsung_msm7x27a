@@ -19,9 +19,13 @@
 #include <linux/spinlock.h>
 #include <linux/gfp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <crypto/ctr.h>
 #include <crypto/des.h>
@@ -221,6 +225,7 @@ static dma_addr_t crypt_phys;
 
 static int support_aes = 1;
 
+<<<<<<< HEAD
 static void dev_release(struct device *dev)
 {
 	return;
@@ -238,6 +243,11 @@ static struct platform_device pseudo_dev = {
 };
 
 static struct device *dev = &pseudo_dev.dev;
+=======
+#define DRIVER_NAME "ixp4xx_crypto"
+
+static struct platform_device *pdev;
+>>>>>>> refs/remotes/origin/master
 
 static inline dma_addr_t crypt_virt2phys(struct crypt_ctl *virt)
 {
@@ -266,6 +276,7 @@ static inline const struct ix_hash_algo *ix_hash(struct crypto_tfm *tfm)
 
 static int setup_crypt_desc(void)
 {
+<<<<<<< HEAD
 	BUILD_BUG_ON(sizeof(struct crypt_ctl) != 64);
 	crypt_virt = dma_alloc_coherent(dev,
 			NPE_QLEN * sizeof(struct crypt_ctl),
@@ -274,6 +285,13 @@ static int setup_crypt_desc(void)
 =======
 			&crypt_phys, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev = &pdev->dev;
+	BUILD_BUG_ON(sizeof(struct crypt_ctl) != 64);
+	crypt_virt = dma_alloc_coherent(dev,
+			NPE_QLEN * sizeof(struct crypt_ctl),
+			&crypt_phys, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (!crypt_virt)
 		return -ENOMEM;
 	memset(crypt_virt, 0, NPE_QLEN * sizeof(struct crypt_ctl));
@@ -370,6 +388,10 @@ static void finish_scattered_hmac(struct crypt_ctl *crypt)
 
 static void one_packet(dma_addr_t phys)
 {
+<<<<<<< HEAD
+=======
+	struct device *dev = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	struct crypt_ctl *crypt;
 	struct ixp_ctx *ctx;
 	int failed;
@@ -439,7 +461,11 @@ static void crypto_done_action(unsigned long arg)
 	tasklet_schedule(&crypto_done_tasklet);
 }
 
+<<<<<<< HEAD
 static int init_ixp_crypto(void)
+=======
+static int init_ixp_crypto(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 	u32 msg[2] = { 0, 0 };
@@ -526,7 +552,11 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void release_ixp_crypto(void)
+=======
+static void release_ixp_crypto(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	qmgr_disable_irq(RECV_QID);
 	tasklet_kill(&crypto_done_tasklet);
@@ -757,12 +787,21 @@ static int setup_cipher(struct crypto_tfm *tfm, int encrypt,
 	}
 	if (cipher_cfg & MOD_AES) {
 		switch (key_len) {
+<<<<<<< HEAD
 			case 16: keylen_cfg = MOD_AES128 | KEYLEN_128; break;
 			case 24: keylen_cfg = MOD_AES192 | KEYLEN_192; break;
 			case 32: keylen_cfg = MOD_AES256 | KEYLEN_256; break;
 			default:
 				*flags |= CRYPTO_TFM_RES_BAD_KEY_LEN;
 				return -EINVAL;
+=======
+		case 16: keylen_cfg = MOD_AES128; break;
+		case 24: keylen_cfg = MOD_AES192; break;
+		case 32: keylen_cfg = MOD_AES256; break;
+		default:
+			*flags |= CRYPTO_TFM_RES_BAD_KEY_LEN;
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 		cipher_cfg |= keylen_cfg;
 	} else if (cipher_cfg & MOD_3DES) {
@@ -893,6 +932,10 @@ static int ablk_perform(struct ablkcipher_request *req, int encrypt)
 	enum dma_data_direction src_direction = DMA_BIDIRECTIONAL;
 	struct ablk_ctx *req_ctx = ablkcipher_request_ctx(req);
 	struct buffer_desc src_hook;
+<<<<<<< HEAD
+=======
+	struct device *dev = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ?
 				GFP_KERNEL : GFP_ATOMIC;
 
@@ -1017,6 +1060,10 @@ static int aead_perform(struct aead_request *req, int encrypt,
 	unsigned int cryptlen;
 	struct buffer_desc *buf, src_hook;
 	struct aead_ctx *req_ctx = aead_request_ctx(req);
+<<<<<<< HEAD
+=======
+	struct device *dev = &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	gfp_t flags = req->base.flags & CRYPTO_TFM_REQ_MAY_SLEEP ?
 				GFP_KERNEL : GFP_ATOMIC;
 
@@ -1166,6 +1213,7 @@ static int aead_setkey(struct crypto_aead *tfm, const u8 *key,
 			unsigned int keylen)
 {
 	struct ixp_ctx *ctx = crypto_aead_ctx(tfm);
+<<<<<<< HEAD
 	struct rtattr *rta = (struct rtattr *)key;
 	struct crypto_authenc_key_param *param;
 
@@ -1192,6 +1240,26 @@ static int aead_setkey(struct crypto_aead *tfm, const u8 *key,
 	return aead_setup(tfm, crypto_aead_authsize(tfm));
 badkey:
 	ctx->enckey_len = 0;
+=======
+	struct crypto_authenc_keys keys;
+
+	if (crypto_authenc_extractkeys(&keys, key, keylen) != 0)
+		goto badkey;
+
+	if (keys.authkeylen > sizeof(ctx->authkey))
+		goto badkey;
+
+	if (keys.enckeylen > sizeof(ctx->enckey))
+		goto badkey;
+
+	memcpy(ctx->authkey, keys.authkey, keys.authkeylen);
+	memcpy(ctx->enckey, keys.enckey, keys.enckeylen);
+	ctx->authkey_len = keys.authkeylen;
+	ctx->enckey_len = keys.enckeylen;
+
+	return aead_setup(tfm, crypto_aead_authsize(tfm));
+badkey:
+>>>>>>> refs/remotes/origin/master
 	crypto_aead_set_flags(tfm, CRYPTO_TFM_RES_BAD_KEY_LEN);
 	return -EINVAL;
 }
@@ -1425,6 +1493,7 @@ static struct ixp_alg ixp4xx_algos[] = {
 } };
 
 #define IXP_POSTFIX "-ixp4xx"
+<<<<<<< HEAD
 static int __init ixp_module_init(void)
 {
 	int num = ARRAY_SIZE(ixp4xx_algos);
@@ -1432,13 +1501,36 @@ static int __init ixp_module_init(void)
 
 	if (platform_device_register(&pseudo_dev))
 		return -ENODEV;
+=======
+
+static const struct platform_device_info ixp_dev_info __initdata = {
+	.name		= DRIVER_NAME,
+	.id		= 0,
+	.dma_mask	= DMA_BIT_MASK(32),
+};
+
+static int __init ixp_module_init(void)
+{
+	int num = ARRAY_SIZE(ixp4xx_algos);
+	int i, err;
+
+	pdev = platform_device_register_full(&ixp_dev_info);
+	if (IS_ERR(pdev))
+		return PTR_ERR(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&desc_lock);
 	spin_lock_init(&emerg_lock);
 
+<<<<<<< HEAD
 	err = init_ixp_crypto();
 	if (err) {
 		platform_device_unregister(&pseudo_dev);
+=======
+	err = init_ixp_crypto(&pdev->dev);
+	if (err) {
+		platform_device_unregister(pdev);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	for (i=0; i< num; i++) {
@@ -1458,9 +1550,13 @@ static int __init ixp_module_init(void)
 			cra->cra_type = &crypto_ablkcipher_type;
 			cra->cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					 CRYPTO_ALG_KERN_DRIVER_ONLY |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 CRYPTO_ALG_KERN_DRIVER_ONLY |
+>>>>>>> refs/remotes/origin/master
 					 CRYPTO_ALG_ASYNC;
 			if (!cra->cra_ablkcipher.setkey)
 				cra->cra_ablkcipher.setkey = ablk_setkey;
@@ -1474,9 +1570,13 @@ static int __init ixp_module_init(void)
 			cra->cra_type = &crypto_aead_type;
 			cra->cra_flags = CRYPTO_ALG_TYPE_AEAD |
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					 CRYPTO_ALG_KERN_DRIVER_ONLY |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					 CRYPTO_ALG_KERN_DRIVER_ONLY |
+>>>>>>> refs/remotes/origin/master
 					 CRYPTO_ALG_ASYNC;
 			cra->cra_aead.setkey = aead_setkey;
 			cra->cra_aead.setauthsize = aead_setauthsize;
@@ -1508,8 +1608,13 @@ static void __exit ixp_module_exit(void)
 		if (ixp4xx_algos[i].registered)
 			crypto_unregister_alg(&ixp4xx_algos[i].crypto);
 	}
+<<<<<<< HEAD
 	release_ixp_crypto();
 	platform_device_unregister(&pseudo_dev);
+=======
+	release_ixp_crypto(&pdev->dev);
+	platform_device_unregister(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ixp_module_init);

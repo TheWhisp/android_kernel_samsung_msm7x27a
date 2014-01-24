@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * net/sched/ipt.c	iptables target interface
+=======
+ * net/sched/ipt.c     iptables target interface
+>>>>>>> refs/remotes/origin/master
  *
  *TODO: Add other tables. For now we only support the ipv4 table targets
  *
@@ -102,7 +106,11 @@ static const struct nla_policy ipt_policy[TCA_IPT_MAX + 1] = {
 	[TCA_IPT_TARG]	= { .len = sizeof(struct xt_entry_target) },
 };
 
+<<<<<<< HEAD
 static int tcf_ipt_init(struct nlattr *nla, struct nlattr *est,
+=======
+static int tcf_ipt_init(struct net *net, struct nlattr *nla, struct nlattr *est,
+>>>>>>> refs/remotes/origin/master
 			struct tc_action *a, int ovr, int bind)
 {
 	struct nlattr *tb[TCA_IPT_MAX + 1];
@@ -141,10 +149,19 @@ static int tcf_ipt_init(struct nlattr *nla, struct nlattr *est,
 			return PTR_ERR(pc);
 		ret = ACT_P_CREATED;
 	} else {
+<<<<<<< HEAD
 		if (!ovr) {
 			tcf_ipt_release(to_ipt(pc), bind);
 			return -EEXIST;
 		}
+=======
+		if (bind)/* dont override defaults */
+			return 0;
+		tcf_ipt_release(to_ipt(pc), bind);
+
+		if (!ovr)
+			return -EEXIST;
+>>>>>>> refs/remotes/origin/master
 	}
 	ipt = to_ipt(pc);
 
@@ -185,7 +202,16 @@ err3:
 err2:
 	kfree(tname);
 err1:
+<<<<<<< HEAD
 	kfree(pc);
+=======
+	if (ret == ACT_P_CREATED) {
+		if (est)
+			gen_kill_estimator(&pc->tcfc_bstats,
+					   &pc->tcfc_rate_est);
+		kfree_rcu(pc, tcfc_rcu);
+	}
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -196,20 +222,29 @@ static int tcf_ipt_cleanup(struct tc_action *a, int bind)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tcf_ipt(struct sk_buff *skb, struct tc_action *a,
 =======
 static int tcf_ipt(struct sk_buff *skb, const struct tc_action *a,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tcf_ipt(struct sk_buff *skb, const struct tc_action *a,
+>>>>>>> refs/remotes/origin/master
 		   struct tcf_result *res)
 {
 	int ret = 0, result = 0;
 	struct tcf_ipt *ipt = a->priv;
 	struct xt_action_param par;
 
+<<<<<<< HEAD
 	if (skb_cloned(skb)) {
 		if (pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
 			return TC_ACT_UNSPEC;
 	}
+=======
+	if (skb_unclone(skb, GFP_ATOMIC))
+		return TC_ACT_UNSPEC;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&ipt->tcf_lock);
 
@@ -239,9 +274,14 @@ static int tcf_ipt(struct sk_buff *skb, const struct tc_action *a,
 		result = TC_ACT_PIPE;
 		break;
 	default:
+<<<<<<< HEAD
 		if (net_ratelimit())
 			pr_notice("tc filter: Bogus netfilter code"
 				  " %d assume ACCEPT\n", ret);
+=======
+		net_notice_ratelimited("tc filter: Bogus netfilter code %d assume ACCEPT\n",
+				       ret);
+>>>>>>> refs/remotes/origin/master
 		result = TC_POLICE_OK;
 		break;
 	}
@@ -271,6 +311,7 @@ static int tcf_ipt_dump(struct sk_buff *skb, struct tc_action *a, int bind, int 
 	c.refcnt = ipt->tcf_refcnt - ref;
 	strcpy(t->u.user.name, ipt->tcfi_t->u.kernel.target->name);
 
+<<<<<<< HEAD
 	NLA_PUT(skb, TCA_IPT_TARG, ipt->tcfi_t->u.user.target_size, t);
 	NLA_PUT_U32(skb, TCA_IPT_INDEX, ipt->tcf_index);
 	NLA_PUT_U32(skb, TCA_IPT_HOOK, ipt->tcfi_hook);
@@ -280,6 +321,19 @@ static int tcf_ipt_dump(struct sk_buff *skb, struct tc_action *a, int bind, int 
 	tm.lastuse = jiffies_to_clock_t(jiffies - ipt->tcf_tm.lastuse);
 	tm.expires = jiffies_to_clock_t(ipt->tcf_tm.expires);
 	NLA_PUT(skb, TCA_IPT_TM, sizeof (tm), &tm);
+=======
+	if (nla_put(skb, TCA_IPT_TARG, ipt->tcfi_t->u.user.target_size, t) ||
+	    nla_put_u32(skb, TCA_IPT_INDEX, ipt->tcf_index) ||
+	    nla_put_u32(skb, TCA_IPT_HOOK, ipt->tcfi_hook) ||
+	    nla_put(skb, TCA_IPT_CNT, sizeof(struct tc_cnt), &c) ||
+	    nla_put_string(skb, TCA_IPT_TABLE, ipt->tcfi_tname))
+		goto nla_put_failure;
+	tm.install = jiffies_to_clock_t(jiffies - ipt->tcf_tm.install);
+	tm.lastuse = jiffies_to_clock_t(jiffies - ipt->tcf_tm.lastuse);
+	tm.expires = jiffies_to_clock_t(ipt->tcf_tm.expires);
+	if (nla_put(skb, TCA_IPT_TM, sizeof (tm), &tm))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	kfree(t);
 	return skb->len;
 
@@ -298,9 +352,13 @@ static struct tc_action_ops act_ipt_ops = {
 	.act		=	tcf_ipt,
 	.dump		=	tcf_ipt_dump,
 	.cleanup	=	tcf_ipt_cleanup,
+<<<<<<< HEAD
 	.lookup		=	tcf_hash_search,
 	.init		=	tcf_ipt_init,
 	.walk		=	tcf_generic_walker
+=======
+	.init		=	tcf_ipt_init,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct tc_action_ops act_xt_ops = {
@@ -312,9 +370,13 @@ static struct tc_action_ops act_xt_ops = {
 	.act		=	tcf_ipt,
 	.dump		=	tcf_ipt_dump,
 	.cleanup	=	tcf_ipt_cleanup,
+<<<<<<< HEAD
 	.lookup		=	tcf_hash_search,
 	.init		=	tcf_ipt_init,
 	.walk		=	tcf_generic_walker
+=======
+	.init		=	tcf_ipt_init,
+>>>>>>> refs/remotes/origin/master
 };
 
 MODULE_AUTHOR("Jamal Hadi Salim(2002-13)");

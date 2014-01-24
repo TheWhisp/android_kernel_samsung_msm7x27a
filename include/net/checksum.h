@@ -79,6 +79,15 @@ csum_block_add(__wsum csum, __wsum csum2, int offset)
 }
 
 static inline __wsum
+<<<<<<< HEAD
+=======
+csum_block_add_ext(__wsum csum, __wsum csum2, int offset, int len)
+{
+	return csum_block_add(csum, csum2, offset);
+}
+
+static inline __wsum
+>>>>>>> refs/remotes/origin/master
 csum_block_sub(__wsum csum, __wsum csum2, int offset)
 {
 	u32 sum = (__force u32)csum2;
@@ -92,6 +101,14 @@ static inline __wsum csum_unfold(__sum16 n)
 	return (__force __wsum)n;
 }
 
+<<<<<<< HEAD
+=======
+static inline __wsum csum_partial_ext(const void *buff, int len, __wsum sum)
+{
+	return csum_partial(buff, len, sum);
+}
+
+>>>>>>> refs/remotes/origin/master
 #define CSUM_MANGLED_0 ((__force __sum16)0xffff)
 
 static inline void csum_replace4(__sum16 *sum, __be32 from, __be32 to)
@@ -107,8 +124,16 @@ static inline void csum_replace2(__sum16 *sum, __be16 from, __be16 to)
 }
 
 struct sk_buff;
+<<<<<<< HEAD
 extern void inet_proto_csum_replace4(__sum16 *sum, struct sk_buff *skb,
 				     __be32 from, __be32 to, int pseudohdr);
+=======
+void inet_proto_csum_replace4(__sum16 *sum, struct sk_buff *skb,
+			      __be32 from, __be32 to, int pseudohdr);
+void inet_proto_csum_replace16(__sum16 *sum, struct sk_buff *skb,
+			       const __be32 *from, const __be32 *to,
+			       int pseudohdr);
+>>>>>>> refs/remotes/origin/master
 
 static inline void inet_proto_csum_replace2(__sum16 *sum, struct sk_buff *skb,
 					    __be16 from, __be16 to,

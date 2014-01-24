@@ -68,6 +68,19 @@ static u32 hspi_read(struct hspi_priv *hspi, int reg)
 	return ioread32(hspi->addr + reg);
 }
 
+<<<<<<< HEAD
+=======
+static void hspi_bit_set(struct hspi_priv *hspi, int reg, u32 mask, u32 set)
+{
+	u32 val = hspi_read(hspi, reg);
+
+	val &= ~mask;
+	val |= set & mask;
+
+	hspi_write(hspi, reg, val);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *		transfer function
  */
@@ -79,7 +92,11 @@ static int hspi_status_check_timeout(struct hspi_priv *hspi, u32 mask, u32 val)
 		if ((mask & hspi_read(hspi, SPSR)) == val)
 			return 0;
 
+<<<<<<< HEAD
 		msleep(20);
+=======
+		udelay(10);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev_err(hspi->dev, "timeout\n");
@@ -89,6 +106,7 @@ static int hspi_status_check_timeout(struct hspi_priv *hspi, u32 mask, u32 val)
 /*
  *		spi master function
  */
+<<<<<<< HEAD
 static int hspi_prepare_transfer(struct spi_master *master)
 {
 	struct hspi_priv *hspi = spi_master_get_devdata(master);
@@ -103,6 +121,14 @@ static int hspi_unprepare_transfer(struct spi_master *master)
 
 	pm_runtime_put_sync(hspi->dev);
 	return 0;
+=======
+
+#define hspi_hw_cs_enable(hspi)		hspi_hw_cs_ctrl(hspi, 0)
+#define hspi_hw_cs_disable(hspi)	hspi_hw_cs_ctrl(hspi, 1)
+static void hspi_hw_cs_ctrl(struct hspi_priv *hspi, int hi)
+{
+	hspi_bit_set(hspi, SPSCR, (1 << 6), (hi) << 6);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void hspi_hw_setup(struct hspi_priv *hspi,
@@ -135,7 +161,11 @@ static void hspi_hw_setup(struct hspi_priv *hspi,
 			rate /= 16;
 
 		/* CLKCx calculation */
+<<<<<<< HEAD
 		rate /= (((idiv_clk & 0x1F) + 1) * 2) ;
+=======
+		rate /= (((idiv_clk & 0x1F) + 1) * 2);
+>>>>>>> refs/remotes/origin/master
 
 		/* save best settings */
 		tmp = abs(target_rate - rate);
@@ -155,7 +185,11 @@ static void hspi_hw_setup(struct hspi_priv *hspi,
 
 	hspi_write(hspi, SPCR, spcr);
 	hspi_write(hspi, SPSR, 0x0);
+<<<<<<< HEAD
 	hspi_write(hspi, SPSCR, 0x1);	/* master mode */
+=======
+	hspi_write(hspi, SPSCR, 0x21);	/* master mode / CS control */
+>>>>>>> refs/remotes/origin/master
 }
 
 static int hspi_transfer_one_message(struct spi_master *master,
@@ -166,12 +200,30 @@ static int hspi_transfer_one_message(struct spi_master *master,
 	u32 tx;
 	u32 rx;
 	int ret, i;
+<<<<<<< HEAD
 
 	dev_dbg(hspi->dev, "%s\n", __func__);
 
 	ret = 0;
 	list_for_each_entry(t, &msg->transfers, transfer_list) {
 		hspi_hw_setup(hspi, msg, t);
+=======
+	unsigned int cs_change;
+	const int nsecs = 50;
+
+	dev_dbg(hspi->dev, "%s\n", __func__);
+
+	cs_change = 1;
+	ret = 0;
+	list_for_each_entry(t, &msg->transfers, transfer_list) {
+
+		if (cs_change) {
+			hspi_hw_setup(hspi, msg, t);
+			hspi_hw_cs_enable(hspi);
+			ndelay(nsecs);
+		}
+		cs_change = t->cs_change;
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < t->len; i++) {
 
@@ -198,9 +250,28 @@ static int hspi_transfer_one_message(struct spi_master *master,
 		}
 
 		msg->actual_length += t->len;
+<<<<<<< HEAD
 	}
 
 	msg->status = ret;
+=======
+
+		if (t->delay_usecs)
+			udelay(t->delay_usecs);
+
+		if (cs_change) {
+			ndelay(nsecs);
+			hspi_hw_cs_disable(hspi);
+			ndelay(nsecs);
+		}
+	}
+
+	msg->status = ret;
+	if (!cs_change) {
+		ndelay(nsecs);
+		hspi_hw_cs_disable(hspi);
+	}
+>>>>>>> refs/remotes/origin/master
 	spi_finalize_current_message(master);
 
 	return ret;
@@ -229,7 +300,11 @@ static void hspi_cleanup(struct spi_device *spi)
 	dev_dbg(dev, "%s cleanup\n", spi->modalias);
 }
 
+<<<<<<< HEAD
 static int __devinit hspi_probe(struct platform_device *pdev)
+=======
+static int hspi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res;
 	struct spi_master *master;
@@ -251,14 +326,22 @@ static int __devinit hspi_probe(struct platform_device *pdev)
 	}
 
 	clk = clk_get(NULL, "shyway_clk");
+<<<<<<< HEAD
 	if (!clk) {
+=======
+	if (IS_ERR(clk)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "shyway_clk is required\n");
 		ret = -EINVAL;
 		goto error0;
 	}
 
 	hspi = spi_master_get_devdata(master);
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, hspi);
+=======
+	platform_set_drvdata(pdev, hspi);
+>>>>>>> refs/remotes/origin/master
 
 	/* init hspi */
 	hspi->master	= master;
@@ -272,11 +355,17 @@ static int __devinit hspi_probe(struct platform_device *pdev)
 		goto error1;
 	}
 
+<<<<<<< HEAD
+=======
+	pm_runtime_enable(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	master->num_chipselect	= 1;
 	master->bus_num		= pdev->id;
 	master->setup		= hspi_setup;
 	master->cleanup		= hspi_cleanup;
 	master->mode_bits	= SPI_CPOL | SPI_CPHA;
+<<<<<<< HEAD
 	master->prepare_transfer_hardware	= hspi_prepare_transfer;
 	master->transfer_one_message		= hspi_transfer_one_message;
 	master->unprepare_transfer_hardware	= hspi_unprepare_transfer;
@@ -294,6 +383,19 @@ static int __devinit hspi_probe(struct platform_device *pdev)
 
  error2:
 	devm_iounmap(hspi->dev, hspi->addr);
+=======
+	master->dev.of_node	= pdev->dev.of_node;
+	master->auto_runtime_pm = true;
+	master->transfer_one_message		= hspi_transfer_one_message;
+	ret = devm_spi_register_master(&pdev->dev, master);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "spi_register_master error.\n");
+		goto error1;
+	}
+
+	return 0;
+
+>>>>>>> refs/remotes/origin/master
  error1:
 	clk_put(clk);
  error0:
@@ -302,25 +404,50 @@ static int __devinit hspi_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit hspi_remove(struct platform_device *pdev)
 {
 	struct hspi_priv *hspi = dev_get_drvdata(&pdev->dev);
+=======
+static int hspi_remove(struct platform_device *pdev)
+{
+	struct hspi_priv *hspi = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	pm_runtime_disable(&pdev->dev);
 
 	clk_put(hspi->clk);
+<<<<<<< HEAD
 	spi_unregister_master(hspi->master);
 	devm_iounmap(hspi->dev, hspi->addr);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver hspi_driver = {
 	.probe = hspi_probe,
 	.remove = __devexit_p(hspi_remove),
 	.driver = {
 		.name = "sh-hspi",
 		.owner = THIS_MODULE,
+=======
+static struct of_device_id hspi_of_match[] = {
+	{ .compatible = "renesas,hspi", },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, hspi_of_match);
+
+static struct platform_driver hspi_driver = {
+	.probe = hspi_probe,
+	.remove = hspi_remove,
+	.driver = {
+		.name = "sh-hspi",
+		.owner = THIS_MODULE,
+		.of_match_table = hspi_of_match,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 module_platform_driver(hspi_driver);

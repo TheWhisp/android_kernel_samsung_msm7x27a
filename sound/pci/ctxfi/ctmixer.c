@@ -87,12 +87,16 @@ enum CTALSA_MIXER_CTL {
 	MIXER_MIC_C_S,
 	MIXER_SPDIFI_C_S,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MIXER_LINEIN_P_S,
 	MIXER_SPDIFO_P_S,
 	MIXER_SPDIFI_P_S,
 =======
 	MIXER_SPDIFO_P_S,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	MIXER_SPDIFO_P_S,
+>>>>>>> refs/remotes/origin/master
 	MIXER_WAVEF_P_S,
 	MIXER_WAVER_P_S,
 	MIXER_WAVEC_P_S,
@@ -142,18 +146,24 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 	[MIXER_LINEIN_P] = {
 		.ctl = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "Line-in Playback Volume",
 	},
 	[MIXER_LINEIN_C] = {
 		.ctl = 1,
 		.name = "Line-in Capture Volume",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "Line Playback Volume",
 	},
 	[MIXER_LINEIN_C] = {
 		.ctl = 1,
 		.name = "Line Capture Volume",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[MIXER_MIC_P] = {
 		.ctl = 1,
@@ -166,6 +176,7 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 	[MIXER_SPDIFI_P] = {
 		.ctl = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "S/PDIF-in Playback Volume",
 	},
 	[MIXER_SPDIFI_C] = {
@@ -176,6 +187,8 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 		.ctl = 1,
 		.name = "S/PDIF-out Playback Volume",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "IEC958 Playback Volume",
 	},
 	[MIXER_SPDIFI_C] = {
@@ -185,7 +198,10 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 	[MIXER_SPDIFO_P] = {
 		.ctl = 1,
 		.name = "Digital Playback Volume",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[MIXER_WAVEF_P] = {
 		.ctl = 1,
@@ -204,9 +220,12 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 		.name = "Surround Playback Volume",
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	[MIXER_PCM_C_S] = {
 		.ctl = 1,
 		.name = "PCM Capture Switch",
@@ -214,10 +233,14 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 	[MIXER_LINEIN_C_S] = {
 		.ctl = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "Line-in Capture Switch",
 =======
 		.name = "Line Capture Switch",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "Line Capture Switch",
+>>>>>>> refs/remotes/origin/master
 	},
 	[MIXER_MIC_C_S] = {
 		.ctl = 1,
@@ -225,6 +248,7 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 	},
 	[MIXER_SPDIFI_C_S] = {
 		.ctl = 1,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "S/PDIF-in Capture Switch",
 	},
@@ -240,12 +264,17 @@ ct_kcontrol_init_table[NUM_CTALSA_MIXERS] = {
 		.ctl = 1,
 		.name = "S/PDIF-in Playback Switch",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.name = "IEC958 Capture Switch",
 	},
 	[MIXER_SPDIFO_P_S] = {
 		.ctl = 1,
 		.name = "Digital Playback Switch",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 	[MIXER_WAVEF_P_S] = {
 		.ctl = 1,
@@ -276,10 +305,15 @@ static void
 ct_mixer_recording_unselect(struct ct_mixer *mixer, enum CT_AMIXER_CTL type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* FIXME: this static looks like it would fail if more than one card was */
 /* installed. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* FIXME: this static looks like it would fail if more than one card was */
+/* installed. */
+>>>>>>> refs/remotes/origin/master
 static struct snd_kcontrol *kctls[2] = {NULL};
 
 static enum CT_AMIXER_CTL get_amixer_index(enum CTALSA_MIXER_CTL alsa_index)
@@ -465,7 +499,10 @@ static struct snd_kcontrol_new vol_ctl = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int output_switch_info(struct snd_kcontrol *kcontrol,
 			      struct snd_ctl_elem_info *info)
 {
@@ -537,7 +574,10 @@ static struct snd_kcontrol_new mic_source_ctl = {
 	.put = mic_source_switch_put,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 do_line_mic_switch(struct ct_atc *atc, enum CTALSA_MIXER_CTL type)
 {
@@ -584,9 +624,13 @@ static void do_switch(struct ct_atc *atc, enum CTALSA_MIXER_CTL type, int state)
 {
 	struct ct_mixer *mixer = atc->mixer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct capabilities cap = atc->capabilities(atc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct capabilities cap = atc->capabilities(atc);
+>>>>>>> refs/remotes/origin/master
 
 	/* Do changes in mixer. */
 	if ((SWH_CAPTURE_START <= type) && (SWH_CAPTURE_END >= type)) {
@@ -600,9 +644,12 @@ static void do_switch(struct ct_atc *atc, enum CTALSA_MIXER_CTL type, int state)
 	}
 	/* Do changes out of mixer. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (state && (MIXER_LINEIN_C_S == type || MIXER_MIC_C_S == type))
 		do_line_mic_switch(atc, type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!cap.dedicated_mic &&
 	    (MIXER_LINEIN_C_S == type || MIXER_MIC_C_S == type)) {
 		if (state)
@@ -614,7 +661,10 @@ static void do_switch(struct ct_atc *atc, enum CTALSA_MIXER_CTL type, int state)
 		atc->mic_unmute(atc, state);
 	else if (MIXER_SPDIFI_C_S == type)
 		atc->spdif_in_unmute(atc, state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else if (MIXER_WAVEF_P_S == type)
 		atc->line_front_unmute(atc, state);
 	else if (MIXER_WAVES_P_S == type)
@@ -623,6 +673,7 @@ static void do_switch(struct ct_atc *atc, enum CTALSA_MIXER_CTL type, int state)
 		atc->line_clfe_unmute(atc, state);
 	else if (MIXER_WAVER_P_S == type)
 		atc->line_rear_unmute(atc, state);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	else if (MIXER_LINEIN_P_S == type)
 		atc->line_in_unmute(atc, state);
@@ -634,6 +685,10 @@ static void do_switch(struct ct_atc *atc, enum CTALSA_MIXER_CTL type, int state)
 	else if (MIXER_SPDIFO_P_S == type)
 		atc->spdif_out_unmute(atc, state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (MIXER_SPDIFO_P_S == type)
+		atc->spdif_out_unmute(atc, state);
+>>>>>>> refs/remotes/origin/master
 	else if (MIXER_DIGITAL_IO_S == type)
 		do_digit_io_switch(atc, state);
 
@@ -813,9 +868,13 @@ static int ct_mixer_kcontrols_create(struct ct_mixer *mixer)
 	enum CTALSA_MIXER_CTL type;
 	struct ct_atc *atc = mixer->atc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct capabilities cap = atc->capabilities(atc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct capabilities cap = atc->capabilities(atc);
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	/* Create snd kcontrol instances on demand */
@@ -830,12 +889,17 @@ static int ct_mixer_kcontrols_create(struct ct_mixer *mixer)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ct_kcontrol_init_table[MIXER_DIGITAL_IO_S].ctl =
 					atc->have_digit_io_switch(atc);
 =======
 	ct_kcontrol_init_table[MIXER_DIGITAL_IO_S].ctl = cap.digit_io_switch;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ct_kcontrol_init_table[MIXER_DIGITAL_IO_S].ctl = cap.digit_io_switch;
+
+>>>>>>> refs/remotes/origin/master
 	for (type = SWH_MIXER_START; type <= SWH_MIXER_END; type++) {
 		if (ct_kcontrol_init_table[type].ctl) {
 			swh_ctl.name = ct_kcontrol_init_table[type].name;
@@ -859,7 +923,10 @@ static int ct_mixer_kcontrols_create(struct ct_mixer *mixer)
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cap.output_switch) {
 		err = ct_mixer_kcontrol_new(mixer, &output_ctl);
 		if (err)
@@ -871,7 +938,10 @@ static int ct_mixer_kcontrols_create(struct ct_mixer *mixer)
 		if (err)
 			return err;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	atc->line_front_unmute(atc, 1);
 	set_switch_state(mixer, MIXER_WAVEF_P_S, 1);
 	atc->line_surround_unmute(atc, 0);
@@ -884,6 +954,7 @@ static int ct_mixer_kcontrols_create(struct ct_mixer *mixer)
 	set_switch_state(mixer, MIXER_SPDIFO_P_S, 0);
 	atc->line_in_unmute(atc, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_switch_state(mixer, MIXER_LINEIN_P_S, 0);
 	atc->spdif_in_unmute(atc, 0);
 	set_switch_state(mixer, MIXER_SPDIFI_P_S, 0);
@@ -892,13 +963,18 @@ static int ct_mixer_kcontrols_create(struct ct_mixer *mixer)
 	set_switch_state(mixer, MIXER_LINEIN_C_S, 1);
 	set_switch_state(mixer, MIXER_SPDIFI_C_S, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cap.dedicated_mic)
 		atc->mic_unmute(atc, 0);
 	atc->spdif_in_unmute(atc, 0);
 	set_switch_state(mixer, MIXER_PCM_C_S, 0);
 	set_switch_state(mixer, MIXER_LINEIN_C_S, 0);
 	set_switch_state(mixer, MIXER_SPDIFI_C_S, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1212,7 +1288,11 @@ mixer_set_input_right(struct ct_mixer *mixer,
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int mixer_resume(struct ct_mixer *mixer)
 {
 	int i, state;
@@ -1282,7 +1362,11 @@ int ct_mixer_create(struct ct_atc *atc, struct ct_mixer **rmixer)
 	mixer->get_output_ports = mixer_get_output_ports;
 	mixer->set_input_left = mixer_set_input_left;
 	mixer->set_input_right = mixer_set_input_right;
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	mixer->resume = mixer_resume;
 #endif
 

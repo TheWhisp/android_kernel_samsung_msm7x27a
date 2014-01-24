@@ -4,10 +4,14 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sys_device;
 =======
 struct device;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct device;
+>>>>>>> refs/remotes/origin/master
 struct device_node;
 
 #ifdef CONFIG_NUMA
@@ -22,6 +26,7 @@ struct device_node;
  */
 #define RECLAIM_DISTANCE 10
 
+<<<<<<< HEAD
 /*
 <<<<<<< HEAD
  * Before going off node we want the VM to try and reclaim from the local
@@ -39,6 +44,8 @@ struct device_node;
 #define SD_NODES_PER_DOMAIN 32
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mmzone.h>
 
 static inline int cpu_to_node(int cpu)
@@ -66,6 +73,7 @@ static inline int pcibus_to_node(struct pci_bus *bus)
 				 cpu_all_mask :				\
 				 cpumask_of_node(pcibus_to_node(bus)))
 
+<<<<<<< HEAD
 /* sched_domains SD_NODE_INIT for PPC64 machines */
 #define SD_NODE_INIT (struct sched_domain) {				\
 	.min_interval		= 8,					\
@@ -104,11 +112,14 @@ static inline int pcibus_to_node(struct pci_bus *bus)
 	.balance_interval	= 1,					\
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern int __node_distance(int, int);
 #define node_distance(a, b) __node_distance(a, b)
 
 extern void __init dump_numa_cpu_topology(void);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int sysfs_add_device_to_node(struct sys_device *dev, int nid);
 extern void sysfs_remove_device_from_node(struct sys_device *dev, int nid);
@@ -116,25 +127,37 @@ extern void sysfs_remove_device_from_node(struct sys_device *dev, int nid);
 extern int sysfs_add_device_to_node(struct device *dev, int nid);
 extern void sysfs_remove_device_from_node(struct device *dev, int nid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int sysfs_add_device_to_node(struct device *dev, int nid);
+extern void sysfs_remove_device_from_node(struct device *dev, int nid);
+>>>>>>> refs/remotes/origin/master
 
 #else
 
 static inline void dump_numa_cpu_topology(void) {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int sysfs_add_device_to_node(struct sys_device *dev, int nid)
 =======
 static inline int sysfs_add_device_to_node(struct device *dev, int nid)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int sysfs_add_device_to_node(struct device *dev, int nid)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void sysfs_remove_device_from_node(struct sys_device *dev,
 =======
 static inline void sysfs_remove_device_from_node(struct device *dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void sysfs_remove_device_from_node(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 						int nid)
 {
 }
@@ -143,6 +166,10 @@ static inline void sysfs_remove_device_from_node(struct device *dev,
 #if defined(CONFIG_NUMA) && defined(CONFIG_PPC_SPLPAR)
 extern int start_topology_update(void);
 extern int stop_topology_update(void);
+<<<<<<< HEAD
+=======
+extern int prrn_is_enabled(void);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline int start_topology_update(void)
 {
@@ -152,6 +179,13 @@ static inline int stop_topology_update(void)
 {
 	return 0;
 }
+<<<<<<< HEAD
+=======
+static inline int prrn_is_enabled(void)
+{
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_NUMA && CONFIG_PPC_SPLPAR */
 
 #include <asm-generic/topology.h>
@@ -163,6 +197,10 @@ static inline int stop_topology_update(void)
 #ifdef CONFIG_PPC64
 #include <asm/smp.h>
 
+<<<<<<< HEAD
+=======
+#define topology_physical_package_id(cpu)	(cpu_to_chip_id(cpu))
+>>>>>>> refs/remotes/origin/master
 #define topology_thread_cpumask(cpu)	(per_cpu(cpu_sibling_map, cpu))
 #define topology_core_cpumask(cpu)	(per_cpu(cpu_core_map, cpu))
 #define topology_core_id(cpu)		(cpu_to_core_id(cpu))

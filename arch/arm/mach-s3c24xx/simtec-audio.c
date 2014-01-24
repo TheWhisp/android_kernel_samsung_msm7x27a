@@ -17,6 +17,7 @@
 #include <linux/device.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <mach/bast-map.h>
 #include <mach/bast-irq.h>
 #include <mach/bast-cpld.h>
@@ -27,6 +28,15 @@
 #include <plat/audio-simtec.h>
 #include <plat/devs.h>
 
+=======
+#include <mach/hardware.h>
+#include <mach/regs-gpio.h>
+
+#include <linux/platform_data/asoc-s3c24xx_simtec.h>
+#include <plat/devs.h>
+
+#include "bast.h"
+>>>>>>> refs/remotes/origin/master
 #include "simtec.h"
 
 /* platform ops for audio */

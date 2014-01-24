@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 #define _FILE_OFFSET_BITS 64
 
 <<<<<<< HEAD
 =======
 #include "util.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "util.h"
+>>>>>>> refs/remotes/origin/master
 #include <sys/types.h>
 #include <byteswap.h>
 #include <unistd.h>
@@ -12,23 +16,30 @@
 #include <linux/list.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "evlist.h"
 #include "evsel.h"
 #include "util.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <sys/utsname.h>
 
 #include "evlist.h"
 #include "evsel.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "header.h"
 #include "../perf.h"
 #include "trace-event.h"
 #include "session.h"
 #include "symbol.h"
 #include "debug.h"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include "cpumap.h"
@@ -84,6 +95,20 @@ static const char *__perf_magic = "PERFFILE";
 
 #define PERF_MAGIC	(*(u64 *)__perf_magic)
 =======
+=======
+#include "cpumap.h"
+#include "pmu.h"
+#include "vdso.h"
+#include "strbuf.h"
+#include "build-id.h"
+#include "data.h"
+
+static bool no_buildid_cache = false;
+
+static u32 header_argc;
+static const char **header_argv;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * magic2 = "PERFILE2"
  * must be a numerical value to let the endianness
@@ -98,7 +123,10 @@ static const u64 __perf_magic2    = 0x32454c4946524550ULL;
 static const u64 __perf_magic2_sw = 0x50455246494c4532ULL;
 
 #define PERF_MAGIC	__perf_magic2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct perf_file_attr {
 	struct perf_event_attr	attr;
@@ -150,14 +178,21 @@ static int write_padded(int fd, const void *bf, size_t count,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int do_write_string(int fd, const char *str)
 {
 	u32 len, olen;
 	int ret;
 
 	olen = strlen(str) + 1;
+<<<<<<< HEAD
 	len = ALIGN(olen, NAME_ALIGN);
+=======
+	len = PERF_ALIGN(olen, NAME_ALIGN);
+>>>>>>> refs/remotes/origin/master
 
 	/* write len, incl. \0 */
 	ret = do_write(fd, &len, sizeof(len));
@@ -173,7 +208,11 @@ static char *do_read_string(int fd, struct perf_header *ph)
 	u32 len;
 	char *buf;
 
+<<<<<<< HEAD
 	sz = read(fd, &len, sizeof(len));
+=======
+	sz = readn(fd, &len, sizeof(len));
+>>>>>>> refs/remotes/origin/master
 	if (sz < (ssize_t)sizeof(len))
 		return NULL;
 
@@ -184,7 +223,11 @@ static char *do_read_string(int fd, struct perf_header *ph)
 	if (!buf)
 		return NULL;
 
+<<<<<<< HEAD
 	ret = read(fd, buf, len);
+=======
+	ret = readn(fd, buf, len);
+>>>>>>> refs/remotes/origin/master
 	if (ret == (ssize_t)len) {
 		/*
 		 * strings are padded by zeroes
@@ -203,6 +246,18 @@ perf_header__set_cmdline(int argc, const char **argv)
 {
 	int i;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * If header_argv has already been set, do not override it.
+	 * This allows a command to set the cmdline, parse args and
+	 * then call another builtin function that implements a
+	 * command -- e.g, cmd_kvm calling cmd_record.
+	 */
+	if (header_argv)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	header_argc = (u32)argc;
 
 	/* do not include NULL termination */
@@ -220,20 +275,55 @@ perf_header__set_cmdline(int argc, const char **argv)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define dsos__for_each_with_build_id(pos, head)	\
 	list_for_each_entry(pos, head, node)	\
 		if (!pos->has_build_id)		\
 			continue;		\
 		else
 
+<<<<<<< HEAD
 static int __dsos__write_buildid_table(struct list_head *head, pid_t pid,
 				u16 misc, int fd)
 {
+=======
+static int write_buildid(const char *name, size_t name_len, u8 *build_id,
+			 pid_t pid, u16 misc, int fd)
+{
+	int err;
+	struct build_id_event b;
+	size_t len;
+
+	len = name_len + 1;
+	len = PERF_ALIGN(len, NAME_ALIGN);
+
+	memset(&b, 0, sizeof(b));
+	memcpy(&b.build_id, build_id, BUILD_ID_SIZE);
+	b.pid = pid;
+	b.header.misc = misc;
+	b.header.size = sizeof(b) + len;
+
+	err = do_write(fd, &b, sizeof(b));
+	if (err < 0)
+		return err;
+
+	return write_padded(fd, name, name_len + 1, len);
+}
+
+static int __dsos__write_buildid_table(struct list_head *head,
+				       struct machine *machine,
+				       pid_t pid, u16 misc, int fd)
+{
+	char nm[PATH_MAX];
+>>>>>>> refs/remotes/origin/master
 	struct dso *pos;
 
 	dsos__for_each_with_build_id(pos, head) {
 		int err;
+<<<<<<< HEAD
 		struct build_id_event b;
 		size_t len;
 
@@ -252,6 +342,29 @@ static int __dsos__write_buildid_table(struct list_head *head, pid_t pid,
 		err = write_padded(fd, pos->long_name,
 				   pos->long_name_len + 1, len);
 		if (err < 0)
+=======
+		const char *name;
+		size_t name_len;
+
+		if (!pos->hit)
+			continue;
+
+		if (is_vdso_map(pos->short_name)) {
+			name = (char *) VDSO__MAP_NAME;
+			name_len = sizeof(VDSO__MAP_NAME) + 1;
+		} else if (dso__is_kcore(pos)) {
+			machine__mmap_name(machine, nm, sizeof(nm));
+			name = nm;
+			name_len = strlen(nm) + 1;
+		} else {
+			name = pos->long_name;
+			name_len = pos->long_name_len + 1;
+		}
+
+		err = write_buildid(name, name_len, pos->build_id,
+				    pid, misc, fd);
+		if (err)
+>>>>>>> refs/remotes/origin/master
 			return err;
 	}
 
@@ -269,10 +382,17 @@ static int machine__write_buildid_table(struct machine *machine, int fd)
 		umisc = PERF_RECORD_MISC_GUEST_USER;
 	}
 
+<<<<<<< HEAD
 	err = __dsos__write_buildid_table(&machine->kernel_dsos, machine->pid,
 					  kmisc, fd);
 	if (err == 0)
 		err = __dsos__write_buildid_table(&machine->user_dsos,
+=======
+	err = __dsos__write_buildid_table(&machine->kernel_dsos, machine,
+					  machine->pid, kmisc, fd);
+	if (err == 0)
+		err = __dsos__write_buildid_table(&machine->user_dsos, machine,
+>>>>>>> refs/remotes/origin/master
 						  machine->pid, umisc, fd);
 	return err;
 }
@@ -282,12 +402,20 @@ static int dsos__write_buildid_table(struct perf_header *header, int fd)
 	struct perf_session *session = container_of(header,
 			struct perf_session, header);
 	struct rb_node *nd;
+<<<<<<< HEAD
 	int err = machine__write_buildid_table(&session->host_machine, fd);
+=======
+	int err = machine__write_buildid_table(&session->machines.host, fd);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	for (nd = rb_first(&session->machines); nd; nd = rb_next(nd)) {
+=======
+	for (nd = rb_first(&session->machines.guests); nd; nd = rb_next(nd)) {
+>>>>>>> refs/remotes/origin/master
 		struct machine *pos = rb_entry(nd, struct machine, rb_node);
 		err = machine__write_buildid_table(pos, fd);
 		if (err)
@@ -297,6 +425,7 @@ static int dsos__write_buildid_table(struct perf_header *header, int fd)
 }
 
 int build_id_cache__add_s(const char *sbuild_id, const char *debugdir,
+<<<<<<< HEAD
 			  const char *name, bool is_kallsyms)
 {
 	const size_t size = PATH_MAX;
@@ -308,19 +437,36 @@ int build_id_cache__add_s(const char *sbuild_id, const char *debugdir,
 	     *linkname = zalloc(size), *targetname;
 >>>>>>> refs/remotes/origin/cm-10.0
 	int len, err = -1;
+=======
+			  const char *name, bool is_kallsyms, bool is_vdso)
+{
+	const size_t size = PATH_MAX;
+	char *realname, *filename = zalloc(size),
+	     *linkname = zalloc(size), *targetname;
+	int len, err = -1;
+	bool slash = is_kallsyms || is_vdso;
+>>>>>>> refs/remotes/origin/master
 
 	if (is_kallsyms) {
 		if (symbol_conf.kptr_restrict) {
 			pr_debug("Not caching a kptr_restrict'ed /proc/kallsyms\n");
+<<<<<<< HEAD
 			return 0;
 		}
 		realname = (char *)name;
+=======
+			err = 0;
+			goto out_free;
+		}
+		realname = (char *) name;
+>>>>>>> refs/remotes/origin/master
 	} else
 		realname = realpath(name, NULL);
 
 	if (realname == NULL || filename == NULL || linkname == NULL)
 		goto out_free;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	len = snprintf(filename, size, "%s%s%s",
 =======
@@ -335,6 +481,15 @@ int build_id_cache__add_s(const char *sbuild_id, const char *debugdir,
 =======
 	snprintf(filename + len, size - len, "/%s", sbuild_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	len = scnprintf(filename, size, "%s%s%s",
+		       debugdir, slash ? "/" : "",
+		       is_vdso ? VDSO__MAP_NAME : realname);
+	if (mkdir_p(filename, 0755))
+		goto out_free;
+
+	snprintf(filename + len, size - len, "/%s", sbuild_id);
+>>>>>>> refs/remotes/origin/master
 
 	if (access(filename, F_OK)) {
 		if (is_kallsyms) {
@@ -345,10 +500,14 @@ int build_id_cache__add_s(const char *sbuild_id, const char *debugdir,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	len = snprintf(linkname, size, "%s/.build-id/%.2s",
 =======
 	len = scnprintf(linkname, size, "%s/.build-id/%.2s",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	len = scnprintf(linkname, size, "%s/.build-id/%.2s",
+>>>>>>> refs/remotes/origin/master
 		       debugdir, sbuild_id);
 
 	if (access(linkname, X_OK) && mkdir_p(linkname, 0755))
@@ -370,18 +529,28 @@ out_free:
 
 static int build_id_cache__add_b(const u8 *build_id, size_t build_id_size,
 				 const char *name, const char *debugdir,
+<<<<<<< HEAD
 				 bool is_kallsyms)
+=======
+				 bool is_kallsyms, bool is_vdso)
+>>>>>>> refs/remotes/origin/master
 {
 	char sbuild_id[BUILD_ID_SIZE * 2 + 1];
 
 	build_id__sprintf(build_id, build_id_size, sbuild_id);
 
+<<<<<<< HEAD
 	return build_id_cache__add_s(sbuild_id, debugdir, name, is_kallsyms);
+=======
+	return build_id_cache__add_s(sbuild_id, debugdir, name,
+				     is_kallsyms, is_vdso);
+>>>>>>> refs/remotes/origin/master
 }
 
 int build_id_cache__remove_s(const char *sbuild_id, const char *debugdir)
 {
 	const size_t size = PATH_MAX;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	char *filename = malloc(size),
 	     *linkname = malloc(size);
@@ -389,6 +558,10 @@ int build_id_cache__remove_s(const char *sbuild_id, const char *debugdir)
 	char *filename = zalloc(size),
 	     *linkname = zalloc(size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char *filename = zalloc(size),
+	     *linkname = zalloc(size);
+>>>>>>> refs/remotes/origin/master
 	int err = -1;
 
 	if (filename == NULL || linkname == NULL)
@@ -401,10 +574,14 @@ int build_id_cache__remove_s(const char *sbuild_id, const char *debugdir)
 		goto out_free;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (readlink(linkname, filename, size) < 0)
 =======
 	if (readlink(linkname, filename, size - 1) < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (readlink(linkname, filename, size - 1) < 0)
+>>>>>>> refs/remotes/origin/master
 		goto out_free;
 
 	if (unlink(linkname))
@@ -426,6 +603,7 @@ out_free:
 	return err;
 }
 
+<<<<<<< HEAD
 static int dso__cache_build_id(struct dso *dso, const char *debugdir)
 {
 	bool is_kallsyms = dso->kernel && dso->long_name[0] != '/';
@@ -435,12 +613,37 @@ static int dso__cache_build_id(struct dso *dso, const char *debugdir)
 }
 
 static int __dsos__cache_build_ids(struct list_head *head, const char *debugdir)
+=======
+static int dso__cache_build_id(struct dso *dso, struct machine *machine,
+			       const char *debugdir)
+{
+	bool is_kallsyms = dso->kernel && dso->long_name[0] != '/';
+	bool is_vdso = is_vdso_map(dso->short_name);
+	const char *name = dso->long_name;
+	char nm[PATH_MAX];
+
+	if (dso__is_kcore(dso)) {
+		is_kallsyms = true;
+		machine__mmap_name(machine, nm, sizeof(nm));
+		name = nm;
+	}
+	return build_id_cache__add_b(dso->build_id, sizeof(dso->build_id), name,
+				     debugdir, is_kallsyms, is_vdso);
+}
+
+static int __dsos__cache_build_ids(struct list_head *head,
+				   struct machine *machine, const char *debugdir)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dso *pos;
 	int err = 0;
 
 	dsos__for_each_with_build_id(pos, head)
+<<<<<<< HEAD
 		if (dso__cache_build_id(pos, debugdir))
+=======
+		if (dso__cache_build_id(pos, machine, debugdir))
+>>>>>>> refs/remotes/origin/master
 			err = -1;
 
 	return err;
@@ -448,8 +651,14 @@ static int __dsos__cache_build_ids(struct list_head *head, const char *debugdir)
 
 static int machine__cache_build_ids(struct machine *machine, const char *debugdir)
 {
+<<<<<<< HEAD
 	int ret = __dsos__cache_build_ids(&machine->kernel_dsos, debugdir);
 	ret |= __dsos__cache_build_ids(&machine->user_dsos, debugdir);
+=======
+	int ret = __dsos__cache_build_ids(&machine->kernel_dsos, machine,
+					  debugdir);
+	ret |= __dsos__cache_build_ids(&machine->user_dsos, machine, debugdir);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -464,9 +673,15 @@ static int perf_session__cache_build_ids(struct perf_session *session)
 	if (mkdir(debugdir, 0755) != 0 && errno != EEXIST)
 		return -1;
 
+<<<<<<< HEAD
 	ret = machine__cache_build_ids(&session->host_machine, debugdir);
 
 	for (nd = rb_first(&session->machines); nd; nd = rb_next(nd)) {
+=======
+	ret = machine__cache_build_ids(&session->machines.host, debugdir);
+
+	for (nd = rb_first(&session->machines.guests); nd; nd = rb_next(nd)) {
+>>>>>>> refs/remotes/origin/master
 		struct machine *pos = rb_entry(nd, struct machine, rb_node);
 		ret |= machine__cache_build_ids(pos, debugdir);
 	}
@@ -483,9 +698,15 @@ static bool machine__read_build_ids(struct machine *machine, bool with_hits)
 static bool perf_session__read_build_ids(struct perf_session *session, bool with_hits)
 {
 	struct rb_node *nd;
+<<<<<<< HEAD
 	bool ret = machine__read_build_ids(&session->host_machine, with_hits);
 
 	for (nd = rb_first(&session->machines); nd; nd = rb_next(nd)) {
+=======
+	bool ret = machine__read_build_ids(&session->machines.host, with_hits);
+
+	for (nd = rb_first(&session->machines.guests); nd; nd = rb_next(nd)) {
+>>>>>>> refs/remotes/origin/master
 		struct machine *pos = rb_entry(nd, struct machine, rb_node);
 		ret |= machine__read_build_ids(pos, with_hits);
 	}
@@ -494,8 +715,12 @@ static bool perf_session__read_build_ids(struct perf_session *session, bool with
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int write_trace_info(int fd, struct perf_header *h __used,
+=======
+static int write_tracing_data(int fd, struct perf_header *h __maybe_unused,
+>>>>>>> refs/remotes/origin/master
 			    struct perf_evlist *evlist)
 {
 	return read_tracing_data(fd, &evlist->entries);
@@ -503,7 +728,11 @@ static int write_trace_info(int fd, struct perf_header *h __used,
 
 
 static int write_build_id(int fd, struct perf_header *h,
+<<<<<<< HEAD
 			  struct perf_evlist *evlist __used)
+=======
+			  struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_session *session;
 	int err;
@@ -524,8 +753,13 @@ static int write_build_id(int fd, struct perf_header *h,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int write_hostname(int fd, struct perf_header *h __used,
 			  struct perf_evlist *evlist __used)
+=======
+static int write_hostname(int fd, struct perf_header *h __maybe_unused,
+			  struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct utsname uts;
 	int ret;
@@ -537,8 +771,13 @@ static int write_hostname(int fd, struct perf_header *h __used,
 	return do_write_string(fd, uts.nodename);
 }
 
+<<<<<<< HEAD
 static int write_osrelease(int fd, struct perf_header *h __used,
 			   struct perf_evlist *evlist __used)
+=======
+static int write_osrelease(int fd, struct perf_header *h __maybe_unused,
+			   struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct utsname uts;
 	int ret;
@@ -550,8 +789,13 @@ static int write_osrelease(int fd, struct perf_header *h __used,
 	return do_write_string(fd, uts.release);
 }
 
+<<<<<<< HEAD
 static int write_arch(int fd, struct perf_header *h __used,
 		      struct perf_evlist *evlist __used)
+=======
+static int write_arch(int fd, struct perf_header *h __maybe_unused,
+		      struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct utsname uts;
 	int ret;
@@ -563,14 +807,24 @@ static int write_arch(int fd, struct perf_header *h __used,
 	return do_write_string(fd, uts.machine);
 }
 
+<<<<<<< HEAD
 static int write_version(int fd, struct perf_header *h __used,
 			 struct perf_evlist *evlist __used)
+=======
+static int write_version(int fd, struct perf_header *h __maybe_unused,
+			 struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	return do_write_string(fd, perf_version_string);
 }
 
+<<<<<<< HEAD
 static int write_cpudesc(int fd, struct perf_header *h __used,
 		       struct perf_evlist *evlist __used)
+=======
+static int write_cpudesc(int fd, struct perf_header *h __maybe_unused,
+		       struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 #ifndef CPUINFO_PROC
 #define CPUINFO_PROC NULL
@@ -628,8 +882,13 @@ done:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int write_nrcpus(int fd, struct perf_header *h __used,
 			struct perf_evlist *evlist __used)
+=======
+static int write_nrcpus(int fd, struct perf_header *h __maybe_unused,
+			struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	long nr;
 	u32 nrc, nra;
@@ -654,6 +913,7 @@ static int write_nrcpus(int fd, struct perf_header *h __used,
 	return do_write(fd, &nra, sizeof(nra));
 }
 
+<<<<<<< HEAD
 static int write_event_desc(int fd, struct perf_header *h __used,
 			    struct perf_evlist *evlist)
 {
@@ -663,6 +923,16 @@ static int write_event_desc(int fd, struct perf_header *h __used,
 
 	list_for_each_entry(attr, &evlist->entries, node)
 		nre++;
+=======
+static int write_event_desc(int fd, struct perf_header *h __maybe_unused,
+			    struct perf_evlist *evlist)
+{
+	struct perf_evsel *evsel;
+	u32 nre, nri, sz;
+	int ret;
+
+	nre = evlist->nr_entries;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * write number of events
@@ -674,14 +944,23 @@ static int write_event_desc(int fd, struct perf_header *h __used,
 	/*
 	 * size of perf_event_attr struct
 	 */
+<<<<<<< HEAD
 	sz = (u32)sizeof(attr->attr);
+=======
+	sz = (u32)sizeof(evsel->attr);
+>>>>>>> refs/remotes/origin/master
 	ret = do_write(fd, &sz, sizeof(sz));
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	list_for_each_entry(attr, &evlist->entries, node) {
 
 		ret = do_write(fd, &attr->attr, sz);
+=======
+	evlist__for_each(evlist, evsel) {
+		ret = do_write(fd, &evsel->attr, sz);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			return ret;
 		/*
@@ -691,7 +970,11 @@ static int write_event_desc(int fd, struct perf_header *h __used,
 		 * copy into an nri to be independent of the
 		 * type of ids,
 		 */
+<<<<<<< HEAD
 		nri = attr->ids;
+=======
+		nri = evsel->ids;
+>>>>>>> refs/remotes/origin/master
 		ret = do_write(fd, &nri, sizeof(nri));
 		if (ret < 0)
 			return ret;
@@ -699,21 +982,34 @@ static int write_event_desc(int fd, struct perf_header *h __used,
 		/*
 		 * write event string as passed on cmdline
 		 */
+<<<<<<< HEAD
 		ret = do_write_string(fd, event_name(attr));
+=======
+		ret = do_write_string(fd, perf_evsel__name(evsel));
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			return ret;
 		/*
 		 * write unique ids for this event
 		 */
+<<<<<<< HEAD
 		ret = do_write(fd, attr->id, attr->ids * sizeof(u64));
+=======
+		ret = do_write(fd, evsel->id, evsel->ids * sizeof(u64));
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			return ret;
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static int write_cmdline(int fd, struct perf_header *h __used,
 			 struct perf_evlist *evlist __used)
+=======
+static int write_cmdline(int fd, struct perf_header *h __maybe_unused,
+			 struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	char buf[MAXPATHLEN];
 	char proc[32];
@@ -768,18 +1064,31 @@ static int build_cpu_topo(struct cpu_topo *tp, int cpu)
 	char filename[MAXPATHLEN];
 	char *buf = NULL, *p;
 	size_t len = 0;
+<<<<<<< HEAD
+=======
+	ssize_t sret;
+>>>>>>> refs/remotes/origin/master
 	u32 i = 0;
 	int ret = -1;
 
 	sprintf(filename, CORE_SIB_FMT, cpu);
 	fp = fopen(filename, "r");
 	if (!fp)
+<<<<<<< HEAD
 		return -1;
 
 	if (getline(&buf, &len, fp) <= 0)
 		goto done;
 
 	fclose(fp);
+=======
+		goto try_threads;
+
+	sret = getline(&buf, &len, fp);
+	fclose(fp);
+	if (sret <= 0)
+		goto try_threads;
+>>>>>>> refs/remotes/origin/master
 
 	p = strchr(buf, '\n');
 	if (p)
@@ -795,7 +1104,13 @@ static int build_cpu_topo(struct cpu_topo *tp, int cpu)
 		buf = NULL;
 		len = 0;
 	}
+<<<<<<< HEAD
 
+=======
+	ret = 0;
+
+try_threads:
+>>>>>>> refs/remotes/origin/master
 	sprintf(filename, THRD_SIB_FMT, cpu);
 	fp = fopen(filename, "r");
 	if (!fp)
@@ -833,10 +1148,17 @@ static void free_cpu_topo(struct cpu_topo *tp)
 		return;
 
 	for (i = 0 ; i < tp->core_sib; i++)
+<<<<<<< HEAD
 		free(tp->core_siblings[i]);
 
 	for (i = 0 ; i < tp->thread_sib; i++)
 		free(tp->thread_siblings[i]);
+=======
+		zfree(&tp->core_siblings[i]);
+
+	for (i = 0 ; i < tp->thread_sib; i++)
+		zfree(&tp->thread_siblings[i]);
+>>>>>>> refs/remotes/origin/master
 
 	free(tp);
 }
@@ -881,8 +1203,13 @@ static struct cpu_topo *build_cpu_topology(void)
 	return tp;
 }
 
+<<<<<<< HEAD
 static int write_cpu_topology(int fd, struct perf_header *h __used,
 			  struct perf_evlist *evlist __used)
+=======
+static int write_cpu_topology(int fd, struct perf_header *h __maybe_unused,
+			  struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpu_topo *tp;
 	u32 i;
@@ -917,8 +1244,13 @@ done:
 
 
 
+<<<<<<< HEAD
 static int write_total_mem(int fd, struct perf_header *h __used,
 			  struct perf_evlist *evlist __used)
+=======
+static int write_total_mem(int fd, struct perf_header *h __maybe_unused,
+			  struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	char *buf = NULL;
 	FILE *fp;
@@ -973,6 +1305,10 @@ static int write_topo_node(int fd, int node)
 	}
 
 	fclose(fp);
+<<<<<<< HEAD
+=======
+	fp = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	ret = do_write(fd, &mem_total, sizeof(u64));
 	if (ret)
@@ -999,12 +1335,22 @@ static int write_topo_node(int fd, int node)
 	ret = do_write_string(fd, buf);
 done:
 	free(buf);
+<<<<<<< HEAD
 	fclose(fp);
 	return ret;
 }
 
 static int write_numa_topology(int fd, struct perf_header *h __used,
 			  struct perf_evlist *evlist __used)
+=======
+	if (fp)
+		fclose(fp);
+	return ret;
+}
+
+static int write_numa_topology(int fd, struct perf_header *h __maybe_unused,
+			  struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	char *buf = NULL;
 	size_t len = 0;
@@ -1053,16 +1399,123 @@ done:
 }
 
 /*
+<<<<<<< HEAD
  * default get_cpuid(): nothing gets recorded
  * actual implementation must be in arch/$(ARCH)/util/header.c
  */
 int __attribute__((weak)) get_cpuid(char *buffer __used, size_t sz __used)
+=======
+ * File format:
+ *
+ * struct pmu_mappings {
+ *	u32	pmu_num;
+ *	struct pmu_map {
+ *		u32	type;
+ *		char	name[];
+ *	}[pmu_num];
+ * };
+ */
+
+static int write_pmu_mappings(int fd, struct perf_header *h __maybe_unused,
+			      struct perf_evlist *evlist __maybe_unused)
+{
+	struct perf_pmu *pmu = NULL;
+	off_t offset = lseek(fd, 0, SEEK_CUR);
+	__u32 pmu_num = 0;
+	int ret;
+
+	/* write real pmu_num later */
+	ret = do_write(fd, &pmu_num, sizeof(pmu_num));
+	if (ret < 0)
+		return ret;
+
+	while ((pmu = perf_pmu__scan(pmu))) {
+		if (!pmu->name)
+			continue;
+		pmu_num++;
+
+		ret = do_write(fd, &pmu->type, sizeof(pmu->type));
+		if (ret < 0)
+			return ret;
+
+		ret = do_write_string(fd, pmu->name);
+		if (ret < 0)
+			return ret;
+	}
+
+	if (pwrite(fd, &pmu_num, sizeof(pmu_num), offset) != sizeof(pmu_num)) {
+		/* discard all */
+		lseek(fd, offset, SEEK_SET);
+		return -1;
+	}
+
+	return 0;
+}
+
+/*
+ * File format:
+ *
+ * struct group_descs {
+ *	u32	nr_groups;
+ *	struct group_desc {
+ *		char	name[];
+ *		u32	leader_idx;
+ *		u32	nr_members;
+ *	}[nr_groups];
+ * };
+ */
+static int write_group_desc(int fd, struct perf_header *h __maybe_unused,
+			    struct perf_evlist *evlist)
+{
+	u32 nr_groups = evlist->nr_groups;
+	struct perf_evsel *evsel;
+	int ret;
+
+	ret = do_write(fd, &nr_groups, sizeof(nr_groups));
+	if (ret < 0)
+		return ret;
+
+	evlist__for_each(evlist, evsel) {
+		if (perf_evsel__is_group_leader(evsel) &&
+		    evsel->nr_members > 1) {
+			const char *name = evsel->group_name ?: "{anon_group}";
+			u32 leader_idx = evsel->idx;
+			u32 nr_members = evsel->nr_members;
+
+			ret = do_write_string(fd, name);
+			if (ret < 0)
+				return ret;
+
+			ret = do_write(fd, &leader_idx, sizeof(leader_idx));
+			if (ret < 0)
+				return ret;
+
+			ret = do_write(fd, &nr_members, sizeof(nr_members));
+			if (ret < 0)
+				return ret;
+		}
+	}
+	return 0;
+}
+
+/*
+ * default get_cpuid(): nothing gets recorded
+ * actual implementation must be in arch/$(ARCH)/util/header.c
+ */
+int __attribute__ ((weak)) get_cpuid(char *buffer __maybe_unused,
+				     size_t sz __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	return -1;
 }
 
+<<<<<<< HEAD
 static int write_cpuid(int fd, struct perf_header *h __used,
 		       struct perf_evlist *evlist __used)
+=======
+static int write_cpuid(int fd, struct perf_header *h __maybe_unused,
+		       struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	char buffer[64];
 	int ret;
@@ -1076,12 +1529,19 @@ write_it:
 	return do_write_string(fd, buffer);
 }
 
+<<<<<<< HEAD
 static int write_branch_stack(int fd __used, struct perf_header *h __used,
 		       struct perf_evlist *evlist __used)
+=======
+static int write_branch_stack(int fd __maybe_unused,
+			      struct perf_header *h __maybe_unused,
+		       struct perf_evlist *evlist __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static void print_hostname(struct perf_header *ph, int fd, FILE *fp)
 {
 	char *str = do_read_string(fd, ph);
@@ -1153,17 +1613,69 @@ static void print_cmdline(struct perf_header *ph, int fd, FILE *fp)
 
 	if (ph->needs_swap)
 		nr = bswap_32(nr);
+=======
+static void print_hostname(struct perf_header *ph, int fd __maybe_unused,
+			   FILE *fp)
+{
+	fprintf(fp, "# hostname : %s\n", ph->env.hostname);
+}
+
+static void print_osrelease(struct perf_header *ph, int fd __maybe_unused,
+			    FILE *fp)
+{
+	fprintf(fp, "# os release : %s\n", ph->env.os_release);
+}
+
+static void print_arch(struct perf_header *ph, int fd __maybe_unused, FILE *fp)
+{
+	fprintf(fp, "# arch : %s\n", ph->env.arch);
+}
+
+static void print_cpudesc(struct perf_header *ph, int fd __maybe_unused,
+			  FILE *fp)
+{
+	fprintf(fp, "# cpudesc : %s\n", ph->env.cpu_desc);
+}
+
+static void print_nrcpus(struct perf_header *ph, int fd __maybe_unused,
+			 FILE *fp)
+{
+	fprintf(fp, "# nrcpus online : %u\n", ph->env.nr_cpus_online);
+	fprintf(fp, "# nrcpus avail : %u\n", ph->env.nr_cpus_avail);
+}
+
+static void print_version(struct perf_header *ph, int fd __maybe_unused,
+			  FILE *fp)
+{
+	fprintf(fp, "# perf version : %s\n", ph->env.version);
+}
+
+static void print_cmdline(struct perf_header *ph, int fd __maybe_unused,
+			  FILE *fp)
+{
+	int nr, i;
+	char *str;
+
+	nr = ph->env.nr_cmdline;
+	str = ph->env.cmdline;
+>>>>>>> refs/remotes/origin/master
 
 	fprintf(fp, "# cmdline : ");
 
 	for (i = 0; i < nr; i++) {
+<<<<<<< HEAD
 		str = do_read_string(fd, ph);
 		fprintf(fp, "%s ", str);
 		free(str);
+=======
+		fprintf(fp, "%s ", str);
+		str += strlen(str) + 1;
+>>>>>>> refs/remotes/origin/master
 	}
 	fputc('\n', fp);
 }
 
+<<<<<<< HEAD
 static void print_cpu_topology(struct perf_header *ph, int fd, FILE *fp)
 {
 	ssize_t ret;
@@ -1203,49 +1715,125 @@ static void print_event_desc(struct perf_header *ph, int fd, FILE *fp)
 	uint64_t id;
 	void *buf = NULL;
 	char *str;
+=======
+static void print_cpu_topology(struct perf_header *ph, int fd __maybe_unused,
+			       FILE *fp)
+{
+	int nr, i;
+	char *str;
+
+	nr = ph->env.nr_sibling_cores;
+	str = ph->env.sibling_cores;
+
+	for (i = 0; i < nr; i++) {
+		fprintf(fp, "# sibling cores   : %s\n", str);
+		str += strlen(str) + 1;
+	}
+
+	nr = ph->env.nr_sibling_threads;
+	str = ph->env.sibling_threads;
+
+	for (i = 0; i < nr; i++) {
+		fprintf(fp, "# sibling threads : %s\n", str);
+		str += strlen(str) + 1;
+	}
+}
+
+static void free_event_desc(struct perf_evsel *events)
+{
+	struct perf_evsel *evsel;
+
+	if (!events)
+		return;
+
+	for (evsel = events; evsel->attr.size; evsel++) {
+		zfree(&evsel->name);
+		zfree(&evsel->id);
+	}
+
+	free(events);
+}
+
+static struct perf_evsel *
+read_event_desc(struct perf_header *ph, int fd)
+{
+	struct perf_evsel *evsel, *events = NULL;
+	u64 *id;
+	void *buf = NULL;
+>>>>>>> refs/remotes/origin/master
 	u32 nre, sz, nr, i, j;
 	ssize_t ret;
 	size_t msz;
 
 	/* number of events */
+<<<<<<< HEAD
 	ret = read(fd, &nre, sizeof(nre));
+=======
+	ret = readn(fd, &nre, sizeof(nre));
+>>>>>>> refs/remotes/origin/master
 	if (ret != (ssize_t)sizeof(nre))
 		goto error;
 
 	if (ph->needs_swap)
 		nre = bswap_32(nre);
 
+<<<<<<< HEAD
 	ret = read(fd, &sz, sizeof(sz));
+=======
+	ret = readn(fd, &sz, sizeof(sz));
+>>>>>>> refs/remotes/origin/master
 	if (ret != (ssize_t)sizeof(sz))
 		goto error;
 
 	if (ph->needs_swap)
 		sz = bswap_32(sz);
 
+<<<<<<< HEAD
 	memset(&attr, 0, sizeof(attr));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* buffer to hold on file attr struct */
 	buf = malloc(sz);
 	if (!buf)
 		goto error;
 
+<<<<<<< HEAD
 	msz = sizeof(attr);
 	if (sz < msz)
 		msz = sz;
 
 	for (i = 0 ; i < nre; i++) {
+=======
+	/* the last event terminates with evsel->attr.size == 0: */
+	events = calloc(nre + 1, sizeof(*events));
+	if (!events)
+		goto error;
+
+	msz = sizeof(evsel->attr);
+	if (sz < msz)
+		msz = sz;
+
+	for (i = 0, evsel = events; i < nre; evsel++, i++) {
+		evsel->idx = i;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * must read entire on-file attr struct to
 		 * sync up with layout.
 		 */
+<<<<<<< HEAD
 		ret = read(fd, buf, sz);
+=======
+		ret = readn(fd, buf, sz);
+>>>>>>> refs/remotes/origin/master
 		if (ret != (ssize_t)sz)
 			goto error;
 
 		if (ph->needs_swap)
 			perf_event__attr_swap(buf);
 
+<<<<<<< HEAD
 		memcpy(&attr, buf, msz);
 
 		ret = read(fd, &nr, sizeof(nr));
@@ -1361,12 +1949,147 @@ static void print_numa_topology(struct perf_header *h __used, int fd, FILE *fp)
 		str = do_read_string(fd, h);
 		fprintf(fp, "# node%u cpu list : %s\n", c, str);
 		free(str);
+=======
+		memcpy(&evsel->attr, buf, msz);
+
+		ret = readn(fd, &nr, sizeof(nr));
+		if (ret != (ssize_t)sizeof(nr))
+			goto error;
+
+		if (ph->needs_swap) {
+			nr = bswap_32(nr);
+			evsel->needs_swap = true;
+		}
+
+		evsel->name = do_read_string(fd, ph);
+
+		if (!nr)
+			continue;
+
+		id = calloc(nr, sizeof(*id));
+		if (!id)
+			goto error;
+		evsel->ids = nr;
+		evsel->id = id;
+
+		for (j = 0 ; j < nr; j++) {
+			ret = readn(fd, id, sizeof(*id));
+			if (ret != (ssize_t)sizeof(*id))
+				goto error;
+			if (ph->needs_swap)
+				*id = bswap_64(*id);
+			id++;
+		}
+	}
+out:
+	free(buf);
+	return events;
+error:
+	if (events)
+		free_event_desc(events);
+	events = NULL;
+	goto out;
+}
+
+static void print_event_desc(struct perf_header *ph, int fd, FILE *fp)
+{
+	struct perf_evsel *evsel, *events = read_event_desc(ph, fd);
+	u32 j;
+	u64 *id;
+
+	if (!events) {
+		fprintf(fp, "# event desc: not available or unable to read\n");
+		return;
+	}
+
+	for (evsel = events; evsel->attr.size; evsel++) {
+		fprintf(fp, "# event : name = %s, ", evsel->name);
+
+		fprintf(fp, "type = %d, config = 0x%"PRIx64
+			    ", config1 = 0x%"PRIx64", config2 = 0x%"PRIx64,
+				evsel->attr.type,
+				(u64)evsel->attr.config,
+				(u64)evsel->attr.config1,
+				(u64)evsel->attr.config2);
+
+		fprintf(fp, ", excl_usr = %d, excl_kern = %d",
+				evsel->attr.exclude_user,
+				evsel->attr.exclude_kernel);
+
+		fprintf(fp, ", excl_host = %d, excl_guest = %d",
+				evsel->attr.exclude_host,
+				evsel->attr.exclude_guest);
+
+		fprintf(fp, ", precise_ip = %d", evsel->attr.precise_ip);
+
+		fprintf(fp, ", attr_mmap2 = %d", evsel->attr.mmap2);
+		fprintf(fp, ", attr_mmap  = %d", evsel->attr.mmap);
+		fprintf(fp, ", attr_mmap_data = %d", evsel->attr.mmap_data);
+		if (evsel->ids) {
+			fprintf(fp, ", id = {");
+			for (j = 0, id = evsel->id; j < evsel->ids; j++, id++) {
+				if (j)
+					fputc(',', fp);
+				fprintf(fp, " %"PRIu64, *id);
+			}
+			fprintf(fp, " }");
+		}
+
+		fputc('\n', fp);
+	}
+
+	free_event_desc(events);
+}
+
+static void print_total_mem(struct perf_header *ph, int fd __maybe_unused,
+			    FILE *fp)
+{
+	fprintf(fp, "# total memory : %Lu kB\n", ph->env.total_mem);
+}
+
+static void print_numa_topology(struct perf_header *ph, int fd __maybe_unused,
+				FILE *fp)
+{
+	u32 nr, c, i;
+	char *str, *tmp;
+	uint64_t mem_total, mem_free;
+
+	/* nr nodes */
+	nr = ph->env.nr_numa_nodes;
+	str = ph->env.numa_nodes;
+
+	for (i = 0; i < nr; i++) {
+		/* node number */
+		c = strtoul(str, &tmp, 0);
+		if (*tmp != ':')
+			goto error;
+
+		str = tmp + 1;
+		mem_total = strtoull(str, &tmp, 0);
+		if (*tmp != ':')
+			goto error;
+
+		str = tmp + 1;
+		mem_free = strtoull(str, &tmp, 0);
+		if (*tmp != ':')
+			goto error;
+
+		fprintf(fp, "# node%u meminfo  : total = %"PRIu64" kB,"
+			    " free = %"PRIu64" kB\n",
+			c, mem_total, mem_free);
+
+		str = tmp + 1;
+		fprintf(fp, "# node%u cpu list : %s\n", c, str);
+
+		str += strlen(str) + 1;
+>>>>>>> refs/remotes/origin/master
 	}
 	return;
 error:
 	fprintf(fp, "# numa topology : not available\n");
 }
 
+<<<<<<< HEAD
 static void print_cpuid(struct perf_header *ph, int fd, FILE *fp)
 {
 	char *str = do_read_string(fd, ph);
@@ -1376,10 +2099,84 @@ static void print_cpuid(struct perf_header *ph, int fd, FILE *fp)
 
 static void print_branch_stack(struct perf_header *ph __used, int fd __used,
 			       FILE *fp)
+=======
+static void print_cpuid(struct perf_header *ph, int fd __maybe_unused, FILE *fp)
+{
+	fprintf(fp, "# cpuid : %s\n", ph->env.cpuid);
+}
+
+static void print_branch_stack(struct perf_header *ph __maybe_unused,
+			       int fd __maybe_unused, FILE *fp)
+>>>>>>> refs/remotes/origin/master
 {
 	fprintf(fp, "# contains samples with branch stack\n");
 }
 
+<<<<<<< HEAD
+=======
+static void print_pmu_mappings(struct perf_header *ph, int fd __maybe_unused,
+			       FILE *fp)
+{
+	const char *delimiter = "# pmu mappings: ";
+	char *str, *tmp;
+	u32 pmu_num;
+	u32 type;
+
+	pmu_num = ph->env.nr_pmu_mappings;
+	if (!pmu_num) {
+		fprintf(fp, "# pmu mappings: not available\n");
+		return;
+	}
+
+	str = ph->env.pmu_mappings;
+
+	while (pmu_num) {
+		type = strtoul(str, &tmp, 0);
+		if (*tmp != ':')
+			goto error;
+
+		str = tmp + 1;
+		fprintf(fp, "%s%s = %" PRIu32, delimiter, str, type);
+
+		delimiter = ", ";
+		str += strlen(str) + 1;
+		pmu_num--;
+	}
+
+	fprintf(fp, "\n");
+
+	if (!pmu_num)
+		return;
+error:
+	fprintf(fp, "# pmu mappings: unable to read\n");
+}
+
+static void print_group_desc(struct perf_header *ph, int fd __maybe_unused,
+			     FILE *fp)
+{
+	struct perf_session *session;
+	struct perf_evsel *evsel;
+	u32 nr = 0;
+
+	session = container_of(ph, struct perf_session, header);
+
+	evlist__for_each(session->evlist, evsel) {
+		if (perf_evsel__is_group_leader(evsel) &&
+		    evsel->nr_members > 1) {
+			fprintf(fp, "# group: %s{%s", evsel->group_name ?: "",
+				perf_evsel__name(evsel));
+
+			nr = evsel->nr_members - 1;
+		} else if (nr) {
+			fprintf(fp, ",%s", perf_evsel__name(evsel));
+
+			if (--nr == 0)
+				fprintf(fp, "}\n");
+		}
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __event_process_build_id(struct build_id_event *bev,
 				    char *filename,
 				    struct perf_session *session)
@@ -1441,7 +2238,11 @@ static int perf_header__read_build_ids_abi_quirk(struct perf_header *header,
 	struct perf_session *session = container_of(header, struct perf_session, header);
 	struct {
 		struct perf_event_header   header;
+<<<<<<< HEAD
 		u8			   build_id[ALIGN(BUILD_ID_SIZE, sizeof(u64))];
+=======
+		u8			   build_id[PERF_ALIGN(BUILD_ID_SIZE, sizeof(u64))];
+>>>>>>> refs/remotes/origin/master
 		char			   filename[0];
 	} old_bev;
 	struct build_id_event bev;
@@ -1451,14 +2252,22 @@ static int perf_header__read_build_ids_abi_quirk(struct perf_header *header,
 	while (offset < limit) {
 		ssize_t len;
 
+<<<<<<< HEAD
 		if (read(input, &old_bev, sizeof(old_bev)) != sizeof(old_bev))
+=======
+		if (readn(input, &old_bev, sizeof(old_bev)) != sizeof(old_bev))
+>>>>>>> refs/remotes/origin/master
 			return -1;
 
 		if (header->needs_swap)
 			perf_event_header__bswap(&old_bev.header);
 
 		len = old_bev.header.size - sizeof(old_bev);
+<<<<<<< HEAD
 		if (read(input, filename, len) != len)
+=======
+		if (readn(input, filename, len) != len)
+>>>>>>> refs/remotes/origin/master
 			return -1;
 
 		bev.header = old_bev.header;
@@ -1493,14 +2302,22 @@ static int perf_header__read_build_ids(struct perf_header *header,
 	while (offset < limit) {
 		ssize_t len;
 
+<<<<<<< HEAD
 		if (read(input, &bev, sizeof(bev)) != sizeof(bev))
+=======
+		if (readn(input, &bev, sizeof(bev)) != sizeof(bev))
+>>>>>>> refs/remotes/origin/master
 			goto out;
 
 		if (header->needs_swap)
 			perf_event_header__bswap(&bev.header);
 
 		len = bev.header.size - sizeof(bev);
+<<<<<<< HEAD
 		if (read(input, filename, len) != len)
+=======
+		if (readn(input, filename, len) != len)
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		/*
 		 * The a1645ce1 changeset:
@@ -1530,6 +2347,7 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static int process_trace_info(struct perf_file_section *section __unused,
 			      struct perf_header *ph __unused,
 			      int feat __unused, int fd)
@@ -1541,12 +2359,26 @@ static int process_trace_info(struct perf_file_section *section __unused,
 static int process_build_id(struct perf_file_section *section,
 			    struct perf_header *ph,
 			    int feat __unused, int fd)
+=======
+static int process_tracing_data(struct perf_file_section *section __maybe_unused,
+				struct perf_header *ph __maybe_unused,
+				int fd, void *data)
+{
+	ssize_t ret = trace_report(fd, data, false);
+	return ret < 0 ? -1 : 0;
+}
+
+static int process_build_id(struct perf_file_section *section,
+			    struct perf_header *ph, int fd,
+			    void *data __maybe_unused)
+>>>>>>> refs/remotes/origin/master
 {
 	if (perf_header__read_build_ids(ph, fd, section->offset, section->size))
 		pr_debug("Failed to read buildids, continuing...\n");
 	return 0;
 }
 
+<<<<<<< HEAD
 struct feature_ops {
 	int (*write)(int fd, struct perf_header *h, struct perf_evlist *evlist);
 	void (*print)(struct perf_header *h, int fd, FILE *fp);
@@ -1585,6 +2417,489 @@ static const struct feature_ops feat_ops[HEADER_LAST_FEATURE] = {
 	FEAT_OPF(HEADER_CPU_TOPOLOGY,	cpu_topology),
 	FEAT_OPF(HEADER_NUMA_TOPOLOGY,	numa_topology),
 	FEAT_OPA(HEADER_BRANCH_STACK,	branch_stack),
+=======
+static int process_hostname(struct perf_file_section *section __maybe_unused,
+			    struct perf_header *ph, int fd,
+			    void *data __maybe_unused)
+{
+	ph->env.hostname = do_read_string(fd, ph);
+	return ph->env.hostname ? 0 : -ENOMEM;
+}
+
+static int process_osrelease(struct perf_file_section *section __maybe_unused,
+			     struct perf_header *ph, int fd,
+			     void *data __maybe_unused)
+{
+	ph->env.os_release = do_read_string(fd, ph);
+	return ph->env.os_release ? 0 : -ENOMEM;
+}
+
+static int process_version(struct perf_file_section *section __maybe_unused,
+			   struct perf_header *ph, int fd,
+			   void *data __maybe_unused)
+{
+	ph->env.version = do_read_string(fd, ph);
+	return ph->env.version ? 0 : -ENOMEM;
+}
+
+static int process_arch(struct perf_file_section *section __maybe_unused,
+			struct perf_header *ph,	int fd,
+			void *data __maybe_unused)
+{
+	ph->env.arch = do_read_string(fd, ph);
+	return ph->env.arch ? 0 : -ENOMEM;
+}
+
+static int process_nrcpus(struct perf_file_section *section __maybe_unused,
+			  struct perf_header *ph, int fd,
+			  void *data __maybe_unused)
+{
+	ssize_t ret;
+	u32 nr;
+
+	ret = readn(fd, &nr, sizeof(nr));
+	if (ret != sizeof(nr))
+		return -1;
+
+	if (ph->needs_swap)
+		nr = bswap_32(nr);
+
+	ph->env.nr_cpus_online = nr;
+
+	ret = readn(fd, &nr, sizeof(nr));
+	if (ret != sizeof(nr))
+		return -1;
+
+	if (ph->needs_swap)
+		nr = bswap_32(nr);
+
+	ph->env.nr_cpus_avail = nr;
+	return 0;
+}
+
+static int process_cpudesc(struct perf_file_section *section __maybe_unused,
+			   struct perf_header *ph, int fd,
+			   void *data __maybe_unused)
+{
+	ph->env.cpu_desc = do_read_string(fd, ph);
+	return ph->env.cpu_desc ? 0 : -ENOMEM;
+}
+
+static int process_cpuid(struct perf_file_section *section __maybe_unused,
+			 struct perf_header *ph,  int fd,
+			 void *data __maybe_unused)
+{
+	ph->env.cpuid = do_read_string(fd, ph);
+	return ph->env.cpuid ? 0 : -ENOMEM;
+}
+
+static int process_total_mem(struct perf_file_section *section __maybe_unused,
+			     struct perf_header *ph, int fd,
+			     void *data __maybe_unused)
+{
+	uint64_t mem;
+	ssize_t ret;
+
+	ret = readn(fd, &mem, sizeof(mem));
+	if (ret != sizeof(mem))
+		return -1;
+
+	if (ph->needs_swap)
+		mem = bswap_64(mem);
+
+	ph->env.total_mem = mem;
+	return 0;
+}
+
+static struct perf_evsel *
+perf_evlist__find_by_index(struct perf_evlist *evlist, int idx)
+{
+	struct perf_evsel *evsel;
+
+	evlist__for_each(evlist, evsel) {
+		if (evsel->idx == idx)
+			return evsel;
+	}
+
+	return NULL;
+}
+
+static void
+perf_evlist__set_event_name(struct perf_evlist *evlist,
+			    struct perf_evsel *event)
+{
+	struct perf_evsel *evsel;
+
+	if (!event->name)
+		return;
+
+	evsel = perf_evlist__find_by_index(evlist, event->idx);
+	if (!evsel)
+		return;
+
+	if (evsel->name)
+		return;
+
+	evsel->name = strdup(event->name);
+}
+
+static int
+process_event_desc(struct perf_file_section *section __maybe_unused,
+		   struct perf_header *header, int fd,
+		   void *data __maybe_unused)
+{
+	struct perf_session *session;
+	struct perf_evsel *evsel, *events = read_event_desc(header, fd);
+
+	if (!events)
+		return 0;
+
+	session = container_of(header, struct perf_session, header);
+	for (evsel = events; evsel->attr.size; evsel++)
+		perf_evlist__set_event_name(session->evlist, evsel);
+
+	free_event_desc(events);
+
+	return 0;
+}
+
+static int process_cmdline(struct perf_file_section *section __maybe_unused,
+			   struct perf_header *ph, int fd,
+			   void *data __maybe_unused)
+{
+	ssize_t ret;
+	char *str;
+	u32 nr, i;
+	struct strbuf sb;
+
+	ret = readn(fd, &nr, sizeof(nr));
+	if (ret != sizeof(nr))
+		return -1;
+
+	if (ph->needs_swap)
+		nr = bswap_32(nr);
+
+	ph->env.nr_cmdline = nr;
+	strbuf_init(&sb, 128);
+
+	for (i = 0; i < nr; i++) {
+		str = do_read_string(fd, ph);
+		if (!str)
+			goto error;
+
+		/* include a NULL character at the end */
+		strbuf_add(&sb, str, strlen(str) + 1);
+		free(str);
+	}
+	ph->env.cmdline = strbuf_detach(&sb, NULL);
+	return 0;
+
+error:
+	strbuf_release(&sb);
+	return -1;
+}
+
+static int process_cpu_topology(struct perf_file_section *section __maybe_unused,
+				struct perf_header *ph, int fd,
+				void *data __maybe_unused)
+{
+	ssize_t ret;
+	u32 nr, i;
+	char *str;
+	struct strbuf sb;
+
+	ret = readn(fd, &nr, sizeof(nr));
+	if (ret != sizeof(nr))
+		return -1;
+
+	if (ph->needs_swap)
+		nr = bswap_32(nr);
+
+	ph->env.nr_sibling_cores = nr;
+	strbuf_init(&sb, 128);
+
+	for (i = 0; i < nr; i++) {
+		str = do_read_string(fd, ph);
+		if (!str)
+			goto error;
+
+		/* include a NULL character at the end */
+		strbuf_add(&sb, str, strlen(str) + 1);
+		free(str);
+	}
+	ph->env.sibling_cores = strbuf_detach(&sb, NULL);
+
+	ret = readn(fd, &nr, sizeof(nr));
+	if (ret != sizeof(nr))
+		return -1;
+
+	if (ph->needs_swap)
+		nr = bswap_32(nr);
+
+	ph->env.nr_sibling_threads = nr;
+
+	for (i = 0; i < nr; i++) {
+		str = do_read_string(fd, ph);
+		if (!str)
+			goto error;
+
+		/* include a NULL character at the end */
+		strbuf_add(&sb, str, strlen(str) + 1);
+		free(str);
+	}
+	ph->env.sibling_threads = strbuf_detach(&sb, NULL);
+	return 0;
+
+error:
+	strbuf_release(&sb);
+	return -1;
+}
+
+static int process_numa_topology(struct perf_file_section *section __maybe_unused,
+				 struct perf_header *ph, int fd,
+				 void *data __maybe_unused)
+{
+	ssize_t ret;
+	u32 nr, node, i;
+	char *str;
+	uint64_t mem_total, mem_free;
+	struct strbuf sb;
+
+	/* nr nodes */
+	ret = readn(fd, &nr, sizeof(nr));
+	if (ret != sizeof(nr))
+		goto error;
+
+	if (ph->needs_swap)
+		nr = bswap_32(nr);
+
+	ph->env.nr_numa_nodes = nr;
+	strbuf_init(&sb, 256);
+
+	for (i = 0; i < nr; i++) {
+		/* node number */
+		ret = readn(fd, &node, sizeof(node));
+		if (ret != sizeof(node))
+			goto error;
+
+		ret = readn(fd, &mem_total, sizeof(u64));
+		if (ret != sizeof(u64))
+			goto error;
+
+		ret = readn(fd, &mem_free, sizeof(u64));
+		if (ret != sizeof(u64))
+			goto error;
+
+		if (ph->needs_swap) {
+			node = bswap_32(node);
+			mem_total = bswap_64(mem_total);
+			mem_free = bswap_64(mem_free);
+		}
+
+		strbuf_addf(&sb, "%u:%"PRIu64":%"PRIu64":",
+			    node, mem_total, mem_free);
+
+		str = do_read_string(fd, ph);
+		if (!str)
+			goto error;
+
+		/* include a NULL character at the end */
+		strbuf_add(&sb, str, strlen(str) + 1);
+		free(str);
+	}
+	ph->env.numa_nodes = strbuf_detach(&sb, NULL);
+	return 0;
+
+error:
+	strbuf_release(&sb);
+	return -1;
+}
+
+static int process_pmu_mappings(struct perf_file_section *section __maybe_unused,
+				struct perf_header *ph, int fd,
+				void *data __maybe_unused)
+{
+	ssize_t ret;
+	char *name;
+	u32 pmu_num;
+	u32 type;
+	struct strbuf sb;
+
+	ret = readn(fd, &pmu_num, sizeof(pmu_num));
+	if (ret != sizeof(pmu_num))
+		return -1;
+
+	if (ph->needs_swap)
+		pmu_num = bswap_32(pmu_num);
+
+	if (!pmu_num) {
+		pr_debug("pmu mappings not available\n");
+		return 0;
+	}
+
+	ph->env.nr_pmu_mappings = pmu_num;
+	strbuf_init(&sb, 128);
+
+	while (pmu_num) {
+		if (readn(fd, &type, sizeof(type)) != sizeof(type))
+			goto error;
+		if (ph->needs_swap)
+			type = bswap_32(type);
+
+		name = do_read_string(fd, ph);
+		if (!name)
+			goto error;
+
+		strbuf_addf(&sb, "%u:%s", type, name);
+		/* include a NULL character at the end */
+		strbuf_add(&sb, "", 1);
+
+		free(name);
+		pmu_num--;
+	}
+	ph->env.pmu_mappings = strbuf_detach(&sb, NULL);
+	return 0;
+
+error:
+	strbuf_release(&sb);
+	return -1;
+}
+
+static int process_group_desc(struct perf_file_section *section __maybe_unused,
+			      struct perf_header *ph, int fd,
+			      void *data __maybe_unused)
+{
+	size_t ret = -1;
+	u32 i, nr, nr_groups;
+	struct perf_session *session;
+	struct perf_evsel *evsel, *leader = NULL;
+	struct group_desc {
+		char *name;
+		u32 leader_idx;
+		u32 nr_members;
+	} *desc;
+
+	if (readn(fd, &nr_groups, sizeof(nr_groups)) != sizeof(nr_groups))
+		return -1;
+
+	if (ph->needs_swap)
+		nr_groups = bswap_32(nr_groups);
+
+	ph->env.nr_groups = nr_groups;
+	if (!nr_groups) {
+		pr_debug("group desc not available\n");
+		return 0;
+	}
+
+	desc = calloc(nr_groups, sizeof(*desc));
+	if (!desc)
+		return -1;
+
+	for (i = 0; i < nr_groups; i++) {
+		desc[i].name = do_read_string(fd, ph);
+		if (!desc[i].name)
+			goto out_free;
+
+		if (readn(fd, &desc[i].leader_idx, sizeof(u32)) != sizeof(u32))
+			goto out_free;
+
+		if (readn(fd, &desc[i].nr_members, sizeof(u32)) != sizeof(u32))
+			goto out_free;
+
+		if (ph->needs_swap) {
+			desc[i].leader_idx = bswap_32(desc[i].leader_idx);
+			desc[i].nr_members = bswap_32(desc[i].nr_members);
+		}
+	}
+
+	/*
+	 * Rebuild group relationship based on the group_desc
+	 */
+	session = container_of(ph, struct perf_session, header);
+	session->evlist->nr_groups = nr_groups;
+
+	i = nr = 0;
+	evlist__for_each(session->evlist, evsel) {
+		if (evsel->idx == (int) desc[i].leader_idx) {
+			evsel->leader = evsel;
+			/* {anon_group} is a dummy name */
+			if (strcmp(desc[i].name, "{anon_group}")) {
+				evsel->group_name = desc[i].name;
+				desc[i].name = NULL;
+			}
+			evsel->nr_members = desc[i].nr_members;
+
+			if (i >= nr_groups || nr > 0) {
+				pr_debug("invalid group desc\n");
+				goto out_free;
+			}
+
+			leader = evsel;
+			nr = evsel->nr_members - 1;
+			i++;
+		} else if (nr) {
+			/* This is a group member */
+			evsel->leader = leader;
+
+			nr--;
+		}
+	}
+
+	if (i != nr_groups || nr != 0) {
+		pr_debug("invalid group desc\n");
+		goto out_free;
+	}
+
+	ret = 0;
+out_free:
+	for (i = 0; i < nr_groups; i++)
+		zfree(&desc[i].name);
+	free(desc);
+
+	return ret;
+}
+
+struct feature_ops {
+	int (*write)(int fd, struct perf_header *h, struct perf_evlist *evlist);
+	void (*print)(struct perf_header *h, int fd, FILE *fp);
+	int (*process)(struct perf_file_section *section,
+		       struct perf_header *h, int fd, void *data);
+	const char *name;
+	bool full_only;
+};
+
+#define FEAT_OPA(n, func) \
+	[n] = { .name = #n, .write = write_##func, .print = print_##func }
+#define FEAT_OPP(n, func) \
+	[n] = { .name = #n, .write = write_##func, .print = print_##func, \
+		.process = process_##func }
+#define FEAT_OPF(n, func) \
+	[n] = { .name = #n, .write = write_##func, .print = print_##func, \
+		.process = process_##func, .full_only = true }
+
+/* feature_ops not implemented: */
+#define print_tracing_data	NULL
+#define print_build_id		NULL
+
+static const struct feature_ops feat_ops[HEADER_LAST_FEATURE] = {
+	FEAT_OPP(HEADER_TRACING_DATA,	tracing_data),
+	FEAT_OPP(HEADER_BUILD_ID,	build_id),
+	FEAT_OPP(HEADER_HOSTNAME,	hostname),
+	FEAT_OPP(HEADER_OSRELEASE,	osrelease),
+	FEAT_OPP(HEADER_VERSION,	version),
+	FEAT_OPP(HEADER_ARCH,		arch),
+	FEAT_OPP(HEADER_NRCPUS,		nrcpus),
+	FEAT_OPP(HEADER_CPUDESC,	cpudesc),
+	FEAT_OPP(HEADER_CPUID,		cpuid),
+	FEAT_OPP(HEADER_TOTAL_MEM,	total_mem),
+	FEAT_OPP(HEADER_EVENT_DESC,	event_desc),
+	FEAT_OPP(HEADER_CMDLINE,	cmdline),
+	FEAT_OPF(HEADER_CPU_TOPOLOGY,	cpu_topology),
+	FEAT_OPF(HEADER_NUMA_TOPOLOGY,	numa_topology),
+	FEAT_OPA(HEADER_BRANCH_STACK,	branch_stack),
+	FEAT_OPP(HEADER_PMU_MAPPINGS,	pmu_mappings),
+	FEAT_OPP(HEADER_GROUP_DESC,	group_desc),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct header_print_data {
@@ -1623,7 +2938,11 @@ int perf_header__fprintf_info(struct perf_session *session, FILE *fp, bool full)
 {
 	struct header_print_data hd;
 	struct perf_header *header = &session->header;
+<<<<<<< HEAD
 	int fd = session->fd;
+=======
+	int fd = perf_data_file__fd(session->file);
+>>>>>>> refs/remotes/origin/master
 	hd.fp = fp;
 	hd.full = full;
 
@@ -1660,11 +2979,15 @@ static int do_write_feat(int fd, struct perf_header *h, int type,
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int perf_header__adds_write(struct perf_header *header,
 				   struct perf_evlist *evlist, int fd)
 {
 	int nr_sections;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct perf_session *session;
 	struct perf_file_section *feat_sec;
@@ -1678,27 +3001,37 @@ static int perf_header__adds_write(struct perf_header *header,
 	    !perf_session__read_build_ids(session, true)))
 		perf_header__clear_feat(header, HEADER_BUILD_ID);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct perf_file_section *feat_sec, *p;
 	int sec_size;
 	u64 sec_start;
 	int feat;
 	int err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	nr_sections = bitmap_weight(header->adds_features, HEADER_FEAT_BITS);
 	if (!nr_sections)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	feat_sec = calloc(sizeof(*feat_sec), nr_sections);
 =======
 	feat_sec = p = calloc(sizeof(*feat_sec), nr_sections);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	feat_sec = p = calloc(nr_sections, sizeof(*feat_sec));
+>>>>>>> refs/remotes/origin/master
 	if (feat_sec == NULL)
 		return -ENOMEM;
 
 	sec_size = sizeof(*feat_sec) * nr_sections;
 
+<<<<<<< HEAD
 	sec_start = header->data_offset + header->data_size;
 	lseek(fd, sec_start + sec_size, SEEK_SET);
 
@@ -1738,6 +3071,11 @@ static int perf_header__adds_write(struct perf_header *header,
 		pr_debug("failed to write feature section\n");
 out_free:
 =======
+=======
+	sec_start = header->feat_offset;
+	lseek(fd, sec_start + sec_size, SEEK_SET);
+
+>>>>>>> refs/remotes/origin/master
 	for_each_set_bit(feat, header->adds_features, HEADER_FEAT_BITS) {
 		if (do_write_feat(fd, header, feat, &p, evlist))
 			perf_header__clear_feat(header, feat);
@@ -1751,7 +3089,10 @@ out_free:
 	err = do_write(fd, feat_sec, sec_size);
 	if (err < 0)
 		pr_debug("failed to write feature section\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	free(feat_sec);
 	return err;
 }
@@ -1782,11 +3123,17 @@ int perf_session__write_header(struct perf_session *session,
 	struct perf_file_header f_header;
 	struct perf_file_attr   f_attr;
 	struct perf_header *header = &session->header;
+<<<<<<< HEAD
 	struct perf_evsel *attr, *pair = NULL;
+=======
+	struct perf_evsel *evsel;
+	u64 attr_offset;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	lseek(fd, sizeof(f_header), SEEK_SET);
 
+<<<<<<< HEAD
 	if (session->evlist != evlist)
 		pair = list_entry(session->evlist->entries.next, struct perf_evsel, node);
 
@@ -1815,6 +3162,25 @@ out_err_write:
 			.ids  = {
 				.offset = attr->id_offset,
 				.size   = attr->ids * sizeof(u64),
+=======
+	evlist__for_each(session->evlist, evsel) {
+		evsel->id_offset = lseek(fd, 0, SEEK_CUR);
+		err = do_write(fd, evsel->id, evsel->ids * sizeof(u64));
+		if (err < 0) {
+			pr_debug("failed to write perf header\n");
+			return err;
+		}
+	}
+
+	attr_offset = lseek(fd, 0, SEEK_CUR);
+
+	evlist__for_each(evlist, evsel) {
+		f_attr = (struct perf_file_attr){
+			.attr = evsel->attr,
+			.ids  = {
+				.offset = evsel->id_offset,
+				.size   = evsel->ids * sizeof(u64),
+>>>>>>> refs/remotes/origin/master
 			}
 		};
 		err = do_write(fd, &f_attr, sizeof(f_attr));
@@ -1824,6 +3190,7 @@ out_err_write:
 		}
 	}
 
+<<<<<<< HEAD
 	header->event_offset = lseek(fd, 0, SEEK_CUR);
 	header->event_size = event_count * sizeof(struct perf_trace_event_type);
 	if (events) {
@@ -1835,6 +3202,11 @@ out_err_write:
 	}
 
 	header->data_offset = lseek(fd, 0, SEEK_CUR);
+=======
+	if (!header->data_offset)
+		header->data_offset = lseek(fd, 0, SEEK_CUR);
+	header->feat_offset = header->data_offset + header->data_size;
+>>>>>>> refs/remotes/origin/master
 
 	if (at_exit) {
 		err = perf_header__adds_write(header, evlist, fd);
@@ -1847,12 +3219,17 @@ out_err_write:
 		.size	   = sizeof(f_header),
 		.attr_size = sizeof(f_attr),
 		.attrs = {
+<<<<<<< HEAD
 			.offset = header->attr_offset,
+=======
+			.offset = attr_offset,
+>>>>>>> refs/remotes/origin/master
 			.size   = evlist->nr_entries * sizeof(f_attr),
 		},
 		.data = {
 			.offset = header->data_offset,
 			.size	= header->data_size,
+<<<<<<< HEAD
 		},
 		.event_types = {
 			.offset = header->event_offset,
@@ -2100,6 +3477,81 @@ static int perf_header__read_build_ids_abi_quirk(struct perf_header *header,
 static const int attr_file_abi_sizes[] = {
 	[0] = PERF_ATTR_SIZE_VER0,
 	[1] = PERF_ATTR_SIZE_VER1,
+=======
+		},
+		/* event_types is ignored, store zeros */
+	};
+
+	memcpy(&f_header.adds_features, &header->adds_features, sizeof(header->adds_features));
+
+	lseek(fd, 0, SEEK_SET);
+	err = do_write(fd, &f_header, sizeof(f_header));
+	if (err < 0) {
+		pr_debug("failed to write perf header\n");
+		return err;
+	}
+	lseek(fd, header->data_offset + header->data_size, SEEK_SET);
+
+	return 0;
+}
+
+static int perf_header__getbuffer64(struct perf_header *header,
+				    int fd, void *buf, size_t size)
+{
+	if (readn(fd, buf, size) <= 0)
+		return -1;
+
+	if (header->needs_swap)
+		mem_bswap_64(buf, size);
+
+	return 0;
+}
+
+int perf_header__process_sections(struct perf_header *header, int fd,
+				  void *data,
+				  int (*process)(struct perf_file_section *section,
+						 struct perf_header *ph,
+						 int feat, int fd, void *data))
+{
+	struct perf_file_section *feat_sec, *sec;
+	int nr_sections;
+	int sec_size;
+	int feat;
+	int err;
+
+	nr_sections = bitmap_weight(header->adds_features, HEADER_FEAT_BITS);
+	if (!nr_sections)
+		return 0;
+
+	feat_sec = sec = calloc(nr_sections, sizeof(*feat_sec));
+	if (!feat_sec)
+		return -1;
+
+	sec_size = sizeof(*feat_sec) * nr_sections;
+
+	lseek(fd, header->feat_offset, SEEK_SET);
+
+	err = perf_header__getbuffer64(header, fd, feat_sec, sec_size);
+	if (err < 0)
+		goto out_free;
+
+	for_each_set_bit(feat, header->adds_features, HEADER_LAST_FEATURE) {
+		err = process(sec++, header, feat, fd, data);
+		if (err < 0)
+			goto out_free;
+	}
+	err = 0;
+out_free:
+	free(feat_sec);
+	return err;
+}
+
+static const int attr_file_abi_sizes[] = {
+	[0] = PERF_ATTR_SIZE_VER0,
+	[1] = PERF_ATTR_SIZE_VER1,
+	[2] = PERF_ATTR_SIZE_VER2,
+	[3] = PERF_ATTR_SIZE_VER3,
+>>>>>>> refs/remotes/origin/master
 	0,
 };
 
@@ -2166,6 +3618,19 @@ static int try_all_pipe_abis(uint64_t hdr_sz, struct perf_header *ph)
 	return -1;
 }
 
+<<<<<<< HEAD
+=======
+bool is_perf_magic(u64 magic)
+{
+	if (!memcmp(&magic, __perf_magic1, sizeof(magic))
+		|| magic == __perf_magic2
+		|| magic == __perf_magic2_sw)
+		return true;
+
+	return false;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int check_magic_endian(u64 magic, uint64_t hdr_sz,
 			      bool is_pipe, struct perf_header *ph)
 {
@@ -2174,6 +3639,10 @@ static int check_magic_endian(u64 magic, uint64_t hdr_sz,
 	/* check for legacy format */
 	ret = memcmp(&magic, __perf_magic1, sizeof(magic));
 	if (ret == 0) {
+<<<<<<< HEAD
+=======
+		ph->version = PERF_HEADER_VERSION_1;
+>>>>>>> refs/remotes/origin/master
 		pr_debug("legacy perf.data format\n");
 		if (is_pipe)
 			return try_all_pipe_abis(hdr_sz, ph);
@@ -2195,11 +3664,16 @@ static int check_magic_endian(u64 magic, uint64_t hdr_sz,
 		return -1;
 
 	ph->needs_swap = true;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ph->version = PERF_HEADER_VERSION_2;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int perf_header__read_build_ids(struct perf_header *header,
 				       int input, u64 offset, u64 size)
@@ -2253,6 +3727,12 @@ int perf_file_header__read(struct perf_file_header *header,
 			   struct perf_header *ph, int fd)
 {
 	int ret;
+=======
+int perf_file_header__read(struct perf_file_header *header,
+			   struct perf_header *ph, int fd)
+{
+	ssize_t ret;
+>>>>>>> refs/remotes/origin/master
 
 	lseek(fd, 0, SEEK_SET);
 
@@ -2278,7 +3758,10 @@ int perf_file_header__read(struct perf_file_header *header,
 		else
 			return -1;
 	} else if (ph->needs_swap) {
+<<<<<<< HEAD
 		unsigned int i;
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * feature bitmap is declared as an array of unsigned longs --
 		 * not good since its size can differ between the host that
@@ -2294,6 +3777,7 @@ int perf_file_header__read(struct perf_file_header *header,
 		 * file), punt and fallback to the original behavior --
 		 * clearing all feature bits and setting buildid.
 		 */
+<<<<<<< HEAD
 		for (i = 0; i < BITS_TO_LONGS(HEADER_FEAT_BITS); ++i)
 			header->adds_features[i] = bswap_64(header->adds_features[i]);
 
@@ -2302,6 +3786,19 @@ int perf_file_header__read(struct perf_file_header *header,
 				header->adds_features[i] = bswap_64(header->adds_features[i]);
 				header->adds_features[i] = bswap_32(header->adds_features[i]);
 			}
+=======
+		mem_bswap_64(&header->adds_features,
+			    BITS_TO_U64(HEADER_FEAT_BITS));
+
+		if (!test_bit(HEADER_HOSTNAME, header->adds_features)) {
+			/* unswap as u64 */
+			mem_bswap_64(&header->adds_features,
+				    BITS_TO_U64(HEADER_FEAT_BITS));
+
+			/* unswap as u32 */
+			mem_bswap_32(&header->adds_features,
+				    BITS_TO_U32(HEADER_FEAT_BITS));
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!test_bit(HEADER_HOSTNAME, header->adds_features)) {
@@ -2313,21 +3810,32 @@ int perf_file_header__read(struct perf_file_header *header,
 	memcpy(&ph->adds_features, &header->adds_features,
 	       sizeof(ph->adds_features));
 
+<<<<<<< HEAD
 	ph->event_offset = header->event_types.offset;
 	ph->event_size   = header->event_types.size;
 	ph->data_offset  = header->data.offset;
 	ph->data_size	 = header->data.size;
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ph->data_offset  = header->data.offset;
+	ph->data_size	 = header->data.size;
+	ph->feat_offset  = header->data.offset + header->data.size;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int perf_file_section__process(struct perf_file_section *section,
 				      struct perf_header *ph,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      int feat, int fd)
 =======
 				      int feat, int fd, void *data __used)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      int feat, int fd, void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	if (lseek(fd, section->offset, SEEK_SET) == (off_t)-1) {
 		pr_debug("Failed to lseek to %" PRIu64 " offset for feature "
@@ -2335,6 +3843,7 @@ static int perf_file_section__process(struct perf_file_section *section,
 		return 0;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (feat) {
 	case HEADER_TRACE_INFO:
@@ -2351,6 +3860,8 @@ static int perf_file_section__process(struct perf_file_section *section,
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (feat >= HEADER_LAST_FEATURE) {
 		pr_debug("unknown feature %d, continuing...\n", feat);
 		return 0;
@@ -2359,14 +3870,19 @@ static int perf_file_section__process(struct perf_file_section *section,
 	if (!feat_ops[feat].process)
 		return 0;
 
+<<<<<<< HEAD
 	return feat_ops[feat].process(section, ph, feat, fd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return feat_ops[feat].process(section, ph, fd, data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
 				       struct perf_header *ph, int fd,
 				       bool repipe)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (readn(fd, header, sizeof(*header)) <= 0 ||
 	    memcmp(&header->magic, __perf_magic, sizeof(header->magic)))
@@ -2385,6 +3901,9 @@ static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
 	}
 =======
 	int ret;
+=======
+	ssize_t ret;
+>>>>>>> refs/remotes/origin/master
 
 	ret = readn(fd, header, sizeof(*header));
 	if (ret <= 0)
@@ -2400,22 +3919,35 @@ static int perf_file_header__read_pipe(struct perf_pipe_file_header *header,
 
 	if (repipe && do_write(STDOUT_FILENO, header, sizeof(*header)) < 0)
 		return -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int perf_header__read_pipe(struct perf_session *session, int fd)
+=======
+static int perf_header__read_pipe(struct perf_session *session)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_header *header = &session->header;
 	struct perf_pipe_file_header f_header;
 
+<<<<<<< HEAD
 	if (perf_file_header__read_pipe(&f_header, header, fd,
+=======
+	if (perf_file_header__read_pipe(&f_header, header,
+					perf_data_file__fd(session->file),
+>>>>>>> refs/remotes/origin/master
 					session->repipe) < 0) {
 		pr_debug("incompatible file format\n");
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	session->fd = fd;
 
 	return 0;
@@ -2423,13 +3955,22 @@ static int perf_header__read_pipe(struct perf_session *session, int fd)
 
 <<<<<<< HEAD
 =======
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int read_attr(int fd, struct perf_header *ph,
 		     struct perf_file_attr *f_attr)
 {
 	struct perf_event_attr *attr = &f_attr->attr;
 	size_t sz, left;
 	size_t our_sz = sizeof(f_attr->attr);
+<<<<<<< HEAD
 	int ret;
+=======
+	ssize_t ret;
+>>>>>>> refs/remotes/origin/master
 
 	memset(f_attr, 0, sizeof(*f_attr));
 
@@ -2469,14 +4010,65 @@ static int read_attr(int fd, struct perf_header *ph,
 	return ret <= 0 ? -1 : 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 int perf_session__read_header(struct perf_session *session, int fd)
 {
+=======
+static int perf_evsel__prepare_tracepoint_event(struct perf_evsel *evsel,
+						struct pevent *pevent)
+{
+	struct event_format *event;
+	char bf[128];
+
+	/* already prepared */
+	if (evsel->tp_format)
+		return 0;
+
+	if (pevent == NULL) {
+		pr_debug("broken or missing trace data\n");
+		return -1;
+	}
+
+	event = pevent_find_event(pevent, evsel->attr.config);
+	if (event == NULL)
+		return -1;
+
+	if (!evsel->name) {
+		snprintf(bf, sizeof(bf), "%s:%s", event->system, event->name);
+		evsel->name = strdup(bf);
+		if (evsel->name == NULL)
+			return -1;
+	}
+
+	evsel->tp_format = event;
+	return 0;
+}
+
+static int perf_evlist__prepare_tracepoint_events(struct perf_evlist *evlist,
+						  struct pevent *pevent)
+{
+	struct perf_evsel *pos;
+
+	evlist__for_each(evlist, pos) {
+		if (pos->attr.type == PERF_TYPE_TRACEPOINT &&
+		    perf_evsel__prepare_tracepoint_event(pos, pevent))
+			return -1;
+	}
+
+	return 0;
+}
+
+int perf_session__read_header(struct perf_session *session)
+{
+	struct perf_data_file *file = session->file;
+>>>>>>> refs/remotes/origin/master
 	struct perf_header *header = &session->header;
 	struct perf_file_header	f_header;
 	struct perf_file_attr	f_attr;
 	u64			f_id;
 	int nr_attrs, nr_ids, i, j;
+<<<<<<< HEAD
 
 	session->evlist = perf_evlist__new(NULL, NULL);
 	if (session->evlist == NULL)
@@ -2498,6 +4090,33 @@ int perf_session__read_header(struct perf_session *session, int fd)
 
 	nr_attrs = f_header.attrs.size / f_header.attr_size;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int fd = perf_data_file__fd(file);
+
+	session->evlist = perf_evlist__new();
+	if (session->evlist == NULL)
+		return -ENOMEM;
+
+	if (perf_data_file__is_pipe(file))
+		return perf_header__read_pipe(session);
+
+	if (perf_file_header__read(&f_header, header, fd) < 0)
+		return -EINVAL;
+
+	/*
+	 * Sanity check that perf.data was written cleanly; data size is
+	 * initialized to 0 and updated only if the on_exit function is run.
+	 * If data size is still 0 then the file contains only partial
+	 * information.  Just warn user and process it as much as it can.
+	 */
+	if (f_header.data.size == 0) {
+		pr_warning("WARNING: The %s file's data size field is 0 which is unexpected.\n"
+			   "Was the 'perf record' command properly terminated?\n",
+			   file->path);
+	}
+
+	nr_attrs = f_header.attrs.size / f_header.attr_size;
+>>>>>>> refs/remotes/origin/master
 	lseek(fd, f_header.attrs.offset, SEEK_SET);
 
 	for (i = 0; i < nr_attrs; i++) {
@@ -2505,20 +4124,33 @@ int perf_session__read_header(struct perf_session *session, int fd)
 		off_t tmp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (readn(fd, &f_attr, sizeof(f_attr)) <= 0)
 =======
 		if (read_attr(fd, header, &f_attr) < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (read_attr(fd, header, &f_attr) < 0)
+>>>>>>> refs/remotes/origin/master
 			goto out_errno;
 
 		if (header->needs_swap)
 			perf_event__attr_swap(&f_attr.attr);
 
 		tmp = lseek(fd, 0, SEEK_CUR);
+<<<<<<< HEAD
 		evsel = perf_evsel__new(&f_attr.attr, i);
 
 		if (evsel == NULL)
 			goto out_delete_evlist;
+=======
+		evsel = perf_evsel__new(&f_attr.attr);
+
+		if (evsel == NULL)
+			goto out_delete_evlist;
+
+		evsel->needs_swap = header->needs_swap;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Do it before so that if perf_evsel__alloc_id fails, this
 		 * entry gets purged too at perf_evlist__delete().
@@ -2547,6 +4179,7 @@ int perf_session__read_header(struct perf_session *session, int fd)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	symbol_conf.nr_events = nr_attrs;
 
@@ -2572,6 +4205,17 @@ int perf_session__read_header(struct perf_session *session, int fd)
 	lseek(fd, header->data_offset, SEEK_SET);
 
 	header->frozen = 1;
+=======
+	symbol_conf.nr_events = nr_attrs;
+
+	perf_header__process_sections(header, fd, &session->tevent,
+				      perf_file_section__process);
+
+	if (perf_evlist__prepare_tracepoint_events(session->evlist,
+						   session->tevent.pevent))
+		goto out_delete_evlist;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out_errno:
 	return -errno;
@@ -2583,6 +4227,7 @@ out_delete_evlist:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int perf_event__synthesize_attr(struct perf_event_attr *attr, u16 ids, u64 *id,
 				perf_event__handler_t process,
 				struct perf_session *session)
@@ -2591,13 +4236,22 @@ int perf_event__synthesize_attr(struct perf_tool *tool,
 				struct perf_event_attr *attr, u16 ids, u64 *id,
 				perf_event__handler_t process)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int perf_event__synthesize_attr(struct perf_tool *tool,
+				struct perf_event_attr *attr, u32 ids, u64 *id,
+				perf_event__handler_t process)
+>>>>>>> refs/remotes/origin/master
 {
 	union perf_event *ev;
 	size_t size;
 	int err;
 
 	size = sizeof(struct perf_event_attr);
+<<<<<<< HEAD
 	size = ALIGN(size, sizeof(u64));
+=======
+	size = PERF_ALIGN(size, sizeof(u64));
+>>>>>>> refs/remotes/origin/master
 	size += sizeof(struct perf_event_header);
 	size += ids * sizeof(u64);
 
@@ -2610,6 +4264,7 @@ int perf_event__synthesize_attr(struct perf_tool *tool,
 	memcpy(ev->attr.id, id, ids * sizeof(u64));
 
 	ev->attr.header.type = PERF_RECORD_HEADER_ATTR;
+<<<<<<< HEAD
 	ev->attr.header.size = size;
 
 <<<<<<< HEAD
@@ -2617,12 +4272,21 @@ int perf_event__synthesize_attr(struct perf_tool *tool,
 =======
 	err = process(tool, ev, NULL, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ev->attr.header.size = (u16)size;
+
+	if (ev->attr.header.size == size)
+		err = process(tool, ev, NULL, NULL);
+	else
+		err = -E2BIG;
+>>>>>>> refs/remotes/origin/master
 
 	free(ev);
 
 	return err;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int perf_session__synthesize_attrs(struct perf_session *session,
 =======
@@ -2642,6 +4306,18 @@ int perf_event__synthesize_attrs(struct perf_tool *tool,
 		err = perf_event__synthesize_attr(tool, &attr->attr, attr->ids,
 						  attr->id, process);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int perf_event__synthesize_attrs(struct perf_tool *tool,
+				   struct perf_session *session,
+				   perf_event__handler_t process)
+{
+	struct perf_evsel *evsel;
+	int err = 0;
+
+	evlist__for_each(session->evlist, evsel) {
+		err = perf_event__synthesize_attr(tool, &evsel->attr, evsel->ids,
+						  evsel->id, process);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			pr_debug("failed to create perf header attribute\n");
 			return err;
@@ -2651,6 +4327,7 @@ int perf_event__synthesize_attrs(struct perf_tool *tool,
 	return err;
 }
 
+<<<<<<< HEAD
 int perf_event__process_attr(union perf_event *event,
 <<<<<<< HEAD
 			     struct perf_session *session)
@@ -2674,21 +4351,39 @@ int perf_event__process_attr(union perf_event *event,
 			     struct perf_evlist **pevlist)
 {
 	unsigned int i, ids, n_ids;
+=======
+int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
+			     union perf_event *event,
+			     struct perf_evlist **pevlist)
+{
+	u32 i, ids, n_ids;
+>>>>>>> refs/remotes/origin/master
 	struct perf_evsel *evsel;
 	struct perf_evlist *evlist = *pevlist;
 
 	if (evlist == NULL) {
+<<<<<<< HEAD
 		*pevlist = evlist = perf_evlist__new(NULL, NULL);
+=======
+		*pevlist = evlist = perf_evlist__new();
+>>>>>>> refs/remotes/origin/master
 		if (evlist == NULL)
 			return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	evsel = perf_evsel__new(&event->attr.attr, evlist->nr_entries);
+=======
+	evsel = perf_evsel__new(&event->attr.attr);
+>>>>>>> refs/remotes/origin/master
 	if (evsel == NULL)
 		return -ENOMEM;
 
 	perf_evlist__add(evlist, evsel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ids = event->header.size;
 	ids -= (void *)&event->attr.id - (void *)event;
@@ -2702,6 +4397,7 @@ int perf_event__process_attr(union perf_event *event,
 		return -ENOMEM;
 
 	for (i = 0; i < n_ids; i++) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		perf_evlist__id_add(session->evlist, evsel, 0, i,
 				    event->attr.id[i]);
@@ -2801,10 +4497,17 @@ int perf_event__process_event_type(struct perf_tool *tool __unused,
 	if (perf_header__push_event(event->event_type.event_type.event_id,
 				    event->event_type.event_type.name) < 0)
 		return -ENOMEM;
+=======
+		perf_evlist__id_add(evlist, evsel, 0, i, event->attr.id[i]);
+	}
+
+	symbol_conf.nr_events = evlist->nr_entries;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int perf_event__synthesize_tracing_data(int fd, struct perf_evlist *evlist,
 					 perf_event__handler_t process,
@@ -2821,6 +4524,8 @@ int perf_event__synthesize_tracing_data(int fd, struct perf_evlist *evlist,
 	if (size <= 0)
 		return size;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int perf_event__synthesize_tracing_data(struct perf_tool *tool, int fd,
 					struct perf_evlist *evlist,
 					perf_event__handler_t process)
@@ -2828,7 +4533,11 @@ int perf_event__synthesize_tracing_data(struct perf_tool *tool, int fd,
 	union perf_event ev;
 	struct tracing_data *tdata;
 	ssize_t size = 0, aligned_size = 0, padding;
+<<<<<<< HEAD
 	int err __used = 0;
+=======
+	int err __maybe_unused = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We are going to store the size of the data followed
@@ -2849,17 +4558,24 @@ int perf_event__synthesize_tracing_data(struct perf_tool *tool, int fd,
 
 	ev.tracing_data.header.type = PERF_RECORD_HEADER_TRACING_DATA;
 	size = tdata->size;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	aligned_size = ALIGN(size, sizeof(u64));
+=======
+	aligned_size = PERF_ALIGN(size, sizeof(u64));
+>>>>>>> refs/remotes/origin/master
 	padding = aligned_size - size;
 	ev.tracing_data.header.size = sizeof(ev.tracing_data);
 	ev.tracing_data.size = aligned_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	process(&ev, NULL, session);
 
 	err = read_tracing_data(fd, &evlist->entries);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	process(tool, &ev, NULL, NULL);
 
 	/*
@@ -2868,12 +4584,16 @@ int perf_event__synthesize_tracing_data(struct perf_tool *tool, int fd,
 	 */
 	tracing_data_put(tdata);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	write_padded(fd, NULL, 0, padding);
 
 	return aligned_size;
 }
 
+<<<<<<< HEAD
 int perf_event__process_tracing_data(union perf_event *event,
 				     struct perf_session *session)
 {
@@ -2899,21 +4619,65 @@ int perf_event__process_tracing_data(union perf_event *event,
 
 	if (size_read + padding != size)
 		die("tracing data size mismatch");
+=======
+int perf_event__process_tracing_data(struct perf_tool *tool __maybe_unused,
+				     union perf_event *event,
+				     struct perf_session *session)
+{
+	ssize_t size_read, padding, size = event->tracing_data.size;
+	int fd = perf_data_file__fd(session->file);
+	off_t offset = lseek(fd, 0, SEEK_CUR);
+	char buf[BUFSIZ];
+
+	/* setup for reading amidst mmap */
+	lseek(fd, offset + sizeof(struct tracing_data_event),
+	      SEEK_SET);
+
+	size_read = trace_report(fd, &session->tevent,
+				 session->repipe);
+	padding = PERF_ALIGN(size_read, sizeof(u64)) - size_read;
+
+	if (readn(fd, buf, padding) < 0) {
+		pr_err("%s: reading input file", __func__);
+		return -1;
+	}
+	if (session->repipe) {
+		int retw = write(STDOUT_FILENO, buf, padding);
+		if (retw <= 0 || retw != padding) {
+			pr_err("%s: repiping tracing data padding", __func__);
+			return -1;
+		}
+	}
+
+	if (size_read + padding != size) {
+		pr_err("%s: tracing data size mismatch", __func__);
+		return -1;
+	}
+
+	perf_evlist__prepare_tracepoint_events(session->evlist,
+					       session->tevent.pevent);
+>>>>>>> refs/remotes/origin/master
 
 	return size_read + padding;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int perf_event__synthesize_build_id(struct dso *pos, u16 misc,
 				    perf_event__handler_t process,
 				    struct machine *machine,
 				    struct perf_session *session)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int perf_event__synthesize_build_id(struct perf_tool *tool,
 				    struct dso *pos, u16 misc,
 				    perf_event__handler_t process,
 				    struct machine *machine)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	union perf_event ev;
 	size_t len;
@@ -2925,7 +4689,11 @@ int perf_event__synthesize_build_id(struct perf_tool *tool,
 	memset(&ev, 0, sizeof(ev));
 
 	len = pos->long_name_len + 1;
+<<<<<<< HEAD
 	len = ALIGN(len, NAME_ALIGN);
+=======
+	len = PERF_ALIGN(len, NAME_ALIGN);
+>>>>>>> refs/remotes/origin/master
 	memcpy(&ev.build_id.build_id, pos->build_id, sizeof(pos->build_id));
 	ev.build_id.header.type = PERF_RECORD_HEADER_BUILD_ID;
 	ev.build_id.header.misc = misc;
@@ -2934,20 +4702,29 @@ int perf_event__synthesize_build_id(struct perf_tool *tool,
 	memcpy(&ev.build_id.filename, pos->long_name, pos->long_name_len);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = process(&ev, NULL, session);
 =======
 	err = process(tool, &ev, NULL, machine);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = process(tool, &ev, NULL, machine);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int perf_event__process_build_id(union perf_event *event,
 =======
 int perf_event__process_build_id(struct perf_tool *tool __used,
 				 union perf_event *event,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int perf_event__process_build_id(struct perf_tool *tool __maybe_unused,
+				 union perf_event *event,
+>>>>>>> refs/remotes/origin/master
 				 struct perf_session *session)
 {
 	__event_process_build_id(&event->build_id,

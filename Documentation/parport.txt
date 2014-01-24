@@ -37,22 +37,29 @@ are automatically detected.
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 KMod
 ----
 
 If you use kmod, you will find it useful to edit /etc/modprobe.conf.
 Here is an example of the lines that need to be added:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 modprobe
 --------
 
 If you use modprobe , you will find it useful to add lines as below to a
 configuration file in /etc/modprobe.d/ directory:.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	alias parport_lowlevel parport_pc
 	options parport_pc io=0x378,0x278 irq=7,auto
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 KMod will then automatically load parport_pc (with the options
 "io=0x378,0x278 irq=7,auto") whenever a parallel port device driver
@@ -61,6 +68,10 @@ KMod will then automatically load parport_pc (with the options
 modprobe will load parport_pc (with the options "io=0x378,0x278 irq=7,auto")
 whenever a parallel port device driver (such as lp) is loaded.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+modprobe will load parport_pc (with the options "io=0x378,0x278 irq=7,auto")
+whenever a parallel port device driver (such as lp) is loaded.
+>>>>>>> refs/remotes/origin/master
 
 Note that these are example lines only!  You shouldn't in general need
 to specify any options to parport_pc in order to be able to use a

@@ -15,10 +15,14 @@
 * published by the Free Software Foundation.
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/input.h>
@@ -31,6 +35,7 @@
 #include <linux/i2c.h>
 #include <linux/errno.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 =======
@@ -38,10 +43,17 @@
 #include <linux/omapfb.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/omapfb.h>
+#include <linux/platform_data/keypad-omap.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/gpio.h>
 =======
@@ -67,6 +79,19 @@
 #include "common.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/flash.h>
+#include <mach/mux.h>
+#include <linux/omap-dma.h>
+#include <mach/tc.h>
+#include <mach/board-sx1.h>
+
+#include <mach/hardware.h>
+#include <mach/usb.h>
+
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 /* Write to I2C device */
 int sx1_i2c_write_byte(u8 devaddr, u8 regoffset, u8 value)
 {
@@ -248,6 +273,7 @@ static struct platform_device sx1_kp_device = {
 	.resource	= sx1_kp_resources,
 };
 
+<<<<<<< HEAD
 /*----------- IRDA -------------------------*/
 
 static struct omap_irda_config sx1_irda_data = {
@@ -281,6 +307,8 @@ static struct platform_device sx1_irda_device = {
 	.resource	= sx1_irda_resources,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*----------- MTD -------------------------*/
 
 static struct mtd_partition sx1_partitions[] = {
@@ -379,6 +407,7 @@ static struct omap_usb_config sx1_usb_config __initdata = {
 /*----------- LCD -------------------------*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device sx1_lcd_device = {
 	.name		= "lcd_sx1",
 	.id		= -1,
@@ -386,6 +415,8 @@ static struct platform_device sx1_lcd_device = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct omap_lcd_config sx1_lcd_config __initdata = {
 	.ctrl_name	= "internal",
 };
@@ -394,6 +425,7 @@ static struct omap_lcd_config sx1_lcd_config __initdata = {
 static struct platform_device *sx1_devices[] __initdata = {
 	&sx1_flash_device,
 	&sx1_kp_device,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	&sx1_lcd_device,
 	&sx1_irda_device,
@@ -407,6 +439,9 @@ static struct omap_board_config_kernel sx1_config[] __initdata = {
 	&sx1_irda_device,
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 /*-----------------------------------------*/
 
@@ -423,10 +458,13 @@ static void __init omap_sx1_init(void)
 	platform_add_devices(sx1_devices, ARRAY_SIZE(sx1_devices));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	omap_board_config = sx1_config;
 	omap_board_config_size = ARRAY_SIZE(sx1_config);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	omap_serial_init();
 	omap_register_i2c_bus(1, 100, NULL, 0);
 	omap1_usb_init(&sx1_usb_config);
@@ -440,6 +478,7 @@ static void __init omap_sx1_init(void)
 	gpio_direction_output(1, 1);	/*A_IRDA_OFF = 1 */
 	gpio_direction_output(11, 0);	/*A_SWITCH = 0 */
 	gpio_direction_output(15, 0);	/*A_USB_ON = 0 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 /*----------------------------------------*/
@@ -463,6 +502,8 @@ MACHINE_START(SX1, "OMAP310 based Siemens SX1")
 	.init_machine	= omap_sx1_init,
 	.timer		= &omap_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	omapfb_set_lcd_config(&sx1_lcd_config);
 }
@@ -471,10 +512,18 @@ MACHINE_START(SX1, "OMAP310 based Siemens SX1")
 	.atag_offset	= 0x100,
 	.map_io		= omap15xx_map_io,
 	.init_early     = omap1_init_early,
+<<<<<<< HEAD
 	.reserve	= omap_reserve,
 	.init_irq	= omap1_init_irq,
 	.init_machine	= omap_sx1_init,
 	.timer		= &omap1_timer,
 	.restart	= omap1_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_irq	= omap1_init_irq,
+	.init_machine	= omap_sx1_init,
+	.init_late	= omap1_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

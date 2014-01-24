@@ -52,10 +52,14 @@ static int __init walnut_probe(void)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ppc_pci_flags = PPC_PCI_REASSIGN_ALL_RSRC;
 =======
 	pci_set_flags(PCI_REASSIGN_ALL_RSRC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_set_flags(PCI_REASSIGN_ALL_RSRC);
+>>>>>>> refs/remotes/origin/master
 
 	return 1;
 }

@@ -14,10 +14,13 @@
 #define	BITMAP_MAJOR_HOSTENDIAN 3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BITMAP_MINOR 39
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * in-memory bitmap:
  *
@@ -105,6 +108,7 @@ typedef __u16 bitmap_counter_t;
 #define PAGE_COUNTER_MASK  (PAGE_COUNTER_RATIO - 1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BITMAP_BLOCK_SIZE 512
 #define BITMAP_BLOCK_SHIFT 9
 
@@ -125,6 +129,10 @@ typedef __u16 bitmap_counter_t;
 #define BITMAP_BLOCK_SHIFT 9
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BITMAP_BLOCK_SHIFT 9
+
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -135,9 +143,15 @@ typedef __u16 bitmap_counter_t;
 
 /* use these for bitmap->flags and bitmap->sb->state bit-fields */
 enum bitmap_state {
+<<<<<<< HEAD
 	BITMAP_STALE  = 0x002,  /* the bitmap file is out of date or had -EIO */
 	BITMAP_WRITE_ERROR = 0x004, /* A write error has occurred */
 	BITMAP_HOSTENDIAN = 0x8000,
+=======
+	BITMAP_STALE	   = 1,  /* the bitmap file is out of date or had -EIO */
+	BITMAP_WRITE_ERROR = 2, /* A write error has occurred */
+	BITMAP_HOSTENDIAN  =15,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* the superblock at the front of the bitmap file -- little endian */
@@ -152,8 +166,15 @@ typedef struct bitmap_super_s {
 	__le32 chunksize;    /* 52  the bitmap chunk size in bytes */
 	__le32 daemon_sleep; /* 56  seconds between disk flushes */
 	__le32 write_behind; /* 60  number of outstanding write-behind writes */
+<<<<<<< HEAD
 
 	__u8  pad[256 - 64]; /* set to zero */
+=======
+	__le32 sectors_reserved; /* 64 number of 512-byte sectors that are
+				  * reserved for the bitmap. */
+
+	__u8  pad[256 - 68]; /* set to zero */
+>>>>>>> refs/remotes/origin/master
 } bitmap_super_t;
 
 /* notes:
@@ -184,6 +205,7 @@ struct bitmap_page {
 	 */
 	unsigned int hijacked:1;
 	/*
+<<<<<<< HEAD
 	 * count of dirty bits on the page
 	 */
 	unsigned int  count:31;
@@ -237,6 +259,51 @@ struct bitmap {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * If any counter in this page is '1' or '2' - and so could be
+	 * cleared then that page is marked as 'pending'
+	 */
+	unsigned int pending:1;
+	/*
+	 * count of dirty bits on the page
+	 */
+	unsigned int  count:30;
+};
+
+/* the main bitmap structure - one per mddev */
+struct bitmap {
+
+	struct bitmap_counts {
+		spinlock_t lock;
+		struct bitmap_page *bp;
+		unsigned long pages;		/* total number of pages
+						 * in the bitmap */
+		unsigned long missing_pages;	/* number of pages
+						 * not yet allocated */
+		unsigned long chunkshift;	/* chunksize = 2^chunkshift
+						 * (for bitops) */
+		unsigned long chunks;		/* Total number of data
+						 * chunks for the array */
+	} counts;
+
+	struct mddev *mddev; /* the md device that the bitmap is for */
+
+	__u64	events_cleared;
+	int need_sync;
+
+	struct bitmap_storage {
+		struct file *file;		/* backing disk file */
+		struct page *sb_page;		/* cached copy of the bitmap
+						 * file superblock */
+		struct page **filemap;		/* list of cache pages for
+						 * the file */
+		unsigned long *filemap_attr;	/* attributes associated
+						 * w/ filemap pages */
+		unsigned long file_pages;	/* number of pages in the file*/
+		unsigned long bytes;		/* total bytes in the bitmap */
+	} storage;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	int allclean;
@@ -257,16 +324,21 @@ struct bitmap {
 	wait_queue_head_t overflow_wait;
 	wait_queue_head_t behind_wait;
 
+<<<<<<< HEAD
 	struct sysfs_dirent *sysfs_can_clear;
 <<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct kernfs_node *sysfs_can_clear;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* the bitmap API */
 
 /* these are used only by md/bitmap */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int  bitmap_create(mddev_t *mddev);
 int bitmap_load(mddev_t *mddev);
@@ -276,6 +348,8 @@ void bitmap_destroy(mddev_t *mddev);
 void bitmap_print_sb(struct bitmap *bitmap);
 void bitmap_update_sb(struct bitmap *bitmap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int  bitmap_create(struct mddev *mddev);
 int bitmap_load(struct mddev *mddev);
 void bitmap_flush(struct mddev *mddev);
@@ -284,7 +358,10 @@ void bitmap_destroy(struct mddev *mddev);
 void bitmap_print_sb(struct bitmap *bitmap);
 void bitmap_update_sb(struct bitmap *bitmap);
 void bitmap_status(struct seq_file *seq, struct bitmap *bitmap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int  bitmap_setallbits(struct bitmap *bitmap);
 void bitmap_write_all(struct bitmap *bitmap);
@@ -303,10 +380,17 @@ void bitmap_cond_end_sync(struct bitmap *bitmap, sector_t sector);
 
 void bitmap_unplug(struct bitmap *bitmap);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void bitmap_daemon_work(mddev_t *mddev);
 =======
 void bitmap_daemon_work(struct mddev *mddev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void bitmap_daemon_work(struct mddev *mddev);
+
+int bitmap_resize(struct bitmap *bitmap, sector_t blocks,
+		  int chunksize, int init);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif

@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2012, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +87,13 @@
  * Should the subsystem abort the loading of an ACPI table if the
  * table checksum is incorrect?
  */
+<<<<<<< HEAD
 #define ACPI_CHECKSUM_ABORT             FALSE
+=======
+#ifndef ACPI_CHECKSUM_ABORT
+#define ACPI_CHECKSUM_ABORT             FALSE
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Generate a version of ACPICA that only supports "reduced hardware"
@@ -100,7 +110,13 @@
  *      ACPI PM timer
  *      FACS table (Waking vectors and Global Lock)
  */
+<<<<<<< HEAD
 #define ACPI_REDUCED_HARDWARE           FALSE
+=======
+#ifndef ACPI_REDUCED_HARDWARE
+#define ACPI_REDUCED_HARDWARE           FALSE
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /******************************************************************************
  *
@@ -138,7 +154,11 @@
 
 /* Maximum sleep allowed via Sleep() operator */
 
+<<<<<<< HEAD
 #define ACPI_MAX_SLEEP                  2000	/* Two seconds */
+=======
+#define ACPI_MAX_SLEEP                  2000	/* 2000 millisec == two seconds */
+>>>>>>> refs/remotes/origin/master
 
 /* Address Range lists are per-space_id (Memory and I/O only) */
 
@@ -150,11 +170,14 @@
  *
  *****************************************************************************/
 
+<<<<<<< HEAD
 /* Number of distinct GPE register blocks and register width */
 
 #define ACPI_MAX_GPE_BLOCKS             2
 #define ACPI_GPE_REGISTER_WIDTH         8
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Method info (in WALK_STATE), containing local variables and argumetns */
 
 #define ACPI_METHOD_NUM_LOCALS          8
@@ -163,12 +186,15 @@
 #define ACPI_METHOD_NUM_ARGS            7
 #define ACPI_METHOD_MAX_ARG             6
 
+<<<<<<< HEAD
 /* Length of _HID, _UID, _CID, and UUID values */
 
 #define ACPI_DEVICE_ID_LENGTH           0x09
 #define ACPI_MAX_CID_LENGTH             48
 #define ACPI_UUID_LENGTH                16
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Operand Stack (in WALK_STATE), Must be large enough to contain METHOD_MAX_ARG
  */
@@ -186,6 +212,7 @@
  */
 #define ACPI_RESULTS_OBJ_NUM_MAX        255
 
+<<<<<<< HEAD
 /* Names within the namespace are 4 bytes long */
 
 #define ACPI_NAME_SIZE                  4
@@ -197,6 +224,8 @@
 #define ACPI_OEM_ID_SIZE                6
 #define ACPI_OEM_TABLE_ID_SIZE          8
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Constants used in searching for the RSDP in low memory */
 
 #define ACPI_EBDA_PTR_LOCATION          0x0000040E	/* Physical Address */
@@ -213,6 +242,10 @@
 /* Maximum space_ids for Operation Regions */
 
 #define ACPI_MAX_ADDRESS_SPACE          255
+<<<<<<< HEAD
+=======
+#define ACPI_NUM_DEFAULT_SPACES         4
+>>>>>>> refs/remotes/origin/master
 
 /* Array sizes.  Used for range checking also */
 
@@ -240,7 +273,12 @@
  *
  *****************************************************************************/
 
+<<<<<<< HEAD
 #define ACPI_DEBUGGER_MAX_ARGS          8	/* Must be max method args + 1 */
+=======
+#define ACPI_DEBUGGER_MAX_ARGS          ACPI_METHOD_NUM_ARGS + 4	/* Max command line arguments */
+#define ACPI_DB_LINE_BUFFER_SIZE        512
+>>>>>>> refs/remotes/origin/master
 
 #define ACPI_DEBUGGER_COMMAND_PROMPT    '-'
 #define ACPI_DEBUGGER_EXECUTE_PROMPT    '%'

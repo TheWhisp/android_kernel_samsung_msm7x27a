@@ -261,6 +261,7 @@ static struct gameport_driver cobra_drv = {
 	.disconnect	= cobra_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init cobra_init(void)
 {
 	return gameport_register_driver(&cobra_drv);
@@ -273,3 +274,6 @@ static void __exit cobra_exit(void)
 
 module_init(cobra_init);
 module_exit(cobra_exit);
+=======
+module_gameport_driver(cobra_drv);
+>>>>>>> refs/remotes/origin/master

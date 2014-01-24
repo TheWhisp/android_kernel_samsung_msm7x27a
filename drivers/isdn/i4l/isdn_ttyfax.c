@@ -46,10 +46,14 @@ isdn_getrev(const char *revision)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_fax_modem_result(int code, modem_info * info)
 =======
 isdn_tty_fax_modem_result(int code, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_fax_modem_result(int code, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	T30_s *f = info->fax;
@@ -59,6 +63,7 @@ isdn_tty_fax_modem_result(int code, modem_info *info)
 	int i;
 	static char *msg[] =
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"OK", "ERROR", "+FCON", "+FCSI:", "+FDIS:",
 	 "+FHNG:", "+FDCS:", "CONNECT", "+FTSI:",
 	 "+FCFR", "+FPTS:", "+FET:"};
@@ -67,6 +72,11 @@ isdn_tty_fax_modem_result(int code, modem_info *info)
 		 "+FHNG:", "+FDCS:", "CONNECT", "+FTSI:",
 		 "+FCFR", "+FPTS:", "+FET:"};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{"OK", "ERROR", "+FCON", "+FCSI:", "+FDIS:",
+		 "+FHNG:", "+FDCS:", "CONNECT", "+FTSI:",
+		 "+FCFR", "+FPTS:", "+FET:"};
+>>>>>>> refs/remotes/origin/master
 
 
 	isdn_tty_at_cout("\r\n", info);
@@ -74,6 +84,7 @@ isdn_tty_fax_modem_result(int code, modem_info *info)
 
 #ifdef ISDN_TTY_FAX_CMD_DEBUG
 	printk(KERN_DEBUG "isdn_tty: Fax send %s on ttyI%d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		msg[code], info->line);
 #endif
@@ -145,6 +156,8 @@ isdn_tty_fax_modem_result(int code, modem_info *info)
 			isdn_tty_at_cout(rs, info);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	       msg[code], info->line);
 #endif
 	switch (code) {
@@ -214,12 +227,16 @@ isdn_tty_fax_modem_result(int code, modem_info *info)
 		sprintf(rs, "%d", f->fet);
 		isdn_tty_at_cout(rs, info);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	isdn_tty_at_cout("\r\n", info);
 
 	switch (code) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 7:	/* CONNECT */
 			info->online = 2;
@@ -229,6 +246,8 @@ isdn_tty_fax_modem_result(int code, modem_info *info)
 			}
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 7:	/* CONNECT */
 		info->online = 2;
 		if (info->faxonline & 1) {
@@ -236,22 +255,31 @@ isdn_tty_fax_modem_result(int code, modem_info *info)
 			isdn_tty_at_cout(rs, info);
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static int
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_tty_fax_command1(modem_info * info, isdn_ctrl * c)
 {
 	static char *msg[] =
 	{"OK", "CONNECT", "NO CARRIER", "ERROR", "FCERROR"};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_tty_fax_command1(modem_info *info, isdn_ctrl *c)
 {
 	static char *msg[] =
 		{"OK", "CONNECT", "NO CARRIER", "ERROR", "FCERROR"};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef ISDN_TTY_FAX_CMD_DEBUG
 	printk(KERN_DEBUG "isdn_tty: FCLASS1 cmd(%d)\n", c->parm.aux.cmd);
@@ -264,6 +292,7 @@ isdn_tty_fax_command1(modem_info *info, isdn_ctrl *c)
 		isdn_tty_at_cout("\r\n", info);
 	}
 	switch (c->parm.aux.cmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case ISDN_FAX_CLASS1_CONNECT:
 			info->online = 2;
@@ -284,6 +313,8 @@ isdn_tty_fax_command1(modem_info *info, isdn_ctrl *c)
 			}
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_FAX_CLASS1_CONNECT:
 		info->online = 2;
 		break;
@@ -302,17 +333,24 @@ isdn_tty_fax_command1(modem_info *info, isdn_ctrl *c)
 			isdn_tty_at_cout("\r\nOK\r\n", info);
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return (0);
 }
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_fax_command(modem_info * info, isdn_ctrl * c)
 =======
 isdn_tty_fax_command(modem_info *info, isdn_ctrl *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_fax_command(modem_info *info, isdn_ctrl *c)
+>>>>>>> refs/remotes/origin/master
 {
 	T30_s *f = info->fax;
 	char rs[10];
@@ -325,6 +363,7 @@ isdn_tty_fax_command(modem_info *info, isdn_ctrl *c)
 	       f->r_code, info->line);
 #endif
 	switch (f->r_code) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case ISDN_TTY_FAX_FCON:
 			info->faxonline = 1;
@@ -399,6 +438,8 @@ isdn_tty_fax_command(modem_info *info, isdn_ctrl *c)
 			f->phase = ISDN_FAX_PHASE_D;
 			return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_TTY_FAX_FCON:
 		info->faxonline = 1;
 		isdn_tty_fax_modem_result(2, info);	/* +FCON */
@@ -471,7 +512,10 @@ isdn_tty_fax_command(modem_info *info, isdn_ctrl *c)
 		info->online = 1;
 		f->phase = ISDN_FAX_PHASE_D;
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	}
 	return (-1);
@@ -480,10 +524,14 @@ isdn_tty_fax_command(modem_info *info, isdn_ctrl *c)
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_fax_bitorder(modem_info * info, struct sk_buff *skb)
 =======
 isdn_tty_fax_bitorder(modem_info *info, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_fax_bitorder(modem_info *info, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	__u8 LeftMask;
 	__u8 RightMask;
@@ -496,16 +544,22 @@ isdn_tty_fax_bitorder(modem_info *info, struct sk_buff *skb)
 			Data = skb->data[i];
 			for (
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    LeftMask = 0x80, RightMask = 0x01;
 				    LeftMask > RightMask;
 				    LeftMask >>= 1, RightMask <<= 1
 			    ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				LeftMask = 0x80, RightMask = 0x01;
 				LeftMask > RightMask;
 				LeftMask >>= 1, RightMask <<= 1
 				) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				fBit = (Data & LeftMask);
 				if (Data & RightMask)
 					Data |= LeftMask;
@@ -528,16 +582,22 @@ isdn_tty_fax_bitorder(modem_info *info, struct sk_buff *skb)
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_FCLASS1(char **p, modem_info * info)
 {
 	static char *cmd[] =
 	{"AE", "TS", "RS", "TM", "RM", "TH", "RH"};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_tty_cmd_FCLASS1(char **p, modem_info *info)
 {
 	static char *cmd[] =
 		{"AE", "TS", "RS", "TM", "RM", "TH", "RH"};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	isdn_ctrl c;
 	int par, i;
 	u_long flags;
@@ -554,6 +614,7 @@ isdn_tty_cmd_FCLASS1(char **p, modem_info *info)
 
 	p[0] += 2;
 	switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case '?':
 			p[0]++;
@@ -578,6 +639,8 @@ isdn_tty_cmd_FCLASS1(char **p, modem_info *info)
 		default:
 			PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case '?':
 		p[0]++;
 		c.parm.aux.subcmd = AT_QUERY;
@@ -600,7 +663,10 @@ isdn_tty_cmd_FCLASS1(char **p, modem_info *info)
 		break;
 	default:
 		PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	c.command = ISDN_CMD_FAXCMD;
 #ifdef ISDN_TTY_FAX_CMD_DEBUG
@@ -652,10 +718,14 @@ isdn_tty_cmd_FCLASS1(char **p, modem_info *info)
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_FCLASS2(char **p, modem_info * info)
 =======
 isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	T30_s *f = info->fax;
@@ -665,15 +735,20 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	char rss[50];
 	int maxdccval[] =
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{1, 5, 2, 2, 3, 2, 0, 7};
 =======
 		{1, 5, 2, 2, 3, 2, 0, 7};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{1, 5, 2, 2, 3, 2, 0, 7};
+>>>>>>> refs/remotes/origin/master
 
 	/* FAA still unchanged */
 	if (!strncmp(p[0], "AA", 2)) {	/* TODO */
 		p[0] += 2;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -689,6 +764,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", 0);
@@ -702,7 +779,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -710,6 +790,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "BADLIN", 6)) {
 		p[0] += 6;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -735,6 +816,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->badlin);
@@ -758,7 +841,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -766,6 +852,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "BADMUL", 6)) {
 		p[0] += 6;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -791,6 +878,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->badmul);
@@ -814,7 +903,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -822,6 +914,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "BOR", 3)) {
 		p[0] += 3;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -847,6 +940,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->bor);
@@ -870,7 +965,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -878,6 +976,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "NBC", 3)) {
 		p[0] += 3;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -903,6 +1002,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->nbc);
@@ -926,7 +1027,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -946,6 +1050,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 		int i, r;
 		p[0] += 3;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -978,6 +1083,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n\"%s\"", f->pollid);
@@ -1008,7 +1115,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1016,6 +1126,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "CQ", 2)) {
 		p[0] += 2;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -1041,6 +1152,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->cq);
@@ -1064,7 +1177,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1072,6 +1188,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "CR", 2)) {
 		p[0] += 2;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -1097,6 +1214,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->cr);	/* read actual value from struct and print */
@@ -1120,7 +1239,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1128,6 +1250,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "CTCRTY", 6)) {
 		p[0] += 6;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -1153,6 +1276,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->ctcrty);
@@ -1176,7 +1301,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1187,6 +1315,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 
 		p[0] += 3;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -1225,6 +1354,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			strcpy(rs, "\r\n");
@@ -1261,7 +1392,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1272,6 +1406,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 
 		p[0] += 3;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -1310,6 +1445,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			strcpy(rs, "\r\n");
@@ -1346,7 +1483,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1368,6 +1508,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			} else if (f->phase == ISDN_FAX_PHASE_D) {
 				switch (f->fet) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					case 0:	/* next page will be received */
 						f->phase = ISDN_FAX_PHASE_C;
 						isdn_tty_fax_modem_result(7, info);	/* CONNECT */
@@ -1381,6 +1522,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 					default:
 						PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				case 0:	/* next page will be received */
 					f->phase = ISDN_FAX_PHASE_C;
 					isdn_tty_fax_modem_result(7, info);	/* CONNECT */
@@ -1393,7 +1536,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 					break;
 				default:
 					PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		} else {
@@ -1405,10 +1551,14 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "DT", 2)) {
 		int i, val[] =
 <<<<<<< HEAD
+<<<<<<< HEAD
 		{4, 0, 2, 3};
 =======
 			{4, 0, 2, 3};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			{4, 0, 2, 3};
+>>>>>>> refs/remotes/origin/master
 		char *rp = &f->resolution;
 
 		p[0] += 2;
@@ -1451,6 +1601,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 		p[0] += 3;
 		switch (*p[0]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case '?':
 				p[0]++;
 				sprintf(rs, "\r\n%d", f->ecm);
@@ -1475,6 +1626,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->ecm);
@@ -1498,7 +1651,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1543,6 +1699,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 		p[0] += 3;
 		switch (*p[0]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case '?':
 				p[0]++;
 				sprintf(rs, "\r\n\"%s\"", f->id);
@@ -1574,6 +1731,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n\"%s\"", f->id);
@@ -1604,7 +1763,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1632,6 +1794,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 		p[0] += 5;
 		switch (*p[0]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case '?':
 				p[0]++;
 				sprintf(rs, "\r\n%d", f->minsp);
@@ -1656,6 +1819,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->minsp);
@@ -1679,7 +1844,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1687,6 +1855,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "PHCTO", 5)) {
 		p[0] += 5;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -1712,6 +1881,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->phcto);
@@ -1735,7 +1906,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1744,6 +1918,7 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 	if (!strncmp(p[0], "REL", 3)) {
 		p[0] += 3;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -1769,6 +1944,8 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d", f->rel);
@@ -1792,7 +1969,10 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1816,18 +1996,24 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 #endif
 		switch (*p[0]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case '0':
 				p[0]++;
 				break;
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '0':
 			p[0]++;
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -1837,10 +2023,14 @@ isdn_tty_cmd_FCLASS2(char **p, modem_info *info)
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_PLUSF_FAX(char **p, modem_info * info)
 =======
 isdn_tty_cmd_PLUSF_FAX(char **p, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cmd_PLUSF_FAX(char **p, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	if (TTY_IS_FCLASS2(info))
 		return (isdn_tty_cmd_FCLASS2(p, info));

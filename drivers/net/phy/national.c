@@ -15,6 +15,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <linux/mii.h>
@@ -22,6 +27,7 @@
 #include <linux/phy.h>
 #include <linux/netdevice.h>
 
+<<<<<<< HEAD
 /* DP83865 phy identifier values */
 #define DP83865_PHY_ID	0x20005c7a
 
@@ -33,6 +39,16 @@
 #define DP83865_INT_MASK	0x15
 #define DP83865_INT_CLEAR	0x17
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEBUG
+
+/* DP83865 phy identifier values */
+#define DP83865_PHY_ID	0x20005c7a
+
+#define DP83865_INT_STATUS	0x14
+#define DP83865_INT_MASK	0x15
+#define DP83865_INT_CLEAR	0x17
+>>>>>>> refs/remotes/origin/master
 
 #define DP83865_INT_REMOTE_FAULT 0x0008
 #define DP83865_INT_ANE_COMPLETED 0x0010
@@ -75,16 +91,22 @@ static int ns_config_intr(struct phy_device *phydev)
 
 	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = phy_write(phydev, DP83865_INT_MASK_REG,
 				DP83865_INT_MASK_DEFAULT);
 	else
 		err = phy_write(phydev, DP83865_INT_MASK_REG, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		err = phy_write(phydev, DP83865_INT_MASK,
 				DP83865_INT_MASK_DEFAULT);
 	else
 		err = phy_write(phydev, DP83865_INT_MASK, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -92,12 +114,15 @@ static int ns_config_intr(struct phy_device *phydev)
 static int ns_ack_interrupt(struct phy_device *phydev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = phy_read(phydev, DP83865_INT_MASK_STATUS);
 	if (ret < 0)
 		return ret;
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = phy_read(phydev, DP83865_INT_STATUS);
 	if (ret < 0)
 		return ret;
@@ -107,7 +132,10 @@ static int ns_ack_interrupt(struct phy_device *phydev)
 	ret = phy_write(phydev, DP83865_INT_CLEAR, ret & ~0x7);
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ns_giga_speed_fallback(struct phy_device *phydev, int mode)
@@ -132,8 +160,13 @@ static void ns_10_base_t_hdx_loopack(struct phy_device *phydev, int disable)
 		ns_exp_write(phydev, 0x1c0,
 			     ns_exp_read(phydev, 0x1c0) & 0xfffe);
 
+<<<<<<< HEAD
 	printk(KERN_DEBUG "DP83865 PHY: 10BASE-T HDX loopback %s\n",
 	       (ns_exp_read(phydev, 0x1c0) & 0x0001) ? "off" : "on");
+=======
+	pr_debug("10BASE-T HDX loopback %s\n",
+		 (ns_exp_read(phydev, 0x1c0) & 0x0001) ? "off" : "on");
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ns_config_init(struct phy_device *phydev)

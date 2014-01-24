@@ -15,8 +15,12 @@
 #include <linux/types.h>
 #include <linux/string.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 
 #undef strlen
+=======
+#include "string-endian.h"
+>>>>>>> refs/remotes/origin/master
 
 size_t strlen(const char *s)
 {
@@ -24,15 +28,24 @@ size_t strlen(const char *s)
 	const uintptr_t s_int = (uintptr_t) s;
 	const uint64_t *p = (const uint64_t *)(s_int & -8);
 
+<<<<<<< HEAD
 	/* Read the first word, but force bytes before the string to be nonzero.
 	 * This expression works because we know shift counts are taken mod 64.
 	 */
 	uint64_t v = *p | ((1ULL << (s_int << 3)) - 1);
+=======
+	/* Read and MASK the first word. */
+	uint64_t v = *p | MASK(s_int);
+>>>>>>> refs/remotes/origin/master
 
 	uint64_t bits;
 	while ((bits = __insn_v1cmpeqi(v, 0)) == 0)
 		v = *++p;
 
+<<<<<<< HEAD
 	return ((const char *)p) + (__insn_ctz(bits) >> 3) - s;
+=======
+	return ((const char *)p) + (CFZ(bits) >> 3) - s;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(strlen);

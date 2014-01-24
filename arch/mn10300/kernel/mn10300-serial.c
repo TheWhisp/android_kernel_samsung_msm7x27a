@@ -37,9 +37,12 @@ static const char serial_revdate[] = "2007-11-06";
 #include <linux/sysrq.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <asm/bitops.h>
@@ -412,6 +415,37 @@ static struct irq_chip mn10300_serial_pic = {
 	.irq_unmask	= mn10300_serial_nop,
 };
 
+<<<<<<< HEAD
+=======
+static void mn10300_serial_low_mask(struct irq_data *d)
+{
+	unsigned long flags;
+	u16 tmp;
+
+	flags = arch_local_cli_save();
+	GxICR(d->irq) = NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL);
+	tmp = GxICR(d->irq); /* flush write buffer */
+	arch_local_irq_restore(flags);
+}
+
+static void mn10300_serial_low_unmask(struct irq_data *d)
+{
+	unsigned long flags;
+	u16 tmp;
+
+	flags = arch_local_cli_save();
+	GxICR(d->irq) =
+		NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL) | GxICR_ENABLE;
+	tmp = GxICR(d->irq); /* flush write buffer */
+	arch_local_irq_restore(flags);
+}
+
+static struct irq_chip mn10300_serial_low_pic = {
+	.name		= "mnserial-low",
+	.irq_mask	= mn10300_serial_low_mask,
+	.irq_unmask	= mn10300_serial_low_unmask,
+};
+>>>>>>> refs/remotes/origin/master
 
 /*
  * serial virtual DMA interrupt jump table
@@ -420,6 +454,7 @@ struct mn10300_serial_int mn10300_serial_int_tbl[NR_IRQS];
 
 static void mn10300_serial_dis_tx_intr(struct mn10300_serial_port *port)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 	u16 x;
 
@@ -427,10 +462,39 @@ static void mn10300_serial_dis_tx_intr(struct mn10300_serial_port *port)
 	*port->tx_icr = NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL);
 	x = *port->tx_icr;
 	arch_local_irq_restore(flags);
+=======
+	int retries = 100;
+	u16 x;
+
+	/* nothing to do if irq isn't set up */
+	if (!mn10300_serial_int_tbl[port->tx_irq].port)
+		return;
+
+	port->tx_flags |= MNSCx_TX_STOP;
+	mb();
+
+	/*
+	 * Here we wait for the irq to be disabled. Either it already is
+	 * disabled or we wait some number of retries for the VDMA handler
+	 * to disable it. The retries give the VDMA handler enough time to
+	 * run to completion if it was already in progress. If the VDMA IRQ
+	 * is enabled but the handler is not yet running when arrive here,
+	 * the STOP flag will prevent the handler from conflicting with the
+	 * driver code following this loop.
+	 */
+	while ((*port->tx_icr & GxICR_ENABLE) && retries-- > 0)
+		;
+	if (retries <= 0) {
+		*port->tx_icr =
+			NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL);
+		x = *port->tx_icr;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mn10300_serial_en_tx_intr(struct mn10300_serial_port *port)
 {
+<<<<<<< HEAD
 	unsigned long flags;
 	u16 x;
 
@@ -439,6 +503,25 @@ static void mn10300_serial_en_tx_intr(struct mn10300_serial_port *port)
 		NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL) | GxICR_ENABLE;
 	x = *port->tx_icr;
 	arch_local_irq_restore(flags);
+=======
+	u16 x;
+
+	/* nothing to do if irq isn't set up */
+	if (!mn10300_serial_int_tbl[port->tx_irq].port)
+		return;
+
+	/* stop vdma irq if not already stopped */
+	if (!(port->tx_flags & MNSCx_TX_STOP))
+		mn10300_serial_dis_tx_intr(port);
+
+	port->tx_flags &= ~MNSCx_TX_STOP;
+	mb();
+
+	*port->tx_icr =
+		NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL) |
+		GxICR_ENABLE | GxICR_REQUEST | GxICR_DETECT;
+	x = *port->tx_icr;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mn10300_serial_dis_rx_intr(struct mn10300_serial_port *port)
@@ -472,7 +555,11 @@ static int mask_test_and_clear(volatile u8 *ptr, u8 mask)
 static void mn10300_serial_receive_interrupt(struct mn10300_serial_port *port)
 {
 	struct uart_icount *icount = &port->uart.icount;
+<<<<<<< HEAD
 	struct tty_struct *tty = port->uart.state->port.tty;
+=======
+	struct tty_port *tport = &port->uart.state->port;
+>>>>>>> refs/remotes/origin/master
 	unsigned ix;
 	int count;
 	u8 st, ch, push, status, overrun;
@@ -482,15 +569,23 @@ static void mn10300_serial_receive_interrupt(struct mn10300_serial_port *port)
 	push = 0;
 
 	count = CIRC_CNT(port->rx_inp, port->rx_outp, MNSC_BUFFER_SIZE);
+<<<<<<< HEAD
 	count = tty_buffer_request_room(tty, count);
 	if (count == 0) {
 		if (!tty->low_latency)
 			tty_flip_buffer_push(tty);
+=======
+	count = tty_buffer_request_room(tport, count);
+	if (count == 0) {
+		if (!tport->low_latency)
+			tty_flip_buffer_push(tport);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 try_again:
 	/* pull chars out of the hat */
+<<<<<<< HEAD
 	ix = port->rx_outp;
 	if (ix == port->rx_inp) {
 		if (push && !tty->low_latency)
@@ -501,6 +596,19 @@ try_again:
 	ch = port->rx_buffer[ix++];
 	st = port->rx_buffer[ix++];
 	smp_rmb();
+=======
+	ix = ACCESS_ONCE(port->rx_outp);
+	if (CIRC_CNT(port->rx_inp, ix, MNSC_BUFFER_SIZE) == 0) {
+		if (push && !tport->low_latency)
+			tty_flip_buffer_push(tport);
+		return;
+	}
+
+	smp_read_barrier_depends();
+	ch = port->rx_buffer[ix++];
+	st = port->rx_buffer[ix++];
+	smp_mb();
+>>>>>>> refs/remotes/origin/master
 	port->rx_outp = ix & (MNSC_BUFFER_SIZE - 1);
 	port->uart.icount.rx++;
 
@@ -613,19 +721,32 @@ insert:
 		else
 			flag = TTY_NORMAL;
 
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, ch, flag);
+=======
+		tty_insert_flip_char(tport, ch, flag);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* overrun is special, since it's reported immediately, and doesn't
 	 * affect the current character
 	 */
 	if (overrun)
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, 0, TTY_OVERRUN);
 
 	count--;
 	if (count <= 0) {
 		if (!tty->low_latency)
 			tty_flip_buffer_push(tty);
+=======
+		tty_insert_flip_char(tport, 0, TTY_OVERRUN);
+
+	count--;
+	if (count <= 0) {
+		if (!tport->low_latency)
+			tty_flip_buffer_push(tport);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -782,8 +903,11 @@ static void mn10300_serial_start_tx(struct uart_port *_port)
 	struct mn10300_serial_port *port =
 		container_of(_port, struct mn10300_serial_port, uart);
 
+<<<<<<< HEAD
 	u16 x;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	_enter("%s{%lu}",
 	       port->name,
 	       CIRC_CNT(&port->uart.state->xmit.head,
@@ -791,6 +915,7 @@ static void mn10300_serial_start_tx(struct uart_port *_port)
 			UART_XMIT_SIZE));
 
 	/* kick the virtual DMA controller */
+<<<<<<< HEAD
 	arch_local_cli();
 	x = *port->tx_icr;
 	x |= GxICR_ENABLE;
@@ -799,6 +924,9 @@ static void mn10300_serial_start_tx(struct uart_port *_port)
 		x &= ~(GxICR_REQUEST | GxICR_DETECT);
 	else
 		x |= GxICR_REQUEST | GxICR_DETECT;
+=======
+	mn10300_serial_en_tx_intr(port);
+>>>>>>> refs/remotes/origin/master
 
 	_debug("CTR=%04hx ICR=%02hx STR=%04x TMD=%02hx TBR=%04hx ICR=%04hx",
 	       *port->_control, *port->_intr, *port->_status,
@@ -806,10 +934,13 @@ static void mn10300_serial_start_tx(struct uart_port *_port)
 	       (port->div_timer == MNSCx_DIV_TIMER_8BIT) ?
 	           *(volatile u8 *)port->_tmxbr : *port->_tmxbr,
 	       *port->tx_icr);
+<<<<<<< HEAD
 
 	*port->tx_icr = x;
 	x = *port->tx_icr;
 	arch_local_sti();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -819,13 +950,25 @@ static void mn10300_serial_send_xchar(struct uart_port *_port, char ch)
 {
 	struct mn10300_serial_port *port =
 		container_of(_port, struct mn10300_serial_port, uart);
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	_enter("%s,%02x", port->name, ch);
 
 	if (likely(port->gdbstub)) {
 		port->tx_xchar = ch;
+<<<<<<< HEAD
 		if (ch)
 			mn10300_serial_en_tx_intr(port);
+=======
+		if (ch) {
+			spin_lock_irqsave(&port->uart.lock, flags);
+			mn10300_serial_en_tx_intr(port);
+			spin_unlock_irqrestore(&port->uart.lock, flags);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -886,6 +1029,7 @@ static void mn10300_serial_break_ctl(struct uart_port *_port, int ctl)
 {
 	struct mn10300_serial_port *port =
 		container_of(_port, struct mn10300_serial_port, uart);
+<<<<<<< HEAD
 
 	_enter("%s,%d", port->name, ctl);
 
@@ -898,6 +1042,23 @@ static void mn10300_serial_break_ctl(struct uart_port *_port, int ctl)
 		*port->_control &= ~SC01CTR_BKE;
 		mn10300_serial_en_tx_intr(port);
 	}
+=======
+	unsigned long flags;
+
+	_enter("%s,%d", port->name, ctl);
+
+	spin_lock_irqsave(&port->uart.lock, flags);
+	if (ctl) {
+		/* tell the virtual DMA handler to assert BREAK */
+		port->tx_flags |= MNSCx_TX_BREAK;
+		mn10300_serial_en_tx_intr(port);
+	} else {
+		port->tx_flags &= ~MNSCx_TX_BREAK;
+		*port->_control &= ~SC01CTR_BKE;
+		mn10300_serial_en_tx_intr(port);
+	}
+	spin_unlock_irqrestore(&port->uart.lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -920,6 +1081,10 @@ static int mn10300_serial_startup(struct uart_port *_port)
 		return -ENOMEM;
 
 	port->rx_inp = port->rx_outp = 0;
+<<<<<<< HEAD
+=======
+	port->tx_flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* finally, enable the device */
 	*port->_intr = SC01ICR_TI;
@@ -932,6 +1097,7 @@ static int mn10300_serial_startup(struct uart_port *_port)
 	pint->port = port;
 	pint->vdma = mn10300_serial_vdma_tx_handler;
 
+<<<<<<< HEAD
 	set_intr_level(port->rx_irq,
 		NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL));
 	set_intr_level(port->tx_irq,
@@ -948,6 +1114,25 @@ static int mn10300_serial_startup(struct uart_port *_port)
 
 	if (request_irq(port->tm_irq, mn10300_serial_interrupt,
 			IRQF_DISABLED, port->tm_name, port) < 0)
+=======
+	irq_set_chip(port->rx_irq, &mn10300_serial_low_pic);
+	irq_set_chip(port->tx_irq, &mn10300_serial_low_pic);
+	irq_set_chip(port->tm_irq, &mn10300_serial_pic);
+
+	if (request_irq(port->rx_irq, mn10300_serial_interrupt,
+			IRQF_DISABLED | IRQF_NOBALANCING,
+			port->rx_name, port) < 0)
+		goto error;
+
+	if (request_irq(port->tx_irq, mn10300_serial_interrupt,
+			IRQF_DISABLED | IRQF_NOBALANCING,
+			port->tx_name, port) < 0)
+		goto error2;
+
+	if (request_irq(port->tm_irq, mn10300_serial_interrupt,
+			IRQF_DISABLED | IRQF_NOBALANCING,
+			port->tm_name, port) < 0)
+>>>>>>> refs/remotes/origin/master
 		goto error3;
 	mn10300_serial_mask_ack(port->tm_irq);
 
@@ -968,14 +1153,30 @@ error:
  */
 static void mn10300_serial_shutdown(struct uart_port *_port)
 {
+<<<<<<< HEAD
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 	u16 x;
 	struct mn10300_serial_port *port =
 		container_of(_port, struct mn10300_serial_port, uart);
 
 	_enter("%s", port->name);
 
+<<<<<<< HEAD
 	/* disable the serial port and its baud rate timer */
 	port->tx_break = 0;
+=======
+	spin_lock_irqsave(&_port->lock, flags);
+	mn10300_serial_dis_tx_intr(port);
+
+	*port->rx_icr = NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL);
+	x = *port->rx_icr;
+	port->tx_flags = 0;
+	spin_unlock_irqrestore(&_port->lock, flags);
+
+	/* disable the serial port and its baud rate timer */
+>>>>>>> refs/remotes/origin/master
 	*port->_control &= ~(SC01CTR_TXE | SC01CTR_RXE | SC01CTR_BKE);
 	*port->_tmxmd = 0;
 
@@ -990,12 +1191,17 @@ static void mn10300_serial_shutdown(struct uart_port *_port)
 	free_irq(port->rx_irq, port);
 	free_irq(port->tx_irq, port);
 
+<<<<<<< HEAD
 	arch_local_cli();
 	*port->rx_icr = NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL);
 	x = *port->rx_icr;
 	*port->tx_icr = NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL);
 	x = *port->tx_icr;
 	arch_local_sti();
+=======
+	mn10300_serial_int_tbl[port->tx_irq].port = NULL;
+	mn10300_serial_int_tbl[port->rx_irq].port = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1321,7 +1527,12 @@ timer_okay:
 	if ((new->c_cflag & CREAD) == 0)
 		port->uart.ignore_status_mask |= (1 << TTY_NORMAL);
 
+<<<<<<< HEAD
 	scxctr |= *port->_control & (SC01CTR_TXE | SC01CTR_RXE | SC01CTR_BKE);
+=======
+	scxctr |= SC01CTR_TXE | SC01CTR_RXE;
+	scxctr |= *port->_control & SC01CTR_BKE;
+>>>>>>> refs/remotes/origin/master
 	*port->_control = scxctr;
 
 	spin_unlock_irqrestore(&port->uart.lock, flags);
@@ -1523,6 +1734,7 @@ static void mn10300_serial_console_write(struct console *co,
 {
 	struct mn10300_serial_port *port;
 	unsigned i;
+<<<<<<< HEAD
 	u16 scxctr, txicr, tmp;
 	u8 tmxmd;
 
@@ -1534,6 +1746,26 @@ static void mn10300_serial_console_write(struct console *co,
 	*port->tx_icr = NUM2GxICR_LEVEL(CONFIG_MN10300_SERIAL_IRQ_LEVEL);
 	tmp = *port->tx_icr;
 	arch_local_sti();
+=======
+	u16 scxctr;
+	u8 tmxmd;
+	unsigned long flags;
+	int locked = 1;
+
+	port = mn10300_serial_ports[co->index];
+
+	local_irq_save(flags);
+	if (port->uart.sysrq) {
+		/* mn10300_serial_interrupt() already took the lock */
+		locked = 0;
+	} else if (oops_in_progress) {
+		locked = spin_trylock(&port->uart.lock);
+	} else
+		spin_lock(&port->uart.lock);
+
+	/* firstly hijack the serial port from the "virtual DMA" controller */
+	mn10300_serial_dis_tx_intr(port);
+>>>>>>> refs/remotes/origin/master
 
 	/* the transmitter may be disabled */
 	scxctr = *port->_control;
@@ -1569,12 +1801,20 @@ static void mn10300_serial_console_write(struct console *co,
 
 		while (*port->_status & SC01STR_TBF)
 			continue;
+<<<<<<< HEAD
 		*(u8 *) port->_txb = ch;
+=======
+		*port->_txb = ch;
+>>>>>>> refs/remotes/origin/master
 
 		if (ch == 0x0a) {
 			while (*port->_status & SC01STR_TBF)
 				continue;
+<<<<<<< HEAD
 			*(u8 *) port->_txb = 0xd;
+=======
+			*port->_txb = 0xd;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -1587,10 +1827,18 @@ static void mn10300_serial_console_write(struct console *co,
 	if (!(scxctr & SC01CTR_TXE))
 		*port->_control = scxctr;
 
+<<<<<<< HEAD
 	arch_local_cli();
 	*port->tx_icr = txicr;
 	tmp = *port->tx_icr;
 	arch_local_sti();
+=======
+	mn10300_serial_en_tx_intr(port);
+
+	if (locked)
+		spin_unlock(&port->uart.lock);
+	local_irq_restore(flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1659,6 +1907,7 @@ static int mn10300_serial_poll_get_char(struct uart_port *_port)
 
 	_enter("%s", port->name);
 
+<<<<<<< HEAD
 	do {
 		/* pull chars out of the hat */
 		ix = port->rx_outp;
@@ -1671,6 +1920,31 @@ static int mn10300_serial_poll_get_char(struct uart_port *_port)
 		port->rx_outp = ix & (MNSC_BUFFER_SIZE - 1);
 
 	} while (st & (SC01STR_FEF | SC01STR_PEF | SC01STR_OEF));
+=======
+	if (mn10300_serial_int_tbl[port->rx_irq].port != NULL) {
+		do {
+			/* pull chars out of the hat */
+			ix = ACCESS_ONCE(port->rx_outp);
+			if (CIRC_CNT(port->rx_inp, ix, MNSC_BUFFER_SIZE) == 0)
+				return NO_POLL_CHAR;
+
+			smp_read_barrier_depends();
+			ch = port->rx_buffer[ix++];
+			st = port->rx_buffer[ix++];
+			smp_mb();
+			port->rx_outp = ix & (MNSC_BUFFER_SIZE - 1);
+
+		} while (st & (SC01STR_FEF | SC01STR_PEF | SC01STR_OEF));
+	} else {
+		do {
+			st = *port->_status;
+			if (st & (SC01STR_FEF | SC01STR_PEF | SC01STR_OEF))
+				continue;
+		} while (!(st & SC01STR_RBF));
+
+		ch = *port->_rxb;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return ch;
 }
@@ -1697,12 +1971,20 @@ static void mn10300_serial_poll_put_char(struct uart_port *_port,
 	tmp = *port->_intr;
 
 	if (ch == 0x0a) {
+<<<<<<< HEAD
 		*(u8 *) port->_txb = 0x0d;
+=======
+		*port->_txb = 0x0d;
+>>>>>>> refs/remotes/origin/master
 		while (*port->_status & SC01STR_TBF)
 			continue;
 	}
 
+<<<<<<< HEAD
 	*(u8 *) port->_txb = ch;
+=======
+	*port->_txb = ch;
+>>>>>>> refs/remotes/origin/master
 	while (*port->_status & SC01STR_TBF)
 		continue;
 

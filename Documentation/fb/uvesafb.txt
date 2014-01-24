@@ -81,6 +81,7 @@ pmipal  Use the protected mode interface for palette changes.
 
 mtrr:n  Setup memory type range registers for the framebuffer
         where n:
+<<<<<<< HEAD
               0 - disabled (equivalent to nomtrr) (default)
               1 - uncachable
               2 - write-back
@@ -92,6 +93,13 @@ mtrr:n  Setup memory type range registers for the framebuffer
 ...
 mtrr: type mismatch for e0000000,8000000 old: write-back new: write-combining
 ...
+=======
+              0 - disabled (equivalent to nomtrr)
+              3 - write-combining (default)
+
+	Values other than 0 and 3 will result in a warning and will be
+	treated just like 3.
+>>>>>>> refs/remotes/origin/master
 
 nomtrr  Do not use memory type range registers.
 

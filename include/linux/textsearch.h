@@ -5,17 +5,23 @@
 #include <linux/list.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/err.h>
 #include <linux/slab.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/slab.h>
 
 struct module;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct ts_config;
 
 #define TS_AUTOLOAD	1 /* Automatically load textsearch modules when needed */

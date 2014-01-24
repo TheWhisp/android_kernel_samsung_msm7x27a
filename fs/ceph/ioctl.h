@@ -7,8 +7,11 @@
 #define CEPH_IOCTL_MAGIC 0x97
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* just use u64 to align sanely on all archs */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * CEPH_IOC_GET_LAYOUT - get file layout or dir layout policy
  * CEPH_IOC_SET_LAYOUT - set file layout
@@ -34,10 +37,18 @@
  */
 
 /* use u64 to align sanely on all archs */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct ceph_ioctl_layout {
 	__u64 stripe_unit, stripe_count, object_size;
 	__u64 data_pool;
+=======
+struct ceph_ioctl_layout {
+	__u64 stripe_unit, stripe_count, object_size;
+	__u64 data_pool;
+
+	/* obsolete.  new values ignored, always return -1 */
+>>>>>>> refs/remotes/origin/master
 	__s64 preferred_osd;
 };
 
@@ -50,10 +61,15 @@ struct ceph_ioctl_layout {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * CEPH_IOC_GET_DATALOC - get location of file data in the cluster
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * CEPH_IOC_GET_DATALOC - get location of file data in the cluster
+ *
+>>>>>>> refs/remotes/origin/master
  * Extract identity, address of the OSD and object storing a given
  * file offset.
  */
@@ -73,9 +89,12 @@ struct ceph_ioctl_dataloc {
 				   struct ceph_ioctl_dataloc)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CEPH_IOC_LAZYIO _IO(CEPH_IOCTL_MAGIC, 4)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * CEPH_IOC_LAZYIO - relax consistency
  *
@@ -106,5 +125,8 @@ struct ceph_ioctl_dataloc {
  */
 #define CEPH_IOC_SYNCIO _IO(CEPH_IOCTL_MAGIC, 5)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

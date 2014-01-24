@@ -26,6 +26,10 @@
 #include <linux/delay.h>
 #include <linux/rtc.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm.h>
+>>>>>>> refs/remotes/origin/master
 
 /* set to 1 = busy every eight 32kHz clocks during copy of sec+msec to AHB */
 #define TEGRA_RTC_REG_BUSY			0x004
@@ -303,17 +307,33 @@ static struct rtc_class_ops tegra_rtc_ops = {
 	.alarm_irq_enable = tegra_rtc_alarm_irq_enable,
 };
 
+<<<<<<< HEAD
 static int __devinit tegra_rtc_probe(struct platform_device *pdev)
+=======
+static const struct of_device_id tegra_rtc_dt_match[] = {
+	{ .compatible = "nvidia,tegra20-rtc", },
+	{}
+};
+MODULE_DEVICE_TABLE(of, tegra_rtc_dt_match);
+
+static int __init tegra_rtc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tegra_rtc_info *info;
 	struct resource *res;
 	int ret;
 
+<<<<<<< HEAD
 	info = kzalloc(sizeof(struct tegra_rtc_info), GFP_KERNEL);
+=======
+	info = devm_kzalloc(&pdev->dev, sizeof(struct tegra_rtc_info),
+		GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!info)
 		return -ENOMEM;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (!res) {
 		dev_err(&pdev->dev,
 			"Unable to allocate resources for device.\n");
@@ -340,6 +360,15 @@ static int __devinit tegra_rtc_probe(struct platform_device *pdev)
 		ret = -EBUSY;
 		goto err_release_mem_region;
 	}
+=======
+	info->rtc_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(info->rtc_base))
+		return PTR_ERR(info->rtc_base);
+
+	info->tegra_rtc_irq = platform_get_irq(pdev, 0);
+	if (info->tegra_rtc_irq <= 0)
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 
 	/* set context info. */
 	info->pdev = pdev;
@@ -354,6 +383,7 @@ static int __devinit tegra_rtc_probe(struct platform_device *pdev)
 
 	device_init_wakeup(&pdev->dev, 1);
 
+<<<<<<< HEAD
 	info->rtc_dev = rtc_device_register(
 		pdev->name, &pdev->dev, &tegra_rtc_ops, THIS_MODULE);
 	if (IS_ERR(info->rtc_dev)) {
@@ -367,16 +397,36 @@ static int __devinit tegra_rtc_probe(struct platform_device *pdev)
 
 	ret = request_irq(info->tegra_rtc_irq, tegra_rtc_irq_handler,
 		IRQF_TRIGGER_HIGH, "rtc alarm", &pdev->dev);
+=======
+	info->rtc_dev = devm_rtc_device_register(&pdev->dev,
+				dev_name(&pdev->dev), &tegra_rtc_ops,
+				THIS_MODULE);
+	if (IS_ERR(info->rtc_dev)) {
+		ret = PTR_ERR(info->rtc_dev);
+		dev_err(&pdev->dev, "Unable to register device (err=%d).\n",
+			ret);
+		return ret;
+	}
+
+	ret = devm_request_irq(&pdev->dev, info->tegra_rtc_irq,
+			tegra_rtc_irq_handler, IRQF_TRIGGER_HIGH,
+			dev_name(&pdev->dev), &pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&pdev->dev,
 			"Unable to request interrupt for device (err=%d).\n",
 			ret);
+<<<<<<< HEAD
 		goto err_dev_unreg;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev_notice(&pdev->dev, "Tegra internal Real Time Clock\n");
 
 	return 0;
+<<<<<<< HEAD
 
 err_dev_unreg:
 	rtc_device_unregister(info->rtc_dev);
@@ -415,6 +465,14 @@ static int tegra_rtc_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct device *dev = &pdev->dev;
 	struct tegra_rtc_info *info = platform_get_drvdata(pdev);
+=======
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int tegra_rtc_suspend(struct device *dev)
+{
+	struct tegra_rtc_info *info = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	tegra_rtc_wait_while_busy(dev);
 
@@ -436,10 +494,16 @@ static int tegra_rtc_suspend(struct platform_device *pdev, pm_message_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int tegra_rtc_resume(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
 	struct tegra_rtc_info *info = platform_get_drvdata(pdev);
+=======
+static int tegra_rtc_resume(struct device *dev)
+{
+	struct tegra_rtc_info *info = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev_vdbg(dev, "Resume (device_may_wakeup=%d)\n",
 		device_may_wakeup(dev));
@@ -451,6 +515,11 @@ static int tegra_rtc_resume(struct platform_device *pdev)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static SIMPLE_DEV_PM_OPS(tegra_rtc_pm_ops, tegra_rtc_suspend, tegra_rtc_resume);
+
+>>>>>>> refs/remotes/origin/master
 static void tegra_rtc_shutdown(struct platform_device *pdev)
 {
 	dev_vdbg(&pdev->dev, "disabling interrupts.\n");
@@ -459,11 +528,15 @@ static void tegra_rtc_shutdown(struct platform_device *pdev)
 
 MODULE_ALIAS("platform:tegra_rtc");
 static struct platform_driver tegra_rtc_driver = {
+<<<<<<< HEAD
 	.remove		= __devexit_p(tegra_rtc_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= tegra_rtc_shutdown,
 	.driver		= {
 		.name	= "tegra_rtc",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 #ifdef CONFIG_PM
 	.suspend	= tegra_rtc_suspend,
@@ -482,6 +555,14 @@ static void __exit tegra_rtc_exit(void)
 	platform_driver_unregister(&tegra_rtc_driver);
 }
 module_exit(tegra_rtc_exit);
+=======
+		.of_match_table = tegra_rtc_dt_match,
+		.pm	= &tegra_rtc_pm_ops,
+	},
+};
+
+module_platform_driver_probe(tegra_rtc_driver, tegra_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jon Mayo <jmayo@nvidia.com>");
 MODULE_DESCRIPTION("driver for Tegra internal RTC");

@@ -28,11 +28,16 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/pm.h>
+<<<<<<< HEAD
 #include <linux/i2c.h>
 <<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <linux/i2c.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cdev.h>
 #include <linux/slab.h>
 
@@ -63,6 +68,7 @@ struct aic32x4_rate_divs {
 };
 
 struct aic32x4_priv {
+<<<<<<< HEAD
 	u32 sysclk;
 <<<<<<< HEAD
 	s32 master;
@@ -73,6 +79,14 @@ struct aic32x4_priv {
 	u32 power_cfg;
 	u32 micpga_routing;
 	bool swapdacs;
+=======
+	struct regmap *regmap;
+	u32 sysclk;
+	u32 power_cfg;
+	u32 micpga_routing;
+	bool swapdacs;
+	int rstn_gpio;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* 0dB min, 1dB steps */
@@ -268,6 +282,7 @@ static const struct snd_soc_dapm_route aic32x4_dapm_routes[] = {
 	{"Right ADC", NULL, "Right Input Mixer"},
 };
 
+<<<<<<< HEAD
 static inline int aic32x4_change_page(struct snd_soc_codec *codec,
 					unsigned int new_page)
 {
@@ -329,6 +344,27 @@ static unsigned int aic32x4_read(struct snd_soc_codec *codec, unsigned int reg)
 	}
 	return i2c_smbus_read_byte_data(codec->control_data, fixed_reg & 0xff);
 }
+=======
+static const struct regmap_range_cfg aic32x4_regmap_pages[] = {
+	{
+		.selector_reg = 0,
+		.selector_mask  = 0xff,
+		.window_start = 0,
+		.window_len = 128,
+		.range_min = 0,
+		.range_max = AIC32X4_RMICPGAVOL,
+	},
+};
+
+static const struct regmap_config aic32x4_regmap = {
+	.reg_bits = 8,
+	.val_bits = 8,
+
+	.max_register = AIC32X4_RMICPGAVOL,
+	.ranges = aic32x4_regmap_pages,
+	.num_ranges = ARRAY_SIZE(aic32x4_regmap_pages),
+};
+>>>>>>> refs/remotes/origin/master
 
 static inline int aic32x4_get_divs(int mclk, int rate)
 {
@@ -344,6 +380,7 @@ static inline int aic32x4_get_divs(int mclk, int rate)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int aic32x4_add_widgets(struct snd_soc_codec *codec)
 {
 	snd_soc_dapm_new_controls(&codec->dapm, aic32x4_dapm_widgets,
@@ -356,6 +393,8 @@ static int aic32x4_add_widgets(struct snd_soc_codec *codec)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int aic32x4_set_dai_sysclk(struct snd_soc_dai *codec_dai,
 				  int clk_id, unsigned int freq, int dir)
 {
@@ -377,9 +416,12 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
 {
 	struct snd_soc_codec *codec = codec_dai->codec;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 iface_reg_1;
 	u8 iface_reg_2;
 	u8 iface_reg_3;
@@ -395,6 +437,7 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 	case SND_SOC_DAIFMT_CBM_CFM:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		aic32x4->master = 1;
 		iface_reg_1 |= AIC32X4_BCLKMASTER | AIC32X4_WCLKMASTER;
 		break;
@@ -405,6 +448,11 @@ static int aic32x4_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
 		break;
 	case SND_SOC_DAIFMT_CBS_CFS:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		iface_reg_1 |= AIC32X4_BCLKMASTER | AIC32X4_WCLKMASTER;
+		break;
+	case SND_SOC_DAIFMT_CBS_CFS:
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		printk(KERN_ERR "aic32x4: invalid DAI master/slave interface\n");
@@ -543,6 +591,7 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
 				  enum snd_soc_bias_level level)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
 	u8 value;
 
@@ -580,6 +629,8 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
 				      value | AIC32X4_BCLKEN);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 		/* Switch on PLL */
@@ -605,11 +656,15 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
 		/* Switch on BCLK_N Divider */
 		snd_soc_update_bits(codec, AIC32X4_BCLKN,
 				    AIC32X4_BCLKEN, AIC32X4_BCLKEN);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SND_SOC_BIAS_PREPARE:
 		break;
 	case SND_SOC_BIAS_STANDBY:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (aic32x4->master) {
 			/* Switch off PLL */
@@ -643,6 +698,8 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
 				      value & ~AIC32X4_BCLKEN);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Switch off PLL */
 		snd_soc_update_bits(codec, AIC32X4_PLLPR,
 				    AIC32X4_PLLEN, 0);
@@ -666,7 +723,10 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
 		/* Switch off BCLK_N Divider */
 		snd_soc_update_bits(codec, AIC32X4_BCLKN,
 				    AIC32X4_BCLKEN, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case SND_SOC_BIAS_OFF:
 		break;
@@ -680,10 +740,14 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
 			 | SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops aic32x4_ops = {
 =======
 static const struct snd_soc_dai_ops aic32x4_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops aic32x4_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params = aic32x4_hw_params,
 	.digital_mute = aic32x4_mute,
 	.set_fmt = aic32x4_set_dai_fmt,
@@ -709,10 +773,14 @@ static struct snd_soc_dai_driver aic32x4_dai = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int aic32x4_suspend(struct snd_soc_codec *codec, pm_message_t state)
 =======
 static int aic32x4_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int aic32x4_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	aic32x4_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -729,8 +797,17 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
 	struct aic32x4_priv *aic32x4 = snd_soc_codec_get_drvdata(codec);
 	u32 tmp_reg;
 
+<<<<<<< HEAD
 	codec->hw_write = (hw_write_t) i2c_master_send;
 	codec->control_data = aic32x4->control_data;
+=======
+	snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_REGMAP);
+
+	if (aic32x4->rstn_gpio >= 0) {
+		ndelay(10);
+		gpio_set_value(aic32x4->rstn_gpio, 1);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	snd_soc_write(codec, AIC32X4_RESET, 0x01);
 
@@ -743,16 +820,22 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
 		snd_soc_write(codec, AIC32X4_PWRCFG, AIC32X4_AVDDWEAKDISABLE);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (aic32x4->power_cfg & AIC32X4_PWR_AIC32X4_LDO_ENABLE) {
 		snd_soc_write(codec, AIC32X4_LDOCTL, AIC32X4_LDOCTLEN);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	tmp_reg = (aic32x4->power_cfg & AIC32X4_PWR_AIC32X4_LDO_ENABLE) ?
 			AIC32X4_LDOCTLEN : 0;
 	snd_soc_write(codec, AIC32X4_LDOCTL, tmp_reg);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp_reg = snd_soc_read(codec, AIC32X4_CMMODE);
 	if (aic32x4->power_cfg & AIC32X4_PWR_CMMODE_LDOIN_RANGE_18_36) {
 		tmp_reg |= AIC32X4_LDOIN_18_36;
@@ -771,20 +854,27 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
 
 	/* Mic PGA routing */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (aic32x4->micpga_routing | AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K) {
 		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_IN2R_10K);
 	}
 	if (aic32x4->micpga_routing | AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K) {
 		snd_soc_write(codec, AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_IN2R_10K);
 	}
 	if (aic32x4->micpga_routing & AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		snd_soc_write(codec, AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_IN1L_10K);
 	}
 
 	aic32x4_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	snd_soc_add_controls(codec, aic32x4_snd_controls,
 =======
@@ -792,6 +882,18 @@ static int aic32x4_probe(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
 			     ARRAY_SIZE(aic32x4_snd_controls));
 	aic32x4_add_widgets(codec);
+=======
+
+	/*
+	 * Workaround: for an unknown reason, the ADC needs to be powered up
+	 * and down for the first capture to work properly. It seems related to
+	 * a HW BUG or some kind of behavior not documented in the datasheet.
+	 */
+	tmp_reg = snd_soc_read(codec, AIC32X4_ADCSETUP);
+	snd_soc_write(codec, AIC32X4_ADCSETUP, tmp_reg |
+				AIC32X4_LADC_EN | AIC32X4_RADC_EN);
+	snd_soc_write(codec, AIC32X4_ADCSETUP, tmp_reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -803,22 +905,40 @@ static int aic32x4_remove(struct snd_soc_codec *codec)
 }
 
 static struct snd_soc_codec_driver soc_codec_dev_aic32x4 = {
+<<<<<<< HEAD
 	.read = aic32x4_read,
 	.write = aic32x4_write,
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe = aic32x4_probe,
 	.remove = aic32x4_remove,
 	.suspend = aic32x4_suspend,
 	.resume = aic32x4_resume,
 	.set_bias_level = aic32x4_set_bias_level,
+<<<<<<< HEAD
 };
 
 static __devinit int aic32x4_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+
+	.controls = aic32x4_snd_controls,
+	.num_controls = ARRAY_SIZE(aic32x4_snd_controls),
+	.dapm_widgets = aic32x4_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(aic32x4_dapm_widgets),
+	.dapm_routes = aic32x4_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(aic32x4_dapm_routes),
+};
+
+static int aic32x4_i2c_probe(struct i2c_client *i2c,
+			     const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aic32x4_pdata *pdata = i2c->dev.platform_data;
 	struct aic32x4_priv *aic32x4;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	aic32x4 = kzalloc(sizeof(struct aic32x4_priv), GFP_KERNEL);
 =======
@@ -829,20 +949,47 @@ static __devinit int aic32x4_i2c_probe(struct i2c_client *i2c,
 		return -ENOMEM;
 
 	aic32x4->control_data = i2c;
+=======
+	aic32x4 = devm_kzalloc(&i2c->dev, sizeof(struct aic32x4_priv),
+			       GFP_KERNEL);
+	if (aic32x4 == NULL)
+		return -ENOMEM;
+
+	aic32x4->regmap = devm_regmap_init_i2c(i2c, &aic32x4_regmap);
+	if (IS_ERR(aic32x4->regmap))
+		return PTR_ERR(aic32x4->regmap);
+
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(i2c, aic32x4);
 
 	if (pdata) {
 		aic32x4->power_cfg = pdata->power_cfg;
 		aic32x4->swapdacs = pdata->swapdacs;
 		aic32x4->micpga_routing = pdata->micpga_routing;
+<<<<<<< HEAD
+=======
+		aic32x4->rstn_gpio = pdata->rstn_gpio;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		aic32x4->power_cfg = 0;
 		aic32x4->swapdacs = false;
 		aic32x4->micpga_routing = 0;
+<<<<<<< HEAD
+=======
+		aic32x4->rstn_gpio = -1;
+	}
+
+	if (aic32x4->rstn_gpio >= 0) {
+		ret = devm_gpio_request_one(&i2c->dev, aic32x4->rstn_gpio,
+				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
+		if (ret != 0)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_aic32x4, &aic32x4_dai, 1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ret < 0)
 		kfree(aic32x4);
@@ -858,6 +1005,14 @@ static __devexit int aic32x4_i2c_remove(struct i2c_client *client)
 	kfree(i2c_get_clientdata(client));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+}
+
+static int aic32x4_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -873,6 +1028,7 @@ static struct i2c_driver aic32x4_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe =    aic32x4_i2c_probe,
+<<<<<<< HEAD
 	.remove =   __devexit_p(aic32x4_i2c_remove),
 	.id_table = aic32x4_i2c_id,
 };
@@ -895,6 +1051,13 @@ static void __exit aic32x4_exit(void)
 	i2c_del_driver(&aic32x4_i2c_driver);
 }
 module_exit(aic32x4_exit);
+=======
+	.remove =   aic32x4_i2c_remove,
+	.id_table = aic32x4_i2c_id,
+};
+
+module_i2c_driver(aic32x4_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC tlv320aic32x4 codec driver");
 MODULE_AUTHOR("Javier Martin <javier.martin@vista-silicon.com>");

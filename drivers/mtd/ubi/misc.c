@@ -82,10 +82,14 @@ int ubi_check_volume(struct ubi_device *ubi, int vol_id)
 		err = ubi_eba_read_leb(ubi, vol, i, buf, 0, size, 1);
 		if (err) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (err == -EBADMSG)
 =======
 			if (mtd_is_eccerr(err))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (mtd_is_eccerr(err))
+>>>>>>> refs/remotes/origin/master
 				err = 1;
 			break;
 		}
@@ -96,16 +100,56 @@ int ubi_check_volume(struct ubi_device *ubi, int vol_id)
 }
 
 /**
+<<<<<<< HEAD
  * ubi_calculate_rsvd_pool - calculate how many PEBs must be reserved for bad
+=======
+ * ubi_update_reserved - update bad eraseblock handling accounting data.
+ * @ubi: UBI device description object
+ *
+ * This function calculates the gap between current number of PEBs reserved for
+ * bad eraseblock handling and the required level of PEBs that must be
+ * reserved, and if necessary, reserves more PEBs to fill that gap, according
+ * to availability. Should be called with ubi->volumes_lock held.
+ */
+void ubi_update_reserved(struct ubi_device *ubi)
+{
+	int need = ubi->beb_rsvd_level - ubi->beb_rsvd_pebs;
+
+	if (need <= 0 || ubi->avail_pebs == 0)
+		return;
+
+	need = min_t(int, need, ubi->avail_pebs);
+	ubi->avail_pebs -= need;
+	ubi->rsvd_pebs += need;
+	ubi->beb_rsvd_pebs += need;
+	ubi_msg("reserved more %d PEBs for bad PEB handling", need);
+}
+
+/**
+ * ubi_calculate_reserved - calculate how many PEBs must be reserved for bad
+>>>>>>> refs/remotes/origin/master
  * eraseblock handling.
  * @ubi: UBI device description object
  */
 void ubi_calculate_reserved(struct ubi_device *ubi)
 {
+<<<<<<< HEAD
 	ubi->beb_rsvd_level = ubi->good_peb_count/100;
 	ubi->beb_rsvd_level *= CONFIG_MTD_UBI_BEB_RESERVE;
 	if (ubi->beb_rsvd_level < MIN_RESEVED_PEBS)
 		ubi->beb_rsvd_level = MIN_RESEVED_PEBS;
+=======
+	/*
+	 * Calculate the actual number of PEBs currently needed to be reserved
+	 * for future bad eraseblock handling.
+	 */
+	ubi->beb_rsvd_level = ubi->bad_peb_limit - ubi->bad_peb_count;
+	if (ubi->beb_rsvd_level < 0) {
+		ubi->beb_rsvd_level = 0;
+		ubi_warn("number of bad PEBs (%d) is above the expected limit (%d), not reserving any PEBs for bad PEB handling, will use available PEBs (if any)",
+			 ubi->bad_peb_count, ubi->bad_peb_limit);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**

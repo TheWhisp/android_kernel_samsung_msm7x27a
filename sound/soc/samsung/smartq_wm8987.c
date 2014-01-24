@@ -15,9 +15,13 @@
 
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/soc.h>
 #include <sound/jack.h>
@@ -158,6 +162,7 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
 	int err = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Add SmartQ specific widgets */
 	snd_soc_dapm_new_controls(dapm, wm8987_dapm_widgets,
 				  ARRAY_SIZE(wm8987_dapm_widgets));
@@ -174,6 +179,8 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set endpoints to not connected */
 	snd_soc_dapm_nc_pin(dapm, "LINPUT1");
 	snd_soc_dapm_nc_pin(dapm, "RINPUT1");
@@ -186,12 +193,15 @@ static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_disable_pin(dapm, "Headphone Jack");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_soc_dapm_sync(dapm);
 	if (err)
 		return err;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Headphone jack detection */
 	err = snd_soc_jack_new(codec, "Headphone Jack",
 			       SND_JACK_HEADPHONE, &smartq_jack);
@@ -216,12 +226,17 @@ static struct snd_soc_dai_link smartq_dai[] = {
 		.stream_name	= "SmartQ Hi-Fi",
 		.cpu_dai_name	= "samsung-i2s.0",
 		.codec_dai_name	= "wm8750-hifi",
+<<<<<<< HEAD
 		.platform_name	= "samsung-audio",
 <<<<<<< HEAD
 		.codec_name	= "wm8750-codec.0-0x1a",
 =======
 		.codec_name	= "wm8750.0-0x1a",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.platform_name	= "samsung-i2s.0",
+		.codec_name	= "wm8750.0-0x1a",
+>>>>>>> refs/remotes/origin/master
 		.init		= smartq_wm8987_init,
 		.ops		= &smartq_hifi_ops,
 	},
@@ -230,9 +245,12 @@ static struct snd_soc_dai_link smartq_dai[] = {
 static struct snd_soc_card snd_soc_smartq = {
 	.name = "SmartQ",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dai_link = smartq_dai,
 	.num_links = ARRAY_SIZE(smartq_dai),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.owner = THIS_MODULE,
 	.dai_link = smartq_dai,
 	.num_links = ARRAY_SIZE(smartq_dai),
@@ -243,7 +261,10 @@ static struct snd_soc_card snd_soc_smartq = {
 	.num_dapm_routes = ARRAY_SIZE(audio_map),
 	.controls = wm8987_smartq_controls,
 	.num_controls = ARRAY_SIZE(wm8987_smartq_controls),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *smartq_snd_device;

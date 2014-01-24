@@ -365,7 +365,11 @@ static ssize_t serio_show_description(struct device *dev, struct device_attribut
 	return sprintf(buf, "%s\n", serio->name);
 }
 
+<<<<<<< HEAD
 static ssize_t serio_show_modalias(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t modalias_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio *serio = to_serio_port(dev);
 
@@ -373,30 +377,47 @@ static ssize_t serio_show_modalias(struct device *dev, struct device_attribute *
 			serio->id.type, serio->id.proto, serio->id.id, serio->id.extra);
 }
 
+<<<<<<< HEAD
 static ssize_t serio_show_id_type(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t type_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio *serio = to_serio_port(dev);
 	return sprintf(buf, "%02x\n", serio->id.type);
 }
 
+<<<<<<< HEAD
 static ssize_t serio_show_id_proto(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t proto_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio *serio = to_serio_port(dev);
 	return sprintf(buf, "%02x\n", serio->id.proto);
 }
 
+<<<<<<< HEAD
 static ssize_t serio_show_id_id(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t id_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio *serio = to_serio_port(dev);
 	return sprintf(buf, "%02x\n", serio->id.id);
 }
 
+<<<<<<< HEAD
 static ssize_t serio_show_id_extra(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static ssize_t extra_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio *serio = to_serio_port(dev);
 	return sprintf(buf, "%02x\n", serio->id.extra);
 }
 
+<<<<<<< HEAD
 static DEVICE_ATTR(type, S_IRUGO, serio_show_id_type, NULL);
 static DEVICE_ATTR(proto, S_IRUGO, serio_show_id_proto, NULL);
 static DEVICE_ATTR(id, S_IRUGO, serio_show_id_id, NULL);
@@ -421,6 +442,9 @@ static const struct attribute_group *serio_device_attr_groups[] = {
 };
 
 static ssize_t serio_rebind_driver(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+=======
+static ssize_t drvctl_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio *serio = to_serio_port(dev);
 	struct device_driver *drv;
@@ -442,9 +466,12 @@ static ssize_t serio_rebind_driver(struct device *dev, struct device_attribute *
 		serio_disconnect_port(serio);
 		error = serio_bind_driver(serio, to_serio_driver(drv));
 <<<<<<< HEAD
+<<<<<<< HEAD
 		put_driver(drv);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		serio_remove_duplicate_events(serio, SERIO_RESCAN_PORT);
 	} else {
 		error = -EINVAL;
@@ -478,6 +505,7 @@ static ssize_t serio_set_bind_mode(struct device *dev, struct device_attribute *
 	return retval;
 }
 
+<<<<<<< HEAD
 static struct device_attribute serio_device_attrs[] = {
 	__ATTR(description, S_IRUGO, serio_show_description, NULL),
 	__ATTR(modalias, S_IRUGO, serio_show_modalias, NULL),
@@ -486,6 +514,48 @@ static struct device_attribute serio_device_attrs[] = {
 	__ATTR_NULL
 };
 
+=======
+static DEVICE_ATTR_RO(type);
+static DEVICE_ATTR_RO(proto);
+static DEVICE_ATTR_RO(id);
+static DEVICE_ATTR_RO(extra);
+
+static struct attribute *serio_device_id_attrs[] = {
+	&dev_attr_type.attr,
+	&dev_attr_proto.attr,
+	&dev_attr_id.attr,
+	&dev_attr_extra.attr,
+	NULL
+};
+
+static struct attribute_group serio_id_attr_group = {
+	.name	= "id",
+	.attrs	= serio_device_id_attrs,
+};
+
+static DEVICE_ATTR_RO(modalias);
+static DEVICE_ATTR_WO(drvctl);
+static DEVICE_ATTR(description, S_IRUGO, serio_show_description, NULL);
+static DEVICE_ATTR(bind_mode, S_IWUSR | S_IRUGO, serio_show_bind_mode, serio_set_bind_mode);
+
+static struct attribute *serio_device_attrs[] = {
+	&dev_attr_modalias.attr,
+	&dev_attr_description.attr,
+	&dev_attr_drvctl.attr,
+	&dev_attr_bind_mode.attr,
+	NULL
+};
+
+static struct attribute_group serio_device_attr_group = {
+	.attrs	= serio_device_attrs,
+};
+
+static const struct attribute_group *serio_device_attr_groups[] = {
+	&serio_id_attr_group,
+	&serio_device_attr_group,
+	NULL
+};
+>>>>>>> refs/remotes/origin/master
 
 static void serio_release_port(struct device *dev)
 {
@@ -736,19 +806,33 @@ EXPORT_SYMBOL(serio_unregister_child_port);
  * Serio driver operations
  */
 
+<<<<<<< HEAD
 static ssize_t serio_driver_show_description(struct device_driver *drv, char *buf)
+=======
+static ssize_t description_show(struct device_driver *drv, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio_driver *driver = to_serio_driver(drv);
 	return sprintf(buf, "%s\n", driver->description ? driver->description : "(none)");
 }
+<<<<<<< HEAD
 
 static ssize_t serio_driver_show_bind_mode(struct device_driver *drv, char *buf)
+=======
+static DRIVER_ATTR_RO(description);
+
+static ssize_t bind_mode_show(struct device_driver *drv, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio_driver *serio_drv = to_serio_driver(drv);
 	return sprintf(buf, "%s\n", serio_drv->manual_bind ? "manual" : "auto");
 }
 
+<<<<<<< HEAD
 static ssize_t serio_driver_set_bind_mode(struct device_driver *drv, const char *buf, size_t count)
+=======
+static ssize_t bind_mode_store(struct device_driver *drv, const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct serio_driver *serio_drv = to_serio_driver(drv);
 	int retval;
@@ -764,6 +848,7 @@ static ssize_t serio_driver_set_bind_mode(struct device_driver *drv, const char 
 
 	return retval;
 }
+<<<<<<< HEAD
 
 
 static struct driver_attribute serio_driver_attrs[] = {
@@ -772,6 +857,16 @@ static struct driver_attribute serio_driver_attrs[] = {
 		serio_driver_show_bind_mode, serio_driver_set_bind_mode),
 	__ATTR_NULL
 };
+=======
+static DRIVER_ATTR_RW(bind_mode);
+
+static struct attribute *serio_driver_attrs[] = {
+	&driver_attr_description.attr,
+	&driver_attr_bind_mode.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(serio_driver);
+>>>>>>> refs/remotes/origin/master
 
 static int serio_driver_probe(struct device *dev)
 {
@@ -895,8 +990,11 @@ static int serio_bus_match(struct device *dev, struct device_driver *drv)
 	return serio_match_port(serio_drv->id_table, serio);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define SERIO_ADD_UEVENT_VAR(fmt, val...)				\
 	do {								\
 		int err = add_uevent_var(env, fmt, val);		\
@@ -924,6 +1022,7 @@ static int serio_uevent(struct device *dev, struct kobj_uevent_env *env)
 }
 #undef SERIO_ADD_UEVENT_VAR
 
+<<<<<<< HEAD
 #else
 
 static int serio_uevent(struct device *dev, struct kobj_uevent_env *env)
@@ -933,6 +1032,8 @@ static int serio_uevent(struct device *dev, struct kobj_uevent_env *env)
 
 #endif /* CONFIG_HOTPLUG */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 static int serio_suspend(struct device *dev)
 {
@@ -1010,8 +1111,12 @@ EXPORT_SYMBOL(serio_interrupt);
 
 static struct bus_type serio_bus = {
 	.name		= "serio",
+<<<<<<< HEAD
 	.dev_attrs	= serio_device_attrs,
 	.drv_attrs	= serio_driver_attrs,
+=======
+	.drv_groups	= serio_driver_groups,
+>>>>>>> refs/remotes/origin/master
 	.match		= serio_bus_match,
 	.uevent		= serio_uevent,
 	.probe		= serio_driver_probe,

@@ -15,6 +15,10 @@
 #include <linux/types.h>
 #include <linux/string.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include "string-endian.h"
+>>>>>>> refs/remotes/origin/master
 
 void *memchr(const void *s, int c, size_t n)
 {
@@ -35,6 +39,7 @@ void *memchr(const void *s, int c, size_t n)
 	p = (const uint64_t *)(s_int & -8);
 
 	/* Create eight copies of the byte for which we are looking. */
+<<<<<<< HEAD
 	goal = 0x0101010101010101ULL * (uint8_t) c;
 
 	/* Read the first word, but munge it so that bytes before the array
@@ -44,6 +49,14 @@ void *memchr(const void *s, int c, size_t n)
 	 * shift counts are taken mod 64.
 	 */
 	before_mask = (1ULL << (s_int << 3)) - 1;
+=======
+	goal = copy_byte(c);
+
+	/* Read the first word, but munge it so that bytes before the array
+	 * will not match goal.
+	 */
+	before_mask = MASK(s_int);
+>>>>>>> refs/remotes/origin/master
 	v = (*p | before_mask) ^ (goal & before_mask);
 
 	/* Compute the address of the last byte. */
@@ -65,7 +78,11 @@ void *memchr(const void *s, int c, size_t n)
 	/* We found a match, but it might be in a byte past the end
 	 * of the array.
 	 */
+<<<<<<< HEAD
 	ret = ((char *)p) + (__insn_ctz(bits) >> 3);
+=======
+	ret = ((char *)p) + (CFZ(bits) >> 3);
+>>>>>>> refs/remotes/origin/master
 	return (ret <= last_byte_ptr) ? ret : NULL;
 }
 EXPORT_SYMBOL(memchr);

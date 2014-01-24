@@ -8,19 +8,28 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/moduleparam.h>
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/debugfs.h>
 #include <linux/fs.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/stat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/fault-inject.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/fault-inject.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mmc/card.h>
 #include <linux/mmc/host.h>
@@ -29,7 +38,10 @@
 #include "mmc_ops.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FAIL_MMC_REQUEST
 
 static DECLARE_FAULT_ATTR(fail_default_attr);
@@ -38,7 +50,10 @@ module_param(fail_request, charp, 0);
 
 #endif /* CONFIG_FAIL_MMC_REQUEST */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* The debugfs functions are optimized away when CONFIG_DEBUG_FS isn't set. */
 static int mmc_ios_show(struct seq_file *s, void *data)
 {
@@ -67,10 +82,15 @@ static int mmc_ios_show(struct seq_file *s, void *data)
 
 	seq_printf(s, "clock:\t\t%u Hz\n", ios->clock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (host->actual_clock)
 		seq_printf(s, "actual clock:\t%u Hz\n", host->actual_clock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (host->actual_clock)
+		seq_printf(s, "actual clock:\t%u Hz\n", host->actual_clock);
+>>>>>>> refs/remotes/origin/master
 	seq_printf(s, "vdd:\t\t%u ", ios->vdd);
 	if ((1 << ios->vdd) & MMC_VDD_165_195)
 		seq_printf(s, "(1.65 - 1.95 V)\n");
@@ -139,7 +159,10 @@ static int mmc_ios_show(struct seq_file *s, void *data)
 		str = "sd high-speed";
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case MMC_TIMING_UHS_SDR50:
 		str = "sd uhs SDR50";
 		break;
@@ -152,13 +175,35 @@ static int mmc_ios_show(struct seq_file *s, void *data)
 	case MMC_TIMING_MMC_HS200:
 		str = "mmc high-speed SDR200";
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		str = "invalid";
 		break;
 	}
 	seq_printf(s, "timing spec:\t%u (%s)\n", ios->timing, str);
 
+<<<<<<< HEAD
+=======
+	switch (ios->signal_voltage) {
+	case MMC_SIGNAL_VOLTAGE_330:
+		str = "3.30 V";
+		break;
+	case MMC_SIGNAL_VOLTAGE_180:
+		str = "1.80 V";
+		break;
+	case MMC_SIGNAL_VOLTAGE_120:
+		str = "1.20 V";
+		break;
+	default:
+		str = "invalid";
+		break;
+	}
+	seq_printf(s, "signal voltage:\t%u (%s)\n", ios->chip_select, str);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -229,7 +274,10 @@ void mmc_add_host_debugfs(struct mmc_host *host)
 		goto err_node;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FAIL_MMC_REQUEST
 	if (fail_request)
 		setup_fault_attr(&fail_default_attr, fail_request);
@@ -239,7 +287,10 @@ void mmc_add_host_debugfs(struct mmc_host *host)
 					     &host->fail_mmc_request)))
 		goto err_node;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 
 err_node:
@@ -260,13 +311,21 @@ static int mmc_dbg_card_status_get(void *data, u64 *val)
 	u32		status;
 	int		ret;
 
+<<<<<<< HEAD
 	mmc_claim_host(card->host);
+=======
+	mmc_get_card(card);
+>>>>>>> refs/remotes/origin/master
 
 	ret = mmc_send_status(data, &status);
 	if (!ret)
 		*val = status;
 
+<<<<<<< HEAD
 	mmc_release_host(card->host);
+=======
+	mmc_put_card(card);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -293,6 +352,7 @@ static int mmc_ext_csd_open(struct inode *inode, struct file *filp)
 		goto out_free;
 	}
 
+<<<<<<< HEAD
 	mmc_claim_host(card->host);
 	err = mmc_send_ext_csd(card, ext_csd);
 	mmc_release_host(card->host);
@@ -300,6 +360,15 @@ static int mmc_ext_csd_open(struct inode *inode, struct file *filp)
 		goto out_free;
 
 	for (i = 511; i >= 0; i--)
+=======
+	mmc_get_card(card);
+	err = mmc_send_ext_csd(card, ext_csd);
+	mmc_put_card(card);
+	if (err)
+		goto out_free;
+
+	for (i = 0; i < 512; i++)
+>>>>>>> refs/remotes/origin/master
 		n += sprintf(buf + n, "%02x", ext_csd[i]);
 	n += sprintf(buf + n, "\n");
 	BUG_ON(n != EXT_CSD_STR_LEN);
@@ -336,6 +405,7 @@ static const struct file_operations mmc_dbg_ext_csd_fops = {
 	.llseek		= default_llseek,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static int mmc_wr_pack_stats_open(struct inode *inode, struct file *filp)
@@ -497,6 +567,8 @@ static const struct file_operations mmc_dbg_wr_pack_stats_fops = {
 };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void mmc_add_card_debugfs(struct mmc_card *card)
 {
 	struct mmc_host	*host = card->host;
@@ -530,6 +602,7 @@ void mmc_add_card_debugfs(struct mmc_card *card)
 			goto err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (mmc_card_mmc(card) && (card->ext_csd.rev >= 6) &&
 	    (card->host->caps2 & MMC_CAP2_PACKED_WR))
@@ -538,6 +611,8 @@ void mmc_add_card_debugfs(struct mmc_card *card)
 			goto err;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 
 err:

@@ -311,6 +311,10 @@ static ssize_t c2port_show_name(struct device *dev,
 
 	return sprintf(buf, "%s\n", c2dev->name);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(name, 0444, c2port_show_name, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t c2port_show_flash_blocks_num(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -320,6 +324,10 @@ static ssize_t c2port_show_flash_blocks_num(struct device *dev,
 
 	return sprintf(buf, "%d\n", ops->blocks_num);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(flash_blocks_num, 0444, c2port_show_flash_blocks_num, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t c2port_show_flash_block_size(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -329,6 +337,10 @@ static ssize_t c2port_show_flash_block_size(struct device *dev,
 
 	return sprintf(buf, "%d\n", ops->block_size);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(flash_block_size, 0444, c2port_show_flash_block_size, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t c2port_show_flash_size(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -338,18 +350,30 @@ static ssize_t c2port_show_flash_size(struct device *dev,
 
 	return sprintf(buf, "%d\n", ops->blocks_num * ops->block_size);
 }
+<<<<<<< HEAD
 
 static ssize_t c2port_show_access(struct device *dev,
 				struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR(flash_size, 0444, c2port_show_flash_size, NULL);
+
+static ssize_t access_show(struct device *dev, struct device_attribute *attr,
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct c2port_device *c2dev = dev_get_drvdata(dev);
 
 	return sprintf(buf, "%d\n", c2dev->access);
 }
 
+<<<<<<< HEAD
 static ssize_t c2port_store_access(struct device *dev,
 				struct device_attribute *attr,
 				const char *buf, size_t count)
+=======
+static ssize_t access_store(struct device *dev, struct device_attribute *attr,
+			    const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct c2port_device *c2dev = dev_get_drvdata(dev);
 	struct c2port_ops *ops = c2dev->ops;
@@ -375,6 +399,10 @@ static ssize_t c2port_store_access(struct device *dev,
 
 	return count;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RW(access);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t c2port_store_reset(struct device *dev,
 				struct device_attribute *attr,
@@ -395,6 +423,10 @@ static ssize_t c2port_store_reset(struct device *dev,
 
 	return count;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(reset, 0200, NULL, c2port_store_reset);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t __c2port_show_dev_id(struct c2port_device *dev, char *buf)
 {
@@ -431,6 +463,10 @@ static ssize_t c2port_show_dev_id(struct device *dev,
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(dev_id, 0444, c2port_show_dev_id, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t __c2port_show_rev_id(struct c2port_device *dev, char *buf)
 {
@@ -467,6 +503,10 @@ static ssize_t c2port_show_rev_id(struct device *dev,
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(rev_id, 0444, c2port_show_rev_id, NULL);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t c2port_show_flash_access(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -536,6 +576,11 @@ static ssize_t c2port_store_flash_access(struct device *dev,
 
 	return count;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(flash_access, 0644, c2port_show_flash_access,
+		   c2port_store_flash_access);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t __c2port_write_flash_erase(struct c2port_device *dev)
 {
@@ -616,6 +661,10 @@ static ssize_t c2port_store_flash_erase(struct device *dev,
 
 	return count;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR(flash_erase, 0200, NULL, c2port_store_flash_erase);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t __c2port_read_flash_data(struct c2port_device *dev,
 				char *buffer, loff_t offset, size_t count)
@@ -846,10 +895,17 @@ static ssize_t c2port_write_flash_data(struct file *filp, struct kobject *kobj,
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+/* size is computed at run-time */
+static BIN_ATTR(flash_data, 0644, c2port_read_flash_data,
+		c2port_write_flash_data, 0);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Class attributes
  */
+<<<<<<< HEAD
 
 static struct device_attribute c2port_attrs[] = {
 	__ATTR(name, 0444, c2port_show_name, NULL),
@@ -875,6 +931,35 @@ static struct bin_attribute c2port_bin_attrs = {
 	.read	= c2port_read_flash_data,
 	.write	= c2port_write_flash_data,
 	/* .size is computed at run-time */
+=======
+static struct attribute *c2port_attrs[] = {
+	&dev_attr_name.attr,
+	&dev_attr_flash_blocks_num.attr,
+	&dev_attr_flash_block_size.attr,
+	&dev_attr_flash_size.attr,
+	&dev_attr_access.attr,
+	&dev_attr_reset.attr,
+	&dev_attr_dev_id.attr,
+	&dev_attr_rev_id.attr,
+	&dev_attr_flash_access.attr,
+	&dev_attr_flash_erase.attr,
+	NULL,
+};
+
+static struct bin_attribute *c2port_bin_attrs[] = {
+	&bin_attr_flash_data,
+	NULL,
+};
+
+static const struct attribute_group c2port_group = {
+	.attrs = c2port_attrs,
+	.bin_attrs = c2port_bin_attrs,
+};
+
+static const struct attribute_group *c2port_groups[] = {
+	&c2port_group,
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -885,7 +970,11 @@ struct c2port_device *c2port_device_register(char *name,
 					struct c2port_ops *ops, void *devdata)
 {
 	struct c2port_device *c2dev;
+<<<<<<< HEAD
 	int id, ret;
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(!ops) || unlikely(!ops->access) || \
 		unlikely(!ops->c2d_dir) || unlikely(!ops->c2ck_set) || \
@@ -897,6 +986,7 @@ struct c2port_device *c2port_device_register(char *name,
 	if (unlikely(!c2dev))
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	ret = idr_pre_get(&c2port_idr, GFP_KERNEL);
 	if (!ret) {
 		ret = -ENOMEM;
@@ -913,6 +1003,22 @@ struct c2port_device *c2port_device_register(char *name,
 
 	c2dev->dev = device_create(c2port_class, NULL, 0, c2dev,
 					"c2port%d", id);
+=======
+	idr_preload(GFP_KERNEL);
+	spin_lock_irq(&c2port_idr_lock);
+	ret = idr_alloc(&c2port_idr, c2dev, 0, 0, GFP_NOWAIT);
+	spin_unlock_irq(&c2port_idr_lock);
+	idr_preload_end();
+
+	if (ret < 0)
+		goto error_idr_alloc;
+	c2dev->id = ret;
+
+	bin_attr_flash_data.size = ops->blocks_num * ops->block_size;
+
+	c2dev->dev = device_create(c2port_class, NULL, 0, c2dev,
+				   "c2port%d", c2dev->id);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(IS_ERR(c2dev->dev))) {
 		ret = PTR_ERR(c2dev->dev);
 		goto error_device_create;
@@ -923,12 +1029,15 @@ struct c2port_device *c2port_device_register(char *name,
 	c2dev->ops = ops;
 	mutex_init(&c2dev->mutex);
 
+<<<<<<< HEAD
 	/* Create binary file */
 	c2port_bin_attrs.size = ops->blocks_num * ops->block_size;
 	ret = device_create_bin_file(c2dev->dev, &c2port_bin_attrs);
 	if (unlikely(ret))
 		goto error_device_create_bin_file;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* By default C2 port access is off */
 	c2dev->access = c2dev->flash_access = 0;
 	ops->access(c2dev, 0);
@@ -941,6 +1050,7 @@ struct c2port_device *c2port_device_register(char *name,
 
 	return c2dev;
 
+<<<<<<< HEAD
 error_device_create_bin_file:
 	device_destroy(c2port_class, 0);
 
@@ -950,6 +1060,14 @@ error_device_create:
 	spin_unlock_irq(&c2port_idr_lock);
 
 error_idr_get_new:
+=======
+error_device_create:
+	spin_lock_irq(&c2port_idr_lock);
+	idr_remove(&c2port_idr, c2dev->id);
+	spin_unlock_irq(&c2port_idr_lock);
+
+error_idr_alloc:
+>>>>>>> refs/remotes/origin/master
 	kfree(c2dev);
 
 	return ERR_PTR(ret);
@@ -963,7 +1081,10 @@ void c2port_device_unregister(struct c2port_device *c2dev)
 
 	dev_info(c2dev->dev, "C2 port %s removed\n", c2dev->name);
 
+<<<<<<< HEAD
 	device_remove_bin_file(c2dev->dev, &c2port_bin_attrs);
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&c2port_idr_lock);
 	idr_remove(&c2port_idr, c2dev->id);
 	spin_unlock_irq(&c2port_idr_lock);
@@ -985,6 +1106,7 @@ static int __init c2port_init(void)
 
 	c2port_class = class_create(THIS_MODULE, "c2port");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!c2port_class) {
 		printk(KERN_ERR "c2port: failed to allocate class\n");
 		return -ENOMEM;
@@ -995,6 +1117,13 @@ static int __init c2port_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 	c2port_class->dev_attrs = c2port_attrs;
+=======
+	if (IS_ERR(c2port_class)) {
+		printk(KERN_ERR "c2port: failed to allocate class\n");
+		return PTR_ERR(c2port_class);
+	}
+	c2port_class->dev_groups = c2port_groups;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

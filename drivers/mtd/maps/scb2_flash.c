@@ -69,8 +69,12 @@ static struct map_info scb2_map = {
 };
 static int region_fail;
 
+<<<<<<< HEAD
 static int __devinit
 scb2_fixup_mtd(struct mtd_info *mtd)
+=======
+static int scb2_fixup_mtd(struct mtd_info *mtd)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int done = 0;
@@ -133,8 +137,13 @@ scb2_fixup_mtd(struct mtd_info *mtd)
 /* CSB5's 'Function Control Register' has bits for decoding @ >= 0xffc00000 */
 #define CSB5_FCR	0x41
 #define CSB5_FCR_DECODE_ALL 0x0e
+<<<<<<< HEAD
 static int __devinit
 scb2_flash_probe(struct pci_dev *dev, const struct pci_device_id *ent)
+=======
+static int scb2_flash_probe(struct pci_dev *dev,
+			    const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 reg;
 
@@ -197,19 +206,27 @@ scb2_flash_probe(struct pci_dev *dev, const struct pci_device_id *ent)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit
 scb2_flash_remove(struct pci_dev *dev)
+=======
+static void scb2_flash_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!scb2_mtd)
 		return;
 
 	/* disable flash writes */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (scb2_mtd->lock)
 		scb2_mtd->lock(scb2_mtd, 0, scb2_mtd->size);
 =======
 	mtd_lock(scb2_mtd, 0, scb2_mtd->size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_lock(scb2_mtd, 0, scb2_mtd->size);
+>>>>>>> refs/remotes/origin/master
 
 	mtd_device_unregister(scb2_mtd);
 	map_destroy(scb2_mtd);
@@ -219,7 +236,10 @@ scb2_flash_remove(struct pci_dev *dev)
 
 	if (!region_fail)
 		release_mem_region(SCB2_ADDR, SCB2_WINDOW);
+<<<<<<< HEAD
 	pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pci_device_id scb2_flash_pci_ids[] = {
@@ -236,6 +256,7 @@ static struct pci_driver scb2_flash_driver = {
 	.name =     "Intel SCB2 BIOS Flash",
 	.id_table = scb2_flash_pci_ids,
 	.probe =    scb2_flash_probe,
+<<<<<<< HEAD
 	.remove =   __devexit_p(scb2_flash_remove),
 };
 
@@ -253,6 +274,12 @@ scb2_flash_exit(void)
 
 module_init(scb2_flash_init);
 module_exit(scb2_flash_exit);
+=======
+	.remove =   scb2_flash_remove,
+};
+
+module_pci_driver(scb2_flash_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Tim Hockin <thockin@sun.com>");

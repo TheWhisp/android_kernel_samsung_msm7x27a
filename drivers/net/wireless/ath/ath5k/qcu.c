@@ -18,6 +18,7 @@
 
 /********************************************\
 <<<<<<< HEAD
+<<<<<<< HEAD
 Queue Control Unit, DFS Control Unit Functions
 =======
 Queue Control Unit, DCF Control Unit Functions
@@ -30,6 +31,16 @@ Queue Control Unit, DCF Control Unit Functions
 <<<<<<< HEAD
 #include "base.h"
 =======
+=======
+Queue Control Unit, DCF Control Unit Functions
+\********************************************/
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include "ath5k.h"
+#include "reg.h"
+#include "debug.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/log2.h>
 
 /**
@@ -53,7 +64,10 @@ Queue Control Unit, DCF Control Unit Functions
  * the DCU it goes to PCU for further processing and then to PHY for
  * the actual transmission.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /******************\
@@ -61,12 +75,15 @@ Queue Control Unit, DCF Control Unit Functions
 \******************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Get number of pending frames
  * for a specific queue [5211+]
  */
 u32 ath5k_hw_num_tx_pending(struct ath5k_hw *ah, unsigned int queue)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_num_tx_pending() - Get number of pending frames for a  given queue
  * @ah: The &struct ath5k_hw
@@ -74,7 +91,10 @@ u32 ath5k_hw_num_tx_pending(struct ath5k_hw *ah, unsigned int queue)
  */
 u32
 ath5k_hw_num_tx_pending(struct ath5k_hw *ah, unsigned int queue)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 pending;
 	AR5K_ASSERT_ENTRY(queue, ah->ah_capabilities.cap_queues.q_tx_num);
@@ -100,11 +120,14 @@ ath5k_hw_num_tx_pending(struct ath5k_hw *ah, unsigned int queue)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set a transmit queue inactive
  */
 void ath5k_hw_release_tx_queue(struct ath5k_hw *ah, unsigned int queue)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_release_tx_queue() - Set a transmit queue inactive
  * @ah: The &struct ath5k_hw
@@ -112,7 +135,10 @@ void ath5k_hw_release_tx_queue(struct ath5k_hw *ah, unsigned int queue)
  */
 void
 ath5k_hw_release_tx_queue(struct ath5k_hw *ah, unsigned int queue)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (WARN_ON(queue >= ah->ah_capabilities.cap_queues.q_tx_num))
 		return;
@@ -123,6 +149,7 @@ ath5k_hw_release_tx_queue(struct ath5k_hw *ah, unsigned int queue)
 	AR5K_Q_DISABLE_BITS(ah->ah_txq_status, queue);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Make sure cw is a power of 2 minus 1 and smaller than 1024
@@ -143,6 +170,8 @@ static u16 ath5k_cw_validate(u16 cw_req)
  */
 int ath5k_hw_get_tx_queueprops(struct ath5k_hw *ah, int queue,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_cw_validate() - Make sure the given cw is valid
  * @cw_req: The contention window value to check
@@ -177,7 +206,10 @@ ath5k_cw_validate(u16 cw_req)
  */
 int
 ath5k_hw_get_tx_queueprops(struct ath5k_hw *ah, int queue,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ath5k_txq_info *queue_info)
 {
 	memcpy(queue_info, &ah->ah_txq[queue], sizeof(struct ath5k_txq_info));
@@ -185,11 +217,14 @@ ath5k_hw_get_tx_queueprops(struct ath5k_hw *ah, int queue,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set properties for a transmit queue
  */
 int ath5k_hw_set_tx_queueprops(struct ath5k_hw *ah, int queue,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_set_tx_queueprops() - Set properties for a transmit queue
  * @ah: The &struct ath5k_hw
@@ -200,7 +235,10 @@ int ath5k_hw_set_tx_queueprops(struct ath5k_hw *ah, int queue,
  */
 int
 ath5k_hw_set_tx_queueprops(struct ath5k_hw *ah, int queue,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				const struct ath5k_txq_info *qinfo)
 {
 	struct ath5k_txq_info *qi;
@@ -241,11 +279,14 @@ ath5k_hw_set_tx_queueprops(struct ath5k_hw *ah, int queue,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Initialize a transmit queue
  */
 int ath5k_hw_setup_tx_queue(struct ath5k_hw *ah, enum ath5k_tx_queue queue_type,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_setup_tx_queue() - Initialize a transmit queue
  * @ah: The &struct ath5k_hw
@@ -256,7 +297,10 @@ int ath5k_hw_setup_tx_queue(struct ath5k_hw *ah, enum ath5k_tx_queue queue_type,
  */
 int
 ath5k_hw_setup_tx_queue(struct ath5k_hw *ah, enum ath5k_tx_queue queue_type,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct ath5k_txq_info *queue_info)
 {
 	unsigned int queue;
@@ -299,6 +343,7 @@ ath5k_hw_setup_tx_queue(struct ath5k_hw *ah, enum ath5k_tx_queue queue_type,
 			queue = AR5K_TX_QUEUE_ID_CAB;
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case AR5K_TX_QUEUE_XR_DATA:
 			if (ah->ah_version != AR5K_AR5212)
 				ATH5K_ERR(ah->ah_sc,
@@ -308,6 +353,8 @@ ath5k_hw_setup_tx_queue(struct ath5k_hw *ah, enum ath5k_tx_queue queue_type,
 			break;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		default:
 			return -EINVAL;
 		}
@@ -342,11 +389,14 @@ ath5k_hw_setup_tx_queue(struct ath5k_hw *ah, enum ath5k_tx_queue queue_type,
 \*******************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Set tx retry limits on DCU
  */
 void ath5k_hw_set_tx_retry_limits(struct ath5k_hw *ah,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_set_tx_retry_limits() - Set tx retry limits on DCU
  * @ah: The &struct ath5k_hw
@@ -357,7 +407,10 @@ void ath5k_hw_set_tx_retry_limits(struct ath5k_hw *ah,
  */
 void
 ath5k_hw_set_tx_retry_limits(struct ath5k_hw *ah,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				  unsigned int queue)
 {
 	/* Single data queue on AR5210 */
@@ -393,6 +446,7 @@ ath5k_hw_set_tx_retry_limits(struct ath5k_hw *ah,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_reset_tx_queue - Initialize a single hw queue
  *
  * @ah The &struct ath5k_hw
@@ -403,6 +457,8 @@ ath5k_hw_set_tx_retry_limits(struct ath5k_hw *ah,
  */
 int ath5k_hw_reset_tx_queue(struct ath5k_hw *ah, unsigned int queue)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * ath5k_hw_reset_tx_queue() - Initialize a single hw queue
  * @ah: The &struct ath5k_hw
  * @queue: One of enum ath5k_tx_queue_id
@@ -412,7 +468,10 @@ int ath5k_hw_reset_tx_queue(struct ath5k_hw *ah, unsigned int queue)
  */
 int
 ath5k_hw_reset_tx_queue(struct ath5k_hw *ah, unsigned int queue)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath5k_txq_info *tq = &ah->ah_txq[queue];
 
@@ -641,6 +700,7 @@ ath5k_hw_reset_tx_queue(struct ath5k_hw *ah, unsigned int queue)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * ath5k_hw_set_ifs_intervals  - Set global inter-frame spaces on DCU
  *
  * @ah The &struct ath5k_hw
@@ -650,6 +710,11 @@ ath5k_hw_reset_tx_queue(struct ath5k_hw *ah, unsigned int queue)
  * @ah: The &struct ath5k_hw
  * @slot_time: Slot time in us
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ath5k_hw_set_ifs_intervals()  - Set global inter-frame spaces on DCU
+ * @ah: The &struct ath5k_hw
+ * @slot_time: Slot time in us
+>>>>>>> refs/remotes/origin/master
  *
  * Sets the global IFS intervals on DCU (also works on AR5210) for
  * the given slot time and the current bwmode.
@@ -658,12 +723,21 @@ int ath5k_hw_set_ifs_intervals(struct ath5k_hw *ah, unsigned int slot_time)
 {
 	struct ieee80211_channel *channel = ah->ah_current_channel;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath5k_softc *sc = ah->ah_sc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct ieee80211_rate *rate;
 	u32 ack_tx_time, eifs, eifs_clock, sifs, sifs_clock;
 	u32 slot_time_clock = ath5k_hw_htoclock(ah, slot_time);
+=======
+	enum ieee80211_band band;
+	struct ieee80211_supported_band *sband;
+	struct ieee80211_rate *rate;
+	u32 ack_tx_time, eifs, eifs_clock, sifs, sifs_clock;
+	u32 slot_time_clock = ath5k_hw_htoclock(ah, slot_time);
+	u32 rate_flags, i;
+>>>>>>> refs/remotes/origin/master
 
 	if (slot_time < 6 || slot_time_clock > AR5K_SLOT_TIME_MAX)
 		return -EINVAL;
@@ -696,6 +770,7 @@ int ath5k_hw_set_ifs_intervals(struct ath5k_hw *ah, unsigned int slot_time)
 	 * Also we have different lowest rate for 802.11a
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (channel->hw_value & CHANNEL_5GHZ)
 		rate = &sc->sbands[IEEE80211_BAND_5GHZ].bitrates[0];
 	else
@@ -708,6 +783,36 @@ int ath5k_hw_set_ifs_intervals(struct ath5k_hw *ah, unsigned int slot_time)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	ack_tx_time = ath5k_hw_get_frame_duration(ah, 10, rate, false);
+=======
+	if (channel->band == IEEE80211_BAND_5GHZ)
+		band = IEEE80211_BAND_5GHZ;
+	else
+		band = IEEE80211_BAND_2GHZ;
+
+	switch (ah->ah_bwmode) {
+	case AR5K_BWMODE_5MHZ:
+		rate_flags = IEEE80211_RATE_SUPPORTS_5MHZ;
+		break;
+	case AR5K_BWMODE_10MHZ:
+		rate_flags = IEEE80211_RATE_SUPPORTS_10MHZ;
+		break;
+	default:
+		rate_flags = 0;
+		break;
+	}
+	sband = &ah->sbands[band];
+	rate = NULL;
+	for (i = 0; i < sband->n_bitrates; i++) {
+		if ((rate_flags & sband->bitrates[i].flags) != rate_flags)
+			continue;
+		rate = &sband->bitrates[i];
+		break;
+	}
+	if (WARN_ON(!rate))
+		return -EINVAL;
+
+	ack_tx_time = ath5k_hw_get_frame_duration(ah, band, 10, rate, false);
+>>>>>>> refs/remotes/origin/master
 
 	/* ack_tx_time includes an SIFS already */
 	eifs = ack_tx_time + sifs + 2 * slot_time;
@@ -764,8 +869,11 @@ int ath5k_hw_set_ifs_intervals(struct ath5k_hw *ah, unsigned int slot_time)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ath5k_hw_init_queues(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_init_queues() - Initialize tx queues
  * @ah: The &struct ath5k_hw
@@ -775,7 +883,10 @@ int ath5k_hw_init_queues(struct ath5k_hw *ah)
  */
 int
 ath5k_hw_init_queues(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i, ret;
 
@@ -792,10 +903,14 @@ ath5k_hw_init_queues(struct ath5k_hw *ah)
 			ret = ath5k_hw_reset_tx_queue(ah, i);
 			if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ATH5K_ERR(ah->ah_sc,
 =======
 				ATH5K_ERR(ah,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ATH5K_ERR(ah,
+>>>>>>> refs/remotes/origin/master
 					"failed to reset TX queue #%d\n", i);
 				return ret;
 			}

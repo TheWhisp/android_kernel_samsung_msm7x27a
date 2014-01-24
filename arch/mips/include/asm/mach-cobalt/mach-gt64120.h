@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  *  Copyright (C) 2006  Yoichi Yuasa <yuasa@linux-mips.org>
+=======
+ *  Copyright (C) 2006	Yoichi Yuasa <yuasa@linux-mips.org>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

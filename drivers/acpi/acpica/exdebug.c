@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,8 +62,13 @@ ACPI_MODULE_NAME("exdebug")
  * FUNCTION:    acpi_ex_do_debug_object
  *
  * PARAMETERS:  source_desc         - Object to be output to "Debug Object"
+<<<<<<< HEAD
  *              Level               - Indentation level (used for packages)
  *              Index               - Current package element, zero if not pkg
+=======
+ *              level               - Indentation level (used for packages)
+ *              index               - Current package element, zero if not pkg
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -149,10 +158,17 @@ acpi_ex_do_debug_object(union acpi_operand_object *source_desc,
 	case ACPI_TYPE_BUFFER:
 
 		acpi_os_printf("[0x%.2X]\n", (u32)source_desc->buffer.length);
+<<<<<<< HEAD
 		acpi_ut_dump_buffer2(source_desc->buffer.pointer,
 				     (source_desc->buffer.length < 256) ?
 				     source_desc->buffer.length : 256,
 				     DB_BYTE_DISPLAY);
+=======
+		acpi_ut_dump_buffer(source_desc->buffer.pointer,
+				    (source_desc->buffer.length < 256) ?
+				    source_desc->buffer.length : 256,
+				    DB_BYTE_DISPLAY, 0);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case ACPI_TYPE_STRING:
@@ -194,9 +210,16 @@ acpi_ex_do_debug_object(union acpi_operand_object *source_desc,
 
 			acpi_os_printf("Table Index 0x%X\n",
 				       source_desc->reference.value);
+<<<<<<< HEAD
 			return;
 
 		default:
+=======
+			return_VOID;
+
+		default:
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -230,6 +253,10 @@ acpi_ex_do_debug_object(union acpi_operand_object *source_desc,
 					break;
 
 				default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 					acpi_ex_do_debug_object((source_desc->
 								 reference.
 								 node)->object,

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*
  *
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *
  Copyright (c) Eicon Networks, 2002.
@@ -45,7 +48,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #include "platform.h"
@@ -55,6 +61,7 @@
 #include "divasync.h"
 #include "dadapter.h"
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
   Adapter array change notification framework
    -------------------------------------------------------------------------- */
@@ -69,6 +76,8 @@ static didd_adapter_change_notification_t\
 /* --------------------------------------------------------------------------
   Array to held adapter information
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Adapter array change notification framework
    -------------------------------------------------------------------------- */
 typedef struct _didd_adapter_change_notification {
@@ -81,11 +90,15 @@ static didd_adapter_change_notification_t	\
 NotificationTable[DIVA_DIDD_MAX_NOTIFICATIONS];
 /* --------------------------------------------------------------------------
    Array to held adapter information
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    -------------------------------------------------------------------------- */
 static DESCRIPTOR  HandleTable[NEW_MAX_DESCRIPTORS];
 static dword Adapters = 0; /* Number of adapters */
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
   Shadow IDI_DIMAINT
   and 'shadow' debug stuff
@@ -98,6 +111,8 @@ static void no_printf (unsigned char * format, ...)
 	debug((format, ap));
 	va_end (ap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Shadow IDI_DIMAINT
    and 'shadow' debug stuff
    -------------------------------------------------------------------------- */
@@ -108,11 +123,15 @@ static void no_printf(unsigned char *format, ...)
 	va_start(ap, format);
 	debug((format, ap));
 	va_end(ap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
 /* -------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
   Portable debug Library
   ------------------------------------------------------------------------- */
@@ -393,6 +412,8 @@ static void diva_notify_adapter_change (DESCRIPTOR* d, int removal) {
    length  - length (in bytes) of space in buffer
   OUTPUT:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Portable debug Library
    ------------------------------------------------------------------------- */
 #include "debuglib.c"
@@ -671,23 +692,31 @@ static void diva_notify_adapter_change(DESCRIPTOR *d, int removal) {
    buffer - pointer to buffer that will receive adapter array
    length  - length (in bytes) of space in buffer
    OUTPUT:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    Adapter array will be written to memory described by 'buffer'
    If the last adapter seen in the returned adapter array is
    IDI_DADAPTER or if last adapter in array does have type '0', then
    it was enougth space in buffer to accommodate all available
    adapter descriptors
 <<<<<<< HEAD
+<<<<<<< HEAD
   *NOTE 1 (debug interface):
 =======
    *NOTE 1 (debug interface):
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   *NOTE 1 (debug interface):
+>>>>>>> refs/remotes/origin/master
    The IDI adapter of type 'IDI_DIMAINT' does register as 'request'
    famous 'dprintf' function (of type DI_PRINTF, please look
    include/debuglib.c and include/debuglib.h) for details.
    So dprintf is not exported from module debug module directly,
    instead of this IDI_DIMAINT is registered.
    Module load order will receive in this case:
+<<<<<<< HEAD
 <<<<<<< HEAD
     1. DIDD (this file)
     2. DIMAINT does load and register 'IDI_DIMAINT', at this step
@@ -704,6 +733,8 @@ void IDI_CALL_LINK_T DIVA_DIDD_Read (void IDI_CALL_ENTITY_T * buffer,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    1. DIDD (this file)
    2. DIMAINT does load and register 'IDI_DIMAINT', at this step
    DIDD should be able to get 'dprintf', save it, and
@@ -717,4 +748,7 @@ void IDI_CALL_LINK_T DIVA_DIDD_Read(void IDI_CALL_ENTITY_T *buffer,
 				    int length) {
 	diva_didd_read_adapter_array(buffer, length);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

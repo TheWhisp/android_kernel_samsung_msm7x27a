@@ -132,7 +132,11 @@ static struct clk *clk_msysclk_sources[] = {
 	[3] = &clk_mpllref,
 };
 
+<<<<<<< HEAD
 struct clksrc_clk clk_msysclk = {
+=======
+static struct clksrc_clk clk_msysclk = {
+>>>>>>> refs/remotes/origin/master
 	.clk	= {
 		.name		= "msysclk",
 		.parent		= &clk_xtal,
@@ -424,11 +428,14 @@ static struct clk init_clocks_off[] = {
 		.enable		= s3c2443_clkcon_enable_p,
 		.ctrlbit	= S3C2443_PCLKCON_IIS,
 	}, {
+<<<<<<< HEAD
 		.name		= "hsspi",
 		.parent		= &clk_p,
 		.enable		= s3c2443_clkcon_enable_p,
 		.ctrlbit	= S3C2443_PCLKCON_HSSPI,
 	}, {
+=======
+>>>>>>> refs/remotes/origin/master
 		.name		= "adc",
 		.parent		= &clk_p,
 		.enable		= s3c2443_clkcon_enable_p,
@@ -443,32 +450,56 @@ static struct clk init_clocks_off[] = {
 
 static struct clk init_clocks[] = {
 	{
+<<<<<<< HEAD
 		.name		= "dma",
+=======
+		.name		= "dma.0",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_h,
 		.enable		= s3c2443_clkcon_enable_h,
 		.ctrlbit	= S3C2443_HCLKCON_DMA0,
 	}, {
+<<<<<<< HEAD
 		.name		= "dma",
+=======
+		.name		= "dma.1",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_h,
 		.enable		= s3c2443_clkcon_enable_h,
 		.ctrlbit	= S3C2443_HCLKCON_DMA1,
 	}, {
+<<<<<<< HEAD
 		.name		= "dma",
+=======
+		.name		= "dma.2",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_h,
 		.enable		= s3c2443_clkcon_enable_h,
 		.ctrlbit	= S3C2443_HCLKCON_DMA2,
 	}, {
+<<<<<<< HEAD
 		.name		= "dma",
+=======
+		.name		= "dma.3",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_h,
 		.enable		= s3c2443_clkcon_enable_h,
 		.ctrlbit	= S3C2443_HCLKCON_DMA3,
 	}, {
+<<<<<<< HEAD
 		.name		= "dma",
+=======
+		.name		= "dma.4",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_h,
 		.enable		= s3c2443_clkcon_enable_h,
 		.ctrlbit	= S3C2443_HCLKCON_DMA4,
 	}, {
+<<<<<<< HEAD
 		.name		= "dma",
+=======
+		.name		= "dma.5",
+>>>>>>> refs/remotes/origin/master
 		.parent		= &clk_h,
 		.enable		= s3c2443_clkcon_enable_h,
 		.ctrlbit	= S3C2443_HCLKCON_DMA5,
@@ -562,6 +593,17 @@ static struct clk hsmmc1_clk = {
 	.ctrlbit	= S3C2443_HCLKCON_HSMMC,
 };
 
+<<<<<<< HEAD
+=======
+static struct clk hsspi_clk = {
+	.name		= "spi",
+	.devname	= "s3c2443-spi.0",
+	.parent		= &clk_p,
+	.enable		= s3c2443_clkcon_enable_p,
+	.ctrlbit	= S3C2443_PCLKCON_HSSPI,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* EPLLCON compatible enough to get on/off information */
 
 void __init_or_cpufreq s3c2443_common_setup_clocks(pll_fn get_mpll)
@@ -612,6 +654,10 @@ static struct clk *clks[] __initdata = {
 	&clk_usb_bus,
 	&clk_armdiv,
 	&hsmmc1_clk,
+<<<<<<< HEAD
+=======
+	&hsspi_clk,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct clksrc_clk *clksrcs[] __initdata = {
@@ -629,6 +675,10 @@ static struct clk_lookup s3c2443_clk_lookup[] = {
 	CLKDEV_INIT(NULL, "clk_uart_baud2", &clk_p),
 	CLKDEV_INIT(NULL, "clk_uart_baud3", &clk_esys_uart.clk),
 	CLKDEV_INIT("s3c-sdhci.1", "mmc_busclk.0", &hsmmc1_clk),
+<<<<<<< HEAD
+=======
+	CLKDEV_INIT("s3c2443-spi.0", "spi_busclk0", &hsspi_clk),
+>>>>>>> refs/remotes/origin/master
 };
 
 void __init s3c2443_common_init_clocks(int xtal, pll_fn get_mpll,

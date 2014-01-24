@@ -74,8 +74,13 @@ static void oprofile_hrtimer_stop(void)
 	put_online_cpus();
 }
 
+<<<<<<< HEAD
 static int __cpuinit oprofile_cpu_notify(struct notifier_block *self,
 					 unsigned long action, void *hcpu)
+=======
+static int oprofile_cpu_notify(struct notifier_block *self,
+			       unsigned long action, void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	long cpu = (long) hcpu;
 
@@ -97,6 +102,7 @@ static struct notifier_block __refdata oprofile_cpu_notifier = {
 	.notifier_call = oprofile_cpu_notify,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int oprofile_timer_init(struct oprofile_operations *ops)
 {
@@ -120,6 +126,8 @@ void oprofile_timer_exit(void)
 	unregister_hotcpu_notifier(&oprofile_cpu_notifier);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int oprofile_hrtimer_setup(void)
 {
 	return register_hotcpu_notifier(&oprofile_cpu_notifier);
@@ -141,4 +149,7 @@ int oprofile_timer_init(struct oprofile_operations *ops)
 	printk(KERN_INFO "oprofile: using timer interrupt.\n");
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

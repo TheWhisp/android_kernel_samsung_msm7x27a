@@ -11,10 +11,14 @@
  * - Added Machine Check exception handling
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2007, 2008, 2010 Freescale Semiconductor, Inc.
 =======
  * Copyright (C) 2007, 2008, 2010, 2011 Freescale Semiconductor, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2007, 2008, 2010, 2011 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  * Zhang Wei <wei.zhang@freescale.com>
  *
  * Copyright 2005 MontaVista Software, Inc.
@@ -32,6 +36,7 @@
 #include <linux/dma-mapping.h>
 #include <linux/interrupt.h>
 #include <linux/device.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/rio.h>
 #include <linux/rio_drv.h>
@@ -61,6 +66,10 @@
 #define ESCSR_CLEAR		0x07120204
 #define IECSR_CLEAR		0x80000000
 =======
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
@@ -72,12 +81,16 @@
 #include "fsl_rio.h"
 
 #undef DEBUG_PW	/* Port-Write debugging */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define RIO_PORT1_EDCSR		0x0640
 #define RIO_PORT2_EDCSR		0x0680
 #define RIO_PORT1_IECSR		0x10130
 #define RIO_PORT2_IECSR		0x101B0
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define RIO_IM0SR		0x13064
 #define RIO_IM1SR		0x13164
@@ -282,6 +295,8 @@ struct rio_priv {
 	spinlock_t pw_fifo_lock;
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define RIO_GCCSR		0x13c
 #define RIO_ESCSR		0x158
@@ -293,7 +308,10 @@ struct rio_priv {
 #define IECSR_CLEAR		0x80000000
 #define RIO_ISR_AACR		0x10120
 #define RIO_ISR_AACR_AA		0x1	/* Accept All ID */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define __fsl_read_rio_config(x, addr, err, op)		\
 	__asm__ __volatile__(				\
@@ -306,26 +324,37 @@ struct rio_priv {
 		"	b 2b\n"				\
 		".section __ex_table,\"a\"\n"		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"	.align 2\n"			\
 		"	.long 1b,3b\n"			\
 =======
 			PPC_LONG_ALIGN "\n"		\
 			PPC_LONG "1b,3b\n"		\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			PPC_LONG_ALIGN "\n"		\
+			PPC_LONG "1b,3b\n"		\
+>>>>>>> refs/remotes/origin/master
 		".text"					\
 		: "=r" (err), "=r" (x)			\
 		: "b" (addr), "i" (-EFAULT), "0" (err))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __iomem *rio_regs_win;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void __iomem *rio_regs_win;
 void __iomem *rmu_regs_win;
 resource_size_t rio_law_start;
 
 struct fsl_rio_dbell *dbell;
 struct fsl_rio_pw *pw;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_E500
 int fsl_rio_mcheck_exception(struct pt_regs *regs)
@@ -357,6 +386,7 @@ EXPORT_SYMBOL_GPL(fsl_rio_mcheck_exception);
 #endif
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * fsl_rio_doorbell_send - Send a MPC85xx doorbell message
  * @mport: RapidIO master port info
@@ -396,6 +426,8 @@ static int fsl_rio_doorbell_send(struct rio_mport *mport,
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * fsl_local_config_read - Generate a MPC85xx local config space read
  * @mport: RapidIO master port info
  * @index: ID of RapdiIO interface
@@ -434,12 +466,17 @@ static int fsl_local_config_write(struct rio_mport *mport,
 	struct rio_priv *priv = mport->priv;
 	pr_debug
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    ("fsl_local_config_write: index %d offset %8.8x data %8.8x\n",
 	     index, offset, data);
 =======
 		("fsl_local_config_write: index %d offset %8.8x data %8.8x\n",
 		index, offset, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		("fsl_local_config_write: index %d offset %8.8x data %8.8x\n",
+		index, offset, data);
+>>>>>>> refs/remotes/origin/master
 	out_be32(priv->regs_win + offset, data);
 
 	return 0;
@@ -468,6 +505,7 @@ fsl_rio_config_read(struct rio_mport *mport, int index, u16 destid,
 
 	pr_debug
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    ("fsl_rio_config_read: index %d destid %d hopcount %d offset %8.8x len %d\n",
 	     index, destid, hopcount, offset, len);
 =======
@@ -475,6 +513,11 @@ fsl_rio_config_read(struct rio_mport *mport, int index, u16 destid,
 		" index %d destid %d hopcount %d offset %8.8x len %d\n",
 		index, destid, hopcount, offset, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		("fsl_rio_config_read:"
+		" index %d destid %d hopcount %d offset %8.8x len %d\n",
+		index, destid, hopcount, offset, len);
+>>>>>>> refs/remotes/origin/master
 
 	/* 16MB maintenance window possible */
 	/* allow only aligned access to maintenance registers */
@@ -484,10 +527,14 @@ fsl_rio_config_read(struct rio_mport *mport, int index, u16 destid,
 	out_be32(&priv->maint_atmu_regs->rowtar,
 		 (destid << 22) | (hopcount << 12) | (offset >> 12));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	out_be32(&priv->maint_atmu_regs->rowtear,  (destid >> 10));
 =======
 	out_be32(&priv->maint_atmu_regs->rowtear, (destid >> 10));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	out_be32(&priv->maint_atmu_regs->rowtear, (destid >> 10));
+>>>>>>> refs/remotes/origin/master
 
 	data = (u8 *) priv->maint_win + (offset & (RIO_MAINT_WIN_SIZE - 1));
 	switch (len) {
@@ -535,6 +582,7 @@ fsl_rio_config_write(struct rio_mport *mport, int index, u16 destid,
 	u8 *data;
 	pr_debug
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    ("fsl_rio_config_write: index %d destid %d hopcount %d offset %8.8x len %d val %8.8x\n",
 	     index, destid, hopcount, offset, len, val);
 =======
@@ -542,6 +590,11 @@ fsl_rio_config_write(struct rio_mport *mport, int index, u16 destid,
 		" index %d destid %d hopcount %d offset %8.8x len %d val %8.8x\n",
 		index, destid, hopcount, offset, len, val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		("fsl_rio_config_write:"
+		" index %d destid %d hopcount %d offset %8.8x len %d val %8.8x\n",
+		index, destid, hopcount, offset, len, val);
+>>>>>>> refs/remotes/origin/master
 
 	/* 16MB maintenance windows possible */
 	/* allow only aligned access to maintenance registers */
@@ -551,10 +604,14 @@ fsl_rio_config_write(struct rio_mport *mport, int index, u16 destid,
 	out_be32(&priv->maint_atmu_regs->rowtar,
 		 (destid << 22) | (hopcount << 12) | (offset >> 12));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	out_be32(&priv->maint_atmu_regs->rowtear,  (destid >> 10));
 =======
 	out_be32(&priv->maint_atmu_regs->rowtear, (destid >> 10));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	out_be32(&priv->maint_atmu_regs->rowtear, (destid >> 10));
+>>>>>>> refs/remotes/origin/master
 
 	data = (u8 *) priv->maint_win + (offset & (RIO_MAINT_WIN_SIZE - 1));
 	switch (len) {
@@ -574,6 +631,7 @@ fsl_rio_config_write(struct rio_mport *mport, int index, u16 destid,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  * fsl_add_outb_message - Add message to the MPC85xx outbound message queue
@@ -1162,6 +1220,9 @@ static void port_error_handler(struct rio_mport *port, int offset)
 =======
 void fsl_rio_port_error_handler(int offset)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void fsl_rio_port_error_handler(int offset)
+>>>>>>> refs/remotes/origin/master
 {
 	/*XXX: Error recovery is not implemented, we just clear errors */
 	out_be32((u32 *)(rio_regs_win + RIO_LTLEDCSR), 0);
@@ -1176,6 +1237,7 @@ void fsl_rio_port_error_handler(int offset)
 		out_be32((u32 *)(rio_regs_win + RIO_PORT2_ESCSR), ESCSR_CLEAR);
 	}
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static void msg_unit_error_handler(struct rio_mport *port)
@@ -1436,6 +1498,8 @@ err_out:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void fsl_rio_info(struct device *dev, u32 ccsr)
 {
 	const char *str;
@@ -1493,6 +1557,7 @@ int fsl_rio_setup(struct platform_device *dev)
 	struct rio_priv *priv;
 	int rc = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const u32 *dt_range, *cell;
 	struct resource regs;
 	int rlen;
@@ -1504,6 +1569,8 @@ int fsl_rio_setup(struct platform_device *dev)
 		dev_err(&dev->dev, "Device OF-Node is NULL");
 		return -EFAULT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const u32 *dt_range, *cell, *port_index;
 	u32 active_ports = 0;
 	struct resource regs, rmu_regs;
@@ -1519,7 +1586,10 @@ int fsl_rio_setup(struct platform_device *dev)
 	if (!dev->dev.of_node) {
 		dev_err(&dev->dev, "Device OF-Node is NULL");
 		return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = of_address_to_resource(dev->dev.of_node, 0, &regs);
@@ -1528,6 +1598,7 @@ int fsl_rio_setup(struct platform_device *dev)
 				dev->dev.of_node->full_name);
 		return -EFAULT;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dev_info(&dev->dev, "Of-device full name %s\n", dev->dev.of_node->full_name);
 	dev_info(&dev->dev, "Regs: %pR\n", &regs);
@@ -1561,6 +1632,8 @@ int fsl_rio_setup(struct platform_device *dev)
 			law_start, law_size);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_info(&dev->dev, "Of-device full name %s\n",
 			dev->dev.of_node->full_name);
 	dev_info(&dev->dev, "Regs: %pR\n", &regs);
@@ -1572,7 +1645,10 @@ int fsl_rio_setup(struct platform_device *dev)
 		goto err_rio_regs;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ops = kzalloc(sizeof(struct rio_ops), GFP_KERNEL);
 	if (!ops) {
 		rc = -ENOMEM;
@@ -1592,6 +1668,7 @@ int fsl_rio_setup(struct platform_device *dev)
 	ops->add_inb_buffer = fsl_add_inb_buffer;
 	ops->get_inb_message = fsl_get_inb_message;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	port = kzalloc(sizeof(struct rio_mport), GFP_KERNEL);
 	if (!port) {
@@ -1730,6 +1807,8 @@ err_port:
 	kfree(ops);
 err_ops:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	rmu_node = of_parse_phandle(dev->dev.of_node, "fsl,srio-rmu-handle", 0);
 	if (!rmu_node)
 		goto err_rmu;
@@ -1981,13 +2060,20 @@ err_rmu:
 err_ops:
 	iounmap(rio_regs_win);
 err_rio_regs:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 /* The probe function for RapidIO peer-to-peer network.
  */
+<<<<<<< HEAD
 static int __devinit fsl_of_rio_rpn_probe(struct platform_device *dev)
+=======
+static int fsl_of_rio_rpn_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	printk(KERN_INFO "Setting up RapidIO peer-to-peer network %s\n",
 			dev->dev.of_node->full_name);
@@ -1998,10 +2084,14 @@ static int __devinit fsl_of_rio_rpn_probe(struct platform_device *dev)
 static const struct of_device_id fsl_of_rio_rpn_ids[] = {
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.compatible = "fsl,rapidio-delta",
 =======
 		.compatible = "fsl,srio",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.compatible = "fsl,srio",
+>>>>>>> refs/remotes/origin/master
 	},
 	{},
 };

@@ -28,10 +28,14 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define _d(name, bits, addr, perms) debugfs_create_x##bits(name, perms, parent, (u##bits *)addr)
 =======
 #define _d(name, bits, addr, perms) debugfs_create_x##bits(name, perms, parent, (u##bits *)(addr))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _d(name, bits, addr, perms) debugfs_create_x##bits(name, perms, parent, (u##bits *)(addr))
+>>>>>>> refs/remotes/origin/master
 #define d(name, bits, addr)         _d(name, bits, addr, S_IRUSR|S_IWUSR)
 #define d_RO(name, bits, addr)      _d(name, bits, addr, S_IRUSR)
 #define d_WO(name, bits, addr)      _d(name, bits, addr, S_IWUSR)
@@ -109,6 +113,10 @@ DEFINE_SYSREG(seqstat, , );
 DEFINE_SYSREG(syscfg, , CSYNC());
 #define D_SYSREG(sr) debugfs_create_file(#sr, S_IRUSR|S_IWUSR, parent, NULL, &fops_sysreg_##sr)
 
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_BF60x
+>>>>>>> refs/remotes/origin/master
 /*
  * CAN
  */
@@ -228,11 +236,18 @@ bfin_debug_mmrs_dma(struct dentry *parent, unsigned long base, int num, char mdm
 	__DMA(CURR_ADDR, curr_addr);
 	__DMA(IRQ_STATUS, irq_status);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__DMA(PERIPHERAL_MAP, peripheral_map);
 =======
 	if (strcmp(pfx, "IMDMA") != 0)
 		__DMA(PERIPHERAL_MAP, peripheral_map);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef CONFIG_BF60x
+	if (strcmp(pfx, "IMDMA") != 0)
+		__DMA(PERIPHERAL_MAP, peripheral_map);
+#endif
+>>>>>>> refs/remotes/origin/master
 	__DMA(CURR_X_COUNT, curr_x_count);
 	__DMA(CURR_Y_COUNT, curr_y_count);
 }
@@ -287,7 +302,10 @@ bfin_debug_mmrs_gptimer(struct dentry *parent, unsigned long base, int num)
 #define GPTIMER(num) bfin_debug_mmrs_gptimer(parent, TIMER##num##_CONFIG, num)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GPTIMER_GROUP_OFF(mmr) REGS_OFF(gptimer_group, mmr)
 #define __GPTIMER_GROUP(uname, lname) __REGS(gptimer_group, #uname, lname)
 static void __init __maybe_unused
@@ -314,7 +332,10 @@ bfin_debug_mmrs_gptimer_group(struct dentry *parent, unsigned long base, int num
 }
 #define GPTIMER_GROUP(mmr, num) bfin_debug_mmrs_gptimer_group(parent, mmr, num)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Handshake MDMA
  */
@@ -335,7 +356,10 @@ bfin_debug_mmrs_hmdma(struct dentry *parent, unsigned long base, int num)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Peripheral Interrupts (PINT/GPIO)
  */
 #ifdef PINT0_MASK_SET
@@ -359,7 +383,10 @@ bfin_debug_mmrs_pint(struct dentry *parent, unsigned long base, int num)
 #endif
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Port/GPIO
  */
 #define bfin_gpio_regs gpio_port_t
@@ -582,7 +609,11 @@ bfin_debug_mmrs_uart(struct dentry *parent, unsigned long base, int num)
 #endif
 }
 #define UART(num) bfin_debug_mmrs_uart(parent, UART##num##_DLL, num)
+<<<<<<< HEAD
 
+=======
+#endif /* CONFIG_BF60x */
+>>>>>>> refs/remotes/origin/master
 /*
  * The actual debugfs generation
  */
@@ -754,7 +785,11 @@ static int __init bfin_debug_mmrs_init(void)
 	D32(WPDACNT0);
 	D32(WPDACNT1);
 	D32(WPSTAT);
+<<<<<<< HEAD
 
+=======
+#ifndef CONFIG_BF60x
+>>>>>>> refs/remotes/origin/master
 	/* System MMRs */
 #ifdef ATAPI_CONTROL
 	parent = debugfs_create_dir("atapi", top);
@@ -812,10 +847,14 @@ static int __init bfin_debug_mmrs_init(void)
 
 	parent = debugfs_create_dir("dmac", top);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef DMA_TC_CNT
 =======
 #ifdef DMAC_TC_CNT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef DMAC_TC_CNT
+>>>>>>> refs/remotes/origin/master
 	D16(DMAC_TC_CNT);
 	D16(DMAC_TC_PER);
 #endif
@@ -1074,6 +1113,7 @@ static int __init bfin_debug_mmrs_init(void)
 
 	parent = debugfs_create_dir("gptimer", top);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef TIMER_DISABLE
 	D16(TIMER_DISABLE);
 	D16(TIMER_ENABLE);
@@ -1098,6 +1138,8 @@ static int __init bfin_debug_mmrs_init(void)
 	D16(TMRS8_ENABLE);
 	D32(TMRS8_STATUS);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef TIMER_ENABLE
 	GPTIMER_GROUP(TIMER_ENABLE, -1);
 #endif
@@ -1111,7 +1153,10 @@ static int __init bfin_debug_mmrs_init(void)
 #ifdef TMRS4_DISABLE
 	GPTIMER_GROUP(TMRS4_ENABLE, 0);
 	GPTIMER_GROUP(TMRS8_ENABLE, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	GPTIMER(0);
 	GPTIMER(1);
@@ -1338,7 +1383,10 @@ static int __init bfin_debug_mmrs_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef PINT0_MASK_SET
 	parent = debugfs_create_dir("pint", top);
 	PINT(0);
@@ -1347,7 +1395,10 @@ static int __init bfin_debug_mmrs_init(void)
 	PINT(3);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef PIXC_CTL
 	parent = debugfs_create_dir("pixc", top);
 	D16(PIXC_CTL);
@@ -1912,9 +1963,12 @@ static int __init bfin_debug_mmrs_init(void)
 		int num;
 		unsigned long base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		char *_buf, buf[32];
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		base = PORTA_FER;
 		for (num = 0; num < 10; ++num) {
@@ -1922,6 +1976,7 @@ static int __init bfin_debug_mmrs_init(void)
 			base += sizeof(struct bfin_gpio_regs);
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define __PINT(uname, lname) __REGS(pint, #uname, lname)
 		parent = debugfs_create_dir("pint", top);
@@ -1946,6 +2001,11 @@ static int __init bfin_debug_mmrs_init(void)
 	}
 #endif	/* BF54x */
 
+=======
+	}
+#endif	/* BF54x */
+#endif /* CONFIG_BF60x */
+>>>>>>> refs/remotes/origin/master
 	debug_mmrs_dentry = top;
 
 	return 0;

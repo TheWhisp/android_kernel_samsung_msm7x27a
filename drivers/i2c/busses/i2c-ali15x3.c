@@ -131,7 +131,11 @@ MODULE_PARM_DESC(force_addr,
 static struct pci_driver ali15x3_driver;
 static unsigned short ali15x3_smba;
 
+<<<<<<< HEAD
 static int __devinit ali15x3_setup(struct pci_dev *ALI15X3_dev)
+=======
+static int ali15x3_setup(struct pci_dev *ALI15X3_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 a;
 	unsigned char temp;
@@ -478,17 +482,25 @@ static struct i2c_adapter ali15x3_adapter = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id ali15x3_ids[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(ali15x3_ids) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_PCI_DEVICE_TABLE(ali15x3_ids) = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_AL, PCI_DEVICE_ID_AL_M7101) },
 	{ 0, }
 };
 
 MODULE_DEVICE_TABLE (pci, ali15x3_ids);
 
+<<<<<<< HEAD
 static int __devinit ali15x3_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int ali15x3_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	if (ali15x3_setup(dev)) {
 		dev_err(&dev->dev,
@@ -504,7 +516,11 @@ static int __devinit ali15x3_probe(struct pci_dev *dev, const struct pci_device_
 	return i2c_add_adapter(&ali15x3_adapter);
 }
 
+<<<<<<< HEAD
 static void __devexit ali15x3_remove(struct pci_dev *dev)
+=======
+static void ali15x3_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	i2c_del_adapter(&ali15x3_adapter);
 	release_region(ali15x3_smba, ALI15X3_SMB_IOSIZE);
@@ -514,6 +530,7 @@ static struct pci_driver ali15x3_driver = {
 	.name		= "ali15x3_smbus",
 	.id_table	= ali15x3_ids,
 	.probe		= ali15x3_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ali15x3_remove),
 };
 
@@ -526,12 +543,21 @@ static void __exit i2c_ali15x3_exit(void)
 {
 	pci_unregister_driver(&ali15x3_driver);
 }
+=======
+	.remove		= ali15x3_remove,
+};
+
+module_pci_driver(ali15x3_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR ("Frodo Looijaard <frodol@dds.nl>, "
 		"Philip Edelbrock <phil@netroedge.com>, "
 		"and Mark D. Studebaker <mdsxyz123@yahoo.com>");
 MODULE_DESCRIPTION("ALI15X3 SMBus driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(i2c_ali15x3_init);
 module_exit(i2c_ali15x3_exit);
+=======
+>>>>>>> refs/remotes/origin/master

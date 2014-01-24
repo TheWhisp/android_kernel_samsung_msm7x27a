@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 OKI SEMICONDUCTOR CO., LTD.
 =======
  * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,16 +50,22 @@
 					      (Intel EG20T PCH)*/
 #define PCH_PHUB_ROM_START_ADDR_ML7213 0x400 /* ROM data area start address
 <<<<<<< HEAD
+<<<<<<< HEAD
 						offset(OKI SEMICONDUCTOR ML7213)
 					      */
 #define PCH_PHUB_ROM_START_ADDR_ML7223 0x400 /* ROM data area start address
 						offset(OKI SEMICONDUCTOR ML7223)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						offset(LAPIS Semicon ML7213)
 					      */
 #define PCH_PHUB_ROM_START_ADDR_ML7223 0x400 /* ROM data area start address
 						offset(LAPIS Semicon ML7223)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					      */
 
 /* MAX number of INT_REDUCE_CONTROL registers */
@@ -76,10 +86,13 @@
 #define PCI_VENDOR_ID_ROHM			0x10db
 #define PCI_DEVICE_ID_ROHM_ML7213_PHUB		0x801A
 
+<<<<<<< HEAD
 /* Macros for ML7213 */
 #define PCI_VENDOR_ID_ROHM			0x10db
 #define PCI_DEVICE_ID_ROHM_ML7213_PHUB		0x801A
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Macros for ML7223 */
 #define PCI_DEVICE_ID_ROHM_ML7223_mPHUB	0x8012 /* for Bus-m */
 #define PCI_DEVICE_ID_ROHM_ML7223_nPHUB	0x8002 /* for Bus-n */
@@ -643,16 +656,21 @@ static ssize_t show_pch_mac(struct device *dev, struct device_attribute *attr,
 	pci_unmap_rom(chip->pdev, chip->pch_phub_extrom_base_address);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "%02x:%02x:%02x:%02x:%02x:%02x\n",
 				mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 =======
 	return sprintf(buf, "%pM\n", mac);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "%pM\n", mac);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t store_pch_mac(struct device *dev, struct device_attribute *attr,
 			     const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	u8 mac[6];
 	ssize_t rom_size;
 	struct pch_phub_reg *chip = dev_get_drvdata(dev);
@@ -664,6 +682,15 @@ static ssize_t store_pch_mac(struct device *dev, struct device_attribute *attr,
 		(u32 *)&mac[0], (u32 *)&mac[1], (u32 *)&mac[2], (u32 *)&mac[3],
 		(u32 *)&mac[4], (u32 *)&mac[5]);
 
+=======
+	u8 mac[ETH_ALEN];
+	ssize_t rom_size;
+	struct pch_phub_reg *chip = dev_get_drvdata(dev);
+
+	if (!mac_pton(buf, mac))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	chip->pch_phub_extrom_base_address = pci_map_rom(chip->pdev, &rom_size);
 	if (!chip->pch_phub_extrom_base_address)
 		return -ENOMEM;
@@ -686,11 +713,17 @@ static struct bin_attribute pch_bin_attr = {
 	.write = pch_phub_bin_write,
 };
 
+<<<<<<< HEAD
 static int __devinit pch_phub_probe(struct pci_dev *pdev,
 				    const struct pci_device_id *id)
 {
 	int retval;
 
+=======
+static int pch_phub_probe(struct pci_dev *pdev,
+				    const struct pci_device_id *id)
+{
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct pch_phub_reg *chip;
 
@@ -719,7 +752,11 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 	chip->pch_phub_base_address = pci_iomap(pdev, 1, 0);
 
 
+<<<<<<< HEAD
 	if (chip->pch_phub_base_address == 0) {
+=======
+	if (chip->pch_phub_base_address == NULL) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "%s : pci_iomap FAILED", __func__);
 		ret = -ENOMEM;
 		goto err_pci_iomap;
@@ -732,6 +769,7 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 
 	if (id->driver_data == 1) { /* EG20T PCH */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		const char *board_name;
 
@@ -743,6 +781,17 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 
 		retval = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
 		if (retval)
+=======
+		const char *board_name;
+
+		ret = sysfs_create_file(&pdev->dev.kobj,
+					&dev_attr_pch_mac.attr);
+		if (ret)
+			goto err_sysfs_create;
+
+		ret = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
+		if (ret)
+>>>>>>> refs/remotes/origin/master
 			goto exit_bin_attr;
 
 		pch_phub_read_modify_write_reg(chip,
@@ -752,11 +801,16 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 
 		/* quirk for CM-iTC board */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (strstr(dmi_get_system_info(DMI_BOARD_NAME), "CM-iTC"))
 =======
 		board_name = dmi_get_system_info(DMI_BOARD_NAME);
 		if (board_name && strstr(board_name, "CM-iTC"))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		board_name = dmi_get_system_info(DMI_BOARD_NAME);
+		if (board_name && strstr(board_name, "CM-iTC"))
+>>>>>>> refs/remotes/origin/master
 			pch_phub_read_modify_write_reg(chip,
 						(unsigned int)CLKCFG_REG_OFFSET,
 						CLKCFG_UART_48MHZ | CLKCFG_BAUDDIV |
@@ -770,8 +824,13 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 		chip->pch_opt_rom_start_address = PCH_PHUB_ROM_START_ADDR_EG20T;
 		chip->pch_mac_start_address = PCH_PHUB_MAC_START_ADDR_EG20T;
 	} else if (id->driver_data == 2) { /* ML7213 IOH */
+<<<<<<< HEAD
 		retval = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
 		if (retval)
+=======
+		ret = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
+		if (ret)
+>>>>>>> refs/remotes/origin/master
 			goto err_sysfs_create;
 		/* set the prefech value
 		 * Device2(USB OHCI #1/ USB EHCI #1/ USB Device):a
@@ -793,12 +852,21 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 						 PCH_PHUB_ROM_START_ADDR_ML7223;
 		chip->pch_mac_start_address = PCH_PHUB_MAC_START_ADDR_ML7223;
 	} else if (id->driver_data == 4) { /* ML7223 IOH Bus-n*/
+<<<<<<< HEAD
 		retval = sysfs_create_file(&pdev->dev.kobj,
 					   &dev_attr_pch_mac.attr);
 		if (retval)
 			goto err_sysfs_create;
 		retval = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
 		if (retval)
+=======
+		ret = sysfs_create_file(&pdev->dev.kobj,
+					&dev_attr_pch_mac.attr);
+		if (ret)
+			goto err_sysfs_create;
+		ret = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
+		if (ret)
+>>>>>>> refs/remotes/origin/master
 			goto exit_bin_attr;
 		/* set the prefech value
 		 * Device2(USB OHCI #0,1,2,3/ USB EHCI #0):a
@@ -810,6 +878,7 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 						 PCH_PHUB_ROM_START_ADDR_ML7223;
 		chip->pch_mac_start_address = PCH_PHUB_MAC_START_ADDR_ML7223;
 	} else if (id->driver_data == 5) { /* ML7831 */
+<<<<<<< HEAD
 		retval = sysfs_create_file(&pdev->dev.kobj,
 					   &dev_attr_pch_mac.attr);
 		if (retval)
@@ -817,6 +886,15 @@ static int __devinit pch_phub_probe(struct pci_dev *pdev,
 
 		retval = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
 		if (retval)
+=======
+		ret = sysfs_create_file(&pdev->dev.kobj,
+					&dev_attr_pch_mac.attr);
+		if (ret)
+			goto err_sysfs_create;
+
+		ret = sysfs_create_bin_file(&pdev->dev.kobj, &pch_bin_attr);
+		if (ret)
+>>>>>>> refs/remotes/origin/master
 			goto exit_bin_attr;
 
 		/* set the prefech value */
@@ -846,7 +924,11 @@ err_pci_enable_dev:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit pch_phub_remove(struct pci_dev *pdev)
+=======
+static void pch_phub_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pch_phub_reg *chip = pci_get_drvdata(pdev);
 
@@ -915,11 +997,16 @@ static struct pci_driver pch_phub_driver = {
 	.name = "pch_phub",
 	.id_table = pch_phub_pcidev_id,
 	.probe = pch_phub_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pch_phub_remove),
+=======
+	.remove = pch_phub_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = pch_phub_suspend,
 	.resume = pch_phub_resume
 };
 
+<<<<<<< HEAD
 static int __init pch_phub_pci_init(void)
 {
 	return pci_register_driver(&pch_phub_driver);
@@ -938,4 +1025,9 @@ MODULE_DESCRIPTION("Intel EG20T PCH/OKI SEMICONDUCTOR IOH(ML7213/ML7223) PHUB");
 =======
 MODULE_DESCRIPTION("Intel EG20T PCH/LAPIS Semiconductor IOH(ML7213/ML7223) PHUB");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_pci_driver(pch_phub_driver);
+
+MODULE_DESCRIPTION("Intel EG20T PCH/LAPIS Semiconductor IOH(ML7213/ML7223) PHUB");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

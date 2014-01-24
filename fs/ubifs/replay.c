@@ -141,9 +141,15 @@ static int set_bud_lprops(struct ubifs_info *c, struct bud_entry *b)
 		 * during the replay.
 		 */
 		if (dirty != 0)
+<<<<<<< HEAD
 			dbg_msg("LEB %d lp: %d free %d dirty "
 				"replay: %d free %d dirty", b->bud->lnum,
 				lp->free, lp->dirty, b->free, b->dirty);
+=======
+			dbg_mnt("LEB %d lp: %d free %d dirty replay: %d free %d dirty",
+				b->bud->lnum, lp->free, lp->dirty, b->free,
+				b->dirty);
+>>>>>>> refs/remotes/origin/master
 	}
 	lp = ubifs_change_lp(c, lp, b->free, dirty + b->dirty,
 			     lp->flags | LPROPS_TAKEN, 0);
@@ -154,8 +160,12 @@ static int set_bud_lprops(struct ubifs_info *c, struct bud_entry *b)
 
 	/* Make sure the journal head points to the latest bud */
 	err = ubifs_wbuf_seek_nolock(&c->jheads[b->bud->jhead].wbuf,
+<<<<<<< HEAD
 				     b->bud->lnum, c->leb_size - b->free,
 				     UBI_SHORTTERM);
+=======
+				     b->bud->lnum, c->leb_size - b->free);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	ubifs_release_lprops(c);
@@ -222,12 +232,17 @@ static int apply_replay_entry(struct ubifs_info *c, struct replay_entry *r)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_mnt("LEB %d:%d len %d deletion %d sqnum %llu %s", r->lnum,
 		r->offs, r->len, r->deletion, r->sqnum, DBGKEY(&r->key));
 =======
 	dbg_mntk(&r->key, "LEB %d:%d len %d deletion %d sqnum %llu key ",
 		 r->lnum, r->offs, r->len, r->deletion, r->sqnum);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_mntk(&r->key, "LEB %d:%d len %d deletion %d sqnum %llu key ",
+		 r->lnum, r->offs, r->len, r->deletion, r->sqnum);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set c->replay_sqnum to help deal with dangling branches. */
 	c->replay_sqnum = r->sqnum;
@@ -367,10 +382,14 @@ static int insert_node(struct ubifs_info *c, int lnum, int offs, int len,
 	struct replay_entry *r;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_mnt("add LEB %d:%d, key %s", lnum, offs, DBGKEY(key));
 =======
 	dbg_mntk(key, "add LEB %d:%d, key ", lnum, offs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_mntk(key, "add LEB %d:%d, key ", lnum, offs);
+>>>>>>> refs/remotes/origin/master
 
 	if (key_inum(c, key) >= c->highest_inum)
 		c->highest_inum = key_inum(c, key);
@@ -419,10 +438,14 @@ static int insert_dent(struct ubifs_info *c, int lnum, int offs, int len,
 	char *nbuf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_mnt("add LEB %d:%d, key %s", lnum, offs, DBGKEY(key));
 =======
 	dbg_mntk(key, "add LEB %d:%d, key ", lnum, offs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_mntk(key, "add LEB %d:%d, key ", lnum, offs);
+>>>>>>> refs/remotes/origin/master
 	if (key_inum(c, key) >= c->highest_inum)
 		c->highest_inum = key_inum(c, key);
 
@@ -537,11 +560,15 @@ static int is_last_bud(struct ubifs_info *c, struct ubifs_bud *bud)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, next->lnum, (char *)&data,
 		       next->start, 4);
 =======
 	err = ubifs_leb_read(c, next->lnum, (char *)&data, next->start, 4, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, next->lnum, (char *)&data, next->start, 4, 1);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return 0;
 
@@ -696,7 +723,12 @@ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
 
 	b->dirty = sleb->endpt - offs - used;
 	b->free = c->leb_size - sleb->endpt;
+<<<<<<< HEAD
 	dbg_mnt("bud LEB %d replied: dirty %d, free %d", lnum, b->dirty, b->free);
+=======
+	dbg_mnt("bud LEB %d replied: dirty %d, free %d",
+		lnum, b->dirty, b->free);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	ubifs_scan_destroy(sleb);
@@ -704,7 +736,11 @@ out:
 
 out_dump:
 	ubifs_err("bad node is at LEB %d:%d", lnum, snod->offs);
+<<<<<<< HEAD
 	dbg_dump_node(c, snod->node);
+=======
+	ubifs_dump_node(c, snod->node);
+>>>>>>> refs/remotes/origin/master
 	ubifs_scan_destroy(sleb);
 	return -EINVAL;
 }
@@ -879,6 +915,7 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
 		 * numbers.
 		 */
 		if (snod->type != UBIFS_CS_NODE) {
+<<<<<<< HEAD
 			dbg_err("first log node at LEB %d:%d is not CS node",
 				lnum, offs);
 			goto out_dump;
@@ -889,6 +926,17 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
 				lnum, offs,
 				(unsigned long long)le64_to_cpu(node->cmt_no),
 				c->cmt_no);
+=======
+			ubifs_err("first log node at LEB %d:%d is not CS node",
+				  lnum, offs);
+			goto out_dump;
+		}
+		if (le64_to_cpu(node->cmt_no) != c->cmt_no) {
+			ubifs_err("first CS node at LEB %d:%d has wrong commit number %llu expected %llu",
+				  lnum, offs,
+				  (unsigned long long)le64_to_cpu(node->cmt_no),
+				  c->cmt_no);
+>>>>>>> refs/remotes/origin/master
 			goto out_dump;
 		}
 
@@ -910,7 +958,11 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
 
 	/* Make sure the first node sits at offset zero of the LEB */
 	if (snod->offs != 0) {
+<<<<<<< HEAD
 		dbg_err("first node is not at zero offset");
+=======
+		ubifs_err("first node is not at zero offset");
+>>>>>>> refs/remotes/origin/master
 		goto out_dump;
 	}
 
@@ -923,8 +975,13 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
 		}
 
 		if (snod->sqnum < c->cs_sqnum) {
+<<<<<<< HEAD
 			dbg_err("bad sqnum %llu, commit sqnum %llu",
 				snod->sqnum, c->cs_sqnum);
+=======
+			ubifs_err("bad sqnum %llu, commit sqnum %llu",
+				  snod->sqnum, c->cs_sqnum);
+>>>>>>> refs/remotes/origin/master
 			goto out_dump;
 		}
 
@@ -976,7 +1033,11 @@ out:
 out_dump:
 	ubifs_err("log error detected while replaying the log at LEB %d:%d",
 		  lnum, offs + snod->offs);
+<<<<<<< HEAD
 	dbg_dump_node(c, snod->node);
+=======
+	ubifs_dump_node(c, snod->node);
+>>>>>>> refs/remotes/origin/master
 	ubifs_scan_destroy(sleb);
 	return -EINVAL;
 }
@@ -1026,7 +1087,11 @@ out:
  */
 int ubifs_replay_journal(struct ubifs_info *c)
 {
+<<<<<<< HEAD
 	int err, i, lnum, offs, free;
+=======
+	int err, lnum, free;
+>>>>>>> refs/remotes/origin/master
 
 	BUILD_BUG_ON(UBIFS_TRUN_KEY > 5);
 
@@ -1044,6 +1109,7 @@ int ubifs_replay_journal(struct ubifs_info *c)
 	dbg_mnt("start replaying the journal");
 	c->replaying = 1;
 	lnum = c->ltail_lnum = c->lhead_lnum;
+<<<<<<< HEAD
 	offs = c->lhead_offs;
 
 	for (i = 0; i < c->log_lebs; i++, lnum++) {
@@ -1056,13 +1122,23 @@ int ubifs_replay_journal(struct ubifs_info *c)
 			offs = 0;
 		}
 		err = replay_log_leb(c, lnum, offs, c->sbuf);
+=======
+
+	do {
+		err = replay_log_leb(c, lnum, 0, c->sbuf);
+>>>>>>> refs/remotes/origin/master
 		if (err == 1)
 			/* We hit the end of the log */
 			break;
 		if (err)
 			goto out;
+<<<<<<< HEAD
 		offs = 0;
 	}
+=======
+		lnum = ubifs_next_log_lnum(c, lnum);
+	} while (lnum != c->ltail_lnum);
+>>>>>>> refs/remotes/origin/master
 
 	err = replay_buds(c);
 	if (err)
@@ -1086,8 +1162,13 @@ int ubifs_replay_journal(struct ubifs_info *c)
 	c->bi.uncommitted_idx *= c->max_idx_node_sz;
 
 	ubifs_assert(c->bud_bytes <= c->max_bud_bytes || c->need_recovery);
+<<<<<<< HEAD
 	dbg_mnt("finished, log head LEB %d:%d, max_sqnum %llu, "
 		"highest_inum %lu", c->lhead_lnum, c->lhead_offs, c->max_sqnum,
+=======
+	dbg_mnt("finished, log head LEB %d:%d, max_sqnum %llu, highest_inum %lu",
+		c->lhead_lnum, c->lhead_offs, c->max_sqnum,
+>>>>>>> refs/remotes/origin/master
 		(unsigned long)c->highest_inum);
 out:
 	destroy_replay_list(c);

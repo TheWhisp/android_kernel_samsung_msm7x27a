@@ -17,6 +17,7 @@
 #include <mach/gpio.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GPIO_0	0
 #define GPIO_1	1
 #define GPIO_2	2
@@ -70,6 +71,8 @@
 #define GPIO_USAGE 0
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PERIPHERAL_USAGE 1
 #define GPIO_USAGE 0
 
@@ -77,10 +80,21 @@
 # define BFIN_GPIO_PINT 0
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __ASSEMBLY__
 
 #include <linux/compiler.h>
+=======
+#ifndef __ASSEMBLY__
+
+#ifndef CONFIG_PINCTRL
+
+#include <linux/compiler.h>
+#include <asm/blackfin.h>
+#include <asm/portmux.h>
+#include <asm/irq_handler.h>
+>>>>>>> refs/remotes/origin/master
 
 /***********************************************************
 *
@@ -100,10 +114,13 @@
 **************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_BF54x
 =======
 #if !BFIN_GPIO_PINT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void set_gpio_dir(unsigned, unsigned short);
 void set_gpio_inen(unsigned, unsigned short);
 void set_gpio_polar(unsigned, unsigned short);
@@ -173,17 +190,24 @@ struct gpio_port_t {
 	unsigned short dummy16;
 	unsigned short inen;
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef BFIN_SPECIAL_GPIO_BANKS
 void bfin_special_gpio_free(unsigned gpio);
 int bfin_special_gpio_request(unsigned gpio, const char *label);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # ifdef CONFIG_PM
 void bfin_special_gpio_pm_hibernate_restore(void);
 void bfin_special_gpio_pm_hibernate_suspend(void);
 # endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
@@ -193,10 +217,24 @@ int bfin_pm_standby_ctrl(unsigned ctrl);
 static inline int bfin_pm_standby_setup(void)
 {
 	return bfin_pm_standby_ctrl(1);
+=======
+#endif
+
+#ifdef CONFIG_PM
+void bfin_gpio_pm_hibernate_restore(void);
+void bfin_gpio_pm_hibernate_suspend(void);
+int bfin_gpio_pm_wakeup_ctrl(unsigned gpio, unsigned ctrl);
+int bfin_gpio_pm_standby_ctrl(unsigned ctrl);
+
+static inline int bfin_pm_standby_setup(void)
+{
+	return bfin_gpio_pm_standby_ctrl(1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void bfin_pm_standby_restore(void)
 {
+<<<<<<< HEAD
 	bfin_pm_standby_ctrl(0);
 }
 
@@ -209,6 +247,11 @@ void bfin_gpio_pm_hibernate_suspend(void);
 # if !BFIN_GPIO_PINT
 >>>>>>> refs/remotes/origin/cm-10.0
 int gpio_pm_wakeup_ctrl(unsigned gpio, unsigned ctrl);
+=======
+	bfin_gpio_pm_standby_ctrl(0);
+}
+
+>>>>>>> refs/remotes/origin/master
 
 struct gpio_port_s {
 	unsigned short data;
@@ -225,6 +268,7 @@ struct gpio_port_s {
 	unsigned short mux;
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /*CONFIG_BF54x*/
 #endif /*CONFIG_PM*/
 =======
@@ -232,6 +276,10 @@ struct gpio_port_s {
 #endif /*CONFIG_PM*/
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /*CONFIG_PM*/
+
+>>>>>>> refs/remotes/origin/master
 /***********************************************************
 *
 * FUNCTIONS: Blackfin GPIO Driver
@@ -246,6 +294,7 @@ struct gpio_port_s {
 *************************************************************
 * MODIFICATION HISTORY :
 **************************************************************/
+<<<<<<< HEAD
 
 int bfin_gpio_request(unsigned gpio, const char *label);
 void bfin_gpio_free(unsigned gpio);
@@ -255,27 +304,49 @@ int bfin_gpio_direction_input(unsigned gpio);
 int bfin_gpio_direction_output(unsigned gpio, int value);
 int bfin_gpio_get_value(unsigned gpio);
 void bfin_gpio_set_value(unsigned gpio, int value);
+=======
+int bfin_gpio_irq_request(unsigned gpio, const char *label);
+void bfin_gpio_irq_free(unsigned gpio);
+void bfin_gpio_irq_prepare(unsigned gpio);
+
+static inline int irq_to_gpio(unsigned irq)
+{
+	return irq - GPIO_IRQ_BASE;
+}
+#endif /* CONFIG_PINCTRL */
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 #include <asm/errno.h>
 
+<<<<<<< HEAD
 #ifdef CONFIG_GPIOLIB
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/gpio.h>		/* cansleep wrappers */
 
 static inline int gpio_get_value(unsigned int gpio)
 {
+<<<<<<< HEAD
 	if (gpio < MAX_BLACKFIN_GPIOS)
 		return bfin_gpio_get_value(gpio);
 	else
 		return __gpio_get_value(gpio);
+=======
+	return __gpio_get_value(gpio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void gpio_set_value(unsigned int gpio, int value)
 {
+<<<<<<< HEAD
 	if (gpio < MAX_BLACKFIN_GPIOS)
 		bfin_gpio_set_value(gpio, value);
 	else
 		__gpio_set_value(gpio, value);
+=======
+	__gpio_set_value(gpio, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int gpio_cansleep(unsigned int gpio)
@@ -287,6 +358,7 @@ static inline int gpio_to_irq(unsigned gpio)
 {
 	return __gpio_to_irq(gpio);
 }
+<<<<<<< HEAD
 
 #else /* !CONFIG_GPIOLIB */
 
@@ -362,6 +434,8 @@ static inline int irq_to_gpio(unsigned irq)
 	return (irq - GPIO_IRQ_BASE);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 
 #endif /* __ARCH_BLACKFIN_GPIO_H__ */

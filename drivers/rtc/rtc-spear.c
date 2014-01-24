@@ -16,6 +16,10 @@
 #include <linux/io.h>
 #include <linux/irq.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/rtc.h>
 #include <linux/slab.h>
@@ -78,16 +82,22 @@
 
 struct spear_rtc_config {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct clk *clk;
 	spinlock_t lock;
 	void __iomem *ioaddr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rtc_device *rtc;
 	struct clk *clk;
 	spinlock_t lock;
 	void __iomem *ioaddr;
 	unsigned int irq_wake;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void spear_rtc_clear_interrupt(struct spear_rtc_config *config)
@@ -158,11 +168,15 @@ static void rtc_wait_not_busy(struct spear_rtc_config *config)
 static irqreturn_t spear_rtc_irq(int irq, void *dev_id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct rtc_device *rtc = (struct rtc_device *)dev_id;
 	struct spear_rtc_config *config = dev_get_drvdata(&rtc->dev);
 =======
 	struct spear_rtc_config *config = dev_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct spear_rtc_config *config = dev_id;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags, events = 0;
 	unsigned int irq_data;
 
@@ -174,10 +188,14 @@ static irqreturn_t spear_rtc_irq(int irq, void *dev_id)
 		spear_rtc_clear_interrupt(config);
 		events = RTC_IRQF | RTC_AF;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rtc_update_irq(rtc, 1, events);
 =======
 		rtc_update_irq(config->rtc, 1, events);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rtc_update_irq(config->rtc, 1, events);
+>>>>>>> refs/remotes/origin/master
 		return IRQ_HANDLED;
 	} else
 		return IRQ_NONE;
@@ -220,12 +238,16 @@ static void bcd2tm(struct rtc_time *tm)
 static int spear_rtc_read_time(struct device *dev, struct rtc_time *tm)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct rtc_device *rtc = platform_get_drvdata(pdev);
 	struct spear_rtc_config *config = dev_get_drvdata(&rtc->dev);
 =======
 	struct spear_rtc_config *config = dev_get_drvdata(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct spear_rtc_config *config = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	unsigned int time, date;
 
 	/* we don't report wday/yday/isdst ... */
@@ -255,6 +277,7 @@ static int spear_rtc_read_time(struct device *dev, struct rtc_time *tm)
 static int spear_rtc_set_time(struct device *dev, struct rtc_time *tm)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct rtc_device *rtc = platform_get_drvdata(pdev);
 	struct spear_rtc_config *config = dev_get_drvdata(&rtc->dev);
@@ -262,6 +285,10 @@ static int spear_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	struct spear_rtc_config *config = dev_get_drvdata(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int time, date, err = 0;
+=======
+	struct spear_rtc_config *config = dev_get_drvdata(dev);
+	unsigned int time, date;
+>>>>>>> refs/remotes/origin/master
 
 	if (tm2bcd(tm) < 0)
 		return -EINVAL;
@@ -273,11 +300,16 @@ static int spear_rtc_set_time(struct device *dev, struct rtc_time *tm)
 		(tm->tm_year << YEAR_SHIFT);
 	writel(time, config->ioaddr + TIME_REG);
 	writel(date, config->ioaddr + DATE_REG);
+<<<<<<< HEAD
 	err = is_write_complete(config);
 	if (err < 0)
 		return err;
 
 	return 0;
+=======
+
+	return is_write_complete(config);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -291,12 +323,16 @@ static int spear_rtc_set_time(struct device *dev, struct rtc_time *tm)
 static int spear_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alm)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct rtc_device *rtc = platform_get_drvdata(pdev);
 	struct spear_rtc_config *config = dev_get_drvdata(&rtc->dev);
 =======
 	struct spear_rtc_config *config = dev_get_drvdata(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct spear_rtc_config *config = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 	unsigned int time, date;
 
 	rtc_wait_not_busy(config);
@@ -327,6 +363,7 @@ static int spear_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alm)
 static int spear_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alm)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct platform_device *pdev = to_platform_device(dev);
 	struct rtc_device *rtc = platform_get_drvdata(pdev);
 	struct spear_rtc_config *config = dev_get_drvdata(&rtc->dev);
@@ -334,6 +371,11 @@ static int spear_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alm)
 	struct spear_rtc_config *config = dev_get_drvdata(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int time, date, err = 0;
+=======
+	struct spear_rtc_config *config = dev_get_drvdata(dev);
+	unsigned int time, date;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	if (tm2bcd(&alm->time) < 0)
 		return -EINVAL;
@@ -359,7 +401,10 @@ static int spear_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alm)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int spear_alarm_irq_enable(struct device *dev, unsigned int enabled)
 {
@@ -385,12 +430,16 @@ static int spear_alarm_irq_enable(struct device *dev, unsigned int enabled)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct rtc_class_ops spear_rtc_ops = {
 	.read_time = spear_rtc_read_time,
 	.set_time = spear_rtc_set_time,
 	.read_alarm = spear_rtc_read_alarm,
 	.set_alarm = spear_rtc_set_alarm,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	.alarm_irq_enable = spear_alarm_irq_enable,
@@ -406,6 +455,16 @@ static int __devinit spear_rtc_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct spear_rtc_config *config;
 	unsigned int status = 0;
+=======
+	.alarm_irq_enable = spear_alarm_irq_enable,
+};
+
+static int spear_rtc_probe(struct platform_device *pdev)
+{
+	struct resource *res;
+	struct spear_rtc_config *config;
+	int status = 0;
+>>>>>>> refs/remotes/origin/master
 	int irq;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -413,6 +472,7 @@ static int __devinit spear_rtc_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "no resource defined\n");
 		return -EBUSY;
 	}
+<<<<<<< HEAD
 	if (!request_mem_region(res->start, resource_size(res), pdev->name)) {
 		dev_err(&pdev->dev, "rtc region already claimed\n");
 		return -EBUSY;
@@ -462,10 +522,52 @@ static int __devinit spear_rtc_probe(struct platform_device *pdev)
 
 	config->rtc = rtc_device_register(pdev->name, &pdev->dev,
 			&spear_rtc_ops, THIS_MODULE);
+=======
+
+	config = devm_kzalloc(&pdev->dev, sizeof(*config), GFP_KERNEL);
+	if (!config) {
+		dev_err(&pdev->dev, "out of memory\n");
+		return -ENOMEM;
+	}
+
+	/* alarm irqs */
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0) {
+		dev_err(&pdev->dev, "no update irq?\n");
+		return irq;
+	}
+
+	status = devm_request_irq(&pdev->dev, irq, spear_rtc_irq, 0, pdev->name,
+			config);
+	if (status) {
+		dev_err(&pdev->dev, "Alarm interrupt IRQ%d already claimed\n",
+				irq);
+		return status;
+	}
+
+	config->ioaddr = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(config->ioaddr))
+		return PTR_ERR(config->ioaddr);
+
+	config->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(config->clk))
+		return PTR_ERR(config->clk);
+
+	status = clk_prepare_enable(config->clk);
+	if (status < 0)
+		return status;
+
+	spin_lock_init(&config->lock);
+	platform_set_drvdata(pdev, config);
+
+	config->rtc = devm_rtc_device_register(&pdev->dev, pdev->name,
+					&spear_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(config->rtc)) {
 		dev_err(&pdev->dev, "can't register RTC device, err %ld\n",
 				PTR_ERR(config->rtc));
 		status = PTR_ERR(config->rtc);
+<<<<<<< HEAD
 		goto err_iounmap;
 	}
 
@@ -488,12 +590,19 @@ static int __devinit spear_rtc_probe(struct platform_device *pdev)
 				claimed\n", irq);
 		goto err_clear_platdata;
 	}
+=======
+		goto err_disable_clock;
+	}
+
+	config->rtc->uie_unsupported = 1;
+>>>>>>> refs/remotes/origin/master
 
 	if (!device_can_wakeup(&pdev->dev))
 		device_init_wakeup(&pdev->dev, 1);
 
 	return 0;
 
+<<<<<<< HEAD
 err_clear_platdata:
 	platform_set_drvdata(pdev, NULL);
 <<<<<<< HEAD
@@ -512,10 +621,15 @@ err_kfree:
 	kfree(config);
 err_release_region:
 	release_mem_region(res->start, resource_size(res));
+=======
+err_disable_clock:
+	clk_disable_unprepare(config->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }
 
+<<<<<<< HEAD
 static int __devexit spear_rtc_remove(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -551,10 +665,20 @@ static int __devexit spear_rtc_remove(struct platform_device *pdev)
 	rtc_device_unregister(config->rtc);
 	kfree(config);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int spear_rtc_remove(struct platform_device *pdev)
+{
+	struct spear_rtc_config *config = platform_get_drvdata(pdev);
+
+	spear_rtc_disable_interrupt(config);
+	clk_disable_unprepare(config->clk);
+	device_init_wakeup(&pdev->dev, 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 
 static int spear_rtc_suspend(struct platform_device *pdev, pm_message_t state)
@@ -569,6 +693,12 @@ static int spear_rtc_suspend(struct platform_device *pdev, pm_message_t state)
 		enable_irq_wake(irq);
 	else {
 =======
+=======
+#ifdef CONFIG_PM_SLEEP
+static int spear_rtc_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct spear_rtc_config *config = platform_get_drvdata(pdev);
 	int irq;
 
@@ -577,7 +707,10 @@ static int spear_rtc_suspend(struct platform_device *pdev, pm_message_t state)
 		if (!enable_irq_wake(irq))
 			config->irq_wake = 1;
 	} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spear_rtc_disable_interrupt(config);
 		clk_disable(config->clk);
 	}
@@ -585,6 +718,7 @@ static int spear_rtc_suspend(struct platform_device *pdev, pm_message_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int spear_rtc_resume(struct platform_device *pdev)
 {
 <<<<<<< HEAD
@@ -593,28 +727,41 @@ static int spear_rtc_resume(struct platform_device *pdev)
 =======
 	struct spear_rtc_config *config = platform_get_drvdata(pdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int spear_rtc_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	struct spear_rtc_config *config = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int irq;
 
 	irq = platform_get_irq(pdev, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (device_may_wakeup(&pdev->dev))
 		disable_irq_wake(irq);
 	else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (device_may_wakeup(&pdev->dev)) {
 		if (config->irq_wake) {
 			disable_irq_wake(irq);
 			config->irq_wake = 0;
 		}
 	} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		clk_enable(config->clk);
 		spear_rtc_enable_interrupt(config);
 	}
 
 	return 0;
 }
+<<<<<<< HEAD
 
 #else
 #define spear_rtc_suspend	NULL
@@ -629,11 +776,21 @@ static void spear_rtc_shutdown(struct platform_device *pdev)
 =======
 	struct spear_rtc_config *config = platform_get_drvdata(pdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(spear_rtc_pm_ops, spear_rtc_suspend, spear_rtc_resume);
+
+static void spear_rtc_shutdown(struct platform_device *pdev)
+{
+	struct spear_rtc_config *config = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	spear_rtc_disable_interrupt(config);
 	clk_disable(config->clk);
 }
 
+<<<<<<< HEAD
 static struct platform_driver spear_rtc_driver = {
 	.probe = spear_rtc_probe,
 	.remove = __devexit_p(spear_rtc_remove),
@@ -660,6 +817,28 @@ module_exit(rtc_exit);
 =======
 module_platform_driver(spear_rtc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id spear_rtc_id_table[] = {
+	{ .compatible = "st,spear600-rtc" },
+	{}
+};
+MODULE_DEVICE_TABLE(of, spear_rtc_id_table);
+#endif
+
+static struct platform_driver spear_rtc_driver = {
+	.probe = spear_rtc_probe,
+	.remove = spear_rtc_remove,
+	.shutdown = spear_rtc_shutdown,
+	.driver = {
+		.name = "rtc-spear",
+		.pm = &spear_rtc_pm_ops,
+		.of_match_table = of_match_ptr(spear_rtc_id_table),
+	},
+};
+
+module_platform_driver(spear_rtc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:rtc-spear");
 MODULE_AUTHOR("Rajeev Kumar <rajeev-dlh.kumar@st.com>");

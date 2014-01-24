@@ -27,6 +27,11 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/flash.h>
 
+<<<<<<< HEAD
+=======
+#include <mach/hardware.h>
+
+>>>>>>> refs/remotes/origin/master
 static struct resource omixp_flash_resources[] = {
 	{
 		.flags	= IORESOURCE_MEM,
@@ -245,7 +250,11 @@ MACHINE_START(DEVIXP, "Omicron DEVIXP")
 	.map_io		= ixp4xx_map_io,
 	.init_early	= ixp4xx_init_early,
 	.init_irq	= ixp4xx_init_irq,
+<<<<<<< HEAD
 	.timer          = &ixp4xx_timer,
+=======
+	.init_time	= ixp4xx_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= omixp_init,
 	.restart	= ixp4xx_restart,
 MACHINE_END
@@ -257,7 +266,11 @@ MACHINE_START(MICCPT, "Omicron MICCPT")
 	.map_io		= ixp4xx_map_io,
 	.init_early	= ixp4xx_init_early,
 	.init_irq	= ixp4xx_init_irq,
+<<<<<<< HEAD
 	.timer          = &ixp4xx_timer,
+=======
+	.init_time	= ixp4xx_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= omixp_init,
 #if defined(CONFIG_PCI)
 	.dma_zone_size	= SZ_64M,
@@ -272,7 +285,11 @@ MACHINE_START(MIC256, "Omicron MIC256")
 	.map_io		= ixp4xx_map_io,
 	.init_early	= ixp4xx_init_early,
 	.init_irq	= ixp4xx_init_irq,
+<<<<<<< HEAD
 	.timer          = &ixp4xx_timer,
+=======
+	.init_time	= ixp4xx_timer_init,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= omixp_init,
 	.restart	= ixp4xx_restart,
 MACHINE_END

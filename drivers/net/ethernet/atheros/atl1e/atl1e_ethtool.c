@@ -268,7 +268,11 @@ static int atl1e_set_eeprom(struct net_device *netdev,
 	if (eeprom_buff == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	ptr = (u32 *)eeprom_buff;
+=======
+	ptr = eeprom_buff;
+>>>>>>> refs/remotes/origin/master
 
 	if (eeprom->offset & 3) {
 		/* need read/modify/write of first changed EEPROM word */

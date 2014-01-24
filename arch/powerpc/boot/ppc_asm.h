@@ -59,4 +59,10 @@
 #define	r30	30
 #define	r31	31
 
+<<<<<<< HEAD
+=======
+#define SPRN_TBRL	268
+#define SPRN_TBRU	269
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _PPC64_PPC_ASM_H */

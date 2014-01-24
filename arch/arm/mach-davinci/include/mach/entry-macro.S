@@ -9,6 +9,7 @@
  * or implied.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/io.h>
 #include <mach/irqs.h>
 
@@ -19,17 +20,24 @@
 #include <mach/irqs.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/irqs.h>
+
+>>>>>>> refs/remotes/origin/master
 		.macro  get_irqnr_preamble, base, tmp
 		ldr \base, =davinci_intc_base
 		ldr \base, [\base]
 		.endm
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.macro  arch_ret_to_user, tmp1, tmp2
 		.endm
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
 #if defined(CONFIG_AINTC) && defined(CONFIG_CP_INTC)
 		ldr \tmp, =davinci_intc_type
@@ -45,6 +53,7 @@
 #endif
 #if defined(CONFIG_CP_INTC)
 1001:		ldr \irqnr, [\base, #0x80] /* get irq number */
+<<<<<<< HEAD
 		and \irqnr, \irqnr, #0xff  /* irq is in bits 0-9 */
 		mov \tmp, \irqnr, lsr #3
 		and \tmp, \tmp, #0xfc
@@ -60,3 +69,12 @@
 		.endm
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mov \tmp, \irqnr, lsr #31
+		and \irqnr, \irqnr, #0xff  /* irq is in bits 0-9 */
+		and \tmp, \tmp, #0x1
+		cmp \tmp, #0x1
+#endif
+1002:
+		.endm
+>>>>>>> refs/remotes/origin/master

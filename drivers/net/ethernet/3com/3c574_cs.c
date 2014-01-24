@@ -432,7 +432,11 @@ static int tc574_config(struct pcmcia_device *link)
 	netdev_info(dev, "%s at io %#3lx, irq %d, hw_addr %pM\n",
 		    cardname, dev->base_addr, dev->irq, dev->dev_addr);
 	netdev_info(dev, " %dK FIFO split %s Rx:Tx, %sMII interface.\n",
+<<<<<<< HEAD
 		    8 << config & Ram_size,
+=======
+		    8 << (config & Ram_size),
+>>>>>>> refs/remotes/origin/master
 		    ram_split[(config & Ram_split) >> Ram_split_shift],
 		    config & Autoselect ? "autoselect " : "");
 
@@ -1165,6 +1169,7 @@ static struct pcmcia_driver tc574_driver = {
 	.suspend	= tc574_suspend,
 	.resume		= tc574_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_tc574(void)
 {
@@ -1178,3 +1183,6 @@ static void __exit exit_tc574(void)
 
 module_init(init_tc574);
 module_exit(exit_tc574);
+=======
+module_pcmcia_driver(tc574_driver);
+>>>>>>> refs/remotes/origin/master

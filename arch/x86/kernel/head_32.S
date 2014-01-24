@@ -21,6 +21,10 @@
 #include <asm/msr-index.h>
 #include <asm/cpufeature.h>
 #include <asm/percpu.h>
+<<<<<<< HEAD
+=======
+#include <asm/nops.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Physical address */
 #define pa(X) ((X) - __PAGE_OFFSET)
@@ -143,6 +147,14 @@ ENTRY(startup_32)
 	movl %eax, pa(olpc_ofw_pgd)
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MICROCODE_EARLY
+	/* Early load ucode on BSP. */
+	call load_ucode_bsp
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize page tables.  This creates a PDE and a set of page
  * tables, which are located immediately beyond __brk_base.  The variable
@@ -265,6 +277,22 @@ num_subarch_entries = (. - subarch_entries) / 4
 	jmp default_entry
 #endif /* CONFIG_PARAVIRT */
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+/*
+ * Boot CPU0 entry point. It's called from play_dead(). Everything has been set
+ * up already except stack. We just set up stack here. Then call
+ * start_secondary().
+ */
+ENTRY(start_cpu0)
+	movl stack_start, %ecx
+	movl %ecx, %esp
+	jmp  *(initial_code)
+ENDPROC(start_cpu0)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Non-boot CPU entry point; entered from trampoline.S
  * We can't lgdt here, because lgdt itself uses a data segment, but
@@ -273,10 +301,13 @@ num_subarch_entries = (. - subarch_entries) / 4
  * If cpu hotplug is not supported then this code can go in init section
  * which will be freed later
  */
+<<<<<<< HEAD
 
 __CPUINIT
 
 #ifdef CONFIG_SMP
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(startup_32_smp)
 	cld
 	movl $(__BOOT_DS),%eax
@@ -287,6 +318,7 @@ ENTRY(startup_32_smp)
 	movl pa(stack_start),%ecx
 	movl %eax,%ss
 	leal -__PAGE_OFFSET(%ecx),%esp
+<<<<<<< HEAD
 #endif /* CONFIG_SMP */
 default_entry:
 
@@ -314,6 +346,62 @@ default_entry:
 
 	testb $X86_CR4_PAE, %al		# check if PAE is enabled
 	jz 6f
+=======
+
+#ifdef CONFIG_MICROCODE_EARLY
+	/* Early load ucode on AP. */
+	call load_ucode_ap
+#endif
+
+
+default_entry:
+#define CR0_STATE	(X86_CR0_PE | X86_CR0_MP | X86_CR0_ET | \
+			 X86_CR0_NE | X86_CR0_WP | X86_CR0_AM | \
+			 X86_CR0_PG)
+	movl $(CR0_STATE & ~X86_CR0_PG),%eax
+	movl %eax,%cr0
+
+/*
+ * We want to start out with EFLAGS unambiguously cleared. Some BIOSes leave
+ * bits like NT set. This would confuse the debugger if this code is traced. So
+ * initialize them properly now before switching to protected mode. That means
+ * DF in particular (even though we have cleared it earlier after copying the
+ * command line) because GCC expects it.
+ */
+	pushl $0
+	popfl
+
+/*
+ * New page tables may be in 4Mbyte page mode and may be using the global pages.
+ *
+ * NOTE! If we are on a 486 we may have no cr4 at all! Specifically, cr4 exists
+ * if and only if CPUID exists and has flags other than the FPU flag set.
+ */
+	movl $-1,pa(X86_CPUID)		# preset CPUID level
+	movl $X86_EFLAGS_ID,%ecx
+	pushl %ecx
+	popfl				# set EFLAGS=ID
+	pushfl
+	popl %eax			# get EFLAGS
+	testl $X86_EFLAGS_ID,%eax	# did EFLAGS.ID remained set?
+	jz enable_paging		# hw disallowed setting of ID bit
+					# which means no CPUID and no CR4
+
+	xorl %eax,%eax
+	cpuid
+	movl %eax,pa(X86_CPUID)		# save largest std CPUID function
+
+	movl $1,%eax
+	cpuid
+	andl $~1,%edx			# Ignore CPUID.FPU
+	jz enable_paging		# No flags or only CPUID.FPU = no CR4
+
+	movl pa(mmu_cr4_features),%eax
+	movl %eax,%cr4
+
+	testb $X86_CR4_PAE, %al		# check if PAE is enabled
+	jz enable_paging
+>>>>>>> refs/remotes/origin/master
 
 	/* Check if extended functions are implemented */
 	movl $0x80000000, %eax
@@ -321,7 +409,11 @@ default_entry:
 	/* Value must be in the range 0x80000001 to 0x8000ffff */
 	subl $0x80000001, %eax
 	cmpl $(0x8000ffff-0x80000001), %eax
+<<<<<<< HEAD
 	ja 6f
+=======
+	ja enable_paging
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear bogus XD_DISABLE bits */
 	call verify_cpu
@@ -330,7 +422,11 @@ default_entry:
 	cpuid
 	/* Execute Disable bit supported? */
 	btl $(X86_FEATURE_NX & 31), %edx
+<<<<<<< HEAD
 	jnc 6f
+=======
+	jnc enable_paging
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup EFER (Extended Feature Enable Register) */
 	movl $MSR_EFER, %ecx
@@ -340,15 +436,23 @@ default_entry:
 	/* Make changes effective */
 	wrmsr
 
+<<<<<<< HEAD
 6:
+=======
+enable_paging:
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Enable paging
  */
 	movl $pa(initial_page_table), %eax
 	movl %eax,%cr3		/* set the page table pointer.. */
+<<<<<<< HEAD
 	movl %cr0,%eax
 	orl  $X86_CR0_PG,%eax
+=======
+	movl $CR0_STATE,%eax
+>>>>>>> refs/remotes/origin/master
 	movl %eax,%cr0		/* ..and set paging (PG) bit */
 	ljmp $__BOOT_CS,$1f	/* Clear prefetch and normalize %eip */
 1:
@@ -356,6 +460,7 @@ default_entry:
 	addl $__PAGE_OFFSET, %esp
 
 /*
+<<<<<<< HEAD
  * Initialize eflags.  Some BIOS's leave bits like NT set.  This would
  * confuse the debugger if this code is traced.
  * XXX - best to initialize before switching to protected mode.
@@ -402,6 +507,22 @@ checkCPUtype:
 
 	movb $4,X86		# at least 486
 	testl $0x200000,%eax	# check if ID bit changed
+=======
+ * start system 32-bit setup. We need to re-do some of the things done
+ * in 16-bit mode for the "real" operations.
+ */
+	movl setup_once_ref,%eax
+	andl %eax,%eax
+	jz 1f				# Did we do this already?
+	call *%eax
+1:
+
+/*
+ * Check if it is 486
+ */
+	movb $4,X86			# at least 486
+	cmpl $-1,X86_CPUID
+>>>>>>> refs/remotes/origin/master
 	je is486
 
 	/* get vendor info */
@@ -427,16 +548,25 @@ checkCPUtype:
 	movb %cl,X86_MASK
 	movl %edx,X86_CAPABILITY
 
+<<<<<<< HEAD
 is486:	movl $0x50022,%ecx	# set AM, WP, NE and MP
 	jmp 2f
 
 is386:	movl $2,%ecx		# set MP
 2:	movl %cr0,%eax
+=======
+is486:
+	movl $0x50022,%ecx	# set AM, WP, NE and MP
+	movl %cr0,%eax
+>>>>>>> refs/remotes/origin/master
 	andl $0x80000011,%eax	# Save PG,PE,ET
 	orl %ecx,%eax
 	movl %eax,%cr0
 
+<<<<<<< HEAD
 	call check_x87
+=======
+>>>>>>> refs/remotes/origin/master
 	lgdt early_gdt_descr
 	lidt idt_descr
 	ljmp $(__KERNEL_CS),$1f
@@ -450,6 +580,7 @@ is386:	movl $2,%ecx		# set MP
 	movl $(__KERNEL_PERCPU), %eax
 	movl %eax,%fs			# set this cpu's percpu
 
+<<<<<<< HEAD
 #ifdef CONFIG_CC_STACKPROTECTOR
 	/*
 	 * The linker can't handle this by relocation.  Manually set
@@ -465,12 +596,15 @@ is386:	movl $2,%ecx		# set MP
 	movb %ch, 8 * GDT_ENTRY_STACK_CANARY + 7(%eax)
 1:
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	movl $(__KERNEL_STACK_CANARY),%eax
 	movl %eax,%gs
 
 	xorl %eax,%eax			# Clear LDT
 	lldt %ax
 
+<<<<<<< HEAD
 	cld			# gcc2 wants the direction flag cleared at all times
 	pushl $0		# fake return address for unwinder
 	movb $1, ready
@@ -570,6 +704,126 @@ early_fault:
 	movl %cr2,%eax
 	pushl %eax
 	pushl %edx		/* trapno */
+=======
+	pushl $0		# fake return address for unwinder
+	jmp *(initial_code)
+
+#include "verify_cpu.S"
+
+/*
+ *  setup_once
+ *
+ *  The setup work we only want to run on the BSP.
+ *
+ *  Warning: %esi is live across this function.
+ */
+__INIT
+setup_once:
+	/*
+	 * Set up a idt with 256 entries pointing to ignore_int,
+	 * interrupt gates. It doesn't actually load idt - that needs
+	 * to be done on each CPU. Interrupts are enabled elsewhere,
+	 * when we can be relatively sure everything is ok.
+	 */
+
+	movl $idt_table,%edi
+	movl $early_idt_handlers,%eax
+	movl $NUM_EXCEPTION_VECTORS,%ecx
+1:
+	movl %eax,(%edi)
+	movl %eax,4(%edi)
+	/* interrupt gate, dpl=0, present */
+	movl $(0x8E000000 + __KERNEL_CS),2(%edi)
+	addl $9,%eax
+	addl $8,%edi
+	loop 1b
+
+	movl $256 - NUM_EXCEPTION_VECTORS,%ecx
+	movl $ignore_int,%edx
+	movl $(__KERNEL_CS << 16),%eax
+	movw %dx,%ax		/* selector = 0x0010 = cs */
+	movw $0x8E00,%dx	/* interrupt gate - dpl=0, present */
+2:
+	movl %eax,(%edi)
+	movl %edx,4(%edi)
+	addl $8,%edi
+	loop 2b
+
+#ifdef CONFIG_CC_STACKPROTECTOR
+	/*
+	 * Configure the stack canary. The linker can't handle this by
+	 * relocation.  Manually set base address in stack canary
+	 * segment descriptor.
+	 */
+	movl $gdt_page,%eax
+	movl $stack_canary,%ecx
+	movw %cx, 8 * GDT_ENTRY_STACK_CANARY + 2(%eax)
+	shrl $16, %ecx
+	movb %cl, 8 * GDT_ENTRY_STACK_CANARY + 4(%eax)
+	movb %ch, 8 * GDT_ENTRY_STACK_CANARY + 7(%eax)
+#endif
+
+	andl $0,setup_once_ref	/* Once is enough, thanks */
+	ret
+
+ENTRY(early_idt_handlers)
+	# 36(%esp) %eflags
+	# 32(%esp) %cs
+	# 28(%esp) %eip
+	# 24(%rsp) error code
+	i = 0
+	.rept NUM_EXCEPTION_VECTORS
+	.if (EXCEPTION_ERRCODE_MASK >> i) & 1
+	ASM_NOP2
+	.else
+	pushl $0		# Dummy error code, to make stack frame uniform
+	.endif
+	pushl $i		# 20(%esp) Vector number
+	jmp early_idt_handler
+	i = i + 1
+	.endr
+ENDPROC(early_idt_handlers)
+	
+	/* This is global to keep gas from relaxing the jumps */
+ENTRY(early_idt_handler)
+	cld
+	cmpl $2,%ss:early_recursion_flag
+	je hlt_loop
+	incl %ss:early_recursion_flag
+
+	push %eax		# 16(%esp)
+	push %ecx		# 12(%esp)
+	push %edx		#  8(%esp)
+	push %ds		#  4(%esp)
+	push %es		#  0(%esp)
+	movl $(__KERNEL_DS),%eax
+	movl %eax,%ds
+	movl %eax,%es
+
+	cmpl $(__KERNEL_CS),32(%esp)
+	jne 10f
+
+	leal 28(%esp),%eax	# Pointer to %eip
+	call early_fixup_exception
+	andl %eax,%eax
+	jnz ex_entry		/* found an exception entry */
+
+10:
+#ifdef CONFIG_PRINTK
+	xorl %eax,%eax
+	movw %ax,2(%esp)	/* clean up the segment values on some cpus */
+	movw %ax,6(%esp)
+	movw %ax,34(%esp)
+	leal  40(%esp),%eax
+	pushl %eax		/* %esp before the exception */
+	pushl %ebx
+	pushl %ebp
+	pushl %esi
+	pushl %edi
+	movl %cr2,%eax
+	pushl %eax
+	pushl (20+6*4)(%esp)	/* trapno */
+>>>>>>> refs/remotes/origin/master
 	pushl $fault_msg
 	call printk
 #endif
@@ -578,6 +832,20 @@ hlt_loop:
 	hlt
 	jmp hlt_loop
 
+<<<<<<< HEAD
+=======
+ex_entry:
+	pop %es
+	pop %ds
+	pop %edx
+	pop %ecx
+	pop %eax
+	addl $8,%esp		/* drop vector number and error code */
+	decl %ss:early_recursion_flag
+	iret
+ENDPROC(early_idt_handler)
+
+>>>>>>> refs/remotes/origin/master
 /* This is the default interrupt "handler" :-) */
 	ALIGN
 ignore_int:
@@ -611,6 +879,7 @@ ignore_int:
 	popl %eax
 #endif
 	iret
+<<<<<<< HEAD
 
 #include "verify_cpu.S"
 
@@ -618,6 +887,20 @@ ignore_int:
 .align 4
 ENTRY(initial_code)
 	.long i386_start_kernel
+=======
+ENDPROC(ignore_int)
+__INITDATA
+	.align 4
+early_recursion_flag:
+	.long 0
+
+__REFDATA
+	.align 4
+ENTRY(initial_code)
+	.long i386_start_kernel
+ENTRY(setup_once_ref)
+	.long setup_once
+>>>>>>> refs/remotes/origin/master
 
 /*
  * BSS section
@@ -670,22 +953,35 @@ ENTRY(initial_page_table)
 ENTRY(stack_start)
 	.long init_thread_union+THREAD_SIZE
 
+<<<<<<< HEAD
 early_recursion_flag:
 	.long 0
 
 ready:	.byte 0
 
+=======
+__INITRODATA
+>>>>>>> refs/remotes/origin/master
 int_msg:
 	.asciz "Unknown interrupt or fault at: %p %p %p\n"
 
 fault_msg:
 /* fault info: */
 	.ascii "BUG: Int %d: CR2 %p\n"
+<<<<<<< HEAD
 /* pusha regs: */
 	.ascii "     EDI %p  ESI %p  EBP %p  ESP %p\n"
 	.ascii "     EBX %p  EDX %p  ECX %p  EAX %p\n"
 /* fault frame: */
 	.ascii "     err %p  EIP %p   CS %p  flg %p\n"
+=======
+/* regs pushed in early_idt_handler: */
+	.ascii "     EDI %p  ESI %p  EBP %p  EBX %p\n"
+	.ascii "     ESP %p   ES %p   DS %p\n"
+	.ascii "     EDX %p  ECX %p  EAX %p\n"
+/* fault frame: */
+	.ascii "     vec %p  err %p  EIP %p   CS %p  flg %p\n"
+>>>>>>> refs/remotes/origin/master
 	.ascii "Stack: %p %p %p %p %p %p %p %p\n"
 	.ascii "       %p %p %p %p %p %p %p %p\n"
 	.asciz "       %p %p %p %p %p %p %p %p\n"
@@ -699,6 +995,10 @@ fault_msg:
  * segment size, and 32-bit linear address value:
  */
 
+<<<<<<< HEAD
+=======
+	.data
+>>>>>>> refs/remotes/origin/master
 .globl boot_gdt_descr
 .globl idt_descr
 

@@ -5,10 +5,14 @@
  *
  * Copyright 2008, Johannes Berg <johannes@sipsolutions.net>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009, 2010, Christian Lamparter <chunkeey@googlemail.com>
 =======
  * Copyright 2009-2011 Christian Lamparter <chunkeey@googlemail.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009-2011 Christian Lamparter <chunkeey@googlemail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -179,9 +183,13 @@
 #define		AR9170_MAC_SNIFFER_DEFAULTS		0x02000000
 #define	AR9170_MAC_REG_ENCRYPTION		(AR9170_MAC_REG_BASE + 0x678)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define		AR9170_MAC_ENCRYPTION_MGMT_RX_SOFTWARE	BIT(2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define		AR9170_MAC_ENCRYPTION_MGMT_RX_SOFTWARE	BIT(2)
+>>>>>>> refs/remotes/origin/master
 #define		AR9170_MAC_ENCRYPTION_RX_SOFTWARE	BIT(3)
 #define		AR9170_MAC_ENCRYPTION_DEFAULTS		0x70
 
@@ -231,14 +239,20 @@
 #define AR9170_MAC_REG_NAV_COUNT		(AR9170_MAC_REG_BASE + 0x6c4)
 #define AR9170_MAC_REG_BACKOFF_STATUS		(AR9170_MAC_REG_BASE + 0x6c8)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define		AR9170_MAC_BACKOFF_CCA			BIT(24)
 #define		AR9170_MAC_BACKOFF_TX_PEX		BIT(25)
 #define		AR9170_MAC_BACKOFF_RX_PE		BIT(26)
 #define		AR9170_MAC_BACKOFF_MD_READY		BIT(27)
 #define		AR9170_MAC_BACKOFF_TX_PE		BIT(28)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define	AR9170_MAC_REG_TX_RETRY			(AR9170_MAC_REG_BASE + 0x6cc)
 
 #define AR9170_MAC_REG_TX_COMPLETE		(AR9170_MAC_REG_BASE + 0x6d4)
@@ -375,8 +389,11 @@
 #define AR9170_MAC_REG_DMA_WLAN_STATUS		(AR9170_MAC_REG_BASE + 0xd38)
 #define	AR9170_MAC_REG_DMA_STATUS		(AR9170_MAC_REG_BASE + 0xd3c)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AR9170_MAC_REG_DMA_TXQ_LAST_ADDR	(AR9170_MAC_REG_BASE + 0xd40)
 #define	AR9170_MAC_REG_DMA_TXQ0_LAST_ADDR	(AR9170_MAC_REG_BASE + 0xd40)
 #define	AR9170_MAC_REG_DMA_TXQ1_LAST_ADDR	(AR9170_MAC_REG_BASE + 0xd44)
@@ -389,7 +406,10 @@
 
 #define AR9170_MAC_REG_DMA_TXQX_LAST_ADDR	(AR9170_MAC_REG_BASE + 0xd74)
 #define AR9170_MAC_REG_DMA_TXQX_FAIL_ADDR	(AR9170_MAC_REG_BASE + 0xd78)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define	AR9170_MAC_REG_TXRX_MPI			(AR9170_MAC_REG_BASE + 0xd7c)
 #define		AR9170_MAC_TXRX_MPI_TX_MPI_MASK		0x0000000f
 #define		AR9170_MAC_TXRX_MPI_TX_TO_MASK		0x0000fff0
@@ -398,7 +418,11 @@
 
 #define	AR9170_MAC_REG_BCN_ADDR			(AR9170_MAC_REG_BASE + 0xd84)
 #define	AR9170_MAC_REG_BCN_LENGTH		(AR9170_MAC_REG_BASE + 0xd88)
+<<<<<<< HEAD
 #define		AR9170_MAC_BCN_LENGTH_MAX		256
+=======
+#define		AR9170_MAC_BCN_LENGTH_MAX		(512 - 32)
+>>>>>>> refs/remotes/origin/master
 
 #define AR9170_MAC_REG_BCN_STATUS		(AR9170_MAC_REG_BASE + 0xd8c)
 
@@ -410,11 +434,14 @@
 #define AR9170_MAC_REG_BCN_CURR_ADDR		(AR9170_MAC_REG_BASE + 0xd98)
 #define	AR9170_MAC_REG_BCN_COUNT		(AR9170_MAC_REG_BASE + 0xd9c)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 #define	AR9170_MAC_REG_BCN_HT1			(AR9170_MAC_REG_BASE + 0xda0)
 #define	AR9170_MAC_REG_BCN_HT2			(AR9170_MAC_REG_BASE + 0xda4)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define	AR9170_MAC_REG_BCN_HT1			(AR9170_MAC_REG_BASE + 0xda0)
 #define		AR9170_MAC_BCN_HT1_HT_EN		BIT(0)
 #define		AR9170_MAC_BCN_HT1_GF_PMB		BIT(1)
@@ -449,7 +476,10 @@
 #define		AR9170_MAC_BCN_HT2_SGI			BIT(15)
 #define		AR9170_MAC_BCN_HT2_LEN_S		16
 #define		AR9170_MAC_BCN_HT2_LEN			0xffff0000
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	AR9170_MAC_REG_DMA_TXQX_ADDR_CURR	(AR9170_MAC_REG_BASE + 0xdc0)
 

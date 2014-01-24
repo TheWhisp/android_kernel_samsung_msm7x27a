@@ -28,17 +28,25 @@
 #ifndef VMWGFX_KMS_H_
 #define VMWGFX_KMS_H_
 
+<<<<<<< HEAD
 #include "drmP.h"
 <<<<<<< HEAD
 #include "vmwgfx_drv.h"
 
 =======
 #include "drm_crtc_helper.h"
+=======
+#include <drm/drmP.h>
+#include <drm/drm_crtc_helper.h>
+>>>>>>> refs/remotes/origin/master
 #include "vmwgfx_drv.h"
 
 #define VMWGFX_NUM_DISPLAY_UNITS 8
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define vmw_framebuffer_to_vfb(x) \
 	container_of(x, struct vmw_framebuffer, base)
@@ -54,11 +62,17 @@ struct vmw_framebuffer {
 	int (*pin)(struct vmw_framebuffer *fb);
 	int (*unpin)(struct vmw_framebuffer *fb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	bool dmabuf;
 	struct ttm_base_object *user_obj;
 	uint32_t user_handle;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool dmabuf;
+	struct ttm_base_object *user_obj;
+	uint32_t user_handle;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -72,10 +86,13 @@ int vmw_cursor_update_image(struct vmw_private *dev_priv,
 			    u32 *image, u32 width, u32 height,
 			    u32 hotspotX, u32 hotspotY);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void vmw_cursor_update_position(struct vmw_private *dev_priv,
 				bool show, int x, int y);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int vmw_cursor_update_dmabuf(struct vmw_private *dev_priv,
 			     struct vmw_dma_buffer *dmabuf,
 			     u32 width, u32 height,
@@ -84,7 +101,10 @@ void vmw_cursor_update_position(struct vmw_private *dev_priv,
 				bool show, int x, int y);
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Base class display unit.
  *
@@ -109,9 +129,12 @@ struct vmw_display_unit {
 
 	unsigned unit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Prefered mode tracking.
@@ -135,11 +158,15 @@ struct vmw_display_unit {
 	container_of(x, struct vmw_display_unit, connector)
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Shared display unit functions - vmwgfx_kms.c
  */
 void vmw_display_unit_cleanup(struct vmw_display_unit *du);
+<<<<<<< HEAD
 <<<<<<< HEAD
 int vmw_du_crtc_cursor_set(struct drm_crtc *crtc, struct drm_file *file_priv,
 			   uint32_t handle, uint32_t width, uint32_t height);
@@ -148,6 +175,12 @@ int vmw_du_crtc_cursor_move(struct drm_crtc *crtc, int x, int y);
 int vmw_du_page_flip(struct drm_crtc *crtc,
 		     struct drm_framebuffer *fb,
 		     struct drm_pending_vblank_event *event);
+=======
+int vmw_du_page_flip(struct drm_crtc *crtc,
+		     struct drm_framebuffer *fb,
+		     struct drm_pending_vblank_event *event,
+		     uint32_t page_flip_flags);
+>>>>>>> refs/remotes/origin/master
 void vmw_du_crtc_save(struct drm_crtc *crtc);
 void vmw_du_crtc_restore(struct drm_crtc *crtc);
 void vmw_du_crtc_gamma_set(struct drm_crtc *crtc,
@@ -167,7 +200,10 @@ int vmw_du_connector_set_property(struct drm_connector *connector,
 				  struct drm_property *property,
 				  uint64_t val);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Legacy display unit functions - vmwgfx_ldu.c
@@ -175,9 +211,12 @@ int vmw_du_connector_set_property(struct drm_connector *connector,
 int vmw_kms_init_legacy_display_system(struct vmw_private *dev_priv);
 int vmw_kms_close_legacy_display_system(struct vmw_private *dev_priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int vmw_kms_ldu_update_layout(struct vmw_private *dev_priv, unsigned num,
 			      struct drm_vmw_rect *rects);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Screen Objects display functions - vmwgfx_scrn.c
@@ -191,6 +230,9 @@ bool vmw_kms_screen_object_flippable(struct vmw_private *dev_priv,
 void vmw_kms_screen_object_update_implicit_fb(struct vmw_private *dev_priv,
 					      struct drm_crtc *crtc);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

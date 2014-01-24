@@ -1,7 +1,11 @@
 /*
  * OMAP44xx PRCM MPU instance offset macros
  *
+<<<<<<< HEAD
  * Copyright (C) 2010 Texas Instruments, Inc.
+=======
+ * Copyright (C) 2010, 2012 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2010 Nokia Corporation
  *
  * Paul Walmsley (paul@pwsan.com)
@@ -25,6 +29,12 @@
 #ifndef __ARCH_ARM_MACH_OMAP2_PRCM_MPU44XX_H
 #define __ARCH_ARM_MACH_OMAP2_PRCM_MPU44XX_H
 
+<<<<<<< HEAD
+=======
+#include "prcm_mpu_44xx_54xx.h"
+#include "common.h"
+
+>>>>>>> refs/remotes/origin/master
 #define OMAP4430_PRCM_MPU_BASE			0x48243000
 
 #define OMAP44XX_PRCM_MPU_REGADDR(inst, reg)				\
@@ -32,9 +42,12 @@
 
 /* PRCM_MPU instances */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP4430_PRCM_MPU_OCP_SOCKET_PRCM_INST	0x0000
 #define OMAP4430_PRCM_MPU_DEVICE_PRM_INST	0x0200
 #define OMAP4430_PRCM_MPU_CPU0_INST		0x0400
@@ -55,6 +68,7 @@
  */
 
 /* PRCM_MPU.OCP_SOCKET_PRCM register offsets */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define OMAP4_REVISION_PRCM_OFFSET			0x0000
 #define OMAP4430_REVISION_PRCM				OMAP44XX_PRCM_MPU_REGADDR(OMAP4430_PRCM_MPU_OCP_SOCKET_PRCM_INST, 0x0000)
@@ -97,6 +111,8 @@
 #define OMAP4_CM_CPU1_CLKSTCTRL_OFFSET			0x0018
 #define OMAP4430_CM_CPU1_CLKSTCTRL			OMAP44XX_PRCM_MPU_REGADDR(OMAP4430_PRCM_MPU_CPU1_INST, 0x0018)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP4_REVISION_PRCM_OFFSET		0x0000
 #define OMAP4430_REVISION_PRCM			OMAP44XX_PRCM_MPU_REGADDR(OMAP4430_PRCM_MPU_OCP_SOCKET_PRCM_INST, 0x0000)
 
@@ -137,6 +153,7 @@
 #define OMAP4430_CM_CPU1_CPU1_CLKCTRL		OMAP44XX_PRCM_MPU_REGADDR(OMAP4430_PRCM_MPU_CPU1_INST, 0x0014)
 #define OMAP4_CM_CPU1_CLKSTCTRL_OFFSET		0x0018
 #define OMAP4430_CM_CPU1_CLKSTCTRL		OMAP44XX_PRCM_MPU_REGADDR(OMAP4430_PRCM_MPU_CPU1_INST, 0x0018)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /* Function prototypes */
@@ -146,5 +163,7 @@ extern void omap4_prcm_mpu_write_inst_reg(u32 val, s16 inst, u16 idx);
 extern u32 omap4_prcm_mpu_rmw_inst_reg_bits(u32 mask, u32 bits, s16 inst,
 					    s16 idx);
 # endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

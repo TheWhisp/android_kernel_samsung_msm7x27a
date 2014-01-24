@@ -86,14 +86,20 @@
 #define IRQ_S3CUART_RX5		IRQ_S5P_UART_RX5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define IRQ_I2S0		IRQ_I2SV40
 
 #define IRQ_LCD_FIFO		IRQ_DISPCON0
 #define IRQ_LCD_VSYNC		IRQ_DISPCON1
 #define IRQ_LCD_SYSTEM		IRQ_DISPCON2
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* S5P6450 EINT feature will be added */
 
 /*
@@ -145,10 +151,13 @@
 #define IRQ_EINT_GROUP(grp, x)	(IRQ_EINT_GROUP##grp##_BASE + (x))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IRQ_TIMER_BASE		(11)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Set the default NR_IRQS */
 
 #define NR_IRQS			(IRQ_EINT_GROUP8_BASE + IRQ_EINT_GROUP8_NR + 1)

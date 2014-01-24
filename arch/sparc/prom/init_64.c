@@ -22,8 +22,13 @@ int prom_stdout;
 phandle prom_chosen_node;
 
 /* You must call prom_init() before you attempt to use any of the
+<<<<<<< HEAD
  * routines in the prom library.  It returns 0 on success, 1 on
  * failure.  It gets passed the pointer to the PROM vector.
+=======
+ * routines in the prom library.
+ * It gets passed the pointer to the PROM vector.
+>>>>>>> refs/remotes/origin/master
  */
 
 extern void prom_cif_init(void *, void *);

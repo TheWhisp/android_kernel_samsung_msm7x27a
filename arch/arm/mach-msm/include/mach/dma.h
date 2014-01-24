@@ -2,10 +2,13 @@
  *
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2008-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2008-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -19,6 +22,7 @@
  */
 
 #ifndef __ASM_ARCH_MSM_DMA_H
+<<<<<<< HEAD
 #define __ASM_ARCH_MSM_DMA_H
 
 #include <linux/list.h>
@@ -27,6 +31,10 @@
 #if defined(CONFIG_ARCH_FSM9XXX)
 #include <mach/dma-fsm9xxx.h>
 #endif
+=======
+
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/master
 
 struct msm_dmov_errdata {
 	uint32_t flush[6];
@@ -38,6 +46,7 @@ struct msm_dmov_cmd {
 	void (*complete_func)(struct msm_dmov_cmd *cmd,
 			      unsigned int result,
 			      struct msm_dmov_errdata *err);
+<<<<<<< HEAD
 	void (*exec_func)(struct msm_dmov_cmd *cmd);
 <<<<<<< HEAD
 	void *user;	/* Pointer for caller's reference */
@@ -69,19 +78,42 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_ADDR(off, ch) ((off) + ((ch) << 2))
 
 #define DMOV_CMD_PTR(ch)      DMOV_ADDR(0x000, ch)
+=======
+	void (*execute_func)(struct msm_dmov_cmd *cmd);
+	void *data;
+};
+
+#ifndef CONFIG_ARCH_MSM8X60
+void msm_dmov_enqueue_cmd(unsigned id, struct msm_dmov_cmd *cmd);
+void msm_dmov_stop_cmd(unsigned id, struct msm_dmov_cmd *cmd, int graceful);
+int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
+#else
+static inline
+void msm_dmov_enqueue_cmd(unsigned id, struct msm_dmov_cmd *cmd) { }
+static inline
+void msm_dmov_stop_cmd(unsigned id, struct msm_dmov_cmd *cmd, int graceful) { }
+static inline
+int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr) { return -EIO; }
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define DMOV_CMD_LIST         (0 << 29) /* does not work */
 #define DMOV_CMD_PTR_LIST     (1 << 29) /* works */
 #define DMOV_CMD_INPUT_CFG    (2 << 29) /* untested */
 #define DMOV_CMD_OUTPUT_CFG   (3 << 29) /* untested */
 #define DMOV_CMD_ADDR(addr)   ((addr) >> 3)
 
+<<<<<<< HEAD
 #define DMOV_RSLT(ch)         DMOV_ADDR(0x040, ch)
+=======
+>>>>>>> refs/remotes/origin/master
 #define DMOV_RSLT_VALID       (1 << 31) /* 0 == host has empties result fifo */
 #define DMOV_RSLT_ERROR       (1 << 3)
 #define DMOV_RSLT_FLUSH       (1 << 2)
 #define DMOV_RSLT_DONE        (1 << 1)  /* top pointer done */
 #define DMOV_RSLT_USER        (1 << 0)  /* command with FR force result */
 
+<<<<<<< HEAD
 #define DMOV_FLUSH0(ch)       DMOV_ADDR(0x080, ch)
 #define DMOV_FLUSH1(ch)       DMOV_ADDR(0x0C0, ch)
 #define DMOV_FLUSH2(ch)       DMOV_ADDR(0x100, ch)
@@ -91,11 +123,14 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_FLUSH_TYPE       (1 << 31)
 
 #define DMOV_STATUS(ch)       DMOV_ADDR(0x200, ch)
+=======
+>>>>>>> refs/remotes/origin/master
 #define DMOV_STATUS_RSLT_COUNT(n)    (((n) >> 29))
 #define DMOV_STATUS_CMD_COUNT(n)     (((n) >> 27) & 3)
 #define DMOV_STATUS_RSLT_VALID       (1 << 1)
 #define DMOV_STATUS_CMD_PTR_RDY      (1 << 0)
 
+<<<<<<< HEAD
 #define DMOV_CONF(ch)         DMOV_ADDR(0x240, ch)
 #define DMOV_CONF_SD(sd)      (((sd & 4) << 11) | ((sd & 3) << 4))
 #define DMOV_CONF_IRQ_EN             (1 << 6)
@@ -238,6 +273,14 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 
 #define DMOV_CE_HASH_CRCI     3
 
+=======
+#define DMOV_CONFIG_FORCE_TOP_PTR_RSLT (1 << 2)
+#define DMOV_CONFIG_FORCE_FLUSH_RSLT   (1 << 1)
+#define DMOV_CONFIG_IRQ_EN             (1 << 0)
+
+/* channel assignments */
+
+>>>>>>> refs/remotes/origin/master
 #define DMOV_NAND_CHAN        7
 #define DMOV_NAND_CRCI_CMD    5
 #define DMOV_NAND_CRCI_DATA   4
@@ -248,17 +291,21 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV_SDC2_CHAN        8
 #define DMOV_SDC2_CRCI        7
 
+<<<<<<< HEAD
 #define DMOV_SDC3_CHAN        8
 #define DMOV_SDC3_CRCI        12
 
 #define DMOV_SDC4_CHAN        8
 #define DMOV_SDC4_CRCI        13
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define DMOV_TSIF_CHAN        10
 #define DMOV_TSIF_CRCI        10
 
 #define DMOV_USB_CHAN         11
 
+<<<<<<< HEAD
 #define DMOV_HSUART1_TX_CHAN   4
 #define DMOV_HSUART1_TX_CRCI   8
 
@@ -287,6 +334,8 @@ int msm_dmov_exec_cmd(unsigned id, unsigned int cmdptr);
 #define DMOV8064_CE_OUT_CRCI       15
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* no client rate control ifc (eg, ram) */
 #define DMOV_NONE_CRCI        0
 

@@ -6,22 +6,31 @@
  * definitions of processors.
  *
  * Basic handling of the devices is done in drivers/base/cpu.c
+<<<<<<< HEAD
  * and system devices are handled in drivers/base/sys.c. 
  *
  * CPUs are exported via sysfs in the class/cpu/devices/
+=======
+ *
+ * CPUs are exported via sysfs in the devices/system/cpu
+>>>>>>> refs/remotes/origin/master
  * directory. 
  */
 #ifndef _LINUX_CPU_H_
 #define _LINUX_CPU_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/node.h>
 #include <linux/compiler.h>
 #include <linux/cpumask.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct cpu {
 	int node_id;		/* The node which contains the CPU */
@@ -41,6 +50,10 @@ extern void cpu_remove_sysdev_attr_group(struct attribute_group *attrs);
 extern int sched_create_sysfs_power_savings_entries(struct sysdev_class *cls);
 =======
 struct device;
+=======
+struct device;
+struct device_node;
+>>>>>>> refs/remotes/origin/master
 
 struct cpu {
 	int node_id;		/* The node which contains the CPU */
@@ -51,6 +64,12 @@ struct cpu {
 extern int register_cpu(struct cpu *cpu, int num);
 extern struct device *get_cpu_device(unsigned cpu);
 extern bool cpu_is_hotpluggable(unsigned cpu);
+<<<<<<< HEAD
+=======
+extern bool arch_match_cpu_phys_id(int cpu, u64 phys_id);
+extern bool arch_find_n_match_cpu_physical_id(struct device_node *cpun,
+					      int cpu, unsigned int *thread);
+>>>>>>> refs/remotes/origin/master
 
 extern int cpu_add_dev_attr(struct device_attribute *attr);
 extern void cpu_remove_dev_attr(struct device_attribute *attr);
@@ -58,9 +77,12 @@ extern void cpu_remove_dev_attr(struct device_attribute *attr);
 extern int cpu_add_dev_attr_group(struct attribute_group *attrs);
 extern void cpu_remove_dev_attr_group(struct attribute_group *attrs);
 
+<<<<<<< HEAD
 extern int sched_create_sysfs_power_savings_entries(struct device *dev);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HOTPLUG_CPU
 extern void unregister_cpu(struct cpu *cpu);
 extern ssize_t arch_cpu_probe(const char *, size_t);
@@ -69,7 +91,10 @@ extern ssize_t arch_cpu_release(const char *, size_t);
 struct notifier_block;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARCH_HAS_CPU_AUTOPROBE
 extern int arch_cpu_uevent(struct device *dev, struct kobj_uevent_env *env);
 extern ssize_t arch_print_cpu_modalias(struct device *dev,
@@ -77,7 +102,10 @@ extern ssize_t arch_print_cpu_modalias(struct device *dev,
 				       char *bufptr);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * CPU notifier priorities.
  */
@@ -107,7 +135,10 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CPU_ONLINE		0x0002 /* CPU (unsigned)v is up */
 #define CPU_UP_PREPARE		0x0003 /* CPU (unsigned)v coming up */
 #define CPU_UP_CANCELED		0x0004 /* CPU (unsigned)v NOT coming up */
@@ -141,12 +172,19 @@ enum {
 #define CPU_STARTING_FROZEN	(CPU_STARTING | CPU_TASKS_FROZEN)
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 /* Need to know about CPUs going up/down? */
 #if defined(CONFIG_HOTPLUG_CPU) || !defined(MODULE)
 #define cpu_notifier(fn, pri) {					\
+<<<<<<< HEAD
 	static struct notifier_block fn##_nb __cpuinitdata =	\
+=======
+	static struct notifier_block fn##_nb =			\
+>>>>>>> refs/remotes/origin/master
 		{ .notifier_call = fn, .priority = pri };	\
 	register_cpu_notifier(&fn##_nb);			\
 }
@@ -200,14 +238,19 @@ static inline void cpu_maps_update_done(void)
 
 #endif /* CONFIG_SMP */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct sysdev_class cpu_sysdev_class;
 =======
 extern struct bus_type cpu_subsys;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct bus_type cpu_subsys;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HOTPLUG_CPU
 /* Stop CPUs going up and down. */
 
+<<<<<<< HEAD
 extern void get_online_cpus(void);
 extern void put_online_cpus(void);
 <<<<<<< HEAD
@@ -242,6 +285,28 @@ static inline void cpu_hotplug_driver_unlock(void)
 #define cpu_hotplug_disable()	do { } while (0)
 #define cpu_hotplug_enable()	do { } while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void cpu_hotplug_begin(void);
+extern void cpu_hotplug_done(void);
+extern void get_online_cpus(void);
+extern void put_online_cpus(void);
+extern void cpu_hotplug_disable(void);
+extern void cpu_hotplug_enable(void);
+#define hotcpu_notifier(fn, pri)	cpu_notifier(fn, pri)
+#define register_hotcpu_notifier(nb)	register_cpu_notifier(nb)
+#define unregister_hotcpu_notifier(nb)	unregister_cpu_notifier(nb)
+void clear_tasks_mm_cpumask(int cpu);
+int cpu_down(unsigned int cpu);
+
+#else		/* CONFIG_HOTPLUG_CPU */
+
+static inline void cpu_hotplug_begin(void) {}
+static inline void cpu_hotplug_done(void) {}
+#define get_online_cpus()	do { } while (0)
+#define put_online_cpus()	do { } while (0)
+#define cpu_hotplug_disable()	do { } while (0)
+#define cpu_hotplug_enable()	do { } while (0)
+>>>>>>> refs/remotes/origin/master
 #define hotcpu_notifier(fn, pri)	do { (void)(fn); } while (0)
 /* These aren't inline functions due to a GCC bug. */
 #define register_hotcpu_notifier(nb)	({ (void)(nb); 0; })
@@ -249,6 +314,7 @@ static inline void cpu_hotplug_driver_unlock(void)
 #endif		/* CONFIG_HOTPLUG_CPU */
 
 #ifdef CONFIG_PM_SLEEP_SMP
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int suspend_cpu_hotplug;
 
@@ -262,15 +328,38 @@ extern int disable_nonboot_cpus(void);
 extern void enable_nonboot_cpus(void);
 #else /* !CONFIG_PM_SLEEP_SMP */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int disable_nonboot_cpus(void);
+extern void enable_nonboot_cpus(void);
+#else /* !CONFIG_PM_SLEEP_SMP */
+>>>>>>> refs/remotes/origin/master
 static inline int disable_nonboot_cpus(void) { return 0; }
 static inline void enable_nonboot_cpus(void) {}
 #endif /* !CONFIG_PM_SLEEP_SMP */
 
+<<<<<<< HEAD
 #define IDLE_START 1
 #define IDLE_END 2
 
 void idle_notifier_register(struct notifier_block *n);
 void idle_notifier_unregister(struct notifier_block *n);
 void idle_notifier_call_chain(unsigned long val);
+=======
+enum cpuhp_state {
+	CPUHP_OFFLINE,
+	CPUHP_ONLINE,
+};
+
+void cpu_startup_entry(enum cpuhp_state state);
+void cpu_idle(void);
+
+void cpu_idle_poll_ctrl(bool enable);
+
+void arch_cpu_idle(void);
+void arch_cpu_idle_prepare(void);
+void arch_cpu_idle_enter(void);
+void arch_cpu_idle_exit(void);
+void arch_cpu_idle_dead(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _LINUX_CPU_H_ */

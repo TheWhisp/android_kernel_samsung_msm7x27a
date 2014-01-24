@@ -29,15 +29,21 @@ static unsigned long romfs_get_unmapped_area(struct file *file,
 	struct mtd_info *mtd = inode->i_sb->s_mtd;
 	unsigned long isize, offset, maxpages, lpages;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!mtd)
 		goto cant_map_directly;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (!mtd)
 		return (unsigned long) -ENOSYS;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* the mapping mustn't extend beyond the EOF */
 	lpages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
@@ -48,6 +54,7 @@ static unsigned long romfs_get_unmapped_area(struct file *file,
 	if ((pgoff >= maxpages) || (maxpages - pgoff < lpages))
 		return (unsigned long) -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* we need to call down to the MTD layer to do the actual mapping */
 	if (mtd->get_unmapped_area) {
@@ -67,6 +74,8 @@ static unsigned long romfs_get_unmapped_area(struct file *file,
 cant_map_directly:
 	return (unsigned long) -ENOSYS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (addr != 0)
 		return (unsigned long) -EINVAL;
 
@@ -74,14 +83,25 @@ cant_map_directly:
 		return (unsigned long) -EINVAL;
 
 	offset += ROMFS_I(inode)->i_dataoffset;
+<<<<<<< HEAD
 	if (offset > mtd->size - len)
 		return (unsigned long) -EINVAL;
+=======
+	if (offset >= mtd->size)
+		return (unsigned long) -EINVAL;
+	/* the mapping mustn't extend beyond the EOF */
+	if ((offset + len) > mtd->size)
+		len = mtd->size - offset;
+>>>>>>> refs/remotes/origin/master
 
 	ret = mtd_get_unmapped_area(mtd, len, offset, flags);
 	if (ret == -EOPNOTSUPP)
 		ret = -ENOSYS;
 	return (unsigned long) ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

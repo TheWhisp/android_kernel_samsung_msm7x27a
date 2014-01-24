@@ -34,6 +34,7 @@
 #include <asm/sal.h>
 #include <asm/machvec.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/processor.h>
 #include <asm/vga.h>
@@ -42,6 +43,11 @@
 #include <asm/vga.h>
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/processor.h>
+#include <asm/vga.h>
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sn/arch.h>
 #include <asm/sn/addrs.h>
 #include <asm/sn/pda.h>
@@ -198,7 +204,11 @@ void __init early_sn_setup(void)
 }
 
 extern int platform_intr_list[];
+<<<<<<< HEAD
 static int __cpuinitdata shub_1_1_found;
+=======
+static int shub_1_1_found;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * sn_check_for_wars
@@ -206,7 +216,11 @@ static int __cpuinitdata shub_1_1_found;
  * Set flag for enabling shub specific wars
  */
 
+<<<<<<< HEAD
 static inline int __cpuinit is_shub_1_1(int nasid)
+=======
+static inline int is_shub_1_1(int nasid)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long id;
 	int rev;
@@ -218,7 +232,11 @@ static inline int __cpuinit is_shub_1_1(int nasid)
 	return rev <= 2;
 }
 
+<<<<<<< HEAD
 static void __cpuinit sn_check_for_wars(void)
+=======
+static void sn_check_for_wars(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cnode;
 
@@ -564,7 +582,11 @@ static void __init sn_init_pdas(char **cmdline_p)
  * Also sets up a few fields in the nodepda.  Also known as
  * platform_cpu_init() by the ia64 machvec code.
  */
+<<<<<<< HEAD
 void __cpuinit sn_cpu_init(void)
+=======
+void sn_cpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpuid;
 	int cpuphyid;

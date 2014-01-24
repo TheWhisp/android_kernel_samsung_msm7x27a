@@ -24,6 +24,7 @@
 #include <linux/platform_device.h>
 #include <linux/input.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/intel_scu_ipc.h>
 
@@ -33,6 +34,8 @@
 #define MSIC_PB_LEVEL	(1 << 3) /* 1 - release, 0 - press */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/mfd/intel_msic.h>
 
 #define DRIVER_NAME "msic_power_btn"
@@ -45,7 +48,10 @@
  */
 #define MSIC_PWRBTNM    (1 << 0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t mfld_pb_isr(int irq, void *dev_id)
 {
 	struct input_dev *input = dev_id;
@@ -53,12 +59,18 @@ static irqreturn_t mfld_pb_isr(int irq, void *dev_id)
 	u8 pbstat;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = intel_scu_ipc_ioread8(MSIC_PB_STATUS, &pbstat);
 =======
 	ret = intel_msic_reg_read(INTEL_MSIC_PBSTATUS, &pbstat);
 	dev_dbg(input->dev.parent, "PB_INT status= %d\n", pbstat);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_msic_reg_read(INTEL_MSIC_PBSTATUS, &pbstat);
+	dev_dbg(input->dev.parent, "PB_INT status= %d\n", pbstat);
+
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(input->dev.parent, "Read error %d while reading"
 			       " MSIC_PB_STATUS\n", ret);
@@ -71,7 +83,11 @@ static irqreturn_t mfld_pb_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mfld_pb_probe(struct platform_device *pdev)
+=======
+static int mfld_pb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input;
 	int irq = platform_get_irq(pdev, 0);
@@ -81,10 +97,15 @@ static int __devinit mfld_pb_probe(struct platform_device *pdev)
 		return -EINVAL;
 
 	input = input_allocate_device();
+<<<<<<< HEAD
 	if (!input) {
 		dev_err(&pdev->dev, "Input device allocation error\n");
 		return -ENOMEM;
 	}
+=======
+	if (!input)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	input->name = pdev->name;
 	input->phys = "power-button/input0";
@@ -94,10 +115,14 @@ static int __devinit mfld_pb_probe(struct platform_device *pdev)
 	input_set_capability(input, EV_KEY, KEY_POWER);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = request_threaded_irq(irq, NULL, mfld_pb_isr, 0,
 =======
 	error = request_threaded_irq(irq, NULL, mfld_pb_isr, IRQF_NO_SUSPEND,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = request_threaded_irq(irq, NULL, mfld_pb_isr, IRQF_NO_SUSPEND,
+>>>>>>> refs/remotes/origin/master
 			DRIVER_NAME, input);
 	if (error) {
 		dev_err(&pdev->dev, "Unable to request irq %d for mfld power"
@@ -114,7 +139,10 @@ static int __devinit mfld_pb_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, input);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * SCU firmware might send power button interrupts to IA core before
@@ -133,7 +161,10 @@ static int __devinit mfld_pb_probe(struct platform_device *pdev)
 		goto err_free_irq;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_free_irq:
@@ -143,14 +174,21 @@ err_free_input:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit mfld_pb_remove(struct platform_device *pdev)
+=======
+static int mfld_pb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input = platform_get_drvdata(pdev);
 	int irq = platform_get_irq(pdev, 0);
 
 	free_irq(irq, input);
 	input_unregister_device(input);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -161,6 +199,7 @@ static struct platform_driver mfld_pb_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe	= mfld_pb_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(mfld_pb_remove),
 };
 
@@ -179,6 +218,12 @@ module_exit(mfld_pb_exit);
 =======
 module_platform_driver(mfld_pb_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= mfld_pb_remove,
+};
+
+module_platform_driver(mfld_pb_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Hong Liu <hong.liu@intel.com>");
 MODULE_DESCRIPTION("Intel Medfield Power Button Driver");

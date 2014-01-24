@@ -22,14 +22,56 @@
  *
  * Authors:
  *     Alex Deucher <alexander.deucher@amd.com>
+<<<<<<< HEAD
  */
 #include "drmP.h"
 #include "drm.h"
 #include "radeon_drm.h"
+=======
+ *
+ * ------------------------ This file is DEPRECATED! -------------------------
+ */
+#include <drm/drmP.h>
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_drv.h"
 
 #include "r600_blit_shaders.h"
 
+<<<<<<< HEAD
+=======
+/* 23 bits of float fractional data */
+#define I2F_FRAC_BITS  23
+#define I2F_MASK ((1 << I2F_FRAC_BITS) - 1)
+
+/*
+ * Converts unsigned integer into 32-bit IEEE floating point representation.
+ * Will be exact from 0 to 2^24.  Above that, we round towards zero
+ * as the fractional bits will not fit in a float.  (It would be better to
+ * round towards even as the fpu does, but that is slower.)
+ */
+static __pure uint32_t int2float(uint32_t x)
+{
+	uint32_t msb, exponent, fraction;
+
+	/* Zero is special */
+	if (!x) return 0;
+
+	/* Get location of the most significant bit */
+	msb = __fls(x);
+
+	/*
+	 * Use a rotate instead of a shift because that works both leftwards
+	 * and rightwards due to the mod(32) behaviour.  This means we don't
+	 * need to check to see if we are above 2^24 or not.
+	 */
+	fraction = ror32(x, (msb - I2F_FRAC_BITS) & 0x1f) & I2F_MASK;
+	exponent = (127 + msb) << I2F_FRAC_BITS;
+
+	return fraction + exponent;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define DI_PT_RECTLIST        0x11
 #define DI_INDEX_SIZE_16_BIT  0x0
 #define DI_SRC_SEL_AUTO_INDEX 0x2
@@ -42,10 +84,14 @@
 #define COLOR_8_8_8_8         0x1a
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 set_render_target(drm_radeon_private_t *dev_priv, int format, int w, int h, u64 gpu_addr)
 {
 	u32 cb_color_info;
@@ -104,10 +150,14 @@ set_render_target(drm_radeon_private_t *dev_priv, int format, int w, int h, u64 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 cp_set_surface_sync(drm_radeon_private_t *dev_priv,
 		    u32 sync_type, u32 size, u64 mc_addr)
 {
@@ -130,10 +180,14 @@ cp_set_surface_sync(drm_radeon_private_t *dev_priv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 set_shaders(struct drm_device *dev)
 {
 	drm_radeon_private_t *dev_priv = dev->dev_private;
@@ -197,10 +251,14 @@ set_shaders(struct drm_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 set_vtx_resource(drm_radeon_private_t *dev_priv, u64 gpu_addr)
 {
 	uint32_t sq_vtx_constant_word2;
@@ -237,10 +295,14 @@ set_vtx_resource(drm_radeon_private_t *dev_priv, u64 gpu_addr)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 set_tex_resource(drm_radeon_private_t *dev_priv,
 		 int format, int w, int h, int pitch, u64 gpu_addr)
 {
@@ -279,10 +341,14 @@ set_tex_resource(drm_radeon_private_t *dev_priv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 set_scissors(drm_radeon_private_t *dev_priv, int x1, int y1, int x2, int y2)
 {
 	RING_LOCALS;
@@ -307,10 +373,14 @@ set_scissors(drm_radeon_private_t *dev_priv, int x1, int y1, int x2, int y2)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 draw_auto(drm_radeon_private_t *dev_priv)
 {
 	RING_LOCALS;
@@ -340,10 +410,14 @@ draw_auto(drm_radeon_private_t *dev_priv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void
 =======
 static void
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 set_default_state(drm_radeon_private_t *dev_priv)
 {
 	int i;
@@ -522,6 +596,7 @@ set_default_state(drm_radeon_private_t *dev_priv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline uint32_t i2f(uint32_t input)
 =======
 static uint32_t i2f(uint32_t input)
@@ -556,6 +631,9 @@ static inline int r600_nomm_get_vb(struct drm_device *dev)
 =======
 static int r600_nomm_get_vb(struct drm_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int r600_nomm_get_vb(struct drm_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	drm_radeon_private_t *dev_priv = dev->dev_private;
 	dev_priv->blit_vb = radeon_freelist_get(dev);
@@ -567,10 +645,14 @@ static int r600_nomm_get_vb(struct drm_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void r600_nomm_put_vb(struct drm_device *dev)
 =======
 static void r600_nomm_put_vb(struct drm_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void r600_nomm_put_vb(struct drm_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	drm_radeon_private_t *dev_priv = dev->dev_private;
 
@@ -579,10 +661,14 @@ static void r600_nomm_put_vb(struct drm_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void *r600_nomm_get_vb_ptr(struct drm_device *dev)
 =======
 static void *r600_nomm_get_vb_ptr(struct drm_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void *r600_nomm_get_vb_ptr(struct drm_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	drm_radeon_private_t *dev_priv = dev->dev_private;
 	return (((char *)dev->agp_buffer_map->handle +
@@ -680,6 +766,7 @@ r600_blit_copy(struct drm_device *dev,
 				vb = r600_nomm_get_vb_ptr(dev);
 			}
 
+<<<<<<< HEAD
 			vb[0] = i2f(dst_x);
 			vb[1] = 0;
 			vb[2] = i2f(src_x);
@@ -694,6 +781,22 @@ r600_blit_copy(struct drm_device *dev,
 			vb[9] = i2f(h);
 			vb[10] = i2f(src_x + cur_size);
 			vb[11] = i2f(h);
+=======
+			vb[0] = int2float(dst_x);
+			vb[1] = 0;
+			vb[2] = int2float(src_x);
+			vb[3] = 0;
+
+			vb[4] = int2float(dst_x);
+			vb[5] = int2float(h);
+			vb[6] = int2float(src_x);
+			vb[7] = int2float(h);
+
+			vb[8] = int2float(dst_x + cur_size);
+			vb[9] = int2float(h);
+			vb[10] = int2float(src_x + cur_size);
+			vb[11] = int2float(h);
+>>>>>>> refs/remotes/origin/master
 
 			/* src */
 			set_tex_resource(dev_priv, FMT_8,
@@ -769,6 +872,7 @@ r600_blit_copy(struct drm_device *dev,
 				vb = r600_nomm_get_vb_ptr(dev);
 			}
 
+<<<<<<< HEAD
 			vb[0] = i2f(dst_x / 4);
 			vb[1] = 0;
 			vb[2] = i2f(src_x / 4);
@@ -783,6 +887,22 @@ r600_blit_copy(struct drm_device *dev,
 			vb[9] = i2f(h);
 			vb[10] = i2f((src_x + cur_size) / 4);
 			vb[11] = i2f(h);
+=======
+			vb[0] = int2float(dst_x / 4);
+			vb[1] = 0;
+			vb[2] = int2float(src_x / 4);
+			vb[3] = 0;
+
+			vb[4] = int2float(dst_x / 4);
+			vb[5] = int2float(h);
+			vb[6] = int2float(src_x / 4);
+			vb[7] = int2float(h);
+
+			vb[8] = int2float((dst_x + cur_size) / 4);
+			vb[9] = int2float(h);
+			vb[10] = int2float((src_x + cur_size) / 4);
+			vb[11] = int2float(h);
+>>>>>>> refs/remotes/origin/master
 
 			/* src */
 			set_tex_resource(dev_priv, FMT_8_8_8_8,
@@ -852,6 +972,7 @@ r600_blit_swap(struct drm_device *dev,
 	dx2 = dx + w;
 	dy2 = dy + h;
 
+<<<<<<< HEAD
 	vb[0] = i2f(dx);
 	vb[1] = i2f(dy);
 	vb[2] = i2f(sx);
@@ -866,6 +987,22 @@ r600_blit_swap(struct drm_device *dev,
 	vb[9] = i2f(dy2);
 	vb[10] = i2f(sx2);
 	vb[11] = i2f(sy2);
+=======
+	vb[0] = int2float(dx);
+	vb[1] = int2float(dy);
+	vb[2] = int2float(sx);
+	vb[3] = int2float(sy);
+
+	vb[4] = int2float(dx);
+	vb[5] = int2float(dy2);
+	vb[6] = int2float(sx);
+	vb[7] = int2float(sy2);
+
+	vb[8] = int2float(dx2);
+	vb[9] = int2float(dy2);
+	vb[10] = int2float(sx2);
+	vb[11] = int2float(sy2);
+>>>>>>> refs/remotes/origin/master
 
 	switch(cpp) {
 	case 4:

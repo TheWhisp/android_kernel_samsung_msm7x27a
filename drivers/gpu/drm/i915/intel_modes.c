@@ -27,16 +27,22 @@
 #include <linux/i2c.h>
 #include <linux/fb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "drmP.h"
 =======
 #include <drm/drm_edid.h>
 #include "drmP.h"
 #include "drm_edid.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <drm/drm_edid.h>
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "intel_drv.h"
 #include "i915_drv.h"
 
 /**
+<<<<<<< HEAD
  * intel_ddc_probe
  *
  */
@@ -74,6 +80,8 @@ bool intel_ddc_probe(struct intel_encoder *intel_encoder, int ddc_bus)
 /**
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * intel_connector_update_modes - update connector from edid
  * @connector: DRM connector device to use
  * @edid: previously read EDID information
@@ -86,14 +94,20 @@ int intel_connector_update_modes(struct drm_connector *connector,
 	drm_mode_connector_update_edid_property(connector, edid);
 	ret = drm_add_edid_modes(connector, edid);
 	drm_edid_to_eld(connector, edid);
+<<<<<<< HEAD
 	connector->display_info.raw_edid = NULL;
 	kfree(edid);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * intel_ddc_get_modes - get modelist from monitor
  * @connector: DRM connector device to use
  * @adapter: i2c adapter
@@ -104,6 +118,7 @@ int intel_ddc_get_modes(struct drm_connector *connector,
 			struct i2c_adapter *adapter)
 {
 	struct edid *edid;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret = 0;
 
@@ -123,12 +138,22 @@ static const char *force_audio_names[] = {
 	"auto",
 	"on",
 =======
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	edid = drm_get_edid(connector, adapter);
 	if (!edid)
 		return 0;
 
+<<<<<<< HEAD
 	return intel_connector_update_modes(connector, edid);
+=======
+	ret = intel_connector_update_modes(connector, edid);
+	kfree(edid);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct drm_prop_enum_list force_audio_names[] = {
@@ -136,7 +161,10 @@ static const struct drm_prop_enum_list force_audio_names[] = {
 	{ HDMI_AUDIO_OFF, "off" },
 	{ HDMI_AUDIO_AUTO, "auto" },
 	{ HDMI_AUDIO_ON, "on" },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 void
@@ -146,6 +174,7 @@ intel_attach_force_audio_property(struct drm_connector *connector)
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	struct drm_property *prop;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	prop = dev_priv->force_audio_property;
@@ -153,17 +182,23 @@ intel_attach_force_audio_property(struct drm_connector *connector)
 		prop = drm_property_create(dev, DRM_MODE_PROP_ENUM,
 					   "audio",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	prop = dev_priv->force_audio_property;
 	if (prop == NULL) {
 		prop = drm_property_create_enum(dev, 0,
 					   "audio",
 					   force_audio_names,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					   ARRAY_SIZE(force_audio_names));
 		if (prop == NULL)
 			return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (i = 0; i < ARRAY_SIZE(force_audio_names); i++)
 			drm_property_add_enum(prop, i, i-1, force_audio_names[i]);
@@ -184,6 +219,17 @@ static const struct drm_prop_enum_list broadcast_rgb_names[] = {
 	{ 0, "Full" },
 	{ 1, "Limited 16:235" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_priv->force_audio_property = prop;
+	}
+	drm_object_attach_property(&connector->base, prop, 0);
+}
+
+static const struct drm_prop_enum_list broadcast_rgb_names[] = {
+	{ INTEL_BROADCAST_RGB_AUTO, "Automatic" },
+	{ INTEL_BROADCAST_RGB_FULL, "Full" },
+	{ INTEL_BROADCAST_RGB_LIMITED, "Limited 16:235" },
+>>>>>>> refs/remotes/origin/master
 };
 
 void
@@ -193,6 +239,7 @@ intel_attach_broadcast_rgb_property(struct drm_connector *connector)
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	struct drm_property *prop;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	prop = dev_priv->broadcast_rgb_property;
@@ -200,17 +247,23 @@ intel_attach_broadcast_rgb_property(struct drm_connector *connector)
 		prop = drm_property_create(dev, DRM_MODE_PROP_ENUM,
 					   "Broadcast RGB",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	prop = dev_priv->broadcast_rgb_property;
 	if (prop == NULL) {
 		prop = drm_property_create_enum(dev, DRM_MODE_PROP_ENUM,
 					   "Broadcast RGB",
 					   broadcast_rgb_names,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					   ARRAY_SIZE(broadcast_rgb_names));
 		if (prop == NULL)
 			return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (i = 0; i < ARRAY_SIZE(broadcast_rgb_names); i++)
 			drm_property_add_enum(prop, i, i, broadcast_rgb_names[i]);
@@ -221,4 +274,10 @@ intel_attach_broadcast_rgb_property(struct drm_connector *connector)
 	}
 
 	drm_connector_attach_property(connector, prop, 0);
+=======
+		dev_priv->broadcast_rgb_property = prop;
+	}
+
+	drm_object_attach_property(&connector->base, prop, 0);
+>>>>>>> refs/remotes/origin/master
 }

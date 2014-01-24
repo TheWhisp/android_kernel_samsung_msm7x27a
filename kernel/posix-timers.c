@@ -40,12 +40,17 @@
 #include <linux/list.h>
 #include <linux/init.h>
 #include <linux/compiler.h>
+<<<<<<< HEAD
 #include <linux/idr.h>
+=======
+#include <linux/hash.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/posix-clock.h>
 #include <linux/posix-timers.h>
 #include <linux/syscalls.h>
 #include <linux/wait.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/module.h>
 =======
@@ -68,14 +73,32 @@
  * (but it may be ok to do this under a lock...).
  * idr_find is just a memory look up and is quite fast.  A -1 return
  * indicates that the requested id does not exist.
+=======
+#include <linux/export.h>
+#include <linux/hashtable.h>
+
+/*
+ * Management arrays for POSIX timers. Timers are now kept in static hash table
+ * with 512 entries.
+ * Timer ids are allocated by local routine, which selects proper hash head by
+ * key, constructed from current->signal address and per signal struct counter.
+ * This keeps timer ids unique per process, but now they can intersect between
+ * processes.
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
  * Lets keep our timers in a slab cache :-)
  */
 static struct kmem_cache *posix_timers_cache;
+<<<<<<< HEAD
 static struct idr posix_timers_id;
 static DEFINE_SPINLOCK(idr_lock);
+=======
+
+static DEFINE_HASHTABLE(posix_timers_hashtable, 9);
+static DEFINE_SPINLOCK(hash_lock);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * we assume that the new SIGEV_THREAD_ID shares no bits with the other
@@ -156,6 +179,59 @@ static struct k_itimer *__lock_timer(timer_t timer_id, unsigned long *flags);
 	__timr;								   \
 })
 
+<<<<<<< HEAD
+=======
+static int hash(struct signal_struct *sig, unsigned int nr)
+{
+	return hash_32(hash32_ptr(sig) ^ nr, HASH_BITS(posix_timers_hashtable));
+}
+
+static struct k_itimer *__posix_timers_find(struct hlist_head *head,
+					    struct signal_struct *sig,
+					    timer_t id)
+{
+	struct k_itimer *timer;
+
+	hlist_for_each_entry_rcu(timer, head, t_hash) {
+		if ((timer->it_signal == sig) && (timer->it_id == id))
+			return timer;
+	}
+	return NULL;
+}
+
+static struct k_itimer *posix_timer_by_id(timer_t id)
+{
+	struct signal_struct *sig = current->signal;
+	struct hlist_head *head = &posix_timers_hashtable[hash(sig, id)];
+
+	return __posix_timers_find(head, sig, id);
+}
+
+static int posix_timer_add(struct k_itimer *timer)
+{
+	struct signal_struct *sig = current->signal;
+	int first_free_id = sig->posix_timer_id;
+	struct hlist_head *head;
+	int ret = -ENOENT;
+
+	do {
+		spin_lock(&hash_lock);
+		head = &posix_timers_hashtable[hash(sig, sig->posix_timer_id)];
+		if (!__posix_timers_find(head, sig, sig->posix_timer_id)) {
+			hlist_add_head_rcu(&timer->t_hash, head);
+			ret = sig->posix_timer_id;
+		}
+		if (++sig->posix_timer_id < 0)
+			sig->posix_timer_id = 0;
+		if ((sig->posix_timer_id == first_free_id) && (ret == -ENOENT))
+			/* Loop over all possible ids completed */
+			ret = -EAGAIN;
+		spin_unlock(&hash_lock);
+	} while (ret == -ENOENT);
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void unlock_timer(struct k_itimer *timr, unsigned long flags)
 {
 	spin_unlock_irqrestore(&timr->it_lock, flags);
@@ -225,6 +301,14 @@ static int posix_get_boottime(const clockid_t which_clock, struct timespec *tp)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int posix_get_tai(clockid_t which_clock, struct timespec *tp)
+{
+	timekeeping_clocktai(tp);
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Initialize everything, well, just everything in Posix clocks/timers ;)
@@ -265,6 +349,19 @@ static __init int init_posix_timers(void)
 		.clock_getres	= posix_get_coarse_res,
 		.clock_get	= posix_get_monotonic_coarse,
 	};
+<<<<<<< HEAD
+=======
+	struct k_clock clock_tai = {
+		.clock_getres	= hrtimer_get_res,
+		.clock_get	= posix_get_tai,
+		.nsleep		= common_nsleep,
+		.nsleep_restart	= hrtimer_nanosleep_restart,
+		.timer_create	= common_timer_create,
+		.timer_set	= common_timer_set,
+		.timer_get	= common_timer_get,
+		.timer_del	= common_timer_del,
+	};
+>>>>>>> refs/remotes/origin/master
 	struct k_clock clock_boottime = {
 		.clock_getres	= hrtimer_get_res,
 		.clock_get	= posix_get_boottime,
@@ -282,11 +379,18 @@ static __init int init_posix_timers(void)
 	posix_timers_register_clock(CLOCK_REALTIME_COARSE, &clock_realtime_coarse);
 	posix_timers_register_clock(CLOCK_MONOTONIC_COARSE, &clock_monotonic_coarse);
 	posix_timers_register_clock(CLOCK_BOOTTIME, &clock_boottime);
+<<<<<<< HEAD
+=======
+	posix_timers_register_clock(CLOCK_TAI, &clock_tai);
+>>>>>>> refs/remotes/origin/master
 
 	posix_timers_cache = kmem_cache_create("posix_timers_cache",
 					sizeof (struct k_itimer), 0, SLAB_PANIC,
 					NULL);
+<<<<<<< HEAD
 	idr_init(&posix_timers_id);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -508,9 +612,15 @@ static void release_posix_timer(struct k_itimer *tmr, int it_id_set)
 {
 	if (it_id_set) {
 		unsigned long flags;
+<<<<<<< HEAD
 		spin_lock_irqsave(&idr_lock, flags);
 		idr_remove(&posix_timers_id, tmr->it_id);
 		spin_unlock_irqrestore(&idr_lock, flags);
+=======
+		spin_lock_irqsave(&hash_lock, flags);
+		hlist_del_rcu(&tmr->t_hash);
+		spin_unlock_irqrestore(&hash_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 	put_pid(tmr->it_pid);
 	sigqueue_free(tmr->sigq);
@@ -556,6 +666,7 @@ SYSCALL_DEFINE3(timer_create, const clockid_t, which_clock,
 		return -EAGAIN;
 
 	spin_lock_init(&new_timer->it_lock);
+<<<<<<< HEAD
  retry:
 	if (unlikely(!idr_pre_get(&posix_timers_id, GFP_KERNEL))) {
 		error = -EAGAIN;
@@ -572,6 +683,11 @@ SYSCALL_DEFINE3(timer_create, const clockid_t, which_clock,
 		 * full (proper POSIX return value for this)
 		 */
 		error = -EAGAIN;
+=======
+	new_timer_id = posix_timer_add(new_timer);
+	if (new_timer_id < 0) {
+		error = new_timer_id;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -651,7 +767,11 @@ static struct k_itimer *__lock_timer(timer_t timer_id, unsigned long *flags)
 		return NULL;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	timr = idr_find(&posix_timers_id, (int)timer_id);
+=======
+	timr = posix_timer_by_id(timer_id);
+>>>>>>> refs/remotes/origin/master
 	if (timr) {
 		spin_lock_irqsave(&timr->it_lock, *flags);
 		if (timr->it_signal == current->signal) {
@@ -1008,7 +1128,11 @@ SYSCALL_DEFINE2(clock_adjtime, const clockid_t, which_clock,
 
 	err = kc->clock_adj(which_clock, &ktx);
 
+<<<<<<< HEAD
 	if (!err && copy_to_user(utx, &ktx, sizeof(ktx)))
+=======
+	if (err >= 0 && copy_to_user(utx, &ktx, sizeof(ktx)))
+>>>>>>> refs/remotes/origin/master
 		return -EFAULT;
 
 	return err;

@@ -23,12 +23,43 @@
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 #include <plat/ata.h>
 #include <plat/regs-ata.h>
+=======
+#include <linux/platform_data/ata-samsung_cf.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRV_NAME "pata_samsung_cf"
 #define DRV_VERSION "0.1"
 
+<<<<<<< HEAD
+=======
+#define S3C_CFATA_REG(x)	(x)
+#define S3C_CFATA_MUX		S3C_CFATA_REG(0x0)
+#define S3C_ATA_CTRL		S3C_CFATA_REG(0x0)
+#define S3C_ATA_CMD		S3C_CFATA_REG(0x8)
+#define S3C_ATA_IRQ		S3C_CFATA_REG(0x10)
+#define S3C_ATA_IRQ_MSK		S3C_CFATA_REG(0x14)
+#define S3C_ATA_CFG		S3C_CFATA_REG(0x18)
+
+#define S3C_ATA_PIO_TIME	S3C_CFATA_REG(0x2c)
+#define S3C_ATA_PIO_DTR		S3C_CFATA_REG(0x54)
+#define S3C_ATA_PIO_FED		S3C_CFATA_REG(0x58)
+#define S3C_ATA_PIO_SCR		S3C_CFATA_REG(0x5c)
+#define S3C_ATA_PIO_LLR		S3C_CFATA_REG(0x60)
+#define S3C_ATA_PIO_LMR		S3C_CFATA_REG(0x64)
+#define S3C_ATA_PIO_LHR		S3C_CFATA_REG(0x68)
+#define S3C_ATA_PIO_DVR		S3C_CFATA_REG(0x6c)
+#define S3C_ATA_PIO_CSD		S3C_CFATA_REG(0x70)
+#define S3C_ATA_PIO_DAD		S3C_CFATA_REG(0x74)
+#define S3C_ATA_PIO_RDATA	S3C_CFATA_REG(0x7c)
+
+#define S3C_CFATA_MUX_TRUEIDE	0x01
+#define S3C_ATA_CFG_SWAP	0x40
+#define S3C_ATA_CFG_IORDYEN	0x02
+
+>>>>>>> refs/remotes/origin/master
 enum s3c_cpu_type {
 	TYPE_S3C64XX,
 	TYPE_S5PC100,
@@ -241,8 +272,13 @@ static u8 pata_s3c_check_altstatus(struct ata_port *ap)
 /*
  * pata_s3c_data_xfer - Transfer data by PIO
  */
+<<<<<<< HEAD
 unsigned int pata_s3c_data_xfer(struct ata_device *dev, unsigned char *buf,
 				unsigned int buflen, int rw)
+=======
+static unsigned int pata_s3c_data_xfer(struct ata_device *dev,
+				unsigned char *buf, unsigned int buflen, int rw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_port *ap = dev->link->ap;
 	struct s3c_ide_info *info = ap->host->private_data;
@@ -377,10 +413,14 @@ static int pata_s3c_softreset(struct ata_link *link, unsigned int *classes,
 	/* if link is occupied, -ENODEV too is an error */
 	if (rc && rc != -ENODEV) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR, "SRST failed (errno=%d)\n", rc);
 =======
 		ata_link_err(link, "SRST failed (errno=%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_link_err(link, "SRST failed (errno=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -422,7 +462,11 @@ static struct ata_port_operations pata_s5p_port_ops = {
 	.set_piomode		= pata_s3c_set_piomode,
 };
 
+<<<<<<< HEAD
 static void pata_s3c_enable(void *s3c_ide_regbase, bool state)
+=======
+static void pata_s3c_enable(void __iomem *s3c_ide_regbase, bool state)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 temp = readl(s3c_ide_regbase + S3C_ATA_CTRL);
 	temp = state ? (temp | 1) : (temp & ~1);
@@ -479,7 +523,11 @@ static void pata_s3c_hwinit(struct s3c_ide_info *info,
 
 static int __init pata_s3c_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct s3c_ide_platdata *pdata = pdev->dev.platform_data;
+=======
+	struct s3c_ide_platdata *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct device *dev = &pdev->dev;
 	struct s3c_ide_info *info;
 	struct resource *res;
@@ -499,6 +547,7 @@ static int __init pata_s3c_probe(struct platform_device *pdev)
 	info->irq = platform_get_irq(pdev, 0);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	if (res == NULL) {
 		dev_err(dev, "failed to get mem resource\n");
 		return -EINVAL;
@@ -517,6 +566,14 @@ static int __init pata_s3c_probe(struct platform_device *pdev)
 	}
 
 	info->clk = clk_get(&pdev->dev, "cfcon");
+=======
+
+	info->ide_addr = devm_ioremap_resource(dev, res);
+	if (IS_ERR(info->ide_addr))
+		return PTR_ERR(info->ide_addr);
+
+	info->clk = devm_clk_get(&pdev->dev, "cfcon");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(info->clk)) {
 		dev_err(dev, "failed to get access to cf controller clock\n");
 		ret = PTR_ERR(info->clk);
@@ -593,7 +650,10 @@ static int __init pata_s3c_probe(struct platform_device *pdev)
 
 stop_clk:
 	clk_disable(info->clk);
+<<<<<<< HEAD
 	clk_put(info->clk);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -605,7 +665,10 @@ static int __exit pata_s3c_remove(struct platform_device *pdev)
 	ata_host_detach(host);
 
 	clk_disable(info->clk);
+<<<<<<< HEAD
 	clk_put(info->clk);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -623,7 +686,11 @@ static int pata_s3c_resume(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct ata_host *host = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct s3c_ide_platdata *pdata = pdev->dev.platform_data;
+=======
+	struct s3c_ide_platdata *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct s3c_ide_info *info = host->private_data;
 
 	pata_s3c_hwinit(info, pdata);
@@ -667,6 +734,7 @@ static struct platform_driver pata_s3c_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init pata_s3c_init(void)
 {
 	return platform_driver_probe(&pata_s3c_driver, pata_s3c_probe);
@@ -679,6 +747,9 @@ static void __exit pata_s3c_exit(void)
 
 module_init(pata_s3c_init);
 module_exit(pata_s3c_exit);
+=======
+module_platform_driver_probe(pata_s3c_driver, pata_s3c_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Abhilash Kesavan, <a.kesavan@samsung.com>");
 MODULE_DESCRIPTION("low-level driver for Samsung PATA controller");

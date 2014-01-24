@@ -19,6 +19,7 @@
 
 #define SI_ENUM_BASE		0x18000000	/* Enumeration space base */
 
+<<<<<<< HEAD
 /* core codes */
 #define	NODEV_CORE_ID		0x700	/* Invalid coreid */
 #define	CC_CORE_ID		0x800	/* chipcommon core */
@@ -81,6 +82,8 @@
 					 * maps all unused address ranges
 					 */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Common core control flags */
 #define	SICF_BIST_EN		0x8000
 #define	SICF_PME_EN		0x4000

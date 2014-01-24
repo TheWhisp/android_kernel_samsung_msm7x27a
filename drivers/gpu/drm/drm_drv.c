@@ -49,17 +49,24 @@
 #include <linux/debugfs.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "drmP.h"
 #include "drm_core.h"
+=======
+#include <linux/export.h>
+#include <drm/drmP.h>
+#include <drm/drm_core.h>
+>>>>>>> refs/remotes/origin/master
 
 
 static int drm_version(struct drm_device *dev, void *data,
 		       struct drm_file *file_priv);
 
 #define DRM_IOCTL_DEF(ioctl, _func, _flags) \
+<<<<<<< HEAD
 	[DRM_IOCTL_NR(ioctl)] = {.cmd = ioctl, .func = _func, .flags = _flags, .cmd_drv = 0}
 
 /** Ioctl table */
@@ -75,14 +82,26 @@ static struct drm_ioctl_desc drm_ioctls[] = {
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_CAP, drm_getcap, 0),
 =======
 	DRM_IOCTL_DEF(DRM_IOCTL_VERSION, drm_version, DRM_UNLOCKED),
+=======
+	[DRM_IOCTL_NR(ioctl)] = {.cmd = ioctl, .func = _func, .flags = _flags, .cmd_drv = 0, .name = #ioctl}
+
+/** Ioctl table */
+static const struct drm_ioctl_desc drm_ioctls[] = {
+	DRM_IOCTL_DEF(DRM_IOCTL_VERSION, drm_version, DRM_UNLOCKED|DRM_RENDER_ALLOW),
+>>>>>>> refs/remotes/origin/master
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_UNIQUE, drm_getunique, 0),
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_MAGIC, drm_getmagic, 0),
 	DRM_IOCTL_DEF(DRM_IOCTL_IRQ_BUSID, drm_irq_by_busid, DRM_MASTER|DRM_ROOT_ONLY),
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_MAP, drm_getmap, DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_CLIENT, drm_getclient, DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_STATS, drm_getstats, DRM_UNLOCKED),
+<<<<<<< HEAD
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_CAP, drm_getcap, DRM_UNLOCKED),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DRM_IOCTL_DEF(DRM_IOCTL_GET_CAP, drm_getcap, DRM_UNLOCKED|DRM_RENDER_ALLOW),
+	DRM_IOCTL_DEF(DRM_IOCTL_SET_CLIENT_CAP, drm_setclientcap, 0),
+>>>>>>> refs/remotes/origin/master
 	DRM_IOCTL_DEF(DRM_IOCTL_SET_VERSION, drm_setversion, DRM_MASTER),
 
 	DRM_IOCTL_DEF(DRM_IOCTL_SET_UNIQUE, drm_setunique, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
@@ -101,7 +120,11 @@ static struct drm_ioctl_desc drm_ioctls[] = {
 
 	DRM_IOCTL_DEF(DRM_IOCTL_ADD_CTX, drm_addctx, DRM_AUTH|DRM_ROOT_ONLY),
 	DRM_IOCTL_DEF(DRM_IOCTL_RM_CTX, drm_rmctx, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
+<<<<<<< HEAD
 	DRM_IOCTL_DEF(DRM_IOCTL_MOD_CTX, drm_modctx, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
+=======
+	DRM_IOCTL_DEF(DRM_IOCTL_MOD_CTX, drm_noop, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
+>>>>>>> refs/remotes/origin/master
 	DRM_IOCTL_DEF(DRM_IOCTL_GET_CTX, drm_getctx, DRM_AUTH),
 	DRM_IOCTL_DEF(DRM_IOCTL_SWITCH_CTX, drm_switchctx, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 	DRM_IOCTL_DEF(DRM_IOCTL_NEW_CTX, drm_newctx, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
@@ -120,8 +143,12 @@ static struct drm_ioctl_desc drm_ioctls[] = {
 	DRM_IOCTL_DEF(DRM_IOCTL_INFO_BUFS, drm_infobufs, DRM_AUTH),
 	DRM_IOCTL_DEF(DRM_IOCTL_MAP_BUFS, drm_mapbufs, DRM_AUTH),
 	DRM_IOCTL_DEF(DRM_IOCTL_FREE_BUFS, drm_freebufs, DRM_AUTH),
+<<<<<<< HEAD
 	/* The DRM_IOCTL_DMA ioctl should be defined by the driver. */
 	DRM_IOCTL_DEF(DRM_IOCTL_DMA, NULL, DRM_AUTH),
+=======
+	DRM_IOCTL_DEF(DRM_IOCTL_DMA, drm_dma_ioctl, DRM_AUTH),
+>>>>>>> refs/remotes/origin/master
 
 	DRM_IOCTL_DEF(DRM_IOCTL_CONTROL, drm_control, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 
@@ -136,6 +163,7 @@ static struct drm_ioctl_desc drm_ioctls[] = {
 	DRM_IOCTL_DEF(DRM_IOCTL_AGP_UNBIND, drm_agp_unbind_ioctl, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 #endif
 
+<<<<<<< HEAD
 	DRM_IOCTL_DEF(DRM_IOCTL_SG_ALLOC, drm_sg_alloc_ioctl, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 	DRM_IOCTL_DEF(DRM_IOCTL_SG_FREE, drm_sg_free, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 
@@ -144,11 +172,18 @@ static struct drm_ioctl_desc drm_ioctls[] = {
 =======
 	DRM_IOCTL_DEF(DRM_IOCTL_WAIT_VBLANK, drm_wait_vblank, DRM_UNLOCKED),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	DRM_IOCTL_DEF(DRM_IOCTL_SG_ALLOC, drm_sg_alloc, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
+	DRM_IOCTL_DEF(DRM_IOCTL_SG_FREE, drm_sg_free, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
+
+	DRM_IOCTL_DEF(DRM_IOCTL_WAIT_VBLANK, drm_wait_vblank, DRM_UNLOCKED),
+>>>>>>> refs/remotes/origin/master
 
 	DRM_IOCTL_DEF(DRM_IOCTL_MODESET_CTL, drm_modeset_ctl, 0),
 
 	DRM_IOCTL_DEF(DRM_IOCTL_UPDATE_DRAW, drm_noop, DRM_AUTH|DRM_MASTER|DRM_ROOT_ONLY),
 
+<<<<<<< HEAD
 	DRM_IOCTL_DEF(DRM_IOCTL_GEM_CLOSE, drm_gem_close_ioctl, DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_GEM_FLINK, drm_gem_flink_ioctl, DRM_AUTH|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_GEM_OPEN, drm_gem_open_ioctl, DRM_AUTH|DRM_UNLOCKED),
@@ -172,12 +207,28 @@ static struct drm_ioctl_desc drm_ioctls[] = {
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETCRTC, drm_mode_getcrtc, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_SETCRTC, drm_mode_setcrtc, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETPLANE, drm_mode_getplane, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+=======
+	DRM_IOCTL_DEF(DRM_IOCTL_GEM_CLOSE, drm_gem_close_ioctl, DRM_UNLOCKED|DRM_RENDER_ALLOW),
+	DRM_IOCTL_DEF(DRM_IOCTL_GEM_FLINK, drm_gem_flink_ioctl, DRM_AUTH|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_GEM_OPEN, drm_gem_open_ioctl, DRM_AUTH|DRM_UNLOCKED),
+
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETRESOURCES, drm_mode_getresources, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+
+	DRM_IOCTL_DEF(DRM_IOCTL_PRIME_HANDLE_TO_FD, drm_prime_handle_to_fd_ioctl, DRM_AUTH|DRM_UNLOCKED|DRM_RENDER_ALLOW),
+	DRM_IOCTL_DEF(DRM_IOCTL_PRIME_FD_TO_HANDLE, drm_prime_fd_to_handle_ioctl, DRM_AUTH|DRM_UNLOCKED|DRM_RENDER_ALLOW),
+
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETPLANERESOURCES, drm_mode_getplane_res, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETCRTC, drm_mode_getcrtc, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_SETCRTC, drm_mode_setcrtc, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETPLANE, drm_mode_getplane, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+>>>>>>> refs/remotes/origin/master
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_SETPLANE, drm_mode_setplane, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CURSOR, drm_mode_cursor_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETGAMMA, drm_mode_gamma_get_ioctl, DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_SETGAMMA, drm_mode_gamma_set_ioctl, DRM_MASTER|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETENCODER, drm_mode_getencoder, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETCONNECTOR, drm_mode_getconnector, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_ATTACHMODE, drm_mode_attachmode_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_DETACHMODE, drm_mode_detachmode_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
@@ -198,10 +249,30 @@ static struct drm_ioctl_desc drm_ioctls[] = {
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CREATE_DUMB, drm_mode_create_dumb_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_MAP_DUMB, drm_mode_mmap_dumb_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
 	DRM_IOCTL_DEF(DRM_IOCTL_MODE_DESTROY_DUMB, drm_mode_destroy_dumb_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED)
+=======
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_ATTACHMODE, drm_noop, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_DETACHMODE, drm_noop, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETPROPERTY, drm_mode_getproperty_ioctl, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_SETPROPERTY, drm_mode_connector_property_set_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETPROPBLOB, drm_mode_getblob_ioctl, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_GETFB, drm_mode_getfb, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_ADDFB, drm_mode_addfb, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_ADDFB2, drm_mode_addfb2, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_RMFB, drm_mode_rmfb, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_PAGE_FLIP, drm_mode_page_flip_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_DIRTYFB, drm_mode_dirtyfb_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CREATE_DUMB, drm_mode_create_dumb_ioctl, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_MAP_DUMB, drm_mode_mmap_dumb_ioctl, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_DESTROY_DUMB, drm_mode_destroy_dumb_ioctl, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_OBJ_GETPROPERTIES, drm_mode_obj_get_properties_ioctl, DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_OBJ_SETPROPERTY, drm_mode_obj_set_property_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+	DRM_IOCTL_DEF(DRM_IOCTL_MODE_CURSOR2, drm_mode_cursor2_ioctl, DRM_MASTER|DRM_CONTROL_ALLOW|DRM_UNLOCKED),
+>>>>>>> refs/remotes/origin/master
 };
 
 #define DRM_CORE_IOCTL_COUNT	ARRAY_SIZE( drm_ioctls )
 
+<<<<<<< HEAD
 /**
  * Take down the DRM device.
  *
@@ -281,6 +352,8 @@ int drm_lastclose(struct drm_device * dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /** File operations structure */
 static const struct file_operations drm_stub_fops = {
 	.owner = THIS_MODULE,
@@ -293,6 +366,10 @@ static int __init drm_core_init(void)
 	int ret = -ENOMEM;
 
 	drm_global_init();
+<<<<<<< HEAD
+=======
+	drm_connector_ida_init();
+>>>>>>> refs/remotes/origin/master
 	idr_init(&drm_minors_idr);
 
 	if (register_chrdev(DRM_MAJOR, "drm", &drm_stub_fops))
@@ -305,6 +382,7 @@ static int __init drm_core_init(void)
 		goto err_p2;
 	}
 
+<<<<<<< HEAD
 	drm_proc_root = proc_mkdir("dri", NULL);
 	if (!drm_proc_root) {
 		DRM_ERROR("Cannot create /proc/dri\n");
@@ -312,6 +390,8 @@ static int __init drm_core_init(void)
 		goto err_p3;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	drm_debugfs_root = debugfs_create_dir("dri", NULL);
 	if (!drm_debugfs_root) {
 		DRM_ERROR("Cannot create /sys/kernel/debug/dri\n");
@@ -334,13 +414,20 @@ err_p1:
 
 static void __exit drm_core_exit(void)
 {
+<<<<<<< HEAD
 	remove_proc_entry("dri", NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	debugfs_remove(drm_debugfs_root);
 	drm_sysfs_destroy();
 
 	unregister_chrdev(DRM_MAJOR, "drm");
 
+<<<<<<< HEAD
 	idr_remove_all(&drm_minors_idr);
+=======
+	drm_connector_ida_destroy();
+>>>>>>> refs/remotes/origin/master
 	idr_destroy(&drm_minors_idr);
 }
 
@@ -419,7 +506,11 @@ long drm_ioctl(struct file *filp,
 {
 	struct drm_file *file_priv = filp->private_data;
 	struct drm_device *dev;
+<<<<<<< HEAD
 	struct drm_ioctl_desc *ioctl;
+=======
+	const struct drm_ioctl_desc *ioctl = NULL;
+>>>>>>> refs/remotes/origin/master
 	drm_ioctl_t *func;
 	unsigned int nr = DRM_IOCTL_NR(cmd);
 	int retcode = -EINVAL;
@@ -429,11 +520,15 @@ long drm_ioctl(struct file *filp,
 
 	dev = file_priv->minor->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (drm_device_is_unplugged(dev))
 		return -ENODEV;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	atomic_inc(&dev->ioctl_count);
 	atomic_inc(&dev->counts[_DRM_STAT_IOCTLS]);
@@ -444,6 +539,11 @@ long drm_ioctl(struct file *filp,
 		  (long)old_encode_dev(file_priv->minor->device),
 		  file_priv->authenticated);
 
+=======
+	atomic_inc(&dev->ioctl_count);
+	++file_priv->ioctl_count;
+
+>>>>>>> refs/remotes/origin/master
 	if ((nr >= DRM_CORE_IOCTL_COUNT) &&
 	    ((nr < DRM_COMMAND_BASE) || (nr >= DRM_COMMAND_END)))
 		goto err_i1;
@@ -455,6 +555,7 @@ long drm_ioctl(struct file *filp,
 		usize = asize = _IOC_SIZE(cmd);
 		if (drv_size > asize)
 			asize = drv_size;
+<<<<<<< HEAD
 	}
 	else if ((nr >= DRM_COMMAND_END) || (nr < DRM_COMMAND_BASE)) {
 <<<<<<< HEAD
@@ -462,6 +563,11 @@ long drm_ioctl(struct file *filp,
 		cmd = ioctl->cmd;
 		usize = asize = _IOC_SIZE(cmd);
 =======
+=======
+		cmd = ioctl->cmd_drv;
+	}
+	else if ((nr >= DRM_COMMAND_END) || (nr < DRM_COMMAND_BASE)) {
+>>>>>>> refs/remotes/origin/master
 		u32 drv_size;
 
 		ioctl = &drm_ioctls[nr];
@@ -472,6 +578,7 @@ long drm_ioctl(struct file *filp,
 			asize = drv_size;
 
 		cmd = ioctl->cmd;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	} else
 		goto err_i1;
@@ -481,14 +588,33 @@ long drm_ioctl(struct file *filp,
 	/* is there a local override? */
 	if ((nr == DRM_IOCTL_NR(DRM_IOCTL_DMA)) && dev->driver->dma_ioctl)
 		func = dev->driver->dma_ioctl;
+=======
+	} else
+		goto err_i1;
+
+	DRM_DEBUG("pid=%d, dev=0x%lx, auth=%d, %s\n",
+		  task_pid_nr(current),
+		  (long)old_encode_dev(file_priv->minor->device),
+		  file_priv->authenticated, ioctl->name);
+
+	/* Do not trust userspace, use our own definition */
+	func = ioctl->func;
+>>>>>>> refs/remotes/origin/master
 
 	if (!func) {
 		DRM_DEBUG("no function\n");
 		retcode = -EINVAL;
 	} else if (((ioctl->flags & DRM_ROOT_ONLY) && !capable(CAP_SYS_ADMIN)) ||
+<<<<<<< HEAD
 		   ((ioctl->flags & DRM_AUTH) && !file_priv->authenticated) ||
 		   ((ioctl->flags & DRM_MASTER) && !file_priv->is_master) ||
 		   (!(ioctl->flags & DRM_CONTROL_ALLOW) && (file_priv->minor->type == DRM_MINOR_CONTROL))) {
+=======
+		   ((ioctl->flags & DRM_AUTH) && !drm_is_render_client(file_priv) && !file_priv->authenticated) ||
+		   ((ioctl->flags & DRM_MASTER) && !file_priv->is_master) ||
+		   (!(ioctl->flags & DRM_CONTROL_ALLOW) && (file_priv->minor->type == DRM_MINOR_CONTROL)) ||
+		   (!(ioctl->flags & DRM_RENDER_ALLOW) && drm_is_render_client(file_priv))) {
+>>>>>>> refs/remotes/origin/master
 		retcode = -EACCES;
 	} else {
 		if (cmd & (IOC_IN | IOC_OUT)) {
@@ -502,10 +628,15 @@ long drm_ioctl(struct file *filp,
 				}
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (asize > usize)
 				memset(kdata + usize, 0, asize - usize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (asize > usize)
+				memset(kdata + usize, 0, asize - usize);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (cmd & IOC_IN) {
@@ -533,10 +664,20 @@ long drm_ioctl(struct file *filp,
 	}
 
       err_i1:
+<<<<<<< HEAD
+=======
+	if (!ioctl)
+		DRM_DEBUG("invalid ioctl: pid=%d, dev=0x%lx, auth=%d, cmd=0x%02x, nr=0x%02x\n",
+			  task_pid_nr(current),
+			  (long)old_encode_dev(file_priv->minor->device),
+			  file_priv->authenticated, cmd, nr);
+
+>>>>>>> refs/remotes/origin/master
 	if (kdata != stack_kdata)
 		kfree(kdata);
 	atomic_dec(&dev->ioctl_count);
 	if (retcode)
+<<<<<<< HEAD
 		DRM_DEBUG("ret = %x\n", retcode);
 	return retcode;
 }
@@ -556,3 +697,9 @@ struct drm_local_map *drm_getsarea(struct drm_device *dev)
 	return NULL;
 }
 EXPORT_SYMBOL(drm_getsarea);
+=======
+		DRM_DEBUG("ret = %d\n", retcode);
+	return retcode;
+}
+EXPORT_SYMBOL(drm_ioctl);
+>>>>>>> refs/remotes/origin/master

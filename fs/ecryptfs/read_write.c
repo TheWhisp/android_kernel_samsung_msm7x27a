@@ -40,16 +40,23 @@ int ecryptfs_write_lower(struct inode *ecryptfs_inode, char *data,
 			 loff_t offset, size_t size)
 {
 	struct file *lower_file;
+<<<<<<< HEAD
 	mm_segment_t fs_save;
+=======
+>>>>>>> refs/remotes/origin/master
 	ssize_t rc;
 
 	lower_file = ecryptfs_inode_to_private(ecryptfs_inode)->lower_file;
 	if (!lower_file)
 		return -EIO;
+<<<<<<< HEAD
 	fs_save = get_fs();
 	set_fs(get_ds());
 	rc = vfs_write(lower_file, data, size, &offset);
 	set_fs(fs_save);
+=======
+	rc = kernel_write(lower_file, data, size, offset);
+>>>>>>> refs/remotes/origin/master
 	mark_inode_dirty_sync(ecryptfs_inode);
 	return rc;
 }
@@ -157,10 +164,14 @@ int ecryptfs_write(struct inode *ecryptfs_inode, char *data, loff_t offset,
 			goto out;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ecryptfs_page_virt = kmap_atomic(ecryptfs_page, KM_USER0);
 =======
 		ecryptfs_page_virt = kmap_atomic(ecryptfs_page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ecryptfs_page_virt = kmap_atomic(ecryptfs_page);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * pos: where we're now writing, offset: where the request was
@@ -184,10 +195,14 @@ int ecryptfs_write(struct inode *ecryptfs_inode, char *data, loff_t offset,
 			data_offset += num_bytes;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(ecryptfs_page_virt, KM_USER0);
 =======
 		kunmap_atomic(ecryptfs_page_virt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(ecryptfs_page_virt);
+>>>>>>> refs/remotes/origin/master
 		flush_dcache_page(ecryptfs_page);
 		SetPageUptodate(ecryptfs_page);
 		unlock_page(ecryptfs_page);
@@ -244,6 +259,7 @@ int ecryptfs_read_lower(char *data, loff_t offset, size_t size,
 			struct inode *ecryptfs_inode)
 {
 	struct file *lower_file;
+<<<<<<< HEAD
 	mm_segment_t fs_save;
 	ssize_t rc;
 
@@ -255,6 +271,12 @@ int ecryptfs_read_lower(char *data, loff_t offset, size_t size,
 	rc = vfs_read(lower_file, data, size, &offset);
 	set_fs(fs_save);
 	return rc;
+=======
+	lower_file = ecryptfs_inode_to_private(ecryptfs_inode)->lower_file;
+	if (!lower_file)
+		return -EIO;
+	return kernel_read(lower_file, offset, data, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -290,6 +312,7 @@ int ecryptfs_read_lower_page_segment(struct page *page_for_ecryptfs,
 	flush_dcache_page(page_for_ecryptfs);
 	return rc;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #if 0
@@ -366,3 +389,5 @@ out:
 #endif  /*  0  */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

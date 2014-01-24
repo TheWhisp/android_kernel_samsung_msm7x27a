@@ -214,6 +214,7 @@ void dlm_user_add_ast(struct dlm_lkb *lkb, uint32_t flags, int mode,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (list_empty(&lkb->lkb_astqueue)) {
 		kref_get(&lkb->lkb_ref);
 		list_add_tail(&lkb->lkb_astqueue, &proc->asts);
@@ -222,6 +223,11 @@ void dlm_user_add_ast(struct dlm_lkb *lkb, uint32_t flags, int mode,
 		kref_get(&lkb->lkb_ref);
 		list_add_tail(&lkb->lkb_cb_list, &proc->asts);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (list_empty(&lkb->lkb_cb_list)) {
+		kref_get(&lkb->lkb_ref);
+		list_add_tail(&lkb->lkb_cb_list, &proc->asts);
+>>>>>>> refs/remotes/origin/master
 		wake_up_interruptible(&proc->wait);
 	}
 	spin_unlock(&proc->asts_spin);
@@ -399,6 +405,7 @@ static int device_create_lockspace(struct dlm_lspace_params *params)
 		return -EPERM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = dlm_new_lockspace(params->name, strlen(params->name),
 				  &lockspace, params->flags, DLM_USER_LVB_LEN);
 =======
@@ -406,6 +413,11 @@ static int device_create_lockspace(struct dlm_lspace_params *params)
 				  DLM_USER_LVB_LEN, NULL, NULL, NULL,
 				  &lockspace);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = dlm_new_lockspace(params->name, NULL, params->flags,
+				  DLM_USER_LVB_LEN, NULL, NULL, NULL,
+				  &lockspace);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -504,7 +516,10 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 {
 	struct dlm_user_proc *proc = file->private_data;
 	struct dlm_write_request *kbuf;
+<<<<<<< HEAD
 	sigset_t tmpsig, allsigs;
+=======
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 #ifdef CONFIG_COMPAT
@@ -514,6 +529,16 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 #endif
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * can't compare against COMPAT/dlm_write_request32 because
+	 * we don't yet know if is64bit is zero
+	 */
+	if (count > sizeof(struct dlm_write_request) + DLM_RESNAME_MAXLEN)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	kbuf = kzalloc(count + 1, GFP_NOFS);
 	if (!kbuf)
 		return -ENOMEM;
@@ -561,9 +586,12 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 		goto out_free;
 	}
 
+<<<<<<< HEAD
 	sigfillset(&allsigs);
 	sigprocmask(SIG_BLOCK, &allsigs, &tmpsig);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	error = -EINVAL;
 
 	switch (kbuf->cmd)
@@ -571,7 +599,11 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 	case DLM_USER_LOCK:
 		if (!proc) {
 			log_print("no locking on control device");
+<<<<<<< HEAD
 			goto out_sig;
+=======
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		}
 		error = device_user_lock(proc, &kbuf->i.lock);
 		break;
@@ -579,7 +611,11 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 	case DLM_USER_UNLOCK:
 		if (!proc) {
 			log_print("no locking on control device");
+<<<<<<< HEAD
 			goto out_sig;
+=======
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		}
 		error = device_user_unlock(proc, &kbuf->i.lock);
 		break;
@@ -587,7 +623,11 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 	case DLM_USER_DEADLOCK:
 		if (!proc) {
 			log_print("no locking on control device");
+<<<<<<< HEAD
 			goto out_sig;
+=======
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		}
 		error = device_user_deadlock(proc, &kbuf->i.lock);
 		break;
@@ -595,7 +635,11 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 	case DLM_USER_CREATE_LOCKSPACE:
 		if (proc) {
 			log_print("create/remove only on control device");
+<<<<<<< HEAD
 			goto out_sig;
+=======
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		}
 		error = device_create_lockspace(&kbuf->i.lspace);
 		break;
@@ -603,7 +647,11 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 	case DLM_USER_REMOVE_LOCKSPACE:
 		if (proc) {
 			log_print("create/remove only on control device");
+<<<<<<< HEAD
 			goto out_sig;
+=======
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		}
 		error = device_remove_lockspace(&kbuf->i.lspace);
 		break;
@@ -611,7 +659,11 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 	case DLM_USER_PURGE:
 		if (!proc) {
 			log_print("no locking on control device");
+<<<<<<< HEAD
 			goto out_sig;
+=======
+			goto out_free;
+>>>>>>> refs/remotes/origin/master
 		}
 		error = device_user_purge(proc, &kbuf->i.purge);
 		break;
@@ -621,8 +673,11 @@ static ssize_t device_write(struct file *file, const char __user *buf,
 			  kbuf->cmd);
 	}
 
+<<<<<<< HEAD
  out_sig:
 	sigprocmask(SIG_SETMASK, &tmpsig, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
  out_free:
 	kfree(kbuf);
 	return error;
@@ -663,15 +718,21 @@ static int device_close(struct inode *inode, struct file *file)
 {
 	struct dlm_user_proc *proc = file->private_data;
 	struct dlm_ls *ls;
+<<<<<<< HEAD
 	sigset_t tmpsig, allsigs;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ls = dlm_find_lockspace_local(proc->lockspace);
 	if (!ls)
 		return -ENOENT;
 
+<<<<<<< HEAD
 	sigfillset(&allsigs);
 	sigprocmask(SIG_BLOCK, &allsigs, &tmpsig);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	set_bit(DLM_PROC_FLAGS_CLOSING, &proc->flags);
 
 	dlm_clear_proc_locks(ls, proc);
@@ -689,9 +750,12 @@ static int device_close(struct inode *inode, struct file *file)
 	/* FIXME: AUTOFREE: if this ls is no longer used do
 	   device_remove_lockspace() */
 
+<<<<<<< HEAD
 	sigprocmask(SIG_SETMASK, &tmpsig, NULL);
 	recalc_sigpending();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -845,16 +909,22 @@ static ssize_t device_read(struct file *file, char __user *buf, size_t count,
 
 	/* if we empty lkb_callbacks, we don't want to unlock the spinlock
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   without removing lkb_astqueue; so empty lkb_astqueue is always
 	   consistent with empty lkb_callbacks */
 
 	lkb = list_entry(proc->asts.next, struct dlm_lkb, lkb_astqueue);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	   without removing lkb_cb_list; so empty lkb_cb_list is always
 	   consistent with empty lkb_callbacks */
 
 	lkb = list_entry(proc->asts.next, struct dlm_lkb, lkb_cb_list);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rv = dlm_rem_lkb_callback(lkb->lkb_resource->res_ls, lkb, &cb, &resid);
 	if (rv < 0) {
@@ -862,10 +932,14 @@ static ssize_t device_read(struct file *file, char __user *buf, size_t count,
 		   list when resid was zero */
 		log_print("dlm_rem_lkb_callback empty %x", lkb->lkb_id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_del_init(&lkb->lkb_astqueue);
 =======
 		list_del_init(&lkb->lkb_cb_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del_init(&lkb->lkb_cb_list);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&proc->asts_spin);
 		/* removes ref for proc->asts, may cause lkb to be freed */
 		dlm_put_lkb(lkb);
@@ -873,10 +947,14 @@ static ssize_t device_read(struct file *file, char __user *buf, size_t count,
 	}
 	if (!resid)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_del_init(&lkb->lkb_astqueue);
 =======
 		list_del_init(&lkb->lkb_cb_list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del_init(&lkb->lkb_cb_list);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&proc->asts_spin);
 
 	if (cb.flags & DLM_CB_SKIP) {

@@ -3,9 +3,13 @@
  *
  * Copyright (C) 2009 Nokia Corporation
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (C) 2011 Texas Instruments, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2011 Texas Instruments, Inc.
+>>>>>>> refs/remotes/origin/master
  * Paul Walmsley
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +24,7 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/common.h>
 
 =======
@@ -27,10 +32,19 @@
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "prm44xx.h"
+=======
+#include "iomap.h"
+#include "common.h"
+#include "prcm-common.h"
+#include "prm44xx.h"
+#include "prm54xx.h"
+#include "prm7xx.h"
+>>>>>>> refs/remotes/origin/master
 #include "prminst44xx.h"
 #include "prm-regbits-44xx.h"
 #include "prcm44xx.h"
 #include "prcm_mpu44xx.h"
+<<<<<<< HEAD
 
 static u32 _prm_bases[OMAP4_MAX_PRCM_PARTITIONS] = {
 	[OMAP4430_INVALID_PRCM_PARTITION]	= 0,
@@ -40,6 +54,23 @@ static u32 _prm_bases[OMAP4_MAX_PRCM_PARTITIONS] = {
 	[OMAP4430_SCRM_PARTITION]		= 0,
 	[OMAP4430_PRCM_MPU_PARTITION]		= OMAP4430_PRCM_MPU_BASE,
 };
+=======
+#include "soc.h"
+
+static void __iomem *_prm_bases[OMAP4_MAX_PRCM_PARTITIONS];
+
+/**
+ * omap_prm_base_init - Populates the prm partitions
+ *
+ * Populates the base addresses of the _prm_bases
+ * array used for read/write of prm module registers.
+ */
+void omap_prm_base_init(void)
+{
+	_prm_bases[OMAP4430_PRM_PARTITION] = prm_base;
+	_prm_bases[OMAP4430_PRCM_MPU_PARTITION] = prcm_mpu_base;
+}
+>>>>>>> refs/remotes/origin/master
 
 /* Read a register in a PRM instance */
 u32 omap4_prminst_read_inst_reg(u8 part, s16 inst, u16 idx)
@@ -47,8 +78,12 @@ u32 omap4_prminst_read_inst_reg(u8 part, s16 inst, u16 idx)
 	BUG_ON(part >= OMAP4_MAX_PRCM_PARTITIONS ||
 	       part == OMAP4430_INVALID_PRCM_PARTITION ||
 	       !_prm_bases[part]);
+<<<<<<< HEAD
 	return __raw_readl(OMAP2_L4_IO_ADDRESS(_prm_bases[part] + inst +
 					       idx));
+=======
+	return __raw_readl(_prm_bases[part] + inst + idx);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Write into a register in a PRM instance */
@@ -57,16 +92,24 @@ void omap4_prminst_write_inst_reg(u32 val, u8 part, s16 inst, u16 idx)
 	BUG_ON(part >= OMAP4_MAX_PRCM_PARTITIONS ||
 	       part == OMAP4430_INVALID_PRCM_PARTITION ||
 	       !_prm_bases[part]);
+<<<<<<< HEAD
 	__raw_writel(val, OMAP2_L4_IO_ADDRESS(_prm_bases[part] + inst + idx));
+=======
+	__raw_writel(val, _prm_bases[part] + inst + idx);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Read-modify-write a register in PRM. Caller must lock */
 u32 omap4_prminst_rmw_inst_reg_bits(u32 mask, u32 bits, u8 part, s16 inst,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   s16 idx)
 =======
 				    u16 idx)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    u16 idx)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 v;
 
@@ -78,7 +121,10 @@ u32 omap4_prminst_rmw_inst_reg_bits(u32 mask, u32 bits, u8 part, s16 inst,
 	return v;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Address offset (in bytes) between the reset control and the reset
@@ -174,10 +220,26 @@ int omap4_prminst_deassert_hardreset(u8 shift, u8 part, s16 inst,
 void omap4_prminst_global_warm_sw_reset(void)
 {
 	u32 v;
+<<<<<<< HEAD
 
 	v = omap4_prminst_read_inst_reg(OMAP4430_PRM_PARTITION,
 				    OMAP4430_PRM_DEVICE_INST,
 				    OMAP4_PRM_RSTCTRL_OFFSET);
+=======
+	s16 dev_inst;
+
+	if (cpu_is_omap44xx())
+		dev_inst = OMAP4430_PRM_DEVICE_INST;
+	else if (soc_is_omap54xx())
+		dev_inst = OMAP54XX_PRM_DEVICE_INST;
+	else if (soc_is_dra7xx())
+		dev_inst = DRA7XX_PRM_DEVICE_INST;
+	else
+		return;
+
+	v = omap4_prminst_read_inst_reg(OMAP4430_PRM_PARTITION, dev_inst,
+					OMAP4_PRM_RSTCTRL_OFFSET);
+>>>>>>> refs/remotes/origin/master
 	v |= OMAP4430_RST_GLOBAL_WARM_SW_MASK;
 	omap4_prminst_write_inst_reg(v, OMAP4430_PRM_PARTITION,
 				 OMAP4430_PRM_DEVICE_INST,
@@ -188,4 +250,7 @@ void omap4_prminst_global_warm_sw_reset(void)
 				    OMAP4430_PRM_DEVICE_INST,
 				    OMAP4_PRM_RSTCTRL_OFFSET);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -7,6 +7,7 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * EP93xx Physical Memory Map:
  *
  * The ASDO pin is sampled at system reset to select a synchronous or
@@ -43,6 +44,8 @@
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * EP93xx linux memory map:
  *
  * virt		phys		size
@@ -65,6 +68,7 @@
 #define EP93XX_APB_PHYS(x)		(EP93XX_APB_PHYS_BASE + (x))
 #define EP93XX_APB_IOMEM(x)		IOMEM(EP93XX_APB_VIRT_BASE + (x))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* AHB peripherals */
@@ -120,6 +124,9 @@
 =======
 /* APB UARTs */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* APB UARTs */
+>>>>>>> refs/remotes/origin/master
 #define EP93XX_UART1_PHYS_BASE		EP93XX_APB_PHYS(0x000c0000)
 #define EP93XX_UART1_BASE		EP93XX_APB_IOMEM(0x000c0000)
 
@@ -129,6 +136,7 @@
 #define EP93XX_UART3_PHYS_BASE		EP93XX_APB_PHYS(0x000e0000)
 #define EP93XX_UART3_BASE		EP93XX_APB_IOMEM(0x000e0000)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define EP93XX_KEY_MATRIX_PHYS_BASE	EP93XX_APB_PHYS(0x000f0000)
 #define EP93XX_KEY_MATRIX_BASE		EP93XX_APB_IOMEM(0x000f0000)
@@ -236,4 +244,6 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

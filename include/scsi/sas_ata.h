@@ -33,6 +33,7 @@
 static inline int dev_is_sata(struct domain_device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (dev->rphy->identify.target_port_protocols & SAS_PROTOCOL_SATA);
 }
 
@@ -49,6 +50,10 @@ int sas_ata_eh(struct Scsi_Host *shost, struct list_head *work_q,
 =======
 	return dev->dev_type == SATA_DEV || dev->dev_type == SATA_PM ||
 	       dev->dev_type == SATA_PM_PORT || dev->dev_type == SATA_PENDING;
+=======
+	return dev->dev_type == SAS_SATA_DEV || dev->dev_type == SAS_SATA_PM ||
+	       dev->dev_type == SAS_SATA_PM_PORT || dev->dev_type == SAS_SATA_PENDING;
+>>>>>>> refs/remotes/origin/master
 }
 
 int sas_get_ata_info(struct domain_device *dev, struct ex_phy *phy);
@@ -60,7 +65,13 @@ void sas_ata_eh(struct Scsi_Host *shost, struct list_head *work_q,
 void sas_ata_schedule_reset(struct domain_device *dev);
 void sas_ata_wait_eh(struct domain_device *dev);
 void sas_probe_sata(struct asd_sas_port *port);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sas_suspend_sata(struct asd_sas_port *port);
+void sas_resume_sata(struct asd_sas_port *port);
+void sas_ata_end_eh(struct ata_port *ap);
+>>>>>>> refs/remotes/origin/master
 #else
 
 
@@ -69,11 +80,15 @@ static inline int dev_is_sata(struct domain_device *dev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int sas_ata_init_host_and_port(struct domain_device *found_dev,
 			       struct scsi_target *starget)
 =======
 static inline int sas_ata_init(struct domain_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int sas_ata_init(struct domain_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -85,6 +100,7 @@ static inline void sas_ata_strategy_handler(struct Scsi_Host *shost)
 {
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int sas_ata_timed_out(struct scsi_cmnd *cmd,
 				    struct sas_task *task,
@@ -99,6 +115,8 @@ static inline int sas_ata_eh(struct Scsi_Host *shost, struct list_head *work_q,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void sas_ata_eh(struct Scsi_Host *shost, struct list_head *work_q,
 			      struct list_head *done_q)
 {
@@ -116,11 +134,29 @@ static inline void sas_probe_sata(struct asd_sas_port *port)
 {
 }
 
+<<<<<<< HEAD
+=======
+static inline void sas_suspend_sata(struct asd_sas_port *port)
+{
+}
+
+static inline void sas_resume_sata(struct asd_sas_port *port)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int sas_get_ata_info(struct domain_device *dev, struct ex_phy *phy)
 {
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static inline void sas_ata_end_eh(struct ata_port *ap)
+{
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* _SAS_ATA_H_ */

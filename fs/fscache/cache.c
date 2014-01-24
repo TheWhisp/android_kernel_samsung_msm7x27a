@@ -115,7 +115,11 @@ struct fscache_cache *fscache_select_cache_for_object(
 				     struct fscache_object, cookie_link);
 
 		cache = object->cache;
+<<<<<<< HEAD
 		if (object->state >= FSCACHE_OBJECT_DYING ||
+=======
+		if (fscache_object_is_dying(object) ||
+>>>>>>> refs/remotes/origin/master
 		    test_bit(FSCACHE_IOERROR, &cache->flags))
 			cache = NULL;
 
@@ -224,8 +228,15 @@ int fscache_add_cache(struct fscache_cache *cache,
 	BUG_ON(!ifsdef);
 
 	cache->flags = 0;
+<<<<<<< HEAD
 	ifsdef->event_mask = ULONG_MAX & ~(1 << FSCACHE_OBJECT_EV_CLEARED);
 	ifsdef->state = FSCACHE_OBJECT_ACTIVE;
+=======
+	ifsdef->event_mask =
+		((1 << NR_FSCACHE_OBJECT_EVENTS) - 1) &
+		~(1 << FSCACHE_OBJECT_EV_CLEARED);
+	__set_bit(FSCACHE_OBJECT_IS_AVAILABLE, &ifsdef->flags);
+>>>>>>> refs/remotes/origin/master
 
 	if (!tagname)
 		tagname = cache->identifier;
@@ -314,10 +325,17 @@ EXPORT_SYMBOL(fscache_add_cache);
  */
 void fscache_io_error(struct fscache_cache *cache)
 {
+<<<<<<< HEAD
 	set_bit(FSCACHE_IOERROR, &cache->flags);
 
 	printk(KERN_ERR "FS-Cache: Cache %s stopped due to I/O error\n",
 	       cache->ops->name);
+=======
+	if (!test_and_set_bit(FSCACHE_IOERROR, &cache->flags))
+		printk(KERN_ERR "FS-Cache:"
+		       " Cache '%s' stopped due to I/O error\n",
+		       cache->ops->name);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(fscache_io_error);
 
@@ -330,6 +348,7 @@ static void fscache_withdraw_all_objects(struct fscache_cache *cache,
 {
 	struct fscache_object *object;
 
+<<<<<<< HEAD
 	spin_lock(&cache->object_list_lock);
 
 	while (!list_empty(&cache->object_list)) {
@@ -349,6 +368,27 @@ static void fscache_withdraw_all_objects(struct fscache_cache *cache,
 	}
 
 	spin_unlock(&cache->object_list_lock);
+=======
+	while (!list_empty(&cache->object_list)) {
+		spin_lock(&cache->object_list_lock);
+
+		if (!list_empty(&cache->object_list)) {
+			object = list_entry(cache->object_list.next,
+					    struct fscache_object, cache_link);
+			list_move_tail(&object->cache_link, dying_objects);
+
+			_debug("withdraw %p", object->cookie);
+
+			/* This must be done under object_list_lock to prevent
+			 * a race with fscache_drop_object().
+			 */
+			fscache_raise_event(object, FSCACHE_OBJECT_EV_KILL);
+		}
+
+		spin_unlock(&cache->object_list_lock);
+		cond_resched();
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /**

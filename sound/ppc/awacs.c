@@ -477,7 +477,11 @@ static int snd_pmac_awacs_put_master_amp(struct snd_kcontrol *kcontrol,
 #define AMP_CH_SPK	0
 #define AMP_CH_HD	1
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_amp_vol[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_amp_vol[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	  .name = "Speaker Playback Volume",
 	  .info = snd_pmac_awacs_info_volume_amp,
@@ -514,7 +518,11 @@ static struct snd_kcontrol_new snd_pmac_awacs_amp_vol[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_amp_hp_sw __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_amp_hp_sw = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Headphone Playback Switch",
 	.info = snd_pmac_boolean_stereo_info,
@@ -523,7 +531,11 @@ static struct snd_kcontrol_new snd_pmac_awacs_amp_hp_sw __devinitdata = {
 	.private_value = AMP_CH_HD,
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_amp_spk_sw __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_amp_spk_sw = {
+>>>>>>> refs/remotes/origin/master
 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	.name = "Speaker Playback Switch",
 	.info = snd_pmac_boolean_stereo_info,
@@ -595,46 +607,78 @@ static int snd_pmac_screamer_mic_boost_put(struct snd_kcontrol *kcontrol,
 /*
  * lists of mixer elements
  */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_mixers[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_mixers[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_SWITCH("Master Capture Switch", 1, SHIFT_LOOPTHRU, 0),
 	AWACS_VOLUME("Master Capture Volume", 0, 4, 0),
 /*	AWACS_SWITCH("Unknown Playback Switch", 6, SHIFT_PAROUT0, 0), */
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_screamer_mixers_beige[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_screamer_mixers_beige[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_VOLUME("Master Playback Volume", 2, 6, 1),
 	AWACS_VOLUME("Play-through Playback Volume", 5, 6, 1),
 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_LINE, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_screamer_mixers_lo[] __devinitdata = {
 	AWACS_VOLUME("Line out Playback Volume", 2, 6, 1),
 };
 
 static struct snd_kcontrol_new snd_pmac_screamer_mixers_imac[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_screamer_mixers_lo[] = {
+	AWACS_VOLUME("Line out Playback Volume", 2, 6, 1),
+};
+
+static struct snd_kcontrol_new snd_pmac_screamer_mixers_imac[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_VOLUME("Play-through Playback Volume", 5, 6, 1),
 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_screamer_mixers_g4agp[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_screamer_mixers_g4agp[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_VOLUME("Line out Playback Volume", 2, 6, 1),
 	AWACS_VOLUME("Master Playback Volume", 5, 6, 1),
 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac7500[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac7500[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_VOLUME("Line out Playback Volume", 2, 6, 1),
 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac5500[] __devinitdata = {
 	AWACS_VOLUME("Headphone Playback Volume", 2, 6, 1),
 };
 
 static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac5500[] = {
+	AWACS_VOLUME("Headphone Playback Volume", 2, 6, 1),
+};
+
+static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_VOLUME("Master Playback Volume", 2, 6, 1),
 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
 };
@@ -642,16 +686,25 @@ static struct snd_kcontrol_new snd_pmac_awacs_mixers_pmac[] __devinitdata = {
 /* FIXME: is this correct order?
  * screamer (powerbook G3 pismo) seems to have different bits...
  */
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_mixers2[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_mixers2[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_LINE, 0),
 	AWACS_SWITCH("Mic Capture Switch", 0, SHIFT_MUX_MIC, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_screamer_mixers2[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_screamer_mixers2[] = {
+>>>>>>> refs/remotes/origin/master
 	AWACS_SWITCH("Line Capture Switch", 0, SHIFT_MUX_MIC, 0),
 	AWACS_SWITCH("Mic Capture Switch", 0, SHIFT_MUX_LINE, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_mixers2_pmac5500[] __devinitdata = {
 	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
 };
@@ -670,6 +723,26 @@ static struct snd_kcontrol_new snd_pmac_awacs_mic_boost[] __devinitdata = {
 };
 
 static struct snd_kcontrol_new snd_pmac_screamer_mic_boost[] __devinitdata = {
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_mixers2_pmac5500[] = {
+	AWACS_SWITCH("CD Capture Switch", 0, SHIFT_MUX_CD, 0),
+};
+
+static struct snd_kcontrol_new snd_pmac_awacs_master_sw =
+AWACS_SWITCH("Master Playback Switch", 1, SHIFT_HDMUTE, 1);
+
+static struct snd_kcontrol_new snd_pmac_awacs_master_sw_imac =
+AWACS_SWITCH("Line out Playback Switch", 1, SHIFT_HDMUTE, 1);
+
+static struct snd_kcontrol_new snd_pmac_awacs_master_sw_pmac5500 =
+AWACS_SWITCH("Headphone Playback Switch", 1, SHIFT_HDMUTE, 1);
+
+static struct snd_kcontrol_new snd_pmac_awacs_mic_boost[] = {
+	AWACS_SWITCH("Mic Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
+};
+
+static struct snd_kcontrol_new snd_pmac_screamer_mic_boost[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
 	  .name = "Mic Boost Capture Volume",
 	  .info = snd_pmac_screamer_mic_boost_info,
@@ -678,23 +751,36 @@ static struct snd_kcontrol_new snd_pmac_screamer_mic_boost[] __devinitdata = {
 	},
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_mic_boost_pmac7500[] __devinitdata =
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_mic_boost_pmac7500[] =
+>>>>>>> refs/remotes/origin/master
 {
 	AWACS_SWITCH("Line Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_screamer_mic_boost_beige[] __devinitdata =
+=======
+static struct snd_kcontrol_new snd_pmac_screamer_mic_boost_beige[] =
+>>>>>>> refs/remotes/origin/master
 {
 	AWACS_SWITCH("Line Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
 	AWACS_SWITCH("CD Boost Capture Switch", 6, SHIFT_MIC_BOOST, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_screamer_mic_boost_imac[] __devinitdata =
+=======
+static struct snd_kcontrol_new snd_pmac_screamer_mic_boost_imac[] =
+>>>>>>> refs/remotes/origin/master
 {
 	AWACS_SWITCH("Line Boost Capture Switch", 0, SHIFT_GAINLINE, 0),
 	AWACS_SWITCH("Mic Boost Capture Switch", 6, SHIFT_MIC_BOOST, 0),
 };
 
+<<<<<<< HEAD
 static struct snd_kcontrol_new snd_pmac_awacs_speaker_vol[] __devinitdata = {
 	AWACS_VOLUME("Speaker Playback Volume", 4, 6, 1),
 };
@@ -706,6 +792,19 @@ static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac1 __devinitdata =
 AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_PAROUT1, 1);
 
 static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac2 __devinitdata =
+=======
+static struct snd_kcontrol_new snd_pmac_awacs_speaker_vol[] = {
+	AWACS_VOLUME("Speaker Playback Volume", 4, 6, 1),
+};
+
+static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw =
+AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_SPKMUTE, 1);
+
+static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac1 =
+AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_PAROUT1, 1);
+
+static struct snd_kcontrol_new snd_pmac_awacs_speaker_sw_imac2 =
+>>>>>>> refs/remotes/origin/master
 AWACS_SWITCH("Speaker Playback Switch", 1, SHIFT_PAROUT1, 0);
 
 
@@ -872,7 +971,11 @@ static void snd_pmac_awacs_update_automute(struct snd_pmac *chip, int do_notify)
 /*
  * initialize chip
  */
+<<<<<<< HEAD
 int __devinit
+=======
+int
+>>>>>>> refs/remotes/origin/master
 snd_pmac_awacs_init(struct snd_pmac *chip)
 {
 	int pm7500 = IS_PM7500;

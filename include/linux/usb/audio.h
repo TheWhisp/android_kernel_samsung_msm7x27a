@@ -17,6 +17,7 @@
  * Types and defines in this file are either specific to version 1.0 of
  * this standard or common for newer versions.
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_USB_AUDIO_H
 #define __LINUX_USB_AUDIO_H
@@ -552,6 +553,13 @@ struct uac1_status_word {
 } __attribute__((packed));
 
 #ifdef __KERNEL__
+=======
+#ifndef __LINUX_USB_AUDIO_H
+#define __LINUX_USB_AUDIO_H
+
+#include <uapi/linux/usb/audio.h>
+
+>>>>>>> refs/remotes/origin/master
 
 struct usb_audio_control {
 	struct list_head list;
@@ -571,6 +579,9 @@ struct usb_audio_control_selector {
 	struct usb_descriptor_header *desc;
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_USB_AUDIO_H */

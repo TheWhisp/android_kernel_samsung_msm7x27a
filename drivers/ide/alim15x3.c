@@ -415,7 +415,11 @@ static u8 ali_cable_detect(ide_hwif_t *hwif)
  *	Sparc systems.
  */
 
+<<<<<<< HEAD
 static void __devinit init_hwif_ali15x3 (ide_hwif_t *hwif)
+=======
+static void init_hwif_ali15x3(ide_hwif_t *hwif)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 ideic, inmir;
 	s8 irq_routing_table[] = { -1,  9, 3, 10, 4,  5, 7,  6,
@@ -464,8 +468,12 @@ static void __devinit init_hwif_ali15x3 (ide_hwif_t *hwif)
  *	Set up the DMA functionality on the ALi 15x3.
  */
 
+<<<<<<< HEAD
 static int __devinit init_dma_ali15x3(ide_hwif_t *hwif,
 				      const struct ide_port_info *d)
+=======
+static int init_dma_ali15x3(ide_hwif_t *hwif, const struct ide_port_info *d)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = to_pci_dev(hwif->dev);
 	unsigned long base = ide_pci_dma_base(hwif, d);
@@ -512,7 +520,11 @@ static const struct ide_dma_ops ali_dma_ops = {
 	.dma_sff_read_status	= ide_dma_sff_read_status,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info ali15x3_chipset __devinitdata = {
+=======
+static const struct ide_port_info ali15x3_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= DRV_NAME,
 	.init_chipset	= init_chipset_ali15x3,
 	.init_hwif	= init_hwif_ali15x3,
@@ -532,7 +544,12 @@ static const struct ide_port_info ali15x3_chipset __devinitdata = {
  *	hot plug layer.
  */
  
+<<<<<<< HEAD
 static int __devinit alim15x3_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int alim15x3_init_one(struct pci_dev *dev,
+			     const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ide_port_info d = ali15x3_chipset;
 	u8 rev = dev->revision, idx = id->driver_data;

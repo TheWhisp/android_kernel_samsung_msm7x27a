@@ -19,6 +19,7 @@
 
 #include <linux/module.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 #include <linux/kprobes.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
@@ -550,10 +551,17 @@ static fetch_func_t get_fetch_size_function(const struct fetch_type *type,
 	WARN_ON(1);	/* This should not happen */
 	return NULL;
 }
+=======
+
+#include "trace_probe.h"
+
+#define KPROBE_EVENT_SYSTEM "kprobes"
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Kprobe event core functions
  */
+<<<<<<< HEAD
 
 struct probe_arg {
 	struct fetch_param	fetch;
@@ -572,6 +580,8 @@ struct probe_arg {
 #define TP_FLAG_REGISTERED 4
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct trace_probe {
 	struct list_head	list;
 	struct kretprobe	rp;	/* Use rp.kp for kprobe use */
@@ -580,36 +590,59 @@ struct trace_probe {
 	const char		*symbol;	/* symbol name */
 	struct ftrace_event_class	class;
 	struct ftrace_event_call	call;
+<<<<<<< HEAD
+=======
+	struct list_head	files;
+>>>>>>> refs/remotes/origin/master
 	ssize_t			size;		/* trace entry size */
 	unsigned int		nr_args;
 	struct probe_arg	args[];
 };
 
+<<<<<<< HEAD
+=======
+struct event_file_link {
+	struct ftrace_event_file	*file;
+	struct list_head		list;
+};
+
+>>>>>>> refs/remotes/origin/master
 #define SIZEOF_TRACE_PROBE(n)			\
 	(offsetof(struct trace_probe, args) +	\
 	(sizeof(struct probe_arg) * (n)))
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __kprobes int probe_is_return(struct trace_probe *tp)
 =======
 static __kprobes int trace_probe_is_return(struct trace_probe *tp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __kprobes bool trace_probe_is_return(struct trace_probe *tp)
+>>>>>>> refs/remotes/origin/master
 {
 	return tp->rp.handler != NULL;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __kprobes const char *probe_symbol(struct trace_probe *tp)
 =======
 static __kprobes const char *trace_probe_symbol(struct trace_probe *tp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __kprobes const char *trace_probe_symbol(struct trace_probe *tp)
+>>>>>>> refs/remotes/origin/master
 {
 	return tp->symbol ? tp->symbol : "unknown";
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static __kprobes unsigned long trace_probe_offset(struct trace_probe *tp)
 {
 	return tp->rp.kp.offset;
@@ -643,9 +676,14 @@ static __kprobes bool trace_probe_is_on_module(struct trace_probe *tp)
 	return !!strchr(trace_probe_symbol(tp), ':');
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int register_probe_event(struct trace_probe *tp);
 static void unregister_probe_event(struct trace_probe *tp);
+=======
+static int register_probe_event(struct trace_probe *tp);
+static int unregister_probe_event(struct trace_probe *tp);
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_MUTEX(probe_lock);
 static LIST_HEAD(probe_list);
@@ -654,6 +692,7 @@ static int kprobe_dispatcher(struct kprobe *kp, struct pt_regs *regs);
 static int kretprobe_dispatcher(struct kretprobe_instance *ri,
 				struct pt_regs *regs);
 
+<<<<<<< HEAD
 /* Check the name is good for event/group/fields */
 static int is_good_name(const char *name)
 {
@@ -666,6 +705,8 @@ static int is_good_name(const char *name)
 	return 1;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Allocate new trace_probe and initialize it (including kprobes).
  */
@@ -674,7 +715,11 @@ static struct trace_probe *alloc_trace_probe(const char *group,
 					     void *addr,
 					     const char *symbol,
 					     unsigned long offs,
+<<<<<<< HEAD
 					     int nargs, int is_return)
+=======
+					     int nargs, bool is_return)
+>>>>>>> refs/remotes/origin/master
 {
 	struct trace_probe *tp;
 	int ret = -ENOMEM;
@@ -717,6 +762,10 @@ static struct trace_probe *alloc_trace_probe(const char *group,
 		goto error;
 
 	INIT_LIST_HEAD(&tp->list);
+<<<<<<< HEAD
+=======
+	INIT_LIST_HEAD(&tp->files);
+>>>>>>> refs/remotes/origin/master
 	return tp;
 error:
 	kfree(tp->call.name);
@@ -725,6 +774,7 @@ error:
 	return ERR_PTR(ret);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static void update_probe_arg(struct probe_arg *arg)
@@ -750,12 +800,18 @@ static void free_probe_arg(struct probe_arg *arg)
 	kfree(arg->comm);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void free_trace_probe(struct trace_probe *tp)
 {
 	int i;
 
 	for (i = 0; i < tp->nr_args; i++)
+<<<<<<< HEAD
 		free_probe_arg(&tp->args[i]);
+=======
+		traceprobe_free_probe_arg(&tp->args[i]);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(tp->call.class->system);
 	kfree(tp->call.name);
@@ -764,10 +820,14 @@ static void free_trace_probe(struct trace_probe *tp)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct trace_probe *find_probe_event(const char *event,
 =======
 static struct trace_probe *find_trace_probe(const char *event,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct trace_probe *find_trace_probe(const char *event,
+>>>>>>> refs/remotes/origin/master
 					    const char *group)
 {
 	struct trace_probe *tp;
@@ -779,6 +839,7 @@ static struct trace_probe *find_trace_probe(const char *event,
 	return NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Unregister a trace_probe and probe_event: call with locking probe_lock */
 static void unregister_trace_probe(struct trace_probe *tp)
@@ -798,11 +859,40 @@ static int enable_trace_probe(struct trace_probe *tp, int flag)
 	tp->flags |= flag;
 	if (trace_probe_is_enabled(tp) && trace_probe_is_registered(tp) &&
 	    !trace_probe_has_gone(tp)) {
+=======
+/*
+ * Enable trace_probe
+ * if the file is NULL, enable "perf" handler, or enable "trace" handler.
+ */
+static int
+enable_trace_probe(struct trace_probe *tp, struct ftrace_event_file *file)
+{
+	int ret = 0;
+
+	if (file) {
+		struct event_file_link *link;
+
+		link = kmalloc(sizeof(*link), GFP_KERNEL);
+		if (!link) {
+			ret = -ENOMEM;
+			goto out;
+		}
+
+		link->file = file;
+		list_add_tail_rcu(&link->list, &tp->files);
+
+		tp->flags |= TP_FLAG_TRACE;
+	} else
+		tp->flags |= TP_FLAG_PROFILE;
+
+	if (trace_probe_is_registered(tp) && !trace_probe_has_gone(tp)) {
+>>>>>>> refs/remotes/origin/master
 		if (trace_probe_is_return(tp))
 			ret = enable_kretprobe(&tp->rp);
 		else
 			ret = enable_kprobe(&tp->rp.kp);
 	}
+<<<<<<< HEAD
 
 	return ret;
 }
@@ -811,12 +901,77 @@ static int enable_trace_probe(struct trace_probe *tp, int flag)
 static void disable_trace_probe(struct trace_probe *tp, int flag)
 {
 	tp->flags &= ~flag;
+=======
+ out:
+	return ret;
+}
+
+static struct event_file_link *
+find_event_file_link(struct trace_probe *tp, struct ftrace_event_file *file)
+{
+	struct event_file_link *link;
+
+	list_for_each_entry(link, &tp->files, list)
+		if (link->file == file)
+			return link;
+
+	return NULL;
+}
+
+/*
+ * Disable trace_probe
+ * if the file is NULL, disable "perf" handler, or disable "trace" handler.
+ */
+static int
+disable_trace_probe(struct trace_probe *tp, struct ftrace_event_file *file)
+{
+	struct event_file_link *link = NULL;
+	int wait = 0;
+	int ret = 0;
+
+	if (file) {
+		link = find_event_file_link(tp, file);
+		if (!link) {
+			ret = -EINVAL;
+			goto out;
+		}
+
+		list_del_rcu(&link->list);
+		wait = 1;
+		if (!list_empty(&tp->files))
+			goto out;
+
+		tp->flags &= ~TP_FLAG_TRACE;
+	} else
+		tp->flags &= ~TP_FLAG_PROFILE;
+
+>>>>>>> refs/remotes/origin/master
 	if (!trace_probe_is_enabled(tp) && trace_probe_is_registered(tp)) {
 		if (trace_probe_is_return(tp))
 			disable_kretprobe(&tp->rp);
 		else
 			disable_kprobe(&tp->rp.kp);
+<<<<<<< HEAD
 	}
+=======
+		wait = 1;
+	}
+ out:
+	if (wait) {
+		/*
+		 * Synchronize with kprobe_trace_func/kretprobe_trace_func
+		 * to ensure disabled (all running handlers are finished).
+		 * This is not only for kfree(), but also the caller,
+		 * trace_remove_event_call() supposes it for releasing
+		 * event_call related objects, which will be accessed in
+		 * the kprobe_trace_func/kretprobe_trace_func.
+		 */
+		synchronize_sched();
+		kfree(link);	/* Ignored if link == NULL */
+	}
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Internal register function - just handle k*probes and flags */
@@ -828,7 +983,11 @@ static int __register_trace_probe(struct trace_probe *tp)
 		return -EINVAL;
 
 	for (i = 0; i < tp->nr_args; i++)
+<<<<<<< HEAD
 		update_probe_arg(&tp->args[i]);
+=======
+		traceprobe_update_arg(&tp->args[i]);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set/clear disabled flag according to tp->flag */
 	if (trace_probe_is_enabled(tp))
@@ -883,12 +1042,23 @@ static int unregister_trace_probe(struct trace_probe *tp)
 	if (trace_probe_is_enabled(tp))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	__unregister_trace_probe(tp);
 	list_del(&tp->list);
 	unregister_probe_event(tp);
 
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Will fail if probe is being used by ftrace or perf */
+	if (unregister_probe_event(tp))
+		return -EBUSY;
+
+	__unregister_trace_probe(tp);
+	list_del(&tp->list);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Register a trace_probe and probe_event */
@@ -900,6 +1070,7 @@ static int register_trace_probe(struct trace_probe *tp)
 	mutex_lock(&probe_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* register as an event */
 	old_tp = find_probe_event(tp->call.name, tp->call.class->system);
 	if (old_tp) {
@@ -908,6 +1079,8 @@ static int register_trace_probe(struct trace_probe *tp)
 		free_trace_probe(old_tp);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Delete old (same name) event if exist */
 	old_tp = find_trace_probe(tp->call.name, tp->call.class->system);
 	if (old_tp) {
@@ -918,13 +1091,17 @@ static int register_trace_probe(struct trace_probe *tp)
 	}
 
 	/* Register new event */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = register_probe_event(tp);
 	if (ret) {
 		pr_warning("Failed to register probe event(%d)\n", ret);
 		goto end;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tp->rp.kp.flags |= KPROBE_FLAG_DISABLED;
 	if (probe_is_return(tp))
@@ -944,6 +1121,8 @@ static int register_trace_probe(struct trace_probe *tp)
 	} else
 		list_add_tail(&tp->list, &probe_list);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Register k*probe */
 	ret = __register_trace_probe(tp);
 	if (ret < 0)
@@ -951,14 +1130,20 @@ static int register_trace_probe(struct trace_probe *tp)
 	else
 		list_add_tail(&tp->list, &probe_list);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 end:
 	mutex_unlock(&probe_lock);
 	return ret;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Module notifier call back, checking event on the module */
 static int trace_probe_module_callback(struct notifier_block *nb,
 				       unsigned long val, void *data)
@@ -993,6 +1178,7 @@ static struct notifier_block trace_probe_module_nb = {
 	.priority = 1	/* Invoked after kprobe module callback */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* Split symbol and offset. */
 static int split_symbol_offset(char *symbol, unsigned long *offset)
@@ -1215,10 +1401,13 @@ static int conflict_field_name(const char *name,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int create_trace_probe(int argc, char **argv)
 {
 	/*
 	 * Argument syntax:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 *  - Add kprobe: p[:[GRP/]EVENT] KSYM[+OFFS]|KADDR [FETCHARGS]
 	 *  - Add kretprobe: r[:[GRP/]EVENT] KSYM[+0] [FETCHARGS]
@@ -1226,6 +1415,10 @@ static int create_trace_probe(int argc, char **argv)
 	 *  - Add kprobe: p[:[GRP/]EVENT] [MOD:]KSYM[+OFFS]|KADDR [FETCHARGS]
 	 *  - Add kretprobe: r[:[GRP/]EVENT] [MOD:]KSYM[+0] [FETCHARGS]
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 *  - Add kprobe: p[:[GRP/]EVENT] [MOD:]KSYM[+OFFS]|KADDR [FETCHARGS]
+	 *  - Add kretprobe: r[:[GRP/]EVENT] [MOD:]KSYM[+0] [FETCHARGS]
+>>>>>>> refs/remotes/origin/master
 	 * Fetch args:
 	 *  $retval	: fetch return value
 	 *  $stack	: fetch stack address
@@ -1242,7 +1435,11 @@ static int create_trace_probe(int argc, char **argv)
 	 */
 	struct trace_probe *tp;
 	int i, ret = 0;
+<<<<<<< HEAD
 	int is_return = 0, is_delete = 0;
+=======
+	bool is_return = false, is_delete = false;
+>>>>>>> refs/remotes/origin/master
 	char *symbol = NULL, *event = NULL, *group = NULL;
 	char *arg;
 	unsigned long offset = 0;
@@ -1251,11 +1448,19 @@ static int create_trace_probe(int argc, char **argv)
 
 	/* argc must be >= 1 */
 	if (argv[0][0] == 'p')
+<<<<<<< HEAD
 		is_return = 0;
 	else if (argv[0][0] == 'r')
 		is_return = 1;
 	else if (argv[0][0] == '-')
 		is_delete = 1;
+=======
+		is_return = false;
+	else if (argv[0][0] == 'r')
+		is_return = true;
+	else if (argv[0][0] == '-')
+		is_delete = true;
+>>>>>>> refs/remotes/origin/master
 	else {
 		pr_info("Probe definition must be started with 'p', 'r' or"
 			" '-'.\n");
@@ -1288,10 +1493,14 @@ static int create_trace_probe(int argc, char **argv)
 		}
 		mutex_lock(&probe_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tp = find_probe_event(event, group);
 =======
 		tp = find_trace_probe(event, group);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		tp = find_trace_probe(event, group);
+>>>>>>> refs/remotes/origin/master
 		if (!tp) {
 			mutex_unlock(&probe_lock);
 			pr_info("Event %s/%s doesn't exist.\n", group, event);
@@ -1299,17 +1508,23 @@ static int create_trace_probe(int argc, char **argv)
 		}
 		/* delete an event */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unregister_trace_probe(tp);
 		free_trace_probe(tp);
 		mutex_unlock(&probe_lock);
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = unregister_trace_probe(tp);
 		if (ret == 0)
 			free_trace_probe(tp);
 		mutex_unlock(&probe_lock);
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (argc < 2) {
@@ -1322,7 +1537,11 @@ static int create_trace_probe(int argc, char **argv)
 			return -EINVAL;
 		}
 		/* an address specified */
+<<<<<<< HEAD
 		ret = strict_strtoul(&argv[1][0], 0, (unsigned long *)&addr);
+=======
+		ret = kstrtoul(&argv[1][0], 0, (unsigned long *)&addr);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			pr_info("Failed to parse address.\n");
 			return ret;
@@ -1331,7 +1550,11 @@ static int create_trace_probe(int argc, char **argv)
 		/* a symbol specified */
 		symbol = argv[1];
 		/* TODO: support .init module functions */
+<<<<<<< HEAD
 		ret = split_symbol_offset(symbol, &offset);
+=======
+		ret = traceprobe_split_symbol_offset(symbol, &offset);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			pr_info("Failed to parse symbol.\n");
 			return ret;
@@ -1393,7 +1616,12 @@ static int create_trace_probe(int argc, char **argv)
 			goto error;
 		}
 
+<<<<<<< HEAD
 		if (conflict_field_name(tp->args[i].name, tp->args, i)) {
+=======
+		if (traceprobe_conflict_field_name(tp->args[i].name,
+							tp->args, i)) {
+>>>>>>> refs/remotes/origin/master
 			pr_info("Argument[%d] name '%s' conflicts with "
 				"another field.\n", i, argv[i]);
 			ret = -EINVAL;
@@ -1401,7 +1629,12 @@ static int create_trace_probe(int argc, char **argv)
 		}
 
 		/* Parse fetch argument */
+<<<<<<< HEAD
 		ret = parse_probe_arg(arg, tp, &tp->args[i], is_return);
+=======
+		ret = traceprobe_parse_probe_arg(arg, &tp->size, &tp->args[i],
+						is_return, true);
+>>>>>>> refs/remotes/origin/master
 		if (ret) {
 			pr_info("Parse error at argument[%d]. (%d)\n", i, ret);
 			goto error;
@@ -1419,12 +1652,15 @@ error:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void cleanup_all_probes(void)
 {
 	struct trace_probe *tp;
 
 	mutex_lock(&probe_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int release_all_trace_probes(void)
 {
 	struct trace_probe *tp;
@@ -1437,6 +1673,7 @@ static int release_all_trace_probes(void)
 			ret = -EBUSY;
 			goto end;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* TODO: Use batch unregistration */
 	while (!list_empty(&probe_list)) {
@@ -1449,13 +1686,26 @@ static int release_all_trace_probes(void)
 }
 
 =======
+=======
+	/* TODO: Use batch unregistration */
+	while (!list_empty(&probe_list)) {
+		tp = list_entry(probe_list.next, struct trace_probe, list);
+		ret = unregister_trace_probe(tp);
+		if (ret)
+			goto end;
+		free_trace_probe(tp);
+	}
+>>>>>>> refs/remotes/origin/master
 
 end:
 	mutex_unlock(&probe_lock);
 
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Probes listing interfaces */
 static void *probes_seq_start(struct seq_file *m, loff_t *pos)
@@ -1480,25 +1730,35 @@ static int probes_seq_show(struct seq_file *m, void *v)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	seq_printf(m, "%c", probe_is_return(tp) ? 'r' : 'p');
 =======
 	seq_printf(m, "%c", trace_probe_is_return(tp) ? 'r' : 'p');
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	seq_printf(m, "%c", trace_probe_is_return(tp) ? 'r' : 'p');
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, ":%s/%s", tp->call.class->system, tp->call.name);
 
 	if (!tp->symbol)
 		seq_printf(m, " 0x%p", tp->rp.kp.addr);
 	else if (tp->rp.kp.offset)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		seq_printf(m, " %s+%u", probe_symbol(tp), tp->rp.kp.offset);
 	else
 		seq_printf(m, " %s", probe_symbol(tp));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		seq_printf(m, " %s+%u", trace_probe_symbol(tp),
 			   tp->rp.kp.offset);
 	else
 		seq_printf(m, " %s", trace_probe_symbol(tp));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < tp->nr_args; i++)
 		seq_printf(m, " %s=%s", tp->args[i].name, tp->args[i].comm);
@@ -1517,10 +1777,13 @@ static const struct seq_operations probes_seq_op = {
 static int probes_open(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((file->f_mode & FMODE_WRITE) &&
 	    (file->f_flags & O_TRUNC))
 		cleanup_all_probes();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if ((file->f_mode & FMODE_WRITE) && (file->f_flags & O_TRUNC)) {
@@ -1528,11 +1791,15 @@ static int probes_open(struct inode *inode, struct file *file)
 		if (ret < 0)
 			return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return seq_open(file, &probes_seq_op);
 }
 
+<<<<<<< HEAD
 static int command_trace_probe(const char *buf)
 {
 	char **argv;
@@ -1597,6 +1864,13 @@ static ssize_t probes_write(struct file *file, const char __user *buffer,
 out:
 	kfree(kbuf);
 	return ret;
+=======
+static ssize_t probes_write(struct file *file, const char __user *buffer,
+			    size_t count, loff_t *ppos)
+{
+	return traceprobe_probes_write(file, buffer, count, ppos,
+			create_trace_probe);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations kprobe_events_ops = {
@@ -1688,9 +1962,16 @@ static __kprobes void store_trace_args(int ent_size, struct trace_probe *tp,
 }
 
 /* Kprobe handler */
+<<<<<<< HEAD
 static __kprobes void kprobe_trace_func(struct kprobe *kp, struct pt_regs *regs)
 {
 	struct trace_probe *tp = container_of(kp, struct trace_probe, rp.kp);
+=======
+static __kprobes void
+__kprobe_trace_func(struct trace_probe *tp, struct pt_regs *regs,
+		    struct ftrace_event_file *ftrace_file)
+{
+>>>>>>> refs/remotes/origin/master
 	struct kprobe_trace_entry_head *entry;
 	struct ring_buffer_event *event;
 	struct ring_buffer *buffer;
@@ -1698,7 +1979,14 @@ static __kprobes void kprobe_trace_func(struct kprobe *kp, struct pt_regs *regs)
 	unsigned long irq_flags;
 	struct ftrace_event_call *call = &tp->call;
 
+<<<<<<< HEAD
 	tp->nhit++;
+=======
+	WARN_ON(call != ftrace_file->event_call);
+
+	if (test_bit(FTRACE_EVENT_FL_SOFT_DISABLED_BIT, &ftrace_file->flags))
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	local_save_flags(irq_flags);
 	pc = preempt_count();
@@ -1706,12 +1994,19 @@ static __kprobes void kprobe_trace_func(struct kprobe *kp, struct pt_regs *regs)
 	dsize = __get_data_size(tp, regs);
 	size = sizeof(*entry) + tp->size + dsize;
 
+<<<<<<< HEAD
 	event = trace_current_buffer_lock_reserve(&buffer, call->event.type,
 						  size, irq_flags, pc);
+=======
+	event = trace_event_buffer_lock_reserve(&buffer, ftrace_file,
+						call->event.type,
+						size, irq_flags, pc);
+>>>>>>> refs/remotes/origin/master
 	if (!event)
 		return;
 
 	entry = ring_buffer_event_data(event);
+<<<<<<< HEAD
 	entry->ip = (unsigned long)kp->addr;
 	store_trace_args(sizeof(*entry), tp, regs, (u8 *)&entry[1], dsize);
 
@@ -1729,6 +2024,31 @@ static __kprobes void kretprobe_trace_func(struct kretprobe_instance *ri,
 					  struct pt_regs *regs)
 {
 	struct trace_probe *tp = container_of(ri->rp, struct trace_probe, rp);
+=======
+	entry->ip = (unsigned long)tp->rp.kp.addr;
+	store_trace_args(sizeof(*entry), tp, regs, (u8 *)&entry[1], dsize);
+
+	if (!filter_check_discard(ftrace_file, entry, buffer, event))
+		trace_buffer_unlock_commit_regs(buffer, event,
+						irq_flags, pc, regs);
+}
+
+static __kprobes void
+kprobe_trace_func(struct trace_probe *tp, struct pt_regs *regs)
+{
+	struct event_file_link *link;
+
+	list_for_each_entry_rcu(link, &tp->files, list)
+		__kprobe_trace_func(tp, regs, link->file);
+}
+
+/* Kretprobe handler */
+static __kprobes void
+__kretprobe_trace_func(struct trace_probe *tp, struct kretprobe_instance *ri,
+		       struct pt_regs *regs,
+		       struct ftrace_event_file *ftrace_file)
+{
+>>>>>>> refs/remotes/origin/master
 	struct kretprobe_trace_entry_head *entry;
 	struct ring_buffer_event *event;
 	struct ring_buffer *buffer;
@@ -1736,14 +2056,28 @@ static __kprobes void kretprobe_trace_func(struct kretprobe_instance *ri,
 	unsigned long irq_flags;
 	struct ftrace_event_call *call = &tp->call;
 
+<<<<<<< HEAD
+=======
+	WARN_ON(call != ftrace_file->event_call);
+
+	if (test_bit(FTRACE_EVENT_FL_SOFT_DISABLED_BIT, &ftrace_file->flags))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	local_save_flags(irq_flags);
 	pc = preempt_count();
 
 	dsize = __get_data_size(tp, regs);
 	size = sizeof(*entry) + tp->size + dsize;
 
+<<<<<<< HEAD
 	event = trace_current_buffer_lock_reserve(&buffer, call->event.type,
 						  size, irq_flags, pc);
+=======
+	event = trace_event_buffer_lock_reserve(&buffer, ftrace_file,
+						call->event.type,
+						size, irq_flags, pc);
+>>>>>>> refs/remotes/origin/master
 	if (!event)
 		return;
 
@@ -1752,6 +2086,7 @@ static __kprobes void kretprobe_trace_func(struct kretprobe_instance *ri,
 	entry->ret_ip = (unsigned long)ri->ret_addr;
 	store_trace_args(sizeof(*entry), tp, regs, (u8 *)&entry[1], dsize);
 
+<<<<<<< HEAD
 	if (!filter_current_check_discard(buffer, call, entry, event))
 <<<<<<< HEAD
 		trace_nowake_buffer_unlock_commit(buffer, event, irq_flags, pc);
@@ -1763,6 +2098,25 @@ static __kprobes void kretprobe_trace_func(struct kretprobe_instance *ri,
 
 /* Event entry printers */
 enum print_line_t
+=======
+	if (!filter_check_discard(ftrace_file, entry, buffer, event))
+		trace_buffer_unlock_commit_regs(buffer, event,
+						irq_flags, pc, regs);
+}
+
+static __kprobes void
+kretprobe_trace_func(struct trace_probe *tp, struct kretprobe_instance *ri,
+		     struct pt_regs *regs)
+{
+	struct event_file_link *link;
+
+	list_for_each_entry_rcu(link, &tp->files, list)
+		__kretprobe_trace_func(tp, ri, regs, link->file);
+}
+
+/* Event entry printers */
+static enum print_line_t
+>>>>>>> refs/remotes/origin/master
 print_kprobe_event(struct trace_iterator *iter, int flags,
 		   struct trace_event *event)
 {
@@ -1798,7 +2152,11 @@ partial:
 	return TRACE_TYPE_PARTIAL_LINE;
 }
 
+<<<<<<< HEAD
 enum print_line_t
+=======
+static enum print_line_t
+>>>>>>> refs/remotes/origin/master
 print_kretprobe_event(struct trace_iterator *iter, int flags,
 		      struct trace_event *event)
 {
@@ -1841,6 +2199,7 @@ partial:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int probe_event_enable(struct ftrace_event_call *call)
 {
 	struct trace_probe *tp = (struct trace_probe *)call->data;
@@ -1877,6 +2236,8 @@ static void probe_event_disable(struct ftrace_event_call *call)
 		if (ret)						\
 			return ret;					\
 	} while (0)
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int kprobe_event_define_fields(struct ftrace_event_call *event_call)
 {
@@ -1929,10 +2290,14 @@ static int __set_print_fmt(struct trace_probe *tp, char *buf, int len)
 	const char *fmt, *arg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!probe_is_return(tp)) {
 =======
 	if (!trace_probe_is_return(tp)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!trace_probe_is_return(tp)) {
+>>>>>>> refs/remotes/origin/master
 		fmt = "(%lx)";
 		arg = "REC->" FIELD_STRING_IP;
 	} else {
@@ -1989,28 +2354,45 @@ static int set_print_fmt(struct trace_probe *tp)
 #ifdef CONFIG_PERF_EVENTS
 
 /* Kprobe profile handler */
+<<<<<<< HEAD
 static __kprobes void kprobe_perf_func(struct kprobe *kp,
 					 struct pt_regs *regs)
 {
 	struct trace_probe *tp = container_of(kp, struct trace_probe, rp.kp);
+=======
+static __kprobes void
+kprobe_perf_func(struct trace_probe *tp, struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/master
 	struct ftrace_event_call *call = &tp->call;
 	struct kprobe_trace_entry_head *entry;
 	struct hlist_head *head;
 	int size, __size, dsize;
 	int rctx;
 
+<<<<<<< HEAD
+=======
+	head = this_cpu_ptr(call->perf_events);
+	if (hlist_empty(head))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	dsize = __get_data_size(tp, regs);
 	__size = sizeof(*entry) + tp->size + dsize;
 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
 	size -= sizeof(u32);
+<<<<<<< HEAD
 	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
 		     "profile buffer not large enough"))
 		return;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	entry = perf_trace_buf_prepare(size, call->event.type, regs, &rctx);
 	if (!entry)
 		return;
 
+<<<<<<< HEAD
 	entry->ip = (unsigned long)kp->addr;
 	memset(&entry[1], 0, dsize);
 	store_trace_args(sizeof(*entry), tp, regs, (u8 *)&entry[1], dsize);
@@ -2024,19 +2406,42 @@ static __kprobes void kretprobe_perf_func(struct kretprobe_instance *ri,
 					    struct pt_regs *regs)
 {
 	struct trace_probe *tp = container_of(ri->rp, struct trace_probe, rp);
+=======
+	entry->ip = (unsigned long)tp->rp.kp.addr;
+	memset(&entry[1], 0, dsize);
+	store_trace_args(sizeof(*entry), tp, regs, (u8 *)&entry[1], dsize);
+	perf_trace_buf_submit(entry, size, rctx, 0, 1, regs, head, NULL);
+}
+
+/* Kretprobe profile handler */
+static __kprobes void
+kretprobe_perf_func(struct trace_probe *tp, struct kretprobe_instance *ri,
+		    struct pt_regs *regs)
+{
+>>>>>>> refs/remotes/origin/master
 	struct ftrace_event_call *call = &tp->call;
 	struct kretprobe_trace_entry_head *entry;
 	struct hlist_head *head;
 	int size, __size, dsize;
 	int rctx;
 
+<<<<<<< HEAD
+=======
+	head = this_cpu_ptr(call->perf_events);
+	if (hlist_empty(head))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	dsize = __get_data_size(tp, regs);
 	__size = sizeof(*entry) + tp->size + dsize;
 	size = ALIGN(__size + sizeof(u32), sizeof(u64));
 	size -= sizeof(u32);
+<<<<<<< HEAD
 	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
 		     "profile buffer not large enough"))
 		return;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	entry = perf_trace_buf_prepare(size, call->event.type, regs, &rctx);
 	if (!entry)
@@ -2045,6 +2450,7 @@ static __kprobes void kretprobe_perf_func(struct kretprobe_instance *ri,
 	entry->func = (unsigned long)tp->rp.kp.addr;
 	entry->ret_ip = (unsigned long)ri->ret_addr;
 	store_trace_args(sizeof(*entry), tp, regs, (u8 *)&entry[1], dsize);
+<<<<<<< HEAD
 
 	head = this_cpu_ptr(call->perf_events);
 	perf_trace_buf_submit(entry, size, rctx, entry->ret_ip, 1, regs, head);
@@ -2089,11 +2495,24 @@ int kprobe_register(struct ftrace_event_call *event, enum trace_reg type)
 =======
 #endif	/* CONFIG_PERF_EVENTS */
 
+=======
+	perf_trace_buf_submit(entry, size, rctx, 0, 1, regs, head, NULL);
+}
+#endif	/* CONFIG_PERF_EVENTS */
+
+/*
+ * called by perf_trace_init() or __ftrace_set_clr_event() under event_mutex.
+ *
+ * kprobe_trace_self_tests_init() does enable_trace_probe/disable_trace_probe
+ * lockless, but we can't race with this __init function.
+ */
+>>>>>>> refs/remotes/origin/master
 static __kprobes
 int kprobe_register(struct ftrace_event_call *event,
 		    enum trace_reg type, void *data)
 {
 	struct trace_probe *tp = (struct trace_probe *)event->data;
+<<<<<<< HEAD
 
 	switch (type) {
 	case TRACE_REG_REGISTER:
@@ -2114,11 +2533,29 @@ int kprobe_register(struct ftrace_event_call *event,
 	case TRACE_REG_PERF_UNREGISTER:
 		disable_trace_probe(tp, TP_FLAG_PROFILE);
 		return 0;
+=======
+	struct ftrace_event_file *file = data;
+
+	switch (type) {
+	case TRACE_REG_REGISTER:
+		return enable_trace_probe(tp, file);
+	case TRACE_REG_UNREGISTER:
+		return disable_trace_probe(tp, file);
+
+#ifdef CONFIG_PERF_EVENTS
+	case TRACE_REG_PERF_REGISTER:
+		return enable_trace_probe(tp, NULL);
+	case TRACE_REG_PERF_UNREGISTER:
+		return disable_trace_probe(tp, NULL);
+>>>>>>> refs/remotes/origin/master
 	case TRACE_REG_PERF_OPEN:
 	case TRACE_REG_PERF_CLOSE:
 	case TRACE_REG_PERF_ADD:
 	case TRACE_REG_PERF_DEL:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 #endif
 	}
@@ -2130,11 +2567,21 @@ int kprobe_dispatcher(struct kprobe *kp, struct pt_regs *regs)
 {
 	struct trace_probe *tp = container_of(kp, struct trace_probe, rp.kp);
 
+<<<<<<< HEAD
 	if (tp->flags & TP_FLAG_TRACE)
 		kprobe_trace_func(kp, regs);
 #ifdef CONFIG_PERF_EVENTS
 	if (tp->flags & TP_FLAG_PROFILE)
 		kprobe_perf_func(kp, regs);
+=======
+	tp->nhit++;
+
+	if (tp->flags & TP_FLAG_TRACE)
+		kprobe_trace_func(tp, regs);
+#ifdef CONFIG_PERF_EVENTS
+	if (tp->flags & TP_FLAG_PROFILE)
+		kprobe_perf_func(tp, regs);
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;	/* We don't tweek kernel, so just return 0 */
 }
@@ -2144,11 +2591,21 @@ int kretprobe_dispatcher(struct kretprobe_instance *ri, struct pt_regs *regs)
 {
 	struct trace_probe *tp = container_of(ri->rp, struct trace_probe, rp);
 
+<<<<<<< HEAD
 	if (tp->flags & TP_FLAG_TRACE)
 		kretprobe_trace_func(ri, regs);
 #ifdef CONFIG_PERF_EVENTS
 	if (tp->flags & TP_FLAG_PROFILE)
 		kretprobe_perf_func(ri, regs);
+=======
+	tp->nhit++;
+
+	if (tp->flags & TP_FLAG_TRACE)
+		kretprobe_trace_func(tp, ri, regs);
+#ifdef CONFIG_PERF_EVENTS
+	if (tp->flags & TP_FLAG_PROFILE)
+		kretprobe_perf_func(tp, ri, regs);
+>>>>>>> refs/remotes/origin/master
 #endif
 	return 0;	/* We don't tweek kernel, so just return 0 */
 }
@@ -2169,10 +2626,14 @@ static int register_probe_event(struct trace_probe *tp)
 	/* Initialize ftrace_event_call */
 	INIT_LIST_HEAD(&call->class->fields);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (probe_is_return(tp)) {
 =======
 	if (trace_probe_is_return(tp)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (trace_probe_is_return(tp)) {
+>>>>>>> refs/remotes/origin/master
 		call->event.funcs = &kretprobe_funcs;
 		call->class->define_fields = kretprobe_event_define_fields;
 	} else {
@@ -2198,11 +2659,23 @@ static int register_probe_event(struct trace_probe *tp)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void unregister_probe_event(struct trace_probe *tp)
 {
 	/* tp->event is unregistered in trace_remove_event_call() */
 	trace_remove_event_call(&tp->call);
 	kfree(tp->call.print_fmt);
+=======
+static int unregister_probe_event(struct trace_probe *tp)
+{
+	int ret;
+
+	/* tp->event is unregistered in trace_remove_event_call() */
+	ret = trace_remove_event_call(&tp->call);
+	if (!ret)
+		kfree(tp->call.print_fmt);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Make a debugfs interface for controlling probe points */
@@ -2212,11 +2685,17 @@ static __init int init_kprobe_trace(void)
 	struct dentry *entry;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (register_module_notifier(&trace_probe_module_nb))
 		return -EINVAL;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (register_module_notifier(&trace_probe_module_nb))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	d_tracer = tracing_init_dentry();
 	if (!d_tracer)
 		return 0;
@@ -2253,16 +2732,40 @@ static __used int kprobe_trace_selftest_target(int a1, int a2, int a3,
 	return a1 + a2 + a3 + a4 + a5 + a6;
 }
 
+<<<<<<< HEAD
+=======
+static struct ftrace_event_file *
+find_trace_probe_file(struct trace_probe *tp, struct trace_array *tr)
+{
+	struct ftrace_event_file *file;
+
+	list_for_each_entry(file, &tr->events, list)
+		if (file->event_call == &tp->call)
+			return file;
+
+	return NULL;
+}
+
+/*
+ * Nobody but us can call enable_trace_probe/disable_trace_probe at this
+ * stage, we can do this lockless.
+ */
+>>>>>>> refs/remotes/origin/master
 static __init int kprobe_trace_self_tests_init(void)
 {
 	int ret, warn = 0;
 	int (*target)(int, int, int, int, int, int);
 	struct trace_probe *tp;
+<<<<<<< HEAD
+=======
+	struct ftrace_event_file *file;
+>>>>>>> refs/remotes/origin/master
 
 	target = kprobe_trace_selftest_target;
 
 	pr_info("Testing kprobe tracing: ");
 
+<<<<<<< HEAD
 	ret = command_trace_probe("p:testprobe kprobe_trace_selftest_target "
 				  "$stack $stack0 +0($stack)");
 	if (WARN_ON_ONCE(ret)) {
@@ -2307,6 +2810,49 @@ static __init int kprobe_trace_self_tests_init(void)
 =======
 			enable_trace_probe(tp, TP_FLAG_TRACE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = traceprobe_command("p:testprobe kprobe_trace_selftest_target "
+				  "$stack $stack0 +0($stack)",
+				  create_trace_probe);
+	if (WARN_ON_ONCE(ret)) {
+		pr_warn("error on probing function entry.\n");
+		warn++;
+	} else {
+		/* Enable trace point */
+		tp = find_trace_probe("testprobe", KPROBE_EVENT_SYSTEM);
+		if (WARN_ON_ONCE(tp == NULL)) {
+			pr_warn("error on getting new probe.\n");
+			warn++;
+		} else {
+			file = find_trace_probe_file(tp, top_trace_array());
+			if (WARN_ON_ONCE(file == NULL)) {
+				pr_warn("error on getting probe file.\n");
+				warn++;
+			} else
+				enable_trace_probe(tp, file);
+		}
+	}
+
+	ret = traceprobe_command("r:testprobe2 kprobe_trace_selftest_target "
+				  "$retval", create_trace_probe);
+	if (WARN_ON_ONCE(ret)) {
+		pr_warn("error on probing function return.\n");
+		warn++;
+	} else {
+		/* Enable trace point */
+		tp = find_trace_probe("testprobe2", KPROBE_EVENT_SYSTEM);
+		if (WARN_ON_ONCE(tp == NULL)) {
+			pr_warn("error on getting 2nd new probe.\n");
+			warn++;
+		} else {
+			file = find_trace_probe_file(tp, top_trace_array());
+			if (WARN_ON_ONCE(file == NULL)) {
+				pr_warn("error on getting probe file.\n");
+				warn++;
+			} else
+				enable_trace_probe(tp, file);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (warn)
@@ -2314,6 +2860,7 @@ static __init int kprobe_trace_self_tests_init(void)
 
 	ret = target(1, 2, 3, 4, 5, 6);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* Disable trace points before removing it */
@@ -2341,15 +2888,57 @@ static __init int kprobe_trace_self_tests_init(void)
 	ret = command_trace_probe("-:testprobe2");
 	if (WARN_ON_ONCE(ret)) {
 		pr_warning("error on deleting a probe.\n");
+=======
+	/* Disable trace points before removing it */
+	tp = find_trace_probe("testprobe", KPROBE_EVENT_SYSTEM);
+	if (WARN_ON_ONCE(tp == NULL)) {
+		pr_warn("error on getting test probe.\n");
+		warn++;
+	} else {
+		file = find_trace_probe_file(tp, top_trace_array());
+		if (WARN_ON_ONCE(file == NULL)) {
+			pr_warn("error on getting probe file.\n");
+			warn++;
+		} else
+			disable_trace_probe(tp, file);
+	}
+
+	tp = find_trace_probe("testprobe2", KPROBE_EVENT_SYSTEM);
+	if (WARN_ON_ONCE(tp == NULL)) {
+		pr_warn("error on getting 2nd test probe.\n");
+		warn++;
+	} else {
+		file = find_trace_probe_file(tp, top_trace_array());
+		if (WARN_ON_ONCE(file == NULL)) {
+			pr_warn("error on getting probe file.\n");
+			warn++;
+		} else
+			disable_trace_probe(tp, file);
+	}
+
+	ret = traceprobe_command("-:testprobe", create_trace_probe);
+	if (WARN_ON_ONCE(ret)) {
+		pr_warn("error on deleting a probe.\n");
+		warn++;
+	}
+
+	ret = traceprobe_command("-:testprobe2", create_trace_probe);
+	if (WARN_ON_ONCE(ret)) {
+		pr_warn("error on deleting a probe.\n");
+>>>>>>> refs/remotes/origin/master
 		warn++;
 	}
 
 end:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cleanup_all_probes();
 =======
 	release_all_trace_probes();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_all_trace_probes();
+>>>>>>> refs/remotes/origin/master
 	if (warn)
 		pr_cont("NG: Some tests are failed. Please check them.\n");
 	else

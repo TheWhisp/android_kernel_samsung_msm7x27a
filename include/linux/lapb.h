@@ -45,11 +45,16 @@ struct lapb_parms_struct {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int lapb_register(struct net_device *dev, struct lapb_register_struct *callbacks);
 =======
 extern int lapb_register(struct net_device *dev,
 			 const struct lapb_register_struct *callbacks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int lapb_register(struct net_device *dev,
+			 const struct lapb_register_struct *callbacks);
+>>>>>>> refs/remotes/origin/master
 extern int lapb_unregister(struct net_device *dev);
 extern int lapb_getparms(struct net_device *dev, struct lapb_parms_struct *parms);
 extern int lapb_setparms(struct net_device *dev, struct lapb_parms_struct *parms);

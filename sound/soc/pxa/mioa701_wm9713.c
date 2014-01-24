@@ -56,8 +56,11 @@
 #include "pxa2xx-ac97.h"
 #include "../codecs/wm9713.h"
 
+<<<<<<< HEAD
 #define ARRAY_AND_SIZE(x)	(x), ARRAY_SIZE(x)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define AC97_GPIO_PULL		0x58
 
 /* Use GPIO8 for rear speaker amplifier */
@@ -133,10 +136,18 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
 	unsigned short reg;
 
 	/* Add mioa701 specific widgets */
+<<<<<<< HEAD
 	snd_soc_dapm_new_controls(dapm, ARRAY_AND_SIZE(mioa701_dapm_widgets));
 
 	/* Set up mioa701 specific audio path audio_mapnects */
 	snd_soc_dapm_add_routes(dapm, ARRAY_AND_SIZE(audio_map));
+=======
+	snd_soc_dapm_new_controls(dapm, mioa701_dapm_widgets,
+				  ARRAY_SIZE(mioa701_dapm_widgets));
+
+	/* Set up mioa701 specific audio path audio_mapnects */
+	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
+>>>>>>> refs/remotes/origin/master
 
 	/* Prepare GPIO8 for rear speaker amplifier */
 	reg = codec->driver->read(codec, AC97_GPIO_CFG);
@@ -152,9 +163,12 @@ static int mioa701_wm9713_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_enable_pin(dapm, "GSM Line In");
 	snd_soc_dapm_enable_pin(dapm, "GSM Line Out");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -186,22 +200,33 @@ static struct snd_soc_dai_link mioa701_dai[] = {
 static struct snd_soc_card mioa701 = {
 	.name = "MioA701",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner = THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner = THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link = mioa701_dai,
 	.num_links = ARRAY_SIZE(mioa701_dai),
 };
 
+<<<<<<< HEAD
 static struct platform_device *mioa701_snd_device;
 
 static int mioa701_wm9713_probe(struct platform_device *pdev)
 {
 	int ret;
+=======
+static int mioa701_wm9713_probe(struct platform_device *pdev)
+{
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	if (!machine_is_mioa701())
 		return -ENODEV;
 
+<<<<<<< HEAD
 	dev_warn(&pdev->dev, "Be warned that incorrect mixers/muxes setup will"
 		 "lead to overheating and possible destruction of your device."
 		 "Do not use without a good knowledge of mio's board design!\n");
@@ -223,11 +248,28 @@ static int mioa701_wm9713_probe(struct platform_device *pdev)
 static int __devexit mioa701_wm9713_remove(struct platform_device *pdev)
 {
 	platform_device_unregister(mioa701_snd_device);
+=======
+	mioa701.dev = &pdev->dev;
+	rc =  snd_soc_register_card(&mioa701);
+	if (!rc)
+		dev_warn(&pdev->dev, "Be warned that incorrect mixers/muxes setup will"
+			 "lead to overheating and possible destruction of your device."
+			 " Do not use without a good knowledge of mio's board design!\n");
+	return rc;
+}
+
+static int mioa701_wm9713_remove(struct platform_device *pdev)
+{
+	struct snd_soc_card *card = platform_get_drvdata(pdev);
+
+	snd_soc_unregister_card(card);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver mioa701_wm9713_driver = {
 	.probe		= mioa701_wm9713_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mioa701_wm9713_remove),
 	.driver		= {
 		.name		= "mioa701-wm9713",
@@ -251,6 +293,17 @@ module_exit(mioa701_asoc_exit);
 =======
 module_platform_driver(mioa701_wm9713_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= mioa701_wm9713_remove,
+	.driver		= {
+		.name		= "mioa701-wm9713",
+		.owner		= THIS_MODULE,
+		.pm     = &snd_soc_pm_ops,
+	},
+};
+
+module_platform_driver(mioa701_wm9713_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Robert Jarzmik (rjarzmik@free.fr)");

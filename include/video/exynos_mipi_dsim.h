@@ -216,11 +216,18 @@ struct mipi_dsim_config {
  *	automatically.
  * @e_clk_src: select byte clock source.
  * @pd: pointer to MIPI-DSI driver platform data.
+<<<<<<< HEAD
+=======
+ * @phy: pointer to the MIPI-DSI PHY
+>>>>>>> refs/remotes/origin/master
  */
 struct mipi_dsim_device {
 	struct device			*dev;
 	int				id;
+<<<<<<< HEAD
 	struct resource			*res;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct clk			*clock;
 	unsigned int			irq;
 	void __iomem			*reg_base;
@@ -237,6 +244,10 @@ struct mipi_dsim_device {
 	bool				suspended;
 
 	struct mipi_dsim_platform_data	*pd;
+<<<<<<< HEAD
+=======
+	struct phy			*phy;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -249,7 +260,10 @@ struct mipi_dsim_device {
  * @enabled: indicate whether mipi controller got enabled or not.
  * @lcd_panel_info: pointer for lcd panel specific structure.
  *	this structure specifies width, height, timing and polarity and so on.
+<<<<<<< HEAD
  * @phy_enable: pointer to a callback controlling D-PHY enable/reset
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct mipi_dsim_platform_data {
 	char				lcd_panel_name[PANEL_NAME_SIZE];
@@ -257,8 +271,11 @@ struct mipi_dsim_platform_data {
 	struct mipi_dsim_config		*dsim_config;
 	unsigned int			enabled;
 	void				*lcd_panel_info;
+<<<<<<< HEAD
 
 	int (*phy_enable)(struct platform_device *pdev, bool on);
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -315,6 +332,10 @@ struct mipi_dsim_lcd_device {
 	int			id;
 	int			bus_id;
 	int			irq;
+<<<<<<< HEAD
+=======
+	int			panel_reverse;
+>>>>>>> refs/remotes/origin/master
 
 	struct mipi_dsim_device *master;
 	void			*platform_data;

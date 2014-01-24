@@ -25,7 +25,11 @@
  * Date: May 21, 1996
  *
  * Functions:
+<<<<<<< HEAD
  *      ETHbyGetHashIndexByCrc32 - Caculate multicast hash value by CRC32
+=======
+ *      ETHbyGetHashIndexByCrc32 - Calculate multicast hash value by CRC32
+>>>>>>> refs/remotes/origin/master
  *      ETHbIsBufferCrc32Ok - Check CRC value of the buffer if Ok or not
  *
  * Revision History:
@@ -47,10 +51,15 @@
 
 /*---------------------  Export Variables  --------------------------*/
 
+<<<<<<< HEAD
 
 
 /*
  * Description: Caculate multicast hash value by CRC32
+=======
+/*
+ * Description: Calculate multicast hash value by CRC32
+>>>>>>> refs/remotes/origin/master
  *
  * Parameters:
  *  In:
@@ -61,6 +70,7 @@
  * Return Value: Hash value
  *
  */
+<<<<<<< HEAD
 unsigned char ETHbyGetHashIndexByCrc32 (unsigned char *pbyMultiAddr)
 {
     int     ii;
@@ -83,6 +93,29 @@ unsigned char ETHbyGetHashIndexByCrc32 (unsigned char *pbyMultiAddr)
 }
 
 
+=======
+unsigned char ETHbyGetHashIndexByCrc32(unsigned char *pbyMultiAddr)
+{
+	int     ii;
+	unsigned char byTmpHash;
+	unsigned char byHash = 0;
+
+	// get the least 6-bits from CRC generator
+	byTmpHash = (unsigned char)(CRCdwCrc32(pbyMultiAddr, ETH_ALEN,
+					       0xFFFFFFFFL) & 0x3F);
+	// reverse most bit to least bit
+	for (ii = 0; ii < (sizeof(byTmpHash) * 8); ii++) {
+		byHash <<= 1;
+		if (byTmpHash & 0x01)
+			byHash |= 1;
+		byTmpHash >>= 1;
+	}
+
+	// adjust 6-bits to the right most
+	return byHash >> 2;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description: Check CRC value of the buffer if Ok or not
  *
@@ -96,6 +129,7 @@ unsigned char ETHbyGetHashIndexByCrc32 (unsigned char *pbyMultiAddr)
  * Return Value: true if ok; false if error.
  *
  */
+<<<<<<< HEAD
 bool ETHbIsBufferCrc32Ok (unsigned char *pbyBuffer, unsigned int cbFrameLength)
 {
     unsigned long dwCRC;
@@ -107,3 +141,15 @@ bool ETHbIsBufferCrc32Ok (unsigned char *pbyBuffer, unsigned int cbFrameLength)
     return true;
 }
 
+=======
+bool ETHbIsBufferCrc32Ok(unsigned char *pbyBuffer, unsigned int cbFrameLength)
+{
+	unsigned long dwCRC;
+
+	dwCRC = CRCdwGetCrc32(pbyBuffer, cbFrameLength - 4);
+	if (cpu_to_le32(*((unsigned long *)(pbyBuffer + cbFrameLength - 4))) != dwCRC) {
+		return false;
+	}
+	return true;
+}
+>>>>>>> refs/remotes/origin/master

@@ -52,17 +52,23 @@ CONFIG_BLK_DEV_RAM_SIZE=35000
 # CONFIG_MISC_DEVICES is not set
 CONFIG_NETDEVICES=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_NET_ETHERNET=y
 CONFIG_IBM_NEW_EMAC=y
 CONFIG_IBM_NEW_EMAC_RXB=256
 CONFIG_IBM_NEW_EMAC_TXB=256
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_ETHERNET=y
 CONFIG_NET_VENDOR_IBM=y
 CONFIG_IBM_EMAC=y
 CONFIG_IBM_EMAC_RXB=256
 CONFIG_IBM_EMAC_TXB=256
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_NETDEV_1000 is not set
 # CONFIG_NETDEV_10000 is not set
 # CONFIG_INPUT is not set

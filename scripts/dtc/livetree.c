@@ -29,16 +29,38 @@ void add_label(struct label **labels, char *label)
 	struct label *new;
 
 	/* Make sure the label isn't already there */
+<<<<<<< HEAD
 	for_each_label(*labels, new)
 		if (streq(new->label, label))
 			return;
 
 	new = xmalloc(sizeof(*new));
+=======
+	for_each_label_withdel(*labels, new)
+		if (streq(new->label, label)) {
+			new->deleted = 0;
+			return;
+		}
+
+	new = xmalloc(sizeof(*new));
+	memset(new, 0, sizeof(*new));
+>>>>>>> refs/remotes/origin/master
 	new->label = label;
 	new->next = *labels;
 	*labels = new;
 }
 
+<<<<<<< HEAD
+=======
+void delete_labels(struct label **labels)
+{
+	struct label *label;
+
+	for_each_label(*labels, label)
+		label->deleted = 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct property *build_property(char *name, struct data val)
 {
 	struct property *new = xmalloc(sizeof(*new));
@@ -51,6 +73,21 @@ struct property *build_property(char *name, struct data val)
 	return new;
 }
 
+<<<<<<< HEAD
+=======
+struct property *build_property_delete(char *name)
+{
+	struct property *new = xmalloc(sizeof(*new));
+
+	memset(new, 0, sizeof(*new));
+
+	new->name = name;
+	new->deleted = 1;
+
+	return new;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct property *chain_property(struct property *first, struct property *list)
 {
 	assert(first->next == NULL);
@@ -91,6 +128,20 @@ struct node *build_node(struct property *proplist, struct node *children)
 	return new;
 }
 
+<<<<<<< HEAD
+=======
+struct node *build_node_delete(void)
+{
+	struct node *new = xmalloc(sizeof(*new));
+
+	memset(new, 0, sizeof(*new));
+
+	new->deleted = 1;
+
+	return new;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct node *name_node(struct node *node, char *name)
 {
 	assert(node->name == NULL);
@@ -106,8 +157,15 @@ struct node *merge_nodes(struct node *old_node, struct node *new_node)
 	struct node *new_child, *old_child;
 	struct label *l;
 
+<<<<<<< HEAD
 	/* Add new node labels to old node */
 	for_each_label(new_node->labels, l)
+=======
+	old_node->deleted = 0;
+
+	/* Add new node labels to old node */
+	for_each_label_withdel(new_node->labels, l)
+>>>>>>> refs/remotes/origin/master
 		add_label(&old_node->labels, l->label);
 
 	/* Move properties from the new node to the old node.  If there
@@ -118,6 +176,7 @@ struct node *merge_nodes(struct node *old_node, struct node *new_node)
 		new_node->proplist = new_prop->next;
 		new_prop->next = NULL;
 
+<<<<<<< HEAD
 		/* Look for a collision, set new value if there is */
 		for_each_property(old_node, old_prop) {
 			if (streq(old_prop->name, new_prop->name)) {
@@ -126,6 +185,23 @@ struct node *merge_nodes(struct node *old_node, struct node *new_node)
 					add_label(&old_prop->labels, l->label);
 
 				old_prop->val = new_prop->val;
+=======
+		if (new_prop->deleted) {
+			delete_property_by_name(old_node, new_prop->name);
+			free(new_prop);
+			continue;
+		}
+
+		/* Look for a collision, set new value if there is */
+		for_each_property_withdel(old_node, old_prop) {
+			if (streq(old_prop->name, new_prop->name)) {
+				/* Add new labels to old property */
+				for_each_label_withdel(new_prop->labels, l)
+					add_label(&old_prop->labels, l->label);
+
+				old_prop->val = new_prop->val;
+				old_prop->deleted = 0;
+>>>>>>> refs/remotes/origin/master
 				free(new_prop);
 				new_prop = NULL;
 				break;
@@ -146,8 +222,19 @@ struct node *merge_nodes(struct node *old_node, struct node *new_node)
 		new_child->parent = NULL;
 		new_child->next_sibling = NULL;
 
+<<<<<<< HEAD
 		/* Search for a collision.  Merge if there is */
 		for_each_child(old_node, old_child) {
+=======
+		if (new_child->deleted) {
+			delete_node_by_name(old_node, new_child->name);
+			free(new_child);
+			continue;
+		}
+
+		/* Search for a collision.  Merge if there is */
+		for_each_child_withdel(old_node, old_child) {
+>>>>>>> refs/remotes/origin/master
 			if (streq(old_child->name, new_child->name)) {
 				merge_nodes(old_child, new_child);
 				new_child = NULL;
@@ -155,7 +242,11 @@ struct node *merge_nodes(struct node *old_node, struct node *new_node)
 			}
 		}
 
+<<<<<<< HEAD
 		/* if no collision occurred, add child to the old node. */
+=======
+		/* if no collision occured, add child to the old node. */
+>>>>>>> refs/remotes/origin/master
 		if (new_child)
 			add_child(old_node, new_child);
 	}
@@ -188,6 +279,28 @@ void add_property(struct node *node, struct property *prop)
 	*p = prop;
 }
 
+<<<<<<< HEAD
+=======
+void delete_property_by_name(struct node *node, char *name)
+{
+	struct property *prop = node->proplist;
+
+	while (prop) {
+		if (!strcmp(prop->name, name)) {
+			delete_property(prop);
+			return;
+		}
+		prop = prop->next;
+	}
+}
+
+void delete_property(struct property *prop)
+{
+	prop->deleted = 1;
+	delete_labels(&prop->labels);
+}
+
+>>>>>>> refs/remotes/origin/master
 void add_child(struct node *parent, struct node *child)
 {
 	struct node **p;
@@ -202,6 +315,35 @@ void add_child(struct node *parent, struct node *child)
 	*p = child;
 }
 
+<<<<<<< HEAD
+=======
+void delete_node_by_name(struct node *parent, char *name)
+{
+	struct node *node = parent->children;
+
+	while (node) {
+		if (!strcmp(node->name, name)) {
+			delete_node(node);
+			return;
+		}
+		node = node->next_sibling;
+	}
+}
+
+void delete_node(struct node *node)
+{
+	struct property *prop;
+	struct node *child;
+
+	node->deleted = 1;
+	for_each_child(node, child)
+		delete_node(child);
+	for_each_property(node, prop)
+		delete_property(prop);
+	delete_labels(&node->labels);
+}
+
+>>>>>>> refs/remotes/origin/master
 struct reserve_info *build_reserve_entry(uint64_t address, uint64_t size)
 {
 	struct reserve_info *new = xmalloc(sizeof(*new));
@@ -353,8 +495,16 @@ struct node *get_node_by_path(struct node *tree, const char *path)
 	const char *p;
 	struct node *child;
 
+<<<<<<< HEAD
 	if (!path || ! (*path))
 		return tree;
+=======
+	if (!path || ! (*path)) {
+		if (tree->deleted)
+			return NULL;
+		return tree;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	while (path[0] == '/')
 		path++;
@@ -397,8 +547,16 @@ struct node *get_node_by_phandle(struct node *tree, cell_t phandle)
 
 	assert((phandle != 0) && (phandle != -1));
 
+<<<<<<< HEAD
 	if (tree->phandle == phandle)
 		return tree;
+=======
+	if (tree->phandle == phandle) {
+		if (tree->deleted)
+			return NULL;
+		return tree;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	for_each_child(tree, child) {
 		node = get_node_by_phandle(child, phandle);
@@ -535,7 +693,11 @@ static void sort_properties(struct node *node)
 	int n = 0, i = 0;
 	struct property *prop, **tbl;
 
+<<<<<<< HEAD
 	for_each_property(node, prop)
+=======
+	for_each_property_withdel(node, prop)
+>>>>>>> refs/remotes/origin/master
 		n++;
 
 	if (n == 0)
@@ -543,7 +705,11 @@ static void sort_properties(struct node *node)
 
 	tbl = xmalloc(n * sizeof(*tbl));
 
+<<<<<<< HEAD
 	for_each_property(node, prop)
+=======
+	for_each_property_withdel(node, prop)
+>>>>>>> refs/remotes/origin/master
 		tbl[i++] = prop;
 
 	qsort(tbl, n, sizeof(*tbl), cmp_prop);
@@ -571,7 +737,11 @@ static void sort_subnodes(struct node *node)
 	int n = 0, i = 0;
 	struct node *subnode, **tbl;
 
+<<<<<<< HEAD
 	for_each_child(node, subnode)
+=======
+	for_each_child_withdel(node, subnode)
+>>>>>>> refs/remotes/origin/master
 		n++;
 
 	if (n == 0)
@@ -579,7 +749,11 @@ static void sort_subnodes(struct node *node)
 
 	tbl = xmalloc(n * sizeof(*tbl));
 
+<<<<<<< HEAD
 	for_each_child(node, subnode)
+=======
+	for_each_child_withdel(node, subnode)
+>>>>>>> refs/remotes/origin/master
 		tbl[i++] = subnode;
 
 	qsort(tbl, n, sizeof(*tbl), cmp_subnode);
@@ -598,7 +772,11 @@ static void sort_node(struct node *node)
 
 	sort_properties(node);
 	sort_subnodes(node);
+<<<<<<< HEAD
 	for_each_child(node, c)
+=======
+	for_each_child_withdel(node, c)
+>>>>>>> refs/remotes/origin/master
 		sort_node(c);
 }
 

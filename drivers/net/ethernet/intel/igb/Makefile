@@ -1,7 +1,11 @@
 ################################################################################
 #
 # Intel 82575 PCI-Express Ethernet Linux driver
+<<<<<<< HEAD
 # Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+# Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU General Public License,
@@ -33,5 +37,10 @@
 obj-$(CONFIG_IGB) += igb.o
 
 igb-objs := igb_main.o igb_ethtool.o e1000_82575.o \
+<<<<<<< HEAD
 	    e1000_mac.o e1000_nvm.o e1000_phy.o e1000_mbx.o
 
+=======
+	    e1000_mac.o e1000_nvm.o e1000_phy.o e1000_mbx.o \
+	    e1000_i210.o igb_ptp.o igb_hwmon.o
+>>>>>>> refs/remotes/origin/master

@@ -25,6 +25,10 @@
 #include <linux/console.h>
 #include <linux/consolemap.h>
 #include <linux/signal.h>
+<<<<<<< HEAD
+=======
+#include <linux/suspend.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/timex.h>
 
 #include <asm/io.h>
@@ -111,6 +115,7 @@ void vt_event_post(unsigned int event, unsigned int old, unsigned int new)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  *	vt_event_wait		-	wait for an event
  *	@vw: our event
@@ -124,6 +129,9 @@ static void vt_event_wait(struct vt_event_wait *vw)
 =======
 static void __vt_event_queue(struct vt_event_wait *vw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __vt_event_queue(struct vt_event_wait *vw)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	/* Prepare the event */
@@ -134,9 +142,12 @@ static void __vt_event_queue(struct vt_event_wait *vw)
 	list_add(&vw->list, &vt_events);
 	spin_unlock_irqrestore(&vt_event_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Wait for it to pass */
 	wait_event_interruptible_tty(vt_event_waitqueue, vw->done);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __vt_event_wait(struct vt_event_wait *vw)
@@ -149,7 +160,10 @@ static void __vt_event_dequeue(struct vt_event_wait *vw)
 {
 	unsigned long flags;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Dequeue it */
 	spin_lock_irqsave(&vt_event_lock, flags);
 	list_del(&vw->list);
@@ -158,7 +172,10 @@ static void __vt_event_dequeue(struct vt_event_wait *vw)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	vt_event_wait		-	wait for an event
  *	@vw: our event
  *
@@ -175,7 +192,10 @@ static void vt_event_wait(struct vt_event_wait *vw)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	vt_event_wait_ioctl	-	event ioctl handler
  *	@arg: argument to ioctl
  *
@@ -216,11 +236,14 @@ int vt_waitactive(int n)
 	struct vt_event_wait vw;
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (n == fg_console + 1)
 			break;
 		vw.event.event = VT_EVENT_SWITCH;
 		vt_event_wait(&vw);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		vw.event.event = VT_EVENT_SWITCH;
 		__vt_event_queue(&vw);
 		if (n == fg_console + 1) {
@@ -229,7 +252,10 @@ int vt_waitactive(int n)
 		}
 		__vt_event_wait(&vw);
 		__vt_event_dequeue(&vw);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (vw.done == 0)
 			return -EINTR;
 	} while (vw.event.newev != n);
@@ -244,6 +270,7 @@ int vt_waitactive(int n)
 #define GPLAST 0x3df
 #define GPNUM (GPLAST - GPFIRST + 1)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define i (tmp.kb_index)
 #define s (tmp.kb_table)
@@ -474,6 +501,9 @@ reterr:
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 
 static inline int 
 do_fontx_ioctl(int cmd, struct consolefontdesc __user *user_cfd, int perm, struct console_font_op *op)
@@ -539,6 +569,51 @@ do_unimap_ioctl(int cmd, struct unimapdesc __user *user_ud, int perm, struct vc_
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* deallocate a single console, if possible (leave 0) */
+static int vt_disallocate(unsigned int vc_num)
+{
+	struct vc_data *vc = NULL;
+	int ret = 0;
+
+	console_lock();
+	if (VT_BUSY(vc_num))
+		ret = -EBUSY;
+	else if (vc_num)
+		vc = vc_deallocate(vc_num);
+	console_unlock();
+
+	if (vc && vc_num >= MIN_NR_CONSOLES) {
+		tty_port_destroy(&vc->port);
+		kfree(vc);
+	}
+
+	return ret;
+}
+
+/* deallocate all unused consoles, but leave 0 */
+static void vt_disallocate_all(void)
+{
+	struct vc_data *vc[MAX_NR_CONSOLES];
+	int i;
+
+	console_lock();
+	for (i = 1; i < MAX_NR_CONSOLES; i++)
+		if (!VT_BUSY(i))
+			vc[i] = vc_deallocate(i);
+		else
+			vc[i] = NULL;
+	console_unlock();
+
+	for (i = 1; i < MAX_NR_CONSOLES; i++) {
+		if (vc[i] && i >= MIN_NR_CONSOLES) {
+			tty_port_destroy(&vc[i]->port);
+			kfree(vc[i]);
+		}
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -551,9 +626,12 @@ int vt_ioctl(struct tty_struct *tty,
 	struct vc_data *vc = tty->driver_data;
 	struct console_font_op op;	/* used in multiple places here */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kbd_struct * kbd;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int console;
 	unsigned char ucval;
 	unsigned int uival;
@@ -564,9 +642,12 @@ int vt_ioctl(struct tty_struct *tty,
 	console = vc->vc_num;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_lock();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!vc_cons_allocated(console)) { 	/* impossible? */
 		ret = -ENOIOCTLCMD;
@@ -583,9 +664,12 @@ int vt_ioctl(struct tty_struct *tty,
 		perm = 1;
  
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kbd = kbd_table + console;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (cmd) {
 	case TIOCLINUX:
 		ret = tioclinux(tty, arg);
@@ -593,19 +677,27 @@ int vt_ioctl(struct tty_struct *tty,
 	case KIOCSOUND:
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The use of PIT_TICK_RATE is historic, it used to be
 		 * the platform-dependent CLOCK_TICK_RATE between 2.6.12
 		 * and 2.6.36, which was a minor but unfortunate ABI
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * change.
 =======
 		 * change. kd_mksound is locked by the input layer.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * change. kd_mksound is locked by the input layer.
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (arg)
 			arg = PIT_TICK_RATE / arg;
@@ -615,10 +707,14 @@ int vt_ioctl(struct tty_struct *tty,
 	case KDMKTONE:
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 	{
 		unsigned int ticks, count;
 		
@@ -637,17 +733,23 @@ int vt_ioctl(struct tty_struct *tty,
 	case KDGKBTYPE:
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * this is naive.
 		 */
 		ucval = KB_101;
 		goto setchar;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * this is naïve.
 		 */
 		ucval = KB_101;
 		ret = put_user(ucval, (char __user *)arg);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * These cannot be implemented on any machine that implements
@@ -662,10 +764,15 @@ int vt_ioctl(struct tty_struct *tty,
 		 * KDADDIO and KDDELIO may be able to add ports beyond what
 		 * we reject here, but to be safe...
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		 *
 		 * These are locked internally via sys_ioperm
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 *
+		 * These are locked internally via sys_ioperm
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (arg < GPFIRST || arg > GPLAST) {
 			ret = -EINVAL;
@@ -689,10 +796,14 @@ int vt_ioctl(struct tty_struct *tty,
 		
 		if (!capable(CAP_SYS_TTY_CONFIG))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 		if (copy_from_user(&kbrep, up, sizeof(struct kbd_repeat))) {
 			ret =  -EFAULT;
@@ -717,10 +828,14 @@ int vt_ioctl(struct tty_struct *tty,
 		 */
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		switch (arg) {
 		case KD_GRAPHICS:
 			break;
@@ -734,9 +849,13 @@ int vt_ioctl(struct tty_struct *tty,
 			goto out;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* FIXME: this needs the console lock extending */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* FIXME: this needs the console lock extending */
+>>>>>>> refs/remotes/origin/master
 		if (vc->vc_mode == (unsigned char) arg)
 			break;
 		vc->vc_mode = (unsigned char) arg;
@@ -768,6 +887,7 @@ int vt_ioctl(struct tty_struct *tty,
 
 	case KDSKBMODE:
 		if (!perm)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			goto eperm;
 		switch(arg) {
@@ -815,6 +935,8 @@ int vt_ioctl(struct tty_struct *tty,
 		}
 		goto setint;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return -EPERM;
 		ret = vt_do_kdskbmode(console, arg);
 		if (ret == 0)
@@ -825,11 +947,15 @@ int vt_ioctl(struct tty_struct *tty,
 		uival = vt_do_kdgkbmode(console);
 		ret = put_user(uival, (int __user *)arg);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* this could be folded into KDSKBMODE, but for compatibility
 	   reasons it is not so easy to fold KDGKBMETA into KDGKBMODE */
 	case KDSKBMETA:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		switch(arg) {
 		  case K_METABIT:
@@ -846,13 +972,18 @@ int vt_ioctl(struct tty_struct *tty,
 	case KDGKBMETA:
 		uival = (vc_kbd_mode(kbd, VC_META) ? K_ESCPREFIX : K_METABIT);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = vt_do_kdskbmeta(console, arg);
 		break;
 
 	case KDGKBMETA:
 		/* FIXME: should review whether this is worth locking */
 		uival = vt_do_kdgkbmeta(console);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	setint:
 		ret = put_user(uival, (int __user *)arg);
 		break;
@@ -862,23 +993,32 @@ int vt_ioctl(struct tty_struct *tty,
 		if(!capable(CAP_SYS_TTY_CONFIG))
 			perm = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = do_kbkeycode_ioctl(cmd, up, perm);
 =======
 		ret = vt_do_kbkeycode_ioctl(cmd, up, perm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = vt_do_kbkeycode_ioctl(cmd, up, perm);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case KDGKBENT:
 	case KDSKBENT:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = do_kdsk_ioctl(cmd, up, perm, kbd);
 =======
 		ret = vt_do_kdsk_ioctl(cmd, up, perm, console);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = vt_do_kdsk_ioctl(cmd, up, perm, console);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case KDGKBSENT:
 	case KDSKBSENT:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = do_kdgkb_ioctl(cmd, up, perm);
 		break;
@@ -967,6 +1107,8 @@ int vt_ioctl(struct tty_struct *tty,
 		break;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = vt_do_kdgkb_ioctl(cmd, up, perm);
 		break;
 
@@ -978,11 +1120,15 @@ int vt_ioctl(struct tty_struct *tty,
 	case KDSKBDIACRUC:
 		ret = vt_do_diacrit(cmd, up, perm);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* the ioctls below read/set the flags usually shown in the leds */
 	/* don't use them - they will go away without warning */
 	case KDGKBLED:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ucval = kbd->ledflagstate | (kbd->default_ledflagstate << 4);
 		goto setchar;
@@ -1012,11 +1158,16 @@ int vt_ioctl(struct tty_struct *tty,
 			goto eperm;
 		setledstate(kbd, arg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case KDSKBLED:
 	case KDGETLED:
 	case KDSETLED:
 		ret = vt_do_kdskled(console, cmd, arg, perm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	/*
@@ -1030,10 +1181,14 @@ int vt_ioctl(struct tty_struct *tty,
 	{
 		if (!perm || !capable(CAP_KILL))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		if (!valid_signal(arg) || arg < 1 || arg == SIGKILL)
 			ret = -EINVAL;
 		else {
@@ -1052,10 +1207,14 @@ int vt_ioctl(struct tty_struct *tty,
 
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		if (copy_from_user(&tmp, up, sizeof(struct vt_mode))) {
 			ret = -EFAULT;
 			goto out;
@@ -1102,9 +1261,13 @@ int vt_ioctl(struct tty_struct *tty,
 		unsigned short state, mask;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* Review: FIXME: Console lock ? */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* Review: FIXME: Console lock ? */
+>>>>>>> refs/remotes/origin/master
 		if (put_user(fg_console + 1, &vtstat->v_active))
 			ret = -EFAULT;
 		else {
@@ -1123,9 +1286,13 @@ int vt_ioctl(struct tty_struct *tty,
 	 */
 	case VT_OPENQRY:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* FIXME: locking ? - but then this is a stupid API */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* FIXME: locking ? - but then this is a stupid API */
+>>>>>>> refs/remotes/origin/master
 		for (i = 0; i < MAX_NR_CONSOLES; ++i)
 			if (! VT_IS_IN_USE(i))
 				break;
@@ -1140,10 +1307,14 @@ int vt_ioctl(struct tty_struct *tty,
 	case VT_ACTIVATE:
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		if (arg == 0 || arg > MAX_NR_CONSOLES)
 			ret =  -ENXIO;
 		else {
@@ -1163,10 +1334,14 @@ int vt_ioctl(struct tty_struct *tty,
 
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 		if (copy_from_user(&vsa, (struct vt_setactivate __user *)arg,
 					sizeof(struct vt_setactivate))) {
@@ -1195,9 +1370,13 @@ int vt_ioctl(struct tty_struct *tty,
 				break;
 			/* Commence switch and lock */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* Review set_console locks */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* Review set_console locks */
+>>>>>>> refs/remotes/origin/master
 			set_console(vsa.console);
 		}
 		break;
@@ -1209,10 +1388,14 @@ int vt_ioctl(struct tty_struct *tty,
 	case VT_WAITACTIVE:
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		if (arg == 0 || arg > MAX_NR_CONSOLES)
 			ret = -ENXIO;
 		else
@@ -1232,16 +1415,22 @@ int vt_ioctl(struct tty_struct *tty,
 	case VT_RELDISP:
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 
 		if (vc->vt_mode.mode != VT_PROCESS) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return -EPERM;
 
 		console_lock();
 		if (vc->vt_mode.mode != VT_PROCESS) {
 			console_unlock();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ret = -EINVAL;
 			break;
 		}
@@ -1249,9 +1438,12 @@ int vt_ioctl(struct tty_struct *tty,
 		 * Switching-from response
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		console_lock();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (vc->vt_newvt >= 0) {
 			if (arg == 0)
 				/*
@@ -1301,6 +1493,7 @@ int vt_ioctl(struct tty_struct *tty,
 			ret = -ENXIO;
 			break;
 		}
+<<<<<<< HEAD
 		if (arg == 0) {
 		    /* deallocate all unused consoles, but leave 0 */
 			console_lock();
@@ -1319,6 +1512,12 @@ int vt_ioctl(struct tty_struct *tty,
 				console_unlock();
 			}
 		}
+=======
+		if (arg == 0)
+			vt_disallocate_all();
+		else
+			ret = vt_disallocate(--arg);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case VT_RESIZE:
@@ -1329,10 +1528,14 @@ int vt_ioctl(struct tty_struct *tty,
 		ushort ll,cc;
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		if (get_user(ll, &vtsizes->v_rows) ||
 		    get_user(cc, &vtsizes->v_cols))
 			ret = -EFAULT;
@@ -1344,9 +1547,13 @@ int vt_ioctl(struct tty_struct *tty,
 				if (vc) {
 					vc->vc_resize_user = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					/* FIXME: review v tty lock */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					/* FIXME: review v tty lock */
+>>>>>>> refs/remotes/origin/master
 					vc_resize(vc_cons[i].d, cc, ll);
 				}
 			}
@@ -1361,10 +1568,14 @@ int vt_ioctl(struct tty_struct *tty,
 		ushort ll,cc,vlin,clin,vcol,ccol;
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		if (!access_ok(VERIFY_READ, vtconsize,
 				sizeof(struct vt_consize))) {
 			ret = -EFAULT;
@@ -1421,10 +1632,14 @@ int vt_ioctl(struct tty_struct *tty,
 	case PIO_FONT: {
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		op.op = KD_FONT_OP_SET;
 		op.flags = KD_FONT_FLAG_OLD | KD_FONT_FLAG_DONT_RECALC;	/* Compatibility */
 		op.width = 8;
@@ -1466,10 +1681,14 @@ int vt_ioctl(struct tty_struct *tty,
 	{
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef BROKEN_GRAPHICS_PROGRAMS
 		/* With BROKEN_GRAPHICS_PROGRAMS defined, the default
@@ -1483,7 +1702,13 @@ int vt_ioctl(struct tty_struct *tty,
 		ret = con_font_op(vc_cons[fg_console].d, &op);
 		if (ret)
 			break;
+<<<<<<< HEAD
 		con_set_default_unimap(vc_cons[fg_console].d);
+=======
+		console_lock();
+		con_set_default_unimap(vc_cons[fg_console].d);
+		console_unlock();
+>>>>>>> refs/remotes/origin/master
 		break;
 		}
 #endif
@@ -1496,10 +1721,14 @@ int vt_ioctl(struct tty_struct *tty,
 		}
 		if (!perm && op.op != KD_FONT_OP_GET)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		ret = con_font_op(vc, &op);
 		if (ret)
 			break;
@@ -1512,12 +1741,16 @@ int vt_ioctl(struct tty_struct *tty,
 		if (!perm)
 			ret = -EPERM;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			ret = con_set_trans_old(up);
 		break;
 
 	case GIO_SCRNMAP:
 		ret = con_get_trans_old(up);
+<<<<<<< HEAD
 =======
 		else {
 			tty_lock();
@@ -1531,18 +1764,24 @@ int vt_ioctl(struct tty_struct *tty,
 		ret = con_get_trans_old(up);
 		tty_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case PIO_UNISCRNMAP:
 		if (!perm)
 			ret = -EPERM;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			ret = con_set_trans_new(up);
 		break;
 
 	case GIO_UNISCRNMAP:
 		ret = con_get_trans_new(up);
+<<<<<<< HEAD
 =======
 		else {
 			tty_lock();
@@ -1556,12 +1795,15 @@ int vt_ioctl(struct tty_struct *tty,
 		ret = con_get_trans_new(up);
 		tty_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case PIO_UNIMAPCLR:
 	      { struct unimapinit ui;
 		if (!perm)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto eperm;
 		ret = copy_from_user(&ui, up, sizeof(struct unimapinit));
 		if (ret)
@@ -1569,21 +1811,29 @@ int vt_ioctl(struct tty_struct *tty,
 		else
 			con_clear_unimap(vc, &ui);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return -EPERM;
 		ret = copy_from_user(&ui, up, sizeof(struct unimapinit));
 		if (ret)
 			ret = -EFAULT;
+<<<<<<< HEAD
 		else {
 			tty_lock();
 			con_clear_unimap(vc, &ui);
 			tty_unlock();
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		else
+			con_clear_unimap(vc, &ui);
+>>>>>>> refs/remotes/origin/master
 		break;
 	      }
 
 	case PIO_UNIMAP:
 	case GIO_UNIMAP:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = do_unimap_ioctl(cmd, up, perm, vc);
 =======
@@ -1591,24 +1841,35 @@ int vt_ioctl(struct tty_struct *tty,
 		ret = do_unimap_ioctl(cmd, up, perm, vc);
 		tty_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = do_unimap_ioctl(cmd, up, perm, vc);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case VT_LOCKSWITCH:
 		if (!capable(CAP_SYS_TTY_CONFIG))
 <<<<<<< HEAD
-			goto eperm;
-=======
-			return -EPERM;
->>>>>>> refs/remotes/origin/cm-10.0
-		vt_dont_switch = 1;
-		break;
-	case VT_UNLOCKSWITCH:
-		if (!capable(CAP_SYS_TTY_CONFIG))
 <<<<<<< HEAD
 			goto eperm;
 =======
 			return -EPERM;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
+		vt_dont_switch = 1;
+		break;
+	case VT_UNLOCKSWITCH:
+		if (!capable(CAP_SYS_TTY_CONFIG))
+<<<<<<< HEAD
+<<<<<<< HEAD
+			goto eperm;
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EPERM;
+>>>>>>> refs/remotes/origin/master
 		vt_dont_switch = 0;
 		break;
 	case VT_GETHIFONTMASK:
@@ -1623,6 +1884,7 @@ int vt_ioctl(struct tty_struct *tty,
 	}
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_unlock();
 	return ret;
 eperm:
@@ -1631,16 +1893,23 @@ eperm:
 =======
 	return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 void reset_vc(struct vc_data *vc)
 {
 	vc->vc_mode = KD_TEXT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kbd_table[vc->vc_num].kbdmode = default_utf8 ? VC_UNICODE : VC_XLATE;
 =======
 	vt_reset_unicode(vc->vc_num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vt_reset_unicode(vc->vc_num);
+>>>>>>> refs/remotes/origin/master
 	vc->vt_mode.mode = VT_AUTO;
 	vc->vt_mode.waitv = 0;
 	vc->vt_mode.relsig = 0;
@@ -1664,9 +1933,13 @@ void vc_SAK(struct work_struct *work)
 	vc = vc_con->d;
 	if (vc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* FIXME: review tty ref counting */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* FIXME: review tty ref counting */
+>>>>>>> refs/remotes/origin/master
 		tty = vc->port.tty;
 		/*
 		 * SAK should also work in all raw modes and reset
@@ -1800,10 +2073,13 @@ long vt_compat_ioctl(struct tty_struct *tty,
 	console = vc->vc_num;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_lock();
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!vc_cons_allocated(console)) { 	/* impossible? */
 		ret = -ENOIOCTLCMD;
 		goto out;
@@ -1833,12 +2109,16 @@ long vt_compat_ioctl(struct tty_struct *tty,
 	case PIO_UNIMAP:
 	case GIO_UNIMAP:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = compat_unimap_ioctl(cmd, up, perm, vc);
 =======
 		tty_lock();
 		ret = compat_unimap_ioctl(cmd, up, perm, vc);
 		tty_unlock();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = compat_unimap_ioctl(cmd, up, perm, vc);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	/*
@@ -1876,6 +2156,7 @@ long vt_compat_ioctl(struct tty_struct *tty,
 	}
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_unlock();
 	return ret;
 
@@ -1886,6 +2167,11 @@ fallback:
 
 fallback:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ret;
+
+fallback:
+>>>>>>> refs/remotes/origin/master
 	return vt_ioctl(tty, cmd, arg);
 }
 
@@ -2072,6 +2358,7 @@ int vt_move_to_console(unsigned int vt, int alloc)
 	}
 	console_unlock();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty_lock();
 	if (vt_waitactive(vt + 1)) {
 		pr_debug("Suspend: Can't switch VCs.");
@@ -2080,11 +2367,16 @@ int vt_move_to_console(unsigned int vt, int alloc)
 	}
 	tty_unlock();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (vt_waitactive(vt + 1)) {
 		pr_debug("Suspend: Can't switch VCs.");
 		return -EINTR;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return prev;
 }
 

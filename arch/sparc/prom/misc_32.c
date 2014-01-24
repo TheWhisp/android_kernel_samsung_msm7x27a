@@ -14,9 +14,12 @@
 #include <asm/oplib.h>
 #include <asm/auxio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void restore_current(void);
 

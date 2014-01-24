@@ -21,9 +21,12 @@
 #include <asm/irq.h>
 #include <asm/signal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <asm/mach/pci.h>
 #include <asm/hardware/iop3xx.h>
@@ -164,7 +167,11 @@ iop3xx_write_config(struct pci_bus *bus, unsigned int devfn, int where,
 	return PCIBIOS_SUCCESSFUL;
 }
 
+<<<<<<< HEAD
 static struct pci_ops iop3xx_ops = {
+=======
+struct pci_ops iop3xx_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read	= iop3xx_read_config,
 	.write	= iop3xx_write_config,
 };
@@ -196,6 +203,7 @@ int iop3xx_pci_setup(int nr, struct pci_sys_data *sys)
 	if (nr != 0)
 		return 0;
 
+<<<<<<< HEAD
 	res = kzalloc(2 * sizeof(struct resource), GFP_KERNEL);
 	if (!res)
 		panic("PCI: unable to alloc resources");
@@ -211,11 +219,23 @@ int iop3xx_pci_setup(int nr, struct pci_sys_data *sys)
 	res[1].name  = "IOP3XX PCI Memory Space";
 	res[1].flags = IORESOURCE_MEM;
 	request_resource(&iomem_resource, &res[1]);
+=======
+	res = kzalloc(sizeof(struct resource), GFP_KERNEL);
+	if (!res)
+		panic("PCI: unable to alloc resources");
+
+	res->start = IOP3XX_PCI_LOWER_MEM_PA;
+	res->end   = IOP3XX_PCI_LOWER_MEM_PA + IOP3XX_PCI_MEM_WINDOW_SIZE - 1;
+	res->name  = "IOP3XX PCI Memory Space";
+	res->flags = IORESOURCE_MEM;
+	request_resource(&iomem_resource, res);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Use whatever translation is already setup.
 	 */
 	sys->mem_offset = IOP3XX_PCI_LOWER_MEM_PA - *IOP3XX_OMWTVR0;
+<<<<<<< HEAD
 	sys->io_offset  = IOP3XX_PCI_LOWER_IO_PA - *IOP3XX_OIOWTVR;
 
 <<<<<<< HEAD
@@ -238,6 +258,14 @@ struct pci_bus *iop3xx_pci_scan_bus(int nr, struct pci_sys_data *sys)
 	return pci_scan_root_bus(NULL, sys->busnr, &iop3xx_ops, sys,
 				 &sys->resources);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pci_add_resource_offset(&sys->resources, res, sys->mem_offset);
+
+	pci_ioremap_io(0, IOP3XX_PCI_LOWER_IO_PA);
+
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init iop3xx_atu_setup(void)
@@ -388,11 +416,16 @@ void __init iop3xx_pci_preinit_cond(void)
 void __init iop3xx_pci_preinit(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pcibios_min_io = 0;
 	pcibios_min_mem = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcibios_min_mem = 0;
+
+>>>>>>> refs/remotes/origin/master
 	iop3xx_atu_disable();
 	iop3xx_atu_setup();
 	iop3xx_atu_debug();

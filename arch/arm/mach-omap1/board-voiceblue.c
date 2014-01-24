@@ -14,9 +14,13 @@
 
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -29,6 +33,7 @@
 #include <linux/serial_reg.h>
 #include <linux/smc91x.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 #include <mach/system.h>
@@ -36,10 +41,16 @@
 #include <linux/export.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/reboot.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <plat/board-voiceblue.h>
 <<<<<<< HEAD
 #include <plat/common.h>
@@ -58,13 +69,25 @@ static struct plat_serial8250_port voiceblue_ports[] = {
 		.irq		= OMAP_GPIO_IRQ(12),
 =======
 #include <mach/hardware.h>
+=======
+#include <mach/board-voiceblue.h>
+#include <mach/flash.h>
+#include <mach/mux.h>
+#include <mach/tc.h>
+
+#include <mach/hardware.h>
+#include <mach/usb.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "common.h"
 
 static struct plat_serial8250_port voiceblue_ports[] = {
 	{
 		.mapbase	= (unsigned long)(OMAP_CS1_PHYS + 0x40000),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 1,
@@ -73,9 +96,12 @@ static struct plat_serial8250_port voiceblue_ports[] = {
 	{
 		.mapbase	= (unsigned long)(OMAP_CS1_PHYS + 0x50000),
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(13),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 1,
@@ -84,9 +110,12 @@ static struct plat_serial8250_port voiceblue_ports[] = {
 	{
 		.mapbase	= (unsigned long)(OMAP_CS1_PHYS + 0x60000),
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(14),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 1,
@@ -95,9 +124,12 @@ static struct plat_serial8250_port voiceblue_ports[] = {
 	{
 		.mapbase	= (unsigned long)(OMAP_CS1_PHYS + 0x70000),
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= OMAP_GPIO_IRQ(15),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags		= UPF_BOOT_AUTOCONF | UPF_IOREMAP,
 		.iotype		= UPIO_MEM,
 		.regshift	= 1,
@@ -110,11 +142,14 @@ static struct platform_device serial_device = {
 	.name			= "serial8250",
 	.id			= PLAT8250_DEV_PLATFORM1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dev			= {
 		.platform_data	= voiceblue_ports,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ext_uart_init(void)
@@ -123,13 +158,19 @@ static int __init ext_uart_init(void)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	voiceblue_ports[0].irq = gpio_to_irq(12);
 	voiceblue_ports[1].irq = gpio_to_irq(13);
 	voiceblue_ports[2].irq = gpio_to_irq(14);
 	voiceblue_ports[3].irq = gpio_to_irq(15);
 	serial_device.dev.platform_data = voiceblue_ports;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return platform_device_register(&serial_device);
 }
 arch_initcall(ext_uart_init);
@@ -169,10 +210,13 @@ static struct resource voiceblue_smc91x_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= OMAP_GPIO_IRQ(8),
 		.end	= OMAP_GPIO_IRQ(8),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	},
 };
@@ -201,6 +245,7 @@ static struct omap_usb_config voiceblue_usb_config __initdata = {
 	.pins[2]	= 6,
 };
 
+<<<<<<< HEAD
 static struct omap_board_config_kernel voiceblue_config[] = {
 };
 
@@ -218,6 +263,8 @@ static void __init voiceblue_map_io(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MACHINE_PANICED		1
 #define MACHINE_REBOOTING	2
 #define MACHINE_REBOOT		4
@@ -280,10 +327,14 @@ void voiceblue_wdt_ping(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void voiceblue_reset(char mode, const char *cmd)
 =======
 static void voiceblue_restart(char mode, const char *cmd)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void voiceblue_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Workaround for 5912/1611b bug mentioned in sprz209d.pdf p. 28
@@ -337,6 +388,7 @@ static void __init voiceblue_init(void)
 	irq_set_irq_type(gpio_to_irq(15), IRQ_TYPE_EDGE_RISING);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	voiceblue_smc91x_resources[1].start = gpio_to_irq(8);
 	voiceblue_smc91x_resources[1].end = gpio_to_irq(8);
@@ -344,6 +396,11 @@ static void __init voiceblue_init(void)
 	platform_add_devices(voiceblue_devices, ARRAY_SIZE(voiceblue_devices));
 	omap_board_config = voiceblue_config;
 	omap_board_config_size = ARRAY_SIZE(voiceblue_config);
+=======
+	voiceblue_smc91x_resources[1].start = gpio_to_irq(8);
+	voiceblue_smc91x_resources[1].end = gpio_to_irq(8);
+	platform_add_devices(voiceblue_devices, ARRAY_SIZE(voiceblue_devices));
+>>>>>>> refs/remotes/origin/master
 	omap_serial_init();
 	omap1_usb_init(&voiceblue_usb_config);
 	omap_register_i2c_bus(1, 100, NULL, 0);
@@ -353,14 +410,18 @@ static void __init voiceblue_init(void)
 	omap_writeb(0x00, OMAP_LPG1_LCR);
 	omap_writeb(0x00, OMAP_LPG1_PMR);	/* Disable clock */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	arch_reset = voiceblue_reset;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(VOICEBLUE, "VoiceBlue OMAP5910")
 	/* Maintainer: Ladislav Michl <michl@2n.cz> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= 0x10000100,
 	.map_io		= voiceblue_map_io,
@@ -378,4 +439,14 @@ MACHINE_START(VOICEBLUE, "VoiceBlue OMAP5910")
 	.timer		= &omap1_timer,
 	.restart	= voiceblue_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= omap15xx_map_io,
+	.init_early     = omap1_init_early,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= voiceblue_init,
+	.init_late	= omap1_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= voiceblue_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

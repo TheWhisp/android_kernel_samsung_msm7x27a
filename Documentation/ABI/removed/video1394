@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 What:                video1394 (a.k.a. "OHCI-1394 Video support" for FireWire)
 Date:                May 2010 (scheduled), finally removed in kernel v2.6.37
 Contact:        linux1394-devel@lists.sourceforge.net
@@ -16,6 +17,8 @@ Users:
         libdc1394 (works with firewire-cdev too, transparent to library ABI
         users)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 What:		video1394 (a.k.a. "OHCI-1394 Video support" for FireWire)
 Date:		May 2010 (scheduled), finally removed in kernel v2.6.37
 Contact:	linux1394-devel@lists.sourceforge.net
@@ -32,4 +35,7 @@ Description:
 Users:
 	libdc1394 (works with firewire-cdev too, transparent to library ABI
 	users)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

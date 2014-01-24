@@ -2,6 +2,10 @@
 DEF(amd_fam14h)
 DEF(intel_nhm)
 DEF(intel_snb)
+<<<<<<< HEAD
+=======
+DEF(intel_hsw_ext)
+>>>>>>> refs/remotes/origin/master
 DEF(mperf)
 #endif
 DEF(cpuidle_sysfs)

@@ -5,7 +5,11 @@
 config NET_VENDOR_EMULEX
 	bool "Emulex devices"
 	default y
+<<<<<<< HEAD
 	depends on PCI && INET
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from

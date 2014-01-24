@@ -36,9 +36,13 @@
 #include <linux/skbuff.h>
 #include <linux/ti_wilink_st.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 
 #define MAX_ST_DEVICES	3	/* Imagine 1 on each UART for now */
@@ -66,6 +70,7 @@ static struct platform_device *st_get_plat_device(int id)
  *	in case of error don't complete so that waiting for proper
  *	response times out
  */
+<<<<<<< HEAD
 void validate_firmware_response(struct kim_data_s *kim_gdata)
 {
 	struct sk_buff *skb = kim_gdata->rx_skb;
@@ -76,6 +81,32 @@ void validate_firmware_response(struct kim_data_s *kim_gdata)
 =======
 		kfree_skb(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void validate_firmware_response(struct kim_data_s *kim_gdata)
+{
+	struct sk_buff *skb = kim_gdata->rx_skb;
+	if (!skb)
+		return;
+
+	/* these magic numbers are the position in the response buffer which
+	 * allows us to distinguish whether the response is for the read
+	 * version info. command
+	 */
+	if (skb->data[2] == 0x01 && skb->data[3] == 0x01 &&
+			skb->data[4] == 0x10 && skb->data[5] == 0x00) {
+		/* fw version response */
+		memcpy(kim_gdata->resp_buffer,
+				kim_gdata->rx_skb->data,
+				kim_gdata->rx_skb->len);
+		complete_all(&kim_gdata->kim_rcvd);
+		kim_gdata->rx_state = ST_W4_PACKET_TYPE;
+		kim_gdata->rx_skb = NULL;
+		kim_gdata->rx_count = 0;
+	} else if (unlikely(skb->data[5] != 0)) {
+		pr_err("no proper response during fw download");
+		pr_err("data6 %x", skb->data[5]);
+		kfree_skb(skb);
+>>>>>>> refs/remotes/origin/master
 		return;		/* keep waiting for the proper response */
 	}
 	/* becos of all the script being downloaded */
@@ -125,7 +156,11 @@ static inline int kim_check_data_len(struct kim_data_s *kim_gdata, int len)
  *	have been observed to come in bursts of different
  *	tty_receive and hence the logic
  */
+<<<<<<< HEAD
 void kim_int_recv(struct kim_data_s *kim_gdata,
+=======
+static void kim_int_recv(struct kim_data_s *kim_gdata,
+>>>>>>> refs/remotes/origin/master
 	const unsigned char *data, long count)
 {
 	const unsigned char *ptr;
@@ -207,12 +242,17 @@ static long read_local_version(struct kim_data_s *kim_gdata, char *bts_scr_name)
 
 	pr_debug("%s", __func__);
 
+<<<<<<< HEAD
 	INIT_COMPLETION(kim_gdata->kim_rcvd);
+=======
+	reinit_completion(&kim_gdata->kim_rcvd);
+>>>>>>> refs/remotes/origin/master
 	if (4 != st_int_write(kim_gdata->core_data, read_ver_cmd, 4)) {
 		pr_err("kim: couldn't write 4 bytes");
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 	if (!wait_for_completion_timeout
 	    (&kim_gdata->kim_rcvd, msecs_to_jiffies(CMD_RESP_TIME))) {
 		pr_err(" waiting for ver info- timed out ");
@@ -226,6 +266,21 @@ static long read_local_version(struct kim_data_s *kim_gdata, char *bts_scr_name)
 	version =
 		MAKEWORD(kim_gdata->resp_buffer[13],
 				kim_gdata->resp_buffer[14]);
+=======
+	if (!wait_for_completion_interruptible_timeout(
+		&kim_gdata->kim_rcvd, msecs_to_jiffies(CMD_RESP_TIME))) {
+		pr_err(" waiting for ver info- timed out ");
+		return -ETIMEDOUT;
+	}
+	reinit_completion(&kim_gdata->kim_rcvd);
+	/* the positions 12 & 13 in the response buffer provide with the
+	 * chip, major & minor numbers
+	 */
+
+	version =
+		MAKEWORD(kim_gdata->resp_buffer[12],
+				kim_gdata->resp_buffer[13]);
+>>>>>>> refs/remotes/origin/master
 	chip = (version & 0x7C00) >> 10;
 	min_ver = (version & 0x007F);
 	maj_ver = (version & 0x0380) >> 7;
@@ -245,7 +300,11 @@ static long read_local_version(struct kim_data_s *kim_gdata, char *bts_scr_name)
 	return 0;
 }
 
+<<<<<<< HEAD
 void skip_change_remote_baud(unsigned char **ptr, long *len)
+=======
+static void skip_change_remote_baud(unsigned char **ptr, long *len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char *nxt_action, *cur_action;
 	cur_action = *ptr;
@@ -311,9 +370,13 @@ static long download_firmware(struct kim_data_s *kim_gdata)
 		switch (((struct bts_action *)ptr)->type) {
 		case ACTION_SEND_COMMAND:	/* action send */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			pr_debug("S");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_debug("S");
+>>>>>>> refs/remotes/origin/master
 			action_ptr = &(((struct bts_action *)ptr)->data[0]);
 			if (unlikely
 			    (((struct hci_command *)action_ptr)->opcode ==
@@ -352,12 +415,19 @@ static long download_firmware(struct kim_data_s *kim_gdata)
 				return -ETIMEDOUT;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			/* reinit completion before sending for the
 			 * relevant wait
 			 */
 			INIT_COMPLETION(kim_gdata->kim_rcvd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			/* reinit completion before sending for the
+			 * relevant wait
+			 */
+			reinit_completion(&kim_gdata->kim_rcvd);
+>>>>>>> refs/remotes/origin/master
 
 			/*
 			 * Free space found in uart buffer, call st_int_write
@@ -385,18 +455,29 @@ static long download_firmware(struct kim_data_s *kim_gdata)
 			break;
 		case ACTION_WAIT_EVENT:  /* wait */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			pr_debug("W");
 >>>>>>> refs/remotes/origin/cm-10.0
 			if (!wait_for_completion_timeout
 					(&kim_gdata->kim_rcvd,
 					 msecs_to_jiffies(CMD_RESP_TIME))) {
+=======
+			pr_debug("W");
+			if (!wait_for_completion_interruptible_timeout(
+					&kim_gdata->kim_rcvd,
+					msecs_to_jiffies(CMD_RESP_TIME))) {
+>>>>>>> refs/remotes/origin/master
 				pr_err("response timeout during fw download ");
 				/* timed out */
 				release_firmware(kim_gdata->fw_entry);
 				return -ETIMEDOUT;
 			}
+<<<<<<< HEAD
 			INIT_COMPLETION(kim_gdata->kim_rcvd);
+=======
+			reinit_completion(&kim_gdata->kim_rcvd);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case ACTION_DELAY:	/* sleep */
 			pr_info("sleep command in scr");
@@ -428,6 +509,7 @@ void st_kim_recv(void *disc_data, const unsigned char *data, long count)
 	struct st_data_s	*st_gdata = (struct st_data_s *)disc_data;
 	struct kim_data_s	*kim_gdata = st_gdata->kim_data;
 
+<<<<<<< HEAD
 	/* copy to local buffer */
 	if (unlikely(data[4] == 0x01 && data[5] == 0x10 && data[0] == 0x04)) {
 		/* must be the read_ver_cmd */
@@ -438,6 +520,12 @@ void st_kim_recv(void *disc_data, const unsigned char *data, long count)
 		kim_int_recv(kim_gdata, data, count);
 		/* either completes or times out */
 	}
+=======
+	/* proceed to gather all data and distinguish read fw version response
+	 * from other fw responses when data gathering is complete
+	 */
+	kim_int_recv(kim_gdata, data, count);
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -462,12 +550,15 @@ long st_kim_start(void *kim_data)
 	long err = 0;
 	long retry = POR_RETRY_COUNT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kim_data_s	*kim_gdata = (struct kim_data_s *)kim_data;
 
 	pr_info(" %s", __func__);
 
 	do {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ti_st_plat_data	*pdata;
 	struct kim_data_s	*kim_gdata = (struct kim_data_s *)kim_data;
 
@@ -479,20 +570,28 @@ long st_kim_start(void *kim_data)
 		if (pdata->chip_enable)
 			pdata->chip_enable(kim_gdata);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Configure BT nShutdown to HIGH state */
 		gpio_set_value(kim_gdata->nshutdown, GPIO_LOW);
 		mdelay(5);	/* FIXME: a proper toggle */
 		gpio_set_value(kim_gdata->nshutdown, GPIO_HIGH);
 		mdelay(100);
 		/* re-initialize the completion */
+<<<<<<< HEAD
 		INIT_COMPLETION(kim_gdata->ldisc_installed);
+=======
+		reinit_completion(&kim_gdata->ldisc_installed);
+>>>>>>> refs/remotes/origin/master
 		/* send notification to UIM */
 		kim_gdata->ldisc_install = 1;
 		pr_info("ldisc_install = 1");
 		sysfs_notify(&kim_gdata->kim_pdev->dev.kobj,
 				NULL, "install");
 		/* wait for ldisc to be installed */
+<<<<<<< HEAD
 		err = wait_for_completion_timeout(&kim_gdata->ldisc_installed,
 				msecs_to_jiffies(LDISC_TIME));
 <<<<<<< HEAD
@@ -515,6 +614,10 @@ long st_kim_start(void *kim_data)
 				sysfs_notify(&kim_gdata->kim_pdev->dev.kobj,
 						NULL, "install");
 =======
+=======
+		err = wait_for_completion_interruptible_timeout(
+			&kim_gdata->ldisc_installed, msecs_to_jiffies(LDISC_TIME));
+>>>>>>> refs/remotes/origin/master
 		if (!err) {
 			/* ldisc installation timeout,
 			 * flush uart, power cycle BT_EN */
@@ -530,7 +633,10 @@ long st_kim_start(void *kim_data)
 				 * flush uart & power cycle BT_EN */
 				pr_err("download firmware failed");
 				err = st_kim_stop(kim_gdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				continue;
 			} else {	/* on success don't retry */
 				break;
@@ -542,9 +648,12 @@ long st_kim_start(void *kim_data)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * st_kim_stop - called from ST Core, on the last un-registration
  *	toggle low the chip enable gpio
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * st_kim_stop - stop communication with chip.
  *	This can be called from ST Core/KIM, on the-
  *	(a) last un-register when chip need not be powered there-after,
@@ -553,12 +662,16 @@ long st_kim_start(void *kim_data)
  *	(b) flush UART if the ldisc was installed.
  *	(c) reset BT_EN - pull down nshutdown at the end.
  *	(d) invoke platform's chip disabling routine.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 long st_kim_stop(void *kim_data)
 {
 	long err = 0;
 	struct kim_data_s	*kim_gdata = (struct kim_data_s *)kim_data;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	INIT_COMPLETION(kim_gdata->ldisc_installed);
@@ -567,19 +680,29 @@ long st_kim_stop(void *kim_data)
 	tty_ldisc_flush(kim_gdata->core_data->tty);
 	tty_driver_flush_buffer(kim_gdata->core_data->tty);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ti_st_plat_data	*pdata =
 		kim_gdata->kim_pdev->dev.platform_data;
 	struct tty_struct	*tty = kim_gdata->core_data->tty;
 
+<<<<<<< HEAD
 	INIT_COMPLETION(kim_gdata->ldisc_installed);
+=======
+	reinit_completion(&kim_gdata->ldisc_installed);
+>>>>>>> refs/remotes/origin/master
 
 	if (tty) {	/* can be called before ldisc is installed */
 		/* Flush any pending characters in the driver and discipline. */
 		tty_ldisc_flush(tty);
 		tty_driver_flush_buffer(tty);
+<<<<<<< HEAD
 		tty->ops->flush_buffer(tty);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* send uninstall notification to UIM */
 	pr_info("ldisc_install = 0");
@@ -587,11 +710,19 @@ long st_kim_stop(void *kim_data)
 	sysfs_notify(&kim_gdata->kim_pdev->dev.kobj, NULL, "install");
 
 	/* wait for ldisc to be un-installed */
+<<<<<<< HEAD
 	err = wait_for_completion_timeout(&kim_gdata->ldisc_installed,
 			msecs_to_jiffies(LDISC_TIME));
 	if (!err) {		/* timeout */
 		pr_err(" timed out waiting for ldisc to be un-installed");
 		return -ETIMEDOUT;
+=======
+	err = wait_for_completion_interruptible_timeout(
+		&kim_gdata->ldisc_installed, msecs_to_jiffies(LDISC_TIME));
+	if (!err) {		/* timeout */
+		pr_err(" timed out waiting for ldisc to be un-installed");
+		err = -ETIMEDOUT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* By default configure BT nShutdown to LOW state */
@@ -601,12 +732,18 @@ long st_kim_stop(void *kim_data)
 	mdelay(1);
 	gpio_set_value(kim_gdata->nshutdown, GPIO_LOW);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* platform specific disable */
 	if (pdata->chip_disable)
 		pdata->chip_disable(kim_gdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -638,7 +775,10 @@ static ssize_t show_install(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef DEBUG
 static ssize_t store_dev_name(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t count)
@@ -661,7 +801,10 @@ static ssize_t store_baud_rate(struct device *dev,
 }
 #endif	/* if DEBUG */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_dev_name(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -689,11 +832,14 @@ __ATTR(install, 0444, (void *)show_install, NULL);
 
 static struct kobj_attribute uart_dev_name =
 <<<<<<< HEAD
+<<<<<<< HEAD
 __ATTR(dev_name, 0444, (void *)show_dev_name, NULL);
 
 static struct kobj_attribute uart_baud_rate =
 __ATTR(baud_rate, 0444, (void *)show_baud_rate, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef DEBUG	/* TODO: move this to debug-fs if possible */
 __ATTR(dev_name, 0644, (void *)show_dev_name, (void *)store_dev_name);
 #else
@@ -706,7 +852,10 @@ __ATTR(baud_rate, 0644, (void *)show_baud_rate, (void *)store_baud_rate);
 #else
 __ATTR(baud_rate, 0444, (void *)show_baud_rate, NULL);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct kobj_attribute uart_flow_cntrl =
 __ATTR(flow_cntrl, 0444, (void *)show_flow_cntrl, NULL);
@@ -740,7 +889,11 @@ void st_kim_ref(struct st_data_s **core_data, int id)
 		*core_data = NULL;
 		return;
 	}
+<<<<<<< HEAD
 	kim_gdata = dev_get_drvdata(&pdev->dev);
+=======
+	kim_gdata = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	*core_data = kim_gdata->core_data;
 }
 
@@ -775,12 +928,21 @@ static const struct file_operations list_debugfs_fops = {
  * board-*.c file
  */
 
+<<<<<<< HEAD
 struct dentry *kim_debugfs_dir;
 static int kim_probe(struct platform_device *pdev)
 {
 	long status;
 	struct kim_data_s	*kim_gdata;
 	struct ti_st_plat_data	*pdata = pdev->dev.platform_data;
+=======
+static struct dentry *kim_debugfs_dir;
+static int kim_probe(struct platform_device *pdev)
+{
+	struct kim_data_s	*kim_gdata;
+	struct ti_st_plat_data	*pdata = pdev->dev.platform_data;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	if ((pdev->id != -1) && (pdev->id < MAX_ST_DEVICES)) {
 		/* multiple devices could exist */
@@ -795,18 +957,29 @@ static int kim_probe(struct platform_device *pdev)
 		pr_err("no mem to allocate");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, kim_gdata);
 
 	status = st_core_init(&kim_gdata->core_data);
 	if (status != 0) {
 		pr_err(" ST core init failed");
 		return -EIO;
+=======
+	platform_set_drvdata(pdev, kim_gdata);
+
+	err = st_core_init(&kim_gdata->core_data);
+	if (err != 0) {
+		pr_err(" ST core init failed");
+		err = -EIO;
+		goto err_core_init;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* refer to itself */
 	kim_gdata->core_data->kim_data = kim_gdata;
 
 	/* Claim the chip enable nShutdown gpio from the system */
 	kim_gdata->nshutdown = pdata->nshutdown_gpio;
+<<<<<<< HEAD
 	status = gpio_request(kim_gdata->nshutdown, "kim");
 	if (unlikely(status)) {
 		pr_err(" gpio %ld request failed ", kim_gdata->nshutdown);
@@ -818,6 +991,19 @@ static int kim_probe(struct platform_device *pdev)
 	if (unlikely(status)) {
 		pr_err(" unable to configure gpio %ld", kim_gdata->nshutdown);
 		return status;
+=======
+	err = gpio_request(kim_gdata->nshutdown, "kim");
+	if (unlikely(err)) {
+		pr_err(" gpio %ld request failed ", kim_gdata->nshutdown);
+		return err;
+	}
+
+	/* Configure nShutdown GPIO as output=0 */
+	err = gpio_direction_output(kim_gdata->nshutdown, 0);
+	if (unlikely(err)) {
+		pr_err(" unable to configure gpio %ld", kim_gdata->nshutdown);
+		return err;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* get reference of pdev for request_firmware
 	 */
@@ -825,10 +1011,17 @@ static int kim_probe(struct platform_device *pdev)
 	init_completion(&kim_gdata->kim_rcvd);
 	init_completion(&kim_gdata->ldisc_installed);
 
+<<<<<<< HEAD
 	status = sysfs_create_group(&pdev->dev.kobj, &uim_attr_grp);
 	if (status) {
 		pr_err("failed to create sysfs entries");
 		return status;
+=======
+	err = sysfs_create_group(&pdev->dev.kobj, &uim_attr_grp);
+	if (err) {
+		pr_err("failed to create sysfs entries");
+		goto err_sysfs_group;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* copying platform data */
@@ -840,8 +1033,13 @@ static int kim_probe(struct platform_device *pdev)
 	kim_debugfs_dir = debugfs_create_dir("ti-st", NULL);
 	if (IS_ERR(kim_debugfs_dir)) {
 		pr_err(" debugfs entries creation failed ");
+<<<<<<< HEAD
 		kim_debugfs_dir = NULL;
 		return -EIO;
+=======
+		err = -EIO;
+		goto err_debugfs_dir;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	debugfs_create_file("version", S_IRUGO, kim_debugfs_dir,
@@ -850,6 +1048,20 @@ static int kim_probe(struct platform_device *pdev)
 				kim_gdata, &list_debugfs_fops);
 	pr_info(" debugfs entries created ");
 	return 0;
+<<<<<<< HEAD
+=======
+
+err_debugfs_dir:
+	sysfs_remove_group(&pdev->dev.kobj, &uim_attr_grp);
+
+err_sysfs_group:
+	st_core_exit(kim_gdata->core_data);
+
+err_core_init:
+	kfree(kim_gdata);
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int kim_remove(struct platform_device *pdev)
@@ -858,7 +1070,11 @@ static int kim_remove(struct platform_device *pdev)
 	struct ti_st_plat_data	*pdata = pdev->dev.platform_data;
 	struct kim_data_s	*kim_gdata;
 
+<<<<<<< HEAD
 	kim_gdata = dev_get_drvdata(&pdev->dev);
+=======
+	kim_gdata = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Free the Bluetooth/FM/GPIO
 	 * nShutdown gpio from the system
@@ -878,7 +1094,11 @@ static int kim_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 int kim_suspend(struct platform_device *pdev, pm_message_t state)
+=======
+static int kim_suspend(struct platform_device *pdev, pm_message_t state)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ti_st_plat_data	*pdata = pdev->dev.platform_data;
 
@@ -888,7 +1108,11 @@ int kim_suspend(struct platform_device *pdev, pm_message_t state)
 	return -EOPNOTSUPP;
 }
 
+<<<<<<< HEAD
 int kim_resume(struct platform_device *pdev)
+=======
+static int kim_resume(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ti_st_plat_data	*pdata = pdev->dev.platform_data;
 
@@ -912,6 +1136,7 @@ static struct platform_driver kim_platform_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init st_kim_init(void)
 {
 	return platform_driver_register(&kim_platform_driver);
@@ -929,6 +1154,10 @@ module_exit(st_kim_deinit);
 module_platform_driver(kim_platform_driver);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(kim_platform_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Pavan Savoy <pavan_savoy@ti.com>");
 MODULE_DESCRIPTION("Shared Transport Driver for TI BT/FM/GPS combo chips ");
 MODULE_LICENSE("GPL");

@@ -77,9 +77,13 @@ static void orinoco_add_hostscan_result(struct orinoco_private *priv,
 	struct wiphy *wiphy = priv_to_wiphy(priv);
 	struct ieee80211_channel *channel;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct cfg80211_bss *cbss;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cfg80211_bss *cbss;
+>>>>>>> refs/remotes/origin/master
 	u8 *ie;
 	u8 ie_buf[46];
 	u64 timestamp;
@@ -126,6 +130,7 @@ static void orinoco_add_hostscan_result(struct orinoco_private *priv,
 	signal = SIGNAL_TO_MBM(le16_to_cpu(bss->a.level));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cfg80211_inform_bss(wiphy, channel, bss->a.bssid, timestamp,
 			    capability, beacon_interval, ie_buf, ie_len,
 			    signal, GFP_KERNEL);
@@ -135,6 +140,12 @@ static void orinoco_add_hostscan_result(struct orinoco_private *priv,
 				   signal, GFP_KERNEL);
 	cfg80211_put_bss(cbss);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cbss = cfg80211_inform_bss(wiphy, channel, bss->a.bssid, timestamp,
+				   capability, beacon_interval, ie_buf, ie_len,
+				   signal, GFP_KERNEL);
+	cfg80211_put_bss(wiphy, cbss);
+>>>>>>> refs/remotes/origin/master
 }
 
 void orinoco_add_extscan_result(struct orinoco_private *priv,
@@ -144,9 +155,13 @@ void orinoco_add_extscan_result(struct orinoco_private *priv,
 	struct wiphy *wiphy = priv_to_wiphy(priv);
 	struct ieee80211_channel *channel;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct cfg80211_bss *cbss;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cfg80211_bss *cbss;
+>>>>>>> refs/remotes/origin/master
 	const u8 *ie;
 	u64 timestamp;
 	s32 signal;
@@ -168,6 +183,7 @@ void orinoco_add_extscan_result(struct orinoco_private *priv,
 	signal = SIGNAL_TO_MBM(bss->level);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cfg80211_inform_bss(wiphy, channel, bss->bssid, timestamp,
 			    capability, beacon_interval, ie, ie_len,
 			    signal, GFP_KERNEL);
@@ -177,6 +193,12 @@ void orinoco_add_extscan_result(struct orinoco_private *priv,
 				   signal, GFP_KERNEL);
 	cfg80211_put_bss(cbss);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cbss = cfg80211_inform_bss(wiphy, channel, bss->bssid, timestamp,
+				   capability, beacon_interval, ie, ie_len,
+				   signal, GFP_KERNEL);
+	cfg80211_put_bss(wiphy, cbss);
+>>>>>>> refs/remotes/origin/master
 }
 
 void orinoco_add_hostscan_results(struct orinoco_private *priv,

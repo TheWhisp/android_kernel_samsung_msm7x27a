@@ -20,6 +20,10 @@
 .file "twofish-x86_64-asm.S"
 .text
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 
 #define a_offset	0
@@ -214,6 +218,7 @@
 	xor	%r8d,		d ## D;\
 	ror	$1,		d ## D;
 
+<<<<<<< HEAD
 .align 8
 .global twofish_enc_blk
 .global twofish_dec_blk
@@ -231,6 +236,14 @@ twofish_enc_blk:
 	/* %rsi contains the output address */
 	/* %rdx contains the input address */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(twofish_enc_blk)
+	pushq    R1
+
+	/* %rdi contains the ctx address */
+	/* %rsi contains the output address */
+	/* %rdx contains the input address */
+>>>>>>> refs/remotes/origin/master
 	/* ctx address is moved to free one non-rex register
 	as target for the 8bit high operations */
 	mov	%rdi,		%r11
@@ -276,6 +289,7 @@ twofish_enc_blk:
 	popq	R1
 	movq	$1,%rax
 	ret
+<<<<<<< HEAD
 
 twofish_dec_blk:
 	pushq    R1
@@ -290,6 +304,16 @@ twofish_dec_blk:
 	/* %rsi contains the output address */
 	/* %rdx contains the input address */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(twofish_enc_blk)
+
+ENTRY(twofish_dec_blk)
+	pushq    R1
+
+	/* %rdi contains the ctx address */
+	/* %rsi contains the output address */
+	/* %rdx contains the input address */
+>>>>>>> refs/remotes/origin/master
 	/* ctx address is moved to free one non-rex register
 	as target for the 8bit high operations */
 	mov	%rdi,		%r11
@@ -334,3 +358,7 @@ twofish_dec_blk:
 	popq	R1
 	movq	$1,%rax
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(twofish_dec_blk)
+>>>>>>> refs/remotes/origin/master

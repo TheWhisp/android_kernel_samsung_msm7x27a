@@ -127,9 +127,12 @@
 #include <asm/asm-offsets.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/gdb-stub.h>
 
 #define LEDS(x) do { /* *(u32*)0xe1200004 = ~(x); mb(); */ } while(0)
@@ -676,10 +679,14 @@ static unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fa
 		if (!gdbstub_read_byte(mem,ch))
 			return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 =======
 		buf = hex_byte_pack(buf, ch[0]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+>>>>>>> refs/remotes/origin/master
 		mem++;
 		count--;
 	}
@@ -688,12 +695,17 @@ static unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fa
 		if (!gdbstub_read_word(mem,(uint16_t *)ch))
 			return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 		buf = pack_hex_byte(buf, ch[1]);
 =======
 		buf = hex_byte_pack(buf, ch[0]);
 		buf = hex_byte_pack(buf, ch[1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+		buf = hex_byte_pack(buf, ch[1]);
+>>>>>>> refs/remotes/origin/master
 		mem += 2;
 		count -= 2;
 	}
@@ -702,16 +714,22 @@ static unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fa
 		if (!gdbstub_read_dword(mem,(uint32_t *)ch))
 			return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 		buf = pack_hex_byte(buf, ch[1]);
 		buf = pack_hex_byte(buf, ch[2]);
 		buf = pack_hex_byte(buf, ch[3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		buf = hex_byte_pack(buf, ch[0]);
 		buf = hex_byte_pack(buf, ch[1]);
 		buf = hex_byte_pack(buf, ch[2]);
 		buf = hex_byte_pack(buf, ch[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mem += 4;
 		count -= 4;
 	}
@@ -720,12 +738,17 @@ static unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fa
 		if (!gdbstub_read_word(mem,(uint16_t *)ch))
 			return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 		buf = pack_hex_byte(buf, ch[1]);
 =======
 		buf = hex_byte_pack(buf, ch[0]);
 		buf = hex_byte_pack(buf, ch[1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+		buf = hex_byte_pack(buf, ch[1]);
+>>>>>>> refs/remotes/origin/master
 		mem += 2;
 		count -= 2;
 	}
@@ -734,10 +757,14 @@ static unsigned char *mem2hex(const void *_mem, char *buf, int count, int may_fa
 		if (!gdbstub_read_byte(mem,ch))
 			return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = pack_hex_byte(buf, ch[0]);
 =======
 		buf = hex_byte_pack(buf, ch[0]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = hex_byte_pack(buf, ch[0]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	*buf = 0;
@@ -1527,6 +1554,7 @@ void gdbstub(int sigval)
 
 		hx = hex_asc_hi(brr >> 24);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ptr = pack_hex_byte(ptr, hx);
 		hx = hex_asc_lo(brr >> 24);
 		ptr = pack_hex_byte(ptr, hx);
@@ -1543,6 +1571,8 @@ void gdbstub(int sigval)
 		hx = hex_asc_lo(brr);
 		ptr = pack_hex_byte(ptr, hx);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ptr = hex_byte_pack(ptr, hx);
 		hx = hex_asc_lo(brr >> 24);
 		ptr = hex_byte_pack(ptr, hx);
@@ -1558,7 +1588,10 @@ void gdbstub(int sigval)
 		ptr = hex_byte_pack(ptr, hx);
 		hx = hex_asc_lo(brr);
 		ptr = hex_byte_pack(ptr, hx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ptr = mem2hex(crlf, ptr, sizeof(crlf) - 1, 0);
 		*ptr = 0;
@@ -1573,16 +1606,22 @@ void gdbstub(int sigval)
 	/* Send trap type (converted to signal) */
 	*ptr++ = 'T';
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, sigval);
 
 	/* Send Error PC */
 	ptr = pack_hex_byte(ptr, GDB_REG_PC);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ptr = hex_byte_pack(ptr, sigval);
 
 	/* Send Error PC */
 	ptr = hex_byte_pack(ptr, GDB_REG_PC);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*ptr++ = ':';
 	ptr = mem2hex(&__debug_frame->pc, ptr, 4, 0);
 	*ptr++ = ';';
@@ -1591,10 +1630,14 @@ void gdbstub(int sigval)
 	 * Send frame pointer
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, GDB_REG_FP);
 =======
 	ptr = hex_byte_pack(ptr, GDB_REG_FP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptr = hex_byte_pack(ptr, GDB_REG_FP);
+>>>>>>> refs/remotes/origin/master
 	*ptr++ = ':';
 	ptr = mem2hex(&__debug_frame->fp, ptr, 4, 0);
 	*ptr++ = ';';
@@ -1603,10 +1646,14 @@ void gdbstub(int sigval)
 	 * Send stack pointer
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ptr = pack_hex_byte(ptr, GDB_REG_SP);
 =======
 	ptr = hex_byte_pack(ptr, GDB_REG_SP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ptr = hex_byte_pack(ptr, GDB_REG_SP);
+>>>>>>> refs/remotes/origin/master
 	*ptr++ = ':';
 	ptr = mem2hex(&__debug_frame->sp, ptr, 4, 0);
 	*ptr++ = ';';

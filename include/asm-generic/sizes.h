@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * linux/include/asm-generic/sizes.h
  *
@@ -45,3 +46,7 @@
 #define SZ_2G				0x80000000
 
 #endif /* __ASM_GENERIC_SIZES_H__ */
+=======
+/* This is a placeholder, to be removed over time */
+#include <linux/sizes.h>
+>>>>>>> refs/remotes/origin/master

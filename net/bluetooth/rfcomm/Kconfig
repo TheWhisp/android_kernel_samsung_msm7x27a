@@ -12,6 +12,10 @@ config BT_RFCOMM
 config BT_RFCOMM_TTY
 	bool "RFCOMM TTY support"
 	depends on BT_RFCOMM
+<<<<<<< HEAD
+=======
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option enables TTY emulation support for RFCOMM channels.
 

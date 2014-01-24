@@ -1,7 +1,11 @@
 /*******************************************************************
  * This file is part of the Emulex Linux Device Driver for         *
  * Fibre Channel Host Bus Adapters.                                *
+<<<<<<< HEAD
  * Copyright (C) 2004-2010 Emulex.  All rights reserved.           *
+=======
+ * Copyright (C) 2004-2013 Emulex.  All rights reserved.           *
+>>>>>>> refs/remotes/origin/master
  * EMULEX and SLI are trademarks of Emulex.                        *
  * www.emulex.com                                                  *
  *                                                                 *
@@ -104,7 +108,12 @@ lpfc_ct_unsol_event(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
 	if (unlikely(icmd->ulpStatus == IOSTAT_NEED_BUFFER)) {
 		lpfc_sli_hbqbuf_add_hbqs(phba, LPFC_ELS_HBQ);
 	} else if ((icmd->ulpStatus == IOSTAT_LOCAL_REJECT) &&
+<<<<<<< HEAD
 		((icmd->un.ulpWord[4] & 0xff) == IOERR_RCV_BUFFER_WAITING)) {
+=======
+		   ((icmd->un.ulpWord[4] & IOERR_PARAM_MASK) ==
+		   IOERR_RCV_BUFFER_WAITING)) {
+>>>>>>> refs/remotes/origin/master
 		/* Not enough posted buffers; Try posting more buffers */
 		phba->fc_stat.NoRcvBuf++;
 		if (!(phba->sli3_options & LPFC_SLI3_HBQ_ENABLED))
@@ -163,6 +172,7 @@ lpfc_ct_unsol_event(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
 }
 
 /**
+<<<<<<< HEAD
  * lpfc_sli4_ct_abort_unsol_event - Default handle for sli4 unsol abort
  * @phba: Pointer to HBA context object.
  * @pring: Pointer to the driver internal I/O ring.
@@ -194,6 +204,26 @@ lpfc_sli4_ct_abort_unsol_event(struct lpfc_hba *phba,
 	size  = icmd->un.cont64[0].tus.f.bdeSize;
 	lpfc_ct_unsol_buffer(phba, piocbq, bdeBuf, size);
 	lpfc_in_buf_free(phba, bdeBuf);
+=======
+ * lpfc_ct_handle_unsol_abort - ct upper level protocol abort handler
+ * @phba: Pointer to HBA context object.
+ * @dmabuf: pointer to a dmabuf that describes the FC sequence
+ *
+ * This function serves as the upper level protocol abort handler for CT
+ * protocol.
+ *
+ * Return 1 if abort has been handled, 0 otherwise.
+ **/
+int
+lpfc_ct_handle_unsol_abort(struct lpfc_hba *phba, struct hbq_dmabuf *dmabuf)
+{
+	int handled;
+
+	/* CT upper level goes through BSG */
+	handled = lpfc_bsg_ct_unsol_abort(phba, dmabuf);
+
+	return handled;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -292,7 +322,11 @@ lpfc_ct_free_iocb(struct lpfc_hba *phba, struct lpfc_iocbq *ctiocb)
 		buf_ptr = (struct lpfc_dmabuf *) ctiocb->context3;
 		lpfc_mbuf_free(phba, buf_ptr->virt, buf_ptr->phys);
 		kfree(buf_ptr);
+<<<<<<< HEAD
 		ctiocb->context1 = NULL;
+=======
+		ctiocb->context3 = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	lpfc_sli_release_iocbq(phba, ctiocb);
 	return 0;
@@ -633,7 +667,12 @@ lpfc_cmpl_ct_cmd_gid_ft(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
 		/* Check for retry */
 		if (vport->fc_ns_retry < LPFC_MAX_NS_RETRY) {
 			if (irsp->ulpStatus != IOSTAT_LOCAL_REJECT ||
+<<<<<<< HEAD
 			    irsp->un.ulpWord[4] != IOERR_NO_RESOURCES)
+=======
+			    (irsp->un.ulpWord[4] & IOERR_PARAM_MASK) !=
+			    IOERR_NO_RESOURCES)
+>>>>>>> refs/remotes/origin/master
 				vport->fc_ns_retry++;
 
 			/* CT command is being retried */
@@ -783,7 +822,13 @@ lpfc_cmpl_ct_cmd_gff_id(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
 		if (cmdiocb->retry < LPFC_MAX_NS_RETRY) {
 			retry = 1;
 			if (irsp->ulpStatus == IOSTAT_LOCAL_REJECT) {
+<<<<<<< HEAD
 				switch (irsp->un.ulpWord[4]) {
+=======
+				switch ((irsp->un.ulpWord[4] &
+					IOERR_PARAM_MASK)) {
+
+>>>>>>> refs/remotes/origin/master
 				case IOERR_NO_RESOURCES:
 					/* We don't increment the retry
 					 * count for this case.
@@ -904,12 +949,23 @@ lpfc_cmpl_ct(struct lpfc_hba *phba, struct lpfc_iocbq *cmdiocb,
 
 	if (irsp->ulpStatus) {
 		lpfc_printf_vlog(vport, KERN_ERR, LOG_DISCOVERY,
+<<<<<<< HEAD
 				 "0268 NS cmd %x Error (%d %d)\n",
 				 cmdcode, irsp->ulpStatus, irsp->un.ulpWord[4]);
 
 		if ((irsp->ulpStatus == IOSTAT_LOCAL_REJECT) &&
 			((irsp->un.ulpWord[4] == IOERR_SLI_DOWN) ||
 			 (irsp->un.ulpWord[4] == IOERR_SLI_ABORTED)))
+=======
+				 "0268 NS cmd x%x Error (x%x x%x)\n",
+				 cmdcode, irsp->ulpStatus, irsp->un.ulpWord[4]);
+
+		if ((irsp->ulpStatus == IOSTAT_LOCAL_REJECT) &&
+			(((irsp->un.ulpWord[4] & IOERR_PARAM_MASK) ==
+			  IOERR_SLI_DOWN) ||
+			 ((irsp->un.ulpWord[4] & IOERR_PARAM_MASK) ==
+			  IOERR_SLI_ABORTED)))
+>>>>>>> refs/remotes/origin/master
 			goto out;
 
 		retry = cmdiocb->retry;
@@ -1077,10 +1133,14 @@ lpfc_vport_symbolic_node_name(struct lpfc_vport *vport, char *symbol,
 	size_t size)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char fwrev[16];
 =======
 	char fwrev[FW_REV_STR_SIZE];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	char fwrev[FW_REV_STR_SIZE];
+>>>>>>> refs/remotes/origin/master
 	int n;
 
 	lpfc_decode_firmware_rev(vport->phba, fwrev, 0);
@@ -1822,7 +1882,12 @@ lpfc_fdmi_timeout_handler(struct lpfc_vport *vport)
 		if (init_utsname()->nodename[0] != '\0')
 			lpfc_fdmi_cmd(vport, ndlp, SLI_MGMT_DHBA);
 		else
+<<<<<<< HEAD
 			mod_timer(&vport->fc_fdmitmo, jiffies + HZ * 60);
+=======
+			mod_timer(&vport->fc_fdmitmo, jiffies +
+				  msecs_to_jiffies(1000 * 60));
+>>>>>>> refs/remotes/origin/master
 	}
 	return;
 }
@@ -1839,10 +1904,14 @@ lpfc_decode_firmware_rev(struct lpfc_hba *phba, char *fwrevision, int flag)
 
 	if (phba->sli_rev == LPFC_SLI_REV4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sprintf(fwrevision, "%s", vp->rev.opFwName);
 =======
 		snprintf(fwrevision, FW_REV_STR_SIZE, "%s", vp->rev.opFwName);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		snprintf(fwrevision, FW_REV_STR_SIZE, "%s", vp->rev.opFwName);
+>>>>>>> refs/remotes/origin/master
 	else if (vp->rev.rBit) {
 		if (psli->sli_flag & LPFC_SLI_ACTIVE)
 			rev = vp->rev.sli2FwRev;
@@ -1865,11 +1934,17 @@ lpfc_decode_firmware_rev(struct lpfc_hba *phba, char *fwrevision, int flag)
 			c = 'B';
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		case 3:
 			c = 'X';
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		case 3:
+			c = 'X';
+			break;
+>>>>>>> refs/remotes/origin/master
 		default:
 			c = 0;
 			break;

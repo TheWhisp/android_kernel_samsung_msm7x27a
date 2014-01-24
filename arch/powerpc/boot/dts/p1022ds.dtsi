@@ -145,6 +145,17 @@
 			 * the clock is enabled.
 			 */
 		};
+<<<<<<< HEAD
+=======
+		rtc@68 {
+			compatible = "dallas,ds1339";
+			reg = <0x68>;
+		};
+		adt7461@4c {
+			compatible = "adi,adt7461";
+			reg = <0x4c>;
+		};
+>>>>>>> refs/remotes/origin/master
 	};
 
 	spi@7000 {

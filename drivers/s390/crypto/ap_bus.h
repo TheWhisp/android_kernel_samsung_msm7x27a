@@ -1,15 +1,23 @@
 /*
+<<<<<<< HEAD
  * linux/drivers/s390/crypto/ap_bus.h
  *
  * Copyright (C) 2006 IBM Corporation
+=======
+ * Copyright IBM Corp. 2006, 2012
+>>>>>>> refs/remotes/origin/master
  * Author(s): Cornelia Huck <cornelia.huck@de.ibm.com>
  *	      Martin Schwidefsky <schwidefsky@de.ibm.com>
  *	      Ralph Wuerthner <rwuerthn@de.ibm.com>
  *	      Felix Beck <felix.beck@de.ibm.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *	      Holger Dengler <hd@linux.vnet.ibm.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	      Holger Dengler <hd@linux.vnet.ibm.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Adjunct processor bus header file.
  *
@@ -38,7 +46,11 @@
 #define AP_DEVICES 64		/* Number of AP devices. */
 #define AP_DOMAINS 16		/* Number of AP domains. */
 #define AP_MAX_RESET 90		/* Maximum number of resets. */
+<<<<<<< HEAD
 #define AP_RESET_TIMEOUT (HZ/2)	/* Time in ticks for reset timeouts. */
+=======
+#define AP_RESET_TIMEOUT (HZ*0.7)	/* Time in ticks for reset timeouts. */
+>>>>>>> refs/remotes/origin/master
 #define AP_CONFIG_TIME 30	/* Time in seconds between AP bus rescans. */
 #define AP_POLL_TIME 1		/* Time in ticks between receive polls. */
 
@@ -77,8 +89,11 @@ struct ap_queue_status {
 	unsigned int response_code	: 8;
 	unsigned int pad2		: 16;
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 } __packed;
 
 #define AP_QUEUE_STATUS_INVALID \
@@ -91,6 +106,7 @@ int ap_queue_status_invalid_test(struct ap_queue_status *status)
 	return !(memcmp(status, &invalid, sizeof(struct ap_queue_status)));
 }
 
+<<<<<<< HEAD
 #define MAX_AP_FACILITY 31
 
 static inline int test_ap_facility(unsigned int function, unsigned int nr)
@@ -100,6 +116,15 @@ static inline int test_ap_facility(unsigned int function, unsigned int nr)
 	return function & (unsigned int)(0x80000000 >> nr);
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AP_MAX_BITS 31
+static inline int ap_test_bit(unsigned int *ptr, unsigned int nr)
+{
+	if (nr > AP_MAX_BITS)
+		return 0;
+	return (*ptr & (0x80000000u >> nr)) != 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 #define AP_RESPONSE_NORMAL		0x00
 #define AP_RESPONSE_Q_NOT_AVAIL		0x01
@@ -126,6 +151,20 @@ static inline int test_ap_facility(unsigned int function, unsigned int nr)
 #define AP_DEVICE_TYPE_CEX2C	7
 #define AP_DEVICE_TYPE_CEX3A	8
 #define AP_DEVICE_TYPE_CEX3C	9
+<<<<<<< HEAD
+=======
+#define AP_DEVICE_TYPE_CEX4	10
+
+/*
+ * Known function facilities
+ */
+#define AP_FUNC_MEX4K 1
+#define AP_FUNC_CRT4K 2
+#define AP_FUNC_COPRO 3
+#define AP_FUNC_ACCEL 4
+#define AP_FUNC_EP11  5
+#define AP_FUNC_APXA  6
+>>>>>>> refs/remotes/origin/master
 
 /*
  * AP reset flag states
@@ -143,9 +182,12 @@ struct ap_driver {
 
 	int (*probe)(struct ap_device *);
 	void (*remove)(struct ap_device *);
+<<<<<<< HEAD
 	/* receive is called from tasklet context */
 	void (*receive)(struct ap_device *, struct ap_message *,
 			struct ap_message *);
+=======
+>>>>>>> refs/remotes/origin/master
 	int request_timeout;		/* request timeout in jiffies */
 };
 
@@ -163,6 +205,10 @@ struct ap_device {
 	ap_qid_t qid;			/* AP queue id. */
 	int queue_depth;		/* AP queue depth.*/
 	int device_type;		/* AP device type. */
+<<<<<<< HEAD
+=======
+	unsigned int functions;		/* AP device function bitfield. */
+>>>>>>> refs/remotes/origin/master
 	int unregistered;		/* marks AP device as unregistered */
 	struct timer_list timeout;	/* Timer for request timeouts. */
 	int reset;			/* Reset required after req. timeout. */
@@ -190,8 +236,27 @@ struct ap_message {
 
 	void *private;			/* ap driver private pointer. */
 	unsigned int special:1;		/* Used for special commands. */
+<<<<<<< HEAD
 };
 
+=======
+	/* receive is called from tasklet context */
+	void (*receive)(struct ap_device *, struct ap_message *,
+			struct ap_message *);
+};
+
+struct ap_config_info {
+	unsigned int special_command:1;
+	unsigned int ap_extended:1;
+	unsigned char reserved1:6;
+	unsigned char reserved2[15];
+	unsigned int apm[8];		/* AP ID mask */
+	unsigned int aqm[8];		/* AP queue mask */
+	unsigned int adm[8];		/* AP domain mask */
+	unsigned char reserved4[16];
+} __packed;
+
+>>>>>>> refs/remotes/origin/master
 #define AP_DEVICE(dt)					\
 	.dev_type=(dt),					\
 	.match_flags=AP_DEVICE_ID_MATCH_DEVICE_TYPE,
@@ -206,6 +271,10 @@ static inline void ap_init_message(struct ap_message *ap_msg)
 	ap_msg->psmid = 0;
 	ap_msg->length = 0;
 	ap_msg->special = 0;
+<<<<<<< HEAD
+=======
+	ap_msg->receive = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -219,10 +288,17 @@ int ap_recv(ap_qid_t, unsigned long long *, void *, size_t);
 void ap_queue_message(struct ap_device *ap_dev, struct ap_message *ap_msg);
 void ap_cancel_message(struct ap_device *ap_dev, struct ap_message *ap_msg);
 void ap_flush_queue(struct ap_device *ap_dev);
+<<<<<<< HEAD
+=======
+void ap_bus_force_rescan(void);
+>>>>>>> refs/remotes/origin/master
 
 int ap_module_init(void);
 void ap_module_exit(void);
 
+<<<<<<< HEAD
 int ap_4096_commands_available(ap_qid_t qid);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _AP_BUS_H_ */

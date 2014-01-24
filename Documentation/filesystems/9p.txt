@@ -93,10 +93,14 @@ OPTIONS
   wfdno=n	the file descriptor for writing with trans=fd
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   maxdata=n	the number of bytes to use for 9p packet payload (msize)
 =======
   msize=n	the number of bytes to use for 9p packet payload
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  msize=n	the number of bytes to use for 9p packet payload
+>>>>>>> refs/remotes/origin/master
 
   port=n	port to connect to on the remote server
 

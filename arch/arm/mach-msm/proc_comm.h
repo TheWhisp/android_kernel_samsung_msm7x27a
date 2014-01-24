@@ -1,6 +1,10 @@
 /* arch/arm/mach-msm/proc_comm.h
  *
+<<<<<<< HEAD
  * Copyright (c) 2007-2009,2011 The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2007 QUALCOMM Incorporated
+>>>>>>> refs/remotes/origin/master
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -13,8 +17,15 @@
  *
  */
 
+<<<<<<< HEAD
 #ifndef _ARCH_ARM_MACH_MSM_MSM_PROC_COMM_H_
 #define _ARCH_ARM_MACH_MSM_MSM_PROC_COMM_H_
+=======
+#ifndef _ARCH_ARM_MACH_MSM_PROC_COMM_H_
+#define _ARCH_ARM_MACH_MSM_PROC_COMM_H_
+
+#include <linux/init.h>
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	PCOM_CMD_IDLE = 0x0,
@@ -135,6 +146,7 @@ enum {
 	PCOM_CLKCTL_RPC_RAIL_DISABLE,
 	PCOM_CLKCTL_RPC_RAIL_CONTROL,
 	PCOM_CLKCTL_RPC_MIN_MSMC1,
+<<<<<<< HEAD
 	PCOM_CLKCTL_RPC_SRC_REQUEST,
 	PCOM_NPA_INIT,
 	PCOM_NPA_ISSUE_REQUIRED_REQUEST,
@@ -152,6 +164,9 @@ enum {
 	PCOM_OEM_SYS_CMD,
 	PCOM_OEM_SAMSUNG_LAST,
 	PCOM_OEM_LAST = PCOM_OEM_SAMSUNG_LAST,
+=======
+	PCOM_NUM_CMDS,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum {
@@ -171,6 +186,7 @@ enum {
 	PCOM_CMD_FAIL_SMSM_NOT_INIT,
 	PCOM_CMD_FAIL_PROC_COMM_BUSY,
 	PCOM_CMD_FAIL_PROC_COMM_NOT_INIT,
+<<<<<<< HEAD
 };
 
 #ifdef CONFIG_MSM_PROC_COMM
@@ -181,5 +197,104 @@ static inline void msm_proc_comm_reset_modem_now(void) { }
 static inline int msm_proc_comm(unsigned cmd, unsigned *data1, unsigned *data2)
 { return 0; }
 #endif
+=======
+
+};
+
+/* List of VREGs that support the Pull Down Resistor setting. */
+enum vreg_pdown_id {
+	PM_VREG_PDOWN_MSMA_ID,
+	PM_VREG_PDOWN_MSMP_ID,
+	PM_VREG_PDOWN_MSME1_ID,	/* Not supported in Panoramix */
+	PM_VREG_PDOWN_MSMC1_ID,	/* Not supported in PM6620 */
+	PM_VREG_PDOWN_MSMC2_ID,	/* Supported in PM7500 only */
+	PM_VREG_PDOWN_GP3_ID,	/* Supported in PM7500 only */
+	PM_VREG_PDOWN_MSME2_ID,	/* Supported in PM7500 and Panoramix only */
+	PM_VREG_PDOWN_GP4_ID,	/* Supported in PM7500 only */
+	PM_VREG_PDOWN_GP1_ID,	/* Supported in PM7500 only */
+	PM_VREG_PDOWN_TCXO_ID,
+	PM_VREG_PDOWN_PA_ID,
+	PM_VREG_PDOWN_RFTX_ID,
+	PM_VREG_PDOWN_RFRX1_ID,
+	PM_VREG_PDOWN_RFRX2_ID,
+	PM_VREG_PDOWN_SYNT_ID,
+	PM_VREG_PDOWN_WLAN_ID,
+	PM_VREG_PDOWN_USB_ID,
+	PM_VREG_PDOWN_MMC_ID,
+	PM_VREG_PDOWN_RUIM_ID,
+	PM_VREG_PDOWN_MSMC0_ID,	/* Supported in PM6610 only */
+	PM_VREG_PDOWN_GP2_ID,	/* Supported in PM7500 only */
+	PM_VREG_PDOWN_GP5_ID,	/* Supported in PM7500 only */
+	PM_VREG_PDOWN_GP6_ID,	/* Supported in PM7500 only */
+	PM_VREG_PDOWN_RF_ID,
+	PM_VREG_PDOWN_RF_VCO_ID,
+	PM_VREG_PDOWN_MPLL_ID,
+	PM_VREG_PDOWN_S2_ID,
+	PM_VREG_PDOWN_S3_ID,
+	PM_VREG_PDOWN_RFUBM_ID,
+
+	/* new for HAN */
+	PM_VREG_PDOWN_RF1_ID,
+	PM_VREG_PDOWN_RF2_ID,
+	PM_VREG_PDOWN_RFA_ID,
+	PM_VREG_PDOWN_CDC2_ID,
+	PM_VREG_PDOWN_RFTX2_ID,
+	PM_VREG_PDOWN_USIM_ID,
+	PM_VREG_PDOWN_USB2P6_ID,
+	PM_VREG_PDOWN_USB3P3_ID,
+	PM_VREG_PDOWN_INVALID_ID,
+
+	/* backward compatible enums only */
+	PM_VREG_PDOWN_CAM_ID = PM_VREG_PDOWN_GP1_ID,
+	PM_VREG_PDOWN_MDDI_ID = PM_VREG_PDOWN_GP2_ID,
+	PM_VREG_PDOWN_RUIM2_ID = PM_VREG_PDOWN_GP3_ID,
+	PM_VREG_PDOWN_AUX_ID = PM_VREG_PDOWN_GP4_ID,
+	PM_VREG_PDOWN_AUX2_ID = PM_VREG_PDOWN_GP5_ID,
+	PM_VREG_PDOWN_BT_ID = PM_VREG_PDOWN_GP6_ID,
+
+	PM_VREG_PDOWN_MSME_ID = PM_VREG_PDOWN_MSME1_ID,
+	PM_VREG_PDOWN_MSMC_ID = PM_VREG_PDOWN_MSMC1_ID,
+	PM_VREG_PDOWN_RFA1_ID = PM_VREG_PDOWN_RFRX2_ID,
+	PM_VREG_PDOWN_RFA2_ID = PM_VREG_PDOWN_RFTX2_ID,
+	PM_VREG_PDOWN_XO_ID = PM_VREG_PDOWN_TCXO_ID
+};
+
+enum {
+	PCOM_CLKRGM_APPS_RESET_USB_PHY	= 34,
+	PCOM_CLKRGM_APPS_RESET_USBH	= 37,
+};
+
+/* gpio info for PCOM_RPC_GPIO_TLMM_CONFIG_EX */
+
+#define GPIO_ENABLE	0
+#define GPIO_DISABLE	1
+
+#define GPIO_INPUT	0
+#define GPIO_OUTPUT	1
+
+#define GPIO_NO_PULL	0
+#define GPIO_PULL_DOWN	1
+#define GPIO_KEEPER	2
+#define GPIO_PULL_UP	3
+
+#define GPIO_2MA	0
+#define GPIO_4MA	1
+#define GPIO_6MA	2
+#define GPIO_8MA	3
+#define GPIO_10MA	4
+#define GPIO_12MA	5
+#define GPIO_14MA	6
+#define GPIO_16MA	7
+
+#define PCOM_GPIO_CFG(gpio, func, dir, pull, drvstr) \
+		((((gpio) & 0x3FF) << 4)	| \
+		((func) & 0xf)			| \
+		(((dir) & 0x1) << 14)		| \
+		(((pull) & 0x3) << 15)		| \
+		(((drvstr) & 0xF) << 17))
+
+int msm_proc_comm(unsigned cmd, unsigned *data1, unsigned *data2);
+void proc_comm_boot_wait(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef _ASM_SH_MODULE_H
 #define _ASM_SH_MODULE_H
 
+<<<<<<< HEAD
 struct mod_arch_specific {
 #ifdef CONFIG_DWARF_UNWINDER
 	struct list_head fde_list;
@@ -16,6 +17,15 @@ struct mod_arch_specific {
 #define Elf_Shdr Elf32_Shdr
 #define Elf_Sym Elf32_Sym
 #define Elf_Ehdr Elf32_Ehdr
+=======
+#include <asm-generic/module.h>
+
+#ifdef CONFIG_DWARF_UNWINDER
+struct mod_arch_specific {
+	struct list_head fde_list;
+	struct list_head cie_list;
+};
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_CPU_LITTLE_ENDIAN

@@ -8,12 +8,22 @@
 
 #include <linux/pfn.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #include <linux/suspend.h>
 #include <linux/mm.h>
 #include <asm/ctl_reg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/suspend.h>
+#include <linux/mm.h>
+#include <asm/ctl_reg.h>
+#include <asm/ipl.h>
+#include <asm/cio.h>
+#include <asm/pci.h>
+#include "entry.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * References to section boundaries
@@ -21,7 +31,10 @@
 extern const void __nosave_begin, __nosave_end;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The restore of the saved pages in an hibernation image will set
  * the change and referenced bits in the storage key for each page.
@@ -47,6 +60,10 @@ struct page_key_data {
 static struct page_key_data *page_key_data;
 static struct page_key_data *page_key_rp, *page_key_wp;
 static unsigned long page_key_rx, page_key_wx;
+<<<<<<< HEAD
+=======
+unsigned long suspend_zero_pages;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * For each page in the hibernation image one additional byte is
@@ -139,7 +156,10 @@ void page_key_write(void *address)
 	page_key_rx = 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int pfn_is_nosave(unsigned long pfn)
 {
 	unsigned long nosave_begin_pfn = PFN_DOWN(__pa(&__nosave_begin));
@@ -156,6 +176,39 @@ int pfn_is_nosave(unsigned long pfn)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * PM notifier callback for suspend
+ */
+static int suspend_pm_cb(struct notifier_block *nb, unsigned long action,
+			 void *ptr)
+{
+	switch (action) {
+	case PM_SUSPEND_PREPARE:
+	case PM_HIBERNATION_PREPARE:
+		suspend_zero_pages = __get_free_pages(GFP_KERNEL, LC_ORDER);
+		if (!suspend_zero_pages)
+			return NOTIFY_BAD;
+		break;
+	case PM_POST_SUSPEND:
+	case PM_POST_HIBERNATION:
+		free_pages(suspend_zero_pages, LC_ORDER);
+		break;
+	default:
+		return NOTIFY_DONE;
+	}
+	return NOTIFY_OK;
+}
+
+static int __init suspend_pm_init(void)
+{
+	pm_notifier(suspend_pm_cb, 0);
+	return 0;
+}
+arch_initcall(suspend_pm_init);
+
+>>>>>>> refs/remotes/origin/master
 void save_processor_state(void)
 {
 	/* swsusp_arch_suspend() actually saves all cpu register contents.
@@ -187,3 +240,14 @@ void restore_processor_state(void)
 	__ctl_set_bit(0,28);
 	local_mcck_enable();
 }
+<<<<<<< HEAD
+=======
+
+/* Called at the end of swsusp_arch_resume */
+void s390_early_resume(void)
+{
+	lgr_info_log();
+	channel_subsystem_reinit();
+	zpci_rescan();
+}
+>>>>>>> refs/remotes/origin/master

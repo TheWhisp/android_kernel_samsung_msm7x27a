@@ -150,7 +150,11 @@ static int mid_spi_dma_transfer(struct dw_spi *dws, int cs_change)
 				&dws->tx_sgl,
 				1,
 				DMA_MEM_TO_DEV,
+<<<<<<< HEAD
 				DMA_PREP_INTERRUPT | DMA_COMPL_SKIP_DEST_UNMAP);
+=======
+				DMA_PREP_INTERRUPT);
+>>>>>>> refs/remotes/origin/master
 	txdesc->callback = dw_spi_dma_done;
 	txdesc->callback_param = dws;
 
@@ -173,7 +177,11 @@ static int mid_spi_dma_transfer(struct dw_spi *dws, int cs_change)
 				&dws->rx_sgl,
 				1,
 				DMA_DEV_TO_MEM,
+<<<<<<< HEAD
 				DMA_PREP_INTERRUPT | DMA_COMPL_SKIP_DEST_UNMAP);
+=======
+				DMA_PREP_INTERRUPT);
+>>>>>>> refs/remotes/origin/master
 	rxdesc->callback = dw_spi_dma_done;
 	rxdesc->callback_param = dws;
 

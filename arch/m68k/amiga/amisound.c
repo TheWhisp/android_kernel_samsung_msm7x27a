@@ -15,9 +15,12 @@
 #include <linux/module.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/amigahw.h>
 
 static unsigned short *snd_data;

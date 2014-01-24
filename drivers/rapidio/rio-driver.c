@@ -164,6 +164,16 @@ void rio_unregister_driver(struct rio_driver *rdrv)
 	driver_unregister(&rdrv->driver);
 }
 
+<<<<<<< HEAD
+=======
+void rio_attach_device(struct rio_dev *rdev)
+{
+	rdev->dev.bus = &rio_bus_type;
+	rdev->dev.parent = &rio_bus;
+}
+EXPORT_SYMBOL_GPL(rio_attach_device);
+
+>>>>>>> refs/remotes/origin/master
 /**
  *  rio_match_bus - Tell if a RIO device structure has a matching RIO driver device id structure
  *  @dev: the standard device structure to match against
@@ -192,6 +202,26 @@ static int rio_match_bus(struct device *dev, struct device_driver *drv)
       out:return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int rio_uevent(struct device *dev, struct kobj_uevent_env *env)
+{
+	struct rio_dev *rdev;
+
+	if (!dev)
+		return -ENODEV;
+
+	rdev = to_rio_dev(dev);
+	if (!rdev)
+		return -ENODEV;
+
+	if (add_uevent_var(env, "MODALIAS=rapidio:v%04Xd%04Xav%04Xad%04X",
+			   rdev->vid, rdev->did, rdev->asm_vid, rdev->asm_did))
+		return -ENOMEM;
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct device rio_bus = {
 	.init_name = "rapidio",
 };
@@ -199,9 +229,17 @@ struct device rio_bus = {
 struct bus_type rio_bus_type = {
 	.name = "rapidio",
 	.match = rio_match_bus,
+<<<<<<< HEAD
 	.dev_attrs = rio_dev_attrs,
 	.probe = rio_device_probe,
 	.remove = rio_device_remove,
+=======
+	.dev_groups = rio_dev_groups,
+	.bus_groups = rio_bus_groups,
+	.probe = rio_device_probe,
+	.remove = rio_device_remove,
+	.uevent	= rio_uevent,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**

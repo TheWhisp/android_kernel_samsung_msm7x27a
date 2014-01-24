@@ -12,10 +12,13 @@
 #
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MKIMAGE := $(srctree)/scripts/mkuboot.sh
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 targets := Image zImage uImage
 
 $(obj)/Image: vmlinux FORCE
@@ -30,6 +33,7 @@ $(obj)/zImage: $(obj)/compressed/vmlinux FORCE
 	@echo '  Kernel: $@ is ready'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 quiet_cmd_uimage = UIMAGE  $@
       cmd_uimage = $(CONFIG_SHELL) $(MKIMAGE) -A unicore -O linux -T kernel \
 		   -C none -a $(LOADADDR) -e $(STARTADDR) \
@@ -42,6 +46,10 @@ $(obj)/uImage: STARTADDR=$(LOADADDR)
 UIMAGE_ARCH = unicore
 UIMAGE_LOADADDR = 0x0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+UIMAGE_ARCH = unicore
+UIMAGE_LOADADDR = 0x0
+>>>>>>> refs/remotes/origin/master
 
 $(obj)/uImage: $(obj)/zImage FORCE
 	$(call if_changed,uimage)

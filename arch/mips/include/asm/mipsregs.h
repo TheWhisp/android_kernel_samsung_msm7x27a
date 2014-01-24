@@ -123,6 +123,7 @@
  * Status Register Values
  */
 
+<<<<<<< HEAD
 #define FPU_CSR_FLUSH   0x01000000      /* flush denormalised results to 0 */
 #define FPU_CSR_COND    0x00800000      /* $fcc0 */
 #define FPU_CSR_COND0   0x00800000      /* $fcc0 */
@@ -133,6 +134,18 @@
 #define FPU_CSR_COND5   0x20000000      /* $fcc5 */
 #define FPU_CSR_COND6   0x40000000      /* $fcc6 */
 #define FPU_CSR_COND7   0x80000000      /* $fcc7 */
+=======
+#define FPU_CSR_FLUSH	0x01000000	/* flush denormalised results to 0 */
+#define FPU_CSR_COND	0x00800000	/* $fcc0 */
+#define FPU_CSR_COND0	0x00800000	/* $fcc0 */
+#define FPU_CSR_COND1	0x02000000	/* $fcc1 */
+#define FPU_CSR_COND2	0x04000000	/* $fcc2 */
+#define FPU_CSR_COND3	0x08000000	/* $fcc3 */
+#define FPU_CSR_COND4	0x10000000	/* $fcc4 */
+#define FPU_CSR_COND5	0x20000000	/* $fcc5 */
+#define FPU_CSR_COND6	0x40000000	/* $fcc6 */
+#define FPU_CSR_COND7	0x80000000	/* $fcc7 */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bits 18 - 20 of the FPU Status Register will be read as 0,
@@ -145,6 +158,7 @@
  * E the exception enable
  * S the sticky/flag bit
 */
+<<<<<<< HEAD
 #define FPU_CSR_ALL_X   0x0003f000
 #define FPU_CSR_UNI_X   0x00020000
 #define FPU_CSR_INV_X   0x00010000
@@ -173,6 +187,36 @@
 #define FPU_CSR_RZ      0x1     /* towards zero */
 #define FPU_CSR_RU      0x2     /* towards +Infinity */
 #define FPU_CSR_RD      0x3     /* towards -Infinity */
+=======
+#define FPU_CSR_ALL_X	0x0003f000
+#define FPU_CSR_UNI_X	0x00020000
+#define FPU_CSR_INV_X	0x00010000
+#define FPU_CSR_DIV_X	0x00008000
+#define FPU_CSR_OVF_X	0x00004000
+#define FPU_CSR_UDF_X	0x00002000
+#define FPU_CSR_INE_X	0x00001000
+
+#define FPU_CSR_ALL_E	0x00000f80
+#define FPU_CSR_INV_E	0x00000800
+#define FPU_CSR_DIV_E	0x00000400
+#define FPU_CSR_OVF_E	0x00000200
+#define FPU_CSR_UDF_E	0x00000100
+#define FPU_CSR_INE_E	0x00000080
+
+#define FPU_CSR_ALL_S	0x0000007c
+#define FPU_CSR_INV_S	0x00000040
+#define FPU_CSR_DIV_S	0x00000020
+#define FPU_CSR_OVF_S	0x00000010
+#define FPU_CSR_UDF_S	0x00000008
+#define FPU_CSR_INE_S	0x00000004
+
+/* Bits 0 and 1 of FPU Status Register specify the rounding mode */
+#define FPU_CSR_RM	0x00000003
+#define FPU_CSR_RN	0x0	/* nearest */
+#define FPU_CSR_RZ	0x1	/* towards zero */
+#define FPU_CSR_RU	0x2	/* towards +Infinity */
+#define FPU_CSR_RD	0x3	/* towards -Infinity */
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -214,6 +258,7 @@
  * Default page size for a given kernel configuration
  */
 #ifdef CONFIG_PAGE_SIZE_4KB
+<<<<<<< HEAD
 #define PM_DEFAULT_MASK	PM_4K
 #elif defined(CONFIG_PAGE_SIZE_8KB)
 #define PM_DEFAULT_MASK	PM_8K
@@ -223,6 +268,17 @@
 #define PM_DEFAULT_MASK	PM_32K
 #elif defined(CONFIG_PAGE_SIZE_64KB)
 #define PM_DEFAULT_MASK	PM_64K
+=======
+#define PM_DEFAULT_MASK PM_4K
+#elif defined(CONFIG_PAGE_SIZE_8KB)
+#define PM_DEFAULT_MASK PM_8K
+#elif defined(CONFIG_PAGE_SIZE_16KB)
+#define PM_DEFAULT_MASK PM_16K
+#elif defined(CONFIG_PAGE_SIZE_32KB)
+#define PM_DEFAULT_MASK PM_32K
+#elif defined(CONFIG_PAGE_SIZE_64KB)
+#define PM_DEFAULT_MASK PM_64K
+>>>>>>> refs/remotes/origin/master
 #else
 #error Bad page size configuration!
 #endif
@@ -240,7 +296,11 @@
 #define PM_HUGE_MASK	PM_64M
 #elif defined(CONFIG_PAGE_SIZE_64KB)
 #define PM_HUGE_MASK	PM_256M
+<<<<<<< HEAD
 #elif defined(CONFIG_HUGETLB_PAGE)
+=======
+#elif defined(CONFIG_MIPS_HUGE_TLB_SUPPORT)
+>>>>>>> refs/remotes/origin/master
 #error Bad page size configuration for hugetlbfs!
 #endif
 
@@ -260,14 +320,22 @@
 /*
  * PageGrain bits
  */
+<<<<<<< HEAD
 #define PG_RIE		(_ULCAST_(1) <<  31)
 #define PG_XIE		(_ULCAST_(1) <<  30)
 #define PG_ELPA		(_ULCAST_(1) <<  29)
 #define PG_ESP		(_ULCAST_(1) <<  28)
+=======
+#define PG_RIE		(_ULCAST_(1) <<	 31)
+#define PG_XIE		(_ULCAST_(1) <<	 30)
+#define PG_ELPA		(_ULCAST_(1) <<	 29)
+#define PG_ESP		(_ULCAST_(1) <<	 28)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * R4x00 interrupt enable / cause bits
  */
+<<<<<<< HEAD
 #define IE_SW0          (_ULCAST_(1) <<  8)
 #define IE_SW1          (_ULCAST_(1) <<  9)
 #define IE_IRQ0         (_ULCAST_(1) << 10)
@@ -276,10 +344,21 @@
 #define IE_IRQ3         (_ULCAST_(1) << 13)
 #define IE_IRQ4         (_ULCAST_(1) << 14)
 #define IE_IRQ5         (_ULCAST_(1) << 15)
+=======
+#define IE_SW0		(_ULCAST_(1) <<	 8)
+#define IE_SW1		(_ULCAST_(1) <<	 9)
+#define IE_IRQ0		(_ULCAST_(1) << 10)
+#define IE_IRQ1		(_ULCAST_(1) << 11)
+#define IE_IRQ2		(_ULCAST_(1) << 12)
+#define IE_IRQ3		(_ULCAST_(1) << 13)
+#define IE_IRQ4		(_ULCAST_(1) << 14)
+#define IE_IRQ5		(_ULCAST_(1) << 15)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * R4x00 interrupt cause bits
  */
+<<<<<<< HEAD
 #define C_SW0           (_ULCAST_(1) <<  8)
 #define C_SW1           (_ULCAST_(1) <<  9)
 #define C_IRQ0          (_ULCAST_(1) << 10)
@@ -288,6 +367,16 @@
 #define C_IRQ3          (_ULCAST_(1) << 13)
 #define C_IRQ4          (_ULCAST_(1) << 14)
 #define C_IRQ5          (_ULCAST_(1) << 15)
+=======
+#define C_SW0		(_ULCAST_(1) <<	 8)
+#define C_SW1		(_ULCAST_(1) <<	 9)
+#define C_IRQ0		(_ULCAST_(1) << 10)
+#define C_IRQ1		(_ULCAST_(1) << 11)
+#define C_IRQ2		(_ULCAST_(1) << 12)
+#define C_IRQ3		(_ULCAST_(1) << 13)
+#define C_IRQ4		(_ULCAST_(1) << 14)
+#define C_IRQ5		(_ULCAST_(1) << 15)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bitfields in the R4xx0 cp0 status register
@@ -301,7 +390,11 @@
 #  define KSU_KERNEL		0x00000000
 #define ST0_UX			0x00000020
 #define ST0_SX			0x00000040
+<<<<<<< HEAD
 #define ST0_KX 			0x00000080
+=======
+#define ST0_KX			0x00000080
+>>>>>>> refs/remotes/origin/master
 #define ST0_DE			0x00010000
 #define ST0_CE			0x00020000
 
@@ -315,7 +408,11 @@
 /*
  * Bitfields in the R[23]000 cp0 status register.
  */
+<<<<<<< HEAD
 #define ST0_IEC                 0x00000001
+=======
+#define ST0_IEC			0x00000001
+>>>>>>> refs/remotes/origin/master
 #define ST0_KUC			0x00000002
 #define ST0_IEP			0x00000004
 #define ST0_KUP			0x00000008
@@ -329,7 +426,11 @@
 /*
  * Bits specific to the R4640/R4650
  */
+<<<<<<< HEAD
 #define ST0_UM			(_ULCAST_(1) <<  4)
+=======
+#define ST0_UM			(_ULCAST_(1) <<	 4)
+>>>>>>> refs/remotes/origin/master
 #define ST0_IL			(_ULCAST_(1) << 23)
 #define ST0_DL			(_ULCAST_(1) << 24)
 
@@ -343,6 +444,7 @@
  */
 #define TX39_CONF_ICS_SHIFT	19
 #define TX39_CONF_ICS_MASK	0x00380000
+<<<<<<< HEAD
 #define TX39_CONF_ICS_1KB 	0x00000000
 #define TX39_CONF_ICS_2KB 	0x00080000
 #define TX39_CONF_ICS_4KB 	0x00100000
@@ -359,6 +461,24 @@
 
 #define TX39_CONF_CWFON 	0x00004000
 #define TX39_CONF_WBON  	0x00002000
+=======
+#define TX39_CONF_ICS_1KB	0x00000000
+#define TX39_CONF_ICS_2KB	0x00080000
+#define TX39_CONF_ICS_4KB	0x00100000
+#define TX39_CONF_ICS_8KB	0x00180000
+#define TX39_CONF_ICS_16KB	0x00200000
+
+#define TX39_CONF_DCS_SHIFT	16
+#define TX39_CONF_DCS_MASK	0x00070000
+#define TX39_CONF_DCS_1KB	0x00000000
+#define TX39_CONF_DCS_2KB	0x00010000
+#define TX39_CONF_DCS_4KB	0x00020000
+#define TX39_CONF_DCS_8KB	0x00030000
+#define TX39_CONF_DCS_16KB	0x00040000
+
+#define TX39_CONF_CWFON		0x00004000
+#define TX39_CONF_WBON		0x00002000
+>>>>>>> refs/remotes/origin/master
 #define TX39_CONF_RF_SHIFT	10
 #define TX39_CONF_RF_MASK	0x00000c00
 #define TX39_CONF_DOZE		0x00000200
@@ -375,6 +495,7 @@
  * Status register bits available in all MIPS CPUs.
  */
 #define ST0_IM			0x0000ff00
+<<<<<<< HEAD
 #define  STATUSB_IP0		8
 #define  STATUSF_IP0		(_ULCAST_(1) <<  8)
 #define  STATUSB_IP1		9
@@ -407,6 +528,40 @@
 #define  STATUSF_IP14		(_ULCAST_(1) <<  6)
 #define  STATUSB_IP15		7
 #define  STATUSF_IP15		(_ULCAST_(1) <<  7)
+=======
+#define	 STATUSB_IP0		8
+#define	 STATUSF_IP0		(_ULCAST_(1) <<	 8)
+#define	 STATUSB_IP1		9
+#define	 STATUSF_IP1		(_ULCAST_(1) <<	 9)
+#define	 STATUSB_IP2		10
+#define	 STATUSF_IP2		(_ULCAST_(1) << 10)
+#define	 STATUSB_IP3		11
+#define	 STATUSF_IP3		(_ULCAST_(1) << 11)
+#define	 STATUSB_IP4		12
+#define	 STATUSF_IP4		(_ULCAST_(1) << 12)
+#define	 STATUSB_IP5		13
+#define	 STATUSF_IP5		(_ULCAST_(1) << 13)
+#define	 STATUSB_IP6		14
+#define	 STATUSF_IP6		(_ULCAST_(1) << 14)
+#define	 STATUSB_IP7		15
+#define	 STATUSF_IP7		(_ULCAST_(1) << 15)
+#define	 STATUSB_IP8		0
+#define	 STATUSF_IP8		(_ULCAST_(1) <<	 0)
+#define	 STATUSB_IP9		1
+#define	 STATUSF_IP9		(_ULCAST_(1) <<	 1)
+#define	 STATUSB_IP10		2
+#define	 STATUSF_IP10		(_ULCAST_(1) <<	 2)
+#define	 STATUSB_IP11		3
+#define	 STATUSF_IP11		(_ULCAST_(1) <<	 3)
+#define	 STATUSB_IP12		4
+#define	 STATUSF_IP12		(_ULCAST_(1) <<	 4)
+#define	 STATUSB_IP13		5
+#define	 STATUSF_IP13		(_ULCAST_(1) <<	 5)
+#define	 STATUSB_IP14		6
+#define	 STATUSF_IP14		(_ULCAST_(1) <<	 6)
+#define	 STATUSB_IP15		7
+#define	 STATUSF_IP15		(_ULCAST_(1) <<	 7)
+>>>>>>> refs/remotes/origin/master
 #define ST0_CH			0x00040000
 #define ST0_NMI			0x00080000
 #define ST0_SR			0x00100000
@@ -436,6 +591,7 @@
  *
  * Refer to your MIPS R4xx0 manual, chapter 5 for explanation.
  */
+<<<<<<< HEAD
 #define  CAUSEB_EXCCODE		2
 #define  CAUSEF_EXCCODE		(_ULCAST_(31)  <<  2)
 #define  CAUSEB_IP		8
@@ -464,6 +620,38 @@
 #define  CAUSEF_TI		(_ULCAST_(1)   << 30)
 #define  CAUSEB_BD		31
 #define  CAUSEF_BD		(_ULCAST_(1)   << 31)
+=======
+#define	 CAUSEB_EXCCODE		2
+#define	 CAUSEF_EXCCODE		(_ULCAST_(31)  <<  2)
+#define	 CAUSEB_IP		8
+#define	 CAUSEF_IP		(_ULCAST_(255) <<  8)
+#define	 CAUSEB_IP0		8
+#define	 CAUSEF_IP0		(_ULCAST_(1)   <<  8)
+#define	 CAUSEB_IP1		9
+#define	 CAUSEF_IP1		(_ULCAST_(1)   <<  9)
+#define	 CAUSEB_IP2		10
+#define	 CAUSEF_IP2		(_ULCAST_(1)   << 10)
+#define	 CAUSEB_IP3		11
+#define	 CAUSEF_IP3		(_ULCAST_(1)   << 11)
+#define	 CAUSEB_IP4		12
+#define	 CAUSEF_IP4		(_ULCAST_(1)   << 12)
+#define	 CAUSEB_IP5		13
+#define	 CAUSEF_IP5		(_ULCAST_(1)   << 13)
+#define	 CAUSEB_IP6		14
+#define	 CAUSEF_IP6		(_ULCAST_(1)   << 14)
+#define	 CAUSEB_IP7		15
+#define	 CAUSEF_IP7		(_ULCAST_(1)   << 15)
+#define	 CAUSEB_IV		23
+#define	 CAUSEF_IV		(_ULCAST_(1)   << 23)
+#define	 CAUSEB_PCI		26
+#define	 CAUSEF_PCI		(_ULCAST_(1)   << 26)
+#define	 CAUSEB_CE		28
+#define	 CAUSEF_CE		(_ULCAST_(3)   << 28)
+#define	 CAUSEB_TI		30
+#define	 CAUSEF_TI		(_ULCAST_(1)   << 30)
+#define	 CAUSEB_BD		31
+#define	 CAUSEF_BD		(_ULCAST_(1)   << 31)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bits in the coprocessor 0 config register.
@@ -481,11 +669,19 @@
 #define CONF_BE			(_ULCAST_(1) << 15)
 
 /* Bits common to various processors.  */
+<<<<<<< HEAD
 #define CONF_CU			(_ULCAST_(1) <<  3)
 #define CONF_DB			(_ULCAST_(1) <<  4)
 #define CONF_IB			(_ULCAST_(1) <<  5)
 #define CONF_DC			(_ULCAST_(7) <<  6)
 #define CONF_IC			(_ULCAST_(7) <<  9)
+=======
+#define CONF_CU			(_ULCAST_(1) <<	 3)
+#define CONF_DB			(_ULCAST_(1) <<	 4)
+#define CONF_IB			(_ULCAST_(1) <<	 5)
+#define CONF_DC			(_ULCAST_(7) <<	 6)
+#define CONF_IC			(_ULCAST_(7) <<	 9)
+>>>>>>> refs/remotes/origin/master
 #define CONF_EB			(_ULCAST_(1) << 13)
 #define CONF_EM			(_ULCAST_(1) << 14)
 #define CONF_SM			(_ULCAST_(1) << 16)
@@ -495,29 +691,51 @@
 #define CONF_EC			(_ULCAST_(7) << 28)
 #define CONF_CM			(_ULCAST_(1) << 31)
 
+<<<<<<< HEAD
 /* Bits specific to the R4xx0.  */
+=======
+/* Bits specific to the R4xx0.	*/
+>>>>>>> refs/remotes/origin/master
 #define R4K_CONF_SW		(_ULCAST_(1) << 20)
 #define R4K_CONF_SS		(_ULCAST_(1) << 21)
 #define R4K_CONF_SB		(_ULCAST_(3) << 22)
 
+<<<<<<< HEAD
 /* Bits specific to the R5000.  */
 #define R5K_CONF_SE		(_ULCAST_(1) << 12)
 #define R5K_CONF_SS		(_ULCAST_(3) << 20)
 
 /* Bits specific to the RM7000.  */
 #define RM7K_CONF_SE		(_ULCAST_(1) <<  3)
+=======
+/* Bits specific to the R5000.	*/
+#define R5K_CONF_SE		(_ULCAST_(1) << 12)
+#define R5K_CONF_SS		(_ULCAST_(3) << 20)
+
+/* Bits specific to the RM7000.	 */
+#define RM7K_CONF_SE		(_ULCAST_(1) <<	 3)
+>>>>>>> refs/remotes/origin/master
 #define RM7K_CONF_TE		(_ULCAST_(1) << 12)
 #define RM7K_CONF_CLK		(_ULCAST_(1) << 16)
 #define RM7K_CONF_TC		(_ULCAST_(1) << 17)
 #define RM7K_CONF_SI		(_ULCAST_(3) << 20)
 #define RM7K_CONF_SC		(_ULCAST_(1) << 31)
 
+<<<<<<< HEAD
 /* Bits specific to the R10000.  */
 #define R10K_CONF_DN		(_ULCAST_(3) <<  3)
 #define R10K_CONF_CT		(_ULCAST_(1) <<  5)
 #define R10K_CONF_PE		(_ULCAST_(1) <<  6)
 #define R10K_CONF_PM		(_ULCAST_(3) <<  7)
 #define R10K_CONF_EC		(_ULCAST_(15)<<  9)
+=======
+/* Bits specific to the R10000.	 */
+#define R10K_CONF_DN		(_ULCAST_(3) <<	 3)
+#define R10K_CONF_CT		(_ULCAST_(1) <<	 5)
+#define R10K_CONF_PE		(_ULCAST_(1) <<	 6)
+#define R10K_CONF_PM		(_ULCAST_(3) <<	 7)
+#define R10K_CONF_EC		(_ULCAST_(15)<<	 9)
+>>>>>>> refs/remotes/origin/master
 #define R10K_CONF_SB		(_ULCAST_(1) << 13)
 #define R10K_CONF_SK		(_ULCAST_(1) << 14)
 #define R10K_CONF_SS		(_ULCAST_(7) << 16)
@@ -525,14 +743,22 @@
 #define R10K_CONF_DC		(_ULCAST_(7) << 26)
 #define R10K_CONF_IC		(_ULCAST_(7) << 29)
 
+<<<<<<< HEAD
 /* Bits specific to the VR41xx.  */
+=======
+/* Bits specific to the VR41xx.	 */
+>>>>>>> refs/remotes/origin/master
 #define VR41_CONF_CS		(_ULCAST_(1) << 12)
 #define VR41_CONF_P4K		(_ULCAST_(1) << 13)
 #define VR41_CONF_BP		(_ULCAST_(1) << 16)
 #define VR41_CONF_M16		(_ULCAST_(1) << 20)
 #define VR41_CONF_AD		(_ULCAST_(1) << 23)
 
+<<<<<<< HEAD
 /* Bits specific to the R30xx.  */
+=======
+/* Bits specific to the R30xx.	*/
+>>>>>>> refs/remotes/origin/master
 #define R30XX_CONF_FDM		(_ULCAST_(1) << 19)
 #define R30XX_CONF_REV		(_ULCAST_(1) << 22)
 #define R30XX_CONF_AC		(_ULCAST_(1) << 23)
@@ -549,8 +775,13 @@
 #define TX49_CONF_HALT		(_ULCAST_(1) << 18)
 #define TX49_CONF_CWFON		(_ULCAST_(1) << 27)
 
+<<<<<<< HEAD
 /* Bits specific to the MIPS32/64 PRA.  */
 #define MIPS_CONF_MT		(_ULCAST_(7) <<  7)
+=======
+/* Bits specific to the MIPS32/64 PRA.	*/
+#define MIPS_CONF_MT		(_ULCAST_(7) <<	 7)
+>>>>>>> refs/remotes/origin/master
 #define MIPS_CONF_AR		(_ULCAST_(7) << 10)
 #define MIPS_CONF_AT		(_ULCAST_(3) << 13)
 #define MIPS_CONF_M		(_ULCAST_(1) << 31)
@@ -558,6 +789,7 @@
 /*
  * Bits in the MIPS32/64 PRA coprocessor 0 config registers 1 and above.
  */
+<<<<<<< HEAD
 #define MIPS_CONF1_FP		(_ULCAST_(1) <<  0)
 #define MIPS_CONF1_EP		(_ULCAST_(1) <<  1)
 #define MIPS_CONF1_CA		(_ULCAST_(1) <<  2)
@@ -566,6 +798,16 @@
 #define MIPS_CONF1_MD		(_ULCAST_(1) <<  5)
 #define MIPS_CONF1_C2		(_ULCAST_(1) <<  6)
 #define MIPS_CONF1_DA		(_ULCAST_(7) <<  7)
+=======
+#define MIPS_CONF1_FP		(_ULCAST_(1) <<	 0)
+#define MIPS_CONF1_EP		(_ULCAST_(1) <<	 1)
+#define MIPS_CONF1_CA		(_ULCAST_(1) <<	 2)
+#define MIPS_CONF1_WR		(_ULCAST_(1) <<	 3)
+#define MIPS_CONF1_PC		(_ULCAST_(1) <<	 4)
+#define MIPS_CONF1_MD		(_ULCAST_(1) <<	 5)
+#define MIPS_CONF1_C2		(_ULCAST_(1) <<	 6)
+#define MIPS_CONF1_DA		(_ULCAST_(7) <<	 7)
+>>>>>>> refs/remotes/origin/master
 #define MIPS_CONF1_DL		(_ULCAST_(7) << 10)
 #define MIPS_CONF1_DS		(_ULCAST_(7) << 13)
 #define MIPS_CONF1_IA		(_ULCAST_(7) << 16)
@@ -573,15 +815,22 @@
 #define MIPS_CONF1_IS		(_ULCAST_(7) << 22)
 #define MIPS_CONF1_TLBS		(_ULCAST_(63)<< 25)
 
+<<<<<<< HEAD
 #define MIPS_CONF2_SA		(_ULCAST_(15)<<  0)
 #define MIPS_CONF2_SL		(_ULCAST_(15)<<  4)
 #define MIPS_CONF2_SS		(_ULCAST_(15)<<  8)
+=======
+#define MIPS_CONF2_SA		(_ULCAST_(15)<<	 0)
+#define MIPS_CONF2_SL		(_ULCAST_(15)<<	 4)
+#define MIPS_CONF2_SS		(_ULCAST_(15)<<	 8)
+>>>>>>> refs/remotes/origin/master
 #define MIPS_CONF2_SU		(_ULCAST_(15)<< 12)
 #define MIPS_CONF2_TA		(_ULCAST_(15)<< 16)
 #define MIPS_CONF2_TL		(_ULCAST_(15)<< 20)
 #define MIPS_CONF2_TS		(_ULCAST_(15)<< 24)
 #define MIPS_CONF2_TU		(_ULCAST_(7) << 28)
 
+<<<<<<< HEAD
 #define MIPS_CONF3_TL		(_ULCAST_(1) <<  0)
 #define MIPS_CONF3_SM		(_ULCAST_(1) <<  1)
 #define MIPS_CONF3_MT		(_ULCAST_(1) <<  2)
@@ -591,11 +840,39 @@
 #define MIPS_CONF3_LPA		(_ULCAST_(1) <<  7)
 #define MIPS_CONF3_DSP		(_ULCAST_(1) << 10)
 #define MIPS_CONF3_ULRI		(_ULCAST_(1) << 13)
+=======
+#define MIPS_CONF3_TL		(_ULCAST_(1) <<	 0)
+#define MIPS_CONF3_SM		(_ULCAST_(1) <<	 1)
+#define MIPS_CONF3_MT		(_ULCAST_(1) <<	 2)
+#define MIPS_CONF3_SP		(_ULCAST_(1) <<	 4)
+#define MIPS_CONF3_VINT		(_ULCAST_(1) <<	 5)
+#define MIPS_CONF3_VEIC		(_ULCAST_(1) <<	 6)
+#define MIPS_CONF3_LPA		(_ULCAST_(1) <<	 7)
+#define MIPS_CONF3_DSP		(_ULCAST_(1) << 10)
+#define MIPS_CONF3_DSP2P	(_ULCAST_(1) << 11)
+#define MIPS_CONF3_RXI		(_ULCAST_(1) << 12)
+#define MIPS_CONF3_ULRI		(_ULCAST_(1) << 13)
+#define MIPS_CONF3_ISA		(_ULCAST_(3) << 14)
+#define MIPS_CONF3_ISA_OE	(_ULCAST_(1) << 16)
+#define MIPS_CONF3_VZ		(_ULCAST_(1) << 23)
+>>>>>>> refs/remotes/origin/master
 
 #define MIPS_CONF4_MMUSIZEEXT	(_ULCAST_(255) << 0)
 #define MIPS_CONF4_MMUEXTDEF	(_ULCAST_(3) << 14)
 #define MIPS_CONF4_MMUEXTDEF_MMUSIZEEXT (_ULCAST_(1) << 14)
 
+<<<<<<< HEAD
+=======
+#define MIPS_CONF5_NF		(_ULCAST_(1) << 0)
+#define MIPS_CONF5_UFR		(_ULCAST_(1) << 2)
+#define MIPS_CONF5_MSAEN	(_ULCAST_(1) << 27)
+#define MIPS_CONF5_EVA		(_ULCAST_(1) << 28)
+#define MIPS_CONF5_CV		(_ULCAST_(1) << 29)
+#define MIPS_CONF5_K		(_ULCAST_(1) << 30)
+
+#define MIPS_CONF6_SYND		(_ULCAST_(1) << 13)
+
+>>>>>>> refs/remotes/origin/master
 #define MIPS_CONF7_WII		(_ULCAST_(1) << 31)
 
 #define MIPS_CONF7_RPS		(_ULCAST_(1) << 2)
@@ -615,7 +892,29 @@
 #ifndef __ASSEMBLY__
 
 /*
+<<<<<<< HEAD
  * Functions to access the R10000 performance counters.  These are basically
+=======
+ * Macros for handling the ISA mode bit for microMIPS.
+ */
+#define get_isa16_mode(x)		((x) & 0x1)
+#define msk_isa16_mode(x)		((x) & ~0x1)
+#define set_isa16_mode(x)		do { (x) |= 0x1; } while(0)
+
+/*
+ * microMIPS instructions can be 16-bit or 32-bit in length. This
+ * returns a 1 if the instruction is 16-bit and a 0 if 32-bit.
+ */
+static inline int mm_insn_16bit(u16 insn)
+{
+	u16 opcode = (insn >> 10) & 0x7;
+
+	return (opcode >= 1 && opcode <= 3) ? 1 : 0;
+}
+
+/*
+ * Functions to access the R10000 performance counters.	 These are basically
+>>>>>>> refs/remotes/origin/master
  * mfc0 and mtc0 instructions from and to coprocessor register with a 5-bit
  * performance counter number encoded into bits 1 ... 5 of the instruction.
  * Only performance counters 0 to 1 actually exist, so for a non-R10000 aware
@@ -626,6 +925,7 @@
 	unsigned int __res;					\
 	__asm__ __volatile__(					\
 	"mfpc\t%0, %1"						\
+<<<<<<< HEAD
         : "=r" (__res)						\
 	: "i" (counter));					\
 								\
@@ -633,6 +933,15 @@
 })
 
 #define write_r10k_perf_cntr(counter,val)                       \
+=======
+	: "=r" (__res)						\
+	: "i" (counter));					\
+								\
+	__res;							\
+})
+
+#define write_r10k_perf_cntr(counter,val)			\
+>>>>>>> refs/remotes/origin/master
 do {								\
 	__asm__ __volatile__(					\
 	"mtpc\t%0, %1"						\
@@ -645,6 +954,7 @@ do {								\
 	unsigned int __res;					\
 	__asm__ __volatile__(					\
 	"mfps\t%0, %1"						\
+<<<<<<< HEAD
         : "=r" (__res)						\
 	: "i" (counter));					\
 								\
@@ -652,6 +962,15 @@ do {								\
 })
 
 #define write_r10k_perf_cntl(counter,val)                       \
+=======
+	: "=r" (__res)						\
+	: "i" (counter));					\
+								\
+	__res;							\
+})
+
+#define write_r10k_perf_cntl(counter,val)			\
+>>>>>>> refs/remotes/origin/master
 do {								\
 	__asm__ __volatile__(					\
 	"mtps\t%0, %1"						\
@@ -841,20 +1160,32 @@ do {									\
 #define write_c0_context(val)	__write_ulong_c0_register($4, 0, val)
 
 #define read_c0_userlocal()	__read_ulong_c0_register($4, 2)
+<<<<<<< HEAD
 #define write_c0_userlocal(val)	__write_ulong_c0_register($4, 2, val)
+=======
+#define write_c0_userlocal(val) __write_ulong_c0_register($4, 2, val)
+>>>>>>> refs/remotes/origin/master
 
 #define read_c0_pagemask()	__read_32bit_c0_register($5, 0)
 #define write_c0_pagemask(val)	__write_32bit_c0_register($5, 0, val)
 
 #define read_c0_pagegrain()	__read_32bit_c0_register($5, 1)
+<<<<<<< HEAD
 #define write_c0_pagegrain(val)	__write_32bit_c0_register($5, 1, val)
+=======
+#define write_c0_pagegrain(val) __write_32bit_c0_register($5, 1, val)
+>>>>>>> refs/remotes/origin/master
 
 #define read_c0_wired()		__read_32bit_c0_register($6, 0)
 #define write_c0_wired(val)	__write_32bit_c0_register($6, 0, val)
 
 #define read_c0_info()		__read_32bit_c0_register($7, 0)
 
+<<<<<<< HEAD
 #define read_c0_cache()		__read_32bit_c0_register($7, 0)	/* TX39xx */
+=======
+#define read_c0_cache()		__read_32bit_c0_register($7, 0) /* TX39xx */
+>>>>>>> refs/remotes/origin/master
 #define write_c0_cache(val)	__write_32bit_c0_register($7, 0, val)
 
 #define read_c0_badvaddr()	__read_ulong_c0_register($8, 0)
@@ -969,11 +1300,15 @@ do {									\
 #define write_c0_intcontrol(val) __write_32bit_c0_ctrl_register($20, val)
 
 #define read_c0_framemask()	__read_32bit_c0_register($21, 0)
+<<<<<<< HEAD
 #define write_c0_framemask(val)	__write_32bit_c0_register($21, 0, val)
 
 /* RM9000 PerfControl performance counter control register */
 #define read_c0_perfcontrol()	__read_32bit_c0_register($22, 0)
 #define write_c0_perfcontrol(val) __write_32bit_c0_register($22, 0, val)
+=======
+#define write_c0_framemask(val) __write_32bit_c0_register($21, 0, val)
+>>>>>>> refs/remotes/origin/master
 
 #define read_c0_diag()		__read_32bit_c0_register($22, 0)
 #define write_c0_diag(val)	__write_32bit_c0_register($22, 0, val)
@@ -1003,6 +1338,7 @@ do {									\
  * MIPS32 / MIPS64 performance counters
  */
 #define read_c0_perfctrl0()	__read_32bit_c0_register($25, 0)
+<<<<<<< HEAD
 #define write_c0_perfctrl0(val)	__write_32bit_c0_register($25, 0, val)
 #define read_c0_perfcntr0()	__read_32bit_c0_register($25, 1)
 #define write_c0_perfcntr0(val)	__write_32bit_c0_register($25, 1, val)
@@ -1042,17 +1378,50 @@ do {									\
 /* RM9000 PerfCount performance counter register */
 #define read_c0_perfcount()	__read_64bit_c0_register($25, 0)
 #define write_c0_perfcount(val)	__write_64bit_c0_register($25, 0, val)
+=======
+#define write_c0_perfctrl0(val) __write_32bit_c0_register($25, 0, val)
+#define read_c0_perfcntr0()	__read_32bit_c0_register($25, 1)
+#define write_c0_perfcntr0(val) __write_32bit_c0_register($25, 1, val)
+#define read_c0_perfcntr0_64()	__read_64bit_c0_register($25, 1)
+#define write_c0_perfcntr0_64(val) __write_64bit_c0_register($25, 1, val)
+#define read_c0_perfctrl1()	__read_32bit_c0_register($25, 2)
+#define write_c0_perfctrl1(val) __write_32bit_c0_register($25, 2, val)
+#define read_c0_perfcntr1()	__read_32bit_c0_register($25, 3)
+#define write_c0_perfcntr1(val) __write_32bit_c0_register($25, 3, val)
+#define read_c0_perfcntr1_64()	__read_64bit_c0_register($25, 3)
+#define write_c0_perfcntr1_64(val) __write_64bit_c0_register($25, 3, val)
+#define read_c0_perfctrl2()	__read_32bit_c0_register($25, 4)
+#define write_c0_perfctrl2(val) __write_32bit_c0_register($25, 4, val)
+#define read_c0_perfcntr2()	__read_32bit_c0_register($25, 5)
+#define write_c0_perfcntr2(val) __write_32bit_c0_register($25, 5, val)
+#define read_c0_perfcntr2_64()	__read_64bit_c0_register($25, 5)
+#define write_c0_perfcntr2_64(val) __write_64bit_c0_register($25, 5, val)
+#define read_c0_perfctrl3()	__read_32bit_c0_register($25, 6)
+#define write_c0_perfctrl3(val) __write_32bit_c0_register($25, 6, val)
+#define read_c0_perfcntr3()	__read_32bit_c0_register($25, 7)
+#define write_c0_perfcntr3(val) __write_32bit_c0_register($25, 7, val)
+#define read_c0_perfcntr3_64()	__read_64bit_c0_register($25, 7)
+#define write_c0_perfcntr3_64(val) __write_64bit_c0_register($25, 7, val)
+>>>>>>> refs/remotes/origin/master
 
 #define read_c0_ecc()		__read_32bit_c0_register($26, 0)
 #define write_c0_ecc(val)	__write_32bit_c0_register($26, 0, val)
 
 #define read_c0_derraddr0()	__read_ulong_c0_register($26, 1)
+<<<<<<< HEAD
 #define write_c0_derraddr0(val)	__write_ulong_c0_register($26, 1, val)
+=======
+#define write_c0_derraddr0(val) __write_ulong_c0_register($26, 1, val)
+>>>>>>> refs/remotes/origin/master
 
 #define read_c0_cacheerr()	__read_32bit_c0_register($27, 0)
 
 #define read_c0_derraddr1()	__read_ulong_c0_register($27, 1)
+<<<<<<< HEAD
 #define write_c0_derraddr1(val)	__write_ulong_c0_register($27, 1, val)
+=======
+#define write_c0_derraddr1(val) __write_ulong_c0_register($27, 1, val)
+>>>>>>> refs/remotes/origin/master
 
 #define read_c0_taglo()		__read_32bit_c0_register($28, 0)
 #define write_c0_taglo(val)	__write_32bit_c0_register($28, 0, val)
@@ -1097,9 +1466,15 @@ do {									\
 #define write_c0_cvmctl(val)	__write_64bit_c0_register($9, 7, val)
 
 #define read_c0_cvmmemctl()	__read_64bit_c0_register($11, 7)
+<<<<<<< HEAD
 #define write_c0_cvmmemctl(val)	__write_64bit_c0_register($11, 7, val)
 /*
  * The cacheerr registers are not standardized.  On OCTEON, they are
+=======
+#define write_c0_cvmmemctl(val) __write_64bit_c0_register($11, 7, val)
+/*
+ * The cacheerr registers are not standardized.	 On OCTEON, they are
+>>>>>>> refs/remotes/origin/master
  * 64 bits wide.
  */
 #define read_octeon_c0_icacheerr()	__read_64bit_c0_register($27, 0)
@@ -1119,10 +1494,14 @@ do {									\
 #define write_c0_brcm_reset(val)	__write_32bit_c0_register($22, 5, val)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* BMIPS4380 */
 =======
 /* BMIPS43xx */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* BMIPS43xx */
+>>>>>>> refs/remotes/origin/master
 #define read_c0_brcm_cmt_intr()		__read_32bit_c0_register($22, 1)
 #define write_c0_brcm_cmt_intr(val)	__write_32bit_c0_register($22, 1, val)
 
@@ -1160,6 +1539,7 @@ do {									\
 /*
  * Macros to access the floating point coprocessor control registers
  */
+<<<<<<< HEAD
 #define read_32bit_cp1_register(source)                         \
 ({ int __res;                                                   \
 	__asm__ __volatile__(                                   \
@@ -1186,11 +1566,43 @@ do {									\
 	: "=r" (__res)							\
 	: "i" (mask));							\
 	__res;								\
+=======
+#define read_32bit_cp1_register(source)					\
+({									\
+	int __res;							\
+									\
+	__asm__ __volatile__(						\
+	"	.set	push					\n"	\
+	"	.set	reorder					\n"	\
+	"	# gas fails to assemble cfc1 for some archs,	\n"	\
+	"	# like Octeon.					\n"	\
+	"	.set	mips1					\n"	\
+	"	cfc1	%0,"STR(source)"			\n"	\
+	"	.set	pop					\n"	\
+	: "=r" (__res));						\
+	__res;								\
+})
+
+#ifdef HAVE_AS_DSP
+#define rddsp(mask)							\
+({									\
+	unsigned int __dspctl;						\
+									\
+	__asm__ __volatile__(						\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	rddsp	%0, %x1					\n"	\
+	"	.set pop					\n"	\
+	: "=r" (__dspctl)						\
+	: "i" (mask));							\
+	__dspctl;							\
+>>>>>>> refs/remotes/origin/master
 })
 
 #define wrdsp(val, mask)						\
 do {									\
 	__asm__ __volatile__(						\
+<<<<<<< HEAD
 	"	.set	push					\n"	\
 	"	.set	noat					\n"	\
 	"	move	$1, %0					\n"	\
@@ -1237,10 +1649,79 @@ do {									\
 	"	.set	pop			\n"			\
 	: "=r" (__treg));						\
 	__treg;								\
+=======
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	wrdsp	%0, %x1					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (val), "i" (mask));					\
+} while (0)
+
+#define mflo0()								\
+({									\
+	long mflo0;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mflo %0, $ac0					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mflo0)); 						\
+	mflo0;								\
+})
+
+#define mflo1()								\
+({									\
+	long mflo1;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mflo %0, $ac1					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mflo1)); 						\
+	mflo1;								\
+})
+
+#define mflo2()								\
+({									\
+	long mflo2;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mflo %0, $ac2					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mflo2)); 						\
+	mflo2;								\
+})
+
+#define mflo3()								\
+({									\
+	long mflo3;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mflo %0, $ac3					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mflo3)); 						\
+	mflo3;								\
+})
+
+#define mfhi0()								\
+({									\
+	long mfhi0;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mfhi %0, $ac0					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mfhi0)); 						\
+	mfhi0;								\
+>>>>>>> refs/remotes/origin/master
 })
 
 #define mfhi1()								\
 ({									\
+<<<<<<< HEAD
 	unsigned long __treg;						\
 									\
 	__asm__ __volatile__(						\
@@ -1252,10 +1733,21 @@ do {									\
 	"	.set	pop			\n"			\
 	: "=r" (__treg));						\
 	__treg;								\
+=======
+	long mfhi1;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mfhi %0, $ac1					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mfhi1)); 						\
+	mfhi1;								\
+>>>>>>> refs/remotes/origin/master
 })
 
 #define mfhi2()								\
 ({									\
+<<<<<<< HEAD
 	unsigned long __treg;						\
 									\
 	__asm__ __volatile__(						\
@@ -1267,10 +1759,21 @@ do {									\
 	"	.set	pop			\n"			\
 	: "=r" (__treg));						\
 	__treg;								\
+=======
+	long mfhi2;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mfhi %0, $ac2					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mfhi2)); 						\
+	mfhi2;								\
+>>>>>>> refs/remotes/origin/master
 })
 
 #define mfhi3()								\
 ({									\
+<<<<<<< HEAD
 	unsigned long __treg;						\
 									\
 	__asm__ __volatile__(						\
@@ -1371,11 +1874,134 @@ do {									\
 } while (0)
 
 #define mthi2(x)							\
+=======
+	long mfhi3;							\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mfhi %0, $ac3					\n"	\
+	"	.set pop					\n" 	\
+	: "=r" (mfhi3)); 						\
+	mfhi3;								\
+})
+
+
+#define mtlo0(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mtlo %0, $ac0					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#define mtlo1(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mtlo %0, $ac1					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#define mtlo2(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mtlo %0, $ac2					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#define mtlo3(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mtlo %0, $ac3					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#define mthi0(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mthi %0, $ac0					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#define mthi1(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mthi %0, $ac1					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#define mthi2(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mthi %0, $ac2					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#define mthi3(x)							\
+({									\
+	__asm__(							\
+	"	.set push					\n"	\
+	"	.set dsp					\n"	\
+	"	mthi %0, $ac3					\n"	\
+	"	.set pop					\n"	\
+	:								\
+	: "r" (x));							\
+})
+
+#else
+
+#ifdef CONFIG_CPU_MICROMIPS
+#define rddsp(mask)							\
+({									\
+	unsigned int __res;						\
+									\
+	__asm__ __volatile__(						\
+	"	.set	push					\n"	\
+	"	.set	noat					\n"	\
+	"	# rddsp $1, %x1					\n"	\
+	"	.hword	((0x0020067c | (%x1 << 14)) >> 16)	\n"	\
+	"	.hword	((0x0020067c | (%x1 << 14)) & 0xffff)	\n"	\
+	"	move	%0, $1					\n"	\
+	"	.set	pop					\n"	\
+	: "=r" (__res)							\
+	: "i" (mask));							\
+	__res;								\
+})
+
+#define wrdsp(val, mask)						\
+>>>>>>> refs/remotes/origin/master
 do {									\
 	__asm__ __volatile__(						\
 	"	.set	push					\n"	\
 	"	.set	noat					\n"	\
 	"	move	$1, %0					\n"	\
+<<<<<<< HEAD
 	"	# mthi	$1, $ac2				\n"	\
 	"	.word	0x00201011				\n"	\
 	"	.set	pop					\n"	\
@@ -1397,11 +2023,39 @@ do {									\
 } while (0)
 
 #define mtlo0(x)							\
+=======
+	"	# wrdsp $1, %x1					\n"	\
+	"	.hword	((0x0020167c | (%x1 << 14)) >> 16)	\n"	\
+	"	.hword	((0x0020167c | (%x1 << 14)) & 0xffff)	\n"	\
+	"	.set	pop					\n"	\
+	:								\
+	: "r" (val), "i" (mask));					\
+} while (0)
+
+#define _umips_dsp_mfxxx(ins)						\
+({									\
+	unsigned long __treg;						\
+									\
+	__asm__ __volatile__(						\
+	"	.set	push					\n"	\
+	"	.set	noat					\n"	\
+	"	.hword	0x0001					\n"	\
+	"	.hword	%x1					\n"	\
+	"	move	%0, $1					\n"	\
+	"	.set	pop					\n"	\
+	: "=r" (__treg)							\
+	: "i" (ins));							\
+	__treg;								\
+})
+
+#define _umips_dsp_mtxxx(val, ins)					\
+>>>>>>> refs/remotes/origin/master
 do {									\
 	__asm__ __volatile__(						\
 	"	.set	push					\n"	\
 	"	.set	noat					\n"	\
 	"	move	$1, %0					\n"	\
+<<<<<<< HEAD
 	"	# mtlo	$1, $ac0				\n"	\
 	"	.word	0x00200013				\n"	\
 	"	.set	pop					\n"	\
@@ -1410,11 +2064,65 @@ do {									\
 } while (0)
 
 #define mtlo1(x)							\
+=======
+	"	.hword	0x0001					\n"	\
+	"	.hword	%x1					\n"	\
+	"	.set	pop					\n"	\
+	:								\
+	: "r" (val), "i" (ins));					\
+} while (0)
+
+#define _umips_dsp_mflo(reg) _umips_dsp_mfxxx((reg << 14) | 0x107c)
+#define _umips_dsp_mfhi(reg) _umips_dsp_mfxxx((reg << 14) | 0x007c)
+
+#define _umips_dsp_mtlo(val, reg) _umips_dsp_mtxxx(val, ((reg << 14) | 0x307c))
+#define _umips_dsp_mthi(val, reg) _umips_dsp_mtxxx(val, ((reg << 14) | 0x207c))
+
+#define mflo0() _umips_dsp_mflo(0)
+#define mflo1() _umips_dsp_mflo(1)
+#define mflo2() _umips_dsp_mflo(2)
+#define mflo3() _umips_dsp_mflo(3)
+
+#define mfhi0() _umips_dsp_mfhi(0)
+#define mfhi1() _umips_dsp_mfhi(1)
+#define mfhi2() _umips_dsp_mfhi(2)
+#define mfhi3() _umips_dsp_mfhi(3)
+
+#define mtlo0(x) _umips_dsp_mtlo(x, 0)
+#define mtlo1(x) _umips_dsp_mtlo(x, 1)
+#define mtlo2(x) _umips_dsp_mtlo(x, 2)
+#define mtlo3(x) _umips_dsp_mtlo(x, 3)
+
+#define mthi0(x) _umips_dsp_mthi(x, 0)
+#define mthi1(x) _umips_dsp_mthi(x, 1)
+#define mthi2(x) _umips_dsp_mthi(x, 2)
+#define mthi3(x) _umips_dsp_mthi(x, 3)
+
+#else  /* !CONFIG_CPU_MICROMIPS */
+#define rddsp(mask)							\
+({									\
+	unsigned int __res;						\
+									\
+	__asm__ __volatile__(						\
+	"	.set	push				\n"		\
+	"	.set	noat				\n"		\
+	"	# rddsp $1, %x1				\n"		\
+	"	.word	0x7c000cb8 | (%x1 << 16)	\n"		\
+	"	move	%0, $1				\n"		\
+	"	.set	pop				\n"		\
+	: "=r" (__res)							\
+	: "i" (mask));							\
+	__res;								\
+})
+
+#define wrdsp(val, mask)						\
+>>>>>>> refs/remotes/origin/master
 do {									\
 	__asm__ __volatile__(						\
 	"	.set	push					\n"	\
 	"	.set	noat					\n"	\
 	"	move	$1, %0					\n"	\
+<<<<<<< HEAD
 	"	# mtlo	$1, $ac1				\n"	\
 	"	.word	0x00200813				\n"	\
 	"	.set	pop					\n"	\
@@ -1436,11 +2144,37 @@ do {									\
 } while (0)
 
 #define mtlo3(x)							\
+=======
+	"	# wrdsp $1, %x1					\n"	\
+	"	.word	0x7c2004f8 | (%x1 << 11)		\n"	\
+	"	.set	pop					\n"	\
+        :								\
+	: "r" (val), "i" (mask));					\
+} while (0)
+
+#define _dsp_mfxxx(ins)							\
+({									\
+	unsigned long __treg;						\
+									\
+	__asm__ __volatile__(						\
+	"	.set	push					\n"	\
+	"	.set	noat					\n"	\
+	"	.word	(0x00000810 | %1)			\n"	\
+	"	move	%0, $1					\n"	\
+	"	.set	pop					\n"	\
+	: "=r" (__treg)							\
+	: "i" (ins));							\
+	__treg;								\
+})
+
+#define _dsp_mtxxx(val, ins)						\
+>>>>>>> refs/remotes/origin/master
 do {									\
 	__asm__ __volatile__(						\
 	"	.set	push					\n"	\
 	"	.set	noat					\n"	\
 	"	move	$1, %0					\n"	\
+<<<<<<< HEAD
 	"	# mtlo	$1, $ac3				\n"	\
 	"	.word	0x00201813				\n"	\
 	"	.set	pop					\n"	\
@@ -1448,6 +2182,41 @@ do {									\
 	: "r" (x));							\
 } while (0)
 
+=======
+	"	.word	(0x00200011 | %1)			\n"	\
+	"	.set	pop					\n"	\
+	:								\
+	: "r" (val), "i" (ins));					\
+} while (0)
+
+#define _dsp_mflo(reg) _dsp_mfxxx((reg << 21) | 0x0002)
+#define _dsp_mfhi(reg) _dsp_mfxxx((reg << 21) | 0x0000)
+
+#define _dsp_mtlo(val, reg) _dsp_mtxxx(val, ((reg << 11) | 0x0002))
+#define _dsp_mthi(val, reg) _dsp_mtxxx(val, ((reg << 11) | 0x0000))
+
+#define mflo0() _dsp_mflo(0)
+#define mflo1() _dsp_mflo(1)
+#define mflo2() _dsp_mflo(2)
+#define mflo3() _dsp_mflo(3)
+
+#define mfhi0() _dsp_mfhi(0)
+#define mfhi1() _dsp_mfhi(1)
+#define mfhi2() _dsp_mfhi(2)
+#define mfhi3() _dsp_mfhi(3)
+
+#define mtlo0(x) _dsp_mtlo(x, 0)
+#define mtlo1(x) _dsp_mtlo(x, 1)
+#define mtlo2(x) _dsp_mtlo(x, 2)
+#define mtlo3(x) _dsp_mtlo(x, 3)
+
+#define mthi0(x) _dsp_mthi(x, 0)
+#define mthi1(x) _dsp_mthi(x, 1)
+#define mthi2(x) _dsp_mthi(x, 2)
+#define mthi3(x) _dsp_mthi(x, 3)
+
+#endif /* CONFIG_CPU_MICROMIPS */
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -1684,7 +2453,10 @@ __BUILD_SET_C0(intcontrol)
 __BUILD_SET_C0(intctl)
 __BUILD_SET_C0(srsmap)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 __BUILD_SET_C0(brcm_config_0)
 __BUILD_SET_C0(brcm_bus_pll)
 __BUILD_SET_C0(brcm_reset)
@@ -1692,7 +2464,10 @@ __BUILD_SET_C0(brcm_cmt_intr)
 __BUILD_SET_C0(brcm_cmt_ctrl)
 __BUILD_SET_C0(brcm_config)
 __BUILD_SET_C0(brcm_mode)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* !__ASSEMBLY__ */
 

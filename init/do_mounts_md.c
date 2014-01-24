@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+=======
+/*
+ * Many of the syscalls used in this file expect some of the arguments
+ * to be __user pointers not __kernel pointers.  To limit the sparse
+ * noise, turn off sparse checking for this file.
+ */
+#ifdef __CHECKER__
+#undef __CHECKER__
+#warning "Sparse checking disabled for this file"
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/raid/md_u.h>
 #include <linux/raid/md_p.h>
@@ -283,7 +296,11 @@ static void __init autodetect_raid(void)
 
 	wait_for_device_probe();
 
+<<<<<<< HEAD
 	fd = sys_open((const char __user __force *) "/dev/md0", 0, 0);
+=======
+	fd = sys_open("/dev/md0", 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (fd >= 0) {
 		sys_ioctl(fd, RAID_AUTORUN, raid_autopart);
 		sys_close(fd);

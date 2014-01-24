@@ -8,11 +8,14 @@
 # Copyright 2009 John W. Linville <linville@tuxdriver.com>
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation.
 #
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
@@ -24,7 +27,10 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 BEGIN {
 	active = 0
@@ -53,6 +59,15 @@ BEGIN {
 	sub(/:/, "", country)
 	printf "static const struct ieee80211_regdomain regdom_%s = {\n", country
 	printf "\t.alpha2 = \"%s\",\n", country
+<<<<<<< HEAD
+=======
+	if ($NF ~ /DFS-ETSI/)
+		printf "\t.dfs_region = NL80211_DFS_ETSI,\n"
+	else if ($NF ~ /DFS-FCC/)
+		printf "\t.dfs_region = NL80211_DFS_FCC,\n"
+	else if ($NF ~ /DFS-JP/)
+		printf "\t.dfs_region = NL80211_DFS_JP,\n"
+>>>>>>> refs/remotes/origin/master
 	printf "\t.reg_rules = {\n"
 	active = 1
 	regdb = regdb "\t&regdom_" country ",\n"

@@ -4,7 +4,11 @@
 
 menuconfig PMBUS
 	tristate "PMBus support"
+<<<<<<< HEAD
 	depends on I2C && EXPERIMENTAL
+=======
+	depends on I2C
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  Say yes here if you want to enable PMBus support.
@@ -42,17 +46,29 @@ config SENSORS_LM25066
 	default n
 	help
 	  If you say yes here you get hardware monitoring support for National
+<<<<<<< HEAD
 	  Semiconductor LM25066, LM5064, and LM5066.
+=======
+	  Semiconductor LM25056, LM25066, LM5064, and LM5066.
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module. If so, the module will
 	  be called lm25066.
 
 config SENSORS_LTC2978
+<<<<<<< HEAD
 	tristate "Linear Technologies LTC2978 and LTC3880"
 	default n
 	help
 	  If you say yes here you get hardware monitoring support for Linear
 	  Technology LTC2978 and LTC3880.
+=======
+	tristate "Linear Technologies LTC2974, LTC2978, LTC3880, and LTC3883"
+	default n
+	help
+	  If you say yes here you get hardware monitoring support for Linear
+	  Technology LTC2974, LTC2978, LTC3880, and LTC3883.
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module. If so, the module will
 	  be called ltc2978.
@@ -72,7 +88,11 @@ config SENSORS_MAX34440
 	default n
 	help
 	  If you say yes here you get hardware monitoring support for Maxim
+<<<<<<< HEAD
 	  MAX34440, MAX34441, and MAX34446.
+=======
+	  MAX34440, MAX34441, MAX34446, MAX34460, and MAX34461.
+>>>>>>> refs/remotes/origin/master
 
 	  This driver can also be built as a module. If so, the module will
 	  be called max34440.

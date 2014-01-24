@@ -2,15 +2,21 @@
 #include <linux/clockchips.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/delay.h>
 #include <linux/errno.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/delay.h>
 #include <linux/errno.h>
 #include <linux/i8253.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/hpet.h>
 #include <linux/init.h>
@@ -20,12 +26,17 @@
 
 #include <asm/fixmap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/i8253.h>
 #include <asm/hpet.h>
 =======
 #include <asm/hpet.h>
 #include <asm/time.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/hpet.h>
+#include <asm/time.h>
+>>>>>>> refs/remotes/origin/master
 
 #define HPET_MASK			CLOCKSOURCE_MASK(32)
 
@@ -43,10 +54,13 @@
 #define HPET_MIN_PROG_DELTA		(HPET_MIN_CYCLES + (HPET_MIN_CYCLES >> 1))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define EVT_TO_HPET_DEV(evt) container_of(evt, struct hpet_dev, evt)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * HPET address is set in acpi/boot.c, when an ACPI entry exists
  */
@@ -69,13 +83,19 @@ struct hpet_dev {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 inline struct hpet_dev *EVT_TO_HPET_DEV(struct clock_event_device *evtdev)
 {
 	return container_of(evtdev, struct hpet_dev, evt);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 inline unsigned int hpet_readl(unsigned int a)
 {
 	return readl(hpet_virt_address + a);
@@ -95,10 +115,14 @@ static inline void hpet_set_mapping(void)
 	hpet_virt_address = ioremap_nocache(hpet_address, HPET_MMAP_SIZE);
 #ifdef CONFIG_X86_64
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__set_fixmap(VSYSCALL_HPET, hpet_address, PAGE_KERNEL_VSYSCALL_NOCACHE);
 =======
 	__set_fixmap(VSYSCALL_HPET, hpet_address, PAGE_KERNEL_VVAR_NOCACHE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__set_fixmap(VSYSCALL_HPET, hpet_address, PAGE_KERNEL_VVAR_NOCACHE);
+>>>>>>> refs/remotes/origin/master
 #endif
 }
 
@@ -117,13 +141,25 @@ static int hpet_verbose;
 
 static int __init hpet_setup(char *str)
 {
+<<<<<<< HEAD
 	if (str) {
+=======
+	while (str) {
+		char *next = strchr(str, ',');
+
+		if (next)
+			*next++ = 0;
+>>>>>>> refs/remotes/origin/master
 		if (!strncmp("disable", str, 7))
 			boot_hpet_disable = 1;
 		if (!strncmp("force", str, 5))
 			hpet_force_user = 1;
 		if (!strncmp("verbose", str, 7))
 			hpet_verbose = 1;
+<<<<<<< HEAD
+=======
+		str = next;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 1;
 }
@@ -342,8 +378,11 @@ static void hpet_set_mode(enum clock_event_mode mode,
 		now = hpet_readl(HPET_COUNTER);
 		cmp = now + (unsigned int) delta;
 		cfg = hpet_readl(HPET_Tn_CFG(timer));
+<<<<<<< HEAD
 		/* Make sure we use edge triggered interrupts */
 		cfg &= ~HPET_TN_LEVEL;
+=======
+>>>>>>> refs/remotes/origin/master
 		cfg |= HPET_TN_ENABLE | HPET_TN_PERIODIC |
 		       HPET_TN_SETVAL | HPET_TN_32BIT;
 		hpet_writel(cfg, HPET_Tn_CFG(timer));
@@ -498,7 +537,11 @@ static int hpet_msi_next_event(unsigned long delta,
 
 static int hpet_setup_msi_irq(unsigned int irq)
 {
+<<<<<<< HEAD
 	if (arch_setup_hpet_msi(irq, hpet_blockid)) {
+=======
+	if (x86_msi.setup_hpet_msi(irq, hpet_blockid)) {
+>>>>>>> refs/remotes/origin/master
 		destroy_irq(irq);
 		return -EINVAL;
 	}
@@ -766,6 +809,7 @@ static cycle_t read_hpet(struct clocksource *cs)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_X86_64
 static cycle_t __vsyscall_fn vread_hpet(void)
 {
@@ -775,6 +819,8 @@ static cycle_t __vsyscall_fn vread_hpet(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clocksource clocksource_hpet = {
 	.name		= "hpet",
 	.rating		= 250,
@@ -784,10 +830,14 @@ static struct clocksource clocksource_hpet = {
 	.resume		= hpet_resume_counter,
 #ifdef CONFIG_X86_64
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.vread		= vread_hpet,
 =======
 	.archdata	= { .vclock_mode = VCLOCK_HPET },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.archdata	= { .vclock_mode = VCLOCK_HPET },
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
@@ -824,15 +874,26 @@ static int hpet_clocksource_register(void)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static u32 *hpet_boot_cfg;
+
+>>>>>>> refs/remotes/origin/master
 /**
  * hpet_enable - Try to setup the HPET timer. Returns 1 on success.
  */
 int __init hpet_enable(void)
 {
+<<<<<<< HEAD
 	unsigned long hpet_period;
 	unsigned int id;
 	u64 freq;
 	int i;
+=======
+	u32 hpet_period, cfg, id;
+	u64 freq;
+	unsigned int i, last;
+>>>>>>> refs/remotes/origin/master
 
 	if (!is_hpet_capable())
 		return 0;
@@ -884,15 +945,55 @@ int __init hpet_enable(void)
 	id = hpet_readl(HPET_ID);
 	hpet_print_config();
 
+<<<<<<< HEAD
+=======
+	last = (id & HPET_ID_NUMBER) >> HPET_ID_NUMBER_SHIFT;
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HPET_EMULATE_RTC
 	/*
 	 * The legacy routing mode needs at least two channels, tick timer
 	 * and the rtc emulation channel.
 	 */
+<<<<<<< HEAD
 	if (!(id & HPET_ID_NUMBER))
 		goto out_nohpet;
 #endif
 
+=======
+	if (!last)
+		goto out_nohpet;
+#endif
+
+	cfg = hpet_readl(HPET_CFG);
+	hpet_boot_cfg = kmalloc((last + 2) * sizeof(*hpet_boot_cfg),
+				GFP_KERNEL);
+	if (hpet_boot_cfg)
+		*hpet_boot_cfg = cfg;
+	else
+		pr_warn("HPET initial state will not be saved\n");
+	cfg &= ~(HPET_CFG_ENABLE | HPET_CFG_LEGACY);
+	hpet_writel(cfg, HPET_CFG);
+	if (cfg)
+		pr_warn("HPET: Unrecognized bits %#x set in global cfg\n",
+			cfg);
+
+	for (i = 0; i <= last; ++i) {
+		cfg = hpet_readl(HPET_Tn_CFG(i));
+		if (hpet_boot_cfg)
+			hpet_boot_cfg[i + 1] = cfg;
+		cfg &= ~(HPET_TN_ENABLE | HPET_TN_LEVEL | HPET_TN_FSB);
+		hpet_writel(cfg, HPET_Tn_CFG(i));
+		cfg &= ~(HPET_TN_PERIODIC | HPET_TN_PERIODIC_CAP
+			 | HPET_TN_64BIT_CAP | HPET_TN_32BIT | HPET_TN_ROUTE
+			 | HPET_TN_FSB | HPET_TN_FSB_CAP);
+		if (cfg)
+			pr_warn("HPET: Unrecognized bits %#x set in cfg#%u\n",
+				cfg, i);
+	}
+	hpet_print_config();
+
+>>>>>>> refs/remotes/origin/master
 	if (hpet_clocksource_register())
 		goto out_nohpet;
 
@@ -960,14 +1061,37 @@ fs_initcall(hpet_late_init);
 void hpet_disable(void)
 {
 	if (is_hpet_capable() && hpet_virt_address) {
+<<<<<<< HEAD
 		unsigned int cfg = hpet_readl(HPET_CFG);
 
 		if (hpet_legacy_int_enabled) {
+=======
+		unsigned int cfg = hpet_readl(HPET_CFG), id, last;
+
+		if (hpet_boot_cfg)
+			cfg = *hpet_boot_cfg;
+		else if (hpet_legacy_int_enabled) {
+>>>>>>> refs/remotes/origin/master
 			cfg &= ~HPET_CFG_LEGACY;
 			hpet_legacy_int_enabled = 0;
 		}
 		cfg &= ~HPET_CFG_ENABLE;
 		hpet_writel(cfg, HPET_CFG);
+<<<<<<< HEAD
+=======
+
+		if (!hpet_boot_cfg)
+			return;
+
+		id = hpet_readl(HPET_ID);
+		last = ((id & HPET_ID_NUMBER) >> HPET_ID_NUMBER_SHIFT);
+
+		for (id = 0; id <= last; ++id)
+			hpet_writel(hpet_boot_cfg[id + 1], HPET_Tn_CFG(id));
+
+		if (*hpet_boot_cfg & HPET_CFG_ENABLE)
+			hpet_writel(*hpet_boot_cfg, HPET_CFG);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

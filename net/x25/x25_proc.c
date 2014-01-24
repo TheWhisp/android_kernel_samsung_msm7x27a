@@ -21,9 +21,13 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/net_namespace.h>
 #include <net/sock.h>
 #include <net/x25.h>
@@ -190,7 +194,10 @@ static int x25_seq_forward_open(struct inode *inode, struct file *file)
 }
 
 static const struct file_operations x25_seq_socket_fops = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/master
 	.open		= x25_seq_socket_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
@@ -198,7 +205,10 @@ static const struct file_operations x25_seq_socket_fops = {
 };
 
 static const struct file_operations x25_seq_route_fops = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/master
 	.open		= x25_seq_route_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
@@ -206,13 +216,17 @@ static const struct file_operations x25_seq_route_fops = {
 };
 
 static const struct file_operations x25_seq_forward_fops = {
+<<<<<<< HEAD
 	.owner		= THIS_MODULE,
+=======
+>>>>>>> refs/remotes/origin/master
 	.open		= x25_seq_forward_open,
 	.read		= seq_read,
 	.llseek		= seq_lseek,
 	.release	= seq_release,
 };
 
+<<<<<<< HEAD
 static struct proc_dir_entry *x25_proc_dir;
 
 int __init x25_proc_init(void)
@@ -247,14 +261,41 @@ out_socket:
 out_route:
 	remove_proc_entry("x25", init_net.proc_net);
 	goto out;
+=======
+int __init x25_proc_init(void)
+{
+	if (!proc_mkdir("x25", init_net.proc_net))
+		return -ENOMEM;
+
+	if (!proc_create("x25/route", S_IRUGO, init_net.proc_net,
+			&x25_seq_route_fops))
+		goto out;
+
+	if (!proc_create("x25/socket", S_IRUGO, init_net.proc_net,
+			&x25_seq_socket_fops))
+		goto out;
+
+	if (!proc_create("x25/forward", S_IRUGO, init_net.proc_net,
+			&x25_seq_forward_fops))
+		goto out;
+	return 0;
+
+out:
+	remove_proc_subtree("x25", init_net.proc_net);
+	return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __exit x25_proc_exit(void)
 {
+<<<<<<< HEAD
 	remove_proc_entry("forward", x25_proc_dir);
 	remove_proc_entry("route", x25_proc_dir);
 	remove_proc_entry("socket", x25_proc_dir);
 	remove_proc_entry("x25", init_net.proc_net);
+=======
+	remove_proc_subtree("x25", init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 #else /* CONFIG_PROC_FS */

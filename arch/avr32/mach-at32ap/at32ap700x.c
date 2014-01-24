@@ -605,6 +605,12 @@ static void __init genclk_init_parent(struct clk *clk)
 
 static struct dw_dma_platform_data dw_dmac0_data = {
 	.nr_channels	= 3,
+<<<<<<< HEAD
+=======
+	.block_size	= 4095U,
+	.nr_masters	= 2,
+	.data_width	= { 2, 2, 0, 0 },
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource dw_dmac0_resource[] = {
@@ -1056,6 +1062,7 @@ struct platform_device *__init at32_add_device_usart(unsigned int id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct platform_device *atmel_default_console_device;
 
 =======
@@ -1063,6 +1070,13 @@ struct platform_device *atmel_default_console_device;
 void __init at32_setup_serial_console(unsigned int usart_id)
 {
 	atmel_default_console_device = at32_usarts[usart_id];
+=======
+void __init at32_setup_serial_console(unsigned int usart_id)
+{
+#ifdef CONFIG_SERIAL_ATMEL
+	atmel_default_console_device = at32_usarts[usart_id];
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /* --------------------------------------------------------------------
@@ -1071,10 +1085,14 @@ void __init at32_setup_serial_console(unsigned int usart_id)
 
 #ifdef CONFIG_CPU_AT32AP7000
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct eth_platform_data macb0_data;
 =======
 static struct macb_platform_data macb0_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data macb0_data;
+>>>>>>> refs/remotes/origin/master
 static struct resource macb0_resource[] = {
 	PBMEM(0xfff01800),
 	IRQ(25),
@@ -1084,10 +1102,14 @@ DEV_CLK(hclk, macb0, hsb, 8);
 DEV_CLK(pclk, macb0, pbb, 6);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct eth_platform_data macb1_data;
 =======
 static struct macb_platform_data macb1_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data macb1_data;
+>>>>>>> refs/remotes/origin/master
 static struct resource macb1_resource[] = {
 	PBMEM(0xfff01c00),
 	IRQ(26),
@@ -1098,10 +1120,14 @@ DEV_CLK(pclk, macb1, pbb, 7);
 
 struct platform_device *__init
 <<<<<<< HEAD
+<<<<<<< HEAD
 at32_add_device_eth(unsigned int id, struct eth_platform_data *data)
 =======
 at32_add_device_eth(unsigned int id, struct macb_platform_data *data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+at32_add_device_eth(unsigned int id, struct macb_platform_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *pdev;
 	u32 pin_mask;
@@ -1179,10 +1205,14 @@ at32_add_device_eth(unsigned int id, struct macb_platform_data *data)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(pdev->dev.platform_data, data, sizeof(struct eth_platform_data));
 =======
 	memcpy(pdev->dev.platform_data, data, sizeof(struct macb_platform_data));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memcpy(pdev->dev.platform_data, data, sizeof(struct macb_platform_data));
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(pdev);
 
 	return pdev;
@@ -1373,9 +1403,12 @@ at32_add_device_mci(unsigned int id, struct mci_platform_data *data)
 
 	slave->sdata.dma_dev = &dw_dmac0_device.dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	slave->sdata.reg_width = DW_DMA_SLAVE_WIDTH_32BIT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	slave->sdata.cfg_hi = (DWC_CFGH_SRC_PER(0)
 				| DWC_CFGH_DST_PER(1));
 	slave->sdata.cfg_lo &= ~(DWC_CFGL_HS_DST_POL
@@ -1459,7 +1492,11 @@ fail:
  *  LCDC
  * -------------------------------------------------------------------- */
 #if defined(CONFIG_CPU_AT32AP7000) || defined(CONFIG_CPU_AT32AP7002)
+<<<<<<< HEAD
 static struct atmel_lcdfb_info atmel_lcdfb0_data;
+=======
+static struct atmel_lcdfb_pdata atmel_lcdfb0_data;
+>>>>>>> refs/remotes/origin/master
 static struct resource atmel_lcdfb0_resource[] = {
 	{
 		.start		= 0xff000000,
@@ -1475,7 +1512,11 @@ static struct resource atmel_lcdfb0_resource[] = {
 	},
 };
 DEFINE_DEV_DATA(atmel_lcdfb, 0);
+<<<<<<< HEAD
 DEV_CLK(hck1, atmel_lcdfb0, hsb, 7);
+=======
+DEV_CLK(hclk, atmel_lcdfb0, hsb, 7);
+>>>>>>> refs/remotes/origin/master
 static struct clk atmel_lcdfb0_pixclk = {
 	.name		= "lcdc_clk",
 	.dev		= &atmel_lcdfb0_device.dev,
@@ -1487,12 +1528,20 @@ static struct clk atmel_lcdfb0_pixclk = {
 };
 
 struct platform_device *__init
+<<<<<<< HEAD
 at32_add_device_lcdc(unsigned int id, struct atmel_lcdfb_info *data,
+=======
+at32_add_device_lcdc(unsigned int id, struct atmel_lcdfb_pdata *data,
+>>>>>>> refs/remotes/origin/master
 		     unsigned long fbmem_start, unsigned long fbmem_len,
 		     u64 pin_mask)
 {
 	struct platform_device *pdev;
+<<<<<<< HEAD
 	struct atmel_lcdfb_info *info;
+=======
+	struct atmel_lcdfb_pdata *info;
+>>>>>>> refs/remotes/origin/master
 	struct fb_monspecs *monspecs;
 	struct fb_videomode *modedb;
 	unsigned int modedb_size;
@@ -1549,9 +1598,17 @@ at32_add_device_lcdc(unsigned int id, struct atmel_lcdfb_info *data,
 	}
 
 	info = pdev->dev.platform_data;
+<<<<<<< HEAD
 	memcpy(info, data, sizeof(struct atmel_lcdfb_info));
 	info->default_monspecs = monspecs;
 
+=======
+	memcpy(info, data, sizeof(struct atmel_lcdfb_pdata));
+	info->default_monspecs = monspecs;
+
+	pdev->name = "at32ap-lcdfb";
+
+>>>>>>> refs/remotes/origin/master
 	platform_device_register(pdev);
 	return pdev;
 
@@ -2001,6 +2058,12 @@ at32_add_device_nand(unsigned int id, struct atmel_nand_data *data)
 				ARRAY_SIZE(smc_cs3_resource)))
 		goto fail;
 
+<<<<<<< HEAD
+=======
+	/* For at32ap7000, we use the reset workaround for nand driver */
+	data->need_reset_workaround = true;
+
+>>>>>>> refs/remotes/origin/master
 	if (platform_device_add_data(pdev, data,
 				sizeof(struct atmel_nand_data)))
 		goto fail;
@@ -2071,38 +2134,50 @@ at32_add_device_ac97c(unsigned int id, struct ac97c_platform_data *data,
 	if (flags & AC97C_CAPTURE) {
 		rx_dws->dma_dev = &dw_dmac0_device.dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rx_dws->reg_width = DW_DMA_SLAVE_WIDTH_16BIT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rx_dws->cfg_hi = DWC_CFGH_SRC_PER(3);
 		rx_dws->cfg_lo &= ~(DWC_CFGL_HS_DST_POL | DWC_CFGL_HS_SRC_POL);
 		rx_dws->src_master = 0;
 		rx_dws->dst_master = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		rx_dws->src_msize = DW_DMA_MSIZE_1;
 		rx_dws->dst_msize = DW_DMA_MSIZE_1;
 		rx_dws->fc = DW_DMA_FC_D_P2M;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Check if DMA slave interface for playback should be configured. */
 	if (flags & AC97C_PLAYBACK) {
 		tx_dws->dma_dev = &dw_dmac0_device.dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tx_dws->reg_width = DW_DMA_SLAVE_WIDTH_16BIT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		tx_dws->cfg_hi = DWC_CFGH_DST_PER(4);
 		tx_dws->cfg_lo &= ~(DWC_CFGL_HS_DST_POL | DWC_CFGL_HS_SRC_POL);
 		tx_dws->src_master = 0;
 		tx_dws->dst_master = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		tx_dws->src_msize = DW_DMA_MSIZE_1;
 		tx_dws->dst_msize = DW_DMA_MSIZE_1;
 		tx_dws->fc = DW_DMA_FC_D_M2P;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (platform_device_add_data(pdev, data,
@@ -2173,19 +2248,25 @@ at32_add_device_abdac(unsigned int id, struct atmel_abdac_pdata *data)
 
 	dws->dma_dev = &dw_dmac0_device.dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dws->reg_width = DW_DMA_SLAVE_WIDTH_32BIT;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dws->cfg_hi = DWC_CFGH_DST_PER(2);
 	dws->cfg_lo &= ~(DWC_CFGL_HS_DST_POL | DWC_CFGL_HS_SRC_POL);
 	dws->src_master = 0;
 	dws->dst_master = 1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	dws->src_msize = DW_DMA_MSIZE_1;
 	dws->dst_msize = DW_DMA_MSIZE_1;
 	dws->fc = DW_DMA_FC_D_M2P;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (platform_device_add_data(pdev, data,
 				sizeof(struct atmel_abdac_pdata)))
@@ -2298,7 +2379,11 @@ static __initdata struct clk *init_clocks[] = {
 	&atmel_twi0_pclk,
 	&atmel_mci0_pclk,
 #if defined(CONFIG_CPU_AT32AP7000) || defined(CONFIG_CPU_AT32AP7002)
+<<<<<<< HEAD
 	&atmel_lcdfb0_hck1,
+=======
+	&atmel_lcdfb0_hclk,
+>>>>>>> refs/remotes/origin/master
 	&atmel_lcdfb0_pixclk,
 #endif
 	&ssc0_pclk,

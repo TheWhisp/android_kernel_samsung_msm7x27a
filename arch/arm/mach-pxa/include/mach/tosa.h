@@ -25,10 +25,14 @@
  * SCOOP2 internal GPIOs
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOSA_SCOOP_GPIO_BASE		NR_BUILTIN_GPIO
 =======
 #define TOSA_SCOOP_GPIO_BASE		PXA_NR_BUILTIN_GPIO
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TOSA_SCOOP_GPIO_BASE		PXA_NR_BUILTIN_GPIO
+>>>>>>> refs/remotes/origin/master
 #define TOSA_SCOOP_PXA_VCORE1		SCOOP_GPCR_PA11
 #define TOSA_GPIO_TC6393XB_REST_IN	(TOSA_SCOOP_GPIO_BASE + 1)
 #define TOSA_GPIO_IR_POWERDWN		(TOSA_SCOOP_GPIO_BASE + 2)
@@ -47,10 +51,14 @@
  * SCOOP2 jacket GPIOs
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOSA_SCOOP_JC_GPIO_BASE		(NR_BUILTIN_GPIO + 12)
 =======
 #define TOSA_SCOOP_JC_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 12)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TOSA_SCOOP_JC_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 12)
+>>>>>>> refs/remotes/origin/master
 #define TOSA_GPIO_BT_LED		(TOSA_SCOOP_JC_GPIO_BASE + 0)
 #define TOSA_GPIO_NOTE_LED		(TOSA_SCOOP_JC_GPIO_BASE + 1)
 #define TOSA_GPIO_CHRG_ERR_LED		(TOSA_SCOOP_JC_GPIO_BASE + 2)
@@ -68,10 +76,14 @@
  * TC6393XB GPIOs
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOSA_TC6393XB_GPIO_BASE		(NR_BUILTIN_GPIO + 2 * 12)
 =======
 #define TOSA_TC6393XB_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 2 * 12)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TOSA_TC6393XB_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 2 * 12)
+>>>>>>> refs/remotes/origin/master
 
 #define TOSA_GPIO_TG_ON			(TOSA_TC6393XB_GPIO_BASE + 0)
 #define TOSA_GPIO_L_MUTE		(TOSA_TC6393XB_GPIO_BASE + 1)
@@ -154,6 +166,7 @@
  * Interrupts
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOSA_IRQ_GPIO_WAKEUP        	IRQ_GPIO(TOSA_GPIO_WAKEUP)
 #define TOSA_IRQ_GPIO_AC_IN         	IRQ_GPIO(TOSA_GPIO_AC_IN)
 #define TOSA_IRQ_GPIO_RECORD_BTN    	IRQ_GPIO(TOSA_GPIO_RECORD_BTN)
@@ -179,6 +192,8 @@
 
 #define TOSA_IRQ_GPIO_MAIN_BAT_LOW 	IRQ_GPIO(TOSA_GPIO_MAIN_BAT_LOW)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define TOSA_IRQ_GPIO_WAKEUP        	PXA_GPIO_TO_IRQ(TOSA_GPIO_WAKEUP)
 #define TOSA_IRQ_GPIO_AC_IN         	PXA_GPIO_TO_IRQ(TOSA_GPIO_AC_IN)
 #define TOSA_IRQ_GPIO_RECORD_BTN    	PXA_GPIO_TO_IRQ(TOSA_GPIO_RECORD_BTN)
@@ -203,7 +218,10 @@
 #define TOSA_IRQ_GPIO_KEY_SENSE(a)  	PXA_GPIO_TO_IRQ(69+(a))
 
 #define TOSA_IRQ_GPIO_MAIN_BAT_LOW 	PXA_GPIO_TO_IRQ(TOSA_GPIO_MAIN_BAT_LOW)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define TOSA_KEY_SYNC		KEY_102ND /* ??? */
 

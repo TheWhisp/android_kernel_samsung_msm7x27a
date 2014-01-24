@@ -62,9 +62,13 @@ hcall(unsigned long call,
 	return call;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*:*/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*:*/
+>>>>>>> refs/remotes/origin/master
 
 /* Can't use our min() macro here: needs to be a constant */
 #define LGUEST_IRQS (NR_IRQS < 32 ? NR_IRQS: 32)

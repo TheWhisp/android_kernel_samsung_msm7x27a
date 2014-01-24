@@ -126,11 +126,19 @@ static irqreturn_t ems_pcmcia_interrupt(int irq, void *dev_id)
 static inline int ems_pcmcia_check_chan(struct sja1000_priv *priv)
 {
 	/* Make sure SJA1000 is in reset mode */
+<<<<<<< HEAD
 	ems_pcmcia_write_reg(priv, REG_MOD, 1);
 	ems_pcmcia_write_reg(priv, REG_CDR, CDR_PELICAN);
 
 	/* read reset-values */
 	if (ems_pcmcia_read_reg(priv, REG_CDR) == CDR_PELICAN)
+=======
+	ems_pcmcia_write_reg(priv, SJA1000_MOD, 1);
+	ems_pcmcia_write_reg(priv, SJA1000_CDR, CDR_PELICAN);
+
+	/* read reset-values */
+	if (ems_pcmcia_read_reg(priv, SJA1000_CDR) == CDR_PELICAN)
+>>>>>>> refs/remotes/origin/master
 		return 1;
 
 	return 0;
@@ -166,8 +174,12 @@ static void ems_pcmcia_del_card(struct pcmcia_device *pdev)
  * Probe PCI device for EMS CAN signature and register each available
  * CAN channel to SJA1000 Socket-CAN subsystem.
  */
+<<<<<<< HEAD
 static int __devinit ems_pcmcia_add_card(struct pcmcia_device *pdev,
 					 unsigned long base)
+=======
+static int ems_pcmcia_add_card(struct pcmcia_device *pdev, unsigned long base)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sja1000_priv *priv;
 	struct net_device *dev;
@@ -256,7 +268,11 @@ failure_cleanup:
 /*
  * Setup PCMCIA socket and probe for EMS CPC-CARD
  */
+<<<<<<< HEAD
 static int __devinit ems_pcmcia_probe(struct pcmcia_device *dev)
+=======
+static int ems_pcmcia_probe(struct pcmcia_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int csval;
 
@@ -317,6 +333,7 @@ static struct pcmcia_driver ems_pcmcia_driver = {
 	.remove = ems_pcmcia_remove,
 	.id_table = ems_pcmcia_tbl,
 };
+<<<<<<< HEAD
 
 static int __init ems_pcmcia_init(void)
 {
@@ -329,3 +346,6 @@ static void __exit ems_pcmcia_exit(void)
 	pcmcia_unregister_driver(&ems_pcmcia_driver);
 }
 module_exit(ems_pcmcia_exit);
+=======
+module_pcmcia_driver(ems_pcmcia_driver);
+>>>>>>> refs/remotes/origin/master

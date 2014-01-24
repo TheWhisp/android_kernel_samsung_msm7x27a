@@ -4,10 +4,14 @@
  * Copyright 2007-2010 Wolfson Microelectronics PLC.
  * Author: Graeme Gregory
 <<<<<<< HEAD
+<<<<<<< HEAD
  *         linux@wolfsonmicro.com
 =======
  *         Graeme.Gregory@wolfsonmicro.com
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *         Graeme.Gregory@wolfsonmicro.com
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute  it and/or modify it
  *  under  the terms of  the GNU General  Public License as published by the
@@ -23,9 +27,13 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -39,6 +47,7 @@
 #include "wm8991.h"
 
 struct wm8991_priv {
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
 	unsigned int pcmclk;
 };
@@ -110,6 +119,86 @@ static const u16 wm8991_reg_defs[] = {
 };
 
 #define wm8991_reset(c) snd_soc_write(c, WM8991_RESET, 0)
+=======
+	struct regmap *regmap;
+	unsigned int pcmclk;
+};
+
+static const struct reg_default wm8991_reg_defaults[] = {
+	{  1, 0x0000 },     /* R1  - Power Management (1) */
+	{  2, 0x6000 },     /* R2  - Power Management (2) */
+	{  3, 0x0000 },     /* R3  - Power Management (3) */
+	{  4, 0x4050 },     /* R4  - Audio Interface (1) */
+	{  5, 0x4000 },     /* R5  - Audio Interface (2) */
+	{  6, 0x01C8 },     /* R6  - Clocking (1) */
+	{  7, 0x0000 },     /* R7  - Clocking (2) */
+	{  8, 0x0040 },     /* R8  - Audio Interface (3) */
+	{  9, 0x0040 },     /* R9  - Audio Interface (4) */
+	{ 10, 0x0004 },     /* R10 - DAC CTRL */
+	{ 11, 0x00C0 },     /* R11 - Left DAC Digital Volume */
+	{ 12, 0x00C0 },     /* R12 - Right DAC Digital Volume */
+	{ 13, 0x0000 },     /* R13 - Digital Side Tone */
+	{ 14, 0x0100 },     /* R14 - ADC CTRL */
+	{ 15, 0x00C0 },     /* R15 - Left ADC Digital Volume */
+	{ 16, 0x00C0 },     /* R16 - Right ADC Digital Volume */
+
+	{ 18, 0x0000 },     /* R18 - GPIO CTRL 1 */
+	{ 19, 0x1000 },     /* R19 - GPIO1 & GPIO2 */
+	{ 20, 0x1010 },     /* R20 - GPIO3 & GPIO4 */
+	{ 21, 0x1010 },     /* R21 - GPIO5 & GPIO6 */
+	{ 22, 0x8000 },     /* R22 - GPIOCTRL 2 */
+	{ 23, 0x0800 },     /* R23 - GPIO_POL */
+	{ 24, 0x008B },     /* R24 - Left Line Input 1&2 Volume */
+	{ 25, 0x008B },     /* R25 - Left Line Input 3&4 Volume */
+	{ 26, 0x008B },     /* R26 - Right Line Input 1&2 Volume */
+	{ 27, 0x008B },     /* R27 - Right Line Input 3&4 Volume */
+	{ 28, 0x0000 },     /* R28 - Left Output Volume */
+	{ 29, 0x0000 },     /* R29 - Right Output Volume */
+	{ 30, 0x0066 },     /* R30 - Line Outputs Volume */
+	{ 31, 0x0022 },     /* R31 - Out3/4 Volume */
+	{ 32, 0x0079 },     /* R32 - Left OPGA Volume */
+	{ 33, 0x0079 },     /* R33 - Right OPGA Volume */
+	{ 34, 0x0003 },     /* R34 - Speaker Volume */
+	{ 35, 0x0003 },     /* R35 - ClassD1 */
+
+	{ 37, 0x0100 },     /* R37 - ClassD3 */
+
+	{ 39, 0x0000 },     /* R39 - Input Mixer1 */
+	{ 40, 0x0000 },     /* R40 - Input Mixer2 */
+	{ 41, 0x0000 },     /* R41 - Input Mixer3 */
+	{ 42, 0x0000 },     /* R42 - Input Mixer4 */
+	{ 43, 0x0000 },     /* R43 - Input Mixer5 */
+	{ 44, 0x0000 },     /* R44 - Input Mixer6 */
+	{ 45, 0x0000 },     /* R45 - Output Mixer1 */
+	{ 46, 0x0000 },     /* R46 - Output Mixer2 */
+	{ 47, 0x0000 },     /* R47 - Output Mixer3 */
+	{ 48, 0x0000 },     /* R48 - Output Mixer4 */
+	{ 49, 0x0000 },     /* R49 - Output Mixer5 */
+	{ 50, 0x0000 },     /* R50 - Output Mixer6 */
+	{ 51, 0x0180 },     /* R51 - Out3/4 Mixer */
+	{ 52, 0x0000 },     /* R52 - Line Mixer1 */
+	{ 53, 0x0000 },     /* R53 - Line Mixer2 */
+	{ 54, 0x0000 },     /* R54 - Speaker Mixer */
+	{ 55, 0x0000 },     /* R55 - Additional Control */
+	{ 56, 0x0000 },     /* R56 - AntiPOP1 */
+	{ 57, 0x0000 },     /* R57 - AntiPOP2 */
+	{ 58, 0x0000 },     /* R58 - MICBIAS */
+
+	{ 60, 0x0008 },     /* R60 - PLL1 */
+	{ 61, 0x0031 },     /* R61 - PLL2 */
+	{ 62, 0x0026 },     /* R62 - PLL3 */
+};
+
+static bool wm8991_volatile(struct device *dev, unsigned int reg)
+{
+	switch (reg) {
+	case WM8991_RESET:
+		return true;
+	default:
+		return false;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 static const unsigned int rec_mix_tlv[] = {
 	TLV_DB_RANGE_HEAD(1),
@@ -382,6 +471,7 @@ static const struct snd_kcontrol_new wm8991_snd_controls[] = {
 /*
  * _DAPM_ Controls
  */
+<<<<<<< HEAD
 static int inmixer_event(struct snd_soc_dapm_widget *w,
 			 struct snd_kcontrol *kcontrol, int event)
 {
@@ -410,6 +500,8 @@ static int inmixer_event(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int outmixer_event(struct snd_soc_dapm_widget *w,
 			  struct snd_kcontrol *kcontrol, int event)
 {
@@ -667,6 +759,14 @@ static const struct snd_soc_dapm_widget wm8991_dapm_widgets[] = {
 	SND_SOC_DAPM_INPUT("RIN2"),
 	SND_SOC_DAPM_INPUT("Internal ADC Source"),
 
+<<<<<<< HEAD
+=======
+	SND_SOC_DAPM_SUPPLY("INL", WM8991_POWER_MANAGEMENT_2,
+			    WM8991_AINL_ENA_BIT, 0, NULL, 0),
+	SND_SOC_DAPM_SUPPLY("INR", WM8991_POWER_MANAGEMENT_2,
+			    WM8991_AINR_ENA_BIT, 0, NULL, 0),
+
+>>>>>>> refs/remotes/origin/master
 	/* DACs */
 	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", WM8991_POWER_MANAGEMENT_2,
 		WM8991_ADCL_ENA_BIT, 0),
@@ -688,6 +788,7 @@ static const struct snd_soc_dapm_widget wm8991_dapm_widgets[] = {
 		ARRAY_SIZE(wm8991_dapm_rin34_pga_controls)),
 
 	/* INMIXL */
+<<<<<<< HEAD
 	SND_SOC_DAPM_MIXER_E("INMIXL", WM8991_INTDRIVBITS, WM8991_INMIXL_PWR_BIT, 0,
 		&wm8991_dapm_inmixl_controls[0],
 		ARRAY_SIZE(wm8991_dapm_inmixl_controls),
@@ -708,6 +809,24 @@ static const struct snd_soc_dapm_widget wm8991_dapm_widgets[] = {
 	SND_SOC_DAPM_MUX_E("AINRMUX", WM8991_INTDRIVBITS, WM8991_AINRMUX_PWR_BIT, 0,
 		&wm8991_dapm_ainrmux_controls, inmixer_event,
 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+=======
+	SND_SOC_DAPM_MIXER("INMIXL", SND_SOC_NOPM, 0, 0,
+		&wm8991_dapm_inmixl_controls[0],
+		ARRAY_SIZE(wm8991_dapm_inmixl_controls)),
+
+	/* AINLMUX */
+	SND_SOC_DAPM_MUX("AINLMUX", SND_SOC_NOPM, 0, 0,
+		&wm8991_dapm_ainlmux_controls),
+
+	/* INMIXR */
+	SND_SOC_DAPM_MIXER("INMIXR", SND_SOC_NOPM, 0, 0,
+		&wm8991_dapm_inmixr_controls[0],
+		ARRAY_SIZE(wm8991_dapm_inmixr_controls)),
+
+	/* AINRMUX */
+	SND_SOC_DAPM_MUX("AINRMUX", SND_SOC_NOPM, 0, 0,
+		&wm8991_dapm_ainrmux_controls),
+>>>>>>> refs/remotes/origin/master
 
 	/* Output Side */
 	/* DACs */
@@ -782,12 +901,17 @@ static const struct snd_soc_dapm_widget wm8991_dapm_widgets[] = {
 
 	/* MICBIAS */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SND_SOC_DAPM_MICBIAS("MICBIAS", WM8991_POWER_MANAGEMENT_1,
 		WM8991_MICBIAS_ENA_BIT, 0),
 =======
 	SND_SOC_DAPM_SUPPLY("MICBIAS", WM8991_POWER_MANAGEMENT_1,
 			    WM8991_MICBIAS_ENA_BIT, 0, NULL, 0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	SND_SOC_DAPM_SUPPLY("MICBIAS", WM8991_POWER_MANAGEMENT_1,
+			    WM8991_MICBIAS_ENA_BIT, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 
 	SND_SOC_DAPM_OUTPUT("LON"),
 	SND_SOC_DAPM_OUTPUT("LOP"),
@@ -804,7 +928,11 @@ static const struct snd_soc_dapm_widget wm8991_dapm_widgets[] = {
 	SND_SOC_DAPM_OUTPUT("Internal DAC Sink"),
 };
 
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
+=======
+static const struct snd_soc_dapm_route wm8991_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	/* Make DACs turn on when playing even if not mixed into any outputs */
 	{"Internal DAC Sink", NULL, "Left DAC"},
 	{"Internal DAC Sink", NULL, "Right DAC"},
@@ -814,6 +942,13 @@ static const struct snd_soc_dapm_route audio_map[] = {
 	{"Right ADC", NULL, "Internal ADC Source"},
 
 	/* Input Side */
+<<<<<<< HEAD
+=======
+	{"INMIXL", NULL, "INL"},
+	{"AINLMUX", NULL, "INL"},
+	{"INMIXR", NULL, "INR"},
+	{"AINRMUX", NULL, "INR"},
+>>>>>>> refs/remotes/origin/master
 	/* LIN12 PGA */
 	{"LIN12 PGA", "LIN1 Switch", "LIN1"},
 	{"LIN12 PGA", "LIN2 Switch", "LIN2"},
@@ -1146,6 +1281,10 @@ static int wm8991_mute(struct snd_soc_dai *dai, int mute)
 static int wm8991_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
+=======
+	struct wm8991_priv *wm8991 = snd_soc_codec_get_drvdata(codec);
+>>>>>>> refs/remotes/origin/master
 	u16 val;
 
 	switch (level) {
@@ -1161,7 +1300,11 @@ static int wm8991_set_bias_level(struct snd_soc_codec *codec,
 
 	case SND_SOC_BIAS_STANDBY:
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
 			snd_soc_cache_sync(codec);
+=======
+			regcache_sync(wm8991->regmap);
+>>>>>>> refs/remotes/origin/master
 			/* Enable all output discharge bits */
 			snd_soc_write(codec, WM8991_ANTIPOP1, WM8991_DIS_LLINE |
 				      WM8991_DIS_RLINE | WM8991_DIS_OUT3 |
@@ -1249,7 +1392,11 @@ static int wm8991_set_bias_level(struct snd_soc_codec *codec,
 
 		/* disable POBCTRL, SOFT_ST and BUFDCOPEN */
 		snd_soc_write(codec, WM8991_ANTIPOP2, 0x0);
+<<<<<<< HEAD
 		codec->cache_sync = 1;
+=======
+		regcache_mark_dirty(wm8991->regmap);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -1258,10 +1405,14 @@ static int wm8991_set_bias_level(struct snd_soc_codec *codec,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8991_suspend(struct snd_soc_codec *codec, pm_message_t state)
 =======
 static int wm8991_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8991_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8991_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -1285,6 +1436,7 @@ static int wm8991_probe(struct snd_soc_codec *codec)
 	struct wm8991_priv *wm8991;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int reg;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1292,11 +1444,18 @@ static int wm8991_probe(struct snd_soc_codec *codec)
 	wm8991 = snd_soc_codec_get_drvdata(codec);
 
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, wm8991->control_type);
+=======
+
+	wm8991 = snd_soc_codec_get_drvdata(codec);
+
+	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache i/o: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 	ret = wm8991_reset(codec);
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to issue reset\n");
@@ -1349,6 +1508,10 @@ static int wm8991_probe(struct snd_soc_codec *codec)
 				  ARRAY_SIZE(wm8991_dapm_widgets));
 	snd_soc_dapm_add_routes(&codec->dapm, audio_map,
 				ARRAY_SIZE(audio_map));
+=======
+	wm8991_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1356,10 +1519,14 @@ static int wm8991_probe(struct snd_soc_codec *codec)
 			SNDRV_PCM_FMTBIT_S24_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8991_ops = {
 =======
 static const struct snd_soc_dai_ops wm8991_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8991_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params = wm8991_hw_params,
 	.digital_mute = wm8991_mute,
 	.set_fmt = wm8991_set_dai_fmt,
@@ -1401,6 +1568,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8991 = {
 	.suspend = wm8991_suspend,
 	.resume = wm8991_resume,
 	.set_bias_level = wm8991_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = WM8991_MAX_REGISTER + 1,
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8991_reg_defs
@@ -1430,6 +1598,89 @@ static __devexit int wm8991_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
 	kfree(i2c_get_clientdata(client));
+=======
+	.controls = wm8991_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8991_snd_controls),
+	.dapm_widgets = wm8991_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wm8991_dapm_widgets),
+	.dapm_routes = wm8991_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wm8991_dapm_routes),
+};
+
+static const struct regmap_config wm8991_regmap = {
+	.reg_bits = 8,
+	.val_bits = 16,
+
+	.max_register = WM8991_PLL3,
+	.volatile_reg = wm8991_volatile,
+	.reg_defaults = wm8991_reg_defaults,
+	.num_reg_defaults = ARRAY_SIZE(wm8991_reg_defaults),
+	.cache_type = REGCACHE_RBTREE,
+};
+
+static int wm8991_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct wm8991_priv *wm8991;
+	unsigned int val;
+	int ret;
+
+	wm8991 = devm_kzalloc(&i2c->dev, sizeof(*wm8991), GFP_KERNEL);
+	if (!wm8991)
+		return -ENOMEM;
+
+	wm8991->regmap = devm_regmap_init_i2c(i2c, &wm8991_regmap);
+	if (IS_ERR(wm8991->regmap))
+		return PTR_ERR(wm8991->regmap);
+
+	i2c_set_clientdata(i2c, wm8991);
+
+	ret = regmap_read(wm8991->regmap, WM8991_RESET, &val);
+	if (ret != 0) {
+		dev_err(&i2c->dev, "Failed to read device ID: %d\n", ret);
+		return ret;
+	}
+	if (val != 0x8991) {
+		dev_err(&i2c->dev, "Device with ID %x is not a WM8991\n", val);
+		return -EINVAL;
+	}
+
+	ret = regmap_write(wm8991->regmap, WM8991_RESET, 0);
+	if (ret < 0) {
+		dev_err(&i2c->dev, "Failed to issue reset: %d\n", ret);
+		return ret;
+	}
+
+	regmap_update_bits(wm8991->regmap, WM8991_AUDIO_INTERFACE_4,
+			   WM8991_ALRCGPIO1, WM8991_ALRCGPIO1);
+
+	regmap_update_bits(wm8991->regmap, WM8991_GPIO1_GPIO2,
+			   WM8991_GPIO1_SEL_MASK, 1);
+
+	regmap_update_bits(wm8991->regmap, WM8991_POWER_MANAGEMENT_1,
+			   WM8991_VREF_ENA | WM8991_VMID_MODE_MASK,
+			   WM8991_VREF_ENA | WM8991_VMID_MODE_MASK);
+
+	regmap_update_bits(wm8991->regmap, WM8991_POWER_MANAGEMENT_2,
+			   WM8991_OPCLK_ENA, WM8991_OPCLK_ENA);
+
+	regmap_write(wm8991->regmap, WM8991_DAC_CTRL, 0);
+	regmap_write(wm8991->regmap, WM8991_LEFT_OUTPUT_VOLUME,
+		     0x50 | (1<<8));
+	regmap_write(wm8991->regmap, WM8991_RIGHT_OUTPUT_VOLUME,
+		     0x50 | (1<<8));
+
+	ret = snd_soc_register_codec(&i2c->dev,
+				     &soc_codec_dev_wm8991, &wm8991_dai, 1);
+
+	return ret;
+}
+
+static int wm8991_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1445,6 +1696,7 @@ static struct i2c_driver wm8991_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = wm8991_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(wm8991_i2c_remove),
 	.id_table = wm8991_i2c_id,
 };
@@ -1466,6 +1718,13 @@ static void __exit wm8991_exit(void)
 	i2c_del_driver(&wm8991_i2c_driver);
 }
 module_exit(wm8991_exit);
+=======
+	.remove = wm8991_i2c_remove,
+	.id_table = wm8991_i2c_id,
+};
+
+module_i2c_driver(wm8991_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8991 driver");
 MODULE_AUTHOR("Graeme Gregory");

@@ -1,6 +1,7 @@
 /*
  * linux/arch/arm/mach-sa1100/neponset.c
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  */
 #include <linux/kernel.h>
@@ -79,6 +80,8 @@ neponset_irq_handler(unsigned int irq, struct irq_desc *desc)
 			generic_handle_irq(IRQ_NEPONSET_SA1111);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/err.h>
 #include <linux/init.h>
@@ -86,6 +89,10 @@ neponset_irq_handler(unsigned int irq, struct irq_desc *desc)
 #include <linux/irq.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/sa11x0-serial.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/pm.h>
 #include <linux/serial_core.h>
@@ -93,7 +100,10 @@ neponset_irq_handler(unsigned int irq, struct irq_desc *desc)
 
 #include <asm/mach-types.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <asm/mach/serial_sa1100.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/hardware/sa1111.h>
 #include <asm/sizes.h>
 
@@ -166,6 +176,7 @@ void neponset_ncr_frob(unsigned int mask, unsigned int val)
 		local_irq_restore(flags);
 	} else {
 		WARN(1, "nep_base unset\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
@@ -176,6 +187,14 @@ static void neponset_set_mctrl(struct uart_port *port, u_int mctrl)
 	u_int mdm_ctl0 = MDM_CTL_0;
 
 =======
+=======
+	}
+}
+EXPORT_SYMBOL(neponset_ncr_frob);
+
+static void neponset_set_mctrl(struct uart_port *port, u_int mctrl)
+{
+>>>>>>> refs/remotes/origin/master
 	void __iomem *base = nep_base;
 	u_int mdm_ctl0;
 
@@ -183,7 +202,10 @@ static void neponset_set_mctrl(struct uart_port *port, u_int mctrl)
 		return;
 
 	mdm_ctl0 = readb_relaxed(base + MDM_CTL_0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (port->mapbase == _Ser1UTCR0) {
 		if (mctrl & TIOCM_RTS)
 			mdm_ctl0 &= ~MDM_CTL0_RTS2;
@@ -207,19 +229,26 @@ static void neponset_set_mctrl(struct uart_port *port, u_int mctrl)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MDM_CTL_0 = mdm_ctl0;
 =======
 	writeb_relaxed(mdm_ctl0, base + MDM_CTL_0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writeb_relaxed(mdm_ctl0, base + MDM_CTL_0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u_int neponset_get_mctrl(struct uart_port *port)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_int ret = TIOCM_CD | TIOCM_CTS | TIOCM_DSR;
 	u_int mdm_ctl1 = MDM_CTL_1;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	void __iomem *base = nep_base;
 	u_int ret = TIOCM_CD | TIOCM_CTS | TIOCM_DSR;
 	u_int mdm_ctl1;
@@ -228,7 +257,10 @@ static u_int neponset_get_mctrl(struct uart_port *port)
 		return ret;
 
 	mdm_ctl1 = readb_relaxed(base + MDM_CTL_1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (port->mapbase == _Ser1UTCR0) {
 		if (mdm_ctl1 & MDM_CTL1_DCD2)
 			ret &= ~TIOCM_CD;
@@ -248,11 +280,16 @@ static u_int neponset_get_mctrl(struct uart_port *port)
 	return ret;
 }
 
+<<<<<<< HEAD
 static struct sa1100_port_fns neponset_port_fns __devinitdata = {
+=======
+static struct sa1100_port_fns neponset_port_fns = {
+>>>>>>> refs/remotes/origin/master
 	.set_mctrl	= neponset_set_mctrl,
 	.get_mctrl	= neponset_get_mctrl,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __devinit neponset_probe(struct platform_device *dev)
 {
@@ -461,6 +498,8 @@ void __init neponset_map_io(void)
 	iotable_init(neponset_io_desc, ARRAY_SIZE(neponset_io_desc));
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Install handler for Neponset IRQ.  Note that we have to loop here
  * since the ETHERNET and USAR IRQs are level based, and we need to
@@ -535,7 +574,11 @@ static struct sa1111_platform_data sa1111_info = {
 	.disable_devs	= SA1111_DEVID_PS2_MSE,
 };
 
+<<<<<<< HEAD
 static int __devinit neponset_probe(struct platform_device *dev)
+=======
+static int neponset_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct neponset_drvdata *d;
 	struct resource *nep_res, *sa1111_res, *smc91x_res;
@@ -670,7 +713,11 @@ static int __devinit neponset_probe(struct platform_device *dev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit neponset_remove(struct platform_device *dev)
+=======
+static int neponset_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct neponset_drvdata *d = platform_get_drvdata(dev);
 	int irq = platform_get_irq(dev, 0);
@@ -722,7 +769,11 @@ static const struct dev_pm_ops neponset_pm_ops = {
 
 static struct platform_driver neponset_device_driver = {
 	.probe		= neponset_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(neponset_remove),
+=======
+	.remove		= neponset_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "neponset",
 		.owner	= THIS_MODULE,
@@ -736,4 +787,7 @@ static int __init neponset_init(void)
 }
 
 subsys_initcall(neponset_init);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

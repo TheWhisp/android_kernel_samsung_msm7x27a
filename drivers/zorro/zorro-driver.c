@@ -38,9 +38,13 @@ zorro_match_device(const struct zorro_device_id *ids,
 	return NULL;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(zorro_match_device);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(zorro_match_device);
+>>>>>>> refs/remotes/origin/master
 
 
 static int zorro_device_probe(struct device *dev)
@@ -96,9 +100,13 @@ int zorro_register_driver(struct zorro_driver *drv)
 	return driver_register(&drv->driver);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(zorro_register_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(zorro_register_driver);
+>>>>>>> refs/remotes/origin/master
 
 
     /**
@@ -116,9 +124,13 @@ void zorro_unregister_driver(struct zorro_driver *drv)
 	driver_unregister(&drv->driver);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(zorro_unregister_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(zorro_unregister_driver);
+>>>>>>> refs/remotes/origin/master
 
 
     /**
@@ -151,7 +163,10 @@ static int zorro_bus_match(struct device *dev, struct device_driver *drv)
 
 static int zorro_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 	struct zorro_dev *z;
 
 	if (!dev)
@@ -168,6 +183,7 @@ static int zorro_uevent(struct device *dev, struct kobj_uevent_env *env)
 		return -ENOMEM;
 
 	return 0;
+<<<<<<< HEAD
 #else /* !CONFIG_HOTPLUG */
 	return -ENODEV;
 #endif /* !CONFIG_HOTPLUG */
@@ -184,6 +200,19 @@ struct bus_type zorro_bus_type = {
 =======
 EXPORT_SYMBOL(zorro_bus_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+struct bus_type zorro_bus_type = {
+	.name     = "zorro",
+	.dev_name = "zorro",
+	.match    = zorro_bus_match,
+	.uevent   = zorro_uevent,
+	.probe    = zorro_device_probe,
+	.remove   = zorro_device_remove,
+};
+EXPORT_SYMBOL(zorro_bus_type);
+>>>>>>> refs/remotes/origin/master
 
 
 static int __init zorro_driver_init(void)
@@ -194,9 +223,12 @@ static int __init zorro_driver_init(void)
 postcore_initcall(zorro_driver_init);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(zorro_match_device);
 EXPORT_SYMBOL(zorro_register_driver);
 EXPORT_SYMBOL(zorro_unregister_driver);
 EXPORT_SYMBOL(zorro_bus_type);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

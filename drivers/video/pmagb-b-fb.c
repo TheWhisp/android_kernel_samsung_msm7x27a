@@ -30,9 +30,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <video/pmagb-b-fb.h>
 
@@ -48,7 +51,11 @@ struct pmagbbfb_par {
 };
 
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo pmagbbfb_defined __devinitdata = {
+=======
+static struct fb_var_screeninfo pmagbbfb_defined = {
+>>>>>>> refs/remotes/origin/master
 	.bits_per_pixel	= 8,
 	.red.length	= 8,
 	.green.length	= 8,
@@ -61,7 +68,11 @@ static struct fb_var_screeninfo pmagbbfb_defined __devinitdata = {
 	.vmode		= FB_VMODE_NONINTERLACED,
 };
 
+<<<<<<< HEAD
 static struct fb_fix_screeninfo pmagbbfb_fix __devinitdata = {
+=======
+static struct fb_fix_screeninfo pmagbbfb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.id		= "PMAGB-BA",
 	.smem_len	= (2048 * 1024),
 	.type		= FB_TYPE_PACKED_PIXELS,
@@ -151,7 +162,11 @@ static void __init pmagbbfb_erase_cursor(struct fb_info *info)
 /*
  * Set up screen parameters.
  */
+<<<<<<< HEAD
 static void __devinit pmagbbfb_screen_setup(struct fb_info *info)
+=======
+static void pmagbbfb_screen_setup(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pmagbbfb_par *par = info->par;
 
@@ -183,9 +198,15 @@ static void __devinit pmagbbfb_screen_setup(struct fb_info *info)
 /*
  * Determine oscillator configuration.
  */
+<<<<<<< HEAD
 static void __devinit pmagbbfb_osc_setup(struct fb_info *info)
 {
 	static unsigned int pmagbbfb_freqs[] __devinitdata = {
+=======
+static void pmagbbfb_osc_setup(struct fb_info *info)
+{
+	static unsigned int pmagbbfb_freqs[] = {
+>>>>>>> refs/remotes/origin/master
 		130808, 119843, 104000, 92980, 74370, 72800,
 		69197, 66000, 65000, 50350, 36000, 32000, 25175
 	};
@@ -250,7 +271,11 @@ static void __devinit pmagbbfb_osc_setup(struct fb_info *info)
 };
 
 
+<<<<<<< HEAD
 static int __devinit pmagbbfb_probe(struct device *dev)
+=======
+static int pmagbbfb_probe(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tc_dev *tdev = to_tc_dev(dev);
 	resource_size_t start, len;
@@ -332,11 +357,18 @@ static int __devinit pmagbbfb_probe(struct device *dev)
 	snprintf(freq1, sizeof(freq1), "%u.%03uMHz",
 		 par->osc1 / 1000, par->osc1 % 1000);
 
+<<<<<<< HEAD
 	pr_info("fb%d: %s frame buffer device at %s\n",
 		info->node, info->fix.id, dev_name(dev));
 	pr_info("fb%d: Osc0: %s, Osc1: %s, Osc%u selected\n",
 		info->node, freq0, par->osc1 ? freq1 : "disabled",
 		par->osc1 != 0);
+=======
+	fb_info(info, "%s frame buffer device at %s\n",
+		info->fix.id, dev_name(dev));
+	fb_info(info, "Osc0: %s, Osc1: %s, Osc%u selected\n",
+		freq0, par->osc1 ? freq1 : "disabled", par->osc1 != 0);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 

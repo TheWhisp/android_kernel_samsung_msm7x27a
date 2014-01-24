@@ -30,11 +30,20 @@
 
 /* Generic bus chip selects */
 #ifdef CONFIG_SIBYTE_RHONE
+<<<<<<< HEAD
 #define LEDS_CS         6
 #define LEDS_PHYS       0x1d0a0000
 #endif
 
 /* GPIOs */
 #define K_GPIO_DBG_LED  0
+=======
+#define LEDS_CS		6
+#define LEDS_PHYS	0x1d0a0000
+#endif
+
+/* GPIOs */
+#define K_GPIO_DBG_LED	0
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_SIBYTE_SENTOSA_H */

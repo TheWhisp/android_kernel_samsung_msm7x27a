@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _IO_H_
 #define _IO_H_
 
@@ -121,10 +127,14 @@ struct io_req {
 	u32	status;
 	u8	*pbuf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct semaphore sema;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	void (*_async_io_callback)(struct _adapter *padater,
+=======
+	void (*_async_io_callback)(struct _adapter *padapter,
+>>>>>>> refs/remotes/origin/master
 				   struct io_req *pio_req, u8 *cnxt);
 	u8 *cnxt;
 };

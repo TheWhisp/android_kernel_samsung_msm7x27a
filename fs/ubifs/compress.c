@@ -112,8 +112,12 @@ void ubifs_compress(const void *in_buf, int in_len, void *out_buf, int *out_len,
 	if (compr->comp_mutex)
 		mutex_unlock(compr->comp_mutex);
 	if (unlikely(err)) {
+<<<<<<< HEAD
 		ubifs_warn("cannot compress %d bytes, compressor %s, "
 			   "error %d, leave data uncompressed",
+=======
+		ubifs_warn("cannot compress %d bytes, compressor %s, error %d, leave data uncompressed",
+>>>>>>> refs/remotes/origin/master
 			   in_len, compr->name, err);
 		 goto no_compr;
 	}
@@ -176,8 +180,13 @@ int ubifs_decompress(const void *in_buf, int in_len, void *out_buf,
 	if (compr->decomp_mutex)
 		mutex_unlock(compr->decomp_mutex);
 	if (err)
+<<<<<<< HEAD
 		ubifs_err("cannot decompress %d bytes, compressor %s, "
 			  "error %d", in_len, compr->name, err);
+=======
+		ubifs_err("cannot decompress %d bytes, compressor %s, error %d",
+			  in_len, compr->name, err);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

@@ -15,6 +15,7 @@
 #include <linux/clk.h>
 #include <linux/clockchips.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of.h>
 #include <linux/of_address.h>
@@ -25,6 +26,26 @@
 
 #include <mach/at91_pit.h>
 
+=======
+#include <linux/of.h>
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+
+#include <asm/mach/time.h>
+
+#define AT91_PIT_MR		0x00			/* Mode Register */
+#define		AT91_PIT_PITIEN		(1 << 25)		/* Timer Interrupt Enable */
+#define		AT91_PIT_PITEN		(1 << 24)		/* Timer Enabled */
+#define		AT91_PIT_PIV		(0xfffff)		/* Periodic Interval Value */
+
+#define AT91_PIT_SR		0x04			/* Status Register */
+#define		AT91_PIT_PITS		(1 << 0)		/* Timer Status */
+
+#define AT91_PIT_PIVR		0x08			/* Periodic Interval Value Register */
+#define AT91_PIT_PIIR		0x0c			/* Periodic Interval Image Register */
+#define		AT91_PIT_PICNT		(0xfff << 20)		/* Interval Counter */
+#define		AT91_PIT_CPIV		(0xfffff)		/* Inverval Value */
+>>>>>>> refs/remotes/origin/master
 
 #define PIT_CPIV(x)	((x) & AT91_PIT_CPIV)
 #define PIT_PICNT(x)	(((x) & AT91_PIT_PICNT) >> 20)
@@ -32,8 +53,11 @@
 static u32 pit_cycle;		/* write-once */
 static u32 pit_cnt;		/* access only w/system irq blocked */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __iomem *pit_base_addr __read_mostly;
 
 static inline unsigned int pit_read(unsigned int reg_offset)
@@ -45,7 +69,10 @@ static inline void pit_write(unsigned int reg_offset, unsigned long value)
 {
 	__raw_writel(value, pit_base_addr + reg_offset);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Clocksource:  just a monotonic counter of MCK/16 cycles.
@@ -60,10 +87,14 @@ static cycle_t read_pit_clk(struct clocksource *cs)
 	raw_local_irq_save(flags);
 	elapsed = pit_cnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	t = at91_sys_read(AT91_PIT_PIIR);
 =======
 	t = pit_read(AT91_PIT_PIIR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	t = pit_read(AT91_PIT_PIIR);
+>>>>>>> refs/remotes/origin/master
 	raw_local_irq_restore(flags);
 
 	elapsed += PIT_PICNT(t) * pit_cycle;
@@ -89,12 +120,17 @@ pit_clkevt_mode(enum clock_event_mode mode, struct clock_event_device *dev)
 	case CLOCK_EVT_MODE_PERIODIC:
 		/* update clocksource counter */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pit_cnt += pit_cycle * PIT_PICNT(at91_sys_read(AT91_PIT_PIVR));
 		at91_sys_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN
 =======
 		pit_cnt += pit_cycle * PIT_PICNT(pit_read(AT91_PIT_PIVR));
 		pit_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pit_cnt += pit_cycle * PIT_PICNT(pit_read(AT91_PIT_PIVR));
+		pit_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN
+>>>>>>> refs/remotes/origin/master
 				| AT91_PIT_PITIEN);
 		break;
 	case CLOCK_EVT_MODE_ONESHOT:
@@ -104,22 +140,58 @@ pit_clkevt_mode(enum clock_event_mode mode, struct clock_event_device *dev)
 	case CLOCK_EVT_MODE_UNUSED:
 		/* disable irq, leaving the clocksource active */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		at91_sys_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN);
 =======
 		pit_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pit_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case CLOCK_EVT_MODE_RESUME:
 		break;
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void at91sam926x_pit_suspend(struct clock_event_device *cedev)
+{
+	/* Disable timer */
+	pit_write(AT91_PIT_MR, 0);
+}
+
+static void at91sam926x_pit_reset(void)
+{
+	/* Disable timer and irqs */
+	pit_write(AT91_PIT_MR, 0);
+
+	/* Clear any pending interrupts, wait for PIT to stop counting */
+	while (PIT_CPIV(pit_read(AT91_PIT_PIVR)) != 0)
+		cpu_relax();
+
+	/* Start PIT but don't enable IRQ */
+	pit_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN);
+}
+
+static void at91sam926x_pit_resume(struct clock_event_device *cedev)
+{
+	at91sam926x_pit_reset();
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct clock_event_device pit_clkevt = {
 	.name		= "pit",
 	.features	= CLOCK_EVT_FEAT_PERIODIC,
 	.shift		= 32,
 	.rating		= 100,
 	.set_mode	= pit_clkevt_mode,
+<<<<<<< HEAD
+=======
+	.suspend	= at91sam926x_pit_suspend,
+	.resume		= at91sam926x_pit_resume,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -137,18 +209,24 @@ static irqreturn_t at91sam926x_pit_interrupt(int irq, void *dev_id)
 	/* The PIT interrupt may be disabled, and is shared */
 	if ((pit_clkevt.mode == CLOCK_EVT_MODE_PERIODIC)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			&& (at91_sys_read(AT91_PIT_SR) & AT91_PIT_PITS)) {
 		unsigned nr_ticks;
 
 		/* Get number of ticks performed before irq, and ack it */
 		nr_ticks = PIT_PICNT(at91_sys_read(AT91_PIT_PIVR));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			&& (pit_read(AT91_PIT_SR) & AT91_PIT_PITS)) {
 		unsigned nr_ticks;
 
 		/* Get number of ticks performed before irq, and ack it */
 		nr_ticks = PIT_PICNT(pit_read(AT91_PIT_PIVR));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		do {
 			pit_cnt += pit_cycle;
 			pit_clkevt.event_handler(&pit_clkevt);
@@ -163,6 +241,7 @@ static irqreturn_t at91sam926x_pit_interrupt(int irq, void *dev_id)
 
 static struct irqaction at91sam926x_pit_irq = {
 	.name		= "at91_tick",
+<<<<<<< HEAD
 	.flags		= IRQF_SHARED | IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL,
 <<<<<<< HEAD
 	.handler	= at91sam926x_pit_interrupt
@@ -196,6 +275,13 @@ static void at91sam926x_pit_reset(void)
 	pit_write(AT91_PIT_MR, (pit_cycle - 1) | AT91_PIT_PITEN);
 }
 
+=======
+	.flags		= IRQF_SHARED | IRQF_TIMER | IRQF_IRQPOLL,
+	.handler	= at91sam926x_pit_interrupt,
+	.irq		= NR_IRQS_LEGACY + AT91_ID_SYS,
+};
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_OF
 static struct of_device_id pit_timer_ids[] = {
 	{ .compatible = "atmel,at91sam9260-pit" },
@@ -240,22 +326,35 @@ static int __init of_at91sam926x_pit_init(void)
 	return -EINVAL;
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Set up both clocksource and clockevent support.
  */
+<<<<<<< HEAD
 static void __init at91sam926x_pit_init(void)
 {
 	unsigned long	pit_rate;
 	unsigned	bits;
 <<<<<<< HEAD
 =======
+=======
+void __init at91sam926x_pit_init(void)
+{
+	unsigned long	pit_rate;
+	unsigned	bits;
+>>>>>>> refs/remotes/origin/master
 	int		ret;
 
 	/* For device tree enabled device: initialize here */
 	of_at91sam926x_pit_init();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Use our actual MCK to figure out how many MCK/16 ticks per
@@ -278,12 +377,18 @@ static void __init at91sam926x_pit_init(void)
 
 	/* Set up irq handler */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	setup_irq(AT91_ID_SYS, &at91sam926x_pit_irq);
 =======
 	ret = setup_irq(at91sam926x_pit_irq.irq, &at91sam926x_pit_irq);
 	if (ret)
 		pr_crit("AT91: PIT: Unable to setup IRQ\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = setup_irq(at91sam926x_pit_irq.irq, &at91sam926x_pit_irq);
+	if (ret)
+		pr_crit("AT91: PIT: Unable to setup IRQ\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up and register clockevents */
 	pit_clkevt.mult = div_sc(pit_rate, NSEC_PER_SEC, pit_clkevt.shift);
@@ -291,6 +396,7 @@ static void __init at91sam926x_pit_init(void)
 	clockevents_register_device(&pit_clkevt);
 }
 
+<<<<<<< HEAD
 static void at91sam926x_pit_suspend(void)
 {
 	/* Disable timer */
@@ -300,6 +406,8 @@ static void at91sam926x_pit_suspend(void)
 	pit_write(AT91_PIT_MR, 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void __init at91sam926x_ioremap_pit(u32 addr)
 {
 #if defined(CONFIG_OF)
@@ -315,6 +423,7 @@ void __init at91sam926x_ioremap_pit(u32 addr)
 
 	if (!pit_base_addr)
 		panic("Impossible to ioremap PIT\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -323,3 +432,6 @@ struct sys_timer at91sam926x_timer = {
 	.suspend	= at91sam926x_pit_suspend,
 	.resume		= at91sam926x_pit_reset,
 };
+=======
+}
+>>>>>>> refs/remotes/origin/master

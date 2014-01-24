@@ -54,7 +54,11 @@ static void v1_mem2disk_dqblk(struct v1_disk_dqblk *d, struct mem_dqblk *m)
 
 static int v1_read_dqblk(struct dquot *dquot)
 {
+<<<<<<< HEAD
 	int type = dquot->dq_type;
+=======
+	int type = dquot->dq_id.type;
+>>>>>>> refs/remotes/origin/master
 	struct v1_disk_dqblk dqblk;
 
 	if (!sb_dqopt(dquot->dq_sb)->files[type])
@@ -63,7 +67,12 @@ static int v1_read_dqblk(struct dquot *dquot)
 	/* Set structure to 0s in case read fails/is after end of file */
 	memset(&dqblk, 0, sizeof(struct v1_disk_dqblk));
 	dquot->dq_sb->s_op->quota_read(dquot->dq_sb, type, (char *)&dqblk,
+<<<<<<< HEAD
 			sizeof(struct v1_disk_dqblk), v1_dqoff(dquot->dq_id));
+=======
+			sizeof(struct v1_disk_dqblk),
+			v1_dqoff(from_kqid(&init_user_ns, dquot->dq_id)));
+>>>>>>> refs/remotes/origin/master
 
 	v1_disk2mem_dqblk(&dquot->dq_dqb, &dqblk);
 	if (dquot->dq_dqb.dqb_bhardlimit == 0 &&
@@ -78,12 +87,21 @@ static int v1_read_dqblk(struct dquot *dquot)
 
 static int v1_commit_dqblk(struct dquot *dquot)
 {
+<<<<<<< HEAD
 	short type = dquot->dq_type;
+=======
+	short type = dquot->dq_id.type;
+>>>>>>> refs/remotes/origin/master
 	ssize_t ret;
 	struct v1_disk_dqblk dqblk;
 
 	v1_mem2disk_dqblk(&dqblk, &dquot->dq_dqb);
+<<<<<<< HEAD
 	if (dquot->dq_id == 0) {
+=======
+	if (((type == USRQUOTA) && uid_eq(dquot->dq_id.uid, GLOBAL_ROOT_UID)) ||
+	    ((type == GRPQUOTA) && gid_eq(dquot->dq_id.gid, GLOBAL_ROOT_GID))) {
+>>>>>>> refs/remotes/origin/master
 		dqblk.dqb_btime =
 			sb_dqopt(dquot->dq_sb)->info[type].dqi_bgrace;
 		dqblk.dqb_itime =
@@ -93,7 +111,11 @@ static int v1_commit_dqblk(struct dquot *dquot)
 	if (sb_dqopt(dquot->dq_sb)->files[type])
 		ret = dquot->dq_sb->s_op->quota_write(dquot->dq_sb, type,
 			(char *)&dqblk, sizeof(struct v1_disk_dqblk),
+<<<<<<< HEAD
 			v1_dqoff(dquot->dq_id));
+=======
+			v1_dqoff(from_kqid(&init_user_ns, dquot->dq_id)));
+>>>>>>> refs/remotes/origin/master
 	if (ret != sizeof(struct v1_disk_dqblk)) {
 		quota_error(dquot->dq_sb, "dquota write failed");
 		if (ret >= 0)

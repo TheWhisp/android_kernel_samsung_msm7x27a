@@ -12,10 +12,14 @@
 #include <linux/init.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/smp.h>
 #include <asm/time.h>
 
@@ -40,13 +44,21 @@ static struct {
 
 static volatile int		running;
 
+<<<<<<< HEAD
 static void __devinit enter_contest(u64 mark, long add)
+=======
+static void enter_contest(u64 mark, long add)
+>>>>>>> refs/remotes/origin/master
 {
 	while (get_tb() < mark)
 		tbsync->race_result = add;
 }
 
+<<<<<<< HEAD
 void __devinit smp_generic_take_timebase(void)
+=======
+void smp_generic_take_timebase(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cmd;
 	u64 tb;
@@ -79,7 +91,11 @@ void __devinit smp_generic_take_timebase(void)
 	local_irq_restore(flags);
 }
 
+<<<<<<< HEAD
 static int __devinit start_contest(int cmd, long offset, int num)
+=======
+static int start_contest(int cmd, long offset, int num)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, score=0;
 	u64 tb;
@@ -114,7 +130,11 @@ static int __devinit start_contest(int cmd, long offset, int num)
 	return score;
 }
 
+<<<<<<< HEAD
 void __devinit smp_generic_give_timebase(void)
+=======
+void smp_generic_give_timebase(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, score, score2, old, min=0, max=5000, offset=1000;
 

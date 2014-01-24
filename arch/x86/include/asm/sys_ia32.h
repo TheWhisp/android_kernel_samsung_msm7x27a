@@ -11,10 +11,15 @@
 #define _ASM_X86_SYS_IA32_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_COMPAT
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_COMPAT
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/compiler.h>
 #include <linux/linkage.h>
 #include <linux/types.h>
@@ -33,6 +38,7 @@ asmlinkage long sys32_fstatat(unsigned int, const char __user *,
 			      struct stat64 __user *, int);
 struct mmap_arg_struct32;
 asmlinkage long sys32_mmap(struct mmap_arg_struct32 __user *);
+<<<<<<< HEAD
 asmlinkage long sys32_mprotect(unsigned long, size_t, unsigned long);
 
 struct sigaction32;
@@ -55,10 +61,15 @@ asmlinkage long sys32_sched_rr_get_interval(compat_pid_t,
 					    struct compat_timespec __user *);
 asmlinkage long sys32_rt_sigpending(compat_sigset_t __user *, compat_size_t);
 asmlinkage long sys32_rt_sigqueueinfo(int, int, compat_siginfo_t __user *);
+=======
+
+asmlinkage long sys32_waitpid(compat_pid_t, unsigned int __user *, int);
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage long sys32_pread(unsigned int, char __user *, u32, u32, u32);
 asmlinkage long sys32_pwrite(unsigned int, const char __user *, u32, u32, u32);
 
+<<<<<<< HEAD
 asmlinkage long sys32_personality(unsigned long);
 asmlinkage long sys32_sendfile(int, int, compat_off_t __user *, s32);
 
@@ -71,6 +82,10 @@ long sys32_kill(int, int);
 long sys32_fadvise64_64(int, __u32, __u32, __u32, __u32, int);
 long sys32_vm86_warning(void);
 long sys32_lookup_dcookie(u32, u32, char __user *, size_t);
+=======
+long sys32_fadvise64_64(int, __u32, __u32, __u32, __u32, int);
+long sys32_vm86_warning(void);
+>>>>>>> refs/remotes/origin/master
 
 asmlinkage ssize_t sys32_readahead(int, unsigned, unsigned, size_t);
 asmlinkage long sys32_sync_file_range(int, unsigned, unsigned,
@@ -80,6 +95,7 @@ asmlinkage long sys32_fallocate(int, int, unsigned,
 				unsigned, unsigned, unsigned);
 
 /* ia32/ia32_signal.c */
+<<<<<<< HEAD
 asmlinkage long sys32_sigsuspend(int, int, old_sigset_t);
 asmlinkage long sys32_sigaltstack(const stack_ia32_t __user *,
 				  stack_ia32_t __user *, struct pt_regs *);
@@ -97,4 +113,11 @@ asmlinkage long sys32_fanotify_mark(int, unsigned int, u32, u32, int,
 #endif /* CONFIG_COMPAT */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+asmlinkage long sys32_sigreturn(void);
+asmlinkage long sys32_rt_sigreturn(void);
+
+#endif /* CONFIG_COMPAT */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_SYS_IA32_H */

@@ -20,6 +20,10 @@
 #include <linux/delay.h>
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
+<<<<<<< HEAD
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 
 MODULE_AUTHOR("Alessandro Zummo <a.zummo@towertech.it>");
@@ -35,6 +39,7 @@ static void ixp4xx_spkr_control(unsigned int pin, unsigned int count)
 
 	spin_lock_irqsave(&beep_lock, flags);
 
+<<<<<<< HEAD
 	 if (count) {
 		gpio_line_config(pin, IXP4XX_GPIO_OUT);
 		gpio_line_set(pin, IXP4XX_GPIO_LOW);
@@ -44,6 +49,14 @@ static void ixp4xx_spkr_control(unsigned int pin, unsigned int count)
 		gpio_line_config(pin, IXP4XX_GPIO_IN);
 		gpio_line_set(pin, IXP4XX_GPIO_HIGH);
 
+=======
+	if (count) {
+		gpio_direction_output(pin, 0);
+		*IXP4XX_OSRT2 = (count & ~IXP4XX_OST_RELOAD_MASK) | IXP4XX_OST_ENABLE;
+	} else {
+		gpio_direction_output(pin, 1);
+		gpio_direction_input(pin);
+>>>>>>> refs/remotes/origin/master
 		*IXP4XX_OSRT2 = 0;
 	}
 
@@ -78,16 +91,29 @@ static int ixp4xx_spkr_event(struct input_dev *dev, unsigned int type, unsigned 
 
 static irqreturn_t ixp4xx_spkr_interrupt(int irq, void *dev_id)
 {
+<<<<<<< HEAD
+=======
+	unsigned int pin = (unsigned int) dev_id;
+
+>>>>>>> refs/remotes/origin/master
 	/* clear interrupt */
 	*IXP4XX_OSST = IXP4XX_OSST_TIMER_2_PEND;
 
 	/* flip the beeper output */
+<<<<<<< HEAD
 	*IXP4XX_GPIO_GPOUTR ^= (1 << (unsigned int) dev_id);
+=======
+	gpio_set_value(pin, !gpio_get_value(pin));
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit ixp4xx_spkr_probe(struct platform_device *dev)
+=======
+static int ixp4xx_spkr_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input_dev;
 	int err;
@@ -110,6 +136,7 @@ static int __devinit ixp4xx_spkr_probe(struct platform_device *dev)
 	input_dev->sndbit[0] = BIT_MASK(SND_BELL) | BIT_MASK(SND_TONE);
 	input_dev->event = ixp4xx_spkr_event;
 
+<<<<<<< HEAD
 	err = request_irq(IRQ_IXP4XX_TIMER2, &ixp4xx_spkr_interrupt,
 <<<<<<< HEAD
 			  IRQF_DISABLED | IRQF_NO_SUSPEND, "ixp4xx-beeper",
@@ -119,6 +146,17 @@ static int __devinit ixp4xx_spkr_probe(struct platform_device *dev)
 			  (void *) dev->id);
 	if (err)
 		goto err_free_device;
+=======
+	err = gpio_request(dev->id, "ixp4-beeper");
+	if (err)
+		goto err_free_device;
+
+	err = request_irq(IRQ_IXP4XX_TIMER2, &ixp4xx_spkr_interrupt,
+			  IRQF_NO_SUSPEND, "ixp4xx-beeper",
+			  (void *) dev->id);
+	if (err)
+		goto err_free_gpio;
+>>>>>>> refs/remotes/origin/master
 
 	err = input_register_device(input_dev);
 	if (err)
@@ -129,26 +167,44 @@ static int __devinit ixp4xx_spkr_probe(struct platform_device *dev)
 	return 0;
 
  err_free_irq:
+<<<<<<< HEAD
 	free_irq(IRQ_IXP4XX_TIMER2, dev);
+=======
+	free_irq(IRQ_IXP4XX_TIMER2, (void *)dev->id);
+ err_free_gpio:
+	gpio_free(dev->id);
+>>>>>>> refs/remotes/origin/master
  err_free_device:
 	input_free_device(input_dev);
 
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ixp4xx_spkr_remove(struct platform_device *dev)
+=======
+static int ixp4xx_spkr_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *input_dev = platform_get_drvdata(dev);
 	unsigned int pin = (unsigned int) input_get_drvdata(input_dev);
 
 	input_unregister_device(input_dev);
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* turn the speaker off */
 	disable_irq(IRQ_IXP4XX_TIMER2);
 	ixp4xx_spkr_control(pin, 0);
 
+<<<<<<< HEAD
 	free_irq(IRQ_IXP4XX_TIMER2, dev);
+=======
+	free_irq(IRQ_IXP4XX_TIMER2, (void *)dev->id);
+	gpio_free(dev->id);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -169,6 +225,7 @@ static struct platform_driver ixp4xx_spkr_platform_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ixp4xx_spkr_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ixp4xx_spkr_remove),
 	.shutdown	= ixp4xx_spkr_shutdown,
 };
@@ -190,3 +247,10 @@ module_exit(ixp4xx_spkr_exit);
 module_platform_driver(ixp4xx_spkr_platform_driver);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= ixp4xx_spkr_remove,
+	.shutdown	= ixp4xx_spkr_shutdown,
+};
+module_platform_driver(ixp4xx_spkr_platform_driver);
+
+>>>>>>> refs/remotes/origin/master

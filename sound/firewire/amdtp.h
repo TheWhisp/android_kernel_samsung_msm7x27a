@@ -1,8 +1,15 @@
 #ifndef SOUND_FIREWIRE_AMDTP_H_INCLUDED
 #define SOUND_FIREWIRE_AMDTP_H_INCLUDED
 
+<<<<<<< HEAD
 #include <linux/mutex.h>
 #include <linux/spinlock.h>
+=======
+#include <linux/err.h>
+#include <linux/interrupt.h>
+#include <linux/mutex.h>
+#include <sound/asound.h>
+>>>>>>> refs/remotes/origin/master
 #include "packets-buffer.h"
 
 /**
@@ -11,9 +18,24 @@
  *	sample_rate/8000 samples, with rounding up or down to adjust
  *	for clock skew and left-over fractional samples.  This should
  *	be used if supported by the device.
+<<<<<<< HEAD
  */
 enum cip_out_flags {
 	CIP_NONBLOCKING = 0,
+=======
+ * @CIP_BLOCKING: In blocking mode, each packet contains either zero or
+ *	SYT_INTERVAL samples, with these two types alternating so that
+ *	the overall sample rate comes out right.
+ * @CIP_HI_DUALWIRE: At rates above 96 kHz, pretend that the stream runs
+ *	at half the actual sample rate with twice the number of channels;
+ *	two samples of a channel are stored consecutively in the packet.
+ *	Requires blocking mode and SYT_INTERVAL-aligned PCM buffer size.
+ */
+enum cip_out_flags {
+	CIP_NONBLOCKING	= 0x00,
+	CIP_BLOCKING	= 0x01,
+	CIP_HI_DUALWIRE	= 0x02,
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -27,6 +49,10 @@ enum cip_sfc {
 	CIP_SFC_96000  = 4,
 	CIP_SFC_176400 = 5,
 	CIP_SFC_192000 = 6,
+<<<<<<< HEAD
+=======
+	CIP_SFC_COUNT
+>>>>>>> refs/remotes/origin/master
 };
 
 #define AMDTP_OUT_PCM_FORMAT_BITS	(SNDRV_PCM_FMTBIT_S16 | \
@@ -43,6 +69,10 @@ struct amdtp_out_stream {
 	struct mutex mutex;
 
 	enum cip_sfc sfc;
+<<<<<<< HEAD
+=======
+	bool dual_wire;
+>>>>>>> refs/remotes/origin/master
 	unsigned int data_block_quadlets;
 	unsigned int pcm_channels;
 	unsigned int midi_ports;
@@ -51,10 +81,18 @@ struct amdtp_out_stream {
 				 __be32 *buffer, unsigned int frames);
 
 	unsigned int syt_interval;
+<<<<<<< HEAD
+=======
+	unsigned int transfer_delay;
+>>>>>>> refs/remotes/origin/master
 	unsigned int source_node_id_field;
 	struct iso_packets_buffer buffer;
 
 	struct snd_pcm_substream *pcm;
+<<<<<<< HEAD
+=======
+	struct tasklet_struct period_tasklet;
+>>>>>>> refs/remotes/origin/master
 
 	int packet_index;
 	unsigned int data_block_counter;
@@ -66,13 +104,24 @@ struct amdtp_out_stream {
 
 	unsigned int pcm_buffer_pointer;
 	unsigned int pcm_period_pointer;
+<<<<<<< HEAD
+=======
+	bool pointer_flush;
+>>>>>>> refs/remotes/origin/master
 };
 
 int amdtp_out_stream_init(struct amdtp_out_stream *s, struct fw_unit *unit,
 			  enum cip_out_flags flags);
 void amdtp_out_stream_destroy(struct amdtp_out_stream *s);
 
+<<<<<<< HEAD
 void amdtp_out_stream_set_rate(struct amdtp_out_stream *s, unsigned int rate);
+=======
+void amdtp_out_stream_set_parameters(struct amdtp_out_stream *s,
+				     unsigned int rate,
+				     unsigned int pcm_channels,
+				     unsigned int midi_ports);
+>>>>>>> refs/remotes/origin/master
 unsigned int amdtp_out_stream_get_max_payload(struct amdtp_out_stream *s);
 
 int amdtp_out_stream_start(struct amdtp_out_stream *s, int channel, int speed);
@@ -81,6 +130,7 @@ void amdtp_out_stream_stop(struct amdtp_out_stream *s);
 
 void amdtp_out_stream_set_pcm_format(struct amdtp_out_stream *s,
 				     snd_pcm_format_t format);
+<<<<<<< HEAD
 void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s);
 
 /**
@@ -108,6 +158,17 @@ static inline void amdtp_out_stream_set_midi(struct amdtp_out_stream *s,
 					     unsigned int midi_ports)
 {
 	s->midi_ports = midi_ports;
+=======
+void amdtp_out_stream_pcm_prepare(struct amdtp_out_stream *s);
+unsigned long amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s);
+void amdtp_out_stream_pcm_abort(struct amdtp_out_stream *s);
+
+extern const unsigned int amdtp_syt_intervals[CIP_SFC_COUNT];
+
+static inline bool amdtp_out_stream_running(struct amdtp_out_stream *s)
+{
+	return !IS_ERR(s->context);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -123,6 +184,7 @@ static inline bool amdtp_out_streaming_error(struct amdtp_out_stream *s)
 }
 
 /**
+<<<<<<< HEAD
  * amdtp_out_stream_pcm_prepare - prepare PCM device for running
  * @s: the AMDTP output stream
  *
@@ -135,6 +197,8 @@ static inline void amdtp_out_stream_pcm_prepare(struct amdtp_out_stream *s)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * amdtp_out_stream_pcm_trigger - start/stop playback from a PCM device
  * @s: the AMDTP output stream
  * @pcm: the PCM device to be started, or %NULL to stop the current device
@@ -149,6 +213,7 @@ static inline void amdtp_out_stream_pcm_trigger(struct amdtp_out_stream *s,
 	ACCESS_ONCE(s->pcm) = pcm;
 }
 
+<<<<<<< HEAD
 /**
  * amdtp_out_stream_pcm_pointer - get the PCM buffer position
  * @s: the AMDTP output stream that transports the PCM data
@@ -161,6 +226,8 @@ amdtp_out_stream_pcm_pointer(struct amdtp_out_stream *s)
 	return ACCESS_ONCE(s->pcm_buffer_pointer);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
 {
 	return sfc & 1;

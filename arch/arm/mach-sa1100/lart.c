@@ -4,6 +4,7 @@
 
 #include <linux/init.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/tty.h>
 
 <<<<<<< HEAD
@@ -11,6 +12,16 @@
 #include <video/sa1100fb.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/sa11x0-serial.h>
+#include <linux/tty.h>
+#include <linux/gpio.h>
+#include <linux/leds.h>
+#include <linux/platform_device.h>
+
+#include <video/sa1100fb.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <asm/setup.h>
 #include <asm/mach-types.h>
@@ -18,6 +29,7 @@
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <asm/mach/serial_sa1100.h>
 #include <mach/mcp.h>
 <<<<<<< HEAD
@@ -30,15 +42,25 @@
 
 #warning "include/asm/arch-sa1100/ide.h needs fixing for lart"
 
+=======
+#include <linux/platform_data/mfd-mcp-sa11x0.h>
+#include <mach/irqs.h>
+
+#include "generic.h"
+
+>>>>>>> refs/remotes/origin/master
 static struct mcp_plat_data lart_mcp_data = {
 	.mccr0		= MCCR0_ADM,
 	.sclk_rate	= 11981000,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init lart_init(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef LART_GREY_LCD
 static struct sa1100fb_mach_info lart_grey_info = {
 	.pixclock	= 150000,	.bpp		= 4,
@@ -119,7 +141,10 @@ static void __init lart_init(void)
 		sa11x0_register_lcd(inf);
 
 	sa11x0_ppc_configure_mcp();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sa11x0_register_mcp(&lart_mcp_data);
 }
 
@@ -137,6 +162,30 @@ static struct map_desc lart_io_desc[] __initdata = {
 	}
 };
 
+<<<<<<< HEAD
+=======
+/* LEDs */
+struct gpio_led lart_gpio_leds[] = {
+	{
+		.name			= "lart:red",
+		.default_trigger	= "cpu0",
+		.gpio			= 23,
+	},
+};
+
+static struct gpio_led_platform_data lart_gpio_led_info = {
+	.leds		= lart_gpio_leds,
+	.num_leds	= ARRAY_SIZE(lart_gpio_leds),
+};
+
+static struct platform_device lart_leds = {
+	.name	= "leds-gpio",
+	.id	= -1,
+	.dev	= {
+		.platform_data	= &lart_gpio_led_info,
+	}
+};
+>>>>>>> refs/remotes/origin/master
 static void __init lart_map_io(void)
 {
 	sa1100_map_io();
@@ -150,6 +199,7 @@ static void __init lart_map_io(void)
 	GPDR |= GPIO_UART_TXD;
 	GPDR &= ~GPIO_UART_RXD;
 	PPAR |= PPAR_UPR;
+<<<<<<< HEAD
 }
 
 MACHINE_START(LART, "LART")
@@ -160,12 +210,25 @@ MACHINE_START(LART, "LART")
 	.init_machine	= lart_init,
 	.timer		= &sa1100_timer,
 =======
+=======
+
+	platform_device_register(&lart_leds);
+}
+
+MACHINE_START(LART, "LART")
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= lart_map_io,
 	.nr_irqs	= SA1100_NR_IRQS,
 	.init_irq	= sa1100_init_irq,
 	.init_machine	= lart_init,
+<<<<<<< HEAD
 	.timer		= &sa1100_timer,
 	.restart	= sa11x0_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= sa11x0_init_late,
+	.init_time	= sa1100_timer_init,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

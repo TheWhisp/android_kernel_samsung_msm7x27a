@@ -162,6 +162,10 @@ struct xfrm_state {
 		xfrm_address_t	saddr;
 		int		header_len;
 		int		trailer_len;
+<<<<<<< HEAD
+=======
+		u32		extra_flags;
+>>>>>>> refs/remotes/origin/master
 	} props;
 
 	struct xfrm_lifetime_cfg lft;
@@ -213,6 +217,12 @@ struct xfrm_state {
 	struct xfrm_lifetime_cur curlft;
 	struct tasklet_hrtimer	mtimer;
 
+<<<<<<< HEAD
+=======
+	/* used to fix curlft->add_time when changing date */
+	long		saved_tmo;
+
+>>>>>>> refs/remotes/origin/master
 	/* Last used time */
 	unsigned long		lastused;
 
@@ -238,6 +248,10 @@ static inline struct net *xs_net(struct xfrm_state *x)
 
 /* xflags - make enum if more show up */
 #define XFRM_TIME_DEFER	1
+<<<<<<< HEAD
+=======
+#define XFRM_SOFT_EXPIRE 2
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	XFRM_STATE_VOID,
@@ -259,7 +273,11 @@ struct km_event {
 	} data;
 
 	u32	seq;
+<<<<<<< HEAD
 	u32	pid;
+=======
+	u32	portid;
+>>>>>>> refs/remotes/origin/master
 	u32	event;
 	struct net *net;
 };
@@ -291,6 +309,11 @@ struct xfrm_policy_afinfo {
 						  struct flowi *fl,
 						  int reverse);
 	int			(*get_tos)(const struct flowi *fl);
+<<<<<<< HEAD
+=======
+	void			(*init_dst)(struct net *net,
+					    struct xfrm_dst *dst);
+>>>>>>> refs/remotes/origin/master
 	int			(*init_path)(struct xfrm_dst *path,
 					     struct dst_entry *dst,
 					     int nfheader_len);
@@ -300,6 +323,7 @@ struct xfrm_policy_afinfo {
 	struct dst_entry	*(*blackhole_route)(struct net *net, struct dst_entry *orig);
 };
 
+<<<<<<< HEAD
 extern int xfrm_policy_register_afinfo(struct xfrm_policy_afinfo *afinfo);
 extern int xfrm_policy_unregister_afinfo(struct xfrm_policy_afinfo *afinfo);
 extern void km_policy_notify(struct xfrm_policy *xp, int dir, const struct km_event *c);
@@ -309,6 +333,19 @@ struct xfrm_tmpl;
 extern int km_query(struct xfrm_state *x, struct xfrm_tmpl *t, struct xfrm_policy *pol);
 extern void km_state_expired(struct xfrm_state *x, int hard, u32 pid);
 extern int __xfrm_state_delete(struct xfrm_state *x);
+=======
+int xfrm_policy_register_afinfo(struct xfrm_policy_afinfo *afinfo);
+int xfrm_policy_unregister_afinfo(struct xfrm_policy_afinfo *afinfo);
+void km_policy_notify(struct xfrm_policy *xp, int dir,
+		      const struct km_event *c);
+void km_state_notify(struct xfrm_state *x, const struct km_event *c);
+
+struct xfrm_tmpl;
+int km_query(struct xfrm_state *x, struct xfrm_tmpl *t,
+	     struct xfrm_policy *pol);
+void km_state_expired(struct xfrm_state *x, int hard, u32 portid);
+int __xfrm_state_delete(struct xfrm_state *x);
+>>>>>>> refs/remotes/origin/master
 
 struct xfrm_state_afinfo {
 	unsigned int		family;
@@ -334,12 +371,24 @@ struct xfrm_state_afinfo {
 						  struct sk_buff *skb);
 	int			(*transport_finish)(struct sk_buff *skb,
 						    int async);
+<<<<<<< HEAD
 };
 
 extern int xfrm_state_register_afinfo(struct xfrm_state_afinfo *afinfo);
 extern int xfrm_state_unregister_afinfo(struct xfrm_state_afinfo *afinfo);
 
 extern void xfrm_state_delete_tunnel(struct xfrm_state *x);
+=======
+	void			(*local_error)(struct sk_buff *skb, u32 mtu);
+};
+
+int xfrm_state_register_afinfo(struct xfrm_state_afinfo *afinfo);
+int xfrm_state_unregister_afinfo(struct xfrm_state_afinfo *afinfo);
+struct xfrm_state_afinfo *xfrm_state_get_afinfo(unsigned int family);
+void xfrm_state_put_afinfo(struct xfrm_state_afinfo *afinfo);
+
+void xfrm_state_delete_tunnel(struct xfrm_state *x);
+>>>>>>> refs/remotes/origin/master
 
 struct xfrm_type {
 	char			*description;
@@ -362,8 +411,13 @@ struct xfrm_type {
 	u32			(*get_mtu)(struct xfrm_state *, int size);
 };
 
+<<<<<<< HEAD
 extern int xfrm_register_type(const struct xfrm_type *type, unsigned short family);
 extern int xfrm_unregister_type(const struct xfrm_type *type, unsigned short family);
+=======
+int xfrm_register_type(const struct xfrm_type *type, unsigned short family);
+int xfrm_unregister_type(const struct xfrm_type *type, unsigned short family);
+>>>>>>> refs/remotes/origin/master
 
 struct xfrm_mode {
 	/*
@@ -424,8 +478,13 @@ enum {
 	XFRM_MODE_FLAG_TUNNEL = 1,
 };
 
+<<<<<<< HEAD
 extern int xfrm_register_mode(struct xfrm_mode *mode, int family);
 extern int xfrm_unregister_mode(struct xfrm_mode *mode, int family);
+=======
+int xfrm_register_mode(struct xfrm_mode *mode, int family);
+int xfrm_unregister_mode(struct xfrm_mode *mode, int family);
+>>>>>>> refs/remotes/origin/master
 
 static inline int xfrm_af2proto(unsigned int family)
 {
@@ -495,6 +554,15 @@ struct xfrm_policy_walk {
 	u32 seq;
 };
 
+<<<<<<< HEAD
+=======
+struct xfrm_policy_queue {
+	struct sk_buff_head	hold_queue;
+	struct timer_list	hold_timer;
+	unsigned long		timeout;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct xfrm_policy {
 #ifdef CONFIG_NET_NS
 	struct net		*xp_net;
@@ -516,6 +584,10 @@ struct xfrm_policy {
 	struct xfrm_lifetime_cfg lft;
 	struct xfrm_lifetime_cur curlft;
 	struct xfrm_policy_walk_entry walk;
+<<<<<<< HEAD
+=======
+	struct xfrm_policy_queue polq;
+>>>>>>> refs/remotes/origin/master
 	u8			type;
 	u8			action;
 	u8			flags;
@@ -551,10 +623,13 @@ struct xfrm_migrate {
 };
 
 #define XFRM_KM_TIMEOUT                30
+<<<<<<< HEAD
 /* which seqno */
 #define XFRM_REPLAY_SEQ		1
 #define XFRM_REPLAY_OSEQ	2
 #define XFRM_REPLAY_SEQ_MASK	3
+=======
+>>>>>>> refs/remotes/origin/master
 /* what happened */
 #define XFRM_REPLAY_UPDATE	XFRM_AE_CR
 #define XFRM_REPLAY_TIMEOUT	XFRM_AE_CE
@@ -570,7 +645,11 @@ struct xfrm_mgr {
 	struct list_head	list;
 	char			*id;
 	int			(*notify)(struct xfrm_state *x, const struct km_event *c);
+<<<<<<< HEAD
 	int			(*acquire)(struct xfrm_state *x, struct xfrm_tmpl *, struct xfrm_policy *xp, int dir);
+=======
+	int			(*acquire)(struct xfrm_state *x, struct xfrm_tmpl *, struct xfrm_policy *xp);
+>>>>>>> refs/remotes/origin/master
 	struct xfrm_policy	*(*compile_policy)(struct sock *sk, int opt, u8 *data, int len, int *dir);
 	int			(*new_mapping)(struct xfrm_state *x, xfrm_address_t *ipaddr, __be16 sport);
 	int			(*notify_policy)(struct xfrm_policy *x, int dir, const struct km_event *c);
@@ -582,8 +661,13 @@ struct xfrm_mgr {
 					   const struct xfrm_kmaddress *k);
 };
 
+<<<<<<< HEAD
 extern int xfrm_register_km(struct xfrm_mgr *km);
 extern int xfrm_unregister_km(struct xfrm_mgr *km);
+=======
+int xfrm_register_km(struct xfrm_mgr *km);
+int xfrm_unregister_km(struct xfrm_mgr *km);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This structure is used for the duration where packets are being
@@ -665,7 +749,11 @@ struct xfrm_spi_skb_cb {
 /* Audit Information */
 struct xfrm_audit {
 	u32	secid;
+<<<<<<< HEAD
 	uid_t	loginuid;
+=======
+	kuid_t	loginuid;
+>>>>>>> refs/remotes/origin/master
 	u32	sessionid;
 };
 
@@ -684,13 +772,22 @@ static inline struct audit_buffer *xfrm_audit_start(const char *op)
 	return audit_buf;
 }
 
+<<<<<<< HEAD
 static inline void xfrm_audit_helper_usrinfo(uid_t auid, u32 ses, u32 secid,
+=======
+static inline void xfrm_audit_helper_usrinfo(kuid_t auid, u32 ses, u32 secid,
+>>>>>>> refs/remotes/origin/master
 					     struct audit_buffer *audit_buf)
 {
 	char *secctx;
 	u32 secctx_len;
 
+<<<<<<< HEAD
 	audit_log_format(audit_buf, " auid=%u ses=%u", auid, ses);
+=======
+	audit_log_format(audit_buf, " auid=%u ses=%u",
+			 from_kuid(&init_user_ns, auid), ses);
+>>>>>>> refs/remotes/origin/master
 	if (secid != 0 &&
 	    security_secid_to_secctx(secid, &secctx, &secctx_len) == 0) {
 		audit_log_format(audit_buf, " subj=%s", secctx);
@@ -699,6 +796,7 @@ static inline void xfrm_audit_helper_usrinfo(uid_t auid, u32 ses, u32 secid,
 		audit_log_task_context(audit_buf);
 }
 
+<<<<<<< HEAD
 extern void xfrm_audit_policy_add(struct xfrm_policy *xp, int result,
 				  u32 auid, u32 ses, u32 secid);
 extern void xfrm_audit_policy_delete(struct xfrm_policy *xp, int result,
@@ -720,21 +818,56 @@ extern void xfrm_audit_state_icvfail(struct xfrm_state *x,
 
 static inline void xfrm_audit_policy_add(struct xfrm_policy *xp, int result,
 				  u32 auid, u32 ses, u32 secid)
+=======
+void xfrm_audit_policy_add(struct xfrm_policy *xp, int result, kuid_t auid,
+			   u32 ses, u32 secid);
+void xfrm_audit_policy_delete(struct xfrm_policy *xp, int result, kuid_t auid,
+			      u32 ses, u32 secid);
+void xfrm_audit_state_add(struct xfrm_state *x, int result, kuid_t auid,
+			  u32 ses, u32 secid);
+void xfrm_audit_state_delete(struct xfrm_state *x, int result, kuid_t auid,
+			     u32 ses, u32 secid);
+void xfrm_audit_state_replay_overflow(struct xfrm_state *x,
+				      struct sk_buff *skb);
+void xfrm_audit_state_replay(struct xfrm_state *x, struct sk_buff *skb,
+			     __be32 net_seq);
+void xfrm_audit_state_notfound_simple(struct sk_buff *skb, u16 family);
+void xfrm_audit_state_notfound(struct sk_buff *skb, u16 family, __be32 net_spi,
+			       __be32 net_seq);
+void xfrm_audit_state_icvfail(struct xfrm_state *x, struct sk_buff *skb,
+			      u8 proto);
+#else
+
+static inline void xfrm_audit_policy_add(struct xfrm_policy *xp, int result,
+				  kuid_t auid, u32 ses, u32 secid)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
 static inline void xfrm_audit_policy_delete(struct xfrm_policy *xp, int result,
+<<<<<<< HEAD
 				  u32 auid, u32 ses, u32 secid)
+=======
+				  kuid_t auid, u32 ses, u32 secid)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
 static inline void xfrm_audit_state_add(struct xfrm_state *x, int result,
+<<<<<<< HEAD
 				 u32 auid, u32 ses, u32 secid)
+=======
+				 kuid_t auid, u32 ses, u32 secid)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
 static inline void xfrm_audit_state_delete(struct xfrm_state *x, int result,
+<<<<<<< HEAD
 				    u32 auid, u32 ses, u32 secid)
+=======
+				    kuid_t auid, u32 ses, u32 secid)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -770,7 +903,11 @@ static inline void xfrm_pol_hold(struct xfrm_policy *policy)
 		atomic_inc(&policy->refcnt);
 }
 
+<<<<<<< HEAD
 extern void xfrm_policy_destroy(struct xfrm_policy *policy);
+=======
+void xfrm_policy_destroy(struct xfrm_policy *policy);
+>>>>>>> refs/remotes/origin/master
 
 static inline void xfrm_pol_put(struct xfrm_policy *policy)
 {
@@ -785,7 +922,11 @@ static inline void xfrm_pols_put(struct xfrm_policy **pols, int npols)
 		xfrm_pol_put(pols[i]);
 }
 
+<<<<<<< HEAD
 extern void __xfrm_state_destroy(struct xfrm_state *);
+=======
+void __xfrm_state_destroy(struct xfrm_state *);
+>>>>>>> refs/remotes/origin/master
 
 static inline void __xfrm_state_put(struct xfrm_state *x)
 {
@@ -831,7 +972,10 @@ static inline bool addr_match(const void *token1, const void *token2,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool addr4_match(__be32 a1, __be32 a2, u8 prefixlen)
 {
 	/* C99 6.5.7 (3): u32 << 32 is undefined behaviour */
@@ -840,7 +984,10 @@ static inline bool addr4_match(__be32 a1, __be32 a2, u8 prefixlen)
 	return !((a1 ^ a2) & htonl(0xFFFFFFFFu << (32 - prefixlen)));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static __inline__
 __be16 xfrm_flowi_sport(const struct flowi *fl, const union flowi_uli *uli)
 {
@@ -892,15 +1039,24 @@ __be16 xfrm_flowi_dport(const struct flowi *fl, const union flowi_uli *uli)
 	return port;
 }
 
+<<<<<<< HEAD
 extern int xfrm_selector_match(const struct xfrm_selector *sel,
 			       const struct flowi *fl,
 			       unsigned short family);
+=======
+bool xfrm_selector_match(const struct xfrm_selector *sel,
+			 const struct flowi *fl, unsigned short family);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SECURITY_NETWORK_XFRM
 /*	If neither has a context --> match
  * 	Otherwise, both must have a context and the sids, doi, alg must match
  */
+<<<<<<< HEAD
 static inline int xfrm_sec_ctx_match(struct xfrm_sec_ctx *s1, struct xfrm_sec_ctx *s2)
+=======
+static inline bool xfrm_sec_ctx_match(struct xfrm_sec_ctx *s1, struct xfrm_sec_ctx *s2)
+>>>>>>> refs/remotes/origin/master
 {
 	return ((!s1 && !s2) ||
 		(s1 && s2 &&
@@ -909,9 +1065,15 @@ static inline int xfrm_sec_ctx_match(struct xfrm_sec_ctx *s1, struct xfrm_sec_ct
 		 (s1->ctx_alg == s2->ctx_alg)));
 }
 #else
+<<<<<<< HEAD
 static inline int xfrm_sec_ctx_match(struct xfrm_sec_ctx *s1, struct xfrm_sec_ctx *s2)
 {
 	return 1;
+=======
+static inline bool xfrm_sec_ctx_match(struct xfrm_sec_ctx *s1, struct xfrm_sec_ctx *s2)
+{
+	return true;
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -964,7 +1126,11 @@ static inline void xfrm_dst_destroy(struct xfrm_dst *xdst)
 }
 #endif
 
+<<<<<<< HEAD
 extern void xfrm_dst_ifdown(struct dst_entry *dst, struct net_device *dev);
+=======
+void xfrm_dst_ifdown(struct dst_entry *dst, struct net_device *dev);
+>>>>>>> refs/remotes/origin/master
 
 struct sec_path {
 	atomic_t		refcnt;
@@ -989,7 +1155,11 @@ secpath_get(struct sec_path *sp)
 	return sp;
 }
 
+<<<<<<< HEAD
 extern void __secpath_destroy(struct sec_path *sp);
+=======
+void __secpath_destroy(struct sec_path *sp);
+>>>>>>> refs/remotes/origin/master
 
 static inline void
 secpath_put(struct sec_path *sp)
@@ -998,7 +1168,11 @@ secpath_put(struct sec_path *sp)
 		__secpath_destroy(sp);
 }
 
+<<<<<<< HEAD
 extern struct sec_path *secpath_dup(struct sec_path *src);
+=======
+struct sec_path *secpath_dup(struct sec_path *src);
+>>>>>>> refs/remotes/origin/master
 
 static inline void
 secpath_reset(struct sk_buff *skb)
@@ -1032,7 +1206,11 @@ static inline int
 __xfrm6_state_addr_cmp(const struct xfrm_tmpl *tmpl, const struct xfrm_state *x)
 {
 	return	(!ipv6_addr_any((struct in6_addr*)&tmpl->saddr) &&
+<<<<<<< HEAD
 		 ipv6_addr_cmp((struct in6_addr *)&tmpl->saddr, (struct in6_addr*)&x->props.saddr));
+=======
+		 !ipv6_addr_equal((struct in6_addr *)&tmpl->saddr, (struct in6_addr*)&x->props.saddr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int
@@ -1048,7 +1226,12 @@ xfrm_state_addr_cmp(const struct xfrm_tmpl *tmpl, const struct xfrm_state *x, un
 }
 
 #ifdef CONFIG_XFRM
+<<<<<<< HEAD
 extern int __xfrm_policy_check(struct sock *, int dir, struct sk_buff *skb, unsigned short family);
+=======
+int __xfrm_policy_check(struct sock *, int dir, struct sk_buff *skb,
+			unsigned short family);
+>>>>>>> refs/remotes/origin/master
 
 static inline int __xfrm_policy_check2(struct sock *sk, int dir,
 				       struct sk_buff *skb,
@@ -1092,8 +1275,13 @@ static inline int xfrm6_policy_check_reverse(struct sock *sk, int dir,
 	return __xfrm_policy_check2(sk, dir, skb, AF_INET6, 1);
 }
 
+<<<<<<< HEAD
 extern int __xfrm_decode_session(struct sk_buff *skb, struct flowi *fl,
 				 unsigned int family, int reverse);
+=======
+int __xfrm_decode_session(struct sk_buff *skb, struct flowi *fl,
+			  unsigned int family, int reverse);
+>>>>>>> refs/remotes/origin/master
 
 static inline int xfrm_decode_session(struct sk_buff *skb, struct flowi *fl,
 				      unsigned int family)
@@ -1108,7 +1296,11 @@ static inline int xfrm_decode_session_reverse(struct sk_buff *skb,
 	return __xfrm_decode_session(skb, fl, family, 1);
 }
 
+<<<<<<< HEAD
 extern int __xfrm_route_forward(struct sk_buff *skb, unsigned short family);
+=======
+int __xfrm_route_forward(struct sk_buff *skb, unsigned short family);
+>>>>>>> refs/remotes/origin/master
 
 static inline int xfrm_route_forward(struct sk_buff *skb, unsigned short family)
 {
@@ -1129,7 +1321,11 @@ static inline int xfrm6_route_forward(struct sk_buff *skb)
 	return xfrm_route_forward(skb, AF_INET6);
 }
 
+<<<<<<< HEAD
 extern int __xfrm_sk_clone_policy(struct sock *sk);
+=======
+int __xfrm_sk_clone_policy(struct sock *sk);
+>>>>>>> refs/remotes/origin/master
 
 static inline int xfrm_sk_clone_policy(struct sock *sk)
 {
@@ -1138,7 +1334,11 @@ static inline int xfrm_sk_clone_policy(struct sock *sk)
 	return 0;
 }
 
+<<<<<<< HEAD
 extern int xfrm_policy_delete(struct xfrm_policy *pol, int dir);
+=======
+int xfrm_policy_delete(struct xfrm_policy *pol, int dir);
+>>>>>>> refs/remotes/origin/master
 
 static inline void xfrm_sk_free_policy(struct sock *sk)
 {
@@ -1152,6 +1352,11 @@ static inline void xfrm_sk_free_policy(struct sock *sk)
 	}
 }
 
+<<<<<<< HEAD
+=======
+void xfrm_garbage_collect(struct net *net);
+
+>>>>>>> refs/remotes/origin/master
 #else
 
 static inline void xfrm_sk_free_policy(struct sock *sk) {}
@@ -1186,6 +1391,12 @@ static inline int xfrm6_policy_check_reverse(struct sock *sk, int dir,
 {
 	return 1;
 }
+<<<<<<< HEAD
+=======
+static inline void xfrm_garbage_collect(struct net *net)
+{
+}
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static __inline__
@@ -1224,12 +1435,17 @@ void xfrm_flowi_addr_get(const struct flowi *fl,
 		break;
 	case AF_INET6:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy((struct in6_addr *)&saddr->a6, &fl->u.ip6.saddr);
 		ipv6_addr_copy((struct in6_addr *)&daddr->a6, &fl->u.ip6.daddr);
 =======
 		*(struct in6_addr *)saddr->a6 = fl->u.ip6.saddr;
 		*(struct in6_addr *)daddr->a6 = fl->u.ip6.daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		*(struct in6_addr *)saddr->a6 = fl->u.ip6.saddr;
+		*(struct in6_addr *)daddr->a6 = fl->u.ip6.daddr;
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -1248,8 +1464,13 @@ static __inline__ int
 __xfrm6_state_addr_check(const struct xfrm_state *x,
 			 const xfrm_address_t *daddr, const xfrm_address_t *saddr)
 {
+<<<<<<< HEAD
 	if (!ipv6_addr_cmp((struct in6_addr *)daddr, (struct in6_addr *)&x->id.daddr) &&
 	    (!ipv6_addr_cmp((struct in6_addr *)saddr, (struct in6_addr *)&x->props.saddr)|| 
+=======
+	if (ipv6_addr_equal((struct in6_addr *)daddr, (struct in6_addr *)&x->id.daddr) &&
+	    (ipv6_addr_equal((struct in6_addr *)saddr, (struct in6_addr *)&x->props.saddr) ||
+>>>>>>> refs/remotes/origin/master
 	     ipv6_addr_any((struct in6_addr *)saddr) || 
 	     ipv6_addr_any((struct in6_addr *)&x->props.saddr)))
 		return 1;
@@ -1325,6 +1546,10 @@ struct xfrm_algo_desc {
 	char *name;
 	char *compat;
 	u8 available:1;
+<<<<<<< HEAD
+=======
+	u8 pfkey_supported:1;
+>>>>>>> refs/remotes/origin/master
 	union {
 		struct xfrm_algo_aead_info aead;
 		struct xfrm_algo_auth_info auth;
@@ -1343,6 +1568,15 @@ struct xfrm_tunnel {
 	int priority;
 };
 
+<<<<<<< HEAD
+=======
+struct xfrm_tunnel_notifier {
+	int (*handler)(struct sk_buff *skb);
+	struct xfrm_tunnel_notifier __rcu *next;
+	int priority;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct xfrm6_tunnel {
 	int (*handler)(struct sk_buff *skb);
 	int (*err_handler)(struct sk_buff *skb, struct inet6_skb_parm *opt,
@@ -1351,6 +1585,7 @@ struct xfrm6_tunnel {
 	int priority;
 };
 
+<<<<<<< HEAD
 extern void xfrm_init(void);
 extern void xfrm4_init(int rt_hash_size);
 extern int xfrm_state_init(struct net *net);
@@ -1361,6 +1596,18 @@ extern int xfrm6_init(void);
 extern void xfrm6_fini(void);
 extern int xfrm6_state_init(void);
 extern void xfrm6_state_fini(void);
+=======
+void xfrm_init(void);
+void xfrm4_init(void);
+int xfrm_state_init(struct net *net);
+void xfrm_state_fini(struct net *net);
+void xfrm4_state_init(void);
+#ifdef CONFIG_XFRM
+int xfrm6_init(void);
+void xfrm6_fini(void);
+int xfrm6_state_init(void);
+void xfrm6_state_fini(void);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline int xfrm6_init(void)
 {
@@ -1373,6 +1620,7 @@ static inline void xfrm6_fini(void)
 #endif
 
 #ifdef CONFIG_XFRM_STATISTICS
+<<<<<<< HEAD
 extern int xfrm_proc_init(struct net *net);
 extern void xfrm_proc_fini(struct net *net);
 #endif
@@ -1380,12 +1628,22 @@ extern void xfrm_proc_fini(struct net *net);
 extern int xfrm_sysctl_init(struct net *net);
 #ifdef CONFIG_SYSCTL
 extern void xfrm_sysctl_fini(struct net *net);
+=======
+int xfrm_proc_init(struct net *net);
+void xfrm_proc_fini(struct net *net);
+#endif
+
+int xfrm_sysctl_init(struct net *net);
+#ifdef CONFIG_SYSCTL
+void xfrm_sysctl_fini(struct net *net);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline void xfrm_sysctl_fini(struct net *net)
 {
 }
 #endif
 
+<<<<<<< HEAD
 extern void xfrm_state_walk_init(struct xfrm_state_walk *walk, u8 proto);
 extern int xfrm_state_walk(struct net *net, struct xfrm_state_walk *walk,
 			   int (*func)(struct xfrm_state *, int, void*), void *);
@@ -1419,6 +1677,41 @@ extern int xfrm_tmpl_sort(struct xfrm_tmpl **dst, struct xfrm_tmpl **src,
 			  int n, unsigned short family);
 extern int xfrm_state_sort(struct xfrm_state **dst, struct xfrm_state **src,
 			   int n, unsigned short family);
+=======
+void xfrm_state_walk_init(struct xfrm_state_walk *walk, u8 proto);
+int xfrm_state_walk(struct net *net, struct xfrm_state_walk *walk,
+		    int (*func)(struct xfrm_state *, int, void*), void *);
+void xfrm_state_walk_done(struct xfrm_state_walk *walk);
+struct xfrm_state *xfrm_state_alloc(struct net *net);
+struct xfrm_state *xfrm_state_find(const xfrm_address_t *daddr,
+				   const xfrm_address_t *saddr,
+				   const struct flowi *fl,
+				   struct xfrm_tmpl *tmpl,
+				   struct xfrm_policy *pol, int *err,
+				   unsigned short family);
+struct xfrm_state *xfrm_stateonly_find(struct net *net, u32 mark,
+				       xfrm_address_t *daddr,
+				       xfrm_address_t *saddr,
+				       unsigned short family,
+				       u8 mode, u8 proto, u32 reqid);
+int xfrm_state_check_expire(struct xfrm_state *x);
+void xfrm_state_insert(struct xfrm_state *x);
+int xfrm_state_add(struct xfrm_state *x);
+int xfrm_state_update(struct xfrm_state *x);
+struct xfrm_state *xfrm_state_lookup(struct net *net, u32 mark,
+				     const xfrm_address_t *daddr, __be32 spi,
+				     u8 proto, unsigned short family);
+struct xfrm_state *xfrm_state_lookup_byaddr(struct net *net, u32 mark,
+					    const xfrm_address_t *daddr,
+					    const xfrm_address_t *saddr,
+					    u8 proto,
+					    unsigned short family);
+#ifdef CONFIG_XFRM_SUB_POLICY
+int xfrm_tmpl_sort(struct xfrm_tmpl **dst, struct xfrm_tmpl **src, int n,
+		   unsigned short family);
+int xfrm_state_sort(struct xfrm_state **dst, struct xfrm_state **src, int n,
+		    unsigned short family);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline int xfrm_tmpl_sort(struct xfrm_tmpl **dst, struct xfrm_tmpl **src,
 				 int n, unsigned short family)
@@ -1450,6 +1743,7 @@ struct xfrmk_spdinfo {
 	u32 spdhmcnt;
 };
 
+<<<<<<< HEAD
 extern struct xfrm_state *xfrm_find_acq_byseq(struct net *net, u32 mark,
 					      u32 seq);
 extern int xfrm_state_delete(struct xfrm_state *x);
@@ -1474,12 +1768,38 @@ extern int xfrm4_rcv_encap(struct sk_buff *skb, int nexthdr, __be32 spi,
 			   int encap_type);
 extern int xfrm4_transport_finish(struct sk_buff *skb, int async);
 extern int xfrm4_rcv(struct sk_buff *skb);
+=======
+struct xfrm_state *xfrm_find_acq_byseq(struct net *net, u32 mark, u32 seq);
+int xfrm_state_delete(struct xfrm_state *x);
+int xfrm_state_flush(struct net *net, u8 proto, struct xfrm_audit *audit_info);
+void xfrm_sad_getinfo(struct net *net, struct xfrmk_sadinfo *si);
+void xfrm_spd_getinfo(struct net *net, struct xfrmk_spdinfo *si);
+u32 xfrm_replay_seqhi(struct xfrm_state *x, __be32 net_seq);
+int xfrm_init_replay(struct xfrm_state *x);
+int xfrm_state_mtu(struct xfrm_state *x, int mtu);
+int __xfrm_init_state(struct xfrm_state *x, bool init_replay);
+int xfrm_init_state(struct xfrm_state *x);
+int xfrm_prepare_input(struct xfrm_state *x, struct sk_buff *skb);
+int xfrm_input(struct sk_buff *skb, int nexthdr, __be32 spi, int encap_type);
+int xfrm_input_resume(struct sk_buff *skb, int nexthdr);
+int xfrm_output_resume(struct sk_buff *skb, int err);
+int xfrm_output(struct sk_buff *skb);
+int xfrm_inner_extract_output(struct xfrm_state *x, struct sk_buff *skb);
+void xfrm_local_error(struct sk_buff *skb, int mtu);
+int xfrm4_extract_header(struct sk_buff *skb);
+int xfrm4_extract_input(struct xfrm_state *x, struct sk_buff *skb);
+int xfrm4_rcv_encap(struct sk_buff *skb, int nexthdr, __be32 spi,
+		    int encap_type);
+int xfrm4_transport_finish(struct sk_buff *skb, int async);
+int xfrm4_rcv(struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 
 static inline int xfrm4_rcv_spi(struct sk_buff *skb, int nexthdr, __be32 spi)
 {
 	return xfrm4_rcv_encap(skb, nexthdr, spi, 0);
 }
 
+<<<<<<< HEAD
 extern int xfrm4_extract_output(struct xfrm_state *x, struct sk_buff *skb);
 extern int xfrm4_prepare_output(struct xfrm_state *x, struct sk_buff *skb);
 extern int xfrm4_output(struct sk_buff *skb);
@@ -1507,6 +1827,42 @@ extern int xfrm6_find_1stfragopt(struct xfrm_state *x, struct sk_buff *skb,
 #ifdef CONFIG_XFRM
 extern int xfrm4_udp_encap_rcv(struct sock *sk, struct sk_buff *skb);
 extern int xfrm_user_policy(struct sock *sk, int optname, u8 __user *optval, int optlen);
+=======
+int xfrm4_extract_output(struct xfrm_state *x, struct sk_buff *skb);
+int xfrm4_prepare_output(struct xfrm_state *x, struct sk_buff *skb);
+int xfrm4_output(struct sk_buff *skb);
+int xfrm4_output_finish(struct sk_buff *skb);
+int xfrm4_tunnel_register(struct xfrm_tunnel *handler, unsigned short family);
+int xfrm4_tunnel_deregister(struct xfrm_tunnel *handler, unsigned short family);
+void xfrm4_local_error(struct sk_buff *skb, u32 mtu);
+int xfrm4_mode_tunnel_input_register(struct xfrm_tunnel_notifier *handler);
+int xfrm4_mode_tunnel_input_deregister(struct xfrm_tunnel_notifier *handler);
+int xfrm6_mode_tunnel_input_register(struct xfrm_tunnel_notifier *handler);
+int xfrm6_mode_tunnel_input_deregister(struct xfrm_tunnel_notifier *handler);
+int xfrm6_extract_header(struct sk_buff *skb);
+int xfrm6_extract_input(struct xfrm_state *x, struct sk_buff *skb);
+int xfrm6_rcv_spi(struct sk_buff *skb, int nexthdr, __be32 spi);
+int xfrm6_transport_finish(struct sk_buff *skb, int async);
+int xfrm6_rcv(struct sk_buff *skb);
+int xfrm6_input_addr(struct sk_buff *skb, xfrm_address_t *daddr,
+		     xfrm_address_t *saddr, u8 proto);
+void xfrm6_local_error(struct sk_buff *skb, u32 mtu);
+int xfrm6_tunnel_register(struct xfrm6_tunnel *handler, unsigned short family);
+int xfrm6_tunnel_deregister(struct xfrm6_tunnel *handler, unsigned short family);
+__be32 xfrm6_tunnel_alloc_spi(struct net *net, xfrm_address_t *saddr);
+__be32 xfrm6_tunnel_spi_lookup(struct net *net, const xfrm_address_t *saddr);
+int xfrm6_extract_output(struct xfrm_state *x, struct sk_buff *skb);
+int xfrm6_prepare_output(struct xfrm_state *x, struct sk_buff *skb);
+int xfrm6_output(struct sk_buff *skb);
+int xfrm6_output_finish(struct sk_buff *skb);
+int xfrm6_find_1stfragopt(struct xfrm_state *x, struct sk_buff *skb,
+			  u8 **prevhdr);
+
+#ifdef CONFIG_XFRM
+int xfrm4_udp_encap_rcv(struct sock *sk, struct sk_buff *skb);
+int xfrm_user_policy(struct sock *sk, int optname,
+		     u8 __user *optval, int optlen);
+>>>>>>> refs/remotes/origin/master
 #else
 static inline int xfrm_user_policy(struct sock *sk, int optname, u8 __user *optval, int optlen)
 {
@@ -1523,25 +1879,43 @@ static inline int xfrm4_udp_encap_rcv(struct sock *sk, struct sk_buff *skb)
 
 struct xfrm_policy *xfrm_policy_alloc(struct net *net, gfp_t gfp);
 
+<<<<<<< HEAD
 extern void xfrm_policy_walk_init(struct xfrm_policy_walk *walk, u8 type);
 extern int xfrm_policy_walk(struct net *net, struct xfrm_policy_walk *walk,
 	int (*func)(struct xfrm_policy *, int, int, void*), void *);
 extern void xfrm_policy_walk_done(struct xfrm_policy_walk *walk);
+=======
+void xfrm_policy_walk_init(struct xfrm_policy_walk *walk, u8 type);
+int xfrm_policy_walk(struct net *net, struct xfrm_policy_walk *walk,
+		     int (*func)(struct xfrm_policy *, int, int, void*),
+		     void *);
+void xfrm_policy_walk_done(struct xfrm_policy_walk *walk);
+>>>>>>> refs/remotes/origin/master
 int xfrm_policy_insert(int dir, struct xfrm_policy *policy, int excl);
 struct xfrm_policy *xfrm_policy_bysel_ctx(struct net *net, u32 mark,
 					  u8 type, int dir,
 					  struct xfrm_selector *sel,
 					  struct xfrm_sec_ctx *ctx, int delete,
 					  int *err);
+<<<<<<< HEAD
 struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u8, int dir, u32 id, int delete, int *err);
 int xfrm_policy_flush(struct net *net, u8 type, struct xfrm_audit *audit_info);
 u32 xfrm_get_acqseq(void);
 extern int xfrm_alloc_spi(struct xfrm_state *x, u32 minspi, u32 maxspi);
 struct xfrm_state *xfrm_find_acq(struct net *net, struct xfrm_mark *mark,
+=======
+struct xfrm_policy *xfrm_policy_byid(struct net *net, u32 mark, u8, int dir,
+				     u32 id, int delete, int *err);
+int xfrm_policy_flush(struct net *net, u8 type, struct xfrm_audit *audit_info);
+u32 xfrm_get_acqseq(void);
+int xfrm_alloc_spi(struct xfrm_state *x, u32 minspi, u32 maxspi);
+struct xfrm_state *xfrm_find_acq(struct net *net, const struct xfrm_mark *mark,
+>>>>>>> refs/remotes/origin/master
 				 u8 mode, u32 reqid, u8 proto,
 				 const xfrm_address_t *daddr,
 				 const xfrm_address_t *saddr, int create,
 				 unsigned short family);
+<<<<<<< HEAD
 extern int xfrm_sk_policy_insert(struct sock *sk, int dir, struct xfrm_policy *pol);
 
 #ifdef CONFIG_XFRM_MIGRATE
@@ -1588,14 +1962,68 @@ typedef int (icv_update_fn_t)(struct hash_desc *, struct scatterlist *,
 static inline int xfrm_addr_cmp(const xfrm_address_t *a,
 				const xfrm_address_t *b,
 				int family)
+=======
+int xfrm_sk_policy_insert(struct sock *sk, int dir, struct xfrm_policy *pol);
+
+#ifdef CONFIG_XFRM_MIGRATE
+int km_migrate(const struct xfrm_selector *sel, u8 dir, u8 type,
+	       const struct xfrm_migrate *m, int num_bundles,
+	       const struct xfrm_kmaddress *k);
+struct xfrm_state *xfrm_migrate_state_find(struct xfrm_migrate *m);
+struct xfrm_state *xfrm_state_migrate(struct xfrm_state *x,
+				      struct xfrm_migrate *m);
+int xfrm_migrate(const struct xfrm_selector *sel, u8 dir, u8 type,
+		 struct xfrm_migrate *m, int num_bundles,
+		 struct xfrm_kmaddress *k);
+#endif
+
+int km_new_mapping(struct xfrm_state *x, xfrm_address_t *ipaddr, __be16 sport);
+void km_policy_expired(struct xfrm_policy *pol, int dir, int hard, u32 portid);
+int km_report(struct net *net, u8 proto, struct xfrm_selector *sel,
+	      xfrm_address_t *addr);
+
+void xfrm_input_init(void);
+int xfrm_parse_spi(struct sk_buff *skb, u8 nexthdr, __be32 *spi, __be32 *seq);
+
+void xfrm_probe_algs(void);
+int xfrm_count_pfkey_auth_supported(void);
+int xfrm_count_pfkey_enc_supported(void);
+struct xfrm_algo_desc *xfrm_aalg_get_byidx(unsigned int idx);
+struct xfrm_algo_desc *xfrm_ealg_get_byidx(unsigned int idx);
+struct xfrm_algo_desc *xfrm_aalg_get_byid(int alg_id);
+struct xfrm_algo_desc *xfrm_ealg_get_byid(int alg_id);
+struct xfrm_algo_desc *xfrm_calg_get_byid(int alg_id);
+struct xfrm_algo_desc *xfrm_aalg_get_byname(const char *name, int probe);
+struct xfrm_algo_desc *xfrm_ealg_get_byname(const char *name, int probe);
+struct xfrm_algo_desc *xfrm_calg_get_byname(const char *name, int probe);
+struct xfrm_algo_desc *xfrm_aead_get_byname(const char *name, int icv_len,
+					    int probe);
+
+static inline bool xfrm6_addr_equal(const xfrm_address_t *a,
+				    const xfrm_address_t *b)
+{
+	return ipv6_addr_equal((const struct in6_addr *)a,
+			       (const struct in6_addr *)b);
+}
+
+static inline bool xfrm_addr_equal(const xfrm_address_t *a,
+				   const xfrm_address_t *b,
+				   sa_family_t family)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (family) {
 	default:
 	case AF_INET:
+<<<<<<< HEAD
 		return (__force u32)a->a4 - (__force u32)b->a4;
 	case AF_INET6:
 		return ipv6_addr_cmp((const struct in6_addr *)a,
 				     (const struct in6_addr *)b);
+=======
+		return ((__force u32)a->a4 ^ (__force u32)b->a4) == 0;
+	case AF_INET6:
+		return xfrm6_addr_equal(a, b);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1701,12 +2129,20 @@ static inline int xfrm_mark_get(struct nlattr **attrs, struct xfrm_mark *m)
 
 static inline int xfrm_mark_put(struct sk_buff *skb, const struct xfrm_mark *m)
 {
+<<<<<<< HEAD
 	if (m->m | m->v)
 		NLA_PUT(skb, XFRMA_MARK, sizeof(struct xfrm_mark), m);
 	return 0;
 
 nla_put_failure:
 	return -1;
+=======
+	int ret = 0;
+
+	if (m->m | m->v)
+		ret = nla_put(skb, XFRMA_MARK, sizeof(struct xfrm_mark), m);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif	/* _NET_XFRM_H */

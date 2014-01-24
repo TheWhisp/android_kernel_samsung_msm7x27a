@@ -73,7 +73,11 @@ static int ds3234_read_time(struct device *dev, struct rtc_time *dt)
 	dt->tm_wday	= bcd2bin(buf[3]) - 1; /* 0 = Sun */
 	dt->tm_mday	= bcd2bin(buf[4]);
 	dt->tm_mon	= bcd2bin(buf[5] & 0x1f) - 1; /* 0 = Jan */
+<<<<<<< HEAD
 	dt->tm_year 	= bcd2bin(buf[6] & 0xff) + 100; /* Assume 20YY */
+=======
+	dt->tm_year	= bcd2bin(buf[6] & 0xff) + 100; /* Assume 20YY */
+>>>>>>> refs/remotes/origin/master
 
 	return rtc_valid_tm(dt);
 }
@@ -105,7 +109,11 @@ static const struct rtc_class_ops ds3234_rtc_ops = {
 	.set_time	= ds3234_set_time,
 };
 
+<<<<<<< HEAD
 static int __devinit ds3234_probe(struct spi_device *spi)
+=======
+static int ds3234_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rtc_device *rtc;
 	unsigned char tmp;
@@ -146,16 +154,26 @@ static int __devinit ds3234_probe(struct spi_device *spi)
 	ds3234_get_reg(&spi->dev, DS3234_REG_CONT_STAT, &tmp);
 	dev_info(&spi->dev, "Ctrl/Stat Reg: 0x%02x\n", tmp);
 
+<<<<<<< HEAD
 	rtc = rtc_device_register("ds3234",
 				&spi->dev, &ds3234_rtc_ops, THIS_MODULE);
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
 
 	dev_set_drvdata(&spi->dev, rtc);
+=======
+	rtc = devm_rtc_device_register(&spi->dev, "ds3234",
+				&ds3234_rtc_ops, THIS_MODULE);
+	if (IS_ERR(rtc))
+		return PTR_ERR(rtc);
+
+	spi_set_drvdata(spi, rtc);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit ds3234_remove(struct spi_device *spi)
 {
 	struct rtc_device *rtc = spi_get_drvdata(spi);
@@ -164,12 +182,15 @@ static int __devexit ds3234_remove(struct spi_device *spi)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct spi_driver ds3234_driver = {
 	.driver = {
 		.name	 = "ds3234",
 		.owner	= THIS_MODULE,
 	},
 	.probe	 = ds3234_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ds3234_remove),
 };
 
@@ -188,6 +209,11 @@ module_exit(ds3234_exit);
 =======
 module_spi_driver(ds3234_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+module_spi_driver(ds3234_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("DS3234 SPI RTC driver");
 MODULE_AUTHOR("Dennis Aberilla <denzzzhome@yahoo.com>");

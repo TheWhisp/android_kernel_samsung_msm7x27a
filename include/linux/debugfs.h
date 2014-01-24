@@ -17,9 +17,13 @@
 
 #include <linux/fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/seq_file.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/types.h>
 
@@ -31,19 +35,29 @@ struct debugfs_blob_wrapper {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct debugfs_reg32 {
 	char *name;
 	unsigned long offset;
 };
 
 struct debugfs_regset32 {
+<<<<<<< HEAD
 	struct debugfs_reg32 *regs;
+=======
+	const struct debugfs_reg32 *regs;
+>>>>>>> refs/remotes/origin/master
 	int nregs;
 	void __iomem *base;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct dentry *arch_debugfs_dir;
 
 #if defined(CONFIG_DEBUG_FS)
@@ -53,10 +67,14 @@ extern const struct file_operations debugfs_file_operations;
 extern const struct inode_operations debugfs_link_operations;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *debugfs_create_file(const char *name, mode_t mode,
 =======
 struct dentry *debugfs_create_file(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_file(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				   struct dentry *parent, void *data,
 				   const struct file_operations *fops);
 
@@ -71,6 +89,7 @@ void debugfs_remove_recursive(struct dentry *dentry);
 struct dentry *debugfs_rename(struct dentry *old_dir, struct dentry *old_dentry,
                 struct dentry *new_dir, const char *new_name);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct dentry *debugfs_create_u8(const char *name, mode_t mode,
 				 struct dentry *parent, u8 *value);
@@ -98,6 +117,8 @@ struct dentry *debugfs_create_blob(const char *name, mode_t mode,
 				  struct debugfs_blob_wrapper *blob);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct dentry *debugfs_create_u8(const char *name, umode_t mode,
 				 struct dentry *parent, u8 *value);
 struct dentry *debugfs_create_u16(const char *name, umode_t mode,
@@ -116,6 +137,11 @@ struct dentry *debugfs_create_x64(const char *name, umode_t mode,
 				  struct dentry *parent, u64 *value);
 struct dentry *debugfs_create_size_t(const char *name, umode_t mode,
 				     struct dentry *parent, size_t *value);
+<<<<<<< HEAD
+=======
+struct dentry *debugfs_create_atomic_t(const char *name, umode_t mode,
+				     struct dentry *parent, atomic_t *value);
+>>>>>>> refs/remotes/origin/master
 struct dentry *debugfs_create_bool(const char *name, umode_t mode,
 				  struct dentry *parent, u32 *value);
 
@@ -130,7 +156,14 @@ struct dentry *debugfs_create_regset32(const char *name, umode_t mode,
 int debugfs_print_regs32(struct seq_file *s, const struct debugfs_reg32 *regs,
 			 int nregs, void __iomem *base, char *prefix);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct dentry *debugfs_create_u32_array(const char *name, umode_t mode,
+					struct dentry *parent,
+					u32 *array, u32 elements);
+
+>>>>>>> refs/remotes/origin/master
 bool debugfs_initialized(void);
 
 #else
@@ -144,10 +177,14 @@ bool debugfs_initialized(void);
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_file(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_file(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_file(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 					struct dentry *parent, void *data,
 					const struct file_operations *fops)
 {
@@ -180,10 +217,14 @@ static inline struct dentry *debugfs_rename(struct dentry *old_dir, struct dentr
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_u8(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_u8(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_u8(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 					       struct dentry *parent,
 					       u8 *value)
 {
@@ -191,10 +232,14 @@ static inline struct dentry *debugfs_create_u8(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_u16(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_u16(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_u16(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 						struct dentry *parent,
 						u16 *value)
 {
@@ -202,10 +247,14 @@ static inline struct dentry *debugfs_create_u16(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_u32(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_u32(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_u32(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 						struct dentry *parent,
 						u32 *value)
 {
@@ -213,10 +262,14 @@ static inline struct dentry *debugfs_create_u32(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_u64(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_u64(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_u64(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 						struct dentry *parent,
 						u64 *value)
 {
@@ -224,10 +277,14 @@ static inline struct dentry *debugfs_create_u64(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_x8(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_x8(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_x8(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 					       struct dentry *parent,
 					       u8 *value)
 {
@@ -235,10 +292,14 @@ static inline struct dentry *debugfs_create_x8(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_x16(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_x16(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_x16(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 						struct dentry *parent,
 						u16 *value)
 {
@@ -246,10 +307,14 @@ static inline struct dentry *debugfs_create_x16(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_x32(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_x32(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_x32(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 						struct dentry *parent,
 						u32 *value)
 {
@@ -257,10 +322,21 @@ static inline struct dentry *debugfs_create_x32(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_size_t(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_size_t(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_x64(const char *name, umode_t mode,
+						struct dentry *parent,
+						u64 *value)
+{
+	return ERR_PTR(-ENODEV);
+}
+
+static inline struct dentry *debugfs_create_size_t(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				     struct dentry *parent,
 				     size_t *value)
 {
@@ -268,10 +344,20 @@ static inline struct dentry *debugfs_create_size_t(const char *name, umode_t mod
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_bool(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_atomic_t(const char *name, umode_t mode,
+				     struct dentry *parent, atomic_t *value)
+{
+	return ERR_PTR(-ENODEV);
+}
+
+static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 						 struct dentry *parent,
 						 u32 *value)
 {
@@ -279,10 +365,14 @@ static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline struct dentry *debugfs_create_blob(const char *name, mode_t mode,
 =======
 static inline struct dentry *debugfs_create_blob(const char *name, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline struct dentry *debugfs_create_blob(const char *name, umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				  struct dentry *parent,
 				  struct debugfs_blob_wrapper *blob)
 {
@@ -290,7 +380,10 @@ static inline struct dentry *debugfs_create_blob(const char *name, umode_t mode,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct dentry *debugfs_create_regset32(const char *name,
 				   umode_t mode, struct dentry *parent,
 				   struct debugfs_regset32 *regset)
@@ -298,12 +391,31 @@ static inline struct dentry *debugfs_create_regset32(const char *name,
 	return ERR_PTR(-ENODEV);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int debugfs_print_regs32(struct seq_file *s, const struct debugfs_reg32 *regs,
+			 int nregs, void __iomem *base, char *prefix)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline bool debugfs_initialized(void)
 {
 	return false;
 }
 
+<<<<<<< HEAD
+=======
+static inline struct dentry *debugfs_create_u32_array(const char *name, umode_t mode,
+					struct dentry *parent,
+					u32 *array, u32 elements)
+{
+	return ERR_PTR(-ENODEV);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif

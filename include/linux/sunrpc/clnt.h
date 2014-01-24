@@ -10,9 +10,13 @@
 #define _LINUX_SUNRPC_CLNT_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/socket.h>
 #include <linux/in.h>
 #include <linux/in6.h>
@@ -24,6 +28,10 @@
 #include <linux/sunrpc/stats.h>
 #include <linux/sunrpc/xdr.h>
 #include <linux/sunrpc/timer.h>
+<<<<<<< HEAD
+=======
+#include <linux/sunrpc/rpc_pipe_fs.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/signal.h>
 #include <linux/path.h>
 #include <net/ipv6.h>
@@ -35,6 +43,7 @@ struct rpc_inode;
  */
 struct rpc_clnt {
 	atomic_t		cl_count;	/* Number of references */
+<<<<<<< HEAD
 	struct list_head	cl_clients;	/* Global list of clients */
 	struct list_head	cl_tasks;	/* List of tasks */
 	spinlock_t		cl_lock;	/* spinlock */
@@ -43,23 +52,37 @@ struct rpc_clnt {
 =======
 	struct rpc_xprt __rcu *	cl_xprt;	/* transport */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		cl_clid;	/* client id */
+	struct list_head	cl_clients;	/* Global list of clients */
+	struct list_head	cl_tasks;	/* List of tasks */
+	spinlock_t		cl_lock;	/* spinlock */
+	struct rpc_xprt __rcu *	cl_xprt;	/* transport */
+>>>>>>> refs/remotes/origin/master
 	struct rpc_procinfo *	cl_procinfo;	/* procedure info */
 	u32			cl_prog,	/* RPC program number */
 				cl_vers,	/* RPC version number */
 				cl_maxproc;	/* max procedure number */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *			cl_server;	/* server machine name */
 	char *			cl_protname;	/* protocol name */
 =======
 	const char *		cl_protname;	/* protocol name */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct rpc_auth *	cl_auth;	/* authenticator */
 	struct rpc_stat *	cl_stats;	/* per-program statistics */
 	struct rpc_iostats *	cl_metrics;	/* per-client statistics */
 
 	unsigned int		cl_softrtry : 1,/* soft timeouts */
 				cl_discrtry : 1,/* disconnect before retry */
+<<<<<<< HEAD
+=======
+				cl_noretranstimeo: 1,/* No retransmit timeouts */
+>>>>>>> refs/remotes/origin/master
 				cl_autobind : 1,/* use getport() */
 				cl_chatty   : 1;/* be verbose */
 
@@ -69,6 +92,7 @@ struct rpc_clnt {
 	int			cl_nodelen;	/* nodename length */
 	char 			cl_nodename[UNX_MAXNODENAME];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct path		cl_path;
 	struct rpc_clnt *	cl_parent;	/* Points to parent of clones */
 	struct rpc_rtt		cl_rtt_default;
@@ -77,12 +101,18 @@ struct rpc_clnt {
 	char			cl_inline_name[32];
 =======
 	struct dentry *		cl_dentry;
+=======
+	struct rpc_pipe_dir_head cl_pipedir_objects;
+>>>>>>> refs/remotes/origin/master
 	struct rpc_clnt *	cl_parent;	/* Points to parent of clones */
 	struct rpc_rtt		cl_rtt_default;
 	struct rpc_timeout	cl_timeout_default;
 	const struct rpc_program *cl_program;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	char			*cl_principal;	/* target to authenticate to */
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -91,6 +121,7 @@ struct rpc_clnt {
 #define RPC_MAXVERSION		4
 struct rpc_program {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *			name;		/* protocol name */
 	u32			number;		/* program number */
 	unsigned int		nrvers;		/* number of versions */
@@ -98,13 +129,18 @@ struct rpc_program {
 	struct rpc_stat *	stats;		/* statistics */
 	char *			pipe_dir_name;	/* path to rpc_pipefs dir */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *		name;		/* protocol name */
 	u32			number;		/* program number */
 	unsigned int		nrvers;		/* number of versions */
 	const struct rpc_version **	version;	/* version array */
 	struct rpc_stat *	stats;		/* statistics */
 	const char *		pipe_dir_name;	/* path to rpc_pipefs dir */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct rpc_version {
@@ -126,10 +162,14 @@ struct rpc_procinfo {
 	unsigned int		p_timer;	/* Which RTT timer to use */
 	u32			p_statidx;	/* Which procedure to account */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char *			p_name;		/* name of procedure */
 =======
 	const char *		p_name;		/* name of procedure */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *		p_name;		/* name of procedure */
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef __KERNEL__
@@ -142,12 +182,17 @@ struct rpc_create_args {
 	struct sockaddr		*saddress;
 	const struct rpc_timeout *timeout;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	char			*servername;
 	struct rpc_program	*program;
 =======
 	const char		*servername;
 	const struct rpc_program *program;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char		*servername;
+	const struct rpc_program *program;
+>>>>>>> refs/remotes/origin/master
 	u32			prognumber;	/* overrides program->number */
 	u32			version;
 	rpc_authflavor_t	authflavor;
@@ -163,6 +208,7 @@ struct rpc_create_args {
 #define RPC_CLNT_CREATE_NOPING		(1UL << 4)
 #define RPC_CLNT_CREATE_DISCRTRY	(1UL << 5)
 #define RPC_CLNT_CREATE_QUIET		(1UL << 6)
+<<<<<<< HEAD
 
 struct rpc_clnt *rpc_create(struct rpc_create_args *args);
 struct rpc_clnt	*rpc_bind_new_program(struct rpc_clnt *,
@@ -173,20 +219,43 @@ struct rpc_clnt	*rpc_bind_new_program(struct rpc_clnt *,
 >>>>>>> refs/remotes/origin/cm-10.0
 void rpc_task_reset_client(struct rpc_task *task, struct rpc_clnt *clnt);
 struct rpc_clnt *rpc_clone_client(struct rpc_clnt *);
+=======
+#define RPC_CLNT_CREATE_INFINITE_SLOTS	(1UL << 7)
+#define RPC_CLNT_CREATE_NO_IDLE_TIMEOUT	(1UL << 8)
+#define RPC_CLNT_CREATE_NO_RETRANS_TIMEOUT	(1UL << 9)
+
+struct rpc_clnt *rpc_create(struct rpc_create_args *args);
+struct rpc_clnt	*rpc_bind_new_program(struct rpc_clnt *,
+				const struct rpc_program *, u32);
+void rpc_task_reset_client(struct rpc_task *task, struct rpc_clnt *clnt);
+struct rpc_clnt *rpc_clone_client(struct rpc_clnt *);
+struct rpc_clnt *rpc_clone_client_set_auth(struct rpc_clnt *,
+				rpc_authflavor_t);
+int		rpc_switch_client_transport(struct rpc_clnt *,
+				struct xprt_create *,
+				const struct rpc_timeout *);
+
+>>>>>>> refs/remotes/origin/master
 void		rpc_shutdown_client(struct rpc_clnt *);
 void		rpc_release_client(struct rpc_clnt *);
 void		rpc_task_release_client(struct rpc_task *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int		rpcb_register(u32, u32, int, unsigned short);
 int		rpcb_v4_register(const u32 program, const u32 version,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int		rpcb_create_local(struct net *);
 void		rpcb_put_local(struct net *);
 int		rpcb_register(struct net *, u32, u32, int, unsigned short);
 int		rpcb_v4_register(struct net *net, const u32 program,
 				 const u32 version,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				 const struct sockaddr *address,
 				 const char *netid);
 void		rpcb_getport_async(struct rpc_task *);
@@ -203,6 +272,7 @@ struct rpc_task *rpc_call_null(struct rpc_clnt *clnt, struct rpc_cred *cred,
 int		rpc_restart_call_prepare(struct rpc_task *);
 int		rpc_restart_call(struct rpc_task *);
 void		rpc_setbufsize(struct rpc_clnt *, unsigned int, unsigned int);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 int		rpc_protocol(struct rpc_clnt *);
@@ -394,5 +464,16 @@ static inline u32 rpc_get_scope_id(const struct sockaddr *sa)
 	return ((struct sockaddr_in6 *) sa)->sin6_scope_id;
 }
 
+=======
+int		rpc_protocol(struct rpc_clnt *);
+struct net *	rpc_net_ns(struct rpc_clnt *);
+size_t		rpc_max_payload(struct rpc_clnt *);
+unsigned long	rpc_get_timeout(struct rpc_clnt *clnt);
+void		rpc_force_rebind(struct rpc_clnt *);
+size_t		rpc_peeraddr(struct rpc_clnt *, struct sockaddr *, size_t);
+const char	*rpc_peeraddr2str(struct rpc_clnt *, enum rpc_display_format_t);
+int		rpc_localaddr(struct rpc_clnt *, struct sockaddr *, size_t);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __KERNEL__ */
 #endif /* _LINUX_SUNRPC_CLNT_H */

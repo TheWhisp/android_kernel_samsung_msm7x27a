@@ -17,6 +17,7 @@ static void
 #ifdef HFC_REGISTER_DEBUG
 HFC_outb_embsd(struct hfc_multi *hc, u_char reg, u_char val,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		const char *function, int line)
 #else
 HFC_outb_embsd(struct hfc_multi *hc, u_char reg, u_char val)
@@ -25,6 +26,11 @@ HFC_outb_embsd(struct hfc_multi *hc, u_char reg, u_char val)
 #else
 	HFC_outb_embsd(struct hfc_multi *hc, u_char reg, u_char val)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       const char *function, int line)
+#else
+	HFC_outb_embsd(struct hfc_multi *hc, u_char reg, u_char val)
+>>>>>>> refs/remotes/origin/master
 #endif
 {
 	hc->immap->im_ioport.iop_padat |= PA_XHFC_A0;
@@ -37,10 +43,14 @@ static u_char
 HFC_inb_embsd(struct hfc_multi *hc, u_char reg, const char *function, int line)
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 HFC_inb_embsd(struct hfc_multi *hc, u_char reg)
 =======
 	HFC_inb_embsd(struct hfc_multi *hc, u_char reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HFC_inb_embsd(struct hfc_multi *hc, u_char reg)
+>>>>>>> refs/remotes/origin/master
 #endif
 {
 	hc->immap->im_ioport.iop_padat |= PA_XHFC_A0;
@@ -53,10 +63,14 @@ static u_short
 HFC_inw_embsd(struct hfc_multi *hc, u_char reg, const char *function, int line)
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 HFC_inw_embsd(struct hfc_multi *hc, u_char reg)
 =======
 	HFC_inw_embsd(struct hfc_multi *hc, u_char reg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HFC_inw_embsd(struct hfc_multi *hc, u_char reg)
+>>>>>>> refs/remotes/origin/master
 #endif
 {
 	hc->immap->im_ioport.iop_padat |= PA_XHFC_A0;
@@ -69,10 +83,14 @@ static void
 HFC_wait_embsd(struct hfc_multi *hc, const char *function, int line)
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 HFC_wait_embsd(struct hfc_multi *hc)
 =======
 	HFC_wait_embsd(struct hfc_multi *hc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HFC_wait_embsd(struct hfc_multi *hc)
+>>>>>>> refs/remotes/origin/master
 #endif
 {
 	hc->immap->im_ioport.iop_padat |= PA_XHFC_A0;
@@ -115,12 +133,17 @@ setup_embedded(struct hfc_multi *hc, struct hm_map *m)
 {
 	printk(KERN_INFO
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    "HFC-multi: card manufacturer: '%s' card name: '%s' clock: %s\n",
 	    m->vendor_name, m->card_name, m->clock2 ? "double" : "normal");
 =======
 	       "HFC-multi: card manufacturer: '%s' card name: '%s' clock: %s\n",
 	       m->vendor_name, m->card_name, m->clock2 ? "double" : "normal");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       "HFC-multi: card manufacturer: '%s' card name: '%s' clock: %s\n",
+	       m->vendor_name, m->card_name, m->clock2 ? "double" : "normal");
+>>>>>>> refs/remotes/origin/master
 
 	hc->pci_dev = NULL;
 	if (m->clock2)
@@ -153,34 +176,46 @@ setup_embedded(struct hfc_multi *hc, struct hm_map *m)
 		hc->xhfc_origmembase = XHFC_MEMBASE + XHFC_OFFSET * hc->id;
 		hc->xhfc_membase = (u_char *)ioremap(hc->xhfc_origmembase,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				XHFC_MEMSIZE);
 		if (!hc->xhfc_membase) {
 			printk(KERN_WARNING
 			    "HFC-multi: failed to remap xhfc address space. "
 			    "(internal error)\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						     XHFC_MEMSIZE);
 		if (!hc->xhfc_membase) {
 			printk(KERN_WARNING
 			       "HFC-multi: failed to remap xhfc address space. "
 			       "(internal error)\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		}
 		hc->xhfc_memaddr = (u_long *)(hc->xhfc_membase + 4);
 		hc->xhfc_memdata = (u_long *)(hc->xhfc_membase);
 		printk(KERN_INFO
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    "HFC-multi: xhfc_membase:%#lx xhfc_origmembase:%#lx "
 		    "xhfc_memaddr:%#lx xhfc_memdata:%#lx\n",
 		    (u_long)hc->xhfc_membase, hc->xhfc_origmembase,
 		    (u_long)hc->xhfc_memaddr, (u_long)hc->xhfc_memdata);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       "HFC-multi: xhfc_membase:%#lx xhfc_origmembase:%#lx "
 		       "xhfc_memaddr:%#lx xhfc_memdata:%#lx\n",
 		       (u_long)hc->xhfc_membase, hc->xhfc_origmembase,
 		       (u_long)hc->xhfc_memaddr, (u_long)hc->xhfc_memdata);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		printk(KERN_WARNING "HFC-multi: Invalid IO mode.\n");

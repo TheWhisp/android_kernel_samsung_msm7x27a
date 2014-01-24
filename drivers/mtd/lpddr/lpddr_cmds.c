@@ -28,9 +28,13 @@
 #include <linux/mtd/qinfo.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 static int lpddr_read(struct mtd_info *mtd, loff_t adr, size_t len,
 					size_t *retlen, u_char *buf);
@@ -44,10 +48,14 @@ static int lpddr_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
 static int lpddr_point(struct mtd_info *mtd, loff_t adr, size_t len,
 			size_t *retlen, void **mtdbuf, resource_size_t *phys);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void lpddr_unpoint(struct mtd_info *mtd, loff_t adr, size_t len);
 =======
 static int lpddr_unpoint(struct mtd_info *mtd, loff_t adr, size_t len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int lpddr_unpoint(struct mtd_info *mtd, loff_t adr, size_t len);
+>>>>>>> refs/remotes/origin/master
 static int get_chip(struct map_info *map, struct flchip *chip, int mode);
 static int chip_ready(struct map_info *map, struct flchip *chip, int mode);
 static void put_chip(struct map_info *map, struct flchip *chip);
@@ -71,6 +79,7 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
 
 	/* Fill in the default mtd operations */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mtd->read = lpddr_read;
 	mtd->type = MTD_NORFLASH;
 	mtd->flags = MTD_CAP_NORFLASH;
@@ -92,6 +101,8 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
 	mtd->block_isbad = NULL;
 	mtd->block_markbad = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mtd->_read = lpddr_read;
 	mtd->type = MTD_NORFLASH;
 	mtd->flags = MTD_CAP_NORFLASH;
@@ -105,7 +116,10 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
 		mtd->_point = lpddr_point;
 		mtd->_unpoint = lpddr_unpoint;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mtd->size = 1 << lpddr->qinfo->DevSizeShift;
 	mtd->erasesize = 1 << lpddr->qinfo->UniformBlockSizeShift;
 	mtd->writesize = 1 << lpddr->qinfo->BufSizeShift;
@@ -561,14 +575,19 @@ static int lpddr_point(struct mtd_info *mtd, loff_t adr, size_t len,
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!map->virt || (adr + len > mtd->size))
 =======
 	if (!map->virt)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!map->virt)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/* ofs: offset within the first chip that the first read should start */
 	ofs = adr - (chipnum << lpddr->chipshift);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	*mtdbuf = (void *)map->virt + chip->start + ofs;
@@ -576,6 +595,9 @@ static int lpddr_point(struct mtd_info *mtd, loff_t adr, size_t len,
 =======
 	*mtdbuf = (void *)map->virt + chip->start + ofs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*mtdbuf = (void *)map->virt + chip->start + ofs;
+>>>>>>> refs/remotes/origin/master
 
 	while (len) {
 		unsigned long thislen;
@@ -614,18 +636,24 @@ static int lpddr_point(struct mtd_info *mtd, loff_t adr, size_t len,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void lpddr_unpoint (struct mtd_info *mtd, loff_t adr, size_t len)
 {
 	struct map_info *map = mtd->priv;
 	struct lpddr_private *lpddr = map->fldrv_priv;
 	int chipnum = adr >> lpddr->chipshift;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int lpddr_unpoint (struct mtd_info *mtd, loff_t adr, size_t len)
 {
 	struct map_info *map = mtd->priv;
 	struct lpddr_private *lpddr = map->fldrv_priv;
 	int chipnum = adr >> lpddr->chipshift, err = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long ofs;
 
 	/* ofs: offset within the first chip that the first read should start */
@@ -650,16 +678,22 @@ static int lpddr_unpoint (struct mtd_info *mtd, loff_t adr, size_t len)
 			if (chip->ref_point_counter == 0)
 				chip->state = FL_READY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} else
 			printk(KERN_WARNING "%s: Warning: unpoint called on non"
 					"pointed region\n", map->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			printk(KERN_WARNING "%s: Warning: unpoint called on non"
 					"pointed region\n", map->name);
 			err = -EINVAL;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		put_chip(map, chip);
 		mutex_unlock(&chip->mutex);
@@ -669,10 +703,15 @@ static int lpddr_unpoint (struct mtd_info *mtd, loff_t adr, size_t len)
 		chipnum++;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lpddr_write_buffers(struct mtd_info *mtd, loff_t to, size_t len,
@@ -697,18 +736,24 @@ static int lpddr_writev(struct mtd_info *mtd, const struct kvec *vecs,
 	unsigned long ofs, vec_seek, i;
 	int wbufsize = 1 << lpddr->qinfo->BufSizeShift;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	size_t len = 0;
 
 	for (i = 0; i < count; i++)
 		len += vecs[i].iov_len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	*retlen = 0;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!len)
 		return 0;
 
@@ -754,11 +799,14 @@ static int lpddr_erase(struct mtd_info *mtd, struct erase_info *instr)
 	len = instr->len;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ofs > mtd->size || (len + ofs) > mtd->size)
 		return -EINVAL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	while (len > 0) {
 		ret = do_erase_oneblock(mtd, ofs);
 		if (ret)
@@ -774,7 +822,11 @@ static int lpddr_erase(struct mtd_info *mtd, struct erase_info *instr)
 
 #define DO_XXLOCK_LOCK		1
 #define DO_XXLOCK_UNLOCK	2
+<<<<<<< HEAD
 int do_xxlock(struct mtd_info *mtd, loff_t adr, uint32_t len, int thunk)
+=======
+static int do_xxlock(struct mtd_info *mtd, loff_t adr, uint32_t len, int thunk)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	struct map_info *map = mtd->priv;

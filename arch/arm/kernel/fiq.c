@@ -40,6 +40,7 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/seq_file.h>
 
 #include <asm/cacheflush.h>
@@ -48,15 +49,27 @@
 #include <asm/system.h>
 =======
 #include <linux/irq.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/seq_file.h>
 
 #include <asm/cacheflush.h>
 #include <asm/cp15.h>
 #include <asm/fiq.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/traps.h>
 
+=======
+#include <asm/traps.h>
+
+#define FIQ_OFFSET ({					\
+		extern void *vector_fiq_offset;		\
+		(unsigned)&vector_fiq_offset;		\
+	})
+
+>>>>>>> refs/remotes/origin/master
 static unsigned long no_fiq_insn;
 
 /* Default reacquire function
@@ -89,6 +102,7 @@ int show_fiq_list(struct seq_file *p, int prec)
 
 void set_fiq_handler(void *start, unsigned int length)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_USE_DOMAINS)
 	memcpy((void *)0xffff001c, start, length);
 #else
@@ -97,6 +111,16 @@ void set_fiq_handler(void *start, unsigned int length)
 	flush_icache_range(0xffff001c, 0xffff001c + length);
 	if (!vectors_high())
 		flush_icache_range(0x1c, 0x1c + length);
+=======
+	void *base = vectors_page;
+	unsigned offset = FIQ_OFFSET;
+
+	memcpy(base + offset, start, length);
+	if (!cache_is_vipt_nonaliasing())
+		flush_icache_range((unsigned long)base + offset, offset +
+				   length);
+	flush_icache_range(0xffff0000 + offset, 0xffff0000 + offset + length);
+>>>>>>> refs/remotes/origin/master
 }
 
 int claim_fiq(struct fiq_handler *f)
@@ -132,13 +156,22 @@ void release_fiq(struct fiq_handler *f)
 	while (current_fiq->fiq_op(current_fiq->dev_id, 0));
 }
 
+<<<<<<< HEAD
 void enable_fiq(int fiq)
 {
 	enable_irq(fiq + FIQ_START);
+=======
+static int fiq_start;
+
+void enable_fiq(int fiq)
+{
+	enable_irq(fiq + fiq_start);
+>>>>>>> refs/remotes/origin/master
 }
 
 void disable_fiq(int fiq)
 {
+<<<<<<< HEAD
 	disable_irq(fiq + FIQ_START);
 }
 
@@ -150,6 +183,11 @@ void fiq_set_type(int fiq, unsigned int type)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	disable_irq(fiq + fiq_start);
+}
+
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL(set_fiq_handler);
 EXPORT_SYMBOL(__set_fiq_regs);	/* defined in fiqasm.S */
 EXPORT_SYMBOL(__get_fiq_regs);	/* defined in fiqasm.S */
@@ -158,6 +196,7 @@ EXPORT_SYMBOL(release_fiq);
 EXPORT_SYMBOL(enable_fiq);
 EXPORT_SYMBOL(disable_fiq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(fiq_set_type);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -165,4 +204,12 @@ EXPORT_SYMBOL(fiq_set_type);
 void __init init_FIQ(void)
 {
 	no_fiq_insn = *(unsigned long *)0xffff001c;
+=======
+
+void __init init_FIQ(int start)
+{
+	unsigned offset = FIQ_OFFSET;
+	no_fiq_insn = *(unsigned long *)(0xffff0000 + offset);
+	fiq_start = start;
+>>>>>>> refs/remotes/origin/master
 }

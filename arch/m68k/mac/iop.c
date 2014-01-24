@@ -111,6 +111,7 @@
 #include <linux/init.h>
 #include <linux/interrupt.h>
 
+<<<<<<< HEAD
 #include <asm/bootinfo.h>
 #include <asm/macintosh.h>
 #include <asm/macints.h>
@@ -125,6 +126,17 @@
 /* Set to non-zero if the IOPs are present. Set by iop_init() */
 
 int iop_scc_present,iop_ism_present;
+=======
+#include <asm/macintosh.h>
+#include <asm/macints.h>
+#include <asm/mac_iop.h>
+
+/*#define DEBUG_IOP*/
+
+/* Non-zero if the IOPs are present */
+
+int iop_scc_present, iop_ism_present;
+>>>>>>> refs/remotes/origin/master
 
 /* structure for tracking channel listeners */
 
@@ -153,10 +165,13 @@ static struct listener iop_listeners[NUM_IOPS][NUM_IOP_CHAN];
 irqreturn_t iop_ism_irq(int, void *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void oss_irq_enable(int);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Private access functions
  */
@@ -311,6 +326,7 @@ void __init iop_register_interrupts(void)
 {
 	if (iop_ism_present) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (oss_present) {
 			if (request_irq(OSS_IRQLEV_IOPISM, iop_ism_irq,
 					IRQ_FLG_LOCK, "ISM IOP",
@@ -322,6 +338,8 @@ void __init iop_register_interrupts(void)
 					IRQ_FLG_LOCK|IRQ_FLG_FAST, "ISM IOP",
 					(void *) IOP_NUM_ISM))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (macintosh_config->ident == MAC_MODEL_IIFX) {
 			if (request_irq(IRQ_MAC_ADB, iop_ism_irq, 0,
 					"ISM IOP", (void *)IOP_NUM_ISM))
@@ -329,7 +347,10 @@ void __init iop_register_interrupts(void)
 		} else {
 			if (request_irq(IRQ_VIA2_0, iop_ism_irq, 0, "ISM IOP",
 					(void *)IOP_NUM_ISM))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				pr_err("Couldn't register ISM IOP interrupt\n");
 		}
 		if (!iop_alive(iop_base[IOP_NUM_ISM])) {

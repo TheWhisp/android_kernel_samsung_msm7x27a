@@ -1,6 +1,10 @@
 /*
 	This is part of rtl8180 OpenSource driver
+<<<<<<< HEAD
 	Copyright (C) Andrea Merello 2004-2005  <andreamrl@tiscali.it>
+=======
+	Copyright (C) Andrea Merello 2004-2005  <andrea.merello@gmail.com>
+>>>>>>> refs/remotes/origin/master
 	Released under the terms of GPL (General Public Licence)
 
 	Parts of this driver are based on the GPL part of the official realtek driver

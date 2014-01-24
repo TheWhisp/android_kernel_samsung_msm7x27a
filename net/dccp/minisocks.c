@@ -54,6 +54,7 @@ void dccp_time_wait(struct sock *sk, int state, int timeo)
 		const struct inet_connection_sock *icsk = inet_csk(sk);
 		const int rto = (icsk->icsk_rto << 2) - (icsk->icsk_rto >> 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
 =======
 #if IS_ENABLED(CONFIG_IPV6)
@@ -71,6 +72,14 @@ void dccp_time_wait(struct sock *sk, int state, int timeo)
 			tw6->tw_v6_daddr = np->daddr;
 			tw6->tw_v6_rcv_saddr = np->rcv_saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+		if (tw->tw_family == PF_INET6) {
+			const struct ipv6_pinfo *np = inet6_sk(sk);
+
+			tw->tw_v6_daddr = sk->sk_v6_daddr;
+			tw->tw_v6_rcv_saddr = sk->sk_v6_rcv_saddr;
+>>>>>>> refs/remotes/origin/master
 			tw->tw_ipv6only = np->ipv6only;
 		}
 #endif
@@ -110,10 +119,14 @@ struct sock *dccp_create_openreq_child(struct sock *sk,
 	 *   Set S := new socket for this port pair
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sock *newsk = inet_csk_clone(sk, req, GFP_ATOMIC);
 =======
 	struct sock *newsk = inet_csk_clone_lock(sk, req, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct sock *newsk = inet_csk_clone_lock(sk, req, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 
 	if (newsk != NULL) {
 		struct dccp_request_sock *dreq = dccp_rsk(req);
@@ -141,16 +154,22 @@ struct sock *dccp_create_openreq_child(struct sock *sk,
 		 *    and remote Sequence Window feature values (7.5.2).
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		newdp->dccps_gss = newdp->dccps_iss = dreq->dreq_iss;
 		newdp->dccps_gar = newdp->dccps_iss;
 		newdp->dccps_gsr = newdp->dccps_isr = dreq->dreq_isr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		newdp->dccps_iss = dreq->dreq_iss;
 		newdp->dccps_gss = dreq->dreq_gss;
 		newdp->dccps_gar = newdp->dccps_iss;
 		newdp->dccps_isr = dreq->dreq_isr;
 		newdp->dccps_gsr = dreq->dreq_gsr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Activate features: initialise CCIDs, sequence windows etc.
@@ -186,6 +205,7 @@ struct sock *dccp_check_req(struct sock *sk, struct sk_buff *skb,
 	if (dccp_hdr(skb)->dccph_type == DCCP_PKT_REQUEST) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (after48(DCCP_SKB_CB(skb)->dccpd_seq, dreq->dreq_isr)) {
 			dccp_pr_debug("Retransmitted REQUEST\n");
 			dreq->dreq_isr = DCCP_SKB_CB(skb)->dccpd_seq;
@@ -194,13 +214,22 @@ struct sock *dccp_check_req(struct sock *sk, struct sk_buff *skb,
 			dccp_pr_debug("Retransmitted REQUEST\n");
 			dreq->dreq_gsr = DCCP_SKB_CB(skb)->dccpd_seq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (after48(DCCP_SKB_CB(skb)->dccpd_seq, dreq->dreq_gsr)) {
+			dccp_pr_debug("Retransmitted REQUEST\n");
+			dreq->dreq_gsr = DCCP_SKB_CB(skb)->dccpd_seq;
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Send another RESPONSE packet
 			 * To protect against Request floods, increment retrans
 			 * counter (backoff, monitored by dccp_response_timer).
 			 */
+<<<<<<< HEAD
 			req->retrans++;
 			req->rsk_ops->rtx_syn_ack(sk, req, NULL);
+=======
+			inet_rtx_syn_ack(sk, req);
+>>>>>>> refs/remotes/origin/master
 		}
 		/* Network Duplicate, discard packet */
 		return NULL;
@@ -214,6 +243,7 @@ struct sock *dccp_check_req(struct sock *sk, struct sk_buff *skb,
 
 	/* Invalid ACK */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (DCCP_SKB_CB(skb)->dccpd_ack_seq != dreq->dreq_iss) {
 		dccp_pr_debug("Invalid ACK number: ack_seq=%llu, "
 			      "dreq_iss=%llu\n",
@@ -221,6 +251,8 @@ struct sock *dccp_check_req(struct sock *sk, struct sk_buff *skb,
 			      DCCP_SKB_CB(skb)->dccpd_ack_seq,
 			      (unsigned long long) dreq->dreq_iss);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!between48(DCCP_SKB_CB(skb)->dccpd_ack_seq,
 				dreq->dreq_iss, dreq->dreq_gss)) {
 		dccp_pr_debug("Invalid ACK number: ack_seq=%llu, "
@@ -229,7 +261,10 @@ struct sock *dccp_check_req(struct sock *sk, struct sk_buff *skb,
 			      DCCP_SKB_CB(skb)->dccpd_ack_seq,
 			      (unsigned long long) dreq->dreq_iss,
 			      (unsigned long long) dreq->dreq_gss);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto drop;
 	}
 
@@ -304,10 +339,17 @@ int dccp_reqsk_init(struct request_sock *req,
 {
 	struct dccp_request_sock *dreq = dccp_rsk(req);
 
+<<<<<<< HEAD
 	inet_rsk(req)->rmt_port	  = dccp_hdr(skb)->dccph_sport;
 	inet_rsk(req)->loc_port	  = dccp_hdr(skb)->dccph_dport;
 	inet_rsk(req)->acked	  = 0;
 	dreq->dreq_timestamp_echo = 0;
+=======
+	inet_rsk(req)->ir_rmt_port = dccp_hdr(skb)->dccph_sport;
+	inet_rsk(req)->ir_num	   = ntohs(dccp_hdr(skb)->dccph_dport);
+	inet_rsk(req)->acked	   = 0;
+	dreq->dreq_timestamp_echo  = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* inherit feature negotiation options from listening socket */
 	return dccp_feat_clone_list(&dp->dccps_featneg, &dreq->dreq_featneg);

@@ -2,15 +2,19 @@
 #define _ASM_X86_CMPXCHG_32_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/bitops.h> /* for LOCK_PREFIX */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: if you use set64_bit(), __cmpxchg64(), or their variants, you
  *       you need to test for the feature in boot_cpu_data.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern void __xchg_wrong_size(void);
 
@@ -62,6 +66,8 @@ extern void __xchg_wrong_size(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * CMPXCHG8B only writes to the target if we had the previous
  * value in registers, otherwise it acts as a read and gives us the
@@ -90,6 +96,7 @@ static inline void set_64bit(volatile u64 *ptr, u64 value)
 		     : "memory");
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern void __cmpxchg_wrong_size(void);
 
@@ -163,6 +170,10 @@ extern void __cmpxchg_wrong_size(void);
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
+=======
+#define __HAVE_ARCH_CMPXCHG 1
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_CMPXCHG64
 #define cmpxchg64(ptr, o, n)						\
 	((__typeof__(*(ptr)))__cmpxchg64((ptr), (unsigned long long)(o), \
@@ -198,6 +209,7 @@ static inline u64 __cmpxchg64_local(volatile u64 *ptr, u64 old, u64 new)
 	return prev;
 }
 
+<<<<<<< HEAD
 #ifndef CONFIG_X86_CMPXCHG
 /*
  * Building a kernel capable running on 80386. It may be necessary to
@@ -251,6 +263,8 @@ static inline unsigned long cmpxchg_386(volatile void *ptr, unsigned long old,
 })
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_X86_CMPXCHG64
 /*
  * Building a kernel capable running on 80386 and 80486. It may be necessary
@@ -292,8 +306,13 @@ static inline unsigned long cmpxchg_386(volatile void *ptr, unsigned long old,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define system_has_cmpxchg_double() cpu_has_cx8
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define system_has_cmpxchg_double() cpu_has_cx8
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_CMPXCHG_32_H */

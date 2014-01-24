@@ -103,7 +103,11 @@ static inline unsigned int get_dma_residue(unsigned int dmanr)
 	return ebus_dma_residue(&sparc_ebus_dmas[dmanr].info);
 }
 
+<<<<<<< HEAD
 static int __devinit ecpp_probe(struct platform_device *op)
+=======
+static int ecpp_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long base = op->resource[0].start;
 	unsigned long config = op->resource[1].start;
@@ -192,7 +196,11 @@ out_err:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit ecpp_remove(struct platform_device *op)
+=======
+static int ecpp_remove(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	struct parport *p = dev_get_drvdata(&op->dev);
 	int slot = p->dma;
@@ -242,7 +250,11 @@ static struct platform_driver ecpp_driver = {
 		.of_match_table = ecpp_match,
 	},
 	.probe			= ecpp_probe,
+<<<<<<< HEAD
 	.remove			= __devexit_p(ecpp_remove),
+=======
+	.remove			= ecpp_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int parport_pc_find_nonpci_ports(int autoirq, int autodma)

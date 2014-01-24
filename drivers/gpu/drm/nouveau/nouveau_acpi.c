@@ -7,6 +7,7 @@
 #include <acpi/acpi.h>
 #include <linux/mxm-wmi.h>
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "drm_sarea.h"
@@ -27,6 +28,15 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/vga_switcheroo.h>
+
+#include <drm/drm_edid.h>
+
+#include "nouveau_drm.h"
+#include "nouveau_acpi.h"
+
+>>>>>>> refs/remotes/origin/master
 #define NOUVEAU_DSM_LED 0x02
 #define NOUVEAU_DSM_LED_STATE 0x00
 #define NOUVEAU_DSM_LED_OFF 0x10
@@ -39,18 +49,58 @@
 #define NOUVEAU_DSM_POWER_STAMINA 0x02
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define NOUVEAU_DSM_OPTIMUS_FN 0x1A
 #define NOUVEAU_DSM_OPTIMUS_ARGS 0x03000001
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NOUVEAU_DSM_OPTIMUS_CAPS 0x1A
+#define NOUVEAU_DSM_OPTIMUS_FLAGS 0x1B
+
+#define NOUVEAU_DSM_OPTIMUS_POWERDOWN_PS3 (3 << 24)
+#define NOUVEAU_DSM_OPTIMUS_NO_POWERDOWN_PS3 (2 << 24)
+#define NOUVEAU_DSM_OPTIMUS_FLAGS_CHANGED (1)
+
+#define NOUVEAU_DSM_OPTIMUS_SET_POWERDOWN (NOUVEAU_DSM_OPTIMUS_POWERDOWN_PS3 | NOUVEAU_DSM_OPTIMUS_FLAGS_CHANGED)
+
+/* result of the optimus caps function */
+#define OPTIMUS_ENABLED (1 << 0)
+#define OPTIMUS_STATUS_MASK (3 << 3)
+#define OPTIMUS_STATUS_OFF  (0 << 3)
+#define OPTIMUS_STATUS_ON_ENABLED  (1 << 3)
+#define OPTIMUS_STATUS_PWR_STABLE  (3 << 3)
+#define OPTIMUS_DISPLAY_HOTPLUG (1 << 6)
+#define OPTIMUS_CAPS_MASK (7 << 24)
+#define OPTIMUS_DYNAMIC_PWR_CAP (1 << 24)
+
+#define OPTIMUS_AUDIO_CAPS_MASK (3 << 27)
+#define OPTIMUS_HDA_CODEC_MASK (2 << 27) /* hda bios control */
+
+>>>>>>> refs/remotes/origin/master
 static struct nouveau_dsm_priv {
 	bool dsm_detected;
 	bool optimus_detected;
 	acpi_handle dhandle;
+<<<<<<< HEAD
 	acpi_handle rom_handle;
 } nouveau_dsm_priv;
 
+=======
+	acpi_handle other_handle;
+	acpi_handle rom_handle;
+} nouveau_dsm_priv;
+
+bool nouveau_is_optimus(void) {
+	return nouveau_dsm_priv.optimus_detected;
+}
+
+bool nouveau_is_v1_dsm(void) {
+	return nouveau_dsm_priv.dsm_detected;
+}
+
+>>>>>>> refs/remotes/origin/master
 #define NOUVEAU_DSM_HAS_MUX 0x1
 #define NOUVEAU_DSM_HAS_OPT 0x2
 
@@ -71,11 +121,16 @@ static int nouveau_optimus_dsm(acpi_handle handle, int func, int arg, uint32_t *
 	union acpi_object params[4];
 	union acpi_object *obj;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int err;
 =======
 	int i, err;
 	char args_buff[4];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, err;
+	char args_buff[4];
+>>>>>>> refs/remotes/origin/master
 
 	input.count = 4;
 	input.pointer = params;
@@ -88,14 +143,20 @@ static int nouveau_optimus_dsm(acpi_handle handle, int func, int arg, uint32_t *
 	params[2].integer.value = func;
 	params[3].type = ACPI_TYPE_BUFFER;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	params[3].buffer.length = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	params[3].buffer.length = 4;
 	/* ACPI is little endian, AABBCCDD becomes {DD,CC,BB,AA} */
 	for (i = 0; i < 4; i++)
 		args_buff[i] = (arg >> i * 8) & 0xFF;
 	params[3].buffer.pointer = args_buff;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = acpi_evaluate_object(handle, "_DSM", &input, &output);
 	if (err) {
@@ -171,7 +232,10 @@ static int nouveau_dsm(acpi_handle handle, int func, int arg, uint32_t *result)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Returns 1 if a DSM function is usable and 0 otherwise */
 static int nouveau_test_dsm(acpi_handle test_handle,
 	int (*dsm_func)(acpi_handle, int, int, uint32_t *),
@@ -189,7 +253,10 @@ static int nouveau_test_dsm(acpi_handle test_handle,
 	return result & 1 && result & (1 << sfnc);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int nouveau_dsm_switch_mux(acpi_handle handle, int mux_id)
 {
 	mxm_wmi_call_mxmx(mux_id == NOUVEAU_DSM_LED_STAMINA ? MXM_MXDS_ADAPTER_IGD : MXM_MXDS_ADAPTER_0);
@@ -211,12 +278,17 @@ static int nouveau_dsm_set_discrete_state(acpi_handle handle, enum vga_switchero
 static int nouveau_dsm_switchto(enum vga_switcheroo_client_id id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* perhaps the _DSM functions are mutually exclusive, but prepare for
 	 * the future */
 	if (!nouveau_dsm_priv.dsm_detected && nouveau_dsm_priv.optimus_detected)
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!nouveau_dsm_priv.dsm_detected)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	if (id == VGA_SWITCHEROO_IGD)
 		return nouveau_dsm_switch_mux(nouveau_dsm_priv.dhandle, NOUVEAU_DSM_LED_STAMINA);
 	else
@@ -229,6 +301,7 @@ static int nouveau_dsm_power_state(enum vga_switcheroo_client_id id,
 	if (id == VGA_SWITCHEROO_IGD)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* Optimus laptops have the card already disabled in
@@ -245,6 +318,16 @@ static int nouveau_dsm_init(void)
 	return 0;
 }
 
+=======
+	/* Optimus laptops have the card already disabled in
+	 * nouveau_switcheroo_set_state */
+	if (!nouveau_dsm_priv.dsm_detected)
+		return 0;
+
+	return nouveau_dsm_set_discrete_state(nouveau_dsm_priv.dhandle, state);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int nouveau_dsm_get_client_id(struct pci_dev *pdev)
 {
 	/* easy option one - intel vendor ID means Integrated */
@@ -261,12 +344,16 @@ static int nouveau_dsm_get_client_id(struct pci_dev *pdev)
 static struct vga_switcheroo_handler nouveau_dsm_handler = {
 	.switchto = nouveau_dsm_switchto,
 	.power_state = nouveau_dsm_power_state,
+<<<<<<< HEAD
 	.init = nouveau_dsm_init,
+=======
+>>>>>>> refs/remotes/origin/master
 	.get_client_id = nouveau_dsm_get_client_id,
 };
 
 static int nouveau_dsm_pci_probe(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	acpi_handle dhandle, nvidia_handle;
 	acpi_status status;
 <<<<<<< HEAD
@@ -294,14 +381,42 @@ static int nouveau_dsm_pci_probe(struct pci_dev *pdev)
 	ret = nouveau_optimus_dsm(dhandle, 0, 0, &result);
 	if (ret == 0)
 =======
+=======
+	acpi_handle dhandle;
+	int retval = 0;
+
+	dhandle = ACPI_HANDLE(&pdev->dev);
+	if (!dhandle)
+		return false;
+
+	if (!acpi_has_method(dhandle, "_DSM")) {
+		nouveau_dsm_priv.other_handle = dhandle;
+		return false;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (nouveau_test_dsm(dhandle, nouveau_dsm, NOUVEAU_DSM_POWER))
 		retval |= NOUVEAU_DSM_HAS_MUX;
 
 	if (nouveau_test_dsm(dhandle, nouveau_optimus_dsm,
+<<<<<<< HEAD
 		NOUVEAU_DSM_OPTIMUS_FN))
 >>>>>>> refs/remotes/origin/cm-10.0
 		retval |= NOUVEAU_DSM_HAS_OPT;
 
+=======
+		NOUVEAU_DSM_OPTIMUS_CAPS))
+		retval |= NOUVEAU_DSM_HAS_OPT;
+
+	if (retval & NOUVEAU_DSM_HAS_OPT) {
+		uint32_t result;
+		nouveau_optimus_dsm(dhandle, NOUVEAU_DSM_OPTIMUS_CAPS, 0,
+				    &result);
+		dev_info(&pdev->dev, "optimus capabilities: %s, status %s%s\n",
+			 (result & OPTIMUS_ENABLED) ? "enabled" : "disabled",
+			 (result & OPTIMUS_DYNAMIC_PWR_CAP) ? "dynamic power, " : "",
+			 (result & OPTIMUS_HDA_CODEC_MASK) ? "hda bios codec supported" : "");
+	}
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		nouveau_dsm_priv.dhandle = dhandle;
 
@@ -315,10 +430,14 @@ static bool nouveau_dsm_detect(void)
 	struct pci_dev *pdev = NULL;
 	int has_dsm = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int has_optimus;
 =======
 	int has_optimus = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int has_optimus = 0;
+>>>>>>> refs/remotes/origin/master
 	int vga_count = 0;
 	bool guid_valid;
 	int retval;
@@ -341,6 +460,7 @@ static bool nouveau_dsm_detect(void)
 			has_optimus = 1;
 	}
 
+<<<<<<< HEAD
 	if (vga_count == 2 && has_dsm && guid_valid) {
 <<<<<<< HEAD
 		acpi_get_name(nouveau_dsm_priv.dhandle, ACPI_FULL_PATHNAME, &buffer);
@@ -360,6 +480,19 @@ static bool nouveau_dsm_detect(void)
 	if (has_optimus == 1)
 		nouveau_dsm_priv.optimus_detected = true;
 =======
+=======
+	while ((pdev = pci_get_class(PCI_CLASS_DISPLAY_3D << 8, pdev)) != NULL) {
+		vga_count++;
+
+		retval = nouveau_dsm_pci_probe(pdev);
+		if (retval & NOUVEAU_DSM_HAS_MUX)
+			has_dsm |= 1;
+		if (retval & NOUVEAU_DSM_HAS_OPT)
+			has_optimus = 1;
+	}
+
+	/* find the optimus DSM or the old v1 DSM */
+>>>>>>> refs/remotes/origin/master
 	if (has_optimus == 1) {
 		acpi_get_name(nouveau_dsm_priv.dhandle, ACPI_FULL_PATHNAME,
 			&buffer);
@@ -367,8 +500,30 @@ static bool nouveau_dsm_detect(void)
 			acpi_method_name);
 		nouveau_dsm_priv.optimus_detected = true;
 		ret = true;
+<<<<<<< HEAD
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (vga_count == 2 && has_dsm && guid_valid) {
+		acpi_get_name(nouveau_dsm_priv.dhandle, ACPI_FULL_PATHNAME,
+			&buffer);
+		printk(KERN_INFO "VGA switcheroo: detected DSM switching method %s handle\n",
+			acpi_method_name);
+		nouveau_dsm_priv.dsm_detected = true;
+		/*
+		 * On some systems hotplug events are generated for the device
+		 * being switched off when _DSM is executed.  They cause ACPI
+		 * hotplug to trigger and attempt to remove the device from
+		 * the system, which causes it to break down.  Prevent that from
+		 * happening by setting the no_hotplug flag for the involved
+		 * ACPI device objects.
+		 */
+		acpi_bus_no_hotplug(nouveau_dsm_priv.dhandle);
+		acpi_bus_no_hotplug(nouveau_dsm_priv.other_handle);
+		ret = true;
+	}
+
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -385,7 +540,10 @@ void nouveau_register_dsm_handler(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Must be called for Optimus models before the card can be turned off */
 void nouveau_switcheroo_optimus_dsm(void)
 {
@@ -393,6 +551,7 @@ void nouveau_switcheroo_optimus_dsm(void)
 	if (!nouveau_dsm_priv.optimus_detected)
 		return;
 
+<<<<<<< HEAD
 	nouveau_optimus_dsm(nouveau_dsm_priv.dhandle, NOUVEAU_DSM_OPTIMUS_FN,
 		NOUVEAU_DSM_OPTIMUS_ARGS, &result);
 }
@@ -401,6 +560,20 @@ void nouveau_switcheroo_optimus_dsm(void)
 void nouveau_unregister_dsm_handler(void)
 {
 	vga_switcheroo_unregister_handler();
+=======
+	nouveau_optimus_dsm(nouveau_dsm_priv.dhandle, NOUVEAU_DSM_OPTIMUS_FLAGS,
+			    0x3, &result);
+
+	nouveau_optimus_dsm(nouveau_dsm_priv.dhandle, NOUVEAU_DSM_OPTIMUS_CAPS,
+		NOUVEAU_DSM_OPTIMUS_SET_POWERDOWN, &result);
+
+}
+
+void nouveau_unregister_dsm_handler(void)
+{
+	if (nouveau_dsm_priv.optimus_detected || nouveau_dsm_priv.dsm_detected)
+		vga_switcheroo_unregister_handler();
+>>>>>>> refs/remotes/origin/master
 }
 
 /* retrieve the ROM in 4k blocks */
@@ -440,7 +613,11 @@ bool nouveau_acpi_rom_supported(struct pci_dev *pdev)
 	if (!nouveau_dsm_priv.dsm_detected && !nouveau_dsm_priv.optimus_detected)
 		return false;
 
+<<<<<<< HEAD
 	dhandle = DEVICE_ACPI_HANDLE(&pdev->dev);
+=======
+	dhandle = ACPI_HANDLE(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!dhandle)
 		return false;
 
@@ -457,10 +634,16 @@ int nouveau_acpi_get_bios_chunk(uint8_t *bios, int offset, int len)
 	return nouveau_rom_call(nouveau_dsm_priv.rom_handle, bios, offset, len);
 }
 
+<<<<<<< HEAD
 int
 nouveau_acpi_edid(struct drm_device *dev, struct drm_connector *connector)
 {
 	struct nouveau_connector *nv_connector = nouveau_connector(connector);
+=======
+void *
+nouveau_acpi_edid(struct drm_device *dev, struct drm_connector *connector)
+{
+>>>>>>> refs/remotes/origin/master
 	struct acpi_device *acpidev;
 	acpi_handle handle;
 	int type, ret;
@@ -472,6 +655,7 @@ nouveau_acpi_edid(struct drm_device *dev, struct drm_connector *connector)
 		type = ACPI_VIDEO_DISPLAY_LCD;
 		break;
 	default:
+<<<<<<< HEAD
 		return -EINVAL;
 	}
 
@@ -489,4 +673,22 @@ nouveau_acpi_edid(struct drm_device *dev, struct drm_connector *connector)
 
 	nv_connector->edid = kmemdup(edid, EDID_LENGTH, GFP_KERNEL);
 	return 0;
+=======
+		return NULL;
+	}
+
+	handle = ACPI_HANDLE(&dev->pdev->dev);
+	if (!handle)
+		return NULL;
+
+	ret = acpi_bus_get_device(handle, &acpidev);
+	if (ret)
+		return NULL;
+
+	ret = acpi_video_get_edid(acpidev, type, -1, &edid);
+	if (ret < 0)
+		return NULL;
+
+	return kmemdup(edid, EDID_LENGTH, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 }

@@ -1,6 +1,11 @@
 config NFC_NCI
+<<<<<<< HEAD
 	depends on NFC && EXPERIMENTAL
 	tristate "NCI protocol support (EXPERIMENTAL)"
+=======
+	depends on NFC
+	tristate "NCI protocol support"
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  NCI (NFC Controller Interface) is a communication protocol between
@@ -8,3 +13,17 @@ config NFC_NCI
 
 	  Say Y here to compile NCI support into the kernel or say M to
 	  compile it as module (nci).
+<<<<<<< HEAD
+=======
+
+config NFC_NCI_SPI
+	depends on NFC_NCI && SPI
+	select CRC_CCITT
+	bool "NCI over SPI protocol support"
+	default n
+	help
+	  NCI (NFC Controller Interface) is a communication protocol between
+	  an NFC Controller (NFCC) and a Device Host (DH).
+
+	  Say yes if you use an NCI driver that requires SPI link layer.
+>>>>>>> refs/remotes/origin/master

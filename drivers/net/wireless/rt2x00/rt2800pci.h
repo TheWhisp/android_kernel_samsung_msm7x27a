@@ -35,6 +35,7 @@
 #define RT2800PCI_H
 
 /*
+<<<<<<< HEAD
  * Queue register offset macros
  */
 #define TX_QUEUE_REG_OFFSET		0x10
@@ -137,4 +138,12 @@
 #define RXD_W3_PLCP_SIGNAL		FIELD32(0x00020000)
 #define RXD_W3_PLCP_RSSI		FIELD32(0x00040000)
 
+=======
+ * 8051 firmware image.
+ */
+#define FIRMWARE_RT2860			"rt2860.bin"
+#define FIRMWARE_RT3290			"rt3290.bin"
+#define FIRMWARE_IMAGE_BASE		0x2000
+
+>>>>>>> refs/remotes/origin/master
 #endif /* RT2800PCI_H */

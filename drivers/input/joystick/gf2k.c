@@ -373,6 +373,7 @@ static struct gameport_driver gf2k_drv = {
 	.disconnect	= gf2k_disconnect,
 };
 
+<<<<<<< HEAD
 static int __init gf2k_init(void)
 {
 	return gameport_register_driver(&gf2k_drv);
@@ -385,3 +386,6 @@ static void __exit gf2k_exit(void)
 
 module_init(gf2k_init);
 module_exit(gf2k_exit);
+=======
+module_gameport_driver(gf2k_drv);
+>>>>>>> refs/remotes/origin/master

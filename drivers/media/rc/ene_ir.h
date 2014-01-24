@@ -183,6 +183,7 @@
 #define  ENE_HW_D		3	/* 3926D or later */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ene_printk(level, text, ...) \
 	printk(level ENE_DRIVER_NAME ": " text "\n", ## __VA_ARGS__)
 
@@ -204,6 +205,13 @@ do {								\
 		pr_debug(format "\n", ## __VA_ARGS__);		\
 } while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __dbg(level, format, ...)				\
+do {								\
+	if (debug >= level)					\
+		pr_info(format "\n", ## __VA_ARGS__);		\
+} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #define dbg(format, ...)		__dbg(1, format, ## __VA_ARGS__)
 #define dbg_verbose(format, ...)	__dbg(2, format, ## __VA_ARGS__)
@@ -244,12 +252,17 @@ struct ene_device {
 
 	/* TX buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int *tx_buffer;				/* input samples buffer*/
 	int tx_pos;				/* position in that bufer */
 =======
 	unsigned *tx_buffer;			/* input samples buffer*/
 	int tx_pos;				/* position in that buffer */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned *tx_buffer;			/* input samples buffer*/
+	int tx_pos;				/* position in that buffer */
+>>>>>>> refs/remotes/origin/master
 	int tx_len;				/* current len of tx buffer */
 	int tx_done;				/* done transmitting */
 						/* one more sample pending*/

@@ -3,6 +3,10 @@
 
 #include <media/v4l2-common.h>
 #include <media/v4l2-ioctl.h>
+<<<<<<< HEAD
+=======
+#include <media/v4l2-fh.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/saa7146.h>
 #include <media/videobuf-dma-sg.h>
 
@@ -84,6 +88,7 @@ struct saa7146_overlay {
 
 /* per open data */
 struct saa7146_fh {
+<<<<<<< HEAD
 	struct saa7146_dev	*dev;
 	/* if this is a vbi or capture open */
 	enum v4l2_buf_type	type;
@@ -99,6 +104,17 @@ struct saa7146_fh {
 	struct videobuf_queue	vbi_q;
 	struct v4l2_vbi_format	vbi_fmt;
 	struct timer_list	vbi_read_timeout;
+=======
+	/* Must be the first field! */
+	struct v4l2_fh		fh;
+	struct saa7146_dev	*dev;
+
+	/* video capture */
+	struct videobuf_queue	video_q;
+
+	/* vbi capture */
+	struct videobuf_queue	vbi_q;
+>>>>>>> refs/remotes/origin/master
 
 	unsigned int resources;	/* resource management for device open */
 };
@@ -109,7 +125,13 @@ struct saa7146_fh {
 struct saa7146_vv
 {
 	/* vbi capture */
+<<<<<<< HEAD
 	struct saa7146_dmaqueue		vbi_q;
+=======
+	struct saa7146_dmaqueue		vbi_dmaq;
+	struct v4l2_vbi_format		vbi_fmt;
+	struct timer_list		vbi_read_timeout;
+>>>>>>> refs/remotes/origin/master
 	/* vbi workaround interrupt queue */
 	wait_queue_head_t		vbi_wq;
 	int				vbi_fieldcount;
@@ -119,6 +141,7 @@ struct saa7146_vv
 	struct saa7146_fh		*video_fh;
 
 	/* video overlay */
+<<<<<<< HEAD
 	struct v4l2_framebuffer		ov_fb;
 	struct saa7146_format		*ov_fmt;
 	struct saa7146_overlay		*ov_data;
@@ -126,6 +149,16 @@ struct saa7146_vv
 
 	/* video capture */
 	struct saa7146_dmaqueue		video_q;
+=======
+	struct saa7146_overlay		ov;
+	struct v4l2_framebuffer		ov_fb;
+	struct saa7146_format		*ov_fmt;
+	struct saa7146_fh		*ov_suspend;
+
+	/* video capture */
+	struct saa7146_dmaqueue		video_dmaq;
+	struct v4l2_pix_format		video_fmt;
+>>>>>>> refs/remotes/origin/master
 	enum v4l2_field			last_field;
 
 	/* common: fixme? shouldn't this be in saa7146_fh?
@@ -163,7 +196,12 @@ struct saa7146_ext_vv
 	int (*std_callback)(struct saa7146_dev*, struct saa7146_standard *);
 
 	/* the extension can override this */
+<<<<<<< HEAD
 	struct v4l2_ioctl_ops ops;
+=======
+	struct v4l2_ioctl_ops vid_ops;
+	struct v4l2_ioctl_ops vbi_ops;
+>>>>>>> refs/remotes/origin/master
 	/* pointer to the saa7146 core ops */
 	const struct v4l2_ioctl_ops *core_ops;
 
@@ -202,10 +240,18 @@ void saa7146_set_gpio(struct saa7146_dev *saa, u8 pin, u8 data);
 
 /* from saa7146_video.c */
 extern const struct v4l2_ioctl_ops saa7146_video_ioctl_ops;
+<<<<<<< HEAD
+=======
+extern const struct v4l2_ioctl_ops saa7146_vbi_ioctl_ops;
+>>>>>>> refs/remotes/origin/master
 extern struct saa7146_use_ops saa7146_video_uops;
 int saa7146_start_preview(struct saa7146_fh *fh);
 int saa7146_stop_preview(struct saa7146_fh *fh);
 long saa7146_video_do_ioctl(struct file *file, unsigned int cmd, void *arg);
+<<<<<<< HEAD
+=======
+int saa7146_s_ctrl(struct v4l2_ctrl *ctrl);
+>>>>>>> refs/remotes/origin/master
 
 /* from saa7146_vbi.c */
 extern struct saa7146_use_ops saa7146_vbi_uops;

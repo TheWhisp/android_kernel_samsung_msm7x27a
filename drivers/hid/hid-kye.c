@@ -4,9 +4,13 @@
  *  Copyright (c) 2009 Jiri Kosina
  *  Copyright (c) 2009 Tomas Hanak
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *  Copyright (c) 2012 Nikolai Kondrashov
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Copyright (c) 2012 Nikolai Kondrashov
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -19,6 +23,7 @@
 #include <linux/device.h>
 #include <linux/hid.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include "hid-ids.h"
@@ -47,6 +52,8 @@ static __u8 *kye_report_fixup(struct hid_device *hdev, __u8 *rdesc,
 =======
 #include <linux/usb.h>
 #include "usbhid/usbhid.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "hid-ids.h"
 
@@ -299,6 +306,29 @@ static __u8 easypen_m610x_rdesc_fixed[] = {
 	0xC0                          /*  End Collection                  */
 };
 
+<<<<<<< HEAD
+=======
+static __u8 *kye_consumer_control_fixup(struct hid_device *hdev, __u8 *rdesc,
+		unsigned int *rsize, int offset, const char *device_name) {
+	/*
+	 * the fixup that need to be done:
+	 *   - change Usage Maximum in the Comsumer Control
+	 *     (report ID 3) to a reasonable value
+	 */
+	if (*rsize >= offset + 31 &&
+	    /* Usage Page (Consumer Devices) */
+	    rdesc[offset] == 0x05 && rdesc[offset + 1] == 0x0c &&
+	    /* Usage (Consumer Control) */
+	    rdesc[offset + 2] == 0x09 && rdesc[offset + 3] == 0x01 &&
+	    /*   Usage Maximum > 12287 */
+	    rdesc[offset + 10] == 0x2a && rdesc[offset + 12] > 0x2f) {
+		hid_info(hdev, "fixing up %s report descriptor\n", device_name);
+		rdesc[offset + 12] = 0x2f;
+	}
+	return rdesc;
+}
+
+>>>>>>> refs/remotes/origin/master
 static __u8 *kye_report_fixup(struct hid_device *hdev, __u8 *rdesc,
 		unsigned int *rsize)
 {
@@ -345,15 +375,33 @@ static __u8 *kye_report_fixup(struct hid_device *hdev, __u8 *rdesc,
 			*rsize = sizeof(easypen_m610x_rdesc_fixed);
 		}
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case USB_DEVICE_ID_GENIUS_GILA_GAMING_MOUSE:
+		rdesc = kye_consumer_control_fixup(hdev, rdesc, rsize, 104,
+					"Genius Gila Gaming Mouse");
+		break;
+	case USB_DEVICE_ID_GENIUS_GX_IMPERATOR:
+		rdesc = kye_consumer_control_fixup(hdev, rdesc, rsize, 83,
+					"Genius Gx Imperator Keyboard");
+		break;
+	case USB_DEVICE_ID_GENIUS_MANTICORE:
+		rdesc = kye_consumer_control_fixup(hdev, rdesc, rsize, 104,
+					"Genius Manticore Keyboard");
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 	return rdesc;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct hid_device_id kye_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_KYE_ERGO_525V) },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Enable fully-functional tablet mode by setting a special feature report.
  *
@@ -395,7 +443,11 @@ static int kye_tablet_enable(struct hid_device *hdev)
 	value[4] = 0x00;
 	value[5] = 0x00;
 	value[6] = 0x00;
+<<<<<<< HEAD
 	usbhid_submit_report(hdev, report, USB_DIR_OUT);
+=======
+	hid_hw_request(hdev, report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -426,6 +478,17 @@ static int kye_probe(struct hid_device *hdev, const struct hid_device_id *id)
 			goto enabling_err;
 		}
 		break;
+<<<<<<< HEAD
+=======
+	case USB_DEVICE_ID_GENIUS_MANTICORE:
+		/*
+		 * The manticore keyboard needs to have all the interfaces
+		 * opened at least once to be fully functional.
+		 */
+		if (hid_hw_open(hdev))
+			hid_hw_close(hdev);
+		break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -443,7 +506,16 @@ static const struct hid_device_id kye_devices[] = {
 				USB_DEVICE_ID_KYE_MOUSEPEN_I608X) },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE,
 				USB_DEVICE_ID_KYE_EASYPEN_M610X) },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE,
+				USB_DEVICE_ID_GENIUS_GILA_GAMING_MOUSE) },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE,
+				USB_DEVICE_ID_GENIUS_GX_IMPERATOR) },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE,
+				USB_DEVICE_ID_GENIUS_MANTICORE) },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(hid, kye_devices);
@@ -451,6 +523,7 @@ MODULE_DEVICE_TABLE(hid, kye_devices);
 static struct hid_driver kye_driver = {
 	.name = "kye",
 	.id_table = kye_devices,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	.probe = kye_probe,
@@ -470,4 +543,11 @@ static void __exit kye_exit(void)
 
 module_init(kye_init);
 module_exit(kye_exit);
+=======
+	.probe = kye_probe,
+	.report_fixup = kye_report_fixup,
+};
+module_hid_driver(kye_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

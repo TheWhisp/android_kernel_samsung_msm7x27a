@@ -18,9 +18,13 @@
 #include <linux/bcd.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/atariints.h>
 
@@ -45,9 +49,15 @@ atari_sched_init(irq_handler_t timer_routine)
 #define TICK_SIZE 10000
 
 /* This is always executed with interrupts disabled.  */
+<<<<<<< HEAD
 unsigned long atari_gettimeoffset (void)
 {
   unsigned long ticks, offset = 0;
+=======
+u32 atari_gettimeoffset(void)
+{
+  u32 ticks, offset = 0;
+>>>>>>> refs/remotes/origin/master
 
   /* read MFP timer C current value */
   ticks = st_mfp.tim_dt_c;
@@ -60,7 +70,11 @@ unsigned long atari_gettimeoffset (void)
   ticks = INT_TICKS - ticks;
   ticks = ticks * 10000L / INT_TICKS;
 
+<<<<<<< HEAD
   return ticks + offset;
+=======
+  return (ticks + offset) * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 

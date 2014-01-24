@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+=======
+/*
+ * Many of the syscalls used in this file expect some of the arguments
+ * to be __user pointers not __kernel pointers.  To limit the sparse
+ * noise, turn off sparse checking for this file.
+ */
+#ifdef __CHECKER__
+#undef __CHECKER__
+#warning "Sparse checking disabled for this file"
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
@@ -23,10 +36,14 @@ static void __init error(char *x)
 static __initdata struct hash {
 	int ino, minor, major;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 	struct hash *next;
 	char name[N_ALIGN(PATH_MAX)];
 } *head[32];
@@ -40,10 +57,14 @@ static inline int hash(int major, int minor, int ino)
 
 static char __init *find_link(int major, int minor, int ino,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      mode_t mode, char *name)
 =======
 			      umode_t mode, char *name)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      umode_t mode, char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hash **p, *q;
 	for (p = head + hash(major, minor, ino); *p; p = &(*p)->next) {
@@ -82,7 +103,11 @@ static void __init free_hash(void)
 	}
 }
 
+<<<<<<< HEAD
 static long __init do_utime(char __user *filename, time_t mtime)
+=======
+static long __init do_utime(char *filename, time_t mtime)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timespec t[2];
 
@@ -129,10 +154,14 @@ static __initdata time_t mtime;
 
 static __initdata unsigned long ino, major, minor, nlink;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __initdata mode_t mode;
 =======
 static __initdata umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __initdata umode_t mode;
+>>>>>>> refs/remotes/origin/master
 static __initdata unsigned long body_len, name_len;
 static __initdata uid_t uid;
 static __initdata gid_t gid;
@@ -289,10 +318,14 @@ static int __init maybe_link(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init clean_path(char *path, mode_t mode)
 =======
 static void __init clean_path(char *path, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init clean_path(char *path, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct stat st;
 
@@ -545,7 +578,11 @@ static void __init clean_rootfs(void)
 	struct linux_dirent64 *dirp;
 	int num;
 
+<<<<<<< HEAD
 	fd = sys_open((const char __user __force *) "/", O_RDONLY, 0);
+=======
+	fd = sys_open("/", O_RDONLY, 0);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(fd < 0);
 	if (fd < 0)
 		return;
@@ -598,14 +635,22 @@ static int __init populate_rootfs(void)
 			initrd_end - initrd_start);
 		if (!err) {
 			free_initrd();
+<<<<<<< HEAD
 			return 0;
+=======
+			goto done;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			clean_rootfs();
 			unpack_to_rootfs(__initramfs_start, __initramfs_size);
 		}
 		printk(KERN_INFO "rootfs image is not initramfs (%s)"
 				"; looks like an initrd\n", err);
+<<<<<<< HEAD
 		fd = sys_open((const char __user __force *) "/initrd.image",
+=======
+		fd = sys_open("/initrd.image",
+>>>>>>> refs/remotes/origin/master
 			      O_WRONLY|O_CREAT, 0700);
 		if (fd >= 0) {
 			sys_write(fd, (char *)initrd_start,
@@ -613,6 +658,10 @@ static int __init populate_rootfs(void)
 			sys_close(fd);
 			free_initrd();
 		}
+<<<<<<< HEAD
+=======
+	done:
+>>>>>>> refs/remotes/origin/master
 #else
 		printk(KERN_INFO "Unpacking initramfs...\n");
 		err = unpack_to_rootfs((char *)initrd_start,
@@ -621,6 +670,14 @@ static int __init populate_rootfs(void)
 			printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
 		free_initrd();
 #endif
+<<<<<<< HEAD
+=======
+		/*
+		 * Try loading default modules from initramfs.  This gives
+		 * us a chance to load before device_initcalls.
+		 */
+		load_default_modules();
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }

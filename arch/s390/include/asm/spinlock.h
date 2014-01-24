@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/spinlock.h
  *
  *  S390 version
  *    Copyright (C) 1999 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com)
  *
  *  Derived from "include/asm-i386/spinlock.h"
@@ -14,10 +19,15 @@
 #include <linux/smp.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int spin_retry;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int spin_retry;
+
+>>>>>>> refs/remotes/origin/master
 static inline int
 _raw_compare_and_swap(volatile unsigned int *lock,
 		      unsigned int old, unsigned int new)
@@ -49,6 +59,14 @@ extern void arch_spin_lock_wait_flags(arch_spinlock_t *, unsigned long flags);
 extern int arch_spin_trylock_retry(arch_spinlock_t *);
 extern void arch_spin_relax(arch_spinlock_t *lock);
 
+<<<<<<< HEAD
+=======
+static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+{
+	return lock.owner_cpu == 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void arch_spin_lock(arch_spinlock_t *lp)
 {
 	int old;

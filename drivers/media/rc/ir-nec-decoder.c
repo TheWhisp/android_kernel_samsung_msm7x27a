@@ -14,9 +14,13 @@
 
 #include <linux/bitrev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "rc-core-priv.h"
 
 #define NEC_NBITS		32
@@ -55,7 +59,11 @@ static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
 	u8 address, not_address, command, not_command;
 	bool send_32bits = false;
 
+<<<<<<< HEAD
 	if (!(dev->raw->enabled_protocols & RC_TYPE_NEC))
+=======
+	if (!(dev->enabled_protocols & RC_BIT_NEC))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!is_timing_event(ev)) {
@@ -73,7 +81,11 @@ static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
 		if (!ev.pulse)
 			break;
 
+<<<<<<< HEAD
 		if (eq_margin(ev.duration, NEC_HEADER_PULSE, NEC_UNIT / 2)) {
+=======
+		if (eq_margin(ev.duration, NEC_HEADER_PULSE, NEC_UNIT * 2)) {
+>>>>>>> refs/remotes/origin/master
 			data->is_nec_x = false;
 			data->necx_repeat = false;
 		} else if (eq_margin(ev.duration, NECX_HEADER_PULSE, NEC_UNIT / 2))
@@ -89,7 +101,11 @@ static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
 		if (ev.pulse)
 			break;
 
+<<<<<<< HEAD
 		if (eq_margin(ev.duration, NEC_HEADER_SPACE, NEC_UNIT / 2)) {
+=======
+		if (eq_margin(ev.duration, NEC_HEADER_SPACE, NEC_UNIT)) {
+>>>>>>> refs/remotes/origin/master
 			data->state = STATE_BIT_PULSE;
 			return 0;
 		} else if (eq_margin(ev.duration, NEC_REPEAT_SPACE, NEC_UNIT / 2)) {
@@ -153,12 +169,15 @@ static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
 
 		data->state = STATE_TRAILER_SPACE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		if (data->is_nec_x)
 			goto rc_data;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	case STATE_TRAILER_SPACE:
@@ -168,10 +187,14 @@ static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
 		if (!geq_margin(ev.duration, NEC_TRAILER_SPACE, NEC_UNIT / 2))
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 rc_data:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		address     = bitrev8((data->bits >> 24) & 0xff);
 		not_address = bitrev8((data->bits >> 16) & 0xff);
 		command	    = bitrev8((data->bits >>  8) & 0xff);
@@ -209,18 +232,27 @@ rc_data:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	IR_dprintk(1, "NEC decode failed at state %d (%uus %s)\n",
 		   data->state, TO_US(ev.duration), TO_STR(ev.pulse));
 =======
 	IR_dprintk(1, "NEC decode failed at count %d state %d (%uus %s)\n",
 		   data->count, data->state, TO_US(ev.duration), TO_STR(ev.pulse));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IR_dprintk(1, "NEC decode failed at count %d state %d (%uus %s)\n",
+		   data->count, data->state, TO_US(ev.duration), TO_STR(ev.pulse));
+>>>>>>> refs/remotes/origin/master
 	data->state = STATE_INACTIVE;
 	return -EINVAL;
 }
 
 static struct ir_raw_handler nec_handler = {
+<<<<<<< HEAD
 	.protocols	= RC_TYPE_NEC,
+=======
+	.protocols	= RC_BIT_NEC,
+>>>>>>> refs/remotes/origin/master
 	.decode		= ir_nec_decode,
 };
 

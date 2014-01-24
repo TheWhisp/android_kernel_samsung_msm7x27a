@@ -76,7 +76,11 @@
  *	PCI pin -> global system interrupt (GSI) -> IA-64 vector <-> IRQ
  *
  * Note: The term "IRQ" is loosely used everywhere in Linux kernel to
+<<<<<<< HEAD
  * describeinterrupts.  Now we use "IRQ" only for Linux IRQ's.  ISA IRQ
+=======
+ * describe interrupts.  Now we use "IRQ" only for Linux IRQ's.  ISA IRQ
+>>>>>>> refs/remotes/origin/master
  * (isa_irq) is the only exception in this source code.
  */
 
@@ -99,9 +103,12 @@
 #include <asm/processor.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG_INTERRUPT_ROUTING
 
@@ -151,7 +158,11 @@ static struct iosapic_intr_info {
 	unsigned char	trigger	: 1;	/* trigger mode (see iosapic.h) */
 } iosapic_intr_info[NR_IRQS];
 
+<<<<<<< HEAD
 static unsigned char pcat_compat __devinitdata;	/* 8259 compatibility flag */
+=======
+static unsigned char pcat_compat;	/* 8259 compatibility flag */
+>>>>>>> refs/remotes/origin/master
 
 static inline void
 iosapic_write(struct iosapic *iosapic, unsigned int reg, u32 val)
@@ -918,10 +929,15 @@ iosapic_register_platform_intr (u32 int_type, unsigned int gsi,
 /*
  * ACPI calls this when it finds an entry for a legacy ISA IRQ override.
  */
+<<<<<<< HEAD
 void __devinit
 iosapic_override_isa_irq (unsigned int isa_irq, unsigned int gsi,
 			  unsigned long polarity,
 			  unsigned long trigger)
+=======
+void iosapic_override_isa_irq(unsigned int isa_irq, unsigned int gsi,
+			      unsigned long polarity, unsigned long trigger)
+>>>>>>> refs/remotes/origin/master
 {
 	int vector, irq;
 	unsigned int dest = cpu_physical_id(smp_processor_id());
@@ -1016,8 +1032,32 @@ iosapic_check_gsi_range (unsigned int gsi_base, unsigned int ver)
 	return 0;
 }
 
+<<<<<<< HEAD
 int __devinit
 iosapic_init (unsigned long phys_addr, unsigned int gsi_base)
+=======
+static int
+iosapic_delete_rte(unsigned int irq, unsigned int gsi)
+{
+	struct iosapic_rte_info *rte, *temp;
+
+	list_for_each_entry_safe(rte, temp, &iosapic_intr_info[irq].rtes,
+								rte_list) {
+		if (rte->iosapic->gsi_base + rte->rte_index == gsi) {
+			if (rte->refcnt)
+				return -EBUSY;
+
+			list_del(&rte->rte_list);
+			kfree(rte);
+			return 0;
+		}
+	}
+
+	return -EINVAL;
+}
+
+int iosapic_init(unsigned long phys_addr, unsigned int gsi_base)
+>>>>>>> refs/remotes/origin/master
 {
 	int num_rte, err, index;
 	unsigned int isa_irq, ver;
@@ -1074,11 +1114,17 @@ iosapic_init (unsigned long phys_addr, unsigned int gsi_base)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
 int
 iosapic_remove (unsigned int gsi_base)
 {
 	int index, err = 0;
+=======
+int iosapic_remove(unsigned int gsi_base)
+{
+	int i, irq, index, err = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&iosapic_lock, flags);
@@ -1096,17 +1142,36 @@ iosapic_remove (unsigned int gsi_base)
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	for (i = gsi_base; i < gsi_base + iosapic_lists[index].num_rte; i++) {
+		irq = __gsi_to_irq(i);
+		if (irq < 0)
+			continue;
+
+		err = iosapic_delete_rte(irq, i);
+		if (err)
+			goto out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	iounmap(iosapic_lists[index].addr);
 	iosapic_free(index);
  out:
 	spin_unlock_irqrestore(&iosapic_lock, flags);
 	return err;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_HOTPLUG */
 
 #ifdef CONFIG_NUMA
 void __devinit
 map_iosapic_to_node(unsigned int gsi_base, int node)
+=======
+
+#ifdef CONFIG_NUMA
+void map_iosapic_to_node(unsigned int gsi_base, int node)
+>>>>>>> refs/remotes/origin/master
 {
 	int index;
 

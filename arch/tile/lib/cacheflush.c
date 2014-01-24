@@ -12,6 +12,10 @@
  *   more details.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/cacheflush.h>
 #include <arch/icache.h>
@@ -35,6 +39,7 @@ static inline void force_load(char *p)
  * core (if "!hfh") or homed via hash-for-home (if "hfh"), waiting
  * until the memory controller holds the flushed values.
  */
+<<<<<<< HEAD
 void finv_buffer_remote(void *buffer, size_t size, int hfh)
 {
 	char *p, *base;
@@ -42,6 +47,13 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 <<<<<<< HEAD
 	const unsigned long STRIPE_WIDTH = 8192;
 =======
+=======
+void __attribute__((optimize("omit-frame-pointer")))
+finv_buffer_remote(void *buffer, size_t size, int hfh)
+{
+	char *p, *base;
+	size_t step_size, load_count;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * On TILEPro the striping granularity is a fixed 8KB; on
@@ -57,7 +69,10 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 	const unsigned long STRIPE_WIDTH = 8192;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __tilegx__
 	/*
 	 * On TILE-Gx, we must disable the dstream prefetcher before doing
@@ -93,10 +108,14 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 	 * be, we also need to back up to the last load issued to
 	 * another memory controller, which would be the point where
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * we crossed an 8KB boundary (the granularity of striping
 =======
 	 * we crossed a "striping" boundary (the granularity of striping
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * we crossed a "striping" boundary (the granularity of striping
+>>>>>>> refs/remotes/origin/master
 	 * across memory controllers).  Keep backing up and doing this
 	 * until we are before the beginning of the buffer, or have
 	 * hit all the controllers.
@@ -111,6 +130,7 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 	 * controller" that we simply do that, to simplify the logic.
 	 *
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * FIXME: See bug 9535 for some issues with this code.
 	 */
 	if (hfh) {
@@ -118,6 +138,8 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 		load_count = (STRIPE_WIDTH / L2_CACHE_BYTES) *
 			      (1 << CHIP_LOG_NUM_MSHIMS());
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * On TILE-Gx the hash-for-home function is much more complex,
 	 * with the upshot being we can't readily guarantee we have
 	 * hit both entries in the 128-entry AMT that were hit by any
@@ -134,7 +156,10 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 		load_count = (STRIPE_WIDTH / L2_CACHE_BYTES) *
 			      (1 << CHIP_LOG_NUM_MSHIMS());
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		step_size = STRIPE_WIDTH;
 		load_count = (1 << CHIP_LOG_NUM_MSHIMS());
@@ -151,10 +176,14 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 	/* Figure out how far back we need to go. */
 	base = p - (step_size * (load_count - 2));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((long)base < (long)buffer)
 =======
 	if ((unsigned long)base < (unsigned long)buffer)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((unsigned long)base < (unsigned long)buffer)
+>>>>>>> refs/remotes/origin/master
 		base = buffer;
 
 	/*
@@ -167,6 +196,7 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 		force_load(p);
 
 	/*
+<<<<<<< HEAD
 	 * Repeat, but with inv's instead of loads, to get rid of the
 	 * data we just loaded into our own cache and the old home L3.
 	 * No need to unroll since inv's don't target a register.
@@ -179,6 +209,23 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 		__insn_inv(p);
 
 	/* Wait for the load+inv's (and thus finvs) to have completed. */
+=======
+	 * Repeat, but with finv's instead of loads, to get rid of the
+	 * data we just loaded into our own cache and the old home L3.
+	 * No need to unroll since finv's don't target a register.
+	 * The finv's are guaranteed not to actually flush the data in
+	 * the buffer back to their home, since we just read it, so the
+	 * lines are clean in cache; we will only invalidate those lines.
+	 */
+	p = (char *)buffer + size - 1;
+	__insn_finv(p);
+	p -= step_size;
+	p = (char *)((unsigned long)p | (step_size - 1));
+	for (; p >= base; p -= step_size)
+		__insn_finv(p);
+
+	/* Wait for these finv's (and thus the first finvs) to be done. */
+>>>>>>> refs/remotes/origin/master
 	__insn_mf();
 
 #ifdef __tilegx__
@@ -186,3 +233,7 @@ void finv_buffer_remote(void *buffer, size_t size, int hfh)
 	__insn_mtspr(SPR_DSTREAM_PF, old_dstream_pf);
 #endif
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(finv_buffer_remote);
+>>>>>>> refs/remotes/origin/master

@@ -286,10 +286,14 @@ static int afs_check_permit(struct afs_vnode *vnode, struct key *key,
  *   parent directory's ACL
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int afs_permission(struct inode *inode, int mask, unsigned int flags)
 =======
 int afs_permission(struct inode *inode, int mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int afs_permission(struct inode *inode, int mask)
+>>>>>>> refs/remotes/origin/master
 {
 	struct afs_vnode *vnode = AFS_FS_I(inode);
 	afs_access_t uninitialized_var(access);
@@ -297,10 +301,14 @@ int afs_permission(struct inode *inode, int mask)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (flags & IPERM_FLAG_RCU)
 =======
 	if (mask & MAY_NOT_BLOCK)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mask & MAY_NOT_BLOCK)
+>>>>>>> refs/remotes/origin/master
 		return -ECHILD;
 
 	_enter("{{%x:%u},%lx},%x,",
@@ -359,10 +367,14 @@ int afs_permission(struct inode *inode, int mask)
 
 	key_put(key);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = generic_permission(inode, mask, flags, NULL);
 =======
 	ret = generic_permission(inode, mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = generic_permission(inode, mask);
+>>>>>>> refs/remotes/origin/master
 	_leave(" = %d", ret);
 	return ret;
 

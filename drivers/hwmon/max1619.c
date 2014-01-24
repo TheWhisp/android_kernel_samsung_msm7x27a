@@ -1,7 +1,11 @@
 /*
  * max1619.c - Part of lm_sensors, Linux kernel modules for hardware
  *             monitoring
+<<<<<<< HEAD
  * Copyright (C) 2003-2004 Alexey Fisher <fishor@mail.ru>
+=======
+ * Copyright (C) 2003-2004 Oleksij Rempel <bug-track@fisher-privat.net>
+>>>>>>> refs/remotes/origin/master
  *                         Jean Delvare <khali@linux-fr.org>
  *
  * Based on the lm90 driver. The MAX1619 is a sensor chip made by Maxim.
@@ -126,10 +130,14 @@ struct max1619_data {
 	u8 temp_crit2;
 	u8 temp_hyst2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 alarms; 
 =======
 	u8 alarms;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 alarms;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -138,11 +146,16 @@ struct max1619_data {
 
 #define show_temp(value) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##value(struct device *dev, struct device_attribute *attr, char *buf) \
 =======
 static ssize_t show_##value(struct device *dev, struct device_attribute *attr, \
 			    char *buf) \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_##value(struct device *dev, struct device_attribute *attr, \
+			    char *buf) \
+>>>>>>> refs/remotes/origin/master
 { \
 	struct max1619_data *data = max1619_update_device(dev); \
 	return sprintf(buf, "%d\n", temp_from_reg(data->value)); \
@@ -156,25 +169,36 @@ show_temp(temp_hyst2);
 
 #define set_temp2(value, reg) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t set_##value(struct device *dev, struct device_attribute *attr, const char *buf, \
 =======
 static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
 			   const char *buf, \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t set_##value(struct device *dev, struct device_attribute *attr, \
+			   const char *buf, \
+>>>>>>> refs/remotes/origin/master
 	size_t count) \
 { \
 	struct i2c_client *client = to_i2c_client(dev); \
 	struct max1619_data *data = i2c_get_clientdata(client); \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10); \
  \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val; \
 	int err = kstrtol(buf, 10, &val); \
 	if (err) \
 		return err; \
 \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock); \
 	data->value = temp_to_reg(val); \
 	i2c_smbus_write_byte_data(client, reg, data->value); \
@@ -188,11 +212,16 @@ set_temp2(temp_crit2, MAX1619_REG_W_REMOTE_CRIT);
 set_temp2(temp_hyst2, MAX1619_REG_W_TCRIT_HYST);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_alarms(struct device *dev, struct device_attribute *attr, char *buf)
 =======
 static ssize_t show_alarms(struct device *dev, struct device_attribute *attr,
 			   char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_alarms(struct device *dev, struct device_attribute *attr,
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max1619_data *data = max1619_update_device(dev);
 	return sprintf(buf, "%d\n", data->alarms);
@@ -288,11 +317,18 @@ static int max1619_probe(struct i2c_client *new_client,
 	struct max1619_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct max1619_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&new_client->dev, sizeof(struct max1619_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(new_client, data);
 	data->valid = 0;
@@ -303,12 +339,18 @@ static int max1619_probe(struct i2c_client *new_client,
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&new_client->dev.kobj, &max1619_group)))
 =======
 	err = sysfs_create_group(&new_client->dev.kobj, &max1619_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto exit_free;
+=======
+	err = sysfs_create_group(&new_client->dev.kobj, &max1619_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&new_client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -320,9 +362,12 @@ static int max1619_probe(struct i2c_client *new_client,
 
 exit_remove_files:
 	sysfs_remove_group(&new_client->dev.kobj, &max1619_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -348,7 +393,10 @@ static int max1619_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &max1619_group);
 
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -386,6 +434,7 @@ static struct max1619_data *max1619_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_max1619_init(void)
 {
 	return i2c_add_driver(&max1619_driver);
@@ -409,3 +458,11 @@ module_init(sensors_max1619_init);
 module_exit(sensors_max1619_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(max1619_driver);
+
+MODULE_AUTHOR("Oleksij Rempel <bug-track@fisher-privat.net> and "
+	"Jean Delvare <khali@linux-fr.org>");
+MODULE_DESCRIPTION("MAX1619 sensor driver");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

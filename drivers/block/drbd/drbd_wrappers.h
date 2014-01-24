@@ -3,6 +3,10 @@
 
 #include <linux/ctype.h>
 #include <linux/mm.h>
+<<<<<<< HEAD
+=======
+#include "drbd_int.h"
+>>>>>>> refs/remotes/origin/master
 
 /* see get_sb_bdev and bd_claim */
 extern char *drbd_sec_holder;
@@ -20,8 +24,13 @@ static inline void drbd_set_my_capacity(struct drbd_conf *mdev,
 
 /* bi_end_io handlers */
 extern void drbd_md_io_complete(struct bio *bio, int error);
+<<<<<<< HEAD
 extern void drbd_endio_sec(struct bio *bio, int error);
 extern void drbd_endio_pri(struct bio *bio, int error);
+=======
+extern void drbd_peer_request_endio(struct bio *bio, int error);
+extern void drbd_request_endio(struct bio *bio, int error);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * used to submit our private bio
@@ -45,12 +54,15 @@ static inline void drbd_generic_make_request(struct drbd_conf *mdev,
 		generic_make_request(bio);
 }
 
+<<<<<<< HEAD
 static inline int drbd_crypto_is_hash(struct crypto_tfm *tfm)
 {
         return (crypto_tfm_alg_type(tfm) & CRYPTO_ALG_TYPE_HASH_MASK)
                 == CRYPTO_ALG_TYPE_HASH;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __CHECKER__
 # undef __cond_lock
 # define __cond_lock(x,c) (c)

@@ -24,14 +24,21 @@
 #include <linux/interrupt.h>
 #include <linux/netdevice.h>
 #include <linux/security.h>
+<<<<<<< HEAD
+=======
+#include <linux/pid_namespace.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pid.h>
 #include <linux/nsproxy.h>
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #include <net/protocol.h>
@@ -39,6 +46,10 @@
 #include <net/sock.h>
 #include <net/compat.h>
 #include <net/scm.h>
+<<<<<<< HEAD
+=======
+#include <net/cls_cgroup.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -49,12 +60,27 @@
 static __inline__ int scm_check_creds(struct ucred *creds)
 {
 	const struct cred *cred = current_cred();
+<<<<<<< HEAD
 
 	if ((creds->pid == task_tgid_vnr(current) || capable(CAP_SYS_ADMIN)) &&
 	    ((creds->uid == cred->uid   || creds->uid == cred->euid ||
 	      creds->uid == cred->suid) || capable(CAP_SETUID)) &&
 	    ((creds->gid == cred->gid   || creds->gid == cred->egid ||
 	      creds->gid == cred->sgid) || capable(CAP_SETGID))) {
+=======
+	kuid_t uid = make_kuid(cred->user_ns, creds->uid);
+	kgid_t gid = make_kgid(cred->user_ns, creds->gid);
+
+	if (!uid_valid(uid) || !gid_valid(gid))
+		return -EINVAL;
+
+	if ((creds->pid == task_tgid_vnr(current) ||
+	     ns_capable(task_active_pid_ns(current)->user_ns, CAP_SYS_ADMIN)) &&
+	    ((uid_eq(uid, cred->uid)   || uid_eq(uid, cred->euid) ||
+	      uid_eq(uid, cred->suid)) || ns_capable(cred->user_ns, CAP_SETUID)) &&
+	    ((gid_eq(gid, cred->gid)   || gid_eq(gid, cred->egid) ||
+	      gid_eq(gid, cred->sgid)) || ns_capable(cred->user_ns, CAP_SETGID))) {
+>>>>>>> refs/remotes/origin/master
 	       return 0;
 	}
 	return -EPERM;
@@ -113,6 +139,7 @@ void __scm_destroy(struct scm_cookie *scm)
 
 	if (fpl) {
 		scm->fp = NULL;
+<<<<<<< HEAD
 		if (current->scm_work_list) {
 			list_add_tail(&fpl->list, current->scm_work_list);
 		} else {
@@ -132,6 +159,11 @@ void __scm_destroy(struct scm_cookie *scm)
 
 			current->scm_work_list = NULL;
 		}
+=======
+		for (i=fpl->count-1; i>=0; i--)
+			fput(fpl->fp[i]);
+		kfree(fpl);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(__scm_destroy);
@@ -169,6 +201,7 @@ int __scm_send(struct socket *sock, struct msghdr *msg, struct scm_cookie *p)
 				goto error;
 			break;
 		case SCM_CREDENTIALS:
+<<<<<<< HEAD
 			if (cmsg->cmsg_len != CMSG_LEN(sizeof(struct ucred)))
 				goto error;
 			memcpy(&p->creds, CMSG_DATA(cmsg), sizeof(struct ucred));
@@ -184,12 +217,31 @@ int __scm_send(struct socket *sock, struct msghdr *msg, struct scm_cookie *p)
 				struct pid *pid;
 				err = -ESRCH;
 				pid = find_get_pid(p->creds.pid);
+=======
+		{
+			struct ucred creds;
+			kuid_t uid;
+			kgid_t gid;
+			if (cmsg->cmsg_len != CMSG_LEN(sizeof(struct ucred)))
+				goto error;
+			memcpy(&creds, CMSG_DATA(cmsg), sizeof(struct ucred));
+			err = scm_check_creds(&creds);
+			if (err)
+				goto error;
+
+			p->creds.pid = creds.pid;
+			if (!p->pid || pid_vnr(p->pid) != creds.pid) {
+				struct pid *pid;
+				err = -ESRCH;
+				pid = find_get_pid(creds.pid);
+>>>>>>> refs/remotes/origin/master
 				if (!pid)
 					goto error;
 				put_pid(p->pid);
 				p->pid = pid;
 			}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if ((p->cred->euid != p->creds.uid) ||
 				(p->cred->egid != p->creds.gid)) {
@@ -215,6 +267,18 @@ int __scm_send(struct socket *sock, struct msghdr *msg, struct scm_cookie *p)
 				p->cred = cred;
 			}
 			break;
+=======
+			err = -EINVAL;
+			uid = make_kuid(current_user_ns(), creds.uid);
+			gid = make_kgid(current_user_ns(), creds.gid);
+			if (!uid_valid(uid) || !gid_valid(gid))
+				goto error;
+
+			p->creds.uid = uid;
+			p->creds.gid = gid;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 		default:
 			goto error;
 		}
@@ -298,6 +362,10 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
 	for (i=0, cmfptr=(__force int __user *)CMSG_DATA(cm); i<fdmax;
 	     i++, cmfptr++)
 	{
+<<<<<<< HEAD
+=======
+		struct socket *sock;
+>>>>>>> refs/remotes/origin/master
 		int new_fd;
 		err = security_file_receive(fp[i]);
 		if (err)
@@ -313,8 +381,17 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
 			break;
 		}
 		/* Bump the usage count and install the file. */
+<<<<<<< HEAD
 		get_file(fp[i]);
 		fd_install(new_fd, fp[i]);
+=======
+		sock = sock_from_file(fp[i], &err);
+		if (sock) {
+			sock_update_netprioidx(sock->sk);
+			sock_update_classid(sock->sk);
+		}
+		fd_install(new_fd, get_file(fp[i]));
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (i > 0)

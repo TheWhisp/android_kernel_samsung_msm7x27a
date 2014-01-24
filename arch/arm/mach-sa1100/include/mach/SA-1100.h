@@ -830,6 +830,7 @@
  *              	(read/write).
  */
 
+<<<<<<< HEAD
 #define OSMR0  		__REG(0x90000000)  /* OS timer Match Reg. 0 */
 #define OSMR1  		__REG(0x90000004)  /* OS timer Match Reg. 1 */
 #define OSMR2  		__REG(0x90000008)  /* OS timer Match Reg. 2 */
@@ -838,6 +839,16 @@
 #define OSSR   	__REG(0x90000014	)  /* OS timer Status Reg. */
 #define OWER   	__REG(0x90000018	)  /* OS timer Watch-dog Enable Reg. */
 #define OIER   	__REG(0x9000001C	)  /* OS timer Interrupt Enable Reg. */
+=======
+#define OSMR0  		io_p2v(0x90000000)  /* OS timer Match Reg. 0 */
+#define OSMR1  		io_p2v(0x90000004)  /* OS timer Match Reg. 1 */
+#define OSMR2  		io_p2v(0x90000008)  /* OS timer Match Reg. 2 */
+#define OSMR3  		io_p2v(0x9000000c)  /* OS timer Match Reg. 3 */
+#define OSCR   		io_p2v(0x90000010)  /* OS timer Counter Reg. */
+#define OSSR   		io_p2v(0x90000014)  /* OS timer Status Reg. */
+#define OWER   		io_p2v(0x90000018)  /* OS timer Watch-dog Enable Reg. */
+#define OIER  	 	io_p2v(0x9000001C)  /* OS timer Interrupt Enable Reg. */
+>>>>>>> refs/remotes/origin/master
 
 #define OSSR_M(Nb)	        	/* Match detected [0..3]           */ \
                 	(0x00000001 << (Nb))
@@ -1591,6 +1602,7 @@
 /*
  * Direct Memory Access (DMA) control registers
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Registers
  *    DDAR0     	Direct Memory Access (DMA) Device Address Register
@@ -1814,6 +1826,11 @@
 #define DMA_SIZE	(6 * 0x20)
 #define DMA_PHYS	0xb0000000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+#define DMA_SIZE	(6 * 0x20)
+#define DMA_PHYS	0xb0000000
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -1910,6 +1927,7 @@
                 	        	/* (Alternative)                   */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LCCR0		__REG(0xB0100000)  /* LCD Control Reg. 0 */
 #define LCSR		__REG(0xB0100004)  /* LCD Status Reg. */
 #define DBAR1		__REG(0xB0100010)  /* LCD DMA Base Address Reg. channel 1 */
@@ -1922,6 +1940,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LCCR0_LEN	0x00000001	/* LCD ENable                      */
 #define LCCR0_CMS	0x00000002	/* Color/Monochrome display Select */
 #define LCCR0_Color	(LCCR0_CMS*0)	/*  Color display                  */

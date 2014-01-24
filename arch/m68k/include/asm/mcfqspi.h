@@ -22,6 +22,7 @@
 #define mcfqspi_h
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_M523x) || defined(CONFIG_M527x) || defined(CONFIG_M528x)
 #define	MCFQSPI_IOBASE		(MCF_IPSBAR + 0x340)
 #elif defined(CONFIG_M5249)
@@ -33,6 +34,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct mcfqspi_cs_control - chip select control for the coldfire qspi driver
  * @setup: setup the control; allocate gpio's, etc. May be NULL.

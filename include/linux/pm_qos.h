@@ -20,6 +20,16 @@ enum {
 	PM_QOS_NUM_CLASSES,
 };
 
+<<<<<<< HEAD
+=======
+enum pm_qos_flags_status {
+	PM_QOS_FLAGS_UNDEFINED = -1,
+	PM_QOS_FLAGS_NONE,
+	PM_QOS_FLAGS_SOME,
+	PM_QOS_FLAGS_ALL,
+};
+
+>>>>>>> refs/remotes/origin/master
 #define PM_QOS_DEFAULT_VALUE -1
 
 #define PM_QOS_CPU_DMA_LAT_DEFAULT_VALUE	(2000 * USEC_PER_SEC)
@@ -27,14 +37,39 @@ enum {
 #define PM_QOS_NETWORK_THROUGHPUT_DEFAULT_VALUE	0
 #define PM_QOS_DEV_LAT_DEFAULT_VALUE		0
 
+<<<<<<< HEAD
+=======
+#define PM_QOS_FLAG_NO_POWER_OFF	(1 << 0)
+#define PM_QOS_FLAG_REMOTE_WAKEUP	(1 << 1)
+
+>>>>>>> refs/remotes/origin/master
 struct pm_qos_request {
 	struct plist_node node;
 	int pm_qos_class;
 	struct delayed_work work; /* for pm_qos_update_request_timeout */
 };
 
+<<<<<<< HEAD
 struct dev_pm_qos_request {
 	struct plist_node node;
+=======
+struct pm_qos_flags_request {
+	struct list_head node;
+	s32 flags;	/* Do not change to 64 bit */
+};
+
+enum dev_pm_qos_req_type {
+	DEV_PM_QOS_LATENCY = 1,
+	DEV_PM_QOS_FLAGS,
+};
+
+struct dev_pm_qos_request {
+	enum dev_pm_qos_req_type type;
+	union {
+		struct plist_node pnode;
+		struct pm_qos_flags_request flr;
+	} data;
+>>>>>>> refs/remotes/origin/master
 	struct device *dev;
 };
 
@@ -45,8 +80,13 @@ enum pm_qos_type {
 };
 
 /*
+<<<<<<< HEAD
  * Note: The lockless read path depends on the CPU accessing
  * target_value atomically.  Atomic access is only guaranteed on all CPU
+=======
+ * Note: The lockless read path depends on the CPU accessing target_value
+ * or effective_flags atomically.  Atomic access is only guaranteed on all CPU
+>>>>>>> refs/remotes/origin/master
  * types linux supports for 32 bit quantites
  */
 struct pm_qos_constraints {
@@ -57,6 +97,21 @@ struct pm_qos_constraints {
 	struct blocking_notifier_head *notifiers;
 };
 
+<<<<<<< HEAD
+=======
+struct pm_qos_flags {
+	struct list_head list;
+	s32 effective_flags;	/* Do not change to 64 bit */
+};
+
+struct dev_pm_qos {
+	struct pm_qos_constraints latency;
+	struct pm_qos_flags flags;
+	struct dev_pm_qos_request *latency_req;
+	struct dev_pm_qos_request *flags_req;
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Action requested to pm_qos_update_target */
 enum pm_qos_req_action {
 	PM_QOS_ADD_REQ,		/* Add a new request */
@@ -66,11 +121,21 @@ enum pm_qos_req_action {
 
 static inline int dev_pm_qos_request_active(struct dev_pm_qos_request *req)
 {
+<<<<<<< HEAD
 	return req->dev != 0;
+=======
+	return req->dev != NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 int pm_qos_update_target(struct pm_qos_constraints *c, struct plist_node *node,
 			 enum pm_qos_req_action action, int value);
+<<<<<<< HEAD
+=======
+bool pm_qos_update_flags(struct pm_qos_flags *pqf,
+			 struct pm_qos_flags_request *req,
+			 enum pm_qos_req_action action, s32 val);
+>>>>>>> refs/remotes/origin/master
 void pm_qos_add_request(struct pm_qos_request *req, int pm_qos_class,
 			s32 value);
 void pm_qos_update_request(struct pm_qos_request *req,
@@ -86,10 +151,19 @@ int pm_qos_request_active(struct pm_qos_request *req);
 s32 pm_qos_read_value(struct pm_qos_constraints *c);
 
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 s32 __dev_pm_qos_read_value(struct device *dev);
 s32 dev_pm_qos_read_value(struct device *dev);
 int dev_pm_qos_add_request(struct device *dev, struct dev_pm_qos_request *req,
 			   s32 value);
+=======
+enum pm_qos_flags_status __dev_pm_qos_flags(struct device *dev, s32 mask);
+enum pm_qos_flags_status dev_pm_qos_flags(struct device *dev, s32 mask);
+s32 __dev_pm_qos_read_value(struct device *dev);
+s32 dev_pm_qos_read_value(struct device *dev);
+int dev_pm_qos_add_request(struct device *dev, struct dev_pm_qos_request *req,
+			   enum dev_pm_qos_req_type type, s32 value);
+>>>>>>> refs/remotes/origin/master
 int dev_pm_qos_update_request(struct dev_pm_qos_request *req, s32 new_value);
 int dev_pm_qos_remove_request(struct dev_pm_qos_request *req);
 int dev_pm_qos_add_notifier(struct device *dev,
@@ -103,12 +177,25 @@ void dev_pm_qos_constraints_destroy(struct device *dev);
 int dev_pm_qos_add_ancestor_request(struct device *dev,
 				    struct dev_pm_qos_request *req, s32 value);
 #else
+<<<<<<< HEAD
+=======
+static inline enum pm_qos_flags_status __dev_pm_qos_flags(struct device *dev,
+							  s32 mask)
+			{ return PM_QOS_FLAGS_UNDEFINED; }
+static inline enum pm_qos_flags_status dev_pm_qos_flags(struct device *dev,
+							s32 mask)
+			{ return PM_QOS_FLAGS_UNDEFINED; }
+>>>>>>> refs/remotes/origin/master
 static inline s32 __dev_pm_qos_read_value(struct device *dev)
 			{ return 0; }
 static inline s32 dev_pm_qos_read_value(struct device *dev)
 			{ return 0; }
 static inline int dev_pm_qos_add_request(struct device *dev,
 					 struct dev_pm_qos_request *req,
+<<<<<<< HEAD
+=======
+					 enum dev_pm_qos_req_type type,
+>>>>>>> refs/remotes/origin/master
 					 s32 value)
 			{ return 0; }
 static inline int dev_pm_qos_update_request(struct dev_pm_qos_request *req,
@@ -144,10 +231,37 @@ static inline int dev_pm_qos_add_ancestor_request(struct device *dev,
 #ifdef CONFIG_PM_RUNTIME
 int dev_pm_qos_expose_latency_limit(struct device *dev, s32 value);
 void dev_pm_qos_hide_latency_limit(struct device *dev);
+<<<<<<< HEAD
+=======
+int dev_pm_qos_expose_flags(struct device *dev, s32 value);
+void dev_pm_qos_hide_flags(struct device *dev);
+int dev_pm_qos_update_flags(struct device *dev, s32 mask, bool set);
+
+static inline s32 dev_pm_qos_requested_latency(struct device *dev)
+{
+	return dev->power.qos->latency_req->data.pnode.prio;
+}
+
+static inline s32 dev_pm_qos_requested_flags(struct device *dev)
+{
+	return dev->power.qos->flags_req->data.flr.flags;
+}
+>>>>>>> refs/remotes/origin/master
 #else
 static inline int dev_pm_qos_expose_latency_limit(struct device *dev, s32 value)
 			{ return 0; }
 static inline void dev_pm_qos_hide_latency_limit(struct device *dev) {}
+<<<<<<< HEAD
+=======
+static inline int dev_pm_qos_expose_flags(struct device *dev, s32 value)
+			{ return 0; }
+static inline void dev_pm_qos_hide_flags(struct device *dev) {}
+static inline int dev_pm_qos_update_flags(struct device *dev, s32 m, bool set)
+			{ return 0; }
+
+static inline s32 dev_pm_qos_requested_latency(struct device *dev) { return 0; }
+static inline s32 dev_pm_qos_requested_flags(struct device *dev) { return 0; }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif

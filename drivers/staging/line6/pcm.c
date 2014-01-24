@@ -34,8 +34,13 @@ static struct snd_line6_pcm *dev2pcm(struct device *dev)
 /*
 	"read" request on "impulse_volume" special file.
 */
+<<<<<<< HEAD
 static ssize_t pcm_get_impulse_volume(struct device *dev,
 				      struct device_attribute *attr, char *buf)
+=======
+static ssize_t impulse_volume_show(struct device *dev,
+				   struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf, "%d\n", dev2pcm(dev)->impulse_volume);
 }
@@ -43,6 +48,7 @@ static ssize_t pcm_get_impulse_volume(struct device *dev,
 /*
 	"write" request on "impulse_volume" special file.
 */
+<<<<<<< HEAD
 static ssize_t pcm_set_impulse_volume(struct device *dev,
 				      struct device_attribute *attr,
 				      const char *buf, size_t count)
@@ -64,12 +70,41 @@ static ssize_t pcm_set_impulse_volume(struct device *dev,
 
 	return count;
 }
+=======
+static ssize_t impulse_volume_store(struct device *dev,
+				    struct device_attribute *attr,
+				    const char *buf, size_t count)
+{
+	struct snd_line6_pcm *line6pcm = dev2pcm(dev);
+	int value;
+	int ret;
+
+	ret = kstrtoint(buf, 10, &value);
+	if (ret < 0)
+		return ret;
+
+	line6pcm->impulse_volume = value;
+
+	if (value > 0)
+		line6_pcm_acquire(line6pcm, LINE6_BITS_PCM_IMPULSE);
+	else
+		line6_pcm_release(line6pcm, LINE6_BITS_PCM_IMPULSE);
+
+	return count;
+}
+static DEVICE_ATTR_RW(impulse_volume);
+>>>>>>> refs/remotes/origin/master
 
 /*
 	"read" request on "impulse_period" special file.
 */
+<<<<<<< HEAD
 static ssize_t pcm_get_impulse_period(struct device *dev,
 				      struct device_attribute *attr, char *buf)
+=======
+static ssize_t impulse_period_show(struct device *dev,
+				   struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	return sprintf(buf, "%d\n", dev2pcm(dev)->impulse_period);
 }
@@ -77,6 +112,7 @@ static ssize_t pcm_get_impulse_period(struct device *dev,
 /*
 	"write" request on "impulse_period" special file.
 */
+<<<<<<< HEAD
 static ssize_t pcm_set_impulse_period(struct device *dev,
 				      struct device_attribute *attr,
 				      const char *buf, size_t count)
@@ -95,6 +131,26 @@ static DEVICE_ATTR(impulse_period, S_IWUSR | S_IRUGO, pcm_get_impulse_period,
 <<<<<<< HEAD
 int line6_pcm_start(struct snd_line6_pcm *line6pcm, int channels)
 =======
+=======
+static ssize_t impulse_period_store(struct device *dev,
+				    struct device_attribute *attr,
+				    const char *buf, size_t count)
+{
+	int value;
+	int ret;
+
+	ret = kstrtoint(buf, 10, &value);
+	if (ret < 0)
+		return ret;
+
+	dev2pcm(dev)->impulse_period = value;
+	return count;
+}
+static DEVICE_ATTR_RW(impulse_period);
+
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static bool test_flags(unsigned long flags0, unsigned long flags1,
 		       unsigned long mask)
 {
@@ -102,6 +158,7 @@ static bool test_flags(unsigned long flags0, unsigned long flags1,
 }
 
 int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags_old =
@@ -136,14 +193,35 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
 
 	if (test_flags(flags_old, flags_new, LINE6_BITS_CAPTURE_BUFFER)) {
 		/* We may be invoked multiple times in a row so allocate once only */
+=======
+{
+	unsigned long flags_old, flags_new, flags_final;
+	int err;
+
+	do {
+		flags_old = ACCESS_ONCE(line6pcm->flags);
+		flags_new = flags_old | channels;
+	} while (cmpxchg(&line6pcm->flags, flags_old, flags_new) != flags_old);
+
+	flags_final = flags_old;
+
+	line6pcm->prev_fbuf = NULL;
+
+	if (test_flags(flags_old, flags_new, LINE6_BITS_CAPTURE_BUFFER)) {
+		/* Invoked multiple times in a row so allocate once only */
+>>>>>>> refs/remotes/origin/master
 		if (!line6pcm->buffer_in) {
 			line6pcm->buffer_in =
 				kmalloc(LINE6_ISO_BUFFERS * LINE6_ISO_PACKETS *
 					line6pcm->max_packet_size, GFP_KERNEL);
+<<<<<<< HEAD
 
 			if (!line6pcm->buffer_in) {
 				dev_err(line6pcm->line6->ifcdev,
 					"cannot malloc capture buffer\n");
+=======
+			if (!line6pcm->buffer_in) {
+>>>>>>> refs/remotes/origin/master
 				err = -ENOMEM;
 				goto pcm_acquire_error;
 			}
@@ -153,12 +231,16 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
 	}
 
 	if (test_flags(flags_old, flags_new, LINE6_BITS_CAPTURE_STREAM)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		   Waiting for completion of active URBs in the stop handler is
 		   a bug, we therefore report an error if capturing is restarted
 		   too soon.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (line6pcm->active_urb_in | line6pcm->unlink_urb_in)
 			return -EBUSY;
@@ -176,12 +258,18 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
 			dev_err(line6pcm->line6->ifcdev, "Device not yet ready\n");
 			return -EBUSY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (line6pcm->active_urb_in | line6pcm->unlink_urb_in) {
+			dev_err(line6pcm->line6->ifcdev, "Device not yet ready\n");
+			return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		line6pcm->count_in = 0;
 		line6pcm->prev_fsize = 0;
 		err = line6_submit_audio_in_all_urbs(line6pcm);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (err < 0) {
 			__sync_fetch_and_and(&line6pcm->flags, ~channels);
@@ -206,6 +294,8 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
 				"cannot malloc playback buffer\n");
 			return -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			goto pcm_acquire_error;
 
@@ -213,15 +303,23 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
 	}
 
 	if (test_flags(flags_old, flags_new, LINE6_BITS_PLAYBACK_BUFFER)) {
+<<<<<<< HEAD
 		/* We may be invoked multiple times in a row so allocate once only */
+=======
+		/* Invoked multiple times in a row so allocate once only */
+>>>>>>> refs/remotes/origin/master
 		if (!line6pcm->buffer_out) {
 			line6pcm->buffer_out =
 				kmalloc(LINE6_ISO_BUFFERS * LINE6_ISO_PACKETS *
 					line6pcm->max_packet_size, GFP_KERNEL);
+<<<<<<< HEAD
 
 			if (!line6pcm->buffer_out) {
 				dev_err(line6pcm->line6->ifcdev,
 					"cannot malloc playback buffer\n");
+=======
+			if (!line6pcm->buffer_out) {
+>>>>>>> refs/remotes/origin/master
 				err = -ENOMEM;
 				goto pcm_acquire_error;
 			}
@@ -237,12 +335,16 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
 		if (line6pcm->active_urb_out | line6pcm->unlink_urb_out) {
 			dev_err(line6pcm->line6->ifcdev, "Device not yet ready\n");
 			return -EBUSY;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		line6pcm->count_out = 0;
 		err = line6_submit_audio_out_all_urbs(line6pcm);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (err < 0) {
 			__sync_fetch_and_and(&line6pcm->flags, ~channels);
@@ -255,6 +357,8 @@ int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels)
 
 int line6_pcm_stop(struct snd_line6_pcm *line6pcm, int channels)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			goto pcm_acquire_error;
 
@@ -273,6 +377,7 @@ pcm_acquire_error:
 }
 
 int line6_pcm_release(struct snd_line6_pcm *line6pcm, int channels)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned long flags_old =
@@ -297,6 +402,16 @@ int line6_pcm_release(struct snd_line6_pcm *line6pcm, int channels)
 	kfree(line6pcm->prev_fbuf);
 #endif
 =======
+=======
+{
+	unsigned long flags_old, flags_new;
+
+	do {
+		flags_old = ACCESS_ONCE(line6pcm->flags);
+		flags_new = flags_old & ~channels;
+	} while (cmpxchg(&line6pcm->flags, flags_old, flags_new) != flags_old);
+
+>>>>>>> refs/remotes/origin/master
 	if (test_flags(flags_new, flags_old, LINE6_BITS_CAPTURE_STREAM))
 		line6_unlink_audio_in_urbs(line6pcm);
 
@@ -312,7 +427,10 @@ int line6_pcm_release(struct snd_line6_pcm *line6pcm, int channels)
 		line6_wait_clear_audio_out_urbs(line6pcm);
 		line6_free_playback_buffer(line6pcm);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -327,10 +445,14 @@ int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd)
 
 	spin_lock_irqsave(&line6pcm->lock_trigger, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clear_bit(BIT_PREPARED, &line6pcm->flags);
 =======
 	clear_bit(LINE6_INDEX_PREPARED, &line6pcm->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clear_bit(LINE6_INDEX_PREPARED, &line6pcm->flags);
+>>>>>>> refs/remotes/origin/master
 
 	snd_pcm_group_for_each_entry(s, substream) {
 		switch (s->stream) {
@@ -486,8 +608,16 @@ static int snd_line6_pcm_free(struct snd_device *device)
 */
 static void pcm_disconnect_substream(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	if (substream->runtime && snd_pcm_running(substream))
 		snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
+=======
+	if (substream->runtime && snd_pcm_running(substream)) {
+		snd_pcm_stream_lock_irq(substream);
+		snd_pcm_stop(substream, SNDRV_PCM_STATE_DISCONNECTED);
+		snd_pcm_stream_unlock_irq(substream);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -530,17 +660,26 @@ int line6_init_pcm(struct usb_line6 *line6,
 	case LINE6_DEVID_PODXTLIVE:
 	case LINE6_DEVID_PODXTPRO:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case LINE6_DEVID_PODHD300:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case LINE6_DEVID_PODHD300:
+	case LINE6_DEVID_PODHD400:
+>>>>>>> refs/remotes/origin/master
 		ep_read = 0x82;
 		ep_write = 0x01;
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case LINE6_DEVID_PODHD500:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case LINE6_DEVID_PODHD500:
+>>>>>>> refs/remotes/origin/master
 	case LINE6_DEVID_PODX3:
 	case LINE6_DEVID_PODX3LIVE:
 		ep_read = 0x86;
@@ -563,6 +702,7 @@ int line6_init_pcm(struct usb_line6 *line6,
 		ep_write = 0x01;
 		break;
 
+<<<<<<< HEAD
 		/* this is for interface_number == 1:
 		   case LINE6_DEVID_TONEPORT_UX2:
 		   case LINE6_DEVID_PODSTUDIO_UX2:
@@ -570,6 +710,14 @@ int line6_init_pcm(struct usb_line6 *line6,
 		   ep_write = 0x00;
 		   break;
 		 */
+=======
+	/* this is for interface_number == 1:
+	case LINE6_DEVID_TONEPORT_UX2:
+	case LINE6_DEVID_PODSTUDIO_UX2:
+		ep_read  = 0x87;
+		ep_write = 0x00;
+		break; */
+>>>>>>> refs/remotes/origin/master
 
 	default:
 		MISSING_CASE;
@@ -586,10 +734,13 @@ int line6_init_pcm(struct usb_line6 *line6,
 	line6pcm->ep_audio_read = ep_read;
 	line6pcm->ep_audio_write = ep_write;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	line6pcm->max_packet_size = usb_maxpacket(line6->usbdev,
 						  usb_rcvintpipe(line6->usbdev,
 								 ep_read), 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Read and write buffers are sized identically, so choose minimum */
 	line6pcm->max_packet_size = min(
@@ -598,7 +749,10 @@ int line6_init_pcm(struct usb_line6 *line6,
 			usb_maxpacket(line6->usbdev,
 				usb_sndisocpipe(line6->usbdev, ep_write), 1));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	line6pcm->properties = properties;
 	line6->line6pcm = line6pcm;
 
@@ -654,8 +808,11 @@ int snd_line6_prepare(struct snd_pcm_substream *substream)
 	struct snd_line6_pcm *line6pcm = snd_pcm_substream_chip(substream);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!test_and_set_bit(BIT_PREPARED, &line6pcm->flags)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (substream->stream) {
 	case SNDRV_PCM_STREAM_PLAYBACK:
 		if ((line6pcm->flags & LINE6_BITS_PLAYBACK_STREAM) == 0)
@@ -674,7 +831,10 @@ int snd_line6_prepare(struct snd_pcm_substream *substream)
 	}
 
 	if (!test_and_set_bit(LINE6_INDEX_PREPARED, &line6pcm->flags)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		line6pcm->count_out = 0;
 		line6pcm->pos_out = 0;
 		line6pcm->pos_out_done = 0;

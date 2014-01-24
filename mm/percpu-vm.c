@@ -51,6 +51,7 @@ static struct page **pcpu_get_pages_and_bitmap(struct pcpu_chunk *chunk,
 	if (!pages || !bitmap) {
 		if (may_alloc && !pages)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pages = pcpu_mem_alloc(pages_size);
 		if (may_alloc && !bitmap)
 			bitmap = pcpu_mem_alloc(bitmap_size);
@@ -59,14 +60,22 @@ static struct page **pcpu_get_pages_and_bitmap(struct pcpu_chunk *chunk,
 		if (may_alloc && !bitmap)
 			bitmap = pcpu_mem_zalloc(bitmap_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pages = pcpu_mem_zalloc(pages_size);
+		if (may_alloc && !bitmap)
+			bitmap = pcpu_mem_zalloc(bitmap_size);
+>>>>>>> refs/remotes/origin/master
 		if (!pages || !bitmap)
 			return NULL;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memset(pages, 0, pages_size);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bitmap_copy(bitmap, chunk->populated, pcpu_unit_pages);
 
 	*bitmapp = bitmap;
@@ -195,11 +204,15 @@ static void pcpu_unmap_pages(struct pcpu_chunk *chunk,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = page_start; i < page_end; i++)
 		__clear_bit(i, populated);
 =======
 	bitmap_clear(populated, page_start, page_end - page_start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bitmap_clear(populated, page_start, page_end - page_start);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -375,7 +388,10 @@ err_free:
  * @chunk: chunk to depopulate
  * @off: offset to the area to depopulate
  * @size: size of the area to depopulate in bytes
+<<<<<<< HEAD
  * @flush: whether to flush cache and tlb or not
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * For each cpu, depopulate and unmap pages [@page_start,@page_end)
  * from @chunk.  If @flush is true, vcache is flushed before unmapping

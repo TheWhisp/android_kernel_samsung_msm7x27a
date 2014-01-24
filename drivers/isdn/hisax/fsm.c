@@ -6,10 +6,14 @@
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
  *              by Kai Germaschewski <kai.germaschewski@gmx.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -30,6 +34,7 @@ FsmNew(struct Fsm *fsm, struct FsmNode *fnlist, int fncount)
 {
 	int i;
 
+<<<<<<< HEAD
 	fsm->jumpmatrix = (FSMFNPTR *)
 <<<<<<< HEAD
 		kzalloc(sizeof (FSMFNPTR) * fsm->state_count * fsm->event_count, GFP_KERNEL);
@@ -45,6 +50,9 @@ FsmNew(struct Fsm *fsm, struct FsmNode *fnlist, int fncount)
 			fsm->jumpmatrix[fsm->state_count * fnlist[i].event +
 				fnlist[i].state] = (FSMFNPTR) fnlist[i].routine;
 =======
+=======
+	fsm->jumpmatrix =
+>>>>>>> refs/remotes/origin/master
 		kzalloc(sizeof(FSMFNPTR) * fsm->state_count * fsm->event_count, GFP_KERNEL);
 	if (!fsm->jumpmatrix)
 		return -ENOMEM;
@@ -57,7 +65,10 @@ FsmNew(struct Fsm *fsm, struct FsmNode *fnlist, int fncount)
 		} else
 			fsm->jumpmatrix[fsm->state_count * fnlist[i].event +
 					fnlist[i].state] = (FSMFNPTR)fnlist[i].routine;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -73,33 +84,28 @@ FsmEvent(struct FsmInst *fi, int event, void *arg)
 	FSMFNPTR r;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((fi->state>=fi->fsm->state_count) || (event >= fi->fsm->event_count)) {
 		printk(KERN_ERR "FsmEvent Error st(%ld/%ld) ev(%d/%ld)\n",
 			(long)fi->state,(long)fi->fsm->state_count,event,(long)fi->fsm->event_count);
 		return(1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((fi->state >= fi->fsm->state_count) || (event >= fi->fsm->event_count)) {
 		printk(KERN_ERR "FsmEvent Error st(%ld/%ld) ev(%d/%ld)\n",
 		       (long)fi->state, (long)fi->fsm->state_count, event, (long)fi->fsm->event_count);
 		return (1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	r = fi->fsm->jumpmatrix[fi->fsm->state_count * event + fi->state];
 	if (r) {
 		if (fi->debug)
 			fi->printdebug(fi, "State %s Event %s",
 <<<<<<< HEAD
-				fi->fsm->strState[fi->state],
-				fi->fsm->strEvent[event]);
-=======
-				       fi->fsm->strState[fi->state],
-				       fi->fsm->strEvent[event]);
->>>>>>> refs/remotes/origin/cm-10.0
-		r(fi, event, arg);
-		return (0);
-	} else {
-		if (fi->debug)
-			fi->printdebug(fi, "State %s Event %s no routine",
 <<<<<<< HEAD
 				fi->fsm->strState[fi->state],
 				fi->fsm->strEvent[event]);
@@ -107,6 +113,27 @@ FsmEvent(struct FsmInst *fi, int event, void *arg)
 				       fi->fsm->strState[fi->state],
 				       fi->fsm->strEvent[event]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       fi->fsm->strState[fi->state],
+				       fi->fsm->strEvent[event]);
+>>>>>>> refs/remotes/origin/master
+		r(fi, event, arg);
+		return (0);
+	} else {
+		if (fi->debug)
+			fi->printdebug(fi, "State %s Event %s no routine",
+<<<<<<< HEAD
+<<<<<<< HEAD
+				fi->fsm->strState[fi->state],
+				fi->fsm->strEvent[event]);
+=======
+				       fi->fsm->strState[fi->state],
+				       fi->fsm->strEvent[event]);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       fi->fsm->strState[fi->state],
+				       fi->fsm->strEvent[event]);
+>>>>>>> refs/remotes/origin/master
 		return (!0);
 	}
 }
@@ -118,10 +145,14 @@ FsmChangeState(struct FsmInst *fi, int newstate)
 	if (fi->debug)
 		fi->printdebug(fi, "ChangeState %s",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			fi->fsm->strState[newstate]);
 =======
 			       fi->fsm->strState[newstate]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       fi->fsm->strState[newstate]);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -166,10 +197,14 @@ FsmAddTimer(struct FsmTimer *ft,
 	if (ft->fi->debug)
 		ft->fi->printdebug(ft->fi, "FsmAddTimer %lx %d %d",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(long) ft, millisec, where);
 =======
 				   (long) ft, millisec, where);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   (long) ft, millisec, where);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	if (timer_pending(&ft->tl)) {
@@ -188,20 +223,28 @@ FsmAddTimer(struct FsmTimer *ft,
 void
 FsmRestartTimer(struct FsmTimer *ft,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    int millisec, int event, void *arg, int where)
 =======
 		int millisec, int event, void *arg, int where)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int millisec, int event, void *arg, int where)
+>>>>>>> refs/remotes/origin/master
 {
 
 #if FSM_TIMER_DEBUG
 	if (ft->fi->debug)
 		ft->fi->printdebug(ft->fi, "FsmRestartTimer %lx %d %d",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(long) ft, millisec, where);
 =======
 				   (long) ft, millisec, where);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   (long) ft, millisec, where);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	if (timer_pending(&ft->tl))

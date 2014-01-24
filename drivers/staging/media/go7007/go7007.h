@@ -17,6 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
 /* DEPRECATED -- use V4L2_PIX_FMT_MPEG and then call GO7007IOC_S_MPEG_PARAMS
  * to select between MPEG1, MPEG2, and MPEG4 */
 #define V4L2_PIX_FMT_MPEG4     v4l2_fourcc('M', 'P', 'G', '4') /* MPEG4 */
@@ -83,6 +84,8 @@ struct go7007_mpeg_params {
 #define GO7007_MPEG4_PROFILE_AS_L4		GO7007_MPEG_PROFILE(4, 0xf4)
 #define GO7007_MPEG4_PROFILE_AS_L5		GO7007_MPEG_PROFILE(4, 0xf5)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct go7007_md_params {
 	__u16 region;
 	__u16 trigger;
@@ -98,6 +101,7 @@ struct go7007_md_region {
 	__u32 reserved[8];
 };
 
+<<<<<<< HEAD
 #define	GO7007IOC_S_MPEG_PARAMS	_IOWR('V', BASE_VIDIOC_PRIVATE + 2, \
 					struct go7007_mpeg_params)
 #define	GO7007IOC_G_MPEG_PARAMS	_IOR('V', BASE_VIDIOC_PRIVATE + 3, \
@@ -106,6 +110,8 @@ struct go7007_md_region {
 					struct go7007_comp_params)
 #define	GO7007IOC_G_COMP_PARAMS	_IOR('V', BASE_VIDIOC_PRIVATE + 5, \
 					struct go7007_comp_params)
+=======
+>>>>>>> refs/remotes/origin/master
 #define	GO7007IOC_S_MD_PARAMS	_IOWR('V', BASE_VIDIOC_PRIVATE + 6, \
 					struct go7007_md_params)
 #define	GO7007IOC_G_MD_PARAMS	_IOR('V', BASE_VIDIOC_PRIVATE + 7, \

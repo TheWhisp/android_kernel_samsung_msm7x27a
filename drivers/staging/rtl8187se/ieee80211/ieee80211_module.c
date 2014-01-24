@@ -47,12 +47,18 @@
 #include <linux/tcp.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/wireless.h>
 #include <linux/etherdevice.h>
 #include <asm/uaccess.h>
+=======
+#include <linux/wireless.h>
+#include <linux/etherdevice.h>
+#include <linux/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/arp.h>
 #include <net/net_namespace.h>
 
@@ -72,11 +78,16 @@ static inline int ieee80211_networks_allocate(struct ieee80211_device *ieee)
 	ieee->networks = kcalloc(
 		MAX_NETWORK_COUNT, sizeof(struct ieee80211_network),
 		GFP_KERNEL);
+<<<<<<< HEAD
 	if (!ieee->networks) {
 		printk(KERN_WARNING "%s: Out of memory allocating beacons\n",
 		       ieee->dev->name);
 		return -ENOMEM;
 	}
+=======
+	if (!ieee->networks)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -104,7 +115,11 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
 {
 	struct ieee80211_device *ieee;
 	struct net_device *dev;
+<<<<<<< HEAD
 	int i,err;
+=======
+	int i, err;
+>>>>>>> refs/remotes/origin/master
 
 	IEEE80211_DEBUG_INFO("Initializing...\n");
 
@@ -144,11 +159,19 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
 	spin_lock_init(&ieee->wpax_suitlist_lock);
 
 	ieee->wpax_type_set = 0;
+<<<<<<< HEAD
  	ieee->wpa_enabled = 0;
  	ieee->tkip_countermeasures = 0;
  	ieee->drop_unencrypted = 0;
  	ieee->privacy_invoked = 0;
  	ieee->ieee802_1x = 1;
+=======
+	ieee->wpa_enabled = 0;
+	ieee->tkip_countermeasures = 0;
+	ieee->drop_unencrypted = 0;
+	ieee->privacy_invoked = 0;
+	ieee->ieee802_1x = 1;
+>>>>>>> refs/remotes/origin/master
 	ieee->raw_tx = 0;
 
 	ieee80211_softmac_init(ieee);
@@ -157,9 +180,15 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
 		INIT_LIST_HEAD(&ieee->ibss_mac_hash[i]);
 
 	for (i = 0; i < 17; i++) {
+<<<<<<< HEAD
 	  ieee->last_rxseq_num[i] = -1;
 	  ieee->last_rxfrag_num[i] = -1;
 	  ieee->last_packet_time[i] = 0;
+=======
+		ieee->last_rxseq_num[i] = -1;
+		ieee->last_rxfrag_num[i] = -1;
+		ieee->last_packet_time[i] = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 //These function were added to load crypte module autoly
 	ieee80211_tkip_null();

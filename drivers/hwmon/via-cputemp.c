@@ -28,9 +28,13 @@
 #include <linux/slab.h>
 #include <linux/hwmon.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/hwmon-vid.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hwmon-vid.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sysfs.h>
 #include <linux/hwmon-sysfs.h>
 #include <linux/err.h>
@@ -41,9 +45,13 @@
 #include <asm/msr.h>
 #include <asm/processor.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cpu_device_id.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cpu_device_id.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRVNAME	"via_cputemp"
 
@@ -57,14 +65,20 @@ struct via_cputemp_data {
 	struct device *hwmon_dev;
 	const char *name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 id;
 	u32 msr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 vrm;
 	u32 id;
 	u32 msr_temp;
 	u32 msr_vid;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -93,10 +107,14 @@ static ssize_t show_temp(struct device *dev,
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = rdmsr_safe_on_cpu(data->id, data->msr, &eax, &edx);
 =======
 	err = rdmsr_safe_on_cpu(data->id, data->msr_temp, &eax, &edx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = rdmsr_safe_on_cpu(data->id, data->msr_temp, &eax, &edx);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		return -EAGAIN;
 
@@ -104,7 +122,10 @@ static ssize_t show_temp(struct device *dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_cpu_vid(struct device *dev,
 			    struct device_attribute *devattr, char *buf)
 {
@@ -119,7 +140,10 @@ static ssize_t show_cpu_vid(struct device *dev,
 	return sprintf(buf, "%d\n", vid_from_reg(~edx & 0x7f, data->vrm));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, show_temp, NULL,
 			  SHOW_TEMP);
 static SENSOR_DEVICE_ATTR(temp1_label, S_IRUGO, show_name, NULL, SHOW_LABEL);
@@ -137,24 +161,38 @@ static const struct attribute_group via_cputemp_group = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Optional attributes */
 static DEVICE_ATTR(cpu0_vid, S_IRUGO, show_cpu_vid, NULL);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinit via_cputemp_probe(struct platform_device *pdev)
+=======
+/* Optional attributes */
+static DEVICE_ATTR(cpu0_vid, S_IRUGO, show_cpu_vid, NULL);
+
+static int via_cputemp_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct via_cputemp_data *data;
 	struct cpuinfo_x86 *c = &cpu_data(pdev->id);
 	int err;
 	u32 eax, edx;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct via_cputemp_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		dev_err(&pdev->dev, "Out of memory\n");
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct via_cputemp_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	data->id = pdev->id;
 	data->name = "via_cputemp";
@@ -165,18 +203,22 @@ static int __devinit via_cputemp_probe(struct platform_device *pdev)
 	case 0xD:
 		/* C7 D */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		data->msr = 0x1169;
 		break;
 	case 0xF:
 		/* Nano */
 		data->msr = 0x1423;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		data->msr_temp = 0x1169;
 		data->msr_vid = 0x198;
 		break;
 	case 0xF:
 		/* Nano */
 		data->msr_temp = 0x1423;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	default:
@@ -194,16 +236,34 @@ static int __devinit via_cputemp_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev,
 			"Unable to access TEMPERATURE MSR, giving up\n");
 		goto exit_free;
+=======
+		break;
+	default:
+		return -ENODEV;
+	}
+
+	/* test if we can access the TEMPERATURE MSR */
+	err = rdmsr_safe_on_cpu(data->id, data->msr_temp, &eax, &edx);
+	if (err) {
+		dev_err(&pdev->dev,
+			"Unable to access TEMPERATURE MSR, giving up\n");
+		return err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, data);
 
 	err = sysfs_create_group(&pdev->dev.kobj, &via_cputemp_group);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
 
 <<<<<<< HEAD
 =======
+=======
+		return err;
+
+>>>>>>> refs/remotes/origin/master
 	if (data->msr_vid)
 		data->vrm = vid_which_vrm();
 
@@ -213,7 +273,10 @@ static int __devinit via_cputemp_probe(struct platform_device *pdev)
 			goto exit_remove;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	data->hwmon_dev = hwmon_device_register(&pdev->dev);
 	if (IS_ERR(data->hwmon_dev)) {
 		err = PTR_ERR(data->hwmon_dev);
@@ -225,6 +288,7 @@ static int __devinit via_cputemp_probe(struct platform_device *pdev)
 	return 0;
 
 exit_remove:
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (data->vrm)
@@ -239,10 +303,20 @@ exit:
 }
 
 static int __devexit via_cputemp_remove(struct platform_device *pdev)
+=======
+	if (data->vrm)
+		device_remove_file(&pdev->dev, &dev_attr_cpu0_vid);
+	sysfs_remove_group(&pdev->dev.kobj, &via_cputemp_group);
+	return err;
+}
+
+static int via_cputemp_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct via_cputemp_data *data = platform_get_drvdata(pdev);
 
 	hwmon_device_unregister(data->hwmon_dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (data->vrm)
@@ -251,6 +325,11 @@ static int __devexit via_cputemp_remove(struct platform_device *pdev)
 	sysfs_remove_group(&pdev->dev.kobj, &via_cputemp_group);
 	platform_set_drvdata(pdev, NULL);
 	kfree(data);
+=======
+	if (data->vrm)
+		device_remove_file(&pdev->dev, &dev_attr_cpu0_vid);
+	sysfs_remove_group(&pdev->dev.kobj, &via_cputemp_group);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -260,7 +339,11 @@ static struct platform_driver via_cputemp_driver = {
 		.name = DRVNAME,
 	},
 	.probe = via_cputemp_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(via_cputemp_remove),
+=======
+	.remove = via_cputemp_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pdev_entry {
@@ -272,7 +355,11 @@ struct pdev_entry {
 static LIST_HEAD(pdev_list);
 static DEFINE_MUTEX(pdev_list_mutex);
 
+<<<<<<< HEAD
 static int __cpuinit via_cputemp_device_add(unsigned int cpu)
+=======
+static int via_cputemp_device_add(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct platform_device *pdev;
@@ -313,7 +400,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __cpuinit via_cputemp_device_remove(unsigned int cpu)
+=======
+static void via_cputemp_device_remove(unsigned int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pdev_entry *p;
 
@@ -330,8 +421,13 @@ static void __cpuinit via_cputemp_device_remove(unsigned int cpu)
 	mutex_unlock(&pdev_list_mutex);
 }
 
+<<<<<<< HEAD
 static int __cpuinit via_cputemp_cpu_callback(struct notifier_block *nfb,
 				 unsigned long action, void *hcpu)
+=======
+static int via_cputemp_cpu_callback(struct notifier_block *nfb,
+				    unsigned long action, void *hcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu = (unsigned long) hcpu;
 
@@ -352,8 +448,12 @@ static struct notifier_block via_cputemp_cpu_notifier __refdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static const struct x86_cpu_id cputemp_ids[] = {
+=======
+static const struct x86_cpu_id __initconst cputemp_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ X86_VENDOR_CENTAUR, 6, 0xa, }, /* C7 A */
 	{ X86_VENDOR_CENTAUR, 6, 0xd, }, /* C7 D */
 	{ X86_VENDOR_CENTAUR, 6, 0xf, }, /* Nano */
@@ -361,11 +461,15 @@ static const struct x86_cpu_id cputemp_ids[] = {
 };
 MODULE_DEVICE_TABLE(x86cpu, cputemp_ids);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init via_cputemp_init(void)
 {
 	int i, err;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cpu_data(0).x86_vendor != X86_VENDOR_CENTAUR) {
 		printk(KERN_DEBUG DRVNAME ": Not a VIA CPU\n");
@@ -376,11 +480,19 @@ static int __init via_cputemp_init(void)
 	if (!x86_match_cpu(cputemp_ids))
 		return -ENODEV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!x86_match_cpu(cputemp_ids))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	err = platform_driver_register(&via_cputemp_driver);
 	if (err)
 		goto exit;
 
+<<<<<<< HEAD
+=======
+	get_online_cpus();
+>>>>>>> refs/remotes/origin/master
 	for_each_online_cpu(i) {
 		struct cpuinfo_x86 *c = &cpu_data(i);
 
@@ -400,12 +512,20 @@ static int __init via_cputemp_init(void)
 
 #ifndef CONFIG_HOTPLUG_CPU
 	if (list_empty(&pdev_list)) {
+<<<<<<< HEAD
+=======
+		put_online_cpus();
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto exit_driver_unreg;
 	}
 #endif
 
 	register_hotcpu_notifier(&via_cputemp_cpu_notifier);
+<<<<<<< HEAD
+=======
+	put_online_cpus();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 #ifndef CONFIG_HOTPLUG_CPU
@@ -420,6 +540,10 @@ static void __exit via_cputemp_exit(void)
 {
 	struct pdev_entry *p, *n;
 
+<<<<<<< HEAD
+=======
+	get_online_cpus();
+>>>>>>> refs/remotes/origin/master
 	unregister_hotcpu_notifier(&via_cputemp_cpu_notifier);
 	mutex_lock(&pdev_list_mutex);
 	list_for_each_entry_safe(p, n, &pdev_list, list) {
@@ -428,6 +552,10 @@ static void __exit via_cputemp_exit(void)
 		kfree(p);
 	}
 	mutex_unlock(&pdev_list_mutex);
+<<<<<<< HEAD
+=======
+	put_online_cpus();
+>>>>>>> refs/remotes/origin/master
 	platform_driver_unregister(&via_cputemp_driver);
 }
 

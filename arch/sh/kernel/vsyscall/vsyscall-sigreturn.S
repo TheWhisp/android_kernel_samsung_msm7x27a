@@ -35,9 +35,12 @@ __kernel_rt_sigreturn:
 .LEND_rt_sigreturn:
 	.size __kernel_rt_sigreturn,.-.LSTART_rt_sigreturn
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	.section .eh_frame,"a",@progbits
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.previous
 
 	.section .eh_frame,"a",@progbits
@@ -75,5 +78,8 @@ __kernel_rt_sigreturn:
 	.align 2
 .LFDE1_end:
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.previous

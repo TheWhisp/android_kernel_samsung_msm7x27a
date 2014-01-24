@@ -60,16 +60,22 @@ typedef struct user_m68kfp_struct elf_fpregset_t;
 #define ELF_PLAT_INIT(_r, load_addr)	_r->a1 = 0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SUN3
 #define ELF_EXEC_PAGESIZE	4096
 #else
 #define ELF_EXEC_PAGESIZE	8192
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_SUN3) || defined(CONFIG_COLDFIRE)
 #define ELF_EXEC_PAGESIZE	8192
 #else
 #define ELF_EXEC_PAGESIZE	4096
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /* This is the location that an ET_DYN program is loaded if exec'ed.  Typical
@@ -120,6 +126,9 @@ typedef struct user_m68kfp_struct elf_fpregset_t;
 
 #define ELF_PLATFORM  (NULL)
 
+<<<<<<< HEAD
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

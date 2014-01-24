@@ -2888,7 +2888,11 @@ ahd_handle_lqiphase_error(struct ahd_softc *ahd, u_int lqistat1)
 		ahd_outb(ahd, CLRINT, CLRSCSIINT);
 		ahd_unpause(ahd);
 	} else {
+<<<<<<< HEAD
 		printk("Reseting Channel for LQI Phase error\n");
+=======
+		printk("Resetting Channel for LQI Phase error\n");
+>>>>>>> refs/remotes/origin/master
 		ahd_dump_card_state(ahd);
 		ahd_reset_channel(ahd, 'A', /*Initiate Reset*/TRUE);
 	}
@@ -8994,10 +8998,14 @@ ahd_handle_scsi_status(struct ahd_softc *ahd, struct scb *scb)
 					break;
 				case SIU_PFC_TMF_NOT_SUPPORTED:
 <<<<<<< HEAD
+<<<<<<< HEAD
 					printk("TMF not supportd\n");
 =======
 					printk("TMF not supported\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					printk("TMF not supported\n");
+>>>>>>> refs/remotes/origin/master
 					break;
 				case SIU_PFC_TMF_FAILED:
 					printk("TMF failed\n");
@@ -9118,10 +9126,14 @@ ahd_handle_scsi_status(struct ahd_softc *ahd, struct scb *scb)
 	}
 	case SCSI_STATUS_OK:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk("%s: Interrupted for staus of 0???\n",
 =======
 		printk("%s: Interrupted for status of 0???\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk("%s: Interrupted for status of 0???\n",
+>>>>>>> refs/remotes/origin/master
 		       ahd_name(ahd));
 		/* FALLTHROUGH */
 	default:

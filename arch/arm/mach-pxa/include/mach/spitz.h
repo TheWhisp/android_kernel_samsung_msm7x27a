@@ -109,10 +109,14 @@
 #define SPITZ_SCP_SUS_SET     0
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SPITZ_SCP_GPIO_BASE	(NR_BUILTIN_GPIO)
 =======
 #define SPITZ_SCP_GPIO_BASE	(PXA_NR_BUILTIN_GPIO)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SPITZ_SCP_GPIO_BASE	(PXA_NR_BUILTIN_GPIO)
+>>>>>>> refs/remotes/origin/master
 #define SPITZ_GPIO_LED_GREEN	(SPITZ_SCP_GPIO_BASE + 0)
 #define SPITZ_GPIO_JK_B		(SPITZ_SCP_GPIO_BASE + 1)
 #define SPITZ_GPIO_CHRG_ON	(SPITZ_SCP_GPIO_BASE + 2)
@@ -145,10 +149,14 @@
 #define SPITZ_SCP2_SUS_SET  (SPITZ_SCP2_IR_ON | SPITZ_SCP2_RESERVED_1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SPITZ_SCP2_GPIO_BASE		(NR_BUILTIN_GPIO + 12)
 =======
 #define SPITZ_SCP2_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 12)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SPITZ_SCP2_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 12)
+>>>>>>> refs/remotes/origin/master
 #define SPITZ_GPIO_IR_ON		(SPITZ_SCP2_GPIO_BASE + 0)
 #define SPITZ_GPIO_AKIN_PULLUP		(SPITZ_SCP2_GPIO_BASE + 1)
 #define SPITZ_GPIO_RESERVED_1		(SPITZ_SCP2_GPIO_BASE + 2)
@@ -161,10 +169,14 @@
 
 /* Akita IO Expander GPIOs */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AKITA_IOEXP_GPIO_BASE		(NR_BUILTIN_GPIO + 12)
 =======
 #define AKITA_IOEXP_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 12)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AKITA_IOEXP_GPIO_BASE		(PXA_NR_BUILTIN_GPIO + 12)
+>>>>>>> refs/remotes/origin/master
 #define AKITA_GPIO_RESERVED_0		(AKITA_IOEXP_GPIO_BASE + 0)
 #define AKITA_GPIO_RESERVED_1		(AKITA_IOEXP_GPIO_BASE + 1)
 #define AKITA_GPIO_MIC_BIAS		(AKITA_IOEXP_GPIO_BASE + 2)
@@ -176,6 +188,7 @@
 
 /* Spitz IRQ Definitions */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SPITZ_IRQ_GPIO_KEY_INT        IRQ_GPIO(SPITZ_GPIO_KEY_INT)
 #define SPITZ_IRQ_GPIO_AC_IN          IRQ_GPIO(SPITZ_GPIO_AC_IN)
@@ -195,6 +208,8 @@
 #define SPITZ_IRQ_GPIO_nSD_INT        IRQ_GPIO(SPITZ_GPIO_nSD_INT)
 #define SPITZ_IRQ_GPIO_nSD_DETECT     IRQ_GPIO(SPITZ_GPIO_nSD_DETECT)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SPITZ_IRQ_GPIO_KEY_INT        PXA_GPIO_TO_IRQ(SPITZ_GPIO_KEY_INT)
 #define SPITZ_IRQ_GPIO_AC_IN          PXA_GPIO_TO_IRQ(SPITZ_GPIO_AC_IN)
 #define SPITZ_IRQ_GPIO_AK_INT         PXA_GPIO_TO_IRQ(SPITZ_GPIO_AK_INT)
@@ -212,7 +227,10 @@
 #define SPITZ_IRQ_GPIO_CF2_IRQ        PXA_GPIO_TO_IRQ(SPITZ_GPIO_CF2_IRQ)
 #define SPITZ_IRQ_GPIO_nSD_INT        PXA_GPIO_TO_IRQ(SPITZ_GPIO_nSD_INT)
 #define SPITZ_IRQ_GPIO_nSD_DETECT     PXA_GPIO_TO_IRQ(SPITZ_GPIO_nSD_DETECT)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Shared data structures

@@ -21,6 +21,7 @@
 #include <linux/string.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/opcode-tile.h>
 #include <asm/pgtable.h>
 #include <asm/homecache.h>
@@ -39,6 +40,11 @@
 # define ELF_R_SYM ELF32_R_SYM
 # define ELF_R_TYPE ELF32_R_TYPE
 #endif
+=======
+#include <asm/pgtable.h>
+#include <asm/homecache.h>
+#include <arch/opcode.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef MODULE_DEBUG
 #define DEBUGP printk
@@ -58,8 +64,11 @@ void *module_alloc(unsigned long size)
 	int i = 0;
 	int npages;
 
+<<<<<<< HEAD
 	if (size == 0)
 		return NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	npages = (size + PAGE_SIZE - 1) / PAGE_SIZE;
 	pages = kmalloc(npages * sizeof(struct page *), GFP_KERNEL);
 	if (pages == NULL)
@@ -74,10 +83,15 @@ void *module_alloc(unsigned long size)
 	if (!area)
 		goto error;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	area->nr_pages = npages;
 	area->pages = pages;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	area->nr_pages = npages;
+	area->pages = pages;
+>>>>>>> refs/remotes/origin/master
 
 	if (map_vm_area(area, prot_rwx, &pages)) {
 		vunmap(area->addr);
@@ -110,6 +124,7 @@ void module_free(struct module *mod, void *module_region)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* We don't need anything special. */
 int module_frob_arch_sections(Elf_Ehdr *hdr,
 			      Elf_Shdr *sechdrs,
@@ -131,6 +146,8 @@ int apply_relocate(Elf_Shdr *sechdrs,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __tilegx__
 /*
  * Validate that the high 16 bits of "value" is just the sign-extension of
@@ -190,7 +207,21 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
 
 		switch (ELF_R_TYPE(rel[i].r_info)) {
 
+<<<<<<< HEAD
 #define MUNGE(func) (*location = ((*location & ~func(-1)) | func(value)))
+=======
+#ifdef __LITTLE_ENDIAN
+# define MUNGE(func) \
+	(*location = ((*location & ~func(-1)) | func(value)))
+#else
+/*
+ * Instructions are always little-endian, so when we read them as data,
+ * we have to swap them around before and after modifying them.
+ */
+# define MUNGE(func) \
+	(*location = swab64((swab64(*location) & ~func(-1)) | func(value)))
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __tilegx__
 		case R_TILE_32:
@@ -264,6 +295,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 int module_finalize(const Elf_Ehdr *hdr,
 		    const Elf_Shdr *sechdrs,
@@ -278,3 +310,5 @@ void module_arch_cleanup(struct module *mod)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

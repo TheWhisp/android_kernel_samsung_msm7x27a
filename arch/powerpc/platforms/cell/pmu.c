@@ -25,9 +25,13 @@
 #include <linux/interrupt.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/irq_regs.h>
 #include <asm/machdep.h>
@@ -385,7 +389,11 @@ static int __init cbe_init_pm_irq(void)
 	unsigned int irq;
 	int rc, node;
 
+<<<<<<< HEAD
 	for_each_node(node) {
+=======
+	for_each_online_node(node) {
+>>>>>>> refs/remotes/origin/master
 		irq = irq_create_mapping(NULL, IIC_IRQ_IOEX_PMI |
 					       (node << IIC_IRQ_NODE_SHIFT));
 		if (irq == NO_IRQ) {
@@ -396,10 +404,14 @@ static int __init cbe_init_pm_irq(void)
 
 		rc = request_irq(irq, cbe_pm_irq,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 IRQF_DISABLED, "cbe-pmu-0", NULL);
 =======
 				 0, "cbe-pmu-0", NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 0, "cbe-pmu-0", NULL);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			printk("ERROR: Request for irq on node %d failed\n",
 			       node);

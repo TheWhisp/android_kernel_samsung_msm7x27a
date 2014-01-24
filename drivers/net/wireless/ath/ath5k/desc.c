@@ -21,12 +21,20 @@
  Hardware Descriptor Functions
 \******************************/
 
+<<<<<<< HEAD
 #include "ath5k.h"
 #include "reg.h"
 #include "debug.h"
 <<<<<<< HEAD
 #include "base.h"
 =======
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include "ath5k.h"
+#include "reg.h"
+#include "debug.h"
+>>>>>>> refs/remotes/origin/master
 
 
 /**
@@ -44,13 +52,17 @@
  * have function pointers on &struct ath5k_hw we initialize at runtime based on
  * the chip used.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 /************************\
 * TX Control descriptors *
 \************************/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Initialize the 2-word tx control descriptor on 5210/5211
@@ -63,6 +75,8 @@ ath5k_hw_setup_2word_tx_desc(struct ath5k_hw *ah, struct ath5k_desc *desc,
 	unsigned int key_index, unsigned int antenna_mode, unsigned int flags,
 	unsigned int rtscts_rate, unsigned int rtscts_duration)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_setup_2word_tx_desc() - Initialize a 2-word tx control descriptor
  * @ah: The &struct ath5k_hw
@@ -97,7 +111,10 @@ ath5k_hw_setup_2word_tx_desc(struct ath5k_hw *ah,
 			unsigned int antenna_mode,
 			unsigned int flags,
 			unsigned int rtscts_rate, unsigned int rtscts_duration)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	u32 frame_type;
 	struct ath5k_hw_2w_tx_ctl *tx_ctl;
@@ -113,19 +130,27 @@ ath5k_hw_setup_2word_tx_desc(struct ath5k_hw *ah,
 	 */
 	if (unlikely(tx_tries0 == 0)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "zero retries\n");
 =======
 		ATH5K_ERR(ah, "zero retries\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_ERR(ah, "zero retries\n");
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(1);
 		return -EINVAL;
 	}
 	if (unlikely(tx_rate0 == 0)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "zero rate\n");
 =======
 		ATH5K_ERR(ah, "zero rate\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_ERR(ah, "zero rate\n");
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(1);
 		return -EINVAL;
 	}
@@ -239,6 +264,7 @@ ath5k_hw_setup_2word_tx_desc(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Initialize the 4-word tx control descriptor on 5212
  */
@@ -251,6 +277,8 @@ static int ath5k_hw_setup_4word_tx_desc(struct ath5k_hw *ah,
 	unsigned int rtscts_rate,
 	unsigned int rtscts_duration)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_setup_4word_tx_desc() - Initialize a 4-word tx control descriptor
  * @ah: The &struct ath5k_hw
@@ -285,7 +313,10 @@ ath5k_hw_setup_4word_tx_desc(struct ath5k_hw *ah,
 			unsigned int antenna_mode,
 			unsigned int flags,
 			unsigned int rtscts_rate, unsigned int rtscts_duration)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath5k_hw_4w_tx_ctl *tx_ctl;
 	unsigned int frame_len;
@@ -306,19 +337,27 @@ ath5k_hw_setup_4word_tx_desc(struct ath5k_hw *ah,
 	 */
 	if (unlikely(tx_tries0 == 0)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "zero retries\n");
 =======
 		ATH5K_ERR(ah, "zero retries\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_ERR(ah, "zero retries\n");
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(1);
 		return -EINVAL;
 	}
 	if (unlikely(tx_rate0 == 0)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "zero rate\n");
 =======
 		ATH5K_ERR(ah, "zero rate\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_ERR(ah, "zero rate\n");
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(1);
 		return -EINVAL;
 	}
@@ -404,6 +443,7 @@ ath5k_hw_setup_4word_tx_desc(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Initialize a 4-word multi rate retry tx control descriptor on 5212
  */
@@ -412,6 +452,8 @@ ath5k_hw_setup_mrr_tx_desc(struct ath5k_hw *ah, struct ath5k_desc *desc,
 	unsigned int tx_rate1, u_int tx_tries1, u_int tx_rate2,
 	u_int tx_tries2, unsigned int tx_rate3, u_int tx_tries3)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_setup_mrr_tx_desc() - Initialize an MRR tx control descriptor
  * @ah: The &struct ath5k_hw
@@ -435,7 +477,10 @@ ath5k_hw_setup_mrr_tx_desc(struct ath5k_hw *ah,
 			u_int tx_rate1, u_int tx_tries1,
 			u_int tx_rate2, u_int tx_tries2,
 			u_int tx_rate3, u_int tx_tries3)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath5k_hw_4w_tx_ctl *tx_ctl;
 
@@ -453,10 +498,14 @@ ath5k_hw_setup_mrr_tx_desc(struct ath5k_hw *ah,
 		     (tx_rate2 == 0 && tx_tries2 != 0) ||
 		     (tx_rate3 == 0 && tx_tries3 != 0))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ATH5K_ERR(ah->ah_sc, "zero rate\n");
 =======
 		ATH5K_ERR(ah, "zero rate\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ATH5K_ERR(ah, "zero rate\n");
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(1);
 		return -EINVAL;
 	}
@@ -492,12 +541,15 @@ ath5k_hw_setup_mrr_tx_desc(struct ath5k_hw *ah,
 \***********************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Process the tx status descriptor on 5210/5211
  */
 static int ath5k_hw_proc_2word_tx_status(struct ath5k_hw *ah,
 		struct ath5k_desc *desc, struct ath5k_tx_status *ts)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_proc_2word_tx_status() - Process a tx status descriptor on 5210/1
  * @ah: The &struct ath5k_hw
@@ -508,12 +560,18 @@ static int
 ath5k_hw_proc_2word_tx_status(struct ath5k_hw *ah,
 				struct ath5k_desc *desc,
 				struct ath5k_tx_status *ts)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ath5k_hw_2w_tx_ctl *tx_ctl;
 	struct ath5k_hw_tx_status *tx_status;
 
 	tx_ctl = &desc->ud.ds_tx5210.tx_ctl;
+=======
+{
+	struct ath5k_hw_tx_status *tx_status;
+
+>>>>>>> refs/remotes/origin/master
 	tx_status = &desc->ud.ds_tx5210.tx_stat;
 
 	/* No frame has been send or error */
@@ -554,12 +612,15 @@ ath5k_hw_proc_2word_tx_status(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Process a tx status descriptor on 5212
  */
 static int ath5k_hw_proc_4word_tx_status(struct ath5k_hw *ah,
 		struct ath5k_desc *desc, struct ath5k_tx_status *ts)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_proc_4word_tx_status() - Process a tx status descriptor on 5212
  * @ah: The &struct ath5k_hw
@@ -570,6 +631,7 @@ static int
 ath5k_hw_proc_4word_tx_status(struct ath5k_hw *ah,
 				struct ath5k_desc *desc,
 				struct ath5k_tx_status *ts)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct ath5k_hw_4w_tx_ctl *tx_ctl;
@@ -577,6 +639,12 @@ ath5k_hw_proc_4word_tx_status(struct ath5k_hw *ah,
 	u32 txstat0, txstat1;
 
 	tx_ctl = &desc->ud.ds_tx5212.tx_ctl;
+=======
+{
+	struct ath5k_hw_tx_status *tx_status;
+	u32 txstat0, txstat1;
+
+>>>>>>> refs/remotes/origin/master
 	tx_status = &desc->ud.ds_tx5212.tx_stat;
 
 	txstat1 = ACCESS_ONCE(tx_status->tx_status_1);
@@ -628,12 +696,15 @@ ath5k_hw_proc_4word_tx_status(struct ath5k_hw *ah,
 \****************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Initialize an rx control descriptor
  */
 int ath5k_hw_setup_rx_desc(struct ath5k_hw *ah, struct ath5k_desc *desc,
 			   u32 size, unsigned int flags)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_setup_rx_desc() - Initialize an rx control descriptor
  * @ah: The &struct ath5k_hw
@@ -645,7 +716,10 @@ int
 ath5k_hw_setup_rx_desc(struct ath5k_hw *ah,
 			struct ath5k_desc *desc,
 			u32 size, unsigned int flags)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath5k_hw_rx_ctl *rx_ctl;
 
@@ -673,12 +747,15 @@ ath5k_hw_setup_rx_desc(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Process the rx status descriptor on 5210/5211
  */
 static int ath5k_hw_proc_5210_rx_status(struct ath5k_hw *ah,
 		struct ath5k_desc *desc, struct ath5k_rx_status *rs)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_proc_5210_rx_status() - Process the rx status descriptor on 5210/1
  * @ah: The &struct ath5k_hw
@@ -695,7 +772,10 @@ static int
 ath5k_hw_proc_5210_rx_status(struct ath5k_hw *ah,
 				struct ath5k_desc *desc,
 				struct ath5k_rx_status *rs)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath5k_hw_rx_status *rx_status;
 
@@ -775,6 +855,7 @@ ath5k_hw_proc_5210_rx_status(struct ath5k_hw *ah,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Process the rx status descriptor on 5212
  */
@@ -782,6 +863,8 @@ static int ath5k_hw_proc_5212_rx_status(struct ath5k_hw *ah,
 					struct ath5k_desc *desc,
 					struct ath5k_rx_status *rs)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_proc_5212_rx_status() - Process the rx status descriptor on 5212
  * @ah: The &struct ath5k_hw
@@ -798,7 +881,10 @@ static int
 ath5k_hw_proc_5212_rx_status(struct ath5k_hw *ah,
 				struct ath5k_desc *desc,
 				struct ath5k_rx_status *rs)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ath5k_hw_rx_status *rx_status;
 	u32 rxstat0, rxstat1;
@@ -866,11 +952,14 @@ ath5k_hw_proc_5212_rx_status(struct ath5k_hw *ah,
 \********/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Init function pointers inside ath5k_hw struct
  */
 int ath5k_hw_init_desc_functions(struct ath5k_hw *ah)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * ath5k_hw_init_desc_functions() - Init function pointers inside ah
  * @ah: The &struct ath5k_hw
@@ -881,7 +970,10 @@ int ath5k_hw_init_desc_functions(struct ath5k_hw *ah)
  */
 int
 ath5k_hw_init_desc_functions(struct ath5k_hw *ah)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (ah->ah_version == AR5K_AR5212) {
 		ah->ah_setup_tx_desc = ath5k_hw_setup_4word_tx_desc;

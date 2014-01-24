@@ -75,11 +75,16 @@ struct rpc_clnt;
 
 struct rpc_iostats *	rpc_alloc_iostats(struct rpc_clnt *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void			rpc_count_iostats(struct rpc_task *);
 =======
 void			rpc_count_iostats(const struct rpc_task *,
 					  struct rpc_iostats *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void			rpc_count_iostats(const struct rpc_task *,
+					  struct rpc_iostats *);
+>>>>>>> refs/remotes/origin/master
 void			rpc_print_iostats(struct seq_file *, struct rpc_clnt *);
 void			rpc_free_iostats(struct rpc_iostats *);
 
@@ -87,11 +92,16 @@ void			rpc_free_iostats(struct rpc_iostats *);
 
 static inline struct rpc_iostats *rpc_alloc_iostats(struct rpc_clnt *clnt) { return NULL; }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void rpc_count_iostats(struct rpc_task *task) {}
 =======
 static inline void rpc_count_iostats(const struct rpc_task *task,
 				     struct rpc_iostats *stats) {}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void rpc_count_iostats(const struct rpc_task *task,
+				     struct rpc_iostats *stats) {}
+>>>>>>> refs/remotes/origin/master
 static inline void rpc_print_iostats(struct seq_file *seq, struct rpc_clnt *clnt) {}
 static inline void rpc_free_iostats(struct rpc_iostats *stats) {}
 

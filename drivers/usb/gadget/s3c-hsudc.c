@@ -24,6 +24,7 @@
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <linux/clk.h>
+<<<<<<< HEAD
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
 <<<<<<< HEAD
@@ -32,6 +33,11 @@
 #include <mach/regs-s3c2443-clock.h>
 #include <plat/udc.h>
 =======
+=======
+#include <linux/err.h>
+#include <linux/usb/ch9.h>
+#include <linux/usb/gadget.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb/otg.h>
 #include <linux/prefetch.h>
 #include <linux/platform_data/s3c-hsudc.h>
@@ -39,7 +45,10 @@
 #include <linux/pm_runtime.h>
 
 #include <mach/regs-s3c2443-clock.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define S3C_HSUDC_REG(x)	(x)
 
@@ -97,14 +106,20 @@
 #define DATA_STATE_RECV			(2)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const char * const s3c_hsudc_supply_names[] = {
 	"vdda",		/* analog phy supply, 3.3V */
 	"vddi",		/* digital phy supply, 1.2V */
 	"vddosc",	/* oscillator supply, 1.8V - 3.3V */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct s3c_hsudc_ep - Endpoint representation used by driver.
  * @ep: USB gadget layer representation of device endpoint.
@@ -120,7 +135,10 @@ struct s3c_hsudc_ep {
 	struct usb_ep ep;
 	char name[20];
 	struct s3c_hsudc *dev;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor *desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head queue;
 	u8 stopped;
 	u8 wedge;
@@ -145,7 +163,10 @@ struct s3c_hsudc_req {
  * @dev: The device reference used by probe function.
  * @lock: Lock to synchronize the usage of Endpoints (EP's are indexed).
  * @regs: Remapped base address of controller's register space.
+<<<<<<< HEAD
  * @mem_rsrc: Device memory resource used for remapping device register space.
+=======
+>>>>>>> refs/remotes/origin/master
  * irq: IRQ number used by the controller.
  * uclk: Reference to the controller clock.
  * ep0state: Current state of EP0.
@@ -157,6 +178,7 @@ struct s3c_hsudc {
 	struct device *dev;
 	struct s3c24xx_hsudc_platdata *pd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct usb_phy *transceiver;
 	struct regulator_bulk_data supplies[ARRAY_SIZE(s3c_hsudc_supply_names)];
@@ -164,6 +186,12 @@ struct s3c_hsudc {
 	spinlock_t lock;
 	void __iomem *regs;
 	struct resource *mem_rsrc;
+=======
+	struct usb_phy *transceiver;
+	struct regulator_bulk_data supplies[ARRAY_SIZE(s3c_hsudc_supply_names)];
+	spinlock_t lock;
+	void __iomem *regs;
+>>>>>>> refs/remotes/origin/master
 	int irq;
 	struct clk *uclk;
 	int ep0state;
@@ -176,9 +204,12 @@ struct s3c_hsudc {
 					USB_ENDPOINT_NUMBER_MASK)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct s3c_hsudc *the_controller;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const char driver_name[] = "s3c-udc";
 static const char ep0name[] = "ep0-control";
 
@@ -302,17 +333,24 @@ static void s3c_hsudc_nuke_ep(struct s3c_hsudc_ep *hsep, int status)
 /**
  * s3c_hsudc_stop_activity - Stop activity on all endpoints.
  * @hsudc: Device controller for which EP activity is to be stopped.
+<<<<<<< HEAD
  * @driver: Reference to the gadget driver which is currently active.
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * All the endpoints are stopped and any pending transfer requests if any on
  * the endpoint are terminated.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void s3c_hsudc_stop_activity(struct s3c_hsudc *hsudc,
 			  struct usb_gadget_driver *driver)
 =======
 static void s3c_hsudc_stop_activity(struct s3c_hsudc *hsudc)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void s3c_hsudc_stop_activity(struct s3c_hsudc *hsudc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s3c_hsudc_ep *hsep;
 	int epnum;
@@ -325,12 +363,15 @@ static void s3c_hsudc_stop_activity(struct s3c_hsudc *hsudc)
 		s3c_hsudc_nuke_ep(hsep, -ESHUTDOWN);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	spin_unlock(&hsudc->lock);
 	driver->disconnect(&hsudc->gadget);
 	spin_lock(&hsudc->lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -466,7 +507,11 @@ static void s3c_hsudc_epin_intr(struct s3c_hsudc *hsudc, u32 ep_idx)
 	struct s3c_hsudc_req *hsreq;
 	u32 csr;
 
+<<<<<<< HEAD
 	csr = readl((u32)hsudc->regs + S3C_ESR);
+=======
+	csr = readl(hsudc->regs + S3C_ESR);
+>>>>>>> refs/remotes/origin/master
 	if (csr & S3C_ESR_STALL) {
 		writel(S3C_ESR_STALL, hsudc->regs + S3C_ESR);
 		return;
@@ -499,7 +544,11 @@ static void s3c_hsudc_epout_intr(struct s3c_hsudc *hsudc, u32 ep_idx)
 	struct s3c_hsudc_req *hsreq;
 	u32 csr;
 
+<<<<<<< HEAD
 	csr = readl((u32)hsudc->regs + S3C_ESR);
+=======
+	csr = readl(hsudc->regs + S3C_ESR);
+>>>>>>> refs/remotes/origin/master
 	if (csr & S3C_ESR_STALL) {
 		writel(S3C_ESR_STALL, hsudc->regs + S3C_ESR);
 		return;
@@ -790,6 +839,7 @@ static int s3c_hsudc_ep_enable(struct usb_ep *_ep,
 	u32 ecr = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hsep = container_of(_ep, struct s3c_hsudc_ep, ep);
 	if (!_ep || !desc || hsep->desc || _ep->name == ep0name
 		|| desc->bDescriptorType != USB_DT_ENDPOINT
@@ -802,6 +852,10 @@ static int s3c_hsudc_ep_enable(struct usb_ep *_ep,
 =======
 	hsep = our_ep(_ep);
 	if (!_ep || !desc || hsep->desc || _ep->name == ep0name
+=======
+	hsep = our_ep(_ep);
+	if (!_ep || !desc || _ep->name == ep0name
+>>>>>>> refs/remotes/origin/master
 		|| desc->bDescriptorType != USB_DT_ENDPOINT
 		|| hsep->bEndpointAddress != desc->bEndpointAddress
 		|| ep_maxpacket(hsep) < usb_endpoint_maxp(desc))
@@ -809,7 +863,10 @@ static int s3c_hsudc_ep_enable(struct usb_ep *_ep,
 
 	if ((desc->bmAttributes == USB_ENDPOINT_XFER_BULK
 		&& usb_endpoint_maxp(desc) != ep_maxpacket(hsep))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		|| !desc->wMaxPacketSize)
 		return -ERANGE;
 
@@ -824,12 +881,17 @@ static int s3c_hsudc_ep_enable(struct usb_ep *_ep,
 	writel(ecr, hsudc->regs + S3C_ECR);
 
 	hsep->stopped = hsep->wedge = 0;
+<<<<<<< HEAD
 	hsep->desc = desc;
 <<<<<<< HEAD
 	hsep->ep.maxpacket = le16_to_cpu(desc->wMaxPacketSize);
 =======
 	hsep->ep.maxpacket = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hsep->ep.desc = desc;
+	hsep->ep.maxpacket = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 
 	s3c_hsudc_set_halt(_ep, 0);
 	__set_bit(ep_index(hsep), hsudc->regs + S3C_EIER);
@@ -851,7 +913,11 @@ static int s3c_hsudc_ep_disable(struct usb_ep *_ep)
 	struct s3c_hsudc *hsudc = hsep->dev;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	if (!_ep || !hsep->desc)
+=======
+	if (!_ep || !hsep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	spin_lock_irqsave(&hsudc->lock, flags);
@@ -861,11 +927,15 @@ static int s3c_hsudc_ep_disable(struct usb_ep *_ep)
 
 	s3c_hsudc_nuke_ep(hsep, -ESHUTDOWN);
 
+<<<<<<< HEAD
 	hsep->desc = 0;
 <<<<<<< HEAD
 =======
 	hsep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hsep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 	hsep->stopped = 1;
 
 	spin_unlock_irqrestore(&hsudc->lock, flags);
@@ -884,9 +954,15 @@ static struct usb_request *s3c_hsudc_alloc_request(struct usb_ep *_ep,
 {
 	struct s3c_hsudc_req *hsreq;
 
+<<<<<<< HEAD
 	hsreq = kzalloc(sizeof *hsreq, gfp_flags);
 	if (!hsreq)
 		return 0;
+=======
+	hsreq = kzalloc(sizeof(*hsreq), gfp_flags);
+	if (!hsreq)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	INIT_LIST_HEAD(&hsreq->queue);
 	return &hsreq->req;
@@ -904,10 +980,14 @@ static void s3c_hsudc_free_request(struct usb_ep *ep, struct usb_request *_req)
 	struct s3c_hsudc_req *hsreq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hsreq = container_of(_req, struct s3c_hsudc_req, req);
 =======
 	hsreq = our_req(_req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hsreq = our_req(_req);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(!list_empty(&hsreq->queue));
 	kfree(hsreq);
 }
@@ -931,19 +1011,27 @@ static int s3c_hsudc_queue(struct usb_ep *_ep, struct usb_request *_req,
 	u32 csr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hsreq = container_of(_req, struct s3c_hsudc_req, req);
 =======
 	hsreq = our_req(_req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hsreq = our_req(_req);
+>>>>>>> refs/remotes/origin/master
 	if ((!_req || !_req->complete || !_req->buf ||
 		!list_empty(&hsreq->queue)))
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hsep = container_of(_ep, struct s3c_hsudc_ep, ep);
 =======
 	hsep = our_ep(_ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hsep = our_ep(_ep);
+>>>>>>> refs/remotes/origin/master
 	hsudc = hsep->dev;
 	if (!hsudc->driver || hsudc->gadget.speed == USB_SPEED_UNKNOWN)
 		return -ESHUTDOWN;
@@ -964,6 +1052,7 @@ static int s3c_hsudc_queue(struct usb_ep *_ep, struct usb_request *_req,
 	if (list_empty(&hsep->queue) && !hsep->stopped) {
 		offset = (ep_index(hsep)) ? S3C_ESR : S3C_EP0SR;
 		if (ep_is_in(hsep)) {
+<<<<<<< HEAD
 			csr = readl((u32)hsudc->regs + offset);
 			if (!(csr & S3C_ESR_TX_SUCCESS) &&
 				(s3c_hsudc_write_fifo(hsep, hsreq) == 1))
@@ -977,6 +1066,21 @@ static int s3c_hsudc_queue(struct usb_ep *_ep, struct usb_request *_req,
 	}
 
 	if (hsreq != 0)
+=======
+			csr = readl(hsudc->regs + offset);
+			if (!(csr & S3C_ESR_TX_SUCCESS) &&
+				(s3c_hsudc_write_fifo(hsep, hsreq) == 1))
+				hsreq = NULL;
+		} else {
+			csr = readl(hsudc->regs + offset);
+			if ((csr & S3C_ESR_RX_SUCCESS)
+				   && (s3c_hsudc_read_fifo(hsep, hsreq) == 1))
+				hsreq = NULL;
+		}
+	}
+
+	if (hsreq)
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&hsreq->queue, &hsep->queue);
 
 	spin_unlock_irqrestore(&hsudc->lock, flags);
@@ -998,10 +1102,14 @@ static int s3c_hsudc_dequeue(struct usb_ep *_ep, struct usb_request *_req)
 	unsigned long flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hsep = container_of(_ep, struct s3c_hsudc_ep, ep);
 =======
 	hsep = our_ep(_ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hsep = our_ep(_ep);
+>>>>>>> refs/remotes/origin/master
 	if (!_ep || hsep->ep.name == ep0name)
 		return -EINVAL;
 
@@ -1067,6 +1175,7 @@ static void s3c_hsudc_initep(struct s3c_hsudc *hsudc,
 
 	hsep->dev = hsudc;
 	hsep->ep.name = hsep->name;
+<<<<<<< HEAD
 	hsep->ep.maxpacket = epnum ? 512 : 64;
 	hsep->ep.ops = &s3c_hsudc_ep_ops;
 	hsep->fifo = hsudc->regs + S3C_BR(epnum);
@@ -1075,6 +1184,12 @@ static void s3c_hsudc_initep(struct s3c_hsudc *hsudc,
 =======
 	hsep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_ep_set_maxpacket_limit(&hsep->ep, epnum ? 512 : 64);
+	hsep->ep.ops = &s3c_hsudc_ep_ops;
+	hsep->fifo = hsudc->regs + S3C_BR(epnum);
+	hsep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 	hsep->stopped = 0;
 	hsep->wedge = 0;
 
@@ -1208,6 +1323,7 @@ static irqreturn_t s3c_hsudc_irq(int irq, void *_dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *))
 {
@@ -1220,6 +1336,8 @@ int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 		|| !bind
 		|| !driver->unbind || !driver->disconnect || !driver->setup)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int s3c_hsudc_start(struct usb_gadget *gadget,
 		struct usb_gadget_driver *driver)
 {
@@ -1229,7 +1347,10 @@ static int s3c_hsudc_start(struct usb_gadget *gadget,
 	if (!driver
 		|| driver->max_speed < USB_SPEED_FULL
 		|| !driver->setup)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (!hsudc)
@@ -1239,6 +1360,7 @@ static int s3c_hsudc_start(struct usb_gadget *gadget,
 		return -EBUSY;
 
 	hsudc->driver = driver;
+<<<<<<< HEAD
 	hsudc->gadget.dev.driver = &driver->driver;
 <<<<<<< HEAD
 	hsudc->gadget.speed = USB_SPEED_UNKNOWN;
@@ -1257,6 +1379,8 @@ static int s3c_hsudc_start(struct usb_gadget *gadget,
 		hsudc->gadget.dev.driver = NULL;
 		return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = regulator_bulk_enable(ARRAY_SIZE(hsudc->supplies),
 				    hsudc->supplies);
@@ -1266,7 +1390,11 @@ static int s3c_hsudc_start(struct usb_gadget *gadget,
 	}
 
 	/* connect to bus through transceiver */
+<<<<<<< HEAD
 	if (hsudc->transceiver) {
+=======
+	if (!IS_ERR_OR_NULL(hsudc->transceiver)) {
+>>>>>>> refs/remotes/origin/master
 		ret = otg_set_peripheral(hsudc->transceiver->otg,
 					&hsudc->gadget);
 		if (ret) {
@@ -1274,7 +1402,10 @@ static int s3c_hsudc_start(struct usb_gadget *gadget,
 					hsudc->gadget.name);
 			goto err_otg;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	enable_irq(hsudc->irq);
@@ -1282,16 +1413,23 @@ static int s3c_hsudc_start(struct usb_gadget *gadget,
 
 	s3c_hsudc_reconfig(hsudc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	pm_runtime_get_sync(hsudc->dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	pm_runtime_get_sync(hsudc->dev);
+
+>>>>>>> refs/remotes/origin/master
 	s3c_hsudc_init_phy();
 	if (hsudc->pd->gpio_init)
 		hsudc->pd->gpio_init();
 
 	return 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 EXPORT_SYMBOL(usb_gadget_probe_driver);
@@ -1300,11 +1438,16 @@ int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 {
 	struct s3c_hsudc *hsudc = the_controller;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 err_otg:
 	regulator_bulk_disable(ARRAY_SIZE(hsudc->supplies), hsudc->supplies);
 err_supplies:
 	hsudc->driver = NULL;
+<<<<<<< HEAD
 	hsudc->gadget.dev.driver = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1312,12 +1455,16 @@ static int s3c_hsudc_stop(struct usb_gadget *gadget,
 		struct usb_gadget_driver *driver)
 {
 	struct s3c_hsudc *hsudc = to_hsudc(gadget);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	if (!hsudc)
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!driver || driver != hsudc->driver || !driver->unbind)
 		return -EINVAL;
@@ -1335,12 +1482,17 @@ static int s3c_hsudc_stop(struct usb_gadget *gadget,
 	disable_irq(hsudc->irq);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!driver || driver != hsudc->driver)
 		return -EINVAL;
 
 	spin_lock_irqsave(&hsudc->lock, flags);
 	hsudc->driver = NULL;
+<<<<<<< HEAD
 	hsudc->gadget.dev.driver = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	hsudc->gadget.speed = USB_SPEED_UNKNOWN;
 	s3c_hsudc_uninit_phy();
 
@@ -1351,22 +1503,32 @@ static int s3c_hsudc_stop(struct usb_gadget *gadget,
 	s3c_hsudc_stop_activity(hsudc);
 	spin_unlock_irqrestore(&hsudc->lock, flags);
 
+<<<<<<< HEAD
 	if (hsudc->transceiver)
+=======
+	if (!IS_ERR_OR_NULL(hsudc->transceiver))
+>>>>>>> refs/remotes/origin/master
 		(void) otg_set_peripheral(hsudc->transceiver->otg, NULL);
 
 	disable_irq(hsudc->irq);
 
 	regulator_bulk_disable(ARRAY_SIZE(hsudc->supplies), hsudc->supplies);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_info(hsudc->dev, "unregistered gadget driver '%s'\n",
 			driver->driver.name);
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline u32 s3c_hsudc_read_frameno(struct s3c_hsudc *hsudc)
 {
@@ -1379,12 +1541,15 @@ static int s3c_hsudc_gadget_getframe(struct usb_gadget *gadget)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct usb_gadget_ops s3c_hsudc_gadget_ops = {
 	.get_frame	= s3c_hsudc_gadget_getframe,
 };
 
 static int s3c_hsudc_probe(struct platform_device *pdev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int s3c_hsudc_vbus_draw(struct usb_gadget *gadget, unsigned mA)
 {
 	struct s3c_hsudc *hsudc = to_hsudc(gadget);
@@ -1392,25 +1557,38 @@ static int s3c_hsudc_vbus_draw(struct usb_gadget *gadget, unsigned mA)
 	if (!hsudc)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	if (hsudc->transceiver)
+=======
+	if (!IS_ERR_OR_NULL(hsudc->transceiver))
+>>>>>>> refs/remotes/origin/master
 		return usb_phy_set_power(hsudc->transceiver, mA);
 
 	return -EOPNOTSUPP;
 }
 
+<<<<<<< HEAD
 static struct usb_gadget_ops s3c_hsudc_gadget_ops = {
+=======
+static const struct usb_gadget_ops s3c_hsudc_gadget_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_frame	= s3c_hsudc_gadget_getframe,
 	.udc_start	= s3c_hsudc_start,
 	.udc_stop	= s3c_hsudc_stop,
 	.vbus_draw	= s3c_hsudc_vbus_draw,
 };
 
+<<<<<<< HEAD
 static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int s3c_hsudc_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &pdev->dev;
 	struct resource *res;
 	struct s3c_hsudc *hsudc;
+<<<<<<< HEAD
 	struct s3c24xx_hsudc_platdata *pd = pdev->dev.platform_data;
 <<<<<<< HEAD
 	int ret;
@@ -1419,6 +1597,12 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	hsudc = kzalloc(sizeof(struct s3c_hsudc) +
+=======
+	struct s3c24xx_hsudc_platdata *pd = dev_get_platdata(&pdev->dev);
+	int ret, i;
+
+	hsudc = devm_kzalloc(&pdev->dev, sizeof(struct s3c_hsudc) +
+>>>>>>> refs/remotes/origin/master
 			sizeof(struct s3c_hsudc_ep) * pd->epnum,
 			GFP_KERNEL);
 	if (!hsudc) {
@@ -1426,6 +1610,7 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	the_controller = hsudc;
 =======
@@ -1437,17 +1622,29 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 <<<<<<< HEAD
 =======
 	hsudc->transceiver = usb_get_transceiver();
+=======
+	platform_set_drvdata(pdev, dev);
+	hsudc->dev = dev;
+	hsudc->pd = dev_get_platdata(&pdev->dev);
+
+	hsudc->transceiver = usb_get_phy(USB_PHY_TYPE_USB2);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ARRAY_SIZE(hsudc->supplies); i++)
 		hsudc->supplies[i].supply = s3c_hsudc_supply_names[i];
 
+<<<<<<< HEAD
 	ret = regulator_bulk_get(dev, ARRAY_SIZE(hsudc->supplies),
+=======
+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(hsudc->supplies),
+>>>>>>> refs/remotes/origin/master
 				 hsudc->supplies);
 	if (ret != 0) {
 		dev_err(dev, "failed to request supplies: %d\n", ret);
 		goto err_supplies;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!res) {
@@ -1511,6 +1708,24 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 	s3c_hsudc_setup_ep(hsudc);
 
 =======
+=======
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	hsudc->regs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(hsudc->regs)) {
+		ret = PTR_ERR(hsudc->regs);
+		goto err_res;
+	}
+
+	spin_lock_init(&hsudc->lock);
+
+	hsudc->gadget.max_speed = USB_SPEED_HIGH;
+	hsudc->gadget.ops = &s3c_hsudc_gadget_ops;
+	hsudc->gadget.name = dev_name(dev);
+	hsudc->gadget.ep0 = &hsudc->ep[0].ep;
+	hsudc->gadget.is_otg = 0;
+	hsudc->gadget.is_a_peripheral = 0;
+>>>>>>> refs/remotes/origin/master
 	hsudc->gadget.speed = USB_SPEED_UNKNOWN;
 
 	s3c_hsudc_setup_ep(hsudc);
@@ -1518,6 +1733,7 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 	ret = platform_get_irq(pdev, 0);
 	if (ret < 0) {
 		dev_err(dev, "unable to obtain IRQ number\n");
+<<<<<<< HEAD
 		goto err_irq;
 	}
 	hsudc->irq = ret;
@@ -1534,6 +1750,24 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 		dev_err(dev, "failed to find usb-device clock source\n");
 		ret = PTR_ERR(hsudc->uclk);
 		goto err_clk;
+=======
+		goto err_res;
+	}
+	hsudc->irq = ret;
+
+	ret = devm_request_irq(&pdev->dev, hsudc->irq, s3c_hsudc_irq, 0,
+				driver_name, hsudc);
+	if (ret < 0) {
+		dev_err(dev, "irq request failed\n");
+		goto err_res;
+	}
+
+	hsudc->uclk = devm_clk_get(&pdev->dev, "usb-device");
+	if (IS_ERR(hsudc->uclk)) {
+		dev_err(dev, "failed to find usb-device clock source\n");
+		ret = PTR_ERR(hsudc->uclk);
+		goto err_res;
+>>>>>>> refs/remotes/origin/master
 	}
 	clk_enable(hsudc->uclk);
 
@@ -1541,6 +1775,7 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 
 	disable_irq(hsudc->irq);
 	local_irq_enable();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return 0;
 =======
@@ -1550,6 +1785,8 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 		put_device(&hsudc->gadget.dev);
 		goto err_add_device;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ret = usb_add_gadget_udc(&pdev->dev, &hsudc->gadget);
 	if (ret)
@@ -1559,6 +1796,7 @@ static int __devinit s3c_hsudc_probe(struct platform_device *pdev)
 
 	return 0;
 err_add_udc:
+<<<<<<< HEAD
 	device_unregister(&hsudc->gadget.dev);
 err_add_device:
 	clk_disable(hsudc->uclk);
@@ -1585,6 +1823,15 @@ err_res:
 err_supplies:
 >>>>>>> refs/remotes/origin/cm-10.0
 	kfree(hsudc);
+=======
+err_add_device:
+	clk_disable(hsudc->uclk);
+err_res:
+	if (!IS_ERR_OR_NULL(hsudc->transceiver))
+		usb_put_phy(hsudc->transceiver);
+
+err_supplies:
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1596,6 +1843,7 @@ static struct platform_driver s3c_hsudc_driver = {
 	.probe		= s3c_hsudc_probe,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init s3c_hsudc_modinit(void)
 {
@@ -1612,11 +1860,18 @@ module_exit(s3c_hsudc_modexit);
 =======
 module_platform_driver(s3c_hsudc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(s3c_hsudc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Samsung S3C24XX USB high-speed controller driver");
 MODULE_AUTHOR("Thomas Abraham <thomas.ab@samsung.com>");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:s3c-hsudc");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:s3c-hsudc");
+>>>>>>> refs/remotes/origin/master

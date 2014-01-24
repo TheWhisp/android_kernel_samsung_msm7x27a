@@ -11,10 +11,14 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -27,20 +31,31 @@
 #include <linux/clk.h>
 #include <linux/spi/spi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/regulator/fixed.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/fixed.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/machine.h>
 #include <linux/i2c/twl.h>
 #include <linux/io.h>
 #include <linux/smsc911x.h>
 #include <linux/mmc/host.h>
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
+=======
+#include <linux/usb/phy.h>
+#include <linux/platform_data/spi-omap2-mcspi.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <plat/mcspi.h>
 <<<<<<< HEAD
 #include <mach/gpio.h>
@@ -63,6 +78,15 @@
 #include <video/omap-panel-generic-dpi.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "common.h"
+#include "gpmc.h"
+#include "gpmc-smsc911x.h"
+
+#include <video/omapdss.h>
+#include <video/omap-panel-data.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "board-flash.h"
 #include "mux.h"
 #include "hsmmc.h"
@@ -200,6 +224,7 @@ static inline void __init ldp_init_smsc911x(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct platform_device ldp_lcd_device = {
 	.name		= "ldp_lcd",
 	.id		= -1,
@@ -266,6 +291,50 @@ static struct omap_dss_board_info ldp_dss_data = {
 	.num_devices	= ARRAY_SIZE(ldp_dss_devices),
 	.devices	= ldp_dss_devices,
 	.default_device	= &ldp_lcd_device,
+=======
+/* LCD */
+
+#define LCD_PANEL_RESET_GPIO		55
+#define LCD_PANEL_QVGA_GPIO		56
+
+static const struct display_timing ldp_lcd_videomode = {
+	.pixelclock	= { 0, 5400000, 0 },
+
+	.hactive = { 0, 240, 0 },
+	.hfront_porch = { 0, 3, 0 },
+	.hback_porch = { 0, 39, 0 },
+	.hsync_len = { 0, 3, 0 },
+
+	.vactive = { 0, 320, 0 },
+	.vfront_porch = { 0, 2, 0 },
+	.vback_porch = { 0, 7, 0 },
+	.vsync_len = { 0, 1, 0 },
+
+	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
+		DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_POSEDGE,
+};
+
+static struct panel_dpi_platform_data ldp_lcd_pdata = {
+	.name                   = "lcd",
+	.source                 = "dpi.0",
+
+	.data_lines		= 18,
+
+	.display_timing		= &ldp_lcd_videomode,
+
+	.enable_gpio		= -1,	/* filled in code */
+	.backlight_gpio		= -1,	/* filled in code */
+};
+
+static struct platform_device ldp_lcd_device = {
+	.name                   = "panel-dpi",
+	.id                     = 0,
+	.dev.platform_data      = &ldp_lcd_pdata,
+};
+
+static struct omap_dss_board_info ldp_dss_data = {
+	.default_display_name = "lcd",
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init ldp_display_init(void)
@@ -288,6 +357,7 @@ static void __init ldp_display_init(void)
 
 static int ldp_twl_gpio_setup(struct device *dev, unsigned gpio, unsigned ngpio)
 {
+<<<<<<< HEAD
 	int r;
 
 	struct gpio gpios[] = {
@@ -320,12 +390,33 @@ static struct twl4030_gpio_platform_data ldp_gpio_data = {
 static struct regulator_consumer_supply ldp_vmmc1_supply = {
 	.supply			= "vmmc",
 =======
+=======
+	int res;
+
+	/* LCD enable GPIO */
+	ldp_lcd_pdata.enable_gpio = gpio + 7;
+
+	/* Backlight enable GPIO */
+	ldp_lcd_pdata.backlight_gpio = gpio + 15;
+
+	res = platform_device_register(&ldp_lcd_device);
+	if (res)
+		pr_err("Unable to register LCD: %d\n", res);
+
+	return 0;
+}
+
+static struct twl4030_gpio_platform_data ldp_gpio_data = {
+>>>>>>> refs/remotes/origin/master
 	.setup		= ldp_twl_gpio_setup,
 };
 
 static struct regulator_consumer_supply ldp_vmmc1_supply[] = {
 	REGULATOR_SUPPLY("vmmc", "omap_hsmmc.0"),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* VMMC1 for MMC1 pins CMD, CLK, DAT0..DAT3 (20 mA, plus card == max 220 mA) */
@@ -340,12 +431,17 @@ static struct regulator_init_data ldp_vmmc1 = {
 					| REGULATOR_CHANGE_STATUS,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.num_consumer_supplies	= 1,
 	.consumer_supplies	= &ldp_vmmc1_supply,
 =======
 	.num_consumer_supplies	= ARRAY_SIZE(ldp_vmmc1_supply),
 	.consumer_supplies	= ldp_vmmc1_supply,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_consumer_supplies	= ARRAY_SIZE(ldp_vmmc1_supply),
+	.consumer_supplies	= ldp_vmmc1_supply,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ads7846 on SPI */
@@ -369,10 +465,17 @@ static struct regulator_init_data ldp_vaux1 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct regulator_consumer_supply ldp_vpll2_supplies[] = {
 	REGULATOR_SUPPLY("vdds_dsi", "omapdss"),
 	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi1"),
+=======
+static struct regulator_consumer_supply ldp_vpll2_supplies[] = {
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss"),
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dpi.0"),
+	REGULATOR_SUPPLY("vdds_dsi", "omapdss_dsi.0"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data ldp_vpll2 = {
@@ -390,15 +493,22 @@ static struct regulator_init_data ldp_vpll2 = {
 	.consumer_supplies	= ldp_vpll2_supplies,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct twl4030_platform_data ldp_twldata = {
 	/* platform_data for children goes here */
 	.vmmc1		= &ldp_vmmc1,
 	.vaux1		= &ldp_vaux1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.vpll2		= &ldp_vpll2,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vpll2		= &ldp_vpll2,
+>>>>>>> refs/remotes/origin/master
 	.gpio		= &ldp_gpio_data,
 	.keypad		= &ldp_kp_twl4030_data,
 };
@@ -425,9 +535,12 @@ static struct omap2_hsmmc_info mmc[] __initdata = {
 
 static struct platform_device *ldp_devices[] __initdata = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&ldp_lcd_device,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&ldp_gpio_keys_device,
 };
 
@@ -470,12 +583,15 @@ static struct mtd_partition ldp_nand_partitions[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init omap_ldp_init(void)
 {
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
 	omap_board_config = ldp_config;
 	omap_board_config_size = ARRAY_SIZE(ldp_config);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct regulator_consumer_supply dummy_supplies[] = {
 	REGULATOR_SUPPLY("vddvario", "smsc911x.0"),
 	REGULATOR_SUPPLY("vdd33a", "smsc911x.0"),
@@ -485,12 +601,16 @@ static void __init omap_ldp_init(void)
 {
 	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ldp_init_smsc911x();
 	omap_i2c_init();
 	platform_add_devices(ldp_devices, ARRAY_SIZE(ldp_devices));
 	omap_ads7846_init(1, 54, 310, NULL);
 	omap_serial_init();
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	omap_sdrc_init(NULL, NULL);
@@ -514,6 +634,14 @@ MACHINE_START(OMAP_LDP, "OMAP LDP board")
 	.init_machine	= omap_ldp_init,
 	.timer		= &omap_timer,
 =======
+=======
+	omap_sdrc_init(NULL, NULL);
+	usb_bind_phy("musb-hdrc.0.auto", 0, "twl4030_usb");
+	usb_musb_init(NULL);
+	board_nand_init(ldp_nand_partitions, ARRAY_SIZE(ldp_nand_partitions),
+			0, 0, nand_default_timings);
+
+>>>>>>> refs/remotes/origin/master
 	omap_hsmmc_init(mmc);
 	ldp_display_init();
 }
@@ -526,7 +654,13 @@ MACHINE_START(OMAP_LDP, "OMAP LDP board")
 	.init_irq	= omap3_init_irq,
 	.handle_irq	= omap3_intc_handle_irq,
 	.init_machine	= omap_ldp_init,
+<<<<<<< HEAD
 	.timer		= &omap3_timer,
 	.restart	= omap_prcm_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_late	= omap3430_init_late,
+	.init_time	= omap3_sync32k_timer_init,
+	.restart	= omap3xxx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

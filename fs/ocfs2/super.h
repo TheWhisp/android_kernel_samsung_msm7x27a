@@ -32,6 +32,7 @@ int ocfs2_publish_get_mount_state(struct ocfs2_super *osb,
 				  int node_num);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __ocfs2_error(struct super_block *sb,
 		   const char *function,
 		   const char *fmt, ...)
@@ -44,6 +45,8 @@ void __ocfs2_abort(struct super_block *sb,
 		   const char *fmt, ...)
 	__attribute__ ((format (printf, 3, 4)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 __printf(3, 4)
 void __ocfs2_error(struct super_block *sb, const char *function,
 		   const char *fmt, ...);
@@ -53,7 +56,10 @@ void __ocfs2_error(struct super_block *sb, const char *function,
 __printf(3, 4)
 void __ocfs2_abort(struct super_block *sb, const char *function,
 		   const char *fmt, ...);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define ocfs2_abort(sb, fmt, args...) __ocfs2_abort(sb, __PRETTY_FUNCTION__, fmt, ##args)
 

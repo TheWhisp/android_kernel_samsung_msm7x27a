@@ -18,17 +18,26 @@
 #include <linux/serial_core.h>
 #include <linux/spi/spi_gpio.h>
 #include <linux/usb/gpio_vbus.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/s3c-hsotg.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/map.h>
 
 #include <mach/map.h>
 #include <mach/regs-gpio.h>
+<<<<<<< HEAD
 #include <mach/regs-modem.h>
+=======
+#include <mach/gpio-samsung.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <plat/clock.h>
 #include <plat/cpu.h>
 #include <plat/devs.h>
+<<<<<<< HEAD
 #include <plat/iic.h>
 #include <plat/gpio-cfg.h>
 #include <plat/hwmon.h>
@@ -45,6 +54,22 @@
 #include "common.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <plat/gpio-cfg.h>
+#include <linux/platform_data/hwmon-s3c.h>
+#include <plat/regs-serial.h>
+#include <linux/platform_data/usb-ohci-s3c2410.h>
+#include <plat/sdhci.h>
+#include <linux/platform_data/touchscreen-s3c2410.h>
+
+#include <video/platform_lcd.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+#include "regs-modem.h"
+
+>>>>>>> refs/remotes/origin/master
 #define UCON S3C2410_UCON_DEFAULT
 #define ULCON (S3C2410_LCON_CS8 | S3C2410_LCON_PNONE)
 #define UFCON (S3C2410_UFCON_RXTRIG8 | S3C2410_UFCON_FIFOMODE)
@@ -153,13 +178,21 @@ static struct platform_pwm_backlight_data smartq_backlight_data = {
 	.max_brightness	= 1000,
 	.dft_brightness	= 600,
 	.pwm_period_ns	= 1000000000 / (1000 * 20),
+<<<<<<< HEAD
+=======
+	.enable_gpio	= -1,
+>>>>>>> refs/remotes/origin/master
 	.init		= smartq_bl_init,
 };
 
 static struct platform_device smartq_backlight_device = {
 	.name		= "pwm-backlight",
 	.dev		= {
+<<<<<<< HEAD
 		.parent	= &s3c_device_timer[1].dev,
+=======
+		.parent	= &samsung_device_pwm.dev,
+>>>>>>> refs/remotes/origin/master
 		.platform_data = &smartq_backlight_data,
 	},
 };
@@ -191,10 +224,15 @@ static struct s3c_hwmon_pdata smartq_hwmon_pdata __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static struct s3c_hsotg_plat smartq_hsotg_pdata;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct s3c_hsotg_plat smartq_hsotg_pdata;
+
+>>>>>>> refs/remotes/origin/master
 static int __init smartq_lcd_setup_gpio(void)
 {
 	int ret;
@@ -251,7 +289,11 @@ static struct platform_device *smartq_devices[] __initdata = {
 	&s3c_device_i2c0,
 	&s3c_device_ohci,
 	&s3c_device_rtc,
+<<<<<<< HEAD
 	&s3c_device_timer[1],
+=======
+	&samsung_device_pwm,
+>>>>>>> refs/remotes/origin/master
 	&s3c_device_ts,
 	&s3c_device_usb_hsotg,
 	&s3c64xx_device_iis0,
@@ -342,6 +384,7 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __init smartq_usb_otg_init(void)
 {
 	clk_xusbxti.rate = 12000000;
@@ -349,6 +392,8 @@ static int __init smartq_usb_otg_init(void)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init smartq_wifi_init(void)
 {
 	int ret;
@@ -382,8 +427,15 @@ static struct map_desc smartq_iodesc[] __initdata = {};
 void __init smartq_map_io(void)
 {
 	s3c64xx_init_io(smartq_iodesc, ARRAY_SIZE(smartq_iodesc));
+<<<<<<< HEAD
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(smartq_uartcfgs, ARRAY_SIZE(smartq_uartcfgs));
+=======
+	s3c64xx_set_xtal_freq(12000000);
+	s3c64xx_set_xusbxti_freq(12000000);
+	s3c24xx_init_uarts(smartq_uartcfgs, ARRAY_SIZE(smartq_uartcfgs));
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 
 	smartq_lcd_mode_set();
 }
@@ -392,9 +444,13 @@ void __init smartq_machine_init(void)
 {
 	s3c_i2c0_set_platdata(NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	s3c_hsotg_set_platdata(&smartq_hsotg_pdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s3c_hsotg_set_platdata(&smartq_hsotg_pdata);
+>>>>>>> refs/remotes/origin/master
 	s3c_hwmon_set_platdata(&smartq_hwmon_pdata);
 	s3c_sdhci1_set_platdata(&smartq_internal_hsmmc_pdata);
 	s3c_sdhci2_set_platdata(&smartq_internal_hsmmc_pdata);
@@ -406,7 +462,10 @@ void __init smartq_machine_init(void)
 	WARN_ON(smartq_lcd_setup_gpio());
 	WARN_ON(smartq_power_off_init());
 	WARN_ON(smartq_usb_host_init());
+<<<<<<< HEAD
 	WARN_ON(smartq_usb_otg_init());
+=======
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(smartq_wifi_init());
 
 	platform_add_devices(smartq_devices, ARRAY_SIZE(smartq_devices));

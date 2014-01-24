@@ -212,7 +212,11 @@ int enic_dev_deinit_done(struct enic *enic, int *status)
 }
 
 /* rtnl lock is held */
+<<<<<<< HEAD
 int enic_vlan_rx_add_vid(struct net_device *netdev, u16 vid)
+=======
+int enic_vlan_rx_add_vid(struct net_device *netdev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct enic *enic = netdev_priv(netdev);
 	int err;
@@ -225,7 +229,11 @@ int enic_vlan_rx_add_vid(struct net_device *netdev, u16 vid)
 }
 
 /* rtnl lock is held */
+<<<<<<< HEAD
 int enic_vlan_rx_kill_vid(struct net_device *netdev, u16 vid)
+=======
+int enic_vlan_rx_kill_vid(struct net_device *netdev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct enic *enic = netdev_priv(netdev);
 	int err;

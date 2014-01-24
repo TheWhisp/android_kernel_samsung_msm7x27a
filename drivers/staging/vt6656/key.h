@@ -30,17 +30,26 @@
 #ifndef __KEY_H__
 #define __KEY_H__
 
+<<<<<<< HEAD
 #include "ttype.h"
 #include "tether.h"
 #include "80211mgr.h"
 
 /*---------------------  Export Definitions -------------------------*/
+=======
+#include "tether.h"
+#include "80211mgr.h"
+
+>>>>>>> refs/remotes/origin/master
 #define MAX_GROUP_KEY       4
 #define MAX_KEY_TABLE       11
 #define MAX_KEY_LEN         32
 #define AES_KEY_LEN         16
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define AUTHENTICATOR_KEY   0x10000000
 #define USE_KEYRSC          0x20000000
 #define PAIRWISE_KEY        0x40000000
@@ -54,6 +63,7 @@
 #define KEY_CTL_CCMP        0x03
 #define KEY_CTL_INVALID     0xFF
 
+<<<<<<< HEAD
 
 typedef struct tagSKeyItem
 {
@@ -66,11 +76,25 @@ typedef struct tagSKeyItem
     BYTE        byCipherSuite;
     BYTE        byReserved0;
     DWORD       dwKeyIndex;
+=======
+typedef struct tagSKeyItem
+{
+    bool        bKeyValid;
+	u32 uKeyLength;
+    u8        abyKey[MAX_KEY_LEN];
+	u64 KeyRSC;
+    u32       dwTSC47_16;
+    u16        wTSC15_0;
+    u8        byCipherSuite;
+    u8        byReserved0;
+    u32       dwKeyIndex;
+>>>>>>> refs/remotes/origin/master
     void *pvKeyTable;
 } SKeyItem, *PSKeyItem; //64
 
 typedef struct tagSKeyTable
 {
+<<<<<<< HEAD
     BYTE        abyBSSID[ETH_ALEN];  /* 6 */
     BYTE        byReserved0[2];              //8
     SKeyItem    PairwiseKey;
@@ -80,6 +104,17 @@ typedef struct tagSKeyTable
     WORD        wKeyCtl;
     BOOL        bSoftWEP;
     BYTE        byReserved1[6];
+=======
+    u8        abyBSSID[ETH_ALEN];  /* 6 */
+    u8        byReserved0[2];              //8
+    SKeyItem    PairwiseKey;
+    SKeyItem    GroupKey[MAX_GROUP_KEY]; //64*5 = 320, 320+8=328
+    u32       dwGTKeyIndex;            // GroupTransmitKey Index
+    bool        bInUse;
+    u16        wKeyCtl;
+    bool        bSoftWEP;
+    u8        byReserved1[6];
+>>>>>>> refs/remotes/origin/master
 } SKeyTable, *PSKeyTable; //352
 
 typedef struct tagSKeyManagement
@@ -87,6 +122,7 @@ typedef struct tagSKeyManagement
     SKeyTable   KeyTable[MAX_KEY_TABLE];
 } SKeyManagement, *PSKeyManagement;
 
+<<<<<<< HEAD
 /*---------------------  Export Types  ------------------------------*/
 
 /*---------------------  Export Macros ------------------------------*/
@@ -161,5 +197,32 @@ BOOL KeybSetAllGroupKey(
     PBYTE           pbyKey,
     BYTE            byKeyDecMode
     );
+=======
+void KeyvInitTable(struct vnt_private *, PSKeyManagement pTable);
+
+int KeybGetKey(PSKeyManagement pTable, u8 *pbyBSSID, u32 dwKeyIndex,
+	PSKeyItem *pKey);
+
+int KeybSetKey(struct vnt_private *, PSKeyManagement pTable, u8 *pbyBSSID,
+	u32 dwKeyIndex, u32 uKeyLength, u64 *KeyRSC, u8 *pbyKey,
+	u8 byKeyDecMode);
+
+int KeybRemoveKey(struct vnt_private *, PSKeyManagement pTable,
+	u8 *pbyBSSID, u32 dwKeyIndex);
+
+int KeybRemoveAllKey(struct vnt_private *, PSKeyManagement pTable,
+	u8 *pbyBSSID);
+
+int KeybGetTransmitKey(PSKeyManagement pTable, u8 *pbyBSSID, u32 dwKeyType,
+	PSKeyItem *pKey);
+
+int KeybSetDefaultKey(struct vnt_private *, PSKeyManagement pTable,
+	u32 dwKeyIndex, u32 uKeyLength, u64 *KeyRSC, u8 *pbyKey,
+	u8 byKeyDecMode);
+
+int KeybSetAllGroupKey(struct vnt_private *, PSKeyManagement pTable,
+	u32 dwKeyIndex, u32 uKeyLength, u64 *KeyRSC, u8 *pbyKey,
+	u8 byKeyDecMode);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KEY_H__ */

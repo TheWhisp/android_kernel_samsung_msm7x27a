@@ -3,9 +3,13 @@
  *
  * Copyright (C) 2008 Andrew Victor
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (C) 2011 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2011 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -15,15 +19,21 @@
 #include <linux/module.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of.h>
 #include <linux/of_address.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/at91sam9_smc.h>
 
 #include "sam9_smc.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __init sam9_smc_configure(int cs, struct sam9_smc_config* config)
 {
@@ -55,6 +65,8 @@ void __init sam9_smc_configure(int cs, struct sam9_smc_config* config)
 		| AT91_SMC_TDF_(config->tdf_cycles)
 	);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AT91_SMC_CS(id, n)	(smc_base_addr[id] + ((n) * 0x10))
 
@@ -167,5 +179,8 @@ void __init at91sam9_ioremap_smc(int id, u32 addr)
 	smc_base_addr[id] = ioremap(addr, 512);
 	if (!smc_base_addr[id])
 		pr_warn("Impossible to ioremap smc.%d 0x%x\n", id, addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

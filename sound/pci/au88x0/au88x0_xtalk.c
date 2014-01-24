@@ -49,6 +49,7 @@ static unsigned short const wXtalkNarrowRightDelay = 0x7;
 
 static xtalk_gains_t const asXtalkGainsDefault = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	0x4000, 0x4000, 4000, 0x4000, 4000, 0x4000, 4000, 0x4000, 4000,
 	0x4000
 };
@@ -60,6 +61,8 @@ static xtalk_gains_t const asXtalkGainsTest = {
 static xtalk_gains_t const asXtalkGains1Chan = {
 	0x7FFF, 0, 0, 0, 0x7FFF, 0, 0, 0, 0, 0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	0x4000, 0x4000, 0x4000, 0x4000, 0x4000,
 	0x4000, 0x4000, 0x4000, 0x4000,	0x4000
 };
@@ -72,11 +75,15 @@ static xtalk_gains_t const asXtalkGainsTest = {
 static xtalk_gains_t const asXtalkGains1Chan = {
 	0x7FFF, 0, 0, 0, 0,
 	0x7FFF, 0, 0, 0, 0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 // Input gain for 4 A3D slices. One possible input pair is left zero.
 static xtalk_gains_t const asXtalkGainsAllChan = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0, 0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF,
 	0
@@ -96,6 +103,8 @@ static xtalk_instate_t const asXtalkInStateTest =
     { 0xFF80, 0x0080, 0xFFFF, 0x0001 };
 static xtalk_state_t const asXtalkOutStateZeros;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF, 0,
 	0x7FFF, 0x7FFF, 0x7FFF, 0x7FFF,	0
 };
@@ -129,17 +138,24 @@ static xtalk_state_t const asXtalkOutStateZeros = {
 	{0, 0, 0, 0},
 	{0, 0, 0, 0}
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static short const sDiamondKLeftEq = 0x401d;
 static short const sDiamondKRightEq = 0x401d;
 static short const sDiamondKLeftXt = 0xF90E;
 static short const sDiamondKRightXt = 0xF90E;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static short const sDiamondShiftLeftEq = 1;	/* 0xF90E Is this a bug ??? */
 =======
 static short const sDiamondShiftLeftEq = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static short const sDiamondShiftLeftEq = 1;
+>>>>>>> refs/remotes/origin/master
 static short const sDiamondShiftRightEq = 1;
 static short const sDiamondShiftLeftXt = 0;
 static short const sDiamondShiftRightXt = 0;
@@ -150,17 +166,23 @@ static xtalk_coefs_t const asXtalkWideCoefsLeftEq = {
 	{0xEC4C, 0xDCE9, 0xFDC2, 0xFEEC, 0},
 	{0x5F60, 0xCBCB, 0xFC26, 0x0305, 0},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{0x340B, 0xf504, 0x6CE8, 0x0D23, 0x00E4},
 	{0xD500, 0x8D76, 0xACC7, 0x5B05, 0x00FA},
 =======
 	{0x340B, 0xe8f5, 0x236c, 0xe40d, 0},
 	{0x76d5, 0xc78d, 0x05ac, 0xfa5b, 0},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{0x340B, 0xe8f5, 0x236c, 0xe40d, 0},
+	{0x76d5, 0xc78d, 0x05ac, 0xfa5b, 0},
+>>>>>>> refs/remotes/origin/master
 	{0x7F04, 0xC0FA, 0x0263, 0xFDA2, 0}
 };
 static xtalk_coefs_t const asXtalkWideCoefsRightEq = {
 	{0xEC4C, 0xDCE9, 0xFDC2, 0xFEEC, 0},
 	{0x5F60, 0xCBCB, 0xFC26, 0x0305, 0},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{0x340B, 0xF504, 0x6CE8, 0x0D23, 0x00E4},
 	{0xD500, 0x8D76, 0xACC7, 0x5B05, 0x00FA},
@@ -179,6 +201,8 @@ static xtalk_coefs_t const asXtalkWideCoefsRightXt = {
 	{0x1100, 0x1164, 0xA1D7, 0x90FC, 0x0001},
 	{0xDC00, 0x9E77, 0xB8C7, 0x0AFF, 0},
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{0x340B, 0xe8f5, 0x236c, 0xe40d, 0},
 	{0x76d5, 0xc78d, 0x05ac, 0xfa5b, 0},
 	{0x7F04, 0xC0FA, 0x0263, 0xFDA2, 0}
@@ -195,7 +219,10 @@ static xtalk_coefs_t const asXtalkWideCoefsRightXt = {
 	{0x6a60, 0xca20, 0xffc6, 0x0040, 0},
 	{0x6411, 0xd711, 0xfca1, 0x0190, 0},
 	{0x77dc, 0xc79e, 0xffb8, 0x000a, 0},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{0, 0, 0, 0, 0}
 };
 static xtalk_coefs_t const asXtalkNarrowCoefsLeftEq = {
@@ -231,8 +258,11 @@ static xtalk_coefs_t const asXtalkNarrowCoefsRightXt = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static xtalk_coefs_t const asXtalkCoefsZeros;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static xtalk_coefs_t const asXtalkCoefsZeros = {
 	{0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0},
@@ -241,7 +271,10 @@ static xtalk_coefs_t const asXtalkCoefsZeros = {
 	{0, 0, 0, 0, 0}
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static xtalk_coefs_t const asXtalkCoefsPipe = {
 	{0, 0, 0x0FA0, 0, 0},
 	{0, 0, 0x0FA0, 0, 0},
@@ -277,10 +310,14 @@ static xtalk_state_t const asXtalkOutStateTest = {
 	{0x7FFF, 0x0004, 0xFFFC, 0},
 	{0xFE00, 0x0008, 0xFFF8, 0x4000},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{0x200, 0x0010, 0xFFF0, 0xC000},
 =======
 	{0x0200, 0x0010, 0xFFF0, 0xC000},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{0x0200, 0x0010, 0xFFF0, 0xC000},
+>>>>>>> refs/remotes/origin/master
 	{0x8000, 0x0020, 0xFFE0, 0},
 	{0, 0, 0, 0}
 };
@@ -401,16 +438,22 @@ vortex_XtalkHw_SetLeftEQStates(vortex_t * vortex,
 		hwwrite(vortex->mmio, 0x24220 + i * 0x24, coefs[i][3]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hwwrite(vortex->mmio, 0x244F8 + i * 0x24, arg_0[0]);
 	hwwrite(vortex->mmio, 0x244FC + i * 0x24, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24500 + i * 0x24, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24504 + i * 0x24, arg_0[3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hwwrite(vortex->mmio, 0x244F8, arg_0[0]);
 	hwwrite(vortex->mmio, 0x244FC, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24500, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24504, arg_0[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -427,16 +470,22 @@ vortex_XtalkHw_SetRightEQStates(vortex_t * vortex,
 		hwwrite(vortex->mmio, 0x244D4 + i * 0x24, coefs[i][3]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hwwrite(vortex->mmio, 0x24508 + i * 0x24, arg_0[0]);
 	hwwrite(vortex->mmio, 0x2450C + i * 0x24, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24510 + i * 0x24, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24514 + i * 0x24, arg_0[3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hwwrite(vortex->mmio, 0x24508, arg_0[0]);
 	hwwrite(vortex->mmio, 0x2450C, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24510, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24514, arg_0[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -453,16 +502,22 @@ vortex_XtalkHw_SetLeftXTStates(vortex_t * vortex,
 		hwwrite(vortex->mmio, 0x24388 + i * 0x24, coefs[i][3]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hwwrite(vortex->mmio, 0x24518 + i * 0x24, arg_0[0]);
 	hwwrite(vortex->mmio, 0x2451C + i * 0x24, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24520 + i * 0x24, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24524 + i * 0x24, arg_0[3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hwwrite(vortex->mmio, 0x24518, arg_0[0]);
 	hwwrite(vortex->mmio, 0x2451C, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24520, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24524, arg_0[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -479,16 +534,22 @@ vortex_XtalkHw_SetRightXTStates(vortex_t * vortex,
 		hwwrite(vortex->mmio, 0x2443C + i * 0x24, coefs[i][3]);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hwwrite(vortex->mmio, 0x24528 + i * 0x24, arg_0[0]);
 	hwwrite(vortex->mmio, 0x2452C + i * 0x24, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24530 + i * 0x24, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24534 + i * 0x24, arg_0[3]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	hwwrite(vortex->mmio, 0x24528, arg_0[0]);
 	hwwrite(vortex->mmio, 0x2452C, arg_0[1]);
 	hwwrite(vortex->mmio, 0x24530, arg_0[2]);
 	hwwrite(vortex->mmio, 0x24534, arg_0[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #if 0
@@ -573,16 +634,22 @@ vortex_XtalkHw_GetLeftEQStates(vortex_t * vortex, xtalk_instate_t arg_0,
 		coefs[i][3] = hwread(vortex->mmio, 0x24220 + i * 0x24);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arg_0[0] = hwread(vortex->mmio, 0x244F8 + i * 0x24);
 	arg_0[1] = hwread(vortex->mmio, 0x244FC + i * 0x24);
 	arg_0[2] = hwread(vortex->mmio, 0x24500 + i * 0x24);
 	arg_0[3] = hwread(vortex->mmio, 0x24504 + i * 0x24);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	arg_0[0] = hwread(vortex->mmio, 0x244F8);
 	arg_0[1] = hwread(vortex->mmio, 0x244FC);
 	arg_0[2] = hwread(vortex->mmio, 0x24500);
 	arg_0[3] = hwread(vortex->mmio, 0x24504);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -598,16 +665,22 @@ vortex_XtalkHw_GetRightEQStates(vortex_t * vortex, xtalk_instate_t arg_0,
 		coefs[i][3] = hwread(vortex->mmio, 0x242D4 + i * 0x24);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arg_0[0] = hwread(vortex->mmio, 0x24508 + i * 0x24);
 	arg_0[1] = hwread(vortex->mmio, 0x2450C + i * 0x24);
 	arg_0[2] = hwread(vortex->mmio, 0x24510 + i * 0x24);
 	arg_0[3] = hwread(vortex->mmio, 0x24514 + i * 0x24);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	arg_0[0] = hwread(vortex->mmio, 0x24508);
 	arg_0[1] = hwread(vortex->mmio, 0x2450C);
 	arg_0[2] = hwread(vortex->mmio, 0x24510);
 	arg_0[3] = hwread(vortex->mmio, 0x24514);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -623,16 +696,22 @@ vortex_XtalkHw_GetLeftXTStates(vortex_t * vortex, xtalk_instate_t arg_0,
 		coefs[i][3] = hwread(vortex->mmio, 0x24388 + i * 0x24);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arg_0[0] = hwread(vortex->mmio, 0x24518 + i * 0x24);
 	arg_0[1] = hwread(vortex->mmio, 0x2451C + i * 0x24);
 	arg_0[2] = hwread(vortex->mmio, 0x24520 + i * 0x24);
 	arg_0[3] = hwread(vortex->mmio, 0x24524 + i * 0x24);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	arg_0[0] = hwread(vortex->mmio, 0x24518);
 	arg_0[1] = hwread(vortex->mmio, 0x2451C);
 	arg_0[2] = hwread(vortex->mmio, 0x24520);
 	arg_0[3] = hwread(vortex->mmio, 0x24524);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -648,16 +727,22 @@ vortex_XtalkHw_GetRightXTStates(vortex_t * vortex, xtalk_instate_t arg_0,
 		coefs[i][3] = hwread(vortex->mmio, 0x2443C + i * 0x24);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arg_0[0] = hwread(vortex->mmio, 0x24528 + i * 0x24);
 	arg_0[1] = hwread(vortex->mmio, 0x2452C + i * 0x24);
 	arg_0[2] = hwread(vortex->mmio, 0x24530 + i * 0x24);
 	arg_0[3] = hwread(vortex->mmio, 0x24534 + i * 0x24);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	arg_0[0] = hwread(vortex->mmio, 0x24528);
 	arg_0[1] = hwread(vortex->mmio, 0x2452C);
 	arg_0[2] = hwread(vortex->mmio, 0x24530);
 	arg_0[3] = hwread(vortex->mmio, 0x24534);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif

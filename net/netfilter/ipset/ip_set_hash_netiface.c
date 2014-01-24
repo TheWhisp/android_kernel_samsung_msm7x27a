@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (C) 2011 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+=======
+/* Copyright (C) 2011-2013 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -21,12 +25,26 @@
 #include <linux/netfilter.h>
 #include <linux/netfilter/ipset/pfxlen.h>
 #include <linux/netfilter/ipset/ip_set.h>
+<<<<<<< HEAD
 #include <linux/netfilter/ipset/ip_set_timeout.h>
 #include <linux/netfilter/ipset/ip_set_hash.h>
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>");
 MODULE_DESCRIPTION("hash:net,iface type of IP sets");
+=======
+#include <linux/netfilter/ipset/ip_set_hash.h>
+
+#define IPSET_TYPE_REV_MIN	0
+/*				1    nomatch flag support added */
+/*				2    /0 support added */
+/*				3    Counters support added */
+#define IPSET_TYPE_REV_MAX	4 /* Comments support added */
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>");
+IP_SET_MODULE_DESC("hash:net,iface", IPSET_TYPE_REV_MIN, IPSET_TYPE_REV_MAX);
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("ip_set_hash:net,iface");
 
 /* Interface name rbtree */
@@ -38,6 +56,7 @@ struct iface_node {
 
 #define iface_data(n)	(rb_entry(n, struct iface_node, node)->iface)
 
+<<<<<<< HEAD
 static inline long
 ifname_compare(const char *_a, const char *_b)
 {
@@ -62,6 +81,8 @@ ifname_compare(const char *_a, const char *_b)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 rbtree_destroy(struct rb_root *root)
 {
@@ -99,7 +120,11 @@ iface_test(struct rb_root *root, const char **iface)
 
 	while (n) {
 		const char *d = iface_data(n);
+<<<<<<< HEAD
 		long res = ifname_compare(*iface, d);
+=======
+		int res = strcmp(*iface, d);
+>>>>>>> refs/remotes/origin/master
 
 		if (res < 0)
 			n = n->rb_left;
@@ -121,7 +146,11 @@ iface_add(struct rb_root *root, const char **iface)
 
 	while (*n) {
 		char *ifname = iface_data(*n);
+<<<<<<< HEAD
 		long res = ifname_compare(*iface, ifname);
+=======
+		int res = strcmp(*iface, ifname);
+>>>>>>> refs/remotes/origin/master
 
 		p = *n;
 		if (res < 0)
@@ -147,6 +176,7 @@ iface_add(struct rb_root *root, const char **iface)
 }
 
 /* Type specific function prefix */
+<<<<<<< HEAD
 #define TYPE		hash_netiface
 
 static bool
@@ -158,23 +188,41 @@ hash_netiface_same_set(const struct ip_set *a, const struct ip_set *b);
 #define STREQ(a, b)	(strcmp(a, b) == 0)
 
 /* The type variant functions: IPv4 */
+=======
+#define HTYPE		hash_netiface
+#define IP_SET_HASH_WITH_NETS
+#define IP_SET_HASH_WITH_RBTREE
+#define IP_SET_HASH_WITH_MULTI
+
+#define STREQ(a, b)	(strcmp(a, b) == 0)
+
+/* IPv4 variant */
+>>>>>>> refs/remotes/origin/master
 
 struct hash_netiface4_elem_hashed {
 	__be32 ip;
 	u8 physdev;
 	u8 cidr;
 	u8 nomatch;
+<<<<<<< HEAD
 	u8 padding;
 };
 
 #define HKEY_DATALEN	sizeof(struct hash_netiface4_elem_hashed)
 
 /* Member elements without timeout */
+=======
+	u8 elem;
+};
+
+/* Member elements */
+>>>>>>> refs/remotes/origin/master
 struct hash_netiface4_elem {
 	__be32 ip;
 	u8 physdev;
 	u8 cidr;
 	u8 nomatch;
+<<<<<<< HEAD
 	u8 padding;
 	const char *iface;
 };
@@ -189,6 +237,13 @@ struct hash_netiface4_telem {
 	const char *iface;
 	unsigned long timeout;
 };
+=======
+	u8 elem;
+	const char *iface;
+};
+
+/* Common functions */
+>>>>>>> refs/remotes/origin/master
 
 static inline bool
 hash_netiface4_data_equal(const struct hash_netiface4_elem *ip1,
@@ -202,6 +257,7 @@ hash_netiface4_data_equal(const struct hash_netiface4_elem *ip1,
 	       ip1->iface == ip2->iface;
 }
 
+<<<<<<< HEAD
 static inline bool
 hash_netiface4_data_isnull(const struct hash_netiface4_elem *elem)
 {
@@ -229,6 +285,24 @@ static inline bool
 hash_netiface4_data_match(const struct hash_netiface4_elem *elem)
 {
 	return !elem->nomatch;
+=======
+static inline int
+hash_netiface4_do_data_match(const struct hash_netiface4_elem *elem)
+{
+	return elem->nomatch ? -ENOTEMPTY : 1;
+}
+
+static inline void
+hash_netiface4_data_set_flags(struct hash_netiface4_elem *elem, u32 flags)
+{
+	elem->nomatch = (flags >> 16) & IPSET_FLAG_NOMATCH;
+}
+
+static inline void
+hash_netiface4_data_reset_flags(struct hash_netiface4_elem *elem, u8 *flags)
+{
+	swap(*flags, elem->nomatch);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -238,12 +312,15 @@ hash_netiface4_data_netmask(struct hash_netiface4_elem *elem, u8 cidr)
 	elem->cidr = cidr;
 }
 
+<<<<<<< HEAD
 static inline void
 hash_netiface4_data_zero_out(struct hash_netiface4_elem *elem)
 {
 	elem->cidr = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static bool
 hash_netiface4_data_list(struct sk_buff *skb,
 			 const struct hash_netiface4_elem *data)
@@ -252,17 +329,27 @@ hash_netiface4_data_list(struct sk_buff *skb,
 
 	if (data->nomatch)
 		flags |= IPSET_FLAG_NOMATCH;
+<<<<<<< HEAD
 	NLA_PUT_IPADDR4(skb, IPSET_ATTR_IP, data->ip);
 	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr);
 	NLA_PUT_STRING(skb, IPSET_ATTR_IFACE, data->iface);
 	if (flags)
 		NLA_PUT_NET32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags));
+=======
+	if (nla_put_ipaddr4(skb, IPSET_ATTR_IP, data->ip) ||
+	    nla_put_u8(skb, IPSET_ATTR_CIDR, data->cidr) ||
+	    nla_put_string(skb, IPSET_ATTR_IFACE, data->iface) ||
+	    (flags &&
+	     nla_put_net32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags))))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
 	return 1;
 }
 
+<<<<<<< HEAD
 static bool
 hash_netiface4_data_tlist(struct sk_buff *skb,
 			  const struct hash_netiface4_elem *data)
@@ -301,10 +388,25 @@ hash_netiface4_data_next(struct ip_set_hash *h,
 {
 	h->next.ip = ntohl(d->ip);
 }
+=======
+static inline void
+hash_netiface4_data_next(struct hash_netiface4_elem *next,
+			 const struct hash_netiface4_elem *d)
+{
+	next->ip = d->ip;
+}
+
+#define MTYPE		hash_netiface4
+#define PF		4
+#define HOST_MASK	32
+#define HKEY_DATALEN	sizeof(struct hash_netiface4_elem_hashed)
+#include "ip_set_hash_gen.h"
+>>>>>>> refs/remotes/origin/master
 
 static int
 hash_netiface4_kadt(struct ip_set *set, const struct sk_buff *skb,
 		    const struct xt_action_param *par,
+<<<<<<< HEAD
 		    enum ipset_adt adt, const struct ip_set_adt_opt *opt)
 {
 	struct ip_set_hash *h = set->data;
@@ -321,6 +423,26 @@ hash_netiface4_kadt(struct ip_set *set, const struct sk_buff *skb,
 
 	ip4addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &data.ip);
 	data.ip &= ip_set_netmask(data.cidr);
+=======
+		    enum ipset_adt adt, struct ip_set_adt_opt *opt)
+{
+	struct hash_netiface *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_netiface4_elem e = {
+		.cidr = IP_SET_INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
+		.elem = 1,
+	};
+	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
+	int ret;
+
+	if (e.cidr == 0)
+		return -EINVAL;
+	if (adt == IPSET_TEST)
+		e.cidr = HOST_MASK;
+
+	ip4addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &e.ip);
+	e.ip &= ip_set_netmask(e.cidr);
+>>>>>>> refs/remotes/origin/master
 
 #define IFACE(dir)	(par->dir ? par->dir->name : NULL)
 #define PHYSDEV(dir)	(nf_bridge->dir ? nf_bridge->dir->name : NULL)
@@ -332,6 +454,7 @@ hash_netiface4_kadt(struct ip_set *set, const struct sk_buff *skb,
 
 		if (!nf_bridge)
 			return -EINVAL;
+<<<<<<< HEAD
 		data.iface = SRCDIR ? PHYSDEV(physindev) : PHYSDEV(physoutdev);
 		data.physdev = 1;
 #else
@@ -346,41 +469,82 @@ hash_netiface4_kadt(struct ip_set *set, const struct sk_buff *skb,
 	if (adt == IPSET_ADD) {
 		if (!ret) {
 			ret = iface_add(&h->rbtree, &data.iface);
+=======
+		e.iface = SRCDIR ? PHYSDEV(physindev) : PHYSDEV(physoutdev);
+		e.physdev = 1;
+#else
+		e.iface = NULL;
+#endif
+	} else
+		e.iface = SRCDIR ? IFACE(in) : IFACE(out);
+
+	if (!e.iface)
+		return -EINVAL;
+	ret = iface_test(&h->rbtree, &e.iface);
+	if (adt == IPSET_ADD) {
+		if (!ret) {
+			ret = iface_add(&h->rbtree, &e.iface);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				return ret;
 		}
 	} else if (!ret)
 		return ret;
 
+<<<<<<< HEAD
 	return adtfn(set, &data, opt_timeout(opt, h), opt->cmdflags);
+=======
+	return adtfn(set, &e, &ext, &opt->ext, opt->cmdflags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
 		    enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
 {
+<<<<<<< HEAD
 	struct ip_set_hash *h = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
 	struct hash_netiface4_elem data = { .cidr = HOST_MASK };
 	u32 ip = 0, ip_to, last;
 	u32 timeout = h->timeout;
 	char iface[IFNAMSIZ] = {};
+=======
+	struct hash_netiface *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_netiface4_elem e = { .cidr = HOST_MASK, .elem = 1 };
+	struct ip_set_ext ext = IP_SET_INIT_UEXT(set);
+	u32 ip = 0, ip_to = 0, last;
+	char iface[IFNAMSIZ];
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (unlikely(!tb[IPSET_ATTR_IP] ||
 		     !tb[IPSET_ATTR_IFACE] ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+<<<<<<< HEAD
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_CADT_FLAGS)))
+=======
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_CADT_FLAGS) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PACKETS) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_BYTES)))
+>>>>>>> refs/remotes/origin/master
 		return -IPSET_ERR_PROTOCOL;
 
 	if (tb[IPSET_ATTR_LINENO])
 		*lineno = nla_get_u32(tb[IPSET_ATTR_LINENO]);
 
+<<<<<<< HEAD
 	ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP], &ip);
+=======
+	ret = ip_set_get_hostipaddr4(tb[IPSET_ATTR_IP], &ip) ||
+	      ip_set_get_extensions(set, tb, &ext);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	if (tb[IPSET_ATTR_CIDR]) {
+<<<<<<< HEAD
 		data.cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
 		if (!data.cidr || data.cidr > HOST_MASK)
 			return -IPSET_ERR_INVALID_CIDR;
@@ -398,6 +562,19 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (adt == IPSET_ADD) {
 		if (!ret) {
 			ret = iface_add(&h->rbtree, &data.iface);
+=======
+		e.cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
+		if (e.cidr > HOST_MASK)
+			return -IPSET_ERR_INVALID_CIDR;
+	}
+
+	strcpy(iface, nla_data(tb[IPSET_ATTR_IFACE]));
+	e.iface = iface;
+	ret = iface_test(&h->rbtree, &e.iface);
+	if (adt == IPSET_ADD) {
+		if (!ret) {
+			ret = iface_add(&h->rbtree, &e.iface);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				return ret;
 		}
@@ -407,6 +584,7 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (tb[IPSET_ATTR_CADT_FLAGS]) {
 		u32 cadt_flags = ip_set_get_h32(tb[IPSET_ATTR_CADT_FLAGS]);
 		if (cadt_flags & IPSET_FLAG_PHYSDEV)
+<<<<<<< HEAD
 			data.physdev = 1;
 		if (adt == IPSET_ADD && (cadt_flags & IPSET_FLAG_NOMATCH))
 			flags |= (cadt_flags << 16);
@@ -416,6 +594,17 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
 		data.ip = htonl(ip & ip_set_hostmask(data.cidr));
 		ret = adtfn(set, &data, timeout, flags);
 		return ip_set_eexist(ret, flags) ? 0 : ret;
+=======
+			e.physdev = 1;
+		if (cadt_flags & IPSET_FLAG_NOMATCH)
+			flags |= (IPSET_FLAG_NOMATCH << 16);
+	}
+	if (adt == IPSET_TEST || !tb[IPSET_ATTR_IP_TO]) {
+		e.ip = htonl(ip & ip_set_hostmask(e.cidr));
+		ret = adtfn(set, &e, &ext, &ext, flags);
+		return ip_set_enomatch(ret, flags, adt, set) ? -ret :
+		       ip_set_eexist(ret, flags) ? 0 : ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (tb[IPSET_ATTR_IP_TO]) {
@@ -426,6 +615,7 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
 			swap(ip, ip_to);
 		if (ip + UINT_MAX == ip_to)
 			return -IPSET_ERR_HASH_RANGE;
+<<<<<<< HEAD
 	} else {
 		ip_set_mask_from_to(ip, ip_to, data.cidr);
 	}
@@ -436,6 +626,17 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
 		data.ip = htonl(ip);
 		last = ip_set_range_to_cidr(ip, ip_to, &data.cidr);
 		ret = adtfn(set, &data, timeout, flags);
+=======
+	} else
+		ip_set_mask_from_to(ip, ip_to, e.cidr);
+
+	if (retried)
+		ip = ntohl(h->next.ip);
+	while (!after(ip, ip_to)) {
+		e.ip = htonl(ip);
+		last = ip_set_range_to_cidr(ip, ip_to, &e.cidr);
+		ret = adtfn(set, &e, &ext, &ext, flags);
+>>>>>>> refs/remotes/origin/master
 
 		if (ret && !ip_set_eexist(ret, flags))
 			return ret;
@@ -446,6 +647,7 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
 	return ret;
 }
 
+<<<<<<< HEAD
 static bool
 hash_netiface_same_set(const struct ip_set *a, const struct ip_set *b)
 {
@@ -458,22 +660,32 @@ hash_netiface_same_set(const struct ip_set *a, const struct ip_set *b)
 }
 
 /* The type variant functions: IPv6 */
+=======
+/* IPv6 variant */
+>>>>>>> refs/remotes/origin/master
 
 struct hash_netiface6_elem_hashed {
 	union nf_inet_addr ip;
 	u8 physdev;
 	u8 cidr;
 	u8 nomatch;
+<<<<<<< HEAD
 	u8 padding;
 };
 
 #define HKEY_DATALEN	sizeof(struct hash_netiface6_elem_hashed)
 
+=======
+	u8 elem;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct hash_netiface6_elem {
 	union nf_inet_addr ip;
 	u8 physdev;
 	u8 cidr;
 	u8 nomatch;
+<<<<<<< HEAD
 	u8 padding;
 	const char *iface;
 };
@@ -487,19 +699,31 @@ struct hash_netiface6_telem {
 	const char *iface;
 	unsigned long timeout;
 };
+=======
+	u8 elem;
+	const char *iface;
+};
+
+/* Common functions */
+>>>>>>> refs/remotes/origin/master
 
 static inline bool
 hash_netiface6_data_equal(const struct hash_netiface6_elem *ip1,
 			  const struct hash_netiface6_elem *ip2,
 			  u32 *multi)
 {
+<<<<<<< HEAD
 	return ipv6_addr_cmp(&ip1->ip.in6, &ip2->ip.in6) == 0 &&
+=======
+	return ipv6_addr_equal(&ip1->ip.in6, &ip2->ip.in6) &&
+>>>>>>> refs/remotes/origin/master
 	       ip1->cidr == ip2->cidr &&
 	       (++*multi) &&
 	       ip1->physdev == ip2->physdev &&
 	       ip1->iface == ip2->iface;
 }
 
+<<<<<<< HEAD
 static inline bool
 hash_netiface6_data_isnull(const struct hash_netiface6_elem *elem)
 {
@@ -538,6 +762,24 @@ ip6_netmask(union nf_inet_addr *ip, u8 prefix)
 	ip->ip6[1] &= ip_set_netmask6(prefix)[1];
 	ip->ip6[2] &= ip_set_netmask6(prefix)[2];
 	ip->ip6[3] &= ip_set_netmask6(prefix)[3];
+=======
+static inline int
+hash_netiface6_do_data_match(const struct hash_netiface6_elem *elem)
+{
+	return elem->nomatch ? -ENOTEMPTY : 1;
+}
+
+static inline void
+hash_netiface6_data_set_flags(struct hash_netiface6_elem *elem, u32 flags)
+{
+	elem->nomatch = (flags >> 16) & IPSET_FLAG_NOMATCH;
+}
+
+static inline void
+hash_netiface6_data_reset_flags(struct hash_netiface6_elem *elem, u8 *flags)
+{
+	swap(*flags, elem->nomatch);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -555,17 +797,27 @@ hash_netiface6_data_list(struct sk_buff *skb,
 
 	if (data->nomatch)
 		flags |= IPSET_FLAG_NOMATCH;
+<<<<<<< HEAD
 	NLA_PUT_IPADDR6(skb, IPSET_ATTR_IP, &data->ip);
 	NLA_PUT_U8(skb, IPSET_ATTR_CIDR, data->cidr);
 	NLA_PUT_STRING(skb, IPSET_ATTR_IFACE, data->iface);
 	if (flags)
 		NLA_PUT_NET32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags));
+=======
+	if (nla_put_ipaddr6(skb, IPSET_ATTR_IP, &data->ip.in6) ||
+	    nla_put_u8(skb, IPSET_ATTR_CIDR, data->cidr) ||
+	    nla_put_string(skb, IPSET_ATTR_IFACE, data->iface) ||
+	    (flags &&
+	     nla_put_net32(skb, IPSET_ATTR_CADT_FLAGS, htonl(flags))))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 nla_put_failure:
 	return 1;
 }
 
+<<<<<<< HEAD
 static bool
 hash_netiface6_data_tlist(struct sk_buff *skb,
 			  const struct hash_netiface6_elem *data)
@@ -601,10 +853,30 @@ hash_netiface6_data_next(struct ip_set_hash *h,
 			 const struct hash_netiface6_elem *d)
 {
 }
+=======
+static inline void
+hash_netiface6_data_next(struct hash_netiface4_elem *next,
+			 const struct hash_netiface6_elem *d)
+{
+}
+
+#undef MTYPE
+#undef PF
+#undef HOST_MASK
+#undef HKEY_DATALEN
+
+#define MTYPE		hash_netiface6
+#define PF		6
+#define HOST_MASK	128
+#define HKEY_DATALEN	sizeof(struct hash_netiface6_elem_hashed)
+#define IP_SET_EMIT_CREATE
+#include "ip_set_hash_gen.h"
+>>>>>>> refs/remotes/origin/master
 
 static int
 hash_netiface6_kadt(struct ip_set *set, const struct sk_buff *skb,
 		    const struct xt_action_param *par,
+<<<<<<< HEAD
 		    enum ipset_adt adt, const struct ip_set_adt_opt *opt)
 {
 	struct ip_set_hash *h = set->data;
@@ -621,6 +893,26 @@ hash_netiface6_kadt(struct ip_set *set, const struct sk_buff *skb,
 
 	ip6addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &data.ip.in6);
 	ip6_netmask(&data.ip, data.cidr);
+=======
+		    enum ipset_adt adt, struct ip_set_adt_opt *opt)
+{
+	struct hash_netiface *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_netiface6_elem e = {
+		.cidr = IP_SET_INIT_CIDR(h->nets[0].cidr[0], HOST_MASK),
+		.elem = 1,
+	};
+	struct ip_set_ext ext = IP_SET_INIT_KEXT(skb, opt, set);
+	int ret;
+
+	if (e.cidr == 0)
+		return -EINVAL;
+	if (adt == IPSET_TEST)
+		e.cidr = HOST_MASK;
+
+	ip6addrptr(skb, opt->flags & IPSET_DIM_ONE_SRC, &e.ip.in6);
+	ip6_netmask(&e.ip, e.cidr);
+>>>>>>> refs/remotes/origin/master
 
 	if (opt->cmdflags & IPSET_FLAG_PHYSDEV) {
 #ifdef CONFIG_BRIDGE_NETFILTER
@@ -628,6 +920,7 @@ hash_netiface6_kadt(struct ip_set *set, const struct sk_buff *skb,
 
 		if (!nf_bridge)
 			return -EINVAL;
+<<<<<<< HEAD
 		data.iface = SRCDIR ? PHYSDEV(physindev) : PHYSDEV(physoutdev);
 		data.physdev = 1;
 #else
@@ -642,30 +935,64 @@ hash_netiface6_kadt(struct ip_set *set, const struct sk_buff *skb,
 	if (adt == IPSET_ADD) {
 		if (!ret) {
 			ret = iface_add(&h->rbtree, &data.iface);
+=======
+		e.iface = SRCDIR ? PHYSDEV(physindev) : PHYSDEV(physoutdev);
+		e.physdev = 1;
+#else
+		e.iface = NULL;
+#endif
+	} else
+		e.iface = SRCDIR ? IFACE(in) : IFACE(out);
+
+	if (!e.iface)
+		return -EINVAL;
+	ret = iface_test(&h->rbtree, &e.iface);
+	if (adt == IPSET_ADD) {
+		if (!ret) {
+			ret = iface_add(&h->rbtree, &e.iface);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				return ret;
 		}
 	} else if (!ret)
 		return ret;
 
+<<<<<<< HEAD
 	return adtfn(set, &data, opt_timeout(opt, h), opt->cmdflags);
+=======
+	return adtfn(set, &e, &ext, &opt->ext, opt->cmdflags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 hash_netiface6_uadt(struct ip_set *set, struct nlattr *tb[],
 		   enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
 {
+<<<<<<< HEAD
 	struct ip_set_hash *h = set->data;
 	ipset_adtfn adtfn = set->variant->adt[adt];
 	struct hash_netiface6_elem data = { .cidr = HOST_MASK };
 	u32 timeout = h->timeout;
 	char iface[IFNAMSIZ] = {};
+=======
+	struct hash_netiface *h = set->data;
+	ipset_adtfn adtfn = set->variant->adt[adt];
+	struct hash_netiface6_elem e = { .cidr = HOST_MASK, .elem = 1 };
+	struct ip_set_ext ext = IP_SET_INIT_UEXT(set);
+	char iface[IFNAMSIZ];
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (unlikely(!tb[IPSET_ATTR_IP] ||
 		     !tb[IPSET_ATTR_IFACE] ||
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_TIMEOUT) ||
+<<<<<<< HEAD
 		     !ip_set_optattr_netorder(tb, IPSET_ATTR_CADT_FLAGS)))
+=======
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_CADT_FLAGS) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_PACKETS) ||
+		     !ip_set_optattr_netorder(tb, IPSET_ATTR_BYTES)))
+>>>>>>> refs/remotes/origin/master
 		return -IPSET_ERR_PROTOCOL;
 	if (unlikely(tb[IPSET_ATTR_IP_TO]))
 		return -IPSET_ERR_HASH_RANGE_UNSUPPORTED;
@@ -673,11 +1000,17 @@ hash_netiface6_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (tb[IPSET_ATTR_LINENO])
 		*lineno = nla_get_u32(tb[IPSET_ATTR_LINENO]);
 
+<<<<<<< HEAD
 	ret = ip_set_get_ipaddr6(tb[IPSET_ATTR_IP], &data.ip);
+=======
+	ret = ip_set_get_ipaddr6(tb[IPSET_ATTR_IP], &e.ip) ||
+	      ip_set_get_extensions(set, tb, &ext);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
 	if (tb[IPSET_ATTR_CIDR])
+<<<<<<< HEAD
 		data.cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
 	if (!data.cidr || data.cidr > HOST_MASK)
 		return -IPSET_ERR_INVALID_CIDR;
@@ -695,6 +1028,19 @@ hash_netiface6_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (adt == IPSET_ADD) {
 		if (!ret) {
 			ret = iface_add(&h->rbtree, &data.iface);
+=======
+		e.cidr = nla_get_u8(tb[IPSET_ATTR_CIDR]);
+	if (e.cidr > HOST_MASK)
+		return -IPSET_ERR_INVALID_CIDR;
+	ip6_netmask(&e.ip, e.cidr);
+
+	strcpy(iface, nla_data(tb[IPSET_ATTR_IFACE]));
+	e.iface = iface;
+	ret = iface_test(&h->rbtree, &e.iface);
+	if (adt == IPSET_ADD) {
+		if (!ret) {
+			ret = iface_add(&h->rbtree, &e.iface);
+>>>>>>> refs/remotes/origin/master
 			if (ret)
 				return ret;
 		}
@@ -704,6 +1050,7 @@ hash_netiface6_uadt(struct ip_set *set, struct nlattr *tb[],
 	if (tb[IPSET_ATTR_CADT_FLAGS]) {
 		u32 cadt_flags = ip_set_get_h32(tb[IPSET_ATTR_CADT_FLAGS]);
 		if (cadt_flags & IPSET_FLAG_PHYSDEV)
+<<<<<<< HEAD
 			data.physdev = 1;
 		if (adt == IPSET_ADD && (cadt_flags & IPSET_FLAG_NOMATCH))
 			flags |= (cadt_flags << 16);
@@ -788,16 +1135,36 @@ hash_netiface_create(struct ip_set *set, struct nlattr *tb[], u32 flags)
 		 h->table->htable_bits, h->maxelem, set->data, h->table);
 
 	return 0;
+=======
+			e.physdev = 1;
+		if (cadt_flags & IPSET_FLAG_NOMATCH)
+			flags |= (IPSET_FLAG_NOMATCH << 16);
+	}
+
+	ret = adtfn(set, &e, &ext, &ext, flags);
+
+	return ip_set_enomatch(ret, flags, adt, set) ? -ret :
+	       ip_set_eexist(ret, flags) ? 0 : ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct ip_set_type hash_netiface_type __read_mostly = {
 	.name		= "hash:net,iface",
 	.protocol	= IPSET_PROTOCOL,
+<<<<<<< HEAD
 	.features	= IPSET_TYPE_IP | IPSET_TYPE_IFACE,
 	.dimension	= IPSET_DIM_TWO,
 	.family		= NFPROTO_UNSPEC,
 	.revision_min	= 0,
 	.revision_max	= 1,	/* nomatch flag support added */
+=======
+	.features	= IPSET_TYPE_IP | IPSET_TYPE_IFACE |
+			  IPSET_TYPE_NOMATCH,
+	.dimension	= IPSET_DIM_TWO,
+	.family		= NFPROTO_UNSPEC,
+	.revision_min	= IPSET_TYPE_REV_MIN,
+	.revision_max	= IPSET_TYPE_REV_MAX,
+>>>>>>> refs/remotes/origin/master
 	.create		= hash_netiface_create,
 	.create_policy	= {
 		[IPSET_ATTR_HASHSIZE]	= { .type = NLA_U32 },
@@ -806,16 +1173,30 @@ static struct ip_set_type hash_netiface_type __read_mostly = {
 		[IPSET_ATTR_RESIZE]	= { .type = NLA_U8  },
 		[IPSET_ATTR_PROTO]	= { .type = NLA_U8 },
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_CADT_FLAGS]	= { .type = NLA_U32 },
+>>>>>>> refs/remotes/origin/master
 	},
 	.adt_policy	= {
 		[IPSET_ATTR_IP]		= { .type = NLA_NESTED },
 		[IPSET_ATTR_IP_TO]	= { .type = NLA_NESTED },
 		[IPSET_ATTR_IFACE]	= { .type = NLA_NUL_STRING,
+<<<<<<< HEAD
 					    .len = IPSET_MAXNAMELEN - 1 },
+=======
+					    .len  = IFNAMSIZ - 1 },
+>>>>>>> refs/remotes/origin/master
 		[IPSET_ATTR_CADT_FLAGS]	= { .type = NLA_U32 },
 		[IPSET_ATTR_CIDR]	= { .type = NLA_U8 },
 		[IPSET_ATTR_TIMEOUT]	= { .type = NLA_U32 },
 		[IPSET_ATTR_LINENO]	= { .type = NLA_U32 },
+<<<<<<< HEAD
+=======
+		[IPSET_ATTR_BYTES]	= { .type = NLA_U64 },
+		[IPSET_ATTR_PACKETS]	= { .type = NLA_U64 },
+		[IPSET_ATTR_COMMENT]	= { .type = NLA_NUL_STRING },
+>>>>>>> refs/remotes/origin/master
 	},
 	.me		= THIS_MODULE,
 };

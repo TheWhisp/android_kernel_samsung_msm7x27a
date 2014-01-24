@@ -33,9 +33,13 @@
 #include <linux/wimax.h>
 #include <linux/security.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "wimax-internal.h"
 
 #define D_SUBMODULE op_reset
@@ -95,6 +99,7 @@ int wimax_reset(struct wimax_dev *wimax_dev)
 EXPORT_SYMBOL(wimax_reset);
 
 
+<<<<<<< HEAD
 static const struct nla_policy wimax_gnl_reset_policy[WIMAX_GNL_ATTR_MAX + 1] = {
 	[WIMAX_GNL_RESET_IFIDX] = {
 		.type = NLA_U32,
@@ -102,6 +107,8 @@ static const struct nla_policy wimax_gnl_reset_policy[WIMAX_GNL_ATTR_MAX + 1] = 
 };
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Exporting to user space over generic netlink
  *
@@ -109,7 +116,10 @@ static const struct nla_policy wimax_gnl_reset_policy[WIMAX_GNL_ATTR_MAX + 1] = 
  *
  * No attributes.
  */
+<<<<<<< HEAD
 static
+=======
+>>>>>>> refs/remotes/origin/master
 int wimax_gnl_doit_reset(struct sk_buff *skb, struct genl_info *info)
 {
 	int result, ifindex;
@@ -133,6 +143,7 @@ error_no_wimax_dev:
 	d_fnend(3, NULL, "(skb %p info %p) = %d\n", skb, info, result);
 	return result;
 }
+<<<<<<< HEAD
 
 
 struct genl_ops wimax_gnl_reset = {
@@ -142,3 +153,5 @@ struct genl_ops wimax_gnl_reset = {
 	.doit = wimax_gnl_doit_reset,
 	.dumpit = NULL,
 };
+=======
+>>>>>>> refs/remotes/origin/master

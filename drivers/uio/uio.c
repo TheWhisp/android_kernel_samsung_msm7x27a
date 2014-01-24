@@ -35,7 +35,10 @@ struct uio_device {
 	atomic_t		event;
 	struct fasync_struct	*async_queue;
 	wait_queue_head_t	wait;
+<<<<<<< HEAD
 	int			vma_count;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct uio_info		*info;
 	struct kobject		*map_dir;
 	struct kobject		*portio_dir;
@@ -70,10 +73,14 @@ static ssize_t map_name_show(struct uio_mem *mem, char *buf)
 static ssize_t map_addr_show(struct uio_mem *mem, char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "0x%lx\n", mem->addr);
 =======
 	return sprintf(buf, "0x%llx\n", (unsigned long long)mem->addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "0x%llx\n", (unsigned long long)mem->addr);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t map_size_show(struct uio_mem *mem, char *buf)
@@ -84,10 +91,14 @@ static ssize_t map_size_show(struct uio_mem *mem, char *buf)
 static ssize_t map_offset_show(struct uio_mem *mem, char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return sprintf(buf, "0x%lx\n", mem->addr & ~PAGE_MASK);
 =======
 	return sprintf(buf, "0x%llx\n", (unsigned long long)mem->addr & ~PAGE_MASK);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return sprintf(buf, "0x%llx\n", (unsigned long long)mem->addr & ~PAGE_MASK);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct map_sysfs_entry {
@@ -232,26 +243,43 @@ static struct kobj_type portio_attr_type = {
 	.default_attrs	= portio_attrs,
 };
 
+<<<<<<< HEAD
 static ssize_t show_name(struct device *dev,
+=======
+static ssize_t name_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			 struct device_attribute *attr, char *buf)
 {
 	struct uio_device *idev = dev_get_drvdata(dev);
 	return sprintf(buf, "%s\n", idev->info->name);
 }
+<<<<<<< HEAD
 
 static ssize_t show_version(struct device *dev,
+=======
+static DEVICE_ATTR_RO(name);
+
+static ssize_t version_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			    struct device_attribute *attr, char *buf)
 {
 	struct uio_device *idev = dev_get_drvdata(dev);
 	return sprintf(buf, "%s\n", idev->info->version);
 }
+<<<<<<< HEAD
 
 static ssize_t show_event(struct device *dev,
+=======
+static DEVICE_ATTR_RO(version);
+
+static ssize_t event_show(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 			  struct device_attribute *attr, char *buf)
 {
 	struct uio_device *idev = dev_get_drvdata(dev);
 	return sprintf(buf, "%u\n", (unsigned int)atomic_read(&idev->event));
 }
+<<<<<<< HEAD
 
 static struct device_attribute uio_class_attributes[] = {
 	__ATTR(name, S_IRUGO, show_name, NULL),
@@ -259,11 +287,26 @@ static struct device_attribute uio_class_attributes[] = {
 	__ATTR(event, S_IRUGO, show_event, NULL),
 	{}
 };
+=======
+static DEVICE_ATTR_RO(event);
+
+static struct attribute *uio_attrs[] = {
+	&dev_attr_name.attr,
+	&dev_attr_version.attr,
+	&dev_attr_event.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(uio);
+>>>>>>> refs/remotes/origin/master
 
 /* UIO class infrastructure */
 static struct class uio_class = {
 	.name = "uio",
+<<<<<<< HEAD
 	.dev_attrs = uio_class_attributes,
+=======
+	.dev_groups = uio_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -293,13 +336,21 @@ static int uio_dev_add_attributes(struct uio_device *idev)
 		}
 		map = kzalloc(sizeof(*map), GFP_KERNEL);
 		if (!map)
+<<<<<<< HEAD
 			goto err_map;
+=======
+			goto err_map_kobj;
+>>>>>>> refs/remotes/origin/master
 		kobject_init(&map->kobj, &map_attr_type);
 		map->mem = mem;
 		mem->map = map;
 		ret = kobject_add(&map->kobj, idev->map_dir, "map%d", mi);
 		if (ret)
+<<<<<<< HEAD
 			goto err_map;
+=======
+			goto err_map_kobj;
+>>>>>>> refs/remotes/origin/master
 		ret = kobject_uevent(&map->kobj, KOBJ_ADD);
 		if (ret)
 			goto err_map;
@@ -318,14 +369,22 @@ static int uio_dev_add_attributes(struct uio_device *idev)
 		}
 		portio = kzalloc(sizeof(*portio), GFP_KERNEL);
 		if (!portio)
+<<<<<<< HEAD
 			goto err_portio;
+=======
+			goto err_portio_kobj;
+>>>>>>> refs/remotes/origin/master
 		kobject_init(&portio->kobj, &portio_attr_type);
 		portio->port = port;
 		port->portio = portio;
 		ret = kobject_add(&portio->kobj, idev->portio_dir,
 							"port%d", pi);
 		if (ret)
+<<<<<<< HEAD
 			goto err_portio;
+=======
+			goto err_portio_kobj;
+>>>>>>> refs/remotes/origin/master
 		ret = kobject_uevent(&portio->kobj, KOBJ_ADD);
 		if (ret)
 			goto err_portio;
@@ -334,14 +393,26 @@ static int uio_dev_add_attributes(struct uio_device *idev)
 	return 0;
 
 err_portio:
+<<<<<<< HEAD
 	for (pi--; pi >= 0; pi--) {
+=======
+	pi--;
+err_portio_kobj:
+	for (; pi >= 0; pi--) {
+>>>>>>> refs/remotes/origin/master
 		port = &idev->info->port[pi];
 		portio = port->portio;
 		kobject_put(&portio->kobj);
 	}
 	kobject_put(idev->portio_dir);
 err_map:
+<<<<<<< HEAD
 	for (mi--; mi>=0; mi--) {
+=======
+	mi--;
+err_map_kobj:
+	for (; mi >= 0; mi--) {
+>>>>>>> refs/remotes/origin/master
 		mem = &idev->info->mem[mi];
 		map = mem->map;
 		kobject_put(&map->kobj);
@@ -377,6 +448,7 @@ static void uio_dev_del_attributes(struct uio_device *idev)
 static int uio_get_minor(struct uio_device *idev)
 {
 	int retval = -ENOMEM;
+<<<<<<< HEAD
 	int id;
 
 	mutex_lock(&minor_lock);
@@ -397,6 +469,18 @@ static int uio_get_minor(struct uio_device *idev)
 		idr_remove(&uio_idr, id);
 	}
 exit:
+=======
+
+	mutex_lock(&minor_lock);
+	retval = idr_alloc(&uio_idr, idev, 0, UIO_MAX_DEVICES, GFP_KERNEL);
+	if (retval >= 0) {
+		idev->minor = retval;
+		retval = 0;
+	} else if (retval == -ENOSPC) {
+		dev_err(idev->dev, "too many uio devices\n");
+		retval = -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&minor_lock);
 	return retval;
 }
@@ -611,6 +695,7 @@ static int uio_find_mem_index(struct vm_area_struct *vma)
 	return -1;
 }
 
+<<<<<<< HEAD
 static void uio_vma_open(struct vm_area_struct *vma)
 {
 	struct uio_device *idev = vma->vm_private_data;
@@ -623,11 +708,17 @@ static void uio_vma_close(struct vm_area_struct *vma)
 	idev->vma_count--;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int uio_vma_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 {
 	struct uio_device *idev = vma->vm_private_data;
 	struct page *page;
 	unsigned long offset;
+<<<<<<< HEAD
+=======
+	void *addr;
+>>>>>>> refs/remotes/origin/master
 
 	int mi = uio_find_mem_index(vma);
 	if (mi < 0)
@@ -639,6 +730,7 @@ static int uio_vma_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 	 */
 	offset = (vmf->pgoff - mi) << PAGE_SHIFT;
 
+<<<<<<< HEAD
 	if (idev->info->mem[mi].memtype == UIO_MEM_LOGICAL)
 		page = virt_to_page(idev->info->mem[mi].addr + offset);
 	else
@@ -648,21 +740,49 @@ static int uio_vma_fault(struct vm_area_struct *vma, struct vm_fault *vmf)
 =======
 		page = vmalloc_to_page((void *)(unsigned long)idev->info->mem[mi].addr + offset);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	addr = (void *)(unsigned long)idev->info->mem[mi].addr + offset;
+	if (idev->info->mem[mi].memtype == UIO_MEM_LOGICAL)
+		page = virt_to_page(addr);
+	else
+		page = vmalloc_to_page(addr);
+>>>>>>> refs/remotes/origin/master
 	get_page(page);
 	vmf->page = page;
 	return 0;
 }
 
+<<<<<<< HEAD
 static const struct vm_operations_struct uio_vm_ops = {
 	.open = uio_vma_open,
 	.close = uio_vma_close,
 	.fault = uio_vma_fault,
 };
 
+=======
+static const struct vm_operations_struct uio_logical_vm_ops = {
+	.fault = uio_vma_fault,
+};
+
+static int uio_mmap_logical(struct vm_area_struct *vma)
+{
+	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+	vma->vm_ops = &uio_logical_vm_ops;
+	return 0;
+}
+
+static const struct vm_operations_struct uio_physical_vm_ops = {
+#ifdef CONFIG_HAVE_IOREMAP_PROT
+	.access = generic_access_phys,
+#endif
+};
+
+>>>>>>> refs/remotes/origin/master
 static int uio_mmap_physical(struct vm_area_struct *vma)
 {
 	struct uio_device *idev = vma->vm_private_data;
 	int mi = uio_find_mem_index(vma);
+<<<<<<< HEAD
 	if (mi < 0)
 		return -EINVAL;
 
@@ -673,10 +793,38 @@ static int uio_mmap_physical(struct vm_area_struct *vma)
 	return remap_pfn_range(vma,
 			       vma->vm_start,
 			       idev->info->mem[mi].addr >> PAGE_SHIFT,
+=======
+	struct uio_mem *mem;
+	if (mi < 0)
+		return -EINVAL;
+	mem = idev->info->mem + mi;
+
+	if (mem->addr & ~PAGE_MASK)
+		return -ENODEV;
+	if (vma->vm_end - vma->vm_start > mem->size)
+		return -EINVAL;
+
+	vma->vm_ops = &uio_physical_vm_ops;
+	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+
+	/*
+	 * We cannot use the vm_iomap_memory() helper here,
+	 * because vma->vm_pgoff is the map index we looked
+	 * up above in uio_find_mem_index(), rather than an
+	 * actual page offset into the mmap.
+	 *
+	 * So we just do the physical mmap without a page
+	 * offset.
+	 */
+	return remap_pfn_range(vma,
+			       vma->vm_start,
+			       mem->addr >> PAGE_SHIFT,
+>>>>>>> refs/remotes/origin/master
 			       vma->vm_end - vma->vm_start,
 			       vma->vm_page_prot);
 }
 
+<<<<<<< HEAD
 static int uio_mmap_logical(struct vm_area_struct *vma)
 {
 	vma->vm_flags |= VM_RESERVED;
@@ -685,6 +833,8 @@ static int uio_mmap_logical(struct vm_area_struct *vma)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int uio_mmap(struct file *filep, struct vm_area_struct *vma)
 {
 	struct uio_listener *listener = filep->private_data;
@@ -702,7 +852,11 @@ static int uio_mmap(struct file *filep, struct vm_area_struct *vma)
 	if (mi < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	requested_pages = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+=======
+	requested_pages = vma_pages(vma);
+>>>>>>> refs/remotes/origin/master
 	actual_pages = ((idev->info->mem[mi].addr & ~PAGE_MASK)
 			+ idev->info->mem[mi].size + PAGE_SIZE -1) >> PAGE_SHIFT;
 	if (requested_pages > actual_pages)
@@ -763,22 +917,31 @@ static int uio_major_init(void)
 	uio_major = MAJOR(uio_dev);
 	uio_cdev = cdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	result = 0;
 out:
 	return result;
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 out_put:
 	kobject_put(&cdev->kobj);
 out_unregister:
 	unregister_chrdev_region(uio_dev, UIO_MAX_DEVICES);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	goto out;
 =======
 out:
 	return result;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	return result;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void uio_major_cleanup(void)
@@ -835,10 +998,16 @@ int __uio_register_device(struct module *owner,
 
 	info->uio_dev = NULL;
 
+<<<<<<< HEAD
 	idev = kzalloc(sizeof(*idev), GFP_KERNEL);
 	if (!idev) {
 		ret = -ENOMEM;
 		goto err_kzalloc;
+=======
+	idev = devm_kzalloc(parent, sizeof(*idev), GFP_KERNEL);
+	if (!idev) {
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	idev->owner = owner;
@@ -848,7 +1017,11 @@ int __uio_register_device(struct module *owner,
 
 	ret = uio_get_minor(idev);
 	if (ret)
+<<<<<<< HEAD
 		goto err_get_minor;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	idev->dev = device_create(&uio_class, parent,
 				  MKDEV(uio_major, idev->minor), idev,
@@ -866,7 +1039,11 @@ int __uio_register_device(struct module *owner,
 	info->uio_dev = idev;
 
 	if (info->irq && (info->irq != UIO_IRQ_CUSTOM)) {
+<<<<<<< HEAD
 		ret = request_irq(info->irq, uio_interrupt,
+=======
+		ret = devm_request_irq(idev->dev, info->irq, uio_interrupt,
+>>>>>>> refs/remotes/origin/master
 				  info->irq_flags, info->name, idev);
 		if (ret)
 			goto err_request_irq;
@@ -880,9 +1057,12 @@ err_uio_dev_add_attributes:
 	device_destroy(&uio_class, MKDEV(uio_major, idev->minor));
 err_device_create:
 	uio_free_minor(idev);
+<<<<<<< HEAD
 err_get_minor:
 	kfree(idev);
 err_kzalloc:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 EXPORT_SYMBOL_GPL(__uio_register_device);
@@ -903,6 +1083,7 @@ void uio_unregister_device(struct uio_info *info)
 
 	uio_free_minor(idev);
 
+<<<<<<< HEAD
 	if (info->irq && (info->irq != UIO_IRQ_CUSTOM))
 		free_irq(info->irq, idev);
 
@@ -910,6 +1091,11 @@ void uio_unregister_device(struct uio_info *info)
 
 	device_destroy(&uio_class, MKDEV(uio_major, idev->minor));
 	kfree(idev);
+=======
+	uio_dev_del_attributes(idev);
+
+	device_destroy(&uio_class, MKDEV(uio_major, idev->minor));
+>>>>>>> refs/remotes/origin/master
 
 	return;
 }

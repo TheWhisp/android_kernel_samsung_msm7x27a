@@ -454,7 +454,11 @@ apne_block_input(struct net_device *dev, int count, struct sk_buff *skb, int rin
 	buf[count-1] = inb(NE_BASE + NE_DATAPORT);
       }
     } else {
+<<<<<<< HEAD
       ptrc = (char*)buf;
+=======
+      ptrc = buf;
+>>>>>>> refs/remotes/origin/master
       for (cnt = 0; cnt < count; cnt++)
         *ptrc++ = inb(NE_BASE + NE_DATAPORT);
     }

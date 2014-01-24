@@ -1,6 +1,9 @@
 #include <linux/bitops.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 #include <asm/e820.h>
@@ -11,7 +14,11 @@
 
 #ifdef CONFIG_X86_OOSTORE
 
+<<<<<<< HEAD
 static u32 __cpuinit power2(u32 x)
+=======
+static u32 power2(u32 x)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 s = 1;
 
@@ -25,7 +32,11 @@ static u32 __cpuinit power2(u32 x)
 /*
  * Set up an actual MCR
  */
+<<<<<<< HEAD
 static void __cpuinit centaur_mcr_insert(int reg, u32 base, u32 size, int key)
+=======
+static void centaur_mcr_insert(int reg, u32 base, u32 size, int key)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 lo, hi;
 
@@ -42,7 +53,11 @@ static void __cpuinit centaur_mcr_insert(int reg, u32 base, u32 size, int key)
  *
  * Shortcut: We know you can't put 4Gig of RAM on a winchip
  */
+<<<<<<< HEAD
 static u32 __cpuinit ramtop(void)
+=======
+static u32 ramtop(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 clip = 0xFFFFFFFFUL;
 	u32 top = 0;
@@ -91,7 +106,11 @@ static u32 __cpuinit ramtop(void)
 /*
  * Compute a set of MCR's to give maximum coverage
  */
+<<<<<<< HEAD
 static int __cpuinit centaur_mcr_compute(int nr, int key)
+=======
+static int centaur_mcr_compute(int nr, int key)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 mem = ramtop();
 	u32 root = power2(mem);
@@ -157,7 +176,11 @@ static int __cpuinit centaur_mcr_compute(int nr, int key)
 	return ct;
 }
 
+<<<<<<< HEAD
 static void __cpuinit centaur_create_optimal_mcr(void)
+=======
+static void centaur_create_optimal_mcr(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int used;
 	int i;
@@ -181,7 +204,11 @@ static void __cpuinit centaur_create_optimal_mcr(void)
 		wrmsr(MSR_IDT_MCR0+i, 0, 0);
 }
 
+<<<<<<< HEAD
 static void __cpuinit winchip2_create_optimal_mcr(void)
+=======
+static void winchip2_create_optimal_mcr(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 lo, hi;
 	int used;
@@ -217,7 +244,11 @@ static void __cpuinit winchip2_create_optimal_mcr(void)
 /*
  * Handle the MCR key on the Winchip 2.
  */
+<<<<<<< HEAD
 static void __cpuinit winchip2_unprotect_mcr(void)
+=======
+static void winchip2_unprotect_mcr(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 lo, hi;
 	u32 key;
@@ -229,7 +260,11 @@ static void __cpuinit winchip2_unprotect_mcr(void)
 	wrmsr(MSR_IDT_MCR_CTRL, lo, hi);
 }
 
+<<<<<<< HEAD
 static void __cpuinit winchip2_protect_mcr(void)
+=======
+static void winchip2_protect_mcr(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 lo, hi;
 
@@ -247,7 +282,11 @@ static void __cpuinit winchip2_protect_mcr(void)
 #define RNG_ENABLED	(1 << 3)
 #define RNG_ENABLE	(1 << 6)	/* MSR_VIA_RNG */
 
+<<<<<<< HEAD
 static void __cpuinit init_c3(struct cpuinfo_x86 *c)
+=======
+static void init_c3(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 	u32  lo, hi;
 
@@ -279,10 +318,14 @@ static void __cpuinit init_c3(struct cpuinfo_x86 *c)
 #ifdef CONFIG_X86_32
 	/* Cyrix III family needs CX8 & PGE explicitly enabled. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (c->x86_model >= 6 && c->x86_model <= 9) {
 =======
 	if (c->x86_model >= 6 && c->x86_model <= 13) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (c->x86_model >= 6 && c->x86_model <= 13) {
+>>>>>>> refs/remotes/origin/master
 		rdmsr(MSR_VIA_FCR, lo, hi);
 		lo |= (1<<1 | 1<<7);
 		wrmsr(MSR_VIA_FCR, lo, hi);
@@ -322,7 +365,11 @@ enum {
 		EAMD3D		= 1<<20,
 };
 
+<<<<<<< HEAD
 static void __cpuinit early_init_centaur(struct cpuinfo_x86 *c)
+=======
+static void early_init_centaur(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (c->x86) {
 #ifdef CONFIG_X86_32
@@ -341,7 +388,11 @@ static void __cpuinit early_init_centaur(struct cpuinfo_x86 *c)
 #endif
 }
 
+<<<<<<< HEAD
 static void __cpuinit init_centaur(struct cpuinfo_x86 *c)
+=======
+static void init_centaur(struct cpuinfo_x86 *c)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_X86_32
 	char *name;
@@ -472,10 +523,17 @@ static void __cpuinit init_centaur(struct cpuinfo_x86 *c)
 #endif
 }
 
+<<<<<<< HEAD
 static unsigned int __cpuinit
 centaur_size_cache(struct cpuinfo_x86 *c, unsigned int size)
 {
 #ifdef CONFIG_X86_32
+=======
+#ifdef CONFIG_X86_32
+static unsigned int
+centaur_size_cache(struct cpuinfo_x86 *c, unsigned int size)
+{
+>>>>>>> refs/remotes/origin/master
 	/* VIA C3 CPUs (670-68F) need further shifting. */
 	if ((c->x86 == 6) && ((c->x86_model == 7) || (c->x86_model == 8)))
 		size >>= 8;
@@ -488,16 +546,30 @@ centaur_size_cache(struct cpuinfo_x86 *c, unsigned int size)
 	if ((c->x86 == 6) && (c->x86_model == 9) &&
 				(c->x86_mask == 1) && (size == 65))
 		size -= 1;
+<<<<<<< HEAD
 #endif
 	return size;
 }
 
 static const struct cpu_dev __cpuinitconst centaur_cpu_dev = {
+=======
+	return size;
+}
+#endif
+
+static const struct cpu_dev centaur_cpu_dev = {
+>>>>>>> refs/remotes/origin/master
 	.c_vendor	= "Centaur",
 	.c_ident	= { "CentaurHauls" },
 	.c_early_init	= early_init_centaur,
 	.c_init		= init_centaur,
+<<<<<<< HEAD
 	.c_size_cache	= centaur_size_cache,
+=======
+#ifdef CONFIG_X86_32
+	.legacy_cache_size = centaur_size_cache,
+#endif
+>>>>>>> refs/remotes/origin/master
 	.c_x86_vendor	= X86_VENDOR_CENTAUR,
 };
 

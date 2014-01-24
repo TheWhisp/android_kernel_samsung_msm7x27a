@@ -10,6 +10,7 @@
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
+<<<<<<< HEAD
 
 #ifndef __ISDN_H__
 #define __ISDN_H__
@@ -143,6 +144,11 @@ typedef struct {
 #define ISDN_NET_DIALMODE(x) ((&(x))->flags & ISDN_NET_DIALMODE_MASK)
 
 #ifdef __KERNEL__
+=======
+#ifndef __ISDN_H__
+#define __ISDN_H__
+
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/errno.h>
 #include <linux/fs.h>
@@ -166,6 +172,10 @@ typedef struct {
 #include <linux/skbuff.h>
 #include <linux/tcp.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
+=======
+#include <uapi/linux/isdn.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ISDN_TTY_MAJOR    43
 #define ISDN_TTYAUX_MAJOR 44
@@ -192,10 +202,14 @@ typedef struct {
 
 #include <linux/ppp_defs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/if_ppp.h>
 =======
 #include <linux/ppp-ioctl.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ppp-ioctl.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/isdn_ppp.h>
 #endif
@@ -400,6 +414,7 @@ typedef struct isdn_net_dev_s {
 /*======================= Start of ISDN-tty stuff ===========================*/
 
 #define ISDN_ASYNC_MAGIC          0x49344C01 /* for paranoia-checking        */
+<<<<<<< HEAD
 #define ISDN_ASYNC_INITIALIZED	  0x80000000 /* port was initialized         */
 #define ISDN_ASYNC_CALLOUT_ACTIVE 0x40000000 /* Call out device active       */
 #define ISDN_ASYNC_NORMAL_ACTIVE  0x20000000 /* Normal device active         */
@@ -415,6 +430,10 @@ typedef struct isdn_net_dev_s {
 #define ISDN_SERIAL_XMIT_MAX            4000 /* Maximum bufsize for write    */
 #define ISDN_SERIAL_TYPE_NORMAL            1
 #define ISDN_SERIAL_TYPE_CALLOUT           2
+=======
+#define ISDN_SERIAL_XMIT_SIZE           1024 /* Default bufsize for write    */
+#define ISDN_SERIAL_XMIT_MAX            4000 /* Maximum bufsize for write    */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_ISDN_AUDIO
 /* For using sk_buffs with audio we need some private variables
@@ -456,17 +475,24 @@ typedef struct atemu {
 /* Private data (similar to async_struct in <linux/serial.h>) */
 typedef struct modem_info {
   int			magic;
+<<<<<<< HEAD
   struct module		*owner;
   int			flags;		 /* defined in tty.h               */
+=======
+  struct tty_port	port;
+>>>>>>> refs/remotes/origin/master
   int			x_char;		 /* xon/xoff character             */
   int			mcr;		 /* Modem control register         */
   int                   msr;             /* Modem status register          */
   int                   lsr;             /* Line status register           */
   int			line;
+<<<<<<< HEAD
   int			count;		 /* # of fd on device              */
   int			blocked_open;	 /* # of blocked opens             */
   long			session;	 /* Session of opening process     */
   long			pgrp;		 /* pgrp of opening process        */
+=======
+>>>>>>> refs/remotes/origin/master
   int                   online;          /* 1 = B-Channel is up, drop data */
 					 /* 2 = B-Channel is up, deliver d.*/
   int                   dialing;         /* Dial in progress or ATA        */
@@ -486,7 +512,10 @@ typedef struct modem_info {
   int                   send_outstanding;/* # of outstanding send-requests */
   int                   xmit_size;       /* max. # of chars in xmit_buf    */
   int                   xmit_count;      /* # of chars in xmit_buf         */
+<<<<<<< HEAD
   unsigned char         *xmit_buf;       /* transmit buffer                */
+=======
+>>>>>>> refs/remotes/origin/master
   struct sk_buff_head   xmit_queue;      /* transmit queue                 */
   atomic_t              xmit_lock;       /* Semaphore for isdn_tty_write   */
 #ifdef CONFIG_ISDN_AUDIO
@@ -504,11 +533,15 @@ typedef struct modem_info {
   struct T30_s		*fax;		 /* T30 Fax Group 3 data/interface */
   int			faxonline;	 /* Fax-channel status             */
 #endif
+<<<<<<< HEAD
   struct tty_struct 	*tty;            /* Pointer to corresponding tty   */
   atemu                 emu;             /* AT-emulator data               */
   struct ktermios	normal_termios;  /* For saving termios structs     */
   struct ktermios	callout_termios;
   wait_queue_head_t	open_wait, close_wait;
+=======
+  atemu                 emu;             /* AT-emulator data               */
+>>>>>>> refs/remotes/origin/master
   spinlock_t	        readlock;
 } modem_info;
 
@@ -625,6 +658,9 @@ typedef struct isdn_devt {
 extern isdn_dev *dev;
 
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ISDN_H__ */

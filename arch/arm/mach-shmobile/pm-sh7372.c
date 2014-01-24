@@ -16,6 +16,7 @@
 #include <linux/err.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/io.h>
 #include <asm/tlbflush.h>
@@ -60,17 +61,24 @@ static void sh7372_cpuidle_setup(struct cpuidle_device *dev)
 
 	state = &dev->states[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm_clock.h>
 #include <linux/platform_device.h>
 #include <linux/delay.h>
 #include <linux/irq.h>
 #include <linux/bitrev.h>
 #include <linux/console.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpuidle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/tlbflush.h>
 #include <asm/suspend.h>
 #include <mach/common.h>
 #include <mach/sh7372.h>
+<<<<<<< HEAD
 
 /* DBG */
 #define DBGREG1 0xe6100020
@@ -191,12 +199,64 @@ static int pd_power_up(struct generic_pm_domain *genpd)
 }
 
 static int sh7372_a4r_suspend(void)
+=======
+#include <mach/pm-rmobile.h>
+
+/* DBG */
+#define DBGREG1 IOMEM(0xe6100020)
+#define DBGREG9 IOMEM(0xe6100040)
+
+/* CPGA */
+#define SYSTBCR IOMEM(0xe6150024)
+#define MSTPSR0 IOMEM(0xe6150030)
+#define MSTPSR1 IOMEM(0xe6150038)
+#define MSTPSR2 IOMEM(0xe6150040)
+#define MSTPSR3 IOMEM(0xe6150048)
+#define MSTPSR4 IOMEM(0xe615004c)
+#define PLLC01STPCR IOMEM(0xe61500c8)
+
+/* SYSC */
+#define SBAR IOMEM(0xe6180020)
+#define WUPRMSK IOMEM(0xe6180028)
+#define WUPSMSK IOMEM(0xe618002c)
+#define WUPSMSK2 IOMEM(0xe6180048)
+#define WUPSFAC IOMEM(0xe6180098)
+#define IRQCR IOMEM(0xe618022c)
+#define IRQCR2 IOMEM(0xe6180238)
+#define IRQCR3 IOMEM(0xe6180244)
+#define IRQCR4 IOMEM(0xe6180248)
+#define PDNSEL IOMEM(0xe6180254)
+
+/* INTC */
+#define ICR1A IOMEM(0xe6900000)
+#define ICR2A IOMEM(0xe6900004)
+#define ICR3A IOMEM(0xe6900008)
+#define ICR4A IOMEM(0xe690000c)
+#define INTMSK00A IOMEM(0xe6900040)
+#define INTMSK10A IOMEM(0xe6900044)
+#define INTMSK20A IOMEM(0xe6900048)
+#define INTMSK30A IOMEM(0xe690004c)
+
+/* MFIS */
+/* FIXME: pointing where? */
+#define SMFRAM 0xe6a70000
+
+/* AP-System Core */
+#define APARMBAREA IOMEM(0xe6f10020)
+
+#ifdef CONFIG_PM
+
+#define PM_DOMAIN_ON_OFF_LATENCY_NS	250000
+
+static int sh7372_a4r_pd_suspend(void)
+>>>>>>> refs/remotes/origin/master
 {
 	sh7372_intcs_suspend();
 	__raw_writel(0x300fffff, WUPRMSK); /* avoid wakeup */
 	return 0;
 }
 
+<<<<<<< HEAD
 static bool pd_active_wakeup(struct device *dev)
 {
 	bool (*active_wakeup)(struct device *dev);
@@ -315,6 +375,29 @@ struct sh7372_pm_domain sh7372_a4s = {
 };
 
 static int sh7372_a3sp_suspend(void)
+=======
+static bool a4s_suspend_ready;
+
+static int sh7372_a4s_pd_suspend(void)
+{
+	/*
+	 * The A4S domain contains the CPU core and therefore it should
+	 * only be turned off if the CPU is not in use.  This may happen
+	 * during system suspend, when SYSC is going to be used for generating
+	 * resume signals and a4s_suspend_ready is set to let
+	 * sh7372_enter_suspend() know that it can turn A4S off.
+	 */
+	a4s_suspend_ready = true;
+	return -EBUSY;
+}
+
+static void sh7372_a4s_pd_resume(void)
+{
+	a4s_suspend_ready = false;
+}
+
+static int sh7372_a3sp_pd_suspend(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * Serial consoles make use of SCIF hardware located in A3SP,
@@ -323,6 +406,7 @@ static int sh7372_a3sp_suspend(void)
 	return console_suspend_enabled ? 0 : -EBUSY;
 }
 
+<<<<<<< HEAD
 struct sh7372_pm_domain sh7372_a3sp = {
 	.genpd.name = "A3SP",
 	.bit_shift = 11,
@@ -349,6 +433,86 @@ static int sh7372_do_idle_core_standby(unsigned long unused)
 	return 0;
 }
 
+=======
+static struct rmobile_pm_domain sh7372_pm_domains[] = {
+	{
+		.genpd.name = "A4LC",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 1,
+	},
+	{
+		.genpd.name = "A4MP",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 2,
+	},
+	{
+		.genpd.name = "D4",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 3,
+	},
+	{
+		.genpd.name = "A4R",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 5,
+		.suspend = sh7372_a4r_pd_suspend,
+		.resume = sh7372_intcs_resume,
+	},
+	{
+		.genpd.name = "A3RV",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 6,
+	},
+	{
+		.genpd.name = "A3RI",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 8,
+	},
+	{
+		.genpd.name = "A4S",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 10,
+		.gov = &pm_domain_always_on_gov,
+		.no_debug = true,
+		.suspend = sh7372_a4s_pd_suspend,
+		.resume = sh7372_a4s_pd_resume,
+	},
+	{
+		.genpd.name = "A3SP",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 11,
+		.gov = &pm_domain_always_on_gov,
+		.no_debug = true,
+		.suspend = sh7372_a3sp_pd_suspend,
+	},
+	{
+		.genpd.name = "A3SG",
+		.genpd.power_on_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.genpd.power_off_latency_ns = PM_DOMAIN_ON_OFF_LATENCY_NS,
+		.bit_shift = 13,
+	},
+};
+
+void __init sh7372_init_pm_domains(void)
+{
+	rmobile_init_domains(sh7372_pm_domains, ARRAY_SIZE(sh7372_pm_domains));
+	pm_genpd_add_subdomain_names("A4LC", "A3RV");
+	pm_genpd_add_subdomain_names("A4R", "A4LC");
+	pm_genpd_add_subdomain_names("A4S", "A3SG");
+	pm_genpd_add_subdomain_names("A4S", "A3SP");
+}
+
+#endif /* CONFIG_PM */
+
+#if defined(CONFIG_SUSPEND) || defined(CONFIG_CPU_IDLE)
+>>>>>>> refs/remotes/origin/master
 static void sh7372_set_reset_vector(unsigned long address)
 {
 	/* set reset vector, translate 4k */
@@ -356,6 +520,7 @@ static void sh7372_set_reset_vector(unsigned long address)
 	__raw_writel(0, APARMBAREA);
 }
 
+<<<<<<< HEAD
 static void sh7372_enter_core_standby(void)
 {
 	sh7372_set_reset_vector(__pa(sh7372_resume_core_standby_sysc));
@@ -371,6 +536,8 @@ static void sh7372_enter_core_standby(void)
 #endif
 
 #ifdef CONFIG_SUSPEND
+=======
+>>>>>>> refs/remotes/origin/master
 static void sh7372_enter_sysc(int pllc0_on, unsigned long sleep_mode)
 {
 	if (pllc0_on)
@@ -510,6 +677,11 @@ static void sh7372_setup_sysc(unsigned long msk, unsigned long msk2)
 
 static void sh7372_enter_a3sm_common(int pllc0_on)
 {
+<<<<<<< HEAD
+=======
+	/* use INTCA together with SYSC for wakeup */
+	sh7372_setup_sysc(1 << 0, 0);
+>>>>>>> refs/remotes/origin/master
 	sh7372_set_reset_vector(__pa(sh7372_resume_core_standby_sysc));
 	sh7372_enter_sysc(pllc0_on, 1 << 12);
 }
@@ -517,12 +689,16 @@ static void sh7372_enter_a3sm_common(int pllc0_on)
 static void sh7372_enter_a4s_common(int pllc0_on)
 {
 	sh7372_intca_suspend();
+<<<<<<< HEAD
 	memcpy((void *)SMFRAM, sh7372_resume_core_standby_sysc, 0x100);
+=======
+>>>>>>> refs/remotes/origin/master
 	sh7372_set_reset_vector(SMFRAM);
 	sh7372_enter_sysc(pllc0_on, 1 << 10);
 	sh7372_intca_resume();
 }
 
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_CPU_IDLE
@@ -572,11 +748,125 @@ static void sh7372_suspend_init(void)
 	shmobile_suspend_ops.enter = sh7372_enter_suspend;
 =======
 
+=======
+static void sh7372_pm_setup_smfram(void)
+{
+	/* pass physical address of cpu_resume() to assembly resume code */
+	sh7372_cpu_resume = virt_to_phys(cpu_resume);
+
+	memcpy((void *)SMFRAM, sh7372_resume_core_standby_sysc, 0x100);
+}
+#else
+static inline void sh7372_pm_setup_smfram(void) {}
+#endif /* CONFIG_SUSPEND || CONFIG_CPU_IDLE */
+
+#ifdef CONFIG_CPU_IDLE
+static int sh7372_do_idle_core_standby(unsigned long unused)
+{
+	cpu_do_idle(); /* WFI when SYSTBCR == 0x10 -> Core Standby */
+	return 0;
+}
+
+static int sh7372_enter_core_standby(struct cpuidle_device *dev,
+				     struct cpuidle_driver *drv, int index)
+{
+	sh7372_set_reset_vector(__pa(sh7372_resume_core_standby_sysc));
+
+	/* enter sleep mode with SYSTBCR to 0x10 */
+	__raw_writel(0x10, SYSTBCR);
+	cpu_suspend(0, sh7372_do_idle_core_standby);
+	__raw_writel(0, SYSTBCR);
+
+	 /* disable reset vector translation */
+	__raw_writel(0, SBAR);
+
+	return 1;
+}
+
+static int sh7372_enter_a3sm_pll_on(struct cpuidle_device *dev,
+				    struct cpuidle_driver *drv, int index)
+{
+	sh7372_enter_a3sm_common(1);
+	return 2;
+}
+
+static int sh7372_enter_a3sm_pll_off(struct cpuidle_device *dev,
+				     struct cpuidle_driver *drv, int index)
+{
+	sh7372_enter_a3sm_common(0);
+	return 3;
+}
+
+static int sh7372_enter_a4s(struct cpuidle_device *dev,
+			    struct cpuidle_driver *drv, int index)
+{
+	unsigned long msk, msk2;
+
+	if (!sh7372_sysc_valid(&msk, &msk2))
+		return sh7372_enter_a3sm_pll_off(dev, drv, index);
+
+	sh7372_setup_sysc(msk, msk2);
+	sh7372_enter_a4s_common(0);
+	return 4;
+}
+
+static struct cpuidle_driver sh7372_cpuidle_driver = {
+	.name			= "sh7372_cpuidle",
+	.owner			= THIS_MODULE,
+	.state_count		= 5,
+	.safe_state_index	= 0, /* C1 */
+	.states[0] = ARM_CPUIDLE_WFI_STATE,
+	.states[1] = {
+		.name = "C2",
+		.desc = "Core Standby Mode",
+		.exit_latency = 10,
+		.target_residency = 20 + 10,
+		.flags = CPUIDLE_FLAG_TIME_VALID,
+		.enter = sh7372_enter_core_standby,
+	},
+	.states[2] = {
+		.name = "C3",
+		.desc = "A3SM PLL ON",
+		.exit_latency = 20,
+		.target_residency = 30 + 20,
+		.flags = CPUIDLE_FLAG_TIME_VALID,
+		.enter = sh7372_enter_a3sm_pll_on,
+	},
+	.states[3] = {
+		.name = "C4",
+		.desc = "A3SM PLL OFF",
+		.exit_latency = 120,
+		.target_residency = 30 + 120,
+		.flags = CPUIDLE_FLAG_TIME_VALID,
+		.enter = sh7372_enter_a3sm_pll_off,
+	},
+	.states[4] = {
+		.name = "C5",
+		.desc = "A4S PLL OFF",
+		.exit_latency = 240,
+		.target_residency = 30 + 240,
+		.flags = CPUIDLE_FLAG_TIME_VALID,
+		.enter = sh7372_enter_a4s,
+		.disabled = true,
+	},
+};
+
+static void __init sh7372_cpuidle_init(void)
+{
+	shmobile_cpuidle_set_driver(&sh7372_cpuidle_driver);
+}
+#else
+static void __init sh7372_cpuidle_init(void) {}
+#endif
+
+#ifdef CONFIG_SUSPEND
+>>>>>>> refs/remotes/origin/master
 static int sh7372_enter_suspend(suspend_state_t suspend_state)
 {
 	unsigned long msk, msk2;
 
 	/* check active clocks to determine potential wakeup sources */
+<<<<<<< HEAD
 	if (sh7372_sysc_valid(&msk, &msk2)) {
 		/* convert INTC mask and sense to SYSC mask and sense */
 		sh7372_setup_sysc(msk, msk2);
@@ -596,6 +886,21 @@ static int sh7372_enter_suspend(suspend_state_t suspend_state)
 		pr_debug("entering Core Standby\n");
 		sh7372_enter_core_standby();
 	}
+=======
+	if (sh7372_sysc_valid(&msk, &msk2) && a4s_suspend_ready) {
+		/* convert INTC mask/sense to SYSC mask/sense */
+		sh7372_setup_sysc(msk, msk2);
+
+		/* enter A4S sleep with PLLC0 off */
+		pr_debug("entering A4S\n");
+		sh7372_enter_a4s_common(0);
+		return 0;
+	}
+
+	/* default to enter A3SM sleep with PLLC0 off */
+	pr_debug("entering A3SM\n");
+	sh7372_enter_a3sm_common(0);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -616,7 +921,11 @@ static int sh7372_pm_notifier_fn(struct notifier_block *notifier,
 		 * executed during system suspend and resume, respectively, so
 		 * that those functions don't crash while accessing the INTCS.
 		 */
+<<<<<<< HEAD
 		pm_genpd_poweron(&sh7372_a4r.genpd);
+=======
+		pm_genpd_name_poweron("A4R");
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PM_POST_SUSPEND:
 		pm_genpd_poweroff_unused();
@@ -630,18 +939,24 @@ static void sh7372_suspend_init(void)
 {
 	shmobile_suspend_ops.enter = sh7372_enter_suspend;
 	pm_notifier(sh7372_pm_notifier_fn, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #else
 static void sh7372_suspend_init(void) {}
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DBGREG1 0xe6100020
 #define DBGREG9 0xe6100040
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void __init sh7372_pm_init(void)
 {
 	/* enable DBG hardware block to kick SYSC */
@@ -649,6 +964,7 @@ void __init sh7372_pm_init(void)
 	__raw_writel(0x0000a501, DBGREG9);
 	__raw_writel(0x00000000, DBGREG1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	/* do not convert A3SM, A3SP, A3SG, A4R power down into A4S */
@@ -658,3 +974,19 @@ void __init sh7372_pm_init(void)
 	sh7372_suspend_init();
 	sh7372_cpuidle_init();
 }
+=======
+	/* do not convert A3SM, A3SP, A3SG, A4R power down into A4S */
+	__raw_writel(0, PDNSEL);
+
+	sh7372_pm_setup_smfram();
+
+	sh7372_suspend_init();
+	sh7372_cpuidle_init();
+}
+
+void __init sh7372_pm_init_late(void)
+{
+	shmobile_init_late();
+	pm_genpd_name_attach_cpuidle("A4S", 4);
+}
+>>>>>>> refs/remotes/origin/master

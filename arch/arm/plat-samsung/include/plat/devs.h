@@ -27,14 +27,20 @@ extern struct s3c24xx_uart_resources s3c2410_uart_resources[];
 extern struct s3c24xx_uart_resources s3c64xx_uart_resources[];
 extern struct s3c24xx_uart_resources s5p_uart_resources[];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern struct s3c24xx_uart_resources exynos4_uart_resources[];
 extern struct s3c24xx_uart_resources exynos5_uart_resources[];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct s3c24xx_uart_resources exynos4_uart_resources[];
+extern struct s3c24xx_uart_resources exynos5_uart_resources[];
+>>>>>>> refs/remotes/origin/master
 
 extern struct platform_device *s3c24xx_uart_devs[];
 extern struct platform_device *s3c24xx_uart_src[];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern struct platform_device s3c_device_timer[];
 
@@ -59,6 +65,8 @@ extern struct platform_device s3c_device_ohci;
 extern struct platform_device s3c_device_lcd;
 extern struct platform_device s3c_device_wdt;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct platform_device s3c64xx_device_ac97;
 extern struct platform_device s3c64xx_device_iis0;
 extern struct platform_device s3c64xx_device_iis1;
@@ -78,7 +86,10 @@ extern struct platform_device s3c_device_hsmmc0;
 extern struct platform_device s3c_device_hsmmc1;
 extern struct platform_device s3c_device_hsmmc2;
 extern struct platform_device s3c_device_hsmmc3;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct platform_device s3c_device_i2c0;
 extern struct platform_device s3c_device_i2c1;
 extern struct platform_device s3c_device_i2c2;
@@ -87,6 +98,7 @@ extern struct platform_device s3c_device_i2c4;
 extern struct platform_device s3c_device_i2c5;
 extern struct platform_device s3c_device_i2c6;
 extern struct platform_device s3c_device_i2c7;
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern struct platform_device s3c_device_rtc;
 extern struct platform_device s3c_device_adc;
@@ -144,6 +156,8 @@ extern struct platform_device exynos4_device_ahci;
 extern struct platform_device s5p6440_device_pcm;
 extern struct platform_device s5p6440_device_iis;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct platform_device s3c_device_iis;
 extern struct platform_device s3c_device_lcd;
 extern struct platform_device s3c_device_nand;
@@ -160,7 +174,10 @@ extern struct platform_device s3c_device_usb_hsotg;
 extern struct platform_device s3c_device_usb_hsudc;
 extern struct platform_device s3c_device_wdt;
 
+<<<<<<< HEAD
 extern struct platform_device s5p_device_ehci;
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct platform_device s5p_device_fimc0;
 extern struct platform_device s5p_device_fimc1;
 extern struct platform_device s5p_device_fimc2;
@@ -182,13 +199,17 @@ extern struct platform_device s5p_device_sdo;
 
 extern struct platform_device s5p6440_device_iis;
 extern struct platform_device s5p6440_device_pcm;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern struct platform_device s5p6450_device_iis0;
 extern struct platform_device s5p6450_device_iis1;
 extern struct platform_device s5p6450_device_iis2;
 extern struct platform_device s5p6450_device_pcm0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern struct platform_device s5pc100_device_ac97;
 extern struct platform_device s5pc100_device_pcm0;
@@ -213,6 +234,8 @@ extern struct platform_device s5p_device_ehci;
 extern struct platform_device exynos4_device_sysmmu;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern struct platform_device s5pc100_device_ac97;
 extern struct platform_device s5pc100_device_iis0;
@@ -233,7 +256,10 @@ extern struct platform_device s5pv210_device_spdif;
 
 extern struct platform_device exynos4_device_ac97;
 extern struct platform_device exynos4_device_ahci;
+<<<<<<< HEAD
 extern struct platform_device exynos4_device_dwmci;
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct platform_device exynos4_device_i2s0;
 extern struct platform_device exynos4_device_i2s1;
 extern struct platform_device exynos4_device_i2s2;
@@ -241,6 +267,7 @@ extern struct platform_device exynos4_device_ohci;
 extern struct platform_device exynos4_device_pcm0;
 extern struct platform_device exynos4_device_pcm1;
 extern struct platform_device exynos4_device_pcm2;
+<<<<<<< HEAD
 extern struct platform_device exynos4_device_pd[];
 extern struct platform_device exynos4_device_spdif;
 extern struct platform_device exynos4_device_sysmmu;
@@ -250,6 +277,14 @@ extern struct platform_device samsung_asoc_idma;
 extern struct platform_device samsung_device_keypad;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct platform_device exynos4_device_spdif;
+
+extern struct platform_device samsung_asoc_idma;
+extern struct platform_device samsung_device_keypad;
+extern struct platform_device samsung_device_pwm;
+
+>>>>>>> refs/remotes/origin/master
 /* s3c2440 specific devices */
 
 #ifdef CONFIG_CPU_S3C2440

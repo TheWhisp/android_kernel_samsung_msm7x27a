@@ -23,10 +23,15 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 #include <linux/hid.h>
 
 #include "usbhid/usbhid.h"
+=======
+#include <linux/hid.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "hid-lg.h"
 
 struct lg2ff_device {
@@ -56,7 +61,11 @@ static int play_effect(struct input_dev *dev, void *data,
 		lg2ff->report->field[0]->value[4] = 0x00;
 	}
 
+<<<<<<< HEAD
 	usbhid_submit_report(hid, lg2ff->report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, lg2ff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -66,6 +75,7 @@ int lg2ff_init(struct hid_device *hid)
 	struct hid_report *report;
 	struct hid_input *hidinput = list_entry(hid->inputs.next,
 						struct hid_input, list);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct list_head *report_list =
 			&hid->report_enum[HID_OUTPUT_REPORT].report_list;
@@ -88,6 +98,8 @@ int lg2ff_init(struct hid_device *hid)
 		return -ENODEV;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct input_dev *dev = hidinput->input;
 	int error;
 
@@ -95,7 +107,10 @@ int lg2ff_init(struct hid_device *hid)
 	report = hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 7);
 	if (!report)
 		return -ENODEV;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	lg2ff = kmalloc(sizeof(struct lg2ff_device), GFP_KERNEL);
 	if (!lg2ff)
@@ -118,9 +133,15 @@ int lg2ff_init(struct hid_device *hid)
 	report->field[0]->value[5] = 0x00;
 	report->field[0]->value[6] = 0x00;
 
+<<<<<<< HEAD
 	usbhid_submit_report(hid, report, USB_DIR_OUT);
 
 	hid_info(hid, "Force feedback for Logitech RumblePad/Rumblepad 2 by Anssi Hannula <anssi.hannula@gmail.com>\n");
+=======
+	hid_hw_request(hid, report, HID_REQ_SET_REPORT);
+
+	hid_info(hid, "Force feedback for Logitech variant 2 rumble devices by Anssi Hannula <anssi.hannula@gmail.com>\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

@@ -29,11 +29,16 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/hardware/vic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/netx-regs.h>
 #include <mach/eth.h>
+=======
+#include <mach/netx-regs.h>
+#include <linux/platform_data/eth-netx.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 #include "fb.h"
@@ -182,6 +187,7 @@ static void __init nxeb500hmi_init(void)
 
 MACHINE_START(NXEB500HMI, "Hilscher nxeb500hmi")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x80000100,
 	.map_io		= netx_map_io,
 	.init_irq	= netx_init_irq,
@@ -196,4 +202,12 @@ MACHINE_START(NXEB500HMI, "Hilscher nxeb500hmi")
 	.init_machine	= nxeb500hmi_init,
 	.restart	= netx_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= netx_map_io,
+	.init_irq	= netx_init_irq,
+	.init_time	= netx_timer_init,
+	.init_machine	= nxeb500hmi_init,
+	.restart	= netx_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

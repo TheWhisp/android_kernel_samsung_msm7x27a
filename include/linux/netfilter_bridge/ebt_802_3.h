@@ -1,6 +1,7 @@
 #ifndef __LINUX_BRIDGE_EBT_802_3_H
 #define __LINUX_BRIDGE_EBT_802_3_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define EBT_802_3_SAP 0x01
@@ -53,12 +54,17 @@ struct ebt_802_3_hdr {
 
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
+=======
+#include <linux/skbuff.h>
+#include <uapi/linux/netfilter_bridge/ebt_802_3.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct ebt_802_3_hdr *ebt_802_3_hdr(const struct sk_buff *skb)
 {
 	return (struct ebt_802_3_hdr *)skb_mac_header(skb);
 }
 #endif
+<<<<<<< HEAD
 
 struct ebt_802_3_info {
 	__u8  sap;
@@ -68,3 +74,5 @@ struct ebt_802_3_info {
 };
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

@@ -308,7 +308,11 @@ static void wait(void)
  * Read board id and convert to string.
  * Effectively same code as decode_eisa_sig
  */
+<<<<<<< HEAD
 static __devinit const char *hp100_read_id(int ioaddr)
+=======
+static const char *hp100_read_id(int ioaddr)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	static char str[HP100_SIG_LEN];
@@ -447,8 +451,13 @@ static const struct net_device_ops hp100_netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit hp100_probe1(struct net_device *dev, int ioaddr,
 				  u_char bus, struct pci_dev *pci_dev)
+=======
+static int hp100_probe1(struct net_device *dev, int ioaddr, u_char bus,
+			struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int err = -ENODEV;
@@ -1097,8 +1106,13 @@ static int hp100_open(struct net_device *dev)
 	/* New: if bus is PCI or EISA, interrupts might be shared interrupts */
 	if (request_irq(dev->irq, hp100_interrupt,
 			lp->bus == HP100_BUS_PCI || lp->bus ==
+<<<<<<< HEAD
 			HP100_BUS_EISA ? IRQF_SHARED : IRQF_DISABLED,
 			"hp100", dev)) {
+=======
+			HP100_BUS_EISA ? IRQF_SHARED : 0,
+			dev->name, dev)) {
+>>>>>>> refs/remotes/origin/master
 		printk("hp100: %s: unable to get IRQ %d\n", dev->name, dev->irq);
 		return -EAGAIN;
 	}
@@ -1217,7 +1231,11 @@ static int hp100_init_rxpdl(struct net_device *dev,
 
 	ringptr->pdl = pdlptr + 1;
 	ringptr->pdl_paddr = virt_to_whatever(dev, pdlptr + 1);
+<<<<<<< HEAD
 	ringptr->skb = (void *) NULL;
+=======
+	ringptr->skb = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Write address and length of first PDL Fragment (which is used for
@@ -1243,7 +1261,11 @@ static int hp100_init_txpdl(struct net_device *dev,
 
 	ringptr->pdl = pdlptr;	/* +1; */
 	ringptr->pdl_paddr = virt_to_whatever(dev, pdlptr);	/* +1 */
+<<<<<<< HEAD
 	ringptr->skb = (void *) NULL;
+=======
+	ringptr->skb = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return roundup(MAX_TX_FRAG * 2 + 2, 4);
 }
@@ -1628,7 +1650,11 @@ static void hp100_clean_txring(struct net_device *dev)
 		/* Conversion to new PCI API : NOP */
 		pci_unmap_single(lp->pci_dev, (dma_addr_t) lp->txrhead->pdl[1], lp->txrhead->pdl[2], PCI_DMA_TODEVICE);
 		dev_kfree_skb_any(lp->txrhead->skb);
+<<<<<<< HEAD
 		lp->txrhead->skb = (void *) NULL;
+=======
+		lp->txrhead->skb = NULL;
+>>>>>>> refs/remotes/origin/master
 		lp->txrhead = lp->txrhead->next;
 		lp->txrcommit--;
 	}
@@ -2866,7 +2892,11 @@ static int __init hp100_eisa_probe (struct device *gendev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit hp100_eisa_remove (struct device *gendev)
+=======
+static int hp100_eisa_remove(struct device *gendev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = dev_get_drvdata(gendev);
 	cleanup_dev(dev);
@@ -2878,14 +2908,23 @@ static struct eisa_driver hp100_eisa_driver = {
         .driver   = {
                 .name    = "hp100",
                 .probe   = hp100_eisa_probe,
+<<<<<<< HEAD
                 .remove  = __devexit_p (hp100_eisa_remove),
+=======
+		.remove  = hp100_eisa_remove,
+>>>>>>> refs/remotes/origin/master
         }
 };
 #endif
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinit hp100_pci_probe (struct pci_dev *pdev,
 				     const struct pci_device_id *ent)
+=======
+static int hp100_pci_probe(struct pci_dev *pdev,
+			   const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	int ioaddr;
@@ -2937,7 +2976,11 @@ static int __devinit hp100_pci_probe (struct pci_dev *pdev,
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit hp100_pci_remove (struct pci_dev *pdev)
+=======
+static void hp100_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
@@ -2950,7 +2993,11 @@ static struct pci_driver hp100_pci_driver = {
 	.name		= "hp100",
 	.id_table	= hp100_pci_tbl,
 	.probe		= hp100_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(hp100_pci_remove),
+=======
+	.remove		= hp100_pci_remove,
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 

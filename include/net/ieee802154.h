@@ -22,19 +22,28 @@
  * Maxim Osipov <maxim.osipov@siemens.com>
  * Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Alexander Smirnov <alex.bluesman.smirnov@gmail.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Alexander Smirnov <alex.bluesman.smirnov@gmail.com>
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef NET_IEEE802154_H
 #define NET_IEEE802154_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define IEEE802154_MTU			127
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IEEE802154_MTU			127
+
+>>>>>>> refs/remotes/origin/master
 #define IEEE802154_FC_TYPE_BEACON	0x0	/* Frame is beacon */
 #define	IEEE802154_FC_TYPE_DATA		0x1	/* Frame is data */
 #define IEEE802154_FC_TYPE_ACK		0x2	/* Frame is acknowledgment */
@@ -66,11 +75,17 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* MAC footer size */
 #define IEEE802154_MFR_SIZE	2 /* 2 octets */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* MAC footer size */
+#define IEEE802154_MFR_SIZE	2 /* 2 octets */
+
+>>>>>>> refs/remotes/origin/master
 /* MAC's Command Frames Identifiers */
 #define IEEE802154_CMD_ASSOCIATION_REQ		0x01
 #define IEEE802154_CMD_ASSOCIATION_RESP		0x02

@@ -43,9 +43,12 @@ static inline void arch_decomp_setup(void)
 	if (machine_is_avengers_lite())
 		UART = (unsigned long *)UART3_BASE;
 }
+<<<<<<< HEAD
 
 /*
  * nothing to do
  */
 
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master

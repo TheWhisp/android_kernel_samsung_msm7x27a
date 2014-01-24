@@ -333,6 +333,7 @@ static struct pcmcia_driver com20020_cs_driver = {
 	.suspend	= com20020_suspend,
 	.resume		= com20020_resume,
 };
+<<<<<<< HEAD
 
 static int __init init_com20020_cs(void)
 {
@@ -346,3 +347,6 @@ static void __exit exit_com20020_cs(void)
 
 module_init(init_com20020_cs);
 module_exit(exit_com20020_cs);
+=======
+module_pcmcia_driver(com20020_cs_driver);
+>>>>>>> refs/remotes/origin/master

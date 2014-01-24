@@ -22,6 +22,10 @@
 #include <linux/mii.h>
 #include <linux/platform_device.h>
 #include <linux/mdio-bitbang.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_mdio.h>
 #include <linux/of_platform.h>
 
@@ -108,8 +112,12 @@ static struct mdiobb_ops bb_ops = {
 	.get_mdio_data = mdio_read,
 };
 
+<<<<<<< HEAD
 static int __devinit fs_mii_bitbang_init(struct mii_bus *bus,
                                          struct device_node *np)
+=======
+static int fs_mii_bitbang_init(struct mii_bus *bus, struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource res;
 	const u32 *data;
@@ -150,7 +158,11 @@ static int __devinit fs_mii_bitbang_init(struct mii_bus *bus,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit fs_enet_mdio_probe(struct platform_device *ofdev)
+=======
+static int fs_enet_mdio_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mii_bus *new_bus;
 	struct bb_info *bitbang;
@@ -174,11 +186,21 @@ static int __devinit fs_enet_mdio_probe(struct platform_device *ofdev)
 
 	new_bus->phy_mask = ~0;
 	new_bus->irq = kmalloc(sizeof(int) * PHY_MAX_ADDR, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!new_bus->irq)
 		goto out_unmap_regs;
 
 	new_bus->parent = &ofdev->dev;
 	dev_set_drvdata(&ofdev->dev, new_bus);
+=======
+	if (!new_bus->irq) {
+		ret = -ENOMEM;
+		goto out_unmap_regs;
+	}
+
+	new_bus->parent = &ofdev->dev;
+	platform_set_drvdata(ofdev, new_bus);
+>>>>>>> refs/remotes/origin/master
 
 	ret = of_mdiobus_register(new_bus, ofdev->dev.of_node);
 	if (ret)
@@ -187,7 +209,10 @@ static int __devinit fs_enet_mdio_probe(struct platform_device *ofdev)
 	return 0;
 
 out_free_irqs:
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(new_bus->irq);
 out_unmap_regs:
 	iounmap(bitbang->dir);
@@ -201,11 +226,18 @@ out:
 
 static int fs_enet_mdio_remove(struct platform_device *ofdev)
 {
+<<<<<<< HEAD
 	struct mii_bus *bus = dev_get_drvdata(&ofdev->dev);
 	struct bb_info *bitbang = bus->priv;
 
 	mdiobus_unregister(bus);
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+	struct mii_bus *bus = platform_get_drvdata(ofdev);
+	struct bb_info *bitbang = bus->priv;
+
+	mdiobus_unregister(bus);
+>>>>>>> refs/remotes/origin/master
 	kfree(bus->irq);
 	free_mdio_bitbang(bus);
 	iounmap(bitbang->dir);

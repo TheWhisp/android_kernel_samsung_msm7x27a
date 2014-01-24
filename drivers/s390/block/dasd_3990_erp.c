@@ -1,9 +1,16 @@
 /*
+<<<<<<< HEAD
  * File...........: linux/drivers/s390/block/dasd_3990_erp.c
  * Author(s)......: Horst  Hummel    <Horst.Hummel@de.ibm.com>
  *		    Holger Smolinski <Holger.Smolinski@de.ibm.com>
  * Bugreports.to..: <Linux390@de.ibm.com>
  * (C) IBM Corporation, IBM Deutschland Entwicklung GmbH, 2000, 2001
+=======
+ * Author(s)......: Horst  Hummel    <Horst.Hummel@de.ibm.com>
+ *		    Holger Smolinski <Holger.Smolinski@de.ibm.com>
+ * Bugreports.to..: <Linux390@de.ibm.com>
+ * Copyright IBM Corp. 2000, 2001
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -230,7 +237,11 @@ dasd_3990_erp_DCTL(struct dasd_ccw_req * erp, char modifier)
 	dctl_cqr->expires = 5 * 60 * HZ;
 	dctl_cqr->retries = 2;
 
+<<<<<<< HEAD
 	dctl_cqr->buildclk = get_clock();
+=======
+	dctl_cqr->buildclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 
 	dctl_cqr->status = DASD_CQR_FILLED;
 
@@ -1719,12 +1730,18 @@ dasd_3990_erp_action_1B_32(struct dasd_ccw_req * default_erp, char *sense)
 	erp->memdev = device;
 	erp->magic = default_erp->magic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	erp->expires = 0;
 =======
 	erp->expires = default_erp->expires;
 >>>>>>> refs/remotes/origin/cm-10.0
 	erp->retries = 256;
 	erp->buildclk = get_clock();
+=======
+	erp->expires = default_erp->expires;
+	erp->retries = 256;
+	erp->buildclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	erp->status = DASD_CQR_FILLED;
 
 	/* remove the default erp */
@@ -2327,7 +2344,11 @@ static struct dasd_ccw_req *dasd_3990_erp_add_erp(struct dasd_ccw_req *cqr)
 			DBF_DEV_EVENT(DBF_ERR, device, "%s",
 				    "Unable to allocate ERP request");
 			cqr->status = DASD_CQR_FAILED;
+<<<<<<< HEAD
                         cqr->stopclk = get_clock ();
+=======
+			cqr->stopclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 		} else {
 			DBF_DEV_EVENT(DBF_ERR, device,
                                      "Unable to allocate ERP request "
@@ -2368,12 +2389,18 @@ static struct dasd_ccw_req *dasd_3990_erp_add_erp(struct dasd_ccw_req *cqr)
 	erp->block    = cqr->block;
 	erp->magic    = cqr->magic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	erp->expires  = 0;
 =======
 	erp->expires  = cqr->expires;
 >>>>>>> refs/remotes/origin/cm-10.0
 	erp->retries  = 256;
 	erp->buildclk = get_clock();
+=======
+	erp->expires  = cqr->expires;
+	erp->retries  = 256;
+	erp->buildclk = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	erp->status = DASD_CQR_FILLED;
 
 	return erp;

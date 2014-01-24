@@ -1,7 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 Note: This filesystem doesn't have a maintainer.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Note: This filesystem doesn't have a maintainer.
+>>>>>>> refs/remotes/origin/master
 
 Macintosh HFS Filesystem for Linux
 ==================================
@@ -81,6 +85,7 @@ Credits
 =======
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 The HFS drivers was written by Paul H. Hargrovea (hargrove@sccm.Stanford.EDU)
 and is now maintained by Roman Zippel (roman@ardistech.com) at Ardis
 Technologies.
@@ -91,3 +96,8 @@ The HFS drivers was written by Paul H. Hargrovea (hargrove@sccm.Stanford.EDU).
 Roman Zippel (roman@ardistech.com) rewrote large parts of the code and brought
 in btree routines derived from Brad Boyer's hfsplus driver.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+The HFS drivers was written by Paul H. Hargrovea (hargrove@sccm.Stanford.EDU).
+Roman Zippel (roman@ardistech.com) rewrote large parts of the code and brought
+in btree routines derived from Brad Boyer's hfsplus driver.
+>>>>>>> refs/remotes/origin/master

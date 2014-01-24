@@ -44,7 +44,10 @@ static inline bool uac2_control_is_writeable(u32 bmControls, u8 control)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* 4.7.2 Class-Specific AC Interface Descriptor */
 struct uac2_ac_header_descriptor {
 	__u8  bLength;			/* 9 */
@@ -66,7 +69,10 @@ struct uac2_format_type_i_descriptor {
 	__u8  bBitResolution;
 } __packed;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* 4.7.2.1 Clock Source Descriptor */
 
 struct uac_clock_source_descriptor {
@@ -173,6 +179,11 @@ struct uac2_as_header_descriptor {
 	__u8 iChannelNames;
 } __attribute__((packed));
 
+<<<<<<< HEAD
+=======
+#define UAC2_FORMAT_TYPE_I_RAW_DATA	(1 << 31)
+
+>>>>>>> refs/remotes/origin/master
 /* 4.10.1.2 Class-Specific AS Isochronous Audio Data Endpoint Descriptor */
 
 struct uac2_iso_endpoint_descriptor {

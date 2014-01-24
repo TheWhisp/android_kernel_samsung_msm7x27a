@@ -69,10 +69,14 @@ Linux カーネルパッチ投稿者向けチェックリスト
 12: CONFIG_PREEMPT, CONFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB,
     CONFIG_DEBUG_PAGEALLOC, CONFIG_DEBUG_MUTEXES, CONFIG_DEBUG_SPINLOCK,
 <<<<<<< HEAD
+<<<<<<< HEAD
     CONFIG_DEBUG_SPINLOCK_SLEEP これら全てを同時に有効にして動作確認を
 =======
     CONFIG_DEBUG_ATOMIC_SLEEP これら全てを同時に有効にして動作確認を
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    CONFIG_DEBUG_ATOMIC_SLEEP これら全てを同時に有効にして動作確認を
+>>>>>>> refs/remotes/origin/master
     行ってください。
 
 13: CONFIG_SMP, CONFIG_PREEMPT を有効にした場合と無効にした場合の両方で

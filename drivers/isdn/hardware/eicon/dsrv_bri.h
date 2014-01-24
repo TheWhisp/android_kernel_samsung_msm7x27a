@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,12 +46,16 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_XDI_DSRV_BRI_INC__
 #define __DIVA_XDI_DSRV_BRI_INC__
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  Functions exported from os dependent part of
  BRI card configuration and used in
@@ -59,6 +66,8 @@
  */
 void diva_os_prepare_maestra_functions (PISDN_ADAPTER IoAdapter);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   Functions exported from os dependent part of
   BRI card configuration and used in
   OS independed part
@@ -67,5 +76,8 @@ void diva_os_prepare_maestra_functions (PISDN_ADAPTER IoAdapter);
   Prepare OS dependent part of BRI functions
 */
 void diva_os_prepare_maestra_functions(PISDN_ADAPTER IoAdapter);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

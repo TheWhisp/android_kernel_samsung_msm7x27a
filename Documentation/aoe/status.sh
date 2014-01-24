@@ -1,5 +1,11 @@
 #! /bin/sh
 # collate and present sysfs information about AoE storage
+<<<<<<< HEAD
+=======
+#
+# A more complete version of this script is aoe-stat, in the
+# aoetools.
+>>>>>>> refs/remotes/origin/master
 
 set -e
 format="%8s\t%8s\t%8s\n"

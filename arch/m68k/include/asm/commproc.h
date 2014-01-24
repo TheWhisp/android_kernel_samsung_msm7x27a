@@ -480,6 +480,7 @@ typedef struct scc_enet {
 #define SICR_ENET_CLKRT	((uint)0x0000003d)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_RPXLITE
 /* This ENET stuff is for the MPC850 with ethernet on SCC2.  Some of
  * this may be unique to the RPX-Lite configuration.
@@ -497,6 +498,8 @@ typedef struct scc_enet {
 #define SICR_ENET_CLKRT	((uint)0x00003d00)
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BSEIP
 /* This ENET stuff is for the MPC823 with ethernet on SCC2.
  * This is unique to the BSE ip-Engine board.

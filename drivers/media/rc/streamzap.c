@@ -44,6 +44,7 @@
 
 #ifdef CONFIG_USB_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int debug = 1;
 #else
 static int debug;
@@ -52,6 +53,11 @@ static bool debug = 1;
 #else
 static bool debug;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool debug = 1;
+#else
+static bool debug;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define USB_STREAMZAP_VENDOR_ID		0x0e9c
@@ -328,7 +334,11 @@ static struct rc_dev *streamzap_init_rc_dev(struct streamzap_ir *sz)
 	rdev->dev.parent = dev;
 	rdev->priv = sz;
 	rdev->driver_type = RC_DRIVER_IR_RAW;
+<<<<<<< HEAD
 	rdev->allowed_protos = RC_TYPE_ALL;
+=======
+	rdev->allowed_protos = RC_BIT_ALL;
+>>>>>>> refs/remotes/origin/master
 	rdev->driver_name = DRIVER_NAME;
 	rdev->map_name = RC_MAP_STREAMZAP;
 
@@ -352,8 +362,13 @@ out:
  *	On any failure the return value is the ERROR
  *	On success return 0
  */
+<<<<<<< HEAD
 static int __devinit streamzap_probe(struct usb_interface *intf,
 				     const struct usb_device_id *id)
+=======
+static int streamzap_probe(struct usb_interface *intf,
+			   const struct usb_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_device *usbdev = interface_to_usbdev(intf);
 	struct usb_host_interface *iface_host;
@@ -530,6 +545,7 @@ static int streamzap_resume(struct usb_interface *intf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  *	streamzap_init
  */
@@ -560,6 +576,9 @@ module_exit(streamzap_exit);
 =======
 module_usb_driver(streamzap_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(streamzap_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jarod Wilson <jarod@wilsonet.com>");
 MODULE_DESCRIPTION(DRIVER_DESC);

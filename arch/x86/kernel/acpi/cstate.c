@@ -15,9 +15,13 @@
 #include <asm/acpi.h>
 #include <asm/mwait.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/special_insns.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/special_insns.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Initialize bm_flags based on the CPU cache properties
@@ -154,6 +158,7 @@ int acpi_processor_ffh_cstate_probe(unsigned int cpu,
 EXPORT_SYMBOL_GPL(acpi_processor_ffh_cstate_probe);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /*
  * This uses new MONITOR/MWAIT instructions on P4 processors with PNI,
@@ -179,6 +184,8 @@ void mwait_idle_with_hints(unsigned long ax, unsigned long cx)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void acpi_processor_ffh_cstate_enter(struct acpi_processor_cx *cx)
 {
 	unsigned int cpu = smp_processor_id();

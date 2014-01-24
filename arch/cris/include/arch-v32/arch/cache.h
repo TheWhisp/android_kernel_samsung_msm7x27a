@@ -7,7 +7,11 @@
 #define L1_CACHE_BYTES 32
 #define L1_CACHE_SHIFT 5
 
+<<<<<<< HEAD
 #define __read_mostly __attribute__((__section__(".data.read_mostly")))
+=======
+#define __read_mostly __attribute__((__section__(".data..read_mostly")))
+>>>>>>> refs/remotes/origin/master
 
 void flush_dma_list(dma_descr_data *descr);
 void flush_dma_descr(dma_descr_data *descr, int flush_buf);

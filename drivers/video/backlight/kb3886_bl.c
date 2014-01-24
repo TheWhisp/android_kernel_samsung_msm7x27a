@@ -34,9 +34,15 @@ static void kb3886_bl_set_intensity(int intensity)
 	mutex_lock(&bl_mutex);
 	intensity = intensity&0xff;
 	outb(KB3886_ADC_DAC_PWM, KB3886_PARENT);
+<<<<<<< HEAD
 	msleep(10);
 	outb(KB3886_PWM0_WRITE, KB3886_IO);
 	msleep(10);
+=======
+	usleep_range(10000, 11000);
+	outb(KB3886_PWM0_WRITE, KB3886_IO);
+	usleep_range(10000, 11000);
+>>>>>>> refs/remotes/origin/master
 	outb(intensity, KB3886_IO);
 	mutex_unlock(&bl_mutex);
 }
@@ -106,29 +112,49 @@ static int kb3886bl_send_intensity(struct backlight_device *bd)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int kb3886bl_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct backlight_device *bd = platform_get_drvdata(pdev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int kb3886bl_suspend(struct device *dev)
+{
+	struct backlight_device *bd = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	kb3886bl_flags |= KB3886BL_SUSPENDED;
 	backlight_update_status(bd);
 	return 0;
 }
 
+<<<<<<< HEAD
 static int kb3886bl_resume(struct platform_device *pdev)
 {
 	struct backlight_device *bd = platform_get_drvdata(pdev);
+=======
+static int kb3886bl_resume(struct device *dev)
+{
+	struct backlight_device *bd = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	kb3886bl_flags &= ~KB3886BL_SUSPENDED;
 	backlight_update_status(bd);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define kb3886bl_suspend	NULL
 #define kb3886bl_resume		NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(kb3886bl_pm_ops, kb3886bl_suspend, kb3886bl_resume);
+
+>>>>>>> refs/remotes/origin/master
 static int kb3886bl_get_intensity(struct backlight_device *bd)
 {
 	return kb3886bl_intensity;
@@ -142,7 +168,11 @@ static const struct backlight_ops kb3886bl_ops = {
 static int kb3886bl_probe(struct platform_device *pdev)
 {
 	struct backlight_properties props;
+<<<<<<< HEAD
 	struct kb3886bl_machinfo *machinfo = pdev->dev.platform_data;
+=======
+	struct kb3886bl_machinfo *machinfo = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	bl_machinfo = machinfo;
 	if (!machinfo->limit_mask)
@@ -151,10 +181,17 @@ static int kb3886bl_probe(struct platform_device *pdev)
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = machinfo->max_intensity;
+<<<<<<< HEAD
 	kb3886_backlight_device = backlight_device_register("kb3886-bl",
 							    &pdev->dev, NULL,
 							    &kb3886bl_ops,
 							    &props);
+=======
+	kb3886_backlight_device = devm_backlight_device_register(&pdev->dev,
+							"kb3886-bl", &pdev->dev,
+							NULL, &kb3886bl_ops,
+							&props);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(kb3886_backlight_device))
 		return PTR_ERR(kb3886_backlight_device);
 
@@ -167,6 +204,7 @@ static int kb3886bl_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int kb3886bl_remove(struct platform_device *pdev)
 {
 	struct backlight_device *bd = platform_get_drvdata(pdev);
@@ -183,6 +221,13 @@ static struct platform_driver kb3886bl_driver = {
 	.resume		= kb3886bl_resume,
 	.driver		= {
 		.name	= "kb3886-bl",
+=======
+static struct platform_driver kb3886bl_driver = {
+	.probe		= kb3886bl_probe,
+	.driver		= {
+		.name	= "kb3886-bl",
+		.pm	= &kb3886bl_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

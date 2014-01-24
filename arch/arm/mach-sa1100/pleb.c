@@ -6,6 +6,10 @@
 #include <linux/kernel.h>
 #include <linux/tty.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/sa11x0-serial.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/irq.h>
 #include <linux/io.h>
@@ -18,7 +22,10 @@
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/flash.h>
+<<<<<<< HEAD
 #include <asm/mach/serial_sa1100.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <mach/irqs.h>
 
 #include "generic.h"
@@ -38,6 +45,7 @@
 
 static struct resource smc91x_resources[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[0] = {
 		.start	= PLEB_ETH0_P,
 		.end	= PLEB_ETH0_P | 0x03ffffff,
@@ -54,6 +62,11 @@ static struct resource smc91x_resources[] = {
 #if 0 /* Autoprobe instead, to get rising/falling edge characteristic right */
 	[1] = DEFINE_RES_IRQ(IRQ_GPIO_ETH0_IRQ),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[0] = DEFINE_RES_MEM(PLEB_ETH0_P, 0x04000000),
+#if 0 /* Autoprobe instead, to get rising/falling edge characteristic right */
+	[1] = DEFINE_RES_IRQ(IRQ_GPIO_ETH0_IRQ),
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
@@ -77,6 +90,7 @@ static struct platform_device *devices[] __initdata = {
  */
 static struct resource pleb_flash_resources[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	[0] = {
 		.start = SA1100_CS0_PHYS,
 		.end   = SA1100_CS0_PHYS + SZ_8M - 1,
@@ -91,6 +105,10 @@ static struct resource pleb_flash_resources[] = {
 	[0] = DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_8M),
 	[1] = DEFINE_RES_MEM(SA1100_CS1_PHYS, SZ_8M),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	[0] = DEFINE_RES_MEM(SA1100_CS0_PHYS, SZ_8M),
+	[1] = DEFINE_RES_MEM(SA1100_CS1_PHYS, SZ_8M),
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -159,6 +177,7 @@ static void __init pleb_map_io(void)
 MACHINE_START(PLEB, "PLEB")
 	.map_io		= pleb_map_io,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.init_irq	= sa1100_init_irq,
 	.timer		= &sa1100_timer,
 	.init_machine   = pleb_init,
@@ -169,4 +188,12 @@ MACHINE_START(PLEB, "PLEB")
 	.init_machine   = pleb_init,
 	.restart	= sa11x0_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.nr_irqs	= SA1100_NR_IRQS,
+	.init_irq	= sa1100_init_irq,
+	.init_time	= sa1100_timer_init,
+	.init_machine   = pleb_init,
+	.init_late	= sa11x0_init_late,
+	.restart	= sa11x0_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

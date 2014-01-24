@@ -15,6 +15,10 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/io.h>
 
@@ -98,6 +102,7 @@ static uint16_t socrates_nand_read_word(struct mtd_info *mtd)
 	return word;
 }
 
+<<<<<<< HEAD
 /**
  * socrates_nand_verify_buf -  Verify chip data against buffer
  * @mtd:	MTD device structure
@@ -116,6 +121,8 @@ static int socrates_nand_verify_buf(struct mtd_info *mtd, const u8 *buf,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Hardware specific access to control-lines
  */
@@ -156,6 +163,7 @@ static int socrates_nand_device_ready(struct mtd_info *mtd)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", NULL };
 
 =======
@@ -164,11 +172,18 @@ static const char *part_probes[] = { "cmdlinepart", NULL };
  * Probe for the NAND device.
  */
 static int __devinit socrates_nand_probe(struct platform_device *ofdev)
+=======
+/*
+ * Probe for the NAND device.
+ */
+static int socrates_nand_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct socrates_nand_host *host;
 	struct mtd_info *mtd;
 	struct nand_chip *nand_chip;
 	int res;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mtd_partition *partitions = NULL;
 	int num_partitions = 0;
@@ -188,6 +203,18 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 	if (host->io_base == NULL) {
 		printk(KERN_ERR "socrates_nand: ioremap failed\n");
 		kfree(host);
+=======
+	struct mtd_part_parser_data ppdata;
+
+	/* Allocate memory for the device structure (and zero it) */
+	host = devm_kzalloc(&ofdev->dev, sizeof(*host), GFP_KERNEL);
+	if (!host)
+		return -ENOMEM;
+
+	host->io_base = of_iomap(ofdev->dev.of_node, 0);
+	if (host->io_base == NULL) {
+		dev_err(&ofdev->dev, "ioremap failed\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -201,9 +228,13 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 	mtd->owner = THIS_MODULE;
 	mtd->dev.parent = &ofdev->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ppdata.of_node = ofdev->dev.of_node;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ppdata.of_node = ofdev->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 
 	/*should never be accessed directly */
 	nand_chip->IO_ADDR_R = (void *)0xdeadbeef;
@@ -214,7 +245,10 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 	nand_chip->read_word = socrates_nand_read_word;
 	nand_chip->write_buf = socrates_nand_write_buf;
 	nand_chip->read_buf = socrates_nand_read_buf;
+<<<<<<< HEAD
 	nand_chip->verify_buf = socrates_nand_verify_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 	nand_chip->dev_ready = socrates_nand_device_ready;
 
 	nand_chip->ecc.mode = NAND_ECC_SOFT;	/* enable ECC */
@@ -236,6 +270,7 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 		goto out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MTD_CMDLINE_PARTS
 	num_partitions = parse_mtd_partitions(mtd, part_probes,
@@ -262,10 +297,13 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
 
 release:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	res = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
 	if (!res)
 		return res;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	nand_release(mtd);
 
@@ -273,22 +311,36 @@ out:
 	dev_set_drvdata(&ofdev->dev, NULL);
 	iounmap(host->io_base);
 	kfree(host);
+=======
+	nand_release(mtd);
+
+out:
+	iounmap(host->io_base);
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
 /*
  * Remove a NAND device.
  */
+<<<<<<< HEAD
 static int __devexit socrates_nand_remove(struct platform_device *ofdev)
+=======
+static int socrates_nand_remove(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct socrates_nand_host *host = dev_get_drvdata(&ofdev->dev);
 	struct mtd_info *mtd = &host->mtd;
 
 	nand_release(mtd);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
 	iounmap(host->io_base);
 	kfree(host);
+=======
+	iounmap(host->io_base);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -310,6 +362,7 @@ static struct platform_driver socrates_nand_driver = {
 		.of_match_table = socrates_nand_match,
 	},
 	.probe		= socrates_nand_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(socrates_nand_remove),
 };
 
@@ -329,6 +382,12 @@ module_exit(socrates_nand_exit);
 =======
 module_platform_driver(socrates_nand_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= socrates_nand_remove,
+};
+
+module_platform_driver(socrates_nand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ilya Yanok");

@@ -154,6 +154,7 @@ config MD_RAID456
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
 config MULTICORE_RAID456
 	bool "RAID-4/RAID-5/RAID-6 Multicore processing (EXPERIMENTAL)"
 	depends on MD_RAID456
@@ -165,6 +166,8 @@ config MULTICORE_RAID456
 
 	  If unsure, say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MD_MULTIPATH
 	tristate "Multipath I/O support"
 	depends on BLK_DEV_MD
@@ -185,6 +188,11 @@ config MD_FAULTY
 
 	  In unsure, say N.
 
+<<<<<<< HEAD
+=======
+source "drivers/md/bcache/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_DM
 	tristate "Device mapper support"
 	---help---
@@ -209,18 +217,36 @@ config DM_DEBUG
 	  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config DM_BUFIO
        tristate
        depends on BLK_DEV_DM && EXPERIMENTAL
+=======
+config DM_BUFIO
+       tristate
+       depends on BLK_DEV_DM
+>>>>>>> refs/remotes/origin/master
        ---help---
 	 This interface allows you to do buffered I/O on a device and acts
 	 as a cache, holding recently-read blocks in memory and performing
 	 delayed writes.
 
+<<<<<<< HEAD
 source "drivers/md/persistent-data/Kconfig"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config DM_BIO_PRISON
+       tristate
+       depends on BLK_DEV_DM
+       ---help---
+	 Some bio locking schemes used by other device-mapper targets
+	 including thin provisioning.
+
+source "drivers/md/persistent-data/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 config DM_CRYPT
 	tristate "Crypt target support"
 	depends on BLK_DEV_DM
@@ -247,11 +273,19 @@ config DM_SNAPSHOT
          Allow volume managers to take writable snapshots of a device.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config DM_THIN_PROVISIONING
        tristate "Thin provisioning target (EXPERIMENTAL)"
        depends on BLK_DEV_DM && EXPERIMENTAL
        select DM_PERSISTENT_DATA
+=======
+config DM_THIN_PROVISIONING
+       tristate "Thin provisioning target"
+       depends on BLK_DEV_DM
+       select DM_PERSISTENT_DATA
+       select DM_BIO_PRISON
+>>>>>>> refs/remotes/origin/master
        ---help---
          Provides thin provisioning and snapshots that share a data store.
 
@@ -265,6 +299,7 @@ config DM_DEBUG_BLOCK_STACK_TRACING
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 config DM_DEBUG_SPACE_MAPS
 	boolean "Extra validation for thin provisioning space maps"
 	depends on DM_THIN_PROVISIONING
@@ -275,6 +310,39 @@ config DM_DEBUG_SPACE_MAPS
           If unsure, say N.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config DM_CACHE
+       tristate "Cache target (EXPERIMENTAL)"
+       depends on BLK_DEV_DM
+       default n
+       select DM_PERSISTENT_DATA
+       select DM_BIO_PRISON
+       ---help---
+         dm-cache attempts to improve performance of a block device by
+         moving frequently used data to a smaller, higher performance
+         device.  Different 'policy' plugins can be used to change the
+         algorithms used to select which blocks are promoted, demoted,
+         cleaned etc.  It supports writeback and writethrough modes.
+
+config DM_CACHE_MQ
+       tristate "MQ Cache Policy (EXPERIMENTAL)"
+       depends on DM_CACHE
+       default y
+       ---help---
+         A cache policy that uses a multiqueue ordered by recent hit
+         count to select which blocks should be promoted and demoted.
+         This is meant to be a general purpose policy.  It prioritises
+         reads over writes.
+
+config DM_CACHE_CLEANER
+       tristate "Cleaner Cache Policy (EXPERIMENTAL)"
+       depends on DM_CACHE
+       default y
+       ---help---
+         A simple cache policy that writes back all data to the
+         origin.  Used when decommissioning a dm-cache.
+
+>>>>>>> refs/remotes/origin/master
 config DM_MIRROR
        tristate "Mirror target"
        depends on BLK_DEV_DM
@@ -282,6 +350,7 @@ config DM_MIRROR
          Allow volume managers to mirror logical volumes, also
          needed for live data migration tools such as 'pvmove'.
 
+<<<<<<< HEAD
 config DM_RAID
 <<<<<<< HEAD
        tristate "RAID 4/5/6 target (EXPERIMENTAL)"
@@ -299,6 +368,28 @@ config DM_RAID
        ---help---
 	 A dm target that supports RAID1, RAID4, RAID5 and RAID6 mappings
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config DM_LOG_USERSPACE
+	tristate "Mirror userspace logging"
+	depends on DM_MIRROR && NET
+	select CONNECTOR
+	---help---
+	  The userspace logging module provides a mechanism for
+	  relaying the dm-dirty-log API to userspace.  Log designs
+	  which are more suited to userspace implementation (e.g.
+	  shared storage logs) or experimental logs can be implemented
+	  by leveraging this framework.
+
+config DM_RAID
+       tristate "RAID 1/4/5/6/10 target"
+       depends on BLK_DEV_DM
+       select MD_RAID1
+       select MD_RAID10
+       select MD_RAID456
+       select BLK_DEV_MD
+       ---help---
+	 A dm target that supports RAID1, RAID10, RAID4, RAID5 and RAID6 mappings
+>>>>>>> refs/remotes/origin/master
 
 	 A RAID-5 set of N drives with a capacity of C MB per drive provides
 	 the capacity of C * (N - 1) MB, and protects against a failure
@@ -316,6 +407,7 @@ config DM_RAID
 	 RAID-5, RAID-6 distributes the syndromes across the drives
 	 in one of the available parity distribution methods.
 
+<<<<<<< HEAD
 config DM_LOG_USERSPACE
 	tristate "Mirror userspace logging (EXPERIMENTAL)"
 	depends on DM_MIRROR && EXPERIMENTAL && NET
@@ -327,6 +419,8 @@ config DM_LOG_USERSPACE
 	  shared storage logs) or experimental logs can be implemented
 	  by leveraging this framework.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config DM_ZERO
 	tristate "Zero target"
 	depends on BLK_DEV_DM
@@ -365,8 +459,13 @@ config DM_MULTIPATH_ST
 	  If unsure, say N.
 
 config DM_DELAY
+<<<<<<< HEAD
 	tristate "I/O delaying target (EXPERIMENTAL)"
 	depends on BLK_DEV_DM && EXPERIMENTAL
+=======
+	tristate "I/O delaying target"
+	depends on BLK_DEV_DM
+>>>>>>> refs/remotes/origin/master
 	---help---
 	A target that delays reads and/or writes and can send
 	them to different devices.  Useful for testing.
@@ -375,16 +474,22 @@ config DM_DELAY
 
 config DM_UEVENT
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool "DM uevents (EXPERIMENTAL)"
 	depends on BLK_DEV_DM && EXPERIMENTAL
 =======
 	bool "DM uevents"
 	depends on BLK_DEV_DM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool "DM uevents"
+	depends on BLK_DEV_DM
+>>>>>>> refs/remotes/origin/master
 	---help---
 	Generate udev events for DM events.
 
 config DM_FLAKEY
+<<<<<<< HEAD
        tristate "Flakey target (EXPERIMENTAL)"
        depends on BLK_DEV_DM && EXPERIMENTAL
        ---help---
@@ -395,6 +500,16 @@ config DM_FLAKEY
 config DM_VERITY
 	tristate "Verity target support (EXPERIMENTAL)"
 	depends on BLK_DEV_DM && EXPERIMENTAL
+=======
+       tristate "Flakey target"
+       depends on BLK_DEV_DM
+       ---help---
+         A target that intermittently fails I/O for debugging purposes.
+
+config DM_VERITY
+	tristate "Verity target support"
+	depends on BLK_DEV_DM
+>>>>>>> refs/remotes/origin/master
 	select CRYPTO
 	select CRYPTO_HASH
 	select DM_BUFIO
@@ -412,5 +527,22 @@ config DM_VERITY
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config DM_SWITCH
+	tristate "Switch target support (EXPERIMENTAL)"
+	depends on BLK_DEV_DM
+	---help---
+	  This device-mapper target creates a device that supports an arbitrary
+	  mapping of fixed-size regions of I/O across a fixed set of paths.
+	  The path used for any specific region can be switched dynamically
+	  by sending the target a message.
+
+	  To compile this code as a module, choose M here: the module will
+	  be called dm-switch.
+
+	  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 endif # MD

@@ -48,11 +48,19 @@
 # define vmcore_elf_check_arch_cross(x) ((x)->e_machine == EM_X86_64)
 #else
 /* Maximum physical address we can use pages from */
+<<<<<<< HEAD
 # define KEXEC_SOURCE_MEMORY_LIMIT      (0xFFFFFFFFFFUL)
 /* Maximum address we can reach in physical address mode */
 # define KEXEC_DESTINATION_MEMORY_LIMIT (0xFFFFFFFFFFUL)
 /* Maximum address we can use for the control pages */
 # define KEXEC_CONTROL_MEMORY_LIMIT     (0xFFFFFFFFFFUL)
+=======
+# define KEXEC_SOURCE_MEMORY_LIMIT      (MAXMEM-1)
+/* Maximum address we can reach in physical address mode */
+# define KEXEC_DESTINATION_MEMORY_LIMIT (MAXMEM-1)
+/* Maximum address we can use for the control pages */
+# define KEXEC_CONTROL_MEMORY_LIMIT     (MAXMEM-1)
+>>>>>>> refs/remotes/origin/master
 
 /* Allocate one page for the pdp and the second for the code */
 # define KEXEC_CONTROL_PAGE_SIZE  (4096UL + 4096UL)
@@ -163,6 +171,12 @@ struct kimage_arch {
 };
 #endif
 
+<<<<<<< HEAD
+=======
+typedef void crash_vmclear_fn(void);
+extern crash_vmclear_fn __rcu *crash_vmclear_loaded_vmcss;
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASSEMBLY__ */
 
 #endif /* _ASM_X86_KEXEC_H */

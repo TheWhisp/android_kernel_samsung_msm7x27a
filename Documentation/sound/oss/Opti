@@ -19,10 +19,14 @@ If you have another OS installed on your computer it is recommended
 that Linux and the other OS use the same resources.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Also, it is recommended that resources specified in /etc/modprobe.conf
 =======
 Also, it is recommended that resources specified in /etc/modprobe.d/*.conf
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Also, it is recommended that resources specified in /etc/modprobe.d/*.conf
+>>>>>>> refs/remotes/origin/master
 and resources specified in /etc/isapnp.conf agree.
 
 Compiling the sound driver
@@ -72,6 +76,7 @@ address is hard-coded into the driver.
 Using kmod and autoloading the sound driver
 -------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 Comment: as of linux-2.1.90 kmod is replacing kerneld.
 The config file '/etc/modprobe.conf' is used as before.
 
@@ -80,6 +85,9 @@ Following that I will explain each line.
 =======
 Config files in '/etc/modprobe.d/' are used as below:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Config files in '/etc/modprobe.d/' are used as below:
+>>>>>>> refs/remotes/origin/master
 
 alias mixer0 mad16
 alias audio0 mad16

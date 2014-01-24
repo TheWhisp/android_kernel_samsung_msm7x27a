@@ -146,7 +146,11 @@ void __init smp_prepare_boot_cpu(void)
  * to point to current thread info
  */
 
+<<<<<<< HEAD
 void __cpuinit start_secondary(void)
+=======
+void start_secondary(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int cpu;
 	unsigned long thread_ptr;
@@ -180,6 +184,7 @@ void __cpuinit start_secondary(void)
 
 	notify_cpu_starting(cpu);
 
+<<<<<<< HEAD
 	ipi_call_lock();
 	set_cpu_online(cpu, true);
 	ipi_call_unlock();
@@ -187,6 +192,13 @@ void __cpuinit start_secondary(void)
 	local_irq_enable();
 
 	cpu_idle();
+=======
+	set_cpu_online(cpu, true);
+
+	local_irq_enable();
+
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -196,6 +208,7 @@ void __cpuinit start_secondary(void)
  * maintains control until "cpu_online(cpu)" is set.
  */
 
+<<<<<<< HEAD
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	struct task_struct *idle;
@@ -208,6 +221,13 @@ int __cpuinit __cpu_up(unsigned int cpu)
 		panic(KERN_ERR "fork_idle failed\n");
 
 	thread = (struct thread_info *)idle->stack;
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *idle)
+{
+	struct thread_info *thread = (struct thread_info *)idle->stack;
+	void *stack_start;
+
+>>>>>>> refs/remotes/origin/master
 	thread->cpu = cpu;
 
 	/*  Boot to the head.  */

@@ -313,6 +313,7 @@ clear_user(void *addr, unsigned long size)
 	return size;
 }
 
+<<<<<<< HEAD
 extern int __strncpy_from_user(char *dst, const char *src, long count);
 
 static inline long strncpy_from_user(char *dst, const char *src, long count)
@@ -350,5 +351,14 @@ static inline long strnlen_user(const char __user *str, long len)
 }
 
 #define strlen_user(str) strnlen_user(str, TASK_SIZE-1)
+=======
+#define user_addr_max() \
+	(segment_eq(get_fs(), USER_DS) ? TASK_SIZE : ~0UL)
+
+extern long strncpy_from_user(char *dest, const char __user *src, long count);
+
+extern __must_check long strlen_user(const char __user *str);
+extern __must_check long strnlen_user(const char __user *str, long n);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_OPENRISC_UACCESS_H */

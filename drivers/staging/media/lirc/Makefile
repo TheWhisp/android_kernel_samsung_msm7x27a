@@ -10,5 +10,8 @@ obj-$(CONFIG_LIRC_PARALLEL)	+= lirc_parallel.o
 obj-$(CONFIG_LIRC_SASEM)	+= lirc_sasem.o
 obj-$(CONFIG_LIRC_SERIAL)	+= lirc_serial.o
 obj-$(CONFIG_LIRC_SIR)		+= lirc_sir.o
+<<<<<<< HEAD
 obj-$(CONFIG_LIRC_TTUSBIR)	+= lirc_ttusbir.o
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_LIRC_ZILOG)	+= lirc_zilog.o

@@ -53,10 +53,14 @@ struct eth_addr {
 
 static struct eth_addr __initdata hw_addr[2];
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct eth_platform_data __initdata eth_data[2];
 =======
 static struct macb_platform_data __initdata eth_data[2];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data __initdata eth_data[2];
+>>>>>>> refs/remotes/origin/master
 
 static int ads7846_get_pendown_state_PB26(void)
 {

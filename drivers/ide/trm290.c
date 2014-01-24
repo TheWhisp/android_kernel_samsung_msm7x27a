@@ -231,7 +231,11 @@ static void trm290_dma_host_set(ide_drive_t *drive, int on)
 {
 }
 
+<<<<<<< HEAD
 static void __devinit init_hwif_trm290(ide_hwif_t *hwif)
+=======
+static void init_hwif_trm290(ide_hwif_t *hwif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev	= to_pci_dev(hwif->dev);
 	unsigned int  cfg_base	= pci_resource_start(dev, 4);
@@ -324,7 +328,11 @@ static struct ide_dma_ops trm290_dma_ops = {
 	.dma_check		= trm290_dma_check,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info trm290_chipset __devinitdata = {
+=======
+static const struct ide_port_info trm290_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= DRV_NAME,
 	.init_hwif	= init_hwif_trm290,
 	.tp_ops 	= &trm290_tp_ops,
@@ -338,7 +346,11 @@ static const struct ide_port_info trm290_chipset __devinitdata = {
 			  IDE_HFLAG_NO_LBA48,
 };
 
+<<<<<<< HEAD
 static int __devinit trm290_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int trm290_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	return ide_pci_init_one(dev, &trm290_chipset, NULL);
 }

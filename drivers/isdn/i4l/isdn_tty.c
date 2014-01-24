@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /* $Id: isdn_tty.c,v 1.1.2.3 2004/02/10 01:07:13 keil Exp $
  *
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Linux ISDN subsystem, tty functions and AT-command emulator (linklevel).
  *
  * Copyright 1994-1999  by Fritz Elfert (fritz@isdn4linux.de)
@@ -12,6 +16,10 @@
 #undef ISDN_TTY_STAT_DEBUG
 
 #include <linux/isdn.h>
+<<<<<<< HEAD
+=======
+#include <linux/serial.h> /* ASYNC_* flags */
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/mutex.h>
@@ -48,9 +56,12 @@ static int bit2si[8] =
 static int si2bit[8] =
 {4, 1, 4, 4, 4, 4, 4, 4};
 
+<<<<<<< HEAD
 char *isdn_tty_revision = "$Revision: 1.1.2.3 $";
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* isdn_tty_try_read() is called from within isdn_tty_rcv_skb()
  * to stuff incoming data directly into a tty's flip-buffer. This
  * is done to speed up tty-receiving if the receive-queue is empty.
@@ -61,6 +72,7 @@ char *isdn_tty_revision = "$Revision: 1.1.2.3 $";
  *      isdn_tty_readmodem().
  */
 static int
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_tty_try_read(modem_info * info, struct sk_buff *skb)
 =======
@@ -119,6 +131,59 @@ isdn_tty_try_read(modem_info *info, struct sk_buff *skb)
 		}
 	}
 	return 0;
+=======
+isdn_tty_try_read(modem_info *info, struct sk_buff *skb)
+{
+	struct tty_port *port = &info->port;
+	int c;
+	int len;
+	char last;
+
+	if (!info->online)
+		return 0;
+
+	if (!(info->mcr & UART_MCR_RTS))
+		return 0;
+
+	len = skb->len
+#ifdef CONFIG_ISDN_AUDIO
+		+ ISDN_AUDIO_SKB_DLECOUNT(skb)
+#endif
+		;
+
+	c = tty_buffer_request_room(port, len);
+	if (c < len)
+		return 0;
+
+#ifdef CONFIG_ISDN_AUDIO
+	if (ISDN_AUDIO_SKB_DLECOUNT(skb)) {
+		int l = skb->len;
+		unsigned char *dp = skb->data;
+		while (--l) {
+			if (*dp == DLE)
+				tty_insert_flip_char(port, DLE, 0);
+			tty_insert_flip_char(port, *dp++, 0);
+		}
+		if (*dp == DLE)
+			tty_insert_flip_char(port, DLE, 0);
+		last = *dp;
+	} else {
+#endif
+		if (len > 1)
+			tty_insert_flip_string(port, skb->data, len - 1);
+		last = skb->data[len - 1];
+#ifdef CONFIG_ISDN_AUDIO
+	}
+#endif
+	if (info->emu.mdmreg[REG_CPPP] & BIT_CPPP)
+		tty_insert_flip_char(port, last, 0xFF);
+	else
+		tty_insert_flip_char(port, last, TTY_NORMAL);
+	tty_flip_buffer_push(port);
+	kfree_skb(skb);
+
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* isdn_tty_readmodem() is called periodically from within timer-interrupt.
@@ -132,6 +197,7 @@ isdn_tty_readmodem(void)
 	int midx;
 	int i;
 	int r;
+<<<<<<< HEAD
 	struct tty_struct *tty;
 	modem_info *info;
 
@@ -165,6 +231,45 @@ isdn_tty_readmodem(void)
 					info->rcvsched = 1;
 			}
 		}
+=======
+	modem_info *info;
+
+	for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
+		midx = dev->m_idx[i];
+		if (midx < 0)
+			continue;
+
+		info = &dev->mdm.info[midx];
+		if (!info->online)
+			continue;
+
+		r = 0;
+#ifdef CONFIG_ISDN_AUDIO
+		isdn_audio_eval_dtmf(info);
+		if ((info->vonline & 1) && (info->emu.vpar[1]))
+			isdn_audio_eval_silence(info);
+#endif
+		if (info->mcr & UART_MCR_RTS) {
+			/* CISCO AsyncPPP Hack */
+			if (!(info->emu.mdmreg[REG_CPPP] & BIT_CPPP))
+				r = isdn_readbchan_tty(info->isdn_driver,
+						info->isdn_channel,
+						&info->port, 0);
+			else
+				r = isdn_readbchan_tty(info->isdn_driver,
+						info->isdn_channel,
+						&info->port, 1);
+			if (r)
+				tty_flip_buffer_push(&info->port);
+		} else
+			r = 1;
+
+		if (r) {
+			info->rcvsched = 0;
+			resched = 1;
+		} else
+			info->rcvsched = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!resched)
 		isdn_timer_ctrl(ISDN_TIMER_MODEMREAD, 0);
@@ -188,10 +293,14 @@ isdn_tty_rcv_skb(int i, int di, int channel, struct sk_buff *skb)
 #ifdef CONFIG_ISDN_AUDIO
 	ifmt = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if ((info->vonline) && (!info->emu.vpar[4]))
 		isdn_audio_calc_dtmf(info, skb->data, skb->len, ifmt);
 	if ((info->vonline & 1) && (info->emu.vpar[1]))
@@ -226,6 +335,7 @@ isdn_tty_rcv_skb(int i, int di, int channel, struct sk_buff *skb)
 		/* voice conversion/compression */
 		switch (info->emu.vpar[3]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case 2:
 			case 3:
 			case 4:
@@ -250,6 +360,8 @@ isdn_tty_rcv_skb(int i, int di, int channel, struct sk_buff *skb)
 					isdn_audio_alaw2ulaw(skb->data, skb->len);
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 2:
 		case 3:
 		case 4:
@@ -273,7 +385,10 @@ isdn_tty_rcv_skb(int i, int di, int channel, struct sk_buff *skb)
 			if (ifmt)
 				isdn_audio_alaw2ulaw(skb->data, skb->len);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		ISDN_AUDIO_SKB_DLECOUNT(skb) =
 			isdn_tty_countDLE(skb->data, skb->len);
@@ -314,10 +429,14 @@ isdn_tty_rcv_skb(int i, int di, int channel, struct sk_buff *skb)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cleanup_xmit(modem_info * info)
 =======
 isdn_tty_cleanup_xmit(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cleanup_xmit(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	skb_queue_purge(&info->xmit_queue);
 #ifdef CONFIG_ISDN_AUDIO
@@ -327,10 +446,14 @@ isdn_tty_cleanup_xmit(modem_info *info)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_tint(modem_info * info)
 =======
 isdn_tty_tint(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_tint(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb = skb_dequeue(&info->xmit_queue);
 	int len, slen;
@@ -340,7 +463,11 @@ isdn_tty_tint(modem_info *info)
 	len = skb->len;
 	if ((slen = isdn_writebuf_skb_stub(info->isdn_driver,
 					   info->isdn_channel, 1, skb)) == len) {
+<<<<<<< HEAD
 		struct tty_struct *tty = info->tty;
+=======
+		struct tty_struct *tty = info->port.tty;
+>>>>>>> refs/remotes/origin/master
 		info->send_outstanding++;
 		info->msr &= ~UART_MSR_CTS;
 		info->lsr &= ~UART_LSR_TEMT;
@@ -372,18 +499,25 @@ isdn_tty_countDLE(unsigned char *buf, int len)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_handleDLEdown(modem_info * info, atemu * m, int len)
 =======
 isdn_tty_handleDLEdown(modem_info *info, atemu *m, int len)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	unsigned char *p = &info->xmit_buf[info->xmit_count];
+=======
+isdn_tty_handleDLEdown(modem_info *info, atemu *m, int len)
+{
+	unsigned char *p = &info->port.xmit_buf[info->xmit_count];
+>>>>>>> refs/remotes/origin/master
 	int count = 0;
 
 	while (len > 0) {
 		if (m->lastDLE) {
 			m->lastDLE = 0;
 			switch (*p) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				case DLE:
 					/* Escape code */
@@ -422,6 +556,8 @@ isdn_tty_handleDLEdown(modem_info *info, atemu *m, int len)
 					p--;
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case DLE:
 				/* Escape code */
 				if (len > 1)
@@ -458,7 +594,10 @@ isdn_tty_handleDLEdown(modem_info *info, atemu *m, int len)
 					memmove(p, p + 1, len - 1);
 				p--;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		} else {
 			if (*p == DLE)
@@ -506,10 +645,14 @@ static int voice_cf[7] =
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_senddown(modem_info * info)
 =======
 isdn_tty_senddown(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_senddown(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	int buflen;
 	int skb_res;
@@ -534,6 +677,7 @@ isdn_tty_senddown(modem_info *info)
 	if (!(buflen = info->xmit_count))
 		return;
 <<<<<<< HEAD
+<<<<<<< HEAD
  	if ((info->emu.mdmreg[REG_CTS] & BIT_CTS) != 0)
 		info->msr &= ~UART_MSR_CTS;
 	info->lsr &= ~UART_LSR_TEMT;	
@@ -542,6 +686,11 @@ isdn_tty_senddown(modem_info *info)
 		info->msr &= ~UART_MSR_CTS;
 	info->lsr &= ~UART_LSR_TEMT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((info->emu.mdmreg[REG_CTS] & BIT_CTS) != 0)
+		info->msr &= ~UART_MSR_CTS;
+	info->lsr &= ~UART_LSR_TEMT;
+>>>>>>> refs/remotes/origin/master
 	/* info->xmit_count is modified here and in isdn_tty_write().
 	 * So we return here if isdn_tty_write() is in the
 	 * critical section.
@@ -570,7 +719,11 @@ isdn_tty_senddown(modem_info *info)
 		return;
 	}
 	skb_reserve(skb, skb_res);
+<<<<<<< HEAD
 	memcpy(skb_put(skb, buflen), info->xmit_buf, buflen);
+=======
+	memcpy(skb_put(skb, buflen), info->port.xmit_buf, buflen);
+>>>>>>> refs/remotes/origin/master
 	info->xmit_count = 0;
 #ifdef CONFIG_ISDN_AUDIO
 	if (info->vonline & 2) {
@@ -584,6 +737,7 @@ isdn_tty_senddown(modem_info *info)
 
 		/* voice conversion/decompression */
 		switch (info->emu.vpar[3]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case 2:
 			case 3:
@@ -612,6 +766,8 @@ isdn_tty_senddown(modem_info *info)
 							     buflen);
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 2:
 		case 3:
 		case 4:
@@ -638,7 +794,10 @@ isdn_tty_senddown(modem_info *info)
 				isdn_audio_ulaw2alaw(skb->data,
 						     buflen);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif                          /* CONFIG_ISDN_AUDIO */
@@ -679,10 +838,14 @@ isdn_tty_modem_do_ncarrier(unsigned long data)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_modem_ncarrier(modem_info * info)
 =======
 isdn_tty_modem_ncarrier(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_modem_ncarrier(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	if (info->ncarrier) {
 		info->nc_timer.expires = jiffies + HZ;
@@ -700,6 +863,7 @@ isdn_calc_usage(int si, int l2)
 
 #ifdef CONFIG_ISDN_AUDIO
 	if (si == 1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		switch(l2) {
 			case ISDN_PROTO_L2_MODEM: 
@@ -719,6 +883,8 @@ isdn_calc_usage(int si, int l2)
 #endif
 	return(usg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		switch (l2) {
 		case ISDN_PROTO_L2_MODEM:
 			usg = ISDN_USAGE_MODEM;
@@ -736,7 +902,10 @@ isdn_calc_usage(int si, int l2)
 	}
 #endif
 	return (usg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* isdn_tty_dial() performs dialing of a tty an the necessary
@@ -744,10 +913,14 @@ isdn_calc_usage(int si, int l2)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_dial(char *n, modem_info * info, atemu * m)
 =======
 isdn_tty_dial(char *n, modem_info *info, atemu *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_dial(char *n, modem_info *info, atemu *m)
+>>>>>>> refs/remotes/origin/master
 {
 	int usg = ISDN_USAGE_MODEM;
 	int si = 7;
@@ -765,16 +938,22 @@ isdn_tty_dial(char *n, modem_info *info, atemu *m)
 	usg = isdn_calc_usage(si, l2);
 #ifdef CONFIG_ISDN_AUDIO
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((si == 1) && 
 		(l2 != ISDN_PROTO_L2_MODEM)
 #ifdef CONFIG_ISDN_TTY_FAX
 		&& (l2 != ISDN_PROTO_L2_FAX)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((si == 1) &&
 	    (l2 != ISDN_PROTO_L2_MODEM)
 #ifdef CONFIG_ISDN_TTY_FAX
 	    && (l2 != ISDN_PROTO_L2_FAX)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 		) {
 		l2 = ISDN_PROTO_L2_TRANS;
@@ -843,10 +1022,14 @@ isdn_tty_dial(char *n, modem_info *info, atemu *m)
  */
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_modem_hup(modem_info * info, int local)
 =======
 isdn_tty_modem_hup(modem_info *info, int local)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_modem_hup(modem_info *info, int local)
+>>>>>>> refs/remotes/origin/master
 {
 	isdn_ctrl cmd;
 	int di, ch;
@@ -866,7 +1049,11 @@ isdn_tty_modem_hup(modem_info *info, int local)
 	printk(KERN_DEBUG "Mhup ttyI%d\n", info->line);
 #endif
 	info->rcvsched = 0;
+<<<<<<< HEAD
 	isdn_tty_flush_buffer(info->tty);
+=======
+	isdn_tty_flush_buffer(info->port.tty);
+>>>>>>> refs/remotes/origin/master
 	if (info->online) {
 		info->last_lhup = local;
 		info->online = 0;
@@ -891,10 +1078,14 @@ isdn_tty_modem_hup(modem_info *info, int local)
 #endif
 	if ((info->msr & UART_MSR_RI) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(info->emu.mdmreg[REG_RUNG] & BIT_RUNG))
 =======
 	    (info->emu.mdmreg[REG_RUNG] & BIT_RUNG))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (info->emu.mdmreg[REG_RUNG] & BIT_RUNG))
+>>>>>>> refs/remotes/origin/master
 		isdn_tty_modem_result(RESULT_RUNG, info);
 	info->msr &= ~(UART_MSR_DCD | UART_MSR_RI);
 	info->lsr |= UART_LSR_TEMT;
@@ -918,6 +1109,7 @@ isdn_tty_modem_hup(modem_info *info, int local)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Begin of a CAPI like interface, currently used only for 
  * supplementary service (CAPI 2.0 part III)
  */
@@ -927,6 +1119,8 @@ int
 isdn_tty_capi_facility(capi_msg *cm) {
 	return(-1); /* dummy */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Begin of a CAPI like interface, currently used only for
  * supplementary service (CAPI 2.0 part III)
  */
@@ -936,23 +1130,32 @@ isdn_tty_capi_facility(capi_msg *cm) {
 int
 isdn_tty_capi_facility(capi_msg *cm) {
 	return (-1); /* dummy */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* isdn_tty_suspend() tries to suspend the current tty connection
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_suspend(char *id, modem_info * info, atemu * m)
 {
 	isdn_ctrl cmd;
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_tty_suspend(char *id, modem_info *info, atemu *m)
 {
 	isdn_ctrl cmd;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int l;
 
 	if (!info)
@@ -964,10 +1167,14 @@ isdn_tty_suspend(char *id, modem_info *info, atemu *m)
 	l = strlen(id);
 	if ((info->isdn_driver >= 0)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd.parm.cmsg.Length = l+18;
 =======
 		cmd.parm.cmsg.Length = l + 18;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cmd.parm.cmsg.Length = l + 18;
+>>>>>>> refs/remotes/origin/master
 		cmd.parm.cmsg.Command = CAPI_FACILITY;
 		cmd.parm.cmsg.Subcommand = CAPI_REQ;
 		cmd.parm.cmsg.adr.Controller = info->isdn_driver + 1;
@@ -994,10 +1201,14 @@ isdn_tty_suspend(char *id, modem_info *info, atemu *m)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_resume(char *id, modem_info * info, atemu * m)
 =======
 isdn_tty_resume(char *id, modem_info *info, atemu *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_resume(char *id, modem_info *info, atemu *m)
+>>>>>>> refs/remotes/origin/master
 {
 	int usg = ISDN_USAGE_MODEM;
 	int si = 7;
@@ -1017,16 +1228,22 @@ isdn_tty_resume(char *id, modem_info *info, atemu *m)
 	usg = isdn_calc_usage(si, l2);
 #ifdef CONFIG_ISDN_AUDIO
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((si == 1) && 
 		(l2 != ISDN_PROTO_L2_MODEM)
 #ifdef CONFIG_ISDN_TTY_FAX
 		&& (l2 != ISDN_PROTO_L2_FAX)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((si == 1) &&
 	    (l2 != ISDN_PROTO_L2_MODEM)
 #ifdef CONFIG_ISDN_TTY_FAX
 	    && (l2 != ISDN_PROTO_L2_FAX)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 		) {
 		l2 = ISDN_PROTO_L2_TRANS;
@@ -1069,29 +1286,41 @@ isdn_tty_resume(char *id, modem_info *info, atemu *m)
 		cmd.driver = info->isdn_driver;
 		cmd.arg = info->isdn_channel;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd.parm.cmsg.Length = l+18;
 =======
 		cmd.parm.cmsg.Length = l + 18;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cmd.parm.cmsg.Length = l + 18;
+>>>>>>> refs/remotes/origin/master
 		cmd.parm.cmsg.Command = CAPI_FACILITY;
 		cmd.parm.cmsg.Subcommand = CAPI_REQ;
 		cmd.parm.cmsg.adr.Controller = info->isdn_driver + 1;
 		cmd.parm.cmsg.para[0] = 3; /* 16 bit 0x0003 suplementary service */
 		cmd.parm.cmsg.para[1] = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd.parm.cmsg.para[2] = l+3;
 =======
 		cmd.parm.cmsg.para[2] = l + 3;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cmd.parm.cmsg.para[2] = l + 3;
+>>>>>>> refs/remotes/origin/master
 		cmd.parm.cmsg.para[3] = 5; /* 16 bit 0x0005 Resume */
 		cmd.parm.cmsg.para[4] = 0;
 		cmd.parm.cmsg.para[5] = l;
 		strncpy(&cmd.parm.cmsg.para[6], id, l);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd.command =CAPI_PUT_MESSAGE;
 =======
 		cmd.command = CAPI_PUT_MESSAGE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cmd.command = CAPI_PUT_MESSAGE;
+>>>>>>> refs/remotes/origin/master
 		info->dialing = 1;
 //		strcpy(dev->num[i], n);
 		isdn_info_update();
@@ -1106,10 +1335,14 @@ isdn_tty_resume(char *id, modem_info *info, atemu *m)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_send_msg(modem_info * info, atemu * m, char *msg)
 =======
 isdn_tty_send_msg(modem_info *info, atemu *m, char *msg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_send_msg(modem_info *info, atemu *m, char *msg)
+>>>>>>> refs/remotes/origin/master
 {
 	int usg = ISDN_USAGE_MODEM;
 	int si = 7;
@@ -1120,7 +1353,13 @@ isdn_tty_send_msg(modem_info *info, atemu *m, char *msg)
 	int j;
 	int l;
 
+<<<<<<< HEAD
 	l = strlen(msg);
+=======
+	l = min(strlen(msg), sizeof(cmd.parm) - sizeof(cmd.parm.cmsg)
+		+ sizeof(cmd.parm.cmsg.para) - 2);
+
+>>>>>>> refs/remotes/origin/master
 	if (!l) {
 		isdn_tty_modem_result(RESULT_ERROR, info);
 		return;
@@ -1133,16 +1372,22 @@ isdn_tty_send_msg(modem_info *info, atemu *m, char *msg)
 	usg = isdn_calc_usage(si, l2);
 #ifdef CONFIG_ISDN_AUDIO
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((si == 1) && 
 		(l2 != ISDN_PROTO_L2_MODEM)
 #ifdef CONFIG_ISDN_TTY_FAX
 		&& (l2 != ISDN_PROTO_L2_FAX)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((si == 1) &&
 	    (l2 != ISDN_PROTO_L2_MODEM)
 #ifdef CONFIG_ISDN_TTY_FAX
 	    && (l2 != ISDN_PROTO_L2_FAX)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 		) {
 		l2 = ISDN_PROTO_L2_TRANS;
@@ -1184,6 +1429,7 @@ isdn_tty_send_msg(modem_info *info, atemu *m, char *msg)
 		cmd.driver = info->isdn_driver;
 		cmd.arg = info->isdn_channel;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cmd.parm.cmsg.Length = l+14;
 		cmd.parm.cmsg.Command = CAPI_MANUFACTURER;
 		cmd.parm.cmsg.Subcommand = CAPI_REQ;
@@ -1193,6 +1439,8 @@ isdn_tty_send_msg(modem_info *info, atemu *m, char *msg)
 		cmd.parm.cmsg.para[l+1] = 0xd;
 		cmd.command =CAPI_PUT_MESSAGE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		cmd.parm.cmsg.Length = l + 14;
 		cmd.parm.cmsg.Command = CAPI_MANUFACTURER;
 		cmd.parm.cmsg.Subcommand = CAPI_REQ;
@@ -1201,7 +1449,10 @@ isdn_tty_send_msg(modem_info *info, atemu *m, char *msg)
 		strncpy(&cmd.parm.cmsg.para[1], msg, l);
 		cmd.parm.cmsg.para[l + 1] = 0xd;
 		cmd.command = CAPI_PUT_MESSAGE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*		info->dialing = 1;
 		strcpy(dev->num[i], n);
 		isdn_info_update();
@@ -1217,10 +1468,14 @@ isdn_tty_paranoia_check(modem_info *info, char *name, const char *routine)
 	if (!info) {
 		printk(KERN_WARNING "isdn_tty: null info_struct for %s in %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			name, routine);
 =======
 		       name, routine);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       name, routine);
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	}
 	if (info->magic != ISDN_ASYNC_MAGIC) {
@@ -1237,6 +1492,7 @@ isdn_tty_paranoia_check(modem_info *info, char *name, const char *routine)
  * the specified baud rate for a serial port.
  */
 static void
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_tty_change_speed(modem_info * info)
 {
@@ -1255,12 +1511,29 @@ isdn_tty_change_speed(modem_info *info)
 	if (!info->tty || !info->tty->termios)
 		return;
 	cflag = info->tty->termios->c_cflag;
+=======
+isdn_tty_change_speed(modem_info *info)
+{
+	struct tty_port *port = &info->port;
+	uint cflag,
+		cval,
+		quot;
+	int i;
+
+	if (!port->tty)
+		return;
+	cflag = port->tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 
 	quot = i = cflag & CBAUD;
 	if (i & CBAUDEX) {
 		i &= ~CBAUDEX;
 		if (i < 1 || i > 2)
+<<<<<<< HEAD
 			info->tty->termios->c_cflag &= ~CBAUDEX;
+=======
+			port->tty->termios.c_cflag &= ~CBAUDEX;
+>>>>>>> refs/remotes/origin/master
 		else
 			i += 15;
 	}
@@ -1290,6 +1563,7 @@ isdn_tty_change_speed(modem_info *info)
 
 	/* CTS flow control flag and modem status interrupts */
 	if (cflag & CRTSCTS) {
+<<<<<<< HEAD
 		info->flags |= ISDN_ASYNC_CTS_FLOW;
 	} else
 		info->flags &= ~ISDN_ASYNC_CTS_FLOW;
@@ -1297,10 +1571,20 @@ isdn_tty_change_speed(modem_info *info)
 		info->flags &= ~ISDN_ASYNC_CHECK_CD;
 	else {
 		info->flags |= ISDN_ASYNC_CHECK_CD;
+=======
+		port->flags |= ASYNC_CTS_FLOW;
+	} else
+		port->flags &= ~ASYNC_CTS_FLOW;
+	if (cflag & CLOCAL)
+		port->flags &= ~ASYNC_CHECK_CD;
+	else {
+		port->flags |= ASYNC_CHECK_CD;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static int
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_tty_startup(modem_info * info)
 =======
@@ -1308,6 +1592,11 @@ isdn_tty_startup(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (info->flags & ISDN_ASYNC_INITIALIZED)
+=======
+isdn_tty_startup(modem_info *info)
+{
+	if (info->port.flags & ASYNC_INITIALIZED)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	isdn_lock_drivers();
 #ifdef ISDN_DEBUG_MODEM_OPEN
@@ -1317,14 +1606,23 @@ isdn_tty_startup(modem_info *info)
 	 * Now, initialize the UART
 	 */
 	info->mcr = UART_MCR_DTR | UART_MCR_RTS | UART_MCR_OUT2;
+<<<<<<< HEAD
 	if (info->tty)
 		clear_bit(TTY_IO_ERROR, &info->tty->flags);
+=======
+	if (info->port.tty)
+		clear_bit(TTY_IO_ERROR, &info->port.tty->flags);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * and set the speed of the serial port
 	 */
 	isdn_tty_change_speed(info);
 
+<<<<<<< HEAD
 	info->flags |= ISDN_ASYNC_INITIALIZED;
+=======
+	info->port.flags |= ASYNC_INITIALIZED;
+>>>>>>> refs/remotes/origin/master
 	info->msr |= (UART_MSR_DSR | UART_MSR_CTS);
 	info->send_outstanding = 0;
 	return 0;
@@ -1336,19 +1634,29 @@ isdn_tty_startup(modem_info *info)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_shutdown(modem_info * info)
 =======
 isdn_tty_shutdown(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	if (!(info->flags & ISDN_ASYNC_INITIALIZED))
+=======
+isdn_tty_shutdown(modem_info *info)
+{
+	if (!(info->port.flags & ASYNC_INITIALIZED))
+>>>>>>> refs/remotes/origin/master
 		return;
 #ifdef ISDN_DEBUG_MODEM_OPEN
 	printk(KERN_DEBUG "Shutting down isdnmodem port %d ....\n", info->line);
 #endif
 	isdn_unlock_drivers();
 	info->msr &= ~UART_MSR_RI;
+<<<<<<< HEAD
 	if (!info->tty || (info->tty->termios->c_cflag & HUPCL)) {
+=======
+	if (!info->port.tty || (info->port.tty->termios.c_cflag & HUPCL)) {
+>>>>>>> refs/remotes/origin/master
 		info->mcr &= ~(UART_MCR_DTR | UART_MCR_RTS);
 		if (info->emu.mdmreg[REG_DTRHUP] & BIT_DTRHUP) {
 			isdn_tty_modem_reset_regs(info, 0);
@@ -1358,10 +1666,17 @@ isdn_tty_shutdown(modem_info *info)
 			isdn_tty_modem_hup(info, 1);
 		}
 	}
+<<<<<<< HEAD
 	if (info->tty)
 		set_bit(TTY_IO_ERROR, &info->tty->flags);
 
 	info->flags &= ~ISDN_ASYNC_INITIALIZED;
+=======
+	if (info->port.tty)
+		set_bit(TTY_IO_ERROR, &info->port.tty->flags);
+
+	info->port.flags &= ~ASYNC_INITIALIZED;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* isdn_tty_write() is the main send-routine. It is called from the upper
@@ -1375,10 +1690,14 @@ isdn_tty_shutdown(modem_info *info)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_write(struct tty_struct *tty, const u_char * buf, int count)
 =======
 isdn_tty_write(struct tty_struct *tty, const u_char *buf, int count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_write(struct tty_struct *tty, const u_char *buf, int count)
+>>>>>>> refs/remotes/origin/master
 {
 	int c;
 	int total = 0;
@@ -1408,7 +1727,11 @@ isdn_tty_write(struct tty_struct *tty, const u_char *buf, int count)
 				isdn_tty_check_esc(buf, m->mdmreg[REG_ESC], c,
 						   &(m->pluscount),
 						   &(m->lastplus));
+<<<<<<< HEAD
 			memcpy(&(info->xmit_buf[info->xmit_count]), buf, c);
+=======
+			memcpy(&info->port.xmit_buf[info->xmit_count], buf, c);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ISDN_AUDIO
 			if (info->vonline) {
 				int cc = isdn_tty_handleDLEdown(info, m, c);
@@ -1439,6 +1762,7 @@ isdn_tty_write(struct tty_struct *tty, const u_char *buf, int count)
 				}
 			} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (TTY_IS_FCLASS1(info)) {
 				int cc = isdn_tty_handleDLEdown(info, m, c);
 				
@@ -1461,6 +1785,8 @@ isdn_tty_write(struct tty_struct *tty, const u_char *buf, int count)
 #endif
 				info->xmit_count += c;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				if (TTY_IS_FCLASS1(info)) {
 					int cc = isdn_tty_handleDLEdown(info, m, c);
 
@@ -1482,7 +1808,10 @@ isdn_tty_write(struct tty_struct *tty, const u_char *buf, int count)
 				} else
 #endif
 					info->xmit_count += c;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			info->msr |= UART_MSR_CTS;
 			info->lsr |= UART_LSR_TEMT;
@@ -1619,10 +1948,14 @@ isdn_tty_unthrottle(struct tty_struct *tty)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_get_lsr_info(modem_info * info, uint __user * value)
 =======
 isdn_tty_get_lsr_info(modem_info *info, uint __user *value)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_get_lsr_info(modem_info *info, uint __user *value)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char status;
 	uint result;
@@ -1654,27 +1987,37 @@ isdn_tty_tiocmget(struct tty_struct *tty)
 	mutex_unlock(&modem_info_mutex);
 	return ((control & UART_MCR_RTS) ? TIOCM_RTS : 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    | ((control & UART_MCR_DTR) ? TIOCM_DTR : 0)
 	    | ((status & UART_MSR_DCD) ? TIOCM_CAR : 0)
 	    | ((status & UART_MSR_RI) ? TIOCM_RNG : 0)
 	    | ((status & UART_MSR_DSR) ? TIOCM_DSR : 0)
 	    | ((status & UART_MSR_CTS) ? TIOCM_CTS : 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		| ((control & UART_MCR_DTR) ? TIOCM_DTR : 0)
 		| ((status & UART_MSR_DCD) ? TIOCM_CAR : 0)
 		| ((status & UART_MSR_RI) ? TIOCM_RNG : 0)
 		| ((status & UART_MSR_DSR) ? TIOCM_DSR : 0)
 		| ((status & UART_MSR_CTS) ? TIOCM_CTS : 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
 isdn_tty_tiocmset(struct tty_struct *tty,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned int set, unsigned int clear)
 =======
 		  unsigned int set, unsigned int clear)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  unsigned int set, unsigned int clear)
+>>>>>>> refs/remotes/origin/master
 {
 	modem_info *info = (modem_info *) tty->driver_data;
 
@@ -1725,6 +2068,7 @@ isdn_tty_ioctl(struct tty_struct *tty, uint cmd, ulong arg)
 		return -EIO;
 	switch (cmd) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case TCSBRK:   /* SVID version: non-zero arg --> no break */
 #ifdef ISDN_DEBUG_MODEM_IOCTL
 			printk(KERN_DEBUG "ttyI%d ioctl TCSBRK\n", info->line);
@@ -1754,6 +2098,8 @@ isdn_tty_ioctl(struct tty_struct *tty, uint cmd, ulong arg)
 #endif
 			return -ENOIOCTLCMD;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case TCSBRK:   /* SVID version: non-zero arg --> no break */
 #ifdef ISDN_DEBUG_MODEM_IOCTL
 		printk(KERN_DEBUG "ttyI%d ioctl TCSBRK\n", info->line);
@@ -1782,7 +2128,10 @@ isdn_tty_ioctl(struct tty_struct *tty, uint cmd, ulong arg)
 		printk(KERN_DEBUG "UNKNOWN ioctl 0x%08x on ttyi%d\n", cmd, info->line);
 #endif
 		return -ENOIOCTLCMD;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1795,6 +2144,7 @@ isdn_tty_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 	if (!old_termios)
 		isdn_tty_change_speed(info);
 	else {
+<<<<<<< HEAD
 		if (tty->termios->c_cflag == old_termios->c_cflag &&
 		    tty->termios->c_ispeed == old_termios->c_ispeed &&
 		    tty->termios->c_ospeed == old_termios->c_ospeed)
@@ -1803,6 +2153,13 @@ isdn_tty_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
 		if ((old_termios->c_cflag & CRTSCTS) &&
 		    !(tty->termios->c_cflag & CRTSCTS))
 			tty->hw_stopped = 0;
+=======
+		if (tty->termios.c_cflag == old_termios->c_cflag &&
+		    tty->termios.c_ispeed == old_termios->c_ispeed &&
+		    tty->termios.c_ospeed == old_termios->c_ospeed)
+			return;
+		isdn_tty_change_speed(info);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1811,6 +2168,7 @@ isdn_tty_set_termios(struct tty_struct *tty, struct ktermios *old_termios)
  * isdn_tty_open() and friends
  * ------------------------------------------------------------
  */
+<<<<<<< HEAD
 static int
 <<<<<<< HEAD
 isdn_tty_block_til_ready(struct tty_struct *tty, struct file *filp, modem_info * info)
@@ -1915,6 +2273,19 @@ isdn_tty_block_til_ready(struct tty_struct *tty, struct file *filp, modem_info *
 		return retval;
 	info->flags |= ISDN_ASYNC_NORMAL_ACTIVE;
 	return 0;
+=======
+
+static int isdn_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+{
+	modem_info *info = &dev->mdm.info[tty->index];
+
+	if (isdn_tty_paranoia_check(info, tty->name, __func__))
+		return -ENODEV;
+
+	tty->driver_data = info;
+
+	return tty_port_install(&info->port, driver, tty);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1926,6 +2297,7 @@ isdn_tty_block_til_ready(struct tty_struct *tty, struct file *filp, modem_info *
 static int
 isdn_tty_open(struct tty_struct *tty, struct file *filp)
 {
+<<<<<<< HEAD
 	modem_info *info;
 <<<<<<< HEAD
 	int retval, line;
@@ -1956,6 +2328,18 @@ isdn_tty_open(struct tty_struct *tty, struct file *filp)
 	info->count++;
 	tty->driver_data = info;
 	info->tty = tty;
+=======
+	modem_info *info = tty->driver_data;
+	struct tty_port *port = &info->port;
+	int retval;
+
+#ifdef ISDN_DEBUG_MODEM_OPEN
+	printk(KERN_DEBUG "isdn_tty_open %s, count = %d\n", tty->name,
+	       port->count);
+#endif
+	port->count++;
+	port->tty = tty;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Start up serial port
 	 */
@@ -1964,15 +2348,24 @@ isdn_tty_open(struct tty_struct *tty, struct file *filp)
 #ifdef ISDN_DEBUG_MODEM_OPEN
 		printk(KERN_DEBUG "isdn_tty_open return after startup\n");
 #endif
+<<<<<<< HEAD
 		module_put(info->owner);
 		return retval;
 	}
 	retval = isdn_tty_block_til_ready(tty, filp, info);
+=======
+		return retval;
+	}
+	retval = tty_port_block_til_ready(port, tty, filp);
+>>>>>>> refs/remotes/origin/master
 	if (retval) {
 #ifdef ISDN_DEBUG_MODEM_OPEN
 		printk(KERN_DEBUG "isdn_tty_open return after isdn_tty_block_til_ready \n");
 #endif
+<<<<<<< HEAD
 		module_put(info->owner);
+=======
+>>>>>>> refs/remotes/origin/master
 		return retval;
 	}
 #ifdef ISDN_DEBUG_MODEM_OPEN
@@ -1989,6 +2382,10 @@ static void
 isdn_tty_close(struct tty_struct *tty, struct file *filp)
 {
 	modem_info *info = (modem_info *) tty->driver_data;
+<<<<<<< HEAD
+=======
+	struct tty_port *port = &info->port;
+>>>>>>> refs/remotes/origin/master
 	ulong timeout;
 
 	if (!info || isdn_tty_paranoia_check(info, tty->name, "isdn_tty_close"))
@@ -1999,7 +2396,11 @@ isdn_tty_close(struct tty_struct *tty, struct file *filp)
 #endif
 		return;
 	}
+<<<<<<< HEAD
 	if ((tty->count == 1) && (info->count != 1)) {
+=======
+	if ((tty->count == 1) && (port->count != 1)) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Uh, oh.  tty->count is 1, which means that the tty
 		 * structure will be freed.  Info->count should always
@@ -2008,6 +2409,7 @@ isdn_tty_close(struct tty_struct *tty, struct file *filp)
 		 * serial port won't be shutdown.
 		 */
 		printk(KERN_ERR "isdn_tty_close: bad port count; tty->count is 1, "
+<<<<<<< HEAD
 		       "info->count is %d\n", info->count);
 		info->count = 1;
 	}
@@ -2032,6 +2434,23 @@ isdn_tty_close(struct tty_struct *tty, struct file *filp)
 		info->normal_termios = *tty->termios;
 	if (info->flags & ISDN_ASYNC_CALLOUT_ACTIVE)
 		info->callout_termios = *tty->termios;
+=======
+		       "info->count is %d\n", port->count);
+		port->count = 1;
+	}
+	if (--port->count < 0) {
+		printk(KERN_ERR "isdn_tty_close: bad port count for ttyi%d: %d\n",
+		       info->line, port->count);
+		port->count = 0;
+	}
+	if (port->count) {
+#ifdef ISDN_DEBUG_MODEM_OPEN
+		printk(KERN_DEBUG "isdn_tty_close after info->count != 0\n");
+#endif
+		return;
+	}
+	port->flags |= ASYNC_CLOSING;
+>>>>>>> refs/remotes/origin/master
 
 	tty->closing = 1;
 	/*
@@ -2040,12 +2459,17 @@ isdn_tty_close(struct tty_struct *tty, struct file *filp)
 	 * interrupt driver to stop checking the data ready bit in the
 	 * line status register.
 	 */
+<<<<<<< HEAD
 	if (info->flags & ISDN_ASYNC_INITIALIZED) {
 <<<<<<< HEAD
 		tty_wait_until_sent(tty, 3000);	/* 30 seconds timeout */
 =======
 		tty_wait_until_sent_from_close(tty, 3000);	/* 30 seconds timeout */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (port->flags & ASYNC_INITIALIZED) {
+		tty_wait_until_sent_from_close(tty, 3000);	/* 30 seconds timeout */
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Before we drop DTR, make sure the UART transmitter
 		 * has completely drained; this is especially
@@ -2055,10 +2479,14 @@ isdn_tty_close(struct tty_struct *tty, struct file *filp)
 		while (!(info->lsr & UART_LSR_TEMT)) {
 			schedule_timeout_interruptible(20);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (time_after(jiffies,timeout))
 =======
 			if (time_after(jiffies, timeout))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (time_after(jiffies, timeout))
+>>>>>>> refs/remotes/origin/master
 				break;
 		}
 	}
@@ -2066,6 +2494,7 @@ isdn_tty_close(struct tty_struct *tty, struct file *filp)
 	isdn_tty_shutdown(info);
 	isdn_tty_flush_buffer(tty);
 	tty_ldisc_flush(tty);
+<<<<<<< HEAD
 	info->tty = NULL;
 	info->ncarrier = 0;
 	tty->closing = 0;
@@ -2076,6 +2505,12 @@ isdn_tty_close(struct tty_struct *tty, struct file *filp)
 	}
 	info->flags &= ~(ISDN_ASYNC_NORMAL_ACTIVE | ISDN_ASYNC_CLOSING);
 	wake_up_interruptible(&info->close_wait);
+=======
+	port->tty = NULL;
+	info->ncarrier = 0;
+
+	tty_port_close_end(port, tty);
+>>>>>>> refs/remotes/origin/master
 #ifdef ISDN_DEBUG_MODEM_OPEN
 	printk(KERN_DEBUG "isdn_tty_close normal exit\n");
 #endif
@@ -2088,24 +2523,39 @@ static void
 isdn_tty_hangup(struct tty_struct *tty)
 {
 	modem_info *info = (modem_info *) tty->driver_data;
+<<<<<<< HEAD
+=======
+	struct tty_port *port = &info->port;
+>>>>>>> refs/remotes/origin/master
 
 	if (isdn_tty_paranoia_check(info, tty->name, "isdn_tty_hangup"))
 		return;
 	isdn_tty_shutdown(info);
+<<<<<<< HEAD
 	info->count = 0;
 	info->flags &= ~(ISDN_ASYNC_NORMAL_ACTIVE | ISDN_ASYNC_CALLOUT_ACTIVE);
 	info->tty = NULL;
 	wake_up_interruptible(&info->open_wait);
+=======
+	port->count = 0;
+	port->flags &= ~ASYNC_NORMAL_ACTIVE;
+	port->tty = NULL;
+	wake_up_interruptible(&port->open_wait);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* This routine initializes all emulator-data.
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_reset_profile(atemu * m)
 =======
 isdn_tty_reset_profile(atemu *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_reset_profile(atemu *m)
+>>>>>>> refs/remotes/origin/master
 {
 	m->profile[0] = 0;
 	m->profile[1] = 0;
@@ -2136,10 +2586,14 @@ isdn_tty_reset_profile(atemu *m)
 #ifdef CONFIG_ISDN_AUDIO
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_modem_reset_vpar(atemu * m)
 =======
 isdn_tty_modem_reset_vpar(atemu *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_modem_reset_vpar(atemu *m)
+>>>>>>> refs/remotes/origin/master
 {
 	m->vpar[0] = 2;         /* Voice-device            (2 = phone line) */
 	m->vpar[1] = 0;         /* Silence detection level (0 = none      ) */
@@ -2153,10 +2607,14 @@ isdn_tty_modem_reset_vpar(atemu *m)
 #ifdef CONFIG_ISDN_TTY_FAX
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_modem_reset_faxpar(modem_info * info)
 =======
 isdn_tty_modem_reset_faxpar(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_modem_reset_faxpar(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	T30_s *f = info->fax;
 
@@ -2190,10 +2648,14 @@ isdn_tty_modem_reset_faxpar(modem_info *info)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_modem_reset_regs(modem_info * info, int force)
 =======
 isdn_tty_modem_reset_regs(modem_info *info, int force)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_modem_reset_regs(modem_info *info, int force)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	if ((m->mdmreg[REG_DTRR] & BIT_DTRR) || force) {
@@ -2213,10 +2675,14 @@ isdn_tty_modem_reset_regs(modem_info *info, int force)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 modem_write_profile(atemu * m)
 =======
 modem_write_profile(atemu *m)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+modem_write_profile(atemu *m)
+>>>>>>> refs/remotes/origin/master
 {
 	memcpy(m->profile, m->mdmreg, ISDN_MODEM_NUMREG);
 	memcpy(m->pmsn, m->msn, ISDN_MSNLEN);
@@ -2227,10 +2693,15 @@ modem_write_profile(atemu *m)
 
 static const struct tty_operations modem_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
         .open = isdn_tty_open,
 =======
 	.open = isdn_tty_open,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.install = isdn_tty_install,
+	.open = isdn_tty_open,
+>>>>>>> refs/remotes/origin/master
 	.close = isdn_tty_close,
 	.write = isdn_tty_write,
 	.flush_chars = isdn_tty_flush_chars,
@@ -2246,6 +2717,19 @@ static const struct tty_operations modem_ops = {
 	.tiocmset = isdn_tty_tiocmset,
 };
 
+<<<<<<< HEAD
+=======
+static int isdn_tty_carrier_raised(struct tty_port *port)
+{
+	modem_info *info = container_of(port, modem_info, port);
+	return info->msr & UART_MSR_DCD;
+}
+
+static const struct tty_port_operations isdn_tty_port_ops = {
+	.carrier_raised = isdn_tty_carrier_raised,
+};
+
+>>>>>>> refs/remotes/origin/master
 int
 isdn_tty_modem_init(void)
 {
@@ -2264,7 +2748,11 @@ isdn_tty_modem_init(void)
 	m->tty_modem->subtype = SERIAL_TYPE_NORMAL;
 	m->tty_modem->init_termios = tty_std_termios;
 	m->tty_modem->init_termios.c_cflag = B9600 | CS8 | CREAD | HUPCL | CLOCAL;
+<<<<<<< HEAD
 	m->tty_modem->flags = TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;
+=======
+	m->tty_modem->flags = TTY_DRIVER_REAL_RAW;
+>>>>>>> refs/remotes/origin/master
 	m->tty_modem->driver_name = "isdn_tty";
 	tty_set_operations(m->tty_modem, &modem_ops);
 	retval = tty_register_driver(m->tty_modem);
@@ -2281,9 +2769,14 @@ isdn_tty_modem_init(void)
 			goto err_unregister;
 		}
 #endif
+<<<<<<< HEAD
 #ifdef MODULE
 		info->owner = THIS_MODULE;
 #endif
+=======
+		tty_port_init(&info->port);
+		info->port.ops = &isdn_tty_port_ops;
+>>>>>>> refs/remotes/origin/master
 		spin_lock_init(&info->readlock);
 		sprintf(info->last_cause, "0000");
 		sprintf(info->last_num, "none");
@@ -2295,12 +2788,16 @@ isdn_tty_modem_init(void)
 		isdn_tty_modem_reset_regs(info, 1);
 		info->magic = ISDN_ASYNC_MAGIC;
 		info->line = i;
+<<<<<<< HEAD
 		info->tty = NULL;
 		info->x_char = 0;
 		info->count = 0;
 		info->blocked_open = 0;
 		init_waitqueue_head(&info->open_wait);
 		init_waitqueue_head(&info->close_wait);
+=======
+		info->x_char = 0;
+>>>>>>> refs/remotes/origin/master
 		info->isdn_driver = -1;
 		info->isdn_channel = -1;
 		info->drv_index = -1;
@@ -2312,13 +2809,23 @@ isdn_tty_modem_init(void)
 #ifdef CONFIG_ISDN_AUDIO
 		skb_queue_head_init(&info->dtmf_queue);
 #endif
+<<<<<<< HEAD
 		if (!(info->xmit_buf = kmalloc(ISDN_SERIAL_XMIT_MAX + 5, GFP_KERNEL))) {
+=======
+		info->port.xmit_buf = kmalloc(ISDN_SERIAL_XMIT_MAX + 5,
+				GFP_KERNEL);
+		if (!info->port.xmit_buf) {
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_ERR "Could not allocate modem xmit-buffer\n");
 			retval = -ENOMEM;
 			goto err_unregister;
 		}
 		/* Make room for T.70 header */
+<<<<<<< HEAD
 		info->xmit_buf += 4;
+=======
+		info->port.xmit_buf += 4;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 err_unregister:
@@ -2327,6 +2834,7 @@ err_unregister:
 #ifdef CONFIG_ISDN_TTY_FAX
 		kfree(info->fax);
 #endif
+<<<<<<< HEAD
 		kfree(info->xmit_buf - 4);
 	}
 	tty_unregister_driver(m->tty_modem);
@@ -2335,6 +2843,14 @@ err_unregister:
 =======
 err:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree(info->port.xmit_buf - 4);
+		info->port.xmit_buf = NULL;
+		tty_port_destroy(&info->port);
+	}
+	tty_unregister_driver(m->tty_modem);
+err:
+>>>>>>> refs/remotes/origin/master
 	put_tty_driver(m->tty_modem);
 	m->tty_modem = NULL;
 	return retval;
@@ -2352,7 +2868,13 @@ isdn_tty_exit(void)
 #ifdef CONFIG_ISDN_TTY_FAX
 		kfree(info->fax);
 #endif
+<<<<<<< HEAD
 		kfree(info->xmit_buf - 4);
+=======
+		kfree(info->port.xmit_buf - 4);
+		info->port.xmit_buf = NULL;
+		tty_port_destroy(&info->port);
+>>>>>>> refs/remotes/origin/master
 	}
 	tty_unregister_driver(dev->mdm.tty_modem);
 	put_tty_driver(dev->mdm.tty_modem);
@@ -2405,12 +2927,17 @@ isdn_tty_match_icall(char *cid, atemu *emu, int di)
 		tmp = isdn_msncmp(cid, isdn_map_eaz2msn(emu->msn, di));
 #ifdef ISDN_DEBUG_MODEM_ICALL
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG "m_fi: mmsn=%s -> tmp=%d\n",
 			       isdn_map_eaz2msn(emu->msn, di), tmp);
 =======
 		printk(KERN_DEBUG "m_fi: mmsn=%s -> tmp=%d\n",
 		       isdn_map_eaz2msn(emu->msn, di), tmp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_DEBUG "m_fi: mmsn=%s -> tmp=%d\n",
+		       isdn_map_eaz2msn(emu->msn, di), tmp);
+>>>>>>> refs/remotes/origin/master
 #endif
 		return tmp;
 	}
@@ -2460,24 +2987,38 @@ isdn_tty_find_icall(int di, int ch, setup_parm *setup)
 		modem_info *info = &dev->mdm.info[i];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (info->count == 0)
                     continue;
 =======
 		if (info->count == 0)
 			continue;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (info->port.count == 0)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if ((info->emu.mdmreg[REG_SI1] & si2bit[si1]) &&  /* SI1 is matching */
 		    (info->emu.mdmreg[REG_SI2] == si2))	{         /* SI2 is matching */
 			idx = isdn_dc2minor(di, ch);
 #ifdef ISDN_DEBUG_MODEM_ICALL
 			printk(KERN_DEBUG "m_fi: match1 wret=%d\n", wret);
 			printk(KERN_DEBUG "m_fi: idx=%d flags=%08lx drv=%d ch=%d usg=%d\n", idx,
+<<<<<<< HEAD
 			       info->flags, info->isdn_driver, info->isdn_channel,
 			       dev->usage[idx]);
 #endif
 			if (
 #ifndef FIX_FILE_TRANSFER
 				(info->flags & ISDN_ASYNC_NORMAL_ACTIVE) &&
+=======
+			       info->port.flags, info->isdn_driver,
+			       info->isdn_channel, dev->usage[idx]);
+#endif
+			if (
+#ifndef FIX_FILE_TRANSFER
+				(info->port.flags & ASYNC_NORMAL_ACTIVE) &&
+>>>>>>> refs/remotes/origin/master
 #endif
 				(info->isdn_driver == -1) &&
 				(info->isdn_channel == -1) &&
@@ -2493,10 +3034,14 @@ isdn_tty_find_icall(int di, int ch, setup_parm *setup)
 					dev->m_idx[idx] = info->line;
 					dev->usage[idx] &= ISDN_USAGE_EXCLUSIVE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 					dev->usage[idx] |= isdn_calc_usage(si1, info->emu.mdmreg[REG_L2PROT]); 
 =======
 					dev->usage[idx] |= isdn_calc_usage(si1, info->emu.mdmreg[REG_L2PROT]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					dev->usage[idx] |= isdn_calc_usage(si1, info->emu.mdmreg[REG_L2PROT]);
+>>>>>>> refs/remotes/origin/master
 					strcpy(dev->num[idx], nr);
 					strcpy(info->emu.cpn, eaz);
 					info->emu.mdmreg[REG_SI1I] = si2bit[si1];
@@ -2517,19 +3062,26 @@ isdn_tty_find_icall(int di, int ch, setup_parm *setup)
 	spin_unlock_irqrestore(&dev->lock, flags);
 	printk(KERN_INFO "isdn_tty: call from %s -> %s %s\n", nr, eaz,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	       ((dev->drv[di]->flags & DRV_FLAG_REJBUS) && (wret != 2))? "rejected" : "ignored");
 	return (wret == 2)?3:0;
 }
 
 #define TTY_IS_ACTIVE(info) \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	       ((dev->drv[di]->flags & DRV_FLAG_REJBUS) && (wret != 2)) ? "rejected" : "ignored");
 	return (wret == 2) ? 3 : 0;
 }
 
+<<<<<<< HEAD
 #define TTY_IS_ACTIVE(info)						\
 >>>>>>> refs/remotes/origin/cm-10.0
 	(info->flags & (ISDN_ASYNC_NORMAL_ACTIVE | ISDN_ASYNC_CALLOUT_ACTIVE))
+=======
+#define TTY_IS_ACTIVE(info)	(info->port.flags & ASYNC_NORMAL_ACTIVE)
+>>>>>>> refs/remotes/origin/master
 
 int
 isdn_tty_stat_callback(int i, isdn_ctrl *c)
@@ -2543,6 +3095,7 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
 	if ((mi = dev->m_idx[i]) >= 0) {
 		info = &dev->mdm.info[mi];
 		switch (c->command) {
+<<<<<<< HEAD
 <<<<<<< HEAD
                         case ISDN_STAT_CINF:
                                 printk(KERN_DEBUG "CHARGEINFO on ttyI%d: %ld %s\n", info->line, c->arg, c->parm.num);
@@ -2713,6 +3266,8 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
 				}
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case ISDN_STAT_CINF:
 			printk(KERN_DEBUG "CHARGEINFO on ttyI%d: %ld %s\n", info->line, c->arg, c->parm.num);
 			info->emu.charge = (unsigned) simple_strtoul(c->parm.num, &e, 10);
@@ -2790,9 +3345,15 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
 			 * for incoming call of this device when
 			 * DCD follow the state of incoming carrier
 			 */
+<<<<<<< HEAD
 			if (info->blocked_open &&
 			    (info->emu.mdmreg[REG_DCD] & BIT_DCD)) {
 				wake_up_interruptible(&info->open_wait);
+=======
+			if (info->port.blocked_open &&
+			    (info->emu.mdmreg[REG_DCD] & BIT_DCD)) {
+				wake_up_interruptible(&info->port.open_wait);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			/* Schedule CONNECT-Message to any tty
@@ -2800,7 +3361,12 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
 			 * set DCD-bit of its modem-status.
 			 */
 			if (TTY_IS_ACTIVE(info) ||
+<<<<<<< HEAD
 			    (info->blocked_open && (info->emu.mdmreg[REG_DCD] & BIT_DCD))) {
+=======
+			    (info->port.blocked_open &&
+			     (info->emu.mdmreg[REG_DCD] & BIT_DCD))) {
+>>>>>>> refs/remotes/origin/master
 				info->msr |= UART_MSR_DCD;
 				info->emu.charge = 0;
 				if (info->dialing & 0xf)
@@ -2881,7 +3447,10 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
 				}
 			}
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 		}
 	}
@@ -2891,6 +3460,7 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
 /*********************************************************************
  Modem-Emulator-Routines
 <<<<<<< HEAD
+<<<<<<< HEAD
  *********************************************************************/
 
 #define cmdchar(c) ((c>=' ')&&(c<=0x7f))
@@ -2899,6 +3469,11 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
 
 #define cmdchar(c) ((c >= ' ') && (c <= 0x7f))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*********************************************************************/
+
+#define cmdchar(c) ((c >= ' ') && (c <= 0x7f))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Put a message from the AT-emulator into receive-buffer of tty,
@@ -2906,12 +3481,18 @@ isdn_tty_stat_callback(int i, isdn_ctrl *c)
  */
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_at_cout(char *msg, modem_info * info)
 =======
 isdn_tty_at_cout(char *msg, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct tty_struct *tty;
+=======
+isdn_tty_at_cout(char *msg, modem_info *info)
+{
+	struct tty_port *port = &info->port;
+>>>>>>> refs/remotes/origin/master
 	atemu *m = &info->emu;
 	char *p;
 	char c;
@@ -2928,20 +3509,29 @@ isdn_tty_at_cout(char *msg, modem_info *info)
 	l = strlen(msg);
 
 	spin_lock_irqsave(&info->readlock, flags);
+<<<<<<< HEAD
 	tty = info->tty;
 	if ((info->flags & ISDN_ASYNC_CLOSING) || (!tty)) {
+=======
+	if (port->flags & ASYNC_CLOSING) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&info->readlock, flags);
 		return;
 	}
 
 	/* use queue instead of direct, if online and */
 	/* data is in queue or buffer is full */
+<<<<<<< HEAD
 	if (info->online && ((tty_buffer_request_room(tty, l) < l) ||
 <<<<<<< HEAD
 	    !skb_queue_empty(&dev->drv[info->isdn_driver]->rpqueue[info->isdn_channel]))) {
 =======
 			     !skb_queue_empty(&dev->drv[info->isdn_driver]->rpqueue[info->isdn_channel]))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (info->online && ((tty_buffer_request_room(port, l) < l) ||
+			     !skb_queue_empty(&dev->drv[info->isdn_driver]->rpqueue[info->isdn_channel]))) {
+>>>>>>> refs/remotes/origin/master
 		skb = alloc_skb(l, GFP_ATOMIC);
 		if (!skb) {
 			spin_unlock_irqrestore(&info->readlock, flags);
@@ -2957,6 +3547,7 @@ isdn_tty_at_cout(char *msg, modem_info *info)
 	for (p = msg; *p; p++) {
 		switch (*p) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case '\r':
 				c = m->mdmreg[REG_CR];
 				break;
@@ -2969,6 +3560,8 @@ isdn_tty_at_cout(char *msg, modem_info *info)
 			default:
 				c = *p;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '\r':
 			c = m->mdmreg[REG_CR];
 			break;
@@ -2980,16 +3573,23 @@ isdn_tty_at_cout(char *msg, modem_info *info)
 			break;
 		default:
 			c = *p;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (skb) {
 			*sp++ = c;
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(tty_insert_flip_char(tty, c, TTY_NORMAL) == 0)
 =======
 			if (tty_insert_flip_char(tty, c, TTY_NORMAL) == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (tty_insert_flip_char(port, c, TTY_NORMAL) == 0)
+>>>>>>> refs/remotes/origin/master
 				break;
 		}
 	}
@@ -3003,7 +3603,11 @@ isdn_tty_at_cout(char *msg, modem_info *info)
 
 	} else {
 		spin_unlock_irqrestore(&info->readlock, flags);
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
+=======
+		tty_flip_buffer_push(port);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -3012,10 +3616,14 @@ isdn_tty_at_cout(char *msg, modem_info *info)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_on_hook(modem_info * info)
 =======
 isdn_tty_on_hook(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_on_hook(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	if (info->isdn_channel >= 0) {
 #ifdef ISDN_DEBUG_MODEM_HUP
@@ -3032,12 +3640,17 @@ isdn_tty_off_hook(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PLUSWAIT1 (HZ/2)        /* 0.5 sec. */
 #define PLUSWAIT2 (HZ*3/2)      /* 1.5 sec */
 =======
 #define PLUSWAIT1 (HZ / 2)      /* 0.5 sec. */
 #define PLUSWAIT2 (HZ * 3 / 2)  /* 1.5 sec */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PLUSWAIT1 (HZ / 2)      /* 0.5 sec. */
+#define PLUSWAIT2 (HZ * 3 / 2)  /* 1.5 sec */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Check Buffer for Modem-escape-sequence, activate timer-callback to
@@ -3052,10 +3665,14 @@ isdn_tty_off_hook(void)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_check_esc(const u_char * p, u_char plus, int count, int *pluscount,
 =======
 isdn_tty_check_esc(const u_char *p, u_char plus, int count, int *pluscount,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_check_esc(const u_char *p, u_char plus, int count, int *pluscount,
+>>>>>>> refs/remotes/origin/master
 		   u_long *lastplus)
 {
 	if (plus > 127)
@@ -3095,6 +3712,7 @@ isdn_tty_check_esc(const u_char *p, u_char plus, int count, int *pluscount,
  */
 
 static void
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_tty_modem_result(int code, modem_info * info)
 {
@@ -3160,6 +3778,8 @@ isdn_tty_modem_result(int code, modem_info * info)
 			break;
 	} /* switch(code) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_tty_modem_result(int code, modem_info *info)
 {
 	atemu *m = &info->emu;
@@ -3179,15 +3799,26 @@ isdn_tty_modem_result(int code, modem_info *info)
 	case RESULT_NO_CARRIER:
 #ifdef ISDN_DEBUG_MODEM_HUP
 		printk(KERN_DEBUG "modem_result: NO CARRIER %d %d\n",
+<<<<<<< HEAD
 		       (info->flags & ISDN_ASYNC_CLOSING),
 		       (!info->tty));
+=======
+		       (info->port.flags & ASYNC_CLOSING),
+		       (!info->port.tty));
+>>>>>>> refs/remotes/origin/master
 #endif
 		m->mdmreg[REG_RINGCNT] = 0;
 		del_timer(&info->nc_timer);
 		info->ncarrier = 0;
+<<<<<<< HEAD
 		if ((info->flags & ISDN_ASYNC_CLOSING) || (!info->tty)) {
 			return;
 		}
+=======
+		if ((info->port.flags & ASYNC_CLOSING) || (!info->port.tty))
+			return;
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ISDN_AUDIO
 		if (info->vonline & 1) {
 #ifdef ISDN_DEBUG_MODEM_VOICE
@@ -3223,7 +3854,10 @@ isdn_tty_modem_result(int code, modem_info *info)
 			info->online = 1;
 		break;
 	} /* switch (code) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (m->mdmreg[REG_RESP] & BIT_RESP) {
 		/* Show results */
@@ -3233,6 +3867,7 @@ isdn_tty_modem_result(int code, modem_info *info)
 			isdn_tty_at_cout(s, info);
 		} else {
 			if (code == RESULT_RING) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			    /* return if "show RUNG" and ringcounter>1 */
 			    if ((m->mdmreg[REG_RUNG] & BIT_RUNG) &&
@@ -3248,6 +3883,8 @@ isdn_tty_modem_result(int code, modem_info *info)
 				    }
 			    }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				/* return if "show RUNG" and ringcounter>1 */
 				if ((m->mdmreg[REG_RUNG] & BIT_RUNG) &&
 				    (m->mdmreg[REG_RINGCNT] > 1))
@@ -3261,11 +3898,15 @@ isdn_tty_modem_result(int code, modem_info *info)
 						isdn_tty_at_cout(info->emu.cpn, info);
 					}
 				}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			isdn_tty_at_cout("\r\n", info);
 			isdn_tty_at_cout(msg[code], info);
 			switch (code) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				case RESULT_CONNECT:
 					switch (m->mdmreg[REG_L2PROT]) {
@@ -3332,6 +3973,8 @@ isdn_tty_modem_result(int code, modem_info *info)
 					}
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			case RESULT_CONNECT:
 				switch (m->mdmreg[REG_L2PROT]) {
 				case ISDN_PROTO_L2_MODEM:
@@ -3396,12 +4039,16 @@ isdn_tty_modem_result(int code, modem_info *info)
 						isdn_tty_at_cout("+", info);
 				}
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			isdn_tty_at_cout("\r\n", info);
 		}
 	}
 	if (code == RESULT_NO_CARRIER) {
+<<<<<<< HEAD
 		if ((info->flags & ISDN_ASYNC_CLOSING) || (!info->tty)) {
 			return;
 		}
@@ -3410,6 +4057,13 @@ isdn_tty_modem_result(int code, modem_info *info)
 		       (info->flags & ISDN_ASYNC_CALLOUT_NOHUP)))) {
 			tty_hangup(info->tty);
 		}
+=======
+		if ((info->port.flags & ASYNC_CLOSING) || (!info->port.tty))
+			return;
+
+		if (info->port.flags & ASYNC_CHECK_CD)
+			tty_hangup(info->port.tty);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -3419,10 +4073,14 @@ isdn_tty_modem_result(int code, modem_info *info)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_show_profile(int ridx, modem_info * info)
 =======
 isdn_tty_show_profile(int ridx, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_show_profile(int ridx, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	char v[6];
 
@@ -3442,10 +4100,14 @@ isdn_tty_get_msnstr(char *n, char **p)
 		/* Why a comma ??? */
 		(*p[0] == ',') || (*p[0] == ':')) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 		(limit--))
 =======
 	       (limit--))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       (limit--))
+>>>>>>> refs/remotes/origin/master
 		*n++ = *p[0]++;
 	*n = '\0';
 }
@@ -3455,6 +4117,7 @@ isdn_tty_get_msnstr(char *n, char **p)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_getdial(char *p, char *q,int cnt)
 {
 	int first = 1;
@@ -3463,6 +4126,8 @@ isdn_tty_getdial(char *p, char *q,int cnt)
 
 	while (strchr(" 0123456789,#.*WPTSR-", *p) && *p && --cnt>0) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_tty_getdial(char *p, char *q, int cnt)
 {
 	int first = 1;
@@ -3470,7 +4135,10 @@ isdn_tty_getdial(char *p, char *q, int cnt)
 					   buffer overflow */
 
 	while (strchr(" 0123456789,#.*WPTSR-", *p) && *p && --cnt > 0) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if ((*p >= '0' && *p <= '9') || ((*p == 'S') && first) ||
 		    ((*p == 'R') && first) ||
 		    (*p == '*') || (*p == '#')) {
@@ -3478,10 +4146,14 @@ isdn_tty_getdial(char *p, char *q, int cnt)
 			limit--;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(!limit)
 =======
 		if (!limit)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!limit)
+>>>>>>> refs/remotes/origin/master
 			break;
 		p++;
 		first = 0;
@@ -3494,10 +4166,14 @@ isdn_tty_getdial(char *p, char *q, int cnt)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_report(modem_info * info)
 =======
 isdn_tty_report(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_report(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	char s[80];
@@ -3509,6 +4185,7 @@ isdn_tty_report(modem_info *info)
 	isdn_tty_at_cout(s, info);
 	isdn_tty_at_cout("    Layer-2 Protocol: ", info);
 	switch (info->last_l2) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case ISDN_PROTO_L2_X75I:
 			isdn_tty_at_cout("X.75i", info);
@@ -3544,6 +4221,8 @@ isdn_tty_report(modem_info *info)
 			isdn_tty_at_cout("unknown", info);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_PROTO_L2_X75I:
 		isdn_tty_at_cout("X.75i", info);
 		break;
@@ -3577,7 +4256,10 @@ isdn_tty_report(modem_info *info)
 	default:
 		isdn_tty_at_cout("unknown", info);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (m->mdmreg[REG_T70] & BIT_T70) {
 		isdn_tty_at_cout("/T.70", info);
@@ -3587,6 +4269,7 @@ isdn_tty_report(modem_info *info)
 	isdn_tty_at_cout("\r\n", info);
 	isdn_tty_at_cout("    Service:          ", info);
 	switch (info->last_si) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 1:
 			isdn_tty_at_cout("audio\r\n", info);
@@ -3602,6 +4285,8 @@ isdn_tty_report(modem_info *info)
 			isdn_tty_at_cout(s, info);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 1:
 		isdn_tty_at_cout("audio\r\n", info);
 		break;
@@ -3615,7 +4300,10 @@ isdn_tty_report(modem_info *info)
 		sprintf(s, "%d\r\n", info->last_si);
 		isdn_tty_at_cout(s, info);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	sprintf(s, "    Hangup location:  %s\r\n", info->last_lhup ? "local" : "remote");
 	isdn_tty_at_cout(s, info);
@@ -3628,10 +4316,14 @@ isdn_tty_report(modem_info *info)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_ATand(char **p, modem_info * info)
 =======
 isdn_tty_cmd_ATand(char **p, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cmd_ATand(char **p, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	int i;
@@ -3640,6 +4332,7 @@ isdn_tty_cmd_ATand(char **p, modem_info *info)
 #define MAXRB (sizeof(rb) - 1)
 
 	switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 'B':
 			/* &B - Set Buffersize */
@@ -3827,6 +4520,8 @@ isdn_tty_cmd_ATand(char **p, modem_info *info)
 		default:
 			PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 'B':
 		/* &B - Set Buffersize */
 		p[0]++;
@@ -4012,12 +4707,16 @@ isdn_tty_cmd_ATand(char **p, modem_info *info)
 		break;
 	default:
 		PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
 static int
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_tty_check_ats(int mreg, int mval, modem_info * info, atemu * m)
 {
@@ -4048,6 +4747,8 @@ isdn_tty_check_ats(int mreg, int mval, modem_info * info, atemu * m)
 			/* readonly registers */
 			return 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_tty_check_ats(int mreg, int mval, modem_info *info, atemu *m)
 {
 	/* Some plausibility checks */
@@ -4076,7 +4777,10 @@ isdn_tty_check_ats(int mreg, int mval, modem_info *info, atemu *m)
 	case REG_SCREEN:
 		/* readonly registers */
 		return 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -4086,10 +4790,14 @@ isdn_tty_check_ats(int mreg, int mval, modem_info *info, atemu *m)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_ATS(char **p, modem_info * info)
 =======
 isdn_tty_cmd_ATS(char **p, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cmd_ATS(char **p, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	int bitpos;
@@ -4102,12 +4810,15 @@ isdn_tty_cmd_ATS(char **p, modem_info *info)
 		PARSE_ERROR1;
 	switch (*p[0]) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case '=':
 			p[0]++;
 			mval = isdn_getnum(p);
 			if (mval < 0 || mval > 255)
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case '=':
 		p[0]++;
 		mval = isdn_getnum(p);
@@ -4133,11 +4844,15 @@ isdn_tty_cmd_ATS(char **p, modem_info *info)
 				mval = m->mdmreg[mreg] | (1 << bitpos);
 			else
 				mval = m->mdmreg[mreg] & ~(1 << bitpos);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (isdn_tty_check_ats(mreg, mval, info, m))
 				PARSE_ERROR1;
 			m->mdmreg[mreg] = mval;
 			break;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case '.':
 			/* Set/Clear a single bit */
@@ -4177,6 +4892,8 @@ isdn_tty_cmd_ATS(char **p, modem_info *info)
 			PARSE_ERROR1;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			isdn_tty_at_cout("\r\n", info);
@@ -4194,7 +4911,10 @@ isdn_tty_cmd_ATS(char **p, modem_info *info)
 	default:
 		PARSE_ERROR1;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -4204,10 +4924,14 @@ isdn_tty_cmd_ATS(char **p, modem_info *info)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_ATA(modem_info * info)
 =======
 isdn_tty_cmd_ATA(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cmd_ATA(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	isdn_ctrl cmd;
@@ -4262,10 +4986,14 @@ isdn_tty_cmd_ATA(modem_info *info)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_PLUSF(char **p, modem_info * info)
 =======
 isdn_tty_cmd_PLUSF(char **p, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cmd_PLUSF(char **p, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	char rs[20];
@@ -4273,6 +5001,7 @@ isdn_tty_cmd_PLUSF(char **p, modem_info *info)
 	if (!strncmp(p[0], "CLASS", 5)) {
 		p[0] += 5;
 		switch (*p[0]) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case '?':
 				p[0]++;
@@ -4350,6 +5079,8 @@ isdn_tty_cmd_PLUSF(char **p, modem_info *info)
 			default:
 				PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			p[0]++;
 			sprintf(rs, "\r\n%d",
@@ -4425,7 +5156,10 @@ isdn_tty_cmd_PLUSF(char **p, modem_info *info)
 			break;
 		default:
 			PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		return 0;
 	}
@@ -4441,19 +5175,27 @@ isdn_tty_cmd_PLUSF(char **p, modem_info *info)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_cmd_PLUSV(char **p, modem_info * info)
 =======
 isdn_tty_cmd_PLUSV(char **p, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_cmd_PLUSV(char **p, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	isdn_ctrl cmd;
 	static char *vcmd[] =
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"NH", "IP", "LS", "RX", "SD", "SM", "TX", "DD", NULL};
 =======
 		{"NH", "IP", "LS", "RX", "SD", "SM", "TX", "DD", NULL};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{"NH", "IP", "LS", "RX", "SD", "SM", "TX", "DD", NULL};
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int par1;
 	int par2;
@@ -4468,6 +5210,7 @@ isdn_tty_cmd_PLUSV(char **p, modem_info *info)
 		i++;
 	}
 	switch (i) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case 0:
 			/* AT+VNH - Auto hangup feature */
@@ -4720,6 +5463,8 @@ isdn_tty_cmd_PLUSV(char **p, modem_info *info)
 		default:
 			PARSE_ERROR1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case 0:
 		/* AT+VNH - Auto hangup feature */
 		switch (*p[0]) {
@@ -4970,7 +5715,10 @@ isdn_tty_cmd_PLUSV(char **p, modem_info *info)
 		break;
 	default:
 		PARSE_ERROR1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -4981,10 +5729,14 @@ isdn_tty_cmd_PLUSV(char **p, modem_info *info)
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_parse_at(modem_info * info)
 =======
 isdn_tty_parse_at(modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_parse_at(modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	char *p;
@@ -4995,6 +5747,7 @@ isdn_tty_parse_at(modem_info *info)
 #endif
 	for (p = &m->mdmcmd[2]; *p;) {
 		switch (*p) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case ' ':
 				p++;
@@ -5179,6 +5932,8 @@ isdn_tty_parse_at(modem_info *info)
 			default:
 				PARSE_ERROR;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case ' ':
 			p++;
 			break;
@@ -5187,7 +5942,10 @@ isdn_tty_parse_at(modem_info *info)
 			p++;
 			isdn_tty_cmd_ATA(info);
 			return;
+<<<<<<< HEAD
 			break;
+=======
+>>>>>>> refs/remotes/origin/master
 		case 'D':
 			/* D - Dial */
 			if (info->msr & UART_MSR_DCD)
@@ -5361,7 +6119,10 @@ isdn_tty_parse_at(modem_info *info)
 			break;
 		default:
 			PARSE_ERROR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #ifdef CONFIG_ISDN_AUDIO
@@ -5374,10 +6135,14 @@ isdn_tty_parse_at(modem_info *info)
  * within modules.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define my_toupper(c) (((c>='a')&&(c<='z'))?(c&0xdf):c)
 =======
 #define my_toupper(c) (((c >= 'a') && (c <= 'z')) ? (c & 0xdf) : c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define my_toupper(c) (((c >= 'a') && (c <= 'z')) ? (c & 0xdf) : c)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Perform line-editing of AT-commands
@@ -5389,10 +6154,14 @@ isdn_tty_parse_at(modem_info *info)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_tty_edit_at(const char *p, int count, modem_info * info)
 =======
 isdn_tty_edit_at(const char *p, int count, modem_info *info)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_tty_edit_at(const char *p, int count, modem_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	atemu *m = &info->emu;
 	int total = 0;
@@ -5436,6 +6205,7 @@ isdn_tty_edit_at(const char *p, int count, modem_info *info)
 				c = my_toupper(c);
 				switch (m->mdmcmdl) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 					case 1:
 						if (c == 'T') {
 							m->mdmcmd[m->mdmcmdl] = c;
@@ -5454,6 +6224,8 @@ isdn_tty_edit_at(const char *p, int count, modem_info *info)
 						m->mdmcmd[m->mdmcmdl] = c;
 						m->mdmcmd[++m->mdmcmdl] = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				case 1:
 					if (c == 'T') {
 						m->mdmcmd[m->mdmcmdl] = c;
@@ -5471,7 +6243,10 @@ isdn_tty_edit_at(const char *p, int count, modem_info *info)
 				default:
 					m->mdmcmd[m->mdmcmdl] = c;
 					m->mdmcmd[++m->mdmcmdl] = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 		}
@@ -5493,6 +6268,7 @@ isdn_tty_modem_escape(void)
 	int midx;
 
 	for (i = 0; i < ISDN_MAX_CHANNELS; i++)
+<<<<<<< HEAD
 		if (USG_MODEM(dev->usage[i]))
 			if ((midx = dev->m_idx[i]) >= 0) {
 				modem_info *info = &dev->mdm.info[midx];
@@ -5506,6 +6282,21 @@ isdn_tty_modem_escape(void)
 					}
 				}
 			}
+=======
+		if (USG_MODEM(dev->usage[i]) && (midx = dev->m_idx[i]) >= 0) {
+			modem_info *info = &dev->mdm.info[midx];
+			if (info->online) {
+				ton = 1;
+				if ((info->emu.pluscount == 3) &&
+				    time_after(jiffies,
+					    info->emu.lastplus + PLUSWAIT2)) {
+					info->emu.pluscount = 0;
+					info->online = 0;
+					isdn_tty_modem_result(RESULT_OK, info);
+				}
+			}
+		}
+>>>>>>> refs/remotes/origin/master
 	isdn_timer_ctrl(ISDN_TIMER_MODEMPLUS, ton);
 }
 
@@ -5563,6 +6354,7 @@ isdn_tty_carrier_timeout(void)
 
 	for (i = 0; i < ISDN_MAX_CHANNELS; i++) {
 		modem_info *info = &dev->mdm.info[i];
+<<<<<<< HEAD
 		if (info->dialing) {
 			if (info->emu.carrierwait++ > info->emu.mdmreg[REG_WAITC]) {
 				info->dialing = 0;
@@ -5572,6 +6364,16 @@ isdn_tty_carrier_timeout(void)
 			else
 				ton = 1;
 		}
+=======
+		if (!info->dialing)
+			continue;
+		if (info->emu.carrierwait++ > info->emu.mdmreg[REG_WAITC]) {
+			info->dialing = 0;
+			isdn_tty_modem_result(RESULT_NO_CARRIER, info);
+			isdn_tty_modem_hup(info, 1);
+		} else
+			ton = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 	isdn_timer_ctrl(ISDN_TIMER_CARRIER, ton);
 }

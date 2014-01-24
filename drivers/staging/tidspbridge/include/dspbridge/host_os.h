@@ -18,20 +18,27 @@
 #define _HOST_OS_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/semaphore.h>
 #include <linux/uaccess.h>
 #include <linux/irq.h>
 #include <linux/io.h>
 #include <linux/syscalls.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/stddef.h>
@@ -49,15 +56,25 @@
 #include <linux/vmalloc.h>
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <plat/clock.h>
 #include <linux/clk.h>
 #include <plat/mailbox.h>
+=======
+#include <linux/clk.h>
+#include <linux/omap-mailbox.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pagemap.h>
 #include <asm/cacheflush.h>
 #include <linux/dma-mapping.h>
 
+<<<<<<< HEAD
 /* TODO -- Remove, once BP defines them */
 #define INT_DSP_MMU_IRQ        28
+=======
+/* TODO -- Remove, once omap-iommu is used */
+#define INT_DSP_MMU_IRQ        (28 + NR_IRQS)
+>>>>>>> refs/remotes/origin/master
 
 #define PRCM_VDD1 1
 

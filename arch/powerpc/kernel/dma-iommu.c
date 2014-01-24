@@ -6,9 +6,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/iommu.h>
 
 /*
@@ -21,11 +25,16 @@
  */
 static void *dma_iommu_alloc_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      dma_addr_t *dma_handle, gfp_t flag)
 =======
 				      dma_addr_t *dma_handle, gfp_t flag,
 				      struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      dma_addr_t *dma_handle, gfp_t flag,
+				      struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	return iommu_alloc_coherent(dev, get_iommu_table_base(dev), size,
 				    dma_handle, dev->coherent_dma_mask, flag,
@@ -34,11 +43,16 @@ static void *dma_iommu_alloc_coherent(struct device *dev, size_t size,
 
 static void dma_iommu_free_coherent(struct device *dev, size_t size,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    void *vaddr, dma_addr_t dma_handle)
 =======
 				    void *vaddr, dma_addr_t dma_handle,
 				    struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    void *vaddr, dma_addr_t dma_handle,
+				    struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	iommu_free_coherent(get_iommu_table_base(dev), size, vaddr, dma_handle);
 }
@@ -94,16 +108,24 @@ static int dma_iommu_dma_supported(struct device *dev, u64 mask)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if ((tbl->it_offset + tbl->it_size) > (mask >> IOMMU_PAGE_SHIFT)) {
 		dev_info(dev, "Warning: IOMMU window too big for device mask\n");
 		dev_info(dev, "mask: 0x%08llx, table end: 0x%08lx\n",
 				mask, (tbl->it_offset + tbl->it_size) <<
 				IOMMU_PAGE_SHIFT);
+=======
+	if (tbl->it_offset > (mask >> IOMMU_PAGE_SHIFT)) {
+		dev_info(dev, "Warning: IOMMU offset too big for device mask\n");
+		dev_info(dev, "mask: 0x%08llx, table offset: 0x%08lx\n",
+				mask, tbl->it_offset << IOMMU_PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	} else
 		return 1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct dma_map_ops dma_iommu_ops = {
 	.alloc_coherent	= dma_iommu_alloc_coherent,
@@ -114,6 +136,8 @@ struct dma_map_ops dma_iommu_ops = {
 	.map_page	= dma_iommu_map_page,
 	.unmap_page	= dma_iommu_unmap_page,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u64 dma_iommu_get_required_mask(struct device *dev)
 {
 	struct iommu_table *tbl = get_iommu_table_base(dev);
@@ -130,12 +154,19 @@ static u64 dma_iommu_get_required_mask(struct device *dev)
 struct dma_map_ops dma_iommu_ops = {
 	.alloc			= dma_iommu_alloc_coherent,
 	.free			= dma_iommu_free_coherent,
+<<<<<<< HEAD
+=======
+	.mmap			= dma_direct_mmap_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_sg			= dma_iommu_map_sg,
 	.unmap_sg		= dma_iommu_unmap_sg,
 	.dma_supported		= dma_iommu_dma_supported,
 	.map_page		= dma_iommu_map_page,
 	.unmap_page		= dma_iommu_unmap_page,
 	.get_required_mask	= dma_iommu_get_required_mask,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL(dma_iommu_ops);

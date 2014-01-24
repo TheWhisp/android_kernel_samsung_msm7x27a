@@ -317,7 +317,12 @@ int iforce_init_device(struct iforce *iforce)
 			break;
 
 	if (i == 20) { /* 5 seconds */
+<<<<<<< HEAD
 		err("Timeout waiting for response from device.");
+=======
+		dev_err(&input_dev->dev,
+			"Timeout waiting for response from device.\n");
+>>>>>>> refs/remotes/origin/master
 		error = -ENODEV;
 		goto fail;
 	}

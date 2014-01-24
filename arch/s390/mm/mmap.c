@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  linux/arch/s390/mm/mmap.c
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  flexible mmap layout support
  *
  * Copyright 2003-2004 Red Hat Inc., Durham, North Carolina.
@@ -27,9 +30,13 @@
 #include <linux/personality.h>
 #include <linux/mm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/mman.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/mman.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/random.h>
 #include <linux/compat.h>
@@ -69,6 +76,14 @@ static unsigned long mmap_rnd(void)
 	return (get_random_int() & 0x7ffUL) << PAGE_SHIFT;
 }
 
+<<<<<<< HEAD
+=======
+static unsigned long mmap_base_legacy(void)
+{
+	return TASK_UNMAPPED_BASE + mmap_rnd();
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long mmap_base(void)
 {
 	unsigned long gap = rlimit(RLIMIT_STACK);
@@ -94,6 +109,7 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 	 * bit is set, or if the expected stack growth is unlimited:
 	 */
 	if (mmap_is_legacy()) {
+<<<<<<< HEAD
 		mm->mmap_base = TASK_UNMAPPED_BASE;
 		mm->get_unmapped_area = arch_get_unmapped_area;
 		mm->unmap_area = arch_unmap_area;
@@ -127,6 +143,26 @@ int s390_mmap_check(unsigned long addr, unsigned long len)
 		update_mm(current->mm, current);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mm->mmap_base = mmap_base_legacy();
+		mm->get_unmapped_area = arch_get_unmapped_area;
+	} else {
+		mm->mmap_base = mmap_base();
+		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+	}
+}
+
+#else
+
+int s390_mmap_check(unsigned long addr, unsigned long len, unsigned long flags)
+{
+	if (is_compat_task() || (TASK_SIZE >= (1UL << 53)))
+		return 0;
+	if (!(flags & MAP_FIXED))
+		addr = 0;
+	if ((addr + len) >= TASK_SIZE)
+		return crst_table_upgrade(current->mm, 1UL << 53);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -147,9 +183,12 @@ s390_get_unmapped_area(struct file *filp, unsigned long addr,
 		if (rc)
 			return (unsigned long) rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		update_mm(mm, current);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		area = arch_get_unmapped_area(filp, addr, len, pgoff, flags);
 	}
 	return area;
@@ -173,9 +212,12 @@ s390_get_unmapped_area_topdown(struct file *filp, const unsigned long addr,
 		if (rc)
 			return (unsigned long) rc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		update_mm(mm, current);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		area = arch_get_unmapped_area_topdown(filp, addr, len,
 						      pgoff, flags);
 	}
@@ -192,6 +234,7 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 	 * bit is set, or if the expected stack growth is unlimited:
 	 */
 	if (mmap_is_legacy()) {
+<<<<<<< HEAD
 		mm->mmap_base = TASK_UNMAPPED_BASE;
 		mm->get_unmapped_area = s390_get_unmapped_area;
 		mm->unmap_area = arch_unmap_area;
@@ -205,5 +248,14 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 EXPORT_SYMBOL_GPL(arch_pick_mmap_layout);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mm->mmap_base = mmap_base_legacy();
+		mm->get_unmapped_area = s390_get_unmapped_area;
+	} else {
+		mm->mmap_base = mmap_base();
+		mm->get_unmapped_area = s390_get_unmapped_area_topdown;
+	}
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -30,11 +30,18 @@
 #include "debug.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 void via_set_primary_timing(const struct display_timing *timing)
 {
 	struct display_timing raw;
+=======
+
+void via_set_primary_timing(const struct via_display_timing *timing)
+{
+	struct via_display_timing raw;
+>>>>>>> refs/remotes/origin/master
 
 	raw.hor_total = timing->hor_total / 8 - 5;
 	raw.hor_addr = timing->hor_addr / 8 - 1;
@@ -90,9 +97,15 @@ void via_set_primary_timing(const struct display_timing *timing)
 	via_write_reg_mask(VIACR, 0x17, 0x80, 0x80);
 }
 
+<<<<<<< HEAD
 void via_set_secondary_timing(const struct display_timing *timing)
 {
 	struct display_timing raw;
+=======
+void via_set_secondary_timing(const struct via_display_timing *timing)
+{
+	struct via_display_timing raw;
+>>>>>>> refs/remotes/origin/master
 
 	raw.hor_total = timing->hor_total - 1;
 	raw.hor_addr = timing->hor_addr - 1;
@@ -135,7 +148,10 @@ void via_set_secondary_timing(const struct display_timing *timing)
 		| (raw.ver_sync_start >> (8 - 5) & 0xE0));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void via_set_primary_address(u32 addr)
 {
 	DEBUG_MSG(KERN_DEBUG "via_set_primary_address(0x%08X)\n", addr);

@@ -56,20 +56,30 @@ static int wm8958_dsp2_fw(struct snd_soc_codec *codec, const char *name,
 
 	if (fw->size < 32) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(codec->dev, "%s: firmware too short\n", name);
 =======
 		dev_err(codec->dev, "%s: firmware too short (%zd bytes)\n",
 			name, fw->size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(codec->dev, "%s: firmware too short (%zd bytes)\n",
+			name, fw->size);
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
 	if (memcmp(fw->data, "WMFW", 4) != 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		memcpy(&data32, fw->data, sizeof(data32));
 		data32 = be32_to_cpu(data32);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		memcpy(&data32, fw->data, sizeof(data32));
+		data32 = be32_to_cpu(data32);
+>>>>>>> refs/remotes/origin/master
 		dev_err(codec->dev, "%s: firmware has bad file magic %08x\n",
 			name, data32);
 		goto err;
@@ -202,7 +212,11 @@ ok:
 static void wm8958_dsp_start_mbc(struct snd_soc_codec *codec, int path)
 {
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	/* If the DSP is already running then noop */
@@ -217,9 +231,15 @@ static void wm8958_dsp_start_mbc(struct snd_soc_codec *codec, int path)
 			    WM8958_DSP2_ENA, WM8958_DSP2_ENA);
 
 	/* If we've got user supplied MBC settings use them */
+<<<<<<< HEAD
 	if (pdata && pdata->num_mbc_cfgs) {
 		struct wm8958_mbc_cfg *cfg
 			= &pdata->mbc_cfgs[wm8994->mbc_cfg];
+=======
+	if (control->pdata.num_mbc_cfgs) {
+		struct wm8958_mbc_cfg *cfg
+			= &control->pdata.mbc_cfgs[wm8994->mbc_cfg];
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < ARRAY_SIZE(cfg->coeff_regs); i++)
 			snd_soc_write(codec, i + WM8958_MBC_BAND_1_K_1,
@@ -246,7 +266,11 @@ static void wm8958_dsp_start_mbc(struct snd_soc_codec *codec, int path)
 static void wm8958_dsp_start_vss(struct snd_soc_codec *codec, int path)
 {
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+>>>>>>> refs/remotes/origin/master
 	int i, ena;
 
 	if (wm8994->mbc_vss)
@@ -256,26 +280,44 @@ static void wm8958_dsp_start_vss(struct snd_soc_codec *codec, int path)
 			    WM8958_DSP2_ENA, WM8958_DSP2_ENA);
 
 	/* If we've got user supplied settings use them */
+<<<<<<< HEAD
 	if (pdata && pdata->num_mbc_cfgs) {
 		struct wm8958_mbc_cfg *cfg
 			= &pdata->mbc_cfgs[wm8994->mbc_cfg];
+=======
+	if (control->pdata.num_mbc_cfgs) {
+		struct wm8958_mbc_cfg *cfg
+			= &control->pdata.mbc_cfgs[wm8994->mbc_cfg];
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < ARRAY_SIZE(cfg->combined_regs); i++)
 			snd_soc_write(codec, i + 0x2800,
 				      cfg->combined_regs[i]);
 	}
 
+<<<<<<< HEAD
 	if (pdata && pdata->num_vss_cfgs) {
 		struct wm8958_vss_cfg *cfg
 			= &pdata->vss_cfgs[wm8994->vss_cfg];
+=======
+	if (control->pdata.num_vss_cfgs) {
+		struct wm8958_vss_cfg *cfg
+			= &control->pdata.vss_cfgs[wm8994->vss_cfg];
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < ARRAY_SIZE(cfg->regs); i++)
 			snd_soc_write(codec, i + 0x2600, cfg->regs[i]);
 	}
 
+<<<<<<< HEAD
 	if (pdata && pdata->num_vss_hpf_cfgs) {
 		struct wm8958_vss_hpf_cfg *cfg
 			= &pdata->vss_hpf_cfgs[wm8994->vss_hpf_cfg];
+=======
+	if (control->pdata.num_vss_hpf_cfgs) {
+		struct wm8958_vss_hpf_cfg *cfg
+			= &control->pdata.vss_hpf_cfgs[wm8994->vss_hpf_cfg];
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < ARRAY_SIZE(cfg->regs); i++)
 			snd_soc_write(codec, i + 0x2400, cfg->regs[i]);
@@ -307,7 +349,11 @@ static void wm8958_dsp_start_vss(struct snd_soc_codec *codec, int path)
 static void wm8958_dsp_start_enh_eq(struct snd_soc_codec *codec, int path)
 {
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	wm8958_dsp2_fw(codec, "ENH_EQ", wm8994->enh_eq, false);
@@ -316,9 +362,15 @@ static void wm8958_dsp_start_enh_eq(struct snd_soc_codec *codec, int path)
 			    WM8958_DSP2_ENA, WM8958_DSP2_ENA);
 
 	/* If we've got user supplied settings use them */
+<<<<<<< HEAD
 	if (pdata && pdata->num_enh_eq_cfgs) {
 		struct wm8958_enh_eq_cfg *cfg
 			= &pdata->enh_eq_cfgs[wm8994->enh_eq_cfg];
+=======
+	if (control->pdata.num_enh_eq_cfgs) {
+		struct wm8958_enh_eq_cfg *cfg
+			= &control->pdata.enh_eq_cfgs[wm8994->enh_eq_cfg];
+>>>>>>> refs/remotes/origin/master
 
 		for (i = 0; i < ARRAY_SIZE(cfg->regs); i++)
 			snd_soc_write(codec, i + 0x2200,
@@ -355,7 +407,11 @@ static void wm8958_dsp_apply(struct snd_soc_codec *codec, int path, int start)
 		aif = 1;
 		break;
 	default:
+<<<<<<< HEAD
 		BUG();
+=======
+		WARN(1, "Invalid path %d\n", path);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -465,7 +521,11 @@ static int wm8958_put_mbc_enum(struct snd_kcontrol *kcontrol,
 {
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+>>>>>>> refs/remotes/origin/master
 	int value = ucontrol->value.integer.value[0];
 	int reg;
 
@@ -474,7 +534,11 @@ static int wm8958_put_mbc_enum(struct snd_kcontrol *kcontrol,
 	if (reg < 0 || reg & WM8958_DSP2CLK_ENA)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (value >= pdata->num_mbc_cfgs)
+=======
+	if (value >= control->pdata.num_mbc_cfgs)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	wm8994->mbc_cfg = value;
@@ -555,7 +619,11 @@ static int wm8958_put_vss_enum(struct snd_kcontrol *kcontrol,
 {
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+>>>>>>> refs/remotes/origin/master
 	int value = ucontrol->value.integer.value[0];
 	int reg;
 
@@ -564,7 +632,11 @@ static int wm8958_put_vss_enum(struct snd_kcontrol *kcontrol,
 	if (reg < 0 || reg & WM8958_DSP2CLK_ENA)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (value >= pdata->num_vss_cfgs)
+=======
+	if (value >= control->pdata.num_vss_cfgs)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	wm8994->vss_cfg = value;
@@ -588,7 +660,11 @@ static int wm8958_put_vss_hpf_enum(struct snd_kcontrol *kcontrol,
 {
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+>>>>>>> refs/remotes/origin/master
 	int value = ucontrol->value.integer.value[0];
 	int reg;
 
@@ -597,7 +673,11 @@ static int wm8958_put_vss_hpf_enum(struct snd_kcontrol *kcontrol,
 	if (reg < 0 || reg & WM8958_DSP2CLK_ENA)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (value >= pdata->num_vss_hpf_cfgs)
+=======
+	if (value >= control->pdata.num_vss_hpf_cfgs)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	wm8994->vss_hpf_cfg = value;
@@ -755,7 +835,11 @@ static int wm8958_put_enh_eq_enum(struct snd_kcontrol *kcontrol,
 {
 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+>>>>>>> refs/remotes/origin/master
 	int value = ucontrol->value.integer.value[0];
 	int reg;
 
@@ -764,7 +848,11 @@ static int wm8958_put_enh_eq_enum(struct snd_kcontrol *kcontrol,
 	if (reg < 0 || reg & WM8958_DSP2CLK_ENA)
 		return -EBUSY;
 
+<<<<<<< HEAD
 	if (value >= pdata->num_enh_eq_cfgs)
+=======
+	if (value >= control->pdata.num_enh_eq_cfgs)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	wm8994->enh_eq_cfg = value;
@@ -890,6 +978,7 @@ static void wm8958_mbc_vss_loaded(const struct firmware *fw, void *context)
 		wm8994->mbc_vss = fw;
 		mutex_unlock(&codec->mutex);
 	}
+<<<<<<< HEAD
 
 	/* We can't have more than one request outstanding at once so
 	 * we daisy chain.
@@ -897,6 +986,8 @@ static void wm8958_mbc_vss_loaded(const struct firmware *fw, void *context)
 	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
 				"wm8958_enh_eq.wfw", codec->dev, GFP_KERNEL,
 				codec, wm8958_enh_eq_loaded);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
@@ -904,6 +995,7 @@ static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
 	struct snd_soc_codec *codec = context;
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
 	if (wm8958_dsp2_fw(codec, "MBC", fw, true) != 0)
 		return;
 
@@ -917,16 +1009,29 @@ static void wm8958_mbc_loaded(const struct firmware *fw, void *context)
 	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
 				"wm8958_mbc_vss.wfw", codec->dev, GFP_KERNEL,
 				codec, wm8958_mbc_vss_loaded);
+=======
+	if (fw && (wm8958_dsp2_fw(codec, "MBC", fw, true) == 0)) {
+		mutex_lock(&codec->mutex);
+		wm8994->mbc = fw;
+		mutex_unlock(&codec->mutex);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void wm8958_dsp2_init(struct snd_soc_codec *codec)
 {
 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 	struct wm8994_pdata *pdata = wm8994->pdata;
+=======
+	struct wm8994 *control = wm8994->wm8994;
+	struct wm8994_pdata *pdata = &control->pdata;
+>>>>>>> refs/remotes/origin/master
 	int ret, i;
 
 	wm8994->dsp_active = -1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	snd_soc_add_controls(codec, wm8958_mbc_snd_controls,
 			     ARRAY_SIZE(wm8958_mbc_snd_controls));
@@ -934,12 +1039,17 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 			     ARRAY_SIZE(wm8958_vss_snd_controls));
 	snd_soc_add_controls(codec, wm8958_enh_eq_snd_controls,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_soc_add_codec_controls(codec, wm8958_mbc_snd_controls,
 			     ARRAY_SIZE(wm8958_mbc_snd_controls));
 	snd_soc_add_codec_controls(codec, wm8958_vss_snd_controls,
 			     ARRAY_SIZE(wm8958_vss_snd_controls));
 	snd_soc_add_codec_controls(codec, wm8958_enh_eq_snd_controls,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			     ARRAY_SIZE(wm8958_enh_eq_snd_controls));
 
 
@@ -947,9 +1057,18 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
 				"wm8958_mbc.wfw", codec->dev, GFP_KERNEL,
 				codec, wm8958_mbc_loaded);
+<<<<<<< HEAD
 
 	if (!pdata)
 		return;
+=======
+	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
+				"wm8958_mbc_vss.wfw", codec->dev, GFP_KERNEL,
+				codec, wm8958_mbc_vss_loaded);
+	request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
+				"wm8958_enh_eq.wfw", codec->dev, GFP_KERNEL,
+				codec, wm8958_enh_eq_loaded);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->num_mbc_cfgs) {
 		struct snd_kcontrol_new control[] = {
@@ -961,7 +1080,11 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->mbc_texts = kmalloc(sizeof(char *)
 					    * pdata->num_mbc_cfgs, GFP_KERNEL);
 		if (!wm8994->mbc_texts) {
+<<<<<<< HEAD
 			dev_err(wm8994->codec->dev,
+=======
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to allocate %d MBC config texts\n",
 				pdata->num_mbc_cfgs);
 			return;
@@ -974,12 +1097,19 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->mbc_enum.texts = wm8994->mbc_texts;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = snd_soc_add_controls(wm8994->codec, control, 1);
 =======
 		ret = snd_soc_add_codec_controls(wm8994->codec, control, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (ret != 0)
 			dev_err(wm8994->codec->dev,
+=======
+		ret = snd_soc_add_codec_controls(wm8994->hubs.codec,
+						 control, 1);
+		if (ret != 0)
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to add MBC mode controls: %d\n", ret);
 	}
 
@@ -993,7 +1123,11 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->vss_texts = kmalloc(sizeof(char *)
 					    * pdata->num_vss_cfgs, GFP_KERNEL);
 		if (!wm8994->vss_texts) {
+<<<<<<< HEAD
 			dev_err(wm8994->codec->dev,
+=======
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to allocate %d VSS config texts\n",
 				pdata->num_vss_cfgs);
 			return;
@@ -1006,12 +1140,19 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->vss_enum.texts = wm8994->vss_texts;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = snd_soc_add_controls(wm8994->codec, control, 1);
 =======
 		ret = snd_soc_add_codec_controls(wm8994->codec, control, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (ret != 0)
 			dev_err(wm8994->codec->dev,
+=======
+		ret = snd_soc_add_codec_controls(wm8994->hubs.codec,
+						 control, 1);
+		if (ret != 0)
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to add VSS mode controls: %d\n", ret);
 	}
 
@@ -1026,7 +1167,11 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->vss_hpf_texts = kmalloc(sizeof(char *)
 						* pdata->num_vss_hpf_cfgs, GFP_KERNEL);
 		if (!wm8994->vss_hpf_texts) {
+<<<<<<< HEAD
 			dev_err(wm8994->codec->dev,
+=======
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to allocate %d VSS HPF config texts\n",
 				pdata->num_vss_hpf_cfgs);
 			return;
@@ -1039,12 +1184,19 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->vss_hpf_enum.texts = wm8994->vss_hpf_texts;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = snd_soc_add_controls(wm8994->codec, control, 1);
 =======
 		ret = snd_soc_add_codec_controls(wm8994->codec, control, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (ret != 0)
 			dev_err(wm8994->codec->dev,
+=======
+		ret = snd_soc_add_codec_controls(wm8994->hubs.codec,
+						 control, 1);
+		if (ret != 0)
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to add VSS HPFmode controls: %d\n",
 				ret);
 	}
@@ -1060,7 +1212,11 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->enh_eq_texts = kmalloc(sizeof(char *)
 						* pdata->num_enh_eq_cfgs, GFP_KERNEL);
 		if (!wm8994->enh_eq_texts) {
+<<<<<<< HEAD
 			dev_err(wm8994->codec->dev,
+=======
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to allocate %d enhanced EQ config texts\n",
 				pdata->num_enh_eq_cfgs);
 			return;
@@ -1073,12 +1229,19 @@ void wm8958_dsp2_init(struct snd_soc_codec *codec)
 		wm8994->enh_eq_enum.texts = wm8994->enh_eq_texts;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = snd_soc_add_controls(wm8994->codec, control, 1);
 =======
 		ret = snd_soc_add_codec_controls(wm8994->codec, control, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (ret != 0)
 			dev_err(wm8994->codec->dev,
+=======
+		ret = snd_soc_add_codec_controls(wm8994->hubs.codec,
+						 control, 1);
+		if (ret != 0)
+			dev_err(wm8994->hubs.codec->dev,
+>>>>>>> refs/remotes/origin/master
 				"Failed to add enhanced EQ controls: %d\n",
 				ret);
 	}

@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,9 +60,13 @@
  * Note: The order of these include files is important.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "acconfig.h"		/* Global configuration constants */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <acpi/acconfig.h>	/* Global configuration constants */
+>>>>>>> refs/remotes/origin/master
 #include "acmacros.h"		/* C macros */
 #include "aclocal.h"		/* Internal data types */
 #include "acobject.h"		/* ACPI internal object */

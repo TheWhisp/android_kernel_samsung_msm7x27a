@@ -9,4 +9,8 @@ obj-$(CONFIG_IGB) += igb/
 obj-$(CONFIG_IGBVF) += igbvf/
 obj-$(CONFIG_IXGBE) += ixgbe/
 obj-$(CONFIG_IXGBEVF) += ixgbevf/
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_I40E) += i40e/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_IXGB) += ixgb/

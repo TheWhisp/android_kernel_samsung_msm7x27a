@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* A Bison parser, made by GNU Bison 2.4.1.  */
 
@@ -14,6 +15,13 @@
       Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006,
    2009, 2010 Free Software Foundation, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* A Bison parser, made by GNU Bison 2.5.  */
+
+/* Bison interface for Yacc-like parsers in C
+   
+      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
+>>>>>>> refs/remotes/origin/master
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -50,6 +58,7 @@
    enum yytokentype {
      DT_V1 = 258,
      DT_MEMRESERVE = 259,
+<<<<<<< HEAD
      DT_PROPNODENAME = 260,
      DT_LITERAL = 261,
      DT_BASE = 262,
@@ -58,6 +67,28 @@
      DT_LABEL = 265,
      DT_REF = 266,
      DT_INCBIN = 267
+=======
+     DT_LSHIFT = 260,
+     DT_RSHIFT = 261,
+     DT_LE = 262,
+     DT_GE = 263,
+     DT_EQ = 264,
+     DT_NE = 265,
+     DT_AND = 266,
+     DT_OR = 267,
+     DT_BITS = 268,
+     DT_DEL_PROP = 269,
+     DT_DEL_NODE = 270,
+     DT_PROPNODENAME = 271,
+     DT_LITERAL = 272,
+     DT_CHAR_LITERAL = 273,
+     DT_BASE = 274,
+     DT_BYTE = 275,
+     DT_STRING = 276,
+     DT_LABEL = 277,
+     DT_REF = 278,
+     DT_INCBIN = 279
+>>>>>>> refs/remotes/origin/master
    };
 #endif
 
@@ -68,10 +99,15 @@ typedef union YYSTYPE
 {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Line 1676 of yacc.c  */
 #line 39 "dtc-parser.y"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Line 2068 of yacc.c  */
+#line 40 "dtc-parser.y"
+>>>>>>> refs/remotes/origin/master
 
 	char *propnodename;
 	char *literal;
@@ -80,13 +116,22 @@ typedef union YYSTYPE
 	uint8_t byte;
 	struct data data;
 
+<<<<<<< HEAD
 	uint64_t addr;
 	cell_t cell;
+=======
+	struct {
+		struct data	data;
+		int		bits;
+	} array;
+
+>>>>>>> refs/remotes/origin/master
 	struct property *prop;
 	struct property *proplist;
 	struct node *node;
 	struct node *nodelist;
 	struct reserve_info *re;
+<<<<<<< HEAD
 
 
 
@@ -95,6 +140,14 @@ typedef union YYSTYPE
 #line 83 "dtc-parser.tab.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uint64_t integer;
+
+
+
+/* Line 2068 of yacc.c  */
+#line 97 "dtc-parser.tab.h"
+>>>>>>> refs/remotes/origin/master
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

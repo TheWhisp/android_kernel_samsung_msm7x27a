@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -19,7 +23,11 @@
 #include <linux/uaccess.h>
 #include <linux/debugfs.h>
 #include <linux/caif/caif_socket.h>
+<<<<<<< HEAD
 #include <linux/atomic.h>
+=======
+#include <linux/pkt_sched.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/sock.h>
 #include <net/tcp_states.h>
 #include <net/caif/caif_layer.h>
@@ -43,6 +51,7 @@ enum caif_states {
 #define TX_FLOW_ON_BIT	1
 #define RX_FLOW_ON_BIT	2
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct dentry *debugfsdir;
 
@@ -77,6 +86,11 @@ struct caifsock {
 	struct sock sk; /* must be first member */
 	struct cflayer layer;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct caifsock {
+	struct sock sk; /* must be first member */
+	struct cflayer layer;
+>>>>>>> refs/remotes/origin/master
 	u32 flow_state;
 	struct caif_connect_request conn_req;
 	struct mutex readlock;
@@ -161,6 +175,7 @@ static int caif_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 	struct caifsock *cf_sk = container_of(sk, struct caifsock, sk);
 
 	if (atomic_read(&sk->sk_rmem_alloc) + skb->truesize >=
+<<<<<<< HEAD
 		(unsigned)sk->sk_rcvbuf && rx_flow_is_on(cf_sk)) {
 		if (net_ratelimit())
 			pr_debug("sending flow OFF (queue len = %d %d)\n",
@@ -171,12 +186,20 @@ static int caif_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		dbfs_atomic_inc(&cnt.num_rx_flow_off);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(unsigned int)sk->sk_rcvbuf && rx_flow_is_on(cf_sk)) {
+		net_dbg_ratelimited("sending flow OFF (queue len = %d %d)\n",
+				    atomic_read(&cf_sk->sk.sk_rmem_alloc),
+				    sk_rcvbuf_lowwater(cf_sk));
+		set_rx_flow_off(cf_sk);
+>>>>>>> refs/remotes/origin/master
 		caif_flow_ctrl(sk, CAIF_MODEMCMD_FLOW_OFF_REQ);
 	}
 
 	err = sk_filter(sk, skb);
 	if (err)
 		return err;
+<<<<<<< HEAD
 	if (!sk_rmem_schedule(sk, skb->truesize) && rx_flow_is_on(cf_sk)) {
 		set_rx_flow_off(cf_sk);
 		if (net_ratelimit())
@@ -185,6 +208,11 @@ static int caif_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		dbfs_atomic_inc(&cnt.num_rx_flow_off);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!sk_rmem_schedule(sk, skb, skb->truesize) && rx_flow_is_on(cf_sk)) {
+		set_rx_flow_off(cf_sk);
+		net_dbg_ratelimited("sending flow OFF due to rmem_schedule\n");
+>>>>>>> refs/remotes/origin/master
 		caif_flow_ctrl(sk, CAIF_MODEMCMD_FLOW_OFF_REQ);
 	}
 	skb->dev = NULL;
@@ -238,17 +266,25 @@ static void cfsk_put(struct cflayer *layr)
 
 /* Packet Control Callback function called from CAIF */
 static void caif_ctrl_cb(struct cflayer *layr,
+<<<<<<< HEAD
 				enum caif_ctrlcmd flow,
 				int phyid)
+=======
+			 enum caif_ctrlcmd flow,
+			 int phyid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct caifsock *cf_sk = container_of(layr, struct caifsock, layer);
 	switch (flow) {
 	case CAIF_CTRLCMD_FLOW_ON_IND:
 		/* OK from modem to start sending again */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbfs_atomic_inc(&cnt.num_tx_flow_on_ind);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		set_tx_flow_on(cf_sk);
 		cf_sk->sk.sk_state_change(&cf_sk->sk);
 		break;
@@ -256,9 +292,12 @@ static void caif_ctrl_cb(struct cflayer *layr,
 	case CAIF_CTRLCMD_FLOW_OFF_IND:
 		/* Modem asks us to shut up */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbfs_atomic_inc(&cnt.num_tx_flow_off_ind);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		set_tx_flow_off(cf_sk);
 		cf_sk->sk.sk_state_change(&cf_sk->sk);
 		break;
@@ -268,11 +307,17 @@ static void caif_ctrl_cb(struct cflayer *layr,
 		caif_client_register_refcnt(&cf_sk->layer,
 						cfsk_hold, cfsk_put);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbfs_atomic_inc(&cnt.num_connect_resp);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 		cf_sk->sk.sk_state = CAIF_CONNECTED;
 		set_tx_flow_on(cf_sk);
+=======
+		cf_sk->sk.sk_state = CAIF_CONNECTED;
+		set_tx_flow_on(cf_sk);
+		cf_sk->sk.sk_shutdown = 0;
+>>>>>>> refs/remotes/origin/master
 		cf_sk->sk.sk_state_change(&cf_sk->sk);
 		break;
 
@@ -285,9 +330,12 @@ static void caif_ctrl_cb(struct cflayer *layr,
 	case CAIF_CTRLCMD_INIT_FAIL_RSP:
 		/* Connect request failed */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbfs_atomic_inc(&cnt.num_connect_fail_resp);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cf_sk->sk.sk_err = ECONNREFUSED;
 		cf_sk->sk.sk_state = CAIF_DISCONNECTED;
 		cf_sk->sk.sk_shutdown = SHUTDOWN_MASK;
@@ -302,9 +350,12 @@ static void caif_ctrl_cb(struct cflayer *layr,
 	case CAIF_CTRLCMD_REMOTE_SHUTDOWN_IND:
 		/* Modem has closed this connection, or device is down. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbfs_atomic_inc(&cnt.num_remote_shutdown_ind);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cf_sk->sk.sk_shutdown = SHUTDOWN_MASK;
 		cf_sk->sk.sk_err = ECONNRESET;
 		set_rx_flow_on(cf_sk);
@@ -325,9 +376,12 @@ static void caif_check_flow_release(struct sock *sk)
 
 	if (atomic_read(&sk->sk_rmem_alloc) <= sk_rcvbuf_lowwater(cf_sk)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dbfs_atomic_inc(&cnt.num_rx_flow_on);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			set_rx_flow_on(cf_sk);
 			caif_flow_ctrl(sk, CAIF_MODEMCMD_FLOW_ON_REQ);
 	}
@@ -338,7 +392,11 @@ static void caif_check_flow_release(struct sock *sk)
  * changed locking, address handling and added MSG_TRUNC.
  */
 static int caif_seqpkt_recvmsg(struct kiocb *iocb, struct socket *sock,
+<<<<<<< HEAD
 				struct msghdr *m, size_t len, int flags)
+=======
+			       struct msghdr *m, size_t len, int flags)
+>>>>>>> refs/remotes/origin/master
 
 {
 	struct sock *sk = sock->sk;
@@ -350,8 +408,11 @@ static int caif_seqpkt_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (m->msg_flags&MSG_OOB)
 		goto read_error;
 
+<<<<<<< HEAD
 	m->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	skb = skb_recv_datagram(sk, flags, 0 , &ret);
 	if (!skb)
 		goto read_error;
@@ -412,8 +473,13 @@ static long caif_stream_data_wait(struct sock *sk, long timeo)
  * changed locking calls, changed address handling.
  */
 static int caif_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
+<<<<<<< HEAD
 				struct msghdr *msg, size_t size,
 				int flags)
+=======
+			       struct msghdr *msg, size_t size,
+			       int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = sock->sk;
 	int copied = 0;
@@ -425,8 +491,11 @@ static int caif_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (flags&MSG_OOB)
 		goto out;
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Lock the socket to prevent queue disordering
 	 * while sleeps in memcpy_tomsg
@@ -528,7 +597,11 @@ out:
  * CAIF flow-on and sock_writable.
  */
 static long caif_wait_for_flow_on(struct caifsock *cf_sk,
+<<<<<<< HEAD
 				int wait_writeable, long timeo, int *err)
+=======
+				  int wait_writeable, long timeo, int *err)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = &cf_sk->sk;
 	DEFINE_WAIT(wait);
@@ -570,23 +643,35 @@ static int transmit_skb(struct sk_buff *skb, struct caifsock *cf_sk,
 
 	pkt = cfpkt_fromnative(CAIF_DIR_OUT, skb);
 	memset(skb->cb, 0, sizeof(struct caif_payload_info));
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	if (cf_sk->layer.dn == NULL)
 		return -EINVAL;
 =======
+=======
+	cfpkt_set_prio(pkt, cf_sk->sk.sk_priority);
+
+>>>>>>> refs/remotes/origin/master
 	if (cf_sk->layer.dn == NULL) {
 		kfree_skb(skb);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return cf_sk->layer.dn->transmit(cf_sk->layer.dn, pkt);
 }
 
 /* Copied from af_unix:unix_dgram_sendmsg, and adapted to CAIF */
 static int caif_seqpkt_sendmsg(struct kiocb *kiocb, struct socket *sock,
+<<<<<<< HEAD
 			struct msghdr *msg, size_t len)
+=======
+			       struct msghdr *msg, size_t len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = sock->sk;
 	struct caifsock *cf_sk = container_of(sk, struct caifsock, sk);
@@ -661,7 +746,11 @@ err:
  * and other minor adaptations.
  */
 static int caif_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
+<<<<<<< HEAD
 				struct msghdr *msg, size_t len)
+=======
+			       struct msghdr *msg, size_t len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = sock->sk;
 	struct caifsock *cf_sk = container_of(sk, struct caifsock, sk);
@@ -723,16 +812,22 @@ static int caif_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 		err = transmit_skb(skb, cf_sk,
 				msg->msg_flags&MSG_DONTWAIT, timeo);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err < 0) {
 			kfree_skb(skb);
 			goto pipe_err;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (err < 0)
 			/* skb is already freed */
 			goto pipe_err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sent += size;
 	}
 
@@ -747,7 +842,11 @@ out_err:
 }
 
 static int setsockopt(struct socket *sock,
+<<<<<<< HEAD
 			int lvl, int opt, char __user *ov, unsigned int ol)
+=======
+		      int lvl, int opt, char __user *ov, unsigned int ol)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = sock->sk;
 	struct caifsock *cf_sk = container_of(sk, struct caifsock, sk);
@@ -901,9 +1000,12 @@ static int caif_connect(struct socket *sock, struct sockaddr *uaddr,
 	cf_sk->conn_req.ifindex = cf_sk->sk.sk_bound_dev_if;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbfs_atomic_inc(&cnt.num_connect_req);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cf_sk->layer.receive = caif_sktrecv_cb;
 
 	err = caif_connect_client(sock_net(sk), &cf_sk->conn_req,
@@ -993,10 +1095,13 @@ static int caif_release(struct socket *sock)
 	sock->sk = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbfs_atomic_inc(&cnt.num_disconnect);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(IS_ERR(cf_sk->debugfs_socket_dir));
 	if (cf_sk->debugfs_socket_dir != NULL)
 		debugfs_remove_recursive(cf_sk->debugfs_socket_dir);
@@ -1018,7 +1123,11 @@ static int caif_release(struct socket *sock)
 
 /* Copied from af_unix.c:unix_poll(), added CAIF tx_flow handling */
 static unsigned int caif_poll(struct file *file,
+<<<<<<< HEAD
 				struct socket *sock, poll_table *wait)
+=======
+			      struct socket *sock, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *sk = sock->sk;
 	unsigned int mask;
@@ -1105,19 +1214,27 @@ static void caif_sock_destructor(struct sock *sk)
 	}
 	sk_stream_kill_queues(&cf_sk->sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbfs_atomic_dec(&cnt.caif_nr_socks);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	caif_free_client(&cf_sk->layer);
 }
 
 static int caif_create(struct net *net, struct socket *sock, int protocol,
+<<<<<<< HEAD
 			int kern)
 {
 <<<<<<< HEAD
 	int num;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       int kern)
+{
+>>>>>>> refs/remotes/origin/master
 	struct sock *sk = NULL;
 	struct caifsock *cf_sk = NULL;
 	static struct proto prot = {.name = "PF_CAIF",
@@ -1156,6 +1273,21 @@ static int caif_create(struct net *net, struct socket *sock, int protocol,
 	/* Store the protocol */
 	sk->sk_protocol = (unsigned char) protocol;
 
+<<<<<<< HEAD
+=======
+	/* Initialize default priority for well-known cases */
+	switch (protocol) {
+	case CAIFPROTO_AT:
+		sk->sk_priority = TC_PRIO_CONTROL;
+		break;
+	case CAIFPROTO_RFM:
+		sk->sk_priority = TC_PRIO_INTERACTIVE_BULK;
+		break;
+	default:
+		sk->sk_priority = TC_PRIO_BESTEFFORT;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Lock in order to try to stop someone from opening the socket
 	 * too early.
@@ -1175,6 +1307,7 @@ static int caif_create(struct net *net, struct socket *sock, int protocol,
 	set_rx_flow_on(cf_sk);
 
 	/* Set default options on configuration */
+<<<<<<< HEAD
 	cf_sk->sk.sk_priority = CAIF_PRIO_NORMAL;
 	cf_sk->conn_req.link_selector = CAIF_LINK_LOW_LATENCY;
 	cf_sk->conn_req.protocol = protocol;
@@ -1209,6 +1342,10 @@ static int caif_create(struct net *net, struct socket *sock, int protocol,
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cf_sk->conn_req.link_selector = CAIF_LINK_LOW_LATENCY;
+	cf_sk->conn_req.protocol = protocol;
+>>>>>>> refs/remotes/origin/master
 	release_sock(&cf_sk->sk);
 	return 0;
 }
@@ -1221,10 +1358,14 @@ static struct net_proto_family caif_family_ops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int af_caif_init(void)
 =======
 static int __init caif_sktinit_module(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init caif_sktinit_module(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = sock_register(&caif_family_ops);
 	if (!err)
@@ -1232,6 +1373,7 @@ static int __init caif_sktinit_module(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init caif_sktinit_module(void)
 {
@@ -1286,6 +1428,11 @@ static void __exit caif_sktexit_module(void)
 {
 	sock_unregister(PF_CAIF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __exit caif_sktexit_module(void)
+{
+	sock_unregister(PF_CAIF);
+>>>>>>> refs/remotes/origin/master
 }
 module_init(caif_sktinit_module);
 module_exit(caif_sktexit_module);

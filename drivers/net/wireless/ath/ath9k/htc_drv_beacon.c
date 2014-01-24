@@ -28,12 +28,21 @@ void ath9k_htc_beaconq_config(struct ath9k_htc_priv *priv)
 
 	ath9k_hw_get_txq_props(ah, priv->beaconq, &qi);
 
+<<<<<<< HEAD
 	if (priv->ah->opmode == NL80211_IFTYPE_AP) {
+=======
+	if (priv->ah->opmode == NL80211_IFTYPE_AP ||
+	    priv->ah->opmode == NL80211_IFTYPE_MESH_POINT) {
+>>>>>>> refs/remotes/origin/master
 		qi.tqi_aifs = 1;
 		qi.tqi_cwmin = 0;
 		qi.tqi_cwmax = 0;
 	} else if (priv->ah->opmode == NL80211_IFTYPE_ADHOC) {
+<<<<<<< HEAD
 		int qnum = priv->hwq_map[WME_AC_BE];
+=======
+		int qnum = priv->hwq_map[IEEE80211_AC_BE];
+>>>>>>> refs/remotes/origin/master
 
 		ath9k_hw_get_txq_props(ah, qnum, &qi_be);
 
@@ -80,10 +89,14 @@ static void ath9k_htc_beacon_config_sta(struct ath9k_htc_priv *priv,
 	memset(&bs, 0, sizeof(bs));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	intval = bss_conf->beacon_interval & ATH9K_BEACON_PERIOD;
 =======
 	intval = bss_conf->beacon_interval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	intval = bss_conf->beacon_interval;
+>>>>>>> refs/remotes/origin/master
 	bmiss_timeout = (ATH_DEFAULT_BMISS_LIMIT * bss_conf->beacon_interval);
 
 	/*
@@ -172,6 +185,7 @@ static void ath9k_htc_beacon_config_sta(struct ath9k_htc_priv *priv,
 	bs.bs_tsfoor_threshold = ATH9K_TSFOOR_THRESHOLD;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG, "intval: %u tsf: %llu tsftu: %u\n",
 		intval, tsf, tsftu);
 	ath_dbg(common, ATH_DBG_CONFIG,
@@ -180,6 +194,11 @@ static void ath9k_htc_beacon_config_sta(struct ath9k_htc_priv *priv,
 		intval, tsf, tsftu);
 	ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG, "intval: %u tsf: %llu tsftu: %u\n",
+		intval, tsf, tsftu);
+	ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 		"bmiss: %u sleep: %u cfp-period: %u maxdur: %u next: %u\n",
 		bs.bs_bmissthreshold, bs.bs_sleepduration,
 		bs.bs_cfpperiod, bs.bs_cfpmaxduration, bs.bs_cfpnext);
@@ -205,10 +224,14 @@ static void ath9k_htc_beacon_config_ap(struct ath9k_htc_priv *priv,
 	u64 tsf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	intval = bss_conf->beacon_interval & ATH9K_BEACON_PERIOD;
 =======
 	intval = bss_conf->beacon_interval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	intval = bss_conf->beacon_interval;
+>>>>>>> refs/remotes/origin/master
 	intval /= ATH9K_HTC_MAX_BCN_VIF;
 	nexttbtt = intval;
 
@@ -221,9 +244,15 @@ static void ath9k_htc_beacon_config_ap(struct ath9k_htc_priv *priv,
 	else
 		priv->ah->config.sw_beacon_response_time = MIN_SWBA_RESPONSE;
 
+<<<<<<< HEAD
 	if (priv->op_flags & OP_TSF_RESET) {
 		ath9k_hw_reset_tsf(priv->ah);
 		priv->op_flags &= ~OP_TSF_RESET;
+=======
+	if (test_bit(OP_TSF_RESET, &priv->op_flags)) {
+		ath9k_hw_reset_tsf(priv->ah);
+		clear_bit(OP_TSF_RESET, &priv->op_flags);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/*
 		 * Pull nexttbtt forward to reflect the current TSF.
@@ -235,6 +264,7 @@ static void ath9k_htc_beacon_config_ap(struct ath9k_htc_priv *priv,
 		} while (nexttbtt < tsftu);
 	}
 
+<<<<<<< HEAD
 	if (priv->op_flags & OP_ENABLE_BEACON)
 		imask |= ATH9K_INT_SWBA;
 
@@ -246,6 +276,13 @@ static void ath9k_htc_beacon_config_ap(struct ath9k_htc_priv *priv,
 	ath_dbg(common, CONFIG,
 		"AP Beacon config, intval: %d, nexttbtt: %u, resp_time: %d imask: 0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(OP_ENABLE_BEACON, &priv->op_flags))
+		imask |= ATH9K_INT_SWBA;
+
+	ath_dbg(common, CONFIG,
+		"AP Beacon config, intval: %d, nexttbtt: %u, resp_time: %d imask: 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 		bss_conf->beacon_interval, nexttbtt,
 		priv->ah->config.sw_beacon_response_time, imask);
 
@@ -270,10 +307,14 @@ static void ath9k_htc_beacon_config_adhoc(struct ath9k_htc_priv *priv,
 	u64 tsf;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	intval = bss_conf->beacon_interval & ATH9K_BEACON_PERIOD;
 =======
 	intval = bss_conf->beacon_interval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	intval = bss_conf->beacon_interval;
+>>>>>>> refs/remotes/origin/master
 	nexttbtt = intval;
 
 	/*
@@ -293,6 +334,7 @@ static void ath9k_htc_beacon_config_adhoc(struct ath9k_htc_priv *priv,
 	else
 		priv->ah->config.sw_beacon_response_time = MIN_SWBA_RESPONSE;
 
+<<<<<<< HEAD
 	if (priv->op_flags & OP_ENABLE_BEACON)
 		imask |= ATH9K_INT_SWBA;
 
@@ -304,6 +346,13 @@ static void ath9k_htc_beacon_config_adhoc(struct ath9k_htc_priv *priv,
 	ath_dbg(common, CONFIG,
 		"IBSS Beacon config, intval: %d, nexttbtt: %u, resp_time: %d, imask: 0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (test_bit(OP_ENABLE_BEACON, &priv->op_flags))
+		imask |= ATH9K_INT_SWBA;
+
+	ath_dbg(common, CONFIG,
+		"IBSS Beacon config, intval: %d, nexttbtt: %u, resp_time: %d, imask: 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 		bss_conf->beacon_interval, nexttbtt,
 		priv->ah->config.sw_beacon_response_time, imask);
 
@@ -338,7 +387,11 @@ static void ath9k_htc_send_buffered(struct ath9k_htc_priv *priv,
 	while(skb) {
 		hdr = (struct ieee80211_hdr *) skb->data;
 
+<<<<<<< HEAD
 		padpos = ath9k_cmn_padpos(hdr->frame_control);
+=======
+		padpos = ieee80211_hdrlen(hdr->frame_control);
+>>>>>>> refs/remotes/origin/master
 		padsize = padpos & 3;
 		if (padsize && skb->len > padpos) {
 			if (skb_headroom(skb) < padsize) {
@@ -352,25 +405,37 @@ static void ath9k_htc_send_buffered(struct ath9k_htc_priv *priv,
 		tx_slot = ath9k_htc_tx_get_slot(priv);
 		if (tx_slot < 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_XMIT, "No free CAB slot\n");
 =======
 			ath_dbg(common, XMIT, "No free CAB slot\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, XMIT, "No free CAB slot\n");
+>>>>>>> refs/remotes/origin/master
 			dev_kfree_skb_any(skb);
 			goto next;
 		}
 
+<<<<<<< HEAD
 		ret = ath9k_htc_tx_start(priv, skb, tx_slot, true);
+=======
+		ret = ath9k_htc_tx_start(priv, NULL, skb, tx_slot, true);
+>>>>>>> refs/remotes/origin/master
 		if (ret != 0) {
 			ath9k_htc_tx_clear_slot(priv, tx_slot);
 			dev_kfree_skb_any(skb);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_XMIT,
 				"Failed to send CAB frame\n");
 =======
 			ath_dbg(common, XMIT, "Failed to send CAB frame\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, XMIT, "Failed to send CAB frame\n");
+>>>>>>> refs/remotes/origin/master
 		} else {
 			spin_lock_bh(&priv->tx.tx_lock);
 			priv->tx.queued_cnt++;
@@ -404,7 +469,11 @@ static void ath9k_htc_send_beacon(struct ath9k_htc_priv *priv,
 	vif = priv->cur_beacon_conf.bslot[slot];
 	avp = (struct ath9k_htc_vif *)vif->drv_priv;
 
+<<<<<<< HEAD
 	if (unlikely(priv->op_flags & OP_SCANNING)) {
+=======
+	if (unlikely(test_bit(OP_SCANNING, &priv->op_flags))) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_bh(&priv->beacon_lock);
 		return;
 	}
@@ -446,10 +515,14 @@ static void ath9k_htc_send_beacon(struct ath9k_htc_priv *priv,
 	if (ret != 0) {
 		if (ret == -ENOMEM) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_BSTUCK,
 =======
 			ath_dbg(common, BSTUCK,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, BSTUCK,
+>>>>>>> refs/remotes/origin/master
 				"Failed to send beacon, no free TX buffer\n");
 		}
 		dev_kfree_skb_any(beacon);
@@ -468,10 +541,14 @@ static int ath9k_htc_choose_bslot(struct ath9k_htc_priv *priv,
 	int slot;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	intval = priv->cur_beacon_conf.beacon_interval & ATH9K_BEACON_PERIOD;
 =======
 	intval = priv->cur_beacon_conf.beacon_interval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	intval = priv->cur_beacon_conf.beacon_interval;
+>>>>>>> refs/remotes/origin/master
 
 	tsf = be64_to_cpu(swba->tsf);
 	tsftu = TSF_TO_TU(tsf >> 32, tsf);
@@ -479,10 +556,14 @@ static int ath9k_htc_choose_bslot(struct ath9k_htc_priv *priv,
 	slot = ATH9K_HTC_MAX_BCN_VIF - slot - 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_BEACON,
 =======
 	ath_dbg(common, BEACON,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, BEACON,
+>>>>>>> refs/remotes/origin/master
 		"Choose slot: %d, tsf: %llu, tsftu: %u, intval: %u\n",
 		slot, tsf, tsftu, intval);
 
@@ -499,11 +580,15 @@ void ath9k_htc_swba(struct ath9k_htc_priv *priv,
 		priv->cur_beacon_conf.bmiss_cnt++;
 		if (priv->cur_beacon_conf.bmiss_cnt > BSTUCK_THRESHOLD) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_BSTUCK,
 				"Beacon stuck, HW reset\n");
 =======
 			ath_dbg(common, BSTUCK, "Beacon stuck, HW reset\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, BSTUCK, "Beacon stuck, HW reset\n");
+>>>>>>> refs/remotes/origin/master
 			ieee80211_queue_work(priv->hw,
 					     &priv->fatal_work);
 		}
@@ -512,10 +597,14 @@ void ath9k_htc_swba(struct ath9k_htc_priv *priv,
 
 	if (priv->cur_beacon_conf.bmiss_cnt) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_BSTUCK,
 =======
 		ath_dbg(common, BSTUCK,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, BSTUCK,
+>>>>>>> refs/remotes/origin/master
 			"Resuming beacon xmit after %u misses\n",
 			priv->cur_beacon_conf.bmiss_cnt);
 		priv->cur_beacon_conf.bmiss_cnt = 0;
@@ -552,12 +641,17 @@ void ath9k_htc_assign_bslot(struct ath9k_htc_priv *priv,
 	spin_unlock_bh(&priv->beacon_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"Added interface at beacon slot: %d\n", avp->bslot);
 =======
 	ath_dbg(common, CONFIG, "Added interface at beacon slot: %d\n",
 		avp->bslot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG, "Added interface at beacon slot: %d\n",
+		avp->bslot);
+>>>>>>> refs/remotes/origin/master
 }
 
 void ath9k_htc_remove_bslot(struct ath9k_htc_priv *priv,
@@ -571,12 +665,17 @@ void ath9k_htc_remove_bslot(struct ath9k_htc_priv *priv,
 	spin_unlock_bh(&priv->beacon_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"Removed interface at beacon slot: %d\n", avp->bslot);
 =======
 	ath_dbg(common, CONFIG, "Removed interface at beacon slot: %d\n",
 		avp->bslot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG, "Removed interface at beacon slot: %d\n",
+		avp->bslot);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -603,11 +702,15 @@ void ath9k_htc_set_tsfadjust(struct ath9k_htc_priv *priv,
 	avp->tsfadjust = cpu_to_le64(TU_TO_USEC(tsfadjust));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_CONFIG,
 		"tsfadjust is: %llu for bslot: %d\n",
 =======
 	ath_dbg(common, CONFIG, "tsfadjust is: %llu for bslot: %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, CONFIG, "tsfadjust is: %llu for bslot: %d\n",
+>>>>>>> refs/remotes/origin/master
 		(unsigned long long)tsfadjust, avp->bslot);
 }
 
@@ -639,10 +742,14 @@ static bool ath9k_htc_check_beacon_config(struct ath9k_htc_priv *priv,
 	    (vif->type == NL80211_IFTYPE_AP) &&
 	    (cur_conf->beacon_interval != bss_conf->beacon_int)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
 		ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 			"Changing beacon interval of multiple AP interfaces !\n");
 		return false;
 	}
@@ -654,10 +761,14 @@ static bool ath9k_htc_check_beacon_config(struct ath9k_htc_priv *priv,
 	if (priv->num_ap_vif &&
 	    (vif->type != NL80211_IFTYPE_AP)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 =======
 		ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 			"HW in AP mode, cannot set STA beacon parameters\n");
 		return false;
 	}
@@ -670,6 +781,7 @@ static bool ath9k_htc_check_beacon_config(struct ath9k_htc_priv *priv,
 	    (priv->num_sta_vif > 1) &&
 	    (vif->type == NL80211_IFTYPE_STATION)) {
 		beacon_configured = false;
+<<<<<<< HEAD
 		ieee80211_iterate_active_interfaces_atomic(priv->hw,
 							   ath9k_htc_beacon_iter,
 							   &beacon_configured);
@@ -680,6 +792,14 @@ static bool ath9k_htc_check_beacon_config(struct ath9k_htc_priv *priv,
 =======
 			ath_dbg(common, CONFIG,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ieee80211_iterate_active_interfaces_atomic(
+			priv->hw, IEEE80211_IFACE_ITER_RESUME_ALL,
+			ath9k_htc_beacon_iter, &beacon_configured);
+
+		if (beacon_configured) {
+			ath_dbg(common, CONFIG,
+>>>>>>> refs/remotes/origin/master
 				"Beacon already configured for a station interface\n");
 			return false;
 		}
@@ -715,16 +835,24 @@ void ath9k_htc_beacon_config(struct ath9k_htc_priv *priv,
 	case NL80211_IFTYPE_ADHOC:
 		ath9k_htc_beacon_config_adhoc(priv, cur_conf);
 		break;
+<<<<<<< HEAD
+=======
+	case NL80211_IFTYPE_MESH_POINT:
+>>>>>>> refs/remotes/origin/master
 	case NL80211_IFTYPE_AP:
 		ath9k_htc_beacon_config_ap(priv, cur_conf);
 		break;
 	default:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 			"Unsupported beaconing mode\n");
 =======
 		ath_dbg(common, CONFIG, "Unsupported beaconing mode\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CONFIG, "Unsupported beaconing mode\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 }
@@ -741,16 +869,24 @@ void ath9k_htc_beacon_reconfig(struct ath9k_htc_priv *priv)
 	case NL80211_IFTYPE_ADHOC:
 		ath9k_htc_beacon_config_adhoc(priv, cur_conf);
 		break;
+<<<<<<< HEAD
+=======
+	case NL80211_IFTYPE_MESH_POINT:
+>>>>>>> refs/remotes/origin/master
 	case NL80211_IFTYPE_AP:
 		ath9k_htc_beacon_config_ap(priv, cur_conf);
 		break;
 	default:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_CONFIG,
 			"Unsupported beaconing mode\n");
 =======
 		ath_dbg(common, CONFIG, "Unsupported beaconing mode\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(common, CONFIG, "Unsupported beaconing mode\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 }

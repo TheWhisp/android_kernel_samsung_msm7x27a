@@ -15,6 +15,7 @@ KBUILD_CFLAGS += -fno-short-enums
 # LDFLAGS_MODULE += -shared
 CFLAGS_MODULE += -mlong-calls
 
+<<<<<<< HEAD
 cflags-$(CONFIG_HEXAGON_ARCH_V1) += $(call cc-option,-mv1)
 cflags-$(CONFIG_HEXAGON_ARCH_V2) += $(call cc-option,-mv2)
 cflags-$(CONFIG_HEXAGON_ARCH_V3) += $(call cc-option,-mv3)
@@ -29,6 +30,11 @@ ldflags-$(CONFIG_HEXAGON_ARCH_V1) += $(call cc-option,-mv1)
 ldflags-$(CONFIG_HEXAGON_ARCH_V2) += $(call cc-option,-mv2)
 ldflags-$(CONFIG_HEXAGON_ARCH_V3) += $(call cc-option,-mv3)
 ldflags-$(CONFIG_HEXAGON_ARCH_V4) += $(call cc-option,-mv4)
+=======
+cflags-y += $(call cc-option,-mv${CONFIG_HEXAGON_ARCH_VERSION})
+aflags-y += $(call cc-option,-mv${CONFIG_HEXAGON_ARCH_VERSION})
+ldflags-y += $(call cc-option,-mv${CONFIG_HEXAGON_ARCH_VERSION})
+>>>>>>> refs/remotes/origin/master
 
 KBUILD_CFLAGS += $(cflags-y)
 KBUILD_AFLAGS += $(aflags-y)
@@ -45,14 +51,21 @@ KBUILD_AFLAGS += -DTHREADINFO_REG=$(TIR_NAME)
 LIBGCC := $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
 libs-y += $(LIBGCC)
 
+<<<<<<< HEAD
 head-y := arch/hexagon/kernel/head.o \
 	arch/hexagon/kernel/init_task.o
+=======
+head-y := arch/hexagon/kernel/head.o
+>>>>>>> refs/remotes/origin/master
 
 core-y += arch/hexagon/kernel/ \
 	arch/hexagon/mm/ \
 	arch/hexagon/lib/
+<<<<<<< HEAD
 
 #	arch/hexagon/platform/common/
 #
 #core-$(CONFIG_HEXAGON_COMET)		+= arch/hexagon/platform/comet/
 #machine-$(CONFIG_HEXAGON_COMET)		:= comet
+=======
+>>>>>>> refs/remotes/origin/master

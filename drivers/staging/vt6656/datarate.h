@@ -29,6 +29,7 @@
 #ifndef __DATARATE_H__
 #define __DATARATE_H__
 
+<<<<<<< HEAD
 /*---------------------  Export Definitions -------------------------*/
 
 #define FALLBACK_PKT_COLLECT_TR_H  50   // pkts
@@ -41,6 +42,17 @@
 #define RETRY_TIMES_THRD_H         2    // times
 #define RETRY_TIMES_THRD_L         1    // times
 
+=======
+#define FALLBACK_PKT_COLLECT_TR_H  50   /* pkts */
+#define FALLBACK_PKT_COLLECT_TR_L  10   /* pkts */
+#define FALLBACK_POLL_SECOND       5    /* 5 sec */
+#define FALLBACK_RECOVER_SECOND    30   /* 30 sec */
+#define FALLBACK_THRESHOLD         15   /* percent */
+#define UPGRADE_THRESHOLD          5    /* percent */
+#define UPGRADE_CNT_THRD           3    /* times */
+#define RETRY_TIMES_THRD_H         2    /* times */
+#define RETRY_TIMES_THRD_L         1    /* times */
+>>>>>>> refs/remotes/origin/master
 
 #define RATE_1M         0
 #define RATE_2M         1
@@ -55,6 +67,7 @@
 #define RATE_48M       10
 #define RATE_54M       11
 #define RATE_AUTO      12
+<<<<<<< HEAD
 #define MAX_RATE       12
 
 /*---------------------  Export Classes  ----------------------------*/
@@ -89,12 +102,25 @@ RATEvTxRateFallBack(
     );
 
 BYTE
+=======
+
+void RATEvParseMaxRate(struct vnt_private *, PWLAN_IE_SUPP_RATES pItemRates,
+	PWLAN_IE_SUPP_RATES pItemExtRates, int bUpdateBasicRate,
+	u16 *pwMaxBasicRate, u16 *pwMaxSuppRate, u16 *pwSuppRate,
+	u8 *pbyTopCCKRate, u8 *pbyTopOFDMRate);
+
+void RATEvTxRateFallBack(struct vnt_private *pDevice,
+	PKnownNodeDB psNodeDBTable);
+
+u8
+>>>>>>> refs/remotes/origin/master
 RATEuSetIE(
      PWLAN_IE_SUPP_RATES pSrcRates,
      PWLAN_IE_SUPP_RATES pDstRates,
      unsigned int                uRateLen
     );
 
+<<<<<<< HEAD
 WORD
 RATEwGetRateIdx(
      BYTE byRate
@@ -104,6 +130,11 @@ RATEwGetRateIdx(
 BYTE
 DATARATEbyGetRateIdx(
      BYTE byRate
+=======
+u16
+RATEwGetRateIdx(
+     u8 byRate
+>>>>>>> refs/remotes/origin/master
     );
 
 #endif /* __DATARATE_H__ */

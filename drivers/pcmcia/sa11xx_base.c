@@ -42,9 +42,12 @@
 #include <mach/hardware.h>
 #include <asm/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "soc_common.h"
 #include "sa11xx_base.h"
@@ -240,6 +243,7 @@ int sa11xx_drv_pcmcia_probe(struct device *dev, struct pcmcia_low_level *ops,
 
 		skt->nr = first + i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		skt->ops = ops;
 		skt->socket.owner = ops->owner;
 		skt->socket.dev.parent = dev;
@@ -247,6 +251,9 @@ int sa11xx_drv_pcmcia_probe(struct device *dev, struct pcmcia_low_level *ops,
 =======
 		soc_pcmcia_init_one(skt, ops, dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		soc_pcmcia_init_one(skt, ops, dev);
+>>>>>>> refs/remotes/origin/master
 
 		ret = sa11xx_drv_pcmcia_add_one(skt);
 		if (ret)

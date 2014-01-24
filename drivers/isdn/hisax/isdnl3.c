@@ -4,10 +4,14 @@
  *              based on the teles driver from Jan den Ouden
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -32,19 +36,27 @@ enum {
 	ST_L3_LC_REL,
 	ST_L3_LC_ESTAB_WAIT,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ST_L3_LC_REL_DELAY, 
 =======
 	ST_L3_LC_REL_DELAY,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ST_L3_LC_REL_DELAY,
+>>>>>>> refs/remotes/origin/master
 	ST_L3_LC_REL_WAIT,
 	ST_L3_LC_ESTAB,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L3_STATE_COUNT (ST_L3_LC_ESTAB+1)
 =======
 #define L3_STATE_COUNT (ST_L3_LC_ESTAB + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L3_STATE_COUNT (ST_L3_LC_ESTAB + 1)
+>>>>>>> refs/remotes/origin/master
 
 static char *strL3State[] =
 {
@@ -66,10 +78,14 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L3_EVENT_COUNT (EV_TIMEOUT+1)
 =======
 #define L3_EVENT_COUNT (EV_TIMEOUT + 1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L3_EVENT_COUNT (EV_TIMEOUT + 1)
+>>>>>>> refs/remotes/origin/master
 
 static char *strL3Event[] =
 {
@@ -83,12 +99,17 @@ static char *strL3Event[] =
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __attribute__((format(printf, 2, 3))) void
 l3m_debug(struct FsmInst *fi, char *fmt, ...)
 =======
 static __printf(2, 3) void
 	l3m_debug(struct FsmInst *fi, char *fmt, ...)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __printf(2, 3) void
+	l3m_debug(struct FsmInst *fi, char *fmt, ...)
+>>>>>>> refs/remotes/origin/master
 {
 	va_list args;
 	struct PStack *st = fi->userdata;
@@ -100,10 +121,14 @@ static __printf(2, 3) void
 
 u_char *
 <<<<<<< HEAD
+<<<<<<< HEAD
 findie(u_char * p, int size, u_char ie, int wanted_set)
 =======
 findie(u_char *p, int size, u_char ie, int wanted_set)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+findie(u_char *p, int size, u_char ie, int wanted_set)
+>>>>>>> refs/remotes/origin/master
 {
 	int l, codeset, maincodeset;
 	u_char *pend = p + size;
@@ -128,6 +153,7 @@ findie(u_char *p, int size, u_char ie, int wanted_set)
 			if (codeset == wanted_set) {
 				if (*p == ie)
 <<<<<<< HEAD
+<<<<<<< HEAD
                                   { /* improved length check (Werner Cornelius) */
                                     if ((pend - p) < 2) 
                                       return(NULL); 
@@ -137,6 +163,8 @@ findie(u_char *p, int size, u_char ie, int wanted_set)
                                   }           
                                   
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				{ /* improved length check (Werner Cornelius) */
 					if ((pend - p) < 2)
 						return (NULL);
@@ -145,7 +173,10 @@ findie(u_char *p, int size, u_char ie, int wanted_set)
 					return (p);
 				}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				if (*p > ie)
 					return (NULL);
 			}
@@ -160,26 +191,36 @@ findie(u_char *p, int size, u_char ie, int wanted_set)
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 getcallref(u_char * p)
 =======
 getcallref(u_char *p)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+getcallref(u_char *p)
+>>>>>>> refs/remotes/origin/master
 {
 	int l, cr = 0;
 
 	p++;			/* prot discr */
 	if (*p & 0xfe)		/* wrong callref BRI only 1 octet*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(-2);
 	l = 0xf & *p++;		/* callref length */
 	if (!l)			/* dummy CallRef */
 		return(-1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return (-2);
 	l = 0xf & *p++;		/* callref length */
 	if (!l)			/* dummy CallRef */
 		return (-1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cr = *p++;
 	return (cr);
 }
@@ -201,10 +242,14 @@ newl3state(struct l3_process *pc, int state)
 {
 	if (pc->debug & L3_DEB_STATE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		l3_debug(pc->st, "newstate cr %d %d --> %d", 
 =======
 		l3_debug(pc->st, "newstate cr %d %d --> %d",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		l3_debug(pc->st, "newstate cr %d %d --> %d",
+>>>>>>> refs/remotes/origin/master
 			 pc->callref & 0x7F,
 			 pc->state, state);
 	pc->state = state;
@@ -280,12 +325,17 @@ static int
 no_l3_proto_spec(struct PStack *st, isdn_ctrl *ic)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_WARNING "HiSax: no specific protocol handler for proto %lu\n",ic->arg & 0xFF);
 	return(-1);
 =======
 	printk(KERN_WARNING "HiSax: no specific protocol handler for proto %lu\n", ic->arg & 0xFF);
 	return (-1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_WARNING "HiSax: no specific protocol handler for proto %lu\n", ic->arg & 0xFF);
+	return (-1);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct l3_process
@@ -344,10 +394,14 @@ release_l3_process(struct l3_process *p)
 				pp->next = np->next;
 			else if (!(p->st->l3.proc = np->next) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 				!test_bit(FLG_PTP, &p->st->l2.flag)) {
 =======
 				 !test_bit(FLG_PTP, &p->st->l2.flag)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 !test_bit(FLG_PTP, &p->st->l2.flag)) {
+>>>>>>> refs/remotes/origin/master
 				if (p->debug)
 					l3_debug(p->st, "release_l3_process: last process");
 				if (skb_queue_empty(&p->st->l3.squeue)) {
@@ -362,10 +416,14 @@ release_l3_process(struct l3_process *p)
 						l3_debug(p->st, "release_l3_process: not release link");
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			} 
 =======
 			}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 			kfree(p);
 			return;
 		}
@@ -405,22 +463,29 @@ setstack_l3dc(struct PStack *st, struct Channel *chanp)
 	st->l3.l3m.userint = 0;
 	st->l3.l3m.printdebug = l3m_debug;
 <<<<<<< HEAD
+<<<<<<< HEAD
         FsmInitTimer(&st->l3.l3m, &st->l3.l3m_timer);
 	strcpy(st->l3.debug_id, "L3DC ");
 	st->lli.l4l3_proto = no_l3_proto_spec;
 
 #ifdef	CONFIG_HISAX_EURO
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	FsmInitTimer(&st->l3.l3m, &st->l3.l3m_timer);
 	strcpy(st->l3.debug_id, "L3DC ");
 	st->lli.l4l3_proto = no_l3_proto_spec;
 
 #ifdef CONFIG_HISAX_EURO
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (st->protocol == ISDN_PTYPE_EURO) {
 		setstack_dss1(st);
 	} else
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef  CONFIG_HISAX_NI1
 	if (st->protocol == ISDN_PTYPE_NI1) {
@@ -450,6 +515,8 @@ setstack_l3dc(struct PStack *st, struct Channel *chanp)
 		st->protocol = -1;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HISAX_NI1
 		if (st->protocol == ISDN_PTYPE_NI1) {
 			setstack_ni1(st);
@@ -477,7 +544,10 @@ setstack_l3dc(struct PStack *st, struct Channel *chanp)
 					printk(KERN_WARNING "HiSax: %s\n", tmp);
 					st->protocol = -1;
 				}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -572,22 +642,29 @@ static void
 lc_start_delay(struct FsmInst *fi, int event, void *arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
        struct PStack *st = fi->userdata;
 
        FsmChangeState(fi, ST_L3_LC_REL_DELAY);
        FsmAddTimer(&st->l3.l3m_timer, DREL_TIMER_VALUE, EV_TIMEOUT, NULL, 50);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct PStack *st = fi->userdata;
 
 	FsmChangeState(fi, ST_L3_LC_REL_DELAY);
 	FsmAddTimer(&st->l3.l3m_timer, DREL_TIMER_VALUE, EV_TIMEOUT, NULL, 50);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 lc_start_delay_check(struct FsmInst *fi, int event, void *arg)
 /* 20/09/00 - GE timer not user for NI-1 as layer 2 should stay up */
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
        struct PStack *st = fi->userdata;
 
@@ -596,13 +673,18 @@ lc_start_delay_check(struct FsmInst *fi, int event, void *arg)
        if (st->protocol != ISDN_PTYPE_NI1) 
        		FsmAddTimer(&st->l3.l3m_timer, DREL_TIMER_VALUE, EV_TIMEOUT, NULL, 50);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct PStack *st = fi->userdata;
 
 	FsmChangeState(fi, ST_L3_LC_REL_DELAY);
 	/* 19/09/00 - GE timer not user for NI-1 */
 	if (st->protocol != ISDN_PTYPE_NI1)
 		FsmAddTimer(&st->l3.l3m_timer, DREL_TIMER_VALUE, EV_TIMEOUT, NULL, 50);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -655,6 +737,7 @@ static struct FsmNode L3FnList[] __initdata =
 	{ST_L3_LC_ESTAB,	EV_RELEASE_IND,		lc_release_ind},
 	{ST_L3_LC_ESTAB,	EV_RELEASE_REQ,		lc_start_delay_check},
 <<<<<<< HEAD
+<<<<<<< HEAD
         {ST_L3_LC_REL_DELAY,    EV_RELEASE_IND,         lc_release_ind},
         {ST_L3_LC_REL_DELAY,    EV_ESTABLISH_REQ,       lc_connected},
         {ST_L3_LC_REL_DELAY,    EV_TIMEOUT,             lc_release_req},
@@ -663,6 +746,11 @@ static struct FsmNode L3FnList[] __initdata =
 	{ST_L3_LC_REL_DELAY,    EV_ESTABLISH_REQ,       lc_connected},
 	{ST_L3_LC_REL_DELAY,    EV_TIMEOUT,             lc_release_req},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ST_L3_LC_REL_DELAY,    EV_RELEASE_IND,         lc_release_ind},
+	{ST_L3_LC_REL_DELAY,    EV_ESTABLISH_REQ,       lc_connected},
+	{ST_L3_LC_REL_DELAY,    EV_TIMEOUT,             lc_release_req},
+>>>>>>> refs/remotes/origin/master
 	{ST_L3_LC_REL_WAIT,	EV_RELEASE_CNF,		lc_release_cnf},
 	{ST_L3_LC_REL_WAIT,	EV_ESTABLISH_REQ,	lc_activate},
 };
@@ -672,6 +760,7 @@ void
 l3_msg(struct PStack *st, int pr, void *arg)
 {
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (DL_DATA | REQUEST):
 			if (st->l3.l3m.state == ST_L3_LC_ESTAB) {
@@ -702,6 +791,8 @@ l3_msg(struct PStack *st, int pr, void *arg)
 			FsmEvent(&st->l3.l3m, EV_RELEASE_REQ, NULL);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (DL_DATA | REQUEST):
 		if (st->l3.l3m.state == ST_L3_LC_ESTAB) {
 			st->l3.l3l2(st, pr, arg);
@@ -730,7 +821,10 @@ l3_msg(struct PStack *st, int pr, void *arg)
 	case (DL_RELEASE | REQUEST):
 		FsmEvent(&st->l3.l3m, EV_RELEASE_REQ, NULL);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

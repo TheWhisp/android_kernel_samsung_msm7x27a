@@ -3,12 +3,17 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef MMC_SDIO_IDS_H
 #define MMC_SDIO_IDS_H
 =======
 #ifndef LINUX_MMC_SDIO_IDS_H
 #define LINUX_MMC_SDIO_IDS_H
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef LINUX_MMC_SDIO_IDS_H
+#define LINUX_MMC_SDIO_IDS_H
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Standard SDIO Function Interfaces
@@ -50,7 +55,11 @@
 #define SDIO_DEVICE_ID_SIANO_STELLAR 		0x5347
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 #endif /* LINUX_MMC_SDIO_IDS_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* LINUX_MMC_SDIO_IDS_H */
+>>>>>>> refs/remotes/origin/master

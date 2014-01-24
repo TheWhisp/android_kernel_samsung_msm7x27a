@@ -27,6 +27,7 @@
 #define FSMC_NAND_BW16		2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * The placement of the Command Latch Enable (CLE) and
  * Address Latch Enable (ALE) is twisted around in the
@@ -42,12 +43,15 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FSMC_MAX_NOR_BANKS	4
 #define FSMC_MAX_NAND_BANKS	4
 
 #define FSMC_FLASH_WIDTH8	1
 #define FSMC_FLASH_WIDTH16	2
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct fsmc_nor_bank_regs {
 	uint32_t ctrl;
@@ -120,6 +124,8 @@ struct fsmc_regs {
 #define FSMC_THIZ_1		(1 << 24)
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* fsmc controller registers for NOR flash */
 #define CTRL			0x0
 	/* ctrl register definitions */
@@ -191,7 +197,10 @@ struct fsmc_regs {
 
 #define FSMC_BUSY_WAIT_TIMEOUT	(1 * HZ)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * There are 13 bytes of ecc for every 512 byte block in FSMC version 8
  * and it has to be read consecutively and immediately after the 512
@@ -211,7 +220,10 @@ struct fsmc_eccplace {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct fsmc_nand_timings {
 	uint8_t tclr;
 	uint8_t tar;
@@ -226,9 +238,15 @@ enum access_mode {
 	USE_WORD_ACCESS,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /**
  * fsmc_nand_platform_data - platform specific NAND controller config
+=======
+/**
+ * fsmc_nand_platform_data - platform specific NAND controller config
+ * @nand_timings: timing setup for the physical NAND interface
+>>>>>>> refs/remotes/origin/master
  * @partitions: partition table for the platform, use a default fallback
  * if this is NULL
  * @nr_partitions: the number of partitions in the previous entry
@@ -241,14 +259,19 @@ enum access_mode {
  */
 struct fsmc_nand_platform_data {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct fsmc_nand_timings *nand_timings;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct fsmc_nand_timings *nand_timings;
+>>>>>>> refs/remotes/origin/master
 	struct mtd_partition	*partitions;
 	unsigned int		nr_partitions;
 	unsigned int		options;
 	unsigned int		width;
 	unsigned int		bank;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	void			(*select_bank)(uint32_t bank, uint32_t busw);
 =======
@@ -256,6 +279,9 @@ struct fsmc_nand_platform_data {
 	/* CLE, ALE offsets */
 	unsigned int		cle_off;
 	unsigned int		ale_off;
+=======
+
+>>>>>>> refs/remotes/origin/master
 	enum access_mode	mode;
 
 	void			(*select_bank)(uint32_t bank, uint32_t busw);
@@ -263,7 +289,10 @@ struct fsmc_nand_platform_data {
 	/* priv structures for dma accesses */
 	void			*read_dma_priv;
 	void			*write_dma_priv;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int __init fsmc_nor_init(struct platform_device *pdev,

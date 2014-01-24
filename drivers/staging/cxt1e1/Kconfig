@@ -7,11 +7,15 @@ config CXT1E1
       mode controller.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       If you want to compile this driver as a module
       say M here and read <file:Documentation/modules.txt>.
 =======
       If you want to compile this driver as a module say M here.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+      If you want to compile this driver as a module say M here.
+>>>>>>> refs/remotes/origin/master
       The module will be called 'cxt1e1'.
 
       If unsure, say N.

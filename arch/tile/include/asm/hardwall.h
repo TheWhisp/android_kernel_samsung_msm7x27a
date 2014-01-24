@@ -11,6 +11,7 @@
  *   NON INFRINGEMENT.  See the GNU General Public License for
  *   more details.
  *
+<<<<<<< HEAD
  * Provide methods for the HARDWALL_FILE for accessing the UDN.
  */
 
@@ -50,6 +51,15 @@
 #define HARDWALL_FILE "/dev/hardwall"
 
 #else
+=======
+ * Provide methods for access control of per-cpu resources like
+ * UDN, IDN, or IPI.
+ */
+#ifndef _ASM_TILE_HARDWALL_H
+#define _ASM_TILE_HARDWALL_H
+
+#include <uapi/asm/hardwall.h>
+>>>>>>> refs/remotes/origin/master
 
 /* /proc hooks for hardwall. */
 struct proc_dir_entry;
@@ -59,7 +69,10 @@ int proc_pid_hardwall(struct task_struct *task, char *buffer);
 #else
 static inline void proc_tile_hardwall_init(struct proc_dir_entry *root) {}
 #endif
+<<<<<<< HEAD
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TILE_HARDWALL_H */

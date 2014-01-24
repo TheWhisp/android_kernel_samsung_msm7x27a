@@ -211,12 +211,17 @@ static void pata_icside_set_dmamode(struct ata_port *ap, struct ata_device *adev
 		iomd_type = 'A', cycle = 562;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_dev_printk(adev, KERN_INFO, "timings: act %dns rec %dns cyc %dns (%c)\n",
 		t.active, t.recover, t.cycle, iomd_type);
 =======
 	ata_dev_info(adev, "timings: act %dns rec %dns cyc %dns (%c)\n",
 		     t.active, t.recover, t.cycle, iomd_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_dev_info(adev, "timings: act %dns rec %dns cyc %dns (%c)\n",
+		     t.active, t.recover, t.cycle, iomd_type);
+>>>>>>> refs/remotes/origin/master
 
 	state->port[ap->port_no].speed[adev->devno] = cycle;
 }
@@ -342,10 +347,16 @@ static struct ata_port_operations pata_icside_port_ops = {
 	.port_start		= ATA_OP_NULL,	/* don't need PRD table */
 };
 
+<<<<<<< HEAD
 static void __devinit
 pata_icside_setup_ioaddr(struct ata_port *ap, void __iomem *base,
 			 struct pata_icside_info *info,
 			 const struct portinfo *port)
+=======
+static void pata_icside_setup_ioaddr(struct ata_port *ap, void __iomem *base,
+				     struct pata_icside_info *info,
+				     const struct portinfo *port)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_ioports *ioaddr = &ap->ioaddr;
 	void __iomem *cmd = base + port->dataoffset;
@@ -373,7 +384,11 @@ pata_icside_setup_ioaddr(struct ata_port *ap, void __iomem *base,
 		ata_port_desc(ap, "iocbase 0x%lx", info->raw_ioc_base);
 }
 
+<<<<<<< HEAD
 static int __devinit pata_icside_register_v5(struct pata_icside_info *info)
+=======
+static int pata_icside_register_v5(struct pata_icside_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pata_icside_state *state = info->state;
 	void __iomem *base;
@@ -396,7 +411,11 @@ static int __devinit pata_icside_register_v5(struct pata_icside_info *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit pata_icside_register_v6(struct pata_icside_info *info)
+=======
+static int pata_icside_register_v6(struct pata_icside_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pata_icside_state *state = info->state;
 	struct expansion_card *ec = info->ec;
@@ -439,7 +458,11 @@ static int __devinit pata_icside_register_v6(struct pata_icside_info *info)
 	return icside_dma_init(info);
 }
 
+<<<<<<< HEAD
 static int __devinit pata_icside_add_ports(struct pata_icside_info *info)
+=======
+static int pata_icside_add_ports(struct pata_icside_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct expansion_card *ec = info->ec;
 	struct ata_host *host;
@@ -479,8 +502,13 @@ static int __devinit pata_icside_add_ports(struct pata_icside_info *info)
 				 &pata_icside_sht);
 }
 
+<<<<<<< HEAD
 static int __devinit
 pata_icside_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int pata_icside_probe(struct expansion_card *ec,
+			     const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pata_icside_state *state;
 	struct pata_icside_info info;
@@ -580,7 +608,11 @@ static void pata_icside_shutdown(struct expansion_card *ec)
 	}
 }
 
+<<<<<<< HEAD
 static void __devexit pata_icside_remove(struct expansion_card *ec)
+=======
+static void pata_icside_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_host *host = ecard_get_drvdata(ec);
 	struct pata_icside_state *state = host->private_data;
@@ -607,7 +639,11 @@ static const struct ecard_id pata_icside_ids[] = {
 
 static struct ecard_driver pata_icside_driver = {
 	.probe		= pata_icside_probe,
+<<<<<<< HEAD
 	.remove 	= __devexit_p(pata_icside_remove),
+=======
+	.remove 	= pata_icside_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= pata_icside_shutdown,
 	.id_table	= pata_icside_ids,
 	.drv = {

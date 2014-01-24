@@ -14,6 +14,10 @@
 #include <linux/fb.h>
 #include <linux/backlight.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/cs5535.h>
 
 static struct cs5535_mfgpt_timer *pwm_timer;
@@ -84,7 +88,12 @@ static int ot200_backlight_probe(struct platform_device *pdev)
 	int retval = 0;
 
 	/* request gpio */
+<<<<<<< HEAD
 	if (gpio_request(GPIO_DIMM, "ot200 backlight dimmer") < 0) {
+=======
+	if (devm_gpio_request(&pdev->dev, GPIO_DIMM,
+				"ot200 backlight dimmer") < 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "failed to request GPIO %d\n", GPIO_DIMM);
 		return -ENODEV;
 	}
@@ -93,6 +102,7 @@ static int ot200_backlight_probe(struct platform_device *pdev)
 	pwm_timer = cs5535_mfgpt_alloc_timer(7, MFGPT_DOMAIN_ANY);
 	if (!pwm_timer) {
 		dev_err(&pdev->dev, "MFGPT 7 not available\n");
+<<<<<<< HEAD
 		retval = -ENODEV;
 		goto error_mfgpt_alloc;
 	}
@@ -101,6 +111,15 @@ static int ot200_backlight_probe(struct platform_device *pdev)
 	if (!data) {
 		retval = -ENOMEM;
 		goto error_kzalloc;
+=======
+		return -ENODEV;
+	}
+
+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+	if (!data) {
+		retval = -ENOMEM;
+		goto error_devm_kzalloc;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* setup gpio */
@@ -122,26 +141,38 @@ static int ot200_backlight_probe(struct platform_device *pdev)
 	if (IS_ERR(bl)) {
 		dev_err(&pdev->dev, "failed to register backlight\n");
 		retval = PTR_ERR(bl);
+<<<<<<< HEAD
 		goto error_backlight_device_register;
+=======
+		goto error_devm_kzalloc;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, bl);
 
 	return 0;
 
+<<<<<<< HEAD
 error_backlight_device_register:
 	kfree(data);
 error_kzalloc:
 	cs5535_mfgpt_free_timer(pwm_timer);
 error_mfgpt_alloc:
 	gpio_free(GPIO_DIMM);
+=======
+error_devm_kzalloc:
+	cs5535_mfgpt_free_timer(pwm_timer);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
 static int ot200_backlight_remove(struct platform_device *pdev)
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct ot200_backlight_data *data = bl_get_data(bl);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	backlight_device_unregister(bl);
 
@@ -152,9 +183,13 @@ static int ot200_backlight_remove(struct platform_device *pdev)
 		MAX_COMP2 - dim_table[100]);
 
 	cs5535_mfgpt_free_timer(pwm_timer);
+<<<<<<< HEAD
 	gpio_free(GPIO_DIMM);
 
 	kfree(data);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

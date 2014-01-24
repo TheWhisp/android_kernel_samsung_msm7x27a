@@ -11,9 +11,14 @@
 #ifndef __ASM_AVR32_SETUP_H__
 #define __ASM_AVR32_SETUP_H__
 
+<<<<<<< HEAD
 #define COMMAND_LINE_SIZE 256
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/setup.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* Magic number indicating that a tag table is present */
 #define ATAG_MAGIC	0xa2a25441
@@ -142,6 +147,9 @@ void setup_processor(void);
 
 #endif /* !__ASSEMBLY__ */
 
+<<<<<<< HEAD
 #endif  /*  __KERNEL__  */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_AVR32_SETUP_H__ */

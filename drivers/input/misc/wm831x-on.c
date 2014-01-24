@@ -69,6 +69,7 @@ static irqreturn_t wm831x_on_irq(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit wm831x_on_probe(struct platform_device *pdev)
 {
 	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
@@ -77,6 +78,17 @@ static int __devinit wm831x_on_probe(struct platform_device *pdev)
 	int ret;
 
 	wm831x_on = kzalloc(sizeof(struct wm831x_on), GFP_KERNEL);
+=======
+static int wm831x_on_probe(struct platform_device *pdev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(pdev->dev.parent);
+	struct wm831x_on *wm831x_on;
+	int irq = wm831x_irq(wm831x, platform_get_irq(pdev, 0));
+	int ret;
+
+	wm831x_on = devm_kzalloc(&pdev->dev, sizeof(struct wm831x_on),
+				 GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!wm831x_on) {
 		dev_err(&pdev->dev, "Can't allocate data\n");
 		return -ENOMEM;
@@ -85,7 +97,11 @@ static int __devinit wm831x_on_probe(struct platform_device *pdev)
 	wm831x_on->wm831x = wm831x;
 	INIT_DELAYED_WORK(&wm831x_on->work, wm831x_poll_on);
 
+<<<<<<< HEAD
 	wm831x_on->dev = input_allocate_device();
+=======
+	wm831x_on->dev = devm_input_allocate_device(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!wm831x_on->dev) {
 		dev_err(&pdev->dev, "Can't allocate input dev\n");
 		ret = -ENOMEM;
@@ -118,6 +134,7 @@ static int __devinit wm831x_on_probe(struct platform_device *pdev)
 err_irq:
 	free_irq(irq, wm831x_on);
 err_input_dev:
+<<<<<<< HEAD
 	input_free_device(wm831x_on->dev);
 err:
 	kfree(wm831x_on);
@@ -125,26 +142,41 @@ err:
 }
 
 static int __devexit wm831x_on_remove(struct platform_device *pdev)
+=======
+err:
+	return ret;
+}
+
+static int wm831x_on_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm831x_on *wm831x_on = platform_get_drvdata(pdev);
 	int irq = platform_get_irq(pdev, 0);
 
 	free_irq(irq, wm831x_on);
 	cancel_delayed_work_sync(&wm831x_on->work);
+<<<<<<< HEAD
 	input_unregister_device(wm831x_on->dev);
 	kfree(wm831x_on);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver wm831x_on_driver = {
 	.probe		= wm831x_on_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wm831x_on_remove),
+=======
+	.remove		= wm831x_on_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "wm831x-on",
 		.owner	= THIS_MODULE,
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init wm831x_on_init(void)
@@ -161,6 +193,9 @@ module_exit(wm831x_on_exit);
 =======
 module_platform_driver(wm831x_on_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(wm831x_on_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:wm831x-on");
 MODULE_DESCRIPTION("WM831x ON pin");

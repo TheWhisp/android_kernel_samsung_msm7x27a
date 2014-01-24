@@ -35,10 +35,13 @@
 BSS_STACK(4096);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void iss_4xx_fixups(void)
 {
 	ibm4xx_sdram_fixup_memsize();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 ibm4xx_memstart;
 
 static void iss_4xx_fixups(void)
@@ -62,7 +65,10 @@ static void iss_4xx_fixups(void)
 static void *iss_4xx_vmlinux_alloc(unsigned long size)
 {
 	return (void *)ibm4xx_memstart;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #define SPRN_PIR	0x11E	/* Processor Indentification Register */
@@ -75,9 +81,13 @@ void platform_init(void)
 	simple_alloc_init(_end, avail_ram, 128, 64);
 	platform_ops.fixups = iss_4xx_fixups;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	platform_ops.vmlinux_alloc = iss_4xx_vmlinux_alloc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	platform_ops.vmlinux_alloc = iss_4xx_vmlinux_alloc;
+>>>>>>> refs/remotes/origin/master
 	platform_ops.exit = ibm44x_dbcr_reset;
 	pir_reg = mfspr(SPRN_PIR);
 	fdt_set_boot_cpuid_phys(_dtb_start, pir_reg);

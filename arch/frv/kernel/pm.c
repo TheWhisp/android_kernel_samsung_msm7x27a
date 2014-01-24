@@ -150,15 +150,23 @@ static int user_atoi(char __user *ubuf, size_t len)
 /*
  * Send us to sleep.
  */
+<<<<<<< HEAD
 static int sysctl_pm_do_suspend(ctl_table *ctl, int write,
 				void __user *buffer, size_t *lenp, loff_t *fpos)
 {
 	int retval, mode;
+=======
+static int sysctl_pm_do_suspend(struct ctl_table *ctl, int write,
+				void __user *buffer, size_t *lenp, loff_t *fpos)
+{
+	int mode;
+>>>>>>> refs/remotes/origin/master
 
 	if (*lenp <= 0)
 		return -EIO;
 
 	mode = user_atoi(buffer, *lenp);
+<<<<<<< HEAD
 	if ((mode != 1) && (mode != 5))
 		return -EINVAL;
 
@@ -170,6 +178,18 @@ static int sysctl_pm_do_suspend(ctl_table *ctl, int write,
 	}
 
 	return retval;
+=======
+	switch (mode) {
+	case 1:
+	    return pm_do_suspend();
+
+	case 5:
+	    return pm_do_bus_sleep();
+
+	default:
+	    return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int try_set_cmode(int new_cmode)
@@ -198,7 +218,11 @@ static int try_set_cmode(int new_cmode)
 }
 
 
+<<<<<<< HEAD
 static int cmode_procctl(ctl_table *ctl, int write,
+=======
+static int cmode_procctl(struct ctl_table *ctl, int write,
+>>>>>>> refs/remotes/origin/master
 			 void __user *buffer, size_t *lenp, loff_t *fpos)
 {
 	int new_cmode;
@@ -270,7 +294,11 @@ static int try_set_cm(int new_cm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int p0_procctl(ctl_table *ctl, int write,
+=======
+static int p0_procctl(struct ctl_table *ctl, int write,
+>>>>>>> refs/remotes/origin/master
 		      void __user *buffer, size_t *lenp, loff_t *fpos)
 {
 	int new_p0;
@@ -283,7 +311,11 @@ static int p0_procctl(ctl_table *ctl, int write,
 	return try_set_p0(new_p0)?:*lenp;
 }
 
+<<<<<<< HEAD
 static int cm_procctl(ctl_table *ctl, int write,
+=======
+static int cm_procctl(struct ctl_table *ctl, int write,
+>>>>>>> refs/remotes/origin/master
 		      void __user *buffer, size_t *lenp, loff_t *fpos)
 {
 	int new_cm;

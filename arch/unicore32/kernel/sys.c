@@ -28,6 +28,7 @@
 #include <asm/syscalls.h>
 #include <asm/cacheflush.h>
 
+<<<<<<< HEAD
 /* Clone a task - this clones the calling program thread.
  * This is called indirectly via a small wrapper
  */
@@ -115,10 +116,16 @@ SYSCALL_DEFINE6(mmap2, unsigned long, addr, unsigned long, len,
 			      off_4k);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Provide the actual syscall number to call mapping. */
 #undef __SYSCALL
 #define __SYSCALL(nr, call)	[nr] = (call),
 
+<<<<<<< HEAD
+=======
+#define sys_mmap2 sys_mmap_pgoff
+>>>>>>> refs/remotes/origin/master
 /* Note that we don't include <linux/unistd.h> but <asm/unistd.h> */
 void *sys_call_table[__NR_syscalls] = {
 	[0 ... __NR_syscalls-1] = sys_ni_syscall,

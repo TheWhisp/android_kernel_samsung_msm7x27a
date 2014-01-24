@@ -28,6 +28,10 @@
 struct gpio_charger {
 	const struct gpio_charger_platform_data *pdata;
 	unsigned int irq;
+<<<<<<< HEAD
+=======
+	bool wakeup_enabled;
+>>>>>>> refs/remotes/origin/master
 
 	struct power_supply charger;
 };
@@ -54,7 +58,11 @@ static int gpio_charger_get_property(struct power_supply *psy,
 
 	switch (psp) {
 	case POWER_SUPPLY_PROP_ONLINE:
+<<<<<<< HEAD
 		val->intval = gpio_get_value(pdata->gpio);
+=======
+		val->intval = gpio_get_value_cansleep(pdata->gpio);
+>>>>>>> refs/remotes/origin/master
 		val->intval ^= pdata->gpio_active_low;
 		break;
 	default:
@@ -68,7 +76,11 @@ static enum power_supply_property gpio_charger_properties[] = {
 	POWER_SUPPLY_PROP_ONLINE,
 };
 
+<<<<<<< HEAD
 static int __devinit gpio_charger_probe(struct platform_device *pdev)
+=======
+static int gpio_charger_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct gpio_charger_platform_data *pdata = pdev->dev.platform_data;
 	struct gpio_charger *gpio_charger;
@@ -86,7 +98,12 @@ static int __devinit gpio_charger_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	gpio_charger = kzalloc(sizeof(*gpio_charger), GFP_KERNEL);
+=======
+	gpio_charger = devm_kzalloc(&pdev->dev, sizeof(*gpio_charger),
+					GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!gpio_charger) {
 		dev_err(&pdev->dev, "Failed to alloc driver structure\n");
 		return -ENOMEM;
@@ -128,10 +145,14 @@ static int __devinit gpio_charger_probe(struct platform_device *pdev)
 				IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
 				dev_name(&pdev->dev), charger);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ret)
 =======
 		if (ret < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ret < 0)
+>>>>>>> refs/remotes/origin/master
 			dev_warn(&pdev->dev, "Failed to request irq: %d\n", ret);
 		else
 			gpio_charger->irq = irq;
@@ -139,16 +160,28 @@ static int __devinit gpio_charger_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, gpio_charger);
 
+<<<<<<< HEAD
+=======
+	device_init_wakeup(&pdev->dev, 1);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_gpio_free:
 	gpio_free(pdata->gpio);
 err_free:
+<<<<<<< HEAD
 	kfree(gpio_charger);
 	return ret;
 }
 
 static int __devexit gpio_charger_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int gpio_charger_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gpio_charger *gpio_charger = platform_get_drvdata(pdev);
 
@@ -159,29 +192,60 @@ static int __devexit gpio_charger_remove(struct platform_device *pdev)
 
 	gpio_free(gpio_charger->pdata->gpio);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	kfree(gpio_charger);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 #ifdef CONFIG_PM_SLEEP
+<<<<<<< HEAD
+=======
+static int gpio_charger_suspend(struct device *dev)
+{
+	struct gpio_charger *gpio_charger = dev_get_drvdata(dev);
+
+	if (device_may_wakeup(dev))
+		gpio_charger->wakeup_enabled =
+			enable_irq_wake(gpio_charger->irq);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int gpio_charger_resume(struct device *dev)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct gpio_charger *gpio_charger = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
+=======
+	if (gpio_charger->wakeup_enabled)
+		disable_irq_wake(gpio_charger->irq);
+>>>>>>> refs/remotes/origin/master
 	power_supply_changed(&gpio_charger->charger);
 
 	return 0;
 }
 #endif
 
+<<<<<<< HEAD
 static SIMPLE_DEV_PM_OPS(gpio_charger_pm_ops, NULL, gpio_charger_resume);
 
 static struct platform_driver gpio_charger_driver = {
 	.probe = gpio_charger_probe,
 	.remove = __devexit_p(gpio_charger_remove),
+=======
+static SIMPLE_DEV_PM_OPS(gpio_charger_pm_ops,
+		gpio_charger_suspend, gpio_charger_resume);
+
+static struct platform_driver gpio_charger_driver = {
+	.probe = gpio_charger_probe,
+	.remove = gpio_charger_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "gpio-charger",
 		.owner = THIS_MODULE,
@@ -189,6 +253,7 @@ static struct platform_driver gpio_charger_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init gpio_charger_init(void)
 {
@@ -204,6 +269,9 @@ module_exit(gpio_charger_exit);
 =======
 module_platform_driver(gpio_charger_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(gpio_charger_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
 MODULE_DESCRIPTION("Driver for chargers which report their online status through a GPIO");

@@ -21,6 +21,7 @@
 #include <linux/ptrace.h>
 #include <linux/device.h>
 #include <linux/highmem.h>
+<<<<<<< HEAD
 #include <linux/crash_dump.h>
 #include <linux/backing-dev.h>
 #include <linux/bootmem.h>
@@ -33,11 +34,26 @@
 
 #include <asm/uaccess.h>
 #include <asm/io.h>
+=======
+#include <linux/backing-dev.h>
+#include <linux/splice.h>
+#include <linux/pfn.h>
+#include <linux/export.h>
+#include <linux/io.h>
+#include <linux/aio.h>
+
+#include <asm/uaccess.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IA64
 # include <linux/efi.h>
 #endif
 
+<<<<<<< HEAD
+=======
+#define DEVPORT_MINOR	4
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long size_inside_page(unsigned long start,
 					     unsigned long size)
 {
@@ -49,7 +65,11 @@ static inline unsigned long size_inside_page(unsigned long start,
 }
 
 #ifndef ARCH_HAS_VALID_PHYS_ADDR_RANGE
+<<<<<<< HEAD
 static inline int valid_phys_addr_range(unsigned long addr, size_t count)
+=======
+static inline int valid_phys_addr_range(phys_addr_t addr, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	return addr + count <= __pa(high_memory);
 }
@@ -60,7 +80,10 @@ static inline int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
 }
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM)
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_STRICT_DEVMEM
 static inline int range_is_allowed(unsigned long pfn, unsigned long size)
 {
@@ -86,9 +109,13 @@ static inline int range_is_allowed(unsigned long pfn, unsigned long size)
 	return 1;
 }
 #endif
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_DEVMEM
+=======
+
+>>>>>>> refs/remotes/origin/master
 void __weak unxlate_dev_mem_ptr(unsigned long phys, void *addr)
 {
 }
@@ -100,7 +127,11 @@ void __weak unxlate_dev_mem_ptr(unsigned long phys, void *addr)
 static ssize_t read_mem(struct file *file, char __user *buf,
 			size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	unsigned long p = *ppos;
+=======
+	phys_addr_t p = *ppos;
+>>>>>>> refs/remotes/origin/master
 	ssize_t read, sz;
 	char *ptr;
 
@@ -157,7 +188,11 @@ static ssize_t read_mem(struct file *file, char __user *buf,
 static ssize_t write_mem(struct file *file, const char __user *buf,
 			 size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	unsigned long p = *ppos;
+=======
+	phys_addr_t p = *ppos;
+>>>>>>> refs/remotes/origin/master
 	ssize_t written, sz;
 	unsigned long copied;
 	void *ptr;
@@ -215,9 +250,12 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
 	*ppos += written;
 	return written;
 }
+<<<<<<< HEAD
 #endif	/* CONFIG_DEVMEM */
 
 #if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM)
+=======
+>>>>>>> refs/remotes/origin/master
 
 int __weak phys_mem_access_prot_allowed(struct file *file,
 	unsigned long pfn, unsigned long size, pgprot_t *vma_prot)
@@ -233,7 +271,11 @@ int __weak phys_mem_access_prot_allowed(struct file *file,
  *
  */
 #ifdef pgprot_noncached
+<<<<<<< HEAD
 static int uncached_access(struct file *file, unsigned long addr)
+=======
+static int uncached_access(struct file *file, phys_addr_t addr)
+>>>>>>> refs/remotes/origin/master
 {
 #if defined(CONFIG_IA64)
 	/*
@@ -265,7 +307,11 @@ static pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
 				     unsigned long size, pgprot_t vma_prot)
 {
 #ifdef pgprot_noncached
+<<<<<<< HEAD
 	unsigned long offset = pfn << PAGE_SHIFT;
+=======
+	phys_addr_t offset = pfn << PAGE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	if (uncached_access(file, offset))
 		return pgprot_noncached(vma_prot);
@@ -329,7 +375,11 @@ static int mmap_mem(struct file *file, struct vm_area_struct *vma)
 
 	vma->vm_ops = &mmap_mem_ops;
 
+<<<<<<< HEAD
 	/* Remap-pfn-range will mark the range VM_IO and VM_RESERVED */
+=======
+	/* Remap-pfn-range will mark the range VM_IO */
+>>>>>>> refs/remotes/origin/master
 	if (remap_pfn_range(vma,
 			    vma->vm_start,
 			    vma->vm_pgoff,
@@ -339,7 +389,10 @@ static int mmap_mem(struct file *file, struct vm_area_struct *vma)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 #endif	/* CONFIG_DEVMEM */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEVKMEM
 static int mmap_kmem(struct file *file, struct vm_area_struct *vma)
@@ -364,6 +417,7 @@ static int mmap_kmem(struct file *file, struct vm_area_struct *vma)
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_CRASH_DUMP
 /*
  * Read memory corresponding to the old kernel.
@@ -398,6 +452,8 @@ static ssize_t read_oldmem(struct file *file, char __user *buf,
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEVKMEM
 /*
  * This function reads the *virtual* memory as seen by the kernel.
@@ -407,7 +463,11 @@ static ssize_t read_kmem(struct file *file, char __user *buf,
 {
 	unsigned long p = *ppos;
 	ssize_t low_count, read, sz;
+<<<<<<< HEAD
 	char * kbuf; /* k-addr because vread() takes vmlist_lock rwlock */
+=======
+	char *kbuf; /* k-addr because vread() takes vmlist_lock rwlock */
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	read = 0;
@@ -535,7 +595,11 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
 	unsigned long p = *ppos;
 	ssize_t wrote = 0;
 	ssize_t virtr = 0;
+<<<<<<< HEAD
 	char * kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
+=======
+	char *kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	if (p < (unsigned long) high_memory) {
@@ -603,7 +667,11 @@ static ssize_t write_port(struct file *file, const char __user *buf,
 			  size_t count, loff_t *ppos)
 {
 	unsigned long i = *ppos;
+<<<<<<< HEAD
 	const char __user * tmp = buf;
+=======
+	const char __user *tmp = buf;
+>>>>>>> refs/remotes/origin/master
 
 	if (!access_ok(VERIFY_READ, buf, count))
 		return -EFAULT;
@@ -635,6 +703,21 @@ static ssize_t write_null(struct file *file, const char __user *buf,
 	return count;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t aio_read_null(struct kiocb *iocb, const struct iovec *iov,
+			     unsigned long nr_segs, loff_t pos)
+{
+	return 0;
+}
+
+static ssize_t aio_write_null(struct kiocb *iocb, const struct iovec *iov,
+			      unsigned long nr_segs, loff_t pos)
+{
+	return iov_length(iov, nr_segs);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int pipe_to_null(struct pipe_inode_info *info, struct pipe_buffer *buf,
 			struct splice_desc *sd)
 {
@@ -678,6 +761,27 @@ static ssize_t read_zero(struct file *file, char __user *buf,
 	return written ? written : -EFAULT;
 }
 
+<<<<<<< HEAD
+=======
+static ssize_t aio_read_zero(struct kiocb *iocb, const struct iovec *iov,
+			     unsigned long nr_segs, loff_t pos)
+{
+	size_t written = 0;
+	unsigned long i;
+	ssize_t ret;
+
+	for (i = 0; i < nr_segs; i++) {
+		ret = read_zero(iocb->ki_filp, iov[i].iov_base, iov[i].iov_len,
+				&pos);
+		if (ret < 0)
+			break;
+		written += ret;
+	}
+
+	return written ? written : -EFAULT;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int mmap_zero(struct file *file, struct vm_area_struct *vma)
 {
 #ifndef CONFIG_MMU
@@ -704,8 +808,11 @@ static loff_t null_lseek(struct file *file, loff_t offset, int orig)
 	return file->f_pos = 0;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_DEVMEM) || defined(CONFIG_DEVKMEM) || defined(CONFIG_DEVPORT)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * The memory devices use the full 32/64 bits of the offset, and so we cannot
  * check against negative addresses: they are ok. The return value is weird,
@@ -718,13 +825,21 @@ static loff_t memory_lseek(struct file *file, loff_t offset, int orig)
 {
 	loff_t ret;
 
+<<<<<<< HEAD
 	mutex_lock(&file->f_path.dentry->d_inode->i_mutex);
+=======
+	mutex_lock(&file_inode(file)->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	switch (orig) {
 	case SEEK_CUR:
 		offset += file->f_pos;
 	case SEEK_SET:
 		/* to avoid userland mistaking f_pos=-9 as -EBADF=-9 */
+<<<<<<< HEAD
 		if ((unsigned long long)offset >= ~0xFFFULL) {
+=======
+		if (IS_ERR_VALUE((unsigned long long)offset)) {
+>>>>>>> refs/remotes/origin/master
 			ret = -EOVERFLOW;
 			break;
 		}
@@ -735,6 +850,7 @@ static loff_t memory_lseek(struct file *file, loff_t offset, int orig)
 	default:
 		ret = -EINVAL;
 	}
+<<<<<<< HEAD
 	mutex_unlock(&file->f_path.dentry->d_inode->i_mutex);
 	return ret;
 }
@@ -747,16 +863,33 @@ static int open_port(struct inode * inode, struct file * filp)
 	return capable(CAP_SYS_RAWIO) ? 0 : -EPERM;
 }
 #endif
+=======
+	mutex_unlock(&file_inode(file)->i_mutex);
+	return ret;
+}
+
+static int open_port(struct inode *inode, struct file *filp)
+{
+	return capable(CAP_SYS_RAWIO) ? 0 : -EPERM;
+}
+>>>>>>> refs/remotes/origin/master
 
 #define zero_lseek	null_lseek
 #define full_lseek      null_lseek
 #define write_zero	write_null
 #define read_full       read_zero
+<<<<<<< HEAD
 #define open_mem	open_port
 #define open_kmem	open_mem
 #define open_oldmem	open_mem
 
 #ifdef CONFIG_DEVMEM
+=======
+#define aio_write_zero	aio_write_null
+#define open_mem	open_port
+#define open_kmem	open_mem
+
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations mem_fops = {
 	.llseek		= memory_lseek,
 	.read		= read_mem,
@@ -765,7 +898,10 @@ static const struct file_operations mem_fops = {
 	.open		= open_mem,
 	.get_unmapped_area = get_unmapped_area_mem,
 };
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEVKMEM
 static const struct file_operations kmem_fops = {
@@ -782,6 +918,11 @@ static const struct file_operations null_fops = {
 	.llseek		= null_lseek,
 	.read		= read_null,
 	.write		= write_null,
+<<<<<<< HEAD
+=======
+	.aio_read	= aio_read_null,
+	.aio_write	= aio_write_null,
+>>>>>>> refs/remotes/origin/master
 	.splice_write	= splice_write_null,
 };
 
@@ -798,6 +939,11 @@ static const struct file_operations zero_fops = {
 	.llseek		= zero_lseek,
 	.read		= read_zero,
 	.write		= write_zero,
+<<<<<<< HEAD
+=======
+	.aio_read	= aio_read_zero,
+	.aio_write	= aio_write_zero,
+>>>>>>> refs/remotes/origin/master
 	.mmap		= mmap_zero,
 };
 
@@ -817,6 +963,7 @@ static const struct file_operations full_fops = {
 	.write		= write_full,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_CRASH_DUMP
 static const struct file_operations oldmem_fops = {
 	.read	= read_oldmem,
@@ -876,6 +1023,15 @@ static const struct memdev {
 #ifdef CONFIG_DEVMEM
 	 [1] = { "mem", 0, &mem_fops, &directly_mappable_cdev_bdi },
 #endif
+=======
+static const struct memdev {
+	const char *name;
+	umode_t mode;
+	const struct file_operations *fops;
+	struct backing_dev_info *dev_info;
+} devlist[] = {
+	 [1] = { "mem", 0, &mem_fops, &directly_mappable_cdev_bdi },
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_DEVKMEM
 	 [2] = { "kmem", 0, &kmem_fops, &directly_mappable_cdev_bdi },
 #endif
@@ -887,9 +1043,14 @@ static const struct memdev {
 	 [7] = { "full", 0666, &full_fops, NULL },
 	 [8] = { "random", 0666, &random_fops, NULL },
 	 [9] = { "urandom", 0666, &urandom_fops, NULL },
+<<<<<<< HEAD
 	[11] = { "kmsg", 0, &kmsg_fops, NULL },
 #ifdef CONFIG_CRASH_DUMP
 	[12] = { "oldmem", 0, &oldmem_fops, NULL },
+=======
+#ifdef CONFIG_PRINTK
+	[11] = { "kmsg", 0644, &kmsg_fops, NULL },
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
@@ -926,10 +1087,14 @@ static const struct file_operations memory_fops = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *mem_devnode(struct device *dev, mode_t *mode)
 =======
 static char *mem_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *mem_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	if (mode && devlist[MINOR(dev->devt)].mode)
 		*mode = devlist[MINOR(dev->devt)].mode;
@@ -958,6 +1123,16 @@ static int __init chr_dev_init(void)
 	for (minor = 1; minor < ARRAY_SIZE(devlist); minor++) {
 		if (!devlist[minor].name)
 			continue;
+<<<<<<< HEAD
+=======
+
+		/*
+		 * Create /dev/port?
+		 */
+		if ((minor == DEVPORT_MINOR) && !arch_has_dev_port())
+			continue;
+
+>>>>>>> refs/remotes/origin/master
 		device_create(mem_class, NULL, MKDEV(MEM_MAJOR, minor),
 			      NULL, devlist[minor].name);
 	}

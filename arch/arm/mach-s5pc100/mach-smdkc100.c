@@ -26,13 +26,17 @@
 #include <linux/pwm_backlight.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/hardware/vic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
 #include <mach/map.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/regs-fb.h>
 =======
@@ -40,6 +44,12 @@
 #include <mach/regs-gpio.h>
 
 #include <video/platform_lcd.h>
+=======
+#include <mach/regs-gpio.h>
+
+#include <video/platform_lcd.h>
+#include <video/samsung_fimd.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 #include <asm/mach-types.h>
@@ -50,6 +60,7 @@
 #include <plat/clock.h>
 #include <plat/devs.h>
 #include <plat/cpu.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <plat/s5pc100.h>
 =======
@@ -68,6 +79,19 @@
 
 #include "common.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <plat/fb.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <linux/platform_data/ata-samsung_cf.h>
+#include <plat/adc.h>
+#include <plat/keypad.h>
+#include <linux/platform_data/touchscreen-s3c2410.h>
+#include <linux/platform_data/asoc-s3c.h>
+#include <plat/backlight.h>
+#include <plat/samsung-time.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Following are default values for UCON, ULCON and UFCON UART registers */
 #define SMDKC100_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
@@ -150,6 +174,7 @@ static struct platform_device smdkc100_lcd_powerdev = {
 
 /* Frame Buffer */
 static struct s3c_fb_pd_win smdkc100_fb_win0 = {
+<<<<<<< HEAD
 	/* this is to ensure we use win0 */
 	.win_mode	= {
 		.left_margin	= 8,
@@ -164,10 +189,32 @@ static struct s3c_fb_pd_win smdkc100_fb_win0 = {
 	},
 	.max_bpp	= 32,
 	.default_bpp	= 16,
+=======
+	.max_bpp	= 32,
+	.default_bpp	= 16,
+	.xres		= 800,
+	.yres		= 480,
+};
+
+static struct fb_videomode smdkc100_lcd_timing = {
+	.left_margin	= 8,
+	.right_margin	= 13,
+	.upper_margin	= 7,
+	.lower_margin	= 5,
+	.hsync_len	= 3,
+	.vsync_len	= 1,
+	.xres		= 800,
+	.yres		= 480,
+	.refresh	= 80,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct s3c_fb_platdata smdkc100_lcd_pdata __initdata = {
 	.win[0]		= &smdkc100_fb_win0,
+<<<<<<< HEAD
+=======
+	.vtiming	= &smdkc100_lcd_timing,
+>>>>>>> refs/remotes/origin/master
 	.vidcon0	= VIDCON0_VIDOUT_RGB | VIDCON0_PNRMODE_RGB,
 	.vidcon1	= VIDCON1_INV_HSYNC | VIDCON1_INV_VSYNC,
 	.setup_gpio	= s5pc100_fb_gpio_setup_24bpp,
@@ -196,6 +243,7 @@ static struct samsung_keypad_platdata smdkc100_keypad_data __initdata = {
 	.cols		= 8,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int smdkc100_backlight_init(struct device *dev)
 {
@@ -238,6 +286,8 @@ static struct platform_device smdkc100_backlight_device = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *smdkc100_devices[] __initdata = {
 	&s3c_device_adc,
 	&s3c_device_cfcon,
@@ -247,10 +297,17 @@ static struct platform_device *smdkc100_devices[] __initdata = {
 	&s3c_device_hsmmc0,
 	&s3c_device_hsmmc1,
 	&s3c_device_hsmmc2,
+<<<<<<< HEAD
 	&s3c_device_ts,
 	&s3c_device_wdt,
 	&smdkc100_lcd_powerdev,
 	&samsung_asoc_dma,
+=======
+	&samsung_device_pwm,
+	&s3c_device_ts,
+	&s3c_device_wdt,
+	&smdkc100_lcd_powerdev,
+>>>>>>> refs/remotes/origin/master
 	&s5pc100_device_iis0,
 	&samsung_device_keypad,
 	&s5pc100_device_ac97,
@@ -259,6 +316,7 @@ static struct platform_device *smdkc100_devices[] __initdata = {
 	&s5p_device_fimc1,
 	&s5p_device_fimc2,
 	&s5pc100_device_spdif,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	&s3c_device_timer[0],
 	&smdkc100_backlight_device,
@@ -269,6 +327,8 @@ static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
 	.presc			= 49,
 	.oversampling_shift	= 2,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* LCD Backlight data */
@@ -279,11 +339,16 @@ static struct samsung_bl_gpio_info smdkc100_bl_gpio_info = {
 
 static struct platform_pwm_backlight_data smdkc100_bl_data = {
 	.pwm_id = 0,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.enable_gpio = -1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init smdkc100_map_io(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	s5p_init_io(NULL, 0, S5P_VA_CHIPID);
 =======
@@ -291,15 +356,25 @@ static void __init smdkc100_map_io(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 	s3c24xx_init_clocks(12000000);
 	s3c24xx_init_uarts(smdkc100_uartcfgs, ARRAY_SIZE(smdkc100_uartcfgs));
+=======
+	s5pc100_init_io(NULL, 0);
+	s3c24xx_init_clocks(12000000);
+	s3c24xx_init_uarts(smdkc100_uartcfgs, ARRAY_SIZE(smdkc100_uartcfgs));
+	samsung_set_timer_source(SAMSUNG_PWM3, SAMSUNG_PWM4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init smdkc100_machine_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	s3c24xx_ts_set_platdata(&s3c_ts_platform);
 =======
 	s3c24xx_ts_set_platdata(NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s3c24xx_ts_set_platdata(NULL);
+>>>>>>> refs/remotes/origin/master
 
 	/* I2C */
 	s3c_i2c0_set_platdata(NULL);
@@ -318,16 +393,24 @@ static void __init smdkc100_machine_init(void)
 	gpio_request(S5PC100_GPH0(6), "GPH0");
 	smdkc100_lcd_power_set(&smdkc100_lcd_power_data, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	samsung_bl_set(&smdkc100_bl_gpio_info, &smdkc100_bl_data);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	platform_add_devices(smdkc100_devices, ARRAY_SIZE(smdkc100_devices));
+=======
+
+	platform_add_devices(smdkc100_devices, ARRAY_SIZE(smdkc100_devices));
+
+	samsung_bl_set(&smdkc100_bl_gpio_info, &smdkc100_bl_data);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(SMDKC100, "SMDKC100")
 	/* Maintainer: Byungho Min <bhmin@samsung.com> */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= S5P_PA_SDRAM + 0x100,
 	.init_irq	= s5pc100_init_irq,
@@ -343,4 +426,12 @@ MACHINE_START(SMDKC100, "SMDKC100")
 	.timer		= &s3c24xx_timer,
 	.restart	= s5pc100_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.init_irq	= s5pc100_init_irq,
+	.map_io		= smdkc100_map_io,
+	.init_machine	= smdkc100_machine_init,
+	.init_time	= samsung_timer_init,
+	.restart	= s5pc100_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

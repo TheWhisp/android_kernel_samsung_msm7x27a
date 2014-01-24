@@ -64,10 +64,14 @@ static int switch_drv_probe(struct platform_device *pdev)
 
 	ret = request_irq(irq, psw_info->irq_handler,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  IRQF_DISABLED | psw_info->irq_flags,
 =======
 			  psw_info->irq_flags,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  psw_info->irq_flags,
+>>>>>>> refs/remotes/origin/master
 			  psw_info->name ? psw_info->name : DRV_NAME, pdev);
 	if (unlikely(ret < 0))
 		goto err;
@@ -111,7 +115,11 @@ static int switch_drv_remove(struct platform_device *pdev)
 		device_remove_file(&pdev->dev, &dev_attr_switch);
 
 	platform_set_drvdata(pdev, NULL);
+<<<<<<< HEAD
 	flush_work_sync(&psw->work);
+=======
+	flush_work(&psw->work);
+>>>>>>> refs/remotes/origin/master
 	del_timer_sync(&psw->debounce);
 	free_irq(irq, pdev);
 

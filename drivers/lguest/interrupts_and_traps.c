@@ -140,6 +140,19 @@ static void set_guest_interrupt(struct lg_cpu *cpu, u32 lo, u32 hi,
 	cpu->regs->eip = idt_address(lo, hi);
 
 	/*
+<<<<<<< HEAD
+=======
+	 * Trapping always clears these flags:
+	 * TF: Trap flag
+	 * VM: Virtual 8086 mode
+	 * RF: Resume
+	 * NT: Nested task.
+	 */
+	cpu->regs->eflags &=
+		~(X86_EFLAGS_TF|X86_EFLAGS_VM|X86_EFLAGS_RF|X86_EFLAGS_NT);
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * There are two kinds of interrupt handlers: 0xE is an "interrupt
 	 * gate" which expects interrupts to be disabled on entry.
 	 */
@@ -376,6 +389,7 @@ static bool direct_trap(unsigned int num)
 	 * The Host needs to see page faults (for shadow paging and to save the
 	 * fault address), general protection faults (in/out emulation) and
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * device not available (TS handling), invalid opcode fault (kvm hcall),
 	 * and of course, the hypercall trap.
 	 */
@@ -386,6 +400,11 @@ static bool direct_trap(unsigned int num)
 	 */
 	return num != 14 && num != 13 && num != 7 && num != LGUEST_TRAP_ENTRY;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * device not available (TS handling) and of course, the hypercall trap.
+	 */
+	return num != 14 && num != 13 && num != 7 && num != LGUEST_TRAP_ENTRY;
+>>>>>>> refs/remotes/origin/master
 }
 /*:*/
 
@@ -436,12 +455,17 @@ void pin_stack_pages(struct lg_cpu *cpu)
 /*
  * Direct traps also mean that we need to know whenever the Guest wants to use
 <<<<<<< HEAD
+<<<<<<< HEAD
  * a different kernel stack, so we can change the IDT entries to use that
  * stack.  The IDT entries expect a virtual address, so unlike most addresses
 =======
  * a different kernel stack, so we can change the guest TSS to use that
  * stack.  The TSS entries expect a virtual address, so unlike most addresses
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * a different kernel stack, so we can change the guest TSS to use that
+ * stack.  The TSS entries expect a virtual address, so unlike most addresses
+>>>>>>> refs/remotes/origin/master
  * the Guest gives us, the "esp" (stack pointer) value here is virtual, not
  * physical.
  *

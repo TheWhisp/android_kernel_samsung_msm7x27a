@@ -388,7 +388,10 @@ int dlm_unlock_lock_handler(struct o2net_msg *msg, u32 len, void *data,
 	struct dlm_ctxt *dlm = data;
 	struct dlm_unlock_lock *unlock = (struct dlm_unlock_lock *)msg->buf;
 	struct dlm_lock_resource *res = NULL;
+<<<<<<< HEAD
 	struct list_head *iter;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dlm_lock *lock = NULL;
 	enum dlm_status status = DLM_NORMAL;
 	int found = 0, i;
@@ -458,8 +461,12 @@ int dlm_unlock_lock_handler(struct o2net_msg *msg, u32 len, void *data,
 	}
 
 	for (i=0; i<3; i++) {
+<<<<<<< HEAD
 		list_for_each(iter, queue) {
 			lock = list_entry(iter, struct dlm_lock, list);
+=======
+		list_for_each_entry(lock, queue, list) {
+>>>>>>> refs/remotes/origin/master
 			if (lock->ml.cookie == unlock->cookie &&
 		    	    lock->ml.node == unlock->node_idx) {
 				dlm_lock_get(lock);

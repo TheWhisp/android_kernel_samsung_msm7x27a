@@ -282,14 +282,21 @@ struct parport *parport_register_port(unsigned long base, int irq, int dma,
 	int device;
 	char *name;
 
+<<<<<<< HEAD
 	tmp = kmalloc(sizeof(struct parport), GFP_KERNEL);
+=======
+	tmp = kzalloc(sizeof(struct parport), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!tmp) {
 		printk(KERN_WARNING "parport: memory squeeze\n");
 		return NULL;
 	}
 
 	/* Init our structure */
+<<<<<<< HEAD
  	memset(tmp, 0, sizeof(struct parport));
+=======
+>>>>>>> refs/remotes/origin/master
 	tmp->base = base;
 	tmp->irq = irq;
 	tmp->dma = dma;

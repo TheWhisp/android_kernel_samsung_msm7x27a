@@ -23,6 +23,11 @@ extern unsigned cachefiles_debug;
 #define CACHEFILES_DEBUG_KLEAVE	2
 #define CACHEFILES_DEBUG_KDEBUG	4
 
+<<<<<<< HEAD
+=======
+#define cachefiles_gfp (__GFP_WAIT | __GFP_NORETRY | __GFP_NOMEMALLOC)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * node records
  */
@@ -233,6 +238,10 @@ extern int cachefiles_set_object_xattr(struct cachefiles_object *object,
 				       struct cachefiles_xattr *auxdata);
 extern int cachefiles_update_object_xattr(struct cachefiles_object *object,
 					  struct cachefiles_xattr *auxdata);
+<<<<<<< HEAD
+=======
+extern int cachefiles_check_auxdata(struct cachefiles_object *object);
+>>>>>>> refs/remotes/origin/master
 extern int cachefiles_check_object_xattr(struct cachefiles_object *object,
 					 struct cachefiles_xattr *auxdata);
 extern int cachefiles_remove_object_xattr(struct cachefiles_cache *cache,

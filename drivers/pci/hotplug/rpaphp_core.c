@@ -38,10 +38,14 @@
 #include "rpaphp.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int rpaphp_debug;
 =======
 bool rpaphp_debug;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool rpaphp_debug;
+>>>>>>> refs/remotes/origin/master
 LIST_HEAD(rpaphp_slot_head);
 
 #define DRIVER_VERSION	"0.1"
@@ -230,7 +234,11 @@ int rpaphp_get_drc_props(struct device_node *dn, int *drc_index,
 	for (i = 0; i < indexes[0]; i++) {
 		if ((unsigned int) indexes[i + 1] == *my_index) {
 			if (drc_name)
+<<<<<<< HEAD
                 		*drc_name = name_tmp;
+=======
+				*drc_name = name_tmp;
+>>>>>>> refs/remotes/origin/master
 			if (drc_type)
 				*drc_type = type_tmp;
 			if (drc_index)
@@ -293,7 +301,11 @@ static int is_php_dn(struct device_node *dn, const int **indexes,
  * rpaphp_add_slot -- declare a hotplug slot to the hotplug subsystem.
  * @dn: device node of slot
  *
+<<<<<<< HEAD
  * This subroutine will register a hotplugable slot with the
+=======
+ * This subroutine will register a hotpluggable slot with the
+>>>>>>> refs/remotes/origin/master
  * PCI hotplug infrastructure. This routine is typically called
  * during boot time, if the hotplug slots are present at boot time,
  * or is called later, by the dlpar add code, if the slot is
@@ -332,7 +344,11 @@ int rpaphp_add_slot(struct device_node *dn)
 			return -ENOMEM;
 
 		slot->type = simple_strtoul(type, NULL, 10);
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> refs/remotes/origin/master
 		dbg("Found drc-index:0x%x drc-name:%s drc-type:%s\n",
 				indexes[i + 1], name, type);
 
@@ -360,7 +376,11 @@ static void __exit cleanup_slots(void)
 	/*
 	 * Unregister all of our slots with the pci_hotplug subsystem,
 	 * and free up all memory that we had allocated.
+<<<<<<< HEAD
 	 * memory will be freed in release_slot callback. 
+=======
+	 * memory will be freed in release_slot callback.
+>>>>>>> refs/remotes/origin/master
 	 */
 
 	list_for_each_safe(tmp, n, &rpaphp_slot_head) {

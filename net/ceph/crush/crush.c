@@ -27,6 +27,7 @@ const char *crush_bucket_alg_name(int alg)
  * @p: item index in bucket
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int crush_get_bucket_item_weight(struct crush_bucket *b, int p)
 {
 	if (p >= b->size)
@@ -35,6 +36,11 @@ int crush_get_bucket_item_weight(const struct crush_bucket *b, int p)
 {
 	if ((__u32)p >= b->size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int crush_get_bucket_item_weight(const struct crush_bucket *b, int p)
+{
+	if ((__u32)p >= b->size)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	switch (b->alg) {
@@ -44,18 +50,23 @@ int crush_get_bucket_item_weight(const struct crush_bucket *b, int p)
 		return ((struct crush_bucket_list *)b)->item_weights[p];
 	case CRUSH_BUCKET_TREE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (p & 1)
 			return ((struct crush_bucket_tree *)b)->node_weights[p];
 		return 0;
 =======
 		return ((struct crush_bucket_tree *)b)->node_weights[crush_calc_tree_node(p)];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ((struct crush_bucket_tree *)b)->node_weights[crush_calc_tree_node(p)];
+>>>>>>> refs/remotes/origin/master
 	case CRUSH_BUCKET_STRAW:
 		return ((struct crush_bucket_straw *)b)->item_weights[p];
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  * crush_calc_parents - Calculate parent vectors for the given crush map.
  * @map: crush_map pointer
@@ -79,6 +90,8 @@ void crush_calc_parents(struct crush_map *map)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void crush_destroy_bucket_uniform(struct crush_bucket_uniform *b)
 {
 	kfree(b->h.perm);
@@ -98,10 +111,15 @@ void crush_destroy_bucket_list(struct crush_bucket_list *b)
 void crush_destroy_bucket_tree(struct crush_bucket_tree *b)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(b->h.perm);
 	kfree(b->h.items);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(b->h.perm);
+	kfree(b->h.items);
+>>>>>>> refs/remotes/origin/master
 	kfree(b->node_weights);
 	kfree(b);
 }
@@ -140,6 +158,7 @@ void crush_destroy_bucket(struct crush_bucket *b)
 void crush_destroy(struct crush_map *map)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int b;
 
 	/* buckets */
@@ -149,6 +168,11 @@ void crush_destroy(struct crush_map *map)
 	if (map->buckets) {
 		__s32 b;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* buckets */
+	if (map->buckets) {
+		__s32 b;
+>>>>>>> refs/remotes/origin/master
 		for (b = 0; b < map->max_buckets; b++) {
 			if (map->buckets[b] == NULL)
 				continue;
@@ -160,16 +184,23 @@ void crush_destroy(struct crush_map *map)
 	/* rules */
 	if (map->rules) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		__u32 b;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__u32 b;
+>>>>>>> refs/remotes/origin/master
 		for (b = 0; b < map->max_rules; b++)
 			kfree(map->rules[b]);
 		kfree(map->rules);
 	}
 
+<<<<<<< HEAD
 	kfree(map->bucket_parents);
 	kfree(map->device_parents);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(map);
 }
 

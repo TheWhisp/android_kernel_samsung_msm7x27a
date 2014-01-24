@@ -27,6 +27,10 @@
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/power/sbs-battery.h>
 
@@ -89,7 +93,11 @@ static const struct chip_data {
 	[REG_CURRENT] =
 		SBS_DATA(POWER_SUPPLY_PROP_CURRENT_NOW, 0x0A, -32768, 32767),
 	[REG_CAPACITY] =
+<<<<<<< HEAD
 		SBS_DATA(POWER_SUPPLY_PROP_CAPACITY, 0x0E, 0, 100),
+=======
+		SBS_DATA(POWER_SUPPLY_PROP_CAPACITY, 0x0D, 0, 100),
+>>>>>>> refs/remotes/origin/master
 	[REG_REMAINING_CAPACITY] =
 		SBS_DATA(POWER_SUPPLY_PROP_ENERGY_NOW, 0x0F, 0, 65535),
 	[REG_REMAINING_CAPACITY_CHARGE] =
@@ -469,7 +477,11 @@ static int sbs_get_property(struct power_supply *psy,
 
 	case POWER_SUPPLY_PROP_TECHNOLOGY:
 		val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
+<<<<<<< HEAD
 		break;
+=======
+		goto done; /* don't trigger power_supply_changed()! */
+>>>>>>> refs/remotes/origin/master
 
 	case POWER_SUPPLY_PROP_ENERGY_NOW:
 	case POWER_SUPPLY_PROP_ENERGY_FULL:
@@ -667,7 +679,10 @@ of_out:
 	return pdata;
 }
 #else
+<<<<<<< HEAD
 #define sbs_dt_ids NULL
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sbs_platform_data *sbs_of_populate_pdata(
 	struct i2c_client *client)
 {
@@ -675,7 +690,11 @@ static struct sbs_platform_data *sbs_of_populate_pdata(
 }
 #endif
 
+<<<<<<< HEAD
 static int __devinit sbs_probe(struct i2c_client *client,
+=======
+static int sbs_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 	const struct i2c_device_id *id)
 {
 	struct sbs_info *chip;
@@ -704,6 +723,10 @@ static int __devinit sbs_probe(struct i2c_client *client,
 	chip->power_supply.properties = sbs_properties;
 	chip->power_supply.num_properties = ARRAY_SIZE(sbs_properties);
 	chip->power_supply.get_property = sbs_get_property;
+<<<<<<< HEAD
+=======
+	chip->power_supply.of_node = client->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	/* ignore first notification of external change, it is generated
 	 * from the power_supply_register call back
 	 */
@@ -759,6 +782,19 @@ static int __devinit sbs_probe(struct i2c_client *client,
 	chip->irq = irq;
 
 skip_gpio:
+<<<<<<< HEAD
+=======
+	/*
+	 * Before we register, we need to make sure we can actually talk
+	 * to the battery.
+	 */
+	rc = sbs_read_word_data(client, sbs_data[REG_STATUS].addr);
+	if (rc < 0) {
+		dev_err(&client->dev, "%s: Failed to get device status\n",
+			__func__);
+		goto exit_psupply;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	rc = power_supply_register(&client->dev, &chip->power_supply);
 	if (rc) {
@@ -790,7 +826,11 @@ exit_free_name:
 	return rc;
 }
 
+<<<<<<< HEAD
 static int __devexit sbs_remove(struct i2c_client *client)
+=======
+static int sbs_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sbs_info *chip = i2c_get_clientdata(client);
 
@@ -810,10 +850,18 @@ static int __devexit sbs_remove(struct i2c_client *client)
 	return 0;
 }
 
+<<<<<<< HEAD
 #if defined CONFIG_PM
 static int sbs_suspend(struct i2c_client *client,
 	pm_message_t state)
 {
+=======
+#if defined CONFIG_PM_SLEEP
+
+static int sbs_suspend(struct device *dev)
+{
+	struct i2c_client *client = to_i2c_client(dev);
+>>>>>>> refs/remotes/origin/master
 	struct sbs_info *chip = i2c_get_clientdata(client);
 	s32 ret;
 
@@ -828,11 +876,21 @@ static int sbs_suspend(struct i2c_client *client,
 
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define sbs_suspend		NULL
 #endif
 /* any smbus transaction will wake up sbs */
 #define sbs_resume		NULL
+=======
+
+static SIMPLE_DEV_PM_OPS(sbs_pm_ops, sbs_suspend, NULL);
+#define SBS_PM_OPS (&sbs_pm_ops)
+
+#else
+#define SBS_PM_OPS NULL
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static const struct i2c_device_id sbs_id[] = {
 	{ "bq20z75", 0 },
@@ -843,6 +901,7 @@ MODULE_DEVICE_TABLE(i2c, sbs_id);
 
 static struct i2c_driver sbs_battery_driver = {
 	.probe		= sbs_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sbs_remove),
 	.suspend	= sbs_suspend,
 	.resume		= sbs_resume,
@@ -850,6 +909,14 @@ static struct i2c_driver sbs_battery_driver = {
 	.driver = {
 		.name	= "sbs-battery",
 		.of_match_table = sbs_dt_ids,
+=======
+	.remove		= sbs_remove,
+	.id_table	= sbs_id,
+	.driver = {
+		.name	= "sbs-battery",
+		.of_match_table = of_match_ptr(sbs_dt_ids),
+		.pm	= SBS_PM_OPS,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 module_i2c_driver(sbs_battery_driver);

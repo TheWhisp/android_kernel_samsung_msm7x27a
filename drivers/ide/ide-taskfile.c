@@ -12,9 +12,13 @@
 #include <linux/string.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/interrupt.h>
 #include <linux/errno.h>
@@ -242,9 +246,12 @@ void ide_pio_bytes(ide_drive_t *drive, struct ide_cmd *cmd,
 		unsigned nr_bytes = min(len, cursg->length - cmd->cursg_ofs);
 		int page_is_high;
 
+<<<<<<< HEAD
 		if (nr_bytes > PAGE_SIZE)
 			nr_bytes = PAGE_SIZE;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		page = sg_page(cursg);
 		offset = cursg->offset + cmd->cursg_ofs;
 
@@ -252,15 +259,24 @@ void ide_pio_bytes(ide_drive_t *drive, struct ide_cmd *cmd,
 		page = nth_page(page, (offset >> PAGE_SHIFT));
 		offset %= PAGE_SIZE;
 
+<<<<<<< HEAD
+=======
+		nr_bytes = min_t(unsigned, nr_bytes, (PAGE_SIZE - offset));
+
+>>>>>>> refs/remotes/origin/master
 		page_is_high = PageHighMem(page);
 		if (page_is_high)
 			local_irq_save(flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		buf = kmap_atomic(page, KM_BIO_SRC_IRQ) + offset;
 =======
 		buf = kmap_atomic(page) + offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		buf = kmap_atomic(page) + offset;
+>>>>>>> refs/remotes/origin/master
 
 		cmd->nleft -= nr_bytes;
 		cmd->cursg_ofs += nr_bytes;
@@ -277,10 +293,14 @@ void ide_pio_bytes(ide_drive_t *drive, struct ide_cmd *cmd,
 			hwif->tp_ops->input_data(drive, cmd, buf, nr_bytes);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(buf, KM_BIO_SRC_IRQ);
 =======
 		kunmap_atomic(buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(buf);
+>>>>>>> refs/remotes/origin/master
 
 		if (page_is_high)
 			local_irq_restore(flags);

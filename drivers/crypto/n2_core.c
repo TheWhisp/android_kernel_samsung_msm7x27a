@@ -1,10 +1,14 @@
 /* n2_core.c: Niagara2 Stream Processing Unit (SPU) crypto support.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 David S. Miller <davem@davemloft.net>
 =======
  * Copyright (C) 2010, 2011 David S. Miller <davem@davemloft.net>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2010, 2011 David S. Miller <davem@davemloft.net>
+>>>>>>> refs/remotes/origin/master
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
@@ -36,6 +40,7 @@
 
 #define DRV_MODULE_NAME		"n2_crypto"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_MODULE_VERSION	"0.1"
 #define DRV_MODULE_RELDATE	"April 29, 2010"
 =======
@@ -44,6 +49,12 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static char version[] __devinitdata =
+=======
+#define DRV_MODULE_VERSION	"0.2"
+#define DRV_MODULE_RELDATE	"July 28, 2011"
+
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 	DRV_MODULE_NAME ".c:v" DRV_MODULE_VERSION " (" DRV_MODULE_RELDATE ")\n";
 
 MODULE_AUTHOR("David S. Miller (davem@davemloft.net)");
@@ -51,7 +62,11 @@ MODULE_DESCRIPTION("Niagara2 Crypto driver");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_MODULE_VERSION);
 
+<<<<<<< HEAD
 #define N2_CRA_PRIORITY		300
+=======
+#define N2_CRA_PRIORITY		200
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_MUTEX(spu_lock);
 
@@ -1016,6 +1031,7 @@ static int n2_do_ecb(struct ablkcipher_request *req, bool encrypt)
 	spin_unlock_irqrestore(&qp->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	put_cpu();
 
 out:
@@ -1024,6 +1040,11 @@ out:
 	put_cpu();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	put_cpu();
+
+>>>>>>> refs/remotes/origin/master
 	n2_chunk_complete(req, NULL);
 	return err;
 }
@@ -1112,6 +1133,7 @@ static int n2_do_chaining(struct ablkcipher_request *req, bool encrypt)
 	spin_unlock_irqrestore(&qp->lock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	put_cpu();
 
 out:
@@ -1120,6 +1142,11 @@ out:
 	put_cpu();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	put_cpu();
+
+>>>>>>> refs/remotes/origin/master
 	n2_chunk_complete(req, err ? NULL : final_iv_addr);
 	return err;
 }
@@ -1409,7 +1436,11 @@ static int n2_cipher_cra_init(struct crypto_tfm *tfm)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit __n2_register_one_cipher(const struct n2_cipher_tmpl *tmpl)
+=======
+static int __n2_register_one_cipher(const struct n2_cipher_tmpl *tmpl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct n2_cipher_alg *p = kzalloc(sizeof(*p), GFP_KERNEL);
 	struct crypto_alg *alg;
@@ -1424,11 +1455,16 @@ static int __devinit __n2_register_one_cipher(const struct n2_cipher_tmpl *tmpl)
 	snprintf(alg->cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s-n2", tmpl->drv_name);
 	alg->cra_priority = N2_CRA_PRIORITY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	alg->cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER | CRYPTO_ALG_ASYNC;
 =======
 	alg->cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
 			 CRYPTO_ALG_KERN_DRIVER_ONLY | CRYPTO_ALG_ASYNC;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alg->cra_flags = CRYPTO_ALG_TYPE_ABLKCIPHER |
+			 CRYPTO_ALG_KERN_DRIVER_ONLY | CRYPTO_ALG_ASYNC;
+>>>>>>> refs/remotes/origin/master
 	alg->cra_blocksize = tmpl->block_size;
 	p->enc_type = tmpl->enc_type;
 	alg->cra_ctxsize = sizeof(struct n2_cipher_context);
@@ -1449,7 +1485,11 @@ static int __devinit __n2_register_one_cipher(const struct n2_cipher_tmpl *tmpl)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit __n2_register_one_hmac(struct n2_ahash_alg *n2ahash)
+=======
+static int __n2_register_one_hmac(struct n2_ahash_alg *n2ahash)
+>>>>>>> refs/remotes/origin/master
 {
 	struct n2_hmac_alg *p = kzalloc(sizeof(*p), GFP_KERNEL);
 	struct ahash_alg *ahash;
@@ -1487,7 +1527,11 @@ static int __devinit __n2_register_one_hmac(struct n2_ahash_alg *n2ahash)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit __n2_register_one_ahash(const struct n2_hash_tmpl *tmpl)
+=======
+static int __n2_register_one_ahash(const struct n2_hash_tmpl *tmpl)
+>>>>>>> refs/remotes/origin/master
 {
 	struct n2_ahash_alg *p = kzalloc(sizeof(*p), GFP_KERNEL);
 	struct hash_alg_common *halg;
@@ -1520,12 +1564,18 @@ static int __devinit __n2_register_one_ahash(const struct n2_hash_tmpl *tmpl)
 	snprintf(base->cra_driver_name, CRYPTO_MAX_ALG_NAME, "%s-n2", tmpl->name);
 	base->cra_priority = N2_CRA_PRIORITY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	base->cra_flags = CRYPTO_ALG_TYPE_AHASH | CRYPTO_ALG_NEED_FALLBACK;
 =======
 	base->cra_flags = CRYPTO_ALG_TYPE_AHASH |
 			  CRYPTO_ALG_KERN_DRIVER_ONLY |
 			  CRYPTO_ALG_NEED_FALLBACK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	base->cra_flags = CRYPTO_ALG_TYPE_AHASH |
+			  CRYPTO_ALG_KERN_DRIVER_ONLY |
+			  CRYPTO_ALG_NEED_FALLBACK;
+>>>>>>> refs/remotes/origin/master
 	base->cra_blocksize = tmpl->block_size;
 	base->cra_ctxsize = sizeof(struct n2_hash_ctx);
 	base->cra_module = THIS_MODULE;
@@ -1546,7 +1596,11 @@ static int __devinit __n2_register_one_ahash(const struct n2_hash_tmpl *tmpl)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit n2_register_algs(void)
+=======
+static int n2_register_algs(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err = 0;
 
@@ -1574,7 +1628,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit n2_unregister_algs(void)
+=======
+static void n2_unregister_algs(void)
+>>>>>>> refs/remotes/origin/master
 {
 	mutex_lock(&spu_lock);
 	if (!--algs_registered)
@@ -1639,8 +1697,12 @@ static int spu_map_ino(struct platform_device *dev, struct spu_mdesc_info *ip,
 
 	sprintf(p->irq_name, "%s-%d", irq_name, index);
 
+<<<<<<< HEAD
 	return request_irq(p->irq, handler, IRQF_SAMPLE_RANDOM,
 			   p->irq_name, p);
+=======
+	return request_irq(p->irq, handler, 0, p->irq_name, p);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct kmem_cache *queue_cache[2];
@@ -1852,6 +1914,7 @@ static int spu_mdesc_scan(struct mdesc_handle *mdesc, struct platform_device *de
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit get_irq_props(struct mdesc_handle *mdesc, u64 node,
 				   struct spu_mdesc_info *ip)
 {
@@ -1873,6 +1936,11 @@ static int __devinit get_irq_props(struct mdesc_handle *mdesc, u64 node,
 
 	ip->num_intrs = intr_len / sizeof(u64);
 =======
+=======
+static int get_irq_props(struct mdesc_handle *mdesc, u64 node,
+			 struct spu_mdesc_info *ip)
+{
+>>>>>>> refs/remotes/origin/master
 	const u64 *ino;
 	int ino_len;
 	int i;
@@ -1884,7 +1952,10 @@ static int __devinit get_irq_props(struct mdesc_handle *mdesc, u64 node,
 	}
 
 	ip->num_intrs = ino_len / sizeof(u64);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ip->ino_table = kzalloc((sizeof(struct ino_blob) *
 				 ip->num_intrs),
 				GFP_KERNEL);
@@ -1894,20 +1965,31 @@ static int __devinit get_irq_props(struct mdesc_handle *mdesc, u64 node,
 	for (i = 0; i < ip->num_intrs; i++) {
 		struct ino_blob *b = &ip->ino_table[i];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		b->intr = intr[i];
 =======
 		b->intr = i + 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		b->intr = i + 1;
+>>>>>>> refs/remotes/origin/master
 		b->ino = ino[i];
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit grab_mdesc_irq_props(struct mdesc_handle *mdesc,
 					  struct platform_device *dev,
 					  struct spu_mdesc_info *ip,
 					  const char *node_name)
+=======
+static int grab_mdesc_irq_props(struct mdesc_handle *mdesc,
+				struct platform_device *dev,
+				struct spu_mdesc_info *ip,
+				const char *node_name)
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned int *reg;
 	u64 node;
@@ -1936,7 +2018,11 @@ static int __devinit grab_mdesc_irq_props(struct mdesc_handle *mdesc,
 static unsigned long n2_spu_hvapi_major;
 static unsigned long n2_spu_hvapi_minor;
 
+<<<<<<< HEAD
 static int __devinit n2_spu_hvapi_register(void)
+=======
+static int n2_spu_hvapi_register(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -1962,7 +2048,11 @@ static void n2_spu_hvapi_unregister(void)
 
 static int global_ref;
 
+<<<<<<< HEAD
 static int __devinit grab_global_resources(void)
+=======
+static int grab_global_resources(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 
@@ -2026,7 +2116,11 @@ static void release_global_resources(void)
 	mutex_unlock(&spu_lock);
 }
 
+<<<<<<< HEAD
 static struct n2_crypto * __devinit alloc_n2cp(void)
+=======
+static struct n2_crypto *alloc_n2cp(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct n2_crypto *np = kzalloc(sizeof(struct n2_crypto), GFP_KERNEL);
 
@@ -2046,7 +2140,11 @@ static void free_n2cp(struct n2_crypto *np)
 	kfree(np);
 }
 
+<<<<<<< HEAD
 static void __devinit n2_spu_driver_version(void)
+=======
+static void n2_spu_driver_version(void)
+>>>>>>> refs/remotes/origin/master
 {
 	static int n2_spu_version_printed;
 
@@ -2054,7 +2152,11 @@ static void __devinit n2_spu_driver_version(void)
 		pr_info("%s", version);
 }
 
+<<<<<<< HEAD
 static int __devinit n2_crypto_probe(struct platform_device *dev)
+=======
+static int n2_crypto_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mdesc_handle *mdesc;
 	const char *full_name;
@@ -2130,7 +2232,11 @@ out_free_n2cp:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit n2_crypto_remove(struct platform_device *dev)
+=======
+static int n2_crypto_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct n2_crypto *np = dev_get_drvdata(&dev->dev);
 
@@ -2145,7 +2251,11 @@ static int __devexit n2_crypto_remove(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct n2_mau * __devinit alloc_ncp(void)
+=======
+static struct n2_mau *alloc_ncp(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct n2_mau *mp = kzalloc(sizeof(struct n2_mau), GFP_KERNEL);
 
@@ -2165,7 +2275,11 @@ static void free_ncp(struct n2_mau *mp)
 	kfree(mp);
 }
 
+<<<<<<< HEAD
 static int __devinit n2_mau_probe(struct platform_device *dev)
+=======
+static int n2_mau_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mdesc_handle *mdesc;
 	const char *full_name;
@@ -2232,7 +2346,11 @@ out_free_ncp:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit n2_mau_remove(struct platform_device *dev)
+=======
+static int n2_mau_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct n2_mau *mp = dev_get_drvdata(&dev->dev);
 
@@ -2255,12 +2373,18 @@ static struct of_device_id n2_crypto_match[] = {
 		.compatible = "SUNW,vf-cwq",
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "n2cp",
 		.compatible = "SUNW,kt-cwq",
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
@@ -2273,7 +2397,11 @@ static struct platform_driver n2_crypto_driver = {
 		.of_match_table	=	n2_crypto_match,
 	},
 	.probe		=	n2_crypto_probe,
+<<<<<<< HEAD
 	.remove		=	__devexit_p(n2_crypto_remove),
+=======
+	.remove		=	n2_crypto_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct of_device_id n2_mau_match[] = {
@@ -2286,12 +2414,18 @@ static struct of_device_id n2_mau_match[] = {
 		.compatible = "SUNW,vf-mau",
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "ncp",
 		.compatible = "SUNW,kt-mau",
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{},
 };
 
@@ -2304,7 +2438,11 @@ static struct platform_driver n2_mau_driver = {
 		.of_match_table	=	n2_mau_match,
 	},
 	.probe		=	n2_mau_probe,
+<<<<<<< HEAD
 	.remove		=	__devexit_p(n2_mau_remove),
+=======
+	.remove		=	n2_mau_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init n2_init(void)

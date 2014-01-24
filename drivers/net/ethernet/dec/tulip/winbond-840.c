@@ -236,7 +236,11 @@ struct pci_id_info {
         int drv_flags;		/* Driver use, intended as capability flags. */
 };
 
+<<<<<<< HEAD
 static const struct pci_id_info pci_id_tbl[] __devinitdata = {
+=======
+static const struct pci_id_info pci_id_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ 				/* Sometime a Level-One switch card. */
 	  "Winbond W89c840",	CanHaveMII | HasBrokenTx | FDXOnNoMII},
 	{ "Winbond W89c840",	CanHaveMII | HasBrokenTx},
@@ -358,8 +362,12 @@ static const struct net_device_ops netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit w840_probe1 (struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
+=======
+static int w840_probe1(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct netdev_private *np;
@@ -400,9 +408,12 @@ static int __devinit w840_probe1 (struct pci_dev *pdev,
 	   No hold time required! */
 	iowrite32(0x00000001, ioaddr + PCIBusCfg);
 
+<<<<<<< HEAD
 	dev->base_addr = (unsigned long)ioaddr;
 	dev->irq = irq;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	np = netdev_priv(dev);
 	np->pci_dev = pdev;
 	np->chip_id = chip_idx;
@@ -472,7 +483,10 @@ static int __devinit w840_probe1 (struct pci_dev *pdev,
 	return 0;
 
 err_out_cleardev:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_iounmap(pdev, ioaddr);
 err_out_free_res:
 	pci_release_regions(pdev);
@@ -635,17 +649,29 @@ static int netdev_open(struct net_device *dev)
 {
 	struct netdev_private *np = netdev_priv(dev);
 	void __iomem *ioaddr = np->base_addr;
+<<<<<<< HEAD
+=======
+	const int irq = np->pci_dev->irq;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	iowrite32(0x00000001, ioaddr + PCIBusCfg);		/* Reset */
 
 	netif_device_detach(dev);
+<<<<<<< HEAD
 	i = request_irq(dev->irq, intr_handler, IRQF_SHARED, dev->name, dev);
+=======
+	i = request_irq(irq, intr_handler, IRQF_SHARED, dev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (i)
 		goto out_err;
 
 	if (debug > 1)
+<<<<<<< HEAD
 		netdev_dbg(dev, "w89c840_open() irq %d\n", dev->irq);
+=======
+		netdev_dbg(dev, "w89c840_open() irq %d\n", irq);
+>>>>>>> refs/remotes/origin/master
 
 	if((i=alloc_ringdesc(dev)))
 		goto out_err;
@@ -932,6 +958,10 @@ static void tx_timeout(struct net_device *dev)
 {
 	struct netdev_private *np = netdev_priv(dev);
 	void __iomem *ioaddr = np->base_addr;
+<<<<<<< HEAD
+=======
+	const int irq = np->pci_dev->irq;
+>>>>>>> refs/remotes/origin/master
 
 	dev_warn(&dev->dev, "Transmit timed out, status %08x, resetting...\n",
 		 ioread32(ioaddr + IntrStatus));
@@ -951,7 +981,11 @@ static void tx_timeout(struct net_device *dev)
 	       np->cur_tx, np->dirty_tx, np->tx_full, np->tx_q_bytes);
 	printk(KERN_DEBUG "Tx Descriptor addr %xh\n", ioread32(ioaddr+0x4C));
 
+<<<<<<< HEAD
 	disable_irq(dev->irq);
+=======
+	disable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&np->lock);
 	/*
 	 * Under high load dirty_tx and the internal tx descriptor pointer
@@ -966,7 +1000,11 @@ static void tx_timeout(struct net_device *dev)
 	init_rxtx_rings(dev);
 	init_registers(dev);
 	spin_unlock_irq(&np->lock);
+<<<<<<< HEAD
 	enable_irq(dev->irq);
+=======
+	enable_irq(irq);
+>>>>>>> refs/remotes/origin/master
 
 	netif_wake_queue(dev);
 	dev->trans_start = jiffies; /* prevent tx timeout */
@@ -1500,7 +1538,11 @@ static int netdev_close(struct net_device *dev)
 	iowrite32(0x0000, ioaddr + IntrEnable);
 	spin_unlock_irq(&np->lock);
 
+<<<<<<< HEAD
 	free_irq(dev->irq, dev);
+=======
+	free_irq(np->pci_dev->irq, dev);
+>>>>>>> refs/remotes/origin/master
 	wmb();
 	netif_device_attach(dev);
 
@@ -1533,7 +1575,11 @@ static int netdev_close(struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit w840_remove1 (struct pci_dev *pdev)
+=======
+static void w840_remove1(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
@@ -1544,8 +1590,11 @@ static void __devexit w840_remove1 (struct pci_dev *pdev)
 		pci_iounmap(pdev, np->base_addr);
 		free_netdev(dev);
 	}
+<<<<<<< HEAD
 
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PM
@@ -1589,7 +1638,11 @@ static int w840_suspend (struct pci_dev *pdev, pm_message_t state)
 		iowrite32(0, ioaddr + IntrEnable);
 		spin_unlock_irq(&np->lock);
 
+<<<<<<< HEAD
 		synchronize_irq(dev->irq);
+=======
+		synchronize_irq(np->pci_dev->irq);
+>>>>>>> refs/remotes/origin/master
 		netif_tx_disable(dev);
 
 		np->stats.rx_missed_errors += ioread32(ioaddr + RxMissed) & 0xffff;
@@ -1648,7 +1701,11 @@ static struct pci_driver w840_driver = {
 	.name		= DRV_NAME,
 	.id_table	= w840_pci_tbl,
 	.probe		= w840_probe1,
+<<<<<<< HEAD
 	.remove		= __devexit_p(w840_remove1),
+=======
+	.remove		= w840_remove1,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= w840_suspend,
 	.resume		= w840_resume,

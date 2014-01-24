@@ -12,6 +12,7 @@
 #include <linux/errno.h>
 #include <linux/smp.h>
 
+<<<<<<< HEAD
 #include <asm/cacheflush.h>
 <<<<<<< HEAD
 =======
@@ -33,6 +34,24 @@ static inline void platform_do_lowpower(unsigned int cpu)
 =======
 		if (pen_release == cpu_logical_map(cpu)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/smp_plat.h>
+
+#include "setup.h"
+
+/*
+ * platform-specific code to shutdown a CPU
+ *
+ * Called with IRQs disabled
+ */
+void __ref ux500_cpu_die(unsigned int cpu)
+{
+	/* directly enter low power state, skipping secure registers */
+	for (;;) {
+		__asm__ __volatile__("dsb\n\t" "wfi\n\t"
+				: : : "memory");
+		if (pen_release == cpu_logical_map(cpu)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * OK, proper wakeup, we're done
 			 */
@@ -40,6 +59,7 @@ static inline void platform_do_lowpower(unsigned int cpu)
 		}
 	}
 }
+<<<<<<< HEAD
 
 int platform_cpu_kill(unsigned int cpu)
 {
@@ -65,3 +85,5 @@ int platform_cpu_disable(unsigned int cpu)
 	 */
 	return cpu == 0 ? -EPERM : 0;
 }
+=======
+>>>>>>> refs/remotes/origin/master

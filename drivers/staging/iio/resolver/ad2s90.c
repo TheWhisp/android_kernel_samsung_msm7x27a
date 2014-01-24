@@ -15,6 +15,7 @@
 #include <linux/slab.h>
 #include <linux/sysfs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -113,6 +114,13 @@ static int __devinit ad2s90_probe(struct spi_device *spi)
 
 	ret = iio_device_register(st->idev);
 =======
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+
+>>>>>>> refs/remotes/origin/master
 struct ad2s90_state {
 	struct mutex lock;
 	struct spi_device *sdev;
@@ -149,19 +157,32 @@ static const struct iio_chan_spec ad2s90_chan = {
 	.type = IIO_ANGL,
 	.indexed = 1,
 	.channel = 0,
+<<<<<<< HEAD
 };
 
 static int __devinit ad2s90_probe(struct spi_device *spi)
+=======
+	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+};
+
+static int ad2s90_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dev *indio_dev;
 	struct ad2s90_state *st;
 	int ret = 0;
 
+<<<<<<< HEAD
 	indio_dev = iio_allocate_device(sizeof(*st));
 	if (indio_dev == NULL) {
 		ret = -ENOMEM;
 		goto error_ret;
 	}
+=======
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	st = iio_priv(indio_dev);
 	spi_set_drvdata(spi, indio_dev);
 
@@ -175,9 +196,14 @@ static int __devinit ad2s90_probe(struct spi_device *spi)
 	indio_dev->name = spi_get_device_id(spi)->name;
 
 	ret = iio_device_register(indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (ret)
 		goto error_free_dev;
+=======
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* need 600ns between CS and the first falling edge of SCLK */
 	spi->max_speed_hz = 830000;
@@ -185,6 +211,7 @@ static int __devinit ad2s90_probe(struct spi_device *spi)
 	spi_setup(spi);
 
 	return 0;
+<<<<<<< HEAD
 
 error_free_dev:
 <<<<<<< HEAD
@@ -209,15 +236,25 @@ static int __devexit ad2s90_remove(struct spi_device *spi)
 	iio_device_unregister(spi_get_drvdata(spi));
 	iio_free_device(spi_get_drvdata(spi));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+static int ad2s90_remove(struct spi_device *spi)
+{
+	iio_device_unregister(spi_get_drvdata(spi));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct spi_driver ad2s90_driver = {
 	.driver = {
 		.name = DRV_NAME,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct spi_device_id ad2s90_id[] = {
 	{ "ad2s90" },
 	{}
@@ -227,6 +264,7 @@ MODULE_DEVICE_TABLE(spi, ad2s90_id);
 static struct spi_driver ad2s90_driver = {
 	.driver = {
 		.name = "ad2s90",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		.owner = THIS_MODULE,
 	},
@@ -251,6 +289,15 @@ module_exit(ad2s90_spi_exit);
 };
 module_spi_driver(ad2s90_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner = THIS_MODULE,
+	},
+	.probe = ad2s90_probe,
+	.remove = ad2s90_remove,
+	.id_table = ad2s90_id,
+};
+module_spi_driver(ad2s90_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Graff Yang <graff.yang@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices AD2S90 Resolver to Digital SPI driver");

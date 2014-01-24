@@ -71,11 +71,19 @@ void ufs_free_inode (struct inode * inode)
 	
 	ino = inode->i_ino;
 
+<<<<<<< HEAD
 	lock_super (sb);
 
 	if (!((ino > 1) && (ino < (uspi->s_ncg * uspi->s_ipg )))) {
 		ufs_warning(sb, "ufs_free_inode", "reserved inode or nonexistent inode %u\n", ino);
 		unlock_super (sb);
+=======
+	mutex_lock(&UFS_SB(sb)->s_lock);
+
+	if (!((ino > 1) && (ino < (uspi->s_ncg * uspi->s_ipg )))) {
+		ufs_warning(sb, "ufs_free_inode", "reserved inode or nonexistent inode %u\n", ino);
+		mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	
@@ -83,7 +91,11 @@ void ufs_free_inode (struct inode * inode)
 	bit = ufs_inotocgoff (ino);
 	ucpi = ufs_load_cylinder (sb, cg);
 	if (!ucpi) {
+<<<<<<< HEAD
 		unlock_super (sb);
+=======
+		mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	ucg = ubh_get_ucg(UCPI_UBH(ucpi));
@@ -116,8 +128,13 @@ void ufs_free_inode (struct inode * inode)
 	if (sb->s_flags & MS_SYNCHRONOUS)
 		ubh_sync_block(UCPI_UBH(ucpi));
 	
+<<<<<<< HEAD
 	sb->s_dirt = 1;
 	unlock_super (sb);
+=======
+	ufs_mark_sb_dirty(sb);
+	mutex_unlock(&UFS_SB(sb)->s_lock);
+>>>>>>> refs/remotes/origin/master
 	UFSD("EXIT\n");
 }
 
@@ -171,10 +188,14 @@ static void ufs2_init_inodes_chunk(struct super_block *sb,
  * group to find a free inode.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct inode * ufs_new_inode(struct inode * dir, int mode)
 =======
 struct inode *ufs_new_inode(struct inode *dir, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *ufs_new_inode(struct inode *dir, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block * sb;
 	struct ufs_sb_info * sbi;
@@ -201,7 +222,11 @@ struct inode *ufs_new_inode(struct inode *dir, umode_t mode)
 	uspi = sbi->s_uspi;
 	usb1 = ubh_get_usb_first(uspi);
 
+<<<<<<< HEAD
 	lock_super (sb);
+=======
+	mutex_lock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Try to place the inode in its parent directory
@@ -292,7 +317,11 @@ cg_found:
 	ubh_mark_buffer_dirty (UCPI_UBH(ucpi));
 	if (sb->s_flags & MS_SYNCHRONOUS)
 		ubh_sync_block(UCPI_UBH(ucpi));
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+	ufs_mark_sb_dirty(sb);
+>>>>>>> refs/remotes/origin/master
 
 	inode->i_ino = cg * uspi->s_ipg + bit;
 	inode_init_owner(inode, dir, mode);
@@ -337,24 +366,37 @@ cg_found:
 		brelse(bh);
 	}
 
+<<<<<<< HEAD
 	unlock_super (sb);
+=======
+	mutex_unlock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 
 	UFSD("allocating inode %lu\n", inode->i_ino);
 	UFSD("EXIT\n");
 	return inode;
 
 fail_remove_inode:
+<<<<<<< HEAD
 	unlock_super(sb);
 <<<<<<< HEAD
 	inode->i_nlink = 0;
 =======
 	clear_nlink(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&sbi->s_lock);
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 	iput(inode);
 	UFSD("EXIT (FAILED): err %d\n", err);
 	return ERR_PTR(err);
 failed:
+<<<<<<< HEAD
 	unlock_super (sb);
+=======
+	mutex_unlock(&sbi->s_lock);
+>>>>>>> refs/remotes/origin/master
 	make_bad_inode(inode);
 	iput (inode);
 	UFSD("EXIT (FAILED): err %d\n", err);

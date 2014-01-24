@@ -96,8 +96,15 @@ static DEFINE_PCI_DEVICE_TABLE(qlge_pci_tbl) = {
 
 MODULE_DEVICE_TABLE(pci, qlge_pci_tbl);
 
+<<<<<<< HEAD
 static int ql_wol(struct ql_adapter *qdev);
 static void qlge_set_multicast_list(struct net_device *ndev);
+=======
+static int ql_wol(struct ql_adapter *);
+static void qlge_set_multicast_list(struct net_device *);
+static int ql_adapter_down(struct ql_adapter *);
+static int ql_adapter_up(struct ql_adapter *);
+>>>>>>> refs/remotes/origin/master
 
 /* This hardware semaphore causes exclusive access to
  * resources shared between the NIC driver, MPI firmware,
@@ -409,7 +416,11 @@ static int ql_set_mac_addr_reg(struct ql_adapter *qdev, u8 *addr, u32 type,
 				      (qdev->
 				       func << CAM_OUT_FUNC_SHIFT) |
 					(0 << CAM_OUT_CQ_ID_SHIFT));
+<<<<<<< HEAD
 			if (qdev->ndev->features & NETIF_F_HW_VLAN_RX)
+=======
+			if (qdev->ndev->features & NETIF_F_HW_VLAN_CTAG_RX)
+>>>>>>> refs/remotes/origin/master
 				cam_output |= CAM_OUT_RV;
 			/* route to NIC core */
 			ql_write32(qdev, MAC_ADDR_DATA, cam_output);
@@ -1106,6 +1117,10 @@ static int ql_get_next_chunk(struct ql_adapter *qdev, struct rx_ring *rx_ring,
 		if (pci_dma_mapping_error(qdev->pdev, map)) {
 			__free_pages(rx_ring->pg_chunk.page,
 					qdev->lbq_buf_order);
+<<<<<<< HEAD
+=======
+			rx_ring->pg_chunk.page = NULL;
+>>>>>>> refs/remotes/origin/master
 			netif_err(qdev, drv, qdev->ndev,
 				  "PCI mapping failed.\n");
 			return -ENOMEM;
@@ -1211,8 +1226,11 @@ static void ql_update_sbq(struct ql_adapter *qdev, struct rx_ring *rx_ring)
 				    netdev_alloc_skb(qdev->ndev,
 						     SMALL_BUFFER_SIZE);
 				if (sbq_desc->p.skb == NULL) {
+<<<<<<< HEAD
 					netif_err(qdev, probe, qdev->ndev,
 						  "Couldn't get an skb.\n");
+=======
+>>>>>>> refs/remotes/origin/master
 					rx_ring->sbq_clean_idx = clean_idx;
 					return;
 				}
@@ -1433,6 +1451,64 @@ map_error:
 	return NETDEV_TX_BUSY;
 }
 
+<<<<<<< HEAD
+=======
+/* Categorizing receive firmware frame errors */
+static void ql_categorize_rx_err(struct ql_adapter *qdev, u8 rx_err,
+				 struct rx_ring *rx_ring)
+{
+	struct nic_stats *stats = &qdev->nic_stats;
+
+	stats->rx_err_count++;
+	rx_ring->rx_errors++;
+
+	switch (rx_err & IB_MAC_IOCB_RSP_ERR_MASK) {
+	case IB_MAC_IOCB_RSP_ERR_CODE_ERR:
+		stats->rx_code_err++;
+		break;
+	case IB_MAC_IOCB_RSP_ERR_OVERSIZE:
+		stats->rx_oversize_err++;
+		break;
+	case IB_MAC_IOCB_RSP_ERR_UNDERSIZE:
+		stats->rx_undersize_err++;
+		break;
+	case IB_MAC_IOCB_RSP_ERR_PREAMBLE:
+		stats->rx_preamble_err++;
+		break;
+	case IB_MAC_IOCB_RSP_ERR_FRAME_LEN:
+		stats->rx_frame_len_err++;
+		break;
+	case IB_MAC_IOCB_RSP_ERR_CRC:
+		stats->rx_crc_err++;
+	default:
+		break;
+	}
+}
+
+/**
+ * ql_update_mac_hdr_len - helper routine to update the mac header length
+ * based on vlan tags if present
+ */
+static void ql_update_mac_hdr_len(struct ql_adapter *qdev,
+				  struct ib_mac_iocb_rsp *ib_mac_rsp,
+				  void *page, size_t *len)
+{
+	u16 *tags;
+
+	if (qdev->ndev->features & NETIF_F_HW_VLAN_CTAG_RX)
+		return;
+	if (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_V) {
+		tags = (u16 *)page;
+		/* Look for stacked vlan tags in ethertype field */
+		if (tags[6] == ETH_P_8021Q &&
+		    tags[8] == ETH_P_8021Q)
+			*len += 2 * VLAN_HLEN;
+		else
+			*len += VLAN_HLEN;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Process an inbound completion from an rx ring. */
 static void ql_process_mac_rx_gro_page(struct ql_adapter *qdev,
 					struct rx_ring *rx_ring,
@@ -1444,6 +1520,15 @@ static void ql_process_mac_rx_gro_page(struct ql_adapter *qdev,
 	struct bq_desc *lbq_desc = ql_get_curr_lchunk(qdev, rx_ring);
 	struct napi_struct *napi = &rx_ring->napi;
 
+<<<<<<< HEAD
+=======
+	/* Frame error, so drop the packet. */
+	if (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_ERR_MASK) {
+		ql_categorize_rx_err(qdev, ib_mac_rsp->flags2, rx_ring);
+		put_page(lbq_desc->p.pg_chunk.page);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	napi->dev = qdev->ndev;
 
 	skb = napi_get_frags(napi);
@@ -1470,7 +1555,11 @@ static void ql_process_mac_rx_gro_page(struct ql_adapter *qdev,
 	skb->ip_summed = CHECKSUM_UNNECESSARY;
 	skb_record_rx_queue(skb, rx_ring->cq_id);
 	if (vlan_id != 0xffff)
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, vlan_id);
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_id);
+>>>>>>> refs/remotes/origin/master
 	napi_gro_frags(napi);
 }
 
@@ -1486,11 +1575,18 @@ static void ql_process_mac_rx_page(struct ql_adapter *qdev,
 	void *addr;
 	struct bq_desc *lbq_desc = ql_get_curr_lchunk(qdev, rx_ring);
 	struct napi_struct *napi = &rx_ring->napi;
+<<<<<<< HEAD
 
 	skb = netdev_alloc_skb(ndev, length);
 	if (!skb) {
 		netif_err(qdev, drv, qdev->ndev,
 			  "Couldn't get an skb, need to unwind!.\n");
+=======
+	size_t hlen = ETH_HLEN;
+
+	skb = netdev_alloc_skb(ndev, length);
+	if (!skb) {
+>>>>>>> refs/remotes/origin/master
 		rx_ring->rx_dropped++;
 		put_page(lbq_desc->p.pg_chunk.page);
 		return;
@@ -1499,6 +1595,7 @@ static void ql_process_mac_rx_page(struct ql_adapter *qdev,
 	addr = lbq_desc->p.pg_chunk.va;
 	prefetch(addr);
 
+<<<<<<< HEAD
 
 	/* Frame error, so drop the packet. */
 	if (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_ERR_MASK) {
@@ -1512,21 +1609,48 @@ static void ql_process_mac_rx_page(struct ql_adapter *qdev,
 	 * MTU since FCoE uses 2k frames.
 	 */
 	if (skb->len > ndev->mtu + ETH_HLEN) {
+=======
+	/* Frame error, so drop the packet. */
+	if (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_ERR_MASK) {
+		ql_categorize_rx_err(qdev, ib_mac_rsp->flags2, rx_ring);
+		goto err_out;
+	}
+
+	/* Update the MAC header length*/
+	ql_update_mac_hdr_len(qdev, ib_mac_rsp, addr, &hlen);
+
+	/* The max framesize filter on this chip is set higher than
+	 * MTU since FCoE uses 2k frames.
+	 */
+	if (skb->len > ndev->mtu + hlen) {
+>>>>>>> refs/remotes/origin/master
 		netif_err(qdev, drv, qdev->ndev,
 			  "Segment too small, dropping.\n");
 		rx_ring->rx_dropped++;
 		goto err_out;
 	}
+<<<<<<< HEAD
 	memcpy(skb_put(skb, ETH_HLEN), addr, ETH_HLEN);
+=======
+	memcpy(skb_put(skb, hlen), addr, hlen);
+>>>>>>> refs/remotes/origin/master
 	netif_printk(qdev, rx_status, KERN_DEBUG, qdev->ndev,
 		     "%d bytes of headers and data in large. Chain page to new skb and pull tail.\n",
 		     length);
 	skb_fill_page_desc(skb, 0, lbq_desc->p.pg_chunk.page,
+<<<<<<< HEAD
 				lbq_desc->p.pg_chunk.offset+ETH_HLEN,
 				length-ETH_HLEN);
 	skb->len += length-ETH_HLEN;
 	skb->data_len += length-ETH_HLEN;
 	skb->truesize += length-ETH_HLEN;
+=======
+				lbq_desc->p.pg_chunk.offset + hlen,
+				length - hlen);
+	skb->len += length - hlen;
+	skb->data_len += length - hlen;
+	skb->truesize += length - hlen;
+>>>>>>> refs/remotes/origin/master
 
 	rx_ring->rx_packets++;
 	rx_ring->rx_bytes += skb->len;
@@ -1544,9 +1668,15 @@ static void ql_process_mac_rx_page(struct ql_adapter *qdev,
 				(ib_mac_rsp->flags3 & IB_MAC_IOCB_RSP_V4)) {
 			/* Unfragmented ipv4 UDP frame. */
 			struct iphdr *iph =
+<<<<<<< HEAD
 				(struct iphdr *) ((u8 *)addr + ETH_HLEN);
 			if (!(iph->frag_off &
 				cpu_to_be16(IP_MF|IP_OFFSET))) {
+=======
+				(struct iphdr *)((u8 *)addr + hlen);
+			if (!(iph->frag_off &
+				htons(IP_MF|IP_OFFSET))) {
+>>>>>>> refs/remotes/origin/master
 				skb->ip_summed = CHECKSUM_UNNECESSARY;
 				netif_printk(qdev, rx_status, KERN_DEBUG,
 					     qdev->ndev,
@@ -1557,7 +1687,11 @@ static void ql_process_mac_rx_page(struct ql_adapter *qdev,
 
 	skb_record_rx_queue(skb, rx_ring->cq_id);
 	if (vlan_id != 0xffff)
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, vlan_id);
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_id);
+>>>>>>> refs/remotes/origin/master
 	if (skb->ip_summed == CHECKSUM_UNNECESSARY)
 		napi_gro_receive(napi, skb);
 	else
@@ -1584,8 +1718,11 @@ static void ql_process_mac_rx_skb(struct ql_adapter *qdev,
 	/* Allocate new_skb and copy */
 	new_skb = netdev_alloc_skb(qdev->ndev, length + NET_IP_ALIGN);
 	if (new_skb == NULL) {
+<<<<<<< HEAD
 		netif_err(qdev, probe, qdev->ndev,
 			  "No skb available, drop the packet.\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		rx_ring->rx_dropped++;
 		return;
 	}
@@ -1595,10 +1732,15 @@ static void ql_process_mac_rx_skb(struct ql_adapter *qdev,
 
 	/* Frame error, so drop the packet. */
 	if (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_ERR_MASK) {
+<<<<<<< HEAD
 		netif_info(qdev, drv, qdev->ndev,
 			  "Receive error, flags2 = 0x%x\n", ib_mac_rsp->flags2);
 		dev_kfree_skb_any(skb);
 		rx_ring->rx_errors++;
+=======
+		ql_categorize_rx_err(qdev, ib_mac_rsp->flags2, rx_ring);
+		dev_kfree_skb_any(skb);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -1619,7 +1761,10 @@ static void ql_process_mac_rx_skb(struct ql_adapter *qdev,
 	}
 
 	prefetch(skb->data);
+<<<<<<< HEAD
 	skb->dev = ndev;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ib_mac_rsp->flags1 & IB_MAC_IOCB_RSP_M_MASK) {
 		netif_printk(qdev, rx_status, KERN_DEBUG, qdev->ndev,
 			     "%s Multicast.\n",
@@ -1654,7 +1799,11 @@ static void ql_process_mac_rx_skb(struct ql_adapter *qdev,
 			/* Unfragmented ipv4 UDP frame. */
 			struct iphdr *iph = (struct iphdr *) skb->data;
 			if (!(iph->frag_off &
+<<<<<<< HEAD
 				ntohs(IP_MF|IP_OFFSET))) {
+=======
+				htons(IP_MF|IP_OFFSET))) {
+>>>>>>> refs/remotes/origin/master
 				skb->ip_summed = CHECKSUM_UNNECESSARY;
 				netif_printk(qdev, rx_status, KERN_DEBUG,
 					     qdev->ndev,
@@ -1665,7 +1814,11 @@ static void ql_process_mac_rx_skb(struct ql_adapter *qdev,
 
 	skb_record_rx_queue(skb, rx_ring->cq_id);
 	if (vlan_id != 0xffff)
+<<<<<<< HEAD
 		__vlan_hwaccel_put_tag(skb, vlan_id);
+=======
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_id);
+>>>>>>> refs/remotes/origin/master
 	if (skb->ip_summed == CHECKSUM_UNNECESSARY)
 		napi_gro_receive(&rx_ring->napi, skb);
 	else
@@ -1699,7 +1852,12 @@ static struct sk_buff *ql_build_rx_skb(struct ql_adapter *qdev,
 	struct bq_desc *sbq_desc;
 	struct sk_buff *skb = NULL;
 	u32 length = le32_to_cpu(ib_mac_rsp->data_len);
+<<<<<<< HEAD
        u32 hdr_len = le32_to_cpu(ib_mac_rsp->hdr_len);
+=======
+	u32 hdr_len = le32_to_cpu(ib_mac_rsp->hdr_len);
+	size_t hlen = ETH_HLEN;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Handle the header buffer if present.
@@ -1826,9 +1984,16 @@ static struct sk_buff *ql_build_rx_skb(struct ql_adapter *qdev,
 			skb->data_len += length;
 			skb->truesize += length;
 			length -= length;
+<<<<<<< HEAD
 			__pskb_pull_tail(skb,
 				(ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_V) ?
 				VLAN_ETH_HLEN : ETH_HLEN);
+=======
+			ql_update_mac_hdr_len(qdev, ib_mac_rsp,
+					      lbq_desc->p.pg_chunk.va,
+					      &hlen);
+			__pskb_pull_tail(skb, hlen);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		/*
@@ -1883,8 +2048,14 @@ static struct sk_buff *ql_build_rx_skb(struct ql_adapter *qdev,
 			length -= size;
 			i++;
 		}
+<<<<<<< HEAD
 		__pskb_pull_tail(skb, (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_V) ?
 				VLAN_ETH_HLEN : ETH_HLEN);
+=======
+		ql_update_mac_hdr_len(qdev, ib_mac_rsp, lbq_desc->p.pg_chunk.va,
+				      &hlen);
+		__pskb_pull_tail(skb, hlen);
+>>>>>>> refs/remotes/origin/master
 	}
 	return skb;
 }
@@ -1910,10 +2081,15 @@ static void ql_process_mac_split_rx_intr(struct ql_adapter *qdev,
 
 	/* Frame error, so drop the packet. */
 	if (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_ERR_MASK) {
+<<<<<<< HEAD
 		netif_info(qdev, drv, qdev->ndev,
 			  "Receive error, flags2 = 0x%x\n", ib_mac_rsp->flags2);
 		dev_kfree_skb_any(skb);
 		rx_ring->rx_errors++;
+=======
+		ql_categorize_rx_err(qdev, ib_mac_rsp->flags2, rx_ring);
+		dev_kfree_skb_any(skb);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -1934,7 +2110,10 @@ static void ql_process_mac_split_rx_intr(struct ql_adapter *qdev,
 	}
 
 	prefetch(skb->data);
+<<<<<<< HEAD
 	skb->dev = ndev;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ib_mac_rsp->flags1 & IB_MAC_IOCB_RSP_M_MASK) {
 		netif_printk(qdev, rx_status, KERN_DEBUG, qdev->ndev, "%s Multicast.\n",
 			     (ib_mac_rsp->flags1 & IB_MAC_IOCB_RSP_M_MASK) ==
@@ -1968,7 +2147,11 @@ static void ql_process_mac_split_rx_intr(struct ql_adapter *qdev,
 		/* Unfragmented ipv4 UDP frame. */
 			struct iphdr *iph = (struct iphdr *) skb->data;
 			if (!(iph->frag_off &
+<<<<<<< HEAD
 				ntohs(IP_MF|IP_OFFSET))) {
+=======
+				htons(IP_MF|IP_OFFSET))) {
+>>>>>>> refs/remotes/origin/master
 				skb->ip_summed = CHECKSUM_UNNECESSARY;
 				netif_printk(qdev, rx_status, KERN_DEBUG, qdev->ndev,
 					     "TCP checksum done!\n");
@@ -1979,8 +2162,13 @@ static void ql_process_mac_split_rx_intr(struct ql_adapter *qdev,
 	rx_ring->rx_packets++;
 	rx_ring->rx_bytes += skb->len;
 	skb_record_rx_queue(skb, rx_ring->cq_id);
+<<<<<<< HEAD
 	if ((ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_V) && (vlan_id != 0))
 		__vlan_hwaccel_put_tag(skb, vlan_id);
+=======
+	if (vlan_id != 0xffff)
+		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_id);
+>>>>>>> refs/remotes/origin/master
 	if (skb->ip_summed == CHECKSUM_UNNECESSARY)
 		napi_gro_receive(&rx_ring->napi, skb);
 	else
@@ -1993,7 +2181,12 @@ static unsigned long ql_process_mac_rx_intr(struct ql_adapter *qdev,
 					struct ib_mac_iocb_rsp *ib_mac_rsp)
 {
 	u32 length = le32_to_cpu(ib_mac_rsp->data_len);
+<<<<<<< HEAD
 	u16 vlan_id = (ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_V) ?
+=======
+	u16 vlan_id = ((ib_mac_rsp->flags2 & IB_MAC_IOCB_RSP_V) &&
+			(qdev->ndev->features & NETIF_F_HW_VLAN_CTAG_RX)) ?
+>>>>>>> refs/remotes/origin/master
 			((le16_to_cpu(ib_mac_rsp->vlan_id) &
 			IB_MAC_IOCB_RSP_VLAN_MASK)) : 0xffff;
 
@@ -2173,8 +2366,12 @@ static int ql_clean_outbound_rx_ring(struct rx_ring *rx_ring)
 	ql_write_cq_idx(rx_ring);
 	tx_ring = &qdev->tx_ring[net_rsp->txq_idx];
 	if (__netif_subqueue_stopped(qdev->ndev, tx_ring->wq_id)) {
+<<<<<<< HEAD
 		if (atomic_read(&tx_ring->queue_stopped) &&
 		    (atomic_read(&tx_ring->tx_count) > (tx_ring->wq_len / 4)))
+=======
+		if ((atomic_read(&tx_ring->tx_count) > (tx_ring->wq_len / 4)))
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * The queue got stopped because the tx_ring was full.
 			 * Wake it up, because it's now at least 25% empty.
@@ -2279,7 +2476,11 @@ static void qlge_vlan_mode(struct net_device *ndev, netdev_features_t features)
 {
 	struct ql_adapter *qdev = netdev_priv(ndev);
 
+<<<<<<< HEAD
 	if (features & NETIF_F_HW_VLAN_RX) {
+=======
+	if (features & NETIF_F_HW_VLAN_CTAG_RX) {
+>>>>>>> refs/remotes/origin/master
 		ql_write32(qdev, NIC_RCV_CFG, NIC_RCV_CFG_VLAN_MASK |
 				 NIC_RCV_CFG_VLAN_MATCH_AND_NON);
 	} else {
@@ -2287,6 +2488,7 @@ static void qlge_vlan_mode(struct net_device *ndev, netdev_features_t features)
 	}
 }
 
+<<<<<<< HEAD
 static netdev_features_t qlge_fix_features(struct net_device *ndev,
 	netdev_features_t features)
 {
@@ -2298,6 +2500,46 @@ static netdev_features_t qlge_fix_features(struct net_device *ndev,
 		features |= NETIF_F_HW_VLAN_TX;
 	else
 		features &= ~NETIF_F_HW_VLAN_TX;
+=======
+/**
+ * qlge_update_hw_vlan_features - helper routine to reinitialize the adapter
+ * based on the features to enable/disable hardware vlan accel
+ */
+static int qlge_update_hw_vlan_features(struct net_device *ndev,
+					netdev_features_t features)
+{
+	struct ql_adapter *qdev = netdev_priv(ndev);
+	int status = 0;
+
+	status = ql_adapter_down(qdev);
+	if (status) {
+		netif_err(qdev, link, qdev->ndev,
+			  "Failed to bring down the adapter\n");
+		return status;
+	}
+
+	/* update the features with resent change */
+	ndev->features = features;
+
+	status = ql_adapter_up(qdev);
+	if (status) {
+		netif_err(qdev, link, qdev->ndev,
+			  "Failed to bring up the adapter\n");
+		return status;
+	}
+	return status;
+}
+
+static netdev_features_t qlge_fix_features(struct net_device *ndev,
+	netdev_features_t features)
+{
+	int err;
+
+	/* Update the behavior of vlan accel in the adapter */
+	err = qlge_update_hw_vlan_features(ndev, features);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	return features;
 }
@@ -2307,7 +2549,11 @@ static int qlge_set_features(struct net_device *ndev,
 {
 	netdev_features_t changed = ndev->features ^ features;
 
+<<<<<<< HEAD
 	if (changed & NETIF_F_HW_VLAN_RX)
+=======
+	if (changed & NETIF_F_HW_VLAN_CTAG_RX)
+>>>>>>> refs/remotes/origin/master
 		qlge_vlan_mode(ndev, features);
 
 	return 0;
@@ -2326,7 +2572,11 @@ static int __qlge_vlan_rx_add_vid(struct ql_adapter *qdev, u16 vid)
 	return err;
 }
 
+<<<<<<< HEAD
 static int qlge_vlan_rx_add_vid(struct net_device *ndev, u16 vid)
+=======
+static int qlge_vlan_rx_add_vid(struct net_device *ndev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ql_adapter *qdev = netdev_priv(ndev);
 	int status;
@@ -2357,7 +2607,11 @@ static int __qlge_vlan_rx_kill_vid(struct ql_adapter *qdev, u16 vid)
 	return err;
 }
 
+<<<<<<< HEAD
 static int qlge_vlan_rx_kill_vid(struct net_device *ndev, u16 vid)
+=======
+static int qlge_vlan_rx_kill_vid(struct net_device *ndev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ql_adapter *qdev = netdev_priv(ndev);
 	int status;
@@ -2558,10 +2812,16 @@ static netdev_tx_t qlge_send(struct sk_buff *skb, struct net_device *ndev)
 
 	if (unlikely(atomic_read(&tx_ring->tx_count) < 2)) {
 		netif_info(qdev, tx_queued, qdev->ndev,
+<<<<<<< HEAD
 			   "%s: shutting down tx queue %d du to lack of resources.\n",
 			   __func__, tx_ring_idx);
 		netif_stop_subqueue(ndev, tx_ring->wq_id);
 		atomic_inc(&tx_ring->queue_stopped);
+=======
+			   "%s: BUG! shutting down tx queue %d due to lack of resources.\n",
+			   __func__, tx_ring_idx);
+		netif_stop_subqueue(ndev, tx_ring->wq_id);
+>>>>>>> refs/remotes/origin/master
 		tx_ring->tx_errors++;
 		return NETDEV_TX_BUSY;
 	}
@@ -2612,6 +2872,19 @@ static netdev_tx_t qlge_send(struct sk_buff *skb, struct net_device *ndev)
 		     tx_ring->prod_idx, skb->len);
 
 	atomic_dec(&tx_ring->tx_count);
+<<<<<<< HEAD
+=======
+
+	if (unlikely(atomic_read(&tx_ring->tx_count) < 2)) {
+		netif_stop_subqueue(ndev, tx_ring->wq_id);
+		if ((atomic_read(&tx_ring->tx_count) > (tx_ring->wq_len / 4)))
+			/*
+			 * The queue got stopped because the tx_ring was full.
+			 * Wake it up, because it's now at least 25% empty.
+			 */
+			netif_wake_subqueue(qdev->ndev, tx_ring->wq_id);
+	}
+>>>>>>> refs/remotes/origin/master
 	return NETDEV_TX_OK;
 }
 
@@ -2680,7 +2953,10 @@ static void ql_init_tx_ring(struct ql_adapter *qdev, struct tx_ring *tx_ring)
 		tx_ring_desc++;
 	}
 	atomic_set(&tx_ring->tx_count, tx_ring->wq_len);
+<<<<<<< HEAD
 	atomic_set(&tx_ring->queue_stopped, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ql_free_tx_resources(struct ql_adapter *qdev,
@@ -2703,10 +2979,16 @@ static int ql_alloc_tx_resources(struct ql_adapter *qdev,
 				 &tx_ring->wq_base_dma);
 
 	if ((tx_ring->wq_base == NULL) ||
+<<<<<<< HEAD
 	    tx_ring->wq_base_dma & WQ_ADDR_ALIGN) {
 		netif_err(qdev, ifup, qdev->ndev, "tx_ring alloc failed.\n");
 		return -ENOMEM;
 	}
+=======
+	    tx_ring->wq_base_dma & WQ_ADDR_ALIGN)
+		goto pci_alloc_err;
+
+>>>>>>> refs/remotes/origin/master
 	tx_ring->q =
 	    kmalloc(tx_ring->wq_len * sizeof(struct tx_ring_desc), GFP_KERNEL);
 	if (tx_ring->q == NULL)
@@ -2716,6 +2998,12 @@ static int ql_alloc_tx_resources(struct ql_adapter *qdev,
 err:
 	pci_free_consistent(qdev->pdev, tx_ring->wq_size,
 			    tx_ring->wq_base, tx_ring->wq_base_dma);
+<<<<<<< HEAD
+=======
+	tx_ring->wq_base = NULL;
+pci_alloc_err:
+	netif_err(qdev, ifup, qdev->ndev, "tx_ring alloc failed.\n");
+>>>>>>> refs/remotes/origin/master
 	return -ENOMEM;
 }
 
@@ -2745,6 +3033,15 @@ static void ql_free_lbq_buffers(struct ql_adapter *qdev, struct rx_ring *rx_ring
 			curr_idx = 0;
 
 	}
+<<<<<<< HEAD
+=======
+	if (rx_ring->pg_chunk.page) {
+		pci_unmap_page(qdev->pdev, rx_ring->pg_chunk.map,
+			ql_lbq_block_size(qdev), PCI_DMA_FROMDEVICE);
+		put_page(rx_ring->pg_chunk.page);
+		rx_ring->pg_chunk.page = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ql_free_sbq_buffers(struct ql_adapter *qdev, struct rx_ring *rx_ring)
@@ -2904,6 +3201,7 @@ static int ql_alloc_rx_resources(struct ql_adapter *qdev,
 		/*
 		 * Allocate small buffer queue control blocks.
 		 */
+<<<<<<< HEAD
 		rx_ring->sbq =
 		    kmalloc(rx_ring->sbq_len * sizeof(struct bq_desc),
 			    GFP_KERNEL);
@@ -2912,6 +3210,13 @@ static int ql_alloc_rx_resources(struct ql_adapter *qdev,
 				  "Small buffer queue control block allocation failed.\n");
 			goto err_mem;
 		}
+=======
+		rx_ring->sbq = kmalloc_array(rx_ring->sbq_len,
+					     sizeof(struct bq_desc),
+					     GFP_KERNEL);
+		if (rx_ring->sbq == NULL)
+			goto err_mem;
+>>>>>>> refs/remotes/origin/master
 
 		ql_init_sbq_ring(qdev, rx_ring);
 	}
@@ -2932,6 +3237,7 @@ static int ql_alloc_rx_resources(struct ql_adapter *qdev,
 		/*
 		 * Allocate large buffer queue control blocks.
 		 */
+<<<<<<< HEAD
 		rx_ring->lbq =
 		    kmalloc(rx_ring->lbq_len * sizeof(struct bq_desc),
 			    GFP_KERNEL);
@@ -2940,6 +3246,13 @@ static int ql_alloc_rx_resources(struct ql_adapter *qdev,
 				  "Large buffer queue control block allocation failed.\n");
 			goto err_mem;
 		}
+=======
+		rx_ring->lbq = kmalloc_array(rx_ring->lbq_len,
+					     sizeof(struct bq_desc),
+					     GFP_KERNEL);
+		if (rx_ring->lbq == NULL)
+			goto err_mem;
+>>>>>>> refs/remotes/origin/master
 
 		ql_init_lbq_ring(qdev, rx_ring);
 	}
@@ -3671,8 +3984,17 @@ static int ql_adapter_initialize(struct ql_adapter *qdev)
 	ql_write32(qdev, SYS, mask | value);
 
 	/* Set the default queue, and VLAN behavior. */
+<<<<<<< HEAD
 	value = NIC_RCV_CFG_DFQ | NIC_RCV_CFG_RV;
 	mask = NIC_RCV_CFG_DFQ_MASK | (NIC_RCV_CFG_RV << 16);
+=======
+	value = NIC_RCV_CFG_DFQ;
+	mask = NIC_RCV_CFG_DFQ_MASK;
+	if (qdev->ndev->features & NETIF_F_HW_VLAN_CTAG_RX) {
+		value |= NIC_RCV_CFG_RV;
+		mask |= (NIC_RCV_CFG_RV << 16);
+	}
+>>>>>>> refs/remotes/origin/master
 	ql_write32(qdev, NIC_RCV_CFG, (mask | value));
 
 	/* Set the MPI interrupt to enabled. */
@@ -3845,7 +4167,11 @@ static int ql_wol(struct ql_adapter *qdev)
 	if (qdev->wol & (WAKE_ARP | WAKE_MAGICSECURE | WAKE_PHY | WAKE_UCAST |
 			WAKE_MCAST | WAKE_BCAST)) {
 		netif_err(qdev, ifdown, qdev->ndev,
+<<<<<<< HEAD
 			  "Unsupported WOL paramter. qdev->wol = 0x%x.\n",
+=======
+			  "Unsupported WOL parameter. qdev->wol = 0x%x.\n",
+>>>>>>> refs/remotes/origin/master
 			  qdev->wol);
 		return -EINVAL;
 	}
@@ -4472,11 +4798,18 @@ static void ql_release_all(struct pci_dev *pdev)
 		iounmap(qdev->doorbell_area);
 	vfree(qdev->mpi_coredump);
 	pci_release_regions(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
 }
 
 static int __devinit ql_init_device(struct pci_dev *pdev,
 				    struct net_device *ndev, int cards_found)
+=======
+}
+
+static int ql_init_device(struct pci_dev *pdev, struct net_device *ndev,
+			  int cards_found)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ql_adapter *qdev = netdev_priv(ndev);
 	int err = 0;
@@ -4556,7 +4889,10 @@ static int __devinit ql_init_device(struct pci_dev *pdev,
 		qdev->mpi_coredump =
 			vmalloc(sizeof(struct ql_mpi_coredump));
 		if (qdev->mpi_coredump == NULL) {
+<<<<<<< HEAD
 			dev_err(&pdev->dev, "Coredump alloc failed.\n");
+=======
+>>>>>>> refs/remotes/origin/master
 			err = -ENOMEM;
 			goto err_out2;
 		}
@@ -4570,7 +4906,10 @@ static int __devinit ql_init_device(struct pci_dev *pdev,
 		goto err_out2;
 	}
 
+<<<<<<< HEAD
 	memcpy(ndev->perm_addr, ndev->dev_addr, ndev->addr_len);
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Keep local copy of current mac address. */
 	memcpy(qdev->current_mac_addr, ndev->dev_addr, ndev->addr_len);
 
@@ -4640,8 +4979,13 @@ static void ql_timer(unsigned long data)
 	mod_timer(&qdev->timer, jiffies + (5*HZ));
 }
 
+<<<<<<< HEAD
 static int __devinit qlge_probe(struct pci_dev *pdev,
 				const struct pci_device_id *pci_entry)
+=======
+static int qlge_probe(struct pci_dev *pdev,
+		      const struct pci_device_id *pci_entry)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev = NULL;
 	struct ql_adapter *qdev = NULL;
@@ -4649,7 +4993,11 @@ static int __devinit qlge_probe(struct pci_dev *pdev,
 	int err = 0;
 
 	ndev = alloc_etherdev_mq(sizeof(struct ql_adapter),
+<<<<<<< HEAD
 			min(MAX_CPUS, (int)num_online_cpus()));
+=======
+			min(MAX_CPUS, netif_get_num_default_rss_queues()));
+>>>>>>> refs/remotes/origin/master
 	if (!ndev)
 		return -ENOMEM;
 
@@ -4661,11 +5009,26 @@ static int __devinit qlge_probe(struct pci_dev *pdev,
 
 	qdev = netdev_priv(ndev);
 	SET_NETDEV_DEV(ndev, &pdev->dev);
+<<<<<<< HEAD
 	ndev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM |
 		NETIF_F_TSO | NETIF_F_TSO6 | NETIF_F_TSO_ECN |
 		NETIF_F_HW_VLAN_TX | NETIF_F_RXCSUM;
 	ndev->features = ndev->hw_features |
 		NETIF_F_HW_VLAN_RX | NETIF_F_HW_VLAN_FILTER;
+=======
+	ndev->hw_features = NETIF_F_SG |
+			    NETIF_F_IP_CSUM |
+			    NETIF_F_TSO |
+			    NETIF_F_TSO_ECN |
+			    NETIF_F_HW_VLAN_CTAG_TX |
+			    NETIF_F_HW_VLAN_CTAG_RX |
+			    NETIF_F_HW_VLAN_CTAG_FILTER |
+			    NETIF_F_RXCSUM;
+	ndev->features = ndev->hw_features;
+	ndev->vlan_features = ndev->hw_features;
+	/* vlan gets same features (except vlan filter) */
+	ndev->vlan_features &= ~NETIF_F_HW_VLAN_CTAG_FILTER;
+>>>>>>> refs/remotes/origin/master
 
 	if (test_bit(QL_DMA64, &qdev->flags))
 		ndev->features |= NETIF_F_HIGHDMA;
@@ -4685,6 +5048,10 @@ static int __devinit qlge_probe(struct pci_dev *pdev,
 		dev_err(&pdev->dev, "net device registration failed.\n");
 		ql_release_all(pdev);
 		pci_disable_device(pdev);
+<<<<<<< HEAD
+=======
+		free_netdev(ndev);
+>>>>>>> refs/remotes/origin/master
 		return err;
 	}
 	/* Start up the timer to trigger EEH if
@@ -4712,7 +5079,11 @@ int ql_clean_lb_rx_ring(struct rx_ring *rx_ring, int budget)
 	return ql_clean_inbound_rx_ring(rx_ring, budget);
 }
 
+<<<<<<< HEAD
 static void __devexit qlge_remove(struct pci_dev *pdev)
+=======
+static void qlge_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev = pci_get_drvdata(pdev);
 	struct ql_adapter *qdev = netdev_priv(ndev);
@@ -4830,7 +5201,11 @@ static void qlge_io_resume(struct pci_dev *pdev)
 	netif_device_attach(ndev);
 }
 
+<<<<<<< HEAD
 static struct pci_error_handlers qlge_err_handler = {
+=======
+static const struct pci_error_handlers qlge_err_handler = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected = qlge_io_error_detected,
 	.slot_reset = qlge_io_slot_reset,
 	.resume = qlge_io_resume,
@@ -4904,7 +5279,11 @@ static struct pci_driver qlge_driver = {
 	.name = DRV_NAME,
 	.id_table = qlge_pci_tbl,
 	.probe = qlge_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(qlge_remove),
+=======
+	.remove = qlge_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend = qlge_suspend,
 	.resume = qlge_resume,
@@ -4913,6 +5292,7 @@ static struct pci_driver qlge_driver = {
 	.err_handler = &qlge_err_handler
 };
 
+<<<<<<< HEAD
 static int __init qlge_init_module(void)
 {
 	return pci_register_driver(&qlge_driver);
@@ -4925,3 +5305,6 @@ static void __exit qlge_exit(void)
 
 module_init(qlge_init_module);
 module_exit(qlge_exit);
+=======
+module_pci_driver(qlge_driver);
+>>>>>>> refs/remotes/origin/master

@@ -17,6 +17,7 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_IF_ETHER_H
 #define _LINUX_IF_ETHER_H
@@ -140,6 +141,13 @@ struct ethhdr {
 
 #ifdef __KERNEL__
 #include <linux/skbuff.h>
+=======
+#ifndef _LINUX_IF_ETHER_H
+#define _LINUX_IF_ETHER_H
+
+#include <linux/skbuff.h>
+#include <uapi/linux/if_ether.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct ethhdr *eth_hdr(const struct sk_buff *skb)
 {
@@ -148,9 +156,14 @@ static inline struct ethhdr *eth_hdr(const struct sk_buff *skb)
 
 int eth_header_parse(const struct sk_buff *skb, unsigned char *haddr);
 
+<<<<<<< HEAD
 int mac_pton(const char *s, u8 *mac);
 extern ssize_t sysfs_format_mac(char *buf, const unsigned char *addr, int len);
 
 #endif
 
+=======
+extern ssize_t sysfs_format_mac(char *buf, const unsigned char *addr, int len);
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* _LINUX_IF_ETHER_H */

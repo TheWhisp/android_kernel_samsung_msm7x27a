@@ -208,11 +208,18 @@ static void x25_remove_socket(struct sock *sk)
 static void x25_kill_by_device(struct net_device *dev)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	write_lock_bh(&x25_list_lock);
 
 	sk_for_each(s, node, &x25_list)
+=======
+
+	write_lock_bh(&x25_list_lock);
+
+	sk_for_each(s, &x25_list)
+>>>>>>> refs/remotes/origin/master
 		if (x25_sk(s)->neighbour && x25_sk(s)->neighbour->dev == dev)
 			x25_disconnect(s, ENETUNREACH, 0, 0);
 
@@ -225,7 +232,11 @@ static void x25_kill_by_device(struct net_device *dev)
 static int x25_device_event(struct notifier_block *this, unsigned long event,
 			    void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 	struct x25_neigh *nb;
 
 	if (!net_eq(dev_net(dev), &init_net))
@@ -233,14 +244,19 @@ static int x25_device_event(struct notifier_block *this, unsigned long event,
 
 	if (dev->type == ARPHRD_X25
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_LLC) || defined(CONFIG_LLC_MODULE)
 =======
 #if IS_ENABLED(CONFIG_LLC)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IS_ENABLED(CONFIG_LLC)
+>>>>>>> refs/remotes/origin/master
 	 || dev->type == ARPHRD_ETHER
 #endif
 	 ) {
 		switch (event) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case NETDEV_UP:
 				x25_link_device_up(dev);
@@ -258,6 +274,8 @@ static int x25_device_event(struct notifier_block *this, unsigned long event,
 				x25_link_device_down(dev);
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case NETDEV_UP:
 			x25_link_device_up(dev);
 			break;
@@ -273,7 +291,10 @@ static int x25_device_event(struct notifier_block *this, unsigned long event,
 			x25_route_device_down(dev);
 			x25_link_device_down(dev);
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -302,12 +323,19 @@ static struct sock *x25_find_listener(struct x25_address *addr,
 {
 	struct sock *s;
 	struct sock *next_best;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	read_lock_bh(&x25_list_lock);
 	next_best = NULL;
 
+<<<<<<< HEAD
 	sk_for_each(s, node, &x25_list)
+=======
+	sk_for_each(s, &x25_list)
+>>>>>>> refs/remotes/origin/master
 		if ((!strcmp(addr->x25_addr,
 			x25_sk(s)->source_addr.x25_addr) ||
 				!strcmp(addr->x25_addr,
@@ -345,9 +373,14 @@ found:
 static struct sock *__x25_find_socket(unsigned int lci, struct x25_neigh *nb)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	sk_for_each(s, node, &x25_list)
+=======
+
+	sk_for_each(s, &x25_list)
+>>>>>>> refs/remotes/origin/master
 		if (x25_sk(s)->lci == lci && x25_sk(s)->neighbour == nb) {
 			sock_hold(s);
 			goto found;
@@ -1284,19 +1317,26 @@ static int x25_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sockaddr_x25 *sx25 = (struct sockaddr_x25 *)msg->msg_name;
 	size_t copied;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int qbit, header_len = x25->neighbour->extended ?
 		X25_EXT_MIN_LEN : X25_STD_MIN_LEN;
 
 =======
 	int qbit, header_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int qbit, header_len;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 	unsigned char *asmptr;
 	int rc = -ENOTCONN;
 
 	lock_sock(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (x25->neighbour == NULL)
 		goto out;
@@ -1304,7 +1344,10 @@ static int x25_recvmsg(struct kiocb *iocb, struct socket *sock,
 	header_len = x25->neighbour->extended ?
 		X25_EXT_MIN_LEN : X25_STD_MIN_LEN;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This works for seqpacket too. The receiver has ordered the queue for
 	 * us! We do one quick check first though
@@ -1374,10 +1417,16 @@ static int x25_recvmsg(struct kiocb *iocb, struct socket *sock,
 	if (sx25) {
 		sx25->sx25_family = AF_X25;
 		sx25->sx25_addr   = x25->dest_addr;
+<<<<<<< HEAD
 	}
 
 	msg->msg_namelen = sizeof(struct sockaddr_x25);
 
+=======
+		msg->msg_namelen = sizeof(*sx25);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	x25_check_rbuf(sk);
 	rc = copied;
 out_free_dgram:
@@ -1396,6 +1445,7 @@ static int x25_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 	int rc;
 
 	switch (cmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case TIOCOUTQ: {
 			int amount;
@@ -1649,6 +1699,8 @@ out_sendcallaccpt_release:
 			rc = -ENOIOCTLCMD;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case TIOCOUTQ: {
 		int amount;
 
@@ -1897,7 +1949,10 @@ out_sendcallaccpt_release:
 	default:
 		rc = -ENOIOCTLCMD;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rc;
@@ -2068,11 +2123,18 @@ static struct notifier_block x25_dev_notifier = {
 void x25_kill_by_neigh(struct x25_neigh *nb)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	write_lock_bh(&x25_list_lock);
 
 	sk_for_each(s, node, &x25_list)
+=======
+
+	write_lock_bh(&x25_list_lock);
+
+	sk_for_each(s, &x25_list)
+>>>>>>> refs/remotes/origin/master
 		if (x25_sk(s)->neighbour == nb)
 			x25_disconnect(s, ENETUNREACH, 0, 0);
 

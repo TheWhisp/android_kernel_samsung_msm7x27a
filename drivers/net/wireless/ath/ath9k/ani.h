@@ -17,6 +17,7 @@
 #ifndef ANI_H
 #define ANI_H
 
+<<<<<<< HEAD
 #define HAL_PROCESS_ANI           0x00000001
 
 #define DO_ANI(ah) (((ah)->proc_phyerr & HAL_PROCESS_ANI) && ah->curchan)
@@ -48,10 +49,27 @@
 
 #define ATH9K_ANI_FIRSTEP_LVL_OLD         0
 #define ATH9K_ANI_FIRSTEP_LVL_NEW         2
+=======
+#define BEACON_RSSI(ahp) (ahp->stats.avgbrssi)
+
+/* units are errors per second */
+#define ATH9K_ANI_OFDM_TRIG_HIGH           3500
+#define ATH9K_ANI_OFDM_TRIG_HIGH_BELOW_INI 1000
+
+#define ATH9K_ANI_OFDM_TRIG_LOW           400
+#define ATH9K_ANI_OFDM_TRIG_LOW_ABOVE_INI 900
+
+#define ATH9K_ANI_CCK_TRIG_HIGH           600
+#define ATH9K_ANI_CCK_TRIG_LOW            300
+
+#define ATH9K_ANI_SPUR_IMMUNE_LVL         3
+#define ATH9K_ANI_FIRSTEP_LVL             2
+>>>>>>> refs/remotes/origin/master
 
 #define ATH9K_ANI_RSSI_THR_HIGH           40
 #define ATH9K_ANI_RSSI_THR_LOW            7
 
+<<<<<<< HEAD
 #define ATH9K_ANI_PERIOD_OLD              100
 #define ATH9K_ANI_PERIOD_NEW              1000
 
@@ -62,12 +80,19 @@
 #define HAL_NOISE_IMMUNE_MAX              4
 #define HAL_SPUR_IMMUNE_MAX               7
 #define HAL_FIRST_STEP_MAX                2
+=======
+#define ATH9K_ANI_PERIOD                  300
+
+/* in ms */
+#define ATH9K_ANI_POLLINTERVAL            1000
+>>>>>>> refs/remotes/origin/master
 
 #define ATH9K_SIG_FIRSTEP_SETTING_MIN     0
 #define ATH9K_SIG_FIRSTEP_SETTING_MAX     20
 #define ATH9K_SIG_SPUR_IMM_SETTING_MIN    0
 #define ATH9K_SIG_SPUR_IMM_SETTING_MAX    22
 
+<<<<<<< HEAD
 #define ATH9K_ANI_ENABLE_MRC_CCK          true
 
 /* values here are relative to the INI */
@@ -82,6 +107,15 @@ enum ath9k_ani_cmd {
 	ATH9K_ANI_MODE = 0x40,
 	ATH9K_ANI_PHYERR_RESET = 0x80,
 	ATH9K_ANI_MRC_CCK = 0x100,
+=======
+/* values here are relative to the INI */
+
+enum ath9k_ani_cmd {
+	ATH9K_ANI_OFDM_WEAK_SIGNAL_DETECTION = 0x1,
+	ATH9K_ANI_FIRSTEP_LEVEL = 0x2,
+	ATH9K_ANI_SPUR_IMMUNITY_LEVEL = 0x4,
+	ATH9K_ANI_MRC_CCK = 0x8,
+>>>>>>> refs/remotes/origin/master
 	ATH9K_ANI_ALL = 0xfff
 };
 
@@ -112,11 +146,15 @@ struct ath9k_ani_default {
 };
 
 struct ar5416AniState {
+<<<<<<< HEAD
 	struct ath9k_channel *c;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 noiseImmunityLevel;
 	u8 ofdmNoiseImmunityLevel;
 	u8 cckNoiseImmunityLevel;
 	bool ofdmsTurn;
+<<<<<<< HEAD
 	u8 mrcCCKOff;
 	u8 spurImmunityLevel;
 	u8 firstepLevel;
@@ -135,12 +173,24 @@ struct ar5416AniState {
 	int16_t pktRssi[2];
 	int16_t ofdmErrRssi[2];
 	int16_t cckErrRssi[2];
+=======
+	u8 mrcCCK;
+	u8 spurImmunityLevel;
+	u8 firstepLevel;
+	bool ofdmWeakSigDetect;
+	u32 listenTime;
+	u32 ofdmPhyErrCount;
+	u32 cckPhyErrCount;
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_ani_default iniDef;
 };
 
 struct ar5416Stats {
+<<<<<<< HEAD
 	u32 ast_ani_niup;
 	u32 ast_ani_nidown;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 ast_ani_spurup;
 	u32 ast_ani_spurdown;
 	u32 ast_ani_ofdmon;
@@ -153,11 +203,15 @@ struct ar5416Stats {
 	u32 ast_ani_cckerrs;
 	u32 ast_ani_reset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 ast_ani_lzero;
 	u32 ast_ani_lneg;
 =======
 	u32 ast_ani_lneg_or_lzero;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 ast_ani_lneg_or_lzero;
+>>>>>>> refs/remotes/origin/master
 	u32 avgbrssi;
 	struct ath9k_mib_stats ast_mibstats;
 };
@@ -165,6 +219,7 @@ struct ar5416Stats {
 
 void ath9k_enable_mib_counters(struct ath_hw *ah);
 void ath9k_hw_disable_mib_counters(struct ath_hw *ah);
+<<<<<<< HEAD
 void ath9k_hw_ani_setup(struct ath_hw *ah);
 void ath9k_hw_ani_init(struct ath_hw *ah);
 <<<<<<< HEAD
@@ -172,5 +227,8 @@ int ath9k_hw_get_ani_channel_idx(struct ath_hw *ah,
 				 struct ath9k_channel *chan);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ath9k_hw_ani_init(struct ath_hw *ah);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* ANI_H */

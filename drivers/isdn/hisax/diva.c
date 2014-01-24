@@ -5,10 +5,14 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -32,10 +36,14 @@
 static const char *Diva_revision = "$Revision: 1.33.2.6 $";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
 =======
 #define byteout(addr, val) outb(val, addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 #define DIVA_HSCX_DATA		0
@@ -98,10 +106,14 @@ readreg(unsigned int ale, unsigned int adr, u_char off)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
 =======
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	byteout(ale, off);
 	insb(adr, data, size);
@@ -126,12 +138,17 @@ static inline u_char
 memreadreg(unsigned long adr, u_char off)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(*((unsigned char *)
 		(((unsigned int *)adr) + off)));
 =======
 	return (*((unsigned char *)
 		 (((unsigned int *)adr) + off)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (*((unsigned char *)
+		 (((unsigned int *)adr) + off)));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -139,10 +156,14 @@ memwritereg(unsigned long adr, u_char off, u_char data)
 {
 	register u_char *p;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	p = (unsigned char *)(((unsigned int *)adr) + off);
 	*p = data;
 }
@@ -153,10 +174,14 @@ static u_char
 ReadISAC(struct IsdnCardState *cs, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(readreg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset));
 =======
 	return (readreg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (readreg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -181,15 +206,20 @@ static u_char
 ReadISAC_IPAC(struct IsdnCardState *cs, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (readreg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset+0x80));
 =======
 	return (readreg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset + 0x80));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (readreg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset + 0x80));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 WriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writereg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset|0x80, value);
 }
@@ -197,22 +227,31 @@ WriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 static void
 ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	writereg(cs->hw.diva.isac_adr, cs->hw.diva.isac, offset | 0x80, value);
 }
 
 static void
 ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	readfifo(cs->hw.diva.isac_adr, cs->hw.diva.isac, 0x80, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	writefifo(cs->hw.diva.isac_adr, cs->hw.diva.isac, 0x80, data, size);
 }
@@ -221,12 +260,17 @@ static u_char
 ReadHSCX(struct IsdnCardState *cs, int hscx, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(readreg(cs->hw.diva.hscx_adr,
 		cs->hw.diva.hscx, offset + (hscx ? 0x40 : 0)));
 =======
 	return (readreg(cs->hw.diva.hscx_adr,
 		       cs->hw.diva.hscx, offset + (hscx ? 0x40 : 0)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (readreg(cs->hw.diva.hscx_adr,
+		       cs->hw.diva.hscx, offset + (hscx ? 0x40 : 0)));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -234,25 +278,34 @@ WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
 {
 	writereg(cs->hw.diva.hscx_adr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->hw.diva.hscx, offset + (hscx ? 0x40 : 0), value);
 =======
 		 cs->hw.diva.hscx, offset + (hscx ? 0x40 : 0), value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 cs->hw.diva.hscx, offset + (hscx ? 0x40 : 0), value);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u_char
 MemReadISAC_IPAC(struct IsdnCardState *cs, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (memreadreg(cs->hw.diva.cfg_reg, offset+0x80));
 =======
 	return (memreadreg(cs->hw.diva.cfg_reg, offset + 0x80));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (memreadreg(cs->hw.diva.cfg_reg, offset + 0x80));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 MemWriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memwritereg(cs->hw.diva.cfg_reg, offset|0x80, value);
 }
@@ -262,6 +315,8 @@ MemReadISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 {
 	while(size--)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	memwritereg(cs->hw.diva.cfg_reg, offset | 0x80, value);
 }
 
@@ -269,11 +324,15 @@ static void
 MemReadISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
 {
 	while (size--)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		*data++ = memreadreg(cs->hw.diva.cfg_reg, 0x80);
 }
 
 static void
+<<<<<<< HEAD
 <<<<<<< HEAD
 MemWriteISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 {
@@ -283,6 +342,11 @@ MemWriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
 {
 	while (size--)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MemWriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+{
+	while (size--)
+>>>>>>> refs/remotes/origin/master
 		memwritereg(cs->hw.diva.cfg_reg, 0x80, *data++);
 }
 
@@ -290,10 +354,14 @@ static u_char
 MemReadHSCX(struct IsdnCardState *cs, int hscx, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(memreadreg(cs->hw.diva.cfg_reg, offset + (hscx ? 0x40 : 0)));
 =======
 	return (memreadreg(cs->hw.diva.cfg_reg, offset + (hscx ? 0x40 : 0)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (memreadreg(cs->hw.diva.cfg_reg, offset + (hscx ? 0x40 : 0)));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -317,6 +385,7 @@ MemWriteISAC_IPACX(struct IsdnCardState *cs, u_char offset, u_char value)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 MemReadISACfifo_IPACX(struct IsdnCardState *cs, u_char * data, int size)
 {
 	while(size--)
@@ -325,10 +394,16 @@ MemReadISACfifo_IPACX(struct IsdnCardState *cs, u_char *data, int size)
 {
 	while (size--)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MemReadISACfifo_IPACX(struct IsdnCardState *cs, u_char *data, int size)
+{
+	while (size--)
+>>>>>>> refs/remotes/origin/master
 		*data++ = memreadreg(cs->hw.diva.cfg_reg, 0);
 }
 
 static void
+<<<<<<< HEAD
 <<<<<<< HEAD
 MemWriteISACfifo_IPACX(struct IsdnCardState *cs, u_char * data, int size)
 {
@@ -338,6 +413,11 @@ MemWriteISACfifo_IPACX(struct IsdnCardState *cs, u_char *data, int size)
 {
 	while (size--)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MemWriteISACfifo_IPACX(struct IsdnCardState *cs, u_char *data, int size)
+{
+	while (size--)
+>>>>>>> refs/remotes/origin/master
 		memwritereg(cs->hw.diva.cfg_reg, 0, *data++);
 }
 
@@ -345,17 +425,23 @@ static u_char
 MemReadHSCX_IPACX(struct IsdnCardState *cs, int hscx, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(memreadreg(cs->hw.diva.cfg_reg, offset + 
                     (hscx ? IPACX_OFF_B2 : IPACX_OFF_B1)));
 =======
 	return (memreadreg(cs->hw.diva.cfg_reg, offset +
 			  (hscx ? IPACX_OFF_B2 : IPACX_OFF_B1)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (memreadreg(cs->hw.diva.cfg_reg, offset +
+			  (hscx ? IPACX_OFF_B2 : IPACX_OFF_B1)));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 MemWriteHSCX_IPACX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memwritereg(cs->hw.diva.cfg_reg, offset + 
               (hscx ? IPACX_OFF_B2 : IPACX_OFF_B1), value);
@@ -363,12 +449,17 @@ MemWriteHSCX_IPACX(struct IsdnCardState *cs, int hscx, u_char offset, u_char val
 	memwritereg(cs->hw.diva.cfg_reg, offset +
 		    (hscx ? IPACX_OFF_B2 : IPACX_OFF_B1), value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memwritereg(cs->hw.diva.cfg_reg, offset +
+		    (hscx ? IPACX_OFF_B2 : IPACX_OFF_B1), value);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * fast interrupt HSCX stuff goes here
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define READHSCX(cs, nr, reg) readreg(cs->hw.diva.hscx_adr, \
 		cs->hw.diva.hscx, reg + (nr ? 0x40 : 0))
@@ -381,6 +472,8 @@ MemWriteHSCX_IPACX(struct IsdnCardState *cs, int hscx, u_char offset, u_char val
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.diva.hscx_adr, \
 		cs->hw.diva.hscx, (nr ? 0x40 : 0), ptr, cnt)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define READHSCX(cs, nr, reg) readreg(cs->hw.diva.hscx_adr,		\
 				      cs->hw.diva.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.diva.hscx_adr,	\
@@ -391,7 +484,10 @@ MemWriteHSCX_IPACX(struct IsdnCardState *cs, int hscx, u_char offset, u_char val
 
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.diva.hscx_adr, \
 						  cs->hw.diva.hscx, (nr ? 0x40 : 0), ptr, cnt)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "hscx_irq.c"
 
@@ -402,10 +498,14 @@ diva_interrupt(int intno, void *dev_id)
 	u_char val, sval;
 	u_long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int cnt=5;
 =======
 	int cnt = 5;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int cnt = 5;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&cs->lock, flags);
 	while (((sval = bytein(cs->hw.diva.ctrl)) & DIVA_IRQ_REQ) && cnt) {
@@ -434,6 +534,7 @@ diva_irq_ipac_isa(int intno, void *dev_id)
 {
 	struct IsdnCardState *cs = dev_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_char ista,val;
 	u_long flags;
 	int icnt=5;
@@ -442,6 +543,11 @@ diva_irq_ipac_isa(int intno, void *dev_id)
 	u_long flags;
 	int icnt = 5;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u_char ista, val;
+	u_long flags;
+	int icnt = 5;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&cs->lock, flags);
 	ista = readreg(cs->hw.diva.isac_adr, cs->hw.diva.isac, IPAC_ISTA);
@@ -546,7 +652,11 @@ Memhscx_empty_fifo(struct BCState *bcs, int count)
 		t += sprintf(t, "hscx_empty_fifo %c cnt %d",
 			     bcs->hw.hscx.hscx ? 'B' : 'A', count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -556,12 +666,17 @@ Memhscx_fill_fifo(struct BCState *bcs)
 	struct IsdnCardState *cs = bcs->cs;
 	int more, count, cnt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags)? 64: 32;
 	u_char *ptr,*p;
 =======
 	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
 	u_char *ptr, *p;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
+	u_char *ptr, *p;
+>>>>>>> refs/remotes/origin/master
 
 	if ((cs->debug & L1_DEB_HSCX) && !(cs->debug & L1_DEB_HSCX_FIFO))
 		debugl1(cs, "hscx_fill_fifo");
@@ -584,6 +699,7 @@ Memhscx_fill_fifo(struct BCState *bcs)
 	bcs->tx_cnt -= count;
 	bcs->hw.hscx.count += count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while(cnt--)
 		memwritereg(cs->hw.diva.cfg_reg, bcs->hw.hscx.hscx ? 0x40 : 0,
 			*p++);
@@ -592,6 +708,11 @@ Memhscx_fill_fifo(struct BCState *bcs)
 		memwritereg(cs->hw.diva.cfg_reg, bcs->hw.hscx.hscx ? 0x40 : 0,
 			    *p++);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (cnt--)
+		memwritereg(cs->hw.diva.cfg_reg, bcs->hw.hscx.hscx ? 0x40 : 0,
+			    *p++);
+>>>>>>> refs/remotes/origin/master
 	MemWriteHSCXCMDR(cs, bcs->hw.hscx.hscx, more ? 0x8 : 0xa);
 	if (cs->debug & L1_DEB_HSCX_FIFO) {
 		char *t = bcs->blog;
@@ -599,7 +720,11 @@ Memhscx_fill_fifo(struct BCState *bcs)
 		t += sprintf(t, "hscx_fill_fifo %c cnt %d",
 			     bcs->hw.hscx.hscx ? 'B' : 'A', count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, bcs->blog);
+=======
+		debugl1(cs, "%s", bcs->blog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -610,10 +735,14 @@ Memhscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 	struct BCState *bcs = cs->bcs + hscx;
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags)? 64: 32;
 =======
 	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int fifo_size = test_bit(HW_IPAC, &cs->HW_Flags) ? 64 : 32;
+>>>>>>> refs/remotes/origin/master
 	int count;
 
 	if (!test_bit(BC_FLG_INIT, &bcs->Flag))
@@ -636,10 +765,14 @@ Memhscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 		} else {
 			count = MemReadHSCX(cs, hscx, HSCX_RBCL) & (
 <<<<<<< HEAD
+<<<<<<< HEAD
 				test_bit(HW_IPAC, &cs->HW_Flags)? 0x3f: 0x1f);
 =======
 				test_bit(HW_IPAC, &cs->HW_Flags) ? 0x3f : 0x1f);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				test_bit(HW_IPAC, &cs->HW_Flags) ? 0x3f : 0x1f);
+>>>>>>> refs/remotes/origin/master
 			if (count == 0)
 				count = fifo_size;
 			Memhscx_empty_fifo(bcs, count);
@@ -678,12 +811,17 @@ Memhscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 				return;
 			} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (test_bit(FLG_LLI_L1WAKEUP,&bcs->st->lli.flag) &&
 					(PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 =======
 				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
 				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (test_bit(FLG_LLI_L1WAKEUP, &bcs->st->lli.flag) &&
+				    (PACKET_NOACK != bcs->tx_skb->pkt_type)) {
+>>>>>>> refs/remotes/origin/master
 					u_long	flags;
 					spin_lock_irqsave(&bcs->aclock, flags);
 					bcs->ackcnt += bcs->hw.hscx.count;
@@ -692,10 +830,14 @@ Memhscx_interrupt(struct IsdnCardState *cs, u_char val, u_char hscx)
 				}
 				dev_kfree_skb_irq(bcs->tx_skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				bcs->hw.hscx.count = 0; 
 =======
 				bcs->hw.hscx.count = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				bcs->hw.hscx.count = 0;
+>>>>>>> refs/remotes/origin/master
 				bcs->tx_skb = NULL;
 			}
 		}
@@ -726,10 +868,14 @@ Memhscx_int_main(struct IsdnCardState *cs, u_char val)
 			else {
 				/* Here we lost an TX interrupt, so
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   * restart transmitting the whole frame.
 =======
 				 * restart transmitting the whole frame.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/master
 				 */
 				if (bcs->tx_skb) {
 					skb_push(bcs->tx_skb, bcs->hw.hscx.count);
@@ -757,10 +903,14 @@ Memhscx_int_main(struct IsdnCardState *cs, u_char val)
 			else {
 				/* Here we lost an TX interrupt, so
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   * restart transmitting the whole frame.
 =======
 				 * restart transmitting the whole frame.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 * restart transmitting the whole frame.
+>>>>>>> refs/remotes/origin/master
 				 */
 				if (bcs->tx_skb) {
 					skb_push(bcs->tx_skb, bcs->hw.hscx.count);
@@ -787,12 +937,17 @@ diva_irq_ipac_pci(int intno, void *dev_id)
 {
 	struct IsdnCardState *cs = dev_id;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_char ista,val;
 	int icnt=5;
 =======
 	u_char ista, val;
 	int icnt = 5;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u_char ista, val;
+	int icnt = 5;
+>>>>>>> refs/remotes/origin/master
 	u_char *cfg;
 	u_long flags;
 
@@ -854,18 +1009,24 @@ diva_irq_ipacx_pci(int intno, void *dev_id)
 	cfg = (u_char *) cs->hw.diva.pci_cfg;
 	val = *cfg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(val &PITA_INT0_STATUS)) {
 		spin_unlock_irqrestore(&cs->lock, flags);
 		return IRQ_NONE; // other shared IRQ
 	}
  	interrupt_ipacx(cs);      // handler for chip
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(val & PITA_INT0_STATUS)) {
 		spin_unlock_irqrestore(&cs->lock, flags);
 		return IRQ_NONE; // other shared IRQ
 	}
 	interrupt_ipacx(cs);      // handler for chip
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*cfg = PITA_INT0_STATUS;  // Reset PLX interrupt
 	spin_unlock_irqrestore(&cs->lock, flags);
 	return IRQ_HANDLED;
@@ -877,18 +1038,24 @@ release_io_diva(struct IsdnCardState *cs)
 	int bytecnt;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((cs->subtyp == DIVA_IPAC_PCI) || 
 	    (cs->subtyp == DIVA_IPACX_PCI)   ) {
 		u_int *cfg = (unsigned int *)cs->hw.diva.pci_cfg;
 
 		*cfg = 0; /* disable INT0/1 */ 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((cs->subtyp == DIVA_IPAC_PCI) ||
 	    (cs->subtyp == DIVA_IPACX_PCI)) {
 		u_int *cfg = (unsigned int *)cs->hw.diva.pci_cfg;
 
 		*cfg = 0; /* disable INT0/1 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		*cfg = 2; /* reset pending INT0 */
 		if (cs->hw.diva.cfg_reg)
 			iounmap((void *)cs->hw.diva.cfg_reg);
@@ -938,10 +1105,14 @@ reset_diva(struct IsdnCardState *cs)
 	} else if (cs->subtyp == DIVA_IPAC_PCI) {
 		unsigned int *ireg = (unsigned int *)(cs->hw.diva.pci_cfg +
 <<<<<<< HEAD
+<<<<<<< HEAD
 					PITA_MISC_REG);
 =======
 						      PITA_MISC_REG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						      PITA_MISC_REG);
+>>>>>>> refs/remotes/origin/master
 		*ireg = PITA_PARA_SOFTRESET | PITA_PARA_MPX_MODE;
 		mdelay(10);
 		*ireg = PITA_PARA_MPX_MODE;
@@ -950,10 +1121,14 @@ reset_diva(struct IsdnCardState *cs)
 	} else if (cs->subtyp == DIVA_IPACX_PCI) {
 		unsigned int *ireg = (unsigned int *)(cs->hw.diva.pci_cfg +
 <<<<<<< HEAD
+<<<<<<< HEAD
 					PITA_MISC_REG);
 =======
 						      PITA_MISC_REG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						      PITA_MISC_REG);
+>>>>>>> refs/remotes/origin/master
 		*ireg = PITA_PARA_SOFTRESET | PITA_PARA_MPX_MODE;
 		mdelay(10);
 		*ireg = PITA_PARA_MPX_MODE | PITA_SER_SOFTRESET;
@@ -987,10 +1162,14 @@ diva_led_handler(struct IsdnCardState *cs)
 	if ((cs->subtyp == DIVA_IPAC_ISA) ||
 	    (cs->subtyp == DIVA_IPAC_PCI) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (cs->subtyp == DIVA_IPACX_PCI)   )
 =======
 	    (cs->subtyp == DIVA_IPACX_PCI))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (cs->subtyp == DIVA_IPACX_PCI))
+>>>>>>> refs/remotes/origin/master
 		return;
 	del_timer(&cs->hw.diva.tl);
 	if (cs->hw.diva.status & DIVA_ASSIGN)
@@ -1011,10 +1190,14 @@ diva_led_handler(struct IsdnCardState *cs)
 	} else
 		cs->hw.diva.ctrl_reg &= ~((DIVA_ISA == cs->subtyp) ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DIVA_ISA_LED_B : DIVA_PCI_LED_B);
 =======
 					  DIVA_ISA_LED_B : DIVA_PCI_LED_B);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  DIVA_ISA_LED_B : DIVA_PCI_LED_B);
+>>>>>>> refs/remotes/origin/master
 
 	byteout(cs->hw.diva.ctrl, cs->hw.diva.ctrl_reg);
 	if (blink) {
@@ -1031,6 +1214,7 @@ Diva_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	u_long flags;
 
 	switch (mt) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
@@ -1096,6 +1280,8 @@ Diva_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		spin_lock_irqsave(&cs->lock, flags);
 		reset_diva(cs);
@@ -1159,10 +1345,16 @@ Diva_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		spin_unlock_irqrestore(&cs->lock, flags);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit setup_diva_common(struct IsdnCardState *cs)
+=======
+}
+
+static int setup_diva_common(struct IsdnCardState *cs)
+>>>>>>> refs/remotes/origin/master
 {
 	int bytecnt;
 	u_char val;
@@ -1173,6 +1365,7 @@ static int __devinit setup_diva_common(struct IsdnCardState *cs)
 		bytecnt = 32;
 
 	printk(KERN_INFO
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"Diva: %s card configured at %#lx IRQ %d\n",
 		(cs->subtyp == DIVA_PCI) ? "PCI" :
@@ -1190,6 +1383,8 @@ static int __devinit setup_diva_common(struct IsdnCardState *cs)
 	if ((cs->subtyp != DIVA_IPAC_PCI) &&
 	    (cs->subtyp != DIVA_IPACX_PCI)   ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	       "Diva: %s card configured at %#lx IRQ %d\n",
 	       (cs->subtyp == DIVA_PCI) ? "PCI" :
 	       (cs->subtyp == DIVA_ISA) ? "ISA" :
@@ -1205,7 +1400,10 @@ static int __devinit setup_diva_common(struct IsdnCardState *cs)
 		       cs->hw.diva.pci_cfg);
 	if ((cs->subtyp != DIVA_IPAC_PCI) &&
 	    (cs->subtyp != DIVA_IPACX_PCI)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!request_region(cs->hw.diva.cfg_reg, bytecnt, "diva isdn")) {
 			printk(KERN_WARNING
 			       "HiSax: %s config port %lx-%lx already in use\n",
@@ -1250,12 +1448,17 @@ static int __devinit setup_diva_common(struct IsdnCardState *cs)
 		cs->BC_Send_Data = NULL; // function located in ipacx module
 		cs->irq_func = &diva_irq_ipacx_pci;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "Diva: IPACX Design Id: %x\n", 
 			MemReadISAC_IPACX(cs, IPACX_ID) &0x3F);
 =======
 		printk(KERN_INFO "Diva: IPACX Design Id: %x\n",
 		       MemReadISAC_IPACX(cs, IPACX_ID) & 0x3F);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_INFO "Diva: IPACX Design Id: %x\n",
+		       MemReadISAC_IPACX(cs, IPACX_ID) & 0x3F);
+>>>>>>> refs/remotes/origin/master
 	} else { /* DIVA 2.0 */
 		cs->hw.diva.tl.function = (void *) diva_led_handler;
 		cs->hw.diva.tl.data = (long) cs;
@@ -1269,10 +1472,14 @@ static int __devinit setup_diva_common(struct IsdnCardState *cs)
 		if (HscxVersion(cs, "Diva:")) {
 			printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       "Diva: wrong HSCX versions check IO address\n");
 =======
 			       "Diva: wrong HSCX versions check IO address\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "Diva: wrong HSCX versions check IO address\n");
+>>>>>>> refs/remotes/origin/master
 			release_io_diva(cs);
 			return (0);
 		}
@@ -1282,7 +1489,11 @@ static int __devinit setup_diva_common(struct IsdnCardState *cs)
 
 #ifdef CONFIG_ISA
 
+<<<<<<< HEAD
 static int __devinit setup_diva_isa(struct IsdnCard *card)
+=======
+static int setup_diva_isa(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	u_char val;
@@ -1294,6 +1505,7 @@ static int __devinit setup_diva_isa(struct IsdnCard *card)
 	cs->hw.diva.cfg_reg = card->para[1];
 	val = readreg(cs->hw.diva.cfg_reg + DIVA_IPAC_ADR,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->hw.diva.cfg_reg + DIVA_IPAC_DATA, IPAC_ID);
 	printk(KERN_INFO "Diva: IPAC version %x\n", val);
 	if ((val == 1) || (val==2)) {
@@ -1302,6 +1514,11 @@ static int __devinit setup_diva_isa(struct IsdnCard *card)
 	printk(KERN_INFO "Diva: IPAC version %x\n", val);
 	if ((val == 1) || (val == 2)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      cs->hw.diva.cfg_reg + DIVA_IPAC_DATA, IPAC_ID);
+	printk(KERN_INFO "Diva: IPAC version %x\n", val);
+	if ((val == 1) || (val == 2)) {
+>>>>>>> refs/remotes/origin/master
 		cs->subtyp = DIVA_IPAC_ISA;
 		cs->hw.diva.ctrl = 0;
 		cs->hw.diva.isac = card->para[1] + DIVA_IPAC_DATA;
@@ -1324,7 +1541,11 @@ static int __devinit setup_diva_isa(struct IsdnCard *card)
 
 #else	/* if !CONFIG_ISA */
 
+<<<<<<< HEAD
 static int __devinit setup_diva_isa(struct IsdnCard *card)
+=======
+static int setup_diva_isa(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	return (-1);	/* card not found; continue search */
 }
@@ -1332,6 +1553,7 @@ static int __devinit setup_diva_isa(struct IsdnCard *card)
 #endif	/* CONFIG_ISA */
 
 #ifdef __ISAPNP__
+<<<<<<< HEAD
 static struct isapnp_device_id diva_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('G', 'D', 'I'), ISAPNP_FUNCTION(0x51),
 <<<<<<< HEAD
@@ -1352,6 +1574,10 @@ static struct isapnp_device_id diva_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('G', 'D', 'I'), ISAPNP_FUNCTION(0xA1),
 	  ISAPNP_VENDOR('E', 'I', 'C'), ISAPNP_FUNCTION(0xA1), 
 =======
+=======
+static struct isapnp_device_id diva_ids[] = {
+	{ ISAPNP_VENDOR('G', 'D', 'I'), ISAPNP_FUNCTION(0x51),
+>>>>>>> refs/remotes/origin/master
 	  ISAPNP_VENDOR('G', 'D', 'I'), ISAPNP_FUNCTION(0x51),
 	  (unsigned long) "Diva picola" },
 	{ ISAPNP_VENDOR('G', 'D', 'I'), ISAPNP_FUNCTION(0x51),
@@ -1368,15 +1594,25 @@ static struct isapnp_device_id diva_ids[] __devinitdata = {
 	  (unsigned long) "Diva 2.01" },
 	{ ISAPNP_VENDOR('G', 'D', 'I'), ISAPNP_FUNCTION(0xA1),
 	  ISAPNP_VENDOR('E', 'I', 'C'), ISAPNP_FUNCTION(0xA1),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  (unsigned long) "Diva 2.01" },
 	{ 0, }
 };
 
+<<<<<<< HEAD
 static struct isapnp_device_id *ipid __devinitdata = &diva_ids[0];
 static struct pnp_card *pnp_c __devinitdata = NULL;
 
 static int __devinit setup_diva_isapnp(struct IsdnCard *card)
+=======
+static struct isapnp_device_id *ipid = &diva_ids[0];
+static struct pnp_card *pnp_c = NULL;
+
+static int setup_diva_isapnp(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	struct pnp_dev *pnp_d;
@@ -1384,6 +1620,7 @@ static int __devinit setup_diva_isapnp(struct IsdnCard *card)
 	if (!isapnp_present())
 		return (-1);	/* card not found; continue search */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while(ipid->card_vendor) {
 		if ((pnp_c = pnp_find_card(ipid->card_vendor,
@@ -1402,6 +1639,8 @@ static int __devinit setup_diva_isapnp(struct IsdnCard *card)
 						__func__, err);
 					return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (ipid->card_vendor) {
 		if ((pnp_c = pnp_find_card(ipid->card_vendor,
 					   ipid->card_device, pnp_c))) {
@@ -1418,12 +1657,16 @@ static int __devinit setup_diva_isapnp(struct IsdnCard *card)
 					printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
 					       __func__, err);
 					return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 				card->para[1] = pnp_port_start(pnp_d, 0);
 				card->para[0] = pnp_irq(pnp_d, 0);
 				if (!card->para[0] || !card->para[1]) {
 					printk(KERN_ERR "Diva PnP:some resources are missing %ld/%lx\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 						card->para[0], card->para[1]);
 					pnp_disable_dev(pnp_d); 
@@ -1433,6 +1676,11 @@ static int __devinit setup_diva_isapnp(struct IsdnCard *card)
 					pnp_disable_dev(pnp_d);
 					return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       card->para[0], card->para[1]);
+					pnp_disable_dev(pnp_d);
+					return (0);
+>>>>>>> refs/remotes/origin/master
 				}
 				cs->hw.diva.cfg_reg  = card->para[1];
 				cs->irq = card->para[0];
@@ -1465,6 +1713,7 @@ static int __devinit setup_diva_isapnp(struct IsdnCard *card)
 			} else {
 				printk(KERN_ERR "Diva PnP: PnP error card found, no device\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 				return(0);
 			}
 		}
@@ -1472,20 +1721,29 @@ static int __devinit setup_diva_isapnp(struct IsdnCard *card)
 		pnp_c=NULL;
 	} 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				return (0);
 			}
 		}
 		ipid++;
 		pnp_c = NULL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return (-1);	/* card not found; continue search */
 }
 
 #else	/* if !ISAPNP */
 
+<<<<<<< HEAD
 static int __devinit setup_diva_isapnp(struct IsdnCard *card)
+=======
+static int setup_diva_isapnp(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	return (-1);	/* card not found; continue search */
 }
@@ -1493,17 +1751,27 @@ static int __devinit setup_diva_isapnp(struct IsdnCard *card)
 #endif	/* ISAPNP */
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static struct pci_dev *dev_diva __devinitdata = NULL;
 static struct pci_dev *dev_diva_u __devinitdata = NULL;
 static struct pci_dev *dev_diva201 __devinitdata = NULL;
 static struct pci_dev *dev_diva202 __devinitdata = NULL;
 
 static int __devinit setup_diva_pci(struct IsdnCard *card)
+=======
+static struct pci_dev *dev_diva = NULL;
+static struct pci_dev *dev_diva_u = NULL;
+static struct pci_dev *dev_diva201 = NULL;
+static struct pci_dev *dev_diva202 = NULL;
+
+static int setup_diva_pci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 
 	cs->subtyp = 0;
 	if ((dev_diva = hisax_find_pci_device(PCI_VENDOR_ID_EICON,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		PCI_DEVICE_ID_EICON_DIVA20, dev_diva))) {
 		if (pci_enable_device(dev_diva))
@@ -1513,10 +1781,16 @@ static int __devinit setup_diva_pci(struct IsdnCard *card)
 		if (pci_enable_device(dev_diva))
 			return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      PCI_DEVICE_ID_EICON_DIVA20, dev_diva))) {
+		if (pci_enable_device(dev_diva))
+			return (0);
+>>>>>>> refs/remotes/origin/master
 		cs->subtyp = DIVA_PCI;
 		cs->irq = dev_diva->irq;
 		cs->hw.diva.cfg_reg = pci_resource_start(dev_diva, 2);
 	} else if ((dev_diva_u = hisax_find_pci_device(PCI_VENDOR_ID_EICON,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		PCI_DEVICE_ID_EICON_DIVA20_U, dev_diva_u))) {
 		if (pci_enable_device(dev_diva_u))
@@ -1526,10 +1800,16 @@ static int __devinit setup_diva_pci(struct IsdnCard *card)
 		if (pci_enable_device(dev_diva_u))
 			return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       PCI_DEVICE_ID_EICON_DIVA20_U, dev_diva_u))) {
+		if (pci_enable_device(dev_diva_u))
+			return (0);
+>>>>>>> refs/remotes/origin/master
 		cs->subtyp = DIVA_PCI;
 		cs->irq = dev_diva_u->irq;
 		cs->hw.diva.cfg_reg = pci_resource_start(dev_diva_u, 2);
 	} else if ((dev_diva201 = hisax_find_pci_device(PCI_VENDOR_ID_EICON,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		PCI_DEVICE_ID_EICON_DIVA201, dev_diva201))) {
 		if (pci_enable_device(dev_diva201))
@@ -1539,6 +1819,11 @@ static int __devinit setup_diva_pci(struct IsdnCard *card)
 		if (pci_enable_device(dev_diva201))
 			return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							PCI_DEVICE_ID_EICON_DIVA201, dev_diva201))) {
+		if (pci_enable_device(dev_diva201))
+			return (0);
+>>>>>>> refs/remotes/origin/master
 		cs->subtyp = DIVA_IPAC_PCI;
 		cs->irq = dev_diva201->irq;
 		cs->hw.diva.pci_cfg =
@@ -1546,6 +1831,7 @@ static int __devinit setup_diva_pci(struct IsdnCard *card)
 		cs->hw.diva.cfg_reg =
 			(ulong) ioremap(pci_resource_start(dev_diva201, 1), 4096);
 	} else if ((dev_diva202 = hisax_find_pci_device(PCI_VENDOR_ID_EICON,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		PCI_DEVICE_ID_EICON_DIVA202, dev_diva202))) {
 		if (pci_enable_device(dev_diva202))
@@ -1555,6 +1841,11 @@ static int __devinit setup_diva_pci(struct IsdnCard *card)
 		if (pci_enable_device(dev_diva202))
 			return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+							PCI_DEVICE_ID_EICON_DIVA202, dev_diva202))) {
+		if (pci_enable_device(dev_diva202))
+			return (0);
+>>>>>>> refs/remotes/origin/master
 		cs->subtyp = DIVA_IPACX_PCI;
 		cs->irq = dev_diva202->irq;
 		cs->hw.diva.pci_cfg =
@@ -1569,29 +1860,41 @@ static int __devinit setup_diva_pci(struct IsdnCard *card)
 		printk(KERN_WARNING "Diva: No IRQ for PCI card found\n");
 		iounmap_diva(cs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!cs->hw.diva.cfg_reg) {
 		printk(KERN_WARNING "Diva: No IO-Adr for PCI card found\n");
 		iounmap_diva(cs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 	cs->irq_flags |= IRQF_SHARED;
 
 	if ((cs->subtyp == DIVA_IPAC_PCI) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (cs->subtyp == DIVA_IPACX_PCI)   ) {
 =======
 	    (cs->subtyp == DIVA_IPACX_PCI)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    (cs->subtyp == DIVA_IPACX_PCI)) {
+>>>>>>> refs/remotes/origin/master
 		cs->hw.diva.ctrl = 0;
 		cs->hw.diva.isac = 0;
 		cs->hw.diva.hscx = 0;
@@ -1611,15 +1914,23 @@ static int __devinit setup_diva_pci(struct IsdnCard *card)
 
 #else	/* if !CONFIG_PCI */
 
+<<<<<<< HEAD
 static int __devinit setup_diva_pci(struct IsdnCard *card)
+=======
+static int setup_diva_pci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	return (-1);	/* card not found; continue search */
 }
 
 #endif	/* CONFIG_PCI */
 
+<<<<<<< HEAD
 int __devinit
 setup_diva(struct IsdnCard *card)
+=======
+int setup_diva(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc, have_card = 0;
 	struct IsdnCardState *cs = card->cs;
@@ -1629,10 +1940,14 @@ setup_diva(struct IsdnCard *card)
 	printk(KERN_INFO "HiSax: Eicon.Diehl Diva driver Rev. %s\n", HiSax_getrev(tmp));
 	if (cs->typ != ISDN_CTYPE_DIEHLDIVA)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	cs->hw.diva.status = 0;
 
 	rc = setup_diva_isa(card);
@@ -1661,10 +1976,14 @@ ready:
 	if (!have_card) {
 		printk(KERN_WARNING "Diva: No ISA, ISAPNP or PCI card found\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return setup_diva_common(card->cs);

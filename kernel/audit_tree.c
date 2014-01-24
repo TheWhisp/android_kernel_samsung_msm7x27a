@@ -94,6 +94,7 @@ static inline void get_tree(struct audit_tree *tree)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __put_tree(struct rcu_head *rcu)
 {
 	struct audit_tree *tree = container_of(rcu, struct audit_tree, head);
@@ -105,11 +106,16 @@ static inline void put_tree(struct audit_tree *tree)
 	if (atomic_dec_and_test(&tree->count))
 		call_rcu(&tree->head, __put_tree);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void put_tree(struct audit_tree *tree)
 {
 	if (atomic_dec_and_test(&tree->count))
 		kfree_rcu(tree, head);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* to avoid bringing the entire thing in audit.h */
@@ -262,7 +268,11 @@ static void untag_chunk(struct node *p)
 		list_del_rcu(&chunk->hash);
 		spin_unlock(&hash_lock);
 		spin_unlock(&entry->lock);
+<<<<<<< HEAD
 		fsnotify_destroy_mark(entry);
+=======
+		fsnotify_destroy_mark(entry, audit_tree_group);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -304,7 +314,12 @@ static void untag_chunk(struct node *p)
 		owner->root = new;
 	spin_unlock(&hash_lock);
 	spin_unlock(&entry->lock);
+<<<<<<< HEAD
 	fsnotify_destroy_mark(entry);
+=======
+	fsnotify_destroy_mark(entry, audit_tree_group);
+	fsnotify_put_mark(&new->mark);	/* drop initial reference */
+>>>>>>> refs/remotes/origin/master
 	goto out;
 
 Fallback:
@@ -343,8 +358,12 @@ static int create_chunk(struct inode *inode, struct audit_tree *tree)
 		spin_unlock(&hash_lock);
 		chunk->dead = 1;
 		spin_unlock(&entry->lock);
+<<<<<<< HEAD
 		fsnotify_get_mark(entry);
 		fsnotify_destroy_mark(entry);
+=======
+		fsnotify_destroy_mark(entry, audit_tree_group);
+>>>>>>> refs/remotes/origin/master
 		fsnotify_put_mark(entry);
 		return 0;
 	}
@@ -359,6 +378,10 @@ static int create_chunk(struct inode *inode, struct audit_tree *tree)
 	insert_hash(chunk);
 	spin_unlock(&hash_lock);
 	spin_unlock(&entry->lock);
+<<<<<<< HEAD
+=======
+	fsnotify_put_mark(entry);	/* drop initial reference */
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -424,8 +447,12 @@ static int tag_chunk(struct inode *inode, struct audit_tree *tree)
 		spin_unlock(&chunk_entry->lock);
 		spin_unlock(&old_entry->lock);
 
+<<<<<<< HEAD
 		fsnotify_get_mark(chunk_entry);
 		fsnotify_destroy_mark(chunk_entry);
+=======
+		fsnotify_destroy_mark(chunk_entry, audit_tree_group);
+>>>>>>> refs/remotes/origin/master
 
 		fsnotify_put_mark(chunk_entry);
 		fsnotify_put_mark(old_entry);
@@ -456,16 +483,43 @@ static int tag_chunk(struct inode *inode, struct audit_tree *tree)
 	spin_unlock(&hash_lock);
 	spin_unlock(&chunk_entry->lock);
 	spin_unlock(&old_entry->lock);
+<<<<<<< HEAD
 	fsnotify_destroy_mark(old_entry);
+=======
+	fsnotify_destroy_mark(old_entry, audit_tree_group);
+	fsnotify_put_mark(chunk_entry);	/* drop initial reference */
+>>>>>>> refs/remotes/origin/master
 	fsnotify_put_mark(old_entry); /* pair to fsnotify_find mark_entry */
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static void audit_log_remove_rule(struct audit_krule *rule)
+{
+	struct audit_buffer *ab;
+
+	ab = audit_log_start(NULL, GFP_KERNEL, AUDIT_CONFIG_CHANGE);
+	if (unlikely(!ab))
+		return;
+	audit_log_format(ab, "op=");
+	audit_log_string(ab, "remove rule");
+	audit_log_format(ab, " dir=");
+	audit_log_untrustedstring(ab, rule->tree->pathname);
+	audit_log_key(ab, rule->filterkey);
+	audit_log_format(ab, " list=%d res=1", rule->listnr);
+	audit_log_end(ab);
+}
+
+>>>>>>> refs/remotes/origin/master
 static void kill_rules(struct audit_tree *tree)
 {
 	struct audit_krule *rule, *next;
 	struct audit_entry *entry;
+<<<<<<< HEAD
 	struct audit_buffer *ab;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry_safe(rule, next, &tree->rules, rlist) {
 		entry = container_of(rule, struct audit_entry, rule);
@@ -473,6 +527,7 @@ static void kill_rules(struct audit_tree *tree)
 		list_del_init(&rule->rlist);
 		if (rule->tree) {
 			/* not a half-baked one */
+<<<<<<< HEAD
 			ab = audit_log_start(NULL, GFP_KERNEL, AUDIT_CONFIG_CHANGE);
 			audit_log_format(ab, "op=");
 			audit_log_string(ab, "remove rule");
@@ -481,6 +536,9 @@ static void kill_rules(struct audit_tree *tree)
 			audit_log_key(ab, rule->filterkey);
 			audit_log_format(ab, " list=%d res=1", rule->listnr);
 			audit_log_end(ab);
+=======
+			audit_log_remove_rule(rule);
+>>>>>>> refs/remotes/origin/master
 			rule->tree = NULL;
 			list_del_rcu(&entry->list);
 			list_del(&entry->rule.list);
@@ -607,7 +665,11 @@ void audit_trim_trees(void)
 
 		root_mnt = collect_mounts(&path);
 		path_put(&path);
+<<<<<<< HEAD
 		if (!root_mnt)
+=======
+		if (IS_ERR(root_mnt))
+>>>>>>> refs/remotes/origin/master
 			goto skip_it;
 
 		spin_lock(&hash_lock);
@@ -662,6 +724,10 @@ int audit_add_tree_rule(struct audit_krule *rule)
 	struct vfsmount *mnt;
 	int err;
 
+<<<<<<< HEAD
+=======
+	rule->tree = NULL;
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(tree, &tree_list, list) {
 		if (!strcmp(seed->pathname, tree->pathname)) {
 			put_tree(seed);
@@ -681,8 +747,13 @@ int audit_add_tree_rule(struct audit_krule *rule)
 		goto Err;
 	mnt = collect_mounts(&path);
 	path_put(&path);
+<<<<<<< HEAD
 	if (!mnt) {
 		err = -ENOMEM;
+=======
+	if (IS_ERR(mnt)) {
+		err = PTR_ERR(mnt);
+>>>>>>> refs/remotes/origin/master
 		goto Err;
 	}
 
@@ -731,8 +802,13 @@ int audit_tag_tree(char *old, char *new)
 		return err;
 	tagged = collect_mounts(&path2);
 	path_put(&path2);
+<<<<<<< HEAD
 	if (!tagged)
 		return -ENOMEM;
+=======
+	if (IS_ERR(tagged))
+		return PTR_ERR(tagged);
+>>>>>>> refs/remotes/origin/master
 
 	err = kern_path(old, 0, &path1);
 	if (err) {
@@ -915,12 +991,22 @@ static void evict_chunk(struct audit_chunk *chunk)
 }
 
 static int audit_tree_handle_event(struct fsnotify_group *group,
+<<<<<<< HEAD
 				   struct fsnotify_mark *inode_mark,
 				   struct fsnotify_mark *vfsmonut_mark,
 				   struct fsnotify_event *event)
 {
 	BUG();
 	return -EOPNOTSUPP;
+=======
+				   struct inode *to_tell,
+				   struct fsnotify_mark *inode_mark,
+				   struct fsnotify_mark *vfsmount_mark,
+				   u32 mask, void *data, int data_type,
+				   const unsigned char *file_name)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void audit_tree_freeing_mark(struct fsnotify_mark *entry, struct fsnotify_group *group)
@@ -928,6 +1014,7 @@ static void audit_tree_freeing_mark(struct fsnotify_mark *entry, struct fsnotify
 	struct audit_chunk *chunk = container_of(entry, struct audit_chunk, mark);
 
 	evict_chunk(chunk);
+<<<<<<< HEAD
 	fsnotify_put_mark(entry);
 }
 
@@ -937,13 +1024,24 @@ static bool audit_tree_send_event(struct fsnotify_group *group, struct inode *in
 				  __u32 mask, void *data, int data_type)
 {
 	return false;
+=======
+
+	/*
+	 * We are guaranteed to have at least one reference to the mark from
+	 * either the inode or the caller of fsnotify_destroy_mark().
+	 */
+	BUG_ON(atomic_read(&entry->refcnt) < 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct fsnotify_ops audit_tree_ops = {
 	.handle_event = audit_tree_handle_event,
+<<<<<<< HEAD
 	.should_send_event = audit_tree_send_event,
 	.free_group_priv = NULL,
 	.free_event_priv = NULL,
+=======
+>>>>>>> refs/remotes/origin/master
 	.freeing_mark = audit_tree_freeing_mark,
 };
 

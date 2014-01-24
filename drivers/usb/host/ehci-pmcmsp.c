@@ -78,10 +78,15 @@ static int ehci_msp_setup(struct usb_hcd *hcd)
 {
 	struct ehci_hcd		*ehci = hcd_to_ehci(hcd);
 	int			retval;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ehci->big_endian_mmio = 1;
 	ehci->big_endian_desc = 1;
 
 	ehci->caps = hcd->regs;
+<<<<<<< HEAD
 	ehci->regs = hcd->regs +
 		HC_LENGTH(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
 	dbg_hcs_params(ehci, "reset");
@@ -99,11 +104,19 @@ static int ehci_msp_setup(struct usb_hcd *hcd)
 
 	/* data structure init */
 	retval = ehci_init(hcd);
+=======
+	hcd->has_tt = 1;
+
+	retval = ehci_setup(hcd);
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		return retval;
 
 	usb_hcd_tdi_set_mode(ehci);
+<<<<<<< HEAD
 	ehci_port_power(ehci, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -125,10 +138,14 @@ static int usb_hcd_msp_map_regs(struct mspusb_device *dev)
 	if (res == NULL)
 		return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res_len = res->end - res->start + 1;
 =======
 	res_len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res_len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	if (!request_mem_region(res->start, res_len, "mab regs"))
 		return -EBUSY;
 
@@ -145,10 +162,14 @@ static int usb_hcd_msp_map_regs(struct mspusb_device *dev)
 		goto err2;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res_len = res->end - res->start + 1;
 =======
 	res_len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res_len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	if (!request_mem_region(res->start, res_len, "usbid regs")) {
 		retval = -EBUSY;
 		goto err2;
@@ -163,20 +184,28 @@ static int usb_hcd_msp_map_regs(struct mspusb_device *dev)
 err3:
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res_len = res->end - res->start + 1;
 =======
 	res_len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res_len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	release_mem_region(res->start, res_len);
 err2:
 	iounmap(dev->mab_regs);
 err1:
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res_len = res->end - res->start + 1;
 =======
 	res_len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res_len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	release_mem_region(res->start, res_len);
 	dev_err(&pdev->dev, "Failed to map non-EHCI regs.\n");
 	return retval;
@@ -211,10 +240,14 @@ int usb_hcd_msp_probe(const struct hc_driver *driver,
 	}
 	hcd->rsrc_start = res->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = res->end - res->start + 1;
 =======
 	hcd->rsrc_len = resource_size(res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hcd->rsrc_len = resource_size(res);
+>>>>>>> refs/remotes/origin/master
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, dev->name)) {
 		retval = -EBUSY;
 		goto err1;
@@ -244,8 +277,15 @@ int usb_hcd_msp_probe(const struct hc_driver *driver,
 
 
 	retval = usb_add_hcd(hcd, res->start, IRQF_SHARED);
+<<<<<<< HEAD
 	if (retval == 0)
 		return 0;
+=======
+	if (retval == 0) {
+		device_wakeup_enable(hcd->self.controller);
+		return 0;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	usb_remove_hcd(hcd);
 err3:
@@ -320,13 +360,21 @@ static const struct hc_driver ehci_msp_hc_driver = {
 #else
 	.irq =			ehci_irq,
 #endif
+<<<<<<< HEAD
 	.flags =		HCD_MEMORY | HCD_USB2,
+=======
+	.flags =		HCD_MEMORY | HCD_USB2 | HCD_BH,
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * basic lifecycle operations
 	 */
+<<<<<<< HEAD
 	.reset =		ehci_msp_setup,
 	.start =		ehci_run,
+=======
+	.reset			= ehci_msp_setup,
+>>>>>>> refs/remotes/origin/master
 	.shutdown		= ehci_shutdown,
 	.start			= ehci_run,
 	.stop			= ehci_stop,

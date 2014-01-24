@@ -6,6 +6,10 @@ libertas-y += ethtool.o
 libertas-y += main.o
 libertas-y += rx.o
 libertas-y += tx.o
+<<<<<<< HEAD
+=======
+libertas-y += firmware.o
+>>>>>>> refs/remotes/origin/master
 libertas-$(CONFIG_LIBERTAS_MESH) += mesh.o
 
 usb8xxx-objs += if_usb.o

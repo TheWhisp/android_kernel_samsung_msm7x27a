@@ -18,6 +18,7 @@
 #ifndef	__XFS_INODE_H__
 #define	__XFS_INODE_H__
 
+<<<<<<< HEAD
 struct posix_acl;
 struct xfs_dinode;
 struct xfs_inode;
@@ -223,6 +224,16 @@ typedef struct xfs_icdinode {
 struct bhv_desc;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "xfs_inode_buf.h"
+#include "xfs_inode_fork.h"
+
+/*
+ * Kernel only inode definitions
+ */
+struct xfs_dinode;
+struct xfs_inode;
+>>>>>>> refs/remotes/origin/master
 struct xfs_buf;
 struct xfs_bmap_free;
 struct xfs_bmbt_irec;
@@ -232,6 +243,7 @@ struct xfs_trans;
 struct xfs_dquot;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct dm_attrs_s {
 	__uint32_t	da_dmevmask;	/* DMIG event mask */
 	__uint16_t	da_dmstate;	/* DMIG state info */
@@ -240,11 +252,17 @@ typedef struct dm_attrs_s {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct xfs_inode {
 	/* Inode linking and identification information. */
 	struct xfs_mount	*i_mount;	/* fs mount struct ptr */
 	struct xfs_dquot	*i_udquot;	/* user dquot */
 	struct xfs_dquot	*i_gdquot;	/* group dquot */
+<<<<<<< HEAD
+=======
+	struct xfs_dquot	*i_pdquot;	/* project dquot */
+>>>>>>> refs/remotes/origin/master
 
 	/* Inode location stuff */
 	xfs_ino_t		i_ino;		/* inode number (agno/agino)*/
@@ -254,6 +272,7 @@ typedef struct xfs_inode {
 	xfs_ifork_t		*i_afp;		/* attribute fork pointer */
 	xfs_ifork_t		i_df;		/* data fork */
 
+<<<<<<< HEAD
 	/* Transaction and locking information. */
 <<<<<<< HEAD
 	struct xfs_trans	*i_transp;	/* ptr to owning transaction*/
@@ -268,6 +287,12 @@ typedef struct xfs_inode {
 	unsigned short		i_flags;	/* see defined flags below */
 	unsigned char		i_update_core;	/* timestamps/size is dirty */
 =======
+=======
+	/* operations vectors */
+	const struct xfs_dir_ops *d_ops;		/* directory ops vector */
+
+	/* Transaction and locking information. */
+>>>>>>> refs/remotes/origin/master
 	struct xfs_inode_log_item *i_itemp;	/* logging information */
 	mrlock_t		i_lock;		/* inode lock */
 	mrlock_t		i_iolock;	/* inode IO lock */
@@ -275,11 +300,15 @@ typedef struct xfs_inode {
 	spinlock_t		i_flags_lock;	/* inode i_flags lock */
 	/* Miscellaneous state. */
 	unsigned long		i_flags;	/* see defined flags below */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		i_delayed_blks;	/* count of delay alloc blks */
 
 	xfs_icdinode_t		i_d;		/* most of ondisk inode */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	xfs_fsize_t		i_size;		/* in-memory size */
 	xfs_fsize_t		i_new_size;	/* size when write completes */
@@ -287,16 +316,21 @@ typedef struct xfs_inode {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* VFS inode */
 	struct inode		i_vnode;	/* embedded VFS inode */
 } xfs_inode_t;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define XFS_ISIZE(ip)	(((ip)->i_d.di_mode & S_IFMT) == S_IFREG) ? \
 				(ip)->i_size : (ip)->i_d.di_size;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Convert from vfs inode to xfs inode */
 static inline struct xfs_inode *XFS_I(struct inode *inode)
 {
@@ -311,7 +345,10 @@ static inline struct inode *VFS_I(struct xfs_inode *ip)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * For regular files we only update the on-disk filesize when actually
  * writing data back to disk.  Until then only the copy in the VFS inode
  * is uptodate.
@@ -338,7 +375,10 @@ xfs_new_eof(struct xfs_inode *ip, xfs_fsize_t new_size)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * i_flags helper functions
  */
 static inline void
@@ -393,7 +433,10 @@ xfs_iflags_test_and_clear(xfs_inode_t *ip, unsigned short flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int
 xfs_iflags_test_and_set(xfs_inode_t *ip, unsigned short flags)
 {
@@ -407,7 +450,10 @@ xfs_iflags_test_and_set(xfs_inode_t *ip, unsigned short flags)
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Project quota id helpers (previously projid was 16bit only
  * and using two 16bit values to hold new 32bit projid was chosen
@@ -428,6 +474,7 @@ xfs_set_projid(struct xfs_inode *ip,
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Manage the i_flush queue embedded in the inode.  This completion
  * queue synchronizes processes attempting to flush the in-core
@@ -463,6 +510,8 @@ static inline void xfs_ifunlock(xfs_inode_t *ip)
  * Per-lifetime flags need to be reset when re-using a reclaimable inode during
  * inode lookup. Thi prevents unintended behaviour on the new inode from
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * In-core inode flags.
  */
 #define XFS_IRECLAIM		(1 << 0) /* started reclaiming this inode */
@@ -481,7 +530,10 @@ static inline void xfs_ifunlock(xfs_inode_t *ip)
 /*
  * Per-lifetime flags need to be reset when re-using a reclaimable inode during
  * inode lookup. This prevents unintended behaviour on the new inode from
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * ocurring.
  */
 #define XFS_IRECLAIM_RESET_FLAGS	\
@@ -491,7 +543,10 @@ static inline void xfs_ifunlock(xfs_inode_t *ip)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Synchronize processes attempting to flush the in-core inode back to disk.
  */
 
@@ -511,6 +566,10 @@ static inline void xfs_iflock(struct xfs_inode *ip)
 static inline void xfs_ifunlock(struct xfs_inode *ip)
 {
 	xfs_iflags_clear(ip, XFS_IFLOCK);
+<<<<<<< HEAD
+=======
+	smp_mb();
+>>>>>>> refs/remotes/origin/master
 	wake_up_bit(&ip->i_flags, __XFS_IFLOCK_BIT);
 }
 
@@ -520,7 +579,10 @@ static inline int xfs_isiflocked(struct xfs_inode *ip)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Flags for inode locking.
  * Bit ranges:	1<<1  - 1<<16-1 -- iolock/ilock modes (bitfield)
  *		1<<16 - 1<<32-1 -- lockdep annotation (integers)
@@ -530,9 +592,12 @@ static inline int xfs_isiflocked(struct xfs_inode *ip)
 #define	XFS_ILOCK_EXCL		(1<<2)
 #define	XFS_ILOCK_SHARED	(1<<3)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	XFS_IUNLOCK_NONOTIFY	(1<<4)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define XFS_LOCK_MASK		(XFS_IOLOCK_EXCL | XFS_IOLOCK_SHARED \
 				| XFS_ILOCK_EXCL | XFS_ILOCK_SHARED)
@@ -542,11 +607,15 @@ static inline int xfs_isiflocked(struct xfs_inode *ip)
 	{ XFS_IOLOCK_SHARED,	"IOLOCK_SHARED" }, \
 	{ XFS_ILOCK_EXCL,	"ILOCK_EXCL" }, \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ XFS_ILOCK_SHARED,	"ILOCK_SHARED" }, \
 	{ XFS_IUNLOCK_NONOTIFY,	"IUNLOCK_NONOTIFY" }
 =======
 	{ XFS_ILOCK_SHARED,	"ILOCK_SHARED" }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ XFS_ILOCK_SHARED,	"ILOCK_SHARED" }
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -589,6 +658,7 @@ static inline int xfs_isiflocked(struct xfs_inode *ip)
 #define XFS_IOLOCK_DEP(flags)	(((flags) & XFS_IOLOCK_DEP_MASK) >> XFS_IOLOCK_SHIFT)
 #define XFS_ILOCK_DEP(flags)	(((flags) & XFS_ILOCK_DEP_MASK) >> XFS_ILOCK_SHIFT)
 
+<<<<<<< HEAD
 extern struct lock_class_key xfs_iolock_reclaimable;
 
 /*
@@ -605,6 +675,9 @@ extern struct lock_class_key xfs_iolock_reclaimable;
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * For multiple groups support: if S_ISGID bit is set in the parent
  * directory, group of new file is set to that of the parent, and
  * new subdirectory gets S_ISGID bit from parent.
@@ -613,11 +686,30 @@ extern struct lock_class_key xfs_iolock_reclaimable;
 	(((pip)->i_mount->m_flags & XFS_MOUNT_GRPID) || \
 	 ((pip)->i_d.di_mode & S_ISGID))
 
+<<<<<<< HEAD
 /*
  * xfs_iget.c prototypes.
  */
 int		xfs_iget(struct xfs_mount *, struct xfs_trans *, xfs_ino_t,
 			 uint, uint, xfs_inode_t **);
+=======
+
+int		xfs_release(struct xfs_inode *ip);
+void		xfs_inactive(struct xfs_inode *ip);
+int		xfs_lookup(struct xfs_inode *dp, struct xfs_name *name,
+			   struct xfs_inode **ipp, struct xfs_name *ci_name);
+int		xfs_create(struct xfs_inode *dp, struct xfs_name *name,
+			   umode_t mode, xfs_dev_t rdev, struct xfs_inode **ipp);
+int		xfs_remove(struct xfs_inode *dp, struct xfs_name *name,
+			   struct xfs_inode *ip);
+int		xfs_link(struct xfs_inode *tdp, struct xfs_inode *sip,
+			 struct xfs_name *target_name);
+int		xfs_rename(struct xfs_inode *src_dp, struct xfs_name *src_name,
+			   struct xfs_inode *src_ip, struct xfs_inode *target_dp,
+			   struct xfs_name *target_name,
+			   struct xfs_inode *target_ip);
+
+>>>>>>> refs/remotes/origin/master
 void		xfs_ilock(xfs_inode_t *, uint);
 int		xfs_ilock_nowait(xfs_inode_t *, uint);
 void		xfs_iunlock(xfs_inode_t *, uint);
@@ -625,6 +717,7 @@ void		xfs_ilock_demote(xfs_inode_t *, uint);
 int		xfs_isilocked(xfs_inode_t *, uint);
 uint		xfs_ilock_map_shared(xfs_inode_t *);
 void		xfs_iunlock_map_shared(xfs_inode_t *, uint);
+<<<<<<< HEAD
 void		xfs_inode_free(struct xfs_inode *ip);
 
 /*
@@ -637,11 +730,17 @@ int		xfs_ialloc(struct xfs_trans *, xfs_inode_t *, umode_t,
 >>>>>>> refs/remotes/origin/cm-10.0
 			   xfs_nlink_t, xfs_dev_t, prid_t, int,
 			   struct xfs_buf **, boolean_t *, xfs_inode_t **);
+=======
+int		xfs_ialloc(struct xfs_trans *, xfs_inode_t *, umode_t,
+			   xfs_nlink_t, xfs_dev_t, prid_t, int,
+			   struct xfs_buf **, xfs_inode_t **);
+>>>>>>> refs/remotes/origin/master
 
 uint		xfs_ip2xflags(struct xfs_inode *);
 uint		xfs_dic2xflags(struct xfs_dinode *);
 int		xfs_ifree(struct xfs_trans *, xfs_inode_t *,
 			   struct xfs_bmap_free *);
+<<<<<<< HEAD
 <<<<<<< HEAD
 int		xfs_itruncate_start(xfs_inode_t *, uint, xfs_fsize_t);
 int		xfs_itruncate_finish(struct xfs_trans **, xfs_inode_t *,
@@ -666,6 +765,35 @@ void		xfs_mark_inode_dirty_sync(xfs_inode_t *);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int		xfs_itruncate_extents(struct xfs_trans **, struct xfs_inode *,
+				      int, xfs_fsize_t);
+int		xfs_iunlink(struct xfs_trans *, xfs_inode_t *);
+
+void		xfs_iext_realloc(xfs_inode_t *, int, int);
+
+void		xfs_iunpin_wait(xfs_inode_t *);
+#define xfs_ipincount(ip)	((unsigned int) atomic_read(&ip->i_pincount))
+
+int		xfs_iflush(struct xfs_inode *, struct xfs_buf **);
+void		xfs_lock_inodes(xfs_inode_t **, int, uint);
+void		xfs_lock_two_inodes(xfs_inode_t *, xfs_inode_t *, uint);
+
+xfs_extlen_t	xfs_get_extsz_hint(struct xfs_inode *ip);
+
+int		xfs_dir_ialloc(struct xfs_trans **, struct xfs_inode *, umode_t,
+			       xfs_nlink_t, xfs_dev_t, prid_t, int,
+			       struct xfs_inode **, int *);
+int		xfs_droplink(struct xfs_trans *, struct xfs_inode *);
+int		xfs_bumplink(struct xfs_trans *, struct xfs_inode *);
+void		xfs_bump_ino_vers2(struct xfs_trans *, struct xfs_inode *);
+
+/* from xfs_file.c */
+int		xfs_zero_eof(struct xfs_inode *, xfs_off_t, xfs_fsize_t);
+int		xfs_iozero(struct xfs_inode *, loff_t, size_t);
+
+
+>>>>>>> refs/remotes/origin/master
 #define IHOLD(ip) \
 do { \
 	ASSERT(atomic_read(&VFS_I(ip)->i_count) > 0) ; \
@@ -679,6 +807,7 @@ do { \
 	iput(VFS_I(ip)); \
 } while (0)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /*
@@ -752,5 +881,8 @@ void		xfs_inobp_check(struct xfs_mount *, struct xfs_buf *);
 extern struct kmem_zone	*xfs_ifork_zone;
 extern struct kmem_zone	*xfs_inode_zone;
 extern struct kmem_zone	*xfs_ili_zone;
+=======
+extern struct kmem_zone	*xfs_inode_zone;
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __XFS_INODE_H__ */

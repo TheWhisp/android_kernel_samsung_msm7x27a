@@ -1,7 +1,11 @@
 /*
  * An interface between IEEE802.15.4 device and rest of the kernel.
  *
+<<<<<<< HEAD
  * Copyright (C) 2007, 2008, 2009 Siemens AG
+=======
+ * Copyright (C) 2007-2012 Siemens AG
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2
@@ -21,11 +25,20 @@
  * Maxim Gorbachyov <maxim.gorbachev@siemens.com>
  * Maxim Osipov <maxim.osipov@siemens.com>
  * Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+<<<<<<< HEAD
+=======
+ * Alexander Smirnov <alex.bluesman.smirnov@gmail.com>
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef IEEE802154_NETDEVICE_H
 #define IEEE802154_NETDEVICE_H
 
+<<<<<<< HEAD
+=======
+#include <net/af_ieee802154.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * A control block of skb passed between the ARPHRD_IEEE802154 device
  * and other stack parts.
@@ -82,6 +95,11 @@ struct wpan_phy;
  * Use wpan_wpy_put to put that reference.
  */
 struct ieee802154_mlme_ops {
+<<<<<<< HEAD
+=======
+	/* The following fields are optional (can be NULL). */
+
+>>>>>>> refs/remotes/origin/master
 	int (*assoc_req)(struct net_device *dev,
 			struct ieee802154_addr *addr,
 			u8 channel, u8 page, u8 cap);
@@ -98,6 +116,11 @@ struct ieee802154_mlme_ops {
 	int (*scan_req)(struct net_device *dev,
 			u8 type, u32 channels, u8 page, u8 duration);
 
+<<<<<<< HEAD
+=======
+	/* The fields below are required. */
+
+>>>>>>> refs/remotes/origin/master
 	struct wpan_phy *(*get_phy)(const struct net_device *dev);
 
 	/*
@@ -107,15 +130,42 @@ struct ieee802154_mlme_ops {
 	u16 (*get_pan_id)(const struct net_device *dev);
 	u16 (*get_short_addr)(const struct net_device *dev);
 	u8 (*get_dsn)(const struct net_device *dev);
+<<<<<<< HEAD
 	u8 (*get_bsn)(const struct net_device *dev);
 };
 
 static inline struct ieee802154_mlme_ops *ieee802154_mlme_ops(
 		const struct net_device *dev)
+=======
+};
+
+/* The IEEE 802.15.4 standard defines 2 type of the devices:
+ * - FFD - full functionality device
+ * - RFD - reduce functionality device
+ *
+ * So 2 sets of mlme operations are needed
+ */
+struct ieee802154_reduced_mlme_ops {
+	struct wpan_phy *(*get_phy)(const struct net_device *dev);
+};
+
+static inline struct ieee802154_mlme_ops *
+ieee802154_mlme_ops(const struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
+{
+	return dev->ml_priv;
+}
+
+<<<<<<< HEAD
+#endif
+
+
+=======
+static inline struct ieee802154_reduced_mlme_ops *
+ieee802154_reduced_mlme_ops(const struct net_device *dev)
 {
 	return dev->ml_priv;
 }
 
 #endif
-
-
+>>>>>>> refs/remotes/origin/master

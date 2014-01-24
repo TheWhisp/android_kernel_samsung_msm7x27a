@@ -50,14 +50,20 @@ struct wm8962_pdata {
 
 	bool spk_mono;   /* Speaker outputs tied together as mono */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * This flag should be set if one or both IN4 inputs is wired
 	 * in a DC measurement configuration.
 	 */
 	bool in4_dc_measure;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

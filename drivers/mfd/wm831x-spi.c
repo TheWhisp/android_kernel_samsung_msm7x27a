@@ -17,6 +17,7 @@
 #include <linux/pm.h>
 #include <linux/spi/spi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <linux/mfd/wm831x/core.h>
 
@@ -92,12 +93,18 @@ static int __devinit wm831x_spi_probe(struct spi_device *spi)
 
 	wm831x = kzalloc(sizeof(struct wm831x), GFP_KERNEL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/regmap.h>
 #include <linux/err.h>
 
 #include <linux/mfd/wm831x/core.h>
 
+<<<<<<< HEAD
 static int __devinit wm831x_spi_probe(struct spi_device *spi)
+=======
+static int wm831x_spi_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct spi_device_id *id = spi_get_device_id(spi);
 	struct wm831x *wm831x;
@@ -107,6 +114,7 @@ static int __devinit wm831x_spi_probe(struct spi_device *spi)
 	type = (enum wm831x_parent)id->driver_data;
 
 	wm831x = devm_kzalloc(&spi->dev, sizeof(struct wm831x), GFP_KERNEL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (wm831x == NULL)
 		return -ENOMEM;
@@ -121,6 +129,15 @@ static int __devinit wm831x_spi_probe(struct spi_device *spi)
 	wm831x->read_dev = wm831x_spi_read_device;
 	wm831x->write_dev = wm831x_spi_write_device;
 =======
+=======
+	if (wm831x == NULL)
+		return -ENOMEM;
+
+	spi->mode = SPI_MODE_0;
+
+	spi_set_drvdata(spi, wm831x);
+	wm831x->dev = &spi->dev;
+>>>>>>> refs/remotes/origin/master
 
 	wm831x->regmap = devm_regmap_init_spi(spi, &wm831x_regmap_config);
 	if (IS_ERR(wm831x->regmap)) {
@@ -129,14 +146,23 @@ static int __devinit wm831x_spi_probe(struct spi_device *spi)
 			ret);
 		return ret;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return wm831x_device_init(wm831x, type, spi->irq);
 }
 
+<<<<<<< HEAD
 static int __devexit wm831x_spi_remove(struct spi_device *spi)
 {
 	struct wm831x *wm831x = dev_get_drvdata(&spi->dev);
+=======
+static int wm831x_spi_remove(struct spi_device *spi)
+{
+	struct wm831x *wm831x = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	wm831x_device_exit(wm831x);
 
@@ -150,6 +176,7 @@ static int wm831x_spi_suspend(struct device *dev)
 	return wm831x_device_suspend(wm831x);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static void wm831x_spi_shutdown(struct spi_device *spi)
@@ -242,6 +269,23 @@ static struct spi_driver wm8326_spi_driver = {
 	.probe		= wm831x_spi_probe,
 	.remove		= __devexit_p(wm831x_spi_remove),
 =======
+=======
+static int wm831x_spi_poweroff(struct device *dev)
+{
+	struct wm831x *wm831x = dev_get_drvdata(dev);
+
+	wm831x_device_shutdown(wm831x);
+
+	return 0;
+}
+
+static const struct dev_pm_ops wm831x_spi_pm = {
+	.freeze = wm831x_spi_suspend,
+	.suspend = wm831x_spi_suspend,
+	.poweroff = wm831x_spi_poweroff,
+};
+
+>>>>>>> refs/remotes/origin/master
 static const struct spi_device_id wm831x_spi_ids[] = {
 	{ "wm8310", WM8310 },
 	{ "wm8311", WM8311 },
@@ -262,15 +306,20 @@ static struct spi_driver wm831x_spi_driver = {
 	},
 	.id_table	= wm831x_spi_ids,
 	.probe		= wm831x_spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wm831x_spi_remove),
 	.shutdown	= wm831x_spi_shutdown,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= wm831x_spi_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init wm831x_spi_init(void)
 {
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = spi_register_driver(&wm8310_spi_driver);
 	if (ret != 0)
@@ -304,6 +353,11 @@ static int __init wm831x_spi_init(void)
 	if (ret != 0)
 		pr_err("Failed to register WM831x SPI driver: %d\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = spi_register_driver(&wm831x_spi_driver);
+	if (ret != 0)
+		pr_err("Failed to register WM831x SPI driver: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -311,6 +365,7 @@ subsys_initcall(wm831x_spi_init);
 
 static void __exit wm831x_spi_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spi_unregister_driver(&wm8326_spi_driver);
 	spi_unregister_driver(&wm8325_spi_driver);
@@ -322,6 +377,9 @@ static void __exit wm831x_spi_exit(void)
 =======
 	spi_unregister_driver(&wm831x_spi_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spi_unregister_driver(&wm831x_spi_driver);
+>>>>>>> refs/remotes/origin/master
 }
 module_exit(wm831x_spi_exit);
 

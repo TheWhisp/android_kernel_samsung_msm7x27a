@@ -68,10 +68,15 @@ extern int viafb_lcd_mode;
 
 extern int viafb_CRT_ON;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern unsigned int viafb_second_xres;
 extern unsigned int viafb_second_yres;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern unsigned int viafb_second_xres;
+extern unsigned int viafb_second_yres;
+>>>>>>> refs/remotes/origin/master
 extern int viafb_hotplug_Xres;
 extern int viafb_hotplug_Yres;
 extern int viafb_hotplug_bpp;

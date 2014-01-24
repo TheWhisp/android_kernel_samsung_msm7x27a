@@ -75,8 +75,15 @@ static int zd1201_fw_upload(struct usb_device *dev, int apfw)
         len = fw_entry->size;
 
 	buf = kmalloc(1024, GFP_ATOMIC);
+<<<<<<< HEAD
 	if (!buf)
 		goto exit;
+=======
+	if (!buf) {
+		err = -ENOMEM;
+		goto exit;
+	}
+>>>>>>> refs/remotes/origin/master
 	
 	while (len > 0) {
 		int translen = (len > 1024) ? 1024 : len;
@@ -311,7 +318,10 @@ static void zd1201_usbrx(struct urb *urb)
 	if (data[urb->actual_length-1] == ZD1201_PACKET_RXDATA) {
 		int datalen = urb->actual_length-1;
 		unsigned short len, fc, seq;
+<<<<<<< HEAD
 		struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		len = ntohs(*(__be16 *)&data[datalen-2]);
 		if (len>datalen)
@@ -364,7 +374,11 @@ static void zd1201_usbrx(struct urb *urb)
 				hlist_add_head(&frag->fnode, &zd->fraglist);
 				goto resubmit;
 			}
+<<<<<<< HEAD
 			hlist_for_each_entry(frag, node, &zd->fraglist, fnode)
+=======
+			hlist_for_each_entry(frag, &zd->fraglist, fnode)
+>>>>>>> refs/remotes/origin/master
 				if (frag->seq == (seq&IEEE80211_SCTL_SEQ))
 					break;
 			if (!frag)
@@ -1725,10 +1739,14 @@ static const struct net_device_ops zd1201_netdev_ops = {
 	.ndo_start_xmit		= zd1201_hard_start_xmit,
 	.ndo_tx_timeout		= zd1201_tx_timeout,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list = zd1201_set_multicast,
 =======
 	.ndo_set_rx_mode	= zd1201_set_multicast,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= zd1201_set_multicast,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= zd1201_set_mac_address,
 	.ndo_change_mtu		= eth_change_mtu,
 	.ndo_validate_addr	= eth_validate_addr,
@@ -1769,8 +1787,15 @@ static int zd1201_probe(struct usb_interface *interface,
 	zd->endp_out2 = 2;
 	zd->rx_urb = usb_alloc_urb(0, GFP_KERNEL);
 	zd->tx_urb = usb_alloc_urb(0, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!zd->rx_urb || !zd->tx_urb)
 		goto err_zd;
+=======
+	if (!zd->rx_urb || !zd->tx_urb) {
+		err = -ENOMEM;
+		goto err_zd;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mdelay(100);
 	err = zd1201_drvr_start(zd);
@@ -1837,14 +1862,22 @@ err_zd:
 static void zd1201_disconnect(struct usb_interface *interface)
 {
 	struct zd1201 *zd = usb_get_intfdata(interface);
+<<<<<<< HEAD
 	struct hlist_node *node, *node2;
+=======
+	struct hlist_node *node2;
+>>>>>>> refs/remotes/origin/master
 	struct zd1201_frag *frag;
 
 	if (!zd)
 		return;
 	usb_set_intfdata(interface, NULL);
 
+<<<<<<< HEAD
 	hlist_for_each_entry_safe(frag, node, node2, &zd->fraglist, fnode) {
+=======
+	hlist_for_each_entry_safe(frag, node2, &zd->fraglist, fnode) {
+>>>>>>> refs/remotes/origin/master
 		hlist_del_init(&frag->fnode);
 		kfree_skb(frag->skb);
 		kfree(frag);
@@ -1911,6 +1944,7 @@ static struct usb_driver zd1201_usb = {
 	.id_table = zd1201_table,
 	.suspend = zd1201_suspend,
 	.resume = zd1201_resume,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -1929,3 +1963,9 @@ module_exit(zd1201_cleanup);
 =======
 module_usb_driver(zd1201_usb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(zd1201_usb);
+>>>>>>> refs/remotes/origin/master

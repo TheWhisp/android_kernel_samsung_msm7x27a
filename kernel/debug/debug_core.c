@@ -29,6 +29,10 @@
  */
 #include <linux/pid_namespace.h>
 #include <linux/clocksource.h>
+<<<<<<< HEAD
+=======
+#include <linux/serial_core.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/spinlock.h>
 #include <linux/console.h>
@@ -42,9 +46,13 @@
 #include <linux/sched.h>
 #include <linux/sysrq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/reboot.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/kgdb.h>
 #include <linux/kdb.h>
@@ -56,11 +64,15 @@
 #include <asm/cacheflush.h>
 #include <asm/byteorder.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/system.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "debug_core.h"
 
@@ -84,10 +96,15 @@ struct kgdb_io		*dbg_io_ops;
 static DEFINE_SPINLOCK(kgdb_registration_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Action for the reboot notifiter, a global allow kdb to change it */
 static int kgdbreboot;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Action for the reboot notifiter, a global allow kdb to change it */
+static int kgdbreboot;
+>>>>>>> refs/remotes/origin/master
 /* kgdb console driver is loaded */
 static int kgdb_con_registered;
 /* determine if kgdb console output should be used */
@@ -97,12 +114,15 @@ bool dbg_is_early = true;
 /* Next cpu to become the master debug core */
 int dbg_switch_cpu;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /* Flag for entering kdb when a panic occurs */
 static bool break_on_panic = true;
 /* Flag for entering kdb when an exception occurs */
 static bool break_on_exception = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Use kdb or gdbserver mode */
 int dbg_kdb_mode = 1;
@@ -117,11 +137,15 @@ early_param("kgdbcon", opt_kgdb_con);
 
 module_param(kgdb_use_con, int, 0644);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 module_param(kgdbreboot, int, 0644);
 module_param(break_on_panic, bool, 0644);
 module_param(break_on_exception, bool, 0644);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(kgdbreboot, int, 0644);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Holds information about breakpoints in a kernel. These breakpoints are
@@ -597,8 +621,17 @@ return_normal:
 		raw_spin_lock(&dbg_slave_lock);
 
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 	/* Signal the other CPUs to enter kgdb_wait() */
 	if ((!kgdb_single_step) && kgdb_do_roundup)
+=======
+	/* If send_ready set, slaves are already waiting */
+	if (ks->send_ready)
+		atomic_set(ks->send_ready, 1);
+
+	/* Signal the other CPUs to enter kgdb_wait() */
+	else if ((!kgdb_single_step) && kgdb_do_roundup)
+>>>>>>> refs/remotes/origin/master
 		kgdb_roundup_cpus(flags);
 #endif
 
@@ -695,6 +728,7 @@ kgdb_handle_exception(int evector, int signo, int ecode, struct pt_regs *regs)
 {
 	struct kgdb_state kgdb_var;
 	struct kgdb_state *ks = &kgdb_var;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -702,10 +736,19 @@ kgdb_handle_exception(int evector, int signo, int ecode, struct pt_regs *regs)
 		return 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+
+	if (arch_kgdb_ops.enable_nmi)
+		arch_kgdb_ops.enable_nmi(0);
+
+	memset(ks, 0, sizeof(struct kgdb_state));
+>>>>>>> refs/remotes/origin/master
 	ks->cpu			= raw_smp_processor_id();
 	ks->ex_vector		= evector;
 	ks->signo		= signo;
 	ks->err_code		= ecode;
+<<<<<<< HEAD
 	ks->kgdb_usethreadid	= 0;
 	ks->linux_regs		= regs;
 
@@ -717,6 +760,38 @@ kgdb_handle_exception(int evector, int signo, int ecode, struct pt_regs *regs)
 	return kgdb_cpu_enter(ks, regs, DCPU_WANT_MASTER);
 }
 
+=======
+	ks->linux_regs		= regs;
+
+	if (kgdb_reenter_check(ks))
+		goto out; /* Ouch, double exception ! */
+	if (kgdb_info[ks->cpu].enter_kgdb != 0)
+		goto out;
+
+	ret = kgdb_cpu_enter(ks, regs, DCPU_WANT_MASTER);
+out:
+	if (arch_kgdb_ops.enable_nmi)
+		arch_kgdb_ops.enable_nmi(1);
+	return ret;
+}
+
+/*
+ * GDB places a breakpoint at this function to know dynamically
+ * loaded objects. It's not defined static so that only one instance with this
+ * name exists in the kernel.
+ */
+
+static int module_event(struct notifier_block *self, unsigned long val,
+	void *data)
+{
+	return 0;
+}
+
+static struct notifier_block dbg_module_load_nb = {
+	.notifier_call	= module_event,
+};
+
+>>>>>>> refs/remotes/origin/master
 int kgdb_nmicallback(int cpu, void *regs)
 {
 #ifdef CONFIG_SMP
@@ -736,6 +811,33 @@ int kgdb_nmicallback(int cpu, void *regs)
 	return 1;
 }
 
+<<<<<<< HEAD
+=======
+int kgdb_nmicallin(int cpu, int trapnr, void *regs, atomic_t *send_ready)
+{
+#ifdef CONFIG_SMP
+	if (!kgdb_io_ready(0) || !send_ready)
+		return 1;
+
+	if (kgdb_info[cpu].enter_kgdb == 0) {
+		struct kgdb_state kgdb_var;
+		struct kgdb_state *ks = &kgdb_var;
+
+		memset(ks, 0, sizeof(struct kgdb_state));
+		ks->cpu			= cpu;
+		ks->ex_vector		= trapnr;
+		ks->signo		= SIGTRAP;
+		ks->err_code		= KGDB_KDB_REASON_SYSTEM_NMI;
+		ks->linux_regs		= regs;
+		ks->send_ready		= send_ready;
+		kgdb_cpu_enter(ks, regs, DCPU_WANT_MASTER);
+		return 0;
+	}
+#endif
+	return 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void kgdb_console_write(struct console *co, const char *s,
    unsigned count)
 {
@@ -779,7 +881,11 @@ static void sysrq_handle_dbg(int key)
 
 static struct sysrq_key_op sysrq_dbg_op = {
 	.handler	= sysrq_handle_dbg,
+<<<<<<< HEAD
 	.help_msg	= "debug(G)",
+=======
+	.help_msg	= "debug(g)",
+>>>>>>> refs/remotes/origin/master
 	.action_msg	= "DEBUG",
 };
 #endif
@@ -789,11 +895,14 @@ static int kgdb_panic_event(struct notifier_block *self,
 			    void *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!break_on_panic)
 		return NOTIFY_DONE;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dbg_kdb_mode)
 		kdb_printf("PANIC: %s\n", (char *)data);
 	kgdb_breakpoint();
@@ -818,7 +927,10 @@ void __init dbg_late_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 dbg_notify_reboot(struct notifier_block *this, unsigned long code, void *x)
 {
@@ -846,7 +958,10 @@ static struct notifier_block dbg_reboot_notifier = {
 	.priority		= INT_MAX,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void kgdb_register_callbacks(void)
 {
 	if (!kgdb_io_module_registered) {
@@ -855,9 +970,14 @@ static void kgdb_register_callbacks(void)
 		if (!dbg_is_early)
 			kgdb_arch_late();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		register_reboot_notifier(&dbg_reboot_notifier);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		register_module_notifier(&dbg_module_load_nb);
+		register_reboot_notifier(&dbg_reboot_notifier);
+>>>>>>> refs/remotes/origin/master
 		atomic_notifier_chain_register(&panic_notifier_list,
 					       &kgdb_panic_event_nb);
 #ifdef CONFIG_MAGIC_SYSRQ
@@ -880,9 +1000,14 @@ static void kgdb_unregister_callbacks(void)
 	if (kgdb_io_module_registered) {
 		kgdb_io_module_registered = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		unregister_reboot_notifier(&dbg_reboot_notifier);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unregister_reboot_notifier(&dbg_reboot_notifier);
+		unregister_module_notifier(&dbg_module_load_nb);
+>>>>>>> refs/remotes/origin/master
 		atomic_notifier_chain_unregister(&panic_notifier_list,
 					       &kgdb_panic_event_nb);
 		kgdb_arch_exit();

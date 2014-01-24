@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * kvm_ia64.c: Basic KVM suppport On Itanium series processors
+=======
+ * kvm_ia64.c: Basic KVM support On Itanium series processors
+>>>>>>> refs/remotes/origin/master
  *
  *
  * 	Copyright (C) 2007, Intel Corporation.
@@ -34,9 +38,13 @@
 #include <linux/iommu.h>
 #include <linux/intel-iommu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/pci.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pgtable.h>
 #include <asm/gcc_intrin.h>
@@ -207,6 +215,7 @@ int kvm_dev_ioctl_check_extension(long ext)
 	case KVM_CAP_COALESCED_MMIO:
 		r = KVM_COALESCED_MMIO_PAGE_OFFSET;
 		break;
+<<<<<<< HEAD
 	case KVM_CAP_IOMMU:
 <<<<<<< HEAD
 		r = iommu_found();
@@ -214,6 +223,13 @@ int kvm_dev_ioctl_check_extension(long ext)
 		r = iommu_present(&pci_bus_type);
 >>>>>>> refs/remotes/origin/cm-10.0
 		break;
+=======
+#ifdef CONFIG_KVM_DEVICE_ASSIGNMENT
+	case KVM_CAP_IOMMU:
+		r = iommu_present(&pci_bus_type);
+		break;
+#endif
+>>>>>>> refs/remotes/origin/master
 	default:
 		r = 0;
 	}
@@ -239,12 +255,21 @@ static int handle_mmio(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
 	if ((p->addr & PAGE_MASK) == IOAPIC_DEFAULT_BASE_ADDRESS)
 		goto mmio;
 	vcpu->mmio_needed = 1;
+<<<<<<< HEAD
 	vcpu->mmio_phys_addr = kvm_run->mmio.phys_addr = p->addr;
 	vcpu->mmio_size = kvm_run->mmio.len = p->size;
 	vcpu->mmio_is_write = kvm_run->mmio.is_write = !p->dir;
 
 	if (vcpu->mmio_is_write)
 		memcpy(vcpu->mmio_data, &p->data, p->size);
+=======
+	vcpu->mmio_fragments[0].gpa = kvm_run->mmio.phys_addr = p->addr;
+	vcpu->mmio_fragments[0].len = kvm_run->mmio.len = p->size;
+	vcpu->mmio_is_write = kvm_run->mmio.is_write = !p->dir;
+
+	if (vcpu->mmio_is_write)
+		memcpy(vcpu->arch.mmio_data, &p->data, p->size);
+>>>>>>> refs/remotes/origin/master
 	memcpy(kvm_run->mmio.data, &p->data, p->size);
 	kvm_run->exit_reason = KVM_EXIT_MMIO;
 	return 0;
@@ -726,7 +751,11 @@ static void kvm_set_mmio_data(struct kvm_vcpu *vcpu)
 	struct kvm_mmio_req *p = kvm_get_vcpu_ioreq(vcpu);
 
 	if (!vcpu->mmio_is_write)
+<<<<<<< HEAD
 		memcpy(&p->data, vcpu->mmio_data, 8);
+=======
+		memcpy(&p->data, vcpu->arch.mmio_data, 8);
+>>>>>>> refs/remotes/origin/master
 	p->state = STATE_IORESP_READY;
 }
 
@@ -746,7 +775,11 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
 	}
 
 	if (vcpu->mmio_needed) {
+<<<<<<< HEAD
 		memcpy(vcpu->mmio_data, kvm_run->mmio.data, 8);
+=======
+		memcpy(vcpu->arch.mmio_data, kvm_run->mmio.data, 8);
+>>>>>>> refs/remotes/origin/master
 		kvm_set_mmio_data(vcpu);
 		vcpu->mmio_read_completed = 1;
 		vcpu->mmio_needed = 0;
@@ -782,20 +815,28 @@ struct kvm *kvm_arch_alloc_vm(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct kvm_io_range {
 =======
 struct kvm_ia64_io_range {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct kvm_ia64_io_range {
+>>>>>>> refs/remotes/origin/master
 	unsigned long start;
 	unsigned long size;
 	unsigned long type;
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct kvm_io_range io_ranges[] = {
 =======
 static const struct kvm_ia64_io_range io_ranges[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct kvm_ia64_io_range io_ranges[] = {
+>>>>>>> refs/remotes/origin/master
 	{VGA_IO_START, VGA_IO_SIZE, GPFN_FRAME_BUFFER},
 	{MMIO_START, MMIO_SIZE, GPFN_LOW_MMIO},
 	{LEGACY_IO_START, LEGACY_IO_SIZE, GPFN_LEGACY_IO},
@@ -825,11 +866,14 @@ static void kvm_build_io_pmt(struct kvm *kvm)
 #define VMM_INIT_RR		0x1660
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int kvm_arch_init_vm(struct kvm *kvm)
 {
 	BUG_ON(!kvm);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
 {
 	BUG_ON(!kvm);
@@ -837,7 +881,10 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
 	if (type)
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kvm->arch.is_sn2 = ia64_platform_is("sn2");
 
 	kvm->arch.metaphysical_rr0 = GUEST_PHYSICAL_RR0;
@@ -946,6 +993,21 @@ int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+int kvm_vm_ioctl_irq_line(struct kvm *kvm, struct kvm_irq_level *irq_event,
+		bool line_status)
+{
+	if (!irqchip_in_kernel(kvm))
+		return -ENXIO;
+
+	irq_event->status = kvm_set_irq(kvm, KVM_USERSPACE_IRQ_SOURCE_ID,
+					irq_event->irq, irq_event->level,
+					line_status);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 long kvm_arch_vm_ioctl(struct file *filp,
 		unsigned int ioctl, unsigned long arg)
 {
@@ -954,6 +1016,7 @@ long kvm_arch_vm_ioctl(struct file *filp,
 	int r = -ENOTTY;
 
 	switch (ioctl) {
+<<<<<<< HEAD
 	case KVM_SET_MEMORY_REGION: {
 		struct kvm_memory_region kvm_mem;
 		struct kvm_userspace_memory_region kvm_userspace_mem;
@@ -972,6 +1035,8 @@ long kvm_arch_vm_ioctl(struct file *filp,
 			goto out;
 		break;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	case KVM_CREATE_IRQCHIP:
 		r = -EFAULT;
 		r = kvm_ioapic_init(kvm);
@@ -985,6 +1050,7 @@ long kvm_arch_vm_ioctl(struct file *filp,
 			goto out;
 		}
 		break;
+<<<<<<< HEAD
 	case KVM_IRQ_LINE_STATUS:
 	case KVM_IRQ_LINE: {
 		struct kvm_irq_level irq_event;
@@ -1008,6 +1074,8 @@ long kvm_arch_vm_ioctl(struct file *filp,
 		}
 		break;
 		}
+=======
+>>>>>>> refs/remotes/origin/master
 	case KVM_GET_IRQCHIP: {
 		/* 0: PIC master, 1: PIC slave, 2: IOAPIC */
 		struct kvm_irqchip chip;
@@ -1197,10 +1265,14 @@ out:
 bool kvm_vcpu_compatible(struct kvm_vcpu *vcpu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return irqchip_in_kernel(vcpu->kcm) == (vcpu->arch.apic != NULL);
 =======
 	return irqchip_in_kernel(vcpu->kvm) == (vcpu->arch.apic != NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return irqchip_in_kernel(vcpu->kvm) == (vcpu->arch.apic != NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 int kvm_arch_vcpu_init(struct kvm_vcpu *vcpu)
@@ -1369,6 +1441,14 @@ int kvm_arch_vcpu_setup(struct kvm_vcpu *vcpu)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+int kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
+{
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 int kvm_arch_vcpu_ioctl_get_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
 {
 	return -EINVAL;
@@ -1401,6 +1481,7 @@ static void kvm_release_vm_pages(struct kvm *kvm)
 	struct kvm_memslots *slots;
 	struct kvm_memory_slot *memslot;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i, j;
 	unsigned long base_gfn;
 
@@ -1417,6 +1498,12 @@ static void kvm_release_vm_pages(struct kvm *kvm)
 	kvm_for_each_memslot(memslot, slots) {
 		base_gfn = memslot->base_gfn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int j;
+
+	slots = kvm_memslots(kvm);
+	kvm_for_each_memslot(memslot, slots) {
+>>>>>>> refs/remotes/origin/master
 		for (j = 0; j < memslot->npages; j++) {
 			if (memslot->rmap[j])
 				put_page((struct page *)memslot->rmap[j]);
@@ -1431,9 +1518,13 @@ void kvm_arch_sync_events(struct kvm *kvm)
 void kvm_arch_destroy_vm(struct kvm *kvm)
 {
 	kvm_iommu_unmap_guest(kvm);
+<<<<<<< HEAD
 #ifdef  KVM_CAP_DEVICE_ASSIGNMENT
 	kvm_free_all_assigned_devices(kvm);
 #endif
+=======
+	kvm_free_all_assigned_devices(kvm);
+>>>>>>> refs/remotes/origin/master
 	kfree(kvm->arch.vioapic);
 	kvm_release_vm_pages(kvm);
 }
@@ -1609,28 +1700,51 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
 {
 	return VM_FAULT_SIGBUS;
 }
 
+<<<<<<< HEAD
 void kvm_arch_free_memslot(struct kvm_memory_slot *free,
+=======
+void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
+>>>>>>> refs/remotes/origin/master
 			   struct kvm_memory_slot *dont)
 {
 }
 
+<<<<<<< HEAD
 int kvm_arch_create_memslot(struct kvm_memory_slot *slot, unsigned long npages)
+=======
+int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+			    unsigned long npages)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 int kvm_arch_prepare_memory_region(struct kvm *kvm,
 		struct kvm_memory_slot *memslot,
 		struct kvm_memory_slot old,
 		struct kvm_userspace_memory_region *mem,
 		int user_alloc)
+=======
+void kvm_arch_memslots_updated(struct kvm *kvm)
+{
+}
+
+int kvm_arch_prepare_memory_region(struct kvm *kvm,
+		struct kvm_memory_slot *memslot,
+		struct kvm_userspace_memory_region *mem,
+		enum kvm_mr_change change)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long i;
 	unsigned long pfn;
@@ -1660,17 +1774,35 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
 
 void kvm_arch_commit_memory_region(struct kvm *kvm,
 		struct kvm_userspace_memory_region *mem,
+<<<<<<< HEAD
 		struct kvm_memory_slot old,
 		int user_alloc)
+=======
+		const struct kvm_memory_slot *old,
+		enum kvm_mr_change change)
+>>>>>>> refs/remotes/origin/master
 {
 	return;
 }
 
+<<<<<<< HEAD
 void kvm_arch_flush_shadow(struct kvm *kvm)
+=======
+void kvm_arch_flush_shadow_all(struct kvm *kvm)
+>>>>>>> refs/remotes/origin/master
 {
 	kvm_flush_remote_tlbs(kvm);
 }
 
+<<<<<<< HEAD
+=======
+void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
+				   struct kvm_memory_slot *slot)
+{
+	kvm_arch_flush_shadow_all();
+}
+
+>>>>>>> refs/remotes/origin/master
 long kvm_arch_dev_ioctl(struct file *filp,
 			unsigned int ioctl, unsigned long arg)
 {
@@ -1878,6 +2010,7 @@ int kvm_vm_ioctl_get_dirty_log(struct kvm *kvm,
 	mutex_lock(&kvm->slots_lock);
 
 	r = -EINVAL;
+<<<<<<< HEAD
 	if (log->slot >= KVM_MEMORY_SLOTS)
 		goto out;
 
@@ -1886,6 +2019,12 @@ int kvm_vm_ioctl_get_dirty_log(struct kvm *kvm,
 =======
 	memslot = id_to_memslot(kvm->memslots, log->slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (log->slot >= KVM_USER_MEM_SLOTS)
+		goto out;
+
+	memslot = id_to_memslot(kvm->memslots, log->slot);
+>>>>>>> refs/remotes/origin/master
 	r = -ENOENT;
 	if (!memslot->dirty_bitmap)
 		goto out;
@@ -1916,6 +2055,7 @@ void kvm_arch_hardware_unsetup(void)
 {
 }
 
+<<<<<<< HEAD
 void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
 {
 	int me;
@@ -1931,6 +2071,8 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
 	put_cpu();
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int kvm_apic_set_irq(struct kvm_vcpu *vcpu, struct kvm_lapic_irq *irq)
 {
 	return __apic_accept_irq(vcpu, irq->vector);
@@ -2000,6 +2142,14 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
 		(kvm_highest_pending_irq(vcpu) != -1);
 }
 
+<<<<<<< HEAD
+=======
+int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu)
+{
+	return (!test_and_set_bit(KVM_REQ_KICK, &vcpu->requests));
+}
+
+>>>>>>> refs/remotes/origin/master
 int kvm_arch_vcpu_ioctl_get_mpstate(struct kvm_vcpu *vcpu,
 				    struct kvm_mp_state *mp_state)
 {

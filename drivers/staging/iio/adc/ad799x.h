@@ -36,6 +36,7 @@
 #define AD7998_ALERT_STAT_REG			0x1
 #define AD7998_CONF_REG				0x2
 #define AD7998_CYCLE_TMR_REG			0x3
+<<<<<<< HEAD
 #define AD7998_DATALOW_CH1_REG			0x4
 #define AD7998_DATAHIGH_CH1_REG			0x5
 #define AD7998_HYST_CH1_REG			0x6
@@ -48,6 +49,12 @@
 #define AD7998_DATALOW_CH4_REG			0xD
 #define AD7998_DATAHIGH_CH4_REG			0xE
 #define AD7998_HYST_CH4_REG			0xF
+=======
+
+#define AD7998_DATALOW_REG(x)			((x) * 3 + 0x4)
+#define AD7998_DATAHIGH_REG(x)			((x) * 3 + 0x5)
+#define AD7998_HYST_REG(x)			((x) * 3 + 0x6)
+>>>>>>> refs/remotes/origin/master
 
 #define AD7998_CYC_MASK				0x7
 #define AD7998_CYC_DIS				0x0
@@ -87,7 +94,10 @@ struct ad799x_state;
  * struct ad799x_chip_info - chip specifc information
  * @channel:		channel specification
  * @num_channels:	number of channels
+<<<<<<< HEAD
  * @int_vref_mv:	the internal reference voltage
+=======
+>>>>>>> refs/remotes/origin/master
  * @monitor_mode:	whether the chip supports monitor interrupts
  * @default_config:	device default configuration
  * @event_attrs:	pointer to the monitor event attribute group
@@ -96,7 +106,10 @@ struct ad799x_state;
 struct ad799x_chip_info {
 	struct iio_chan_spec		channel[9];
 	int				num_channels;
+<<<<<<< HEAD
 	u16				int_vref_mv;
+=======
+>>>>>>> refs/remotes/origin/master
 	u16				default_config;
 	const struct iio_info		*info;
 };
@@ -104,6 +117,7 @@ struct ad799x_chip_info {
 struct ad799x_state {
 	struct i2c_client		*client;
 	const struct ad799x_chip_info	*chip_info;
+<<<<<<< HEAD
 	size_t				d_size;
 	struct iio_trigger		*trig;
 	struct regulator		*reg;
@@ -111,6 +125,15 @@ struct ad799x_state {
 	unsigned			id;
 	char				*name;
 	u16				config;
+=======
+	struct regulator		*reg;
+	u16				int_vref_mv;
+	unsigned			id;
+	u16				config;
+
+	u8				*rx_buf;
+	unsigned int			transfer_size;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -121,6 +144,7 @@ struct ad799x_platform_data {
 	u16				vref_mv;
 };
 
+<<<<<<< HEAD
 int ad7997_8_set_scan_mode(struct ad799x_state *st, unsigned mask);
 
 #ifdef CONFIG_AD799X_RING_BUFFER
@@ -139,6 +163,12 @@ int ad799x_register_ring_funcs_and_init(struct iio_dev *indio_dev);
 void ad799x_ring_cleanup(struct iio_dev *indio_dev);
 #else /* CONFIG_AD799X_RING_BUFFER */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_AD799X_RING_BUFFER
+int ad799x_register_ring_funcs_and_init(struct iio_dev *indio_dev);
+void ad799x_ring_cleanup(struct iio_dev *indio_dev);
+#else /* CONFIG_AD799X_RING_BUFFER */
+>>>>>>> refs/remotes/origin/master
 
 static inline int
 ad799x_register_ring_funcs_and_init(struct iio_dev *indio_dev)

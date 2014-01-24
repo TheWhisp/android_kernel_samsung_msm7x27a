@@ -55,6 +55,7 @@ static void irq_wake_thread(struct irq_desc *desc, struct irqaction *action)
 {
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Wake up the handler thread for this action. In case the
 	 * thread crashed and was killed we just pretend that we
 	 * handled the interrupt. The hardirq handler has disabled the
@@ -64,6 +65,8 @@ static void irq_wake_thread(struct irq_desc *desc, struct irqaction *action)
 	if (test_bit(IRQTF_DIED, &action->thread_flags) ||
 	    test_and_set_bit(IRQTF_RUNTHREAD, &action->thread_flags))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * In case the thread crashed and was killed we just pretend that
 	 * we handled the interrupt. The hardirq handler has disabled the
 	 * device interrupt, so no irq storm is lurking.
@@ -76,7 +79,10 @@ static void irq_wake_thread(struct irq_desc *desc, struct irqaction *action)
 	 * RUNTHREAD bit is already set, nothing to do.
 	 */
 	if (test_and_set_bit(IRQTF_RUNTHREAD, &action->thread_flags))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/*
@@ -126,7 +132,10 @@ static void irq_wake_thread(struct irq_desc *desc, struct irqaction *action)
 	 */
 	desc->threads_oneshot |= action->thread_mask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We increment the threads_active counter in case we wake up
@@ -139,7 +148,10 @@ static void irq_wake_thread(struct irq_desc *desc, struct irqaction *action)
 	 */
 	atomic_inc(&desc->threads_active);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wake_up_process(action->thread);
 }
 

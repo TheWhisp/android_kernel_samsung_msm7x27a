@@ -2,7 +2,10 @@ bootsect
 bzImage
 cpustr.h
 mkcpustr
+<<<<<<< HEAD
 offsets.h
+=======
+>>>>>>> refs/remotes/origin/master
 voffset.h
 zoffset.h
 setup

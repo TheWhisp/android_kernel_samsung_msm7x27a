@@ -33,10 +33,14 @@
 #include <asm/irq.h>
 #include <asm/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 #include <asm/bitsperlong.h>
 

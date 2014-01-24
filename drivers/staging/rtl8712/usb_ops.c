@@ -33,7 +33,10 @@
 #include "osdep_intf.h"
 #include "usb_ops.h"
 #include "recv_osdep.h"
+<<<<<<< HEAD
 #include "rtl871x_byteorder.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 static u8 usb_read8(struct intf_hdl *pintfhdl, u32 addr)
 {

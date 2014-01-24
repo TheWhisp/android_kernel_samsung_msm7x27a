@@ -17,9 +17,12 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/elf.h>
 #include <linux/moduleloader.h>
 #include <linux/err.h>
@@ -29,6 +32,7 @@
 #include <asm/uaccess.h>
 #include <asm/firmware.h>
 #include <linux/sort.h>
+<<<<<<< HEAD
 
 #include "setup.h"
 
@@ -51,6 +55,12 @@ void module_free(struct module *mod, void *module_region)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+
+LIST_HEAD(module_bug_list);
+
+>>>>>>> refs/remotes/origin/master
 static const Elf_Shdr *find_section(const Elf_Ehdr *hdr,
 				    const Elf_Shdr *sechdrs,
 				    const char *name)
@@ -100,9 +110,12 @@ int module_finalize(const Elf_Ehdr *hdr,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 void module_arch_cleanup(struct module *mod)
 {
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

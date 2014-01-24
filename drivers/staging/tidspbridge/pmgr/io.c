@@ -24,11 +24,14 @@
 #include <dspbridge/dbdefs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*  ----------------------------------- Platform Manager */
 #include <dspbridge/dev.h>
 
@@ -37,11 +40,14 @@
 #include <dspbridge/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Globals */
 static u32 refs;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  ======== io_create ========
  *  Purpose:
@@ -57,12 +63,15 @@ int io_create(struct io_mgr **io_man, struct dev_object *hdev_obj,
 	int status = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 	DBC_REQUIRE(io_man != NULL);
 	DBC_REQUIRE(mgr_attrts != NULL);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*io_man = NULL;
 
 	/* A memory base of 0 implies no memory base: */
@@ -104,10 +113,13 @@ int io_destroy(struct io_mgr *hio_mgr)
 	int status;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	DBC_REQUIRE(refs > 0);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	intf_fxns = pio_mgr->intf_fxns;
 
 	/* Let Bridge channel module destroy the io_mgr: */
@@ -115,6 +127,7 @@ int io_destroy(struct io_mgr *hio_mgr)
 
 	return status;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*
@@ -151,3 +164,5 @@ bool io_init(void)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

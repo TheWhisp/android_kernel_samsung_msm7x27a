@@ -137,6 +137,7 @@ struct hpux_ustat {
 static int hpux_ustat(dev_t dev, struct hpux_ustat __user *ubuf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct super_block *s;
 	struct hpux_ustat tmp;  /* Changed to hpux_ustat */
 	struct kstatfs sbuf;
@@ -152,6 +153,11 @@ static int hpux_ustat(dev_t dev, struct hpux_ustat __user *ubuf)
 	struct kstatfs sbuf;
 	int err = vfs_ustat(dev, &sbuf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hpux_ustat tmp;  /* Changed to hpux_ustat */
+	struct kstatfs sbuf;
+	int err = vfs_ustat(dev, &sbuf);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 

@@ -1598,7 +1598,11 @@ static int __init run_all_tests(void)
 {
 	int ret = 0;
 
+<<<<<<< HEAD
 	pr_info("Begining kprobe tests...\n");
+=======
+	pr_info("Beginning kprobe tests...\n");
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_THUMB2_KERNEL
 

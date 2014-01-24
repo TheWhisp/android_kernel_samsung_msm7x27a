@@ -2,7 +2,11 @@
 # Input core configuration
 #
 config SERIO
+<<<<<<< HEAD
 	tristate "Serial I/O support" if EXPERT || !X86
+=======
+	tristate "Serial I/O support"
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  Say Yes here if you have any input device that uses serial I/O to
@@ -19,10 +23,18 @@ config SERIO
 if SERIO
 
 config SERIO_I8042
+<<<<<<< HEAD
 	tristate "i8042 PC Keyboard controller" if EXPERT || !X86
 	default y
 	depends on !PARISC && (!ARM || ARCH_SHARK || FOOTBRIDGE_HOST) && \
 		   (!SUPERH || SH_CAYMAN) && !M68K && !BLACKFIN
+=======
+	tristate "i8042 PC Keyboard controller"
+	default y
+	depends on !PARISC && (!ARM || FOOTBRIDGE_HOST) && \
+		   (!SUPERH || SH_CAYMAN) && !M68K && !BLACKFIN && !S390 && \
+		   !ARC
+>>>>>>> refs/remotes/origin/master
 	help
 	  i8042 is the chip over which the standard AT keyboard and PS/2
 	  mouse are connected to the computer. If you use these devices,
@@ -36,6 +48,10 @@ config SERIO_I8042
 config SERIO_SERPORT
 	tristate "Serial port line discipline"
 	default y
+<<<<<<< HEAD
+=======
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you plan to use an input device (mouse, joystick,
 	  tablet, 6dof) that communicates over the RS232 serial (COM) port.
@@ -168,7 +184,11 @@ config SERIO_MACEPS2
 	  module will be called maceps2.
 
 config SERIO_LIBPS2
+<<<<<<< HEAD
 	tristate "PS/2 driver library" if EXPERT
+=======
+	tristate "PS/2 driver library"
+>>>>>>> refs/remotes/origin/master
 	depends on SERIO_I8042 || SERIO_I8042=n
 	help
 	  Say Y here if you are using a driver for device connected
@@ -204,6 +224,10 @@ config SERIO_XILINX_XPS_PS2
 
 config SERIO_ALTERA_PS2
 	tristate "Altera UP PS/2 controller"
+<<<<<<< HEAD
+=======
+	depends on HAS_IOMEM
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you have Altera University Program PS/2 ports.
 
@@ -234,4 +258,46 @@ config SERIO_PS2MULT
 	  To compile this driver as a module, choose M here: the
 	  module will be called ps2mult.
 
+<<<<<<< HEAD
+=======
+config SERIO_ARC_PS2
+	tristate "ARC PS/2 support"
+	help
+	  Say Y here if you have an ARC FPGA platform with a PS/2
+	  controller in it.
+
+	  To compile this driver as a module, choose M here; the module
+	  will be called arc_ps2.
+
+config SERIO_APBPS2
+	tristate "GRLIB APBPS2 PS/2 keyboard/mouse controller"
+	depends on OF
+	help
+	  Say Y here if you want support for GRLIB APBPS2 peripherals used
+	  to connect to PS/2 keyboard and/or mouse.
+
+	  To compile this driver as a module, choose M here: the module will
+	  be called apbps2.
+
+config SERIO_OLPC_APSP
+	tristate "OLPC AP-SP input support"
+	depends on OF
+	help
+	  Say Y here if you want support for the keyboard and touchpad included
+	  in the OLPC XO-1.75 and XO-4 laptops.
+
+	  To compile this driver as a module, choose M here: the module will
+	  be called olpc_apsp.
+
+config HYPERV_KEYBOARD
+	tristate "Microsoft Synthetic Keyboard driver"
+	depends on HYPERV
+	default HYPERV
+	help
+	  Select this option to enable the Hyper-V Keyboard driver.
+
+	  To compile this driver as a module, choose M here: the module will
+	  be called hyperv_keyboard.
+
+>>>>>>> refs/remotes/origin/master
 endif

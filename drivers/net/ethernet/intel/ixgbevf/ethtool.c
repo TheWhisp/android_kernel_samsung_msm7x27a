@@ -43,6 +43,7 @@
 
 #define IXGBE_ALL_RAR_ENTRIES 16
 
+<<<<<<< HEAD
 #ifdef ETHTOOL_GSTATS
 struct ixgbe_stats {
 	char stat_string[ETH_GSTRING_LEN];
@@ -56,6 +57,31 @@ struct ixgbe_stats {
 			    offsetof(struct ixgbevf_adapter, m),         \
 			    offsetof(struct ixgbevf_adapter, b),         \
 			    offsetof(struct ixgbevf_adapter, r)
+=======
+struct ixgbe_stats {
+	char stat_string[ETH_GSTRING_LEN];
+	struct {
+		int sizeof_stat;
+		int stat_offset;
+		int base_stat_offset;
+		int saved_reset_offset;
+	};
+};
+
+#define IXGBEVF_STAT(m, b, r) { \
+	.sizeof_stat = FIELD_SIZEOF(struct ixgbevf_adapter, m), \
+	.stat_offset = offsetof(struct ixgbevf_adapter, m), \
+	.base_stat_offset = offsetof(struct ixgbevf_adapter, b), \
+	.saved_reset_offset = offsetof(struct ixgbevf_adapter, r) \
+}
+
+#define IXGBEVF_ZSTAT(m) { \
+	.sizeof_stat = FIELD_SIZEOF(struct ixgbevf_adapter, m), \
+	.stat_offset = offsetof(struct ixgbevf_adapter, m), \
+	.base_stat_offset = -1, \
+	.saved_reset_offset = -1 \
+}
+>>>>>>> refs/remotes/origin/master
 
 static const struct ixgbe_stats ixgbe_gstrings_stats[] = {
 	{"rx_packets", IXGBEVF_STAT(stats.vfgprc, stats.base_vfgprc,
@@ -66,6 +92,7 @@ static const struct ixgbe_stats ixgbe_gstrings_stats[] = {
 				  stats.saved_reset_vfgorc)},
 	{"tx_bytes", IXGBEVF_STAT(stats.vfgotc, stats.base_vfgotc,
 				  stats.saved_reset_vfgotc)},
+<<<<<<< HEAD
 	{"tx_busy", IXGBEVF_STAT(tx_busy, zero_base, zero_base)},
 	{"multicast", IXGBEVF_STAT(stats.vfmprc, stats.base_vfmprc,
 				   stats.saved_reset_vfmprc)},
@@ -76,20 +103,42 @@ static const struct ixgbe_stats ixgbe_gstrings_stats[] = {
 	{"tx_csum_offload_ctxt", IXGBEVF_STAT(hw_csum_tx_good, zero_base,
 					      zero_base)},
 	{"rx_header_split", IXGBEVF_STAT(rx_hdr_split, zero_base, zero_base)},
+=======
+	{"tx_busy", IXGBEVF_ZSTAT(tx_busy)},
+	{"multicast", IXGBEVF_STAT(stats.vfmprc, stats.base_vfmprc,
+				   stats.saved_reset_vfmprc)},
+	{"rx_csum_offload_good", IXGBEVF_ZSTAT(hw_csum_rx_good)},
+	{"rx_csum_offload_errors", IXGBEVF_ZSTAT(hw_csum_rx_error)},
+	{"tx_csum_offload_ctxt", IXGBEVF_ZSTAT(hw_csum_tx_good)},
+#ifdef BP_EXTENDED_STATS
+	{"rx_bp_poll_yield", IXGBEVF_ZSTAT(bp_rx_yields)},
+	{"rx_bp_cleaned", IXGBEVF_ZSTAT(bp_rx_cleaned)},
+	{"rx_bp_misses", IXGBEVF_ZSTAT(bp_rx_missed)},
+	{"tx_bp_napi_yield", IXGBEVF_ZSTAT(bp_tx_yields)},
+	{"tx_bp_cleaned", IXGBEVF_ZSTAT(bp_tx_cleaned)},
+	{"tx_bp_misses", IXGBEVF_ZSTAT(bp_tx_missed)},
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 #define IXGBE_QUEUE_STATS_LEN 0
 #define IXGBE_GLOBAL_STATS_LEN	ARRAY_SIZE(ixgbe_gstrings_stats)
 
 #define IXGBEVF_STATS_LEN (IXGBE_GLOBAL_STATS_LEN + IXGBE_QUEUE_STATS_LEN)
+<<<<<<< HEAD
 #endif /* ETHTOOL_GSTATS */
 #ifdef ETHTOOL_TEST
+=======
+>>>>>>> refs/remotes/origin/master
 static const char ixgbe_gstrings_test[][ETH_GSTRING_LEN] = {
 	"Register test  (offline)",
 	"Link test   (on/offline)"
 };
 #define IXGBE_TEST_LEN (sizeof(ixgbe_gstrings_test) / ETH_GSTRING_LEN)
+<<<<<<< HEAD
 #endif /* ETHTOOL_TEST */
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int ixgbevf_get_settings(struct net_device *netdev,
 				struct ethtool_cmd *ecmd)
@@ -104,6 +153,7 @@ static int ixgbevf_get_settings(struct net_device *netdev,
 	ecmd->transceiver = XCVR_DUMMY1;
 	ecmd->port = -1;
 
+<<<<<<< HEAD
 	hw->mac.ops.check_link(hw, &link_speed, &link_up, false);
 
 	if (link_up) {
@@ -111,6 +161,26 @@ static int ixgbevf_get_settings(struct net_device *netdev,
 			ecmd,
 			(link_speed == IXGBE_LINK_SPEED_10GB_FULL) ?
 			SPEED_10000 : SPEED_1000);
+=======
+	hw->mac.get_link_status = 1;
+	hw->mac.ops.check_link(hw, &link_speed, &link_up, false);
+
+	if (link_up) {
+		__u32 speed = SPEED_10000;
+		switch (link_speed) {
+		case IXGBE_LINK_SPEED_10GB_FULL:
+			speed = SPEED_10000;
+			break;
+		case IXGBE_LINK_SPEED_1GB_FULL:
+			speed = SPEED_1000;
+			break;
+		case IXGBE_LINK_SPEED_100_FULL:
+			speed = SPEED_100;
+			break;
+		}
+
+		ethtool_cmd_speed_set(ecmd, speed);
+>>>>>>> refs/remotes/origin/master
 		ecmd->duplex = DUPLEX_FULL;
 	} else {
 		ethtool_cmd_speed_set(ecmd, -1);
@@ -134,6 +204,7 @@ static void ixgbevf_set_msglevel(struct net_device *netdev, u32 data)
 
 #define IXGBE_GET_STAT(_A_, _R_) (_A_->stats._R_)
 
+<<<<<<< HEAD
 static char *ixgbevf_reg_names[] = {
 	"IXGBE_VFCTRL",
 	"IXGBE_VFSTATUS",
@@ -186,6 +257,12 @@ static char *ixgbevf_reg_names[] = {
 static int ixgbevf_get_regs_len(struct net_device *netdev)
 {
 	return (ARRAY_SIZE(ixgbevf_reg_names)) * sizeof(u32);
+=======
+static int ixgbevf_get_regs_len(struct net_device *netdev)
+{
+#define IXGBE_REGS_LEN 45
+	return IXGBE_REGS_LEN * sizeof(u32);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ixgbevf_get_regs(struct net_device *netdev,
@@ -258,9 +335,12 @@ static void ixgbevf_get_regs(struct net_device *netdev,
 		regs_buff[41 + i] = IXGBE_READ_REG(hw, IXGBE_VFTDWBAL(i));
 	for (i = 0; i < 2; i++)
 		regs_buff[43 + i] = IXGBE_READ_REG(hw, IXGBE_VFTDWBAH(i));
+<<<<<<< HEAD
 
 	for (i = 0; i < ARRAY_SIZE(ixgbevf_reg_names); i++)
 		hw_dbg(hw, "%s\t%8.8x\n", ixgbevf_reg_names[i], regs_buff[i]);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ixgbevf_get_drvinfo(struct net_device *netdev,
@@ -279,6 +359,7 @@ static void ixgbevf_get_ringparam(struct net_device *netdev,
 				  struct ethtool_ringparam *ring)
 {
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+<<<<<<< HEAD
 	struct ixgbevf_ring *tx_ring = adapter->tx_ring;
 	struct ixgbevf_ring *rx_ring = adapter->rx_ring;
 
@@ -286,6 +367,13 @@ static void ixgbevf_get_ringparam(struct net_device *netdev,
 	ring->tx_max_pending = IXGBEVF_MAX_TXD;
 	ring->rx_pending = rx_ring->count;
 	ring->tx_pending = tx_ring->count;
+=======
+
+	ring->rx_max_pending = IXGBEVF_MAX_RXD;
+	ring->tx_max_pending = IXGBEVF_MAX_TXD;
+	ring->rx_pending = adapter->rx_ring_count;
+	ring->tx_pending = adapter->tx_ring_count;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ixgbevf_set_ringparam(struct net_device *netdev,
@@ -293,12 +381,18 @@ static int ixgbevf_set_ringparam(struct net_device *netdev,
 {
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
 	struct ixgbevf_ring *tx_ring = NULL, *rx_ring = NULL;
+<<<<<<< HEAD
 	int i, err = 0;
 	u32 new_rx_count, new_tx_count;
+=======
+	u32 new_rx_count, new_tx_count;
+	int i, err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if ((ring->rx_mini_pending) || (ring->rx_jumbo_pending))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	new_rx_count = max(ring->rx_pending, (u32)IXGBEVF_MIN_RXD);
 	new_rx_count = min(new_rx_count, (u32)IXGBEVF_MAX_RXD);
 	new_rx_count = ALIGN(new_rx_count, IXGBE_REQ_RX_DESCRIPTOR_MULTIPLE);
@@ -320,6 +414,24 @@ static int ixgbevf_set_ringparam(struct net_device *netdev,
 	 * If the adapter isn't up and running then just set the
 	 * new parameters and scurry for the exits.
 	 */
+=======
+	new_tx_count = max_t(u32, ring->tx_pending, IXGBEVF_MIN_TXD);
+	new_tx_count = min_t(u32, new_tx_count, IXGBEVF_MAX_TXD);
+	new_tx_count = ALIGN(new_tx_count, IXGBE_REQ_TX_DESCRIPTOR_MULTIPLE);
+
+	new_rx_count = max_t(u32, ring->rx_pending, IXGBEVF_MIN_RXD);
+	new_rx_count = min_t(u32, new_rx_count, IXGBEVF_MAX_RXD);
+	new_rx_count = ALIGN(new_rx_count, IXGBE_REQ_RX_DESCRIPTOR_MULTIPLE);
+
+	/* if nothing to do return success */
+	if ((new_tx_count == adapter->tx_ring_count) &&
+	    (new_rx_count == adapter->rx_ring_count))
+		return 0;
+
+	while (test_and_set_bit(__IXGBEVF_RESETTING, &adapter->state))
+		usleep_range(1000, 2000);
+
+>>>>>>> refs/remotes/origin/master
 	if (!netif_running(adapter->netdev)) {
 		for (i = 0; i < adapter->num_tx_queues; i++)
 			adapter->tx_ring[i].count = new_tx_count;
@@ -330,6 +442,7 @@ static int ixgbevf_set_ringparam(struct net_device *netdev,
 		goto clear_reset;
 	}
 
+<<<<<<< HEAD
 	tx_ring = kcalloc(adapter->num_tx_queues,
 			  sizeof(struct ixgbevf_ring), GFP_KERNEL);
 	if (!tx_ring) {
@@ -406,6 +519,100 @@ err_rx_setup:
 	kfree(tx_ring);
 
 clear_reset:
+=======
+	if (new_tx_count != adapter->tx_ring_count) {
+		tx_ring = vmalloc(adapter->num_tx_queues * sizeof(*tx_ring));
+		if (!tx_ring) {
+			err = -ENOMEM;
+			goto clear_reset;
+		}
+
+		for (i = 0; i < adapter->num_tx_queues; i++) {
+			/* clone ring and setup updated count */
+			tx_ring[i] = adapter->tx_ring[i];
+			tx_ring[i].count = new_tx_count;
+			err = ixgbevf_setup_tx_resources(adapter, &tx_ring[i]);
+			if (!err)
+				continue;
+			while (i) {
+				i--;
+				ixgbevf_free_tx_resources(adapter, &tx_ring[i]);
+			}
+
+			vfree(tx_ring);
+			tx_ring = NULL;
+
+			goto clear_reset;
+		}
+	}
+
+	if (new_rx_count != adapter->rx_ring_count) {
+		rx_ring = vmalloc(adapter->num_rx_queues * sizeof(*rx_ring));
+		if (!rx_ring) {
+			err = -ENOMEM;
+			goto clear_reset;
+		}
+
+		for (i = 0; i < adapter->num_rx_queues; i++) {
+			/* clone ring and setup updated count */
+			rx_ring[i] = adapter->rx_ring[i];
+			rx_ring[i].count = new_rx_count;
+			err = ixgbevf_setup_rx_resources(adapter, &rx_ring[i]);
+			if (!err)
+				continue;
+			while (i) {
+				i--;
+				ixgbevf_free_rx_resources(adapter, &rx_ring[i]);
+			}
+
+			vfree(rx_ring);
+			rx_ring = NULL;
+
+			goto clear_reset;
+		}
+	}
+
+	/* bring interface down to prepare for update */
+	ixgbevf_down(adapter);
+
+	/* Tx */
+	if (tx_ring) {
+		for (i = 0; i < adapter->num_tx_queues; i++) {
+			ixgbevf_free_tx_resources(adapter,
+						  &adapter->tx_ring[i]);
+			adapter->tx_ring[i] = tx_ring[i];
+		}
+		adapter->tx_ring_count = new_tx_count;
+
+		vfree(tx_ring);
+		tx_ring = NULL;
+	}
+
+	/* Rx */
+	if (rx_ring) {
+		for (i = 0; i < adapter->num_rx_queues; i++) {
+			ixgbevf_free_rx_resources(adapter,
+						  &adapter->rx_ring[i]);
+			adapter->rx_ring[i] = rx_ring[i];
+		}
+		adapter->rx_ring_count = new_rx_count;
+
+		vfree(rx_ring);
+		rx_ring = NULL;
+	}
+
+	/* restore interface using new values */
+	ixgbevf_up(adapter);
+
+clear_reset:
+	/* free Tx resources if Rx error is encountered */
+	if (tx_ring) {
+		for (i = 0; i < adapter->num_tx_queues; i++)
+			ixgbevf_free_tx_resources(adapter, &tx_ring[i]);
+		vfree(tx_ring);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	clear_bit(__IXGBEVF_RESETTING, &adapter->state);
 	return err;
 }
@@ -426,6 +633,7 @@ static void ixgbevf_get_ethtool_stats(struct net_device *netdev,
 				      struct ethtool_stats *stats, u64 *data)
 {
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+<<<<<<< HEAD
 	int i;
 
 	ixgbevf_update_stats(adapter);
@@ -442,6 +650,52 @@ static void ixgbevf_get_ethtool_stats(struct net_device *netdev,
 			    sizeof(u64)) ? *(u64 *)b : *(u32 *)b) +
 			  ((ixgbe_gstrings_stats[i].sizeof_stat ==
 			    sizeof(u64)) ? *(u64 *)r : *(u32 *)r);
+=======
+	char *base = (char *) adapter;
+	int i;
+#ifdef BP_EXTENDED_STATS
+	u64 rx_yields = 0, rx_cleaned = 0, rx_missed = 0,
+	    tx_yields = 0, tx_cleaned = 0, tx_missed = 0;
+
+	for (i = 0; i < adapter->num_rx_queues; i++) {
+		rx_yields += adapter->rx_ring[i].bp_yields;
+		rx_cleaned += adapter->rx_ring[i].bp_cleaned;
+		rx_yields += adapter->rx_ring[i].bp_yields;
+	}
+
+	for (i = 0; i < adapter->num_tx_queues; i++) {
+		tx_yields += adapter->tx_ring[i].bp_yields;
+		tx_cleaned += adapter->tx_ring[i].bp_cleaned;
+		tx_yields += adapter->tx_ring[i].bp_yields;
+	}
+
+	adapter->bp_rx_yields = rx_yields;
+	adapter->bp_rx_cleaned = rx_cleaned;
+	adapter->bp_rx_missed = rx_missed;
+
+	adapter->bp_tx_yields = tx_yields;
+	adapter->bp_tx_cleaned = tx_cleaned;
+	adapter->bp_tx_missed = tx_missed;
+#endif
+
+	ixgbevf_update_stats(adapter);
+	for (i = 0; i < IXGBE_GLOBAL_STATS_LEN; i++) {
+		char *p = base + ixgbe_gstrings_stats[i].stat_offset;
+		char *b = base + ixgbe_gstrings_stats[i].base_stat_offset;
+		char *r = base + ixgbe_gstrings_stats[i].saved_reset_offset;
+
+		if (ixgbe_gstrings_stats[i].sizeof_stat == sizeof(u64)) {
+			if (ixgbe_gstrings_stats[i].base_stat_offset >= 0)
+				data[i] = *(u64 *)p - *(u64 *)b + *(u64 *)r;
+			else
+				data[i] = *(u64 *)p;
+		} else {
+			if (ixgbe_gstrings_stats[i].base_stat_offset >= 0)
+				data[i] = *(u32 *)p - *(u32 *)b + *(u32 *)r;
+			else
+				data[i] = *(u32 *)p;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -664,9 +918,92 @@ static int ixgbevf_nway_reset(struct net_device *netdev)
 {
 	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
 
+<<<<<<< HEAD
 	if (netif_running(netdev)) {
 		if (!adapter->dev_closed)
 			ixgbevf_reinit_locked(adapter);
+=======
+	if (netif_running(netdev))
+		ixgbevf_reinit_locked(adapter);
+
+	return 0;
+}
+
+static int ixgbevf_get_coalesce(struct net_device *netdev,
+				struct ethtool_coalesce *ec)
+{
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+
+	/* only valid if in constant ITR mode */
+	if (adapter->rx_itr_setting <= 1)
+		ec->rx_coalesce_usecs = adapter->rx_itr_setting;
+	else
+		ec->rx_coalesce_usecs = adapter->rx_itr_setting >> 2;
+
+	/* if in mixed tx/rx queues per vector mode, report only rx settings */
+	if (adapter->q_vector[0]->tx.count && adapter->q_vector[0]->rx.count)
+		return 0;
+
+	/* only valid if in constant ITR mode */
+	if (adapter->tx_itr_setting <= 1)
+		ec->tx_coalesce_usecs = adapter->tx_itr_setting;
+	else
+		ec->tx_coalesce_usecs = adapter->tx_itr_setting >> 2;
+
+	return 0;
+}
+
+static int ixgbevf_set_coalesce(struct net_device *netdev,
+				struct ethtool_coalesce *ec)
+{
+	struct ixgbevf_adapter *adapter = netdev_priv(netdev);
+	struct ixgbevf_q_vector *q_vector;
+	int num_vectors, i;
+	u16 tx_itr_param, rx_itr_param;
+
+	/* don't accept tx specific changes if we've got mixed RxTx vectors */
+	if (adapter->q_vector[0]->tx.count && adapter->q_vector[0]->rx.count
+	    && ec->tx_coalesce_usecs)
+		return -EINVAL;
+
+
+	if ((ec->rx_coalesce_usecs > (IXGBE_MAX_EITR >> 2)) ||
+	    (ec->tx_coalesce_usecs > (IXGBE_MAX_EITR >> 2)))
+		return -EINVAL;
+
+	if (ec->rx_coalesce_usecs > 1)
+		adapter->rx_itr_setting = ec->rx_coalesce_usecs << 2;
+	else
+		adapter->rx_itr_setting = ec->rx_coalesce_usecs;
+
+	if (adapter->rx_itr_setting == 1)
+		rx_itr_param = IXGBE_20K_ITR;
+	else
+		rx_itr_param = adapter->rx_itr_setting;
+
+
+	if (ec->tx_coalesce_usecs > 1)
+		adapter->tx_itr_setting = ec->tx_coalesce_usecs << 2;
+	else
+		adapter->tx_itr_setting = ec->tx_coalesce_usecs;
+
+	if (adapter->tx_itr_setting == 1)
+		tx_itr_param = IXGBE_10K_ITR;
+	else
+		tx_itr_param = adapter->tx_itr_setting;
+
+	num_vectors = adapter->num_msix_vectors - NON_Q_VECTORS;
+
+	for (i = 0; i < num_vectors; i++) {
+		q_vector = adapter->q_vector[i];
+		if (q_vector->tx.count && !q_vector->rx.count)
+			/* tx only */
+			q_vector->itr = tx_itr_param;
+		else
+			/* rx only or mixed */
+			q_vector->itr = rx_itr_param;
+		ixgbevf_write_eitr(q_vector);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -687,6 +1024,11 @@ static const struct ethtool_ops ixgbevf_ethtool_ops = {
 	.get_sset_count         = ixgbevf_get_sset_count,
 	.get_strings            = ixgbevf_get_strings,
 	.get_ethtool_stats      = ixgbevf_get_ethtool_stats,
+<<<<<<< HEAD
+=======
+	.get_coalesce           = ixgbevf_get_coalesce,
+	.set_coalesce           = ixgbevf_set_coalesce,
+>>>>>>> refs/remotes/origin/master
 };
 
 void ixgbevf_set_ethtool_ops(struct net_device *netdev)

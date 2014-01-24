@@ -27,6 +27,7 @@ config B43
 	  If unsure, say M.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config B43_BCMA
 	bool "Support for BCMA bus"
@@ -45,6 +46,18 @@ config B43_SSB
 	default y
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config B43_BCMA
+	bool "Support for BCMA bus"
+	depends on B43 && (BCMA = y || BCMA = B43)
+	default y
+
+config B43_SSB
+	bool
+	depends on B43 && (SSB = y || SSB = B43)
+	default y
+
+>>>>>>> refs/remotes/origin/master
 # Auto-select SSB PCI-HOST support, if possible
 config B43_PCI_AUTOSELECT
 	bool
@@ -81,8 +94,13 @@ config B43_PCMCIA
 	  If unsure, say N.
 
 config B43_SDIO
+<<<<<<< HEAD
 	bool "Broadcom 43xx SDIO device support (EXPERIMENTAL)"
 	depends on B43 && SSB_SDIOHOST_POSSIBLE && EXPERIMENTAL
+=======
+	bool "Broadcom 43xx SDIO device support"
+	depends on B43 && SSB_SDIOHOST_POSSIBLE
+>>>>>>> refs/remotes/origin/master
 	select SSB_SDIOHOST
 	---help---
 	  Broadcom 43xx device support for Soft-MAC SDIO devices.
@@ -100,14 +118,20 @@ config B43_SDIO
 #Data transfers to the device via PIO. We want it as a fallback even
 # if we can do DMA.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config B43_BCMA_PIO
 	bool
 	depends on B43_BCMA
 	select BCMA_BLOCKIO
 	default y
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config B43_PIO
 	bool
 	depends on B43
@@ -115,8 +139,14 @@ config B43_PIO
 	default y
 
 config B43_PHY_N
+<<<<<<< HEAD
 	bool "Support for 802.11n (N-PHY) devices (EXPERIMENTAL)"
 	depends on B43 && EXPERIMENTAL
+=======
+	bool "Support for 802.11n (N-PHY) devices"
+	depends on B43
+	default y
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Support for the N-PHY.
 
@@ -127,27 +157,41 @@ config B43_PHY_N
 
 config B43_PHY_LP
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool "Support for low-power (LP-PHY) devices (EXPERIMENTAL)"
 	depends on B43 && EXPERIMENTAL
 =======
 	bool "Support for low-power (LP-PHY) devices"
 	depends on B43
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool "Support for low-power (LP-PHY) devices"
+	depends on B43
+>>>>>>> refs/remotes/origin/master
 	default y
 	---help---
 	  Support for the LP-PHY.
 	  The LP-PHY is a low-power PHY built into some notebooks
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  and embedded devices. It supports 802.11a/g
 	  (802.11a support is optional, and currently disabled).
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  and embedded devices. It supports 802.11a/b/g
 	  (802.11a support is optional, and currently disabled).
 
 config B43_PHY_HT
+<<<<<<< HEAD
 	bool "Support for HT-PHY (high throughput) devices (EXPERIMENTAL)"
 	depends on B43 && EXPERIMENTAL
+=======
+	bool "Support for HT-PHY (high throughput) devices"
+	depends on B43 && B43_BCMA
+	default y
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  Support for the HT-PHY.
 
@@ -161,7 +205,10 @@ config B43_PHY_LCN
 
 	  Say N, this is BROKEN and crashes driver.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # This config option automatically enables b43 LEDS support,
 # if it's possible.
 config B43_LEDS
@@ -183,8 +230,13 @@ config B43_DEBUG
 	  Broadcom 43xx debugging.
 
 	  This adds additional runtime sanity checks and statistics to the driver.
+<<<<<<< HEAD
 	  These checks and statistics might me expensive and hurt runtime performance
 	  of your system.
+=======
+	  These checks and statistics might be expensive and hurt the runtime
+	  performance of your system.
+>>>>>>> refs/remotes/origin/master
 	  This also adds the b43 debugfs interface.
 
 	  Do not enable this, unless you are debugging the driver.
@@ -192,6 +244,7 @@ config B43_DEBUG
 	  Say N, if you are a distributor or user building a release kernel
 	  for production use.
 	  Only say Y, if you are debugging a problem in the b43 driver sourcecode.
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 config B43_FORCE_PIO
@@ -205,3 +258,5 @@ config B43_FORCE_PIO
 	  _NOT_ want to enable this.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

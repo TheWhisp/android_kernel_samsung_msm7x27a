@@ -26,6 +26,7 @@ struct svc_sock {
 	void			(*sk_owspace)(struct sock *);
 
 	/* private TCP part */
+<<<<<<< HEAD
 	u32			sk_reclen;	/* length of record */
 	u32			sk_tcplen;	/* current read length */
 	struct page *		sk_pages[RPCSVC_MAXPAGES];	/* received data */
@@ -39,13 +40,44 @@ void		svc_close_all(struct svc_serv *);
 =======
 void		svc_close_net(struct svc_serv *, struct net *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* On-the-wire fragment header: */
+	__be32			sk_reclen;
+	/* As we receive a record, this includes the length received so
+	 * far (including the fragment header): */
+	u32			sk_tcplen;
+	/* Total length of the data (not including fragment headers)
+	 * received so far in the fragments making up this rpc: */
+	u32			sk_datalen;
+
+	struct page *		sk_pages[RPCSVC_MAXPAGES];	/* received data */
+};
+
+static inline u32 svc_sock_reclen(struct svc_sock *svsk)
+{
+	return ntohl(svsk->sk_reclen) & RPC_FRAGMENT_SIZE_MASK;
+}
+
+static inline u32 svc_sock_final_rec(struct svc_sock *svsk)
+{
+	return ntohl(svsk->sk_reclen) & RPC_LAST_STREAM_FRAGMENT;
+}
+
+/*
+ * Function prototypes.
+ */
+void		svc_close_net(struct svc_serv *, struct net *);
+>>>>>>> refs/remotes/origin/master
 int		svc_recv(struct svc_rqst *, long);
 int		svc_send(struct svc_rqst *);
 void		svc_drop(struct svc_rqst *);
 void		svc_sock_update_bufs(struct svc_serv *serv);
+<<<<<<< HEAD
 int		svc_sock_names(struct svc_serv *serv, char *buf,
 					const size_t buflen,
 					const char *toclose);
+=======
+>>>>>>> refs/remotes/origin/master
 int		svc_addsock(struct svc_serv *serv, const int fd,
 					char *name_return, const size_t len);
 void		svc_init_xprt_sock(void);

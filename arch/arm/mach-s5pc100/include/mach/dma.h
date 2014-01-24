@@ -21,11 +21,16 @@
 #define __MACH_DMA_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* This platform uses the common S3C DMA API driver for PL330 */
 #include <plat/s3c-dma-pl330.h>
 =======
 /* This platform uses the common DMA API driver for PL330 */
 #include <plat/dma-pl330.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* This platform uses the common DMA API driver for PL330 */
+#include <plat/dma-pl330.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __MACH_DMA_H */

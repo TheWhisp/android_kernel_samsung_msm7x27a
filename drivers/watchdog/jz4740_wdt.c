@@ -18,6 +18,7 @@
 #include <linux/types.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
 #include <linux/watchdog.h>
@@ -32,14 +33,23 @@
 #include <linux/init.h>
 #include <linux/platform_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/watchdog.h>
+#include <linux/init.h>
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/device.h>
 #include <linux/clk.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/err.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-jz4740/timer.h>
 
@@ -53,11 +63,14 @@
 #define JZ_WDT_CLOCK_EXT  0x4
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WDT_IN_USE        0
 #define WDT_OK_TO_CLOSE   1
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define JZ_WDT_CLOCK_DIV_SHIFT   3
 
 #define JZ_WDT_CLOCK_DIV_1    (0 << JZ_WDT_CLOCK_DIV_SHIFT)
@@ -70,6 +83,7 @@
 #define DEFAULT_HEARTBEAT 5
 #define MAX_HEARTBEAT     2048
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct {
 	void __iomem *base;
@@ -89,6 +103,8 @@ static void jz4740_wdt_service(void)
 static void jz4740_wdt_set_heartbeat(int new_heartbeat)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 MODULE_PARM_DESC(nowayout,
@@ -120,11 +136,15 @@ static int jz4740_wdt_set_timeout(struct watchdog_device *wdt_dev,
 				    unsigned int new_timeout)
 {
 	struct jz4740_wdt_drvdata *drvdata = watchdog_get_drvdata(wdt_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int rtc_clk_rate;
 	unsigned int timeout_value;
 	unsigned short clock_div = JZ_WDT_CLOCK_DIV_1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	heartbeat = new_heartbeat;
 
@@ -136,6 +156,11 @@ static int jz4740_wdt_set_timeout(struct watchdog_device *wdt_dev,
 
 	timeout_value = rtc_clk_rate * new_timeout;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rtc_clk_rate = clk_get_rate(drvdata->rtc_clk);
+
+	timeout_value = rtc_clk_rate * new_timeout;
+>>>>>>> refs/remotes/origin/master
 	while (timeout_value > 0xffff) {
 		if (clock_div == JZ_WDT_CLOCK_DIV_1024) {
 			/* Requested timeout too high;
@@ -147,6 +172,7 @@ static int jz4740_wdt_set_timeout(struct watchdog_device *wdt_dev,
 		clock_div += (1 << JZ_WDT_CLOCK_DIV_SHIFT);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writeb(0x0, jz4740_wdt.base + JZ_REG_WDT_COUNTER_ENABLE);
 	writew(clock_div, jz4740_wdt.base + JZ_REG_WDT_TIMER_CONTROL);
@@ -271,6 +297,8 @@ static struct miscdevice jz4740_wdt_miscdev = {
 	.name = "watchdog",
 	.fops = &jz4740_wdt_fops,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	writeb(0x0, drvdata->base + JZ_REG_WDT_COUNTER_ENABLE);
 	writew(clock_div, drvdata->base + JZ_REG_WDT_TIMER_CONTROL);
 
@@ -314,6 +342,7 @@ static const struct watchdog_ops jz4740_wdt_ops = {
 	.stop = jz4740_wdt_stop,
 	.ping = jz4740_wdt_ping,
 	.set_timeout = jz4740_wdt_set_timeout,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -383,6 +412,12 @@ static int __devexit jz4740_wdt_remove(struct platform_device *pdev)
 				resource_size(jz4740_wdt.mem));
 	jz4740_wdt.mem = NULL;
 =======
+=======
+};
+
+static int jz4740_wdt_probe(struct platform_device *pdev)
+{
+>>>>>>> refs/remotes/origin/master
 	struct jz4740_wdt_drvdata *drvdata;
 	struct watchdog_device *jz4740_wdt;
 	struct resource	*res;
@@ -408,6 +443,7 @@ static int __devexit jz4740_wdt_remove(struct platform_device *pdev)
 	watchdog_set_drvdata(jz4740_wdt, drvdata);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+<<<<<<< HEAD
 	drvdata->base = devm_request_and_ioremap(&pdev->dev, res);
 	if (drvdata->base == NULL) {
 		ret = -EBUSY;
@@ -415,6 +451,15 @@ static int __devexit jz4740_wdt_remove(struct platform_device *pdev)
 	}
 
 	drvdata->rtc_clk = clk_get(NULL, "rtc");
+=======
+	drvdata->base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(drvdata->base)) {
+		ret = PTR_ERR(drvdata->base);
+		goto err_out;
+	}
+
+	drvdata->rtc_clk = clk_get(&pdev->dev, "rtc");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(drvdata->rtc_clk)) {
 		dev_err(&pdev->dev, "cannot find RTC clock\n");
 		ret = PTR_ERR(drvdata->rtc_clk);
@@ -434,18 +479,26 @@ err_out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit jz4740_wdt_remove(struct platform_device *pdev)
+=======
+static int jz4740_wdt_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct jz4740_wdt_drvdata *drvdata = platform_get_drvdata(pdev);
 
 	jz4740_wdt_stop(&drvdata->wdt);
 	watchdog_unregister_device(&drvdata->wdt);
 	clk_put(drvdata->rtc_clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -453,12 +506,18 @@ static int __devexit jz4740_wdt_remove(struct platform_device *pdev)
 static struct platform_driver jz4740_wdt_driver = {
 	.probe = jz4740_wdt_probe,
 	.remove = __devexit_p(jz4740_wdt_remove),
+=======
+static struct platform_driver jz4740_wdt_driver = {
+	.probe = jz4740_wdt_probe,
+	.remove = jz4740_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-wdt",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init jz4740_wdt_init(void)
@@ -483,11 +542,17 @@ MODULE_PARM_DESC(heartbeat,
 		__MODULE_STRING(DEFAULT_HEARTBEAT));
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(jz4740_wdt_driver);
 
 MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
 MODULE_DESCRIPTION("jz4740 Watchdog Driver");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 MODULE_LICENSE("GPL");
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("platform:jz4740-wdt");

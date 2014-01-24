@@ -80,10 +80,13 @@ static struct platform_device wbd222_leds_device = {
 	},
 };
 
+<<<<<<< HEAD
 static struct sys_timer wbd222_timer = {
 	.init	= gemini_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mtd_partition wbd222_partitions[] = {
 	{
 		.name		= "RedBoot",
@@ -130,6 +133,7 @@ static void __init wbd222_init(void)
 
 MACHINE_START(WBD222, "Wiliboard WBD-222")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x100,
 =======
 	.atag_offset	= 0x100,
@@ -138,4 +142,12 @@ MACHINE_START(WBD222, "Wiliboard WBD-222")
 	.init_irq	= gemini_init_irq,
 	.timer		= &wbd222_timer,
 	.init_machine	= wbd222_init,
+=======
+	.atag_offset	= 0x100,
+	.map_io		= gemini_map_io,
+	.init_irq	= gemini_init_irq,
+	.init_time	= gemini_timer_init,
+	.init_machine	= wbd222_init,
+	.restart	= gemini_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

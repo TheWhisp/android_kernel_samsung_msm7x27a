@@ -28,6 +28,7 @@
  *  Ben Skeggs <bskeggs@redhat.com>
  */
 
+<<<<<<< HEAD
 #include <linux/debugfs.h>
 
 #include "drmP.h"
@@ -148,11 +149,16 @@ nouveau_debugfs_memory_info(struct seq_file *m, void *data)
 	seq_printf(m, "VRAM total: %dKiB\n", (int)(dev_priv->vram_size >> 10));
 	return 0;
 }
+=======
+#include "nouveau_debugfs.h"
+#include "nouveau_drm.h"
+>>>>>>> refs/remotes/origin/master
 
 static int
 nouveau_debugfs_vbios_image(struct seq_file *m, void *data)
 {
 	struct drm_info_node *node = (struct drm_info_node *) m->private;
+<<<<<<< HEAD
 	struct drm_nouveau_private *dev_priv = node->minor->dev->dev_private;
 	int i;
 
@@ -173,10 +179,18 @@ nouveau_debugfs_evict_vram(struct seq_file *m, void *data)
 		seq_printf(m, "failed: %d", ret);
 	else
 		seq_printf(m, "succeeded\n");
+=======
+	struct nouveau_drm *drm = nouveau_drm(node->minor->dev);
+	int i;
+
+	for (i = 0; i < drm->vbios.length; i++)
+		seq_printf(m, "%c", drm->vbios.data[i]);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct drm_info_list nouveau_debugfs_list[] = {
+<<<<<<< HEAD
 	{ "evict_vram", nouveau_debugfs_evict_vram, 0, NULL },
 	{ "chipset", nouveau_debugfs_chipset_info, 0, NULL },
 	{ "memory", nouveau_debugfs_memory_info, 0, NULL },
@@ -186,6 +200,9 @@ static struct drm_info_list nouveau_debugfs_list[] = {
 =======
 	{ "ttm_dma_page_pool", ttm_dma_page_alloc_debugfs, 0, NULL },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "vbios.rom", nouveau_debugfs_vbios_image, 0, NULL },
+>>>>>>> refs/remotes/origin/master
 };
 #define NOUVEAU_DEBUGFS_ENTRIES ARRAY_SIZE(nouveau_debugfs_list)
 

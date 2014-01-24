@@ -2,6 +2,10 @@
 #include <linux/consolemap.h>
 #include <linux/interrupt.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/device.h> /* for dev_warn */
+>>>>>>> refs/remotes/origin/master
 #include <linux/selection.h>
 
 #include "speakup.h"
@@ -10,10 +14,17 @@
 /* Don't take this from <ctype.h>: 011-015 on the screen aren't spaces */
 #define ishardspace(c)      ((c) == ' ')
 
+<<<<<<< HEAD
 unsigned short xs, ys, xe, ye; /* our region points */
 
 /* Variables for selection control. */
 /* must not be disallocated */
+=======
+unsigned short spk_xs, spk_ys, spk_xe, spk_ye; /* our region points */
+
+/* Variables for selection control. */
+/* must not be deallocated */
+>>>>>>> refs/remotes/origin/master
 struct vc_data *spk_sel_cons;
 /* cleared by clear_selection */
 static int sel_start = -1;
@@ -51,12 +62,21 @@ int speakup_set_selection(struct tty_struct *tty)
 	int i, ps, pe;
 	struct vc_data *vc = vc_cons[fg_console].d;
 
+<<<<<<< HEAD
 	xs = limit(xs, vc->vc_cols - 1);
 	ys = limit(ys, vc->vc_rows - 1);
 	xe = limit(xe, vc->vc_cols - 1);
 	ye = limit(ye, vc->vc_rows - 1);
 	ps = ys * vc->vc_size_row + (xs << 1);
 	pe = ye * vc->vc_size_row + (xe << 1);
+=======
+	spk_xs = limit(spk_xs, vc->vc_cols - 1);
+	spk_ys = limit(spk_ys, vc->vc_rows - 1);
+	spk_xe = limit(spk_xe, vc->vc_cols - 1);
+	spk_ye = limit(spk_ye, vc->vc_rows - 1);
+	ps = spk_ys * vc->vc_size_row + (spk_xs << 1);
+	pe = spk_ye * vc->vc_size_row + (spk_xe << 1);
+>>>>>>> refs/remotes/origin/master
 
 	if (ps > pe) {
 		/* make sel_start <= sel_end */
@@ -68,7 +88,11 @@ int speakup_set_selection(struct tty_struct *tty)
 	if (spk_sel_cons != vc_cons[fg_console].d) {
 		speakup_clear_selection();
 		spk_sel_cons = vc_cons[fg_console].d;
+<<<<<<< HEAD
 		printk(KERN_WARNING
+=======
+		dev_warn(tty->dev,
+>>>>>>> refs/remotes/origin/master
 			"Selection: mark console not the same as cut\n");
 		return -EINVAL;
 	}
@@ -95,7 +119,10 @@ int speakup_set_selection(struct tty_struct *tty)
 	/* Allocate a new buffer before freeing the old one ... */
 	bp = kmalloc((sel_end-sel_start)/2+1, GFP_ATOMIC);
 	if (!bp) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "selection: kmalloc() failed\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		speakup_clear_selection();
 		return -ENOMEM;
 	}
@@ -141,7 +168,11 @@ int speakup_paste_selection(struct tty_struct *tty)
 		count = sel_buffer_lth - pasted;
 		count = min_t(int, count, tty->receive_room);
 		tty->ldisc->ops->receive_buf(tty, sel_buffer + pasted,
+<<<<<<< HEAD
 			0, count);
+=======
+			NULL, count);
+>>>>>>> refs/remotes/origin/master
 		pasted += count;
 	}
 	remove_wait_queue(&vc->paste_wait, &wait);

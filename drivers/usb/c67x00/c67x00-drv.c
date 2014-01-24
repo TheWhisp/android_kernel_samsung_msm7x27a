@@ -39,9 +39,13 @@
 #include <linux/list.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb.h>
 #include <linux/usb/c67x00.h>
 
@@ -119,7 +123,11 @@ static irqreturn_t c67x00_irq(int irq, void *__dev)
 
 /* ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int __devinit c67x00_drv_probe(struct platform_device *pdev)
+=======
+static int c67x00_drv_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct c67x00_device *c67x00;
 	struct c67x00_platform_data *pdata;
@@ -134,7 +142,11 @@ static int __devinit c67x00_drv_probe(struct platform_device *pdev)
 	if (!res2)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata)
 		return -ENODEV;
 
@@ -157,7 +169,11 @@ static int __devinit c67x00_drv_probe(struct platform_device *pdev)
 
 	spin_lock_init(&c67x00->hpi.lock);
 	c67x00->hpi.regstep = pdata->hpi_regstep;
+<<<<<<< HEAD
 	c67x00->pdata = pdev->dev.platform_data;
+=======
+	c67x00->pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	c67x00->pdev = pdev;
 
 	c67x00_ll_init(c67x00);
@@ -194,7 +210,11 @@ static int __devinit c67x00_drv_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit c67x00_drv_remove(struct platform_device *pdev)
+=======
+static int c67x00_drv_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct c67x00_device *c67x00 = platform_get_drvdata(pdev);
 	struct resource *res;
@@ -222,12 +242,17 @@ static int __devexit c67x00_drv_remove(struct platform_device *pdev)
 
 static struct platform_driver c67x00_driver = {
 	.probe	= c67x00_drv_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(c67x00_drv_remove),
+=======
+	.remove	= c67x00_drv_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.owner = THIS_MODULE,
 		.name = "c67x00",
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 MODULE_ALIAS("platform:c67x00");
 
@@ -247,11 +272,19 @@ module_exit(c67x00_exit);
 
 module_platform_driver(c67x00_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+module_platform_driver(c67x00_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Peter Korsgaard, Jan Veldeman, Grant Likely");
 MODULE_DESCRIPTION("Cypress C67X00 USB Controller Driver");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:c67x00");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:c67x00");
+>>>>>>> refs/remotes/origin/master

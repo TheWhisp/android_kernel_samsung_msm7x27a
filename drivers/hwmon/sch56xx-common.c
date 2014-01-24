@@ -66,6 +66,7 @@ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 
 struct sch56xx_watchdog_data {
 	u16 addr;
+<<<<<<< HEAD
 	u32 revision;
 	struct mutex *io_lock;
 	struct mutex watchdog_lock;
@@ -75,6 +76,12 @@ struct sch56xx_watchdog_data {
 	unsigned long watchdog_is_open;
 	char watchdog_name[10]; /* must be unique to avoid sysfs conflict */
 	char watchdog_expect_close;
+=======
+	struct mutex *io_lock;
+	struct kref kref;
+	struct watchdog_info wdinfo;
+	struct watchdog_device wddev;
+>>>>>>> refs/remotes/origin/master
 	u8 watchdog_preset;
 	u8 watchdog_control;
 	u8 watchdog_output_enable;
@@ -82,6 +89,7 @@ struct sch56xx_watchdog_data {
 
 static struct platform_device *sch56xx_pdev;
 
+<<<<<<< HEAD
 /*
  * Somewhat ugly :( global data pointer list with all sch56xx devices, so that
  * we can find our device data as when using misc_register there is no other
@@ -91,6 +99,8 @@ static LIST_HEAD(watchdog_data_list);
 /* Note this lock not only protect list access, but also data.kref access */
 static DEFINE_MUTEX(watchdog_data_mutex);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Super I/O functions */
 static inline int superio_inb(int base, int reg)
 {
@@ -175,8 +185,13 @@ static int sch56xx_send_cmd(u16 addr, u8 cmd, u16 reg, u8 v)
 			break;
 	}
 	if (i == max_busy_polls + max_lazy_polls) {
+<<<<<<< HEAD
 		pr_err("Max retries exceeded reading virtual "
 		       "register 0x%04hx (%d)\n", reg, 1);
+=======
+		pr_err("Max retries exceeded reading virtual register 0x%04hx (%d)\n",
+		       reg, 1);
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -192,12 +207,21 @@ static int sch56xx_send_cmd(u16 addr, u8 cmd, u16 reg, u8 v)
 			break;
 
 		if (i == 0)
+<<<<<<< HEAD
 			pr_warn("EC reports: 0x%02x reading virtual register "
 				"0x%04hx\n", (unsigned int)val, reg);
 	}
 	if (i == max_busy_polls) {
 		pr_err("Max retries exceeded reading virtual "
 		       "register 0x%04hx (%d)\n", reg, 2);
+=======
+			pr_warn("EC reports: 0x%02x reading virtual register 0x%04hx\n",
+				(unsigned int)val, reg);
+	}
+	if (i == max_busy_polls) {
+		pr_err("Max retries exceeded reading virtual register 0x%04hx (%d)\n",
+		       reg, 2);
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -272,22 +296,38 @@ EXPORT_SYMBOL(sch56xx_read_virtual_reg12);
  * Watchdog routines
  */
 
+<<<<<<< HEAD
 /*
  * Release our data struct when the platform device has been released *and*
  * all references to our watchdog device are released.
  */
 static void sch56xx_watchdog_release_resources(struct kref *r)
+=======
+/* Release our data struct when we're unregistered *and*
+   all references to our watchdog device are released */
+static void watchdog_release_resources(struct kref *r)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sch56xx_watchdog_data *data =
 		container_of(r, struct sch56xx_watchdog_data, kref);
 	kfree(data);
 }
 
+<<<<<<< HEAD
 static int watchdog_set_timeout(struct sch56xx_watchdog_data *data,
 				int timeout)
 {
 	int ret, resolution;
 	u8 control;
+=======
+static int watchdog_set_timeout(struct watchdog_device *wddev,
+				unsigned int timeout)
+{
+	struct sch56xx_watchdog_data *data = watchdog_get_drvdata(wddev);
+	unsigned int resolution;
+	u8 control;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* 1 second or 60 second resolution? */
 	if (timeout <= 255)
@@ -298,12 +338,15 @@ static int watchdog_set_timeout(struct sch56xx_watchdog_data *data,
 	if (timeout < resolution || timeout > (resolution * 255))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	mutex_lock(&data->watchdog_lock);
 	if (!data->addr) {
 		ret = -ENODEV;
 		goto leave;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (resolution == 1)
 		control = data->watchdog_control | SCH56XX_WDOG_TIME_BASE_SEC;
 	else
@@ -316,7 +359,11 @@ static int watchdog_set_timeout(struct sch56xx_watchdog_data *data,
 						control);
 		mutex_unlock(data->io_lock);
 		if (ret)
+<<<<<<< HEAD
 			goto leave;
+=======
+			return ret;
+>>>>>>> refs/remotes/origin/master
 
 		data->watchdog_control = control;
 	}
@@ -326,6 +373,7 @@ static int watchdog_set_timeout(struct sch56xx_watchdog_data *data,
 	 * the watchdog countdown.
 	 */
 	data->watchdog_preset = DIV_ROUND_UP(timeout, resolution);
+<<<<<<< HEAD
 
 	ret = data->watchdog_preset * resolution;
 leave:
@@ -358,6 +406,19 @@ static int watchdog_start(struct sch56xx_watchdog_data *data)
 		goto leave_unlock_watchdog;
 	}
 
+=======
+	wddev->timeout = data->watchdog_preset * resolution;
+
+	return 0;
+}
+
+static int watchdog_start(struct watchdog_device *wddev)
+{
+	struct sch56xx_watchdog_data *data = watchdog_get_drvdata(wddev);
+	int ret;
+	u8 val;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The sch56xx's watchdog cannot really be started / stopped
 	 * it is always running, but we can avoid the timer expiring
@@ -385,6 +446,7 @@ static int watchdog_start(struct sch56xx_watchdog_data *data)
 	if (ret)
 		goto leave;
 
+<<<<<<< HEAD
 	/* 2. Enable output (if not already enabled) */
 	if (!(data->watchdog_output_enable & SCH56XX_WDOG_OUTPUT_ENABLE)) {
 		val = data->watchdog_output_enable |
@@ -397,6 +459,16 @@ static int watchdog_start(struct sch56xx_watchdog_data *data)
 
 		data->watchdog_output_enable = val;
 	}
+=======
+	/* 2. Enable output */
+	val = data->watchdog_output_enable | SCH56XX_WDOG_OUTPUT_ENABLE;
+	ret = sch56xx_write_virtual_reg(data->addr,
+					SCH56XX_REG_WDOG_OUTPUT_ENABLE, val);
+	if (ret)
+		goto leave;
+
+	data->watchdog_output_enable = val;
+>>>>>>> refs/remotes/origin/master
 
 	/* 3. Clear the watchdog event bit if set */
 	val = inb(data->addr + 9);
@@ -405,6 +477,7 @@ static int watchdog_start(struct sch56xx_watchdog_data *data)
 
 leave:
 	mutex_unlock(data->io_lock);
+<<<<<<< HEAD
 leave_unlock_watchdog:
 	mutex_unlock(&data->watchdog_lock);
 	return ret;
@@ -420,11 +493,22 @@ static int watchdog_trigger(struct sch56xx_watchdog_data *data)
 		goto leave;
 	}
 
+=======
+	return ret;
+}
+
+static int watchdog_trigger(struct watchdog_device *wddev)
+{
+	struct sch56xx_watchdog_data *data = watchdog_get_drvdata(wddev);
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	/* Reset the watchdog countdown counter */
 	mutex_lock(data->io_lock);
 	ret = sch56xx_write_virtual_reg(data->addr, SCH56XX_REG_WDOG_PRESET,
 					data->watchdog_preset);
 	mutex_unlock(data->io_lock);
+<<<<<<< HEAD
 leave:
 	mutex_unlock(&data->watchdog_lock);
 	return ret;
@@ -633,6 +717,59 @@ struct sch56xx_watchdog_data *sch56xx_watchdog_register(
 	struct sch56xx_watchdog_data *data;
 	int i, err, control, output_enable;
 	const int watchdog_minors[] = { WATCHDOG_MINOR, 212, 213, 214, 215 };
+=======
+
+	return ret;
+}
+
+static int watchdog_stop(struct watchdog_device *wddev)
+{
+	struct sch56xx_watchdog_data *data = watchdog_get_drvdata(wddev);
+	int ret = 0;
+	u8 val;
+
+	val = data->watchdog_output_enable & ~SCH56XX_WDOG_OUTPUT_ENABLE;
+	mutex_lock(data->io_lock);
+	ret = sch56xx_write_virtual_reg(data->addr,
+					SCH56XX_REG_WDOG_OUTPUT_ENABLE, val);
+	mutex_unlock(data->io_lock);
+	if (ret)
+		return ret;
+
+	data->watchdog_output_enable = val;
+	return 0;
+}
+
+static void watchdog_ref(struct watchdog_device *wddev)
+{
+	struct sch56xx_watchdog_data *data = watchdog_get_drvdata(wddev);
+
+	kref_get(&data->kref);
+}
+
+static void watchdog_unref(struct watchdog_device *wddev)
+{
+	struct sch56xx_watchdog_data *data = watchdog_get_drvdata(wddev);
+
+	kref_put(&data->kref, watchdog_release_resources);
+}
+
+static const struct watchdog_ops watchdog_ops = {
+	.owner		= THIS_MODULE,
+	.start		= watchdog_start,
+	.stop		= watchdog_stop,
+	.ping		= watchdog_trigger,
+	.set_timeout	= watchdog_set_timeout,
+	.ref		= watchdog_ref,
+	.unref		= watchdog_unref,
+};
+
+struct sch56xx_watchdog_data *sch56xx_watchdog_register(struct device *parent,
+	u16 addr, u32 revision, struct mutex *io_lock, int check_enabled)
+{
+	struct sch56xx_watchdog_data *data;
+	int err, control, output_enable;
+>>>>>>> refs/remotes/origin/master
 
 	/* Cache the watchdog registers */
 	mutex_lock(io_lock);
@@ -656,6 +793,7 @@ struct sch56xx_watchdog_data *sch56xx_watchdog_register(
 		return NULL;
 
 	data->addr = addr;
+<<<<<<< HEAD
 	data->revision = revision;
 	data->io_lock = io_lock;
 	data->watchdog_control = control;
@@ -708,11 +846,55 @@ struct sch56xx_watchdog_data *sch56xx_watchdog_register(
 error:
 	kfree(data);
 	return NULL;
+=======
+	data->io_lock = io_lock;
+	kref_init(&data->kref);
+
+	strlcpy(data->wdinfo.identity, "sch56xx watchdog",
+		sizeof(data->wdinfo.identity));
+	data->wdinfo.firmware_version = revision;
+	data->wdinfo.options = WDIOF_KEEPALIVEPING | WDIOF_SETTIMEOUT;
+	if (!nowayout)
+		data->wdinfo.options |= WDIOF_MAGICCLOSE;
+
+	data->wddev.info = &data->wdinfo;
+	data->wddev.ops = &watchdog_ops;
+	data->wddev.parent = parent;
+	data->wddev.timeout = 60;
+	data->wddev.min_timeout = 1;
+	data->wddev.max_timeout = 255 * 60;
+	if (nowayout)
+		set_bit(WDOG_NO_WAY_OUT, &data->wddev.status);
+	if (output_enable & SCH56XX_WDOG_OUTPUT_ENABLE)
+		set_bit(WDOG_ACTIVE, &data->wddev.status);
+
+	/* Since the watchdog uses a downcounter there is no register to read
+	   the BIOS set timeout from (if any was set at all) ->
+	   Choose a preset which will give us a 1 minute timeout */
+	if (control & SCH56XX_WDOG_TIME_BASE_SEC)
+		data->watchdog_preset = 60; /* seconds */
+	else
+		data->watchdog_preset = 1; /* minute */
+
+	data->watchdog_control = control;
+	data->watchdog_output_enable = output_enable;
+
+	watchdog_set_drvdata(&data->wddev, data);
+	err = watchdog_register_device(&data->wddev);
+	if (err) {
+		pr_err("Registering watchdog chardev: %d\n", err);
+		kfree(data);
+		return NULL;
+	}
+
+	return data;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(sch56xx_watchdog_register);
 
 void sch56xx_watchdog_unregister(struct sch56xx_watchdog_data *data)
 {
+<<<<<<< HEAD
 	mutex_lock(&watchdog_data_mutex);
 	misc_deregister(&data->watchdog_miscdev);
 	list_del(&data->list);
@@ -732,6 +914,11 @@ void sch56xx_watchdog_unregister(struct sch56xx_watchdog_data *data)
 	mutex_lock(&watchdog_data_mutex);
 	kref_put(&data->kref, sch56xx_watchdog_release_resources);
 	mutex_unlock(&watchdog_data_mutex);
+=======
+	watchdog_unregister_device(&data->wddev);
+	kref_put(&data->kref, watchdog_release_resources);
+	/* Don't touch data after this it may have been free-ed! */
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(sch56xx_watchdog_unregister);
 
@@ -739,10 +926,17 @@ EXPORT_SYMBOL(sch56xx_watchdog_unregister);
  * platform dev find, add and remove functions
  */
 
+<<<<<<< HEAD
 static int __init sch56xx_find(int sioaddr, unsigned short *address,
 			       const char **name)
 {
 	u8 devid;
+=======
+static int __init sch56xx_find(int sioaddr, const char **name)
+{
+	u8 devid;
+	unsigned short address;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	err = superio_enter(sioaddr);
@@ -776,20 +970,34 @@ static int __init sch56xx_find(int sioaddr, unsigned short *address,
 	 * Warning the order of the low / high byte is the other way around
 	 * as on most other superio devices!!
 	 */
+<<<<<<< HEAD
 	*address = superio_inb(sioaddr, SIO_REG_ADDR) |
 		   superio_inb(sioaddr, SIO_REG_ADDR + 1) << 8;
 	if (*address == 0) {
+=======
+	address = superio_inb(sioaddr, SIO_REG_ADDR) |
+		   superio_inb(sioaddr, SIO_REG_ADDR + 1) << 8;
+	if (address == 0) {
+>>>>>>> refs/remotes/origin/master
 		pr_warn("Base address not set\n");
 		err = -ENODEV;
 		goto exit;
 	}
+<<<<<<< HEAD
+=======
+	err = address;
+>>>>>>> refs/remotes/origin/master
 
 exit:
 	superio_exit(sioaddr);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __init sch56xx_device_add(unsigned short address, const char *name)
+=======
+static int __init sch56xx_device_add(int address, const char *name)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource res = {
 		.start	= address,
@@ -829,6 +1037,7 @@ exit_device_put:
 
 static int __init sch56xx_init(void)
 {
+<<<<<<< HEAD
 	int err;
 	unsigned short address;
 	const char *name;
@@ -838,6 +1047,16 @@ static int __init sch56xx_init(void)
 		err = sch56xx_find(0x2e, &address, &name);
 	if (err)
 		return err;
+=======
+	int address;
+	const char *name = NULL;
+
+	address = sch56xx_find(0x4e, &name);
+	if (address < 0)
+		address = sch56xx_find(0x2e, &name);
+	if (address < 0)
+		return address;
+>>>>>>> refs/remotes/origin/master
 
 	return sch56xx_device_add(address, name);
 }

@@ -29,6 +29,7 @@
 #include <linux/gpio.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
 
 #include <asm/mach-types.h>
@@ -39,6 +40,20 @@
 #include <plat/cpu.h>
 #include <plat/pm.h>
 
+=======
+#include <asm/mach-types.h>
+
+#include <mach/hardware.h>
+#include <mach/regs-gpio.h>
+#include <mach/gpio-samsung.h>
+
+#include <plat/gpio-cfg.h>
+#include <plat/cpu.h>
+#include <plat/pm.h>
+
+#include "h1940.h"
+
+>>>>>>> refs/remotes/origin/master
 static void s3c2410_pm_prepare(void)
 {
 	/* ensure at least GSTATUS3 has the resume address */
@@ -77,8 +92,15 @@ static void s3c2410_pm_prepare(void)
 		__raw_writel(calc, phys_to_virt(H1940_SUSPEND_CHECKSUM));
 	}
 
+<<<<<<< HEAD
 	if ( machine_is_aml_m5900() )
 		s3c2410_gpio_setpin(S3C2410_GPF(2), 1);
+=======
+	if (machine_is_aml_m5900()) {
+		gpio_request_one(S3C2410_GPF(2), GPIOF_OUT_INIT_HIGH, NULL);
+		gpio_free(S3C2410_GPF(2));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (machine_is_rx1950()) {
 		/* According to S3C2442 user's manual, page 7-17,
@@ -103,8 +125,15 @@ static void s3c2410_pm_resume(void)
 	tmp &= S3C2410_GSTATUS2_OFFRESET;
 	__raw_writel(tmp, S3C2410_GSTATUS2);
 
+<<<<<<< HEAD
 	if ( machine_is_aml_m5900() )
 		s3c2410_gpio_setpin(S3C2410_GPF(2), 0);
+=======
+	if (machine_is_aml_m5900()) {
+		gpio_request_one(S3C2410_GPF(2), GPIOF_OUT_INIT_LOW, NULL);
+		gpio_free(S3C2410_GPF(2));
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 struct syscore_ops s3c2410_pm_syscore_ops = {

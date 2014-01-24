@@ -88,8 +88,12 @@ static void *ima_measurements_next(struct seq_file *m, void *v, loff_t *pos)
 	 * against concurrent list-extension
 	 */
 	rcu_read_lock();
+<<<<<<< HEAD
 	qe = list_entry_rcu(qe->later.next,
 			    struct ima_queue_entry, later);
+=======
+	qe = list_entry_rcu(qe->later.next, struct ima_queue_entry, later);
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 	(*pos)++;
 
@@ -100,7 +104,11 @@ static void ima_measurements_stop(struct seq_file *m, void *v)
 {
 }
 
+<<<<<<< HEAD
 static void ima_putc(struct seq_file *m, void *data, int datalen)
+=======
+void ima_putc(struct seq_file *m, void *data, int datalen)
+>>>>>>> refs/remotes/origin/master
 {
 	while (datalen--)
 		seq_putc(m, *(char *)data++);
@@ -111,6 +119,10 @@ static void ima_putc(struct seq_file *m, void *data, int datalen)
  *       char[20]=template digest
  *       32bit-le=template name size
  *       char[n]=template name
+<<<<<<< HEAD
+=======
+ *       [eventdata length]
+>>>>>>> refs/remotes/origin/master
  *       eventdata[n]=template specific data
  */
 static int ima_measurements_show(struct seq_file *m, void *v)
@@ -120,6 +132,11 @@ static int ima_measurements_show(struct seq_file *m, void *v)
 	struct ima_template_entry *e;
 	int namelen;
 	u32 pcr = CONFIG_IMA_MEASURE_PCR_IDX;
+<<<<<<< HEAD
+=======
+	bool is_ima_template = false;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	/* get entry */
 	e = qe->entry;
@@ -134,6 +151,7 @@ static int ima_measurements_show(struct seq_file *m, void *v)
 	ima_putc(m, &pcr, sizeof pcr);
 
 	/* 2nd: template digest */
+<<<<<<< HEAD
 	ima_putc(m, e->digest, IMA_DIGEST_SIZE);
 
 	/* 3rd: template name size */
@@ -146,6 +164,34 @@ static int ima_measurements_show(struct seq_file *m, void *v)
 	/* 5th:  template specific data */
 	ima_template_show(m, (struct ima_template_data *)&e->template,
 			  IMA_SHOW_BINARY);
+=======
+	ima_putc(m, e->digest, TPM_DIGEST_SIZE);
+
+	/* 3rd: template name size */
+	namelen = strlen(e->template_desc->name);
+	ima_putc(m, &namelen, sizeof namelen);
+
+	/* 4th:  template name */
+	ima_putc(m, e->template_desc->name, namelen);
+
+	/* 5th:  template length (except for 'ima' template) */
+	if (strcmp(e->template_desc->name, IMA_TEMPLATE_IMA_NAME) == 0)
+		is_ima_template = true;
+
+	if (!is_ima_template)
+		ima_putc(m, &e->template_data_len,
+			 sizeof(e->template_data_len));
+
+	/* 6th:  template specific data */
+	for (i = 0; i < e->template_desc->num_fields; i++) {
+		enum ima_show_type show = IMA_SHOW_BINARY;
+		struct ima_template_field *field = e->template_desc->fields[i];
+
+		if (is_ima_template && strcmp(field->field_id, "d") == 0)
+			show = IMA_SHOW_BINARY_NO_FIELD_LEN;
+		field->field_show(m, show, &e->template_data[i]);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -168,6 +214,7 @@ static const struct file_operations ima_measurements_ops = {
 	.release = seq_release,
 };
 
+<<<<<<< HEAD
 static void ima_print_digest(struct seq_file *m, u8 *digest)
 {
 	int i;
@@ -197,12 +244,26 @@ void ima_template_show(struct seq_file *m, void *e, enum ima_show_type show)
 	}
 }
 
+=======
+void ima_print_digest(struct seq_file *m, u8 *digest, int size)
+{
+	int i;
+
+	for (i = 0; i < size; i++)
+		seq_printf(m, "%02x", *(digest + i));
+}
+
+>>>>>>> refs/remotes/origin/master
 /* print in ascii */
 static int ima_ascii_measurements_show(struct seq_file *m, void *v)
 {
 	/* the list never shrinks, so we don't need a lock here */
 	struct ima_queue_entry *qe = v;
 	struct ima_template_entry *e;
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	/* get entry */
 	e = qe->entry;
@@ -213,6 +274,7 @@ static int ima_ascii_measurements_show(struct seq_file *m, void *v)
 	seq_printf(m, "%2d ", CONFIG_IMA_MEASURE_PCR_IDX);
 
 	/* 2nd: SHA1 template hash */
+<<<<<<< HEAD
 	ima_print_digest(m, e->digest);
 
 	/* 3th:  template name */
@@ -221,6 +283,23 @@ static int ima_ascii_measurements_show(struct seq_file *m, void *v)
 	/* 4th:  template specific data */
 	ima_template_show(m, (struct ima_template_data *)&e->template,
 			  IMA_SHOW_ASCII);
+=======
+	ima_print_digest(m, e->digest, TPM_DIGEST_SIZE);
+
+	/* 3th:  template name */
+	seq_printf(m, " %s", e->template_desc->name);
+
+	/* 4th:  template specific data */
+	for (i = 0; i < e->template_desc->num_fields; i++) {
+		seq_puts(m, " ");
+		if (e->template_data[i].len == 0)
+			continue;
+
+		e->template_desc->fields[i]->field_show(m, IMA_SHOW_ASCII,
+							&e->template_data[i]);
+	}
+	seq_puts(m, "\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -288,10 +367,14 @@ static atomic_t policy_opencount = ATOMIC_INIT(1);
  * ima_open_policy: sequentialize access to the policy file
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ima_open_policy(struct inode * inode, struct file * filp)
 =======
 static int ima_open_policy(struct inode * inode, struct file * filp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ima_open_policy(struct inode * inode, struct file * filp)
+>>>>>>> refs/remotes/origin/master
 {
 	/* No point in being allowed to open it if you aren't going to write */
 	if (!(filp->f_flags & O_WRONLY))
@@ -371,6 +454,7 @@ int __init ima_fs_init(void)
 
 	return 0;
 out:
+<<<<<<< HEAD
 	securityfs_remove(runtime_measurements_count);
 	securityfs_remove(ascii_runtime_measurements);
 	securityfs_remove(binary_runtime_measurements);
@@ -381,10 +465,16 @@ out:
 
 void __exit ima_fs_cleanup(void)
 {
+=======
+>>>>>>> refs/remotes/origin/master
 	securityfs_remove(violations);
 	securityfs_remove(runtime_measurements_count);
 	securityfs_remove(ascii_runtime_measurements);
 	securityfs_remove(binary_runtime_measurements);
 	securityfs_remove(ima_dir);
 	securityfs_remove(ima_policy);
+<<<<<<< HEAD
+=======
+	return -1;
+>>>>>>> refs/remotes/origin/master
 }

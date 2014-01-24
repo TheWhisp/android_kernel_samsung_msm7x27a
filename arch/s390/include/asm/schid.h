@@ -1,6 +1,7 @@
 #ifndef ASM_SCHID_H
 #define ASM_SCHID_H
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 struct subchannel_id {
@@ -14,6 +15,10 @@ struct subchannel_id {
 
 #ifdef __KERNEL__
 #include <linux/string.h>
+=======
+#include <linux/string.h>
+#include <uapi/asm/schid.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Helper function for sane state of pre-allocated subchannel_id. */
 static inline void
@@ -29,6 +34,9 @@ schid_equal(struct subchannel_id *schid1, struct subchannel_id *schid2)
 	return !memcmp(schid1, schid2, sizeof(struct subchannel_id));
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* ASM_SCHID_H */

@@ -30,29 +30,55 @@
 #include <linux/platform_device.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ASUS_WMI_KEY_IGNORE (-1)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ASUS_WMI_KEY_IGNORE (-1)
+#define ASUS_WMI_BRN_DOWN	0x20
+#define ASUS_WMI_BRN_UP		0x2f
+
+>>>>>>> refs/remotes/origin/master
 struct module;
 struct key_entry;
 struct asus_wmi;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct asus_wmi_driver {
 	bool			hotplug_wireless;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct quirk_entry {
 	bool hotplug_wireless;
 	bool scalar_panel_brightness;
 	bool store_backlight_power;
+<<<<<<< HEAD
 	int wapf;
+=======
+	bool wmi_backlight_power;
+	int wapf;
+	/*
+	 * For machines with AMD graphic chips, it will send out WMI event
+	 * and ACPI interrupt at the same time while hitting the hotkey.
+	 * To simplify the problem, we just have to ignore the WMI event,
+	 * and let the ACPI interrupt to send out the key event.
+	 */
+	int no_display_toggle;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct asus_wmi_driver {
 	int			brightness;
 	int			panel_power;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			wlan_ctrl_by_user;
+>>>>>>> refs/remotes/origin/master
 
 	const char		*name;
 	struct module		*owner;
@@ -63,10 +89,13 @@ struct asus_wmi_driver {
 	const char		*input_name;
 	const char		*input_phys;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	int (*probe) (struct platform_device *device);
 	void (*quirks) (struct asus_wmi_driver *driver);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct quirk_entry	*quirks;
 	/* Returns new code, value, and autorelease values in arguments.
 	 * Return ASUS_WMI_KEY_IGNORE in code if event should be ignored. */
@@ -75,7 +104,10 @@ struct asus_wmi_driver {
 
 	int (*probe) (struct platform_device *device);
 	void (*detect_quirks) (struct asus_wmi_driver *driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct platform_driver	platform_driver;
 	struct platform_device *platform_device;

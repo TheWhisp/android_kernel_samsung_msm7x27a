@@ -6,7 +6,11 @@
 #ifndef __MCONSOLE_KERN_H__
 #define __MCONSOLE_KERN_H__
 
+<<<<<<< HEAD
 #include "linux/list.h"
+=======
+#include <linux/list.h>
+>>>>>>> refs/remotes/origin/master
 #include "mconsole.h"
 
 struct mconsole_entry {

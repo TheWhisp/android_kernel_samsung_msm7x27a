@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Generic GPIO API implementation for PowerPC.
  *
@@ -51,3 +52,9 @@ static inline int irq_to_gpio(unsigned int irq)
 #endif /* CONFIG_GPIOLIB */
 
 #endif /* _ASM_MICROBLAZE_GPIO_H */
+=======
+#ifndef __LINUX_GPIO_H
+#warning Include linux/gpio.h instead of asm/gpio.h
+#include <linux/gpio.h>
+#endif
+>>>>>>> refs/remotes/origin/master

@@ -2,10 +2,14 @@
  * AD714X CapTouch Programmable Controller driver supporting AD7142/3/7/8/7A
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009 Analog Devices Inc.
 =======
  * Copyright 2009-2011 Analog Devices Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009-2011 Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -17,9 +21,13 @@
 #include <linux/slab.h>
 #include <linux/input/ad714x.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "ad714x.h"
 
 #define AD714X_PWR_CTRL           0x0
@@ -68,9 +76,12 @@
 
 #define PER_STAGE_REG_NUM      36
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define STAGE_NUM              12
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define STAGE_CFGREG_NUM       8
 #define SYS_CFGREG_NUM         8
 
@@ -136,6 +147,7 @@ struct ad714x_driver_data {
  * of spi/i2c device
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct ad714x_chip {
 	unsigned short h_state;
 	unsigned short l_state;
@@ -159,6 +171,8 @@ struct ad714x_chip {
 };
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void ad714x_use_com_int(struct ad714x_chip *ad714x,
 				int start_stage, int end_stage)
@@ -169,6 +183,7 @@ static void ad714x_use_com_int(struct ad714x_chip *ad714x,
 	mask = ((1 << (end_stage + 1)) - 1) - ((1 << start_stage) - 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad714x->read(ad714x->dev, STG_COM_INT_EN_REG, &data);
 	data |= 1 << end_stage;
 	ad714x->write(ad714x->dev, STG_COM_INT_EN_REG, data);
@@ -177,6 +192,8 @@ static void ad714x_use_com_int(struct ad714x_chip *ad714x,
 	data &= ~mask;
 	ad714x->write(ad714x->dev, STG_HIGH_INT_EN_REG, data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ad714x->read(ad714x, STG_COM_INT_EN_REG, &data, 1);
 	data |= 1 << end_stage;
 	ad714x->write(ad714x, STG_COM_INT_EN_REG, data);
@@ -184,7 +201,10 @@ static void ad714x_use_com_int(struct ad714x_chip *ad714x,
 	ad714x->read(ad714x, STG_HIGH_INT_EN_REG, &data, 1);
 	data &= ~mask;
 	ad714x->write(ad714x, STG_HIGH_INT_EN_REG, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void ad714x_use_thr_int(struct ad714x_chip *ad714x,
@@ -196,6 +216,7 @@ static void ad714x_use_thr_int(struct ad714x_chip *ad714x,
 	mask = ((1 << (end_stage + 1)) - 1) - ((1 << start_stage) - 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad714x->read(ad714x->dev, STG_COM_INT_EN_REG, &data);
 	data &= ~(1 << end_stage);
 	ad714x->write(ad714x->dev, STG_COM_INT_EN_REG, data);
@@ -204,6 +225,8 @@ static void ad714x_use_thr_int(struct ad714x_chip *ad714x,
 	data |= mask;
 	ad714x->write(ad714x->dev, STG_HIGH_INT_EN_REG, data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ad714x->read(ad714x, STG_COM_INT_EN_REG, &data, 1);
 	data &= ~(1 << end_stage);
 	ad714x->write(ad714x, STG_COM_INT_EN_REG, data);
@@ -211,7 +234,10 @@ static void ad714x_use_thr_int(struct ad714x_chip *ad714x,
 	ad714x->read(ad714x, STG_HIGH_INT_EN_REG, &data, 1);
 	data |= mask;
 	ad714x->write(ad714x, STG_HIGH_INT_EN_REG, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ad714x_cal_highest_stage(struct ad714x_chip *ad714x,
@@ -308,6 +334,7 @@ static void ad714x_slider_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = hw->start_stage; i <= hw->end_stage; i++) {
 		ad714x->read(ad714x->dev, CDC_RESULT_S0 + i,
 			&ad714x->adc_reg[i]);
@@ -318,6 +345,8 @@ static void ad714x_slider_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 		ad714x->sensor_val[i] = abs(ad714x->adc_reg[i] -
 				ad714x->amb_reg[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ad714x->read(ad714x, CDC_RESULT_S0 + hw->start_stage,
 			&ad714x->adc_reg[hw->start_stage],
 			hw->end_stage - hw->start_stage + 1);
@@ -328,7 +357,10 @@ static void ad714x_slider_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 
 		ad714x->sensor_val[i] =
 			abs(ad714x->adc_reg[i] - ad714x->amb_reg[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -492,6 +524,7 @@ static void ad714x_wheel_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = hw->start_stage; i <= hw->end_stage; i++) {
 		ad714x->read(ad714x->dev, CDC_RESULT_S0 + i,
 			&ad714x->adc_reg[i]);
@@ -502,6 +535,8 @@ static void ad714x_wheel_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 			ad714x->sensor_val[i] = ad714x->adc_reg[i] -
 				ad714x->amb_reg[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ad714x->read(ad714x, CDC_RESULT_S0 + hw->start_stage,
 			&ad714x->adc_reg[hw->start_stage],
 			hw->end_stage - hw->start_stage + 1);
@@ -512,7 +547,10 @@ static void ad714x_wheel_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 		if (ad714x->adc_reg[i] > ad714x->amb_reg[i])
 			ad714x->sensor_val[i] =
 				ad714x->adc_reg[i] - ad714x->amb_reg[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			ad714x->sensor_val[i] = 0;
 	}
@@ -658,6 +696,7 @@ static void touchpad_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = hw->x_start_stage; i <= hw->x_end_stage; i++) {
 		ad714x->read(ad714x->dev, CDC_RESULT_S0 + i,
 				&ad714x->adc_reg[i]);
@@ -668,6 +707,8 @@ static void touchpad_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 			ad714x->sensor_val[i] = ad714x->adc_reg[i] -
 				ad714x->amb_reg[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ad714x->read(ad714x, CDC_RESULT_S0 + hw->x_start_stage,
 			&ad714x->adc_reg[hw->x_start_stage],
 			hw->x_end_stage - hw->x_start_stage + 1);
@@ -678,7 +719,10 @@ static void touchpad_cal_sensor_val(struct ad714x_chip *ad714x, int idx)
 		if (ad714x->adc_reg[i] > ad714x->amb_reg[i])
 			ad714x->sensor_val[i] =
 				ad714x->adc_reg[i] - ad714x->amb_reg[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			ad714x->sensor_val[i] = 0;
 	}
@@ -965,10 +1009,14 @@ static int ad714x_hw_detect(struct ad714x_chip *ad714x)
 	unsigned short data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad714x->read(ad714x->dev, AD714X_PARTID_REG, &data);
 =======
 	ad714x->read(ad714x, AD714X_PARTID_REG, &data, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad714x->read(ad714x, AD714X_PARTID_REG, &data, 1);
+>>>>>>> refs/remotes/origin/master
 	switch (data & 0xFFF0) {
 	case AD7142_PARTID:
 		ad714x->product = 0x7142;
@@ -1018,14 +1066,19 @@ static void ad714x_hw_init(struct ad714x_chip *ad714x)
 		reg_base = AD714X_STAGECFG_REG + i * STAGE_CFGREG_NUM;
 		for (j = 0; j < STAGE_CFGREG_NUM; j++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ad714x->write(ad714x->dev, reg_base + j,
 =======
 			ad714x->write(ad714x, reg_base + j,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ad714x->write(ad714x, reg_base + j,
+>>>>>>> refs/remotes/origin/master
 					ad714x->hw->stage_cfg_reg[i][j]);
 	}
 
 	for (i = 0; i < SYS_CFGREG_NUM; i++)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ad714x->write(ad714x->dev, AD714X_SYSCFG_REG + i,
 			ad714x->hw->sys_cfg_reg[i]);
@@ -1040,6 +1093,8 @@ static void ad714x_hw_init(struct ad714x_chip *ad714x)
 	ad714x->read(ad714x->dev, STG_HIGH_INT_STA_REG, &data);
 	ad714x->read(ad714x->dev, STG_COM_INT_STA_REG, &data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ad714x->write(ad714x, AD714X_SYSCFG_REG + i,
 			ad714x->hw->sys_cfg_reg[i]);
 	for (i = 0; i < SYS_CFGREG_NUM; i++)
@@ -1049,7 +1104,10 @@ static void ad714x_hw_init(struct ad714x_chip *ad714x)
 
 	/* clear all interrupts */
 	ad714x->read(ad714x, STG_LOW_INT_STA_REG, &ad714x->l_state, 3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t ad714x_interrupt_thread(int irq, void *data)
@@ -1060,12 +1118,16 @@ static irqreturn_t ad714x_interrupt_thread(int irq, void *data)
 	mutex_lock(&ad714x->mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad714x->read(ad714x->dev, STG_LOW_INT_STA_REG, &ad714x->l_state);
 	ad714x->read(ad714x->dev, STG_HIGH_INT_STA_REG, &ad714x->h_state);
 	ad714x->read(ad714x->dev, STG_COM_INT_STA_REG, &ad714x->c_state);
 =======
 	ad714x->read(ad714x, STG_LOW_INT_STA_REG, &ad714x->l_state, 3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad714x->read(ad714x, STG_LOW_INT_STA_REG, &ad714x->l_state, 3);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ad714x->hw->button_num; i++)
 		ad714x_button_state_machine(ad714x, i);
@@ -1092,6 +1154,10 @@ struct ad714x_chip *ad714x_probe(struct device *dev, u16 bus_type, int irq,
 	struct ad714x_platform_data *plat_data = dev->platform_data;
 	struct ad714x_chip *ad714x;
 	void *drv_mem;
+<<<<<<< HEAD
+=======
+	unsigned long irqflags;
+>>>>>>> refs/remotes/origin/master
 
 	struct ad714x_button_drv *bt_drv;
 	struct ad714x_slider_drv *sd_drv;
@@ -1282,10 +1348,18 @@ struct ad714x_chip *ad714x_probe(struct device *dev, u16 bus_type, int irq,
 		alloc_idx++;
 	}
 
+<<<<<<< HEAD
 	error = request_threaded_irq(ad714x->irq, NULL, ad714x_interrupt_thread,
 				plat_data->irqflags ?
 					plat_data->irqflags : IRQF_TRIGGER_FALLING,
 				"ad714x_captouch", ad714x);
+=======
+	irqflags = plat_data->irqflags ?: IRQF_TRIGGER_FALLING;
+	irqflags |= IRQF_ONESHOT;
+
+	error = request_threaded_irq(ad714x->irq, NULL, ad714x_interrupt_thread,
+				     irqflags, "ad714x_captouch", ad714x);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		dev_err(dev, "can't allocate irq %d\n", ad714x->irq);
 		goto err_unreg_dev;
@@ -1343,10 +1417,14 @@ int ad714x_disable(struct ad714x_chip *ad714x)
 
 	data = ad714x->hw->sys_cfg_reg[AD714X_PWR_CTRL] | 0x3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad714x->write(ad714x->dev, AD714X_PWR_CTRL, data);
 =======
 	ad714x->write(ad714x, AD714X_PWR_CTRL, data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad714x->write(ad714x, AD714X_PWR_CTRL, data);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&ad714x->mutex);
 
@@ -1357,10 +1435,13 @@ EXPORT_SYMBOL(ad714x_disable);
 int ad714x_enable(struct ad714x_chip *ad714x)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned short data;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(ad714x->dev, "%s enter\n", __func__);
 
 	mutex_lock(&ad714x->mutex);
@@ -1368,10 +1449,14 @@ int ad714x_enable(struct ad714x_chip *ad714x)
 	/* resume to non-shutdown mode */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad714x->write(ad714x->dev, AD714X_PWR_CTRL,
 =======
 	ad714x->write(ad714x, AD714X_PWR_CTRL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad714x->write(ad714x, AD714X_PWR_CTRL,
+>>>>>>> refs/remotes/origin/master
 			ad714x->hw->sys_cfg_reg[AD714X_PWR_CTRL]);
 
 	/* make sure the interrupt output line is not low level after resume,
@@ -1379,12 +1464,16 @@ int ad714x_enable(struct ad714x_chip *ad714x)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ad714x->read(ad714x->dev, STG_LOW_INT_STA_REG, &data);
 	ad714x->read(ad714x->dev, STG_HIGH_INT_STA_REG, &data);
 	ad714x->read(ad714x->dev, STG_COM_INT_STA_REG, &data);
 =======
 	ad714x->read(ad714x, STG_LOW_INT_STA_REG, &ad714x->l_state, 3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ad714x->read(ad714x, STG_LOW_INT_STA_REG, &ad714x->l_state, 3);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&ad714x->mutex);
 

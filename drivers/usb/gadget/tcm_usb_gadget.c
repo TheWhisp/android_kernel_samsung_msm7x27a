@@ -25,6 +25,7 @@
 #include <target/configfs_macros.h>
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
 #include "usbstring.c"
 #include "epautoconf.c"
 #include "config.c"
@@ -32,6 +33,12 @@
 
 #include "tcm_usb_gadget.h"
 
+=======
+#include "tcm_usb_gadget.h"
+
+USB_GADGET_COMPOSITE_OPTIONS();
+
+>>>>>>> refs/remotes/origin/master
 static struct target_fabric_configfs *usbg_fabric_configfs;
 
 static inline struct f_uas *to_f_uas(struct usb_function *f)
@@ -294,7 +301,11 @@ static int bot_send_write_request(struct usbg_cmd *cmd)
 		pr_err("%s(%d)\n", __func__, __LINE__);
 
 	wait_for_completion(&cmd->write_complete);
+<<<<<<< HEAD
 	transport_generic_process_write(se_cmd);
+=======
+	target_execute_cmd(se_cmd);
+>>>>>>> refs/remotes/origin/master
 cleanup:
 	return ret;
 }
@@ -373,7 +384,11 @@ err:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 void bot_cleanup_old_alt(struct f_uas *fu)
+=======
+static void bot_cleanup_old_alt(struct f_uas *fu)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!(fu->flags & USBG_ENABLED))
 		return;
@@ -475,7 +490,11 @@ static int usbg_bot_setup(struct usb_function *f,
 		bot_enqueue_cmd_cbw(fu);
 		return 0;
 		break;
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	return -ENOTSUPP;
 }
 
@@ -620,7 +639,11 @@ static void uasp_status_data_cmpl(struct usb_ep *ep, struct usb_request *req)
 
 	default:
 		BUG();
+<<<<<<< HEAD
 	};
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 	return;
 
 cleanup:
@@ -725,7 +748,11 @@ static int uasp_send_write_request(struct usbg_cmd *cmd)
 	}
 
 	wait_for_completion(&cmd->write_complete);
+<<<<<<< HEAD
 	transport_generic_process_write(se_cmd);
+=======
+	target_execute_cmd(se_cmd);
+>>>>>>> refs/remotes/origin/master
 cleanup:
 	return ret;
 }
@@ -1065,6 +1092,7 @@ static void usbg_cmd_work(struct work_struct *work)
 				tv_nexus->tvn_se_sess->se_tpg->se_tpg_tfo,
 				tv_nexus->tvn_se_sess, cmd->data_len, DMA_NONE,
 				cmd->prio_attr, cmd->sense_iu.sense);
+<<<<<<< HEAD
 
 		transport_send_check_condition_and_sense(se_cmd,
 				TCM_UNSUPPORTED_SCSI_OPCODE, 1);
@@ -1075,6 +1103,22 @@ static void usbg_cmd_work(struct work_struct *work)
 	target_submit_cmd(se_cmd, tv_nexus->tvn_se_sess,
 			cmd->cmd_buf, cmd->sense_iu.sense, cmd->unpacked_lun,
 			0, cmd->prio_attr, dir, TARGET_SCF_UNKNOWN_SIZE);
+=======
+		goto out;
+	}
+
+	if (target_submit_cmd(se_cmd, tv_nexus->tvn_se_sess,
+			cmd->cmd_buf, cmd->sense_iu.sense, cmd->unpacked_lun,
+			0, cmd->prio_attr, dir, TARGET_SCF_UNKNOWN_SIZE) < 0)
+		goto out;
+
+	return;
+
+out:
+	transport_send_check_condition_and_sense(se_cmd,
+			TCM_UNSUPPORTED_SCSI_OPCODE, 1);
+	usbg_cleanup_cmd(cmd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usbg_submit_command(struct f_uas *fu,
@@ -1177,6 +1221,7 @@ static void bot_cmd_work(struct work_struct *work)
 				tv_nexus->tvn_se_sess->se_tpg->se_tpg_tfo,
 				tv_nexus->tvn_se_sess, cmd->data_len, DMA_NONE,
 				cmd->prio_attr, cmd->sense_iu.sense);
+<<<<<<< HEAD
 
 		transport_send_check_condition_and_sense(se_cmd,
 				TCM_UNSUPPORTED_SCSI_OPCODE, 1);
@@ -1187,6 +1232,22 @@ static void bot_cmd_work(struct work_struct *work)
 	target_submit_cmd(se_cmd, tv_nexus->tvn_se_sess,
 			cmd->cmd_buf, cmd->sense_iu.sense, cmd->unpacked_lun,
 			cmd->data_len, cmd->prio_attr, dir, 0);
+=======
+		goto out;
+	}
+
+	if (target_submit_cmd(se_cmd, tv_nexus->tvn_se_sess,
+			cmd->cmd_buf, cmd->sense_iu.sense, cmd->unpacked_lun,
+			cmd->data_len, cmd->prio_attr, dir, 0) < 0)
+		goto out;
+
+	return;
+
+out:
+	transport_send_check_condition_and_sense(se_cmd,
+				TCM_UNSUPPORTED_SCSI_OPCODE, 1);
+	usbg_cleanup_cmd(cmd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int bot_submit_command(struct f_uas *fu,
@@ -1379,7 +1440,11 @@ static struct se_node_acl *usbg_alloc_fabric_acl(struct se_portal_group *se_tpg)
 
 	nacl = kzalloc(sizeof(struct usbg_nacl), GFP_KERNEL);
 	if (!nacl) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Unable to alocate struct usbg_nacl\n");
+=======
+		printk(KERN_ERR "Unable to allocate struct usbg_nacl\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -1400,6 +1465,7 @@ static u32 usbg_tpg_get_inst_index(struct se_portal_group *se_tpg)
 	return 1;
 }
 
+<<<<<<< HEAD
 static int usbg_new_cmd(struct se_cmd *se_cmd)
 {
 	struct usbg_cmd *cmd = container_of(se_cmd, struct usbg_cmd,
@@ -1413,6 +1479,8 @@ static int usbg_new_cmd(struct se_cmd *se_cmd)
 	return transport_generic_map_mem_to_cmd(se_cmd, NULL, 0, NULL, 0);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void usbg_cmd_release(struct kref *ref)
 {
 	struct usbg_cmd *cmd = container_of(ref, struct usbg_cmd,
@@ -1475,6 +1543,7 @@ static int usbg_get_cmd_state(struct se_cmd *se_cmd)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int usbg_queue_tm_rsp(struct se_cmd *se_cmd)
 {
 	return 0;
@@ -1488,6 +1557,10 @@ static u16 usbg_set_fabric_sense_len(struct se_cmd *se_cmd, u32 sense_length)
 static u16 usbg_get_fabric_sense_len(void)
 {
 	return 0;
+=======
+static void usbg_queue_tm_rsp(struct se_cmd *se_cmd)
+{
+>>>>>>> refs/remotes/origin/master
 }
 
 static const char *usbg_check_wwn(const char *name)
@@ -1812,9 +1885,16 @@ static int tcm_usbg_drop_nexus(struct usbg_tpg *tpg)
 	tpg->tpg_nexus = NULL;
 
 	kfree(tv_nexus);
+<<<<<<< HEAD
 out:
 	mutex_unlock(&tpg->tpg_mutex);
 	return 0;
+=======
+	ret = 0;
+out:
+	mutex_unlock(&tpg->tpg_mutex);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t tcm_usbg_tpg_store_nexus(
@@ -1830,7 +1910,11 @@ static ssize_t tcm_usbg_tpg_store_nexus(
 		ret = tcm_usbg_drop_nexus(tpg);
 		return (!ret) ? count : ret;
 	}
+<<<<<<< HEAD
 	if (strlen(page) > USBG_NAMELEN) {
+=======
+	if (strlen(page) >= USBG_NAMELEN) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("Emulated NAA Sas Address: %s, exceeds"
 				" max: %d\n", page, USBG_NAMELEN);
 		return -EINVAL;
@@ -1902,7 +1986,10 @@ static struct target_core_fabric_ops usbg_ops = {
 	.tpg_alloc_fabric_acl		= usbg_alloc_fabric_acl,
 	.tpg_release_fabric_acl		= usbg_release_fabric_acl,
 	.tpg_get_inst_index		= usbg_tpg_get_inst_index,
+<<<<<<< HEAD
 	.new_cmd_map			= usbg_new_cmd,
+=======
+>>>>>>> refs/remotes/origin/master
 	.release_cmd			= usbg_release_cmd,
 	.shutdown_session		= usbg_shutdown_session,
 	.close_session			= usbg_close_session,
@@ -1916,8 +2003,11 @@ static struct target_core_fabric_ops usbg_ops = {
 	.queue_data_in			= usbg_send_read_response,
 	.queue_status			= usbg_send_status_response,
 	.queue_tm_rsp			= usbg_queue_tm_rsp,
+<<<<<<< HEAD
 	.get_fabric_sense_len		= usbg_get_fabric_sense_len,
 	.set_fabric_sense_len		= usbg_set_fabric_sense_len,
+=======
+>>>>>>> refs/remotes/origin/master
 	.check_stop_free		= usbg_check_stop_free,
 
 	.fabric_make_wwn		= usbg_make_tport,
@@ -1944,6 +2034,7 @@ static int usbg_register_configfs(void)
 	}
 
 	fabric->tf_ops = usbg_ops;
+<<<<<<< HEAD
 	TF_CIT_TMPL(fabric)->tfc_wwn_cit.ct_attrs = usbg_wwn_attrs;
 	TF_CIT_TMPL(fabric)->tfc_tpg_base_cit.ct_attrs = usbg_base_attrs;
 	TF_CIT_TMPL(fabric)->tfc_tpg_attrib_cit.ct_attrs = NULL;
@@ -1953,6 +2044,17 @@ static int usbg_register_configfs(void)
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_attrib_cit.ct_attrs = NULL;
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_auth_cit.ct_attrs = NULL;
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_param_cit.ct_attrs = NULL;
+=======
+	fabric->tf_cit_tmpl.tfc_wwn_cit.ct_attrs = usbg_wwn_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_base_cit.ct_attrs = usbg_base_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_attrib_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_param_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_np_base_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_base_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_attrib_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_auth_cit.ct_attrs = NULL;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_param_cit.ct_attrs = NULL;
+>>>>>>> refs/remotes/origin/master
 	ret = target_fabric_configfs_register(fabric);
 	if (ret < 0) {
 		printk(KERN_ERR "target_fabric_configfs_register() failed"
@@ -1977,13 +2079,19 @@ static void usbg_deregister_configfs(void)
 static struct usb_interface_descriptor bot_intf_desc = {
 	.bLength =              sizeof(bot_intf_desc),
 	.bDescriptorType =      USB_DT_INTERFACE,
+<<<<<<< HEAD
 	.bAlternateSetting =	0,
+=======
+>>>>>>> refs/remotes/origin/master
 	.bNumEndpoints =        2,
 	.bAlternateSetting =	USB_G_ALT_INT_BBB,
 	.bInterfaceClass =      USB_CLASS_MASS_STORAGE,
 	.bInterfaceSubClass =   USB_SC_SCSI,
 	.bInterfaceProtocol =   USB_PR_BULK,
+<<<<<<< HEAD
 	.iInterface =           USB_G_STR_INT_UAS,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_interface_descriptor uasp_intf_desc = {
@@ -1994,7 +2102,10 @@ static struct usb_interface_descriptor uasp_intf_desc = {
 	.bInterfaceClass =	USB_CLASS_MASS_STORAGE,
 	.bInterfaceSubClass =	USB_SC_SCSI,
 	.bInterfaceProtocol =	USB_PR_UAS,
+<<<<<<< HEAD
 	.iInterface =		USB_G_STR_INT_BBB,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_endpoint_descriptor uasp_bi_desc = {
@@ -2163,6 +2274,10 @@ static struct usb_descriptor_header *uasp_fs_function_desc[] = {
 	(struct usb_descriptor_header *) &uasp_status_pipe_desc,
 	(struct usb_descriptor_header *) &uasp_fs_cmd_desc,
 	(struct usb_descriptor_header *) &uasp_cmd_pipe_desc,
+<<<<<<< HEAD
+=======
+	NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_descriptor_header *uasp_hs_function_desc[] = {
@@ -2215,20 +2330,32 @@ static struct usb_device_descriptor usbg_device_desc = {
 	.bDeviceClass =		USB_CLASS_PER_INTERFACE,
 	.idVendor =		cpu_to_le16(UAS_VENDOR_ID),
 	.idProduct =		cpu_to_le16(UAS_PRODUCT_ID),
+<<<<<<< HEAD
 	.iManufacturer =	USB_G_STR_MANUFACTOR,
 	.iProduct =		USB_G_STR_PRODUCT,
 	.iSerialNumber =	USB_G_STR_SERIAL,
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.bNumConfigurations =   1,
 };
 
 static struct usb_string	usbg_us_strings[] = {
+<<<<<<< HEAD
 	{ USB_G_STR_MANUFACTOR,	"Target Manufactor"},
 	{ USB_G_STR_PRODUCT,	"Target Product"},
 	{ USB_G_STR_SERIAL,	"000000000001"},
 	{ USB_G_STR_CONFIG,	"default config"},
 	{ USB_G_STR_INT_UAS,	"USB Attached SCSI"},
 	{ USB_G_STR_INT_BBB,	"Bulk Only Transport"},
+=======
+	[USB_GADGET_MANUFACTURER_IDX].s	= "Target Manufactor",
+	[USB_GADGET_PRODUCT_IDX].s	= "Target Product",
+	[USB_GADGET_SERIAL_IDX].s	= "000000000001",
+	[USB_G_STR_CONFIG].s		= "default config",
+	[USB_G_STR_INT_UAS].s		= "USB Attached SCSI",
+	[USB_G_STR_INT_BBB].s		= "Bulk Only Transport",
+>>>>>>> refs/remotes/origin/master
 	{ },
 };
 
@@ -2250,7 +2377,10 @@ static int guas_unbind(struct usb_composite_dev *cdev)
 static struct usb_configuration usbg_config_driver = {
 	.label                  = "Linux Target",
 	.bConfigurationValue    = 1,
+<<<<<<< HEAD
 	.iConfiguration		= USB_G_STR_CONFIG,
+=======
+>>>>>>> refs/remotes/origin/master
 	.bmAttributes           = USB_CONFIG_ATT_SELFPOWER,
 };
 
@@ -2268,6 +2398,10 @@ static int usbg_bind(struct usb_configuration *c, struct usb_function *f)
 	struct usb_gadget	*gadget = c->cdev->gadget;
 	struct usb_ep		*ep;
 	int			iface;
+<<<<<<< HEAD
+=======
+	int			ret;
+>>>>>>> refs/remotes/origin/master
 
 	iface = usb_interface_id(c, f);
 	if (iface < 0)
@@ -2318,6 +2452,14 @@ static int usbg_bind(struct usb_configuration *c, struct usb_function *f)
 		uasp_ss_status_desc.bEndpointAddress;
 	uasp_fs_cmd_desc.bEndpointAddress = uasp_ss_cmd_desc.bEndpointAddress;
 
+<<<<<<< HEAD
+=======
+	ret = usb_assign_descriptors(f, uasp_fs_function_desc,
+			uasp_hs_function_desc, uasp_ss_function_desc);
+	if (ret)
+		goto ep_fail;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 ep_fail:
 	pr_err("Can't claim all required eps\n");
@@ -2333,6 +2475,10 @@ static void usbg_unbind(struct usb_configuration *c, struct usb_function *f)
 {
 	struct f_uas *fu = to_f_uas(f);
 
+<<<<<<< HEAD
+=======
+	usb_free_all_descriptors(f);
+>>>>>>> refs/remotes/origin/master
 	kfree(fu);
 }
 
@@ -2413,9 +2559,12 @@ static int usbg_cfg_bind(struct usb_configuration *c)
 	if (!fu)
 		return -ENOMEM;
 	fu->function.name = "Target Function";
+<<<<<<< HEAD
 	fu->function.descriptors = uasp_fs_function_desc;
 	fu->function.hs_descriptors = uasp_hs_function_desc;
 	fu->function.ss_descriptors = uasp_ss_function_desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	fu->function.bind = usbg_bind;
 	fu->function.unbind = usbg_unbind;
 	fu->function.set_alt = usbg_set_alt;
@@ -2423,6 +2572,12 @@ static int usbg_cfg_bind(struct usb_configuration *c)
 	fu->function.disable = usbg_disable;
 	fu->tpg = the_only_tpg_I_currently_have;
 
+<<<<<<< HEAD
+=======
+	bot_intf_desc.iInterface = usbg_us_strings[USB_G_STR_INT_BBB].id;
+	uasp_intf_desc.iInterface = usbg_us_strings[USB_G_STR_INT_UAS].id;
+
+>>>>>>> refs/remotes/origin/master
 	ret = usb_add_function(c, &fu->function);
 	if (ret)
 		goto err;
@@ -2437,22 +2592,54 @@ static int usb_target_bind(struct usb_composite_dev *cdev)
 {
 	int ret;
 
+<<<<<<< HEAD
 	ret = usb_add_config(cdev, &usbg_config_driver,
 			usbg_cfg_bind);
 	return 0;
 }
 
 static struct usb_composite_driver usbg_driver = {
+=======
+	ret = usb_string_ids_tab(cdev, usbg_us_strings);
+	if (ret)
+		return ret;
+
+	usbg_device_desc.iManufacturer =
+		usbg_us_strings[USB_GADGET_MANUFACTURER_IDX].id;
+	usbg_device_desc.iProduct = usbg_us_strings[USB_GADGET_PRODUCT_IDX].id;
+	usbg_device_desc.iSerialNumber =
+		usbg_us_strings[USB_GADGET_SERIAL_IDX].id;
+	usbg_config_driver.iConfiguration =
+		usbg_us_strings[USB_G_STR_CONFIG].id;
+
+	ret = usb_add_config(cdev, &usbg_config_driver,
+			usbg_cfg_bind);
+	if (ret)
+		return ret;
+	usb_composite_overwrite_options(cdev, &coverwrite);
+	return 0;
+}
+
+static __refdata struct usb_composite_driver usbg_driver = {
+>>>>>>> refs/remotes/origin/master
 	.name           = "g_target",
 	.dev            = &usbg_device_desc,
 	.strings        = usbg_strings,
 	.max_speed      = USB_SPEED_SUPER,
+<<<<<<< HEAD
+=======
+	.bind		= usb_target_bind,
+>>>>>>> refs/remotes/origin/master
 	.unbind         = guas_unbind,
 };
 
 static int usbg_attach(struct usbg_tpg *tpg)
 {
+<<<<<<< HEAD
 	return usb_composite_probe(&usbg_driver, usb_target_bind);
+=======
+	return usb_composite_probe(&usbg_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void usbg_detach(struct usbg_tpg *tpg)

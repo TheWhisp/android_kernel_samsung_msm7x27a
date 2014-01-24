@@ -35,7 +35,11 @@ static __inline__ char *strcpy(char *__dest, __const__ char *__src)
 	".set\tat\n\t"
 	".set\treorder"
 	: "=r" (__dest), "=r" (__src)
+<<<<<<< HEAD
         : "0" (__dest), "1" (__src)
+=======
+	: "0" (__dest), "1" (__src)
+>>>>>>> refs/remotes/origin/master
 	: "memory");
 
   return __xdest;
@@ -62,9 +66,15 @@ static __inline__ char *strncpy(char *__dest, __const__ char *__src, size_t __n)
 	"2:\n\t"
 	".set\tat\n\t"
 	".set\treorder"
+<<<<<<< HEAD
         : "=r" (__dest), "=r" (__src), "=r" (__n)
         : "0" (__dest), "1" (__src), "2" (__n)
         : "memory");
+=======
+	: "=r" (__dest), "=r" (__src), "=r" (__n)
+	: "0" (__dest), "1" (__src), "2" (__n)
+	: "memory");
+>>>>>>> refs/remotes/origin/master
 
   return __xdest;
 }

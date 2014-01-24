@@ -168,9 +168,13 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 	int err = 0;
 	mtrr_type type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long base;
+>>>>>>> refs/remotes/origin/master
 	unsigned long size;
 	struct mtrr_sentry sentry;
 	struct mtrr_gentry gentry;
@@ -272,6 +276,7 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 		if (gentry.regnum >= num_var_ranges)
 			return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mtrr_if->get(gentry.regnum, &gentry.base, &size, &type);
 
 		/* Hide entries that go above 4GB */
@@ -281,6 +286,8 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 		else {
 			gentry.base <<= PAGE_SHIFT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mtrr_if->get(gentry.regnum, &base, &size, &type);
 
 		/* Hide entries that go above 4GB */
@@ -289,7 +296,10 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 			gentry.base = gentry.size = gentry.type = 0;
 		else {
 			gentry.base = base << PAGE_SHIFT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			gentry.size = size << PAGE_SHIFT;
 			gentry.type = type;
 		}
@@ -337,18 +347,26 @@ mtrr_ioctl(struct file *file, unsigned int cmd, unsigned long __arg)
 		if (gentry.regnum >= num_var_ranges)
 			return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mtrr_if->get(gentry.regnum, &gentry.base, &size, &type);
 =======
 		mtrr_if->get(gentry.regnum, &base, &size, &type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mtrr_if->get(gentry.regnum, &base, &size, &type);
+>>>>>>> refs/remotes/origin/master
 		/* Hide entries that would overflow */
 		if (size != (__typeof__(gentry.size))size)
 			gentry.base = gentry.size = gentry.type = 0;
 		else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			gentry.base = base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			gentry.base = base;
+>>>>>>> refs/remotes/origin/master
 			gentry.size = size;
 			gentry.type = type;
 		}

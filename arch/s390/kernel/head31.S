@@ -1,7 +1,11 @@
 /*
+<<<<<<< HEAD
  * arch/s390/kernel/head31.S
  *
  * Copyright (C) IBM Corp. 2005,2010
+=======
+ * Copyright IBM Corp. 2005, 2010
+>>>>>>> refs/remotes/origin/master
  *
  *   Author(s):	Hartmut Penner <hp@de.ibm.com>
  *		Martin Schwidefsky <schwidefsky@de.ibm.com>
@@ -12,20 +16,28 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/linkage.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
 #include <asm/page.h>
 
 __HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	startup_continue
 startup_continue:
 =======
 ENTRY(startup_continue)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(startup_continue)
+>>>>>>> refs/remotes/origin/master
 	basr	%r13,0			# get base
 .LPG1:
 
@@ -54,10 +66,14 @@ ENTRY(startup_continue)
 	.align	8
 .Lentry:.long	0x00080000,0x80000000 + _stext
 <<<<<<< HEAD
+<<<<<<< HEAD
 .Lctl:	.long	0x04b50002		# cr0: various things
 =======
 .Lctl:	.long	0x04b50000		# cr0: various things
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+.Lctl:	.long	0x04b50000		# cr0: various things
+>>>>>>> refs/remotes/origin/master
 	.long	0			# cr1: primary space segment table
 	.long	.Lduct			# cr2: dispatchable unit control table
 	.long	0			# cr3: instruction authorization
@@ -91,6 +107,7 @@ ENTRY(startup_continue)
 	.long	sched_clock_base_cc
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	_ehead
 _ehead:
 =======
@@ -112,13 +129,24 @@ _stext:	basr	%r13,0			# get base
 	stctl	%c0,%c15,0(%r15)
 	oi	2(%r15),0x40		# enable sigp emergency signal
 =======
+=======
+ENTRY(_ehead)
+
+	.org	0x100000 - 0x11000	# head.o ends at 0x11000
+#
+# startup-code, running in absolute addressing mode
+#
+>>>>>>> refs/remotes/origin/master
 ENTRY(_stext)
 	basr	%r13,0			# get base
 .LPG3:
 # check control registers
 	stctl	%c0,%c15,0(%r15)
 	oi	2(%r15),0x60		# enable sigp emergency & external call
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	oi	0(%r15),0x10		# switch on low address protection
 	lctl	%c0,%c15,0(%r15)
 

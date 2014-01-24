@@ -10,20 +10,66 @@
 #include <linux/module.h>
 #include <linux/cpumask.h>
 #include <linux/pci-aspm.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/pci-bridge.h>
+>>>>>>> refs/remotes/origin/master
 #include "pci.h"
 
 #define CARDBUS_LATENCY_TIMER	176	/* secondary latency timer */
 #define CARDBUS_RESERVE_BUSNR	3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static LIST_HEAD(pci_host_bridges);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct resource busn_resource = {
+	.name	= "PCI busn",
+	.start	= 0,
+	.end	= 255,
+	.flags	= IORESOURCE_BUS,
+};
+
+>>>>>>> refs/remotes/origin/master
 /* Ugh.  Need to stop exporting this to modules. */
 LIST_HEAD(pci_root_buses);
 EXPORT_SYMBOL(pci_root_buses);
 
+<<<<<<< HEAD
+=======
+static LIST_HEAD(pci_domain_busn_res_list);
+
+struct pci_domain_busn_res {
+	struct list_head list;
+	struct resource res;
+	int domain_nr;
+};
+
+static struct resource *get_pci_domain_busn_res(int domain_nr)
+{
+	struct pci_domain_busn_res *r;
+
+	list_for_each_entry(r, &pci_domain_busn_res_list, list)
+		if (r->domain_nr == domain_nr)
+			return &r->res;
+
+	r = kzalloc(sizeof(*r), GFP_KERNEL);
+	if (!r)
+		return NULL;
+
+	r->domain_nr = domain_nr;
+	r->res.start = 0;
+	r->res.end = 0xff;
+	r->res.flags = IORESOURCE_BUS | IORESOURCE_PCI_FIXED;
+
+	list_add_tail(&r->list, &pci_domain_busn_res_list);
+
+	return &r->res;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int find_anything(struct device *dev, void *data)
 {
@@ -47,6 +93,7 @@ int no_pci_devices(void)
 }
 EXPORT_SYMBOL(no_pci_devices);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static struct pci_host_bridge *pci_host_bridge(struct pci_dev *dev)
@@ -126,6 +173,8 @@ void pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 EXPORT_SYMBOL(pcibios_bus_to_resource);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PCI Bus Class
  */
@@ -137,16 +186,24 @@ static void release_pcibus_dev(struct device *dev)
 		put_device(pci_bus->bridge);
 	pci_bus_remove_resources(pci_bus);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_release_bus_of_node(pci_bus);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_release_bus_of_node(pci_bus);
+>>>>>>> refs/remotes/origin/master
 	kfree(pci_bus);
 }
 
 static struct class pcibus_class = {
 	.name		= "pci_bus",
 	.dev_release	= &release_pcibus_dev,
+<<<<<<< HEAD
 	.dev_attrs	= pcibus_dev_attrs,
+=======
+	.dev_groups	= pcibus_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init pcibus_class_init(void)
@@ -155,6 +212,7 @@ static int __init pcibus_class_init(void)
 }
 postcore_initcall(pcibus_class_init);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Translate the low bits of the PCI base
@@ -173,6 +231,8 @@ static inline unsigned int pci_calc_resource_flags(unsigned int flags)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u64 pci_size(u64 base, u64 maxbase, u64 mask)
 {
 	u64 size = mask & maxbase;	/* Find the significant bits */
@@ -192,6 +252,7 @@ static u64 pci_size(u64 base, u64 maxbase, u64 mask)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline enum pci_bar_type decode_bar(struct resource *res, u32 bar)
 {
 	if ((bar & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO) {
@@ -205,6 +266,8 @@ static inline enum pci_bar_type decode_bar(struct resource *res, u32 bar)
 		return pci_bar_mem64;
 	return pci_bar_mem32;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long decode_bar(struct pci_dev *dev, u32 bar)
 {
 	u32 mem_type;
@@ -226,12 +289,17 @@ static inline unsigned long decode_bar(struct pci_dev *dev, u32 bar)
 	case PCI_BASE_ADDRESS_MEM_TYPE_32:
 		break;
 	case PCI_BASE_ADDRESS_MEM_TYPE_1M:
+<<<<<<< HEAD
 		dev_info(&dev->dev, "1M mem BAR treated as 32-bit BAR\n");
+=======
+		/* 1M mem BAR treated as 32-bit BAR */
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PCI_BASE_ADDRESS_MEM_TYPE_64:
 		flags |= IORESOURCE_MEM_64;
 		break;
 	default:
+<<<<<<< HEAD
 		dev_warn(&dev->dev,
 			 "mem unknown type %x treated as 32-bit BAR\n",
 			 mem_type);
@@ -241,6 +309,16 @@ static inline unsigned long decode_bar(struct pci_dev *dev, u32 bar)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+		/* mem unknown type treated as 32-bit BAR */
+		break;
+	}
+	return flags;
+}
+
+#define PCI_COMMAND_DECODE_ENABLE	(PCI_COMMAND_MEMORY | PCI_COMMAND_IO)
+
+>>>>>>> refs/remotes/origin/master
 /**
  * pci_read_base - read a PCI BAR
  * @dev: the PCI device
@@ -256,6 +334,7 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 	u32 l, sz, mask;
 	u16 orig_cmd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pci_bus_region region;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -266,6 +345,20 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 		pci_read_config_word(dev, PCI_COMMAND, &orig_cmd);
 		pci_write_config_word(dev, PCI_COMMAND,
 			orig_cmd & ~(PCI_COMMAND_MEMORY | PCI_COMMAND_IO));
+=======
+	struct pci_bus_region region, inverted_region;
+	bool bar_too_big = false, bar_disabled = false;
+
+	mask = type ? PCI_ROM_ADDRESS_MASK : ~0;
+
+	/* No printks while decoding is disabled! */
+	if (!dev->mmio_always_on) {
+		pci_read_config_word(dev, PCI_COMMAND, &orig_cmd);
+		if (orig_cmd & PCI_COMMAND_DECODE_ENABLE) {
+			pci_write_config_word(dev, PCI_COMMAND,
+				orig_cmd & ~PCI_COMMAND_DECODE_ENABLE);
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	res->name = pci_name(dev);
@@ -275,9 +368,12 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 	pci_read_config_dword(dev, pos, &sz);
 	pci_write_config_dword(dev, pos, l);
 
+<<<<<<< HEAD
 	if (!dev->mmio_always_on)
 		pci_write_config_word(dev, PCI_COMMAND, orig_cmd);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * All bits set in sz means the device isn't working properly.
 	 * If the BAR isn't implemented, all bits must be 0.  If it's a
@@ -296,6 +392,7 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 
 	if (type == pci_bar_unknown) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		type = decode_bar(res, l);
 		res->flags |= pci_calc_resource_flags(l) | IORESOURCE_SIZEALIGN;
 		if (type == pci_bar_io) {
@@ -304,6 +401,11 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 		res->flags |= IORESOURCE_SIZEALIGN;
 		if (res->flags & IORESOURCE_IO) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		res->flags = decode_bar(dev, l);
+		res->flags |= IORESOURCE_SIZEALIGN;
+		if (res->flags & IORESOURCE_IO) {
+>>>>>>> refs/remotes/origin/master
 			l &= PCI_BASE_ADDRESS_IO_MASK;
 			mask = PCI_BASE_ADDRESS_IO_MASK & (u32) IO_SPACE_LIMIT;
 		} else {
@@ -317,10 +419,14 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (type == pci_bar_mem64) {
 =======
 	if (res->flags & IORESOURCE_MEM_64) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (res->flags & IORESOURCE_MEM_64) {
+>>>>>>> refs/remotes/origin/master
 		u64 l64 = l;
 		u64 sz64 = sz;
 		u64 mask64 = mask | (u64)~0 << 32;
@@ -339,6 +445,7 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 			goto fail;
 
 		if ((sizeof(resource_size_t) < 8) && (sz64 > 0x100000000ULL)) {
+<<<<<<< HEAD
 			dev_err(&dev->dev, "reg %x: can't handle 64-bit BAR\n",
 				pos);
 			goto fail;
@@ -348,10 +455,17 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 		res->flags |= IORESOURCE_MEM_64;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			bar_too_big = true;
+			goto fail;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if ((sizeof(resource_size_t) < 8) && l) {
 			/* Address above 32-bit boundary; disable the BAR */
 			pci_write_config_dword(dev, pos, 0);
 			pci_write_config_dword(dev, pos + 4, 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			res->start = 0;
 			res->end = sz64;
@@ -369,6 +483,14 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 >>>>>>> refs/remotes/origin/cm-10.0
 			dev_printk(KERN_DEBUG, &dev->dev, "reg %x: %pR\n",
 				   pos, res);
+=======
+			region.start = 0;
+			region.end = sz64;
+			bar_disabled = true;
+		} else {
+			region.start = l64;
+			region.end = l64 + sz64;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		sz = pci_size(l, sz, mask);
@@ -376,6 +498,7 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
 		if (!sz)
 			goto fail;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		res->start = l;
 		res->end = l + sz;
@@ -397,6 +520,50 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
  fail:
 	res->flags = 0;
 	goto out;
+=======
+		region.start = l;
+		region.end = l + sz;
+	}
+
+	pcibios_bus_to_resource(dev, res, &region);
+	pcibios_resource_to_bus(dev, &inverted_region, res);
+
+	/*
+	 * If "A" is a BAR value (a bus address), "bus_to_resource(A)" is
+	 * the corresponding resource address (the physical address used by
+	 * the CPU.  Converting that resource address back to a bus address
+	 * should yield the original BAR value:
+	 *
+	 *     resource_to_bus(bus_to_resource(A)) == A
+	 *
+	 * If it doesn't, CPU accesses to "bus_to_resource(A)" will not
+	 * be claimed by the device.
+	 */
+	if (inverted_region.start != region.start) {
+		dev_info(&dev->dev, "reg 0x%x: initial BAR value %pa invalid; forcing reassignment\n",
+			 pos, &region.start);
+		res->flags |= IORESOURCE_UNSET;
+		res->end -= res->start;
+		res->start = 0;
+	}
+
+	goto out;
+
+
+fail:
+	res->flags = 0;
+out:
+	if (!dev->mmio_always_on &&
+	    (orig_cmd & PCI_COMMAND_DECODE_ENABLE))
+		pci_write_config_word(dev, PCI_COMMAND, orig_cmd);
+
+	if (bar_too_big)
+		dev_err(&dev->dev, "reg 0x%x: can't handle 64-bit BAR\n", pos);
+	if (res->flags && !bar_disabled)
+		dev_printk(KERN_DEBUG, &dev->dev, "reg 0x%x: %pR\n", pos, res);
+
+	return (res->flags & IORESOURCE_MEM_64) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pci_read_bases(struct pci_dev *dev, unsigned int howmany, int rom)
@@ -419,6 +586,7 @@ static void pci_read_bases(struct pci_dev *dev, unsigned int howmany, int rom)
 	}
 }
 
+<<<<<<< HEAD
 static void __devinit pci_read_bridge_io(struct pci_bus *child)
 {
 	struct pci_dev *dev = child->self;
@@ -430,10 +598,28 @@ static void __devinit pci_read_bridge_io(struct pci_bus *child)
 	struct pci_bus_region region;
 	struct resource *res, res2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void pci_read_bridge_io(struct pci_bus *child)
+{
+	struct pci_dev *dev = child->self;
+	u8 io_base_lo, io_limit_lo;
+	unsigned long io_mask, io_granularity, base, limit;
+	struct pci_bus_region region;
+	struct resource *res;
+
+	io_mask = PCI_IO_RANGE_MASK;
+	io_granularity = 0x1000;
+	if (dev->io_window_1k) {
+		/* Support 1K I/O space granularity */
+		io_mask = PCI_IO_1K_RANGE_MASK;
+		io_granularity = 0x400;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	res = child->resource[0];
 	pci_read_config_byte(dev, PCI_IO_BASE, &io_base_lo);
 	pci_read_config_byte(dev, PCI_IO_LIMIT, &io_limit_lo);
+<<<<<<< HEAD
 	base = (io_base_lo & PCI_IO_RANGE_MASK) << 8;
 	limit = (io_limit_lo & PCI_IO_RANGE_MASK) << 8;
 
@@ -472,19 +658,48 @@ static void __devinit pci_read_bridge_io(struct pci_bus *child)
 }
 
 static void __devinit pci_read_bridge_mmio(struct pci_bus *child)
+=======
+	base = (io_base_lo & io_mask) << 8;
+	limit = (io_limit_lo & io_mask) << 8;
+
+	if ((io_base_lo & PCI_IO_RANGE_TYPE_MASK) == PCI_IO_RANGE_TYPE_32) {
+		u16 io_base_hi, io_limit_hi;
+
+		pci_read_config_word(dev, PCI_IO_BASE_UPPER16, &io_base_hi);
+		pci_read_config_word(dev, PCI_IO_LIMIT_UPPER16, &io_limit_hi);
+		base |= ((unsigned long) io_base_hi << 16);
+		limit |= ((unsigned long) io_limit_hi << 16);
+	}
+
+	if (base <= limit) {
+		res->flags = (io_base_lo & PCI_IO_RANGE_TYPE_MASK) | IORESOURCE_IO;
+		region.start = base;
+		region.end = limit + io_granularity - 1;
+		pcibios_bus_to_resource(dev, res, &region);
+		dev_printk(KERN_DEBUG, &dev->dev, "  bridge window %pR\n", res);
+	}
+}
+
+static void pci_read_bridge_mmio(struct pci_bus *child)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = child->self;
 	u16 mem_base_lo, mem_limit_lo;
 	unsigned long base, limit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pci_bus_region region;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_bus_region region;
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 
 	res = child->resource[1];
 	pci_read_config_word(dev, PCI_MEMORY_BASE, &mem_base_lo);
 	pci_read_config_word(dev, PCI_MEMORY_LIMIT, &mem_limit_lo);
+<<<<<<< HEAD
 	base = (mem_base_lo & PCI_MEMORY_RANGE_MASK) << 16;
 	limit = (mem_limit_lo & PCI_MEMORY_RANGE_MASK) << 16;
 	if (base && base <= limit) {
@@ -498,33 +713,59 @@ static void __devinit pci_read_bridge_mmio(struct pci_bus *child)
 			"  bridge window [mem %#010lx-%#010lx] (disabled)\n",
 					 base, limit + 0xfffff);
 =======
+=======
+	base = ((unsigned long) mem_base_lo & PCI_MEMORY_RANGE_MASK) << 16;
+	limit = ((unsigned long) mem_limit_lo & PCI_MEMORY_RANGE_MASK) << 16;
+	if (base <= limit) {
+		res->flags = (mem_base_lo & PCI_MEMORY_RANGE_TYPE_MASK) | IORESOURCE_MEM;
+>>>>>>> refs/remotes/origin/master
 		region.start = base;
 		region.end = limit + 0xfffff;
 		pcibios_bus_to_resource(dev, res, &region);
 		dev_printk(KERN_DEBUG, &dev->dev, "  bridge window %pR\n", res);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
 static void __devinit pci_read_bridge_mmio_pref(struct pci_bus *child)
+=======
+	}
+}
+
+static void pci_read_bridge_mmio_pref(struct pci_bus *child)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = child->self;
 	u16 mem_base_lo, mem_limit_lo;
 	unsigned long base, limit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pci_bus_region region;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_bus_region region;
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 
 	res = child->resource[2];
 	pci_read_config_word(dev, PCI_PREF_MEMORY_BASE, &mem_base_lo);
 	pci_read_config_word(dev, PCI_PREF_MEMORY_LIMIT, &mem_limit_lo);
+<<<<<<< HEAD
 	base = (mem_base_lo & PCI_PREF_RANGE_MASK) << 16;
 	limit = (mem_limit_lo & PCI_PREF_RANGE_MASK) << 16;
 
 	if ((mem_base_lo & PCI_PREF_RANGE_TYPE_MASK) == PCI_PREF_RANGE_TYPE_64) {
 		u32 mem_base_hi, mem_limit_hi;
+=======
+	base = ((unsigned long) mem_base_lo & PCI_PREF_RANGE_MASK) << 16;
+	limit = ((unsigned long) mem_limit_lo & PCI_PREF_RANGE_MASK) << 16;
+
+	if ((mem_base_lo & PCI_PREF_RANGE_TYPE_MASK) == PCI_PREF_RANGE_TYPE_64) {
+		u32 mem_base_hi, mem_limit_hi;
+
+>>>>>>> refs/remotes/origin/master
 		pci_read_config_dword(dev, PCI_PREF_BASE_UPPER32, &mem_base_hi);
 		pci_read_config_dword(dev, PCI_PREF_LIMIT_UPPER32, &mem_limit_hi);
 
@@ -535,8 +776,13 @@ static void __devinit pci_read_bridge_mmio_pref(struct pci_bus *child)
 		 */
 		if (mem_base_hi <= mem_limit_hi) {
 #if BITS_PER_LONG == 64
+<<<<<<< HEAD
 			base |= ((long) mem_base_hi) << 32;
 			limit |= ((long) mem_limit_hi) << 32;
+=======
+			base |= ((unsigned long) mem_base_hi) << 32;
+			limit |= ((unsigned long) mem_limit_hi) << 32;
+>>>>>>> refs/remotes/origin/master
 #else
 			if (mem_base_hi || mem_limit_hi) {
 				dev_err(&dev->dev, "can't handle 64-bit "
@@ -546,11 +792,16 @@ static void __devinit pci_read_bridge_mmio_pref(struct pci_bus *child)
 #endif
 		}
 	}
+<<<<<<< HEAD
 	if (base && base <= limit) {
+=======
+	if (base <= limit) {
+>>>>>>> refs/remotes/origin/master
 		res->flags = (mem_base_lo & PCI_PREF_RANGE_TYPE_MASK) |
 					 IORESOURCE_MEM | IORESOURCE_PREFETCH;
 		if (res->flags & PCI_PREF_RANGE_TYPE_64)
 			res->flags |= IORESOURCE_MEM_64;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		res->start = base;
 		res->end = limit + 0xfffff;
@@ -560,15 +811,24 @@ static void __devinit pci_read_bridge_mmio_pref(struct pci_bus *child)
 		     "  bridge window [mem %#010lx-%#010lx pref] (disabled)\n",
 					 base, limit + 0xfffff);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		region.start = base;
 		region.end = limit + 0xfffff;
 		pcibios_bus_to_resource(dev, res, &region);
 		dev_printk(KERN_DEBUG, &dev->dev, "  bridge window %pR\n", res);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 }
 
 void __devinit pci_read_bridge_bases(struct pci_bus *child)
+=======
+	}
+}
+
+void pci_read_bridge_bases(struct pci_bus *child)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = child->self;
 	struct resource *res;
@@ -577,8 +837,13 @@ void __devinit pci_read_bridge_bases(struct pci_bus *child)
 	if (pci_is_root_bus(child))	/* It's a host bus, nothing to read */
 		return;
 
+<<<<<<< HEAD
 	dev_info(&dev->dev, "PCI bridge to [bus %02x-%02x]%s\n",
 		 child->secondary, child->subordinate,
+=======
+	dev_info(&dev->dev, "PCI bridge to %pR%s\n",
+		 &child->busn_res,
+>>>>>>> refs/remotes/origin/master
 		 dev->transparent ? " (subtractive decode)" : "");
 
 	pci_bus_remove_resources(child);
@@ -602,11 +867,16 @@ void __devinit pci_read_bridge_bases(struct pci_bus *child)
 	}
 }
 
+<<<<<<< HEAD
 static struct pci_bus * pci_alloc_bus(void)
+=======
+static struct pci_bus *pci_alloc_bus(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_bus *b;
 
 	b = kzalloc(sizeof(*b), GFP_KERNEL);
+<<<<<<< HEAD
 	if (b) {
 		INIT_LIST_HEAD(&b->node);
 		INIT_LIST_HEAD(&b->children);
@@ -620,6 +890,47 @@ static struct pci_bus * pci_alloc_bus(void)
 }
 
 static unsigned char pcix_bus_speed[] = {
+=======
+	if (!b)
+		return NULL;
+
+	INIT_LIST_HEAD(&b->node);
+	INIT_LIST_HEAD(&b->children);
+	INIT_LIST_HEAD(&b->devices);
+	INIT_LIST_HEAD(&b->slots);
+	INIT_LIST_HEAD(&b->resources);
+	b->max_bus_speed = PCI_SPEED_UNKNOWN;
+	b->cur_bus_speed = PCI_SPEED_UNKNOWN;
+	return b;
+}
+
+static void pci_release_host_bridge_dev(struct device *dev)
+{
+	struct pci_host_bridge *bridge = to_pci_host_bridge(dev);
+
+	if (bridge->release_fn)
+		bridge->release_fn(bridge);
+
+	pci_free_resource_list(&bridge->windows);
+
+	kfree(bridge);
+}
+
+static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
+{
+	struct pci_host_bridge *bridge;
+
+	bridge = kzalloc(sizeof(*bridge), GFP_KERNEL);
+	if (!bridge)
+		return NULL;
+
+	INIT_LIST_HEAD(&bridge->windows);
+	bridge->bus = b;
+	return bridge;
+}
+
+const unsigned char pcix_bus_speed[] = {
+>>>>>>> refs/remotes/origin/master
 	PCI_SPEED_UNKNOWN,		/* 0 */
 	PCI_SPEED_66MHz_PCIX,		/* 1 */
 	PCI_SPEED_100MHz_PCIX,		/* 2 */
@@ -638,7 +949,11 @@ static unsigned char pcix_bus_speed[] = {
 	PCI_SPEED_133MHz_PCIX_533	/* F */
 };
 
+<<<<<<< HEAD
 static unsigned char pcie_link_speed[] = {
+=======
+const unsigned char pcie_link_speed[] = {
+>>>>>>> refs/remotes/origin/master
 	PCI_SPEED_UNKNOWN,		/* 0 */
 	PCIE_SPEED_2_5GT,		/* 1 */
 	PCIE_SPEED_5_0GT,		/* 2 */
@@ -659,7 +974,11 @@ static unsigned char pcie_link_speed[] = {
 
 void pcie_update_link_speed(struct pci_bus *bus, u16 linksta)
 {
+<<<<<<< HEAD
 	bus->cur_bus_speed = pcie_link_speed[linksta & 0xf];
+=======
+	bus->cur_bus_speed = pcie_link_speed[linksta & PCI_EXP_LNKSTA_CLS];
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(pcie_update_link_speed);
 
@@ -683,7 +1002,11 @@ static enum pci_bus_speed agp_speed(int agp3, int agpstat)
 		index = 1;
 	else
 		goto out;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (agp3) {
 		index += 2;
 		if (index == 5)
@@ -717,6 +1040,7 @@ static void pci_set_bus_speed(struct pci_bus *bus)
 	if (pos) {
 		u16 status;
 		enum pci_bus_speed max;
+<<<<<<< HEAD
 		pci_read_config_word(bridge, pos + 2, &status);
 
 		if (status & 0x8000) {
@@ -725,6 +1049,18 @@ static void pci_set_bus_speed(struct pci_bus *bus)
 			max = PCI_SPEED_133MHz_PCIX_266;
 		} else if (status & 0x0002) {
 			if (((status >> 12) & 0x3) == 2) {
+=======
+
+		pci_read_config_word(bridge, pos + PCI_X_BRIDGE_SSTATUS,
+				     &status);
+
+		if (status & PCI_X_SSTATUS_533MHZ) {
+			max = PCI_SPEED_133MHz_PCIX_533;
+		} else if (status & PCI_X_SSTATUS_266MHZ) {
+			max = PCI_SPEED_133MHz_PCIX_266;
+		} else if (status & PCI_X_SSTATUS_133MHZ) {
+			if ((status & PCI_X_SSTATUS_VERS) == PCI_X_SSTATUS_V2) {
+>>>>>>> refs/remotes/origin/master
 				max = PCI_SPEED_133MHz_PCIX_ECC;
 			} else {
 				max = PCI_SPEED_133MHz_PCIX;
@@ -734,11 +1070,17 @@ static void pci_set_bus_speed(struct pci_bus *bus)
 		}
 
 		bus->max_bus_speed = max;
+<<<<<<< HEAD
 		bus->cur_bus_speed = pcix_bus_speed[(status >> 6) & 0xf];
+=======
+		bus->cur_bus_speed = pcix_bus_speed[
+			(status & PCI_X_SSTATUS_FREQ) >> 6];
+>>>>>>> refs/remotes/origin/master
 
 		return;
 	}
 
+<<<<<<< HEAD
 	pos = pci_find_capability(bridge, PCI_CAP_ID_EXP);
 	if (pos) {
 		u32 linkcap;
@@ -748,6 +1090,16 @@ static void pci_set_bus_speed(struct pci_bus *bus)
 		bus->max_bus_speed = pcie_link_speed[linkcap & 0xf];
 
 		pci_read_config_word(bridge, pos + PCI_EXP_LNKSTA, &linksta);
+=======
+	if (pci_is_pcie(bridge)) {
+		u32 linkcap;
+		u16 linksta;
+
+		pcie_capability_read_dword(bridge, PCI_EXP_LNKCAP, &linkcap);
+		bus->max_bus_speed = pcie_link_speed[linkcap & PCI_EXP_LNKCAP_SLS];
+
+		pcie_capability_read_word(bridge, PCI_EXP_LNKSTA, &linksta);
+>>>>>>> refs/remotes/origin/master
 		pcie_update_link_speed(bus, linksta);
 	}
 }
@@ -758,6 +1110,10 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
 {
 	struct pci_bus *child;
 	int i;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Allocate a new bus, and inherit stuff from the parent..
@@ -768,12 +1124,20 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
 
 	child->parent = parent;
 	child->ops = parent->ops;
+<<<<<<< HEAD
+=======
+	child->msi = parent->msi;
+>>>>>>> refs/remotes/origin/master
 	child->sysdata = parent->sysdata;
 	child->bus_flags = parent->bus_flags;
 
 	/* initialize some portions of the bus device, but don't register it
+<<<<<<< HEAD
 	 * now as the parent is not properly set up yet.  This device will get
 	 * registered later in pci_bus_add_devices()
+=======
+	 * now as the parent is not properly set up yet.
+>>>>>>> refs/remotes/origin/master
 	 */
 	child->dev.class = &pcibus_class;
 	dev_set_name(&child->dev, "%04x:%02x", pci_domain_nr(child), busnr);
@@ -782,6 +1146,7 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
 	 * Set up the primary, secondary and subordinate
 	 * bus numbers.
 	 */
+<<<<<<< HEAD
 	child->number = child->secondary = busnr;
 	child->primary = parent->secondary;
 	child->subordinate = 0xff;
@@ -796,6 +1161,21 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
 =======
 	pci_set_bus_of_node(child);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	child->number = child->busn_res.start = busnr;
+	child->primary = parent->busn_res.start;
+	child->busn_res.end = 0xff;
+
+	if (!bridge) {
+		child->dev.parent = parent->bridge;
+		goto add_dev;
+	}
+
+	child->self = bridge;
+	child->bridge = get_device(&bridge->dev);
+	child->dev.parent = child->bridge;
+	pci_set_bus_of_node(child);
+>>>>>>> refs/remotes/origin/master
 	pci_set_bus_speed(child);
 
 	/* Set up default resource pointers and names.. */
@@ -805,6 +1185,18 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
 	}
 	bridge->subordinate = child;
 
+<<<<<<< HEAD
+=======
+add_dev:
+	ret = device_register(&child->dev);
+	WARN_ON(ret < 0);
+
+	pcibios_add_bus(child);
+
+	/* Create legacy_io and legacy_mem files for this bus */
+	pci_create_legacy_files(child);
+
+>>>>>>> refs/remotes/origin/master
 	return child;
 }
 
@@ -830,8 +1222,13 @@ static void pci_fixup_parent_subordinate_busnr(struct pci_bus *child, int max)
 	if (!pcibios_assign_all_busses())
 		return;
 
+<<<<<<< HEAD
 	while (parent->parent && parent->subordinate < max) {
 		parent->subordinate = max;
+=======
+	while (parent->parent && parent->busn_res.end < max) {
+		parent->busn_res.end = max;
+>>>>>>> refs/remotes/origin/master
 		pci_write_config_byte(parent->self, PCI_SUBORDINATE_BUS, max);
 		parent = parent->parent;
 	}
@@ -847,7 +1244,11 @@ static void pci_fixup_parent_subordinate_busnr(struct pci_bus *child, int max)
  * them, we proceed to assigning numbers to the remaining buses in
  * order to avoid overlaps between old and new bus numbers.
  */
+<<<<<<< HEAD
 int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max, int pass)
+=======
+int pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max, int pass)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_bus *child;
 	int is_cardbus = (dev->hdr_type == PCI_HEADER_TYPE_CARDBUS);
@@ -879,7 +1280,11 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 	}
 
 	/* Disable MasterAbortMode during probing to avoid reporting
+<<<<<<< HEAD
 	   of bus errors (in some architectures) */ 
+=======
+	   of bus errors (in some architectures) */
+>>>>>>> refs/remotes/origin/master
 	pci_read_config_word(dev, PCI_BRIDGE_CONTROL, &bctl);
 	pci_write_config_word(dev, PCI_BRIDGE_CONTROL,
 			      bctl & ~PCI_BRIDGE_CTL_MASTER_ABORT);
@@ -907,15 +1312,24 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 			if (!child)
 				goto out;
 			child->primary = primary;
+<<<<<<< HEAD
 			child->subordinate = subordinate;
+=======
+			pci_bus_insert_busn_res(child, secondary, subordinate);
+>>>>>>> refs/remotes/origin/master
 			child->bridge_ctl = bctl;
 		}
 
 		cmax = pci_scan_child_bus(child);
 		if (cmax > max)
 			max = cmax;
+<<<<<<< HEAD
 		if (child->subordinate > max)
 			max = child->subordinate;
+=======
+		if (child->busn_res.end > max)
+			max = child->busn_res.end;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/*
 		 * We need to assign a number to this bus which we always
@@ -939,6 +1353,7 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 
 		/* Prevent assigning a bus number that already exists.
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * This can happen when a bridge is hot-plugged */
 		if (pci_find_bus(pci_domain_nr(bus), max+1))
 			goto out;
@@ -946,6 +1361,8 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 		if (!child)
 			goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * This can happen when a bridge is hot-plugged, so in
 		 * this case we only re-scan this bus. */
 		child = pci_find_bus(pci_domain_nr(bus), max+1);
@@ -953,12 +1370,21 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 			child = pci_add_new_bus(bus, dev, ++max);
 			if (!child)
 				goto out;
+<<<<<<< HEAD
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
 		buses = (buses & 0xff000000)
 		      | ((unsigned int)(child->primary)     <<  0)
 		      | ((unsigned int)(child->secondary)   <<  8)
 		      | ((unsigned int)(child->subordinate) << 16);
+=======
+			pci_bus_insert_busn_res(child, max, 0xff);
+		}
+		buses = (buses & 0xff000000)
+		      | ((unsigned int)(child->primary)     <<  0)
+		      | ((unsigned int)(child->busn_res.start)   <<  8)
+		      | ((unsigned int)(child->busn_res.end) << 16);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * yenta.c forces a secondary latency timer of 176.
@@ -1003,8 +1429,13 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 					break;
 				while (parent->parent) {
 					if ((!pcibios_assign_all_busses()) &&
+<<<<<<< HEAD
 					    (parent->subordinate > max) &&
 					    (parent->subordinate <= max+i)) {
+=======
+					    (parent->busn_res.end > max) &&
+					    (parent->busn_res.end <= max+i)) {
+>>>>>>> refs/remotes/origin/master
 						j = 1;
 					}
 					parent = parent->parent;
@@ -1025,7 +1456,11 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 		/*
 		 * Set the subordinate bus number to its real value.
 		 */
+<<<<<<< HEAD
 		child->subordinate = max;
+=======
+		pci_bus_update_busn_res_end(child, max);
+>>>>>>> refs/remotes/origin/master
 		pci_write_config_byte(dev, PCI_SUBORDINATE_BUS, max);
 	}
 
@@ -1035,6 +1470,7 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 
 	/* Has only triggered on CardBus, fixup is in yenta_socket */
 	while (bus->parent) {
+<<<<<<< HEAD
 		if ((child->subordinate > bus->subordinate) ||
 		    (child->number > bus->subordinate) ||
 		    (child->number < bus->number) ||
@@ -1048,6 +1484,21 @@ int __devinit pci_scan_bridge(struct pci_bus *bus, struct pci_dev *dev, int max,
 				bus->self->transparent ? " transparent" : "",
 				dev_name(&bus->dev),
 				bus->number, bus->subordinate);
+=======
+		if ((child->busn_res.end > bus->busn_res.end) ||
+		    (child->number > bus->busn_res.end) ||
+		    (child->number < bus->number) ||
+		    (child->busn_res.end < bus->number)) {
+			dev_info(&child->dev, "%pR %s "
+				"hidden behind%s bridge %s %pR\n",
+				&child->busn_res,
+				(bus->number > child->busn_res.end &&
+				 bus->busn_res.end < child->number) ?
+					"wholly" : "partially",
+				bus->self->transparent ? " transparent" : "",
+				dev_name(&bus->dev),
+				&bus->busn_res);
+>>>>>>> refs/remotes/origin/master
 		}
 		bus = bus->parent;
 	}
@@ -1081,6 +1532,7 @@ void set_pcie_port_type(struct pci_dev *pdev)
 	pos = pci_find_capability(pdev, PCI_CAP_ID_EXP);
 	if (!pos)
 		return;
+<<<<<<< HEAD
 	pdev->is_pcie = 1;
 	pdev->pcie_cap = pos;
 	pci_read_config_word(pdev, pos + PCI_EXP_FLAGS, &reg16);
@@ -1090,10 +1542,18 @@ void set_pcie_port_type(struct pci_dev *pdev)
 	pci_read_config_word(pdev, pos + PCI_EXP_DEVCAP, &reg16);
 	pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pdev->pcie_cap = pos;
+	pci_read_config_word(pdev, pos + PCI_EXP_FLAGS, &reg16);
+	pdev->pcie_flags_reg = reg16;
+	pci_read_config_word(pdev, pos + PCI_EXP_DEVCAP, &reg16);
+	pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
+>>>>>>> refs/remotes/origin/master
 }
 
 void set_pcie_hotplug_bridge(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	int pos;
 	u16 reg16;
 	u32 reg32;
@@ -1105,6 +1565,11 @@ void set_pcie_hotplug_bridge(struct pci_dev *pdev)
 	if (!(reg16 & PCI_EXP_FLAGS_SLOT))
 		return;
 	pci_read_config_dword(pdev, pos + PCI_EXP_SLTCAP, &reg32);
+=======
+	u32 reg32;
+
+	pcie_capability_read_dword(pdev, PCI_EXP_SLTCAP, &reg32);
+>>>>>>> refs/remotes/origin/master
 	if (reg32 & PCI_EXP_SLTCAP_HPC)
 		pdev->is_hotplug_bridge = 1;
 }
@@ -1115,7 +1580,11 @@ void set_pcie_hotplug_bridge(struct pci_dev *pdev)
  * pci_setup_device - fill in class and map information of a device
  * @dev: the device structure to fill
  *
+<<<<<<< HEAD
  * Initialize the device structure with information about the device's 
+=======
+ * Initialize the device structure with information about the device's
+>>>>>>> refs/remotes/origin/master
  * vendor,class,memory and IO-space addresses,IRQ lines etc.
  * Called at initialisation of the PCI subsystem and by CardBus services.
  * Returns 0 on success and negative if unknown type of device (not normal,
@@ -1128,10 +1597,15 @@ int pci_setup_device(struct pci_dev *dev)
 	struct pci_slot *slot;
 	int pos = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pci_bus_region region;
 	struct resource *res;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_bus_region region;
+	struct resource *res;
+>>>>>>> refs/remotes/origin/master
 
 	if (pci_read_config_byte(dev, PCI_HEADER_TYPE, &hdr_type))
 		return -EIO;
@@ -1159,6 +1633,7 @@ int pci_setup_device(struct pci_dev *dev)
 	pci_read_config_dword(dev, PCI_CLASS_REVISION, &class);
 	dev->revision = class & 0xff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	class >>= 8;				    /* upper 3 bytes */
 	dev->class = class;
 	class >>= 8;
@@ -1166,11 +1641,16 @@ int pci_setup_device(struct pci_dev *dev)
 	dev_printk(KERN_DEBUG, &dev->dev, "[%04x:%04x] type %d class %#08x\n",
 		   dev->vendor, dev->device, dev->hdr_type, class);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->class = class >> 8;		    /* upper 3 bytes */
 
 	dev_printk(KERN_DEBUG, &dev->dev, "[%04x:%04x] type %02x class %#08x\n",
 		   dev->vendor, dev->device, dev->hdr_type, dev->class);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* need to have dev->class ready */
 	dev->cfg_size = pci_cfg_space_size(dev);
@@ -1203,6 +1683,7 @@ int pci_setup_device(struct pci_dev *dev)
 			pci_read_config_byte(dev, PCI_CLASS_PROG, &progif);
 			if ((progif & 1) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				dev->resource[0].start = 0x1F0;
 				dev->resource[0].end = 0x1F7;
 				dev->resource[0].flags = LEGACY_IO_RESOURCE;
@@ -1218,6 +1699,8 @@ int pci_setup_device(struct pci_dev *dev)
 				dev->resource[3].end = 0x376;
 				dev->resource[3].flags = LEGACY_IO_RESOURCE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				region.start = 0x1F0;
 				region.end = 0x1F7;
 				res = &dev->resource[0];
@@ -1240,7 +1723,10 @@ int pci_setup_device(struct pci_dev *dev)
 				res = &dev->resource[3];
 				res->flags = LEGACY_IO_RESOURCE;
 				pcibios_bus_to_resource(dev, res, &region);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		break;
@@ -1250,7 +1736,11 @@ int pci_setup_device(struct pci_dev *dev)
 			goto bad;
 		/* The PCI-to-PCI bridge spec requires that subtractive
 		   decoding (i.e. transparent) bridge must have programming
+<<<<<<< HEAD
 		   interface code of 0x01. */ 
+=======
+		   interface code of 0x01. */
+>>>>>>> refs/remotes/origin/master
 		pci_read_irq(dev);
 		dev->transparent = ((dev->class & 0xff) == 1);
 		pci_read_bases(dev, 2, PCI_ROM_ADDRESS1);
@@ -1278,12 +1768,17 @@ int pci_setup_device(struct pci_dev *dev)
 
 	bad:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&dev->dev, "ignoring class %02x (doesn't match header "
 			"type %02x)\n", class, dev->hdr_type);
 =======
 		dev_err(&dev->dev, "ignoring class %#08x (doesn't match header "
 			"type %02x)\n", dev->class, dev->hdr_type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&dev->dev, "ignoring class %#08x (doesn't match header "
+			"type %02x)\n", dev->class, dev->hdr_type);
+>>>>>>> refs/remotes/origin/master
 		dev->class = PCI_CLASS_NOT_DEFINED;
 	}
 
@@ -1296,9 +1791,13 @@ static void pci_release_capabilities(struct pci_dev *dev)
 	pci_vpd_release(dev);
 	pci_iov_release(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_free_cap_save_buffers(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_free_cap_save_buffers(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1315,9 +1814,15 @@ static void pci_release_dev(struct device *dev)
 	pci_dev = to_pci_dev(dev);
 	pci_release_capabilities(pci_dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pci_release_of_node(pci_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_release_of_node(pci_dev);
+	pcibios_release_device(pci_dev);
+	pci_bus_put(pci_dev->bus);
+>>>>>>> refs/remotes/origin/master
 	kfree(pci_dev);
 }
 
@@ -1358,8 +1863,12 @@ int pci_cfg_space_size(struct pci_dev *dev)
 	if (class == PCI_CLASS_BRIDGE_HOST)
 		return pci_cfg_space_size_ext(dev);
 
+<<<<<<< HEAD
 	pos = pci_pcie_cap(dev);
 	if (!pos) {
+=======
+	if (!pci_is_pcie(dev)) {
+>>>>>>> refs/remotes/origin/master
 		pos = pci_find_capability(dev, PCI_CAP_ID_PCIX);
 		if (!pos)
 			goto fail;
@@ -1375,12 +1884,16 @@ int pci_cfg_space_size(struct pci_dev *dev)
 	return PCI_CFG_SPACE_SIZE;
 }
 
+<<<<<<< HEAD
 static void pci_release_bus_bridge_dev(struct device *dev)
 {
 	kfree(dev);
 }
 
 struct pci_dev *alloc_pci_dev(void)
+=======
+struct pci_dev *pci_alloc_dev(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev;
 
@@ -1389,6 +1902,7 @@ struct pci_dev *alloc_pci_dev(void)
 		return NULL;
 
 	INIT_LIST_HEAD(&dev->bus_list);
+<<<<<<< HEAD
 
 	return dev;
 }
@@ -1422,6 +1936,21 @@ static struct pci_dev *pci_scan_device(struct pci_bus *bus, int devfn)
 		/* Card hasn't responded in 60 seconds?  Must be stuck. */
 		if (delay > 60 * 1000) {
 =======
+=======
+	dev->dev.type = &pci_dev_type;
+	dev->bus = pci_bus_get(bus);
+
+	return dev;
+}
+EXPORT_SYMBOL(pci_alloc_dev);
+
+struct pci_dev *alloc_pci_dev(void)
+{
+	return pci_alloc_dev(NULL);
+}
+EXPORT_SYMBOL(alloc_pci_dev);
+
+>>>>>>> refs/remotes/origin/master
 bool pci_bus_read_dev_vendor_id(struct pci_bus *bus, int devfn, u32 *l,
 				 int crs_timeout)
 {
@@ -1446,17 +1975,23 @@ bool pci_bus_read_dev_vendor_id(struct pci_bus *bus, int devfn, u32 *l,
 			return false;
 		/* Card hasn't responded in 60 seconds?  Must be stuck. */
 		if (delay > crs_timeout) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_WARNING "pci %04x:%02x:%02x.%d: not "
 					"responding\n", pci_domain_nr(bus),
 					bus->number, PCI_SLOT(devfn),
 					PCI_FUNC(devfn));
+<<<<<<< HEAD
 <<<<<<< HEAD
 			return NULL;
 		}
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return false;
 		}
 	}
@@ -1477,22 +2012,36 @@ static struct pci_dev *pci_scan_device(struct pci_bus *bus, int devfn)
 	if (!pci_bus_read_dev_vendor_id(bus, devfn, &l, 60*1000))
 		return NULL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	dev = alloc_pci_dev();
 	if (!dev)
 		return NULL;
 
 	dev->bus = bus;
+=======
+	dev = pci_alloc_dev(bus);
+	if (!dev)
+		return NULL;
+
+>>>>>>> refs/remotes/origin/master
 	dev->devfn = devfn;
 	dev->vendor = l & 0xffff;
 	dev->device = (l >> 16) & 0xffff;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	pci_set_of_node(dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (pci_setup_device(dev)) {
+=======
+	pci_set_of_node(dev);
+
+	if (pci_setup_device(dev)) {
+		pci_bus_put(dev->bus);
+>>>>>>> refs/remotes/origin/master
 		kfree(dev);
 		return NULL;
 	}
@@ -1510,13 +2059,20 @@ static void pci_init_capabilities(struct pci_dev *dev)
 
 	/* Power Management */
 	pci_pm_init(dev);
+<<<<<<< HEAD
 	platform_pci_wakeup_init(dev);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Vital Product Data */
 	pci_vpd_pci22_init(dev);
 
 	/* Alternative Routing-ID Forwarding */
+<<<<<<< HEAD
 	pci_enable_ari(dev);
+=======
+	pci_configure_ari(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/* Single Root I/O Virtualization */
 	pci_iov_init(dev);
@@ -1527,10 +2083,19 @@ static void pci_init_capabilities(struct pci_dev *dev)
 
 void pci_device_add(struct pci_dev *dev, struct pci_bus *bus)
 {
+<<<<<<< HEAD
 	device_initialize(&dev->dev);
 	dev->dev.release = pci_release_dev;
 	pci_dev_get(dev);
 
+=======
+	int ret;
+
+	device_initialize(&dev->dev);
+	dev->dev.release = pci_release_dev;
+
+	set_dev_node(&dev->dev, pcibus_to_node(bus));
+>>>>>>> refs/remotes/origin/master
 	dev->dev.dma_mask = &dev->dma_mask;
 	dev->dev.dma_parms = &dev->dma_parms;
 	dev->dev.coherent_dma_mask = 0xffffffffull;
@@ -1542,11 +2107,17 @@ void pci_device_add(struct pci_dev *dev, struct pci_bus *bus)
 	pci_fixup_device(pci_fixup_header, dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* moved out from quirk header fixup code */
 	pci_reassigndev_resource_alignment(dev);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* moved out from quirk header fixup code */
+	pci_reassigndev_resource_alignment(dev);
+
+>>>>>>> refs/remotes/origin/master
 	/* Clear the state_saved flag. */
 	dev->state_saved = false;
 
@@ -1560,6 +2131,19 @@ void pci_device_add(struct pci_dev *dev, struct pci_bus *bus)
 	down_write(&pci_bus_sem);
 	list_add_tail(&dev->bus_list, &bus->devices);
 	up_write(&pci_bus_sem);
+<<<<<<< HEAD
+=======
+
+	ret = pcibios_add_device(dev);
+	WARN_ON(ret < 0);
+
+	/* Notifier could use PCI capabilities */
+	dev->match_driver = false;
+	ret = device_add(&dev->dev);
+	WARN_ON(ret < 0);
+
+	pci_proc_attach_device(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct pci_dev *__ref pci_scan_single_device(struct pci_bus *bus, int devfn)
@@ -1582,6 +2166,7 @@ struct pci_dev *__ref pci_scan_single_device(struct pci_bus *bus, int devfn)
 }
 EXPORT_SYMBOL(pci_scan_single_device);
 
+<<<<<<< HEAD
 static unsigned next_ari_fn(struct pci_dev *dev, unsigned fn)
 {
 	u16 cap;
@@ -1607,16 +2192,53 @@ static unsigned next_trad_fn(struct pci_dev *dev, unsigned fn)
 
 static unsigned no_next_fn(struct pci_dev *dev, unsigned fn)
 {
+=======
+static unsigned next_fn(struct pci_bus *bus, struct pci_dev *dev, unsigned fn)
+{
+	int pos;
+	u16 cap = 0;
+	unsigned next_fn;
+
+	if (pci_ari_enabled(bus)) {
+		if (!dev)
+			return 0;
+		pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ARI);
+		if (!pos)
+			return 0;
+
+		pci_read_config_word(dev, pos + PCI_ARI_CAP, &cap);
+		next_fn = PCI_ARI_CAP_NFN(cap);
+		if (next_fn <= fn)
+			return 0;	/* protect against malformed list */
+
+		return next_fn;
+	}
+
+	/* dev may be NULL for non-contiguous multifunction devices */
+	if (!dev || dev->multifunction)
+		return (fn + 1) % 8;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int only_one_child(struct pci_bus *bus)
 {
 	struct pci_dev *parent = bus->self;
+<<<<<<< HEAD
 	if (!parent || !pci_is_pcie(parent))
 		return 0;
 	if (parent->pcie_type == PCI_EXP_TYPE_ROOT_PORT ||
 	    parent->pcie_type == PCI_EXP_TYPE_DOWNSTREAM)
+=======
+
+	if (!parent || !pci_is_pcie(parent))
+		return 0;
+	if (pci_pcie_type(parent) == PCI_EXP_TYPE_ROOT_PORT)
+		return 1;
+	if (pci_pcie_type(parent) == PCI_EXP_TYPE_DOWNSTREAM &&
+	    !pci_has_flag(PCI_SCAN_ALL_PCIE_DEVS))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
@@ -1636,7 +2258,10 @@ int pci_scan_slot(struct pci_bus *bus, int devfn)
 {
 	unsigned fn, nr = 0;
 	struct pci_dev *dev;
+<<<<<<< HEAD
 	unsigned (*next_fn)(struct pci_dev *, unsigned) = no_next_fn;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (only_one_child(bus) && (devfn > 0))
 		return 0; /* Already scanned the entire slot */
@@ -1647,12 +2272,16 @@ int pci_scan_slot(struct pci_bus *bus, int devfn)
 	if (!dev->is_added)
 		nr++;
 
+<<<<<<< HEAD
 	if (pci_ari_enabled(bus))
 		next_fn = next_ari_fn;
 	else if (dev->multifunction)
 		next_fn = next_trad_fn;
 
 	for (fn = next_fn(dev, 0); fn > 0; fn = next_fn(dev, fn)) {
+=======
+	for (fn = next_fn(bus, dev, 0); fn > 0; fn = next_fn(bus, dev, fn)) {
+>>>>>>> refs/remotes/origin/master
 		dev = pci_scan_single_device(bus, devfn + fn);
 		if (dev) {
 			if (!dev->is_added)
@@ -1669,7 +2298,10 @@ int pci_scan_slot(struct pci_bus *bus, int devfn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int pcie_find_smpss(struct pci_dev *dev, void *data)
 {
 	u8 *smpss = data;
@@ -1677,6 +2309,7 @@ static int pcie_find_smpss(struct pci_dev *dev, void *data)
 	if (!pci_is_pcie(dev))
 		return 0;
 
+<<<<<<< HEAD
 	/* For PCIE hotplug enabled slots not connected directly to a
 	 * PCI-E root port, there can be problems when hotplugging
 	 * devices.  This is due to the possibility of hotplugging a
@@ -1695,6 +2328,25 @@ static int pcie_find_smpss(struct pci_dev *dev, void *data)
 	if (dev->is_hotplug_bridge && (!list_is_singular(&dev->bus->devices) ||
 	     (dev->bus->self &&
 	      dev->bus->self->pcie_type != PCI_EXP_TYPE_ROOT_PORT)))
+=======
+	/*
+	 * We don't have a way to change MPS settings on devices that have
+	 * drivers attached.  A hot-added device might support only the minimum
+	 * MPS setting (MPS=128).  Therefore, if the fabric contains a bridge
+	 * where devices may be hot-added, we limit the fabric MPS to 128 so
+	 * hot-added devices will work correctly.
+	 *
+	 * However, if we hot-add a device to a slot directly below a Root
+	 * Port, it's impossible for there to be other existing devices below
+	 * the port.  We don't limit the MPS in this case because we can
+	 * reconfigure MPS on both the Root Port and the hot-added device,
+	 * and there are no other devices involved.
+	 *
+	 * Note that this PCIE_BUS_SAFE path assumes no peer-to-peer DMA.
+	 */
+	if (dev->is_hotplug_bridge &&
+	    pci_pcie_type(dev) != PCI_EXP_TYPE_ROOT_PORT)
+>>>>>>> refs/remotes/origin/master
 		*smpss = 0;
 
 	if (*smpss > dev->pcie_mpss)
@@ -1710,7 +2362,12 @@ static void pcie_write_mps(struct pci_dev *dev, int mps)
 	if (pcie_bus_config == PCIE_BUS_PERFORMANCE) {
 		mps = 128 << dev->pcie_mpss;
 
+<<<<<<< HEAD
 		if (dev->pcie_type != PCI_EXP_TYPE_ROOT_PORT && dev->bus->self)
+=======
+		if (pci_pcie_type(dev) != PCI_EXP_TYPE_ROOT_PORT &&
+		    dev->bus->self)
+>>>>>>> refs/remotes/origin/master
 			/* For "Performance", the assumption is made that
 			 * downstream communication will never be larger than
 			 * the MRRS.  So, the MPS only needs to be configured
@@ -1752,7 +2409,11 @@ static void pcie_write_mrrs(struct pci_dev *dev)
 	 * subsequent read will verify if the value is acceptable or not.
 	 * If the MRRS value provided is not acceptable (e.g., too large),
 	 * shrink the value until it is acceptable to the HW.
+<<<<<<< HEAD
  	 */
+=======
+	 */
+>>>>>>> refs/remotes/origin/master
 	while (mrrs != pcie_get_readrq(dev) && mrrs >= 128) {
 		rc = pcie_set_readrq(dev, mrrs);
 		if (!rc)
@@ -1768,6 +2429,25 @@ static void pcie_write_mrrs(struct pci_dev *dev)
 			"with pci=pcie_bus_safe.\n");
 }
 
+<<<<<<< HEAD
+=======
+static void pcie_bus_detect_mps(struct pci_dev *dev)
+{
+	struct pci_dev *bridge = dev->bus->self;
+	int mps, p_mps;
+
+	if (!bridge)
+		return;
+
+	mps = pcie_get_mps(dev);
+	p_mps = pcie_get_mps(bridge);
+
+	if (mps != p_mps)
+		dev_warn(&dev->dev, "Max Payload Size %d, but upstream %s set to %d; if necessary, use \"pci=pcie_bus_safe\" and report a bug\n",
+			 mps, pci_name(bridge), p_mps);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int pcie_bus_configure_set(struct pci_dev *dev, void *data)
 {
 	int mps, orig_mps;
@@ -1775,13 +2455,25 @@ static int pcie_bus_configure_set(struct pci_dev *dev, void *data)
 	if (!pci_is_pcie(dev))
 		return 0;
 
+<<<<<<< HEAD
+=======
+	if (pcie_bus_config == PCIE_BUS_TUNE_OFF) {
+		pcie_bus_detect_mps(dev);
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	mps = 128 << *(u8 *)data;
 	orig_mps = pcie_get_mps(dev);
 
 	pcie_write_mps(dev, mps);
 	pcie_write_mrrs(dev);
 
+<<<<<<< HEAD
 	dev_info(&dev->dev, "PCI-E Max Payload Size set to %4d/%4d (was %4d), "
+=======
+	dev_info(&dev->dev, "Max Payload Size set to %4d/%4d (was %4d), "
+>>>>>>> refs/remotes/origin/master
 		 "Max Read Rq %4d\n", pcie_get_mps(dev), 128 << dev->pcie_mpss,
 		 orig_mps, pcie_get_readrq(dev));
 
@@ -1792,6 +2484,7 @@ static int pcie_bus_configure_set(struct pci_dev *dev, void *data)
  * parents then children fashion.  If this changes, then this code will not
  * work as designed.
  */
+<<<<<<< HEAD
 void pcie_bus_configure_settings(struct pci_bus *bus, u8 mpss)
 {
 	u8 smpss;
@@ -1804,13 +2497,31 @@ void pcie_bus_configure_settings(struct pci_bus *bus, u8 mpss)
 
 	/* FIXME - Peer to peer DMA is possible, though the endpoint would need
 	 * to be aware to the MPS of the destination.  To work around this,
+=======
+void pcie_bus_configure_settings(struct pci_bus *bus)
+{
+	u8 smpss;
+
+	if (!bus->self)
+		return;
+
+	if (!pci_is_pcie(bus->self))
+		return;
+
+	/* FIXME - Peer to peer DMA is possible, though the endpoint would need
+	 * to be aware of the MPS of the destination.  To work around this,
+>>>>>>> refs/remotes/origin/master
 	 * simply force the MPS of the entire system to the smallest possible.
 	 */
 	if (pcie_bus_config == PCIE_BUS_PEER2PEER)
 		smpss = 0;
 
 	if (pcie_bus_config == PCIE_BUS_SAFE) {
+<<<<<<< HEAD
 		smpss = mpss;
+=======
+		smpss = bus->self->pcie_mpss;
+>>>>>>> refs/remotes/origin/master
 
 		pcie_find_smpss(bus->self, &smpss);
 		pci_walk_bus(bus, pcie_find_smpss, &smpss);
@@ -1821,10 +2532,16 @@ void pcie_bus_configure_settings(struct pci_bus *bus, u8 mpss)
 }
 EXPORT_SYMBOL_GPL(pcie_bus_configure_settings);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 unsigned int __devinit pci_scan_child_bus(struct pci_bus *bus)
 {
 	unsigned int devfn, pass, max = bus->secondary;
+=======
+unsigned int pci_scan_child_bus(struct pci_bus *bus)
+{
+	unsigned int devfn, pass, max = bus->busn_res.start;
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *dev;
 
 	dev_dbg(&bus->dev, "scanning bus\n");
@@ -1843,8 +2560,12 @@ unsigned int __devinit pci_scan_child_bus(struct pci_bus *bus)
 	if (!bus->is_added) {
 		dev_dbg(&bus->dev, "fixups for bus\n");
 		pcibios_fixup_bus(bus);
+<<<<<<< HEAD
 		if (pci_is_root_bus(bus))
 			bus->is_added = 1;
+=======
+		bus->is_added = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (pass=0; pass < 2; pass++)
@@ -1866,6 +2587,7 @@ unsigned int __devinit pci_scan_child_bus(struct pci_bus *bus)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct pci_bus * pci_create_bus(struct device *parent,
 		int bus, struct pci_ops *ops, void *sysdata)
 {
@@ -1883,19 +2605,45 @@ struct pci_bus * pci_create_bus(struct device *parent,
 		return NULL;
 	}
 =======
+=======
+/**
+ * pcibios_root_bridge_prepare - Platform-specific host bridge setup.
+ * @bridge: Host bridge to set up.
+ *
+ * Default empty implementation.  Replace with an architecture-specific setup
+ * routine, if necessary.
+ */
+int __weak pcibios_root_bridge_prepare(struct pci_host_bridge *bridge)
+{
+	return 0;
+}
+
+void __weak pcibios_add_bus(struct pci_bus *bus)
+{
+}
+
+void __weak pcibios_remove_bus(struct pci_bus *bus)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 		struct pci_ops *ops, void *sysdata, struct list_head *resources)
 {
 	int error;
 	struct pci_host_bridge *bridge;
 	struct pci_bus *b, *b2;
+<<<<<<< HEAD
 	struct device *dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_host_bridge_window *window, *n;
 	struct resource *res;
 	resource_size_t offset;
 	char bus_addr[64];
 	char *fmt;
 
+<<<<<<< HEAD
 	bridge = kzalloc(sizeof(*bridge), GFP_KERNEL);
 	if (!bridge)
 		return NULL;
@@ -1912,6 +2660,15 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 	b->sysdata = sysdata;
 	b->ops = ops;
 
+=======
+	b = pci_alloc_bus();
+	if (!b)
+		return NULL;
+
+	b->sysdata = sysdata;
+	b->ops = ops;
+	b->number = b->busn_res.start = bus;
+>>>>>>> refs/remotes/origin/master
 	b2 = pci_find_bus(pci_domain_nr(b), bus);
 	if (b2) {
 		/* If we already got to this bus through a different bridge, ignore it */
@@ -1919,6 +2676,7 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 		goto err_out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	down_write(&pci_bus_sem);
 	list_add_tail(&b->node, &pci_root_buses);
@@ -1938,6 +2696,29 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 =======
 	pci_set_bus_of_node(b);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bridge = pci_alloc_host_bridge(b);
+	if (!bridge)
+		goto err_out;
+
+	bridge->dev.parent = parent;
+	bridge->dev.release = pci_release_host_bridge_dev;
+	dev_set_name(&bridge->dev, "pci%04x:%02x", pci_domain_nr(b), bus);
+	error = pcibios_root_bridge_prepare(bridge);
+	if (error) {
+		kfree(bridge);
+		goto err_out;
+	}
+
+	error = device_register(&bridge->dev);
+	if (error) {
+		put_device(&bridge->dev);
+		goto err_out;
+	}
+	b->bridge = get_device(&bridge->dev);
+	device_enable_async_suspend(b->bridge);
+	pci_set_bus_of_node(b);
+>>>>>>> refs/remotes/origin/master
 
 	if (!parent)
 		set_dev_node(b->bridge, pcibus_to_node(b));
@@ -1949,6 +2730,7 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 	if (error)
 		goto class_dev_reg_err;
 
+<<<<<<< HEAD
 	/* Create legacy_io and legacy_mem files for this bus */
 	pci_create_legacy_files(b);
 
@@ -1961,6 +2743,13 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 	bridge->bus = b;
 	INIT_LIST_HEAD(&bridge->windows);
 
+=======
+	pcibios_add_bus(b);
+
+	/* Create legacy_io and legacy_mem files for this bus */
+	pci_create_legacy_files(b);
+
+>>>>>>> refs/remotes/origin/master
 	if (parent)
 		dev_info(parent, "PCI host bridge to bus %s\n", dev_name(&b->dev));
 	else
@@ -1971,7 +2760,14 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 		list_move_tail(&window->list, &bridge->windows);
 		res = window->res;
 		offset = window->offset;
+<<<<<<< HEAD
 		pci_bus_add_resource(b, res, 0);
+=======
+		if (res->flags & IORESOURCE_BUS)
+			pci_bus_insert_busn_res(b, bus, res->end);
+		else
+			pci_bus_add_resource(b, res, 0);
+>>>>>>> refs/remotes/origin/master
 		if (offset) {
 			if (resource_type(res) == IORESOURCE_IO)
 				fmt = " (bus address [%#06llx-%#06llx])";
@@ -1986,14 +2782,20 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
 	}
 
 	down_write(&pci_bus_sem);
+<<<<<<< HEAD
 	list_add_tail(&bridge->list, &pci_host_bridges);
 	list_add_tail(&b->node, &pci_root_buses);
 	up_write(&pci_bus_sem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_add_tail(&b->node, &pci_root_buses);
+	up_write(&pci_bus_sem);
+>>>>>>> refs/remotes/origin/master
 
 	return b;
 
 class_dev_reg_err:
+<<<<<<< HEAD
 	device_unregister(dev);
 dev_reg_err:
 	down_write(&pci_bus_sem);
@@ -2006,10 +2808,16 @@ dev_reg_err:
 err_out:
 	kfree(dev);
 <<<<<<< HEAD
+=======
+	put_device(&bridge->dev);
+	device_unregister(&bridge->dev);
+err_out:
+>>>>>>> refs/remotes/origin/master
 	kfree(b);
 	return NULL;
 }
 
+<<<<<<< HEAD
 struct pci_bus * __devinit pci_scan_bus_parented(struct device *parent,
 		int bus, struct pci_ops *ops, void *sysdata)
 {
@@ -2030,19 +2838,116 @@ struct pci_bus * __devinit pci_scan_root_bus(struct device *parent, int bus,
 		struct pci_ops *ops, void *sysdata, struct list_head *resources)
 {
 	struct pci_bus *b;
+=======
+int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int bus_max)
+{
+	struct resource *res = &b->busn_res;
+	struct resource *parent_res, *conflict;
+
+	res->start = bus;
+	res->end = bus_max;
+	res->flags = IORESOURCE_BUS;
+
+	if (!pci_is_root_bus(b))
+		parent_res = &b->parent->busn_res;
+	else {
+		parent_res = get_pci_domain_busn_res(pci_domain_nr(b));
+		res->flags |= IORESOURCE_PCI_FIXED;
+	}
+
+	conflict = insert_resource_conflict(parent_res, res);
+
+	if (conflict)
+		dev_printk(KERN_DEBUG, &b->dev,
+			   "busn_res: can not insert %pR under %s%pR (conflicts with %s %pR)\n",
+			    res, pci_is_root_bus(b) ? "domain " : "",
+			    parent_res, conflict->name, conflict);
+
+	return conflict == NULL;
+}
+
+int pci_bus_update_busn_res_end(struct pci_bus *b, int bus_max)
+{
+	struct resource *res = &b->busn_res;
+	struct resource old_res = *res;
+	resource_size_t size;
+	int ret;
+
+	if (res->start > bus_max)
+		return -EINVAL;
+
+	size = bus_max - res->start + 1;
+	ret = adjust_resource(res, res->start, size);
+	dev_printk(KERN_DEBUG, &b->dev,
+			"busn_res: %pR end %s updated to %02x\n",
+			&old_res, ret ? "can not be" : "is", bus_max);
+
+	if (!ret && !res->parent)
+		pci_bus_insert_busn_res(b, res->start, res->end);
+
+	return ret;
+}
+
+void pci_bus_release_busn_res(struct pci_bus *b)
+{
+	struct resource *res = &b->busn_res;
+	int ret;
+
+	if (!res->flags || !res->parent)
+		return;
+
+	ret = release_resource(res);
+	dev_printk(KERN_DEBUG, &b->dev,
+			"busn_res: %pR %s released\n",
+			res, ret ? "can not be" : "is");
+}
+
+struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
+		struct pci_ops *ops, void *sysdata, struct list_head *resources)
+{
+	struct pci_host_bridge_window *window;
+	bool found = false;
+	struct pci_bus *b;
+	int max;
+
+	list_for_each_entry(window, resources, list)
+		if (window->res->flags & IORESOURCE_BUS) {
+			found = true;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 
 	b = pci_create_root_bus(parent, bus, ops, sysdata, resources);
 	if (!b)
 		return NULL;
 
+<<<<<<< HEAD
 	b->subordinate = pci_scan_child_bus(b);
+=======
+	if (!found) {
+		dev_info(&b->dev,
+		 "No busn resource found for root bus, will use [bus %02x-ff]\n",
+			bus);
+		pci_bus_insert_busn_res(b, bus, 255);
+	}
+
+	max = pci_scan_child_bus(b);
+
+	if (!found)
+		pci_bus_update_busn_res_end(b, max);
+
+>>>>>>> refs/remotes/origin/master
 	pci_bus_add_devices(b);
 	return b;
 }
 EXPORT_SYMBOL(pci_scan_root_bus);
 
 /* Deprecated; use pci_scan_root_bus() instead */
+<<<<<<< HEAD
 struct pci_bus * __devinit pci_scan_bus_parented(struct device *parent,
+=======
+struct pci_bus *pci_scan_bus_parented(struct device *parent,
+>>>>>>> refs/remotes/origin/master
 		int bus, struct pci_ops *ops, void *sysdata)
 {
 	LIST_HEAD(resources);
@@ -2050,16 +2955,26 @@ struct pci_bus * __devinit pci_scan_bus_parented(struct device *parent,
 
 	pci_add_resource(&resources, &ioport_resource);
 	pci_add_resource(&resources, &iomem_resource);
+<<<<<<< HEAD
 	b = pci_create_root_bus(parent, bus, ops, sysdata, &resources);
 	if (b)
 		b->subordinate = pci_scan_child_bus(b);
 	else
 		pci_free_resource_list(&resources);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pci_add_resource(&resources, &busn_resource);
+	b = pci_create_root_bus(parent, bus, ops, sysdata, &resources);
+	if (b)
+		pci_scan_child_bus(b);
+	else
+		pci_free_resource_list(&resources);
+>>>>>>> refs/remotes/origin/master
 	return b;
 }
 EXPORT_SYMBOL(pci_scan_bus_parented);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
 /**
@@ -2090,6 +3005,9 @@ unsigned int __ref pci_rescan_bus(struct pci_bus *bus)
 	pci_enable_bridges(bus);
 =======
 struct pci_bus * __devinit pci_scan_bus(int bus, struct pci_ops *ops,
+=======
+struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops,
+>>>>>>> refs/remotes/origin/master
 					void *sysdata)
 {
 	LIST_HEAD(resources);
@@ -2097,9 +3015,16 @@ struct pci_bus * __devinit pci_scan_bus(int bus, struct pci_ops *ops,
 
 	pci_add_resource(&resources, &ioport_resource);
 	pci_add_resource(&resources, &iomem_resource);
+<<<<<<< HEAD
 	b = pci_create_root_bus(NULL, bus, ops, sysdata, &resources);
 	if (b) {
 		b->subordinate = pci_scan_child_bus(b);
+=======
+	pci_add_resource(&resources, &busn_resource);
+	b = pci_create_root_bus(NULL, bus, ops, sysdata, &resources);
+	if (b) {
+		pci_scan_child_bus(b);
+>>>>>>> refs/remotes/origin/master
 		pci_bus_add_devices(b);
 	} else {
 		pci_free_resource_list(&resources);
@@ -2108,7 +3033,10 @@ struct pci_bus * __devinit pci_scan_bus(int bus, struct pci_ops *ops,
 }
 EXPORT_SYMBOL(pci_scan_bus);
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * pci_rescan_bus_bridge_resize - scan a PCI bus for devices.
  * @bridge: PCI bridge for the bus to scan
@@ -2129,21 +3057,51 @@ unsigned int __ref pci_rescan_bus_bridge_resize(struct pci_dev *bridge)
 
 	pci_assign_unassigned_bridge_resources(bridge);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_bus_add_devices(bus);
 
 	return max;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(pci_rescan_bus);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/**
+ * pci_rescan_bus - scan a PCI bus for devices.
+ * @bus: PCI bus to scan
+ *
+ * Scan a PCI bus and child buses for new devices, adds them,
+ * and enables them.
+ *
+ * Returns the max number of subordinate bus discovered.
+ */
+unsigned int __ref pci_rescan_bus(struct pci_bus *bus)
+{
+	unsigned int max;
+
+	max = pci_scan_child_bus(bus);
+	pci_assign_unassigned_bus_resources(bus);
+	pci_bus_add_devices(bus);
+
+	return max;
+}
+EXPORT_SYMBOL_GPL(pci_rescan_bus);
+>>>>>>> refs/remotes/origin/master
 
 EXPORT_SYMBOL(pci_add_new_bus);
 EXPORT_SYMBOL(pci_scan_slot);
 EXPORT_SYMBOL(pci_scan_bridge);
 EXPORT_SYMBOL_GPL(pci_scan_child_bus);
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int __init pci_sort_bf_cmp(const struct device *d_a, const struct device *d_b)
 {

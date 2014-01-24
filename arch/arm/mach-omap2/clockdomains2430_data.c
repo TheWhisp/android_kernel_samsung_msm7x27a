@@ -35,6 +35,10 @@
 #include <linux/kernel.h>
 #include <linux/io.h>
 
+<<<<<<< HEAD
+=======
+#include "soc.h"
+>>>>>>> refs/remotes/origin/master
 #include "clockdomain.h"
 #include "prm2xxx_3xxx.h"
 #include "cm2xxx_3xxx.h"
@@ -157,8 +161,11 @@ static struct clockdomain dss_2430_clkdm = {
 
 static struct clockdomain *clockdomains_omap243x[] __initdata = {
 	&wkup_common_clkdm,
+<<<<<<< HEAD
 	&cm_common_clkdm,
 	&prm_common_clkdm,
+=======
+>>>>>>> refs/remotes/origin/master
 	&mpu_2430_clkdm,
 	&mdm_clkdm,
 	&dsp_2430_clkdm,

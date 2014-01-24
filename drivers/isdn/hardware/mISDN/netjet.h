@@ -56,6 +56,9 @@
 #define NJ_DMA_RXSIZE		128  /* 2 * 64 */
 #define NJ_DMA_TXSIZE		128  /* 2 * 64 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

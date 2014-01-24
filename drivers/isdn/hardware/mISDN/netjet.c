@@ -21,9 +21,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/pci.h>
 #include <linux/delay.h>
@@ -195,10 +199,14 @@ fill_mem(struct tiger_ch *bc, u32 idx, u32 cnt, u32 fill)
 
 	pr_debug("%s: B%1d fill %02x len %d idx %d/%d\n", card->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bc->bch.nr, fill, cnt, idx, card->send.idx);
 =======
 		 bc->bch.nr, fill, cnt, idx, card->send.idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 bc->bch.nr, fill, cnt, idx, card->send.idx);
+>>>>>>> refs/remotes/origin/master
 	if (bc->bch.nr & 2) {
 		fill  <<= 8;
 		mask <<= 8;
@@ -221,10 +229,14 @@ mode_tiger(struct tiger_ch *bc, u32 protocol)
 
 	pr_debug("%s: B%1d protocol %x-->%x\n", card->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bc->bch.nr, bc->bch.state, protocol);
 =======
 		 bc->bch.nr, bc->bch.state, protocol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 bc->bch.nr, bc->bch.state, protocol);
+>>>>>>> refs/remotes/origin/master
 	switch (protocol) {
 	case ISDN_P_NONE:
 		if (bc->bch.state == ISDN_P_NONE)
@@ -249,10 +261,14 @@ mode_tiger(struct tiger_ch *bc, u32 protocol)
 		bc->bch.state = protocol;
 		bc->idx = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bc->free = card->send.size/2;
 =======
 		bc->free = card->send.size / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bc->free = card->send.size / 2;
+>>>>>>> refs/remotes/origin/master
 		bc->rxstate = 0;
 		bc->txstate = TX_INIT | TX_IDLE;
 		bc->lastrx = -1;
@@ -267,10 +283,14 @@ mode_tiger(struct tiger_ch *bc, u32 protocol)
 		bc->bch.state = protocol;
 		bc->idx = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		bc->free = card->send.size/2;
 =======
 		bc->free = card->send.size / 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bc->free = card->send.size / 2;
+>>>>>>> refs/remotes/origin/master
 		bc->rxstate = 0;
 		bc->txstate = TX_INIT | TX_IDLE;
 		isdnhdlc_rcv_init(&bc->hrecv, 0);
@@ -293,6 +313,7 @@ mode_tiger(struct tiger_ch *bc, u32 protocol)
 	card->recv.idx = (card->recv.dmacur - card->recv.dmastart) >> 2;
 	pr_debug("%s: %s ctrl %x irq  %02x/%02x idx %d/%d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		card->name, __func__,
 		inb(card->base + NJ_DMACTRL),
 		inb(card->base + NJ_IRQMASK0),
@@ -300,13 +321,18 @@ mode_tiger(struct tiger_ch *bc, u32 protocol)
 		card->send.idx,
 		card->recv.idx);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 card->name, __func__,
 		 inb(card->base + NJ_DMACTRL),
 		 inb(card->base + NJ_IRQMASK0),
 		 inb(card->base + NJ_IRQSTAT0),
 		 card->send.idx,
 		 card->recv.idx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -340,10 +366,14 @@ inittiger(struct tiger_hw *card)
 
 	card->dma_p = pci_alloc_consistent(card->pdev, NJ_DMA_SIZE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			&card->dma);
 =======
 					   &card->dma);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					   &card->dma);
+>>>>>>> refs/remotes/origin/master
 	if (!card->dma_p) {
 		pr_info("%s: No DMA memory\n", card->name);
 		return -ENOMEM;
@@ -377,6 +407,7 @@ inittiger(struct tiger_hw *card)
 	if (debug & DEBUG_HW)
 		pr_notice("%s: send buffer phy %#x - %#x - %#x  virt %p"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			" size %zu u32\n", card->name,
 			card->send.dmastart, card->send.dmairq,
 			card->send.dmaend, card->send.start, card->send.size);
@@ -385,6 +416,11 @@ inittiger(struct tiger_hw *card)
 			  card->send.dmastart, card->send.dmairq,
 			  card->send.dmaend, card->send.start, card->send.size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  " size %zu u32\n", card->name,
+			  card->send.dmastart, card->send.dmairq,
+			  card->send.dmaend, card->send.start, card->send.size);
+>>>>>>> refs/remotes/origin/master
 
 	outl(card->send.dmastart, card->base + NJ_DMA_READ_START);
 	outl(card->send.dmairq, card->base + NJ_DMA_READ_IRQ);
@@ -401,6 +437,7 @@ inittiger(struct tiger_hw *card)
 	if (debug & DEBUG_HW)
 		pr_notice("%s: recv buffer phy %#x - %#x - %#x  virt %p"
 <<<<<<< HEAD
+<<<<<<< HEAD
 			" size %zu u32\n", card->name,
 			card->recv.dmastart, card->recv.dmairq,
 			card->recv.dmaend, card->recv.start, card->recv.size);
@@ -409,6 +446,11 @@ inittiger(struct tiger_hw *card)
 			  card->recv.dmastart, card->recv.dmairq,
 			  card->recv.dmaend, card->recv.start, card->recv.size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  " size %zu u32\n", card->name,
+			  card->recv.dmastart, card->recv.dmairq,
+			  card->recv.dmaend, card->recv.start, card->recv.size);
+>>>>>>> refs/remotes/origin/master
 
 	outl(card->recv.dmastart, card->base + NJ_DMA_WRITE_START);
 	outl(card->recv.dmairq, card->base + NJ_DMA_WRITE_IRQ);
@@ -430,6 +472,7 @@ read_dma(struct tiger_ch *bc, u32 idx, int cnt)
 			bc->bch.nr, idx);
 	}
 	bc->lastrx = idx;
+<<<<<<< HEAD
 	if (!bc->bch.rx_skb) {
 		bc->bch.rx_skb = mI_alloc_skb(bc->bch.maxlen, GFP_ATOMIC);
 		if (!bc->bch.rx_skb) {
@@ -452,6 +495,22 @@ read_dma(struct tiger_ch *bc, u32 idx, int cnt)
 		}
 		p = skb_put(bc->bch.rx_skb, cnt);
 	} else
+=======
+	if (test_bit(FLG_RX_OFF, &bc->bch.Flags)) {
+		bc->bch.dropcnt += cnt;
+		return;
+	}
+	stat = bchannel_get_rxbuf(&bc->bch, cnt);
+	/* only transparent use the count here, HDLC overun is detected later */
+	if (stat == ENOMEM) {
+		pr_warning("%s.B%d: No memory for %d bytes\n",
+			   card->name, bc->bch.nr, cnt);
+		return;
+	}
+	if (test_bit(FLG_TRANSPARENT, &bc->bch.Flags))
+		p = skb_put(bc->bch.rx_skb, cnt);
+	else
+>>>>>>> refs/remotes/origin/master
 		p = bc->hrbuf;
 
 	for (i = 0; i < cnt; i++) {
@@ -462,6 +521,7 @@ read_dma(struct tiger_ch *bc, u32 idx, int cnt)
 			idx = 0;
 		p[i] = val & 0xff;
 	}
+<<<<<<< HEAD
 	pn = bc->hrbuf;
 next_frame:
 	if (test_bit(FLG_HDLC, &bc->bch.Flags)) {
@@ -523,6 +583,47 @@ next_frame:
 		}
 		if (cnt > 0)
 			goto next_frame;
+=======
+
+	if (test_bit(FLG_TRANSPARENT, &bc->bch.Flags)) {
+		recv_Bchannel(&bc->bch, 0, false);
+		return;
+	}
+
+	pn = bc->hrbuf;
+	while (cnt > 0) {
+		stat = isdnhdlc_decode(&bc->hrecv, pn, cnt, &i,
+				       bc->bch.rx_skb->data, bc->bch.maxlen);
+		if (stat > 0) { /* valid frame received */
+			p = skb_put(bc->bch.rx_skb, stat);
+			if (debug & DEBUG_HW_BFIFO) {
+				snprintf(card->log, LOG_SIZE,
+					 "B%1d-recv %s %d ", bc->bch.nr,
+					 card->name, stat);
+				print_hex_dump_bytes(card->log,
+						     DUMP_PREFIX_OFFSET, p,
+						     stat);
+			}
+			recv_Bchannel(&bc->bch, 0, false);
+			stat = bchannel_get_rxbuf(&bc->bch, bc->bch.maxlen);
+			if (stat < 0) {
+				pr_warning("%s.B%d: No memory for %d bytes\n",
+					   card->name, bc->bch.nr, cnt);
+				return;
+			}
+		} else if (stat == -HDLC_CRC_ERROR) {
+			pr_info("%s: B%1d receive frame CRC error\n",
+				card->name, bc->bch.nr);
+		} else if (stat == -HDLC_FRAMING_ERROR) {
+			pr_info("%s: B%1d receive framing error\n",
+				card->name, bc->bch.nr);
+		} else if (stat == -HDLC_LENGTH_ERROR) {
+			pr_info("%s: B%1d receive frame too long (> %d)\n",
+				card->name, bc->bch.nr, bc->bch.maxlen);
+		}
+		pn += i;
+		cnt -= i;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -566,10 +667,14 @@ resync(struct tiger_ch *bc, struct tiger_hw *card)
 	bc->txstate = TX_RUN;
 	pr_debug("%s: %s B%1d free %d idx %d/%d\n", card->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__func__, bc->bch.nr, bc->free, bc->idx, card->send.idx);
 =======
 		 __func__, bc->bch.nr, bc->free, bc->idx, card->send.idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 __func__, bc->bch.nr, bc->free, bc->idx, card->send.idx);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int bc_next_frame(struct tiger_ch *);
@@ -586,6 +691,7 @@ fill_hdlc_flag(struct tiger_ch *bc)
 		return;
 	pr_debug("%s: %s B%1d %d state %x idx %d/%d\n", card->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		__func__, bc->bch.nr, bc->free, bc->txstate,
 		bc->idx, card->send.idx);
 	if (bc->txstate & (TX_IDLE | TX_INIT | TX_UNDERRUN))
@@ -595,6 +701,8 @@ fill_hdlc_flag(struct tiger_ch *bc)
 	pr_debug("%s: B%1d hdlc encoded %d flags\n", card->name,
 			bc->bch.nr, count);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 __func__, bc->bch.nr, bc->free, bc->txstate,
 		 bc->idx, card->send.idx);
 	if (bc->txstate & (TX_IDLE | TX_INIT | TX_UNDERRUN))
@@ -603,7 +711,10 @@ fill_hdlc_flag(struct tiger_ch *bc)
 				bc->hsbuf, bc->free);
 	pr_debug("%s: B%1d hdlc encoded %d flags\n", card->name,
 		 bc->bch.nr, count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	bc->free -= count;
 	p = bc->hsbuf;
 	m = (bc->bch.nr & 1) ? 0xffffff00 : 0xffff00ff;
@@ -618,10 +729,14 @@ fill_hdlc_flag(struct tiger_ch *bc)
 	if (debug & DEBUG_HW_BFIFO) {
 		snprintf(card->log, LOG_SIZE, "B%1d-send %s %d ",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bc->bch.nr, card->name, count);
 =======
 			 bc->bch.nr, card->name, count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 bc->bch.nr, card->name, count);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(card->log, DUMP_PREFIX_OFFSET, p, count);
 	}
 }
@@ -630,12 +745,18 @@ static void
 fill_dma(struct tiger_ch *bc)
 {
 	struct tiger_hw *card = bc->bch.hw;
+<<<<<<< HEAD
 	int count, i;
 	u32 m, v;
+=======
+	int count, i, fillempty = 0;
+	u32 m, v, n = 0;
+>>>>>>> refs/remotes/origin/master
 	u8  *p;
 
 	if (bc->free == 0)
 		return;
+<<<<<<< HEAD
 	count = bc->bch.tx_skb->len - bc->bch.tx_idx;
 	if (count <= 0)
 		return;
@@ -661,12 +782,38 @@ fill_dma(struct tiger_ch *bc)
 		pr_debug("%s: B%1d hdlc encoded %d in %d\n", card->name,
 			 bc->bch.nr, i, count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!bc->bch.tx_skb) {
+		if (!test_bit(FLG_TX_EMPTY, &bc->bch.Flags))
+			return;
+		fillempty = 1;
+		count = card->send.size >> 1;
+		p = bc->bch.fill;
+	} else {
+		count = bc->bch.tx_skb->len - bc->bch.tx_idx;
+		if (count <= 0)
+			return;
+		pr_debug("%s: %s B%1d %d/%d/%d/%d state %x idx %d/%d\n",
+			 card->name, __func__, bc->bch.nr, count, bc->free,
+			 bc->bch.tx_idx, bc->bch.tx_skb->len, bc->txstate,
+			 bc->idx, card->send.idx);
+		p = bc->bch.tx_skb->data + bc->bch.tx_idx;
+	}
+	if (bc->txstate & (TX_IDLE | TX_INIT | TX_UNDERRUN))
+		resync(bc, card);
+	if (test_bit(FLG_HDLC, &bc->bch.Flags) && !fillempty) {
+		count = isdnhdlc_encode(&bc->hsend, p, count, &i,
+					bc->hsbuf, bc->free);
+		pr_debug("%s: B%1d hdlc encoded %d in %d\n", card->name,
+			 bc->bch.nr, i, count);
+>>>>>>> refs/remotes/origin/master
 		bc->bch.tx_idx += i;
 		bc->free -= count;
 		p = bc->hsbuf;
 	} else {
 		if (count > bc->free)
 			count = bc->free;
+<<<<<<< HEAD
 		bc->bch.tx_idx += count;
 		bc->free -= count;
 	}
@@ -686,6 +833,39 @@ fill_dma(struct tiger_ch *bc)
 =======
 			 bc->bch.nr, card->name, count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!fillempty)
+			bc->bch.tx_idx += count;
+		bc->free -= count;
+	}
+	m = (bc->bch.nr & 1) ? 0xffffff00 : 0xffff00ff;
+	if (fillempty) {
+		n = p[0];
+		if (!(bc->bch.nr & 1))
+			n <<= 8;
+		for (i = 0; i < count; i++) {
+			if (bc->idx >= card->send.size)
+				bc->idx = 0;
+			v = card->send.start[bc->idx];
+			v &= m;
+			v |= n;
+			card->send.start[bc->idx++] = v;
+		}
+	} else {
+		for (i = 0; i < count; i++) {
+			if (bc->idx >= card->send.size)
+				bc->idx = 0;
+			v = card->send.start[bc->idx];
+			v &= m;
+			n = p[i];
+			v |= (bc->bch.nr & 1) ? n : n << 8;
+			card->send.start[bc->idx++] = v;
+		}
+	}
+	if (debug & DEBUG_HW_BFIFO) {
+		snprintf(card->log, LOG_SIZE, "B%1d-send %s %d ",
+			 bc->bch.nr, card->name, count);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump_bytes(card->log, DUMP_PREFIX_OFFSET, p, count);
 	}
 	if (bc->free)
@@ -696,6 +876,7 @@ fill_dma(struct tiger_ch *bc)
 static int
 bc_next_frame(struct tiger_ch *bc)
 {
+<<<<<<< HEAD
 	if (bc->bch.tx_skb && bc->bch.tx_idx < bc->bch.tx_skb->len)
 		fill_dma(bc);
 	else {
@@ -711,6 +892,28 @@ bc_next_frame(struct tiger_ch *bc)
 			return 0;
 	}
 	return 1;
+=======
+	int ret = 1;
+
+	if (bc->bch.tx_skb && bc->bch.tx_idx < bc->bch.tx_skb->len) {
+		fill_dma(bc);
+	} else {
+		if (bc->bch.tx_skb)
+			dev_kfree_skb(bc->bch.tx_skb);
+		if (get_next_bframe(&bc->bch)) {
+			fill_dma(bc);
+			test_and_clear_bit(FLG_TX_EMPTY, &bc->bch.Flags);
+		} else if (test_bit(FLG_TX_EMPTY, &bc->bch.Flags)) {
+			fill_dma(bc);
+		} else if (test_bit(FLG_FILLEMPTY, &bc->bch.Flags)) {
+			test_and_set_bit(FLG_TX_EMPTY, &bc->bch.Flags);
+			ret = 0;
+		} else {
+			ret = 0;
+		}
+	}
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -735,10 +938,14 @@ send_tiger_bc(struct tiger_hw *card, struct tiger_ch *bc)
 		}
 		pr_debug("%s: B%1d TX no data free %d idx %d/%d\n", card->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			bc->bch.nr, bc->free, bc->idx, card->send.idx);
 =======
 			 bc->bch.nr, bc->free, bc->idx, card->send.idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 bc->bch.nr, bc->free, bc->idx, card->send.idx);
+>>>>>>> refs/remotes/origin/master
 		if (!(bc->txstate & (TX_IDLE | TX_INIT))) {
 			fill_mem(bc, bc->idx, bc->free, 0xff);
 			if (bc->free == card->send.size)
@@ -812,12 +1019,17 @@ nj_irq(int intno, void *dev_id)
 
 	pr_debug("%s: DMA Status %02x/%02x/%02x %d/%d\n", card->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		s1val, s0val, card->last_is0,
 		card->recv.idx, card->send.idx);
 =======
 		 s1val, s0val, card->last_is0,
 		 card->recv.idx, card->send.idx);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 s1val, s0val, card->last_is0,
+		 card->recv.idx, card->send.idx);
+>>>>>>> refs/remotes/origin/master
 	/* test if we have a DMA interrupt */
 	if (s0val != card->last_is0) {
 		if ((s0val & NJ_IRQM0_RD_MASK) !=
@@ -842,14 +1054,19 @@ nj_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 	struct tiger_ch *bc = container_of(bch, struct tiger_ch, bch);
 	struct tiger_hw *card = bch->hw;
 	struct mISDNhead *hh = mISDN_HEAD_P(skb);
+<<<<<<< HEAD
 	u32 id;
 	u_long flags;
+=======
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 
 	switch (hh->prim) {
 	case PH_DATA_REQ:
 		spin_lock_irqsave(&card->lock, flags);
 		ret = bchannel_senddata(bch, skb);
 		if (ret > 0) { /* direct TX */
+<<<<<<< HEAD
 			id = hh->id; /* skb can be freed */
 			fill_dma(bc);
 			ret = 0;
@@ -858,6 +1075,12 @@ nj_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 				queue_ch_frame(ch, PH_DATA_CNF, id, NULL);
 		} else
 			spin_unlock_irqrestore(&card->lock, flags);
+=======
+			fill_dma(bc);
+			ret = 0;
+		}
+		spin_unlock_irqrestore(&card->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	case PH_ACTIVATE_REQ:
 		spin_lock_irqsave(&card->lock, flags);
@@ -869,10 +1092,14 @@ nj_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 		if (!ret)
 			_queue_data(ch, PH_ACTIVATE_IND, MISDN_ID_ANY, 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				NULL, GFP_KERNEL);
 =======
 				    NULL, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case PH_DEACTIVATE_REQ:
 		spin_lock_irqsave(&card->lock, flags);
@@ -881,10 +1108,14 @@ nj_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 		spin_unlock_irqrestore(&card->lock, flags);
 		_queue_data(ch, PH_DEACTIVATE_IND, MISDN_ID_ANY, 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			NULL, GFP_KERNEL);
 =======
 			    NULL, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    NULL, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 	}
@@ -896,6 +1127,7 @@ nj_l2l1B(struct mISDNchannel *ch, struct sk_buff *skb)
 static int
 channel_bctrl(struct tiger_ch *bc, struct mISDN_ctrl_req *cq)
 {
+<<<<<<< HEAD
 	int ret = 0;
 	struct tiger_hw *card  = bc->bch.hw;
 
@@ -915,6 +1147,9 @@ channel_bctrl(struct tiger_ch *bc, struct mISDN_ctrl_req *cq)
 		break;
 	}
 	return ret;
+=======
+	return mISDN_ctrl_bchannel(&bc->bch, cq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -930,6 +1165,7 @@ nj_bctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 	switch (cmd) {
 	case CLOSE_CHANNEL:
 		test_and_clear_bit(FLG_OPEN, &bch->Flags);
+<<<<<<< HEAD
 		if (test_bit(FLG_ACTIVE, &bch->Flags)) {
 			spin_lock_irqsave(&card->lock, flags);
 			mISDN_freebchannel(bch);
@@ -938,6 +1174,13 @@ nj_bctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 			mode_tiger(bc, ISDN_P_NONE);
 			spin_unlock_irqrestore(&card->lock, flags);
 		}
+=======
+		cancel_work_sync(&bch->workq);
+		spin_lock_irqsave(&card->lock, flags);
+		mISDN_clear_bchannel(bch);
+		mode_tiger(bc, ISDN_P_NONE);
+		spin_unlock_irqrestore(&card->lock, flags);
+>>>>>>> refs/remotes/origin/master
 		ch->protocol = ISDN_P_NONE;
 		ch->peer = NULL;
 		module_put(THIS_MODULE);
@@ -959,7 +1202,11 @@ channel_ctrl(struct tiger_hw *card, struct mISDN_ctrl_req *cq)
 
 	switch (cq->op) {
 	case MISDN_CTRL_GETOP:
+<<<<<<< HEAD
 		cq->op = MISDN_CTRL_LOOP;
+=======
+		cq->op = MISDN_CTRL_LOOP | MISDN_CTRL_L1_TIMER3;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MISDN_CTRL_LOOP:
 		/* cq->channel: 0 disable, 1 B1 loop 2 B2 loop, 3 both */
@@ -969,6 +1216,12 @@ channel_ctrl(struct tiger_hw *card, struct mISDN_ctrl_req *cq)
 		}
 		ret = card->isac.ctrl(&card->isac, HW_TESTLOOP, cq->channel);
 		break;
+<<<<<<< HEAD
+=======
+	case MISDN_CTRL_L1_TIMER3:
+		ret = card->isac.ctrl(&card->isac, HW_TIMER3_VALUE, cq->p1);
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		pr_info("%s: %s unknown Op %x\n", card->name, __func__, cq->op);
 		ret = -EINVAL;
@@ -983,10 +1236,14 @@ open_bchannel(struct tiger_hw *card, struct channel_req *rq)
 	struct bchannel *bch;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rq->adr.channel > 2)
 =======
 	if (rq->adr.channel == 0 || rq->adr.channel > 2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rq->adr.channel == 0 || rq->adr.channel > 2)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (rq->protocol == ISDN_P_NONE)
 		return -EINVAL;
@@ -1027,10 +1284,14 @@ nj_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 	case CLOSE_CHANNEL:
 		pr_debug("%s: dev(%d) close from %p\n", card->name, dch->dev.id,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__builtin_return_address(0));
 =======
 			 __builtin_return_address(0));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 __builtin_return_address(0));
+>>>>>>> refs/remotes/origin/master
 		module_put(THIS_MODULE);
 		break;
 	case CONTROL_CHANNEL:
@@ -1039,10 +1300,14 @@ nj_dctrl(struct mISDNchannel *ch, u32 cmd, void *arg)
 	default:
 		pr_debug("%s: %s unknown command %x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			card->name, __func__, cmd);
 =======
 			 card->name, __func__, cmd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 card->name, __func__, cmd);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 	return err;
@@ -1103,10 +1368,14 @@ nj_release(struct tiger_hw *card)
 	if (card->isac.dch.dev.dev.class)
 		mISDN_unregister_device(&card->isac.dch.dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 2; i++) {
 		mISDN_freebchannel(&card->bc[i].bch);
 		kfree(card->bc[i].hsbuf);
@@ -1115,10 +1384,14 @@ nj_release(struct tiger_hw *card)
 	if (card->dma_p)
 		pci_free_consistent(card->pdev, NJ_DMA_SIZE,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			card->dma_p, card->dma);
 =======
 				    card->dma_p, card->dma);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    card->dma_p, card->dma);
+>>>>>>> refs/remotes/origin/master
 	write_lock_irqsave(&card_lock, flags);
 	list_del(&card->list);
 	write_unlock_irqrestore(&card_lock, flags);
@@ -1146,7 +1419,11 @@ nj_setup(struct tiger_hw *card)
 }
 
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 setup_instance(struct tiger_hw *card)
 {
 	int i, err;
@@ -1169,17 +1446,26 @@ setup_instance(struct tiger_hw *card)
 	for (i = 0; i < 2; i++) {
 		card->bc[i].bch.nr = i + 1;
 		set_channelmap(i + 1, card->isac.dch.dev.channelmap);
+<<<<<<< HEAD
 		mISDN_initbchannel(&card->bc[i].bch, MAX_DATA_MEM);
+=======
+		mISDN_initbchannel(&card->bc[i].bch, MAX_DATA_MEM,
+				   NJ_DMA_RXSIZE >> 1);
+>>>>>>> refs/remotes/origin/master
 		card->bc[i].bch.hw = card;
 		card->bc[i].bch.ch.send = nj_l2l1B;
 		card->bc[i].bch.ch.ctrl = nj_bctrl;
 		card->bc[i].bch.ch.nr = i + 1;
 		list_add(&card->bc[i].bch.ch.list,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			&card->isac.dch.dev.bchannels);
 =======
 			 &card->isac.dch.dev.bchannels);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 &card->isac.dch.dev.bchannels);
+>>>>>>> refs/remotes/origin/master
 		card->bc[i].bch.hw = card;
 	}
 	err = nj_setup(card);
@@ -1187,10 +1473,14 @@ setup_instance(struct tiger_hw *card)
 		goto error;
 	err = mISDN_register_device(&card->isac.dch.dev, &card->pdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		card->name);
 =======
 				    card->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    card->name);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto error;
 	err = nj_init_card(card);
@@ -1204,7 +1494,11 @@ error:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 nj_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	int err = -ENOMEM;
@@ -1225,10 +1519,14 @@ nj_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	if (pdev->subsystem_vendor == 0xb100 &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    pdev->subsystem_device == 0x0003 ) {
 =======
 	    pdev->subsystem_device == 0x0003) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    pdev->subsystem_device == 0x0003) {
+>>>>>>> refs/remotes/origin/master
 		pr_notice("Netjet: Digium TDM400P not handled yet\n");
 		return -ENODEV;
 	}
@@ -1249,10 +1547,14 @@ nj_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	printk(KERN_INFO "nj_probe(mISDN): found adapter at %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pci_name(pdev));
 =======
 	       pci_name(pdev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       pci_name(pdev));
+>>>>>>> refs/remotes/origin/master
 
 	pci_set_master(pdev);
 
@@ -1277,7 +1579,11 @@ nj_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 }
 
 
+<<<<<<< HEAD
 static void __devexit nj_remove(struct pci_dev *pdev)
+=======
+static void nj_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tiger_hw *card = pci_get_drvdata(pdev);
 
@@ -1290,7 +1596,11 @@ static void __devexit nj_remove(struct pci_dev *pdev)
 /* We cannot select cards with PCI_SUB... IDs, since here are cards with
  * SUB IDs set to PCI_ANY_ID, so we need to match all and reject
  * known other cards which not work with this driver - see probe function */
+<<<<<<< HEAD
 static struct pci_device_id nj_pci_ids[] __devinitdata = {
+=======
+static struct pci_device_id nj_pci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VENDOR_ID_TIGERJET, PCI_DEVICE_ID_TIGERJET_300,
 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{ }
@@ -1300,7 +1610,11 @@ MODULE_DEVICE_TABLE(pci, nj_pci_ids);
 static struct pci_driver nj_driver = {
 	.name = "netjet",
 	.probe = nj_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(nj_remove),
+=======
+	.remove = nj_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = nj_pci_ids,
 };
 

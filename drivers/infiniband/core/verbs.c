@@ -39,12 +39,18 @@
 #include <linux/errno.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/string.h>
 =======
 #include <linux/export.h>
 #include <linux/string.h>
 #include <linux/slab.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/string.h>
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <rdma/ib_verbs.h>
 #include <rdma/ib_cache.h>
@@ -84,7 +90,10 @@ enum ib_rate mult_to_ib_rate(int mult)
 EXPORT_SYMBOL(mult_to_ib_rate);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ib_rate_to_mbps(enum ib_rate rate)
 {
 	switch (rate) {
@@ -110,7 +119,10 @@ int ib_rate_to_mbps(enum ib_rate rate)
 }
 EXPORT_SYMBOL(ib_rate_to_mbps);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum rdma_transport_type
 rdma_node_get_transport(enum rdma_node_type node_type)
 {
@@ -121,6 +133,11 @@ rdma_node_get_transport(enum rdma_node_type node_type)
 		return RDMA_TRANSPORT_IB;
 	case RDMA_NODE_RNIC:
 		return RDMA_TRANSPORT_IWARP;
+<<<<<<< HEAD
+=======
+	case RDMA_NODE_USNIC:
+		return RDMA_TRANSPORT_USNIC;
+>>>>>>> refs/remotes/origin/master
 	default:
 		BUG();
 		return 0;
@@ -137,6 +154,10 @@ enum rdma_link_layer rdma_port_get_link_layer(struct ib_device *device, u8 port_
 	case RDMA_TRANSPORT_IB:
 		return IB_LINK_LAYER_INFINIBAND;
 	case RDMA_TRANSPORT_IWARP:
+<<<<<<< HEAD
+=======
+	case RDMA_TRANSPORT_USNIC:
+>>>>>>> refs/remotes/origin/master
 		return IB_LINK_LAYER_ETHERNET;
 	default:
 		return IB_LINK_LAYER_UNSPECIFIED;
@@ -285,7 +306,10 @@ struct ib_srq *ib_create_srq(struct ib_pd *pd,
 		srq->event_handler = srq_init_attr->event_handler;
 		srq->srq_context   = srq_init_attr->srq_context;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		srq->srq_type      = srq_init_attr->srq_type;
 		if (srq->srq_type == IB_SRQT_XRC) {
 			srq->ext.xrc.xrcd = srq_init_attr->ext.xrc.xrcd;
@@ -293,7 +317,10 @@ struct ib_srq *ib_create_srq(struct ib_pd *pd,
 			atomic_inc(&srq->ext.xrc.xrcd->usecnt);
 			atomic_inc(&srq->ext.xrc.cq->usecnt);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		atomic_inc(&pd->usecnt);
 		atomic_set(&srq->usecnt, 0);
 	}
@@ -324,11 +351,17 @@ int ib_destroy_srq(struct ib_srq *srq)
 {
 	struct ib_pd *pd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	enum ib_srq_type srq_type;
 	struct ib_xrcd *uninitialized_var(xrcd);
 	struct ib_cq *uninitialized_var(cq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum ib_srq_type srq_type;
+	struct ib_xrcd *uninitialized_var(xrcd);
+	struct ib_cq *uninitialized_var(cq);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (atomic_read(&srq->usecnt))
@@ -336,11 +369,14 @@ int ib_destroy_srq(struct ib_srq *srq)
 
 	pd = srq->pd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	ret = srq->device->destroy_srq(srq);
 	if (!ret)
 		atomic_dec(&pd->usecnt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	srq_type = srq->srq_type;
 	if (srq_type == IB_SRQT_XRC) {
 		xrcd = srq->ext.xrc.xrcd;
@@ -355,7 +391,10 @@ int ib_destroy_srq(struct ib_srq *srq)
 			atomic_dec(&cq->usecnt);
 		}
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -363,6 +402,7 @@ EXPORT_SYMBOL(ib_destroy_srq);
 
 /* Queue pairs */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct ib_qp *ib_create_qp(struct ib_pd *pd,
 			   struct ib_qp_init_attr *qp_init_attr)
@@ -393,6 +433,18 @@ static void __ib_shared_qp_event_handler(struct ib_event *event, void *context)
 
 	list_for_each_entry(event->element.qp, &qp->open_list, open_list)
 		event->element.qp->event_handler(event, event->element.qp->qp_context);
+=======
+static void __ib_shared_qp_event_handler(struct ib_event *event, void *context)
+{
+	struct ib_qp *qp = context;
+	unsigned long flags;
+
+	spin_lock_irqsave(&qp->device->event_handler_lock, flags);
+	list_for_each_entry(event->element.qp, &qp->open_list, open_list)
+		if (event->element.qp->event_handler)
+			event->element.qp->event_handler(event, event->element.qp->qp_context);
+	spin_unlock_irqrestore(&qp->device->event_handler_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __ib_insert_xrcd_qp(struct ib_xrcd *xrcd, struct ib_qp *qp)
@@ -504,7 +556,10 @@ struct ib_qp *ib_create_qp(struct ib_pd *pd,
 			atomic_inc(&pd->usecnt);
 			atomic_inc(&qp_init_attr->send_cq->usecnt);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return qp;
@@ -514,12 +569,17 @@ EXPORT_SYMBOL(ib_create_qp);
 static const struct {
 	int			valid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum ib_qp_attr_mask	req_param[IB_QPT_RAW_ETHERTYPE + 1];
 	enum ib_qp_attr_mask	opt_param[IB_QPT_RAW_ETHERTYPE + 1];
 =======
 	enum ib_qp_attr_mask	req_param[IB_QPT_MAX];
 	enum ib_qp_attr_mask	opt_param[IB_QPT_MAX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	enum ib_qp_attr_mask	req_param[IB_QPT_MAX];
+	enum ib_qp_attr_mask	opt_param[IB_QPT_MAX];
+>>>>>>> refs/remotes/origin/master
 } qp_state_table[IB_QPS_ERR + 1][IB_QPS_ERR + 1] = {
 	[IB_QPS_RESET] = {
 		[IB_QPS_RESET] = { .valid = 1 },
@@ -529,6 +589,10 @@ static const struct {
 				[IB_QPT_UD]  = (IB_QP_PKEY_INDEX		|
 						IB_QP_PORT			|
 						IB_QP_QKEY),
+<<<<<<< HEAD
+=======
+				[IB_QPT_RAW_PACKET] = IB_QP_PORT,
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_UC]  = (IB_QP_PKEY_INDEX		|
 						IB_QP_PORT			|
 						IB_QP_ACCESS_FLAGS),
@@ -536,14 +600,20 @@ static const struct {
 						IB_QP_PORT			|
 						IB_QP_ACCESS_FLAGS),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_XRC_INI] = (IB_QP_PKEY_INDEX		|
 						IB_QP_PORT			|
 						IB_QP_ACCESS_FLAGS),
 				[IB_QPT_XRC_TGT] = (IB_QP_PKEY_INDEX		|
 						IB_QP_PORT			|
 						IB_QP_ACCESS_FLAGS),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_SMI] = (IB_QP_PKEY_INDEX		|
 						IB_QP_QKEY),
 				[IB_QPT_GSI] = (IB_QP_PKEY_INDEX		|
@@ -567,14 +637,20 @@ static const struct {
 						IB_QP_PORT			|
 						IB_QP_ACCESS_FLAGS),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_XRC_INI] = (IB_QP_PKEY_INDEX		|
 						IB_QP_PORT			|
 						IB_QP_ACCESS_FLAGS),
 				[IB_QPT_XRC_TGT] = (IB_QP_PKEY_INDEX		|
 						IB_QP_PORT			|
 						IB_QP_ACCESS_FLAGS),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_SMI] = (IB_QP_PKEY_INDEX		|
 						IB_QP_QKEY),
 				[IB_QPT_GSI] = (IB_QP_PKEY_INDEX		|
@@ -595,7 +671,10 @@ static const struct {
 						IB_QP_MAX_DEST_RD_ATOMIC	|
 						IB_QP_MIN_RNR_TIMER),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_XRC_INI] = (IB_QP_AV			|
 						IB_QP_PATH_MTU			|
 						IB_QP_DEST_QPN			|
@@ -606,7 +685,10 @@ static const struct {
 						IB_QP_RQ_PSN			|
 						IB_QP_MAX_DEST_RD_ATOMIC	|
 						IB_QP_MIN_RNR_TIMER),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			},
 			.opt_param = {
 				 [IB_QPT_UD]  = (IB_QP_PKEY_INDEX		|
@@ -618,14 +700,20 @@ static const struct {
 						 IB_QP_ACCESS_FLAGS		|
 						 IB_QP_PKEY_INDEX),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 [IB_QPT_XRC_INI] = (IB_QP_ALT_PATH		|
 						 IB_QP_ACCESS_FLAGS		|
 						 IB_QP_PKEY_INDEX),
 				 [IB_QPT_XRC_TGT] = (IB_QP_ALT_PATH		|
 						 IB_QP_ACCESS_FLAGS		|
 						 IB_QP_PKEY_INDEX),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				 [IB_QPT_SMI] = (IB_QP_PKEY_INDEX		|
 						 IB_QP_QKEY),
 				 [IB_QPT_GSI] = (IB_QP_PKEY_INDEX		|
@@ -647,7 +735,10 @@ static const struct {
 						IB_QP_SQ_PSN			|
 						IB_QP_MAX_QP_RD_ATOMIC),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_XRC_INI] = (IB_QP_TIMEOUT		|
 						IB_QP_RETRY_CNT			|
 						IB_QP_RNR_RETRY			|
@@ -655,7 +746,10 @@ static const struct {
 						IB_QP_MAX_QP_RD_ATOMIC),
 				[IB_QPT_XRC_TGT] = (IB_QP_TIMEOUT		|
 						IB_QP_SQ_PSN),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_SMI] = IB_QP_SQ_PSN,
 				[IB_QPT_GSI] = IB_QP_SQ_PSN,
 			},
@@ -672,7 +766,10 @@ static const struct {
 						 IB_QP_MIN_RNR_TIMER		|
 						 IB_QP_PATH_MIG_STATE),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 [IB_QPT_XRC_INI] = (IB_QP_CUR_STATE		|
 						 IB_QP_ALT_PATH			|
 						 IB_QP_ACCESS_FLAGS		|
@@ -682,7 +779,10 @@ static const struct {
 						 IB_QP_ACCESS_FLAGS		|
 						 IB_QP_MIN_RNR_TIMER		|
 						 IB_QP_PATH_MIG_STATE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				 [IB_QPT_SMI] = (IB_QP_CUR_STATE		|
 						 IB_QP_QKEY),
 				 [IB_QPT_GSI] = (IB_QP_CUR_STATE		|
@@ -708,7 +808,10 @@ static const struct {
 						IB_QP_PATH_MIG_STATE		|
 						IB_QP_MIN_RNR_TIMER),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_XRC_INI] = (IB_QP_CUR_STATE		|
 						IB_QP_ACCESS_FLAGS		|
 						IB_QP_ALT_PATH			|
@@ -718,7 +821,10 @@ static const struct {
 						IB_QP_ALT_PATH			|
 						IB_QP_PATH_MIG_STATE		|
 						IB_QP_MIN_RNR_TIMER),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_SMI] = (IB_QP_CUR_STATE			|
 						IB_QP_QKEY),
 				[IB_QPT_GSI] = (IB_QP_CUR_STATE			|
@@ -732,10 +838,15 @@ static const struct {
 				[IB_QPT_UC]  = IB_QP_EN_SQD_ASYNC_NOTIFY,
 				[IB_QPT_RC]  = IB_QP_EN_SQD_ASYNC_NOTIFY,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				[IB_QPT_XRC_INI] = IB_QP_EN_SQD_ASYNC_NOTIFY,
 				[IB_QPT_XRC_TGT] = IB_QP_EN_SQD_ASYNC_NOTIFY, /* ??? */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				[IB_QPT_XRC_INI] = IB_QP_EN_SQD_ASYNC_NOTIFY,
+				[IB_QPT_XRC_TGT] = IB_QP_EN_SQD_ASYNC_NOTIFY, /* ??? */
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_SMI] = IB_QP_EN_SQD_ASYNC_NOTIFY,
 				[IB_QPT_GSI] = IB_QP_EN_SQD_ASYNC_NOTIFY
 			}
@@ -759,7 +870,10 @@ static const struct {
 						IB_QP_MIN_RNR_TIMER		|
 						IB_QP_PATH_MIG_STATE),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_XRC_INI] = (IB_QP_CUR_STATE		|
 						IB_QP_ALT_PATH			|
 						IB_QP_ACCESS_FLAGS		|
@@ -769,7 +883,10 @@ static const struct {
 						IB_QP_ACCESS_FLAGS		|
 						IB_QP_MIN_RNR_TIMER		|
 						IB_QP_PATH_MIG_STATE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_SMI] = (IB_QP_CUR_STATE			|
 						IB_QP_QKEY),
 				[IB_QPT_GSI] = (IB_QP_CUR_STATE			|
@@ -799,7 +916,10 @@ static const struct {
 						IB_QP_MIN_RNR_TIMER		|
 						IB_QP_PATH_MIG_STATE),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_XRC_INI] = (IB_QP_PORT			|
 						IB_QP_AV			|
 						IB_QP_TIMEOUT			|
@@ -819,7 +939,10 @@ static const struct {
 						IB_QP_PKEY_INDEX		|
 						IB_QP_MIN_RNR_TIMER		|
 						IB_QP_PATH_MIG_STATE),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				[IB_QPT_SMI] = (IB_QP_PKEY_INDEX		|
 						IB_QP_QKEY),
 				[IB_QPT_GSI] = (IB_QP_PKEY_INDEX		|
@@ -885,10 +1008,14 @@ int ib_modify_qp(struct ib_qp *qp,
 		 int qp_attr_mask)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return qp->device->modify_qp(qp, qp_attr, qp_attr_mask, NULL);
 =======
 	return qp->device->modify_qp(qp->real_qp, qp_attr, qp_attr_mask, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return qp->device->modify_qp(qp->real_qp, qp_attr, qp_attr_mask, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ib_modify_qp);
 
@@ -899,16 +1026,23 @@ int ib_query_qp(struct ib_qp *qp,
 {
 	return qp->device->query_qp ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qp->device->query_qp(qp, qp_attr, qp_attr_mask, qp_init_attr) :
 =======
 		qp->device->query_qp(qp->real_qp, qp_attr, qp_attr_mask, qp_init_attr) :
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		qp->device->query_qp(qp->real_qp, qp_attr, qp_attr_mask, qp_init_attr) :
+>>>>>>> refs/remotes/origin/master
 		-ENOSYS;
 }
 EXPORT_SYMBOL(ib_query_qp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ib_close_qp(struct ib_qp *qp)
 {
 	struct ib_qp *real_qp;
@@ -957,7 +1091,10 @@ static int __ib_destroy_shared_qp(struct ib_qp *qp)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int ib_destroy_qp(struct ib_qp *qp)
 {
 	struct ib_pd *pd;
@@ -965,6 +1102,7 @@ int ib_destroy_qp(struct ib_qp *qp)
 	struct ib_srq *srq;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pd  = qp->pd;
 	scq = qp->send_cq;
@@ -977,6 +1115,8 @@ int ib_destroy_qp(struct ib_qp *qp)
 		atomic_dec(&scq->usecnt);
 		atomic_dec(&rcq->usecnt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (atomic_read(&qp->usecnt))
 		return -EBUSY;
 
@@ -996,7 +1136,10 @@ int ib_destroy_qp(struct ib_qp *qp)
 			atomic_dec(&scq->usecnt);
 		if (rcq)
 			atomic_dec(&rcq->usecnt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (srq)
 			atomic_dec(&srq->usecnt);
 	}
@@ -1057,6 +1200,14 @@ EXPORT_SYMBOL(ib_resize_cq);
 struct ib_mr *ib_get_dma_mr(struct ib_pd *pd, int mr_access_flags)
 {
 	struct ib_mr *mr;
+<<<<<<< HEAD
+=======
+	int err;
+
+	err = ib_check_mr_access(mr_access_flags);
+	if (err)
+		return ERR_PTR(err);
+>>>>>>> refs/remotes/origin/master
 
 	mr = pd->device->get_dma_mr(pd, mr_access_flags);
 
@@ -1079,6 +1230,14 @@ struct ib_mr *ib_reg_phys_mr(struct ib_pd *pd,
 			     u64 *iova_start)
 {
 	struct ib_mr *mr;
+<<<<<<< HEAD
+=======
+	int err;
+
+	err = ib_check_mr_access(mr_access_flags);
+	if (err)
+		return ERR_PTR(err);
+>>>>>>> refs/remotes/origin/master
 
 	if (!pd->device->reg_phys_mr)
 		return ERR_PTR(-ENOSYS);
@@ -1109,6 +1268,13 @@ int ib_rereg_phys_mr(struct ib_mr *mr,
 	struct ib_pd *old_pd;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	ret = ib_check_mr_access(mr_access_flags);
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	if (!mr->device->rereg_phys_mr)
 		return -ENOSYS;
 
@@ -1202,18 +1368,30 @@ EXPORT_SYMBOL(ib_free_fast_reg_page_list);
 
 /* Memory windows */
 
+<<<<<<< HEAD
 struct ib_mw *ib_alloc_mw(struct ib_pd *pd)
+=======
+struct ib_mw *ib_alloc_mw(struct ib_pd *pd, enum ib_mw_type type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ib_mw *mw;
 
 	if (!pd->device->alloc_mw)
 		return ERR_PTR(-ENOSYS);
 
+<<<<<<< HEAD
 	mw = pd->device->alloc_mw(pd);
+=======
+	mw = pd->device->alloc_mw(pd, type);
+>>>>>>> refs/remotes/origin/master
 	if (!IS_ERR(mw)) {
 		mw->device  = pd->device;
 		mw->pd      = pd;
 		mw->uobject = NULL;
+<<<<<<< HEAD
+=======
+		mw->type    = type;
+>>>>>>> refs/remotes/origin/master
 		atomic_inc(&pd->usecnt);
 	}
 
@@ -1287,27 +1465,53 @@ EXPORT_SYMBOL(ib_dealloc_fmr);
 
 int ib_attach_mcast(struct ib_qp *qp, union ib_gid *gid, u16 lid)
 {
+<<<<<<< HEAD
+=======
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	if (!qp->device->attach_mcast)
 		return -ENOSYS;
 	if (gid->raw[0] != 0xff || qp->qp_type != IB_QPT_UD)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	return qp->device->attach_mcast(qp, gid, lid);
+=======
+	ret = qp->device->attach_mcast(qp, gid, lid);
+	if (!ret)
+		atomic_inc(&qp->usecnt);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ib_attach_mcast);
 
 int ib_detach_mcast(struct ib_qp *qp, union ib_gid *gid, u16 lid)
 {
+<<<<<<< HEAD
+=======
+	int ret;
+
+>>>>>>> refs/remotes/origin/master
 	if (!qp->device->detach_mcast)
 		return -ENOSYS;
 	if (gid->raw[0] != 0xff || qp->qp_type != IB_QPT_UD)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	return qp->device->detach_mcast(qp, gid, lid);
 }
 EXPORT_SYMBOL(ib_detach_mcast);
 <<<<<<< HEAD
 =======
+=======
+	ret = qp->device->detach_mcast(qp, gid, lid);
+	if (!ret)
+		atomic_dec(&qp->usecnt);
+	return ret;
+}
+EXPORT_SYMBOL(ib_detach_mcast);
+>>>>>>> refs/remotes/origin/master
 
 struct ib_xrcd *ib_alloc_xrcd(struct ib_device *device)
 {
@@ -1347,4 +1551,34 @@ int ib_dealloc_xrcd(struct ib_xrcd *xrcd)
 	return xrcd->device->dealloc_xrcd(xrcd);
 }
 EXPORT_SYMBOL(ib_dealloc_xrcd);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+struct ib_flow *ib_create_flow(struct ib_qp *qp,
+			       struct ib_flow_attr *flow_attr,
+			       int domain)
+{
+	struct ib_flow *flow_id;
+	if (!qp->device->create_flow)
+		return ERR_PTR(-ENOSYS);
+
+	flow_id = qp->device->create_flow(qp, flow_attr, domain);
+	if (!IS_ERR(flow_id))
+		atomic_inc(&qp->usecnt);
+	return flow_id;
+}
+EXPORT_SYMBOL(ib_create_flow);
+
+int ib_destroy_flow(struct ib_flow *flow_id)
+{
+	int err;
+	struct ib_qp *qp = flow_id->qp;
+
+	err = qp->device->destroy_flow(flow_id);
+	if (!err)
+		atomic_dec(&qp->usecnt);
+	return err;
+}
+EXPORT_SYMBOL(ib_destroy_flow);
+>>>>>>> refs/remotes/origin/master

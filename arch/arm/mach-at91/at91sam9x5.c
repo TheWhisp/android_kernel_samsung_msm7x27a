@@ -15,8 +15,13 @@
 #include <mach/at91sam9x5.h>
 #include <mach/at91_pmc.h>
 #include <mach/cpu.h>
+<<<<<<< HEAD
 #include <mach/board.h>
 
+=======
+
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "soc.h"
 #include "generic.h"
 #include "clock.h"
@@ -120,6 +125,14 @@ static struct clk adc_clk = {
 	.pmc_mask	= 1 << AT91SAM9X5_ID_ADC,
 	.type	= CLK_TYPE_PERIPHERAL,
 };
+<<<<<<< HEAD
+=======
+static struct clk adc_op_clk = {
+	.name		= "adc_op_clk",
+	.type		= CLK_TYPE_PERIPHERAL,
+	.rate_hz	= 5000000,
+};
+>>>>>>> refs/remotes/origin/master
 static struct clk dma0_clk = {
 	.name		= "dma0_clk",
 	.pmc_mask	= 1 << AT91SAM9X5_ID_DMA0,
@@ -205,6 +218,10 @@ static struct clk *periph_clocks[] __initdata = {
 	&tcb0_clk,
 	&pwm_clk,
 	&adc_clk,
+<<<<<<< HEAD
+=======
+	&adc_op_clk,
+>>>>>>> refs/remotes/origin/master
 	&dma0_clk,
 	&dma1_clk,
 	&uhphs_clk,
@@ -221,6 +238,7 @@ static struct clk_lookup periph_clocks_lookups[] = {
 	CLKDEV_CON_DEV_ID("usart", "f8020000.serial", &usart1_clk),
 	CLKDEV_CON_DEV_ID("usart", "f8024000.serial", &usart2_clk),
 	CLKDEV_CON_DEV_ID("usart", "f8028000.serial", &usart3_clk),
+<<<<<<< HEAD
 	CLKDEV_CON_DEV_ID("t0_clk", "f8008000.timer", &tcb0_clk),
 	CLKDEV_CON_DEV_ID("t0_clk", "f800c000.timer", &tcb0_clk),
 	CLKDEV_CON_DEV_ID("dma_clk", "ffffec00.dma-controller", &dma0_clk),
@@ -229,12 +247,37 @@ static struct clk_lookup periph_clocks_lookups[] = {
 	CLKDEV_CON_ID("pioB", &pioAB_clk),
 	CLKDEV_CON_ID("pioC", &pioCD_clk),
 	CLKDEV_CON_ID("pioD", &pioCD_clk),
+=======
+	CLKDEV_CON_DEV_ID("usart", "f8040000.serial", &uart0_clk),
+	CLKDEV_CON_DEV_ID("usart", "f8044000.serial", &uart1_clk),
+	CLKDEV_CON_DEV_ID("t0_clk", "f8008000.timer", &tcb0_clk),
+	CLKDEV_CON_DEV_ID("t0_clk", "f800c000.timer", &tcb0_clk),
+	CLKDEV_CON_DEV_ID("mci_clk", "f0008000.mmc", &mmc0_clk),
+	CLKDEV_CON_DEV_ID("mci_clk", "f000c000.mmc", &mmc1_clk),
+	CLKDEV_CON_DEV_ID("dma_clk", "ffffec00.dma-controller", &dma0_clk),
+	CLKDEV_CON_DEV_ID("dma_clk", "ffffee00.dma-controller", &dma1_clk),
+	CLKDEV_CON_DEV_ID("pclk", "f0010000.ssc", &ssc_clk),
+	CLKDEV_CON_DEV_ID(NULL, "f8010000.i2c", &twi0_clk),
+	CLKDEV_CON_DEV_ID(NULL, "f8014000.i2c", &twi1_clk),
+	CLKDEV_CON_DEV_ID(NULL, "f8018000.i2c", &twi2_clk),
+	CLKDEV_CON_DEV_ID("spi_clk", "f0000000.spi", &spi0_clk),
+	CLKDEV_CON_DEV_ID("spi_clk", "f0004000.spi", &spi1_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffff400.gpio", &pioAB_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffff600.gpio", &pioAB_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffff800.gpio", &pioCD_clk),
+	CLKDEV_CON_DEV_ID(NULL, "fffffa00.gpio", &pioCD_clk),
+>>>>>>> refs/remotes/origin/master
 	/* additional fake clock for macb_hclk */
 	CLKDEV_CON_DEV_ID("hclk", "f802c000.ethernet", &macb0_clk),
 	CLKDEV_CON_DEV_ID("hclk", "f8030000.ethernet", &macb1_clk),
 	CLKDEV_CON_DEV_ID("hclk", "600000.ohci", &uhphs_clk),
 	CLKDEV_CON_DEV_ID("ohci_clk", "600000.ohci", &uhphs_clk),
 	CLKDEV_CON_DEV_ID("ehci_clk", "700000.ehci", &uhphs_clk),
+<<<<<<< HEAD
+=======
+	CLKDEV_CON_DEV_ID("hclk", "500000.gadget", &utmi_clk),
+	CLKDEV_CON_DEV_ID("pclk", "500000.gadget", &udphs_clk),
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -304,17 +347,24 @@ static void __init at91sam9x5_map_io(void)
 	at91_init_sram(0, AT91SAM9X5_SRAM_BASE, AT91SAM9X5_SRAM_SIZE);
 }
 
+<<<<<<< HEAD
 void __init at91sam9x5_initialize(void)
 {
 	at91_extern_irq = (1 << AT91SAM9X5_ID_IRQ0);
 
 	/* Register GPIO subsystem (using DT) */
 	at91_gpio_init(NULL, 0);
+=======
+static void __init at91sam9x5_initialize(void)
+{
+	at91_sysirq_mask_rtc(AT91SAM9X5_BASE_RTC);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* --------------------------------------------------------------------
  *  Interrupt initialization
  * -------------------------------------------------------------------- */
+<<<<<<< HEAD
 /*
  * The default interrupt priority levels (0 = lowest, 7 = highest).
  */
@@ -359,3 +409,11 @@ struct at91_init_soc __initdata at91sam9x5_soc = {
 	.register_clocks = at91sam9x5_register_clocks,
 	.init = at91sam9x5_initialize,
 };
+=======
+
+AT91_SOC_START(at91sam9x5)
+	.map_io = at91sam9x5_map_io,
+	.register_clocks = at91sam9x5_register_clocks,
+	.init = at91sam9x5_initialize,
+AT91_SOC_END
+>>>>>>> refs/remotes/origin/master

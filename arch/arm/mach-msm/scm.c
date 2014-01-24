@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2012, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -8,6 +12,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
+=======
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/slab.h>
@@ -16,11 +28,21 @@
 #include <linux/mutex.h>
 #include <linux/errno.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 
 #include <asm/cacheflush.h>
 
 #include <mach/scm.h>
+=======
+
+#include <asm/cacheflush.h>
+
+#include "scm.h"
+
+/* Cache line size for msm8x60 */
+#define CACHELINESIZE 32
+>>>>>>> refs/remotes/origin/master
 
 #define SCM_ENOMEM		-5
 #define SCM_EOPNOTSUPP		-4
@@ -203,6 +225,7 @@ static int __scm_call(const struct scm_command *cmd)
 	return ret;
 }
 
+<<<<<<< HEAD
 static u32 cacheline_size;
 
 static void scm_inv_range(unsigned long start, unsigned long end)
@@ -218,6 +241,8 @@ static void scm_inv_range(unsigned long start, unsigned long end)
 	isb();
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * scm_call() - Send an SCM command
  * @svc_id: service identifier
@@ -235,7 +260,10 @@ int scm_call(u32 svc_id, u32 cmd_id, const void *cmd_buf, size_t cmd_len,
 	int ret;
 	struct scm_command *cmd;
 	struct scm_response *rsp;
+<<<<<<< HEAD
 	unsigned long start, end;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cmd = alloc_scm_command(cmd_len, resp_len);
 	if (!cmd)
@@ -252,6 +280,7 @@ int scm_call(u32 svc_id, u32 cmd_id, const void *cmd_buf, size_t cmd_len,
 		goto out;
 
 	rsp = scm_command_to_response(cmd);
+<<<<<<< HEAD
 	start = (unsigned long)rsp;
 
 	do {
@@ -261,6 +290,19 @@ int scm_call(u32 svc_id, u32 cmd_id, const void *cmd_buf, size_t cmd_len,
 	end = (unsigned long)scm_get_response_buffer(rsp) + resp_len;
 	scm_inv_range(start, end);
 
+=======
+	do {
+		u32 start = (u32)rsp;
+		u32 end = (u32)scm_get_response_buffer(rsp) + resp_len;
+		start &= ~(CACHELINESIZE - 1);
+		while (start < end) {
+			asm ("mcr p15, 0, %0, c7, c6, 1" : : "r" (start)
+			     : "memory");
+			start += CACHELINESIZE;
+		}
+	} while (!rsp->is_complete);
+
+>>>>>>> refs/remotes/origin/master
 	if (resp_buf)
 		memcpy(resp_buf, scm_get_response_buffer(rsp), resp_len);
 out:
@@ -269,6 +311,7 @@ out:
 }
 EXPORT_SYMBOL(scm_call);
 
+<<<<<<< HEAD
 #define SCM_CLASS_REGISTER	(0x2 << 8)
 #define SCM_MASK_IRQS		BIT(5)
 #define SCM_ATOMIC(svc, cmd, n) (((((svc) << 10)|((cmd) & 0x3ff)) << 12) | \
@@ -377,6 +420,8 @@ s32 scm_call_atomic4_3(u32 svc, u32 cmd, u32 arg1, u32 arg2,
 }
 EXPORT_SYMBOL(scm_call_atomic4_3);
 
+=======
+>>>>>>> refs/remotes/origin/master
 u32 scm_get_version(void)
 {
 	int context_id;
@@ -412,6 +457,7 @@ u32 scm_get_version(void)
 	return version;
 }
 EXPORT_SYMBOL(scm_get_version);
+<<<<<<< HEAD
 
 #define IS_CALL_AVAIL_CMD	1
 int scm_is_call_available(u32 svc_id, u32 cmd_id)
@@ -455,3 +501,5 @@ static int scm_init(void)
 	return 0;
 }
 early_initcall(scm_init);
+=======
+>>>>>>> refs/remotes/origin/master

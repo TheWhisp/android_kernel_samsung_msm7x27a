@@ -13,7 +13,11 @@
 
 #define DRV_NAME	"pata-swarm"
 
+<<<<<<< HEAD
 #define SWARM_IDE_SHIFT	5
+=======
+#define SWARM_IDE_SHIFT 5
+>>>>>>> refs/remotes/origin/master
 #define SWARM_IDE_BASE	0x1f0
 #define SWARM_IDE_CTRL	0x3f6
 
@@ -123,7 +127,11 @@ static int __init sb1250_device_init(void)
 	case K_SYS_SOC_TYPE_BCM1120:
 	case K_SYS_SOC_TYPE_BCM1125:
 	case K_SYS_SOC_TYPE_BCM1125H:
+<<<<<<< HEAD
 	case K_SYS_SOC_TYPE_BCM1250_ALT2:       /* Hybrid */
+=======
+	case K_SYS_SOC_TYPE_BCM1250_ALT2:	/* Hybrid */
+>>>>>>> refs/remotes/origin/master
 		ret = platform_add_devices(sb1250_devs, 2);
 		break;
 	case K_SYS_SOC_TYPE_BCM1x55:

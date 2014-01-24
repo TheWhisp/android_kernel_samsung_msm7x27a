@@ -7,7 +7,11 @@ config NET_VENDOR_AMD
 	default y
 	depends on DIO || MACH_DECSTATION || MVME147 || ATARI || SUN3 || \
 		   SUN3X || SBUS || PCI || ZORRO || (ISA && ISA_DMA_API) || \
+<<<<<<< HEAD
 		   (ARM && ARCH_EBSA110) || ISA || EISA || MCA || PCMCIA
+=======
+		   (ARM && ARCH_EBSA110) || ISA || EISA || PCMCIA
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) chipset belonging to this class,
 	  say Y.
@@ -34,7 +38,10 @@ config AMD8111_ETH
 	tristate "AMD 8111 (new PCI LANCE) support"
 	depends on PCI
 	select CRC32
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  If you have an AMD 8111-based PCI LANCE ethernet card,
@@ -60,7 +67,10 @@ config PCNET32
 	tristate "AMD PCnet32 PCI support"
 	depends on PCI
 	select CRC32
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  If you have a PCnet32 or PCnetPCI based network (Ethernet) card,
@@ -105,6 +115,7 @@ config DECLANCE
 	  DEC (now Compaq) based on the AMD LANCE chipset, including the
 	  DEPCA series.  (This chipset is better known via the NE2100 cards.)
 
+<<<<<<< HEAD
 config DEPCA
 	tristate "DEPCA, DE10x, DE200, DE201, DE202, DE422 support"
 	depends on (ISA || EISA || MCA)
@@ -118,6 +129,8 @@ config DEPCA
 	  To compile this driver as a module, choose M here. The module
 	  will be called depca.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config HPLANCE
 	bool "HP on-board LANCE support"
 	depends on DIO

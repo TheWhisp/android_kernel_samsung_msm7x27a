@@ -37,4 +37,8 @@ Maintainers
   Thanks to the many others who have also provided support.
 
 
+<<<<<<< HEAD
 (c) 2005 Ben Dooks
+=======
+(c) 2005 Ben Dooks
+>>>>>>> refs/remotes/origin/master

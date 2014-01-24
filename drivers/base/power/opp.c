@@ -18,6 +18,7 @@
 #include <linux/slab.h>
 #include <linux/cpufreq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -25,6 +26,15 @@
 #include <linux/rculist.h>
 #include <linux/rcupdate.h>
 #include <linux/opp.h>
+=======
+#include <linux/device.h>
+#include <linux/list.h>
+#include <linux/rculist.h>
+#include <linux/rcupdate.h>
+#include <linux/pm_opp.h>
+#include <linux/of.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Internal data structure organization with the OPP layer library is as
@@ -43,7 +53,11 @@
  */
 
 /**
+<<<<<<< HEAD
  * struct opp - Generic OPP description structure
+=======
+ * struct dev_pm_opp - Generic OPP description structure
+>>>>>>> refs/remotes/origin/master
  * @node:	opp list node. The nodes are maintained throughout the lifetime
  *		of boot. It is expected only an optimal set of OPPs are
  *		added to the library by the SoC framework.
@@ -56,10 +70,18 @@
  * @rate:	Frequency in hertz
  * @u_volt:	Nominal voltage in microvolts corresponding to this OPP
  * @dev_opp:	points back to the device_opp struct this opp belongs to
+<<<<<<< HEAD
  *
  * This structure stores the OPP information for a given device.
  */
 struct opp {
+=======
+ * @head:	RCU callback head used for deferred freeing
+ *
+ * This structure stores the OPP information for a given device.
+ */
+struct dev_pm_opp {
+>>>>>>> refs/remotes/origin/master
 	struct list_head node;
 
 	bool available;
@@ -67,6 +89,10 @@ struct opp {
 	unsigned long u_volt;
 
 	struct device_opp *dev_opp;
+<<<<<<< HEAD
+=======
+	struct rcu_head head;
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -78,9 +104,13 @@ struct opp {
  *		however addition is possible and is secured by dev_opp_list_lock
  * @dev:	device pointer
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @head:	notifier head to notify the OPP availability changes.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @head:	notifier head to notify the OPP availability changes.
+>>>>>>> refs/remotes/origin/master
  * @opp_list:	list of opps
  *
  * This is an internal data structure maintaining the link to opps attached to
@@ -92,9 +122,13 @@ struct device_opp {
 
 	struct device *dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct srcu_notifier_head head;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct srcu_notifier_head head;
+>>>>>>> refs/remotes/origin/master
 	struct list_head opp_list;
 };
 
@@ -141,7 +175,11 @@ static struct device_opp *find_device_opp(struct device *dev)
 }
 
 /**
+<<<<<<< HEAD
  * opp_get_voltage() - Gets the voltage corresponding to an available opp
+=======
+ * dev_pm_opp_get_voltage() - Gets the voltage corresponding to an available opp
+>>>>>>> refs/remotes/origin/master
  * @opp:	opp for which voltage has to be returned for
  *
  * Return voltage in micro volt corresponding to the opp, else
@@ -155,9 +193,15 @@ static struct device_opp *find_device_opp(struct device *dev)
  * prior to unlocking with rcu_read_unlock() to maintain the integrity of the
  * pointer.
  */
+<<<<<<< HEAD
 unsigned long opp_get_voltage(struct opp *opp)
 {
 	struct opp *tmp_opp;
+=======
+unsigned long dev_pm_opp_get_voltage(struct dev_pm_opp *opp)
+{
+	struct dev_pm_opp *tmp_opp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long v = 0;
 
 	tmp_opp = rcu_dereference(opp);
@@ -168,9 +212,16 @@ unsigned long opp_get_voltage(struct opp *opp)
 
 	return v;
 }
+<<<<<<< HEAD
 
 /**
  * opp_get_freq() - Gets the frequency corresponding to an available opp
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_get_voltage);
+
+/**
+ * dev_pm_opp_get_freq() - Gets the frequency corresponding to an available opp
+>>>>>>> refs/remotes/origin/master
  * @opp:	opp for which frequency has to be returned for
  *
  * Return frequency in hertz corresponding to the opp, else
@@ -184,9 +235,15 @@ unsigned long opp_get_voltage(struct opp *opp)
  * prior to unlocking with rcu_read_unlock() to maintain the integrity of the
  * pointer.
  */
+<<<<<<< HEAD
 unsigned long opp_get_freq(struct opp *opp)
 {
 	struct opp *tmp_opp;
+=======
+unsigned long dev_pm_opp_get_freq(struct dev_pm_opp *opp)
+{
+	struct dev_pm_opp *tmp_opp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long f = 0;
 
 	tmp_opp = rcu_dereference(opp);
@@ -197,9 +254,16 @@ unsigned long opp_get_freq(struct opp *opp)
 
 	return f;
 }
+<<<<<<< HEAD
 
 /**
  * opp_get_opp_count() - Get number of opps available in the opp list
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_get_freq);
+
+/**
+ * dev_pm_opp_get_opp_count() - Get number of opps available in the opp list
+>>>>>>> refs/remotes/origin/master
  * @dev:	device for which we do this operation
  *
  * This function returns the number of available opps if there are any,
@@ -209,10 +273,17 @@ unsigned long opp_get_freq(struct opp *opp)
  * internally references two RCU protected structures: device_opp and opp which
  * are safe as long as we are under a common RCU locked section.
  */
+<<<<<<< HEAD
 int opp_get_opp_count(struct device *dev)
 {
 	struct device_opp *dev_opp;
 	struct opp *temp_opp;
+=======
+int dev_pm_opp_get_opp_count(struct device *dev)
+{
+	struct device_opp *dev_opp;
+	struct dev_pm_opp *temp_opp;
+>>>>>>> refs/remotes/origin/master
 	int count = 0;
 
 	dev_opp = find_device_opp(dev);
@@ -229,16 +300,30 @@ int opp_get_opp_count(struct device *dev)
 
 	return count;
 }
+<<<<<<< HEAD
 
 /**
  * opp_find_freq_exact() - search for an exact frequency
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_get_opp_count);
+
+/**
+ * dev_pm_opp_find_freq_exact() - search for an exact frequency
+>>>>>>> refs/remotes/origin/master
  * @dev:		device for which we do this operation
  * @freq:		frequency to search for
  * @available:		true/false - match for available opp
  *
  * Searches for exact match in the opp list and returns pointer to the matching
  * opp if found, else returns ERR_PTR in case of error and should be handled
+<<<<<<< HEAD
  * using IS_ERR.
+=======
+ * using IS_ERR. Error return values can be:
+ * EINVAL:	for bad pointer
+ * ERANGE:	no match found for search
+ * ENODEV:	if device not found in list of registered devices
+>>>>>>> refs/remotes/origin/master
  *
  * Note: available is a modifier for the search. if available=true, then the
  * match is for exact matching frequency and is available in the stored OPP
@@ -253,11 +338,20 @@ int opp_get_opp_count(struct device *dev)
  * under the locked area. The pointer returned must be used prior to unlocking
  * with rcu_read_unlock() to maintain the integrity of the pointer.
  */
+<<<<<<< HEAD
 struct opp *opp_find_freq_exact(struct device *dev, unsigned long freq,
 				bool available)
 {
 	struct device_opp *dev_opp;
 	struct opp *temp_opp, *opp = ERR_PTR(-ENODEV);
+=======
+struct dev_pm_opp *dev_pm_opp_find_freq_exact(struct device *dev,
+					      unsigned long freq,
+					      bool available)
+{
+	struct device_opp *dev_opp;
+	struct dev_pm_opp *temp_opp, *opp = ERR_PTR(-ERANGE);
+>>>>>>> refs/remotes/origin/master
 
 	dev_opp = find_device_opp(dev);
 	if (IS_ERR(dev_opp)) {
@@ -276,9 +370,16 @@ struct opp *opp_find_freq_exact(struct device *dev, unsigned long freq,
 
 	return opp;
 }
+<<<<<<< HEAD
 
 /**
  * opp_find_freq_ceil() - Search for an rounded ceil freq
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_find_freq_exact);
+
+/**
+ * dev_pm_opp_find_freq_ceil() - Search for an rounded ceil freq
+>>>>>>> refs/remotes/origin/master
  * @dev:	device for which we do this operation
  * @freq:	Start frequency
  *
@@ -286,7 +387,15 @@ struct opp *opp_find_freq_exact(struct device *dev, unsigned long freq,
  * for a device.
  *
  * Returns matching *opp and refreshes *freq accordingly, else returns
+<<<<<<< HEAD
  * ERR_PTR in case of error and should be handled using IS_ERR.
+=======
+ * ERR_PTR in case of error and should be handled using IS_ERR. Error return
+ * values can be:
+ * EINVAL:	for bad pointer
+ * ERANGE:	no match found for search
+ * ENODEV:	if device not found in list of registered devices
+>>>>>>> refs/remotes/origin/master
  *
  * Locking: This function must be called under rcu_read_lock(). opp is a rcu
  * protected pointer. The reason for the same is that the opp pointer which is
@@ -294,10 +403,18 @@ struct opp *opp_find_freq_exact(struct device *dev, unsigned long freq,
  * under the locked area. The pointer returned must be used prior to unlocking
  * with rcu_read_unlock() to maintain the integrity of the pointer.
  */
+<<<<<<< HEAD
 struct opp *opp_find_freq_ceil(struct device *dev, unsigned long *freq)
 {
 	struct device_opp *dev_opp;
 	struct opp *temp_opp, *opp = ERR_PTR(-ENODEV);
+=======
+struct dev_pm_opp *dev_pm_opp_find_freq_ceil(struct device *dev,
+					     unsigned long *freq)
+{
+	struct device_opp *dev_opp;
+	struct dev_pm_opp *temp_opp, *opp = ERR_PTR(-ERANGE);
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev || !freq) {
 		dev_err(dev, "%s: Invalid argument freq=%p\n", __func__, freq);
@@ -306,7 +423,11 @@ struct opp *opp_find_freq_ceil(struct device *dev, unsigned long *freq)
 
 	dev_opp = find_device_opp(dev);
 	if (IS_ERR(dev_opp))
+<<<<<<< HEAD
 		return opp;
+=======
+		return ERR_CAST(dev_opp);
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry_rcu(temp_opp, &dev_opp->opp_list, node) {
 		if (temp_opp->available && temp_opp->rate >= *freq) {
@@ -318,9 +439,16 @@ struct opp *opp_find_freq_ceil(struct device *dev, unsigned long *freq)
 
 	return opp;
 }
+<<<<<<< HEAD
 
 /**
  * opp_find_freq_floor() - Search for a rounded floor freq
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_find_freq_ceil);
+
+/**
+ * dev_pm_opp_find_freq_floor() - Search for a rounded floor freq
+>>>>>>> refs/remotes/origin/master
  * @dev:	device for which we do this operation
  * @freq:	Start frequency
  *
@@ -328,7 +456,15 @@ struct opp *opp_find_freq_ceil(struct device *dev, unsigned long *freq)
  * for a device.
  *
  * Returns matching *opp and refreshes *freq accordingly, else returns
+<<<<<<< HEAD
  * ERR_PTR in case of error and should be handled using IS_ERR.
+=======
+ * ERR_PTR in case of error and should be handled using IS_ERR. Error return
+ * values can be:
+ * EINVAL:	for bad pointer
+ * ERANGE:	no match found for search
+ * ENODEV:	if device not found in list of registered devices
+>>>>>>> refs/remotes/origin/master
  *
  * Locking: This function must be called under rcu_read_lock(). opp is a rcu
  * protected pointer. The reason for the same is that the opp pointer which is
@@ -336,10 +472,18 @@ struct opp *opp_find_freq_ceil(struct device *dev, unsigned long *freq)
  * under the locked area. The pointer returned must be used prior to unlocking
  * with rcu_read_unlock() to maintain the integrity of the pointer.
  */
+<<<<<<< HEAD
 struct opp *opp_find_freq_floor(struct device *dev, unsigned long *freq)
 {
 	struct device_opp *dev_opp;
 	struct opp *temp_opp, *opp = ERR_PTR(-ENODEV);
+=======
+struct dev_pm_opp *dev_pm_opp_find_freq_floor(struct device *dev,
+					      unsigned long *freq)
+{
+	struct device_opp *dev_opp;
+	struct dev_pm_opp *temp_opp, *opp = ERR_PTR(-ERANGE);
+>>>>>>> refs/remotes/origin/master
 
 	if (!dev || !freq) {
 		dev_err(dev, "%s: Invalid argument freq=%p\n", __func__, freq);
@@ -348,7 +492,11 @@ struct opp *opp_find_freq_floor(struct device *dev, unsigned long *freq)
 
 	dev_opp = find_device_opp(dev);
 	if (IS_ERR(dev_opp))
+<<<<<<< HEAD
 		return opp;
+=======
+		return ERR_CAST(dev_opp);
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry_rcu(temp_opp, &dev_opp->opp_list, node) {
 		if (temp_opp->available) {
@@ -364,16 +512,27 @@ struct opp *opp_find_freq_floor(struct device *dev, unsigned long *freq)
 
 	return opp;
 }
+<<<<<<< HEAD
 
 /**
  * opp_add()  - Add an OPP table from a table definitions
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_find_freq_floor);
+
+/**
+ * dev_pm_opp_add()  - Add an OPP table from a table definitions
+>>>>>>> refs/remotes/origin/master
  * @dev:	device for which we do this operation
  * @freq:	Frequency in Hz for this OPP
  * @u_volt:	Voltage in uVolts for this OPP
  *
  * This function adds an opp definition to the opp list and returns status.
  * The opp is made available by default and it can be controlled using
+<<<<<<< HEAD
  * opp_enable/disable functions.
+=======
+ * dev_pm_opp_enable/disable functions.
+>>>>>>> refs/remotes/origin/master
  *
  * Locking: The internal device_opp and opp structures are RCU protected.
  * Hence this function internally uses RCU updater strategy with mutex locks
@@ -381,6 +540,7 @@ struct opp *opp_find_freq_floor(struct device *dev, unsigned long *freq)
  * that this function is *NOT* called under RCU protection or in contexts where
  * mutex cannot be locked.
  */
+<<<<<<< HEAD
 int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
 {
 	struct device_opp *dev_opp = NULL;
@@ -389,6 +549,16 @@ int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
 
 	/* allocate new OPP node */
 	new_opp = kzalloc(sizeof(struct opp), GFP_KERNEL);
+=======
+int dev_pm_opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
+{
+	struct device_opp *dev_opp = NULL;
+	struct dev_pm_opp *opp, *new_opp;
+	struct list_head *head;
+
+	/* allocate new OPP node */
+	new_opp = kzalloc(sizeof(*new_opp), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!new_opp) {
 		dev_warn(dev, "%s: Unable to create new OPP node\n", __func__);
 		return -ENOMEM;
@@ -417,9 +587,13 @@ int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
 
 		dev_opp->dev = dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		srcu_init_notifier_head(&dev_opp->head);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		srcu_init_notifier_head(&dev_opp->head);
+>>>>>>> refs/remotes/origin/master
 		INIT_LIST_HEAD(&dev_opp->opp_list);
 
 		/* Secure the device list modification */
@@ -445,15 +619,24 @@ int opp_add(struct device *dev, unsigned long freq, unsigned long u_volt)
 	mutex_unlock(&dev_opp_list_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Notify the changes in the availability of the operable
 	 * frequency/voltage list.
 	 */
 	srcu_notifier_call_chain(&dev_opp->head, OPP_EVENT_ADD, new_opp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 }
+=======
+	return 0;
+}
+EXPORT_SYMBOL_GPL(dev_pm_opp_add);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * opp_set_availability() - helper to set the availability of an opp
@@ -478,6 +661,7 @@ static int opp_set_availability(struct device *dev, unsigned long freq,
 		bool availability_req)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct device_opp *tmp_dev_opp, *dev_opp = NULL;
 =======
 	struct device_opp *tmp_dev_opp, *dev_opp = ERR_PTR(-ENODEV);
@@ -487,6 +671,14 @@ static int opp_set_availability(struct device *dev, unsigned long freq,
 
 	/* keep the node allocated */
 	new_opp = kmalloc(sizeof(struct opp), GFP_KERNEL);
+=======
+	struct device_opp *tmp_dev_opp, *dev_opp = ERR_PTR(-ENODEV);
+	struct dev_pm_opp *new_opp, *tmp_opp, *opp = ERR_PTR(-ENODEV);
+	int r = 0;
+
+	/* keep the node allocated */
+	new_opp = kmalloc(sizeof(*new_opp), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!new_opp) {
 		dev_warn(dev, "%s: Unable to create OPP\n", __func__);
 		return -ENOMEM;
@@ -530,10 +722,15 @@ static int opp_set_availability(struct device *dev, unsigned long freq,
 
 	list_replace_rcu(&opp->node, &new_opp->node);
 	mutex_unlock(&dev_opp_list_lock);
+<<<<<<< HEAD
 	synchronize_rcu();
 
 <<<<<<< HEAD
 =======
+=======
+	kfree_rcu(opp, head);
+
+>>>>>>> refs/remotes/origin/master
 	/* Notify the change of the OPP availability */
 	if (availability_req)
 		srcu_notifier_call_chain(&dev_opp->head, OPP_EVENT_ENABLE,
@@ -542,6 +739,7 @@ static int opp_set_availability(struct device *dev, unsigned long freq,
 		srcu_notifier_call_chain(&dev_opp->head, OPP_EVENT_DISABLE,
 					 new_opp);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* clean up old opp */
 	new_opp = opp;
@@ -550,18 +748,32 @@ static int opp_set_availability(struct device *dev, unsigned long freq,
 unlock:
 	mutex_unlock(&dev_opp_list_lock);
 out:
+=======
+	return 0;
+
+unlock:
+	mutex_unlock(&dev_opp_list_lock);
+>>>>>>> refs/remotes/origin/master
 	kfree(new_opp);
 	return r;
 }
 
 /**
+<<<<<<< HEAD
  * opp_enable() - Enable a specific OPP
+=======
+ * dev_pm_opp_enable() - Enable a specific OPP
+>>>>>>> refs/remotes/origin/master
  * @dev:	device for which we do this operation
  * @freq:	OPP frequency to enable
  *
  * Enables a provided opp. If the operation is valid, this returns 0, else the
  * corresponding error value. It is meant to be used for users an OPP available
+<<<<<<< HEAD
  * after being temporarily made unavailable with opp_disable.
+=======
+ * after being temporarily made unavailable with dev_pm_opp_disable.
+>>>>>>> refs/remotes/origin/master
  *
  * Locking: The internal device_opp and opp structures are RCU protected.
  * Hence this function indirectly uses RCU and mutex locks to keep the
@@ -569,6 +781,7 @@ out:
  * this function is *NOT* called under RCU protection or in contexts where
  * mutex locking or synchronize_rcu() blocking calls cannot be used.
  */
+<<<<<<< HEAD
 int opp_enable(struct device *dev, unsigned long freq)
 {
 	return opp_set_availability(dev, freq, true);
@@ -576,13 +789,27 @@ int opp_enable(struct device *dev, unsigned long freq)
 
 /**
  * opp_disable() - Disable a specific OPP
+=======
+int dev_pm_opp_enable(struct device *dev, unsigned long freq)
+{
+	return opp_set_availability(dev, freq, true);
+}
+EXPORT_SYMBOL_GPL(dev_pm_opp_enable);
+
+/**
+ * dev_pm_opp_disable() - Disable a specific OPP
+>>>>>>> refs/remotes/origin/master
  * @dev:	device for which we do this operation
  * @freq:	OPP frequency to disable
  *
  * Disables a provided opp. If the operation is valid, this returns
  * 0, else the corresponding error value. It is meant to be a temporary
  * control by users to make this OPP not available until the circumstances are
+<<<<<<< HEAD
  * right to make it available again (with a call to opp_enable).
+=======
+ * right to make it available again (with a call to dev_pm_opp_enable).
+>>>>>>> refs/remotes/origin/master
  *
  * Locking: The internal device_opp and opp structures are RCU protected.
  * Hence this function indirectly uses RCU and mutex locks to keep the
@@ -590,6 +817,7 @@ int opp_enable(struct device *dev, unsigned long freq)
  * this function is *NOT* called under RCU protection or in contexts where
  * mutex locking or synchronize_rcu() blocking calls cannot be used.
  */
+<<<<<<< HEAD
 int opp_disable(struct device *dev, unsigned long freq)
 {
 	return opp_set_availability(dev, freq, false);
@@ -598,6 +826,17 @@ int opp_disable(struct device *dev, unsigned long freq)
 #ifdef CONFIG_CPU_FREQ
 /**
  * opp_init_cpufreq_table() - create a cpufreq table for a device
+=======
+int dev_pm_opp_disable(struct device *dev, unsigned long freq)
+{
+	return opp_set_availability(dev, freq, false);
+}
+EXPORT_SYMBOL_GPL(dev_pm_opp_disable);
+
+#ifdef CONFIG_CPU_FREQ
+/**
+ * dev_pm_opp_init_cpufreq_table() - create a cpufreq table for a device
+>>>>>>> refs/remotes/origin/master
  * @dev:	device for which we do this operation
  * @table:	Cpufreq table returned back to caller
  *
@@ -620,11 +859,19 @@ int opp_disable(struct device *dev, unsigned long freq)
  * Callers should ensure that this function is *NOT* called under RCU protection
  * or in contexts where mutex locking cannot be used.
  */
+<<<<<<< HEAD
 int opp_init_cpufreq_table(struct device *dev,
 			    struct cpufreq_frequency_table **table)
 {
 	struct device_opp *dev_opp;
 	struct opp *opp;
+=======
+int dev_pm_opp_init_cpufreq_table(struct device *dev,
+			    struct cpufreq_frequency_table **table)
+{
+	struct device_opp *dev_opp;
+	struct dev_pm_opp *opp;
+>>>>>>> refs/remotes/origin/master
 	struct cpufreq_frequency_table *freq_table;
 	int i = 0;
 
@@ -640,7 +887,11 @@ int opp_init_cpufreq_table(struct device *dev,
 	}
 
 	freq_table = kzalloc(sizeof(struct cpufreq_frequency_table) *
+<<<<<<< HEAD
 			     (opp_get_opp_count(dev) + 1), GFP_KERNEL);
+=======
+			     (dev_pm_opp_get_opp_count(dev) + 1), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!freq_table) {
 		mutex_unlock(&dev_opp_list_lock);
 		dev_warn(dev, "%s: Unable to allocate frequency table\n",
@@ -650,20 +901,29 @@ int opp_init_cpufreq_table(struct device *dev,
 
 	list_for_each_entry(opp, &dev_opp->opp_list, node) {
 		if (opp->available) {
+<<<<<<< HEAD
 			freq_table[i].index = i;
+=======
+			freq_table[i].driver_data = i;
+>>>>>>> refs/remotes/origin/master
 			freq_table[i].frequency = opp->rate / 1000;
 			i++;
 		}
 	}
 	mutex_unlock(&dev_opp_list_lock);
 
+<<<<<<< HEAD
 	freq_table[i].index = i;
+=======
+	freq_table[i].driver_data = i;
+>>>>>>> refs/remotes/origin/master
 	freq_table[i].frequency = CPUFREQ_TABLE_END;
 
 	*table = &freq_table[0];
 
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 #endif		/* CONFIG_CPU_FREQ */
 =======
@@ -676,6 +936,18 @@ int opp_init_cpufreq_table(struct device *dev,
  * Free up the table allocated by opp_init_cpufreq_table
  */
 void opp_free_cpufreq_table(struct device *dev,
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_init_cpufreq_table);
+
+/**
+ * dev_pm_opp_free_cpufreq_table() - free the cpufreq table
+ * @dev:	device for which we do this operation
+ * @table:	table to free
+ *
+ * Free up the table allocated by dev_pm_opp_init_cpufreq_table
+ */
+void dev_pm_opp_free_cpufreq_table(struct device *dev,
+>>>>>>> refs/remotes/origin/master
 				struct cpufreq_frequency_table **table)
 {
 	if (!table)
@@ -684,6 +956,7 @@ void opp_free_cpufreq_table(struct device *dev,
 	kfree(*table);
 	*table = NULL;
 }
+<<<<<<< HEAD
 #endif		/* CONFIG_CPU_FREQ */
 
 /**
@@ -691,6 +964,16 @@ void opp_free_cpufreq_table(struct device *dev,
  * @dev:	device pointer used to lookup device OPPs.
  */
 struct srcu_notifier_head *opp_get_notifier(struct device *dev)
+=======
+EXPORT_SYMBOL_GPL(dev_pm_opp_free_cpufreq_table);
+#endif		/* CONFIG_CPU_FREQ */
+
+/**
+ * dev_pm_opp_get_notifier() - find notifier_head of the device with opp
+ * @dev:	device pointer used to lookup device OPPs.
+ */
+struct srcu_notifier_head *dev_pm_opp_get_notifier(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_opp *dev_opp = find_device_opp(dev);
 
@@ -699,4 +982,54 @@ struct srcu_notifier_head *opp_get_notifier(struct device *dev)
 
 	return &dev_opp->head;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_OF
+/**
+ * of_init_opp_table() - Initialize opp table from device tree
+ * @dev:	device pointer used to lookup device OPPs.
+ *
+ * Register the initial OPP table with the OPP library for given device.
+ */
+int of_init_opp_table(struct device *dev)
+{
+	const struct property *prop;
+	const __be32 *val;
+	int nr;
+
+	prop = of_find_property(dev->of_node, "operating-points", NULL);
+	if (!prop)
+		return -ENODEV;
+	if (!prop->value)
+		return -ENODATA;
+
+	/*
+	 * Each OPP is a set of tuples consisting of frequency and
+	 * voltage like <freq-kHz vol-uV>.
+	 */
+	nr = prop->length / sizeof(u32);
+	if (nr % 2) {
+		dev_err(dev, "%s: Invalid OPP list\n", __func__);
+		return -EINVAL;
+	}
+
+	val = prop->value;
+	while (nr) {
+		unsigned long freq = be32_to_cpup(val++) * 1000;
+		unsigned long volt = be32_to_cpup(val++);
+
+		if (dev_pm_opp_add(dev, freq, volt)) {
+			dev_warn(dev, "%s: Failed to add OPP %ld\n",
+				 __func__, freq);
+			continue;
+		}
+		nr -= 2;
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(of_init_opp_table);
+#endif
+>>>>>>> refs/remotes/origin/master

@@ -2,10 +2,14 @@ Overview of Linux kernel SPI support
 ====================================
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 21-May-2007
 =======
 02-Feb-2012
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+02-Feb-2012
+>>>>>>> refs/remotes/origin/master
 
 What is SPI?
 ------------
@@ -219,7 +223,11 @@ So for example arch/.../mach-*/board-*.c files might have code like:
 	/* if your mach-* infrastructure doesn't support kernels that can
 	 * run on multiple boards, pdata wouldn't benefit from "__init".
 	 */
+<<<<<<< HEAD
 	static struct mysoc_spi_data __initdata pdata = { ... };
+=======
+	static struct mysoc_spi_data pdata __initdata = { ... };
+>>>>>>> refs/remotes/origin/master
 
 	static __init board_init(void)
 	{
@@ -349,7 +357,11 @@ SPI protocol drivers somewhat resemble platform device drivers:
 		},
 
 		.probe		= CHIP_probe,
+<<<<<<< HEAD
 		.remove		= __devexit_p(CHIP_remove),
+=======
+		.remove		= CHIP_remove,
+>>>>>>> refs/remotes/origin/master
 		.suspend	= CHIP_suspend,
 		.resume		= CHIP_resume,
 	};
@@ -359,7 +371,11 @@ device whose board_info gave a modalias of "CHIP".  Your probe() code
 might look like this unless you're creating a device which is managing
 a bus (appearing under /sys/class/spi_master).
 
+<<<<<<< HEAD
 	static int __devinit CHIP_probe(struct spi_device *spi)
+=======
+	static int CHIP_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 	{
 		struct CHIP			*chip;
 		struct CHIP_platform_data	*pdata;
@@ -488,6 +504,7 @@ and those methods.)
 
 After you initialize the spi_master, then use spi_register_master() to
 <<<<<<< HEAD
+<<<<<<< HEAD
 publish it to the rest of the system.  At that time, device nodes for
 the controller and any predeclared spi devices will be made available,
 and the driver model core will take care of binding them to drivers.
@@ -496,6 +513,11 @@ publish it to the rest of the system. At that time, device nodes for the
 controller and any predeclared spi devices will be made available, and
 the driver model core will take care of binding them to drivers.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+publish it to the rest of the system. At that time, device nodes for the
+controller and any predeclared spi devices will be made available, and
+the driver model core will take care of binding them to drivers.
+>>>>>>> refs/remotes/origin/master
 
 If you need to remove your SPI controller driver, spi_unregister_master()
 will reverse the effect of spi_register_master().
@@ -532,6 +554,7 @@ SPI MASTER METHODS
 		** is actively processing transfers for another device.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     master->transfer(struct spi_device *spi, struct spi_message *message)
     	This must not sleep.  Its responsibility is arrange that the
 	transfer happens and its complete() callback is issued.  The two
@@ -540,17 +563,22 @@ SPI MASTER METHODS
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
     master->cleanup(struct spi_device *spi)
 	Your controller driver may use spi_device.controller_state to hold
 	state it dynamically associates with that device.  If you do that,
 	be sure to provide the cleanup() method to free that state.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 SPI MESSAGE QUEUE
 
 The bulk of the driver will be managing the I/O queue fed by transfer().
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     master->prepare_transfer_hardware(struct spi_master *master)
 	This will be called by the queue mechanism to signal to the driver
 	that a message is coming in soon, so the subsystem requests the
@@ -593,7 +621,10 @@ can also be elevated to realtime priority on high-priority SPI traffic.
 Unless the queueing mechanism in the SPI subsystem is selected, the bulk
 of the driver will be managing the I/O queue fed by the now deprecated
 function transfer().
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 That queue could be purely conceptual.  For example, a driver used only
 for low-frequency sensor access might be fine using synchronous PIO.
@@ -620,9 +651,15 @@ Mark Underwood
 Andrew Victor
 Vitaly Wool
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 Grant Likely
 Mark Brown
 Linus Walleij
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Grant Likely
+Mark Brown
+Linus Walleij
+>>>>>>> refs/remotes/origin/master

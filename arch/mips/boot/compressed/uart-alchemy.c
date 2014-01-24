@@ -3,6 +3,7 @@
 void putc(char c)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* all current (Jan. 2010) in-kernel boards */
 	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
 =======
@@ -12,4 +13,7 @@ void putc(char c)
 	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
+>>>>>>> refs/remotes/origin/master
 }

@@ -23,6 +23,7 @@
 #define DEBUG 1
 #define XFS_BUF_LOCK_TRACKING 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* #define QUOTADEBUG 1 */
 #endif
 
@@ -33,4 +34,15 @@
 #include "xfs_linux.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+#ifdef CONFIG_XFS_WARN
+#define XFS_WARN 1
+#endif
+
+
+#include "xfs_linux.h"
+
+>>>>>>> refs/remotes/origin/master
 #endif	/* __XFS_H__ */

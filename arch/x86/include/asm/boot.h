@@ -1,6 +1,7 @@
 #ifndef _ASM_X86_BOOT_H
 #define _ASM_X86_BOOT_H
 
+<<<<<<< HEAD
 /* Internal svga startup constants */
 #define NORMAL_VGA	0xffff		/* 80x25 mode */
 #define EXTENDED_VGA	0xfffe		/* 80x50 mode */
@@ -9,6 +10,11 @@
 #ifdef __KERNEL__
 
 #include <asm/pgtable_types.h>
+=======
+
+#include <asm/pgtable_types.h>
+#include <uapi/asm/boot.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Physical address where kernel should be loaded. */
 #define LOAD_PHYSICAL_ADDR ((CONFIG_PHYSICAL_START \
@@ -19,7 +25,11 @@
 #ifdef CONFIG_X86_64
 #define MIN_KERNEL_ALIGN_LG2	PMD_SHIFT
 #else
+<<<<<<< HEAD
 #define MIN_KERNEL_ALIGN_LG2	(PAGE_SHIFT + THREAD_ORDER)
+=======
+#define MIN_KERNEL_ALIGN_LG2	(PAGE_SHIFT + THREAD_SIZE_ORDER)
+>>>>>>> refs/remotes/origin/master
 #endif
 #define MIN_KERNEL_ALIGN	(_AC(1, UL) << MIN_KERNEL_ALIGN_LG2)
 
@@ -42,6 +52,9 @@
 #define BOOT_STACK_SIZE	0x1000
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_BOOT_H */

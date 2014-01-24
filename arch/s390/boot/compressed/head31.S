@@ -8,9 +8,13 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/linkage.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
 #include <asm/page.h>
@@ -18,11 +22,15 @@
 
 __HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.globl	startup_continue
 startup_continue:
 =======
 ENTRY(startup_continue)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENTRY(startup_continue)
+>>>>>>> refs/remotes/origin/master
 	basr	%r13,0			# get base
 .LPG1:
 	# setup stack

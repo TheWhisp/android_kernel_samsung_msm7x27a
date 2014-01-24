@@ -2,10 +2,14 @@
  *
  * Copyright (C) 2007 Google, Inc.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2007-2011, The Linux Foundation. All rights reserved.
 =======
  * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2007-2012, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -18,6 +22,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/err.h>
 #include <linux/spinlock.h>
@@ -716,3 +721,17 @@ static int __init clock_late_init(void)
 	return ret;
 }
 late_initcall(clock_late_init);
+=======
+#include <linux/clk-provider.h>
+#include <linux/module.h>
+
+#include "clock.h"
+
+int clk_reset(struct clk *clk, enum clk_reset_action action)
+{
+	struct clk_hw *hw = __clk_get_hw(clk);
+	struct msm_clk *m = to_msm_clk(hw);
+	return m->reset(hw, action);
+}
+EXPORT_SYMBOL(clk_reset);
+>>>>>>> refs/remotes/origin/master

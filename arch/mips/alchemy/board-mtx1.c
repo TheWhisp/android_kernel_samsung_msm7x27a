@@ -81,10 +81,17 @@ static void mtx1_power_off(void)
 
 void __init board_setup(void)
 {
+<<<<<<< HEAD
 #if defined(CONFIG_USB_OHCI_HCD) || defined(CONFIG_USB_OHCI_HCD_MODULE)
 	/* Enable USB power switch */
 	alchemy_gpio_direction_output(204, 0);
 #endif /* defined(CONFIG_USB_OHCI_HCD) || defined(CONFIG_USB_OHCI_HCD_MODULE) */
+=======
+#if IS_ENABLED(CONFIG_USB_OHCI_HCD)
+	/* Enable USB power switch */
+	alchemy_gpio_direction_output(204, 0);
+#endif /* IS_ENABLED(CONFIG_USB_OHCI_HCD) */
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize sys_pinfunc */
 	au_writel(SYS_PF_NI2, SYS_PINFUNC);
@@ -173,23 +180,39 @@ static struct mtd_partition mtx1_mtd_partitions[] = {
 	{
 		.name	= "filesystem",
 		.size	= 0x01C00000,
+<<<<<<< HEAD
 		.offset	= 0,
+=======
+		.offset = 0,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name	= "yamon",
 		.size	= 0x00100000,
+<<<<<<< HEAD
 		.offset	= MTDPART_OFS_APPEND,
+=======
+		.offset = MTDPART_OFS_APPEND,
+>>>>>>> refs/remotes/origin/master
 		.mask_flags = MTD_WRITEABLE,
 	},
 	{
 		.name	= "kernel",
 		.size	= 0x002c0000,
+<<<<<<< HEAD
 		.offset	= MTDPART_OFS_APPEND,
+=======
+		.offset = MTDPART_OFS_APPEND,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.name	= "yamon env",
 		.size	= 0x00040000,
+<<<<<<< HEAD
 		.offset	= MTDPART_OFS_APPEND,
+=======
+		.offset = MTDPART_OFS_APPEND,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -228,6 +251,11 @@ static int mtx1_pci_idsel(unsigned int devsel, int assert)
 	 * adapter on the mtx-1 "singleboard" variant. It triggers a custom
 	 * logic chip connected to EXT_IO3 (GPIO1) to suppress IDSEL signals.
 	 */
+<<<<<<< HEAD
+=======
+	udelay(1);
+
+>>>>>>> refs/remotes/origin/master
 	if (assert && devsel != 0)
 		/* Suppress signal to Cardbus */
 		alchemy_gpio_set_value(1, 0);	/* set EXT_IO3 OFF */
@@ -274,7 +302,11 @@ static struct platform_device mtx1_pci_host = {
 	.resource	= alchemy_pci_host_res,
 };
 
+<<<<<<< HEAD
 static struct __initdata platform_device * mtx1_devs[] = {
+=======
+static struct platform_device *mtx1_devs[] __initdata = {
+>>>>>>> refs/remotes/origin/master
 	&mtx1_pci_host,
 	&mtx1_gpio_leds,
 	&mtx1_wdt,

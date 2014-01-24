@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* TILE-Gx opcode information.
  *
  * Copyright 2011 Tilera Corporation. All Rights Reserved.
@@ -20,7 +23,10 @@
  *
  */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* This define is BFD_RELOC_##x for real bfd, or -1 for everyone else. */
 #define BFD_RELOC(x) -1
 
@@ -30,6 +36,7 @@
 #define TREG_ZERO 63
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* FIXME: Rename this. */
 #include <asm/opcode-tile_64.h>
 
@@ -38,6 +45,10 @@
 #include <linux/stddef.h>
 #include <asm/tile-desc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/stddef.h>
+#include <asm/tile-desc.h>
+>>>>>>> refs/remotes/origin/master
 
 const struct tilegx_opcode tilegx_opcodes[334] =
 {
@@ -2069,19 +2080,27 @@ const struct tilegx_operand tilegx_operands[35] =
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILEGX_OP_TYPE_IMMEDIATE, BFD_RELOC(NONE),
 =======
     TILEGX_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEGX_MMSTART_X0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEGX_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEGX_MMSTART_X0),
+>>>>>>> refs/remotes/origin/master
     6, 0, 0, 0, 0, 0,
     create_BFStart_X0, get_BFStart_X0
   },
   {
 <<<<<<< HEAD
+<<<<<<< HEAD
     TILEGX_OP_TYPE_IMMEDIATE, BFD_RELOC(NONE),
 =======
     TILEGX_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEGX_MMEND_X0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    TILEGX_OP_TYPE_IMMEDIATE, BFD_RELOC(TILEGX_MMEND_X0),
+>>>>>>> refs/remotes/origin/master
     6, 0, 0, 0, 0, 0,
     create_BFEnd_X0, get_BFEnd_X0
   },

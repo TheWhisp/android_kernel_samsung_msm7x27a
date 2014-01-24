@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_bit.h"
 #include "xfs_log.h"
 #include "xfs_inum.h"
@@ -36,6 +37,22 @@
 #include "xfs_buf_item.h"
 #include "xfs_trans_priv.h"
 #include "xfs_qm.h"
+=======
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_quota.h"
+#include "xfs_error.h"
+#include "xfs_trans.h"
+#include "xfs_buf_item.h"
+#include "xfs_trans_priv.h"
+#include "xfs_qm.h"
+#include "xfs_log.h"
+>>>>>>> refs/remotes/origin/master
 
 static inline struct xfs_dq_logitem *DQUOT_ITEM(struct xfs_log_item *lip)
 {
@@ -45,6 +62,7 @@ static inline struct xfs_dq_logitem *DQUOT_ITEM(struct xfs_log_item *lip)
 /*
  * returns the number of iovecs needed to log the given dquot item.
  */
+<<<<<<< HEAD
 STATIC uint
 xfs_qm_dquot_logitem_size(
 	struct xfs_log_item	*lip)
@@ -53,6 +71,17 @@ xfs_qm_dquot_logitem_size(
 	 * we need only two iovecs, one for the format, one for the real thing
 	 */
 	return 2;
+=======
+STATIC void
+xfs_qm_dquot_logitem_size(
+	struct xfs_log_item	*lip,
+	int			*nvecs,
+	int			*nbytes)
+{
+	*nvecs += 2;
+	*nbytes += sizeof(struct xfs_dq_logformat) +
+		   sizeof(struct xfs_disk_dquot);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -108,6 +137,7 @@ xfs_qm_dquot_logitem_unpin(
 		wake_up(&dqp->q_pinwait);
 }
 
+<<<<<<< HEAD
 /*
  * Given the logitem, this writes the corresponding dquot entry to disk
  * asynchronously. This is called with the dquot entry securely locked;
@@ -140,6 +170,8 @@ xfs_qm_dquot_logitem_push(
 	xfs_dqunlock(dqp);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 STATIC xfs_lsn_t
 xfs_qm_dquot_logitem_committed(
 	struct xfs_log_item	*lip,
@@ -171,6 +203,7 @@ xfs_qm_dqunpin_wait(
 	wait_event(dqp->q_pinwait, (atomic_read(&dqp->q_pincount) == 0));
 }
 
+<<<<<<< HEAD
 /*
  * This is called when IOP_TRYLOCK returns XFS_ITEM_PUSHBUF to indicate that
  * the dquot is locked by us, but the flush lock isn't. So, here we are
@@ -232,6 +265,18 @@ xfs_qm_dquot_logitem_trylock(
 	struct xfs_log_item	*lip)
 {
 	struct xfs_dquot	*dqp = DQUOT_ITEM(lip)->qli_dquot;
+=======
+STATIC uint
+xfs_qm_dquot_logitem_push(
+	struct xfs_log_item	*lip,
+	struct list_head	*buffer_list) __releases(&lip->li_ailp->xa_lock)
+					      __acquires(&lip->li_ailp->xa_lock)
+{
+	struct xfs_dquot	*dqp = DQUOT_ITEM(lip)->qli_dquot;
+	struct xfs_buf		*bp = NULL;
+	uint			rval = XFS_ITEM_SUCCESS;
+	int			error;
+>>>>>>> refs/remotes/origin/master
 
 	if (atomic_read(&dqp->q_pincount) > 0)
 		return XFS_ITEM_PINNED;
@@ -239,6 +284,7 @@ xfs_qm_dquot_logitem_trylock(
 	if (!xfs_dqlock_nowait(dqp))
 		return XFS_ITEM_LOCKED;
 
+<<<<<<< HEAD
 	if (!xfs_dqflock_nowait(dqp)) {
 		/*
 		 * dquot has already been flushed to the backing buffer,
@@ -249,6 +295,43 @@ xfs_qm_dquot_logitem_trylock(
 
 	ASSERT(lip->li_flags & XFS_LI_IN_AIL);
 	return XFS_ITEM_SUCCESS;
+=======
+	/*
+	 * Re-check the pincount now that we stabilized the value by
+	 * taking the quota lock.
+	 */
+	if (atomic_read(&dqp->q_pincount) > 0) {
+		rval = XFS_ITEM_PINNED;
+		goto out_unlock;
+	}
+
+	/*
+	 * Someone else is already flushing the dquot.  Nothing we can do
+	 * here but wait for the flush to finish and remove the item from
+	 * the AIL.
+	 */
+	if (!xfs_dqflock_nowait(dqp)) {
+		rval = XFS_ITEM_FLUSHING;
+		goto out_unlock;
+	}
+
+	spin_unlock(&lip->li_ailp->xa_lock);
+
+	error = xfs_qm_dqflush(dqp, &bp);
+	if (error) {
+		xfs_warn(dqp->q_mount, "%s: push error %d on dqp %p",
+			__func__, error, dqp);
+	} else {
+		if (!xfs_buf_delwri_queue(bp, buffer_list))
+			rval = XFS_ITEM_FLUSHING;
+		xfs_buf_relse(bp);
+	}
+
+	spin_lock(&lip->li_ailp->xa_lock);
+out_unlock:
+	xfs_dqunlock(dqp);
+	return rval;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -299,11 +382,17 @@ static const struct xfs_item_ops xfs_dquot_item_ops = {
 	.iop_format	= xfs_qm_dquot_logitem_format,
 	.iop_pin	= xfs_qm_dquot_logitem_pin,
 	.iop_unpin	= xfs_qm_dquot_logitem_unpin,
+<<<<<<< HEAD
 	.iop_trylock	= xfs_qm_dquot_logitem_trylock,
 	.iop_unlock	= xfs_qm_dquot_logitem_unlock,
 	.iop_committed	= xfs_qm_dquot_logitem_committed,
 	.iop_push	= xfs_qm_dquot_logitem_push,
 	.iop_pushbuf	= xfs_qm_dquot_logitem_pushbuf,
+=======
+	.iop_unlock	= xfs_qm_dquot_logitem_unlock,
+	.iop_committed	= xfs_qm_dquot_logitem_committed,
+	.iop_push	= xfs_qm_dquot_logitem_push,
+>>>>>>> refs/remotes/origin/master
 	.iop_committing = xfs_qm_dquot_logitem_committing
 };
 
@@ -348,11 +437,22 @@ static inline struct xfs_qoff_logitem *QOFF_ITEM(struct xfs_log_item *lip)
  * We only need 1 iovec for an quotaoff item.  It just logs the
  * quotaoff_log_format structure.
  */
+<<<<<<< HEAD
 STATIC uint
 xfs_qm_qoff_logitem_size(
 	struct xfs_log_item	*lip)
 {
 	return 1;
+=======
+STATIC void
+xfs_qm_qoff_logitem_size(
+	struct xfs_log_item	*lip,
+	int			*nvecs,
+	int			*nbytes)
+{
+	*nvecs += 1;
+	*nbytes += sizeof(struct xfs_qoff_logitem);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -398,11 +498,21 @@ xfs_qm_qoff_logitem_unpin(
 }
 
 /*
+<<<<<<< HEAD
  * Quotaoff items have no locking, so just return success.
  */
 STATIC uint
 xfs_qm_qoff_logitem_trylock(
 	struct xfs_log_item	*lip)
+=======
+ * There isn't much you can do to push a quotaoff item.  It is simply
+ * stuck waiting for the log to be flushed to disk.
+ */
+STATIC uint
+xfs_qm_qoff_logitem_push(
+	struct xfs_log_item	*lip,
+	struct list_head	*buffer_list)
+>>>>>>> refs/remotes/origin/master
 {
 	return XFS_ITEM_LOCKED;
 }
@@ -429,6 +539,7 @@ xfs_qm_qoff_logitem_committed(
 	return lsn;
 }
 
+<<<<<<< HEAD
 /*
  * There isn't much you can do to push on an quotaoff item.  It is simply
  * stuck waiting for the log to be flushed to disk.
@@ -440,6 +551,8 @@ xfs_qm_qoff_logitem_push(
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 STATIC xfs_lsn_t
 xfs_qm_qoffend_logitem_committed(
 	struct xfs_log_item	*lip,
@@ -454,7 +567,11 @@ xfs_qm_qoffend_logitem_committed(
 	 * xfs_trans_ail_delete() drops the AIL lock.
 	 */
 	spin_lock(&ailp->xa_lock);
+<<<<<<< HEAD
 	xfs_trans_ail_delete(ailp, (xfs_log_item_t *)qfs);
+=======
+	xfs_trans_ail_delete(ailp, &qfs->qql_item, SHUTDOWN_LOG_IO_ERROR);
+>>>>>>> refs/remotes/origin/master
 
 	kmem_free(qfs);
 	kmem_free(qfe);
@@ -487,7 +604,10 @@ static const struct xfs_item_ops xfs_qm_qoffend_logitem_ops = {
 	.iop_format	= xfs_qm_qoff_logitem_format,
 	.iop_pin	= xfs_qm_qoff_logitem_pin,
 	.iop_unpin	= xfs_qm_qoff_logitem_unpin,
+<<<<<<< HEAD
 	.iop_trylock	= xfs_qm_qoff_logitem_trylock,
+=======
+>>>>>>> refs/remotes/origin/master
 	.iop_unlock	= xfs_qm_qoff_logitem_unlock,
 	.iop_committed	= xfs_qm_qoffend_logitem_committed,
 	.iop_push	= xfs_qm_qoff_logitem_push,
@@ -502,7 +622,10 @@ static const struct xfs_item_ops xfs_qm_qoff_logitem_ops = {
 	.iop_format	= xfs_qm_qoff_logitem_format,
 	.iop_pin	= xfs_qm_qoff_logitem_pin,
 	.iop_unpin	= xfs_qm_qoff_logitem_unpin,
+<<<<<<< HEAD
 	.iop_trylock	= xfs_qm_qoff_logitem_trylock,
+=======
+>>>>>>> refs/remotes/origin/master
 	.iop_unlock	= xfs_qm_qoff_logitem_unlock,
 	.iop_committed	= xfs_qm_qoff_logitem_committed,
 	.iop_push	= xfs_qm_qoff_logitem_push,

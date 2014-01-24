@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #include "platform.h"
@@ -66,6 +72,7 @@
 
 /* --------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Recovery XLOG from QBRI Card
 	 -------------------------------------------------------------------------- */
 static void qBri_cpu_trapped (PISDN_ADAPTER IoAdapter) {
@@ -74,6 +81,8 @@ static void qBri_cpu_trapped (PISDN_ADAPTER IoAdapter) {
 	dword   regs[4], TrapID, offset, size ;
 	Xdesc   xlogDesc ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Recovery XLOG from QBRI Card
    -------------------------------------------------------------------------- */
 static void qBri_cpu_trapped(PISDN_ADAPTER IoAdapter) {
@@ -81,7 +90,10 @@ static void qBri_cpu_trapped(PISDN_ADAPTER IoAdapter) {
 	word *Xlog;
 	dword   regs[4], TrapID, offset, size;
 	Xdesc   xlogDesc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int factor = (IoAdapter->tasks == 1) ? 1 : 2;
 
 /*
@@ -89,6 +101,7 @@ static void qBri_cpu_trapped(PISDN_ADAPTER IoAdapter) {
  */
 
 	base = DIVA_OS_MEM_ATTACH_CONTROL(IoAdapter);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	offset = IoAdapter->ControllerNumber * (IoAdapter->MemorySize >> factor) ;
 
@@ -99,6 +112,8 @@ static void qBri_cpu_trapped(PISDN_ADAPTER IoAdapter) {
 		dump_trap_frame (IoAdapter, &base[0x90]) ;
 		IoAdapter->trapped = 1 ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	offset = IoAdapter->ControllerNumber * (IoAdapter->MemorySize >> factor);
 
 	TrapID = READ_DWORD(&base[0x80]);
@@ -107,13 +122,17 @@ static void qBri_cpu_trapped(PISDN_ADAPTER IoAdapter) {
 	{
 		dump_trap_frame(IoAdapter, &base[0x90]);
 		IoAdapter->trapped = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	regs[0] = READ_DWORD((base + offset) + 0x70);
 	regs[1] = READ_DWORD((base + offset) + 0x74);
 	regs[2] = READ_DWORD((base + offset) + 0x78);
 	regs[3] = READ_DWORD((base + offset) + 0x7c);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	regs[0] &= IoAdapter->MemorySize - 1 ;
 
@@ -136,6 +155,8 @@ static void qBri_cpu_trapped(PISDN_ADAPTER IoAdapter) {
 		diva_os_free (0, Xlog) ;
 		IoAdapter->trapped = 2 ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	regs[0] &= IoAdapter->MemorySize - 1;
 
 	if ((regs[0] >= offset)
@@ -156,12 +177,16 @@ static void qBri_cpu_trapped(PISDN_ADAPTER IoAdapter) {
 		dump_xlog_buffer(IoAdapter, &xlogDesc);
 		diva_os_free(0, Xlog);
 		IoAdapter->trapped = 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	DIVA_OS_MEM_DETACH_CONTROL(IoAdapter, base);
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
 		Reset QBRI Hardware
 	 -------------------------------------------------------------------------- */
@@ -180,6 +205,8 @@ static void reset_qBri_hardware (PISDN_ADAPTER IoAdapter) {
 	WRITE_WORD(qBriReset, READ_WORD(qBriReset) & ~PLX9054_RELOAD_EEPROM) ;
 	diva_os_wait (1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Reset QBRI Hardware
    -------------------------------------------------------------------------- */
 static void reset_qBri_hardware(PISDN_ADAPTER IoAdapter) {
@@ -196,11 +223,15 @@ static void reset_qBri_hardware(PISDN_ADAPTER IoAdapter) {
 	diva_os_wait(1);
 	WRITE_WORD(qBriReset, READ_WORD(qBriReset) & ~PLX9054_RELOAD_EEPROM);
 	diva_os_wait(1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DIVA_OS_MEM_DETACH_PROM(IoAdapter, qBriReset);
 
 	qBriCntrl = DIVA_OS_MEM_ATTACH_CTLREG(IoAdapter);
 	p = &qBriCntrl[DIVA_4BRI_REVISION(IoAdapter) ? (MQ2_BREG_RISC) : (MQ_BREG_RISC)];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	WRITE_DWORD(p, 0) ;
 	DIVA_OS_MEM_DETACH_CTLREG(IoAdapter, qBriCntrl);
@@ -236,6 +267,8 @@ static void stop_qBri_hardware (PISDN_ADAPTER IoAdapter) {
 	dword volatile __iomem *qBriIrq ;
 	dword volatile __iomem *qBriIsacDspReset ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WRITE_DWORD(p, 0);
 	DIVA_OS_MEM_DETACH_CTLREG(IoAdapter, qBriCntrl);
 
@@ -269,12 +302,16 @@ static void stop_qBri_hardware(PISDN_ADAPTER IoAdapter) {
 	dword volatile __iomem *qBriReset;
 	dword volatile __iomem *qBriIrq;
 	dword volatile __iomem *qBriIsacDspReset;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int rev2 = DIVA_4BRI_REVISION(IoAdapter);
 	int reset_offset = rev2 ? (MQ2_BREG_RISC)      : (MQ_BREG_RISC);
 	int irq_offset   = rev2 ? (MQ2_BREG_IRQ_TEST)  : (MQ_BREG_IRQ_TEST);
 	int hw_offset    = rev2 ? (MQ2_ISAC_DSP_RESET) : (MQ_ISAC_DSP_RESET);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ( IoAdapter->ControllerNumber > 0 )
 		return ;
@@ -282,12 +319,17 @@ static void stop_qBri_hardware(PISDN_ADAPTER IoAdapter) {
 	if (IoAdapter->ControllerNumber > 0)
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IoAdapter->ControllerNumber > 0)
+		return;
+>>>>>>> refs/remotes/origin/master
 	p = DIVA_OS_MEM_ATTACH_CTLREG(IoAdapter);
 	qBriReset = (dword volatile __iomem *)&p[reset_offset];
 	qBriIsacDspReset = (dword volatile __iomem *)&p[hw_offset];
 /*
  *	clear interrupt line (reset Local Interrupt Test Register)
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	WRITE_DWORD(qBriReset, 0) ;
  	WRITE_DWORD(qBriIsacDspReset, 0) ;
@@ -301,6 +343,8 @@ static void stop_qBri_hardware(PISDN_ADAPTER IoAdapter) {
 	qBriIrq   = (dword volatile __iomem *)&p[irq_offset];
 	WRITE_DWORD(qBriIrq, MQ_IRQ_REQ_OFF) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WRITE_DWORD(qBriReset, 0);
 	WRITE_DWORD(qBriIsacDspReset, 0);
 	DIVA_OS_MEM_DETACH_CTLREG(IoAdapter, p);
@@ -312,11 +356,15 @@ static void stop_qBri_hardware(PISDN_ADAPTER IoAdapter) {
 	p = DIVA_OS_MEM_ATTACH_CTLREG(IoAdapter);
 	qBriIrq   = (dword volatile __iomem *)&p[irq_offset];
 	WRITE_DWORD(qBriIrq, MQ_IRQ_REQ_OFF);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DIVA_OS_MEM_DETACH_CTLREG(IoAdapter, p);
 
 	DBG_TRC(("stopped processor @ addr 0x%08lx", qBriReset))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 
@@ -334,6 +382,8 @@ static byte * qBri_check_FPGAsrc (PISDN_ADAPTER IoAdapter, char *FileName,
 	if (!(File = (byte *)xdiLoadFile (FileName, Length, 0))) {
 		return (NULL) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 /* --------------------------------------------------------------------------
@@ -349,11 +399,15 @@ static byte *qBri_check_FPGAsrc(PISDN_ADAPTER IoAdapter, char *FileName,
 
 	if (!(File = (byte *)xdiLoadFile(FileName, Length, 0))) {
 		return (NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 /*
  *	 scan file until FF and put id string into buffer
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for ( i = 0 ; File[i] != 0xff ; )
 	{
@@ -422,6 +476,8 @@ static byte *qBri_check_FPGAsrc(PISDN_ADAPTER IoAdapter, char *FileName,
 	         fpgaType, fpgaFile, fpgaDate, fpgaTime, cnt))
 	return (File) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; File[i] != 0xff;)
 	{
 		if (++i >= *Length)
@@ -488,7 +544,10 @@ static byte *qBri_check_FPGAsrc(PISDN_ADAPTER IoAdapter, char *FileName,
 	DBG_LOG(("FPGA[%s] file %s (%s %s) len %d",
 		 fpgaType, fpgaFile, fpgaDate, fpgaTime, cnt))
 		return (File);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************************************************/
@@ -501,6 +560,7 @@ static byte *qBri_check_FPGAsrc(PISDN_ADAPTER IoAdapter, char *FileName,
 #define FPGA_DIN    FPGA_DOUT   /* bidirectional I/O */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int qBri_FPGA_download (PISDN_ADAPTER IoAdapter) {
 	int            bit ;
 	byte           *File ;
@@ -508,18 +568,24 @@ int qBri_FPGA_download (PISDN_ADAPTER IoAdapter) {
 	word volatile __iomem *addr = (word volatile __iomem *)DIVA_OS_MEM_ATTACH_PROM(IoAdapter);
 	word           val, baseval = FPGA_CS | FPGA_PROG ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int qBri_FPGA_download(PISDN_ADAPTER IoAdapter) {
 	int            bit;
 	byte           *File;
 	dword          code, FileLength;
 	word volatile __iomem *addr = (word volatile __iomem *)DIVA_OS_MEM_ATTACH_PROM(IoAdapter);
 	word           val, baseval = FPGA_CS | FPGA_PROG;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
 	if (DIVA_4BRI_REVISION(IoAdapter))
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 		char* name;
 
@@ -549,6 +615,8 @@ int qBri_FPGA_download(PISDN_ADAPTER IoAdapter) {
 		DIVA_OS_MEM_DETACH_PROM(IoAdapter, addr);
 		return (0) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		char *name;
 
 		switch (IoAdapter->cardType) {
@@ -576,11 +644,15 @@ int qBri_FPGA_download(PISDN_ADAPTER IoAdapter) {
 	if (!File) {
 		DIVA_OS_MEM_DETACH_PROM(IoAdapter, addr);
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 /*
  *	prepare download, pulse PROGRAM pin down.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	WRITE_WORD(addr, baseval & ~FPGA_PROG) ; /* PROGRAM low pulse */
 	WRITE_WORD(addr, baseval) ;              /* release */
@@ -595,6 +667,8 @@ int qBri_FPGA_download(PISDN_ADAPTER IoAdapter) {
 		DIVA_OS_MEM_DETACH_PROM(IoAdapter, addr);
 		return (0) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WRITE_WORD(addr, baseval & ~FPGA_PROG); /* PROGRAM low pulse */
 	WRITE_WORD(addr, baseval);              /* release */
 	diva_os_wait(50);  /* wait until FPGA finished internal memory clear */
@@ -607,11 +681,15 @@ int qBri_FPGA_download(PISDN_ADAPTER IoAdapter) {
 			xdiFreeFile(File);
 		DIVA_OS_MEM_DETACH_PROM(IoAdapter, addr);
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 /*
  *	put data onto the FPGA
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while ( code < FileLength )
 	{
@@ -644,6 +722,8 @@ int qBri_FPGA_download(PISDN_ADAPTER IoAdapter) {
 
 static int load_qBri_hardware (PISDN_ADAPTER IoAdapter) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (code < FileLength)
 	{
 		val = ((word)File[code++]) << 3;
@@ -674,11 +754,15 @@ static int load_qBri_hardware (PISDN_ADAPTER IoAdapter) {
 }
 
 static int load_qBri_hardware(PISDN_ADAPTER IoAdapter) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return (0);
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
 		Card ISR
 	 -------------------------------------------------------------------------- */
@@ -690,6 +774,8 @@ static int qBri_ISR (struct _ISDN_ADAPTER* IoAdapter) {
 	word              	i ;
 	int             	serviced = 0 ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Card ISR
    -------------------------------------------------------------------------- */
 static int qBri_ISR(struct _ISDN_ADAPTER *IoAdapter) {
@@ -699,11 +785,15 @@ static int qBri_ISR(struct _ISDN_ADAPTER *IoAdapter) {
 
 	word			i;
 	int			serviced = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	byte __iomem *p;
 
 	p = DIVA_OS_MEM_ATTACH_RESET(IoAdapter);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ( !(READ_BYTE(&p[PLX9054_INTCSR]) & 0x80) ) {
 		DIVA_OS_MEM_DETACH_RESET(IoAdapter, p);
@@ -713,6 +803,11 @@ static int qBri_ISR(struct _ISDN_ADAPTER *IoAdapter) {
 		DIVA_OS_MEM_DETACH_RESET(IoAdapter, p);
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(READ_BYTE(&p[PLX9054_INTCSR]) & 0x80)) {
+		DIVA_OS_MEM_DETACH_RESET(IoAdapter, p);
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 	DIVA_OS_MEM_DETACH_RESET(IoAdapter, p);
 
@@ -721,6 +816,7 @@ static int qBri_ISR(struct _ISDN_ADAPTER *IoAdapter) {
  */
 	p = DIVA_OS_MEM_ATTACH_CTLREG(IoAdapter);
 	qBriIrq = (dword volatile __iomem *)(&p[DIVA_4BRI_REVISION(IoAdapter) ? (MQ2_BREG_IRQ_TEST)  : (MQ_BREG_IRQ_TEST)]);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	WRITE_DWORD(qBriIrq, MQ_IRQ_REQ_OFF) ;
 	DIVA_OS_MEM_DETACH_CTLREG(IoAdapter, p);
@@ -751,6 +847,8 @@ static void disable_qBri_interrupt (PISDN_ADAPTER IoAdapter) {
 	if ( IoAdapter->ControllerNumber > 0 )
 		return ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WRITE_DWORD(qBriIrq, MQ_IRQ_REQ_OFF);
 	DIVA_OS_MEM_DETACH_CTLREG(IoAdapter, p);
 
@@ -779,7 +877,10 @@ static void disable_qBri_interrupt(PISDN_ADAPTER IoAdapter) {
 
 	if (IoAdapter->ControllerNumber > 0)
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	clear interrupt line (reset Local Interrupt Test Register)
  */
@@ -790,14 +891,19 @@ static void disable_qBri_interrupt(PISDN_ADAPTER IoAdapter) {
 	p = DIVA_OS_MEM_ATTACH_CTLREG(IoAdapter);
 	qBriIrq = (dword volatile __iomem *)(&p[DIVA_4BRI_REVISION(IoAdapter) ? (MQ2_BREG_IRQ_TEST)  : (MQ_BREG_IRQ_TEST)]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WRITE_DWORD(qBriIrq, MQ_IRQ_REQ_OFF) ;
 =======
 	WRITE_DWORD(qBriIrq, MQ_IRQ_REQ_OFF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WRITE_DWORD(qBriIrq, MQ_IRQ_REQ_OFF);
+>>>>>>> refs/remotes/origin/master
 	DIVA_OS_MEM_DETACH_CTLREG(IoAdapter, p);
 }
 
 /* --------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
 		Install Adapter Entry Points
 	 -------------------------------------------------------------------------- */
@@ -844,6 +950,8 @@ static void set_qBri_functions (PISDN_ADAPTER IoAdapter) {
 
 static void set_qBri2_functions (PISDN_ADAPTER IoAdapter) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
    Install Adapter Entry Points
    -------------------------------------------------------------------------- */
 static void set_common_qBri_functions(PISDN_ADAPTER IoAdapter) {
@@ -888,11 +996,15 @@ static void set_qBri_functions(PISDN_ADAPTER IoAdapter) {
 }
 
 static void set_qBri2_functions(PISDN_ADAPTER IoAdapter) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!IoAdapter->tasks) {
 		IoAdapter->tasks = MQ_INSTANCE_COUNT;
 	}
 	IoAdapter->MemorySize = (IoAdapter->tasks == 1) ? BRI2_MEMORY_SIZE : MQ2_MEMORY_SIZE;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	set_common_qBri_functions (IoAdapter) ;
 	diva_os_set_qBri2_functions (IoAdapter) ;
@@ -900,10 +1012,15 @@ static void set_qBri2_functions(PISDN_ADAPTER IoAdapter) {
 	set_common_qBri_functions(IoAdapter);
 	diva_os_set_qBri2_functions(IoAdapter);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_common_qBri_functions(IoAdapter);
+	diva_os_set_qBri2_functions(IoAdapter);
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************************************************/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void prepare_qBri_functions (PISDN_ADAPTER IoAdapter) {
 
@@ -916,6 +1033,8 @@ void prepare_qBri_functions (PISDN_ADAPTER IoAdapter) {
 
 void prepare_qBri2_functions (PISDN_ADAPTER IoAdapter) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void prepare_qBri_functions(PISDN_ADAPTER IoAdapter) {
 
 	set_qBri_functions(IoAdapter->QuadroList->QuadroAdapter[0]);
@@ -926,11 +1045,15 @@ void prepare_qBri_functions(PISDN_ADAPTER IoAdapter) {
 }
 
 void prepare_qBri2_functions(PISDN_ADAPTER IoAdapter) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!IoAdapter->tasks) {
 		IoAdapter->tasks = MQ_INSTANCE_COUNT;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	set_qBri2_functions (IoAdapter->QuadroList->QuadroAdapter[0]) ;
 	if (IoAdapter->tasks > 1) {
@@ -938,12 +1061,17 @@ void prepare_qBri2_functions(PISDN_ADAPTER IoAdapter) {
 		set_qBri2_functions (IoAdapter->QuadroList->QuadroAdapter[2]) ;
 		set_qBri2_functions (IoAdapter->QuadroList->QuadroAdapter[3]) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	set_qBri2_functions(IoAdapter->QuadroList->QuadroAdapter[0]);
 	if (IoAdapter->tasks > 1) {
 		set_qBri2_functions(IoAdapter->QuadroList->QuadroAdapter[1]);
 		set_qBri2_functions(IoAdapter->QuadroList->QuadroAdapter[2]);
 		set_qBri2_functions(IoAdapter->QuadroList->QuadroAdapter[3]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 }

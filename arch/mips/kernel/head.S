@@ -21,7 +21,10 @@
 #include <asm/asmmacro.h>
 #include <asm/irqflags.h>
 #include <asm/regdef.h>
+<<<<<<< HEAD
 #include <asm/page.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/pgtable-bits.h>
 #include <asm/mipsregs.h>
 #include <asm/stackframe.h>
@@ -29,6 +32,7 @@
 #include <kernel-entry-init.h>
 
 	/*
+<<<<<<< HEAD
 	 * inputs are the text nasid in t1, data nasid in t2.
 	 */
 	.macro MAPPED_KERNEL_SETUP_TLB
@@ -68,6 +72,8 @@
 	.endm
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * For the moment disable interrupts, mark the kernel mode and
 	 * set ST0_KX so that the CPU does not spit fire when using
 	 * 64-bit addresses.  A full initialization of the CPU's status
@@ -134,7 +140,11 @@ EXPORT(_stext)
 #ifdef CONFIG_BOOT_RAW
 	/*
 	 * Give us a fighting chance of running if execution beings at the
+<<<<<<< HEAD
 	 * kernel load address.  This is needed because this platform does
+=======
+	 * kernel load address.	 This is needed because this platform does
+>>>>>>> refs/remotes/origin/master
 	 * not have a ELF loader yet.
 	 */
 FEXPORT(__kernel_entry)
@@ -198,11 +208,17 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
 	j		start_kernel
 	END(kernel_entry)
 
+<<<<<<< HEAD
 	__CPUINIT
 
 #ifdef CONFIG_SMP
 /*
  * SMP slave cpus entry point.  Board specific code for bootstrap calls this
+=======
+#ifdef CONFIG_SMP
+/*
+ * SMP slave cpus entry point.	Board specific code for bootstrap calls this
+>>>>>>> refs/remotes/origin/master
  * function after setting up the stack and gp registers.
  */
 NESTED(smp_bootstrap, 16, sp)
@@ -228,5 +244,8 @@ NESTED(smp_bootstrap, 16, sp)
 	j	start_secondary
 	END(smp_bootstrap)
 #endif /* CONFIG_SMP */
+<<<<<<< HEAD
 
 	__FINIT
+=======
+>>>>>>> refs/remotes/origin/master

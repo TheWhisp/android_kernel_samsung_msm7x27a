@@ -14,14 +14,25 @@
 #include <linux/init.h>
 #include <linux/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/proc-fns.h>
 #include <asm/system_misc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+#include <asm/proc-fns.h>
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <mach/at91x40.h>
 #include <mach/at91_st.h>
 #include <mach/timex.h>
+<<<<<<< HEAD
+=======
+
+#include "at91_aic.h"
+>>>>>>> refs/remotes/origin/master
 #include "generic.h"
 
 /*
@@ -43,25 +54,35 @@ unsigned long clk_get_rate(struct clk *clk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init at91x40_initialize(unsigned long main_clock)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void at91x40_idle(void)
 {
 	/*
 	 * Disable the processor clock.  The processor will be automatically
 	 * re-enabled by an interrupt or by a reset.
 	 */
+<<<<<<< HEAD
 	__raw_writel(AT91_PS_CR_CPU, AT91_PS_CR);
+=======
+	__raw_writel(AT91_PS_CR_CPU, AT91_IO_P2V(AT91_PS_CR));
+>>>>>>> refs/remotes/origin/master
 	cpu_do_idle();
 }
 
 void __init at91x40_initialize(unsigned long main_clock)
 {
 	arm_pm_idle = at91x40_idle;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	at91_extern_irq = (1 << AT91X40_ID_IRQ0) | (1 << AT91X40_ID_IRQ1)
 			| (1 << AT91X40_ID_IRQ2);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -91,9 +112,19 @@ static unsigned int at91x40_default_irq_priority[NR_AIC_IRQS] __initdata = {
 
 void __init at91x40_init_interrupts(unsigned int priority[NR_AIC_IRQS])
 {
+<<<<<<< HEAD
 	if (!priority)
 		priority = at91x40_default_irq_priority;
 
 	at91_aic_init(priority);
 }
 
+=======
+	u32  extern_irq = (1 << AT91X40_ID_IRQ0) | (1 << AT91X40_ID_IRQ1)
+			| (1 << AT91X40_ID_IRQ2);
+	if (!priority)
+		priority = at91x40_default_irq_priority;
+
+	at91_aic_init(priority, extern_irq);
+}
+>>>>>>> refs/remotes/origin/master

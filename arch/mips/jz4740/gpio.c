@@ -3,7 +3,11 @@
  *  JZ4740 platform GPIO support
  *
  *  This program is free software; you can redistribute it and/or modify it
+<<<<<<< HEAD
  *  under  the terms of the GNU General  Public License as published by the
+=======
+ *  under  the terms of the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  *  Free Software Foundation;  either version 2 of the License, or (at your
  *  option) any later version.
  *
@@ -18,10 +22,13 @@
 #include <linux/init.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 #include <linux/syscore_ops.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <linux/delay.h>
@@ -34,10 +41,15 @@
 #include <asm/mach-jz4740/base.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "irq.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "irq.h"
+
+>>>>>>> refs/remotes/origin/master
 #define JZ4740_GPIO_BASE_A (32*0)
 #define JZ4740_GPIO_BASE_B (32*1)
 #define JZ4740_GPIO_BASE_C (32*2)
@@ -86,19 +98,25 @@ struct jz_gpio_chip {
 	unsigned int irq;
 	unsigned int irq_base;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint32_t wakeup;
 	uint32_t suspend_mask;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t edge_trigger_both;
 
 	void __iomem *base;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct gpio_chip gpio_chip;
 };
 
@@ -117,11 +135,16 @@ static inline struct jz_gpio_chip *gpio_chip_to_jz_gpio_chip(struct gpio_chip *g
 static inline struct jz_gpio_chip *irq_to_jz_gpio_chip(struct irq_data *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return irq_data_get_irq_chip_data(data);
 =======
 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
 	return gc->private;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(data);
+	return gc->private;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void jz_gpio_write_bit(unsigned int gpio, unsigned int reg)
@@ -324,6 +347,7 @@ static void jz_gpio_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
 	uint32_t flag;
 	unsigned int gpio_irq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int gpio_bank;
 	struct jz_gpio_chip *chip = irq_desc_get_handler_data(desc);
 
@@ -340,6 +364,8 @@ static void jz_gpio_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
 
 	gpio_irq += (gpio_bank << 5) + JZ4740_IRQ_GPIO(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct jz_gpio_chip *chip = irq_desc_get_handler_data(desc);
 
 	flag = readl(chip->base + JZ_REG_GPIO_FLAG);
@@ -349,7 +375,10 @@ static void jz_gpio_irq_demux_handler(unsigned int irq, struct irq_desc *desc)
 	gpio_irq = chip->irq_base + __fls(flag);
 
 	jz_gpio_check_trigger_both(chip, gpio_irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	generic_handle_irq(gpio_irq);
 };
@@ -361,6 +390,7 @@ static inline void jz_gpio_set_irq_bit(struct irq_data *data, unsigned int reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void jz_gpio_irq_mask(struct irq_data *data)
 {
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_MASK_SET);
@@ -368,17 +398,23 @@ static void jz_gpio_irq_mask(struct irq_data *data)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void jz_gpio_irq_unmask(struct irq_data *data)
 {
 	struct jz_gpio_chip *chip = irq_to_jz_gpio_chip(data);
 
 	jz_gpio_check_trigger_both(chip, data->irq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_MASK_CLEAR);
 =======
 	irq_gc_unmask_enable_reg(data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_gc_unmask_enable_reg(data);
+>>>>>>> refs/remotes/origin/master
 };
 
 /* TODO: Check if function is gpio */
@@ -392,16 +428,21 @@ static unsigned int jz_gpio_irq_startup(struct irq_data *data)
 static void jz_gpio_irq_shutdown(struct irq_data *data)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	jz_gpio_irq_mask(data);
 =======
 	irq_gc_mask_disable_reg(data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	irq_gc_mask_disable_reg(data);
+>>>>>>> refs/remotes/origin/master
 
 	/* Set direction to input */
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_DIRECTION_CLEAR);
 	jz_gpio_set_irq_bit(data, JZ_REG_GPIO_SELECT_CLEAR);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void jz_gpio_irq_ack(struct irq_data *data)
 {
@@ -410,6 +451,8 @@ static void jz_gpio_irq_ack(struct irq_data *data)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int jz_gpio_irq_set_type(struct irq_data *data, unsigned int flow_type)
 {
 	struct jz_gpio_chip *chip = irq_to_jz_gpio_chip(data);
@@ -454,6 +497,7 @@ static int jz_gpio_irq_set_wake(struct irq_data *data, unsigned int on)
 {
 	struct jz_gpio_chip *chip = irq_to_jz_gpio_chip(data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&chip->lock);
 	if (on)
 		chip->wakeup |= IRQ_TO_BIT(data->irq);
@@ -484,6 +528,8 @@ static struct irq_chip jz_gpio_irq_chip = {
 static struct lock_class_key gpio_lock_class;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	irq_gc_set_wake(data, on);
 	irq_set_irq_wake(chip->irq, on);
@@ -491,7 +537,10 @@ static struct lock_class_key gpio_lock_class;
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define JZ4740_GPIO_CHIP(_bank) { \
 	.irq_base = JZ4740_IRQ_GPIO_BASE_ ## _bank, \
 	.gpio_chip = { \
@@ -513,6 +562,7 @@ static struct jz_gpio_chip jz4740_gpio_chips[] = {
 	JZ4740_GPIO_CHIP(D),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void jz4740_gpio_suspend_chip(struct jz_gpio_chip *chip)
 {
@@ -573,6 +623,8 @@ static void jz4740_gpio_chip_init(struct jz_gpio_chip *chip, unsigned int id)
 					 handle_level_irq);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void jz4740_gpio_chip_init(struct jz_gpio_chip *chip, unsigned int id)
 {
 	struct irq_chip_generic *gc;
@@ -611,7 +663,10 @@ static void jz4740_gpio_chip_init(struct jz_gpio_chip *chip, unsigned int id)
 		IRQ_GC_INIT_NESTED_LOCK, 0, IRQ_NOPROBE | IRQ_LEVEL);
 
 	gpiochip_add(&chip->gpio_chip);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __init jz4740_gpio_init(void)
@@ -622,10 +677,13 @@ static int __init jz4740_gpio_init(void)
 		jz4740_gpio_chip_init(&jz4740_gpio_chips[i], i);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	register_syscore_ops(&jz4740_gpio_syscore_ops);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "JZ4740 GPIO initialized\n");
 
 	return 0;

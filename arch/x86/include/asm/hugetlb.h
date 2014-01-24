@@ -2,6 +2,10 @@
 #define _ASM_X86_HUGETLB_H
 
 #include <asm/page.h>
+<<<<<<< HEAD
+=======
+#include <asm-generic/hugetlb.h>
+>>>>>>> refs/remotes/origin/master
 
 
 static inline int is_hugepage_only_range(struct mm_struct *mm,
@@ -90,4 +94,11 @@ static inline void arch_release_hugepage(struct page *page)
 {
 }
 
+<<<<<<< HEAD
+=======
+static inline void arch_clear_hugepage_flags(struct page *page)
+{
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_HUGETLB_H */

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __MMIO_P2V(x)	(((x) & 0xfffff) | (((x) & 0x0f000000) >> 4) | 0xf8000000)
 #define MMIO_P2V(x)	((void __iomem *)__MMIO_P2V(x))
 
@@ -19,6 +20,8 @@ struct amba_device name##_device = {		\
 	/* .dma		= DMA_##base,*/		\
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* 2MB large area for motherboard's peripherals static mapping */
 #define V2M_PERIPH 0xf8000000
 
@@ -26,4 +29,13 @@ struct amba_device name##_device = {		\
 #define V2T_PERIPH 0xf8200000
 
 void vexpress_dt_smp_map_io(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+bool vexpress_smp_init_ops(void);
+
+extern struct smp_operations	vexpress_smp_ops;
+
+extern void vexpress_cpu_die(unsigned int cpu);
+>>>>>>> refs/remotes/origin/master

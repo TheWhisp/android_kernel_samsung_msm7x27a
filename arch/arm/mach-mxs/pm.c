@@ -16,19 +16,27 @@
 #include <linux/suspend.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "pm.h"
+>>>>>>> refs/remotes/origin/master
 
 static int mxs_suspend_enter(suspend_state_t state)
 {
 	switch (state) {
 	case PM_SUSPEND_MEM:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		arch_idle();
 =======
 		cpu_do_idle();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cpu_do_idle();
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -42,9 +50,16 @@ static struct platform_suspend_ops mxs_suspend_ops = {
 	.valid = suspend_valid_only_mem,
 };
 
+<<<<<<< HEAD
 static int __init mxs_pm_init(void)
 {
 	suspend_set_ops(&mxs_suspend_ops);
 	return 0;
 }
 device_initcall(mxs_pm_init);
+=======
+void __init mxs_pm_init(void)
+{
+	suspend_set_ops(&mxs_suspend_ops);
+}
+>>>>>>> refs/remotes/origin/master

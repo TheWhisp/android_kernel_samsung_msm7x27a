@@ -9,10 +9,15 @@
 #include <linux/mnt_namespace.h>
 #include <linux/mount.h>
 #include <linux/fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/nsproxy.h>
+>>>>>>> refs/remotes/origin/master
 #include "internal.h"
 #include "pnode.h"
 
 /* return the next shared peer mount of @p */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline struct vfsmount *next_peer(struct vfsmount *p)
 {
@@ -54,6 +59,8 @@ static struct vfsmount *get_peer_under_root(struct vfsmount *mnt,
 		/* Check the namespace first for optimization */
 		if (m->mnt_ns == ns && is_path_reachable(m, m->mnt_root, root))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct mount *next_peer(struct mount *p)
 {
 	return list_entry(p->mnt_share.next, struct mount, mnt_share);
@@ -78,7 +85,10 @@ static struct mount *get_peer_under_root(struct mount *mnt,
 	do {
 		/* Check the namespace first for optimization */
 		if (m->mnt_ns == ns && is_path_reachable(m, m->mnt.mnt_root, root))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return m;
 
 		m = next_peer(m);
@@ -94,6 +104,7 @@ static struct mount *get_peer_under_root(struct mount *mnt,
  * Caller must hold namespace_sem
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int get_dominating_id(struct vfsmount *mnt, const struct path *root)
 {
 	struct vfsmount *m;
@@ -101,13 +112,18 @@ int get_dominating_id(struct vfsmount *mnt, const struct path *root)
 	for (m = mnt->mnt_master; m != NULL; m = m->mnt_master) {
 		struct vfsmount *d = get_peer_under_root(m, mnt->mnt_ns, root);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int get_dominating_id(struct mount *mnt, const struct path *root)
 {
 	struct mount *m;
 
 	for (m = mnt->mnt_master; m != NULL; m = m->mnt_master) {
 		struct mount *d = get_peer_under_root(m, mnt->mnt_ns, root);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (d)
 			return d->mnt_group_id;
 	}
@@ -116,16 +132,22 @@ int get_dominating_id(struct mount *mnt, const struct path *root)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int do_make_slave(struct vfsmount *mnt)
 {
 	struct vfsmount *peer_mnt = mnt, *master = mnt->mnt_master;
 	struct vfsmount *slave_mnt;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int do_make_slave(struct mount *mnt)
 {
 	struct mount *peer_mnt = mnt, *master = mnt->mnt_master;
 	struct mount *slave_mnt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * slave 'mnt' to a peer mount that has the
@@ -134,17 +156,26 @@ static int do_make_slave(struct mount *mnt)
 	 */
 	while ((peer_mnt = next_peer(peer_mnt)) != mnt &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	       peer_mnt->mnt_root != mnt->mnt_root) ;
 =======
 	       peer_mnt->mnt.mnt_root != mnt->mnt.mnt_root) ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       peer_mnt->mnt.mnt_root != mnt->mnt.mnt_root) ;
+>>>>>>> refs/remotes/origin/master
 
 	if (peer_mnt == mnt) {
 		peer_mnt = next_peer(mnt);
 		if (peer_mnt == mnt)
 			peer_mnt = NULL;
 	}
+<<<<<<< HEAD
 	if (IS_MNT_SHARED(mnt) && list_empty(&mnt->mnt_share))
+=======
+	if (mnt->mnt_group_id && IS_MNT_SHARED(mnt) &&
+	    list_empty(&mnt->mnt_share))
+>>>>>>> refs/remotes/origin/master
 		mnt_release_group_id(mnt);
 
 	list_del_init(&mnt->mnt_share);
@@ -164,10 +195,14 @@ static int do_make_slave(struct mount *mnt)
 		while (!list_empty(p)) {
                         slave_mnt = list_first_entry(p,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					struct vfsmount, mnt_slave);
 =======
 					struct mount, mnt_slave);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					struct mount, mnt_slave);
+>>>>>>> refs/remotes/origin/master
 			list_del_init(&slave_mnt->mnt_slave);
 			slave_mnt->mnt_master = NULL;
 		}
@@ -181,10 +216,14 @@ static int do_make_slave(struct mount *mnt)
  * vfsmount lock must be held for write
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void change_mnt_propagation(struct vfsmount *mnt, int type)
 =======
 void change_mnt_propagation(struct mount *mnt, int type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void change_mnt_propagation(struct mount *mnt, int type)
+>>>>>>> refs/remotes/origin/master
 {
 	if (type == MS_SHARED) {
 		set_mnt_shared(mnt);
@@ -196,6 +235,7 @@ void change_mnt_propagation(struct mount *mnt, int type)
 		mnt->mnt_master = NULL;
 		if (type == MS_UNBINDABLE)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mnt->mnt_flags |= MNT_UNBINDABLE;
 		else
 			mnt->mnt_flags &= ~MNT_UNBINDABLE;
@@ -204,6 +244,11 @@ void change_mnt_propagation(struct mount *mnt, int type)
 		else
 			mnt->mnt.mnt_flags &= ~MNT_UNBINDABLE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mnt->mnt.mnt_flags |= MNT_UNBINDABLE;
+		else
+			mnt->mnt.mnt_flags &= ~MNT_UNBINDABLE;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -218,18 +263,24 @@ void change_mnt_propagation(struct mount *mnt, int type)
  * a peer of one we'd found earlier.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct vfsmount *propagation_next(struct vfsmount *m,
 					 struct vfsmount *origin)
 =======
 static struct mount *propagation_next(struct mount *m,
 					 struct mount *origin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct mount *propagation_next(struct mount *m,
+					 struct mount *origin)
+>>>>>>> refs/remotes/origin/master
 {
 	/* are there any slaves of this mount? */
 	if (!IS_MNT_NEW(m) && !list_empty(&m->mnt_slave_list))
 		return first_slave(m);
 
 	while (1) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct vfsmount *next;
 		struct vfsmount *master = m->mnt_master;
@@ -238,12 +289,17 @@ static struct mount *propagation_next(struct mount *m,
 			next = next_peer(m);
 			return ((next == origin) ? NULL : next);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		struct mount *master = m->mnt_master;
 
 		if (master == origin->mnt_master) {
 			struct mount *next = next_peer(m);
 			return (next == origin) ? NULL : next;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (m->mnt_slave.next != &master->mnt_slave_list)
 			return next_slave(m);
 
@@ -262,6 +318,7 @@ static struct mount *propagation_next(struct mount *m,
  * 		cloned as a slave.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct vfsmount *get_source(struct vfsmount *dest,
 					struct vfsmount *last_dest,
 					struct vfsmount *last_src,
@@ -270,6 +327,8 @@ static struct vfsmount *get_source(struct vfsmount *dest,
 	struct vfsmount *p_last_src = NULL;
 	struct vfsmount *p_last_dest = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mount *get_source(struct mount *dest,
 				struct mount *last_dest,
 				struct mount *last_src,
@@ -277,7 +336,10 @@ static struct mount *get_source(struct mount *dest,
 {
 	struct mount *p_last_src = NULL;
 	struct mount *p_last_dest = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	while (last_dest != dest->mnt_master) {
 		p_last_dest = last_dest;
@@ -318,6 +380,7 @@ static struct mount *get_source(struct mount *dest,
  * @tree_list : list of heads of trees to be attached.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int propagate_mnt(struct vfsmount *dest_mnt, struct dentry *dest_dentry,
 		    struct vfsmount *source_mnt, struct list_head *tree_list)
 {
@@ -329,22 +392,36 @@ int propagate_mnt(struct vfsmount *dest_mnt, struct dentry *dest_dentry,
 int propagate_mnt(struct mount *dest_mnt, struct dentry *dest_dentry,
 		    struct mount *source_mnt, struct list_head *tree_list)
 {
+=======
+int propagate_mnt(struct mount *dest_mnt, struct mountpoint *dest_mp,
+		    struct mount *source_mnt, struct list_head *tree_list)
+{
+	struct user_namespace *user_ns = current->nsproxy->mnt_ns->user_ns;
+>>>>>>> refs/remotes/origin/master
 	struct mount *m, *child;
 	int ret = 0;
 	struct mount *prev_dest_mnt = dest_mnt;
 	struct mount *prev_src_mnt  = source_mnt;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	LIST_HEAD(tmp_list);
 	LIST_HEAD(umount_list);
+=======
+	LIST_HEAD(tmp_list);
+>>>>>>> refs/remotes/origin/master
 
 	for (m = propagation_next(dest_mnt, dest_mnt); m;
 			m = propagation_next(m, dest_mnt)) {
 		int type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct vfsmount *source;
 =======
 		struct mount *source;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct mount *source;
+>>>>>>> refs/remotes/origin/master
 
 		if (IS_MNT_NEW(m))
 			continue;
@@ -352,21 +429,36 @@ int propagate_mnt(struct mount *dest_mnt, struct dentry *dest_dentry,
 		source =  get_source(m, prev_dest_mnt, prev_src_mnt, &type);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(child = copy_tree(source, source->mnt_root, type))) {
 =======
 		if (!(child = copy_tree(source, source->mnt.mnt_root, type))) {
 >>>>>>> refs/remotes/origin/cm-10.0
 			ret = -ENOMEM;
+=======
+		/* Notice when we are propagating across user namespaces */
+		if (m->mnt_ns->user_ns != user_ns)
+			type |= CL_UNPRIVILEGED;
+
+		child = copy_tree(source, source->mnt.mnt_root, type);
+		if (IS_ERR(child)) {
+			ret = PTR_ERR(child);
+>>>>>>> refs/remotes/origin/master
 			list_splice(tree_list, tmp_list.prev);
 			goto out;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (is_subdir(dest_dentry, m->mnt_root)) {
 =======
 		if (is_subdir(dest_dentry, m->mnt.mnt_root)) {
 >>>>>>> refs/remotes/origin/cm-10.0
 			mnt_set_mountpoint(m, dest_dentry, child);
+=======
+		if (is_subdir(dest_mp->m_dentry, m->mnt.mnt_root)) {
+			mnt_set_mountpoint(m, dest_mp, child);
+>>>>>>> refs/remotes/origin/master
 			list_add_tail(&child->mnt_hash, tree_list);
 		} else {
 			/*
@@ -379,6 +471,7 @@ int propagate_mnt(struct mount *dest_mnt, struct dentry *dest_dentry,
 		prev_src_mnt  = child;
 	}
 out:
+<<<<<<< HEAD
 	br_write_lock(vfsmount_lock);
 	while (!list_empty(&tmp_list)) {
 <<<<<<< HEAD
@@ -390,12 +483,21 @@ out:
 	}
 	br_write_unlock(vfsmount_lock);
 	release_mounts(&umount_list);
+=======
+	lock_mount_hash();
+	while (!list_empty(&tmp_list)) {
+		child = list_first_entry(&tmp_list, struct mount, mnt_hash);
+		umount_tree(child, 0);
+	}
+	unlock_mount_hash();
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 /*
  * return true if the refcount is greater than count
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int do_refcount_check(struct vfsmount *mnt, int count)
 =======
@@ -404,6 +506,11 @@ static inline int do_refcount_check(struct mount *mnt, int count)
 {
 	int mycount = mnt_get_count(mnt) - mnt->mnt_ghosts;
 	return (mycount > count);
+=======
+static inline int do_refcount_check(struct mount *mnt, int count)
+{
+	return mnt_get_count(mnt) > count;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -417,16 +524,22 @@ static inline int do_refcount_check(struct mount *mnt, int count)
  * vfsmount lock must be held for write
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int propagate_mount_busy(struct vfsmount *mnt, int refcnt)
 {
 	struct vfsmount *m, *child;
 	struct vfsmount *parent = mnt->mnt_parent;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int propagate_mount_busy(struct mount *mnt, int refcnt)
 {
 	struct mount *m, *child;
 	struct mount *parent = mnt->mnt_parent;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (mnt == parent)
@@ -443,10 +556,14 @@ int propagate_mount_busy(struct mount *mnt, int refcnt)
 	for (m = propagation_next(parent, parent); m;
 	     		m = propagation_next(m, parent)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		child = __lookup_mnt(m, mnt->mnt_mountpoint, 0);
 =======
 		child = __lookup_mnt(&m->mnt, mnt->mnt_mountpoint, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		child = __lookup_mnt_last(&m->mnt, mnt->mnt_mountpoint);
+>>>>>>> refs/remotes/origin/master
 		if (child && list_empty(&child->mnt_mounts) &&
 		    (ret = do_refcount_check(child, 1)))
 			break;
@@ -459,16 +576,22 @@ int propagate_mount_busy(struct mount *mnt, int refcnt)
  * parent propagates to.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __propagate_umount(struct vfsmount *mnt)
 {
 	struct vfsmount *parent = mnt->mnt_parent;
 	struct vfsmount *m;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __propagate_umount(struct mount *mnt)
 {
 	struct mount *parent = mnt->mnt_parent;
 	struct mount *m;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(parent == mnt);
 
@@ -476,11 +599,16 @@ static void __propagate_umount(struct mount *mnt)
 			m = propagation_next(m, parent)) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct vfsmount *child = __lookup_mnt(m,
 =======
 		struct mount *child = __lookup_mnt(&m->mnt,
 >>>>>>> refs/remotes/origin/cm-10.0
 					mnt->mnt_mountpoint, 0);
+=======
+		struct mount *child = __lookup_mnt_last(&m->mnt,
+						mnt->mnt_mountpoint);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * umount the child only if the child has no
 		 * other children
@@ -500,10 +628,14 @@ static void __propagate_umount(struct mount *mnt)
 int propagate_umount(struct list_head *list)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct vfsmount *mnt;
 =======
 	struct mount *mnt;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct mount *mnt;
+>>>>>>> refs/remotes/origin/master
 
 	list_for_each_entry(mnt, list, mnt_hash)
 		__propagate_umount(mnt);

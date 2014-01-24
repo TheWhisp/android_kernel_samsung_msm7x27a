@@ -19,9 +19,12 @@
 #include <asm/uaccess.h>
 #include <asm/page.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cacheflush.h>
 #include <asm/cache.h>
 #include <asm/elf.h>
@@ -29,9 +32,13 @@
 #include <asm/smp.h>
 #include <asm/sh_bios.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SH_FPU
 #define cpu_has_fpu	1
@@ -50,9 +57,15 @@
  * peripherals (nofpu, nodsp, and so forth).
  */
 #define onchip_setup(x)					\
+<<<<<<< HEAD
 static int x##_disabled __cpuinitdata = !cpu_has_##x;	\
 							\
 static int __cpuinit x##_setup(char *opts)			\
+=======
+static int x##_disabled = !cpu_has_##x;			\
+							\
+static int x##_setup(char *opts)			\
+>>>>>>> refs/remotes/origin/master
 {							\
 	x##_disabled = 1;				\
 	return 1;					\
@@ -66,7 +79,11 @@ onchip_setup(dsp);
 #define CPUOPM		0xff2f0000
 #define CPUOPM_RABD	(1 << 5)
 
+<<<<<<< HEAD
 static void __cpuinit speculative_execution_init(void)
+=======
+static void speculative_execution_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Clear RABD */
 	__raw_writel(__raw_readl(CPUOPM) & ~CPUOPM_RABD, CPUOPM);
@@ -85,7 +102,11 @@ static void __cpuinit speculative_execution_init(void)
 #define EXPMASK_BRDSSLP		(1 << 1)
 #define EXPMASK_MMCAW		(1 << 4)
 
+<<<<<<< HEAD
 static void __cpuinit expmask_init(void)
+=======
+static void expmask_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long expmask = __raw_readl(EXPMASK);
 
@@ -224,7 +245,11 @@ static void detect_cache_shape(void)
 		l2_cache_shape = -1; /* No S-cache */
 }
 
+<<<<<<< HEAD
 static void __cpuinit fpu_init(void)
+=======
+static void fpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Disable the FPU */
 	if (fpu_disabled && (current_cpu_data.flags & CPU_HAS_FPU)) {
@@ -237,7 +262,11 @@ static void __cpuinit fpu_init(void)
 }
 
 #ifdef CONFIG_SH_DSP
+<<<<<<< HEAD
 static void __cpuinit release_dsp(void)
+=======
+static void release_dsp(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long sr;
 
@@ -251,7 +280,11 @@ static void __cpuinit release_dsp(void)
 	);
 }
 
+<<<<<<< HEAD
 static void __cpuinit dsp_init(void)
+=======
+static void dsp_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long sr;
 
@@ -283,7 +316,11 @@ static void __cpuinit dsp_init(void)
 	release_dsp();
 }
 #else
+<<<<<<< HEAD
 static inline void __cpuinit dsp_init(void) { }
+=======
+static inline void dsp_init(void) { }
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SH_DSP */
 
 /**
@@ -302,7 +339,11 @@ static inline void __cpuinit dsp_init(void) { }
  * Each processor family is still responsible for doing its own probing
  * and cache configuration in cpu_probe().
  */
+<<<<<<< HEAD
 asmlinkage void __cpuinit cpu_init(void)
+=======
+asmlinkage void cpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	current_thread_info()->cpu = hard_smp_processor_id();
 

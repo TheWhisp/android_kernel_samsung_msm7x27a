@@ -460,7 +460,13 @@ il3945_build_tx_cmd_basic(struct il_priv *il, struct il_device_cmd *cmd,
  * start C_TX command process
  */
 static int
+<<<<<<< HEAD
 il3945_tx_skb(struct il_priv *il, struct sk_buff *skb)
+=======
+il3945_tx_skb(struct il_priv *il,
+	      struct ieee80211_sta *sta,
+	      struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
@@ -473,6 +479,10 @@ il3945_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	dma_addr_t txcmd_phys;
 	int txq_id = skb_get_queue_mapping(skb);
 	u16 len, idx, hdr_len;
+<<<<<<< HEAD
+=======
+	u16 firstlen, secondlen;
+>>>>>>> refs/remotes/origin/master
 	u8 id;
 	u8 unicast;
 	u8 sta_id;
@@ -512,7 +522,11 @@ il3945_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	hdr_len = ieee80211_hdrlen(fc);
 
 	/* Find idx into station table for destination station */
+<<<<<<< HEAD
 	sta_id = il_sta_id_or_broadcast(il, info->control.sta);
+=======
+	sta_id = il_sta_id_or_broadcast(il, sta);
+>>>>>>> refs/remotes/origin/master
 	if (sta_id == IL_INVALID_STATION) {
 		D_DROP("Dropping - INVALID STATION: %pM\n", hdr->addr1);
 		goto drop;
@@ -570,6 +584,7 @@ il3945_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	il3945_hw_build_tx_cmd_rate(il, out_cmd, info, hdr, sta_id);
 
 	/* Total # bytes to be transmitted */
+<<<<<<< HEAD
 	len = (u16) skb->len;
 	tx_cmd->len = cpu_to_le16(len);
 
@@ -590,6 +605,13 @@ il3945_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	il_print_hex_dump(il, IL_DL_TX, (u8 *) tx_cmd->hdr,
 			  ieee80211_hdrlen(fc));
 
+=======
+	tx_cmd->len = cpu_to_le16((u16) skb->len);
+
+	tx_cmd->tx_flags &= ~TX_CMD_FLG_ANT_A_MSK;
+	tx_cmd->tx_flags &= ~TX_CMD_FLG_ANT_B_MSK;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Use the first empty entry in this queue's command buffer array
 	 * to contain the Tx command and MAC header concatenated together
@@ -602,11 +624,16 @@ il3945_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	len =
 	    sizeof(struct il3945_tx_cmd) + sizeof(struct il_cmd_header) +
 	    hdr_len;
+<<<<<<< HEAD
 	len = (len + 3) & ~3;
+=======
+	firstlen = (len + 3) & ~3;
+>>>>>>> refs/remotes/origin/master
 
 	/* Physical address of this Tx command's header (not MAC header!),
 	 * within command buffer array. */
 	txcmd_phys =
+<<<<<<< HEAD
 	    pci_map_single(il->pci_dev, &out_cmd->hdr, len, PCI_DMA_TODEVICE);
 	/* we do not map meta data ... so we can safely access address to
 	 * provide to unmap command*/
@@ -628,6 +655,48 @@ il3945_tx_skb(struct il_priv *il, struct sk_buff *skb)
 					       U32_PAD(len));
 	}
 
+=======
+	    pci_map_single(il->pci_dev, &out_cmd->hdr, firstlen,
+			   PCI_DMA_TODEVICE);
+	if (unlikely(pci_dma_mapping_error(il->pci_dev, txcmd_phys)))
+		goto drop_unlock;
+
+	/* Set up TFD's 2nd entry to point directly to remainder of skb,
+	 * if any (802.11 null frames have no payload). */
+	secondlen = skb->len - hdr_len;
+	if (secondlen > 0) {
+		phys_addr =
+		    pci_map_single(il->pci_dev, skb->data + hdr_len, secondlen,
+				   PCI_DMA_TODEVICE);
+		if (unlikely(pci_dma_mapping_error(il->pci_dev, phys_addr)))
+			goto drop_unlock;
+	}
+
+	/* Add buffer containing Tx command and MAC(!) header to TFD's
+	 * first entry */
+	il->ops->txq_attach_buf_to_tfd(il, txq, txcmd_phys, firstlen, 1, 0);
+	dma_unmap_addr_set(out_meta, mapping, txcmd_phys);
+	dma_unmap_len_set(out_meta, len, firstlen);
+	if (secondlen > 0)
+		il->ops->txq_attach_buf_to_tfd(il, txq, phys_addr, secondlen, 0,
+					       U32_PAD(secondlen));
+
+	if (!ieee80211_has_morefrags(hdr->frame_control)) {
+		txq->need_update = 1;
+	} else {
+		wait_write_ptr = 1;
+		txq->need_update = 0;
+	}
+
+	il_update_stats(il, true, fc, skb->len);
+
+	D_TX("sequence nr = 0X%x\n", le16_to_cpu(out_cmd->hdr.sequence));
+	D_TX("tx_flags = 0X%x\n", le32_to_cpu(tx_cmd->tx_flags));
+	il_print_hex_dump(il, IL_DL_TX, tx_cmd, sizeof(*tx_cmd));
+	il_print_hex_dump(il, IL_DL_TX, (u8 *) tx_cmd->hdr,
+			  ieee80211_hdrlen(fc));
+
+>>>>>>> refs/remotes/origin/master
 	/* Tell device the write idx *just past* this latest filled TFD */
 	q->write_ptr = il_queue_inc_wrap(q->write_ptr, q->n_bd);
 	il_txq_update_write_ptr(il, txq);
@@ -999,12 +1068,19 @@ il3945_rx_allocate(struct il_priv *il, gfp_t priority)
 	struct list_head *element;
 	struct il_rx_buf *rxb;
 	struct page *page;
+<<<<<<< HEAD
+=======
+	dma_addr_t page_dma;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	gfp_t gfp_mask = priority;
 
 	while (1) {
 		spin_lock_irqsave(&rxq->lock, flags);
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 		if (list_empty(&rxq->rx_used)) {
 			spin_unlock_irqrestore(&rxq->lock, flags);
 			return;
@@ -1033,6 +1109,7 @@ il3945_rx_allocate(struct il_priv *il, gfp_t priority)
 			break;
 		}
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&rxq->lock, flags);
 		if (list_empty(&rxq->rx_used)) {
 			spin_unlock_irqrestore(&rxq->lock, flags);
@@ -1053,6 +1130,36 @@ il3945_rx_allocate(struct il_priv *il, gfp_t priority)
 
 		spin_lock_irqsave(&rxq->lock, flags);
 
+=======
+		/* Get physical address of RB/SKB */
+		page_dma =
+		    pci_map_page(il->pci_dev, page, 0,
+				 PAGE_SIZE << il->hw_params.rx_page_order,
+				 PCI_DMA_FROMDEVICE);
+
+		if (unlikely(pci_dma_mapping_error(il->pci_dev, page_dma))) {
+			__free_pages(page, il->hw_params.rx_page_order);
+			break;
+		}
+
+		spin_lock_irqsave(&rxq->lock, flags);
+
+		if (list_empty(&rxq->rx_used)) {
+			spin_unlock_irqrestore(&rxq->lock, flags);
+			pci_unmap_page(il->pci_dev, page_dma,
+				       PAGE_SIZE << il->hw_params.rx_page_order,
+				       PCI_DMA_FROMDEVICE);
+			__free_pages(page, il->hw_params.rx_page_order);
+			return;
+		}
+
+		element = rxq->rx_used.next;
+		rxb = list_entry(element, struct il_rx_buf, list);
+		list_del(element);
+
+		rxb->page = page;
+		rxb->page_dma = page_dma;
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&rxb->list, &rxq->rx_free);
 		rxq->free_count++;
 		il->alloc_rxb_page++;
@@ -1282,8 +1389,20 @@ il3945_rx_handle(struct il_priv *il)
 			    pci_map_page(il->pci_dev, rxb->page, 0,
 					 PAGE_SIZE << il->hw_params.
 					 rx_page_order, PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
 			list_add_tail(&rxb->list, &rxq->rx_free);
 			rxq->free_count++;
+=======
+			if (unlikely(pci_dma_mapping_error(il->pci_dev,
+							   rxb->page_dma))) {
+				__il_free_pages(il, rxb->page);
+				rxb->page = NULL;
+				list_add_tail(&rxb->list, &rxq->rx_used);
+			} else {
+				list_add_tail(&rxb->list, &rxq->rx_free);
+				rxq->free_count++;
+			}
+>>>>>>> refs/remotes/origin/master
 		} else
 			list_add_tail(&rxb->list, &rxq->rx_used);
 
@@ -2859,7 +2978,13 @@ il3945_mac_stop(struct ieee80211_hw *hw)
 }
 
 static void
+<<<<<<< HEAD
 il3945_mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
+=======
+il3945_mac_tx(struct ieee80211_hw *hw,
+	       struct ieee80211_tx_control *control,
+	       struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct il_priv *il = hw->priv;
 
@@ -2868,7 +2993,11 @@ il3945_mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 	D_TX("dev->xmit(%d bytes) at rate 0x%02x\n", skb->len,
 	     ieee80211_get_tx_rate(hw, IEEE80211_SKB_CB(skb))->bitrate);
 
+<<<<<<< HEAD
 	if (il3945_tx_skb(il, skb))
+=======
+	if (il3945_tx_skb(il, control->sta, skb))
+>>>>>>> refs/remotes/origin/master
 		dev_kfree_skb_any(skb);
 
 	D_MAC80211("leave\n");
@@ -3095,7 +3224,11 @@ il3945_store_debug_level(struct device *d, struct device_attribute *attr,
 	unsigned long val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 0, &val);
+=======
+	ret = kstrtoul(buf, 0, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		IL_INFO("%s is not in hex or decimal form.\n", buf);
 	else
@@ -3269,7 +3402,11 @@ il3945_store_measurement(struct device *d, struct device_attribute *attr,
 
 	if (count) {
 		char *p = buffer;
+<<<<<<< HEAD
 		strncpy(buffer, buf, min(sizeof(buffer), count));
+=======
+		strlcpy(buffer, buf, sizeof(buffer));
+>>>>>>> refs/remotes/origin/master
 		channel = simple_strtoul(p, NULL, 0);
 		if (channel)
 			params.channel = channel;
@@ -3453,7 +3590,11 @@ static struct attribute_group il3945_attribute_group = {
 	.attrs = il3945_sysfs_entries,
 };
 
+<<<<<<< HEAD
 struct ieee80211_ops il3945_mac_ops = {
+=======
+static struct ieee80211_ops il3945_mac_ops __read_mostly = {
+>>>>>>> refs/remotes/origin/master
 	.tx = il3945_mac_tx,
 	.start = il3945_mac_start,
 	.stop = il3945_mac_stop,
@@ -3470,6 +3611,10 @@ struct ieee80211_ops il3945_mac_ops = {
 	.sta_add = il3945_mac_sta_add,
 	.sta_remove = il_mac_sta_remove,
 	.tx_last_beacon = il_mac_tx_last_beacon,
+<<<<<<< HEAD
+=======
+	.flush = il_mac_flush,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int
@@ -3544,7 +3689,12 @@ il3945_setup_mac(struct il_priv *il)
 	hw->vif_data_size = sizeof(struct il_vif_priv);
 
 	/* Tell mac80211 our characteristics */
+<<<<<<< HEAD
 	hw->flags = IEEE80211_HW_SIGNAL_DBM | IEEE80211_HW_SPECTRUM_MGMT;
+=======
+	hw->flags = IEEE80211_HW_SIGNAL_DBM | IEEE80211_HW_SPECTRUM_MGMT |
+		    IEEE80211_HW_SUPPORTS_PS | IEEE80211_HW_SUPPORTS_DYNAMIC_PS;
+>>>>>>> refs/remotes/origin/master
 
 	hw->wiphy->interface_modes =
 	    BIT(NL80211_IFTYPE_STATION) | BIT(NL80211_IFTYPE_ADHOC);
@@ -3553,6 +3703,11 @@ il3945_setup_mac(struct il_priv *il)
 	    WIPHY_FLAG_CUSTOM_REGULATORY | WIPHY_FLAG_DISABLE_BEACON_HINTS |
 	    WIPHY_FLAG_IBSS_RSN;
 
+<<<<<<< HEAD
+=======
+	hw->wiphy->flags &= ~WIPHY_FLAG_PS_ON_BY_DEFAULT;
+
+>>>>>>> refs/remotes/origin/master
 	hw->wiphy->max_scan_ssids = PROBE_OPTION_MAX_3945;
 	/* we create the 802.11 header and a zero-length SSID element */
 	hw->wiphy->max_scan_ie_len = IL3945_MAX_PROBE_REQUEST - 24 - 2;
@@ -3699,7 +3854,12 @@ il3945_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	 * 5. Setup HW Constants
 	 * ********************/
 	/* Device-specific setup */
+<<<<<<< HEAD
 	if (il3945_hw_set_hw_params(il)) {
+=======
+	err = il3945_hw_set_hw_params(il);
+	if (err) {
+>>>>>>> refs/remotes/origin/master
 		IL_ERR("failed to set hw settings\n");
 		goto out_eeprom_free;
 	}
@@ -3782,7 +3942,10 @@ out_iounmap:
 out_pci_release_regions:
 	pci_release_regions(pdev);
 out_pci_disable_device:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_disable_device(pdev);
 out_ieee80211_free_hw:
 	ieee80211_free_hw(il->hw);
@@ -3790,7 +3953,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il3945_pci_remove(struct pci_dev *pdev)
 {
 	struct il_priv *il = pci_get_drvdata(pdev);
@@ -3859,7 +4026,10 @@ il3945_pci_remove(struct pci_dev *pdev)
 	iounmap(il->hw_base);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	il_free_channel_map(il);
 	il_free_geos(il);
@@ -3880,7 +4050,11 @@ static struct pci_driver il3945_driver = {
 	.name = DRV_NAME,
 	.id_table = il3945_hw_card_ids,
 	.probe = il3945_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(il3945_pci_remove),
+=======
+	.remove = il3945_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver.pm = IL_LEGACY_PM_OPS,
 };
 

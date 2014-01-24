@@ -177,8 +177,11 @@ static int fs_enet_rx_napi(struct napi_struct *napi, int budget)
 				received++;
 				netif_receive_skb(skb);
 			} else {
+<<<<<<< HEAD
 				dev_warn(fep->dev,
 					 "Memory squeeze, dropping packet.\n");
+=======
+>>>>>>> refs/remotes/origin/master
 				fep->stats.rx_dropped++;
 				skbn = skb;
 			}
@@ -309,8 +312,11 @@ static int fs_enet_rx_non_napi(struct net_device *dev)
 				received++;
 				netif_rx(skb);
 			} else {
+<<<<<<< HEAD
 				dev_warn(fep->dev,
 					 "Memory squeeze, dropping packet.\n");
+=======
+>>>>>>> refs/remotes/origin/master
 				fep->stats.rx_dropped++;
 				skbn = skb;
 			}
@@ -505,11 +511,17 @@ void fs_init_bds(struct net_device *dev)
 	 */
 	for (i = 0, bdp = fep->rx_bd_base; i < fep->rx_ring; i++, bdp++) {
 		skb = netdev_alloc_skb(dev, ENET_RX_FRSIZE);
+<<<<<<< HEAD
 		if (skb == NULL) {
 			dev_warn(fep->dev,
 				 "Memory squeeze, unable to allocate skb\n");
 			break;
 		}
+=======
+		if (skb == NULL)
+			break;
+
+>>>>>>> refs/remotes/origin/master
 		skb_align(skb, ENET_RX_ALIGN);
 		fep->rx_skbuff[i] = skb;
 		CBDW_BUFADDR(bdp,
@@ -589,6 +601,7 @@ static struct sk_buff *tx_skb_align_workaround(struct net_device *dev,
 					       struct sk_buff *skb)
 {
 	struct sk_buff *new_skb;
+<<<<<<< HEAD
 	struct fs_enet_private *fep = netdev_priv(dev);
 
 	/* Alloc new skb */
@@ -600,6 +613,13 @@ static struct sk_buff *tx_skb_align_workaround(struct net_device *dev,
 		}
 		return NULL;
 	}
+=======
+
+	/* Alloc new skb */
+	new_skb = netdev_alloc_skb(dev, skb->len + 4);
+	if (!new_skb)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure new skb is properly aligned */
 	skb_align(new_skb, 4);
@@ -888,8 +908,13 @@ static struct net_device_stats *fs_enet_get_stats(struct net_device *dev)
 static void fs_get_drvinfo(struct net_device *dev,
 			    struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_MODULE_NAME);
 	strcpy(info->version, DRV_MODULE_VERSION);
+=======
+	strlcpy(info->driver, DRV_MODULE_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_MODULE_VERSION, sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int fs_get_regs_len(struct net_device *dev)
@@ -963,6 +988,10 @@ static const struct ethtool_ops fs_ethtool_ops = {
 	.get_msglevel = fs_get_msglevel,
 	.set_msglevel = fs_set_msglevel,
 	.get_regs = fs_get_regs,
+<<<<<<< HEAD
+=======
+	.get_ts_info = ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int fs_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
@@ -1003,13 +1032,22 @@ static const struct net_device_ops fs_enet_netdev_ops = {
 };
 
 static struct of_device_id fs_enet_match[];
+<<<<<<< HEAD
 static int __devinit fs_enet_probe(struct platform_device *ofdev)
+=======
+static int fs_enet_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct of_device_id *match;
 	struct net_device *ndev;
 	struct fs_enet_private *fep;
 	struct fs_platform_info *fpi;
 	const u32 *data;
+<<<<<<< HEAD
+=======
+	struct clk *clk;
+	int err;
+>>>>>>> refs/remotes/origin/master
 	const u8 *mac_addr;
 	const char *phy_connection_type;
 	int privsize, len, ret = -ENODEV;
@@ -1047,6 +1085,23 @@ static int __devinit fs_enet_probe(struct platform_device *ofdev)
 			fpi->use_rmii = 1;
 	}
 
+<<<<<<< HEAD
+=======
+	/* make clock lookup non-fatal (the driver is shared among platforms),
+	 * but require enable to succeed when a clock was specified/found,
+	 * keep a reference to the clock upon successful acquisition
+	 */
+	clk = devm_clk_get(&ofdev->dev, "per");
+	if (!IS_ERR(clk)) {
+		err = clk_prepare_enable(clk);
+		if (err) {
+			ret = err;
+			goto out_free_fpi;
+		}
+		fpi->clk_per = clk;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	privsize = sizeof(*fep) +
 	           sizeof(struct sk_buff **) *
 	           (fpi->rx_ring + fpi->tx_ring);
@@ -1058,7 +1113,11 @@ static int __devinit fs_enet_probe(struct platform_device *ofdev)
 	}
 
 	SET_NETDEV_DEV(ndev, &ofdev->dev);
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, ndev);
+=======
+	platform_set_drvdata(ofdev, ndev);
+>>>>>>> refs/remotes/origin/master
 
 	fep = netdev_priv(ndev);
 	fep->dev = &ofdev->dev;
@@ -1078,7 +1137,11 @@ static int __devinit fs_enet_probe(struct platform_device *ofdev)
 
 	mac_addr = of_get_mac_address(ofdev->dev.of_node);
 	if (mac_addr)
+<<<<<<< HEAD
 		memcpy(ndev->dev_addr, mac_addr, 6);
+=======
+		memcpy(ndev->dev_addr, mac_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	ret = fep->ops->allocate_bd(ndev);
 	if (ret)
@@ -1116,9 +1179,16 @@ out_cleanup_data:
 	fep->ops->cleanup_data(ndev);
 out_free_dev:
 	free_netdev(ndev);
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, NULL);
 out_put:
 	of_node_put(fpi->phy_node);
+=======
+out_put:
+	of_node_put(fpi->phy_node);
+	if (fpi->clk_per)
+		clk_disable_unprepare(fpi->clk_per);
+>>>>>>> refs/remotes/origin/master
 out_free_fpi:
 	kfree(fpi);
 	return ret;
@@ -1126,7 +1196,11 @@ out_free_fpi:
 
 static int fs_enet_remove(struct platform_device *ofdev)
 {
+<<<<<<< HEAD
 	struct net_device *ndev = dev_get_drvdata(&ofdev->dev);
+=======
+	struct net_device *ndev = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 	struct fs_enet_private *fep = netdev_priv(ndev);
 
 	unregister_netdev(ndev);
@@ -1135,6 +1209,11 @@ static int fs_enet_remove(struct platform_device *ofdev)
 	fep->ops->cleanup_data(ndev);
 	dev_set_drvdata(fep->dev, NULL);
 	of_node_put(fep->fpi->phy_node);
+<<<<<<< HEAD
+=======
+	if (fep->fpi->clk_per)
+		clk_disable_unprepare(fep->fpi->clk_per);
+>>>>>>> refs/remotes/origin/master
 	free_netdev(ndev);
 	return 0;
 }

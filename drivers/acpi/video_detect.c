@@ -24,10 +24,14 @@
  * are available, video.ko should be used to handle the device.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Otherwise vendor specific drivers like thinkpad_acpi, asus_acpi,
 =======
  * Otherwise vendor specific drivers like thinkpad_acpi, asus-laptop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Otherwise vendor specific drivers like thinkpad_acpi, asus-laptop,
+>>>>>>> refs/remotes/origin/master
  * sony_acpi,... can take care about backlight brightness.
  *
  * If CONFIG_ACPI_VIDEO is neither set as "compiled in" (y) nor as a module (m)
@@ -38,13 +42,22 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/acpi.h>
 #include <linux/dmi.h>
 #include <linux/pci.h>
 
+<<<<<<< HEAD
+=======
+#include "internal.h"
+
+>>>>>>> refs/remotes/origin/master
 #define PREFIX "ACPI: "
 
 ACPI_MODULE_NAME("video");
@@ -58,6 +71,7 @@ acpi_backlight_cap_match(acpi_handle handle, u32 level, void *context,
 			  void **retyurn_value)
 {
 	long *cap = context;
+<<<<<<< HEAD
 	acpi_handle h_dummy;
 
 	if (ACPI_SUCCESS(acpi_get_handle(handle, "_BCM", &h_dummy)) &&
@@ -66,6 +80,15 @@ acpi_backlight_cap_match(acpi_handle handle, u32 level, void *context,
 				  "support\n"));
 		*cap |= ACPI_VIDEO_BACKLIGHT;
 		if (ACPI_FAILURE(acpi_get_handle(handle, "_BQC", &h_dummy)))
+=======
+
+	if (acpi_has_method(handle, "_BCM") &&
+	    acpi_has_method(handle, "_BCL")) {
+		ACPI_DEBUG_PRINT((ACPI_DB_INFO, "Found generic backlight "
+				  "support\n"));
+		*cap |= ACPI_VIDEO_BACKLIGHT;
+		if (!acpi_has_method(handle, "_BQC"))
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_WARNING FW_BUG PREFIX "No _BQC method, "
 				"cannot determine initial brightness\n");
 		/* We have backlight support, no need to scan further */
@@ -74,14 +97,20 @@ acpi_backlight_cap_match(acpi_handle handle, u32 level, void *context,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Returns true if the device is a video device which can be handled by
  * video.ko.
+=======
+/* Returns true if the ACPI object is a video device which can be
+ * handled by video.ko.
+>>>>>>> refs/remotes/origin/master
  * The device will get a Linux specific CID added in scan.c to
  * identify the device as an ACPI graphics device
  * Be aware that the graphics device may not be physically present
  * Use acpi_video_get_capabilities() to detect general ACPI video
  * capabilities of present cards
  */
+<<<<<<< HEAD
 long acpi_is_video_device(struct acpi_device *device)
 {
 	acpi_handle h_dummy;
@@ -103,11 +132,33 @@ long acpi_is_video_device(struct acpi_device *device)
 	if (ACPI_SUCCESS(acpi_get_handle(device->handle, "_VPO", &h_dummy)) &&
 	    ACPI_SUCCESS(acpi_get_handle(device->handle, "_GPD", &h_dummy)) &&
 	    ACPI_SUCCESS(acpi_get_handle(device->handle, "_SPD", &h_dummy)))
+=======
+long acpi_is_video_device(acpi_handle handle)
+{
+	long video_caps = 0;
+
+	/* Is this device able to support video switching ? */
+	if (acpi_has_method(handle, "_DOD") || acpi_has_method(handle, "_DOS"))
+		video_caps |= ACPI_VIDEO_OUTPUT_SWITCHING;
+
+	/* Is this device able to retrieve a video ROM ? */
+	if (acpi_has_method(handle, "_ROM"))
+		video_caps |= ACPI_VIDEO_ROM_AVAILABLE;
+
+	/* Is this device able to configure which video head to be POSTed ? */
+	if (acpi_has_method(handle, "_VPO") &&
+	    acpi_has_method(handle, "_GPD") &&
+	    acpi_has_method(handle, "_SPD"))
+>>>>>>> refs/remotes/origin/master
 		video_caps |= ACPI_VIDEO_DEVICE_POSTING;
 
 	/* Only check for backlight functionality if one of the above hit. */
 	if (video_caps)
+<<<<<<< HEAD
 		acpi_walk_namespace(ACPI_TYPE_DEVICE, device->handle,
+=======
+		acpi_walk_namespace(ACPI_TYPE_DEVICE, handle,
+>>>>>>> refs/remotes/origin/master
 				    ACPI_UINT32_MAX, acpi_backlight_cap_match, NULL,
 				    &video_caps, NULL);
 
@@ -134,11 +185,69 @@ find_video(acpi_handle handle, u32 lvl, void *context, void **rv)
 		if (!dev)
 			return AE_OK;
 		pci_dev_put(dev);
+<<<<<<< HEAD
 		*cap |= acpi_is_video_device(acpi_dev);
+=======
+		*cap |= acpi_is_video_device(handle);
+>>>>>>> refs/remotes/origin/master
 	}
 	return AE_OK;
 }
 
+<<<<<<< HEAD
+=======
+/* Force to use vendor driver when the ACPI device is known to be
+ * buggy */
+static int video_detect_force_vendor(const struct dmi_system_id *d)
+{
+	acpi_video_support |= ACPI_VIDEO_BACKLIGHT_DMI_VENDOR;
+	return 0;
+}
+
+static struct dmi_system_id video_detect_dmi_table[] = {
+	/* On Samsung X360, the BIOS will set a flag (VDRV) if generic
+	 * ACPI backlight device is used. This flag will definitively break
+	 * the backlight interface (even the vendor interface) untill next
+	 * reboot. It's why we should prevent video.ko from being used here
+	 * and we can't rely on a later call to acpi_video_unregister().
+	 */
+	{
+	 .callback = video_detect_force_vendor,
+	 .ident = "X360",
+	 .matches = {
+		DMI_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),
+		DMI_MATCH(DMI_PRODUCT_NAME, "X360"),
+		DMI_MATCH(DMI_BOARD_NAME, "X360"),
+		},
+	},
+	{
+	.callback = video_detect_force_vendor,
+	.ident = "Asus UL30VT",
+	.matches = {
+		DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK Computer Inc."),
+		DMI_MATCH(DMI_PRODUCT_NAME, "UL30VT"),
+		},
+	},
+	{
+	.callback = video_detect_force_vendor,
+	.ident = "Asus UL30A",
+	.matches = {
+		DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK Computer Inc."),
+		DMI_MATCH(DMI_PRODUCT_NAME, "UL30A"),
+		},
+	},
+	{
+	.callback = video_detect_force_vendor,
+	.ident = "Lenovo Yoga 13",
+	.matches = {
+		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+		DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo IdeaPad Yoga 13"),
+		},
+	},
+	{ },
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Returns the video capabilities of a specific ACPI graphics device
  *
@@ -171,6 +280,11 @@ long acpi_video_get_capabilities(acpi_handle graphics_handle)
 		 *		ACPI_VIDEO_BACKLIGHT_DMI_VENDOR;
 		 *}
 		 */
+<<<<<<< HEAD
+=======
+
+		dmi_check_system(video_detect_dmi_table);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		status = acpi_bus_get_device(graphics_handle, &tmp_dev);
 		if (ACPI_FAILURE(status)) {
@@ -189,8 +303,12 @@ long acpi_video_get_capabilities(acpi_handle graphics_handle)
 }
 EXPORT_SYMBOL(acpi_video_get_capabilities);
 
+<<<<<<< HEAD
 /* Returns true if video.ko can do backlight switching */
 int acpi_video_backlight_support(void)
+=======
+static void acpi_video_caps_check(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * We must check whether the ACPI graphics device is physically plugged
@@ -198,6 +316,43 @@ int acpi_video_backlight_support(void)
 	 */
 	if (!acpi_video_caps_checked)
 		acpi_video_get_capabilities(NULL);
+<<<<<<< HEAD
+=======
+}
+
+bool acpi_osi_is_win8(void)
+{
+	return acpi_gbl_osi_data >= ACPI_OSI_WIN_8;
+}
+EXPORT_SYMBOL(acpi_osi_is_win8);
+
+/* Promote the vendor interface instead of the generic video module.
+ * This function allow DMI blacklists to be implemented by externals
+ * platform drivers instead of putting a big blacklist in video_detect.c
+ * After calling this function you will probably want to call
+ * acpi_video_unregister() to make sure the video module is not loaded
+ */
+void acpi_video_dmi_promote_vendor(void)
+{
+	acpi_video_caps_check();
+	acpi_video_support |= ACPI_VIDEO_BACKLIGHT_DMI_VENDOR;
+}
+EXPORT_SYMBOL(acpi_video_dmi_promote_vendor);
+
+/* To be called when a driver who previously promoted the vendor
+ * interface */
+void acpi_video_dmi_demote_vendor(void)
+{
+	acpi_video_caps_check();
+	acpi_video_support &= ~ACPI_VIDEO_BACKLIGHT_DMI_VENDOR;
+}
+EXPORT_SYMBOL(acpi_video_dmi_demote_vendor);
+
+/* Returns true if video.ko can do backlight switching */
+int acpi_video_backlight_support(void)
+{
+	acpi_video_caps_check();
+>>>>>>> refs/remotes/origin/master
 
 	/* First check for boot param -> highest prio */
 	if (acpi_video_support & ACPI_VIDEO_BACKLIGHT_FORCE_VENDOR)

@@ -317,13 +317,19 @@ static const struct usb_device_id	products [] = {
 	.driver_info = ZAURUS_PXA_INFO,
 }, {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* C-750/C-760/C-860/SL-C3000 PDA in MDLM mode */
 	USB_DEVICE_AND_INTERFACE_INFO(0x04DD, 0x9031, USB_CLASS_COMM,
 			USB_CDC_SUBCLASS_MDLM, USB_CDC_PROTO_NONE),
 	.driver_info = (unsigned long) &bogus_mdlm_info,
 }, {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.match_flags    =   USB_DEVICE_ID_MATCH_INT_INFO
 		 | USB_DEVICE_ID_MATCH_DEVICE,
 	.idVendor               = 0x04DD,
@@ -380,6 +386,7 @@ static struct usb_driver zaurus_driver = {
 	.disconnect =	usbnet_disconnect,
 	.suspend =	usbnet_suspend,
 	.resume =	usbnet_resume,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
@@ -397,6 +404,12 @@ module_exit(zaurus_exit);
 =======
 module_usb_driver(zaurus_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.disable_hub_initiated_lpm = 1,
+};
+
+module_usb_driver(zaurus_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Pavel Machek, David Brownell");
 MODULE_DESCRIPTION("Sharp Zaurus PDA, and compatible products");

@@ -27,8 +27,11 @@
 
 /*
  * Greedy allocation.  May fail and may return vmalloced memory.
+<<<<<<< HEAD
  *
  * Must be freed using kmem_free_large.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void *
 kmem_zalloc_greedy(size_t *size, size_t minsize, size_t maxsize)
@@ -36,7 +39,11 @@ kmem_zalloc_greedy(size_t *size, size_t minsize, size_t maxsize)
 	void		*ptr;
 	size_t		kmsize = maxsize;
 
+<<<<<<< HEAD
 	while (!(ptr = kmem_zalloc_large(kmsize))) {
+=======
+	while (!(ptr = vzalloc(kmsize))) {
+>>>>>>> refs/remotes/origin/master
 		if ((kmsize >>= 1) <= minsize)
 			kmsize = minsize;
 	}
@@ -46,7 +53,11 @@ kmem_zalloc_greedy(size_t *size, size_t minsize, size_t maxsize)
 }
 
 void *
+<<<<<<< HEAD
 kmem_alloc(size_t size, unsigned int __nocast flags)
+=======
+kmem_alloc(size_t size, xfs_km_flags_t flags)
+>>>>>>> refs/remotes/origin/master
 {
 	int	retries = 0;
 	gfp_t	lflags = kmem_flags_convert(flags);
@@ -65,6 +76,7 @@ kmem_alloc(size_t size, unsigned int __nocast flags)
 }
 
 void *
+<<<<<<< HEAD
 kmem_zalloc(size_t size, unsigned int __nocast flags)
 {
 	void	*ptr;
@@ -73,6 +85,16 @@ kmem_zalloc(size_t size, unsigned int __nocast flags)
 	if (ptr)
 		memset((char *)ptr, 0, (int)size);
 	return ptr;
+=======
+kmem_zalloc_large(size_t size, xfs_km_flags_t flags)
+{
+	void	*ptr;
+
+	ptr = kmem_zalloc(size, flags | KM_MAYFAIL);
+	if (ptr)
+		return ptr;
+	return vzalloc(size);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -87,7 +109,11 @@ kmem_free(const void *ptr)
 
 void *
 kmem_realloc(const void *ptr, size_t newsize, size_t oldsize,
+<<<<<<< HEAD
 	     unsigned int __nocast flags)
+=======
+	     xfs_km_flags_t flags)
+>>>>>>> refs/remotes/origin/master
 {
 	void	*new;
 
@@ -102,7 +128,11 @@ kmem_realloc(const void *ptr, size_t newsize, size_t oldsize,
 }
 
 void *
+<<<<<<< HEAD
 kmem_zone_alloc(kmem_zone_t *zone, unsigned int __nocast flags)
+=======
+kmem_zone_alloc(kmem_zone_t *zone, xfs_km_flags_t flags)
+>>>>>>> refs/remotes/origin/master
 {
 	int	retries = 0;
 	gfp_t	lflags = kmem_flags_convert(flags);
@@ -119,6 +149,7 @@ kmem_zone_alloc(kmem_zone_t *zone, unsigned int __nocast flags)
 		congestion_wait(BLK_RW_ASYNC, HZ/50);
 	} while (1);
 }
+<<<<<<< HEAD
 
 void *
 kmem_zone_zalloc(kmem_zone_t *zone, unsigned int __nocast flags)
@@ -130,3 +161,5 @@ kmem_zone_zalloc(kmem_zone_t *zone, unsigned int __nocast flags)
 		memset((char *)ptr, 0, kmem_cache_size(zone));
 	return ptr;
 }
+=======
+>>>>>>> refs/remotes/origin/master

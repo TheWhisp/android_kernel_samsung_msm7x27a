@@ -25,9 +25,14 @@
  *          Alex Deucher
  *          Jerome Glisse
  */
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "radeon_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/radeon_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_reg.h"
 #include "radeon.h"
 #include "radeon_asic.h"
@@ -85,12 +90,18 @@ int r200_copy_dma(struct radeon_device *rdev,
 		  uint64_t src_offset,
 		  uint64_t dst_offset,
 		  unsigned num_gpu_pages,
+<<<<<<< HEAD
 		  struct radeon_fence *fence)
 {
 <<<<<<< HEAD
 =======
 	struct radeon_ring *ring = &rdev->ring[RADEON_RING_TYPE_GFX_INDEX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  struct radeon_fence **fence)
+{
+	struct radeon_ring *ring = &rdev->ring[RADEON_RING_TYPE_GFX_INDEX];
+>>>>>>> refs/remotes/origin/master
 	uint32_t size;
 	uint32_t cur_size;
 	int i, num_loops;
@@ -100,15 +111,20 @@ int r200_copy_dma(struct radeon_device *rdev,
 	size = num_gpu_pages << RADEON_GPU_PAGE_SHIFT;
 	num_loops = DIV_ROUND_UP(size, 0x1FFFFF);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_ring_lock(rdev, num_loops * 4 + 64);
 =======
 	r = radeon_ring_lock(rdev, ring, num_loops * 4 + 64);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	r = radeon_ring_lock(rdev, ring, num_loops * 4 + 64);
+>>>>>>> refs/remotes/origin/master
 	if (r) {
 		DRM_ERROR("radeon: moving bo (%d).\n", r);
 		return r;
 	}
 	/* Must wait for 2D idle & clean before DMA or hangs might happen */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	radeon_ring_write(rdev, PACKET0(RADEON_WAIT_UNTIL, 0));
 	radeon_ring_write(rdev, (1 << 16));
@@ -116,12 +132,17 @@ int r200_copy_dma(struct radeon_device *rdev,
 	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
 	radeon_ring_write(ring, (1 << 16));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
+	radeon_ring_write(ring, (1 << 16));
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_loops; i++) {
 		cur_size = size;
 		if (cur_size > 0x1FFFFF) {
 			cur_size = 0x1FFFFF;
 		}
 		size -= cur_size;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		radeon_ring_write(rdev, PACKET0(0x720, 2));
 		radeon_ring_write(rdev, src_offset);
@@ -137,6 +158,8 @@ int r200_copy_dma(struct radeon_device *rdev,
 	}
 	radeon_ring_unlock_commit(rdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		radeon_ring_write(ring, PACKET0(0x720, 2));
 		radeon_ring_write(ring, src_offset);
 		radeon_ring_write(ring, dst_offset);
@@ -147,10 +170,16 @@ int r200_copy_dma(struct radeon_device *rdev,
 	radeon_ring_write(ring, PACKET0(RADEON_WAIT_UNTIL, 0));
 	radeon_ring_write(ring, RADEON_WAIT_DMA_GUI_IDLE);
 	if (fence) {
+<<<<<<< HEAD
 		r = radeon_fence_emit(rdev, fence);
 	}
 	radeon_ring_unlock_commit(rdev, ring);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		r = radeon_fence_emit(rdev, fence, RADEON_RING_TYPE_GFX_INDEX);
+	}
+	radeon_ring_unlock_commit(rdev, ring);
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
@@ -182,7 +211,11 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 	u32 tile_flags = 0;
 	u32 idx_value;
 
+<<<<<<< HEAD
 	ib = p->ib->ptr;
+=======
+	ib = p->ib.ptr;
+>>>>>>> refs/remotes/origin/master
 	track = (struct r100_cs_track *)p->track;
 	idx_value = radeon_get_ib_value(p, idx);
 	switch (reg) {
@@ -191,7 +224,11 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 				  idx, reg);
+<<<<<<< HEAD
 			r100_cs_dump_packet(p, pkt);
+=======
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		break;
@@ -204,11 +241,19 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 			return r;
 		break;
 	case RADEON_RB3D_DEPTHOFFSET:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 				  idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+				  idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		track->zb.robj = reloc->robj;
@@ -217,11 +262,19 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);
 		break;
 	case RADEON_RB3D_COLOROFFSET:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 				  idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+				  idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		track->cb[0].robj = reloc->robj;
@@ -236,6 +289,7 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 	case R200_PP_TXOFFSET_4:
 	case R200_PP_TXOFFSET_5:
 		i = (reg - R200_PP_TXOFFSET_0) / 24;
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
@@ -246,6 +300,15 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 <<<<<<< HEAD
 		ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);
 =======
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+				  idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+			return r;
+		}
+>>>>>>> refs/remotes/origin/master
 		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
 			if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
 				tile_flags |= R200_TXO_MACRO_TILE;
@@ -257,7 +320,10 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 			ib[idx] = tmp + ((u32)reloc->lobj.gpu_offset);
 		} else
 			ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		track->textures[i].robj = reloc->robj;
 		track->tex_dirty = true;
 		break;
@@ -293,11 +359,19 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 	case R200_PP_CUBIC_OFFSET_F5_5:
 		i = (reg - R200_PP_TXOFFSET_0) / 24;
 		face = (reg - ((i * 24) + R200_PP_TXOFFSET_0)) / 4;
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 				  idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+				  idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		track->textures[i].cube_info[face - 1].offset = idx_value;
@@ -311,6 +385,7 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		track->zb_dirty = true;
 		break;
 	case RADEON_RB3D_COLORPITCH:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
@@ -329,6 +404,16 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		tmp |= tile_flags;
 		ib[idx] = tmp;
 =======
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+				  idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+			return r;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (!(p->cs_flags & RADEON_CS_KEEP_TILING_FLAGS)) {
 			if (reloc->lobj.tiling_flags & RADEON_TILING_MACRO)
 				tile_flags |= RADEON_COLOR_TILE_ENABLE;
@@ -340,7 +425,10 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 			ib[idx] = tmp;
 		} else
 			ib[idx] = idx_value;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		track->cb[0].pitch = idx_value & RADEON_COLORPITCH_MASK;
 		track->cb_dirty = true;
@@ -399,11 +487,19 @@ int r200_packet0_check(struct radeon_cs_parser *p,
 		track->zb_dirty = true;
 		break;
 	case RADEON_RB3D_ZPASS_ADDR:
+<<<<<<< HEAD
 		r = r100_cs_packet_next_reloc(p, &reloc);
 		if (r) {
 			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
 				  idx, reg);
 			r100_cs_dump_packet(p, pkt);
+=======
+		r = radeon_cs_packet_next_reloc(p, &reloc, 0);
+		if (r) {
+			DRM_ERROR("No reloc for ib[%d]=0x%04X\n",
+				  idx, reg);
+			radeon_cs_dump_packet(p, pkt);
+>>>>>>> refs/remotes/origin/master
 			return r;
 		}
 		ib[idx] = idx_value + ((u32)reloc->lobj.gpu_offset);

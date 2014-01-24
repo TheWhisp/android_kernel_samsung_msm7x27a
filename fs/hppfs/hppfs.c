@@ -18,7 +18,11 @@
 #include <linux/pid_namespace.h>
 #include <linux/namei.h>
 #include <asm/uaccess.h>
+<<<<<<< HEAD
 #include "os.h"
+=======
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 static struct inode *get_inode(struct super_block *, struct dentry *);
 
@@ -69,7 +73,11 @@ static char *dentry_name(struct dentry *dentry, int extra)
 	struct dentry *parent;
 	char *root, *name;
 	const char *seg_name;
+<<<<<<< HEAD
 	int len, seg_len;
+=======
+	int len, seg_len, root_len;
+>>>>>>> refs/remotes/origin/master
 
 	len = 0;
 	parent = dentry;
@@ -81,7 +89,12 @@ static char *dentry_name(struct dentry *dentry, int extra)
 	}
 
 	root = "proc";
+<<<<<<< HEAD
 	len += strlen(root);
+=======
+	root_len = strlen(root);
+	len += root_len;
+>>>>>>> refs/remotes/origin/master
 	name = kmalloc(len + extra + 1, GFP_KERNEL);
 	if (name == NULL)
 		return NULL;
@@ -91,7 +104,11 @@ static char *dentry_name(struct dentry *dentry, int extra)
 	while (parent->d_parent != parent) {
 		if (is_pid(parent)) {
 			seg_name = "pid";
+<<<<<<< HEAD
 			seg_len = strlen("pid");
+=======
+			seg_len = strlen(seg_name);
+>>>>>>> refs/remotes/origin/master
 		}
 		else {
 			seg_name = parent->d_name.name;
@@ -100,10 +117,17 @@ static char *dentry_name(struct dentry *dentry, int extra)
 
 		len -= seg_len + 1;
 		name[len] = '/';
+<<<<<<< HEAD
 		strncpy(&name[len + 1], seg_name, seg_len);
 		parent = parent->d_parent;
 	}
 	strncpy(name, root, strlen(root));
+=======
+		memcpy(&name[len + 1], seg_name, seg_len);
+		parent = parent->d_parent;
+	}
+	memcpy(name, root, root_len);
+>>>>>>> refs/remotes/origin/master
 	return name;
 }
 
@@ -138,7 +162,11 @@ static int file_removed(struct dentry *dentry, const char *file)
 }
 
 static struct dentry *hppfs_lookup(struct inode *ino, struct dentry *dentry,
+<<<<<<< HEAD
 				   struct nameidata *nd)
+=======
+				   unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dentry *proc_dentry, *parent;
 	struct qstr *name = &dentry->d_name;
@@ -180,7 +208,11 @@ static ssize_t read_proc(struct file *file, char __user *buf, ssize_t count,
 	ssize_t (*read)(struct file *, char __user *, size_t, loff_t *);
 	ssize_t n;
 
+<<<<<<< HEAD
 	read = file->f_path.dentry->d_inode->i_fop->read;
+=======
+	read = file_inode(file)->i_fop->read;
+>>>>>>> refs/remotes/origin/master
 
 	if (!is_user)
 		set_fs(KERNEL_DS);
@@ -288,7 +320,11 @@ static ssize_t hppfs_write(struct file *file, const char __user *buf,
 	struct file *proc_file = data->proc_file;
 	ssize_t (*write)(struct file *, const char __user *, size_t, loff_t *);
 
+<<<<<<< HEAD
 	write = proc_file->f_path.dentry->d_inode->i_fop->write;
+=======
+	write = file_inode(proc_file)->i_fop->write;
+>>>>>>> refs/remotes/origin/master
 	return (*write)(proc_file, buf, len, ppos);
 }
 
@@ -420,8 +456,12 @@ static int hppfs_open(struct inode *inode, struct file *file)
 {
 	const struct cred *cred = file->f_cred;
 	struct hppfs_private *data;
+<<<<<<< HEAD
 	struct vfsmount *proc_mnt;
 	struct dentry *proc_dentry;
+=======
+	struct path path;
+>>>>>>> refs/remotes/origin/master
 	char *host_file;
 	int err, fd, type, filter;
 
@@ -434,12 +474,19 @@ static int hppfs_open(struct inode *inode, struct file *file)
 	if (host_file == NULL)
 		goto out_free2;
 
+<<<<<<< HEAD
 	proc_dentry = HPPFS_I(inode)->proc_dentry;
 	proc_mnt = inode->i_sb->s_fs_info;
 
 	/* XXX This isn't closed anywhere */
 	data->proc_file = dentry_open(dget(proc_dentry), mntget(proc_mnt),
 				      file_mode(file->f_mode), cred);
+=======
+	path.mnt = inode->i_sb->s_fs_info;
+	path.dentry = HPPFS_I(inode)->proc_dentry;
+
+	data->proc_file = dentry_open(&path, file_mode(file->f_mode), cred);
+>>>>>>> refs/remotes/origin/master
 	err = PTR_ERR(data->proc_file);
 	if (IS_ERR(data->proc_file))
 		goto out_free1;
@@ -484,8 +531,12 @@ static int hppfs_dir_open(struct inode *inode, struct file *file)
 {
 	const struct cred *cred = file->f_cred;
 	struct hppfs_private *data;
+<<<<<<< HEAD
 	struct vfsmount *proc_mnt;
 	struct dentry *proc_dentry;
+=======
+	struct path path;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	err = -ENOMEM;
@@ -493,10 +544,16 @@ static int hppfs_dir_open(struct inode *inode, struct file *file)
 	if (data == NULL)
 		goto out;
 
+<<<<<<< HEAD
 	proc_dentry = HPPFS_I(inode)->proc_dentry;
 	proc_mnt = inode->i_sb->s_fs_info;
 	data->proc_file = dentry_open(dget(proc_dentry), mntget(proc_mnt),
 				      file_mode(file->f_mode), cred);
+=======
+	path.mnt = inode->i_sb->s_fs_info;
+	path.dentry = HPPFS_I(inode)->proc_dentry;
+	data->proc_file = dentry_open(&path, file_mode(file->f_mode), cred);
+>>>>>>> refs/remotes/origin/master
 	err = PTR_ERR(data->proc_file);
 	if (IS_ERR(data->proc_file))
 		goto out_free;
@@ -517,7 +574,11 @@ static loff_t hppfs_llseek(struct file *file, loff_t off, int where)
 	loff_t (*llseek)(struct file *, loff_t, int);
 	loff_t ret;
 
+<<<<<<< HEAD
 	llseek = proc_file->f_path.dentry->d_inode->i_fop->llseek;
+=======
+	llseek = file_inode(proc_file)->i_fop->llseek;
+>>>>>>> refs/remotes/origin/master
 	if (llseek != NULL) {
 		ret = (*llseek)(proc_file, off, where);
 		if (ret < 0)
@@ -527,17 +588,39 @@ static loff_t hppfs_llseek(struct file *file, loff_t off, int where)
 	return default_llseek(file, off, where);
 }
 
+<<<<<<< HEAD
+=======
+static int hppfs_release(struct inode *inode, struct file *file)
+{
+	struct hppfs_private *data = file->private_data;
+	struct file *proc_file = data->proc_file;
+	if (proc_file)
+		fput(proc_file);
+	kfree(data);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations hppfs_file_fops = {
 	.owner		= NULL,
 	.llseek		= hppfs_llseek,
 	.read		= hppfs_read,
 	.write		= hppfs_write,
 	.open		= hppfs_open,
+<<<<<<< HEAD
 };
 
 struct hppfs_dirent {
 	void *vfs_dirent;
 	filldir_t filldir;
+=======
+	.release	= hppfs_release,
+};
+
+struct hppfs_dirent {
+	struct dir_context ctx;
+	struct dir_context *caller;
+>>>>>>> refs/remotes/origin/master
 	struct dentry *dentry;
 };
 
@@ -549,6 +632,7 @@ static int hppfs_filldir(void *d, const char *name, int size,
 	if (file_removed(dirent->dentry, name))
 		return 0;
 
+<<<<<<< HEAD
 	return (*dirent->filldir)(dirent->vfs_dirent, name, size, offset,
 				  inode, type);
 }
@@ -592,6 +676,34 @@ static const struct file_operations hppfs_dir_fops = {
 	.open		= hppfs_dir_open,
 	.fsync		= hppfs_fsync,
 	.llseek		= default_llseek,
+=======
+	dirent->caller->pos = dirent->ctx.pos;
+	return !dir_emit(dirent->caller, name, size, inode, type);
+}
+
+static int hppfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct hppfs_private *data = file->private_data;
+	struct file *proc_file = data->proc_file;
+	struct hppfs_dirent d = {
+		.ctx.actor	= hppfs_filldir,
+		.caller		= ctx,
+		.dentry  	= file->f_path.dentry
+	};
+	int err;
+	proc_file->f_pos = ctx->pos;
+	err = iterate_dir(proc_file, &d.ctx);
+	ctx->pos = d.ctx.pos;
+	return err;
+}
+
+static const struct file_operations hppfs_dir_fops = {
+	.owner		= NULL,
+	.iterate	= hppfs_readdir,
+	.open		= hppfs_dir_open,
+	.llseek		= default_llseek,
+	.release	= hppfs_release,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int hppfs_statfs(struct dentry *dentry, struct kstatfs *sf)
@@ -620,7 +732,11 @@ static struct inode *hppfs_alloc_inode(struct super_block *sb)
 
 void hppfs_evict_inode(struct inode *ino)
 {
+<<<<<<< HEAD
 	end_writeback(ino);
+=======
+	clear_inode(ino);
+>>>>>>> refs/remotes/origin/master
 	dput(HPPFS_I(ino)->proc_dentry);
 	mntput(ino->i_sb->s_fs_info);
 }
@@ -629,9 +745,12 @@ static void hppfs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(HPPFS_I(inode));
 }
 
@@ -688,7 +807,11 @@ static struct inode *get_inode(struct super_block *sb, struct dentry *dentry)
 
 	if (!inode) {
 		dput(dentry);
+<<<<<<< HEAD
 		return ERR_PTR(-ENOMEM);
+=======
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (S_ISDIR(dentry->d_inode->i_mode)) {
@@ -712,10 +835,14 @@ static struct inode *get_inode(struct super_block *sb, struct dentry *dentry)
 	inode->i_ino = proc_ino->i_ino;
 	inode->i_mode = proc_ino->i_mode;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = proc_ino->i_nlink;
 =======
 	set_nlink(inode, proc_ino->i_nlink);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_nlink(inode, proc_ino->i_nlink);
+>>>>>>> refs/remotes/origin/master
 	inode->i_size = proc_ino->i_size;
 	inode->i_blocks = proc_ino->i_blocks;
 
@@ -728,7 +855,11 @@ static int hppfs_fill_super(struct super_block *sb, void *d, int silent)
 	struct vfsmount *proc_mnt;
 	int err = -ENOENT;
 
+<<<<<<< HEAD
 	proc_mnt = mntget(current->nsproxy->pid_ns->proc_mnt);
+=======
+	proc_mnt = mntget(task_active_pid_ns(current)->proc_mnt);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(proc_mnt))
 		goto out;
 
@@ -739,6 +870,7 @@ static int hppfs_fill_super(struct super_block *sb, void *d, int silent)
 	sb->s_fs_info = proc_mnt;
 
 	err = -ENOMEM;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	root_inode = get_inode(sb, dget(proc_mnt->mnt_sb->s_root));
 	if (!root_inode)
@@ -753,6 +885,8 @@ static int hppfs_fill_super(struct super_block *sb, void *d, int silent)
  out_iput:
 	iput(root_inode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	root_inode = get_inode(sb, dget(proc_mnt->mnt_root));
 	sb->s_root = d_make_root(root_inode);
 	if (!sb->s_root)
@@ -760,7 +894,10 @@ static int hppfs_fill_super(struct super_block *sb, void *d, int silent)
 
 	return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  out_mntput:
 	mntput(proc_mnt);
  out:
@@ -781,6 +918,10 @@ static struct file_system_type hppfs_type = {
 	.kill_sb	= kill_anon_super,
 	.fs_flags 	= 0,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("hppfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_hppfs(void)
 {

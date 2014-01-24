@@ -44,11 +44,17 @@
  *
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/io.h>
 #include <linux/uaccess.h>
@@ -132,6 +138,7 @@ static int sbwdog_release(struct inode *inode, struct file *file)
 		module_put(THIS_MODULE);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT
 			"%s: Unexpected close, not stopping watchdog!\n",
 						ident.identity);
@@ -139,6 +146,10 @@ static int sbwdog_release(struct inode *inode, struct file *file)
 		pr_crit("%s: Unexpected close, not stopping watchdog!\n",
 			ident.identity);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("%s: Unexpected close, not stopping watchdog!\n",
+			ident.identity);
+>>>>>>> refs/remotes/origin/master
 		sbwdog_pet(user_dog);
 	}
 	clear_bit(0, &sbwdog_gate);
@@ -217,7 +228,11 @@ static long sbwdog_ioctl(struct file *file, unsigned int cmd,
 		 * get the remaining count from the ... count register
 		 * which is 1*8 before the config register
 		 */
+<<<<<<< HEAD
 		ret = put_user(__raw_readq(user_dog - 8) / 1000000, p);
+=======
+		ret = put_user((u32)__raw_readq(user_dog - 8) / 1000000, p);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return ret;
@@ -281,10 +296,14 @@ irqreturn_t sbwdog_interrupt(int irq, void *addr)
 	 */
 	if (wd_cfg_reg == user_dog)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT "%s in danger of initiating system reset "
 =======
 		pr_crit("%s in danger of initiating system reset "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("%s in danger of initiating system reset "
+>>>>>>> refs/remotes/origin/master
 			"in %ld.%01ld seconds\n",
 			ident.identity,
 			wd_init / 1000000, (wd_init / 100000) % 10);
@@ -306,6 +325,7 @@ static int __init sbwdog_init(void)
 	ret = register_reboot_notifier(&sbwdog_notifier);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR
 			"%s: cannot register reboot notifier (err=%d)\n",
 						ident.identity, ret);
@@ -313,6 +333,10 @@ static int __init sbwdog_init(void)
 		pr_err("%s: cannot register reboot notifier (err=%d)\n",
 		       ident.identity, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("%s: cannot register reboot notifier (err=%d)\n",
+		       ident.identity, ret);
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -321,23 +345,30 @@ static int __init sbwdog_init(void)
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(1, sbwdog_interrupt, IRQF_DISABLED | IRQF_SHARED,
 		ident.identity, (void *)user_dog);
 	if (ret) {
 		printk(KERN_ERR "%s: failed to request irq 1 - %d\n",
 						ident.identity, ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = request_irq(1, sbwdog_interrupt, IRQF_SHARED,
 		ident.identity, (void *)user_dog);
 	if (ret) {
 		pr_err("%s: failed to request irq 1 - %d\n",
 		       ident.identity, ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	ret = misc_register(&sbwdog_miscdev);
 	if (ret == 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "%s: timeout is %ld.%ld secs\n",
 				ident.identity,
@@ -347,6 +378,11 @@ static int __init sbwdog_init(void)
 			ident.identity,
 			timeout / 1000000, (timeout / 100000) % 10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("%s: timeout is %ld.%ld secs\n",
+			ident.identity,
+			timeout / 1000000, (timeout / 100000) % 10);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	free_irq(1, (void *)user_dog);
@@ -374,7 +410,10 @@ MODULE_PARM_DESC(timeout,
       "Watchdog timeout in microseconds (max/default 8388607 or 8.3ish secs)");
 
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * example code that can be put in a platform code area to utilize the
@@ -385,17 +424,23 @@ void platform_wd_setup(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(1, sbwdog_interrupt, IRQF_DISABLED | IRQF_SHARED,
 		"Kernel Watchdog", IOADDR(A_SCD_WDOG_CFG_0));
 	if (ret) {
 		printk(KERN_CRIT
 		  "Watchdog IRQ zero(0) failed to be requested - %d\n", ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = request_irq(1, sbwdog_interrupt, IRQF_SHARED,
 		"Kernel Watchdog", IOADDR(A_SCD_WDOG_CFG_0));
 	if (ret) {
 		pr_crit("Watchdog IRQ zero(0) failed to be requested - %d\n", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

@@ -27,8 +27,13 @@ struct kvec;
 
 #define JFFS2_F_I_SIZE(f) (OFNI_EDONI_2SFFJ(f)->i_size)
 #define JFFS2_F_I_MODE(f) (OFNI_EDONI_2SFFJ(f)->i_mode)
+<<<<<<< HEAD
 #define JFFS2_F_I_UID(f) (OFNI_EDONI_2SFFJ(f)->i_uid)
 #define JFFS2_F_I_GID(f) (OFNI_EDONI_2SFFJ(f)->i_gid)
+=======
+#define JFFS2_F_I_UID(f) (i_uid_read(OFNI_EDONI_2SFFJ(f)))
+#define JFFS2_F_I_GID(f) (i_gid_read(OFNI_EDONI_2SFFJ(f)))
+>>>>>>> refs/remotes/origin/master
 #define JFFS2_F_I_RDEV(f) (OFNI_EDONI_2SFFJ(f)->i_rdev)
 
 #define ITIME(sec) ((struct timespec){sec, 0})
@@ -77,10 +82,14 @@ static inline void jffs2_init_inode_info(struct jffs2_inode_info *f)
 
 #define jffs2_flash_write(c, ofs, len, retlen, buf) jffs2_flash_direct_write(c, ofs, len, retlen, buf)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define jffs2_flash_read(c, ofs, len, retlen, buf) ((c)->mtd->read((c)->mtd, ofs, len, retlen, buf))
 =======
 #define jffs2_flash_read(c, ofs, len, retlen, buf) (mtd_read((c)->mtd, ofs, len, retlen, buf))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define jffs2_flash_read(c, ofs, len, retlen, buf) (mtd_read((c)->mtd, ofs, len, retlen, buf))
+>>>>>>> refs/remotes/origin/master
 #define jffs2_flush_wbuf_pad(c) ({ do{} while(0); (void)(c), 0; })
 #define jffs2_flush_wbuf_gc(c, i) ({ do{} while(0); (void)(c), (void) i, 0; })
 #define jffs2_write_nand_badblock(c,jeb,bad_offset) (1)
@@ -99,6 +108,10 @@ static inline void jffs2_init_inode_info(struct jffs2_inode_info *f)
 #define jffs2_ubivol(c) (0)
 #define jffs2_ubivol_setup(c) (0)
 #define jffs2_ubivol_cleanup(c) do {} while (0)
+<<<<<<< HEAD
+=======
+#define jffs2_dirty_trigger(c) do {} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #else /* NAND and/or ECC'd NOR support present */
 
@@ -113,10 +126,13 @@ static inline void jffs2_init_inode_info(struct jffs2_inode_info *f)
 #define jffs2_cleanmarker_oob(c) (c->mtd->type == MTD_NANDFLASH)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define jffs2_flash_write_oob(c, ofs, len, retlen, buf) ((c)->mtd->write_oob((c)->mtd, ofs, len, retlen, buf))
 #define jffs2_flash_read_oob(c, ofs, len, retlen, buf) ((c)->mtd->read_oob((c)->mtd, ofs, len, retlen, buf))
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define jffs2_wbuf_dirty(c) (!!(c)->wbuf_len)
 
 /* wbuf.c */
@@ -144,6 +160,7 @@ void jffs2_ubivol_cleanup(struct jffs2_sb_info *c);
 #define jffs2_nor_wbuf_flash(c) (c->mtd->type == MTD_NORFLASH && ! (c->mtd->flags & MTD_BIT_WRITEABLE))
 int jffs2_nor_wbuf_flash_setup(struct jffs2_sb_info *c);
 void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
+<<<<<<< HEAD
 
 #endif /* WRITEBUFFER */
 
@@ -152,6 +169,12 @@ static inline void jffs2_dirty_trigger(struct jffs2_sb_info *c)
 	OFNI_BS_2SFFJ(c)->s_dirt = 1;
 }
 
+=======
+void jffs2_dirty_trigger(struct jffs2_sb_info *c);
+
+#endif /* WRITEBUFFER */
+
+>>>>>>> refs/remotes/origin/master
 /* background.c */
 int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c);
 void jffs2_stop_garbage_collect_thread(struct jffs2_sb_info *c);
@@ -166,10 +189,14 @@ extern const struct file_operations jffs2_file_operations;
 extern const struct inode_operations jffs2_file_inode_operations;
 extern const struct address_space_operations jffs2_file_address_operations;
 <<<<<<< HEAD
+<<<<<<< HEAD
 int jffs2_fsync(struct file *, int);
 =======
 int jffs2_fsync(struct file *, loff_t, loff_t, int);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int jffs2_fsync(struct file *, loff_t, loff_t, int);
+>>>>>>> refs/remotes/origin/master
 int jffs2_do_readpage_unlock (struct inode *inode, struct page *pg);
 
 /* ioctl.c */
@@ -185,16 +212,22 @@ struct inode *jffs2_iget(struct super_block *, unsigned long);
 void jffs2_evict_inode (struct inode *);
 void jffs2_dirty_inode(struct inode *inode, int flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *jffs2_new_inode (struct inode *dir_i, int mode,
 			       struct jffs2_raw_inode *ri);
 int jffs2_statfs (struct dentry *, struct kstatfs *);
 int jffs2_remount_fs (struct super_block *, int *, char *);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode,
 			       struct jffs2_raw_inode *ri);
 int jffs2_statfs (struct dentry *, struct kstatfs *);
 int jffs2_do_remount_fs(struct super_block *, int *, char *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int jffs2_do_fill_super(struct super_block *sb, void *data, int silent);
 void jffs2_gc_release_inode(struct jffs2_sb_info *c,
 			    struct jffs2_inode_info *f);

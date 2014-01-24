@@ -33,11 +33,21 @@
  * Set number of channels of DMA on ColdFire for different implementations.
  */
 #if defined(CONFIG_M5249) || defined(CONFIG_M5307) || defined(CONFIG_M5407) || \
+<<<<<<< HEAD
 	defined(CONFIG_M523x) || defined(CONFIG_M527x) || defined(CONFIG_M528x)
 #define MAX_M68K_DMA_CHANNELS 4
 #elif defined(CONFIG_M5272)
 #define MAX_M68K_DMA_CHANNELS 1
 #elif defined(CONFIG_M532x)
+=======
+	defined(CONFIG_M523x) || defined(CONFIG_M527x) || \
+	defined(CONFIG_M528x) || defined(CONFIG_M525x)
+
+#define MAX_M68K_DMA_CHANNELS 4
+#elif defined(CONFIG_M5272)
+#define MAX_M68K_DMA_CHANNELS 1
+#elif defined(CONFIG_M53xx)
+>>>>>>> refs/remotes/origin/master
 #define MAX_M68K_DMA_CHANNELS 0
 #else
 #define MAX_M68K_DMA_CHANNELS 2
@@ -486,6 +496,14 @@ static __inline__ int get_dma_residue(unsigned int dmanr)
 extern int request_dma(unsigned int dmanr, const char * device_id);	/* reserve a DMA channel */
 extern void free_dma(unsigned int dmanr);	/* release it again */
 
+<<<<<<< HEAD
 #define isa_dma_bridge_buggy    (0)
+=======
+#ifdef CONFIG_PCI
+extern int isa_dma_bridge_buggy;
+#else
+#define isa_dma_bridge_buggy    (0)
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _M68K_DMA_H */

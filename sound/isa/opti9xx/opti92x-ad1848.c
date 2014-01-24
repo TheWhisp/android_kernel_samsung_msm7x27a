@@ -29,10 +29,14 @@
 #include <linux/delay.h>
 #include <linux/pnp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/dma.h>
 #include <sound/core.h>
@@ -43,6 +47,10 @@
 #ifndef OPTi93X
 #include <sound/opl4.h>
 #endif
+<<<<<<< HEAD
+=======
+#define SNDRV_LEGACY_FIND_FREE_IOPORT
+>>>>>>> refs/remotes/origin/master
 #define SNDRV_LEGACY_FIND_FREE_IRQ
 #define SNDRV_LEGACY_FIND_FREE_DMA
 #include <sound/initval.h>
@@ -68,6 +76,7 @@ MODULE_SUPPORTED_DEVICE("{{OPTi,82C924 (AD1848)},"
 static int index = SNDRV_DEFAULT_IDX1;	/* Index 0-MAX */
 static char *id = SNDRV_DEFAULT_STR1;		/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 //static int enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
 #ifdef CONFIG_PNP
 static int isapnp = 1;			/* Enable ISA PnP detection */
@@ -76,6 +85,11 @@ static int isapnp = 1;			/* Enable ISA PnP detection */
 #ifdef CONFIG_PNP
 static bool isapnp = true;			/* Enable ISA PnP detection */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+//static bool enable = SNDRV_DEFAULT_ENABLE1;	/* Enable this card */
+#ifdef CONFIG_PNP
+static bool isapnp = true;			/* Enable ISA PnP detection */
+>>>>>>> refs/remotes/origin/master
 #endif
 static long port = SNDRV_DEFAULT_PORT1; 	/* 0x530,0xe80,0xf40,0x604 */
 static long mpu_port = SNDRV_DEFAULT_PORT1;	/* 0x300,0x310,0x320,0x330 */
@@ -145,10 +159,16 @@ struct snd_opti9xx {
 	unsigned long mc_base_size;
 #ifdef OPTi93X
 	unsigned long mc_indir_index;
+<<<<<<< HEAD
 	unsigned long mc_indir_size;
 	struct resource *res_mc_indir;
 	struct snd_wss *codec;
 #endif	/* OPTi93X */
+=======
+	struct resource *res_mc_indir;
+#endif	/* OPTi93X */
+	struct snd_wss *codec;
+>>>>>>> refs/remotes/origin/master
 	unsigned long pwd_reg;
 
 	spinlock_t lock;
@@ -192,6 +212,7 @@ static char * snd_opti9xx_names[] = {
 	"82C930",	"82C931",	"82C933"
 };
 
+<<<<<<< HEAD
 
 static long __devinit snd_legacy_find_free_ioport(long *port_table, long size)
 {
@@ -207,6 +228,10 @@ static long __devinit snd_legacy_find_free_ioport(long *port_table, long size)
 
 static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
 				      unsigned short hardware)
+=======
+static int snd_opti9xx_init(struct snd_opti9xx *chip,
+			    unsigned short hardware)
+>>>>>>> refs/remotes/origin/master
 {
 	static int opti9xx_mc_size[] = {7, 7, 10, 10, 2, 2, 2};
 
@@ -251,10 +276,15 @@ static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
 	case OPTi9XX_HW_82C931:
 	case OPTi9XX_HW_82C933:
 		chip->mc_base = (hardware == OPTi9XX_HW_82C930) ? 0xf8f : 0xf8d;
+<<<<<<< HEAD
 		if (!chip->mc_indir_index) {
 			chip->mc_indir_index = 0xe0e;
 			chip->mc_indir_size = 2;
 		}
+=======
+		if (!chip->mc_indir_index)
+			chip->mc_indir_index = 0xe0e;
+>>>>>>> refs/remotes/origin/master
 		chip->password = 0xe4;
 		chip->pwd_reg = 0;
 		break;
@@ -357,7 +387,11 @@ static void snd_opti9xx_write(struct snd_opti9xx *chip, unsigned char reg,
 		(snd_opti9xx_read(chip, reg) & ~(mask)) | ((value) & (mask)))
 
 
+<<<<<<< HEAD
 static int __devinit snd_opti9xx_configure(struct snd_opti9xx *chip,
+=======
+static int snd_opti9xx_configure(struct snd_opti9xx *chip,
+>>>>>>> refs/remotes/origin/master
 					   long port,
 					   int irq, int dma1, int dma2,
 					   long mpu_port, int mpu_irq)
@@ -409,7 +443,13 @@ static int __devinit snd_opti9xx_configure(struct snd_opti9xx *chip,
 
 #else	/* OPTi93X */
 	case OPTi9XX_HW_82C931:
+<<<<<<< HEAD
 	case OPTi9XX_HW_82C933:
+=======
+		/* disable 3D sound (set GPIO1 as output, low) */
+		snd_opti9xx_write_mask(chip, OPTi9XX_MC_REG(20), 0x04, 0x0c);
+	case OPTi9XX_HW_82C933: /* FALL THROUGH */
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The BTC 1817DW has QS1000 wavetable which is connected
 		 * to the serial digital input of the OPTI931.
@@ -612,7 +652,11 @@ WSS_DOUBLE_TLV("Aux Playback Volume", 0,
 		db_scale_4bit_12db_max),
 };
 
+<<<<<<< HEAD
 static int __devinit snd_opti93x_mixer(struct snd_wss *chip)
+=======
+static int snd_opti93x_mixer(struct snd_wss *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	unsigned int idx;
@@ -685,7 +729,11 @@ static irqreturn_t snd_opti93x_interrupt(int irq, void *dev_id)
 
 #endif /* OPTi93X */
 
+<<<<<<< HEAD
 static int __devinit snd_opti9xx_read_check(struct snd_opti9xx *chip)
+=======
+static int snd_opti9xx_read_check(struct snd_opti9xx *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char value;
 #ifdef OPTi93X
@@ -702,8 +750,12 @@ static int __devinit snd_opti9xx_read_check(struct snd_opti9xx *chip)
 		if (value == snd_opti9xx_read(chip, OPTi9XX_MC_REG(1)))
 			return 0;
 #else	/* OPTi93X */
+<<<<<<< HEAD
 	chip->res_mc_indir = request_region(chip->mc_indir_index,
 					    chip->mc_indir_size,
+=======
+	chip->res_mc_indir = request_region(chip->mc_indir_index, 2,
+>>>>>>> refs/remotes/origin/master
 					    "OPTi93x MC");
 	if (chip->res_mc_indir == NULL)
 		return -EBUSY;
@@ -727,8 +779,13 @@ static int __devinit snd_opti9xx_read_check(struct snd_opti9xx *chip)
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
 					     struct snd_opti9xx *chip)
+=======
+static int snd_card_opti9xx_detect(struct snd_card *card,
+				   struct snd_opti9xx *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err;
 
@@ -752,9 +809,15 @@ static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
 }
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
 					  struct pnp_card_link *card,
 					  const struct pnp_card_device_id *pid)
+=======
+static int snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
+				struct pnp_card_link *card,
+				const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *pdev;
 	int err;
@@ -776,8 +839,14 @@ static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
 #ifdef OPTi93X
 	port = pnp_port_start(pdev, 0) - 4;
 	fm_port = pnp_port_start(pdev, 1) + 8;
+<<<<<<< HEAD
 	chip->mc_indir_index = pnp_port_start(pdev, 3) + 2;
 	chip->mc_indir_size = pnp_port_len(pdev, 3) - 2;
+=======
+	/* adjust mc_indir_index - some cards report it at 0xe?d,
+	   other at 0xe?c but it really is always at 0xe?e */
+	chip->mc_indir_index = (pnp_port_start(pdev, 3) & ~0xf) | 0xe;
+>>>>>>> refs/remotes/origin/master
 #else
 	devmc = pnp_request_card_device(card, pid->devs[2].id, NULL);
 	if (devmc == NULL)
@@ -836,7 +905,11 @@ static void snd_card_opti9xx_free(struct snd_card *card)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit snd_opti9xx_probe(struct snd_card *card)
+=======
+static int snd_opti9xx_probe(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	static long possible_ports[] = {0x530, 0xe80, 0xf40, 0x604, -1};
 	int error;
@@ -877,9 +950,13 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
 			       &codec);
 	if (error < 0)
 		return error;
+<<<<<<< HEAD
 #ifdef OPTi93X
 	chip->codec = codec;
 #endif
+=======
+	chip->codec = codec;
+>>>>>>> refs/remotes/origin/master
 	error = snd_wss_pcm(codec, 0, &pcm);
 	if (error < 0)
 		return error;
@@ -899,10 +976,14 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
 #ifdef OPTi93X
 	error = request_irq(irq, snd_opti93x_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    IRQF_DISABLED, DEV_NAME" - WSS", chip);
 =======
 			    0, DEV_NAME" - WSS", chip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    0, DEV_NAME" - WSS", chip);
+>>>>>>> refs/remotes/origin/master
 	if (error < 0) {
 		snd_printk(KERN_ERR "opti9xx: can't grab IRQ %d\n", irq);
 		return error;
@@ -925,10 +1006,14 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
 	else {
 		error = snd_mpu401_uart_new(card, 0, MPU401_HW_MPU401,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				mpu_port, 0, mpu_irq, IRQF_DISABLED, &rmidi);
 =======
 				mpu_port, 0, mpu_irq, &rmidi);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				mpu_port, 0, mpu_irq, &rmidi);
+>>>>>>> refs/remotes/origin/master
 		if (error)
 			snd_printk(KERN_WARNING "no MPU-401 device at 0x%lx?\n",
 				   mpu_port);
@@ -981,8 +1066,13 @@ static int snd_opti9xx_card_new(struct snd_card **cardp)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_opti9xx_isa_match(struct device *devptr,
 					   unsigned int dev)
+=======
+static int snd_opti9xx_isa_match(struct device *devptr,
+				 unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_PNP
 	if (snd_opti9xx_pnp_is_probed)
@@ -993,8 +1083,13 @@ static int __devinit snd_opti9xx_isa_match(struct device *devptr,
 	return 1;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_opti9xx_isa_probe(struct device *devptr,
 					   unsigned int dev)
+=======
+static int snd_opti9xx_isa_probe(struct device *devptr,
+				 unsigned int dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	int error;
@@ -1060,6 +1155,7 @@ static int __devinit snd_opti9xx_isa_probe(struct device *devptr,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_opti9xx_isa_remove(struct device *devptr,
 					    unsigned int dev)
 {
@@ -1073,14 +1169,77 @@ static struct isa_driver snd_opti9xx_driver = {
 	.probe		= snd_opti9xx_isa_probe,
 	.remove		= __devexit_p(snd_opti9xx_isa_remove),
 	/* FIXME: suspend/resume */
+=======
+static int snd_opti9xx_isa_remove(struct device *devptr,
+				  unsigned int dev)
+{
+	snd_card_free(dev_get_drvdata(devptr));
+	return 0;
+}
+
+#ifdef CONFIG_PM
+static int snd_opti9xx_suspend(struct snd_card *card)
+{
+	struct snd_opti9xx *chip = card->private_data;
+
+	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+	chip->codec->suspend(chip->codec);
+	return 0;
+}
+
+static int snd_opti9xx_resume(struct snd_card *card)
+{
+	struct snd_opti9xx *chip = card->private_data;
+	int error, xdma2;
+#if defined(CS4231) || defined(OPTi93X)
+	xdma2 = dma2;
+#else
+	xdma2 = -1;
+#endif
+
+	error = snd_opti9xx_configure(chip, port, irq, dma1, xdma2,
+				      mpu_port, mpu_irq);
+	if (error)
+		return error;
+	chip->codec->resume(chip->codec);
+	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+	return 0;
+}
+
+static int snd_opti9xx_isa_suspend(struct device *dev, unsigned int n,
+				   pm_message_t state)
+{
+	return snd_opti9xx_suspend(dev_get_drvdata(dev));
+}
+
+static int snd_opti9xx_isa_resume(struct device *dev, unsigned int n)
+{
+	return snd_opti9xx_resume(dev_get_drvdata(dev));
+}
+#endif
+
+static struct isa_driver snd_opti9xx_driver = {
+	.match		= snd_opti9xx_isa_match,
+	.probe		= snd_opti9xx_isa_probe,
+	.remove		= snd_opti9xx_isa_remove,
+#ifdef CONFIG_PM
+	.suspend	= snd_opti9xx_isa_suspend,
+	.resume		= snd_opti9xx_isa_resume,
+#endif
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DEV_NAME
 	},
 };
 
 #ifdef CONFIG_PNP
+<<<<<<< HEAD
 static int __devinit snd_opti9xx_pnp_probe(struct pnp_card_link *pcard,
 					   const struct pnp_card_device_id *pid)
+=======
+static int snd_opti9xx_pnp_probe(struct pnp_card_link *pcard,
+				 const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	int error, hw;
@@ -1131,19 +1290,47 @@ static int __devinit snd_opti9xx_pnp_probe(struct pnp_card_link *pcard,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_opti9xx_pnp_remove(struct pnp_card_link * pcard)
+=======
+static void snd_opti9xx_pnp_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
 	snd_opti9xx_pnp_is_probed = 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PM
+static int snd_opti9xx_pnp_suspend(struct pnp_card_link *pcard,
+				   pm_message_t state)
+{
+	return snd_opti9xx_suspend(pnp_get_card_drvdata(pcard));
+}
+
+static int snd_opti9xx_pnp_resume(struct pnp_card_link *pcard)
+{
+	return snd_opti9xx_resume(pnp_get_card_drvdata(pcard));
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct pnp_card_driver opti9xx_pnpc_driver = {
 	.flags		= PNP_DRIVER_RES_DISABLE,
 	.name		= DEV_NAME,
 	.id_table	= snd_opti9xx_pnpids,
 	.probe		= snd_opti9xx_pnp_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_opti9xx_pnp_remove),
+=======
+	.remove		= snd_opti9xx_pnp_remove,
+#ifdef CONFIG_PM
+	.suspend	= snd_opti9xx_pnp_suspend,
+	.resume		= snd_opti9xx_pnp_resume,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 

@@ -39,7 +39,10 @@
 #include <linux/sched.h>
 #include <linux/delay.h>
 #include <linux/kgdb.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/smp.h>
 #include <linux/nmi.h>
 #include <linux/hw_breakpoint.h>
@@ -49,9 +52,12 @@
 #include <asm/debugreg.h>
 #include <asm/apicdef.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/apic.h>
 #include <asm/nmi.h>
 
@@ -73,10 +79,13 @@ struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] =
 	{ "ds", 4, offsetof(struct pt_regs, ds) },
 	{ "es", 4, offsetof(struct pt_regs, es) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ "fs", 4, -1 },
 	{ "gs", 4, -1 },
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 	{ "ax", 8, offsetof(struct pt_regs, ax) },
 	{ "bx", 8, offsetof(struct pt_regs, bx) },
@@ -99,14 +108,20 @@ struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] =
 	{ "cs", 4, offsetof(struct pt_regs, cs) },
 	{ "ss", 4, offsetof(struct pt_regs, ss) },
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ "ds", 4, -1 },
 	{ "es", 4, -1 },
 #endif
 	{ "fs", 4, -1 },
 	{ "gs", 4, -1 },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 int dbg_set_reg(int regno, void *mem, struct pt_regs *regs)
@@ -457,12 +472,21 @@ void kgdb_roundup_cpus(unsigned long flags)
 
 /**
  *	kgdb_arch_handle_exception - Handle architecture specific GDB packets.
+<<<<<<< HEAD
  *	@vector: The error vector of the exception that happened.
  *	@signo: The signal number of the exception that happened.
  *	@err_code: The error code of the exception that happened.
  *	@remcom_in_buffer: The buffer of the packet we have read.
  *	@remcom_out_buffer: The buffer of %BUFMAX bytes to write a packet into.
  *	@regs: The &struct pt_regs of the current process.
+=======
+ *	@e_vector: The error vector of the exception that happened.
+ *	@signo: The signal number of the exception that happened.
+ *	@err_code: The error code of the exception that happened.
+ *	@remcomInBuffer: The buffer of the packet we have read.
+ *	@remcomOutBuffer: The buffer of %BUFMAX bytes to write a packet into.
+ *	@linux_regs: The &struct pt_regs of the current process.
+>>>>>>> refs/remotes/origin/master
  *
  *	This function MUST handle the 'c' and 's' command packets,
  *	as well packets to set / remove a hardware breakpoint, if used.
@@ -528,6 +552,7 @@ single_step_cont(struct pt_regs *regs, struct die_args *args)
 static int was_in_debug_nmi[NR_CPUS];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __kgdb_notify(struct die_args *args, unsigned long cmd)
 {
 	struct pt_regs *regs = args->regs;
@@ -535,16 +560,22 @@ static int __kgdb_notify(struct die_args *args, unsigned long cmd)
 	switch (cmd) {
 	case DIE_NMI:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int kgdb_nmi_handler(unsigned int cmd, struct pt_regs *regs)
 {
 	switch (cmd) {
 	case NMI_LOCAL:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (atomic_read(&kgdb_active) != -1) {
 			/* KGDB CPU roundup */
 			kgdb_nmicallback(raw_smp_processor_id(), regs);
 			was_in_debug_nmi[raw_smp_processor_id()] = 1;
 			touch_nmi_watchdog();
+<<<<<<< HEAD
 <<<<<<< HEAD
 			return NOTIFY_STOP;
 		}
@@ -558,6 +589,8 @@ static int kgdb_nmi_handler(unsigned int cmd, struct pt_regs *regs)
 		return NOTIFY_DONE;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return NMI_HANDLED;
 		}
 		break;
@@ -580,7 +613,10 @@ static int __kgdb_notify(struct die_args *args, unsigned long cmd)
 	struct pt_regs *regs = args->regs;
 
 	switch (cmd) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case DIE_DEBUG:
 		if (atomic_read(&kgdb_cpu_doing_single_step) != -1) {
 			if (user_mode(regs))
@@ -639,6 +675,7 @@ kgdb_notify(struct notifier_block *self, unsigned long cmd, void *ptr)
 static struct notifier_block kgdb_notifier = {
 	.notifier_call	= kgdb_notify,
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/*
 	 * Lowest-prio notifier priority, we want to be notified last:
@@ -646,6 +683,8 @@ static struct notifier_block kgdb_notifier = {
 	.priority	= NMI_LOCAL_LOW_PRIOR,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -657,11 +696,14 @@ static struct notifier_block kgdb_notifier = {
 int kgdb_arch_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return register_die_notifier(&kgdb_notifier);
 }
 
 static void kgdb_hw_overflow_handler(struct perf_event *event, int nmi,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int retval;
 
 	retval = register_die_notifier(&kgdb_notifier);
@@ -690,7 +732,10 @@ out:
 }
 
 static void kgdb_hw_overflow_handler(struct perf_event *event,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct perf_sample_data *data, struct pt_regs *regs)
 {
 	struct task_struct *tsk = current;
@@ -721,10 +766,14 @@ void kgdb_arch_late(void)
 		if (breakinfo[i].pev)
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		breakinfo[i].pev = register_wide_hw_breakpoint(&attr, NULL);
 =======
 		breakinfo[i].pev = register_wide_hw_breakpoint(&attr, NULL, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		breakinfo[i].pev = register_wide_hw_breakpoint(&attr, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR((void * __force)breakinfo[i].pev)) {
 			printk(KERN_ERR "kgdb: Could not allocate hw"
 			       "breakpoints\nDisabling the kernel debugger\n");
@@ -760,10 +809,15 @@ void kgdb_arch_exit(void)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unregister_nmi_handler(NMI_UNKNOWN, "kgdb");
 	unregister_nmi_handler(NMI_LOCAL, "kgdb");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unregister_nmi_handler(NMI_UNKNOWN, "kgdb");
+	unregister_nmi_handler(NMI_LOCAL, "kgdb");
+>>>>>>> refs/remotes/origin/master
 	unregister_die_notifier(&kgdb_notifier);
 }
 
@@ -804,7 +858,13 @@ void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long ip)
 int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
 {
 	int err;
+<<<<<<< HEAD
 	char opc[BREAK_INSTR_SIZE];
+=======
+#ifdef CONFIG_DEBUG_RODATA
+	char opc[BREAK_INSTR_SIZE];
+#endif /* CONFIG_DEBUG_RODATA */
+>>>>>>> refs/remotes/origin/master
 
 	bpt->type = BP_BREAKPOINT;
 	err = probe_kernel_read(bpt->saved_instr, (char *)bpt->bpt_addr,

@@ -204,9 +204,12 @@ static struct resource bfin_uart0_resources[] = {
 	 },
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .start = IRQ_UART_RX,
 	 .end = IRQ_UART_RX + 1,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 .start = IRQ_UART_TX,
 	 .end = IRQ_UART_TX,
 	 .flags = IORESOURCE_IRQ,
@@ -214,7 +217,10 @@ static struct resource bfin_uart0_resources[] = {
 	{
 	 .start = IRQ_UART_RX,
 	 .end = IRQ_UART_RX,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 .flags = IORESOURCE_IRQ,
 	 },
 	{
@@ -253,8 +259,11 @@ static struct platform_device bfin_uart0_device = {
 
 #if defined(CONFIG_MTD_NAND_PLATFORM) || defined(CONFIG_MTD_NAND_PLATFORM_MODULE)
 
+<<<<<<< HEAD
 const char *part_probes[] = { "cmdlinepart", NULL };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mtd_partition bfin_plat_nand_partitions[] = {
 	{
 	 .name = "params(nand)",
@@ -294,7 +303,10 @@ static struct platform_nand_data bfin_plat_nand_data = {
 	.chip = {
 		 .nr_chips = 1,
 		 .chip_delay = 30,
+<<<<<<< HEAD
 		 .part_probe_types = part_probes,
+=======
+>>>>>>> refs/remotes/origin/master
 		 .partitions = bfin_plat_nand_partitions,
 		 .nr_partitions = ARRAY_SIZE(bfin_plat_nand_partitions),
 		 },
@@ -375,6 +387,7 @@ static struct flash_platform_data bfin_spi_dataflash_data = {
 static struct bfin5xx_spi_chip data_flash_chip_info = {
 	.enable_dma = 0,	/* use dma transfer with this chip */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bits_per_word = 8,
 };
 #endif
@@ -388,11 +401,16 @@ static struct bfin5xx_spi_chip spidev_chip_info = {
 
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 };
 #endif
 
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* SPI (0) */
 static struct resource bfin_spi0_resource[] = {
 	[0] = {
@@ -438,9 +456,12 @@ static struct spi_board_info bfin_spi_board_info[] __initdata = {
 	 .bus_num = 0,
 	 .chip_select = 3,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 .controller_data = &spidev_chip_info,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 },
 #endif
 #if defined(CONFIG_MTD_DATAFLASH) || defined(CONFIG_MTD_DATAFLASH_MODULE)
@@ -500,10 +521,14 @@ static struct platform_device *acvilon_devices[] __initdata = {
 	&bfin_dpmc,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_SPI_BFIN) || defined(CONFIG_SPI_BFIN_MODULE)
 =======
 #if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SPI_BFIN5XX) || defined(CONFIG_SPI_BFIN5XX_MODULE)
+>>>>>>> refs/remotes/origin/master
 	&bfin_spi0_device,
 #endif
 

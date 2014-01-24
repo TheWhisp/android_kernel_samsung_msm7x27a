@@ -33,18 +33,24 @@ struct nouveau_crtc {
 	int index;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct drm_display_mode *mode;
 
 	uint32_t dpms_saved_fp_control;
 	uint32_t fp_users;
 	int saturation;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	uint32_t dpms_saved_fp_control;
 	uint32_t fp_users;
 	int saturation;
 	int color_vibrance;
 	int vibrant_hue;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int sharpness;
 	int last_dpms;
 
@@ -76,6 +82,7 @@ struct nouveau_crtc {
 	} lut;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int (*set_dither)(struct nouveau_crtc *crtc, bool on, bool update);
 	int (*set_scale)(struct nouveau_crtc *crtc, int mode, bool update);
 =======
@@ -83,6 +90,11 @@ struct nouveau_crtc {
 	int (*set_scale)(struct nouveau_crtc *crtc, bool update);
 	int (*set_color_vibrance)(struct nouveau_crtc *crtc, bool update);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*set_dither)(struct nouveau_crtc *crtc, bool update);
+	int (*set_scale)(struct nouveau_crtc *crtc, bool update);
+	int (*set_color_vibrance)(struct nouveau_crtc *crtc, bool update);
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct nouveau_crtc *nouveau_crtc(struct drm_crtc *crtc)
@@ -95,6 +107,7 @@ static inline struct drm_crtc *to_drm_crtc(struct nouveau_crtc *crtc)
 	return &crtc->base;
 }
 
+<<<<<<< HEAD
 int nv50_crtc_create(struct drm_device *dev, int index);
 <<<<<<< HEAD
 int nv50_cursor_init(struct nouveau_crtc *);
@@ -114,5 +127,8 @@ int nv50_cursor_init(struct nouveau_crtc *);
 
 struct nouveau_connector *
 nouveau_crtc_connector_get(struct nouveau_crtc *crtc);
+=======
+int nv04_cursor_init(struct nouveau_crtc *);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __NOUVEAU_CRTC_H__ */

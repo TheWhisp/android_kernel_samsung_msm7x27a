@@ -29,7 +29,11 @@ static void psb_lid_timer_func(unsigned long data)
 	struct drm_device *dev = (struct drm_device *)dev_priv->dev;
 	struct timer_list *lid_timer = &dev_priv->lid_timer;
 	unsigned long irq_flags;
+<<<<<<< HEAD
 	u32 *lid_state = dev_priv->lid_state;
+=======
+	u32 __iomem *lid_state = dev_priv->opregion.lid_state;
+>>>>>>> refs/remotes/origin/master
 	u32 pp_status;
 
 	if (readl(lid_state) == dev_priv->lid_last_state)
@@ -40,10 +44,23 @@ static void psb_lid_timer_func(unsigned long data)
 		REG_WRITE(PP_CONTROL, REG_READ(PP_CONTROL) | POWER_TARGET_ON);
 		do {
 			pp_status = REG_READ(PP_STATUS);
+<<<<<<< HEAD
 		} while ((pp_status & PP_ON) == 0);
 
 		/*FIXME: should be backlight level before*/
 		psb_intel_lvds_set_brightness(dev, 100);
+=======
+		} while ((pp_status & PP_ON) == 0 &&
+			 (pp_status & PP_SEQUENCE_MASK) != 0);
+
+		if (REG_READ(PP_STATUS) & PP_ON) {
+			/*FIXME: should be backlight level before*/
+			psb_intel_lvds_set_brightness(dev, 100);
+		} else {
+			DRM_DEBUG("LVDS panel never powered up");
+			return;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else {
 		psb_intel_lvds_set_brightness(dev, 0);
 

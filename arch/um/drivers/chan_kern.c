@@ -7,11 +7,17 @@
 #include <linux/tty.h>
 #include <linux/tty_flip.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "chan_kern.h"
 =======
 #include "chan.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "os.h"
+=======
+#include "chan.h"
+#include <os.h>
+#include <irq_kern.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_NOCONFIG_CHAN
 static void *not_configged_init(char *str, int device,
@@ -84,6 +90,7 @@ static const struct chan_ops not_configged_ops = {
 };
 #endif /* CONFIG_NOCONFIG_CHAN */
 
+<<<<<<< HEAD
 static void tty_receive_char(struct tty_struct *tty, char ch)
 {
 	if (tty == NULL)
@@ -103,6 +110,8 @@ static void tty_receive_char(struct tty_struct *tty, char ch)
 	tty_insert_flip_char(tty, ch, TTY_NORMAL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int open_one_chan(struct chan *chan)
 {
 	int fd, err;
@@ -145,6 +154,7 @@ static int open_chan(struct list_head *chans)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void chan_enable_winch(struct list_head *chans, struct tty_struct *tty)
 {
 	struct list_head *ele;
@@ -162,6 +172,12 @@ void chan_enable_winch(struct chan *chan, struct tty_struct *tty)
 {
 	if (chan && chan->primary && chan->ops->winch)
 		register_winch(chan->fd, tty);
+=======
+void chan_enable_winch(struct chan *chan, struct tty_port *port)
+{
+	if (chan && chan->primary && chan->ops->winch)
+		register_winch(chan->fd, port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void line_timer_cb(struct work_struct *work)
@@ -169,8 +185,12 @@ static void line_timer_cb(struct work_struct *work)
 	struct line *line = container_of(work, struct line, task.work);
 
 	if (!line->throttled)
+<<<<<<< HEAD
 		chan_interrupt(line, line->tty, line->driver->read_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		chan_interrupt(line, line->driver->read_irq);
+>>>>>>> refs/remotes/origin/master
 }
 
 int enable_chan(struct line *line)
@@ -180,10 +200,15 @@ int enable_chan(struct line *line)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_DELAYED_WORK(&line->task, line_timer_cb);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_DELAYED_WORK(&line->task, line_timer_cb);
+
+>>>>>>> refs/remotes/origin/master
 	list_for_each(ele, &line->chan_list) {
 		chan = list_entry(ele, struct chan, list);
 		err = open_one_chan(chan);
@@ -208,10 +233,14 @@ int enable_chan(struct line *line)
 
  out_close:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	close_chan(&line->chan_list, 0);
 =======
 	close_chan(line);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	close_chan(line);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -239,9 +268,15 @@ void free_irqs(void)
 		chan = list_entry(ele, struct chan, free_list);
 
 		if (chan->input && chan->enabled)
+<<<<<<< HEAD
 			free_irq(chan->line->driver->read_irq, chan);
 		if (chan->output && chan->enabled)
 			free_irq(chan->line->driver->write_irq, chan);
+=======
+			um_free_irq(chan->line->driver->read_irq, chan);
+		if (chan->output && chan->enabled)
+			um_free_irq(chan->line->driver->write_irq, chan);
+>>>>>>> refs/remotes/origin/master
 		chan->enabled = 0;
 	}
 }
@@ -260,9 +295,15 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
 	}
 	else {
 		if (chan->input && chan->enabled)
+<<<<<<< HEAD
 			free_irq(chan->line->driver->read_irq, chan);
 		if (chan->output && chan->enabled)
 			free_irq(chan->line->driver->write_irq, chan);
+=======
+			um_free_irq(chan->line->driver->read_irq, chan);
+		if (chan->output && chan->enabled)
+			um_free_irq(chan->line->driver->write_irq, chan);
+>>>>>>> refs/remotes/origin/master
 		chan->enabled = 0;
 	}
 	if (chan->ops->close != NULL)
@@ -273,10 +314,14 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void close_chan(struct list_head *chans, int delay_free_irq)
 =======
 void close_chan(struct line *line)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void close_chan(struct line *line)
+>>>>>>> refs/remotes/origin/master
 {
 	struct chan *chan;
 
@@ -285,6 +330,7 @@ void close_chan(struct line *line)
 	 * state.  Then, the first one opened will have the original state,
 	 * so it must be the last closed.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	list_for_each_entry_reverse(chan, chans, list) {
 		close_one_chan(chan, delay_free_irq);
@@ -339,6 +385,8 @@ int write_chan(struct list_head *chans, const char *buf, int len,
 				reactivate_fd(chan->fd, write_irq);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_reverse(chan, &line->chan_list, list) {
 		close_one_chan(chan, 0);
 	}
@@ -369,11 +417,15 @@ int write_chan(struct chan *chan, const char *buf, int len,
 		ret = n;
 		if ((ret == -EAGAIN) || ((ret >= 0) && (ret < len)))
 			reactivate_fd(chan->fd, write_irq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int console_write_chan(struct list_head *chans, const char *buf, int len)
 {
@@ -391,6 +443,8 @@ int console_write_chan(struct list_head *chans, const char *buf, int len)
 			ret = n;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int console_write_chan(struct chan *chan, const char *buf, int len)
 {
 	int n, ret = 0;
@@ -401,7 +455,10 @@ int console_write_chan(struct chan *chan, const char *buf, int len)
 	n = chan->ops->console_write(chan->fd, buf, len);
 	if (chan->primary)
 		ret = n;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -419,6 +476,7 @@ int console_open_chan(struct line *line, struct console *co)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int chan_window_size(struct list_head *chans, unsigned short *rows_out,
 		      unsigned short *cols_out)
 {
@@ -434,6 +492,8 @@ int chan_window_size(struct list_head *chans, unsigned short *rows_out,
 						      rows_out, cols_out);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int chan_window_size(struct line *line, unsigned short *rows_out,
 		      unsigned short *cols_out)
 {
@@ -452,11 +512,15 @@ int chan_window_size(struct line *line, unsigned short *rows_out,
 			return 0;
 		return chan->ops->window_size(chan->fd, chan->data,
 					      rows_out, cols_out);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void free_one_chan(struct chan *chan, int delay_free_irq)
 {
@@ -464,12 +528,17 @@ static void free_one_chan(struct chan *chan, int delay_free_irq)
 
 	close_one_chan(chan, delay_free_irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void free_one_chan(struct chan *chan)
 {
 	list_del(&chan->list);
 
 	close_one_chan(chan, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (chan->ops->free != NULL)
 		(*chan->ops->free)(chan->data);
@@ -480,10 +549,14 @@ static void free_one_chan(struct chan *chan)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void free_chan(struct list_head *chans, int delay_free_irq)
 =======
 static void free_chan(struct list_head *chans)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void free_chan(struct list_head *chans)
+>>>>>>> refs/remotes/origin/master
 {
 	struct list_head *ele, *next;
 	struct chan *chan;
@@ -491,10 +564,14 @@ static void free_chan(struct list_head *chans)
 	list_for_each_safe(ele, next, chans) {
 		chan = list_entry(ele, struct chan, list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		free_one_chan(chan, delay_free_irq);
 =======
 		free_one_chan(chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		free_one_chan(chan);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -545,6 +622,7 @@ static int chan_pair_config_string(struct chan *in, struct chan *out,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int chan_config_string(struct list_head *chans, char *str, int size,
 		       char **error_out)
 {
@@ -561,6 +639,8 @@ int chan_config_string(struct list_head *chans, char *str, int size,
 			out = chan;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int chan_config_string(struct line *line, char *str, int size,
 		       char **error_out)
 {
@@ -570,7 +650,10 @@ int chan_config_string(struct line *line, char *str, int size,
 		in = NULL;
 	if (out && !out->primary)
 		out = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return chan_pair_config_string(in, out, str, size, error_out);
 }
@@ -671,6 +754,7 @@ int parse_chan_pair(char *str, struct line *line, int device,
 {
 	struct list_head *chans = &line->chan_list;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct chan *new, *chan;
 	char *in, *out;
 
@@ -681,6 +765,8 @@ int parse_chan_pair(char *str, struct line *line, int device,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct chan *new;
 	char *in, *out;
 
@@ -693,7 +779,10 @@ int parse_chan_pair(char *str, struct line *line, int device,
 	if (!str)
 		return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	out = strchr(str, ',');
 	if (out != NULL) {
 		in = str;
@@ -706,9 +795,13 @@ int parse_chan_pair(char *str, struct line *line, int device,
 		new->input = 1;
 		list_add(&new->list, chans);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		line->chan_in = new;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		line->chan_in = new;
+>>>>>>> refs/remotes/origin/master
 
 		new = parse_chan(line, out, device, opts, error_out);
 		if (new == NULL)
@@ -717,9 +810,13 @@ int parse_chan_pair(char *str, struct line *line, int device,
 		list_add(&new->list, chans);
 		new->output = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		line->chan_out = new;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		line->chan_out = new;
+>>>>>>> refs/remotes/origin/master
 	}
 	else {
 		new = parse_chan(line, str, device, opts, error_out);
@@ -730,13 +827,18 @@ int parse_chan_pair(char *str, struct line *line, int device,
 		new->input = 1;
 		new->output = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		line->chan_in = line->chan_out = new;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		line->chan_in = line->chan_out = new;
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void chan_interrupt(struct list_head *chans, struct delayed_work *task,
 		    struct tty_struct *tty, int irq)
@@ -774,6 +876,11 @@ void chan_interrupt(struct list_head *chans, struct delayed_work *task,
 =======
 void chan_interrupt(struct line *line, struct tty_struct *tty, int irq)
 {
+=======
+void chan_interrupt(struct line *line, int irq)
+{
+	struct tty_port *port = &line->port;
+>>>>>>> refs/remotes/origin/master
 	struct chan *chan = line->chan_in;
 	int err;
 	char c;
@@ -782,30 +889,48 @@ void chan_interrupt(struct line *line, struct tty_struct *tty, int irq)
 		goto out;
 
 	do {
+<<<<<<< HEAD
 		if (tty && !tty_buffer_request_room(tty, 1)) {
+=======
+		if (!tty_buffer_request_room(port, 1)) {
+>>>>>>> refs/remotes/origin/master
 			schedule_delayed_work(&line->task, 1);
 			goto out;
 		}
 		err = chan->ops->read(chan->fd, &c, chan->data);
 		if (err > 0)
+<<<<<<< HEAD
 			tty_receive_char(tty, c);
+=======
+			tty_insert_flip_char(port, c, TTY_NORMAL);
+>>>>>>> refs/remotes/origin/master
 	} while (err > 0);
 
 	if (err == 0)
 		reactivate_fd(chan->fd, irq);
 	if (err == -EIO) {
 		if (chan->primary) {
+<<<<<<< HEAD
 			if (tty != NULL)
 				tty_hangup(tty);
+=======
+			tty_port_tty_hangup(&line->port, false);
+>>>>>>> refs/remotes/origin/master
 			if (line->chan_out != chan)
 				close_one_chan(line->chan_out, 1);
 		}
 		close_one_chan(chan, 1);
 		if (chan->primary)
 			return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
  out:
 	if (tty)
 		tty_flip_buffer_push(tty);
+=======
+	}
+ out:
+	tty_flip_buffer_push(port);
+>>>>>>> refs/remotes/origin/master
 }

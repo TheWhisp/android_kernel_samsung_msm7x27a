@@ -37,7 +37,10 @@ struct early_node_data {
 	struct ia64_node_data *node_data;
 	unsigned long pernode_addr;
 	unsigned long pernode_size;
+<<<<<<< HEAD
 	unsigned long num_physpages;
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ZONE_DMA
 	unsigned long num_dma_physpages;
 #endif
@@ -593,7 +596,11 @@ void __init find_memory(void)
  * find_pernode_space() does most of this already, we just need to set
  * local_per_cpu_offset
  */
+<<<<<<< HEAD
 void __cpuinit *per_cpu_init(void)
+=======
+void *per_cpu_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu;
 	static int first_time = 1;
@@ -609,6 +616,7 @@ void __cpuinit *per_cpu_init(void)
 #endif /* CONFIG_SMP */
 
 /**
+<<<<<<< HEAD
  * show_mem - give short summary of memory stats
  *
  * Shows a simple page count of reserved and used pages in the system.
@@ -675,6 +683,8 @@ void show_mem(unsigned int filter)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * call_pernode_memory - use SRAT to call callback functions with node info
  * @start: physical start of range
  * @len: length of range
@@ -735,7 +745,10 @@ static __init int count_node_pages(unsigned long start, unsigned long len, int n
 {
 	unsigned long end = start + len;
 
+<<<<<<< HEAD
 	mem_data[node].num_physpages += len >> PAGE_SHIFT;
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ZONE_DMA
 	if (start <= __pa(MAX_DMA_ADDRESS))
 		mem_data[node].num_dma_physpages +=
@@ -781,7 +794,10 @@ void __init paging_init(void)
 #endif
 
 	for_each_online_node(node) {
+<<<<<<< HEAD
 		num_physpages += mem_data[node].num_physpages;
+=======
+>>>>>>> refs/remotes/origin/master
 		pfn_offset = mem_data[node].min_pfn;
 
 #ifdef CONFIG_VIRTUAL_MEM_MAP
@@ -822,9 +838,19 @@ void arch_refresh_nodedata(int update_node, pg_data_t *update_pgdat)
 #endif
 
 #ifdef CONFIG_SPARSEMEM_VMEMMAP
+<<<<<<< HEAD
 int __meminit vmemmap_populate(struct page *start_page,
 						unsigned long size, int node)
 {
 	return vmemmap_populate_basepages(start_page, size, node);
+=======
+int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node)
+{
+	return vmemmap_populate_basepages(start, end, node);
+}
+
+void vmemmap_free(unsigned long start, unsigned long end)
+{
+>>>>>>> refs/remotes/origin/master
 }
 #endif

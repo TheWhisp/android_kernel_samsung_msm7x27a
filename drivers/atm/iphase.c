@@ -54,18 +54,24 @@
 #include <linux/uio.h>  
 #include <linux/init.h>  
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/wait.h>
 #include <linux/slab.h>
 #include <asm/system.h>  
 #include <asm/io.h>  
 #include <asm/atomic.h>  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/wait.h>
 #include <linux/slab.h>
 #include <asm/io.h>  
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>  
 #include <asm/string.h>  
 #include <asm/byteorder.h>  
@@ -826,6 +832,7 @@ static void ia_hw_type(IADEV *iadev) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void IaFrontEndIntr(IADEV *iadev) {
   volatile IA_SUNI *suni;
   volatile ia_mb25_t *mb25;
@@ -948,6 +955,8 @@ static void ia_suni_pm7345_init (IADEV *iadev)
                                  SUNI_PM7345_DLB |
                                   SUNI_PM7345_PLB);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 ia_phy_read32(struct iadev_priv *ia, unsigned int reg)
 {
 	return readl(ia->phy + (reg >> 2));
@@ -1094,7 +1103,10 @@ static void ia_suni_pm7345_init(struct iadev_priv *iadev)
 	ia_phy_write32(iadev, SUNI_CONFIG, ia_phy_read32(iadev, SUNI_CONFIG) &
 		~(SUNI_PM7345_LLB | SUNI_PM7345_CLB |
 		  SUNI_PM7345_DLB | SUNI_PM7345_PLB));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef __SNMP__
    suni_pm7345->suni_rxcp_intr_en_sts |= SUNI_OOCDE;
 #endif /* __SNMP__ */
@@ -1452,12 +1464,17 @@ static void rx_dle_intr(struct atm_dev *dev)
           {
              atomic_inc(&vcc->stats->rx_err);
 <<<<<<< HEAD
+<<<<<<< HEAD
              dev_kfree_skb_any(skb);
              atm_return(vcc, atm_guess_pdu2truesize(len));
 =======
              atm_return(vcc, skb->truesize);
              dev_kfree_skb_any(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+             atm_return(vcc, skb->truesize);
+             dev_kfree_skb_any(skb);
+>>>>>>> refs/remotes/origin/master
              goto INCR_DLE;
            }
           // get real pkt length  pwang_test
@@ -1471,12 +1488,17 @@ static void rx_dle_intr(struct atm_dev *dev)
              IF_ERR(printk("rx_dle_intr: Bad  AAL5 trailer %d (skb len %d)", 
                                                             length, skb->len);)
 <<<<<<< HEAD
+<<<<<<< HEAD
              dev_kfree_skb_any(skb);
              atm_return(vcc, atm_guess_pdu2truesize(len));
 =======
              atm_return(vcc, skb->truesize);
              dev_kfree_skb_any(skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+             atm_return(vcc, skb->truesize);
+             dev_kfree_skb_any(skb);
+>>>>>>> refs/remotes/origin/master
              goto INCR_DLE;
           }
           skb_trim(skb, length);
@@ -1592,16 +1614,22 @@ static int rx_init(struct atm_dev *dev)
 	IF_INIT(printk("Tx Dle list addr: 0x%p value: 0x%0x\n",
                       iadev->dma+IPHASE5575_TX_LIST_ADDR,
 <<<<<<< HEAD
+<<<<<<< HEAD
                       *(u32*)(iadev->dma+IPHASE5575_TX_LIST_ADDR));  
 	printk("Rx Dle list addr: 0x%p value: 0x%0x\n",
                       iadev->dma+IPHASE5575_RX_LIST_ADDR,
                       *(u32*)(iadev->dma+IPHASE5575_RX_LIST_ADDR));)  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
                       readl(iadev->dma + IPHASE5575_TX_LIST_ADDR));
 	printk("Rx Dle list addr: 0x%p value: 0x%0x\n",
                       iadev->dma+IPHASE5575_RX_LIST_ADDR,
                       readl(iadev->dma + IPHASE5575_RX_LIST_ADDR));)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
   
 	writew(0xffff, iadev->reass_reg+REASS_MASK_REG);  
 	writew(0, iadev->reass_reg+MODE_REG);  
@@ -2382,10 +2410,14 @@ static irqreturn_t ia_int(int irq, void *dev_id)
 	{  
 	   /* Clear this bit by writing a 1 to it. */  
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   *(u_int *)(iadev->reg+IPHASE5575_BUS_STATUS_REG) = STAT_DLERINT;
 =======
 	   writel(STAT_DLERINT, iadev->reg + IPHASE5575_BUS_STATUS_REG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	   writel(STAT_DLERINT, iadev->reg + IPHASE5575_BUS_STATUS_REG);
+>>>>>>> refs/remotes/origin/master
 	   rx_dle_intr(dev);  
 	}  
 	if (status & STAT_SEGINT)  
@@ -2397,20 +2429,28 @@ static irqreturn_t ia_int(int irq, void *dev_id)
 	if (status & STAT_DLETINT)  
 	{  
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   *(u_int *)(iadev->reg+IPHASE5575_BUS_STATUS_REG) = STAT_DLETINT;  
 =======
 	   writel(STAT_DLETINT, iadev->reg + IPHASE5575_BUS_STATUS_REG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	   writel(STAT_DLETINT, iadev->reg + IPHASE5575_BUS_STATUS_REG);
+>>>>>>> refs/remotes/origin/master
 	   tx_dle_intr(dev);  
 	}  
 	if (status & (STAT_FEINT | STAT_ERRINT | STAT_MARKINT))  
 	{  
            if (status & STAT_FEINT) 
 <<<<<<< HEAD
+<<<<<<< HEAD
                IaFrontEndIntr(iadev);
 =======
                ia_frontend_intr(iadev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+               ia_frontend_intr(iadev);
+>>>>>>> refs/remotes/origin/master
 	}  
    }
    return IRQ_RETVAL(handled);
@@ -2460,7 +2500,11 @@ static int reset_sar(struct atm_dev *dev)
 }  
 	  
 	  
+<<<<<<< HEAD
 static int __devinit ia_init(struct atm_dev *dev)
+=======
+static int ia_init(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {  
 	IADEV *iadev;  
 	unsigned long real_base;
@@ -2523,7 +2567,11 @@ static int __devinit ia_init(struct atm_dev *dev)
 	{  
 		printk(DEV_LABEL " (itf %d): can't set up page mapping\n",  
 			    dev->number);  
+<<<<<<< HEAD
 		return error;  
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}  
 	IF_INIT(printk(DEV_LABEL " (itf %d): rev.%d,base=%p,irq=%d\n",  
 			dev->number, iadev->pci->revision, base, iadev->irq);)
@@ -2653,7 +2701,11 @@ static void ia_free_rx(IADEV *iadev)
 			  iadev->rx_dle_dma);  
 }
 
+<<<<<<< HEAD
 static int __devinit ia_start(struct atm_dev *dev)
+=======
+static int ia_start(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {  
 	IADEV *iadev;  
 	int error;  
@@ -2742,10 +2794,14 @@ static int __devinit ia_start(struct atm_dev *dev)
 		}
 		/* Get iadev->carrier_detect status */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IaFrontEndIntr(iadev);
 =======
 		ia_frontend_intr(iadev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ia_frontend_intr(iadev);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 
@@ -3017,10 +3073,14 @@ static int ia_ioctl(struct atm_dev *dev, unsigned int cmd, void __user *arg)
          case 0xb:
 	    if (!capable(CAP_NET_ADMIN)) return -EPERM;
 <<<<<<< HEAD
+<<<<<<< HEAD
             IaFrontEndIntr(iadev);
 =======
             ia_frontend_intr(iadev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+            ia_frontend_intr(iadev);
+>>>>>>> refs/remotes/origin/master
             break;
          case 0xa:
 	    if (!capable(CAP_NET_ADMIN)) return -EPERM;
@@ -3337,8 +3397,12 @@ static const struct atmdev_ops ops = {
 	.owner		= THIS_MODULE,
 };  
 	  
+<<<<<<< HEAD
 static int __devinit ia_init_one(struct pci_dev *pdev,
 				 const struct pci_device_id *ent)
+=======
+static int ia_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {  
 	struct atm_dev *dev;  
 	IADEV *iadev;  
@@ -3398,7 +3462,11 @@ err_out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit ia_remove_one(struct pci_dev *pdev)
+=======
+static void ia_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atm_dev *dev = pci_get_drvdata(pdev);
 	IADEV *iadev = INPH_IA_DEV(dev);
@@ -3439,7 +3507,11 @@ static struct pci_driver ia_driver = {
 	.name =         DEV_LABEL,
 	.id_table =     ia_pci_tbl,
 	.probe =        ia_init_one,
+<<<<<<< HEAD
 	.remove =       __devexit_p(ia_remove_one),
+=======
+	.remove =       ia_remove_one,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init ia_module_init(void)

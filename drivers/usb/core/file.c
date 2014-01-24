@@ -8,7 +8,11 @@
  * (C) Copyright Deti Fliegl 1999 (new USB architecture)
  * (C) Copyright Randy Dunlap 2000
  * (C) Copyright David Brownell 2000-2001 (kernel hotplug, usb_device_id,
+<<<<<<< HEAD
  	more docs, etc)
+=======
+ *	more docs, etc)
+>>>>>>> refs/remotes/origin/master
  * (C) Copyright Yggdrasil Computing, Inc. 2000
  *     (usb_device_id matching changes by Adam J. Richter)
  * (C) Copyright Greg Kroah-Hartman 2002-2003
@@ -27,6 +31,7 @@
 static const struct file_operations *usb_minors[MAX_USB_MINORS];
 static DECLARE_RWSEM(minor_rwsem);
 
+<<<<<<< HEAD
 static int usb_open(struct inode * inode, struct file * file)
 {
 	int minor = iminor(inode);
@@ -50,6 +55,23 @@ static int usb_open(struct inode * inode, struct file * file)
 		file->f_op = fops_get(old_fops);
 	}
 	fops_put(old_fops);
+=======
+static int usb_open(struct inode *inode, struct file *file)
+{
+	int err = -ENODEV;
+	const struct file_operations *new_fops;
+
+	down_read(&minor_rwsem);
+	new_fops = fops_get(usb_minors[iminor(inode)]);
+
+	if (!new_fops)
+		goto done;
+
+	replace_fops(file, new_fops);
+	/* Curiouser and curiouser... NULL ->open() as "no device" ? */
+	if (file->f_op->open)
+		err = file->f_op->open(inode, file);
+>>>>>>> refs/remotes/origin/master
  done:
 	up_read(&minor_rwsem);
 	return err;
@@ -67,10 +89,14 @@ static struct usb_class {
 } *usb_class;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *usb_devnode(struct device *dev, mode_t *mode)
 =======
 static char *usb_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *usb_devnode(struct device *dev, umode_t *mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_class_driver *drv;
 
@@ -96,9 +122,15 @@ static int init_usb_class(void)
 	}
 
 	kref_init(&usb_class->kref);
+<<<<<<< HEAD
 	usb_class->class = class_create(THIS_MODULE, "usb");
 	if (IS_ERR(usb_class->class)) {
 		result = IS_ERR(usb_class->class);
+=======
+	usb_class->class = class_create(THIS_MODULE, "usbmisc");
+	if (IS_ERR(usb_class->class)) {
+		result = PTR_ERR(usb_class->class);
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "class_create failed for usb devices\n");
 		kfree(usb_class);
 		usb_class = NULL;
@@ -157,7 +189,11 @@ void usb_major_cleanup(void)
  * usb_deregister_dev() must be called when the driver is done with
  * the minor numbers given out by this function.
  *
+<<<<<<< HEAD
  * Returns -EINVAL if something bad happens with trying to register a
+=======
+ * Return: -EINVAL if something bad happens with trying to register a
+>>>>>>> refs/remotes/origin/master
  * device, and 0 on success.
  */
 int usb_register_dev(struct usb_interface *intf,
@@ -170,7 +206,11 @@ int usb_register_dev(struct usb_interface *intf,
 	char *temp;
 
 #ifdef CONFIG_USB_DYNAMIC_MINORS
+<<<<<<< HEAD
 	/* 
+=======
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * We don't care what the device tries to start at, we want to start
 	 * at zero to pack the devices into the smallest available space with
 	 * no holes in the minor range.
@@ -187,7 +227,11 @@ int usb_register_dev(struct usb_interface *intf,
 	if (retval)
 		return retval;
 
+<<<<<<< HEAD
 	dev_dbg(&intf->dev, "looking for a minor, starting at %d", minor_base);
+=======
+	dev_dbg(&intf->dev, "looking for a minor, starting at %d\n", minor_base);
+>>>>>>> refs/remotes/origin/master
 
 	down_write(&minor_rwsem);
 	for (minor = minor_base; minor < MAX_USB_MINORS; ++minor) {
@@ -243,7 +287,11 @@ void usb_deregister_dev(struct usb_interface *intf,
 	if (intf->minor == -1)
 		return;
 
+<<<<<<< HEAD
 	dbg ("removing %d minor", intf->minor);
+=======
+	dev_dbg(&intf->dev, "removing %d minor\n", intf->minor);
+>>>>>>> refs/remotes/origin/master
 
 	down_write(&minor_rwsem);
 	usb_minors[intf->minor] = NULL;

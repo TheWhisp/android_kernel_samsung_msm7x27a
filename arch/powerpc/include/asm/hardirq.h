@@ -10,6 +10,12 @@ typedef struct {
 	unsigned int pmu_irqs;
 	unsigned int mce_exceptions;
 	unsigned int spurious_irqs;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_DOORBELL
+	unsigned int doorbell_irqs;
+#endif
+>>>>>>> refs/remotes/origin/master
 } ____cacheline_aligned irq_cpustat_t;
 
 DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);

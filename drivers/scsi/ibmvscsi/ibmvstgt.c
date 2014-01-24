@@ -907,7 +907,11 @@ static int ibmvstgt_remove(struct vio_dev *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct vio_device_id ibmvstgt_device_table[] __devinitdata = {
+=======
+static struct vio_device_id ibmvstgt_device_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{"v-scsi-host", "IBM,v-scsi-host"},
 	{"",""}
 };
@@ -919,6 +923,7 @@ static struct vio_driver ibmvstgt_driver = {
 	.probe = ibmvstgt_probe,
 	.remove = ibmvstgt_remove,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.driver = {
 		.name = "ibmvscsis",
 		.owner = THIS_MODULE,
@@ -926,6 +931,9 @@ static struct vio_driver ibmvstgt_driver = {
 =======
 	.name = "ibmvscsis",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.name = "ibmvscsis",
+>>>>>>> refs/remotes/origin/master
 };
 
 static int get_system_info(void)

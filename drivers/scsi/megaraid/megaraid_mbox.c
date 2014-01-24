@@ -68,17 +68,23 @@
  * NEC	MegaRAID PCI Express ROMB	1000	0408	1033	8287
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * For history of changes, see Documentation/ChangeLog.megaraid
  */
 
 #include <linux/slab.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * For history of changes, see Documentation/scsi/ChangeLog.megaraid
  */
 
 #include <linux/slab.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "megaraid_mbox.h"
 
 static int megaraid_init(void);
@@ -312,7 +318,11 @@ static struct pci_driver megaraid_pci_driver = {
 	.name		= "megaraid",
 	.id_table	= pci_id_table_g,
 	.probe		= megaraid_probe_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(megaraid_detach_one),
+=======
+	.remove		= megaraid_detach_one,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= megaraid_mbox_shutdown,
 };
 
@@ -374,6 +384,10 @@ static struct scsi_host_template megaraid_template_g = {
 	.eh_host_reset_handler		= megaraid_reset_handler,
 	.change_queue_depth		= megaraid_change_queue_depth,
 	.use_clustering			= ENABLE_CLUSTERING,
+<<<<<<< HEAD
+=======
+	.no_write_same			= 1,
+>>>>>>> refs/remotes/origin/master
 	.sdev_attrs			= megaraid_sdev_attrs,
 	.shost_attrs			= megaraid_shost_attrs,
 };
@@ -441,7 +455,11 @@ megaraid_exit(void)
  * This routine should be called whenever a new adapter is detected by the
  * PCI hotplug susbsystem.
  */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 megaraid_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	adapter_t	*adapter;
@@ -541,7 +559,10 @@ megaraid_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	return 0;
 
 out_cmm_unreg:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	megaraid_cmm_unregister(adapter);
 out_fini_mbox:
 	megaraid_fini_mbox(adapter);
@@ -556,7 +577,11 @@ out_probe_one:
 
 /**
  * megaraid_detach_one - release framework resources and call LLD release routine
+<<<<<<< HEAD
  * @pdev	: handle for our PCI cofiguration space
+=======
+ * @pdev	: handle for our PCI configuration space
+>>>>>>> refs/remotes/origin/master
  *
  * This routine is called during driver unload. We free all the allocated
  * resources and call the corresponding LLD so that it can also release all
@@ -601,11 +626,14 @@ megaraid_detach_one(struct pci_dev *pdev)
 	// detach from the IO sub-system
 	megaraid_io_detach(adapter);
 
+<<<<<<< HEAD
 	// reset the device state in the PCI structure. We check this
 	// condition when we enter here. If the device state is NULL,
 	// that would mean the device has already been removed
 	pci_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	// Unregister from common management module
 	//
 	// FIXME: this must return success or failure for conditions if there
@@ -742,7 +770,11 @@ megaraid_io_detach(adapter_t *adapter)
  * - Allocate memory required for all the commands
  * - Use internal library of FW routines, build up complete soft state
  */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 megaraid_init_mbox(adapter_t *adapter)
 {
 	struct pci_dev		*pdev;
@@ -986,7 +1018,11 @@ megaraid_fini_mbox(adapter_t *adapter)
  * @adapter		: soft state of the raid controller
  *
  * Allocate and align the shared mailbox. This maibox is used to issue
+<<<<<<< HEAD
  * all the commands. For IO based controllers, the mailbox is also regsitered
+=======
+ * all the commands. For IO based controllers, the mailbox is also registered
+>>>>>>> refs/remotes/origin/master
  * with the FW. Allocate memory for all commands as well.
  * This is our big allocator.
  */
@@ -2034,7 +2070,11 @@ megaraid_mbox_prepare_pthru(adapter_t *adapter, scb_t *scb,
  * @scb		: scsi control block
  * @scp		: scsi command from the mid-layer
  *
+<<<<<<< HEAD
  * Prepare a command for the scsi physical devices. This rountine prepares
+=======
+ * Prepare a command for the scsi physical devices. This routine prepares
+>>>>>>> refs/remotes/origin/master
  * commands for devices which can take extended CDBs (>10 bytes).
  */
 static void
@@ -2593,7 +2633,11 @@ megaraid_abort_handler(struct scsi_cmnd *scp)
 }
 
 /**
+<<<<<<< HEAD
  * megaraid_reset_handler - device reset hadler for mailbox based driver
+=======
+ * megaraid_reset_handler - device reset handler for mailbox based driver
+>>>>>>> refs/remotes/origin/master
  * @scp		: reference command
  *
  * Reset handler for the mailbox based controller. First try to find out if
@@ -2738,7 +2782,11 @@ megaraid_reset_handler(struct scsi_cmnd *scp)
 	}
 
  out:
+<<<<<<< HEAD
 	spin_unlock_irq(&adapter->lock);
+=======
+	spin_unlock(&adapter->lock);
+>>>>>>> refs/remotes/origin/master
 	return rval;
 }
 
@@ -3453,7 +3501,11 @@ megaraid_mbox_display_scb(adapter_t *adapter, scb_t *scb)
  * megaraid_mbox_setup_device_map - manage device ids
  * @adapter	: Driver's soft state
  *
+<<<<<<< HEAD
  * Manange the device ids to have an appropriate mapping between the kernel
+=======
+ * Manage the device ids to have an appropriate mapping between the kernel
+>>>>>>> refs/remotes/origin/master
  * scsi addresses and megaraid scsi and logical drive addresses. We export
  * scsi devices on their actual addresses, whereas the logical drives are
  * exported on a virtual scsi channel.

@@ -20,6 +20,7 @@
 #define __BTRFS_LOCKING_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int btrfs_tree_lock(struct extent_buffer *eb);
 int btrfs_tree_unlock(struct extent_buffer *eb);
 int btrfs_try_spin_lock(struct extent_buffer *eb);
@@ -28,6 +29,8 @@ void btrfs_set_lock_blocking(struct extent_buffer *eb);
 void btrfs_clear_lock_blocking(struct extent_buffer *eb);
 void btrfs_assert_tree_locked(struct extent_buffer *eb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BTRFS_WRITE_LOCK 1
 #define BTRFS_READ_LOCK 2
 #define BTRFS_WRITE_LOCK_BLOCKING 3
@@ -35,7 +38,10 @@ void btrfs_assert_tree_locked(struct extent_buffer *eb);
 
 void btrfs_tree_lock(struct extent_buffer *eb);
 void btrfs_tree_unlock(struct extent_buffer *eb);
+<<<<<<< HEAD
 int btrfs_try_spin_lock(struct extent_buffer *eb);
+=======
+>>>>>>> refs/remotes/origin/master
 
 void btrfs_tree_read_lock(struct extent_buffer *eb);
 void btrfs_tree_read_unlock(struct extent_buffer *eb);
@@ -67,5 +73,8 @@ static inline void btrfs_clear_lock_blocking(struct extent_buffer *eb)
 {
 	btrfs_clear_lock_blocking_rw(eb, BTRFS_WRITE_LOCK_BLOCKING);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

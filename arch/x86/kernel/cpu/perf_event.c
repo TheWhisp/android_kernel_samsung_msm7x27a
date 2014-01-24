@@ -23,6 +23,7 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/highmem.h>
 #include <linux/cpu.h>
 #include <linux/bitops.h>
@@ -31,10 +32,16 @@
 #include <linux/bitops.h>
 #include <linux/device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cpu.h>
+#include <linux/bitops.h>
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/apic.h>
 #include <asm/stacktrace.h>
 #include <asm/nmi.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/compat.h>
 #include <asm/smp.h>
@@ -327,6 +334,16 @@ static u64 __read_mostly hw_cache_event_ids
 				[PERF_COUNT_HW_CACHE_RESULT_MAX];
 static u64 __read_mostly hw_cache_extra_regs
 =======
+=======
+#include <asm/smp.h>
+#include <asm/alternative.h>
+#include <asm/timer.h>
+#include <asm/desc.h>
+#include <asm/ldt.h>
+
+#include "perf_event.h"
+
+>>>>>>> refs/remotes/origin/master
 struct x86_pmu x86_pmu __read_mostly;
 
 DEFINE_PER_CPU(struct cpu_hw_events, cpu_hw_events) = {
@@ -338,7 +355,10 @@ u64 __read_mostly hw_cache_event_ids
 				[PERF_COUNT_HW_CACHE_OP_MAX]
 				[PERF_COUNT_HW_CACHE_RESULT_MAX];
 u64 __read_mostly hw_cache_extra_regs
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				[PERF_COUNT_HW_CACHE_MAX]
 				[PERF_COUNT_HW_CACHE_OP_MAX]
 				[PERF_COUNT_HW_CACHE_RESULT_MAX];
@@ -349,11 +369,15 @@ u64 __read_mostly hw_cache_extra_regs
  * Returns the delta events processed.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static u64
 x86_perf_event_update(struct perf_event *event)
 =======
 u64 x86_perf_event_update(struct perf_event *event)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u64 x86_perf_event_update(struct perf_event *event)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hw_perf_event *hwc = &event->hw;
 	int shift = 64 - x86_pmu.cntval_bits;
@@ -361,7 +385,11 @@ u64 x86_perf_event_update(struct perf_event *event)
 	int idx = hwc->idx;
 	s64 delta;
 
+<<<<<<< HEAD
 	if (idx == X86_PMC_IDX_FIXED_BTS)
+=======
+	if (idx == INTEL_PMC_IDX_FIXED_BTS)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -373,7 +401,11 @@ u64 x86_perf_event_update(struct perf_event *event)
 	 */
 again:
 	prev_raw_count = local64_read(&hwc->prev_count);
+<<<<<<< HEAD
 	rdmsrl(hwc->event_base, new_raw_count);
+=======
+	rdpmcl(hwc->event_base_rdpmc, new_raw_count);
+>>>>>>> refs/remotes/origin/master
 
 	if (local64_cmpxchg(&hwc->prev_count, prev_raw_count,
 					new_raw_count) != prev_raw_count)
@@ -396,6 +428,7 @@ again:
 	return new_raw_count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline int x86_pmu_addr_offset(int index)
 {
@@ -423,22 +456,30 @@ static inline unsigned int x86_pmu_event_addr(int index)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Find and validate any extra registers to set up.
  */
 static int x86_pmu_extra_regs(u64 config, struct perf_event *event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct extra_reg *er;
 
 	event->hw.extra_reg = 0;
 	event->hw.extra_config = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hw_perf_event_extra *reg;
 	struct extra_reg *er;
 
 	reg = &event->hw.extra_reg;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!x86_pmu.extra_regs)
 		return 0;
@@ -449,14 +490,20 @@ static int x86_pmu_extra_regs(u64 config, struct perf_event *event)
 		if (event->attr.config1 & ~er->valid_mask)
 			return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		event->hw.extra_reg = er->msr;
 		event->hw.extra_config = event->attr.config1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		reg->idx = er->idx;
 		reg->config = event->attr.config1;
 		reg->reg = er->msr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return 0;
@@ -515,8 +562,14 @@ static void release_pmc_hardware(void) {}
 
 static bool check_hw_exists(void)
 {
+<<<<<<< HEAD
 	u64 val, val_new = 0;
 	int i, reg, ret = 0;
+=======
+	u64 val, val_fail, val_new= ~0;
+	int i, reg, reg_fail, ret = 0;
+	int bios_fail = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check to see if the BIOS enabled any of the counters, if so
@@ -527,8 +580,16 @@ static bool check_hw_exists(void)
 		ret = rdmsrl_safe(reg, &val);
 		if (ret)
 			goto msr_fail;
+<<<<<<< HEAD
 		if (val & ARCH_PERFMON_EVENTSEL_ENABLE)
 			goto bios_fail;
+=======
+		if (val & ARCH_PERFMON_EVENTSEL_ENABLE) {
+			bios_fail = 1;
+			val_fail = val;
+			reg_fail = reg;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (x86_pmu.num_counters_fixed) {
@@ -537,12 +598,21 @@ static bool check_hw_exists(void)
 		if (ret)
 			goto msr_fail;
 		for (i = 0; i < x86_pmu.num_counters_fixed; i++) {
+<<<<<<< HEAD
 			if (val & (0x03 << i*4))
 				goto bios_fail;
+=======
+			if (val & (0x03 << i*4)) {
+				bios_fail = 1;
+				val_fail = val;
+				reg_fail = reg;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	/*
+<<<<<<< HEAD
 	 * Now write a value and read it back to see if it matches,
 	 * this is needed to detect certain hardware emulators (qemu/kvm)
 	 * that don't trap on the MSR access and always return 0s.
@@ -561,21 +631,50 @@ bios_fail:
 	 */
 	printk(KERN_CONT "Broken BIOS detected, complain to your hardware vendor.\n");
 	printk(KERN_ERR FW_BUG "the BIOS has corrupted hw-PMU resources (MSR %x is %Lx)\n", reg, val);
+=======
+	 * Read the current value, change it and read it back to see if it
+	 * matches, this is needed to detect certain hardware emulators
+	 * (qemu/kvm) that don't trap on the MSR access and always return 0s.
+	 */
+	reg = x86_pmu_event_addr(0);
+	if (rdmsrl_safe(reg, &val))
+		goto msr_fail;
+	val ^= 0xffffUL;
+	ret = wrmsrl_safe(reg, val);
+	ret |= rdmsrl_safe(reg, &val_new);
+	if (ret || val != val_new)
+		goto msr_fail;
+
+	/*
+	 * We still allow the PMU driver to operate:
+	 */
+	if (bios_fail) {
+		printk(KERN_CONT "Broken BIOS detected, complain to your hardware vendor.\n");
+		printk(KERN_ERR FW_BUG "the BIOS has corrupted hw-PMU resources (MSR %x is %Lx)\n", reg_fail, val_fail);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return true;
 
 msr_fail:
 	printk(KERN_CONT "Broken PMU hardware detected, using software events only.\n");
+<<<<<<< HEAD
+=======
+	printk(KERN_ERR "Failed to access perfctr msr (MSR %x is %Lx)\n", reg, val_new);
+>>>>>>> refs/remotes/origin/master
 
 	return false;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void reserve_ds_buffers(void);
 static void release_ds_buffers(void);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void hw_perf_event_destroy(struct perf_event *event)
 {
 	if (atomic_dec_and_mutex_lock(&active_events, &pmc_reserve_mutex)) {
@@ -625,10 +724,14 @@ set_ext_hw_attr(struct hw_perf_event *hwc, struct perf_event *event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int x86_setup_perfctr(struct perf_event *event)
 =======
 int x86_setup_perfctr(struct perf_event *event)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int x86_setup_perfctr(struct perf_event *event)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_event_attr *attr = &event->attr;
 	struct hw_perf_event *hwc = &event->hw;
@@ -650,6 +753,7 @@ int x86_setup_perfctr(struct perf_event *event)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Do not allow config1 (extended registers) to propagate,
 	 * there's no sane user-space generalization yet:
@@ -660,6 +764,10 @@ int x86_setup_perfctr(struct perf_event *event)
 	if (attr->type == PERF_TYPE_RAW)
 		return x86_pmu_extra_regs(event->attr.config, event);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (attr->type == PERF_TYPE_RAW)
+		return x86_pmu_extra_regs(event->attr.config, event);
+>>>>>>> refs/remotes/origin/master
 
 	if (attr->type == PERF_TYPE_HW_CACHE)
 		return set_ext_hw_attr(hwc, event);
@@ -698,8 +806,11 @@ int x86_setup_perfctr(struct perf_event *event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int x86_pmu_hw_config(struct perf_event *event)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * check that branch_sample_type is compatible with
  * settings needed for precise_ip > 1 which implies
@@ -731,13 +842,20 @@ static inline int precise_br_compat(struct perf_event *event)
 }
 
 int x86_pmu_hw_config(struct perf_event *event)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (event->attr.precise_ip) {
 		int precise = 0;
 
 		/* Support for constant skid */
+<<<<<<< HEAD
 		if (x86_pmu.pebs_active) {
+=======
+		if (x86_pmu.pebs_active && !x86_pmu.pebs_broken) {
+>>>>>>> refs/remotes/origin/master
 			precise++;
 
 			/* Support for IP fixup */
@@ -748,12 +866,20 @@ int x86_pmu_hw_config(struct perf_event *event)
 		if (event->attr.precise_ip > precise)
 			return -EOPNOTSUPP;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * check that PEBS LBR correction does not conflict with
 		 * whatever the user is asking with attr->branch_sample_type
 		 */
+<<<<<<< HEAD
 		if (event->attr.precise_ip > 1) {
+=======
+		if (event->attr.precise_ip > 1 &&
+		    x86_pmu.intel_cap.pebs_format < 2) {
+>>>>>>> refs/remotes/origin/master
 			u64 *br_type = &event->attr.branch_sample_type;
 
 			if (has_branch_stack(event)) {
@@ -779,7 +905,10 @@ int x86_pmu_hw_config(struct perf_event *event)
 					*br_type |= PERF_SAMPLE_BRANCH_KERNEL;
 			}
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -835,6 +964,7 @@ static int __x86_pmu_event_init(struct perf_event *event)
 	event->hw.last_tag = ~0ULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return x86_pmu.hw_config(event);
 }
 
@@ -845,13 +975,20 @@ static void x86_pmu_disable_all(void)
 
 	/* mark not used */
 	event->hw.extra_reg.idx = EXTRA_REG_NONE;
+=======
+	/* mark unused */
+	event->hw.extra_reg.idx = EXTRA_REG_NONE;
+>>>>>>> refs/remotes/origin/master
 	event->hw.branch_reg.idx = EXTRA_REG_NONE;
 
 	return x86_pmu.hw_config(event);
 }
 
 void x86_pmu_disable_all(void)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
 	int idx;
@@ -887,6 +1024,7 @@ static void x86_pmu_disable(struct pmu *pmu)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void __x86_pmu_enable_event(struct hw_perf_event *hwc,
 					  u64 enable_mask)
 {
@@ -899,6 +1037,9 @@ static void x86_pmu_enable_all(int added)
 =======
 void x86_pmu_enable_all(int added)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void x86_pmu_enable_all(int added)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
 	int idx;
@@ -921,12 +1062,15 @@ static inline int is_x86_event(struct perf_event *event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
 {
 	struct event_constraint *c, *constraints[X86_PMC_IDX_MAX];
 	unsigned long used_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
 	int i, j, w, wmax, num = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Event scheduler state:
  *
@@ -948,7 +1092,11 @@ struct sched_state {
 struct perf_sched {
 	int			max_weight;
 	int			max_events;
+<<<<<<< HEAD
 	struct event_constraint	**constraints;
+=======
+	struct perf_event	**events;
+>>>>>>> refs/remotes/origin/master
 	struct sched_state	state;
 	int			saved_states;
 	struct sched_state	saved[SCHED_STATES_MAX];
@@ -957,7 +1105,11 @@ struct perf_sched {
 /*
  * Initialize interator that runs through all events and counters.
  */
+<<<<<<< HEAD
 static void perf_sched_init(struct perf_sched *sched, struct event_constraint **c,
+=======
+static void perf_sched_init(struct perf_sched *sched, struct perf_event **events,
+>>>>>>> refs/remotes/origin/master
 			    int num, int wmin, int wmax)
 {
 	int idx;
@@ -965,10 +1117,17 @@ static void perf_sched_init(struct perf_sched *sched, struct event_constraint **
 	memset(sched, 0, sizeof(*sched));
 	sched->max_events	= num;
 	sched->max_weight	= wmax;
+<<<<<<< HEAD
 	sched->constraints	= c;
 
 	for (idx = 0; idx < num; idx++) {
 		if (c[idx]->weight == wmin)
+=======
+	sched->events		= events;
+
+	for (idx = 0; idx < num; idx++) {
+		if (events[idx]->hw.constraint->weight == wmin)
+>>>>>>> refs/remotes/origin/master
 			break;
 	}
 
@@ -1015,11 +1174,18 @@ static bool __perf_sched_find_counter(struct perf_sched *sched)
 	if (sched->state.event >= sched->max_events)
 		return false;
 
+<<<<<<< HEAD
 	c = sched->constraints[sched->state.event];
 
 	/* Prefer fixed purpose counters */
 	if (x86_pmu.num_counters_fixed) {
 		idx = X86_PMC_IDX_FIXED;
+=======
+	c = sched->events[sched->state.event]->hw.constraint;
+	/* Prefer fixed purpose counters */
+	if (c->idxmsk64 & (~0ULL << INTEL_PMC_IDX_FIXED)) {
+		idx = INTEL_PMC_IDX_FIXED;
+>>>>>>> refs/remotes/origin/master
 		for_each_set_bit_from(idx, c->idxmsk, X86_PMC_IDX_MAX) {
 			if (!__test_and_set_bit(idx, sched->state.used))
 				goto done;
@@ -1027,7 +1193,11 @@ static bool __perf_sched_find_counter(struct perf_sched *sched)
 	}
 	/* Grab the first unused counter starting with idx */
 	idx = sched->state.counter;
+<<<<<<< HEAD
 	for_each_set_bit_from(idx, c->idxmsk, X86_PMC_IDX_FIXED) {
+=======
+	for_each_set_bit_from(idx, c->idxmsk, INTEL_PMC_IDX_FIXED) {
+>>>>>>> refs/remotes/origin/master
 		if (!__test_and_set_bit(idx, sched->state.used))
 			goto done;
 	}
@@ -1074,7 +1244,11 @@ static bool perf_sched_next_event(struct perf_sched *sched)
 			if (sched->state.weight > sched->max_weight)
 				return false;
 		}
+<<<<<<< HEAD
 		c = sched->constraints[sched->state.event];
+=======
+		c = sched->events[sched->state.event]->hw.constraint;
+>>>>>>> refs/remotes/origin/master
 	} while (c->weight != sched->state.weight);
 
 	sched->state.counter = 0;	/* start with first counter */
@@ -1085,12 +1259,21 @@ static bool perf_sched_next_event(struct perf_sched *sched)
 /*
  * Assign a counter for each event.
  */
+<<<<<<< HEAD
 static int perf_assign_events(struct event_constraint **constraints, int n,
 			      int wmin, int wmax, int *assign)
 {
 	struct perf_sched sched;
 
 	perf_sched_init(&sched, constraints, n, wmin, wmax);
+=======
+int perf_assign_events(struct perf_event **events, int n,
+			int wmin, int wmax, int *assign)
+{
+	struct perf_sched sched;
+
+	perf_sched_init(&sched, events, n, wmin, wmax);
+>>>>>>> refs/remotes/origin/master
 
 	do {
 		if (!perf_sched_find_counter(&sched))
@@ -1104,14 +1287,22 @@ static int perf_assign_events(struct event_constraint **constraints, int n,
 
 int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
 {
+<<<<<<< HEAD
 	struct event_constraint *c, *constraints[X86_PMC_IDX_MAX];
 	unsigned long used_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
 	int i, wmin, wmax, num = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct event_constraint *c;
+	unsigned long used_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
+	struct perf_event *e;
+	int i, wmin, wmax, num = 0;
+>>>>>>> refs/remotes/origin/master
 	struct hw_perf_event *hwc;
 
 	bitmap_zero(used_mask, X86_PMC_IDX_MAX);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for (i = 0; i < n; i++) {
 		c = x86_pmu.get_event_constraints(cpuc, cpuc->event_list[i]);
@@ -1123,6 +1314,15 @@ int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
 		wmin = min(wmin, c->weight);
 		wmax = max(wmax, c->weight);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0, wmin = X86_PMC_IDX_MAX, wmax = 0; i < n; i++) {
+		hwc = &cpuc->event_list[i]->hw;
+		c = x86_pmu.get_event_constraints(cpuc, cpuc->event_list[i]);
+		hwc->constraint = c;
+
+		wmin = min(wmin, c->weight);
+		wmax = max(wmax, c->weight);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1130,7 +1330,11 @@ int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
 	 */
 	for (i = 0; i < n; i++) {
 		hwc = &cpuc->event_list[i]->hw;
+<<<<<<< HEAD
 		c = constraints[i];
+=======
+		c = hwc->constraint;
+>>>>>>> refs/remotes/origin/master
 
 		/* never assigned */
 		if (hwc->idx == -1)
@@ -1148,6 +1352,7 @@ int x86_schedule_events(struct cpu_hw_events *cpuc, int n, int *assign)
 		if (assign)
 			assign[i] = hwc->idx;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (i == n)
 		goto done;
@@ -1211,11 +1416,31 @@ done:
 
 	/*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* slow path */
+	if (i != n)
+		num = perf_assign_events(cpuc->event_list, n, wmin,
+					 wmax, assign);
+
+	/*
+	 * Mark the event as committed, so we do not put_constraint()
+	 * in case new events are added and fail scheduling.
+	 */
+	if (!num && assign) {
+		for (i = 0; i < n; i++) {
+			e = cpuc->event_list[i];
+			e->hw.flags |= PERF_X86_EVENT_COMMITTED;
+		}
+	}
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * scheduling failed or is just a simulation,
 	 * free resources if necessary
 	 */
 	if (!assign || num) {
 		for (i = 0; i < n; i++) {
+<<<<<<< HEAD
 			if (x86_pmu.put_event_constraints)
 				x86_pmu.put_event_constraints(cpuc, cpuc->event_list[i]);
 		}
@@ -1225,6 +1450,21 @@ done:
 =======
 	return num ? -EINVAL : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			e = cpuc->event_list[i];
+			/*
+			 * do not put_constraint() on comitted events,
+			 * because they are good to go
+			 */
+			if ((e->hw.flags & PERF_X86_EVENT_COMMITTED))
+				continue;
+
+			if (x86_pmu.put_event_constraints)
+				x86_pmu.put_event_constraints(cpuc, e);
+		}
+	}
+	return num ? -EINVAL : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1244,10 +1484,14 @@ static int collect_events(struct cpu_hw_events *cpuc, struct perf_event *leader,
 	if (is_x86_event(leader)) {
 		if (n >= max_count)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -ENOSPC;
 =======
 			return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		cpuc->event_list[n] = leader;
 		n++;
 	}
@@ -1261,10 +1505,14 @@ static int collect_events(struct cpu_hw_events *cpuc, struct perf_event *leader,
 
 		if (n >= max_count)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return -ENOSPC;
 =======
 			return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 		cpuc->event_list[n] = event;
 		n++;
@@ -1281,6 +1529,7 @@ static inline void x86_assign_hw_event(struct perf_event *event,
 	hwc->last_cpu = smp_processor_id();
 	hwc->last_tag = ++cpuc->tags[i];
 
+<<<<<<< HEAD
 	if (hwc->idx == X86_PMC_IDX_FIXED_BTS) {
 		hwc->config_base = 0;
 		hwc->event_base	= 0;
@@ -1290,6 +1539,19 @@ static inline void x86_assign_hw_event(struct perf_event *event,
 	} else {
 		hwc->config_base = x86_pmu_config_addr(hwc->idx);
 		hwc->event_base  = x86_pmu_event_addr(hwc->idx);
+=======
+	if (hwc->idx == INTEL_PMC_IDX_FIXED_BTS) {
+		hwc->config_base = 0;
+		hwc->event_base	= 0;
+	} else if (hwc->idx >= INTEL_PMC_IDX_FIXED) {
+		hwc->config_base = MSR_ARCH_PERFMON_FIXED_CTR_CTRL;
+		hwc->event_base = MSR_ARCH_PERFMON_FIXED_CTR0 + (hwc->idx - INTEL_PMC_IDX_FIXED);
+		hwc->event_base_rdpmc = (hwc->idx - INTEL_PMC_IDX_FIXED) | 1<<30;
+	} else {
+		hwc->config_base = x86_pmu_config_addr(hwc->idx);
+		hwc->event_base  = x86_pmu_event_addr(hwc->idx);
+		hwc->event_base_rdpmc = x86_pmu_rdpmc_index(hwc->idx);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1304,9 +1566,12 @@ static inline int match_prev_assignment(struct hw_perf_event *hwc,
 
 static void x86_pmu_start(struct perf_event *event, int flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void x86_pmu_stop(struct perf_event *event, int flags);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void x86_pmu_enable(struct pmu *pmu)
 {
@@ -1379,6 +1644,7 @@ static void x86_pmu_enable(struct pmu *pmu)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void x86_pmu_disable_event(struct perf_event *event)
 {
 	struct hw_perf_event *hwc = &event->hw;
@@ -1388,6 +1654,8 @@ static inline void x86_pmu_disable_event(struct perf_event *event)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_PER_CPU(u64 [X86_PMC_IDX_MAX], pmc_prev_left);
 
 /*
@@ -1395,18 +1663,26 @@ static DEFINE_PER_CPU(u64 [X86_PMC_IDX_MAX], pmc_prev_left);
  * To be called with the event disabled in hw:
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int
 x86_perf_event_set_period(struct perf_event *event)
 =======
 int x86_perf_event_set_period(struct perf_event *event)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int x86_perf_event_set_period(struct perf_event *event)
+>>>>>>> refs/remotes/origin/master
 {
 	struct hw_perf_event *hwc = &event->hw;
 	s64 left = local64_read(&hwc->period_left);
 	s64 period = hwc->sample_period;
 	int ret = 0, idx = hwc->idx;
 
+<<<<<<< HEAD
 	if (idx == X86_PMC_IDX_FIXED_BTS)
+=======
+	if (idx == INTEL_PMC_IDX_FIXED_BTS)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -1460,10 +1736,14 @@ int x86_perf_event_set_period(struct perf_event *event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void x86_pmu_enable_event(struct perf_event *event)
 =======
 void x86_pmu_enable_event(struct perf_event *event)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void x86_pmu_enable_event(struct perf_event *event)
+>>>>>>> refs/remotes/origin/master
 {
 	if (__this_cpu_read(cpu_hw_events.enabled))
 		__x86_pmu_enable_event(&event->hw,
@@ -1603,10 +1883,14 @@ void perf_event_print_debug(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void x86_pmu_stop(struct perf_event *event, int flags)
 =======
 void x86_pmu_stop(struct perf_event *event, int flags)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void x86_pmu_stop(struct perf_event *event, int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cpu_hw_events *cpuc = &__get_cpu_var(cpu_hw_events);
 	struct hw_perf_event *hwc = &event->hw;
@@ -1634,6 +1918,14 @@ static void x86_pmu_del(struct perf_event *event, int flags)
 	int i;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * event is descheduled
+	 */
+	event->hw.flags &= ~PERF_X86_EVENT_COMMITTED;
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * If we're called during a txn, we don't need to do anything.
 	 * The events never got scheduled and ->cancel_txn will truncate
 	 * the event_list.
@@ -1660,10 +1952,14 @@ static void x86_pmu_del(struct perf_event *event, int flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int x86_pmu_handle_irq(struct pt_regs *regs)
 =======
 int x86_pmu_handle_irq(struct pt_regs *regs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int x86_pmu_handle_irq(struct pt_regs *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_sample_data data;
 	struct cpu_hw_events *cpuc;
@@ -1671,8 +1967,11 @@ int x86_pmu_handle_irq(struct pt_regs *regs)
 	int idx, handled = 0;
 	u64 val;
 
+<<<<<<< HEAD
 	perf_sample_data_init(&data, 0);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cpuc = &__get_cpu_var(cpu_hw_events);
 
 	/*
@@ -1707,16 +2006,24 @@ int x86_pmu_handle_irq(struct pt_regs *regs)
 		 * event overflow
 		 */
 		handled++;
+<<<<<<< HEAD
 		data.period	= event->hw.last_period;
+=======
+		perf_sample_data_init(&data, 0, event->hw.last_period);
+>>>>>>> refs/remotes/origin/master
 
 		if (!x86_perf_event_set_period(event))
 			continue;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (perf_event_overflow(event, 1, &data, regs))
 =======
 		if (perf_event_overflow(event, &data, regs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (perf_event_overflow(event, &data, regs))
+>>>>>>> refs/remotes/origin/master
 			x86_pmu_stop(event, 0);
 	}
 
@@ -1737,6 +2044,7 @@ void perf_events_lapic_init(void)
 	apic_write(APIC_LVTPC, APIC_DM_NMI);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct pmu_nmi_state {
 	unsigned int	marked;
@@ -1840,10 +2148,30 @@ perf_event_nmi_handler(unsigned int cmd, struct pt_regs *regs)
 		return NMI_DONE;
 
 	return x86_pmu.handle_irq(regs);
+=======
+static int __kprobes
+perf_event_nmi_handler(unsigned int cmd, struct pt_regs *regs)
+{
+	u64 start_clock;
+	u64 finish_clock;
+	int ret;
+
+	if (!atomic_read(&active_events))
+		return NMI_DONE;
+
+	start_clock = sched_clock();
+	ret = x86_pmu.handle_irq(regs);
+	finish_clock = sched_clock();
+
+	perf_sample_event_took(finish_clock - start_clock);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 struct event_constraint emptyconstraint;
 struct event_constraint unconstrained;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static int __cpuinit
@@ -1854,35 +2182,58 @@ x86_pmu_notifier(struct notifier_block *self, unsigned long action, void *hcpu)
 =======
 	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+static int
+x86_pmu_notifier(struct notifier_block *self, unsigned long action, void *hcpu)
+{
+	unsigned int cpu = (long)hcpu;
+	struct cpu_hw_events *cpuc = &per_cpu(cpu_hw_events, cpu);
+>>>>>>> refs/remotes/origin/master
 	int ret = NOTIFY_OK;
 
 	switch (action & ~CPU_TASKS_FROZEN) {
 	case CPU_UP_PREPARE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		cpuc->kfree_on_online = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cpuc->kfree_on_online = NULL;
+>>>>>>> refs/remotes/origin/master
 		if (x86_pmu.cpu_prepare)
 			ret = x86_pmu.cpu_prepare(cpu);
 		break;
 
 	case CPU_STARTING:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (x86_pmu.attr_rdpmc)
 			set_in_cr4(X86_CR4_PCE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (x86_pmu.attr_rdpmc)
+			set_in_cr4(X86_CR4_PCE);
+>>>>>>> refs/remotes/origin/master
 		if (x86_pmu.cpu_starting)
 			x86_pmu.cpu_starting(cpu);
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CPU_ONLINE:
 		kfree(cpuc->kfree_on_online);
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	case CPU_DYING:
 		if (x86_pmu.cpu_dying)
 			x86_pmu.cpu_dying(cpu);
@@ -1912,19 +2263,166 @@ static void __init pmu_check_apic(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init init_hw_perf_events(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct attribute_group x86_pmu_format_group = {
 	.name = "format",
 	.attrs = NULL,
 };
 
+<<<<<<< HEAD
 static int __init init_hw_perf_events(void)
 {
 	struct x86_pmu_quirk *quirk;
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct event_constraint *c;
+=======
+/*
+ * Remove all undefined events (x86_pmu.event_map(id) == 0)
+ * out of events_attr attributes.
+ */
+static void __init filter_events(struct attribute **attrs)
+{
+	struct device_attribute *d;
+	struct perf_pmu_events_attr *pmu_attr;
+	int i, j;
+
+	for (i = 0; attrs[i]; i++) {
+		d = (struct device_attribute *)attrs[i];
+		pmu_attr = container_of(d, struct perf_pmu_events_attr, attr);
+		/* str trumps id */
+		if (pmu_attr->event_str)
+			continue;
+		if (x86_pmu.event_map(i))
+			continue;
+
+		for (j = i; attrs[j]; j++)
+			attrs[j] = attrs[j + 1];
+
+		/* Check the shifted attr. */
+		i--;
+	}
+}
+
+/* Merge two pointer arrays */
+static __init struct attribute **merge_attr(struct attribute **a, struct attribute **b)
+{
+	struct attribute **new;
+	int j, i;
+
+	for (j = 0; a[j]; j++)
+		;
+	for (i = 0; b[i]; i++)
+		j++;
+	j++;
+
+	new = kmalloc(sizeof(struct attribute *) * j, GFP_KERNEL);
+	if (!new)
+		return NULL;
+
+	j = 0;
+	for (i = 0; a[i]; i++)
+		new[j++] = a[i];
+	for (i = 0; b[i]; i++)
+		new[j++] = b[i];
+	new[j] = NULL;
+
+	return new;
+}
+
+ssize_t events_sysfs_show(struct device *dev, struct device_attribute *attr,
+			  char *page)
+{
+	struct perf_pmu_events_attr *pmu_attr = \
+		container_of(attr, struct perf_pmu_events_attr, attr);
+	u64 config = x86_pmu.event_map(pmu_attr->id);
+
+	/* string trumps id */
+	if (pmu_attr->event_str)
+		return sprintf(page, "%s", pmu_attr->event_str);
+
+	return x86_pmu.events_sysfs_show(page, config);
+}
+
+EVENT_ATTR(cpu-cycles,			CPU_CYCLES		);
+EVENT_ATTR(instructions,		INSTRUCTIONS		);
+EVENT_ATTR(cache-references,		CACHE_REFERENCES	);
+EVENT_ATTR(cache-misses, 		CACHE_MISSES		);
+EVENT_ATTR(branch-instructions,		BRANCH_INSTRUCTIONS	);
+EVENT_ATTR(branch-misses,		BRANCH_MISSES		);
+EVENT_ATTR(bus-cycles,			BUS_CYCLES		);
+EVENT_ATTR(stalled-cycles-frontend,	STALLED_CYCLES_FRONTEND	);
+EVENT_ATTR(stalled-cycles-backend,	STALLED_CYCLES_BACKEND	);
+EVENT_ATTR(ref-cycles,			REF_CPU_CYCLES		);
+
+static struct attribute *empty_attrs;
+
+static struct attribute *events_attr[] = {
+	EVENT_PTR(CPU_CYCLES),
+	EVENT_PTR(INSTRUCTIONS),
+	EVENT_PTR(CACHE_REFERENCES),
+	EVENT_PTR(CACHE_MISSES),
+	EVENT_PTR(BRANCH_INSTRUCTIONS),
+	EVENT_PTR(BRANCH_MISSES),
+	EVENT_PTR(BUS_CYCLES),
+	EVENT_PTR(STALLED_CYCLES_FRONTEND),
+	EVENT_PTR(STALLED_CYCLES_BACKEND),
+	EVENT_PTR(REF_CPU_CYCLES),
+	NULL,
+};
+
+static struct attribute_group x86_pmu_events_group = {
+	.name = "events",
+	.attrs = events_attr,
+};
+
+ssize_t x86_event_sysfs_show(char *page, u64 config, u64 event)
+{
+	u64 umask  = (config & ARCH_PERFMON_EVENTSEL_UMASK) >> 8;
+	u64 cmask  = (config & ARCH_PERFMON_EVENTSEL_CMASK) >> 24;
+	bool edge  = (config & ARCH_PERFMON_EVENTSEL_EDGE);
+	bool pc    = (config & ARCH_PERFMON_EVENTSEL_PIN_CONTROL);
+	bool any   = (config & ARCH_PERFMON_EVENTSEL_ANY);
+	bool inv   = (config & ARCH_PERFMON_EVENTSEL_INV);
+	ssize_t ret;
+
+	/*
+	* We have whole page size to spend and just little data
+	* to write, so we can safely use sprintf.
+	*/
+	ret = sprintf(page, "event=0x%02llx", event);
+
+	if (umask)
+		ret += sprintf(page + ret, ",umask=0x%02llx", umask);
+
+	if (edge)
+		ret += sprintf(page + ret, ",edge");
+
+	if (pc)
+		ret += sprintf(page + ret, ",pc");
+
+	if (any)
+		ret += sprintf(page + ret, ",any");
+
+	if (inv)
+		ret += sprintf(page + ret, ",inv");
+
+	if (cmask)
+		ret += sprintf(page + ret, ",cmask=0x%02llx", cmask);
+
+	ret += sprintf(page + ret, "\n");
+
+	return ret;
+}
+
+static int __init init_hw_perf_events(void)
+{
+	struct x86_pmu_quirk *quirk;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	pr_info("Performance Events: ");
@@ -1937,7 +2435,11 @@ static int __init init_hw_perf_events(void)
 		err = amd_pmu_init();
 		break;
 	default:
+<<<<<<< HEAD
 		return 0;
+=======
+		err = -ENOTSUPP;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (err != 0) {
 		pr_cont("no PMU driver, software events only.\n");
@@ -1952,6 +2454,7 @@ static int __init init_hw_perf_events(void)
 
 	pr_cont("%s PMU driver.\n", x86_pmu.name);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (x86_pmu.quirks)
 		x86_pmu.quirks();
@@ -2018,6 +2521,40 @@ static int __init init_hw_perf_events(void)
 	x86_pmu_format_group.attrs = x86_pmu.format_attrs;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (quirk = x86_pmu.quirks; quirk; quirk = quirk->next)
+		quirk->func();
+
+	if (!x86_pmu.intel_ctrl)
+		x86_pmu.intel_ctrl = (1 << x86_pmu.num_counters) - 1;
+
+	perf_events_lapic_init();
+	register_nmi_handler(NMI_LOCAL, perf_event_nmi_handler, 0, "PMI");
+
+	unconstrained = (struct event_constraint)
+		__EVENT_CONSTRAINT(0, (1ULL << x86_pmu.num_counters) - 1,
+				   0, x86_pmu.num_counters, 0, 0);
+
+	x86_pmu.attr_rdpmc = 1; /* enable userspace RDPMC usage by default */
+	x86_pmu_format_group.attrs = x86_pmu.format_attrs;
+
+	if (x86_pmu.event_attrs)
+		x86_pmu_events_group.attrs = x86_pmu.event_attrs;
+
+	if (!x86_pmu.events_sysfs_show)
+		x86_pmu_events_group.attrs = &empty_attrs;
+	else
+		filter_events(x86_pmu_events_group.attrs);
+
+	if (x86_pmu.cpu_events) {
+		struct attribute **tmp;
+
+		tmp = merge_attr(x86_pmu_events_group.attrs, x86_pmu.cpu_events);
+		if (!WARN_ON(!tmp))
+			x86_pmu_events_group.attrs = tmp;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	pr_info("... version:                %d\n",     x86_pmu.version);
 	pr_info("... bit width:              %d\n",     x86_pmu.cntval_bits);
 	pr_info("... generic registers:      %d\n",     x86_pmu.num_counters);
@@ -2097,7 +2634,10 @@ static int x86_pmu_commit_txn(struct pmu *pmu)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * a fake_cpuc is used to validate event groups. Due to
  * the extra reg logic, we need to also allocate a fake
@@ -2127,12 +2667,19 @@ static struct cpu_hw_events *allocate_fake_cpuc(void)
 		if (!cpuc->shared_regs)
 			goto error;
 	}
+<<<<<<< HEAD
+=======
+	cpuc->is_fake = 1;
+>>>>>>> refs/remotes/origin/master
 	return cpuc;
 error:
 	free_fake_cpuc(cpuc);
 	return ERR_PTR(-ENOMEM);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * validate that we can schedule this event
@@ -2144,6 +2691,7 @@ static int validate_event(struct perf_event *event)
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fake_cpuc = kmalloc(sizeof(*fake_cpuc), GFP_KERNEL | __GFP_ZERO);
 	if (!fake_cpuc)
 		return -ENOMEM;
@@ -2152,24 +2700,37 @@ static int validate_event(struct perf_event *event)
 	if (IS_ERR(fake_cpuc))
 		return PTR_ERR(fake_cpuc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fake_cpuc = allocate_fake_cpuc();
+	if (IS_ERR(fake_cpuc))
+		return PTR_ERR(fake_cpuc);
+>>>>>>> refs/remotes/origin/master
 
 	c = x86_pmu.get_event_constraints(fake_cpuc, event);
 
 	if (!c || !c->weight)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = -ENOSPC;
 =======
 		ret = -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (x86_pmu.put_event_constraints)
 		x86_pmu.put_event_constraints(fake_cpuc, event);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(fake_cpuc);
 =======
 	free_fake_cpuc(fake_cpuc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	free_fake_cpuc(fake_cpuc);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -2190,6 +2751,7 @@ static int validate_group(struct perf_event *event)
 	struct perf_event *leader = event->group_leader;
 	struct cpu_hw_events *fake_cpuc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret, n;
 
 	ret = -ENOMEM;
@@ -2198,18 +2760,24 @@ static int validate_group(struct perf_event *event)
 		goto out;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = -EINVAL, n;
 
 	fake_cpuc = allocate_fake_cpuc();
 	if (IS_ERR(fake_cpuc))
 		return PTR_ERR(fake_cpuc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * the event is not yet connected with its
 	 * siblings therefore we must first collect
 	 * existing siblings, then add the new event
 	 * before we can simulate the scheduling
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = -ENOSPC;
 	n = collect_events(fake_cpuc, leader, true);
@@ -2220,20 +2788,30 @@ static int validate_group(struct perf_event *event)
 	if (n < 0)
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	n = collect_events(fake_cpuc, leader, true);
+	if (n < 0)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	fake_cpuc->n_events = n;
 	n = collect_events(fake_cpuc, event, false);
 	if (n < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto out_free;
 =======
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	fake_cpuc->n_events = n;
 
 	ret = x86_pmu.schedule_events(fake_cpuc, n, NULL);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 out_free:
 	kfree(fake_cpuc);
@@ -2242,6 +2820,10 @@ out:
 out:
 	free_fake_cpuc(fake_cpuc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+	free_fake_cpuc(fake_cpuc);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -2286,6 +2868,7 @@ static int x86_pmu_event_init(struct perf_event *event)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pmu pmu = {
 	.pmu_enable	= x86_pmu_enable,
 	.pmu_disable	= x86_pmu_disable,
@@ -2298,6 +2881,8 @@ static struct pmu pmu = {
 	.stop		= x86_pmu_stop,
 	.read		= x86_pmu_read,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int x86_pmu_event_idx(struct perf_event *event)
 {
 	int idx = event->hw.idx;
@@ -2305,8 +2890,13 @@ static int x86_pmu_event_idx(struct perf_event *event)
 	if (!x86_pmu.attr_rdpmc)
 		return 0;
 
+<<<<<<< HEAD
 	if (x86_pmu.num_counters_fixed && idx >= X86_PMC_IDX_FIXED) {
 		idx -= X86_PMC_IDX_FIXED;
+=======
+	if (x86_pmu.num_counters_fixed && idx >= INTEL_PMC_IDX_FIXED) {
+		idx -= INTEL_PMC_IDX_FIXED;
+>>>>>>> refs/remotes/origin/master
 		idx |= 1 << 30;
 	}
 
@@ -2334,7 +2924,16 @@ static ssize_t set_attr_rdpmc(struct device *cdev,
 			      struct device_attribute *attr,
 			      const char *buf, size_t count)
 {
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 0);
+=======
+	unsigned long val;
+	ssize_t ret;
+
+	ret = kstrtoul(buf, 0, &val);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (!!val != !!x86_pmu.attr_rdpmc) {
 		x86_pmu.attr_rdpmc = !!val;
@@ -2358,6 +2957,10 @@ static struct attribute_group x86_pmu_attr_group = {
 static const struct attribute_group *x86_pmu_attr_groups[] = {
 	&x86_pmu_attr_group,
 	&x86_pmu_format_group,
+<<<<<<< HEAD
+=======
+	&x86_pmu_events_group,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -2367,19 +2970,36 @@ static void x86_pmu_flush_branch_stack(void)
 		x86_pmu.flush_branch_stack();
 }
 
+<<<<<<< HEAD
+=======
+void perf_check_microcode(void)
+{
+	if (x86_pmu.check_microcode)
+		x86_pmu.check_microcode();
+}
+EXPORT_SYMBOL_GPL(perf_check_microcode);
+
+>>>>>>> refs/remotes/origin/master
 static struct pmu pmu = {
 	.pmu_enable		= x86_pmu_enable,
 	.pmu_disable		= x86_pmu_disable,
 
+<<<<<<< HEAD
 	.attr_groups	= x86_pmu_attr_groups,
 
 	.event_init	= x86_pmu_event_init,
+=======
+	.attr_groups		= x86_pmu_attr_groups,
+
+	.event_init		= x86_pmu_event_init,
+>>>>>>> refs/remotes/origin/master
 
 	.add			= x86_pmu_add,
 	.del			= x86_pmu_del,
 	.start			= x86_pmu_start,
 	.stop			= x86_pmu_stop,
 	.read			= x86_pmu_read,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	.start_txn	= x86_pmu_start_txn,
@@ -2391,11 +3011,20 @@ static struct pmu pmu = {
 =======
 
 	.event_idx	= x86_pmu_event_idx,
+=======
+
+	.start_txn		= x86_pmu_start_txn,
+	.cancel_txn		= x86_pmu_cancel_txn,
+	.commit_txn		= x86_pmu_commit_txn,
+
+	.event_idx		= x86_pmu_event_idx,
+>>>>>>> refs/remotes/origin/master
 	.flush_branch_stack	= x86_pmu_flush_branch_stack,
 };
 
 void arch_perf_update_userpage(struct perf_event_mmap_page *userpg, u64 now)
 {
+<<<<<<< HEAD
 	userpg->cap_usr_time = 0;
 	userpg->cap_usr_rdpmc = x86_pmu.attr_rdpmc;
 	userpg->pmc_width = x86_pmu.cntval_bits;
@@ -2413,6 +3042,31 @@ void arch_perf_update_userpage(struct perf_event_mmap_page *userpg, u64 now)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cyc2ns_data *data;
+
+	userpg->cap_user_time = 0;
+	userpg->cap_user_time_zero = 0;
+	userpg->cap_user_rdpmc = x86_pmu.attr_rdpmc;
+	userpg->pmc_width = x86_pmu.cntval_bits;
+
+	if (!sched_clock_stable())
+		return;
+
+	data = cyc2ns_read_begin();
+
+	userpg->cap_user_time = 1;
+	userpg->time_mult = data->cyc2ns_mul;
+	userpg->time_shift = data->cyc2ns_shift;
+	userpg->time_offset = data->cyc2ns_offset - now;
+
+	userpg->cap_user_time_zero = 1;
+	userpg->time_zero = data->cyc2ns_offset;
+
+	cyc2ns_read_end(data);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * callchain support
  */
@@ -2448,6 +3102,7 @@ perf_callchain_kernel(struct perf_callchain_entry *entry, struct pt_regs *regs)
 	dump_trace(NULL, regs, NULL, 0, &backtrace_ops, entry);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_COMPAT
 <<<<<<< HEAD
 =======
@@ -2455,23 +3110,70 @@ perf_callchain_kernel(struct perf_callchain_entry *entry, struct pt_regs *regs)
 #include <asm/compat.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int
+valid_user_frame(const void __user *fp, unsigned long size)
+{
+	return (__range_not_ok(fp, size, TASK_SIZE) == 0);
+}
+
+static unsigned long get_segment_base(unsigned int segment)
+{
+	struct desc_struct *desc;
+	int idx = segment >> 3;
+
+	if ((segment & SEGMENT_TI_MASK) == SEGMENT_LDT) {
+		if (idx > LDT_ENTRIES)
+			return 0;
+
+		if (idx > current->active_mm->context.size)
+			return 0;
+
+		desc = current->active_mm->context.ldt;
+	} else {
+		if (idx > GDT_ENTRIES)
+			return 0;
+
+		desc = __this_cpu_ptr(&gdt_page.gdt[0]);
+	}
+
+	return get_desc_base(desc + idx);
+}
+
+#ifdef CONFIG_COMPAT
+
+#include <asm/compat.h>
+
+>>>>>>> refs/remotes/origin/master
 static inline int
 perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry *entry)
 {
 	/* 32-bit process in 64-bit kernel. */
+<<<<<<< HEAD
+=======
+	unsigned long ss_base, cs_base;
+>>>>>>> refs/remotes/origin/master
 	struct stack_frame_ia32 frame;
 	const void __user *fp;
 
 	if (!test_thread_flag(TIF_IA32))
 		return 0;
 
+<<<<<<< HEAD
 	fp = compat_ptr(regs->bp);
+=======
+	cs_base = get_segment_base(regs->cs);
+	ss_base = get_segment_base(regs->ss);
+
+	fp = compat_ptr(ss_base + regs->bp);
+>>>>>>> refs/remotes/origin/master
 	while (entry->nr < PERF_MAX_STACK_DEPTH) {
 		unsigned long bytes;
 		frame.next_frame     = 0;
 		frame.return_address = 0;
 
 		bytes = copy_from_user_nmi(&frame, fp, sizeof(frame));
+<<<<<<< HEAD
 		if (bytes != sizeof(frame))
 			break;
 
@@ -2480,6 +3182,16 @@ perf_callchain_user32(struct pt_regs *regs, struct perf_callchain_entry *entry)
 
 		perf_callchain_store(entry, frame.return_address);
 		fp = compat_ptr(frame.next_frame);
+=======
+		if (bytes != 0)
+			break;
+
+		if (!valid_user_frame(fp, sizeof(frame)))
+			break;
+
+		perf_callchain_store(entry, cs_base + frame.return_address);
+		fp = compat_ptr(ss_base + frame.next_frame);
+>>>>>>> refs/remotes/origin/master
 	}
 	return 1;
 }
@@ -2502,6 +3214,15 @@ perf_callchain_user(struct perf_callchain_entry *entry, struct pt_regs *regs)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * We don't know what to do with VM86 stacks.. ignore them for now.
+	 */
+	if (regs->flags & (X86_VM_MASK | PERF_EFLAGS_VM))
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	fp = (void __user *)regs->bp;
 
 	perf_callchain_store(entry, regs->ip);
@@ -2518,10 +3239,17 @@ perf_callchain_user(struct perf_callchain_entry *entry, struct pt_regs *regs)
 		frame.return_address = 0;
 
 		bytes = copy_from_user_nmi(&frame, fp, sizeof(frame));
+<<<<<<< HEAD
 		if (bytes != sizeof(frame))
 			break;
 
 		if ((unsigned long)fp < regs->sp)
+=======
+		if (bytes != 0)
+			break;
+
+		if (!valid_user_frame(fp, sizeof(frame)))
+>>>>>>> refs/remotes/origin/master
 			break;
 
 		perf_callchain_store(entry, frame.return_address);
@@ -2529,6 +3257,7 @@ perf_callchain_user(struct perf_callchain_entry *entry, struct pt_regs *regs)
 	}
 }
 
+<<<<<<< HEAD
 unsigned long perf_instruction_pointer(struct pt_regs *regs)
 {
 	unsigned long ip;
@@ -2539,6 +3268,52 @@ unsigned long perf_instruction_pointer(struct pt_regs *regs)
 		ip = instruction_pointer(regs);
 
 	return ip;
+=======
+/*
+ * Deal with code segment offsets for the various execution modes:
+ *
+ *   VM86 - the good olde 16 bit days, where the linear address is
+ *          20 bits and we use regs->ip + 0x10 * regs->cs.
+ *
+ *   IA32 - Where we need to look at GDT/LDT segment descriptor tables
+ *          to figure out what the 32bit base address is.
+ *
+ *    X32 - has TIF_X32 set, but is running in x86_64
+ *
+ * X86_64 - CS,DS,SS,ES are all zero based.
+ */
+static unsigned long code_segment_base(struct pt_regs *regs)
+{
+	/*
+	 * If we are in VM86 mode, add the segment offset to convert to a
+	 * linear address.
+	 */
+	if (regs->flags & X86_VM_MASK)
+		return 0x10 * regs->cs;
+
+	/*
+	 * For IA32 we look at the GDT/LDT segment base to convert the
+	 * effective IP to a linear address.
+	 */
+#ifdef CONFIG_X86_32
+	if (user_mode(regs) && regs->cs != __USER_CS)
+		return get_segment_base(regs->cs);
+#else
+	if (test_thread_flag(TIF_IA32)) {
+		if (user_mode(regs) && regs->cs != __USER32_CS)
+			return get_segment_base(regs->cs);
+	}
+#endif
+	return 0;
+}
+
+unsigned long perf_instruction_pointer(struct pt_regs *regs)
+{
+	if (perf_guest_cbs && perf_guest_cbs->is_in_guest())
+		return perf_guest_cbs->get_guest_ip();
+
+	return regs->ip + code_segment_base(regs);
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long perf_misc_flags(struct pt_regs *regs)
@@ -2563,7 +3338,10 @@ unsigned long perf_misc_flags(struct pt_regs *regs)
 	return misc;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap)
 {
@@ -2576,4 +3354,7 @@ void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap)
 	cap->events_mask_len	= x86_pmu.events_mask_len;
 }
 EXPORT_SYMBOL_GPL(perf_get_x86_pmu_capability);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,5 +1,8 @@
 /*
+<<<<<<< HEAD
  * File...........: linux/drivers/s390/block/dasd_int.h
+=======
+>>>>>>> refs/remotes/origin/master
  * Author(s)......: Holger Smolinski <Holger.Smolinski@de.ibm.com>
  *		    Horst Hummel <Horst.Hummel@de.ibm.com>
  *		    Martin Schwidefsky <schwidefsky@de.ibm.com>
@@ -10,8 +13,11 @@
 #ifndef DASD_INT_H
 #define DASD_INT_H
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* we keep old device allocation scheme; IOW, minors are still in 0..255 */
 #define DASD_PER_MAJOR (1U << (MINORBITS - DASD_PARTN_BITS))
 #define DASD_PARTN_MASK ((1 << DASD_PARTN_BITS) - 1)
@@ -227,6 +233,11 @@ struct dasd_ccw_req {
 /* default expiration time*/
 #define DASD_EXPIRES	  300
 #define DASD_EXPIRES_MAX  40000000
+<<<<<<< HEAD
+=======
+#define DASD_RETRIES	  256
+#define DASD_RETRIES_MAX  32768
+>>>>>>> refs/remotes/origin/master
 
 /* per dasd_ccw_req flags */
 #define DASD_CQR_FLAGS_USE_ERP   0	/* use ERP for this request */
@@ -303,10 +314,18 @@ struct dasd_discipline {
 	 * Last things to do when a device is set online, and first things
 	 * when it is set offline.
 	 */
+<<<<<<< HEAD
 	int (*ready_to_online) (struct dasd_device *);
 	int (*online_to_ready) (struct dasd_device *);
 
 	/*
+=======
+	int (*basic_to_ready) (struct dasd_device *);
+	int (*online_to_ready) (struct dasd_device *);
+	int (*ready_to_basic)  (struct dasd_device *);
+
+	/* (struct dasd_device *);
+>>>>>>> refs/remotes/origin/master
 	 * Device operation functions. build_cp creates a ccw chain for
 	 * a block device request, start_io starts the request and
 	 * term_IO cancels it (e.g. in case of a timeout). format_device
@@ -320,8 +339,13 @@ struct dasd_discipline {
 	int (*start_IO) (struct dasd_ccw_req *);
 	int (*term_IO) (struct dasd_ccw_req *);
 	void (*handle_terminated_request) (struct dasd_ccw_req *);
+<<<<<<< HEAD
 	struct dasd_ccw_req *(*format_device) (struct dasd_device *,
 					       struct format_data_t *);
+=======
+	int (*format_device) (struct dasd_device *,
+			      struct format_data_t *);
+>>>>>>> refs/remotes/origin/master
 	int (*free_cp) (struct dasd_ccw_req *, struct request *);
 
 	/*
@@ -356,9 +380,13 @@ struct dasd_discipline {
 
 	int (*get_uid) (struct dasd_device *, struct dasd_uid *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void (*kick_validate) (struct dasd_device *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*kick_validate) (struct dasd_device *);
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct dasd_discipline *dasd_diag_discipline_pointer;
@@ -387,7 +415,10 @@ struct dasd_path {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct dasd_profile_info {
 	/* legacy part of profile data, as in dasd_profile_info_t */
 	unsigned int dasd_io_reqs;	 /* number of requests processed */
@@ -423,7 +454,10 @@ struct dasd_profile {
 	spinlock_t lock;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct dasd_device {
 	/* Block device stuff. */
 	struct dasd_block *block;
@@ -463,9 +497,13 @@ struct dasd_device {
 	struct work_struct restore_device;
 	struct work_struct reload_device;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct work_struct kick_validate;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct work_struct kick_validate;
+>>>>>>> refs/remotes/origin/master
 	struct timer_list timer;
 
 	debug_info_t *debug_area;
@@ -478,11 +516,20 @@ struct dasd_device {
 	/* default expiration time in s */
 	unsigned long default_expires;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	struct dentry *debugfs_dentry;
 	struct dasd_profile profile;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long default_retries;
+
+	unsigned long blk_timeout;
+
+	struct dentry *debugfs_dentry;
+	struct dasd_profile profile;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct dasd_block {
@@ -506,6 +553,7 @@ struct dasd_block {
 	struct timer_list timer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DASD_PROFILE
 	struct dasd_profile_info_t profile;
 #endif
@@ -513,6 +561,10 @@ struct dasd_block {
 	struct dentry *debugfs_dentry;
 	struct dasd_profile profile;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dentry *debugfs_dentry;
+	struct dasd_profile profile;
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -537,10 +589,20 @@ struct dasd_block {
 #define DASD_FLAG_IS_RESERVED	7	/* The device is reserved */
 #define DASD_FLAG_LOCK_STOLEN	8	/* The device lock was stolen */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DASD_FLAG_SUSPENDED	9	/* The device was suspended */
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#define DASD_FLAG_SUSPENDED	9	/* The device was suspended */
+#define DASD_FLAG_SAFE_OFFLINE	10	/* safe offline processing requested*/
+#define DASD_FLAG_SAFE_OFFLINE_RUNNING	11	/* safe offline running */
+#define DASD_FLAG_ABORTALL	12	/* Abort all noretry requests */
+
+#define DASD_SLEEPON_START_TAG	((void *) 1)
+#define DASD_SLEEPON_END_TAG	((void *) 2)
+>>>>>>> refs/remotes/origin/master
 
 void dasd_put_device_wake(struct dasd_device *);
 
@@ -651,6 +713,7 @@ dasd_check_blocksize(int bsize)
 
 /* externals in dasd.c */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DASD_PROFILE_ON	 1
 #define DASD_PROFILE_OFF 0
 
@@ -658,6 +721,8 @@ extern debug_info_t *dasd_debug_area;
 extern struct dasd_profile_info_t dasd_global_profile;
 extern unsigned int dasd_profile_level;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DASD_PROFILE_OFF	 0
 #define DASD_PROFILE_ON 	 1
 #define DASD_PROFILE_GLOBAL_ONLY 2
@@ -665,7 +730,10 @@ extern unsigned int dasd_profile_level;
 extern debug_info_t *dasd_debug_area;
 extern struct dasd_profile_info dasd_global_profile_data;
 extern unsigned int dasd_global_profile_level;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern const struct block_device_operations dasd_device_operations;
 
 extern struct kmem_cache *dasd_page_cache;
@@ -677,9 +745,13 @@ dasd_smalloc_request(int , int, int, struct dasd_device *);
 void dasd_kfree_request(struct dasd_ccw_req *, struct dasd_device *);
 void dasd_sfree_request(struct dasd_ccw_req *, struct dasd_device *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void dasd_wakeup_cb(struct dasd_ccw_req *, void *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void dasd_wakeup_cb(struct dasd_ccw_req *, void *);
+>>>>>>> refs/remotes/origin/master
 
 static inline int
 dasd_kmalloc_set_cda(struct ccw1 *ccw, void *cda, struct dasd_device *device)
@@ -693,6 +765,11 @@ void dasd_free_device(struct dasd_device *);
 struct dasd_block *dasd_alloc_block(void);
 void dasd_free_block(struct dasd_block *);
 
+<<<<<<< HEAD
+=======
+enum blk_eh_timer_return dasd_times_out(struct request *req);
+
+>>>>>>> refs/remotes/origin/master
 void dasd_enable_device(struct dasd_device *);
 void dasd_set_target_state(struct dasd_device *, int);
 void dasd_kick_device(struct dasd_device *);
@@ -706,6 +783,10 @@ int  dasd_term_IO(struct dasd_ccw_req *);
 void dasd_schedule_device_bh(struct dasd_device *);
 void dasd_schedule_block_bh(struct dasd_block *);
 int  dasd_sleep_on(struct dasd_ccw_req *);
+<<<<<<< HEAD
+=======
+int  dasd_sleep_on_queue(struct list_head *);
+>>>>>>> refs/remotes/origin/master
 int  dasd_sleep_on_immediatly(struct dasd_ccw_req *);
 int  dasd_sleep_on_interruptible(struct dasd_ccw_req *);
 void dasd_device_set_timer(struct dasd_device *, int);
@@ -721,6 +802,10 @@ int dasd_generic_set_offline (struct ccw_device *cdev);
 int dasd_generic_notify(struct ccw_device *, int);
 int dasd_generic_last_path_gone(struct dasd_device *);
 int dasd_generic_path_operational(struct dasd_device *);
+<<<<<<< HEAD
+=======
+void dasd_generic_shutdown(struct ccw_device *);
+>>>>>>> refs/remotes/origin/master
 
 void dasd_generic_handle_state_change(struct dasd_device *);
 int dasd_generic_pm_freeze(struct ccw_device *);
@@ -738,13 +823,19 @@ void dasd_device_remove_stop_bits(struct dasd_device *, int);
 int dasd_device_is_ro(struct dasd_device *);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void dasd_profile_reset(struct dasd_profile *);
 int dasd_profile_on(struct dasd_profile *);
 void dasd_profile_off(struct dasd_profile *);
 void dasd_global_profile_reset(void);
 char *dasd_get_user_string(const char __user *, size_t);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* externals in dasd_devmap.c */
 extern int dasd_max_devindex;
@@ -827,6 +918,9 @@ static inline int dasd_eer_enabled(struct dasd_device *device)
 #define dasd_eer_enabled(d)	(0)
 #endif	/* CONFIG_DASD_ERR */
 
+<<<<<<< HEAD
 #endif				/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* DASD_H */

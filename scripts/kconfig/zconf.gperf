@@ -10,10 +10,14 @@
 struct kconf_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct kconf_id *kconf_id_lookup(register const char *str, register unsigned int len);
 =======
 static const struct kconf_id *kconf_id_lookup(register const char *str, register unsigned int len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct kconf_id *kconf_id_lookup(register const char *str, register unsigned int len);
+>>>>>>> refs/remotes/origin/master
 
 %%
 mainmenu,	T_MAINMENU,	TF_COMMAND

@@ -12,13 +12,23 @@
 
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/dmaengine.h>
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/soc.h>
 #include <sound/pxa2xx-lib.h>
+<<<<<<< HEAD
+=======
+#include <sound/dmaengine_pcm.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "../../arm/pxa2xx-pcm.h"
 
@@ -28,7 +38,11 @@ static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct pxa2xx_runtime_data *prtd = runtime->private_data;
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+<<<<<<< HEAD
 	struct pxa2xx_pcm_dma_params *dma;
+=======
+	struct snd_dmaengine_dai_dma_data *dma;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	dma = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
@@ -42,7 +56,11 @@ static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
 	 * with different params */
 	if (prtd->params == NULL) {
 		prtd->params = dma;
+<<<<<<< HEAD
 		ret = pxa_request_dma(prtd->params->name, DMA_PRIO_LOW,
+=======
+		ret = pxa_request_dma("name", DMA_PRIO_LOW,
+>>>>>>> refs/remotes/origin/master
 			      pxa2xx_pcm_dma_irq, substream);
 		if (ret < 0)
 			return ret;
@@ -50,7 +68,11 @@ static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
 	} else if (prtd->params != dma) {
 		pxa_free_dma(prtd->dma_ch);
 		prtd->params = dma;
+<<<<<<< HEAD
 		ret = pxa_request_dma(prtd->params->name, DMA_PRIO_LOW,
+=======
+		ret = pxa_request_dma("name", DMA_PRIO_LOW,
+>>>>>>> refs/remotes/origin/master
 			      pxa2xx_pcm_dma_irq, substream);
 		if (ret < 0)
 			return ret;
@@ -87,6 +109,7 @@ static struct snd_pcm_ops pxa2xx_pcm_ops = {
 	.mmap		= pxa2xx_pcm_mmap,
 };
 
+<<<<<<< HEAD
 static u64 pxa2xx_pcm_dmamask = DMA_BIT_MASK(32);
 
 static int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
@@ -103,6 +126,17 @@ static int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
 		card->dev->dma_mask = &pxa2xx_pcm_dmamask;
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
+=======
+static int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+	struct snd_pcm *pcm = rtd->pcm;
+	int ret;
+
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
 		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
@@ -127,17 +161,26 @@ static struct snd_soc_platform_driver pxa2xx_soc_platform = {
 	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
 };
 
+<<<<<<< HEAD
 static int __devinit pxa2xx_soc_platform_probe(struct platform_device *pdev)
+=======
+static int pxa2xx_soc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev, &pxa2xx_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit pxa2xx_soc_platform_remove(struct platform_device *pdev)
+=======
+static int pxa2xx_soc_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver pxa_pcm_driver = {
 	.driver = {
 			.name = "pxa-pcm-audio",
@@ -163,6 +206,27 @@ module_exit(snd_pxa_pcm_exit);
 =======
 module_platform_driver(pxa_pcm_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id snd_soc_pxa_audio_match[] = {
+	{ .compatible   = "mrvl,pxa-pcm-audio" },
+	{ }
+};
+#endif
+
+static struct platform_driver pxa_pcm_driver = {
+	.driver = {
+		.name = "pxa-pcm-audio",
+		.owner = THIS_MODULE,
+		.of_match_table = of_match_ptr(snd_soc_pxa_audio_match),
+	},
+
+	.probe = pxa2xx_soc_platform_probe,
+	.remove = pxa2xx_soc_platform_remove,
+};
+
+module_platform_driver(pxa_pcm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Nicolas Pitre");
 MODULE_DESCRIPTION("Intel PXA2xx PCM DMA module");

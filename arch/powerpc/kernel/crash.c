@@ -11,14 +11,18 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #undef DEBUG
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/smp.h>
 #include <linux/reboot.h>
 #include <linux/kexec.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/bootmem.h>
 #include <linux/crash_dump.h>
@@ -30,19 +34,25 @@
 #include <linux/types.h>
 #include <linux/memblock.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/crash_dump.h>
 #include <linux/delay.h>
 #include <linux/init.h>
 #include <linux/irq.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/processor.h>
 #include <asm/machdep.h>
 #include <asm/kexec.h>
 #include <asm/kdump.h>
 #include <asm/prom.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/firmware.h>
 #include <asm/smp.h>
@@ -61,6 +71,8 @@ int crashing_cpu = -1;
 static cpumask_t cpus_in_crash = CPU_MASK_NONE;
 cpumask_t cpus_in_sr = CPU_MASK_NONE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/smp.h>
 #include <asm/setjmp.h>
 #include <asm/debug.h>
@@ -82,7 +94,10 @@ cpumask_t cpus_in_sr = CPU_MASK_NONE;
 /* This keeps a track of which one is the crashing cpu. */
 int crashing_cpu = -1;
 static int time_to_dump;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define CRASH_HANDLER_MAX 3
 /* NULL terminated list of shutdown handles */
@@ -90,12 +105,15 @@ static crash_shutdown_t crash_shutdown_handles[CRASH_HANDLER_MAX+1];
 static DEFINE_SPINLOCK(crash_handlers_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 static atomic_t enter_on_soft_reset = ATOMIC_INIT(0);
 
 void crash_ipi_callback(struct pt_regs *regs)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned long crash_shutdown_buf[JMP_BUF_LEN];
 static int crash_shutdown_cpu = -1;
 
@@ -113,13 +131,17 @@ void crash_ipi_callback(struct pt_regs *regs)
 {
 	static cpumask_t cpus_state_saved = CPU_MASK_NONE;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int cpu = smp_processor_id();
 
 	if (!cpu_online(cpu))
 		return;
 
 	hard_irq_disable();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!cpumask_test_cpu(cpu, &cpus_in_crash))
 		crash_save_cpu(regs, cpu);
@@ -146,6 +168,8 @@ void crash_ipi_callback(struct pt_regs *regs)
 	 */
 	while (!cpumask_test_cpu(crashing_cpu, &cpus_in_crash))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!cpumask_test_cpu(cpu, &cpus_state_saved)) {
 		crash_save_cpu(regs, cpu);
 		cpumask_set_cpu(cpu, &cpus_state_saved);
@@ -159,7 +183,10 @@ void crash_ipi_callback(struct pt_regs *regs)
 	 * This barrier is needed to make sure that all CPUs are stopped.
 	 */
 	while (!time_to_dump)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cpu_relax();
 
 	if (ppc_md.kexec_cpu_down)
@@ -174,6 +201,7 @@ void crash_ipi_callback(struct pt_regs *regs)
 	/* NOTREACHED */
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Wait until all CPUs are entered via soft-reset.
@@ -194,6 +222,8 @@ static void crash_kexec_prepare_cpus(int cpu)
 
 	unsigned int ncpus = num_online_cpus() - 1;/* Excluding the panic cpu */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void crash_kexec_prepare_cpus(int cpu)
 {
 	unsigned int msecs;
@@ -202,19 +232,27 @@ static void crash_kexec_prepare_cpus(int cpu)
 	int (*old_handler)(struct pt_regs *regs);
 
 	printk(KERN_EMERG "Sending IPI to other CPUs\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	crash_send_ipi(crash_ipi_callback);
 	smp_wmb();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 again:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+again:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * FIXME: Until we will have the way to stop other CPUs reliably,
 	 * the crash CPU will send an IPI and wait for other CPUs to
 	 * respond.
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Delay of at least 10 seconds.
 	 */
@@ -291,6 +329,8 @@ void crash_kexec_secondary(struct pt_regs *regs)
 		/* NOTREACHED */
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 */
 	msecs = IPI_TIMEOUT;
 	while ((atomic_read(&cpus_in_crash) < ncpus) && (--msecs > 0))
@@ -367,7 +407,10 @@ void crash_kexec_secondary(struct pt_regs *regs)
 		mdelay(1);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	crash_ipi_callback(regs);
 }
 
@@ -377,10 +420,14 @@ static void crash_kexec_prepare_cpus(int cpu)
 {
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * move the secondarys to us so that we can copy
 =======
 	 * move the secondaries to us so that we can copy
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * move the secondaries to us so that we can copy
+>>>>>>> refs/remotes/origin/master
 	 * the new kernel 0-0x100 safely
 	 *
 	 * do this if kexec in setup.c ?
@@ -395,9 +442,12 @@ static void crash_kexec_prepare_cpus(int cpu)
 void crash_kexec_secondary(struct pt_regs *regs)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpumask_clear(&cpus_in_sr);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif	/* CONFIG_SMP */
 
@@ -409,10 +459,14 @@ static void crash_kexec_wait_realmode(int cpu)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	msecs = 10000;
 =======
 	msecs = REAL_MODE_TIMEOUT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	msecs = REAL_MODE_TIMEOUT;
+>>>>>>> refs/remotes/origin/master
 	for (i=0; i < nr_cpu_ids && msecs > 0; i++) {
 		if (i == cpu)
 			continue;
@@ -485,6 +539,7 @@ int crash_shutdown_unregister(crash_shutdown_t handler)
 EXPORT_SYMBOL(crash_shutdown_unregister);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned long crash_shutdown_buf[JMP_BUF_LEN];
 static int crash_shutdown_cpu = -1;
 
@@ -497,15 +552,20 @@ static int handle_fault(struct pt_regs *regs)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void default_machine_crash_shutdown(struct pt_regs *regs)
 {
 	unsigned int i;
 	int (*old_handler)(struct pt_regs *regs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This function is only called after the system
 	 * has panicked or is otherwise in a critical state.
@@ -524,10 +584,13 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
 	 */
 	crashing_cpu = smp_processor_id();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	crash_save_cpu(regs, crashing_cpu);
 	crash_kexec_prepare_cpus(crashing_cpu);
 	cpumask_set_cpu(crashing_cpu, &cpus_in_crash);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If we came in via system reset, wait a while for the secondary
@@ -542,17 +605,24 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
 
 	time_to_dump = 1;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	crash_kexec_wait_realmode(crashing_cpu);
 
 	machine_kexec_mask_interrupts();
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Call registered shutdown routines savely.  Swap out
 =======
 	 * Call registered shutdown routines safely.  Swap out
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * Call registered shutdown routines safely.  Swap out
+>>>>>>> refs/remotes/origin/master
 	 * __debugger_fault_handler, and replace on exit.
 	 */
 	old_handler = __debugger_fault_handler;

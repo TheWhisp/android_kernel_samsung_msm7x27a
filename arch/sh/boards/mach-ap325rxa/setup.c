@@ -20,12 +20,21 @@
 #include <linux/mtd/sh_flctl.h>
 #include <linux/delay.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/smsc911x.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
 =======
 #include <linux/videodev2.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/machine.h>
+#include <linux/smsc911x.h>
+#include <linux/gpio.h>
+#include <linux/videodev2.h>
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/ov772x.h>
 #include <media/soc_camera.h>
 #include <media/soc_camera_platform.h>
@@ -36,6 +45,15 @@
 #include <asm/suspend.h>
 #include <cpu/sh7723.h>
 
+<<<<<<< HEAD
+=======
+/* Dummy supplies, where voltage doesn't matter */
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vddvario", "smsc911x"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x"),
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct smsc911x_platform_config smsc911x_config = {
 	.phy_interface	= PHY_INTERFACE_MODE_MII,
 	.irq_polarity	= SMSC911X_IRQ_POLARITY_ACTIVE_LOW,
@@ -50,8 +68,13 @@ static struct resource smsc9118_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 35,
 		.end	= 35,
+=======
+		.start	= evt2irq(0x660),
+		.end	= evt2irq(0x660),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	}
 };
@@ -161,10 +184,14 @@ static struct platform_device nand_flash_device = {
 #define PORT_DRVCRB	0xA405018C
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ap320_wvga_set_brightness(void *board_data, int brightness)
 =======
 static int ap320_wvga_set_brightness(int brightness)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ap320_wvga_set_brightness(int brightness)
+>>>>>>> refs/remotes/origin/master
 {
 	if (brightness) {
 		gpio_set_value(GPIO_PTS3, 0);
@@ -173,6 +200,7 @@ static int ap320_wvga_set_brightness(int brightness)
 		__raw_writew(0, FPGA_BKLREG);
 		gpio_set_value(GPIO_PTS3, 1);
 	}
+<<<<<<< HEAD
 	
 	return 0;
 }
@@ -191,6 +219,13 @@ static void ap320_wvga_power_on(void *board_data, struct fb_info *info)
 =======
 static void ap320_wvga_power_on(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	return 0;
+}
+
+static void ap320_wvga_power_on(void)
+>>>>>>> refs/remotes/origin/master
 {
 	msleep(100);
 
@@ -199,20 +234,28 @@ static void ap320_wvga_power_on(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ap320_wvga_power_off(void *board_data)
 =======
 static void ap320_wvga_power_off(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ap320_wvga_power_off(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* ASD AP-320/325 LCD OFF */
 	__raw_writew(0, FPGA_LCDREG);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const static struct fb_videomode ap325rxa_lcdc_modes[] = {
 =======
 static const struct fb_videomode ap325rxa_lcdc_modes[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct fb_videomode ap325rxa_lcdc_modes[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "LB070WV1",
 		.xres = 800,
@@ -232,6 +275,7 @@ static struct sh_mobile_lcdc_info lcdc_info = {
 	.ch[0] = {
 		.chan = LCDC_CHAN_MAINLCD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.bpp = 16,
 		.interface_type = RGB18,
 		.clock_divider = 1,
@@ -247,6 +291,8 @@ static struct sh_mobile_lcdc_info lcdc_info = {
 			.set_brightness = ap320_wvga_set_brightness,
 			.get_brightness = ap320_wvga_get_brightness,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.fourcc = V4L2_PIX_FMT_RGB565,
 		.interface_type = RGB18,
 		.clock_divider = 1,
@@ -257,16 +303,23 @@ static struct sh_mobile_lcdc_info lcdc_info = {
 			.height = 91,
 			.display_on = ap320_wvga_power_on,
 			.display_off = ap320_wvga_power_off,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		},
 		.bl_info = {
 			.name = "sh_mobile_lcdc_bl",
 			.max_brightness = 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			.set_brightness = ap320_wvga_set_brightness,
 			.get_brightness = ap320_wvga_get_brightness,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.set_brightness = ap320_wvga_set_brightness,
+>>>>>>> refs/remotes/origin/master
 		},
 	}
 };
@@ -279,7 +332,11 @@ static struct resource lcdc_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 28,
+=======
+		.start	= evt2irq(0x580),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ,
 	},
 };
@@ -292,11 +349,14 @@ static struct platform_device lcdc_device = {
 		.platform_data	= &lcdc_info,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_LCDC,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void camera_power(int val)
@@ -378,12 +438,17 @@ static int camera_set_capture(struct soc_camera_platform_info *info,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ap325rxa_camera_add(struct soc_camera_link *icl, struct device *dev);
 static void ap325rxa_camera_del(struct soc_camera_link *icl);
 =======
 static int ap325rxa_camera_add(struct soc_camera_device *icd);
 static void ap325rxa_camera_del(struct soc_camera_device *icd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ap325rxa_camera_add(struct soc_camera_device *icd);
+static void ap325rxa_camera_del(struct soc_camera_device *icd);
+>>>>>>> refs/remotes/origin/master
 
 static struct soc_camera_platform_info camera_info = {
 	.format_name = "UYVY",
@@ -396,15 +461,21 @@ static struct soc_camera_platform_info camera_info = {
 		.height = 480,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.bus_param = SOCAM_PCLK_SAMPLE_RISING | SOCAM_HSYNC_ACTIVE_HIGH |
 	SOCAM_VSYNC_ACTIVE_HIGH | SOCAM_MASTER | SOCAM_DATAWIDTH_8 |
 	SOCAM_DATA_ACTIVE_HIGH,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.mbus_param = V4L2_MBUS_PCLK_SAMPLE_RISING | V4L2_MBUS_MASTER |
 	V4L2_MBUS_VSYNC_ACTIVE_HIGH | V4L2_MBUS_HSYNC_ACTIVE_HIGH |
 	V4L2_MBUS_DATA_ACTIVE_HIGH,
 	.mbus_type = V4L2_MBUS_PARALLEL,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_capture = camera_set_capture,
 };
 
@@ -424,6 +495,7 @@ static void ap325rxa_camera_release(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ap325rxa_camera_add(struct soc_camera_link *icl,
 			       struct device *dev)
 {
@@ -433,6 +505,11 @@ static int ap325rxa_camera_add(struct soc_camera_device *icd)
 {
 	int ret = soc_camera_platform_add(icd, &camera_device, &camera_link,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ap325rxa_camera_add(struct soc_camera_device *icd)
+{
+	int ret = soc_camera_platform_add(icd, &camera_device, &camera_link,
+>>>>>>> refs/remotes/origin/master
 					  ap325rxa_camera_release, 0);
 	if (ret < 0)
 		return ret;
@@ -440,14 +517,19 @@ static int ap325rxa_camera_add(struct soc_camera_device *icd)
 	ret = camera_probe();
 	if (ret < 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		soc_camera_platform_del(icl, camera_device, &camera_link);
 =======
 		soc_camera_platform_del(icd, camera_device, &camera_link);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		soc_camera_platform_del(icd, camera_device, &camera_link);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ap325rxa_camera_del(struct soc_camera_link *icl)
 {
@@ -457,6 +539,11 @@ static void ap325rxa_camera_del(struct soc_camera_device *icd)
 {
 	soc_camera_platform_del(icd, camera_device, &camera_link);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ap325rxa_camera_del(struct soc_camera_device *icd)
+{
+	soc_camera_platform_del(icd, camera_device, &camera_link);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_I2C */
 
@@ -481,7 +568,11 @@ static struct resource ceu_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start  = 52,
+=======
+		.start  = evt2irq(0x880),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 	[2] = {
@@ -498,11 +589,23 @@ static struct platform_device ceu_device = {
 		.platform_data	= &sh_mobile_ceu_info,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_CEU,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+/* Fixed 3.3V regulators to be used by SDHI0, SDHI1 */
+static struct regulator_consumer_supply fixed3v3_power_consumers[] =
+{
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.0"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.0"),
+	REGULATOR_SUPPLY("vmmc", "sh_mobile_sdhi.1"),
+	REGULATOR_SUPPLY("vqmmc", "sh_mobile_sdhi.1"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource sdhi0_cn3_resources[] = {
@@ -513,7 +616,11 @@ static struct resource sdhi0_cn3_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 100,
+=======
+		.start	= evt2irq(0xe80),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -531,11 +638,14 @@ static struct platform_device sdhi0_cn3_device = {
 		.platform_data = &sdhi0_cn3_data,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_SDHI0,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct resource sdhi1_cn7_resources[] = {
@@ -546,7 +656,11 @@ static struct resource sdhi1_cn7_resources[] = {
 		.flags	= IORESOURCE_MEM,
 	},
 	[1] = {
+<<<<<<< HEAD
 		.start	= 23,
+=======
+		.start	= evt2irq(0x4e0),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
@@ -564,11 +678,14 @@ static struct platform_device sdhi1_cn7_device = {
 		.platform_data = &sdhi1_cn7_data,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.archdata = {
 		.hwblk_id = HWBLK_SDHI1,
 	},
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct i2c_board_info __initdata ap325rxa_i2c_devices[] = {
@@ -585,11 +702,15 @@ static struct i2c_board_info ap325rxa_i2c_camera[] = {
 
 static struct ov772x_camera_info ov7725_info = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= OV772X_FLAG_VFLIP | OV772X_FLAG_HFLIP | \
 			  OV772X_FLAG_8BIT,
 =======
 	.flags		= OV772X_FLAG_VFLIP | OV772X_FLAG_HFLIP,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags		= OV772X_FLAG_VFLIP | OV772X_FLAG_HFLIP,
+>>>>>>> refs/remotes/origin/master
 	.edgectrl	= OV772X_AUTO_EDGECTRL(0xf, 0),
 };
 
@@ -643,6 +764,13 @@ static int __init ap325rxa_devices_setup(void)
 					&ap325rxa_sdram_leave_start,
 					&ap325rxa_sdram_leave_end);
 
+<<<<<<< HEAD
+=======
+	regulator_register_always_on(0, "fixed-3.3V", fixed3v3_power_consumers,
+				     ARRAY_SIZE(fixed3v3_power_consumers), 3300000);
+	regulator_register_fixed(1, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+
+>>>>>>> refs/remotes/origin/master
 	/* LD3 and LD4 LEDs */
 	gpio_request(GPIO_PTX5, NULL); /* RUN */
 	gpio_direction_output(GPIO_PTX5, 1);

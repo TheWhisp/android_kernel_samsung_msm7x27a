@@ -39,19 +39,25 @@
 /**
  *	sil680_selreg		-	return register base
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	@hwif: interface
  *	@r: config offset
  *
  *	Turn a config register offset into the right address in either
  *	PCI space or MMIO space to access the control register in question
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	@ap: ATA interface
  *	@r: config offset
  *
  *	Turn a config register offset into the right address in PCI space
  *	to access the control register in question.
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	Thankfully this is a configuration operation so isn't performance
  *	criticial.
  */
@@ -66,6 +72,7 @@ static unsigned long sil680_selreg(struct ata_port *ap, int r)
 /**
  *	sil680_seldev		-	return register base
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	@hwif: interface
  *	@r: config offset
  *
@@ -73,13 +80,18 @@ static unsigned long sil680_selreg(struct ata_port *ap, int r)
  *	PCI space or MMIO space to access the control register in question
  *	including accounting for the unit shift.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	@ap: ATA interface
  *	@r: config offset
  *
  *	Turn a config register offset into the right address in PCI space
  *	to access the control register in question including accounting for
  *	the unit shift.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 static unsigned long sil680_seldev(struct ata_port *ap, struct ata_device *adev, int r)
@@ -100,11 +112,16 @@ static unsigned long sil680_seldev(struct ata_port *ap, struct ata_device *adev,
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int sil680_cable_detect(struct ata_port *ap) {
 =======
 static int sil680_cable_detect(struct ata_port *ap)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int sil680_cable_detect(struct ata_port *ap)
+{
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	unsigned long addr = sil680_selreg(ap, 0);
 	u8 ata66;
@@ -117,10 +134,14 @@ static int sil680_cable_detect(struct ata_port *ap)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	sil680_set_piomode	-	set initial PIO mode data
 =======
  *	sil680_set_piomode	-	set PIO mode data
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	sil680_set_piomode	-	set PIO mode data
+>>>>>>> refs/remotes/origin/master
  *	@ap: ATA interface
  *	@adev: ATA device
  *
@@ -132,16 +153,22 @@ static int sil680_cable_detect(struct ata_port *ap)
 static void sil680_set_piomode(struct ata_port *ap, struct ata_device *adev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static u16 speed_p[5] = { 0x328A, 0x2283, 0x1104, 0x10C3, 0x10C1 };
 	static u16 speed_t[5] = { 0x328A, 0x2283, 0x1281, 0x10C3, 0x10C1 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static const u16 speed_p[5] = {
 		0x328A, 0x2283, 0x1104, 0x10C3, 0x10C1
 	};
 	static const u16 speed_t[5] = {
 		0x328A, 0x2283, 0x1281, 0x10C3, 0x10C1
 	};
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	unsigned long tfaddr = sil680_selreg(ap, 0x02);
 	unsigned long addr = sil680_seldev(ap, adev, 0x04);
@@ -177,6 +204,7 @@ static void sil680_set_piomode(struct ata_port *ap, struct ata_device *adev)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	sil680_set_dmamode	-	set initial DMA mode data
  *	@ap: ATA interface
  *	@adev: ATA device
@@ -184,6 +212,8 @@ static void sil680_set_piomode(struct ata_port *ap, struct ata_device *adev)
  *	Program the MWDMA/UDMA modes for the sil680 k
  *	chipset. The MWDMA mode values are pulled from a lookup table
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	sil680_set_dmamode	-	set DMA mode data
  *	@ap: ATA interface
  *	@adev: ATA device
@@ -191,12 +221,16 @@ static void sil680_set_piomode(struct ata_port *ap, struct ata_device *adev)
  *	Program the MWDMA/UDMA modes for the sil680 chipset.
  *
  *	The MWDMA mode values are pulled from a lookup table
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	while the chipset uses mode number for UDMA.
  */
 
 static void sil680_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	static u8 ultra_table[2][7] = {
 		{ 0x0C, 0x07, 0x05, 0x04, 0x02, 0x01, 0xFF },	/* 100MHz */
@@ -204,12 +238,17 @@ static void sil680_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 	};
 	static u16 dma_table[3] = { 0x2208, 0x10C2, 0x10C1 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	static const u8 ultra_table[2][7] = {
 		{ 0x0C, 0x07, 0x05, 0x04, 0x02, 0x01, 0xFF },	/* 100MHz */
 		{ 0x0F, 0x0B, 0x07, 0x05, 0x03, 0x02, 0x01 },	/* 133Mhz */
 	};
 	static const u16 dma_table[3] = { 0x2208, 0x10C2, 0x10C1 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 	unsigned long ma = sil680_seldev(ap, adev, 0x08);
@@ -230,10 +269,14 @@ static void sil680_set_dmamode(struct ata_port *ap, struct ata_device *adev)
 
 	/* Extract scsc */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	scsc = (scsc & 0x30) ? 1: 0;
 =======
 	scsc = (scsc & 0x30) ? 1 : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	scsc = (scsc & 0x30) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (adev->dma_mode >= XFER_UDMA_0) {
 		multi = 0x10C1;
@@ -307,10 +350,14 @@ static u8 sil680_init_chip(struct pci_dev *pdev, int *try_mmio)
 	u8 tmpbyte	= 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* FIXME: double check */
 =======
 	/* FIXME: double check */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* FIXME: double check */
+>>>>>>> refs/remotes/origin/master
 	pci_write_config_byte(pdev, PCI_CACHE_LINE_SIZE,
 			      pdev->revision ? 1 : 255);
 
@@ -329,6 +376,7 @@ static u8 sil680_init_chip(struct pci_dev *pdev, int *try_mmio)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(tmpbyte & 0x30) {
 		case 0x00:
 			/* 133 clock attempt to force it on */
@@ -346,6 +394,8 @@ static u8 sil680_init_chip(struct pci_dev *pdev, int *try_mmio)
 			/* BIOS set PCI x2 clocking */
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (tmpbyte & 0x30) {
 	case 0x00:
 		/* 133 clock attempt to force it on */
@@ -362,7 +412,10 @@ static u8 sil680_init_chip(struct pci_dev *pdev, int *try_mmio)
 	case 0x20:
 		/* BIOS set PCI x2 clocking */
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_read_config_byte(pdev,   0x8A, &tmpbyte);
@@ -381,6 +434,7 @@ static u8 sil680_init_chip(struct pci_dev *pdev, int *try_mmio)
 	pci_write_config_dword(pdev, 0xBC, 0x40094009);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(tmpbyte & 0x30) {
 		case 0x00: printk(KERN_INFO "sil680: 100MHz clock.\n");break;
 		case 0x10: printk(KERN_INFO "sil680: 133MHz clock.\n");break;
@@ -388,6 +442,8 @@ static u8 sil680_init_chip(struct pci_dev *pdev, int *try_mmio)
 		/* This last case is _NOT_ ok */
 		case 0x30: printk(KERN_ERR "sil680: Clock disabled ?\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (tmpbyte & 0x30) {
 	case 0x00:
 		printk(KERN_INFO "sil680: 100MHz clock.\n");
@@ -401,13 +457,20 @@ static u8 sil680_init_chip(struct pci_dev *pdev, int *try_mmio)
 	/* This last case is _NOT_ ok */
 	case 0x30:
 		printk(KERN_ERR "sil680: Clock disabled ?\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return tmpbyte & 0x30;
 }
 
+<<<<<<< HEAD
 static int __devinit sil680_init_one(struct pci_dev *pdev,
 				     const struct pci_device_id *id)
+=======
+static int sil680_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	static const struct ata_port_info info = {
 		.flags = ATA_FLAG_SLAVE_POSS,
@@ -425,19 +488,26 @@ static int __devinit sil680_init_one(struct pci_dev *pdev,
 	};
 	const struct ata_port_info *ppi[] = { &info, NULL };
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ata_host *host;
 	void __iomem *mmio_base;
 	int rc, try_mmio;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -500,7 +570,11 @@ use_ioports:
 #ifdef CONFIG_PM
 static int sil680_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int try_mmio, rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -529,6 +603,7 @@ static struct pci_driver sil680_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init sil680_init(void)
 {
 	return pci_register_driver(&sil680_pci_driver);
@@ -538,12 +613,18 @@ static void __exit sil680_exit(void)
 {
 	pci_unregister_driver(&sil680_pci_driver);
 }
+=======
+module_pci_driver(sil680_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for SI680 PATA");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, sil680);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(sil680_init);
 module_exit(sil680_exit);
+=======
+>>>>>>> refs/remotes/origin/master

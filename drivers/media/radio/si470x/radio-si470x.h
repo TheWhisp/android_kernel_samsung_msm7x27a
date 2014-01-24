@@ -33,13 +33,22 @@
 #include <linux/slab.h>
 #include <linux/input.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/videodev2.h>
 #include <linux/mutex.h>
 #include <media/v4l2-common.h>
 #include <media/v4l2-ioctl.h>
+<<<<<<< HEAD
+=======
+#include <media/v4l2-ctrls.h>
+#include <media/v4l2-event.h>
+#include <media/v4l2-device.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 
@@ -88,7 +97,11 @@
 
 #define SYSCONFIG2		5	/* System Configuration 2 */
 #define SYSCONFIG2_SEEKTH	0xff00	/* bits 15..08: RSSI Seek Threshold */
+<<<<<<< HEAD
 #define SYSCONFIG2_BAND		0x0080	/* bits 07..06: Band Select */
+=======
+#define SYSCONFIG2_BAND		0x00c0	/* bits 07..06: Band Select */
+>>>>>>> refs/remotes/origin/master
 #define SYSCONFIG2_SPACE	0x0030	/* bits 05..04: Channel Spacing */
 #define SYSCONFIG2_VOLUME	0x000f	/* bits 03..00: Volume */
 
@@ -145,10 +158,17 @@
  * si470x_device - private data
  */
 struct si470x_device {
+<<<<<<< HEAD
 	struct video_device *videodev;
 
 	/* driver management */
 	unsigned int users;
+=======
+	struct v4l2_device v4l2_dev;
+	struct video_device videodev;
+	struct v4l2_ctrl_handler hdl;
+	int band;
+>>>>>>> refs/remotes/origin/master
 
 	/* Silabs internal registers (0..15) */
 	unsigned short registers[RADIO_REGISTER_NUM];
@@ -162,9 +182,15 @@ struct si470x_device {
 	unsigned int wr_index;
 
 	struct completion completion;
+<<<<<<< HEAD
 	bool stci_enabled;		/* Seek/Tune Complete Interrupt */
 
 #if defined(CONFIG_USB_SI470X) || defined(CONFIG_USB_SI470X_MODULE)
+=======
+	bool status_rssi_auto_update;	/* Does RSSI get updated automatic? */
+
+#if IS_ENABLED(CONFIG_USB_SI470X)
+>>>>>>> refs/remotes/origin/master
 	/* reference to USB and video device */
 	struct usb_device *usbdev;
 	struct usb_interface *intf;
@@ -178,12 +204,18 @@ struct si470x_device {
 	/* scratch page */
 	unsigned char software_version;
 	unsigned char hardware_version;
+<<<<<<< HEAD
 
 	/* driver management */
 	unsigned char disconnected;
 #endif
 
 #if defined(CONFIG_I2C_SI470X) || defined(CONFIG_I2C_SI470X_MODULE)
+=======
+#endif
+
+#if IS_ENABLED(CONFIG_I2C_SI470X)
+>>>>>>> refs/remotes/origin/master
 	struct i2c_client *client;
 #endif
 };
@@ -194,7 +226,11 @@ struct si470x_device {
  * Firmware Versions
  **************************************************************************/
 
+<<<<<<< HEAD
 #define RADIO_FW_VERSION	15
+=======
+#define RADIO_FW_VERSION	12
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -217,6 +253,10 @@ struct si470x_device {
  * Common Functions
  **************************************************************************/
 extern struct video_device si470x_viddev_template;
+<<<<<<< HEAD
+=======
+extern const struct v4l2_ctrl_ops si470x_ctrl_ops;
+>>>>>>> refs/remotes/origin/master
 int si470x_get_register(struct si470x_device *radio, int regnr);
 int si470x_set_register(struct si470x_device *radio, int regnr);
 int si470x_disconnect_check(struct si470x_device *radio);

@@ -23,9 +23,13 @@
 #include <linux/pci.h>
 #include <linux/string.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/gfp.h>
 
@@ -35,16 +39,35 @@
 #include <asm/ppc-pci.h>
 #include <asm/firmware.h>
 
+<<<<<<< HEAD
+=======
+struct pci_dn *pci_get_pdn(struct pci_dev *pdev)
+{
+	struct device_node *dn = pci_device_to_OF_node(pdev);
+	if (!dn)
+		return NULL;
+	return PCI_DN(dn);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Traverse_func that inits the PCI fields of the device node.
  * NOTE: this *must* be done before read/write config to the device.
  */
+<<<<<<< HEAD
 void * __devinit update_dn_pci_info(struct device_node *dn, void *data)
 {
 	struct pci_controller *phb = data;
 	const int *type =
 		of_get_property(dn, "ibm,pci-config-space-type", NULL);
 	const u32 *regs;
+=======
+void *update_dn_pci_info(struct device_node *dn, void *data)
+{
+	struct pci_controller *phb = data;
+	const __be32 *type = of_get_property(dn, "ibm,pci-config-space-type", NULL);
+	const __be32 *regs;
+>>>>>>> refs/remotes/origin/master
 	struct pci_dn *pdn;
 
 	pdn = zalloc_maybe_bootmem(sizeof(*pdn), GFP_KERNEL);
@@ -53,6 +76,7 @@ void * __devinit update_dn_pci_info(struct device_node *dn, void *data)
 	dn->data = pdn;
 	pdn->node = dn;
 	pdn->phb = phb;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_PPC_POWERNV
@@ -67,6 +91,21 @@ void * __devinit update_dn_pci_info(struct device_node *dn, void *data)
 	}
 
 	pdn->pci_ext_config_space = (type && *type == 1);
+=======
+#ifdef CONFIG_PPC_POWERNV
+	pdn->pe_number = IODA_INVALID_PE;
+#endif
+	regs = of_get_property(dn, "reg", NULL);
+	if (regs) {
+		u32 addr = of_read_number(regs, 1);
+
+		/* First register entry is addr (00BBSS00)  */
+		pdn->busno = (addr >> 16) & 0xff;
+		pdn->devfn = (addr >> 8) & 0xff;
+	}
+
+	pdn->pci_ext_config_space = (type && of_read_number(type, 1) == 1);
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -96,12 +135,22 @@ void *traverse_pci_devices(struct device_node *start, traverse_func pre,
 
 	/* We started with a phb, iterate all childs */
 	for (dn = start->child; dn; dn = nextdn) {
+<<<<<<< HEAD
 		const u32 *classp;
 		u32 class;
 
 		nextdn = NULL;
 		classp = of_get_property(dn, "class-code", NULL);
 		class = classp ? *classp : 0;
+=======
+		const __be32 *classp;
+		u32 class = 0;
+
+		nextdn = NULL;
+		classp = of_get_property(dn, "class-code", NULL);
+		if (classp)
+			class = of_read_number(classp, 1);
+>>>>>>> refs/remotes/origin/master
 
 		if (pre && ((ret = pre(dn, data)) != NULL))
 			return ret;
@@ -135,7 +184,11 @@ void *traverse_pci_devices(struct device_node *start, traverse_func pre,
  * subsystem is set up, before kmalloc is valid) and during the 
  * dynamic lpar operation of adding a PHB to a running system.
  */
+<<<<<<< HEAD
 void __devinit pci_devs_phb_init_dynamic(struct pci_controller *phb)
+=======
+void pci_devs_phb_init_dynamic(struct pci_controller *phb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dn = phb->dn;
 	struct pci_dn *pdn;
@@ -152,6 +205,7 @@ void __devinit pci_devs_phb_init_dynamic(struct pci_controller *phb)
 	traverse_pci_devices(dn, update_dn_pci_info, phb);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Traversal func that looks for a <busno,devfcn> value.
@@ -202,6 +256,8 @@ EXPORT_SYMBOL(fetch_dev_dn);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /** 
  * pci_devs_phb_init - Initialize phbs and pci devs under them.
  * 

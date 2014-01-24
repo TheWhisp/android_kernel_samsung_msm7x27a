@@ -96,7 +96,11 @@ static const struct ide_tp_ops superio_tp_ops = {
 	.output_data		= ide_output_data,
 };
 
+<<<<<<< HEAD
 static void __devinit superio_init_iops(struct hwif_s *hwif)
+=======
+static void superio_init_iops(struct hwif_s *hwif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev = to_pci_dev(hwif->dev);
 	u32 dma_stat;
@@ -201,7 +205,11 @@ static int ns87415_dma_end(ide_drive_t *drive)
 	return (dma_stat & 7) != 4;
 }
 
+<<<<<<< HEAD
 static void __devinit init_hwif_ns87415 (ide_hwif_t *hwif)
+=======
+static void init_hwif_ns87415 (ide_hwif_t *hwif)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev = to_pci_dev(hwif->dev);
 	unsigned int ctrl, using_inta;
@@ -293,7 +301,11 @@ static const struct ide_dma_ops ns87415_dma_ops = {
 	.dma_sff_read_status	= superio_dma_sff_read_status,
 };
 
+<<<<<<< HEAD
 static const struct ide_port_info ns87415_chipset __devinitdata = {
+=======
+static const struct ide_port_info ns87415_chipset = {
+>>>>>>> refs/remotes/origin/master
 	.name		= DRV_NAME,
 	.init_hwif	= init_hwif_ns87415,
 	.tp_ops 	= &ns87415_tp_ops,
@@ -302,7 +314,11 @@ static const struct ide_port_info ns87415_chipset __devinitdata = {
 			  IDE_HFLAG_NO_ATAPI_DMA,
 };
 
+<<<<<<< HEAD
 static int __devinit ns87415_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int ns87415_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ide_port_info d = ns87415_chipset;
 

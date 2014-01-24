@@ -16,18 +16,25 @@
 #define istate core_internal_state__do_not_mess_with_it
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int noirqdebug;
 =======
 extern bool noirqdebug;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern bool noirqdebug;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bits used by threaded handlers:
  * IRQTF_RUNTHREAD - signals that the interrupt handler thread should run
 <<<<<<< HEAD
+<<<<<<< HEAD
  * IRQTF_DIED      - handler thread died
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * IRQTF_WARNED    - warning "IRQ_WAKE_THREAD w/o thread_fn" has been printed
  * IRQTF_AFFINITY  - irq thread is requested to adjust affinity
  * IRQTF_FORCED_THREAD  - irq action is force threaded
@@ -35,9 +42,12 @@ extern bool noirqdebug;
 enum {
 	IRQTF_RUNTHREAD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	IRQTF_DIED,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	IRQTF_WARNED,
 	IRQTF_AFFINITY,
 	IRQTF_FORCED_THREAD,
@@ -113,6 +123,12 @@ extern int irq_select_affinity_usr(unsigned int irq, struct cpumask *mask);
 
 extern void irq_set_thread_affinity(struct irq_desc *desc);
 
+<<<<<<< HEAD
+=======
+extern int irq_do_set_affinity(struct irq_data *data,
+			       const struct cpumask *dest, bool force);
+
+>>>>>>> refs/remotes/origin/master
 /* Inline functions for support of irq chips on slow busses */
 static inline void chip_bus_lock(struct irq_desc *desc)
 {

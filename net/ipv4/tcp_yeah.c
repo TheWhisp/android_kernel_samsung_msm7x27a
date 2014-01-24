@@ -69,7 +69,12 @@ static void tcp_yeah_pkts_acked(struct sock *sk, u32 pkts_acked, s32 rtt_us)
 	tcp_vegas_pkts_acked(sk, pkts_acked, rtt_us);
 }
 
+<<<<<<< HEAD
 static void tcp_yeah_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
+=======
+static void tcp_yeah_cong_avoid(struct sock *sk, u32 ack, u32 acked,
+				u32 in_flight)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tcp_sock *tp = tcp_sk(sk);
 	struct yeah *yeah = inet_csk_ca(sk);
@@ -78,7 +83,11 @@ static void tcp_yeah_cong_avoid(struct sock *sk, u32 ack, u32 in_flight)
 		return;
 
 	if (tp->snd_cwnd <= tp->snd_ssthresh)
+<<<<<<< HEAD
 		tcp_slow_start(tp);
+=======
+		tcp_slow_start(tp, acked);
+>>>>>>> refs/remotes/origin/master
 
 	else if (!yeah->doing_reno_now) {
 		/* Scalable */

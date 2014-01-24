@@ -44,6 +44,7 @@ static struct severity {
 	char *msg;
 } severities[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define KERNEL .context = IN_KERNEL
 #define USER .context = IN_USER
 #define SER .ser = SER_REQUIRED
@@ -127,6 +128,8 @@ int mce_severity(struct mce *a, int tolerant, char **msg)
 			continue;
 		if ((a->mcgstatus & s->mcgmask) != s->mcgres)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MCESEV(s, m, c...) { .sev = MCE_ ## s ## _SEVERITY, .msg = m, ## c }
 #define  KERNEL		.context = IN_KERNEL
 #define  USER		.context = IN_USER
@@ -139,6 +142,7 @@ int mce_severity(struct mce *a, int tolerant, char **msg)
 #define MCI_UC_S (MCI_STATUS_UC|MCI_STATUS_S)
 #define MCI_UC_SAR (MCI_STATUS_UC|MCI_STATUS_S|MCI_STATUS_AR)
 #define	MCI_ADDR (MCI_STATUS_ADDRV|MCI_STATUS_MISCV)
+<<<<<<< HEAD
 #define MCACOD 0xffff
 /* Architecturally defined codes from SDM Vol. 3B Chapter 15 */
 #define MCACOD_SCRUB	0x00C0	/* 0xC0-0xCF Memory Scrubbing */
@@ -146,6 +150,8 @@ int mce_severity(struct mce *a, int tolerant, char **msg)
 #define MCACOD_L3WB	0x017A	/* L3 Explicit Writeback */
 #define MCACOD_DATA	0x0134	/* Data Load */
 #define MCACOD_INSTR	0x0150	/* Instruction Fetch */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	MCESEV(
 		NO, "Invalid",
@@ -201,6 +207,7 @@ int mce_severity(struct mce *a, int tolerant, char **msg)
 	/* known AR MCACODs: */
 #ifdef	CONFIG_MEMORY_FAILURE
 	MCESEV(
+<<<<<<< HEAD
 		KEEP, "HT thread notices Action required: data load error",
 		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_DATA),
 		MCGMASK(MCG_STATUS_EIPV, 0)
@@ -210,6 +217,22 @@ int mce_severity(struct mce *a, int tolerant, char **msg)
 		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_DATA),
 		USER
 		),
+=======
+		KEEP, "Action required but unaffected thread is continuable",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR, MCI_UC_SAR|MCI_ADDR),
+		MCGMASK(MCG_STATUS_RIPV|MCG_STATUS_EIPV, MCG_STATUS_RIPV)
+		),
+	MCESEV(
+		AR, "Action required: data load error in a user process",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_DATA),
+		USER
+		),
+	MCESEV(
+		AR, "Action required: instruction fetch error in a user process",
+		SER, MASK(MCI_STATUS_OVER|MCI_UC_SAR|MCI_ADDR|MCACOD, MCI_UC_SAR|MCI_ADDR|MCACOD_INSTR),
+		USER
+		),
+>>>>>>> refs/remotes/origin/master
 #endif
 	MCESEV(
 		PANIC, "Action required: unknown MCACOD",
@@ -249,6 +272,7 @@ int mce_severity(struct mce *a, int tolerant, char **msg)
 };
 
 /*
+<<<<<<< HEAD
  * If the EIPV bit is set, it means the saved IP is the
  * instruction which caused the MCE.
  */
@@ -258,6 +282,21 @@ static int error_context(struct mce *m)
 		return (m->ip && (m->cs & 3) == 3) ? IN_USER : IN_KERNEL;
 	/* Unknown, assume kernel */
 	return IN_KERNEL;
+=======
+ * If mcgstatus indicated that ip/cs on the stack were
+ * no good, then "m->cs" will be zero and we will have
+ * to assume the worst case (IN_KERNEL) as we actually
+ * have no idea what we were executing when the machine
+ * check hit.
+ * If we do have a good "m->cs" (or a faked one in the
+ * case we were executing in VM86 mode) we can use it to
+ * distinguish an exception taken in user from from one
+ * taken in the kernel.
+ */
+static int error_context(struct mce *m)
+{
+	return ((m->cs & 3) == 3) ? IN_USER : IN_KERNEL;
+>>>>>>> refs/remotes/origin/master
 }
 
 int mce_severity(struct mce *m, int tolerant, char **msg)
@@ -269,11 +308,18 @@ int mce_severity(struct mce *m, int tolerant, char **msg)
 		if ((m->status & s->mask) != s->result)
 			continue;
 		if ((m->mcgstatus & s->mcgmask) != s->mcgres)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			continue;
 		if (s->ser == SER_REQUIRED && !mce_ser)
 			continue;
 		if (s->ser == NO_SER && mce_ser)
+=======
+			continue;
+		if (s->ser == SER_REQUIRED && !mca_cfg.ser)
+			continue;
+		if (s->ser == NO_SER && mca_cfg.ser)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		if (s->context && ctx != s->context)
 			continue;
@@ -347,6 +393,7 @@ static const struct file_operations severities_coverage_fops = {
 static int __init severities_debugfs_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *dmce = NULL, *fseverities_coverage = NULL;
 
 	dmce = mce_get_debugfs_dir();
@@ -357,6 +404,8 @@ static int __init severities_debugfs_init(void)
 						   &severities_coverage_fops);
 	if (fseverities_coverage == NULL)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dentry *dmce, *fsev;
 
 	dmce = mce_get_debugfs_dir();
@@ -366,7 +415,10 @@ static int __init severities_debugfs_init(void)
 	fsev = debugfs_create_file("severities-coverage", 0444, dmce, NULL,
 				   &severities_coverage_fops);
 	if (!fsev)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err_out;
 
 	return 0;
@@ -376,7 +428,11 @@ err_out:
 }
 late_initcall(severities_debugfs_init);
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
 #endif /* CONFIG_DEBUG_FS */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_DEBUG_FS */
+>>>>>>> refs/remotes/origin/master

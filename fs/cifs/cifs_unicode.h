@@ -75,6 +75,7 @@ extern const struct UniCaseRange CifsUniLowerRange[];
 
 #ifdef __KERNEL__
 <<<<<<< HEAD
+<<<<<<< HEAD
 int cifs_from_ucs2(char *to, const __le16 *from, int tolen, int fromlen,
 		   const struct nls_table *codepage, bool mapchar);
 int cifs_ucs2_bytes(const __le16 *from, int maxbytes,
@@ -86,6 +87,8 @@ char *cifs_strndup_from_ucs(const char *src, const int maxlen,
 extern int cifsConvertToUCS(__le16 *target, const char *source, int maxlen,
 			const struct nls_table *cp, int mapChars);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int cifs_from_utf16(char *to, const __le16 *from, int tolen, int fromlen,
 		    const struct nls_table *codepage, bool mapchar);
 int cifs_utf16_bytes(const __le16 *from, int maxbytes,
@@ -96,10 +99,22 @@ char *cifs_strndup_from_utf16(const char *src, const int maxlen,
 			      const struct nls_table *codepage);
 extern int cifsConvertToUTF16(__le16 *target, const char *source, int maxlen,
 			      const struct nls_table *cp, int mapChars);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
 
+=======
+#ifdef CONFIG_CIFS_SMB2
+extern __le16 *cifs_strndup_to_utf16(const char *src, const int maxlen,
+				     int *utf16_len, const struct nls_table *cp,
+				     int remap);
+#endif /* CONFIG_CIFS_SMB2 */
+#endif
+
+wchar_t cifs_toupper(wchar_t in);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * UniStrcat:  Concatenate the second string to the first
  *
@@ -337,6 +352,7 @@ UniToupper(register wchar_t uc)
  * UniStrupr:  Upper case a unicode string
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline wchar_t *
 UniStrupr(register wchar_t *upin)
 {
@@ -346,6 +362,8 @@ UniStrupr(register wchar_t *upin)
 	while (*up) {		/* For all characters */
 		*up = UniToupper(*up);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline __le16 *
 UniStrupr(register __le16 *upin)
 {
@@ -354,7 +372,10 @@ UniStrupr(register __le16 *upin)
 	up = upin;
 	while (*up) {		/* For all characters */
 		*up = cpu_to_le16(UniToupper(le16_to_cpu(*up)));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		up++;
 	}
 	return upin;		/* Return input pointer */

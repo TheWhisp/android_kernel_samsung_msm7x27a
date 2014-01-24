@@ -18,6 +18,7 @@ the Free Software Foundation, 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.data
 	.align 8
 	.globl	__clz_tab
@@ -40,6 +41,10 @@ __clz_tab:
 	.align 4
 	.global .udiv
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.text
+	.align 4
+>>>>>>> refs/remotes/origin/master
 	.globl __divdi3
 __divdi3:
 	save %sp,-104,%sp
@@ -103,8 +108,14 @@ __divdi3:
 	bne .LL85
 	mov %i0,%o2
 	mov 1,%o0
+<<<<<<< HEAD
 	call .udiv,0
 	mov 0,%o1
+=======
+	mov 0,%o1
+	wr %g0, 0, %y
+	udiv %o0, %o1, %o0
+>>>>>>> refs/remotes/origin/master
 	mov %o0,%o4
 	mov %i0,%o2
 .LL85:

@@ -30,6 +30,7 @@
  */
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/assembler.h>
 #include <mach/io.h>
 #include <mach/hardware.h>
@@ -44,6 +45,15 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "prm2xxx_3xxx.h"
 #include "cm2xxx_3xxx.h"
+=======
+
+#include <asm/assembler.h>
+
+#include "soc.h"
+#include "iomap.h"
+#include "prm2xxx.h"
+#include "cm2xxx.h"
+>>>>>>> refs/remotes/origin/master
 #include "sdrc.h"
 
 	.text

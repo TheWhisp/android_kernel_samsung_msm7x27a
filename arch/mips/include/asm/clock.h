@@ -6,8 +6,11 @@
 #include <linux/seq_file.h>
 #include <linux/clk.h>
 
+<<<<<<< HEAD
 extern void (*cpu_wait) (void);
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct clk;
 
 struct clk_ops {
@@ -50,6 +53,7 @@ void clk_recalc_rate(struct clk *);
 int clk_register(struct clk *);
 void clk_unregister(struct clk *);
 
+<<<<<<< HEAD
 /* the exported API, in addition to clk_set_rate */
 /**
  * clk_set_rate_ex - set the clock rate for a clock source, with additional parameter
@@ -61,4 +65,6 @@ void clk_unregister(struct clk *);
  */
 int clk_set_rate_ex(struct clk *clk, unsigned long rate, int algo_id);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif				/* __ASM_MIPS_CLOCK_H */

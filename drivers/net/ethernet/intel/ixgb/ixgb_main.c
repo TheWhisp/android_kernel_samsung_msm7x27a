@@ -54,6 +54,7 @@ MODULE_PARM_DESC(copybreak,
  *   Class, Class Mask, private data (not used) }
  */
 static DEFINE_PCI_DEVICE_TABLE(ixgb_pci_tbl) = {
+<<<<<<< HEAD
 	{INTEL_VENDOR_ID, IXGB_DEVICE_ID_82597EX,
 	 PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{INTEL_VENDOR_ID, IXGB_DEVICE_ID_82597EX_CX4,
@@ -61,6 +62,15 @@ static DEFINE_PCI_DEVICE_TABLE(ixgb_pci_tbl) = {
 	{INTEL_VENDOR_ID, IXGB_DEVICE_ID_82597EX_SR,
 	 PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 	{INTEL_VENDOR_ID, IXGB_DEVICE_ID_82597EX_LR,
+=======
+	{PCI_VENDOR_ID_INTEL, IXGB_DEVICE_ID_82597EX,
+	 PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
+	{PCI_VENDOR_ID_INTEL, IXGB_DEVICE_ID_82597EX_CX4,
+	 PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
+	{PCI_VENDOR_ID_INTEL, IXGB_DEVICE_ID_82597EX_SR,
+	 PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
+	{PCI_VENDOR_ID_INTEL, IXGB_DEVICE_ID_82597EX_LR,
+>>>>>>> refs/remotes/origin/master
 	 PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
 
 	/* required last entry */
@@ -73,7 +83,11 @@ MODULE_DEVICE_TABLE(pci, ixgb_pci_tbl);
 static int ixgb_init_module(void);
 static void ixgb_exit_module(void);
 static int ixgb_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
+<<<<<<< HEAD
 static void __devexit ixgb_remove(struct pci_dev *pdev);
+=======
+static void ixgb_remove(struct pci_dev *pdev);
+>>>>>>> refs/remotes/origin/master
 static int ixgb_sw_init(struct ixgb_adapter *adapter);
 static int ixgb_open(struct net_device *netdev);
 static int ixgb_close(struct net_device *netdev);
@@ -101,8 +115,15 @@ static void ixgb_tx_timeout_task(struct work_struct *work);
 
 static void ixgb_vlan_strip_enable(struct ixgb_adapter *adapter);
 static void ixgb_vlan_strip_disable(struct ixgb_adapter *adapter);
+<<<<<<< HEAD
 static int ixgb_vlan_rx_add_vid(struct net_device *netdev, u16 vid);
 static int ixgb_vlan_rx_kill_vid(struct net_device *netdev, u16 vid);
+=======
+static int ixgb_vlan_rx_add_vid(struct net_device *netdev,
+				__be16 proto, u16 vid);
+static int ixgb_vlan_rx_kill_vid(struct net_device *netdev,
+				 __be16 proto, u16 vid);
+>>>>>>> refs/remotes/origin/master
 static void ixgb_restore_vlan(struct ixgb_adapter *adapter);
 
 #ifdef CONFIG_NET_POLL_CONTROLLER
@@ -115,7 +136,11 @@ static pci_ers_result_t ixgb_io_error_detected (struct pci_dev *pdev,
 static pci_ers_result_t ixgb_io_slot_reset (struct pci_dev *pdev);
 static void ixgb_io_resume (struct pci_dev *pdev);
 
+<<<<<<< HEAD
 static struct pci_error_handlers ixgb_err_handler = {
+=======
+static const struct pci_error_handlers ixgb_err_handler = {
+>>>>>>> refs/remotes/origin/master
 	.error_detected = ixgb_io_error_detected,
 	.slot_reset = ixgb_io_slot_reset,
 	.resume = ixgb_io_resume,
@@ -125,7 +150,11 @@ static struct pci_driver ixgb_driver = {
 	.name     = ixgb_driver_name,
 	.id_table = ixgb_pci_tbl,
 	.probe    = ixgb_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(ixgb_remove),
+=======
+	.remove   = ixgb_remove,
+>>>>>>> refs/remotes/origin/master
 	.err_handler = &ixgb_err_handler
 };
 
@@ -195,7 +224,11 @@ ixgb_irq_enable(struct ixgb_adapter *adapter)
 {
 	u32 val = IXGB_INT_RXT0 | IXGB_INT_RXDMT0 |
 		  IXGB_INT_TXDW | IXGB_INT_LSC;
+<<<<<<< HEAD
 	if (adapter->hw.subsystem_vendor_id == SUN_SUBVENDOR_ID)
+=======
+	if (adapter->hw.subsystem_vendor_id == PCI_VENDOR_ID_SUN)
+>>>>>>> refs/remotes/origin/master
 		val |= IXGB_INT_GPI0;
 	IXGB_WRITE_REG(&adapter->hw, IMS, val);
 	IXGB_WRITE_FLUSH(&adapter->hw);
@@ -332,8 +365,13 @@ ixgb_fix_features(struct net_device *netdev, netdev_features_t features)
 	 * Tx VLAN insertion does not work per HW design when Rx stripping is
 	 * disabled.
 	 */
+<<<<<<< HEAD
 	if (!(features & NETIF_F_HW_VLAN_RX))
 		features &= ~NETIF_F_HW_VLAN_TX;
+=======
+	if (!(features & NETIF_F_HW_VLAN_CTAG_RX))
+		features &= ~NETIF_F_HW_VLAN_CTAG_TX;
+>>>>>>> refs/remotes/origin/master
 
 	return features;
 }
@@ -344,7 +382,11 @@ ixgb_set_features(struct net_device *netdev, netdev_features_t features)
 	struct ixgb_adapter *adapter = netdev_priv(netdev);
 	netdev_features_t changed = features ^ netdev->features;
 
+<<<<<<< HEAD
 	if (!(changed & (NETIF_F_RXCSUM|NETIF_F_HW_VLAN_RX)))
+=======
+	if (!(changed & (NETIF_F_RXCSUM|NETIF_F_HW_VLAN_CTAG_RX)))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	adapter->rx_csum = !!(features & NETIF_F_RXCSUM);
@@ -391,7 +433,11 @@ static const struct net_device_ops ixgb_netdev_ops = {
  * and a hardware reset occur.
  **/
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ixgb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	struct net_device *netdev = NULL;
@@ -406,6 +452,7 @@ ixgb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		return err;
 
 	pci_using_dac = 0;
+<<<<<<< HEAD
 	err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
 	if (!err) {
 		err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
@@ -420,6 +467,16 @@ ixgb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 				pr_err("No usable DMA configuration, aborting\n");
 				goto err_dma_mask;
 			}
+=======
+	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+	if (!err) {
+		pci_using_dac = 1;
+	} else {
+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+		if (err) {
+			pr_err("No usable DMA configuration, aborting\n");
+			goto err_dma_mask;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -479,10 +536,17 @@ ixgb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	netdev->hw_features = NETIF_F_SG |
 			   NETIF_F_TSO |
 			   NETIF_F_HW_CSUM |
+<<<<<<< HEAD
 			   NETIF_F_HW_VLAN_TX |
 			   NETIF_F_HW_VLAN_RX;
 	netdev->features = netdev->hw_features |
 			   NETIF_F_HW_VLAN_FILTER;
+=======
+			   NETIF_F_HW_VLAN_CTAG_TX |
+			   NETIF_F_HW_VLAN_CTAG_RX;
+	netdev->features = netdev->hw_features |
+			   NETIF_F_HW_VLAN_CTAG_FILTER;
+>>>>>>> refs/remotes/origin/master
 	netdev->hw_features |= NETIF_F_RXCSUM;
 
 	if (pci_using_dac) {
@@ -500,9 +564,14 @@ ixgb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 
 	ixgb_get_ee_mac_addr(&adapter->hw, netdev->dev_addr);
+<<<<<<< HEAD
 	memcpy(netdev->perm_addr, netdev->dev_addr, netdev->addr_len);
 
 	if (!is_valid_ether_addr(netdev->perm_addr)) {
+=======
+
+	if (!is_valid_ether_addr(netdev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 		netif_err(adapter, probe, adapter->netdev, "Invalid MAC Address\n");
 		err = -EIO;
 		goto err_eeprom;
@@ -558,7 +627,11 @@ err_dma_mask:
  * memory.
  **/
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 ixgb_remove(struct pci_dev *pdev)
 {
 	struct net_device *netdev = pci_get_drvdata(pdev);
@@ -584,7 +657,11 @@ ixgb_remove(struct pci_dev *pdev)
  * OS network device settings (MTU size).
  **/
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ixgb_sw_init(struct ixgb_adapter *adapter)
 {
 	struct ixgb_hw *hw = &adapter->hw;
@@ -709,17 +786,23 @@ ixgb_setup_tx_resources(struct ixgb_adapter *adapter)
 
 	size = sizeof(struct ixgb_buffer) * txdr->count;
 	txdr->buffer_info = vzalloc(size);
+<<<<<<< HEAD
 	if (!txdr->buffer_info) {
 		netif_err(adapter, probe, adapter->netdev,
 			  "Unable to allocate transmit descriptor ring memory\n");
 		return -ENOMEM;
 	}
+=======
+	if (!txdr->buffer_info)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* round up to nearest 4K */
 
 	txdr->size = txdr->count * sizeof(struct ixgb_tx_desc);
 	txdr->size = ALIGN(txdr->size, 4096);
 
+<<<<<<< HEAD
 	txdr->desc = dma_alloc_coherent(&pdev->dev, txdr->size, &txdr->dma,
 					GFP_KERNEL);
 	if (!txdr->desc) {
@@ -729,6 +812,14 @@ ixgb_setup_tx_resources(struct ixgb_adapter *adapter)
 		return -ENOMEM;
 	}
 	memset(txdr->desc, 0, txdr->size);
+=======
+	txdr->desc = dma_zalloc_coherent(&pdev->dev, txdr->size, &txdr->dma,
+					 GFP_KERNEL);
+	if (!txdr->desc) {
+		vfree(txdr->buffer_info);
+		return -ENOMEM;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	txdr->next_to_use = 0;
 	txdr->next_to_clean = 0;
@@ -798,11 +889,16 @@ ixgb_setup_rx_resources(struct ixgb_adapter *adapter)
 
 	size = sizeof(struct ixgb_buffer) * rxdr->count;
 	rxdr->buffer_info = vzalloc(size);
+<<<<<<< HEAD
 	if (!rxdr->buffer_info) {
 		netif_err(adapter, probe, adapter->netdev,
 			  "Unable to allocate receive descriptor ring\n");
 		return -ENOMEM;
 	}
+=======
+	if (!rxdr->buffer_info)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* Round up to nearest 4K */
 
@@ -814,8 +910,11 @@ ixgb_setup_rx_resources(struct ixgb_adapter *adapter)
 
 	if (!rxdr->desc) {
 		vfree(rxdr->buffer_info);
+<<<<<<< HEAD
 		netif_err(adapter, probe, adapter->netdev,
 			  "Unable to allocate receive descriptors\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	memset(rxdr->desc, 0, rxdr->size);
@@ -1152,7 +1251,11 @@ ixgb_set_multi(struct net_device *netdev)
 	}
 
 alloc_failed:
+<<<<<<< HEAD
 	if (netdev->features & NETIF_F_HW_VLAN_RX)
+=======
+	if (netdev->features & NETIF_F_HW_VLAN_CTAG_RX)
+>>>>>>> refs/remotes/origin/master
 		ixgb_vlan_strip_enable(adapter);
 	else
 		ixgb_vlan_strip_disable(adapter);
@@ -2092,8 +2195,13 @@ ixgb_clean_rx_irq(struct ixgb_adapter *adapter, int *work_done, int work_to_do)
 
 		skb->protocol = eth_type_trans(skb, netdev);
 		if (status & IXGB_RX_DESC_STATUS_VP)
+<<<<<<< HEAD
 			__vlan_hwaccel_put_tag(skb,
 					       le16_to_cpu(rx_desc->special));
+=======
+			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
+				       le16_to_cpu(rx_desc->special));
+>>>>>>> refs/remotes/origin/master
 
 		netif_receive_skb(skb);
 
@@ -2166,6 +2274,13 @@ map_skb:
 		                                  skb->data,
 		                                  adapter->rx_buffer_len,
 						  DMA_FROM_DEVICE);
+<<<<<<< HEAD
+=======
+		if (dma_mapping_error(&pdev->dev, buffer_info->dma)) {
+			adapter->alloc_rx_buff_failed++;
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		rx_desc = IXGB_RX_DESC(*rx_ring, i);
 		rx_desc->buff_addr = cpu_to_le64(buffer_info->dma);
@@ -2175,7 +2290,12 @@ map_skb:
 		rx_desc->status = 0;
 
 
+<<<<<<< HEAD
 		if (++i == rx_ring->count) i = 0;
+=======
+		if (++i == rx_ring->count)
+			i = 0;
+>>>>>>> refs/remotes/origin/master
 		buffer_info = &rx_ring->buffer_info[i];
 	}
 
@@ -2216,7 +2336,11 @@ ixgb_vlan_strip_disable(struct ixgb_adapter *adapter)
 }
 
 static int
+<<<<<<< HEAD
 ixgb_vlan_rx_add_vid(struct net_device *netdev, u16 vid)
+=======
+ixgb_vlan_rx_add_vid(struct net_device *netdev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ixgb_adapter *adapter = netdev_priv(netdev);
 	u32 vfta, index;
@@ -2233,7 +2357,11 @@ ixgb_vlan_rx_add_vid(struct net_device *netdev, u16 vid)
 }
 
 static int
+<<<<<<< HEAD
 ixgb_vlan_rx_kill_vid(struct net_device *netdev, u16 vid)
+=======
+ixgb_vlan_rx_kill_vid(struct net_device *netdev, __be16 proto, u16 vid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ixgb_adapter *adapter = netdev_priv(netdev);
 	u32 vfta, index;
@@ -2255,7 +2383,11 @@ ixgb_restore_vlan(struct ixgb_adapter *adapter)
 	u16 vid;
 
 	for_each_set_bit(vid, adapter->active_vlans, VLAN_N_VID)
+<<<<<<< HEAD
 		ixgb_vlan_rx_add_vid(adapter->netdev, vid);
+=======
+		ixgb_vlan_rx_add_vid(adapter->netdev, htons(ETH_P_8021Q), vid);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_NET_POLL_CONTROLLER
@@ -2276,9 +2408,15 @@ static void ixgb_netpoll(struct net_device *dev)
 #endif
 
 /**
+<<<<<<< HEAD
  * ixgb_io_error_detected() - called when PCI error is detected
  * @pdev    pointer to pci device with error
  * @state   pci channel state after error
+=======
+ * ixgb_io_error_detected - called when PCI error is detected
+ * @pdev:    pointer to pci device with error
+ * @state:   pci channel state after error
+>>>>>>> refs/remotes/origin/master
  *
  * This callback is called by the PCI subsystem whenever
  * a PCI bus error is detected.

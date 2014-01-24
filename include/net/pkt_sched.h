@@ -64,15 +64,29 @@ struct qdisc_watchdog {
 	struct Qdisc	*qdisc;
 };
 
+<<<<<<< HEAD
 extern void qdisc_watchdog_init(struct qdisc_watchdog *wd, struct Qdisc *qdisc);
 extern void qdisc_watchdog_schedule(struct qdisc_watchdog *wd,
 				    psched_time_t expires);
 extern void qdisc_watchdog_cancel(struct qdisc_watchdog *wd);
+=======
+void qdisc_watchdog_init(struct qdisc_watchdog *wd, struct Qdisc *qdisc);
+void qdisc_watchdog_schedule_ns(struct qdisc_watchdog *wd, u64 expires);
+
+static inline void qdisc_watchdog_schedule(struct qdisc_watchdog *wd,
+					   psched_time_t expires)
+{
+	qdisc_watchdog_schedule_ns(wd, PSCHED_TICKS2NS(expires));
+}
+
+void qdisc_watchdog_cancel(struct qdisc_watchdog *wd);
+>>>>>>> refs/remotes/origin/master
 
 extern struct Qdisc_ops pfifo_qdisc_ops;
 extern struct Qdisc_ops bfifo_qdisc_ops;
 extern struct Qdisc_ops pfifo_head_drop_qdisc_ops;
 
+<<<<<<< HEAD
 extern int fifo_set_limit(struct Qdisc *q, unsigned int limit);
 extern struct Qdisc *fifo_create_dflt(struct Qdisc *sch, struct Qdisc_ops *ops,
 				      unsigned int limit);
@@ -92,6 +106,30 @@ extern int sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
 			   spinlock_t *root_lock);
 
 extern void __qdisc_run(struct Qdisc *q);
+=======
+int fifo_set_limit(struct Qdisc *q, unsigned int limit);
+struct Qdisc *fifo_create_dflt(struct Qdisc *sch, struct Qdisc_ops *ops,
+			       unsigned int limit);
+
+int register_qdisc(struct Qdisc_ops *qops);
+int unregister_qdisc(struct Qdisc_ops *qops);
+void qdisc_get_default(char *id, size_t len);
+int qdisc_set_default(const char *id);
+
+void qdisc_list_del(struct Qdisc *q);
+struct Qdisc *qdisc_lookup(struct net_device *dev, u32 handle);
+struct Qdisc *qdisc_lookup_class(struct net_device *dev, u32 handle);
+struct qdisc_rate_table *qdisc_get_rtab(struct tc_ratespec *r,
+					struct nlattr *tab);
+void qdisc_put_rtab(struct qdisc_rate_table *tab);
+void qdisc_put_stab(struct qdisc_size_table *tab);
+void qdisc_warn_nonwc(char *txt, struct Qdisc *qdisc);
+int sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
+		    struct net_device *dev, struct netdev_queue *txq,
+		    spinlock_t *root_lock);
+
+void __qdisc_run(struct Qdisc *q);
+>>>>>>> refs/remotes/origin/master
 
 static inline void qdisc_run(struct Qdisc *q)
 {
@@ -99,6 +137,7 @@ static inline void qdisc_run(struct Qdisc *q)
 		__qdisc_run(q);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int tc_classify_compat(struct sk_buff *skb, struct tcf_proto *tp,
 			      struct tcf_result *res);
@@ -109,11 +148,21 @@ extern int tc_classify_compat(struct sk_buff *skb, const struct tcf_proto *tp,
 extern int tc_classify(struct sk_buff *skb, const struct tcf_proto *tp,
 >>>>>>> refs/remotes/origin/cm-10.0
 		       struct tcf_result *res);
+=======
+int tc_classify_compat(struct sk_buff *skb, const struct tcf_proto *tp,
+		       struct tcf_result *res);
+int tc_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+		struct tcf_result *res);
+>>>>>>> refs/remotes/origin/master
 
 /* Calculate maximal size of packet seen by hard_start_xmit
    routine of this device.
  */
+<<<<<<< HEAD
 static inline unsigned psched_mtu(const struct net_device *dev)
+=======
+static inline unsigned int psched_mtu(const struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return dev->mtu + dev->hard_header_len;
 }

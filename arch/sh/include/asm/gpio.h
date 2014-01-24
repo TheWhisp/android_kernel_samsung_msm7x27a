@@ -20,7 +20,11 @@
 #endif
 
 #define ARCH_NR_GPIOS 512
+<<<<<<< HEAD
 #include <linux/sh_pfc.h>
+=======
+#include <asm-generic/gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_GPIOLIB
 

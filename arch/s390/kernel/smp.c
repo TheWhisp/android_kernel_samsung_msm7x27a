@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  arch/s390/kernel/smp.c
  *
  *    Copyright IBM Corp. 1999, 2009
@@ -14,11 +15,20 @@
  *		 Martin Schwidefsky <schwidefsky@de.ibm.com>,
  *		 Heiko Carstens <heiko.carstens@de.ibm.com>,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  SMP related functions
+ *
+ *    Copyright IBM Corp. 1999, 2012
+ *    Author(s): Denis Joseph Barrow,
+ *		 Martin Schwidefsky <schwidefsky@de.ibm.com>,
+ *		 Heiko Carstens <heiko.carstens@de.ibm.com>,
+>>>>>>> refs/remotes/origin/master
  *
  *  based on other smp stuff by
  *    (c) 1995 Alan Cox, CymruNET Ltd  <alan@cymru.net>
  *    (c) 1998 Ingo Molnar
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * We work with logical cpu numbering everywhere we can. The only
  * functions using the real cpu address (got from STAP) are the sigp
@@ -33,6 +43,11 @@
  * the translation of logical to physical cpu ids. All new code that
  * operates on physical cpu numbers needs to go into smp.c.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * The code outside of smp.c uses logical cpu numbers, only smp.c does
+ * the translation of logical to physical cpu ids. All new code that
+ * operates on physical cpu numbers needs to go into smp.c.
+>>>>>>> refs/remotes/origin/master
  */
 
 #define KMSG_COMPONENT "cpu"
@@ -46,6 +61,7 @@
 #include <linux/spinlock.h>
 #include <linux/kernel_stat.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/cache.h>
 #include <linux/interrupt.h>
@@ -62,6 +78,8 @@
 #include <asm/irq.h>
 #include <asm/cpcmd.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/irqflags.h>
 #include <linux/cpu.h>
@@ -73,6 +91,7 @@
 #include <asm/ipl.h>
 #include <asm/setup.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/tlbflush.h>
 #include <asm/timer.h>
@@ -127,16 +146,34 @@ enum {
 enum {
 	ec_schedule = 0,
 	ec_call_function,
+=======
+#include <asm/tlbflush.h>
+#include <asm/vtimer.h>
+#include <asm/lowcore.h>
+#include <asm/sclp.h>
+#include <asm/vdso.h>
+#include <asm/debug.h>
+#include <asm/os_info.h>
+#include <asm/sigp.h>
+#include "entry.h"
+
+enum {
+	ec_schedule = 0,
+>>>>>>> refs/remotes/origin/master
 	ec_call_function_single,
 	ec_stop_cpu,
 };
 
 enum {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	CPU_STATE_STANDBY,
 	CPU_STATE_CONFIGURED,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 DEFINE_MUTEX(smp_cpu_state_mutex);
 int smp_cpu_polarization[NR_CPUS];
@@ -222,12 +259,20 @@ void smp_send_stop(void)
 struct pcpu {
 	struct cpu cpu;
 	struct task_struct *idle;	/* idle process for the cpu */
+=======
+struct pcpu {
+	struct cpu *cpu;
+>>>>>>> refs/remotes/origin/master
 	struct _lowcore *lowcore;	/* lowcore page(s) for the cpu */
 	unsigned long async_stack;	/* async stack for the cpu */
 	unsigned long panic_stack;	/* panic stack for the cpu */
 	unsigned long ec_mask;		/* bit mask for ec_xxx functions */
 	int state;			/* physical cpu state */
+<<<<<<< HEAD
 	u32 status;			/* last status received via sigp */
+=======
+	int polarization;		/* physical polarization */
+>>>>>>> refs/remotes/origin/master
 	u16 address;			/* physical cpu address */
 };
 
@@ -235,6 +280,13 @@ static u8 boot_cpu_type;
 static u16 boot_cpu_address;
 static struct pcpu pcpu_devices[NR_CPUS];
 
+<<<<<<< HEAD
+=======
+/*
+ * The smp_cpu_state_mutex must be held when changing the state or polarization
+ * member of a pcpu data structure within the pcpu_devices arreay.
+ */
+>>>>>>> refs/remotes/origin/master
 DEFINE_MUTEX(smp_cpu_state_mutex);
 
 /*
@@ -260,8 +312,13 @@ static inline int __pcpu_sigp_relax(u16 addr, u8 order, u32 parm, u32 *status)
 	int cc;
 
 	while (1) {
+<<<<<<< HEAD
 		cc = __pcpu_sigp(addr, order, parm, status);
 		if (cc != sigp_busy)
+=======
+		cc = __pcpu_sigp(addr, order, parm, NULL);
+		if (cc != SIGP_CC_BUSY)
+>>>>>>> refs/remotes/origin/master
 			return cc;
 		cpu_relax();
 	}
@@ -272,8 +329,13 @@ static int pcpu_sigp_retry(struct pcpu *pcpu, u8 order, u32 parm)
 	int cc, retry;
 
 	for (retry = 0; ; retry++) {
+<<<<<<< HEAD
 		cc = __pcpu_sigp(pcpu->address, order, parm, &pcpu->status);
 		if (cc != sigp_busy)
+=======
+		cc = __pcpu_sigp(pcpu->address, order, parm, NULL);
+		if (cc != SIGP_CC_BUSY)
+>>>>>>> refs/remotes/origin/master
 			break;
 		if (retry >= 3)
 			udelay(10);
@@ -283,20 +345,37 @@ static int pcpu_sigp_retry(struct pcpu *pcpu, u8 order, u32 parm)
 
 static inline int pcpu_stopped(struct pcpu *pcpu)
 {
+<<<<<<< HEAD
 	if (__pcpu_sigp(pcpu->address, sigp_sense,
 			0, &pcpu->status) != sigp_status_stored)
 		return 0;
 	/* Check for stopped and check stop state */
 	return !!(pcpu->status & 0x50);
+=======
+	u32 uninitialized_var(status);
+
+	if (__pcpu_sigp(pcpu->address, SIGP_SENSE,
+			0, &status) != SIGP_CC_STATUS_STORED)
+		return 0;
+	return !!(status & (SIGP_STATUS_CHECK_STOP|SIGP_STATUS_STOPPED));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int pcpu_running(struct pcpu *pcpu)
 {
+<<<<<<< HEAD
 	if (__pcpu_sigp(pcpu->address, sigp_sense_running,
 			0, &pcpu->status) != sigp_status_stored)
 		return 1;
 	/* Check for running status */
 	return !(pcpu->status & 0x400);
+=======
+	if (__pcpu_sigp(pcpu->address, SIGP_SENSE_RUNNING,
+			0, NULL) != SIGP_CC_STATUS_STORED)
+		return 1;
+	/* Status stored condition code is equivalent to cpu not running. */
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -316,6 +395,7 @@ static void pcpu_ec_call(struct pcpu *pcpu, int ec_bit)
 {
 	int order;
 
+<<<<<<< HEAD
 	set_bit(ec_bit, &pcpu->ec_mask);
 	order = pcpu_running(pcpu) ?
 		sigp_external_call : sigp_emergency_signal;
@@ -323,6 +403,15 @@ static void pcpu_ec_call(struct pcpu *pcpu, int ec_bit)
 }
 
 static int __cpuinit pcpu_alloc_lowcore(struct pcpu *pcpu, int cpu)
+=======
+	if (test_and_set_bit(ec_bit, &pcpu->ec_mask))
+		return;
+	order = pcpu_running(pcpu) ? SIGP_EXTERNAL_CALL : SIGP_EMERGENCY_SIGNAL;
+	pcpu_sigp_retry(pcpu, order, 0);
+}
+
+static int pcpu_alloc_lowcore(struct pcpu *pcpu, int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct _lowcore *lc;
 
@@ -337,8 +426,15 @@ static int __cpuinit pcpu_alloc_lowcore(struct pcpu *pcpu, int cpu)
 	lc = pcpu->lowcore;
 	memcpy(lc, &S390_lowcore, 512);
 	memset((char *) lc + 512, 0, sizeof(*lc) - 512);
+<<<<<<< HEAD
 	lc->async_stack = pcpu->async_stack + ASYNC_SIZE;
 	lc->panic_stack = pcpu->panic_stack + PAGE_SIZE;
+=======
+	lc->async_stack = pcpu->async_stack + ASYNC_SIZE
+		- STACK_FRAME_OVERHEAD - sizeof(struct pt_regs);
+	lc->panic_stack = pcpu->panic_stack + PAGE_SIZE
+		- STACK_FRAME_OVERHEAD - sizeof(struct pt_regs);
+>>>>>>> refs/remotes/origin/master
 	lc->cpu_nr = cpu;
 #ifndef CONFIG_64BIT
 	if (MACHINE_HAS_IEEE) {
@@ -351,7 +447,11 @@ static int __cpuinit pcpu_alloc_lowcore(struct pcpu *pcpu, int cpu)
 		goto out;
 #endif
 	lowcore_ptr[cpu] = lc;
+<<<<<<< HEAD
 	pcpu_sigp_retry(pcpu, sigp_set_prefix, (u32)(unsigned long) lc);
+=======
+	pcpu_sigp_retry(pcpu, SIGP_SET_PREFIX, (u32)(unsigned long) lc);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out:
 	if (pcpu != &pcpu_devices[0]) {
@@ -362,9 +462,17 @@ out:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static void pcpu_free_lowcore(struct pcpu *pcpu)
 {
 	pcpu_sigp_retry(pcpu, sigp_set_prefix, 0);
+=======
+#ifdef CONFIG_HOTPLUG_CPU
+
+static void pcpu_free_lowcore(struct pcpu *pcpu)
+{
+	pcpu_sigp_retry(pcpu, SIGP_SET_PREFIX, 0);
+>>>>>>> refs/remotes/origin/master
 	lowcore_ptr[pcpu - pcpu_devices] = NULL;
 #ifndef CONFIG_64BIT
 	if (MACHINE_HAS_IEEE) {
@@ -383,6 +491,11 @@ static void pcpu_free_lowcore(struct pcpu *pcpu)
 	}
 }
 
+<<<<<<< HEAD
+=======
+#endif /* CONFIG_HOTPLUG_CPU */
+
+>>>>>>> refs/remotes/origin/master
 static void pcpu_prepare_secondary(struct pcpu *pcpu, int cpu)
 {
 	struct _lowcore *lc = pcpu->lowcore;
@@ -405,7 +518,12 @@ static void pcpu_attach_task(struct pcpu *pcpu, struct task_struct *tsk)
 	struct _lowcore *lc = pcpu->lowcore;
 	struct thread_info *ti = task_thread_info(tsk);
 
+<<<<<<< HEAD
 	lc->kernel_stack = (unsigned long) task_stack_page(tsk) + THREAD_SIZE;
+=======
+	lc->kernel_stack = (unsigned long) task_stack_page(tsk)
+		+ THREAD_SIZE - STACK_FRAME_OVERHEAD - sizeof(struct pt_regs);
+>>>>>>> refs/remotes/origin/master
 	lc->thread_info = (unsigned long) task_thread_info(tsk);
 	lc->current_task = (unsigned long) tsk;
 	lc->user_timer = ti->user_timer;
@@ -421,7 +539,11 @@ static void pcpu_start_fn(struct pcpu *pcpu, void (*func)(void *), void *data)
 	lc->restart_fn = (unsigned long) func;
 	lc->restart_data = (unsigned long) data;
 	lc->restart_source = -1UL;
+<<<<<<< HEAD
 	pcpu_sigp_retry(pcpu, sigp_restart, 0);
+=======
+	pcpu_sigp_retry(pcpu, SIGP_RESTART, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -430,6 +552,7 @@ static void pcpu_start_fn(struct pcpu *pcpu, void (*func)(void *), void *data)
 static void pcpu_delegate(struct pcpu *pcpu, void (*func)(void *),
 			  void *data, unsigned long stack)
 {
+<<<<<<< HEAD
 	struct _lowcore *lc = pcpu->lowcore;
 	unsigned short this_cpu;
 
@@ -450,6 +573,29 @@ static void pcpu_delegate(struct pcpu *pcpu, void (*func)(void *),
 		"1:	sigp	0,%1,5	# sigp stop to current cpu\n"
 		"	brc	2,1b	# busy, try again\n"
 		: : "d" (pcpu->address), "d" (this_cpu) : "0", "1", "cc");
+=======
+	struct _lowcore *lc = lowcore_ptr[pcpu - pcpu_devices];
+	unsigned long source_cpu = stap();
+
+	__load_psw_mask(PSW_KERNEL_BITS);
+	if (pcpu->address == source_cpu)
+		func(data);	/* should not return */
+	/* Stop target cpu (if func returns this stops the current cpu). */
+	pcpu_sigp_retry(pcpu, SIGP_STOP, 0);
+	/* Restart func on the target cpu and stop the current cpu. */
+	mem_assign_absolute(lc->restart_stack, stack);
+	mem_assign_absolute(lc->restart_fn, (unsigned long) func);
+	mem_assign_absolute(lc->restart_data, (unsigned long) data);
+	mem_assign_absolute(lc->restart_source, source_cpu);
+	asm volatile(
+		"0:	sigp	0,%0,%2	# sigp restart to target cpu\n"
+		"	brc	2,0b	# busy, try again\n"
+		"1:	sigp	0,%1,%3	# sigp stop to current cpu\n"
+		"	brc	2,1b	# busy, try again\n"
+		: : "d" (pcpu->address), "d" (source_cpu),
+		    "K" (SIGP_RESTART), "K" (SIGP_STOP)
+		: "0", "1", "cc");
+>>>>>>> refs/remotes/origin/master
 	for (;;) ;
 }
 
@@ -511,11 +657,16 @@ void smp_yield_cpu(int cpu)
  * Send cpus emergency shutdown signal. This gives the cpus the
  * opportunity to complete outstanding interrupts.
  */
+<<<<<<< HEAD
 void smp_emergency_stop(cpumask_t *cpumask)
+=======
+static void smp_emergency_stop(cpumask_t *cpumask)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 end;
 	int cpu;
 
+<<<<<<< HEAD
 	end = get_clock() + (1000000UL << 12);
 	for_each_cpu(cpu, cpumask) {
 		struct pcpu *pcpu = pcpu_devices + cpu;
@@ -526,6 +677,18 @@ void smp_emergency_stop(cpumask_t *cpumask)
 			cpu_relax();
 	}
 	while (get_clock() < end) {
+=======
+	end = get_tod_clock() + (1000000UL << 12);
+	for_each_cpu(cpu, cpumask) {
+		struct pcpu *pcpu = pcpu_devices + cpu;
+		set_bit(ec_stop_cpu, &pcpu->ec_mask);
+		while (__pcpu_sigp(pcpu->address, SIGP_EMERGENCY_SIGNAL,
+				   0, NULL) == SIGP_CC_BUSY &&
+		       get_tod_clock() < end)
+			cpu_relax();
+	}
+	while (get_tod_clock() < end) {
+>>>>>>> refs/remotes/origin/master
 		for_each_cpu(cpu, cpumask)
 			if (pcpu_stopped(pcpu_devices + cpu))
 				cpumask_clear_cpu(cpu, cpumask);
@@ -544,7 +707,11 @@ void smp_send_stop(void)
 	int cpu;
 
 	/* Disable all interrupts/machine checks */
+<<<<<<< HEAD
 	__load_psw_mask(psw_kernel_bits | PSW_MASK_DAT);
+=======
+	__load_psw_mask(PSW_KERNEL_BITS | PSW_MASK_DAT);
+>>>>>>> refs/remotes/origin/master
 	trace_hardirqs_off();
 
 	debug_set_critical();
@@ -557,14 +724,20 @@ void smp_send_stop(void)
 	/* stop all processors */
 	for_each_cpu(cpu, &cpumask) {
 		struct pcpu *pcpu = pcpu_devices + cpu;
+<<<<<<< HEAD
 		pcpu_sigp_retry(pcpu, sigp_stop, 0);
 		while (!pcpu_stopped(pcpu))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pcpu_sigp_retry(pcpu, SIGP_STOP, 0);
+		while (!pcpu_stopped(pcpu))
+>>>>>>> refs/remotes/origin/master
 			cpu_relax();
 	}
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * This is the main routine where commands issued by other
  * cpus are handled.
@@ -581,11 +754,17 @@ static void do_ext_call_interrupt(unsigned int ext_int_code,
 	 */
 	bits = xchg(&S390_lowcore.ext_call_fast, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Stop the current cpu.
  */
 void smp_stop_cpu(void)
 {
+<<<<<<< HEAD
 	pcpu_sigp_retry(pcpu_devices + smp_processor_id(), sigp_stop, 0);
+=======
+	pcpu_sigp_retry(pcpu_devices + smp_processor_id(), SIGP_STOP, 0);
+>>>>>>> refs/remotes/origin/master
 	for (;;) ;
 }
 
@@ -593,6 +772,7 @@ void smp_stop_cpu(void)
  * This is the main routine where commands issued by other
  * cpus are handled.
  */
+<<<<<<< HEAD
 static void do_ext_call_interrupt(struct ext_code ext_code,
 				  unsigned int param32, unsigned long param64)
 {
@@ -639,6 +819,27 @@ static void smp_ext_bitcall(int cpu, int sig)
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void smp_handle_ext_call(void)
+{
+	unsigned long bits;
+
+	/* handle bit signal external calls */
+	bits = xchg(&pcpu_devices[smp_processor_id()].ec_mask, 0);
+	if (test_bit(ec_stop_cpu, &bits))
+		smp_stop_cpu();
+	if (test_bit(ec_schedule, &bits))
+		scheduler_ipi();
+	if (test_bit(ec_call_function_single, &bits))
+		generic_smp_call_function_single_interrupt();
+}
+
+static void do_ext_call_interrupt(struct ext_code ext_code,
+				  unsigned int param32, unsigned long param64)
+{
+	inc_irq_stat(ext_code.code == 0x1202 ? IRQEXT_EXC : IRQEXT_EMS);
+	smp_handle_ext_call();
+>>>>>>> refs/remotes/origin/master
 }
 
 void arch_send_call_function_ipi_mask(const struct cpumask *mask)
@@ -647,19 +848,27 @@ void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 
 	for_each_cpu(cpu, mask)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		smp_ext_bitcall(cpu, ec_call_function);
 =======
 		pcpu_ec_call(pcpu_devices + cpu, ec_call_function);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pcpu_ec_call(pcpu_devices + cpu, ec_call_function_single);
+>>>>>>> refs/remotes/origin/master
 }
 
 void arch_send_call_function_single_ipi(int cpu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smp_ext_bitcall(cpu, ec_call_function_single);
 =======
 	pcpu_ec_call(pcpu_devices + cpu, ec_call_function_single);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcpu_ec_call(pcpu_devices + cpu, ec_call_function_single);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifndef CONFIG_64BIT
@@ -686,16 +895,21 @@ EXPORT_SYMBOL(smp_ptlb_all);
 void smp_send_reschedule(int cpu)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	smp_ext_bitcall(cpu, ec_schedule);
 =======
 	pcpu_ec_call(pcpu_devices + cpu, ec_schedule);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcpu_ec_call(pcpu_devices + cpu, ec_schedule);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * parameter area for the set/clear control bit callbacks
  */
 struct ec_creg_mask_parms {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long orvals[16];
 	unsigned long andvals[16];
@@ -704,6 +918,11 @@ struct ec_creg_mask_parms {
 	unsigned long andval;
 	int cr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long orval;
+	unsigned long andval;
+	int cr;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -713,6 +932,7 @@ static void smp_ctl_bit_callback(void *info)
 {
 	struct ec_creg_mask_parms *pp = info;
 	unsigned long cregs[16];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 
@@ -724,6 +944,11 @@ static void smp_ctl_bit_callback(void *info)
 	__ctl_store(cregs, 0, 15);
 	cregs[pp->cr] = (cregs[pp->cr] & pp->andval) | pp->orval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	__ctl_store(cregs, 0, 15);
+	cregs[pp->cr] = (cregs[pp->cr] & pp->andval) | pp->orval;
+>>>>>>> refs/remotes/origin/master
 	__ctl_load(cregs, 0, 15);
 }
 
@@ -732,6 +957,7 @@ static void smp_ctl_bit_callback(void *info)
  */
 void smp_ctl_set_bit(int cr, int bit)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ec_creg_mask_parms parms;
 
@@ -742,6 +968,10 @@ void smp_ctl_set_bit(int cr, int bit)
 	struct ec_creg_mask_parms parms = { 1UL << bit, -1UL, cr };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ec_creg_mask_parms parms = { 1UL << bit, -1UL, cr };
+
+>>>>>>> refs/remotes/origin/master
 	on_each_cpu(smp_ctl_bit_callback, &parms, 1);
 }
 EXPORT_SYMBOL(smp_ctl_set_bit);
@@ -752,6 +982,7 @@ EXPORT_SYMBOL(smp_ctl_set_bit);
 void smp_ctl_clear_bit(int cr, int bit)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ec_creg_mask_parms parms;
 
 	memset(&parms.orvals, 0, sizeof(parms.orvals));
@@ -761,10 +992,15 @@ void smp_ctl_clear_bit(int cr, int bit)
 	struct ec_creg_mask_parms parms = { 0, ~(1UL << bit), cr };
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ec_creg_mask_parms parms = { 0, ~(1UL << bit), cr };
+
+>>>>>>> refs/remotes/origin/master
 	on_each_cpu(smp_ctl_bit_callback, &parms, 1);
 }
 EXPORT_SYMBOL(smp_ctl_clear_bit);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_ZFCPDUMP
 
@@ -880,6 +1116,10 @@ static int __smp_rescan_cpus(void)
 struct save_area *zfcpdump_save_areas[NR_CPUS + 1];
 EXPORT_SYMBOL_GPL(zfcpdump_save_areas);
 
+=======
+#if defined(CONFIG_ZFCPDUMP) || defined(CONFIG_CRASH_DUMP)
+
+>>>>>>> refs/remotes/origin/master
 static void __init smp_get_save_area(int cpu, u16 address)
 {
 	void *lc = pcpu_devices[0].lowcore;
@@ -890,6 +1130,7 @@ static void __init smp_get_save_area(int cpu, u16 address)
 	if (!OLDMEM_BASE && (address == boot_cpu_address ||
 			     ipl_info.type != IPL_TYPE_FCP_DUMP))
 		return;
+<<<<<<< HEAD
 	if (cpu >= NR_CPUS) {
 		pr_warning("CPU %i exceeds the maximum %i and is excluded "
 			   "from the dump\n", cpu, NR_CPUS - 1);
@@ -899,6 +1140,11 @@ static void __init smp_get_save_area(int cpu, u16 address)
 	if (!save_area)
 		panic("could not allocate memory for save area\n");
 	zfcpdump_save_areas[cpu] = save_area;
+=======
+	save_area = dump_save_area_create(cpu);
+	if (!save_area)
+		panic("could not allocate memory for save area\n");
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_CRASH_DUMP
 	if (address == boot_cpu_address) {
 		/* Copy the registers of the boot cpu. */
@@ -908,7 +1154,11 @@ static void __init smp_get_save_area(int cpu, u16 address)
 	}
 #endif
 	/* Get the registers of a non-boot cpu. */
+<<<<<<< HEAD
 	__pcpu_sigp_relax(address, sigp_stop_and_store_status, 0, NULL);
+=======
+	__pcpu_sigp_relax(address, SIGP_STOP_AND_STORE_STATUS, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	memcpy_real(save_area, lc + SAVE_AREA_BASE, sizeof(*save_area));
 }
 
@@ -917,8 +1167,13 @@ int smp_store_status(int cpu)
 	struct pcpu *pcpu;
 
 	pcpu = pcpu_devices + cpu;
+<<<<<<< HEAD
 	if (__pcpu_sigp_relax(pcpu->address, sigp_stop_and_store_status,
 			      0, NULL) != sigp_order_code_accepted)
+=======
+	if (__pcpu_sigp_relax(pcpu->address, SIGP_STOP_AND_STORE_STATUS,
+			      0, NULL) != SIGP_CC_ORDER_CODE_ACCEPTED)
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	return 0;
 }
@@ -929,6 +1184,19 @@ static inline void smp_get_save_area(int cpu, u16 address) { }
 
 #endif /* CONFIG_ZFCPDUMP || CONFIG_CRASH_DUMP */
 
+<<<<<<< HEAD
+=======
+void smp_cpu_set_polarization(int cpu, int val)
+{
+	pcpu_devices[cpu].polarization = val;
+}
+
+int smp_cpu_get_polarization(int cpu)
+{
+	return pcpu_devices[cpu].polarization;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct sclp_cpu_info *smp_get_cpu_info(void)
 {
 	static int use_sigp_detection;
@@ -939,8 +1207,13 @@ static struct sclp_cpu_info *smp_get_cpu_info(void)
 	if (info && (use_sigp_detection || sclp_get_cpu_info(info))) {
 		use_sigp_detection = 1;
 		for (address = 0; address <= MAX_CPU_ADDRESS; address++) {
+<<<<<<< HEAD
 			if (__pcpu_sigp_relax(address, sigp_sense, 0, NULL) ==
 			    sigp_not_operational)
+=======
+			if (__pcpu_sigp_relax(address, SIGP_SENSE, 0, NULL) ==
+			    SIGP_CC_NOT_OPERATIONAL)
+>>>>>>> refs/remotes/origin/master
 				continue;
 			info->cpu[info->configured].address = address;
 			info->configured++;
@@ -950,10 +1223,16 @@ static struct sclp_cpu_info *smp_get_cpu_info(void)
 	return info;
 }
 
+<<<<<<< HEAD
 static int __devinit smp_add_present_cpu(int cpu);
 
 static int __devinit __smp_rescan_cpus(struct sclp_cpu_info *info,
 				       int sysfs_add)
+=======
+static int smp_add_present_cpu(int cpu);
+
+static int __smp_rescan_cpus(struct sclp_cpu_info *info, int sysfs_add)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pcpu *pcpu;
 	cpumask_t avail;
@@ -969,9 +1248,15 @@ static int __devinit __smp_rescan_cpus(struct sclp_cpu_info *info,
 			continue;
 		pcpu = pcpu_devices + cpu;
 		pcpu->address = info->cpu[i].address;
+<<<<<<< HEAD
 		pcpu->state = (cpu >= info->configured) ?
 			CPU_STATE_STANDBY : CPU_STATE_CONFIGURED;
 		cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
+=======
+		pcpu->state = (i >= info->configured) ?
+			CPU_STATE_STANDBY : CPU_STATE_CONFIGURED;
+		smp_cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
+>>>>>>> refs/remotes/origin/master
 		set_cpu_present(cpu, true);
 		if (sysfs_add && smp_add_present_cpu(cpu) != 0)
 			set_cpu_present(cpu, false);
@@ -980,13 +1265,17 @@ static int __devinit __smp_rescan_cpus(struct sclp_cpu_info *info,
 		cpu = cpumask_next(cpu, &avail);
 	}
 	return nr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init smp_detect_cpus(void)
 {
 	unsigned int cpu, c_cpus, s_cpus;
 	struct sclp_cpu_info *info;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u16 boot_cpu_addr, cpu_addr;
 
@@ -1039,6 +1328,8 @@ out:
 	__smp_rescan_cpus();
 	put_online_cpus();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	info = smp_get_cpu_info();
 	if (!info)
@@ -1067,12 +1358,16 @@ out:
 	__smp_rescan_cpus(info, 0);
 	put_online_cpus();
 	kfree(info);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *	Activate a secondary processor.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int __cpuinit start_secondary(void *cpuvoid)
 {
@@ -1101,19 +1396,29 @@ int __cpuinit start_secondary(void *cpuvoid)
 static void __cpuinit smp_start_secondary(void *cpuvoid)
 {
 	S390_lowcore.last_update_clock = get_clock();
+=======
+static void smp_start_secondary(void *cpuvoid)
+{
+	S390_lowcore.last_update_clock = get_tod_clock();
+>>>>>>> refs/remotes/origin/master
 	S390_lowcore.restart_stack = (unsigned long) restart_stack;
 	S390_lowcore.restart_fn = (unsigned long) do_restart;
 	S390_lowcore.restart_data = 0;
 	S390_lowcore.restart_source = -1UL;
 	restore_access_regs(S390_lowcore.access_regs_save_area);
 	__ctl_load(S390_lowcore.cregs_save_area, 0, 15);
+<<<<<<< HEAD
 	__load_psw_mask(psw_kernel_bits | PSW_MASK_DAT);
+=======
+	__load_psw_mask(PSW_KERNEL_BITS | PSW_MASK_DAT);
+>>>>>>> refs/remotes/origin/master
 	cpu_init();
 	preempt_disable();
 	init_cpu_timer();
 	init_cpu_vtimer();
 	pfault_init();
 	notify_cpu_starting(smp_processor_id());
+<<<<<<< HEAD
 	ipi_call_lock();
 	set_cpu_online(smp_processor_id(), true);
 	ipi_call_unlock();
@@ -1216,12 +1521,24 @@ int __cpuinit __cpu_up(unsigned int cpu)
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	struct create_idle c_idle;
+=======
+	set_cpu_online(smp_processor_id(), true);
+	inc_irq_stat(CPU_RST);
+	local_irq_enable();
+	cpu_startup_entry(CPUHP_ONLINE);
+}
+
+/* Upping and downing of CPUs */
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+>>>>>>> refs/remotes/origin/master
 	struct pcpu *pcpu;
 	int rc;
 
 	pcpu = pcpu_devices + cpu;
 	if (pcpu->state != CPU_STATE_CONFIGURED)
 		return -EIO;
+<<<<<<< HEAD
 	if (pcpu_sigp_retry(pcpu, sigp_initial_cpu_reset, 0) !=
 	    sigp_order_code_accepted)
 		return -EIO;
@@ -1292,15 +1609,26 @@ err_out:
 		pcpu->idle = c_idle.idle;
 	}
 	init_idle(pcpu->idle, cpu);
+=======
+	if (pcpu_sigp_retry(pcpu, SIGP_INITIAL_CPU_RESET, 0) !=
+	    SIGP_CC_ORDER_CODE_ACCEPTED)
+		return -EIO;
+
+>>>>>>> refs/remotes/origin/master
 	rc = pcpu_alloc_lowcore(pcpu, cpu);
 	if (rc)
 		return rc;
 	pcpu_prepare_secondary(pcpu, cpu);
+<<<<<<< HEAD
 	pcpu_attach_task(pcpu, pcpu->idle);
+=======
+	pcpu_attach_task(pcpu, tidle);
+>>>>>>> refs/remotes/origin/master
 	pcpu_start_fn(pcpu, smp_start_secondary, NULL);
 	while (!cpu_online(cpu))
 		cpu_relax();
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -1324,11 +1652,24 @@ static int __init setup_possible_cpus(char *s)
 	return 0;
 }
 early_param("possible_cpus", setup_possible_cpus);
+=======
+}
+
+static unsigned int setup_possible_cpus __initdata;
+
+static int __init _setup_possible_cpus(char *s)
+{
+	get_option(&s, &setup_possible_cpus);
+	return 0;
+}
+early_param("possible_cpus", _setup_possible_cpus);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HOTPLUG_CPU
 
 int __cpu_disable(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ec_creg_mask_parms cr_parms;
 	int cpu = smp_processor_id();
@@ -1359,6 +1700,12 @@ int __cpu_disable(void)
 =======
 	unsigned long cregs[16];
 
+=======
+	unsigned long cregs[16];
+
+	/* Handle possible pending IPIs */
+	smp_handle_ext_call();
+>>>>>>> refs/remotes/origin/master
 	set_cpu_online(smp_processor_id(), false);
 	/* Disable pseudo page faults on this cpu. */
 	pfault_fini();
@@ -1368,12 +1715,16 @@ int __cpu_disable(void)
 	cregs[6]  &= ~0xff000000UL;	/* disable all I/O interrupts */
 	cregs[14] &= ~0x1f000000UL;	/* disable most machine checks */
 	__ctl_load(cregs, 0, 15);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 void __cpu_die(unsigned int cpu)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Wait until target cpu is down */
 	while (!cpu_stopped(cpu))
@@ -1382,6 +1733,8 @@ void __cpu_die(unsigned int cpu)
 		udelay(10);
 	smp_free_lowcore(cpu);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pcpu *pcpu;
 
 	/* Wait until target cpu is down */
@@ -1389,13 +1742,17 @@ void __cpu_die(unsigned int cpu)
 	while (!pcpu_stopped(pcpu))
 		cpu_relax();
 	pcpu_free_lowcore(pcpu);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	atomic_dec(&init_mm.context.attach_count);
 }
 
 void __noreturn cpu_die(void)
 {
 	idle_task_exit();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while (sigp(smp_processor_id(), sigp_stop) == sigp_busy)
 		cpu_relax();
@@ -1404,10 +1761,15 @@ void __noreturn cpu_die(void)
 	pcpu_sigp_retry(pcpu_devices + smp_processor_id(), sigp_stop, 0);
 	for (;;) ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcpu_sigp_retry(pcpu_devices + smp_processor_id(), SIGP_STOP, 0);
+	for (;;) ;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* CONFIG_HOTPLUG_CPU */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __init smp_prepare_cpus(unsigned int max_cpus)
 {
@@ -1459,6 +1821,17 @@ static void smp_call_os_info_init_fn(void)
 	if (!init_fn)
 		return;
 	init_fn();
+=======
+void __init smp_fill_possible_mask(void)
+{
+	unsigned int possible, cpu;
+
+	possible = setup_possible_cpus;
+	if (!possible)
+		possible = MACHINE_IS_VM ? 64 : nr_cpu_ids;
+	for (cpu = 0; cpu < possible && cpu < nr_cpu_ids; cpu++)
+		set_cpu_possible(cpu, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_prepare_cpus(unsigned int max_cpus)
@@ -1469,13 +1842,18 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 	/* request the 0x1202 external call external interrupt */
 	if (register_external_interrupt(0x1202, do_ext_call_interrupt) != 0)
 		panic("Couldn't request external interrupt 0x1202");
+<<<<<<< HEAD
 	smp_call_os_info_init_fn();
 	smp_detect_cpus();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	smp_detect_cpus();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_prepare_boot_cpu(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	BUG_ON(smp_processor_id() != 0);
 
@@ -1501,6 +1879,22 @@ void __init smp_prepare_boot_cpu(void)
 	set_cpu_present(0, true);
 	set_cpu_online(0, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pcpu *pcpu = pcpu_devices;
+
+	boot_cpu_address = stap();
+	pcpu->state = CPU_STATE_CONFIGURED;
+	pcpu->address = boot_cpu_address;
+	pcpu->lowcore = (struct _lowcore *)(unsigned long) store_prefix();
+	pcpu->async_stack = S390_lowcore.async_stack - ASYNC_SIZE
+		+ STACK_FRAME_OVERHEAD + sizeof(struct pt_regs);
+	pcpu->panic_stack = S390_lowcore.panic_stack - PAGE_SIZE
+		+ STACK_FRAME_OVERHEAD + sizeof(struct pt_regs);
+	S390_lowcore.percpu_offset = __per_cpu_offset[0];
+	smp_cpu_set_polarization(0, POLARIZATION_UNKNOWN);
+	set_cpu_present(0, true);
+	set_cpu_online(0, true);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init smp_cpus_done(unsigned int max_cpus)
@@ -1511,9 +1905,12 @@ void __init smp_setup_processor_id(void)
 {
 	S390_lowcore.cpu_nr = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__cpu_logical_map[0] = stap();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1529,25 +1926,35 @@ int setup_profiling_timer(unsigned int multiplier)
 
 #ifdef CONFIG_HOTPLUG_CPU
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t cpu_configure_show(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
 =======
 static ssize_t cpu_configure_show(struct device *dev,
 				  struct device_attribute *attr, char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t cpu_configure_show(struct device *dev,
+				  struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ssize_t count;
 
 	mutex_lock(&smp_cpu_state_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	count = sprintf(buf, "%d\n", smp_cpu_state[dev->id]);
 =======
 	count = sprintf(buf, "%d\n", pcpu_devices[dev->id].state);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	count = sprintf(buf, "%d\n", pcpu_devices[dev->id].state);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&smp_cpu_state_mutex);
 	return count;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t cpu_configure_store(struct sys_device *dev,
 				  struct sysdev_attribute *attr,
@@ -1556,13 +1963,18 @@ static ssize_t cpu_configure_store(struct sys_device *dev,
 	int cpu = dev->id;
 	int val, rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t cpu_configure_store(struct device *dev,
 				   struct device_attribute *attr,
 				   const char *buf, size_t count)
 {
 	struct pcpu *pcpu;
 	int cpu, val, rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char delim;
 
 	if (sscanf(buf, "%d %c", &val, &delim) != 1)
@@ -1570,13 +1982,17 @@ static ssize_t cpu_configure_store(struct device *dev,
 	if (val != 0 && val != 1)
 		return -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	get_online_cpus();
 	mutex_lock(&smp_cpu_state_mutex);
 	rc = -EBUSY;
 	/* disallow configuration changes of online cpus and cpu 0 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (cpu_online(cpu) || cpu == 0)
 		goto out;
@@ -1600,6 +2016,8 @@ static ssize_t cpu_configure_store(struct device *dev,
 			}
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cpu = dev->id;
 	if (cpu_online(cpu) || cpu == 0)
 		goto out;
@@ -1613,7 +2031,11 @@ static ssize_t cpu_configure_store(struct device *dev,
 		if (rc)
 			break;
 		pcpu->state = CPU_STATE_STANDBY;
+<<<<<<< HEAD
 		cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
+=======
+		smp_cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
+>>>>>>> refs/remotes/origin/master
 		topology_expect_change();
 		break;
 	case 1:
@@ -1623,9 +2045,14 @@ static ssize_t cpu_configure_store(struct device *dev,
 		if (rc)
 			break;
 		pcpu->state = CPU_STATE_CONFIGURED;
+<<<<<<< HEAD
 		cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
 		topology_expect_change();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		smp_cpu_set_polarization(cpu, POLARIZATION_UNKNOWN);
+		topology_expect_change();
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		break;
@@ -1635,6 +2062,7 @@ out:
 	put_online_cpus();
 	return rc ? rc : count;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static SYSDEV_ATTR(configure, 0644, cpu_configure_show, cpu_configure_store);
 #endif /* CONFIG_HOTPLUG_CPU */
@@ -1683,6 +2111,8 @@ static struct attribute *cpu_common_attrs[] = {
 	&attr_address.attr,
 	&attr_polarization.attr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(configure, 0644, cpu_configure_show, cpu_configure_store);
 #endif /* CONFIG_HOTPLUG_CPU */
 
@@ -1698,7 +2128,10 @@ static struct attribute *cpu_common_attrs[] = {
 	&dev_attr_configure.attr,
 #endif
 	&dev_attr_address.attr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -1706,6 +2139,7 @@ static struct attribute_group cpu_common_attr_group = {
 	.attrs = cpu_common_attrs,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t show_capability(struct sys_device *dev,
 				struct sysdev_attribute *attr, char *buf)
@@ -1780,6 +2214,8 @@ static struct attribute *cpu_online_attrs[] = {
 =======
 static DEVICE_ATTR(capability, 0444, show_capability, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_idle_count(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
@@ -1790,9 +2226,15 @@ static ssize_t show_idle_count(struct device *dev,
 	do {
 		sequence = ACCESS_ONCE(idle->sequence);
 		idle_count = ACCESS_ONCE(idle->idle_count);
+<<<<<<< HEAD
 		if (ACCESS_ONCE(idle->idle_enter))
 			idle_count++;
 	} while ((sequence & 1) || (idle->sequence != sequence));
+=======
+		if (ACCESS_ONCE(idle->clock_idle_enter))
+			idle_count++;
+	} while ((sequence & 1) || (ACCESS_ONCE(idle->sequence) != sequence));
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%llu\n", idle_count);
 }
 static DEVICE_ATTR(idle_count, 0444, show_idle_count, NULL);
@@ -1805,22 +2247,36 @@ static ssize_t show_idle_time(struct device *dev,
 	unsigned int sequence;
 
 	do {
+<<<<<<< HEAD
 		now = get_clock();
 		sequence = ACCESS_ONCE(idle->sequence);
 		idle_time = ACCESS_ONCE(idle->idle_time);
 		idle_enter = ACCESS_ONCE(idle->idle_enter);
 		idle_exit = ACCESS_ONCE(idle->idle_exit);
 	} while ((sequence & 1) || (idle->sequence != sequence));
+=======
+		now = get_tod_clock();
+		sequence = ACCESS_ONCE(idle->sequence);
+		idle_time = ACCESS_ONCE(idle->idle_time);
+		idle_enter = ACCESS_ONCE(idle->clock_idle_enter);
+		idle_exit = ACCESS_ONCE(idle->clock_idle_exit);
+	} while ((sequence & 1) || (ACCESS_ONCE(idle->sequence) != sequence));
+>>>>>>> refs/remotes/origin/master
 	idle_time += idle_enter ? ((idle_exit ? : now) - idle_enter) : 0;
 	return sprintf(buf, "%llu\n", idle_time >> 12);
 }
 static DEVICE_ATTR(idle_time_us, 0444, show_idle_time, NULL);
 
 static struct attribute *cpu_online_attrs[] = {
+<<<<<<< HEAD
 	&dev_attr_capability.attr,
 	&dev_attr_idle_count.attr,
 	&dev_attr_idle_time_us.attr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&dev_attr_idle_count.attr,
+	&dev_attr_idle_time_us.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -1828,6 +2284,7 @@ static struct attribute_group cpu_online_attr_group = {
 	.attrs = cpu_online_attrs,
 };
 
+<<<<<<< HEAD
 static int __cpuinit smp_cpu_notify(struct notifier_block *self,
 				    unsigned long action, void *hcpu)
 {
@@ -1854,12 +2311,28 @@ static int __cpuinit smp_cpu_notify(struct notifier_block *self,
 		break;
 	case CPU_DEAD:
 	case CPU_DEAD_FROZEN:
+=======
+static int smp_cpu_notify(struct notifier_block *self, unsigned long action,
+			  void *hcpu)
+{
+	unsigned int cpu = (unsigned int)(long)hcpu;
+	struct cpu *c = pcpu_devices[cpu].cpu;
+	struct device *s = &c->dev;
+	int err = 0;
+
+	switch (action & ~CPU_TASKS_FROZEN) {
+	case CPU_ONLINE:
+		err = sysfs_create_group(&s->kobj, &cpu_online_attr_group);
+		break;
+	case CPU_DEAD:
+>>>>>>> refs/remotes/origin/master
 		sysfs_remove_group(&s->kobj, &cpu_online_attr_group);
 		break;
 	}
 	return notifier_from_errno(err);
 }
 
+<<<<<<< HEAD
 static struct notifier_block __cpuinitdata smp_cpu_nb = {
 	.notifier_call = smp_cpu_notify,
 };
@@ -1875,6 +2348,19 @@ static int __devinit smp_add_present_cpu(int cpu)
 >>>>>>> refs/remotes/origin/cm-10.0
 	int rc;
 
+=======
+static int smp_add_present_cpu(int cpu)
+{
+	struct device *s;
+	struct cpu *c;
+	int rc;
+
+	c = kzalloc(sizeof(*c), GFP_KERNEL);
+	if (!c)
+		return -ENOMEM;
+	pcpu_devices[cpu].cpu = c;
+	s = &c->dev;
+>>>>>>> refs/remotes/origin/master
 	c->hotpluggable = 1;
 	rc = register_cpu(c, cpu);
 	if (rc)
@@ -1883,12 +2369,15 @@ static int __devinit smp_add_present_cpu(int cpu)
 	if (rc)
 		goto out_cpu;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cpu_online(cpu))
 		goto out;
 	rc = sysfs_create_group(&s->kobj, &cpu_online_attr_group);
 	if (!rc)
 		return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cpu_online(cpu)) {
 		rc = sysfs_create_group(&s->kobj, &cpu_online_attr_group);
 		if (rc)
@@ -1903,7 +2392,10 @@ out_topology:
 	if (cpu_online(cpu))
 		sysfs_remove_group(&s->kobj, &cpu_online_attr_group);
 out_online:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sysfs_remove_group(&s->kobj, &cpu_common_attr_group);
 out_cpu:
 #ifdef CONFIG_HOTPLUG_CPU
@@ -1917,6 +2409,7 @@ out:
 
 int __ref smp_rescan_cpus(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cpumask_t newcpus;
 	int cpu;
@@ -1946,6 +2439,8 @@ out:
 static ssize_t __ref rescan_store(struct sysdev_class *class,
 				  struct sysdev_class_attribute *attr,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sclp_cpu_info *info;
 	int nr;
 
@@ -1965,7 +2460,10 @@ static ssize_t __ref rescan_store(struct sysdev_class *class,
 
 static ssize_t __ref rescan_store(struct device *dev,
 				  struct device_attribute *attr,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				  const char *buf,
 				  size_t count)
 {
@@ -1974,6 +2472,7 @@ static ssize_t __ref rescan_store(struct device *dev,
 	rc = smp_rescan_cpus();
 	return rc ? rc : count;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static SYSDEV_CLASS_ATTR(rescan, 0200, NULL, rescan_store);
 #endif /* CONFIG_HOTPLUG_CPU */
@@ -2034,6 +2533,8 @@ static int __init topology_init(void)
 	if (rc)
 		return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEVICE_ATTR(rescan, 0200, NULL, rescan_store);
 #endif /* CONFIG_HOTPLUG_CPU */
 
@@ -2041,13 +2542,20 @@ static int __init s390_smp_init(void)
 {
 	int cpu, rc;
 
+<<<<<<< HEAD
 	register_cpu_notifier(&smp_cpu_nb);
+=======
+	hotcpu_notifier(smp_cpu_notify, 0);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HOTPLUG_CPU
 	rc = device_create_file(cpu_subsys.dev_root, &dev_attr_rescan);
 	if (rc)
 		return rc;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for_each_present_cpu(cpu) {
 		rc = smp_add_present_cpu(cpu);
 		if (rc)
@@ -2056,7 +2564,11 @@ static int __init s390_smp_init(void)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 subsys_initcall(topology_init);
 =======
 subsys_initcall(s390_smp_init);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+subsys_initcall(s390_smp_init);
+>>>>>>> refs/remotes/origin/master

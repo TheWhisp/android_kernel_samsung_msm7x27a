@@ -76,6 +76,7 @@ struct ds620_data {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  *  Temperature registers are word-sized.
  *  DS620 uses a high-byte first convention, which is exactly opposite to
@@ -109,6 +110,15 @@ static void ds620_init_client(struct i2c_client *client)
 =======
 	    i2c_smbus_read_word_swapped(client, DS620_REG_CONF);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void ds620_init_client(struct i2c_client *client)
+{
+	struct ds620_platform_data *ds620_info = dev_get_platdata(&client->dev);
+	u16 conf, new_conf;
+
+	new_conf = conf =
+	    i2c_smbus_read_word_swapped(client, DS620_REG_CONF);
+>>>>>>> refs/remotes/origin/master
 
 	/* switch to continuous conversion mode */
 	new_conf &= ~DS620_REG_CONFIG_1SHOT;
@@ -126,11 +136,15 @@ static void ds620_init_client(struct i2c_client *client)
 
 	if (conf != new_conf)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		i2c_smbus_write_word_data(client, DS620_REG_CONF,
 					  swab16(new_conf));
 =======
 		i2c_smbus_write_word_swapped(client, DS620_REG_CONF, new_conf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		i2c_smbus_write_word_swapped(client, DS620_REG_CONF, new_conf);
+>>>>>>> refs/remotes/origin/master
 
 	/* start conversion */
 	i2c_smbus_write_byte(client, DS620_COM_START);
@@ -153,12 +167,17 @@ static struct ds620_data *ds620_update_client(struct device *dev)
 
 		for (i = 0; i < ARRAY_SIZE(data->temp); i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			res = ds620_read_temp(client,
 					      DS620_REG_TEMP[i]);
 =======
 			res = i2c_smbus_read_word_swapped(client,
 							  DS620_REG_TEMP[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			res = i2c_smbus_read_word_swapped(client,
+							  DS620_REG_TEMP[i]);
+>>>>>>> refs/remotes/origin/master
 			if (res < 0) {
 				ret = ERR_PTR(res);
 				goto abort;
@@ -199,10 +218,14 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *da,
 	struct ds620_data *data = i2c_get_clientdata(client);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtol(buf, 10, &val);
 =======
 	res = kstrtol(buf, 10, &val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = kstrtol(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 
 	if (res)
 		return res;
@@ -212,12 +235,17 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *da,
 	mutex_lock(&data->update_lock);
 	data->temp[attr->index] = val;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ds620_write_temp(client, DS620_REG_TEMP[attr->index],
 			 data->temp[attr->index]);
 =======
 	i2c_smbus_write_word_swapped(client, DS620_REG_TEMP[attr->index],
 				     data->temp[attr->index]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i2c_smbus_write_word_swapped(client, DS620_REG_TEMP[attr->index],
+				     data->temp[attr->index]);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 	return count;
 }
@@ -236,6 +264,7 @@ static ssize_t show_alarm(struct device *dev, struct device_attribute *da,
 
 	/* reset alarms if necessary */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = i2c_smbus_read_word_data(client, DS620_REG_CONF);
 	if (res < 0)
 		return res;
@@ -247,6 +276,8 @@ static ssize_t show_alarm(struct device *dev, struct device_attribute *da,
 		res = i2c_smbus_write_word_data(client, DS620_REG_CONF,
 						swab16(new_conf));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	res = i2c_smbus_read_word_swapped(client, DS620_REG_CONF);
 	if (res < 0)
 		return res;
@@ -256,7 +287,10 @@ static ssize_t show_alarm(struct device *dev, struct device_attribute *da,
 	if (conf != new_conf) {
 		res = i2c_smbus_write_word_swapped(client, DS620_REG_CONF,
 						   new_conf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (res < 0)
 			return res;
 	}
@@ -291,11 +325,18 @@ static int ds620_probe(struct i2c_client *client,
 	struct ds620_data *data;
 	int err;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct ds620_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct ds620_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -306,7 +347,11 @@ static int ds620_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	err = sysfs_create_group(&client->dev.kobj, &ds620_group);
 	if (err)
+<<<<<<< HEAD
 		goto exit_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -320,9 +365,12 @@ static int ds620_probe(struct i2c_client *client,
 
 exit_remove_files:
 	sysfs_remove_group(&client->dev.kobj, &ds620_group);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -333,8 +381,11 @@ static int ds620_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &ds620_group);
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -357,6 +408,7 @@ static struct i2c_driver ds620_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ds620_init(void)
 {
 	return i2c_add_driver(&ds620_driver);
@@ -369,13 +421,19 @@ static void __exit ds620_exit(void)
 =======
 module_i2c_driver(ds620_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(ds620_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Roland Stigge <stigge@antcom.de>");
 MODULE_DESCRIPTION("DS620 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(ds620_init);
 module_exit(ds620_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

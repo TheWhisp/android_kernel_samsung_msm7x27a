@@ -7,7 +7,11 @@ Supported chips:
     Addresses scanned: -
     Datasheet: http://datasheets.maxim-ic.com/en/ds/MAX8688.pdf
 
+<<<<<<< HEAD
 Author: Guenter Roeck <guenter.roeck@ericsson.com>
+=======
+Author: Guenter Roeck <linux@roeck-us.net>
+>>>>>>> refs/remotes/origin/master
 
 
 Description
@@ -43,6 +47,7 @@ attributes are read-only.
 in1_label		"vout1"
 in1_input		Measured voltage. From READ_VOUT register.
 <<<<<<< HEAD
+<<<<<<< HEAD
 in1_min			Minumum Voltage. From VOUT_UV_WARN_LIMIT register.
 in1_max			Maximum voltage. From VOUT_OV_WARN_LIMIT register.
 in1_lcrit		Critical minumum Voltage. VOUT_UV_FAULT_LIMIT register.
@@ -51,16 +56,26 @@ in1_min			Minimum Voltage. From VOUT_UV_WARN_LIMIT register.
 in1_max			Maximum voltage. From VOUT_OV_WARN_LIMIT register.
 in1_lcrit		Critical minimum Voltage. VOUT_UV_FAULT_LIMIT register.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+in1_min			Minimum Voltage. From VOUT_UV_WARN_LIMIT register.
+in1_max			Maximum voltage. From VOUT_OV_WARN_LIMIT register.
+in1_lcrit		Critical minimum Voltage. VOUT_UV_FAULT_LIMIT register.
+>>>>>>> refs/remotes/origin/master
 in1_crit		Critical maximum voltage. From VOUT_OV_FAULT_LIMIT register.
 in1_min_alarm		Voltage low alarm. From VOLTAGE_UV_WARNING status.
 in1_max_alarm		Voltage high alarm. From VOLTAGE_OV_WARNING status.
 in1_lcrit_alarm		Voltage critical low alarm. From VOLTAGE_UV_FAULT status.
 in1_crit_alarm		Voltage critical high alarm. From VOLTAGE_OV_FAULT status.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 in1_highest		Historical maximum voltage.
 in1_reset_history	Write any value to reset history.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+in1_highest		Historical maximum voltage.
+in1_reset_history	Write any value to reset history.
+>>>>>>> refs/remotes/origin/master
 
 curr1_label		"iout1"
 curr1_input		Measured current. From READ_IOUT register.
@@ -69,10 +84,15 @@ curr1_crit		Critical maximum current. From IOUT_OC_FAULT_LIMIT register.
 curr1_max_alarm		Current high alarm. From IOUT_OC_WARN_LIMIT register.
 curr1_crit_alarm	Current critical high alarm. From IOUT_OC_FAULT status.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 curr1_highest		Historical maximum current.
 curr1_reset_history	Write any value to reset history.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+curr1_highest		Historical maximum current.
+curr1_reset_history	Write any value to reset history.
+>>>>>>> refs/remotes/origin/master
 
 temp1_input		Measured temperature. From READ_TEMPERATURE_1 register.
 temp1_max		Maximum temperature. From OT_WARN_LIMIT register.
@@ -84,7 +104,12 @@ temp1_crit_alarm	Chip temperature critical high alarm. Set by comparing
 			READ_TEMPERATURE_1 with OT_FAULT_LIMIT if TEMP_OT_FAULT
 			status is set.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 temp1_highest		Historical maximum temperature.
 temp1_reset_history	Write any value to reset history.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+temp1_highest		Historical maximum temperature.
+temp1_reset_history	Write any value to reset history.
+>>>>>>> refs/remotes/origin/master

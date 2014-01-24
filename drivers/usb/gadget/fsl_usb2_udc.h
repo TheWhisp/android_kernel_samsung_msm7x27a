@@ -1,4 +1,15 @@
 /*
+<<<<<<< HEAD
+=======
+ * Copyright (C) 2004,2012 Freescale Semiconductor, Inc
+ * All rights reserved.
+ *
+ * This program is free software; you can redistribute  it and/or modify it
+ * under  the terms of  the GNU General  Public License as published by the
+ * Free Software Foundation;  either version 2 of the  License, or (at your
+ * option) any later version.
+ *
+>>>>>>> refs/remotes/origin/master
  * Freescale USB device/endpoint management registers
  */
 #ifndef __FSL_USB2_UDC_H
@@ -348,6 +359,12 @@ struct usb_sys_interface {
 /* control Register Bit Masks */
 #define  USB_CTRL_IOENB                       0x00000004
 #define  USB_CTRL_ULPI_INT0EN                 0x00000001
+<<<<<<< HEAD
+=======
+#define USB_CTRL_UTMI_PHY_EN		      0x00000200
+#define USB_CTRL_USB_EN			      0x00000004
+#define USB_CTRL_ULPI_PHY_CLK_SEL	      0x00000400
+>>>>>>> refs/remotes/origin/master
 
 /* Endpoint Queue Head data struct
  * Rem: all the variables of qh are LittleEndian Mode
@@ -450,7 +467,10 @@ struct fsl_ep {
 	struct list_head queue;
 	struct fsl_udc *udc;
 	struct ep_queue_head *qh;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor *desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_gadget *gadget;
 
 	char name[14];
@@ -472,10 +492,14 @@ struct fsl_udc {
 	struct usb_ctrlrequest local_setup_buff;
 	spinlock_t lock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver *transceiver;
 =======
 	struct usb_phy *transceiver;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_phy *transceiver;
+>>>>>>> refs/remotes/origin/master
 	unsigned softconnect:1;
 	unsigned vbus_active:1;
 	unsigned stopped:1;
@@ -562,10 +586,17 @@ static void dump_msg(const char *label, const u8 * buf, unsigned int length)
 /*
  * ### internal used help routines.
  */
+<<<<<<< HEAD
 #define ep_index(EP)		((EP)->desc->bEndpointAddress&0xF)
 #define ep_maxpacket(EP)	((EP)->ep.maxpacket)
 #define ep_is_in(EP)	( (ep_index(EP) == 0) ? (EP->udc->ep0_dir == \
 			USB_DIR_IN ):((EP)->desc->bEndpointAddress \
+=======
+#define ep_index(EP)		((EP)->ep.desc->bEndpointAddress&0xF)
+#define ep_maxpacket(EP)	((EP)->ep.maxpacket)
+#define ep_is_in(EP)	( (ep_index(EP) == 0) ? (EP->udc->ep0_dir == \
+			USB_DIR_IN) : ((EP)->ep.desc->bEndpointAddress \
+>>>>>>> refs/remotes/origin/master
 			& USB_DIR_IN)==USB_DIR_IN)
 #define get_ep_by_pipe(udc, pipe)	((pipe == 1)? &udc->eps[0]: \
 					&udc->eps[pipe])
@@ -574,7 +605,10 @@ static void dump_msg(const char *label, const u8 * buf, unsigned int length)
 #define get_pipe_by_ep(EP)	(ep_index(EP) * 2 + ep_is_in(EP))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline struct ep_queue_head *get_qh_by_ep(struct fsl_ep *ep)
 {
 	/* we only have one ep0 structure but two queue heads */
@@ -585,19 +619,32 @@ static inline struct ep_queue_head *get_qh_by_ep(struct fsl_ep *ep)
 				USB_DIR_IN) ? 1 : 0];
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct platform_device;
 #ifdef CONFIG_ARCH_MXC
 int fsl_udc_clk_init(struct platform_device *pdev);
 void fsl_udc_clk_finalize(struct platform_device *pdev);
+=======
+struct platform_device;
+#ifdef CONFIG_ARCH_MXC
+int fsl_udc_clk_init(struct platform_device *pdev);
+int fsl_udc_clk_finalize(struct platform_device *pdev);
+>>>>>>> refs/remotes/origin/master
 void fsl_udc_clk_release(void);
 #else
 static inline int fsl_udc_clk_init(struct platform_device *pdev)
 {
 	return 0;
 }
+<<<<<<< HEAD
 static inline void fsl_udc_clk_finalize(struct platform_device *pdev)
 {
+=======
+static inline int fsl_udc_clk_finalize(struct platform_device *pdev)
+{
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 static inline void fsl_udc_clk_release(void)
 {

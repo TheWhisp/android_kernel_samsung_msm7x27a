@@ -21,6 +21,7 @@
 #define __FSL_DIU_FB_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Arbitrary threshold to determine the allocation method
  * See mpc8610fb_set_par(), map_video_memory(), and unmap_video_memory()
  */
@@ -37,6 +38,10 @@ struct mfb_alpha {
 #include <linux/types.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/master
 struct mfb_chroma_key {
 	int enable;
 	__u8  red_max;
@@ -49,16 +54,22 @@ struct mfb_chroma_key {
 
 struct aoi_display_offset {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int x_aoi_d;
 	int y_aoi_d;
 =======
 	__s32 x_aoi_d;
 	__s32 y_aoi_d;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__s32 x_aoi_d;
+	__s32 y_aoi_d;
+>>>>>>> refs/remotes/origin/master
 };
 
 #define MFB_SET_CHROMA_KEY	_IOW('M', 1, struct mfb_chroma_key)
 #define MFB_SET_BRIGHTNESS	_IOW('M', 3, __u8)
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define MFB_SET_ALPHA		0x80014d00
@@ -74,6 +85,8 @@ struct aoi_display_offset {
 #ifdef __KERNEL__
 #include <linux/spinlock.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MFB_SET_ALPHA		_IOW('M', 0, __u8)
 #define MFB_GET_ALPHA		_IOR('M', 0, __u8)
 #define MFB_SET_AOID		_IOW('M', 4, struct aoi_display_offset)
@@ -82,6 +95,18 @@ struct aoi_display_offset {
 #define MFB_GET_PIXFMT		_IOR('M', 8, __u32)
 
 /*
+<<<<<<< HEAD
+=======
+ * The MPC5121 BSP comes with a gamma_set utility that initializes the
+ * gamma table.  Unfortunately, it uses bad values for the IOCTL commands,
+ * but there's nothing we can do about it now.  These ioctls are only
+ * supported on the MPC5121.
+ */
+#define MFB_SET_GAMMA		_IOW('M', 1, __u8)
+#define MFB_GET_GAMMA		_IOR('M', 1, __u8)
+
+/*
+>>>>>>> refs/remotes/origin/master
  * The original definitions of MFB_SET_PIXFMT and MFB_GET_PIXFMT used the
  * wrong value for 'size' field of the ioctl.  The current macros above use the
  * right size, but we still need to provide backwards compatibility, at least
@@ -91,7 +116,10 @@ struct aoi_display_offset {
 #define MFB_GET_PIXFMT_OLD	0x40014d08
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These are the fields of area descriptor(in DDR memory) for every plane
@@ -190,6 +218,7 @@ struct diu {
 } __attribute__ ((packed));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct diu_hw {
 	struct diu *diu_reg;
 	spinlock_t reg_lock;
@@ -243,13 +272,18 @@ struct diu_pool {
 #define MFB_TYPE_WB	2	/* Panel written back to memory */
 #define MFB_TYPE_TEST	3	/* Panel generate color bar */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Modes of operation of DIU.  The DIU supports five different modes, but
  * the driver only supports modes 0 and 1.
  */
 #define MFB_MODE0	0	/* DIU off */
 #define MFB_MODE1	1	/* All three planes output to display */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 #endif /* __FSL_DIU_FB_H__ */

@@ -1,6 +1,10 @@
 /*
  * Author: MontaVista Software, Inc.
+<<<<<<< HEAD
  *         source@mvista.com
+=======
+ *	   source@mvista.com
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2001-2006 MontaVista Software Inc.
  *
@@ -33,11 +37,19 @@
 #include <asm/txx9/tx4927pcic.h>
 
 #ifdef CONFIG_64BIT
+<<<<<<< HEAD
 #define TX4927_REG_BASE	0xffffffffff1f0000UL
 #else
 #define TX4927_REG_BASE	0xff1f0000UL
 #endif
 #define TX4927_REG_SIZE	0x00010000
+=======
+#define TX4927_REG_BASE 0xffffffffff1f0000UL
+#else
+#define TX4927_REG_BASE 0xff1f0000UL
+#endif
+#define TX4927_REG_SIZE 0x00010000
+>>>>>>> refs/remotes/origin/master
 
 #define TX4927_SDRAMC_REG	(TX4927_REG_BASE + 0x8000)
 #define TX4927_EBUSC_REG	(TX4927_REG_BASE + 0x9000)
@@ -118,10 +130,17 @@ struct tx4927_ccfg_reg {
 #define TX4927_CCFG_DIVMODE_2	(0x4 << 17)
 #define TX4927_CCFG_DIVMODE_3	(0x5 << 17)
 #define TX4927_CCFG_DIVMODE_4	(0x6 << 17)
+<<<<<<< HEAD
 #define TX4927_CCFG_DIVMODE_2_5	(0x7 << 17)
 #define TX4927_CCFG_BEOW	0x00010000
 #define TX4927_CCFG_WR	0x00008000
 #define TX4927_CCFG_TOE	0x00004000
+=======
+#define TX4927_CCFG_DIVMODE_2_5 (0x7 << 17)
+#define TX4927_CCFG_BEOW	0x00010000
+#define TX4927_CCFG_WR	0x00008000
+#define TX4927_CCFG_TOE 0x00004000
+>>>>>>> refs/remotes/origin/master
 #define TX4927_CCFG_PCIARB	0x00002000
 #define TX4927_CCFG_PCIDIVMODE_MASK	0x00001800
 #define TX4927_CCFG_PCIDIVMODE_2_5	0x00000000
@@ -136,10 +155,17 @@ struct tx4927_ccfg_reg {
 
 /* PCFG : Pin Configuration */
 #define TX4927_PCFG_SDCLKDLY_MASK	0x30000000
+<<<<<<< HEAD
 #define TX4927_PCFG_SDCLKDLY(d)	((d)<<28)
 #define TX4927_PCFG_SYSCLKEN	0x08000000
 #define TX4927_PCFG_SDCLKEN_ALL	0x07800000
 #define TX4927_PCFG_SDCLKEN(ch)	(0x00800000<<(ch))
+=======
+#define TX4927_PCFG_SDCLKDLY(d) ((d)<<28)
+#define TX4927_PCFG_SYSCLKEN	0x08000000
+#define TX4927_PCFG_SDCLKEN_ALL 0x07800000
+#define TX4927_PCFG_SDCLKEN(ch) (0x00800000<<(ch))
+>>>>>>> refs/remotes/origin/master
 #define TX4927_PCFG_PCICLKEN_ALL	0x003f0000
 #define TX4927_PCFG_PCICLKEN(ch)	(0x00010000<<(ch))
 #define TX4927_PCFG_SEL2	0x00000200

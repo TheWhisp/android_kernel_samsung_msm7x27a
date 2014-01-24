@@ -88,31 +88,43 @@ enum {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L2_STATE_COUNT (ST_L2_8+1)
 
 extern struct layer2	*create_l2(struct mISDNchannel *, u_int,
 				u_long, int, int);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define L2_STATE_COUNT (ST_L2_8 + 1)
 
 extern struct layer2	*create_l2(struct mISDNchannel *, u_int,
 				   u_long, int, int);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern int		tei_l2(struct layer2 *, u_int, u_long arg);
 
 
 /* from tei.c */
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int 		l2_tei(struct layer2 *, u_int, u_long arg);
 extern void 		TEIrelease(struct layer2 *);
 extern int 		TEIInit(u_int *);
 extern void 		TEIFree(void);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int		l2_tei(struct layer2 *, u_int, u_long arg);
 extern void		TEIrelease(struct layer2 *);
 extern int		TEIInit(u_int *);
 extern void		TEIFree(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_L2HEADER_LEN 4
 

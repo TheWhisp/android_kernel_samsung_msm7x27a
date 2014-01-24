@@ -37,18 +37,24 @@
 #include <linux/ipmi_msgdefs.h>
 #include <linux/proc_fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/device.h>
 #include <linux/platform_device.h>
 #include <linux/ipmi.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/ipmi.h>
 
 struct device;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* This files describes the interface for IPMI system management interface
    drivers to bind into the IPMI message handler. */
 
@@ -224,7 +230,11 @@ int ipmi_unregister_smi(ipmi_smi_t intf);
 
 /*
  * The lower layer reports received messages through this interface.
+<<<<<<< HEAD
  * The data_size should be zero if this is an asyncronous message.  If
+=======
+ * The data_size should be zero if this is an asynchronous message.  If
+>>>>>>> refs/remotes/origin/master
  * the lower layer gets an error sending a message, it should format
  * an error response in the message response.
  */

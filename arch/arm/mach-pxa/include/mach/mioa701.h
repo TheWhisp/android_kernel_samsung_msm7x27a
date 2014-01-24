@@ -61,6 +61,12 @@
 #define GPIO93_KEY_VOLUME_UP			93
 #define GPIO94_KEY_VOLUME_DOWN			94
 
+<<<<<<< HEAD
+=======
+/* Camera */
+#define GPIO56_MT9M111_nOE			56
+
+>>>>>>> refs/remotes/origin/master
 extern struct input_dev *mioa701_evdev;
 extern void mioa701_gpio_lpm_set(unsigned long mfp_pin);
 

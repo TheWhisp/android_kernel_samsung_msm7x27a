@@ -30,12 +30,20 @@
  * Integrated TV-out support for the 915GM and 945GM.
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "drm_crtc.h"
 #include "drm_edid.h"
 #include "intel_drv.h"
 #include "i915_drm.h"
+=======
+#include <drm/drmP.h>
+#include <drm/drm_crtc.h>
+#include <drm/drm_edid.h>
+#include "intel_drv.h"
+#include <drm/i915_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "i915_drv.h"
 
 enum tv_margin {
@@ -195,16 +203,22 @@ static const u32 filter_table[] = {
  *     if (f >= 1) {
  *         exp = 0x7;
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	   mant = 1 << 8;
  *     } else {
  *         for (exp = 0; exp < 3 && f < 0.5; exp++)
  * 	       f *= 2.0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	   mant = 1 << 8;
  *     } else {
  *         for (exp = 0; exp < 3 && f < 0.5; exp++)
  *	   f *= 2.0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *         mant = (f * (1 << 9) + 0.5);
  *         if (mant >= (1 << 9))
  *             mant = (1 << 9) - 1;
@@ -438,10 +452,14 @@ static const struct tv_mode tv_modes[] = {
 		.vsync_len	= 6,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 0,
 =======
 		.veq_ena	= true,		    .veq_start_f1	= 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena	= true,		    .veq_start_f1	= 0,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2	= 1,		    .veq_len		= 18,
 
 		.vi_end_f1	= 20,		    .vi_end_f2		= 21,
@@ -484,10 +502,14 @@ static const struct tv_mode tv_modes[] = {
 		.vsync_len	= 6,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 0,
 =======
 		.veq_ena	= true,		    .veq_start_f1	= 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena	= true,		    .veq_start_f1	= 0,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2	= 1,		    .veq_len		= 18,
 
 		.vi_end_f1	= 20,		    .vi_end_f2		= 21,
@@ -531,10 +553,14 @@ static const struct tv_mode tv_modes[] = {
 		.vsync_len	= 6,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 0,
 =======
 		.veq_ena      = true,	    .veq_start_f1	= 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena      = true,	    .veq_start_f1	= 0,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2 = 1,	    .veq_len		= 18,
 
 		.vi_end_f1	= 20,		    .vi_end_f2		= 21,
@@ -578,10 +604,14 @@ static const struct tv_mode tv_modes[] = {
 		.vsync_len	= 6,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 0,
 =======
 		.veq_ena	= true,		    .veq_start_f1	= 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena	= true,		    .veq_start_f1	= 0,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2	= 1,		    .veq_len		= 18,
 
 		.vi_end_f1	= 20,		    .vi_end_f2		= 21,
@@ -626,10 +656,14 @@ static const struct tv_mode tv_modes[] = {
 		.vsync_len	= 6,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 0,
 =======
 		.veq_ena	= true,		    .veq_start_f1	= 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena	= true,		    .veq_start_f1	= 0,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2	= 1,		    .veq_len		= 18,
 
 		.vi_end_f1	= 24,		    .vi_end_f2		= 25,
@@ -637,10 +671,14 @@ static const struct tv_mode tv_modes[] = {
 
 		.burst_ena	= true,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.hburst_start = 73,	    	    .hburst_len		= 34,
 =======
 		.hburst_start = 73,	    .hburst_len		= 34,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.hburst_start = 73,	    .hburst_len		= 34,
+>>>>>>> refs/remotes/origin/master
 		.vburst_start_f1 = 8,	    .vburst_end_f1	= 285,
 		.vburst_start_f2 = 8,	    .vburst_end_f2	= 286,
 		.vburst_start_f3 = 9,	    .vburst_end_f3	= 286,
@@ -678,10 +716,14 @@ static const struct tv_mode tv_modes[] = {
 		.vsync_len	= 5,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 0,
 =======
 		.veq_ena	= true,	    .veq_start_f1	= 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena	= true,	    .veq_start_f1	= 0,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2	= 1,	    .veq_len		= 15,
 
 		.vi_end_f1	= 24,		    .vi_end_f2		= 25,
@@ -710,12 +752,17 @@ static const struct tv_mode tv_modes[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name       = "480p@59.94Hz",
 		.clock 	= 107520,
 =======
 		.name       = "480p",
 		.clock		= 107520,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name       = "480p",
+		.clock		= 107520,
+>>>>>>> refs/remotes/origin/master
 		.refresh	= 59940,
 		.oversample     = TV_OVERSAMPLE_4X,
 		.component_only = 1,
@@ -723,6 +770,7 @@ static const struct tv_mode tv_modes[] = {
 		.hsync_end      = 64,               .hblank_end         = 122,
 		.hblank_start   = 842,              .htotal             = 857,
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.progressive    = true,.trilevel_sync = false,
 
@@ -752,6 +800,9 @@ static const struct tv_mode tv_modes[] = {
 =======
 		.progressive    = true,		    .trilevel_sync = false,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.progressive    = true,		    .trilevel_sync = false,
+>>>>>>> refs/remotes/origin/master
 
 		.vsync_start_f1 = 12,               .vsync_start_f2     = 12,
 		.vsync_len      = 12,
@@ -768,10 +819,14 @@ static const struct tv_mode tv_modes[] = {
 	{
 		.name       = "576p",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.clock 	= 107520,
 =======
 		.clock		= 107520,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.clock		= 107520,
+>>>>>>> refs/remotes/origin/master
 		.refresh	= 50000,
 		.oversample     = TV_OVERSAMPLE_4X,
 		.component_only = 1,
@@ -780,10 +835,14 @@ static const struct tv_mode tv_modes[] = {
 		.hblank_start   = 859,              .htotal             = 863,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.progressive    = true,		.trilevel_sync = false,
 =======
 		.progressive    = true,		    .trilevel_sync = false,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.progressive    = true,		    .trilevel_sync = false,
+>>>>>>> refs/remotes/origin/master
 
 		.vsync_start_f1 = 10,               .vsync_start_f2     = 10,
 		.vsync_len      = 10,
@@ -807,6 +866,7 @@ static const struct tv_mode tv_modes[] = {
 		.hsync_end      = 80,               .hblank_end         = 300,
 		.hblank_start   = 1580,             .htotal             = 1649,
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.progressive    = true, 	    .trilevel_sync = true,
 
@@ -836,6 +896,9 @@ static const struct tv_mode tv_modes[] = {
 =======
 		.progressive	= true,		    .trilevel_sync = true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.progressive	= true,		    .trilevel_sync = true,
+>>>>>>> refs/remotes/origin/master
 
 		.vsync_start_f1 = 10,               .vsync_start_f2     = 10,
 		.vsync_len      = 10,
@@ -860,10 +923,14 @@ static const struct tv_mode tv_modes[] = {
 		.hblank_start   = 1580,             .htotal             = 1979,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.progressive    = true, 	        .trilevel_sync = true,
 =======
 		.progressive	= true,		    .trilevel_sync = true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.progressive	= true,		    .trilevel_sync = true,
+>>>>>>> refs/remotes/origin/master
 
 		.vsync_start_f1 = 10,               .vsync_start_f2     = 10,
 		.vsync_len      = 10,
@@ -889,19 +956,27 @@ static const struct tv_mode tv_modes[] = {
 		.hblank_start   = 2155,             .htotal             = 2639,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.progressive    = false, 	    .trilevel_sync = true,
 =======
 		.progressive	= false,	  .trilevel_sync = true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.progressive	= false,	  .trilevel_sync = true,
+>>>>>>> refs/remotes/origin/master
 
 		.vsync_start_f1 = 4,              .vsync_start_f2     = 5,
 		.vsync_len      = 10,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 4,
 =======
 		.veq_ena	= true,	    .veq_start_f1	= 4,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena	= true,	    .veq_start_f1	= 4,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2   = 4,	    .veq_len		= 10,
 
 
@@ -923,19 +998,27 @@ static const struct tv_mode tv_modes[] = {
 		.hblank_start   = 2155,             .htotal             = 2199,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.progressive    = false, 	    .trilevel_sync = true,
 =======
 		.progressive	= false,	    .trilevel_sync = true,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.progressive	= false,	    .trilevel_sync = true,
+>>>>>>> refs/remotes/origin/master
 
 		.vsync_start_f1 = 4,               .vsync_start_f2     = 5,
 		.vsync_len      = 10,
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.veq_ena	= true,		    .veq_start_f1    	= 4,
 =======
 		.veq_ena	= true,		    .veq_start_f1	= 4,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.veq_ena	= true,		    .veq_start_f1	= 4,
+>>>>>>> refs/remotes/origin/master
 		.veq_start_f2	= 4,		    .veq_len		= 10,
 
 
@@ -946,6 +1029,7 @@ static const struct tv_mode tv_modes[] = {
 
 		.filter_table = filter_table,
 	},
+<<<<<<< HEAD
 <<<<<<< HEAD
 	{
 		.name       = "1080i@59.94Hz",
@@ -1009,6 +1093,51 @@ intel_tv_dpms(struct drm_encoder *encoder, int mode)
 		I915_WRITE(TV_CTL, I915_READ(TV_CTL) & ~TV_ENC_ENABLE);
 		break;
 	}
+=======
+};
+
+static struct intel_tv *enc_to_tv(struct intel_encoder *encoder)
+{
+	return container_of(encoder, struct intel_tv, base);
+}
+
+static struct intel_tv *intel_attached_tv(struct drm_connector *connector)
+{
+	return enc_to_tv(intel_attached_encoder(connector));
+}
+
+static bool
+intel_tv_get_hw_state(struct intel_encoder *encoder, enum pipe *pipe)
+{
+	struct drm_device *dev = encoder->base.dev;
+	struct drm_i915_private *dev_priv = dev->dev_private;
+	u32 tmp = I915_READ(TV_CTL);
+
+	if (!(tmp & TV_ENC_ENABLE))
+		return false;
+
+	*pipe = PORT_TO_PIPE(tmp);
+
+	return true;
+}
+
+static void
+intel_enable_tv(struct intel_encoder *encoder)
+{
+	struct drm_device *dev = encoder->base.dev;
+	struct drm_i915_private *dev_priv = dev->dev_private;
+
+	I915_WRITE(TV_CTL, I915_READ(TV_CTL) | TV_ENC_ENABLE);
+}
+
+static void
+intel_disable_tv(struct intel_encoder *encoder)
+{
+	struct drm_device *dev = encoder->base.dev;
+	struct drm_i915_private *dev_priv = dev->dev_private;
+
+	I915_WRITE(TV_CTL, I915_READ(TV_CTL) & ~TV_ENC_ENABLE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct tv_mode *
@@ -1017,10 +1146,14 @@ intel_tv_mode_lookup(const char *tv_format)
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < sizeof(tv_modes) / sizeof (tv_modes[0]); i++) {
 =======
 	for (i = 0; i < sizeof(tv_modes) / sizeof(tv_modes[0]); i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ARRAY_SIZE(tv_modes); i++) {
+>>>>>>> refs/remotes/origin/master
 		const struct tv_mode *tv_mode = &tv_modes[i];
 
 		if (!strcmp(tv_format, tv_mode->name))
@@ -1051,6 +1184,7 @@ intel_tv_mode_valid(struct drm_connector *connector,
 }
 
 
+<<<<<<< HEAD
 static bool
 intel_tv_mode_fixup(struct drm_encoder *encoder, struct drm_display_mode *mode,
 		    struct drm_display_mode *adjusted_mode)
@@ -1060,10 +1194,26 @@ intel_tv_mode_fixup(struct drm_encoder *encoder, struct drm_display_mode *mode,
 	struct intel_tv *intel_tv = enc_to_intel_tv(encoder);
 	const struct tv_mode *tv_mode = intel_tv_mode_find(intel_tv);
 	struct drm_encoder *other_encoder;
+=======
+static void
+intel_tv_get_config(struct intel_encoder *encoder,
+		    struct intel_crtc_config *pipe_config)
+{
+	pipe_config->adjusted_mode.crtc_clock = pipe_config->port_clock;
+}
+
+static bool
+intel_tv_compute_config(struct intel_encoder *encoder,
+			struct intel_crtc_config *pipe_config)
+{
+	struct intel_tv *intel_tv = enc_to_tv(encoder);
+	const struct tv_mode *tv_mode = intel_tv_mode_find(intel_tv);
+>>>>>>> refs/remotes/origin/master
 
 	if (!tv_mode)
 		return false;
 
+<<<<<<< HEAD
 	/* FIXME: lock encoder list */
 	list_for_each_entry(other_encoder, &drm_config->encoder_list, head) {
 		if (other_encoder != encoder &&
@@ -1084,6 +1234,29 @@ intel_tv_mode_set(struct drm_encoder *encoder, struct drm_display_mode *mode,
 	struct drm_crtc *crtc = encoder->crtc;
 	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
 	struct intel_tv *intel_tv = enc_to_intel_tv(encoder);
+=======
+	pipe_config->adjusted_mode.crtc_clock = tv_mode->clock;
+	DRM_DEBUG_KMS("forcing bpc to 8 for TV\n");
+	pipe_config->pipe_bpp = 8*3;
+
+	/* TV has it's own notion of sync and other mode flags, so clear them. */
+	pipe_config->adjusted_mode.flags = 0;
+
+	/*
+	 * FIXME: We don't check whether the input mode is actually what we want
+	 * or whether userspace is doing something stupid.
+	 */
+
+	return true;
+}
+
+static void intel_tv_mode_set(struct intel_encoder *encoder)
+{
+	struct drm_device *dev = encoder->base.dev;
+	struct drm_i915_private *dev_priv = dev->dev_private;
+	struct intel_crtc *intel_crtc = to_intel_crtc(encoder->base.crtc);
+	struct intel_tv *intel_tv = enc_to_tv(encoder);
+>>>>>>> refs/remotes/origin/master
 	const struct tv_mode *tv_mode = intel_tv_mode_find(intel_tv);
 	u32 tv_ctl;
 	u32 hctl1, hctl2, hctl3;
@@ -1195,7 +1368,11 @@ intel_tv_mode_set(struct drm_encoder *encoder, struct drm_display_mode *mode,
 		tv_mode->dda3_inc << TV_SCDDA3_INC_SHIFT;
 
 	/* Enable two fixes for the chips that need them. */
+<<<<<<< HEAD
 	if (dev->pci_device < 0x2772)
+=======
+	if (dev->pdev->device < 0x2772)
+>>>>>>> refs/remotes/origin/master
 		tv_ctl |= TV_ENC_C0_FIX | TV_ENC_SDP_FIX;
 
 	I915_WRITE(TV_H_CTL_1, hctl1);
@@ -1216,10 +1393,14 @@ intel_tv_mode_set(struct drm_encoder *encoder, struct drm_display_mode *mode,
 		I915_WRITE(TV_CSC_Y, (color_conversion->ry << 16) |
 			   color_conversion->gy);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		I915_WRITE(TV_CSC_Y2,(color_conversion->by << 16) |
 =======
 		I915_WRITE(TV_CSC_Y2, (color_conversion->by << 16) |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		I915_WRITE(TV_CSC_Y2, (color_conversion->by << 16) |
+>>>>>>> refs/remotes/origin/master
 			   color_conversion->ay);
 		I915_WRITE(TV_CSC_U, (color_conversion->ru << 16) |
 			   color_conversion->gu);
@@ -1245,13 +1426,20 @@ intel_tv_mode_set(struct drm_encoder *encoder, struct drm_display_mode *mode,
 		int dspcntr_reg = DSPCNTR(intel_crtc->plane);
 		int pipeconf = I915_READ(pipeconf_reg);
 		int dspcntr = I915_READ(dspcntr_reg);
+<<<<<<< HEAD
 		int dspbase_reg = DSPADDR(intel_crtc->plane);
+=======
+>>>>>>> refs/remotes/origin/master
 		int xpos = 0x0, ypos = 0x0;
 		unsigned int xsize, ysize;
 		/* Pipe must be off here */
 		I915_WRITE(dspcntr_reg, dspcntr & ~DISPLAY_PLANE_ENABLE);
+<<<<<<< HEAD
 		/* Flush the plane changes */
 		I915_WRITE(dspbase_reg, I915_READ(dspbase_reg));
+=======
+		intel_flush_primary_plane(dev_priv, intel_crtc->plane);
+>>>>>>> refs/remotes/origin/master
 
 		/* Wait for vblank for the disable to take effect */
 		if (IS_GEN2(dev))
@@ -1280,8 +1468,12 @@ intel_tv_mode_set(struct drm_encoder *encoder, struct drm_display_mode *mode,
 
 		I915_WRITE(pipeconf_reg, pipeconf);
 		I915_WRITE(dspcntr_reg, dspcntr);
+<<<<<<< HEAD
 		/* Flush the plane changes */
 		I915_WRITE(dspbase_reg, I915_READ(dspbase_reg));
+=======
+		intel_flush_primary_plane(dev_priv, intel_crtc->plane);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	j = 0;
@@ -1324,18 +1516,24 @@ static const struct drm_display_mode reported_modes[] = {
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 intel_tv_detect_type (struct intel_tv *intel_tv,
 		      struct drm_connector *connector)
 {
 	struct drm_encoder *encoder = &intel_tv->base.base;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 intel_tv_detect_type(struct intel_tv *intel_tv,
 		      struct drm_connector *connector)
 {
 	struct drm_encoder *encoder = &intel_tv->base.base;
 	struct drm_crtc *crtc = encoder->crtc;
 	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct drm_device *dev = encoder->dev;
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	unsigned long irqflags;
@@ -1359,12 +1557,18 @@ intel_tv_detect_type(struct intel_tv *intel_tv,
 	tv_ctl &= ~(TV_ENC_ENABLE | TV_TEST_MODE_MASK);
 	tv_ctl |= TV_TEST_MODE_MONITOR_DETECT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (intel_crtc->pipe == 1)
 		tv_ctl |= TV_ENC_PIPEB_SELECT;
 	else
 		tv_ctl &= ~TV_ENC_PIPEB_SELECT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	tv_dac &= ~(TVDAC_SENSE_MASK | DAC_A_MASK | DAC_B_MASK | DAC_C_MASK);
 	tv_dac |= (TVDAC_STATE_CHG_EN |
@@ -1376,6 +1580,18 @@ intel_tv_detect_type(struct intel_tv *intel_tv,
 		   DAC_B_0_7_V |
 		   DAC_C_0_7_V);
 
+<<<<<<< HEAD
+=======
+
+	/*
+	 * The TV sense state should be cleared to zero on cantiga platform. Otherwise
+	 * the TV is misdetected. This is hardware requirement.
+	 */
+	if (IS_GM45(dev))
+		tv_dac &= ~(TVDAC_STATE_CHG_EN | TVDAC_A_SENSE_CTL |
+			    TVDAC_B_SENSE_CTL | TVDAC_C_SENSE_CTL);
+
+>>>>>>> refs/remotes/origin/master
 	I915_WRITE(TV_CTL, tv_ctl);
 	I915_WRITE(TV_DAC, tv_dac);
 	POSTING_READ(TV_DAC);
@@ -1384,6 +1600,7 @@ intel_tv_detect_type(struct intel_tv *intel_tv,
 			      to_intel_crtc(intel_tv->base.base.crtc)->pipe);
 
 	type = -1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (wait_for((tv_dac = I915_READ(TV_DAC)) & TVDAC_STATE_CHG, 20) == 0) {
 		DRM_DEBUG_KMS("TV detected: %x, %x\n", tv_ctl, tv_dac);
@@ -1406,6 +1623,8 @@ intel_tv_detect_type(struct intel_tv *intel_tv,
 			DRM_DEBUG_KMS("Unrecognised TV connection\n");
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tv_dac = I915_READ(TV_DAC);
 	DRM_DEBUG_KMS("TV detected: %x, %x\n", tv_ctl, tv_dac);
 	/*
@@ -1426,7 +1645,10 @@ intel_tv_detect_type(struct intel_tv *intel_tv,
 	} else {
 		DRM_DEBUG_KMS("Unrecognised TV connection\n");
 		type = -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	I915_WRITE(TV_DAC, save_tv_dac & ~TVDAC_STATE_CHG_EN);
@@ -1473,7 +1695,11 @@ static void intel_tv_find_better_format(struct drm_connector *connector)
 	}
 
 	intel_tv->tv_format = tv_mode->name;
+<<<<<<< HEAD
 	drm_connector_property_set_value(connector,
+=======
+	drm_object_property_set_value(&connector->base,
+>>>>>>> refs/remotes/origin/master
 		connector->dev->mode_config.tv_mode_property, i);
 }
 
@@ -1490,6 +1716,7 @@ intel_tv_detect(struct drm_connector *connector, bool force)
 	struct intel_tv *intel_tv = intel_attached_tv(connector);
 	int type;
 
+<<<<<<< HEAD
 	mode = reported_modes[0];
 <<<<<<< HEAD
 	drm_mode_set_crtcinfo(&mode, CRTC_INTERLACE_HALVE_V);
@@ -1508,6 +1735,20 @@ intel_tv_detect(struct drm_connector *connector, bool force)
 			intel_release_load_detect_pipe(&intel_tv->base,
 						       connector,
 						       &tmp);
+=======
+	DRM_DEBUG_KMS("[CONNECTOR:%d:%s] force=%d\n",
+		      connector->base.id, drm_get_connector_name(connector),
+		      force);
+
+	mode = reported_modes[0];
+
+	if (force) {
+		struct intel_load_detect_pipe tmp;
+
+		if (intel_get_load_detect_pipe(connector, &mode, &tmp)) {
+			type = intel_tv_detect_type(intel_tv, connector);
+			intel_release_load_detect_pipe(connector, &tmp);
+>>>>>>> refs/remotes/origin/master
 		} else
 			return connector_status_unknown;
 	} else
@@ -1620,12 +1861,17 @@ intel_tv_get_modes(struct drm_connector *connector)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 intel_tv_destroy (struct drm_connector *connector)
 =======
 intel_tv_destroy(struct drm_connector *connector)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	drm_sysfs_connector_remove(connector);
+=======
+intel_tv_destroy(struct drm_connector *connector)
+{
+>>>>>>> refs/remotes/origin/master
 	drm_connector_cleanup(connector);
 	kfree(connector);
 }
@@ -1641,7 +1887,11 @@ intel_tv_set_property(struct drm_connector *connector, struct drm_property *prop
 	int ret = 0;
 	bool changed = false;
 
+<<<<<<< HEAD
 	ret = drm_connector_property_set_value(connector, property, val);
+=======
+	ret = drm_object_property_set_value(&connector->base, property, val);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 
@@ -1677,12 +1927,17 @@ intel_tv_set_property(struct drm_connector *connector, struct drm_property *prop
 	}
 
 	if (changed && crtc)
+<<<<<<< HEAD
 		drm_crtc_helper_set_mode(crtc, &crtc->mode, crtc->x,
 				crtc->y, crtc->fb);
+=======
+		intel_crtc_restore_mode(crtc);
+>>>>>>> refs/remotes/origin/master
 out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static const struct drm_encoder_helper_funcs intel_tv_helper_funcs = {
 	.dpms = intel_tv_dpms,
 	.mode_fixup = intel_tv_mode_fixup,
@@ -1693,6 +1948,10 @@ static const struct drm_encoder_helper_funcs intel_tv_helper_funcs = {
 
 static const struct drm_connector_funcs intel_tv_connector_funcs = {
 	.dpms = drm_helper_connector_dpms,
+=======
+static const struct drm_connector_funcs intel_tv_connector_funcs = {
+	.dpms = intel_connector_dpms,
+>>>>>>> refs/remotes/origin/master
 	.detect = intel_tv_detect,
 	.destroy = intel_tv_destroy,
 	.set_property = intel_tv_set_property,
@@ -1719,6 +1978,7 @@ static const struct drm_encoder_funcs intel_tv_enc_funcs = {
 static int tv_is_present_in_vbt(struct drm_device *dev)
 {
 	struct drm_i915_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 	struct child_device_config *p_child;
 	int i, ret;
 
@@ -1733,11 +1993,31 @@ static int tv_is_present_in_vbt(struct drm_device *dev)
 		 */
 		if (p_child->device_type != DEVICE_TYPE_INT_TV &&
 			p_child->device_type != DEVICE_TYPE_TV)
+=======
+	union child_device_config *p_child;
+	int i, ret;
+
+	if (!dev_priv->vbt.child_dev_num)
+		return 1;
+
+	ret = 0;
+	for (i = 0; i < dev_priv->vbt.child_dev_num; i++) {
+		p_child = dev_priv->vbt.child_dev + i;
+		/*
+		 * If the device type is not TV, continue.
+		 */
+		if (p_child->old.device_type != DEVICE_TYPE_INT_TV &&
+			p_child->old.device_type != DEVICE_TYPE_TV)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		/* Only when the addin_offset is non-zero, it is regarded
 		 * as present.
 		 */
+<<<<<<< HEAD
 		if (p_child->addin_offset) {
+=======
+		if (p_child->old.addin_offset) {
+>>>>>>> refs/remotes/origin/master
 			ret = 1;
 			break;
 		}
@@ -1765,7 +2045,11 @@ intel_tv_init(struct drm_device *dev)
 		return;
 	}
 	/* Even if we have an encoder we may not have a connector */
+<<<<<<< HEAD
 	if (!dev_priv->int_tv_support)
+=======
+	if (!dev_priv->vbt.int_tv_support)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/*
@@ -1791,12 +2075,20 @@ intel_tv_init(struct drm_device *dev)
 	    (tv_dac_off & TVDAC_STATE_CHG_EN) != 0)
 		return;
 
+<<<<<<< HEAD
 	intel_tv = kzalloc(sizeof(struct intel_tv), GFP_KERNEL);
+=======
+	intel_tv = kzalloc(sizeof(*intel_tv), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!intel_tv) {
 		return;
 	}
 
+<<<<<<< HEAD
 	intel_connector = kzalloc(sizeof(struct intel_connector), GFP_KERNEL);
+=======
+	intel_connector = kzalloc(sizeof(*intel_connector), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!intel_connector) {
 		kfree(intel_tv);
 		return;
@@ -1814,7 +2106,11 @@ intel_tv_init(struct drm_device *dev)
 	 *
 	 * More recent chipsets favour HDMI rather than integrated S-Video.
 	 */
+<<<<<<< HEAD
 	connector->polled = DRM_CONNECTOR_POLL_CONNECT;
+=======
+	intel_connector->polled = DRM_CONNECTOR_POLL_CONNECT;
+>>>>>>> refs/remotes/origin/master
 
 	drm_connector_init(dev, connector, &intel_tv_connector_funcs,
 			   DRM_MODE_CONNECTOR_SVIDEO);
@@ -1822,10 +2118,25 @@ intel_tv_init(struct drm_device *dev)
 	drm_encoder_init(dev, &intel_encoder->base, &intel_tv_enc_funcs,
 			 DRM_MODE_ENCODER_TVDAC);
 
+<<<<<<< HEAD
 	intel_connector_attach_encoder(intel_connector, intel_encoder);
 	intel_encoder->type = INTEL_OUTPUT_TVOUT;
 	intel_encoder->crtc_mask = (1 << 0) | (1 << 1);
 	intel_encoder->clone_mask = (1 << INTEL_TV_CLONE_BIT);
+=======
+	intel_encoder->compute_config = intel_tv_compute_config;
+	intel_encoder->get_config = intel_tv_get_config;
+	intel_encoder->mode_set = intel_tv_mode_set;
+	intel_encoder->enable = intel_enable_tv;
+	intel_encoder->disable = intel_disable_tv;
+	intel_encoder->get_hw_state = intel_tv_get_hw_state;
+	intel_connector->get_hw_state = intel_connector_get_hw_state;
+
+	intel_connector_attach_encoder(intel_connector, intel_encoder);
+	intel_encoder->type = INTEL_OUTPUT_TVOUT;
+	intel_encoder->crtc_mask = (1 << 0) | (1 << 1);
+	intel_encoder->cloneable = false;
+>>>>>>> refs/remotes/origin/master
 	intel_encoder->base.possible_crtcs = ((1 << 0) | (1 << 1));
 	intel_encoder->base.possible_clones = (1 << INTEL_OUTPUT_TVOUT);
 	intel_tv->type = DRM_MODE_CONNECTOR_Unknown;
@@ -1838,7 +2149,10 @@ intel_tv_init(struct drm_device *dev)
 
 	intel_tv->tv_format = tv_modes[initial_mode].name;
 
+<<<<<<< HEAD
 	drm_encoder_helper_add(&intel_encoder->base, &intel_tv_helper_funcs);
+=======
+>>>>>>> refs/remotes/origin/master
 	drm_connector_helper_add(connector, &intel_tv_connector_helper_funcs);
 	connector->interlace_allowed = false;
 	connector->doublescan_allowed = false;
@@ -1850,6 +2164,7 @@ intel_tv_init(struct drm_device *dev)
 				      ARRAY_SIZE(tv_modes),
 				      tv_format_names);
 
+<<<<<<< HEAD
 	drm_connector_attach_property(connector, dev->mode_config.tv_mode_property,
 				   initial_mode);
 	drm_connector_attach_property(connector,
@@ -1862,6 +2177,20 @@ intel_tv_init(struct drm_device *dev)
 				   dev->mode_config.tv_right_margin_property,
 				   intel_tv->margin[TV_MARGIN_RIGHT]);
 	drm_connector_attach_property(connector,
+=======
+	drm_object_attach_property(&connector->base, dev->mode_config.tv_mode_property,
+				   initial_mode);
+	drm_object_attach_property(&connector->base,
+				   dev->mode_config.tv_left_margin_property,
+				   intel_tv->margin[TV_MARGIN_LEFT]);
+	drm_object_attach_property(&connector->base,
+				   dev->mode_config.tv_top_margin_property,
+				   intel_tv->margin[TV_MARGIN_TOP]);
+	drm_object_attach_property(&connector->base,
+				   dev->mode_config.tv_right_margin_property,
+				   intel_tv->margin[TV_MARGIN_RIGHT]);
+	drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 				   dev->mode_config.tv_bottom_margin_property,
 				   intel_tv->margin[TV_MARGIN_BOTTOM]);
 	drm_sysfs_connector_add(connector);

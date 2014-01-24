@@ -10,14 +10,19 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/irqdomain.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqdomain.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/threads.h>
 #include <linux/list.h>
 #include <linux/radix-tree.h>
 
 #include <asm/types.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/atomic.h>
 
@@ -31,11 +36,17 @@
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+
+
+>>>>>>> refs/remotes/origin/master
 extern atomic_t ppc_n_lost_interrupts;
 
 /* This number is used when no interrupt has been assigned */
 #define NO_IRQ			(0)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* This is a special irq number to return from get_irq() to tell that
  * no interrupt happened _and_ ignore it (don't count it as bad). Some
@@ -299,6 +310,8 @@ extern unsigned int irq_alloc_virt(struct irq_host *host,
  */
 extern void irq_free_virt(unsigned int virq, unsigned int count);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Total number of virq in the platform */
 #define NR_IRQS		CONFIG_NR_IRQS
 
@@ -306,7 +319,10 @@ extern void irq_free_virt(unsigned int virq, unsigned int count);
 #define NR_IRQS_LEGACY		NUM_ISA_INTERRUPTS
 
 extern irq_hw_number_t virq_to_hw(unsigned int virq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * irq_early_init - Init irq remapping subsystem
@@ -346,6 +362,7 @@ extern struct thread_info *softirq_ctx[NR_CPUS];
 
 extern void irq_ctx_init(void);
 extern void call_do_softirq(struct thread_info *tp);
+<<<<<<< HEAD
 extern int call_handle_irq(int irq, void *p1,
 			   struct thread_info *tp, void *func);
 extern void do_IRQ(struct pt_regs *regs);
@@ -355,5 +372,13 @@ extern void do_IRQ(struct pt_regs *regs);
 int irq_choose_cpu(const struct cpumask *mask);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void call_do_irq(struct pt_regs *regs, struct thread_info *tp);
+extern void do_IRQ(struct pt_regs *regs);
+extern void __do_irq(struct pt_regs *regs);
+
+int irq_choose_cpu(const struct cpumask *mask);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IRQ_H */
 #endif /* __KERNEL__ */

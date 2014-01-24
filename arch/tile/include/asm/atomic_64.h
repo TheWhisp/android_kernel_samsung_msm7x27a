@@ -12,10 +12,14 @@
  *   more details.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Do not include directly; use <asm/atomic.h>.
 =======
  * Do not include directly; use <linux/atomic.h>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Do not include directly; use <linux/atomic.h>.
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef _ASM_TILE_ATOMIC_64_H
@@ -24,9 +28,13 @@
 #ifndef __ASSEMBLY__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/barrier.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/barrier.h>
+>>>>>>> refs/remotes/origin/master
 #include <arch/spr_def.h>
 
 /* First, the 32-bit atomic ops that are "real" on our 64-bit platform. */
@@ -39,6 +47,7 @@
  * on any routine which updates memory and returns a value.
  */
 
+<<<<<<< HEAD
 static inline int atomic_cmpxchg(atomic_t *v, int o, int n)
 {
 	int val;
@@ -58,6 +67,8 @@ static inline int atomic_xchg(atomic_t *v, int n)
 	return val;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void atomic_add(int i, atomic_t *v)
 {
 	__insn_fetchadd4((void *)&v->counter, i);
@@ -73,16 +84,21 @@ static inline int atomic_add_return(int i, atomic_t *v)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
 =======
 static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
 	int guess, oldval = v->counter;
 	do {
 		if (oldval == u)
 			break;
 		guess = oldval;
+<<<<<<< HEAD
 		oldval = atomic_cmpxchg(v, guess, guess + a);
 	} while (guess != oldval);
 <<<<<<< HEAD
@@ -90,6 +106,11 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 =======
 	return oldval;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		oldval = cmpxchg(&v->counter, guess, guess + a);
+	} while (guess != oldval);
+	return oldval;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Now the true 64-bit operations. */
@@ -99,6 +120,7 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 #define atomic64_read(v)		((v)->counter)
 #define atomic64_set(v, i) ((v)->counter = (i))
 
+<<<<<<< HEAD
 static inline long atomic64_cmpxchg(atomic64_t *v, long o, long n)
 {
 	long val;
@@ -118,6 +140,8 @@ static inline long atomic64_xchg(atomic64_t *v, long n)
 	return val;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void atomic64_add(long i, atomic64_t *v)
 {
 	__insn_fetchadd((void *)&v->counter, i);
@@ -139,7 +163,11 @@ static inline long atomic64_add_unless(atomic64_t *v, long a, long u)
 		if (oldval == u)
 			break;
 		guess = oldval;
+<<<<<<< HEAD
 		oldval = atomic64_cmpxchg(v, guess, guess + a);
+=======
+		oldval = cmpxchg(&v->counter, guess, guess + a);
+>>>>>>> refs/remotes/origin/master
 	} while (guess != oldval);
 	return oldval != u;
 }

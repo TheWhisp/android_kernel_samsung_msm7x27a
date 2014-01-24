@@ -46,9 +46,13 @@
 #include <linux/completion.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <rdma/iw_cm.h>
 #include <rdma/ib_addr.h>
@@ -184,9 +188,22 @@ static void add_ref(struct iw_cm_id *cm_id)
 static void rem_ref(struct iw_cm_id *cm_id)
 {
 	struct iwcm_id_private *cm_id_priv;
+<<<<<<< HEAD
 	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
 	if (iwcm_deref_id(cm_id_priv) &&
 	    test_bit(IWCM_F_CALLBACK_DESTROY, &cm_id_priv->flags)) {
+=======
+	int cb_destroy;
+
+	cm_id_priv = container_of(cm_id, struct iwcm_id_private, id);
+
+	/*
+	 * Test bit before deref in case the cm_id gets freed on another
+	 * thread.
+	 */
+	cb_destroy = test_bit(IWCM_F_CALLBACK_DESTROY, &cm_id_priv->flags);
+	if (iwcm_deref_id(cm_id_priv) && cb_destroy) {
+>>>>>>> refs/remotes/origin/master
 		BUG_ON(!list_empty(&cm_id_priv->work_list));
 		free_cm_id(cm_id_priv);
 	}
@@ -628,6 +645,7 @@ static void cm_conn_req_handler(struct iwcm_id_private *listen_id_priv,
 	BUG_ON(iw_event->status);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * We could be destroying the listening id. If so, ignore this
 	 * upcall.
@@ -641,6 +659,8 @@ static void cm_conn_req_handler(struct iwcm_id_private *listen_id_priv,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cm_id = iw_create_cm_id(listen_id_priv->id.device,
 				listen_id_priv->id.cm_handler,
 				listen_id_priv->id.context);
@@ -656,7 +676,10 @@ static void cm_conn_req_handler(struct iwcm_id_private *listen_id_priv,
 	cm_id_priv->state = IW_CM_STATE_CONN_RECV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We could be destroying the listening id. If so, ignore this
 	 * upcall.
@@ -670,7 +693,10 @@ static void cm_conn_req_handler(struct iwcm_id_private *listen_id_priv,
 	}
 	spin_unlock_irqrestore(&listen_id_priv->lock, flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = alloc_work_entries(cm_id_priv, 3);
 	if (ret) {
 		iw_cm_reject(cm_id, NULL, 0);
@@ -898,6 +924,11 @@ static void cm_work_handler(struct work_struct *_work)
 			}
 			return;
 		}
+<<<<<<< HEAD
+=======
+		if (empty)
+			return;
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&cm_id_priv->lock, flags);
 	}
 	spin_unlock_irqrestore(&cm_id_priv->lock, flags);

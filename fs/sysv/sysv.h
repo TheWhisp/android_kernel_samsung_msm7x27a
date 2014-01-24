@@ -25,9 +25,12 @@ struct sysv_sb_info {
 	char	       s_truncate;	/* if 1: names > SYSV_NAMELEN chars are truncated */
 					/* if 0: they are disallowed (ENAMETOOLONG) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nlink_t        s_link_max;	/* max number of hard links to a file */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int   s_inodes_per_block;	/* number of inodes per block */
 	unsigned int   s_inodes_per_block_1;	/* inodes_per_block - 1 */
 	unsigned int   s_inodes_per_block_bits;	/* log2(inodes_per_block) */
@@ -62,6 +65,10 @@ struct sysv_sb_info {
 	u32            s_nzones;	/* same as s_sbd->s_fsize */
 	u16	       s_namelen;       /* max length of dir entry */
 	int	       s_forced_ro;
+<<<<<<< HEAD
+=======
+	struct mutex s_lock;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -121,7 +128,10 @@ static inline void dirty_sb(struct super_block *sb)
 	mark_buffer_dirty(sbi->s_bh1);
 	if (sbi->s_bh1 != sbi->s_bh2)
 		mark_buffer_dirty(sbi->s_bh2);
+<<<<<<< HEAD
 	sb->s_dirt = 1;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -129,10 +139,14 @@ static inline void dirty_sb(struct super_block *sb)
 extern struct sysv_inode *sysv_raw_inode(struct super_block *, unsigned,
 			struct buffer_head **);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct inode * sysv_new_inode(const struct inode *, mode_t);
 =======
 extern struct inode * sysv_new_inode(const struct inode *, umode_t);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct inode * sysv_new_inode(const struct inode *, umode_t);
+>>>>>>> refs/remotes/origin/master
 extern void sysv_free_inode(struct inode *);
 extern unsigned long sysv_count_free_inodes(struct super_block *);
 

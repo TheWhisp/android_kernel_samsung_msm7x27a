@@ -1,9 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __uClinux__
 #include "hardirq_no.h"
 #else
 #include "hardirq_mm.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __M68K_HARDIRQ_H
 #define __M68K_HARDIRQ_H
 
@@ -11,6 +14,7 @@
 #include <linux/cache.h>
 #include <asm/irq.h>
 
+<<<<<<< HEAD
 #define HARDIRQ_BITS	8
 
 /*
@@ -22,6 +26,8 @@
 # error HARDIRQ_BITS is too low!
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_MMU
 
 static inline void ack_bad_irq(unsigned int irq)
@@ -42,5 +48,8 @@ typedef struct {
 
 #endif /* !CONFIG_MMU */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

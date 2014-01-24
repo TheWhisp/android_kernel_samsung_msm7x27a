@@ -51,11 +51,32 @@
 #define MMCR1_PMCSEL_MSK	0xff
 
 /*
+<<<<<<< HEAD
  * Layout of constraint bits:
  * 6666555555555544444444443333333333222222222211111111110000000000
  * 3210987654321098765432109876543210987654321098765432109876543210
  *                                                 [  ><><><><><><>
  *                                                  NC P6P5P4P3P2P1
+=======
+ * Power7 event codes.
+ */
+#define EVENT(_name, _code) \
+	PME_##_name = _code,
+
+enum {
+#include "power7-events-list.h"
+};
+#undef EVENT
+
+/*
+ * Layout of constraint bits:
+ * 6666555555555544444444443333333333222222222211111111110000000000
+ * 3210987654321098765432109876543210987654321098765432109876543210
+ *                                              < ><  ><><><><><><>
+ *                                              L2  NC P6P5P4P3P2P1
+ *
+ * L2 - 16-18 - Required L2SEL value (select field)
+>>>>>>> refs/remotes/origin/master
  *
  * NC - number of counters
  *     15: NC error 0x8000
@@ -72,7 +93,11 @@
 static int power7_get_constraint(u64 event, unsigned long *maskp,
 				 unsigned long *valp)
 {
+<<<<<<< HEAD
 	int pmc, sh;
+=======
+	int pmc, sh, unit;
+>>>>>>> refs/remotes/origin/master
 	unsigned long mask = 0, value = 0;
 
 	pmc = (event >> PM_PMC_SH) & PM_PMC_MSK;
@@ -90,6 +115,18 @@ static int power7_get_constraint(u64 event, unsigned long *maskp,
 		mask  |= 0x8000;
 		value |= 0x1000;
 	}
+<<<<<<< HEAD
+=======
+
+	unit = (event >> PM_UNIT_SH) & PM_UNIT_MSK;
+	if (unit == 6) {
+		/* L2SEL must be identical across events */
+		int l2sel = (event >> PM_L2SEL_SH) & PM_L2SEL_MSK;
+		mask  |= 0x7 << 16;
+		value |= l2sel << 16;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	*maskp = mask;
 	*valp = value;
 	return 0;
@@ -296,6 +333,7 @@ static void power7_disable_pmc(unsigned int pmc, unsigned long mmcr[])
 }
 
 static int power7_generic_events[] = {
+<<<<<<< HEAD
 	[PERF_COUNT_HW_CPU_CYCLES] = 0x1e,
 	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND] = 0x100f8, /* GCT_NOSLOT_CYC */
 	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND] = 0x4000a,  /* CMPLU_STALL */
@@ -304,6 +342,16 @@ static int power7_generic_events[] = {
 	[PERF_COUNT_HW_CACHE_MISSES] = 0x400f0,		/* LD_MISS_L1	*/
 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = 0x10068,	/* BRU_FIN	*/
 	[PERF_COUNT_HW_BRANCH_MISSES] = 0x400f6,	/* BR_MPRED	*/
+=======
+	[PERF_COUNT_HW_CPU_CYCLES] =			PME_PM_CYC,
+	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND] =	PME_PM_GCT_NOSLOT_CYC,
+	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND] =	PME_PM_CMPLU_STALL,
+	[PERF_COUNT_HW_INSTRUCTIONS] =			PME_PM_INST_CMPL,
+	[PERF_COUNT_HW_CACHE_REFERENCES] =		PME_PM_LD_REF_L1,
+	[PERF_COUNT_HW_CACHE_MISSES] =			PME_PM_LD_MISS_L1,
+	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] =		PME_PM_BRU_FIN,
+	[PERF_COUNT_HW_BRANCH_MISSES] =			PME_PM_BR_MPRED,
+>>>>>>> refs/remotes/origin/master
 };
 
 #define C(x)	PERF_COUNT_HW_CACHE_##x
@@ -351,6 +399,63 @@ static int power7_cache_events[C(MAX)][C(OP_MAX)][C(RESULT_MAX)] = {
 	},
 };
 
+<<<<<<< HEAD
+=======
+
+GENERIC_EVENT_ATTR(cpu-cycles,			PM_CYC);
+GENERIC_EVENT_ATTR(stalled-cycles-frontend,	PM_GCT_NOSLOT_CYC);
+GENERIC_EVENT_ATTR(stalled-cycles-backend,	PM_CMPLU_STALL);
+GENERIC_EVENT_ATTR(instructions,		PM_INST_CMPL);
+GENERIC_EVENT_ATTR(cache-references,		PM_LD_REF_L1);
+GENERIC_EVENT_ATTR(cache-misses,		PM_LD_MISS_L1);
+GENERIC_EVENT_ATTR(branch-instructions,		PM_BRU_FIN);
+GENERIC_EVENT_ATTR(branch-misses,		PM_BR_MPRED);
+
+#define EVENT(_name, _code)     POWER_EVENT_ATTR(_name, _name);
+#include "power7-events-list.h"
+#undef EVENT
+
+#define EVENT(_name, _code)     POWER_EVENT_PTR(_name),
+
+static struct attribute *power7_events_attr[] = {
+	GENERIC_EVENT_PTR(PM_CYC),
+	GENERIC_EVENT_PTR(PM_GCT_NOSLOT_CYC),
+	GENERIC_EVENT_PTR(PM_CMPLU_STALL),
+	GENERIC_EVENT_PTR(PM_INST_CMPL),
+	GENERIC_EVENT_PTR(PM_LD_REF_L1),
+	GENERIC_EVENT_PTR(PM_LD_MISS_L1),
+	GENERIC_EVENT_PTR(PM_BRU_FIN),
+	GENERIC_EVENT_PTR(PM_BR_MPRED),
+
+	#include "power7-events-list.h"
+	#undef EVENT
+	NULL
+};
+
+static struct attribute_group power7_pmu_events_group = {
+	.name = "events",
+	.attrs = power7_events_attr,
+};
+
+PMU_FORMAT_ATTR(event, "config:0-19");
+
+static struct attribute *power7_pmu_format_attr[] = {
+	&format_attr_event.attr,
+	NULL,
+};
+
+struct attribute_group power7_pmu_format_group = {
+	.name = "format",
+	.attrs = power7_pmu_format_attr,
+};
+
+static const struct attribute_group *power7_pmu_attr_groups[] = {
+	&power7_pmu_format_group,
+	&power7_pmu_events_group,
+	NULL,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct power_pmu power7_pmu = {
 	.name			= "POWER7",
 	.n_counter		= 6,
@@ -362,6 +467,10 @@ static struct power_pmu power7_pmu = {
 	.get_alternatives	= power7_get_alternatives,
 	.disable_pmc		= power7_disable_pmc,
 	.flags			= PPMU_ALT_SIPR,
+<<<<<<< HEAD
+=======
+	.attr_groups		= power7_pmu_attr_groups,
+>>>>>>> refs/remotes/origin/master
 	.n_generic		= ARRAY_SIZE(power7_generic_events),
 	.generic_events		= power7_generic_events,
 	.cache_events		= &power7_cache_events,
@@ -373,6 +482,12 @@ static int __init init_power7_pmu(void)
 	    strcmp(cur_cpu_spec->oprofile_cpu_type, "ppc64/power7"))
 		return -ENODEV;
 
+<<<<<<< HEAD
+=======
+	if (pvr_version_is(PVR_POWER7p))
+		power7_pmu.flags |= PPMU_SIAR_VALID;
+
+>>>>>>> refs/remotes/origin/master
 	return register_power_pmu(&power7_pmu);
 }
 

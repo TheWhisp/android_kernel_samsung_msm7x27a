@@ -14,14 +14,19 @@
 #include <linux/module.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/delay.h>
 #include <linux/spinlock.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/mfd/mcp.h>
 
@@ -40,12 +45,18 @@ struct mcp_sa11x0 {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm.h>
 #include <linux/mfd/mcp.h>
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
+<<<<<<< HEAD
 #include <mach/mcp.h>
+=======
+#include <linux/platform_data/mfd-mcp-sa11x0.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_NAME "sa11x0-mcp"
 
@@ -64,12 +75,16 @@ struct mcp_sa11x0 {
 #define MCSR(m)		((m)->base0 + 0x18)
 #define MCCR1(m)	((m)->base1 + 0x00)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define priv(mcp)	((struct mcp_sa11x0 *)mcp_priv(mcp))
 
 static void
 mcp_sa11x0_set_telecom_divisor(struct mcp *mcp, unsigned int divisor)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int mccr0;
 
@@ -79,6 +94,8 @@ mcp_sa11x0_set_telecom_divisor(struct mcp *mcp, unsigned int divisor)
 	mccr0 |= divisor << 8;
 	Ser4MCCR0 = mccr0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mcp_sa11x0 *m = priv(mcp);
 
 	divisor /= 32;
@@ -86,12 +103,16 @@ mcp_sa11x0_set_telecom_divisor(struct mcp *mcp, unsigned int divisor)
 	m->mccr0 &= ~0x00007f00;
 	m->mccr0 |= divisor << 8;
 	writel_relaxed(m->mccr0, MCCR0(m));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 mcp_sa11x0_set_audio_divisor(struct mcp *mcp, unsigned int divisor)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int mccr0;
 
@@ -101,6 +122,8 @@ mcp_sa11x0_set_audio_divisor(struct mcp *mcp, unsigned int divisor)
 	mccr0 |= divisor;
 	Ser4MCCR0 = mccr0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mcp_sa11x0 *m = priv(mcp);
 
 	divisor /= 32;
@@ -108,7 +131,10 @@ mcp_sa11x0_set_audio_divisor(struct mcp *mcp, unsigned int divisor)
 	m->mccr0 &= ~0x0000007f;
 	m->mccr0 |= divisor;
 	writel_relaxed(m->mccr0, MCCR0(m));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -121,6 +147,7 @@ static void
 mcp_sa11x0_write(struct mcp *mcp, unsigned int reg, unsigned int val)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = -ETIME;
 	int i;
 
@@ -130,6 +157,8 @@ mcp_sa11x0_write(struct mcp *mcp, unsigned int reg, unsigned int val)
 		udelay(mcp->rw_timeout);
 		if (Ser4MCSR & MCSR_CWC) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mcp_sa11x0 *m = priv(mcp);
 	int ret = -ETIME;
 	int i;
@@ -139,7 +168,10 @@ mcp_sa11x0_write(struct mcp *mcp, unsigned int reg, unsigned int val)
 	for (i = 0; i < 2; i++) {
 		udelay(mcp->rw_timeout);
 		if (readl_relaxed(MCSR(m)) & MCSR_CWC) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ret = 0;
 			break;
 		}
@@ -159,6 +191,7 @@ static unsigned int
 mcp_sa11x0_read(struct mcp *mcp, unsigned int reg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = -ETIME;
 	int i;
 
@@ -169,6 +202,8 @@ mcp_sa11x0_read(struct mcp *mcp, unsigned int reg)
 		if (Ser4MCSR & MCSR_CRC) {
 			ret = Ser4MCDR2 & 0xffff;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mcp_sa11x0 *m = priv(mcp);
 	int ret = -ETIME;
 	int i;
@@ -179,7 +214,10 @@ mcp_sa11x0_read(struct mcp *mcp, unsigned int reg)
 		udelay(mcp->rw_timeout);
 		if (readl_relaxed(MCSR(m)) & MCSR_CRC) {
 			ret = readl_relaxed(MCDR2(m)) & 0xffff;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -193,27 +231,39 @@ mcp_sa11x0_read(struct mcp *mcp, unsigned int reg)
 static void mcp_sa11x0_enable(struct mcp *mcp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Ser4MCSR = -1;
 	Ser4MCCR0 |= MCCR0_MCE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mcp_sa11x0 *m = priv(mcp);
 
 	writel(-1, MCSR(m));
 	m->mccr0 |= MCCR0_MCE;
 	writel_relaxed(m->mccr0, MCCR0(m));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void mcp_sa11x0_disable(struct mcp *mcp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Ser4MCCR0 &= ~MCCR0_MCE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mcp_sa11x0 *m = priv(mcp);
 
 	m->mccr0 &= ~MCCR0_MCE;
 	writel_relaxed(m->mccr0, MCCR0(m));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -229,6 +279,7 @@ static struct mcp_ops mcp_sa11x0 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int mcp_sa11x0_probe(struct platform_device *pdev)
 {
 	struct mcp_plat_data *data = pdev->dev.platform_data;
@@ -239,12 +290,20 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 	struct resource *mem0, *mem1;
 	struct mcp_sa11x0 *m;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int mcp_sa11x0_probe(struct platform_device *dev)
+{
+	struct mcp_plat_data *data = dev_get_platdata(&dev->dev);
+	struct resource *mem0, *mem1;
+	struct mcp_sa11x0 *m;
+>>>>>>> refs/remotes/origin/master
 	struct mcp *mcp;
 	int ret;
 
 	if (!data)
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!request_mem_region(0x80060000, 0x60, "sa11x0-mcp"))
 		return -EBUSY;
@@ -254,6 +313,8 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 		ret = -ENOMEM;
 		goto release;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mem0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
 	mem1 = platform_get_resource(dev, IORESOURCE_MEM, 1);
 	if (!mem0 || !mem1)
@@ -275,12 +336,16 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 	if (!mcp) {
 		ret = -ENOMEM;
 		goto err_alloc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mcp->owner		= THIS_MODULE;
 	mcp->ops		= &mcp_sa11x0;
 	mcp->sclk_rate		= data->sclk_rate;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mcp->dma_audio_rd	= DMA_Ser4MCP0Rd;
 	mcp->dma_audio_wr	= DMA_Ser4MCP0Wr;
@@ -303,6 +368,8 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 	PSDR &= ~(PPC_TXD4 | PPC_SCLK | PPC_SFRM);
 	PPSR &= ~(PPC_TXD4 | PPC_SCLK | PPC_SFRM);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	m = priv(mcp);
 	m->mccr0 = data->mccr0 | 0x7f7f;
@@ -316,12 +383,16 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 	}
 
 	platform_set_drvdata(dev, mcp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialise device.  Note that we initially
 	 * set the sampling rate to minimum.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	Ser4MCSR = -1;
 	Ser4MCCR1 = data->mccr1;
@@ -331,6 +402,11 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 	writel_relaxed(m->mccr1, MCCR1(m));
 	writel_relaxed(m->mccr0, MCCR0(m));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel_relaxed(-1, MCSR(m));
+	writel_relaxed(m->mccr1, MCCR1(m));
+	writel_relaxed(m->mccr0, MCCR0(m));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Calculate the read/write timeout (us) from the bit clock
@@ -340,6 +416,7 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 	mcp->rw_timeout = (64 * 3 * 1000000 + mcp->sclk_rate - 1) /
 			  mcp->sclk_rate;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = mcp_host_register(mcp);
 	if (ret == 0)
@@ -351,12 +428,17 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
 
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = mcp_host_add(mcp, data->codec_pdata);
 	if (ret == 0)
 		return 0;
 
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
  err_ioremap:
 	iounmap(m->base1);
 	iounmap(m->base0);
@@ -366,7 +448,10 @@ static int mcp_sa11x0_probe(struct platform_device *dev)
  err_mem1:
 	release_mem_region(mem0->start, resource_size(mem0));
  err_mem0:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -374,11 +459,14 @@ static int mcp_sa11x0_remove(struct platform_device *dev)
 {
 	struct mcp *mcp = platform_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	platform_set_drvdata(dev, NULL);
 	mcp_host_unregister(mcp);
 	release_mem_region(0x80060000, 0x60);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mcp_sa11x0 *m = priv(mcp);
 	struct resource *mem0, *mem1;
 
@@ -389,18 +477,25 @@ static int mcp_sa11x0_remove(struct platform_device *dev)
 	mem0 = platform_get_resource(dev, IORESOURCE_MEM, 0);
 	mem1 = platform_get_resource(dev, IORESOURCE_MEM, 1);
 
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	mcp_host_del(mcp);
 	iounmap(m->base1);
 	iounmap(m->base0);
 	mcp_host_free(mcp);
 	release_mem_region(mem1->start, resource_size(mem1));
 	release_mem_region(mem0->start, resource_size(mem0));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int mcp_sa11x0_suspend(struct platform_device *dev, pm_message_t state)
 {
@@ -410,6 +505,8 @@ static int mcp_sa11x0_suspend(struct platform_device *dev, pm_message_t state)
 	priv(mcp)->mccr1 = Ser4MCCR1;
 	Ser4MCCR0 &= ~MCCR0_MCE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM_SLEEP
 static int mcp_sa11x0_suspend(struct device *dev)
 {
@@ -419,11 +516,15 @@ static int mcp_sa11x0_suspend(struct device *dev)
 		dev_warn(dev, "device left active (missing disable call?)\n");
 
 	writel(m->mccr0 & ~MCCR0_MCE, MCCR0(m));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int mcp_sa11x0_resume(struct platform_device *dev)
 {
@@ -440,6 +541,8 @@ static int mcp_sa11x0_resume(struct platform_device *dev)
  */
 MODULE_ALIAS("platform:sa11x0-mcp");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int mcp_sa11x0_resume(struct device *dev)
 {
 	struct mcp_sa11x0 *m = priv(dev_get_drvdata(dev));
@@ -461,28 +564,38 @@ static const struct dev_pm_ops mcp_sa11x0_pm_ops = {
 	.restore_noirq = mcp_sa11x0_resume,
 #endif
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_driver mcp_sa11x0_driver = {
 	.probe		= mcp_sa11x0_probe,
 	.remove		= mcp_sa11x0_remove,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.suspend	= mcp_sa11x0_suspend,
 	.resume		= mcp_sa11x0_resume,
 	.driver		= {
 		.name	= "sa11x0-mcp",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRIVER_NAME,
 		.owner	= THIS_MODULE,
 		.pm	= &mcp_sa11x0_pm_ops,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 /*
  * This needs re-working
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init mcp_sa11x0_init(void)
 {
@@ -502,6 +615,11 @@ module_platform_driver(mcp_sa11x0_driver);
 
 MODULE_ALIAS("platform:" DRIVER_NAME);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(mcp_sa11x0_driver);
+
+MODULE_ALIAS("platform:" DRIVER_NAME);
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
 MODULE_DESCRIPTION("SA11x0 multimedia communications port driver");
 MODULE_LICENSE("GPL");

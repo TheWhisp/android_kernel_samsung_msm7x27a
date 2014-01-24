@@ -23,10 +23,14 @@
  * not agree with these terms and conditions, do not use the software.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2003 Agere Systems Inc.
 =======
  * Copyright © 2003 Agere Systems Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -48,10 +52,14 @@
  * Disclaimer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
 =======
  * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -143,4 +151,8 @@ void wl_wds_netdev_deregister( struct wl_private *lp );
 #define WL_WDS_NETDEV_DEREGISTER( ARG )
 
 #endif  /* USE_WDS */
+<<<<<<< HEAD
 #endif  // __WL_MAIN_H__
+=======
+#endif  /* __WL_MAIN_H__ */
+>>>>>>> refs/remotes/origin/master

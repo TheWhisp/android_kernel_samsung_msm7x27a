@@ -105,7 +105,11 @@ static void __init smp_dump_qct(void)
 	}
 }
 
+<<<<<<< HEAD
 void __cpuinit numaq_tsc_disable(void)
+=======
+void numaq_tsc_disable(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!found_numaq)
 		return;
@@ -406,6 +410,7 @@ static inline int numaq_check_phys_apicid_present(int phys_apicid)
  * We use physical apicids here, not logical, so just return the default
  * physical broadcast to stop people from breaking us
  */
+<<<<<<< HEAD
 static unsigned int numaq_cpu_mask_to_apicid(const struct cpumask *cpumask)
 {
 	return 0x0F;
@@ -416,6 +421,15 @@ numaq_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
 			     const struct cpumask *andmask)
 {
 	return 0x0F;
+=======
+static int
+numaq_cpu_mask_to_apicid_and(const struct cpumask *cpumask,
+			     const struct cpumask *andmask,
+			     unsigned int *apicid)
+{
+	*apicid = 0x0F;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* No NUMA-Q box has a HT CPU, but it can't hurt to use the default code. */
@@ -441,6 +455,7 @@ static int probe_numaq(void)
 	return found_numaq;
 }
 
+<<<<<<< HEAD
 static void numaq_vector_allocation_domain(int cpu, struct cpumask *retmask)
 {
 	/* Careful. Some cpus do not strictly honor the set of cpus
@@ -455,6 +470,8 @@ static void numaq_vector_allocation_domain(int cpu, struct cpumask *retmask)
 	cpumask_bits(retmask)[0] = APIC_ALL_CPUS;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void numaq_setup_portio_remap(void)
 {
 	int num_quads = num_online_nodes();
@@ -479,9 +496,13 @@ static struct apic __refdata apic_numaq = {
 	.probe				= probe_numaq,
 	.acpi_madt_oem_check		= NULL,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.apic_id_valid			= default_apic_id_valid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.apic_id_valid			= default_apic_id_valid,
+>>>>>>> refs/remotes/origin/master
 	.apic_id_registered		= numaq_apic_id_registered,
 
 	.irq_delivery_mode		= dest_LowestPrio,
@@ -494,7 +515,11 @@ static struct apic __refdata apic_numaq = {
 	.check_apicid_used		= numaq_check_apicid_used,
 	.check_apicid_present		= numaq_check_apicid_present,
 
+<<<<<<< HEAD
 	.vector_allocation_domain	= numaq_vector_allocation_domain,
+=======
+	.vector_allocation_domain	= flat_vector_allocation_domain,
+>>>>>>> refs/remotes/origin/master
 	.init_apic_ldr			= numaq_init_apic_ldr,
 
 	.ioapic_phys_id_map		= numaq_ioapic_phys_id_map,
@@ -512,7 +537,10 @@ static struct apic __refdata apic_numaq = {
 	.set_apic_id			= NULL,
 	.apic_id_mask			= 0x0F << 24,
 
+<<<<<<< HEAD
 	.cpu_mask_to_apicid		= numaq_cpu_mask_to_apicid,
+=======
+>>>>>>> refs/remotes/origin/master
 	.cpu_mask_to_apicid_and		= numaq_cpu_mask_to_apicid_and,
 
 	.send_IPI_mask			= numaq_send_IPI_mask,
@@ -533,6 +561,10 @@ static struct apic __refdata apic_numaq = {
 
 	.read				= native_apic_mem_read,
 	.write				= native_apic_mem_write,
+<<<<<<< HEAD
+=======
+	.eoi_write			= native_apic_mem_write,
+>>>>>>> refs/remotes/origin/master
 	.icr_read			= native_apic_icr_read,
 	.icr_write			= native_apic_icr_write,
 	.wait_icr_idle			= native_apic_wait_icr_idle,

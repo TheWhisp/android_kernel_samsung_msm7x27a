@@ -71,18 +71,46 @@ udelay:
 	add	r4,r4,r5
 	addi	r4,r4,-1
 	divw	r4,r4,r5	/* BUS ticks */
+<<<<<<< HEAD
 1:	mftbu	r5
 	mftb	r6
 	mftbu	r7
+=======
+#ifdef CONFIG_8xx
+1:	mftbu	r5
+	mftb	r6
+	mftbu	r7
+#else
+1:	mfspr	r5, SPRN_TBRU
+	mfspr	r6, SPRN_TBRL
+	mfspr	r7, SPRN_TBRU
+#endif
+>>>>>>> refs/remotes/origin/master
 	cmpw	0,r5,r7
 	bne	1b		/* Get [synced] base time */
 	addc	r9,r6,r4	/* Compute end time */
 	addze	r8,r5
+<<<<<<< HEAD
 2:	mftbu	r5
 	cmpw	0,r5,r8
 	blt	2b
 	bgt	3f
 	mftb	r6
+=======
+#ifdef CONFIG_8xx
+2:	mftbu	r5
+#else
+2:	mfspr	r5, SPRN_TBRU
+#endif
+	cmpw	0,r5,r8
+	blt	2b
+	bgt	3f
+#ifdef CONFIG_8xx
+	mftb	r6
+#else
+	mfspr	r6, SPRN_TBRL
+#endif
+>>>>>>> refs/remotes/origin/master
 	cmpw	0,r6,r9
 	blt	2b
 3:	blr

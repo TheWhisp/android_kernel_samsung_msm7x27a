@@ -185,9 +185,12 @@ int dccp_init_sock(struct sock *sk, const __u8 ctl_sock_initialized)
 	dp->dccps_role		= DCCP_ROLE_UNDEFINED;
 	dp->dccps_service	= DCCP_SERVICE_CODE_IS_ABSENT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dp->dccps_l_ack_ratio	= dp->dccps_r_ack_ratio = 1;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dp->dccps_tx_qlen	= sysctl_dccp_tx_qlen;
 
 	dccp_init_xmit_timers(sk);
@@ -340,7 +343,11 @@ unsigned int dccp_poll(struct file *file, struct socket *sock,
 			mask |= POLLIN | POLLRDNORM;
 
 		if (!(sk->sk_shutdown & SEND_SHUTDOWN)) {
+<<<<<<< HEAD
 			if (sk_stream_wspace(sk) >= sk_stream_min_wspace(sk)) {
+=======
+			if (sk_stream_is_writeable(sk)) {
+>>>>>>> refs/remotes/origin/master
 				mask |= POLLOUT | POLLWRNORM;
 			} else {  /* send SIGIO later */
 				set_bit(SOCK_ASYNC_NOSPACE,
@@ -351,7 +358,11 @@ unsigned int dccp_poll(struct file *file, struct socket *sock,
 				 * wspace test but before the flags are set,
 				 * IO signal will be lost.
 				 */
+<<<<<<< HEAD
 				if (sk_stream_wspace(sk) >= sk_stream_min_wspace(sk))
+=======
+				if (sk_stream_is_writeable(sk))
+>>>>>>> refs/remotes/origin/master
 					mask |= POLLOUT | POLLWRNORM;
 			}
 		}
@@ -852,7 +863,11 @@ int dccp_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		default:
 			dccp_pr_debug("packet_type=%s\n",
 				      dccp_packet_name(dh->dccph_type));
+<<<<<<< HEAD
 			sk_eat_skb(sk, skb, 0);
+=======
+			sk_eat_skb(sk, skb, false);
+>>>>>>> refs/remotes/origin/master
 		}
 verify_sock_status:
 		if (sock_flag(sk, SOCK_DONE)) {
@@ -909,7 +924,11 @@ verify_sock_status:
 			len = skb->len;
 	found_fin_ok:
 		if (!(flags & MSG_PEEK))
+<<<<<<< HEAD
 			sk_eat_skb(sk, skb, 0);
+=======
+			sk_eat_skb(sk, skb, false);
+>>>>>>> refs/remotes/origin/master
 		break;
 	} while (1);
 out:
@@ -1104,10 +1123,14 @@ MODULE_PARM_DESC(thash_entries, "Number of ehash buckets");
 
 #ifdef CONFIG_IP_DCCP_DEBUG
 <<<<<<< HEAD
+<<<<<<< HEAD
 int dccp_debug;
 =======
 bool dccp_debug;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool dccp_debug;
+>>>>>>> refs/remotes/origin/master
 module_param(dccp_debug, bool, 0644);
 MODULE_PARM_DESC(dccp_debug, "Enable debug messages");
 
@@ -1166,10 +1189,15 @@ static int __init dccp_init(void)
 		goto out_free_bind_bucket_cachep;
 	}
 
+<<<<<<< HEAD
 	for (i = 0; i <= dccp_hashinfo.ehash_mask; i++) {
 		INIT_HLIST_NULLS_HEAD(&dccp_hashinfo.ehash[i].chain, i);
 		INIT_HLIST_NULLS_HEAD(&dccp_hashinfo.ehash[i].twchain, i);
 	}
+=======
+	for (i = 0; i <= dccp_hashinfo.ehash_mask; i++)
+		INIT_HLIST_NULLS_HEAD(&dccp_hashinfo.ehash[i].chain, i);
+>>>>>>> refs/remotes/origin/master
 
 	if (inet_ehash_locks_alloc(&dccp_hashinfo))
 			goto out_free_dccp_ehash;

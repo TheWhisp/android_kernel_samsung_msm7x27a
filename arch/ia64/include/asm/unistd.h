@@ -1,12 +1,16 @@
+<<<<<<< HEAD
 #ifndef _ASM_IA64_UNISTD_H
 #define _ASM_IA64_UNISTD_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * IA-64 Linux syscall numbers and inline-functions.
  *
  * Copyright (C) 1998-2005 Hewlett-Packard Co
  *	David Mosberger-Tang <davidm@hpl.hp.com>
  */
+<<<<<<< HEAD
 
 #include <asm/break.h>
 
@@ -332,6 +336,16 @@
 
 
 #define NR_syscalls			311 /* length of syscall table */
+=======
+#ifndef _ASM_IA64_UNISTD_H
+#define _ASM_IA64_UNISTD_H
+
+#include <uapi/asm/unistd.h>
+
+
+
+#define NR_syscalls			312 /* length of syscall table */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The following defines stop scripts/checksyscalls.sh from complaining about
@@ -347,9 +361,12 @@
 #define __IGNORE_vfork		/* clone() */
 #define __IGNORE_umount2	/* umount() */
 
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if !defined(__ASSEMBLY__) && !defined(ASSEMBLER)
 
 #include <linux/types.h>
@@ -367,6 +384,7 @@ asmlinkage unsigned long sys_mmap2(
 				int prot, int flags,
 				int fd, long pgoff);
 struct pt_regs;
+<<<<<<< HEAD
 struct sigaction;
 asmlinkage long sys_ia64_pipe(void);
 asmlinkage long sys_rt_sigaction(int sig,
@@ -386,4 +404,9 @@ asmlinkage long sys_rt_sigaction(int sig,
 
 #endif /* !__ASSEMBLY__ */
 #endif /* __KERNEL__ */
+=======
+asmlinkage long sys_ia64_pipe(void);
+
+#endif /* !__ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_IA64_UNISTD_H */

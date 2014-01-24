@@ -30,12 +30,19 @@
 #include <linux/compat.h>
 #include <linux/ratelimit.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include "drmP.h"
 #include "drm_core.h"
+=======
+#include <linux/export.h>
+
+#include <drm/drmP.h>
+#include <drm/drm_core.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DRM_IOCTL_VERSION32		DRM_IOWR(0x00, drm_version32_t)
 #define DRM_IOCTL_GET_UNIQUE32		DRM_IOWR(0x01, drm_unique32_t)
@@ -319,11 +326,16 @@ static int compat_drm_getclient(struct file *file, unsigned int cmd,
 		return err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (__get_user(c32.auth, &client->auth)
 =======
 	if (__get_user(c32.idx, &client->idx)
 	    || __get_user(c32.auth, &client->auth)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (__get_user(c32.idx, &client->idx)
+	    || __get_user(c32.auth, &client->auth)
+>>>>>>> refs/remotes/origin/master
 	    || __get_user(c32.pid, &client->pid)
 	    || __get_user(c32.uid, &client->uid)
 	    || __get_user(c32.magic, &client->magic)

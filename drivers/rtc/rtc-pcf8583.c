@@ -17,6 +17,10 @@
 #include <linux/slab.h>
 #include <linux/rtc.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/bcd.h>
 
@@ -185,10 +189,18 @@ static int pcf8583_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	if (ctrl & (CTRL_STOP | CTRL_HOLD)) {
 		unsigned char new_ctrl = ctrl & ~(CTRL_STOP | CTRL_HOLD);
 
+<<<<<<< HEAD
 		printk(KERN_WARNING "RTC: resetting control %02x -> %02x\n",
 		       ctrl, new_ctrl);
 
 		if ((err = pcf8583_set_ctrl(client, &new_ctrl)) < 0)
+=======
+		dev_warn(dev, "resetting control %02x -> %02x\n",
+			ctrl, new_ctrl);
+
+		err = pcf8583_set_ctrl(client, &new_ctrl);
+		if (err < 0)
+>>>>>>> refs/remotes/origin/master
 			return err;
 	}
 
@@ -268,17 +280,26 @@ static int pcf8583_probe(struct i2c_client *client,
 				const struct i2c_device_id *id)
 {
 	struct pcf8583 *pcf8583;
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pcf8583 = kzalloc(sizeof(struct pcf8583), GFP_KERNEL);
+=======
+	pcf8583 = devm_kzalloc(&client->dev, sizeof(struct pcf8583),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!pcf8583)
 		return -ENOMEM;
 
 	i2c_set_clientdata(client, pcf8583);
 
+<<<<<<< HEAD
 	pcf8583->rtc = rtc_device_register(pcf8583_driver.driver.name,
 			&client->dev, &pcf8583_rtc_ops, THIS_MODULE);
 
@@ -302,6 +323,13 @@ static int __devexit pcf8583_remove(struct i2c_client *client)
 		rtc_device_unregister(pcf8583->rtc);
 	kfree(pcf8583);
 	return 0;
+=======
+	pcf8583->rtc = devm_rtc_device_register(&client->dev,
+				pcf8583_driver.driver.name,
+				&pcf8583_rtc_ops, THIS_MODULE);
+
+	return PTR_ERR_OR_ZERO(pcf8583->rtc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct i2c_device_id pcf8583_id[] = {
@@ -316,6 +344,7 @@ static struct i2c_driver pcf8583_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= pcf8583_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pcf8583_remove),
 	.id_table	= pcf8583_id,
 };
@@ -336,6 +365,12 @@ module_exit(pcf8583_exit);
 =======
 module_i2c_driver(pcf8583_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.id_table	= pcf8583_id,
+};
+
+module_i2c_driver(pcf8583_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Russell King");
 MODULE_DESCRIPTION("PCF8583 I2C RTC driver");

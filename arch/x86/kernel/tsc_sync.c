@@ -16,7 +16,10 @@
  */
 #include <linux/spinlock.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/smp.h>
 #include <linux/nmi.h>
 #include <asm/tsc.h>
@@ -25,28 +28,45 @@
  * Entry/exit counters that make sure that both CPUs
  * run the measurement code at once:
  */
+<<<<<<< HEAD
 static __cpuinitdata atomic_t start_count;
 static __cpuinitdata atomic_t stop_count;
+=======
+static atomic_t start_count;
+static atomic_t stop_count;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We use a raw spinlock in this exceptional case, because
  * we want to have the fastest, inlined, non-debug version
  * of a critical section, to be able to prove TSC time-warps:
  */
+<<<<<<< HEAD
 static __cpuinitdata arch_spinlock_t sync_lock = __ARCH_SPIN_LOCK_UNLOCKED;
 
 static __cpuinitdata cycles_t last_tsc;
 static __cpuinitdata cycles_t max_warp;
 static __cpuinitdata int nr_warps;
+=======
+static arch_spinlock_t sync_lock = __ARCH_SPIN_LOCK_UNLOCKED;
+
+static cycles_t last_tsc;
+static cycles_t max_warp;
+static int nr_warps;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * TSC-warp measurement loop running on both CPUs:
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __cpuinit void check_tsc_warp(void)
 =======
 static __cpuinit void check_tsc_warp(unsigned int timeout)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void check_tsc_warp(unsigned int timeout)
+>>>>>>> refs/remotes/origin/master
 {
 	cycles_t start, now, prev, end;
 	int i;
@@ -56,6 +76,7 @@ static __cpuinit void check_tsc_warp(unsigned int timeout)
 	rdtsc_barrier();
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * The measurement runs for 20 msecs:
 	 */
 	end = start + tsc_khz * 20ULL;
@@ -64,6 +85,11 @@ static __cpuinit void check_tsc_warp(unsigned int timeout)
 	 */
 	end = start + (cycles_t) tsc_khz * timeout;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * The measurement runs for 'timeout' msecs:
+	 */
+	end = start + (cycles_t) tsc_khz * timeout;
+>>>>>>> refs/remotes/origin/master
 	now = start;
 
 	for (i = 0; ; i++) {
@@ -110,7 +136,10 @@ static __cpuinit void check_tsc_warp(unsigned int timeout)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * If the target CPU coming online doesn't have any of its core-siblings
  * online, a timeout of 20msec will be used for the TSC-warp measurement
  * loop. Otherwise a smaller timeout of 2msec will be used, as we have some
@@ -130,11 +159,18 @@ static inline unsigned int loop_timeout(int cpu)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
  * Source CPU calls into this - it waits for the freshly booted
  * target CPU to arrive and then starts the measurement:
  */
 void __cpuinit check_tsc_sync_source(int cpu)
+=======
+ * Source CPU calls into this - it waits for the freshly booted
+ * target CPU to arrive and then starts the measurement:
+ */
+void check_tsc_sync_source(int cpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpus = 2;
 
@@ -146,10 +182,14 @@ void __cpuinit check_tsc_sync_source(int cpu)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE)) {
 =======
 	if (tsc_clocksource_reliable) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tsc_clocksource_reliable) {
+>>>>>>> refs/remotes/origin/master
 		if (cpu == (nr_cpu_ids-1) || system_state != SYSTEM_BOOTING)
 			pr_info(
 			"Skipped synchronization checks as TSC is reliable.\n");
@@ -172,10 +212,14 @@ void __cpuinit check_tsc_sync_source(int cpu)
 	atomic_inc(&start_count);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	check_tsc_warp();
 =======
 	check_tsc_warp(loop_timeout(cpu));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	check_tsc_warp(loop_timeout(cpu));
+>>>>>>> refs/remotes/origin/master
 
 	while (atomic_read(&stop_count) != cpus-1)
 		cpu_relax();
@@ -208,6 +252,7 @@ void __cpuinit check_tsc_sync_source(int cpu)
 /*
  * Freshly booted CPUs call into this:
  */
+<<<<<<< HEAD
 void __cpuinit check_tsc_sync_target(void)
 {
 	int cpus = 2;
@@ -217,6 +262,13 @@ void __cpuinit check_tsc_sync_target(void)
 =======
 	if (unsynchronized_tsc() || tsc_clocksource_reliable)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void check_tsc_sync_target(void)
+{
+	int cpus = 2;
+
+	if (unsynchronized_tsc() || tsc_clocksource_reliable)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	/*
@@ -228,10 +280,14 @@ void __cpuinit check_tsc_sync_target(void)
 		cpu_relax();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	check_tsc_warp();
 =======
 	check_tsc_warp(loop_timeout(smp_processor_id()));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	check_tsc_warp(loop_timeout(smp_processor_id()));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Ok, we are done:

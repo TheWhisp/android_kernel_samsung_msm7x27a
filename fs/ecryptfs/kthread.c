@@ -27,7 +27,16 @@
 #include <linux/mount.h>
 #include "ecryptfs_kernel.h"
 
+<<<<<<< HEAD
 struct kmem_cache *ecryptfs_open_req_cache;
+=======
+struct ecryptfs_open_req {
+	struct file **lower_file;
+	struct path path;
+	struct completion done;
+	struct list_head kthread_ctl_list;
+};
+>>>>>>> refs/remotes/origin/master
 
 static struct ecryptfs_kthread_ctl {
 #define ECRYPTFS_KTHREAD_ZOMBIE 0x00000001
@@ -67,6 +76,7 @@ static int ecryptfs_threadfn(void *ignored)
 			req = list_first_entry(&ecryptfs_kthread_ctl.req_list,
 					       struct ecryptfs_open_req,
 					       kthread_ctl_list);
+<<<<<<< HEAD
 			mutex_lock(&req->mux);
 			list_del(&req->kthread_ctl_list);
 			if (!(req->flags & ECRYPTFS_REQ_ZOMBIE)) {
@@ -79,6 +89,12 @@ static int ecryptfs_threadfn(void *ignored)
 			}
 			wake_up(&req->wait);
 			mutex_unlock(&req->mux);
+=======
+			list_del(&req->kthread_ctl_list);
+			*req->lower_file = dentry_open(&req->path,
+				(O_RDWR | O_LARGEFILE), current_cred());
+			complete(&req->done);
+>>>>>>> refs/remotes/origin/master
 		}
 		mutex_unlock(&ecryptfs_kthread_ctl.mux);
 	}
@@ -105,6 +121,7 @@ int __init ecryptfs_init_kthread(void)
 
 void ecryptfs_destroy_kthread(void)
 {
+<<<<<<< HEAD
 	struct ecryptfs_open_req *req;
 
 	mutex_lock(&ecryptfs_kthread_ctl.mux);
@@ -115,6 +132,17 @@ void ecryptfs_destroy_kthread(void)
 		req->flags |= ECRYPTFS_REQ_ZOMBIE;
 		wake_up(&req->wait);
 		mutex_unlock(&req->mux);
+=======
+	struct ecryptfs_open_req *req, *tmp;
+
+	mutex_lock(&ecryptfs_kthread_ctl.mux);
+	ecryptfs_kthread_ctl.flags |= ECRYPTFS_KTHREAD_ZOMBIE;
+	list_for_each_entry_safe(req, tmp, &ecryptfs_kthread_ctl.req_list,
+				 kthread_ctl_list) {
+		list_del(&req->kthread_ctl_list);
+		*req->lower_file = ERR_PTR(-EIO);
+		complete(&req->done);
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&ecryptfs_kthread_ctl.mux);
 	kthread_stop(ecryptfs_kthread);
@@ -136,6 +164,7 @@ int ecryptfs_privileged_open(struct file **lower_file,
 			     struct vfsmount *lower_mnt,
 			     const struct cred *cred)
 {
+<<<<<<< HEAD
 	struct ecryptfs_open_req *req;
 	int flags = O_LARGEFILE;
 	int rc = 0;
@@ -147,12 +176,29 @@ int ecryptfs_privileged_open(struct file **lower_file,
 	mntget(lower_mnt);
 	flags |= IS_RDONLY(lower_dentry->d_inode) ? O_RDONLY : O_RDWR;
 	(*lower_file) = dentry_open(lower_dentry, lower_mnt, flags, cred);
+=======
+	struct ecryptfs_open_req req;
+	int flags = O_LARGEFILE;
+	int rc = 0;
+
+	init_completion(&req.done);
+	req.lower_file = lower_file;
+	req.path.dentry = lower_dentry;
+	req.path.mnt = lower_mnt;
+
+	/* Corresponding dput() and mntput() are done when the
+	 * lower file is fput() when all eCryptfs files for the inode are
+	 * released. */
+	flags |= IS_RDONLY(lower_dentry->d_inode) ? O_RDONLY : O_RDWR;
+	(*lower_file) = dentry_open(&req.path, flags, cred);
+>>>>>>> refs/remotes/origin/master
 	if (!IS_ERR(*lower_file))
 		goto out;
 	if ((flags & O_ACCMODE) == O_RDONLY) {
 		rc = PTR_ERR((*lower_file));
 		goto out;
 	}
+<<<<<<< HEAD
 	req = kmem_cache_alloc(ecryptfs_open_req_cache, GFP_KERNEL);
 	if (!req) {
 		rc = -ENOMEM;
@@ -164,6 +210,8 @@ int ecryptfs_privileged_open(struct file **lower_file,
 	req->lower_mnt = lower_mnt;
 	init_waitqueue_head(&req->wait);
 	req->flags = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&ecryptfs_kthread_ctl.mux);
 	if (ecryptfs_kthread_ctl.flags & ECRYPTFS_KTHREAD_ZOMBIE) {
 		rc = -EIO;
@@ -171,6 +219,7 @@ int ecryptfs_privileged_open(struct file **lower_file,
 		printk(KERN_ERR "%s: We are in the middle of shutting down; "
 		       "aborting privileged request to open lower file\n",
 			__func__);
+<<<<<<< HEAD
 		goto out_free;
 	}
 	list_add_tail(&req->kthread_ctl_list, &ecryptfs_kthread_ctl.req_list);
@@ -192,6 +241,16 @@ out_unlock:
 	mutex_unlock(&req->mux);
 out_free:
 	kmem_cache_free(ecryptfs_open_req_cache, req);
+=======
+		goto out;
+	}
+	list_add_tail(&req.kthread_ctl_list, &ecryptfs_kthread_ctl.req_list);
+	mutex_unlock(&ecryptfs_kthread_ctl.mux);
+	wake_up(&ecryptfs_kthread_ctl.wait);
+	wait_for_completion(&req.done);
+	if (IS_ERR(*lower_file))
+		rc = PTR_ERR(*lower_file);
+>>>>>>> refs/remotes/origin/master
 out:
 	return rc;
 }

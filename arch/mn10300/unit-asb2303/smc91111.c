@@ -15,6 +15,10 @@
 #include <linux/platform_device.h>
 
 #include <asm/io.h>
+<<<<<<< HEAD
+=======
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/timex.h>
 #include <asm/processor.h>
 #include <asm/intctl-regs.h>

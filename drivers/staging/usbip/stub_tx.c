@@ -42,7 +42,10 @@ void stub_enqueue_ret_unlink(struct stub_device *sdev, __u32 seqnum,
 
 	unlink = kzalloc(sizeof(struct stub_unlink), GFP_ATOMIC);
 	if (!unlink) {
+<<<<<<< HEAD
 		dev_err(&sdev->interface->dev, "alloc stub_unlink\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		usbip_event_add(&sdev->ud, VDEV_EVENT_ERROR_MALLOC);
 		return;
 	}
@@ -98,6 +101,7 @@ void stub_complete(struct urb *urb)
 	/* link a urb to the queue of tx. */
 	spin_lock_irqsave(&sdev->priv_lock, flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (priv->unlinking) {
 		stub_enqueue_ret_unlink(sdev, priv->seqnum, urb->status);
@@ -106,13 +110,18 @@ void stub_complete(struct urb *urb)
 		list_move_tail(&priv->list, &sdev->priv_tx);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (priv->unlinking) {
 		stub_enqueue_ret_unlink(sdev, priv->seqnum, urb->status);
 		stub_free_priv_and_urb(priv);
 	} else {
 		list_move_tail(&priv->list, &sdev->priv_tx);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&sdev->priv_lock, flags);
 
 	/* wake up tx_thread */
@@ -123,16 +132,22 @@ static inline void setup_base_pdu(struct usbip_header_basic *base,
 				  __u32 command, __u32 seqnum)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	base->command = command;
 	base->seqnum  = seqnum;
 	base->devid   = 0;
 	base->ep      = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	base->command	= command;
 	base->seqnum	= seqnum;
 	base->devid	= 0;
 	base->ep	= 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	base->direction = 0;
 }
 
@@ -183,7 +198,11 @@ static int stub_send_ret_submit(struct stub_device *sdev)
 		int ret;
 		struct urb *urb = priv->urb;
 		struct usbip_header pdu_header;
+<<<<<<< HEAD
 		void *iso_buffer = NULL;
+=======
+		struct usbip_iso_packet_descriptor *iso_buffer = NULL;
+>>>>>>> refs/remotes/origin/master
 		struct kvec *iov = NULL;
 		int iovnum = 0;
 
@@ -209,7 +228,10 @@ static int stub_send_ret_submit(struct stub_device *sdev)
 		setup_ret_submit_pdu(&pdu_header, urb);
 		usbip_dbg_stub_tx("setup txdata seqnum: %d urb: %p\n",
 				  pdu_header.base.seqnum, urb);
+<<<<<<< HEAD
 		/*usbip_dump_header(pdu_header);*/
+=======
+>>>>>>> refs/remotes/origin/master
 		usbip_header_correct_endian(&pdu_header, 1);
 
 		iov[iovnum].iov_base = &pdu_header;
@@ -249,10 +271,14 @@ static int stub_send_ret_submit(struct stub_device *sdev)
 				dev_err(&sdev->interface->dev,
 					"actual length of urb %d does not "
 <<<<<<< HEAD
+<<<<<<< HEAD
 					"match iso packet sizes %lu\n",
 =======
 					"match iso packet sizes %zu\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					"match iso packet sizes %zu\n",
+>>>>>>> refs/remotes/origin/master
 					urb->actual_length,
 					txsize-sizeof(pdu_header));
 				kfree(iov);

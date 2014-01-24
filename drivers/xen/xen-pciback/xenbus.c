@@ -3,6 +3,12 @@
  *
  *   Author: Ryan Wilson <hap9@epoch.ncsc.mil>
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/list.h>
@@ -723,14 +729,22 @@ int __init xen_pcibk_xenbus_register(void)
 {
 	xen_pcibk_wq = create_workqueue("xen_pciback_workqueue");
 	if (!xen_pcibk_wq) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: create"
 			"xen_pciback_workqueue failed\n", __func__);
+=======
+		pr_err("%s: create xen_pciback_workqueue failed\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return -EFAULT;
 	}
 	xen_pcibk_backend = &xen_pcibk_vpci_backend;
 	if (passthrough)
 		xen_pcibk_backend = &xen_pcibk_passthrough_backend;
+<<<<<<< HEAD
 	pr_info(DRV_NAME ": backend is %s\n", xen_pcibk_backend->name);
+=======
+	pr_info("backend is %s\n", xen_pcibk_backend->name);
+>>>>>>> refs/remotes/origin/master
 	return xenbus_register_backend(&xen_pcibk_driver);
 }
 

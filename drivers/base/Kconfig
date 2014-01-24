@@ -2,7 +2,10 @@ menu "Generic Driver Options"
 
 config UEVENT_HELPER_PATH
 	string "path to uevent helper"
+<<<<<<< HEAD
 	depends on HOTPLUG
+=======
+>>>>>>> refs/remotes/origin/master
 	default ""
 	help
 	  Path to uevent helper program forked by the kernel for
@@ -17,16 +20,24 @@ config UEVENT_HELPER_PATH
 	  it is known to create out-of-memory situations during bootup.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  To disable user space helper program execution at early boot
 	  time specify an empty string here. This setting can be altered
 	  via /proc/sys/kernel/hotplug or via /sys/kernel/uevent_helper
 	  later at runtime.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config DEVTMPFS
 	bool "Maintain a devtmpfs filesystem to mount at /dev"
 	depends on HOTPLUG
+=======
+config DEVTMPFS
+	bool "Maintain a devtmpfs filesystem to mount at /dev"
+>>>>>>> refs/remotes/origin/master
 	help
 	  This creates a tmpfs/ramfs filesystem instance early at bootup.
 	  In this filesystem, the kernel driver core maintains device
@@ -60,7 +71,11 @@ config DEVTMPFS_MOUNT
 	  on the rootfs is completely empty.
 
 config STANDALONE
+<<<<<<< HEAD
 	bool "Select only drivers that don't need compile-time external firmware" if EXPERIMENTAL
+=======
+	bool "Select only drivers that don't need compile-time external firmware"
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  Select this option if you don't have magic firmware for drivers that
@@ -74,6 +89,7 @@ config PREVENT_FIRMWARE_BUILD
 	help
 	  Say yes to avoid building firmware. Firmware is usually shipped
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  with the driver, and only when updating the firmware a rebuild
 	  should be made.
 	  If unsure say Y here.
@@ -82,11 +98,17 @@ config PREVENT_FIRMWARE_BUILD
 	  rebuild be made.
 	  If unsure, say Y here.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  with the driver and only when updating the firmware should a
+	  rebuild be made.
+	  If unsure, say Y here.
+>>>>>>> refs/remotes/origin/master
 
 config FW_LOADER
 	tristate "Userspace firmware loading support" if EXPERT
 	default y
 	---help---
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  This option is provided for the case where no in-kernel-tree modules
 	  require userspace firmware loading support, but a module built outside
@@ -96,6 +118,11 @@ config FW_LOADER
 	  require userspace firmware loading support, but a module built
 	  out-of-tree does.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  This option is provided for the case where none of the in-tree modules
+	  require userspace firmware loading support, but a module built
+	  out-of-tree does.
+>>>>>>> refs/remotes/origin/master
 
 config FIRMWARE_IN_KERNEL
 	bool "Include in-kernel firmware blobs in kernel binary"
@@ -104,21 +131,28 @@ config FIRMWARE_IN_KERNEL
 	help
 	  The kernel source tree includes a number of firmware 'blobs'
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  which are used by various drivers. The recommended way to
 	  use these is to run "make firmware_install" and to copy the
 	  resulting binary files created in usr/lib/firmware directory
 	  of the kernel tree to the /lib/firmware on your system so
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  that are used by various drivers. The recommended way to
 	  use these is to run "make firmware_install", which, after
 	  converting ihex files to binary, copies all of the needed
 	  binary files in firmware/ to /lib/firmware/ on your system so
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  that they can be loaded by userspace helpers on request.
 
 	  Enabling this option will build each required firmware blob
 	  into the kernel directly, where request_firmware() will find
 	  them without having to call out to userspace. This may be
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  useful if your root file system requires a device which uses
 	  such firmware, and do not wish to use an initrd.
@@ -128,6 +162,8 @@ config FIRMWARE_IN_KERNEL
 	  firmware in the kernel source tree, to avoid a proliferation
 	  of 'Include firmware for xxx device' options.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  useful if your root file system requires a device that uses
 	  such firmware and do not wish to use an initrd.
 
@@ -135,7 +171,10 @@ config FIRMWARE_IN_KERNEL
 	  every driver that uses request_firmware() and ships its
 	  firmware in the kernel source tree, which avoids a
 	  proliferation of 'Include firmware for xxx device' options.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  Say 'N' and let firmware be loaded from userspace.
 
@@ -144,16 +183,22 @@ config EXTRA_FIRMWARE
 	depends on FW_LOADER
 	help
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  This option allows firmware to be built into the kernel, for the
 	  cases where the user either cannot or doesn't want to provide it from
 =======
 	  This option allows firmware to be built into the kernel for the case
 	  where the user either cannot or doesn't want to provide it from
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  This option allows firmware to be built into the kernel for the case
+	  where the user either cannot or doesn't want to provide it from
+>>>>>>> refs/remotes/origin/master
 	  userspace at runtime (for example, when the firmware in question is
 	  required for accessing the boot device, and the user doesn't want to
 	  use an initrd).
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  This option is a string, and takes the (space-separated) names of the
 	  firmware files -- the same names which appear in MODULE_FIRMWARE()
@@ -171,6 +216,8 @@ config EXTRA_FIRMWARE
 	  then it may be a violation of the GPL to distribute the resulting
 	  image -- since it combines both GPL and non-GPL work. You should
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  This option is a string and takes the (space-separated) names of the
 	  firmware files -- the same names that appear in MODULE_FIRMWARE()
 	  and request_firmware() in the source. These files should exist under
@@ -186,7 +233,10 @@ config EXTRA_FIRMWARE
 	  kernel image that are not available under the terms of the GPL,
 	  then it may be a violation of the GPL to distribute the resulting
 	  image since it combines both GPL and non-GPL work. You should
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  consult a lawyer of your own before distributing such an image.
 
 config EXTRA_FIRMWARE_DIR
@@ -197,6 +247,7 @@ config EXTRA_FIRMWARE_DIR
 	  This option controls the directory in which the kernel build system
 	  looks for the firmware files listed in the EXTRA_FIRMWARE option.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  The default is the firmware/ directory in the kernel source tree,
 	  but by changing this option you can point it elsewhere, such as
 	  the /lib/firmware/ directory or another separate directory
@@ -206,6 +257,22 @@ config EXTRA_FIRMWARE_DIR
 	  this option you can point it elsewhere, such as /lib/firmware/ or
 	  some other directory containing the firmware files.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  The default is firmware/ in the kernel source tree, but by changing
+	  this option you can point it elsewhere, such as /lib/firmware/ or
+	  some other directory containing the firmware files.
+
+config FW_LOADER_USER_HELPER
+	bool "Fallback user-helper invocation for firmware loading"
+	depends on FW_LOADER
+	default y
+	help
+	  This option enables / disables the invocation of user-helper
+	  (e.g. udev) for loading firmware files as a fallback after the
+	  direct file loading in kernel fails.  The user-mode helper is
+	  no longer required unless you have a special firmware file that
+	  resides in a non-standard path.
+>>>>>>> refs/remotes/origin/master
 
 config DEBUG_DRIVER
 	bool "Driver Core verbose debug messages"
@@ -235,7 +302,10 @@ config SYS_HYPERVISOR
 	default n
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config GENERIC_CPU_DEVICES
 	bool
 	default n
@@ -249,13 +319,17 @@ config DMA_SHARED_BUFFER
 	bool
 	default n
 	select ANON_INODES
+<<<<<<< HEAD
 	depends on EXPERIMENTAL
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option enables the framework for buffer-sharing between
 	  multiple drivers. A buffer is associated with a file using driver
 	  APIs extension; the file's descriptor can then be passed on to other
 	  driver.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config GENLOCK
 	bool "Enable a generic cross-process locking mechanism"
@@ -304,6 +378,11 @@ config CMA
 	bool "Contiguous Memory Allocator (EXPERIMENTAL)"
 	depends on HAVE_DMA_CONTIGUOUS && HAVE_MEMBLOCK && EXPERIMENTAL
 	select MIGRATION
+=======
+config DMA_CMA
+	bool "DMA Contiguous Memory Allocator"
+	depends on HAVE_DMA_CONTIGUOUS && CMA
+>>>>>>> refs/remotes/origin/master
 	help
 	  This enables the Contiguous Memory Allocator which allows drivers
 	  to allocate big physically-contiguous blocks of memory for use with
@@ -312,6 +391,7 @@ config CMA
 	  For more information see <include/linux/dma-contiguous.h>.
 	  If unsure, say "n".
 
+<<<<<<< HEAD
 if CMA
 
 config CMA_DEBUG
@@ -323,6 +403,9 @@ config CMA_DEBUG
 	  processing calls such as dma_alloc_from_contiguous().
 	  This option does not affect warning and error messages.
 
+=======
+if  DMA_CMA
+>>>>>>> refs/remotes/origin/master
 comment "Default contiguous memory area size:"
 
 config CMA_SIZE_MBYTES
@@ -343,7 +426,11 @@ config CMA_SIZE_PERCENTAGE
 
 choice
 	prompt "Selected region size"
+<<<<<<< HEAD
 	default CMA_SIZE_SEL_ABSOLUTE
+=======
+	default CMA_SIZE_SEL_MBYTES
+>>>>>>> refs/remotes/origin/master
 
 config CMA_SIZE_SEL_MBYTES
 	bool "Use mega bytes value only"
@@ -389,5 +476,8 @@ config CMA_AREAS
 
 endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu

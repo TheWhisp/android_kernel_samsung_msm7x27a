@@ -20,6 +20,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_OMAPFB_H__
 #define __LINUX_OMAPFB_H__
@@ -259,13 +260,31 @@ extern void omapfb_set_platform_data(struct omapfb_platform_data *data);
 extern void omapfb_set_ctrl_platform_data(void *pdata);
 extern void omapfb_reserve_sdram_memblock(void);
 =======
+=======
+#ifndef __LINUX_OMAPFB_H__
+#define __LINUX_OMAPFB_H__
+
+#include <uapi/linux/omapfb.h>
+
+
+struct omap_lcd_config {
+	char panel_name[16];
+	char ctrl_name[16];
+	s16  nreset_gpio;
+	u8   data_lines;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct omapfb_platform_data {
 	struct omap_lcd_config		lcd;
 };
 
 void __init omapfb_set_lcd_config(const struct omap_lcd_config *config);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __OMAPFB_H */

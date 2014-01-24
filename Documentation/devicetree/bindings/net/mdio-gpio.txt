@@ -8,9 +8,22 @@ gpios property as described in section VIII.1 in the following order:
 
 MDC, MDIO.
 
+<<<<<<< HEAD
 Example:
 
 mdio {
+=======
+Note: Each gpio-mdio bus should have an alias correctly numbered in "aliases"
+node.
+
+Example:
+
+aliases {
+	mdio-gpio0 = <&mdio0>;
+};
+
+mdio0: mdio {
+>>>>>>> refs/remotes/origin/master
 	compatible = "virtual,mdio-gpio";
 	#address-cells = <1>;
 	#size-cells = <0>;

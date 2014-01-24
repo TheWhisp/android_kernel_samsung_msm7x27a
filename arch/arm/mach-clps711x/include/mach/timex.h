@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  *  arch/arm/mach-clps711x/include/mach/timex.h
  *
@@ -20,4 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+=======
+/* Bogus value */
+>>>>>>> refs/remotes/origin/master
 #define CLOCK_TICK_RATE 512000

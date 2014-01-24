@@ -27,6 +27,10 @@
 
 #include <linux/list.h>
 #include <linux/hyperv.h>
+<<<<<<< HEAD
+=======
+#include <linux/rndis.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Fwd declaration */
 struct hv_netvsc_packet;
@@ -34,6 +38,10 @@ struct hv_netvsc_packet;
 /* Represent the xfer page packet which contains 1 or more netvsc packet */
 struct xferpage_packet {
 	struct list_head list_ent;
+<<<<<<< HEAD
+=======
+	u32 status;
+>>>>>>> refs/remotes/origin/master
 
 	/* # of netvsc packets this xfer packet contains */
 	u32 count;
@@ -46,6 +54,10 @@ struct xferpage_packet {
 struct hv_netvsc_packet {
 	/* Bookkeeping stuff */
 	struct list_head list_ent;
+<<<<<<< HEAD
+=======
+	u32 status;
+>>>>>>> refs/remotes/origin/master
 
 	struct hv_device *device;
 	bool is_data_pkt;
@@ -81,7 +93,11 @@ struct hv_netvsc_packet {
 };
 
 struct netvsc_device_info {
+<<<<<<< HEAD
 	unsigned char mac_adr[6];
+=======
+	unsigned char mac_adr[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 	bool link_state;	/* 0 - link up, 1 - link down */
 	int  ring_size;
 };
@@ -130,6 +146,10 @@ int rndis_filter_send(struct hv_device *dev,
 			struct hv_netvsc_packet *pkt);
 
 int rndis_filter_set_packet_filter(struct rndis_device *dev, u32 new_filter);
+<<<<<<< HEAD
+=======
+int rndis_filter_set_device_mac(struct hv_device *hdev, char *mac);
+>>>>>>> refs/remotes/origin/master
 
 
 #define NVSP_INVALID_PROTOCOL_VERSION	((u32)0xFFFFFFFF)
@@ -463,8 +483,11 @@ struct nvsp_message {
 
 #define NETVSC_RECEIVE_BUFFER_ID		0xcafe
 
+<<<<<<< HEAD
 #define NETVSC_RECEIVE_SG_COUNT			1
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Preallocated receive packets */
 #define NETVSC_RECEIVE_PACKETLIST_COUNT		256
 
@@ -477,6 +500,10 @@ struct netvsc_device {
 	u32 nvsp_version;
 
 	atomic_t num_outstanding_sends;
+<<<<<<< HEAD
+=======
+	wait_queue_head_t wait_drain;
+>>>>>>> refs/remotes/origin/master
 	bool start_remove;
 	bool destroy;
 	/*
@@ -506,6 +533,7 @@ struct netvsc_device {
 	void *extension;
 };
 
+<<<<<<< HEAD
 
 /*  Status codes */
 
@@ -795,6 +823,8 @@ struct netvsc_device {
 #define RNDIS_MINOR_VERSION			0x00000000
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* NdisInitialize message */
 struct rndis_initialize_request {
 	u32 req_id;

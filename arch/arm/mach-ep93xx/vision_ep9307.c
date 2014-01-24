@@ -23,18 +23,29 @@
 #include <linux/mtd/partitions.h>
 #include <linux/i2c.h>
 #include <linux/i2c-gpio.h>
+<<<<<<< HEAD
 #include <linux/i2c/pca953x.h>
+=======
+#include <linux/platform_data/pca953x.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/spi/spi.h>
 #include <linux/spi/flash.h>
 #include <linux/spi/mmc_spi.h>
 #include <linux/mmc/host.h>
 
 #include <mach/hardware.h>
+<<<<<<< HEAD
 #include <mach/fb.h>
 #include <mach/ep93xx_spi.h>
 #include <mach/gpio-ep93xx.h>
 
 #include <asm/hardware/vic.h>
+=======
+#include <linux/platform_data/video-ep93xx.h>
+#include <linux/platform_data/spi-ep93xx.h>
+#include <mach/gpio-ep93xx.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/map.h>
 #include <asm/mach/arch.h>
@@ -225,6 +236,7 @@ static struct ep93xx_spi_chip_ops vision_spi_flash_hw = {
 #define VISION_SPI_MMC_WP	EP93XX_GPIO_LINE_F(0)
 #define VISION_SPI_MMC_CD	EP93XX_GPIO_LINE_EGPIO15
 
+<<<<<<< HEAD
 static struct gpio vision_spi_mmc_gpios[] = {
 	{ VISION_SPI_MMC_WP, GPIOF_DIR_IN, "mmc_spi:wp" },
 	{ VISION_SPI_MMC_CD, GPIOF_DIR_IN, "mmc_spi:cd" },
@@ -281,6 +293,17 @@ static struct mmc_spi_platform_data vision_spi_mmc_data = {
 	.detect_delay	= 100,
 	.powerup_msecs	= 100,
 	.ocr_mask	= MMC_VDD_32_33 | MMC_VDD_33_34,
+=======
+static struct mmc_spi_platform_data vision_spi_mmc_data = {
+	.detect_delay	= 100,
+	.powerup_msecs	= 100,
+	.ocr_mask	= MMC_VDD_32_33 | MMC_VDD_33_34,
+	.flags		= MMC_SPI_USE_CD_GPIO | MMC_SPI_USE_RO_GPIO,
+	.cd_gpio	= VISION_SPI_MMC_CD,
+	.cd_debounce	= 1,
+	.ro_gpio	= VISION_SPI_MMC_WP,
+	.caps2		= MMC_CAP2_RO_ACTIVE_HIGH,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int vision_spi_mmc_hw_setup(struct spi_device *spi)
@@ -364,8 +387,14 @@ MACHINE_START(VISION_EP9307, "Vision Engraving Systems EP9307")
 	.atag_offset	= 0x100,
 	.map_io		= vision_map_io,
 	.init_irq	= ep93xx_init_irq,
+<<<<<<< HEAD
 	.handle_irq	= vic_handle_irq,
 	.timer		= &ep93xx_timer,
 	.init_machine	= vision_init_machine,
+=======
+	.init_time	= ep93xx_timer_init,
+	.init_machine	= vision_init_machine,
+	.init_late	= ep93xx_init_late,
+>>>>>>> refs/remotes/origin/master
 	.restart	= ep93xx_restart,
 MACHINE_END

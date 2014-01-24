@@ -11,13 +11,18 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  *
+<<<<<<< HEAD
  * If we have CONFIG_VIRT_CPU_ACCOUNTING, we measure cpu time in nsec.
+=======
+ * If we have CONFIG_VIRT_CPU_ACCOUNTING_NATIVE, we measure cpu time in nsec.
+>>>>>>> refs/remotes/origin/master
  * Otherwise we measure cpu time in jiffies using the generic definitions.
  */
 
 #ifndef __IA64_CPUTIME_H
 #define __IA64_CPUTIME_H
 
+<<<<<<< HEAD
 #ifndef CONFIG_VIRT_CPU_ACCOUNTING
 #include <asm-generic/cputime.h>
 #else
@@ -173,4 +178,14 @@ static inline void cputime_to_timeval(const cputime_t ct, struct timeval *val)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #endif /* CONFIG_VIRT_CPU_ACCOUNTING */
+=======
+#ifndef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+# include <asm-generic/cputime.h>
+#else
+# include <asm/processor.h>
+# include <asm-generic/cputime_nsecs.h>
+extern void arch_vtime_task_switch(struct task_struct *tsk);
+#endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __IA64_CPUTIME_H */

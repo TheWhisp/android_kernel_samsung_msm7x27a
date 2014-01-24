@@ -1,10 +1,15 @@
 #ifndef _FALLOC_H_
 #define _FALLOC_H_
 
+<<<<<<< HEAD
 #define FALLOC_FL_KEEP_SIZE	0x01 /* default is extend size */
 #define FALLOC_FL_PUNCH_HOLE	0x02 /* de-allocates range */
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/falloc.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Space reservation ioctls and argument structure
@@ -23,6 +28,9 @@ struct space_resv {
 #define FS_IOC_RESVSP		_IOW('X', 40, struct space_resv)
 #define FS_IOC_RESVSP64		_IOW('X', 42, struct space_resv)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _FALLOC_H_ */

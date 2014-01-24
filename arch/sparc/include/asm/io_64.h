@@ -7,12 +7,17 @@
 
 #include <asm/page.h>      /* IO address mapping routines need this */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/asi.h>
 =======
 #include <asm/asi.h>
 #include <asm-generic/pci_iomap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/asi.h>
+#include <asm-generic/pci_iomap.h>
+>>>>>>> refs/remotes/origin/master
 
 /* PC crapola... */
 #define __SLOW_DOWN_IO	do { } while (0)
@@ -520,9 +525,12 @@ extern void ioport_unmap(void __iomem *);
 /* Create a virtual mapping cookie for a PCI BAR (memory or IO) */
 struct pci_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void pci_iounmap(struct pci_dev *dev, void __iomem *);
 
 static inline int sbus_can_dma_64bit(void)

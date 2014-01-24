@@ -432,21 +432,31 @@ struct iw_public_data {
 /* First : function strictly used inside the kernel */
 
 /* Handle /proc/net/wireless, called in net/code/dev.c */
+<<<<<<< HEAD
 extern int dev_get_wireless_info(char * buffer, char **start, off_t offset,
 				 int length);
+=======
+int dev_get_wireless_info(char *buffer, char **start, off_t offset, int length);
+>>>>>>> refs/remotes/origin/master
 
 /* Second : functions that may be called by driver modules */
 
 /* Send a single event to user space */
+<<<<<<< HEAD
 extern void wireless_send_event(struct net_device *	dev,
 				unsigned int		cmd,
 				union iwreq_data *	wrqu,
 				const char *		extra);
+=======
+void wireless_send_event(struct net_device *dev, unsigned int cmd,
+			 union iwreq_data *wrqu, const char *extra);
+>>>>>>> refs/remotes/origin/master
 
 /* We may need a function to send a stream of events to user space.
  * More on that later... */
 
 /* Standard handler for SIOCSIWSPY */
+<<<<<<< HEAD
 extern int iw_handler_set_spy(struct net_device *	dev,
 			      struct iw_request_info *	info,
 			      union iwreq_data *	wrqu,
@@ -470,6 +480,22 @@ extern int iw_handler_get_thrspy(struct net_device *	dev,
 extern void wireless_spy_update(struct net_device *	dev,
 				unsigned char *		address,
 				struct iw_quality *	wstats);
+=======
+int iw_handler_set_spy(struct net_device *dev, struct iw_request_info *info,
+		       union iwreq_data *wrqu, char *extra);
+/* Standard handler for SIOCGIWSPY */
+int iw_handler_get_spy(struct net_device *dev, struct iw_request_info *info,
+		       union iwreq_data *wrqu, char *extra);
+/* Standard handler for SIOCSIWTHRSPY */
+int iw_handler_set_thrspy(struct net_device *dev, struct iw_request_info *info,
+			  union iwreq_data *wrqu, char *extra);
+/* Standard handler for SIOCGIWTHRSPY */
+int iw_handler_get_thrspy(struct net_device *dev, struct iw_request_info *info,
+			  union iwreq_data *wrqu, char *extra);
+/* Driver call to update spy records */
+void wireless_spy_update(struct net_device *dev, unsigned char *address,
+			 struct iw_quality *wstats);
+>>>>>>> refs/remotes/origin/master
 
 /************************* INLINE FUNTIONS *************************/
 /*

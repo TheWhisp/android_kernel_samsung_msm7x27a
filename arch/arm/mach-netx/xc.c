@@ -24,9 +24,13 @@
 #include <linux/slab.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <mach/irqs.h>
@@ -139,7 +143,11 @@ int xc_request_firmware(struct xc *x)
 	if (head->magic != 0x4e657458) {
 		if (head->magic == 0x5874654e) {
 			dev_err(x->dev,
+<<<<<<< HEAD
 			    "firmware magic is 'XteN'. Endianess problems?\n");
+=======
+			    "firmware magic is 'XteN'. Endianness problems?\n");
+>>>>>>> refs/remotes/origin/master
 			ret = -ENODEV;
 			goto exit_release_firmware;
 		}

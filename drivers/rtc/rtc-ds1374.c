@@ -65,7 +65,11 @@ struct ds1374 {
 static struct i2c_driver ds1374_driver;
 
 static int ds1374_read_rtc(struct i2c_client *client, u32 *time,
+<<<<<<< HEAD
                            int reg, int nbytes)
+=======
+			   int reg, int nbytes)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 buf[4];
 	int ret;
@@ -90,7 +94,11 @@ static int ds1374_read_rtc(struct i2c_client *client, u32 *time,
 }
 
 static int ds1374_write_rtc(struct i2c_client *client, u32 time,
+<<<<<<< HEAD
                             int reg, int nbytes)
+=======
+			    int reg, int nbytes)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 buf[4];
 	int i;
@@ -119,8 +127,12 @@ static int ds1374_check_rtc_status(struct i2c_client *client)
 
 	if (stat & DS1374_REG_SR_OSF)
 		dev_warn(&client->dev,
+<<<<<<< HEAD
 		         "oscillator discontinuity flagged, "
 		         "time unreliable\n");
+=======
+			 "oscillator discontinuity flagged, time unreliable\n");
+>>>>>>> refs/remotes/origin/master
 
 	stat &= ~(DS1374_REG_SR_OSF | DS1374_REG_SR_AF);
 
@@ -347,7 +359,11 @@ static int ds1374_probe(struct i2c_client *client,
 	struct ds1374 *ds1374;
 	int ret;
 
+<<<<<<< HEAD
 	ds1374 = kzalloc(sizeof(struct ds1374), GFP_KERNEL);
+=======
+	ds1374 = devm_kzalloc(&client->dev, sizeof(struct ds1374), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ds1374)
 		return -ENOMEM;
 
@@ -359,6 +375,7 @@ static int ds1374_probe(struct i2c_client *client,
 
 	ret = ds1374_check_rtc_status(client);
 	if (ret)
+<<<<<<< HEAD
 		goto out_free;
 
 	if (client->irq > 0) {
@@ -367,11 +384,22 @@ static int ds1374_probe(struct i2c_client *client,
 		if (ret) {
 			dev_err(&client->dev, "unable to request IRQ\n");
 			goto out_free;
+=======
+		return ret;
+
+	if (client->irq > 0) {
+		ret = devm_request_irq(&client->dev, client->irq, ds1374_irq, 0,
+					"ds1374", client);
+		if (ret) {
+			dev_err(&client->dev, "unable to request IRQ\n");
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		device_set_wakeup_capable(&client->dev, 1);
 	}
 
+<<<<<<< HEAD
 	ds1374->rtc = rtc_device_register(client->name, &client->dev,
 	                                  &ds1374_rtc_ops, THIS_MODULE);
 	if (IS_ERR(ds1374->rtc)) {
@@ -392,6 +420,19 @@ out_free:
 }
 
 static int __devexit ds1374_remove(struct i2c_client *client)
+=======
+	ds1374->rtc = devm_rtc_device_register(&client->dev, client->name,
+						&ds1374_rtc_ops, THIS_MODULE);
+	if (IS_ERR(ds1374->rtc)) {
+		dev_err(&client->dev, "unable to register the class device\n");
+		return PTR_ERR(ds1374->rtc);
+	}
+
+	return 0;
+}
+
+static int ds1374_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ds1374 *ds1374 = i2c_get_clientdata(client);
 
@@ -400,6 +441,7 @@ static int __devexit ds1374_remove(struct i2c_client *client)
 		ds1374->exiting = 1;
 		mutex_unlock(&ds1374->mutex);
 
+<<<<<<< HEAD
 		free_irq(client->irq, client);
 		cancel_work_sync(&ds1374->work);
 	}
@@ -410,6 +452,16 @@ static int __devexit ds1374_remove(struct i2c_client *client)
 }
 
 #ifdef CONFIG_PM
+=======
+		devm_free_irq(&client->dev, client->irq, client);
+		cancel_work_sync(&ds1374->work);
+	}
+
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int ds1374_suspend(struct device *dev)
 {
 	struct i2c_client *client = to_i2c_client(dev);
@@ -427,6 +479,7 @@ static int ds1374_resume(struct device *dev)
 		disable_irq_wake(client->irq);
 	return 0;
 }
+<<<<<<< HEAD
 
 static SIMPLE_DEV_PM_OPS(ds1374_pm, ds1374_suspend, ds1374_resume);
 
@@ -435,10 +488,17 @@ static SIMPLE_DEV_PM_OPS(ds1374_pm, ds1374_suspend, ds1374_resume);
 #define DS1374_PM NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(ds1374_pm, ds1374_suspend, ds1374_resume);
+
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver ds1374_driver = {
 	.driver = {
 		.name = "rtc-ds1374",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 		.pm = DS1374_PM,
 	},
 	.probe = ds1374_probe,
@@ -462,6 +522,16 @@ module_exit(ds1374_exit);
 =======
 module_i2c_driver(ds1374_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm = &ds1374_pm,
+	},
+	.probe = ds1374_probe,
+	.remove = ds1374_remove,
+	.id_table = ds1374_id,
+};
+
+module_i2c_driver(ds1374_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Scott Wood <scottwood@freescale.com>");
 MODULE_DESCRIPTION("Maxim/Dallas DS1374 RTC Driver");

@@ -15,6 +15,11 @@
 #include <linux/of.h>
 #include <linux/slab.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/reg_a2.h>
 #include <asm/irq.h>
@@ -31,10 +36,14 @@ static int opb_index = 0;
 
 struct opb_pic {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct irq_host *host;
 =======
 	struct irq_domain *host;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct irq_domain *host;
+>>>>>>> refs/remotes/origin/master
 	void *regs;
 	int index;
 	spinlock_t lock;
@@ -184,10 +193,14 @@ static struct irq_chip opb_irq_chip = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int opb_host_map(struct irq_host *host, unsigned int virq,
 =======
 static int opb_host_map(struct irq_domain *host, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int opb_host_map(struct irq_domain *host, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 		irq_hw_number_t hwirq)
 {
 	struct opb_pic *opb;
@@ -204,6 +217,7 @@ static int opb_host_map(struct irq_domain *host, unsigned int virq,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int opb_host_xlate(struct irq_host *host, struct device_node *dn,
 		const u32 *intspec, unsigned int intsize,
@@ -224,6 +238,11 @@ static const struct irq_domain_ops opb_host_ops = {
 	.map = opb_host_map,
 	.xlate = irq_domain_xlate_twocell,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct irq_domain_ops opb_host_ops = {
+	.map = opb_host_map,
+	.xlate = irq_domain_xlate_twocell,
+>>>>>>> refs/remotes/origin/master
 };
 
 irqreturn_t opb_irq_handler(int irq, void *private)
@@ -278,6 +297,7 @@ struct opb_pic *opb_pic_init_one(struct device_node *dn)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Allocate an irq host so that Linux knows that despite only
 	 * having one interrupt to issue, we're the controller for multiple
 	 * hardware IRQs, so later we can lookup their virtual IRQs. */
@@ -286,12 +306,17 @@ struct opb_pic *opb_pic_init_one(struct device_node *dn)
 			OPB_NR_IRQS, &opb_host_ops, -1);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Allocate an irq domain so that Linux knows that despite only
 	 * having one interrupt to issue, we're the controller for multiple
 	 * hardware IRQs, so later we can lookup their virtual IRQs. */
 
 	opb->host = irq_domain_add_linear(dn, OPB_NR_IRQS, &opb_host_ops, opb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!opb->host) {
 		printk(KERN_ERR "opb: Failed to allocate IRQ host!\n");
 		goto free_regs;
@@ -300,9 +325,12 @@ struct opb_pic *opb_pic_init_one(struct device_node *dn)
 	opb->index = opb_index++;
 	spin_lock_init(&opb->lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	opb->host->host_data = opb;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable all interrupts by default */
 	opb_out(opb, OPB_MLSASIER, 0);
@@ -346,11 +374,16 @@ void __init opb_pic_init(void)
 
 		/* Attach opb interrupt handler to new virtual IRQ */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = request_irq(virq, opb_irq_handler, 0, "OPB LS Cascade", opb);
 =======
 		rc = request_irq(virq, opb_irq_handler, IRQF_NO_THREAD,
 				 "OPB LS Cascade", opb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = request_irq(virq, opb_irq_handler, IRQF_NO_THREAD,
+				 "OPB LS Cascade", opb);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			printk("opb: request_irq failed: %d\n", rc);
 			continue;

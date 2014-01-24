@@ -14,6 +14,7 @@
 #include <linux/string.h>
 #include <linux/sunrpc/msg_prot.h>
 #include <linux/sunrpc/cache.h>
+<<<<<<< HEAD
 #include <linux/hash.h>
 
 #define SVC_CRED_NGROUPS	32
@@ -23,6 +24,37 @@ struct svc_cred {
 	struct group_info	*cr_group_info;
 };
 
+=======
+#include <linux/sunrpc/gss_api.h>
+#include <linux/hash.h>
+#include <linux/cred.h>
+
+struct svc_cred {
+	kuid_t			cr_uid;
+	kgid_t			cr_gid;
+	struct group_info	*cr_group_info;
+	u32			cr_flavor; /* pseudoflavor */
+	char			*cr_principal; /* for gss */
+	struct gss_api_mech	*cr_gss_mech;
+};
+
+static inline void init_svc_cred(struct svc_cred *cred)
+{
+	cred->cr_group_info = NULL;
+	cred->cr_principal = NULL;
+	cred->cr_gss_mech = NULL;
+}
+
+static inline void free_svc_cred(struct svc_cred *cred)
+{
+	if (cred->cr_group_info)
+		put_group_info(cred->cr_group_info);
+	kfree(cred->cr_principal);
+	gss_mech_put(cred->cr_gss_mech);
+	init_svc_cred(cred);
+}
+
+>>>>>>> refs/remotes/origin/master
 struct svc_rqst;		/* forward decl */
 struct in6_addr;
 
@@ -131,6 +163,7 @@ extern struct auth_domain *auth_domain_lookup(char *name, struct auth_domain *ne
 extern struct auth_domain *auth_domain_find(char *name);
 extern struct auth_domain *auth_unix_lookup(struct net *net, struct in6_addr *addr);
 extern int auth_unix_forget_old(struct auth_domain *dom);
+<<<<<<< HEAD
 extern void svcauth_unix_purge(void);
 extern void svcauth_unix_info_release(struct svc_xprt *xpt);
 extern int svcauth_unix_set_client(struct svc_rqst *rqstp);
@@ -141,6 +174,15 @@ extern int unix_gid_cache_create(struct net *net);
 extern void unix_gid_cache_destroy(struct net *net);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void svcauth_unix_purge(struct net *net);
+extern void svcauth_unix_info_release(struct svc_xprt *xpt);
+extern int svcauth_unix_set_client(struct svc_rqst *rqstp);
+
+extern int unix_gid_cache_create(struct net *net);
+extern void unix_gid_cache_destroy(struct net *net);
+
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long hash_str(char *name, int bits)
 {
 	unsigned long hash = 0;

@@ -17,9 +17,13 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 
 #include <sound/core.h>
@@ -138,10 +142,14 @@ static int atmel_abdac_prepare_dma(struct atmel_abdac *dac,
 
 	cdesc = dw_dma_cyclic_prep(chan, runtime->dma_addr, buffer_len,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			period_len, DMA_TO_DEVICE);
 =======
 			period_len, DMA_MEM_TO_DEV);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			period_len, DMA_MEM_TO_DEV);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(cdesc)) {
 		dev_dbg(&dac->pdev->dev, "could not prepare cyclic DMA\n");
 		return PTR_ERR(cdesc);
@@ -316,7 +324,11 @@ static struct snd_pcm_ops atmel_abdac_ops = {
 	.pointer	= atmel_abdac_pointer,
 };
 
+<<<<<<< HEAD
 static int __devinit atmel_abdac_pcm_new(struct atmel_abdac *dac)
+=======
+static int atmel_abdac_pcm_new(struct atmel_abdac *dac)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_pcm_hardware hw = atmel_abdac_hw;
 	struct snd_pcm *pcm;
@@ -361,10 +373,18 @@ static int set_sample_rates(struct atmel_abdac *dac)
 	/* we start at 192 kHz and work our way down to 5112 Hz */
 	while (new_rate >= RATE_MIN && index < (MAX_NUM_RATES + 1)) {
 		new_rate = clk_round_rate(dac->sample_clk, 256 * new_rate);
+<<<<<<< HEAD
 		if (new_rate < 0)
 			break;
 		/* make sure we are below the ABDAC clock */
 		if (new_rate <= clk_get_rate(dac->pclk)) {
+=======
+		if (new_rate <= 0)
+			break;
+		/* make sure we are below the ABDAC clock */
+		if (index < MAX_NUM_RATES &&
+		    new_rate <= clk_get_rate(dac->pclk)) {
+>>>>>>> refs/remotes/origin/master
 			dac->rates[index] = new_rate / 256;
 			index++;
 		}
@@ -393,7 +413,11 @@ static int set_sample_rates(struct atmel_abdac *dac)
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devinit atmel_abdac_probe(struct platform_device *pdev)
+=======
+static int atmel_abdac_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card		*card;
 	struct atmel_abdac	*dac;
@@ -457,12 +481,19 @@ static int __devinit atmel_abdac_probe(struct platform_device *pdev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dac->regs = ioremap(regs->start, regs->end - regs->start + 1);
 =======
 	dac->regs = ioremap(regs->start, resource_size(regs));
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (!dac->regs) {
 		dev_dbg(&pdev->dev, "could not remap register memory\n");
+=======
+	dac->regs = ioremap(regs->start, resource_size(regs));
+	if (!dac->regs) {
+		dev_dbg(&pdev->dev, "could not remap register memory\n");
+		retval = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		goto out_free_card;
 	}
 
@@ -480,6 +511,7 @@ static int __devinit atmel_abdac_probe(struct platform_device *pdev)
 
 	if (pdata->dws.dma_dev) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct dw_dma_slave *dws = &pdata->dws;
 		dma_cap_mask_t mask;
 
@@ -490,6 +522,8 @@ static int __devinit atmel_abdac_probe(struct platform_device *pdev)
 
 		dac->dma.chan = dma_request_channel(mask, filter, dws);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dma_cap_mask_t mask;
 
 		dma_cap_zero(mask);
@@ -508,7 +542,10 @@ static int __devinit atmel_abdac_probe(struct platform_device *pdev)
 
 			dmaengine_slave_config(dac->dma.chan, &dma_conf);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (!pdata->dws.dma_dev || !dac->dma.chan) {
 		dev_dbg(&pdev->dev, "DMA not available\n");
@@ -557,10 +594,17 @@ out_put_pclk:
 	return retval;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int atmel_abdac_suspend(struct platform_device *pdev, pm_message_t msg)
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int atmel_abdac_suspend(struct device *pdev)
+{
+	struct snd_card *card = dev_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct atmel_abdac *dac = card->private_data;
 
 	dw_dma_cyclic_stop(dac->dma.chan);
@@ -570,9 +614,15 @@ static int atmel_abdac_suspend(struct platform_device *pdev, pm_message_t msg)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int atmel_abdac_resume(struct platform_device *pdev)
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
+=======
+static int atmel_abdac_resume(struct device *pdev)
+{
+	struct snd_card *card = dev_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct atmel_abdac *dac = card->private_data;
 
 	clk_enable(dac->pclk);
@@ -582,12 +632,23 @@ static int atmel_abdac_resume(struct platform_device *pdev)
 
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define atmel_abdac_suspend NULL
 #define atmel_abdac_resume NULL
 #endif
 
 static int __devexit atmel_abdac_remove(struct platform_device *pdev)
+=======
+
+static SIMPLE_DEV_PM_OPS(atmel_abdac_pm, atmel_abdac_suspend, atmel_abdac_resume);
+#define ATMEL_ABDAC_PM_OPS	&atmel_abdac_pm
+#else
+#define ATMEL_ABDAC_PM_OPS	NULL
+#endif
+
+static int atmel_abdac_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = platform_get_drvdata(pdev);
 	struct atmel_abdac *dac = get_dac(card);
@@ -603,18 +664,30 @@ static int __devexit atmel_abdac_remove(struct platform_device *pdev)
 	free_irq(dac->irq, dac);
 	snd_card_free(card);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver atmel_abdac_driver = {
+<<<<<<< HEAD
 	.remove		= __devexit_p(atmel_abdac_remove),
 	.driver		= {
 		.name	= "atmel_abdac",
 	},
 	.suspend	= atmel_abdac_suspend,
 	.resume		= atmel_abdac_resume,
+=======
+	.remove		= atmel_abdac_remove,
+	.driver		= {
+		.name	= "atmel_abdac",
+		.owner	= THIS_MODULE,
+		.pm	= ATMEL_ABDAC_PM_OPS,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init atmel_abdac_init(void)

@@ -32,8 +32,13 @@ MODULE_DESCRIPTION("Display Output Switcher Lowlevel Control Abstraction");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Luming Yu <luming.yu@intel.com>");
 
+<<<<<<< HEAD
 static ssize_t video_output_show_state(struct device *dev,
 				       struct device_attribute *attr, char *buf)
+=======
+static ssize_t state_show(struct device *dev, struct device_attribute *attr,
+			  char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	ssize_t ret_size = 0;
 	struct output_device *od = to_output_device(dev);
@@ -42,9 +47,14 @@ static ssize_t video_output_show_state(struct device *dev,
 	return ret_size;
 }
 
+<<<<<<< HEAD
 static ssize_t video_output_store_state(struct device *dev,
 					struct device_attribute *attr,
 					const char *buf,size_t count)
+=======
+static ssize_t state_store(struct device *dev, struct device_attribute *attr,
+			   const char *buf,size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	char *endp;
 	struct output_device *od = to_output_device(dev);
@@ -62,6 +72,10 @@ static ssize_t video_output_store_state(struct device *dev,
 	}
 	return count;
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RW(state);
+>>>>>>> refs/remotes/origin/master
 
 static void video_output_release(struct device *dev)
 {
@@ -69,16 +83,28 @@ static void video_output_release(struct device *dev)
 	kfree(od);
 }
 
+<<<<<<< HEAD
 static struct device_attribute video_output_attributes[] = {
 	__ATTR(state, 0644, video_output_show_state, video_output_store_state),
 	__ATTR_NULL,
 };
 
+=======
+static struct attribute *video_output_attrs[] = {
+	&dev_attr_state.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(video_output);
+>>>>>>> refs/remotes/origin/master
 
 static struct class video_output_class = {
 	.name = "video_output",
 	.dev_release = video_output_release,
+<<<<<<< HEAD
 	.dev_attrs = video_output_attributes,
+=======
+	.dev_groups = video_output_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct output_device *video_output_register(const char *name,
@@ -97,7 +123,11 @@ struct output_device *video_output_register(const char *name,
 	new_dev->props = op;
 	new_dev->dev.class = &video_output_class;
 	new_dev->dev.parent = dev;
+<<<<<<< HEAD
 	dev_set_name(&new_dev->dev, name);
+=======
+	dev_set_name(&new_dev->dev, "%s", name);
+>>>>>>> refs/remotes/origin/master
 	dev_set_drvdata(&new_dev->dev, devdata);
 	ret_code = device_register(&new_dev->dev);
 	if (ret_code) {

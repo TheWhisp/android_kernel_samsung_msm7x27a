@@ -3,9 +3,12 @@
 
 #define ADIS16209_STARTUP_DELAY	220 /* ms */
 
+<<<<<<< HEAD
 #define ADIS16209_READ_REG(a)    a
 #define ADIS16209_WRITE_REG(a) ((a) | 0x80)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Flash memory write count */
 #define ADIS16209_FLASH_CNT      0x00
 /* Output, power supply */
@@ -61,8 +64,11 @@
 /* Operation, system command register */
 #define ADIS16209_GLOB_CMD       0x3E
 
+<<<<<<< HEAD
 #define ADIS16209_OUTPUTS        8
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MSC_CTRL */
 /* Self-test at power-on: 1 = disabled, 0 = enabled */
 #define ADIS16209_MSC_CTRL_PWRUP_SELF_TEST	(1 << 10)
@@ -81,6 +87,7 @@
 /* Alarm 1 status: 1 = alarm active, 0 = alarm inactive */
 #define ADIS16209_DIAG_STAT_ALARM1        (1<<8)
 /* Self-test diagnostic error flag: 1 = error condition, 0 = normal operation */
+<<<<<<< HEAD
 #define ADIS16209_DIAG_STAT_SELFTEST_FAIL (1<<5)
 /* SPI communications failure */
 #define ADIS16209_DIAG_STAT_SPI_FAIL	  (1<<3)
@@ -90,12 +97,24 @@
 #define ADIS16209_DIAG_STAT_POWER_HIGH	  (1<<1)
 /* Power supply below 3.15 V */
 #define ADIS16209_DIAG_STAT_POWER_LOW	  (1<<0)
+=======
+#define ADIS16209_DIAG_STAT_SELFTEST_FAIL_BIT	5
+/* SPI communications failure */
+#define ADIS16209_DIAG_STAT_SPI_FAIL_BIT	3
+/* Flash update failure */
+#define ADIS16209_DIAG_STAT_FLASH_UPT_BIT	2
+/* Power supply above 3.625 V */
+#define ADIS16209_DIAG_STAT_POWER_HIGH_BIT	1
+/* Power supply below 3.15 V */
+#define ADIS16209_DIAG_STAT_POWER_LOW_BIT	0
+>>>>>>> refs/remotes/origin/master
 
 /* GLOB_CMD */
 #define ADIS16209_GLOB_CMD_SW_RESET	(1<<7)
 #define ADIS16209_GLOB_CMD_CLEAR_STAT	(1<<4)
 #define ADIS16209_GLOB_CMD_FACTORY_CAL	(1<<1)
 
+<<<<<<< HEAD
 #define ADIS16209_MAX_TX 24
 #define ADIS16209_MAX_RX 24
 
@@ -132,6 +151,10 @@ struct adis16209_state {
 
 int adis16209_set_irq(struct iio_dev *indio_dev, bool enable);
 
+=======
+#define ADIS16209_ERROR_ACTIVE          (1<<14)
+
+>>>>>>> refs/remotes/origin/master
 #define ADIS16209_SCAN_SUPPLY	0
 #define ADIS16209_SCAN_ACC_X	1
 #define ADIS16209_SCAN_ACC_Y	2
@@ -141,6 +164,7 @@ int adis16209_set_irq(struct iio_dev *indio_dev, bool enable);
 #define ADIS16209_SCAN_INCLI_Y	6
 #define ADIS16209_SCAN_ROT	7
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_IIO_RING_BUFFER
 =======
@@ -194,4 +218,6 @@ static inline void adis16209_unconfigure_ring(struct iio_dev *indio_dev)
 =======
 #endif /* CONFIG_IIO_BUFFER */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* SPI_ADIS16209_H_ */

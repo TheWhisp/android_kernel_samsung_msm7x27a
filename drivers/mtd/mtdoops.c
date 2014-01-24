@@ -113,10 +113,14 @@ static int mtdoops_erase_block(struct mtdoops_context *cxt, int offset)
 	add_wait_queue(&wait_q, &wait);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = mtd->erase(mtd, &erase);
 =======
 	ret = mtd_erase(mtd, &erase);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = mtd_erase(mtd, &erase);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		set_current_state(TASK_RUNNING);
 		remove_wait_queue(&wait_q, &wait);
@@ -174,6 +178,7 @@ static void mtdoops_workfunc_erase(struct work_struct *work)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (mtd->block_isbad) {
 		ret = mtd->block_isbad(mtd, cxt->nextpage * record_size);
 =======
@@ -186,6 +191,9 @@ static void mtdoops_workfunc_erase(struct work_struct *work)
 			printk(KERN_ERR "mtdoops: block_isbad failed, aborting\n");
 			return;
 		}
+=======
+	while ((ret = mtd_block_isbad(mtd, cxt->nextpage * record_size)) > 0) {
+>>>>>>> refs/remotes/origin/master
 badblock:
 		printk(KERN_WARNING "mtdoops: bad block at %08lx\n",
 		       cxt->nextpage * record_size);
@@ -199,6 +207,14 @@ badblock:
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	if (ret < 0) {
+		printk(KERN_ERR "mtdoops: mtd_block_isbad failed, aborting\n");
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	for (j = 0, ret = -1; (j < 3) && (ret < 0); j++)
 		ret = mtdoops_erase_block(cxt, cxt->nextpage * record_size);
 
@@ -209,6 +225,7 @@ badblock:
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (mtd->block_markbad && ret == -EIO) {
 		ret = mtd->block_markbad(mtd, cxt->nextpage * record_size);
 		if (ret < 0) {
@@ -217,6 +234,11 @@ badblock:
 		ret = mtd_block_markbad(mtd, cxt->nextpage * record_size);
 		if (ret < 0 && ret != -EOPNOTSUPP) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret == -EIO) {
+		ret = mtd_block_markbad(mtd, cxt->nextpage * record_size);
+		if (ret < 0 && ret != -EOPNOTSUPP) {
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_ERR "mtdoops: block_markbad failed, aborting\n");
 			return;
 		}
@@ -237,6 +259,7 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
 	hdr[1] = MTDOOPS_KERNMSG_MAGIC;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (panic)
 		ret = mtd->panic_write(mtd, cxt->nextpage * record_size,
 					record_size, &retlen, cxt->oops_buf);
@@ -244,6 +267,8 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
 		ret = mtd->write(mtd, cxt->nextpage * record_size,
 					record_size, &retlen, cxt->oops_buf);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (panic) {
 		ret = mtd_panic_write(mtd, cxt->nextpage * record_size,
 				      record_size, &retlen, cxt->oops_buf);
@@ -254,7 +279,10 @@ static void mtdoops_write(struct mtdoops_context *cxt, int panic)
 	} else
 		ret = mtd_write(mtd, cxt->nextpage * record_size,
 				record_size, &retlen, cxt->oops_buf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (retlen != record_size || ret < 0)
 		printk(KERN_ERR "mtdoops: write failure at %ld (%td of %ld written), error %d\n",
@@ -282,6 +310,7 @@ static void find_next_position(struct mtdoops_context *cxt)
 
 	for (page = 0; page < cxt->oops_pages; page++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (mtd->block_isbad &&
 		    mtd->block_isbad(mtd, page * record_size))
 			continue;
@@ -292,6 +321,8 @@ static void find_next_position(struct mtdoops_context *cxt)
 		if (retlen != MTDOOPS_HEADER_SIZE ||
 				(ret < 0 && ret != -EUCLEAN)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (mtd_block_isbad(mtd, page * record_size))
 			continue;
 		/* Assume the page is used */
@@ -300,7 +331,10 @@ static void find_next_position(struct mtdoops_context *cxt)
 			       &retlen, (u_char *)&count[0]);
 		if (retlen != MTDOOPS_HEADER_SIZE ||
 				(ret < 0 && !mtd_is_bitflip(ret))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			printk(KERN_ERR "mtdoops: read failure at %ld (%td of %d read), err %d\n",
 			       page * record_size, retlen,
 			       MTDOOPS_HEADER_SIZE, ret);
@@ -309,7 +343,11 @@ static void find_next_position(struct mtdoops_context *cxt)
 
 		if (count[0] == 0xffffffff && count[1] == 0xffffffff)
 			mark_page_unused(cxt, page);
+<<<<<<< HEAD
 		if (count[0] == 0xffffffff)
+=======
+		if (count[0] == 0xffffffff || count[1] != MTDOOPS_KERNMSG_MAGIC)
+>>>>>>> refs/remotes/origin/master
 			continue;
 		if (maxcount == 0xffffffff) {
 			maxcount = count[0];
@@ -327,6 +365,7 @@ static void find_next_position(struct mtdoops_context *cxt)
 		}
 	}
 	if (maxcount == 0xffffffff) {
+<<<<<<< HEAD
 		cxt->nextpage = 0;
 		cxt->nextcount = 1;
 		schedule_work(&cxt->work_erase);
@@ -335,11 +374,21 @@ static void find_next_position(struct mtdoops_context *cxt)
 
 	cxt->nextpage = maxpos;
 	cxt->nextcount = maxcount;
+=======
+		cxt->nextpage = cxt->oops_pages - 1;
+		cxt->nextcount = 0;
+	}
+	else {
+		cxt->nextpage = maxpos;
+		cxt->nextcount = maxcount;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	mtdoops_inc_counter(cxt);
 }
 
 static void mtdoops_do_dump(struct kmsg_dumper *dumper,
+<<<<<<< HEAD
 		enum kmsg_dump_reason reason, const char *s1, unsigned long l1,
 		const char *s2, unsigned long l2)
 {
@@ -357,11 +406,18 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
 	    reason != KMSG_DUMP_PANIC)
 >>>>>>> refs/remotes/origin/cm-10.0
 		return;
+=======
+			    enum kmsg_dump_reason reason)
+{
+	struct mtdoops_context *cxt = container_of(dumper,
+			struct mtdoops_context, dump);
+>>>>>>> refs/remotes/origin/master
 
 	/* Only dump oopses if dump_oops is set */
 	if (reason == KMSG_DUMP_OOPS && !dump_oops)
 		return;
 
+<<<<<<< HEAD
 	dst = cxt->oops_buf + MTDOOPS_HEADER_SIZE; /* Skip the header */
 	l2_cpy = min(l2, record_size - MTDOOPS_HEADER_SIZE);
 	l1_cpy = min(l1, record_size - MTDOOPS_HEADER_SIZE - l2_cpy);
@@ -385,6 +441,14 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
 	if (reason != KMSG_DUMP_OOPS)
 		mtdoops_write(cxt, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
+			     record_size - MTDOOPS_HEADER_SIZE, NULL);
+
+	/* Panics must be written immediately */
+	if (reason != KMSG_DUMP_OOPS)
+		mtdoops_write(cxt, 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* For other cases, schedule work to write it "nicely" */
 	schedule_work(&cxt->work_write);
@@ -426,6 +490,10 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	cxt->dump.max_reason = KMSG_DUMP_OOPS;
+>>>>>>> refs/remotes/origin/master
 	cxt->dump.dump = mtdoops_do_dump;
 	err = kmsg_dump_register(&cxt->dump);
 	if (err) {
@@ -452,8 +520,13 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
 		printk(KERN_WARNING "mtdoops: could not unregister kmsg_dumper\n");
 
 	cxt->mtd = NULL;
+<<<<<<< HEAD
 	flush_work_sync(&cxt->work_erase);
 	flush_work_sync(&cxt->work_write);
+=======
+	flush_work(&cxt->work_erase);
+	flush_work(&cxt->work_write);
+>>>>>>> refs/remotes/origin/master
 }
 
 

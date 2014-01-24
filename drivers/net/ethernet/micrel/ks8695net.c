@@ -1249,9 +1249,12 @@ ks8695_open(struct net_device *ndev)
 	struct ks8695_priv *ksp = netdev_priv(ndev);
 	int ret;
 
+<<<<<<< HEAD
 	if (!is_valid_ether_addr(ndev->dev_addr))
 		return -EADDRNOTAVAIL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	ks8695_reset(ksp);
 
 	ks8695_update_mac(ksp);
@@ -1277,7 +1280,11 @@ ks8695_open(struct net_device *ndev)
  *	This initialises the LAN switch in the KS8695 to a known-good
  *	set of defaults.
  */
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 ks8695_init_switch(struct ks8695_priv *ksp)
 {
 	u32 ctrl;
@@ -1305,7 +1312,11 @@ ks8695_init_switch(struct ks8695_priv *ksp)
  *	This initialises a KS8695's WAN phy to sensible values for
  *	autonegotiation etc.
  */
+<<<<<<< HEAD
 static void __devinit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 ks8695_init_wan_phy(struct ks8695_priv *ksp)
 {
 	u32 ctrl;
@@ -1349,7 +1360,11 @@ static const struct net_device_ops ks8695_netdev_ops = {
  *	wan ports, and an IORESOURCE_IRQ for the link IRQ for the wan
  *	port.
  */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ks8695_probe(struct platform_device *pdev)
 {
 	struct ks8695_priv *ksp;
@@ -1597,13 +1612,20 @@ ks8695_drv_resume(struct platform_device *pdev)
  *
  *	This unregisters and releases a KS8695 ethernet device.
  */
+<<<<<<< HEAD
 static int __devexit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ks8695_drv_remove(struct platform_device *pdev)
 {
 	struct net_device *ndev = platform_get_drvdata(pdev);
 	struct ks8695_priv *ksp = netdev_priv(ndev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	netif_napi_del(&ksp->napi);
 
 	unregister_netdev(ndev);
@@ -1620,11 +1642,16 @@ static struct platform_driver ks8695_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ks8695_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ks8695_drv_remove),
+=======
+	.remove		= ks8695_drv_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= ks8695_drv_suspend,
 	.resume		= ks8695_drv_resume,
 };
 
+<<<<<<< HEAD
 /* Module interface */
 
 static int __init
@@ -1644,6 +1671,9 @@ ks8695_cleanup(void)
 
 module_init(ks8695_init);
 module_exit(ks8695_cleanup);
+=======
+module_platform_driver(ks8695_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Simtec Electronics");
 MODULE_DESCRIPTION("Micrel KS8695 (Centaur) Ethernet driver");

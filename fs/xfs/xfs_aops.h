@@ -24,17 +24,30 @@ extern mempool_t *xfs_ioend_pool;
  * Types of I/O for bmap clustering and I/O completion tracking.
  */
 enum {
+<<<<<<< HEAD
 	IO_DIRECT = 0,	/* special case for direct I/O ioends */
 	IO_DELALLOC,	/* mapping covers delalloc region */
 	IO_UNWRITTEN,	/* mapping covers allocated but uninitialized data */
 	IO_OVERWRITE,	/* mapping covers already allocated extent */
+=======
+	XFS_IO_DIRECT = 0,	/* special case for direct I/O ioends */
+	XFS_IO_DELALLOC,	/* covers delalloc region */
+	XFS_IO_UNWRITTEN,	/* covers allocated but uninitialized data */
+	XFS_IO_OVERWRITE,	/* covers already allocated extent */
+>>>>>>> refs/remotes/origin/master
 };
 
 #define XFS_IO_TYPES \
 	{ 0,			"" }, \
+<<<<<<< HEAD
 	{ IO_DELALLOC,		"delalloc" }, \
 	{ IO_UNWRITTEN,		"unwritten" }, \
 	{ IO_OVERWRITE,		"overwrite" }
+=======
+	{ XFS_IO_DELALLOC,		"delalloc" }, \
+	{ XFS_IO_UNWRITTEN,		"unwritten" }, \
+	{ XFS_IO_OVERWRITE,		"overwrite" }
+>>>>>>> refs/remotes/origin/master
 
 /*
  * xfs_ioend struct manages large extent writes for XFS.
@@ -45,7 +58,10 @@ typedef struct xfs_ioend {
 	unsigned int		io_type;	/* delalloc / unwritten */
 	int			io_error;	/* I/O error code */
 	atomic_t		io_remaining;	/* hold count */
+<<<<<<< HEAD
 	unsigned int		io_isasync : 1;	/* needs aio_complete */
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		io_isdirect : 1;/* direct I/O */
 	struct inode		*io_inode;	/* file being written to */
 	struct buffer_head	*io_buffer_head;/* buffer linked list head */
@@ -54,8 +70,11 @@ typedef struct xfs_ioend {
 	xfs_off_t		io_offset;	/* offset in the file */
 	struct work_struct	io_work;	/* xfsdatad work queue */
 	struct xfs_trans	*io_append_trans;/* xact. for size update */
+<<<<<<< HEAD
 	struct kiocb		*io_iocb;
 	int			io_result;
+=======
+>>>>>>> refs/remotes/origin/master
 } xfs_ioend_t;
 
 extern const struct address_space_operations xfs_address_space_operations;

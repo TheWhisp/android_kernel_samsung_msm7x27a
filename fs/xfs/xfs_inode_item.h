@@ -18,6 +18,7 @@
 #ifndef	__XFS_INODE_ITEM_H__
 #define	__XFS_INODE_ITEM_H__
 
+<<<<<<< HEAD
 /*
  * This is the structure used to lay out an inode log item in the
  * log.  The size of the inline data/extents/b-tree root to be logged
@@ -135,13 +136,19 @@ static inline int xfs_ilog_fdata(int w)
 }
 
 #ifdef __KERNEL__
+=======
+/* kernel only definitions */
+>>>>>>> refs/remotes/origin/master
 
 struct xfs_buf;
 struct xfs_bmbt_rec;
 struct xfs_inode;
 struct xfs_mount;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct xfs_inode_log_item {
 	xfs_log_item_t		ili_item;	   /* common portion */
 	struct xfs_inode	*ili_inode;	   /* inode ptr */
@@ -151,13 +158,18 @@ typedef struct xfs_inode_log_item {
 	unsigned short		ili_logged;	   /* flushed logged data */
 	unsigned int		ili_last_fields;   /* fields when flushed */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int		ili_fields;	   /* fields to be logged */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		ili_fields;	   /* fields to be logged */
+>>>>>>> refs/remotes/origin/master
 	struct xfs_bmbt_rec	*ili_extents_buf;  /* array of logged
 						      data exts */
 	struct xfs_bmbt_rec	*ili_aextents_buf; /* array of logged
 						      attr exts */
+<<<<<<< HEAD
 #ifdef XFS_TRANS_DEBUG
 	int			ili_root_size;
 	char			*ili_orig_root;
@@ -175,16 +187,32 @@ static inline int xfs_inode_clean(xfs_inode_t *ip)
 =======
 	return !ip->i_itemp || !(ip->i_itemp->ili_fields & XFS_ILOG_ALL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xfs_inode_log_format_t	ili_format;	   /* logged structure */
+} xfs_inode_log_item_t;
+
+static inline int xfs_inode_clean(xfs_inode_t *ip)
+{
+	return !ip->i_itemp || !(ip->i_itemp->ili_fields & XFS_ILOG_ALL);
+>>>>>>> refs/remotes/origin/master
 }
 
 extern void xfs_inode_item_init(struct xfs_inode *, struct xfs_mount *);
 extern void xfs_inode_item_destroy(struct xfs_inode *);
 extern void xfs_iflush_done(struct xfs_buf *, struct xfs_log_item *);
 extern void xfs_istale_done(struct xfs_buf *, struct xfs_log_item *);
+<<<<<<< HEAD
 extern void xfs_iflush_abort(struct xfs_inode *);
 extern int xfs_inode_item_format_convert(xfs_log_iovec_t *,
 					 xfs_inode_log_format_t *);
 
 #endif	/* __KERNEL__ */
+=======
+extern void xfs_iflush_abort(struct xfs_inode *, bool);
+extern int xfs_inode_item_format_convert(xfs_log_iovec_t *,
+					 xfs_inode_log_format_t *);
+
+extern struct kmem_zone	*xfs_ili_zone;
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __XFS_INODE_ITEM_H__ */

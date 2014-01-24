@@ -4,7 +4,11 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "sysdep/ptrace.h"
+=======
+#include <sysdep/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 void arch_check_bugs(void)
 {

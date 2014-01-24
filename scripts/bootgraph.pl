@@ -45,10 +45,14 @@ my %type;
 my $done = 0;
 my $maxtime = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 my $firsttime = 100;
 =======
 my $firsttime = 99999;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+my $firsttime = 99999;
+>>>>>>> refs/remotes/origin/master
 my $count = 0;
 my %pids;
 my %pidctr;

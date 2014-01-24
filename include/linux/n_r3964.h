@@ -43,6 +43,7 @@
  *
  *
  */
+<<<<<<< HEAD
 
 #ifndef __LINUX_N_R3964_H__
 #define __LINUX_N_R3964_H__
@@ -52,6 +53,14 @@
 #ifdef __KERNEL__
 
 #include <linux/param.h>
+=======
+#ifndef __LINUX_N_R3964_H__
+#define __LINUX_N_R3964_H__
+
+
+#include <linux/param.h>
+#include <uapi/linux/n_r3964.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Common ascii handshake characters:
@@ -73,6 +82,7 @@
 #define R3964_TO_RX_PANIC ((4000)*HZ/1000)
 #define R3964_MAX_RETRIES 5
 
+<<<<<<< HEAD
 #endif
 
 /*
@@ -99,6 +109,8 @@
  * r3964 operation states:
  */
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum { R3964_IDLE, 
 	   R3964_TX_REQUEST, R3964_TRANSMITTING, 
@@ -127,6 +139,7 @@ struct r3964_client_info {
 };
 
 
+<<<<<<< HEAD
 #endif
 
 /* types for msg_id: */
@@ -150,6 +163,8 @@ struct r3964_client_message {
 
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct r3964_block_header;
 
@@ -226,6 +241,9 @@ struct r3964_info {
 	int nRetry;
 };
 
+<<<<<<< HEAD
 #endif	
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

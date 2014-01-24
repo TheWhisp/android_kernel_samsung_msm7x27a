@@ -31,9 +31,13 @@
 #include <linux/sched.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/stddef.h>
 #include <linux/unistd.h>

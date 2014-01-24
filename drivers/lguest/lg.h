@@ -14,11 +14,18 @@
 
 #include <asm/lguest.h>
 
+<<<<<<< HEAD
 void free_pagetables(void);
 int init_pagetables(struct page **switcher_page, unsigned int pages);
 
 struct pgdir {
 	unsigned long gpgdir;
+=======
+struct pgdir {
+	unsigned long gpgdir;
+	bool switcher_mapped;
+	int last_host_cpu;
+>>>>>>> refs/remotes/origin/master
 	pgd_t *pgdir;
 };
 
@@ -60,10 +67,15 @@ struct lg_cpu {
 	struct lguest_pages *last_pages;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* Initialization mode: linear map everything. */
 	bool linear_pages;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Initialization mode: linear map everything. */
+	bool linear_pages;
+>>>>>>> refs/remotes/origin/master
 	int cpu_pgd; /* Which pgd this cpu is currently using */
 
 	/* If a hypercall was asked for, this points to the arguments. */
@@ -127,6 +139,10 @@ bool lguest_address_ok(const struct lguest *lg,
 		       unsigned long addr, unsigned long len);
 void __lgread(struct lg_cpu *, void *, unsigned long, unsigned);
 void __lgwrite(struct lg_cpu *, unsigned long, const void *, unsigned);
+<<<<<<< HEAD
+=======
+extern struct page **lg_switcher_pages;
+>>>>>>> refs/remotes/origin/master
 
 /*H:035
  * Using memory-copy operations like that is usually inconvient, so we

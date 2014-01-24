@@ -3,7 +3,10 @@
 #include <linux/dma-mapping.h>
 #include <linux/scatterlist.h>
 #include <linux/string.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/gfp.h>
 #include <linux/pci.h>
 #include <linux/mm.h>
@@ -75,6 +78,7 @@ static int nommu_map_sg(struct device *hwdev, struct scatterlist *sg,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void nommu_free_coherent(struct device *dev, size_t size, void *vaddr,
 				dma_addr_t dma_addr)
 {
@@ -83,6 +87,8 @@ static void nommu_free_coherent(struct device *dev, size_t size, void *vaddr,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void nommu_sync_single_for_device(struct device *dev,
 			dma_addr_t addr, size_t size,
 			enum dma_data_direction dir)
@@ -100,12 +106,17 @@ static void nommu_sync_sg_for_device(struct device *dev,
 
 struct dma_map_ops nommu_dma_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.alloc_coherent		= dma_generic_alloc_coherent,
 	.free_coherent		= nommu_free_coherent,
 =======
 	.alloc			= dma_generic_alloc_coherent,
 	.free			= dma_generic_free_coherent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc			= dma_generic_alloc_coherent,
+	.free			= dma_generic_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.map_sg			= nommu_map_sg,
 	.map_page		= nommu_map_page,
 	.sync_single_for_device = nommu_sync_single_for_device,

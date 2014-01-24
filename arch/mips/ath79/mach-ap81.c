@@ -11,17 +11,23 @@
 
 #include "machtypes.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "dev-ar913x-wmac.h"
 #include "dev-gpio-buttons.h"
 #include "dev-leds-gpio.h"
 #include "dev-spi.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "dev-wmac.h"
 #include "dev-gpio-buttons.h"
 #include "dev-leds-gpio.h"
 #include "dev-spi.h"
 #include "dev-usb.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define AP81_GPIO_LED_STATUS	1
 #define AP81_GPIO_LED_AOSS	3
@@ -85,7 +91,11 @@ static struct spi_board_info ap81_spi_info[] = {
 
 static struct ath79_spi_platform_data ap81_spi_data = {
 	.bus_num	= 0,
+<<<<<<< HEAD
 	.num_chipselect	= 1,
+=======
+	.num_chipselect = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init ap81_setup(void)
@@ -100,11 +110,16 @@ static void __init ap81_setup(void)
 	ath79_register_spi(&ap81_spi_data, ap81_spi_info,
 			   ARRAY_SIZE(ap81_spi_info));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath79_register_ar913x_wmac(cal_data);
 =======
 	ath79_register_wmac(cal_data);
 	ath79_register_usb();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath79_register_wmac(cal_data);
+	ath79_register_usb();
+>>>>>>> refs/remotes/origin/master
 }
 
 MIPS_MACHINE(ATH79_MACH_AP81, "AP81", "Atheros AP81 reference board",

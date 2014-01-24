@@ -145,7 +145,11 @@ static const struct hc_driver ohci_jz4740_hc_driver = {
 };
 
 
+<<<<<<< HEAD
 static __devinit int jz4740_ohci_probe(struct platform_device *pdev)
+=======
+static int jz4740_ohci_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct usb_hcd *hcd;
@@ -174,6 +178,7 @@ static __devinit int jz4740_ohci_probe(struct platform_device *pdev)
 
 	jz4740_ohci = hcd_to_jz4740_hcd(hcd);
 
+<<<<<<< HEAD
 	res = request_mem_region(res->start, resource_size(res), hcd_name);
 	if (!res) {
 		dev_err(&pdev->dev, "Failed to request mem region.\n");
@@ -199,6 +204,25 @@ static __devinit int jz4740_ohci_probe(struct platform_device *pdev)
 	}
 
 	jz4740_ohci->vbus = regulator_get(&pdev->dev, "vbus");
+=======
+	hcd->rsrc_start = res->start;
+	hcd->rsrc_len = resource_size(res);
+
+	hcd->regs = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(hcd->regs)) {
+		ret = PTR_ERR(hcd->regs);
+		goto err_free;
+	}
+
+	jz4740_ohci->clk = devm_clk_get(&pdev->dev, "uhc");
+	if (IS_ERR(jz4740_ohci->clk)) {
+		ret = PTR_ERR(jz4740_ohci->clk);
+		dev_err(&pdev->dev, "Failed to get clock: %d\n", ret);
+		goto err_free;
+	}
+
+	jz4740_ohci->vbus = devm_regulator_get(&pdev->dev, "vbus");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(jz4740_ohci->vbus))
 		jz4740_ohci->vbus = NULL;
 
@@ -217,10 +241,15 @@ static __devinit int jz4740_ohci_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Failed to add hcd: %d\n", ret);
 		goto err_disable;
 	}
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 err_disable:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	if (jz4740_ohci->vbus) {
 		regulator_disable(jz4740_ohci->vbus);
@@ -233,19 +262,30 @@ err_iounmap:
 	iounmap(hcd->regs);
 err_release_mem:
 	release_mem_region(res->start, resource_size(res));
+=======
+	if (jz4740_ohci->vbus)
+		regulator_disable(jz4740_ohci->vbus);
+	clk_disable(jz4740_ohci->clk);
+
+>>>>>>> refs/remotes/origin/master
 err_free:
 	usb_put_hcd(hcd);
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int jz4740_ohci_remove(struct platform_device *pdev)
+=======
+static int jz4740_ohci_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd = platform_get_drvdata(pdev);
 	struct jz4740_ohci_hcd *jz4740_ohci = hcd_to_jz4740_hcd(hcd);
 
 	usb_remove_hcd(hcd);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	if (jz4740_ohci->vbus) {
@@ -258,6 +298,12 @@ static __devexit int jz4740_ohci_remove(struct platform_device *pdev)
 
 	iounmap(hcd->regs);
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
+=======
+	if (jz4740_ohci->vbus)
+		regulator_disable(jz4740_ohci->vbus);
+
+	clk_disable(jz4740_ohci->clk);
+>>>>>>> refs/remotes/origin/master
 
 	usb_put_hcd(hcd);
 
@@ -266,7 +312,11 @@ static __devexit int jz4740_ohci_remove(struct platform_device *pdev)
 
 static struct platform_driver ohci_hcd_jz4740_driver = {
 	.probe = jz4740_ohci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(jz4740_ohci_remove),
+=======
+	.remove = jz4740_ohci_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "jz4740-ohci",
 		.owner = THIS_MODULE,

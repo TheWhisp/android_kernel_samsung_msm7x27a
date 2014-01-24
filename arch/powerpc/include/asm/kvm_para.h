@@ -16,6 +16,7 @@
  *
  * Authors: Hollis Blanchard <hollisb@us.ibm.com>
  */
+<<<<<<< HEAD
 
 #ifndef __POWERPC_KVM_PARA_H__
 #define __POWERPC_KVM_PARA_H__
@@ -101,6 +102,12 @@ struct kvm_vcpu_arch_shared {
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
+=======
+#ifndef __POWERPC_KVM_PARA_H__
+#define __POWERPC_KVM_PARA_H__
+
+#include <uapi/asm/kvm_para.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KVM_GUEST
 
@@ -135,7 +142,11 @@ static unsigned long kvm_hypercall(unsigned long *in,
 				   unsigned long *out,
 				   unsigned long nr)
 {
+<<<<<<< HEAD
 	return HC_EV_UNIMPLEMENTED;
+=======
+	return EV_UNIMPLEMENTED;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
@@ -146,7 +157,11 @@ static inline long kvm_hypercall0_1(unsigned int nr, unsigned long *r2)
 	unsigned long out[8];
 	unsigned long r;
 
+<<<<<<< HEAD
 	r = kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	r = kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 	*r2 = out[0];
 
 	return r;
@@ -157,7 +172,11 @@ static inline long kvm_hypercall0(unsigned int nr)
 	unsigned long in[8];
 	unsigned long out[8];
 
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
@@ -166,7 +185,11 @@ static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
 	unsigned long out[8];
 
 	in[0] = p1;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
@@ -177,7 +200,11 @@ static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
 
 	in[0] = p1;
 	in[1] = p2;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
@@ -189,7 +216,11 @@ static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
 	in[0] = p1;
 	in[1] = p2;
 	in[2] = p3;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
@@ -203,7 +234,11 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
 	in[1] = p2;
 	in[2] = p3;
 	in[3] = p4;
+<<<<<<< HEAD
 	return kvm_hypercall(in, out, nr | HC_VENDOR_KVM);
+=======
+	return kvm_hypercall(in, out, KVM_HCALL_TOKEN(nr));
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -220,6 +255,13 @@ static inline unsigned int kvm_arch_para_features(void)
 	return r;
 }
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+static inline bool kvm_check_and_clear_guest_paused(void)
+{
+	return false;
+}
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __POWERPC_KVM_PARA_H__ */

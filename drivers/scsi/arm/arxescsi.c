@@ -220,6 +220,7 @@ static const char *arxescsi_info(struct Scsi_Host *host)
 	return string;
 }
 
+<<<<<<< HEAD
 /*
  * Function: int arxescsi_proc_info(char *buffer, char **start, off_t offset,
  *					 int length, int host_no, int inout)
@@ -261,6 +262,23 @@ arxescsi_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t off
 
 static struct scsi_host_template arxescsi_template = {
 	.proc_info			= arxescsi_proc_info,
+=======
+static int
+arxescsi_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	struct arxescsi_info *info;
+	info = (struct arxescsi_info *)host->hostdata;
+
+	seq_printf(m, "ARXE 16-bit SCSI driver v%s\n", VERSION);
+	fas216_print_host(&info->info, m);
+	fas216_print_stats(&info->info, m);
+	fas216_print_devices(&info->info, m);
+	return 0;
+}
+
+static struct scsi_host_template arxescsi_template = {
+	.show_info			= arxescsi_show_info,
+>>>>>>> refs/remotes/origin/master
 	.name				= "ARXE SCSI card",
 	.info				= arxescsi_info,
 	.queuecommand			= fas216_noqueue_command,
@@ -276,8 +294,12 @@ static struct scsi_host_template arxescsi_template = {
 	.proc_name			= "arxescsi",
 };
 
+<<<<<<< HEAD
 static int __devinit
 arxescsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int arxescsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	struct arxescsi_info *info;
@@ -306,10 +328,14 @@ arxescsi_probe(struct expansion_card *ec, const struct ecard_id *id)
 
 	info->info.scsi.io_base		= base + 0x2000;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	info->info.scsi.irq		= NO_IRQ;
 =======
 	info->info.scsi.irq		= 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info->info.scsi.irq		= 0;
+>>>>>>> refs/remotes/origin/master
 	info->info.scsi.dma		= NO_DMA;
 	info->info.scsi.io_shift	= 5;
 	info->info.ifcfg.clockrate	= 24; /* MHz */
@@ -344,7 +370,11 @@ arxescsi_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit arxescsi_remove(struct expansion_card *ec)
+=======
+static void arxescsi_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = ecard_get_drvdata(ec);
 
@@ -363,7 +393,11 @@ static const struct ecard_id arxescsi_cids[] = {
 
 static struct ecard_driver arxescsi_driver = {
 	.probe		= arxescsi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(arxescsi_remove),
+=======
+	.remove		= arxescsi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= arxescsi_cids,
 	.drv = {
 		.name		= "arxescsi",

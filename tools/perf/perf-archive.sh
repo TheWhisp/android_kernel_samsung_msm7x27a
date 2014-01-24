@@ -24,21 +24,30 @@ NOBUILDID=0000000000000000000000000000000000000000
 perf buildid-list -i $PERF_DATA --with-hits | grep -v "^$NOBUILDID " > $BUILDIDS
 if [ ! -s $BUILDIDS ] ; then
 	echo "perf archive: no build-ids found"
+<<<<<<< HEAD
 	rm -f $BUILDIDS
+=======
+	rm $BUILDIDS || true
+>>>>>>> refs/remotes/origin/master
 	exit 1
 fi
 
 MANIFEST=$(mktemp /tmp/perf-archive-manifest.XXXXXX)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 PERF_BUILDID_LINKDIR=$(readlink -f $PERF_BUILDID_DIR)/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+PERF_BUILDID_LINKDIR=$(readlink -f $PERF_BUILDID_DIR)/
+>>>>>>> refs/remotes/origin/master
 
 cut -d ' ' -f 1 $BUILDIDS | \
 while read build_id ; do
 	linkname=$PERF_BUILDID_DIR.build-id/${build_id:0:2}/${build_id:2}
 	filename=$(readlink -f $linkname)
 	echo ${linkname#$PERF_BUILDID_DIR} >> $MANIFEST
+<<<<<<< HEAD
 <<<<<<< HEAD
 	echo ${filename#$PERF_BUILDID_DIR} >> $MANIFEST
 =======
@@ -48,6 +57,13 @@ done
 
 tar cfj $PERF_DATA.tar.bz2 -C $PERF_BUILDID_DIR -T $MANIFEST
 rm -f $MANIFEST $BUILDIDS
+=======
+	echo ${filename#$PERF_BUILDID_LINKDIR} >> $MANIFEST
+done
+
+tar cjf $PERF_DATA.tar.bz2 -C $PERF_BUILDID_DIR -T $MANIFEST
+rm $MANIFEST $BUILDIDS || true
+>>>>>>> refs/remotes/origin/master
 echo -e "Now please run:\n"
 echo -e "$ tar xvf $PERF_DATA.tar.bz2 -C ~/.debug\n"
 echo "wherever you need to run 'perf report' on."

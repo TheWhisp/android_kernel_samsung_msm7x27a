@@ -274,14 +274,18 @@ int qib_refresh_qsfp_cache(struct qib_pportdata *ppd, struct qib_qsfp_cache *cp)
 	int idx;
 	u16 cks;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 mask;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 peek[4];
 
 	/* ensure sane contents on invalid reads, for cable swaps */
 	memset(cp, 0, sizeof(*cp));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mask = QSFP_GPIO_MOD_PRS_N;
 	if (ppd->hw_pidx)
@@ -292,6 +296,9 @@ int qib_refresh_qsfp_cache(struct qib_pportdata *ppd, struct qib_qsfp_cache *cp)
 =======
 	if (!qib_qsfp_mod_present(ppd)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!qib_qsfp_mod_present(ppd)) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		goto bail;
 	}
@@ -452,7 +459,10 @@ const char * const qib_qsfp_devtech[16] = {
 static const char *pwr_codes = "1.5W2.0W2.5W3.5W";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int qib_qsfp_mod_present(struct qib_pportdata *ppd)
 {
 	u32 mask;
@@ -466,7 +476,10 @@ int qib_qsfp_mod_present(struct qib_pportdata *ppd)
 		 ((ppd->hw_pidx * QSFP_GPIO_PORT2_SHIFT) + 3));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize structures that control access to QSFP. Called once per port
  * on cards that support QSFP.
@@ -476,9 +489,12 @@ void qib_qsfp_init(struct qib_qsfp_data *qd,
 {
 	u32 mask, highs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int pins;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct qib_devdata *dd = qd->ppd->dd;
 
@@ -501,6 +517,7 @@ void qib_qsfp_init(struct qib_qsfp_data *qd,
 
 	dd->f_gpio_mod(dd, mask, mask, mask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Spec says module can take up to two seconds! */
 	mask = QSFP_GPIO_MOD_PRS_N;
 	if (qd->ppd->hw_pidx)
@@ -516,6 +533,8 @@ void qib_qsfp_init(struct qib_qsfp_data *qd,
 bail:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 

@@ -36,6 +36,7 @@
 	.global nand_boot
 	.global swapper_pg_dir
 
+<<<<<<< HEAD
 	;; Dummy section to make it bootable with current VCS simulator
 #ifdef CONFIG_ETRAX_VCS_SIM
 	.section ".boot", "ax"
@@ -43,6 +44,8 @@
 	nop
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.text
 tstart:
 	;; This is the entry point of the kernel. The CPU is currently in
@@ -75,6 +78,7 @@ secondary_cpu_entry: /* Entry point for secondary CPUs */
 		| REG_FIELD(mmu, rw_mm_kbase_hi, base_c, 4)	\
 		| REG_FIELD(mmu, rw_mm_kbase_hi, base_d, 5)     \
 		| REG_FIELD(mmu, rw_mm_kbase_hi, base_b, 0xb), $r0
+<<<<<<< HEAD
 #elif !defined(CONFIG_ETRAX_VCS_SIM)
 	move.d	REG_FIELD(mmu, rw_mm_kbase_hi, base_e, 8)	\
 		| REG_FIELD(mmu, rw_mm_kbase_hi, base_c, 4)	\
@@ -86,6 +90,12 @@ secondary_cpu_entry: /* Entry point for secondary CPUs */
 		| REG_FIELD(mmu, rw_mm_kbase_hi, base_c, 4)	\
 		| REG_FIELD(mmu, rw_mm_kbase_hi, base_b, 0xb)   \
 		| REG_FIELD(mmu, rw_mm_kbase_hi, base_a, 0xa), $r0
+=======
+#else
+	move.d	REG_FIELD(mmu, rw_mm_kbase_hi, base_e, 8)	\
+		| REG_FIELD(mmu, rw_mm_kbase_hi, base_c, 4)	\
+		| REG_FIELD(mmu, rw_mm_kbase_hi, base_b, 0xb), $r0
+>>>>>>> refs/remotes/origin/master
 #endif
 
 	;; Temporary map of 0x40 -> 0x40 and 0x00 -> 0x00.
@@ -126,6 +136,7 @@ secondary_cpu_entry: /* Entry point for secondary CPUs */
 		| REG_STATE(mmu, rw_mm_cfg, seg_2, page)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_1, page)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_0, linear), $r2
+<<<<<<< HEAD
 #elif !defined(CONFIG_ETRAX_VCS_SIM)
 	move.d	REG_STATE(mmu, rw_mm_cfg, we, on)		\
 		| REG_STATE(mmu, rw_mm_cfg, acc, on)		\
@@ -147,6 +158,8 @@ secondary_cpu_entry: /* Entry point for secondary CPUs */
 		| REG_STATE(mmu, rw_mm_cfg, seg_2, page)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_1, page)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_0, linear), $r2
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 	move.d	REG_STATE(mmu, rw_mm_cfg, we, on)		\
 		| REG_STATE(mmu, rw_mm_cfg, acc, on)		\
@@ -157,7 +170,11 @@ secondary_cpu_entry: /* Entry point for secondary CPUs */
 		| REG_STATE(mmu, rw_mm_cfg, seg_d, page)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_c, linear)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_b, linear)	\
+<<<<<<< HEAD
 		| REG_STATE(mmu, rw_mm_cfg, seg_a, linear)	\
+=======
+		| REG_STATE(mmu, rw_mm_cfg, seg_a, page)	\
+>>>>>>> refs/remotes/origin/master
 		| REG_STATE(mmu, rw_mm_cfg, seg_9, page)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_8, page)	\
 		| REG_STATE(mmu, rw_mm_cfg, seg_7, page)	\
@@ -226,7 +243,10 @@ master_cpu:
 	move.d secondary_cpu_entry, $r1
 	move.d $r1, [$r0]
 #endif
+<<<<<<< HEAD
 #ifndef CONFIG_ETRAX_VCS_SIM
+=======
+>>>>>>> refs/remotes/origin/master
 	; Check if starting from DRAM (network->RAM boot or unpacked
 	; compressed kernel), or directly from flash.
 	lapcq	., $r0
@@ -234,7 +254,10 @@ master_cpu:
 	cmp.d	0x10000, $r0	; Arbitrary, something above this code.
 	blo	_inflash0
 	nop
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	jump	_inram		; Jump to cached RAM.
 	nop
@@ -326,7 +349,10 @@ move_cramfs:
 	move.d	romfs_length, $r1
 	move.d	$r0, [$r1]
 
+<<<<<<< HEAD
 #ifndef CONFIG_ETRAX_VCS_SIM
+=======
+>>>>>>> refs/remotes/origin/master
 	;; The kernel could have been unpacked to DRAM by the loader, but
 	;; the cramfs image could still be in the flash immediately
 	;; following the compressed kernel image. The loader passes the address
@@ -335,10 +361,13 @@ move_cramfs:
 	cmp.d	0x0ffffff8, $r9
 	bhs	_no_romfs_in_flash ; R9 points outside the flash area.
 	nop
+<<<<<<< HEAD
 #else
 	ba _no_romfs_in_flash
 	nop
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	;; cramfs rootfs might to be in flash. Check for it.
 	move.d	[$r9], $r0	; cramfs_super.magic
 	cmp.d	CRAMFS_MAGIC, $r0
@@ -396,7 +425,10 @@ _no_romfs_in_flash:
 	move.d	romfs_length, $r3
 	move.d	$r2, [$r3]	; store size at romfs_length
 
+<<<<<<< HEAD
 #ifndef CONFIG_ETRAX_VCS_SIM
+=======
+>>>>>>> refs/remotes/origin/master
 	add.d	$r2, $r0	; copy from end and downwards
 	add.d	$r2, $r1
 
@@ -410,7 +442,10 @@ _no_romfs_in_flash:
 	subq	1, $r2
 	bne	1b
 	nop
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 4:
 	;; BSS move done.
@@ -455,7 +490,10 @@ no_command_line:
 	move.d	etrax_irv, $r1	; Set the exception base register and pointer.
 	move.d	$r0, [$r1]
 
+<<<<<<< HEAD
 #ifndef CONFIG_ETRAX_VCS_SIM
+=======
+>>>>>>> refs/remotes/origin/master
 	;; Clear the BSS region from _bss_start to _end.
 	move.d	__bss_start, $r0
 	move.d	_end, $r1
@@ -463,6 +501,7 @@ no_command_line:
 	cmp.d	$r1, $r0
 	blo 1b
 	nop
+<<<<<<< HEAD
 #endif
 
 #ifdef CONFIG_ETRAX_VCS_SIM
@@ -472,6 +511,8 @@ no_command_line:
 	jsr     CPU_WATCHDOG_TIMEOUT
 	nop
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	; Initialize registers to increase determinism
 	move.d __bss_start, $r0

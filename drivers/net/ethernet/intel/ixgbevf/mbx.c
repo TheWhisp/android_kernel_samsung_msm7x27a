@@ -86,14 +86,25 @@ static s32 ixgbevf_poll_for_ack(struct ixgbe_hw *hw)
 static s32 ixgbevf_read_posted_mbx(struct ixgbe_hw *hw, u32 *msg, u16 size)
 {
 	struct ixgbe_mbx_info *mbx = &hw->mbx;
+<<<<<<< HEAD
 	s32 ret_val = IXGBE_ERR_MBX;
+=======
+	s32 ret_val = -IXGBE_ERR_MBX;
+
+	if (!mbx->ops.read)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	ret_val = ixgbevf_poll_for_msg(hw);
 
 	/* if ack received read message, otherwise we timed out */
 	if (!ret_val)
 		ret_val = mbx->ops.read(hw, msg, size);
+<<<<<<< HEAD
 
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return ret_val;
 }
 
@@ -109,7 +120,15 @@ static s32 ixgbevf_read_posted_mbx(struct ixgbe_hw *hw, u32 *msg, u16 size)
 static s32 ixgbevf_write_posted_mbx(struct ixgbe_hw *hw, u32 *msg, u16 size)
 {
 	struct ixgbe_mbx_info *mbx = &hw->mbx;
+<<<<<<< HEAD
 	s32 ret_val;
+=======
+	s32 ret_val = -IXGBE_ERR_MBX;
+
+	/* exit if either we can't write or there isn't a defined timeout */
+	if (!mbx->ops.write || !mbx->timeout)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* send msg */
 	ret_val = mbx->ops.write(hw, msg, size);
@@ -117,7 +136,11 @@ static s32 ixgbevf_write_posted_mbx(struct ixgbe_hw *hw, u32 *msg, u16 size)
 	/* if msg sent wait until we receive an ack */
 	if (!ret_val)
 		ret_val = ixgbevf_poll_for_ack(hw);
+<<<<<<< HEAD
 
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return ret_val;
 }
 

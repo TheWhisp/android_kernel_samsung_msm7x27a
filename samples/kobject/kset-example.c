@@ -262,6 +262,10 @@ baz_error:
 bar_error:
 	destroy_foo_obj(foo_obj);
 foo_error:
+<<<<<<< HEAD
+=======
+	kset_unregister(example_kset);
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 

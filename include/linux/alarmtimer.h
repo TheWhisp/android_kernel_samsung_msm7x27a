@@ -14,7 +14,10 @@ enum alarmtimer_type {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum alarmtimer_restart {
 	ALARMTIMER_NORESTART,
 	ALARMTIMER_RESTART,
@@ -23,9 +26,13 @@ enum alarmtimer_restart {
 
 #define ALARMTIMER_STATE_INACTIVE	0x00
 #define ALARMTIMER_STATE_ENQUEUED	0x01
+<<<<<<< HEAD
 #define ALARMTIMER_STATE_CALLBACK	0x02
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct alarm - Alarm timer structure
  * @node:	timerqueue node for adding to the event list this value
@@ -39,6 +46,7 @@ enum alarmtimer_restart {
 struct alarm {
 	struct timerqueue_node	node;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ktime_t			period;
 	void			(*function)(struct alarm *);
 	enum alarmtimer_type	type;
@@ -48,10 +56,17 @@ struct alarm {
 	enum alarmtimer_type	type;
 	int			state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hrtimer		timer;
+	enum alarmtimer_restart	(*function)(struct alarm *, ktime_t now);
+	enum alarmtimer_type	type;
+	int			state;
+>>>>>>> refs/remotes/origin/master
 	void			*data;
 };
 
 void alarm_init(struct alarm *alarm, enum alarmtimer_type type,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		void (*function)(struct alarm *));
 void alarm_start(struct alarm *alarm, ktime_t start, ktime_t period);
@@ -59,10 +74,17 @@ void alarm_cancel(struct alarm *alarm);
 =======
 		enum alarmtimer_restart (*function)(struct alarm *, ktime_t));
 void alarm_start(struct alarm *alarm, ktime_t start);
+=======
+		enum alarmtimer_restart (*function)(struct alarm *, ktime_t));
+int alarm_start(struct alarm *alarm, ktime_t start);
+int alarm_start_relative(struct alarm *alarm, ktime_t start);
+void alarm_restart(struct alarm *alarm);
+>>>>>>> refs/remotes/origin/master
 int alarm_try_to_cancel(struct alarm *alarm);
 int alarm_cancel(struct alarm *alarm);
 
 u64 alarm_forward(struct alarm *alarm, ktime_t now, ktime_t interval);
+<<<<<<< HEAD
 
 /*
  * A alarmtimer is active, when it is enqueued into timerqueue or the
@@ -94,5 +116,12 @@ static inline int alarmtimer_callback_running(struct alarm *timer)
 /* Provide way to access the rtc device being used by alarmtimers */
 struct rtc_device *alarmtimer_get_rtcdev(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+u64 alarm_forward_now(struct alarm *alarm, ktime_t interval);
+ktime_t alarm_expires_remaining(const struct alarm *alarm);
+
+/* Provide way to access the rtc device being used by alarmtimers */
+struct rtc_device *alarmtimer_get_rtcdev(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif

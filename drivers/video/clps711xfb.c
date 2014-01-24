@@ -22,20 +22,31 @@
 #include <linux/mm.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/fb.h>
 #include <linux/init.h>
 #include <linux/proc_fs.h>
 #include <linux/delay.h>
+=======
+#include <linux/slab.h>
+#include <linux/fb.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <linux/uaccess.h>
 
+<<<<<<< HEAD
 #include <asm/hardware/clps7111.h>
 #include <mach/syspld.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct fb_info	*cfb;
 
 #define CMAP_MAX_SIZE	16
@@ -163,6 +174,7 @@ clps7111fb_set_par(struct fb_info *info)
 
 static int clps7111fb_blank(int blank, struct fb_info *info)
 {
+<<<<<<< HEAD
     	if (blank) {
 		if (machine_is_edb7211()) {
 			/* Turn off the LCD backlight. */
@@ -201,6 +213,14 @@ static int clps7111fb_blank(int blank, struct fb_info *info)
 			clps_writeb(clps_readb(PDDR) | EDB_PD3_LCDBL, PDDR);
 		}
 	}
+=======
+	/* Enable/Disable LCD controller. */
+	if (blank)
+		clps_writel(clps_readl(SYSCON1) & ~SYSCON1_LCDEN, SYSCON1);
+	else
+		clps_writel(clps_readl(SYSCON1) | SYSCON1_LCDEN, SYSCON1);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -215,6 +235,7 @@ static struct fb_ops clps7111fb_ops = {
 	.fb_imageblit	= cfb_imageblit,
 };
 
+<<<<<<< HEAD
 static int backlight_proc_show(struct seq_file *m, void *v)
 {
 	if (machine_is_edb7211()) {
@@ -272,6 +293,9 @@ static const struct file_operations backlight_proc_fops = {
 };
 
 static void __init clps711x_guess_lcd_params(struct fb_info *info)
+=======
+static void clps711x_guess_lcd_params(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int lcdcon, syscon, size;
 	unsigned long phys_base = PAGE_OFFSET;
@@ -359,7 +383,11 @@ static void __init clps711x_guess_lcd_params(struct fb_info *info)
 	info->fix.type       = FB_TYPE_PACKED_PIXELS;
 }
 
+<<<<<<< HEAD
 int __init clps711xfb_init(void)
+=======
+static int clps711x_fb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -ENOMEM;
 
@@ -379,6 +407,7 @@ int __init clps711xfb_init(void)
 
 	fb_alloc_cmap(&cfb->cmap, CMAP_MAX_SIZE, 0);
 
+<<<<<<< HEAD
 	if (!proc_create("backlight", 0444, NULL, &backlight_proc_fops)) {
 		printk("Couldn't create the /proc entry for the backlight.\n");
 		return -EINVAL;
@@ -406,16 +435,23 @@ int __init clps711xfb_init(void)
 		clps_writeb(clps_readb(PDDR) | EDB_PD3_LCDBL, PDDR);
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	err = register_framebuffer(cfb);
 
 out:	return err;
 }
 
+<<<<<<< HEAD
 static void __exit clps711xfb_exit(void)
+=======
+static int clps711x_fb_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unregister_framebuffer(cfb);
 	kfree(cfb);
 
+<<<<<<< HEAD
 	/*
 	 * Power down the LCD
 	 */
@@ -430,4 +466,21 @@ module_exit(clps711xfb_exit);
 
 MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
 MODULE_DESCRIPTION("CLPS711x framebuffer driver");
+=======
+	return 0;
+}
+
+static struct platform_driver clps711x_fb_driver = {
+	.driver	= {
+		.name	= "video-clps711x",
+		.owner	= THIS_MODULE,
+	},
+	.probe	= clps711x_fb_probe,
+	.remove	= clps711x_fb_remove,
+};
+module_platform_driver(clps711x_fb_driver);
+
+MODULE_AUTHOR("Russell King <rmk@arm.linux.org.uk>");
+MODULE_DESCRIPTION("CLPS711X framebuffer driver");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

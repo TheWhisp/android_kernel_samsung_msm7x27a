@@ -27,7 +27,10 @@ static inline void s3c_fb_setname(char *name)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Re-define device name depending on support. */
 static inline void s5p_fb_setname(int id, char *name)
 {
@@ -43,5 +46,8 @@ static inline void s5p_fb_setname(int id, char *name)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_PLAT_FB_CORE_H */

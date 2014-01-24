@@ -25,7 +25,11 @@ config  CAIF_DEBUG
 	bool "Enable Debug"
 	depends on CAIF
 	default n
+<<<<<<< HEAD
 	--- help ---
+=======
+	---help---
+>>>>>>> refs/remotes/origin/master
 	Enable the inclusion of debug code in the CAIF stack.
 	Be aware that doing this will impact performance.
 	If unsure say N.
@@ -41,7 +45,10 @@ config CAIF_NETDEV
 	also be a built-in.
 	If unsure say Y.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 config CAIF_USB
 	tristate "CAIF USB support"
@@ -53,4 +60,7 @@ config CAIF_USB
 	If you select to build it as a built-in then the main CAIF device must
 	also be a built-in.
 	If unsure say N.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

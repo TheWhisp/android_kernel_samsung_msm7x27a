@@ -2,6 +2,7 @@
 #define _RAID0_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct strip_zone
 {
 	sector_t zone_end;	/* Start of the next zone (in sectors) */
@@ -19,6 +20,8 @@ struct raid0_private_data
 typedef struct raid0_private_data raid0_conf_t;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct strip_zone {
 	sector_t zone_end;	/* Start of the next zone (in sectors) */
 	sector_t dev_start;	/* Zone offset in real dev (in sectors) */
@@ -34,5 +37,8 @@ struct r0conf {
 						 * a merge_bvec_fn */
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

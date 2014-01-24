@@ -112,6 +112,7 @@ static void nuc900_nand_write_buf(struct mtd_info *mtd,
 		write_data_reg(nand, buf[i]);
 }
 
+<<<<<<< HEAD
 static int nuc900_verify_buf(struct mtd_info *mtd,
 			     const unsigned char *buf, int len)
 {
@@ -128,6 +129,8 @@ static int nuc900_verify_buf(struct mtd_info *mtd,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int nuc900_check_rb(struct nuc900_nand *nand)
 {
 	unsigned int val;
@@ -193,6 +196,7 @@ static void nuc900_nand_command_lp(struct mtd_info *mtd, unsigned int command,
 	case NAND_CMD_SEQIN:
 	case NAND_CMD_RNDIN:
 	case NAND_CMD_STATUS:
+<<<<<<< HEAD
 	case NAND_CMD_DEPLETE1:
 		return;
 
@@ -202,6 +206,8 @@ static void nuc900_nand_command_lp(struct mtd_info *mtd, unsigned int command,
 	case NAND_CMD_STATUS_ERROR2:
 	case NAND_CMD_STATUS_ERROR3:
 		udelay(chip->chip_delay);
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	case NAND_CMD_RESET:
@@ -262,7 +268,11 @@ static void nuc900_nand_enable(struct nuc900_nand *nand)
 	spin_unlock(&nand->lock);
 }
 
+<<<<<<< HEAD
 static int __devinit nuc900_nand_probe(struct platform_device *pdev)
+=======
+static int nuc900_nand_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900_nand *nuc900_nand;
 	struct nand_chip *chip;
@@ -292,7 +302,10 @@ static int __devinit nuc900_nand_probe(struct platform_device *pdev)
 	chip->read_byte		= nuc900_nand_read_byte;
 	chip->write_buf		= nuc900_nand_write_buf;
 	chip->read_buf		= nuc900_nand_read_buf;
+<<<<<<< HEAD
 	chip->verify_buf	= nuc900_verify_buf;
+=======
+>>>>>>> refs/remotes/origin/master
 	chip->chip_delay	= 50;
 	chip->options		= 0;
 	chip->ecc.mode		= NAND_ECC_SOFT;
@@ -334,15 +347,23 @@ fail1:	kfree(nuc900_nand);
 	return retval;
 }
 
+<<<<<<< HEAD
 static int __devexit nuc900_nand_remove(struct platform_device *pdev)
+=======
+static int nuc900_nand_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nuc900_nand *nuc900_nand = platform_get_drvdata(pdev);
 	struct resource *res;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	nand_release(&nuc900_nand->mtd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nand_release(&nuc900_nand->mtd);
+>>>>>>> refs/remotes/origin/master
 	iounmap(nuc900_nand->reg);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -353,20 +374,28 @@ static int __devexit nuc900_nand_remove(struct platform_device *pdev)
 
 	kfree(nuc900_nand);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct platform_driver nuc900_nand_driver = {
 	.probe		= nuc900_nand_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(nuc900_nand_remove),
+=======
+	.remove		= nuc900_nand_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "nuc900-fmi",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init nuc900_nand_init(void)
 {
@@ -383,6 +412,9 @@ module_exit(nuc900_nand_exit);
 =======
 module_platform_driver(nuc900_nand_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(nuc900_nand_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Wan ZongShun <mcuos.com@gmail.com>");
 MODULE_DESCRIPTION("w90p910/NUC9xx nand driver!");

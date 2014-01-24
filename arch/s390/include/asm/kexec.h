@@ -1,7 +1,11 @@
 /*
+<<<<<<< HEAD
  * include/asm-s390/kexec.h
  *
  * (C) Copyright IBM Corp. 2005
+=======
+ * Copyright IBM Corp. 2005
+>>>>>>> refs/remotes/origin/master
  *
  * Author(s): Rolf Adelsberger <adelsberger@de.ibm.com>
  *
@@ -10,10 +14,15 @@
 #ifndef _S390_KEXEC_H
 #define _S390_KEXEC_H
 
+<<<<<<< HEAD
 #ifdef __KERNEL__
 #include <asm/page.h>
 #endif
 #include <asm/processor.h>
+=======
+#include <asm/processor.h>
+#include <asm/page.h>
+>>>>>>> refs/remotes/origin/master
 /*
  * KEXEC_SOURCE_MEMORY_LIMIT maximum page get_free_page can return.
  * I.e. Maximum page that is mapped directly into kernel memory,
@@ -31,6 +40,7 @@
 #define KEXEC_CONTROL_MEMORY_LIMIT (1UL<<31)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Allocate one page for the pdp and the second for the code */
 #define KEXEC_CONTROL_PAGE_SIZE 4096
 
@@ -38,6 +48,8 @@
 #define KEXEC_ARCH KEXEC_ARCH_S390
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Maximum address we can use for the crash control pages */
 #define KEXEC_CRASH_CONTROL_MEMORY_LIMIT (-1UL)
 
@@ -68,7 +80,10 @@
 	 ALIGN(sizeof(u32), 4) \
 	)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Provide a dummy definition to avoid build failures. */
 static inline void crash_setup_regs(struct pt_regs *newregs,
 					struct pt_regs *oldregs) { }

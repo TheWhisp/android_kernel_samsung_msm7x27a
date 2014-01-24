@@ -26,6 +26,7 @@
 #include <linux/sched.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline enum km_type crypto_kmap_type(int out)
 {
 	enum km_type type;
@@ -50,6 +51,8 @@ static inline void crypto_kunmap(void *vaddr, int out)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void crypto_yield(u32 flags)
 {
 	if (flags & CRYPTO_TFM_REQ_MAY_SLEEP)
@@ -61,6 +64,10 @@ static inline void scatterwalk_sg_chain(struct scatterlist *sg1, int num,
 {
 	sg_set_page(&sg1[num - 1], (void *)sg2, 0, 0);
 	sg1[num - 1].page_link &= ~0x02;
+<<<<<<< HEAD
+=======
+	sg1[num - 1].page_link |= 0x01;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline struct scatterlist *scatterwalk_sg_next(struct scatterlist *sg)
@@ -68,7 +75,11 @@ static inline struct scatterlist *scatterwalk_sg_next(struct scatterlist *sg)
 	if (sg_is_last(sg))
 		return NULL;
 
+<<<<<<< HEAD
 	return (++sg)->length ? sg : (void *)sg_page(sg);
+=======
+	return (++sg)->length ? sg : sg_chain_ptr(sg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void scatterwalk_crypto_chain(struct scatterlist *head,
@@ -125,6 +136,7 @@ static inline struct page *scatterwalk_page(struct scatter_walk *walk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void scatterwalk_unmap(void *vaddr, int out)
 {
 	crypto_kunmap(vaddr, out);
@@ -133,19 +145,33 @@ static inline void scatterwalk_unmap(void *vaddr)
 {
 	kunmap_atomic(vaddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void scatterwalk_unmap(void *vaddr)
+{
+	kunmap_atomic(vaddr);
+>>>>>>> refs/remotes/origin/master
 }
 
 void scatterwalk_start(struct scatter_walk *walk, struct scatterlist *sg);
 void scatterwalk_copychunks(void *buf, struct scatter_walk *walk,
 			    size_t nbytes, int out);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void *scatterwalk_map(struct scatter_walk *walk, int out);
 =======
 void *scatterwalk_map(struct scatter_walk *walk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void *scatterwalk_map(struct scatter_walk *walk);
+>>>>>>> refs/remotes/origin/master
 void scatterwalk_done(struct scatter_walk *walk, int out, int more);
 
 void scatterwalk_map_and_copy(void *buf, struct scatterlist *sg,
 			      unsigned int start, unsigned int nbytes, int out);
 
+<<<<<<< HEAD
+=======
+int scatterwalk_bytes_sglen(struct scatterlist *sg, int num_bytes);
+
+>>>>>>> refs/remotes/origin/master
 #endif  /* _CRYPTO_SCATTERWALK_H */

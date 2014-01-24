@@ -14,14 +14,23 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/nl80211.h>
 #include <linux/pci.h>
 #include <linux/pci-aspm.h>
 #include <linux/etherdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "../ath.h"
 #include "ath5k.h"
 #include "debug.h"
@@ -39,6 +48,7 @@ static DEFINE_PCI_DEVICE_TABLE(ath5k_pci_id_table) = {
 	{ PCI_VDEVICE(3COM,    0x0013) }, /* 3com 3CRDAG675 5212 */
 	{ PCI_VDEVICE(ATHEROS, 0x1014) }, /* IBM minipci 5212 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ PCI_VDEVICE(ATHEROS, 0x0014) }, /* 5212 combatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0015) }, /* 5212 combatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0016) }, /* 5212 combatible */
@@ -46,17 +56,26 @@ static DEFINE_PCI_DEVICE_TABLE(ath5k_pci_id_table) = {
 	{ PCI_VDEVICE(ATHEROS, 0x0018) }, /* 5212 combatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0019) }, /* 5212 combatible */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VDEVICE(ATHEROS, 0x0014) }, /* 5212 compatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0015) }, /* 5212 compatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0016) }, /* 5212 compatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0017) }, /* 5212 compatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0018) }, /* 5212 compatible */
 	{ PCI_VDEVICE(ATHEROS, 0x0019) }, /* 5212 compatible */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ PCI_VDEVICE(ATHEROS, 0x001a) }, /* 2413 Griffin-lite */
 	{ PCI_VDEVICE(ATHEROS, 0x001b) }, /* 5413 Eagle */
 	{ PCI_VDEVICE(ATHEROS, 0x001c) }, /* PCI-E cards */
 	{ PCI_VDEVICE(ATHEROS, 0x001d) }, /* 2417 Nala */
+<<<<<<< HEAD
+=======
+	{ PCI_VDEVICE(ATHEROS, 0xff1b) }, /* AR5BXB63 */
+>>>>>>> refs/remotes/origin/master
 	{ 0 }
 };
 MODULE_DEVICE_TABLE(pci, ath5k_pci_id_table);
@@ -65,16 +84,22 @@ MODULE_DEVICE_TABLE(pci, ath5k_pci_id_table);
 static void ath5k_pci_read_cachesize(struct ath_common *common, int *csz)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath5k_softc *sc = (struct ath5k_softc *) common->priv;
 	u8 u8tmp;
 
 	pci_read_config_byte(sc->pdev, PCI_CACHE_LINE_SIZE, &u8tmp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ath5k_hw *ah = (struct ath5k_hw *) common->priv;
 	u8 u8tmp;
 
 	pci_read_config_byte(ah->pdev, PCI_CACHE_LINE_SIZE, &u8tmp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*csz = (int)u8tmp;
 
 	/*
@@ -118,10 +143,14 @@ ath5k_pci_eeprom_read(struct ath_common *common, u32 offset, u16 *data)
 			return true;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		udelay(15);
 =======
 		usleep_range(15, 20);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usleep_range(15, 20);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return false;
@@ -175,16 +204,24 @@ static const struct ath_bus_ops ath_pci_bus_ops = {
 * PCI Initialization *
 \********************/
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 ath5k_pci_probe(struct pci_dev *pdev,
 		const struct pci_device_id *id)
 {
 	void __iomem *mem;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath5k_softc *sc;
 =======
 	struct ath5k_hw *ah;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ath5k_hw *ah;
+>>>>>>> refs/remotes/origin/master
 	struct ieee80211_hw *hw;
 	int ret;
 	u8 csz;
@@ -263,10 +300,14 @@ ath5k_pci_probe(struct pci_dev *pdev,
 	mem = pci_iomap(pdev, 0, 0);
 	if (!mem) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_err(&pdev->dev, "cannot remap PCI memory region\n") ;
 =======
 		dev_err(&pdev->dev, "cannot remap PCI memory region\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev, "cannot remap PCI memory region\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		goto err_reg;
 	}
@@ -276,10 +317,14 @@ ath5k_pci_probe(struct pci_dev *pdev,
 	 * and hw->priv (driver private data)
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hw = ieee80211_alloc_hw(sizeof(*sc), &ath5k_hw_ops);
 =======
 	hw = ieee80211_alloc_hw(sizeof(*ah), &ath5k_hw_ops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hw = ieee80211_alloc_hw(sizeof(*ah), &ath5k_hw_ops);
+>>>>>>> refs/remotes/origin/master
 	if (hw == NULL) {
 		dev_err(&pdev->dev, "cannot allocate ieee80211_hw\n");
 		ret = -ENOMEM;
@@ -288,6 +333,7 @@ ath5k_pci_probe(struct pci_dev *pdev,
 
 	dev_info(&pdev->dev, "registered as '%s'\n", wiphy_name(hw->wiphy));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sc = hw->priv;
 	sc->hw = hw;
@@ -300,6 +346,8 @@ ath5k_pci_probe(struct pci_dev *pdev,
 	/* Initialize */
 	ret = ath5k_init_softc(sc, &ath_pci_bus_ops);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ah = hw->priv;
 	ah->hw = hw;
 	ah->pdev = pdev;
@@ -310,7 +358,10 @@ ath5k_pci_probe(struct pci_dev *pdev,
 
 	/* Initialize */
 	ret = ath5k_init_ah(ah, &ath_pci_bus_ops);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_free;
 
@@ -330,6 +381,7 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit
 ath5k_pci_remove(struct pci_dev *pdev)
 {
@@ -340,11 +392,20 @@ ath5k_pci_remove(struct pci_dev *pdev)
 	ath5k_deinit_softc(sc);
 	pci_iounmap(pdev, sc->iobase);
 =======
+=======
+static void
+ath5k_pci_remove(struct pci_dev *pdev)
+{
+	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	struct ath5k_hw *ah = hw->priv;
 
 	ath5k_deinit_ah(ah);
 	pci_iounmap(pdev, ah->iobase);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_release_region(pdev, 0);
 	pci_disable_device(pdev);
 	ieee80211_free_hw(hw);
@@ -356,6 +417,7 @@ static int ath5k_pci_suspend(struct device *dev)
 	struct pci_dev *pdev = to_pci_dev(dev);
 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 
 	ath5k_led_off(sc);
@@ -364,6 +426,11 @@ static int ath5k_pci_suspend(struct device *dev)
 
 	ath5k_led_off(ah);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ath5k_hw *ah = hw->priv;
+
+	ath5k_led_off(ah);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -372,10 +439,14 @@ static int ath5k_pci_resume(struct device *dev)
 	struct pci_dev *pdev = to_pci_dev(dev);
 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ath5k_softc *sc = hw->priv;
 =======
 	struct ath5k_hw *ah = hw->priv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ath5k_hw *ah = hw->priv;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Suspend/Resume resets the PCI configuration space, so we have to
@@ -385,10 +456,14 @@ static int ath5k_pci_resume(struct device *dev)
 	pci_write_config_byte(pdev, 0x41, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath5k_led_enable(sc);
 =======
 	ath5k_led_enable(ah);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath5k_led_enable(ah);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -402,6 +477,7 @@ static struct pci_driver ath5k_pci_driver = {
 	.name		= KBUILD_MODNAME,
 	.id_table	= ath5k_pci_id_table,
 	.probe		= ath5k_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ath5k_pci_remove),
 	.driver.pm	= ATH5K_PM_OPS,
 };
@@ -431,3 +507,10 @@ exit_ath5k_pci(void)
 
 module_init(init_ath5k_pci);
 module_exit(exit_ath5k_pci);
+=======
+	.remove		= ath5k_pci_remove,
+	.driver.pm	= ATH5K_PM_OPS,
+};
+
+module_pci_driver(ath5k_pci_driver);
+>>>>>>> refs/remotes/origin/master

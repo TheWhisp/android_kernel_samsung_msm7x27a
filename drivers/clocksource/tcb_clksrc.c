@@ -20,10 +20,15 @@
  *     with a base rate of 5+ MHz, packaged as a clocksource (with
  *     resolution better than 200 nsec).
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *   - Some chips support 32 bit counter. A single channel is used for
  *     this 32 bit free-running counter. the second channel is not used.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *   - Some chips support 32 bit counter. A single channel is used for
+ *     this 32 bit free-running counter. the second channel is not used.
+>>>>>>> refs/remotes/origin/master
  *
  *   - The third channel may be used to provide a 16-bit clockevent
  *     source, used in either periodic or oneshot mode.  This runs
@@ -60,22 +65,31 @@ static cycle_t tc_get_cycles(struct clocksource *cs)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static cycle_t tc_get_cycles32(struct clocksource *cs)
 {
 	return __raw_readl(tcaddr + ATMEL_TC_REG(0, CV));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clocksource clksrc = {
 	.name           = "tcb_clksrc",
 	.rating         = 200,
 	.read           = tc_get_cycles,
 	.mask           = CLOCKSOURCE_MASK(32),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.shift          = 18,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
@@ -110,7 +124,11 @@ static void tc_mode(enum clock_event_mode m, struct clock_event_device *d)
 			|| tcd->clkevt.mode == CLOCK_EVT_MODE_ONESHOT) {
 		__raw_writel(0xff, regs + ATMEL_TC_REG(2, IDR));
 		__raw_writel(ATMEL_TC_CLKDIS, regs + ATMEL_TC_REG(2, CCR));
+<<<<<<< HEAD
 		clk_disable(tcd->clk);
+=======
+		clk_disable_unprepare(tcd->clk);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (m) {
@@ -119,7 +137,11 @@ static void tc_mode(enum clock_event_mode m, struct clock_event_device *d)
 	 * of oneshot, we get lower overhead and improved accuracy.
 	 */
 	case CLOCK_EVT_MODE_PERIODIC:
+<<<<<<< HEAD
 		clk_enable(tcd->clk);
+=======
+		clk_prepare_enable(tcd->clk);
+>>>>>>> refs/remotes/origin/master
 
 		/* slow clock, count up to RC, then irq and restart */
 		__raw_writel(timer_clock
@@ -136,7 +158,11 @@ static void tc_mode(enum clock_event_mode m, struct clock_event_device *d)
 		break;
 
 	case CLOCK_EVT_MODE_ONESHOT:
+<<<<<<< HEAD
 		clk_enable(tcd->clk);
+=======
+		clk_prepare_enable(tcd->clk);
+>>>>>>> refs/remotes/origin/master
 
 		/* slow clock, count up to RC, then irq and stop */
 		__raw_writel(timer_clock | ATMEL_TC_CPCSTOP
@@ -167,7 +193,10 @@ static struct tc_clkevt_device clkevt = {
 		.name		= "tc_clkevt",
 		.features	= CLOCK_EVT_FEAT_PERIODIC
 					| CLOCK_EVT_FEAT_ONESHOT,
+<<<<<<< HEAD
 		.shift		= 32,
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Should be lower than at91rm9200's system timer */
 		.rating		= 125,
 		.set_next_event	= tc_next_event,
@@ -191,6 +220,7 @@ static irqreturn_t ch2_irq(int irq, void *handle)
 
 static struct irqaction tc_irqaction = {
 	.name		= "tc_clkevt",
+<<<<<<< HEAD
 	.flags		= IRQF_TIMER | IRQF_DISABLED,
 	.handler	= ch2_irq,
 };
@@ -200,12 +230,31 @@ static void __init setup_clkevents(struct atmel_tc *tc, int clk32k_divisor_idx)
 	struct clk *t2_clk = tc->clk[2];
 	int irq = tc->irq[2];
 
+=======
+	.flags		= IRQF_TIMER,
+	.handler	= ch2_irq,
+};
+
+static int __init setup_clkevents(struct atmel_tc *tc, int clk32k_divisor_idx)
+{
+	int ret;
+	struct clk *t2_clk = tc->clk[2];
+	int irq = tc->irq[2];
+
+	/* try to enable t2 clk to avoid future errors in mode change */
+	ret = clk_prepare_enable(t2_clk);
+	if (ret)
+		return ret;
+	clk_disable_unprepare(t2_clk);
+
+>>>>>>> refs/remotes/origin/master
 	clkevt.regs = tc->regs;
 	clkevt.clk = t2_clk;
 	tc_irqaction.dev_id = &clkevt;
 
 	timer_clock = clk32k_divisor_idx;
 
+<<<<<<< HEAD
 	clkevt.clkevt.mult = div_sc(32768, NSEC_PER_SEC, clkevt.clkevt.shift);
 	clkevt.clkevt.max_delta_ns
 		= clockevent_delta2ns(0xffff, &clkevt.clkevt);
@@ -215,19 +264,40 @@ static void __init setup_clkevents(struct atmel_tc *tc, int clk32k_divisor_idx)
 	clockevents_register_device(&clkevt.clkevt);
 
 	setup_irq(irq, &tc_irqaction);
+=======
+	clkevt.clkevt.cpumask = cpumask_of(0);
+
+	ret = setup_irq(irq, &tc_irqaction);
+	if (ret)
+		return ret;
+
+	clockevents_config_and_register(&clkevt.clkevt, 32768, 1, 0xffff);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 #else /* !CONFIG_GENERIC_CLOCKEVENTS */
 
+<<<<<<< HEAD
 static void __init setup_clkevents(struct atmel_tc *tc, int clk32k_divisor_idx)
 {
 	/* NOTHING */
+=======
+static int __init setup_clkevents(struct atmel_tc *tc, int clk32k_divisor_idx)
+{
+	/* NOTHING */
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init tcb_setup_dual_chan(struct atmel_tc *tc, int mck_divisor_idx)
 {
 	/* channel 0:  waveform mode, input mclk/8, clock TIOA0 on overflow */
@@ -270,7 +340,10 @@ static void __init tcb_setup_single_chan(struct atmel_tc *tc, int mck_divisor_id
 	__raw_writel(ATMEL_TC_SYNC, tcaddr + ATMEL_TC_BCR);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init tcb_clksrc_init(void)
 {
 	static char bootinfo[] __initdata
@@ -283,6 +356,10 @@ static int __init tcb_clksrc_init(void)
 	int best_divisor_idx = -1;
 	int clk32k_divisor_idx = -1;
 	int i;
+<<<<<<< HEAD
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	tc = atmel_tc_alloc(CONFIG_ATMEL_TCB_CLKSRC_BLOCK, clksrc.name);
 	if (!tc) {
@@ -293,7 +370,15 @@ static int __init tcb_clksrc_init(void)
 	pdev = tc->pdev;
 
 	t0_clk = tc->clk[0];
+<<<<<<< HEAD
 	clk_enable(t0_clk);
+=======
+	ret = clk_prepare_enable(t0_clk);
+	if (ret) {
+		pr_debug("can't enable T0 clk\n");
+		goto err_free_tc;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* How fast will we be counting?  Pick something over 5 MHz.  */
 	rate = (u32) clk_get_rate(t0_clk);
@@ -318,14 +403,18 @@ static int __init tcb_clksrc_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clksrc.mult = clocksource_hz2mult(divided_rate, clksrc.shift);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	printk(bootinfo, clksrc.name, CONFIG_ATMEL_TCB_CLKSRC_BLOCK,
 			divided_rate / 1000000,
 			((divided_rate + 500000) % 1000000) / 1000);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* tclib will give us three clocks no matter what the
 	 * underlying platform supports.
@@ -359,6 +448,8 @@ static int __init tcb_clksrc_init(void)
 	/* and away we go! */
 	clocksource_register(&clksrc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tc->tcb_config && tc->tcb_config->counter_width == 32) {
 		/* use apropriate function to read 32 bit counter */
 		clksrc.read = tc_get_cycles32;
@@ -368,12 +459,21 @@ static int __init tcb_clksrc_init(void)
 		/* tclib will give us three clocks no matter what the
 		 * underlying platform supports.
 		 */
+<<<<<<< HEAD
 		clk_enable(tc->clk[1]);
+=======
+		ret = clk_prepare_enable(tc->clk[1]);
+		if (ret) {
+			pr_debug("can't enable T1 clk\n");
+			goto err_disable_t0;
+		}
+>>>>>>> refs/remotes/origin/master
 		/* setup both channel 0 & 1 */
 		tcb_setup_dual_chan(tc, best_divisor_idx);
 	}
 
 	/* and away we go! */
+<<<<<<< HEAD
 	clocksource_register_hz(&clksrc, divided_rate);
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -381,5 +481,31 @@ static int __init tcb_clksrc_init(void)
 	setup_clkevents(tc, clk32k_divisor_idx);
 
 	return 0;
+=======
+	ret = clocksource_register_hz(&clksrc, divided_rate);
+	if (ret)
+		goto err_disable_t1;
+
+	/* channel 2:  periodic and oneshot timer support */
+	ret = setup_clkevents(tc, clk32k_divisor_idx);
+	if (ret)
+		goto err_unregister_clksrc;
+
+	return 0;
+
+err_unregister_clksrc:
+	clocksource_unregister(&clksrc);
+
+err_disable_t1:
+	if (!tc->tcb_config || tc->tcb_config->counter_width != 32)
+		clk_disable_unprepare(tc->clk[1]);
+
+err_disable_t0:
+	clk_disable_unprepare(t0_clk);
+
+err_free_tc:
+	atmel_tc_free(tc);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 arch_initcall(tcb_clksrc_init);

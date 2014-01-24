@@ -26,6 +26,7 @@
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_MUTEX(bat_lock);
 static struct work_struct bat_work;
 static struct mutex work_lock;
@@ -33,6 +34,10 @@ static struct mutex work_lock;
 static struct work_struct bat_work;
 static DEFINE_MUTEX(work_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct work_struct bat_work;
+static DEFINE_MUTEX(work_lock);
+>>>>>>> refs/remotes/origin/master
 static int bat_status = POWER_SUPPLY_STATUS_UNKNOWN;
 static enum power_supply_property *prop;
 
@@ -152,7 +157,11 @@ static irqreturn_t wm97xx_chrg_irq(int irq, void *data)
 #ifdef CONFIG_PM
 static int wm97xx_bat_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	flush_work_sync(&bat_work);
+=======
+	flush_work(&bat_work);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -168,7 +177,11 @@ static const struct dev_pm_ops wm97xx_bat_pm_ops = {
 };
 #endif
 
+<<<<<<< HEAD
 static int __devinit wm97xx_bat_probe(struct platform_device *dev)
+=======
+static int wm97xx_bat_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = 0;
 	int props = 1;	/* POWER_SUPPLY_PROP_PRESENT */
@@ -187,10 +200,13 @@ static int __devinit wm97xx_bat_probe(struct platform_device *dev)
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&work_lock);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&dev->dev, "No platform_data supplied\n");
 		return -EINVAL;
@@ -205,10 +221,14 @@ static int __devinit wm97xx_bat_probe(struct platform_device *dev)
 			goto err2;
 		ret = request_irq(gpio_to_irq(pdata->charge_gpio),
 <<<<<<< HEAD
+<<<<<<< HEAD
 				wm97xx_chrg_irq, IRQF_DISABLED,
 =======
 				wm97xx_chrg_irq, 0,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				wm97xx_chrg_irq, 0,
+>>>>>>> refs/remotes/origin/master
 				"AC Detect", dev);
 		if (ret)
 			goto err2;
@@ -227,8 +247,15 @@ static int __devinit wm97xx_bat_probe(struct platform_device *dev)
 		props++;	/* POWER_SUPPLY_PROP_VOLTAGE_MIN */
 
 	prop = kzalloc(props * sizeof(*prop), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!prop)
 		goto err3;
+=======
+	if (!prop) {
+		ret = -ENOMEM;
+		goto err3;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	prop[i++] = POWER_SUPPLY_PROP_PRESENT;
 	if (pdata->charge_gpio >= 0)
@@ -276,7 +303,11 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit wm97xx_bat_remove(struct platform_device *dev)
+=======
+static int wm97xx_bat_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm97xx_pdata *wmdata = dev->dev.platform_data;
 	struct wm97xx_batt_pdata *pdata = wmdata->batt_pdata;
@@ -300,6 +331,7 @@ static struct platform_driver wm97xx_bat_driver = {
 #endif
 	},
 	.probe		= wm97xx_bat_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wm97xx_bat_remove),
 };
 
@@ -319,6 +351,12 @@ module_exit(wm97xx_bat_exit);
 =======
 module_platform_driver(wm97xx_bat_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= wm97xx_bat_remove,
+};
+
+module_platform_driver(wm97xx_bat_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Marek Vasut <marek.vasut@gmail.com>");

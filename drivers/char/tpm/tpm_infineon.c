@@ -4,8 +4,13 @@
  * SLD 9630 TT 1.1 and SLB 9635 TT 1.2 Trusted Platform Module
  * Specifications at www.trustedcomputinggroup.org
  *
+<<<<<<< HEAD
  * Copyright (C) 2005, Marcel Selhorst <m.selhorst@sirrix.com>
  * Sirrix AG - security technologies, http://www.sirrix.com and
+=======
+ * Copyright (C) 2005, Marcel Selhorst <tpmdd@selhorst.net>
+ * Sirrix AG - security technologies <tpmdd@sirrix.com> and
+>>>>>>> refs/remotes/origin/master
  * Applied Data Security Group, Ruhr-University Bochum, Germany
  * Project-Homepage: http://www.trust.rub.de/projects/linux-device-driver-infineon-tpm/ 
  *
@@ -371,6 +376,7 @@ static u8 tpm_inf_status(struct tpm_chip *chip)
 	return tpm_data_in(STAT);
 }
 
+<<<<<<< HEAD
 static DEVICE_ATTR(pubek, S_IRUGO, tpm_show_pubek, NULL);
 static DEVICE_ATTR(pcrs, S_IRUGO, tpm_show_pcrs, NULL);
 static DEVICE_ATTR(caps, S_IRUGO, tpm_show_caps, NULL);
@@ -396,14 +402,20 @@ static const struct file_operations inf_ops = {
 };
 
 static const struct tpm_vendor_specific tpm_inf = {
+=======
+static const struct tpm_class_ops tpm_inf = {
+>>>>>>> refs/remotes/origin/master
 	.recv = tpm_inf_recv,
 	.send = tpm_inf_send,
 	.cancel = tpm_inf_cancel,
 	.status = tpm_inf_status,
 	.req_complete_mask = 0,
 	.req_complete_val = 0,
+<<<<<<< HEAD
 	.attr_group = &inf_attr_grp,
 	.miscdev = {.fops = &inf_ops,},
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct pnp_device_id tpm_inf_pnp_tbl[] = {
@@ -415,7 +427,11 @@ static const struct pnp_device_id tpm_inf_pnp_tbl[] = {
 
 MODULE_DEVICE_TABLE(pnp, tpm_inf_pnp_tbl);
 
+<<<<<<< HEAD
 static int __devinit tpm_inf_pnp_probe(struct pnp_dev *dev,
+=======
+static int tpm_inf_pnp_probe(struct pnp_dev *dev,
+>>>>>>> refs/remotes/origin/master
 				       const struct pnp_device_id *dev_id)
 {
 	int rc = 0;
@@ -594,7 +610,11 @@ err_last:
 	return rc;
 }
 
+<<<<<<< HEAD
 static __devexit void tpm_inf_pnp_remove(struct pnp_dev *dev)
+=======
+static void tpm_inf_pnp_remove(struct pnp_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tpm_chip *chip = pnp_get_drvdata(dev);
 
@@ -655,7 +675,11 @@ static struct pnp_driver tpm_inf_pnp_driver = {
 	.probe = tpm_inf_pnp_probe,
 	.suspend = tpm_inf_pnp_suspend,
 	.resume = tpm_inf_pnp_resume,
+<<<<<<< HEAD
 	.remove = __devexit_p(tpm_inf_pnp_remove)
+=======
+	.remove = tpm_inf_pnp_remove
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init init_inf(void)
@@ -671,7 +695,11 @@ static void __exit cleanup_inf(void)
 module_init(init_inf);
 module_exit(cleanup_inf);
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Marcel Selhorst <m.selhorst@sirrix.com>");
+=======
+MODULE_AUTHOR("Marcel Selhorst <tpmdd@sirrix.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("Driver for Infineon TPM SLD 9630 TT 1.1 / SLB 9635 TT 1.2");
 MODULE_VERSION("1.9.2");
 MODULE_LICENSE("GPL");

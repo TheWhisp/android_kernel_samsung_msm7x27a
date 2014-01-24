@@ -14,18 +14,24 @@
  *
  * A clock source registers using mISDN_register_clock:
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	name = text string to name clock source
  *	priority = value to priorize clock sources (0 = default)
  *	ctl = callback function to enable/disable clock source
  *	priv = private pointer of clock source
  * 	return = pointer to clock source structure;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	name = text string to name clock source
  *	priority = value to priorize clock sources (0 = default)
  *	ctl = callback function to enable/disable clock source
  *	priv = private pointer of clock source
  *	return = pointer to clock source structure;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Note: Callback 'ctl' can be called before mISDN_register_clock returns!
  *       Also it can be called during mISDN_unregister_clock.
@@ -47,9 +53,13 @@
 #include <linux/spinlock.h>
 #include <linux/mISDNif.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "core.h"
 
 static u_int *debug;
@@ -86,10 +96,14 @@ select_iclock(void)
 		if (*debug & DEBUG_CLOCK)
 			printk(KERN_DEBUG "Old clock source '%s' disable.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				lastclock->name);
 =======
 			       lastclock->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       lastclock->name);
+>>>>>>> refs/remotes/origin/master
 		lastclock->ctl(lastclock->priv, 0);
 	}
 	if (bestclock && bestclock != iclock_current) {
@@ -97,10 +111,14 @@ select_iclock(void)
 		if (*debug & DEBUG_CLOCK)
 			printk(KERN_DEBUG "New clock source '%s' enable.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				bestclock->name);
 =======
 			       bestclock->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       bestclock->name);
+>>>>>>> refs/remotes/origin/master
 		bestclock->ctl(bestclock->priv, 1);
 	}
 	if (bestclock != iclock_current) {
@@ -124,10 +142,14 @@ struct mISDNclock
 		return NULL;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	strncpy(iclock->name, name, sizeof(iclock->name)-1);
 =======
 	strncpy(iclock->name, name, sizeof(iclock->name) - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	strncpy(iclock->name, name, sizeof(iclock->name) - 1);
+>>>>>>> refs/remotes/origin/master
 	iclock->pri = pri;
 	iclock->priv = priv;
 	iclock->ctl = ctl;
@@ -147,14 +169,19 @@ mISDN_unregister_clock(struct mISDNclock *iclock)
 	if (*debug & (DEBUG_CORE | DEBUG_CLOCK))
 		printk(KERN_DEBUG "%s: %s %d\n", __func__, iclock->name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iclock->pri);
 =======
 		       iclock->pri);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       iclock->pri);
+>>>>>>> refs/remotes/origin/master
 	write_lock_irqsave(&iclock_lock, flags);
 	if (iclock_current == iclock) {
 		if (*debug & DEBUG_CLOCK)
 			printk(KERN_DEBUG
+<<<<<<< HEAD
 <<<<<<< HEAD
 				"Current clock source '%s' unregisters.\n",
 				iclock->name);
@@ -162,6 +189,10 @@ mISDN_unregister_clock(struct mISDNclock *iclock)
 			       "Current clock source '%s' unregisters.\n",
 			       iclock->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "Current clock source '%s' unregisters.\n",
+			       iclock->name);
+>>>>>>> refs/remotes/origin/master
 		iclock->ctl(iclock->priv, 0);
 	}
 	list_del(&iclock->list);
@@ -182,6 +213,7 @@ mISDN_clock_update(struct mISDNclock *iclock, int samples, struct timeval *tv)
 	if (iclock_current != iclock) {
 		printk(KERN_ERR "%s: '%s' sends us clock updates, but we do "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"listen to '%s'. This is a bug!\n", __func__,
 			iclock->name,
 			iclock_current ? iclock_current->name : "nothing");
@@ -190,6 +222,11 @@ mISDN_clock_update(struct mISDNclock *iclock, int samples, struct timeval *tv)
 		       iclock->name,
 		       iclock_current ? iclock_current->name : "nothing");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "listen to '%s'. This is a bug!\n", __func__,
+		       iclock->name,
+		       iclock_current ? iclock_current->name : "nothing");
+>>>>>>> refs/remotes/origin/master
 		iclock->ctl(iclock->priv, 0);
 		write_unlock_irqrestore(&iclock_lock, flags);
 		return;
@@ -224,10 +261,14 @@ mISDN_clock_update(struct mISDNclock *iclock, int samples, struct timeval *tv)
 		if (*debug & DEBUG_CLOCK)
 			printk("Received first clock from source '%s'.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    iclock_current ? iclock_current->name : "nothing");
 =======
 			       iclock_current ? iclock_current->name : "nothing");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       iclock_current ? iclock_current->name : "nothing");
+>>>>>>> refs/remotes/origin/master
 	}
 	write_unlock_irqrestore(&iclock_lock, flags);
 }
@@ -258,6 +299,9 @@ mISDN_clock_get(void)
 }
 EXPORT_SYMBOL(mISDN_clock_get);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

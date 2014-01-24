@@ -2,6 +2,7 @@
  * security/tomoyo/gc.c
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Implementation of the Domain-Based Mandatory Access Control.
  *
  * Copyright (C) 2005-2010  NTT DATA CORPORATION
@@ -9,12 +10,16 @@
 =======
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #include "common.h"
 #include <linux/kthread.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct tomoyo_gc {
 	struct list_head list;
@@ -60,6 +65,8 @@ static void tomoyo_del_no_rewrite(struct list_head *element)
 
 static void tomoyo_del_transition_control(struct list_head *element)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_memory_free - Free memory for elements.
  *
@@ -156,7 +163,10 @@ static bool tomoyo_name_used_by_io_buffer(const char *string)
  * Returns nothing.
  */
 static inline void tomoyo_del_transition_control(struct list_head *element)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct tomoyo_transition_control *ptr =
 		container_of(element, typeof(*ptr), head.list);
@@ -165,8 +175,11 @@ static inline void tomoyo_del_transition_control(struct list_head *element)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void tomoyo_del_aggregator(struct list_head *element)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_del_aggregator - Delete members in "struct tomoyo_aggregator".
  *
@@ -175,7 +188,10 @@ static void tomoyo_del_aggregator(struct list_head *element)
  * Returns nothing.
  */
 static inline void tomoyo_del_aggregator(struct list_head *element)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct tomoyo_aggregator *ptr =
 		container_of(element, typeof(*ptr), head.list);
@@ -184,8 +200,11 @@ static inline void tomoyo_del_aggregator(struct list_head *element)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void tomoyo_del_manager(struct list_head *element)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_del_manager - Delete members in "struct tomoyo_manager".
  *
@@ -194,7 +213,10 @@ static void tomoyo_del_manager(struct list_head *element)
  * Returns nothing.
  */
 static inline void tomoyo_del_manager(struct list_head *element)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct tomoyo_manager *ptr =
 		container_of(element, typeof(*ptr), head.list);
@@ -202,7 +224,10 @@ static inline void tomoyo_del_manager(struct list_head *element)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_del_acl - Delete members in "struct tomoyo_acl_info".
  *
@@ -210,15 +235,22 @@ static inline void tomoyo_del_manager(struct list_head *element)
  *
  * Returns nothing.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void tomoyo_del_acl(struct list_head *element)
 {
 	struct tomoyo_acl_info *acl =
 		container_of(element, typeof(*acl), list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	tomoyo_put_condition(acl->cond);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tomoyo_put_condition(acl->cond);
+>>>>>>> refs/remotes/origin/master
 	switch (acl->type) {
 	case TOMOYO_TYPE_PATH_ACL:
 		{
@@ -264,11 +296,14 @@ static void tomoyo_del_acl(struct list_head *element)
 		}
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 }
 
 static bool tomoyo_del_domain(struct list_head *element)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case TOMOYO_TYPE_ENV_ACL:
 		{
 			struct tomoyo_env_acl *entry =
@@ -314,13 +349,17 @@ static bool tomoyo_del_domain(struct list_head *element)
  * Caller holds tomoyo_policy_lock mutex.
  */
 static inline void tomoyo_del_domain(struct list_head *element)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct tomoyo_domain_info *domain =
 		container_of(element, typeof(*domain), list);
 	struct tomoyo_acl_info *acl;
 	struct tomoyo_acl_info *tmp;
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Since we don't protect whole execve() operation using SRCU,
 	 * we need to recheck domain->users at this point.
@@ -346,16 +385,22 @@ static inline void tomoyo_del_domain(struct list_head *element)
 	if (atomic_read(&domain->users))
 		return false;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Since this domain is referenced from neither
 	 * "struct tomoyo_io_buffer" nor "struct cred"->security, we can delete
 	 * elements without checking for is_deleted flag.
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(acl, tmp, &domain->acl_info_list, list) {
 		tomoyo_del_acl(&acl->list);
 		tomoyo_memory_free(acl);
 	}
 	tomoyo_put_name(domain->domainname);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return true;
 }
@@ -369,6 +414,8 @@ static void tomoyo_del_name(struct list_head *element)
 
 static void tomoyo_del_path_group(struct list_head *element)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -430,13 +477,17 @@ static inline void tomoyo_del_name(struct list_head *element)
  * Returns nothing.
  */
 static inline void tomoyo_del_path_group(struct list_head *element)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct tomoyo_path_group *member =
 		container_of(element, typeof(*member), head.list);
 	tomoyo_put_name(member->member_name);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void tomoyo_del_group(struct list_head *element)
 {
@@ -611,6 +662,8 @@ void tomoyo_run_gc(void)
 	if (!IS_ERR(task))
 		wake_up_process(task);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * tomoyo_del_group - Delete "struct tomoyo_group".
  *
@@ -940,5 +993,8 @@ void tomoyo_notify_gc(struct tomoyo_io_buffer *head, const bool is_register)
 		if (!IS_ERR(task))
 			wake_up_process(task);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

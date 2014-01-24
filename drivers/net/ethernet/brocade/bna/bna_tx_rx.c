@@ -18,9 +18,13 @@
 #include "bna.h"
 #include "bfi.h"
 
+<<<<<<< HEAD
 /**
  * IB
  */
+=======
+/* IB */
+>>>>>>> refs/remotes/origin/master
 static void
 bna_ib_coalescing_timeo_set(struct bna_ib *ib, u8 coalescing_timeo)
 {
@@ -29,9 +33,13 @@ bna_ib_coalescing_timeo_set(struct bna_ib *ib, u8 coalescing_timeo)
 				(u32)ib->coalescing_timeo, 0);
 }
 
+<<<<<<< HEAD
 /**
  * RXF
  */
+=======
+/* RXF */
+>>>>>>> refs/remotes/origin/master
 
 #define bna_rxf_vlan_cfg_soft_reset(rxf)				\
 do {									\
@@ -715,6 +723,24 @@ bna_bfi_rxf_cfg_rsp(struct bna_rxf *rxf, struct bfi_msgq_mhdr *msghdr)
 }
 
 void
+<<<<<<< HEAD
+=======
+bna_bfi_rxf_ucast_set_rsp(struct bna_rxf *rxf,
+			struct bfi_msgq_mhdr *msghdr)
+{
+	struct bfi_enet_rsp *rsp =
+		(struct bfi_enet_rsp *)msghdr;
+
+	if (rsp->error) {
+		/* Clear ucast from cache */
+		rxf->ucast_active_set = 0;
+	}
+
+	bfa_fsm_send_event(rxf, RXF_E_FW_RESP);
+}
+
+void
+>>>>>>> refs/remotes/origin/master
 bna_bfi_rxf_mcast_add_rsp(struct bna_rxf *rxf,
 			struct bfi_msgq_mhdr *msghdr)
 {
@@ -1312,9 +1338,13 @@ bna_rxf_vlan_strip_cfg_apply(struct bna_rxf *rxf)
 	return 0;
 }
 
+<<<<<<< HEAD
 /**
  * RX
  */
+=======
+/* RX */
+>>>>>>> refs/remotes/origin/master
 
 #define	BNA_GET_RXQS(qcfg)	(((qcfg)->rxp_type == BNA_RXP_SINGLE) ?	\
 	(qcfg)->num_paths : ((qcfg)->num_paths * 2))
@@ -1361,6 +1391,11 @@ bfa_fsm_state_decl(bna_rx, stopped,
 	struct bna_rx, enum bna_rx_event);
 bfa_fsm_state_decl(bna_rx, start_wait,
 	struct bna_rx, enum bna_rx_event);
+<<<<<<< HEAD
+=======
+bfa_fsm_state_decl(bna_rx, start_stop_wait,
+	struct bna_rx, enum bna_rx_event);
+>>>>>>> refs/remotes/origin/master
 bfa_fsm_state_decl(bna_rx, rxf_start_wait,
 	struct bna_rx, enum bna_rx_event);
 bfa_fsm_state_decl(bna_rx, started,
@@ -1408,7 +1443,11 @@ static void bna_rx_sm_start_wait_entry(struct bna_rx *rx)
 	bna_bfi_rx_enet_start(rx);
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 bna_rx_sm_stop_wait_entry(struct bna_rx *rx)
 {
 }
@@ -1438,7 +1477,11 @@ static void bna_rx_sm_start_wait(struct bna_rx *rx,
 {
 	switch (event) {
 	case RX_E_STOP:
+<<<<<<< HEAD
 		bfa_fsm_set_state(rx, bna_rx_sm_stop_wait);
+=======
+		bfa_fsm_set_state(rx, bna_rx_sm_start_stop_wait);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case RX_E_FAIL:
@@ -1461,7 +1504,11 @@ static void bna_rx_sm_rxf_start_wait_entry(struct bna_rx *rx)
 	bna_rxf_start(&rx->rxf);
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 bna_rx_sm_rxf_stop_wait_entry(struct bna_rx *rx)
 {
 }
@@ -1494,7 +1541,34 @@ bna_rx_sm_rxf_stop_wait(struct bna_rx *rx, enum bna_rx_event event)
 
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+bna_rx_sm_start_stop_wait_entry(struct bna_rx *rx)
+{
+}
+
+static void
+bna_rx_sm_start_stop_wait(struct bna_rx *rx, enum bna_rx_event event)
+{
+	switch (event) {
+	case RX_E_FAIL:
+	case RX_E_STOPPED:
+		bfa_fsm_set_state(rx, bna_rx_sm_stopped);
+		break;
+
+	case RX_E_STARTED:
+		bna_rx_enet_stop(rx);
+		break;
+
+	default:
+		bfa_sm_fault(event);
+	}
+}
+
+static void
+>>>>>>> refs/remotes/origin/master
 bna_rx_sm_started_entry(struct bna_rx *rx)
 {
 	struct bna_rxp *rxp;
@@ -1559,12 +1633,20 @@ static void bna_rx_sm_rxf_start_wait(struct bna_rx *rx,
 	}
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 bna_rx_sm_cleanup_wait_entry(struct bna_rx *rx)
 {
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 bna_rx_sm_cleanup_wait(struct bna_rx *rx, enum bna_rx_event event)
 {
 	switch (event) {
@@ -1914,6 +1996,12 @@ bna_rxq_qpt_setup(struct bna_rxq *rxq,
 		struct bna_mem_descr *swqpt_mem,
 		struct bna_mem_descr *page_mem)
 {
+<<<<<<< HEAD
+=======
+	u8 *kva;
+	u64 dma;
+	struct bna_dma_addr bna_dma;
+>>>>>>> refs/remotes/origin/master
 	int	i;
 
 	rxq->qpt.hw_qpt_ptr.lsb = qpt_mem->dma.lsb;
@@ -1923,6 +2011,7 @@ bna_rxq_qpt_setup(struct bna_rxq *rxq,
 	rxq->qpt.page_size = page_size;
 
 	rxq->rcb->sw_qpt = (void **) swqpt_mem->kva;
+<<<<<<< HEAD
 
 	for (i = 0; i < rxq->qpt.page_count; i++) {
 		rxq->rcb->sw_qpt[i] = page_mem[i].kva;
@@ -1930,6 +2019,23 @@ bna_rxq_qpt_setup(struct bna_rxq *rxq,
 			page_mem[i].dma.lsb;
 		((struct bna_dma_addr *)rxq->qpt.kv_qpt_ptr)[i].msb =
 			page_mem[i].dma.msb;
+=======
+	rxq->rcb->sw_q = page_mem->kva;
+
+	kva = page_mem->kva;
+	BNA_GET_DMA_ADDR(&page_mem->dma, dma);
+
+	for (i = 0; i < rxq->qpt.page_count; i++) {
+		rxq->rcb->sw_qpt[i] = kva;
+		kva += PAGE_SIZE;
+
+		BNA_SET_DMA_ADDR(dma, &bna_dma);
+		((struct bna_dma_addr *)rxq->qpt.kv_qpt_ptr)[i].lsb =
+			bna_dma.lsb;
+		((struct bna_dma_addr *)rxq->qpt.kv_qpt_ptr)[i].msb =
+			bna_dma.msb;
+		dma += PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1941,6 +2047,12 @@ bna_rxp_cqpt_setup(struct bna_rxp *rxp,
 		struct bna_mem_descr *swqpt_mem,
 		struct bna_mem_descr *page_mem)
 {
+<<<<<<< HEAD
+=======
+	u8 *kva;
+	u64 dma;
+	struct bna_dma_addr bna_dma;
+>>>>>>> refs/remotes/origin/master
 	int	i;
 
 	rxp->cq.qpt.hw_qpt_ptr.lsb = qpt_mem->dma.lsb;
@@ -1950,6 +2062,7 @@ bna_rxp_cqpt_setup(struct bna_rxp *rxp,
 	rxp->cq.qpt.page_size = page_size;
 
 	rxp->cq.ccb->sw_qpt = (void **) swqpt_mem->kva;
+<<<<<<< HEAD
 
 	for (i = 0; i < rxp->cq.qpt.page_count; i++) {
 		rxp->cq.ccb->sw_qpt[i] = page_mem[i].kva;
@@ -1958,6 +2071,23 @@ bna_rxp_cqpt_setup(struct bna_rxp *rxp,
 			page_mem[i].dma.lsb;
 		((struct bna_dma_addr *)rxp->cq.qpt.kv_qpt_ptr)[i].msb =
 			page_mem[i].dma.msb;
+=======
+	rxp->cq.ccb->sw_q = page_mem->kva;
+
+	kva = page_mem->kva;
+	BNA_GET_DMA_ADDR(&page_mem->dma, dma);
+
+	for (i = 0; i < rxp->cq.qpt.page_count; i++) {
+		rxp->cq.ccb->sw_qpt[i] = kva;
+		kva += PAGE_SIZE;
+
+		BNA_SET_DMA_ADDR(dma, &bna_dma);
+		((struct bna_dma_addr *)rxp->cq.qpt.kv_qpt_ptr)[i].lsb =
+			bna_dma.lsb;
+		((struct bna_dma_addr *)rxp->cq.qpt.kv_qpt_ptr)[i].msb =
+			bna_dma.msb;
+		dma += PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2256,8 +2386,13 @@ bna_rx_res_req(struct bna_rx_config *q_cfg, struct bna_res_info *res_info)
 	res_info[BNA_RX_RES_MEM_T_CQPT_PAGE].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_RX_RES_MEM_T_CQPT_PAGE].res_u.mem_info;
 	mem_info->mem_type = BNA_MEM_T_DMA;
+<<<<<<< HEAD
 	mem_info->len = PAGE_SIZE;
 	mem_info->num = cpage_count * q_cfg->num_paths;
+=======
+	mem_info->len = PAGE_SIZE * cpage_count;
+	mem_info->num = q_cfg->num_paths;
+>>>>>>> refs/remotes/origin/master
 
 	res_info[BNA_RX_RES_MEM_T_DQPT].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_RX_RES_MEM_T_DQPT].res_u.mem_info;
@@ -2274,8 +2409,13 @@ bna_rx_res_req(struct bna_rx_config *q_cfg, struct bna_res_info *res_info)
 	res_info[BNA_RX_RES_MEM_T_DPAGE].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_RX_RES_MEM_T_DPAGE].res_u.mem_info;
 	mem_info->mem_type = BNA_MEM_T_DMA;
+<<<<<<< HEAD
 	mem_info->len = PAGE_SIZE;
 	mem_info->num = dpage_count * q_cfg->num_paths;
+=======
+	mem_info->len = PAGE_SIZE * dpage_count;
+	mem_info->num = q_cfg->num_paths;
+>>>>>>> refs/remotes/origin/master
 
 	res_info[BNA_RX_RES_MEM_T_HQPT].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_RX_RES_MEM_T_HQPT].res_u.mem_info;
@@ -2292,8 +2432,13 @@ bna_rx_res_req(struct bna_rx_config *q_cfg, struct bna_res_info *res_info)
 	res_info[BNA_RX_RES_MEM_T_HPAGE].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_RX_RES_MEM_T_HPAGE].res_u.mem_info;
 	mem_info->mem_type = BNA_MEM_T_DMA;
+<<<<<<< HEAD
 	mem_info->len = (hpage_count ? PAGE_SIZE : 0);
 	mem_info->num = (hpage_count ? (hpage_count * q_cfg->num_paths) : 0);
+=======
+	mem_info->len = PAGE_SIZE * hpage_count;
+	mem_info->num = (hpage_count ? q_cfg->num_paths : 0);
+>>>>>>> refs/remotes/origin/master
 
 	res_info[BNA_RX_RES_MEM_T_IBIDX].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_RX_RES_MEM_T_IBIDX].res_u.mem_info;
@@ -2338,7 +2483,11 @@ bna_rx_create(struct bna *bna, struct bnad *bnad,
 	struct bna_mem_descr *dsqpt_mem;
 	struct bna_mem_descr *hpage_mem;
 	struct bna_mem_descr *dpage_mem;
+<<<<<<< HEAD
 	int i, cpage_idx = 0, dpage_idx = 0, hpage_idx = 0;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 	int dpage_count, hpage_count, rcb_idx;
 
 	if (!bna_rx_res_check(rx_mod, rx_cfg))
@@ -2358,6 +2507,7 @@ bna_rx_create(struct bna *bna, struct bnad *bnad,
 	hpage_mem = &res_info[BNA_RX_RES_MEM_T_HPAGE].res_u.mem_info.mdl[0];
 	dpage_mem = &res_info[BNA_RX_RES_MEM_T_DPAGE].res_u.mem_info.mdl[0];
 
+<<<<<<< HEAD
 	page_count = res_info[BNA_RX_RES_MEM_T_CQPT_PAGE].res_u.mem_info.num /
 			rx_cfg->num_paths;
 
@@ -2366,6 +2516,16 @@ bna_rx_create(struct bna *bna, struct bnad *bnad,
 
 	hpage_count = res_info[BNA_RX_RES_MEM_T_HPAGE].res_u.mem_info.num /
 			rx_cfg->num_paths;
+=======
+	page_count = res_info[BNA_RX_RES_MEM_T_CQPT_PAGE].res_u.mem_info.len /
+			PAGE_SIZE;
+
+	dpage_count = res_info[BNA_RX_RES_MEM_T_DPAGE].res_u.mem_info.len /
+			PAGE_SIZE;
+
+	hpage_count = res_info[BNA_RX_RES_MEM_T_HPAGE].res_u.mem_info.len /
+			PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 
 	rx = bna_rx_get(rx_mod, rx_cfg->rx_type);
 	rx->bna = bna;
@@ -2452,10 +2612,14 @@ bna_rx_create(struct bna *bna, struct bnad *bnad,
 		q0->rx_packets_with_error = q0->rxbuf_alloc_failed = 0;
 
 		bna_rxq_qpt_setup(q0, rxp, dpage_count, PAGE_SIZE,
+<<<<<<< HEAD
 			&dqpt_mem[i], &dsqpt_mem[i], &dpage_mem[dpage_idx]);
 		q0->rcb->page_idx = dpage_idx;
 		q0->rcb->page_count = dpage_count;
 		dpage_idx += dpage_count;
+=======
+			&dqpt_mem[i], &dsqpt_mem[i], &dpage_mem[i]);
+>>>>>>> refs/remotes/origin/master
 
 		if (rx->rcb_setup_cbfn)
 			rx->rcb_setup_cbfn(bnad, q0->rcb);
@@ -2481,10 +2645,14 @@ bna_rx_create(struct bna *bna, struct bnad *bnad,
 
 			bna_rxq_qpt_setup(q1, rxp, hpage_count, PAGE_SIZE,
 				&hqpt_mem[i], &hsqpt_mem[i],
+<<<<<<< HEAD
 				&hpage_mem[hpage_idx]);
 			q1->rcb->page_idx = hpage_idx;
 			q1->rcb->page_count = hpage_count;
 			hpage_idx += hpage_count;
+=======
+				&hpage_mem[i]);
+>>>>>>> refs/remotes/origin/master
 
 			if (rx->rcb_setup_cbfn)
 				rx->rcb_setup_cbfn(bnad, q1->rcb);
@@ -2516,10 +2684,14 @@ bna_rx_create(struct bna *bna, struct bnad *bnad,
 		rxp->cq.ccb->id = i;
 
 		bna_rxp_cqpt_setup(rxp, page_count, PAGE_SIZE,
+<<<<<<< HEAD
 			&cqpt_mem[i], &cswqpt_mem[i], &cpage_mem[cpage_idx]);
 		rxp->cq.ccb->page_idx = cpage_idx;
 		rxp->cq.ccb->page_count = page_count;
 		cpage_idx += page_count;
+=======
+			&cqpt_mem[i], &cswqpt_mem[i], &cpage_mem[i]);
+>>>>>>> refs/remotes/origin/master
 
 		if (rx->ccb_setup_cbfn)
 			rx->ccb_setup_cbfn(bnad, rxp->cq.ccb);
@@ -2791,9 +2963,14 @@ const u32 bna_napi_dim_vector[BNA_LOAD_T_MAX][BNA_BIAS_T_MAX] = {
 	{1, 2},
 };
 
+<<<<<<< HEAD
 /**
  * TX
  */
+=======
+/* TX */
+
+>>>>>>> refs/remotes/origin/master
 #define call_tx_stop_cbfn(tx)						\
 do {									\
 	if ((tx)->stop_cbfn) {						\
@@ -3237,6 +3414,12 @@ bna_txq_qpt_setup(struct bna_txq *txq, int page_count, int page_size,
 		struct bna_mem_descr *swqpt_mem,
 		struct bna_mem_descr *page_mem)
 {
+<<<<<<< HEAD
+=======
+	u8 *kva;
+	u64 dma;
+	struct bna_dma_addr bna_dma;
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	txq->qpt.hw_qpt_ptr.lsb = qpt_mem->dma.lsb;
@@ -3246,6 +3429,7 @@ bna_txq_qpt_setup(struct bna_txq *txq, int page_count, int page_size,
 	txq->qpt.page_size = page_size;
 
 	txq->tcb->sw_qpt = (void **) swqpt_mem->kva;
+<<<<<<< HEAD
 
 	for (i = 0; i < page_count; i++) {
 		txq->tcb->sw_qpt[i] = page_mem[i].kva;
@@ -3254,6 +3438,23 @@ bna_txq_qpt_setup(struct bna_txq *txq, int page_count, int page_size,
 			page_mem[i].dma.lsb;
 		((struct bna_dma_addr *)txq->qpt.kv_qpt_ptr)[i].msb =
 			page_mem[i].dma.msb;
+=======
+	txq->tcb->sw_q = page_mem->kva;
+
+	kva = page_mem->kva;
+	BNA_GET_DMA_ADDR(&page_mem->dma, dma);
+
+	for (i = 0; i < page_count; i++) {
+		txq->tcb->sw_qpt[i] = kva;
+		kva += PAGE_SIZE;
+
+		BNA_SET_DMA_ADDR(dma, &bna_dma);
+		((struct bna_dma_addr *)txq->qpt.kv_qpt_ptr)[i].lsb =
+			bna_dma.lsb;
+		((struct bna_dma_addr *)txq->qpt.kv_qpt_ptr)[i].msb =
+			bna_dma.msb;
+		dma += PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -3437,8 +3638,13 @@ bna_tx_res_req(int num_txq, int txq_depth, struct bna_res_info *res_info)
 	res_info[BNA_TX_RES_MEM_T_PAGE].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_TX_RES_MEM_T_PAGE].res_u.mem_info;
 	mem_info->mem_type = BNA_MEM_T_DMA;
+<<<<<<< HEAD
 	mem_info->len = PAGE_SIZE;
 	mem_info->num = num_txq * page_count;
+=======
+	mem_info->len = PAGE_SIZE * page_count;
+	mem_info->num = num_txq;
+>>>>>>> refs/remotes/origin/master
 
 	res_info[BNA_TX_RES_MEM_T_IBIDX].res_type = BNA_RES_T_MEM;
 	mem_info = &res_info[BNA_TX_RES_MEM_T_IBIDX].res_u.mem_info;
@@ -3464,6 +3670,7 @@ bna_tx_create(struct bna *bna, struct bnad *bnad,
 	struct bna_txq *txq;
 	struct list_head *qe;
 	int page_count;
+<<<<<<< HEAD
 	int page_size;
 	int page_idx;
 	int i;
@@ -3472,6 +3679,13 @@ bna_tx_create(struct bna *bna, struct bnad *bnad,
 	page_count = (res_info[BNA_TX_RES_MEM_T_PAGE].res_u.mem_info.num) /
 			tx_cfg->num_txq;
 	page_size = res_info[BNA_TX_RES_MEM_T_PAGE].res_u.mem_info.len;
+=======
+	int i;
+
+	intr_info = &res_info[BNA_TX_RES_INTR_T_TXCMPL].res_u.intr_info;
+	page_count = (res_info[BNA_TX_RES_MEM_T_PAGE].res_u.mem_info.len) /
+					PAGE_SIZE;
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * Get resources
@@ -3536,7 +3750,10 @@ bna_tx_create(struct bna *bna, struct bnad *bnad,
 	/* TxQ */
 
 	i = 0;
+<<<<<<< HEAD
 	page_idx = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	list_for_each(qe, &tx->txq_q) {
 		txq = (struct bna_txq *)qe;
 		txq->tcb = (struct bna_tcb *)
@@ -3558,7 +3775,11 @@ bna_tx_create(struct bna *bna, struct bnad *bnad,
 		if (intr_info->intr_type == BNA_INTR_T_INTX)
 			txq->ib.intr_vector = (1 <<  txq->ib.intr_vector);
 		txq->ib.coalescing_timeo = tx_cfg->coalescing_timeo;
+<<<<<<< HEAD
 		txq->ib.interpkt_timeo = 0; /* Not used */
+=======
+		txq->ib.interpkt_timeo = BFI_TX_INTERPKT_TIMEO;
+>>>>>>> refs/remotes/origin/master
 		txq->ib.interpkt_count = BFI_TX_INTERPKT_COUNT;
 
 		/* TCB */
@@ -3576,6 +3797,7 @@ bna_tx_create(struct bna *bna, struct bnad *bnad,
 		txq->tcb->id = i;
 
 		/* QPT, SWQPT, Pages */
+<<<<<<< HEAD
 		bna_txq_qpt_setup(txq, page_count, page_size,
 			&res_info[BNA_TX_RES_MEM_T_QPT].res_u.mem_info.mdl[i],
 			&res_info[BNA_TX_RES_MEM_T_SWQPT].res_u.mem_info.mdl[i],
@@ -3584,6 +3806,13 @@ bna_tx_create(struct bna *bna, struct bnad *bnad,
 		txq->tcb->page_idx = page_idx;
 		txq->tcb->page_count = page_count;
 		page_idx += page_count;
+=======
+		bna_txq_qpt_setup(txq, page_count, PAGE_SIZE,
+			&res_info[BNA_TX_RES_MEM_T_QPT].res_u.mem_info.mdl[i],
+			&res_info[BNA_TX_RES_MEM_T_SWQPT].res_u.mem_info.mdl[i],
+			&res_info[BNA_TX_RES_MEM_T_PAGE].
+				  res_u.mem_info.mdl[i]);
+>>>>>>> refs/remotes/origin/master
 
 		/* Callback to bnad for setting up TCB */
 		if (tx->tcb_setup_cbfn)

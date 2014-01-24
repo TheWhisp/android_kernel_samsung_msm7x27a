@@ -5,7 +5,11 @@
 config NET_VENDOR_DLINK
 	bool "D-Link devices"
 	default y
+<<<<<<< HEAD
 	depends on PCI || PARPORT
+=======
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  If you have a network (Ethernet) card belonging to this class, say Y
 	  and read the Ethernet-HOWTO, available from
@@ -18,6 +22,7 @@ config NET_VENDOR_DLINK
 
 if NET_VENDOR_DLINK
 
+<<<<<<< HEAD
 config DE600
 	tristate "D-Link DE600 pocket adapter support"
 	depends on PARPORT
@@ -48,6 +53,8 @@ config DE620
 	  To compile this driver as a module, choose M here: the module
 	  will be called de620.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config DL2K
 	tristate "DL2000/TC902x-based Gigabit Ethernet support"
 	depends on PCI
@@ -66,7 +73,10 @@ config SUNDANCE
 	tristate "Sundance Alta support"
 	depends on PCI
 	select CRC32
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  This driver is for the Sundance "Alta" chip.

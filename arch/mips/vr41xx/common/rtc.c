@@ -1,7 +1,11 @@
 /*
  *  NEC VR4100 series RTC platform device.
  *
+<<<<<<< HEAD
  *  Copyright (C) 2007  Yoichi Yuasa <yuasa@linux-mips.org>
+=======
+ *  Copyright (C) 2007	Yoichi Yuasa <yuasa@linux-mips.org>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,9 +24,13 @@
 #include <linux/errno.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/smp.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/smp.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/ioport.h>
 #include <linux/platform_device.h>
 

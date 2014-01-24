@@ -86,6 +86,22 @@ struct x86_instruction_info {
 
 struct x86_emulate_ops {
 	/*
+<<<<<<< HEAD
+=======
+	 * read_gpr: read a general purpose register (rax - r15)
+	 *
+	 * @reg: gpr number.
+	 */
+	ulong (*read_gpr)(struct x86_emulate_ctxt *ctxt, unsigned reg);
+	/*
+	 * write_gpr: write a general purpose register (rax - r15)
+	 *
+	 * @reg: gpr number.
+	 * @val: value to write.
+	 */
+	void (*write_gpr)(struct x86_emulate_ctxt *ctxt, unsigned reg, ulong val);
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * read_std: Read bytes of standard (non-emulated/special) memory.
 	 *           Used for descriptor reading.
 	 *  @addr:  [IN ] Linear address from which to read.
@@ -177,18 +193,26 @@ struct x86_emulate_ops {
 	ulong (*get_cr)(struct x86_emulate_ctxt *ctxt, int cr);
 	int (*set_cr)(struct x86_emulate_ctxt *ctxt, int cr, ulong val);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void (*set_rflags)(struct x86_emulate_ctxt *ctxt, ulong val);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void (*set_rflags)(struct x86_emulate_ctxt *ctxt, ulong val);
+>>>>>>> refs/remotes/origin/master
 	int (*cpl)(struct x86_emulate_ctxt *ctxt);
 	int (*get_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong *dest);
 	int (*set_dr)(struct x86_emulate_ctxt *ctxt, int dr, ulong value);
 	int (*set_msr)(struct x86_emulate_ctxt *ctxt, u32 msr_index, u64 data);
 	int (*get_msr)(struct x86_emulate_ctxt *ctxt, u32 msr_index, u64 *pdata);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int (*read_pmc)(struct x86_emulate_ctxt *ctxt, u32 pmc, u64 *pdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int (*read_pmc)(struct x86_emulate_ctxt *ctxt, u32 pmc, u64 *pdata);
+>>>>>>> refs/remotes/origin/master
 	void (*halt)(struct x86_emulate_ctxt *ctxt);
 	void (*wbinvd)(struct x86_emulate_ctxt *ctxt);
 	int (*fix_hypercall)(struct x86_emulate_ctxt *ctxt);
@@ -198,16 +222,27 @@ struct x86_emulate_ops {
 			 struct x86_instruction_info *info,
 			 enum x86_intercept_stage stage);
 
+<<<<<<< HEAD
 	bool (*get_cpuid)(struct x86_emulate_ctxt *ctxt,
 			 u32 *eax, u32 *ebx, u32 *ecx, u32 *edx);
+=======
+	void (*get_cpuid)(struct x86_emulate_ctxt *ctxt,
+			  u32 *eax, u32 *ebx, u32 *ecx, u32 *edx);
+>>>>>>> refs/remotes/origin/master
 };
 
 typedef u32 __attribute__((vector_size(16))) sse128_t;
 
 /* Type, address-of, and value of an instruction's operand. */
 struct operand {
+<<<<<<< HEAD
 	enum { OP_REG, OP_MEM, OP_IMM, OP_XMM, OP_NONE } type;
 	unsigned int bytes;
+=======
+	enum { OP_REG, OP_MEM, OP_MEM_STR, OP_IMM, OP_XMM, OP_MM, OP_NONE } type;
+	unsigned int bytes;
+	unsigned int count;
+>>>>>>> refs/remotes/origin/master
 	union {
 		unsigned long orig_val;
 		u64 orig_val64;
@@ -219,12 +254,21 @@ struct operand {
 			unsigned seg;
 		} mem;
 		unsigned xmm;
+<<<<<<< HEAD
+=======
+		unsigned mm;
+>>>>>>> refs/remotes/origin/master
 	} addr;
 	union {
 		unsigned long val;
 		u64 val64;
 		char valptr[sizeof(unsigned long) + 2];
 		sse128_t vec_val;
+<<<<<<< HEAD
+=======
+		u64 mm_val;
+		void *data;
+>>>>>>> refs/remotes/origin/master
 	};
 };
 
@@ -241,30 +285,61 @@ struct read_cache {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct decode_cache {
 =======
 struct x86_emulate_ctxt {
 	struct x86_emulate_ops *ops;
+=======
+/* Execution mode, passed to the emulator. */
+enum x86emul_mode {
+	X86EMUL_MODE_REAL,	/* Real mode.             */
+	X86EMUL_MODE_VM86,	/* Virtual 8086 mode.     */
+	X86EMUL_MODE_PROT16,	/* 16-bit protected mode. */
+	X86EMUL_MODE_PROT32,	/* 32-bit protected mode. */
+	X86EMUL_MODE_PROT64,	/* 64-bit (long) mode.    */
+};
+
+struct x86_emulate_ctxt {
+	const struct x86_emulate_ops *ops;
+>>>>>>> refs/remotes/origin/master
 
 	/* Register state before/after emulation. */
 	unsigned long eflags;
 	unsigned long eip; /* eip before instruction emulation */
 	/* Emulated execution mode, represented by an X86EMUL_MODE value. */
+<<<<<<< HEAD
 	int mode;
+=======
+	enum x86emul_mode mode;
+>>>>>>> refs/remotes/origin/master
 
 	/* interruptibility state, as a result of execution of STI or MOV SS */
 	int interruptibility;
 
 	bool guest_mode; /* guest running a nested guest */
 	bool perm_ok; /* do not check permissions if true */
+<<<<<<< HEAD
 	bool only_vendor_specific_insn;
+=======
+	bool ud;	/* inject an #UD if host doesn't support insn */
+>>>>>>> refs/remotes/origin/master
 
 	bool have_exception;
 	struct x86_exception exception;
 
+<<<<<<< HEAD
 	/* decode cache */
 >>>>>>> refs/remotes/origin/cm-10.0
 	u8 twobyte;
+=======
+	/*
+	 * decode cache
+	 */
+
+	/* current opcode length in bytes */
+	u8 opcode_len;
+>>>>>>> refs/remotes/origin/master
 	u8 b;
 	u8 intercept;
 	u8 lock_prefix;
@@ -278,6 +353,7 @@ struct x86_emulate_ctxt {
 	bool has_seg_override;
 	u8 seg_override;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int d;
 	int (*execute)(struct x86_emulate_ctxt *ctxt);
 	int (*check_perm)(struct x86_emulate_ctxt *ctxt);
@@ -288,6 +364,11 @@ struct x86_emulate_ctxt {
 	int (*execute)(struct x86_emulate_ctxt *ctxt);
 	int (*check_perm)(struct x86_emulate_ctxt *ctxt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 d;
+	int (*execute)(struct x86_emulate_ctxt *ctxt);
+	int (*check_perm)(struct x86_emulate_ctxt *ctxt);
+>>>>>>> refs/remotes/origin/master
 	/* modrm */
 	u8 modrm;
 	u8 modrm_mod;
@@ -296,6 +377,7 @@ struct x86_emulate_ctxt {
 	u8 modrm_seg;
 	bool rip_relative;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long _eip;
 	/* Fields above regs are cleared together. */
@@ -303,11 +385,21 @@ struct x86_emulate_ctxt {
 	struct operand memop;
 	struct operand *memopp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long _eip;
+	struct operand memop;
+	u32 regs_valid;  /* bitmaps of registers in _regs[] that can be read */
+	u32 regs_dirty;  /* bitmaps of registers in _regs[] that have been written */
+	/* Fields above regs are cleared together. */
+	unsigned long _regs[NR_VCPU_REGS];
+	struct operand *memopp;
+>>>>>>> refs/remotes/origin/master
 	struct fetch_cache fetch;
 	struct read_cache io_read;
 	struct read_cache mem_read;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct x86_emulate_ctxt {
 	struct x86_emulate_ops *ops;
@@ -334,10 +426,13 @@ struct x86_emulate_ctxt {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Repeat String Operation Prefix */
 #define REPE_PREFIX	0xf3
 #define REPNE_PREFIX	0xf2
 
+<<<<<<< HEAD
 /* Execution mode, passed to the emulator. */
 #define X86EMUL_MODE_REAL     0	/* Real mode.             */
 #define X86EMUL_MODE_VM86     1	/* Virtual 8086 mode.     */
@@ -349,6 +444,8 @@ struct x86_emulate_ctxt {
 #define X86EMUL_MODE_PROT     (X86EMUL_MODE_PROT16|X86EMUL_MODE_PROT32| \
 			       X86EMUL_MODE_PROT64)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* CPUID vendors */
 #define X86EMUL_CPUID_VENDOR_AuthenticAMD_ebx 0x68747541
 #define X86EMUL_CPUID_VENDOR_AuthenticAMD_ecx 0x444d4163
@@ -430,15 +527,20 @@ enum x86_intercept {
 
 int x86_decode_insn(struct x86_emulate_ctxt *ctxt, void *insn, int insn_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 bool x86_page_table_writing_insn(struct x86_emulate_ctxt *ctxt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bool x86_page_table_writing_insn(struct x86_emulate_ctxt *ctxt);
+>>>>>>> refs/remotes/origin/master
 #define EMULATION_FAILED -1
 #define EMULATION_OK 0
 #define EMULATION_RESTART 1
 #define EMULATION_INTERCEPTED 2
 int x86_emulate_insn(struct x86_emulate_ctxt *ctxt);
 int emulator_task_switch(struct x86_emulate_ctxt *ctxt,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			 u16 tss_selector, int reason,
 			 bool has_error_code, u32 error_code);
@@ -449,4 +551,12 @@ int emulate_int_real(struct x86_emulate_ctxt *ctxt,
 			 bool has_error_code, u32 error_code);
 int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 u16 tss_selector, int idt_index, int reason,
+			 bool has_error_code, u32 error_code);
+int emulate_int_real(struct x86_emulate_ctxt *ctxt, int irq);
+void emulator_invalidate_register_cache(struct x86_emulate_ctxt *ctxt);
+void emulator_writeback_register_cache(struct x86_emulate_ctxt *ctxt);
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_KVM_X86_EMULATE_H */

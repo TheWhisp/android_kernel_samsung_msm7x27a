@@ -7,9 +7,12 @@
 
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/interrupt.h>
 #include <linux/irq.h>
@@ -94,7 +97,11 @@ static irqreturn_t bfin_rotary_isr(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit bfin_rotary_probe(struct platform_device *pdev)
+=======
+static int bfin_rotary_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bfin_rotary_platform_data *pdata = pdev->dev.platform_data;
 	struct bfin_rot *rotary;
@@ -200,7 +207,11 @@ out1:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit bfin_rotary_remove(struct platform_device *pdev)
+=======
+static int bfin_rotary_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bfin_rot *rotary = platform_get_drvdata(pdev);
 
@@ -212,7 +223,10 @@ static int __devexit bfin_rotary_remove(struct platform_device *pdev)
 	peripheral_free_list(per_cnt);
 
 	kfree(rotary);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -259,7 +273,11 @@ static const struct dev_pm_ops bfin_rotary_pm_ops = {
 
 static struct platform_driver bfin_rotary_device_driver = {
 	.probe		= bfin_rotary_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(bfin_rotary_remove),
+=======
+	.remove		= bfin_rotary_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "bfin-rotary",
 		.owner	= THIS_MODULE,
@@ -268,6 +286,7 @@ static struct platform_driver bfin_rotary_device_driver = {
 #endif
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init bfin_rotary_init(void)
@@ -284,6 +303,9 @@ module_exit(bfin_rotary_exit);
 =======
 module_platform_driver(bfin_rotary_device_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(bfin_rotary_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");

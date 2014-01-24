@@ -3,10 +3,14 @@
 #include <linux/bitops.h>
 #include <linux/cpumask.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bootmem.h>
 
 int __first_cpu(const cpumask_t *srcp)
@@ -31,6 +35,7 @@ EXPORT_SYMBOL(__next_cpu_nr);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __any_online_cpu(const cpumask_t *mask)
 {
 	int cpu;
@@ -45,6 +50,8 @@ EXPORT_SYMBOL(__any_online_cpu);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * cpumask_next_and - get the next cpu in *src1p & *src2p
  * @n: the cpu prior to the place to search (ie. return will be > @n)
@@ -139,10 +146,14 @@ EXPORT_SYMBOL(zalloc_cpumask_var_node);
 bool alloc_cpumask_var(cpumask_var_t *mask, gfp_t flags)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return alloc_cpumask_var_node(mask, flags, numa_node_id());
 =======
 	return alloc_cpumask_var_node(mask, flags, NUMA_NO_NODE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return alloc_cpumask_var_node(mask, flags, NUMA_NO_NODE);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(alloc_cpumask_var);
 
@@ -163,7 +174,11 @@ EXPORT_SYMBOL(zalloc_cpumask_var);
  */
 void __init alloc_bootmem_cpumask_var(cpumask_var_t *mask)
 {
+<<<<<<< HEAD
 	*mask = alloc_bootmem(cpumask_size());
+=======
+	*mask = memblock_virt_alloc(cpumask_size(), 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -184,6 +199,10 @@ EXPORT_SYMBOL(free_cpumask_var);
  */
 void __init free_bootmem_cpumask_var(cpumask_var_t mask)
 {
+<<<<<<< HEAD
 	free_bootmem((unsigned long)mask, cpumask_size());
+=======
+	memblock_free_early(__pa(mask), cpumask_size());
+>>>>>>> refs/remotes/origin/master
 }
 #endif

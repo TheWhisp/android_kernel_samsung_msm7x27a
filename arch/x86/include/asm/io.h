@@ -41,10 +41,13 @@
 #include <asm/page.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <xen/xen.h>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define build_mmio_read(name, size, type, reg, barrier) \
 static inline type name(const volatile void __iomem *addr) \
 { type ret; asm volatile("mov" size " %1,%0":reg (ret) \
@@ -338,9 +341,13 @@ extern bool is_early_ioremap_ptep(pte_t *ptep);
 
 #ifdef CONFIG_XEN
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <xen/xen.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <xen/xen.h>
+>>>>>>> refs/remotes/origin/master
 struct bio_vec;
 
 extern bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
@@ -353,4 +360,14 @@ extern bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
 
 #define IO_SPACE_LIMIT 0xffff
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MTRR
+extern int __must_check arch_phys_wc_add(unsigned long base,
+					 unsigned long size);
+extern void arch_phys_wc_del(int handle);
+#define arch_phys_wc_add arch_phys_wc_add
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_IO_H */

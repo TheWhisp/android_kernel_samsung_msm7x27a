@@ -2,6 +2,7 @@
 #define __ASM_MACH_MMP2_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <plat/sdhci.h>
 =======
 #include <linux/platform_data/pxa_sdhci.h>
@@ -10,6 +11,11 @@
 struct sys_timer;
 
 extern struct sys_timer mmp2_timer;
+=======
+#include <linux/platform_data/pxa_sdhci.h>
+
+extern void mmp2_timer_init(void);
+>>>>>>> refs/remotes/origin/master
 extern void __init mmp2_init_icu(void);
 extern void __init mmp2_init_irq(void);
 extern void mmp2_clear_pmic_int(void);
@@ -18,9 +24,13 @@ extern void mmp2_clear_pmic_int(void);
 #include <linux/i2c/pxa-i2c.h>
 #include <mach/devices.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <mach/sram.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/platform_data/dma-mmp_tdma.h>
+>>>>>>> refs/remotes/origin/master
 
 extern struct pxa_device_desc mmp2_device_uart1;
 extern struct pxa_device_desc mmp2_device_uart2;
@@ -37,12 +47,18 @@ extern struct pxa_device_desc mmp2_device_sdh1;
 extern struct pxa_device_desc mmp2_device_sdh2;
 extern struct pxa_device_desc mmp2_device_sdh3;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct pxa_device_desc mmp2_device_asram;
 extern struct pxa_device_desc mmp2_device_isram;
 
 extern struct platform_device mmp2_device_gpio;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline int mmp2_add_uart(int id)
 {
@@ -101,7 +117,10 @@ static inline int mmp2_add_sdhost(int id, struct sdhci_pxa_platdata *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int mmp2_add_asram(struct sram_platdata *data)
 {
 	return pxa_register_device(&mmp2_device_asram, data, sizeof(*data));
@@ -112,6 +131,9 @@ static inline int mmp2_add_isram(struct sram_platdata *data)
 	return pxa_register_device(&mmp2_device_isram, data, sizeof(*data));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_MACH_MMP2_H */
 

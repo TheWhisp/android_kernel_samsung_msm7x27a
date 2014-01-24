@@ -310,6 +310,10 @@ static int vmw_sou_crtc_set_config(struct drm_mode_set *set)
 		crtc->fb = NULL;
 		crtc->x = 0;
 		crtc->y = 0;
+<<<<<<< HEAD
+=======
+		crtc->enabled = false;
+>>>>>>> refs/remotes/origin/master
 
 		vmw_sou_del_active(dev_priv, sou);
 
@@ -370,6 +374,10 @@ static int vmw_sou_crtc_set_config(struct drm_mode_set *set)
 		crtc->fb = NULL;
 		crtc->x = 0;
 		crtc->y = 0;
+<<<<<<< HEAD
+=======
+		crtc->enabled = false;
+>>>>>>> refs/remotes/origin/master
 
 		return ret;
 	}
@@ -382,6 +390,10 @@ static int vmw_sou_crtc_set_config(struct drm_mode_set *set)
 	crtc->fb = fb;
 	crtc->x = set->x;
 	crtc->y = set->y;
+<<<<<<< HEAD
+=======
+	crtc->enabled = true;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -464,11 +476,20 @@ static int vmw_sou_init(struct vmw_private *dev_priv, unsigned unit)
 	encoder->possible_crtcs = (1 << unit);
 	encoder->possible_clones = 0;
 
+<<<<<<< HEAD
+=======
+	(void) drm_sysfs_connector_add(connector);
+
+>>>>>>> refs/remotes/origin/master
 	drm_crtc_init(dev, crtc, &vmw_screen_object_crtc_funcs);
 
 	drm_mode_crtc_set_gamma_size(crtc, 256);
 
+<<<<<<< HEAD
 	drm_connector_attach_property(connector,
+=======
+	drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 				      dev->mode_config.dirty_info_property,
 				      1);
 
@@ -485,7 +506,11 @@ int vmw_kms_init_screen_object_display(struct vmw_private *dev_priv)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	if (!(dev_priv->fifo.capabilities & SVGA_FIFO_CAP_SCREEN_OBJECT_2)) {
+=======
+	if (!(dev_priv->capabilities & SVGA_CAP_SCREEN_OBJECT_2)) {
+>>>>>>> refs/remotes/origin/master
 		DRM_INFO("Not using screen objects,"
 			 " missing cap SCREEN_OBJECT_2\n");
 		return -ENOSYS;

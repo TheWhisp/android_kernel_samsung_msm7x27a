@@ -173,7 +173,11 @@ static inline u16 Mk16(u8 hi, u8 lo)
 
 static inline u16 Mk16_le(u16 *v)
 {
+<<<<<<< HEAD
 	return le16_to_cpu(*v);
+=======
+	return *v;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -427,7 +431,11 @@ static int rtllib_tkip_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
 			if (net_ratelimit()) {
 				printk(KERN_DEBUG "TKIP: replay detected: STA="
 				       " %pM previous TSC %08x%04x received "
+<<<<<<< HEAD
 				      "TSC %08x%04x\n",hdr->addr2,
+=======
+				      "TSC %08x%04x\n", hdr->addr2,
+>>>>>>> refs/remotes/origin/master
 				      tkey->rx_iv32, tkey->rx_iv16, iv32, iv16);
 			}
 			tkey->dot11RSNAStatsTKIPReplays++;
@@ -708,6 +716,7 @@ static int rtllib_tkip_get_key(void *key, int len, u8 *seq, void *priv)
 }
 
 
+<<<<<<< HEAD
 static char *rtllib_tkip_print_stats(char *p, void *priv)
 {
 	struct rtllib_tkip_data *tkip = priv;
@@ -732,6 +741,32 @@ static char *rtllib_tkip_print_stats(char *p, void *priv)
 		     tkip->dot11RSNAStatsTKIPICVErrors,
 		     tkip->dot11RSNAStatsTKIPLocalMICFailures);
 	return p;
+=======
+static void rtllib_tkip_print_stats(struct seq_file *m, void *priv)
+{
+	struct rtllib_tkip_data *tkip = priv;
+	seq_printf(m,
+		   "key[%d] alg=TKIP key_set=%d "
+		   "tx_pn=%02x%02x%02x%02x%02x%02x "
+		   "rx_pn=%02x%02x%02x%02x%02x%02x "
+		   "replays=%d icv_errors=%d local_mic_failures=%d\n",
+		   tkip->key_idx, tkip->key_set,
+		   (tkip->tx_iv32 >> 24) & 0xff,
+		   (tkip->tx_iv32 >> 16) & 0xff,
+		   (tkip->tx_iv32 >> 8) & 0xff,
+		   tkip->tx_iv32 & 0xff,
+		   (tkip->tx_iv16 >> 8) & 0xff,
+		   tkip->tx_iv16 & 0xff,
+		   (tkip->rx_iv32 >> 24) & 0xff,
+		   (tkip->rx_iv32 >> 16) & 0xff,
+		   (tkip->rx_iv32 >> 8) & 0xff,
+		   tkip->rx_iv32 & 0xff,
+		   (tkip->rx_iv16 >> 8) & 0xff,
+		   tkip->rx_iv16 & 0xff,
+		   tkip->dot11RSNAStatsTKIPReplays,
+		   tkip->dot11RSNAStatsTKIPICVErrors,
+		   tkip->dot11RSNAStatsTKIPLocalMICFailures);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct lib80211_crypto_ops rtllib_crypt_tkip = {
@@ -752,13 +787,21 @@ static struct lib80211_crypto_ops rtllib_crypt_tkip = {
 };
 
 
+<<<<<<< HEAD
 int __init rtllib_crypto_tkip_init(void)
+=======
+static int __init rtllib_crypto_tkip_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return lib80211_register_crypto_ops(&rtllib_crypt_tkip);
 }
 
 
+<<<<<<< HEAD
 void __exit rtllib_crypto_tkip_exit(void)
+=======
+static void __exit rtllib_crypto_tkip_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	lib80211_unregister_crypto_ops(&rtllib_crypt_tkip);
 }

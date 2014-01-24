@@ -9,19 +9,26 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/io.h>
 #include <linux/pm.h>
 #include <linux/pm_runtime.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/io.h>
 #include <linux/pm.h>
 #include <linux/pm_clock.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/clk.h>
 #include <linux/slab.h>
 #include <linux/err.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM_RUNTIME
 
@@ -32,6 +39,9 @@ struct pm_runtime_clk_data {
 =======
 #ifdef CONFIG_PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_PM
+>>>>>>> refs/remotes/origin/master
 
 enum pce_status {
 	PCE_STATUS_NONE = 0,
@@ -47,6 +57,7 @@ struct pm_clock_entry {
 	enum pce_status status;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct pm_runtime_clk_data *__to_prd(struct device *dev)
 {
@@ -68,6 +79,8 @@ int pm_runtime_clk_add(struct device *dev, const char *con_id)
 
 	if (!prd)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * pm_clk_acquire - Acquire a device clock.
  * @dev: Device whose clock is to be acquired.
@@ -98,7 +111,10 @@ int pm_clk_add(struct device *dev, const char *con_id)
 	struct pm_clock_entry *ce;
 
 	if (!psd)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	ce = kzalloc(sizeof(*ce), GFP_KERNEL);
@@ -118,20 +134,27 @@ int pm_clk_add(struct device *dev, const char *con_id)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&prd->lock);
 	list_add_tail(&ce->node, &prd->clock_list);
 	mutex_unlock(&prd->lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pm_clk_acquire(dev, ce);
 
 	spin_lock_irq(&psd->lock);
 	list_add_tail(&ce->node, &psd->clock_list);
 	spin_unlock_irq(&psd->lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * __pm_runtime_clk_remove - Destroy runtime PM clock entry.
  * @ce: Runtime PM clock entry to destroy.
@@ -141,15 +164,21 @@ int pm_clk_add(struct device *dev, const char *con_id)
  */
 static void __pm_runtime_clk_remove(struct pm_clock_entry *ce)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * __pm_clk_remove - Destroy PM clock entry.
  * @ce: PM clock entry to destroy.
  */
 static void __pm_clk_remove(struct pm_clock_entry *ce)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (!ce)
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	list_del(&ce->node);
 
@@ -158,11 +187,17 @@ static void __pm_clk_remove(struct pm_clock_entry *ce)
 	if (ce->status < PCE_STATUS_ERROR) {
 		if (ce->status == PCE_STATUS_ENABLED)
 			clk_disable(ce->clk);
+=======
+	if (ce->status < PCE_STATUS_ERROR) {
+		if (ce->status == PCE_STATUS_ENABLED)
+			clk_disable_unprepare(ce->clk);
+>>>>>>> refs/remotes/origin/master
 
 		if (ce->status >= PCE_STATUS_ACQUIRED)
 			clk_put(ce->clk);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ce->con_id)
 		kfree(ce->con_id);
@@ -170,10 +205,14 @@ static void __pm_clk_remove(struct pm_clock_entry *ce)
 =======
 	kfree(ce->con_id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(ce->con_id);
+>>>>>>> refs/remotes/origin/master
 	kfree(ce);
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * pm_runtime_clk_remove - Stop using a device clock for runtime PM.
  * @dev: Device whose clock should not be used for runtime PM any more.
@@ -298,6 +337,8 @@ int pm_runtime_clk_suspend(struct device *dev)
 		if (ce->status < PCE_STATUS_ERROR) {
 			clk_disable(ce->clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_clk_remove - Stop using a device clock for power management.
  * @dev: Device whose clock should not be used for PM any more.
  * @con_id: Connection ID of the clock.
@@ -357,8 +398,12 @@ void pm_clk_init(struct device *dev)
  */
 int pm_clk_create(struct device *dev)
 {
+<<<<<<< HEAD
 	int ret = dev_pm_get_subsys_data(dev);
 	return ret < 0 ? ret : 0;
+=======
+	return dev_pm_get_subsys_data(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -420,21 +465,29 @@ int pm_clk_suspend(struct device *dev)
 		if (ce->status < PCE_STATUS_ERROR) {
 			if (ce->status == PCE_STATUS_ENABLED)
 				clk_disable(ce->clk);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ce->status = PCE_STATUS_ACQUIRED;
 		}
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&prd->lock);
 =======
 	spin_unlock_irqrestore(&psd->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&psd->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * pm_runtime_clk_resume - Enable clocks in a device's runtime PM clock list.
  * @dev: Device to enable the clocks for.
@@ -456,6 +509,8 @@ int pm_runtime_clk_resume(struct device *dev)
 			pm_runtime_clk_acquire(dev, ce);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_clk_resume - Enable clocks in a device's PM clock list.
  * @dev: Device to enable the clocks for.
  */
@@ -473,7 +528,10 @@ int pm_clk_resume(struct device *dev)
 	spin_lock_irqsave(&psd->lock, flags);
 
 	list_for_each_entry(ce, &psd->clock_list, node) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ce->status < PCE_STATUS_ERROR) {
 			clk_enable(ce->clk);
 			ce->status = PCE_STATUS_ENABLED;
@@ -481,26 +539,35 @@ int pm_clk_resume(struct device *dev)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_unlock(&prd->lock);
 =======
 	spin_unlock_irqrestore(&psd->lock, flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_unlock_irqrestore(&psd->lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_clk_notify - Notify routine for device addition and removal.
 =======
  * pm_clk_notify - Notify routine for device addition and removal.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pm_clk_notify - Notify routine for device addition and removal.
+>>>>>>> refs/remotes/origin/master
  * @nb: Notifier block object this function is a member of.
  * @action: Operation being carried out by the caller.
  * @data: Device the routine is being run for.
  *
  * For this function to work, @nb must be a member of an object of type
  * struct pm_clk_notifier_block containing all of the requisite data.
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Specifically, the pwr_domain member of that object is copied to the device's
  * pwr_domain field and its con_ids member is used to populate the device's list
@@ -512,6 +579,8 @@ int pm_clk_resume(struct device *dev)
  */
 static int pm_runtime_clk_notify(struct notifier_block *nb,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Specifically, the pm_domain member of that object is copied to the device's
  * pm_domain field and its con_ids member is used to populate the device's list
  * of PM clocks, depending on @action.
@@ -521,7 +590,10 @@ static int pm_runtime_clk_notify(struct notifier_block *nb,
  * does nothing.
  */
 static int pm_clk_notify(struct notifier_block *nb,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				 unsigned long action, void *data)
 {
 	struct pm_clk_notifier_block *clknb;
@@ -535,6 +607,7 @@ static int pm_clk_notify(struct notifier_block *nb,
 
 	switch (action) {
 	case BUS_NOTIFY_ADD_DEVICE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (dev->pwr_domain)
 			break;
@@ -550,6 +623,8 @@ static int pm_clk_notify(struct notifier_block *nb,
 		} else {
 			pm_runtime_clk_add(dev, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dev->pm_domain)
 			break;
 
@@ -563,11 +638,15 @@ static int pm_clk_notify(struct notifier_block *nb,
 				pm_clk_add(dev, *con_id);
 		} else {
 			pm_clk_add(dev, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		break;
 	case BUS_NOTIFY_DEL_DEVICE:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (dev->pwr_domain != clknb->pwr_domain)
 			break;
@@ -575,12 +654,17 @@ static int pm_clk_notify(struct notifier_block *nb,
 		dev->pwr_domain = NULL;
 		pm_runtime_clk_destroy(dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dev->pm_domain != clknb->pm_domain)
 			break;
 
 		dev->pm_domain = NULL;
 		pm_clk_destroy(dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -590,7 +674,10 @@ static int pm_clk_notify(struct notifier_block *nb,
 #else /* !CONFIG_PM_RUNTIME */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 
 /**
@@ -647,7 +734,10 @@ int pm_clk_resume(struct device *dev)
 
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * enable_clock - Enable a device clock.
  * @dev: Device whose clock is to be enabled.
@@ -659,7 +749,11 @@ static void enable_clock(struct device *dev, const char *con_id)
 
 	clk = clk_get(dev, con_id);
 	if (!IS_ERR(clk)) {
+<<<<<<< HEAD
 		clk_enable(clk);
+=======
+		clk_prepare_enable(clk);
+>>>>>>> refs/remotes/origin/master
 		clk_put(clk);
 		dev_info(dev, "Runtime PM disabled, clock forced on.\n");
 	}
@@ -676,7 +770,11 @@ static void disable_clock(struct device *dev, const char *con_id)
 
 	clk = clk_get(dev, con_id);
 	if (!IS_ERR(clk)) {
+<<<<<<< HEAD
 		clk_disable(clk);
+=======
+		clk_disable_unprepare(clk);
+>>>>>>> refs/remotes/origin/master
 		clk_put(clk);
 		dev_info(dev, "Runtime PM disabled, clock forced off.\n");
 	}
@@ -684,10 +782,14 @@ static void disable_clock(struct device *dev, const char *con_id)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_clk_notify - Notify routine for device addition and removal.
 =======
  * pm_clk_notify - Notify routine for device addition and removal.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pm_clk_notify - Notify routine for device addition and removal.
+>>>>>>> refs/remotes/origin/master
  * @nb: Notifier block object this function is a member of.
  * @action: Operation being carried out by the caller.
  * @data: Device the routine is being run for.
@@ -698,10 +800,14 @@ static void disable_clock(struct device *dev, const char *con_id)
  * the device's clocks, depending on @action.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int pm_runtime_clk_notify(struct notifier_block *nb,
 =======
 static int pm_clk_notify(struct notifier_block *nb,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pm_clk_notify(struct notifier_block *nb,
+>>>>>>> refs/remotes/origin/master
 				 unsigned long action, void *data)
 {
 	struct pm_clk_notifier_block *clknb;
@@ -738,14 +844,19 @@ static int pm_clk_notify(struct notifier_block *nb,
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_clk_add_notifier - Add bus type notifier for runtime PM clocks.
 =======
  * pm_clk_add_notifier - Add bus type notifier for power management clocks.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pm_clk_add_notifier - Add bus type notifier for power management clocks.
+>>>>>>> refs/remotes/origin/master
  * @bus: Bus type to add the notifier to.
  * @clknb: Notifier to be added to the given bus type.
  *
  * The nb member of @clknb is not expected to be initialized and its
+<<<<<<< HEAD
 <<<<<<< HEAD
  * notifier_call member will be replaced with pm_runtime_clk_notify().  However,
  * the remaining members of @clknb should be populated prior to calling this
@@ -753,21 +864,30 @@ static int pm_clk_notify(struct notifier_block *nb,
  */
 void pm_runtime_clk_add_notifier(struct bus_type *bus,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * notifier_call member will be replaced with pm_clk_notify().  However,
  * the remaining members of @clknb should be populated prior to calling this
  * routine.
  */
 void pm_clk_add_notifier(struct bus_type *bus,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				 struct pm_clk_notifier_block *clknb)
 {
 	if (!bus || !clknb)
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clknb->nb.notifier_call = pm_runtime_clk_notify;
 =======
 	clknb->nb.notifier_call = pm_clk_notify;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clknb->nb.notifier_call = pm_clk_notify;
+>>>>>>> refs/remotes/origin/master
 	bus_register_notifier(bus, &clknb->nb);
 }

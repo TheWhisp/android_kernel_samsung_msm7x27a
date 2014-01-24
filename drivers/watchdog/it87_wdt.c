@@ -12,7 +12,12 @@
  *		    http://www.ite.com.tw/
  *
  *	Support of the watchdog timers, which are available on
+<<<<<<< HEAD
  *	IT8702, IT8712, IT8716, IT8718, IT8720, IT8721 and IT8726.
+=======
+ *	IT8702, IT8712, IT8716, IT8718, IT8720, IT8721, IT8726
+ *	and IT8728.
+>>>>>>> refs/remotes/origin/master
  *
  *	This program is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -30,10 +35,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -49,6 +59,7 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #define WATCHDOG_VERSION	"1.14"
@@ -59,6 +70,11 @@
 #define WATCHDOG_VERSION	"1.14"
 #define WATCHDOG_NAME		"IT87 WDT"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define WATCHDOG_VERSION	"1.14"
+#define WATCHDOG_NAME		"IT87 WDT"
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_VERSION		WATCHDOG_NAME " driver, v" WATCHDOG_VERSION "\n"
 #define WD_MAGIC		'V'
 
@@ -95,6 +111,10 @@
 #define IT8720_ID	0x8720
 #define IT8721_ID	0x8721
 #define IT8726_ID	0x8726	/* the data sheet suggest wrongly 0x8716 */
+<<<<<<< HEAD
+=======
+#define IT8728_ID	0x8728
+>>>>>>> refs/remotes/origin/master
 
 /* GPIO Configuration Registers LDN=0x07 */
 #define WDTCTRL		0x71
@@ -106,7 +126,11 @@
 #define WDT_CIRINT	0x80
 #define WDT_MOUSEINT	0x40
 #define WDT_KYBINT	0x20
+<<<<<<< HEAD
 #define WDT_GAMEPORT	0x10 /* not in it8718, it8720, it8721 */
+=======
+#define WDT_GAMEPORT	0x10 /* not in it8718, it8720, it8721, it8728 */
+>>>>>>> refs/remotes/origin/master
 #define WDT_FORCE	0x02
 #define WDT_ZERO	0x01
 
@@ -149,19 +173,26 @@
 static	unsigned int base, gpact, ciract, max_units, chip_type;
 static	unsigned long wdt_status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static	DEFINE_SPINLOCK(spinlock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static	int nogameport = DEFAULT_NOGAMEPORT;
 static	int exclusive  = DEFAULT_EXCLUSIVE;
 static	int timeout    = DEFAULT_TIMEOUT;
 static	int testmode   = DEFAULT_TESTMODE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static	int nowayout   = DEFAULT_NOWAYOUT;
 =======
 static	bool nowayout   = DEFAULT_NOWAYOUT;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static	bool nowayout   = DEFAULT_NOWAYOUT;
+>>>>>>> refs/remotes/origin/master
 
 module_param(nogameport, int, 0);
 MODULE_PARM_DESC(nogameport, "Forbid the activation of game port, default="
@@ -176,19 +207,26 @@ module_param(testmode, int, 0);
 MODULE_PARM_DESC(testmode, "Watchdog test mode (1 = no reboot), default="
 		__MODULE_STRING(DEFAULT_TESTMODE));
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
 =======
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started, default="
 		__MODULE_STRING(WATCHDOG_NOWAYOUT));
 
 /* Superio Chip */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void superio_enter(void)
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int superio_enter(void)
 {
 	/*
@@ -197,15 +235,22 @@ static inline int superio_enter(void)
 	if (!request_muxed_region(REG, 2, WATCHDOG_NAME))
 		return -EBUSY;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	outb(0x87, REG);
 	outb(0x01, REG);
 	outb(0x55, REG);
 	outb(0x55, REG);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void superio_exit(void)
@@ -213,9 +258,13 @@ static inline void superio_exit(void)
 	outb(0x02, REG);
 	outb(0x02, VAL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	release_region(REG, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_region(REG, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void superio_select(int ldn)
@@ -297,6 +346,7 @@ static void wdt_keepalive(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void wdt_start(void)
 {
 	unsigned long flags;
@@ -304,12 +354,17 @@ static void wdt_start(void)
 	spin_lock_irqsave(&spinlock, flags);
 	superio_enter();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int wdt_start(void)
 {
 	int ret = superio_enter();
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	superio_select(GPIO);
 	if (test_bit(WDTS_USE_GP, &wdt_status))
@@ -319,6 +374,7 @@ static int wdt_start(void)
 	wdt_update_timeout();
 
 	superio_exit();
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_unlock_irqrestore(&spinlock, flags);
 }
@@ -330,6 +386,8 @@ static void wdt_stop(void)
 	spin_lock_irqsave(&spinlock, flags);
 	superio_enter();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -339,7 +397,10 @@ static int wdt_stop(void)
 	int ret = superio_enter();
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	superio_select(GPIO);
 	superio_outb(0x00, WDTCTRL);
@@ -350,10 +411,14 @@ static int wdt_stop(void)
 
 	superio_exit();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&spinlock, flags);
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -369,10 +434,13 @@ static int wdt_stop(void)
 static int wdt_set_timeout(int t)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (t < 1 || t > max_units * 60)
 		return -EINVAL;
 
@@ -382,24 +450,33 @@ static int wdt_set_timeout(int t)
 		timeout = t;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_irqsave(&spinlock, flags);
 	if (test_bit(WDTS_TIMER_RUN, &wdt_status)) {
 		superio_enter();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (test_bit(WDTS_TIMER_RUN, &wdt_status)) {
 		int ret = superio_enter();
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		superio_select(GPIO);
 		wdt_update_timeout();
 		superio_exit();
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock_irqrestore(&spinlock, flags);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -419,6 +496,7 @@ static int wdt_set_timeout(int t)
 static int wdt_get_status(int *status)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	*status = 0;
@@ -426,13 +504,18 @@ static int wdt_get_status(int *status)
 		spin_lock_irqsave(&spinlock, flags);
 		superio_enter();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	*status = 0;
 	if (testmode) {
 		int ret = superio_enter();
 		if (ret)
 			return ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		superio_select(GPIO);
 		if (superio_inb(WDTCTRL) & WDT_ZERO) {
 			superio_outb(0x00, WDTCTRL);
@@ -442,9 +525,12 @@ static int wdt_get_status(int *status)
 
 		superio_exit();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&spinlock, flags);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (test_and_clear_bit(WDTS_KEEPALIVE, &wdt_status))
 		*status |= WDIOF_KEEPALIVEPING;
@@ -471,10 +557,13 @@ static int wdt_open(struct inode *inode, struct file *file)
 		return -EBUSY;
 	if (!test_and_set_bit(WDTS_TIMER_RUN, &wdt_status)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (nowayout && !test_and_set_bit(WDTS_LOCKED, &wdt_status))
 			__module_get(THIS_MODULE);
 		wdt_start();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		int ret;
 		if (nowayout && !test_and_set_bit(WDTS_LOCKED, &wdt_status))
 			__module_get(THIS_MODULE);
@@ -486,7 +575,10 @@ static int wdt_open(struct inode *inode, struct file *file)
 			clear_bit(WDTS_DEV_OPEN, &wdt_status);
 			return ret;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return nonseekable_open(inode, file);
 }
@@ -509,6 +601,7 @@ static int wdt_release(struct inode *inode, struct file *file)
 	if (test_bit(WDTS_TIMER_RUN, &wdt_status)) {
 		if (test_and_clear_bit(WDTS_EXPECTED, &wdt_status)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wdt_stop();
 			clear_bit(WDTS_TIMER_RUN, &wdt_status);
 		} else {
@@ -516,6 +609,8 @@ static int wdt_release(struct inode *inode, struct file *file)
 			printk(KERN_CRIT PFX
 			       "unexpected close, not stopping watchdog!\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			int ret = wdt_stop();
 			if (ret) {
 				/*
@@ -530,7 +625,10 @@ static int wdt_release(struct inode *inode, struct file *file)
 		} else {
 			wdt_keepalive();
 			pr_crit("unexpected close, not stopping watchdog!\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	clear_bit(WDTS_DEV_OPEN, &wdt_status);
@@ -607,12 +705,18 @@ static long wdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
 	case WDIOC_GETSTATUS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wdt_get_status(&status);
 =======
 		rc = wdt_get_status(&status);
 		if (rc)
 			return rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = wdt_get_status(&status);
+		if (rc)
+			return rc;
+>>>>>>> refs/remotes/origin/master
 		return put_user(status, uarg.i);
 
 	case WDIOC_GETBOOTSTATUS:
@@ -629,23 +733,32 @@ static long wdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		switch (new_options) {
 		case WDIOS_DISABLECARD:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (test_bit(WDTS_TIMER_RUN, &wdt_status))
 				wdt_stop();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (test_bit(WDTS_TIMER_RUN, &wdt_status)) {
 				rc = wdt_stop();
 				if (rc)
 					return rc;
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			clear_bit(WDTS_TIMER_RUN, &wdt_status);
 			return 0;
 
 		case WDIOS_ENABLECARD:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!test_and_set_bit(WDTS_TIMER_RUN, &wdt_status))
 				wdt_start();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!test_and_set_bit(WDTS_TIMER_RUN, &wdt_status)) {
 				rc = wdt_start();
 				if (rc) {
@@ -653,7 +766,10 @@ static long wdt_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 					return rc;
 				}
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 0;
 
 		default:
@@ -707,6 +823,7 @@ static int __init it87_wdt_init(void)
 	int try_gameport = !nogameport;
 	u8  chip_rev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 
 	wdt_status = 0;
@@ -718,6 +835,8 @@ static int __init it87_wdt_init(void)
 	superio_exit();
 	spin_unlock_irqrestore(&spinlock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int gp_rreq_fail = 0;
 
 	wdt_status = 0;
@@ -729,7 +848,10 @@ static int __init it87_wdt_init(void)
 	chip_type = superio_inw(CHIPID);
 	chip_rev  = superio_inb(CHIPREV) & 0x0f;
 	superio_exit();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (chip_type) {
 	case IT8702_ID:
@@ -745,10 +867,15 @@ static int __init it87_wdt_init(void)
 	case IT8718_ID:
 	case IT8720_ID:
 	case IT8721_ID:
+<<<<<<< HEAD
+=======
+	case IT8728_ID:
+>>>>>>> refs/remotes/origin/master
 		max_units = 65535;
 		try_gameport = 0;
 		break;
 	case IT8705_ID:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 		       "Unsupported Chip found, Chip %04x Revision %02x\n",
@@ -761,6 +888,8 @@ static int __init it87_wdt_init(void)
 		printk(KERN_ERR PFX
 		       "Unknown Chip found, Chip %04x Revision %04x\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("Unsupported Chip found, Chip %04x Revision %02x\n",
 		       chip_type, chip_rev);
 		return -ENODEV;
@@ -769,11 +898,15 @@ static int __init it87_wdt_init(void)
 		return -ENODEV;
 	default:
 		pr_err("Unknown Chip found, Chip %04x Revision %04x\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		       chip_type, chip_rev);
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&spinlock, flags);
 	superio_enter();
@@ -782,6 +915,11 @@ static int __init it87_wdt_init(void)
 	if (rc)
 		return rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = superio_enter();
+	if (rc)
+		return rc;
+>>>>>>> refs/remotes/origin/master
 
 	superio_select(GPIO);
 	superio_outb(WDT_TOV1, WDTCFG);
@@ -798,6 +936,7 @@ static int __init it87_wdt_init(void)
 		gpact = superio_inb(ACTREG);
 		superio_outb(0x01, ACTREG);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		superio_exit();
 		spin_unlock_irqrestore(&spinlock, flags);
 		if (request_region(base, 1, WATCHDOG_NAME))
@@ -808,16 +947,22 @@ static int __init it87_wdt_init(void)
 		superio_exit();
 		spin_unlock_irqrestore(&spinlock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (request_region(base, 1, WATCHDOG_NAME))
 			set_bit(WDTS_USE_GP, &wdt_status);
 		else
 			gp_rreq_fail = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* If we haven't Gameport support, try to get CIR support */
 	if (!test_bit(WDTS_USE_GP, &wdt_status)) {
 		if (!request_region(CIR_BASE, 8, WATCHDOG_NAME)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (rc == -EIO)
 				printk(KERN_ERR PFX
@@ -828,28 +973,37 @@ static int __init it87_wdt_init(void)
 					"I/O Address 0x%04x already in use\n",
 					CIR_BASE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (gp_rreq_fail)
 				pr_err("I/O Address 0x%04x and 0x%04x already in use\n",
 				       base, CIR_BASE);
 			else
 				pr_err("I/O Address 0x%04x already in use\n",
 				       CIR_BASE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			rc = -EIO;
 			goto err_out;
 		}
 		base = CIR_BASE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		spin_lock_irqsave(&spinlock, flags);
 		superio_enter();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		superio_select(CIR);
 		superio_outw(base, BASEREG);
 		superio_outb(0x00, CIR_ILS);
 		ciract = superio_inb(ACTREG);
 		superio_outb(0x01, ACTREG);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (rc == -EIO) {
 			superio_select(GAMEPORT);
@@ -859,15 +1013,21 @@ static int __init it87_wdt_init(void)
 		superio_exit();
 		spin_unlock_irqrestore(&spinlock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (gp_rreq_fail) {
 			superio_select(GAMEPORT);
 			superio_outb(gpact, ACTREG);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (timeout < 1 || timeout > max_units * 60) {
 		timeout = DEFAULT_TIMEOUT;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_WARNING PFX
 		       "Timeout value out of range, use default %d sec\n",
@@ -876,6 +1036,10 @@ static int __init it87_wdt_init(void)
 		pr_warn("Timeout value out of range, use default %d sec\n",
 			DEFAULT_TIMEOUT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("Timeout value out of range, use default %d sec\n",
+			DEFAULT_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (timeout > max_units)
@@ -884,16 +1048,21 @@ static int __init it87_wdt_init(void)
 	rc = register_reboot_notifier(&wdt_notifier);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 		       "Cannot register reboot notifier (err=%d)\n", rc);
 =======
 		pr_err("Cannot register reboot notifier (err=%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Cannot register reboot notifier (err=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_region;
 	}
 
 	rc = misc_register(&wdt_miscdev);
 	if (rc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 		       "Cannot register miscdev on minor=%d (err=%d)\n",
@@ -902,6 +1071,10 @@ static int __init it87_wdt_init(void)
 		pr_err("Cannot register miscdev on minor=%d (err=%d)\n",
 		       wdt_miscdev.minor, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Cannot register miscdev on minor=%d (err=%d)\n",
+		       wdt_miscdev.minor, rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_reboot;
 	}
 
@@ -917,18 +1090,24 @@ static int __init it87_wdt_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Chip IT%04x revision %d initialized. "
 		"timeout=%d sec (nowayout=%d testmode=%d exclusive=%d "
 		"nogameport=%d)\n", chip_type, chip_rev, timeout,
 		nowayout, testmode, exclusive, nogameport);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("Chip IT%04x revision %d initialized. timeout=%d sec (nowayout=%d testmode=%d exclusive=%d nogameport=%d)\n",
 		chip_type, chip_rev, timeout,
 		nowayout, testmode, exclusive, nogameport);
 
 	superio_exit();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_out_reboot:
@@ -936,6 +1115,7 @@ err_out_reboot:
 err_out_region:
 	release_region(base, test_bit(WDTS_USE_GP, &wdt_status) ? 1 : 8);
 	if (!test_bit(WDTS_USE_GP, &wdt_status)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		spin_lock_irqsave(&spinlock, flags);
 		superio_enter();
@@ -955,6 +1135,8 @@ err_out:
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		superio_select(CIR);
 		superio_outb(ciract, ACTREG);
 	}
@@ -965,12 +1147,16 @@ err_out:
 	}
 
 	superio_exit();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
 static void __exit it87_wdt_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long flags;
 	int nolock;
@@ -994,6 +1180,8 @@ static void __exit it87_wdt_exit(void)
 	if (!nolock)
 		spin_unlock_irqrestore(&spinlock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (superio_enter() == 0) {
 		superio_select(GPIO);
 		superio_outb(0x00, WDTCTRL);
@@ -1010,7 +1198,10 @@ static void __exit it87_wdt_exit(void)
 		}
 		superio_exit();
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	misc_deregister(&wdt_miscdev);
 	unregister_reboot_notifier(&wdt_notifier);
@@ -1023,4 +1214,7 @@ module_exit(it87_wdt_exit);
 MODULE_AUTHOR("Oliver Schuster");
 MODULE_DESCRIPTION("Hardware Watchdog Device Driver for IT87xx EC-LPC I/O");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

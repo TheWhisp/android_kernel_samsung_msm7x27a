@@ -4,6 +4,7 @@
 ///
 // Confidence: Low
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Copyright: (C) 2010 Nicolas Palix, DIKU.  GPLv2.
 // Copyright: (C) 2010 Julia Lawall, DIKU.  GPLv2.
 // Copyright: (C) 2010 Gilles Muller, INRIA/LiP6.  GPLv2.
@@ -15,6 +16,14 @@
 // URL: http://coccinelle.lip6.fr/
 // Comments: requires at least Coccinelle 0.2.4, lex or parse error otherwise
 // Options: -no_includes -include_headers
+=======
+// Copyright: (C) 2010-2012 Nicolas Palix.  GPLv2.
+// Copyright: (C) 2010-2012 Julia Lawall, INRIA/LIP6.  GPLv2.
+// Copyright: (C) 2010-2012 Gilles Muller, INRIA/LiP6.  GPLv2.
+// URL: http://coccinelle.lip6.fr/
+// Comments: requires at least Coccinelle 0.2.4, lex or parse error otherwise
+// Options: --no-includes --include-headers
+>>>>>>> refs/remotes/origin/master
 
 virtual org
 virtual report
@@ -56,8 +65,12 @@ pr << r.p;
 
 if int(ps[0].line) < int(pr[0].line) or (int(ps[0].line) == int(pr[0].line) and int(ps[0].column) < int(pr[0].column)):
 <<<<<<< HEAD
+<<<<<<< HEAD
   msg = "%s: first occurrence %s, second occurrence %s" % (fld,ps[0].line,pr[0].line)
 =======
   msg = "%s: first occurrence line %s, second occurrence line %s" % (fld,ps[0].line,pr[0].line)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  msg = "%s: first occurrence line %s, second occurrence line %s" % (fld,ps[0].line,pr[0].line)
+>>>>>>> refs/remotes/origin/master
   coccilib.report.print_report(p0[0],msg)

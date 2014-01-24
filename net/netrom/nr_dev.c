@@ -22,9 +22,12 @@
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/io.h>
 
@@ -101,7 +104,11 @@ static int nr_rebuild_header(struct sk_buff *skb)
 
 static int nr_header(struct sk_buff *skb, struct net_device *dev,
 		     unsigned short type,
+<<<<<<< HEAD
 		     const void *daddr, const void *saddr, unsigned len)
+=======
+		     const void *daddr, const void *saddr, unsigned int len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char *buff = skb_push(skb, NR_NETWORK_LEN + NR_TRANSPORT_LEN);
 

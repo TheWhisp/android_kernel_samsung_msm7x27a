@@ -11,7 +11,11 @@
  * Modification history kernel/time.c
  *
  * 1993-09-02    Philip Gladstone
+<<<<<<< HEAD
  *      Created file with time related functions from sched.c and adjtimex()
+=======
+ *      Created file with time related functions from sched/core.c and adjtimex()
+>>>>>>> refs/remotes/origin/master
  * 1993-10-08    Torsten Duwe
  *      adjtime interface update and CMOS clock write code
  * 1995-08-13    Torsten Duwe
@@ -28,6 +32,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
@@ -35,6 +40,12 @@
 #include <linux/timex.h>
 #include <linux/capability.h>
 #include <linux/clocksource.h>
+=======
+#include <linux/export.h>
+#include <linux/timex.h>
+#include <linux/capability.h>
+#include <linux/timekeeper_internal.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/syscalls.h>
 #include <linux/security.h>
@@ -119,6 +130,15 @@ SYSCALL_DEFINE2(gettimeofday, struct timeval __user *, tv,
 }
 
 /*
+<<<<<<< HEAD
+=======
+ * Indicates if there is an offset between the system clock and the hardware
+ * clock/persistent clock/rtc.
+ */
+int persistent_clock_is_local;
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Adjust the time obtained from the CMOS to be UTC time instead of
  * local time.
  *
@@ -136,11 +156,22 @@ SYSCALL_DEFINE2(gettimeofday, struct timeval __user *, tv,
  */
 static inline void warp_clock(void)
 {
+<<<<<<< HEAD
 	struct timespec adjust;
 
 	adjust = current_kernel_time();
 	adjust.tv_sec += sys_tz.tz_minuteswest * 60;
 	do_settimeofday(&adjust);
+=======
+	if (sys_tz.tz_minuteswest != 0) {
+		struct timespec adjust;
+
+		persistent_clock_is_local = 1;
+		adjust.tv_sec = sys_tz.tz_minuteswest * 60;
+		adjust.tv_nsec = 0;
+		timekeeping_inject_offset(&adjust);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -168,9 +199,12 @@ int do_sys_settimeofday(const struct timespec *tv, const struct timezone *tz)
 
 	if (tz) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* SMP safe, global irq locking makes it work. */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		sys_tz = *tz;
 		update_vsyscall_tz();
 		if (firsttime) {
@@ -181,6 +215,7 @@ int do_sys_settimeofday(const struct timespec *tv, const struct timezone *tz)
 	}
 	if (tv)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{
 		/* SMP safe, again the code in arch/foo/time.c should
 		 * globally block out interrupts when it runs.
@@ -190,6 +225,9 @@ int do_sys_settimeofday(const struct timespec *tv, const struct timezone *tz)
 =======
 		return do_settimeofday(tv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return do_settimeofday(tv);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -249,7 +287,11 @@ EXPORT_SYMBOL(current_fs_time);
  * Avoid unnecessary multiplications/divisions in the
  * two most common HZ cases:
  */
+<<<<<<< HEAD
 inline unsigned int jiffies_to_msecs(const unsigned long j)
+=======
+unsigned int jiffies_to_msecs(const unsigned long j)
+>>>>>>> refs/remotes/origin/master
 {
 #if HZ <= MSEC_PER_SEC && !(MSEC_PER_SEC % HZ)
 	return (MSEC_PER_SEC / HZ) * j;
@@ -265,7 +307,11 @@ inline unsigned int jiffies_to_msecs(const unsigned long j)
 }
 EXPORT_SYMBOL(jiffies_to_msecs);
 
+<<<<<<< HEAD
 inline unsigned int jiffies_to_usecs(const unsigned long j)
+=======
+unsigned int jiffies_to_usecs(const unsigned long j)
+>>>>>>> refs/remotes/origin/master
 {
 #if HZ <= USEC_PER_SEC && !(USEC_PER_SEC % HZ)
 	return (USEC_PER_SEC / HZ) * j;

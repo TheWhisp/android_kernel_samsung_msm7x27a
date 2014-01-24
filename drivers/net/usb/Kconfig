@@ -8,8 +8,12 @@ menu "USB Network Adapters"
 	depends on USB && NET
 
 config USB_CATC
+<<<<<<< HEAD
 	tristate "USB CATC NetMate-based Ethernet device support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	tristate "USB CATC NetMate-based Ethernet device support"
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	---help---
 	  Say Y if you want to use one of the following 10Mbps USB Ethernet
@@ -69,9 +73,12 @@ config USB_KAWETH
 config USB_PEGASUS
 	tristate "USB Pegasus/Pegasus-II based ethernet device support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select NET_CORE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  Say Y here if you know you have Pegasus or Pegasus-II based adapter.
@@ -86,12 +93,16 @@ config USB_PEGASUS
 	  module will be called pegasus.
 
 config USB_RTL8150
+<<<<<<< HEAD
 	tristate "USB RTL8150 based ethernet device support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
 <<<<<<< HEAD
 =======
 	select NET_CORE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "USB RTL8150 based ethernet device support"
+>>>>>>> refs/remotes/origin/master
 	select MII
 	help
 	  Say Y here if you have RTL8150 based usb-ethernet adapter.
@@ -101,12 +112,27 @@ config USB_RTL8150
 	  To compile this driver as a module, choose M here: the
 	  module will be called rtl8150.
 
+<<<<<<< HEAD
 config USB_USBNET
 	tristate "Multi-purpose USB Networking Framework"
 <<<<<<< HEAD
 =======
 	select NET_CORE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config USB_RTL8152
+	tristate "Realtek RTL8152 Based USB 2.0 Ethernet Adapters"
+	select MII
+	help
+	  This option adds support for Realtek RTL8152 based USB 2.0
+	  10/100 Ethernet adapters.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called r8152.
+
+config USB_USBNET
+	tristate "Multi-purpose USB Networking Framework"
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  This driver supports several kinds of network links over USB,
@@ -143,6 +169,10 @@ config USB_NET_AX8817X
 	tristate "ASIX AX88xxx Based USB 2.0 Ethernet Adapters"
 	depends on USB_USBNET
 	select CRC32
+<<<<<<< HEAD
+=======
+	select PHYLIB
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  This option adds support for ASIX AX88xxx based USB 2.0
@@ -166,6 +196,27 @@ config USB_NET_AX8817X
 	  This driver creates an interface named "ethX", where X depends on
 	  what other networking devices you have in use.
 
+<<<<<<< HEAD
+=======
+config USB_NET_AX88179_178A
+	tristate "ASIX AX88179/178A USB 3.0/2.0 to Gigabit Ethernet"
+	depends on USB_USBNET
+	select CRC32
+	select PHYLIB
+	default y
+	help
+	  This option adds support for ASIX AX88179 based USB 3.0/2.0
+	  to Gigabit Ethernet adapters.
+
+	  This driver should work with at least the following devices:
+	    * ASIX AX88179
+	    * ASIX AX88178A
+	    * Sitcomm LN-032
+
+	  This driver creates an interface named "ethX", where X depends on
+	  what other networking devices you have in use.
+
+>>>>>>> refs/remotes/origin/master
 config USB_NET_CDCETHER
 	tristate "CDC Ethernet support (smart devices such as cable modems)"
 	depends on USB_USBNET
@@ -196,7 +247,11 @@ config USB_NET_CDCETHER
 
 config USB_NET_CDC_EEM
 	tristate "CDC EEM support"
+<<<<<<< HEAD
 	depends on USB_USBNET && EXPERIMENTAL
+=======
+	depends on USB_USBNET
+>>>>>>> refs/remotes/origin/master
 	help
 	  This option supports devices conforming to the Communication Device
 	  Class (CDC) Ethernet Emulation Model, a specification that's easy to
@@ -227,25 +282,88 @@ config USB_NET_CDC_NCM
 	    * ST-Ericsson M343 HSPA Mobile Broadband Modem (reference design)
 	    * Ericsson F5521gw Mobile Broadband Module
 
+<<<<<<< HEAD
 config USB_NET_DM9601
 	tristate "Davicom DM9601 based USB 1.1 10/100 ethernet devices"
 	depends on USB_USBNET
 	select CRC32
 	help
 	  This option adds support for Davicom DM9601 based USB 1.1
+=======
+config USB_NET_HUAWEI_CDC_NCM
+	tristate "Huawei NCM embedded AT channel support"
+	depends on USB_USBNET
+	select USB_WDM
+	select USB_NET_CDC_NCM
+	help
+		This driver supports huawei-style NCM devices, that use NCM as a
+		transport for other protocols, usually an embedded AT channel.
+		Good examples are:
+		* Huawei E3131
+		* Huawei E3251
+
+		To compile this driver as a module, choose M here: the module will be
+		called huawei_cdc_ncm.ko.
+
+config USB_NET_CDC_MBIM
+	tristate "CDC MBIM support"
+	depends on USB_USBNET
+	select USB_WDM
+	select USB_NET_CDC_NCM
+	help
+	  This driver provides support for CDC MBIM (Mobile Broadband
+	  Interface Model) devices. The CDC MBIM specification is
+	  available from <http://www.usb.org/>.
+
+	  MBIM devices require configuration using the management
+	  protocol defined by the MBIM specification.  This driver
+	  provides unfiltered access to the MBIM control channel
+	  through the associated /dev/cdc-wdmx character device.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cdc_mbim.
+
+config USB_NET_DM9601
+	tristate "Davicom DM96xx based USB 10/100 ethernet devices"
+	depends on USB_USBNET
+	select CRC32
+	help
+	  This option adds support for Davicom DM9601/DM9620/DM9621A
+	  based USB 10/100 Ethernet adapters.
+
+config USB_NET_SR9700
+	tristate "CoreChip-sz SR9700 based USB 1.1 10/100 ethernet devices"
+	depends on USB_USBNET
+	select CRC32
+	help
+	  This option adds support for CoreChip-sz SR9700 based USB 1.1
+>>>>>>> refs/remotes/origin/master
 	  10/100 Ethernet adapters.
 
 config USB_NET_SMSC75XX
 	tristate "SMSC LAN75XX based USB 2.0 gigabit ethernet devices"
 	depends on USB_USBNET
+<<<<<<< HEAD
 	select CRC32
 	help
 	  This option adds support for SMSC LAN95XX based USB 2.0
+=======
+	select BITREVERSE
+	select CRC16
+	select CRC32
+	help
+	  This option adds support for SMSC LAN75XX based USB 2.0
+>>>>>>> refs/remotes/origin/master
 	  Gigabit Ethernet adapters.
 
 config USB_NET_SMSC95XX
 	tristate "SMSC LAN95XX based USB 2.0 10/100 ethernet devices"
 	depends on USB_USBNET
+<<<<<<< HEAD
+=======
+	select BITREVERSE
+	select CRC16
+>>>>>>> refs/remotes/origin/master
 	select CRC32
 	help
 	  This option adds support for SMSC LAN95XX based USB 2.0
@@ -273,7 +391,11 @@ config USB_NET_PLUSB
 	tristate "Prolific PL-2301/2302/25A1 based cables"
 	# if the handshake/init/reset problems, from original 'plusb',
 	# are ever resolved ... then remove "experimental"
+<<<<<<< HEAD
 	depends on USB_USBNET && EXPERIMENTAL
+=======
+	depends on USB_USBNET
+>>>>>>> refs/remotes/origin/master
 	help
 	  Choose this option if you're using a host-to-host cable
 	  with one of these chips.
@@ -287,8 +409,13 @@ config USB_NET_MCS7830
 	  adapters marketed under the DeLOCK brand.
 
 config USB_NET_RNDIS_HOST
+<<<<<<< HEAD
 	tristate "Host for RNDIS and ActiveSync devices (EXPERIMENTAL)"
 	depends on USB_USBNET && EXPERIMENTAL
+=======
+	tristate "Host for RNDIS and ActiveSync devices"
+	depends on USB_USBNET
+>>>>>>> refs/remotes/origin/master
 	select USB_NET_CDCETHER
 	help
 	  This option enables hosting "Remote NDIS" USB networking links,
@@ -366,7 +493,11 @@ config USB_EPSON2888
 
 config USB_KC2190
 	boolean "KT Technology KC2190 based cables (InstaNet)"
+<<<<<<< HEAD
 	depends on USB_NET_CDC_SUBSET && EXPERIMENTAL
+=======
+	depends on USB_NET_CDC_SUBSET
+>>>>>>> refs/remotes/origin/master
 	help
 	  Choose this option if you're using a host-to-host cable
 	  with one of these chips.
@@ -408,7 +539,10 @@ config USB_NET_KALMIA
 	  module will be called kalmia.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config USB_NET_QMI_WWAN
 	tristate "QMI WWAN driver for Qualcomm MSM based 3G and LTE modems"
 	depends on USB_USBNET
@@ -431,10 +565,16 @@ config USB_NET_QMI_WWAN
 	  To compile this driver as a module, choose M here: the
 	  module will be called qmi_wwan.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config USB_HSO
 	tristate "Option USB High Speed Mobile Devices"
 	depends on USB && RFKILL
+=======
+config USB_HSO
+	tristate "Option USB High Speed Mobile Devices"
+	depends on USB && RFKILL && TTY
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  Choose this option if you have an Option HSDPA/HSUPA card.
@@ -482,7 +622,11 @@ config USB_SIERRA_NET
 
 config USB_VL600
 	tristate "LG VL600 modem dongle"
+<<<<<<< HEAD
 	depends on USB_NET_CDCETHER
+=======
+	depends on USB_NET_CDCETHER && TTY
+>>>>>>> refs/remotes/origin/master
 	select USB_ACM
 	help
 	  Select this if you want to use an LG Electronics 4G/LTE usb modem
@@ -495,6 +639,7 @@ config USB_VL600
 
 	  http://ubuntuforums.org/showpost.php?p=10589647&postcount=17
 
+<<<<<<< HEAD
 config MSM_RMNET_USB
 	tristate "RMNET USB Driver"
 	depends on USB_USBNET
@@ -504,5 +649,7 @@ config MSM_RMNET_USB
 
 	To compile this driver as a module, choose M here: the module
 	will be called rmnet_usb. If unsure, choose N.
+=======
+>>>>>>> refs/remotes/origin/master
 
 endmenu

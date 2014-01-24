@@ -29,12 +29,17 @@
 #include <linux/types.h>
 #include <linux/ptrace.h>
 #include <linux/percpu.h>
+<<<<<<< HEAD
+=======
+#include <asm/probes.h>
+>>>>>>> refs/remotes/origin/master
 
 #define  __ARCH_WANT_KPROBES_INSN_SLOT
 
 struct pt_regs;
 struct kprobe;
 
+<<<<<<< HEAD
 typedef unsigned int kprobe_opcode_t;
 #define BREAKPOINT_INSTRUCTION	0x7fe00008	/* trap */
 #define MAX_INSN_SIZE 1
@@ -44,6 +49,11 @@ typedef unsigned int kprobe_opcode_t;
 #define IS_TDI(instr)		(((instr) & 0xfc000000) == 0x08000000)
 #define IS_TWI(instr)		(((instr) & 0xfc000000) == 0x0c000000)
 
+=======
+typedef ppc_opcode_t kprobe_opcode_t;
+#define MAX_INSN_SIZE 1
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC64
 /*
  * 64bit powerpc uses function descriptors.
@@ -72,12 +82,15 @@ typedef unsigned int kprobe_opcode_t;
 		addr = (kprobe_opcode_t *)kallsyms_lookup_name(dot_name); \
 	}								\
 }
+<<<<<<< HEAD
 
 #define is_trap(instr)	(IS_TW(instr) || IS_TD(instr) || \
 			IS_TWI(instr) || IS_TDI(instr))
 #else
 /* Use stock kprobe_lookup_name since ppc32 doesn't use function descriptors */
 #define is_trap(instr)	(IS_TW(instr) || IS_TWI(instr))
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define flush_insn_slot(p)	do { } while (0)

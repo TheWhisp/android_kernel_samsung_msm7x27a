@@ -36,6 +36,10 @@
 #include <linux/i2c.h>
 #include <linux/hwmon.h>
 #include <linux/hwmon-sysfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* chip registers */
 #define LTC4151_SENSE_H	0x00
@@ -145,6 +149,7 @@ static ssize_t ltc4151_show_value(struct device *dev,
 /*
  * Input voltages.
  */
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(in1_input, S_IRUGO, \
 	ltc4151_show_value, NULL, LTC4151_VIN_H);
 static SENSOR_DEVICE_ATTR(in2_input, S_IRUGO, \
@@ -160,6 +165,19 @@ static SENSOR_DEVICE_ATTR(curr1_input, S_IRUGO, \
 /*
  * Finally, construct an array of pointers to members of the above objects,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static SENSOR_DEVICE_ATTR(in1_input, S_IRUGO, ltc4151_show_value, NULL,
+			  LTC4151_VIN_H);
+static SENSOR_DEVICE_ATTR(in2_input, S_IRUGO, ltc4151_show_value, NULL,
+			  LTC4151_ADIN_H);
+
+/* Currents (via sense resistor) */
+static SENSOR_DEVICE_ATTR(curr1_input, S_IRUGO, ltc4151_show_value, NULL,
+			  LTC4151_SENSE_H);
+
+/*
+ * Finally, construct an array of pointers to members of the above objects,
+>>>>>>> refs/remotes/origin/master
  * as required for sysfs_create_group()
  */
 static struct attribute *ltc4151_attributes[] = {
@@ -185,11 +203,17 @@ static int ltc4151_probe(struct i2c_client *client,
 	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 	if (!data) {
 		ret = -ENOMEM;
 		goto out_kzalloc;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->update_lock);
@@ -197,7 +221,11 @@ static int ltc4151_probe(struct i2c_client *client,
 	/* Register sysfs hooks */
 	ret = sysfs_create_group(&client->dev.kobj, &ltc4151_group);
 	if (ret)
+<<<<<<< HEAD
 		goto out_sysfs_create_group;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -209,9 +237,12 @@ static int ltc4151_probe(struct i2c_client *client,
 
 out_hwmon_device_register:
 	sysfs_remove_group(&client->dev.kobj, &ltc4151_group);
+<<<<<<< HEAD
 out_sysfs_create_group:
 	kfree(data);
 out_kzalloc:
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -222,8 +253,11 @@ static int ltc4151_remove(struct i2c_client *client)
 	hwmon_device_unregister(data->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &ltc4151_group);
 
+<<<<<<< HEAD
 	kfree(data);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -244,6 +278,7 @@ static struct i2c_driver ltc4151_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init ltc4151_init(void)
 {
 	return i2c_add_driver(&ltc4151_driver);
@@ -256,13 +291,19 @@ static void __exit ltc4151_exit(void)
 =======
 module_i2c_driver(ltc4151_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(ltc4151_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Per Dalen <per.dalen@appeartv.com>");
 MODULE_DESCRIPTION("LTC4151 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(ltc4151_init);
 module_exit(ltc4151_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

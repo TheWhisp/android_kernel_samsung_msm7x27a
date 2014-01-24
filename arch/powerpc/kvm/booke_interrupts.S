@@ -14,9 +14,13 @@
  *
  * Copyright IBM Corp. 2007
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright 2011 Freescale Semiconductor, Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2011 Freescale Semiconductor, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Authors: Hollis Blanchard <hollisb@us.ibm.com>
  */
@@ -29,12 +33,15 @@
 #include <asm/asm-offsets.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define KVMPPC_MSR_MASK (MSR_CE|MSR_EE|MSR_PR|MSR_DE|MSR_ME|MSR_IS|MSR_DS)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #define VCPU_GPR(n)     (VCPU_GPRS + (n * 4))
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* The host stack layout: */
 #define HOST_R1         0 /* Implied by stwu. */
 #define HOST_CALLEE_LR  4
@@ -43,6 +50,7 @@
  * kernel with the -ffixed-r2 gcc option. */
 #define HOST_R2         12
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HOST_NV_GPRS    16
 =======
 #define HOST_CR         16
@@ -50,6 +58,13 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #define HOST_NV_GPR(n)  (HOST_NV_GPRS + ((n - 14) * 4))
 #define HOST_MIN_STACK_SIZE (HOST_NV_GPR(31) + 4)
+=======
+#define HOST_CR         16
+#define HOST_NV_GPRS    20
+#define __HOST_NV_GPR(n)  (HOST_NV_GPRS + ((n - 14) * 4))
+#define HOST_NV_GPR(n)  __HOST_NV_GPR(__REG_##n)
+#define HOST_MIN_STACK_SIZE (HOST_NV_GPR(R31) + 4)
+>>>>>>> refs/remotes/origin/master
 #define HOST_STACK_SIZE (((HOST_MIN_STACK_SIZE + 15) / 16) * 16) /* Align. */
 #define HOST_STACK_LR   (HOST_STACK_SIZE + 4) /* In caller stack frame. */
 
@@ -58,11 +73,17 @@
                         (1<<BOOKE_INTERRUPT_DEBUG))
 
 #define NEED_DEAR_MASK ((1<<BOOKE_INTERRUPT_DATA_STORAGE) | \
+<<<<<<< HEAD
                         (1<<BOOKE_INTERRUPT_DTLB_MISS))
+=======
+                        (1<<BOOKE_INTERRUPT_DTLB_MISS) | \
+                        (1<<BOOKE_INTERRUPT_ALIGNMENT))
+>>>>>>> refs/remotes/origin/master
 
 #define NEED_ESR_MASK ((1<<BOOKE_INTERRUPT_DATA_STORAGE) | \
                        (1<<BOOKE_INTERRUPT_INST_STORAGE) | \
                        (1<<BOOKE_INTERRUPT_PROGRAM) | \
+<<<<<<< HEAD
                        (1<<BOOKE_INTERRUPT_DTLB_MISS))
 
 .macro KVM_HANDLER ivor_nr
@@ -75,12 +96,33 @@ _GLOBAL(kvmppc_handler_\ivor_nr)
 	mfctr	r5
 	lis	r6, kvmppc_resume_host@h
 	stw	r5, VCPU_CTR(r4)
+=======
+                       (1<<BOOKE_INTERRUPT_DTLB_MISS) | \
+                       (1<<BOOKE_INTERRUPT_ALIGNMENT))
+
+.macro __KVM_HANDLER ivor_nr scratch srr0
+	/* Get pointer to vcpu and record exit number. */
+	mtspr	\scratch , r4
+	mfspr   r4, SPRN_SPRG_THREAD
+	lwz     r4, THREAD_KVM_VCPU(r4)
+	stw	r3, VCPU_GPR(R3)(r4)
+	stw	r5, VCPU_GPR(R5)(r4)
+	stw	r6, VCPU_GPR(R6)(r4)
+	mfspr	r3, \scratch
+	mfctr	r5
+	stw	r3, VCPU_GPR(R4)(r4)
+	stw	r5, VCPU_CTR(r4)
+	mfspr	r3, \srr0
+	lis	r6, kvmppc_resume_host@h
+	stw	r3, VCPU_PC(r4)
+>>>>>>> refs/remotes/origin/master
 	li	r5, \ivor_nr
 	ori	r6, r6, kvmppc_resume_host@l
 	mtctr	r6
 	bctr
 .endm
 
+<<<<<<< HEAD
 _GLOBAL(kvmppc_handlers_start)
 KVM_HANDLER BOOKE_INTERRUPT_CRITICAL
 KVM_HANDLER BOOKE_INTERRUPT_MACHINE_CHECK
@@ -105,6 +147,74 @@ KVM_HANDLER BOOKE_INTERRUPT_SPE_FP_ROUND
 _GLOBAL(kvmppc_handler_len)
 	.long kvmppc_handler_1 - kvmppc_handler_0
 
+=======
+.macro KVM_HANDLER ivor_nr scratch srr0
+_GLOBAL(kvmppc_handler_\ivor_nr)
+	__KVM_HANDLER \ivor_nr \scratch \srr0
+.endm
+
+.macro KVM_DBG_HANDLER ivor_nr scratch srr0
+_GLOBAL(kvmppc_handler_\ivor_nr)
+	mtspr   \scratch, r4
+	mfspr	r4, SPRN_SPRG_THREAD
+	lwz	r4, THREAD_KVM_VCPU(r4)
+	stw	r3, VCPU_CRIT_SAVE(r4)
+	mfcr	r3
+	mfspr	r4, SPRN_CSRR1
+	andi.	r4, r4, MSR_PR
+	bne	1f
+	/* debug interrupt happened in enter/exit path */
+	mfspr   r4, SPRN_CSRR1
+	rlwinm  r4, r4, 0, ~MSR_DE
+	mtspr   SPRN_CSRR1, r4
+	lis	r4, 0xffff
+	ori	r4, r4, 0xffff
+	mtspr	SPRN_DBSR, r4
+	mfspr	r4, SPRN_SPRG_THREAD
+	lwz	r4, THREAD_KVM_VCPU(r4)
+	mtcr	r3
+	lwz     r3, VCPU_CRIT_SAVE(r4)
+	mfspr   r4, \scratch
+	rfci
+1:	/* debug interrupt happened in guest */
+	mtcr	r3
+	mfspr	r4, SPRN_SPRG_THREAD
+	lwz	r4, THREAD_KVM_VCPU(r4)
+	lwz     r3, VCPU_CRIT_SAVE(r4)
+	mfspr   r4, \scratch
+	__KVM_HANDLER \ivor_nr \scratch \srr0
+.endm
+
+.macro KVM_HANDLER_ADDR ivor_nr
+	.long	kvmppc_handler_\ivor_nr
+.endm
+
+.macro KVM_HANDLER_END
+	.long	kvmppc_handlers_end
+.endm
+
+_GLOBAL(kvmppc_handlers_start)
+KVM_HANDLER BOOKE_INTERRUPT_CRITICAL SPRN_SPRG_RSCRATCH_CRIT SPRN_CSRR0
+KVM_HANDLER BOOKE_INTERRUPT_MACHINE_CHECK  SPRN_SPRG_RSCRATCH_MC SPRN_MCSRR0
+KVM_HANDLER BOOKE_INTERRUPT_DATA_STORAGE SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_INST_STORAGE SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_EXTERNAL SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_ALIGNMENT SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_PROGRAM SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_FP_UNAVAIL SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_SYSCALL SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_AP_UNAVAIL SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_DECREMENTER SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_FIT SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_WATCHDOG SPRN_SPRG_RSCRATCH_CRIT SPRN_CSRR0
+KVM_HANDLER BOOKE_INTERRUPT_DTLB_MISS SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_ITLB_MISS SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_DBG_HANDLER BOOKE_INTERRUPT_DEBUG SPRN_SPRG_RSCRATCH_CRIT SPRN_CSRR0
+KVM_HANDLER BOOKE_INTERRUPT_SPE_UNAVAIL SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_SPE_FP_DATA SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+KVM_HANDLER BOOKE_INTERRUPT_SPE_FP_ROUND SPRN_SPRG_RSCRATCH0 SPRN_SRR0
+_GLOBAL(kvmppc_handlers_end)
+>>>>>>> refs/remotes/origin/master
 
 /* Registers:
  *  SPRG_SCRATCH0: guest r4
@@ -112,12 +222,20 @@ _GLOBAL(kvmppc_handler_len)
  *  r5: KVM exit number
  */
 _GLOBAL(kvmppc_resume_host)
+<<<<<<< HEAD
 	stw	r3, VCPU_GPR(r3)(r4)
 	mfcr	r3
 	stw	r3, VCPU_CR(r4)
 	stw	r7, VCPU_GPR(r7)(r4)
 	stw	r8, VCPU_GPR(r8)(r4)
 	stw	r9, VCPU_GPR(r9)(r4)
+=======
+	mfcr	r3
+	stw	r3, VCPU_CR(r4)
+	stw	r7, VCPU_GPR(R7)(r4)
+	stw	r8, VCPU_GPR(R8)(r4)
+	stw	r9, VCPU_GPR(R9)(r4)
+>>>>>>> refs/remotes/origin/master
 
 	li	r6, 1
 	slw	r6, r6, r5
@@ -147,6 +265,7 @@ _GLOBAL(kvmppc_resume_host)
 	isync
 	stw	r9, VCPU_LAST_INST(r4)
 
+<<<<<<< HEAD
 	stw	r15, VCPU_GPR(r15)(r4)
 	stw	r16, VCPU_GPR(r16)(r4)
 	stw	r17, VCPU_GPR(r17)(r4)
@@ -164,6 +283,25 @@ _GLOBAL(kvmppc_resume_host)
 	stw	r29, VCPU_GPR(r29)(r4)
 	stw	r30, VCPU_GPR(r30)(r4)
 	stw	r31, VCPU_GPR(r31)(r4)
+=======
+	stw	r15, VCPU_GPR(R15)(r4)
+	stw	r16, VCPU_GPR(R16)(r4)
+	stw	r17, VCPU_GPR(R17)(r4)
+	stw	r18, VCPU_GPR(R18)(r4)
+	stw	r19, VCPU_GPR(R19)(r4)
+	stw	r20, VCPU_GPR(R20)(r4)
+	stw	r21, VCPU_GPR(R21)(r4)
+	stw	r22, VCPU_GPR(R22)(r4)
+	stw	r23, VCPU_GPR(R23)(r4)
+	stw	r24, VCPU_GPR(R24)(r4)
+	stw	r25, VCPU_GPR(R25)(r4)
+	stw	r26, VCPU_GPR(R26)(r4)
+	stw	r27, VCPU_GPR(R27)(r4)
+	stw	r28, VCPU_GPR(R28)(r4)
+	stw	r29, VCPU_GPR(R29)(r4)
+	stw	r30, VCPU_GPR(R30)(r4)
+	stw	r31, VCPU_GPR(R31)(r4)
+>>>>>>> refs/remotes/origin/master
 ..skip_inst_copy:
 
 	/* Also grab DEAR and ESR before the host can clobber them. */
@@ -181,6 +319,7 @@ _GLOBAL(kvmppc_resume_host)
 ..skip_esr:
 
 	/* Save remaining volatile guest register state to vcpu. */
+<<<<<<< HEAD
 	stw	r0, VCPU_GPR(r0)(r4)
 	stw	r1, VCPU_GPR(r1)(r4)
 	stw	r2, VCPU_GPR(r2)(r4)
@@ -189,14 +328,27 @@ _GLOBAL(kvmppc_resume_host)
 	stw	r12, VCPU_GPR(r12)(r4)
 	stw	r13, VCPU_GPR(r13)(r4)
 	stw	r14, VCPU_GPR(r14)(r4) /* We need a NV GPR below. */
+=======
+	stw	r0, VCPU_GPR(R0)(r4)
+	stw	r1, VCPU_GPR(R1)(r4)
+	stw	r2, VCPU_GPR(R2)(r4)
+	stw	r10, VCPU_GPR(R10)(r4)
+	stw	r11, VCPU_GPR(R11)(r4)
+	stw	r12, VCPU_GPR(R12)(r4)
+	stw	r13, VCPU_GPR(R13)(r4)
+	stw	r14, VCPU_GPR(R14)(r4) /* We need a NV GPR below. */
+>>>>>>> refs/remotes/origin/master
 	mflr	r3
 	stw	r3, VCPU_LR(r4)
 	mfxer	r3
 	stw	r3, VCPU_XER(r4)
+<<<<<<< HEAD
 	mfspr	r3, SPRN_SPRG_RSCRATCH0
 	stw	r3, VCPU_GPR(r4)(r4)
 	mfspr	r3, SPRN_SRR0
 	stw	r3, VCPU_PC(r4)
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Restore host stack pointer and PID before IVPR, since the host
 	 * exception handlers use them. */
@@ -205,14 +357,20 @@ _GLOBAL(kvmppc_resume_host)
 	mtspr	SPRN_PID, r3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FSL_BOOKE
 	/* we cheat and know that Linux doesn't use PID1 which is always 0 */
 	lis	r3, 0
 	mtspr	SPRN_PID1, r3
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Restore host IVPR before re-enabling interrupts. We cheat and know
 	 * that Linux IVPR is always 0xc0000000. */
 	lis	r3, 0xc000
@@ -229,11 +387,16 @@ _GLOBAL(kvmppc_resume_host)
 
 	/* Restore vcpu pointer and the nonvolatiles we used. */
 	mr	r4, r14
+<<<<<<< HEAD
 	lwz	r14, VCPU_GPR(r14)(r4)
+=======
+	lwz	r14, VCPU_GPR(R14)(r4)
+>>>>>>> refs/remotes/origin/master
 
 	/* Sometimes instruction emulation must restore complete GPR state. */
 	andi.	r5, r3, RESUME_FLAG_NV
 	beq	..skip_nv_load
+<<<<<<< HEAD
 	lwz	r15, VCPU_GPR(r15)(r4)
 	lwz	r16, VCPU_GPR(r16)(r4)
 	lwz	r17, VCPU_GPR(r17)(r4)
@@ -251,6 +414,25 @@ _GLOBAL(kvmppc_resume_host)
 	lwz	r29, VCPU_GPR(r29)(r4)
 	lwz	r30, VCPU_GPR(r30)(r4)
 	lwz	r31, VCPU_GPR(r31)(r4)
+=======
+	lwz	r15, VCPU_GPR(R15)(r4)
+	lwz	r16, VCPU_GPR(R16)(r4)
+	lwz	r17, VCPU_GPR(R17)(r4)
+	lwz	r18, VCPU_GPR(R18)(r4)
+	lwz	r19, VCPU_GPR(R19)(r4)
+	lwz	r20, VCPU_GPR(R20)(r4)
+	lwz	r21, VCPU_GPR(R21)(r4)
+	lwz	r22, VCPU_GPR(R22)(r4)
+	lwz	r23, VCPU_GPR(R23)(r4)
+	lwz	r24, VCPU_GPR(R24)(r4)
+	lwz	r25, VCPU_GPR(R25)(r4)
+	lwz	r26, VCPU_GPR(R26)(r4)
+	lwz	r27, VCPU_GPR(R27)(r4)
+	lwz	r28, VCPU_GPR(R28)(r4)
+	lwz	r29, VCPU_GPR(R29)(r4)
+	lwz	r30, VCPU_GPR(R30)(r4)
+	lwz	r31, VCPU_GPR(R31)(r4)
+>>>>>>> refs/remotes/origin/master
 ..skip_nv_load:
 
 	/* Should we return to the guest? */
@@ -263,7 +445,10 @@ heavyweight_exit:
 	/* Not returning to guest. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SPE
 	/* save guest SPEFSCR and load host SPEFSCR */
 	mfspr	r9, SPRN_SPEFSCR
@@ -272,6 +457,7 @@ heavyweight_exit:
 	mtspr	SPRN_SPEFSCR, r9
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	/* We already saved guest volatile register state; now save the
 	 * non-volatiles. */
@@ -319,11 +505,58 @@ heavyweight_exit:
 	addi	r1, r1, HOST_STACK_SIZE
 	mtlr	r4
 =======
+=======
+	/* We already saved guest volatile register state; now save the
+	 * non-volatiles. */
+	stw	r15, VCPU_GPR(R15)(r4)
+	stw	r16, VCPU_GPR(R16)(r4)
+	stw	r17, VCPU_GPR(R17)(r4)
+	stw	r18, VCPU_GPR(R18)(r4)
+	stw	r19, VCPU_GPR(R19)(r4)
+	stw	r20, VCPU_GPR(R20)(r4)
+	stw	r21, VCPU_GPR(R21)(r4)
+	stw	r22, VCPU_GPR(R22)(r4)
+	stw	r23, VCPU_GPR(R23)(r4)
+	stw	r24, VCPU_GPR(R24)(r4)
+	stw	r25, VCPU_GPR(R25)(r4)
+	stw	r26, VCPU_GPR(R26)(r4)
+	stw	r27, VCPU_GPR(R27)(r4)
+	stw	r28, VCPU_GPR(R28)(r4)
+	stw	r29, VCPU_GPR(R29)(r4)
+	stw	r30, VCPU_GPR(R30)(r4)
+	stw	r31, VCPU_GPR(R31)(r4)
+
+	/* Load host non-volatile register state from host stack. */
+	lwz	r14, HOST_NV_GPR(R14)(r1)
+	lwz	r15, HOST_NV_GPR(R15)(r1)
+	lwz	r16, HOST_NV_GPR(R16)(r1)
+	lwz	r17, HOST_NV_GPR(R17)(r1)
+	lwz	r18, HOST_NV_GPR(R18)(r1)
+	lwz	r19, HOST_NV_GPR(R19)(r1)
+	lwz	r20, HOST_NV_GPR(R20)(r1)
+	lwz	r21, HOST_NV_GPR(R21)(r1)
+	lwz	r22, HOST_NV_GPR(R22)(r1)
+	lwz	r23, HOST_NV_GPR(R23)(r1)
+	lwz	r24, HOST_NV_GPR(R24)(r1)
+	lwz	r25, HOST_NV_GPR(R25)(r1)
+	lwz	r26, HOST_NV_GPR(R26)(r1)
+	lwz	r27, HOST_NV_GPR(R27)(r1)
+	lwz	r28, HOST_NV_GPR(R28)(r1)
+	lwz	r29, HOST_NV_GPR(R29)(r1)
+	lwz	r30, HOST_NV_GPR(R30)(r1)
+	lwz	r31, HOST_NV_GPR(R31)(r1)
+
+	/* Return to kvm_vcpu_run(). */
+	lwz	r4, HOST_STACK_LR(r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r5, HOST_CR(r1)
 	addi	r1, r1, HOST_STACK_SIZE
 	mtlr	r4
 	mtcr	r5
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* r3 still contains the return code from kvmppc_handle_exit(). */
 	blr
 
@@ -340,6 +573,7 @@ _GLOBAL(__kvmppc_vcpu_run)
 	stw	r3, HOST_RUN(r1)
 	mflr	r3
 	stw	r3, HOST_STACK_LR(r1)
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	mfcr	r5
@@ -388,6 +622,51 @@ _GLOBAL(__kvmppc_vcpu_run)
 
 <<<<<<< HEAD
 =======
+=======
+	mfcr	r5
+	stw	r5, HOST_CR(r1)
+
+	/* Save host non-volatile register state to stack. */
+	stw	r14, HOST_NV_GPR(R14)(r1)
+	stw	r15, HOST_NV_GPR(R15)(r1)
+	stw	r16, HOST_NV_GPR(R16)(r1)
+	stw	r17, HOST_NV_GPR(R17)(r1)
+	stw	r18, HOST_NV_GPR(R18)(r1)
+	stw	r19, HOST_NV_GPR(R19)(r1)
+	stw	r20, HOST_NV_GPR(R20)(r1)
+	stw	r21, HOST_NV_GPR(R21)(r1)
+	stw	r22, HOST_NV_GPR(R22)(r1)
+	stw	r23, HOST_NV_GPR(R23)(r1)
+	stw	r24, HOST_NV_GPR(R24)(r1)
+	stw	r25, HOST_NV_GPR(R25)(r1)
+	stw	r26, HOST_NV_GPR(R26)(r1)
+	stw	r27, HOST_NV_GPR(R27)(r1)
+	stw	r28, HOST_NV_GPR(R28)(r1)
+	stw	r29, HOST_NV_GPR(R29)(r1)
+	stw	r30, HOST_NV_GPR(R30)(r1)
+	stw	r31, HOST_NV_GPR(R31)(r1)
+
+	/* Load guest non-volatiles. */
+	lwz	r14, VCPU_GPR(R14)(r4)
+	lwz	r15, VCPU_GPR(R15)(r4)
+	lwz	r16, VCPU_GPR(R16)(r4)
+	lwz	r17, VCPU_GPR(R17)(r4)
+	lwz	r18, VCPU_GPR(R18)(r4)
+	lwz	r19, VCPU_GPR(R19)(r4)
+	lwz	r20, VCPU_GPR(R20)(r4)
+	lwz	r21, VCPU_GPR(R21)(r4)
+	lwz	r22, VCPU_GPR(R22)(r4)
+	lwz	r23, VCPU_GPR(R23)(r4)
+	lwz	r24, VCPU_GPR(R24)(r4)
+	lwz	r25, VCPU_GPR(R25)(r4)
+	lwz	r26, VCPU_GPR(R26)(r4)
+	lwz	r27, VCPU_GPR(R27)(r4)
+	lwz	r28, VCPU_GPR(R28)(r4)
+	lwz	r29, VCPU_GPR(R29)(r4)
+	lwz	r30, VCPU_GPR(R30)(r4)
+	lwz	r31, VCPU_GPR(R31)(r4)
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SPE
 	/* save host SPEFSCR and load guest SPEFSCR */
 	mfspr	r3, SPRN_SPEFSCR
@@ -396,7 +675,10 @@ _GLOBAL(__kvmppc_vcpu_run)
 	mtspr	SPRN_SPEFSCR, r3
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 lightweight_exit:
 	stw	r2, HOST_R2(r1)
 
@@ -406,18 +688,25 @@ lightweight_exit:
 	mtspr	SPRN_PID, r3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FSL_BOOKE
 	lwz	r3, VCPU_SHADOW_PID1(r4)
 	mtspr	SPRN_PID1, r3
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_44x
 	iccci	0, 0 /* XXX hack */
 #endif
 
 	/* Load some guest volatiles. */
+<<<<<<< HEAD
 	lwz	r0, VCPU_GPR(r0)(r4)
 	lwz	r2, VCPU_GPR(r2)(r4)
 	lwz	r9, VCPU_GPR(r9)(r4)
@@ -425,6 +714,15 @@ lightweight_exit:
 	lwz	r11, VCPU_GPR(r11)(r4)
 	lwz	r12, VCPU_GPR(r12)(r4)
 	lwz	r13, VCPU_GPR(r13)(r4)
+=======
+	lwz	r0, VCPU_GPR(R0)(r4)
+	lwz	r2, VCPU_GPR(R2)(r4)
+	lwz	r9, VCPU_GPR(R9)(r4)
+	lwz	r10, VCPU_GPR(R10)(r4)
+	lwz	r11, VCPU_GPR(R11)(r4)
+	lwz	r12, VCPU_GPR(R12)(r4)
+	lwz	r13, VCPU_GPR(R13)(r4)
+>>>>>>> refs/remotes/origin/master
 	lwz	r3, VCPU_LR(r4)
 	mtlr	r3
 	lwz	r3, VCPU_XER(r4)
@@ -436,6 +734,7 @@ lightweight_exit:
 	lwz	r8, kvmppc_booke_handlers@l(r8)
 	mtspr	SPRN_IVPR, r8
 
+<<<<<<< HEAD
 	/* Save vcpu pointer for the exception handlers. */
 	mtspr	SPRN_SPRG_WVCPU, r4
 
@@ -459,12 +758,21 @@ lightweight_exit:
 	mtspr	SPRN_SPRG6W, r3
 	lwz	r3, VCPU_SPRG7(r4)
 =======
+=======
+	lwz	r5, VCPU_SHARED(r4)
+
+	/* Can't switch the stack pointer until after IVPR is switched,
+	 * because host interrupt handlers would get confused. */
+	lwz	r1, VCPU_GPR(R1)(r4)
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Host interrupt handlers may have clobbered these
 	 * guest-readable SPRGs, or the guest kernel may have
 	 * written directly to the shared area, so we
 	 * need to reload them here with the guest's values.
 	 */
+<<<<<<< HEAD
 	lwz	r3, VCPU_SHARED_SPRG4(r5)
 	mtspr	SPRN_SPRG4W, r3
 	lwz	r3, VCPU_SHARED_SPRG5(r5)
@@ -473,6 +781,15 @@ lightweight_exit:
 	mtspr	SPRN_SPRG6W, r3
 	lwz	r3, VCPU_SHARED_SPRG7(r5)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	PPC_LD(r3, VCPU_SHARED_SPRG4, r5)
+	mtspr	SPRN_SPRG4W, r3
+	PPC_LD(r3, VCPU_SHARED_SPRG5, r5)
+	mtspr	SPRN_SPRG5W, r3
+	PPC_LD(r3, VCPU_SHARED_SPRG6, r5)
+	mtspr	SPRN_SPRG6W, r3
+	PPC_LD(r3, VCPU_SHARED_SPRG7, r5)
+>>>>>>> refs/remotes/origin/master
 	mtspr	SPRN_SPRG7W, r3
 
 #ifdef CONFIG_KVM_EXIT_TIMING
@@ -490,10 +807,13 @@ lightweight_exit:
 	/* Finish loading guest volatiles and jump to guest. */
 	lwz	r3, VCPU_CTR(r4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mtctr	r3
 	lwz	r3, VCPU_CR(r4)
 	mtcr	r3
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	lwz	r5, VCPU_CR(r4)
 	lwz	r6, VCPU_PC(r4)
 	lwz	r7, VCPU_SHADOW_MSR(r4)
@@ -501,6 +821,7 @@ lightweight_exit:
 	mtcr	r5
 	mtsrr0	r6
 	mtsrr1	r7
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	lwz	r5, VCPU_GPR(r5)(r4)
 	lwz	r6, VCPU_GPR(r6)(r4)
@@ -516,6 +837,12 @@ lightweight_exit:
 	mtsrr1	r3
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lwz	r5, VCPU_GPR(R5)(r4)
+	lwz	r6, VCPU_GPR(R6)(r4)
+	lwz	r7, VCPU_GPR(R7)(r4)
+	lwz	r8, VCPU_GPR(R8)(r4)
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear any debug events which occurred since we disabled MSR[DE].
 	 * XXX This gives us a 3-instruction window in which a breakpoint
@@ -524,11 +851,42 @@ lightweight_exit:
 	ori	r3, r3, 0xffff
 	mtspr	SPRN_DBSR, r3
 
+<<<<<<< HEAD
 	lwz	r3, VCPU_GPR(r3)(r4)
 	lwz	r4, VCPU_GPR(r4)(r4)
 	rfi
 <<<<<<< HEAD
 =======
+=======
+	lwz	r3, VCPU_GPR(R3)(r4)
+	lwz	r4, VCPU_GPR(R4)(r4)
+	rfi
+
+	.data
+	.align	4
+	.globl	kvmppc_booke_handler_addr
+kvmppc_booke_handler_addr:
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_CRITICAL
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_MACHINE_CHECK
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_DATA_STORAGE
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_INST_STORAGE
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_EXTERNAL
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_ALIGNMENT
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_PROGRAM
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_FP_UNAVAIL
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_SYSCALL
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_AP_UNAVAIL
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_DECREMENTER
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_FIT
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_WATCHDOG
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_DTLB_MISS
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_ITLB_MISS
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_DEBUG
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_SPE_UNAVAIL
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_SPE_FP_DATA
+KVM_HANDLER_ADDR BOOKE_INTERRUPT_SPE_FP_ROUND
+KVM_HANDLER_END /*Always keep this in end*/
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SPE
 _GLOBAL(kvmppc_save_guest_spe)
@@ -550,4 +908,7 @@ _GLOBAL(kvmppc_load_guest_spe)
 	REST_32EVRS(0, r4, r3, VCPU_EVR)
 	blr
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

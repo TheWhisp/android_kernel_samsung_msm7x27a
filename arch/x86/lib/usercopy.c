@@ -8,13 +8,22 @@
 #include <linux/module.h>
 
 #include <asm/word-at-a-time.h>
+<<<<<<< HEAD
 
 /*
  * best effort, GUP based copy_from_user() that is NMI-safe
+=======
+#include <linux/sched.h>
+
+/*
+ * We rely on the nested NMI work to allow atomic faults from the NMI path; the
+ * nested NMI paths are careful to preserve CR2.
+>>>>>>> refs/remotes/origin/master
  */
 unsigned long
 copy_from_user_nmi(void *to, const void __user *from, unsigned long n)
 {
+<<<<<<< HEAD
 	unsigned long offset, addr = (unsigned long)from;
 	unsigned long size, len = 0;
 	struct page *page;
@@ -144,3 +153,22 @@ strncpy_from_user(char *dst, const char __user *src, long count)
 	return -EFAULT;
 }
 EXPORT_SYMBOL(strncpy_from_user);
+=======
+	unsigned long ret;
+
+	if (__range_not_ok(from, n, TASK_SIZE))
+		return 0;
+
+	/*
+	 * Even though this function is typically called from NMI/IRQ context
+	 * disable pagefaults so that its behaviour is consistent even when
+	 * called form other contexts.
+	 */
+	pagefault_disable();
+	ret = __copy_from_user_inatomic(to, from, n);
+	pagefault_enable();
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(copy_from_user_nmi);
+>>>>>>> refs/remotes/origin/master

@@ -15,9 +15,12 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/interrupt.h>
@@ -27,18 +30,24 @@
 #include <linux/cache.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/cpu.h>
 
 #include <asm/ptrace.h>
 #include <asm/atomic.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/cpu.h>
 
 #include <asm/ptrace.h>
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/irq.h>
 #include <asm/page.h>
 #include <asm/pgtable.h>
@@ -49,6 +58,7 @@
 #include <asm/machdep.h>
 #include <asm/cputable.h>
 #include <asm/firmware.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/system.h>
 =======
@@ -65,6 +75,16 @@
 #include <asm/xics.h>
 
 #include "plpar_wrappers.h"
+=======
+#include <asm/rtas.h>
+#include <asm/mpic.h>
+#include <asm/vdso_datapage.h>
+#include <asm/cputhreads.h>
+#include <asm/xics.h>
+#include <asm/dbell.h>
+#include <asm/plpar_wrappers.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "pseries.h"
 #include "offline_states.h"
 
@@ -75,6 +95,14 @@
  */
 static cpumask_var_t of_spin_mask;
 
+<<<<<<< HEAD
+=======
+/*
+ * If we multiplex IPI mechanisms, store the appropriate XICS IPI mechanism here
+ */
+static void  (*xics_cause_ipi)(int cpu, unsigned long data);
+
+>>>>>>> refs/remotes/origin/master
 /* Query where a cpu is now.  Return codes #defined in plpar_wrappers.h */
 int smp_query_cpu_stopped(unsigned int pcpu)
 {
@@ -108,7 +136,11 @@ int smp_query_cpu_stopped(unsigned int pcpu)
  *	0	- failure
  *	1	- success
  */
+<<<<<<< HEAD
 static inline int __devinit smp_startup_cpu(unsigned int lcpu)
+=======
+static inline int smp_startup_cpu(unsigned int lcpu)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 	unsigned long start_here = __pa((u32)*((unsigned long *)
@@ -154,10 +186,19 @@ out:
 	return 1;
 }
 
+<<<<<<< HEAD
 static void __devinit smp_xics_setup_cpu(int cpu)
 {
 	if (cpu != boot_cpuid)
 		xics_setup_cpu();
+=======
+static void smp_xics_setup_cpu(int cpu)
+{
+	if (cpu != boot_cpuid)
+		xics_setup_cpu();
+	if (cpu_has_feature(CPU_FTR_DBELL))
+		doorbell_setup_this_cpu();
+>>>>>>> refs/remotes/origin/master
 
 	if (firmware_has_feature(FW_FEATURE_SPLPAR))
 		vpa_init(cpu);
@@ -168,12 +209,18 @@ static void __devinit smp_xics_setup_cpu(int cpu)
 	set_default_offline_state(cpu);
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pseries_notify_cpuidle_add_cpu(cpu);
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit smp_pSeries_kick_cpu(int nr)
+=======
+}
+
+static int smp_pSeries_kick_cpu(int nr)
+>>>>>>> refs/remotes/origin/master
 {
 	BUG_ON(nr < 0 || nr >= NR_CPUS);
 
@@ -204,6 +251,7 @@ static int __devinit smp_pSeries_kick_cpu(int nr)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int smp_pSeries_cpu_bootable(unsigned int nr)
 {
 	/* Special case - we inhibit secondary thread startup
@@ -218,6 +266,27 @@ static int smp_pSeries_cpu_bootable(unsigned int nr)
 	}
 
 	return 1;
+=======
+/* Only used on systems that support multiple IPI mechanisms */
+static void pSeries_cause_ipi_mux(int cpu, unsigned long data)
+{
+	if (cpumask_test_cpu(cpu, cpu_sibling_mask(smp_processor_id())))
+		doorbell_cause_ipi(cpu, data);
+	else
+		xics_cause_ipi(cpu, data);
+}
+
+static __init int pSeries_smp_probe(void)
+{
+	int ret = xics_smp_probe();
+
+	if (cpu_has_feature(CPU_FTR_DBELL)) {
+		xics_cause_ipi = smp_ops->cause_ipi;
+		smp_ops->cause_ipi = pSeries_cause_ipi_mux;
+	}
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct smp_ops_t pSeries_mpic_smp_ops = {
@@ -229,6 +298,7 @@ static struct smp_ops_t pSeries_mpic_smp_ops = {
 
 static struct smp_ops_t pSeries_xics_smp_ops = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.message_pass	= smp_muxed_ipi_message_pass,
 =======
 	.message_pass	= NULL,	/* Use smp_muxed_ipi_message_pass */
@@ -238,6 +308,14 @@ static struct smp_ops_t pSeries_xics_smp_ops = {
 	.kick_cpu	= smp_pSeries_kick_cpu,
 	.setup_cpu	= smp_xics_setup_cpu,
 	.cpu_bootable	= smp_pSeries_cpu_bootable,
+=======
+	.message_pass	= NULL,	/* Use smp_muxed_ipi_message_pass */
+	.cause_ipi	= NULL,	/* Filled at runtime by pSeries_smp_probe() */
+	.probe		= pSeries_smp_probe,
+	.kick_cpu	= smp_pSeries_kick_cpu,
+	.setup_cpu	= smp_xics_setup_cpu,
+	.cpu_bootable	= smp_generic_cpu_bootable,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* This is called very early */
@@ -249,6 +327,7 @@ static void __init smp_init_pseries(void)
 
 	alloc_bootmem_cpumask_var(&of_spin_mask);
 
+<<<<<<< HEAD
 	/* Mark threads which are still spinning in hold loops. */
 	if (cpu_has_feature(CPU_FTR_SMT)) {
 		for_each_present_cpu(i) { 
@@ -261,6 +340,26 @@ static void __init smp_init_pseries(void)
 
 	cpumask_clear_cpu(boot_cpuid, of_spin_mask);
 
+=======
+	/*
+	 * Mark threads which are still spinning in hold loops
+	 *
+	 * We know prom_init will not have started them if RTAS supports
+	 * query-cpu-stopped-state.
+	 */
+	if (rtas_token("query-cpu-stopped-state") == RTAS_UNKNOWN_SERVICE) {
+		if (cpu_has_feature(CPU_FTR_SMT)) {
+			for_each_present_cpu(i) {
+				if (cpu_thread_in_core(i) == 0)
+					cpumask_set_cpu(i, of_spin_mask);
+			}
+		} else
+			cpumask_copy(of_spin_mask, cpu_present_mask);
+
+		cpumask_clear_cpu(boot_cpuid, of_spin_mask);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* Non-lpar has additional take/give timebase */
 	if (rtas_token("freeze-time-base") != RTAS_UNKNOWN_SERVICE) {
 		smp_ops->give_timebase = rtas_give_timebase;

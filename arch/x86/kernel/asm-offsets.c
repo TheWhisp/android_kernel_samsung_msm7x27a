@@ -32,7 +32,10 @@ void common(void) {
 	OFFSET(TI_flags, thread_info, flags);
 	OFFSET(TI_status, thread_info, status);
 	OFFSET(TI_addr_limit, thread_info, addr_limit);
+<<<<<<< HEAD
 	OFFSET(TI_preempt_count, thread_info, preempt_count);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	BLANK();
 	OFFSET(crypto_tfm_ctx_offset, crypto_tfm, __crt_ctx);
@@ -68,8 +71,16 @@ void common(void) {
 	OFFSET(BP_version, boot_params, hdr.version);
 	OFFSET(BP_kernel_alignment, boot_params, hdr.kernel_alignment);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	OFFSET(BP_pref_address, boot_params, hdr.pref_address);
 	OFFSET(BP_code32_start, boot_params, hdr.code32_start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	OFFSET(BP_pref_address, boot_params, hdr.pref_address);
+	OFFSET(BP_code32_start, boot_params, hdr.code32_start);
+
+	BLANK();
+	DEFINE(PTREGS_SIZE, sizeof(struct pt_regs));
+>>>>>>> refs/remotes/origin/master
 }

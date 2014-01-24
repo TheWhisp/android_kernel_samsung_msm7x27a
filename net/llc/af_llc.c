@@ -71,8 +71,12 @@ static inline u16 llc_ui_next_link_no(int sap)
  */
 static inline __be16 llc_proto_type(u16 arphrd)
 {
+<<<<<<< HEAD
 	return arphrd == ARPHRD_IEEE802_TR ?
 			 htons(ETH_P_TR_802_2) : htons(ETH_P_802_2);
+=======
+	return htons(ETH_P_802_2);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -161,7 +165,11 @@ static int llc_ui_create(struct net *net, struct socket *sock, int protocol,
 	struct sock *sk;
 	int rc = -ESOCKTNOSUPPORT;
 
+<<<<<<< HEAD
 	if (!capable(CAP_NET_RAW))
+=======
+	if (!ns_capable(net->user_ns, CAP_NET_RAW))
+>>>>>>> refs/remotes/origin/master
 		return -EPERM;
 
 	if (!net_eq(net, &init_net))
@@ -322,12 +330,21 @@ static int llc_ui_bind(struct socket *sock, struct sockaddr *uaddr, int addrlen)
 		if (llc->dev) {
 			if (!addr->sllc_arphrd)
 				addr->sllc_arphrd = llc->dev->type;
+<<<<<<< HEAD
 			if (llc_mac_null(addr->sllc_mac))
 				memcpy(addr->sllc_mac, llc->dev->dev_addr,
 				       IFHWADDRLEN);
 			if (addr->sllc_arphrd != llc->dev->type ||
 			    !llc_mac_match(addr->sllc_mac,
 					   llc->dev->dev_addr)) {
+=======
+			if (is_zero_ether_addr(addr->sllc_mac))
+				memcpy(addr->sllc_mac, llc->dev->dev_addr,
+				       IFHWADDRLEN);
+			if (addr->sllc_arphrd != llc->dev->type ||
+			    !ether_addr_equal(addr->sllc_mac,
+					      llc->dev->dev_addr)) {
+>>>>>>> refs/remotes/origin/master
 				rc = -EINVAL;
 				llc->dev = NULL;
 			}
@@ -518,7 +535,11 @@ static int llc_ui_listen(struct socket *sock, int backlog)
 	if (sock_flag(sk, SOCK_ZAPPED))
 		goto out;
 	rc = 0;
+<<<<<<< HEAD
 	if (!(unsigned)backlog)	/* BSDism */
+=======
+	if (!(unsigned int)backlog)	/* BSDism */
+>>>>>>> refs/remotes/origin/master
 		backlog = 1;
 	sk->sk_max_ack_backlog = backlog;
 	if (sk->sk_state != TCP_LISTEN) {
@@ -714,18 +735,28 @@ static int llc_ui_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sock *sk = sock->sk;
 	struct llc_sock *llc = llc_sk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long cpu_flags;
 >>>>>>> refs/remotes/origin/cm-10.0
 	size_t copied = 0;
 	u32 peek_seq = 0;
 	u32 *seq;
+=======
+	unsigned long cpu_flags;
+	size_t copied = 0;
+	u32 peek_seq = 0;
+	u32 *seq, skb_len;
+>>>>>>> refs/remotes/origin/master
 	unsigned long used;
 	int target;	/* Read at least this many bytes */
 	long timeo;
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	lock_sock(sk);
 	copied = -ENOTCONN;
 	if (unlikely(sk->sk_type == SOCK_STREAM && sk->sk_state == TCP_LISTEN))
@@ -811,14 +842,24 @@ static int llc_ui_recvmsg(struct kiocb *iocb, struct socket *sock,
 			sk_wait_data(sk, &timeo);
 
 		if ((flags & MSG_PEEK) && peek_seq != llc->copied_seq) {
+<<<<<<< HEAD
 			if (net_ratelimit())
 				printk(KERN_DEBUG "LLC(%s:%d): Application "
 						  "bug, race in MSG_PEEK.\n",
 				       current->comm, task_pid_nr(current));
+=======
+			net_dbg_ratelimited("LLC(%s:%d): Application bug, race in MSG_PEEK\n",
+					    current->comm,
+					    task_pid_nr(current));
+>>>>>>> refs/remotes/origin/master
 			peek_seq = llc->copied_seq;
 		}
 		continue;
 	found_ok_skb:
+<<<<<<< HEAD
+=======
+		skb_len = skb->len;
+>>>>>>> refs/remotes/origin/master
 		/* Ok so how much can we use? */
 		used = skb->len - offset;
 		if (len < used)
@@ -845,17 +886,27 @@ static int llc_ui_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 		if (!(flags & MSG_PEEK)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sk_eat_skb(sk, skb, 0);
 =======
 			spin_lock_irqsave(&sk->sk_receive_queue.lock, cpu_flags);
 			sk_eat_skb(sk, skb, 0);
 			spin_unlock_irqrestore(&sk->sk_receive_queue.lock, cpu_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_lock_irqsave(&sk->sk_receive_queue.lock, cpu_flags);
+			sk_eat_skb(sk, skb, false);
+			spin_unlock_irqrestore(&sk->sk_receive_queue.lock, cpu_flags);
+>>>>>>> refs/remotes/origin/master
 			*seq = 0;
 		}
 
 		/* Partial read */
+<<<<<<< HEAD
 		if (used + offset < skb->len)
+=======
+		if (used + offset < skb_len)
+>>>>>>> refs/remotes/origin/master
 			continue;
 	} while (len > 0);
 
@@ -872,12 +923,18 @@ copy_uaddr:
 
 	if (!(flags & MSG_PEEK)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sk_eat_skb(sk, skb, 0);
 =======
 			spin_lock_irqsave(&sk->sk_receive_queue.lock, cpu_flags);
 			sk_eat_skb(sk, skb, 0);
 			spin_unlock_irqrestore(&sk->sk_receive_queue.lock, cpu_flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			spin_lock_irqsave(&sk->sk_receive_queue.lock, cpu_flags);
+			sk_eat_skb(sk, skb, false);
+			spin_unlock_irqrestore(&sk->sk_receive_queue.lock, cpu_flags);
+>>>>>>> refs/remotes/origin/master
 			*seq = 0;
 	}
 
@@ -1038,7 +1095,11 @@ static int llc_ui_ioctl(struct socket *sock, unsigned int cmd,
  *	@sock: Socket to set options on.
  *	@level: Socket level user is requesting operations on.
  *	@optname: Operation name.
+<<<<<<< HEAD
  *	@optval User provided operation data.
+=======
+ *	@optval: User provided operation data.
+>>>>>>> refs/remotes/origin/master
  *	@optlen: Length of optval.
  *
  *	Set various connection specific parameters.
@@ -1220,7 +1281,11 @@ static int __init llc2_init(void)
 	rc = llc_proc_init();
 	if (rc != 0) {
 		printk(llc_proc_err_msg);
+<<<<<<< HEAD
 		goto out_unregister_llc_proto;
+=======
+		goto out_station;
+>>>>>>> refs/remotes/origin/master
 	}
 	rc = llc_sysctl_init();
 	if (rc) {
@@ -1240,7 +1305,12 @@ out_sysctl:
 	llc_sysctl_exit();
 out_proc:
 	llc_proc_exit();
+<<<<<<< HEAD
 out_unregister_llc_proto:
+=======
+out_station:
+	llc_station_exit();
+>>>>>>> refs/remotes/origin/master
 	proto_unregister(&llc_proto);
 	goto out;
 }

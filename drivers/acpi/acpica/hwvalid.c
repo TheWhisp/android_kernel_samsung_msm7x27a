@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: hwvalid - I/O request validation
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +69,11 @@ acpi_hw_validate_io_request(acpi_io_address address, u32 bit_width);
  *
  * The table is used to implement the Microsoft port access rules that
  * first appeared in Windows XP. Some ports are always illegal, and some
+<<<<<<< HEAD
  * ports are only illegal if the BIOS calls _OSI with a win_xP string or
+=======
+ * ports are only illegal if the BIOS calls _OSI with a win_XP string or
+>>>>>>> refs/remotes/origin/master
  * later (meaning that the BIOS itelf is post-XP.)
  *
  * This provides ACPICA with the desired port protections and
@@ -70,7 +81,11 @@ acpi_hw_validate_io_request(acpi_io_address address, u32 bit_width);
  *
  * Description of port entries:
  *  DMA:   DMA controller
+<<<<<<< HEAD
  *  PIC0:  Programmable Interrupt Controller (8259_a)
+=======
+ *  PIC0:  Programmable Interrupt Controller (8259A)
+>>>>>>> refs/remotes/origin/master
  *  PIT1:  System Timer 1
  *  PIT2:  System Timer 2 failsafe
  *  RTC:   Real-time clock
@@ -139,11 +154,17 @@ acpi_hw_validate_io_request(acpi_io_address address, u32 bit_width)
 
 	if ((bit_width != 8) && (bit_width != 16) && (bit_width != 32)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		ACPI_ERROR((AE_INFO,
 			    "Bad BitWidth parameter: %8.8X", bit_width));
 >>>>>>> refs/remotes/origin/cm-10.0
 		return AE_BAD_PARAMETER;
+=======
+		ACPI_ERROR((AE_INFO,
+			    "Bad BitWidth parameter: %8.8X", bit_width));
+		return (AE_BAD_PARAMETER);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	port_info = acpi_protected_ports;
@@ -242,11 +263,19 @@ acpi_status acpi_hw_read_port(acpi_io_address address, u32 *value, u32 width)
 	status = acpi_hw_validate_io_request(address, width);
 	if (ACPI_SUCCESS(status)) {
 		status = acpi_os_read_port(address, value, width);
+<<<<<<< HEAD
 		return status;
 	}
 
 	if (status != AE_AML_ILLEGAL_ADDRESS) {
 		return status;
+=======
+		return (status);
+	}
+
+	if (status != AE_AML_ILLEGAL_ADDRESS) {
+		return (status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -261,7 +290,11 @@ acpi_status acpi_hw_read_port(acpi_io_address address, u32 *value, u32 width)
 		if (acpi_hw_validate_io_request(address, 8) == AE_OK) {
 			status = acpi_os_read_port(address, &one_byte, 8);
 			if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 				return status;
+=======
+				return (status);
+>>>>>>> refs/remotes/origin/master
 			}
 
 			*value |= (one_byte << i);
@@ -270,7 +303,11 @@ acpi_status acpi_hw_read_port(acpi_io_address address, u32 *value, u32 width)
 		address++;
 	}
 
+<<<<<<< HEAD
 	return AE_OK;
+=======
+	return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 }
 
 /******************************************************************************
@@ -305,11 +342,19 @@ acpi_status acpi_hw_write_port(acpi_io_address address, u32 value, u32 width)
 	status = acpi_hw_validate_io_request(address, width);
 	if (ACPI_SUCCESS(status)) {
 		status = acpi_os_write_port(address, value, width);
+<<<<<<< HEAD
 		return status;
 	}
 
 	if (status != AE_AML_ILLEGAL_ADDRESS) {
 		return status;
+=======
+		return (status);
+	}
+
+	if (status != AE_AML_ILLEGAL_ADDRESS) {
+		return (status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -325,12 +370,20 @@ acpi_status acpi_hw_write_port(acpi_io_address address, u32 value, u32 width)
 			status =
 			    acpi_os_write_port(address, (value >> i) & 0xFF, 8);
 			if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 				return status;
+=======
+				return (status);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
 		address++;
 	}
 
+<<<<<<< HEAD
 	return AE_OK;
+=======
+	return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 }

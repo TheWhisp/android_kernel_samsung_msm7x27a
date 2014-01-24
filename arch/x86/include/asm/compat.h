@@ -7,12 +7,18 @@
 #include <linux/types.h>
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/user32.h>
 =======
 #include <asm/processor.h>
 #include <asm/user32.h>
 #include <asm/unistd.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/processor.h>
+#include <asm/user32.h>
+#include <asm/unistd.h>
+>>>>>>> refs/remotes/origin/master
 
 #define COMPAT_USER_HZ		100
 #define COMPAT_UTS_MACHINE	"i686\0\0"
@@ -45,6 +51,10 @@ typedef s64 __attribute__((aligned(4))) compat_s64;
 typedef u32		compat_uint_t;
 typedef u32		compat_ulong_t;
 typedef u64 __attribute__((aligned(4))) compat_u64;
+<<<<<<< HEAD
+=======
+typedef u32		compat_uptr_t;
+>>>>>>> refs/remotes/origin/master
 
 struct compat_timespec {
 	compat_time_t	tv_sec;
@@ -115,11 +125,16 @@ struct compat_statfs {
 	int		f_namelen;	/* SunOS ignores this field. */
 	int		f_frsize;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		f_spare[5];
 =======
 	int		f_flags;
 	int		f_spare[4];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		f_flags;
+	int		f_spare[4];
+>>>>>>> refs/remotes/origin/master
 };
 
 #define COMPAT_RLIM_OLD_INFINITY	0x7fffffff
@@ -132,6 +147,81 @@ typedef u32		compat_old_sigset_t;	/* at least 32 bits */
 
 typedef u32               compat_sigset_word;
 
+<<<<<<< HEAD
+=======
+typedef union compat_sigval {
+	compat_int_t	sival_int;
+	compat_uptr_t	sival_ptr;
+} compat_sigval_t;
+
+typedef struct compat_siginfo {
+	int si_signo;
+	int si_errno;
+	int si_code;
+
+	union {
+		int _pad[128/sizeof(int) - 3];
+
+		/* kill() */
+		struct {
+			unsigned int _pid;	/* sender's pid */
+			unsigned int _uid;	/* sender's uid */
+		} _kill;
+
+		/* POSIX.1b timers */
+		struct {
+			compat_timer_t _tid;	/* timer id */
+			int _overrun;		/* overrun count */
+			compat_sigval_t _sigval;	/* same as below */
+			int _sys_private;	/* not to be passed to user */
+			int _overrun_incr;	/* amount to add to overrun */
+		} _timer;
+
+		/* POSIX.1b signals */
+		struct {
+			unsigned int _pid;	/* sender's pid */
+			unsigned int _uid;	/* sender's uid */
+			compat_sigval_t _sigval;
+		} _rt;
+
+		/* SIGCHLD */
+		struct {
+			unsigned int _pid;	/* which child */
+			unsigned int _uid;	/* sender's uid */
+			int _status;		/* exit code */
+			compat_clock_t _utime;
+			compat_clock_t _stime;
+		} _sigchld;
+
+		/* SIGCHLD (x32 version) */
+		struct {
+			unsigned int _pid;	/* which child */
+			unsigned int _uid;	/* sender's uid */
+			int _status;		/* exit code */
+			compat_s64 _utime;
+			compat_s64 _stime;
+		} _sigchld_x32;
+
+		/* SIGILL, SIGFPE, SIGSEGV, SIGBUS */
+		struct {
+			unsigned int _addr;	/* faulting insn/memory ref. */
+		} _sigfault;
+
+		/* SIGPOLL */
+		struct {
+			int _band;	/* POLL_IN, POLL_OUT, POLL_MSG */
+			int _fd;
+		} _sigpoll;
+
+		struct {
+			unsigned int _call_addr; /* calling insn */
+			int _syscall;	/* triggering system call number */
+			unsigned int _arch;	/* AUDIT_ARCH_* of syscall */
+		} _sigsys;
+	} _sifields;
+} compat_siginfo_t;
+
+>>>>>>> refs/remotes/origin/master
 #define COMPAT_OFF_T_MAX	0x7fffffff
 #define COMPAT_LOFF_T_MAX	0x7fffffffffffffffL
 
@@ -197,8 +287,11 @@ struct compat_shmid64_ds {
  * The type of struct elf_prstatus.pr_reg in compatible core dumps.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct user_regs_struct32 compat_elf_gregset_t;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_X32_ABI
 typedef struct user_regs_struct compat_elf_gregset_t;
 
@@ -213,7 +306,10 @@ typedef struct user_regs_struct compat_elf_gregset_t;
 #else
 typedef struct user_regs_struct32 compat_elf_gregset_t;
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * A pointer passed in from user mode. This should not
@@ -221,7 +317,10 @@ typedef struct user_regs_struct32 compat_elf_gregset_t;
  * as pointers because the syscall entry code will have
  * appropriately converted them already.
  */
+<<<<<<< HEAD
 typedef	u32		compat_uptr_t;
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void __user *compat_ptr(compat_uptr_t uptr)
 {
@@ -236,6 +335,7 @@ static inline compat_uptr_t ptr_to_compat(void __user *uptr)
 static inline void __user *arch_compat_alloc_user_space(long len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct pt_regs *regs = task_pt_regs(current);
 	return (void __user *)regs->sp - len;
 }
@@ -244,13 +344,19 @@ static inline int is_compat_task(void)
 {
 	return current_thread_info()->status & TS_COMPAT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	compat_uptr_t sp;
 
 	if (test_thread_flag(TIF_IA32)) {
 		sp = task_pt_regs(current)->sp;
 	} else {
 		/* -128 for the x32 ABI redzone */
+<<<<<<< HEAD
 		sp = percpu_read(old_rsp) - 128;
+=======
+		sp = this_cpu_read(old_rsp) - 128;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (void __user *)round_down(sp - len, 16);
@@ -268,7 +374,10 @@ static inline bool is_x32_task(void)
 static inline bool is_compat_task(void)
 {
 	return is_ia32_task() || is_x32_task();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* _ASM_X86_COMPAT_H */

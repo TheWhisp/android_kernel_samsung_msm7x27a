@@ -17,19 +17,62 @@
 #include <linux/ptrace.h>
 #include <linux/prctl.h>
 #include <linux/ratelimit.h>
+<<<<<<< HEAD
 
 static int ptrace_scope = 1;
+=======
+#include <linux/workqueue.h>
+
+#define YAMA_SCOPE_DISABLED	0
+#define YAMA_SCOPE_RELATIONAL	1
+#define YAMA_SCOPE_CAPABILITY	2
+#define YAMA_SCOPE_NO_ATTACH	3
+
+static int ptrace_scope = YAMA_SCOPE_RELATIONAL;
+>>>>>>> refs/remotes/origin/master
 
 /* describe a ptrace relationship for potential exception */
 struct ptrace_relation {
 	struct task_struct *tracer;
 	struct task_struct *tracee;
+<<<<<<< HEAD
 	struct list_head node;
+=======
+	bool invalid;
+	struct list_head node;
+	struct rcu_head rcu;
+>>>>>>> refs/remotes/origin/master
 };
 
 static LIST_HEAD(ptracer_relations);
 static DEFINE_SPINLOCK(ptracer_relations_lock);
 
+<<<<<<< HEAD
+=======
+static void yama_relation_cleanup(struct work_struct *work);
+static DECLARE_WORK(yama_relation_work, yama_relation_cleanup);
+
+/**
+ * yama_relation_cleanup - remove invalid entries from the relation list
+ *
+ */
+static void yama_relation_cleanup(struct work_struct *work)
+{
+	struct ptrace_relation *relation;
+
+	spin_lock(&ptracer_relations_lock);
+	rcu_read_lock();
+	list_for_each_entry_rcu(relation, &ptracer_relations, node) {
+		if (relation->invalid) {
+			list_del_rcu(&relation->node);
+			kfree_rcu(relation, rcu);
+		}
+	}
+	rcu_read_unlock();
+	spin_unlock(&ptracer_relations_lock);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * yama_ptracer_add - add/replace an exception for this tracer/tracee pair
  * @tracer: the task_struct of the process doing the ptrace
@@ -43,14 +86,19 @@ static DEFINE_SPINLOCK(ptracer_relations_lock);
 static int yama_ptracer_add(struct task_struct *tracer,
 			    struct task_struct *tracee)
 {
+<<<<<<< HEAD
 	int rc = 0;
 	struct ptrace_relation *added;
 	struct ptrace_relation *entry, *relation = NULL;
+=======
+	struct ptrace_relation *relation, *added;
+>>>>>>> refs/remotes/origin/master
 
 	added = kmalloc(sizeof(*added), GFP_KERNEL);
 	if (!added)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	spin_lock_bh(&ptracer_relations_lock);
 	list_for_each_entry(entry, &ptracer_relations, node)
 		if (entry->tracee == tracee) {
@@ -69,6 +117,30 @@ static int yama_ptracer_add(struct task_struct *tracer,
 		kfree(added);
 
 	return rc;
+=======
+	added->tracee = tracee;
+	added->tracer = tracer;
+	added->invalid = false;
+
+	spin_lock(&ptracer_relations_lock);
+	rcu_read_lock();
+	list_for_each_entry_rcu(relation, &ptracer_relations, node) {
+		if (relation->invalid)
+			continue;
+		if (relation->tracee == tracee) {
+			list_replace_rcu(&relation->node, &added->node);
+			kfree_rcu(relation, rcu);
+			goto out;
+		}
+	}
+
+	list_add_rcu(&added->node, &ptracer_relations);
+
+out:
+	rcu_read_unlock();
+	spin_unlock(&ptracer_relations_lock);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -79,6 +151,7 @@ static int yama_ptracer_add(struct task_struct *tracer,
 static void yama_ptracer_del(struct task_struct *tracer,
 			     struct task_struct *tracee)
 {
+<<<<<<< HEAD
 	struct ptrace_relation *relation, *safe;
 
 	spin_lock_bh(&ptracer_relations_lock);
@@ -89,13 +162,36 @@ static void yama_ptracer_del(struct task_struct *tracer,
 			kfree(relation);
 		}
 	spin_unlock_bh(&ptracer_relations_lock);
+=======
+	struct ptrace_relation *relation;
+	bool marked = false;
+
+	rcu_read_lock();
+	list_for_each_entry_rcu(relation, &ptracer_relations, node) {
+		if (relation->invalid)
+			continue;
+		if (relation->tracee == tracee ||
+		    (tracer && relation->tracer == tracer)) {
+			relation->invalid = true;
+			marked = true;
+		}
+	}
+	rcu_read_unlock();
+
+	if (marked)
+		schedule_work(&yama_relation_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * yama_task_free - check for task_pid to remove from exception list
  * @task: task being removed
  */
+<<<<<<< HEAD
 static void yama_task_free(struct task_struct *task)
+=======
+void yama_task_free(struct task_struct *task)
+>>>>>>> refs/remotes/origin/master
 {
 	yama_ptracer_del(task, task);
 }
@@ -111,7 +207,11 @@ static void yama_task_free(struct task_struct *task)
  * Return 0 on success, -ve on error.  -ENOSYS is returned when Yama
  * does not handle the given option.
  */
+<<<<<<< HEAD
 static int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
+=======
+int yama_task_prctl(int option, unsigned long arg2, unsigned long arg3,
+>>>>>>> refs/remotes/origin/master
 			   unsigned long arg4, unsigned long arg5)
 {
 	int rc;
@@ -212,21 +312,37 @@ static int ptracer_exception_found(struct task_struct *tracer,
 	struct task_struct *parent = NULL;
 	bool found = false;
 
+<<<<<<< HEAD
 	spin_lock_bh(&ptracer_relations_lock);
 	rcu_read_lock();
 	if (!thread_group_leader(tracee))
 		tracee = rcu_dereference(tracee->group_leader);
 	list_for_each_entry(relation, &ptracer_relations, node)
+=======
+	rcu_read_lock();
+	if (!thread_group_leader(tracee))
+		tracee = rcu_dereference(tracee->group_leader);
+	list_for_each_entry_rcu(relation, &ptracer_relations, node) {
+		if (relation->invalid)
+			continue;
+>>>>>>> refs/remotes/origin/master
 		if (relation->tracee == tracee) {
 			parent = relation->tracer;
 			found = true;
 			break;
 		}
+<<<<<<< HEAD
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (found && (parent == NULL || task_is_descendant(parent, tracer)))
 		rc = 1;
 	rcu_read_unlock();
+<<<<<<< HEAD
 	spin_unlock_bh(&ptracer_relations_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -238,7 +354,11 @@ static int ptracer_exception_found(struct task_struct *tracer,
  *
  * Returns 0 if following the ptrace is allowed, -ve on error.
  */
+<<<<<<< HEAD
 static int yama_ptrace_access_check(struct task_struct *child,
+=======
+int yama_ptrace_access_check(struct task_struct *child,
+>>>>>>> refs/remotes/origin/master
 				    unsigned int mode)
 {
 	int rc;
@@ -251,6 +371,7 @@ static int yama_ptrace_access_check(struct task_struct *child,
 		return rc;
 
 	/* require ptrace target be a child of ptracer on attach */
+<<<<<<< HEAD
 	if (mode == PTRACE_MODE_ATTACH &&
 	    ptrace_scope &&
 	    !task_is_descendant(current, child) &&
@@ -265,15 +386,89 @@ static int yama_ptrace_access_check(struct task_struct *child,
 			child->pid,
 			get_task_comm(name, current),
 			current->pid);
+=======
+	if (mode == PTRACE_MODE_ATTACH) {
+		switch (ptrace_scope) {
+		case YAMA_SCOPE_DISABLED:
+			/* No additional restrictions. */
+			break;
+		case YAMA_SCOPE_RELATIONAL:
+			rcu_read_lock();
+			if (!task_is_descendant(current, child) &&
+			    !ptracer_exception_found(current, child) &&
+			    !ns_capable(__task_cred(child)->user_ns, CAP_SYS_PTRACE))
+				rc = -EPERM;
+			rcu_read_unlock();
+			break;
+		case YAMA_SCOPE_CAPABILITY:
+			rcu_read_lock();
+			if (!ns_capable(__task_cred(child)->user_ns, CAP_SYS_PTRACE))
+				rc = -EPERM;
+			rcu_read_unlock();
+			break;
+		case YAMA_SCOPE_NO_ATTACH:
+		default:
+			rc = -EPERM;
+			break;
+		}
+	}
+
+	if (rc) {
+		printk_ratelimited(KERN_NOTICE
+			"ptrace of pid %d was attempted by: %s (pid %d)\n",
+			child->pid, current->comm, current->pid);
 	}
 
 	return rc;
 }
 
+/**
+ * yama_ptrace_traceme - validate PTRACE_TRACEME calls
+ * @parent: task that will become the ptracer of the current task
+ *
+ * Returns 0 if following the ptrace is allowed, -ve on error.
+ */
+int yama_ptrace_traceme(struct task_struct *parent)
+{
+	int rc;
+
+	/* If standard caps disallows it, so does Yama.  We should
+	 * only tighten restrictions further.
+	 */
+	rc = cap_ptrace_traceme(parent);
+	if (rc)
+		return rc;
+
+	/* Only disallow PTRACE_TRACEME on more aggressive settings. */
+	switch (ptrace_scope) {
+	case YAMA_SCOPE_CAPABILITY:
+		if (!has_ns_capability(parent, current_user_ns(), CAP_SYS_PTRACE))
+			rc = -EPERM;
+		break;
+	case YAMA_SCOPE_NO_ATTACH:
+		rc = -EPERM;
+		break;
+	}
+
+	if (rc) {
+		printk_ratelimited(KERN_NOTICE
+			"ptraceme of pid %d was attempted by: %s (pid %d)\n",
+			current->pid, parent->comm, parent->pid);
+>>>>>>> refs/remotes/origin/master
+	}
+
+	return rc;
+}
+
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_SECURITY_YAMA_STACKED
+>>>>>>> refs/remotes/origin/master
 static struct security_operations yama_ops = {
 	.name =			"yama",
 
 	.ptrace_access_check =	yama_ptrace_access_check,
+<<<<<<< HEAD
 	.task_prctl =		yama_task_prctl,
 	.task_free =		yama_task_free,
 };
@@ -281,6 +476,36 @@ static struct security_operations yama_ops = {
 #ifdef CONFIG_SYSCTL
 static int zero;
 static int one = 1;
+=======
+	.ptrace_traceme =	yama_ptrace_traceme,
+	.task_prctl =		yama_task_prctl,
+	.task_free =		yama_task_free,
+};
+#endif
+
+#ifdef CONFIG_SYSCTL
+static int yama_dointvec_minmax(struct ctl_table *table, int write,
+				void __user *buffer, size_t *lenp, loff_t *ppos)
+{
+	int rc;
+
+	if (write && !capable(CAP_SYS_PTRACE))
+		return -EPERM;
+
+	rc = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+	if (rc)
+		return rc;
+
+	/* Lock the max value if it ever gets set. */
+	if (write && *(int *)table->data == *(int *)table->extra2)
+		table->extra1 = table->extra2;
+
+	return rc;
+}
+
+static int zero;
+static int max_scope = YAMA_SCOPE_NO_ATTACH;
+>>>>>>> refs/remotes/origin/master
 
 struct ctl_path yama_sysctl_path[] = {
 	{ .procname = "kernel", },
@@ -294,9 +519,15 @@ static struct ctl_table yama_sysctl_table[] = {
 		.data           = &ptrace_scope,
 		.maxlen         = sizeof(int),
 		.mode           = 0644,
+<<<<<<< HEAD
 		.proc_handler   = proc_dointvec_minmax,
 		.extra1         = &zero,
 		.extra2         = &one,
+=======
+		.proc_handler   = yama_dointvec_minmax,
+		.extra1         = &zero,
+		.extra2         = &max_scope,
+>>>>>>> refs/remotes/origin/master
 	},
 	{ }
 };
@@ -304,6 +535,7 @@ static struct ctl_table yama_sysctl_table[] = {
 
 static __init int yama_init(void)
 {
+<<<<<<< HEAD
 	if (!security_module_enable(&yama_ops))
 		return 0;
 
@@ -311,6 +543,19 @@ static __init int yama_init(void)
 
 	if (register_security(&yama_ops))
 		panic("Yama: kernel registration failed.\n");
+=======
+#ifndef CONFIG_SECURITY_YAMA_STACKED
+	if (!security_module_enable(&yama_ops))
+		return 0;
+#endif
+
+	printk(KERN_INFO "Yama: becoming mindful.\n");
+
+#ifndef CONFIG_SECURITY_YAMA_STACKED
+	if (register_security(&yama_ops))
+		panic("Yama: kernel registration failed.\n");
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SYSCTL
 	if (!register_sysctl_paths(yama_sysctl_path, yama_sysctl_table))

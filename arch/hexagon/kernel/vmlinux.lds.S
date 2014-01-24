@@ -1,7 +1,11 @@
 /*
  * Linker script for Hexagon kernel
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -18,8 +22,11 @@
  * 02110-1301, USA.
  */
 
+<<<<<<< HEAD
 #define LOAD_OFFSET PAGE_OFFSET
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/vmlinux.lds.h>
 #include <asm/asm-offsets.h>	/*  Most of the kernel defines are here  */
 #include <asm/mem-layout.h>	/*  except for page_offset  */
@@ -36,6 +43,7 @@ See asm-generic/sections.h for seemingly required labels.
 
 #define PAGE_SIZE _PAGE_SIZE
 
+<<<<<<< HEAD
 /*  This LOAD_OFFSET is temporary for debugging on the simulator; it may change
     for hypervisor pseudo-physical memory.  */
 
@@ -43,6 +51,11 @@ See asm-generic/sections.h for seemingly required labels.
 SECTIONS
 {
 	. = PAGE_OFFSET + LOAD_ADDRESS;
+=======
+SECTIONS
+{
+	. = PAGE_OFFSET;
+>>>>>>> refs/remotes/origin/master
 
 	__init_begin = .;
 	HEAD_TEXT_SECTION
@@ -52,7 +65,11 @@ SECTIONS
 
         . = ALIGN(_PAGE_SIZE);
 	_stext = .;
+<<<<<<< HEAD
 	.text : AT(ADDR(.text) - LOAD_OFFSET) {
+=======
+	.text : AT(ADDR(.text)) {
+>>>>>>> refs/remotes/origin/master
 		_text = .;
 		TEXT_TEXT
 		SCHED_TEXT

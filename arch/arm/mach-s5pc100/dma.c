@@ -1,12 +1,18 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* linux/arch/arm/mach-s5pc100/dma.c
  *
  * Copyright (c) 2011 Samsung Electronics Co., Ltd.
  *		http://www.samsung.com
  *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2010 Samsung Electronics Co. Ltd.
  *	Jaswinder Singh <jassi.brar@samsung.com>
  *
@@ -25,6 +31,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/dma-mapping.h>
@@ -171,6 +178,8 @@ static int __init s5pc100_dma_init(void)
 {
 	platform_add_devices(s5pc100_dmacs, ARRAY_SIZE(s5pc100_dmacs));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/dma-mapping.h>
 #include <linux/amba/bus.h>
 #include <linux/amba/pl330.h>
@@ -183,8 +192,11 @@ static int __init s5pc100_dma_init(void)
 #include <mach/irqs.h>
 #include <mach/dma.h>
 
+<<<<<<< HEAD
 static u64 dma_dmamask = DMA_BIT_MASK(32);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static u8 pdma0_peri[] = {
 	DMACH_UART0_RX,
 	DMACH_UART0_TX,
@@ -276,7 +288,10 @@ static int __init s5pc100_dma_init(void)
 	dma_cap_set(DMA_SLAVE, s5pc100_pdma1_pdata.cap_mask);
 	dma_cap_set(DMA_CYCLIC, s5pc100_pdma1_pdata.cap_mask);
 	amba_device_register(&s5pc100_pdma1_device, &iomem_resource);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

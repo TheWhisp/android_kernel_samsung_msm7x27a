@@ -128,14 +128,22 @@ static int rdc_gpio_direction_input(struct gpio_chip *chip, unsigned gpio)
 /*
  * Cache the initial value of both GPIO data registers
  */
+<<<<<<< HEAD
 static int __devinit rdc321x_gpio_probe(struct platform_device *pdev)
+=======
+static int rdc321x_gpio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct resource *r;
 	struct rdc321x_gpio *rdc321x_gpio_dev;
 	struct rdc321x_gpio_pdata *pdata;
 
+<<<<<<< HEAD
 	pdata = pdev->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata) {
 		dev_err(&pdev->dev, "no platform data supplied\n");
 		return -ENODEV;
@@ -170,6 +178,10 @@ static int __devinit rdc321x_gpio_probe(struct platform_device *pdev)
 	rdc321x_gpio_dev->reg2_data_base = r->start + 0x4;
 
 	rdc321x_gpio_dev->chip.label = "rdc321x-gpio";
+<<<<<<< HEAD
+=======
+	rdc321x_gpio_dev->chip.owner = THIS_MODULE;
+>>>>>>> refs/remotes/origin/master
 	rdc321x_gpio_dev->chip.direction_input = rdc_gpio_direction_input;
 	rdc321x_gpio_dev->chip.direction_output = rdc_gpio_config;
 	rdc321x_gpio_dev->chip.get = rdc_gpio_get_value;
@@ -186,26 +198,41 @@ static int __devinit rdc321x_gpio_probe(struct platform_device *pdev)
 					rdc321x_gpio_dev->reg1_data_base,
 					&rdc321x_gpio_dev->data_reg[0]);
 	if (err)
+<<<<<<< HEAD
 		goto out_drvdata;
+=======
+		goto out_free;
+>>>>>>> refs/remotes/origin/master
 
 	err = pci_read_config_dword(rdc321x_gpio_dev->sb_pdev,
 					rdc321x_gpio_dev->reg2_data_base,
 					&rdc321x_gpio_dev->data_reg[1]);
 	if (err)
+<<<<<<< HEAD
 		goto out_drvdata;
+=======
+		goto out_free;
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(&pdev->dev, "registering %d GPIOs\n",
 					rdc321x_gpio_dev->chip.ngpio);
 	return gpiochip_add(&rdc321x_gpio_dev->chip);
 
+<<<<<<< HEAD
 out_drvdata:
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 out_free:
 	kfree(rdc321x_gpio_dev);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit rdc321x_gpio_remove(struct platform_device *pdev)
+=======
+static int rdc321x_gpio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct rdc321x_gpio *rdc321x_gpio_dev = platform_get_drvdata(pdev);
@@ -215,7 +242,10 @@ static int __devexit rdc321x_gpio_remove(struct platform_device *pdev)
 		dev_err(&pdev->dev, "failed to unregister chip\n");
 
 	kfree(rdc321x_gpio_dev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -224,7 +254,11 @@ static struct platform_driver rdc321x_gpio_driver = {
 	.driver.name	= "rdc321x-gpio",
 	.driver.owner	= THIS_MODULE,
 	.probe		= rdc321x_gpio_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(rdc321x_gpio_remove),
+=======
+	.remove		= rdc321x_gpio_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(rdc321x_gpio_driver);

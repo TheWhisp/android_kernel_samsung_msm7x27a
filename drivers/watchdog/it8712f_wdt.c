@@ -21,10 +21,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
@@ -34,25 +39,34 @@
 #include <linux/reboot.h>
 #include <linux/fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pci.h>
 #include <linux/spinlock.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/uaccess.h>
 #include <linux/io.h>
 #include <linux/ioport.h>
 
 #define DEBUG
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define NAME "it8712f_wdt"
 
 MODULE_AUTHOR("Jorge Boncompte - DTI2 <jorge@dti2.net>");
 MODULE_DESCRIPTION("IT8712F Watchdog Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int max_units = 255;
 static int margin = 60;		/* in seconds */
@@ -60,20 +74,28 @@ module_param(margin, int, 0);
 MODULE_PARM_DESC(margin, "Watchdog margin in seconds");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Disable watchdog shutdown on close");
 
 static unsigned long wdt_open;
 static unsigned expect_close;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static spinlock_t io_lock;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned char revision;
 
 /* Dog Food address - We use the game port address */
@@ -144,10 +166,13 @@ static inline void superio_select(int ldn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void superio_enter(void)
 {
 	spin_lock(&io_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int superio_enter(void)
 {
 	/*
@@ -156,15 +181,22 @@ static inline int superio_enter(void)
 	if (!request_muxed_region(REG, 2, NAME))
 		return -EBUSY;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	outb(0x87, REG);
 	outb(0x01, REG);
 	outb(0x55, REG);
 	outb(0x55, REG);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void superio_exit(void)
@@ -172,10 +204,14 @@ static inline void superio_exit(void)
 	outb(0x02, REG);
 	outb(0x02, VAL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&io_lock);
 =======
 	release_region(REG, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	release_region(REG, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void it8712f_wdt_ping(void)
@@ -195,16 +231,22 @@ static void it8712f_wdt_update_margin(void)
 	if (units <= max_units) {
 		config |= WDT_UNIT_SEC; /* else UNIT is MINUTES */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO NAME ": timer margin %d seconds\n", units);
 	} else {
 		units /= 60;
 		printk(KERN_INFO NAME ": timer margin %d minutes\n", units);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("timer margin %d seconds\n", units);
 	} else {
 		units /= 60;
 		pr_info("timer margin %d minutes\n", units);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	superio_outb(config, WDT_CONFIG);
 
@@ -222,11 +264,14 @@ static int it8712f_wdt_get_status(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void it8712f_wdt_enable(void)
 {
 	printk(KERN_DEBUG NAME ": enabling watchdog timer\n");
 	superio_enter();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int it8712f_wdt_enable(void)
 {
 	int ret = superio_enter();
@@ -234,7 +279,10 @@ static int it8712f_wdt_enable(void)
 		return ret;
 
 	pr_debug("enabling watchdog timer\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	superio_select(LDN_GPIO);
 
 	superio_outb(wdt_control_reg, WDT_CONTROL);
@@ -245,6 +293,7 @@ static int it8712f_wdt_enable(void)
 
 	it8712f_wdt_ping();
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 static void it8712f_wdt_disable(void)
@@ -253,6 +302,8 @@ static void it8712f_wdt_disable(void)
 
 	superio_enter();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -264,7 +315,10 @@ static int it8712f_wdt_disable(void)
 		return ret;
 
 	pr_debug("disabling watchdog timer\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	superio_select(LDN_GPIO);
 
 	superio_outb(0, WDT_CONFIG);
@@ -275,9 +329,13 @@ static int it8712f_wdt_disable(void)
 
 	superio_exit();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int it8712f_wdt_notify(struct notifier_block *this,
@@ -329,9 +387,13 @@ static long it8712f_wdt_ioctl(struct file *file, unsigned int cmd,
 	};
 	int value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	switch (cmd) {
 	case WDIOC_GETSUPPORT:
@@ -340,12 +402,18 @@ static long it8712f_wdt_ioctl(struct file *file, unsigned int cmd,
 		return 0;
 	case WDIOC_GETSTATUS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		superio_enter();
 =======
 		ret = superio_enter();
 		if (ret)
 			return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = superio_enter();
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		superio_select(LDN_GPIO);
 
 		value = it8712f_wdt_get_status();
@@ -367,12 +435,18 @@ static long it8712f_wdt_ioctl(struct file *file, unsigned int cmd,
 			return -EINVAL;
 		margin = value;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		superio_enter();
 =======
 		ret = superio_enter();
 		if (ret)
 			return ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = superio_enter();
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 		superio_select(LDN_GPIO);
 
 		it8712f_wdt_update_margin();
@@ -392,11 +466,14 @@ static long it8712f_wdt_ioctl(struct file *file, unsigned int cmd,
 static int it8712f_wdt_open(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* only allow one at a time */
 	if (test_and_set_bit(0, &wdt_open))
 		return -EBUSY;
 	it8712f_wdt_enable();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	/* only allow one at a time */
 	if (test_and_set_bit(0, &wdt_open))
@@ -405,7 +482,10 @@ static int it8712f_wdt_open(struct inode *inode, struct file *file)
 	ret = it8712f_wdt_enable();
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return nonseekable_open(inode, file);
 }
 
@@ -413,17 +493,23 @@ static int it8712f_wdt_release(struct inode *inode, struct file *file)
 {
 	if (expect_close != 42) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING NAME
 			": watchdog device closed unexpectedly, will not"
 			" disable the watchdog timer\n");
 	} else if (!nowayout) {
 		it8712f_wdt_disable();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_warn("watchdog device closed unexpectedly, will not disable the watchdog timer\n");
 	} else if (!nowayout) {
 		if (it8712f_wdt_disable())
 			pr_warn("Watchdog disable failed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	expect_close = 0;
 	clear_bit(0, &wdt_open);
@@ -451,14 +537,20 @@ static int __init it8712f_wdt_find(unsigned short *address)
 	int err = -ENODEV;
 	int chip_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	superio_enter();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = superio_enter();
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	chip_type = superio_inw(DEVID);
 	if (chip_type != IT8712F_DEVID)
 		goto exit;
@@ -467,20 +559,28 @@ static int __init it8712f_wdt_find(unsigned short *address)
 	superio_outb(1, ACT_REG);
 	if (!(superio_inb(ACT_REG) & 0x01)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR NAME ": Device not activated, skipping\n");
 =======
 		pr_err("Device not activated, skipping\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Device not activated, skipping\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
 	*address = superio_inw(BASE_REG);
 	if (*address == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR NAME ": Base address not set, skipping\n");
 =======
 		pr_err("Base address not set, skipping\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Base address not set, skipping\n");
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -495,11 +595,15 @@ static int __init it8712f_wdt_find(unsigned short *address)
 		margin = (max_units * 60);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO NAME ": Found IT%04xF chip revision %d - "
 		"using DogFood address 0x%x\n",
 =======
 	pr_info("Found IT%04xF chip revision %d - using DogFood address 0x%x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Found IT%04xF chip revision %d - using DogFood address 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 		chip_type, revision, *address);
 
 exit:
@@ -512,14 +616,18 @@ static int __init it8712f_wdt_init(void)
 	int err = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&io_lock);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (it8712f_wdt_find(&address))
 		return -ENODEV;
 
 	if (!request_region(address, 1, "IT8712F Watchdog")) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_WARNING NAME ": watchdog I/O region busy\n");
 		return -EBUSY;
@@ -531,6 +639,8 @@ static int __init it8712f_wdt_init(void)
 	if (err) {
 		printk(KERN_ERR NAME ": unable to register reboot notifier\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_warn("watchdog I/O region busy\n");
 		return -EBUSY;
 	}
@@ -544,12 +654,16 @@ static int __init it8712f_wdt_init(void)
 	err = register_reboot_notifier(&it8712f_wdt_notifier);
 	if (err) {
 		pr_err("unable to register reboot notifier\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
 	err = misc_register(&it8712f_wdt_miscdev);
 	if (err) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR NAME
 			": cannot register miscdev on minor=%d (err=%d)\n",
@@ -558,6 +672,10 @@ static int __init it8712f_wdt_init(void)
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, err);
+>>>>>>> refs/remotes/origin/master
 		goto reboot_out;
 	}
 

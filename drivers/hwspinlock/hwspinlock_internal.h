@@ -22,10 +22,15 @@
 #include <linux/device.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct hwspinlock_device;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct hwspinlock_device;
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct hwspinlock_ops - platform-specific hwspinlock handlers
  *
@@ -44,6 +49,7 @@ struct hwspinlock_ops {
 
 /**
  * struct hwspinlock - this struct represents a single hwspinlock instance
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * @dev: underlying device, will be used to invoke runtime PM api
@@ -65,6 +71,8 @@ struct hwspinlock {
 };
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @bank: the hwspinlock_device structure which owns this lock
  * @lock: initialized and used by hwspinlock core
  * @priv: private data, owned by the underlying platform-specific hwspinlock drv
@@ -98,5 +106,8 @@ static inline int hwlock_to_id(struct hwspinlock *hwlock)
 	return hwlock->bank->base_id + local_id;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __HWSPINLOCK_HWSPINLOCK_H */

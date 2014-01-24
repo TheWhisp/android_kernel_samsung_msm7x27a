@@ -24,6 +24,7 @@
 
 #define old_mmap sys_old_mmap
 
+<<<<<<< HEAD
 #define ptregs_fork sys_fork
 #define ptregs_execve sys_execve
 #define ptregs_iopl sys_iopl
@@ -33,6 +34,8 @@
 #define ptregs_sigaltstack sys_sigaltstack
 #define ptregs_vfork sys_vfork
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define __SYSCALL_I386(nr, sym, compat) extern asmlinkage void sym(void) ;
 #include <asm/syscalls_32.h>
 

@@ -12,15 +12,23 @@
 #include <linux/thread_info.h>
 #include <asm/asi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/spitfire.h>
 #include <asm-generic/uaccess-unaligned.h>
 #endif
 
 #ifndef __ASSEMBLY__
 
+<<<<<<< HEAD
+=======
+#include <asm/processor.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Sparc64 is segmented, though more like the M68K than the I386.
  * We use the secondary ASI to address user memory, which references a
@@ -40,14 +48,22 @@
 #define VERIFY_READ	0
 #define VERIFY_WRITE	1
 
+<<<<<<< HEAD
 #define get_fs() ((mm_segment_t) { get_thread_current_ds() })
+=======
+#define get_fs() ((mm_segment_t){(current_thread_info()->current_ds)})
+>>>>>>> refs/remotes/origin/master
 #define get_ds() (KERNEL_DS)
 
 #define segment_eq(a,b)  ((a).seg == (b).seg)
 
 #define set_fs(val)								\
 do {										\
+<<<<<<< HEAD
 	set_thread_current_ds((val).seg);					\
+=======
+	current_thread_info()->current_ds =(val).seg;				\
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__ ("wr %%g0, %0, %%asi" : : "r" ((val).seg));	\
 } while(0)
 
@@ -261,6 +277,7 @@ extern unsigned long __must_check __clear_user(void __user *, unsigned long);
 
 #define clear_user __clear_user
 
+<<<<<<< HEAD
 extern long __must_check __strncpy_from_user(char *dest, const char __user *src, long count);
 
 #define strncpy_from_user __strncpy_from_user
@@ -272,6 +289,18 @@ extern long __strnlen_user(const char __user *, long len);
 #define strnlen_user __strnlen_user
 #define __copy_to_user_inatomic ___copy_to_user
 #define __copy_from_user_inatomic ___copy_from_user
+=======
+extern __must_check long strlen_user(const char __user *str);
+extern __must_check long strnlen_user(const char __user *str, long n);
+
+#define __copy_to_user_inatomic __copy_to_user
+#define __copy_from_user_inatomic __copy_from_user
+
+struct pt_regs;
+extern unsigned long compute_effective_address(struct pt_regs *,
+					       unsigned int insn,
+					       unsigned int rd);
+>>>>>>> refs/remotes/origin/master
 
 #endif  /* __ASSEMBLY__ */
 

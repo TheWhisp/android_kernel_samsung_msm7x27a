@@ -110,9 +110,13 @@ static inline void arch_kgdb_breakpoint(void)
 #endif
 #define GDB_ADJUSTS_BREAK_OFFSET
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define GDB_SKIP_HW_WATCH_TEST
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define GDB_SKIP_HW_WATCH_TEST
+>>>>>>> refs/remotes/origin/master
 #define HW_INST_WATCHPOINT_NUM	6
 #define HW_WATCHPOINT_NUM	8
 #define TYPE_INST_WATCHPOINT	0

@@ -44,9 +44,13 @@
 #include <asm/io.h>
 #include <linux/log2.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 extern struct atomic_notifier_head panic_notifier_list;
 static int alpha_panic_event(struct notifier_block *, unsigned long, void *);
@@ -59,9 +63,12 @@ static struct notifier_block alpha_panic_block = {
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/hwrpb.h>
 #include <asm/dma.h>
 #include <asm/mmu_context.h>
@@ -122,10 +129,23 @@ unsigned long alpha_agpgart_size = DEFAULT_AGP_APER_SIZE;
 
 #ifdef CONFIG_ALPHA_GENERIC
 struct alpha_machine_vector alpha_mv;
+<<<<<<< HEAD
+=======
+#endif
+
+#ifndef alpha_using_srm
+>>>>>>> refs/remotes/origin/master
 int alpha_using_srm;
 EXPORT_SYMBOL(alpha_using_srm);
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef alpha_using_qemu
+int alpha_using_qemu;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct alpha_machine_vector *get_sysvec(unsigned long, unsigned long,
 					       unsigned long);
 static struct alpha_machine_vector *get_sysvec_byname(const char *);
@@ -536,11 +556,22 @@ setup_arch(char **cmdline_p)
 	atomic_notifier_chain_register(&panic_notifier_list,
 			&alpha_panic_block);
 
+<<<<<<< HEAD
 #ifdef CONFIG_ALPHA_GENERIC
+=======
+#ifndef alpha_using_srm
+>>>>>>> refs/remotes/origin/master
 	/* Assume that we've booted from SRM if we haven't booted from MILO.
 	   Detect the later by looking for "MILO" in the system serial nr.  */
 	alpha_using_srm = strncmp((const char *)hwrpb->ssn, "MILO", 4) != 0;
 #endif
+<<<<<<< HEAD
+=======
+#ifndef alpha_using_qemu
+	/* Similarly, look for QEMU.  */
+	alpha_using_qemu = strstr((const char *)hwrpb->ssn, "QEMU") != 0;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* If we are using SRM, we want to allow callbacks
 	   as early as possible, so do this NOW, and then
@@ -1214,6 +1245,10 @@ show_cpuinfo(struct seq_file *f, void *slot)
 	char *systype_name;
 	char *sysvariation_name;
 	int nr_processors;
+<<<<<<< HEAD
+=======
+	unsigned long timer_freq;
+>>>>>>> refs/remotes/origin/master
 
 	cpu_index = (unsigned) (cpu->type - 1);
 	cpu_name = "Unknown";
@@ -1225,6 +1260,15 @@ show_cpuinfo(struct seq_file *f, void *slot)
 
 	nr_processors = get_nr_processors(cpu, hwrpb->nr_processors);
 
+<<<<<<< HEAD
+=======
+#if CONFIG_HZ == 1024 || CONFIG_HZ == 1200
+	timer_freq = (100UL * hwrpb->intr_freq) / 4096;
+#else
+	timer_freq = 100UL * CONFIG_HZ;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	seq_printf(f, "cpu\t\t\t: Alpha\n"
 		      "cpu model\t\t: %s\n"
 		      "cpu variation\t\t: %ld\n"
@@ -1250,8 +1294,12 @@ show_cpuinfo(struct seq_file *f, void *slot)
 		       (char*)hwrpb->ssn,
 		       est_cycle_freq ? : hwrpb->cycle_freq,
 		       est_cycle_freq ? "est." : "",
+<<<<<<< HEAD
 		       hwrpb->intr_freq / 4096,
 		       (100 * hwrpb->intr_freq / 4096) % 100,
+=======
+		       timer_freq / 100, timer_freq % 100,
+>>>>>>> refs/remotes/origin/master
 		       hwrpb->pagesize,
 		       hwrpb->pa_bits,
 		       hwrpb->max_asn,

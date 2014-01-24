@@ -31,6 +31,10 @@
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/major.h>
 #include <linux/serial.h>
 #include <linux/serial_core.h>
@@ -38,15 +42,21 @@
 #include <linux/sysrq.h>
 #include <linux/tty.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #include <asm/atomic.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/tty_flip.h>
 #include <linux/types.h>
 
 #include <linux/atomic.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/war.h>
 
@@ -389,7 +399,11 @@ static void sbd_receive_chars(struct sbd_port *sport)
 		uart_insert_char(uport, status, M_DUART_OVRUN_ERR, ch, flag);
 	}
 
+<<<<<<< HEAD
 	tty_flip_buffer_push(uport->state->port.tty);
+=======
+	tty_flip_buffer_push(&uport->state->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sbd_transmit_chars(struct sbd_port *sport)

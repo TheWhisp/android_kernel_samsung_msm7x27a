@@ -1,6 +1,10 @@
 /*
  * Copyright (C) ST-Ericsson AB 2010
+<<<<<<< HEAD
  * Author:	Sjur Brendeland/ sjur.brandeland@stericsson.com
+=======
+ * Author:	Sjur Brendeland
+>>>>>>> refs/remotes/origin/master
  * License terms: GNU General Public License (GPL) version 2
  */
 
@@ -10,9 +14,13 @@
 #include <net/caif/caif_layer.h>
 #include <net/caif/cfcnfg.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <net/caif/caif_device.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/caif/caif_device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/caif/caif_socket.h>
 #include <linux/if.h>
 #include <linux/net.h>
@@ -109,7 +117,10 @@ void caif_client_register_refcnt(struct cflayer *adapt_layer,
 void caif_free_client(struct cflayer *adap_layer);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct caif_enroll_dev - Enroll a net-device as a CAIF Link layer
  * @dev:		Network device to enroll.
@@ -130,5 +141,8 @@ void caif_enroll_dev(struct net_device *dev, struct caif_dev_common *caifdev,
 				struct sk_buff *, struct net_device *,
 				struct packet_type *, struct net_device *));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CAIF_DEV_H_ */

@@ -12,6 +12,10 @@
 #include <linux/module.h>
 #include <asm/cacheflush.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
+=======
+#include <asm/asm.h>
+>>>>>>> refs/remotes/origin/master
 
 int rodata_test(void)
 {
@@ -42,6 +46,7 @@ int rodata_test(void)
 		".section .fixup,\"ax\"\n"
 		"2:	jmp 1b\n"
 		".previous\n"
+<<<<<<< HEAD
 		".section __ex_table,\"a\"\n"
 		"       .align 16\n"
 #ifdef CONFIG_X86_32
@@ -50,6 +55,9 @@ int rodata_test(void)
 		"	.quad 0b,2b\n"
 #endif
 		".previous"
+=======
+		_ASM_EXTABLE(0b,2b)
+>>>>>>> refs/remotes/origin/master
 		: [rslt] "=r" (result)
 		: [rodata_test] "r" (&rodata_test_data), [zero] "r" (0UL)
 	);

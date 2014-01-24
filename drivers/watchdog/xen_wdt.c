@@ -10,15 +10,21 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_NAME	"wdt"
 #define DRV_VERSION	"0.01"
 #define PFX		DRV_NAME ": "
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #define DRV_NAME	"wdt"
 #define DRV_VERSION	"0.01"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/bug.h>
 #include <linux/errno.h>
@@ -139,6 +145,7 @@ static int xen_wdt_open(struct inode *inode, struct file *file)
 static int xen_wdt_release(struct inode *inode, struct file *file)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (expect_release)
 		xen_wdt_stop();
 	else {
@@ -150,6 +157,8 @@ static int xen_wdt_release(struct inode *inode, struct file *file)
 	expect_release = false;
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	if (expect_release)
@@ -161,7 +170,10 @@ static int xen_wdt_release(struct inode *inode, struct file *file)
 	is_active = err;
 	expect_release = false;
 	return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t xen_wdt_write(struct file *file, const char __user *data,
@@ -263,7 +275,11 @@ static struct miscdevice xen_wdt_miscdev = {
 	.fops =		&xen_wdt_fops,
 };
 
+<<<<<<< HEAD
 static int __devinit xen_wdt_probe(struct platform_device *dev)
+=======
+static int xen_wdt_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sched_watchdog wd = { .id = ~0 };
 	int ret = HYPERVISOR_sched_op(SCHEDOP_watchdog, &wd);
@@ -273,25 +289,34 @@ static int __devinit xen_wdt_probe(struct platform_device *dev)
 		if (!timeout) {
 			timeout = WATCHDOG_TIMEOUT;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_INFO PFX
 			       "timeout value invalid, using %d\n", timeout);
 =======
 			pr_info("timeout value invalid, using %d\n", timeout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_info("timeout value invalid, using %d\n", timeout);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		ret = misc_register(&xen_wdt_miscdev);
 		if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_ERR PFX
 			       "cannot register miscdev on minor=%d (%d)\n",
 =======
 			pr_err("cannot register miscdev on minor=%d (%d)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("cannot register miscdev on minor=%d (%d)\n",
+>>>>>>> refs/remotes/origin/master
 			       WATCHDOG_MINOR, ret);
 			break;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO PFX
 		       "initialized (timeout=%ds, nowayout=%d)\n",
@@ -301,29 +326,42 @@ static int __devinit xen_wdt_probe(struct platform_device *dev)
 	case -ENOSYS:
 		printk(KERN_INFO PFX "not supported\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("initialized (timeout=%ds, nowayout=%d)\n",
 			timeout, nowayout);
 		break;
 
 	case -ENOSYS:
 		pr_info("not supported\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -ENODEV;
 		break;
 
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX "bogus return value %d\n", ret);
 =======
 		pr_info("bogus return value %d\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("bogus return value %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit xen_wdt_remove(struct platform_device *dev)
+=======
+static int xen_wdt_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Stop the timer before we leave */
 	if (!nowayout)
@@ -342,30 +380,46 @@ static void xen_wdt_shutdown(struct platform_device *dev)
 static int xen_wdt_suspend(struct platform_device *dev, pm_message_t state)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return xen_wdt_stop();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	typeof(wdt.id) id = wdt.id;
 	int rc = xen_wdt_stop();
 
 	wdt.id = id;
 	return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int xen_wdt_resume(struct platform_device *dev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (!wdt.id)
 		return 0;
 	wdt.id = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!wdt.id)
+		return 0;
+	wdt.id = 0;
+>>>>>>> refs/remotes/origin/master
 	return xen_wdt_start();
 }
 
 static struct platform_driver xen_wdt_driver = {
 	.probe          = xen_wdt_probe,
+<<<<<<< HEAD
 	.remove         = __devexit_p(xen_wdt_remove),
+=======
+	.remove         = xen_wdt_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown       = xen_wdt_shutdown,
 	.suspend        = xen_wdt_suspend,
 	.resume         = xen_wdt_resume,
@@ -383,10 +437,14 @@ static int __init xen_wdt_init_module(void)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Xen WatchDog Timer Driver v%s\n", DRV_VERSION);
 =======
 	pr_info("Xen WatchDog Timer Driver v%s\n", DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Xen WatchDog Timer Driver v%s\n", DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	err = platform_driver_register(&xen_wdt_driver);
 	if (err)
@@ -407,10 +465,14 @@ static void __exit xen_wdt_cleanup_module(void)
 	platform_device_unregister(platform_device);
 	platform_driver_unregister(&xen_wdt_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "module unloaded\n");
 =======
 	pr_info("module unloaded\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("module unloaded\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(xen_wdt_init_module);
@@ -420,4 +482,7 @@ MODULE_AUTHOR("Jan Beulich <jbeulich@novell.com>");
 MODULE_DESCRIPTION("Xen WatchDog Timer Driver");
 MODULE_VERSION(DRV_VERSION);
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

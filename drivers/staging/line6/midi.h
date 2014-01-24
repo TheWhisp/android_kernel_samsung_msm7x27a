@@ -55,6 +55,7 @@ struct snd_line6_midi {
 	wait_queue_head_t send_wait;
 
 	/**
+<<<<<<< HEAD
 		 Bit mask for output MIDI channels.
 	*/
 <<<<<<< HEAD
@@ -76,11 +77,20 @@ struct snd_line6_midi {
 		 Buffer for incoming MIDI stream.
 	*/
 	struct MidiBuffer midibuf_in;
+=======
+		 Buffer for incoming MIDI stream.
+	*/
+	struct midi_buffer midibuf_in;
+>>>>>>> refs/remotes/origin/master
 
 	/**
 		 Buffer for outgoing MIDI stream.
 	*/
+<<<<<<< HEAD
 	struct MidiBuffer midibuf_out;
+=======
+	struct midi_buffer midibuf_out;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern int line6_init_midi(struct usb_line6 *line6);

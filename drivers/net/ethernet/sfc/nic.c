@@ -1,7 +1,13 @@
 /****************************************************************************
+<<<<<<< HEAD
  * Driver for Solarflare Solarstorm network controllers and boards
  * Copyright 2005-2006 Fen Systems Ltd.
  * Copyright 2006-2011 Solarflare Communications Inc.
+=======
+ * Driver for Solarflare network controllers and boards
+ * Copyright 2005-2006 Fen Systems Ltd.
+ * Copyright 2006-2013 Solarflare Communications Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -14,16 +20,26 @@
 #include <linux/pci.h>
 #include <linux/module.h>
 #include <linux/seq_file.h>
+<<<<<<< HEAD
+=======
+#include <linux/cpu_rmap.h>
+>>>>>>> refs/remotes/origin/master
 #include "net_driver.h"
 #include "bitfield.h"
 #include "efx.h"
 #include "nic.h"
+<<<<<<< HEAD
 #include "regs.h"
+=======
+#include "ef10_regs.h"
+#include "farch_regs.h"
+>>>>>>> refs/remotes/origin/master
 #include "io.h"
 #include "workarounds.h"
 
 /**************************************************************************
  *
+<<<<<<< HEAD
  * Configurable values
  *
  **************************************************************************
@@ -1298,6 +1314,31 @@ int efx_nic_process_eventq(struct efx_channel *channel, int budget)
 out:
 	channel->eventq_read_ptr = read_ptr;
 	return spent;
+=======
+ * Generic buffer handling
+ * These buffers are used for interrupt status, MAC stats, etc.
+ *
+ **************************************************************************/
+
+int efx_nic_alloc_buffer(struct efx_nic *efx, struct efx_buffer *buffer,
+			 unsigned int len, gfp_t gfp_flags)
+{
+	buffer->addr = dma_zalloc_coherent(&efx->pci_dev->dev, len,
+					   &buffer->dma_addr, gfp_flags);
+	if (!buffer->addr)
+		return -ENOMEM;
+	buffer->len = len;
+	return 0;
+}
+
+void efx_nic_free_buffer(struct efx_nic *efx, struct efx_buffer *buffer)
+{
+	if (buffer->addr) {
+		dma_free_coherent(&efx->pci_dev->dev, buffer->len,
+				  buffer->addr, buffer->dma_addr);
+		buffer->addr = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Check whether an event is present in the eventq at the current
@@ -1308,6 +1349,7 @@ bool efx_nic_event_present(struct efx_channel *channel)
 	return efx_event_present(efx_event(channel, channel->eventq_read_ptr));
 }
 
+<<<<<<< HEAD
 /* Allocate buffer table entries for event queue */
 int efx_nic_probe_eventq(struct efx_channel *channel)
 {
@@ -1377,10 +1419,13 @@ void efx_nic_remove_eventq(struct efx_channel *channel)
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 void efx_nic_event_test_start(struct efx_channel *channel)
 {
 	channel->event_test_cpu = -1;
 	smp_wmb();
+<<<<<<< HEAD
 	efx_magic_event(channel, EFX_CHANNEL_MAGIC_TEST(channel));
 }
 
@@ -1429,10 +1474,16 @@ void efx_nic_disable_interrupts(struct efx_nic *efx)
  * Interrupt must already have been enabled, otherwise nasty things
  * may happen.
  */
+=======
+	channel->efx->type->ev_test_generate(channel);
+}
+
+>>>>>>> refs/remotes/origin/master
 void efx_nic_irq_test_start(struct efx_nic *efx)
 {
 	efx->last_irq_cpu = -1;
 	smp_wmb();
+<<<<<<< HEAD
 	efx_nic_interrupts(efx, true, true);
 }
 
@@ -1613,6 +1664,9 @@ void efx_nic_push_rx_indir_table(struct efx_nic *efx)
 				     efx->rx_indir_table[i]);
 		efx_writed_table(efx, &dword, FR_BZ_RX_INDIRECTION_TBL, i);
 	}
+=======
+	efx->type->irq_test_generate(efx);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Hook interrupt handler(s)
@@ -1621,6 +1675,7 @@ void efx_nic_push_rx_indir_table(struct efx_nic *efx)
 int efx_nic_init_interrupt(struct efx_nic *efx)
 {
 	struct efx_channel *channel;
+<<<<<<< HEAD
 	int rc;
 
 	if (!EFX_INT_MODE_USE_MSI(efx)) {
@@ -1631,6 +1686,14 @@ int efx_nic_init_interrupt(struct efx_nic *efx)
 			handler = falcon_legacy_interrupt_a1;
 
 		rc = request_irq(efx->legacy_irq, handler, IRQF_SHARED,
+=======
+	unsigned int n_irqs;
+	int rc;
+
+	if (!EFX_INT_MODE_USE_MSI(efx)) {
+		rc = request_irq(efx->legacy_irq,
+				 efx->type->irq_handle_legacy, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 				 efx->name, efx);
 		if (rc) {
 			netif_err(efx, drv, efx->net_dev,
@@ -1641,24 +1704,71 @@ int efx_nic_init_interrupt(struct efx_nic *efx)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	/* Hook MSI or MSI-X interrupt */
 	efx_for_each_channel(channel, efx) {
 		rc = request_irq(channel->irq, efx_msi_interrupt,
 				 IRQF_PROBE_SHARED, /* Not shared */
 				 efx->channel_name[channel->channel],
 				 &efx->channel[channel->channel]);
+=======
+#ifdef CONFIG_RFS_ACCEL
+	if (efx->interrupt_mode == EFX_INT_MODE_MSIX) {
+		efx->net_dev->rx_cpu_rmap =
+			alloc_irq_cpu_rmap(efx->n_rx_channels);
+		if (!efx->net_dev->rx_cpu_rmap) {
+			rc = -ENOMEM;
+			goto fail1;
+		}
+	}
+#endif
+
+	/* Hook MSI or MSI-X interrupt */
+	n_irqs = 0;
+	efx_for_each_channel(channel, efx) {
+		rc = request_irq(channel->irq, efx->type->irq_handle_msi,
+				 IRQF_PROBE_SHARED, /* Not shared */
+				 efx->msi_context[channel->channel].name,
+				 &efx->msi_context[channel->channel]);
+>>>>>>> refs/remotes/origin/master
 		if (rc) {
 			netif_err(efx, drv, efx->net_dev,
 				  "failed to hook IRQ %d\n", channel->irq);
 			goto fail2;
 		}
+<<<<<<< HEAD
+=======
+		++n_irqs;
+
+#ifdef CONFIG_RFS_ACCEL
+		if (efx->interrupt_mode == EFX_INT_MODE_MSIX &&
+		    channel->channel < efx->n_rx_channels) {
+			rc = irq_cpu_rmap_add(efx->net_dev->rx_cpu_rmap,
+					      channel->irq);
+			if (rc)
+				goto fail2;
+		}
+#endif
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
  fail2:
+<<<<<<< HEAD
 	efx_for_each_channel(channel, efx)
 		free_irq(channel->irq, &efx->channel[channel->channel]);
+=======
+#ifdef CONFIG_RFS_ACCEL
+	free_irq_cpu_rmap(efx->net_dev->rx_cpu_rmap);
+	efx->net_dev->rx_cpu_rmap = NULL;
+#endif
+	efx_for_each_channel(channel, efx) {
+		if (n_irqs-- == 0)
+			break;
+		free_irq(channel->irq, &efx->msi_context[channel->channel]);
+	}
+>>>>>>> refs/remotes/origin/master
  fail1:
 	return rc;
 }
@@ -1666,6 +1776,7 @@ int efx_nic_init_interrupt(struct efx_nic *efx)
 void efx_nic_fini_interrupt(struct efx_nic *efx)
 {
 	struct efx_channel *channel;
+<<<<<<< HEAD
 	efx_oword_t reg;
 
 	/* Disable MSI/MSI-X interrupts */
@@ -1679,12 +1790,24 @@ void efx_nic_fini_interrupt(struct efx_nic *efx)
 		efx_reado(efx, &reg, FR_BZ_INT_ISR0);
 	else
 		falcon_irq_ack_a1(efx);
+=======
+
+#ifdef CONFIG_RFS_ACCEL
+	free_irq_cpu_rmap(efx->net_dev->rx_cpu_rmap);
+	efx->net_dev->rx_cpu_rmap = NULL;
+#endif
+
+	/* Disable MSI/MSI-X interrupts */
+	efx_for_each_channel(channel, efx)
+		free_irq(channel->irq, &efx->msi_context[channel->channel]);
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable legacy interrupt */
 	if (efx->legacy_irq)
 		free_irq(efx->legacy_irq, efx);
 }
 
+<<<<<<< HEAD
 /* Looks at available SRAM resources and works out how many queues we
  * can support, and where things like descriptor caches should live.
  *
@@ -1855,6 +1978,34 @@ struct efx_nic_reg {
 #define REGISTER_BB(name) REGISTER(name, B, B)
 #define REGISTER_BZ(name) REGISTER(name, B, Z)
 #define REGISTER_CZ(name) REGISTER(name, C, Z)
+=======
+/* Register dump */
+
+#define REGISTER_REVISION_FA	1
+#define REGISTER_REVISION_FB	2
+#define REGISTER_REVISION_FC	3
+#define REGISTER_REVISION_FZ	3	/* last Falcon arch revision */
+#define REGISTER_REVISION_ED	4
+#define REGISTER_REVISION_EZ	4	/* latest EF10 revision */
+
+struct efx_nic_reg {
+	u32 offset:24;
+	u32 min_revision:3, max_revision:3;
+};
+
+#define REGISTER(name, arch, min_rev, max_rev) {			\
+	arch ## R_ ## min_rev ## max_rev ## _ ## name,			\
+	REGISTER_REVISION_ ## arch ## min_rev,				\
+	REGISTER_REVISION_ ## arch ## max_rev				\
+}
+#define REGISTER_AA(name) REGISTER(name, F, A, A)
+#define REGISTER_AB(name) REGISTER(name, F, A, B)
+#define REGISTER_AZ(name) REGISTER(name, F, A, Z)
+#define REGISTER_BB(name) REGISTER(name, F, B, B)
+#define REGISTER_BZ(name) REGISTER(name, F, B, Z)
+#define REGISTER_CZ(name) REGISTER(name, F, C, Z)
+#define REGISTER_DZ(name) REGISTER(name, E, D, Z)
+>>>>>>> refs/remotes/origin/master
 
 static const struct efx_nic_reg efx_nic_regs[] = {
 	REGISTER_AZ(ADR_REGION),
@@ -1961,10 +2112,17 @@ static const struct efx_nic_reg efx_nic_regs[] = {
 	REGISTER_AB(XX_TXDRV_CTL),
 	/* XX_PRBS_CTL, XX_PRBS_CHK and XX_PRBS_ERR are not used */
 	/* XX_CORE_STAT is partly RC */
+<<<<<<< HEAD
+=======
+	REGISTER_DZ(BIU_HW_REV_ID),
+	REGISTER_DZ(MC_DB_LWRD),
+	REGISTER_DZ(MC_DB_HWRD),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct efx_nic_reg_table {
 	u32 offset:24;
+<<<<<<< HEAD
 	u32 min_revision:2, max_revision:2;
 	u32 step:6, rows:21;
 };
@@ -1992,6 +2150,37 @@ struct efx_nic_reg_table {
 				  FR_BZ_ ## name ## _STEP,		\
 				  FR_CZ_ ## name ## _ROWS)
 #define REGISTER_TABLE_CZ(name) REGISTER_TABLE(name, C, Z)
+=======
+	u32 min_revision:3, max_revision:3;
+	u32 step:6, rows:21;
+};
+
+#define REGISTER_TABLE_DIMENSIONS(_, offset, arch, min_rev, max_rev, step, rows) { \
+	offset,								\
+	REGISTER_REVISION_ ## arch ## min_rev,				\
+	REGISTER_REVISION_ ## arch ## max_rev,				\
+	step, rows							\
+}
+#define REGISTER_TABLE(name, arch, min_rev, max_rev)			\
+	REGISTER_TABLE_DIMENSIONS(					\
+		name, arch ## R_ ## min_rev ## max_rev ## _ ## name,	\
+		arch, min_rev, max_rev,					\
+		arch ## R_ ## min_rev ## max_rev ## _ ## name ## _STEP,	\
+		arch ## R_ ## min_rev ## max_rev ## _ ## name ## _ROWS)
+#define REGISTER_TABLE_AA(name) REGISTER_TABLE(name, F, A, A)
+#define REGISTER_TABLE_AZ(name) REGISTER_TABLE(name, F, A, Z)
+#define REGISTER_TABLE_BB(name) REGISTER_TABLE(name, F, B, B)
+#define REGISTER_TABLE_BZ(name) REGISTER_TABLE(name, F, B, Z)
+#define REGISTER_TABLE_BB_CZ(name)					\
+	REGISTER_TABLE_DIMENSIONS(name, FR_BZ_ ## name, F, B, B,	\
+				  FR_BZ_ ## name ## _STEP,		\
+				  FR_BB_ ## name ## _ROWS),		\
+	REGISTER_TABLE_DIMENSIONS(name, FR_BZ_ ## name, F, C, Z,	\
+				  FR_BZ_ ## name ## _STEP,		\
+				  FR_CZ_ ## name ## _ROWS)
+#define REGISTER_TABLE_CZ(name) REGISTER_TABLE(name, F, C, Z)
+#define REGISTER_TABLE_DZ(name) REGISTER_TABLE(name, E, D, Z)
+>>>>>>> refs/remotes/origin/master
 
 static const struct efx_nic_reg_table efx_nic_reg_tables[] = {
 	/* DRIVER is not used */
@@ -2009,9 +2198,15 @@ static const struct efx_nic_reg_table efx_nic_reg_tables[] = {
 	 * 1K entries allows for some expansion of queue count and
 	 * size before we need to change the version. */
 	REGISTER_TABLE_DIMENSIONS(BUF_FULL_TBL_KER, FR_AA_BUF_FULL_TBL_KER,
+<<<<<<< HEAD
 				  A, A, 8, 1024),
 	REGISTER_TABLE_DIMENSIONS(BUF_FULL_TBL, FR_BZ_BUF_FULL_TBL,
 				  B, Z, 8, 1024),
+=======
+				  F, A, A, 8, 1024),
+	REGISTER_TABLE_DIMENSIONS(BUF_FULL_TBL, FR_BZ_BUF_FULL_TBL,
+				  F, B, Z, 8, 1024),
+>>>>>>> refs/remotes/origin/master
 	REGISTER_TABLE_CZ(RX_MAC_FILTER_TBL0),
 	REGISTER_TABLE_BB_CZ(TIMER_TBL),
 	REGISTER_TABLE_BB_CZ(TX_PACE_TBL),
@@ -2022,6 +2217,10 @@ static const struct efx_nic_reg_table efx_nic_reg_tables[] = {
 	/* MSIX_PBA_TABLE is not mapped */
 	/* SRM_DBG is not mapped (and is redundant with BUF_FLL_TBL) */
 	REGISTER_TABLE_BZ(RX_FILTER_TBL0),
+<<<<<<< HEAD
+=======
+	REGISTER_TABLE_DZ(BIU_MC_SFT_STATUS),
+>>>>>>> refs/remotes/origin/master
 };
 
 size_t efx_nic_get_regs_len(struct efx_nic *efx)
@@ -2075,15 +2274,24 @@ void efx_nic_get_regs(struct efx_nic *efx, void *buf)
 
 		for (i = 0; i < table->rows; i++) {
 			switch (table->step) {
+<<<<<<< HEAD
 			case 4: /* 32-bit register or SRAM */
 				efx_readd_table(efx, buf, table->offset, i);
+=======
+			case 4: /* 32-bit SRAM */
+				efx_readd(efx, buf, table->offset + 4 * i);
+>>>>>>> refs/remotes/origin/master
 				break;
 			case 8: /* 64-bit SRAM */
 				efx_sram_readq(efx,
 					       efx->membase + table->offset,
 					       buf, i);
 				break;
+<<<<<<< HEAD
 			case 16: /* 128-bit register */
+=======
+			case 16: /* 128-bit-readable register */
+>>>>>>> refs/remotes/origin/master
 				efx_reado_table(efx, buf, table->offset, i);
 				break;
 			case 32: /* 128-bit register, interleaved */
@@ -2097,3 +2305,86 @@ void efx_nic_get_regs(struct efx_nic *efx, void *buf)
 		}
 	}
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * efx_nic_describe_stats - Describe supported statistics for ethtool
+ * @desc: Array of &struct efx_hw_stat_desc describing the statistics
+ * @count: Length of the @desc array
+ * @mask: Bitmask of which elements of @desc are enabled
+ * @names: Buffer to copy names to, or %NULL.  The names are copied
+ *	starting at intervals of %ETH_GSTRING_LEN bytes.
+ *
+ * Returns the number of visible statistics, i.e. the number of set
+ * bits in the first @count bits of @mask for which a name is defined.
+ */
+size_t efx_nic_describe_stats(const struct efx_hw_stat_desc *desc, size_t count,
+			      const unsigned long *mask, u8 *names)
+{
+	size_t visible = 0;
+	size_t index;
+
+	for_each_set_bit(index, mask, count) {
+		if (desc[index].name) {
+			if (names) {
+				strlcpy(names, desc[index].name,
+					ETH_GSTRING_LEN);
+				names += ETH_GSTRING_LEN;
+			}
+			++visible;
+		}
+	}
+
+	return visible;
+}
+
+/**
+ * efx_nic_update_stats - Convert statistics DMA buffer to array of u64
+ * @desc: Array of &struct efx_hw_stat_desc describing the DMA buffer
+ *	layout.  DMA widths of 0, 16, 32 and 64 are supported; where
+ *	the width is specified as 0 the corresponding element of
+ *	@stats is not updated.
+ * @count: Length of the @desc array
+ * @mask: Bitmask of which elements of @desc are enabled
+ * @stats: Buffer to update with the converted statistics.  The length
+ *	of this array must be at least @count.
+ * @dma_buf: DMA buffer containing hardware statistics
+ * @accumulate: If set, the converted values will be added rather than
+ *	directly stored to the corresponding elements of @stats
+ */
+void efx_nic_update_stats(const struct efx_hw_stat_desc *desc, size_t count,
+			  const unsigned long *mask,
+			  u64 *stats, const void *dma_buf, bool accumulate)
+{
+	size_t index;
+
+	for_each_set_bit(index, mask, count) {
+		if (desc[index].dma_width) {
+			const void *addr = dma_buf + desc[index].offset;
+			u64 val;
+
+			switch (desc[index].dma_width) {
+			case 16:
+				val = le16_to_cpup((__le16 *)addr);
+				break;
+			case 32:
+				val = le32_to_cpup((__le32 *)addr);
+				break;
+			case 64:
+				val = le64_to_cpup((__le64 *)addr);
+				break;
+			default:
+				WARN_ON(1);
+				val = 0;
+				break;
+			}
+
+			if (accumulate)
+				stats[index] += val;
+			else
+				stats[index] = val;
+		}
+	}
+}
+>>>>>>> refs/remotes/origin/master

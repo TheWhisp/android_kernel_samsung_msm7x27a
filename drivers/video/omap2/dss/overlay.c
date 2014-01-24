@@ -26,18 +26,25 @@
 #include <linux/module.h>
 #include <linux/err.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 #include <linux/kobject.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
 
 #include <video/omapdss.h>
+<<<<<<< HEAD
 #include <plat/cpu.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "dss.h"
 #include "dss_features.h"
 
 static int num_overlays;
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct list_head overlay_list;
 =======
@@ -732,6 +739,10 @@ static int omap_dss_unset_manager(struct omap_overlay *ovl)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct omap_overlay *overlays;
+
+>>>>>>> refs/remotes/origin/master
 int omap_dss_get_num_overlays(void)
 {
 	return num_overlays;
@@ -740,6 +751,7 @@ EXPORT_SYMBOL(omap_dss_get_num_overlays);
 
 struct omap_overlay *omap_dss_get_overlay(int num)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i = 0;
 	struct omap_overlay *ovl;
@@ -777,6 +789,8 @@ void dss_overlay_setup_l4_manager(struct omap_overlay_manager *mgr)
 #endif
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (num >= num_overlays)
 		return NULL;
 
@@ -784,11 +798,15 @@ void dss_overlay_setup_l4_manager(struct omap_overlay_manager *mgr)
 }
 EXPORT_SYMBOL(omap_dss_get_overlay);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void dss_init_overlays(struct platform_device *pdev)
 {
 	int i, r;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	INIT_LIST_HEAD(&overlay_list);
 
@@ -800,6 +818,8 @@ void dss_init_overlays(struct platform_device *pdev)
 
 		BUG_ON(ovl == NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	num_overlays = dss_feat_get_num_ovls();
 
 	overlays = kzalloc(sizeof(struct omap_overlay) * num_overlays,
@@ -809,31 +829,41 @@ void dss_init_overlays(struct platform_device *pdev)
 
 	for (i = 0; i < num_overlays; ++i) {
 		struct omap_overlay *ovl = &overlays[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		switch (i) {
 		case 0:
 			ovl->name = "gfx";
 			ovl->id = OMAP_DSS_GFX;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ovl->caps = OMAP_DSS_OVL_CAP_DISPC;
 			ovl->info.global_alpha = 255;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 1:
 			ovl->name = "vid1";
 			ovl->id = OMAP_DSS_VIDEO1;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ovl->caps = OMAP_DSS_OVL_CAP_SCALE |
 				OMAP_DSS_OVL_CAP_DISPC;
 			ovl->info.global_alpha = 255;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 2:
 			ovl->name = "vid2";
 			ovl->id = OMAP_DSS_VIDEO2;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ovl->caps = OMAP_DSS_OVL_CAP_SCALE |
 				OMAP_DSS_OVL_CAP_DISPC;
@@ -890,6 +920,8 @@ void dss_init_overlays(struct platform_device *pdev)
 	}
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 3:
 			ovl->name = "vid3";
@@ -897,6 +929,7 @@ void dss_init_overlays(struct platform_device *pdev)
 			break;
 		}
 
+<<<<<<< HEAD
 		ovl->is_enabled = &dss_ovl_is_enabled;
 		ovl->enable = &dss_ovl_enable;
 		ovl->disable = &dss_ovl_disable;
@@ -906,10 +939,13 @@ void dss_init_overlays(struct platform_device *pdev)
 		ovl->get_overlay_info = &dss_ovl_get_info;
 		ovl->wait_for_go = &dss_mgr_wait_for_go_ovl;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		ovl->caps = dss_feat_get_overlay_caps(ovl->id);
 		ovl->supported_modes =
 			dss_feat_get_supported_color_modes(ovl->id);
 
+<<<<<<< HEAD
 		r = kobject_init_and_add(&ovl->kobj, &overlay_ktype,
 				&pdev->dev.kobj, "overlay%d", i);
 
@@ -986,10 +1022,17 @@ void dss_recheck_connections(struct omap_dss_device *dssdev, bool force)
 		dispc_runtime_put();
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+		r = dss_overlay_kobj_init(ovl, pdev);
+		if (r)
+			DSSERR("failed to create sysfs file\n");
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void dss_uninit_overlays(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct omap_overlay *ovl;
 
@@ -1006,13 +1049,19 @@ void dss_uninit_overlays(struct platform_device *pdev)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	for (i = 0; i < num_overlays; ++i) {
 		struct omap_overlay *ovl = &overlays[i];
+<<<<<<< HEAD
 
 		kobject_del(&ovl->kobj);
 		kobject_put(&ovl->kobj);
+=======
+		dss_overlay_kobj_uninit(ovl);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	kfree(overlays);
@@ -1053,19 +1102,38 @@ int dss_ovl_simple_check(struct omap_overlay *ovl,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	return 0;
 }
 
 int dss_ovl_check(struct omap_overlay *ovl,
 		struct omap_overlay_info *info, struct omap_dss_device *dssdev)
+=======
+	if (dss_feat_rotation_type_supported(info->rotation_type) == 0) {
+		DSSERR("check_overlay: rotation type %d not supported\n",
+				info->rotation_type);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+int dss_ovl_check(struct omap_overlay *ovl, struct omap_overlay_info *info,
+		const struct omap_video_timings *mgr_timings)
+>>>>>>> refs/remotes/origin/master
 {
 	u16 outw, outh;
 	u16 dw, dh;
 
+<<<<<<< HEAD
 	if (dssdev == NULL)
 		return 0;
 
 	dssdev->driver->get_resolution(dssdev, &dw, &dh);
+=======
+	dw = mgr_timings->x_res;
+	dh = mgr_timings->y_res;
+>>>>>>> refs/remotes/origin/master
 
 	if ((ovl->caps & OMAP_DSS_OVL_CAP_SCALE) == 0) {
 		outw = info->width;
@@ -1098,4 +1166,20 @@ int dss_ovl_check(struct omap_overlay *ovl,
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+/*
+ * Checks if replication logic should be used. Only use when overlay is in
+ * RGB12U or RGB16 mode, and video port width interface is 18bpp or 24bpp
+ */
+bool dss_ovl_use_replication(struct dss_lcd_mgr_config config,
+		enum omap_color_mode mode)
+{
+	if (mode != OMAP_DSS_COLOR_RGB12U && mode != OMAP_DSS_COLOR_RGB16)
+		return false;
+
+	return config.video_port_width > 16;
+}
+>>>>>>> refs/remotes/origin/master

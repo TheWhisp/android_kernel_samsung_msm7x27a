@@ -246,12 +246,16 @@ RTY_SEND_CMD:
 				if (buf[1] & 0x80)
 					TRACE_RET(chip, STATUS_FAIL);
 			}
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 			/* exclude bit25 CARD_IS_LOCKED */
 			if (buf[1] & 0x7D) {
 #else
 			if (buf[1] & 0x7F) {
 #endif
+=======
+			if (buf[1] & 0x7F) {
+>>>>>>> refs/remotes/origin/master
 				RTS51X_DEBUGP("buf[1]: 0x%02x\n", buf[1]);
 				TRACE_RET(chip, STATUS_FAIL);
 			}
@@ -685,7 +689,11 @@ static int sd_set_init_para(struct rts51x_chip *chip)
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int sd_select_card(struct rts51x_chip *chip, int select)
+=======
+int rts51x_sd_select_card(struct rts51x_chip *chip, int select)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sd_info *sd_card = &(chip->sd_card);
 	int retval;
@@ -709,6 +717,7 @@ int sd_select_card(struct rts51x_chip *chip, int select)
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 int sd_update_lock_status(struct rts51x_chip *chip)
 {
@@ -740,6 +749,9 @@ int sd_update_lock_status(struct rts51x_chip *chip)
 #endif
 
 int sd_wait_currentstate_dataready(struct rts51x_chip *chip, u8 statechk,
+=======
+static int sd_wait_currentstate_dataready(struct rts51x_chip *chip, u8 statechk,
+>>>>>>> refs/remotes/origin/master
 				   u8 rdychk, u16 pollingcnt)
 {
 	struct sd_info *sd_card = &(chip->sd_card);
@@ -1197,6 +1209,7 @@ static int sd_switch_function(struct rts51x_chip *chip, u8 bus_width)
 	RTS51X_DEBUGP("SD_FUNC_GROUP_1: func_to_switch = 0x%02x",
 		       func_to_switch);
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	if ((sd_card->sd_lock_status & SD_SDR_RST)
 	    && (DDR50_SUPPORT == func_to_switch)
@@ -1206,6 +1219,8 @@ static int sd_switch_function(struct rts51x_chip *chip, u8 bus_width)
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (func_to_switch) {
 		retval =
 		    sd_check_switch(chip, SD_FUNC_GROUP_1, func_to_switch,
@@ -1562,7 +1577,11 @@ static u8 sd_search_final_phase(struct rts51x_chip *chip, u32 phase_map,
 	}
 
 Search_Finish:
+<<<<<<< HEAD
 	RTS51X_DEBUGP("Final choosen phase: %d\n", final_phase);
+=======
+	RTS51X_DEBUGP("Final chosen phase: %d\n", final_phase);
+>>>>>>> refs/remotes/origin/master
 	return final_phase;
 }
 
@@ -1791,7 +1810,11 @@ static int mmc_ddr_tuning(struct rts51x_chip *chip)
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int sd_switch_clock(struct rts51x_chip *chip)
+=======
+int rts51x_sd_switch_clock(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sd_info *sd_card = &(chip->sd_card);
 	int retval;
@@ -1957,7 +1980,11 @@ static int sd_init_power(struct rts51x_chip *chip)
 #endif
 
 		/* Power on card */
+<<<<<<< HEAD
 		retval = card_power_on(chip, SD_CARD);
+=======
+		retval = rts51x_card_power_on(chip, SD_CARD);
+>>>>>>> refs/remotes/origin/master
 		if (retval != STATUS_SUCCESS)
 			TRACE_RET(chip, retval);
 
@@ -2024,10 +2051,13 @@ Switch_Fail:
 	k = 0;
 	hi_cap_flow = 0;
 	support_1v8 = 0;
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	if (sd_card->sd_lock_status & SD_UNLOCK_POW_ON)
 		goto SD_UNLOCK_ENTRY;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	retval = sd_prepare_reset(chip);
 	if (retval != STATUS_SUCCESS)
@@ -2182,11 +2212,16 @@ RTY_CMD55:
 	sd_card->sd_addr += (u32) rsp[2] << 16;
 
 	/* Get CSD register for Calculating Timing,Capacity,
+<<<<<<< HEAD
 	 * Check CSD to determaine as if this is the SD ROM card */
+=======
+	 * Check CSD to determine as if this is the SD ROM card */
+>>>>>>> refs/remotes/origin/master
 	retval = sd_check_csd(chip, 1);
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, retval);
 	/* Select SD card */
+<<<<<<< HEAD
 	retval = sd_select_card(chip, 1);
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, retval);
@@ -2204,6 +2239,11 @@ SD_UNLOCK_ENTRY:
 		sd_card->sd_lock_status &= ~SD_PWD_EXIST;
 	}
 #endif
+=======
+	retval = rts51x_sd_select_card(chip, 1);
+	if (retval != STATUS_SUCCESS)
+		TRACE_RET(chip, retval);
+>>>>>>> refs/remotes/origin/master
 
 	/* ACMD42 */
 	retval =
@@ -2294,10 +2334,13 @@ SD_UNLOCK_ENTRY:
 		if (retval != STATUS_SUCCESS)
 			TRACE_RET(chip, retval);
 	}
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	/* clear 1 bit mode status */
 	sd_card->sd_lock_status &= ~SD_LOCK_1BIT_MODE;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (CHK_SD30_SPEED(sd_card)) {
 		rts51x_write_register(chip, SD30_DRIVE_SEL, SD30_DRIVE_MASK,
@@ -2380,6 +2423,7 @@ SD_UNLOCK_ENTRY:
 
 	chip->card_bus_width[chip->card2lun[SD_CARD]] = 4;
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	if (sd_card->sd_lock_status & SD_UNLOCK_POW_ON) {
 		rts51x_init_cmd(chip);
@@ -2393,6 +2437,8 @@ SD_UNLOCK_ENTRY:
 	}
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return STATUS_SUCCESS;
 }
 
@@ -2587,17 +2633,23 @@ static int mmc_switch_timing_bus(struct rts51x_chip *chip)
 		sd_card->capacity =
 		    ((u32) buf[5] << 24) | ((u32) buf[4] << 16) |
 		    ((u32) buf[3] << 8) | ((u32) buf[2]);
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	if (!(sd_card->sd_lock_status & SD_SDR_RST) && CHECK_UHS50(chip))
 		card_type_mask = 0x07;
 	else
 		card_type_mask = 0x03;
 #else
+=======
+>>>>>>> refs/remotes/origin/master
 	if (CHECK_UHS50(chip))
 		card_type_mask = 0x07;
 	else
 		card_type_mask = 0x03;
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	card_type = buf[1] & card_type_mask;
 	if (card_type) {
@@ -2626,6 +2678,7 @@ static int mmc_switch_timing_bus(struct rts51x_chip *chip)
 	if (mmc_test_switch_bus(chip, MMC_8BIT_BUS) == STATUS_SUCCESS) {
 		SET_MMC_8BIT(sd_card);
 		chip->card_bus_width[chip->card2lun[SD_CARD]] = 8;
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 		sd_card->sd_lock_status &= ~SD_LOCK_1BIT_MODE;
 #endif
@@ -2635,6 +2688,11 @@ static int mmc_switch_timing_bus(struct rts51x_chip *chip)
 #ifdef SUPPORT_SD_LOCK
 		sd_card->sd_lock_status &= ~SD_LOCK_1BIT_MODE;
 #endif
+=======
+	} else if (mmc_test_switch_bus(chip, MMC_4BIT_BUS) == STATUS_SUCCESS) {
+		SET_MMC_4BIT(sd_card);
+		chip->card_bus_width[chip->card2lun[SD_CARD]] = 4;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		CLR_MMC_8BIT(sd_card);
 		CLR_MMC_4BIT(sd_card);
@@ -2652,11 +2710,14 @@ static int reset_mmc(struct rts51x_chip *chip)
 	u8 change_to_ddr52 = 1;
 	u8 cmd[5];
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	if (sd_card->sd_lock_status & SD_UNLOCK_POW_ON)
 		goto MMC_UNLOCK_ENTRY;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 MMC_DDR_FAIL:
 
 	retval = sd_prepare_reset(chip);
@@ -2745,7 +2806,11 @@ RTY_MMC_RST:
 		TRACE_RET(chip, retval);
 
 	/* Get CSD register for Calculating Timing,Capacity
+<<<<<<< HEAD
 	 * Check CSD to determaine as if this is the SD ROM card */
+=======
+	 * Check CSD to determine as if this is the SD ROM card */
+>>>>>>> refs/remotes/origin/master
 	retval = sd_check_csd(chip, 1);
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, retval);
@@ -2753,7 +2818,11 @@ RTY_MMC_RST:
 	spec_ver = (sd_card->raw_csd[0] & 0x3C) >> 2;
 
 	/* Select MMC card */
+<<<<<<< HEAD
 	retval = sd_select_card(chip, 1);
+=======
+	retval = rts51x_sd_select_card(chip, 1);
+>>>>>>> refs/remotes/origin/master
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, retval);
 
@@ -2763,6 +2832,7 @@ RTY_MMC_RST:
 				0);
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, retval);
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 MMC_UNLOCK_ENTRY:
 	/* Get SD lock status */
@@ -2770,6 +2840,8 @@ MMC_UNLOCK_ENTRY:
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, STATUS_FAIL);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	RTS51X_WRITE_REG(chip, SD_CFG1, SD_CLK_DIVIDE_MASK, SD_CLK_DIVIDE_0);
 
@@ -2842,6 +2914,7 @@ MMC_UNLOCK_ENTRY:
 			}
 		}
 	}
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	if (sd_card->sd_lock_status & SD_UNLOCK_POW_ON) {
 		rts51x_init_cmd(chip);
@@ -2854,6 +2927,8 @@ MMC_UNLOCK_ENTRY:
 			TRACE_RET(chip, retval);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	retval = rts51x_get_card_status(chip, &(chip->card_status));
 	if (retval != STATUS_SUCCESS)
@@ -2864,7 +2939,11 @@ MMC_UNLOCK_ENTRY:
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int reset_sd_card(struct rts51x_chip *chip)
+=======
+int rts51x_reset_sd_card(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sd_info *sd_card = &(chip->sd_card);
 	int retval;
@@ -2879,6 +2958,7 @@ int reset_sd_card(struct rts51x_chip *chip)
 	sd_card->capacity = 0;
 	sd_card->sd_switch_fail = 0;
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	sd_card->sd_lock_status = 0;
 	sd_card->sd_erase_status = 0;
@@ -2886,6 +2966,10 @@ int reset_sd_card(struct rts51x_chip *chip)
 
 	sd_clear_reset_fail(chip);
 	enable_card_clock(chip, SD_CARD);
+=======
+	sd_clear_reset_fail(chip);
+	rts51x_enable_card_clock(chip, SD_CARD);
+>>>>>>> refs/remotes/origin/master
 
 	sd_init_power(chip);
 
@@ -3006,13 +3090,21 @@ static int wait_data_buf_ready(struct rts51x_chip *chip)
 	TRACE_RET(chip, STATUS_FAIL);
 }
 
+<<<<<<< HEAD
 void sd_stop_seq_mode(struct rts51x_chip *chip)
+=======
+static void sd_stop_seq_mode(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sd_info *sd_card = &(chip->sd_card);
 	int retval;
 
 	if (sd_card->seq_mode) {
+<<<<<<< HEAD
 		retval = sd_switch_clock(chip);
+=======
+		retval = rts51x_sd_switch_clock(chip);
+>>>>>>> refs/remotes/origin/master
 		if (retval != STATUS_SUCCESS)
 			return;
 
@@ -3044,14 +3136,22 @@ static inline int sd_auto_tune_clock(struct rts51x_chip *chip)
 			sd_card->sd_clock = CLK_50;
 	}
 
+<<<<<<< HEAD
 	retval = sd_switch_clock(chip);
+=======
+	retval = rts51x_sd_switch_clock(chip);
+>>>>>>> refs/remotes/origin/master
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, retval);
 
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
+=======
+int rts51x_sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
+>>>>>>> refs/remotes/origin/master
 	  u16 sector_cnt)
 {
 	struct sd_info *sd_card = &(chip->sd_card);
@@ -3068,11 +3168,19 @@ int sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 	else
 		data_addr = start_sector;
 
+<<<<<<< HEAD
 	RTS51X_DEBUGP("sd_rw, data_addr = 0x%x\n", data_addr);
 
 	sd_clr_err_code(chip);
 
 	retval = sd_switch_clock(chip);
+=======
+	RTS51X_DEBUGP("rts51x_sd_rw, data_addr = 0x%x\n", data_addr);
+
+	sd_clr_err_code(chip);
+
+	retval = rts51x_sd_switch_clock(chip);
+>>>>>>> refs/remotes/origin/master
 	if (retval != STATUS_SUCCESS)
 		TRACE_RET(chip, retval);
 
@@ -3141,7 +3249,11 @@ int sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 			       SD_NO_WAIT_BUSY_END | SD_NO_CHECK_CRC7 |
 			       SD_RSP_LEN_0);
 
+<<<<<<< HEAD
 		trans_dma_enable(srb->sc_data_direction, chip, sector_cnt * 512,
+=======
+		rts51x_trans_dma_enable(srb->sc_data_direction, chip, sector_cnt * 512,
+>>>>>>> refs/remotes/origin/master
 				 DMA_512);
 
 		if (srb->sc_data_direction == DMA_FROM_DEVICE) {
@@ -3179,7 +3291,11 @@ int sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 				       SD_NO_WAIT_BUSY_END | SD_CHECK_CRC7 |
 				       SD_RSP_LEN_6);
 
+<<<<<<< HEAD
 			trans_dma_enable(srb->sc_data_direction, chip,
+=======
+			rts51x_trans_dma_enable(srb->sc_data_direction, chip,
+>>>>>>> refs/remotes/origin/master
 					 sector_cnt * 512, DMA_512);
 
 			rts51x_add_cmd(chip, WRITE_REG_CMD, SD_TRANSFER, 0xFF,
@@ -3220,7 +3336,11 @@ int sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 				       SD_NO_WAIT_BUSY_END | SD_NO_CHECK_CRC7 |
 				       SD_RSP_LEN_0);
 
+<<<<<<< HEAD
 			trans_dma_enable(srb->sc_data_direction, chip,
+=======
+			rts51x_trans_dma_enable(srb->sc_data_direction, chip,
+>>>>>>> refs/remotes/origin/master
 					 sector_cnt * 512, DMA_512);
 
 			rts51x_add_cmd(chip, WRITE_REG_CMD, SD_TRANSFER, 0xFF,
@@ -3289,7 +3409,11 @@ int sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 void sd_cleanup_work(struct rts51x_chip *chip)
+=======
+void rts51x_sd_cleanup_work(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sd_info *sd_card = &(chip->sd_card);
 
@@ -3300,7 +3424,11 @@ void sd_cleanup_work(struct rts51x_chip *chip)
 	}
 }
 
+<<<<<<< HEAD
 inline void sd_fill_power_off_card3v3(struct rts51x_chip *chip)
+=======
+static inline void sd_fill_power_off_card3v3(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	rts51x_add_cmd(chip, WRITE_REG_CMD, CARD_CLK_EN, SD_CLK_EN, 0);
 
@@ -3322,7 +3450,11 @@ inline void sd_fill_power_off_card3v3(struct rts51x_chip *chip)
 	}
 }
 
+<<<<<<< HEAD
 int sd_power_off_card3v3(struct rts51x_chip *chip)
+=======
+static int sd_power_off_card3v3(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 
@@ -3341,22 +3473,33 @@ int sd_power_off_card3v3(struct rts51x_chip *chip)
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int release_sd_card(struct rts51x_chip *chip)
+=======
+int rts51x_release_sd_card(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sd_info *sd_card = &(chip->sd_card);
 	int retval;
 
+<<<<<<< HEAD
 	RTS51X_DEBUGP("elease_sd_card\n");
+=======
+	RTS51X_DEBUGP("rts51x_release_sd_card\n");
+>>>>>>> refs/remotes/origin/master
 
 	chip->card_ready &= ~SD_CARD;
 	chip->card_fail &= ~SD_CARD;
 	chip->card_wp &= ~SD_CARD;
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 	sd_card->sd_lock_status = 0;
 	sd_card->sd_erase_status = 0;
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(sd_card->raw_csd, 0, 16);
 	memset(sd_card->raw_scr, 0, 8);
 

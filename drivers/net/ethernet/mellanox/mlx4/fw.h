@@ -78,7 +78,14 @@ struct mlx4_dev_cap {
 	u16 wavelength[MLX4_MAX_PORTS + 1];
 	u64 trans_code[MLX4_MAX_PORTS + 1];
 	u16 stat_rate_support;
+<<<<<<< HEAD
 	u64 flags;
+=======
+	int fs_log_max_ucast_qp_range_size;
+	int fs_max_num_qp_per_entry;
+	u64 flags;
+	u64 flags2;
+>>>>>>> refs/remotes/origin/master
 	int reserved_uars;
 	int uar_size;
 	int min_page_sz;
@@ -110,6 +117,10 @@ struct mlx4_dev_cap {
 	u32 reserved_lkey;
 	u64 max_icm_sz;
 	int max_gso_sz;
+<<<<<<< HEAD
+=======
+	int max_rss_tbl_sz;
+>>>>>>> refs/remotes/origin/master
 	u8  supported_port_types[MLX4_MAX_PORTS + 1];
 	u8  suggested_type[MLX4_MAX_PORTS + 1];
 	u8  default_sense[MLX4_MAX_PORTS + 1];
@@ -130,8 +141,17 @@ struct mlx4_func_cap {
 	int	max_eq;
 	int	reserved_eq;
 	int	mcg_quota;
+<<<<<<< HEAD
 	u8	physical_port[MLX4_MAX_PORTS + 1];
 	u8	port_flags[MLX4_MAX_PORTS + 1];
+=======
+	u32	qp0_tunnel_qpn;
+	u32	qp0_proxy_qpn;
+	u32	qp1_tunnel_qpn;
+	u32	qp1_proxy_qpn;
+	u8	physical_port;
+	u8	port_flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_adapter {
@@ -154,6 +174,10 @@ struct mlx4_init_hca_param {
 	u64 global_caps;
 	u16 log_mc_entry_sz;
 	u16 log_mc_hash_sz;
+<<<<<<< HEAD
+=======
+	u16 hca_core_clock; /* Internal Clock Frequency (in MHz) */
+>>>>>>> refs/remotes/origin/master
 	u8  log_num_qps;
 	u8  log_num_srqs;
 	u8  log_num_cqs;
@@ -162,7 +186,14 @@ struct mlx4_init_hca_param {
 	u8  log_mc_table_sz;
 	u8  log_mpt_sz;
 	u8  log_uar_sz;
+<<<<<<< HEAD
 	u8  uar_page_sz; /* log pg sz in 4k chunks */
+=======
+	u8  mw_enabled;  /* Enable memory windows */
+	u8  uar_page_sz; /* log pg sz in 4k chunks */
+	u8  steering_mode; /* for QUERY_HCA */
+	u64 dev_cap_enabled;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct mlx4_init_ib_param {
@@ -187,7 +218,12 @@ struct mlx4_set_ib_param {
 };
 
 int mlx4_QUERY_DEV_CAP(struct mlx4_dev *dev, struct mlx4_dev_cap *dev_cap);
+<<<<<<< HEAD
 int mlx4_QUERY_FUNC_CAP(struct mlx4_dev *dev, struct mlx4_func_cap *func_cap);
+=======
+int mlx4_QUERY_FUNC_CAP(struct mlx4_dev *dev, u32 gen_or_port,
+			struct mlx4_func_cap *func_cap);
+>>>>>>> refs/remotes/origin/master
 int mlx4_QUERY_FUNC_CAP_wrapper(struct mlx4_dev *dev, int slave,
 				struct mlx4_vhcr *vhcr,
 				struct mlx4_cmd_mailbox *inbox,
@@ -207,5 +243,9 @@ int mlx4_MAP_ICM_AUX(struct mlx4_dev *dev, struct mlx4_icm *icm);
 int mlx4_UNMAP_ICM_AUX(struct mlx4_dev *dev);
 int mlx4_NOP(struct mlx4_dev *dev);
 int mlx4_MOD_STAT_CFG(struct mlx4_dev *dev, struct mlx4_mod_stat_cfg *cfg);
+<<<<<<< HEAD
+=======
+void mlx4_opreq_action(struct work_struct *work);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* MLX4_FW_H */

@@ -21,12 +21,18 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __always_inline bool arch_static_branch(struct jump_label_key *key)
 =======
 static __always_inline bool arch_static_branch(struct static_key *key)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	asm goto("1:\tnop\n\t"
+=======
+static __always_inline bool arch_static_branch(struct static_key *key)
+{
+	asm_volatile_goto("1:\tnop\n\t"
+>>>>>>> refs/remotes/origin/master
 		"nop\n\t"
 		".pushsection __jump_table,  \"aw\"\n\t"
 		WORD_INSN " 1b, %l[l_yes], %0\n\t"

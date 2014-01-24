@@ -66,6 +66,7 @@ static int hx4700_hw_params(struct snd_pcm_substream *substream,
 	int ret = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* set codec DAI configuration */
 	ret = snd_soc_dai_set_fmt(codec_dai,
 			SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
@@ -82,6 +83,8 @@ static int hx4700_hw_params(struct snd_pcm_substream *substream,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set the I2S system clock as output */
 	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA2XX_I2S_SYSCLK, 0,
 			SND_SOC_CLOCK_OUT);
@@ -179,10 +182,15 @@ static struct snd_soc_dai_link hx4700_dai = {
 	.codec_name = "ak4641.0-0012",
 	.init = hx4700_ak4641_init,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.dai_fmt = SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
 		   SND_SOC_DAIFMT_CBS_CFS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.dai_fmt = SND_SOC_DAIFMT_MSB | SND_SOC_DAIFMT_NB_NF |
+		   SND_SOC_DAIFMT_CBS_CFS,
+>>>>>>> refs/remotes/origin/master
 	.ops = &hx4700_ops,
 };
 
@@ -190,9 +198,13 @@ static struct snd_soc_dai_link hx4700_dai = {
 static struct snd_soc_card snd_soc_card_hx4700 = {
 	.name			= "iPAQ hx4700",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.owner			= THIS_MODULE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.owner			= THIS_MODULE,
+>>>>>>> refs/remotes/origin/master
 	.dai_link		= &hx4700_dai,
 	.num_links		= 1,
 	.dapm_widgets		= hx4700_dapm_widgets,
@@ -206,7 +218,11 @@ static struct gpio hx4700_audio_gpios[] = {
 	{ GPIO92_HX4700_HP_DRIVER, GPIOF_OUT_INIT_LOW, "EP_POWER" },
 };
 
+<<<<<<< HEAD
 static int __devinit hx4700_audio_probe(struct platform_device *pdev)
+=======
+static int hx4700_audio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 
@@ -222,18 +238,27 @@ static int __devinit hx4700_audio_probe(struct platform_device *pdev)
 	ret = snd_soc_register_card(&snd_soc_card_hx4700);
 	if (ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ret;
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		gpio_free_array(hx4700_audio_gpios,
 				ARRAY_SIZE(hx4700_audio_gpios));
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devexit hx4700_audio_remove(struct platform_device *pdev)
+=======
+}
+
+static int hx4700_audio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_jack_free_gpios(&hs_jack, 1, &hs_jack_gpio);
 	snd_soc_unregister_card(&snd_soc_card_hx4700);
@@ -252,6 +277,7 @@ static struct platform_driver hx4700_audio_driver = {
 		.pm = &snd_soc_pm_ops,
 	},
 	.probe	= hx4700_audio_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(hx4700_audio_remove),
 };
 
@@ -271,6 +297,12 @@ module_exit(hx4700_modexit);
 =======
 module_platform_driver(hx4700_audio_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove	= hx4700_audio_remove,
+};
+
+module_platform_driver(hx4700_audio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Philipp Zabel");
 MODULE_DESCRIPTION("ALSA SoC iPAQ hx4700");

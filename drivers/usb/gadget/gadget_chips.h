@@ -16,6 +16,7 @@
 #define __GADGET_CHIPS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_GADGET_NET2280
 #define	gadget_is_net2280(g)	!strcmp("net2280", (g)->name)
 #else
@@ -167,6 +168,10 @@
 #define	gadget_is_renesas_usbhs(g) 0
 #endif
 =======
+=======
+#include <linux/usb/gadget.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * NOTICE: the entries below are alphabetical and should be kept
  * that way.
@@ -177,6 +182,7 @@
  * If you have forgotten the alphabetical order let VIM/EMACS
  * do that for you.
  */
+<<<<<<< HEAD
 #define gadget_is_amd5536udc(g)		(!strcmp("amd5536udc", (g)->name))
 #define gadget_is_at91(g)		(!strcmp("at91_udc", (g)->name))
 #define gadget_is_atmel_usba(g)		(!strcmp("atmel_usba_udc", (g)->name))
@@ -286,6 +292,14 @@ static inline int usb_gadget_controller_number(struct usb_gadget *gadget)
 	return -ENOENT;
 }
 
+=======
+#define gadget_is_at91(g)		(!strcmp("at91_udc", (g)->name))
+#define gadget_is_goku(g)		(!strcmp("goku_udc", (g)->name))
+#define gadget_is_musbhdrc(g)		(!strcmp("musb-hdrc", (g)->name))
+#define gadget_is_net2280(g)		(!strcmp("net2280", (g)->name))
+#define gadget_is_pxa(g)		(!strcmp("pxa25x_udc", (g)->name))
+#define gadget_is_pxa27x(g)		(!strcmp("pxa27x_udc", (g)->name))
+>>>>>>> refs/remotes/origin/master
 
 /**
  * gadget_supports_altsettings - return true if altsettings work

@@ -30,7 +30,11 @@
 #include <crypto/ctr.h>
 
 #include <plat/cpu.h>
+<<<<<<< HEAD
 #include <plat/dma.h>
+=======
+#include <mach/dma.h>
+>>>>>>> refs/remotes/origin/master
 
 #define _SBF(s, v)                      ((v) << (s))
 #define _BIT(b)                         _SBF(b, 1)
@@ -519,11 +523,16 @@ static struct crypto_alg algs[] = {
 		.cra_priority		= 100,
 		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
 <<<<<<< HEAD
+<<<<<<< HEAD
 					  CRYPTO_ALG_ASYNC,
 =======
 					  CRYPTO_ALG_ASYNC |
 					  CRYPTO_ALG_KERN_DRIVER_ONLY,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  CRYPTO_ALG_ASYNC |
+					  CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 		.cra_blocksize		= AES_BLOCK_SIZE,
 		.cra_ctxsize		= sizeof(struct s5p_aes_ctx),
 		.cra_alignmask		= 0x0f,
@@ -544,11 +553,16 @@ static struct crypto_alg algs[] = {
 		.cra_priority		= 100,
 		.cra_flags		= CRYPTO_ALG_TYPE_ABLKCIPHER |
 <<<<<<< HEAD
+<<<<<<< HEAD
 					  CRYPTO_ALG_ASYNC,
 =======
 					  CRYPTO_ALG_ASYNC |
 					  CRYPTO_ALG_KERN_DRIVER_ONLY,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					  CRYPTO_ALG_ASYNC |
+					  CRYPTO_ALG_KERN_DRIVER_ONLY,
+>>>>>>> refs/remotes/origin/master
 		.cra_blocksize		= AES_BLOCK_SIZE,
 		.cra_ctxsize		= sizeof(struct s5p_aes_ctx),
 		.cra_alignmask		= 0x0f,
@@ -588,7 +602,11 @@ static int s5p_aes_probe(struct platform_device *pdev)
 				     resource_size(res), pdev->name))
 		return -EBUSY;
 
+<<<<<<< HEAD
 	pdata->clk = clk_get(dev, "secss");
+=======
+	pdata->clk = devm_clk_get(dev, "secss");
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(pdata->clk)) {
 		dev_err(dev, "failed to find secss clock source\n");
 		return -ENOENT;
@@ -634,7 +652,10 @@ static int s5p_aes_probe(struct platform_device *pdev)
 	crypto_init_queue(&pdata->queue, CRYPTO_QUEUE_LEN);
 
 	for (i = 0; i < ARRAY_SIZE(algs); i++) {
+<<<<<<< HEAD
 		INIT_LIST_HEAD(&algs[i].cra_list);
+=======
+>>>>>>> refs/remotes/origin/master
 		err = crypto_register_alg(&algs[i]);
 		if (err)
 			goto err_algs;
@@ -654,10 +675,15 @@ static int s5p_aes_probe(struct platform_device *pdev)
 
  err_irq:
 	clk_disable(pdata->clk);
+<<<<<<< HEAD
 	clk_put(pdata->clk);
 
 	s5p_dev = NULL;
 	platform_set_drvdata(pdev, NULL);
+=======
+
+	s5p_dev = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -676,10 +702,15 @@ static int s5p_aes_remove(struct platform_device *pdev)
 	tasklet_kill(&pdata->tasklet);
 
 	clk_disable(pdata->clk);
+<<<<<<< HEAD
 	clk_put(pdata->clk);
 
 	s5p_dev = NULL;
 	platform_set_drvdata(pdev, NULL);
+=======
+
+	s5p_dev = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -693,6 +724,7 @@ static struct platform_driver s5p_aes_crypto = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init s5p_aes_mod_init(void)
 {
@@ -709,6 +741,9 @@ module_exit(s5p_aes_mod_exit);
 =======
 module_platform_driver(s5p_aes_crypto);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(s5p_aes_crypto);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("S5PV210 AES hw acceleration support.");
 MODULE_LICENSE("GPL v2");

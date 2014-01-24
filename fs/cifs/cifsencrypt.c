@@ -1,7 +1,11 @@
 /*
  *   fs/cifs/cifsencrypt.c
  *
+<<<<<<< HEAD
  *   Copyright (C) International Business Machines  Corp., 2005,2006
+=======
+ *   Copyright (C) International Business Machines  Corp., 2005,2013
+>>>>>>> refs/remotes/origin/master
  *   Author(s): Steve French (sfrench@us.ibm.com)
  *
  *   This library is free software; you can redistribute it and/or modify
@@ -29,6 +33,7 @@
 #include "ntlmssp.h"
 #include <linux/ctype.h>
 #include <linux/random.h>
+<<<<<<< HEAD
 
 /*
  * Calculate and return the CIFS signature based on the mac key and SMB PDU.
@@ -74,10 +79,42 @@ static int cifs_calc_signature(const struct kvec *iov, int n_vec,
 		cifs_pdu->Protocol, be32_to_cpu(cifs_pdu->smb_buf_length));
 
 	rc = crypto_shash_final(&server->secmech.sdescmd5->shash, signature);
+=======
+#include <linux/highmem.h>
+
+static int
+cifs_crypto_shash_md5_allocate(struct TCP_Server_Info *server)
+{
+	int rc;
+	unsigned int size;
+
+	if (server->secmech.sdescmd5 != NULL)
+		return 0; /* already allocated */
+
+	server->secmech.md5 = crypto_alloc_shash("md5", 0, 0);
+	if (IS_ERR(server->secmech.md5)) {
+		cifs_dbg(VFS, "could not allocate crypto md5\n");
+		rc = PTR_ERR(server->secmech.md5);
+		server->secmech.md5 = NULL;
+		return rc;
+	}
+
+	size = sizeof(struct shash_desc) +
+			crypto_shash_descsize(server->secmech.md5);
+	server->secmech.sdescmd5 = kmalloc(size, GFP_KERNEL);
+	if (!server->secmech.sdescmd5) {
+		crypto_free_shash(server->secmech.md5);
+		server->secmech.md5 = NULL;
+		return -ENOMEM;
+	}
+	server->secmech.sdescmd5->shash.tfm = server->secmech.md5;
+	server->secmech.sdescmd5->shash.flags = 0x0;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 /* must be called with server->srv_mutex held */
 int cifs_sign_smb(struct smb_hdr *cifs_pdu, struct TCP_Server_Info *server,
 		  __u32 *pexpected_response_sequence_number)
@@ -112,17 +149,42 @@ static int cifs_calc_signature2(const struct kvec *iov, int n_vec,
 {
 	int i;
 	int rc;
+=======
+/*
+ * Calculate and return the CIFS signature based on the mac key and SMB PDU.
+ * The 16 byte signature must be allocated by the caller. Note we only use the
+ * 1st eight bytes and that the smb header signature field on input contains
+ * the sequence number before this function is called. Also, this function
+ * should be called with the server->srv_mutex held.
+ */
+static int cifs_calc_signature(struct smb_rqst *rqst,
+			struct TCP_Server_Info *server, char *signature)
+{
+	int i;
+	int rc;
+	struct kvec *iov = rqst->rq_iov;
+	int n_vec = rqst->rq_nvec;
+>>>>>>> refs/remotes/origin/master
 
 	if (iov == NULL || signature == NULL || server == NULL)
 		return -EINVAL;
 
 	if (!server->secmech.sdescmd5) {
+<<<<<<< HEAD
 		cERROR(1, "%s: Can't generate signature\n", __func__);
 		return -1;
+=======
+		rc = cifs_crypto_shash_md5_allocate(server);
+		if (rc) {
+			cifs_dbg(VFS, "%s: Can't alloc md5 crypto\n", __func__);
+			return -1;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = crypto_shash_init(&server->secmech.sdescmd5->shash);
 	if (rc) {
+<<<<<<< HEAD
 		cERROR(1, "%s: Oould not init md5\n", __func__);
 		return rc;
 	}
@@ -132,22 +194,36 @@ static int cifs_calc_signature2(const struct kvec *iov, int n_vec,
 
 =======
 		cERROR(1, "%s: Could not init md5\n", __func__);
+=======
+		cifs_dbg(VFS, "%s: Could not init md5\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	rc = crypto_shash_update(&server->secmech.sdescmd5->shash,
 		server->session_key.response, server->session_key.len);
 	if (rc) {
+<<<<<<< HEAD
 		cERROR(1, "%s: Could not update with response\n", __func__);
 		return rc;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cifs_dbg(VFS, "%s: Could not update with response\n", __func__);
+		return rc;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < n_vec; i++) {
 		if (iov[i].iov_len == 0)
 			continue;
 		if (iov[i].iov_base == NULL) {
+<<<<<<< HEAD
 			cERROR(1, "null iovec entry");
+=======
+			cifs_dbg(VFS, "null iovec entry\n");
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		}
 		/* The first entry includes a length field (which does not get
@@ -155,6 +231,7 @@ static int cifs_calc_signature2(const struct kvec *iov, int n_vec,
 		if (i == 0) {
 			if (iov[0].iov_len <= 8) /* cmd field at offset 9 */
 				break; /* nothing to sign or corrupt header */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			crypto_shash_update(&server->secmech.sdescmd5->shash,
 				iov[i].iov_base + 4, iov[i].iov_len - 4);
@@ -165,6 +242,8 @@ static int cifs_calc_signature2(const struct kvec *iov, int n_vec,
 
 	rc = crypto_shash_final(&server->secmech.sdescmd5->shash, signature);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			rc =
 			crypto_shash_update(&server->secmech.sdescmd5->shash,
 				iov[i].iov_base + 4, iov[i].iov_len - 4);
@@ -174,39 +253,71 @@ static int cifs_calc_signature2(const struct kvec *iov, int n_vec,
 				iov[i].iov_base, iov[i].iov_len);
 		}
 		if (rc) {
+<<<<<<< HEAD
 			cERROR(1, "%s: Could not update with payload\n",
 							__func__);
+=======
+			cifs_dbg(VFS, "%s: Could not update with payload\n",
+				 __func__);
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 	}
 
+<<<<<<< HEAD
 	rc = crypto_shash_final(&server->secmech.sdescmd5->shash, signature);
 	if (rc)
 		cERROR(1, "%s: Could not generate md5 hash\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* now hash over the rq_pages array */
+	for (i = 0; i < rqst->rq_npages; i++) {
+		struct kvec p_iov;
+
+		cifs_rqst_page_to_kvec(rqst, i, &p_iov);
+		crypto_shash_update(&server->secmech.sdescmd5->shash,
+					p_iov.iov_base, p_iov.iov_len);
+		kunmap(rqst->rq_pages[i]);
+	}
+
+	rc = crypto_shash_final(&server->secmech.sdescmd5->shash, signature);
+	if (rc)
+		cifs_dbg(VFS, "%s: Could not generate md5 hash\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
 
 /* must be called with server->srv_mutex held */
+<<<<<<< HEAD
 int cifs_sign_smb2(struct kvec *iov, int n_vec, struct TCP_Server_Info *server,
+=======
+int cifs_sign_rqst(struct smb_rqst *rqst, struct TCP_Server_Info *server,
+>>>>>>> refs/remotes/origin/master
 		   __u32 *pexpected_response_sequence_number)
 {
 	int rc = 0;
 	char smb_signature[20];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct smb_hdr *cifs_pdu = iov[0].iov_base;
 =======
 	struct smb_hdr *cifs_pdu = (struct smb_hdr *)iov[0].iov_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct smb_hdr *cifs_pdu = (struct smb_hdr *)rqst->rq_iov[0].iov_base;
+>>>>>>> refs/remotes/origin/master
 
 	if ((cifs_pdu == NULL) || (server == NULL))
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((cifs_pdu->Flags2 & SMBFLG2_SECURITY_SIGNATURE) == 0)
 		return rc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!(cifs_pdu->Flags2 & SMBFLG2_SECURITY_SIGNATURE) ||
 	    server->tcpStatus == CifsNeedNegotiate)
 		return rc;
@@ -215,12 +326,16 @@ int cifs_sign_smb2(struct kvec *iov, int n_vec, struct TCP_Server_Info *server,
 		memcpy(cifs_pdu->Signature.SecuritySignature, "BSRSPYL", 8);
 		return rc;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	cifs_pdu->Signature.Sequence.SequenceNumber =
 				cpu_to_le32(server->sequence_number);
 	cifs_pdu->Signature.Sequence.Reserved = 0;
 
+<<<<<<< HEAD
 	*pexpected_response_sequence_number = server->sequence_number++;
 	server->sequence_number++;
 
@@ -229,6 +344,12 @@ int cifs_sign_smb2(struct kvec *iov, int n_vec, struct TCP_Server_Info *server,
 =======
 	rc = cifs_calc_signature(iov, n_vec, server, smb_signature);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	*pexpected_response_sequence_number = ++server->sequence_number;
+	++server->sequence_number;
+
+	rc = cifs_calc_signature(rqst, server, smb_signature);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		memset(cifs_pdu->Signature.SecuritySignature, 0, 8);
 	else
@@ -238,8 +359,20 @@ int cifs_sign_smb2(struct kvec *iov, int n_vec, struct TCP_Server_Info *server,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int cifs_verify_signature(struct smb_hdr *cifs_pdu,
 =======
+=======
+int cifs_sign_smbv(struct kvec *iov, int n_vec, struct TCP_Server_Info *server,
+		   __u32 *pexpected_response_sequence)
+{
+	struct smb_rqst rqst = { .rq_iov = iov,
+				 .rq_nvec = n_vec };
+
+	return cifs_sign_rqst(&rqst, server, pexpected_response_sequence);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* must be called with server->srv_mutex held */
 int cifs_sign_smb(struct smb_hdr *cifs_pdu, struct TCP_Server_Info *server,
 		  __u32 *pexpected_response_sequence_number)
@@ -249,12 +382,20 @@ int cifs_sign_smb(struct smb_hdr *cifs_pdu, struct TCP_Server_Info *server,
 	iov.iov_base = cifs_pdu;
 	iov.iov_len = be32_to_cpu(cifs_pdu->smb_buf_length) + 4;
 
+<<<<<<< HEAD
 	return cifs_sign_smb2(&iov, 1, server,
 			      pexpected_response_sequence_number);
 }
 
 int cifs_verify_signature(struct kvec *iov, unsigned int nr_iov,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return cifs_sign_smbv(&iov, 1, server,
+			      pexpected_response_sequence_number);
+}
+
+int cifs_verify_signature(struct smb_rqst *rqst,
+>>>>>>> refs/remotes/origin/master
 			  struct TCP_Server_Info *server,
 			  __u32 expected_sequence_number)
 {
@@ -262,9 +403,13 @@ int cifs_verify_signature(struct kvec *iov, unsigned int nr_iov,
 	char server_response_sig[8];
 	char what_we_think_sig_should_be[20];
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct smb_hdr *cifs_pdu = (struct smb_hdr *)iov[0].iov_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct smb_hdr *cifs_pdu = (struct smb_hdr *)rqst->rq_iov[0].iov_base;
+>>>>>>> refs/remotes/origin/master
 
 	if (cifs_pdu == NULL || server == NULL)
 		return -EINVAL;
@@ -284,8 +429,13 @@ int cifs_verify_signature(struct kvec *iov, unsigned int nr_iov,
 
 	/* Do not need to verify session setups with signature "BSRSPYL "  */
 	if (memcmp(cifs_pdu->Signature.SecuritySignature, "BSRSPYL ", 8) == 0)
+<<<<<<< HEAD
 		cFYI(1, "dummy signature received for smb command 0x%x",
 			cifs_pdu->Command);
+=======
+		cifs_dbg(FYI, "dummy signature received for smb command 0x%x\n",
+			 cifs_pdu->Command);
+>>>>>>> refs/remotes/origin/master
 
 	/* save off the origiginal signature so we can modify the smb and check
 		its signature against what the server sent */
@@ -297,12 +447,16 @@ int cifs_verify_signature(struct kvec *iov, unsigned int nr_iov,
 
 	mutex_lock(&server->srv_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rc = cifs_calculate_signature(cifs_pdu, server,
 		what_we_think_sig_should_be);
 =======
 	rc = cifs_calc_signature(iov, nr_iov, server,
 				 what_we_think_sig_should_be);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = cifs_calc_signature(rqst, server, what_we_think_sig_should_be);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&server->srv_mutex);
 
 	if (rc)
@@ -320,10 +474,14 @@ int cifs_verify_signature(struct kvec *iov, unsigned int nr_iov,
 
 /* first calculate 24 bytes ntlm response and then 16 byte session key */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int setup_ntlm_response(struct cifs_ses *ses)
 =======
 int setup_ntlm_response(struct cifs_ses *ses, const struct nls_table *nls_cp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int setup_ntlm_response(struct cifs_ses *ses, const struct nls_table *nls_cp)
+>>>>>>> refs/remotes/origin/master
 {
 	int rc = 0;
 	unsigned int temp_len = CIFS_SESS_KEY_SIZE + CIFS_AUTH_RESP_SIZE;
@@ -333,6 +491,7 @@ int setup_ntlm_response(struct cifs_ses *ses, const struct nls_table *nls_cp)
 		return -EINVAL;
 
 	ses->auth_key.response = kmalloc(temp_len, GFP_KERNEL);
+<<<<<<< HEAD
 	if (!ses->auth_key.response) {
 		cERROR(1, "NTLM can't allocate (%u bytes) memory", temp_len);
 		return -ENOMEM;
@@ -358,13 +517,37 @@ int setup_ntlm_response(struct cifs_ses *ses, const struct nls_table *nls_cp)
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		cFYI(1, "%s Can't generate NT hash, error: %d", __func__, rc);
+=======
+	if (!ses->auth_key.response)
+		return -ENOMEM;
+
+	ses->auth_key.len = temp_len;
+
+	rc = SMBNTencrypt(ses->password, ses->server->cryptkey,
+			ses->auth_key.response + CIFS_SESS_KEY_SIZE, nls_cp);
+	if (rc) {
+		cifs_dbg(FYI, "%s Can't generate NTLM response, error: %d\n",
+			 __func__, rc);
+		return rc;
+	}
+
+	rc = E_md4hash(ses->password, temp_key, nls_cp);
+	if (rc) {
+		cifs_dbg(FYI, "%s Can't generate NT hash, error: %d\n",
+			 __func__, rc);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	rc = mdfour(ses->auth_key.response, temp_key, CIFS_SESS_KEY_SIZE);
 	if (rc)
+<<<<<<< HEAD
 		cFYI(1, "%s Can't generate NTLM session key, error: %d",
 			__func__, rc);
+=======
+		cifs_dbg(FYI, "%s Can't generate NTLM session key, error: %d\n",
+			 __func__, rc);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
@@ -382,7 +565,10 @@ int calc_lanman_hash(const char *password, const char *cryptkey, bool encrypt,
 		strncpy(password_with_pad, password, CIFS_ENCPWD_SIZE);
 
 	if (!encrypt && global_secflags & CIFSSEC_MAY_PLNTXT) {
+<<<<<<< HEAD
 		memset(lnm_session_key, 0, CIFS_SESS_KEY_SIZE);
+=======
+>>>>>>> refs/remotes/origin/master
 		memcpy(lnm_session_key, password_with_pad,
 			CIFS_ENCPWD_SIZE);
 		return 0;
@@ -418,12 +604,16 @@ build_avpair_blob(struct cifs_ses *ses, const struct nls_table *nls_cp)
 {
 	unsigned int dlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int wlen;
 	unsigned int size = 6 * sizeof(struct ntlmssp2_name);
 	__le64  curtime;
 =======
 	unsigned int size = 2 * sizeof(struct ntlmssp2_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int size = 2 * sizeof(struct ntlmssp2_name);
+>>>>>>> refs/remotes/origin/master
 	char *defdmname = "WORKGROUP";
 	unsigned char *blobptr;
 	struct ntlmssp2_name *attrptr;
@@ -436,6 +626,7 @@ build_avpair_blob(struct cifs_ses *ses, const struct nls_table *nls_cp)
 
 	dlen = strlen(ses->domainName);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wlen = strlen(ses->server->hostname);
 
 	/* The length of this blob is a size which is
@@ -446,6 +637,8 @@ build_avpair_blob(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	 */
 	ses->auth_key.len = size + 2 * (2 * dlen) + 2 * (2 * wlen) + 8;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * The length of this blob is two times the size of a
@@ -454,17 +647,24 @@ build_avpair_blob(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	 * unicode length of a netbios domain name
 	 */
 	ses->auth_key.len = size + 2 * dlen;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	ses->auth_key.response = kzalloc(ses->auth_key.len, GFP_KERNEL);
 	if (!ses->auth_key.response) {
 		ses->auth_key.len = 0;
 		cERROR(1, "Challenge target info allocation failure");
+=======
+	ses->auth_key.response = kzalloc(ses->auth_key.len, GFP_KERNEL);
+	if (!ses->auth_key.response) {
+		ses->auth_key.len = 0;
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
 	blobptr = ses->auth_key.response;
 	attrptr = (struct ntlmssp2_name *) blobptr;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	attrptr->type = cpu_to_le16(NTLMSSP_AV_NB_DOMAIN_NAME);
 	attrptr->length = cpu_to_le16(2 * dlen);
@@ -504,6 +704,8 @@ build_avpair_blob(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	curtime = cpu_to_le64(cifs_UnixTimeToNT(CURRENT_TIME));
 	memcpy(blobptr, &curtime, sizeof(__le64));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * As defined in MS-NTLM 3.3.2, just this av pair field
 	 * is sufficient as part of the temp
@@ -512,7 +714,10 @@ build_avpair_blob(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	attrptr->length = cpu_to_le16(2 * dlen);
 	blobptr = (unsigned char *)attrptr + sizeof(struct ntlmssp2_name);
 	cifs_strtoUTF16((__le16 *)blobptr, ses->domainName, dlen, nls_cp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -555,10 +760,14 @@ find_domain_name(struct cifs_ses *ses, const struct nls_table *nls_cp)
 			break;
 		if (type == NTLMSSP_AV_NB_DOMAIN_NAME) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!attrsize)
 =======
 			if (!attrsize || attrsize >= CIFS_MAX_DOMAINNAME_LEN)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!attrsize || attrsize >= CIFS_MAX_DOMAINNAME_LEN)
+>>>>>>> refs/remotes/origin/master
 				break;
 			if (!ses->domainName) {
 				ses->domainName =
@@ -566,10 +775,14 @@ find_domain_name(struct cifs_ses *ses, const struct nls_table *nls_cp)
 				if (!ses->domainName)
 						return -ENOMEM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				cifs_from_ucs2(ses->domainName,
 =======
 				cifs_from_utf16(ses->domainName,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				cifs_from_utf16(ses->domainName,
+>>>>>>> refs/remotes/origin/master
 					(__le16 *)blobptr, attrsize, attrsize,
 					nls_cp, false);
 				break;
@@ -588,30 +801,42 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 	int len;
 	char nt_hash[CIFS_NTHASH_SIZE];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wchar_t *user;
 =======
 	__le16 *user;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__le16 *user;
+>>>>>>> refs/remotes/origin/master
 	wchar_t *domain;
 	wchar_t *server;
 
 	if (!ses->server->secmech.sdeschmacmd5) {
+<<<<<<< HEAD
 		cERROR(1, "calc_ntlmv2_hash: can't generate ntlmv2 hash\n");
+=======
+		cifs_dbg(VFS, "%s: can't generate ntlmv2 hash\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
 	/* calculate md4 hash of password */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	E_md4hash(ses->password, nt_hash);
 
 	crypto_shash_setkey(ses->server->secmech.hmacmd5, nt_hash,
 				CIFS_NTHASH_SIZE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	E_md4hash(ses->password, nt_hash, nls_cp);
 
 	rc = crypto_shash_setkey(ses->server->secmech.hmacmd5, nt_hash,
 				CIFS_NTHASH_SIZE);
 	if (rc) {
+<<<<<<< HEAD
 		cERROR(1, "%s: Could not set NT Hash as a key", __func__);
 		return rc;
 	}
@@ -643,6 +868,23 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 	crypto_shash_update(&ses->server->secmech.sdeschmacmd5->shash,
 				(char *)user, 2 * len);
 =======
+=======
+		cifs_dbg(VFS, "%s: Could not set NT Hash as a key\n", __func__);
+		return rc;
+	}
+
+	rc = crypto_shash_init(&ses->server->secmech.sdeschmacmd5->shash);
+	if (rc) {
+		cifs_dbg(VFS, "%s: could not init hmacmd5\n", __func__);
+		return rc;
+	}
+
+	/* convert ses->user_name to unicode */
+	len = ses->user_name ? strlen(ses->user_name) : 0;
+	user = kmalloc(2 + (len * 2), GFP_KERNEL);
+	if (user == NULL) {
+		rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -657,10 +899,16 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 				(char *)user, 2 * len);
 	kfree(user);
 	if (rc) {
+<<<<<<< HEAD
 		cERROR(1, "%s: Could not update with user\n", __func__);
 		return rc;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cifs_dbg(VFS, "%s: Could not update with user\n", __func__);
+		return rc;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* convert ses->domainName to unicode and uppercase */
 	if (ses->domainName) {
@@ -668,6 +916,7 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 
 		domain = kmalloc(2 + (len * 2), GFP_KERNEL);
 		if (domain == NULL) {
+<<<<<<< HEAD
 			cERROR(1, "calc_ntlmv2_hash: domain mem alloc failure");
 			rc = -ENOMEM;
 <<<<<<< HEAD
@@ -679,6 +928,9 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 					(char *)domain, 2 * len);
 		kfree(domain);
 =======
+=======
+			rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 		len = cifs_strtoUTF16((__le16 *)domain, ses->domainName, len,
@@ -688,16 +940,24 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 					(char *)domain, 2 * len);
 		kfree(domain);
 		if (rc) {
+<<<<<<< HEAD
 			cERROR(1, "%s: Could not update with domain\n",
 								__func__);
 			return rc;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			cifs_dbg(VFS, "%s: Could not update with domain\n",
+				 __func__);
+			return rc;
+		}
+>>>>>>> refs/remotes/origin/master
 	} else if (ses->serverName) {
 		len = strlen(ses->serverName);
 
 		server = kmalloc(2 + (len * 2), GFP_KERNEL);
 		if (server == NULL) {
+<<<<<<< HEAD
 			cERROR(1, "calc_ntlmv2_hash: server mem alloc failure");
 			rc = -ENOMEM;
 <<<<<<< HEAD
@@ -709,6 +969,9 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 					(char *)server, 2 * len);
 		kfree(server);
 =======
+=======
+			rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			return rc;
 		}
 		len = cifs_strtoUTF16((__le16 *)server, ses->serverName, len,
@@ -718,15 +981,23 @@ static int calc_ntlmv2_hash(struct cifs_ses *ses, char *ntlmv2_hash,
 					(char *)server, 2 * len);
 		kfree(server);
 		if (rc) {
+<<<<<<< HEAD
 			cERROR(1, "%s: Could not update with server\n",
 								__func__);
 			return rc;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			cifs_dbg(VFS, "%s: Could not update with server\n",
+				 __func__);
+			return rc;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	rc = crypto_shash_final(&ses->server->secmech.sdeschmacmd5->shash,
 					ntlmv2_hash);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 calc_exit_1:
@@ -737,6 +1008,11 @@ calc_exit_2:
 		cERROR(1, "%s: Could not generate md5 hash\n", __func__);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rc)
+		cifs_dbg(VFS, "%s: Could not generate md5 hash\n", __func__);
+
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -744,6 +1020,7 @@ static int
 CalcNTLMv2_response(const struct cifs_ses *ses, char *ntlmv2_hash)
 {
 	int rc;
+<<<<<<< HEAD
 	unsigned int offset = CIFS_SESS_KEY_SIZE + 8;
 
 	if (!ses->server->secmech.sdeschmacmd5) {
@@ -794,10 +1071,90 @@ CalcNTLMv2_response(const struct cifs_ses *ses, char *ntlmv2_hash)
 	if (rc)
 		cERROR(1, "%s: Could not generate md5 hash\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ntlmv2_resp *ntlmv2 = (struct ntlmv2_resp *)
+	    (ses->auth_key.response + CIFS_SESS_KEY_SIZE);
+	unsigned int hash_len;
+
+	/* The MD5 hash starts at challenge_key.key */
+	hash_len = ses->auth_key.len - (CIFS_SESS_KEY_SIZE +
+		offsetof(struct ntlmv2_resp, challenge.key[0]));
+
+	if (!ses->server->secmech.sdeschmacmd5) {
+		cifs_dbg(VFS, "%s: can't generate ntlmv2 hash\n", __func__);
+		return -1;
+	}
+
+	rc = crypto_shash_setkey(ses->server->secmech.hmacmd5,
+				 ntlmv2_hash, CIFS_HMAC_MD5_HASH_SIZE);
+	if (rc) {
+		cifs_dbg(VFS, "%s: Could not set NTLMV2 Hash as a key\n",
+			 __func__);
+		return rc;
+	}
+
+	rc = crypto_shash_init(&ses->server->secmech.sdeschmacmd5->shash);
+	if (rc) {
+		cifs_dbg(VFS, "%s: could not init hmacmd5\n", __func__);
+		return rc;
+	}
+
+	if (ses->server->negflavor == CIFS_NEGFLAVOR_EXTENDED)
+		memcpy(ntlmv2->challenge.key,
+		       ses->ntlmssp->cryptkey, CIFS_SERVER_CHALLENGE_SIZE);
+	else
+		memcpy(ntlmv2->challenge.key,
+		       ses->server->cryptkey, CIFS_SERVER_CHALLENGE_SIZE);
+	rc = crypto_shash_update(&ses->server->secmech.sdeschmacmd5->shash,
+				 ntlmv2->challenge.key, hash_len);
+	if (rc) {
+		cifs_dbg(VFS, "%s: Could not update with response\n", __func__);
+		return rc;
+	}
+
+	/* Note that the MD5 digest over writes anon.challenge_key.key */
+	rc = crypto_shash_final(&ses->server->secmech.sdeschmacmd5->shash,
+				ntlmv2->ntlmv2_hash);
+	if (rc)
+		cifs_dbg(VFS, "%s: Could not generate md5 hash\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	return rc;
 }
 
+<<<<<<< HEAD
+=======
+static int crypto_hmacmd5_alloc(struct TCP_Server_Info *server)
+{
+	int rc;
+	unsigned int size;
+
+	/* check if already allocated */
+	if (server->secmech.sdeschmacmd5)
+		return 0;
+
+	server->secmech.hmacmd5 = crypto_alloc_shash("hmac(md5)", 0, 0);
+	if (IS_ERR(server->secmech.hmacmd5)) {
+		cifs_dbg(VFS, "could not allocate crypto hmacmd5\n");
+		rc = PTR_ERR(server->secmech.hmacmd5);
+		server->secmech.hmacmd5 = NULL;
+		return rc;
+	}
+
+	size = sizeof(struct shash_desc) +
+			crypto_shash_descsize(server->secmech.hmacmd5);
+	server->secmech.sdeschmacmd5 = kmalloc(size, GFP_KERNEL);
+	if (!server->secmech.sdeschmacmd5) {
+		crypto_free_shash(server->secmech.hmacmd5);
+		server->secmech.hmacmd5 = NULL;
+		return -ENOMEM;
+	}
+	server->secmech.sdeschmacmd5->shash.tfm = server->secmech.hmacmd5;
+	server->secmech.sdeschmacmd5->shash.flags = 0x0;
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 int
 setup_ntlmv2_rsp(struct cifs_ses *ses, const struct nls_table *nls_cp)
@@ -805,6 +1162,7 @@ setup_ntlmv2_rsp(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	int rc;
 	int baselen;
 	unsigned int tilen;
+<<<<<<< HEAD
 	struct ntlmv2_resp *buf;
 	char ntlmv2_hash[16];
 	unsigned char *tiblob = NULL; /* target info blob */
@@ -814,13 +1172,29 @@ setup_ntlmv2_rsp(struct cifs_ses *ses, const struct nls_table *nls_cp)
 			rc = find_domain_name(ses, nls_cp);
 			if (rc) {
 				cERROR(1, "error %d finding domain name", rc);
+=======
+	struct ntlmv2_resp *ntlmv2;
+	char ntlmv2_hash[16];
+	unsigned char *tiblob = NULL; /* target info blob */
+
+	if (ses->server->negflavor == CIFS_NEGFLAVOR_EXTENDED) {
+		if (!ses->domainName) {
+			rc = find_domain_name(ses, nls_cp);
+			if (rc) {
+				cifs_dbg(VFS, "error %d finding domain name\n",
+					 rc);
+>>>>>>> refs/remotes/origin/master
 				goto setup_ntlmv2_rsp_ret;
 			}
 		}
 	} else {
 		rc = build_avpair_blob(ses, nls_cp);
 		if (rc) {
+<<<<<<< HEAD
 			cERROR(1, "error %d building av pair blob", rc);
+=======
+			cifs_dbg(VFS, "error %d building av pair blob\n", rc);
+>>>>>>> refs/remotes/origin/master
 			goto setup_ntlmv2_rsp_ret;
 		}
 	}
@@ -833,11 +1207,15 @@ setup_ntlmv2_rsp(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	if (!ses->auth_key.response) {
 		rc = ENOMEM;
 		ses->auth_key.len = 0;
+<<<<<<< HEAD
 		cERROR(1, "%s: Can't allocate auth blob", __func__);
+=======
+>>>>>>> refs/remotes/origin/master
 		goto setup_ntlmv2_rsp_ret;
 	}
 	ses->auth_key.len += baselen;
 
+<<<<<<< HEAD
 	buf = (struct ntlmv2_resp *)
 			(ses->auth_key.response + CIFS_SESS_KEY_SIZE);
 	buf->blob_signature = cpu_to_le32(0x00000101);
@@ -852,17 +1230,45 @@ setup_ntlmv2_rsp(struct cifs_ses *ses, const struct nls_table *nls_cp)
 	rc = calc_ntlmv2_hash(ses, ntlmv2_hash, nls_cp);
 	if (rc) {
 		cERROR(1, "could not get v2 hash rc %d", rc);
+=======
+	ntlmv2 = (struct ntlmv2_resp *)
+			(ses->auth_key.response + CIFS_SESS_KEY_SIZE);
+	ntlmv2->blob_signature = cpu_to_le32(0x00000101);
+	ntlmv2->reserved = 0;
+	/* Must be within 5 minutes of the server */
+	ntlmv2->time = cpu_to_le64(cifs_UnixTimeToNT(CURRENT_TIME));
+	get_random_bytes(&ntlmv2->client_chal, sizeof(ntlmv2->client_chal));
+	ntlmv2->reserved2 = 0;
+
+	memcpy(ses->auth_key.response + baselen, tiblob, tilen);
+
+	rc = crypto_hmacmd5_alloc(ses->server);
+	if (rc) {
+		cifs_dbg(VFS, "could not crypto alloc hmacmd5 rc %d\n", rc);
+		goto setup_ntlmv2_rsp_ret;
+	}
+
+	/* calculate ntlmv2_hash */
+	rc = calc_ntlmv2_hash(ses, ntlmv2_hash, nls_cp);
+	if (rc) {
+		cifs_dbg(VFS, "could not get v2 hash rc %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto setup_ntlmv2_rsp_ret;
 	}
 
 	/* calculate first part of the client response (CR1) */
 	rc = CalcNTLMv2_response(ses, ntlmv2_hash);
 	if (rc) {
+<<<<<<< HEAD
 		cERROR(1, "Could not calculate CR1  rc: %d", rc);
+=======
+		cifs_dbg(VFS, "Could not calculate CR1 rc: %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto setup_ntlmv2_rsp_ret;
 	}
 
 	/* now calculate the session key for NTLMv2 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	crypto_shash_setkey(ses->server->secmech.hmacmd5,
 		ntlmv2_hash, CIFS_HMAC_MD5_HASH_SIZE);
@@ -894,14 +1300,39 @@ setup_ntlmv2_rsp(struct cifs_ses *ses, const struct nls_table *nls_cp)
 		CIFS_HMAC_MD5_HASH_SIZE);
 	if (rc) {
 		cERROR(1, "%s: Could not update with response\n", __func__);
+=======
+	rc = crypto_shash_setkey(ses->server->secmech.hmacmd5,
+		ntlmv2_hash, CIFS_HMAC_MD5_HASH_SIZE);
+	if (rc) {
+		cifs_dbg(VFS, "%s: Could not set NTLMV2 Hash as a key\n",
+			 __func__);
+		goto setup_ntlmv2_rsp_ret;
+	}
+
+	rc = crypto_shash_init(&ses->server->secmech.sdeschmacmd5->shash);
+	if (rc) {
+		cifs_dbg(VFS, "%s: Could not init hmacmd5\n", __func__);
+		goto setup_ntlmv2_rsp_ret;
+	}
+
+	rc = crypto_shash_update(&ses->server->secmech.sdeschmacmd5->shash,
+		ntlmv2->ntlmv2_hash,
+		CIFS_HMAC_MD5_HASH_SIZE);
+	if (rc) {
+		cifs_dbg(VFS, "%s: Could not update with response\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto setup_ntlmv2_rsp_ret;
 	}
 
 	rc = crypto_shash_final(&ses->server->secmech.sdeschmacmd5->shash,
 		ses->auth_key.response);
 	if (rc)
+<<<<<<< HEAD
 		cERROR(1, "%s: Could not generate md5 hash\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cifs_dbg(VFS, "%s: Could not generate md5 hash\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 setup_ntlmv2_rsp_ret:
 	kfree(tiblob);
@@ -923,12 +1354,17 @@ calc_seckey(struct cifs_ses *ses)
 	tfm_arc4 = crypto_alloc_blkcipher("ecb(arc4)", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(tfm_arc4)) {
 		rc = PTR_ERR(tfm_arc4);
+<<<<<<< HEAD
 		cERROR(1, "could not allocate crypto API arc4\n");
+=======
+		cifs_dbg(VFS, "could not allocate crypto API arc4\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	desc.tfm = tfm_arc4;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	crypto_blkcipher_setkey(tfm_arc4, ses->auth_key.response,
 					CIFS_SESS_KEY_SIZE);
@@ -940,13 +1376,26 @@ calc_seckey(struct cifs_ses *ses)
 		return rc;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = crypto_blkcipher_setkey(tfm_arc4, ses->auth_key.response,
+					CIFS_SESS_KEY_SIZE);
+	if (rc) {
+		cifs_dbg(VFS, "%s: Could not set response as a key\n",
+			 __func__);
+		return rc;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	sg_init_one(&sgin, sec_key, CIFS_SESS_KEY_SIZE);
 	sg_init_one(&sgout, ses->ntlmssp->ciphertext, CIFS_CPHTXT_SIZE);
 
 	rc = crypto_blkcipher_encrypt(&desc, &sgout, &sgin, CIFS_CPHTXT_SIZE);
 	if (rc) {
+<<<<<<< HEAD
 		cERROR(1, "could not encrypt session key rc: %d\n", rc);
+=======
+		cifs_dbg(VFS, "could not encrypt session key rc: %d\n", rc);
+>>>>>>> refs/remotes/origin/master
 		crypto_free_blkcipher(tfm_arc4);
 		return rc;
 	}
@@ -959,15 +1408,20 @@ calc_seckey(struct cifs_ses *ses)
 	crypto_free_blkcipher(tfm_arc4);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 	return rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 void
 cifs_crypto_shash_release(struct TCP_Server_Info *server)
 {
+<<<<<<< HEAD
 	if (server->secmech.md5)
 		crypto_free_shash(server->secmech.md5);
 
@@ -1033,4 +1487,34 @@ crypto_allocate_md5_fail:
 	crypto_free_shash(server->secmech.hmacmd5);
 
 	return rc;
+=======
+	if (server->secmech.cmacaes) {
+		crypto_free_shash(server->secmech.cmacaes);
+		server->secmech.cmacaes = NULL;
+	}
+
+	if (server->secmech.hmacsha256) {
+		crypto_free_shash(server->secmech.hmacsha256);
+		server->secmech.hmacsha256 = NULL;
+	}
+
+	if (server->secmech.md5) {
+		crypto_free_shash(server->secmech.md5);
+		server->secmech.md5 = NULL;
+	}
+
+	if (server->secmech.hmacmd5) {
+		crypto_free_shash(server->secmech.hmacmd5);
+		server->secmech.hmacmd5 = NULL;
+	}
+
+	kfree(server->secmech.sdesccmacaes);
+	server->secmech.sdesccmacaes = NULL;
+	kfree(server->secmech.sdeschmacsha256);
+	server->secmech.sdeschmacsha256 = NULL;
+	kfree(server->secmech.sdeschmacmd5);
+	server->secmech.sdeschmacmd5 = NULL;
+	kfree(server->secmech.sdescmd5);
+	server->secmech.sdescmd5 = NULL;
+>>>>>>> refs/remotes/origin/master
 }

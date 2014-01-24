@@ -62,6 +62,7 @@ const float32 float32Constant[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* condition code lookup table
  index into the table is test code: EQ, NE, ... LT, GT, AL, NV
  bit position in short is condition code: NZCV */
@@ -90,3 +91,5 @@ unsigned int checkCondition(const unsigned int opcode, const unsigned int ccodes
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

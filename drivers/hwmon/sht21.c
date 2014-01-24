@@ -29,6 +29,10 @@
 #include <linux/err.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* I2C command bytes */
 #define SHT21_TRIG_T_MEASUREMENT_HM  0xe3
@@ -84,6 +88,7 @@ static inline int sht21_rh_ticks_to_per_cent_mille(int ticks)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * sht21_read_word_data() - read word from register
  * @client: I2C client device
  * @reg: I2C command byte
@@ -105,6 +110,8 @@ static inline int sht21_read_word_data(struct i2c_client *client, u8 reg)
 /**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * sht21_update_measurements() - get updated measurements from device
  * @client: I2C client device
  *
@@ -123,6 +130,7 @@ static int sht21_update_measurements(struct i2c_client *client)
 	 */
 	if (time_after(jiffies, sht21->last_update + HZ / 2) || !sht21->valid) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = sht21_read_word_data(client, SHT21_TRIG_T_MEASUREMENT_HM);
 		if (ret < 0)
 			goto out;
@@ -130,6 +138,8 @@ static int sht21_update_measurements(struct i2c_client *client)
 		ret = sht21_read_word_data(client,
 					SHT21_TRIG_RH_MEASUREMENT_HM);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = i2c_smbus_read_word_swapped(client,
 						  SHT21_TRIG_T_MEASUREMENT_HM);
 		if (ret < 0)
@@ -137,7 +147,10 @@ static int sht21_update_measurements(struct i2c_client *client)
 		sht21->temperature = sht21_temp_ticks_to_millicelsius(ret);
 		ret = i2c_smbus_read_word_swapped(client,
 						  SHT21_TRIG_RH_MEASUREMENT_HM);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			goto out;
 		sht21->humidity = sht21_rh_ticks_to_per_cent_mille(ret);
@@ -217,7 +230,11 @@ static const struct attribute_group sht21_attr_group = {
  * device's name.
  * Returns 0 on success.
  */
+<<<<<<< HEAD
 static int __devinit sht21_probe(struct i2c_client *client,
+=======
+static int sht21_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 	const struct i2c_device_id *id)
 {
 	struct sht21 *sht21;
@@ -230,11 +247,18 @@ static int __devinit sht21_probe(struct i2c_client *client,
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	sht21 = kzalloc(sizeof(*sht21), GFP_KERNEL);
 	if (!sht21) {
 		dev_dbg(&client->dev, "kzalloc failed\n");
 		return -ENOMEM;
 	}
+=======
+	sht21 = devm_kzalloc(&client->dev, sizeof(*sht21), GFP_KERNEL);
+	if (!sht21)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	i2c_set_clientdata(client, sht21);
 
 	mutex_init(&sht21->lock);
@@ -242,7 +266,11 @@ static int __devinit sht21_probe(struct i2c_client *client,
 	err = sysfs_create_group(&client->dev.kobj, &sht21_attr_group);
 	if (err) {
 		dev_dbg(&client->dev, "could not create sysfs files\n");
+<<<<<<< HEAD
 		goto fail_free;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 	}
 	sht21->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(sht21->hwmon_dev)) {
@@ -257,9 +285,12 @@ static int __devinit sht21_probe(struct i2c_client *client,
 
 fail_remove_sysfs:
 	sysfs_remove_group(&client->dev.kobj, &sht21_attr_group);
+<<<<<<< HEAD
 fail_free:
 	kfree(sht21);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -267,13 +298,20 @@ fail_free:
  * sht21_remove() - remove device
  * @client: I2C client device
  */
+<<<<<<< HEAD
 static int __devexit sht21_remove(struct i2c_client *client)
+=======
+static int sht21_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sht21 *sht21 = i2c_get_clientdata(client);
 
 	hwmon_device_unregister(sht21->hwmon_dev);
 	sysfs_remove_group(&client->dev.kobj, &sht21_attr_group);
+<<<<<<< HEAD
 	kfree(sht21);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -288,6 +326,7 @@ MODULE_DEVICE_TABLE(i2c, sht21_id);
 static struct i2c_driver sht21_driver = {
 	.driver.name = "sht21",
 	.probe       = sht21_probe,
+<<<<<<< HEAD
 	.remove      = __devexit_p(sht21_remove),
 	.id_table    = sht21_id,
 };
@@ -318,6 +357,13 @@ module_exit(sht21_exit);
 =======
 module_i2c_driver(sht21_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove      = sht21_remove,
+	.id_table    = sht21_id,
+};
+
+module_i2c_driver(sht21_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Urs Fleisch <urs.fleisch@sensirion.com>");
 MODULE_DESCRIPTION("Sensirion SHT21 humidity and temperature sensor driver");

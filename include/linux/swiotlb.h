@@ -23,12 +23,19 @@ extern int swiotlb_force;
 #define IO_TLB_SHIFT 11
 
 extern void swiotlb_init(int verbose);
+<<<<<<< HEAD
 extern void swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
 <<<<<<< HEAD
 extern unsigned long swioltb_nr_tbl(void);
 =======
 extern unsigned long swiotlb_nr_tbl(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose);
+extern unsigned long swiotlb_nr_tbl(void);
+unsigned long swiotlb_size_or_default(void);
+extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Enumeration for sync targets
@@ -37,6 +44,7 @@ enum dma_sync_target {
 	SYNC_FOR_CPU = 0,
 	SYNC_FOR_DEVICE = 1,
 };
+<<<<<<< HEAD
 extern void *swiotlb_tbl_map_single(struct device *hwdev, dma_addr_t tbl_dma_addr,
 				    phys_addr_t phys, size_t size,
 				    enum dma_data_direction dir);
@@ -45,13 +53,33 @@ extern void swiotlb_tbl_unmap_single(struct device *hwdev, char *dma_addr,
 				     size_t size, enum dma_data_direction dir);
 
 extern void swiotlb_tbl_sync_single(struct device *hwdev, char *dma_addr,
+=======
+
+/* define the last possible byte of physical address space as a mapping error */
+#define SWIOTLB_MAP_ERROR (~(phys_addr_t)0x0)
+
+extern phys_addr_t swiotlb_tbl_map_single(struct device *hwdev,
+					  dma_addr_t tbl_dma_addr,
+					  phys_addr_t phys, size_t size,
+					  enum dma_data_direction dir);
+
+extern void swiotlb_tbl_unmap_single(struct device *hwdev,
+				     phys_addr_t tlb_addr,
+				     size_t size, enum dma_data_direction dir);
+
+extern void swiotlb_tbl_sync_single(struct device *hwdev,
+				    phys_addr_t tlb_addr,
+>>>>>>> refs/remotes/origin/master
 				    size_t size, enum dma_data_direction dir,
 				    enum dma_sync_target target);
 
 /* Accessory functions. */
+<<<<<<< HEAD
 extern void swiotlb_bounce(phys_addr_t phys, char *dma_addr, size_t size,
 			   enum dma_data_direction dir);
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern void
 *swiotlb_alloc_coherent(struct device *hwdev, size_t size,
 			dma_addr_t *dma_handle, gfp_t flags);

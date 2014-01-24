@@ -351,9 +351,12 @@ static void ns87415_fixup(struct pci_dev *pdev)
 static int ns87415_init_one (struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	static const struct ata_port_info info = {
 		.flags		= ATA_FLAG_SLAVE_POSS,
 		.pio_mask	= ATA_PIO4,
@@ -374,12 +377,16 @@ static int ns87415_init_one (struct pci_dev *pdev, const struct pci_device_id *e
 		ppi[0] = &info87560;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev,
 			   "version " DRV_VERSION "\n");
 =======
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_print_version_once(&pdev->dev, DRV_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -399,7 +406,11 @@ static const struct pci_device_id ns87415_pci_tbl[] = {
 #ifdef CONFIG_PM
 static int ns87415_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -424,6 +435,7 @@ static struct pci_driver ns87415_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init ns87415_init(void)
 {
 	return pci_register_driver(&ns87415_pci_driver);
@@ -436,6 +448,9 @@ static void __exit ns87415_exit(void)
 
 module_init(ns87415_init);
 module_exit(ns87415_exit);
+=======
+module_pci_driver(ns87415_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("ATA low-level driver for NS87415 controllers");

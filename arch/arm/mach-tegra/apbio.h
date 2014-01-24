@@ -16,6 +16,7 @@
 #ifndef __MACH_TEGRA_APBIO_H
 #define __MACH_TEGRA_APBIO_H
 
+<<<<<<< HEAD
 #ifdef CONFIG_TEGRA_SYSTEM_DMA
 
 u32 tegra_apb_readl(unsigned long offset);
@@ -36,4 +37,9 @@ static inline void tegra_apb_writel(u32 value, unsigned long offset)
 }
 #endif
 
+=======
+void tegra_apb_io_init(void);
+u32 tegra_apb_readl(unsigned long offset);
+void tegra_apb_writel(u32 value, unsigned long offset);
+>>>>>>> refs/remotes/origin/master
 #endif

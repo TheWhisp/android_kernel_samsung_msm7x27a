@@ -35,10 +35,13 @@
 #include "pxa2xx-ac97.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_card tosa;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define TOSA_HP        0
 #define TOSA_MIC_INT   1
 #define TOSA_HEADSET   2
@@ -203,10 +206,14 @@ static int tosa_ac97_init(struct snd_soc_pcm_runtime *rtd)
 
 	/* add tosa specific controls */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = snd_soc_add_controls(codec, tosa_controls,
 =======
 	err = snd_soc_add_codec_controls(codec, tosa_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = snd_soc_add_codec_controls(codec, tosa_controls,
+>>>>>>> refs/remotes/origin/master
 				ARRAY_SIZE(tosa_controls));
 	if (err < 0)
 		return err;
@@ -219,9 +226,12 @@ static int tosa_ac97_init(struct snd_soc_pcm_runtime *rtd)
 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_dapm_sync(dapm);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -247,6 +257,7 @@ static struct snd_soc_dai_link tosa_dai[] = {
 },
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tosa_probe(struct snd_soc_card *card)
 {
@@ -311,6 +322,8 @@ static void __exit tosa_exit(void)
 module_init(tosa_init);
 module_exit(tosa_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct snd_soc_card tosa = {
 	.name = "Tosa",
 	.owner = THIS_MODULE,
@@ -318,7 +331,11 @@ static struct snd_soc_card tosa = {
 	.num_links = ARRAY_SIZE(tosa_dai),
 };
 
+<<<<<<< HEAD
 static int __devinit tosa_probe(struct platform_device *pdev)
+=======
+static int tosa_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = &tosa;
 	int ret;
@@ -339,7 +356,11 @@ static int __devinit tosa_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit tosa_remove(struct platform_device *pdev)
+=======
+static int tosa_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_soc_card *card = platform_get_drvdata(pdev);
 
@@ -352,6 +373,7 @@ static struct platform_driver tosa_driver = {
 	.driver		= {
 		.name	= "tosa-audio",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= tosa_probe,
 	.remove		= __devexit_p(tosa_remove),
@@ -359,12 +381,25 @@ static struct platform_driver tosa_driver = {
 
 module_platform_driver(tosa_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm     = &snd_soc_pm_ops,
+	},
+	.probe		= tosa_probe,
+	.remove		= tosa_remove,
+};
+
+module_platform_driver(tosa_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Richard Purdie");
 MODULE_DESCRIPTION("ALSA SoC Tosa");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 MODULE_ALIAS("platform:tosa-audio");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:tosa-audio");
+>>>>>>> refs/remotes/origin/master

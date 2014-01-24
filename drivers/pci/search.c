@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * 	PCI searching functions.
+=======
+ *	PCI searching functions.
+>>>>>>> refs/remotes/origin/master
  *
  *	Copyright (C) 1993 -- 1997 Drew Eckhardt, Frederic Potter,
  *					David Mosberger-Tang
@@ -15,6 +19,11 @@
 #include "pci.h"
 
 DECLARE_RWSEM(pci_bus_sem);
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(pci_bus_sem);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * find the upstream PCIe-to-PCI bridge of a PCI device
  * if the device is PCIE, return NULL
@@ -39,7 +48,11 @@ pci_find_upstream_pcie_bridge(struct pci_dev *pdev)
 			continue;
 		}
 		/* PCI device should connect to a PCIe bridge */
+<<<<<<< HEAD
 		if (pdev->pcie_type != PCI_EXP_TYPE_PCI_BRIDGE) {
+=======
+		if (pci_pcie_type(pdev) != PCI_EXP_TYPE_PCI_BRIDGE) {
+>>>>>>> refs/remotes/origin/master
 			/* Busted hardware? */
 			WARN_ON_ONCE(1);
 			return NULL;
@@ -94,12 +107,20 @@ struct pci_bus * pci_find_bus(int domain, int busnr)
  * pci_find_next_bus - begin or continue searching for a PCI bus
  * @from: Previous PCI bus found, or %NULL for new search.
  *
+<<<<<<< HEAD
  * Iterates through the list of known PCI busses.  A new search is
+=======
+ * Iterates through the list of known PCI buses.  A new search is
+>>>>>>> refs/remotes/origin/master
  * initiated by passing %NULL as the @from argument.  Otherwise if
  * @from is not %NULL, searches continue from next device on the
  * global list.
  */
+<<<<<<< HEAD
 struct pci_bus * 
+=======
+struct pci_bus *
+>>>>>>> refs/remotes/origin/master
 pci_find_next_bus(const struct pci_bus *from)
 {
 	struct list_head *n;
@@ -117,27 +138,44 @@ pci_find_next_bus(const struct pci_bus *from)
 /**
  * pci_get_slot - locate PCI device for a given PCI slot
  * @bus: PCI bus on which desired PCI device resides
+<<<<<<< HEAD
  * @devfn: encodes number of PCI slot in which the desired PCI 
  * device resides and the logical device number within that slot 
  * in case of multi-function devices.
  *
  * Given a PCI bus and slot/function number, the desired PCI device 
+=======
+ * @devfn: encodes number of PCI slot in which the desired PCI
+ * device resides and the logical device number within that slot
+ * in case of multi-function devices.
+ *
+ * Given a PCI bus and slot/function number, the desired PCI device
+>>>>>>> refs/remotes/origin/master
  * is located in the list of PCI devices.
  * If the device is found, its reference count is increased and this
  * function returns a pointer to its data structure.  The caller must
  * decrement the reference count by calling pci_dev_put().
  * If no device is found, %NULL is returned.
  */
+<<<<<<< HEAD
 struct pci_dev * pci_get_slot(struct pci_bus *bus, unsigned int devfn)
 {
 	struct list_head *tmp;
+=======
+struct pci_dev *pci_get_slot(struct pci_bus *bus, unsigned int devfn)
+{
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *dev;
 
 	WARN_ON(in_interrupt());
 	down_read(&pci_bus_sem);
 
+<<<<<<< HEAD
 	list_for_each(tmp, &bus->devices) {
 		dev = pci_dev_b(tmp);
+=======
+	list_for_each_entry(dev, &bus->devices, bus_list) {
+>>>>>>> refs/remotes/origin/master
 		if (dev->devfn == devfn)
 			goto out;
 	}
@@ -243,6 +281,7 @@ struct pci_dev *pci_get_subsys(unsigned int vendor, unsigned int device,
 			       unsigned int ss_vendor, unsigned int ss_device,
 			       struct pci_dev *from)
 {
+<<<<<<< HEAD
 	struct pci_dev *pdev;
 	struct pci_device_id *id;
 
@@ -267,6 +306,16 @@ struct pci_dev *pci_get_subsys(unsigned int vendor, unsigned int device,
 	kfree(id);
 
 	return pdev;
+=======
+	struct pci_device_id id = {
+		.vendor = vendor,
+		.device = device,
+		.subvendor = ss_vendor,
+		.subdevice = ss_device,
+	};
+
+	return pci_get_dev_by_id(&id, from);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -305,6 +354,7 @@ pci_get_device(unsigned int vendor, unsigned int device, struct pci_dev *from)
  */
 struct pci_dev *pci_get_class(unsigned int class, struct pci_dev *from)
 {
+<<<<<<< HEAD
 	struct pci_dev *dev;
 	struct pci_device_id *id;
 
@@ -318,6 +368,18 @@ struct pci_dev *pci_get_class(unsigned int class, struct pci_dev *from)
 	dev = pci_get_dev_by_id(id, from);
 	kfree(id);
 	return dev;
+=======
+	struct pci_device_id id = {
+		.vendor = PCI_ANY_ID,
+		.device = PCI_ANY_ID,
+		.subvendor = PCI_ANY_ID,
+		.subdevice = PCI_ANY_ID,
+		.class_mask = PCI_ANY_ID,
+		.class = class,
+	};
+
+	return pci_get_dev_by_id(&id, from);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -338,6 +400,7 @@ int pci_dev_present(const struct pci_device_id *ids)
 	WARN_ON(in_interrupt());
 	while (ids->vendor || ids->subvendor || ids->class_mask) {
 		found = pci_get_dev_by_id(ids, NULL);
+<<<<<<< HEAD
 		if (found)
 			goto exit;
 		ids++;
@@ -345,6 +408,15 @@ int pci_dev_present(const struct pci_device_id *ids)
 exit:
 	if (found)
 		return 1;
+=======
+		if (found) {
+			pci_dev_put(found);
+			return 1;
+		}
+		ids++;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(pci_dev_present);

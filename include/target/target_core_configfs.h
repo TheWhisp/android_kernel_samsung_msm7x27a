@@ -23,6 +23,10 @@ struct target_fabric_configfs_template {
 	struct config_item_type tfc_tpg_np_cit;
 	struct config_item_type tfc_tpg_np_base_cit;
 	struct config_item_type tfc_tpg_attrib_cit;
+<<<<<<< HEAD
+=======
+	struct config_item_type tfc_tpg_auth_cit;
+>>>>>>> refs/remotes/origin/master
 	struct config_item_type tfc_tpg_param_cit;
 	struct config_item_type tfc_tpg_nacl_cit;
 	struct config_item_type tfc_tpg_nacl_base_cit;
@@ -53,4 +57,7 @@ struct target_fabric_configfs {
 	struct target_fabric_configfs_template tf_cit_tmpl;
 };
 
+<<<<<<< HEAD
 #define TF_CIT_TMPL(tf) (&(tf)->tf_cit_tmpl)
+=======
+>>>>>>> refs/remotes/origin/master

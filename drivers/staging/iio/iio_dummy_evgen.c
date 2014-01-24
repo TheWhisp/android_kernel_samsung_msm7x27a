@@ -22,8 +22,13 @@
 #include <linux/sysfs.h>
 
 #include "iio_dummy_evgen.h"
+<<<<<<< HEAD
 #include "iio.h"
 #include "sysfs.h"
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Fiddly bit of faking and irq without hardware */
 #define IIO_EVENTGEN_NO 10
@@ -108,7 +113,11 @@ int iio_dummy_evgen_get_irq(void)
 
 	mutex_lock(&iio_evgen->lock);
 	for (i = 0; i < IIO_EVENTGEN_NO; i++)
+<<<<<<< HEAD
 		if (iio_evgen->inuse[i] == false) {
+=======
+		if (!iio_evgen->inuse[i]) {
+>>>>>>> refs/remotes/origin/master
 			ret = iio_evgen->base + i;
 			iio_evgen->inuse[i] = true;
 			break;
@@ -216,6 +225,10 @@ static __exit void iio_dummy_evgen_exit(void)
 }
 module_exit(iio_dummy_evgen_exit);
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Jonathan Cameron <jic23@cam.ac.uk>");
+=======
+MODULE_AUTHOR("Jonathan Cameron <jic23@kernel.org>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("IIO dummy driver");
 MODULE_LICENSE("GPL v2");

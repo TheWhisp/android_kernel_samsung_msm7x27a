@@ -80,7 +80,11 @@ int soc_mac_addr(unsigned int index, u8 *addr)
 		if (have_fuse_mac)
 			memcpy(addr, c6x_fuse_mac, 6);
 		else
+<<<<<<< HEAD
 			random_ether_addr(addr);
+=======
+			eth_random_addr(addr);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* adjust for specific EMAC device */

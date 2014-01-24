@@ -8,10 +8,14 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -26,6 +30,7 @@
 
 #include <asm/mach-types.h>
 
+<<<<<<< HEAD
 #include <plat/board.h>
 #include <plat/mux.h>
 <<<<<<< HEAD
@@ -33,6 +38,9 @@
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <plat/fpga.h>
+=======
+#include <mach/mux.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "pm.h"
 
@@ -245,7 +253,11 @@ static void __init omap_serial_set_port_wakeup(int gpio_nr)
 	enable_irq_wake(gpio_to_irq(gpio_nr));
 }
 
+<<<<<<< HEAD
 static int __init omap_serial_wakeup_init(void)
+=======
+int __init omap_serial_wakeup_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!cpu_is_omap16xx())
 		return 0;
@@ -259,7 +271,10 @@ static int __init omap_serial_wakeup_init(void)
 
 	return 0;
 }
+<<<<<<< HEAD
 late_initcall(omap_serial_wakeup_init);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* CONFIG_OMAP_SERIAL_WAKE */
 

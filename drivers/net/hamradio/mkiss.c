@@ -18,9 +18,12 @@
  */
 #include <linux/module.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bitops.h>
 #include <asm/uaccess.h>
 #include <linux/crc16.h>
@@ -489,7 +492,11 @@ static void ax_encaps(struct net_device *dev, unsigned char *icp, int len)
 
 			return;
 		default:
+<<<<<<< HEAD
 			count = kiss_esc(p, (unsigned char *)ax->xbuff, len);
+=======
+			count = kiss_esc(p, ax->xbuff, len);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		unsigned short crc;
@@ -501,7 +508,11 @@ static void ax_encaps(struct net_device *dev, unsigned char *icp, int len)
 		case CRC_MODE_SMACK:
 			*p |= 0x80;
 			crc = swab16(crc16(0, p, len));
+<<<<<<< HEAD
 			count = kiss_esc_crc(p, (unsigned char *)ax->xbuff, crc, len+2);
+=======
+			count = kiss_esc_crc(p, ax->xbuff, crc, len+2);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case CRC_MODE_FLEX_TEST:
 			ax->crcmode = CRC_MODE_NONE;
@@ -510,11 +521,19 @@ static void ax_encaps(struct net_device *dev, unsigned char *icp, int len)
 		case CRC_MODE_FLEX:
 			*p |= 0x20;
 			crc = calc_crc_flex(p, len);
+<<<<<<< HEAD
 			count = kiss_esc_crc(p, (unsigned char *)ax->xbuff, crc, len+2);
 			break;
 
 		default:
 			count = kiss_esc(p, (unsigned char *)ax->xbuff, len);
+=======
+			count = kiss_esc_crc(p, ax->xbuff, crc, len+2);
+			break;
+
+		default:
+			count = kiss_esc(p, ax->xbuff, len);
+>>>>>>> refs/remotes/origin/master
 		}
   	}
 	spin_unlock_bh(&ax->buflock);
@@ -1001,9 +1020,15 @@ static struct tty_ldisc_ops ax_ldisc = {
 	.write_wakeup	= mkiss_write_wakeup
 };
 
+<<<<<<< HEAD
 static const char banner[] __initdata = KERN_INFO \
 	"mkiss: AX.25 Multikiss, Hans Albas PE1AYX\n";
 static const char msg_regfail[] __initdata = KERN_ERR \
+=======
+static const char banner[] __initconst = KERN_INFO \
+	"mkiss: AX.25 Multikiss, Hans Albas PE1AYX\n";
+static const char msg_regfail[] __initconst = KERN_ERR \
+>>>>>>> refs/remotes/origin/master
 	"mkiss: can't register line discipline (err = %d)\n";
 
 static int __init mkiss_init_driver(void)
@@ -1019,7 +1044,11 @@ static int __init mkiss_init_driver(void)
 	return status;
 }
 
+<<<<<<< HEAD
 static const char msg_unregfail[] __exitdata = KERN_ERR \
+=======
+static const char msg_unregfail[] = KERN_ERR \
+>>>>>>> refs/remotes/origin/master
 	"mkiss: can't unregister line discipline (err = %d)\n";
 
 static void __exit mkiss_exit_driver(void)

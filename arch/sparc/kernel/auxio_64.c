@@ -102,7 +102,11 @@ static const struct of_device_id auxio_match[] = {
 
 MODULE_DEVICE_TABLE(of, auxio_match);
 
+<<<<<<< HEAD
 static int __devinit auxio_probe(struct platform_device *dev)
+=======
+static int auxio_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *dp = dev->dev.of_node;
 	unsigned long size;

@@ -10,10 +10,14 @@
  * Author       Marcus Niemann
  * Copyright    by Marcus Niemann    <niemann@www-bib.fh-bielefeld.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -35,20 +39,28 @@
  * Speed Star2	IPAC		CARDMGR
  * Speed PCI	IPAC		PCI PNP
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Speed Fax+ 	ISAC_ISAR	PCI PNP		Full analog support
 =======
  * Speed Fax+	ISAC_ISAR	PCI PNP		Full analog support
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Speed Fax+	ISAC_ISAR	PCI PNP		Full analog support
+>>>>>>> refs/remotes/origin/master
  *
  * Important:
  * For the sedlbauer speed fax+ to work properly you have to download
  * the firmware onto the card.
  * For example: hisaxctrl <DriverID> 9 ISAR.BIN
 <<<<<<< HEAD
+<<<<<<< HEAD
 */
 =======
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/init.h>
 #include "hisax.h"
@@ -64,6 +76,7 @@ static const char *Sedlbauer_revision = "$Revision: 1.34.2.6 $";
 
 static const char *Sedlbauer_Types[] =
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{"None", "speed card/win", "speed star", "speed fax+",
 	"speed win II / ISDN PC/104", "speed star II", "speed pci",
 	"speed fax+ pyramid", "speed fax+ pci", "HST Saphir III"};
@@ -72,6 +85,11 @@ static const char *Sedlbauer_Types[] =
  "speed win II / ISDN PC/104", "speed star II", "speed pci",
  "speed fax+ pyramid", "speed fax+ pci", "HST Saphir III"};
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{"None", "speed card/win", "speed star", "speed fax+",
+ "speed win II / ISDN PC/104", "speed star II", "speed pci",
+ "speed fax+ pyramid", "speed fax+ pci", "HST Saphir III"};
+>>>>>>> refs/remotes/origin/master
 
 #define PCI_SUBVENDOR_SPEEDFAX_PYRAMID	0x51
 #define PCI_SUBVENDOR_HST_SAPHIR3	0x52
@@ -81,18 +99,24 @@ static const char *Sedlbauer_Types[] =
 
 #define SEDL_SPEED_CARD_WIN	1
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SEDL_SPEED_STAR 	2
 #define SEDL_SPEED_FAX		3
 #define SEDL_SPEED_WIN2_PC104 	4
 #define SEDL_SPEED_STAR2 	5
 #define SEDL_SPEED_PCI   	6
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SEDL_SPEED_STAR		2
 #define SEDL_SPEED_FAX		3
 #define SEDL_SPEED_WIN2_PC104	4
 #define SEDL_SPEED_STAR2	5
 #define SEDL_SPEED_PCI		6
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SEDL_SPEEDFAX_PYRAMID	7
 #define SEDL_SPEEDFAX_PCI	8
 #define HST_SAPHIR3		9
@@ -107,10 +131,14 @@ static const char *Sedlbauer_Types[] =
 #define	SEDL_BUS_PCMCIA		3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
 =======
 #define byteout(addr, val) outb(val, addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 #define SEDL_HSCX_ISA_RESET_ON	0
@@ -158,10 +186,14 @@ readreg(unsigned int ale, unsigned int adr, u_char off)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
 =======
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	byteout(ale, off);
 	insb(adr, data, size);
@@ -177,10 +209,14 @@ writereg(unsigned int ale, unsigned int adr, u_char off, u_char data)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 writefifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
 =======
 writefifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+writefifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	byteout(ale, off);
 	outsb(adr, data, size);
@@ -202,20 +238,28 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	readfifo(cs->hw.sedl.adr, cs->hw.sedl.isac, 0, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	writefifo(cs->hw.sedl.adr, cs->hw.sedl.isac, 0, data, size);
 }
@@ -224,15 +268,20 @@ static u_char
 ReadISAC_IPAC(struct IsdnCardState *cs, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (readreg(cs->hw.sedl.adr, cs->hw.sedl.isac, offset|0x80));
 =======
 	return (readreg(cs->hw.sedl.adr, cs->hw.sedl.isac, offset | 0x80));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (readreg(cs->hw.sedl.adr, cs->hw.sedl.isac, offset | 0x80));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 WriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writereg(cs->hw.sedl.adr, cs->hw.sedl.isac, offset|0x80, value);
 }
@@ -240,22 +289,31 @@ WriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 static void
 ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	writereg(cs->hw.sedl.adr, cs->hw.sedl.isac, offset | 0x80, value);
 }
 
 static void
 ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	readfifo(cs->hw.sedl.adr, cs->hw.sedl.isac, 0x80, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	writefifo(cs->hw.sedl.adr, cs->hw.sedl.isac, 0x80, data, size);
 }
@@ -283,19 +341,27 @@ WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
 static u_char
 ReadISAR(struct IsdnCardState *cs, int mode, u_char offset)
 <<<<<<< HEAD
+<<<<<<< HEAD
 {	
 =======
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{
+>>>>>>> refs/remotes/origin/master
 	if (mode == 0)
 		return (readreg(cs->hw.sedl.adr, cs->hw.sedl.hscx, offset));
 	else if (mode == 1)
 		byteout(cs->hw.sedl.adr, offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return(bytein(cs->hw.sedl.hscx));
 =======
 	return (bytein(cs->hw.sedl.hscx));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (bytein(cs->hw.sedl.hscx));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
@@ -315,6 +381,7 @@ WriteISAR(struct IsdnCardState *cs, int mode, u_char offset, u_char value)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define READHSCX(cs, nr, reg) readreg(cs->hw.sedl.adr, \
 		cs->hw.sedl.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.sedl.adr, \
@@ -326,6 +393,8 @@ WriteISAR(struct IsdnCardState *cs, int mode, u_char offset, u_char value)
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.sedl.adr, \
 		cs->hw.sedl.hscx, (nr ? 0x40 : 0), ptr, cnt)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define READHSCX(cs, nr, reg) readreg(cs->hw.sedl.adr,			\
 				      cs->hw.sedl.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.sedl.adr,		\
@@ -336,7 +405,10 @@ WriteISAR(struct IsdnCardState *cs, int mode, u_char offset, u_char value)
 
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.sedl.adr,	\
 						  cs->hw.sedl.hscx, (nr ? 0x40 : 0), ptr, cnt)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "hscx_irq.c"
 
@@ -358,18 +430,24 @@ sedlbauer_interrupt(int intno, void *dev_id)
 
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.hscx, HSCX_ISTA + 0x40);
 <<<<<<< HEAD
+<<<<<<< HEAD
       Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.isac, ISAC_ISTA);
       Start_ISAC:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.isac, ISAC_ISTA);
 Start_ISAC:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (val)
 		isac_interrupt(cs, val);
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.hscx, HSCX_ISTA + 0x40);
@@ -452,18 +530,24 @@ sedlbauer_interrupt_isar(int intno, void *dev_id)
 	spin_lock_irqsave(&cs->lock, flags);
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.hscx, ISAR_IRQBIT);
 <<<<<<< HEAD
+<<<<<<< HEAD
       Start_ISAR:
 	if (val & ISAR_IRQSTA)
 		isar_int_main(cs);
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.isac, ISAC_ISTA);
       Start_ISAC:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Start_ISAR:
 	if (val & ISAR_IRQSTA)
 		isar_int_main(cs);
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.isac, ISAC_ISTA);
 Start_ISAC:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (val)
 		isac_interrupt(cs, val);
 	val = readreg(cs->hw.sedl.adr, cs->hw.sedl.hscx, ISAR_IRQBIT);
@@ -511,10 +595,14 @@ reset_sedlbauer(struct IsdnCardState *cs)
 
 	if (!((cs->hw.sedl.bus == SEDL_BUS_PCMCIA) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   (cs->hw.sedl.chip == SEDL_CHIP_ISAC_HSCX))) {
 =======
 	      (cs->hw.sedl.chip == SEDL_CHIP_ISAC_HSCX))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	      (cs->hw.sedl.chip == SEDL_CHIP_ISAC_HSCX))) {
+>>>>>>> refs/remotes/origin/master
 		if (cs->hw.sedl.chip == SEDL_CHIP_IPAC) {
 			writereg(cs->hw.sedl.adr, cs->hw.sedl.isac, IPAC_POTA2, 0x20);
 			mdelay(2);
@@ -527,6 +615,7 @@ reset_sedlbauer(struct IsdnCardState *cs)
 			writereg(cs->hw.sedl.adr, cs->hw.sedl.isac, IPAC_PCFG, 0x12);
 		} else if ((cs->hw.sedl.chip == SEDL_CHIP_ISAC_ISAR) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(cs->hw.sedl.bus == SEDL_BUS_PCI)) {
 			byteout(cs->hw.sedl.cfg_reg +3, cs->hw.sedl.reset_on);
 			mdelay(2);
@@ -534,13 +623,18 @@ reset_sedlbauer(struct IsdnCardState *cs)
 			mdelay(10);
 		} else {		
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			   (cs->hw.sedl.bus == SEDL_BUS_PCI)) {
 			byteout(cs->hw.sedl.cfg_reg + 3, cs->hw.sedl.reset_on);
 			mdelay(2);
 			byteout(cs->hw.sedl.cfg_reg + 3, cs->hw.sedl.reset_off);
 			mdelay(10);
 		} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			byteout(cs->hw.sedl.reset_on, SEDL_RESET);	/* Reset On */
 			mdelay(2);
 			byteout(cs->hw.sedl.reset_off, 0);	/* Reset Off */
@@ -555,6 +649,7 @@ Sedl_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	u_long flags;
 
 	switch (mt) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
@@ -628,6 +723,8 @@ Sedl_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		spin_lock_irqsave(&cs->lock, flags);
 		reset_sedlbauer(cs);
@@ -699,6 +796,7 @@ Sedl_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		break;
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -711,20 +809,37 @@ static struct isapnp_device_id sedl_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('S', 'A', 'G'), ISAPNP_FUNCTION(0x02),
 	  ISAPNP_VENDOR('S', 'A', 'G'), ISAPNP_FUNCTION(0x02), 
 =======
+=======
+}
+
+#ifdef __ISAPNP__
+static struct isapnp_device_id sedl_ids[] = {
+	{ ISAPNP_VENDOR('S', 'A', 'G'), ISAPNP_FUNCTION(0x01),
+>>>>>>> refs/remotes/origin/master
 	  ISAPNP_VENDOR('S', 'A', 'G'), ISAPNP_FUNCTION(0x01),
 	  (unsigned long) "Speed win" },
 	{ ISAPNP_VENDOR('S', 'A', 'G'), ISAPNP_FUNCTION(0x02),
 	  ISAPNP_VENDOR('S', 'A', 'G'), ISAPNP_FUNCTION(0x02),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  (unsigned long) "Speed Fax+" },
 	{ 0, }
 };
 
+<<<<<<< HEAD
 static struct isapnp_device_id *ipid __devinitdata = &sedl_ids[0];
 static struct pnp_card *pnp_c __devinitdata = NULL;
 
 static int __devinit
 setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
+=======
+static struct isapnp_device_id *ipid = &sedl_ids[0];
+static struct pnp_card *pnp_c = NULL;
+
+static int setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	struct pnp_dev *pnp_d;
@@ -732,6 +847,7 @@ setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
 	if (!isapnp_present())
 		return -1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while(ipid->card_vendor) {
 		if ((pnp_c = pnp_find_card(ipid->card_vendor,
@@ -750,6 +866,8 @@ setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
 						__func__, err);
 					return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (ipid->card_vendor) {
 		if ((pnp_c = pnp_find_card(ipid->card_vendor,
 					   ipid->card_device, pnp_c))) {
@@ -766,13 +884,17 @@ setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
 					printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
 					       __func__, err);
 					return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 				card->para[1] = pnp_port_start(pnp_d, 0);
 				card->para[0] = pnp_irq(pnp_d, 0);
 
 				if (!card->para[0] || !card->para[1]) {
 					printk(KERN_ERR "Sedlbauer PnP:some resources are missing %ld/%lx\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 						card->para[0], card->para[1]);
 					pnp_disable_dev(pnp_d);
@@ -782,6 +904,11 @@ setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
 					pnp_disable_dev(pnp_d);
 					return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       card->para[0], card->para[1]);
+					pnp_disable_dev(pnp_d);
+					return (0);
+>>>>>>> refs/remotes/origin/master
 				}
 				cs->hw.sedl.cfg_reg = card->para[1];
 				cs->irq = card->para[0];
@@ -798,42 +925,61 @@ setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
 			} else {
 				printk(KERN_ERR "Sedlbauer PnP: PnP error card found, no device\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 				return(0);
 =======
 				return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				return (0);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 		ipid++;
 		pnp_c = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} 
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "Sedlbauer PnP: no ISAPnP card found\n");
 	return -1;
 }
 #else
 
+<<<<<<< HEAD
 static int __devinit
 setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
+=======
+static int setup_sedlbauer_isapnp(struct IsdnCard *card, int *bytecnt)
+>>>>>>> refs/remotes/origin/master
 {
 	return -1;
 }
 #endif /* __ISAPNP__ */
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static struct pci_dev *dev_sedl __devinitdata = NULL;
 
 static int __devinit
 setup_sedlbauer_pci(struct IsdnCard *card)
+=======
+static struct pci_dev *dev_sedl = NULL;
+
+static int setup_sedlbauer_pci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct IsdnCardState *cs = card->cs;
 	u16 sub_vendor_id, sub_id;
 
 	if ((dev_sedl = hisax_find_pci_device(PCI_VENDOR_ID_TIGERJET,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			PCI_DEVICE_ID_TIGERJET_100, dev_sedl))) {
 		if (pci_enable_device(dev_sedl))
@@ -843,6 +989,8 @@ setup_sedlbauer_pci(struct IsdnCard *card)
 			printk(KERN_WARNING "Sedlbauer: No IRQ for PCI card found\n");
 			return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      PCI_DEVICE_ID_TIGERJET_100, dev_sedl))) {
 		if (pci_enable_device(dev_sedl))
 			return (0);
@@ -850,22 +998,30 @@ setup_sedlbauer_pci(struct IsdnCard *card)
 		if (!cs->irq) {
 			printk(KERN_WARNING "Sedlbauer: No IRQ for PCI card found\n");
 			return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		cs->hw.sedl.cfg_reg = pci_resource_start(dev_sedl, 0);
 	} else {
 		printk(KERN_WARNING "Sedlbauer: No PCI card found\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(0);
 =======
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 	cs->irq_flags |= IRQF_SHARED;
 	cs->hw.sedl.bus = SEDL_BUS_PCI;
 	sub_vendor_id = dev_sedl->subsystem_vendor;
 	sub_id = dev_sedl->subsystem_device;
 	printk(KERN_INFO "Sedlbauer: PCI subvendor:%x subid %x\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sub_vendor_id, sub_id);
 	printk(KERN_INFO "Sedlbauer: PCI base adr %#x\n",
@@ -874,13 +1030,18 @@ setup_sedlbauer_pci(struct IsdnCard *card)
 		printk(KERN_ERR "Sedlbauer: unknown sub id %#x\n", sub_id);
 		return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	       sub_vendor_id, sub_id);
 	printk(KERN_INFO "Sedlbauer: PCI base adr %#x\n",
 	       cs->hw.sedl.cfg_reg);
 	if (sub_id != PCI_SUB_ID_SEDLBAUER) {
 		printk(KERN_ERR "Sedlbauer: unknown sub id %#x\n", sub_id);
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (sub_vendor_id == PCI_SUBVENDOR_SPEEDFAX_PYRAMID) {
 		cs->hw.sedl.chip = SEDL_CHIP_ISAC_ISAR;
@@ -897,12 +1058,17 @@ setup_sedlbauer_pci(struct IsdnCard *card)
 	} else {
 		printk(KERN_ERR "Sedlbauer: unknown sub vendor id %#x\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sub_vendor_id);
 		return(0);
 =======
 		       sub_vendor_id);
 		return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       sub_vendor_id);
+		return (0);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cs->hw.sedl.reset_on = SEDL_ISAR_PCI_ISAR_RESET_ON;
@@ -910,18 +1076,24 @@ setup_sedlbauer_pci(struct IsdnCard *card)
 	byteout(cs->hw.sedl.cfg_reg, 0xff);
 	byteout(cs->hw.sedl.cfg_reg, 0x00);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	byteout(cs->hw.sedl.cfg_reg+ 2, 0xdd);
 	byteout(cs->hw.sedl.cfg_reg+ 5, 0); /* disable all IRQ */
 	byteout(cs->hw.sedl.cfg_reg +3, cs->hw.sedl.reset_on);
 	mdelay(2);
 	byteout(cs->hw.sedl.cfg_reg +3, cs->hw.sedl.reset_off);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byteout(cs->hw.sedl.cfg_reg + 2, 0xdd);
 	byteout(cs->hw.sedl.cfg_reg + 5, 0); /* disable all IRQ */
 	byteout(cs->hw.sedl.cfg_reg + 3, cs->hw.sedl.reset_on);
 	mdelay(2);
 	byteout(cs->hw.sedl.cfg_reg + 3, cs->hw.sedl.reset_off);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mdelay(10);
 
 	return (1);
@@ -929,16 +1101,24 @@ setup_sedlbauer_pci(struct IsdnCard *card)
 
 #else
 
+<<<<<<< HEAD
 static int __devinit
 setup_sedlbauer_pci(struct IsdnCard *card)
+=======
+static int setup_sedlbauer_pci(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	return (1);
 }
 
 #endif /* CONFIG_PCI */
 
+<<<<<<< HEAD
 int __devinit
 setup_sedlbauer(struct IsdnCard *card)
+=======
+int setup_sedlbauer(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int bytecnt = 8, ver, val, rc;
 	struct IsdnCardState *cs = card->cs;
@@ -946,6 +1126,7 @@ setup_sedlbauer(struct IsdnCard *card)
 
 	strcpy(tmp, Sedlbauer_revision);
 	printk(KERN_INFO "HiSax: Sedlbauer driver Rev. %s\n", HiSax_getrev(tmp));
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
  	if (cs->typ == ISDN_CTYPE_SEDLBAUER) {
@@ -962,6 +1143,8 @@ setup_sedlbauer(struct IsdnCard *card)
 		cs->hw.sedl.chip = SEDL_CHIP_ISAC_ISAR;
  	} else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (cs->typ == ISDN_CTYPE_SEDLBAUER) {
 		cs->subtyp = SEDL_SPEED_CARD_WIN;
@@ -976,7 +1159,10 @@ setup_sedlbauer(struct IsdnCard *card)
 		cs->hw.sedl.bus = SEDL_BUS_ISA;
 		cs->hw.sedl.chip = SEDL_CHIP_ISAC_ISAR;
 	} else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return (0);
 
 	bytecnt = 8;
@@ -1000,6 +1186,7 @@ setup_sedlbauer(struct IsdnCard *card)
 
 		bytecnt = 256;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}	
 
 ready:	
@@ -1008,12 +1195,18 @@ ready:
 
 ready:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+
+ready:
+>>>>>>> refs/remotes/origin/master
 
 	/* In case of the sedlbauer pcmcia card, this region is in use,
 	 * reserved for us by the card manager. So we do not check it
 	 * here, it would fail.
 	 */
 	if (cs->hw.sedl.bus != SEDL_BUS_PCMCIA &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 		!request_region(cs->hw.sedl.cfg_reg, bytecnt, "sedlbauer isdn")) {
 		printk(KERN_WARNING
@@ -1023,6 +1216,8 @@ ready:
 			cs->hw.sedl.cfg_reg + bytecnt);
 			return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	    !request_region(cs->hw.sedl.cfg_reg, bytecnt, "sedlbauer isdn")) {
 		printk(KERN_WARNING
 		       "HiSax: %s config port %x-%x already in use\n",
@@ -1030,7 +1225,10 @@ ready:
 		       cs->hw.sedl.cfg_reg,
 		       cs->hw.sedl.cfg_reg + bytecnt);
 		return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	printk(KERN_INFO
@@ -1049,6 +1247,7 @@ ready:
  * do not test for PCI card, because ports are different
  * and PCI card uses only IPAC (for the moment)
 <<<<<<< HEAD
+<<<<<<< HEAD
  */	
 	if (cs->hw.sedl.bus != SEDL_BUS_PCI) {
 		val = readreg(cs->hw.sedl.cfg_reg + SEDL_IPAC_ANY_ADR,
@@ -1056,13 +1255,18 @@ ready:
 		printk(KERN_DEBUG "Sedlbauer: testing IPAC version %x\n", val);
 	        if ((val == 1) || (val == 2)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  */
 	if (cs->hw.sedl.bus != SEDL_BUS_PCI) {
 		val = readreg(cs->hw.sedl.cfg_reg + SEDL_IPAC_ANY_ADR,
 			      cs->hw.sedl.cfg_reg + SEDL_IPAC_ANY_IPAC, IPAC_ID);
 		printk(KERN_DEBUG "Sedlbauer: testing IPAC version %x\n", val);
 		if ((val == 1) || (val == 2)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* IPAC */
 			cs->subtyp = SEDL_SPEED_WIN2_PC104;
 			if (cs->hw.sedl.bus == SEDL_BUS_PCMCIA) {
@@ -1082,14 +1286,19 @@ ready:
  */
 	printk(KERN_INFO "Sedlbauer: %s detected\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		Sedlbauer_Types[cs->subtyp]);
 =======
 	       Sedlbauer_Types[cs->subtyp]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       Sedlbauer_Types[cs->subtyp]);
+>>>>>>> refs/remotes/origin/master
 
 	setup_isac(cs);
 	if (cs->hw.sedl.chip == SEDL_CHIP_IPAC) {
 		if (cs->hw.sedl.bus == SEDL_BUS_PCI) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	                cs->hw.sedl.adr  = cs->hw.sedl.cfg_reg + SEDL_IPAC_PCI_ADR;
 			cs->hw.sedl.isac = cs->hw.sedl.cfg_reg + SEDL_IPAC_PCI_IPAC;
@@ -1097,12 +1306,17 @@ ready:
 		} else {
 	                cs->hw.sedl.adr  = cs->hw.sedl.cfg_reg + SEDL_IPAC_ANY_ADR;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			cs->hw.sedl.adr  = cs->hw.sedl.cfg_reg + SEDL_IPAC_PCI_ADR;
 			cs->hw.sedl.isac = cs->hw.sedl.cfg_reg + SEDL_IPAC_PCI_IPAC;
 			cs->hw.sedl.hscx = cs->hw.sedl.cfg_reg + SEDL_IPAC_PCI_IPAC;
 		} else {
 			cs->hw.sedl.adr  = cs->hw.sedl.cfg_reg + SEDL_IPAC_ANY_ADR;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			cs->hw.sedl.isac = cs->hw.sedl.cfg_reg + SEDL_IPAC_ANY_IPAC;
 			cs->hw.sedl.hscx = cs->hw.sedl.cfg_reg + SEDL_IPAC_ANY_IPAC;
 		}
@@ -1124,6 +1338,7 @@ ready:
 			if (cs->hw.sedl.bus == SEDL_BUS_PCI) {
 				cs->hw.sedl.adr = cs->hw.sedl.cfg_reg +
 <<<<<<< HEAD
+<<<<<<< HEAD
 							SEDL_ISAR_PCI_ADR;
 				cs->hw.sedl.isac = cs->hw.sedl.cfg_reg +
 							SEDL_ISAR_PCI_ISAC;
@@ -1141,6 +1356,8 @@ ready:
 				cs->hw.sedl.reset_off = cs->hw.sedl.cfg_reg +
 							SEDL_ISAR_ISA_ISAR_RESET_OFF;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					SEDL_ISAR_PCI_ADR;
 				cs->hw.sedl.isac = cs->hw.sedl.cfg_reg +
 					SEDL_ISAR_PCI_ISAC;
@@ -1157,7 +1374,10 @@ ready:
 					SEDL_ISAR_ISA_ISAR_RESET_ON;
 				cs->hw.sedl.reset_off = cs->hw.sedl.cfg_reg +
 					SEDL_ISAR_ISA_ISAR_RESET_OFF;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			cs->bcs[0].hw.isar.reg = &cs->hw.sedl.isar;
 			cs->bcs[1].hw.isar.reg = &cs->hw.sedl.isar;
@@ -1174,10 +1394,14 @@ ready:
 				if (ver < 0)
 					printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 						"Sedlbauer: wrong ISAR version (ret = %d)\n", ver);
 =======
 					       "Sedlbauer: wrong ISAR version (ret = %d)\n", ver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       "Sedlbauer: wrong ISAR version (ret = %d)\n", ver);
+>>>>>>> refs/remotes/origin/master
 				else
 					break;
 				reset_sedlbauer(cs);
@@ -1205,16 +1429,22 @@ ready:
 			cs->irq_func = &sedlbauer_interrupt;
 			ISACVersion(cs, "Sedlbauer:");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 			if (HscxVersion(cs, "Sedlbauer:")) {
 				printk(KERN_WARNING
 					"Sedlbauer: wrong HSCX versions check IO address\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 			if (HscxVersion(cs, "Sedlbauer:")) {
 				printk(KERN_WARNING
 				       "Sedlbauer: wrong HSCX versions check IO address\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				release_io_sedlbauer(cs);
 				return (0);
 			}

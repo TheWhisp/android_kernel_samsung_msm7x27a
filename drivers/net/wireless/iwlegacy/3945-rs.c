@@ -347,7 +347,11 @@ il3945_rs_rate_init(struct il_priv *il, struct ieee80211_sta *sta, u8 sta_id)
 
 	psta = (struct il3945_sta_priv *)sta->drv_priv;
 	rs_sta = &psta->rs_sta;
+<<<<<<< HEAD
 	sband = hw->wiphy->bands[conf->channel->band];
+=======
+	sband = hw->wiphy->bands[conf->chandef.chan->band];
+>>>>>>> refs/remotes/origin/master
 
 	rs_sta->il = il;
 
@@ -816,6 +820,10 @@ out:
 		rs_sta->last_txrate_idx = idx;
 		info->control.rates[0].idx = rs_sta->last_txrate_idx;
 	}
+<<<<<<< HEAD
+=======
+	info->control.rates[0].count = 1;
+>>>>>>> refs/remotes/origin/master
 
 	D_RATE("leave: %d\n", idx);
 }
@@ -886,6 +894,10 @@ il3945_remove_debugfs(void *il, void *il_sta)
  */
 static void
 il3945_rs_rate_init_stub(void *il_r, struct ieee80211_supported_band *sband,
+<<<<<<< HEAD
+=======
+			 struct cfg80211_chan_def *chandef,
+>>>>>>> refs/remotes/origin/master
 			 struct ieee80211_sta *sta, void *il_sta)
 {
 }
@@ -946,7 +958,11 @@ il3945_rate_scale_init(struct ieee80211_hw *hw, s32 sta_id)
 	case IEEE80211_BAND_5GHZ:
 		rs_sta->expected_tpt = il3945_expected_tpt_a;
 		break;
+<<<<<<< HEAD
 	case IEEE80211_NUM_BANDS:
+=======
+	default:
+>>>>>>> refs/remotes/origin/master
 		BUG();
 		break;
 	}

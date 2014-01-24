@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -32,16 +33,42 @@
 #include "xfs_dinode.h"
 #include "xfs_inode.h"
 #include "xfs_btree.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_bit.h"
+#include "xfs_inum.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_da_format.h"
+#include "xfs_inode.h"
+#include "xfs_dir2.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_ialloc.h"
 #include "xfs_alloc.h"
 #include "xfs_rtalloc.h"
 #include "xfs_bmap.h"
+<<<<<<< HEAD
 #include "xfs_error.h"
 #include "xfs_rw.h"
 #include "xfs_quota.h"
 #include "xfs_fsops.h"
 #include "xfs_utils.h"
 #include "xfs_trace.h"
+=======
+#include "xfs_trans.h"
+#include "xfs_trans_priv.h"
+#include "xfs_log.h"
+#include "xfs_error.h"
+#include "xfs_quota.h"
+#include "xfs_fsops.h"
+#include "xfs_trace.h"
+#include "xfs_icache.h"
+#include "xfs_dinode.h"
+>>>>>>> refs/remotes/origin/master
 
 
 #ifdef HAVE_PERCPU_SB
@@ -56,6 +83,7 @@ STATIC void	xfs_icsb_disable_counter(xfs_mount_t *, xfs_sb_field_t);
 #define xfs_icsb_balance_counter_locked(mp, a, b)	do { } while (0)
 #endif
 
+<<<<<<< HEAD
 static const struct {
 	short offset;
 	short type;	/* 0 = integer
@@ -111,6 +139,8 @@ static const struct {
     { sizeof(xfs_sb_t),			 0 }
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_MUTEX(xfs_uuid_table_mutex);
 static int xfs_uuid_table_size;
 static uuid_t *xfs_uuid_table;
@@ -159,10 +189,14 @@ xfs_uuid_mount(
  out_duplicate:
 	mutex_unlock(&xfs_uuid_table_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	xfs_warn(mp, "Filesystem has duplicate UUID - can't mount");
 =======
 	xfs_warn(mp, "Filesystem has duplicate UUID %pU - can't mount", uuid);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xfs_warn(mp, "Filesystem has duplicate UUID %pU - can't mount", uuid);
+>>>>>>> refs/remotes/origin/master
 	return XFS_ERROR(EINVAL);
 }
 
@@ -190,6 +224,7 @@ xfs_uuid_unmount(
 }
 
 
+<<<<<<< HEAD
 /*
  * Reference counting access wrappers to the perag structures.
  * Because we never free per-ag structures, the only thing we
@@ -248,6 +283,8 @@ xfs_perag_put(struct xfs_perag *pag)
 	trace_xfs_perag_put(pag->pag_mount, pag->pag_agno, ref, _RET_IP_);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 STATIC void
 __xfs_free_perag(
 	struct rcu_head	*head)
@@ -300,6 +337,7 @@ xfs_sb_validate_fsb_count(
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
  * Check the validity of the SB found.
  */
@@ -462,13 +500,19 @@ xfs_mount_validate_sb(
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int
 xfs_initialize_perag(
 	xfs_mount_t	*mp,
 	xfs_agnumber_t	agcount,
 	xfs_agnumber_t	*maxagi)
 {
+<<<<<<< HEAD
 	xfs_agnumber_t	index, max_metadata;
+=======
+	xfs_agnumber_t	index;
+>>>>>>> refs/remotes/origin/master
 	xfs_agnumber_t	first_initialised = 0;
 	xfs_perag_t	*pag;
 	xfs_agino_t	agino;
@@ -528,6 +572,7 @@ xfs_initialize_perag(
 	else
 		mp->m_flags &= ~XFS_MOUNT_32BITINODES;
 
+<<<<<<< HEAD
 	if (mp->m_flags & XFS_MOUNT_32BITINODES) {
 		/*
 		 * Calculate how much should be reserved for inodes to meet
@@ -565,6 +610,12 @@ xfs_initialize_perag(
 			xfs_perag_put(pag);
 		}
 	}
+=======
+	if (mp->m_flags & XFS_MOUNT_32BITINODES)
+		index = xfs_set_inode32(mp);
+	else
+		index = xfs_set_inode64(mp);
+>>>>>>> refs/remotes/origin/master
 
 	if (maxagi)
 		*maxagi = index;
@@ -579,6 +630,7 @@ out_unwind:
 	return error;
 }
 
+<<<<<<< HEAD
 void
 xfs_sb_from_disk(
 <<<<<<< HEAD
@@ -693,16 +745,28 @@ xfs_sb_to_disk(
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * xfs_readsb
  *
  * Does the initial read of the superblock.
  */
 int
+<<<<<<< HEAD
 xfs_readsb(xfs_mount_t *mp, int flags)
 {
 	unsigned int	sector_size;
 	xfs_buf_t	*bp;
+=======
+xfs_readsb(
+	struct xfs_mount *mp,
+	int		flags)
+{
+	unsigned int	sector_size;
+	struct xfs_buf	*bp;
+	struct xfs_sb	*sbp = &mp->m_sb;
+>>>>>>> refs/remotes/origin/master
 	int		error;
 	int		loud = !(flags & XFS_MFSI_QUIET);
 
@@ -717,13 +781,21 @@ xfs_readsb(xfs_mount_t *mp, int flags)
 	sector_size = xfs_getsize_buftarg(mp->m_ddev_targp);
 
 reread:
+<<<<<<< HEAD
 	bp = xfs_buf_read_uncached(mp, mp->m_ddev_targp,
 					XFS_SB_DADDR, sector_size, 0);
+=======
+	bp = xfs_buf_read_uncached(mp->m_ddev_targp, XFS_SB_DADDR,
+				   BTOBB(sector_size), 0,
+				   loud ? &xfs_sb_buf_ops
+				        : &xfs_sb_quiet_buf_ops);
+>>>>>>> refs/remotes/origin/master
 	if (!bp) {
 		if (loud)
 			xfs_warn(mp, "SB buffer read failed");
 		return EIO;
 	}
+<<<<<<< HEAD
 
 	/*
 	 * Initialize the mount structure from the superblock.
@@ -740,14 +812,35 @@ reread:
 			xfs_warn(mp, "SB validate failed");
 		goto release_buf;
 	}
+=======
+	if (bp->b_error) {
+		error = bp->b_error;
+		if (loud)
+			xfs_warn(mp, "SB validate failed with error %d.", error);
+		goto release_buf;
+	}
+
+	/*
+	 * Initialize the mount structure from the superblock.
+	 */
+	xfs_sb_from_disk(&mp->m_sb, XFS_BUF_TO_SBP(bp));
+	xfs_sb_quota_from_disk(&mp->m_sb);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We must be able to do sector-sized and sector-aligned IO.
 	 */
+<<<<<<< HEAD
 	if (sector_size > mp->m_sb.sb_sectsize) {
 		if (loud)
 			xfs_warn(mp, "device supports %u byte sectors (not %u)",
 				sector_size, mp->m_sb.sb_sectsize);
+=======
+	if (sector_size > sbp->sb_sectsize) {
+		if (loud)
+			xfs_warn(mp, "device supports %u byte sectors (not %u)",
+				sector_size, sbp->sb_sectsize);
+>>>>>>> refs/remotes/origin/master
 		error = ENOSYS;
 		goto release_buf;
 	}
@@ -756,15 +849,27 @@ reread:
 	 * If device sector size is smaller than the superblock size,
 	 * re-read the superblock so the buffer is correctly sized.
 	 */
+<<<<<<< HEAD
 	if (sector_size < mp->m_sb.sb_sectsize) {
 		xfs_buf_relse(bp);
 		sector_size = mp->m_sb.sb_sectsize;
+=======
+	if (sector_size < sbp->sb_sectsize) {
+		xfs_buf_relse(bp);
+		sector_size = sbp->sb_sectsize;
+>>>>>>> refs/remotes/origin/master
 		goto reread;
 	}
 
 	/* Initialize per-cpu counters */
 	xfs_icsb_reinit_counters(mp);
 
+<<<<<<< HEAD
+=======
+	/* no need to be quiet anymore, so reset the buf ops */
+	bp->b_ops = &xfs_sb_buf_ops;
+
+>>>>>>> refs/remotes/origin/master
 	mp->m_sb_bp = bp;
 	xfs_buf_unlock(bp);
 	return 0;
@@ -774,6 +879,7 @@ release_buf:
 	return error;
 }
 
+<<<<<<< HEAD
 
 /*
  * xfs_mount_common
@@ -875,6 +981,8 @@ xfs_initialize_perag_data(xfs_mount_t *mp, xfs_agnumber_t agcount)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Update alignment values based on mount options and sb values
  */
@@ -890,6 +998,7 @@ xfs_update_alignment(xfs_mount_t *mp)
 		 */
 		if ((BBTOB(mp->m_dalign) & mp->m_blockmask) ||
 		    (BBTOB(mp->m_swidth) & mp->m_blockmask)) {
+<<<<<<< HEAD
 			if (mp->m_flags & XFS_MOUNT_RETERR) {
 <<<<<<< HEAD
 				xfs_warn(mp, "alignment check 1 failed");
@@ -900,12 +1009,19 @@ xfs_update_alignment(xfs_mount_t *mp)
 				return XFS_ERROR(EINVAL);
 			}
 			mp->m_dalign = mp->m_swidth = 0;
+=======
+			xfs_warn(mp,
+		"alignment check failed: sunit/swidth vs. blocksize(%d)",
+				sbp->sb_blocksize);
+			return XFS_ERROR(EINVAL);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/*
 			 * Convert the stripe unit and width to FSBs.
 			 */
 			mp->m_dalign = XFS_BB_TO_FSBT(mp, mp->m_dalign);
 			if (mp->m_dalign && (sbp->sb_agblocks % mp->m_dalign)) {
+<<<<<<< HEAD
 				if (mp->m_flags & XFS_MOUNT_RETERR) {
 <<<<<<< HEAD
 =======
@@ -938,6 +1054,19 @@ xfs_update_alignment(xfs_mount_t *mp)
 					return XFS_ERROR(EINVAL);
 				}
 				mp->m_swidth = 0;
+=======
+				xfs_warn(mp,
+			"alignment check failed: sunit/swidth vs. agsize(%d)",
+					 sbp->sb_agblocks);
+				return XFS_ERROR(EINVAL);
+			} else if (mp->m_dalign) {
+				mp->m_swidth = XFS_BB_TO_FSBT(mp, mp->m_swidth);
+			} else {
+				xfs_warn(mp,
+			"alignment check failed: sunit(%d) less than bsize(%d)",
+					 mp->m_dalign, sbp->sb_blocksize);
+				return XFS_ERROR(EINVAL);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -954,6 +1083,13 @@ xfs_update_alignment(xfs_mount_t *mp)
 				sbp->sb_width = mp->m_swidth;
 				mp->m_update_flags |= XFS_SB_WIDTH;
 			}
+<<<<<<< HEAD
+=======
+		} else {
+			xfs_warn(mp,
+	"cannot change alignment: superblock does not support data alignment");
+			return XFS_ERROR(EINVAL);
+>>>>>>> refs/remotes/origin/master
 		}
 	} else if ((mp->m_flags & XFS_MOUNT_NOALIGN) != XFS_MOUNT_NOALIGN &&
 		    xfs_sb_version_hasdalign(&mp->m_sb)) {
@@ -1069,7 +1205,11 @@ xfs_set_inoalignment(xfs_mount_t *mp)
 }
 
 /*
+<<<<<<< HEAD
  * Check that the data (and log if separate) are an ok size.
+=======
+ * Check that the data (and log if separate) is an ok size.
+>>>>>>> refs/remotes/origin/master
  */
 STATIC int
 xfs_check_sizes(xfs_mount_t *mp)
@@ -1082,9 +1222,15 @@ xfs_check_sizes(xfs_mount_t *mp)
 		xfs_warn(mp, "filesystem size mismatch detected");
 		return XFS_ERROR(EFBIG);
 	}
+<<<<<<< HEAD
 	bp = xfs_buf_read_uncached(mp, mp->m_ddev_targp,
 					d - XFS_FSS_TO_BB(mp, 1),
 					BBTOB(XFS_FSS_TO_BB(mp, 1)), 0);
+=======
+	bp = xfs_buf_read_uncached(mp->m_ddev_targp,
+					d - XFS_FSS_TO_BB(mp, 1),
+					XFS_FSS_TO_BB(mp, 1), 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (!bp) {
 		xfs_warn(mp, "last sector read failed");
 		return EIO;
@@ -1097,9 +1243,15 @@ xfs_check_sizes(xfs_mount_t *mp)
 			xfs_warn(mp, "log size mismatch detected");
 			return XFS_ERROR(EFBIG);
 		}
+<<<<<<< HEAD
 		bp = xfs_buf_read_uncached(mp, mp->m_logdev_targp,
 					d - XFS_FSB_TO_BB(mp, 1),
 					XFS_FSB_TO_B(mp, 1), 0);
+=======
+		bp = xfs_buf_read_uncached(mp->m_logdev_targp,
+					d - XFS_FSB_TO_BB(mp, 1),
+					XFS_FSB_TO_BB(mp, 1), 0, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (!bp) {
 			xfs_warn(mp, "log device read failed");
 			return EIO;
@@ -1139,6 +1291,7 @@ xfs_mount_reset_sbqflags(
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef QUOTADEBUG
 	xfs_notice(mp, "Writing superblock quota changes");
 #endif
@@ -1148,6 +1301,10 @@ xfs_mount_reset_sbqflags(
 	tp = xfs_trans_alloc(mp, XFS_TRANS_QM_SBCHANGE);
 	error = xfs_trans_reserve(tp, 0, mp->m_sb.sb_sectsize + 128, 0, 0,
 				      XFS_DEFAULT_LOG_COUNT);
+=======
+	tp = xfs_trans_alloc(mp, XFS_TRANS_QM_SBCHANGE);
+	error = xfs_trans_reserve(tp, &M_RES(mp)->tr_qm_sbchange, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		xfs_trans_cancel(tp, 0);
 		xfs_alert(mp, "%s: Superblock update failed!", __func__);
@@ -1197,7 +1354,11 @@ xfs_mountfs(
 	uint		quotaflags = 0;
 	int		error = 0;
 
+<<<<<<< HEAD
 	xfs_mount_common(mp, sbp);
+=======
+	xfs_sb_mount_common(mp, sbp);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check for a mismatched features2 values.  Older kernels
@@ -1257,8 +1418,11 @@ xfs_mountfs(
 
 	xfs_set_maxicount(mp);
 
+<<<<<<< HEAD
 	mp->m_maxioffset = xfs_max_file_offset(sbp->sb_blocklog);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	error = xfs_uuid_mount(mp);
 	if (error)
 		goto out;
@@ -1275,8 +1439,27 @@ xfs_mountfs(
 	 * Set the inode cluster size.
 	 * This may still be overridden by the file system
 	 * block size if it is larger than the chosen cluster size.
+<<<<<<< HEAD
 	 */
 	mp->m_inode_cluster_size = XFS_INODE_BIG_CLUSTER_SIZE;
+=======
+	 *
+	 * For v5 filesystems, scale the cluster size with the inode size to
+	 * keep a constant ratio of inode per cluster buffer, but only if mkfs
+	 * has set the inode alignment value appropriately for larger cluster
+	 * sizes.
+	 */
+	mp->m_inode_cluster_size = XFS_INODE_BIG_CLUSTER_SIZE;
+	if (xfs_sb_version_hascrc(&mp->m_sb)) {
+		int	new_size = mp->m_inode_cluster_size;
+
+		new_size *= mp->m_sb.sb_inodesize / XFS_DINODE_MIN_SIZE;
+		if (mp->m_sb.sb_inoalignmt >= XFS_B_TO_FSBT(mp, new_size))
+			mp->m_inode_cluster_size = new_size;
+		xfs_info(mp, "Using inode cluster size of %d bytes",
+			 mp->m_inode_cluster_size);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set inode alignment fields
@@ -1284,7 +1467,11 @@ xfs_mountfs(
 	xfs_set_inoalignment(mp);
 
 	/*
+<<<<<<< HEAD
 	 * Check that the data (and log if separate) are an ok size.
+=======
+	 * Check that the data (and log if separate) is an ok size.
+>>>>>>> refs/remotes/origin/master
 	 */
 	error = xfs_check_sizes(mp);
 	if (error)
@@ -1345,7 +1532,11 @@ xfs_mountfs(
 			      XFS_FSB_TO_BB(mp, sbp->sb_logblocks));
 	if (error) {
 		xfs_warn(mp, "log mount failed");
+<<<<<<< HEAD
 		goto out_free_perag;
+=======
+		goto out_fail_wait;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1372,7 +1563,11 @@ xfs_mountfs(
 	     !mp->m_sb.sb_inprogress) {
 		error = xfs_initialize_perag_data(mp, sbp->sb_agcount);
 		if (error)
+<<<<<<< HEAD
 			goto out_free_perag;
+=======
+			goto out_fail_wait;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1388,10 +1583,14 @@ xfs_mountfs(
 	ASSERT(rip != NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely((rip->i_d.di_mode & S_IFMT) != S_IFDIR)) {
 =======
 	if (unlikely(!S_ISDIR(rip->i_d.di_mode))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(!S_ISDIR(rip->i_d.di_mode))) {
+>>>>>>> refs/remotes/origin/master
 		xfs_warn(mp, "corrupted root inode %llu: not a directory",
 			(unsigned long long)rip->i_ino);
 		xfs_iunlock(rip, XFS_ILOCK_EXCL);
@@ -1500,6 +1699,13 @@ xfs_mountfs(
 	IRELE(rip);
  out_log_dealloc:
 	xfs_log_unmount(mp);
+<<<<<<< HEAD
+=======
+ out_fail_wait:
+	if (mp->m_logdev_targp && mp->m_logdev_targp != mp->m_ddev_targp)
+		xfs_wait_buftarg(mp->m_logdev_targp);
+	xfs_wait_buftarg(mp->m_ddev_targp);
+>>>>>>> refs/remotes/origin/master
  out_free_perag:
 	xfs_free_perag(mp);
  out_remove_uuid:
@@ -1519,6 +1725,11 @@ xfs_unmountfs(
 	__uint64_t		resblks;
 	int			error;
 
+<<<<<<< HEAD
+=======
+	cancel_delayed_work_sync(&mp->m_eofblocks_work);
+
+>>>>>>> refs/remotes/origin/master
 	xfs_qm_unmount_quotas(mp);
 	xfs_rtunmount_inodes(mp);
 	IRELE(mp->m_rootip);
@@ -1536,6 +1747,7 @@ xfs_unmountfs(
 	xfs_log_force(mp, XFS_LOG_SYNC);
 
 	/*
+<<<<<<< HEAD
 	 * Do a delwri reclaim pass first so that as many dirty inodes are
 	 * queued up for IO as possible. Then flush the buffers before making
 	 * a synchronous path to catch all the remaining inodes are reclaimed.
@@ -1559,6 +1771,22 @@ xfs_unmountfs(
 	 * will skip pinned buffers.
 	 */
 	xfs_log_force(mp, XFS_LOG_SYNC);
+=======
+	 * Flush all pending changes from the AIL.
+	 */
+	xfs_ail_push_all_sync(mp->m_ail);
+
+	/*
+	 * And reclaim all inodes.  At this point there should be no dirty
+	 * inodes and none should be pinned or locked, but use synchronous
+	 * reclaim just to be sure. We can stop background inode reclaim
+	 * here as well if it is still running.
+	 */
+	cancel_delayed_work_sync(&mp->m_reclaim_work);
+	xfs_reclaim_inodes(mp, SYNC_WAIT);
+
+	xfs_qm_unmount(mp);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Unreserve any blocks we have so that when we unmount we don't account
@@ -1581,6 +1809,7 @@ xfs_unmountfs(
 				"Freespace may not be correct on next mount.");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = xfs_log_sbcount(mp, 1);
 =======
 	error = xfs_log_sbcount(mp);
@@ -1600,6 +1829,13 @@ xfs_unmountfs(
 	xfs_wait_buftarg(mp->m_ddev_targp);
 
 	xfs_log_unmount_write(mp);
+=======
+	error = xfs_log_sbcount(mp);
+	if (error)
+		xfs_warn(mp, "Unable to update superblock counters. "
+				"Freespace may not be correct on next mount.");
+
+>>>>>>> refs/remotes/origin/master
 	xfs_log_unmount(mp);
 	xfs_uuid_unmount(mp);
 
@@ -1612,13 +1848,18 @@ xfs_unmountfs(
 int
 xfs_fs_writable(xfs_mount_t *mp)
 {
+<<<<<<< HEAD
 	return !(xfs_test_for_freeze(mp) || XFS_FORCED_SHUTDOWN(mp) ||
+=======
+	return !(mp->m_super->s_writers.frozen || XFS_FORCED_SHUTDOWN(mp) ||
+>>>>>>> refs/remotes/origin/master
 		(mp->m_flags & XFS_MOUNT_RDONLY));
 }
 
 /*
  * xfs_log_sbcount
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Called either periodically to keep the on disk superblock values
  * roughly up to date or from unmount to make sure the values are
@@ -1633,6 +1874,8 @@ xfs_log_sbcount(
 	xfs_mount_t	*mp,
 	uint		sync)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Sync the superblock counters to disk.
  *
  * Note this code can be called during the process of freezing, so
@@ -1641,7 +1884,10 @@ xfs_log_sbcount(
  */
 int
 xfs_log_sbcount(xfs_mount_t *mp)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	xfs_trans_t	*tp;
 	int		error;
@@ -1659,8 +1905,12 @@ xfs_log_sbcount(xfs_mount_t *mp)
 		return 0;
 
 	tp = _xfs_trans_alloc(mp, XFS_TRANS_SB_COUNT, KM_SLEEP);
+<<<<<<< HEAD
 	error = xfs_trans_reserve(tp, 0, mp->m_sb.sb_sectsize + 128, 0, 0,
 					XFS_DEFAULT_LOG_COUNT);
+=======
+	error = xfs_trans_reserve(tp, &M_RES(mp)->tr_sb, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		xfs_trans_cancel(tp, 0);
 		return error;
@@ -1668,15 +1918,20 @@ xfs_log_sbcount(xfs_mount_t *mp)
 
 	xfs_mod_sb(tp, XFS_SB_IFREE | XFS_SB_ICOUNT | XFS_SB_FDBLOCKS);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sync)
 		xfs_trans_set_sync(tp);
 =======
 	xfs_trans_set_sync(tp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	xfs_trans_set_sync(tp);
+>>>>>>> refs/remotes/origin/master
 	error = xfs_trans_commit(tp, 0);
 	return error;
 }
 
+<<<<<<< HEAD
 int
 xfs_unmountfs_writesb(xfs_mount_t *mp)
 {
@@ -1762,6 +2017,10 @@ xfs_mod_sb(xfs_trans_t *tp, __int64_t fields)
 
 /*
  * xfs_mod_incore_sb_unlocked() is a utility routine common used to apply
+=======
+/*
+ * xfs_mod_incore_sb_unlocked() is a utility routine commonly used to apply
+>>>>>>> refs/remotes/origin/master
  * a delta to a specified field in the in-core superblock.  Simply
  * switch on the field indicated and apply the delta to that field.
  * Fields are not allowed to dip below zero, so if the delta would
@@ -2019,6 +2278,7 @@ unwind:
  * If it can't then we'll return NULL.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 xfs_buf_t *
 xfs_getsb(
 	xfs_mount_t	*mp,
@@ -2037,6 +2297,8 @@ xfs_getsb(
 	}
 	XFS_BUF_HOLD(bp);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct xfs_buf *
 xfs_getsb(
 	struct xfs_mount	*mp,
@@ -2051,7 +2313,10 @@ xfs_getsb(
 	}
 
 	xfs_buf_hold(bp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ASSERT(XFS_BUF_ISDONE(bp));
 	return bp;
 }
@@ -2088,8 +2353,12 @@ xfs_mount_log_sb(
 			 XFS_SB_VERSIONNUM));
 
 	tp = xfs_trans_alloc(mp, XFS_TRANS_SB_UNIT);
+<<<<<<< HEAD
 	error = xfs_trans_reserve(tp, 0, mp->m_sb.sb_sectsize + 128, 0, 0,
 				XFS_DEFAULT_LOG_COUNT);
+=======
+	error = xfs_trans_reserve(tp, &M_RES(mp)->tr_sb, 0, 0);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		xfs_trans_cancel(tp, 0);
 		return error;
@@ -2247,12 +2516,15 @@ xfs_icsb_init_counters(
 	if (mp->m_sb_cnts == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 #ifdef CONFIG_HOTPLUG_CPU
 	mp->m_icsb_notifier.notifier_call = xfs_icsb_cpu_notify;
 	mp->m_icsb_notifier.priority = 0;
 	register_hotcpu_notifier(&mp->m_icsb_notifier);
 #endif /* CONFIG_HOTPLUG_CPU */
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for_each_online_cpu(i) {
 		cntp = (xfs_icsb_cnts_t *)per_cpu_ptr(mp->m_sb_cnts, i);
 		memset(cntp, 0, sizeof(xfs_icsb_cnts_t));
@@ -2265,6 +2537,16 @@ xfs_icsb_init_counters(
 	 * initial balance kicks us off correctly
 	 */
 	mp->m_icsb_counters = -1;
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_HOTPLUG_CPU
+	mp->m_icsb_notifier.notifier_call = xfs_icsb_cpu_notify;
+	mp->m_icsb_notifier.priority = 0;
+	register_hotcpu_notifier(&mp->m_icsb_notifier);
+#endif /* CONFIG_HOTPLUG_CPU */
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

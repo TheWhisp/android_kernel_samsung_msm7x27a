@@ -114,6 +114,7 @@
 #include <linux/mount.h>
 #include <net/checksum.h>
 #include <linux/security.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 static struct hlist_head unix_socket_table[UNIX_HASH_SIZE + 1];
@@ -129,6 +130,28 @@ static atomic_long_t unix_nr_socks;
 #define unix_sockets_unbound	(&unix_socket_table[UNIX_HASH_SIZE])
 
 #define UNIX_ABSTRACT(sk)	(unix_sk(sk)->addr->hash != UNIX_HASH_SIZE)
+=======
+#include <linux/freezer.h>
+
+struct hlist_head unix_socket_table[2 * UNIX_HASH_SIZE];
+EXPORT_SYMBOL_GPL(unix_socket_table);
+DEFINE_SPINLOCK(unix_table_lock);
+EXPORT_SYMBOL_GPL(unix_table_lock);
+static atomic_long_t unix_nr_socks;
+
+
+static struct hlist_head *unix_sockets_unbound(void *addr)
+{
+	unsigned long hash = (unsigned long)addr;
+
+	hash ^= hash >> 16;
+	hash ^= hash >> 8;
+	hash %= UNIX_HASH_SIZE;
+	return &unix_socket_table[UNIX_HASH_SIZE + hash];
+}
+
+#define UNIX_ABSTRACT(sk)	(unix_sk(sk)->addr->hash < UNIX_HASH_SIZE)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SECURITY_NETWORK
 static void unix_get_secdata(struct scm_cookie *scm, struct sk_buff *skb)
@@ -154,9 +177,16 @@ static inline void unix_set_secdata(struct scm_cookie *scm, struct sk_buff *skb)
  *    each socket state is protected by separate spin lock.
  */
 
+<<<<<<< HEAD
 static inline unsigned unix_hash_fold(__wsum n)
 {
 	unsigned hash = (__force unsigned)n;
+=======
+static inline unsigned int unix_hash_fold(__wsum n)
+{
+	unsigned int hash = (__force unsigned int)n;
+
+>>>>>>> refs/remotes/origin/master
 	hash ^= hash>>16;
 	hash ^= hash>>8;
 	return hash&(UNIX_HASH_SIZE-1);
@@ -180,10 +210,14 @@ static inline int unix_recvq_full(struct sock const *sk)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sock *unix_peer_get(struct sock *s)
 =======
 struct sock *unix_peer_get(struct sock *s)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sock *unix_peer_get(struct sock *s)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *peer;
 
@@ -195,9 +229,13 @@ struct sock *unix_peer_get(struct sock *s)
 	return peer;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(unix_peer_get);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(unix_peer_get);
+>>>>>>> refs/remotes/origin/master
 
 static inline void unix_release_addr(struct unix_address *addr)
 {
@@ -212,7 +250,11 @@ static inline void unix_release_addr(struct unix_address *addr)
  *		- if started by zero, it is abstract name.
  */
 
+<<<<<<< HEAD
 static int unix_mkname(struct sockaddr_un *sunaddr, int len, unsigned *hashp)
+=======
+static int unix_mkname(struct sockaddr_un *sunaddr, int len, unsigned int *hashp)
+>>>>>>> refs/remotes/origin/master
 {
 	if (len <= sizeof(short) || len > sizeof(*sunaddr))
 		return -EINVAL;
@@ -262,12 +304,20 @@ static inline void unix_insert_socket(struct hlist_head *list, struct sock *sk)
 
 static struct sock *__unix_find_socket_byname(struct net *net,
 					      struct sockaddr_un *sunname,
+<<<<<<< HEAD
 					      int len, int type, unsigned hash)
 {
 	struct sock *s;
 	struct hlist_node *node;
 
 	sk_for_each(s, node, &unix_socket_table[hash ^ type]) {
+=======
+					      int len, int type, unsigned int hash)
+{
+	struct sock *s;
+
+	sk_for_each(s, &unix_socket_table[hash ^ type]) {
+>>>>>>> refs/remotes/origin/master
 		struct unix_sock *u = unix_sk(s);
 
 		if (!net_eq(sock_net(s), net))
@@ -285,7 +335,11 @@ found:
 static inline struct sock *unix_find_socket_byname(struct net *net,
 						   struct sockaddr_un *sunname,
 						   int len, int type,
+<<<<<<< HEAD
 						   unsigned hash)
+=======
+						   unsigned int hash)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *s;
 
@@ -300,6 +354,7 @@ static inline struct sock *unix_find_socket_byname(struct net *net,
 static struct sock *unix_find_socket_byinode(struct inode *i)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	spin_lock(&unix_table_lock);
@@ -310,6 +365,13 @@ static struct sock *unix_find_socket_byinode(struct inode *i)
 =======
 		struct dentry *dentry = unix_sk(s)->path.dentry;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	spin_lock(&unix_table_lock);
+	sk_for_each(s,
+		    &unix_socket_table[i->i_ino & (UNIX_HASH_SIZE - 1)]) {
+		struct dentry *dentry = unix_sk(s)->path.dentry;
+>>>>>>> refs/remotes/origin/master
 
 		if (dentry && dentry->d_inode == i) {
 			sock_hold(s);
@@ -394,11 +456,15 @@ static void unix_release_sock(struct sock *sk, int embrion)
 {
 	struct unix_sock *u = unix_sk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dentry *dentry;
 	struct vfsmount *mnt;
 =======
 	struct path path;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct path path;
+>>>>>>> refs/remotes/origin/master
 	struct sock *skpair;
 	struct sk_buff *skb;
 	int state;
@@ -410,6 +476,7 @@ static void unix_release_sock(struct sock *sk, int embrion)
 	sock_orphan(sk);
 	sk->sk_shutdown = SHUTDOWN_MASK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dentry	     = u->dentry;
 	u->dentry    = NULL;
 	mnt	     = u->mnt;
@@ -419,6 +486,11 @@ static void unix_release_sock(struct sock *sk, int embrion)
 	u->path.dentry = NULL;
 	u->path.mnt = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	path	     = u->path;
+	u->path.dentry = NULL;
+	u->path.mnt = NULL;
+>>>>>>> refs/remotes/origin/master
 	state = sk->sk_state;
 	sk->sk_state = TCP_CLOSE;
 	unix_state_unlock(sk);
@@ -452,6 +524,7 @@ static void unix_release_sock(struct sock *sk, int embrion)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dentry) {
 		dput(dentry);
 		mntput(mnt);
@@ -460,13 +533,21 @@ static void unix_release_sock(struct sock *sk, int embrion)
 	if (path.dentry)
 		path_put(&path);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (path.dentry)
+		path_put(&path);
+>>>>>>> refs/remotes/origin/master
 
 	sock_put(sk);
 
 	/* ---- Socket is dead now and most probably destroyed ---- */
 
 	/*
+<<<<<<< HEAD
 	 * Fixme: BSD difference: In BSD all sockets connected to use get
+=======
+	 * Fixme: BSD difference: In BSD all sockets connected to us get
+>>>>>>> refs/remotes/origin/master
 	 *	  ECONNRESET and we die on the spot. In Linux we behave
 	 *	  like files and pipes do and wait for the last
 	 *	  dereference.
@@ -504,7 +585,10 @@ static int unix_listen(struct socket *sock, int backlog)
 	struct sock *sk = sock->sk;
 	struct unix_sock *u = unix_sk(sk);
 	struct pid *old_pid = NULL;
+<<<<<<< HEAD
 	const struct cred *old_cred = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	err = -EOPNOTSUPP;
 	if (sock->type != SOCK_STREAM && sock->type != SOCK_SEQPACKET)
@@ -526,8 +610,11 @@ static int unix_listen(struct socket *sock, int backlog)
 out_unlock:
 	unix_state_unlock(sk);
 	put_pid(old_pid);
+<<<<<<< HEAD
 	if (old_cred)
 		put_cred(old_cred);
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -560,6 +647,7 @@ static int unix_seqpacket_recvmsg(struct kiocb *, struct socket *,
 				  struct msghdr *, size_t, int);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static void unix_set_peek_off(struct sock *sk, int val)
 {
@@ -572,6 +660,22 @@ static void unix_set_peek_off(struct sock *sk, int val)
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int unix_set_peek_off(struct sock *sk, int val)
+{
+	struct unix_sock *u = unix_sk(sk);
+
+	if (mutex_lock_interruptible(&u->readlock))
+		return -EINTR;
+
+	sk->sk_peek_off = val;
+	mutex_unlock(&u->readlock);
+
+	return 0;
+}
+
+
+>>>>>>> refs/remotes/origin/master
 static const struct proto_ops unix_stream_ops = {
 	.family =	PF_UNIX,
 	.owner =	THIS_MODULE,
@@ -592,9 +696,13 @@ static const struct proto_ops unix_stream_ops = {
 	.mmap =		sock_no_mmap,
 	.sendpage =	sock_no_sendpage,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.set_peek_off =	unix_set_peek_off,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_peek_off =	unix_set_peek_off,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct proto_ops unix_dgram_ops = {
@@ -617,9 +725,13 @@ static const struct proto_ops unix_dgram_ops = {
 	.mmap =		sock_no_mmap,
 	.sendpage =	sock_no_sendpage,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.set_peek_off =	unix_set_peek_off,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_peek_off =	unix_set_peek_off,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct proto_ops unix_seqpacket_ops = {
@@ -642,9 +754,13 @@ static const struct proto_ops unix_seqpacket_ops = {
 	.mmap =		sock_no_mmap,
 	.sendpage =	sock_no_sendpage,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.set_peek_off =	unix_set_peek_off,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.set_peek_off =	unix_set_peek_off,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct proto unix_proto = {
@@ -683,18 +799,27 @@ static struct sock *unix_create1(struct net *net, struct socket *sock)
 	sk->sk_destruct		= unix_sock_destructor;
 	u	  = unix_sk(sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u->dentry = NULL;
 	u->mnt	  = NULL;
 =======
 	u->path.dentry = NULL;
 	u->path.mnt = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u->path.dentry = NULL;
+	u->path.mnt = NULL;
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&u->lock);
 	atomic_long_set(&u->inflight, 0);
 	INIT_LIST_HEAD(&u->link);
 	mutex_init(&u->readlock); /* single task reading lock */
 	init_waitqueue_head(&u->peer_wait);
+<<<<<<< HEAD
 	unix_insert_socket(unix_sockets_unbound, sk);
+=======
+	unix_insert_socket(unix_sockets_unbound(sk), sk);
+>>>>>>> refs/remotes/origin/master
 out:
 	if (sk == NULL)
 		atomic_long_dec(&unix_nr_socks);
@@ -760,7 +885,13 @@ static int unix_autobind(struct socket *sock)
 	int err;
 	unsigned int retries = 0;
 
+<<<<<<< HEAD
 	mutex_lock(&u->readlock);
+=======
+	err = mutex_lock_interruptible(&u->readlock);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	err = 0;
 	if (u->addr)
@@ -811,7 +942,11 @@ out:	mutex_unlock(&u->readlock);
 
 static struct sock *unix_find_other(struct net *net,
 				    struct sockaddr_un *sunname, int len,
+<<<<<<< HEAD
 				    int type, unsigned hash, int *error)
+=======
+				    int type, unsigned int hash, int *error)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sock *u;
 	struct path path;
@@ -836,10 +971,14 @@ static struct sock *unix_find_other(struct net *net,
 
 		if (u->sk_type == type)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			touch_atime(path.mnt, path.dentry);
 =======
 			touch_atime(&path);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			touch_atime(&path);
+>>>>>>> refs/remotes/origin/master
 
 		path_put(&path);
 
@@ -854,6 +993,7 @@ static struct sock *unix_find_other(struct net *net,
 		if (u) {
 			struct dentry *dentry;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dentry = unix_sk(u)->dentry;
 			if (dentry)
 				touch_atime(unix_sk(u)->mnt, dentry);
@@ -862,6 +1002,11 @@ static struct sock *unix_find_other(struct net *net,
 			if (dentry)
 				touch_atime(&unix_sk(u)->path);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			dentry = unix_sk(u)->path.dentry;
+			if (dentry)
+				touch_atime(&unix_sk(u)->path);
+>>>>>>> refs/remotes/origin/master
 		} else
 			goto fail;
 	}
@@ -874,6 +1019,37 @@ fail:
 	return NULL;
 }
 
+<<<<<<< HEAD
+=======
+static int unix_mknod(const char *sun_path, umode_t mode, struct path *res)
+{
+	struct dentry *dentry;
+	struct path path;
+	int err = 0;
+	/*
+	 * Get the parent directory, calculate the hash for last
+	 * component.
+	 */
+	dentry = kern_path_create(AT_FDCWD, sun_path, &path, 0);
+	err = PTR_ERR(dentry);
+	if (IS_ERR(dentry))
+		return err;
+
+	/*
+	 * All right, let's create it.
+	 */
+	err = security_path_mknod(&path, dentry, mode, 0);
+	if (!err) {
+		err = vfs_mknod(path.dentry->d_inode, dentry, mode, 0);
+		if (!err) {
+			res->mnt = mntget(path.mnt);
+			res->dentry = dget(dentry);
+		}
+	}
+	done_path_create(&path, dentry);
+	return err;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 {
@@ -881,6 +1057,7 @@ static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 	struct net *net = sock_net(sk);
 	struct unix_sock *u = unix_sk(sk);
 	struct sockaddr_un *sunaddr = (struct sockaddr_un *)uaddr;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct dentry *dentry = NULL;
 	struct nameidata nd;
@@ -891,6 +1068,11 @@ static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 >>>>>>> refs/remotes/origin/cm-10.0
 	int err;
 	unsigned hash;
+=======
+	char *sun_path = sunaddr->sun_path;
+	int err;
+	unsigned int hash;
+>>>>>>> refs/remotes/origin/master
 	struct unix_address *addr;
 	struct hlist_head *list;
 
@@ -908,7 +1090,13 @@ static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 		goto out;
 	addr_len = err;
 
+<<<<<<< HEAD
 	mutex_lock(&u->readlock);
+=======
+	err = mutex_lock_interruptible(&u->readlock);
+	if (err)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	err = -EINVAL;
 	if (u->addr)
@@ -924,6 +1112,7 @@ static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 	addr->hash = hash ^ sk->sk_type;
 	atomic_set(&addr->refcnt, 1);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (sunaddr->sun_path[0]) {
 		unsigned int mode;
@@ -999,6 +1188,26 @@ out_mknod_drop_write:
 =======
 	if (!sun_path[0]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sun_path[0]) {
+		struct path path;
+		umode_t mode = S_IFSOCK |
+		       (SOCK_INODE(sock)->i_mode & ~current_umask());
+		err = unix_mknod(sun_path, mode, &path);
+		if (err) {
+			if (err == -EEXIST)
+				err = -EADDRINUSE;
+			unix_release_addr(addr);
+			goto out_up;
+		}
+		addr->hash = UNIX_HASH_SIZE;
+		hash = path.dentry->d_inode->i_ino & (UNIX_HASH_SIZE-1);
+		spin_lock(&unix_table_lock);
+		u->path = path;
+		list = &unix_socket_table[hash];
+	} else {
+		spin_lock(&unix_table_lock);
+>>>>>>> refs/remotes/origin/master
 		err = -EADDRINUSE;
 		if (__unix_find_socket_byname(net, sunaddr, addr_len,
 					      sk->sk_type, hash)) {
@@ -1007,6 +1216,7 @@ out_mknod_drop_write:
 		}
 
 		list = &unix_socket_table[addr->hash];
+<<<<<<< HEAD
 	} else {
 		list = &unix_socket_table[dentry->d_inode->i_ino & (UNIX_HASH_SIZE-1)];
 <<<<<<< HEAD
@@ -1015,6 +1225,8 @@ out_mknod_drop_write:
 =======
 		u->path = path;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	err = 0;
@@ -1028,6 +1240,7 @@ out_up:
 	mutex_unlock(&u->readlock);
 out:
 	return err;
+<<<<<<< HEAD
 
 out_mknod_dput:
 	dput(dentry);
@@ -1044,6 +1257,8 @@ out_mknod_parent:
 		err = -EADDRINUSE;
 	unix_release_addr(addr);
 	goto out_up;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void unix_state_double_lock(struct sock *sk1, struct sock *sk2)
@@ -1078,7 +1293,11 @@ static int unix_dgram_connect(struct socket *sock, struct sockaddr *addr,
 	struct net *net = sock_net(sk);
 	struct sockaddr_un *sunaddr = (struct sockaddr_un *)addr;
 	struct sock *other;
+<<<<<<< HEAD
 	unsigned hash;
+=======
+	unsigned int hash;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (addr->sa_family != AF_UNSPEC) {
@@ -1176,7 +1395,11 @@ static int unix_stream_connect(struct socket *sock, struct sockaddr *uaddr,
 	struct sock *newsk = NULL;
 	struct sock *other = NULL;
 	struct sk_buff *skb = NULL;
+<<<<<<< HEAD
 	unsigned hash;
+=======
+	unsigned int hash;
+>>>>>>> refs/remotes/origin/master
 	int st;
 	int err;
 	long timeo;
@@ -1303,6 +1526,7 @@ restart:
 		newu->addr = otheru->addr;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (otheru->dentry) {
 		newu->dentry	= dget(otheru->dentry);
 		newu->mnt	= mntget(otheru->mnt);
@@ -1311,6 +1535,11 @@ restart:
 		path_get(&otheru->path);
 		newu->path = otheru->path;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (otheru->path.dentry) {
+		path_get(&otheru->path);
+		newu->path = otheru->path;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Set credentials */
@@ -1369,7 +1598,10 @@ static int unix_socketpair(struct socket *socka, struct socket *sockb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void unix_sock_inherit_flags(const struct socket *old,
 				    struct socket *new)
 {
@@ -1379,7 +1611,10 @@ static void unix_sock_inherit_flags(const struct socket *old,
 		set_bit(SOCK_PASSSEC, &new->flags);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int unix_accept(struct socket *sock, struct socket *newsock, int flags)
 {
 	struct sock *sk = sock->sk;
@@ -1415,9 +1650,13 @@ static int unix_accept(struct socket *sock, struct socket *newsock, int flags)
 	unix_state_lock(tsk);
 	newsock->state = SS_CONNECTED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unix_sock_inherit_flags(sock, newsock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unix_sock_inherit_flags(sock, newsock);
+>>>>>>> refs/remotes/origin/master
 	sock_graft(tsk, newsock);
 	unix_state_unlock(tsk);
 	return 0;
@@ -1479,7 +1718,10 @@ static void unix_destruct_scm(struct sk_buff *skb)
 	struct scm_cookie scm;
 	memset(&scm, 0, sizeof(scm));
 	scm.pid  = UNIXCB(skb).pid;
+<<<<<<< HEAD
 	scm.cred = UNIXCB(skb).cred;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (UNIXCB(skb).fp)
 		unix_detach_fds(&scm, skb);
 
@@ -1529,6 +1771,7 @@ static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool sen
 {
 	int err = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	UNIXCB(skb).pid  = get_pid(scm->pid);
 	UNIXCB(skb).cred = get_cred(scm->cred);
 =======
@@ -1537,6 +1780,12 @@ static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool sen
 	if (scm->cred)
 		UNIXCB(skb).cred = get_cred(scm->cred);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	UNIXCB(skb).pid  = get_pid(scm->pid);
+	UNIXCB(skb).uid = scm->creds.uid;
+	UNIXCB(skb).gid = scm->creds.gid;
+>>>>>>> refs/remotes/origin/master
 	UNIXCB(skb).fp = NULL;
 	if (scm->fp && send_fds)
 		err = unix_attach_fds(scm, skb);
@@ -1547,7 +1796,10 @@ static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool sen
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Some apps rely on write() giving SCM_CREDENTIALS
  * We include credentials if source or destination socket
  * asserted SOCK_PASSCRED.
@@ -1555,18 +1807,29 @@ static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool sen
 static void maybe_add_creds(struct sk_buff *skb, const struct socket *sock,
 			    const struct sock *other)
 {
+<<<<<<< HEAD
 	if (UNIXCB(skb).cred)
+=======
+	if (UNIXCB(skb).pid)
+>>>>>>> refs/remotes/origin/master
 		return;
 	if (test_bit(SOCK_PASSCRED, &sock->flags) ||
 	    !other->sk_socket ||
 	    test_bit(SOCK_PASSCRED, &other->sk_socket->flags)) {
 		UNIXCB(skb).pid  = get_pid(task_tgid(current));
+<<<<<<< HEAD
 		UNIXCB(skb).cred = get_current_cred();
+=======
+		current_uid_gid(&UNIXCB(skb).uid, &UNIXCB(skb).gid);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *	Send AF_UNIX data.
  */
 
@@ -1581,20 +1844,32 @@ static int unix_dgram_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	struct sock *other = NULL;
 	int namelen = 0; /* fake GCC */
 	int err;
+<<<<<<< HEAD
 	unsigned hash;
+=======
+	unsigned int hash;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff *skb;
 	long timeo;
 	struct scm_cookie tmp_scm;
 	int max_level;
+<<<<<<< HEAD
+=======
+	int data_len = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (NULL == siocb->scm)
 		siocb->scm = &tmp_scm;
 	wait_for_unix_gc();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = scm_send(sock, msg, siocb->scm);
 =======
 	err = scm_send(sock, msg, siocb->scm, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = scm_send(sock, msg, siocb->scm, false);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -1623,7 +1898,18 @@ static int unix_dgram_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	if (len > sk->sk_sndbuf - 32)
 		goto out;
 
+<<<<<<< HEAD
 	skb = sock_alloc_send_skb(sk, len, msg->msg_flags&MSG_DONTWAIT, &err);
+=======
+	if (len > SKB_MAX_ALLOC)
+		data_len = min_t(size_t,
+				 len - SKB_MAX_ALLOC,
+				 MAX_SKB_FRAGS * PAGE_SIZE);
+
+	skb = sock_alloc_send_pskb(sk, len - data_len, data_len,
+				   msg->msg_flags & MSG_DONTWAIT, &err,
+				   PAGE_ALLOC_COSTLY_ORDER);
+>>>>>>> refs/remotes/origin/master
 	if (skb == NULL)
 		goto out;
 
@@ -1633,8 +1919,15 @@ static int unix_dgram_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	max_level = err + 1;
 	unix_get_secdata(siocb->scm, skb);
 
+<<<<<<< HEAD
 	skb_reset_transport_header(skb);
 	err = memcpy_fromiovec(skb_put(skb, len), msg->msg_iov, len);
+=======
+	skb_put(skb, len - data_len);
+	skb->data_len = data_len;
+	skb->len = len;
+	err = skb_copy_datagram_from_iovec(skb, 0, msg->msg_iov, 0, len);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out_free;
 
@@ -1718,9 +2011,13 @@ restart:
 	if (sock_flag(other, SOCK_RCVTSTAMP))
 		__net_timestamp(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	maybe_add_creds(skb, sock, other);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	maybe_add_creds(skb, sock, other);
+>>>>>>> refs/remotes/origin/master
 	skb_queue_tail(&other->sk_receive_queue, skb);
 	if (max_level > unix_sk(other)->recursion_level)
 		unix_sk(other)->recursion_level = max_level;
@@ -1741,6 +2038,13 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+/* We use paged skbs for stream sockets, and limit occupancy to 32768
+ * bytes, and a minimun of a full page.
+ */
+#define UNIX_SKB_FRAGS_SZ (PAGE_SIZE << get_order(32768))
+>>>>>>> refs/remotes/origin/master
 
 static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 			       struct msghdr *msg, size_t len)
@@ -1754,15 +2058,23 @@ static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 	struct scm_cookie tmp_scm;
 	bool fds_sent = false;
 	int max_level;
+<<<<<<< HEAD
+=======
+	int data_len;
+>>>>>>> refs/remotes/origin/master
 
 	if (NULL == siocb->scm)
 		siocb->scm = &tmp_scm;
 	wait_for_unix_gc();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = scm_send(sock, msg, siocb->scm);
 =======
 	err = scm_send(sock, msg, siocb->scm, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = scm_send(sock, msg, siocb->scm, false);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 
@@ -1784,6 +2096,7 @@ static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 		goto pipe_err;
 
 	while (sent < len) {
+<<<<<<< HEAD
 		/*
 		 *	Optimisation for the fact that under 0.01% of X
 		 *	messages typically need breaking up.
@@ -1818,6 +2131,24 @@ static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 		size = min_t(int, size, skb_tailroom(skb));
 
 
+=======
+		size = len - sent;
+
+		/* Keep two messages in the pipe so it schedules better */
+		size = min_t(int, size, (sk->sk_sndbuf >> 1) - 64);
+
+		/* allow fallback to order-0 allocations */
+		size = min_t(int, size, SKB_MAX_HEAD(0) + UNIX_SKB_FRAGS_SZ);
+
+		data_len = max_t(int, 0, size - SKB_MAX_HEAD(0));
+
+		skb = sock_alloc_send_pskb(sk, size - data_len, data_len,
+					   msg->msg_flags & MSG_DONTWAIT, &err,
+					   get_order(UNIX_SKB_FRAGS_SZ));
+		if (!skb)
+			goto out_err;
+
+>>>>>>> refs/remotes/origin/master
 		/* Only send the fds in the first buffer */
 		err = unix_scm_to_skb(siocb->scm, skb, !fds_sent);
 		if (err < 0) {
@@ -1827,7 +2158,15 @@ static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 		max_level = err + 1;
 		fds_sent = true;
 
+<<<<<<< HEAD
 		err = memcpy_fromiovec(skb_put(skb, size), msg->msg_iov, size);
+=======
+		skb_put(skb, size - data_len);
+		skb->data_len = data_len;
+		skb->len = size;
+		err = skb_copy_datagram_from_iovec(skb, 0, msg->msg_iov,
+						   sent, size);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			kfree_skb(skb);
 			goto out_err;
@@ -1840,9 +2179,13 @@ static int unix_stream_sendmsg(struct kiocb *kiocb, struct socket *sock,
 			goto pipe_err_free;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		maybe_add_creds(skb, sock, other);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		maybe_add_creds(skb, sock, other);
+>>>>>>> refs/remotes/origin/master
 		skb_queue_tail(&other->sk_receive_queue, skb);
 		if (max_level > unix_sk(other)->recursion_level)
 			unix_sk(other)->recursion_level = max_level;
@@ -1904,7 +2247,10 @@ static void unix_copy_addr(struct msghdr *msg, struct sock *sk)
 {
 	struct unix_sock *u = unix_sk(sk);
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (u->addr) {
 		msg->msg_namelen = u->addr->len;
 		memcpy(msg->msg_name, u->addr->name, u->addr->len);
@@ -1923,16 +2269,23 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 	struct sk_buff *skb;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int peeked, skip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int peeked, skip;
+>>>>>>> refs/remotes/origin/master
 
 	err = -EOPNOTSUPP;
 	if (flags&MSG_OOB)
 		goto out;
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	err = mutex_lock_interruptible(&u->readlock);
 	if (err) {
 		err = sock_intr_errno(sock_rcvtimeo(sk, noblock));
@@ -1940,12 +2293,18 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = skb_recv_datagram(sk, flags, noblock, &err);
 =======
 	skip = sk_peek_offset(sk, flags);
 
 	skb = __skb_recv_datagram(sk, flags, &peeked, &skip, &err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skip = sk_peek_offset(sk, flags);
+
+	skb = __skb_recv_datagram(sk, flags, &peeked, &skip, &err);
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		unix_state_lock(sk);
 		/* Signal EOF on disconnected non-blocking SEQPACKET socket. */
@@ -1963,6 +2322,7 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 		unix_copy_addr(msg, skb->sk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (size > skb->len)
 		size = skb->len;
 	else if (size < skb->len)
@@ -1970,13 +2330,18 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 	err = skb_copy_datagram_iovec(skb, 0, msg->msg_iov, size);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (size > skb->len - skip)
 		size = skb->len - skip;
 	else if (size < skb->len - skip)
 		msg->msg_flags |= MSG_TRUNC;
 
 	err = skb_copy_datagram_iovec(skb, skip, msg->msg_iov, size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out_free;
 
@@ -1987,17 +2352,26 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 		siocb->scm = &tmp_scm;
 		memset(&tmp_scm, 0, sizeof(tmp_scm));
 	}
+<<<<<<< HEAD
 	scm_set_cred(siocb->scm, UNIXCB(skb).pid, UNIXCB(skb).cred);
+=======
+	scm_set_cred(siocb->scm, UNIXCB(skb).pid, UNIXCB(skb).uid, UNIXCB(skb).gid);
+>>>>>>> refs/remotes/origin/master
 	unix_set_secdata(siocb->scm, skb);
 
 	if (!(flags & MSG_PEEK)) {
 		if (UNIXCB(skb).fp)
 			unix_detach_fds(siocb->scm, skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		sk_peek_offset_bwd(sk, skb->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		sk_peek_offset_bwd(sk, skb->len);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* It is questionable: on PEEK we could:
 		   - do not return fds - good, but too simple 8)
@@ -2012,11 +2386,14 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 
 		*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (UNIXCB(skb).fp)
 			siocb->scm->fp = scm_fp_dup(UNIXCB(skb).fp);
 	}
 	err = size;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		sk_peek_offset_fwd(sk, size);
 
@@ -2024,7 +2401,10 @@ static int unix_dgram_recvmsg(struct kiocb *iocb, struct socket *sock,
 			siocb->scm->fp = scm_fp_dup(UNIXCB(skb).fp);
 	}
 	err = (flags & MSG_TRUNC) ? skb->len - skip : size;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	scm_recv(sock, msg, siocb->scm, flags);
 
@@ -2037,10 +2417,17 @@ out:
 }
 
 /*
+<<<<<<< HEAD
  *	Sleep until data has arrive. But check for races..
  */
 
 static long unix_stream_data_wait(struct sock *sk, long timeo)
+=======
+ *	Sleep until more data has arrived. But check for races..
+ */
+static long unix_stream_data_wait(struct sock *sk, long timeo,
+				  struct sk_buff *last)
+>>>>>>> refs/remotes/origin/master
 {
 	DEFINE_WAIT(wait);
 
@@ -2049,7 +2436,11 @@ static long unix_stream_data_wait(struct sock *sk, long timeo)
 	for (;;) {
 		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
 
+<<<<<<< HEAD
 		if (!skb_queue_empty(&sk->sk_receive_queue) ||
+=======
+		if (skb_peek_tail(&sk->sk_receive_queue) != last ||
+>>>>>>> refs/remotes/origin/master
 		    sk->sk_err ||
 		    (sk->sk_shutdown & RCV_SHUTDOWN) ||
 		    signal_pending(current) ||
@@ -2058,7 +2449,11 @@ static long unix_stream_data_wait(struct sock *sk, long timeo)
 
 		set_bit(SOCK_ASYNC_WAITDATA, &sk->sk_socket->flags);
 		unix_state_unlock(sk);
+<<<<<<< HEAD
 		timeo = schedule_timeout(timeo);
+=======
+		timeo = freezable_schedule_timeout(timeo);
+>>>>>>> refs/remotes/origin/master
 		unix_state_lock(sk);
 		clear_bit(SOCK_ASYNC_WAITDATA, &sk->sk_socket->flags);
 	}
@@ -2068,7 +2463,14 @@ static long unix_stream_data_wait(struct sock *sk, long timeo)
 	return timeo;
 }
 
+<<<<<<< HEAD
 
+=======
+static unsigned int unix_skb_len(const struct sk_buff *skb)
+{
+	return skb->len - UNIXCB(skb).consumed;
+}
+>>>>>>> refs/remotes/origin/master
 
 static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 			       struct msghdr *msg, size_t size,
@@ -2085,9 +2487,13 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 	int err = 0;
 	long timeo;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int skip;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int skip;
+>>>>>>> refs/remotes/origin/master
 
 	err = -EINVAL;
 	if (sk->sk_state != TCP_ESTABLISHED)
@@ -2100,8 +2506,11 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 	target = sock_rcvlowat(sk, flags&MSG_WAITALL, size);
 	timeo = sock_rcvtimeo(sk, flags&MSG_DONTWAIT);
 
+<<<<<<< HEAD
 	msg->msg_namelen = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Lock the socket to prevent queue disordering
 	 * while sleeps in memcpy_tomsg
 	 */
@@ -2118,6 +2527,7 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	skip = sk_peek_offset(sk, flags);
 
@@ -2133,6 +2543,15 @@ static int unix_stream_recvmsg(struct kiocb *iocb, struct socket *sock,
 		skb = skb_peek(&sk->sk_receive_queue);
 again:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	do {
+		int chunk;
+		struct sk_buff *skb, *last;
+
+		unix_state_lock(sk);
+		last = skb = skb_peek(&sk->sk_receive_queue);
+again:
+>>>>>>> refs/remotes/origin/master
 		if (skb == NULL) {
 			unix_sk(sk)->recursion_level = 0;
 			if (copied >= target)
@@ -2154,7 +2573,11 @@ again:
 				break;
 			mutex_unlock(&u->readlock);
 
+<<<<<<< HEAD
 			timeo = unix_stream_data_wait(sk, timeo);
+=======
+			timeo = unix_stream_data_wait(sk, timeo, last);
+>>>>>>> refs/remotes/origin/master
 
 			if (signal_pending(current)
 			    ||  mutex_lock_interruptible(&u->readlock)) {
@@ -2168,6 +2591,7 @@ again:
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 		if (skip >= skb->len) {
@@ -2177,11 +2601,24 @@ again:
 		}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+		skip = sk_peek_offset(sk, flags);
+		while (skip >= unix_skb_len(skb)) {
+			skip -= unix_skb_len(skb);
+			last = skb;
+			skb = skb_peek_next(skb, &sk->sk_receive_queue);
+			if (!skb)
+				goto again;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		unix_state_unlock(sk);
 
 		if (check_creds) {
 			/* Never glue messages from different writers */
 			if ((UNIXCB(skb).pid  != siocb->scm->pid) ||
+<<<<<<< HEAD
 <<<<<<< HEAD
 			    (UNIXCB(skb).cred != siocb->scm->cred)) {
 				skb_queue_head(&sk->sk_receive_queue, skb);
@@ -2194,6 +2631,14 @@ again:
 		} else if (test_bit(SOCK_PASSCRED, &sock->flags)) {
 			/* Copy credentials */
 			scm_set_cred(siocb->scm, UNIXCB(skb).pid, UNIXCB(skb).cred);
+=======
+			    !uid_eq(UNIXCB(skb).uid, siocb->scm->creds.uid) ||
+			    !gid_eq(UNIXCB(skb).gid, siocb->scm->creds.gid))
+				break;
+		} else if (test_bit(SOCK_PASSCRED, &sock->flags)) {
+			/* Copy credentials */
+			scm_set_cred(siocb->scm, UNIXCB(skb).pid, UNIXCB(skb).uid, UNIXCB(skb).gid);
+>>>>>>> refs/remotes/origin/master
 			check_creds = 1;
 		}
 
@@ -2204,6 +2649,7 @@ again:
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		chunk = min_t(unsigned int, skb->len, size);
 		if (memcpy_toiovec(msg->msg_iov, skb->data, chunk)) {
 			skb_queue_head(&sk->sk_receive_queue, skb);
@@ -2211,6 +2657,11 @@ again:
 		chunk = min_t(unsigned int, skb->len - skip, size);
 		if (memcpy_toiovec(msg->msg_iov, skb->data + skip, chunk)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		chunk = min_t(unsigned int, unix_skb_len(skb) - skip, size);
+		if (skb_copy_datagram_iovec(skb, UNIXCB(skb).consumed + skip,
+					    msg->msg_iov, chunk)) {
+>>>>>>> refs/remotes/origin/master
 			if (copied == 0)
 				copied = -EFAULT;
 			break;
@@ -2220,6 +2671,7 @@ again:
 
 		/* Mark read part of skb as used */
 		if (!(flags & MSG_PEEK)) {
+<<<<<<< HEAD
 			skb_pull(skb, chunk);
 
 <<<<<<< HEAD
@@ -2233,16 +2685,27 @@ again:
 			}
 
 =======
+=======
+			UNIXCB(skb).consumed += chunk;
+
+>>>>>>> refs/remotes/origin/master
 			sk_peek_offset_bwd(sk, chunk);
 
 			if (UNIXCB(skb).fp)
 				unix_detach_fds(siocb->scm, skb);
 
+<<<<<<< HEAD
 			if (skb->len)
 				break;
 
 			skb_unlink(skb, &sk->sk_receive_queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (unix_skb_len(skb))
+				break;
+
+			skb_unlink(skb, &sk->sk_receive_queue);
+>>>>>>> refs/remotes/origin/master
 			consume_skb(skb);
 
 			if (siocb->scm->fp)
@@ -2254,12 +2717,17 @@ again:
 				siocb->scm->fp = scm_fp_dup(UNIXCB(skb).fp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* put message back and return */
 			skb_queue_head(&sk->sk_receive_queue, skb);
 =======
 			sk_peek_offset_fwd(sk, chunk);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sk_peek_offset_fwd(sk, chunk);
+
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	} while (size);
@@ -2275,10 +2743,21 @@ static int unix_shutdown(struct socket *sock, int mode)
 	struct sock *sk = sock->sk;
 	struct sock *other;
 
+<<<<<<< HEAD
 	mode = (mode+1)&(RCV_SHUTDOWN|SEND_SHUTDOWN);
 
 	if (!mode)
 		return 0;
+=======
+	if (mode < SHUT_RD || mode > SHUT_RDWR)
+		return -EINVAL;
+	/* This maps:
+	 * SHUT_RD   (0) -> RCV_SHUTDOWN  (1)
+	 * SHUT_WR   (1) -> SEND_SHUTDOWN (2)
+	 * SHUT_RDWR (2) -> SHUTDOWN_MASK (3)
+	 */
+	++mode;
+>>>>>>> refs/remotes/origin/master
 
 	unix_state_lock(sk);
 	sk->sk_shutdown |= mode;
@@ -2313,7 +2792,10 @@ static int unix_shutdown(struct socket *sock, int mode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 long unix_inq_len(struct sock *sk)
 {
 	struct sk_buff *skb;
@@ -2326,7 +2808,11 @@ long unix_inq_len(struct sock *sk)
 	if (sk->sk_type == SOCK_STREAM ||
 	    sk->sk_type == SOCK_SEQPACKET) {
 		skb_queue_walk(&sk->sk_receive_queue, skb)
+<<<<<<< HEAD
 			amount += skb->len;
+=======
+			amount += unix_skb_len(skb);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		skb = skb_peek(&sk->sk_receive_queue);
 		if (skb)
@@ -2344,7 +2830,10 @@ long unix_outq_len(struct sock *sk)
 }
 EXPORT_SYMBOL_GPL(unix_outq_len);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int unix_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 {
 	struct sock *sk = sock->sk;
@@ -2353,6 +2842,7 @@ static int unix_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 
 	switch (cmd) {
 	case SIOCOUTQ:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		amount = sk_wmem_alloc_get(sk);
 		err = put_user(amount, (int __user *)arg);
@@ -2382,6 +2872,8 @@ static int unix_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 		}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		amount = unix_outq_len(sk);
 		err = put_user(amount, (int __user *)arg);
 		break;
@@ -2392,7 +2884,10 @@ static int unix_ioctl(struct socket *sock, unsigned int cmd, unsigned long arg)
 		else
 			err = put_user(amount, (int __user *)arg);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		err = -ENOIOCTLCMD;
 		break;
@@ -2446,7 +2941,13 @@ static unsigned int unix_dgram_poll(struct file *file, struct socket *sock,
 
 	/* exceptional events? */
 	if (sk->sk_err || !skb_queue_empty(&sk->sk_error_queue))
+<<<<<<< HEAD
 		mask |= POLLERR;
+=======
+		mask |= POLLERR |
+			(sock_flag(sk, SOCK_SELECT_ERR_QUEUE) ? POLLPRI : 0);
+
+>>>>>>> refs/remotes/origin/master
 	if (sk->sk_shutdown & RCV_SHUTDOWN)
 		mask |= POLLRDHUP | POLLIN | POLLRDNORM;
 	if (sk->sk_shutdown == SHUTDOWN_MASK)
@@ -2467,10 +2968,14 @@ static unsigned int unix_dgram_poll(struct file *file, struct socket *sock,
 
 	/* No write status requested, avoid expensive OUT tests. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (wait && !(wait->key & (POLLWRBAND | POLLWRNORM | POLLOUT)))
 =======
 	if (!(poll_requested_events(wait) & (POLLWRBAND|POLLWRNORM|POLLOUT)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(poll_requested_events(wait) & (POLLWRBAND|POLLWRNORM|POLLOUT)))
+>>>>>>> refs/remotes/origin/master
 		return mask;
 
 	writable = unix_writable(sk);
@@ -2493,6 +2998,7 @@ static unsigned int unix_dgram_poll(struct file *file, struct socket *sock,
 }
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 static struct sock *first_unix_socket(int *i)
 {
 	for (*i = 0; *i <= UNIX_HASH_SIZE; (*i)++) {
@@ -2534,6 +3040,56 @@ static struct sock *unix_seq_idx(struct seq_file *seq, loff_t pos)
 			return s;
 		++off;
 	}
+=======
+
+#define BUCKET_SPACE (BITS_PER_LONG - (UNIX_HASH_BITS + 1) - 1)
+
+#define get_bucket(x) ((x) >> BUCKET_SPACE)
+#define get_offset(x) ((x) & ((1L << BUCKET_SPACE) - 1))
+#define set_bucket_offset(b, o) ((b) << BUCKET_SPACE | (o))
+
+static struct sock *unix_from_bucket(struct seq_file *seq, loff_t *pos)
+{
+	unsigned long offset = get_offset(*pos);
+	unsigned long bucket = get_bucket(*pos);
+	struct sock *sk;
+	unsigned long count = 0;
+
+	for (sk = sk_head(&unix_socket_table[bucket]); sk; sk = sk_next(sk)) {
+		if (sock_net(sk) != seq_file_net(seq))
+			continue;
+		if (++count == offset)
+			break;
+	}
+
+	return sk;
+}
+
+static struct sock *unix_next_socket(struct seq_file *seq,
+				     struct sock *sk,
+				     loff_t *pos)
+{
+	unsigned long bucket;
+
+	while (sk > (struct sock *)SEQ_START_TOKEN) {
+		sk = sk_next(sk);
+		if (!sk)
+			goto next_bucket;
+		if (sock_net(sk) == seq_file_net(seq))
+			return sk;
+	}
+
+	do {
+		sk = unix_from_bucket(seq, pos);
+		if (sk)
+			return sk;
+
+next_bucket:
+		bucket = get_bucket(*pos) + 1;
+		*pos = set_bucket_offset(bucket, 1);
+	} while (bucket < ARRAY_SIZE(unix_socket_table));
+
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -2541,11 +3097,23 @@ static void *unix_seq_start(struct seq_file *seq, loff_t *pos)
 	__acquires(unix_table_lock)
 {
 	spin_lock(&unix_table_lock);
+<<<<<<< HEAD
 	return *pos ? unix_seq_idx(seq, *pos - 1) : SEQ_START_TOKEN;
+=======
+
+	if (!*pos)
+		return SEQ_START_TOKEN;
+
+	if (get_bucket(*pos) >= ARRAY_SIZE(unix_socket_table))
+		return NULL;
+
+	return unix_next_socket(seq, NULL, pos);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *unix_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 {
+<<<<<<< HEAD
 	struct unix_iter_state *iter = seq->private;
 	struct sock *sk = v;
 	++*pos;
@@ -2557,6 +3125,10 @@ static void *unix_seq_next(struct seq_file *seq, void *v, loff_t *pos)
 	while (sk && (sock_net(sk) != seq_file_net(seq)))
 		sk = next_unix_socket(&iter->i, sk);
 	return sk;
+=======
+	++*pos;
+	return unix_next_socket(seq, v, pos);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void unix_seq_stop(struct seq_file *seq, void *v)
@@ -2619,7 +3191,11 @@ static const struct seq_operations unix_seq_ops = {
 static int unix_seq_open(struct inode *inode, struct file *file)
 {
 	return seq_open_net(inode, file, &unix_seq_ops,
+<<<<<<< HEAD
 			    sizeof(struct unix_iter_state));
+=======
+			    sizeof(struct seq_net_private));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations unix_seq_fops = {
@@ -2648,7 +3224,11 @@ static int __net_init unix_net_init(struct net *net)
 		goto out;
 
 #ifdef CONFIG_PROC_FS
+<<<<<<< HEAD
 	if (!proc_net_fops_create(net, "unix", 0, &unix_seq_fops)) {
+=======
+	if (!proc_create("unix", 0, net->proc_net, &unix_seq_fops)) {
+>>>>>>> refs/remotes/origin/master
 		unix_sysctl_unregister(net);
 		goto out;
 	}
@@ -2661,7 +3241,11 @@ out:
 static void __net_exit unix_net_exit(struct net *net)
 {
 	unix_sysctl_unregister(net);
+<<<<<<< HEAD
 	proc_net_remove(net, "unix");
+=======
+	remove_proc_entry("unix", net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct pernet_operations unix_net_ops = {
@@ -2672,9 +3256,14 @@ static struct pernet_operations unix_net_ops = {
 static int __init af_unix_init(void)
 {
 	int rc = -1;
+<<<<<<< HEAD
 	struct sk_buff *dummy_skb;
 
 	BUILD_BUG_ON(sizeof(struct unix_skb_parms) > sizeof(dummy_skb->cb));
+=======
+
+	BUILD_BUG_ON(sizeof(struct unix_skb_parms) > FIELD_SIZEOF(struct sk_buff, cb));
+>>>>>>> refs/remotes/origin/master
 
 	rc = proto_register(&unix_proto, 1);
 	if (rc != 0) {

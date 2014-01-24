@@ -9,6 +9,10 @@
  *
  */
 #include <asm/apic.h>
+<<<<<<< HEAD
+=======
+#include <asm/nmi.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/cpumask.h>
 #include <linux/kdebug.h>
@@ -61,6 +65,7 @@ void arch_trigger_all_cpu_backtrace(void)
 
 static int __kprobes
 <<<<<<< HEAD
+<<<<<<< HEAD
 arch_trigger_all_cpu_backtrace_handler(struct notifier_block *self,
 			 unsigned long cmd, void *__args)
 {
@@ -78,11 +83,16 @@ arch_trigger_all_cpu_backtrace_handler(struct notifier_block *self,
 
 	regs = args->regs;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 arch_trigger_all_cpu_backtrace_handler(unsigned int cmd, struct pt_regs *regs)
 {
 	int cpu;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cpu = smp_processor_id();
 
 	if (cpumask_test_cpu(cpu, to_cpumask(backtrace_mask))) {
@@ -93,6 +103,7 @@ arch_trigger_all_cpu_backtrace_handler(unsigned int cmd, struct pt_regs *regs)
 		show_regs(regs);
 		arch_spin_unlock(&lock);
 		cpumask_clear_cpu(cpu, to_cpumask(backtrace_mask));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return NOTIFY_STOP;
 	}
@@ -110,6 +121,8 @@ static int __init register_trigger_all_cpu_backtrace(void)
 {
 	register_die_notifier(&backtrace_notifier);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return NMI_HANDLED;
 	}
 
@@ -120,7 +133,10 @@ static int __init register_trigger_all_cpu_backtrace(void)
 {
 	register_nmi_handler(NMI_LOCAL, arch_trigger_all_cpu_backtrace_handler,
 				0, "arch_bt");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 early_initcall(register_trigger_all_cpu_backtrace);

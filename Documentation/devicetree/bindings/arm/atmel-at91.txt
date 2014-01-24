@@ -7,6 +7,15 @@ PIT Timer required properties:
 - interrupts: Should contain interrupt for the PIT which is the IRQ line
   shared across all System Controller members.
 
+<<<<<<< HEAD
+=======
+System Timer (ST) required properties:
+- compatible: Should be "atmel,at91rm9200-st"
+- reg: Should contain registers location and length
+- interrupts: Should contain interrupt for the ST which is the IRQ line
+  shared across all System Controller members.
+
+>>>>>>> refs/remotes/origin/master
 TC/TCLIB Timer required properties:
 - compatible: Should be "atmel,<chip>-tcb".
   <chip> can be "at91rm9200" or "at91sam9x5"
@@ -14,6 +23,13 @@ TC/TCLIB Timer required properties:
 - interrupts: Should contain all interrupts for the TC block
   Note that you can specify several interrupt cells if the TC
   block has one interrupt per channel.
+<<<<<<< HEAD
+=======
+- clock-names: tuple listing input clock names.
+	Required elements: "t0_clk"
+	Optional elements: "t1_clk", "t2_clk"
+- clocks: phandles to input clocks.
+>>>>>>> refs/remotes/origin/master
 
 Examples:
 
@@ -22,6 +38,11 @@ One interrupt per TC block:
 		compatible = "atmel,at91rm9200-tcb";
 		reg = <0xfff7c000 0x100>;
 		interrupts = <18 4>;
+<<<<<<< HEAD
+=======
+		clocks = <&tcb0_clk>;
+		clock-names = "t0_clk";
+>>>>>>> refs/remotes/origin/master
 	};
 
 One interrupt per TC channel in a TC block:
@@ -29,6 +50,11 @@ One interrupt per TC channel in a TC block:
 		compatible = "atmel,at91rm9200-tcb";
 		reg = <0xfffdc000 0x100>;
 		interrupts = <26 4 27 4 28 4>;
+<<<<<<< HEAD
+=======
+		clocks = <&tcb1_clk>;
+		clock-names = "t0_clk";
+>>>>>>> refs/remotes/origin/master
 	};
 
 RSTC Reset Controller required properties:

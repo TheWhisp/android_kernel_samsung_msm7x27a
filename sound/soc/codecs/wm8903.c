@@ -1,8 +1,13 @@
 /*
  * wm8903.c  --  WM8903 ALSA SoC Audio driver
  *
+<<<<<<< HEAD
  * Copyright 2008 Wolfson Microelectronics
  * Copyright 2011 NVIDIA, Inc.
+=======
+ * Copyright 2008-12 Wolfson Microelectronics
+ * Copyright 2011-2012 NVIDIA, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
  *
@@ -24,6 +29,7 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 =======
@@ -31,6 +37,11 @@
 #include <linux/slab.h>
 #include <linux/irq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+#include <linux/slab.h>
+#include <linux/irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/jack.h>
 #include <sound/pcm.h>
@@ -44,6 +55,7 @@
 #include "wm8903.h"
 
 /* Register defaults at reset */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u16 wm8903_reg_defaults[] = {
 	0x8903,     /* R0   - SW Reset and ID */
@@ -224,6 +236,8 @@ static u16 wm8903_reg_defaults[] = {
 struct wm8903_priv {
 	struct snd_soc_codec *codec;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct reg_default wm8903_reg_defaults[] = {
 	{ 4,  0x0018 },     /* R4   - Bias Control 0 */
 	{ 5,  0x0000 },     /* R5   - VMID Control 0 */
@@ -301,9 +315,15 @@ static const struct reg_default wm8903_reg_defaults[] = {
 
 struct wm8903_priv {
 	struct wm8903_platform_data *pdata;
+<<<<<<< HEAD
 	struct snd_soc_codec *codec;
 	struct regmap *regmap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct device *dev;
+	struct snd_soc_codec *codec;
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 
 	int sysclk;
 	int irq;
@@ -329,8 +349,11 @@ struct wm8903_priv {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8903_volatile_register(struct snd_soc_codec *codec, unsigned int reg)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool wm8903_readable_register(struct device *dev, unsigned int reg)
 {
 	switch (reg) {
@@ -418,7 +441,10 @@ static bool wm8903_readable_register(struct device *dev, unsigned int reg)
 }
 
 static bool wm8903_volatile_register(struct device *dev, unsigned int reg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (reg) {
 	case WM8903_SW_RESET_AND_ID:
@@ -437,6 +463,7 @@ static bool wm8903_volatile_register(struct device *dev, unsigned int reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void wm8903_reset(struct snd_soc_codec *codec)
 {
 	snd_soc_write(codec, WM8903_SW_RESET_AND_ID, 0);
@@ -446,6 +473,8 @@ static void wm8903_reset(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int wm8903_cp_event(struct snd_soc_dapm_widget *w,
 			   struct snd_kcontrol *kcontrol, int event)
 {
@@ -563,9 +592,13 @@ static void wm8903_seq_notifier(struct snd_soc_dapm_context *dapm,
 static int wm8903_class_w_put(struct snd_kcontrol *kcontrol,
 			      struct snd_ctl_elem_value *ucontrol)
 {
+<<<<<<< HEAD
 	struct snd_soc_dapm_widget_list *wlist = snd_kcontrol_chip(kcontrol);
 	struct snd_soc_dapm_widget *widget = wlist->widgets[0];
 	struct snd_soc_codec *codec = widget->codec;
+=======
+	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
+>>>>>>> refs/remotes/origin/master
 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
 	u16 reg;
 	int ret;
@@ -602,10 +635,15 @@ static int wm8903_class_w_put(struct snd_kcontrol *kcontrol,
 }
 
 #define SOC_DAPM_SINGLE_W(xname, reg, shift, max, invert) \
+<<<<<<< HEAD
 {	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
 	.info = snd_soc_info_volsw, \
 	.get = snd_soc_dapm_get_volsw, .put = wm8903_class_w_put, \
 	.private_value =  SOC_SINGLE_VALUE(reg, shift, max, invert) }
+=======
+	SOC_SINGLE_EXT(xname, reg, shift, max, invert, \
+		snd_soc_dapm_get_volsw, wm8903_class_w_put)
+>>>>>>> refs/remotes/origin/master
 
 
 static int wm8903_deemph[] = { 0, 32000, 44100, 48000 };
@@ -677,6 +715,11 @@ static int wm8903_put_deemph(struct snd_kcontrol *kcontrol,
 /* ALSA can only do steps of .01dB */
 static const DECLARE_TLV_DB_SCALE(digital_tlv, -7200, 75, 1);
 
+<<<<<<< HEAD
+=======
+static const DECLARE_TLV_DB_SCALE(dac_boost_tlv, 0, 600, 0);
+
+>>>>>>> refs/remotes/origin/master
 static const DECLARE_TLV_DB_SCALE(digital_sidetone_tlv, -3600, 300, 0);
 static const DECLARE_TLV_DB_SCALE(out_tlv, -5700, 100, 0);
 
@@ -897,6 +940,11 @@ SOC_ENUM("DAC Mute Mode", mute_mode),
 SOC_SINGLE("DAC Mono Switch", WM8903_DAC_DIGITAL_1, 12, 1, 0),
 SOC_ENUM("DAC Companding Mode", dac_companding),
 SOC_SINGLE("DAC Companding Switch", WM8903_AUDIO_INTERFACE_0, 1, 1, 0),
+<<<<<<< HEAD
+=======
+SOC_SINGLE_TLV("DAC Boost Volume", WM8903_AUDIO_INTERFACE_0, 9, 3, 0,
+	       dac_boost_tlv),
+>>>>>>> refs/remotes/origin/master
 SOC_SINGLE_BOOL_EXT("Playback Deemphasis Switch", 0,
 		    wm8903_get_deemph, wm8903_put_deemph),
 
@@ -1021,10 +1069,14 @@ SND_SOC_DAPM_OUTPUT("ROP"),
 SND_SOC_DAPM_OUTPUT("RON"),
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 SND_SOC_DAPM_MICBIAS("Mic Bias", WM8903_MIC_BIAS_CONTROL_0, 0, 0),
 =======
 SND_SOC_DAPM_SUPPLY("MICBIAS", WM8903_MIC_BIAS_CONTROL_0, 0, 0, NULL, 0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_DAPM_SUPPLY("MICBIAS", WM8903_MIC_BIAS_CONTROL_0, 0, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_MUX("Left Input Mux", SND_SOC_NOPM, 0, 0, &linput_mux),
 SND_SOC_DAPM_MUX("Left Input Inverting Mux", SND_SOC_NOPM, 0, 0,
@@ -1134,10 +1186,14 @@ static const struct snd_soc_dapm_route wm8903_intercon[] = {
 
 	{ "CLK_DSP", NULL, "CLK_SYS" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ "Mic Bias", NULL, "CLK_SYS" },
 =======
 	{ "MICBIAS", NULL, "CLK_SYS" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "MICBIAS", NULL, "CLK_SYS" },
+>>>>>>> refs/remotes/origin/master
 	{ "HPL_DCS", NULL, "CLK_SYS" },
 	{ "HPR_DCS", NULL, "CLK_SYS" },
 	{ "LINEOUTL_DCS", NULL, "CLK_SYS" },
@@ -1642,8 +1698,12 @@ static int wm8903_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec =rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
 	int fs = params_rate(params);
 	int bclk;
@@ -1846,6 +1906,7 @@ EXPORT_SYMBOL_GPL(wm8903_mic_detect);
 
 static irqreturn_t wm8903_irq(int irq, void *data)
 {
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = data;
 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
 	int mic_report;
@@ -1857,6 +1918,29 @@ static irqreturn_t wm8903_irq(int irq, void *data)
 
 	if (int_val & WM8903_WSEQ_BUSY_EINT) {
 		dev_warn(codec->dev, "Write sequencer done\n");
+=======
+	struct wm8903_priv *wm8903 = data;
+	int mic_report, ret;
+	unsigned int int_val, mask, int_pol;
+
+	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_STATUS_1_MASK,
+			  &mask);
+	if (ret != 0) {
+		dev_err(wm8903->dev, "Failed to read IRQ mask: %d\n", ret);
+		return IRQ_NONE;
+	}
+
+	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_STATUS_1, &int_val);
+	if (ret != 0) {
+		dev_err(wm8903->dev, "Failed to read IRQ status: %d\n", ret);
+		return IRQ_NONE;
+	}
+
+	int_val &= ~mask;
+
+	if (int_val & WM8903_WSEQ_BUSY_EINT) {
+		dev_warn(wm8903->dev, "Write sequencer done\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1867,6 +1951,7 @@ static irqreturn_t wm8903_irq(int irq, void *data)
 	 * the polarity register.
 	 */
 	mic_report = wm8903->mic_last_report;
+<<<<<<< HEAD
 	int_pol = snd_soc_read(codec, WM8903_INTERRUPT_POLARITY_1);
 
 #ifndef CONFIG_SND_SOC_WM8903_MODULE
@@ -1876,13 +1961,34 @@ static irqreturn_t wm8903_irq(int irq, void *data)
 
 	if (int_val & WM8903_MICSHRT_EINT) {
 		dev_dbg(codec->dev, "Microphone short (pol=%x)\n", int_pol);
+=======
+	ret = regmap_read(wm8903->regmap, WM8903_INTERRUPT_POLARITY_1,
+			  &int_pol);
+	if (ret != 0) {
+		dev_err(wm8903->dev, "Failed to read interrupt polarity: %d\n",
+			ret);
+		return IRQ_HANDLED;
+	}
+
+#ifndef CONFIG_SND_SOC_WM8903_MODULE
+	if (int_val & (WM8903_MICSHRT_EINT | WM8903_MICDET_EINT))
+		trace_snd_soc_jack_irq(dev_name(wm8903->dev));
+#endif
+
+	if (int_val & WM8903_MICSHRT_EINT) {
+		dev_dbg(wm8903->dev, "Microphone short (pol=%x)\n", int_pol);
+>>>>>>> refs/remotes/origin/master
 
 		mic_report ^= wm8903->mic_short;
 		int_pol ^= WM8903_MICSHRT_INV;
 	}
 
 	if (int_val & WM8903_MICDET_EINT) {
+<<<<<<< HEAD
 		dev_dbg(codec->dev, "Microphone detect (pol=%x)\n", int_pol);
+=======
+		dev_dbg(wm8903->dev, "Microphone detect (pol=%x)\n", int_pol);
+>>>>>>> refs/remotes/origin/master
 
 		mic_report ^= wm8903->mic_det;
 		int_pol ^= WM8903_MICDET_INV;
@@ -1890,8 +1996,13 @@ static irqreturn_t wm8903_irq(int irq, void *data)
 		msleep(wm8903->mic_delay);
 	}
 
+<<<<<<< HEAD
 	snd_soc_update_bits(codec, WM8903_INTERRUPT_POLARITY_1,
 			    WM8903_MICSHRT_INV | WM8903_MICDET_INV, int_pol);
+=======
+	regmap_update_bits(wm8903->regmap, WM8903_INTERRUPT_POLARITY_1,
+			   WM8903_MICSHRT_INV | WM8903_MICDET_INV, int_pol);
+>>>>>>> refs/remotes/origin/master
 
 	snd_soc_jack_report(wm8903->mic_jack, mic_report,
 			    wm8903->mic_short | wm8903->mic_det);
@@ -1924,10 +2035,14 @@ static irqreturn_t wm8903_irq(int irq, void *data)
 			SNDRV_PCM_FMTBIT_S24_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8903_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm8903_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8903_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8903_hw_params,
 	.digital_mute	= wm8903_digital_mute,
 	.set_fmt	= wm8903_set_dai_fmt,
@@ -1955,10 +2070,14 @@ static struct snd_soc_dai_driver wm8903_dai = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8903_suspend(struct snd_soc_codec *codec, pm_message_t state)
 =======
 static int wm8903_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm8903_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	wm8903_set_bias_level(codec, SND_SOC_BIAS_OFF);
 
@@ -1967,6 +2086,7 @@ static int wm8903_suspend(struct snd_soc_codec *codec)
 
 static int wm8903_resume(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 	u16 *reg_cache = codec->reg_cache;
@@ -1986,12 +2106,17 @@ static int wm8903_resume(struct snd_soc_codec *codec)
 		dev_err(codec->dev, "Failed to allocate temporary cache\n");
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
 
 	regcache_sync(wm8903->regmap);
 
 	wm8903_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2013,37 +2138,56 @@ static int wm8903_gpio_request(struct gpio_chip *chip, unsigned offset)
 static int wm8903_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
 {
 	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = wm8903->codec;
 	unsigned int mask, val;
 <<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int mask, val;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	mask = WM8903_GP1_FN_MASK | WM8903_GP1_DIR_MASK;
 	val = (WM8903_GPn_FN_GPIO_INPUT << WM8903_GP1_FN_SHIFT) |
 		WM8903_GP1_DIR;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
 				   mask, val);
 =======
 	ret = snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
 				  mask, val);
+=======
+	ret = regmap_update_bits(wm8903->regmap,
+				 WM8903_GPIO_CONTROL_1 + offset, mask, val);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wm8903_gpio_get(struct gpio_chip *chip, unsigned offset)
 {
 	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = wm8903->codec;
 	int reg;
 
 	reg = snd_soc_read(codec, WM8903_GPIO_CONTROL_1 + offset);
+=======
+	unsigned int reg;
+
+	regmap_read(wm8903->regmap, WM8903_GPIO_CONTROL_1 + offset, &reg);
+>>>>>>> refs/remotes/origin/master
 
 	return (reg & WM8903_GP1_LVL_MASK) >> WM8903_GP1_LVL_SHIFT;
 }
@@ -2052,38 +2196,58 @@ static int wm8903_gpio_direction_out(struct gpio_chip *chip,
 				     unsigned offset, int value)
 {
 	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = wm8903->codec;
 	unsigned int mask, val;
 <<<<<<< HEAD
 =======
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int mask, val;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	mask = WM8903_GP1_FN_MASK | WM8903_GP1_DIR_MASK | WM8903_GP1_LVL_MASK;
 	val = (WM8903_GPn_FN_GPIO_OUTPUT << WM8903_GP1_FN_SHIFT) |
 		(value << WM8903_GP2_LVL_SHIFT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
 				   mask, val);
 =======
 	ret = snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
 				  mask, val);
+=======
+	ret = regmap_update_bits(wm8903->regmap,
+				 WM8903_GPIO_CONTROL_1 + offset, mask, val);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void wm8903_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
 {
 	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+<<<<<<< HEAD
 	struct snd_soc_codec *codec = wm8903->codec;
 
 	snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
 			    WM8903_GP1_LVL_MASK,
 			    !!value << WM8903_GP1_LVL_SHIFT);
+=======
+
+	regmap_update_bits(wm8903->regmap, WM8903_GPIO_CONTROL_1 + offset,
+			   WM8903_GP1_LVL_MASK,
+			   !!value << WM8903_GP1_LVL_SHIFT);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct gpio_chip wm8903_template_chip = {
@@ -2097,6 +2261,7 @@ static struct gpio_chip wm8903_template_chip = {
 	.can_sleep		= 1,
 };
 
+<<<<<<< HEAD
 static void wm8903_init_gpio(struct snd_soc_codec *codec)
 {
 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
@@ -2105,10 +2270,16 @@ static void wm8903_init_gpio(struct snd_soc_codec *codec)
 =======
 	struct wm8903_platform_data *pdata = wm8903->pdata;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void wm8903_init_gpio(struct wm8903_priv *wm8903)
+{
+	struct wm8903_platform_data *pdata = wm8903->pdata;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	wm8903->gpio_chip = wm8903_template_chip;
 	wm8903->gpio_chip.ngpio = WM8903_NUM_GPIO;
+<<<<<<< HEAD
 	wm8903->gpio_chip.dev = codec->dev;
 
 <<<<<<< HEAD
@@ -2116,22 +2287,36 @@ static void wm8903_init_gpio(struct snd_soc_codec *codec)
 =======
 	if (pdata->gpio_base)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8903->gpio_chip.dev = wm8903->dev;
+
+	if (pdata->gpio_base)
+>>>>>>> refs/remotes/origin/master
 		wm8903->gpio_chip.base = pdata->gpio_base;
 	else
 		wm8903->gpio_chip.base = -1;
 
 	ret = gpiochip_add(&wm8903->gpio_chip);
 	if (ret != 0)
+<<<<<<< HEAD
 		dev_err(codec->dev, "Failed to add GPIOs: %d\n", ret);
 }
 
 static void wm8903_free_gpio(struct snd_soc_codec *codec)
 {
 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
+=======
+		dev_err(wm8903->dev, "Failed to add GPIOs: %d\n", ret);
+}
+
+static void wm8903_free_gpio(struct wm8903_priv *wm8903)
+{
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = gpiochip_remove(&wm8903->gpio_chip);
 	if (ret != 0)
+<<<<<<< HEAD
 		dev_err(codec->dev, "Failed to remove GPIOs: %d\n", ret);
 }
 #else
@@ -2140,12 +2325,23 @@ static void wm8903_init_gpio(struct snd_soc_codec *codec)
 }
 
 static void wm8903_free_gpio(struct snd_soc_codec *codec)
+=======
+		dev_err(wm8903->dev, "Failed to remove GPIOs: %d\n", ret);
+}
+#else
+static void wm8903_init_gpio(struct wm8903_priv *wm8903)
+{
+}
+
+static void wm8903_free_gpio(struct wm8903_priv *wm8903)
+>>>>>>> refs/remotes/origin/master
 {
 }
 #endif
 
 static int wm8903_probe(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct wm8903_platform_data *pdata = dev_get_platdata(codec->dev);
 	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
@@ -2163,17 +2359,25 @@ static int wm8903_probe(struct snd_soc_codec *codec)
 	int trigger, irq_pol;
 	u16 val;
 	bool mic_gpio = false;
+=======
+	struct wm8903_priv *wm8903 = snd_soc_codec_get_drvdata(codec);
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	wm8903->codec = codec;
 	codec->control_data = wm8903->regmap;
 
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	val = snd_soc_read(codec, WM8903_SW_RESET_AND_ID);
 	if (val != wm8903_reg_defaults[WM8903_SW_RESET_AND_ID]) {
@@ -2344,12 +2548,18 @@ static int wm8903_probe(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
 	wm8903_init_gpio(codec);
 
+=======
+	/* power on device */
+	wm8903_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 /* power down chip */
 static int wm8903_remove(struct snd_soc_codec *codec)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wm8903_free_gpio(codec);
 	wm8903_set_bias_level(codec, SND_SOC_BIAS_OFF);
@@ -2362,6 +2572,10 @@ static int wm8903_remove(struct snd_soc_codec *codec)
 		free_irq(wm8903->irq, codec);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8903_set_bias_level(codec, SND_SOC_BIAS_OFF);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2371,6 +2585,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8903 = {
 	.suspend =	wm8903_suspend,
 	.resume =	wm8903_resume,
 	.set_bias_level = wm8903_set_bias_level,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8903_reg_defaults),
 	.reg_word_size = sizeof(u16),
@@ -2382,12 +2597,18 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8903 = {
 	.controls = wm8903_snd_controls,
 	.num_controls = ARRAY_SIZE(wm8903_snd_controls),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.seq_notifier = wm8903_seq_notifier,
+	.controls = wm8903_snd_controls,
+	.num_controls = ARRAY_SIZE(wm8903_snd_controls),
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets = wm8903_dapm_widgets,
 	.num_dapm_widgets = ARRAY_SIZE(wm8903_dapm_widgets),
 	.dapm_routes = wm8903_intercon,
 	.num_dapm_routes = ARRAY_SIZE(wm8903_intercon),
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
@@ -2408,6 +2629,8 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
 	if (ret < 0)
 		kfree(wm8903);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct regmap_config wm8903_regmap = {
 	.reg_bits = 8,
 	.val_bits = 16,
@@ -2493,6 +2716,7 @@ static int wm8903_set_pdata_from_of(struct i2c_client *i2c,
 	return 0;
 }
 
+<<<<<<< HEAD
 static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
 {
@@ -2500,13 +2724,30 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
 	struct wm8903_priv *wm8903;
 	unsigned int val;
 	int ret;
+=======
+static int wm8903_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct wm8903_platform_data *pdata = dev_get_platdata(&i2c->dev);
+	struct wm8903_priv *wm8903;
+	int trigger;
+	bool mic_gpio = false;
+	unsigned int val, irq_pol;
+	int ret, i;
+>>>>>>> refs/remotes/origin/master
 
 	wm8903 = devm_kzalloc(&i2c->dev,  sizeof(struct wm8903_priv),
 			      GFP_KERNEL);
 	if (wm8903 == NULL)
 		return -ENOMEM;
+<<<<<<< HEAD
 
 	wm8903->regmap = regmap_init_i2c(i2c, &wm8903_regmap);
+=======
+	wm8903->dev = &i2c->dev;
+
+	wm8903->regmap = devm_regmap_init_i2c(i2c, &wm8903_regmap);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wm8903->regmap)) {
 		ret = PTR_ERR(wm8903->regmap);
 		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
@@ -2515,7 +2756,10 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
 	}
 
 	i2c_set_clientdata(i2c, wm8903);
+<<<<<<< HEAD
 	wm8903->irq = i2c->irq;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* If no platform data was supplied, create storage for defaults */
 	if (pdata) {
@@ -2542,6 +2786,11 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	pdata = wm8903->pdata;
+
+>>>>>>> refs/remotes/origin/master
 	ret = regmap_read(wm8903->regmap, WM8903_SW_RESET_AND_ID, &val);
 	if (ret != 0) {
 		dev_err(&i2c->dev, "Failed to read chip ID: %d\n", ret);
@@ -2564,6 +2813,110 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
 	/* Reset the device */
 	regmap_write(wm8903->regmap, WM8903_SW_RESET_AND_ID, 0x8903);
 
+<<<<<<< HEAD
+=======
+	wm8903_init_gpio(wm8903);
+
+	/* Set up GPIO pin state, detect if any are MIC detect outputs */
+	for (i = 0; i < ARRAY_SIZE(pdata->gpio_cfg); i++) {
+		if ((!pdata->gpio_cfg[i]) ||
+		    (pdata->gpio_cfg[i] > WM8903_GPIO_CONFIG_ZERO))
+			continue;
+
+		regmap_write(wm8903->regmap, WM8903_GPIO_CONTROL_1 + i,
+				pdata->gpio_cfg[i] & 0x7fff);
+
+		val = (pdata->gpio_cfg[i] & WM8903_GP1_FN_MASK)
+			>> WM8903_GP1_FN_SHIFT;
+
+		switch (val) {
+		case WM8903_GPn_FN_MICBIAS_CURRENT_DETECT:
+		case WM8903_GPn_FN_MICBIAS_SHORT_DETECT:
+			mic_gpio = true;
+			break;
+		default:
+			break;
+		}
+	}
+
+	/* Set up microphone detection */
+	regmap_write(wm8903->regmap, WM8903_MIC_BIAS_CONTROL_0,
+		     pdata->micdet_cfg);
+
+	/* Microphone detection needs the WSEQ clock */
+	if (pdata->micdet_cfg)
+		regmap_update_bits(wm8903->regmap, WM8903_WRITE_SEQUENCER_0,
+				   WM8903_WSEQ_ENA, WM8903_WSEQ_ENA);
+
+	/* If microphone detection is enabled by pdata but
+	 * detected via IRQ then interrupts can be lost before
+	 * the machine driver has set up microphone detection
+	 * IRQs as the IRQs are clear on read.  The detection
+	 * will be enabled when the machine driver configures.
+	 */
+	WARN_ON(!mic_gpio && (pdata->micdet_cfg & WM8903_MICDET_ENA));
+
+	wm8903->mic_delay = pdata->micdet_delay;
+
+	if (i2c->irq) {
+		if (pdata->irq_active_low) {
+			trigger = IRQF_TRIGGER_LOW;
+			irq_pol = WM8903_IRQ_POL;
+		} else {
+			trigger = IRQF_TRIGGER_HIGH;
+			irq_pol = 0;
+		}
+
+		regmap_update_bits(wm8903->regmap, WM8903_INTERRUPT_CONTROL,
+				   WM8903_IRQ_POL, irq_pol);
+
+		ret = request_threaded_irq(i2c->irq, NULL, wm8903_irq,
+					   trigger | IRQF_ONESHOT,
+					   "wm8903", wm8903);
+		if (ret != 0) {
+			dev_err(wm8903->dev, "Failed to request IRQ: %d\n",
+				ret);
+			return ret;
+		}
+
+		/* Enable write sequencer interrupts */
+		regmap_update_bits(wm8903->regmap,
+				   WM8903_INTERRUPT_STATUS_1_MASK,
+				   WM8903_IM_WSEQ_BUSY_EINT, 0);
+	}
+
+	/* Latch volume update bits */
+	regmap_update_bits(wm8903->regmap, WM8903_ADC_DIGITAL_VOLUME_LEFT,
+			   WM8903_ADCVU, WM8903_ADCVU);
+	regmap_update_bits(wm8903->regmap, WM8903_ADC_DIGITAL_VOLUME_RIGHT,
+			   WM8903_ADCVU, WM8903_ADCVU);
+
+	regmap_update_bits(wm8903->regmap, WM8903_DAC_DIGITAL_VOLUME_LEFT,
+			   WM8903_DACVU, WM8903_DACVU);
+	regmap_update_bits(wm8903->regmap, WM8903_DAC_DIGITAL_VOLUME_RIGHT,
+			   WM8903_DACVU, WM8903_DACVU);
+
+	regmap_update_bits(wm8903->regmap, WM8903_ANALOGUE_OUT1_LEFT,
+			   WM8903_HPOUTVU, WM8903_HPOUTVU);
+	regmap_update_bits(wm8903->regmap, WM8903_ANALOGUE_OUT1_RIGHT,
+			   WM8903_HPOUTVU, WM8903_HPOUTVU);
+
+	regmap_update_bits(wm8903->regmap, WM8903_ANALOGUE_OUT2_LEFT,
+			   WM8903_LINEOUTVU, WM8903_LINEOUTVU);
+	regmap_update_bits(wm8903->regmap, WM8903_ANALOGUE_OUT2_RIGHT,
+			   WM8903_LINEOUTVU, WM8903_LINEOUTVU);
+
+	regmap_update_bits(wm8903->regmap, WM8903_ANALOGUE_OUT3_LEFT,
+			   WM8903_SPKVU, WM8903_SPKVU);
+	regmap_update_bits(wm8903->regmap, WM8903_ANALOGUE_OUT3_RIGHT,
+			   WM8903_SPKVU, WM8903_SPKVU);
+
+	/* Enable DAC soft mute by default */
+	regmap_update_bits(wm8903->regmap, WM8903_DAC_DIGITAL_1,
+			   WM8903_DAC_MUTEMODE | WM8903_DAC_MUTE,
+			   WM8903_DAC_MUTEMODE | WM8903_DAC_MUTE);
+
+>>>>>>> refs/remotes/origin/master
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8903, &wm8903_dai, 1);
 	if (ret != 0)
@@ -2571,6 +2924,7 @@ static __devinit int wm8903_i2c_probe(struct i2c_client *i2c,
 
 	return 0;
 err:
+<<<<<<< HEAD
 	regmap_exit(wm8903->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
 	return ret;
@@ -2588,6 +2942,18 @@ static __devexit int wm8903_i2c_remove(struct i2c_client *client)
 	struct wm8903_priv *wm8903 = i2c_get_clientdata(client);
 
 	regmap_exit(wm8903->regmap);
+=======
+	return ret;
+}
+
+static int wm8903_i2c_remove(struct i2c_client *client)
+{
+	struct wm8903_priv *wm8903 = i2c_get_clientdata(client);
+
+	if (client->irq)
+		free_irq(client->irq, wm8903);
+	wm8903_free_gpio(wm8903);
+>>>>>>> refs/remotes/origin/master
 	snd_soc_unregister_codec(&client->dev);
 
 	return 0;
@@ -2599,7 +2965,10 @@ static const struct of_device_id wm8903_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, wm8903_of_match);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id wm8903_i2c_id[] = {
 	{ "wm8903", 0 },
 	{ }
@@ -2610,6 +2979,7 @@ static struct i2c_driver wm8903_i2c_driver = {
 	.driver = {
 		.name = "wm8903",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 		.of_match_table = wm8903_of_match,
@@ -2655,6 +3025,16 @@ static void __exit wm8903_exit(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8903_exit);
+=======
+		.of_match_table = wm8903_of_match,
+	},
+	.probe =    wm8903_i2c_probe,
+	.remove =   wm8903_i2c_remove,
+	.id_table = wm8903_i2c_id,
+};
+
+module_i2c_driver(wm8903_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8903 driver");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.cm>");

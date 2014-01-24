@@ -41,6 +41,7 @@
 #include <linux/pci.h>
 #include <linux/videodev2.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>      /* for KERNEL_VERSION MACRO     */
 #include <linux/io.h>
 #include <linux/slab.h>
@@ -78,6 +79,11 @@ MODULE_PARM_DESC(debug, "activates debug info");
 #include <linux/io.h>
 #include <linux/slab.h>
 #include <sound/tea575x-tuner.h>
+=======
+#include <linux/io.h>
+#include <linux/slab.h>
+#include <media/tea575x.h>
+>>>>>>> refs/remotes/origin/master
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-fh.h>
@@ -92,11 +98,15 @@ MODULE_VERSION("1.0.0");
 static int radio_nr = -1;
 module_param(radio_nr, int, 0644);
 MODULE_PARM_DESC(radio_nr, "Radio device number");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* TEA5757 pin mappings */
 static const int clk = 1, data = 2, wren = 4, mo_st = 8, power = 16;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define FREQ_LO		(87 * 16000)
 #define FREQ_HI		(108 * 16000)
@@ -126,6 +136,8 @@ struct maxiradio
 
 	struct mutex lock;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static atomic_t maxiradio_instance = ATOMIC_INIT(0);
 
 #define PCI_VENDOR_ID_GUILLEMOT 0x5046
@@ -138,7 +150,10 @@ struct maxiradio
 	struct pci_dev *pdev;
 
 	u16	io;	/* base of radio io */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct maxiradio *to_maxiradio(struct v4l2_device *v4l2_dev)
@@ -146,6 +161,7 @@ static inline struct maxiradio *to_maxiradio(struct v4l2_device *v4l2_dev)
 	return container_of(v4l2_dev, struct maxiradio, v4l2_dev);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void outbit(unsigned long bit, u16 io)
 {
@@ -402,6 +418,8 @@ static const struct v4l2_ioctl_ops maxiradio_ioctl_ops = {
 
 static int __devinit maxiradio_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void maxiradio_tea575x_set_pins(struct snd_tea575x *tea, u8 pins)
 {
 	struct maxiradio *dev = tea->private_data;
@@ -436,8 +454,13 @@ static struct snd_tea575x_ops maxiradio_tea_ops = {
 	.set_direction = maxiradio_tea575x_set_direction,
 };
 
+<<<<<<< HEAD
 static int __devinit maxiradio_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int maxiradio_probe(struct pci_dev *pdev,
+			   const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct maxiradio *dev;
 	struct v4l2_device *v4l2_dev;
@@ -451,6 +474,7 @@ static int __devinit maxiradio_probe(struct pci_dev *pdev, const struct pci_devi
 
 	v4l2_dev = &dev->v4l2_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&dev->lock);
 	dev->pdev = pdev;
 	dev->muted = 1;
@@ -460,6 +484,9 @@ static int __devinit maxiradio_probe(struct pci_dev *pdev, const struct pci_devi
 =======
 	v4l2_device_set_name(v4l2_dev, "maxiradio", &maxiradio_instance);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	v4l2_device_set_name(v4l2_dev, "maxiradio", &maxiradio_instance);
+>>>>>>> refs/remotes/origin/master
 
 	retval = v4l2_device_register(&pdev->dev, v4l2_dev);
 	if (retval < 0) {
@@ -467,12 +494,15 @@ static int __devinit maxiradio_probe(struct pci_dev *pdev, const struct pci_devi
 		goto errfr;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!request_region(pci_resource_start(pdev, 0),
 			   pci_resource_len(pdev, 0), "Maxi Radio FM 2000")) {
 		v4l2_err(v4l2_dev, "can't reserve I/O ports\n");
 		goto err_out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->tea.private_data = dev;
 	dev->tea.ops = &maxiradio_tea_ops;
 	/* The data pin cannot be read. This may be a hardware limitation, or
@@ -490,13 +520,17 @@ static int __devinit maxiradio_probe(struct pci_dev *pdev, const struct pci_devi
 			   pci_resource_len(pdev, 0), v4l2_dev->name)) {
 		dev_err(&pdev->dev, "can't reserve I/O ports\n");
 		goto err_hdl;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (pci_enable_device(pdev))
 		goto err_out_free_region;
 
 	dev->io = pci_resource_start(pdev, 0);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	strlcpy(dev->vdev.name, v4l2_dev->name, sizeof(dev->vdev.name));
 	dev->vdev.v4l2_dev = v4l2_dev;
@@ -520,10 +554,17 @@ static int __devinit maxiradio_probe(struct pci_dev *pdev, const struct pci_devi
 		goto err_out_free_region;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (snd_tea575x_init(&dev->tea, THIS_MODULE)) {
+		printk(KERN_ERR "radio-maxiradio: Unable to detect TEA575x tuner\n");
+		goto err_out_free_region;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 err_out_free_region:
 	release_region(pci_resource_start(pdev, 0), pci_resource_len(pdev, 0));
+<<<<<<< HEAD
 <<<<<<< HEAD
 err_out:
 	v4l2_device_unregister(v4l2_dev);
@@ -534,6 +575,8 @@ errfr:
 
 static void __devexit maxiradio_remove_one(struct pci_dev *pdev)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 err_hdl:
 	v4l2_device_unregister(v4l2_dev);
 errfr:
@@ -541,21 +584,31 @@ errfr:
 	return retval;
 }
 
+<<<<<<< HEAD
 static void __devexit maxiradio_remove(struct pci_dev *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void maxiradio_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct v4l2_device *v4l2_dev = dev_get_drvdata(&pdev->dev);
 	struct maxiradio *dev = to_maxiradio(v4l2_dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	video_unregister_device(&dev->vdev);
 	v4l2_device_unregister(&dev->v4l2_dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	snd_tea575x_exit(&dev->tea);
 	/* Turn off power */
 	outb(0, dev->io);
 	v4l2_device_unregister(v4l2_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	release_region(pci_resource_start(pdev, 0), pci_resource_len(pdev, 0));
 }
 
@@ -570,6 +623,7 @@ MODULE_DEVICE_TABLE(pci, maxiradio_pci_tbl);
 static struct pci_driver maxiradio_driver = {
 	.name		= "radio-maxiradio",
 	.id_table	= maxiradio_pci_tbl,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.probe		= maxiradio_init_one,
 	.remove		= __devexit_p(maxiradio_remove_one),
@@ -603,3 +657,10 @@ module_exit(maxiradio_radio_exit);
 module_init(maxiradio_init);
 module_exit(maxiradio_exit);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.probe		= maxiradio_probe,
+	.remove		= maxiradio_remove,
+};
+
+module_pci_driver(maxiradio_driver);
+>>>>>>> refs/remotes/origin/master

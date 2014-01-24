@@ -27,23 +27,32 @@ config ACER_WMI
 	depends on ACPI_WMI
 	select INPUT_SPARSEKMAP
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	# Acer WMI depends on ACPI_VIDEO when ACPI is enabled
 	# but for select to work, need to select ACPI_VIDEO's dependencies, ick
         select VIDEO_OUTPUT_CONTROL if ACPI
         select ACPI_VIDEO if ACPI
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This is a driver for newer Acer (and Wistron) laptops. It adds
 	  wireless radio and bluetooth control, and on some laptops,
 	  exposes the mail LED and LCD backlight.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  For more information about this driver see
 	  <file:Documentation/laptops/acer-wmi.txt>
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  If you have an ACPI-WMI compatible Acer/ Wistron laptop, say Y or M
 	  here.
 
@@ -68,15 +77,19 @@ config ASUS_LAPTOP
 	tristate "Asus Laptop Extras"
 	depends on ACPI
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on !ACPI_ASUS
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select LEDS_CLASS
 	select NEW_LEDS
 	select BACKLIGHT_CLASS_DEVICE
 	depends on INPUT
 	depends on RFKILL || RFKILL = n
 	select INPUT_SPARSEKMAP
+<<<<<<< HEAD
 <<<<<<< HEAD
 	---help---
 	  This is the new Linux driver for Asus laptops. It may also support some
@@ -88,6 +101,8 @@ config ASUS_LAPTOP
 	  For more information and a userspace daemon for handling the extra
 	  buttons see <http://acpi4asus.sf.net>.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	select INPUT_POLLDEV
 	---help---
 	  This is a driver for Asus laptops, Lenovo SL and the Pegatron
@@ -100,11 +115,15 @@ config ASUS_LAPTOP
 	  to blink those fancy LEDs.
 
 	  For more information see <http://acpi4asus.sf.net>.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  If you have an ACPI-compatible ASUS laptop, say Y or M here.
 
 config DELL_LAPTOP
+<<<<<<< HEAD
 	tristate "Dell Laptop Extras (EXPERIMENTAL)"
 	depends on X86
 	depends on DCDBAS
@@ -115,11 +134,21 @@ config DELL_LAPTOP
 	depends on POWER_SUPPLY
 	depends on SERIO_I8042
 =======
+=======
+	tristate "Dell Laptop Extras"
+	depends on X86
+	depends on DCDBAS
+	depends on BACKLIGHT_CLASS_DEVICE
+	depends on RFKILL || RFKILL = n
+>>>>>>> refs/remotes/origin/master
 	depends on SERIO_I8042
 	select POWER_SUPPLY
 	select LEDS_CLASS
 	select NEW_LEDS
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default n
 	---help---
 	This driver adds support for rfkill and backlight control to Dell
@@ -177,7 +206,10 @@ config FUJITSU_LAPTOP_DEBUG
 	  If you are not sure, say N here.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config FUJITSU_TABLET
        tristate "Fujitsu Tablet Extras"
        depends on ACPI
@@ -198,15 +230,25 @@ config FUJITSU_TABLET
 config AMILO_RFKILL
 	tristate "Fujitsu-Siemens Amilo rfkill support"
 	depends on RFKILL
+<<<<<<< HEAD
+=======
+	depends on SERIO_I8042
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This is a driver for enabling wifi on some Fujitsu-Siemens Amilo
 	  laptops.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config TC1100_WMI
 	tristate "HP Compaq TC1100 Tablet WMI Extras (EXPERIMENTAL)"
 	depends on !X86_64
 	depends on EXPERIMENTAL
+=======
+config TC1100_WMI
+	tristate "HP Compaq TC1100 Tablet WMI Extras"
+	depends on !X86_64
+>>>>>>> refs/remotes/origin/master
 	depends on ACPI
 	depends on ACPI_WMI
 	---help---
@@ -227,10 +269,14 @@ config HP_ACCEL
 	  Support for a led indicating disk protection will be provided as
 	  hp::hddprotect. For more information on the feature, refer to
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Documentation/hwmon/lis3lv02d.
 =======
 	  Documentation/misc-devices/lis3lv02d.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Documentation/misc-devices/lis3lv02d.
+>>>>>>> refs/remotes/origin/master
 
 	  To compile this driver as a module, choose M here: the module will
 	  be called hp_accel.
@@ -326,9 +372,18 @@ config IDEAPAD_LAPTOP
 	tristate "Lenovo IdeaPad Laptop Extras"
 	depends on ACPI
 	depends on RFKILL && INPUT
+<<<<<<< HEAD
 	select INPUT_SPARSEKMAP
 	help
 	  This is a driver for the rfkill switches on Lenovo IdeaPad netbooks.
+=======
+	depends on SERIO_I8042
+	depends on BACKLIGHT_CLASS_DEVICE
+	select INPUT_SPARSEKMAP
+	help
+	  This is a driver for Lenovo IdeaPad netbooks contains drivers for
+	  rfkill switch, hotkey, fan control and backlight control.
+>>>>>>> refs/remotes/origin/master
 
 config THINKPAD_ACPI
 	tristate "ThinkPad ACPI Laptop Extras"
@@ -501,6 +556,7 @@ config INTEL_MENLOW
 
 config EEEPC_LAPTOP
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Eee PC Hotkey Driver (EXPERIMENTAL)"
 	depends on ACPI
 	depends on INPUT
@@ -510,6 +566,11 @@ config EEEPC_LAPTOP
 	depends on ACPI
 	depends on INPUT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "Eee PC Hotkey Driver"
+	depends on ACPI
+	depends on INPUT
+>>>>>>> refs/remotes/origin/master
 	depends on RFKILL || RFKILL = n
 	depends on HOTPLUG_PCI
 	select BACKLIGHT_CLASS_DEVICE
@@ -529,20 +590,30 @@ config EEEPC_LAPTOP
 
 config ASUS_WMI
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "ASUS WMI Driver (EXPERIMENTAL)"
 	depends on ACPI_WMI
 	depends on INPUT
 	depends on HWMON
 	depends on EXPERIMENTAL
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tristate "ASUS WMI Driver"
 	depends on ACPI_WMI
 	depends on INPUT
 	depends on HWMON
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	depends on BACKLIGHT_CLASS_DEVICE
 	depends on RFKILL || RFKILL = n
 	depends on HOTPLUG_PCI
+=======
+	depends on BACKLIGHT_CLASS_DEVICE
+	depends on RFKILL || RFKILL = n
+	depends on HOTPLUG_PCI
+	depends on ACPI_VIDEO || ACPI_VIDEO = n
+>>>>>>> refs/remotes/origin/master
 	select INPUT_SPARSEKMAP
 	select LEDS_CLASS
 	select NEW_LEDS
@@ -555,10 +626,14 @@ config ASUS_WMI
 
 config ASUS_NB_WMI
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Asus Notebook WMI Driver (EXPERIMENTAL)"
 =======
 	tristate "Asus Notebook WMI Driver"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "Asus Notebook WMI Driver"
+>>>>>>> refs/remotes/origin/master
 	depends on ASUS_WMI
 	---help---
 	  This is a driver for newer Asus notebooks. It adds extra features
@@ -572,10 +647,14 @@ config ASUS_NB_WMI
 
 config EEEPC_WMI
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Eee PC WMI Driver (EXPERIMENTAL)"
 =======
 	tristate "Eee PC WMI Driver"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "Eee PC WMI Driver"
+>>>>>>> refs/remotes/origin/master
 	depends on ASUS_WMI
 	---help---
 	  This is a driver for newer Eee PC laptops. It adds extra features
@@ -621,6 +700,7 @@ config MSI_WMI
 	 be called msi-wmi.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config ACPI_ASUS
 	tristate "ASUS/Medion Laptop Extras (DEPRECATED)"
 	depends on ACPI
@@ -655,6 +735,8 @@ config ACPI_ASUS
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config TOPSTAR_LAPTOP
 	tristate "Topstar Laptop Extras"
 	depends on ACPI
@@ -669,14 +751,22 @@ config ACPI_TOSHIBA
 	tristate "Toshiba Laptop Extras"
 	depends on ACPI
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	depends on ACPI_WMI
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ACPI_WMI
+>>>>>>> refs/remotes/origin/master
 	select LEDS_CLASS
 	select NEW_LEDS
 	depends on BACKLIGHT_CLASS_DEVICE
 	depends on INPUT
 	depends on RFKILL || RFKILL = n
+<<<<<<< HEAD
+=======
+	depends on SERIO_I8042 || SERIO_I8042 = n
+>>>>>>> refs/remotes/origin/master
 	select INPUT_POLLDEV
 	select INPUT_SPARSEKMAP
 	---help---
@@ -732,10 +822,14 @@ config ACPI_CMPC
 config INTEL_SCU_IPC
 	bool "Intel SCU IPC Support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on X86_MRST
 =======
 	depends on X86_INTEL_MID
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on X86_INTEL_MID
+>>>>>>> refs/remotes/origin/master
 	default y
 	---help---
 	  IPC is used to bridge the communications between kernel and SCU on
@@ -769,14 +863,19 @@ config INTEL_MID_POWER_BUTTON
 config INTEL_MFLD_THERMAL
        tristate "Thermal driver for Intel Medfield platform"
 <<<<<<< HEAD
+<<<<<<< HEAD
        depends on INTEL_SCU_IPC && THERMAL
 =======
        depends on MFD_INTEL_MSIC && THERMAL
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+       depends on MFD_INTEL_MSIC && THERMAL
+>>>>>>> refs/remotes/origin/master
        help
          Say Y here to enable thermal driver support for the  Intel Medfield
          platform.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config RAR_REGISTER
 	bool "Restricted Access Region Register Driver"
@@ -802,6 +901,8 @@ config RAR_REGISTER
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config INTEL_IPS
 	tristate "Intel Intelligent Power Sharing"
 	depends on ACPI
@@ -848,6 +949,7 @@ config XO15_EBOOK
 config SAMSUNG_LAPTOP
 	tristate "Samsung Laptop driver"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on RFKILL && BACKLIGHT_CLASS_DEVICE && X86
 	---help---
 	  This module implements a driver for a wide range of different
@@ -858,6 +960,11 @@ config SAMSUNG_LAPTOP
 =======
 	depends on X86
 	depends on RFKILL || RFKILL = n
+=======
+	depends on X86
+	depends on RFKILL || RFKILL = n
+	depends on ACPI_VIDEO || ACPI_VIDEO = n
+>>>>>>> refs/remotes/origin/master
 	depends on BACKLIGHT_CLASS_DEVICE
 	select LEDS_CLASS
 	select NEW_LEDS
@@ -868,7 +975,10 @@ config SAMSUNG_LAPTOP
 
 	  It may also provide some sysfs files described in
 	  <file:Documentation/ABI/testing/sysfs-platform-samsung-laptop>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  To compile this driver as a module, choose M here: the module
 	  will be called samsung-laptop.
@@ -890,10 +1000,16 @@ config INTEL_OAKTRAIL
 	  here; it will only load on supported platforms.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config SAMSUNG_Q10
 	tristate "Samsung Q10 Extras"
 	depends on SERIO_I8042
+=======
+config SAMSUNG_Q10
+	tristate "Samsung Q10 Extras"
+	depends on ACPI
+>>>>>>> refs/remotes/origin/master
 	select BACKLIGHT_CLASS_DEVICE
 	---help---
 	  This driver provides support for backlight control on Samsung Q10
@@ -901,13 +1017,58 @@ config SAMSUNG_Q10
 
 config APPLE_GMUX
 	tristate "Apple Gmux Driver"
+<<<<<<< HEAD
 	depends on PNP
 	select BACKLIGHT_CLASS_DEVICE
+=======
+	depends on ACPI
+	depends on PNP
+	depends on BACKLIGHT_CLASS_DEVICE
+	depends on BACKLIGHT_APPLE=n || BACKLIGHT_APPLE
+	depends on ACPI_VIDEO=n || ACPI_VIDEO
+>>>>>>> refs/remotes/origin/master
 	---help---
 	  This driver provides support for the gmux device found on many
 	  Apple laptops, which controls the display mux for the hybrid
 	  graphics as well as the backlight. Currently only backlight
 	  control is supported by the driver.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config INTEL_RST
+        tristate "Intel Rapid Start Technology Driver"
+	depends on ACPI
+	---help---
+	  This driver provides support for modifying paramaters on systems
+	  equipped with Intel's Rapid Start Technology. When put in an ACPI
+	  sleep state, these devices will wake after either a configured
+	  timeout or when the system battery reaches a critical state,
+	  automatically copying memory contents to disk. On resume, the
+	  firmware will copy the memory contents back to RAM and resume the OS
+	  as usual.
+
+config INTEL_SMARTCONNECT
+        tristate "Intel Smart Connect disabling driver"
+	depends on ACPI
+	---help---
+	  Intel Smart Connect is a technology intended to permit devices to
+	  update state by resuming for a short period of time at regular
+	  intervals. If a user enables this functionality under Windows and
+	  then reboots into Linux, the system may remain configured to resume
+	  on suspend. In the absence of any userspace to support it, the system
+	  will then remain awake until something triggers another suspend.
+
+	  This driver checks to determine whether the device has Intel Smart
+	  Connect enabled, and if so disables it.
+
+config PVPANIC
+	tristate "pvpanic device support"
+	depends on ACPI
+	---help---
+	  This driver provides support for the pvpanic device.  pvpanic is
+	  a paravirtualized device provided by QEMU; it lets a virtual machine
+	  (guest) communicate panic events to the host.
+
+>>>>>>> refs/remotes/origin/master
 endif # X86_PLATFORM_DEVICES

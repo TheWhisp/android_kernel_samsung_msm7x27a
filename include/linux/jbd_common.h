@@ -1,6 +1,7 @@
 #ifndef _LINUX_JBD_STATE_H
 #define _LINUX_JBD_STATE_H
 
+<<<<<<< HEAD
 enum jbd_state_bits {
 	BH_JBD			/* Has an attached ext3 journal_head */
 	  = BH_PrivateStart,
@@ -24,6 +25,9 @@ TAS_BUFFER_FNS(Revoked, revoked)
 BUFFER_FNS(RevokeValid, revokevalid)
 TAS_BUFFER_FNS(RevokeValid, revokevalid)
 BUFFER_FNS(Freed, freed)
+=======
+#include <linux/bit_spinlock.h>
+>>>>>>> refs/remotes/origin/master
 
 static inline struct buffer_head *jh2bh(struct journal_head *jh)
 {

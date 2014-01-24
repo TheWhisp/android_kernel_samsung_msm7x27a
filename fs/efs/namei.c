@@ -58,6 +58,7 @@ static efs_ino_t efs_find_entry(struct inode *inode, const char *name, int len) 
 	return(0);
 }
 
+<<<<<<< HEAD
 struct dentry *efs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd) {
 	efs_ino_t inodenum;
 <<<<<<< HEAD
@@ -70,12 +71,20 @@ struct dentry *efs_lookup(struct inode *dir, struct dentry *dentry, struct namei
 			return ERR_CAST(inode);
 	}
 =======
+=======
+struct dentry *efs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+{
+	efs_ino_t inodenum;
+>>>>>>> refs/remotes/origin/master
 	struct inode *inode = NULL;
 
 	inodenum = efs_find_entry(dir, dentry->d_name.name, dentry->d_name.len);
 	if (inodenum)
 		inode = efs_iget(dir->i_sb, inodenum);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return d_splice_alias(inode, dentry);
 }

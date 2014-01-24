@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Calxeda Highbank Platforms Device Tree Bindings
 -----------------------------------------------
 
@@ -6,3 +7,20 @@ properties.
 
 Required root node properties:
     - compatible = "calxeda,highbank";
+=======
+Calxeda Platforms Device Tree Bindings
+-----------------------------------------------
+
+Boards with Calxeda Cortex-A9 based ECX-1000 (Highbank) SOC shall have the
+following properties.
+
+Required root node properties:
+    - compatible = "calxeda,highbank";
+
+
+Boards with Calxeda Cortex-A15 based ECX-2000 SOC shall have the following
+properties.
+
+Required root node properties:
+    - compatible = "calxeda,ecx-2000";
+>>>>>>> refs/remotes/origin/master

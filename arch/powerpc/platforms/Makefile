@@ -15,12 +15,17 @@ obj-$(CONFIG_PPC_83xx)		+= 83xx/
 obj-$(CONFIG_FSL_SOC_BOOKE)	+= 85xx/
 obj-$(CONFIG_PPC_86xx)		+= 86xx/
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_PPC_PSERIES)	+= pseries/
 obj-$(CONFIG_PPC_ISERIES)	+= iseries/
 =======
 obj-$(CONFIG_PPC_POWERNV)	+= powernv/
 obj-$(CONFIG_PPC_PSERIES)	+= pseries/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_PPC_POWERNV)	+= powernv/
+obj-$(CONFIG_PPC_PSERIES)	+= pseries/
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PPC_MAPLE)		+= maple/
 obj-$(CONFIG_PPC_PASEMI)	+= pasemi/
 obj-$(CONFIG_PPC_CELL)		+= cell/

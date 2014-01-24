@@ -83,6 +83,7 @@ static int proc_handler_callhome(struct ctl_table *ctl, int write,
 	} else {
 		len = *count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = copy_from_user(buf, buffer, sizeof(buf));
 		if (rc != 0)
 			return -EFAULT;
@@ -94,6 +95,11 @@ static int proc_handler_callhome(struct ctl_table *ctl, int write,
 		if (rc)
 			return rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = kstrtoul_from_user(buffer, len, 0, &val);
+		if (rc)
+			return rc;
+>>>>>>> refs/remotes/origin/master
 		if (val != 0 && val != 1)
 			return -EINVAL;
 		callhome_enabled = val;

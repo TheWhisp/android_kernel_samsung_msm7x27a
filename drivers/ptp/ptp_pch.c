@@ -118,7 +118,11 @@ struct pch_ts_regs {
  * struct pch_dev - Driver private data
  */
 struct pch_dev {
+<<<<<<< HEAD
 	struct pch_ts_regs *regs;
+=======
+	struct pch_ts_regs __iomem *regs;
+>>>>>>> refs/remotes/origin/master
 	struct ptp_clock *ptp_clock;
 	struct ptp_clock_info caps;
 	int exts0_enabled;
@@ -154,7 +158,11 @@ static inline void pch_eth_enable_set(struct pch_dev *chip)
 	iowrite32(val, (&chip->regs->ts_sel));
 }
 
+<<<<<<< HEAD
 static u64 pch_systime_read(struct pch_ts_regs *regs)
+=======
+static u64 pch_systime_read(struct pch_ts_regs __iomem *regs)
+>>>>>>> refs/remotes/origin/master
 {
 	u64 ns;
 	u32 lo, hi;
@@ -169,7 +177,11 @@ static u64 pch_systime_read(struct pch_ts_regs *regs)
 	return ns;
 }
 
+<<<<<<< HEAD
 static void pch_systime_write(struct pch_ts_regs *regs, u64 ns)
+=======
+static void pch_systime_write(struct pch_ts_regs __iomem *regs, u64 ns)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 hi, lo;
 
@@ -262,6 +274,10 @@ u64 pch_rx_snap_read(struct pci_dev *pdev)
 
 	ns = ((u64) hi) << 32;
 	ns |= lo;
+<<<<<<< HEAD
+=======
+	ns <<= TICKS_NS_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	return ns;
 }
@@ -278,6 +294,10 @@ u64 pch_tx_snap_read(struct pci_dev *pdev)
 
 	ns = ((u64) hi) << 32;
 	ns |= lo;
+<<<<<<< HEAD
+=======
+	ns <<= TICKS_NS_SHIFT;
+>>>>>>> refs/remotes/origin/master
 
 	return ns;
 }
@@ -307,13 +327,21 @@ static void pch_reset(struct pch_dev *chip)
  *				    traffic on the  ethernet interface
  * @addr:	dress which contain the column separated address to be used.
  */
+<<<<<<< HEAD
 static int pch_set_station_address(u8 *addr, struct pci_dev *pdev)
+=======
+int pch_set_station_address(u8 *addr, struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	s32 i;
 	struct pch_dev *chip = pci_get_drvdata(pdev);
 
 	/* Verify the parameter */
+<<<<<<< HEAD
 	if ((chip->regs == 0) || addr == (u8 *)NULL) {
+=======
+	if ((chip->regs == NULL) || addr == (u8 *)NULL) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev,
 			"invalid params returning PCH_INVALIDPARAM\n");
 		return PCH_INVALIDPARAM;
@@ -351,6 +379,10 @@ static int pch_set_station_address(u8 *addr, struct pci_dev *pdev)
 	}
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(pch_set_station_address);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Interrupt service routine
@@ -358,7 +390,11 @@ static int pch_set_station_address(u8 *addr, struct pci_dev *pdev)
 static irqreturn_t isr(int irq, void *priv)
 {
 	struct pch_dev *pch_dev = priv;
+<<<<<<< HEAD
 	struct pch_ts_regs *regs = pch_dev->regs;
+=======
+	struct pch_ts_regs __iomem *regs = pch_dev->regs;
+>>>>>>> refs/remotes/origin/master
 	struct ptp_clock_event event;
 	u32 ack = 0, lo, hi, val;
 
@@ -412,7 +448,11 @@ static int ptp_pch_adjfreq(struct ptp_clock_info *ptp, s32 ppb)
 	u32 diff, addend;
 	int neg_adj = 0;
 	struct pch_dev *pch_dev = container_of(ptp, struct pch_dev, caps);
+<<<<<<< HEAD
 	struct pch_ts_regs *regs = pch_dev->regs;
+=======
+	struct pch_ts_regs __iomem *regs = pch_dev->regs;
+>>>>>>> refs/remotes/origin/master
 
 	if (ppb < 0) {
 		neg_adj = 1;
@@ -435,7 +475,11 @@ static int ptp_pch_adjtime(struct ptp_clock_info *ptp, s64 delta)
 	s64 now;
 	unsigned long flags;
 	struct pch_dev *pch_dev = container_of(ptp, struct pch_dev, caps);
+<<<<<<< HEAD
 	struct pch_ts_regs *regs = pch_dev->regs;
+=======
+	struct pch_ts_regs __iomem *regs = pch_dev->regs;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&pch_dev->register_lock, flags);
 	now = pch_systime_read(regs);
@@ -452,7 +496,11 @@ static int ptp_pch_gettime(struct ptp_clock_info *ptp, struct timespec *ts)
 	u32 remainder;
 	unsigned long flags;
 	struct pch_dev *pch_dev = container_of(ptp, struct pch_dev, caps);
+<<<<<<< HEAD
 	struct pch_ts_regs *regs = pch_dev->regs;
+=======
+	struct pch_ts_regs __iomem *regs = pch_dev->regs;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&pch_dev->register_lock, flags);
 	ns = pch_systime_read(regs);
@@ -469,7 +517,11 @@ static int ptp_pch_settime(struct ptp_clock_info *ptp,
 	u64 ns;
 	unsigned long flags;
 	struct pch_dev *pch_dev = container_of(ptp, struct pch_dev, caps);
+<<<<<<< HEAD
 	struct pch_ts_regs *regs = pch_dev->regs;
+=======
+	struct pch_ts_regs __iomem *regs = pch_dev->regs;
+>>>>>>> refs/remotes/origin/master
 
 	ns = ts->tv_sec * 1000000000ULL;
 	ns += ts->tv_nsec;
@@ -554,7 +606,11 @@ static s32 pch_resume(struct pci_dev *pdev)
 #define pch_resume NULL
 #endif
 
+<<<<<<< HEAD
 static void __devexit pch_remove(struct pci_dev *pdev)
+=======
+static void pch_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pch_dev *chip = pci_get_drvdata(pdev);
 
@@ -564,9 +620,15 @@ static void __devexit pch_remove(struct pci_dev *pdev)
 		free_irq(pdev->irq, chip);
 
 	/* unmap the virtual IO memory space */
+<<<<<<< HEAD
 	if (chip->regs != 0) {
 		iounmap(chip->regs);
 		chip->regs = 0;
+=======
+	if (chip->regs != NULL) {
+		iounmap(chip->regs);
+		chip->regs = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* release the reserved IO memory space */
 	if (chip->mem_base != 0) {
@@ -578,7 +640,11 @@ static void __devexit pch_remove(struct pci_dev *pdev)
 	dev_info(&pdev->dev, "complete\n");
 }
 
+<<<<<<< HEAD
 static s32 __devinit
+=======
+static s32
+>>>>>>> refs/remotes/origin/master
 pch_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	s32 ret;
@@ -624,10 +690,18 @@ pch_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	}
 
 	chip->caps = ptp_pch_caps;
+<<<<<<< HEAD
 	chip->ptp_clock = ptp_clock_register(&chip->caps);
 
 	if (IS_ERR(chip->ptp_clock))
 		return PTR_ERR(chip->ptp_clock);
+=======
+	chip->ptp_clock = ptp_clock_register(&chip->caps, &pdev->dev);
+	if (IS_ERR(chip->ptp_clock)) {
+		ret = PTR_ERR(chip->ptp_clock);
+		goto err_ptp_clock_reg;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&chip->register_lock);
 
@@ -650,8 +724,11 @@ pch_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	iowrite32(1, &chip->regs->trgt_lo);
 	iowrite32(0, &chip->regs->trgt_hi);
 	iowrite32(PCH_TSE_TTIPEND, &chip->regs->event);
+<<<<<<< HEAD
 	/* Version: IEEE1588 v1 and IEEE1588-2008,  Mode: All Evwnt, Locked  */
 	iowrite32(0x80020000, &chip->regs->ch_control);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pch_eth_enable_set(chip);
 
@@ -668,8 +745,14 @@ pch_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 
 err_req_irq:
 	ptp_clock_unregister(chip->ptp_clock);
+<<<<<<< HEAD
 	iounmap(chip->regs);
 	chip->regs = 0;
+=======
+err_ptp_clock_reg:
+	iounmap(chip->regs);
+	chip->regs = NULL;
+>>>>>>> refs/remotes/origin/master
 
 err_ioremap:
 	release_mem_region(chip->mem_base, chip->mem_size);
@@ -722,9 +805,16 @@ static s32 __init ptp_pch_init(void)
 module_init(ptp_pch_init);
 module_exit(ptp_pch_exit);
 
+<<<<<<< HEAD
 module_param_string(station, pch_param.station, sizeof pch_param.station, 0444);
 MODULE_PARM_DESC(station,
 	 "IEEE 1588 station address to use - column separated hex values");
+=======
+module_param_string(station,
+		    pch_param.station, sizeof(pch_param.station), 0444);
+MODULE_PARM_DESC(station,
+	 "IEEE 1588 station address to use - colon separated hex values");
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("LAPIS SEMICONDUCTOR, <tshimizu818@gmail.com>");
 MODULE_DESCRIPTION("PTP clock using the EG20T timer");

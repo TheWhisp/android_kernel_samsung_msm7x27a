@@ -43,8 +43,17 @@
 #define FBPIXMAPSIZE	(1024 * 8)
 
 static DEFINE_MUTEX(registration_lock);
+<<<<<<< HEAD
 struct fb_info *registered_fb[FB_MAX] __read_mostly;
 int num_registered_fb __read_mostly;
+=======
+
+struct fb_info *registered_fb[FB_MAX] __read_mostly;
+EXPORT_SYMBOL(registered_fb);
+
+int num_registered_fb __read_mostly;
+EXPORT_SYMBOL(num_registered_fb);
+>>>>>>> refs/remotes/origin/master
 
 static struct fb_info *get_fb_info(unsigned int idx)
 {
@@ -182,6 +191,10 @@ char* fb_get_buffer_offset(struct fb_info *info, struct fb_pixmap *buf, u32 size
 
 	return addr;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fb_get_buffer_offset);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_LOGO
 
@@ -669,6 +682,10 @@ int fb_show_logo(struct fb_info *info, int rotate)
 int fb_prepare_logo(struct fb_info *info, int rotate) { return 0; }
 int fb_show_logo(struct fb_info *info, int rotate) { return 0; }
 #endif /* CONFIG_LOGO */
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fb_show_logo);
+>>>>>>> refs/remotes/origin/master
 
 static void *fb_seq_start(struct seq_file *m, loff_t *pos)
 {
@@ -727,7 +744,11 @@ static const struct file_operations fb_proc_fops = {
  */
 static struct fb_info *file_fb_info(struct file *file)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	int fbidx = iminor(inode);
 	struct fb_info *info = registered_fb[fbidx];
 
@@ -909,6 +930,10 @@ fb_pan_display(struct fb_info *info, struct fb_var_screeninfo *var)
 		info->var.vmode &= ~FB_VMODE_YWRAP;
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fb_pan_display);
+>>>>>>> refs/remotes/origin/master
 
 static int fb_check_caps(struct fb_info *info, struct fb_var_screeninfo *var,
 			 u32 activate)
@@ -968,7 +993,10 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
 		u32 activate = var->activate;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* When using FOURCC mode, make sure the red, green, blue and
 		 * transp fields are set to 0.
 		 */
@@ -983,7 +1011,10 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
 				return -EINVAL;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!info->fbops->fb_check_var) {
 			*var = info->var;
 			goto done;
@@ -1045,15 +1076,25 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
  done:
 	return ret;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fb_set_var);
+>>>>>>> refs/remotes/origin/master
 
 int
 fb_blank(struct fb_info *info, int blank)
 {	
+<<<<<<< HEAD
  	int ret = -EINVAL;
+=======
+	struct fb_event event;
+	int ret = -EINVAL, early_ret;
+>>>>>>> refs/remotes/origin/master
 
  	if (blank > FB_BLANK_POWERDOWN)
  		blank = FB_BLANK_POWERDOWN;
 
+<<<<<<< HEAD
 	if (info->fbops->fb_blank)
  		ret = info->fbops->fb_blank(blank, info);
 
@@ -1063,10 +1104,33 @@ fb_blank(struct fb_info *info, int blank)
 		event.info = info;
 		event.data = &blank;
 		fb_notifier_call_chain(FB_EVENT_BLANK, &event);
+=======
+	event.info = info;
+	event.data = &blank;
+
+	early_ret = fb_notifier_call_chain(FB_EARLY_EVENT_BLANK, &event);
+
+	if (info->fbops->fb_blank)
+ 		ret = info->fbops->fb_blank(blank, info);
+
+	if (!ret)
+		fb_notifier_call_chain(FB_EVENT_BLANK, &event);
+	else {
+		/*
+		 * if fb_blank is failed then revert effects of
+		 * the early blank event.
+		 */
+		if (!early_ret)
+			fb_notifier_call_chain(FB_R_EARLY_EVENT_BLANK, &event);
+>>>>>>> refs/remotes/origin/master
 	}
 
  	return ret;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fb_blank);
+>>>>>>> refs/remotes/origin/master
 
 static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 			unsigned long arg)
@@ -1093,6 +1157,7 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 	case FBIOPUT_VSCREENINFO:
 		if (copy_from_user(&var, argp, sizeof(var)))
 			return -EFAULT;
+<<<<<<< HEAD
 		if (!lock_fb_info(info))
 			return -ENODEV;
 		console_lock();
@@ -1101,6 +1166,18 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		info->flags &= ~FBINFO_MISC_USEREVENT;
 		console_unlock();
 		unlock_fb_info(info);
+=======
+		console_lock();
+		if (!lock_fb_info(info)) {
+			console_unlock();
+			return -ENODEV;
+		}
+		info->flags |= FBINFO_MISC_USEREVENT;
+		ret = fb_set_var(info, &var);
+		info->flags &= ~FBINFO_MISC_USEREVENT;
+		unlock_fb_info(info);
+		console_unlock();
+>>>>>>> refs/remotes/origin/master
 		if (!ret && copy_to_user(argp, &var, sizeof(var)))
 			ret = -EFAULT;
 		break;
@@ -1129,12 +1206,23 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 	case FBIOPAN_DISPLAY:
 		if (copy_from_user(&var, argp, sizeof(var)))
 			return -EFAULT;
+<<<<<<< HEAD
 		if (!lock_fb_info(info))
 			return -ENODEV;
 		console_lock();
 		ret = fb_pan_display(info, &var);
 		console_unlock();
 		unlock_fb_info(info);
+=======
+		console_lock();
+		if (!lock_fb_info(info)) {
+			console_unlock();
+			return -ENODEV;
+		}
+		ret = fb_pan_display(info, &var);
+		unlock_fb_info(info);
+		console_unlock();
+>>>>>>> refs/remotes/origin/master
 		if (ret == 0 && copy_to_user(argp, &var, sizeof(var)))
 			return -EFAULT;
 		break;
@@ -1169,6 +1257,7 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 			break;
 		}
 		event.data = &con2fb;
+<<<<<<< HEAD
 		if (!lock_fb_info(info))
 			return -ENODEV;
 		console_lock();
@@ -1188,11 +1277,42 @@ static long do_fb_ioctl(struct fb_info *info, unsigned int cmd,
 		unlock_fb_info(info);
 		break;
 	default:
+=======
+		console_lock();
+		if (!lock_fb_info(info)) {
+			console_unlock();
+			return -ENODEV;
+		}
+		event.info = info;
+		ret = fb_notifier_call_chain(FB_EVENT_SET_CONSOLE_MAP, &event);
+		unlock_fb_info(info);
+		console_unlock();
+		break;
+	case FBIOBLANK:
+		console_lock();
+		if (!lock_fb_info(info)) {
+			console_unlock();
+			return -ENODEV;
+		}
+		info->flags |= FBINFO_MISC_USEREVENT;
+		ret = fb_blank(info, arg);
+		info->flags &= ~FBINFO_MISC_USEREVENT;
+		unlock_fb_info(info);
+		console_unlock();
+		break;
+	default:
+		if (!lock_fb_info(info))
+			return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 		fb = info->fbops;
 		if (fb->fb_ioctl)
 			ret = fb->fb_ioctl(info, cmd, arg);
 		else
 			ret = -ENOTTY;
+<<<<<<< HEAD
+=======
+		unlock_fb_info(info);
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -1296,7 +1416,13 @@ static int do_fscreeninfo_to_user(struct fb_fix_screeninfo *fix,
 	err |= copy_to_user(fix32->reserved, fix->reserved,
 			    sizeof(fix->reserved));
 
+<<<<<<< HEAD
 	return err;
+=======
+	if (err)
+		return -EFAULT;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int fb_get_fscreeninfo(struct fb_info *info, unsigned int cmd,
@@ -1389,6 +1515,14 @@ fb_mmap(struct file *file, struct vm_area_struct * vma)
 	len = info->fix.smem_len;
 	mmio_pgoff = PAGE_ALIGN((start & ~PAGE_MASK) + len) >> PAGE_SHIFT;
 	if (vma->vm_pgoff >= mmio_pgoff) {
+<<<<<<< HEAD
+=======
+		if (info->var.accel_flags) {
+			mutex_unlock(&info->mm_lock);
+			return -EINVAL;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		vma->vm_pgoff -= mmio_pgoff;
 		start = info->fix.mmio_start;
 		len = info->fix.mmio_len;
@@ -1625,17 +1759,37 @@ static int do_register_framebuffer(struct fb_info *fb_info)
 	if (!fb_info->modelist.prev || !fb_info->modelist.next)
 		INIT_LIST_HEAD(&fb_info->modelist);
 
+<<<<<<< HEAD
+=======
+	if (fb_info->skip_vt_switch)
+		pm_vt_switch_required(fb_info->dev, false);
+	else
+		pm_vt_switch_required(fb_info->dev, true);
+
+>>>>>>> refs/remotes/origin/master
 	fb_var_to_videomode(&mode, &fb_info->var);
 	fb_add_videomode(&mode, &fb_info->modelist);
 	registered_fb[i] = fb_info;
 
 	event.info = fb_info;
+<<<<<<< HEAD
 	if (!lock_fb_info(fb_info))
 		return -ENODEV;
 	console_lock();
 	fb_notifier_call_chain(FB_EVENT_FB_REGISTERED, &event);
 	console_unlock();
 	unlock_fb_info(fb_info);
+=======
+	console_lock();
+	if (!lock_fb_info(fb_info)) {
+		console_unlock();
+		return -ENODEV;
+	}
+
+	fb_notifier_call_chain(FB_EVENT_FB_REGISTERED, &event);
+	unlock_fb_info(fb_info);
+	console_unlock();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1648,6 +1802,7 @@ static int do_unregister_framebuffer(struct fb_info *fb_info)
 	if (i < 0 || i >= FB_MAX || registered_fb[i] != fb_info)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (!lock_fb_info(fb_info))
 		return -ENODEV;
 	console_lock();
@@ -1655,10 +1810,27 @@ static int do_unregister_framebuffer(struct fb_info *fb_info)
 	ret = fb_notifier_call_chain(FB_EVENT_FB_UNBIND, &event);
 	console_unlock();
 	unlock_fb_info(fb_info);
+=======
+	console_lock();
+	if (!lock_fb_info(fb_info)) {
+		console_unlock();
+		return -ENODEV;
+	}
+
+	event.info = fb_info;
+	ret = fb_notifier_call_chain(FB_EVENT_FB_UNBIND, &event);
+	unlock_fb_info(fb_info);
+	console_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	if (ret)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	pm_vt_switch_unregister(fb_info->dev);
+
+>>>>>>> refs/remotes/origin/master
 	unlink_framebuffer(fb_info);
 	if (fb_info->pixmap.addr &&
 	    (fb_info->pixmap.flags & FB_PIXMAP_DEFAULT))
@@ -1722,6 +1894,10 @@ register_framebuffer(struct fb_info *fb_info)
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(register_framebuffer);
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	unregister_framebuffer - releases a frame buffer device
@@ -1750,6 +1926,10 @@ unregister_framebuffer(struct fb_info *fb_info)
 
 	return ret;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(unregister_framebuffer);
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	fb_set_suspend - low level driver signals suspend
@@ -1773,6 +1953,10 @@ void fb_set_suspend(struct fb_info *info, int state)
 		fb_notifier_call_chain(FB_EVENT_RESUME, &event);
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fb_set_suspend);
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	fbmem_init - init frame buffer subsystem
@@ -1860,7 +2044,11 @@ static int ofonly __read_mostly;
  *
  * NOTE: Needed to maintain backwards compatibility
  */
+<<<<<<< HEAD
 int fb_get_options(char *name, char **option)
+=======
+int fb_get_options(const char *name, char **option)
+>>>>>>> refs/remotes/origin/master
 {
 	char *opt, *options = NULL;
 	int retval = 0;
@@ -1889,6 +2077,10 @@ int fb_get_options(char *name, char **option)
 
 	return retval;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fb_get_options);
+>>>>>>> refs/remotes/origin/master
 
 #ifndef MODULE
 /**
@@ -1936,6 +2128,7 @@ static int __init video_setup(char *options)
 __setup("video=", video_setup);
 #endif
 
+<<<<<<< HEAD
     /*
      *  Visible symbols for modules
      */
@@ -1952,4 +2145,6 @@ EXPORT_SYMBOL(fb_get_buffer_offset);
 EXPORT_SYMBOL(fb_set_suspend);
 EXPORT_SYMBOL(fb_get_options);
 
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

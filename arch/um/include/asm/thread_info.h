@@ -60,6 +60,7 @@ static inline struct thread_info *current_thread_info(void)
 
 #endif
 
+<<<<<<< HEAD
 #define PREEMPT_ACTIVE		0x10000000
 
 #define TIF_SYSCALL_TRACE	0	/* syscall trace active */
@@ -67,18 +68,28 @@ static inline struct thread_info *current_thread_info(void)
 #define TIF_NEED_RESCHED	2	/* rescheduling necessary */
 #define TIF_POLLING_NRFLAG      3       /* true if poll_idle() is polling
 					 * TIF_NEED_RESCHED */
+=======
+#define TIF_SYSCALL_TRACE	0	/* syscall trace active */
+#define TIF_SIGPENDING		1	/* signal pending */
+#define TIF_NEED_RESCHED	2	/* rescheduling necessary */
+>>>>>>> refs/remotes/origin/master
 #define TIF_RESTART_BLOCK	4
 #define TIF_MEMDIE		5	/* is terminating due to OOM killer */
 #define TIF_SYSCALL_AUDIT	6
 #define TIF_RESTORE_SIGMASK	7
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TIF_FREEZE		16	/* is freezing for suspend */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TIF_NOTIFY_RESUME	8
+>>>>>>> refs/remotes/origin/master
 
 #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
 #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
 #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+<<<<<<< HEAD
 #define _TIF_POLLING_NRFLAG     (1 << TIF_POLLING_NRFLAG)
 #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
 #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
@@ -87,5 +98,9 @@ static inline struct thread_info *current_thread_info(void)
 #define _TIF_FREEZE		(1 << TIF_FREEZE)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define _TIF_MEMDIE		(1 << TIF_MEMDIE)
+#define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
+>>>>>>> refs/remotes/origin/master
 
 #endif

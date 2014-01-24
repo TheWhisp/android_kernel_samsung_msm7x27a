@@ -98,7 +98,11 @@ err_enable:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit atmel_trng_remove(struct platform_device *pdev)
+=======
+static int atmel_trng_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atmel_trng *trng = platform_get_drvdata(pdev);
 
@@ -108,8 +112,11 @@ static int __devexit atmel_trng_remove(struct platform_device *pdev)
 	clk_disable(trng->clk);
 	clk_put(trng->clk);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -138,7 +145,11 @@ static const struct dev_pm_ops atmel_trng_pm_ops = {
 
 static struct platform_driver atmel_trng_driver = {
 	.probe		= atmel_trng_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(atmel_trng_remove),
+=======
+	.remove		= atmel_trng_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "atmel-trng",
 		.owner	= THIS_MODULE,

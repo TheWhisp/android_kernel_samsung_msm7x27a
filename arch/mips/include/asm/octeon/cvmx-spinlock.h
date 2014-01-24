@@ -26,7 +26,11 @@
  ***********************license end**************************************/
 
 /**
+<<<<<<< HEAD
  * Implementation of spinlocks for Octeon CVMX.  Although similar in
+=======
+ * Implementation of spinlocks for Octeon CVMX.	 Although similar in
+>>>>>>> refs/remotes/origin/master
  * function to Linux kernel spinlocks, they are not compatible.
  * Octeon CVMX spinlocks are only used to synchronize with the boot
  * monitor and other non-Linux programs running in the system.
@@ -35,7 +39,11 @@
 #ifndef __CVMX_SPINLOCK_H__
 #define __CVMX_SPINLOCK_H__
 
+<<<<<<< HEAD
 #include "cvmx-asm.h"
+=======
+#include <asm/octeon/cvmx-asm.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Spinlocks for Octeon */
 
@@ -50,8 +58,13 @@ typedef struct {
 } cvmx_spinlock_t;
 
 /* note - macros not expanded in inline ASM, so values hardcoded */
+<<<<<<< HEAD
 #define  CVMX_SPINLOCK_UNLOCKED_VAL  0
 #define  CVMX_SPINLOCK_LOCKED_VAL    1
+=======
+#define	 CVMX_SPINLOCK_UNLOCKED_VAL  0
+#define	 CVMX_SPINLOCK_LOCKED_VAL    1
+>>>>>>> refs/remotes/origin/master
 
 #define CVMX_SPINLOCK_UNLOCKED_INITIALIZER  {CVMX_SPINLOCK_UNLOCKED_VAL}
 
@@ -96,7 +109,11 @@ static inline void cvmx_spinlock_unlock(cvmx_spinlock_t *lock)
  * @lock:   pointer to lock structure
  *
  * Returns 0: lock successfully taken
+<<<<<<< HEAD
  *         1: lock not taken, held by someone else
+=======
+ *	   1: lock not taken, held by someone else
+>>>>>>> refs/remotes/origin/master
  * These return values match the Linux semantics.
  */
 
@@ -104,6 +121,7 @@ static inline unsigned int cvmx_spinlock_trylock(cvmx_spinlock_t *lock)
 {
 	unsigned int tmp;
 
+<<<<<<< HEAD
 	__asm__ __volatile__(".set noreorder         \n"
 			     "1: ll   %[tmp], %[val] \n"
 			/* if lock held, fail immediately */
@@ -114,6 +132,18 @@ static inline unsigned int cvmx_spinlock_trylock(cvmx_spinlock_t *lock)
 			     "   li   %[tmp], 0      \n"
 			     "2:                     \n"
 			     ".set reorder           \n" :
+=======
+	__asm__ __volatile__(".set noreorder	     \n"
+			     "1: ll   %[tmp], %[val] \n"
+			/* if lock held, fail immediately */
+			     "	 bnez %[tmp], 2f     \n"
+			     "	 li   %[tmp], 1	     \n"
+			     "	 sc   %[tmp], %[val] \n"
+			     "	 beqz %[tmp], 1b     \n"
+			     "	 li   %[tmp], 0	     \n"
+			     "2:		     \n"
+			     ".set reorder	     \n" :
+>>>>>>> refs/remotes/origin/master
 			[val] "+m"(lock->value), [tmp] "=&r"(tmp)
 			     : : "memory");
 
@@ -129,6 +159,7 @@ static inline void cvmx_spinlock_lock(cvmx_spinlock_t *lock)
 {
 	unsigned int tmp;
 
+<<<<<<< HEAD
 	__asm__ __volatile__(".set noreorder         \n"
 			     "1: ll   %[tmp], %[val]  \n"
 			     "   bnez %[tmp], 1b     \n"
@@ -137,6 +168,16 @@ static inline void cvmx_spinlock_lock(cvmx_spinlock_t *lock)
 			     "   beqz %[tmp], 1b     \n"
 			     "   nop                \n"
 			     ".set reorder           \n" :
+=======
+	__asm__ __volatile__(".set noreorder	     \n"
+			     "1: ll   %[tmp], %[val]  \n"
+			     "	 bnez %[tmp], 1b     \n"
+			     "	 li   %[tmp], 1	     \n"
+			     "	 sc   %[tmp], %[val] \n"
+			     "	 beqz %[tmp], 1b     \n"
+			     "	 nop		    \n"
+			     ".set reorder	     \n" :
+>>>>>>> refs/remotes/origin/master
 			[val] "+m"(lock->value), [tmp] "=&r"(tmp)
 			: : "memory");
 
@@ -163,6 +204,7 @@ static inline void cvmx_spinlock_bit_lock(uint32_t *word)
 	unsigned int tmp;
 	unsigned int sav;
 
+<<<<<<< HEAD
 	__asm__ __volatile__(".set noreorder         \n"
 			     ".set noat              \n"
 			     "1: ll    %[tmp], %[val]  \n"
@@ -174,6 +216,19 @@ static inline void cvmx_spinlock_bit_lock(uint32_t *word)
 			     "   nop                \n"
 			     ".set at              \n"
 			     ".set reorder           \n" :
+=======
+	__asm__ __volatile__(".set noreorder	     \n"
+			     ".set noat		     \n"
+			     "1: ll    %[tmp], %[val]  \n"
+			     "	 bbit1 %[tmp], 31, 1b	 \n"
+			     "	 li    $at, 1	   \n"
+			     "	 ins   %[tmp], $at, 31, 1  \n"
+			     "	 sc    %[tmp], %[val] \n"
+			     "	 beqz  %[tmp], 1b     \n"
+			     "	 nop		    \n"
+			     ".set at		   \n"
+			     ".set reorder	     \n" :
+>>>>>>> refs/remotes/origin/master
 			[val] "+m"(*word), [tmp] "=&r"(tmp), [sav] "=&r"(sav)
 			     : : "memory");
 
@@ -187,7 +242,11 @@ static inline void cvmx_spinlock_bit_lock(uint32_t *word)
  *
  * @word:  word to lock bit 31 of
  * Returns 0: lock successfully taken
+<<<<<<< HEAD
  *         1: lock not taken, held by someone else
+=======
+ *	   1: lock not taken, held by someone else
+>>>>>>> refs/remotes/origin/master
  * These return values match the Linux semantics.
  */
 static inline unsigned int cvmx_spinlock_bit_trylock(uint32_t *word)
@@ -198,6 +257,7 @@ static inline unsigned int cvmx_spinlock_bit_trylock(uint32_t *word)
 			     ".set noat\n"
 			     "1: ll    %[tmp], %[val] \n"
 			/* if lock held, fail immediately */
+<<<<<<< HEAD
 			     "   bbit1 %[tmp], 31, 2f     \n"
 			     "   li    $at, 1      \n"
 			     "   ins   %[tmp], $at, 31, 1  \n"
@@ -207,6 +267,17 @@ static inline unsigned int cvmx_spinlock_bit_trylock(uint32_t *word)
 			     "2:                     \n"
 			     ".set at              \n"
 			     ".set reorder           \n" :
+=======
+			     "	 bbit1 %[tmp], 31, 2f	  \n"
+			     "	 li    $at, 1	   \n"
+			     "	 ins   %[tmp], $at, 31, 1  \n"
+			     "	 sc    %[tmp], %[val] \n"
+			     "	 beqz  %[tmp], 1b     \n"
+			     "	 li    %[tmp], 0      \n"
+			     "2:		     \n"
+			     ".set at		   \n"
+			     ".set reorder	     \n" :
+>>>>>>> refs/remotes/origin/master
 			[val] "+m"(*word), [tmp] "=&r"(tmp)
 			: : "memory");
 

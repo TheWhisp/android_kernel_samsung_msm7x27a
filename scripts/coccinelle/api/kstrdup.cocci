@@ -2,6 +2,7 @@
 ///
 // Confidence: High
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Copyright: (C) 2010 Nicolas Palix, DIKU.  GPLv2.
 // Copyright: (C) 2010 Julia Lawall, DIKU.  GPLv2.
 // Copyright: (C) 2010 Gilles Muller, INRIA/LiP6.  GPLv2.
@@ -19,12 +20,25 @@ virtual patch
 
 @@
 =======
+=======
+// Copyright: (C) 2010-2012 Nicolas Palix.  GPLv2.
+// Copyright: (C) 2010-2012 Julia Lawall, INRIA/LIP6.  GPLv2.
+// Copyright: (C) 2010-2012 Gilles Muller, INRIA/LiP6.  GPLv2.
+// URL: http://coccinelle.lip6.fr/
+// Comments:
+// Options: --no-includes --include-headers
+
+virtual patch
+>>>>>>> refs/remotes/origin/master
 virtual context
 virtual org
 virtual report
 
 @depends on patch@
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 expression from,to;
 expression flag,E1,E2;
 statement S;
@@ -38,10 +52,14 @@ statement S;
 -  strcpy(to, from);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 @@
 =======
 @depends on patch@
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+@depends on patch@
+>>>>>>> refs/remotes/origin/master
 expression x,from,to;
 expression flag,E1,E2,E3;
 statement S;
@@ -56,7 +74,10 @@ statement S;
     ... when != \(x = E3 \| from = E3 \| to = E3 \)
 -   memcpy(to, from, x);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 // ---------------------------------------------------------------------
 
@@ -119,4 +140,7 @@ p2 << r2.p2;
 
 msg = "WARNING opportunity for kstrdep (memcpy on line %s)" % (p2[0].line)
 coccilib.report.print_report(p1[0], msg)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

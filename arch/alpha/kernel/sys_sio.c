@@ -21,9 +21,12 @@
 #include <asm/compiler.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -150,10 +153,14 @@ sio_fixup_irq_levels(unsigned int level_bits)
 
 static inline int __init
 <<<<<<< HEAD
+<<<<<<< HEAD
 noname_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 noname_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+noname_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * The Noname board has 5 PCI slots with each of the 4
@@ -193,10 +200,14 @@ noname_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 
 static inline int __init
 <<<<<<< HEAD
+<<<<<<< HEAD
 p2k_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 p2k_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+p2k_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static char irq_tab[][5] __initdata = {
 		/*INT A   B   C   D */

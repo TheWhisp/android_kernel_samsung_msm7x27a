@@ -27,6 +27,7 @@
 #include <linux/slab.h>
 #include <linux/rbtree.h>
 #include "ext4.h"
+<<<<<<< HEAD
 
 static unsigned char ext4_filetype_table[] = {
 	DT_UNKNOWN, DT_REG, DT_DIR, DT_CHR, DT_BLK, DT_FIFO, DT_SOCK, DT_LNK
@@ -70,6 +71,15 @@ static unsigned char get_dtype(struct super_block *sb, int filetype)
 /**
  * Check if the given dir-inode refers to an htree-indexed directory
  * (or a directory which chould potentially get coverted to use htree
+=======
+#include "xattr.h"
+
+static int ext4_dx_readdir(struct file *, struct dir_context *);
+
+/**
+ * Check if the given dir-inode refers to an htree-indexed directory
+ * (or a directory which could potentially get converted to use htree
+>>>>>>> refs/remotes/origin/master
  * indexing).
  *
  * Return 1 if it is a dx dir, 0 if not
@@ -81,22 +91,40 @@ static int is_dx_dir(struct inode *inode)
 	if (EXT4_HAS_COMPAT_FEATURE(inode->i_sb,
 		     EXT4_FEATURE_COMPAT_DIR_INDEX) &&
 	    ((ext4_test_inode_flag(inode, EXT4_INODE_INDEX)) ||
+<<<<<<< HEAD
 	     ((inode->i_size >> sb->s_blocksize_bits) == 1)))
+=======
+	     ((inode->i_size >> sb->s_blocksize_bits) == 1) ||
+	     ext4_has_inline_data(inode)))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Return 0 if the directory entry is OK, and 1 if there is a problem
  *
  * Note: this is the opposite of what ext2 and ext3 historically returned...
+<<<<<<< HEAD
+=======
+ *
+ * bh passed here can be an inode block or a dir data block, depending
+ * on the inode inline data flag.
+>>>>>>> refs/remotes/origin/master
  */
 int __ext4_check_dir_entry(const char *function, unsigned int line,
 			   struct inode *dir, struct file *filp,
 			   struct ext4_dir_entry_2 *de,
+<<<<<<< HEAD
 			   struct buffer_head *bh,
+=======
+			   struct buffer_head *bh, char *buf, int size,
+>>>>>>> refs/remotes/origin/master
 			   unsigned int offset)
 {
 	const char *error_msg = NULL;
@@ -109,9 +137,14 @@ int __ext4_check_dir_entry(const char *function, unsigned int line,
 		error_msg = "rec_len % 4 != 0";
 	else if (unlikely(rlen < EXT4_DIR_REC_LEN(de->name_len)))
 		error_msg = "rec_len is too small for name_len";
+<<<<<<< HEAD
 	else if (unlikely(((char *) de - bh->b_data) + rlen >
 			  dir->i_sb->s_blocksize))
 		error_msg = "directory entry across blocks";
+=======
+	else if (unlikely(((char *) de - buf) + rlen > size))
+		error_msg = "directory entry across range";
+>>>>>>> refs/remotes/origin/master
 	else if (unlikely(le32_to_cpu(de->inode) >
 			le32_to_cpu(EXT4_SB(dir->i_sb)->s_es->s_inodes_count)))
 		error_msg = "inode out of bounds";
@@ -119,6 +152,7 @@ int __ext4_check_dir_entry(const char *function, unsigned int line,
 		return 0;
 
 	if (filp)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ext4_error_file(filp, function, line, bh ? bh->b_blocknr : 0,
 				"bad entry in directory: %s - offset=%u(%u), "
@@ -136,20 +170,31 @@ int __ext4_check_dir_entry(const char *function, unsigned int line,
 				"bad entry in directory: %s - offset=%u(%u), "
 				"inode=%u, rec_len=%d, name_len=%d",
 				error_msg, (unsigned) (offset % bh->b_size),
+=======
+		ext4_error_file(filp, function, line, bh->b_blocknr,
+				"bad entry in directory: %s - offset=%u(%u), "
+				"inode=%u, rec_len=%d, name_len=%d",
+				error_msg, (unsigned) (offset % size),
+>>>>>>> refs/remotes/origin/master
 				offset, le32_to_cpu(de->inode),
 				rlen, de->name_len);
 	else
 		ext4_error_inode(dir, function, line, bh->b_blocknr,
 				"bad entry in directory: %s - offset=%u(%u), "
 				"inode=%u, rec_len=%d, name_len=%d",
+<<<<<<< HEAD
 				error_msg, (unsigned) (offset % bh->b_size),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				error_msg, (unsigned) (offset % size),
+>>>>>>> refs/remotes/origin/master
 				offset, le32_to_cpu(de->inode),
 				rlen, de->name_len);
 
 	return 1;
 }
 
+<<<<<<< HEAD
 static int ext4_readdir(struct file *filp,
 			 void *dirent, filldir_t filldir)
 {
@@ -183,11 +228,28 @@ static int ext4_readdir(struct file *filp,
 		if (err != ERR_BAD_DX_DIR) {
 			ret = err;
 			goto out;
+=======
+static int ext4_readdir(struct file *file, struct dir_context *ctx)
+{
+	unsigned int offset;
+	int i, stored;
+	struct ext4_dir_entry_2 *de;
+	int err;
+	struct inode *inode = file_inode(file);
+	struct super_block *sb = inode->i_sb;
+	int dir_has_error = 0;
+
+	if (is_dx_dir(inode)) {
+		err = ext4_dx_readdir(file, ctx);
+		if (err != ERR_BAD_DX_DIR) {
+			return err;
+>>>>>>> refs/remotes/origin/master
 		}
 		/*
 		 * We don't set the inode dirty flag since it's not
 		 * critical that it get flushed back to the disk.
 		 */
+<<<<<<< HEAD
 		ext4_clear_inode_flag(filp->f_path.dentry->d_inode,
 				      EXT4_INODE_INDEX);
 	}
@@ -199,17 +261,48 @@ static int ext4_readdir(struct file *filp,
 		struct buffer_head *bh = NULL;
 
 		map.m_lblk = filp->f_pos >> EXT4_BLOCK_SIZE_BITS(sb);
+=======
+		ext4_clear_inode_flag(file_inode(file),
+				      EXT4_INODE_INDEX);
+	}
+
+	if (ext4_has_inline_data(inode)) {
+		int has_inline_data = 1;
+		int ret = ext4_read_inline_dir(file, ctx,
+					   &has_inline_data);
+		if (has_inline_data)
+			return ret;
+	}
+
+	stored = 0;
+	offset = ctx->pos & (sb->s_blocksize - 1);
+
+	while (ctx->pos < inode->i_size) {
+		struct ext4_map_blocks map;
+		struct buffer_head *bh = NULL;
+
+		map.m_lblk = ctx->pos >> EXT4_BLOCK_SIZE_BITS(sb);
+>>>>>>> refs/remotes/origin/master
 		map.m_len = 1;
 		err = ext4_map_blocks(NULL, inode, &map, 0);
 		if (err > 0) {
 			pgoff_t index = map.m_pblk >>
 					(PAGE_CACHE_SHIFT - inode->i_blkbits);
+<<<<<<< HEAD
 			if (!ra_has_index(&filp->f_ra, index))
 				page_cache_sync_readahead(
 					sb->s_bdev->bd_inode->i_mapping,
 					&filp->f_ra, filp,
 					index, 1);
 			filp->f_ra.prev_pos = (loff_t)index << PAGE_CACHE_SHIFT;
+=======
+			if (!ra_has_index(&file->f_ra, index))
+				page_cache_sync_readahead(
+					sb->s_bdev->bd_inode->i_mapping,
+					&file->f_ra, file,
+					index, 1);
+			file->f_ra.prev_pos = (loff_t)index << PAGE_CACHE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 			bh = ext4_bread(NULL, inode, map.m_lblk, 0, &err);
 		}
 
@@ -219,6 +312,7 @@ static int ext4_readdir(struct file *filp,
 		 */
 		if (!bh) {
 			if (!dir_has_error) {
+<<<<<<< HEAD
 				EXT4_ERROR_FILE(filp, 0,
 						"directory contains a "
 						"hole at offset %llu",
@@ -233,11 +327,43 @@ static int ext4_readdir(struct file *filp,
 		}
 
 revalidate:
+=======
+				EXT4_ERROR_FILE(file, 0,
+						"directory contains a "
+						"hole at offset %llu",
+					   (unsigned long long) ctx->pos);
+				dir_has_error = 1;
+			}
+			/* corrupt size?  Maybe no more blocks to read */
+			if (ctx->pos > inode->i_blocks << 9)
+				break;
+			ctx->pos += sb->s_blocksize - offset;
+			continue;
+		}
+
+		/* Check the checksum */
+		if (!buffer_verified(bh) &&
+		    !ext4_dirent_csum_verify(inode,
+				(struct ext4_dir_entry *)bh->b_data)) {
+			EXT4_ERROR_FILE(file, 0, "directory fails checksum "
+					"at offset %llu",
+					(unsigned long long)ctx->pos);
+			ctx->pos += sb->s_blocksize - offset;
+			brelse(bh);
+			continue;
+		}
+		set_buffer_verified(bh);
+
+>>>>>>> refs/remotes/origin/master
 		/* If the dir block has changed since the last call to
 		 * readdir(2), then we might be pointing to an invalid
 		 * dirent right now.  Scan from the start of the block
 		 * to make sure. */
+<<<<<<< HEAD
 		if (filp->f_version != inode->i_version) {
+=======
+		if (file->f_version != inode->i_version) {
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < sb->s_blocksize && i < offset; ) {
 				de = (struct ext4_dir_entry_2 *)
 					(bh->b_data + i);
@@ -254,6 +380,7 @@ revalidate:
 							    sb->s_blocksize);
 			}
 			offset = i;
+<<<<<<< HEAD
 			filp->f_pos = (filp->f_pos & ~(sb->s_blocksize - 1))
 				| offset;
 			filp->f_version = inode->i_version;
@@ -272,10 +399,30 @@ revalidate:
 				brelse(bh);
 				ret = stored;
 				goto out;
+=======
+			ctx->pos = (ctx->pos & ~(sb->s_blocksize - 1))
+				| offset;
+			file->f_version = inode->i_version;
+		}
+
+		while (ctx->pos < inode->i_size
+		       && offset < sb->s_blocksize) {
+			de = (struct ext4_dir_entry_2 *) (bh->b_data + offset);
+			if (ext4_check_dir_entry(inode, file, de, bh,
+						 bh->b_data, bh->b_size,
+						 offset)) {
+				/*
+				 * On error, skip to the next block
+				 */
+				ctx->pos = (ctx->pos |
+						(sb->s_blocksize - 1)) + 1;
+				break;
+>>>>>>> refs/remotes/origin/master
 			}
 			offset += ext4_rec_len_from_disk(de->rec_len,
 					sb->s_blocksize);
 			if (le32_to_cpu(de->inode)) {
+<<<<<<< HEAD
 				/* We might block in the next section
 				 * if the data destination is
 				 * currently swapped out.  So, use a
@@ -297,10 +444,22 @@ revalidate:
 				stored++;
 			}
 			filp->f_pos += ext4_rec_len_from_disk(de->rec_len,
+=======
+				if (!dir_emit(ctx, de->name,
+						de->name_len,
+						le32_to_cpu(de->inode),
+						get_dtype(sb, de->file_type))) {
+					brelse(bh);
+					return 0;
+				}
+			}
+			ctx->pos += ext4_rec_len_from_disk(de->rec_len,
+>>>>>>> refs/remotes/origin/master
 						sb->s_blocksize);
 		}
 		offset = 0;
 		brelse(bh);
+<<<<<<< HEAD
 	}
 out:
 	return ret;
@@ -324,6 +483,16 @@ out:
 #define pos2maj_hash(pos)	((pos << 1) & 0xffffffff)
 #define pos2min_hash(pos)	(0)
 =======
+=======
+		if (ctx->pos < inode->i_size) {
+			if (!dir_relax(inode))
+				return 0;
+		}
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int is_32bit_api(void)
 {
 #ifdef CONFIG_COMPAT
@@ -383,6 +552,7 @@ static inline loff_t ext4_get_htree_eof(struct file *filp)
 
 
 /*
+<<<<<<< HEAD
  * ext4_dir_llseek() based on generic_file_llseek() to handle both
  * non-htree and htree directories, where the "offset" is in terms
  * of the filename hash value instead of the byte offset.
@@ -453,6 +623,30 @@ out_err:
 	return ret;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * ext4_dir_llseek() calls generic_file_llseek_size to handle htree
+ * directories, where the "offset" is in terms of the filename hash
+ * value instead of the byte offset.
+ *
+ * Because we may return a 64-bit hash that is well beyond offset limits,
+ * we need to pass the max hash as the maximum allowable offset in
+ * the htree directory case.
+ *
+ * For non-htree, ext4_llseek already chooses the proper max offset.
+ */
+static loff_t ext4_dir_llseek(struct file *file, loff_t offset, int whence)
+{
+	struct inode *inode = file->f_mapping->host;
+	int dx_dir = is_dx_dir(inode);
+	loff_t htree_max = ext4_get_htree_eof(file);
+
+	if (likely(dx_dir))
+		return generic_file_llseek_size(file, offset, whence,
+						    htree_max, htree_max);
+	else
+		return ext4_llseek(file, offset, whence);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This structure holds the nodes of the red-black tree used to store
@@ -514,11 +708,16 @@ static void free_rb_tree_fname(struct rb_root *root)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct dir_private_info *ext4_htree_create_dir_info(loff_t pos)
 =======
 static struct dir_private_info *ext4_htree_create_dir_info(struct file *filp,
 							   loff_t pos)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dir_private_info *ext4_htree_create_dir_info(struct file *filp,
+							   loff_t pos)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dir_private_info *p;
 
@@ -526,12 +725,17 @@ static struct dir_private_info *ext4_htree_create_dir_info(struct file *filp,
 	if (!p)
 		return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->curr_hash = pos2maj_hash(pos);
 	p->curr_minor_hash = pos2min_hash(pos);
 =======
 	p->curr_hash = pos2maj_hash(filp, pos);
 	p->curr_minor_hash = pos2min_hash(filp, pos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->curr_hash = pos2maj_hash(filp, pos);
+	p->curr_minor_hash = pos2min_hash(filp, pos);
+>>>>>>> refs/remotes/origin/master
 	return p;
 }
 
@@ -606,6 +810,7 @@ int ext4_htree_store_dirent(struct file *dir_file, __u32 hash,
  * for all entres on the fname linked list.  (Normally there is only
  * one entry on the linked list, unless there are 62 bit hash collisions.)
  */
+<<<<<<< HEAD
 static int call_filldir(struct file *filp, void *dirent,
 			filldir_t filldir, struct fname *fname)
 {
@@ -625,11 +830,22 @@ static int call_filldir(struct file *filp, void *dirent,
 	}
 	curr_pos = hash2pos(fname->hash, fname->minor_hash);
 =======
+=======
+static int call_filldir(struct file *file, struct dir_context *ctx,
+			struct fname *fname)
+{
+	struct dir_private_info *info = file->private_data;
+	struct inode *inode = file_inode(file);
+	struct super_block *sb = inode->i_sb;
+
+	if (!fname) {
+>>>>>>> refs/remotes/origin/master
 		ext4_msg(sb, KERN_ERR, "%s:%d: inode #%lu: comm %s: "
 			 "called with null fname?!?", __func__, __LINE__,
 			 inode->i_ino, current->comm);
 		return 0;
 	}
+<<<<<<< HEAD
 	curr_pos = hash2pos(filp, fname->hash, fname->minor_hash);
 >>>>>>> refs/remotes/origin/cm-10.0
 	while (fname) {
@@ -641,21 +857,39 @@ static int call_filldir(struct file *filp, void *dirent,
 			filp->f_pos = curr_pos;
 			info->extra_fname = fname;
 			return error;
+=======
+	ctx->pos = hash2pos(file, fname->hash, fname->minor_hash);
+	while (fname) {
+		if (!dir_emit(ctx, fname->name,
+				fname->name_len,
+				fname->inode,
+				get_dtype(sb, fname->file_type))) {
+			info->extra_fname = fname;
+			return 1;
+>>>>>>> refs/remotes/origin/master
 		}
 		fname = fname->next;
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ext4_dx_readdir(struct file *filp,
 			 void *dirent, filldir_t filldir)
 {
 	struct dir_private_info *info = filp->private_data;
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+static int ext4_dx_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct dir_private_info *info = file->private_data;
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct fname *fname;
 	int	ret;
 
 	if (!info) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		info = ext4_htree_create_dir_info(filp->f_pos);
 =======
@@ -685,6 +919,24 @@ static int ext4_dx_readdir(struct file *filp,
 		info->curr_hash = pos2maj_hash(filp, filp->f_pos);
 		info->curr_minor_hash = pos2min_hash(filp, filp->f_pos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info = ext4_htree_create_dir_info(file, ctx->pos);
+		if (!info)
+			return -ENOMEM;
+		file->private_data = info;
+	}
+
+	if (ctx->pos == ext4_get_htree_eof(file))
+		return 0;	/* EOF */
+
+	/* Some one has messed with f_pos; reset the world */
+	if (info->last_pos != ctx->pos) {
+		free_rb_tree_fname(&info->root);
+		info->curr_node = NULL;
+		info->extra_fname = NULL;
+		info->curr_hash = pos2maj_hash(file, ctx->pos);
+		info->curr_minor_hash = pos2min_hash(file, ctx->pos);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -692,7 +944,11 @@ static int ext4_dx_readdir(struct file *filp,
 	 * chain, return them first.
 	 */
 	if (info->extra_fname) {
+<<<<<<< HEAD
 		if (call_filldir(filp, dirent, filldir, info->extra_fname))
+=======
+		if (call_filldir(file, ctx, info->extra_fname))
+>>>>>>> refs/remotes/origin/master
 			goto finished;
 		info->extra_fname = NULL;
 		goto next_node;
@@ -706,21 +962,33 @@ static int ext4_dx_readdir(struct file *filp,
 		 * cached entries.
 		 */
 		if ((!info->curr_node) ||
+<<<<<<< HEAD
 		    (filp->f_version != inode->i_version)) {
 			info->curr_node = NULL;
 			free_rb_tree_fname(&info->root);
 			filp->f_version = inode->i_version;
 			ret = ext4_htree_fill_tree(filp, info->curr_hash,
+=======
+		    (file->f_version != inode->i_version)) {
+			info->curr_node = NULL;
+			free_rb_tree_fname(&info->root);
+			file->f_version = inode->i_version;
+			ret = ext4_htree_fill_tree(file, info->curr_hash,
+>>>>>>> refs/remotes/origin/master
 						   info->curr_minor_hash,
 						   &info->next_hash);
 			if (ret < 0)
 				return ret;
 			if (ret == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = EXT4_HTREE_EOF;
 =======
 				filp->f_pos = ext4_get_htree_eof(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ctx->pos = ext4_get_htree_eof(file);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			info->curr_node = rb_first(&info->root);
@@ -729,7 +997,11 @@ static int ext4_dx_readdir(struct file *filp,
 		fname = rb_entry(info->curr_node, struct fname, rb_hash);
 		info->curr_hash = fname->hash;
 		info->curr_minor_hash = fname->minor_hash;
+<<<<<<< HEAD
 		if (call_filldir(filp, dirent, filldir, fname))
+=======
+		if (call_filldir(file, ctx, fname))
+>>>>>>> refs/remotes/origin/master
 			break;
 	next_node:
 		info->curr_node = rb_next(info->curr_node);
@@ -741,10 +1013,14 @@ static int ext4_dx_readdir(struct file *filp,
 		} else {
 			if (info->next_hash == ~0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = EXT4_HTREE_EOF;
 =======
 				filp->f_pos = ext4_get_htree_eof(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ctx->pos = ext4_get_htree_eof(file);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			info->curr_hash = info->next_hash;
@@ -752,7 +1028,11 @@ static int ext4_dx_readdir(struct file *filp,
 		}
 	}
 finished:
+<<<<<<< HEAD
 	info->last_pos = filp->f_pos;
+=======
+	info->last_pos = ctx->pos;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -764,12 +1044,19 @@ static int ext4_release_dir(struct inode *inode, struct file *filp)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 const struct file_operations ext4_dir_operations = {
 	.llseek		= ext4_dir_llseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= ext4_readdir,
+=======
+	.iterate	= ext4_readdir,
+>>>>>>> refs/remotes/origin/master
 	.unlocked_ioctl = ext4_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl	= ext4_compat_ioctl,
@@ -777,4 +1064,7 @@ const struct file_operations ext4_dir_operations = {
 	.fsync		= ext4_sync_file,
 	.release	= ext4_release_dir,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

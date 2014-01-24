@@ -6,6 +6,7 @@
 #include <linux/spi/pxa2xx_spi.h>
 #include <linux/i2c/pxa-i2c.h>
 
+<<<<<<< HEAD
 #include <asm/pmu.h>
 #include <mach/udc.h>
 #include <mach/pxa3xx-u2d.h>
@@ -22,6 +23,20 @@
 #include <mach/audio.h>
 #include <mach/hardware.h>
 #include <plat/pxa3xx_nand.h>
+=======
+#include <mach/udc.h>
+#include <linux/platform_data/usb-pxa3xx-ulpi.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/irda-pxaficp.h>
+#include <mach/irqs.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <linux/platform_data/camera-pxa.h>
+#include <mach/audio.h>
+#include <mach/hardware.h>
+#include <linux/platform_data/mtd-nand-pxa3xx.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "devices.h"
 #include "generic.h"
@@ -45,7 +60,11 @@ static struct resource pxa_resource_pmu = {
 
 struct platform_device pxa_device_pmu = {
 	.name		= "arm-pmu",
+<<<<<<< HEAD
 	.id		= ARM_PMU_DEVICE_CPU,
+=======
+	.id		= -1,
+>>>>>>> refs/remotes/origin/master
 	.resource	= &pxa_resource_pmu,
 	.num_resources	= 1,
 };
@@ -387,9 +406,30 @@ struct platform_device pxa_device_asoc_platform = {
 
 static u64 pxaficp_dmamask = ~(u32)0;
 
+<<<<<<< HEAD
 struct platform_device pxa_device_ficp = {
 	.name		= "pxa2xx-ir",
 	.id		= -1,
+=======
+static struct resource pxa_ir_resources[] = {
+	[0] = {
+		.start  = IRQ_STUART,
+		.end    = IRQ_STUART,
+		.flags  = IORESOURCE_IRQ,
+	},
+	[1] = {
+		.start  = IRQ_ICP,
+		.end    = IRQ_ICP,
+		.flags  = IORESOURCE_IRQ,
+	},
+};
+
+struct platform_device pxa_device_ficp = {
+	.name		= "pxa2xx-ir",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(pxa_ir_resources),
+	.resource	= pxa_ir_resources,
+>>>>>>> refs/remotes/origin/master
 	.dev		= {
 		.dma_mask = &pxaficp_dmamask,
 		.coherent_dma_mask = 0xffffffff,
@@ -411,22 +451,31 @@ static struct resource pxa_rtc_resources[] = {
 		.start  = IRQ_RTC1Hz,
 		.end    = IRQ_RTC1Hz,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.name	= "rtc 1Hz",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= "rtc 1Hz",
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 	[2] = {
 		.start  = IRQ_RTCAlrm,
 		.end    = IRQ_RTCAlrm,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.name	= "rtc alarm",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name	= "rtc alarm",
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct platform_device sa1100_device_rtc = {
 	.name		= "sa1100-rtc",
@@ -435,6 +484,8 @@ struct platform_device sa1100_device_rtc = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct platform_device pxa_device_rtc = {
 	.name		= "pxa-rtc",
 	.id		= -1,
@@ -443,7 +494,10 @@ struct platform_device pxa_device_rtc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource sa1100_rtc_resources[] = {
 	{
 		.start  = IRQ_RTC1Hz,
@@ -465,7 +519,10 @@ struct platform_device sa1100_device_rtc = {
 	.resource	= sa1100_rtc_resources,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct resource pxa_ac97_resources[] = {
 	[0] = {
 		.start  = 0x40500000,
@@ -709,7 +766,11 @@ void __init pxa_set_ohci_info(struct pxaohci_platform_data *info)
 }
 #endif /* CONFIG_PXA27x || CONFIG_PXA3xx */
 
+<<<<<<< HEAD
 #if defined(CONFIG_PXA27x) || defined(CONFIG_PXA3xx) || defined(CONFIG_PXA95x)
+=======
+#if defined(CONFIG_PXA27x) || defined(CONFIG_PXA3xx)
+>>>>>>> refs/remotes/origin/master
 static struct resource pxa27x_resource_keypad[] = {
 	[0] = {
 		.start	= 0x41500000,
@@ -878,7 +939,11 @@ struct platform_device pxa27x_device_pwm1 = {
 	.resource	= pxa27x_resource_pwm1,
 	.num_resources	= ARRAY_SIZE(pxa27x_resource_pwm1),
 };
+<<<<<<< HEAD
 #endif /* CONFIG_PXA27x || CONFIG_PXA3xx || CONFIG_PXA95x*/
+=======
+#endif /* CONFIG_PXA27x || CONFIG_PXA3xx */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PXA3xx
 static struct resource pxa3xx_resources_mci2[] = {
@@ -987,7 +1052,11 @@ struct platform_device pxa3xx_device_gcu = {
 
 #endif /* CONFIG_PXA3xx */
 
+<<<<<<< HEAD
 #if defined(CONFIG_PXA3xx) || defined(CONFIG_PXA95x)
+=======
+#if defined(CONFIG_PXA3xx)
+>>>>>>> refs/remotes/origin/master
 static struct resource pxa3xx_resources_i2c_power[] = {
 	{
 		.start  = 0x40f500c0,
@@ -1088,10 +1157,15 @@ struct platform_device pxa3xx_device_ssp4 = {
 	.resource	= pxa3xx_resource_ssp4,
 	.num_resources	= ARRAY_SIZE(pxa3xx_resource_ssp4),
 };
+<<<<<<< HEAD
 #endif /* CONFIG_PXA3xx || CONFIG_PXA95x */
 
 <<<<<<< HEAD
 =======
+=======
+#endif /* CONFIG_PXA3xx */
+
+>>>>>>> refs/remotes/origin/master
 struct resource pxa_resource_gpio[] = {
 	{
 		.start	= 0x40e00000,
@@ -1115,14 +1189,47 @@ struct resource pxa_resource_gpio[] = {
 	},
 };
 
+<<<<<<< HEAD
 struct platform_device pxa_device_gpio = {
 	.name		= "pxa-gpio",
+=======
+struct platform_device pxa25x_device_gpio = {
+#ifdef CONFIG_CPU_PXA26x
+	.name		= "pxa26x-gpio",
+#else
+	.name		= "pxa25x-gpio",
+#endif
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(pxa_resource_gpio),
 	.resource	= pxa_resource_gpio,
 };
 
+struct platform_device pxa27x_device_gpio = {
+	.name		= "pxa27x-gpio",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(pxa_resource_gpio),
+	.resource	= pxa_resource_gpio,
+};
+
+struct platform_device pxa3xx_device_gpio = {
+	.name		= "pxa3xx-gpio",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(pxa_resource_gpio),
+	.resource	= pxa_resource_gpio,
+};
+
+struct platform_device pxa93x_device_gpio = {
+	.name		= "pxa93x-gpio",
+>>>>>>> refs/remotes/origin/master
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(pxa_resource_gpio),
+	.resource	= pxa_resource_gpio,
+};
+
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* pxa2xx-spi platform-device ID equals respective SSP platform-device ID + 1.
  * See comment in arch/arm/mach-pxa/ssp.c::ssp_probe() */
 void __init pxa2xx_set_spi_info(unsigned id, struct pxa2xx_spi_master *info)

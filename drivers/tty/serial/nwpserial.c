@@ -11,18 +11,26 @@
  */
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/console.h>
 #include <linux/serial.h>
 #include <linux/serial_reg.h>
 #include <linux/serial_core.h>
 #include <linux/tty.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/tty_flip.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/tty_flip.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/irqreturn.h>
 #include <linux/mutex.h>
 #include <linux/of_platform.h>
@@ -134,7 +142,11 @@ static void nwpserial_config_port(struct uart_port *port, int flags)
 static irqreturn_t nwpserial_interrupt(int irq, void *dev_id)
 {
 	struct nwpserial_port *up = dev_id;
+<<<<<<< HEAD
 	struct tty_struct *tty = up->port.state->port.tty;
+=======
+	struct tty_port *port = &up->port.state->port;
+>>>>>>> refs/remotes/origin/master
 	irqreturn_t ret;
 	unsigned int iir;
 	unsigned char ch;
@@ -152,10 +164,20 @@ static irqreturn_t nwpserial_interrupt(int irq, void *dev_id)
 		up->port.icount.rx++;
 		ch = dcr_read(up->dcr_host, UART_RX);
 		if (up->port.ignore_status_mask != NWPSERIAL_STATUS_RXVALID)
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, ch, TTY_NORMAL);
 	} while (dcr_read(up->dcr_host, UART_LSR) & UART_LSR_DR);
 
 	tty_flip_buffer_push(tty);
+=======
+			tty_insert_flip_char(port, ch, TTY_NORMAL);
+	} while (dcr_read(up->dcr_host, UART_LSR) & UART_LSR_DR);
+
+	spin_unlock(&up->port.lock);
+	tty_flip_buffer_push(port);
+	spin_lock(&up->port.lock);
+
+>>>>>>> refs/remotes/origin/master
 	ret = IRQ_HANDLED;
 
 	/* clear interrupt */
@@ -205,7 +227,11 @@ static void nwpserial_shutdown(struct uart_port *port)
 	dcr_write(up->dcr_host, UART_IER, up->ier);
 
 	/* free irq */
+<<<<<<< HEAD
 	free_irq(up->port.irq, port);
+=======
+	free_irq(up->port.irq, up);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int nwpserial_verify_port(struct uart_port *port,

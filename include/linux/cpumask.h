@@ -10,9 +10,13 @@
 #include <linux/threads.h>
 #include <linux/bitmap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef struct cpumask { DECLARE_BITMAP(bits, NR_CPUS); } cpumask_t;
 
@@ -275,6 +279,11 @@ static inline void cpumask_clear_cpu(int cpu, struct cpumask *dstp)
  * @cpu: cpu number (< nr_cpu_ids)
  * @cpumask: the cpumask pointer
  *
+<<<<<<< HEAD
+=======
+ * Returns 1 if @cpu is set in @cpumask, else returns 0
+ *
+>>>>>>> refs/remotes/origin/master
  * No static inline type checking - see Subtlety (1) above.
  */
 #define cpumask_test_cpu(cpu, cpumask) \
@@ -285,6 +294,11 @@ static inline void cpumask_clear_cpu(int cpu, struct cpumask *dstp)
  * @cpu: cpu number (< nr_cpu_ids)
  * @cpumask: the cpumask pointer
  *
+<<<<<<< HEAD
+=======
+ * Returns 1 if @cpu is set in old bitmap of @cpumask, else returns 0
+ *
+>>>>>>> refs/remotes/origin/master
  * test_and_set_bit wrapper for cpumasks.
  */
 static inline int cpumask_test_and_set_cpu(int cpu, struct cpumask *cpumask)
@@ -297,6 +311,11 @@ static inline int cpumask_test_and_set_cpu(int cpu, struct cpumask *cpumask)
  * @cpu: cpu number (< nr_cpu_ids)
  * @cpumask: the cpumask pointer
  *
+<<<<<<< HEAD
+=======
+ * Returns 1 if @cpu is set in old bitmap of @cpumask, else returns 0
+ *
+>>>>>>> refs/remotes/origin/master
  * test_and_clear_bit wrapper for cpumasks.
  */
 static inline int cpumask_test_and_clear_cpu(int cpu, struct cpumask *cpumask)
@@ -327,6 +346,11 @@ static inline void cpumask_clear(struct cpumask *dstp)
  * @dstp: the cpumask result
  * @src1p: the first input
  * @src2p: the second input
+<<<<<<< HEAD
+=======
+ *
+ * If *@dstp is empty, returns 0, else returns 1
+>>>>>>> refs/remotes/origin/master
  */
 static inline int cpumask_and(struct cpumask *dstp,
 			       const struct cpumask *src1p,
@@ -368,6 +392,11 @@ static inline void cpumask_xor(struct cpumask *dstp,
  * @dstp: the cpumask result
  * @src1p: the first input
  * @src2p: the second input
+<<<<<<< HEAD
+=======
+ *
+ * If *@dstp is empty, returns 0, else returns 1
+>>>>>>> refs/remotes/origin/master
  */
 static inline int cpumask_andnot(struct cpumask *dstp,
 				  const struct cpumask *src1p,
@@ -417,6 +446,11 @@ static inline bool cpumask_intersects(const struct cpumask *src1p,
  * cpumask_subset - (*src1p & ~*src2p) == 0
  * @src1p: the first input
  * @src2p: the second input
+<<<<<<< HEAD
+=======
+ *
+ * Returns 1 if *@src1p is a subset of *@src2p, else returns 0
+>>>>>>> refs/remotes/origin/master
  */
 static inline int cpumask_subset(const struct cpumask *src1p,
 				 const struct cpumask *src2p)
@@ -582,9 +616,29 @@ static inline int cpulist_scnprintf(char *buf, int len,
 }
 
 /**
+<<<<<<< HEAD
  * cpulist_parse_user - extract a cpumask from a user string of ranges
  * @buf: the buffer to extract from
  * @len: the length of the buffer
+=======
+ * cpumask_parse - extract a cpumask from from a string
+ * @buf: the buffer to extract from
+ * @dstp: the cpumask to set.
+ *
+ * Returns -errno, or 0 for success.
+ */
+static inline int cpumask_parse(const char *buf, struct cpumask *dstp)
+{
+	char *nl = strchr(buf, '\n');
+	int len = nl ? nl - buf : strlen(buf);
+
+	return bitmap_parse(buf, len, cpumask_bits(dstp), nr_cpumask_bits);
+}
+
+/**
+ * cpulist_parse - extract a cpumask from a user string of ranges
+ * @buf: the buffer to extract from
+>>>>>>> refs/remotes/origin/master
  * @dstp: the cpumask to set.
  *
  * Returns -errno, or 0 for success.
@@ -622,7 +676,10 @@ static inline size_t cpumask_size(void)
  *
  *	free_cpumask_var(tmpmask);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  *
  * However, one notable exception is there. alloc_cpumask_var() allocates
@@ -637,7 +694,10 @@ static inline size_t cpumask_size(void)
  *
  * This code makes NR_CPUS length memcopy and brings to a memory corruption.
  * cpumask_copy() provide safe copy functionality.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 #ifdef CONFIG_CPUMASK_OFFSTACK
 typedef struct cpumask *cpumask_var_t;
@@ -771,6 +831,7 @@ static inline const struct cpumask *get_cpu_mask(unsigned int cpu)
  */
 #ifndef CONFIG_DISABLE_OBSOLETE_CPUMASK_FUNCTIONS
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* These strip const, as traditionally they weren't const. */
 #define cpu_possible_map	(*(cpumask_t *)cpu_possible_mask)
 #define cpu_online_map		(*(cpumask_t *)cpu_online_mask)
@@ -779,6 +840,8 @@ static inline const struct cpumask *get_cpu_mask(unsigned int cpu)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define cpumask_of_cpu(cpu) (*get_cpu_mask(cpu))
 
 #define CPU_MASK_LAST_WORD BITMAP_LAST_WORD_MASK(NR_CPUS)
@@ -820,17 +883,23 @@ static inline const struct cpumask *get_cpu_mask(unsigned int cpu)
 int __first_cpu(const cpumask_t *srcp);
 int __next_cpu(int n, const cpumask_t *srcp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __any_online_cpu(const cpumask_t *mask);
 
 #define first_cpu(src)		__first_cpu(&(src))
 #define next_cpu(n, src)	__next_cpu((n), &(src))
 #define any_online_cpu(mask) __any_online_cpu(&(mask))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define first_cpu(src)		__first_cpu(&(src))
 #define next_cpu(n, src)	__next_cpu((n), &(src))
 #define any_online_cpu(mask) cpumask_any_and(&mask, cpu_online_mask)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define for_each_cpu_mask(cpu, mask)			\
 	for ((cpu) = -1;				\
 		(cpu) = next_cpu((cpu), (mask)),	\

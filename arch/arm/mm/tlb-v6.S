@@ -55,9 +55,12 @@ ENTRY(v6wbi_flush_user_tlb_range)
 	cmp	r0, r1
 	blo	1b
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mcr	p15, 0, ip, c7, c5, 6		@ flush BTAC/BTB
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mcr	p15, 0, ip, c7, c10, 4		@ data synchronization barrier
 	mov	pc, lr
 
@@ -87,6 +90,7 @@ ENTRY(v6wbi_flush_kern_tlb_range)
 	cmp	r0, r1
 	blo	1b
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mcr	p15, 0, r2, c7, c5, 6		@ flush BTAC/BTB
 	mcr	p15, 0, r2, c7, c10, 4		@ data synchronization barrier
 	mcr	p15, 0, r2, c7, c5, 4		@ prefetch flush
@@ -94,10 +98,15 @@ ENTRY(v6wbi_flush_kern_tlb_range)
 	mcr	p15, 0, r2, c7, c10, 4		@ data synchronization barrier
 	mcr	p15, 0, r2, c7, c5, 4		@ prefetch flush (isb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mcr	p15, 0, r2, c7, c10, 4		@ data synchronization barrier
+	mcr	p15, 0, r2, c7, c5, 4		@ prefetch flush (isb)
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 	__INIT
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.type	v6wbi_tlb_fns, #object
 ENTRY(v6wbi_tlb_fns)
@@ -109,3 +118,7 @@ ENTRY(v6wbi_tlb_fns)
 	/* define struct cpu_tlb_fns (see <asm/tlbflush.h> and proc-macros.S) */
 	define_tlb_functions v6wbi, v6wbi_tlb_flags
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* define struct cpu_tlb_fns (see <asm/tlbflush.h> and proc-macros.S) */
+	define_tlb_functions v6wbi, v6wbi_tlb_flags
+>>>>>>> refs/remotes/origin/master

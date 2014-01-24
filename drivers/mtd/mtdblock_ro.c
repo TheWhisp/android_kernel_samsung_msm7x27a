@@ -24,9 +24,14 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/blktrans.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/major.h>
+>>>>>>> refs/remotes/origin/master
 
 static int mtdblock_readsect(struct mtd_blktrans_dev *dev,
 			      unsigned long block, char *buf)
@@ -34,10 +39,14 @@ static int mtdblock_readsect(struct mtd_blktrans_dev *dev,
 	size_t retlen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->mtd->read(dev->mtd, (block * 512), 512, &retlen, buf))
 =======
 	if (mtd_read(dev->mtd, (block * 512), 512, &retlen, buf))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mtd_read(dev->mtd, (block * 512), 512, &retlen, buf))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
@@ -48,10 +57,14 @@ static int mtdblock_writesect(struct mtd_blktrans_dev *dev,
 	size_t retlen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dev->mtd->write(dev->mtd, (block * 512), 512, &retlen, buf))
 =======
 	if (mtd_write(dev->mtd, (block * 512), 512, &retlen, buf))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (mtd_write(dev->mtd, (block * 512), 512, &retlen, buf))
+>>>>>>> refs/remotes/origin/master
 		return 1;
 	return 0;
 }
@@ -81,7 +94,11 @@ static void mtdblock_remove_dev(struct mtd_blktrans_dev *dev)
 
 static struct mtd_blktrans_ops mtdblock_tr = {
 	.name		= "mtdblock",
+<<<<<<< HEAD
 	.major		= 31,
+=======
+	.major		= MTD_BLOCK_MAJOR,
+>>>>>>> refs/remotes/origin/master
 	.part_bits	= 0,
 	.blksize 	= 512,
 	.readsect	= mtdblock_readsect,

@@ -5,10 +5,14 @@
  *
  * Current maintainers (as of 29 September 2003) are:
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	Pavel Roskin <proski AT gnu.org>
 =======
  *	Pavel Roskin <proski AT gnu.org>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Pavel Roskin <proski AT gnu.org>
+>>>>>>> refs/remotes/origin/master
  * and	David Gibson <hermes AT gibson.dropbear.id.au>
  *
  * (C) Copyright David Gibson, IBM Corporation 2001-2003.
@@ -126,10 +130,14 @@ MODULE_PARM_DESC(orinoco_debug, "Debug level");
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int suppress_linkstatus; /* = 0 */
 =======
 static bool suppress_linkstatus; /* = 0 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool suppress_linkstatus; /* = 0 */
+>>>>>>> refs/remotes/origin/master
 module_param(suppress_linkstatus, bool, 0644);
 MODULE_PARM_DESC(suppress_linkstatus, "Don't log link status changes");
 
@@ -155,16 +163,22 @@ static const u8 encaps_hdr[] = {0xaa, 0xaa, 0x03, 0x00, 0x00, 0x00};
 
 #define MAX_IRQLOOPS_PER_IRQ	10
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_IRQLOOPS_PER_JIFFY	(20000/HZ) /* Based on a guestimate of
 					    * how many events the
 					    * device could
 					    * legitimately generate */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_IRQLOOPS_PER_JIFFY	(20000 / HZ)	/* Based on a guestimate of
 						 * how many events the
 						 * device could
 						 * legitimately generate */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DUMMY_FID		0xFFFF
 
@@ -173,10 +187,14 @@ static const u8 encaps_hdr[] = {0xaa, 0xaa, 0x03, 0x00, 0x00, 0x00};
 #define MAX_MULTICAST(priv)	(HERMES_MAX_MULTICAST)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ORINOCO_INTEN	 	(HERMES_EV_RX | HERMES_EV_ALLOC \
 =======
 #define ORINOCO_INTEN		(HERMES_EV_RX | HERMES_EV_ALLOC \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ORINOCO_INTEN		(HERMES_EV_RX | HERMES_EV_ALLOC \
+>>>>>>> refs/remotes/origin/master
 				 | HERMES_EV_TX | HERMES_EV_TXEXC \
 				 | HERMES_EV_WTERR | HERMES_EV_INFO \
 				 | HERMES_EV_INFDROP)
@@ -457,19 +475,27 @@ static netdev_tx_t orinoco_xmit(struct sk_buff *skb, struct net_device *dev)
 	struct orinoco_private *priv = ndev_priv(dev);
 	struct net_device_stats *stats = &priv->stats;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 	u16 txfid = priv->txfid;
 	int tx_control;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 mic_buf[MICHAEL_MIC_LEN+1];
 =======
 	u8 mic_buf[MICHAEL_MIC_LEN + 1];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 mic_buf[MICHAEL_MIC_LEN + 1];
+>>>>>>> refs/remotes/origin/master
 
 	if (!netif_running(dev)) {
 		printk(KERN_ERR "%s: Tx on stopped device!\n",
@@ -607,10 +633,14 @@ static netdev_tx_t orinoco_xmit(struct sk_buff *skb, struct net_device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __orinoco_ev_alloc(struct net_device *dev, hermes_t *hw)
 =======
 static void __orinoco_ev_alloc(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __orinoco_ev_alloc(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = ndev_priv(dev);
 	u16 fid = hermes_read_regn(hw, ALLOCFID);
@@ -626,10 +656,14 @@ static void __orinoco_ev_alloc(struct net_device *dev, struct hermes *hw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __orinoco_ev_tx(struct net_device *dev, hermes_t *hw)
 =======
 static void __orinoco_ev_tx(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __orinoco_ev_tx(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = ndev_priv(dev);
 	struct net_device_stats *stats = &priv->stats;
@@ -642,10 +676,14 @@ static void __orinoco_ev_tx(struct net_device *dev, struct hermes *hw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __orinoco_ev_txexc(struct net_device *dev, hermes_t *hw)
 =======
 static void __orinoco_ev_txexc(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __orinoco_ev_txexc(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = ndev_priv(dev);
 	struct net_device_stats *stats = &priv->stats;
@@ -793,10 +831,14 @@ static void orinoco_rx_monitor(struct net_device *dev, u16 rxfid,
 	struct orinoco_private *priv = ndev_priv(dev);
 	struct net_device_stats *stats = &priv->stats;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 
 	len = le16_to_cpu(desc->data_len);
 
@@ -884,10 +926,14 @@ static void orinoco_rx_monitor(struct net_device *dev, u16 rxfid,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __orinoco_ev_rx(struct net_device *dev, hermes_t *hw)
 =======
 void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = ndev_priv(dev);
 	struct net_device_stats *stats = &priv->stats;
@@ -900,12 +946,17 @@ void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw)
 	int err;
 
 	desc = kmalloc(sizeof(*desc), GFP_ATOMIC);
+<<<<<<< HEAD
 	if (!desc) {
 		printk(KERN_WARNING
 		       "%s: Can't allocate space for RX descriptor\n",
 		       dev->name);
 		goto update_stats;
 	}
+=======
+	if (!desc)
+		goto update_stats;
+>>>>>>> refs/remotes/origin/master
 
 	rxfid = hermes_read_regn(hw, RXFID);
 
@@ -966,10 +1017,14 @@ void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw)
 	   packets from the card, which has an IO granularity of 16
 	   bits */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = dev_alloc_skb(length+ETH_HLEN+2+1);
 =======
 	skb = dev_alloc_skb(length + ETH_HLEN + 2 + 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb = dev_alloc_skb(length + ETH_HLEN + 2 + 1);
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		printk(KERN_WARNING "%s: Can't allocate skb for Rx\n",
 		       dev->name);
@@ -993,6 +1048,7 @@ void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw)
 	/* Add desc and skb to rx queue */
 	rx_data = kzalloc(sizeof(*rx_data), GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!rx_data) {
 		printk(KERN_WARNING "%s: Can't allocate RX packet\n",
 			dev->name);
@@ -1003,6 +1059,11 @@ void __orinoco_ev_rx(struct net_device *dev, struct hermes *hw)
 		goto drop;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!rx_data)
+		goto drop;
+
+>>>>>>> refs/remotes/origin/master
 	rx_data->desc = desc;
 	rx_data->skb = skb;
 	list_add_tail(&rx_data->list, &priv->rx_list);
@@ -1396,12 +1457,18 @@ static void qbuf_scan(struct orinoco_private *priv, void *buf,
 
 	sd = kmalloc(sizeof(*sd), GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!sd) {
 		printk(KERN_ERR "%s: failed to alloc memory\n", __func__);
 		return;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!sd)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	sd->buf = buf;
 	sd->len = len;
 	sd->type = type;
@@ -1420,12 +1487,18 @@ static void qabort_scan(struct orinoco_private *priv)
 
 	sd = kmalloc(sizeof(*sd), GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!sd) {
 		printk(KERN_ERR "%s: failed to alloc memory\n", __func__);
 		return;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!sd)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	sd->len = -1; /* Abort */
 
 	spin_lock_irqsave(&priv->scan_lock, flags);
@@ -1474,10 +1547,14 @@ static void orinoco_process_scan_results(struct work_struct *work)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __orinoco_ev_info(struct net_device *dev, hermes_t *hw)
 =======
 void __orinoco_ev_info(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __orinoco_ev_info(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	struct orinoco_private *priv = ndev_priv(dev);
 	u16 infofid;
@@ -1696,10 +1773,14 @@ void __orinoco_ev_info(struct net_device *dev, struct hermes *hw)
 EXPORT_SYMBOL(__orinoco_ev_info);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __orinoco_ev_infdrop(struct net_device *dev, hermes_t *hw)
 =======
 static void __orinoco_ev_infdrop(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __orinoco_ev_infdrop(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	if (net_ratelimit())
 		printk(KERN_DEBUG "%s: Information frame lost.\n", dev->name);
@@ -1911,10 +1992,14 @@ int orinoco_commit(struct orinoco_private *priv)
 {
 	struct net_device *dev = priv->ndev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (priv->broken_disableport) {
@@ -1958,19 +2043,27 @@ int orinoco_commit(struct orinoco_private *priv)
 /********************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __orinoco_ev_tick(struct net_device *dev, hermes_t *hw)
 =======
 static void __orinoco_ev_tick(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __orinoco_ev_tick(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	printk(KERN_DEBUG "%s: TICK\n", dev->name);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __orinoco_ev_wterr(struct net_device *dev, hermes_t *hw)
 =======
 static void __orinoco_ev_wterr(struct net_device *dev, struct hermes *hw)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __orinoco_ev_wterr(struct net_device *dev, struct hermes *hw)
+>>>>>>> refs/remotes/origin/master
 {
 	/* This seems to happen a fair bit under load, but ignoring it
 	   seems to work fine...*/
@@ -1983,10 +2076,14 @@ irqreturn_t orinoco_interrupt(int irq, void *dev_id)
 	struct orinoco_private *priv = dev_id;
 	struct net_device *dev = priv->ndev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int count = MAX_IRQLOOPS_PER_IRQ;
 	u16 evstat, events;
 	/* These are used to detect a runaway interrupt situation.
@@ -2054,10 +2151,14 @@ irqreturn_t orinoco_interrupt(int irq, void *dev_id)
 		evstat = hermes_read_regn(hw, EVSTAT);
 		events = evstat & hw->inten;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	};
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	orinoco_unlock(priv, &flags);
 	return IRQ_HANDLED;
@@ -2117,12 +2218,17 @@ static void orinoco_unregister_pm_notifier(struct orinoco_private *priv)
 }
 #else /* !PM_SLEEP || HERMES_CACHE_FW_ON_INIT */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define orinoco_register_pm_notifier(priv) do { } while(0)
 #define orinoco_unregister_pm_notifier(priv) do { } while(0)
 =======
 #define orinoco_register_pm_notifier(priv) do { } while (0)
 #define orinoco_unregister_pm_notifier(priv) do { } while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define orinoco_register_pm_notifier(priv) do { } while (0)
+#define orinoco_unregister_pm_notifier(priv) do { } while (0)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /********************************************************************/
@@ -2134,10 +2240,14 @@ int orinoco_init(struct orinoco_private *priv)
 	struct device *dev = priv->dev;
 	struct wiphy *wiphy = priv_to_wiphy(priv);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	/* No need to lock, the hw_unavailable flag is already set in
@@ -2244,10 +2354,14 @@ static const struct net_device_ops orinoco_netdev_ops = {
 	.ndo_stop		= orinoco_stop,
 	.ndo_start_xmit		= orinoco_xmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= orinoco_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= orinoco_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= orinoco_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_mtu		= orinoco_change_mtu,
 	.ndo_set_mac_address	= eth_mac_addr,
 	.ndo_validate_addr	= eth_validate_addr,
@@ -2396,7 +2510,10 @@ int orinoco_if_add(struct orinoco_private *priv,
 	netif_carrier_off(dev);
 
 	memcpy(dev->dev_addr, wiphy->perm_addr, ETH_ALEN);
+<<<<<<< HEAD
 	memcpy(dev->perm_addr, wiphy->perm_addr, ETH_ALEN);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dev->base_addr = base_addr;
 	dev->irq = irq;

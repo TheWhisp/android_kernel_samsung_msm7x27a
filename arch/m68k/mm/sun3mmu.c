@@ -22,9 +22,12 @@
 #include <asm/page.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/machdep.h>
 #include <asm/io.h>
 
@@ -34,10 +37,13 @@ const char bad_pmd_string[] = "Bad pmd in pte_alloc: %08lx\n";
 
 extern unsigned long num_pages;
 
+<<<<<<< HEAD
 void free_initmem(void)
 {
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* For the sun3 we try to follow the i386 paging_init() more closely */
 /* start_mem and end_mem have PAGE_OFFSET added already */
 /* now sets up tables using sun3 PTEs rather than i386 as before. --m */

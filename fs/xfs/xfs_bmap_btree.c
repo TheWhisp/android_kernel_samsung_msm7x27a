@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -41,6 +42,28 @@
 #include "xfs_bmap.h"
 #include "xfs_error.h"
 #include "xfs_quota.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_bit.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_inode.h"
+#include "xfs_trans.h"
+#include "xfs_inode_item.h"
+#include "xfs_alloc.h"
+#include "xfs_btree.h"
+#include "xfs_bmap_btree.h"
+#include "xfs_bmap.h"
+#include "xfs_error.h"
+#include "xfs_quota.h"
+#include "xfs_trace.h"
+#include "xfs_cksum.h"
+#include "xfs_dinode.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Determine the extent state.
@@ -63,24 +86,47 @@ xfs_extent_state(
  */
 void
 xfs_bmdr_to_bmbt(
+<<<<<<< HEAD
 	struct xfs_mount	*mp,
+=======
+	struct xfs_inode	*ip,
+>>>>>>> refs/remotes/origin/master
 	xfs_bmdr_block_t	*dblock,
 	int			dblocklen,
 	struct xfs_btree_block	*rblock,
 	int			rblocklen)
 {
+<<<<<<< HEAD
+=======
+	struct xfs_mount	*mp = ip->i_mount;
+>>>>>>> refs/remotes/origin/master
 	int			dmxr;
 	xfs_bmbt_key_t		*fkp;
 	__be64			*fpp;
 	xfs_bmbt_key_t		*tkp;
 	__be64			*tpp;
 
+<<<<<<< HEAD
 	rblock->bb_magic = cpu_to_be32(XFS_BMAP_MAGIC);
 	rblock->bb_level = dblock->bb_level;
 	ASSERT(be16_to_cpu(rblock->bb_level) > 0);
 	rblock->bb_numrecs = dblock->bb_numrecs;
 	rblock->bb_u.l.bb_leftsib = cpu_to_be64(NULLDFSBNO);
 	rblock->bb_u.l.bb_rightsib = cpu_to_be64(NULLDFSBNO);
+=======
+	if (xfs_sb_version_hascrc(&mp->m_sb))
+		xfs_btree_init_block_int(mp, rblock, XFS_BUF_DADDR_NULL,
+				 XFS_BMAP_CRC_MAGIC, 0, 0, ip->i_ino,
+				 XFS_BTREE_LONG_PTRS | XFS_BTREE_CRC_BLOCKS);
+	else
+		xfs_btree_init_block_int(mp, rblock, XFS_BUF_DADDR_NULL,
+				 XFS_BMAP_MAGIC, 0, 0, ip->i_ino,
+				 XFS_BTREE_LONG_PTRS);
+
+	rblock->bb_level = dblock->bb_level;
+	ASSERT(be16_to_cpu(rblock->bb_level) > 0);
+	rblock->bb_numrecs = dblock->bb_numrecs;
+>>>>>>> refs/remotes/origin/master
 	dmxr = xfs_bmdr_maxrecs(mp, dblocklen, 0);
 	fkp = XFS_BMDR_KEY_ADDR(dblock, 1);
 	tkp = XFS_BMBT_KEY_ADDR(mp, rblock, 1);
@@ -429,6 +475,7 @@ xfs_bmbt_to_bmdr(
 	__be64			*tpp;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ASSERT(be32_to_cpu(rblock->bb_magic) == XFS_BMAP_MAGIC);
 	ASSERT(be64_to_cpu(rblock->bb_u.l.bb_leftsib) == NULLDFSBNO);
 	ASSERT(be64_to_cpu(rblock->bb_u.l.bb_rightsib) == NULLDFSBNO);
@@ -439,6 +486,18 @@ xfs_bmbt_to_bmdr(
 	ASSERT(rblock->bb_u.l.bb_rightsib == cpu_to_be64(NULLDFSBNO));
 	ASSERT(rblock->bb_level != 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (xfs_sb_version_hascrc(&mp->m_sb)) {
+		ASSERT(rblock->bb_magic == cpu_to_be32(XFS_BMAP_CRC_MAGIC));
+		ASSERT(uuid_equal(&rblock->bb_u.l.bb_uuid, &mp->m_sb.sb_uuid));
+		ASSERT(rblock->bb_u.l.bb_blkno ==
+		       cpu_to_be64(XFS_BUF_DADDR_NULL));
+	} else
+		ASSERT(rblock->bb_magic == cpu_to_be32(XFS_BMAP_MAGIC));
+	ASSERT(rblock->bb_u.l.bb_leftsib == cpu_to_be64(NULLDFSBNO));
+	ASSERT(rblock->bb_u.l.bb_rightsib == cpu_to_be64(NULLDFSBNO));
+	ASSERT(rblock->bb_level != 0);
+>>>>>>> refs/remotes/origin/master
 	dblock->bb_level = rblock->bb_level;
 	dblock->bb_numrecs = rblock->bb_numrecs;
 	dmxr = xfs_bmdr_maxrecs(mp, dblocklen, 0);
@@ -719,7 +778,100 @@ xfs_bmbt_key_diff(
 				      cur->bc_rec.b.br_startoff;
 }
 
+<<<<<<< HEAD
 #ifdef DEBUG
+=======
+static bool
+xfs_bmbt_verify(
+	struct xfs_buf		*bp)
+{
+	struct xfs_mount	*mp = bp->b_target->bt_mount;
+	struct xfs_btree_block	*block = XFS_BUF_TO_BLOCK(bp);
+	unsigned int		level;
+
+	switch (block->bb_magic) {
+	case cpu_to_be32(XFS_BMAP_CRC_MAGIC):
+		if (!xfs_sb_version_hascrc(&mp->m_sb))
+			return false;
+		if (!uuid_equal(&block->bb_u.l.bb_uuid, &mp->m_sb.sb_uuid))
+			return false;
+		if (be64_to_cpu(block->bb_u.l.bb_blkno) != bp->b_bn)
+			return false;
+		/*
+		 * XXX: need a better way of verifying the owner here. Right now
+		 * just make sure there has been one set.
+		 */
+		if (be64_to_cpu(block->bb_u.l.bb_owner) == 0)
+			return false;
+		/* fall through */
+	case cpu_to_be32(XFS_BMAP_MAGIC):
+		break;
+	default:
+		return false;
+	}
+
+	/*
+	 * numrecs and level verification.
+	 *
+	 * We don't know what fork we belong to, so just verify that the level
+	 * is less than the maximum of the two. Later checks will be more
+	 * precise.
+	 */
+	level = be16_to_cpu(block->bb_level);
+	if (level > max(mp->m_bm_maxlevels[0], mp->m_bm_maxlevels[1]))
+		return false;
+	if (be16_to_cpu(block->bb_numrecs) > mp->m_bmap_dmxr[level != 0])
+		return false;
+
+	/* sibling pointer verification */
+	if (!block->bb_u.l.bb_leftsib ||
+	    (block->bb_u.l.bb_leftsib != cpu_to_be64(NULLDFSBNO) &&
+	     !XFS_FSB_SANITY_CHECK(mp, be64_to_cpu(block->bb_u.l.bb_leftsib))))
+		return false;
+	if (!block->bb_u.l.bb_rightsib ||
+	    (block->bb_u.l.bb_rightsib != cpu_to_be64(NULLDFSBNO) &&
+	     !XFS_FSB_SANITY_CHECK(mp, be64_to_cpu(block->bb_u.l.bb_rightsib))))
+		return false;
+
+	return true;
+}
+
+static void
+xfs_bmbt_read_verify(
+	struct xfs_buf	*bp)
+{
+	if (!(xfs_btree_lblock_verify_crc(bp) &&
+	      xfs_bmbt_verify(bp))) {
+		trace_xfs_btree_corrupt(bp, _RET_IP_);
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW,
+				     bp->b_target->bt_mount, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+	}
+}
+
+static void
+xfs_bmbt_write_verify(
+	struct xfs_buf	*bp)
+{
+	if (!xfs_bmbt_verify(bp)) {
+		xfs_warn(bp->b_target->bt_mount, "bmbt daddr 0x%llx failed", bp->b_bn);
+		trace_xfs_btree_corrupt(bp, _RET_IP_);
+		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW,
+				     bp->b_target->bt_mount, bp->b_addr);
+		xfs_buf_ioerror(bp, EFSCORRUPTED);
+		return;
+	}
+	xfs_btree_lblock_calc_crc(bp);
+}
+
+const struct xfs_buf_ops xfs_bmbt_buf_ops = {
+	.verify_read = xfs_bmbt_read_verify,
+	.verify_write = xfs_bmbt_write_verify,
+};
+
+
+#if defined(DEBUG) || defined(XFS_WARN)
+>>>>>>> refs/remotes/origin/master
 STATIC int
 xfs_bmbt_keys_inorder(
 	struct xfs_btree_cur	*cur,
@@ -742,6 +894,7 @@ xfs_bmbt_recs_inorder(
 }
 #endif	/* DEBUG */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef XFS_BTREE_TRACE
 ktrace_t	*xfs_bmbt_trace_buf;
@@ -834,6 +987,8 @@ xfs_bmbt_trace_record(
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct xfs_btree_ops xfs_bmbt_ops = {
 	.rec_len		= sizeof(xfs_bmbt_rec_t),
 	.key_len		= sizeof(xfs_bmbt_key_t),
@@ -850,6 +1005,7 @@ static const struct xfs_btree_ops xfs_bmbt_ops = {
 	.init_rec_from_cur	= xfs_bmbt_init_rec_from_cur,
 	.init_ptr_from_cur	= xfs_bmbt_init_ptr_from_cur,
 	.key_diff		= xfs_bmbt_key_diff,
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -868,6 +1024,13 @@ static const struct xfs_btree_ops xfs_bmbt_ops = {
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.buf_ops		= &xfs_bmbt_buf_ops,
+#if defined(DEBUG) || defined(XFS_WARN)
+	.keys_inorder		= xfs_bmbt_keys_inorder,
+	.recs_inorder		= xfs_bmbt_recs_inorder,
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -893,6 +1056,11 @@ xfs_bmbt_init_cursor(
 
 	cur->bc_ops = &xfs_bmbt_ops;
 	cur->bc_flags = XFS_BTREE_LONG_PTRS | XFS_BTREE_ROOT_IN_INODE;
+<<<<<<< HEAD
+=======
+	if (xfs_sb_version_hascrc(&mp->m_sb))
+		cur->bc_flags |= XFS_BTREE_CRC_BLOCKS;
+>>>>>>> refs/remotes/origin/master
 
 	cur->bc_private.b.forksize = XFS_IFORK_SIZE(ip, whichfork);
 	cur->bc_private.b.ip = ip;
@@ -936,3 +1104,50 @@ xfs_bmdr_maxrecs(
 		return blocklen / sizeof(xfs_bmdr_rec_t);
 	return blocklen / (sizeof(xfs_bmdr_key_t) + sizeof(xfs_bmdr_ptr_t));
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * Change the owner of a btree format fork fo the inode passed in. Change it to
+ * the owner of that is passed in so that we can change owners before or after
+ * we switch forks between inodes. The operation that the caller is doing will
+ * determine whether is needs to change owner before or after the switch.
+ *
+ * For demand paged transactional modification, the fork switch should be done
+ * after reading in all the blocks, modifying them and pinning them in the
+ * transaction. For modification when the buffers are already pinned in memory,
+ * the fork switch can be done before changing the owner as we won't need to
+ * validate the owner until the btree buffers are unpinned and writes can occur
+ * again.
+ *
+ * For recovery based ownership change, there is no transactional context and
+ * so a buffer list must be supplied so that we can record the buffers that we
+ * modified for the caller to issue IO on.
+ */
+int
+xfs_bmbt_change_owner(
+	struct xfs_trans	*tp,
+	struct xfs_inode	*ip,
+	int			whichfork,
+	xfs_ino_t		new_owner,
+	struct list_head	*buffer_list)
+{
+	struct xfs_btree_cur	*cur;
+	int			error;
+
+	ASSERT(tp || buffer_list);
+	ASSERT(!(tp && buffer_list));
+	if (whichfork == XFS_DATA_FORK)
+		ASSERT(ip->i_d.di_format == XFS_DINODE_FMT_BTREE);
+	else
+		ASSERT(ip->i_d.di_aformat == XFS_DINODE_FMT_BTREE);
+
+	cur = xfs_bmbt_init_cursor(ip->i_mount, tp, ip, whichfork);
+	if (!cur)
+		return ENOMEM;
+
+	error = xfs_btree_change_owner(cur, new_owner, buffer_list);
+	xfs_btree_del_cursor(cur, error ? XFS_BTREE_ERROR : XFS_BTREE_NOERROR);
+	return error;
+}
+>>>>>>> refs/remotes/origin/master

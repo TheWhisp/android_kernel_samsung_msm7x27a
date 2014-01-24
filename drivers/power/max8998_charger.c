@@ -75,7 +75,11 @@ static int max8998_battery_get_property(struct power_supply *psy,
 	return 0;
 }
 
+<<<<<<< HEAD
 static __devinit int max8998_battery_probe(struct platform_device *pdev)
+=======
+static int max8998_battery_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max8998_dev *iodev = dev_get_drvdata(pdev->dev.parent);
 	struct max8998_platform_data *pdata = dev_get_platdata(iodev->dev);
@@ -88,7 +92,12 @@ static __devinit int max8998_battery_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	max8998 = kzalloc(sizeof(struct max8998_battery_data), GFP_KERNEL);
+=======
+	max8998 = devm_kzalloc(&pdev->dev, sizeof(struct max8998_battery_data),
+				GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!max8998)
 		return -ENOMEM;
 
@@ -174,16 +183,26 @@ static __devinit int max8998_battery_probe(struct platform_device *pdev)
 
 	return 0;
 err:
+<<<<<<< HEAD
 	kfree(max8998);
 	return ret;
 }
 
 static int __devexit max8998_battery_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int max8998_battery_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct max8998_battery_data *max8998 = platform_get_drvdata(pdev);
 
 	power_supply_unregister(&max8998->battery);
+<<<<<<< HEAD
 	kfree(max8998);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -199,7 +218,11 @@ static struct platform_driver max8998_battery_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = max8998_battery_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(max8998_battery_remove),
+=======
+	.remove = max8998_battery_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = max8998_battery_id,
 };
 

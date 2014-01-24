@@ -13,9 +13,13 @@
 #include <linux/bitmap.h>
 #include <asm/msi_bitmap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/setup.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 
 int msi_bitmap_alloc_hwirqs(struct msi_bitmap *bmp, int num)
 {

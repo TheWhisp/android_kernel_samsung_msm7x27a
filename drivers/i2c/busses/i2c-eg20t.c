@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 OKI SEMICONDUCTOR CO., LTD.
 =======
  * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,9 +73,13 @@
 #define TEN_BIT_ADDR_MASK	0xF0
 #define PCH_START		0x0020
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define PCH_RESTART		0x0004
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PCH_RESTART		0x0004
+>>>>>>> refs/remotes/origin/master
 #define PCH_ESR_START		0x0001
 #define PCH_BUFF_START		0x1
 #define PCH_REPSTART		0x0004
@@ -144,11 +152,16 @@
 Set the number of I2C instance max
 Intel EG20T PCH :		1ch
 <<<<<<< HEAD
+<<<<<<< HEAD
 OKI SEMICONDUCTOR ML7213 IOH :	2ch
 =======
 LAPIS Semiconductor ML7213 IOH :	2ch
 LAPIS Semiconductor ML7831 IOH :	1ch
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+LAPIS Semiconductor ML7213 IOH :	2ch
+LAPIS Semiconductor ML7831 IOH :	1ch
+>>>>>>> refs/remotes/origin/master
 */
 #define PCH_I2C_MAX_DEV			2
 
@@ -193,6 +206,7 @@ static wait_queue_head_t pch_event;
 static DEFINE_MUTEX(pch_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Definition for ML7213 by OKI SEMICONDUCTOR */
 #define PCI_VENDOR_ID_ROHM		0x10DB
 #define PCI_DEVICE_ID_ML7213_I2C	0x802D
@@ -203,6 +217,8 @@ static struct pci_device_id __devinitdata pch_pcidev_id[] = {
 	{ PCI_VDEVICE(ROHM, PCI_DEVICE_ID_ML7213_I2C), 2, },
 	{ PCI_VDEVICE(ROHM, PCI_DEVICE_ID_ML7223_I2C), 1, },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Definition for ML7213 by LAPIS Semiconductor */
 #define PCI_VENDOR_ID_ROHM		0x10DB
 #define PCI_DEVICE_ID_ML7213_I2C	0x802D
@@ -214,7 +230,10 @@ static DEFINE_PCI_DEVICE_TABLE(pch_pcidev_id) = {
 	{ PCI_VDEVICE(ROHM, PCI_DEVICE_ID_ML7213_I2C), 2, },
 	{ PCI_VDEVICE(ROHM, PCI_DEVICE_ID_ML7223_I2C), 1, },
 	{ PCI_VDEVICE(ROHM, PCI_DEVICE_ID_ML7831_I2C), 1, },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{0,}
 };
 
@@ -286,6 +305,7 @@ static void pch_i2c_init(struct i2c_algo_pch_data *adap)
 	init_waitqueue_head(&pch_event);
 }
 
+<<<<<<< HEAD
 static inline bool ktime_lt(const ktime_t cmp1, const ktime_t cmp2)
 {
 	return cmp1.tv64 < cmp2.tv64;
@@ -299,11 +319,18 @@ static inline bool ktime_lt(const ktime_t cmp1, const ktime_t cmp2)
 =======
  * @timeout:	waiting time counter (ms).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/**
+ * pch_i2c_wait_for_bus_idle() - check the status of bus.
+ * @adap:	Pointer to struct i2c_algo_pch_data.
+ * @timeout:	waiting time counter (ms).
+>>>>>>> refs/remotes/origin/master
  */
 static s32 pch_i2c_wait_for_bus_idle(struct i2c_algo_pch_data *adap,
 				     s32 timeout)
 {
 	void __iomem *p = adap->pch_base_address;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* MAX timeout value is timeout*1000*1000nsec */
@@ -320,6 +347,8 @@ static s32 pch_i2c_wait_for_bus_idle(struct i2c_algo_pch_data *adap,
 		pch_err(adap, "%s: Timeout Error.return%d\n", __func__, -ETIME);
 		return -ETIME;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int schedule = 0;
 	unsigned long end = jiffies + msecs_to_jiffies(timeout);
 
@@ -341,7 +370,10 @@ static s32 pch_i2c_wait_for_bus_idle(struct i2c_algo_pch_data *adap,
 			usleep_range(20, 1000);
 
 		schedule = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -361,6 +393,7 @@ static void pch_i2c_start(struct i2c_algo_pch_data *adap)
 }
 
 /**
+<<<<<<< HEAD
  * pch_i2c_wait_for_xfer_complete() - initiates a wait for the tx complete event
  * @adap:	Pointer to struct i2c_algo_pch_data.
  */
@@ -386,20 +419,55 @@ static s32 pch_i2c_wait_for_xfer_complete(struct i2c_algo_pch_data *adap)
 		pch_err(adap, "timeout: %x\n", adap->pch_event_flag);
 		adap->pch_event_flag = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pch_i2c_stop() - generate stop condition in normal mode.
+ * @adap:	Pointer to struct i2c_algo_pch_data.
+ */
+static void pch_i2c_stop(struct i2c_algo_pch_data *adap)
+{
+	void __iomem *p = adap->pch_base_address;
+	pch_dbg(adap, "I2CCTL = %x\n", ioread32(p + PCH_I2CCTL));
+	/* clear the start bit */
+	pch_clrbit(adap->pch_base_address, PCH_I2CCTL, PCH_START);
+}
+
+static int pch_i2c_wait_for_check_xfer(struct i2c_algo_pch_data *adap)
+{
+	long ret;
+	void __iomem *p = adap->pch_base_address;
+
+	ret = wait_event_timeout(pch_event,
+			(adap->pch_event_flag != 0), msecs_to_jiffies(1000));
+	if (!ret) {
+		pch_err(adap, "%s:wait-event timeout\n", __func__);
+		adap->pch_event_flag = 0;
+		pch_i2c_stop(adap);
+		pch_i2c_init(adap);
+>>>>>>> refs/remotes/origin/master
 		return -ETIMEDOUT;
 	}
 
 	if (adap->pch_event_flag & I2C_ERROR_MASK) {
+<<<<<<< HEAD
 		pch_err(adap, "error bits set: %x\n", adap->pch_event_flag);
 <<<<<<< HEAD
 =======
 		adap->pch_event_flag = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 		return -EIO;
+=======
+		pch_err(adap, "Lost Arbitration\n");
+		adap->pch_event_flag = 0;
+		pch_clrbit(adap->pch_base_address, PCH_I2CSR, I2CMAL_BIT);
+		pch_clrbit(adap->pch_base_address, PCH_I2CSR, I2CMIF_BIT);
+		pch_i2c_init(adap);
+		return -EAGAIN;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	adap->pch_event_flag = 0;
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -416,12 +484,18 @@ static s32 pch_i2c_getack(struct i2c_algo_pch_data *adap)
 	if (reg_val != 0) {
 		pch_err(adap, "return%d\n", -EPROTO);
 		return -EPROTO;
+=======
+	if (ioread32(p + PCH_I2CSR) & PCH_GETACK) {
+		pch_dbg(adap, "Receive NACK for slave address setting\n");
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
 /**
+<<<<<<< HEAD
  * pch_i2c_stop() - generate stop condition in normal mode.
  * @adap:	Pointer to struct i2c_algo_pch_data.
  */
@@ -434,6 +508,8 @@ static void pch_i2c_stop(struct i2c_algo_pch_data *adap)
 }
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * pch_i2c_repstart() - generate repeated start condition in normal mode
  * @adap:	Pointer to struct i2c_algo_pch_data.
  */
@@ -464,9 +540,13 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 	u32 addr_8_lsb;
 	s32 wrcount;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	s32 rtn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s32 rtn;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *p = adap->pch_base_address;
 
 	length = msgs->len;
@@ -486,6 +566,7 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 
 	if (msgs->flags & I2C_M_TEN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr_2_msb = ((addr & I2C_MSB_2B_MSK) >> 7);
 		iowrite32(addr_2_msb | TEN_BIT_ADDR_MASK, p + PCH_I2CDR);
 		if (first)
@@ -496,11 +577,14 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 			iowrite32(addr_8_lsb, p + PCH_I2CDR);
 		} else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		addr_2_msb = ((addr & I2C_MSB_2B_MSK) >> 7) & 0x06;
 		iowrite32(addr_2_msb | TEN_BIT_ADDR_MASK, p + PCH_I2CDR);
 		if (first)
 			pch_i2c_start(adap);
 
+<<<<<<< HEAD
 		rtn = pch_i2c_wait_for_xfer_complete(adap);
 		if (rtn == 0) {
 			if (pch_i2c_getack(adap)) {
@@ -523,6 +607,14 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 			pch_i2c_stop(adap);
 			return -ETIME;
 		}
+=======
+		rtn = pch_i2c_wait_for_check_xfer(adap);
+		if (rtn)
+			return rtn;
+
+		addr_8_lsb = (addr & I2C_ADDR_MSK);
+		iowrite32(addr_8_lsb, p + PCH_I2CDR);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* set 7 bit slave address and R/W bit as 0 */
 		iowrite32(addr << 1, p + PCH_I2CDR);
@@ -530,6 +622,7 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 			pch_i2c_start(adap);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((pch_i2c_wait_for_xfer_complete(adap) == 0) &&
 	    (pch_i2c_getack(adap) == 0)) {
@@ -573,12 +666,18 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 		pch_i2c_stop(adap);
 		return -ETIME;
 	}
+=======
+	rtn = pch_i2c_wait_for_check_xfer(adap);
+	if (rtn)
+		return rtn;
+>>>>>>> refs/remotes/origin/master
 
 	for (wrcount = 0; wrcount < length; ++wrcount) {
 		/* write buffer value to I2C data register */
 		iowrite32(buf[wrcount], p + PCH_I2CDR);
 		pch_dbg(adap, "writing %x to Data register\n", buf[wrcount]);
 
+<<<<<<< HEAD
 		rtn = pch_i2c_wait_for_xfer_complete(adap);
 		if (rtn == 0) {
 			if (pch_i2c_getack(adap)) {
@@ -594,6 +693,14 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 			pch_i2c_stop(adap);
 			return -ETIME;
 		}
+=======
+		rtn = pch_i2c_wait_for_check_xfer(adap);
+		if (rtn)
+			return rtn;
+
+		pch_clrbit(adap->pch_base_address, PCH_I2CSR, I2CMCF_BIT);
+		pch_clrbit(adap->pch_base_address, PCH_I2CSR, I2CMIF_BIT);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* check if this is the last message */
@@ -601,7 +708,10 @@ static s32 pch_i2c_writebytes(struct i2c_adapter *i2c_adap,
 		pch_i2c_stop(adap);
 	else
 		pch_i2c_repstart(adap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pch_dbg(adap, "return=%d\n", wrcount);
 
@@ -632,7 +742,10 @@ static void pch_i2c_sendnack(struct i2c_algo_pch_data *adap)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * pch_i2c_restart() - Generate I2C restart condition in normal mode.
  * @adap:	Pointer to struct i2c_algo_pch_data.
  *
@@ -646,7 +759,10 @@ static void pch_i2c_restart(struct i2c_algo_pch_data *adap)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * pch_i2c_readbytes() - read data  from I2C bus in normal mode.
  * @i2c_adap:	Pointer to the struct i2c_adapter.
  * @msgs:	Pointer to i2c_msg structure.
@@ -664,12 +780,18 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 	u32 addr;
 	u32 addr_2_msb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void __iomem *p = adap->pch_base_address;
 =======
 	u32 addr_8_lsb;
 	void __iomem *p = adap->pch_base_address;
 	s32 rtn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 addr_8_lsb;
+	void __iomem *p = adap->pch_base_address;
+	s32 rtn;
+>>>>>>> refs/remotes/origin/master
 
 	length = msgs->len;
 	buf = msgs->buf;
@@ -685,15 +807,19 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 
 	if (msgs->flags & I2C_M_TEN) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		addr_2_msb = (((addr & I2C_MSB_2B_MSK) >> 7) | (I2C_RD));
 		iowrite32(addr_2_msb | TEN_BIT_ADDR_MASK, p + PCH_I2CDR);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		addr_2_msb = ((addr & I2C_MSB_2B_MSK) >> 7);
 		iowrite32(addr_2_msb | TEN_BIT_ADDR_MASK, p + PCH_I2CDR);
 		if (first)
 			pch_i2c_start(adap);
 
+<<<<<<< HEAD
 		rtn = pch_i2c_wait_for_xfer_complete(adap);
 		if (rtn == 0) {
 			if (pch_i2c_getack(adap)) {
@@ -739,6 +865,23 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 			return -ETIME;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rtn = pch_i2c_wait_for_check_xfer(adap);
+		if (rtn)
+			return rtn;
+
+		addr_8_lsb = (addr & I2C_ADDR_MSK);
+		iowrite32(addr_8_lsb, p + PCH_I2CDR);
+
+		pch_i2c_restart(adap);
+
+		rtn = pch_i2c_wait_for_check_xfer(adap);
+		if (rtn)
+			return rtn;
+
+		addr_2_msb |= I2C_RD;
+		iowrite32(addr_2_msb | TEN_BIT_ADDR_MASK, p + PCH_I2CDR);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		/* 7 address bits + R/W bit */
 		addr = (((addr) << 1) | (I2C_RD));
@@ -749,6 +892,7 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 	if (first)
 		pch_i2c_start(adap);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if ((pch_i2c_wait_for_xfer_complete(adap) == 0) &&
 	    (pch_i2c_getack(adap) == 0)) {
@@ -818,6 +962,11 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 		pch_i2c_stop(adap);
 		return -ETIME;
 	}
+=======
+	rtn = pch_i2c_wait_for_check_xfer(adap);
+	if (rtn)
+		return rtn;
+>>>>>>> refs/remotes/origin/master
 
 	if (length == 0) {
 		pch_i2c_stop(adap);
@@ -836,6 +985,7 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 			if (loop != 1)
 				read_index++;
 
+<<<<<<< HEAD
 			rtn = pch_i2c_wait_for_xfer_complete(adap);
 			if (rtn == 0) {
 				if (pch_i2c_getack(adap)) {
@@ -848,6 +998,11 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 				return -ETIME;
 			}
 
+=======
+			rtn = pch_i2c_wait_for_check_xfer(adap);
+			if (rtn)
+				return rtn;
+>>>>>>> refs/remotes/origin/master
 		}	/* end for */
 
 		pch_i2c_sendnack(adap);
@@ -857,6 +1012,7 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 		if (length != 1)
 			read_index++;
 
+<<<<<<< HEAD
 		rtn = pch_i2c_wait_for_xfer_complete(adap);
 		if (rtn == 0) {
 			if (pch_i2c_getack(adap)) {
@@ -868,6 +1024,11 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 			pch_i2c_stop(adap);
 			return -ETIME;
 		}
+=======
+		rtn = pch_i2c_wait_for_check_xfer(adap);
+		if (rtn)
+			return rtn;
+>>>>>>> refs/remotes/origin/master
 
 		if (last)
 			pch_i2c_stop(adap);
@@ -876,7 +1037,10 @@ static s32 pch_i2c_readbytes(struct i2c_adapter *i2c_adap, struct i2c_msg *msgs,
 
 		buf[read_index++] = ioread32(p + PCH_I2CDR); /* Read Final */
 		count = read_index;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return count;
@@ -953,17 +1117,24 @@ static s32 pch_i2c_xfer(struct i2c_adapter *i2c_adap,
 	u32 i = 0;
 	u32 status;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 msglen;
 	u32 subaddrlen;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	s32 ret;
 
 	struct i2c_algo_pch_data *adap = i2c_adap->algo_data;
 
 	ret = mutex_lock_interruptible(&pch_mutex);
 	if (ret)
+<<<<<<< HEAD
 		return -ERESTARTSYS;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (adap->p_adapter_info->pch_i2c_suspended) {
 		mutex_unlock(&pch_mutex);
@@ -975,6 +1146,7 @@ static s32 pch_i2c_xfer(struct i2c_adapter *i2c_adap,
 	/* transfer not completed */
 	adap->pch_i2c_xfer_in_progress = true;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pmsg = &msgs[0];
 	pmsg->flags |= adap->pch_buff_mode_en;
@@ -996,6 +1168,8 @@ static s32 pch_i2c_xfer(struct i2c_adapter *i2c_adap,
 		ret = pch_i2c_writebytes(i2c_adap, pmsg, (i + 1 == num),
 				    (i == 0));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num && ret >= 0; i++) {
 		pmsg = &msgs[i];
 		pmsg->flags |= adap->pch_buff_mode_en;
@@ -1010,7 +1184,10 @@ static s32 pch_i2c_xfer(struct i2c_adapter *i2c_adap,
 			ret = pch_i2c_writebytes(i2c_adap, pmsg, (i + 1 == num),
 						 (i == 0));
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	adap->pch_i2c_xfer_in_progress = false;	/* transfer completed */
@@ -1018,10 +1195,14 @@ static s32 pch_i2c_xfer(struct i2c_adapter *i2c_adap,
 	mutex_unlock(&pch_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ret;
 =======
 	return (ret < 0) ? ret : num;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (ret < 0) ? ret : num;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -1053,7 +1234,11 @@ static void pch_i2c_disbl_int(struct i2c_algo_pch_data *adap)
 	iowrite32(BUFFER_MODE_INTR_DISBL, p + PCH_I2CBUFMSK);
 }
 
+<<<<<<< HEAD
 static int __devinit pch_i2c_probe(struct pci_dev *pdev,
+=======
+static int pch_i2c_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				   const struct pci_device_id *id)
 {
 	void __iomem *base_addr;
@@ -1094,7 +1279,10 @@ static int __devinit pch_i2c_probe(struct pci_dev *pdev,
 	adap_info->ch_num = id->driver_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = request_irq(pdev->irq, pch_i2c_handler, IRQF_SHARED,
 		  KBUILD_MODNAME, adap_info);
 	if (ret) {
@@ -1102,7 +1290,10 @@ static int __devinit pch_i2c_probe(struct pci_dev *pdev,
 		goto err_request_irq;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < adap_info->ch_num; i++) {
 		pch_adap = &adap_info->pch_data[i].pch_adapter;
 		adap_info->pch_i2c_suspended = false;
@@ -1111,7 +1302,11 @@ static int __devinit pch_i2c_probe(struct pci_dev *pdev,
 
 		pch_adap->owner = THIS_MODULE;
 		pch_adap->class = I2C_CLASS_HWMON;
+<<<<<<< HEAD
 		strcpy(pch_adap->name, KBUILD_MODNAME);
+=======
+		strlcpy(pch_adap->name, KBUILD_MODNAME, sizeof(pch_adap->name));
+>>>>>>> refs/remotes/origin/master
 		pch_adap->algo = &pch_algorithm;
 		pch_adap->algo_data = &adap_info->pch_data[i];
 
@@ -1120,6 +1315,7 @@ static int __devinit pch_i2c_probe(struct pci_dev *pdev,
 
 		pch_adap->dev.parent = &pdev->dev;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ret = i2c_add_adapter(pch_adap);
 		if (ret) {
@@ -1135,6 +1331,8 @@ static int __devinit pch_i2c_probe(struct pci_dev *pdev,
 		pch_pci_err(pdev, "request_irq FAILED\n");
 		goto err_i2c_add_adapter;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pch_i2c_init(&adap_info->pch_data[i]);
 
 		pch_adap->nr = i;
@@ -1143,7 +1341,10 @@ static int __devinit pch_i2c_probe(struct pci_dev *pdev,
 			pch_pci_err(pdev, "i2c_add_adapter[ch:%d] FAILED\n", i);
 			goto err_add_adapter;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_set_drvdata(pdev, adap_info);
@@ -1151,16 +1352,22 @@ static int __devinit pch_i2c_probe(struct pci_dev *pdev,
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 err_i2c_add_adapter:
 	for (j = 0; j < i; j++)
 		i2c_del_adapter(&adap_info->pch_data[j].pch_adapter);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 err_add_adapter:
 	for (j = 0; j < i; j++)
 		i2c_del_adapter(&adap_info->pch_data[j].pch_adapter);
 	free_irq(pdev->irq, adap_info);
 err_request_irq:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_iounmap(pdev, base_addr);
 err_pci_iomap:
 	pci_release_regions(pdev);
@@ -1171,7 +1378,11 @@ err_pci_enable:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit pch_i2c_remove(struct pci_dev *pdev)
+=======
+static void pch_i2c_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct adapter_info *adap_info = pci_get_drvdata(pdev);
@@ -1187,9 +1398,13 @@ static void __devexit pch_i2c_remove(struct pci_dev *pdev)
 		pci_iounmap(pdev, adap_info->pch_data[0].pch_base_address);
 
 	for (i = 0; i < adap_info->ch_num; i++)
+<<<<<<< HEAD
 		adap_info->pch_data[i].pch_base_address = 0;
 
 	pci_set_drvdata(pdev, NULL);
+=======
+		adap_info->pch_data[i].pch_base_address = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	pci_release_regions(pdev);
 
@@ -1268,11 +1483,16 @@ static struct pci_driver pch_pcidriver = {
 	.name = KBUILD_MODNAME,
 	.id_table = pch_pcidev_id,
 	.probe = pch_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(pch_i2c_remove),
+=======
+	.remove = pch_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend = pch_i2c_suspend,
 	.resume = pch_i2c_resume
 };
 
+<<<<<<< HEAD
 static int __init pch_pci_init(void)
 {
 	return pci_register_driver(&pch_pcidriver);
@@ -1294,5 +1514,12 @@ MODULE_DESCRIPTION("Intel EG20T PCH/LAPIS Semico ML7213/ML7223/ML7831 IOH I2C");
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Tomoya MORINAGA. <tomoya.rohm@gmail.com>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_pci_driver(pch_pcidriver);
+
+MODULE_DESCRIPTION("Intel EG20T PCH/LAPIS Semico ML7213/ML7223/ML7831 IOH I2C");
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Tomoya MORINAGA. <tomoya.rohm@gmail.com>");
+>>>>>>> refs/remotes/origin/master
 module_param(pch_i2c_speed, int, (S_IRUSR | S_IWUSR));
 module_param(pch_clk, int, (S_IRUSR | S_IWUSR));

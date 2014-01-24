@@ -34,7 +34,14 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 {
 	struct phy_device *phy;
 	struct device_node *child;
+<<<<<<< HEAD
 	int rc, i;
+=======
+	const __be32 *paddr;
+	u32 addr;
+	bool is_c45, scanphys = false;
+	int rc, i, len;
+>>>>>>> refs/remotes/origin/master
 
 	/* Mask out all PHYs from auto probing.  Instead the PHYs listed in
 	 * the device tree are populated after the bus has been registered */
@@ -45,12 +52,18 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 		for (i=0; i<PHY_MAX_ADDR; i++)
 			mdio->irq[i] = PHY_POLL;
 
+<<<<<<< HEAD
+=======
+	mdio->dev.of_node = np;
+
+>>>>>>> refs/remotes/origin/master
 	/* Register the MDIO bus */
 	rc = mdiobus_register(mdio);
 	if (rc)
 		return rc;
 
 	/* Loop over the child nodes and register a phy_device for each one */
+<<<<<<< HEAD
 	for_each_child_of_node(np, child) {
 		const __be32 *paddr;
 		u32 addr;
@@ -59,6 +72,13 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 		/* A PHY must have a reg property in the range [0-31] */
 		paddr = of_get_property(child, "reg", &len);
 		if (!paddr || len < sizeof(*paddr)) {
+=======
+	for_each_available_child_of_node(np, child) {
+		/* A PHY must have a reg property in the range [0-31] */
+		paddr = of_get_property(child, "reg", &len);
+		if (!paddr || len < sizeof(*paddr)) {
+			scanphys = true;
+>>>>>>> refs/remotes/origin/master
 			dev_err(&mdio->dev, "%s has invalid PHY address\n",
 				child->full_name);
 			continue;
@@ -77,6 +97,7 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 				mdio->irq[addr] = PHY_POLL;
 		}
 
+<<<<<<< HEAD
 		phy = get_phy_device(mdio, addr);
 		if (!phy || IS_ERR(phy)) {
 			dev_err(&mdio->dev, "error probing PHY at address %i\n",
@@ -87,6 +108,18 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 		phy_scan_fixups(phy);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		is_c45 = of_device_is_compatible(child,
+						 "ethernet-phy-ieee802.3-c45");
+		phy = get_phy_device(mdio, addr, is_c45);
+
+		if (!phy || IS_ERR(phy)) {
+			dev_err(&mdio->dev,
+				"cannot get PHY at address %i\n",
+				addr);
+			continue;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		/* Associate the OF node with the device structure so it
 		 * can be looked up later */
@@ -105,6 +138,62 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 			child->name, addr);
 	}
 
+<<<<<<< HEAD
+=======
+	if (!scanphys)
+		return 0;
+
+	/* auto scan for PHYs with empty reg property */
+	for_each_available_child_of_node(np, child) {
+		/* Skip PHYs with reg property set */
+		paddr = of_get_property(child, "reg", &len);
+		if (paddr)
+			continue;
+
+		is_c45 = of_device_is_compatible(child,
+						 "ethernet-phy-ieee802.3-c45");
+
+		for (addr = 0; addr < PHY_MAX_ADDR; addr++) {
+			/* skip already registered PHYs */
+			if (mdio->phy_map[addr])
+				continue;
+
+			/* be noisy to encourage people to set reg property */
+			dev_info(&mdio->dev, "scan phy %s at address %i\n",
+				 child->name, addr);
+
+			phy = get_phy_device(mdio, addr, is_c45);
+			if (!phy || IS_ERR(phy))
+				continue;
+
+			if (mdio->irq) {
+				mdio->irq[addr] =
+					irq_of_parse_and_map(child, 0);
+				if (!mdio->irq[addr])
+					mdio->irq[addr] = PHY_POLL;
+			}
+
+			/* Associate the OF node with the device structure so it
+			 * can be looked up later */
+			of_node_get(child);
+			phy->dev.of_node = child;
+
+			/* All data is now stored in the phy struct;
+			 * register it */
+			rc = phy_device_register(phy);
+			if (rc) {
+				phy_device_free(phy);
+				of_node_put(child);
+				continue;
+			}
+
+			dev_info(&mdio->dev, "registered phy %s at address %i\n",
+				 child->name, addr);
+			break;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(of_mdiobus_register);
@@ -151,7 +240,11 @@ struct phy_device *of_phy_connect(struct net_device *dev,
 	if (!phy)
 		return NULL;
 
+<<<<<<< HEAD
 	return phy_connect_direct(dev, phy, hndlr, flags, iface) ? NULL : phy;
+=======
+	return phy_connect_direct(dev, phy, hndlr, iface) ? NULL : phy;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(of_phy_connect);
 
@@ -187,12 +280,18 @@ struct phy_device *of_phy_connect_fixed_link(struct net_device *dev,
 		return NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sprintf(bus_id, PHY_ID_FMT, "0", be32_to_cpu(phy_id[0]));
 =======
 	sprintf(bus_id, PHY_ID_FMT, "fixed-0", be32_to_cpu(phy_id[0]));
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	phy = phy_connect(dev, bus_id, hndlr, 0, iface);
+=======
+	sprintf(bus_id, PHY_ID_FMT, "fixed-0", be32_to_cpu(phy_id[0]));
+
+	phy = phy_connect(dev, bus_id, hndlr, iface);
+>>>>>>> refs/remotes/origin/master
 	return IS_ERR(phy) ? NULL : phy;
 }
 EXPORT_SYMBOL(of_phy_connect_fixed_link);

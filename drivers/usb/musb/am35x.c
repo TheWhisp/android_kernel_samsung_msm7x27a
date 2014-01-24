@@ -26,6 +26,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <linux/init.h>
 <<<<<<< HEAD
 =======
@@ -37,6 +38,16 @@
 #include <linux/dma-mapping.h>
 
 #include <plat/usb.h>
+=======
+#include <linux/module.h>
+#include <linux/clk.h>
+#include <linux/err.h>
+#include <linux/io.h>
+#include <linux/platform_device.h>
+#include <linux/dma-mapping.h>
+#include <linux/usb/usb_phy_gen_xceiv.h>
+#include <linux/platform_data/usb-omap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "musb_core.h"
 
@@ -91,7 +102,10 @@ struct am35x_glue {
 	struct clk		*phy_clk;
 	struct clk		*clk;
 };
+<<<<<<< HEAD
 #define glue_to_musb(g)		platform_get_drvdata(g->musb)
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * am35x_musb_enable - enable interrupts
@@ -109,9 +123,14 @@ static void am35x_musb_enable(struct musb *musb)
 	musb_writel(reg_base, CORE_INTR_MASK_SET_REG, AM35X_INTR_USB_MASK);
 
 	/* Force the DRVVBUS IRQ so we can start polling for ID change. */
+<<<<<<< HEAD
 	if (is_otg_enabled(musb))
 		musb_writel(reg_base, CORE_INTR_SRC_SET_REG,
 			    AM35X_INTR_DRVVBUS << AM35X_INTR_USB_SHIFT);
+=======
+	musb_writel(reg_base, CORE_INTR_SRC_SET_REG,
+			AM35X_INTR_DRVVBUS << AM35X_INTR_USB_SHIFT);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -129,6 +148,7 @@ static void am35x_musb_disable(struct musb *musb)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_USB_MUSB_HDRC_HCD
 #define portstate(stmt)		stmt
 #else
@@ -137,6 +157,9 @@ static void am35x_musb_disable(struct musb *musb)
 =======
 #define portstate(stmt)		stmt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define portstate(stmt)		stmt
+>>>>>>> refs/remotes/origin/master
 
 static void am35x_musb_set_vbus(struct musb *musb, int is_on)
 {
@@ -160,7 +183,11 @@ static void otg_timer(unsigned long _musb)
 	 */
 	devctl = musb_readb(mregs, MUSB_DEVCTL);
 	dev_dbg(musb->controller, "Poll devctl %02x (%s)\n", devctl,
+<<<<<<< HEAD
 		otg_state_string(musb->xceiv->state));
+=======
+		usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&musb->lock, flags);
 	switch (musb->xceiv->state) {
@@ -183,9 +210,12 @@ static void otg_timer(unsigned long _musb)
 			    MUSB_INTR_VBUSERROR << AM35X_INTR_USB_SHIFT);
 		break;
 	case OTG_STATE_B_IDLE:
+<<<<<<< HEAD
 		if (!is_peripheral_enabled(musb))
 			break;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		devctl = musb_readb(mregs, MUSB_DEVCTL);
 		if (devctl & MUSB_DEVCTL_BDEVICE)
 			mod_timer(&otg_workaround, jiffies + POLL_SECONDS * HZ);
@@ -202,9 +232,12 @@ static void am35x_musb_try_idle(struct musb *musb, unsigned long timeout)
 {
 	static unsigned long last_timer;
 
+<<<<<<< HEAD
 	if (!is_otg_enabled(musb))
 		return;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (timeout == 0)
 		timeout = jiffies + msecs_to_jiffies(3);
 
@@ -212,7 +245,11 @@ static void am35x_musb_try_idle(struct musb *musb, unsigned long timeout)
 	if (musb->is_active || (musb->a_wait_bcon == 0 &&
 				musb->xceiv->state == OTG_STATE_A_WAIT_BCON)) {
 		dev_dbg(musb->controller, "%s active, deleting timer\n",
+<<<<<<< HEAD
 			otg_state_string(musb->xceiv->state));
+=======
+			usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 		del_timer(&otg_workaround);
 		last_timer = jiffies;
 		return;
@@ -225,7 +262,11 @@ static void am35x_musb_try_idle(struct musb *musb, unsigned long timeout)
 	last_timer = timeout;
 
 	dev_dbg(musb->controller, "%s inactive, starting idle timer for %u ms\n",
+<<<<<<< HEAD
 		otg_state_string(musb->xceiv->state),
+=======
+		usb_otg_state_string(musb->xceiv->state),
+>>>>>>> refs/remotes/origin/master
 		jiffies_to_msecs(timeout - jiffies));
 	mod_timer(&otg_workaround, timeout);
 }
@@ -235,12 +276,18 @@ static irqreturn_t am35x_musb_interrupt(int irq, void *hci)
 	struct musb  *musb = hci;
 	void __iomem *reg_base = musb->ctrl_base;
 	struct device *dev = musb->controller;
+<<<<<<< HEAD
 	struct musb_hdrc_platform_data *plat = dev->platform_data;
 	struct omap_musb_board_data *data = plat->board_data;
 <<<<<<< HEAD
 =======
 	struct usb_otg *otg = musb->xceiv->otg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct musb_hdrc_platform_data *plat = dev_get_platdata(dev);
+	struct omap_musb_board_data *data = plat->board_data;
+	struct usb_otg *otg = musb->xceiv->otg;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	irqreturn_t ret = IRQ_NONE;
 	u32 epintr, usbintr;
@@ -284,8 +331,12 @@ static irqreturn_t am35x_musb_interrupt(int irq, void *hci)
 		u8 devctl = musb_readb(mregs, MUSB_DEVCTL);
 		int err;
 
+<<<<<<< HEAD
 		err = is_host_enabled(musb) && (musb->int_usb &
 						MUSB_INTR_VBUSERROR);
+=======
+		err = musb->int_usb & MUSB_INTR_VBUSERROR;
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			/*
 			 * The Mentor core doesn't debounce VBUS as needed
@@ -302,6 +353,7 @@ static irqreturn_t am35x_musb_interrupt(int irq, void *hci)
 			musb->xceiv->state = OTG_STATE_A_WAIT_VFALL;
 			mod_timer(&otg_workaround, jiffies + POLL_SECONDS * HZ);
 			WARNING("VBUS error workaround (delay coming)\n");
+<<<<<<< HEAD
 		} else if (is_host_enabled(musb) && drvvbus) {
 			MUSB_HST_MODE(musb);
 <<<<<<< HEAD
@@ -309,6 +361,11 @@ static irqreturn_t am35x_musb_interrupt(int irq, void *hci)
 =======
 			otg->default_a = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else if (drvvbus) {
+			MUSB_HST_MODE(musb);
+			otg->default_a = 1;
+>>>>>>> refs/remotes/origin/master
 			musb->xceiv->state = OTG_STATE_A_WAIT_VRISE;
 			portstate(musb->port1_status |= USB_PORT_STAT_POWER);
 			del_timer(&otg_workaround);
@@ -316,10 +373,14 @@ static irqreturn_t am35x_musb_interrupt(int irq, void *hci)
 			musb->is_active = 0;
 			MUSB_DEV_MODE(musb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			musb->xceiv->default_a = 0;
 =======
 			otg->default_a = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			otg->default_a = 0;
+>>>>>>> refs/remotes/origin/master
 			musb->xceiv->state = OTG_STATE_B_IDLE;
 			portstate(musb->port1_status &= ~USB_PORT_STAT_POWER);
 		}
@@ -327,12 +388,25 @@ static irqreturn_t am35x_musb_interrupt(int irq, void *hci)
 		/* NOTE: this must complete power-on within 100 ms. */
 		dev_dbg(musb->controller, "VBUS %s (%s)%s, devctl %02x\n",
 				drvvbus ? "on" : "off",
+<<<<<<< HEAD
 				otg_state_string(musb->xceiv->state),
+=======
+				usb_otg_state_string(musb->xceiv->state),
+>>>>>>> refs/remotes/origin/master
 				err ? " ERROR" : "",
 				devctl);
 		ret = IRQ_HANDLED;
 	}
 
+<<<<<<< HEAD
+=======
+	/* Drop spurious RX and TX if device is disconnected */
+	if (musb->int_usb & MUSB_INTR_DISCONNECT) {
+		musb->int_tx = 0;
+		musb->int_rx = 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (musb->int_tx || musb->int_rx || musb->int_usb)
 		ret |= musb_interrupt(musb);
 
@@ -347,7 +421,11 @@ eoi:
 	}
 
 	/* Poll for ID change */
+<<<<<<< HEAD
 	if (is_otg_enabled(musb) && musb->xceiv->state == OTG_STATE_B_IDLE)
+=======
+	if (musb->xceiv->state == OTG_STATE_B_IDLE)
+>>>>>>> refs/remotes/origin/master
 		mod_timer(&otg_workaround, jiffies + POLL_SECONDS * HZ);
 
 	spin_unlock_irqrestore(&musb->lock, flags);
@@ -358,7 +436,11 @@ eoi:
 static int am35x_musb_set_mode(struct musb *musb, u8 musb_mode)
 {
 	struct device *dev = musb->controller;
+<<<<<<< HEAD
 	struct musb_hdrc_platform_data *plat = dev->platform_data;
+=======
+	struct musb_hdrc_platform_data *plat = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct omap_musb_board_data *data = plat->board_data;
 	int     retval = 0;
 
@@ -373,7 +455,11 @@ static int am35x_musb_set_mode(struct musb *musb, u8 musb_mode)
 static int am35x_musb_init(struct musb *musb)
 {
 	struct device *dev = musb->controller;
+<<<<<<< HEAD
 	struct musb_hdrc_platform_data *plat = dev->platform_data;
+=======
+	struct musb_hdrc_platform_data *plat = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct omap_musb_board_data *data = plat->board_data;
 	void __iomem *reg_base = musb->ctrl_base;
 	u32 rev;
@@ -387,6 +473,7 @@ static int am35x_musb_init(struct musb *musb)
 
 	usb_nop_xceiv_register();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	musb->xceiv = otg_get_transceiver();
 =======
 	musb->xceiv = usb_get_transceiver();
@@ -396,6 +483,13 @@ static int am35x_musb_init(struct musb *musb)
 
 	if (is_host_enabled(musb))
 		setup_timer(&otg_workaround, otg_timer, (unsigned long) musb);
+=======
+	musb->xceiv = usb_get_phy(USB_PHY_TYPE_USB2);
+	if (IS_ERR_OR_NULL(musb->xceiv))
+		return -EPROBE_DEFER;
+
+	setup_timer(&otg_workaround, otg_timer, (unsigned long) musb);
+>>>>>>> refs/remotes/origin/master
 
 	/* Reset the musb */
 	if (data->reset)
@@ -422,21 +516,32 @@ static int am35x_musb_init(struct musb *musb)
 static int am35x_musb_exit(struct musb *musb)
 {
 	struct device *dev = musb->controller;
+<<<<<<< HEAD
 	struct musb_hdrc_platform_data *plat = dev->platform_data;
 	struct omap_musb_board_data *data = plat->board_data;
 
 	if (is_host_enabled(musb))
 		del_timer_sync(&otg_workaround);
+=======
+	struct musb_hdrc_platform_data *plat = dev_get_platdata(dev);
+	struct omap_musb_board_data *data = plat->board_data;
+
+	del_timer_sync(&otg_workaround);
+>>>>>>> refs/remotes/origin/master
 
 	/* Shutdown the on-chip PHY and its PLL. */
 	if (data->set_phy_power)
 		data->set_phy_power(0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	otg_put_transceiver(musb->xceiv);
 =======
 	usb_put_transceiver(musb->xceiv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_put_phy(musb->xceiv);
+>>>>>>> refs/remotes/origin/master
 	usb_nop_xceiv_unregister();
 
 	return 0;
@@ -485,6 +590,7 @@ static const struct musb_platform_ops am35x_ops = {
 	.set_vbus	= am35x_musb_set_vbus,
 };
 
+<<<<<<< HEAD
 static u64 am35x_dmamask = DMA_BIT_MASK(32);
 
 <<<<<<< HEAD
@@ -497,6 +603,20 @@ static int __devinit am35x_probe(struct platform_device *pdev)
 	struct platform_device		*musb;
 	struct am35x_glue		*glue;
 
+=======
+static const struct platform_device_info am35x_dev_info = {
+	.name		= "musb-hdrc",
+	.id		= PLATFORM_DEVID_AUTO,
+	.dma_mask	= DMA_BIT_MASK(32),
+};
+
+static int am35x_probe(struct platform_device *pdev)
+{
+	struct musb_hdrc_platform_data	*pdata = dev_get_platdata(&pdev->dev);
+	struct platform_device		*musb;
+	struct am35x_glue		*glue;
+	struct platform_device_info	pinfo;
+>>>>>>> refs/remotes/origin/master
 	struct clk			*phy_clk;
 	struct clk			*clk;
 
@@ -508,35 +628,51 @@ static int __devinit am35x_probe(struct platform_device *pdev)
 		goto err0;
 	}
 
+<<<<<<< HEAD
 	musb = platform_device_alloc("musb-hdrc", -1);
 	if (!musb) {
 		dev_err(&pdev->dev, "failed to allocate musb device\n");
 		goto err1;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	phy_clk = clk_get(&pdev->dev, "fck");
 	if (IS_ERR(phy_clk)) {
 		dev_err(&pdev->dev, "failed to get PHY clock\n");
 		ret = PTR_ERR(phy_clk);
+<<<<<<< HEAD
 		goto err2;
+=======
+		goto err3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	clk = clk_get(&pdev->dev, "ick");
 	if (IS_ERR(clk)) {
 		dev_err(&pdev->dev, "failed to get clock\n");
 		ret = PTR_ERR(clk);
+<<<<<<< HEAD
 		goto err3;
+=======
+		goto err4;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = clk_enable(phy_clk);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to enable PHY clock\n");
+<<<<<<< HEAD
 		goto err4;
+=======
+		goto err5;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = clk_enable(clk);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to enable clock\n");
+<<<<<<< HEAD
 		goto err5;
 	}
 
@@ -546,6 +682,12 @@ static int __devinit am35x_probe(struct platform_device *pdev)
 
 	glue->dev			= &pdev->dev;
 	glue->musb			= musb;
+=======
+		goto err6;
+	}
+
+	glue->dev			= &pdev->dev;
+>>>>>>> refs/remotes/origin/master
 	glue->phy_clk			= phy_clk;
 	glue->clk			= clk;
 
@@ -553,6 +695,7 @@ static int __devinit am35x_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, glue);
 
+<<<<<<< HEAD
 	ret = platform_device_add_resources(musb, pdev->resource,
 			pdev->num_resources);
 	if (ret) {
@@ -570,10 +713,25 @@ static int __devinit am35x_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev, "failed to register musb device\n");
 		goto err6;
+=======
+	pinfo = am35x_dev_info;
+	pinfo.parent = &pdev->dev;
+	pinfo.res = pdev->resource;
+	pinfo.num_res = pdev->num_resources;
+	pinfo.data = pdata;
+	pinfo.size_data = sizeof(*pdata);
+
+	glue->musb = musb = platform_device_register_full(&pinfo);
+	if (IS_ERR(musb)) {
+		ret = PTR_ERR(musb);
+		dev_err(&pdev->dev, "failed to register musb device: %d\n", ret);
+		goto err7;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 err6:
 	clk_disable(clk);
 
@@ -590,12 +748,28 @@ err2:
 	platform_device_put(musb);
 
 err1:
+=======
+err7:
+	clk_disable(clk);
+
+err6:
+	clk_disable(phy_clk);
+
+err5:
+	clk_put(clk);
+
+err4:
+	clk_put(phy_clk);
+
+err3:
+>>>>>>> refs/remotes/origin/master
 	kfree(glue);
 
 err0:
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __exit am35x_remove(struct platform_device *pdev)
 =======
@@ -606,6 +780,13 @@ static int __devexit am35x_remove(struct platform_device *pdev)
 
 	platform_device_del(glue->musb);
 	platform_device_put(glue->musb);
+=======
+static int am35x_remove(struct platform_device *pdev)
+{
+	struct am35x_glue	*glue = platform_get_drvdata(pdev);
+
+	platform_device_unregister(glue->musb);
+>>>>>>> refs/remotes/origin/master
 	clk_disable(glue->clk);
 	clk_disable(glue->phy_clk);
 	clk_put(glue->clk);
@@ -619,7 +800,11 @@ static int __devexit am35x_remove(struct platform_device *pdev)
 static int am35x_suspend(struct device *dev)
 {
 	struct am35x_glue	*glue = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct musb_hdrc_platform_data *plat = dev->platform_data;
+=======
+	struct musb_hdrc_platform_data *plat = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct omap_musb_board_data *data = plat->board_data;
 
 	/* Shutdown the on-chip PHY and its PLL. */
@@ -635,7 +820,11 @@ static int am35x_suspend(struct device *dev)
 static int am35x_resume(struct device *dev)
 {
 	struct am35x_glue	*glue = dev_get_drvdata(dev);
+<<<<<<< HEAD
 	struct musb_hdrc_platform_data *plat = dev->platform_data;
+=======
+	struct musb_hdrc_platform_data *plat = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct omap_musb_board_data *data = plat->board_data;
 	int			ret;
 
@@ -657,6 +846,7 @@ static int am35x_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static struct dev_pm_ops am35x_pm_ops = {
 	.suspend	= am35x_suspend,
@@ -678,12 +868,25 @@ static struct platform_driver am35x_driver = {
 	.driver		= {
 		.name	= "musb-am35x",
 		.pm	= DEV_PM_OPS,
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(am35x_pm_ops, am35x_suspend, am35x_resume);
+
+static struct platform_driver am35x_driver = {
+	.probe		= am35x_probe,
+	.remove		= am35x_remove,
+	.driver		= {
+		.name	= "musb-am35x",
+		.pm	= &am35x_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 MODULE_DESCRIPTION("AM35x MUSB Glue Layer");
 MODULE_AUTHOR("Ajay Kumar Gupta <ajay.gupta@ti.com>");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 
 static int __init am35x_init(void)
 {
@@ -702,3 +905,6 @@ static void __exit am35x_exit(void)
 	platform_driver_unregister(&am35x_driver);
 }
 module_exit(am35x_exit);
+=======
+module_platform_driver(am35x_driver);
+>>>>>>> refs/remotes/origin/master

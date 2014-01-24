@@ -20,7 +20,10 @@
 #include <linux/mutex.h>
 #include "gcov.h"
 
+<<<<<<< HEAD
 static struct gcov_info *gcov_info_head;
+=======
+>>>>>>> refs/remotes/origin/master
 static int gcov_events_enabled;
 static DEFINE_MUTEX(gcov_lock);
 
@@ -34,7 +37,11 @@ void __gcov_init(struct gcov_info *info)
 
 	mutex_lock(&gcov_lock);
 	if (gcov_version == 0) {
+<<<<<<< HEAD
 		gcov_version = info->version;
+=======
+		gcov_version = gcov_info_version(info);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Printing gcc's version magic may prove useful for debugging
 		 * incompatibility reports.
@@ -45,8 +52,12 @@ void __gcov_init(struct gcov_info *info)
 	 * Add new profiling data structure to list and inform event
 	 * listener.
 	 */
+<<<<<<< HEAD
 	info->next = gcov_info_head;
 	gcov_info_head = info;
+=======
+	gcov_info_link(info);
+>>>>>>> refs/remotes/origin/master
 	if (gcov_events_enabled)
 		gcov_event(GCOV_ADD, info);
 	mutex_unlock(&gcov_lock);
@@ -81,6 +92,15 @@ void __gcov_merge_delta(gcov_type *counters, unsigned int n_counters)
 }
 EXPORT_SYMBOL(__gcov_merge_delta);
 
+<<<<<<< HEAD
+=======
+void __gcov_merge_ior(gcov_type *counters, unsigned int n_counters)
+{
+	/* Unused. */
+}
+EXPORT_SYMBOL(__gcov_merge_ior);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * gcov_enable_events - enable event reporting through gcov_event()
  *
@@ -91,6 +111,7 @@ EXPORT_SYMBOL(__gcov_merge_delta);
  */
 void gcov_enable_events(void)
 {
+<<<<<<< HEAD
 	struct gcov_info *info;
 
 	mutex_lock(&gcov_lock);
@@ -98,6 +119,17 @@ void gcov_enable_events(void)
 	/* Perform event callback for previously registered entries. */
 	for (info = gcov_info_head; info; info = info->next)
 		gcov_event(GCOV_ADD, info);
+=======
+	struct gcov_info *info = NULL;
+
+	mutex_lock(&gcov_lock);
+	gcov_events_enabled = 1;
+
+	/* Perform event callback for previously registered entries. */
+	while ((info = gcov_info_next(info)))
+		gcov_event(GCOV_ADD, info);
+
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&gcov_lock);
 }
 
@@ -112,12 +144,18 @@ static int gcov_module_notifier(struct notifier_block *nb, unsigned long event,
 				void *data)
 {
 	struct module *mod = data;
+<<<<<<< HEAD
 	struct gcov_info *info;
 	struct gcov_info *prev;
+=======
+	struct gcov_info *info = NULL;
+	struct gcov_info *prev = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	if (event != MODULE_STATE_GOING)
 		return NOTIFY_OK;
 	mutex_lock(&gcov_lock);
+<<<<<<< HEAD
 	prev = NULL;
 	/* Remove entries located in module from linked list. */
 	for (info = gcov_info_head; info; info = info->next) {
@@ -126,11 +164,22 @@ static int gcov_module_notifier(struct notifier_block *nb, unsigned long event,
 				prev->next = info->next;
 			else
 				gcov_info_head = info->next;
+=======
+
+	/* Remove entries located in module from linked list. */
+	while ((info = gcov_info_next(info))) {
+		if (within(info, mod->module_core, mod->core_size)) {
+			gcov_info_unlink(prev, info);
+>>>>>>> refs/remotes/origin/master
 			if (gcov_events_enabled)
 				gcov_event(GCOV_REMOVE, info);
 		} else
 			prev = info;
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&gcov_lock);
 
 	return NOTIFY_OK;

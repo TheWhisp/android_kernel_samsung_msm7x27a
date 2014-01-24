@@ -108,7 +108,11 @@ static int regcache_lzo_decompress_cache_block(struct regmap *map,
 static inline int regcache_lzo_get_blkindex(struct regmap *map,
 					    unsigned int reg)
 {
+<<<<<<< HEAD
 	return (reg * map->cache_word_size) /
+=======
+	return ((reg / map->reg_stride) * map->cache_word_size) /
+>>>>>>> refs/remotes/origin/master
 		DIV_ROUND_UP(map->cache_size_raw,
 			     regcache_lzo_block_count(map));
 }
@@ -116,9 +120,16 @@ static inline int regcache_lzo_get_blkindex(struct regmap *map,
 static inline int regcache_lzo_get_blkpos(struct regmap *map,
 					  unsigned int reg)
 {
+<<<<<<< HEAD
 	return reg % (DIV_ROUND_UP(map->cache_size_raw,
 				   regcache_lzo_block_count(map)) /
 		      map->cache_word_size);
+=======
+	return (reg / map->reg_stride) %
+		    (DIV_ROUND_UP(map->cache_size_raw,
+				  regcache_lzo_block_count(map)) /
+		     map->cache_word_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int regcache_lzo_get_blksize(struct regmap *map)
@@ -259,8 +270,12 @@ static int regcache_lzo_read(struct regmap *map,
 	ret = regcache_lzo_decompress_cache_block(map, lzo_block);
 	if (ret >= 0)
 		/* fetch the value from the cache */
+<<<<<<< HEAD
 		*value = regcache_get_val(lzo_block->dst, blkpos,
 					  map->cache_word_size);
+=======
+		*value = regcache_get_val(map, lzo_block->dst, blkpos);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(lzo_block->dst);
 	/* restore the pointer and length of the compressed block */
@@ -303,8 +318,12 @@ static int regcache_lzo_write(struct regmap *map,
 	}
 
 	/* write the new value to the cache */
+<<<<<<< HEAD
 	if (regcache_set_val(lzo_block->dst, blkpos, value,
 			     map->cache_word_size)) {
+=======
+	if (regcache_set_val(map, lzo_block->dst, blkpos, value)) {
+>>>>>>> refs/remotes/origin/master
 		kfree(lzo_block->dst);
 		goto out;
 	}
@@ -322,7 +341,11 @@ static int regcache_lzo_write(struct regmap *map,
 	}
 
 	/* set the bit so we know we have to sync this register */
+<<<<<<< HEAD
 	set_bit(reg, lzo_block->sync_bmp);
+=======
+	set_bit(reg / map->reg_stride, lzo_block->sync_bmp);
+>>>>>>> refs/remotes/origin/master
 	kfree(tmp_dst);
 	kfree(lzo_block->src);
 	return 0;

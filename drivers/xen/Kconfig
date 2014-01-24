@@ -3,6 +3,10 @@ menu "Xen driver support"
 
 config XEN_BALLOON
 	bool "Xen memory balloon driver"
+<<<<<<< HEAD
+=======
+	depends on !ARM
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  The balloon driver allows the Xen domain to request more memory from
@@ -10,7 +14,10 @@ config XEN_BALLOON
 	  return unneeded memory to the system.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config XEN_SELFBALLOONING
 	bool "Dynamically self-balloon kernel memory to target"
 	depends on XEN && XEN_BALLOON && CLEANCACHE && SWAP && XEN_TMEM
@@ -20,11 +27,18 @@ config XEN_SELFBALLOONING
 	  by the current usage of anonymous memory ("committed AS") and
 	  controlled by various sysfs-settable parameters.  Configuring
 	  FRONTSWAP is highly recommended; if it is not configured, self-
+<<<<<<< HEAD
 	  ballooning is disabled by default but can be enabled with the
 	  'selfballooning' kernel boot parameter.  If FRONTSWAP is configured,
 	  frontswap-selfshrinking is enabled by default but can be disabled
 	  with the 'noselfshrink' kernel boot parameter; and self-ballooning
 	  is enabled by default but can be disabled with the 'noselfballooning'
+=======
+	  ballooning is disabled by default. If FRONTSWAP is configured,
+	  frontswap-selfshrinking is enabled by default but can be disabled
+	  with the 'tmem.selfshrink=0' kernel boot parameter; and self-ballooning
+	  is enabled by default but can be disabled with the 'tmem.selfballooning=0'
+>>>>>>> refs/remotes/origin/master
 	  kernel boot parameter.  Note that systems without a sufficiently
 	  large swap device should not enable self-ballooning.
 
@@ -58,7 +72,10 @@ config XEN_BALLOON_MEMORY_HOTPLUG
 
 	  In that case step 3 should be omitted.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config XEN_SCRUB_PAGES
 	bool "Scrub pages before returning them to system"
 	depends on XEN_BALLOON
@@ -74,7 +91,11 @@ config XEN_DEV_EVTCHN
 	tristate "Xen /dev/xen/evtchn device"
 	default y
 	help
+<<<<<<< HEAD
 	  The evtchn driver allows a userspace process to triger event
+=======
+	  The evtchn driver allows a userspace process to trigger event
+>>>>>>> refs/remotes/origin/master
 	  channels and to receive notification of an event channel
 	  firing.
 	  If in doubt, say yes.
@@ -90,9 +111,13 @@ config XEN_BACKEND
 config XENFS
 	tristate "Xen filesystem"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select XEN_PRIVCMD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select XEN_PRIVCMD
+>>>>>>> refs/remotes/origin/master
 	default y
 	help
 	  The xen filesystem provides a way for domains to share
@@ -145,6 +170,7 @@ config XEN_GRANT_DEV_ALLOC
 	  or as part of an inter-domain shared memory channel.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config XEN_PLATFORM_PCI
 	tristate "xen platform pci device driver"
 	depends on XEN_PVHVM && PCI
@@ -167,6 +193,16 @@ config SWIOTLB_XEN
 config XEN_TMEM
 	bool
 	default y if (CLEANCACHE || FRONTSWAP)
+=======
+config SWIOTLB_XEN
+	def_bool y
+	select SWIOTLB
+
+config XEN_TMEM
+	tristate
+	depends on !ARM && !ARM64
+	default m if (CLEANCACHE || FRONTSWAP)
+>>>>>>> refs/remotes/origin/master
 	help
 	  Shim to interface in-kernel Transcendent Memory hooks
 	  (e.g. cleancache and frontswap) to Xen tmem hypercalls.
@@ -199,6 +235,43 @@ config XEN_PRIVCMD
 	depends on XEN
 	default m
 
+<<<<<<< HEAD
+=======
+config XEN_STUB
+	bool "Xen stub drivers"
+	depends on XEN && X86_64 && BROKEN
+	default n
+	help
+	  Allow kernel to install stub drivers, to reserve space for Xen drivers,
+	  i.e. memory hotplug and cpu hotplug, and to block native drivers loaded,
+	  so that real Xen drivers can be modular.
+
+	  To enable Xen features like cpu and memory hotplug, select Y here.
+
+config XEN_ACPI_HOTPLUG_MEMORY
+	tristate "Xen ACPI memory hotplug"
+	depends on XEN_DOM0 && XEN_STUB && ACPI
+	default n
+	help
+	  This is Xen ACPI memory hotplug.
+
+	  Currently Xen only support ACPI memory hot-add. If you want
+	  to hot-add memory at runtime (the hot-added memory cannot be
+	  removed until machine stop), select Y/M here, otherwise select N.
+
+config XEN_ACPI_HOTPLUG_CPU
+	tristate "Xen ACPI cpu hotplug"
+	depends on XEN_DOM0 && XEN_STUB && ACPI
+	select ACPI_CONTAINER
+	default n
+	help
+	  Xen ACPI cpu enumerating and hotplugging
+
+	  For hotplugging, currently Xen only support ACPI cpu hotadd.
+	  If you want to hotadd cpu at runtime (the hotadded cpu cannot
+	  be removed until machine stop), select Y/M here.
+
+>>>>>>> refs/remotes/origin/master
 config XEN_ACPI_PROCESSOR
 	tristate "Xen ACPI processor"
 	depends on XEN && X86 && ACPI_PROCESSOR && CPU_FREQ
@@ -217,5 +290,19 @@ config XEN_ACPI_PROCESSOR
 	  called xen_acpi_processor  If you do not know what to choose, select
 	  M here. If the CPUFREQ drivers are built in, select Y here.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config XEN_MCE_LOG
+	bool "Xen platform mcelog"
+	depends on XEN_DOM0 && X86_64 && X86_MCE
+	default n
+	help
+	  Allow kernel fetching MCE error from Xen platform and
+	  converting it into Linux mcelog format for mcelog tools
+
+config XEN_HAVE_PVMMU
+       bool
+
+>>>>>>> refs/remotes/origin/master
 endmenu

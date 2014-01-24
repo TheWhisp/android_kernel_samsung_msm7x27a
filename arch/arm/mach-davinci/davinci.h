@@ -22,9 +22,15 @@
 #include <linux/davinci_emac.h>
 #include <linux/platform_device.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
 
 #include <mach/asp.h>
 #include <mach/keyscan.h>
+=======
+#include <linux/platform_data/davinci_asp.h>
+#include <linux/platform_data/edma.h>
+#include <linux/platform_data/keyscan-davinci.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 
 #include <media/davinci/vpfe_capture.h>
@@ -36,16 +42,35 @@
 #include <media/davinci/vpbe_osd.h>
 
 #define DAVINCI_SYSTEM_MODULE_BASE	0x01c40000
+<<<<<<< HEAD
+=======
+#define SYSMOD_VDAC_CONFIG		0x2c
+>>>>>>> refs/remotes/origin/master
 #define SYSMOD_VIDCLKCTL		0x38
 #define SYSMOD_VPSS_CLKCTL		0x44
 #define SYSMOD_VDD3P3VPWDN		0x48
 #define SYSMOD_VSCLKDIS			0x6c
 #define SYSMOD_PUPDCTL1			0x7c
 
+<<<<<<< HEAD
+=======
+/* VPSS CLKCTL bit definitions */
+#define VPSS_MUXSEL_EXTCLK_ENABLE	BIT(1)
+#define VPSS_VENCCLKEN_ENABLE		BIT(3)
+#define VPSS_DACCLKEN_ENABLE		BIT(4)
+#define VPSS_PLLC2SYSCLK5_ENABLE	BIT(5)
+
+>>>>>>> refs/remotes/origin/master
 extern void __iomem *davinci_sysmod_base;
 #define DAVINCI_SYSMOD_VIRT(x)	(davinci_sysmod_base + (x))
 void davinci_map_sysmod(void);
 
+<<<<<<< HEAD
+=======
+#define DAVINCI_GPIO_BASE 0x01C67000
+int davinci_gpio_register(struct resource *res, int size, void *pdata);
+
+>>>>>>> refs/remotes/origin/master
 /* DM355 base addresses */
 #define DM355_ASYNC_EMIF_CONTROL_BASE	0x01e10000
 #define DM355_ASYNC_EMIF_DATA_CE0_BASE	0x02000000
@@ -70,6 +95,7 @@ void davinci_map_sysmod(void);
 #define DM646X_ASYNC_EMIF_CS2_SPACE_BASE 0x42000000
 
 /* DM355 function declarations */
+<<<<<<< HEAD
 void __init dm355_init(void);
 void dm355_init_spi0(unsigned chipselect_mask,
 		struct spi_board_info *info, unsigned len);
@@ -99,4 +125,44 @@ int __init dm646x_init_edma(struct edma_rsv_info *rsv);
 void dm646x_video_init(void);
 void dm646x_setup_vpif(struct vpif_display_config *,
 		       struct vpif_capture_config *);
+=======
+void dm355_init(void);
+void dm355_init_spi0(unsigned chipselect_mask,
+		const struct spi_board_info *info, unsigned len);
+void dm355_init_asp1(u32 evt_enable, struct snd_platform_data *pdata);
+int dm355_init_video(struct vpfe_config *, struct vpbe_config *);
+int dm355_gpio_register(void);
+
+/* DM365 function declarations */
+void dm365_init(void);
+void dm365_init_asp(struct snd_platform_data *pdata);
+void dm365_init_vc(struct snd_platform_data *pdata);
+void dm365_init_ks(struct davinci_ks_platform_data *pdata);
+void dm365_init_rtc(void);
+void dm365_init_spi0(unsigned chipselect_mask,
+			const struct spi_board_info *info, unsigned len);
+int dm365_init_video(struct vpfe_config *, struct vpbe_config *);
+int dm365_gpio_register(void);
+
+/* DM644x function declarations */
+void dm644x_init(void);
+void dm644x_init_asp(struct snd_platform_data *pdata);
+int dm644x_init_video(struct vpfe_config *, struct vpbe_config *);
+int dm644x_gpio_register(void);
+
+/* DM646x function declarations */
+void dm646x_init(void);
+void dm646x_init_mcasp0(struct snd_platform_data *pdata);
+void dm646x_init_mcasp1(struct snd_platform_data *pdata);
+int dm646x_init_edma(struct edma_rsv_info *rsv);
+void dm646x_video_init(void);
+void dm646x_setup_vpif(struct vpif_display_config *,
+		       struct vpif_capture_config *);
+int dm646x_gpio_register(void);
+
+extern struct platform_device dm365_serial_device[];
+extern struct platform_device dm355_serial_device[];
+extern struct platform_device dm644x_serial_device[];
+extern struct platform_device dm646x_serial_device[];
+>>>>>>> refs/remotes/origin/master
 #endif /*__DAVINCI_H */

@@ -32,7 +32,11 @@ static void msmtc_send_ipi_mask(const struct cpumask *mask, unsigned int action)
 /*
  * Post-config but pre-boot cleanup entry point
  */
+<<<<<<< HEAD
 static void __cpuinit msmtc_init_secondary(void)
+=======
+static void msmtc_init_secondary(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int myvpe;
 
@@ -53,7 +57,11 @@ static void __cpuinit msmtc_init_secondary(void)
 /*
  * Platform "CPU" startup hook
  */
+<<<<<<< HEAD
 static void __cpuinit msmtc_boot_secondary(int cpu, struct task_struct *idle)
+=======
+static void msmtc_boot_secondary(int cpu, struct task_struct *idle)
+>>>>>>> refs/remotes/origin/master
 {
 	smtc_boot_secondary(cpu, idle);
 }
@@ -61,7 +69,11 @@ static void __cpuinit msmtc_boot_secondary(int cpu, struct task_struct *idle)
 /*
  * SMP initialization finalization entry point
  */
+<<<<<<< HEAD
 static void __cpuinit msmtc_smp_finish(void)
+=======
+static void msmtc_smp_finish(void)
+>>>>>>> refs/remotes/origin/master
 {
 	smtc_smp_finish();
 }
@@ -126,7 +138,11 @@ int plat_set_irq_affinity(struct irq_data *d, const struct cpumask *affinity,
 	 * to the CPU daughterboard, and on the CoreFPGA2/3 34K models,
 	 * that signal is brought to IP2 of both VPEs. To avoid racing
 	 * concurrent interrupt service events, IP2 is enabled only on
+<<<<<<< HEAD
 	 * one VPE, by convention VPE0.  So long as no bits are ever
+=======
+	 * one VPE, by convention VPE0.	 So long as no bits are ever
+>>>>>>> refs/remotes/origin/master
 	 * cleared in the affinity mask, there will never be any
 	 * interrupt forwarding.  But as soon as a program or operator
 	 * sets affinity for one of the related IRQs, we need to make
@@ -153,10 +169,14 @@ int plat_set_irq_affinity(struct irq_data *d, const struct cpumask *affinity,
 		 */
 		printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"IRQ affinity leaves no legal CPU for IRQ %d\n", irq);
 =======
 		       "IRQ affinity leaves no legal CPU for IRQ %d\n", d->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       "IRQ affinity leaves no legal CPU for IRQ %d\n", d->irq);
+>>>>>>> refs/remotes/origin/master
 
 	/* Do any generic SMTC IRQ affinity setup */
 	smtc_set_irq_affinity(d->irq, tmask);

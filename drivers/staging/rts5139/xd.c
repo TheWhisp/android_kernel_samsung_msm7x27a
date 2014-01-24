@@ -47,6 +47,7 @@ static inline void xd_set_err_code(struct rts51x_chip *chip, u8 err_code)
 	xd_card->err_code = err_code;
 }
 
+<<<<<<< HEAD
 static inline int xd_check_err_code(struct rts51x_chip *chip, u8 err_code)
 {
 	struct xd_info *xd_card = &(chip->xd_card);
@@ -54,6 +55,8 @@ static inline int xd_check_err_code(struct rts51x_chip *chip, u8 err_code)
 	return (xd_card->err_code == err_code);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int xd_set_init_para(struct rts51x_chip *chip)
 {
 	struct xd_info *xd_card = &(chip->xd_card);
@@ -432,7 +435,11 @@ static int reset_xd(struct rts51x_chip *chip)
 		}
 #endif
 
+<<<<<<< HEAD
 		retval = card_power_on(chip, XD_CARD);
+=======
+		retval = rts51x_card_power_on(chip, XD_CARD);
+>>>>>>> refs/remotes/origin/master
 		if (retval != STATUS_SUCCESS)
 			TRACE_RET(chip, retval);
 #ifdef SUPPORT_OCP
@@ -479,8 +486,13 @@ static int reset_xd(struct rts51x_chip *chip)
 		rts51x_init_cmd(chip);
 		rts51x_add_cmd(chip, WRITE_REG_CMD, XD_DTCTL, 0xFF,
 			XD_TIME_SETUP_STEP * 3 + XD_TIME_RW_STEP *
+<<<<<<< HEAD
 			(2 + i + chip->option.xd_rw_step)
 			+ XD_TIME_RWN_STEP * (i + chip->option.xd_rwn_step));
+=======
+			(2 + i + chip->option.rts51x_xd_rw_step)
+			+ XD_TIME_RWN_STEP * (i + chip->option.rts51x_xd_rwn_step));
+>>>>>>> refs/remotes/origin/master
 		rts51x_add_cmd(chip, WRITE_REG_CMD, XD_CATCTL, 0xFF,
 			XD_TIME_SETUP_STEP * 3 + XD_TIME_RW_STEP * (4 +
 			i) + XD_TIME_RWN_STEP * (3 + i));
@@ -862,6 +874,11 @@ static void xd_set_l2p_tbl(struct rts51x_chip *chip, int zone_no, u16 log_off,
 	zone->l2p_table[log_off] = phy_off;
 }
 
+<<<<<<< HEAD
+=======
+static int xd_delay_write(struct rts51x_chip *chip);
+
+>>>>>>> refs/remotes/origin/master
 static u32 xd_get_l2p_tbl(struct rts51x_chip *chip, int zone_no, u16 log_off)
 {
 	struct xd_info *xd_card = &(chip->xd_card);
@@ -910,7 +927,11 @@ static u32 xd_get_l2p_tbl(struct rts51x_chip *chip, int zone_no, u16 log_off)
 	return (u32) zone->l2p_table[log_off] + ((u32) (zone_no) << 10);
 }
 
+<<<<<<< HEAD
 int reset_xd_card(struct rts51x_chip *chip)
+=======
+int rts51x_reset_xd_card(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xd_info *xd_card = &(chip->xd_card);
 	int retval;
@@ -925,7 +946,11 @@ int reset_xd_card(struct rts51x_chip *chip)
 	xd_card->cis_block = 0xFFFF;
 	xd_card->delay_write.delay_write_flag = 0;
 
+<<<<<<< HEAD
 	enable_card_clock(chip, XD_CARD);
+=======
+	rts51x_enable_card_clock(chip, XD_CARD);
+>>>>>>> refs/remotes/origin/master
 
 	retval = reset_xd(chip);
 	if (retval != STATUS_SUCCESS) {
@@ -1182,6 +1207,7 @@ static int xd_copy_page(struct rts51x_chip *chip,
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 #ifdef XD_SPEEDUP
 static int xd_auto_copy_page(struct rts51x_chip *chip,
 			     u32 old_blk, u32 new_blk,
@@ -1267,6 +1293,8 @@ Copy_Fail:
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int xd_reset_cmd(struct rts51x_chip *chip)
 {
 	int retval;
@@ -1616,7 +1644,11 @@ static int xd_read_multiple_pages(struct rts51x_chip *chip, u32 phy_blk,
 	rts51x_add_cmd(chip, WRITE_REG_CMD, XD_CHK_DATA_STATUS,
 		       XD_AUTO_CHK_DATA_STATUS, XD_AUTO_CHK_DATA_STATUS);
 
+<<<<<<< HEAD
 	trans_dma_enable(chip->srb->sc_data_direction, chip, page_cnt * 512,
+=======
+	rts51x_trans_dma_enable(chip->srb->sc_data_direction, chip, page_cnt * 512,
+>>>>>>> refs/remotes/origin/master
 			 DMA_512);
 
 	rts51x_add_cmd(chip, WRITE_REG_CMD, XD_TRANSFER, 0xFF,
@@ -1686,6 +1718,7 @@ Fail:
 			XD_CLR_BAD_OLDBLK(xd_card);
 			TRACE_RET(chip, STATUS_FAIL);
 		}
+<<<<<<< HEAD
 #ifdef XD_SPEEDUP
 		retval =
 		    xd_auto_copy_page(chip, phy_blk, new_blk, 0,
@@ -1695,6 +1728,11 @@ Fail:
 		    xd_copy_page(chip, phy_blk, new_blk, 0,
 				 xd_card->page_off + 1);
 #endif
+=======
+		retval =
+		    xd_copy_page(chip, phy_blk, new_blk, 0,
+				 xd_card->page_off + 1);
+>>>>>>> refs/remotes/origin/master
 		if (retval != STATUS_SUCCESS) {
 			if (!XD_CHK_BAD_NEWBLK(xd_card)) {
 				retval = xd_erase_block(chip, new_blk);
@@ -1741,6 +1779,7 @@ static int xd_finish_write(struct rts51x_chip *chip,
 			TRACE_RET(chip, STATUS_FAIL);
 		}
 	} else {
+<<<<<<< HEAD
 #ifdef XD_SPEEDUP
 		retval = xd_auto_copy_page(chip, old_blk, new_blk,
 					   page_off, xd_card->page_off + 1);
@@ -1748,6 +1787,10 @@ static int xd_finish_write(struct rts51x_chip *chip,
 		retval = xd_copy_page(chip, old_blk, new_blk,
 				      page_off, xd_card->page_off + 1);
 #endif
+=======
+		retval = xd_copy_page(chip, old_blk, new_blk,
+				      page_off, xd_card->page_off + 1);
+>>>>>>> refs/remotes/origin/master
 		if (retval != STATUS_SUCCESS) {
 			if (!XD_CHK_BAD_NEWBLK(xd_card)) {
 				retval = xd_erase_block(chip, new_blk);
@@ -1789,11 +1832,15 @@ static int xd_prepare_write(struct rts51x_chip *chip,
 				old_blk, new_blk, log_blk, (int)page_off);
 
 	if (page_off) {
+<<<<<<< HEAD
 #ifdef XD_SPEEDUP
 		retval = xd_auto_copy_page(chip, old_blk, new_blk, 0, page_off);
 #else
 		retval = xd_copy_page(chip, old_blk, new_blk, 0, page_off);
 #endif
+=======
+		retval = xd_copy_page(chip, old_blk, new_blk, 0, page_off);
+>>>>>>> refs/remotes/origin/master
 		if (retval != STATUS_SUCCESS)
 			TRACE_RET(chip, retval);
 	}
@@ -1850,7 +1897,11 @@ static int xd_write_multiple_pages(struct rts51x_chip *chip, u32 old_blk,
 	rts51x_add_cmd(chip, WRITE_REG_CMD, CARD_DATA_SOURCE, 0x01,
 		       RING_BUFFER);
 
+<<<<<<< HEAD
 	trans_dma_enable(chip->srb->sc_data_direction, chip, page_cnt * 512,
+=======
+	rts51x_trans_dma_enable(chip->srb->sc_data_direction, chip, page_cnt * 512,
+>>>>>>> refs/remotes/origin/master
 			 DMA_512);
 
 	rts51x_add_cmd(chip, WRITE_REG_CMD, XD_TRANSFER, 0xFF,
@@ -1922,7 +1973,11 @@ Fail:
 	TRACE_RET(chip, STATUS_FAIL);
 }
 
+<<<<<<< HEAD
 int xd_delay_write(struct rts51x_chip *chip)
+=======
+static int xd_delay_write(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xd_info *xd_card = &(chip->xd_card);
 	struct xd_delay_write_tag *delay_write = &(xd_card->delay_write);
@@ -1947,7 +2002,11 @@ int xd_delay_write(struct rts51x_chip *chip)
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
+=======
+int rts51x_xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
+>>>>>>> refs/remotes/origin/master
 	  u16 sector_cnt)
 {
 	struct xd_info *xd_card = &(chip->xd_card);
@@ -1965,7 +2024,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 
 	xd_card->counter = 0;
 
+<<<<<<< HEAD
 	RTS51X_DEBUGP("xd_rw: scsi_bufflen = %d, scsi_sg_count = %d\n",
+=======
+	RTS51X_DEBUGP("rts51x_xd_rw: scsi_bufflen = %d, scsi_sg_count = %d\n",
+>>>>>>> refs/remotes/origin/master
 		       scsi_bufflen(srb), scsi_sg_count(srb));
 	RTS51X_DEBUGP("Data direction: %s\n",
 		       (srb->sc_data_direction ==
@@ -1988,7 +2051,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 		retval = xd_build_l2p_tbl(chip, zone_no);
 		if (retval != STATUS_SUCCESS) {
 			chip->card_fail |= XD_CARD;
+<<<<<<< HEAD
 			set_sense_type(chip, lun, SENSE_TYPE_MEDIA_NOT_PRESENT);
+=======
+			rts51x_set_sense_type(chip, lun, SENSE_TYPE_MEDIA_NOT_PRESENT);
+>>>>>>> refs/remotes/origin/master
 			TRACE_RET(chip, retval);
 		}
 	}
@@ -1999,20 +2066,28 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 		    (start_page > delay_write->pageoff)) {
 			delay_write->delay_write_flag = 0;
 			if (delay_write->old_phyblock != BLK_NOT_FOUND) {
+<<<<<<< HEAD
 #ifdef XD_SPEEDUP
 				retval = xd_auto_copy_page(chip,
 					delay_write->old_phyblock,
 					delay_write->new_phyblock,
 					delay_write->pageoff, start_page);
 #else
+=======
+>>>>>>> refs/remotes/origin/master
 				retval = xd_copy_page(chip,
 						      delay_write->old_phyblock,
 						      delay_write->new_phyblock,
 						      delay_write->pageoff,
 						      start_page);
+<<<<<<< HEAD
 #endif
 				if (retval != STATUS_SUCCESS) {
 					set_sense_type(chip, lun,
+=======
+				if (retval != STATUS_SUCCESS) {
+					rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 						SENSE_TYPE_MEDIA_WRITE_ERR);
 					TRACE_RET(chip, retval);
 				}
@@ -2028,7 +2103,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 		} else {
 			retval = xd_delay_write(chip);
 			if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MEDIA_WRITE_ERR);
 				TRACE_RET(chip, retval);
 			}
@@ -2036,7 +2115,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 			new_blk = xd_get_unused_block(chip, zone_no);
 			if ((old_blk == BLK_NOT_FOUND)
 			    || (new_blk == BLK_NOT_FOUND)) {
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MEDIA_WRITE_ERR);
 				TRACE_RET(chip, retval);
 			}
@@ -2047,11 +2130,19 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 			if (retval != STATUS_SUCCESS) {
 				if (monitor_card_cd(chip, XD_CARD) ==
 				    CD_NOT_EXIST) {
+<<<<<<< HEAD
 					set_sense_type(chip, lun,
 						SENSE_TYPE_MEDIA_NOT_PRESENT);
 					TRACE_RET(chip, STATUS_FAIL);
 				}
 				set_sense_type(chip, lun,
+=======
+					rts51x_set_sense_type(chip, lun,
+						SENSE_TYPE_MEDIA_NOT_PRESENT);
+					TRACE_RET(chip, STATUS_FAIL);
+				}
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MEDIA_WRITE_ERR);
 				TRACE_RET(chip, retval);
 			}
@@ -2060,18 +2151,30 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 		retval = xd_delay_write(chip);
 		if (retval != STATUS_SUCCESS) {
 			if (monitor_card_cd(chip, XD_CARD) == CD_NOT_EXIST) {
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
 					       SENSE_TYPE_MEDIA_NOT_PRESENT);
 				TRACE_RET(chip, STATUS_FAIL);
 			}
 			set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+					       SENSE_TYPE_MEDIA_NOT_PRESENT);
+				TRACE_RET(chip, STATUS_FAIL);
+			}
+			rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 				       SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
 			TRACE_RET(chip, retval);
 		}
 
 		old_blk = xd_get_l2p_tbl(chip, zone_no, log_off);
 		if (old_blk == BLK_NOT_FOUND) {
+<<<<<<< HEAD
 			set_sense_type(chip, lun,
+=======
+			rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 				       SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
 			TRACE_RET(chip, STATUS_FAIL);
 		}
@@ -2092,7 +2195,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 							start_page, end_page,
 							buf, &ptr, &offset);
 			if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
 				TRACE_RET(chip, STATUS_FAIL);
 			}
@@ -2103,7 +2210,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 						    end_page, buf, &ptr,
 						    &offset);
 			if (retval != STATUS_SUCCESS) {
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MEDIA_WRITE_ERR);
 				TRACE_RET(chip, STATUS_FAIL);
 			}
@@ -2122,7 +2233,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 			retval = xd_build_l2p_tbl(chip, zone_no);
 			if (retval != STATUS_SUCCESS) {
 				chip->card_fail |= XD_CARD;
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MEDIA_NOT_PRESENT);
 				TRACE_RET(chip, retval);
 			}
@@ -2131,10 +2246,17 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 		old_blk = xd_get_l2p_tbl(chip, zone_no, log_off);
 		if (old_blk == BLK_NOT_FOUND) {
 			if (srb->sc_data_direction == DMA_FROM_DEVICE) {
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
 					SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
 			} else {
 				set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+					SENSE_TYPE_MEDIA_UNRECOVER_READ_ERR);
+			} else {
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MEDIA_WRITE_ERR);
 			}
 			TRACE_RET(chip, STATUS_FAIL);
@@ -2143,7 +2265,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 		if (srb->sc_data_direction == DMA_TO_DEVICE) {
 			new_blk = xd_get_unused_block(chip, zone_no);
 			if (new_blk == BLK_NOT_FOUND) {
+<<<<<<< HEAD
 				set_sense_type(chip, lun,
+=======
+				rts51x_set_sense_type(chip, lun,
+>>>>>>> refs/remotes/origin/master
 					       SENSE_TYPE_MEDIA_WRITE_ERR);
 				TRACE_RET(chip, STATUS_FAIL);
 			}
@@ -2166,7 +2292,11 @@ int xd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 void xd_free_l2p_tbl(struct rts51x_chip *chip)
+=======
+void rts51x_xd_free_l2p_tbl(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xd_info *xd_card = &(chip->xd_card);
 	int i = 0;
@@ -2187,7 +2317,11 @@ void xd_free_l2p_tbl(struct rts51x_chip *chip)
 	}
 }
 
+<<<<<<< HEAD
 void xd_cleanup_work(struct rts51x_chip *chip)
+=======
+void rts51x_xd_cleanup_work(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xd_info *xd_card = &(chip->xd_card);
 
@@ -2198,7 +2332,11 @@ void xd_cleanup_work(struct rts51x_chip *chip)
 	}
 }
 
+<<<<<<< HEAD
 int xd_power_off_card3v3(struct rts51x_chip *chip)
+=======
+static int xd_power_off_card3v3(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 
@@ -2227,12 +2365,20 @@ int xd_power_off_card3v3(struct rts51x_chip *chip)
 	return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int release_xd_card(struct rts51x_chip *chip)
+=======
+int rts51x_release_xd_card(struct rts51x_chip *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xd_info *xd_card = &(chip->xd_card);
 	int retval;
 
+<<<<<<< HEAD
 	RTS51X_DEBUGP("elease_xd_card\n");
+=======
+	RTS51X_DEBUGP("rts51x_release_xd_card\n");
+>>>>>>> refs/remotes/origin/master
 
 	chip->card_ready &= ~XD_CARD;
 	chip->card_fail &= ~XD_CARD;
@@ -2240,7 +2386,11 @@ int release_xd_card(struct rts51x_chip *chip)
 
 	xd_card->delay_write.delay_write_flag = 0;
 
+<<<<<<< HEAD
 	xd_free_l2p_tbl(chip);
+=======
+	rts51x_xd_free_l2p_tbl(chip);
+>>>>>>> refs/remotes/origin/master
 
 	rts51x_write_register(chip, SFSM_ED, HW_CMD_STOP, HW_CMD_STOP);
 

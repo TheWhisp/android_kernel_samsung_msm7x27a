@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2007-2011 Nicira Networks.
+=======
+ * Copyright (c) 2007-2011 Nicira, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public

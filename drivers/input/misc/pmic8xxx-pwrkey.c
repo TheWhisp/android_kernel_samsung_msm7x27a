@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010-2011, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -30,12 +34,18 @@
 /**
  * struct pmic8xxx_pwrkey - pmic8xxx pwrkey information
  * @key_press_irq: key press irq number
+<<<<<<< HEAD
  * @pdata: platform data
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct pmic8xxx_pwrkey {
 	struct input_dev *pwr;
 	int key_press_irq;
+<<<<<<< HEAD
 	const struct pm8xxx_pwrkey_platform_data *pdata;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static irqreturn_t pwrkey_press_irq(int irq, void *_pwrkey)
@@ -83,7 +93,11 @@ static int pmic8xxx_pwrkey_resume(struct device *dev)
 static SIMPLE_DEV_PM_OPS(pm8xxx_pwr_key_pm_ops,
 		pmic8xxx_pwrkey_suspend, pmic8xxx_pwrkey_resume);
 
+<<<<<<< HEAD
 static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
+=======
+static int pmic8xxx_pwrkey_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *pwr;
 	int key_release_irq = platform_get_irq(pdev, 0);
@@ -100,9 +114,13 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	/* Valid range of pwr key trigger delay is 1/64 sec to 2 seconds. */
 	if (pdata->kpd_trigger_delay_us > USEC_PER_SEC * 2 ||
 		pdata->kpd_trigger_delay_us < USEC_PER_SEC / 64) {
+=======
+	if (pdata->kpd_trigger_delay_us > 62500) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "invalid power key trigger delay\n");
 		return -EINVAL;
 	}
@@ -111,8 +129,11 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	if (!pwrkey)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	pwrkey->pdata = pdata;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pwr = input_allocate_device();
 	if (!pwr) {
 		dev_dbg(&pdev->dev, "Can't allocate power button\n");
@@ -126,8 +147,13 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	pwr->phys = "pmic8xxx_pwrkey/input0";
 	pwr->dev.parent = &pdev->dev;
 
+<<<<<<< HEAD
 	delay = (pdata->kpd_trigger_delay_us << 6) / USEC_PER_SEC;
 	delay = ilog2(delay);
+=======
+	delay = (pdata->kpd_trigger_delay_us << 10) / USEC_PER_SEC;
+	delay = 1 + ilog2(delay);
+>>>>>>> refs/remotes/origin/master
 
 	err = pm8xxx_readb(pdev->dev.parent, PON_CNTL_1, &pon_cntl);
 	if (err < 0) {
@@ -159,7 +185,11 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, pwrkey);
 
+<<<<<<< HEAD
 	err = request_any_context_irq(key_press_irq, pwrkey_press_irq,
+=======
+	err = request_irq(key_press_irq, pwrkey_press_irq,
+>>>>>>> refs/remotes/origin/master
 		IRQF_TRIGGER_RISING, "pmic8xxx_pwrkey_press", pwrkey);
 	if (err < 0) {
 		dev_dbg(&pdev->dev, "Can't get %d IRQ for pwrkey: %d\n",
@@ -167,7 +197,11 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 		goto unreg_input_dev;
 	}
 
+<<<<<<< HEAD
 	err = request_any_context_irq(key_release_irq, pwrkey_release_irq,
+=======
+	err = request_irq(key_release_irq, pwrkey_release_irq,
+>>>>>>> refs/remotes/origin/master
 		 IRQF_TRIGGER_RISING, "pmic8xxx_pwrkey_release", pwrkey);
 	if (err < 0) {
 		dev_dbg(&pdev->dev, "Can't get %d IRQ for pwrkey: %d\n",
@@ -181,9 +215,14 @@ static int __devinit pmic8xxx_pwrkey_probe(struct platform_device *pdev)
 	return 0;
 
 free_press_irq:
+<<<<<<< HEAD
 	free_irq(key_press_irq, NULL);
 unreg_input_dev:
 	platform_set_drvdata(pdev, NULL);
+=======
+	free_irq(key_press_irq, pwrkey);
+unreg_input_dev:
+>>>>>>> refs/remotes/origin/master
 	input_unregister_device(pwr);
 	pwr = NULL;
 free_input_dev:
@@ -193,7 +232,11 @@ free_pwrkey:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit pmic8xxx_pwrkey_remove(struct platform_device *pdev)
+=======
+static int pmic8xxx_pwrkey_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pmic8xxx_pwrkey *pwrkey = platform_get_drvdata(pdev);
 	int key_release_irq = platform_get_irq(pdev, 0);
@@ -204,7 +247,10 @@ static int __devexit pmic8xxx_pwrkey_remove(struct platform_device *pdev)
 	free_irq(key_press_irq, pwrkey);
 	free_irq(key_release_irq, pwrkey);
 	input_unregister_device(pwrkey->pwr);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(pwrkey);
 
 	return 0;
@@ -212,13 +258,18 @@ static int __devexit pmic8xxx_pwrkey_remove(struct platform_device *pdev)
 
 static struct platform_driver pmic8xxx_pwrkey_driver = {
 	.probe		= pmic8xxx_pwrkey_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pmic8xxx_pwrkey_remove),
+=======
+	.remove		= pmic8xxx_pwrkey_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= PM8XXX_PWRKEY_DEV_NAME,
 		.owner	= THIS_MODULE,
 		.pm	= &pm8xxx_pwr_key_pm_ops,
 	},
 };
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 static int __init pmic8xxx_pwrkey_init(void)
@@ -235,6 +286,9 @@ module_exit(pmic8xxx_pwrkey_exit);
 =======
 module_platform_driver(pmic8xxx_pwrkey_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(pmic8xxx_pwrkey_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:pmic8xxx_pwrkey");
 MODULE_DESCRIPTION("PMIC8XXX Power Key driver");

@@ -13,7 +13,11 @@
 #include "qnx6.h"
 
 struct dentry *qnx6_lookup(struct inode *dir, struct dentry *dentry,
+<<<<<<< HEAD
 				struct nameidata *nd)
+=======
+				unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned ino;
 	struct page *page;

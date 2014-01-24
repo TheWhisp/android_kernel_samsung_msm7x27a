@@ -12,20 +12,35 @@
 
 /*
  * This file essentially defines the interface between board
+<<<<<<< HEAD
  * specific PCI code and MIPS common PCI code.  Should potentially put
+=======
+ * specific PCI code and MIPS common PCI code.	Should potentially put
+>>>>>>> refs/remotes/origin/master
  * into include/asm/pci.h file.
  */
 
 #include <linux/ioport.h>
+<<<<<<< HEAD
 
 /*
  * Each pci channel is a top-level PCI bus seem by CPU.  A machine  with
+=======
+#include <linux/of.h>
+
+/*
+ * Each pci channel is a top-level PCI bus seem by CPU.	 A machine  with
+>>>>>>> refs/remotes/origin/master
  * multiple PCI channels may have multiple PCI host controllers or a
  * single controller supporting multiple channels.
  */
 struct pci_controller {
 	struct pci_controller *next;
 	struct pci_bus *bus;
+<<<<<<< HEAD
+=======
+	struct device_node *of_node;
+>>>>>>> refs/remotes/origin/master
 
 	struct pci_ops *pci_ops;
 	struct resource *mem_resource;
@@ -50,7 +65,10 @@ struct pci_controller {
 /*
  * Used by boards to register their PCI busses before the actual scanning.
  */
+<<<<<<< HEAD
 extern struct pci_controller * alloc_pci_controller(void);
+=======
+>>>>>>> refs/remotes/origin/master
 extern void register_pci_controller(struct pci_controller *hose);
 
 /*
@@ -82,6 +100,21 @@ static inline void pcibios_penalize_isa_irq(int irq, int active)
 extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 	enum pci_mmap_state mmap_state, int write_combine);
 
+<<<<<<< HEAD
+=======
+#define HAVE_ARCH_PCI_RESOURCE_TO_USER
+
+static inline void pci_resource_to_user(const struct pci_dev *dev, int bar,
+		const struct resource *rsrc, resource_size_t *start,
+		resource_size_t *end)
+{
+	phys_t size = resource_size(rsrc);
+
+	*start = fixup_bigphys_addr(rsrc->start, size);
+	*end = rsrc->start + size;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Dynamic DMA mapping stuff.
  * MIPS has everything mapped statically.
@@ -93,14 +126,22 @@ extern int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 #include <linux/string.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm-generic/pci-bridge.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/pci-bridge.h>
+>>>>>>> refs/remotes/origin/master
 
 struct pci_dev;
 
 /*
+<<<<<<< HEAD
  * The PCI address space does equal the physical memory address space.  The
+=======
+ * The PCI address space does equal the physical memory address space.	The
+>>>>>>> refs/remotes/origin/master
  * networking and block device layers use this boolean for bounce buffer
  * decisions.  This is set if any hose does not have an IOMMU.
  */
@@ -117,6 +158,7 @@ static inline void pci_dma_burst_advice(struct pci_dev *pdev,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void pcibios_resource_to_bus(struct pci_dev *dev,
 	struct pci_bus_region *region, struct resource *res);
 
@@ -125,6 +167,8 @@ extern void pcibios_bus_to_resource(struct pci_dev *dev, struct resource *res,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define pci_domain_nr(bus) ((struct pci_controller *)(bus)->sysdata)->index
 
 static inline int pci_proc_domain(struct pci_bus *bus)
@@ -147,6 +191,7 @@ static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
 	return channel ? 15 : 14;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_CAVIUM_OCTEON
 /* MSI arch hook for OCTEON */
 #define arch_setup_msi_irqs arch_setup_msi_irqs
@@ -159,4 +204,17 @@ extern int pci_probe_only;
 >>>>>>> refs/remotes/origin/cm-10.0
 extern char * (*pcibios_plat_setup)(char *str);
 
+=======
+extern char * (*pcibios_plat_setup)(char *str);
+
+#ifdef CONFIG_OF
+/* this function parses memory ranges from a device node */
+extern void pci_load_of_ranges(struct pci_controller *hose,
+			       struct device_node *node);
+#else
+static inline void pci_load_of_ranges(struct pci_controller *hose,
+				      struct device_node *node) {}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_PCI_H */

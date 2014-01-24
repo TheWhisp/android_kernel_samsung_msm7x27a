@@ -35,6 +35,7 @@ struct outer_cache_fns {
 #endif
 	void (*set_debug)(unsigned long);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	void (*resume)(void);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -44,6 +45,15 @@ struct outer_cache_fns {
 
 extern struct outer_cache_fns outer_cache;
 
+=======
+	void (*resume)(void);
+};
+
+extern struct outer_cache_fns outer_cache;
+
+#ifdef CONFIG_OUTER_CACHE
+
+>>>>>>> refs/remotes/origin/master
 static inline void outer_inv_range(phys_addr_t start, phys_addr_t end)
 {
 	if (outer_cache.inv_range)
@@ -79,14 +89,20 @@ static inline void outer_disable(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void outer_resume(void)
 {
 	if (outer_cache.resume)
 		outer_cache.resume();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 
 static inline void outer_inv_range(phys_addr_t start, phys_addr_t end)
@@ -98,6 +114,10 @@ static inline void outer_flush_range(phys_addr_t start, phys_addr_t end)
 static inline void outer_flush_all(void) { }
 static inline void outer_inv_all(void) { }
 static inline void outer_disable(void) { }
+<<<<<<< HEAD
+=======
+static inline void outer_resume(void) { }
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

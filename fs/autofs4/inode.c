@@ -36,8 +36,13 @@ struct autofs_info *autofs4_new_ino(struct autofs_sb_info *sbi)
 
 void autofs4_clean_ino(struct autofs_info *ino)
 {
+<<<<<<< HEAD
 	ino->uid = 0;
 	ino->gid = 0;
+=======
+	ino->uid = GLOBAL_ROOT_UID;
+	ino->gid = GLOBAL_ROOT_GID;
+>>>>>>> refs/remotes/origin/master
 	ino->last_used = jiffies;
 }
 
@@ -56,6 +61,7 @@ void autofs4_kill_sb(struct super_block *sb)
 	 * just call kill_anon_super when we are called from
 	 * deactivate_super.
 	 */
+<<<<<<< HEAD
 	if (!sbi)
 		goto out_kill_sb;
 
@@ -76,20 +82,43 @@ static int autofs4_show_options(struct seq_file *m, struct vfsmount *mnt)
 	struct autofs_sb_info *sbi = autofs4_sbi(mnt->mnt_sb);
 	struct inode *root_inode = mnt->mnt_sb->s_root->d_inode;
 =======
+=======
+	if (sbi) /* Free wait queues, close pipe */
+		autofs4_catatonic_mode(sbi);
+
+	DPRINTK("shutting down");
+	kill_litter_super(sb);
+	if (sbi)
+		kfree_rcu(sbi, rcu);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int autofs4_show_options(struct seq_file *m, struct dentry *root)
 {
 	struct autofs_sb_info *sbi = autofs4_sbi(root->d_sb);
 	struct inode *root_inode = root->d_sb->s_root->d_inode;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!sbi)
 		return 0;
 
 	seq_printf(m, ",fd=%d", sbi->pipefd);
+<<<<<<< HEAD
 	if (root_inode->i_uid != 0)
 		seq_printf(m, ",uid=%u", root_inode->i_uid);
 	if (root_inode->i_gid != 0)
 		seq_printf(m, ",gid=%u", root_inode->i_gid);
+=======
+	if (!uid_eq(root_inode->i_uid, GLOBAL_ROOT_UID))
+		seq_printf(m, ",uid=%u",
+			from_kuid_munged(&init_user_ns, root_inode->i_uid));
+	if (!gid_eq(root_inode->i_gid, GLOBAL_ROOT_GID))
+		seq_printf(m, ",gid=%u",
+			from_kgid_munged(&init_user_ns, root_inode->i_gid));
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, ",pgrp=%d", sbi->oz_pgrp);
 	seq_printf(m, ",timeout=%lu", sbi->exp_timeout/HZ);
 	seq_printf(m, ",minproto=%d", sbi->min_proto);
@@ -107,7 +136,11 @@ static int autofs4_show_options(struct seq_file *m, struct dentry *root)
 
 static void autofs4_evict_inode(struct inode *inode)
 {
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 	kfree(inode->i_private);
 }
 
@@ -133,7 +166,11 @@ static const match_table_t tokens = {
 	{Opt_err, NULL}
 };
 
+<<<<<<< HEAD
 static int parse_options(char *options, int *pipefd, uid_t *uid, gid_t *gid,
+=======
+static int parse_options(char *options, int *pipefd, kuid_t *uid, kgid_t *gid,
+>>>>>>> refs/remotes/origin/master
 		pid_t *pgrp, unsigned int *type, int *minproto, int *maxproto)
 {
 	char *p;
@@ -166,12 +203,24 @@ static int parse_options(char *options, int *pipefd, uid_t *uid, gid_t *gid,
 		case Opt_uid:
 			if (match_int(args, &option))
 				return 1;
+<<<<<<< HEAD
 			*uid = option;
+=======
+			*uid = make_kuid(current_user_ns(), option);
+			if (!uid_valid(*uid))
+				return 1;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_gid:
 			if (match_int(args, &option))
 				return 1;
+<<<<<<< HEAD
 			*gid = option;
+=======
+			*gid = make_kgid(current_user_ns(), option);
+			if (!gid_valid(*gid))
+				return 1;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case Opt_pgrp:
 			if (match_int(args, &option))
@@ -233,9 +282,13 @@ int autofs4_fill_super(struct super_block *s, void *data, int silent)
 	sbi->max_proto = 0;
 	mutex_init(&sbi->wq_mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_init(&sbi->pipe_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&sbi->pipe_mutex);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&sbi->fs_lock);
 	sbi->queues = NULL;
 	spin_lock_init(&sbi->lookup_lock);
@@ -256,6 +309,7 @@ int autofs4_fill_super(struct super_block *s, void *data, int silent)
 		goto fail_free;
 	root_inode = autofs4_get_inode(s, S_IFDIR | 0755);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!root_inode)
 		goto fail_ino;
 
@@ -267,6 +321,11 @@ int autofs4_fill_super(struct super_block *s, void *data, int silent)
 	if (!root)
 		goto fail_ino;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	root = d_make_root(root_inode);
+	if (!root)
+		goto fail_ino;
+>>>>>>> refs/remotes/origin/master
 	pipe = NULL;
 
 	root->d_fsdata = ino;
@@ -332,11 +391,14 @@ fail_dput:
 	dput(root);
 	goto fail_free;
 <<<<<<< HEAD
+<<<<<<< HEAD
 fail_iput:
 	printk("autofs: get root dentry failed\n");
 	iput(root_inode);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 fail_ino:
 	kfree(ino);
 fail_free:
@@ -347,10 +409,14 @@ fail_unlock:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *autofs4_get_inode(struct super_block *sb, mode_t mode)
 =======
 struct inode *autofs4_get_inode(struct super_block *sb, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct inode *autofs4_get_inode(struct super_block *sb, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = new_inode(sb);
 
@@ -367,10 +433,14 @@ struct inode *autofs4_get_inode(struct super_block *sb, umode_t mode)
 
 	if (S_ISDIR(mode)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		inode->i_nlink = 2;
 =======
 		set_nlink(inode, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		set_nlink(inode, 2);
+>>>>>>> refs/remotes/origin/master
 		inode->i_op = &autofs4_dir_inode_operations;
 		inode->i_fop = &autofs4_dir_operations;
 	} else if (S_ISLNK(mode)) {

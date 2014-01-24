@@ -235,12 +235,20 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 		for (e_aci = 0; e_aci < AC_MAX; e_aci++)
 			rtlpriv->cfg->ops->set_hw_reg(hw,
 						      HW_VAR_AC_PARAM,
+<<<<<<< HEAD
 						      (u8 *) (&e_aci));
+=======
+						      (&e_aci));
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	case HW_VAR_ACK_PREAMBLE: {
 		u8 reg_tmp;
+<<<<<<< HEAD
 		u8 short_preamble = (bool) (*(u8 *) val);
+=======
+		u8 short_preamble = (bool) (*val);
+>>>>>>> refs/remotes/origin/master
 
 		reg_tmp = (mac->cur_40_prime_sc) << 5;
 		if (short_preamble)
@@ -252,7 +260,11 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 		u8 min_spacing_to_set;
 		u8 sec_min_space;
 
+<<<<<<< HEAD
 		min_spacing_to_set = *((u8 *) val);
+=======
+		min_spacing_to_set = *val;
+>>>>>>> refs/remotes/origin/master
 		if (min_spacing_to_set <= 7) {
 			sec_min_space = 0;
 			if (min_spacing_to_set < sec_min_space)
@@ -271,7 +283,11 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 	case HW_VAR_SHORTGI_DENSITY: {
 		u8 density_to_set;
 
+<<<<<<< HEAD
 		density_to_set = *((u8 *) val);
+=======
+		density_to_set = *val;
+>>>>>>> refs/remotes/origin/master
 		mac->min_space_cfg = rtlpriv->rtlhal.minspace_cfg;
 		mac->min_space_cfg |= (density_to_set << 3);
 		RT_TRACE(rtlpriv, COMP_MLME, DBG_LOUD,
@@ -293,7 +309,11 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 			regtoSet = 0x66626641;
 		else
 			regtoSet = 0xb972a841;
+<<<<<<< HEAD
 		factor_toset = *((u8 *) val);
+=======
+		factor_toset = *val;
+>>>>>>> refs/remotes/origin/master
 		if (factor_toset <= 3) {
 			factor_toset = (1 << (factor_toset + 2));
 			if (factor_toset > 0xf)
@@ -316,6 +336,7 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 		break;
 	}
 	case HW_VAR_AC_PARAM: {
+<<<<<<< HEAD
 		u8 e_aci = *((u8 *) val);
 		rtl92d_dm_init_edca_turbo(hw);
 		if (rtlpci->acm_method != eAcmWay2_SW)
@@ -325,6 +346,17 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 	}
 	case HW_VAR_ACM_CTRL: {
 		u8 e_aci = *((u8 *) val);
+=======
+		u8 e_aci = *val;
+		rtl92d_dm_init_edca_turbo(hw);
+		if (rtlpci->acm_method != eAcmWay2_SW)
+			rtlpriv->cfg->ops->set_hw_reg(hw, HW_VAR_ACM_CTRL,
+						      &e_aci);
+		break;
+	}
+	case HW_VAR_ACM_CTRL: {
+		u8 e_aci = *val;
+>>>>>>> refs/remotes/origin/master
 		union aci_aifsn *p_aci_aifsn =
 		    (union aci_aifsn *)(&(mac->ac[0].aifs));
 		u8 acm = p_aci_aifsn->f.acm;
@@ -376,7 +408,11 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 		rtlpci->receive_config = ((u32 *) (val))[0];
 		break;
 	case HW_VAR_RETRY_LIMIT: {
+<<<<<<< HEAD
 		u8 retry_limit = ((u8 *) (val))[0];
+=======
+		u8 retry_limit = val[0];
+>>>>>>> refs/remotes/origin/master
 
 		rtl_write_word(rtlpriv, REG_RL,
 			       retry_limit << RETRY_LIMIT_SHORT_SHIFT |
@@ -390,16 +426,27 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 		rtlefuse->efuse_usedbytes = *((u16 *) val);
 		break;
 	case HW_VAR_EFUSE_USAGE:
+<<<<<<< HEAD
 		rtlefuse->efuse_usedpercentage = *((u8 *) val);
+=======
+		rtlefuse->efuse_usedpercentage = *val;
+>>>>>>> refs/remotes/origin/master
 		break;
 	case HW_VAR_IO_CMD:
 		rtl92d_phy_set_io_cmd(hw, (*(enum io_type *)val));
 		break;
 	case HW_VAR_WPA_CONFIG:
+<<<<<<< HEAD
 		rtl_write_byte(rtlpriv, REG_SECCFG, *((u8 *) val));
 		break;
 	case HW_VAR_SET_RPWM:
 		rtl92d_fill_h2c_cmd(hw, H2C_PWRM, 1, (u8 *) (val));
+=======
+		rtl_write_byte(rtlpriv, REG_SECCFG, *val);
+		break;
+	case HW_VAR_SET_RPWM:
+		rtl92d_fill_h2c_cmd(hw, H2C_PWRM, 1, (val));
+>>>>>>> refs/remotes/origin/master
 		break;
 	case HW_VAR_H2C_FW_PWRMODE:
 		break;
@@ -407,7 +454,11 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 		ppsc->fw_current_inpsmode = *((bool *) val);
 		break;
 	case HW_VAR_H2C_FW_JOINBSSRPT: {
+<<<<<<< HEAD
 		u8 mstatus = (*(u8 *) val);
+=======
+		u8 mstatus = (*val);
+>>>>>>> refs/remotes/origin/master
 		u8 tmp_regcr, tmp_reg422;
 		bool recover = false;
 
@@ -435,7 +486,11 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 			rtl_write_byte(rtlpriv, REG_CR + 1,
 				       (tmp_regcr & ~(BIT(0))));
 		}
+<<<<<<< HEAD
 		rtl92d_set_fw_joinbss_report_cmd(hw, (*(u8 *) val));
+=======
+		rtl92d_set_fw_joinbss_report_cmd(hw, (*val));
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	case HW_VAR_AID: {
@@ -447,7 +502,11 @@ void rtl92de_set_hw_reg(struct ieee80211_hw *hw, u8 variable, u8 *val)
 		break;
 	}
 	case HW_VAR_CORRECT_TSF: {
+<<<<<<< HEAD
 		u8 btype_ibss = ((u8 *) (val))[0];
+=======
+		u8 btype_ibss = val[0];
+>>>>>>> refs/remotes/origin/master
 
 		if (btype_ibss)
 			_rtl92de_stop_tx_beacon(hw);
@@ -1183,7 +1242,11 @@ void rtl92d_linked_set_reg(struct ieee80211_hw *hw)
 	u8 channel = rtlphy->current_channel;
 
 	indexforchannel = rtl92d_get_rightchnlplace_for_iqk(channel);
+<<<<<<< HEAD
 	if (!rtlphy->iqk_matrix_regsetting[indexforchannel].iqk_done) {
+=======
+	if (!rtlphy->iqk_matrix[indexforchannel].iqk_done) {
+>>>>>>> refs/remotes/origin/master
 		RT_TRACE(rtlpriv, COMP_SCAN | COMP_INIT, DBG_DMESG,
 			 "Do IQK for channel:%d\n", channel);
 		rtl92d_phy_iq_calibrate(hw);
@@ -1194,6 +1257,7 @@ void rtl92d_linked_set_reg(struct ieee80211_hw *hw)
  * mac80211 will send pkt when scan */
 void rtl92de_set_qos(struct ieee80211_hw *hw, int aci)
 {
+<<<<<<< HEAD
 	struct rtl_priv *rtlpriv = rtl_priv(hw);
 	rtl92d_dm_init_edca_turbo(hw);
 	return;
@@ -1213,6 +1277,9 @@ void rtl92de_set_qos(struct ieee80211_hw *hw, int aci)
 		RT_ASSERT(false, "invalid aci: %d !\n", aci);
 		break;
 	}
+=======
+	rtl92d_dm_init_edca_turbo(hw);
+>>>>>>> refs/remotes/origin/master
 }
 
 void rtl92de_enable_interrupt(struct ieee80211_hw *hw)
@@ -1743,9 +1810,19 @@ static void _rtl92de_efuse_update_chip_version(struct ieee80211_hw *hw)
 		chipver |= CHIP_92D_D_CUT;
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_LOUD, "D-CUT!!!\n");
 		break;
+<<<<<<< HEAD
 	default:
 		chipver |= CHIP_92D_D_CUT;
 		RT_TRACE(rtlpriv, COMP_INIT, DBG_EMERG, "Unkown CUT!\n");
+=======
+	case 0xCC33:
+		chipver |= CHIP_92D_E_CUT;
+		RT_TRACE(rtlpriv, COMP_INIT, DBG_LOUD, "E-CUT!!!\n");
+		break;
+	default:
+		chipver |= CHIP_92D_D_CUT;
+		RT_TRACE(rtlpriv, COMP_INIT, DBG_EMERG, "Unknown CUT!\n");
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	rtlpriv->rtlhal.version = chipver;
@@ -1790,7 +1867,11 @@ static void _rtl92de_read_adapter_info(struct ieee80211_hw *hw)
 			 "RTL819X Not boot from eeprom, check it !!\n");
 		return;
 	}
+<<<<<<< HEAD
 	rtlefuse->eeprom_oemid = *(u8 *)&hwinfo[EEPROM_CUSTOMER_ID];
+=======
+	rtlefuse->eeprom_oemid = hwinfo[EEPROM_CUSTOMER_ID];
+>>>>>>> refs/remotes/origin/master
 	_rtl92de_read_macphymode_and_bandtype(hw, hwinfo);
 
 	/* VID, DID  SE     0xA-D */
@@ -1966,8 +2047,12 @@ static void rtl92de_update_hal_rate_mask(struct ieee80211_hw *hw,
 	struct rtl_sta_info *sta_entry = NULL;
 	u32 ratr_bitmap;
 	u8 ratr_index;
+<<<<<<< HEAD
 	u8 curtxbw_40mhz = (sta->ht_cap.cap & IEEE80211_HT_CAP_SUP_WIDTH_20_40)
 							? 1 : 0;
+=======
+	u8 curtxbw_40mhz = (sta->bandwidth >= IEEE80211_STA_RX_BW_40) ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 	u8 curshortgi_40mhz = (sta->ht_cap.cap & IEEE80211_HT_CAP_SGI_40) ?
 							1 : 0;
 	u8 curshortgi_20mhz = (sta->ht_cap.cap & IEEE80211_HT_CAP_SGI_20) ?
@@ -2111,7 +2196,11 @@ void rtl92de_update_channel_access_setting(struct ieee80211_hw *hw)
 	u16 sifs_timer;
 
 	rtlpriv->cfg->ops->set_hw_reg(hw, HW_VAR_SLOT_TIME,
+<<<<<<< HEAD
 				      (u8 *)&mac->slot_time);
+=======
+				      &mac->slot_time);
+>>>>>>> refs/remotes/origin/master
 	if (!mac->ht_enable)
 		sifs_timer = 0x0a0a;
 	else

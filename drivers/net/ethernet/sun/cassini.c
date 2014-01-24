@@ -185,7 +185,11 @@
 #define CAS_RESET_SPARE                 3
 #endif
 
+<<<<<<< HEAD
 static char version[] __devinitdata =
+=======
+static char version[] =
+>>>>>>> refs/remotes/origin/master
 	DRV_MODULE_NAME ".c:v" DRV_MODULE_VERSION " (" DRV_MODULE_RELDATE ")\n";
 
 static int cassini_debug = -1;	/* -1 == use CAS_DEF_MSG_ENABLE as value */
@@ -222,7 +226,11 @@ static int link_transition_timeout;
 
 
 
+<<<<<<< HEAD
 static u16 link_modes[] __devinitdata = {
+=======
+static u16 link_modes[] = {
+>>>>>>> refs/remotes/origin/master
 	BMCR_ANENABLE,			 /* 0 : autoneg */
 	0,				 /* 1 : 10bt half duplex */
 	BMCR_SPEED100,			 /* 2 : 100bt half duplex */
@@ -808,30 +816,46 @@ static int cas_reset_mii_phy(struct cas *cp)
 	return limit <= 0;
 }
 
+<<<<<<< HEAD
 static int cas_saturn_firmware_init(struct cas *cp)
+=======
+static void cas_saturn_firmware_init(struct cas *cp)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct firmware *fw;
 	const char fw_name[] = "sun/cassini.bin";
 	int err;
 
 	if (PHY_NS_DP83065 != cp->phy_id)
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	err = request_firmware(&fw, fw_name, &cp->pdev->dev);
 	if (err) {
 		pr_err("Failed to load firmware \"%s\"\n",
 		       fw_name);
+<<<<<<< HEAD
 		return err;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 	if (fw->size < 2) {
 		pr_err("bogus length %zu in \"%s\"\n",
 		       fw->size, fw_name);
+<<<<<<< HEAD
 		err = -EINVAL;
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	cp->fw_load_addr= fw->data[1] << 8 | fw->data[0];
 	cp->fw_size = fw->size - 2;
 	cp->fw_data = vmalloc(cp->fw_size);
+<<<<<<< HEAD
 	if (!cp->fw_data) {
 		err = -ENOMEM;
 		goto out;
@@ -840,12 +864,25 @@ static int cas_saturn_firmware_init(struct cas *cp)
 out:
 	release_firmware(fw);
 	return err;
+=======
+	if (!cp->fw_data)
+		goto out;
+	memcpy(cp->fw_data, &fw->data[2], cp->fw_size);
+out:
+	release_firmware(fw);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void cas_saturn_firmware_load(struct cas *cp)
 {
 	int i;
 
+<<<<<<< HEAD
+=======
+	if (!cp->fw_data)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	cas_phy_powerdown(cp);
 
 	/* expanded memory access mode */
@@ -3355,7 +3392,11 @@ use_random_mac_addr:
 #if defined(CONFIG_SPARC)
 	addr = of_get_property(cp->of_node, "local-mac-address", NULL);
 	if (addr != NULL) {
+<<<<<<< HEAD
 		memcpy(dev_addr, addr, 6);
+=======
+		memcpy(dev_addr, addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 #endif
@@ -3890,7 +3931,11 @@ static int cas_change_mtu(struct net_device *dev, int new_mtu)
 	schedule_work(&cp->reset_task);
 #endif
 
+<<<<<<< HEAD
 	flush_work_sync(&cp->reset_task);
+=======
+	flush_work(&cp->reset_task);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -4820,7 +4865,11 @@ static int cas_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
  * only subordinate device and we can tweak the bridge settings to
  * reflect that fact.
  */
+<<<<<<< HEAD
 static void __devinit cas_program_bridge(struct pci_dev *cas_pdev)
+=======
+static void cas_program_bridge(struct pci_dev *cas_pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *pdev = cas_pdev->bus->self;
 	u32 val;
@@ -4916,8 +4965,12 @@ static const struct net_device_ops cas_netdev_ops = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __devinit cas_init_one(struct pci_dev *pdev,
 				  const struct pci_device_id *ent)
+=======
+static int cas_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	static int cas_version_printed = 0;
 	unsigned long casreg_len;
@@ -5084,8 +5137,12 @@ static int __devinit cas_init_one(struct pci_dev *pdev,
 	if (cas_check_invariants(cp))
 		goto err_out_iounmap;
 	if (cp->cas_flags & CAS_FLAG_SATURN)
+<<<<<<< HEAD
 		if (cas_saturn_firmware_init(cp))
 			goto err_out_iounmap;
+=======
+		cas_saturn_firmware_init(cp);
+>>>>>>> refs/remotes/origin/master
 
 	cp->init_block = (struct cas_init_block *)
 		pci_alloc_consistent(pdev, sizeof(struct cas_init_block),
@@ -5171,11 +5228,18 @@ err_out_free_netdev:
 
 err_out_disable_pdev:
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
 	return -ENODEV;
 }
 
 static void __devexit cas_remove_one(struct pci_dev *pdev)
+=======
+	return -ENODEV;
+}
+
+static void cas_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct cas *cp;
@@ -5209,7 +5273,10 @@ static void __devexit cas_remove_one(struct pci_dev *pdev)
 	free_netdev(dev);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_PM
@@ -5273,7 +5340,11 @@ static struct pci_driver cas_driver = {
 	.name		= DRV_MODULE_NAME,
 	.id_table	= cas_pci_tbl,
 	.probe		= cas_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(cas_remove_one),
+=======
+	.remove		= cas_remove_one,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= cas_suspend,
 	.resume		= cas_resume

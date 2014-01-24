@@ -33,12 +33,19 @@
 #include <linux/miscdevice.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/poll.h>
 #include <linux/mutex.h>
 #include <linux/of_device.h>
+=======
+#include <linux/poll.h>
+#include <linux/mutex.h>
+#include <linux/of_device.h>
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_platform.h>
 #include <linux/slab.h>
 
@@ -49,7 +56,10 @@
 #include <asm/pmac_feature.h>
 #include <asm/smu.h>
 #include <asm/sections.h>
+<<<<<<< HEAD
 #include <asm/abs_addr.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 
 #define VERSION "0.7"
@@ -125,11 +135,15 @@ static void smu_start_cmd(void)
 
 	DPRINTK("SMU: starting cmd %x, %d bytes data\n", cmd->cmd,
 		cmd->data_len);
+<<<<<<< HEAD
 	DPRINTK("SMU: data buffer: %02x %02x %02x %02x %02x %02x %02x %02x\n",
 		((u8 *)cmd->data_buf)[0], ((u8 *)cmd->data_buf)[1],
 		((u8 *)cmd->data_buf)[2], ((u8 *)cmd->data_buf)[3],
 		((u8 *)cmd->data_buf)[4], ((u8 *)cmd->data_buf)[5],
 		((u8 *)cmd->data_buf)[6], ((u8 *)cmd->data_buf)[7]);
+=======
+	DPRINTK("SMU: data buffer: %8ph\n", cmd->data_buf);
+>>>>>>> refs/remotes/origin/master
 
 	/* Fill the SMU command buffer */
 	smu->cmd_buf->cmd = cmd->cmd;
@@ -506,7 +520,11 @@ int __init smu_init (void)
 	 * 32 bits value safely
 	 */
 	smu->cmd_buf_abs = (u32)smu_cmdbuf_abs;
+<<<<<<< HEAD
 	smu->cmd_buf = (struct smu_cmd_buf *)abs_to_virt(smu_cmdbuf_abs);
+=======
+	smu->cmd_buf = __va(smu_cmdbuf_abs);
+>>>>>>> refs/remotes/origin/master
 
 	smu->db_node = of_find_node_by_name(NULL, "smu-doorbell");
 	if (smu->db_node == NULL) {
@@ -570,7 +588,11 @@ fail_msg_node:
 fail_db_node:
 	of_node_put(smu->db_node);
 fail_bootmem:
+<<<<<<< HEAD
 	free_bootmem((unsigned long)smu, sizeof(struct smu_device));
+=======
+	free_bootmem(__pa(smu), sizeof(struct smu_device));
+>>>>>>> refs/remotes/origin/master
 	smu = NULL;
 fail_np:
 	of_node_put(np);
@@ -685,11 +707,14 @@ static int __init smu_init_sysfs(void)
 {
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Due to sysfs bogosity, a sysdev is not a real device, so
 	 * we should in fact create both if we want sysdev semantics
 	 * for power management.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * For now, we don't power manage machines with an SMU chip,
 	 * I'm a bit too far from figuring out how that works with those
 	 * new chipsets, but that will come back and bite us
@@ -1008,7 +1033,11 @@ static struct smu_sdbp_header *smu_create_sdb_partition(int id)
 		       "%02x !\n", id, hdr->id);
 		goto failure;
 	}
+<<<<<<< HEAD
 	if (prom_add_property(smu->of_node, prop)) {
+=======
+	if (of_add_property(smu->of_node, prop)) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_DEBUG "SMU: Failed creating sdb-partition-%02x "
 		       "property !\n", id);
 		goto failure;

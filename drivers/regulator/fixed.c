@@ -21,26 +21,38 @@
 #include <linux/err.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
 #include <linux/regulator/fixed.h>
 #include <linux/gpio.h>
+<<<<<<< HEAD
 #include <linux/delay.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
 =======
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of.h>
 #include <linux/of_gpio.h>
 #include <linux/regulator/of_regulator.h>
 #include <linux/regulator/machine.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct fixed_voltage_data {
 	struct regulator_desc desc;
 	struct regulator_dev *dev;
+<<<<<<< HEAD
 	int microvolts;
 	int gpio;
 	unsigned startup_delay;
@@ -50,6 +62,10 @@ struct fixed_voltage_data {
 
 <<<<<<< HEAD
 =======
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * of_get_fixed_voltage_config - extract fixed_voltage_config structure info
@@ -70,11 +86,19 @@ of_get_fixed_voltage_config(struct device *dev)
 	config = devm_kzalloc(dev, sizeof(struct fixed_voltage_config),
 								 GFP_KERNEL);
 	if (!config)
+<<<<<<< HEAD
 		return NULL;
 
 	config->init_data = of_get_regulator_init_data(dev, dev->of_node);
 	if (!config->init_data)
 		return NULL;
+=======
+		return ERR_PTR(-ENOMEM);
+
+	config->init_data = of_get_regulator_init_data(dev, dev->of_node);
+	if (!config->init_data)
+		return ERR_PTR(-EINVAL);
+>>>>>>> refs/remotes/origin/master
 
 	init_data = config->init_data;
 	init_data->constraints.apply_uV = 0;
@@ -85,13 +109,33 @@ of_get_fixed_voltage_config(struct device *dev)
 	} else {
 		dev_err(dev,
 			 "Fixed regulator specified with variable voltages\n");
+<<<<<<< HEAD
 		return NULL;
+=======
+		return ERR_PTR(-EINVAL);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (init_data->constraints.boot_on)
 		config->enabled_at_boot = true;
 
 	config->gpio = of_get_named_gpio(np, "gpio", 0);
+<<<<<<< HEAD
+=======
+	/*
+	 * of_get_named_gpio() currently returns ENODEV rather than
+	 * EPROBE_DEFER. This code attempts to be compatible with both
+	 * for now; the ENODEV check can be removed once the API is fixed.
+	 * of_get_named_gpio() doesn't differentiate between a missing
+	 * property (which would be fine here, since the GPIO is optional)
+	 * and some other error. Patches have been posted for both issues.
+	 * Once they are check in, we should replace this with:
+	 * if (config->gpio < 0 && config->gpio != -ENOENT)
+	 */
+	if ((config->gpio == -ENODEV) || (config->gpio == -EPROBE_DEFER))
+		return ERR_PTR(-EPROBE_DEFER);
+
+>>>>>>> refs/remotes/origin/master
 	delay = of_get_property(np, "startup-delay-us", NULL);
 	if (delay)
 		config->startup_delay = be32_to_cpu(*delay);
@@ -99,6 +143,7 @@ of_get_fixed_voltage_config(struct device *dev)
 	if (of_find_property(np, "enable-active-high", NULL))
 		config->enable_high = true;
 
+<<<<<<< HEAD
 	return config;
 }
 
@@ -191,12 +236,45 @@ static int __devinit reg_fixed_voltage_probe(struct platform_device *pdev)
 		config = of_get_fixed_voltage_config(&pdev->dev);
 	else
 		config = pdev->dev.platform_data;
+=======
+	if (of_find_property(np, "gpio-open-drain", NULL))
+		config->gpio_is_open_drain = true;
+
+	if (of_find_property(np, "vin-supply", NULL))
+		config->input_supply = "vin";
+
+	return config;
+}
+
+static struct regulator_ops fixed_voltage_ops = {
+};
+
+static int reg_fixed_voltage_probe(struct platform_device *pdev)
+{
+	struct fixed_voltage_config *config;
+	struct fixed_voltage_data *drvdata;
+	struct regulator_config cfg = { };
+	int ret;
+
+	if (pdev->dev.of_node) {
+		config = of_get_fixed_voltage_config(&pdev->dev);
+		if (IS_ERR(config))
+			return PTR_ERR(config);
+	} else {
+		config = dev_get_platdata(&pdev->dev);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (!config)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	drvdata = kzalloc(sizeof(struct fixed_voltage_data), GFP_KERNEL);
+=======
+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct fixed_voltage_data),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (drvdata == NULL) {
 		dev_err(&pdev->dev, "Failed to allocate device data\n");
 		ret = -ENOMEM;
@@ -212,6 +290,7 @@ static int __devinit reg_fixed_voltage_probe(struct platform_device *pdev)
 	drvdata->desc.type = REGULATOR_VOLTAGE;
 	drvdata->desc.owner = THIS_MODULE;
 	drvdata->desc.ops = &fixed_voltage_ops;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	drvdata->desc.n_voltages = 1;
 =======
@@ -283,11 +362,60 @@ static int __devinit reg_fixed_voltage_probe(struct platform_device *pdev)
 		ret = PTR_ERR(drvdata->dev);
 		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
 		goto err_gpio;
+=======
+
+	drvdata->desc.enable_time = config->startup_delay;
+
+	if (config->input_supply) {
+		drvdata->desc.supply_name = kstrdup(config->input_supply,
+							GFP_KERNEL);
+		if (!drvdata->desc.supply_name) {
+			dev_err(&pdev->dev,
+				"Failed to allocate input supply\n");
+			ret = -ENOMEM;
+			goto err_name;
+		}
+	}
+
+	if (config->microvolts)
+		drvdata->desc.n_voltages = 1;
+
+	drvdata->desc.fixed_uV = config->microvolts;
+
+	if (config->gpio >= 0)
+		cfg.ena_gpio = config->gpio;
+	cfg.ena_gpio_invert = !config->enable_high;
+	if (config->enabled_at_boot) {
+		if (config->enable_high)
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_HIGH;
+		else
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_LOW;
+	} else {
+		if (config->enable_high)
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_LOW;
+		else
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_HIGH;
+	}
+	if (config->gpio_is_open_drain)
+		cfg.ena_gpio_flags |= GPIOF_OPEN_DRAIN;
+
+	cfg.dev = &pdev->dev;
+	cfg.init_data = config->init_data;
+	cfg.driver_data = drvdata;
+	cfg.of_node = pdev->dev.of_node;
+
+	drvdata->dev = regulator_register(&drvdata->desc, &cfg);
+	if (IS_ERR(drvdata->dev)) {
+		ret = PTR_ERR(drvdata->dev);
+		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
+		goto err_input;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	platform_set_drvdata(pdev, drvdata);
 
 	dev_dbg(&pdev->dev, "%s supplying %duV\n", drvdata->desc.name,
+<<<<<<< HEAD
 		drvdata->microvolts);
 
 	return 0;
@@ -303,26 +431,52 @@ err:
 }
 
 static int __devexit reg_fixed_voltage_remove(struct platform_device *pdev)
+=======
+		drvdata->desc.fixed_uV);
+
+	return 0;
+
+err_input:
+	kfree(drvdata->desc.supply_name);
+err_name:
+	kfree(drvdata->desc.name);
+err:
+	return ret;
+}
+
+static int reg_fixed_voltage_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fixed_voltage_data *drvdata = platform_get_drvdata(pdev);
 
 	regulator_unregister(drvdata->dev);
+<<<<<<< HEAD
 	if (gpio_is_valid(drvdata->gpio))
 		gpio_free(drvdata->gpio);
 	kfree(drvdata->desc.name);
 	kfree(drvdata);
+=======
+	kfree(drvdata->desc.supply_name);
+	kfree(drvdata->desc.name);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if defined(CONFIG_OF)
 static const struct of_device_id fixed_of_match[] __devinitconst = {
+=======
+#if defined(CONFIG_OF)
+static const struct of_device_id fixed_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "regulator-fixed", },
 	{},
 };
 MODULE_DEVICE_TABLE(of, fixed_of_match);
+<<<<<<< HEAD
 #else
 #define fixed_of_match NULL
 #endif
@@ -338,6 +492,17 @@ static struct platform_driver regulator_fixed_voltage_driver = {
 =======
 		.of_match_table = fixed_of_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+static struct platform_driver regulator_fixed_voltage_driver = {
+	.probe		= reg_fixed_voltage_probe,
+	.remove		= reg_fixed_voltage_remove,
+	.driver		= {
+		.name		= "reg-fixed-voltage",
+		.owner		= THIS_MODULE,
+		.of_match_table = of_match_ptr(fixed_of_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

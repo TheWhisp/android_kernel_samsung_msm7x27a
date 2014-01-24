@@ -1,7 +1,11 @@
 /*
  * IUCV special message driver
  *
+<<<<<<< HEAD
  * Copyright (C) 2003 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ * Copyright IBM Corp. 2003
+>>>>>>> refs/remotes/origin/master
  * Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com)
  */
 

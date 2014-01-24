@@ -3,7 +3,11 @@
  *
  * Author: Mark Brown
  *
+<<<<<<< HEAD
  * Copyright 2009 Wolfson Microelectronics plc
+=======
+ * Copyright 2009-12 Wolfson Microelectronics plc
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -19,10 +23,14 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 #include <linux/regmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -34,6 +42,7 @@
 #include <sound/wm9081.h>
 #include "wm9081.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u16 wm9081_reg_defaults[] = {
 	0x0000,     /* R0  - Software Reset */
@@ -99,6 +108,8 @@ static u16 wm9081_reg_defaults[] = {
 	0x0559,     /* R60 - EQ 19 */
 	0x4000,     /* R61 - EQ 20 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct reg_default wm9081_reg[] = {
 	{  2, 0x00B9 },     /* R2  - Analogue Lineout */
 	{  3, 0x00B9 },     /* R3  - Analogue Speaker PGA */
@@ -153,7 +164,10 @@ static struct reg_default wm9081_reg[] = {
 	{ 59, 0x0564 },     /* R59 - EQ 18 */
 	{ 60, 0x0559 },     /* R60 - EQ 19 */
 	{ 61, 0x4000 },     /* R61 - EQ 20 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct {
@@ -218,11 +232,15 @@ static struct {
 
 struct wm9081_priv {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum snd_soc_control_type control_type;
 	void *control_data;
 =======
 	struct regmap *regmap;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	int sysclk_source;
 	int mclk_rate;
 	int sysclk_rate;
@@ -235,6 +253,7 @@ struct wm9081_priv {
 	struct wm9081_pdata pdata;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int wm9081_volatile_register(struct snd_soc_codec *codec, unsigned int reg)
 {
@@ -250,6 +269,8 @@ static int wm9081_reset(struct snd_soc_codec *codec)
 {
 	return snd_soc_write(codec, WM9081_SOFTWARE_RESET, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool wm9081_volatile_register(struct device *dev, unsigned int reg)
 {
 	switch (reg) {
@@ -328,7 +349,10 @@ static bool wm9081_readable_register(struct device *dev, unsigned int reg)
 static int wm9081_reset(struct regmap *map)
 {
 	return regmap_write(map, WM9081_SOFTWARE_RESET, 0x9081);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static const DECLARE_TLV_DB_SCALE(drc_in_tlv, -4500, 75, 0);
@@ -865,7 +889,11 @@ static const struct snd_soc_dapm_widget wm9081_dapm_widgets[] = {
 SND_SOC_DAPM_INPUT("IN1"),
 SND_SOC_DAPM_INPUT("IN2"),
 
+<<<<<<< HEAD
 SND_SOC_DAPM_DAC("DAC", "HiFi Playback", WM9081_POWER_MANAGEMENT, 0, 0),
+=======
+SND_SOC_DAPM_DAC("DAC", NULL, WM9081_POWER_MANAGEMENT, 0, 0),
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_MIXER_NAMED_CTL("Mixer", SND_SOC_NOPM, 0, 0,
 			     mixer, ARRAY_SIZE(mixer)),
@@ -874,10 +902,14 @@ SND_SOC_DAPM_PGA("LINEOUT PGA", WM9081_POWER_MANAGEMENT, 4, 0, NULL, 0),
 
 SND_SOC_DAPM_PGA("Speaker PGA", WM9081_POWER_MANAGEMENT, 2, 0, NULL, 0),
 <<<<<<< HEAD
+<<<<<<< HEAD
 SND_SOC_DAPM_PGA("Speaker", WM9081_POWER_MANAGEMENT, 1, 0, NULL, 0),
 =======
 SND_SOC_DAPM_OUT_DRV("Speaker", WM9081_POWER_MANAGEMENT, 1, 0, NULL, 0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_DAPM_OUT_DRV("Speaker", WM9081_POWER_MANAGEMENT, 1, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 
 SND_SOC_DAPM_OUTPUT("LINEOUT"),
 SND_SOC_DAPM_OUTPUT("SPKN"),
@@ -888,15 +920,23 @@ SND_SOC_DAPM_SUPPLY("CLK_SYS", WM9081_CLOCK_CONTROL_3, 0, 0, clk_sys_event,
 SND_SOC_DAPM_SUPPLY("CLK_DSP", WM9081_CLOCK_CONTROL_3, 1, 0, NULL, 0),
 SND_SOC_DAPM_SUPPLY("TOCLK", WM9081_CLOCK_CONTROL_3, 2, 0, NULL, 0),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 SND_SOC_DAPM_SUPPLY("TSENSE", WM9081_POWER_MANAGEMENT, 7, 0, NULL, 0),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+SND_SOC_DAPM_SUPPLY("TSENSE", WM9081_POWER_MANAGEMENT, 7, 0, NULL, 0),
+>>>>>>> refs/remotes/origin/master
 };
 
 
 static const struct snd_soc_dapm_route wm9081_audio_paths[] = {
 	{ "DAC", NULL, "CLK_SYS" },
 	{ "DAC", NULL, "CLK_DSP" },
+<<<<<<< HEAD
+=======
+	{ "DAC", NULL, "AIF" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "Mixer", "IN1 Switch", "IN1" },
 	{ "Mixer", "IN2 Switch", "IN2" },
@@ -914,9 +954,13 @@ static const struct snd_soc_dapm_route wm9081_audio_paths[] = {
 
 	{ "Speaker", NULL, "Speaker PGA" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "Speaker", NULL, "TSENSE" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "Speaker", NULL, "TSENSE" },
+>>>>>>> refs/remotes/origin/master
 
 	{ "SPKN", NULL, "Speaker" },
 	{ "SPKP", NULL, "Speaker" },
@@ -926,10 +970,14 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
 				 enum snd_soc_bias_level level)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 reg;
 =======
 	struct wm9081_priv *wm9081 = snd_soc_codec_get_drvdata(codec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct wm9081_priv *wm9081 = snd_soc_codec_get_drvdata(codec);
+>>>>>>> refs/remotes/origin/master
 
 	switch (level) {
 	case SND_SOC_BIAS_ON:
@@ -937,6 +985,7 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
 
 	case SND_SOC_BIAS_PREPARE:
 		/* VMID=2*40k */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		reg = snd_soc_read(codec, WM9081_VMID_CONTROL);
 		reg &= ~WM9081_VMID_SEL_MASK;
@@ -948,18 +997,24 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
 		reg &= ~WM9081_STBY_BIAS_ENA;
 		snd_soc_write(codec, WM9081_BIAS_CONTROL_1, reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
 				    WM9081_VMID_SEL_MASK, 0x2);
 
 		/* Normal bias current */
 		snd_soc_update_bits(codec, WM9081_BIAS_CONTROL_1,
 				    WM9081_STBY_BIAS_ENA, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case SND_SOC_BIAS_STANDBY:
 		/* Initial cold start */
 		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			/* Disable LINEOUT discharge */
 			reg = snd_soc_read(codec, WM9081_ANTI_POP_CONTROL);
@@ -976,6 +1031,8 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
 			reg |= WM9081_VMID_RAMP | 0x6;
 			snd_soc_write(codec, WM9081_VMID_CONTROL, reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			regcache_cache_only(wm9081->regmap, false);
 			regcache_sync(wm9081->regmap);
 
@@ -993,11 +1050,15 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
 					    WM9081_VMID_RAMP |
 					    WM9081_VMID_SEL_MASK,
 					    WM9081_VMID_RAMP | 0x6);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			mdelay(100);
 
 			/* Normal bias enable & soft start off */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			reg |= WM9081_BIAS_ENA;
 			reg &= ~WM9081_VMID_RAMP;
@@ -1038,6 +1099,8 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
 		reg |= WM9081_LINEOUT_DISCH;
 		snd_soc_write(codec, WM9081_ANTI_POP_CONTROL, reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			snd_soc_update_bits(codec, WM9081_VMID_CONTROL,
 					    WM9081_VMID_RAMP, 0);
 
@@ -1073,7 +1136,10 @@ static int wm9081_set_bias_level(struct snd_soc_codec *codec,
 				    WM9081_LINEOUT_DISCH);
 
 		regcache_cache_only(wm9081->regmap, true);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -1350,12 +1416,17 @@ static int wm9081_digital_mute(struct snd_soc_dai *codec_dai, int mute)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm9081_set_sysclk(struct snd_soc_codec *codec,
 			     int clk_id, unsigned int freq, int dir)
 =======
 static int wm9081_set_sysclk(struct snd_soc_codec *codec, int clk_id,
 			     int source, unsigned int freq, int dir)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int wm9081_set_sysclk(struct snd_soc_codec *codec, int clk_id,
+			     int source, unsigned int freq, int dir)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm9081_priv *wm9081 = snd_soc_codec_get_drvdata(codec);
 
@@ -1420,10 +1491,14 @@ static int wm9081_set_tdm_slot(struct snd_soc_dai *dai,
 	 SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm9081_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm9081_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm9081_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params = wm9081_hw_params,
 	.set_fmt = wm9081_set_dai_fmt,
 	.digital_mute = wm9081_digital_mute,
@@ -1436,7 +1511,11 @@ static const struct snd_soc_dai_ops wm9081_dai_ops = {
 static struct snd_soc_dai_driver wm9081_dai = {
 	.name = "wm9081-hifi",
 	.playback = {
+<<<<<<< HEAD
 		.stream_name = "HiFi Playback",
+=======
+		.stream_name = "AIF",
+>>>>>>> refs/remotes/origin/master
 		.channels_min = 1,
 		.channels_max = 2,
 		.rates = WM9081_RATES,
@@ -1450,21 +1529,28 @@ static int wm9081_probe(struct snd_soc_codec *codec)
 	struct wm9081_priv *wm9081 = snd_soc_codec_get_drvdata(codec);
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 reg;
 
 	codec->control_data = wm9081->control_data;
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, wm9081->control_type);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	codec->control_data = wm9081->regmap;
 
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	reg = snd_soc_read(codec, WM9081_SOFTWARE_RESET);
 	if (reg != 0x9081) {
@@ -1503,6 +1589,8 @@ static int wm9081_probe(struct snd_soc_codec *codec)
 			"No ReTune Mobile data, using normal EQ\n");
 		snd_soc_add_controls(codec, wm9081_eq_controls,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Enable zero cross by default */
 	snd_soc_update_bits(codec, WM9081_ANALOGUE_LINEOUT,
 			    WM9081_LINEOUTZC, WM9081_LINEOUTZC);
@@ -1513,7 +1601,10 @@ static int wm9081_probe(struct snd_soc_codec *codec)
 		dev_dbg(codec->dev,
 			"No ReTune Mobile data, using normal EQ\n");
 		snd_soc_add_codec_controls(codec, wm9081_eq_controls,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				     ARRAY_SIZE(wm9081_eq_controls));
 	}
 
@@ -1526,6 +1617,7 @@ static int wm9081_remove(struct snd_soc_codec *codec)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM
 static int wm9081_suspend(struct snd_soc_codec *codec, pm_message_t state)
@@ -1566,10 +1658,16 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9081 = {
 	.probe = 	wm9081_probe,
 	.remove = 	wm9081_remove,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_codec_driver soc_codec_dev_wm9081 = {
+	.probe = 	wm9081_probe,
+	.remove = 	wm9081_remove,
+>>>>>>> refs/remotes/origin/master
 
 	.set_sysclk = wm9081_set_sysclk,
 	.set_bias_level = wm9081_set_bias_level,
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm9081_reg_defaults),
 	.reg_word_size = sizeof(u16),
@@ -1577,11 +1675,16 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9081 = {
 	.volatile_register = wm9081_volatile_register,
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.idle_bias_off = true,
 
 	.controls         = wm9081_snd_controls,
 	.num_controls     = ARRAY_SIZE(wm9081_snd_controls),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.dapm_widgets	  = wm9081_dapm_widgets,
 	.num_dapm_widgets = ARRAY_SIZE(wm9081_dapm_widgets),
 	.dapm_routes     = wm9081_audio_paths,
@@ -1589,7 +1692,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9081 = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct regmap_config wm9081_regmap = {
 	.reg_bits = 8,
 	.val_bits = 16,
@@ -1602,6 +1708,7 @@ static const struct regmap_config wm9081_regmap = {
 	.cache_type = REGCACHE_RBTREE,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
@@ -1613,16 +1720,27 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
 
 	wm9081 = kzalloc(sizeof(struct wm9081_priv), GFP_KERNEL);
 =======
+=======
+#if IS_ENABLED(CONFIG_I2C)
+static int wm9081_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+{
+	struct wm9081_priv *wm9081;
+>>>>>>> refs/remotes/origin/master
 	unsigned int reg;
 	int ret;
 
 	wm9081 = devm_kzalloc(&i2c->dev, sizeof(struct wm9081_priv),
 			      GFP_KERNEL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (wm9081 == NULL)
 		return -ENOMEM;
 
 	i2c_set_clientdata(i2c, wm9081);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wm9081->control_type = SND_SOC_I2C;
 	wm9081->control_data = i2c;
@@ -1633,36 +1751,60 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
 		ret = PTR_ERR(wm9081->regmap);
 		dev_err(&i2c->dev, "regmap_init() failed: %d\n", ret);
 		goto err;
+=======
+
+	wm9081->regmap = devm_regmap_init_i2c(i2c, &wm9081_regmap);
+	if (IS_ERR(wm9081->regmap)) {
+		ret = PTR_ERR(wm9081->regmap);
+		dev_err(&i2c->dev, "regmap_init() failed: %d\n", ret);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = regmap_read(wm9081->regmap, WM9081_SOFTWARE_RESET, &reg);
 	if (ret != 0) {
 		dev_err(&i2c->dev, "Failed to read chip ID: %d\n", ret);
+<<<<<<< HEAD
 		goto err_regmap;
 	}
 	if (reg != 0x9081) {
 		dev_err(&i2c->dev, "Device is not a WM9081: ID=0x%x\n", reg);
 		ret = -EINVAL;
 		goto err_regmap;
+=======
+		return ret;
+	}
+	if (reg != 0x9081) {
+		dev_err(&i2c->dev, "Device is not a WM9081: ID=0x%x\n", reg);
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = wm9081_reset(wm9081->regmap);
 	if (ret < 0) {
 		dev_err(&i2c->dev, "Failed to issue reset\n");
+<<<<<<< HEAD
 		goto err_regmap;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (dev_get_platdata(&i2c->dev))
 		memcpy(&wm9081->pdata, dev_get_platdata(&i2c->dev),
 		       sizeof(wm9081->pdata));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm9081, &wm9081_dai, 1);
 	if (ret < 0)
 		kfree(wm9081);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	reg = 0;
 	if (wm9081->pdata.irq_high)
 		reg |= WM9081_IRQ_POL;
@@ -1676,6 +1818,7 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm9081, &wm9081_dai, 1);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto err_regmap;
 
 	return 0;
@@ -1699,6 +1842,16 @@ static __devexit int wm9081_i2c_remove(struct i2c_client *client)
 	snd_soc_unregister_codec(&client->dev);
 	regmap_exit(wm9081->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+
+	return 0;
+}
+
+static int wm9081_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1714,11 +1867,16 @@ static struct i2c_driver wm9081_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm9081_i2c_probe,
+<<<<<<< HEAD
 	.remove =   __devexit_p(wm9081_i2c_remove),
+=======
+	.remove =   wm9081_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = wm9081_i2c_id,
 };
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init wm9081_modinit(void)
 {
@@ -1745,6 +1903,9 @@ module_exit(wm9081_exit);
 =======
 module_i2c_driver(wm9081_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(wm9081_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM9081 driver");
 MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");

@@ -61,8 +61,12 @@ static void delay_backoff(int iterations)
 		(loops - 1);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	relax(1 << exponent);
 =======
 	relax(loops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	relax(loops);
+>>>>>>> refs/remotes/origin/master
 }

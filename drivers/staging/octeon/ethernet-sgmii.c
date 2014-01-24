@@ -27,9 +27,13 @@
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/ratelimit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/dst.h>
 
 #include <asm/octeon/octeon.h>
@@ -39,6 +43,7 @@
 #include "ethernet-util.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "cvmx-helper.h"
 
 #include "cvmx-gmxx-defs.h"
@@ -47,6 +52,11 @@
 
 #include <asm/octeon/cvmx-gmxx-defs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/octeon/cvmx-helper.h>
+
+#include <asm/octeon/cvmx-gmxx-defs.h>
+>>>>>>> refs/remotes/origin/master
 
 int cvm_oct_sgmii_open(struct net_device *dev)
 {
@@ -101,15 +111,20 @@ static void cvm_oct_sgmii_poll(struct net_device *dev)
 			netif_carrier_on(dev);
 		if (priv->queue != -1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUGPRINT
 =======
 			printk_ratelimited
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk_ratelimited
+>>>>>>> refs/remotes/origin/master
 			    ("%s: %u Mbps %s duplex, port %2d, queue %2d\n",
 			     dev->name, link_info.s.speed,
 			     (link_info.s.full_duplex) ? "Full" : "Half",
 			     priv->port, priv->queue);
 		else
+<<<<<<< HEAD
 <<<<<<< HEAD
 			DEBUGPRINT("%s: %u Mbps %s duplex, port %2d, POW\n",
 				   dev->name, link_info.s.speed,
@@ -120,6 +135,8 @@ static void cvm_oct_sgmii_poll(struct net_device *dev)
 			netif_carrier_off(dev);
 		DEBUGPRINT("%s: Link down\n", dev->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			printk_ratelimited
 				("%s: %u Mbps %s duplex, port %2d, POW\n",
 				 dev->name, link_info.s.speed,
@@ -129,7 +146,10 @@ static void cvm_oct_sgmii_poll(struct net_device *dev)
 		if (netif_carrier_ok(dev))
 			netif_carrier_off(dev);
 		printk_ratelimited("%s: Link down\n", dev->name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

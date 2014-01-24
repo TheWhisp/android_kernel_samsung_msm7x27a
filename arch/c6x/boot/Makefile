@@ -6,6 +6,7 @@ OBJCOPYFLAGS_vmlinux.bin := -O binary
 $(obj)/vmlinux.bin: vmlinux FORCE
 	$(call if_changed,objcopy)
 
+<<<<<<< HEAD
 DTC_FLAGS ?= -p 1024
 
 ifneq ($(DTB),)
@@ -28,3 +29,7 @@ $(obj)/dtbImage.%: vmlinux
 	$(call if_changed,objcopy)
 
 clean-files := $(obj)/*.dtb
+=======
+$(obj)/dtbImage.%: vmlinux
+	$(call if_changed,objcopy)
+>>>>>>> refs/remotes/origin/master

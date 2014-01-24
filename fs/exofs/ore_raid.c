@@ -144,11 +144,16 @@ static void _sp2d_reset(struct __stripe_pages_2d *sp2d,
 {
 	unsigned data_devs = sp2d->data_devs;
 	unsigned group_width = data_devs + sp2d->parity;
+<<<<<<< HEAD
 	unsigned p;
+=======
+	int p, c;
+>>>>>>> refs/remotes/origin/master
 
 	if (!sp2d->needed)
 		return;
 
+<<<<<<< HEAD
 	for (p = 0; p < sp2d->pages_in_unit; p++) {
 		struct __1_page_stripe *_1ps = &sp2d->_1p_stripes[p];
 
@@ -164,6 +169,23 @@ static void _sp2d_reset(struct __stripe_pages_2d *sp2d,
 				}
 		}
 
+=======
+	for (c = data_devs - 1; c >= 0; --c)
+		for (p = sp2d->pages_in_unit - 1; p >= 0; --p) {
+			struct __1_page_stripe *_1ps = &sp2d->_1p_stripes[p];
+
+			if (_1ps->page_is_read[c]) {
+				struct page *page = _1ps->pages[c];
+
+				r4w->put_page(priv, page);
+				_1ps->page_is_read[c] = false;
+			}
+		}
+
+	for (p = 0; p < sp2d->pages_in_unit; p++) {
+		struct __1_page_stripe *_1ps = &sp2d->_1p_stripes[p];
+
+>>>>>>> refs/remotes/origin/master
 		memset(_1ps->pages, 0, group_width * sizeof(*_1ps->pages));
 		_1ps->write_count = 0;
 		_1ps->tx = NULL;
@@ -203,7 +225,11 @@ static unsigned _sp2d_min_pg(struct __stripe_pages_2d *sp2d)
 
 static unsigned _sp2d_max_pg(struct __stripe_pages_2d *sp2d)
 {
+<<<<<<< HEAD
 	unsigned p;
+=======
+	int p;
+>>>>>>> refs/remotes/origin/master
 
 	for (p = sp2d->pages_in_unit - 1; p >= 0; --p) {
 		struct __1_page_stripe *_1ps = &sp2d->_1p_stripes[p];
@@ -432,7 +458,11 @@ static void _mark_read4write_pages_uptodate(struct ore_io_state *ios, int ret)
 		if (!bio)
 			continue;
 
+<<<<<<< HEAD
 		__bio_for_each_segment(bv, bio, i, 0) {
+=======
+		bio_for_each_segment_all(bv, bio, i) {
+>>>>>>> refs/remotes/origin/master
 			struct page *page = bv->bv_page;
 
 			SetPageUptodate(page);

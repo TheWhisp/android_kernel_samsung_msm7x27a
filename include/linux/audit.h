@@ -20,6 +20,7 @@
  * Written by Rickard E. (Rik) Faith <faith@redhat.com>
  *
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_AUDIT_H_
 #define _LINUX_AUDIT_H_
@@ -410,6 +411,14 @@ struct audit_rule {		/* for AUDIT_LIST, AUDIT_ADD, and AUDIT_DEL */
 
 #ifdef __KERNEL__
 #include <linux/sched.h>
+=======
+#ifndef _LINUX_AUDIT_H_
+#define _LINUX_AUDIT_H_
+
+#include <linux/sched.h>
+#include <linux/ptrace.h>
+#include <uapi/linux/audit.h>
+>>>>>>> refs/remotes/origin/master
 
 struct audit_sig_info {
 	uid_t		uid;
@@ -450,11 +459,17 @@ struct audit_krule {
 struct audit_field {
 	u32				type;
 	u32				val;
+<<<<<<< HEAD
+=======
+	kuid_t				uid;
+	kgid_t				gid;
+>>>>>>> refs/remotes/origin/master
 	u32				op;
 	char				*lsm_str;
 	void				*lsm_rule;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define AUDITSC_INVALID 0
 #define AUDITSC_SUCCESS 1
@@ -477,12 +492,38 @@ extern void audit_syscall_entry(int arch,
 				unsigned long a2, unsigned long a3);
 extern void audit_syscall_exit(int failed, long return_code);
 =======
+=======
+extern int is_audit_feature_set(int which);
+
+extern int __init audit_register_class(int class, unsigned *list);
+extern int audit_classify_syscall(int abi, unsigned syscall);
+extern int audit_classify_arch(int arch);
+
+/* audit_names->type values */
+#define	AUDIT_TYPE_UNKNOWN	0	/* we don't know yet */
+#define	AUDIT_TYPE_NORMAL	1	/* a "normal" audit record */
+#define	AUDIT_TYPE_PARENT	2	/* a parent audit record */
+#define	AUDIT_TYPE_CHILD_DELETE 3	/* a child being deleted */
+#define	AUDIT_TYPE_CHILD_CREATE 4	/* a child being created */
+
+/* maximized args number that audit_socketcall can process */
+#define AUDITSC_ARGS		6
+
+struct filename;
+
+extern void audit_log_session_info(struct audit_buffer *ab);
+
+#ifdef CONFIG_AUDITSYSCALL
+/* These are defined in auditsc.c */
+				/* Public API */
+>>>>>>> refs/remotes/origin/master
 extern int  audit_alloc(struct task_struct *task);
 extern void __audit_free(struct task_struct *task);
 extern void __audit_syscall_entry(int arch,
 				  int major, unsigned long a0, unsigned long a1,
 				  unsigned long a2, unsigned long a3);
 extern void __audit_syscall_exit(int ret_success, long ret_value);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 extern void __audit_getname(const char *name);
 extern void audit_putname(const char *name);
@@ -493,6 +534,20 @@ extern void __audit_inode_child(const struct dentry *dentry,
 =======
 extern void __audit_seccomp(unsigned long syscall);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct filename *__audit_reusename(const __user char *uptr);
+extern void __audit_getname(struct filename *name);
+extern void audit_putname(struct filename *name);
+
+#define AUDIT_INODE_PARENT	1	/* dentry represents the parent */
+#define AUDIT_INODE_HIDDEN	2	/* audit record should be hidden */
+extern void __audit_inode(struct filename *name, const struct dentry *dentry,
+				unsigned int flags);
+extern void __audit_inode_child(const struct inode *parent,
+				const struct dentry *dentry,
+				const unsigned char type);
+extern void __audit_seccomp(unsigned long syscall, long signr, int code);
+>>>>>>> refs/remotes/origin/master
 extern void __audit_ptrace(struct task_struct *t);
 
 static inline int audit_dummy_context(void)
@@ -501,7 +556,10 @@ static inline int audit_dummy_context(void)
 	return !p || *(int *)p;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void audit_free(struct task_struct *task)
 {
 	if (unlikely(task->audit_context))
@@ -523,12 +581,23 @@ static inline void audit_syscall_exit(void *pt_regs)
 		__audit_syscall_exit(success, return_code);
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static inline void audit_getname(const char *name)
+=======
+static inline struct filename *audit_reusename(const __user char *name)
+{
+	if (unlikely(!audit_dummy_context()))
+		return __audit_reusename(name);
+	return NULL;
+}
+static inline void audit_getname(struct filename *name)
+>>>>>>> refs/remotes/origin/master
 {
 	if (unlikely(!audit_dummy_context()))
 		__audit_getname(name);
 }
+<<<<<<< HEAD
 static inline void audit_inode(const char *name, const struct dentry *dentry) {
 	if (unlikely(!audit_dummy_context()))
 		__audit_inode(name, dentry);
@@ -549,6 +618,40 @@ static inline void audit_seccomp(unsigned long syscall)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void audit_inode(struct filename *name,
+				const struct dentry *dentry,
+				unsigned int parent) {
+	if (unlikely(!audit_dummy_context())) {
+		unsigned int flags = 0;
+		if (parent)
+			flags |= AUDIT_INODE_PARENT;
+		__audit_inode(name, dentry, flags);
+	}
+}
+static inline void audit_inode_parent_hidden(struct filename *name,
+						const struct dentry *dentry)
+{
+	if (unlikely(!audit_dummy_context()))
+		__audit_inode(name, dentry,
+				AUDIT_INODE_PARENT | AUDIT_INODE_HIDDEN);
+}
+static inline void audit_inode_child(const struct inode *parent,
+				     const struct dentry *dentry,
+				     const unsigned char type) {
+	if (unlikely(!audit_dummy_context()))
+		__audit_inode_child(parent, dentry, type);
+}
+void audit_core_dumps(long signr);
+
+static inline void audit_seccomp(unsigned long syscall, long signr, int code)
+{
+	/* Force a record to be reported if a signal was delivered. */
+	if (signr || unlikely(!audit_dummy_context()))
+		__audit_seccomp(syscall, signr, code);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline void audit_ptrace(struct task_struct *t)
 {
 	if (unlikely(!audit_dummy_context()))
@@ -559,6 +662,7 @@ static inline void audit_ptrace(struct task_struct *t)
 extern unsigned int audit_serial(void);
 extern int auditsc_get_stamp(struct audit_context *ctx,
 			      struct timespec *t, unsigned int *serial);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int  audit_set_loginuid(struct task_struct *task, uid_t loginuid);
 =======
@@ -584,6 +688,27 @@ extern int __audit_sockaddr(int len, void *addr);
 extern void __audit_fd_pair(int fd1, int fd2);
 extern void __audit_mq_open(int oflag, umode_t mode, struct mq_attr *attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int audit_set_loginuid(kuid_t loginuid);
+
+static inline kuid_t audit_get_loginuid(struct task_struct *tsk)
+{
+	return tsk->loginuid;
+}
+
+static inline int audit_get_sessionid(struct task_struct *tsk)
+{
+	return tsk->sessionid;
+}
+
+extern void __audit_ipc_obj(struct kern_ipc_perm *ipcp);
+extern void __audit_ipc_set_perm(unsigned long qbytes, uid_t uid, gid_t gid, umode_t mode);
+extern void __audit_bprm(struct linux_binprm *bprm);
+extern int __audit_socketcall(int nargs, unsigned long *args);
+extern int __audit_sockaddr(int len, void *addr);
+extern void __audit_fd_pair(int fd1, int fd2);
+extern void __audit_mq_open(int oflag, umode_t mode, struct mq_attr *attr);
+>>>>>>> refs/remotes/origin/master
 extern void __audit_mq_sendrecv(mqd_t mqdes, size_t msg_len, unsigned int msg_prio, const struct timespec *abs_timeout);
 extern void __audit_mq_notify(mqd_t mqdes, const struct sigevent *notification);
 extern void __audit_mq_getsetattr(mqd_t mqdes, struct mq_attr *mqstat);
@@ -604,14 +729,19 @@ static inline void audit_fd_pair(int fd1, int fd2)
 		__audit_fd_pair(fd1, fd2);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void audit_ipc_set_perm(unsigned long qbytes, uid_t uid, gid_t gid, mode_t mode)
 =======
 static inline void audit_ipc_set_perm(unsigned long qbytes, uid_t uid, gid_t gid, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline void audit_ipc_set_perm(unsigned long qbytes, uid_t uid, gid_t gid, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	if (unlikely(!audit_dummy_context()))
 		__audit_ipc_set_perm(qbytes, uid, gid, mode);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline void audit_mq_open(int oflag, mode_t mode, struct mq_attr *attr)
 =======
@@ -625,6 +755,18 @@ static inline void audit_socketcall(int nargs, unsigned long *args)
 {
 	if (unlikely(!audit_dummy_context()))
 		__audit_socketcall(nargs, args);
+=======
+static inline void audit_bprm(struct linux_binprm *bprm)
+{
+	if (unlikely(!audit_dummy_context()))
+		__audit_bprm(bprm);
+}
+static inline int audit_socketcall(int nargs, unsigned long *args)
+{
+	if (unlikely(!audit_dummy_context()))
+		return __audit_socketcall(nargs, args);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 static inline int audit_sockaddr(int len, void *addr)
 {
@@ -633,7 +775,10 @@ static inline int audit_sockaddr(int len, void *addr)
 	return 0;
 }
 static inline void audit_mq_open(int oflag, umode_t mode, struct mq_attr *attr)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	if (unlikely(!audit_dummy_context()))
 		__audit_mq_open(oflag, mode, attr);
@@ -678,6 +823,7 @@ static inline void audit_mmap_fd(int fd, int flags)
 
 extern int audit_n_rules;
 extern int audit_signals;
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else
 #define audit_finish_fork(t)
@@ -733,10 +879,125 @@ extern int audit_signals;
 =======
 #endif /* CONFIG_AUDITSYSCALL */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else /* CONFIG_AUDITSYSCALL */
+static inline int audit_alloc(struct task_struct *task)
+{
+	return 0;
+}
+static inline void audit_free(struct task_struct *task)
+{ }
+static inline void audit_syscall_entry(int arch, int major, unsigned long a0,
+				       unsigned long a1, unsigned long a2,
+				       unsigned long a3)
+{ }
+static inline void audit_syscall_exit(void *pt_regs)
+{ }
+static inline int audit_dummy_context(void)
+{
+	return 1;
+}
+static inline struct filename *audit_reusename(const __user char *name)
+{
+	return NULL;
+}
+static inline void audit_getname(struct filename *name)
+{ }
+static inline void audit_putname(struct filename *name)
+{ }
+static inline void __audit_inode(struct filename *name,
+					const struct dentry *dentry,
+					unsigned int flags)
+{ }
+static inline void __audit_inode_child(const struct inode *parent,
+					const struct dentry *dentry,
+					const unsigned char type)
+{ }
+static inline void audit_inode(struct filename *name,
+				const struct dentry *dentry,
+				unsigned int parent)
+{ }
+static inline void audit_inode_parent_hidden(struct filename *name,
+				const struct dentry *dentry)
+{ }
+static inline void audit_inode_child(const struct inode *parent,
+				     const struct dentry *dentry,
+				     const unsigned char type)
+{ }
+static inline void audit_core_dumps(long signr)
+{ }
+static inline void __audit_seccomp(unsigned long syscall, long signr, int code)
+{ }
+static inline void audit_seccomp(unsigned long syscall, long signr, int code)
+{ }
+static inline int auditsc_get_stamp(struct audit_context *ctx,
+			      struct timespec *t, unsigned int *serial)
+{
+	return 0;
+}
+static inline kuid_t audit_get_loginuid(struct task_struct *tsk)
+{
+	return INVALID_UID;
+}
+static inline int audit_get_sessionid(struct task_struct *tsk)
+{
+	return -1;
+}
+static inline void audit_ipc_obj(struct kern_ipc_perm *ipcp)
+{ }
+static inline void audit_ipc_set_perm(unsigned long qbytes, uid_t uid,
+					gid_t gid, umode_t mode)
+{ }
+static inline void audit_bprm(struct linux_binprm *bprm)
+{ }
+static inline int audit_socketcall(int nargs, unsigned long *args)
+{
+	return 0;
+}
+static inline void audit_fd_pair(int fd1, int fd2)
+{ }
+static inline int audit_sockaddr(int len, void *addr)
+{
+	return 0;
+}
+static inline void audit_mq_open(int oflag, umode_t mode, struct mq_attr *attr)
+{ }
+static inline void audit_mq_sendrecv(mqd_t mqdes, size_t msg_len,
+				     unsigned int msg_prio,
+				     const struct timespec *abs_timeout)
+{ }
+static inline void audit_mq_notify(mqd_t mqdes,
+				   const struct sigevent *notification)
+{ }
+static inline void audit_mq_getsetattr(mqd_t mqdes, struct mq_attr *mqstat)
+{ }
+static inline int audit_log_bprm_fcaps(struct linux_binprm *bprm,
+				       const struct cred *new,
+				       const struct cred *old)
+{
+	return 0;
+}
+static inline void audit_log_capset(pid_t pid, const struct cred *new,
+				   const struct cred *old)
+{ }
+static inline void audit_mmap_fd(int fd, int flags)
+{ }
+static inline void audit_ptrace(struct task_struct *t)
+{ }
+#define audit_n_rules 0
+#define audit_signals 0
+#endif /* CONFIG_AUDITSYSCALL */
+
+static inline bool audit_loginuid_set(struct task_struct *tsk)
+{
+	return uid_valid(audit_get_loginuid(tsk));
+}
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_AUDIT
 /* These are defined in audit.c */
 				/* Public API */
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern void		    audit_log(struct audit_context *ctx, gfp_t gfp_mask,
 				      int type, const char *fmt, ...)
@@ -747,6 +1008,8 @@ extern void		    audit_log_format(struct audit_buffer *ab,
 					     const char *fmt, ...)
 			    __attribute__((format(printf,2,3)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern __printf(4, 5)
 void audit_log(struct audit_context *ctx, gfp_t gfp_mask, int type,
 	       const char *fmt, ...);
@@ -754,7 +1017,10 @@ void audit_log(struct audit_context *ctx, gfp_t gfp_mask, int type,
 extern struct audit_buffer *audit_log_start(struct audit_context *ctx, gfp_t gfp_mask, int type);
 extern __printf(2, 3)
 void audit_log_format(struct audit_buffer *ab, const char *fmt, ...);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void		    audit_log_end(struct audit_buffer *ab);
 extern int		    audit_string_contains_control(const char *string,
 							  size_t len);
@@ -764,7 +1030,10 @@ extern void		    audit_log_n_hex(struct audit_buffer *ab,
 extern void		    audit_log_n_string(struct audit_buffer *ab,
 					       const char *buf,
 					       size_t n);
+<<<<<<< HEAD
 #define audit_log_string(a,b) audit_log_n_string(a, b, strlen(b));
+=======
+>>>>>>> refs/remotes/origin/master
 extern void		    audit_log_n_untrustedstring(struct audit_buffer *ab,
 							const char *string,
 							size_t n);
@@ -772,6 +1041,7 @@ extern void		    audit_log_untrustedstring(struct audit_buffer *ab,
 						      const char *string);
 extern void		    audit_log_d_path(struct audit_buffer *ab,
 					     const char *prefix,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					     struct path *path);
 extern void		    audit_log_key(struct audit_buffer *ab,
@@ -781,10 +1051,18 @@ extern void		    audit_log_lost(const char *message);
 					     const struct path *path);
 extern void		    audit_log_key(struct audit_buffer *ab,
 					  char *key);
+=======
+					     const struct path *path);
+extern void		    audit_log_key(struct audit_buffer *ab,
+					  char *key);
+extern void		    audit_log_link_denied(const char *operation,
+						  struct path *link);
+>>>>>>> refs/remotes/origin/master
 extern void		    audit_log_lost(const char *message);
 #ifdef CONFIG_SECURITY
 extern void 		    audit_log_secctx(struct audit_buffer *ab, u32 secid);
 #else
+<<<<<<< HEAD
 #define audit_log_secctx(b,s) do { ; } while (0)
 #endif
 
@@ -818,4 +1096,74 @@ extern int audit_enabled;
 #define audit_enabled 0
 #endif
 #endif
+=======
+static inline void	    audit_log_secctx(struct audit_buffer *ab, u32 secid)
+{ }
+#endif
+
+extern int audit_log_task_context(struct audit_buffer *ab);
+extern void audit_log_task_info(struct audit_buffer *ab,
+				struct task_struct *tsk);
+
+extern int		    audit_update_lsm_rules(void);
+
+				/* Private API (for audit.c only) */
+extern int audit_filter_user(int type);
+extern int audit_filter_type(int type);
+extern int  audit_receive_filter(int type, int pid, int seq,
+				void *data, size_t datasz);
+extern int audit_enabled;
+#else /* CONFIG_AUDIT */
+static inline __printf(4, 5)
+void audit_log(struct audit_context *ctx, gfp_t gfp_mask, int type,
+	       const char *fmt, ...)
+{ }
+static inline struct audit_buffer *audit_log_start(struct audit_context *ctx,
+						   gfp_t gfp_mask, int type)
+{
+	return NULL;
+}
+static inline __printf(2, 3)
+void audit_log_format(struct audit_buffer *ab, const char *fmt, ...)
+{ }
+static inline void audit_log_end(struct audit_buffer *ab)
+{ }
+static inline void audit_log_n_hex(struct audit_buffer *ab,
+				   const unsigned char *buf, size_t len)
+{ }
+static inline void audit_log_n_string(struct audit_buffer *ab,
+				      const char *buf, size_t n)
+{ }
+static inline void  audit_log_n_untrustedstring(struct audit_buffer *ab,
+						const char *string, size_t n)
+{ }
+static inline void audit_log_untrustedstring(struct audit_buffer *ab,
+					     const char *string)
+{ }
+static inline void audit_log_d_path(struct audit_buffer *ab,
+				    const char *prefix,
+				    const struct path *path)
+{ }
+static inline void audit_log_key(struct audit_buffer *ab, char *key)
+{ }
+static inline void audit_log_link_denied(const char *string,
+					 const struct path *link)
+{ }
+static inline void audit_log_secctx(struct audit_buffer *ab, u32 secid)
+{ }
+static inline int audit_log_task_context(struct audit_buffer *ab)
+{
+	return 0;
+}
+static inline void audit_log_task_info(struct audit_buffer *ab,
+				       struct task_struct *tsk)
+{ }
+#define audit_enabled 0
+#endif /* CONFIG_AUDIT */
+static inline void audit_log_string(struct audit_buffer *ab, const char *buf)
+{
+	audit_log_n_string(ab, buf, strlen(buf));
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif

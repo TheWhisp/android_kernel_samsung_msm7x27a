@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2011, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,6 +22,8 @@
 #include <linux/string.h>
 #include <linux/gpio.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * gpio-regulator.c
  *
  * Copyright 2011 Heiko Stuebner <heiko@sntech.de>
@@ -47,6 +50,7 @@
 #include <linux/err.h>
 #include <linux/mutex.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/platform_device.h>
 #include <linux/regulator/driver.h>
@@ -223,16 +227,30 @@ static int __devexit gpio_vreg_remove(struct platform_device *pdev)
 #include <linux/gpio.h>
 #include <linux/delay.h>
 #include <linux/slab.h>
+=======
+#include <linux/platform_device.h>
+#include <linux/regulator/driver.h>
+#include <linux/regulator/machine.h>
+#include <linux/regulator/of_regulator.h>
+#include <linux/regulator/gpio-regulator.h>
+#include <linux/gpio.h>
+#include <linux/slab.h>
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 struct gpio_regulator_data {
 	struct regulator_desc desc;
 	struct regulator_dev *dev;
 
+<<<<<<< HEAD
 	int enable_gpio;
 	bool enable_high;
 	bool is_enabled;
 	unsigned startup_delay;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	struct gpio *gpios;
 	int nr_gpios;
 
@@ -242,6 +260,7 @@ struct gpio_regulator_data {
 	int state;
 };
 
+<<<<<<< HEAD
 static int gpio_regulator_is_enabled(struct regulator_dev *dev)
 {
 	struct gpio_regulator_data *data = rdev_get_drvdata(dev);
@@ -280,6 +299,8 @@ static int gpio_regulator_enable_time(struct regulator_dev *dev)
 	return data->startup_delay;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int gpio_regulator_get_value(struct regulator_dev *dev)
 {
 	struct gpio_regulator_data *data = rdev_get_drvdata(dev);
@@ -292,6 +313,7 @@ static int gpio_regulator_get_value(struct regulator_dev *dev)
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 static int gpio_regulator_set_value(struct regulator_dev *dev,
 					int min, int max)
 {
@@ -305,17 +327,42 @@ static int gpio_regulator_set_value(struct regulator_dev *dev,
 			target = data->states[ptr].gpios;
 
 	if (target < 0)
+=======
+static int gpio_regulator_set_voltage(struct regulator_dev *dev,
+					int min_uV, int max_uV,
+					unsigned *selector)
+{
+	struct gpio_regulator_data *data = rdev_get_drvdata(dev);
+	int ptr, target = 0, state, best_val = INT_MAX;
+
+	for (ptr = 0; ptr < data->nr_states; ptr++)
+		if (data->states[ptr].value < best_val &&
+		    data->states[ptr].value >= min_uV &&
+		    data->states[ptr].value <= max_uV) {
+			target = data->states[ptr].gpios;
+			best_val = data->states[ptr].value;
+			if (selector)
+				*selector = ptr;
+		}
+
+	if (best_val == INT_MAX)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	for (ptr = 0; ptr < data->nr_gpios; ptr++) {
 		state = (target & (1 << ptr)) >> ptr;
+<<<<<<< HEAD
 		gpio_set_value(data->gpios[ptr].gpio, state);
+=======
+		gpio_set_value_cansleep(data->gpios[ptr].gpio, state);
+>>>>>>> refs/remotes/origin/master
 	}
 	data->state = target;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int gpio_regulator_set_voltage(struct regulator_dev *dev,
 					int min_uV, int max_uV,
 					unsigned *selector)
@@ -323,6 +370,8 @@ static int gpio_regulator_set_voltage(struct regulator_dev *dev,
 	return gpio_regulator_set_value(dev, min_uV, max_uV);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int gpio_regulator_list_voltage(struct regulator_dev *dev,
 				      unsigned selector)
 {
@@ -337,6 +386,7 @@ static int gpio_regulator_list_voltage(struct regulator_dev *dev,
 static int gpio_regulator_set_current_limit(struct regulator_dev *dev,
 					int min_uA, int max_uA)
 {
+<<<<<<< HEAD
 	return gpio_regulator_set_value(dev, min_uA, max_uA);
 }
 
@@ -345,20 +395,136 @@ static struct regulator_ops gpio_regulator_voltage_ops = {
 	.enable = gpio_regulator_enable,
 	.disable = gpio_regulator_disable,
 	.enable_time = gpio_regulator_enable_time,
+=======
+	struct gpio_regulator_data *data = rdev_get_drvdata(dev);
+	int ptr, target = 0, state, best_val = 0;
+
+	for (ptr = 0; ptr < data->nr_states; ptr++)
+		if (data->states[ptr].value > best_val &&
+		    data->states[ptr].value >= min_uA &&
+		    data->states[ptr].value <= max_uA) {
+			target = data->states[ptr].gpios;
+			best_val = data->states[ptr].value;
+		}
+
+	if (best_val == 0)
+		return -EINVAL;
+
+	for (ptr = 0; ptr < data->nr_gpios; ptr++) {
+		state = (target & (1 << ptr)) >> ptr;
+		gpio_set_value_cansleep(data->gpios[ptr].gpio, state);
+	}
+	data->state = target;
+
+	return 0;
+}
+
+static struct regulator_ops gpio_regulator_voltage_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_voltage = gpio_regulator_get_value,
 	.set_voltage = gpio_regulator_set_voltage,
 	.list_voltage = gpio_regulator_list_voltage,
 };
 
+<<<<<<< HEAD
 static struct regulator_ops gpio_regulator_current_ops = {
 	.is_enabled = gpio_regulator_is_enabled,
 	.enable = gpio_regulator_enable,
 	.disable = gpio_regulator_disable,
 	.enable_time = gpio_regulator_enable_time,
+=======
+static struct gpio_regulator_config *
+of_get_gpio_regulator_config(struct device *dev, struct device_node *np)
+{
+	struct gpio_regulator_config *config;
+	struct property *prop;
+	const char *regtype;
+	int proplen, gpio, i;
+	int ret;
+
+	config = devm_kzalloc(dev,
+			sizeof(struct gpio_regulator_config),
+			GFP_KERNEL);
+	if (!config)
+		return ERR_PTR(-ENOMEM);
+
+	config->init_data = of_get_regulator_init_data(dev, np);
+	if (!config->init_data)
+		return ERR_PTR(-EINVAL);
+
+	config->supply_name = config->init_data->constraints.name;
+
+	if (of_property_read_bool(np, "enable-active-high"))
+		config->enable_high = true;
+
+	if (of_property_read_bool(np, "enable-at-boot"))
+		config->enabled_at_boot = true;
+
+	of_property_read_u32(np, "startup-delay-us", &config->startup_delay);
+
+	config->enable_gpio = of_get_named_gpio(np, "enable-gpio", 0);
+
+	/* Fetch GPIOs. */
+	config->nr_gpios = of_gpio_count(np);
+
+	config->gpios = devm_kzalloc(dev,
+				sizeof(struct gpio) * config->nr_gpios,
+				GFP_KERNEL);
+	if (!config->gpios)
+		return ERR_PTR(-ENOMEM);
+
+	for (i = 0; i < config->nr_gpios; i++) {
+		gpio = of_get_named_gpio(np, "gpios", i);
+		if (gpio < 0)
+			break;
+		config->gpios[i].gpio = gpio;
+	}
+
+	/* Fetch states. */
+	prop = of_find_property(np, "states", NULL);
+	if (!prop) {
+		dev_err(dev, "No 'states' property found\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	proplen = prop->length / sizeof(int);
+
+	config->states = devm_kzalloc(dev,
+				sizeof(struct gpio_regulator_state)
+				* (proplen / 2),
+				GFP_KERNEL);
+	if (!config->states)
+		return ERR_PTR(-ENOMEM);
+
+	for (i = 0; i < proplen / 2; i++) {
+		config->states[i].value =
+			be32_to_cpup((int *)prop->value + (i * 2));
+		config->states[i].gpios =
+			be32_to_cpup((int *)prop->value + (i * 2 + 1));
+	}
+	config->nr_states = i;
+
+	ret = of_property_read_string(np, "regulator-type", &regtype);
+	if (ret < 0) {
+		dev_err(dev, "Missing 'regulator-type' property\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (!strncmp("voltage", regtype, 7))
+		config->type = REGULATOR_VOLTAGE;
+	else if (!strncmp("current", regtype, 7))
+		config->type = REGULATOR_CURRENT;
+
+	return config;
+}
+
+static struct regulator_ops gpio_regulator_current_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_current_limit = gpio_regulator_get_value,
 	.set_current_limit = gpio_regulator_set_current_limit,
 };
 
+<<<<<<< HEAD
 static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 {
 	struct gpio_regulator_config *config = pdev->dev.platform_data;
@@ -366,6 +532,24 @@ static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 	int ptr, ret, state;
 
 	drvdata = kzalloc(sizeof(struct gpio_regulator_data), GFP_KERNEL);
+=======
+static int gpio_regulator_probe(struct platform_device *pdev)
+{
+	struct gpio_regulator_config *config = dev_get_platdata(&pdev->dev);
+	struct device_node *np = pdev->dev.of_node;
+	struct gpio_regulator_data *drvdata;
+	struct regulator_config cfg = { };
+	int ptr, ret, state;
+
+	if (np) {
+		config = of_get_gpio_regulator_config(&pdev->dev, np);
+		if (IS_ERR(config))
+			return PTR_ERR(config);
+	}
+
+	drvdata = devm_kzalloc(&pdev->dev, sizeof(struct gpio_regulator_data),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (drvdata == NULL) {
 		dev_err(&pdev->dev, "Failed to allocate device data\n");
 		return -ENOMEM;
@@ -399,6 +583,10 @@ static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 	drvdata->nr_states = config->nr_states;
 
 	drvdata->desc.owner = THIS_MODULE;
+<<<<<<< HEAD
+=======
+	drvdata->desc.enable_time = config->startup_delay;
+>>>>>>> refs/remotes/origin/master
 
 	/* handle regulator type*/
 	switch (config->type) {
@@ -415,6 +603,7 @@ static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "No regulator type set\n");
 		ret = -EINVAL;
 		goto err_memgpio;
+<<<<<<< HEAD
 		break;
 	}
 
@@ -456,6 +645,8 @@ static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 		 * always enabled
 		 */
 		drvdata->is_enabled = true;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	drvdata->nr_gpios = config->nr_gpios;
@@ -463,7 +654,11 @@ static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 	if (ret) {
 		dev_err(&pdev->dev,
 		   "Could not obtain regulator setting GPIOs: %d\n", ret);
+<<<<<<< HEAD
 		goto err_enablegpio;
+=======
+		goto err_memstate;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* build initial state from gpio init data. */
@@ -474,8 +669,32 @@ static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 	}
 	drvdata->state = state;
 
+<<<<<<< HEAD
 	drvdata->dev = regulator_register(&drvdata->desc, &pdev->dev,
 					  config->init_data, drvdata, NULL);
+=======
+	cfg.dev = &pdev->dev;
+	cfg.init_data = config->init_data;
+	cfg.driver_data = drvdata;
+	cfg.of_node = np;
+
+	if (config->enable_gpio >= 0)
+		cfg.ena_gpio = config->enable_gpio;
+	cfg.ena_gpio_invert = !config->enable_high;
+	if (config->enabled_at_boot) {
+		if (config->enable_high)
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_HIGH;
+		else
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_LOW;
+	} else {
+		if (config->enable_high)
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_LOW;
+		else
+			cfg.ena_gpio_flags |= GPIOF_OUT_INIT_HIGH;
+	}
+
+	drvdata->dev = regulator_register(&drvdata->desc, &cfg);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(drvdata->dev)) {
 		ret = PTR_ERR(drvdata->dev);
 		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
@@ -488,9 +707,12 @@ static int __devinit gpio_regulator_probe(struct platform_device *pdev)
 
 err_stategpio:
 	gpio_free_array(drvdata->gpios, drvdata->nr_gpios);
+<<<<<<< HEAD
 err_enablegpio:
 	if (gpio_is_valid(config->enable_gpio))
 		gpio_free(config->enable_gpio);
+=======
+>>>>>>> refs/remotes/origin/master
 err_memstate:
 	kfree(drvdata->states);
 err_memgpio:
@@ -498,11 +720,18 @@ err_memgpio:
 err_name:
 	kfree(drvdata->desc.name);
 err:
+<<<<<<< HEAD
 	kfree(drvdata);
 	return ret;
 }
 
 static int __devexit gpio_regulator_remove(struct platform_device *pdev)
+=======
+	return ret;
+}
+
+static int gpio_regulator_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gpio_regulator_data *drvdata = platform_get_drvdata(pdev);
 
@@ -513,16 +742,21 @@ static int __devexit gpio_regulator_remove(struct platform_device *pdev)
 	kfree(drvdata->states);
 	kfree(drvdata->gpios);
 
+<<<<<<< HEAD
 	if (gpio_is_valid(drvdata->enable_gpio))
 		gpio_free(drvdata->enable_gpio);
 
 	kfree(drvdata->desc.name);
 	kfree(drvdata);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(drvdata->desc.name);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct platform_driver gpio_vreg_driver = {
 	.probe = gpio_vreg_probe,
@@ -557,6 +791,22 @@ static struct platform_driver gpio_regulator_driver = {
 	.driver		= {
 		.name		= "gpio-regulator",
 		.owner		= THIS_MODULE,
+=======
+#if defined(CONFIG_OF)
+static const struct of_device_id regulator_gpio_of_match[] = {
+	{ .compatible = "regulator-gpio", },
+	{},
+};
+#endif
+
+static struct platform_driver gpio_regulator_driver = {
+	.probe		= gpio_regulator_probe,
+	.remove		= gpio_regulator_remove,
+	.driver		= {
+		.name		= "gpio-regulator",
+		.owner		= THIS_MODULE,
+		.of_match_table = of_match_ptr(regulator_gpio_of_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -576,4 +826,7 @@ MODULE_AUTHOR("Heiko Stuebner <heiko@sntech.de>");
 MODULE_DESCRIPTION("gpio voltage regulator");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:gpio-regulator");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

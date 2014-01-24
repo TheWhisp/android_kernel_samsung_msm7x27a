@@ -18,6 +18,7 @@
  *
  */
 
+<<<<<<< HEAD
 #include <stdarg.h>
 #include <linux/kernel.h>
 #include <linux/string.h>
@@ -104,3 +105,17 @@ void __init early_init_dt_setup_initrd_arch(unsigned long start,
 	initrd_below_start_ok = 1;
 }
 #endif
+=======
+#include <linux/init.h>
+#include <linux/types.h>
+#include <linux/memblock.h>
+#include <linux/of_fdt.h>
+
+#include <asm/page.h>
+
+void __init early_init_devtree(void *params)
+{
+	early_init_dt_scan(params);
+	memblock_allow_resize();
+}
+>>>>>>> refs/remotes/origin/master

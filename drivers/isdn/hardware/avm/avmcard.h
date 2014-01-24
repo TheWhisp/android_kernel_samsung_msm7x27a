@@ -45,6 +45,7 @@ enum avmcardtype {
 
 typedef struct avmcard_dmabuf {
 <<<<<<< HEAD
+<<<<<<< HEAD
     long        size;
     u8       *dmabuf;
     dma_addr_t  dmaaddr;
@@ -53,10 +54,16 @@ typedef struct avmcard_dmabuf {
 	u8       *dmabuf;
 	dma_addr_t  dmaaddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	long        size;
+	u8       *dmabuf;
+	dma_addr_t  dmaaddr;
+>>>>>>> refs/remotes/origin/master
 } avmcard_dmabuf;
 
 typedef struct avmcard_dmainfo {
 	u32                recvlen;
+<<<<<<< HEAD
 <<<<<<< HEAD
         avmcard_dmabuf       recvbuf;
 
@@ -66,6 +73,11 @@ typedef struct avmcard_dmainfo {
 
 	avmcard_dmabuf       sendbuf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	avmcard_dmabuf       recvbuf;
+
+	avmcard_dmabuf       sendbuf;
+>>>>>>> refs/remotes/origin/master
 	struct sk_buff_head  send_queue;
 
 	struct pci_dev      *pcidev;
@@ -74,6 +86,7 @@ typedef struct avmcard_dmainfo {
 typedef	struct avmctrl_info {
 	char cardname[32];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 	int versionlen;
 	char versionbuf[1024];
@@ -85,6 +98,8 @@ typedef	struct avmctrl_info {
 	struct capi_ctr  capi_ctrl;
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int versionlen;
 	char versionbuf[1024];
@@ -95,17 +110,24 @@ typedef	struct avmctrl_info {
 	struct avmcard  *card;
 	struct capi_ctr  capi_ctrl;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head ncci_head;
 } avmctrl_info;
 
 typedef struct avmcard {
 	char name[32];
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	spinlock_t lock;
 	unsigned int port;
 	unsigned irq;
@@ -132,6 +154,7 @@ typedef struct avmcard {
 extern int b1_irq_table[16];
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * LLI Messages to the ISDN-ControllerISDN Controller 
  */
@@ -170,6 +193,8 @@ extern int b1_irq_table[16];
 #define SEND_CONFIG		0x21    /*
                                          */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * LLI Messages to the ISDN-ControllerISDN Controller
  */
 
@@ -206,11 +231,15 @@ extern int b1_irq_table[16];
 
 #define SEND_CONFIG		0x21    /*
 					 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SEND_POLLACK		0x73    /* T1 Watchdog */
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * LLI Messages from the ISDN-ControllerISDN Controller 
  */
@@ -262,6 +291,8 @@ extern int b1_irq_table[16];
 					   * int32 Length message
 					   * 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * LLI Messages from the ISDN-ControllerISDN Controller
  */
 
@@ -311,7 +342,10 @@ extern int b1_irq_table[16];
 #define RECEIVE_DEBUGMSG	0x71	/*
 					 * int32 Length message
 					 *
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					 */
 #define RECEIVE_POLLDWORD	0x75	/* t1pci in dword mode */
 
@@ -385,10 +419,14 @@ static inline int b1_save_put_byte(unsigned int base, unsigned char val)
 {
 	unsigned long stop = jiffies + 2 * HZ;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (!b1_tx_empty(base) && time_before(jiffies,stop));
 =======
 	while (!b1_tx_empty(base) && time_before(jiffies, stop));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (!b1_tx_empty(base) && time_before(jiffies, stop));
+>>>>>>> refs/remotes/origin/master
 	if (!b1_tx_empty(base)) return -1;
 	b1outp(base, B1_WRITE, val);
 	return 0;
@@ -423,6 +461,7 @@ static inline void b1_put_slice(unsigned int base,
 
 static void b1_wr_reg(unsigned int base,
 <<<<<<< HEAD
+<<<<<<< HEAD
                       unsigned int reg,
 		      unsigned int value)
 {
@@ -439,6 +478,8 @@ static inline unsigned int b1_rd_reg(unsigned int base,
         return b1_get_word(base);
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		      unsigned int reg,
 		      unsigned int value)
 {
@@ -454,7 +495,10 @@ static inline unsigned int b1_rd_reg(unsigned int base,
 	b1_put_word(base, reg);
 	return b1_get_word(base);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void b1_reset(unsigned int base)
@@ -481,6 +525,7 @@ static inline void b1_set_test_bit(unsigned int base,
 				   int onoff)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
     b1_wr_reg(base, B1_STAT0(cardtype), onoff ? 0x21 : 0x20);
 }
 
@@ -489,6 +534,8 @@ static inline int b1_get_test_bit(unsigned int base,
 {
     return (b1_rd_reg(base, B1_STAT0(cardtype)) & 0x01) != 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	b1_wr_reg(base, B1_STAT0(cardtype), onoff ? 0x21 : 0x20);
 }
 
@@ -496,7 +543,10 @@ static inline int b1_get_test_bit(unsigned int base,
 				  enum avmcardtype cardtype)
 {
 	return (b1_rd_reg(base, B1_STAT0(cardtype)) & 0x01) != 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* ---------------------------------------------------------------- */
@@ -544,10 +594,14 @@ static inline void t1outp(unsigned int base,
 
 static inline unsigned char t1inp(unsigned int base,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			          unsigned short offset)
 =======
 				  unsigned short offset)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  unsigned short offset)
+>>>>>>> refs/remotes/origin/master
 {
 	return inb(base + offset);
 }
@@ -571,6 +625,7 @@ static inline unsigned int t1_get_slice(unsigned int base,
 #endif
 
 	len = i = b1_get_word(base);
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (t1_isfastlink(base)) {
 		int status;
@@ -609,6 +664,8 @@ static inline unsigned int t1_get_slice(unsigned int base,
 	    printk(KERN_DEBUG "b1lli(0x%x): get_slice l=%d w=%d b=%d\n",
 				base, len, wcnt, bcnt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (t1_isfastlink(base)) {
 		int status;
 		while (i > 0) {
@@ -645,7 +702,10 @@ static inline unsigned int t1_get_slice(unsigned int base,
 		if (wcnt)
 			printk(KERN_DEBUG "b1lli(0x%x): get_slice l=%d w=%d b=%d\n",
 			       base, len, wcnt, bcnt);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	} else {
 		while (i-- > 0)
@@ -659,6 +719,7 @@ static inline void t1_put_slice(unsigned int base,
 {
 	unsigned i = len;
 	b1_put_word(base, i);
+<<<<<<< HEAD
 <<<<<<< HEAD
         if (t1_isfastlink(base)) {
 		int status;
@@ -681,6 +742,8 @@ static inline void t1_put_slice(unsigned int base,
 					i--;
 					break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (t1_isfastlink(base)) {
 		int status;
 		while (i > 0) {
@@ -701,7 +764,10 @@ static inline void t1_put_slice(unsigned int base,
 				b1_put_byte(base, *dp++);
 				i--;
 				break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	} else {
@@ -713,14 +779,19 @@ static inline void t1_put_slice(unsigned int base,
 static inline void t1_disable_irq(unsigned int base)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
       t1outp(base, T1_IRQMASTER, 0x00);
 =======
 	t1outp(base, T1_IRQMASTER, 0x00);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	t1outp(base, T1_IRQMASTER, 0x00);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void t1_reset(unsigned int base)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         /* reset T1 Controller */
         b1_reset(base);
@@ -730,6 +801,8 @@ static inline void t1_reset(unsigned int base)
         t1outp(base, T1_IRQMASTER, 0x00);
         /* reset HEMA board configuration */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* reset T1 Controller */
 	b1_reset(base);
 	/* disable irq on HEMA */
@@ -737,7 +810,10 @@ static inline void t1_reset(unsigned int base)
 	t1outp(base, B1_OUTSTAT, 0x00);
 	t1outp(base, T1_IRQMASTER, 0x00);
 	/* reset HEMA board configuration */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	t1outp(base, T1_RESETBOARD, 0xf);
 }
 
@@ -745,6 +821,7 @@ static inline void b1_setinterrupt(unsigned int base, unsigned irq,
 				   enum avmcardtype cardtype)
 {
 	switch (cardtype) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	   case avm_t1isa:
               t1outp(base, B1_INSTAT, 0x00);
@@ -770,6 +847,8 @@ static inline void b1_setinterrupt(unsigned int base, unsigned irq,
 	      break;
 	 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case avm_t1isa:
 		t1outp(base, B1_INSTAT, 0x00);
 		t1outp(base, B1_INSTAT, 0x02);
@@ -793,7 +872,10 @@ static inline void b1_setinterrupt(unsigned int base, unsigned irq,
 		b1outp(base, B1_RESET, 0xf0);
 		break;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* b1.c */
@@ -802,22 +884,31 @@ void b1_free_card(avmcard *card);
 int b1_detect(unsigned int base, enum avmcardtype cardtype);
 void b1_getrevision(avmcard *card);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int b1_load_t4file(avmcard *card, capiloaddatapart * t4file);
 int b1_load_config(avmcard *card, capiloaddatapart * config);
 =======
 int b1_load_t4file(avmcard *card, capiloaddatapart *t4file);
 int b1_load_config(avmcard *card, capiloaddatapart *config);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int b1_load_t4file(avmcard *card, capiloaddatapart *t4file);
+int b1_load_config(avmcard *card, capiloaddatapart *config);
+>>>>>>> refs/remotes/origin/master
 int b1_loaded(avmcard *card);
 
 int b1_load_firmware(struct capi_ctr *ctrl, capiloaddata *data);
 void b1_reset_ctr(struct capi_ctr *ctrl);
 void b1_register_appl(struct capi_ctr *ctrl, u16 appl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				capi_register_params *rp);
 =======
 		      capi_register_params *rp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      capi_register_params *rp);
+>>>>>>> refs/remotes/origin/master
 void b1_release_appl(struct capi_ctr *ctrl, u16 appl);
 u16  b1_send_message(struct capi_ctr *ctrl, struct sk_buff *skb);
 void b1_parse_version(avmctrl_info *card);
@@ -840,12 +931,17 @@ void b1dma_reset_ctr(struct capi_ctr *ctrl);
 void b1dma_remove_ctr(struct capi_ctr *ctrl);
 void b1dma_register_appl(struct capi_ctr *ctrl,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				u16 appl,
 				capi_register_params *rp);
 =======
 			 u16 appl,
 			 capi_register_params *rp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 u16 appl,
+			 capi_register_params *rp);
+>>>>>>> refs/remotes/origin/master
 void b1dma_release_appl(struct capi_ctr *ctrl, u16 appl);
 u16  b1dma_send_message(struct capi_ctr *ctrl, struct sk_buff *skb);
 extern const struct file_operations b1dmactl_proc_fops;

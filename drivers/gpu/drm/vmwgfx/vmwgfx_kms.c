@@ -28,12 +28,15 @@
 #include "vmwgfx_kms.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Might need a hrtimer here? */
 #define VMWGFX_PRESENT_RATE ((HZ / 60 > 0) ? HZ / 60 : 1)
 
 static int vmw_surface_dmabuf_pin(struct vmw_framebuffer *vfb);
 static int vmw_surface_dmabuf_unpin(struct vmw_framebuffer *vfb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Might need a hrtimer here? */
 #define VMWGFX_PRESENT_RATE ((HZ / 60 > 0) ? HZ / 60 : 1)
@@ -75,7 +78,10 @@ void vmw_clip_cliprects(struct drm_clip_rect *rects,
 
 	*out_num = k;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void vmw_display_unit_cleanup(struct vmw_display_unit *du)
 {
@@ -83,6 +89,10 @@ void vmw_display_unit_cleanup(struct vmw_display_unit *du)
 		vmw_surface_unreference(&du->cursor_surface);
 	if (du->cursor_dmabuf)
 		vmw_dmabuf_unreference(&du->cursor_dmabuf);
+<<<<<<< HEAD
+=======
+	drm_sysfs_connector_remove(&du->connector);
+>>>>>>> refs/remotes/origin/master
 	drm_crtc_cleanup(&du->crtc);
 	drm_encoder_cleanup(&du->encoder);
 	drm_connector_cleanup(&du->connector);
@@ -129,7 +139,10 @@ int vmw_cursor_update_image(struct vmw_private *dev_priv,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int vmw_cursor_update_dmabuf(struct vmw_private *dev_priv,
 			     struct vmw_dma_buffer *dmabuf,
 			     u32 width, u32 height,
@@ -167,7 +180,10 @@ err_unreserve:
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void vmw_cursor_update_position(struct vmw_private *dev_priv,
 				bool show, int x, int y)
 {
@@ -185,12 +201,16 @@ int vmw_du_crtc_cursor_set(struct drm_crtc *crtc, struct drm_file *file_priv,
 			   uint32_t handle, uint32_t width, uint32_t height)
 {
 	struct vmw_private *dev_priv = vmw_priv(crtc->dev);
+<<<<<<< HEAD
 	struct ttm_object_file *tfile = vmw_fpriv(file_priv)->tfile;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct vmw_display_unit *du = vmw_crtc_to_du(crtc);
 	struct vmw_surface *surface = NULL;
 	struct vmw_dma_buffer *dmabuf = NULL;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (handle) {
 		ret = vmw_user_surface_lookup_handle(dev_priv, tfile,
@@ -216,11 +236,37 @@ int vmw_du_crtc_cursor_set(struct drm_crtc *crtc, struct drm_file *file_priv,
 		return -EINVAL;
 
 	if (handle) {
+=======
+	/*
+	 * FIXME: Unclear whether there's any global state touched by the
+	 * cursor_set function, especially vmw_cursor_update_position looks
+	 * suspicious. For now take the easy route and reacquire all locks. We
+	 * can do this since the caller in the drm core doesn't check anything
+	 * which is protected by any looks.
+	 */
+	mutex_unlock(&crtc->mutex);
+	drm_modeset_lock_all(dev_priv->dev);
+
+	/* A lot of the code assumes this */
+	if (handle && (width != 64 || height != 64)) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	if (handle) {
+		struct ttm_object_file *tfile = vmw_fpriv(file_priv)->tfile;
+
+>>>>>>> refs/remotes/origin/master
 		ret = vmw_user_lookup_handle(dev_priv, tfile,
 					     handle, &surface, &dmabuf);
 		if (ret) {
 			DRM_ERROR("failed to find surface or dmabuf: %i\n", ret);
+<<<<<<< HEAD
 			return -EINVAL;
+=======
+			ret = -EINVAL;
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -228,10 +274,17 @@ int vmw_du_crtc_cursor_set(struct drm_crtc *crtc, struct drm_file *file_priv,
 	if (surface && !surface->snooper.image) {
 		DRM_ERROR("surface not suitable for cursor\n");
 		vmw_surface_unreference(&surface);
+<<<<<<< HEAD
 		return -EINVAL;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = -EINVAL;
+		goto out;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* takedown old cursor */
 	if (du->cursor_surface) {
 		du->cursor_surface->snooper.crtc = NULL;
@@ -250,6 +303,7 @@ int vmw_du_crtc_cursor_set(struct drm_crtc *crtc, struct drm_file *file_priv,
 		vmw_cursor_update_image(dev_priv, surface->snooper.image,
 					64, 64, du->hotspot_x, du->hotspot_y);
 	} else if (dmabuf) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		struct ttm_bo_kmap_obj map;
 		unsigned long kmap_offset;
@@ -282,11 +336,14 @@ err_unreserve:
 		ttm_bo_unreserve(&dmabuf->base);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* vmw_user_surface_lookup takes one reference */
 		du->cursor_dmabuf = dmabuf;
 
 		ret = vmw_cursor_update_dmabuf(dev_priv, dmabuf, width, height,
 					       du->hotspot_x, du->hotspot_y);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	} else {
 		vmw_cursor_update_position(dev_priv, false, 0, 0);
@@ -302,6 +359,24 @@ err_unreserve:
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	return 0;
+=======
+	} else {
+		vmw_cursor_update_position(dev_priv, false, 0, 0);
+		ret = 0;
+		goto out;
+	}
+
+	vmw_cursor_update_position(dev_priv, true,
+				   du->cursor_x + du->hotspot_x,
+				   du->cursor_y + du->hotspot_y);
+
+	ret = 0;
+out:
+	drm_modeset_unlock_all(dev_priv->dev);
+	mutex_lock(&crtc->mutex);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 int vmw_du_crtc_cursor_move(struct drm_crtc *crtc, int x, int y)
@@ -313,6 +388,7 @@ int vmw_du_crtc_cursor_move(struct drm_crtc *crtc, int x, int y)
 	du->cursor_x = x + crtc->x;
 	du->cursor_y = y + crtc->y;
 
+<<<<<<< HEAD
 	vmw_cursor_update_position(dev_priv, shown,
 <<<<<<< HEAD
 				   du->cursor_x, du->cursor_y);
@@ -320,6 +396,24 @@ int vmw_du_crtc_cursor_move(struct drm_crtc *crtc, int x, int y)
 				   du->cursor_x + du->hotspot_x,
 				   du->cursor_y + du->hotspot_y);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * FIXME: Unclear whether there's any global state touched by the
+	 * cursor_set function, especially vmw_cursor_update_position looks
+	 * suspicious. For now take the easy route and reacquire all locks. We
+	 * can do this since the caller in the drm core doesn't check anything
+	 * which is protected by any looks.
+	 */
+	mutex_unlock(&crtc->mutex);
+	drm_modeset_lock_all(dev_priv->dev);
+
+	vmw_cursor_update_position(dev_priv, shown,
+				   du->cursor_x + du->hotspot_x,
+				   du->cursor_y + du->hotspot_y);
+
+	drm_modeset_unlock_all(dev_priv->dev);
+	mutex_lock(&crtc->mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -341,10 +435,14 @@ void vmw_kms_cursor_snoop(struct vmw_surface *srf,
 		SVGA3dCmdSurfaceDMA dma;
 	} *cmd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	int i, ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, ret;
+>>>>>>> refs/remotes/origin/master
 
 	cmd = container_of(header, struct vmw_dma_cmd, header);
 
@@ -367,6 +465,7 @@ void vmw_kms_cursor_snoop(struct vmw_surface *srf,
 			sizeof(SVGA3dCopyBox);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cmd->dma.guest.pitch != (64 * 4) ||
 	    cmd->dma.guest.ptr.offset % PAGE_SIZE ||
 	    box->x != 0    || box->y != 0    || box->z != 0    ||
@@ -378,6 +477,8 @@ void vmw_kms_cursor_snoop(struct vmw_surface *srf,
 		/* TODO handle more then one copy (size != 64) */
 		DRM_ERROR("lazy programmer, can't handle weird stuff\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cmd->dma.guest.ptr.offset % PAGE_SIZE ||
 	    box->x != 0    || box->y != 0    || box->z != 0    ||
 	    box->srcx != 0 || box->srcy != 0 || box->srcz != 0 ||
@@ -391,7 +492,10 @@ void vmw_kms_cursor_snoop(struct vmw_surface *srf,
 			  box->x, box->y, box->z,
 			  box->w, box->h, box->d, box_count,
 			  cmd->dma.guest.ptr.offset);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -411,8 +515,11 @@ void vmw_kms_cursor_snoop(struct vmw_surface *srf,
 	virtual = ttm_kmap_obj_virtual(&map, &dummy);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(srf->snooper.image, virtual, 64*64*4);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (box->w == 64 && cmd->dma.guest.pitch == 64*4) {
 		memcpy(srf->snooper.image, virtual, 64*64*4);
 	} else {
@@ -423,7 +530,10 @@ void vmw_kms_cursor_snoop(struct vmw_surface *srf,
 			       box->w * 4);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	srf->snooper.age++;
 
 	/* we can't call this function from this function since execbuf has
@@ -467,6 +577,7 @@ void vmw_kms_cursor_post_execbuf(struct vmw_private *dev_priv)
  * Generic framebuffer code
  */
 
+<<<<<<< HEAD
 int vmw_framebuffer_create_handle(struct drm_framebuffer *fb,
 				  struct drm_file *file_priv,
 				  unsigned int *handle)
@@ -477,6 +588,8 @@ int vmw_framebuffer_create_handle(struct drm_framebuffer *fb,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Surface framebuffer code
  */
@@ -489,15 +602,19 @@ struct vmw_framebuffer_surface {
 	struct vmw_surface *surface;
 	struct vmw_dma_buffer *buffer;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct delayed_work d_work;
 	struct mutex work_lock;
 	bool present_fs;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head head;
 	struct drm_master *master;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  * vmw_kms_idle_workqueues - Flush workqueues on this master
@@ -529,6 +646,8 @@ void vmw_kms_idle_workqueues(struct vmw_master *vmaster)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void vmw_framebuffer_surface_destroy(struct drm_framebuffer *framebuffer)
 {
 	struct vmw_framebuffer_surface *vfbs =
@@ -541,20 +660,27 @@ void vmw_framebuffer_surface_destroy(struct drm_framebuffer *framebuffer)
 	mutex_unlock(&vmaster->fb_surf_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cancel_delayed_work_sync(&vfbs->d_work);
 	drm_master_put(&vfbs->master);
 	drm_framebuffer_cleanup(framebuffer);
 	vmw_surface_unreference(&vfbs->surface);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	drm_master_put(&vfbs->master);
 	drm_framebuffer_cleanup(framebuffer);
 	vmw_surface_unreference(&vfbs->surface);
 	ttm_base_object_unref(&vfbs->base.user_obj);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	kfree(vfbs);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void vmw_framebuffer_present_fs_callback(struct work_struct *work)
 {
@@ -608,6 +734,8 @@ out_unlock:
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int do_surface_dirty_sou(struct vmw_private *dev_priv,
 				struct drm_file *file_priv,
 				struct vmw_framebuffer *framebuffer,
@@ -674,7 +802,10 @@ static int do_surface_dirty_sou(struct vmw_private *dev_priv,
 	}
 
 	/* only need to do this once */
+<<<<<<< HEAD
 	memset(cmd, 0, fifo_size);
+=======
+>>>>>>> refs/remotes/origin/master
 	cmd->header.id = cpu_to_le32(SVGA_3D_CMD_BLIT_SURFACE_TO_SCREEN);
 	cmd->header.size = cpu_to_le32(fifo_size - sizeof(cmd->header));
 
@@ -756,7 +887,10 @@ out_free_tmp:
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int vmw_framebuffer_surface_dirty(struct drm_framebuffer *framebuffer,
 				  struct drm_file *file_priv,
 				  unsigned flags, unsigned color,
@@ -767,6 +901,7 @@ int vmw_framebuffer_surface_dirty(struct drm_framebuffer *framebuffer,
 	struct vmw_master *vmaster = vmw_master(file_priv->master);
 	struct vmw_framebuffer_surface *vfbs =
 		vmw_framebuffer_to_vfbs(framebuffer);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct vmw_surface *surf = vfbs->surface;
 	struct drm_clip_rect norect;
@@ -783,21 +918,32 @@ int vmw_framebuffer_surface_dirty(struct drm_framebuffer *framebuffer,
 	struct drm_clip_rect norect;
 	int ret, inc = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct drm_clip_rect norect;
+	int ret, inc = 1;
+>>>>>>> refs/remotes/origin/master
 
 	if (unlikely(vfbs->master != file_priv->master))
 		return -EINVAL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Require ScreenObject support for 3D */
 	if (!dev_priv->sou_priv)
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ttm_read_lock(&vmaster->lock, true);
 	if (unlikely(ret != 0))
 		return ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!num_clips ||
 	    !(dev_priv->fifo.capabilities &
@@ -820,6 +966,8 @@ int vmw_framebuffer_surface_dirty(struct drm_framebuffer *framebuffer,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!num_clips) {
 		num_clips = 1;
 		clips = &norect;
@@ -831,6 +979,7 @@ int vmw_framebuffer_surface_dirty(struct drm_framebuffer *framebuffer,
 		inc = 2; /* skip source rects */
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cmd = vmw_fifo_reserve(dev_priv, sizeof(*cmd) + (num_clips - 1) * sizeof(cmd->cr));
 	if (unlikely(cmd == NULL)) {
@@ -856,11 +1005,16 @@ int vmw_framebuffer_surface_dirty(struct drm_framebuffer *framebuffer,
 
 	vmw_fifo_commit(dev_priv, sizeof(*cmd) + (num_clips - 1) * sizeof(cmd->cr));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = do_surface_dirty_sou(dev_priv, file_priv, &vfbs->base,
 				   flags, color,
 				   clips, num_clips, inc, NULL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ttm_read_unlock(&vmaster->lock);
 	return 0;
 }
@@ -868,7 +1022,10 @@ int vmw_framebuffer_surface_dirty(struct drm_framebuffer *framebuffer,
 static struct drm_framebuffer_funcs vmw_framebuffer_surface_funcs = {
 	.destroy = vmw_framebuffer_surface_destroy,
 	.dirty = vmw_framebuffer_surface_dirty,
+<<<<<<< HEAD
 	.create_handle = vmw_framebuffer_create_handle,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
@@ -886,23 +1043,35 @@ static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* 3D is only supported on HWv8 hosts which supports screen objects */
 	if (!dev_priv->sou_priv)
 		return -ENOSYS;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Sanity checks.
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Surface must be marked as a scanout. */
 	if (unlikely(!surface->scanout))
 		return -EINVAL;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(surface->mip_levels[0] != 1 ||
 		     surface->num_sizes != 1 ||
 		     surface->sizes[0].width < mode_cmd->width ||
@@ -927,11 +1096,17 @@ static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
 		format = SVGA3D_A1R5G5B5;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case 8:
 		format = SVGA3D_LUMINANCE8;
 		break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case 8:
+		format = SVGA3D_LUMINANCE8;
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		DRM_ERROR("Invalid color depth: %d\n", mode_cmd->depth);
 		return -EINVAL;
@@ -948,6 +1123,7 @@ static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
 		goto out_err1;
 	}
 
+<<<<<<< HEAD
 	ret = drm_framebuffer_init(dev, &vfbs->base.base,
 				   &vmw_framebuffer_surface_funcs);
 	if (ret)
@@ -956,10 +1132,17 @@ static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
 	if (!vmw_surface_reference(surface)) {
 		DRM_ERROR("failed to reference surface %p\n", surface);
 		goto out_err3;
+=======
+	if (!vmw_surface_reference(surface)) {
+		DRM_ERROR("failed to reference surface %p\n", surface);
+		ret = -EINVAL;
+		goto out_err2;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* XXX get the first 3 from the surface info */
 	vfbs->base.base.bits_per_pixel = mode_cmd->bpp;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vfbs->base.base.pitch = mode_cmd->pitch;
 	vfbs->base.base.depth = mode_cmd->depth;
@@ -974,6 +1157,8 @@ static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
 	mutex_lock(&vmaster->fb_surf_mutex);
 	INIT_DELAYED_WORK(&vfbs->d_work, &vmw_framebuffer_present_fs_callback);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	vfbs->base.base.pitches[0] = mode_cmd->pitch;
 	vfbs->base.base.depth = mode_cmd->depth;
 	vfbs->base.base.width = mode_cmd->width;
@@ -983,16 +1168,31 @@ static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
 	vfbs->master = drm_master_get(file_priv->master);
 
 	mutex_lock(&vmaster->fb_surf_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	list_add_tail(&vfbs->head, &vmaster->fb_surf);
 	mutex_unlock(&vmaster->fb_surf_mutex);
 
 	*out = &vfbs->base;
 
+<<<<<<< HEAD
 	return 0;
 
 out_err3:
 	drm_framebuffer_cleanup(&vfbs->base.base);
+=======
+	ret = drm_framebuffer_init(dev, &vfbs->base.base,
+				   &vmw_framebuffer_surface_funcs);
+	if (ret)
+		goto out_err3;
+
+	return 0;
+
+out_err3:
+	vmw_surface_unreference(&surface);
+>>>>>>> refs/remotes/origin/master
 out_err2:
 	kfree(vfbs);
 out_err1:
@@ -1019,13 +1219,18 @@ void vmw_framebuffer_dmabuf_destroy(struct drm_framebuffer *framebuffer)
 	drm_framebuffer_cleanup(framebuffer);
 	vmw_dmabuf_unreference(&vfbd->buffer);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ttm_base_object_unref(&vfbd->base.user_obj);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ttm_base_object_unref(&vfbd->base.user_obj);
+>>>>>>> refs/remotes/origin/master
 
 	kfree(vfbd);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int vmw_framebuffer_dmabuf_dirty(struct drm_framebuffer *framebuffer,
 				 struct drm_file *file_priv,
@@ -1038,6 +1243,8 @@ int vmw_framebuffer_dmabuf_dirty(struct drm_framebuffer *framebuffer,
 	struct drm_clip_rect norect;
 	int ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int do_dmabuf_dirty_ldu(struct vmw_private *dev_priv,
 			       struct vmw_framebuffer *framebuffer,
 			       unsigned flags, unsigned color,
@@ -1047,11 +1254,15 @@ static int do_dmabuf_dirty_ldu(struct vmw_private *dev_priv,
 	size_t fifo_size;
 	int i;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct {
 		uint32_t header;
 		SVGAFifoCmdUpdate body;
 	} *cmd;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i, increment = 1;
 
@@ -1078,6 +1289,8 @@ static int do_dmabuf_dirty_ldu(struct vmw_private *dev_priv,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	fifo_size = sizeof(*cmd) * num_clips;
 	cmd = vmw_fifo_reserve(dev_priv, fifo_size);
@@ -1087,7 +1300,10 @@ static int do_dmabuf_dirty_ldu(struct vmw_private *dev_priv,
 	}
 
 	memset(cmd, 0, fifo_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < num_clips; i++, clips += increment) {
 		cmd[i].header = cpu_to_le32(SVGA_CMD_UPDATE);
 		cmd[i].body.x = cpu_to_le32(clips->x1);
@@ -1096,6 +1312,7 @@ static int do_dmabuf_dirty_ldu(struct vmw_private *dev_priv,
 		cmd[i].body.height = cpu_to_le32(clips->y2 - clips->y1);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	vmw_fifo_commit(dev_priv, sizeof(*cmd) * num_clips);
 	ttm_read_unlock(&vmaster->lock);
@@ -1129,6 +1346,8 @@ static int vmw_surface_dmabuf_pin(struct vmw_framebuffer *vfb)
 	if (unlikely(ret != 0))
 		vfbs->buffer = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	vmw_fifo_commit(dev_priv, fifo_size);
 	return 0;
 }
@@ -1269,11 +1488,15 @@ static int do_dmabuf_dirty_sou(struct drm_file *file_priv,
 	}
 
 	kfree(blits);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int vmw_surface_dmabuf_unpin(struct vmw_framebuffer *vfb)
 {
@@ -1292,6 +1515,8 @@ static int vmw_surface_dmabuf_unpin(struct vmw_framebuffer *vfb)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int vmw_framebuffer_dmabuf_dirty(struct drm_framebuffer *framebuffer,
 				 struct drm_file *file_priv,
 				 unsigned flags, unsigned color,
@@ -1337,13 +1562,19 @@ int vmw_framebuffer_dmabuf_dirty(struct drm_framebuffer *framebuffer,
 static struct drm_framebuffer_funcs vmw_framebuffer_dmabuf_funcs = {
 	.destroy = vmw_framebuffer_dmabuf_destroy,
 	.dirty = vmw_framebuffer_dmabuf_dirty,
+<<<<<<< HEAD
 	.create_handle = vmw_framebuffer_create_handle,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
  * Pin the dmabuffer to the start of vram.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int vmw_framebuffer_dmabuf_pin(struct vmw_framebuffer *vfb)
 {
 	struct vmw_private *dev_priv = vmw_priv(vfb->base.dev);
@@ -1352,18 +1583,24 @@ static int vmw_framebuffer_dmabuf_pin(struct vmw_framebuffer *vfb)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	vmw_overlay_pause_all(dev_priv);
 
 	ret = vmw_dmabuf_to_start_of_vram(dev_priv, vfbd->buffer);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* This code should not be used with screen objects */
 	BUG_ON(dev_priv->sou_priv);
 
 	vmw_overlay_pause_all(dev_priv);
 
 	ret = vmw_dmabuf_to_start_of_vram(dev_priv, vfbd->buffer, true, false);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	vmw_overlay_resume_all(dev_priv);
 
@@ -1384,10 +1621,14 @@ static int vmw_framebuffer_dmabuf_unpin(struct vmw_framebuffer *vfb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return vmw_dmabuf_from_vram(dev_priv, vfbd->buffer);
 =======
 	return vmw_dmabuf_unpin(dev_priv, vfbd->buffer, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return vmw_dmabuf_unpin(dev_priv, vfbd->buffer, false);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int vmw_kms_new_framebuffer_dmabuf(struct vmw_private *dev_priv,
@@ -1410,7 +1651,10 @@ static int vmw_kms_new_framebuffer_dmabuf(struct vmw_private *dev_priv,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Limited framebuffer color depth support for screen objects */
 	if (dev_priv->sou_priv) {
 		switch (mode_cmd->depth) {
@@ -1438,13 +1682,17 @@ static int vmw_kms_new_framebuffer_dmabuf(struct vmw_private *dev_priv,
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	vfbd = kzalloc(sizeof(*vfbd), GFP_KERNEL);
 	if (!vfbd) {
 		ret = -ENOMEM;
 		goto out_err1;
 	}
 
+<<<<<<< HEAD
 	ret = drm_framebuffer_init(dev, &vfbd->base.base,
 				   &vmw_framebuffer_dmabuf_funcs);
 	if (ret)
@@ -1465,6 +1713,15 @@ static int vmw_kms_new_framebuffer_dmabuf(struct vmw_private *dev_priv,
 	vfbd->base.unpin = vmw_framebuffer_dmabuf_unpin;
 	vfbd->buffer = dmabuf;
 =======
+=======
+	if (!vmw_dmabuf_reference(dmabuf)) {
+		DRM_ERROR("failed to reference dmabuf %p\n", dmabuf);
+		ret = -EINVAL;
+		goto out_err2;
+	}
+
+	vfbd->base.base.bits_per_pixel = mode_cmd->bpp;
+>>>>>>> refs/remotes/origin/master
 	vfbd->base.base.pitches[0] = mode_cmd->pitch;
 	vfbd->base.base.depth = mode_cmd->depth;
 	vfbd->base.base.width = mode_cmd->width;
@@ -1476,6 +1733,7 @@ static int vmw_kms_new_framebuffer_dmabuf(struct vmw_private *dev_priv,
 	vfbd->base.dmabuf = true;
 	vfbd->buffer = dmabuf;
 	vfbd->base.user_handle = mode_cmd->handle;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	*out = &vfbd->base;
 
@@ -1483,6 +1741,19 @@ static int vmw_kms_new_framebuffer_dmabuf(struct vmw_private *dev_priv,
 
 out_err3:
 	drm_framebuffer_cleanup(&vfbd->base.base);
+=======
+	*out = &vfbd->base;
+
+	ret = drm_framebuffer_init(dev, &vfbd->base.base,
+				   &vmw_framebuffer_dmabuf_funcs);
+	if (ret)
+		goto out_err3;
+
+	return 0;
+
+out_err3:
+	vmw_dmabuf_unreference(&dmabuf);
+>>>>>>> refs/remotes/origin/master
 out_err2:
 	kfree(vfbd);
 out_err1:
@@ -1496,10 +1767,14 @@ out_err1:
 static struct drm_framebuffer *vmw_kms_fb_create(struct drm_device *dev,
 						 struct drm_file *file_priv,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						 struct drm_mode_fb_cmd *mode_cmd)
 =======
 						 struct drm_mode_fb_cmd2 *mode_cmd2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 struct drm_mode_fb_cmd2 *mode_cmd2)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vmw_private *dev_priv = vmw_priv(dev);
 	struct ttm_object_file *tfile = vmw_fpriv(file_priv)->tfile;
@@ -1507,10 +1782,13 @@ static struct drm_framebuffer *vmw_kms_fb_create(struct drm_device *dev,
 	struct vmw_surface *surface = NULL;
 	struct vmw_dma_buffer *bo = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 required_size;
 	int ret;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ttm_base_object *user_obj;
 	struct drm_mode_fb_cmd mode_cmd;
 	int ret;
@@ -1522,7 +1800,10 @@ static struct drm_framebuffer *vmw_kms_fb_create(struct drm_device *dev,
 	drm_fb_get_bpp_depth(mode_cmd2->pixel_format, &mode_cmd.depth,
 				    &mode_cmd.bpp);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * This code should be conditioned on Screen Objects not being used.
 	 * If screen objects are used, we can allocate a GMR to hold the
@@ -1530,11 +1811,14 @@ static struct drm_framebuffer *vmw_kms_fb_create(struct drm_device *dev,
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	required_size = mode_cmd->pitch * mode_cmd->height;
 	if (unlikely(required_size > (u64) dev_priv->vram_size)) {
 		DRM_ERROR("VRAM size is too small for requested mode.\n");
 		return NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!vmw_kms_validate_mode_vram(dev_priv,
 					mode_cmd.pitch,
 					mode_cmd.height)) {
@@ -1555,13 +1839,17 @@ static struct drm_framebuffer *vmw_kms_fb_create(struct drm_device *dev,
 	if (unlikely(user_obj == NULL)) {
 		DRM_ERROR("Could not locate requested kms frame buffer.\n");
 		return ERR_PTR(-ENOENT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/**
 	 * End conditioned code.
 	 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = vmw_user_surface_lookup_handle(dev_priv, tfile,
 					     mode_cmd->handle, &surface);
@@ -1617,6 +1905,8 @@ static struct drm_mode_config_funcs vmw_kms_funcs = {
 	.fb_create = vmw_kms_fb_create,
 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* returns either a dmabuf or surface */
 	ret = vmw_user_lookup_handle(dev_priv, tfile,
 				     mode_cmd.handle,
@@ -1651,7 +1941,11 @@ err_out:
 	return &vfb->base;
 }
 
+<<<<<<< HEAD
 static struct drm_mode_config_funcs vmw_kms_funcs = {
+=======
+static const struct drm_mode_config_funcs vmw_kms_funcs = {
+>>>>>>> refs/remotes/origin/master
 	.fb_create = vmw_kms_fb_create,
 };
 
@@ -1897,7 +2191,10 @@ int vmw_kms_readback(struct vmw_private *dev_priv,
 
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int vmw_kms_init(struct vmw_private *dev_priv)
 {
@@ -1913,12 +2210,18 @@ int vmw_kms_init(struct vmw_private *dev_priv)
 	dev->mode_config.max_height = 8192;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = vmw_kms_init_legacy_display_system(dev_priv);
 =======
 	ret = vmw_kms_init_screen_object_display(dev_priv);
 	if (ret) /* Fallback */
 		(void)vmw_kms_init_legacy_display_system(dev_priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = vmw_kms_init_screen_object_display(dev_priv);
+	if (ret) /* Fallback */
+		(void)vmw_kms_init_legacy_display_system(dev_priv);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1932,13 +2235,19 @@ int vmw_kms_close(struct vmw_private *dev_priv)
 	 */
 	drm_mode_config_cleanup(dev_priv->dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vmw_kms_close_legacy_display_system(dev_priv);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dev_priv->sou_priv)
 		vmw_kms_close_screen_object_display(dev_priv);
 	else
 		vmw_kms_close_legacy_display_system(dev_priv);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1967,7 +2276,11 @@ int vmw_kms_cursor_bypass_ioctl(struct drm_device *dev, void *data,
 
 	obj = drm_mode_object_find(dev, arg->crtc_id, DRM_MODE_OBJECT_CRTC);
 	if (!obj) {
+<<<<<<< HEAD
 		ret = -EINVAL;
+=======
+		ret = -ENOENT;
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -1984,6 +2297,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void vmw_kms_write_svga(struct vmw_private *vmw_priv,
 			unsigned width, unsigned height, unsigned pitch,
 			unsigned bbp, unsigned depth)
@@ -1992,6 +2306,11 @@ int vmw_kms_write_svga(struct vmw_private *vmw_priv,
 			unsigned width, unsigned height, unsigned pitch,
 			unsigned bpp, unsigned depth)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int vmw_kms_write_svga(struct vmw_private *vmw_priv,
+			unsigned width, unsigned height, unsigned pitch,
+			unsigned bpp, unsigned depth)
+>>>>>>> refs/remotes/origin/master
 {
 	if (vmw_priv->capabilities & SVGA_CAP_PITCHLOCK)
 		vmw_write(vmw_priv, SVGA_REG_PITCHLOCK, pitch);
@@ -2000,12 +2319,15 @@ int vmw_kms_write_svga(struct vmw_private *vmw_priv,
 	vmw_write(vmw_priv, SVGA_REG_WIDTH, width);
 	vmw_write(vmw_priv, SVGA_REG_HEIGHT, height);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vmw_write(vmw_priv, SVGA_REG_BITS_PER_PIXEL, bbp);
 	vmw_write(vmw_priv, SVGA_REG_DEPTH, depth);
 	vmw_write(vmw_priv, SVGA_REG_RED_MASK, 0x00ff0000);
 	vmw_write(vmw_priv, SVGA_REG_GREEN_MASK, 0x0000ff00);
 	vmw_write(vmw_priv, SVGA_REG_BLUE_MASK, 0x000000ff);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	vmw_write(vmw_priv, SVGA_REG_BITS_PER_PIXEL, bpp);
 
 	if (vmw_read(vmw_priv, SVGA_REG_DEPTH) != depth) {
@@ -2015,7 +2337,10 @@ int vmw_kms_write_svga(struct vmw_private *vmw_priv,
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int vmw_kms_save_vga(struct vmw_private *vmw_priv)
@@ -2026,6 +2351,7 @@ int vmw_kms_save_vga(struct vmw_private *vmw_priv)
 	vmw_priv->vga_width = vmw_read(vmw_priv, SVGA_REG_WIDTH);
 	vmw_priv->vga_height = vmw_read(vmw_priv, SVGA_REG_HEIGHT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vmw_priv->vga_depth = vmw_read(vmw_priv, SVGA_REG_DEPTH);
 	vmw_priv->vga_bpp = vmw_read(vmw_priv, SVGA_REG_BITS_PER_PIXEL);
 	vmw_priv->vga_pseudo = vmw_read(vmw_priv, SVGA_REG_PSEUDOCOLOR);
@@ -2035,6 +2361,9 @@ int vmw_kms_save_vga(struct vmw_private *vmw_priv)
 =======
 	vmw_priv->vga_bpp = vmw_read(vmw_priv, SVGA_REG_BITS_PER_PIXEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vmw_priv->vga_bpp = vmw_read(vmw_priv, SVGA_REG_BITS_PER_PIXEL);
+>>>>>>> refs/remotes/origin/master
 	if (vmw_priv->capabilities & SVGA_CAP_PITCHLOCK)
 		vmw_priv->vga_pitchlock =
 		  vmw_read(vmw_priv, SVGA_REG_PITCHLOCK);
@@ -2084,6 +2413,7 @@ int vmw_kms_restore_vga(struct vmw_private *vmw_priv)
 	vmw_write(vmw_priv, SVGA_REG_WIDTH, vmw_priv->vga_width);
 	vmw_write(vmw_priv, SVGA_REG_HEIGHT, vmw_priv->vga_height);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vmw_write(vmw_priv, SVGA_REG_DEPTH, vmw_priv->vga_depth);
 	vmw_write(vmw_priv, SVGA_REG_BITS_PER_PIXEL, vmw_priv->vga_bpp);
 	vmw_write(vmw_priv, SVGA_REG_PSEUDOCOLOR, vmw_priv->vga_pseudo);
@@ -2093,6 +2423,9 @@ int vmw_kms_restore_vga(struct vmw_private *vmw_priv)
 =======
 	vmw_write(vmw_priv, SVGA_REG_BITS_PER_PIXEL, vmw_priv->vga_bpp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vmw_write(vmw_priv, SVGA_REG_BITS_PER_PIXEL, vmw_priv->vga_bpp);
+>>>>>>> refs/remotes/origin/master
 	if (vmw_priv->capabilities & SVGA_CAP_PITCHLOCK)
 		vmw_write(vmw_priv, SVGA_REG_PITCHLOCK,
 			  vmw_priv->vga_pitchlock);
@@ -2118,7 +2451,10 @@ int vmw_kms_restore_vga(struct vmw_private *vmw_priv)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bool vmw_kms_validate_mode_vram(struct vmw_private *dev_priv,
 				uint32_t pitch,
 				uint32_t height)
@@ -2199,7 +2535,12 @@ int vmw_du_update_layout(struct vmw_private *dev_priv, unsigned num,
 
 int vmw_du_page_flip(struct drm_crtc *crtc,
 		     struct drm_framebuffer *fb,
+<<<<<<< HEAD
 		     struct drm_pending_vblank_event *event)
+=======
+		     struct drm_pending_vblank_event *event,
+		     uint32_t page_flip_flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vmw_private *dev_priv = vmw_priv(crtc->dev);
 	struct drm_framebuffer *old_fb = crtc->fb;
@@ -2493,7 +2834,10 @@ int vmw_du_connector_set_property(struct drm_connector *connector,
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int vmw_kms_update_layout_ioctl(struct drm_device *dev, void *data,
 				struct drm_file *file_priv)
 {
@@ -2506,10 +2850,15 @@ int vmw_kms_update_layout_ioctl(struct drm_device *dev, void *data,
 	unsigned rects_size;
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int i;
 	struct drm_mode_config *mode_config = &dev->mode_config;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i;
+	struct drm_mode_config *mode_config = &dev->mode_config;
+>>>>>>> refs/remotes/origin/master
 
 	ret = ttm_read_lock(&vmaster->lock, true);
 	if (unlikely(ret != 0))
@@ -2518,20 +2867,29 @@ int vmw_kms_update_layout_ioctl(struct drm_device *dev, void *data,
 	if (!arg->num_outputs) {
 		struct drm_vmw_rect def_rect = {0, 0, 800, 600};
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vmw_kms_ldu_update_layout(dev_priv, 1, &def_rect);
 =======
 		vmw_du_update_layout(dev_priv, 1, &def_rect);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vmw_du_update_layout(dev_priv, 1, &def_rect);
+>>>>>>> refs/remotes/origin/master
 		goto out_unlock;
 	}
 
 	rects_size = arg->num_outputs * sizeof(struct drm_vmw_rect);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rects = kzalloc(rects_size, GFP_KERNEL);
 =======
 	rects = kcalloc(arg->num_outputs, sizeof(struct drm_vmw_rect),
 			GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rects = kcalloc(arg->num_outputs, sizeof(struct drm_vmw_rect),
+			GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(!rects)) {
 		ret = -ENOMEM;
 		goto out_unlock;
@@ -2546,8 +2904,11 @@ int vmw_kms_update_layout_ioctl(struct drm_device *dev, void *data,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vmw_kms_ldu_update_layout(dev_priv, arg->num_outputs, rects);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < arg->num_outputs; ++i) {
 		if (rects[i].x < 0 ||
 		    rects[i].y < 0 ||
@@ -2560,7 +2921,10 @@ int vmw_kms_update_layout_ioctl(struct drm_device *dev, void *data,
 	}
 
 	vmw_du_update_layout(dev_priv, arg->num_outputs, rects);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 out_free:
 	kfree(rects);
@@ -2568,6 +2932,7 @@ out_unlock:
 	ttm_read_unlock(&vmaster->lock);
 	return ret;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 bool vmw_kms_validate_mode_vram(struct vmw_private *dev_priv,
@@ -2583,3 +2948,5 @@ u32 vmw_get_vblank_counter(struct drm_device *dev, int crtc)
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

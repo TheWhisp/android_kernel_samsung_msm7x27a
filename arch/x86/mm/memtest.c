@@ -9,6 +9,10 @@
 #include <linux/memblock.h>
 
 static u64 patterns[] __initdata = {
+<<<<<<< HEAD
+=======
+	/* The first entry has to be 0 to leave memtest with zeroed memory */
+>>>>>>> refs/remotes/origin/master
 	0,
 	0xffffffffffffffffULL,
 	0x5555555555555555ULL,
@@ -35,10 +39,14 @@ static void __init reserve_bad_mem(u64 pattern, u64 start_bad, u64 end_bad)
 	       (unsigned long long) start_bad,
 	       (unsigned long long) end_bad);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_x86_reserve_range(start_bad, end_bad, "BAD RAM");
 =======
 	memblock_reserve(start_bad, end_bad - start_bad);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_reserve(start_bad, end_bad - start_bad);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init memtest(u64 pattern, u64 start_phys, u64 size)
@@ -75,6 +83,7 @@ static void __init memtest(u64 pattern, u64 start_phys, u64 size)
 static void __init do_one_pass(u64 pattern, u64 start, u64 end)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 size = 0;
 
 	while (start < end) {
@@ -98,6 +107,12 @@ static void __init do_one_pass(u64 pattern, u64 start, u64 end)
 	phys_addr_t this_start, this_end;
 
 	for_each_free_mem_range(i, MAX_NUMNODES, &this_start, &this_end, NULL) {
+=======
+	u64 i;
+	phys_addr_t this_start, this_end;
+
+	for_each_free_mem_range(i, NUMA_NO_NODE, &this_start, &this_end, NULL) {
+>>>>>>> refs/remotes/origin/master
 		this_start = clamp_t(phys_addr_t, this_start, start, end);
 		this_end = clamp_t(phys_addr_t, this_end, start, end);
 		if (this_start < this_end) {
@@ -107,7 +122,10 @@ static void __init do_one_pass(u64 pattern, u64 start, u64 end)
 			       (unsigned long long)cpu_to_be64(pattern));
 			memtest(pattern, this_start, this_end - this_start);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -135,6 +153,7 @@ void __init early_memtest(unsigned long start, unsigned long end)
 		return;
 
 	printk(KERN_INFO "early_memtest: # of tests: %d\n", memtest_pattern);
+<<<<<<< HEAD
 	for (i = 0; i < memtest_pattern; i++) {
 		idx = i % ARRAY_SIZE(patterns);
 		do_one_pass(patterns[idx], start, end);
@@ -146,4 +165,10 @@ void __init early_memtest(unsigned long start, unsigned long end)
 		/* additional test with pattern 0 will do this */
 		do_one_pass(0, start, end);
 	}
+=======
+	for (i = memtest_pattern-1; i < UINT_MAX; --i) {
+		idx = i % ARRAY_SIZE(patterns);
+		do_one_pass(patterns[idx], start, end);
+	}
+>>>>>>> refs/remotes/origin/master
 }

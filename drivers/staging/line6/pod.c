@@ -15,7 +15,10 @@
 
 #include "audio.h"
 #include "capture.h"
+<<<<<<< HEAD
 #include "control.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "driver.h"
 #include "playback.h"
 #include "pod.h"
@@ -26,7 +29,10 @@
 /* *INDENT-OFF* */
 
 enum {
+<<<<<<< HEAD
 	POD_SYSEX_CLIP      = 0x0f,
+=======
+>>>>>>> refs/remotes/origin/master
 	POD_SYSEX_SAVE      = 0x24,
 	POD_SYSEX_SYSTEM    = 0x56,
 	POD_SYSEX_SYSTEMREQ = 0x57,
@@ -36,6 +42,7 @@ enum {
 	POD_SYSEX_DUMPMEM   = 0x73,
 	POD_SYSEX_DUMP      = 0x74,
 	POD_SYSEX_DUMPREQ   = 0x75
+<<<<<<< HEAD
 	/* POD_SYSEX_DUMPMEM2  = 0x76 */   /* dumps entire internal memory of PODxt Pro */
 };
 
@@ -47,6 +54,16 @@ enum {
 	POD_tuner_note     = 0x16,
 	POD_tuner_pitch    = 0x17,
 	POD_system_invalid = 0x10000
+=======
+
+	/* dumps entire internal memory of PODxt Pro */
+	/* POD_SYSEX_DUMPMEM2  = 0x76 */
+};
+
+enum {
+	POD_MONITOR_LEVEL  = 0x04,
+	POD_SYSTEM_INVALID = 0x10000
+>>>>>>> refs/remotes/origin/master
 };
 
 /* *INDENT-ON* */
@@ -118,10 +135,13 @@ static struct line6_pcm_properties pod_pcm_properties = {
 	.bytes_per_frame = POD_BYTES_PER_FRAME
 };
 
+<<<<<<< HEAD
 static const char pod_request_channel[] = {
 	0xf0, 0x00, 0x01, 0x0c, 0x03, 0x75, 0xf7
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const char pod_version_header[] = {
 	0xf2, 0x7e, 0x7f, 0x06, 0x02
 };
@@ -129,6 +149,7 @@ static const char pod_version_header[] = {
 /* forward declarations: */
 static void pod_startup2(unsigned long data);
 static void pod_startup3(struct usb_line6_pod *pod);
+<<<<<<< HEAD
 static void pod_startup4(struct usb_line6_pod *pod);
 
 /*
@@ -141,6 +162,8 @@ static void pod_mark_batch_all_dirty(struct usb_line6_pod *pod)
 	for (i = 0; i < POD_CONTROL_SIZE; i++)
 		set_bit(i, pod->param_dirty);
 }
+=======
+>>>>>>> refs/remotes/origin/master
 
 static char *pod_alloc_sysex_buffer(struct usb_line6_pod *pod, int code,
 				    int size)
@@ -150,6 +173,7 @@ static char *pod_alloc_sysex_buffer(struct usb_line6_pod *pod, int code,
 }
 
 /*
+<<<<<<< HEAD
 	Send channel dump data to the PODxt Pro.
 */
 static void pod_dump(struct usb_line6_pod *pod, const unsigned char *data)
@@ -189,12 +213,15 @@ static void pod_save_button_pressed(struct usb_line6_pod *pod, int type,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
 	Process a completely received message.
 */
 void line6_pod_process_message(struct usb_line6_pod *pod)
 {
 	const unsigned char *buf = pod->line6.buffer_message;
 
+<<<<<<< HEAD
 	/* filter messages by type */
 	switch (buf[0] & 0xf0) {
 	case LINE6_PARAM_CHANGE:
@@ -399,10 +426,33 @@ void line6_pod_midi_postprocess(struct usb_line6_pod *pod, unsigned char *data,
 				line6_invalidate_current(&pod->dumpreq);
 				break;
 			}
+=======
+	if (memcmp(buf, pod_version_header, sizeof(pod_version_header)) == 0) {
+		pod->firmware_version = buf[13] * 100 + buf[14] * 10 + buf[15];
+		pod->device_id = ((int)buf[8] << 16) | ((int)buf[9] << 8) |
+				 (int) buf[10];
+		pod_startup3(pod);
+		return;
+	}
+
+	/* Only look for sysex messages from this device */
+	if (buf[0] != (LINE6_SYSEX_BEGIN | LINE6_CHANNEL_DEVICE) &&
+	    buf[0] != (LINE6_SYSEX_BEGIN | LINE6_CHANNEL_UNKNOWN)) {
+		return;
+	}
+	if (memcmp(buf + 1, line6_midi_id, sizeof(line6_midi_id)) != 0)
+		return;
+
+	if (buf[5] == POD_SYSEX_SYSTEM && buf[6] == POD_MONITOR_LEVEL) {
+		short value = ((int)buf[7] << 12) | ((int)buf[8] << 8) |
+			      ((int)buf[9] << 4) | (int)buf[10];
+		pod->monitor_level = value;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 /*
+<<<<<<< HEAD
 	Send channel number (i.e., switch to a different sound).
 */
 static void pod_send_channel(struct usb_line6_pod *pod, int value)
@@ -700,11 +750,22 @@ static ssize_t pod_get_system_param_string(struct usb_line6_pod *pod, char *buf,
 		return retval;
 
 	return sprintf(buf, "%d\n", value);
+=======
+	Transmit PODxt Pro control parameter.
+*/
+void line6_pod_transmit_parameter(struct usb_line6_pod *pod, int param,
+				  u8 value)
+{
+	line6_transmit_parameter(&pod->line6, param, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
 	Send system parameter (from integer).
+<<<<<<< HEAD
 	@param tuner non-zero, if code refers to a tuner parameter
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static int pod_set_system_param_int(struct usb_line6_pod *pod, int value,
 				    int code)
@@ -712,11 +773,14 @@ static int pod_set_system_param_int(struct usb_line6_pod *pod, int value,
 	char *sysex;
 	static const int size = 5;
 
+<<<<<<< HEAD
 	if (((pod->prog_data.control[POD_tuner] & 0x40) == 0)
 	    && pod_is_tuner(code))
 		return -EINVAL;
 
 	/* send value to tuner: */
+=======
+>>>>>>> refs/remotes/origin/master
 	sysex = pod_alloc_sysex_buffer(pod, POD_SYSEX_SYSTEM, size);
 	if (!sysex)
 		return -ENOMEM;
@@ -731,6 +795,7 @@ static int pod_set_system_param_int(struct usb_line6_pod *pod, int value,
 }
 
 /*
+<<<<<<< HEAD
 	Send system parameter (from string).
 	@param tuner non-zero, if code refers to a tuner parameter
 */
@@ -908,6 +973,12 @@ static ssize_t pod_set_midi_postprocess(struct device *dev,
 */
 static ssize_t pod_get_serial_number(struct device *dev,
 				     struct device_attribute *attr, char *buf)
+=======
+	"read" request on "serial_number" special file.
+*/
+static ssize_t serial_number_show(struct device *dev,
+				  struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_interface *interface = to_usb_interface(dev);
 	struct usb_line6_pod *pod = usb_get_intfdata(interface);
@@ -917,9 +988,14 @@ static ssize_t pod_get_serial_number(struct device *dev,
 /*
 	"read" request on "firmware_version" special file.
 */
+<<<<<<< HEAD
 static ssize_t pod_get_firmware_version(struct device *dev,
 					struct device_attribute *attr,
 					char *buf)
+=======
+static ssize_t firmware_version_show(struct device *dev,
+				     struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_interface *interface = to_usb_interface(dev);
 	struct usb_line6_pod *pod = usb_get_intfdata(interface);
@@ -930,8 +1006,13 @@ static ssize_t pod_get_firmware_version(struct device *dev,
 /*
 	"read" request on "device_id" special file.
 */
+<<<<<<< HEAD
 static ssize_t pod_get_device_id(struct device *dev,
 				 struct device_attribute *attr, char *buf)
+=======
+static ssize_t device_id_show(struct device *dev,
+			      struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_interface *interface = to_usb_interface(dev);
 	struct usb_line6_pod *pod = usb_get_intfdata(interface);
@@ -939,6 +1020,7 @@ static ssize_t pod_get_device_id(struct device *dev,
 }
 
 /*
+<<<<<<< HEAD
 	"read" request on "clip" special file.
 */
 static ssize_t pod_wait_for_clip(struct device *dev,
@@ -951,6 +1033,8 @@ static ssize_t pod_wait_for_clip(struct device *dev,
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
 	POD startup procedure.
 	This is a sequence of functions with special requirements (e.g., must
 	not run immediately after initialization, must not run in interrupt
@@ -969,6 +1053,7 @@ static void pod_startup1(struct usb_line6_pod *pod)
 static void pod_startup2(unsigned long data)
 {
 	struct usb_line6_pod *pod = (struct usb_line6_pod *)data;
+<<<<<<< HEAD
 
 	/* schedule another startup procedure until startup is complete: */
 	if (pod->startup_progress >= POD_STARTUP_LAST)
@@ -985,6 +1070,8 @@ static void pod_startup2(unsigned long data)
 
 static void pod_startup3(struct usb_line6_pod *pod)
 {
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_line6 *line6 = &pod->line6;
 	CHECK_STARTUP_PROGRESS(pod->startup_progress, POD_STARTUP_VERSIONREQ);
 
@@ -992,7 +1079,11 @@ static void pod_startup3(struct usb_line6_pod *pod)
 	line6_version_request_async(line6);
 }
 
+<<<<<<< HEAD
 static void pod_startup4(struct usb_line6_pod *pod)
+=======
+static void pod_startup3(struct usb_line6_pod *pod)
+>>>>>>> refs/remotes/origin/master
 {
 	CHECK_STARTUP_PROGRESS(pod->startup_progress, POD_STARTUP_WORKQUEUE);
 
@@ -1000,7 +1091,11 @@ static void pod_startup4(struct usb_line6_pod *pod)
 	schedule_work(&pod->startup_work);
 }
 
+<<<<<<< HEAD
 static void pod_startup5(struct work_struct *work)
+=======
+static void pod_startup4(struct work_struct *work)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_line6_pod *pod =
 	    container_of(work, struct usb_line6_pod, startup_work);
@@ -1013,6 +1108,7 @@ static void pod_startup5(struct work_struct *work)
 
 	/* ALSA audio interface: */
 	line6_register_audio(line6);
+<<<<<<< HEAD
 
 	/* device files: */
 	line6_pod_create_files(pod->firmware_version,
@@ -1094,6 +1190,14 @@ static DEVICE_ATTR(tuner_pitch, S_IRUGO, pod_get_tuner_pitch, line6_nop_write);
 #ifdef CONFIG_LINE6_USB_RAW
 static DEVICE_ATTR(raw, S_IWUSR, line6_nop_read, line6_set_raw);
 #endif
+=======
+}
+
+/* POD special files: */
+static DEVICE_ATTR_RO(device_id);
+static DEVICE_ATTR_RO(firmware_version);
+static DEVICE_ATTR_RO(serial_number);
+>>>>>>> refs/remotes/origin/master
 
 /* control info callback */
 static int snd_pod_control_monitor_info(struct snd_kcontrol *kcontrol,
@@ -1112,7 +1216,11 @@ static int snd_pod_control_monitor_get(struct snd_kcontrol *kcontrol,
 {
 	struct snd_line6_pcm *line6pcm = snd_kcontrol_chip(kcontrol);
 	struct usb_line6_pod *pod = (struct usb_line6_pod *)line6pcm->line6;
+<<<<<<< HEAD
 	ucontrol->value.integer.value[0] = pod->monitor_level.value;
+=======
+	ucontrol->value.integer.value[0] = pod->monitor_level;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1123,12 +1231,21 @@ static int snd_pod_control_monitor_put(struct snd_kcontrol *kcontrol,
 	struct snd_line6_pcm *line6pcm = snd_kcontrol_chip(kcontrol);
 	struct usb_line6_pod *pod = (struct usb_line6_pod *)line6pcm->line6;
 
+<<<<<<< HEAD
 	if (ucontrol->value.integer.value[0] == pod->monitor_level.value)
 		return 0;
 
 	pod->monitor_level.value = ucontrol->value.integer.value[0];
 	pod_set_system_param_int(pod, ucontrol->value.integer.value[0],
 				 POD_monitor_level);
+=======
+	if (ucontrol->value.integer.value[0] == pod->monitor_level)
+		return 0;
+
+	pod->monitor_level = ucontrol->value.integer.value[0];
+	pod_set_system_param_int(pod, ucontrol->value.integer.value[0],
+				 POD_MONITOR_LEVEL);
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -1150,6 +1267,7 @@ static void pod_destruct(struct usb_interface *interface)
 {
 	struct usb_line6_pod *pod = usb_get_intfdata(interface);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_line6 *line6;
 
 	if (pod == NULL)
@@ -1159,10 +1277,13 @@ static void pod_destruct(struct usb_interface *interface)
 		return;
 	line6_cleanup_audio(line6);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (pod == NULL)
 		return;
 	line6_cleanup_audio(&pod->line6);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	del_timer(&pod->startup_timer);
@@ -1170,6 +1291,11 @@ static void pod_destruct(struct usb_interface *interface)
 
 	/* free dump request data: */
 	line6_dumpreq_destruct(&pod->dumpreq);
+=======
+
+	del_timer(&pod->startup_timer);
+	cancel_work_sync(&pod->startup_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1179,6 +1305,7 @@ static int pod_create_files2(struct device *dev)
 {
 	int err;
 
+<<<<<<< HEAD
 	CHECK_RETURN(device_create_file(dev, &dev_attr_channel));
 	CHECK_RETURN(device_create_file(dev, &dev_attr_clip));
 	CHECK_RETURN(device_create_file(dev, &dev_attr_device_id));
@@ -1208,6 +1335,11 @@ static int pod_create_files2(struct device *dev)
 	CHECK_RETURN(device_create_file(dev, &dev_attr_raw));
 #endif
 
+=======
+	CHECK_RETURN(device_create_file(dev, &dev_attr_device_id));
+	CHECK_RETURN(device_create_file(dev, &dev_attr_firmware_version));
+	CHECK_RETURN(device_create_file(dev, &dev_attr_serial_number));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1221,11 +1353,16 @@ static int pod_try_init(struct usb_interface *interface,
 	struct usb_line6 *line6 = &pod->line6;
 
 	init_timer(&pod->startup_timer);
+<<<<<<< HEAD
 	INIT_WORK(&pod->startup_work, pod_startup5);
+=======
+	INIT_WORK(&pod->startup_work, pod_startup4);
+>>>>>>> refs/remotes/origin/master
 
 	if ((interface == NULL) || (pod == NULL))
 		return -ENODEV;
 
+<<<<<<< HEAD
 	pod->channel_num = 255;
 
 	/* initialize wait queues: */
@@ -1247,6 +1384,8 @@ static int pod_try_init(struct usb_interface *interface,
 		return -ENOMEM;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* create sysfs entries: */
 	err = pod_create_files2(&interface->dev);
 	if (err < 0)
@@ -1280,7 +1419,11 @@ static int pod_try_init(struct usb_interface *interface,
 	 */
 
 	if (pod->line6.properties->capabilities & LINE6_BIT_CONTROL) {
+<<<<<<< HEAD
 		pod->monitor_level.value = POD_system_invalid;
+=======
+		pod->monitor_level = POD_SYSTEM_INVALID;
+>>>>>>> refs/remotes/origin/master
 
 		/* initiate startup procedure: */
 		pod_startup1(pod);
@@ -1322,6 +1465,7 @@ void line6_pod_disconnect(struct usb_interface *interface)
 
 		if (dev != NULL) {
 			/* remove sysfs entries: */
+<<<<<<< HEAD
 			line6_pod_remove_files(pod->firmware_version,
 					       pod->line6.
 					       properties->device_bit, dev);
@@ -1355,6 +1499,11 @@ void line6_pod_disconnect(struct usb_interface *interface)
 #ifdef CONFIG_LINE6_USB_RAW
 			device_remove_file(dev, &dev_attr_raw);
 #endif
+=======
+			device_remove_file(dev, &dev_attr_device_id);
+			device_remove_file(dev, &dev_attr_firmware_version);
+			device_remove_file(dev, &dev_attr_serial_number);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 

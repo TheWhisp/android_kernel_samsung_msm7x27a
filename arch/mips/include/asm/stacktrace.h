@@ -8,12 +8,18 @@ extern int raw_show_trace;
 extern unsigned long unwind_stack(struct task_struct *task, unsigned long *sp,
 				  unsigned long pc, unsigned long *ra);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern unsigned long unwind_stack_by_address(unsigned long stack_page,
 					     unsigned long *sp,
 					     unsigned long pc,
 					     unsigned long *ra);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define raw_show_trace 1
 static inline unsigned long unwind_stack(struct task_struct *task,

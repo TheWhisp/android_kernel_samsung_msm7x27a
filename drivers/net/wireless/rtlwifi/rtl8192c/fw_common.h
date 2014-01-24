@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -37,15 +41,20 @@
 #define FW_8192C_SIZE				0x3000
 #define FW_8192C_START_ADDRESS			0x1000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FW_8192C_END_ADDRESS			0x3FFF
 =======
 #define FW_8192C_END_ADDRESS			0x1FFF
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define FW_8192C_END_ADDRESS			0x1FFF
+>>>>>>> refs/remotes/origin/master
 #define FW_8192C_PAGE_SIZE			4096
 #define FW_8192C_POLLING_DELAY			5
 #define FW_8192C_POLLING_TIMEOUT_COUNT		100
 
 #define IS_FW_HEADER_EXIST(_pfwhdr)	\
+<<<<<<< HEAD
 <<<<<<< HEAD
 	((_pfwhdr->signature&0xFFF0) == 0x92C0 ||\
 	(_pfwhdr->signature&0xFFF0) == 0x88C0)
@@ -56,6 +65,8 @@ struct rtl92c_firmware_header {
 	u8 function;
 	u16 version;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	((le16_to_cpu(_pfwhdr->signature)&0xFFF0) == 0x92C0 ||\
 	(le16_to_cpu(_pfwhdr->signature)&0xFFF0) == 0x88C0)
 
@@ -64,13 +75,17 @@ struct rtl92c_firmware_header {
 	u8 category;
 	u8 function;
 	__le16 version;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 subversion;
 	u8 rsvd1;
 	u8 month;
 	u8 date;
 	u8 hour;
 	u8 minute;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u16 ramcodeSize;
 	u16 rsvd2;
@@ -79,13 +94,18 @@ struct rtl92c_firmware_header {
 	u32 rsvd4;
 	u32 rsvd5;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__le16 ramcodeSize;
 	__le16 rsvd2;
 	__le32 svnindex;
 	__le32 rsvd3;
 	__le32 rsvd4;
 	__le32 rsvd5;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 enum rtl8192c_h2c_cmd {
@@ -95,6 +115,12 @@ enum rtl8192c_h2c_cmd {
 	H2C_RSVDPAGE = 3,
 	H2C_RSSI_REPORT = 5,
 	H2C_RA_MASK = 6,
+<<<<<<< HEAD
+=======
+	H2C_MACID_PS_MODE = 7,
+	H2C_P2P_PS_OFFLOAD = 8,
+	H2C_P2P_PS_CTW_CMD = 32,
+>>>>>>> refs/remotes/origin/master
 	MAX_H2CCMD
 };
 
@@ -123,8 +149,13 @@ void rtl92c_set_fw_pwrmode_cmd(struct ieee80211_hw *hw, u8 mode);
 void rtl92c_set_fw_rsvdpagepkt(struct ieee80211_hw *hw, bool b_dl_finished);
 void rtl92c_set_fw_joinbss_report_cmd(struct ieee80211_hw *hw, u8 mstatus);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void usb_writeN_async(struct rtl_priv *rtlpriv, u32 addr, void *data, u16 len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void usb_writeN_async(struct rtl_priv *rtlpriv, u32 addr, void *data, u16 len);
+void rtl92c_set_p2p_ps_offload_cmd(struct ieee80211_hw *hw, u8 p2p_ps_state);
+>>>>>>> refs/remotes/origin/master
 
 #endif

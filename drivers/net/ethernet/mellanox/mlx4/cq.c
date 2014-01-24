@@ -128,8 +128,11 @@ int mlx4_cq_modify(struct mlx4_dev *dev, struct mlx4_cq *cq,
 		return PTR_ERR(mailbox);
 
 	cq_context = mailbox->buf;
+<<<<<<< HEAD
 	memset(cq_context, 0, sizeof *cq_context);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cq_context->cq_max_count = cpu_to_be16(count);
 	cq_context->cq_period    = cpu_to_be16(period);
 
@@ -153,8 +156,11 @@ int mlx4_cq_resize(struct mlx4_dev *dev, struct mlx4_cq *cq,
 		return PTR_ERR(mailbox);
 
 	cq_context = mailbox->buf;
+<<<<<<< HEAD
 	memset(cq_context, 0, sizeof *cq_context);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	cq_context->logsize_usrpage = cpu_to_be32(ilog2(entries) << 24);
 	cq_context->log_page_size   = mtt->page_shift - 12;
 	mtt_addr = mlx4_mtt_addr(dev, mtt);
@@ -226,7 +232,11 @@ void __mlx4_cq_free_icm(struct mlx4_dev *dev, int cqn)
 
 static void mlx4_cq_free_icm(struct mlx4_dev *dev, int cqn)
 {
+<<<<<<< HEAD
 	u64 in_param;
+=======
+	u64 in_param = 0;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	if (mlx4_is_mfunc(dev)) {
@@ -240,9 +250,16 @@ static void mlx4_cq_free_icm(struct mlx4_dev *dev, int cqn)
 		__mlx4_cq_free_icm(dev, cqn);
 }
 
+<<<<<<< HEAD
 int mlx4_cq_alloc(struct mlx4_dev *dev, int nent, struct mlx4_mtt *mtt,
 		  struct mlx4_uar *uar, u64 db_rec, struct mlx4_cq *cq,
 		  unsigned vector, int collapsed)
+=======
+int mlx4_cq_alloc(struct mlx4_dev *dev, int nent,
+		  struct mlx4_mtt *mtt, struct mlx4_uar *uar, u64 db_rec,
+		  struct mlx4_cq *cq, unsigned vector, int collapsed,
+		  int timestamp_en)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mlx4_priv *priv = mlx4_priv(dev);
 	struct mlx4_cq_table *cq_table = &priv->cq_table;
@@ -273,9 +290,16 @@ int mlx4_cq_alloc(struct mlx4_dev *dev, int nent, struct mlx4_mtt *mtt,
 	}
 
 	cq_context = mailbox->buf;
+<<<<<<< HEAD
 	memset(cq_context, 0, sizeof *cq_context);
 
 	cq_context->flags	    = cpu_to_be32(!!collapsed << 18);
+=======
+	cq_context->flags	    = cpu_to_be32(!!collapsed << 18);
+	if (timestamp_en)
+		cq_context->flags  |= cpu_to_be32(1 << 19);
+
+>>>>>>> refs/remotes/origin/master
 	cq_context->logsize_usrpage = cpu_to_be32((ilog2(nent) << 24) | uar->index);
 	cq_context->comp_eqn	    = priv->eq_table.eq[vector].eqn;
 	cq_context->log_page_size   = mtt->page_shift - MLX4_ICM_PAGE_SHIFT;

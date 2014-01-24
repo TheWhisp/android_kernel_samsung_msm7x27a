@@ -12,11 +12,17 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
 #define psmouse_fmt(fmt)	fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
+#define psmouse_fmt(fmt)	fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/module.h>
 #include <linux/slab.h>
@@ -37,6 +43,10 @@
 #include "touchkit_ps2.h"
 #include "elantech.h"
 #include "sentelic.h"
+<<<<<<< HEAD
+=======
+#include "cypress_ps2.h"
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_DESC	"PS/2 mouse driver"
 
@@ -64,10 +74,14 @@ module_param_named(rate, psmouse_rate, uint, 0644);
 MODULE_PARM_DESC(rate, "Report rate, in reports per second.");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int psmouse_smartscroll = 1;
 =======
 static bool psmouse_smartscroll = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool psmouse_smartscroll = 1;
+>>>>>>> refs/remotes/origin/master
 module_param_named(smartscroll, psmouse_smartscroll, bool, 0644);
 MODULE_PARM_DESC(smartscroll, "Logitech Smartscroll autorepeat, 1 = enabled (default), 0 = disabled.");
 
@@ -135,10 +149,14 @@ struct psmouse_protocol {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static psmouse_ret_t psmouse_process_byte(struct psmouse *psmouse)
 =======
 psmouse_ret_t psmouse_process_byte(struct psmouse *psmouse)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+psmouse_ret_t psmouse_process_byte(struct psmouse *psmouse)
+>>>>>>> refs/remotes/origin/master
 {
 	struct input_dev *dev = psmouse->dev;
 	unsigned char *packet = psmouse->packet;
@@ -266,12 +284,15 @@ static int psmouse_handle_byte(struct psmouse *psmouse)
 	case PSMOUSE_BAD_DATA:
 		if (psmouse->state == PSMOUSE_ACTIVATED) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "psmouse.c: %s at %s lost sync at byte %d\n",
 				psmouse->name, psmouse->phys, psmouse->pktcnt);
 			if (++psmouse->out_of_sync_cnt == psmouse->resetafter) {
 				__psmouse_set_state(psmouse, PSMOUSE_IGNORE);
 				printk(KERN_NOTICE "psmouse.c: issuing reconnect request\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			psmouse_warn(psmouse,
 				     "%s at %s lost sync at byte %d\n",
 				     psmouse->name, psmouse->phys,
@@ -280,7 +301,10 @@ static int psmouse_handle_byte(struct psmouse *psmouse)
 				__psmouse_set_state(psmouse, PSMOUSE_IGNORE);
 				psmouse_notice(psmouse,
 						"issuing reconnect request\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				serio_reconnect(psmouse->ps2dev.serio);
 				return -1;
 			}
@@ -293,6 +317,7 @@ static int psmouse_handle_byte(struct psmouse *psmouse)
 		if (psmouse->out_of_sync_cnt) {
 			psmouse->out_of_sync_cnt = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_NOTICE "psmouse.c: %s at %s - driver resynched.\n",
 				psmouse->name, psmouse->phys);
 =======
@@ -300,6 +325,11 @@ static int psmouse_handle_byte(struct psmouse *psmouse)
 					"%s at %s - driver resynced.\n",
 					psmouse->name, psmouse->phys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			psmouse_notice(psmouse,
+					"%s at %s - driver resynced.\n",
+					psmouse->name, psmouse->phys);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -327,15 +357,21 @@ static irqreturn_t psmouse_interrupt(struct serio *serio,
 
 		if (psmouse->state == PSMOUSE_ACTIVATED)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING "psmouse.c: bad data from KBC -%s%s\n",
 				flags & SERIO_TIMEOUT ? " timeout" : "",
 				flags & SERIO_PARITY ? " bad parity" : "");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			psmouse_warn(psmouse,
 				     "bad data from KBC -%s%s\n",
 				     flags & SERIO_TIMEOUT ? " timeout" : "",
 				     flags & SERIO_PARITY ? " bad parity" : "");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ps2_cmd_aborted(&psmouse->ps2dev);
 		goto out;
 	}
@@ -354,12 +390,17 @@ static irqreturn_t psmouse_interrupt(struct serio *serio,
 	if (psmouse->state == PSMOUSE_ACTIVATED &&
 	    psmouse->pktcnt && time_after(jiffies, psmouse->last + HZ/2)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "psmouse.c: %s at %s lost synchronization, throwing %d bytes away.\n",
 		       psmouse->name, psmouse->phys, psmouse->pktcnt);
 =======
 		psmouse_info(psmouse, "%s at %s lost synchronization, throwing %d bytes away.\n",
 			     psmouse->name, psmouse->phys, psmouse->pktcnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_info(psmouse, "%s at %s lost synchronization, throwing %d bytes away.\n",
+			     psmouse->name, psmouse->phys, psmouse->pktcnt);
+>>>>>>> refs/remotes/origin/master
 		psmouse->badbyte = psmouse->packet[0];
 		__psmouse_set_state(psmouse, PSMOUSE_RESYNCING);
 		psmouse_queue_work(psmouse, &psmouse->resync_work, 0);
@@ -454,7 +495,10 @@ int psmouse_reset(struct psmouse *psmouse)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Here we set the mouse resolution.
  */
@@ -498,7 +542,10 @@ static int psmouse_poll(struct psmouse *psmouse)
 			   PSMOUSE_CMD_POLL | (psmouse->pktsize << 8));
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Genius NetMouse magic init.
@@ -685,7 +732,10 @@ static int cortron_detect(struct psmouse *psmouse, bool set_properties)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Apply default settings to the psmouse structure. Most of them will
  * be overridden by individual protocol initialization routines.
  */
@@ -736,7 +786,10 @@ static int psmouse_do_detect(int (*detect)(struct psmouse *psmouse,
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * psmouse_extensions() probes for any extensions to the basic PS/2 protocol
  * the mouse may have.
  */
@@ -751,10 +804,14 @@ static int psmouse_extensions(struct psmouse *psmouse,
  * (it only checks DMI information).
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (lifebook_detect(psmouse, set_properties) == 0) {
 =======
 	if (psmouse_do_detect(lifebook_detect, psmouse, set_properties) == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (psmouse_do_detect(lifebook_detect, psmouse, set_properties) == 0) {
+>>>>>>> refs/remotes/origin/master
 		if (max_proto > PSMOUSE_IMEX) {
 			if (!set_properties || lifebook_init(psmouse) == 0)
 				return PSMOUSE_LIFEBOOK;
@@ -767,14 +824,20 @@ static int psmouse_extensions(struct psmouse *psmouse,
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (max_proto > PSMOUSE_IMEX && thinking_detect(psmouse, set_properties) == 0)
 		return PSMOUSE_THINKPS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (max_proto > PSMOUSE_IMEX &&
 	    psmouse_do_detect(thinking_detect, psmouse, set_properties) == 0) {
 		return PSMOUSE_THINKPS;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Try Synaptics TouchPad. Note that probing is done even if Synaptics protocol
@@ -782,11 +845,16 @@ static int psmouse_extensions(struct psmouse *psmouse,
  * can reset it properly after probing for intellimouse.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (max_proto > PSMOUSE_PS2 && synaptics_detect(psmouse, set_properties) == 0) {
 =======
 	if (max_proto > PSMOUSE_PS2 &&
 	    psmouse_do_detect(synaptics_detect, psmouse, set_properties) == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (max_proto > PSMOUSE_PS2 &&
+	    psmouse_do_detect(synaptics_detect, psmouse, set_properties) == 0) {
+>>>>>>> refs/remotes/origin/master
 		synaptics_hardware = true;
 
 		if (max_proto > PSMOUSE_IMEX) {
@@ -813,16 +881,46 @@ static int psmouse_extensions(struct psmouse *psmouse,
 	}
 
 /*
+<<<<<<< HEAD
+=======
+ * Try Cypress Trackpad.
+ * Must try it before Finger Sensing Pad because Finger Sensing Pad probe
+ * upsets some modules of Cypress Trackpads.
+ */
+	if (max_proto > PSMOUSE_IMEX &&
+			cypress_detect(psmouse, set_properties) == 0) {
+		if (cypress_supported()) {
+			if (cypress_init(psmouse) == 0)
+				return PSMOUSE_CYPRESS;
+
+			/*
+			 * Finger Sensing Pad probe upsets some modules of
+			 * Cypress Trackpad, must avoid Finger Sensing Pad
+			 * probe if Cypress Trackpad device detected.
+			 */
+			return PSMOUSE_PS2;
+		}
+
+		max_proto = PSMOUSE_IMEX;
+	}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Try ALPS TouchPad
  */
 	if (max_proto > PSMOUSE_IMEX) {
 		ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_RESET_DIS);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (alps_detect(psmouse, set_properties) == 0) {
 =======
 		if (psmouse_do_detect(alps_detect,
 				      psmouse, set_properties) == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (psmouse_do_detect(alps_detect,
+				      psmouse, set_properties) == 0) {
+>>>>>>> refs/remotes/origin/master
 			if (!set_properties || alps_init(psmouse) == 0)
 				return PSMOUSE_ALPS;
 /*
@@ -837,10 +935,14 @@ static int psmouse_extensions(struct psmouse *psmouse,
  */
 	if (max_proto > PSMOUSE_IMEX &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			hgpk_detect(psmouse, set_properties) == 0) {
 =======
 	    psmouse_do_detect(hgpk_detect, psmouse, set_properties) == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    psmouse_do_detect(hgpk_detect, psmouse, set_properties) == 0) {
+>>>>>>> refs/remotes/origin/master
 		if (!set_properties || hgpk_init(psmouse) == 0)
 			return PSMOUSE_HGPK;
 /*
@@ -854,10 +956,14 @@ static int psmouse_extensions(struct psmouse *psmouse,
  */
 	if (max_proto > PSMOUSE_IMEX &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			elantech_detect(psmouse, set_properties) == 0) {
 =======
 	    psmouse_do_detect(elantech_detect, psmouse, set_properties) == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	    psmouse_do_detect(elantech_detect, psmouse, set_properties) == 0) {
+>>>>>>> refs/remotes/origin/master
 		if (!set_properties || elantech_init(psmouse) == 0)
 			return PSMOUSE_ELANTECH;
 /*
@@ -866,6 +972,7 @@ static int psmouse_extensions(struct psmouse *psmouse,
 		max_proto = PSMOUSE_IMEX;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	if (max_proto > PSMOUSE_IMEX) {
@@ -880,6 +987,8 @@ static int psmouse_extensions(struct psmouse *psmouse,
 
 		if (touchkit_ps2_detect(psmouse, set_properties) == 0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (max_proto > PSMOUSE_IMEX) {
 		if (psmouse_do_detect(genius_detect,
 				      psmouse, set_properties) == 0)
@@ -895,7 +1004,10 @@ static int psmouse_extensions(struct psmouse *psmouse,
 
 		if (psmouse_do_detect(touchkit_ps2_detect,
 				      psmouse, set_properties) == 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return PSMOUSE_TOUCHKIT_PS2;
 	}
 
@@ -905,11 +1017,16 @@ static int psmouse_extensions(struct psmouse *psmouse,
  */
 	if (max_proto > PSMOUSE_IMEX) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (fsp_detect(psmouse, set_properties) == 0) {
 =======
 		if (psmouse_do_detect(fsp_detect,
 				      psmouse, set_properties) == 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (psmouse_do_detect(fsp_detect,
+				      psmouse, set_properties) == 0) {
+>>>>>>> refs/remotes/origin/master
 			if (!set_properties || fsp_init(psmouse) == 0)
 				return PSMOUSE_FSP;
 /*
@@ -928,12 +1045,15 @@ static int psmouse_extensions(struct psmouse *psmouse,
 	psmouse_reset(psmouse);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (max_proto >= PSMOUSE_IMEX && im_explorer_detect(psmouse, set_properties) == 0)
 		return PSMOUSE_IMEX;
 
 	if (max_proto >= PSMOUSE_IMPS && intellimouse_detect(psmouse, set_properties) == 0)
 		return PSMOUSE_IMPS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (max_proto >= PSMOUSE_IMEX &&
 	    psmouse_do_detect(im_explorer_detect,
 			      psmouse, set_properties) == 0) {
@@ -945,17 +1065,24 @@ static int psmouse_extensions(struct psmouse *psmouse,
 			      psmouse, set_properties) == 0) {
 		return PSMOUSE_IMPS;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Okay, all failed, we have a standard mouse here. The number of the buttons
  * is still a question, though. We assume 3.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ps2bare_detect(psmouse, set_properties);
 =======
 	psmouse_do_detect(ps2bare_detect, psmouse, set_properties);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	psmouse_do_detect(ps2bare_detect, psmouse, set_properties);
+>>>>>>> refs/remotes/origin/master
 
 	if (synaptics_hardware) {
 /*
@@ -993,6 +1120,18 @@ static const struct psmouse_protocol psmouse_protocols[] = {
 		.alias		= "thinkps",
 		.detect		= thinking_detect,
 	},
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_MOUSE_PS2_CYPRESS
+	{
+		.type		= PSMOUSE_CYPRESS,
+		.name		= "CyPS/2",
+		.alias		= "cypress",
+		.detect		= cypress_detect,
+		.init		= cypress_init,
+	},
+#endif
+>>>>>>> refs/remotes/origin/master
 	{
 		.type		= PSMOUSE_GENPS,
 		.name		= "GenPS/2",
@@ -1024,7 +1163,10 @@ static const struct psmouse_protocol psmouse_protocols[] = {
 		.init		= synaptics_init,
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{
 		.type		= PSMOUSE_SYNAPTICS_RELATIVE,
 		.name		= "SynRelPS/2",
@@ -1032,7 +1174,10 @@ static const struct psmouse_protocol psmouse_protocols[] = {
 		.detect		= synaptics_detect,
 		.init		= synaptics_init_relative,
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 #ifdef CONFIG_MOUSE_PS2_ALPS
 	{
@@ -1166,16 +1311,22 @@ static int psmouse_probe(struct psmouse *psmouse)
 
 	if (ps2_command(ps2dev, NULL, PSMOUSE_CMD_RESET_DIS))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "psmouse.c: Failed to reset mouse on %s\n", ps2dev->serio->phys);
 =======
 		psmouse_warn(psmouse, "Failed to reset mouse on %s\n",
 			     ps2dev->serio->phys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_warn(psmouse, "Failed to reset mouse on %s\n",
+			     ps2dev->serio->phys);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Here we set the mouse resolution.
  */
@@ -1212,6 +1363,8 @@ static void psmouse_set_rate(struct psmouse *psmouse, unsigned int rate)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * psmouse_initialize() initializes the mouse to a sane state.
  */
 
@@ -1233,6 +1386,7 @@ static void psmouse_initialize(struct psmouse *psmouse)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void psmouse_activate(struct psmouse *psmouse)
 {
 	if (ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_ENABLE))
@@ -1244,6 +1398,8 @@ static void psmouse_activate(struct psmouse *psmouse)
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int psmouse_activate(struct psmouse *psmouse)
 {
 	if (ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_ENABLE)) {
@@ -1256,12 +1412,16 @@ int psmouse_activate(struct psmouse *psmouse)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * psmouse_deactivate() puts the mouse into poll mode so that we don't get motion
  * reports from it unless we explicitly request it.
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void psmouse_deactivate(struct psmouse *psmouse)
 {
@@ -1281,6 +1441,8 @@ static int psmouse_poll(struct psmouse *psmouse)
 	return ps2_command(&psmouse->ps2dev, psmouse->packet,
 			   PSMOUSE_CMD_POLL | (psmouse->pktsize << 8));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int psmouse_deactivate(struct psmouse *psmouse)
 {
 	if (ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_DISABLE)) {
@@ -1291,7 +1453,10 @@ int psmouse_deactivate(struct psmouse *psmouse)
 
 	psmouse_set_state(psmouse, PSMOUSE_CMD_MODE);
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1374,23 +1539,33 @@ static void psmouse_resync(struct work_struct *work)
 
 	if (!enabled) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "psmouse.c: failed to re-enable mouse on %s\n",
 			psmouse->ps2dev.serio->phys);
 =======
 		psmouse_warn(psmouse, "failed to re-enable mouse on %s\n",
 			     psmouse->ps2dev.serio->phys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_warn(psmouse, "failed to re-enable mouse on %s\n",
+			     psmouse->ps2dev.serio->phys);
+>>>>>>> refs/remotes/origin/master
 		failed = true;
 	}
 
 	if (failed) {
 		psmouse_set_state(psmouse, PSMOUSE_IGNORE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "psmouse.c: resync failed, issuing reconnect request\n");
 =======
 		psmouse_info(psmouse,
 			     "resync failed, issuing reconnect request\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_info(psmouse,
+			     "resync failed, issuing reconnect request\n");
+>>>>>>> refs/remotes/origin/master
 		serio_reconnect(serio);
 	} else
 		psmouse_set_state(psmouse, PSMOUSE_ACTIVATED);
@@ -1424,12 +1599,17 @@ static void psmouse_cleanup(struct serio *serio)
 	 */
 	if (ps2_command(&psmouse->ps2dev, NULL, PSMOUSE_CMD_DISABLE))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "psmouse.c: Failed to disable mouse on %s\n",
 			psmouse->ps2dev.serio->phys);
 =======
 		psmouse_warn(psmouse, "Failed to disable mouse on %s\n",
 			     psmouse->ps2dev.serio->phys);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_warn(psmouse, "Failed to disable mouse on %s\n",
+			     psmouse->ps2dev.serio->phys);
+>>>>>>> refs/remotes/origin/master
 
 	if (psmouse->cleanup)
 		psmouse->cleanup(psmouse);
@@ -1509,6 +1689,7 @@ static int psmouse_switch_protocol(struct psmouse *psmouse,
 	input_dev->dev.parent = &psmouse->ps2dev.serio->dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	input_dev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REL);
 	input_dev->keybit[BIT_WORD(BTN_MOUSE)] =
 				BIT_MASK(BTN_LEFT) | BIT_MASK(BTN_RIGHT);
@@ -1526,6 +1707,11 @@ static int psmouse_switch_protocol(struct psmouse *psmouse,
 		psmouse_apply_defaults(psmouse);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (proto && (proto->detect || proto->init)) {
+		psmouse_apply_defaults(psmouse);
+
+>>>>>>> refs/remotes/origin/master
 		if (proto->detect && proto->detect(psmouse, true) < 0)
 			return -1;
 
@@ -1680,11 +1866,16 @@ static int psmouse_reconnect(struct serio *serio)
 
 	if (!drv || !psmouse) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "psmouse: reconnect request, but serio is disconnected, ignoring...\n");
 =======
 		psmouse_dbg(psmouse,
 			    "reconnect request, but serio is disconnected, ignoring...\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		psmouse_dbg(psmouse,
+			    "reconnect request, but serio is disconnected, ignoring...\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1712,6 +1903,7 @@ static int psmouse_reconnect(struct serio *serio)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* ok, the device type (and capabilities) match the old one,
 	 * we can continue using it, complete intialization
 =======
@@ -1719,6 +1911,11 @@ static int psmouse_reconnect(struct serio *serio)
 	 * OK, the device type (and capabilities) match the old one,
 	 * we can continue using it, complete initialization
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * OK, the device type (and capabilities) match the old one,
+	 * we can continue using it, complete initialization
+>>>>>>> refs/remotes/origin/master
 	 */
 	psmouse_set_state(psmouse, PSMOUSE_CMD_MODE);
 
@@ -1837,6 +2034,7 @@ static ssize_t psmouse_set_int_attr(struct psmouse *psmouse, void *offset, const
 {
 	unsigned int *field = (unsigned int *)((char *)psmouse + (size_t)offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 
 	if (strict_strtoul(buf, 10, &value))
@@ -1845,13 +2043,18 @@ static ssize_t psmouse_set_int_attr(struct psmouse *psmouse, void *offset, const
 	if ((unsigned int)value != value)
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int value;
 	int err;
 
 	err = kstrtouint(buf, 10, &value);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	*field = value;
 
@@ -1886,6 +2089,7 @@ static ssize_t psmouse_attr_set_protocol(struct psmouse *psmouse, void *data, co
 	while (!list_empty(&serio->children)) {
 		if (++retry > 3) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_WARNING
 				"psmouse: failed to destroy children ports, "
 				"protocol change aborted.\n");
@@ -1893,6 +2097,10 @@ static ssize_t psmouse_attr_set_protocol(struct psmouse *psmouse, void *data, co
 			psmouse_warn(psmouse,
 				     "failed to destroy children ports, protocol change aborted.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			psmouse_warn(psmouse,
+				     "failed to destroy children ports, protocol change aborted.\n");
+>>>>>>> refs/remotes/origin/master
 			input_free_device(new_dev);
 			return -EIO;
 		}
@@ -1965,18 +2173,24 @@ static ssize_t psmouse_attr_set_protocol(struct psmouse *psmouse, void *data, co
 static ssize_t psmouse_attr_set_rate(struct psmouse *psmouse, void *data, const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 
 	if (strict_strtoul(buf, 10, &value))
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int value;
 	int err;
 
 	err = kstrtouint(buf, 10, &value);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	psmouse->set_rate(psmouse, value);
 	return count;
@@ -1985,18 +2199,24 @@ static ssize_t psmouse_attr_set_rate(struct psmouse *psmouse, void *data, const 
 static ssize_t psmouse_attr_set_resolution(struct psmouse *psmouse, void *data, const char *buf, size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long value;
 
 	if (strict_strtoul(buf, 10, &value))
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int value;
 	int err;
 
 	err = kstrtouint(buf, 10, &value);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	psmouse->set_resolution(psmouse, value);
 	return count;
@@ -2038,10 +2258,14 @@ static int __init psmouse_init(void)
 	kpsmoused_wq = create_singlethread_workqueue("kpsmoused");
 	if (!kpsmoused_wq) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "psmouse: failed to create kpsmoused workqueue\n");
 =======
 		pr_err("failed to create kpsmoused workqueue\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("failed to create kpsmoused workqueue\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 

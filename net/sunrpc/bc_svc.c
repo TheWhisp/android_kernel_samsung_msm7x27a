@@ -28,10 +28,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if defined(CONFIG_NFS_V4_1)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 
 #include <linux/sunrpc/xprt.h>
@@ -58,7 +61,11 @@ int bc_send(struct rpc_rqst *req)
 	if (IS_ERR(task))
 		ret = PTR_ERR(task);
 	else {
+<<<<<<< HEAD
 		BUG_ON(atomic_read(&task->tk_count) != 1);
+=======
+		WARN_ON_ONCE(atomic_read(&task->tk_count) != 1);
+>>>>>>> refs/remotes/origin/master
 		ret = task->tk_status;
 		rpc_put_task(task);
 	}
@@ -67,6 +74,9 @@ int bc_send(struct rpc_rqst *req)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif /* CONFIG_NFS_V4_1 */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

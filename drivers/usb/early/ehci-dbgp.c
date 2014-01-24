@@ -20,6 +20,10 @@
 #include <linux/usb/ehci_def.h>
 #include <linux/delay.h>
 #include <linux/serial_core.h>
+<<<<<<< HEAD
+=======
+#include <linux/kconfig.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kgdb.h>
 #include <linux/kthread.h>
 #include <asm/io.h>
@@ -334,7 +338,11 @@ static int dbgp_control_msg(unsigned devnum, int requesttype,
 	int ret;
 
 	read = (requesttype & USB_DIR_IN) != 0;
+<<<<<<< HEAD
 	if (size > (read ? DBGP_MAX_PACKET:0))
+=======
+	if (size > (read ? DBGP_MAX_PACKET : 0))
+>>>>>>> refs/remotes/origin/master
 		return -1;
 
 	/* Compute the control message */
@@ -491,7 +499,11 @@ static int ehci_wait_for_port(int port);
  * Return -ENODEV for any general failure
  * Return -EIO if wait for port fails
  */
+<<<<<<< HEAD
 int dbgp_external_startup(void)
+=======
+static int _dbgp_external_startup(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int devnum;
 	struct usb_debug_descriptor dbgp_desc;
@@ -567,10 +579,13 @@ try_again:
 		dbgp_printk("Could not find attached debug device\n");
 		goto err;
 	}
+<<<<<<< HEAD
 	if (ret < 0) {
 		dbgp_printk("Attached device is not a debug device\n");
 		goto err;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	dbgp_endpoint_out = dbgp_desc.bDebugOutEndpoint;
 	dbgp_endpoint_in = dbgp_desc.bDebugInEndpoint;
 
@@ -613,7 +628,10 @@ err:
 		goto try_again;
 	return -ENODEV;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(dbgp_external_startup);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int ehci_reset_port(int port)
 {
@@ -804,7 +822,11 @@ try_next_port:
 		dbgp_ehci_status("ehci skip - already configured");
 	}
 
+<<<<<<< HEAD
 	ret = dbgp_external_startup();
+=======
+	ret = _dbgp_external_startup();
+>>>>>>> refs/remotes/origin/master
 	if (ret == -EIO)
 		goto next_debug_port;
 
@@ -934,7 +956,11 @@ static void early_dbgp_write(struct console *con, const char *str, u32 n)
 		ctrl = readl(&ehci_debug->control);
 		if (!(ctrl & DBGP_ENABLED)) {
 			dbgp_not_safe = 1;
+<<<<<<< HEAD
 			dbgp_external_startup();
+=======
+			_dbgp_external_startup();
+>>>>>>> refs/remotes/origin/master
 		} else {
 			cmd |= CMD_RUN;
 			writel(cmd, &ehci_regs->command);
@@ -974,10 +1000,22 @@ struct console early_dbgp_console = {
 	.index =	-1,
 };
 
+<<<<<<< HEAD
 int dbgp_reset_prep(void)
 {
 	u32 ctrl;
 
+=======
+#if IS_ENABLED(CONFIG_USB)
+int dbgp_reset_prep(struct usb_hcd *hcd)
+{
+	int ret = xen_dbgp_reset_prep(hcd);
+	u32 ctrl;
+
+	if (ret)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	dbgp_not_safe = 1;
 	if (!ehci_debug)
 		return 0;
@@ -998,6 +1036,16 @@ int dbgp_reset_prep(void)
 }
 EXPORT_SYMBOL_GPL(dbgp_reset_prep);
 
+<<<<<<< HEAD
+=======
+int dbgp_external_startup(struct usb_hcd *hcd)
+{
+	return xen_dbgp_external_startup(hcd) ?: _dbgp_external_startup();
+}
+EXPORT_SYMBOL_GPL(dbgp_external_startup);
+#endif /* USB */
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_KGDB
 
 static char kgdbdbgp_buf[DBGP_MAX_PACKET];

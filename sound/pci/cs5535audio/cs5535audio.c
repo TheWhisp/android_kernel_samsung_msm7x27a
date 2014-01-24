@@ -27,10 +27,14 @@
 #include <linux/pci.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <sound/core.h>
 #include <sound/control.h>
@@ -47,7 +51,11 @@ static char *ac97_quirk;
 module_param(ac97_quirk, charp, 0444);
 MODULE_PARM_DESC(ac97_quirk, "AC'97 board specific workarounds.");
 
+<<<<<<< HEAD
 static struct ac97_quirk ac97_quirks[] __devinitdata = {
+=======
+static struct ac97_quirk ac97_quirks[] = {
+>>>>>>> refs/remotes/origin/master
 #if 0 /* Not yet confirmed if all 5536 boards are HP only */
 	{
 		.subvendor = PCI_VENDOR_ID_AMD, 
@@ -62,10 +70,14 @@ static struct ac97_quirk ac97_quirks[] __devinitdata = {
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for " DRIVER_NAME);
@@ -152,7 +164,11 @@ static unsigned short snd_cs5535audio_ac97_codec_read(struct snd_ac97 *ac97,
 	return snd_cs5535audio_codec_read(cs5535au, reg);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs5535audio_mixer(struct cs5535audio *cs5535au)
+=======
+static int snd_cs5535audio_mixer(struct cs5535audio *cs5535au)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card = cs5535au->card;
 	struct snd_ac97_bus *pbus;
@@ -261,7 +277,11 @@ static irqreturn_t snd_cs5535audio_interrupt(int irq, void *dev_id)
 static int snd_cs5535audio_free(struct cs5535audio *cs5535au)
 {
 	synchronize_irq(cs5535au->irq);
+<<<<<<< HEAD
 	pci_set_power_state(cs5535au->pci, 3);
+=======
+	pci_set_power_state(cs5535au->pci, PCI_D3hot);
+>>>>>>> refs/remotes/origin/master
 
 	if (cs5535au->irq >= 0)
 		free_irq(cs5535au->irq, cs5535au);
@@ -278,9 +298,15 @@ static int snd_cs5535audio_dev_free(struct snd_device *device)
 	return snd_cs5535audio_free(cs5535au);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs5535audio_create(struct snd_card *card,
 					    struct pci_dev *pci,
 					    struct cs5535audio **rcs5535au)
+=======
+static int snd_cs5535audio_create(struct snd_card *card,
+				  struct pci_dev *pci,
+				  struct cs5535audio **rcs5535au)
+>>>>>>> refs/remotes/origin/master
 {
 	struct cs5535audio *cs5535au;
 
@@ -320,10 +346,14 @@ static int __devinit snd_cs5535audio_create(struct snd_card *card,
 
 	if (request_irq(pci->irq, snd_cs5535audio_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			IRQF_SHARED, "CS5535 Audio", cs5535au)) {
 =======
 			IRQF_SHARED, KBUILD_MODNAME, cs5535au)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			IRQF_SHARED, KBUILD_MODNAME, cs5535au)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		err = -EBUSY;
 		goto sndfail;
@@ -350,8 +380,13 @@ pcifail:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_cs5535audio_probe(struct pci_dev *pci,
 					   const struct pci_device_id *pci_id)
+=======
+static int snd_cs5535audio_probe(struct pci_dev *pci,
+				 const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct snd_card *card;
@@ -399,6 +434,7 @@ probefail_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_cs5535audio_remove(struct pci_dev *pci)
 {
 	olpc_quirks_cleanup();
@@ -433,6 +469,27 @@ static void __exit alsa_card_cs5535audio_exit(void)
 
 module_init(alsa_card_cs5535audio_init)
 module_exit(alsa_card_cs5535audio_exit)
+=======
+static void snd_cs5535audio_remove(struct pci_dev *pci)
+{
+	olpc_quirks_cleanup();
+	snd_card_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver cs5535audio_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_cs5535audio_ids,
+	.probe = snd_cs5535audio_probe,
+	.remove = snd_cs5535audio_remove,
+#ifdef CONFIG_PM_SLEEP
+	.driver = {
+		.pm = &snd_cs5535audio_pm,
+	},
+#endif
+};
+
+module_pci_driver(cs5535audio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Jaya Kumar");
 MODULE_LICENSE("GPL");

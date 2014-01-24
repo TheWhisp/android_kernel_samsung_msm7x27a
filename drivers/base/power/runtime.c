@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * drivers/base/power/runtime.c - Helper functions for device run-time PM
 =======
  * drivers/base/power/runtime.c - Helper functions for device runtime PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * drivers/base/power/runtime.c - Helper functions for device runtime PM
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (c) 2009 Rafael J. Wysocki <rjw@sisk.pl>, Novell Inc.
  * Copyright (C) 2010 Alan Stern <stern@rowland.harvard.edu>
@@ -13,12 +17,18 @@
 
 #include <linux/sched.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/pm_runtime.h>
 =======
 #include <linux/export.h>
 #include <linux/pm_runtime.h>
 #include <trace/events/rpm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <linux/pm_runtime.h>
+#include <trace/events/rpm.h>
+>>>>>>> refs/remotes/origin/master
 #include "power.h"
 
 static int rpm_resume(struct device *dev, int rpmflags);
@@ -39,6 +49,7 @@ void update_pm_runtime_accounting(struct device *dev)
 {
 	unsigned long now = jiffies;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int delta;
 
 	delta = now - dev->power.accounting_timestamp;
@@ -47,11 +58,16 @@ void update_pm_runtime_accounting(struct device *dev)
 		delta = 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long delta;
 
 	delta = now - dev->power.accounting_timestamp;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->power.accounting_timestamp = now;
 
 	if (dev->power.disable_depth > 0)
@@ -142,6 +158,79 @@ unsigned long pm_runtime_autosuspend_expiration(struct device *dev)
 }
 EXPORT_SYMBOL_GPL(pm_runtime_autosuspend_expiration);
 
+<<<<<<< HEAD
+=======
+static int dev_memalloc_noio(struct device *dev, void *data)
+{
+	return dev->power.memalloc_noio;
+}
+
+/*
+ * pm_runtime_set_memalloc_noio - Set a device's memalloc_noio flag.
+ * @dev: Device to handle.
+ * @enable: True for setting the flag and False for clearing the flag.
+ *
+ * Set the flag for all devices in the path from the device to the
+ * root device in the device tree if @enable is true, otherwise clear
+ * the flag for devices in the path whose siblings don't set the flag.
+ *
+ * The function should only be called by block device, or network
+ * device driver for solving the deadlock problem during runtime
+ * resume/suspend:
+ *
+ *     If memory allocation with GFP_KERNEL is called inside runtime
+ *     resume/suspend callback of any one of its ancestors(or the
+ *     block device itself), the deadlock may be triggered inside the
+ *     memory allocation since it might not complete until the block
+ *     device becomes active and the involed page I/O finishes. The
+ *     situation is pointed out first by Alan Stern. Network device
+ *     are involved in iSCSI kind of situation.
+ *
+ * The lock of dev_hotplug_mutex is held in the function for handling
+ * hotplug race because pm_runtime_set_memalloc_noio() may be called
+ * in async probe().
+ *
+ * The function should be called between device_add() and device_del()
+ * on the affected device(block/network device).
+ */
+void pm_runtime_set_memalloc_noio(struct device *dev, bool enable)
+{
+	static DEFINE_MUTEX(dev_hotplug_mutex);
+
+	mutex_lock(&dev_hotplug_mutex);
+	for (;;) {
+		bool enabled;
+
+		/* hold power lock since bitfield is not SMP-safe. */
+		spin_lock_irq(&dev->power.lock);
+		enabled = dev->power.memalloc_noio;
+		dev->power.memalloc_noio = enable;
+		spin_unlock_irq(&dev->power.lock);
+
+		/*
+		 * not need to enable ancestors any more if the device
+		 * has been enabled.
+		 */
+		if (enabled && enable)
+			break;
+
+		dev = dev->parent;
+
+		/*
+		 * clear flag of the parent device only if all the
+		 * children don't set the flag because ancestor's
+		 * flag was set by any one of the descendants.
+		 */
+		if (!dev || (!enable &&
+			     device_for_each_child(dev, NULL,
+						   dev_memalloc_noio)))
+			break;
+	}
+	mutex_unlock(&dev_hotplug_mutex);
+}
+EXPORT_SYMBOL_GPL(pm_runtime_set_memalloc_noio);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * rpm_check_suspend_allowed - Test whether a device may be suspended.
  * @dev: Device to test.
@@ -153,6 +242,7 @@ static int rpm_check_suspend_allowed(struct device *dev)
 	if (dev->power.runtime_error)
 		retval = -EINVAL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (atomic_read(&dev->power.usage_count) > 0
 	    || dev->power.disable_depth > 0)
 =======
@@ -160,6 +250,11 @@ static int rpm_check_suspend_allowed(struct device *dev)
 		retval = -EACCES;
 	else if (atomic_read(&dev->power.usage_count) > 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (dev->power.disable_depth > 0)
+		retval = -EACCES;
+	else if (atomic_read(&dev->power.usage_count) > 0)
+>>>>>>> refs/remotes/origin/master
 		retval = -EAGAIN;
 	else if (!pm_children_suspended(dev))
 		retval = -EBUSY;
@@ -170,6 +265,11 @@ static int rpm_check_suspend_allowed(struct device *dev)
 	    || (dev->power.request_pending
 			&& dev->power.request == RPM_REQ_RESUME))
 		retval = -EAGAIN;
+<<<<<<< HEAD
+=======
+	else if (__dev_pm_qos_read_value(dev) < 0)
+		retval = -EPERM;
+>>>>>>> refs/remotes/origin/master
 	else if (dev->power.runtime_status == RPM_SUSPENDED)
 		retval = 1;
 
@@ -178,7 +278,10 @@ static int rpm_check_suspend_allowed(struct device *dev)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * __rpm_callback - Run a given runtime PM callback for a given device.
  * @cb: Runtime PM callback to run.
  * @dev: Device to run the callback for.
@@ -204,11 +307,15 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * rpm_idle - Notify device bus type if the device can be suspended.
  * @dev: Device to notify the bus type about.
  * @rpmflags: Flag bits.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Check if the device's run-time PM status allows it to be suspended.  If
 =======
@@ -217,6 +324,13 @@ static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
  * another idle notification has been started earlier, return immediately.  If
  * the RPM_ASYNC flag is set then queue an idle-notification request; otherwise
  * run the ->runtime_idle() callback directly.
+=======
+ * Check if the device's runtime PM status allows it to be suspended.  If
+ * another idle notification has been started earlier, return immediately.  If
+ * the RPM_ASYNC flag is set then queue an idle-notification request; otherwise
+ * run the ->runtime_idle() callback directly. If the ->runtime_idle callback
+ * doesn't exist or if it returns 0, call rpm_suspend with the RPM_AUTO flag.
+>>>>>>> refs/remotes/origin/master
  *
  * This function must be called under dev->power.lock with interrupts disabled.
  */
@@ -226,9 +340,13 @@ static int rpm_idle(struct device *dev, int rpmflags)
 	int retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_rpm_idle(dev, rpmflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_rpm_idle(dev, rpmflags);
+>>>>>>> refs/remotes/origin/master
 	retval = rpm_check_suspend_allowed(dev);
 	if (retval < 0)
 		;	/* Conditions are wrong. */
@@ -254,11 +372,16 @@ static int rpm_idle(struct device *dev, int rpmflags)
 	/* Pending requests need to be canceled. */
 	dev->power.request = RPM_REQ_NONE;
 
+<<<<<<< HEAD
 	if (dev->power.no_callbacks) {
 		/* Assume ->runtime_idle() callback would have suspended. */
 		retval = rpm_suspend(dev, rpmflags);
 		goto out;
 	}
+=======
+	if (dev->power.no_callbacks)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	/* Carry out an asynchronous or a synchronous idle notification. */
 	if (rpmflags & RPM_ASYNC) {
@@ -267,11 +390,17 @@ static int rpm_idle(struct device *dev, int rpmflags)
 			dev->power.request_pending = true;
 			queue_work(pm_wq, &dev->power.work);
 		}
+<<<<<<< HEAD
 		goto out;
+=======
+		trace_rpm_return_int(dev, _THIS_IP_, 0);
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->power.idle_notification = true;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (dev->pwr_domain)
 		callback = dev->pwr_domain->ops.runtime_idle;
@@ -279,6 +408,10 @@ static int rpm_idle(struct device *dev, int rpmflags)
 	if (dev->pm_domain)
 		callback = dev->pm_domain->ops.runtime_idle;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dev->pm_domain)
+		callback = dev->pm_domain->ops.runtime_idle;
+>>>>>>> refs/remotes/origin/master
 	else if (dev->type && dev->type->pm)
 		callback = dev->type->pm->runtime_idle;
 	else if (dev->class && dev->class->pm)
@@ -289,6 +422,7 @@ static int rpm_idle(struct device *dev, int rpmflags)
 		callback = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (callback) {
 		spin_unlock_irq(&dev->power.lock);
 
@@ -297,22 +431,33 @@ static int rpm_idle(struct device *dev, int rpmflags)
 		spin_lock_irq(&dev->power.lock);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!callback && dev->driver && dev->driver->pm)
 		callback = dev->driver->pm->runtime_idle;
 
 	if (callback)
+<<<<<<< HEAD
 		__rpm_callback(callback, dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		retval = __rpm_callback(callback, dev);
+>>>>>>> refs/remotes/origin/master
 
 	dev->power.idle_notification = false;
 	wake_up_all(&dev->power.wait_queue);
 
  out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_rpm_return_int(dev, _THIS_IP_, retval);
 >>>>>>> refs/remotes/origin/cm-10.0
 	return retval;
+=======
+	trace_rpm_return_int(dev, _THIS_IP_, retval);
+	return retval ? retval : rpm_suspend(dev, rpmflags | RPM_AUTO);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -322,15 +467,19 @@ static int rpm_idle(struct device *dev, int rpmflags)
  */
 static int rpm_callback(int (*cb)(struct device *), struct device *dev)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__releases(&dev->power.lock) __acquires(&dev->power.lock)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 
 	if (!cb)
 		return -ENOSYS;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (dev->power.irq_safe) {
 		retval = cb(dev);
@@ -360,11 +509,32 @@ static int rpm_callback(int (*cb)(struct device *), struct device *dev)
  * failed) or for its parent (if the suspend succeeded).
 =======
 	retval = __rpm_callback(cb, dev);
+=======
+	if (dev->power.memalloc_noio) {
+		unsigned int noio_flag;
+
+		/*
+		 * Deadlock might be caused if memory allocation with
+		 * GFP_KERNEL happens inside runtime_suspend and
+		 * runtime_resume callbacks of one block device's
+		 * ancestor or the block device itself. Network
+		 * device might be thought as part of iSCSI block
+		 * device, so network device and its ancestor should
+		 * be marked as memalloc_noio too.
+		 */
+		noio_flag = memalloc_noio_save();
+		retval = __rpm_callback(cb, dev);
+		memalloc_noio_restore(noio_flag);
+	} else {
+		retval = __rpm_callback(cb, dev);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dev->power.runtime_error = retval;
 	return retval != -EACCES ? retval : -EIO;
 }
 
+<<<<<<< HEAD
 struct rpm_qos_data {
 	ktime_t time_now;
 	s64 constraint_ns;
@@ -406,6 +576,8 @@ static int rpm_update_qos_constraint(struct device *dev, void *data)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * rpm_suspend - Carry out runtime suspend of given device.
  * @dev: Device to suspend.
@@ -421,7 +593,10 @@ static int rpm_update_qos_constraint(struct device *dev, void *data)
  * the callback was running then carry it out, otherwise send an idle
  * notification for its parent (if the suspend succeeded and both
  * ignore_children of parent->power and irq_safe of dev->power are not set).
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * If ->runtime_suspend failed with -EAGAIN or -EBUSY, and if the RPM_AUTO
  * flag is set and the next autosuspend-delay expiration time is in the
  * future, schedule another autosuspend attempt.
@@ -434,6 +609,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 	int (*callback)(struct device *);
 	struct device *parent = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int retval;
 
 	dev_dbg(dev, "%s flags 0x%x\n", __func__, rpmflags);
@@ -443,6 +619,11 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 
 	trace_rpm_suspend(dev, rpmflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int retval;
+
+	trace_rpm_suspend(dev, rpmflags);
+>>>>>>> refs/remotes/origin/master
 
  repeat:
 	retval = rpm_check_suspend_allowed(dev);
@@ -495,7 +676,10 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dev->power.irq_safe) {
 			spin_unlock(&dev->power.lock);
 
@@ -505,7 +689,10 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 			goto repeat;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Wait for the other suspend running in parallel with us. */
 		for (;;) {
 			prepare_to_wait(&dev->power.wait_queue, &wait,
@@ -537,6 +724,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 		goto out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__update_runtime_status(dev, RPM_SUSPENDING);
 
@@ -578,6 +766,12 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 	if (dev->pm_domain)
 		callback = dev->pm_domain->ops.runtime_suspend;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__update_runtime_status(dev, RPM_SUSPENDING);
+
+	if (dev->pm_domain)
+		callback = dev->pm_domain->ops.runtime_suspend;
+>>>>>>> refs/remotes/origin/master
 	else if (dev->type && dev->type->pm)
 		callback = dev->type->pm->runtime_suspend;
 	else if (dev->class && dev->class->pm)
@@ -587,6 +781,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 	else
 		callback = NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	retval = rpm_callback(callback, dev);
 	if (retval) {
@@ -617,6 +812,8 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 			atomic_add_unless(&parent->power.child_count, -1, 0);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!callback && dev->driver && dev->driver->pm)
 		callback = dev->driver->pm->runtime_suspend;
 
@@ -631,7 +828,10 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 	if (dev->parent) {
 		parent = dev->parent;
 		atomic_add_unless(&parent->power.child_count, -1, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	wake_up_all(&dev->power.wait_queue);
 
@@ -655,6 +855,7 @@ static int rpm_suspend(struct device *dev, int rpmflags)
 
  out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(dev, "%s returns %d\n", __func__, retval);
 
 	return retval;
@@ -667,14 +868,19 @@ static int rpm_suspend(struct device *dev, int rpmflags)
  *
  * Check if the device's run-time PM status allows it to be resumed.  Cancel
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	trace_rpm_return_int(dev, _THIS_IP_, retval);
 
 	return retval;
 
  fail:
 	__update_runtime_status(dev, RPM_ACTIVE);
+<<<<<<< HEAD
 	dev->power.suspend_time = ktime_set(0, 0);
 	dev->power.max_time_suspended_ns = -1;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->power.deferred_resume = false;
 	wake_up_all(&dev->power.wait_queue);
 
@@ -702,7 +908,10 @@ static int rpm_suspend(struct device *dev, int rpmflags)
  * @rpmflags: Flag bits.
  *
  * Check if the device's runtime PM status allows it to be resumed.  Cancel
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * any scheduled or pending requests.  If another resume has been started
  * earlier, either return immediately or wait for it to finish, depending on the
  * RPM_NOWAIT and RPM_ASYNC flags.  Similarly, if there's a suspend running in
@@ -722,20 +931,32 @@ static int rpm_resume(struct device *dev, int rpmflags)
 	int retval = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(dev, "%s flags 0x%x\n", __func__, rpmflags);
 =======
 	trace_rpm_resume(dev, rpmflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_rpm_resume(dev, rpmflags);
+>>>>>>> refs/remotes/origin/master
 
  repeat:
 	if (dev->power.runtime_error)
 		retval = -EINVAL;
+<<<<<<< HEAD
 	else if (dev->power.disable_depth > 0)
 <<<<<<< HEAD
 		retval = -EAGAIN;
 =======
 		retval = -EACCES;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else if (dev->power.disable_depth == 1 && dev->power.is_suspended
+	    && dev->power.runtime_status == RPM_ACTIVE)
+		retval = 1;
+	else if (dev->power.disable_depth > 0)
+		retval = -EACCES;
+>>>>>>> refs/remotes/origin/master
 	if (retval)
 		goto out;
 
@@ -767,7 +988,10 @@ static int rpm_resume(struct device *dev, int rpmflags)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (dev->power.irq_safe) {
 			spin_unlock(&dev->power.lock);
 
@@ -777,7 +1001,10 @@ static int rpm_resume(struct device *dev, int rpmflags)
 			goto repeat;
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Wait for the operation carried out in parallel with us. */
 		for (;;) {
 			prepare_to_wait(&dev->power.wait_queue, &wait,
@@ -841,10 +1068,14 @@ static int rpm_resume(struct device *dev, int rpmflags)
 		spin_lock(&parent->power.lock);
 		/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * We can resume if the parent's run-time PM is disabled or it
 =======
 		 * We can resume if the parent's runtime PM is disabled or it
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * We can resume if the parent's runtime PM is disabled or it
+>>>>>>> refs/remotes/origin/master
 		 * is set to ignore children.
 		 */
 		if (!parent->power.disable_depth
@@ -866,6 +1097,7 @@ static int rpm_resume(struct device *dev, int rpmflags)
 		goto no_callback;	/* Assume success. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__update_runtime_status(dev, RPM_RESUMING);
 
 	if (dev->pwr_domain)
@@ -874,11 +1106,16 @@ static int rpm_resume(struct device *dev, int rpmflags)
 	dev->power.suspend_time = ktime_set(0, 0);
 	dev->power.max_time_suspended_ns = -1;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	__update_runtime_status(dev, RPM_RESUMING);
 
 	if (dev->pm_domain)
 		callback = dev->pm_domain->ops.runtime_resume;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else if (dev->type && dev->type->pm)
 		callback = dev->type->pm->runtime_resume;
 	else if (dev->class && dev->class->pm)
@@ -889,11 +1126,17 @@ static int rpm_resume(struct device *dev, int rpmflags)
 		callback = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!callback && dev->driver && dev->driver->pm)
 		callback = dev->driver->pm->runtime_resume;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!callback && dev->driver && dev->driver->pm)
+		callback = dev->driver->pm->runtime_resume;
+
+>>>>>>> refs/remotes/origin/master
 	retval = rpm_callback(callback, dev);
 	if (retval) {
 		__update_runtime_status(dev, RPM_SUSPENDED);
@@ -919,15 +1162,20 @@ static int rpm_resume(struct device *dev, int rpmflags)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(dev, "%s returns %d\n", __func__, retval);
 =======
 	trace_rpm_return_int(dev, _THIS_IP_, retval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_rpm_return_int(dev, _THIS_IP_, retval);
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
 
 /**
+<<<<<<< HEAD
 <<<<<<< HEAD
  * pm_runtime_work - Universal run-time PM work function.
  * @work: Work structure used for scheduling the execution of this function.
@@ -935,12 +1183,17 @@ static int rpm_resume(struct device *dev, int rpmflags)
  * Use @work to get the device object the work is to be done for, determine what
  * is to be done and execute the appropriate run-time PM function.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_runtime_work - Universal runtime PM work function.
  * @work: Work structure used for scheduling the execution of this function.
  *
  * Use @work to get the device object the work is to be done for, determine what
  * is to be done and execute the appropriate runtime PM function.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static void pm_runtime_work(struct work_struct *work)
 {
@@ -1040,10 +1293,14 @@ EXPORT_SYMBOL_GPL(pm_schedule_suspend);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * __pm_runtime_idle - Entry point for run-time idle operations.
 =======
  * __pm_runtime_idle - Entry point for runtime idle operations.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __pm_runtime_idle - Entry point for runtime idle operations.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to send idle notification for.
  * @rpmflags: Flag bits.
  *
@@ -1052,11 +1309,16 @@ EXPORT_SYMBOL_GPL(pm_schedule_suspend);
  * notification, either synchronous or asynchronous.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This routine may be called in atomic context if the RPM_ASYNC flag is set.
 =======
  * This routine may be called in atomic context if the RPM_ASYNC flag is set,
  * or if pm_runtime_irq_safe() has been called.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This routine may be called in atomic context if the RPM_ASYNC flag is set,
+ * or if pm_runtime_irq_safe() has been called.
+>>>>>>> refs/remotes/origin/master
  */
 int __pm_runtime_idle(struct device *dev, int rpmflags)
 {
@@ -1064,10 +1326,14 @@ int __pm_runtime_idle(struct device *dev, int rpmflags)
 	int retval;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	might_sleep_if(!(rpmflags & RPM_ASYNC));
 =======
 	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	might_sleep_if(!(rpmflags & RPM_ASYNC) && !dev->power.irq_safe);
+>>>>>>> refs/remotes/origin/master
 
 	if (rpmflags & RPM_GET_PUT) {
 		if (!atomic_dec_and_test(&dev->power.usage_count))
@@ -1084,10 +1350,14 @@ EXPORT_SYMBOL_GPL(__pm_runtime_idle);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * __pm_runtime_suspend - Entry point for run-time put/suspend operations.
 =======
  * __pm_runtime_suspend - Entry point for runtime put/suspend operations.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __pm_runtime_suspend - Entry point for runtime put/suspend operations.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to suspend.
  * @rpmflags: Flag bits.
  *
@@ -1096,11 +1366,16 @@ EXPORT_SYMBOL_GPL(__pm_runtime_idle);
  * either synchronous or asynchronous.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This routine may be called in atomic context if the RPM_ASYNC flag is set.
 =======
  * This routine may be called in atomic context if the RPM_ASYNC flag is set,
  * or if pm_runtime_irq_safe() has been called.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This routine may be called in atomic context if the RPM_ASYNC flag is set,
+ * or if pm_runtime_irq_safe() has been called.
+>>>>>>> refs/remotes/origin/master
  */
 int __pm_runtime_suspend(struct device *dev, int rpmflags)
 {
@@ -1124,10 +1399,14 @@ EXPORT_SYMBOL_GPL(__pm_runtime_suspend);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * __pm_runtime_resume - Entry point for run-time resume operations.
 =======
  * __pm_runtime_resume - Entry point for runtime resume operations.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __pm_runtime_resume - Entry point for runtime resume operations.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to resume.
  * @rpmflags: Flag bits.
  *
@@ -1135,11 +1414,16 @@ EXPORT_SYMBOL_GPL(__pm_runtime_suspend);
  * carry out a resume, either synchronous or asynchronous.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * This routine may be called in atomic context if the RPM_ASYNC flag is set.
 =======
  * This routine may be called in atomic context if the RPM_ASYNC flag is set,
  * or if pm_runtime_irq_safe() has been called.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * This routine may be called in atomic context if the RPM_ASYNC flag is set,
+ * or if pm_runtime_irq_safe() has been called.
+>>>>>>> refs/remotes/origin/master
  */
 int __pm_runtime_resume(struct device *dev, int rpmflags)
 {
@@ -1161,18 +1445,24 @@ EXPORT_SYMBOL_GPL(__pm_runtime_resume);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * __pm_runtime_set_status - Set run-time PM status of a device.
  * @dev: Device to handle.
  * @status: New run-time PM status of the device.
  *
  * If run-time PM of the device is disabled or its power.runtime_error field is
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * __pm_runtime_set_status - Set runtime PM status of a device.
  * @dev: Device to handle.
  * @status: New runtime PM status of the device.
  *
  * If runtime PM of the device is disabled or its power.runtime_error field is
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * different from zero, the status may be changed either to RPM_ACTIVE, or to
  * RPM_SUSPENDED, as long as that reflects the actual state of the device.
  * However, if the device has a parent and the parent is not active, and the
@@ -1219,10 +1509,14 @@ int __pm_runtime_set_status(struct device *dev, unsigned int status)
 		/*
 		 * It is invalid to put an active child under a parent that is
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 * not active, has run-time PM enabled and the
 =======
 		 * not active, has runtime PM enabled and the
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 * not active, has runtime PM enabled and the
+>>>>>>> refs/remotes/origin/master
 		 * 'power.ignore_children' flag unset.
 		 */
 		if (!parent->power.disable_depth
@@ -1257,10 +1551,14 @@ EXPORT_SYMBOL_GPL(__pm_runtime_set_status);
  *
  * Flush all pending requests for the device from pm_wq and wait for all
 <<<<<<< HEAD
+<<<<<<< HEAD
  * run-time PM operations involving the device in progress to complete.
 =======
  * runtime PM operations involving the device in progress to complete.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * runtime PM operations involving the device in progress to complete.
+>>>>>>> refs/remotes/origin/master
  *
  * Should be called under dev->power.lock with interrupts disabled.
  */
@@ -1309,10 +1607,14 @@ static void __pm_runtime_barrier(struct device *dev)
  * if there's a pending resume request for the device, wake the device up.
  * Next, make sure that all pending requests for the device have been flushed
 <<<<<<< HEAD
+<<<<<<< HEAD
  * from pm_wq and wait for all run-time PM operations involving the device in
 =======
  * from pm_wq and wait for all runtime PM operations involving the device in
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * from pm_wq and wait for all runtime PM operations involving the device in
+>>>>>>> refs/remotes/origin/master
  * progress to complete.
  *
  * Return value:
@@ -1343,14 +1645,19 @@ EXPORT_SYMBOL_GPL(pm_runtime_barrier);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * __pm_runtime_disable - Disable run-time PM of a device.
 =======
  * __pm_runtime_disable - Disable runtime PM of a device.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * __pm_runtime_disable - Disable runtime PM of a device.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to handle.
  * @check_resume: If set, check if there's a resume request for the device.
  *
  * Increment power.disable_depth for the device and if was zero previously,
+<<<<<<< HEAD
 <<<<<<< HEAD
  * cancel all pending run-time PM requests for the device and wait for all
  * operations in progress to complete.  The device can be either active or
@@ -1364,6 +1671,8 @@ void __pm_runtime_disable(struct device *dev, bool check_resume)
 {
 	might_sleep();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * cancel all pending runtime PM requests for the device and wait for all
  * operations in progress to complete.  The device can be either active or
  * suspended after its runtime PM has been disabled.
@@ -1374,7 +1683,10 @@ void __pm_runtime_disable(struct device *dev, bool check_resume)
  */
 void __pm_runtime_disable(struct device *dev, bool check_resume)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&dev->power.lock);
 
 	if (dev->power.disable_depth > 0) {
@@ -1385,10 +1697,14 @@ void __pm_runtime_disable(struct device *dev, bool check_resume)
 	/*
 	 * Wake up the device if there's a resume request pending, because that
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * means there probably is some I/O to process and disabling run-time PM
 =======
 	 * means there probably is some I/O to process and disabling runtime PM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * means there probably is some I/O to process and disabling runtime PM
+>>>>>>> refs/remotes/origin/master
 	 * shouldn't prevent the device from processing the I/O.
 	 */
 	if (check_resume && dev->power.request_pending
@@ -1414,10 +1730,14 @@ EXPORT_SYMBOL_GPL(__pm_runtime_disable);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_enable - Enable run-time PM of a device.
 =======
  * pm_runtime_enable - Enable runtime PM of a device.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pm_runtime_enable - Enable runtime PM of a device.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to handle.
  */
 void pm_runtime_enable(struct device *dev)
@@ -1437,10 +1757,14 @@ EXPORT_SYMBOL_GPL(pm_runtime_enable);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_forbid - Block run-time PM of a device.
 =======
  * pm_runtime_forbid - Block runtime PM of a device.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pm_runtime_forbid - Block runtime PM of a device.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to handle.
  *
  * Increase the device's usage count and clear its power.runtime_auto flag,
@@ -1464,10 +1788,14 @@ EXPORT_SYMBOL_GPL(pm_runtime_forbid);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_allow - Unblock run-time PM of a device.
 =======
  * pm_runtime_allow - Unblock runtime PM of a device.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pm_runtime_allow - Unblock runtime PM of a device.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device to handle.
  *
  * Decrease the device's usage count and set its power.runtime_auto flag.
@@ -1489,6 +1817,7 @@ EXPORT_SYMBOL_GPL(pm_runtime_allow);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_no_callbacks - Ignore run-time PM callbacks for a device.
  * @dev: Device to handle.
  *
@@ -1496,13 +1825,18 @@ EXPORT_SYMBOL_GPL(pm_runtime_allow);
  * device is power-managed through its parent and has no run-time PM
  * callbacks of its own.  The run-time sysfs attributes will be removed.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * pm_runtime_no_callbacks - Ignore runtime PM callbacks for a device.
  * @dev: Device to handle.
  *
  * Set the power.no_callbacks flag, which tells the PM core that this
  * device is power-managed through its parent and has no runtime PM
  * callbacks of its own.  The runtime sysfs attributes will be removed.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 void pm_runtime_no_callbacks(struct device *dev)
 {
@@ -1579,12 +1913,17 @@ static void update_autosuspend(struct device *dev, int old_delay, int old_use)
  *
  * Set the device's power.autosuspend_delay value.  If it changes to negative
 <<<<<<< HEAD
+<<<<<<< HEAD
  * and the power.use_autosuspend flag is set, prevent run-time suspends.  If it
  * changes the other way, allow run-time suspends.
 =======
  * and the power.use_autosuspend flag is set, prevent runtime suspends.  If it
  * changes the other way, allow runtime suspends.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * and the power.use_autosuspend flag is set, prevent runtime suspends.  If it
+ * changes the other way, allow runtime suspends.
+>>>>>>> refs/remotes/origin/master
  */
 void pm_runtime_set_autosuspend_delay(struct device *dev, int delay)
 {
@@ -1605,10 +1944,14 @@ EXPORT_SYMBOL_GPL(pm_runtime_set_autosuspend_delay);
  * @use: New value for use_autosuspend.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Set the device's power.use_autosuspend flag, and allow or prevent run-time
 =======
  * Set the device's power.use_autosuspend flag, and allow or prevent runtime
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Set the device's power.use_autosuspend flag, and allow or prevent runtime
+>>>>>>> refs/remotes/origin/master
  * suspends as needed.
  */
 void __pm_runtime_use_autosuspend(struct device *dev, bool use)
@@ -1616,10 +1959,13 @@ void __pm_runtime_use_autosuspend(struct device *dev, bool use)
 	int old_delay, old_use;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	might_sleep();
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irq(&dev->power.lock);
 	old_delay = dev->power.autosuspend_delay;
 	old_use = dev->power.use_autosuspend;
@@ -1631,10 +1977,14 @@ EXPORT_SYMBOL_GPL(__pm_runtime_use_autosuspend);
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * pm_runtime_init - Initialize run-time PM fields in given device object.
 =======
  * pm_runtime_init - Initialize runtime PM fields in given device object.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * pm_runtime_init - Initialize runtime PM fields in given device object.
+>>>>>>> refs/remotes/origin/master
  * @dev: Device object to initialize.
  */
 void pm_runtime_init(struct device *dev)
@@ -1662,11 +2012,14 @@ void pm_runtime_init(struct device *dev)
 			(unsigned long)dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	dev->power.suspend_time = ktime_set(0, 0);
 	dev->power.max_time_suspended_ns = -1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	init_waitqueue_head(&dev->power.wait_queue);
 }
 
@@ -1682,6 +2035,7 @@ void pm_runtime_remove(struct device *dev)
 	if (dev->power.runtime_status == RPM_ACTIVE)
 		pm_runtime_set_suspended(dev);
 	if (dev->power.irq_safe && dev->parent)
+<<<<<<< HEAD
 		pm_runtime_put_sync(dev->parent);
 }
 <<<<<<< HEAD
@@ -1712,3 +2066,7 @@ void pm_runtime_update_max_time_suspended(struct device *dev, s64 delta_ns)
 	spin_unlock_irqrestore(&dev->power.lock, flags);
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pm_runtime_put(dev->parent);
+}
+>>>>>>> refs/remotes/origin/master

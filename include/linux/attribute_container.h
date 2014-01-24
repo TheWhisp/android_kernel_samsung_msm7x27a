@@ -10,17 +10,23 @@
 #define _ATTRIBUTE_CONTAINER_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/list.h>
 #include <linux/klist.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/klist.h>
 
 struct device;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct attribute_container {
 	struct list_head	node;
 	struct klist		containers;

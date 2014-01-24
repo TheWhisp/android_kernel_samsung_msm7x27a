@@ -14358,7 +14358,11 @@ void wlc_phy_nphy_tkip_rifs_war(struct brcms_phy *pi, u8 rifs)
 
 	wlc_phy_write_txmacreg_nphy(pi, holdoff, delay);
 
+<<<<<<< HEAD
 	if (pi && pi->sh && (pi->sh->_rifs_phy != rifs))
+=======
+	if (pi->sh && (pi->sh->_rifs_phy != rifs))
+>>>>>>> refs/remotes/origin/master
 		pi->sh->_rifs_phy = rifs;
 }
 
@@ -14386,30 +14390,50 @@ static void wlc_phy_txpwr_srom_read_ppr_nphy(struct brcms_phy *pi)
 {
 	u16 bw40po, cddpo, stbcpo, bwduppo;
 	uint band_num;
+<<<<<<< HEAD
 	struct phy_shim_info *shim = pi->sh->physhim;
+=======
+	struct ssb_sprom *sprom = &pi->d11core->bus->sprom;
+>>>>>>> refs/remotes/origin/master
 
 	if (pi->sh->sromrev >= 9)
 		return;
 
+<<<<<<< HEAD
 	bw40po = (u16) wlapi_getintvar(shim, BRCMS_SROM_BW40PO);
+=======
+	bw40po = sprom->bw40po;
+>>>>>>> refs/remotes/origin/master
 	pi->bw402gpo = bw40po & 0xf;
 	pi->bw405gpo = (bw40po & 0xf0) >> 4;
 	pi->bw405glpo = (bw40po & 0xf00) >> 8;
 	pi->bw405ghpo = (bw40po & 0xf000) >> 12;
 
+<<<<<<< HEAD
 	cddpo = (u16) wlapi_getintvar(shim, BRCMS_SROM_CDDPO);
+=======
+	cddpo = sprom->cddpo;
+>>>>>>> refs/remotes/origin/master
 	pi->cdd2gpo = cddpo & 0xf;
 	pi->cdd5gpo = (cddpo & 0xf0) >> 4;
 	pi->cdd5glpo = (cddpo & 0xf00) >> 8;
 	pi->cdd5ghpo = (cddpo & 0xf000) >> 12;
 
+<<<<<<< HEAD
 	stbcpo = (u16) wlapi_getintvar(shim, BRCMS_SROM_STBCPO);
+=======
+	stbcpo = sprom->stbcpo;
+>>>>>>> refs/remotes/origin/master
 	pi->stbc2gpo = stbcpo & 0xf;
 	pi->stbc5gpo = (stbcpo & 0xf0) >> 4;
 	pi->stbc5glpo = (stbcpo & 0xf00) >> 8;
 	pi->stbc5ghpo = (stbcpo & 0xf000) >> 12;
 
+<<<<<<< HEAD
 	bwduppo = (u16) wlapi_getintvar(shim, BRCMS_SROM_BWDUPPO);
+=======
+	bwduppo = sprom->bwduppo;
+>>>>>>> refs/remotes/origin/master
 	pi->bwdup2gpo = bwduppo & 0xf;
 	pi->bwdup5gpo = (bwduppo & 0xf0) >> 4;
 	pi->bwdup5glpo = (bwduppo & 0xf00) >> 8;
@@ -14419,6 +14443,7 @@ static void wlc_phy_txpwr_srom_read_ppr_nphy(struct brcms_phy *pi)
 	     band_num++) {
 		switch (band_num) {
 		case 0:
+<<<<<<< HEAD
 
 			pi->nphy_pwrctrl_info[PHY_CORE_0].max_pwr_2g =
 				(s8) wlapi_getintvar(shim,
@@ -14480,10 +14505,46 @@ static void wlc_phy_txpwr_srom_read_ppr_nphy(struct brcms_phy *pi)
 			pi->mcs2gpo[7] =
 				(u16) wlapi_getintvar(shim,
 						      BRCMS_SROM_MCS2GPO7);
+=======
+			pi->nphy_pwrctrl_info[PHY_CORE_0].max_pwr_2g =
+				sprom->core_pwr_info[0].maxpwr_2g;
+			pi->nphy_pwrctrl_info[PHY_CORE_1].max_pwr_2g =
+				sprom->core_pwr_info[1].maxpwr_2g;
+			pi->nphy_pwrctrl_info[PHY_CORE_0].pwrdet_2g_a1 =
+				sprom->core_pwr_info[0].pa_2g[0];
+			pi->nphy_pwrctrl_info[PHY_CORE_1].pwrdet_2g_a1 =
+				sprom->core_pwr_info[1].pa_2g[0];
+			pi->nphy_pwrctrl_info[PHY_CORE_0].pwrdet_2g_b0 =
+				sprom->core_pwr_info[0].pa_2g[1];
+			pi->nphy_pwrctrl_info[PHY_CORE_1].pwrdet_2g_b0 =
+				sprom->core_pwr_info[1].pa_2g[1];
+			pi->nphy_pwrctrl_info[PHY_CORE_0].pwrdet_2g_b1 =
+				sprom->core_pwr_info[0].pa_2g[2];
+			pi->nphy_pwrctrl_info[PHY_CORE_1].pwrdet_2g_b1 =
+				sprom->core_pwr_info[1].pa_2g[2];
+			pi->nphy_pwrctrl_info[PHY_CORE_0].idle_targ_2g =
+				sprom->core_pwr_info[0].itssi_2g;
+			pi->nphy_pwrctrl_info[PHY_CORE_1].idle_targ_2g =
+				sprom->core_pwr_info[1].itssi_2g;
+
+			pi->cck2gpo = sprom->cck2gpo;
+
+			pi->ofdm2gpo = sprom->ofdm2gpo;
+
+			pi->mcs2gpo[0] = sprom->mcs2gpo[0];
+			pi->mcs2gpo[1] = sprom->mcs2gpo[1];
+			pi->mcs2gpo[2] = sprom->mcs2gpo[2];
+			pi->mcs2gpo[3] = sprom->mcs2gpo[3];
+			pi->mcs2gpo[4] = sprom->mcs2gpo[4];
+			pi->mcs2gpo[5] = sprom->mcs2gpo[5];
+			pi->mcs2gpo[6] = sprom->mcs2gpo[6];
+			pi->mcs2gpo[7] = sprom->mcs2gpo[7];
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 1:
 
 			pi->nphy_pwrctrl_info[PHY_CORE_0].max_pwr_5gm =
+<<<<<<< HEAD
 				(s8) wlapi_getintvar(shim, BRCMS_SROM_MAXP5GA0);
 			pi->nphy_pwrctrl_info[PHY_CORE_1].max_pwr_5gm =
 				(s8) wlapi_getintvar(shim,
@@ -14539,10 +14600,43 @@ static void wlc_phy_txpwr_srom_read_ppr_nphy(struct brcms_phy *pi)
 			pi->mcs5gpo[7] =
 				(u16) wlapi_getintvar(shim,
 						      BRCMS_SROM_MCS5GPO7);
+=======
+				sprom->core_pwr_info[0].maxpwr_5g;
+			pi->nphy_pwrctrl_info[PHY_CORE_1].max_pwr_5gm =
+				sprom->core_pwr_info[1].maxpwr_5g;
+			pi->nphy_pwrctrl_info[PHY_CORE_0].pwrdet_5gm_a1 =
+				sprom->core_pwr_info[0].pa_5g[0];
+			pi->nphy_pwrctrl_info[PHY_CORE_1].pwrdet_5gm_a1 =
+				sprom->core_pwr_info[1].pa_5g[0];
+			pi->nphy_pwrctrl_info[PHY_CORE_0].pwrdet_5gm_b0 =
+				sprom->core_pwr_info[0].pa_5g[1];
+			pi->nphy_pwrctrl_info[PHY_CORE_1].pwrdet_5gm_b0 =
+				sprom->core_pwr_info[1].pa_5g[1];
+			pi->nphy_pwrctrl_info[PHY_CORE_0].pwrdet_5gm_b1 =
+				sprom->core_pwr_info[0].pa_5g[2];
+			pi->nphy_pwrctrl_info[PHY_CORE_1].pwrdet_5gm_b1 =
+				sprom->core_pwr_info[1].pa_5g[2];
+			pi->nphy_pwrctrl_info[PHY_CORE_0].idle_targ_5gm =
+				sprom->core_pwr_info[0].itssi_5g;
+			pi->nphy_pwrctrl_info[PHY_CORE_1].idle_targ_5gm =
+				sprom->core_pwr_info[1].itssi_5g;
+
+			pi->ofdm5gpo = sprom->ofdm5gpo;
+
+			pi->mcs5gpo[0] = sprom->mcs5gpo[0];
+			pi->mcs5gpo[1] = sprom->mcs5gpo[1];
+			pi->mcs5gpo[2] = sprom->mcs5gpo[2];
+			pi->mcs5gpo[3] = sprom->mcs5gpo[3];
+			pi->mcs5gpo[4] = sprom->mcs5gpo[4];
+			pi->mcs5gpo[5] = sprom->mcs5gpo[5];
+			pi->mcs5gpo[6] = sprom->mcs5gpo[6];
+			pi->mcs5gpo[7] = sprom->mcs5gpo[7];
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 2:
 
 			pi->nphy_pwrctrl_info[0].max_pwr_5gl =
+<<<<<<< HEAD
 				(s8) wlapi_getintvar(shim,
 						     BRCMS_SROM_MAXP5GLA0);
 			pi->nphy_pwrctrl_info[1].max_pwr_5gl =
@@ -14597,10 +14691,41 @@ static void wlc_phy_txpwr_srom_read_ppr_nphy(struct brcms_phy *pi)
 			pi->mcs5glpo[7] =
 				(u16) wlapi_getintvar(shim,
 						      BRCMS_SROM_MCS5GLPO7);
+=======
+				sprom->core_pwr_info[0].maxpwr_5gl;
+			pi->nphy_pwrctrl_info[1].max_pwr_5gl =
+				sprom->core_pwr_info[1].maxpwr_5gl;
+			pi->nphy_pwrctrl_info[0].pwrdet_5gl_a1 =
+				sprom->core_pwr_info[0].pa_5gl[0];
+			pi->nphy_pwrctrl_info[1].pwrdet_5gl_a1 =
+				sprom->core_pwr_info[1].pa_5gl[0];
+			pi->nphy_pwrctrl_info[0].pwrdet_5gl_b0 =
+				sprom->core_pwr_info[0].pa_5gl[1];
+			pi->nphy_pwrctrl_info[1].pwrdet_5gl_b0 =
+				sprom->core_pwr_info[1].pa_5gl[1];
+			pi->nphy_pwrctrl_info[0].pwrdet_5gl_b1 =
+				sprom->core_pwr_info[0].pa_5gl[2];
+			pi->nphy_pwrctrl_info[1].pwrdet_5gl_b1 =
+				sprom->core_pwr_info[1].pa_5gl[2];
+			pi->nphy_pwrctrl_info[0].idle_targ_5gl = 0;
+			pi->nphy_pwrctrl_info[1].idle_targ_5gl = 0;
+
+			pi->ofdm5glpo = sprom->ofdm5glpo;
+
+			pi->mcs5glpo[0] = sprom->mcs5glpo[0];
+			pi->mcs5glpo[1] = sprom->mcs5glpo[1];
+			pi->mcs5glpo[2] = sprom->mcs5glpo[2];
+			pi->mcs5glpo[3] = sprom->mcs5glpo[3];
+			pi->mcs5glpo[4] = sprom->mcs5glpo[4];
+			pi->mcs5glpo[5] = sprom->mcs5glpo[5];
+			pi->mcs5glpo[6] = sprom->mcs5glpo[6];
+			pi->mcs5glpo[7] = sprom->mcs5glpo[7];
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 3:
 
 			pi->nphy_pwrctrl_info[0].max_pwr_5gh =
+<<<<<<< HEAD
 				(s8) wlapi_getintvar(shim,
 						     BRCMS_SROM_MAXP5GHA0);
 			pi->nphy_pwrctrl_info[1].max_pwr_5gh =
@@ -14655,6 +14780,36 @@ static void wlc_phy_txpwr_srom_read_ppr_nphy(struct brcms_phy *pi)
 			pi->mcs5ghpo[7] =
 				(u16) wlapi_getintvar(shim,
 						      BRCMS_SROM_MCS5GHPO7);
+=======
+				sprom->core_pwr_info[0].maxpwr_5gh;
+			pi->nphy_pwrctrl_info[1].max_pwr_5gh =
+				sprom->core_pwr_info[1].maxpwr_5gh;
+			pi->nphy_pwrctrl_info[0].pwrdet_5gh_a1 =
+				sprom->core_pwr_info[0].pa_5gh[0];
+			pi->nphy_pwrctrl_info[1].pwrdet_5gh_a1 =
+				sprom->core_pwr_info[1].pa_5gh[0];
+			pi->nphy_pwrctrl_info[0].pwrdet_5gh_b0 =
+				sprom->core_pwr_info[0].pa_5gh[1];
+			pi->nphy_pwrctrl_info[1].pwrdet_5gh_b0 =
+				sprom->core_pwr_info[1].pa_5gh[1];
+			pi->nphy_pwrctrl_info[0].pwrdet_5gh_b1 =
+				sprom->core_pwr_info[0].pa_5gh[2];
+			pi->nphy_pwrctrl_info[1].pwrdet_5gh_b1 =
+				sprom->core_pwr_info[1].pa_5gh[2];
+			pi->nphy_pwrctrl_info[0].idle_targ_5gh = 0;
+			pi->nphy_pwrctrl_info[1].idle_targ_5gh = 0;
+
+			pi->ofdm5ghpo = sprom->ofdm5ghpo;
+
+			pi->mcs5ghpo[0] = sprom->mcs5ghpo[0];
+			pi->mcs5ghpo[1] = sprom->mcs5ghpo[1];
+			pi->mcs5ghpo[2] = sprom->mcs5ghpo[2];
+			pi->mcs5ghpo[3] = sprom->mcs5ghpo[3];
+			pi->mcs5ghpo[4] = sprom->mcs5ghpo[4];
+			pi->mcs5ghpo[5] = sprom->mcs5ghpo[5];
+			pi->mcs5ghpo[6] = sprom->mcs5ghpo[6];
+			pi->mcs5ghpo[7] = sprom->mcs5ghpo[7];
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -14664,6 +14819,7 @@ static void wlc_phy_txpwr_srom_read_ppr_nphy(struct brcms_phy *pi)
 
 static bool wlc_phy_txpwr_srom_read_nphy(struct brcms_phy *pi)
 {
+<<<<<<< HEAD
 	struct phy_shim_info *shim = pi->sh->physhim;
 
 	pi->antswitch = (u8) wlapi_getintvar(shim, BRCMS_SROM_ANTSWITCH);
@@ -14703,6 +14859,36 @@ static bool wlc_phy_txpwr_srom_read_nphy(struct brcms_phy *pi)
 
 	pi->phy_tempsense_offset = (s8) wlapi_getintvar(shim,
 							BRCMS_SROM_TEMPOFFSET);
+=======
+	struct ssb_sprom *sprom = &pi->d11core->bus->sprom;
+
+	pi->antswitch = sprom->antswitch;
+	pi->aa2g = sprom->ant_available_bg;
+	pi->aa5g = sprom->ant_available_a;
+
+	pi->srom_fem2g.tssipos = sprom->fem.ghz2.tssipos;
+	pi->srom_fem2g.extpagain = sprom->fem.ghz2.extpa_gain;
+	pi->srom_fem2g.pdetrange = sprom->fem.ghz2.pdet_range;
+	pi->srom_fem2g.triso = sprom->fem.ghz2.tr_iso;
+	pi->srom_fem2g.antswctrllut = sprom->fem.ghz2.antswlut;
+
+	pi->srom_fem5g.tssipos = sprom->fem.ghz5.tssipos;
+	pi->srom_fem5g.extpagain = sprom->fem.ghz5.extpa_gain;
+	pi->srom_fem5g.pdetrange = sprom->fem.ghz5.pdet_range;
+	pi->srom_fem5g.triso = sprom->fem.ghz5.tr_iso;
+	if (sprom->fem.ghz5.antswlut)
+		pi->srom_fem5g.antswctrllut = sprom->fem.ghz5.antswlut;
+	else
+		pi->srom_fem5g.antswctrllut = sprom->fem.ghz2.antswlut;
+
+	wlc_phy_txpower_ipa_upd(pi);
+
+	pi->phy_txcore_disable_temp = sprom->tempthresh;
+	if (pi->phy_txcore_disable_temp == 0)
+		pi->phy_txcore_disable_temp = PHY_CHAIN_TX_DISABLE_TEMP;
+
+	pi->phy_tempsense_offset = sprom->tempoffset;
+>>>>>>> refs/remotes/origin/master
 	if (pi->phy_tempsense_offset != 0) {
 		if (pi->phy_tempsense_offset >
 		    (NPHY_SROM_TEMPSHIFT + NPHY_SROM_MAXTEMPOFFSET))
@@ -14717,8 +14903,12 @@ static bool wlc_phy_txpwr_srom_read_nphy(struct brcms_phy *pi)
 	pi->phy_txcore_enable_temp =
 		pi->phy_txcore_disable_temp - PHY_HYSTERESIS_DELTATEMP;
 
+<<<<<<< HEAD
 	pi->phycal_tempdelta =
 			(u8) wlapi_getintvar(shim, BRCMS_SROM_PHYCAL_TEMPDELTA);
+=======
+	pi->phycal_tempdelta = sprom->phycal_tempdelta;
+>>>>>>> refs/remotes/origin/master
 	if (pi->phycal_tempdelta > NPHY_CAL_MAXTEMPDELTA)
 		pi->phycal_tempdelta = 0;
 
@@ -16353,11 +16543,15 @@ static void wlc_phy_workarounds_nphy(struct brcms_phy *pi)
 			wlc_phy_set_rfseq_nphy(pi, NPHY_RFSEQ_RX2TX,
 					       rfseq_rx2tx_events_rev3_ipa,
 					       rfseq_rx2tx_dlys_rev3_ipa,
+<<<<<<< HEAD
 					       sizeof
 					       (rfseq_rx2tx_events_rev3_ipa) /
 					       sizeof
 					       (rfseq_rx2tx_events_rev3_ipa
 						[0]));
+=======
+					       ARRAY_SIZE(rfseq_rx2tx_events_rev3_ipa));
+>>>>>>> refs/remotes/origin/master
 
 		mod_phy_reg(pi, 0x299, (0x3 << 14), (0x1 << 14));
 		mod_phy_reg(pi, 0x29d, (0x3 << 14), (0x1 << 14));
@@ -16858,18 +17052,26 @@ static void wlc_phy_workarounds_nphy(struct brcms_phy *pi)
 		wlc_phy_set_rfseq_nphy(pi, NPHY_RFSEQ_TX2RX,
 				       rfseq_tx2rx_events_rev3,
 				       rfseq_tx2rx_dlys_rev3,
+<<<<<<< HEAD
 				       sizeof(rfseq_tx2rx_events_rev3) /
 				       sizeof(rfseq_tx2rx_events_rev3[0]));
+=======
+				       ARRAY_SIZE(rfseq_tx2rx_events_rev3));
+>>>>>>> refs/remotes/origin/master
 
 		if (PHY_IPA(pi))
 			wlc_phy_set_rfseq_nphy(pi, NPHY_RFSEQ_RX2TX,
 					       rfseq_rx2tx_events_rev3_ipa,
 					       rfseq_rx2tx_dlys_rev3_ipa,
+<<<<<<< HEAD
 					       sizeof
 					       (rfseq_rx2tx_events_rev3_ipa) /
 					       sizeof
 					       (rfseq_rx2tx_events_rev3_ipa
 						[0]));
+=======
+					       ARRAY_SIZE(rfseq_rx2tx_events_rev3_ipa));
+>>>>>>> refs/remotes/origin/master
 
 		if ((pi->sh->hw_phyrxchain != 0x3) &&
 		    (pi->sh->hw_phyrxchain != pi->sh->hw_phytxchain)) {
@@ -16885,8 +17087,12 @@ static void wlc_phy_workarounds_nphy(struct brcms_phy *pi)
 				pi, NPHY_RFSEQ_RX2TX,
 				rfseq_rx2tx_events_rev3,
 				rfseq_rx2tx_dlys_rev3,
+<<<<<<< HEAD
 				sizeof(rfseq_rx2tx_events_rev3)	/
 				sizeof(rfseq_rx2tx_events_rev3[0]));
+=======
+				ARRAY_SIZE(rfseq_rx2tx_events_rev3));
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (CHSPEC_IS2G(pi->radio_chanspec))
@@ -17209,6 +17415,7 @@ static void wlc_phy_workarounds_nphy(struct brcms_phy *pi)
 
 		wlc_phy_set_rfseq_nphy(pi, NPHY_RFSEQ_RX2TX, rfseq_rx2tx_events,
 				       rfseq_rx2tx_dlys,
+<<<<<<< HEAD
 				       sizeof(rfseq_rx2tx_events) /
 				       sizeof(rfseq_rx2tx_events[0]));
 
@@ -17216,6 +17423,13 @@ static void wlc_phy_workarounds_nphy(struct brcms_phy *pi)
 				       rfseq_tx2rx_dlys,
 				       sizeof(rfseq_tx2rx_events) /
 				       sizeof(rfseq_tx2rx_events[0]));
+=======
+				       ARRAY_SIZE(rfseq_rx2tx_events));
+
+		wlc_phy_set_rfseq_nphy(pi, NPHY_RFSEQ_TX2RX, rfseq_tx2rx_events,
+				       rfseq_tx2rx_dlys,
+				       ARRAY_SIZE(rfseq_tx2rx_events));
+>>>>>>> refs/remotes/origin/master
 
 		wlc_phy_workarounds_nphy_gainctrl(pi);
 
@@ -18022,6 +18236,11 @@ static u32 *wlc_phy_get_ipa_gaintbl_nphy(struct brcms_phy *pi)
 					nphy_tpc_txgain_ipa_2g_2057rev7;
 		} else if (NREV_IS(pi->pubpi.phy_rev, 6)) {
 			tx_pwrctrl_tbl = nphy_tpc_txgain_ipa_rev6;
+<<<<<<< HEAD
+=======
+			if (pi->sh->chip == BCMA_CHIP_ID_BCM47162)
+				tx_pwrctrl_tbl = nphy_tpc_txgain_ipa_rev5;
+>>>>>>> refs/remotes/origin/master
 		} else if (NREV_IS(pi->pubpi.phy_rev, 5)) {
 			tx_pwrctrl_tbl = nphy_tpc_txgain_ipa_rev5;
 		} else {
@@ -19357,8 +19576,12 @@ static void wlc_phy_spurwar_nphy(struct brcms_phy *pi)
 			}
 
 			if (isAdjustNoiseVar) {
+<<<<<<< HEAD
 				numTonesAdjust = sizeof(nphy_adj_tone_id_buf) /
 						sizeof(nphy_adj_tone_id_buf[0]);
+=======
+				numTonesAdjust = ARRAY_SIZE(nphy_adj_tone_id_buf);
+>>>>>>> refs/remotes/origin/master
 
 				wlc_phy_adjust_min_noisevar_nphy(
 					pi,
@@ -19384,8 +19607,19 @@ static void wlc_phy_spurwar_nphy(struct brcms_phy *pi)
 			case 38:
 			case 102:
 			case 118:
+<<<<<<< HEAD
 				nphy_adj_tone_id_buf[0] = 0;
 				nphy_adj_noise_var_buf[0] = 0x0;
+=======
+				if ((pi->sh->chip == BCMA_CHIP_ID_BCM4716) &&
+				    (pi->sh->chippkg == BCMA_PKG_ID_BCM4717)) {
+					nphy_adj_tone_id_buf[0] = 32;
+					nphy_adj_noise_var_buf[0] = 0x21f;
+				} else {
+					nphy_adj_tone_id_buf[0] = 0;
+					nphy_adj_noise_var_buf[0] = 0x0;
+				}
+>>>>>>> refs/remotes/origin/master
 				break;
 			case 134:
 				nphy_adj_tone_id_buf[0] = 32;
@@ -19439,6 +19673,7 @@ void wlc_phy_init_nphy(struct brcms_phy *pi)
 		pi->measure_hold |= PHY_HOLD_FOR_NOT_ASSOC;
 
 	if ((ISNPHY(pi)) && (NREV_GE(pi->pubpi.phy_rev, 5)) &&
+<<<<<<< HEAD
 	    ((pi->sh->chippkg == BCM4717_PKG_ID) ||
 	     (pi->sh->chippkg == BCM4718_PKG_ID))) {
 		if ((pi->sh->boardflags & BFL_EXTLNA) &&
@@ -19448,6 +19683,20 @@ void wlc_phy_init_nphy(struct brcms_phy *pi)
 				  0x40, 0x40);
 	}
 
+=======
+	    ((pi->sh->chippkg == BCMA_PKG_ID_BCM4717) ||
+	     (pi->sh->chippkg == BCMA_PKG_ID_BCM4718))) {
+		if ((pi->sh->boardflags & BFL_EXTLNA) &&
+		    (CHSPEC_IS2G(pi->radio_chanspec)))
+			bcma_cc_set32(&pi->d11core->bus->drv_cc,
+				      BCMA_CC_CHIPCTL, 0x40);
+	}
+
+	if ((!PHY_IPA(pi)) && (pi->sh->chip == BCMA_CHIP_ID_BCM5357))
+		bcma_chipco_chipctl_maskset(&pi->d11core->bus->drv_cc, 1,
+					    ~CCTRL5357_EXTPA, CCTRL5357_EXTPA);
+
+>>>>>>> refs/remotes/origin/master
 	if ((pi->nphy_gband_spurwar2_en) && CHSPEC_IS2G(pi->radio_chanspec) &&
 	    CHSPEC_IS40(pi->radio_chanspec)) {
 
@@ -20825,12 +21074,31 @@ wlc_phy_chanspec_radio2056_setup(struct brcms_phy *pi,
 			write_radio_reg(pi, RADIO_2056_SYN_PLL_LOOPFILTER2 |
 					RADIO_2056_SYN, 0x1f);
 
+<<<<<<< HEAD
 			write_radio_reg(pi,
 					RADIO_2056_SYN_PLL_LOOPFILTER4 |
 					RADIO_2056_SYN, 0xb);
 			write_radio_reg(pi,
 					RADIO_2056_SYN_PLL_CP2 |
 					RADIO_2056_SYN, 0x14);
+=======
+			if ((pi->sh->chip == BCMA_CHIP_ID_BCM4716) ||
+			    (pi->sh->chip == BCMA_CHIP_ID_BCM47162)) {
+				write_radio_reg(pi,
+						RADIO_2056_SYN_PLL_LOOPFILTER4 |
+						RADIO_2056_SYN, 0x14);
+				write_radio_reg(pi,
+						RADIO_2056_SYN_PLL_CP2 |
+						RADIO_2056_SYN, 0x00);
+			} else {
+				write_radio_reg(pi,
+						RADIO_2056_SYN_PLL_LOOPFILTER4 |
+						RADIO_2056_SYN, 0xb);
+				write_radio_reg(pi,
+						RADIO_2056_SYN_PLL_CP2 |
+						RADIO_2056_SYN, 0x14);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -20877,6 +21145,7 @@ wlc_phy_chanspec_radio2056_setup(struct brcms_phy *pi,
 				WRITE_RADIO_REG2(pi, RADIO_2056, TX, core,
 						 PADG_IDAC, 0xcc);
 
+<<<<<<< HEAD
 				bias = 0x25;
 				cascbias = 0x20;
 
@@ -20895,6 +21164,32 @@ wlc_phy_chanspec_radio2056_setup(struct brcms_phy *pi,
 				pgag_boost_tune = 0x03;
 				padg_boost_tune = 0x77;
 				mixg_boost_tune = 0x65;
+=======
+				if ((pi->sh->chip == BCMA_CHIP_ID_BCM4716) ||
+				    (pi->sh->chip == BCMA_CHIP_ID_BCM47162)) {
+					bias = 0x40;
+					cascbias = 0x45;
+					pag_boost_tune = 0x5;
+					pgag_boost_tune = 0x33;
+					padg_boost_tune = 0x77;
+					mixg_boost_tune = 0x55;
+				} else {
+					bias = 0x25;
+					cascbias = 0x20;
+
+					if ((pi->sh->chip == BCMA_CHIP_ID_BCM43224 ||
+					     pi->sh->chip == BCMA_CHIP_ID_BCM43225) &&
+					    pi->sh->chippkg == BCMA_PKG_ID_BCM43224_FAB_SMIC) {
+						bias = 0x2a;
+						cascbias = 0x38;
+					}
+
+					pag_boost_tune = 0x4;
+					pgag_boost_tune = 0x03;
+					padg_boost_tune = 0x77;
+					mixg_boost_tune = 0x65;
+				}
+>>>>>>> refs/remotes/origin/master
 
 				WRITE_RADIO_REG2(pi, RADIO_2056, TX, core,
 						 INTPAG_IMAIN_STAT, bias);
@@ -20993,11 +21288,18 @@ wlc_phy_chanspec_radio2056_setup(struct brcms_phy *pi,
 
 			cascbias = 0x30;
 
+<<<<<<< HEAD
 			if ((pi->sh->chip == BCM43224_CHIP_ID) ||
 			    (pi->sh->chip == BCM43225_CHIP_ID)) {
 				if (pi->sh->chippkg == BCM43224_FAB_SMIC)
 					cascbias = 0x35;
 			}
+=======
+			if ((pi->sh->chip == BCMA_CHIP_ID_BCM43224 ||
+			     pi->sh->chip == BCMA_CHIP_ID_BCM43225) &&
+			    pi->sh->chippkg == BCMA_PKG_ID_BCM43224_FAB_SMIC)
+				cascbias = 0x35;
+>>>>>>> refs/remotes/origin/master
 
 			pabias = (pi->phy_pabias == 0) ? 0x30 : pi->phy_pabias;
 
@@ -21308,22 +21610,49 @@ wlc_phy_chanspec_nphy_setup(struct brcms_phy *pi, u16 chanspec,
 		} else if (NREV_GE(pi->pubpi.phy_rev, 7)) {
 			if (val == 54)
 				spuravoid = 1;
+<<<<<<< HEAD
 		} else {
 			if (pi->nphy_aband_spurwar_en &&
 			    ((val == 38) || (val == 102)
 			     || (val == 118)))
 				spuravoid = 1;
+=======
+		} else if (pi->nphy_aband_spurwar_en &&
+		    ((val == 38) || (val == 102) || (val == 118))) {
+			if ((pi->sh->chip == BCMA_CHIP_ID_BCM4716)
+			    && (pi->sh->chippkg == BCMA_PKG_ID_BCM4717)) {
+				spuravoid = 0;
+			} else {
+				spuravoid = 1;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (pi->phy_spuravoid == SPURAVOID_FORCEON)
 			spuravoid = 1;
 
+<<<<<<< HEAD
 		wlapi_bmac_core_phypll_ctl(pi->sh->physhim, false);
 		si_pmu_spuravoid_pllupdate(pi->sh->sih, spuravoid);
 		wlapi_bmac_core_phypll_ctl(pi->sh->physhim, true);
 
 		if ((pi->sh->chip == BCM43224_CHIP_ID) ||
 		    (pi->sh->chip == BCM43225_CHIP_ID)) {
+=======
+		if ((pi->sh->chip == BCMA_CHIP_ID_BCM4716) ||
+		    (pi->sh->chip == BCMA_CHIP_ID_BCM43225)) {
+			bcma_pmu_spuravoid_pllupdate(&pi->d11core->bus->drv_cc,
+						     spuravoid);
+		} else {
+			wlapi_bmac_core_phypll_ctl(pi->sh->physhim, false);
+			bcma_pmu_spuravoid_pllupdate(&pi->d11core->bus->drv_cc,
+						     spuravoid);
+			wlapi_bmac_core_phypll_ctl(pi->sh->physhim, true);
+		}
+
+		if ((pi->sh->chip == BCMA_CHIP_ID_BCM43224) ||
+		    (pi->sh->chip == BCMA_CHIP_ID_BCM43225)) {
+>>>>>>> refs/remotes/origin/master
 			if (spuravoid == 1) {
 				bcma_write16(pi->d11core,
 					     D11REGOFFS(tsf_clk_frac_l),
@@ -21339,7 +21668,13 @@ wlc_phy_chanspec_nphy_setup(struct brcms_phy *pi, u16 chanspec,
 			}
 		}
 
+<<<<<<< HEAD
 		wlapi_bmac_core_phypll_reset(pi->sh->physhim);
+=======
+		if (!((pi->sh->chip == BCMA_CHIP_ID_BCM4716) ||
+		      (pi->sh->chip == BCMA_CHIP_ID_BCM47162)))
+			wlapi_bmac_core_phypll_reset(pi->sh->physhim);
+>>>>>>> refs/remotes/origin/master
 
 		mod_phy_reg(pi, 0x01, (0x1 << 15),
 			    ((spuravoid > 0) ? (0x1 << 15) : 0));
@@ -21473,7 +21808,11 @@ void wlc_phy_antsel_init(struct brcms_phy_pub *ppi, bool lut_init)
 		write_phy_reg(pi, 0xc8, 0x0);
 		write_phy_reg(pi, 0xc9, 0x0);
 
+<<<<<<< HEAD
 		ai_gpiocontrol(pi->sh->sih, mask, mask, GPIO_DRV_PRIORITY);
+=======
+		bcma_chipco_gpio_control(&pi->d11core->bus->drv_cc, mask, mask);
+>>>>>>> refs/remotes/origin/master
 
 		mc = bcma_read32(pi->d11core, D11REGOFFS(maccontrol));
 		mc &= ~MCTL_GPOUT_SEL_MASK;
@@ -22301,9 +22640,21 @@ s16 wlc_phy_tempsense_nphy(struct brcms_phy *pi)
 		wlc_phy_table_write_nphy(pi, NPHY_TBL_ID_AFECTRL, 1, 0x03, 16,
 					 &auxADC_rssi_ctrlH_save);
 
+<<<<<<< HEAD
 		radio_temp[0] = (179 * (radio_temp[1] + radio_temp2[1])
 				 + 82 * (auxADC_Vl) - 28861 +
 				 128) / 256;
+=======
+		if (pi->sh->chip == BCMA_CHIP_ID_BCM5357) {
+			radio_temp[0] = (193 * (radio_temp[1] + radio_temp2[1])
+					 + 88 * (auxADC_Vl) - 27111 +
+					 128) / 256;
+		} else {
+			radio_temp[0] = (179 * (radio_temp[1] + radio_temp2[1])
+					 + 82 * (auxADC_Vl) - 28861 +
+					 128) / 256;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		offset = (s16) pi->phy_tempsense_offset;
 
@@ -25053,6 +25404,7 @@ wlc_phy_a2_nphy(struct brcms_phy *pi, struct nphy_ipa_txcalgains *txgains,
 			if (txgains->useindex) {
 				phy_a4 = 15 - ((txgains->index) >> 3);
 				if (CHSPEC_IS2G(pi->radio_chanspec)) {
+<<<<<<< HEAD
 					if (NREV_GE(pi->pubpi.phy_rev, 6))
 						phy_a5 = 0x00f7 | (phy_a4 << 8);
 
@@ -25061,6 +25413,18 @@ wlc_phy_a2_nphy(struct brcms_phy *pi, struct nphy_ipa_txcalgains *txgains,
 						phy_a5 = 0x10f7 | (phy_a4 << 8);
 					else
 						phy_a5 = 0x50f7 | (phy_a4 << 8);
+=======
+					if (NREV_GE(pi->pubpi.phy_rev, 6) &&
+					    pi->sh->chip == BCMA_CHIP_ID_BCM47162) {
+						phy_a5 = 0x10f7 | (phy_a4 << 8);
+					} else if (NREV_GE(pi->pubpi.phy_rev, 6)) {
+						phy_a5 = 0x00f7 | (phy_a4 << 8);
+					} else if (NREV_IS(pi->pubpi.phy_rev, 5)) {
+						phy_a5 = 0x10f7 | (phy_a4 << 8);
+					} else {
+						phy_a5 = 0x50f7 | (phy_a4 << 8);
+					}
+>>>>>>> refs/remotes/origin/master
 				} else {
 					phy_a5 = 0x70f7 | (phy_a4 << 8);
 				}
@@ -25204,32 +25568,48 @@ static u8 wlc_phy_a3_nphy(struct brcms_phy *pi, u8 start_gain, u8 core)
 
 				phy_a15 = pad_gain_codes_used_2057rev5;
 				phy_a13 =
+<<<<<<< HEAD
 					sizeof(pad_gain_codes_used_2057rev5) /
 					sizeof(pad_gain_codes_used_2057rev5
 						[0]) - 1;
+=======
+					ARRAY_SIZE(pad_gain_codes_used_2057rev5) - 1;
+>>>>>>> refs/remotes/origin/master
 
 			} else if ((pi->pubpi.radiorev == 7)
 				   || (pi->pubpi.radiorev == 8)) {
 
 				phy_a15 = pad_gain_codes_used_2057rev7;
 				phy_a13 =
+<<<<<<< HEAD
 					sizeof(pad_gain_codes_used_2057rev7) /
 					sizeof(pad_gain_codes_used_2057rev7
 						[0]) - 1;
+=======
+					ARRAY_SIZE(pad_gain_codes_used_2057rev7) - 1;
+>>>>>>> refs/remotes/origin/master
 
 			} else {
 
 				phy_a15 = pad_all_gain_codes_2057;
+<<<<<<< HEAD
 				phy_a13 = sizeof(pad_all_gain_codes_2057) /
 					  sizeof(pad_all_gain_codes_2057[0]) -
+=======
+				phy_a13 = ARRAY_SIZE(pad_all_gain_codes_2057) -
+>>>>>>> refs/remotes/origin/master
 					  1;
 			}
 
 		} else {
 
 			phy_a15 = pga_all_gain_codes_2057;
+<<<<<<< HEAD
 			phy_a13 = sizeof(pga_all_gain_codes_2057) /
 				  sizeof(pga_all_gain_codes_2057[0]) - 1;
+=======
+			phy_a13 = ARRAY_SIZE(pga_all_gain_codes_2057) - 1;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		phy_a14 = 0;

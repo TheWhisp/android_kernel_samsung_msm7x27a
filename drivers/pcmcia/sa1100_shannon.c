@@ -8,6 +8,10 @@
 #include <linux/kernel.h>
 #include <linux/device.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
@@ -15,6 +19,7 @@
 #include <asm/irq.h>
 #include "sa1100_generic.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{ 0, SHANNON_IRQ_GPIO_EJECT_0, "PCMCIA_CD_0" },
@@ -38,6 +43,8 @@ static void shannon_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int shannon_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	/* All those are inputs */
@@ -59,13 +66,17 @@ static int shannon_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 	}
 
 	return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 shannon_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 			    struct pcmcia_state *state)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long levels = GPLR;
 
@@ -78,6 +89,10 @@ shannon_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 	switch (skt->nr) {
 	case 0:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	switch (skt->nr) {
+	case 0:
+>>>>>>> refs/remotes/origin/master
 		state->bvd1   = 1; 
 		state->bvd2   = 1; 
 		state->vs_3v  = 1; /* FIXME Can only apply 3.3V on Shannon. */
@@ -86,11 +101,14 @@ shannon_pcmcia_socket_state(struct soc_pcmcia_socket *skt,
 
 	case 1:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		state->detect = (levels & SHANNON_GPIO_EJECT_1) ? 0 : 1;
 		state->ready  = (levels & SHANNON_GPIO_RDY_1) ? 1 : 0;
 		state->wrprot = 0; /* Not available on Shannon. */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		state->bvd1   = 1; 
 		state->bvd2   = 1; 
 		state->vs_3v  = 1; /* FIXME Can only apply 3.3V on Shannon. */
@@ -125,6 +143,7 @@ shannon_pcmcia_configure_socket(struct soc_pcmcia_socket *skt,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void shannon_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
 	soc_pcmcia_enable_irqs(skt, irqs, ARRAY_SIZE(irqs));
@@ -145,15 +164,23 @@ static struct pcmcia_low_level shannon_pcmcia_ops = {
 	.socket_init		= shannon_pcmcia_socket_init,
 	.socket_suspend		= shannon_pcmcia_socket_suspend,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pcmcia_low_level shannon_pcmcia_ops = {
 	.owner			= THIS_MODULE,
 	.hw_init		= shannon_pcmcia_hw_init,
 	.socket_state		= shannon_pcmcia_socket_state,
 	.configure_socket	= shannon_pcmcia_configure_socket,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 int __devinit pcmcia_shannon_init(struct device *dev)
+=======
+};
+
+int pcmcia_shannon_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 

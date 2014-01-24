@@ -15,9 +15,12 @@ CONFIG_PPC4xx_GPIO=y
 CONFIG_ACADIA=y
 CONFIG_EP405=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_HCU4=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_HOTFOOT=y
 CONFIG_KILAUEA=y
 CONFIG_MAKALU=y
@@ -54,6 +57,7 @@ CONFIG_BLK_DEV_RAM_SIZE=35000
 CONFIG_XILINX_SYSACE=m
 CONFIG_NETDEVICES=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_NET_ETHERNET=y
 CONFIG_IBM_NEW_EMAC=y
 =======
@@ -61,6 +65,11 @@ CONFIG_ETHERNET=y
 CONFIG_NET_VENDOR_IBM=y
 CONFIG_IBM_EMAC=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_ETHERNET=y
+CONFIG_NET_VENDOR_IBM=y
+CONFIG_IBM_EMAC=y
+>>>>>>> refs/remotes/origin/master
 # CONFIG_INPUT is not set
 CONFIG_SERIO=m
 # CONFIG_SERIO_I8042 is not set

@@ -143,14 +143,20 @@ int hfsplus_uni2asc(struct super_block *sb,
 		if (likely(compose))
 			ce1 = hfsplus_compose_lookup(hfsplus_compose_table, c0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ce1 && (cc = ce1[0])) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ce1)
 			cc = ce1[0];
 		else
 			cc = 0;
 		if (cc) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* start of a possibly decomposed Hangul char */
 			if (cc != 0xffff)
 				goto done;
@@ -218,11 +224,16 @@ int hfsplus_uni2asc(struct super_block *sb,
 				ce2 = ce1;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ((cc = ce2[0])) {
 =======
 			cc = ce2[0];
 			if (cc) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			cc = ce2[0];
+			if (cc) {
+>>>>>>> refs/remotes/origin/master
 				ip += i;
 				ustrlen -= i;
 				goto done;
@@ -303,7 +314,12 @@ static inline u16 *decompose_unichar(wchar_t uc, int *size)
 	return hfsplus_decompose_table + (off / 4);
 }
 
+<<<<<<< HEAD
 int hfsplus_asc2uni(struct super_block *sb, struct hfsplus_unistr *ustr,
+=======
+int hfsplus_asc2uni(struct super_block *sb,
+		    struct hfsplus_unistr *ustr, int max_unistr_len,
+>>>>>>> refs/remotes/origin/master
 		    const char *astr, int len)
 {
 	int size, dsize, decompose;
@@ -311,19 +327,29 @@ int hfsplus_asc2uni(struct super_block *sb, struct hfsplus_unistr *ustr,
 	wchar_t c;
 
 	decompose = !test_bit(HFSPLUS_SB_NODECOMPOSE, &HFSPLUS_SB(sb)->flags);
+<<<<<<< HEAD
 	while (outlen < HFSPLUS_MAX_STRLEN && len > 0) {
 		size = asc2unichar(sb, astr, len, &c);
 
 <<<<<<< HEAD
 		if (decompose && (dstr = decompose_unichar(c, &dsize))) {
 =======
+=======
+	while (outlen < max_unistr_len && len > 0) {
+		size = asc2unichar(sb, astr, len, &c);
+
+>>>>>>> refs/remotes/origin/master
 		if (decompose)
 			dstr = decompose_unichar(c, &dsize);
 		else
 			dstr = NULL;
 		if (dstr) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			if (outlen + dsize > HFSPLUS_MAX_STRLEN)
+=======
+			if (outlen + dsize > max_unistr_len)
+>>>>>>> refs/remotes/origin/master
 				break;
 			do {
 				ustr->unicode[outlen++] = cpu_to_be16(*dstr++);
@@ -345,8 +371,12 @@ int hfsplus_asc2uni(struct super_block *sb, struct hfsplus_unistr *ustr,
  * Composed unicode characters are decomposed and case-folding is performed
  * if the appropriate bits are (un)set on the superblock.
  */
+<<<<<<< HEAD
 int hfsplus_hash_dentry(const struct dentry *dentry, const struct inode *inode,
 		struct qstr *str)
+=======
+int hfsplus_hash_dentry(const struct dentry *dentry, struct qstr *str)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb = dentry->d_sb;
 	const char *astr;
@@ -368,11 +398,14 @@ int hfsplus_hash_dentry(const struct dentry *dentry, const struct inode *inode,
 		len -= size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (decompose && (dstr = decompose_unichar(c, &dsize))) {
 			do {
 				c2 = *dstr++;
 				if (!casefold || (c2 = case_fold(c2)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (decompose)
 			dstr = decompose_unichar(c, &dsize);
 		else
@@ -383,11 +416,15 @@ int hfsplus_hash_dentry(const struct dentry *dentry, const struct inode *inode,
 				if (casefold)
 					c2 = case_fold(c2);
 				if (!casefold || c2)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					hash = partial_name_hash(c2, hash);
 			} while (--dsize > 0);
 		} else {
 			c2 = c;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (!casefold || (c2 = case_fold(c2)))
 =======
@@ -395,6 +432,11 @@ int hfsplus_hash_dentry(const struct dentry *dentry, const struct inode *inode,
 				c2 = case_fold(c2);
 			if (!casefold || c2)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (casefold)
+				c2 = case_fold(c2);
+			if (!casefold || c2)
+>>>>>>> refs/remotes/origin/master
 				hash = partial_name_hash(c2, hash);
 		}
 	}
@@ -408,9 +450,13 @@ int hfsplus_hash_dentry(const struct dentry *dentry, const struct inode *inode,
  * Composed unicode characters are decomposed and case-folding is performed
  * if the appropriate bits are (un)set on the superblock.
  */
+<<<<<<< HEAD
 int hfsplus_compare_dentry(const struct dentry *parent,
 		const struct inode *pinode,
 		const struct dentry *dentry, const struct inode *inode,
+=======
+int hfsplus_compare_dentry(const struct dentry *parent, const struct dentry *dentry,
+>>>>>>> refs/remotes/origin/master
 		unsigned int len, const char *str, const struct qstr *name)
 {
 	struct super_block *sb = parent->d_sb;
@@ -463,21 +509,31 @@ int hfsplus_compare_dentry(const struct dentry *parent,
 		c2 = *dstr2;
 		if (casefold) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if  (!(c1 = case_fold(c1))) {
 =======
 			c1 = case_fold(c1);
 			if (!c1) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			c1 = case_fold(c1);
+			if (!c1) {
+>>>>>>> refs/remotes/origin/master
 				dstr1++;
 				dsize1--;
 				continue;
 			}
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (!(c2 = case_fold(c2))) {
 =======
 			c2 = case_fold(c2);
 			if (!c2) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			c2 = case_fold(c2);
+			if (!c2) {
+>>>>>>> refs/remotes/origin/master
 				dstr2++;
 				dsize2--;
 				continue;

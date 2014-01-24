@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -35,9 +39,13 @@
 
 #define RTL8190_MAX_FIRMWARE_CODE_SIZE		64000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define RTL8190_MAX_RAW_FIRMWARE_CODE_SIZE	90000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define RTL8190_MAX_RAW_FIRMWARE_CODE_SIZE	90000
+>>>>>>> refs/remotes/origin/master
 #define RTL8190_CPU_START_OFFSET		0x80
 /* Firmware Local buffer size. 64k */
 #define	MAX_FIRMWARE_CODE_SIZE			0xFF00
@@ -226,10 +234,14 @@ struct rt_firmware {
 	u32 fw_imem_len;
 	u32 fw_emem_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 sz_fw_tmpbuffer[164000];
 =======
 	u8 sz_fw_tmpbuffer[RTL8190_MAX_RAW_FIRMWARE_CODE_SIZE];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 sz_fw_tmpbuffer[RTL8190_MAX_RAW_FIRMWARE_CODE_SIZE];
+>>>>>>> refs/remotes/origin/master
 	u32 sz_fw_tmpbufferlen;
 	u16 cmdpacket_fragthresold;
 };
@@ -356,7 +368,11 @@ enum fw_h2c_cmd {
 	do {							\
 		udelay(1000);					\
 		rtlpriv->rtlhal.fwcmd_iomap &= (~_Bit);		\
+<<<<<<< HEAD
 	} while (0);
+=======
+	} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #define FW_CMD_IO_UPDATE(rtlpriv, _val)				\
 	rtlpriv->rtlhal.fwcmd_iomap = _val;
@@ -365,13 +381,21 @@ enum fw_h2c_cmd {
 	do {							\
 		rtl_write_word(rtlpriv, LBUS_MON_ADDR, (u16)_val);	\
 		FW_CMD_IO_UPDATE(rtlpriv, _val);		\
+<<<<<<< HEAD
 	} while (0);
+=======
+	} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #define FW_CMD_PARA_SET(rtlpriv, _val)				\
 	do {							\
 		rtl_write_dword(rtlpriv, LBUS_ADDR_MASK, _val);	\
 		rtlpriv->rtlhal.fwcmd_ioparam = _val;		\
+<<<<<<< HEAD
 	} while (0);
+=======
+	} while (0)
+>>>>>>> refs/remotes/origin/master
 
 #define FW_CMD_IO_QUERY(rtlpriv)				\
 	(u16)(rtlpriv->rtlhal.fwcmd_iomap)

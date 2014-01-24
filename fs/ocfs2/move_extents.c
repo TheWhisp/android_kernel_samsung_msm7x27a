@@ -37,9 +37,12 @@
 #include "buffer_head_io.h"
 #include "sysfile.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "suballoc.h"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "refcounttree.h"
 #include "move_extents.h"
 
@@ -73,7 +76,11 @@ static int __ocfs2_move_extent(handle_t *handle,
 	u64 ino = ocfs2_metadata_cache_owner(context->et.et_ci);
 	u64 old_blkno = ocfs2_clusters_to_blocks(inode->i_sb, p_cpos);
 
+<<<<<<< HEAD
 	ret = ocfs2_duplicate_clusters_by_page(handle, context->file, cpos,
+=======
+	ret = ocfs2_duplicate_clusters_by_page(handle, inode, cpos,
+>>>>>>> refs/remotes/origin/master
 					       p_cpos, new_p_cpos, len);
 	if (ret) {
 		mlog_errno(ret);
@@ -156,6 +163,10 @@ static int __ocfs2_move_extent(handle_t *handle,
 	}
 
 out:
+<<<<<<< HEAD
+=======
+	ocfs2_free_path(path);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -204,8 +215,12 @@ static int ocfs2_lock_allocators_move_extents(struct inode *inode,
 		}
 	}
 
+<<<<<<< HEAD
 	*credits += ocfs2_calc_extend_credits(osb->sb, et->et_root_el,
 					      clusters_to_move + 2);
+=======
+	*credits += ocfs2_calc_extend_credits(osb->sb, et->et_root_el);
+>>>>>>> refs/remotes/origin/master
 
 	mlog(0, "reserve metadata_blocks: %d, data_clusters: %u, credits: %d\n",
 	     extra_blocks, clusters_to_move, *credits);
@@ -475,7 +490,11 @@ static int ocfs2_validate_and_adjust_move_goal(struct inode *inode,
 	int ret, goal_bit = 0;
 
 	struct buffer_head *gd_bh = NULL;
+<<<<<<< HEAD
 	struct ocfs2_group_desc *bg = NULL;
+=======
+	struct ocfs2_group_desc *bg;
+>>>>>>> refs/remotes/origin/master
 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
 	int c_to_b = 1 << (osb->s_clustersize_bits -
 					inode->i_sb->s_blocksize_bits);
@@ -486,6 +505,7 @@ static int ocfs2_validate_and_adjust_move_goal(struct inode *inode,
 	range->me_goal = ocfs2_block_to_cluster_start(inode->i_sb,
 						      range->me_goal);
 	/*
+<<<<<<< HEAD
 	 * moving goal is not allowd to start with a group desc blok(#0 blk)
 	 * let's compromise to the latter cluster.
 	 */
@@ -493,6 +513,8 @@ static int ocfs2_validate_and_adjust_move_goal(struct inode *inode,
 		range->me_goal += c_to_b;
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * validate goal sits within global_bitmap, and return the victim
 	 * group desc
 	 */
@@ -506,6 +528,16 @@ static int ocfs2_validate_and_adjust_move_goal(struct inode *inode,
 	bg = (struct ocfs2_group_desc *)gd_bh->b_data;
 
 	/*
+<<<<<<< HEAD
+=======
+	 * moving goal is not allowd to start with a group desc blok(#0 blk)
+	 * let's compromise to the latter cluster.
+	 */
+	if (range->me_goal == le64_to_cpu(bg->bg_blkno))
+		range->me_goal += c_to_b;
+
+	/*
+>>>>>>> refs/remotes/origin/master
 	 * movement is not gonna cross two groups.
 	 */
 	if ((le16_to_cpu(bg->bg_bits) - goal_bit) * osb->s_clustersize <
@@ -565,6 +597,7 @@ static void ocfs2_probe_alloc_group(struct inode *inode, struct buffer_head *bh,
 	mlog(0, "found phys_cpos: %u to fit the wanted moving.\n", *phys_cpos);
 }
 
+<<<<<<< HEAD
 static int ocfs2_alloc_dinode_update_counts(struct inode *inode,
 				       handle_t *handle,
 				       struct buffer_head *di_bh,
@@ -642,6 +675,8 @@ bail:
 	return status;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ocfs2_move_extent(struct ocfs2_move_extents_context *context,
 			     u32 cpos, u32 phys_cpos, u32 *new_phys_cpos,
 			     u32 len, int ext_flags)
@@ -750,10 +785,14 @@ static int ocfs2_move_extent(struct ocfs2_move_extents_context *context,
 	ocfs2_probe_alloc_group(inode, gd_bh, &goal_bit, len, move_max_hop,
 				new_phys_cpos);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!new_phys_cpos) {
 =======
 	if (!*new_phys_cpos) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!*new_phys_cpos) {
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOSPC;
 		goto out_commit;
 	}
@@ -853,7 +892,11 @@ static int __ocfs2_move_extents_range(struct buffer_head *di_bh,
 	struct ocfs2_move_extents *range = context->range;
 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
 
+<<<<<<< HEAD
 	if ((inode->i_size == 0) || (range->me_len == 0))
+=======
+	if ((i_size_read(inode) == 0) || (range->me_len == 0))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (OCFS2_I(inode)->ip_dyn_features & OCFS2_INLINE_DATA_FL)
@@ -1063,6 +1106,7 @@ int ocfs2_ioctl_move_extents(struct file *filp, void __user *argp)
 {
 	int status;
 
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
 	struct ocfs2_move_extents range;
 	struct ocfs2_move_extents_context *context = NULL;
@@ -1081,18 +1125,44 @@ int ocfs2_ioctl_move_extents(struct file *filp, void __user *argp)
 	if (inode->i_flags & (S_IMMUTABLE|S_APPEND)) {
 		status = -EPERM;
 		goto out;
+=======
+	struct inode *inode = file_inode(filp);
+	struct ocfs2_move_extents range;
+	struct ocfs2_move_extents_context *context;
+
+	if (!argp)
+		return -EINVAL;
+
+	status = mnt_want_write_file(filp);
+	if (status)
+		return status;
+
+	if ((!S_ISREG(inode->i_mode)) || !(filp->f_mode & FMODE_WRITE)) {
+		status = -EPERM;
+		goto out_drop;
+	}
+
+	if (inode->i_flags & (S_IMMUTABLE|S_APPEND)) {
+		status = -EPERM;
+		goto out_drop;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	context = kzalloc(sizeof(struct ocfs2_move_extents_context), GFP_NOFS);
 	if (!context) {
 		status = -ENOMEM;
 		mlog_errno(status);
+<<<<<<< HEAD
 		goto out;
+=======
+		goto out_drop;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	context->inode = inode;
 	context->file = filp;
 
+<<<<<<< HEAD
 	if (argp) {
 		if (copy_from_user(&range, (struct ocfs2_move_extents *)argp,
 				   sizeof(range))) {
@@ -1106,6 +1176,17 @@ int ocfs2_ioctl_move_extents(struct file *filp, void __user *argp)
 
 	if (range.me_start > i_size_read(inode))
 		goto out;
+=======
+	if (copy_from_user(&range, argp, sizeof(range))) {
+		status = -EFAULT;
+		goto out_free;
+	}
+
+	if (range.me_start > i_size_read(inode)) {
+		status = -EINVAL;
+		goto out_free;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (range.me_start + range.me_len > i_size_read(inode))
 			range.me_len = i_size_read(inode) - range.me_start;
@@ -1137,18 +1218,27 @@ int ocfs2_ioctl_move_extents(struct file *filp, void __user *argp)
 
 		status = ocfs2_validate_and_adjust_move_goal(inode, &range);
 		if (status)
+<<<<<<< HEAD
 			goto out;
+=======
+			goto out_copy;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	status = ocfs2_move_extents(context);
 	if (status)
 		mlog_errno(status);
+<<<<<<< HEAD
 out:
+=======
+out_copy:
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * movement/defragmentation may end up being partially completed,
 	 * that's the reason why we need to return userspace the finished
 	 * length and new_offset even if failure happens somewhere.
 	 */
+<<<<<<< HEAD
 	if (argp) {
 		if (copy_to_user((struct ocfs2_move_extents *)argp, &range,
 				sizeof(range)))
@@ -1162,6 +1252,15 @@ out:
 =======
 	mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (copy_to_user(argp, &range, sizeof(range)))
+		status = -EFAULT;
+
+out_free:
+	kfree(context);
+out_drop:
+	mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 
 	return status;
 }

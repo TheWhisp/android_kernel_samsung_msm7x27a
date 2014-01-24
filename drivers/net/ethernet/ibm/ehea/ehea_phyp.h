@@ -39,6 +39,7 @@
  * hcp_*  - structures, variables and functions releated to Hypervisor Calls
  */
 
+<<<<<<< HEAD
 static inline u32 get_longbusy_msecs(int long_busy_ret_code)
 {
 	switch (long_busy_ret_code) {
@@ -59,6 +60,8 @@ static inline u32 get_longbusy_msecs(int long_busy_ret_code)
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Number of pages which can be registered at once by H_REGISTER_HEA_RPAGES */
 #define EHEA_MAX_RPAGE 512
 

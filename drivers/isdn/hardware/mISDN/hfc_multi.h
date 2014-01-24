@@ -34,20 +34,28 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_FRAME_SIZE	2048
 =======
   #define MAX_FRAME_SIZE	2048
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  #define MAX_FRAME_SIZE	2048
+>>>>>>> refs/remotes/origin/master
 */
 
 struct hfc_chan {
 	struct dchannel	*dch;	/* link if channel is a D-channel */
 	struct bchannel	*bch;	/* link if channel is a B-channel */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int		port; 	/* the interface port this */
 =======
 	int		port;	/* the interface port this */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		port;	/* the interface port this */
+>>>>>>> refs/remotes/origin/master
 				/* channel is associated with */
 	int		nt_timer; /* -1 if off, 0 if elapsed, >0 if running */
 	int		los, ais, slip_tx, slip_rx, rdi; /* current alarms */
@@ -98,10 +106,14 @@ struct hfcm_hw {
 #define	HFC_CFG_DTMF		9 /* enable DTMF-detection */
 #define	HFC_CFG_CRC4		10 /* disable CRC-4 Multiframe mode, */
 <<<<<<< HEAD
+<<<<<<< HEAD
 					/* use double frame instead. */
 =======
 /* use double frame instead. */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* use double frame instead. */
+>>>>>>> refs/remotes/origin/master
 
 #define HFC_TYPE_E1		1 /* controller is HFC-E1 */
 #define HFC_TYPE_4S		4 /* controller is HFC-4S */
@@ -122,6 +134,7 @@ struct hfcm_hw {
 #define	HFC_CHIP_E1CLOCK_PUT	11 /* always put clock from E1 interface */
 #define	HFC_CHIP_WATCHDOG	12 /* whether we should send signals */
 <<<<<<< HEAD
+<<<<<<< HEAD
 					/* to the watchdog */
 #define	HFC_CHIP_B410P		13 /* whether we have a b410p with echocan in */
 					/* hw */
@@ -130,6 +143,11 @@ struct hfcm_hw {
 #define	HFC_CHIP_B410P		13 /* whether we have a b410p with echocan in */
 /* hw */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* to the watchdog */
+#define	HFC_CHIP_B410P		13 /* whether we have a b410p with echocan in */
+/* hw */
+>>>>>>> refs/remotes/origin/master
 #define	HFC_CHIP_PLXSD		14 /* whether we have a Speech-Design PLX */
 #define	HFC_CHIP_EMBSD          15 /* whether we have a SD Embedded board */
 
@@ -167,6 +185,7 @@ struct hfc_multi {
 #ifdef HFC_REGISTER_DEBUG
 	void		(*HFC_outb)(struct hfc_multi *hc, u_char reg,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				u_char val, const char *function, int line);
 	void		(*HFC_outb_nodebug)(struct hfc_multi *hc, u_char reg,
 				u_char val, const char *function, int line);
@@ -188,6 +207,8 @@ struct hfc_multi {
 	void		(*HFC_outb_nodebug)(struct hfc_multi *hc, u_char reg,
 				u_char val);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				    u_char val, const char *function, int line);
 	void		(*HFC_outb_nodebug)(struct hfc_multi *hc, u_char reg,
 					    u_char val, const char *function, int line);
@@ -208,7 +229,10 @@ struct hfc_multi {
 				    u_char val);
 	void		(*HFC_outb_nodebug)(struct hfc_multi *hc, u_char reg,
 					    u_char val);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u_char		(*HFC_inb)(struct hfc_multi *hc, u_char reg);
 	u_char		(*HFC_inb_nodebug)(struct hfc_multi *hc, u_char reg);
 	u_short		(*HFC_inw)(struct hfc_multi *hc, u_char reg);
@@ -218,6 +242,7 @@ struct hfc_multi {
 #endif
 	void		(*read_fifo)(struct hfc_multi *hc, u_char *data,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				int len);
 	void		(*write_fifo)(struct hfc_multi *hc, u_char *data,
 				int len);
@@ -226,6 +251,11 @@ struct hfc_multi {
 	void		(*write_fifo)(struct hfc_multi *hc, u_char *data,
 				      int len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     int len);
+	void		(*write_fifo)(struct hfc_multi *hc, u_char *data,
+				      int len);
+>>>>>>> refs/remotes/origin/master
 	u_long		pci_origmembase, plx_origmembase;
 	void __iomem	*pci_membase; /* PCI memory */
 	void __iomem	*plx_membase; /* PLX memory */
@@ -252,6 +282,7 @@ struct hfc_multi {
 
 	u_int		slots;	/* number of PCM slots */
 	u_int		leds;	/* type of leds */
+<<<<<<< HEAD
 	u_int		ledcount; /* used to animate leds */
 	u_long		ledstate; /* save last state of leds */
 	int		opticalsupport; /* has the e1 board */
@@ -271,6 +302,24 @@ struct hfc_multi {
 >>>>>>> refs/remotes/origin/cm-10.0
 					/* port (will be cleared after */
 					/* showing led-states) */
+=======
+	u_long		ledstate; /* save last state of leds */
+	int		opticalsupport; /* has the e1 board */
+					/* an optical Interface */
+
+	u_int		bmask[32]; /* bitmask of bchannels for port */
+	u_char		dnum[32]; /* array of used dchannel numbers for port */
+	u_char		created[32]; /* what port is created */
+	u_int		activity_tx; /* if there is data TX / RX */
+	u_int		activity_rx; /* bitmask according to port number */
+				     /* (will be cleared after */
+				     /* showing led-states) */
+	u_int		flash[8]; /* counter for flashing 8 leds on activity */
+
+	u_long		wdcount;	/* every 500 ms we need to */
+					/* send the watchdog a signal */
+	u_char		wdbyte; /* watchdog toggle byte */
+>>>>>>> refs/remotes/origin/master
 	int		e1_state; /* keep track of last state */
 	int		e1_getclock; /* if sync is retrieved from interface */
 	int		syncronized; /* keep track of existing sync interface */
@@ -287,7 +336,10 @@ struct hfc_multi {
 	 * the bch->channel is equvalent to the hfc-channel
 	 */
 	struct hfc_chan	chan[32];
+<<<<<<< HEAD
 	u_char		created[8]; /* what port is created */
+=======
+>>>>>>> refs/remotes/origin/master
 	signed char	slot_owner[256]; /* owner channel of slot */
 };
 
@@ -323,10 +375,14 @@ struct hfc_multi {
 /* GPIO4..8 Enable & Set to OUT, SLAVE_EN_N = 1 */
 #define PLX_GPIOC_INIT		(PLX_GPIO4_DIR | PLX_GPIO5_DIR | PLX_GPIO6_DIR \
 <<<<<<< HEAD
+<<<<<<< HEAD
 			| PLX_GPIO7_DIR | PLX_GPIO8_DIR | PLX_SLAVE_EN_N)
 =======
 				 | PLX_GPIO7_DIR | PLX_GPIO8_DIR | PLX_SLAVE_EN_N)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 | PLX_GPIO7_DIR | PLX_GPIO8_DIR | PLX_SLAVE_EN_N)
+>>>>>>> refs/remotes/origin/master
 
 /* PLX Interrupt Control/STATUS */
 #define PLX_INTCSR_LINTI1_ENABLE 0x01
@@ -349,10 +405,14 @@ struct hfc_multi {
 #define R_CIRM			0x00
 #define R_CTRL			0x01
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define R_BRG_PCM_CFG 		0x02
 =======
 #define R_BRG_PCM_CFG		0x02
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define R_BRG_PCM_CFG		0x02
+>>>>>>> refs/remotes/origin/master
 #define R_RAM_ADDR0		0x08
 #define R_RAM_ADDR1		0x09
 #define R_RAM_ADDR2		0x0A
@@ -750,12 +810,17 @@ struct hfc_multi {
 #define V_HCLK			0x10
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define V_JATT_AUTO_DEL		0x20
 #define V_JATT_AUTO		0x40
 =======
   #define V_JATT_AUTO_DEL		0x20
   #define V_JATT_AUTO		0x40
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  #define V_JATT_AUTO_DEL		0x20
+  #define V_JATT_AUTO		0x40
+>>>>>>> refs/remotes/origin/master
 */
 #define V_JATT_OFF		0x80
 /* R_STATE */
@@ -1298,6 +1363,9 @@ struct hfc_register_names {
 };
 #endif /* HFC_REGISTER_DEBUG */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

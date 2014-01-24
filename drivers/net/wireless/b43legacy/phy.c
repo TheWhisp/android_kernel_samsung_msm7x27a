@@ -5,10 +5,14 @@
   Copyright (c) 2005 Martin Langer <martin-langer@gmx.de>,
 		     Stefano Brivio <stefano.brivio@polimi.it>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     Michael Buesch <mbuesch@freenet.de>
 =======
 		     Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
 		     Danny van Dyk <kugelfang@gentoo.org>
      Andreas Jaggi <andreas.jaggi@waterwave.ch>
   Copyright (c) 2007 Larry Finger <Larry.Finger@lwfinger.net>
@@ -412,7 +416,11 @@ static void b43legacy_phy_setupg(struct b43legacy_wldev *dev)
 
 		if (is_bcm_board_vendor(dev) &&
 		    (dev->dev->bus->boardinfo.type == 0x0416) &&
+<<<<<<< HEAD
 		    (dev->dev->bus->boardinfo.rev == 0x0017))
+=======
+		    (dev->dev->bus->sprom.board_rev == 0x0017))
+>>>>>>> refs/remotes/origin/master
 			return;
 
 		b43legacy_ilt_write(dev, 0x5001, 0x0002);
@@ -428,7 +436,11 @@ static void b43legacy_phy_setupg(struct b43legacy_wldev *dev)
 
 		if (is_bcm_board_vendor(dev) &&
 		    (dev->dev->bus->boardinfo.type == 0x0416) &&
+<<<<<<< HEAD
 		    (dev->dev->bus->boardinfo.rev == 0x0017))
+=======
+		    (dev->dev->bus->sprom.board_rev == 0x0017))
+>>>>>>> refs/remotes/origin/master
 			return;
 
 		b43legacy_ilt_write(dev, 0x0401, 0x0002);
@@ -1865,10 +1877,14 @@ void b43legacy_phy_xmitpower(struct b43legacy_wldev *dev)
 #define REG_MAX_PWR 20
 	max_pwr = min(REG_MAX_PWR * 4
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      - dev->dev->bus->sprom.antenna_gain.ghz24.a0
 =======
 		      - dev->dev->bus->sprom.antenna_gain.a0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      - dev->dev->bus->sprom.antenna_gain.a0
+>>>>>>> refs/remotes/origin/master
 		      - 0x6, max_pwr);
 
 	/* find the desired power in Q5.2 - power_level is in dBm

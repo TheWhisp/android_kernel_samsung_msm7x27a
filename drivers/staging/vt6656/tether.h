@@ -30,9 +30,13 @@
 #define __TETHER_H__
 
 #include <linux/if_ether.h>
+<<<<<<< HEAD
 #include "ttype.h"
 
 /*---------------------  Export Definitions -------------------------*/
+=======
+
+>>>>>>> refs/remotes/origin/master
 //
 // constants
 //
@@ -44,11 +48,14 @@
 
 #define TYPE_MGMT_PROBE_RSP 0x5000
 
+<<<<<<< HEAD
 //
 // wFrameCtl field in the S802_11Header
 //
 // NOTE....
 //   in network byte order, high byte is going first
+=======
+>>>>>>> refs/remotes/origin/master
 #define FC_TODS             0x0001
 #define FC_FROMDS           0x0002
 #define FC_MOREFRAG         0x0004
@@ -71,9 +78,12 @@
 #define TYPE_CTL_CTS        0xc400
 #define TYPE_CTL_ACK        0xd400
 
+<<<<<<< HEAD
 
 //#define WEP_IV_MASK         0xFFFFFF00
 
+=======
+>>>>>>> refs/remotes/origin/master
 #else //if LITTLE_ENDIAN
 //
 // wType field in the SEthernetHeader
@@ -83,11 +93,14 @@
 
 #define TYPE_MGMT_PROBE_RSP 0x0050
 
+<<<<<<< HEAD
 //
 // wFrameCtl field in the S802_11Header
 //
 // NOTE....
 //   in network byte order, high byte is going first
+=======
+>>>>>>> refs/remotes/origin/master
 #define FC_TODS             0x0100
 #define FC_FROMDS           0x0200
 #define FC_MOREFRAG         0x0400
@@ -110,13 +123,17 @@
 #define TYPE_CTL_CTS        0x00c4
 #define TYPE_CTL_ACK        0x00d4
 
+<<<<<<< HEAD
 
 //#define WEP_IV_MASK         0x00FFFFFF
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif //#ifdef __BIG_ENDIAN
 
 #define WEP_IV_MASK         0x00FFFFFF
 
+<<<<<<< HEAD
 /*---------------------  Export Types  ------------------------------*/
 //
 // Ethernet packet
@@ -164,5 +181,9 @@ S802_11Header, *PS802_11Header;
 BYTE ETHbyGetHashIndexByCrc32(PBYTE pbyMultiAddr);
 //BYTE ETHbyGetHashIndexByCrc(PBYTE pbyMultiAddr);
 BOOL ETHbIsBufferCrc32Ok(PBYTE pbyBuffer, unsigned int cbFrameLength);
+=======
+//u8 ETHbyGetHashIndexByCrc(u8 * pbyMultiAddr);
+bool ETHbIsBufferCrc32Ok(u8 * pbyBuffer, unsigned int cbFrameLength);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __TETHER_H__ */

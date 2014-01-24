@@ -51,8 +51,14 @@ config ASYNC_TX_ENABLE_CHANNEL_SWITCH
 
 config AMBA_PL08X
 	bool "ARM PrimeCell PL080 or PL081 support"
+<<<<<<< HEAD
 	depends on ARM_AMBA && EXPERIMENTAL
 	select DMA_ENGINE
+=======
+	depends on ARM_AMBA
+	select DMA_ENGINE
+	select DMA_VIRTUAL_CHANNELS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Platform has a PL08x DMAC device
 	  which can provide DMA engine support
@@ -61,9 +67,14 @@ config INTEL_IOATDMA
 	tristate "Intel I/OAT DMA support"
 	depends on PCI && X86
 	select DMA_ENGINE
+<<<<<<< HEAD
 	select DCA
 	select ASYNC_TX_DISABLE_PQ_VAL_DMA
 	select ASYNC_TX_DISABLE_XOR_VAL_DMA
+=======
+	select DMA_ENGINE_RAID
+	select DCA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable support for the Intel(R) I/OAT DMA engine present
 	  in recent Intel Xeon chipsets.
@@ -80,6 +91,7 @@ config INTEL_IOP_ADMA
 	help
 	  Enable support for the Intel(R) IOP Series RAID engines.
 
+<<<<<<< HEAD
 config DW_DMAC
 	tristate "Synopsys DesignWare AHB DMA support"
 	depends on HAVE_CLK
@@ -98,21 +110,40 @@ config AT_HDMAC
 	  Support the Atmel AHB DMA controller.  This can be integrated in
 	  chips such as the Atmel AT91SAM9RL.
 =======
+=======
+source "drivers/dma/dw/Kconfig"
+
+config AT_HDMAC
+	tristate "Atmel AHB DMA support"
+>>>>>>> refs/remotes/origin/master
 	depends on ARCH_AT91
 	select DMA_ENGINE
 	help
 	  Support the Atmel AHB DMA controller.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 config FSL_DMA
 	tristate "Freescale Elo and Elo Plus DMA support"
+=======
+
+config FSL_DMA
+	tristate "Freescale Elo series DMA support"
+>>>>>>> refs/remotes/origin/master
 	depends on FSL_SOC
 	select DMA_ENGINE
 	select ASYNC_TX_ENABLE_CHANNEL_SWITCH
 	---help---
+<<<<<<< HEAD
 	  Enable support for the Freescale Elo and Elo Plus DMA controllers.
 	  The Elo is the DMA controller on some 82xx and 83xx parts, and the
 	  Elo Plus is the DMA controller on 85xx and 86xx parts.
+=======
+	  Enable support for the Freescale Elo series DMA controllers.
+	  The Elo is the DMA controller on some mpc82xx and mpc83xx parts, the
+	  EloPlus is on mpc85xx and mpc86xx and Pxxx parts, and the Elo3 is on
+	  some Txxx and Bxxx parts.
+>>>>>>> refs/remotes/origin/master
 
 config MPC512X_DMA
 	tristate "Freescale MPC512x built-in DMA engine support"
@@ -121,10 +152,19 @@ config MPC512X_DMA
 	---help---
 	  Enable support for the Freescale MPC512x built-in DMA engine.
 
+<<<<<<< HEAD
+=======
+source "drivers/dma/bestcomm/Kconfig"
+
+>>>>>>> refs/remotes/origin/master
 config MV_XOR
 	bool "Marvell XOR engine support"
 	depends on PLAT_ORION
 	select DMA_ENGINE
+<<<<<<< HEAD
+=======
+	select DMA_ENGINE_RAID
+>>>>>>> refs/remotes/origin/master
 	select ASYNC_TX_ENABLE_CHANNEL_SWITCH
 	---help---
 	  Enable support for the Marvell XOR engine.
@@ -132,10 +172,14 @@ config MV_XOR
 config MX3_IPU
 	bool "MX3x Image Processing Unit support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARCH_MX3
 =======
 	depends on ARCH_MXC
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARCH_MXC
+>>>>>>> refs/remotes/origin/master
 	select DMA_ENGINE
 	default y
 	help
@@ -160,6 +204,7 @@ config TXX9_DMAC
 	  Support the TXx9 SoC internal DMA controller.  This can be
 	  integrated in chips such as the Toshiba TX4927/38/39.
 
+<<<<<<< HEAD
 config SH_DMAE
 	tristate "Renesas SuperH DMAC support"
 	depends on (SUPERH && SH_DMA) || (ARM && ARCH_SHMOBILE)
@@ -167,6 +212,33 @@ config SH_DMAE
 	select DMA_ENGINE
 	help
 	  Enable support for the Renesas SuperH DMA controllers.
+=======
+config TEGRA20_APB_DMA
+	bool "NVIDIA Tegra20 APB DMA support"
+	depends on ARCH_TEGRA
+	select DMA_ENGINE
+	help
+	  Support for the NVIDIA Tegra20 APB DMA controller driver. The
+	  DMA controller is having multiple DMA channel which can be
+	  configured for different peripherals like audio, UART, SPI,
+	  I2C etc which is in APB bus.
+	  This DMA controller transfers data from memory to peripheral fifo
+	  or vice versa. It does not support memory to memory data transfer.
+
+config S3C24XX_DMAC
+	tristate "Samsung S3C24XX DMA support"
+	depends on ARCH_S3C24XX && !S3C24XX_DMA
+	select DMA_ENGINE
+	select DMA_VIRTUAL_CHANNELS
+	help
+	  Support for the Samsung S3C24XX DMA controller driver. The
+	  DMA controller is having multiple DMA channels which can be
+	  configured for different peripherals like audio, UART, SPI.
+	  The DMA controller can transfer data from memory to peripheral,
+	  periphal to memory, periphal to periphal and memory to memory.
+
+source "drivers/dma/sh/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 config COH901318
 	bool "ST-Ericsson COH901318 DMA support"
@@ -186,6 +258,10 @@ config AMCC_PPC440SPE_ADMA
 	tristate "AMCC PPC440SPe ADMA support"
 	depends on 440SPe || 440SP
 	select DMA_ENGINE
+<<<<<<< HEAD
+=======
+	select DMA_ENGINE_RAID
+>>>>>>> refs/remotes/origin/master
 	select ARCH_HAS_ASYNC_TX_FIND_CHANNEL
 	select ASYNC_TX_ENABLE_CHANNEL_SWITCH
 	help
@@ -199,15 +275,35 @@ config TIMB_DMA
 	  Enable support for the Timberdale FPGA DMA engine.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config SIRF_DMA
 	tristate "CSR SiRFprimaII DMA support"
 	depends on ARCH_PRIMA2
+=======
+config SIRF_DMA
+	tristate "CSR SiRFprimaII/SiRFmarco DMA support"
+	depends on ARCH_SIRF
+>>>>>>> refs/remotes/origin/master
 	select DMA_ENGINE
 	help
 	  Enable support for the CSR SiRFprimaII DMA engine.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config TI_EDMA
+	bool "TI EDMA support"
+	depends on ARCH_DAVINCI || ARCH_OMAP || ARCH_KEYSTONE
+	select DMA_ENGINE
+	select DMA_VIRTUAL_CHANNELS
+	select TI_PRIV_EDMA
+	default n
+	help
+	  Enable support for the TI EDMA controller. This DMA
+	  engine is found on TI DaVinci and AM33xx parts.
+
+>>>>>>> refs/remotes/origin/master
 config ARCH_HAS_ASYNC_TX_FIND_CHANNEL
 	bool
 
@@ -215,10 +311,14 @@ config PL330_DMA
 	tristate "DMA API Driver for PL330"
 	select DMA_ENGINE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on PL330
 =======
 	depends on ARM_AMBA
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARM_AMBA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Select if your platform has one or more PL330 DMACs.
 	  You need to provide platform specific settings via
@@ -226,20 +326,29 @@ config PL330_DMA
 
 config PCH_DMA
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "Intel EG20T PCH / OKI Semi IOH(ML7213/ML7223/ML7831) DMA support"
 =======
 	tristate "Intel EG20T PCH / LAPIS Semicon IOH(ML7213/ML7223/ML7831) DMA"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "Intel EG20T PCH / LAPIS Semicon IOH(ML7213/ML7223/ML7831) DMA"
+>>>>>>> refs/remotes/origin/master
 	depends on PCI && X86
 	select DMA_ENGINE
 	help
 	  Enable support for Intel EG20T PCH DMA engine.
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  This driver also can be used for OKI SEMICONDUCTOR IOH(Input/
 =======
 
 	  This driver also can be used for LAPIS Semiconductor IOH(Input/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	  This driver also can be used for LAPIS Semiconductor IOH(Input/
+>>>>>>> refs/remotes/origin/master
 	  Output Hub), ML7213, ML7223 and ML7831.
 	  ML7213 IOH is for IVI(In-Vehicle Infotainment) use, ML7223 IOH is
 	  for MP(Media Phone) use and ML7831 IOH is for general purpose use.
@@ -248,6 +357,7 @@ config PCH_DMA
 
 config IMX_SDMA
 	tristate "i.MX SDMA support"
+<<<<<<< HEAD
 <<<<<<< HEAD
 	depends on ARCH_MX25 || ARCH_MX3 || ARCH_MX5
 	select DMA_ENGINE
@@ -259,6 +369,8 @@ config IMX_DMA
 	tristate "i.MX DMA support"
 	depends on IMX_HAVE_DMA_V1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	depends on ARCH_MXC
 	select DMA_ENGINE
 	help
@@ -268,7 +380,10 @@ config IMX_DMA
 config IMX_DMA
 	tristate "i.MX DMA support"
 	depends on ARCH_MXC
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select DMA_ENGINE
 	help
 	  Support the i.MX DMA engine. This engine is integrated into
@@ -276,14 +391,22 @@ config IMX_DMA
 
 config MXS_DMA
 	bool "MXS DMA support"
+<<<<<<< HEAD
 	depends on SOC_IMX23 || SOC_IMX28
+=======
+	depends on SOC_IMX23 || SOC_IMX28 || SOC_IMX6Q
+	select STMP_DEVICE
+>>>>>>> refs/remotes/origin/master
 	select DMA_ENGINE
 	help
 	  Support the MXS DMA engine. This engine including APBH-DMA
 	  and APBX-DMA is integrated into Freescale i.MX23/28 chips.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config EP93XX_DMA
 	bool "Cirrus Logic EP93xx DMA support"
 	depends on ARCH_EP93XX
@@ -295,15 +418,82 @@ config DMA_SA11X0
 	tristate "SA-11x0 DMA support"
 	depends on ARCH_SA1100
 	select DMA_ENGINE
+<<<<<<< HEAD
+=======
+	select DMA_VIRTUAL_CHANNELS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Support the DMA engine found on Intel StrongARM SA-1100 and
 	  SA-1110 SoCs.  This DMA engine can only be used with on-chip
 	  devices.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config DMA_ENGINE
 	bool
 
+=======
+config MMP_TDMA
+	bool "MMP Two-Channel DMA support"
+	depends on ARCH_MMP
+	select DMA_ENGINE
+	help
+	  Support the MMP Two-Channel DMA engine.
+	  This engine used for MMP Audio DMA and pxa910 SQU.
+
+	  Say Y here if you enabled MMP ADMA, otherwise say N.
+
+config DMA_OMAP
+	tristate "OMAP DMA support"
+	depends on ARCH_OMAP
+	select DMA_ENGINE
+	select DMA_VIRTUAL_CHANNELS
+
+config TI_CPPI41
+	tristate "AM33xx CPPI41 DMA support"
+	depends on ARCH_OMAP
+	select DMA_ENGINE
+	help
+	  The Communications Port Programming Interface (CPPI) 4.1 DMA engine
+	  is currently used by the USB driver on AM335x platforms.
+
+config MMP_PDMA
+	bool "MMP PDMA support"
+	depends on (ARCH_MMP || ARCH_PXA)
+	select DMA_ENGINE
+	help
+	  Support the MMP PDMA engine for PXA and MMP platform.
+
+config DMA_JZ4740
+	tristate "JZ4740 DMA support"
+	depends on MACH_JZ4740
+	select DMA_ENGINE
+	select DMA_VIRTUAL_CHANNELS
+
+config K3_DMA
+	tristate "Hisilicon K3 DMA support"
+	depends on ARCH_HI3xxx
+	select DMA_ENGINE
+	select DMA_VIRTUAL_CHANNELS
+	help
+	  Support the DMA engine for Hisilicon K3 platform
+	  devices.
+
+config DMA_ENGINE
+	bool
+
+config DMA_VIRTUAL_CHANNELS
+	tristate
+
+config DMA_ACPI
+	def_bool y
+	depends on ACPI
+
+config DMA_OF
+	def_bool y
+	depends on OF
+
+>>>>>>> refs/remotes/origin/master
 comment "DMA Clients"
 	depends on DMA_ENGINE
 
@@ -312,9 +502,13 @@ config NET_DMA
 	depends on DMA_ENGINE && NET
 	default (INTEL_IOATDMA || FSL_DMA)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on BROKEN
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on BROKEN
+>>>>>>> refs/remotes/origin/master
 	help
 	  This enables the use of DMA engines in the network stack to
 	  offload receive copy-to-user operations, freeing CPU cycles.
@@ -340,4 +534,10 @@ config DMATEST
 	  Simple DMA test client. Say N unless you're debugging a
 	  DMA Device driver.
 
+<<<<<<< HEAD
+=======
+config DMA_ENGINE_RAID
+	bool
+
+>>>>>>> refs/remotes/origin/master
 endif

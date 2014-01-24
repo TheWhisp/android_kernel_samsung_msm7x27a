@@ -3,7 +3,11 @@
  * temperature/power/energy sensors and capping functionality.
  * Copyright (C) 2008 IBM
  *
+<<<<<<< HEAD
  * Author: Darrick J. Wong <djwong@us.ibm.com>
+=======
+ * Author: Darrick J. Wong <darrick.wong@oracle.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +40,10 @@
 #include <linux/platform_device.h>
 #include <linux/math64.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 
 #define REFRESH_INTERVAL	(HZ)
 #define IPMI_TIMEOUT		(30 * HZ)
@@ -89,11 +97,15 @@
 #define UJ_PER_MJ		1000L
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_IDR(aem_idr);
 static DEFINE_SPINLOCK(aem_idr_lock);
 =======
 static DEFINE_IDA(aem_ida);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_IDA(aem_ida);
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_driver aem_driver = {
 	.driver = {
@@ -153,6 +165,7 @@ struct aem_data {
 	struct aem_ipmi_data	ipmi;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Function to update sensors */
 	void (*update)(struct aem_data *data);
 =======
@@ -160,6 +173,11 @@ struct aem_data {
 	void (*update)(struct aem_data *data);
 	struct aem_read_sensor_resp *rs_resp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Function and buffer to update sensors */
+	void (*update)(struct aem_data *data);
+	struct aem_read_sensor_resp *rs_resp;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * AEM 1.x sensors:
@@ -257,10 +275,13 @@ static void aem_msg_handler(struct ipmi_recv_msg *msg, void *user_msg_data);
 
 static void aem_remove_sensors(struct aem_data *data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int aem_init_aem1(struct aem_ipmi_data *probe);
 static int aem_init_aem2(struct aem_ipmi_data *probe);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int aem1_find_sensors(struct aem_data *data);
 static int aem2_find_sensors(struct aem_data *data);
 static void update_aem1_sensors(struct aem_data *data);
@@ -303,9 +324,16 @@ static int aem_init_ipmi_data(struct aem_ipmi_data *data, int iface,
 	err = ipmi_create_user(data->interface, &driver_data.ipmi_hndlrs,
 			       data, &data->user);
 	if (err < 0) {
+<<<<<<< HEAD
 		dev_err(bmc, "Unable to register user with IPMI "
 			"interface %d\n", data->interface);
 		return -EACCES;
+=======
+		dev_err(bmc,
+			"Unable to register user with IPMI interface %d\n",
+			data->interface);
+		return err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -342,8 +370,13 @@ static void aem_msg_handler(struct ipmi_recv_msg *msg, void *user_msg_data)
 	struct aem_ipmi_data *data = user_msg_data;
 
 	if (msg->msgid != data->tx_msgid) {
+<<<<<<< HEAD
 		dev_err(data->bmc_device, "Mismatch between received msgid "
 			"(%02x) and transmitted msgid (%02x)!\n",
+=======
+		dev_err(data->bmc_device,
+			"Mismatch between received msgid (%02x) and transmitted msgid (%02x)!\n",
+>>>>>>> refs/remotes/origin/master
 			(int)msg->msgid,
 			(int)data->tx_msgid);
 		ipmi_free_recv_msg(msg);
@@ -369,6 +402,7 @@ static void aem_msg_handler(struct ipmi_recv_msg *msg, void *user_msg_data)
 	complete(&data->read_complete);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* ID functions */
 
@@ -410,17 +444,27 @@ static void aem_idr_put(int id)
 
 /* Read a sensor value; must be called with data->lock held */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Sensor support functions */
+
+/* Read a sensor value; must be called with data->lock held */
+>>>>>>> refs/remotes/origin/master
 static int aem_read_sensor(struct aem_data *data, u8 elt, u8 reg,
 			   void *buf, size_t size)
 {
 	int rs_size, res;
 	struct aem_read_sensor_req rs_req;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct aem_read_sensor_resp *rs_resp;
 =======
 	/* Use preallocated rx buffer */
 	struct aem_read_sensor_resp *rs_resp = data->rs_resp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Use preallocated rx buffer */
+	struct aem_read_sensor_resp *rs_resp = data->rs_resp;
+>>>>>>> refs/remotes/origin/master
 	struct aem_ipmi_data *ipmi = &data->ipmi;
 
 	/* AEM registers are 1, 2, 4 or 8 bytes */
@@ -447,12 +491,15 @@ static int aem_read_sensor(struct aem_data *data, u8 elt, u8 reg,
 
 	rs_size = sizeof(*rs_resp) + size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rs_resp = kzalloc(rs_size, GFP_KERNEL);
 	if (!rs_resp)
 		return -ENOMEM;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ipmi->rx_msg_data = rs_resp;
 	ipmi->rx_msg_len = rs_size;
 
@@ -496,9 +543,12 @@ static int aem_read_sensor(struct aem_data *data, u8 elt, u8 reg,
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(rs_resp);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return res;
 }
 
@@ -557,18 +607,26 @@ static void aem_delete(struct aem_data *data)
 	list_del(&data->list);
 	aem_remove_sensors(data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(data->rs_resp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(data->rs_resp);
+>>>>>>> refs/remotes/origin/master
 	hwmon_device_unregister(data->hwmon_dev);
 	ipmi_destroy_user(data->ipmi.user);
 	platform_set_drvdata(data->pdev, NULL);
 	platform_device_unregister(data->pdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	aem_idr_put(data->id);
 =======
 	ida_simple_remove(&aem_ida, data->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ida_simple_remove(&aem_ida, data->id);
+>>>>>>> refs/remotes/origin/master
 	kfree(data);
 }
 
@@ -626,11 +684,16 @@ static int aem_init_aem1_inst(struct aem_ipmi_data *probe, u8 module_handle)
 
 	/* Create sub-device for this fw instance */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (aem_idr_get(&data->id))
 =======
 	data->id = ida_simple_get(&aem_ida, 0, 0, GFP_KERNEL);
 	if (data->id < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->id = ida_simple_get(&aem_ida, 0, 0, GFP_KERNEL);
+	if (data->id < 0)
+>>>>>>> refs/remotes/origin/master
 		goto id_err;
 
 	data->pdev = platform_device_alloc(DRVNAME, data->id);
@@ -646,6 +709,7 @@ static int aem_init_aem1_inst(struct aem_ipmi_data *probe, u8 module_handle)
 
 	/* Set up IPMI interface */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (aem_init_ipmi_data(&data->ipmi, probe->interface,
 			       probe->bmc_device))
 =======
@@ -653,10 +717,16 @@ static int aem_init_aem1_inst(struct aem_ipmi_data *probe, u8 module_handle)
 				 probe->bmc_device);
 	if (res)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = aem_init_ipmi_data(&data->ipmi, probe->interface,
+				 probe->bmc_device);
+	if (res)
+>>>>>>> refs/remotes/origin/master
 		goto ipmi_err;
 
 	/* Register with hwmon */
 	data->hwmon_dev = hwmon_device_register(&data->pdev->dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -669,15 +739,25 @@ static int aem_init_aem1_inst(struct aem_ipmi_data *probe, u8 module_handle)
 =======
 		res = PTR_ERR(data->hwmon_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_ERR(data->hwmon_dev)) {
+		dev_err(&data->pdev->dev,
+			"Unable to register hwmon device for IPMI interface %d\n",
+			probe->interface);
+		res = PTR_ERR(data->hwmon_dev);
+>>>>>>> refs/remotes/origin/master
 		goto hwmon_reg_err;
 	}
 
 	data->update = update_aem1_sensors;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Find sensors */
 	if (aem1_find_sensors(data))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	data->rs_resp = kzalloc(sizeof(*(data->rs_resp)) + 8, GFP_KERNEL);
 	if (!data->rs_resp) {
 		res = -ENOMEM;
@@ -687,7 +767,10 @@ static int aem_init_aem1_inst(struct aem_ipmi_data *probe, u8 module_handle)
 	/* Find sensors */
 	res = aem1_find_sensors(data);
 	if (res)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto sensor_err;
 
 	/* Add to our list of AEM devices */
@@ -700,10 +783,15 @@ static int aem_init_aem1_inst(struct aem_ipmi_data *probe, u8 module_handle)
 
 sensor_err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(data->rs_resp);
 alloc_resp_err:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(data->rs_resp);
+alloc_resp_err:
+>>>>>>> refs/remotes/origin/master
 	hwmon_device_unregister(data->hwmon_dev);
 hwmon_reg_err:
 	ipmi_destroy_user(data->ipmi.user);
@@ -712,10 +800,14 @@ ipmi_err:
 	platform_device_unregister(data->pdev);
 dev_err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	aem_idr_put(data->id);
 =======
 	ida_simple_remove(&aem_ida, data->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ida_simple_remove(&aem_ida, data->id);
+>>>>>>> refs/remotes/origin/master
 id_err:
 	kfree(data);
 
@@ -724,10 +816,14 @@ id_err:
 
 /* Find and initialize all AEM1 instances */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int aem_init_aem1(struct aem_ipmi_data *probe)
 =======
 static void aem_init_aem1(struct aem_ipmi_data *probe)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void aem_init_aem1(struct aem_ipmi_data *probe)
+>>>>>>> refs/remotes/origin/master
 {
 	int num, i, err;
 
@@ -739,6 +835,7 @@ static void aem_init_aem1(struct aem_ipmi_data *probe)
 				"Error %d initializing AEM1 0x%X\n",
 				err, i);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return err;
 		}
 	}
@@ -748,6 +845,10 @@ static void aem_init_aem1(struct aem_ipmi_data *probe)
 		}
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Probe functions for AEM2 devices */
@@ -807,11 +908,16 @@ static int aem_init_aem2_inst(struct aem_ipmi_data *probe,
 
 	/* Create sub-device for this fw instance */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (aem_idr_get(&data->id))
 =======
 	data->id = ida_simple_get(&aem_ida, 0, 0, GFP_KERNEL);
 	if (data->id < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->id = ida_simple_get(&aem_ida, 0, 0, GFP_KERNEL);
+	if (data->id < 0)
+>>>>>>> refs/remotes/origin/master
 		goto id_err;
 
 	data->pdev = platform_device_alloc(DRVNAME, data->id);
@@ -827,6 +933,7 @@ static int aem_init_aem2_inst(struct aem_ipmi_data *probe,
 
 	/* Set up IPMI interface */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (aem_init_ipmi_data(&data->ipmi, probe->interface,
 			       probe->bmc_device))
 =======
@@ -834,10 +941,16 @@ static int aem_init_aem2_inst(struct aem_ipmi_data *probe,
 				 probe->bmc_device);
 	if (res)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = aem_init_ipmi_data(&data->ipmi, probe->interface,
+				 probe->bmc_device);
+	if (res)
+>>>>>>> refs/remotes/origin/master
 		goto ipmi_err;
 
 	/* Register with hwmon */
 	data->hwmon_dev = hwmon_device_register(&data->pdev->dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 =======
@@ -850,15 +963,25 @@ static int aem_init_aem2_inst(struct aem_ipmi_data *probe,
 =======
 		res = PTR_ERR(data->hwmon_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (IS_ERR(data->hwmon_dev)) {
+		dev_err(&data->pdev->dev,
+			"Unable to register hwmon device for IPMI interface %d\n",
+			probe->interface);
+		res = PTR_ERR(data->hwmon_dev);
+>>>>>>> refs/remotes/origin/master
 		goto hwmon_reg_err;
 	}
 
 	data->update = update_aem2_sensors;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Find sensors */
 	if (aem2_find_sensors(data))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	data->rs_resp = kzalloc(sizeof(*(data->rs_resp)) + 8, GFP_KERNEL);
 	if (!data->rs_resp) {
 		res = -ENOMEM;
@@ -868,7 +991,10 @@ static int aem_init_aem2_inst(struct aem_ipmi_data *probe,
 	/* Find sensors */
 	res = aem2_find_sensors(data);
 	if (res)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto sensor_err;
 
 	/* Add to our list of AEM devices */
@@ -881,10 +1007,15 @@ static int aem_init_aem2_inst(struct aem_ipmi_data *probe,
 
 sensor_err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kfree(data->rs_resp);
 alloc_resp_err:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	kfree(data->rs_resp);
+alloc_resp_err:
+>>>>>>> refs/remotes/origin/master
 	hwmon_device_unregister(data->hwmon_dev);
 hwmon_reg_err:
 	ipmi_destroy_user(data->ipmi.user);
@@ -893,10 +1024,14 @@ ipmi_err:
 	platform_device_unregister(data->pdev);
 dev_err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	aem_idr_put(data->id);
 =======
 	ida_simple_remove(&aem_ida, data->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ida_simple_remove(&aem_ida, data->id);
+>>>>>>> refs/remotes/origin/master
 id_err:
 	kfree(data);
 
@@ -905,10 +1040,14 @@ id_err:
 
 /* Find and initialize all AEM2 instances */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int aem_init_aem2(struct aem_ipmi_data *probe)
 =======
 static void aem_init_aem2(struct aem_ipmi_data *probe)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void aem_init_aem2(struct aem_ipmi_data *probe)
+>>>>>>> refs/remotes/origin/master
 {
 	struct aem_find_instance_resp fi_resp;
 	int err;
@@ -916,8 +1055,13 @@ static void aem_init_aem2(struct aem_ipmi_data *probe)
 
 	while (!aem_find_aem2(probe, &fi_resp, i)) {
 		if (fi_resp.major != 2) {
+<<<<<<< HEAD
 			dev_err(probe->bmc_device, "Unknown AEM v%d; please "
 				"report this to the maintainer.\n",
+=======
+			dev_err(probe->bmc_device,
+				"Unknown AEM v%d; please report this to the maintainer.\n",
+>>>>>>> refs/remotes/origin/master
 				fi_resp.major);
 			i++;
 			continue;
@@ -927,6 +1071,7 @@ static void aem_init_aem2(struct aem_ipmi_data *probe)
 			dev_err(probe->bmc_device,
 				"Error %d initializing AEM2 0x%X\n",
 				err, fi_resp.module_handle);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			return err;
 		}
@@ -939,6 +1084,11 @@ static void aem_init_aem2(struct aem_ipmi_data *probe)
 		i++;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		}
+		i++;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Probe a BMC for AEM firmware instances */
@@ -1063,10 +1213,14 @@ static ssize_t aem_set_power_period(struct device *dev,
 	int res;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res = strict_strtoul(buf, 10, &temp);
 =======
 	res = kstrtoul(buf, 10, &temp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	res = kstrtoul(buf, 10, &temp);
+>>>>>>> refs/remotes/origin/master
 	if (res)
 		return res;
 
@@ -1208,10 +1362,14 @@ static struct aem_ro_sensor_template aem2_ro_sensors[] = {
 {"power7_average",	  aem2_show_pcap_value,	POWER_CAP_MIN},
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 {"power3_average", 	  aem2_show_pcap_value,	POWER_AUX},
 =======
 {"power3_average",	  aem2_show_pcap_value,	POWER_AUX},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+{"power3_average",	  aem2_show_pcap_value,	POWER_AUX},
+>>>>>>> refs/remotes/origin/master
 {"power_cap",		  aem2_show_pcap_value,	POWER_CAP},
 {NULL,                    NULL,                 0},
 };
@@ -1267,7 +1425,11 @@ static void __exit aem_exit(void)
 		aem_delete(p1);
 }
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Darrick J. Wong <djwong@us.ibm.com>");
+=======
+MODULE_AUTHOR("Darrick J. Wong <darrick.wong@oracle.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("IBM AEM power/temp/energy sensor driver");
 MODULE_LICENSE("GPL");
 

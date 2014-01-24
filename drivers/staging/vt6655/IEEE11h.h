@@ -45,8 +45,14 @@
 
 /*---------------------  Export Functions  --------------------------*/
 
+<<<<<<< HEAD
 bool IEEE11hbMSRRepTx (
     void *pMgmtHandle
     );
+=======
+bool IEEE11hbMSRRepTx(
+	void *pMgmtHandle
+);
+>>>>>>> refs/remotes/origin/master
 
 #endif // __IEEE11h_H__

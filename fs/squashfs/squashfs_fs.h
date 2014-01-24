@@ -31,12 +31,15 @@
 /* size of metadata (inode and directory) blocks */
 #define SQUASHFS_METADATA_SIZE		8192
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SQUASHFS_METADATA_LOG		13
 
 /* default size of data blocks */
 #define SQUASHFS_FILE_SIZE		131072
 #define SQUASHFS_FILE_LOG		17
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* default size of block device I/O */
 #ifdef CONFIG_SQUASHFS_4K_DEVBLK_SIZE
@@ -44,11 +47,15 @@
 #else
 #define SQUASHFS_DEVBLK_SIZE 1024
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SQUASHFS_FILE_MAX_SIZE		1048576
 #define SQUASHFS_FILE_MAX_LOG		20
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Max number of uids and gids */
 #define SQUASHFS_IDS			65536
@@ -57,13 +64,18 @@
 #define SQUASHFS_NAME_LEN		256
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Max length of filename (not 255) */
 #define SQUASHFS_NAME_LEN		256
 
 /* Max value for directory header count*/
 #define SQUASHFS_DIR_COUNT		256
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SQUASHFS_INVALID_FRAG		(0xffffffffU)
 #define SQUASHFS_INVALID_XATTR		(0xffffffffU)
 #define SQUASHFS_INVALID_BLK		(-1LL)
@@ -104,7 +116,11 @@
 #define SQUASHFS_COMP_OPTS(flags)		SQUASHFS_BIT(flags, \
 						SQUASHFS_COMP_OPT)
 
+<<<<<<< HEAD
 /* Max number of types and file types */
+=======
+/* Inode types including extended types */
+>>>>>>> refs/remotes/origin/master
 #define SQUASHFS_DIR_TYPE		1
 #define SQUASHFS_REG_TYPE		2
 #define SQUASHFS_SYMLINK_TYPE		3
@@ -120,6 +136,12 @@
 #define SQUASHFS_LFIFO_TYPE		13
 #define SQUASHFS_LSOCKET_TYPE		14
 
+<<<<<<< HEAD
+=======
+/* Max type value stored in directory entry */
+#define SQUASHFS_MAX_DIR_TYPE		7
+
+>>>>>>> refs/remotes/origin/master
 /* Xattr types */
 #define SQUASHFS_XATTR_USER             0
 #define SQUASHFS_XATTR_TRUSTED          1
@@ -155,11 +177,14 @@
 					<< 16) + (B)))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Translate between VFS mode and squashfs mode */
 #define SQUASHFS_MODE(A)		((A) & 0xfff)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* fragment and fragment table defines */
 #define SQUASHFS_FRAGMENT_BYTES(A)	\
 				((A) * sizeof(struct squashfs_fragment_entry))
@@ -231,6 +256,7 @@
 #define SQUASHFS_CACHED_BLKS		8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SQUASHFS_MAX_FILE_SIZE_LOG	64
 
 #define SQUASHFS_MAX_FILE_SIZE		(1LL << \
@@ -238,6 +264,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* meta index cache */
 #define SQUASHFS_META_INDEXES	(SQUASHFS_METADATA_SIZE / sizeof(unsigned int))
 #define SQUASHFS_META_ENTRIES	127

@@ -59,6 +59,7 @@ static const char *csb_bad_ata100[] = {
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	dell_cable	-	Dell serverworks cable detection
  *	@ap: ATA port to do cable detect
  *
@@ -85,6 +86,8 @@ static int dell_cable(struct ata_port *ap) {
 
 static int sun_cable(struct ata_port *ap) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	oem_cable	-	Dell/Sun serverworks cable detection
  *	@ap: ATA port to do cable detect
  *
@@ -94,7 +97,10 @@ static int sun_cable(struct ata_port *ap) {
 
 static int oem_cable(struct ata_port *ap)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct pci_dev *pdev = to_pci_dev(ap->host->dev);
 
 	if (pdev->subsystem_device & (1 << (ap->port_no + 14)))
@@ -102,6 +108,7 @@ static int oem_cable(struct ata_port *ap)
 	return ATA_CBL_PATA40;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /**
  *	osb4_cable	-	OSB4 cable detect
@@ -128,12 +135,15 @@ static int csb_cable(struct ata_port *ap) {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct sv_cable_table {
 	int device;
 	int subvendor;
 	int (*cable_detect)(struct ata_port *ap);
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  *	Note that we don't copy the old serverworks code because the old
@@ -150,6 +160,8 @@ static struct sv_cable_table cable_detect[] = {
 	{ PCI_DEVICE_ID_SERVERWORKS_CSB6IDE2, PCI_ANY_ID, csb_cable },
 	{ PCI_DEVICE_ID_SERVERWORKS_HT1000IDE, PCI_ANY_ID, csb_cable },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sv_cable_table cable_detect[] = {
 	{ PCI_DEVICE_ID_SERVERWORKS_CSB5IDE,   PCI_VENDOR_ID_DELL, oem_cable },
 	{ PCI_DEVICE_ID_SERVERWORKS_CSB6IDE,   PCI_VENDOR_ID_DELL, oem_cable },
@@ -159,7 +171,10 @@ static struct sv_cable_table cable_detect[] = {
 	{ PCI_DEVICE_ID_SERVERWORKS_CSB6IDE,   PCI_ANY_ID, ata_cable_unknown },
 	{ PCI_DEVICE_ID_SERVERWORKS_CSB6IDE2,  PCI_ANY_ID, ata_cable_unknown },
 	{ PCI_DEVICE_ID_SERVERWORKS_HT1000IDE, PCI_ANY_ID, ata_cable_unknown },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 
@@ -421,7 +436,10 @@ static void serverworks_fixup_ht1000(struct pci_dev *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int serverworks_fixup(struct pci_dev *pdev)
 {
 	int rc = 0;
@@ -447,7 +465,10 @@ static int serverworks_fixup(struct pci_dev *pdev)
 
 	return rc;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int serverworks_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 {
@@ -486,20 +507,28 @@ static int serverworks_init_one(struct pci_dev *pdev, const struct pci_device_id
 		return rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Force master latency timer to 64 PCI clocks */
 	pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 0x40);
 =======
 	rc = serverworks_fixup(pdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rc = serverworks_fixup(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	/* OSB4 : South Bridge and IDE */
 	if (pdev->device == PCI_DEVICE_ID_SERVERWORKS_OSB4IDE) {
 		/* Select non UDMA capable OSB4 if we can't do fixups */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ( serverworks_fixup_osb4(pdev) < 0)
 =======
 		if (rc < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (rc < 0)
+>>>>>>> refs/remotes/origin/master
 			ppi[0] = &info[1];
 	}
 	/* setup CSB5/CSB6 : South Bridge and IDE option RAID */
@@ -510,16 +539,21 @@ static int serverworks_init_one(struct pci_dev *pdev, const struct pci_device_id
 		 /* If the returned btr is the newer revision then
 		    select the right info block */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 if (serverworks_fixup_csb(pdev) == 3)
 =======
 		 if (rc == 3)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 if (rc == 3)
+>>>>>>> refs/remotes/origin/master
 		 	ppi[0] = &info[3];
 
 		/* Is this the 3rd channel CSB6 IDE ? */
 		if (pdev->device == PCI_DEVICE_ID_SERVERWORKS_CSB6IDE2)
 			ppi[1] = &ata_dummy_port_info;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* setup HT1000E */
 	else if (pdev->device == PCI_DEVICE_ID_SERVERWORKS_HT1000IDE)
@@ -529,6 +563,8 @@ static int serverworks_init_one(struct pci_dev *pdev, const struct pci_device_id
 		ata_pci_bmdma_clear_simplex(pdev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ata_pci_bmdma_init_one(pdev, ppi, &serverworks_sht, NULL, 0);
 }
@@ -536,13 +572,18 @@ static int serverworks_init_one(struct pci_dev *pdev, const struct pci_device_id
 #ifdef CONFIG_PM
 static int serverworks_reinit_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Force master latency timer to 64 PCI clocks */
 	pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 0x40);
@@ -565,6 +606,9 @@ static int serverworks_reinit_one(struct pci_dev *pdev)
 =======
 	(void)serverworks_fixup(pdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	(void)serverworks_fixup(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	ata_host_resume(host);
 	return 0;
@@ -592,6 +636,7 @@ static struct pci_driver serverworks_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init serverworks_init(void)
 {
 	return pci_register_driver(&serverworks_pci_driver);
@@ -601,12 +646,18 @@ static void __exit serverworks_exit(void)
 {
 	pci_unregister_driver(&serverworks_pci_driver);
 }
+=======
+module_pci_driver(serverworks_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for Serverworks OSB4/CSB5/CSB6");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, serverworks);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(serverworks_init);
 module_exit(serverworks_exit);
+=======
+>>>>>>> refs/remotes/origin/master

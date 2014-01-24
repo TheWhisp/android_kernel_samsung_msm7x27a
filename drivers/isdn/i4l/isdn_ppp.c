@@ -29,6 +29,7 @@
 static int isdn_ppp_fill_rq(unsigned char *buf, int len, int proto, int slot);
 static int isdn_ppp_closewait(int slot);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void isdn_ppp_push_higher(isdn_net_dev * net_dev, isdn_net_local * lp,
 				 struct sk_buff *skb, int proto);
 static int isdn_ppp_if_get_unit(char *namebuf);
@@ -42,6 +43,8 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in,int *proto,
 static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 	 struct sk_buff *skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp,
 				 struct sk_buff *skb, int proto);
 static int isdn_ppp_if_get_unit(char *namebuf);
@@ -54,7 +57,10 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in, int *proto,
 					 struct ippp_struct *is, struct ippp_struct *master, int type);
 static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 			      struct sk_buff *skb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* New CCP stuff */
 static void isdn_ppp_ccp_kickup(struct ippp_struct *is);
@@ -68,10 +74,14 @@ static void isdn_ppp_ccp_reset_free_state(struct ippp_struct *is,
 static void isdn_ppp_ccp_timer_callback(unsigned long closure);
 static struct ippp_ccp_reset_state *isdn_ppp_ccp_reset_alloc_state(struct ippp_struct *is,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						      unsigned char id);
 =======
 								   unsigned char id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+								   unsigned char id);
+>>>>>>> refs/remotes/origin/master
 static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 				     struct isdn_ppp_resetparams *rp);
 static void isdn_ppp_ccp_reset_ack_rcvd(struct ippp_struct *is,
@@ -80,6 +90,7 @@ static void isdn_ppp_ccp_reset_ack_rcvd(struct ippp_struct *is,
 
 
 #ifdef CONFIG_ISDN_MPP
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ippp_bundle * isdn_ppp_bundle_arr = NULL;
  
@@ -93,6 +104,8 @@ static int isdn_ppp_bundle(struct ippp_struct *, int unit);
 #endif	/* CONFIG_ISDN_MPP */
   
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ippp_bundle *isdn_ppp_bundle_arr = NULL;
 
 static int isdn_ppp_mp_bundle_array_init(void);
@@ -104,7 +117,10 @@ static void isdn_ppp_mp_cleanup(isdn_net_local *lp);
 static int isdn_ppp_bundle(struct ippp_struct *, int unit);
 #endif	/* CONFIG_ISDN_MPP */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 char *isdn_ppp_revision = "$Revision: 1.1.2.3 $";
 
 static struct ippp_struct *ippp_table[ISDN_MAX_CHANNELS];
@@ -116,18 +132,24 @@ static struct isdn_ppp_compressor *ipc_head = NULL;
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_ppp_frame_log(char *info, char *data, int len, int maxlen,int unit,int slot)
 {
 	int cnt,
 	 j,
 	 i;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_ppp_frame_log(char *info, char *data, int len, int maxlen, int unit, int slot)
 {
 	int cnt,
 		j,
 		i;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	char buf[80];
 
 	if (len < maxlen)
@@ -136,12 +158,17 @@ isdn_ppp_frame_log(char *info, char *data, int len, int maxlen, int unit, int sl
 	for (i = 0, cnt = 0; cnt < maxlen; i++) {
 		for (j = 0; j < 16 && cnt < maxlen; j++, cnt++)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			sprintf(buf + j * 3, "%02x ", (unsigned char) data[cnt]);
 		printk(KERN_DEBUG "[%d/%d].%s[%d]: %s\n",unit,slot, info, i, buf);
 =======
 			sprintf(buf + j * 3, "%02x ", (unsigned char)data[cnt]);
 		printk(KERN_DEBUG "[%d/%d].%s[%d]: %s\n", unit, slot, info, i, buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			sprintf(buf + j * 3, "%02x ", (unsigned char)data[cnt]);
+		printk(KERN_DEBUG "[%d/%d].%s[%d]: %s\n", unit, slot, info, i, buf);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -152,20 +179,28 @@ isdn_ppp_frame_log(char *info, char *data, int len, int maxlen, int unit, int sl
  */
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_ppp_free(isdn_net_local * lp)
 =======
 isdn_ppp_free(isdn_net_local *lp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_ppp_free(isdn_net_local *lp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ippp_struct *is;
 
 	if (lp->ppp_slot < 0 || lp->ppp_slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "%s: ppp_slot(%d) out of range\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, lp->ppp_slot);
 =======
 		       __func__, lp->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, lp->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -183,10 +218,14 @@ isdn_ppp_free(isdn_net_local *lp)
 	if (lp->ppp_slot < 0 || lp->ppp_slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "%s: ppp_slot(%d) now invalid\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, lp->ppp_slot);
 =======
 		       __func__, lp->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, lp->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	is = ippp_table[lp->ppp_slot];
@@ -212,10 +251,14 @@ isdn_ppp_free(isdn_net_local *lp)
  */
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_ppp_bind(isdn_net_local * lp)
 =======
 isdn_ppp_bind(isdn_net_local *lp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_ppp_bind(isdn_net_local *lp)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int unit = 0;
@@ -258,18 +301,24 @@ isdn_ppp_bind(isdn_net_local *lp)
 	if (unit < 0) {
 		printk(KERN_ERR "isdn_ppp_bind: illegal interface name %s.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			lp->netdev->dev->name);
 		retval = -1;
 		goto out;
 	}
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       lp->netdev->dev->name);
 		retval = -1;
 		goto out;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	lp->ppp_slot = i;
 	is = ippp_table[i];
 	is->lp = lp;
@@ -284,10 +333,14 @@ isdn_ppp_bind(isdn_net_local *lp)
 	retval = lp->ppp_slot;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -298,18 +351,24 @@ out:
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_ppp_wakeup_daemon(isdn_net_local * lp)
 {
 	if (lp->ppp_slot < 0 || lp->ppp_slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "%s: ppp_slot(%d) out of range\n",
 			__func__, lp->ppp_slot);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_ppp_wakeup_daemon(isdn_net_local *lp)
 {
 	if (lp->ppp_slot < 0 || lp->ppp_slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "%s: ppp_slot(%d) out of range\n",
 		       __func__, lp->ppp_slot);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	ippp_table[lp->ppp_slot]->state = IPPP_OPEN | IPPP_CONNECT | IPPP_NOBLOCK;
@@ -329,10 +388,14 @@ isdn_ppp_closewait(int slot)
 	if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "%s: slot(%d) out of range\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, slot);
 =======
 		       __func__, slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, slot);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 	is = ippp_table[slot];
@@ -376,10 +439,14 @@ isdn_ppp_open(int min, struct file *file)
 	}
 	is = file->private_data = ippp_table[slot];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_DEBUG "ippp, open, slot: %d, minor: %d, state: %04x\n",
 	       slot, min, is->state);
 
@@ -476,6 +543,7 @@ isdn_ppp_release(int min, struct file *file)
 
 /* TODO: if this was the previous master: link the stuff to the new master */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(is->comp_stat)
 		is->compressor->free(is->comp_stat);
 	if(is->link_comp_stat)
@@ -492,6 +560,8 @@ isdn_ppp_release(int min, struct file *file)
 	/* Clean up if necessary */
 	if(is->reset)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (is->comp_stat)
 		is->compressor->free(is->comp_stat);
 	if (is->link_comp_stat)
@@ -507,7 +577,10 @@ isdn_ppp_release(int min, struct file *file)
 
 	/* Clean up if necessary */
 	if (is->reset)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		isdn_ppp_ccp_reset_free(is);
 
 	/* this slot is ready for new connections */
@@ -532,6 +605,7 @@ get_arg(void __user *b, void *val, int len)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 set_arg(void __user *b, void *val,int len)
 {
 	if(len <= 0)
@@ -540,6 +614,11 @@ set_arg(void __user *b, void *val, int len)
 {
 	if (len <= 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+set_arg(void __user *b, void *val, int len)
+{
+	if (len <= 0)
+>>>>>>> refs/remotes/origin/master
 		len = sizeof(void *);
 	if (copy_to_user(b, val, len))
 		return -EFAULT;
@@ -586,10 +665,14 @@ isdn_ppp_ioctl(int min, struct file *file, unsigned int cmd, unsigned long arg)
 {
 	unsigned long val;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int r,i,j;
 =======
 	int r, i, j;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int r, i, j;
+>>>>>>> refs/remotes/origin/master
 	struct ippp_struct *is;
 	isdn_net_local *lp;
 	struct isdn_ppp_comp_data data;
@@ -605,6 +688,7 @@ isdn_ppp_ioctl(int min, struct file *file, unsigned int cmd, unsigned long arg)
 		return -EINVAL;
 
 	switch (cmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case PPPIOCBUNDLE:
 #ifdef CONFIG_ISDN_MPP
@@ -772,6 +856,8 @@ isdn_ppp_ioctl(int min, struct file *file, unsigned int cmd, unsigned long arg)
 		default:
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case PPPIOCBUNDLE:
 #ifdef CONFIG_ISDN_MPP
 		if (!(is->state & IPPP_CONNECT))
@@ -880,7 +966,11 @@ isdn_ppp_ioctl(int min, struct file *file, unsigned int cmd, unsigned long arg)
 			j = ipc->num / (sizeof(long) * 8);
 			i = ipc->num % (sizeof(long) * 8);
 			if (j < 8)
+<<<<<<< HEAD
 				protos[j] |= (0x1 << i);
+=======
+				protos[j] |= (1UL << i);
+>>>>>>> refs/remotes/origin/master
 			ipc = ipc->next;
 		}
 		if ((r = set_arg(argp, protos, 8 * sizeof(long))))
@@ -937,17 +1027,24 @@ isdn_ppp_ioctl(int min, struct file *file, unsigned int cmd, unsigned long arg)
 #endif /* CONFIG_IPPP_FILTER */
 	default:
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
 
 unsigned int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_ppp_poll(struct file *file, poll_table * wait)
 =======
 isdn_ppp_poll(struct file *file, poll_table *wait)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_ppp_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	u_int mask;
 	struct ippp_buf_queue *bf, *bl;
@@ -959,20 +1056,28 @@ isdn_ppp_poll(struct file *file, poll_table *wait)
 	if (is->debug & 0x2)
 		printk(KERN_DEBUG "isdn_ppp_poll: minor: %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				iminor(file->f_path.dentry->d_inode));
 =======
 		       iminor(file->f_path.dentry->d_inode));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       iminor(file_inode(file)));
+>>>>>>> refs/remotes/origin/master
 
 	/* just registers wait_queue hook. This doesn't really wait. */
 	poll_wait(file, &is->wq, wait);
 
 	if (!(is->state & IPPP_OPEN)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(is->state == IPPP_CLOSEWAIT)
 =======
 		if (is->state == IPPP_CLOSEWAIT)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (is->state == IPPP_CLOSEWAIT)
+>>>>>>> refs/remotes/origin/master
 			return POLLHUP;
 		printk(KERN_DEBUG "isdn_ppp: device not open\n");
 		return POLLERR;
@@ -1126,10 +1231,14 @@ isdn_ppp_write(int min, struct file *file, const char __user *buf, int count)
 
 		if ((dev->drv[lp->isdn_device]->flags & DRV_FLAG_RUNNING) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			lp->dialstate == 0 &&
 =======
 		    lp->dialstate == 0 &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    lp->dialstate == 0 &&
+>>>>>>> refs/remotes/origin/master
 		    (lp->flags & ISDN_NET_CONNECTED)) {
 			unsigned short hl;
 			struct sk_buff *skb;
@@ -1140,10 +1249,14 @@ isdn_ppp_write(int min, struct file *file, const char __user *buf, int count)
 			 */
 			hl = dev->drv[lp->isdn_device]->interface->hl_hdrlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			skb = alloc_skb(hl+count, GFP_ATOMIC);
 =======
 			skb = alloc_skb(hl + count, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			skb = alloc_skb(hl + count, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 			if (!skb) {
 				printk(KERN_WARNING "isdn_ppp_write: out of memory!\n");
 				return count;
@@ -1157,16 +1270,22 @@ isdn_ppp_write(int min, struct file *file, const char __user *buf, int count)
 			if (is->debug & 0x40) {
 				printk(KERN_DEBUG "ppp xmit: len %d\n", (int) skb->len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				isdn_ppp_frame_log("xmit", skb->data, skb->len, 32,is->unit,lp->ppp_slot);
 			}
 
 			isdn_ppp_send_ccp(lp->netdev,lp,skb); /* keeps CCP/compression states in sync */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				isdn_ppp_frame_log("xmit", skb->data, skb->len, 32, is->unit, lp->ppp_slot);
 			}
 
 			isdn_ppp_send_ccp(lp->netdev, lp, skb); /* keeps CCP/compression states in sync */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			isdn_net_write_super(lp, skb);
 		}
@@ -1183,16 +1302,22 @@ isdn_ppp_init(void)
 {
 	int i,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 j;
 	 
 #ifdef CONFIG_ISDN_MPP
 	if( isdn_ppp_mp_bundle_array_init() < 0 )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		j;
 
 #ifdef CONFIG_ISDN_MPP
 	if (isdn_ppp_mp_bundle_array_init() < 0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 #endif /* CONFIG_ISDN_MPP */
 
@@ -1212,10 +1337,14 @@ isdn_ppp_init(void)
 			ippp_table[i]->rq[j].buf = NULL;
 			ippp_table[i]->rq[j].last = ippp_table[i]->rq +
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    (NUM_RCV_BUFFS + j - 1) % NUM_RCV_BUFFS;
 =======
 				(NUM_RCV_BUFFS + j - 1) % NUM_RCV_BUFFS;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				(NUM_RCV_BUFFS + j - 1) % NUM_RCV_BUFFS;
+>>>>>>> refs/remotes/origin/master
 			ippp_table[i]->rq[j].next = ippp_table[i]->rq + (j + 1) % NUM_RCV_BUFFS;
 		}
 	}
@@ -1241,10 +1370,14 @@ isdn_ppp_cleanup(void)
  * retval != 0 -> discard packet silently
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int isdn_ppp_skip_ac(struct ippp_struct *is, struct sk_buff *skb) 
 =======
 static int isdn_ppp_skip_ac(struct ippp_struct *is, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int isdn_ppp_skip_ac(struct ippp_struct *is, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	if (skb->len < 1)
 		return -1;
@@ -1259,10 +1392,14 @@ static int isdn_ppp_skip_ac(struct ippp_struct *is, struct sk_buff *skb)
 		// skip address/control (AC) field
 		skb_pull(skb, 2);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else { 
 =======
 	} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+>>>>>>> refs/remotes/origin/master
 		if (is->pppcfg & SC_REJ_COMP_AC)
 			// if AC compression was not negotiated, but used, discard packet
 			return -1;
@@ -1275,16 +1412,22 @@ static int isdn_ppp_skip_ac(struct ippp_struct *is, struct sk_buff *skb)
  * retval < 0 -> discard packet silently
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int isdn_ppp_strip_proto(struct sk_buff *skb) 
 {
 	int proto;
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int isdn_ppp_strip_proto(struct sk_buff *skb)
 {
 	int proto;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (skb->len < 1)
 		return -1;
 
@@ -1306,10 +1449,14 @@ static int isdn_ppp_strip_proto(struct sk_buff *skb)
  * handler for incoming packets on a syncPPP interface
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void isdn_ppp_receive(isdn_net_dev * net_dev, isdn_net_local * lp, struct sk_buff *skb)
 =======
 void isdn_ppp_receive(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void isdn_ppp_receive(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ippp_struct *is;
 	int slot;
@@ -1321,10 +1468,14 @@ void isdn_ppp_receive(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff 
 	if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "isdn_ppp_receive: lp->ppp_slot(%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			lp->ppp_slot);
 =======
 		       lp->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       lp->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		return;
 	}
@@ -1332,6 +1483,7 @@ void isdn_ppp_receive(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff 
 
 	if (is->debug & 0x4) {
 		printk(KERN_DEBUG "ippp_receive: is:%08lx lp:%08lx slot:%d unit:%d len:%d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		       (long)is,(long)lp,lp->ppp_slot,is->unit,(int) skb->len);
 		isdn_ppp_frame_log("receive", skb->data, skb->len, 32,is->unit,lp->ppp_slot);
@@ -1363,6 +1515,8 @@ void isdn_ppp_receive(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff 
 #endif
  	isdn_ppp_push_higher(net_dev, lp, skb, proto);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       (long)is, (long)lp, lp->ppp_slot, is->unit, (int)skb->len);
 		isdn_ppp_frame_log("receive", skb->data, skb->len, 32, is->unit, lp->ppp_slot);
 	}
@@ -1392,7 +1546,10 @@ void isdn_ppp_receive(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff 
 	}
 #endif
 	isdn_ppp_push_higher(net_dev, lp, skb, proto);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1402,22 +1559,29 @@ void isdn_ppp_receive(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff 
  */
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_ppp_push_higher(isdn_net_dev * net_dev, isdn_net_local * lp, struct sk_buff *skb, int proto)
 {
 	struct net_device *dev = net_dev->dev;
  	struct ippp_struct *is, *mis;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *skb, int proto)
 {
 	struct net_device *dev = net_dev->dev;
 	struct ippp_struct *is, *mis;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	isdn_net_local *mlp = NULL;
 	int slot;
 
 	slot = lp->ppp_slot;
 	if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "isdn_ppp_push_higher: lp->ppp_slot(%d)\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			lp->ppp_slot);
 		goto drop_packet;
@@ -1439,6 +1603,8 @@ isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *
 		printk(KERN_DEBUG "push, skb %d %04x\n", (int) skb->len, proto);
 		isdn_ppp_frame_log("rpush", skb->data, skb->len, 32,is->unit,lp->ppp_slot);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       lp->ppp_slot);
 		goto drop_packet;
 	}
@@ -1458,11 +1624,15 @@ isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *
 	if (is->debug & 0x10) {
 		printk(KERN_DEBUG "push, skb %d %04x\n", (int) skb->len, proto);
 		isdn_ppp_frame_log("rpush", skb->data, skb->len, 32, is->unit, lp->ppp_slot);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (mis->compflags & SC_DECOMP_ON) {
 		skb = isdn_ppp_decompress(skb, is, mis, &proto);
 		if (!skb) // decompression error
+<<<<<<< HEAD
 <<<<<<< HEAD
   			return;
   	}
@@ -1542,6 +1712,8 @@ isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *
 			kfree_skb(skb);
 			return;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			return;
 	}
 	switch (proto) {
@@ -1619,7 +1791,10 @@ isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *
 		isdn_ppp_fill_rq(skb->data, skb->len, proto, lp->ppp_slot);	/* push data to pppd device */
 		kfree_skb(skb);
 		return;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 #ifdef CONFIG_IPPP_FILTER
@@ -1645,10 +1820,14 @@ isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *
 	      && sk_run_filter(skb, is->active_filter) == 0)) {
 		if (is->debug & 0x2)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG "IPPP: link-active filter: reseting huptimer.\n");
 =======
 			printk(KERN_DEBUG "IPPP: link-active filter: resetting huptimer.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_DEBUG "IPPP: link-active filter: resetting huptimer.\n");
+>>>>>>> refs/remotes/origin/master
 		lp->huptimer = 0;
 		if (mlp)
 			mlp->huptimer = 0;
@@ -1666,10 +1845,14 @@ isdn_ppp_push_higher(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *
 	return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  drop_packet:
 =======
 drop_packet:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+drop_packet:
+>>>>>>> refs/remotes/origin/master
 	net_dev->local->stats.rx_dropped++;
 	kfree_skb(skb);
 }
@@ -1680,18 +1863,24 @@ drop_packet:
  * and allocs a new SKB if necessary
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned char *isdn_ppp_skb_push(struct sk_buff **skb_p,int len)
 {
 	struct sk_buff *skb = *skb_p;
 
 	if(skb_headroom(skb) < len) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned char *isdn_ppp_skb_push(struct sk_buff **skb_p, int len)
 {
 	struct sk_buff *skb = *skb_p;
 
 	if (skb_headroom(skb) < len) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct sk_buff *nskb = skb_realloc_headroom(skb, len);
 
 		if (!nskb) {
@@ -1700,19 +1889,27 @@ static unsigned char *isdn_ppp_skb_push(struct sk_buff **skb_p, int len)
 			return NULL;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_DEBUG "isdn_ppp_skb_push:under %d %d\n",skb_headroom(skb),len);
 =======
 		printk(KERN_DEBUG "isdn_ppp_skb_push:under %d %d\n", skb_headroom(skb), len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk(KERN_DEBUG "isdn_ppp_skb_push:under %d %d\n", skb_headroom(skb), len);
+>>>>>>> refs/remotes/origin/master
 		dev_kfree_skb(skb);
 		*skb_p = nskb;
 		return skb_push(nskb, len);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return skb_push(skb,len);
 =======
 	return skb_push(skb, len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return skb_push(skb, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1727,16 +1924,22 @@ int
 isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	isdn_net_local *lp,*mlp;
 	isdn_net_dev *nd;
 	unsigned int proto = PPP_IP;     /* 0x21 */
 	struct ippp_struct *ipt,*ipts;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	isdn_net_local *lp, *mlp;
 	isdn_net_dev *nd;
 	unsigned int proto = PPP_IP;     /* 0x21 */
 	struct ippp_struct *ipt, *ipts;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int slot, retval = NETDEV_TX_OK;
 
 	mlp = netdev_priv(netdev);
@@ -1746,10 +1949,14 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "isdn_ppp_xmit: lp->ppp_slot(%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mlp->ppp_slot);
 =======
 		       mlp->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       mlp->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		goto out;
 	}
@@ -1764,6 +1971,7 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 
 	switch (ntohs(skb->protocol)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case ETH_P_IP:
 			proto = PPP_IP;
 			break;
@@ -1776,6 +1984,8 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 			dev_kfree_skb(skb);
 			goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ETH_P_IP:
 		proto = PPP_IP;
 		break;
@@ -1787,7 +1997,10 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 		       skb->protocol);
 		dev_kfree_skb(skb);
 		goto out;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	lp = isdn_net_get_locked_lp(nd);
@@ -1802,10 +2015,14 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "isdn_ppp_xmit: lp->ppp_slot(%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			lp->ppp_slot);
 =======
 		       lp->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       lp->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 		kfree_skb(skb);
 		goto unlock;
 	}
@@ -1819,10 +2036,14 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	 * the fragmentation code happy.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb_pull(skb,IPPP_MAX_HEADER);
 =======
 	skb_pull(skb, IPPP_MAX_HEADER);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb_pull(skb, IPPP_MAX_HEADER);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IPPP_FILTER
 	/* check if we should pass this packet
@@ -1848,10 +2069,14 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	      && sk_run_filter(skb, ipt->active_filter) == 0)) {
 		if (ipt->debug & 0x4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_DEBUG "IPPP: link-active filter: reseting huptimer.\n");
 =======
 			printk(KERN_DEBUG "IPPP: link-active filter: resetting huptimer.\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_DEBUG "IPPP: link-active filter: resetting huptimer.\n");
+>>>>>>> refs/remotes/origin/master
 		lp->huptimer = 0;
 	}
 	skb_pull(skb, 4);
@@ -1862,21 +2087,30 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	if (ipt->debug & 0x4)
 		printk(KERN_DEBUG "xmit skb, len %d\n", (int) skb->len);
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (ipts->debug & 0x40)
                 isdn_ppp_frame_log("xmit0", skb->data, skb->len, 32,ipts->unit,lp->ppp_slot);
 =======
 	if (ipts->debug & 0x40)
 		isdn_ppp_frame_log("xmit0", skb->data, skb->len, 32, ipts->unit, lp->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ipts->debug & 0x40)
+		isdn_ppp_frame_log("xmit0", skb->data, skb->len, 32, ipts->unit, lp->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_ISDN_PPP_VJ
 	if (proto == PPP_IP && ipts->pppcfg & SC_COMP_TCP) {	/* ipts here? probably yes, but check this again */
 		struct sk_buff *new_skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        unsigned short hl;
 =======
 		unsigned short hl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned short hl;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * we need to reserve enough space in front of
 		 * sk_buff. old call to dev_alloc_skb only reserved
@@ -1884,20 +2118,28 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 		 */
 		hl = dev->drv[lp->isdn_device]->interface->hl_hdrlen + IPPP_MAX_HEADER;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* 
 =======
 		/*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/*
+>>>>>>> refs/remotes/origin/master
 		 * Note: hl might still be insufficient because the method
 		 * above does not account for a possibible MPPP slave channel
 		 * which had larger HL header space requirements than the
 		 * master.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		new_skb = alloc_skb(hl+skb->len, GFP_ATOMIC);
 =======
 		new_skb = alloc_skb(hl + skb->len, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		new_skb = alloc_skb(hl + skb->len, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 		if (new_skb) {
 			u_char *buf;
 			int pktlen;
@@ -1909,6 +2151,7 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 
 			pktlen = slhc_compress(ipts->slcomp, skb->data, skb->len, new_skb->data,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 &buf, !(ipts->pppcfg & SC_NO_TCP_CCID));
 
 			if (buf != skb->data) {	
@@ -1917,6 +2160,11 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 
 			if (buf != skb->data) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					       &buf, !(ipts->pppcfg & SC_NO_TCP_CCID));
+
+			if (buf != skb->data) {
+>>>>>>> refs/remotes/origin/master
 				if (new_skb->data != buf)
 					printk(KERN_ERR "isdn_ppp: FATAL error after slhc_compress!!\n");
 				dev_kfree_skb(skb);
@@ -1942,18 +2190,24 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	 * normal (single link) or bundle compression
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(ipts->compflags & SC_COMP_ON) {
 		/* We send compressed only if both down- und upstream
 		   compression is negotiated, that means, CCP is up */
 		if(ipts->compflags & SC_DECOMP_ON) {
 			skb = isdn_ppp_compress(skb,&proto,ipt,ipts,0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ipts->compflags & SC_COMP_ON) {
 		/* We send compressed only if both down- und upstream
 		   compression is negotiated, that means, CCP is up */
 		if (ipts->compflags & SC_DECOMP_ON) {
 			skb = isdn_ppp_compress(skb, &proto, ipt, ipts, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			printk(KERN_DEBUG "isdn_ppp: CCP not yet up - sending as-is\n");
 		}
@@ -1970,10 +2224,14 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 		if (ipt->mpppcfg & SC_OUT_SHORT_SEQ) {
 			unsigned char *data = isdn_ppp_skb_push(&skb, 3);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(!data)
 =======
 			if (!data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!data)
+>>>>>>> refs/remotes/origin/master
 				goto unlock;
 			mp_seqno &= 0xfff;
 			data[0] = MP_BEGIN_FRAG | MP_END_FRAG | ((mp_seqno >> 8) & 0xf);	/* (B)egin & (E)ndbit .. */
@@ -1982,10 +2240,14 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 		} else {
 			unsigned char *data = isdn_ppp_skb_push(&skb, 5);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(!data)
 =======
 			if (!data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!data)
+>>>>>>> refs/remotes/origin/master
 				goto unlock;
 			data[0] = MP_BEGIN_FRAG | MP_END_FRAG;	/* (B)egin & (E)ndbit .. */
 			data[1] = (mp_seqno >> 16) & 0xff;	/* sequence number: 24bit */
@@ -2001,6 +2263,7 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	 * 'link in bundle' compression  ...
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(ipt->compflags & SC_LINK_COMP_ON)
 		skb = isdn_ppp_compress(skb,&proto,ipt,ipts,1);
 
@@ -2008,17 +2271,23 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 		unsigned char *data = isdn_ppp_skb_push(&skb,1);
 		if(!data)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ipt->compflags & SC_LINK_COMP_ON)
 		skb = isdn_ppp_compress(skb, &proto, ipt, ipts, 1);
 
 	if ((ipt->pppcfg & SC_COMP_PROT) && (proto <= 0xff)) {
 		unsigned char *data = isdn_ppp_skb_push(&skb, 1);
 		if (!data)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto unlock;
 		data[0] = proto & 0xff;
 	}
 	else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		unsigned char *data = isdn_ppp_skb_push(&skb,2);
 		if(!data)
@@ -2026,10 +2295,15 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 		unsigned char *data = isdn_ppp_skb_push(&skb, 2);
 		if (!data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unsigned char *data = isdn_ppp_skb_push(&skb, 2);
+		if (!data)
+>>>>>>> refs/remotes/origin/master
 			goto unlock;
 		data[0] = (proto >> 8) & 0xff;
 		data[1] = proto & 0xff;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if(!(ipt->pppcfg & SC_COMP_AC)) {
 		unsigned char *data = isdn_ppp_skb_push(&skb,2);
@@ -2039,6 +2313,11 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 		unsigned char *data = isdn_ppp_skb_push(&skb, 2);
 		if (!data)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(ipt->pppcfg & SC_COMP_AC)) {
+		unsigned char *data = isdn_ppp_skb_push(&skb, 2);
+		if (!data)
+>>>>>>> refs/remotes/origin/master
 			goto unlock;
 		data[0] = 0xff;    /* All Stations */
 		data[1] = 0x03;    /* Unnumbered information */
@@ -2049,6 +2328,7 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	if (ipts->debug & 0x40) {
 		printk(KERN_DEBUG "skb xmit: len: %d\n", (int) skb->len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		isdn_ppp_frame_log("xmit", skb->data, skb->len, 32,ipt->unit,lp->ppp_slot);
 	}
 	
@@ -2058,6 +2338,8 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 	spin_unlock_bh(&lp->xmit_lock);
  out:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		isdn_ppp_frame_log("xmit", skb->data, skb->len, 32, ipt->unit, lp->ppp_slot);
 	}
 
@@ -2066,7 +2348,10 @@ isdn_ppp_xmit(struct sk_buff *skb, struct net_device *netdev)
 unlock:
 	spin_unlock_bh(&lp->xmit_lock);
 out:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }
 
@@ -2108,6 +2393,7 @@ int isdn_ppp_autodial_filter(struct sk_buff *skb, isdn_net_local *lp)
 		*p = htons(proto);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 	drop |= is->pass_filter
 	        && sk_run_filter(skb, is->pass_filter) == 0;
@@ -2115,13 +2401,18 @@ int isdn_ppp_autodial_filter(struct sk_buff *skb, isdn_net_local *lp)
 	        && sk_run_filter(skb, is->active_filter) == 0;
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	drop |= is->pass_filter
 		&& sk_run_filter(skb, is->pass_filter) == 0;
 	drop |= is->active_filter
 		&& sk_run_filter(skb, is->active_filter) == 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	skb_push(skb, IPPP_MAX_HEADER - 4);
 	return drop;
 }
@@ -2131,12 +2422,17 @@ int isdn_ppp_autodial_filter(struct sk_buff *skb, isdn_net_local *lp)
 /* this is _not_ rfc1990 header, but something we convert both short and long
  * headers to for convinience's sake:
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 	byte 0 is flags as in rfc1990
  *	bytes 1...4 is 24-bit seqence number converted to host byte order 
 =======
  *	byte 0 is flags as in rfc1990
  *	bytes 1...4 is 24-bit seqence number converted to host byte order
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	byte 0 is flags as in rfc1990
+ *	bytes 1...4 is 24-bit seqence number converted to host byte order
+>>>>>>> refs/remotes/origin/master
  */
 #define MP_HEADER_LEN	5
 
@@ -2144,6 +2440,7 @@ int isdn_ppp_autodial_filter(struct sk_buff *skb, isdn_net_local *lp)
 #define MP_SHORTSEQ_MASK	0x00000fff
 #define MP_LONGSEQ_MAX		MP_LONGSEQ_MASK
 #define MP_SHORTSEQ_MAX		MP_SHORTSEQ_MASK
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MP_LONGSEQ_MAXBIT	((MP_LONGSEQ_MASK+1)>>1)
 #define MP_SHORTSEQ_MAXBIT	((MP_SHORTSEQ_MASK+1)>>1)
@@ -2156,6 +2453,8 @@ int isdn_ppp_autodial_filter(struct sk_buff *skb, isdn_net_local *lp)
 
 #define MP_SEQ(f)	((*(u32*)(f->data+1)))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MP_LONGSEQ_MAXBIT	((MP_LONGSEQ_MASK + 1) >> 1)
 #define MP_SHORTSEQ_MAXBIT	((MP_SHORTSEQ_MASK + 1) >> 1)
 
@@ -2166,43 +2465,59 @@ int isdn_ppp_autodial_filter(struct sk_buff *skb, isdn_net_local *lp)
 #define MP_GE(a, b)	!((a - b) & MP_LONGSEQ_MAXBIT)
 
 #define MP_SEQ(f)	((*(u32 *)(f->data + 1)))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MP_FLAGS(f)	(f->data[0])
 
 static int isdn_ppp_mp_bundle_array_init(void)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int sz = ISDN_MAX_CHANNELS*sizeof(ippp_bundle);
 	if( (isdn_ppp_bundle_arr = kzalloc(sz, GFP_KERNEL)) == NULL )
 		return -ENOMEM;
 	for( i = 0; i < ISDN_MAX_CHANNELS; i++ )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int sz = ISDN_MAX_CHANNELS * sizeof(ippp_bundle);
 	if ((isdn_ppp_bundle_arr = kzalloc(sz, GFP_KERNEL)) == NULL)
 		return -ENOMEM;
 	for (i = 0; i < ISDN_MAX_CHANNELS; i++)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock_init(&isdn_ppp_bundle_arr[i].lock);
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ippp_bundle * isdn_ppp_mp_bundle_alloc(void)
 {
 	int i;
 	for( i = 0; i < ISDN_MAX_CHANNELS; i++ )
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ippp_bundle *isdn_ppp_mp_bundle_alloc(void)
 {
 	int i;
 	for (i = 0; i < ISDN_MAX_CHANNELS; i++)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (isdn_ppp_bundle_arr[i].ref_ct <= 0)
 			return (isdn_ppp_bundle_arr + i);
 	return NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int isdn_ppp_mp_init( isdn_net_local * lp, ippp_bundle * add_to )
 {
@@ -2213,6 +2528,8 @@ static int isdn_ppp_mp_init( isdn_net_local * lp, ippp_bundle * add_to )
 			__func__, lp->ppp_slot);
 		return(-EINVAL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int isdn_ppp_mp_init(isdn_net_local *lp, ippp_bundle *add_to)
 {
 	struct ippp_struct *is;
@@ -2221,16 +2538,23 @@ static int isdn_ppp_mp_init(isdn_net_local *lp, ippp_bundle *add_to)
 		printk(KERN_ERR "%s: lp->ppp_slot(%d) out of range\n",
 		       __func__, lp->ppp_slot);
 		return (-EINVAL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	is = ippp_table[lp->ppp_slot];
 	if (add_to) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if( lp->netdev->pb )
 =======
 		if (lp->netdev->pb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (lp->netdev->pb)
+>>>>>>> refs/remotes/origin/master
 			lp->netdev->pb->ref_ct--;
 		lp->netdev->pb = add_to;
 	} else {		/* first link in a bundle */
@@ -2244,14 +2568,19 @@ static int isdn_ppp_mp_init(isdn_net_local *lp, ippp_bundle *add_to)
 	}
 	lp->netdev->pb->ref_ct++;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	is->last_link_seqno = 0;
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u32 isdn_ppp_mp_get_seq( int short_seq, 
 					struct sk_buff * skb, u32 last_seq );
@@ -2271,6 +2600,8 @@ static void isdn_ppp_mp_receive(isdn_net_dev * net_dev, isdn_net_local * lp,
 	isdn_mppp_stats * stats;
 	struct sk_buff * newfrag, * frag, * start, *nextf;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 isdn_ppp_mp_get_seq(int short_seq,
 			       struct sk_buff *skb, u32 last_seq);
 static struct sk_buff *isdn_ppp_mp_discard(ippp_bundle *mp,
@@ -2288,12 +2619,16 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 	ippp_bundle *mp;
 	isdn_mppp_stats *stats;
 	struct sk_buff *newfrag, *frag, *start, *nextf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 newseq, minseq, thisseq;
 	unsigned long flags;
 	int slot;
 
 	spin_lock_irqsave(&net_dev->pb->lock, flags);
+<<<<<<< HEAD
 <<<<<<< HEAD
     	mp = net_dev->pb;
         stats = &mp->stats;
@@ -2302,19 +2637,25 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 		printk(KERN_ERR "%s: lp->ppp_slot(%d)\n",
 			__func__, lp->ppp_slot);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mp = net_dev->pb;
 	stats = &mp->stats;
 	slot = lp->ppp_slot;
 	if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "%s: lp->ppp_slot(%d)\n",
 		       __func__, lp->ppp_slot);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		stats->frame_drops++;
 		dev_kfree_skb(skb);
 		spin_unlock_irqrestore(&mp->lock, flags);
 		return;
 	}
 	is = ippp_table[slot];
+<<<<<<< HEAD
 <<<<<<< HEAD
     	if( ++mp->frames > stats->max_queue_len )
 		stats->max_queue_len = mp->frames;
@@ -2335,6 +2676,8 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 					 * prevents constant packet toss */
 	} else if( MP_LT(newseq, mp->seq) ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (++mp->frames > stats->max_queue_len)
 		stats->max_queue_len = mp->frames;
 
@@ -2353,17 +2696,24 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 					 * rfc1990 non-compliant clients --
 					 * prevents constant packet toss */
 	} else if (MP_LT(newseq, mp->seq)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		stats->frame_drops++;
 		isdn_ppp_mp_free_skb(mp, skb);
 		spin_unlock_irqrestore(&mp->lock, flags);
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* find the minimum received sequence number over all links */
 	is->last_link_seqno = minseq = newseq;
 	for (lpq = net_dev->queue;;) {
@@ -2371,10 +2721,14 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 		if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 			printk(KERN_ERR "%s: lpq->ppp_slot(%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				__func__, lpq->ppp_slot);
 =======
 			       __func__, lpq->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, lpq->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			u32 lls = ippp_table[slot]->last_link_seqno;
 			if (MP_LT(lls, minseq))
@@ -2389,6 +2743,7 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 	newfrag = skb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   	/* if this new fragment is before the first one, then enqueue it now. */
   	if ((frag = mp->frags) == NULL || MP_LT(newseq, MP_SEQ(frag))) {
 		newfrag->next = frag;
@@ -2401,6 +2756,8 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 
 	/* 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* if this new fragment is before the first one, then enqueue it now. */
 	if ((frag = mp->frags) == NULL || MP_LT(newseq, MP_SEQ(frag))) {
 		newfrag->next = frag;
@@ -2412,7 +2769,10 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 		MP_SEQ(frag) == mp->seq ? frag : NULL;
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * main fragment traversing loop
 	 *
 	 * try to accomplish several tasks:
@@ -2427,6 +2787,7 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 	 *
 	 * loop completes when we accomplished the following tasks:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * - new fragment is inserted in the proper sequence ('newfrag' is 
 	 *   set to NULL)
 	 * - we hit a gap in the sequence, so no reassembly/processing is 
@@ -2435,11 +2796,17 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 	 *   set to NULL)
 	 * - we hit a gap in the sequence, so no reassembly/processing is
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	 * - new fragment is inserted in the proper sequence ('newfrag' is
+	 *   set to NULL)
+	 * - we hit a gap in the sequence, so no reassembly/processing is
+>>>>>>> refs/remotes/origin/master
 	 *   possible ('start' would be set to NULL)
 	 *
 	 * algorithm for this code is derived from code in the book
 	 * 'PPP Design And Debugging' by James Carlson (Addison-Wesley)
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
   	while (start != NULL || newfrag != NULL) {
 
@@ -2499,6 +2866,8 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
       			mp->frags = nextf;
     		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (start != NULL || newfrag != NULL) {
 
 		thisseq = MP_SEQ(frag);
@@ -2556,7 +2925,10 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 
 			mp->frags = nextf;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* check if need to update start pointer: if we just
 		 * reassembled the packet and sequence is contiguous
@@ -2566,6 +2938,7 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 		 * if sequence is not contiguous, either clear everything
 		 * below low watermark and set start to the next frag or
 		 * clear start ptr.
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 */ 
     		if (nextf != NULL && 
@@ -2582,6 +2955,8 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 						" END flag with no following "
 						"BEGIN", thisseq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (nextf != NULL &&
 		    ((thisseq + 1) & MP_LONGSEQ_MASK) == MP_SEQ(nextf)) {
@@ -2596,11 +2971,15 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 					printk(KERN_WARNING"isdn_mppp(seq %d):"
 					       " END flag with no following "
 					       "BEGIN", thisseq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					stats->seqerrs++;
 				}
 			}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     		} else {
 			if ( nextf != NULL && frag != NULL &&
@@ -2610,10 +2989,16 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 			if (nextf != NULL && frag != NULL &&
 			    MP_LT(thisseq, minseq)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		} else {
+			if (nextf != NULL && frag != NULL &&
+			    MP_LT(thisseq, minseq)) {
+>>>>>>> refs/remotes/origin/master
 				/* we've got a break in the sequence
 				 * and we not at the end yet
 				 * and we did not just reassembled
 				 *(if we did, there wouldn't be anything before)
+<<<<<<< HEAD
 <<<<<<< HEAD
 				 * and we below the low watermark 
 			 	 * discard all the frames below low watermark 
@@ -2633,6 +3018,8 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 		
 	/* rather straighforward way to deal with (not very) possible 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				 * and we below the low watermark
 				 * discard all the frames below low watermark
 				 * and start over */
@@ -2650,7 +3037,10 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 		mp->frags = frag;
 
 	/* rather straighforward way to deal with (not very) possible
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * queue overflow */
 	if (mp->frames > MP_MAX_QUEUE_LEN) {
 		stats->overflows++;
@@ -2664,18 +3054,24 @@ static void isdn_ppp_mp_receive(isdn_net_dev *net_dev, isdn_net_local *lp,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void isdn_ppp_mp_cleanup( isdn_net_local * lp )
 {
 	struct sk_buff * frag = lp->netdev->pb->frags;
 	struct sk_buff * nextfrag;
     	while( frag ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void isdn_ppp_mp_cleanup(isdn_net_local *lp)
 {
 	struct sk_buff *frag = lp->netdev->pb->frags;
 	struct sk_buff *nextfrag;
 	while (frag) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		nextfrag = frag->next;
 		isdn_ppp_mp_free_skb(lp->netdev->pb, frag);
 		frag = nextfrag;
@@ -2683,6 +3079,7 @@ static void isdn_ppp_mp_cleanup(isdn_net_local *lp)
 	lp->netdev->pb->frags = NULL;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static u32 isdn_ppp_mp_get_seq( int short_seq, 
 					struct sk_buff * skb, u32 last_seq )
@@ -2714,6 +3111,8 @@ static u32 isdn_ppp_mp_get_seq( int short_seq,
 	}
 	*(u32*)(skb->data+1) = seq; 	/* put seqence back in _host_ byte
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 isdn_ppp_mp_get_seq(int short_seq,
 			       struct sk_buff *skb, u32 last_seq)
 {
@@ -2743,12 +3142,16 @@ static u32 isdn_ppp_mp_get_seq(int short_seq,
 		skb_push(skb, 3);	/* put converted seqence back in skb */
 	}
 	*(u32 *)(skb->data + 1) = seq;	/* put seqence back in _host_ byte
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					 * order */
 	skb->data[0] = flags;	        /* restore flags */
 	return seq;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct sk_buff * isdn_ppp_mp_discard( ippp_bundle * mp,
 			struct sk_buff * from, struct sk_buff * to )
@@ -2759,6 +3162,8 @@ struct sk_buff * isdn_ppp_mp_discard( ippp_bundle * mp,
 			isdn_ppp_mp_free_skb(mp, from);
 	  		from = next;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct sk_buff *isdn_ppp_mp_discard(ippp_bundle *mp,
 				    struct sk_buff *from, struct sk_buff *to)
 {
@@ -2767,11 +3172,15 @@ struct sk_buff *isdn_ppp_mp_discard(ippp_bundle *mp,
 			struct sk_buff *next = from->next;
 			isdn_ppp_mp_free_skb(mp, from);
 			from = next;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	return from;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void isdn_ppp_mp_reassembly( isdn_net_dev * net_dev, isdn_net_local * lp,
 				struct sk_buff * from, struct sk_buff * to )
@@ -2780,17 +3189,23 @@ void isdn_ppp_mp_reassembly( isdn_net_dev * net_dev, isdn_net_local * lp,
 	int proto;
 	struct sk_buff * skb;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void isdn_ppp_mp_reassembly(isdn_net_dev *net_dev, isdn_net_local *lp,
 			    struct sk_buff *from, struct sk_buff *to)
 {
 	ippp_bundle *mp = net_dev->pb;
 	int proto;
 	struct sk_buff *skb;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int tot_len;
 
 	if (lp->ppp_slot < 0 || lp->ppp_slot >= ISDN_MAX_CHANNELS) {
 		printk(KERN_ERR "%s: lp->ppp_slot(%d) out of range\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			__func__, lp->ppp_slot);
 		return;
@@ -2817,6 +3232,8 @@ void isdn_ppp_mp_reassembly(isdn_net_dev *net_dev, isdn_net_local *lp,
 			printk(KERN_ERR "isdn_mppp: cannot allocate sk buff "
 					"of size %d\n", tot_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       __func__, lp->ppp_slot);
 		return;
 	}
@@ -2841,11 +3258,15 @@ void isdn_ppp_mp_reassembly(isdn_net_dev *net_dev, isdn_net_local *lp,
 		if ((skb = dev_alloc_skb(tot_len)) == NULL) {
 			printk(KERN_ERR "isdn_mppp: cannot allocate sk buff "
 			       "of size %d\n", tot_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			isdn_ppp_mp_discard(mp, from, to);
 			return;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		while( from != to ) {
 			unsigned int len = from->len - MP_HEADER_LEN;
@@ -2864,6 +3285,8 @@ void isdn_ppp_mp_reassembly(isdn_net_dev *net_dev, isdn_net_local *lp,
 
 static void isdn_ppp_mp_free_skb(ippp_bundle * mp, struct sk_buff * skb)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (from != to) {
 			unsigned int len = from->len - MP_HEADER_LEN;
 
@@ -2880,12 +3303,16 @@ static void isdn_ppp_mp_free_skb(ippp_bundle * mp, struct sk_buff * skb)
 }
 
 static void isdn_ppp_mp_free_skb(ippp_bundle *mp, struct sk_buff *skb)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	dev_kfree_skb(skb);
 	mp->frames--;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void isdn_ppp_mp_print_recv_pkt( int slot, struct sk_buff * skb )
 {
@@ -2894,13 +3321,18 @@ static void isdn_ppp_mp_print_recv_pkt( int slot, struct sk_buff * skb )
 		(int) skb->data[0], (int) skb->data[1], (int) skb->data[2],
 		(int) skb->data[3], (int) skb->data[4], (int) skb->data[5]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void isdn_ppp_mp_print_recv_pkt(int slot, struct sk_buff *skb)
 {
 	printk(KERN_DEBUG "mp_recv: %d/%d -> %02x %02x %02x %02x %02x %02x\n",
 	       slot, (int) skb->len,
 	       (int) skb->data[0], (int) skb->data[1], (int) skb->data[2],
 	       (int) skb->data[3], (int) skb->data[4], (int) skb->data[5]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -2920,6 +3352,7 @@ isdn_ppp_bundle(struct ippp_struct *is, int unit)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     	spin_lock_irqsave(&p->pb->lock, flags);
 
 	nlp = is->lp;
@@ -2933,6 +3366,8 @@ isdn_ppp_bundle(struct ippp_struct *is, int unit)
 		goto out;
  	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&p->pb->lock, flags);
 
 	nlp = is->lp;
@@ -2945,7 +3380,10 @@ isdn_ppp_bundle(struct ippp_struct *is, int unit)
 		rc = -EINVAL;
 		goto out;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	isdn_net_add_to_bundle(p, nlp);
 
@@ -2962,6 +3400,7 @@ out:
 	return rc;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
   
 #endif /* CONFIG_ISDN_MPP */
   
@@ -2970,6 +3409,11 @@ out:
 #endif /* CONFIG_ISDN_MPP */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#endif /* CONFIG_ISDN_MPP */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * network device ioctl handlers
  */
@@ -3017,10 +3461,14 @@ int
 isdn_ppp_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int error=0;
 =======
 	int error = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int error = 0;
+>>>>>>> refs/remotes/origin/master
 	int len;
 	isdn_net_local *lp = netdev_priv(dev);
 
@@ -3030,6 +3478,7 @@ isdn_ppp_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 
 	switch (cmd) {
 #define PPP_VERSION "2.3.7"
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case SIOCGPPPVER:
 			len = strlen(PPP_VERSION) + 1;
@@ -3044,6 +3493,8 @@ isdn_ppp_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 			error = -EINVAL;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SIOCGPPPVER:
 		len = strlen(PPP_VERSION) + 1;
 		if (copy_to_user(ifr->ifr_data, PPP_VERSION, len))
@@ -3056,7 +3507,10 @@ isdn_ppp_dev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 	default:
 		error = -EINVAL;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return error;
 }
@@ -3066,6 +3520,7 @@ isdn_ppp_if_get_unit(char *name)
 {
 	int len,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 i,
 	 unit = 0,
 	 deci;
@@ -3074,6 +3529,11 @@ isdn_ppp_if_get_unit(char *name)
 		unit = 0,
 		deci;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		i,
+		unit = 0,
+		deci;
+>>>>>>> refs/remotes/origin/master
 
 	len = strlen(name);
 
@@ -3151,10 +3611,14 @@ isdn_ppp_hangup_slave(char *name)
 		} else if (mlp->flags & ISDN_NET_CONNECTED)
 			break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 		sdev = mlp->slave;
 	}
 	if (!sdev)
@@ -3228,12 +3692,17 @@ static void isdn_ppp_ccp_xmit_reset(struct ippp_struct *is, int proto,
 	/* Alloc large enough skb */
 	hl = dev->drv[lp->isdn_device]->interface->hl_hdrlen;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = alloc_skb(len + hl + 16,GFP_ATOMIC);
 	if(!skb) {
 =======
 	skb = alloc_skb(len + hl + 16, GFP_ATOMIC);
 	if (!skb) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb = alloc_skb(len + hl + 16, GFP_ATOMIC);
+	if (!skb) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING
 		       "ippp: CCP cannot send reset - out of memory\n");
 		return;
@@ -3242,10 +3711,14 @@ static void isdn_ppp_ccp_xmit_reset(struct ippp_struct *is, int proto,
 
 	/* We may need to stuff an address and control field first */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!(is->pppcfg & SC_COMP_AC)) {
 =======
 	if (!(is->pppcfg & SC_COMP_AC)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(is->pppcfg & SC_COMP_AC)) {
+>>>>>>> refs/remotes/origin/master
 		p = skb_put(skb, 2);
 		*p++ = 0xff;
 		*p++ = 0x03;
@@ -3263,10 +3736,14 @@ static void isdn_ppp_ccp_xmit_reset(struct ippp_struct *is, int proto,
 
 	/* Now stuff remaining bytes */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(len) {
 =======
 	if (len) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (len) {
+>>>>>>> refs/remotes/origin/master
 		p = skb_put(skb, len);
 		memcpy(p, data, len);
 	}
@@ -3274,10 +3751,14 @@ static void isdn_ppp_ccp_xmit_reset(struct ippp_struct *is, int proto,
 	/* skb is now ready for xmit */
 	printk(KERN_DEBUG "Sending CCP Frame:\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	isdn_ppp_frame_log("ccp-xmit", skb->data, skb->len, 32, is->unit,lp->ppp_slot);
 =======
 	isdn_ppp_frame_log("ccp-xmit", skb->data, skb->len, 32, is->unit, lp->ppp_slot);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isdn_ppp_frame_log("ccp-xmit", skb->data, skb->len, 32, is->unit, lp->ppp_slot);
+>>>>>>> refs/remotes/origin/master
 
 	isdn_net_write_super(lp, skb);
 }
@@ -3288,10 +3769,14 @@ static struct ippp_ccp_reset *isdn_ppp_ccp_reset_alloc(struct ippp_struct *is)
 	struct ippp_ccp_reset *r;
 	r = kzalloc(sizeof(struct ippp_ccp_reset), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!r) {
 =======
 	if (!r) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!r) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "ippp_ccp: failed to allocate reset data"
 		       " structure - no mem\n");
 		return NULL;
@@ -3309,12 +3794,17 @@ static void isdn_ppp_ccp_reset_free(struct ippp_struct *is)
 	printk(KERN_DEBUG "ippp_ccp: freeing reset data structure %p\n",
 	       is->reset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for(id = 0; id < 256; id++) {
 		if(is->reset->rs[id]) {
 =======
 	for (id = 0; id < 256; id++) {
 		if (is->reset->rs[id]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (id = 0; id < 256; id++) {
+		if (is->reset->rs[id]) {
+>>>>>>> refs/remotes/origin/master
 			isdn_ppp_ccp_reset_free_state(is, (unsigned char)id);
 		}
 	}
@@ -3329,18 +3819,24 @@ static void isdn_ppp_ccp_reset_free_state(struct ippp_struct *is,
 	struct ippp_ccp_reset_state *rs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(is->reset->rs[id]) {
 		printk(KERN_DEBUG "ippp_ccp: freeing state for id %d\n", id);
 		rs = is->reset->rs[id];
 		/* Make sure the kernel will not call back later */
 		if(rs->ta)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (is->reset->rs[id]) {
 		printk(KERN_DEBUG "ippp_ccp: freeing state for id %d\n", id);
 		rs = is->reset->rs[id];
 		/* Make sure the kernel will not call back later */
 		if (rs->ta)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			del_timer(&rs->timer);
 		is->reset->rs[id] = NULL;
 		kfree(rs);
@@ -3357,6 +3853,7 @@ static void isdn_ppp_ccp_timer_callback(unsigned long closure)
 		(struct ippp_ccp_reset_state *)closure;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!rs) {
 		printk(KERN_ERR "ippp_ccp: timer cb with zero closure.\n");
 		return;
@@ -3365,6 +3862,8 @@ static void isdn_ppp_ccp_timer_callback(unsigned long closure)
 		/* We are correct here */
 		if(!rs->expra) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!rs) {
 		printk(KERN_ERR "ippp_ccp: timer cb with zero closure.\n");
 		return;
@@ -3372,7 +3871,10 @@ static void isdn_ppp_ccp_timer_callback(unsigned long closure)
 	if (rs->ta && rs->state == CCPResetSentReq) {
 		/* We are correct here */
 		if (!rs->expra) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* Hmm, there is no Ack really expected. We can clean
 			   up the state now, it will be reallocated if the
 			   decompressor insists on another reset */
@@ -3387,10 +3889,14 @@ static void isdn_ppp_ccp_timer_callback(unsigned long closure)
 					rs->data, rs->dlen);
 		/* Restart timer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rs->timer.expires = jiffies + HZ*5;
 =======
 		rs->timer.expires = jiffies + HZ * 5;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rs->timer.expires = jiffies + HZ * 5;
+>>>>>>> refs/remotes/origin/master
 		add_timer(&rs->timer);
 	} else {
 		printk(KERN_WARNING "ippp_ccp: timer cb in wrong state %d\n",
@@ -3401,26 +3907,36 @@ static void isdn_ppp_ccp_timer_callback(unsigned long closure)
 /* Allocate a new reset transaction state */
 static struct ippp_ccp_reset_state *isdn_ppp_ccp_reset_alloc_state(struct ippp_struct *is,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						      unsigned char id)
 {
 	struct ippp_ccp_reset_state *rs;
 	if(is->reset->rs[id]) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 								   unsigned char id)
 {
 	struct ippp_ccp_reset_state *rs;
 	if (is->reset->rs[id]) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_WARNING "ippp_ccp: old state exists for id %d\n",
 		       id);
 		return NULL;
 	} else {
 		rs = kzalloc(sizeof(struct ippp_ccp_reset_state), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(!rs)
 =======
 		if (!rs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!rs)
+>>>>>>> refs/remotes/origin/master
 			return NULL;
 		rs->state = CCPResetIdle;
 		rs->is = is;
@@ -3442,36 +3958,50 @@ static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 	struct ippp_ccp_reset_state *rs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(rp->valid) {
 		/* The decompressor defines parameters by itself */
 		if(rp->rsend) {
 			/* And he wants us to send a request */
 			if(!(rp->idval)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rp->valid) {
 		/* The decompressor defines parameters by itself */
 		if (rp->rsend) {
 			/* And he wants us to send a request */
 			if (!(rp->idval)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_ERR "ippp_ccp: decompressor must"
 				       " specify reset id\n");
 				return;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(is->reset->rs[rp->id]) {
 =======
 			if (is->reset->rs[rp->id]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (is->reset->rs[rp->id]) {
+>>>>>>> refs/remotes/origin/master
 				/* There is already a transaction in existence
 				   for this id. May be still waiting for a
 				   Ack or may be wrong. */
 				rs = is->reset->rs[rp->id];
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if(rs->state == CCPResetSentReq && rs->ta) {
 =======
 				if (rs->state == CCPResetSentReq && rs->ta) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (rs->state == CCPResetSentReq && rs->ta) {
+>>>>>>> refs/remotes/origin/master
 					printk(KERN_DEBUG "ippp_ccp: reset"
 					       " trans still in progress"
 					       " for id %d\n", rp->id);
@@ -3486,10 +4016,14 @@ static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 				       " %d to be started\n", rp->id);
 				rs = isdn_ppp_ccp_reset_alloc_state(is, rp->id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if(!rs) {
 =======
 				if (!rs) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (!rs) {
+>>>>>>> refs/remotes/origin/master
 					printk(KERN_ERR "ippp_ccp: out of mem"
 					       " allocing ccp trans\n");
 					return;
@@ -3497,10 +4031,14 @@ static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 				rs->state = CCPResetSentReq;
 				rs->expra = rp->expra;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if(rp->dtval) {
 =======
 				if (rp->dtval) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (rp->dtval) {
+>>>>>>> refs/remotes/origin/master
 					rs->dlen = rp->dlen;
 					memcpy(rs->data, rp->data, rp->dlen);
 				}
@@ -3510,10 +4048,14 @@ static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 							rs->data, rs->dlen);
 				/* Start the timer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				rs->timer.expires = jiffies + 5*HZ;
 =======
 				rs->timer.expires = jiffies + 5 * HZ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				rs->timer.expires = jiffies + 5 * HZ;
+>>>>>>> refs/remotes/origin/master
 				add_timer(&rs->timer);
 				rs->ta = 1;
 			}
@@ -3526,19 +4068,27 @@ static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 		   and increase ids only when an Ack is received for a
 		   given id */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(is->reset->rs[is->reset->lastid]) {
 =======
 		if (is->reset->rs[is->reset->lastid]) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (is->reset->rs[is->reset->lastid]) {
+>>>>>>> refs/remotes/origin/master
 			/* There is already a transaction in existence
 			   for this id. May be still waiting for a
 			   Ack or may be wrong. */
 			rs = is->reset->rs[is->reset->lastid];
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(rs->state == CCPResetSentReq && rs->ta) {
 =======
 			if (rs->state == CCPResetSentReq && rs->ta) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (rs->state == CCPResetSentReq && rs->ta) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_DEBUG "ippp_ccp: reset"
 				       " trans still in progress"
 				       " for id %d\n", rp->id);
@@ -3553,10 +4103,14 @@ static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 			rs = isdn_ppp_ccp_reset_alloc_state(is,
 							    is->reset->lastid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(!rs) {
 =======
 			if (!rs) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!rs) {
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_ERR "ippp_ccp: out of mem"
 				       " allocing ccp trans\n");
 				return;
@@ -3571,10 +4125,14 @@ static void isdn_ppp_ccp_reset_trans(struct ippp_struct *is,
 						rs->id, NULL, 0);
 			/* Start the timer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			rs->timer.expires = jiffies + 5*HZ;
 =======
 			rs->timer.expires = jiffies + 5 * HZ;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rs->timer.expires = jiffies + 5 * HZ;
+>>>>>>> refs/remotes/origin/master
 			add_timer(&rs->timer);
 			rs->ta = 1;
 		}
@@ -3589,16 +4147,22 @@ static void isdn_ppp_ccp_reset_ack_rcvd(struct ippp_struct *is,
 	struct ippp_ccp_reset_state *rs = is->reset->rs[id];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(rs) {
 		if(rs->ta && rs->state == CCPResetSentReq) {
 			/* Great, we are correct */
 			if(!rs->expra)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (rs) {
 		if (rs->ta && rs->state == CCPResetSentReq) {
 			/* Great, we are correct */
 			if (!rs->expra)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				printk(KERN_DEBUG "ippp_ccp: ResetAck received"
 				       " for id %d but not expected\n", id);
 		} else {
@@ -3606,10 +4170,14 @@ static void isdn_ppp_ccp_reset_ack_rcvd(struct ippp_struct *is,
 			       "sync for id %d\n", id);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(rs->ta) {
 =======
 		if (rs->ta) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (rs->ta) {
+>>>>>>> refs/remotes/origin/master
 			rs->ta = 0;
 			del_timer(&rs->timer);
 		}
@@ -3623,10 +4191,14 @@ static void isdn_ppp_ccp_reset_ack_rcvd(struct ippp_struct *is,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
 =======
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * decompress packet
  *
  * if master = 0, we're trying to uncompress an per-link compressed packet,
@@ -3639,12 +4211,17 @@ static void isdn_ppp_ccp_reset_ack_rcvd(struct ippp_struct *is,
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb,struct ippp_struct *is,struct ippp_struct *master,
 	int *proto)
 =======
 static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_struct *is, struct ippp_struct *master,
 					   int *proto)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_struct *is, struct ippp_struct *master,
+					   int *proto)
+>>>>>>> refs/remotes/origin/master
 {
 	void *stat = NULL;
 	struct isdn_ppp_compressor *ipc = NULL;
@@ -3655,12 +4232,17 @@ static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_stru
 	unsigned char rsdata[IPPP_RESET_MAXDATABYTES];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!master) {
 		// per-link decompression 
 =======
 	if (!master) {
 		// per-link decompression
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!master) {
+		// per-link decompression
+>>>>>>> refs/remotes/origin/master
 		stat = is->link_decomp_stat;
 		ipc = is->link_decompressor;
 		ri = is;
@@ -3677,6 +4259,7 @@ static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_stru
 	}
 	BUG_ON(!stat); // if we have a compressor, stat has been set as well
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if((master && *proto == PPP_COMP) || (!master && *proto == PPP_COMPFRAG) ) {
 		// compressed packets are compressed by their protocol type
@@ -3701,6 +4284,8 @@ static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_stru
 				       rsparm.valid ? "with" : "without");
 				
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((master && *proto == PPP_COMP) || (!master && *proto == PPP_COMPFRAG)) {
 		// compressed packets are compressed by their protocol type
 
@@ -3723,7 +4308,10 @@ static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_stru
 				printk(KERN_INFO "ippp: decomp wants reset %s params\n",
 				       rsparm.valid ? "with" : "without");
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				isdn_ppp_ccp_reset_trans(ri, &rsparm);
 				break;
 			case DECOMP_FATALERROR:
@@ -3742,10 +4330,14 @@ static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_stru
 		}
 		return skb_out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else { 
 =======
 	} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+>>>>>>> refs/remotes/origin/master
 		// uncompressed packets are fed through the decompressor to
 		// update the decompressor state
 		ipc->incomp(stat, skb, *proto);
@@ -3755,15 +4347,20 @@ static struct sk_buff *isdn_ppp_decompress(struct sk_buff *skb, struct ippp_stru
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * compress a frame 
 =======
  * compress a frame
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * compress a frame
+>>>>>>> refs/remotes/origin/master
  *   type=0: normal/bundle compression
  *       =1: link compression
  * returns original skb if we haven't compressed the frame
  * and a new skb pointer if we've done it
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in,int *proto,
 	struct ippp_struct *is,struct ippp_struct *master,int type)
@@ -3785,6 +4382,8 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in,int *proto,
 	else {
 		if(!master) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in, int *proto,
 					 struct ippp_struct *is, struct ippp_struct *master, int type)
 {
@@ -3804,7 +4403,10 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in, int *proto,
 	}
 	else {
 		if (!master) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			compressor = is->compressor;
 			stat = is->comp_stat;
 		}
@@ -3816,23 +4418,30 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in, int *proto,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!compressor) {
 		printk(KERN_ERR "isdn_ppp: No compressor set!\n");
 		return skb_in;
 	}
 	if(!stat) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!compressor) {
 		printk(KERN_ERR "isdn_ppp: No compressor set!\n");
 		return skb_in;
 	}
 	if (!stat) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "isdn_ppp: Compressor not initialized?\n");
 		return skb_in;
 	}
 
 	/* Allow for at least 150 % expansion (for now) */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	skb_out = alloc_skb(skb_in->len + skb_in->len/2 + 32 +
 		skb_headroom(skb_in), GFP_ATOMIC);
@@ -3847,6 +4456,8 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in, int *proto,
 	}
 	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	skb_out = alloc_skb(skb_in->len + skb_in->len / 2 + 32 +
 			    skb_headroom(skb_in), GFP_ATOMIC);
 	if (!skb_out)
@@ -3859,7 +4470,10 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in, int *proto,
 		return skb_in;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_kfree_skb(skb_in);
 	*proto = new_proto;
 	return skb_out;
@@ -3867,23 +4481,30 @@ static struct sk_buff *isdn_ppp_compress(struct sk_buff *skb_in, int *proto,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * we received a CCP frame .. 
  * not a clean solution, but we MUST handle a few cases in the kernel
  */
 static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 	 struct sk_buff *skb,int proto)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * we received a CCP frame ..
  * not a clean solution, but we MUST handle a few cases in the kernel
  */
 static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 				 struct sk_buff *skb, int proto)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct ippp_struct *is;
 	struct ippp_struct *mis;
 	int len;
 	struct isdn_ppp_resetparams rsparm;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned char rsdata[IPPP_RESET_MAXDATABYTES];	
 
@@ -3905,6 +4526,8 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 			return;
 		}	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char rsdata[IPPP_RESET_MAXDATABYTES];
 
 	printk(KERN_DEBUG "Received CCP frame from peer slot(%d)\n",
@@ -3924,11 +4547,15 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 			       __func__, slot);
 			return;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mis = ippp_table[slot];
 	} else
 		mis = is;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch(skb->data[0]) {
 	case CCP_CONFREQ:
@@ -3954,6 +4581,8 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 			printk(KERN_DEBUG "Enable decompression here!\n");
 		if(proto == PPP_CCP) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (skb->data[0]) {
 	case CCP_CONFREQ:
 		if (is->debug & 0x10)
@@ -3977,7 +4606,10 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 		if (is->debug & 0x10)
 			printk(KERN_DEBUG "Enable decompression here!\n");
 		if (proto == PPP_CCP) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!mis->decompressor)
 				break;
 			mis->compflags |= SC_DECOMP_ON;
@@ -3994,18 +4626,24 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 		len -= 4;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(proto == PPP_CCP) {
 			/* If a reset Ack was outstanding for this id, then
 			   clean up the state engine */
 			isdn_ppp_ccp_reset_ack_rcvd(mis, skb->data[1]);
 			if(mis->decompressor && mis->decomp_stat)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (proto == PPP_CCP) {
 			/* If a reset Ack was outstanding for this id, then
 			   clean up the state engine */
 			isdn_ppp_ccp_reset_ack_rcvd(mis, skb->data[1]);
 			if (mis->decompressor && mis->decomp_stat)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				mis->decompressor->
 					reset(mis->decomp_stat,
 					      skb->data[0],
@@ -4018,10 +4656,14 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 		else {
 			isdn_ppp_ccp_reset_ack_rcvd(is, skb->data[1]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(is->link_decompressor && is->link_decomp_stat)
 =======
 			if (is->link_decompressor && is->link_decomp_stat)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (is->link_decompressor && is->link_decomp_stat)
+>>>>>>> refs/remotes/origin/master
 				is->link_decompressor->
 					reset(is->link_decomp_stat,
 					      skb->data[0],
@@ -4040,6 +4682,7 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 		memset(&rsparm, 0, sizeof(rsparm));
 		rsparm.data = rsdata;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rsparm.maxdlen = IPPP_RESET_MAXDATABYTES; 
 		/* Isolate data length */
 		len = (skb->data[2] << 8) | skb->data[3];
@@ -4047,13 +4690,18 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 		if(proto == PPP_CCP) {
 			if(mis->compressor && mis->comp_stat)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		rsparm.maxdlen = IPPP_RESET_MAXDATABYTES;
 		/* Isolate data length */
 		len = (skb->data[2] << 8) | skb->data[3];
 		len -= 4;
 		if (proto == PPP_CCP) {
 			if (mis->compressor && mis->comp_stat)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				mis->compressor->
 					reset(mis->comp_stat,
 					      skb->data[0],
@@ -4063,10 +4711,14 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 		}
 		else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(is->link_compressor && is->link_comp_stat)
 =======
 			if (is->link_compressor && is->link_comp_stat)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (is->link_compressor && is->link_comp_stat)
+>>>>>>> refs/remotes/origin/master
 				is->link_compressor->
 					reset(is->link_comp_stat,
 					      skb->data[0],
@@ -4076,6 +4728,7 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 		}
 		/* Ack the Req as specified by rsparm */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if(rsparm.valid) {
 			/* Compressor reset handler decided how to answer */
 			if(rsparm.rsend) {
@@ -4084,6 +4737,11 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 			/* Compressor reset handler decided how to answer */
 			if (rsparm.rsend) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (rsparm.valid) {
+			/* Compressor reset handler decided how to answer */
+			if (rsparm.rsend) {
+>>>>>>> refs/remotes/origin/master
 				/* We should send a Frame */
 				isdn_ppp_ccp_xmit_reset(is, proto, CCP_RESETACK,
 							rsparm.idval ? rsparm.id
@@ -4136,6 +4794,7 @@ static void isdn_ppp_receive_ccp(isdn_net_dev *net_dev, isdn_net_local *lp,
 static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct sk_buff *skb)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ippp_struct *mis,*is;
 	int proto, slot = lp->ppp_slot;
 	unsigned char *data;
@@ -4163,6 +4822,8 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 	printk(KERN_DEBUG "Received CCP frame from daemon:\n");
 	isdn_ppp_frame_log("ccp-xmit", skb->data, skb->len, 32, is->unit,lp->ppp_slot);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ippp_struct *mis, *is;
 	int proto, slot = lp->ppp_slot;
 	unsigned char *data;
@@ -4189,12 +4850,16 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 
 	printk(KERN_DEBUG "Received CCP frame from daemon:\n");
 	isdn_ppp_frame_log("ccp-xmit", skb->data, skb->len, 32, is->unit, lp->ppp_slot);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (lp->master) {
 		slot = ISDN_MASTER_PRIV(lp)->ppp_slot;
 		if (slot < 0 || slot >= ISDN_MAX_CHANNELS) {
 			printk(KERN_ERR "%s: slot(%d) out of range\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 				__func__, slot);
 			return;
@@ -4204,11 +4869,17 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 			return;
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       __func__, slot);
+			return;
+		}
+>>>>>>> refs/remotes/origin/master
 		mis = ippp_table[slot];
 	} else
 		mis = is;
 	if (mis != is)
 		printk(KERN_DEBUG "isdn_ppp: Ouch! Master CCP sends on slave slot!\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 	
         switch(data[2]) {
@@ -4217,19 +4888,25 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 			printk(KERN_DEBUG "Disable decompression here!\n");
 		if(proto == PPP_CCP)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (data[2]) {
 	case CCP_CONFREQ:
 		if (is->debug & 0x10)
 			printk(KERN_DEBUG "Disable decompression here!\n");
 		if (proto == PPP_CCP)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			is->compflags &= ~SC_DECOMP_ON;
 		else
 			is->compflags &= ~SC_LINK_DECOMP_ON;
 		break;
 	case CCP_TERMREQ:
 	case CCP_TERMACK:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if(is->debug & 0x10)
 			printk(KERN_DEBUG "Disable (de)compression here!\n");
@@ -4244,6 +4921,8 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 			printk(KERN_DEBUG "Enable compression here!\n");
 		if(proto == PPP_CCP) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (is->debug & 0x10)
 			printk(KERN_DEBUG "Disable (de)compression here!\n");
 		if (proto == PPP_CCP)
@@ -4256,7 +4935,10 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 		if (is->debug & 0x10)
 			printk(KERN_DEBUG "Enable compression here!\n");
 		if (proto == PPP_CCP) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!is->compressor)
 				break;
 			is->compflags |= SC_COMP_ON;
@@ -4268,6 +4950,7 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 		break;
 	case CCP_RESETACK:
 		/* If we send a ACK we should reset our compressor */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if(is->debug & 0x10)
 			printk(KERN_DEBUG "Reset decompression state here!\n");
@@ -4285,6 +4968,8 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 							   0, 0, NULL, 0, NULL);
 			is->compflags &= ~SC_LINK_COMP_DISCARD;	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (is->debug & 0x10)
 			printk(KERN_DEBUG "Reset decompression state here!\n");
 		printk(KERN_DEBUG "ResetAck from daemon passed by\n");
@@ -4300,7 +4985,10 @@ static void isdn_ppp_send_ccp(isdn_net_dev *net_dev, isdn_net_local *lp, struct 
 				is->link_compressor->reset(is->link_comp_stat,
 							   0, 0, NULL, 0, NULL);
 			is->compflags &= ~SC_LINK_COMP_DISCARD;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case CCP_RESETREQ:
@@ -4315,10 +5003,14 @@ int isdn_ppp_register_compressor(struct isdn_ppp_compressor *ipc)
 	ipc->next = ipc_head;
 	ipc->prev = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(ipc_head) {
 =======
 	if (ipc_head) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ipc_head) {
+>>>>>>> refs/remotes/origin/master
 		ipc_head->prev = ipc;
 	}
 	ipc_head = ipc;
@@ -4328,18 +5020,24 @@ int isdn_ppp_register_compressor(struct isdn_ppp_compressor *ipc)
 int isdn_ppp_unregister_compressor(struct isdn_ppp_compressor *ipc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(ipc->prev)
 		ipc->prev->next = ipc->next;
 	else
 		ipc_head = ipc->next;
 	if(ipc->next)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ipc->prev)
 		ipc->prev->next = ipc->next;
 	else
 		ipc_head = ipc->next;
 	if (ipc->next)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ipc->next->prev = ipc->prev;
 	ipc->prev = ipc->next = NULL;
 	return 0;
@@ -4353,6 +5051,7 @@ static int isdn_ppp_set_compressor(struct ippp_struct *is, struct isdn_ppp_comp_
 	int num = data->num;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(is->debug & 0x10)
 		printk(KERN_DEBUG "[%d] Set %s type %d\n",is->unit,
 			(data->flags&IPPP_COMP_FLAG_XMIT)?"compressor":"decompressor",num);
@@ -4361,21 +5060,31 @@ static int isdn_ppp_set_compressor(struct ippp_struct *is, struct isdn_ppp_comp_
 		printk(KERN_DEBUG "[%d] Set %s type %d\n", is->unit,
 		       (data->flags & IPPP_COMP_FLAG_XMIT) ? "compressor" : "decompressor", num);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (is->debug & 0x10)
+		printk(KERN_DEBUG "[%d] Set %s type %d\n", is->unit,
+		       (data->flags & IPPP_COMP_FLAG_XMIT) ? "compressor" : "decompressor", num);
+>>>>>>> refs/remotes/origin/master
 
 	/* If is has no valid reset state vector, we cannot allocate a
 	   decompressor. The decompressor would cause reset transactions
 	   sooner or later, and they need that vector. */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if(!(data->flags & IPPP_COMP_FLAG_XMIT) && !is->reset) {
 =======
 	if (!(data->flags & IPPP_COMP_FLAG_XMIT) && !is->reset) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!(data->flags & IPPP_COMP_FLAG_XMIT) && !is->reset) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "ippp_ccp: no reset data structure - can't"
 		       " allow decompression.\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	while(ipc) {
 		if(ipc->num == num) {
@@ -4384,13 +5093,18 @@ static int isdn_ppp_set_compressor(struct ippp_struct *is, struct isdn_ppp_comp_
 				ret = ipc->init(stat,data,is->unit,0);
 				if(!ret) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	while (ipc) {
 		if (ipc->num == num) {
 			stat = ipc->alloc(data);
 			if (stat) {
 				ret = ipc->init(stat, data, is->unit, 0);
 				if (!ret) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					printk(KERN_ERR "Can't init (de)compression!\n");
 					ipc->free(stat);
 					stat = NULL;
@@ -4402,6 +5116,7 @@ static int isdn_ppp_set_compressor(struct ippp_struct *is, struct isdn_ppp_comp_
 				break;
 			}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                         if(data->flags & IPPP_COMP_FLAG_XMIT) {
 				if(data->flags & IPPP_COMP_FLAG_LINK) {
@@ -4430,6 +5145,8 @@ static int isdn_ppp_set_compressor(struct ippp_struct *is, struct isdn_ppp_comp_
 					is->decomp_stat = stat;
         	                        is->decompressor = ipc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (data->flags & IPPP_COMP_FLAG_XMIT) {
 				if (data->flags & IPPP_COMP_FLAG_LINK) {
 					if (is->link_comp_stat)
@@ -4456,7 +5173,10 @@ static int isdn_ppp_set_compressor(struct ippp_struct *is, struct isdn_ppp_comp_
 						is->decompressor->free(is->decomp_stat);
 					is->decomp_stat = stat;
 					is->decompressor = ipc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 			}
 			return 0;

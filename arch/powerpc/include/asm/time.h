@@ -19,6 +19,7 @@
 
 #include <asm/processor.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 #include <asm/paca.h>
 #include <asm/firmware.h>
@@ -26,11 +27,17 @@
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* time.c */
 extern unsigned long tb_ticks_per_jiffy;
 extern unsigned long tb_ticks_per_usec;
 extern unsigned long tb_ticks_per_sec;
+<<<<<<< HEAD
+=======
+extern struct clock_event_device decrementer_clockevent;
+>>>>>>> refs/remotes/origin/master
 
 struct rtc_time;
 extern void to_tm(int tim, struct rtc_time * tm);
@@ -171,6 +178,7 @@ static inline void set_dec(int val)
 	--val;
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 	if (firmware_has_feature(FW_FEATURE_ISERIES) &&
 			get_lppaca()->shared_proc) {
@@ -182,6 +190,8 @@ static inline void set_dec(int val)
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mtspr(SPRN_DEC, val);
 #endif /* not 40x or 8xx_CPU6 */
 }
@@ -216,6 +226,7 @@ struct cpu_usage {
 
 DECLARE_PER_CPU(struct cpu_usage, cpu_usage_array);
 
+<<<<<<< HEAD
 #if defined(CONFIG_VIRT_CPU_ACCOUNTING)
 #define account_process_vtime(tsk)		account_process_tick(tsk, 0)
 #else
@@ -231,6 +242,11 @@ DECLARE_PER_CPU(u64, decrementers_next_tb);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 extern void decrementer_check_overflow(void);
+=======
+extern void secondary_cpu_time_init(void);
+
+DECLARE_PER_CPU(u64, decrementers_next_tb);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __KERNEL__ */
 #endif /* __POWERPC_TIME_H */

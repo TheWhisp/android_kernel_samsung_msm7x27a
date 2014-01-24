@@ -24,17 +24,27 @@
  * This file may also be available under a different license from Cavium.
  * Contact Cavium Networks for more information
 **********************************************************************/
+<<<<<<< HEAD
 #include <linux/kernel.h>
 #include <linux/init.h>
+=======
+#include <linux/platform_device.h>
+#include <linux/kernel.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/phy.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+#include <linux/of_net.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <net/dst.h>
 
@@ -49,6 +59,7 @@
 #include "ethernet-util.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "cvmx-pip.h"
 #include "cvmx-pko.h"
 #include "cvmx-fau.h"
@@ -58,6 +69,8 @@
 #include "cvmx-gmxx-defs.h"
 #include "cvmx-smix-defs.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/octeon/cvmx-pip.h>
 #include <asm/octeon/cvmx-pko.h>
 #include <asm/octeon/cvmx-fau.h>
@@ -66,7 +79,10 @@
 
 #include <asm/octeon/cvmx-gmxx-defs.h>
 #include <asm/octeon/cvmx-smix-defs.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_CAVIUM_OCTEON_NUM_PACKET_BUFFERS) \
 	&& CONFIG_CAVIUM_OCTEON_NUM_PACKET_BUFFERS
@@ -84,7 +100,11 @@ int pow_receive_group = 15;
 module_param(pow_receive_group, int, 0444);
 MODULE_PARM_DESC(pow_receive_group, "\n"
 	"\tPOW group to receive packets from. All ethernet hardware\n"
+<<<<<<< HEAD
 	"\twill be configured to send incomming packets to this POW\n"
+=======
+	"\twill be configured to send incoming packets to this POW\n"
+>>>>>>> refs/remotes/origin/master
 	"\tgroup. Also any other software can submit packets to this\n"
 	"\tgroup for the kernel to process.");
 
@@ -127,6 +147,7 @@ int rx_napi_weight = 32;
 module_param(rx_napi_weight, int, 0444);
 MODULE_PARM_DESC(rx_napi_weight, "The NAPI WEIGHT parameter.");
 
+<<<<<<< HEAD
 /*
  * The offset from mac_addr_base that should be used for the next port
  * that is configured.  By convention, if any mgmt ports exist on the
@@ -136,6 +157,8 @@ MODULE_PARM_DESC(rx_napi_weight, "The NAPI WEIGHT parameter.");
  */
 static unsigned int cvm_oct_mac_addr_offset;
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * cvm_oct_poll_queue - Workqueue for polling operations.
  */
@@ -184,6 +207,7 @@ static void cvm_oct_periodic_worker(struct work_struct *work)
 	if (priv->poll)
 		priv->poll(cvm_oct_device[priv->port]);
 
+<<<<<<< HEAD
 	cvm_oct_device[priv->port]->netdev_ops->ndo_get_stats(cvm_oct_device[priv->port]);
 
 	if (!atomic_read(&cvm_oct_poll_queue_stopping))
@@ -191,6 +215,17 @@ static void cvm_oct_periodic_worker(struct work_struct *work)
  }
 
 static __init void cvm_oct_configure_common_hw(void)
+=======
+	cvm_oct_device[priv->port]->netdev_ops->ndo_get_stats(
+						cvm_oct_device[priv->port]);
+
+	if (!atomic_read(&cvm_oct_poll_queue_stopping))
+		queue_delayed_work(cvm_oct_poll_queue,
+						&priv->port_periodic_work, HZ);
+}
+
+static void cvm_oct_configure_common_hw(void)
+>>>>>>> refs/remotes/origin/master
 {
 	/* Setup the FPA */
 	cvmx_fpa_enable();
@@ -371,7 +406,11 @@ static void cvm_oct_common_set_multicast_list(struct net_device *dev)
 			/* Force accept multicast packets */
 			control.s.mcst = 2;
 		else
+<<<<<<< HEAD
 			/* Force reject multicat packets */
+=======
+			/* Force reject multicast packets */
+>>>>>>> refs/remotes/origin/master
 			control.s.mcst = 1;
 
 		if (dev->flags & IFF_PROMISC)
@@ -410,23 +449,37 @@ static void cvm_oct_common_set_multicast_list(struct net_device *dev)
 
  * Returns Zero on success
  */
+<<<<<<< HEAD
 static int cvm_oct_common_set_mac_address(struct net_device *dev, void *addr)
+=======
+static int cvm_oct_set_mac_filter(struct net_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct octeon_ethernet *priv = netdev_priv(dev);
 	union cvmx_gmxx_prtx_cfg gmx_cfg;
 	int interface = INTERFACE(priv->port);
 	int index = INDEX(priv->port);
 
+<<<<<<< HEAD
 	memcpy(dev->dev_addr, addr + 2, 6);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((interface < 2)
 	    && (cvmx_helper_interface_get_mode(interface) !=
 		CVMX_HELPER_INTERFACE_MODE_SPI)) {
 		int i;
+<<<<<<< HEAD
 		uint8_t *ptr = addr;
 		uint64_t mac = 0;
 		for (i = 0; i < 6; i++)
 			mac = (mac << 8) | (uint64_t) (ptr[i + 2]);
+=======
+		uint8_t *ptr = dev->dev_addr;
+		uint64_t mac = 0;
+		for (i = 0; i < 6; i++)
+			mac = (mac << 8) | (uint64_t)ptr[i];
+>>>>>>> refs/remotes/origin/master
 
 		gmx_cfg.u64 =
 		    cvmx_read_csr(CVMX_GMXX_PRTX_CFG(index, interface));
@@ -435,6 +488,7 @@ static int cvm_oct_common_set_mac_address(struct net_device *dev, void *addr)
 
 		cvmx_write_csr(CVMX_GMXX_SMACX(index, interface), mac);
 		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM0(index, interface),
+<<<<<<< HEAD
 			       ptr[2]);
 		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM1(index, interface),
 			       ptr[3]);
@@ -446,6 +500,19 @@ static int cvm_oct_common_set_mac_address(struct net_device *dev, void *addr)
 			       ptr[6]);
 		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM5(index, interface),
 			       ptr[7]);
+=======
+			       ptr[0]);
+		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM1(index, interface),
+			       ptr[1]);
+		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM2(index, interface),
+			       ptr[2]);
+		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM3(index, interface),
+			       ptr[3]);
+		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM4(index, interface),
+			       ptr[4]);
+		cvmx_write_csr(CVMX_GMXX_RXX_ADR_CAM5(index, interface),
+			       ptr[5]);
+>>>>>>> refs/remotes/origin/master
 		cvm_oct_common_set_multicast_list(dev);
 		cvmx_write_csr(CVMX_GMXX_PRTX_CFG(index, interface),
 			       gmx_cfg.u64);
@@ -453,6 +520,18 @@ static int cvm_oct_common_set_mac_address(struct net_device *dev, void *addr)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static int cvm_oct_common_set_mac_address(struct net_device *dev, void *addr)
+{
+	int r = eth_mac_addr(dev, addr);
+
+	if (r)
+		return r;
+	return cvm_oct_set_mac_filter(dev);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * cvm_oct_common_init - per network device initialization
  * @dev:    Device to initialize
@@ -462,6 +541,7 @@ static int cvm_oct_common_set_mac_address(struct net_device *dev, void *addr)
 int cvm_oct_common_init(struct net_device *dev)
 {
 	struct octeon_ethernet *priv = netdev_priv(dev);
+<<<<<<< HEAD
 	struct sockaddr sa;
 	u64 mac = ((u64)(octeon_bootinfo->mac_addr_base[0] & 0xff) << 40) |
 		((u64)(octeon_bootinfo->mac_addr_base[1] & 0xff) << 32) |
@@ -482,6 +562,17 @@ int cvm_oct_common_init(struct net_device *dev)
 		printk(KERN_DEBUG "%s: Using MAC outside of the assigned range:"
 			" %pM\n", dev->name, sa.sa_data);
 	cvm_oct_mac_addr_offset++;
+=======
+	const u8 *mac = NULL;
+
+	if (priv->of_node)
+		mac = of_get_mac_address(priv->of_node);
+
+	if (mac)
+		memcpy(dev->dev_addr, mac, ETH_ALEN);
+	else
+		eth_hw_addr_random(dev);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Force the interface to use the POW send if always_use_pow
@@ -502,7 +593,11 @@ int cvm_oct_common_init(struct net_device *dev)
 	SET_ETHTOOL_OPS(dev, &cvm_oct_ethtool_ops);
 
 	cvm_oct_phy_setup_device(dev);
+<<<<<<< HEAD
 	dev->netdev_ops->ndo_set_mac_address(dev, &sa);
+=======
+	cvm_oct_set_mac_filter(dev);
+>>>>>>> refs/remotes/origin/master
 	dev->netdev_ops->ndo_change_mtu(dev, dev->mtu);
 
 	/*
@@ -528,10 +623,14 @@ static const struct net_device_ops cvm_oct_npi_netdev_ops = {
 	.ndo_uninit		= cvm_oct_common_uninit,
 	.ndo_start_xmit		= cvm_oct_xmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= cvm_oct_common_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= cvm_oct_common_set_mac_address,
 	.ndo_do_ioctl		= cvm_oct_ioctl,
 	.ndo_change_mtu		= cvm_oct_common_change_mtu,
@@ -547,10 +646,14 @@ static const struct net_device_ops cvm_oct_xaui_netdev_ops = {
 	.ndo_stop		= cvm_oct_xaui_stop,
 	.ndo_start_xmit		= cvm_oct_xmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= cvm_oct_common_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= cvm_oct_common_set_mac_address,
 	.ndo_do_ioctl		= cvm_oct_ioctl,
 	.ndo_change_mtu		= cvm_oct_common_change_mtu,
@@ -566,10 +669,14 @@ static const struct net_device_ops cvm_oct_sgmii_netdev_ops = {
 	.ndo_stop		= cvm_oct_sgmii_stop,
 	.ndo_start_xmit		= cvm_oct_xmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= cvm_oct_common_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= cvm_oct_common_set_mac_address,
 	.ndo_do_ioctl		= cvm_oct_ioctl,
 	.ndo_change_mtu		= cvm_oct_common_change_mtu,
@@ -583,10 +690,14 @@ static const struct net_device_ops cvm_oct_spi_netdev_ops = {
 	.ndo_uninit		= cvm_oct_spi_uninit,
 	.ndo_start_xmit		= cvm_oct_xmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= cvm_oct_common_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= cvm_oct_common_set_mac_address,
 	.ndo_do_ioctl		= cvm_oct_ioctl,
 	.ndo_change_mtu		= cvm_oct_common_change_mtu,
@@ -602,10 +713,14 @@ static const struct net_device_ops cvm_oct_rgmii_netdev_ops = {
 	.ndo_stop		= cvm_oct_rgmii_stop,
 	.ndo_start_xmit		= cvm_oct_xmit,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= cvm_oct_common_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= cvm_oct_common_set_mac_address,
 	.ndo_do_ioctl		= cvm_oct_ioctl,
 	.ndo_change_mtu		= cvm_oct_common_change_mtu,
@@ -618,10 +733,14 @@ static const struct net_device_ops cvm_oct_pow_netdev_ops = {
 	.ndo_init		= cvm_oct_common_init,
 	.ndo_start_xmit		= cvm_oct_xmit_pow,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= cvm_oct_common_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= cvm_oct_common_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= cvm_oct_common_set_mac_address,
 	.ndo_do_ioctl		= cvm_oct_ioctl,
 	.ndo_change_mtu		= cvm_oct_common_change_mtu,
@@ -633,22 +752,71 @@ static const struct net_device_ops cvm_oct_pow_netdev_ops = {
 
 extern void octeon_mdiobus_force_mod_depencency(void);
 
+<<<<<<< HEAD
 static int __init cvm_oct_init_module(void)
+=======
+static struct device_node *cvm_oct_of_get_child(
+				const struct device_node *parent, int reg_val)
+{
+	struct device_node *node = NULL;
+	int size;
+	const __be32 *addr;
+
+	for (;;) {
+		node = of_get_next_child(parent, node);
+		if (!node)
+			break;
+		addr = of_get_property(node, "reg", &size);
+		if (addr && (be32_to_cpu(*addr) == reg_val))
+			break;
+	}
+	return node;
+}
+
+static struct device_node *cvm_oct_node_for_port(struct device_node *pip,
+							int interface, int port)
+{
+	struct device_node *ni, *np;
+
+	ni = cvm_oct_of_get_child(pip, interface);
+	if (!ni)
+		return NULL;
+
+	np = cvm_oct_of_get_child(ni, port);
+	of_node_put(ni);
+
+	return np;
+}
+
+static int cvm_oct_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int num_interfaces;
 	int interface;
 	int fau = FAU_NUM_PACKET_BUFFERS_TO_FREE;
 	int qos;
+<<<<<<< HEAD
+=======
+	struct device_node *pip;
+>>>>>>> refs/remotes/origin/master
 
 	octeon_mdiobus_force_mod_depencency();
 	pr_notice("cavium-ethernet %s\n", OCTEON_ETHERNET_VERSION);
 
+<<<<<<< HEAD
 	if (OCTEON_IS_MODEL(OCTEON_CN52XX))
 		cvm_oct_mac_addr_offset = 2; /* First two are the mgmt ports. */
 	else if (OCTEON_IS_MODEL(OCTEON_CN56XX))
 		cvm_oct_mac_addr_offset = 1; /* First one is the mgmt port. */
 	else
 		cvm_oct_mac_addr_offset = 0;
+=======
+	pip = pdev->dev.of_node;
+	if (!pip) {
+		pr_err("Error: No 'pip' in /aliases\n");
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	cvm_oct_poll_queue = create_singlethread_workqueue("octeon-ethernet");
 	if (cvm_oct_poll_queue == NULL) {
@@ -727,10 +895,19 @@ static int __init cvm_oct_init_module(void)
 		    cvmx_helper_interface_get_mode(interface);
 		int num_ports = cvmx_helper_ports_on_interface(interface);
 		int port;
+<<<<<<< HEAD
 
 		for (port = cvmx_helper_get_ipd_port(interface, 0);
 		     port < cvmx_helper_get_ipd_port(interface, num_ports);
 		     port++) {
+=======
+		int port_index;
+
+		for (port_index = 0,
+		     port = cvmx_helper_get_ipd_port(interface, 0);
+		     port < cvmx_helper_get_ipd_port(interface, num_ports);
+		     port_index++, port++) {
+>>>>>>> refs/remotes/origin/master
 			struct octeon_ethernet *priv;
 			struct net_device *dev =
 			    alloc_etherdev(sizeof(struct octeon_ethernet));
@@ -741,6 +918,11 @@ static int __init cvm_oct_init_module(void)
 
 			/* Initialize the device private structure. */
 			priv = netdev_priv(dev);
+<<<<<<< HEAD
+=======
+			priv->of_node = cvm_oct_node_for_port(pip, interface,
+								port_index);
+>>>>>>> refs/remotes/origin/master
 
 			INIT_DELAYED_WORK(&priv->port_periodic_work,
 					  cvm_oct_periodic_worker);
@@ -807,7 +989,11 @@ static int __init cvm_oct_init_module(void)
 				    cvmx_pko_get_num_queues(priv->port) *
 				    sizeof(uint32_t);
 				queue_delayed_work(cvm_oct_poll_queue,
+<<<<<<< HEAD
 						   &priv->port_periodic_work, HZ);
+=======
+						&priv->port_periodic_work, HZ);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -825,7 +1011,11 @@ static int __init cvm_oct_init_module(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __exit cvm_oct_cleanup_module(void)
+=======
+static int cvm_oct_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int port;
 
@@ -873,6 +1063,7 @@ static void __exit cvm_oct_cleanup_module(void)
 	if (CVMX_FPA_OUTPUT_BUFFER_POOL != CVMX_FPA_PACKET_POOL)
 		cvm_oct_mem_empty_fpa(CVMX_FPA_OUTPUT_BUFFER_POOL,
 				      CVMX_FPA_OUTPUT_BUFFER_POOL_SIZE, 128);
+<<<<<<< HEAD
 }
 
 MODULE_LICENSE("GPL");
@@ -880,3 +1071,31 @@ MODULE_AUTHOR("Cavium Networks <support@caviumnetworks.com>");
 MODULE_DESCRIPTION("Cavium Networks Octeon ethernet driver.");
 module_init(cvm_oct_init_module);
 module_exit(cvm_oct_cleanup_module);
+=======
+	return 0;
+}
+
+static struct of_device_id cvm_oct_match[] = {
+	{
+		.compatible = "cavium,octeon-3860-pip",
+	},
+	{},
+};
+MODULE_DEVICE_TABLE(of, cvm_oct_match);
+
+static struct platform_driver cvm_oct_driver = {
+	.probe		= cvm_oct_probe,
+	.remove		= cvm_oct_remove,
+	.driver		= {
+		.owner	= THIS_MODULE,
+		.name	= KBUILD_MODNAME,
+		.of_match_table = cvm_oct_match,
+	},
+};
+
+module_platform_driver(cvm_oct_driver);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Cavium Networks <support@caviumnetworks.com>");
+MODULE_DESCRIPTION("Cavium Networks Octeon ethernet driver.");
+>>>>>>> refs/remotes/origin/master

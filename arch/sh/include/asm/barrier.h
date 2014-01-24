@@ -26,6 +26,7 @@
 #if defined(CONFIG_CPU_SH4A) || defined(CONFIG_CPU_SH5)
 #define mb()		__asm__ __volatile__ ("synco": : :"memory")
 #define rmb()		mb()
+<<<<<<< HEAD
 #define wmb()		__asm__ __volatile__ ("synco": : :"memory")
 #define ctrl_barrier()	__icbi(PAGE_OFFSET)
 #define read_barrier_depends()	do { } while(0)
@@ -47,8 +48,19 @@
 #define smp_rmb()	barrier()
 #define smp_wmb()	barrier()
 #define smp_read_barrier_depends()	do { } while(0)
+=======
+#define wmb()		mb()
+#define ctrl_barrier()	__icbi(PAGE_OFFSET)
+#else
+#define ctrl_barrier()	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop")
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define set_mb(var, value) do { (void)xchg(&var, value); } while (0)
 
+<<<<<<< HEAD
+=======
+#include <asm-generic/barrier.h>
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_SH_BARRIER_H */

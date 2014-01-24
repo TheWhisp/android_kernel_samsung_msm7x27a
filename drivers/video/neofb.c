@@ -72,9 +72,12 @@
 #include <asm/irq.h>
 #include <asm/pgtable.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MTRR
 #include <asm/mtrr.h>
@@ -88,19 +91,26 @@
 /* --------------------------------------------------------------------- */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int internal;
 static int external;
 static int libretto;
 static int nostretch;
 static int nopciburst;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool internal;
 static bool external;
 static bool libretto;
 static bool nostretch;
 static bool nopciburst;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static char *mode_option __devinitdata = NULL;
+=======
+static char *mode_option = NULL;
+>>>>>>> refs/remotes/origin/master
 
 #ifdef MODULE
 
@@ -1197,12 +1207,17 @@ static int neofb_pan_display(struct fb_var_screeninfo *var,
 	DBG("neofb_update_start");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Base = (var->yoffset * var->xres_virtual + var->xoffset) >> 2;
 	Base *= (var->bits_per_pixel + 7) / 8;
 =======
 	Base = (var->yoffset * info->var.xres_virtual + var->xoffset) >> 2;
 	Base *= (info->var.bits_per_pixel + 7) / 8;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	Base = (var->yoffset * info->var.xres_virtual + var->xoffset) >> 2;
+	Base *= (info->var.bits_per_pixel + 7) / 8;
+>>>>>>> refs/remotes/origin/master
 
 	neoUnlock();
 
@@ -1649,7 +1664,11 @@ static struct fb_ops neofb_ops = {
 
 /* --------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static struct fb_videomode __devinitdata mode800x480 = {
+=======
+static struct fb_videomode mode800x480 = {
+>>>>>>> refs/remotes/origin/master
 	.xres           = 800,
 	.yres           = 480,
 	.pixclock       = 25000,
@@ -1663,8 +1682,12 @@ static struct fb_videomode __devinitdata mode800x480 = {
 	.vmode          = FB_VMODE_NONINTERLACED
 };
 
+<<<<<<< HEAD
 static int __devinit neo_map_mmio(struct fb_info *info,
 				  struct pci_dev *dev)
+=======
+static int neo_map_mmio(struct fb_info *info, struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct neofb_par *par = info->par;
 
@@ -1724,8 +1747,13 @@ static void neo_unmap_mmio(struct fb_info *info)
 			   info->fix.mmio_len);
 }
 
+<<<<<<< HEAD
 static int __devinit neo_map_video(struct fb_info *info,
 				   struct pci_dev *dev, int video_len)
+=======
+static int neo_map_video(struct fb_info *info, struct pci_dev *dev,
+			 int video_len)
+>>>>>>> refs/remotes/origin/master
 {
 	//unsigned long addr;
 
@@ -1789,7 +1817,11 @@ static void neo_unmap_video(struct fb_info *info)
 			   info->fix.smem_len);
 }
 
+<<<<<<< HEAD
 static int __devinit neo_scan_monitor(struct fb_info *info)
+=======
+static int neo_scan_monitor(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct neofb_par *par = info->par;
 	unsigned char type, display;
@@ -1868,7 +1900,11 @@ static int __devinit neo_scan_monitor(struct fb_info *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit neo_init_hw(struct fb_info *info)
+=======
+static int neo_init_hw(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct neofb_par *par = info->par;
 	int videoRam = 896;
@@ -1956,8 +1992,13 @@ static int __devinit neo_init_hw(struct fb_info *info)
 }
 
 
+<<<<<<< HEAD
 static struct fb_info *__devinit neo_alloc_fb_info(struct pci_dev *dev, const struct
 						   pci_device_id *id)
+=======
+static struct fb_info *neo_alloc_fb_info(struct pci_dev *dev,
+					 const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct neofb_par *par;
@@ -2055,8 +2096,12 @@ static void neo_free_fb_info(struct fb_info *info)
 
 /* --------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int __devinit neofb_probe(struct pci_dev *dev,
 				 const struct pci_device_id *id)
+=======
+static int neofb_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	u_int h_sync, v_sync;
@@ -2094,6 +2139,10 @@ static int __devinit neofb_probe(struct pci_dev *dev,
 	if (!fb_find_mode(&info->var, info, mode_option, NULL, 0,
 			info->monspecs.modedb, 16)) {
 		printk(KERN_ERR "neofb: Unable to find usable video mode.\n");
+<<<<<<< HEAD
+=======
+		err = -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		goto err_map_video;
 	}
 
@@ -2116,15 +2165,24 @@ static int __devinit neofb_probe(struct pci_dev *dev,
 	       info->fix.smem_len >> 10, info->var.xres,
 	       info->var.yres, h_sync / 1000, h_sync % 1000, v_sync);
 
+<<<<<<< HEAD
 	if (fb_alloc_cmap(&info->cmap, 256, 0) < 0)
+=======
+	err = fb_alloc_cmap(&info->cmap, 256, 0);
+	if (err < 0)
+>>>>>>> refs/remotes/origin/master
 		goto err_map_video;
 
 	err = register_framebuffer(info);
 	if (err < 0)
 		goto err_reg_fb;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "fb%d: %s frame buffer device\n",
 	       info->node, info->fix.id);
+=======
+	fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Our driver data
@@ -2145,7 +2203,11 @@ err_map_mmio:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit neofb_remove(struct pci_dev *dev)
+=======
+static void neofb_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(dev);
 
@@ -2165,12 +2227,15 @@ static void __devexit neofb_remove(struct pci_dev *dev)
 		fb_destroy_modedb(info->monspecs.modedb);
 		neo_unmap_mmio(info);
 		neo_free_fb_info(info);
+<<<<<<< HEAD
 
 		/*
 		 * Ensure that the driver data is no longer
 		 * valid.
 		 */
 		pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -2211,7 +2276,11 @@ static struct pci_driver neofb_driver = {
 	.name =		"neofb",
 	.id_table =	neofb_devices,
 	.probe =	neofb_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(neofb_remove)
+=======
+	.remove =	neofb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ************************* init in-kernel code ************************** */

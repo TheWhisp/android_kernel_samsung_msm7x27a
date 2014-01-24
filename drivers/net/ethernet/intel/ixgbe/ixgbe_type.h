@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel 10 Gigabit PCI Express Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -32,9 +36,12 @@
 #include <linux/mdio.h>
 #include <linux/netdevice.h>
 
+<<<<<<< HEAD
 /* Vendor ID */
 #define IXGBE_INTEL_VENDOR_ID   0x8086
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Device IDs */
 #define IXGBE_DEV_ID_82598               0x10B6
 #define IXGBE_DEV_ID_82598_BX            0x1508
@@ -57,16 +64,32 @@
 #define IXGBE_DEV_ID_82599_BACKPLANE_FCOE       0x152a
 #define IXGBE_DEV_ID_82599_SFP_FCOE      0x1529
 #define IXGBE_SUBDEV_ID_82599_SFP        0x11A9
+<<<<<<< HEAD
 #define IXGBE_SUBDEV_ID_82599_560FLR     0x17D0
 #define IXGBE_DEV_ID_82599_SFP_EM        0x1507
 #define IXGBE_DEV_ID_82599_SFP_SF2       0x154D
 #define IXGBE_DEV_ID_82599EN_SFP         0x1557
+=======
+#define IXGBE_SUBDEV_ID_82599_RNDC       0x1F72
+#define IXGBE_SUBDEV_ID_82599_560FLR     0x17D0
+#define IXGBE_SUBDEV_ID_82599_SP_560FLR  0x211B
+#define IXGBE_SUBDEV_ID_82599_ECNA_DP    0x0470
+#define IXGBE_SUBDEV_ID_82599_LOM_SFP    0x8976
+#define IXGBE_DEV_ID_82599_SFP_EM        0x1507
+#define IXGBE_DEV_ID_82599_SFP_SF2       0x154D
+#define IXGBE_DEV_ID_82599EN_SFP         0x1557
+#define IXGBE_SUBDEV_ID_82599EN_SFP_OCP1 0x0001
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_DEV_ID_82599_XAUI_LOM      0x10FC
 #define IXGBE_DEV_ID_82599_COMBO_BACKPLANE 0x10F8
 #define IXGBE_SUBDEV_ID_82599_KX4_KR_MEZZ  0x000C
 #define IXGBE_DEV_ID_82599_LS            0x154F
 #define IXGBE_DEV_ID_X540T               0x1528
 #define IXGBE_DEV_ID_82599_SFP_SF_QP     0x154A
+<<<<<<< HEAD
+=======
+#define IXGBE_DEV_ID_82599_QSFP_SF_QP    0x1558
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_DEV_ID_X540T1              0x1560
 
 /* VF Device IDs */
@@ -111,6 +134,31 @@
 #define IXGBE_I2C_CLK_OUT   0x00000002
 #define IXGBE_I2C_DATA_IN   0x00000004
 #define IXGBE_I2C_DATA_OUT  0x00000008
+<<<<<<< HEAD
+=======
+#define IXGBE_I2C_CLOCK_STRETCHING_TIMEOUT	500
+
+#define IXGBE_I2C_THERMAL_SENSOR_ADDR	0xF8
+#define IXGBE_EMC_INTERNAL_DATA		0x00
+#define IXGBE_EMC_INTERNAL_THERM_LIMIT	0x20
+#define IXGBE_EMC_DIODE1_DATA		0x01
+#define IXGBE_EMC_DIODE1_THERM_LIMIT	0x19
+#define IXGBE_EMC_DIODE2_DATA		0x23
+#define IXGBE_EMC_DIODE2_THERM_LIMIT	0x1A
+
+#define IXGBE_MAX_SENSORS		3
+
+struct ixgbe_thermal_diode_data {
+	u8 location;
+	u8 temp;
+	u8 caution_thresh;
+	u8 max_op_thresh;
+};
+
+struct ixgbe_thermal_sensor_data {
+	struct ixgbe_thermal_diode_data sensor[IXGBE_MAX_SENSORS];
+};
+>>>>>>> refs/remotes/origin/master
 
 /* Interrupt Registers */
 #define IXGBE_EICR      0x00800
@@ -536,6 +584,13 @@
 #define IXGBE_RTTDQSEL    0x04904
 #define IXGBE_RTTDT1C     0x04908
 #define IXGBE_RTTDT1S     0x0490C
+<<<<<<< HEAD
+=======
+#define IXGBE_RTTQCNCR    0x08B00
+#define IXGBE_RTTQCNTG    0x04A90
+#define IXGBE_RTTBCNRD    0x0498C
+#define IXGBE_RTTQCNRR    0x0498C
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_RTTDTECC    0x04990
 #define IXGBE_RTTDTECC_NO_BCN   0x00000100
 #define IXGBE_RTTBCNRC    0x04984
@@ -545,6 +600,10 @@
 #define IXGBE_RTTBCNRC_RF_INT_MASK	\
 	(IXGBE_RTTBCNRC_RF_DEC_MASK << IXGBE_RTTBCNRC_RF_INT_SHIFT)
 #define IXGBE_RTTBCNRM    0x04980
+<<<<<<< HEAD
+=======
+#define IXGBE_RTTQCNRM    0x04980
+>>>>>>> refs/remotes/origin/master
 
 /* FCoE DMA Context Registers */
 #define IXGBE_FCPTRL    0x02410 /* FC User Desc. PTR Low */
@@ -708,6 +767,16 @@
 #define IXGBE_MDEF_EXT(_i) (0x05160 + ((_i) * 4)) /* 8 of these (0-7) */
 #define IXGBE_LSWFW     0x15014
 
+<<<<<<< HEAD
+=======
+/* Management Bit Fields and Masks */
+#define IXGBE_MANC_RCV_TCO_EN	0x00020000 /* Rcv TCO packet enable */
+
+/* Firmware Semaphore Register */
+#define IXGBE_FWSM_MODE_MASK	0xE
+#define IXGBE_FWSM_FW_MODE_PT	0x4
+
+>>>>>>> refs/remotes/origin/master
 /* ARC Subsystem registers */
 #define IXGBE_HICR      0x15F00
 #define IXGBE_FWSTS     0x15F0C
@@ -803,6 +872,11 @@
 #define IXGBE_TRGTTIMH0  0x08C28 /* Target Time Register 0 High - RW */
 #define IXGBE_TRGTTIML1  0x08C2C /* Target Time Register 1 Low - RW */
 #define IXGBE_TRGTTIMH1  0x08C30 /* Target Time Register 1 High - RW */
+<<<<<<< HEAD
+=======
+#define IXGBE_CLKTIML    0x08C34 /* Clock Out Time Register Low - RW */
+#define IXGBE_CLKTIMH    0x08C38 /* Clock Out Time Register High - RW */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_FREQOUT0   0x08C34 /* Frequency Out 0 Control register - RW */
 #define IXGBE_FREQOUT1   0x08C38 /* Frequency Out 1 Control register - RW */
 #define IXGBE_AUXSTMPL0  0x08C3C /* Auxiliary Time Stamp 0 register Low - RO */
@@ -996,6 +1070,10 @@
 #define IXGBE_CTRL_RST_MASK     (IXGBE_CTRL_LNK_RST | IXGBE_CTRL_RST)
 
 /* FACTPS */
+<<<<<<< HEAD
+=======
+#define IXGBE_FACTPS_MNGCG      0x20000000 /* Manageblility Clock Gated */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_FACTPS_LFS        0x40000000 /* LAN Function Select */
 
 /* MHADD Bit Masks */
@@ -1288,6 +1366,10 @@ enum {
 #define IXGBE_EICR_LINKSEC      0x00200000 /* PN Threshold */
 #define IXGBE_EICR_MNG          0x00400000 /* Manageability Event Interrupt */
 #define IXGBE_EICR_TS           0x00800000 /* Thermal Sensor Event */
+<<<<<<< HEAD
+=======
+#define IXGBE_EICR_TIMESYNC     0x01000000 /* Timesync Event */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_EICR_GPI_SDP0     0x01000000 /* Gen Purpose Interrupt on SDP0 */
 #define IXGBE_EICR_GPI_SDP1     0x02000000 /* Gen Purpose Interrupt on SDP1 */
 #define IXGBE_EICR_GPI_SDP2     0x04000000 /* Gen Purpose Interrupt on SDP2 */
@@ -1305,6 +1387,10 @@ enum {
 #define IXGBE_EICS_MAILBOX      IXGBE_EICR_MAILBOX   /* VF to PF Mailbox Int */
 #define IXGBE_EICS_LSC          IXGBE_EICR_LSC       /* Link Status Change */
 #define IXGBE_EICS_MNG          IXGBE_EICR_MNG       /* MNG Event Interrupt */
+<<<<<<< HEAD
+=======
+#define IXGBE_EICS_TIMESYNC     IXGBE_EICR_TIMESYNC  /* Timesync Event */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_EICS_GPI_SDP0     IXGBE_EICR_GPI_SDP0  /* SDP0 Gen Purpose Int */
 #define IXGBE_EICS_GPI_SDP1     IXGBE_EICR_GPI_SDP1  /* SDP1 Gen Purpose Int */
 #define IXGBE_EICS_GPI_SDP2     IXGBE_EICR_GPI_SDP2  /* SDP2 Gen Purpose Int */
@@ -1323,6 +1409,10 @@ enum {
 #define IXGBE_EIMS_LSC          IXGBE_EICR_LSC       /* Link Status Change */
 #define IXGBE_EIMS_MNG          IXGBE_EICR_MNG       /* MNG Event Interrupt */
 #define IXGBE_EIMS_TS           IXGBE_EICR_TS        /* Thermel Sensor Event */
+<<<<<<< HEAD
+=======
+#define IXGBE_EIMS_TIMESYNC     IXGBE_EICR_TIMESYNC  /* Timesync Event */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_EIMS_GPI_SDP0     IXGBE_EICR_GPI_SDP0  /* SDP0 Gen Purpose Int */
 #define IXGBE_EIMS_GPI_SDP1     IXGBE_EICR_GPI_SDP1  /* SDP1 Gen Purpose Int */
 #define IXGBE_EIMS_GPI_SDP2     IXGBE_EICR_GPI_SDP2  /* SDP2 Gen Purpose Int */
@@ -1340,6 +1430,10 @@ enum {
 #define IXGBE_EIMC_MAILBOX      IXGBE_EICR_MAILBOX   /* VF to PF Mailbox Int */
 #define IXGBE_EIMC_LSC          IXGBE_EICR_LSC       /* Link Status Change */
 #define IXGBE_EIMC_MNG          IXGBE_EICR_MNG       /* MNG Event Interrupt */
+<<<<<<< HEAD
+=======
+#define IXGBE_EIMC_TIMESYNC     IXGBE_EICR_TIMESYNC  /* Timesync Event */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_EIMC_GPI_SDP0     IXGBE_EICR_GPI_SDP0  /* SDP0 Gen Purpose Int */
 #define IXGBE_EIMC_GPI_SDP1     IXGBE_EICR_GPI_SDP1  /* SDP1 Gen Purpose Int */
 #define IXGBE_EIMC_GPI_SDP2     IXGBE_EICR_GPI_SDP2  /* SDP2 Gen Purpose Int */
@@ -1425,6 +1519,10 @@ enum {
 #define IXGBE_ETQF_1588         0x40000000 /* bit 30 */
 #define IXGBE_ETQF_FILTER_EN    0x80000000 /* bit 31 */
 #define IXGBE_ETQF_POOL_ENABLE   (1 << 26) /* bit 26 */
+<<<<<<< HEAD
+=======
+#define IXGBE_ETQF_POOL_SHIFT		20
+>>>>>>> refs/remotes/origin/master
 
 #define IXGBE_ETQS_RX_QUEUE     0x007F0000 /* bits 22:16 */
 #define IXGBE_ETQS_RX_QUEUE_SHIFT       16
@@ -1480,8 +1578,17 @@ enum {
 #define IXGBE_ESDP_SDP4 0x00000010 /* SDP4 Data Value */
 #define IXGBE_ESDP_SDP5 0x00000020 /* SDP5 Data Value */
 #define IXGBE_ESDP_SDP6 0x00000040 /* SDP6 Data Value */
+<<<<<<< HEAD
 #define IXGBE_ESDP_SDP4_DIR     0x00000004 /* SDP4 IO direction */
 #define IXGBE_ESDP_SDP5_DIR     0x00002000 /* SDP5 IO direction */
+=======
+#define IXGBE_ESDP_SDP0_DIR     0x00000100 /* SDP0 IO direction */
+#define IXGBE_ESDP_SDP1_DIR     0x00000200 /* SDP1 IO direction */
+#define IXGBE_ESDP_SDP4_DIR     0x00000004 /* SDP4 IO direction */
+#define IXGBE_ESDP_SDP5_DIR     0x00002000 /* SDP5 IO direction */
+#define IXGBE_ESDP_SDP0_NATIVE  0x00010000 /* SDP0 Native Function */
+#define IXGBE_ESDP_SDP1_NATIVE  0x00020000 /* SDP1 IO mode */
+>>>>>>> refs/remotes/origin/master
 
 /* LEDCTL Bit Masks */
 #define IXGBE_LED_IVRT_BASE      0x00000040
@@ -1552,6 +1659,11 @@ enum {
 #define IXGBE_AUTOC2_10G_KR  (0x0 << IXGBE_AUTOC2_10G_SERIAL_PMA_PMD_SHIFT)
 #define IXGBE_AUTOC2_10G_XFI (0x1 << IXGBE_AUTOC2_10G_SERIAL_PMA_PMD_SHIFT)
 #define IXGBE_AUTOC2_10G_SFI (0x2 << IXGBE_AUTOC2_10G_SERIAL_PMA_PMD_SHIFT)
+<<<<<<< HEAD
+=======
+#define IXGBE_AUTOC2_LINK_DISABLE_ON_D3_MASK  0x50000000
+#define IXGBE_AUTOC2_LINK_DISABLE_MASK        0x70000000
+>>>>>>> refs/remotes/origin/master
 
 #define IXGBE_MACC_FLU       0x00000001
 #define IXGBE_MACC_FSV_10G   0x00030000
@@ -1678,11 +1790,36 @@ enum {
 #define IXGBE_PBANUM0_PTR       0x15
 #define IXGBE_PBANUM1_PTR       0x16
 #define IXGBE_FREE_SPACE_PTR    0X3E
+<<<<<<< HEAD
+=======
+
+/* External Thermal Sensor Config */
+#define IXGBE_ETS_CFG                   0x26
+#define IXGBE_ETS_LTHRES_DELTA_MASK     0x07C0
+#define IXGBE_ETS_LTHRES_DELTA_SHIFT    6
+#define IXGBE_ETS_TYPE_MASK             0x0038
+#define IXGBE_ETS_TYPE_SHIFT            3
+#define IXGBE_ETS_TYPE_EMC              0x000
+#define IXGBE_ETS_TYPE_EMC_SHIFTED      0x000
+#define IXGBE_ETS_NUM_SENSORS_MASK      0x0007
+#define IXGBE_ETS_DATA_LOC_MASK         0x3C00
+#define IXGBE_ETS_DATA_LOC_SHIFT        10
+#define IXGBE_ETS_DATA_INDEX_MASK       0x0300
+#define IXGBE_ETS_DATA_INDEX_SHIFT      8
+#define IXGBE_ETS_DATA_HTHRESH_MASK     0x00FF
+
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_SAN_MAC_ADDR_PTR  0x28
 #define IXGBE_DEVICE_CAPS       0x2C
 #define IXGBE_SERIAL_NUMBER_MAC_ADDR 0x11
 #define IXGBE_PCIE_MSIX_82599_CAPS  0x72
+<<<<<<< HEAD
 #define IXGBE_PCIE_MSIX_82598_CAPS  0x62
+=======
+#define IXGBE_MAX_MSIX_VECTORS_82599	0x40
+#define IXGBE_PCIE_MSIX_82598_CAPS  0x62
+#define IXGBE_MAX_MSIX_VECTORS_82598	0x13
+>>>>>>> refs/remotes/origin/master
 
 /* MSI-X capability fields masks */
 #define IXGBE_PCIE_MSIX_TBL_SZ_MASK     0x7FF
@@ -1779,6 +1916,10 @@ enum {
 #define IXGBE_PCI_LINK_SPEED      0xF
 #define IXGBE_PCI_LINK_SPEED_2500 0x1
 #define IXGBE_PCI_LINK_SPEED_5000 0x2
+<<<<<<< HEAD
+=======
+#define IXGBE_PCI_LINK_SPEED_8000 0x3
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_PCI_HEADER_TYPE_REGISTER  0x0E
 #define IXGBE_PCI_HEADER_TYPE_MULTIFUNC 0x80
 #define IXGBE_PCI_DEVICE_CONTROL2_16ms  0x0005
@@ -1786,6 +1927,7 @@ enum {
 /* Number of 100 microseconds we wait for PCI Express master disable */
 #define IXGBE_PCI_MASTER_DISABLE_TIMEOUT 800
 
+<<<<<<< HEAD
 /* Check whether address is multicast.  This is little-endian specific check.*/
 #define IXGBE_IS_MULTICAST(Address) \
                 (bool)(((u8 *)(Address))[0] & ((u8)0x01))
@@ -1795,6 +1937,8 @@ enum {
                 ((((u8 *)(Address))[0] == ((u8)0xff)) && \
                 (((u8 *)(Address))[1] == ((u8)0xff)))
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* RAH */
 #define IXGBE_RAH_VIND_MASK     0x003C0000
 #define IXGBE_RAH_VIND_SHIFT    18
@@ -1805,6 +1949,10 @@ enum {
 #define IXGBE_RFCTL_ISCSI_DIS       0x00000001
 #define IXGBE_RFCTL_ISCSI_DWC_MASK  0x0000003E
 #define IXGBE_RFCTL_ISCSI_DWC_SHIFT 1
+<<<<<<< HEAD
+=======
+#define IXGBE_RFCTL_RSC_DIS		0x00000020
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_RFCTL_NFSW_DIS        0x00000040
 #define IXGBE_RFCTL_NFSR_DIS        0x00000080
 #define IXGBE_RFCTL_NFS_VER_MASK    0x00000300
@@ -1840,6 +1988,43 @@ enum {
 #define IXGBE_RXDCTL_RLPML_EN   0x00008000
 #define IXGBE_RXDCTL_VME        0x40000000  /* VLAN mode enable */
 
+<<<<<<< HEAD
+=======
+#define IXGBE_TSAUXC_EN_CLK   0x00000004
+#define IXGBE_TSAUXC_SYNCLK   0x00000008
+#define IXGBE_TSAUXC_SDP0_INT 0x00000040
+
+#define IXGBE_TSYNCTXCTL_VALID		0x00000001 /* Tx timestamp valid */
+#define IXGBE_TSYNCTXCTL_ENABLED	0x00000010 /* Tx timestamping enabled */
+
+#define IXGBE_TSYNCRXCTL_VALID		0x00000001 /* Rx timestamp valid */
+#define IXGBE_TSYNCRXCTL_TYPE_MASK	0x0000000E /* Rx type mask */
+#define IXGBE_TSYNCRXCTL_TYPE_L2_V2	0x00
+#define IXGBE_TSYNCRXCTL_TYPE_L4_V1	0x02
+#define IXGBE_TSYNCRXCTL_TYPE_L2_L4_V2	0x04
+#define IXGBE_TSYNCRXCTL_TYPE_EVENT_V2	0x0A
+#define IXGBE_TSYNCRXCTL_ENABLED	0x00000010 /* Rx Timestamping enabled */
+
+#define IXGBE_RXMTRL_V1_CTRLT_MASK	0x000000FF
+#define IXGBE_RXMTRL_V1_SYNC_MSG	0x00
+#define IXGBE_RXMTRL_V1_DELAY_REQ_MSG	0x01
+#define IXGBE_RXMTRL_V1_FOLLOWUP_MSG	0x02
+#define IXGBE_RXMTRL_V1_DELAY_RESP_MSG	0x03
+#define IXGBE_RXMTRL_V1_MGMT_MSG	0x04
+
+#define IXGBE_RXMTRL_V2_MSGID_MASK		0x0000FF00
+#define IXGBE_RXMTRL_V2_SYNC_MSG		0x0000
+#define IXGBE_RXMTRL_V2_DELAY_REQ_MSG		0x0100
+#define IXGBE_RXMTRL_V2_PDELAY_REQ_MSG		0x0200
+#define IXGBE_RXMTRL_V2_PDELAY_RESP_MSG		0x0300
+#define IXGBE_RXMTRL_V2_FOLLOWUP_MSG		0x0800
+#define IXGBE_RXMTRL_V2_DELAY_RESP_MSG		0x0900
+#define IXGBE_RXMTRL_V2_PDELAY_FOLLOWUP_MSG	0x0A00
+#define IXGBE_RXMTRL_V2_ANNOUNCE_MSG		0x0B00
+#define IXGBE_RXMTRL_V2_SIGNALING_MSG		0x0C00
+#define IXGBE_RXMTRL_V2_MGMT_MSG		0x0D00
+
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_FCTRL_SBP 0x00000002 /* Store Bad Packet */
 #define IXGBE_FCTRL_MPE 0x00000100 /* Multicast Promiscuous Ena*/
 #define IXGBE_FCTRL_UPE 0x00000200 /* Unicast Promiscuous Ena */
@@ -1853,7 +2038,11 @@ enum {
 #define IXGBE_MFLCN_DPF         0x00000002 /* Discard Pause Frame */
 #define IXGBE_MFLCN_RPFCE       0x00000004 /* Receive Priority FC Enable */
 #define IXGBE_MFLCN_RFCE        0x00000008 /* Receive FC Enable */
+<<<<<<< HEAD
 #define IXGBE_MFLCN_RPFCE_MASK	0x00000FF0 /* Receive FC Mask */
+=======
+#define IXGBE_MFLCN_RPFCE_MASK	0x00000FF4 /* Receive FC Mask */
+>>>>>>> refs/remotes/origin/master
 
 #define IXGBE_MFLCN_RPFCE_SHIFT		 4
 
@@ -1881,6 +2070,11 @@ enum {
 #define IXGBE_MRQC_RSS_FIELD_IPV6_EX_UDP 0x01000000
 #define IXGBE_MRQC_L3L4TXSWEN            0x00008000
 
+<<<<<<< HEAD
+=======
+#define IXGBE_FWSM_TS_ENABLED	0x1
+
+>>>>>>> refs/remotes/origin/master
 /* Queue Drop Enable */
 #define IXGBE_QDE_ENABLE     0x00000001
 #define IXGBE_QDE_IDX_MASK   0x00007F00
@@ -1969,6 +2163,10 @@ enum {
 #define IXGBE_RXDADV_STAT_FCSTAT_NODDP  0x00000010 /* 01: Ctxt w/o DDP */
 #define IXGBE_RXDADV_STAT_FCSTAT_FCPRSP 0x00000020 /* 10: Recv. FCP_RSP */
 #define IXGBE_RXDADV_STAT_FCSTAT_DDP    0x00000030 /* 11: Ctxt w/ DDP */
+<<<<<<< HEAD
+=======
+#define IXGBE_RXDADV_STAT_TS		0x00010000 /* IEEE 1588 Time Stamp */
+>>>>>>> refs/remotes/origin/master
 
 /* PSRTYPE bit definitions */
 #define IXGBE_PSRTYPE_TCPHDR    0x00000010
@@ -2246,6 +2444,10 @@ struct ixgbe_adv_tx_context_desc {
 /* Adv Transmit Descriptor Config Masks */
 #define IXGBE_ADVTXD_DTALEN_MASK      0x0000FFFF /* Data buf length(bytes) */
 #define IXGBE_ADVTXD_MAC_LINKSEC      0x00040000 /* Insert LinkSec */
+<<<<<<< HEAD
+=======
+#define IXGBE_ADVTXD_MAC_TSTAMP	      0x00080000 /* IEEE 1588 Time Stamp */
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_ADVTXD_IPSEC_SA_INDEX_MASK   0x000003FF /* IPSec SA index */
 #define IXGBE_ADVTXD_IPSEC_ESP_LEN_MASK    0x000001FF /* IPSec ESP length */
 #define IXGBE_ADVTXD_DTYP_MASK  0x00F00000 /* DTYP mask */
@@ -2336,7 +2538,11 @@ typedef u32 ixgbe_physical_layer;
  */
 
 /* BitTimes (BT) conversion */
+<<<<<<< HEAD
 #define IXGBE_BT2KB(BT) ((BT + 1023) / (8 * 1024))
+=======
+#define IXGBE_BT2KB(BT) ((BT + (8 * 1024 - 1)) / (8 * 1024))
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_B2BT(BT) (BT * 8)
 
 /* Calculate Delay to respond to PFC */
@@ -2367,6 +2573,7 @@ typedef u32 ixgbe_physical_layer;
 #define IXGBE_PCI_DELAY	10000
 
 /* Calculate X540 delay value in bit times */
+<<<<<<< HEAD
 #define IXGBE_FILL_RATE (36 / 25)
 
 #define IXGBE_DV_X540(LINK, TC) (IXGBE_FILL_RATE * \
@@ -2385,6 +2592,33 @@ typedef u32 ixgbe_physical_layer;
 #define IXGBE_LOW_DV_X540(TC) (2 * IXGBE_B2BT(TC) + \
 			       (IXGBE_FILL_RATE * IXGBE_PCI_DELAY))
 #define IXGBE_LOW_DV(TC)      (2 * IXGBE_LOW_DV_X540(TC))
+=======
+#define IXGBE_DV_X540(_max_frame_link, _max_frame_tc) \
+			((36 * \
+			  (IXGBE_B2BT(_max_frame_link) + \
+			   IXGBE_PFC_D + \
+			   (2 * IXGBE_CABLE_DC) + \
+			   (2 * IXGBE_ID_X540) + \
+			   IXGBE_HD) / 25 + 1) + \
+			 2 * IXGBE_B2BT(_max_frame_tc))
+
+/* Calculate 82599, 82598 delay value in bit times */
+#define IXGBE_DV(_max_frame_link, _max_frame_tc) \
+			((36 * \
+			  (IXGBE_B2BT(_max_frame_link) + \
+			   IXGBE_PFC_D + \
+			   (2 * IXGBE_CABLE_DC) + \
+			   (2 * IXGBE_ID) + \
+			   IXGBE_HD) / 25 + 1) + \
+			 2 * IXGBE_B2BT(_max_frame_tc))
+
+/* Calculate low threshold delay values */
+#define IXGBE_LOW_DV_X540(_max_frame_tc) \
+			(2 * IXGBE_B2BT(_max_frame_tc) + \
+			(36 * IXGBE_PCI_DELAY / 25) + 1)
+#define IXGBE_LOW_DV(_max_frame_tc) \
+			(2 * IXGBE_LOW_DV_X540(_max_frame_tc))
+>>>>>>> refs/remotes/origin/master
 
 /* Software ATR hash keys */
 #define IXGBE_ATR_BUCKET_HASH_KEY    0x3DAD14E2
@@ -2485,6 +2719,13 @@ enum ixgbe_phy_type {
 	ixgbe_phy_sfp_ftl_active,
 	ixgbe_phy_sfp_unknown,
 	ixgbe_phy_sfp_intel,
+<<<<<<< HEAD
+=======
+	ixgbe_phy_qsfp_passive_unknown,
+	ixgbe_phy_qsfp_active_unknown,
+	ixgbe_phy_qsfp_intel,
+	ixgbe_phy_qsfp_unknown,
+>>>>>>> refs/remotes/origin/master
 	ixgbe_phy_sfp_unsupported,
 	ixgbe_phy_generic
 };
@@ -2514,6 +2755,13 @@ enum ixgbe_sfp_type {
 	ixgbe_sfp_type_da_act_lmt_core1 = 8,
 	ixgbe_sfp_type_1g_cu_core0 = 9,
 	ixgbe_sfp_type_1g_cu_core1 = 10,
+<<<<<<< HEAD
+=======
+	ixgbe_sfp_type_1g_sx_core0 = 11,
+	ixgbe_sfp_type_1g_sx_core1 = 12,
+	ixgbe_sfp_type_1g_lx_core0 = 13,
+	ixgbe_sfp_type_1g_lx_core1 = 14,
+>>>>>>> refs/remotes/origin/master
 	ixgbe_sfp_type_not_present = 0xFFFE,
 	ixgbe_sfp_type_unknown = 0xFFFF
 };
@@ -2521,6 +2769,11 @@ enum ixgbe_sfp_type {
 enum ixgbe_media_type {
 	ixgbe_media_type_unknown = 0,
 	ixgbe_media_type_fiber,
+<<<<<<< HEAD
+=======
+	ixgbe_media_type_fiber_fixed,
+	ixgbe_media_type_fiber_qsfp,
+>>>>>>> refs/remotes/origin/master
 	ixgbe_media_type_fiber_lco,
 	ixgbe_media_type_copper,
 	ixgbe_media_type_backplane,
@@ -2534,9 +2787,12 @@ enum ixgbe_fc_mode {
 	ixgbe_fc_rx_pause,
 	ixgbe_fc_tx_pause,
 	ixgbe_fc_full,
+<<<<<<< HEAD
 #ifdef CONFIG_DCB
 	ixgbe_fc_pfc,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	ixgbe_fc_default
 };
 
@@ -2567,6 +2823,10 @@ enum ixgbe_bus_speed {
 	ixgbe_bus_speed_133     = 133,
 	ixgbe_bus_speed_2500    = 2500,
 	ixgbe_bus_speed_5000    = 5000,
+<<<<<<< HEAD
+=======
+	ixgbe_bus_speed_8000    = 8000,
+>>>>>>> refs/remotes/origin/master
 	ixgbe_bus_speed_reserved
 };
 
@@ -2739,7 +2999,12 @@ struct ixgbe_mac_operations {
 	void (*disable_tx_laser)(struct ixgbe_hw *);
 	void (*enable_tx_laser)(struct ixgbe_hw *);
 	void (*flap_tx_laser)(struct ixgbe_hw *);
+<<<<<<< HEAD
 	s32 (*setup_link)(struct ixgbe_hw *, ixgbe_link_speed, bool, bool);
+=======
+	void (*stop_link_on_d3)(struct ixgbe_hw *);
+	s32 (*setup_link)(struct ixgbe_hw *, ixgbe_link_speed, bool);
+>>>>>>> refs/remotes/origin/master
 	s32 (*check_link)(struct ixgbe_hw *, ixgbe_link_speed *, bool *, bool);
 	s32 (*get_link_capabilities)(struct ixgbe_hw *, ixgbe_link_speed *,
 	                             bool *);
@@ -2757,6 +3022,10 @@ struct ixgbe_mac_operations {
 	s32 (*set_rar)(struct ixgbe_hw *, u32, u8 *, u32, u32);
 	s32 (*clear_rar)(struct ixgbe_hw *, u32);
 	s32 (*set_vmdq)(struct ixgbe_hw *, u32, u32);
+<<<<<<< HEAD
+=======
+	s32 (*set_vmdq_san_mac)(struct ixgbe_hw *, u32);
+>>>>>>> refs/remotes/origin/master
 	s32 (*clear_vmdq)(struct ixgbe_hw *, u32, u32);
 	s32 (*init_rx_addrs)(struct ixgbe_hw *);
 	s32 (*update_mc_addr_list)(struct ixgbe_hw *, struct net_device *);
@@ -2769,10 +3038,20 @@ struct ixgbe_mac_operations {
 	void (*set_vlan_anti_spoofing)(struct ixgbe_hw *, bool, int);
 
 	/* Flow Control */
+<<<<<<< HEAD
 	s32 (*fc_enable)(struct ixgbe_hw *, s32);
 
 	/* Manageability interface */
 	s32 (*set_fw_drv_ver)(struct ixgbe_hw *, u8, u8, u8, u8);
+=======
+	s32 (*fc_enable)(struct ixgbe_hw *);
+
+	/* Manageability interface */
+	s32 (*set_fw_drv_ver)(struct ixgbe_hw *, u8, u8, u8, u8);
+	s32 (*get_thermal_sensor_data)(struct ixgbe_hw *);
+	s32 (*init_thermal_sensor_thresh)(struct ixgbe_hw *hw);
+	bool (*mng_fw_enabled)(struct ixgbe_hw *hw);
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ixgbe_phy_operations {
@@ -2782,13 +3061,24 @@ struct ixgbe_phy_operations {
 	s32 (*reset)(struct ixgbe_hw *);
 	s32 (*read_reg)(struct ixgbe_hw *, u32, u32, u16 *);
 	s32 (*write_reg)(struct ixgbe_hw *, u32, u32, u16);
+<<<<<<< HEAD
 	s32 (*setup_link)(struct ixgbe_hw *);
 	s32 (*setup_link_speed)(struct ixgbe_hw *, ixgbe_link_speed, bool,
 	                        bool);
+=======
+	s32 (*read_reg_mdi)(struct ixgbe_hw *, u32, u32, u16 *);
+	s32 (*write_reg_mdi)(struct ixgbe_hw *, u32, u32, u16);
+	s32 (*setup_link)(struct ixgbe_hw *);
+	s32 (*setup_link_speed)(struct ixgbe_hw *, ixgbe_link_speed, bool);
+>>>>>>> refs/remotes/origin/master
 	s32 (*check_link)(struct ixgbe_hw *, ixgbe_link_speed *, bool *);
 	s32 (*get_firmware_version)(struct ixgbe_hw *, u16 *);
 	s32 (*read_i2c_byte)(struct ixgbe_hw *, u8, u8, u8 *);
 	s32 (*write_i2c_byte)(struct ixgbe_hw *, u8, u8, u8);
+<<<<<<< HEAD
+=======
+	s32 (*read_i2c_sff8472)(struct ixgbe_hw *, u8 , u8 *);
+>>>>>>> refs/remotes/origin/master
 	s32 (*read_i2c_eeprom)(struct ixgbe_hw *, u8 , u8 *);
 	s32 (*write_i2c_eeprom)(struct ixgbe_hw *, u8, u8);
 	s32 (*check_overtemp)(struct ixgbe_hw *);
@@ -2814,6 +3104,10 @@ struct ixgbe_mac_info {
 	u16                             wwnn_prefix;
 	/* prefix for World Wide Port Name (WWPN) */
 	u16                             wwpn_prefix;
+<<<<<<< HEAD
+=======
+	u16				max_msix_vectors;
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_MAX_MTA			128
 	u32				mta_shadow[IXGBE_MAX_MTA];
 	s32                             mc_filter_type;
@@ -2824,12 +3118,22 @@ struct ixgbe_mac_info {
 	u32				rx_pb_size;
 	u32                             max_tx_queues;
 	u32                             max_rx_queues;
+<<<<<<< HEAD
 	u32                             max_msix_vectors;
 	u32                             orig_autoc;
+=======
+	u32                             orig_autoc;
+	u32                             cached_autoc;
+>>>>>>> refs/remotes/origin/master
 	u32                             orig_autoc2;
 	bool                            orig_link_settings_stored;
 	bool                            autotry_restart;
 	u8                              flags;
+<<<<<<< HEAD
+=======
+	u8				san_mac_rar_index;
+	struct ixgbe_thermal_sensor_data  thermal_sensor_data;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ixgbe_phy_info {
@@ -2847,6 +3151,10 @@ struct ixgbe_phy_info {
 	bool                            smart_speed_active;
 	bool                            multispeed_fiber;
 	bool                            reset_if_overtemp;
+<<<<<<< HEAD
+=======
+	bool                            qsfp_shared_i2c_bus;
+>>>>>>> refs/remotes/origin/master
 };
 
 #include "ixgbe_mbx.h"
@@ -2898,6 +3206,11 @@ struct ixgbe_hw {
 	bool				adapter_stopped;
 	bool				force_full_reset;
 	bool				allow_unsupported_sfp;
+<<<<<<< HEAD
+=======
+	bool				mng_fw_enabled;
+	bool				wol_enabled;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ixgbe_info {
@@ -2939,7 +3252,10 @@ struct ixgbe_info {
 #define IXGBE_ERR_OVERTEMP                      -26
 #define IXGBE_ERR_FC_NOT_NEGOTIATED             -27
 #define IXGBE_ERR_FC_NOT_SUPPORTED              -28
+<<<<<<< HEAD
 #define IXGBE_ERR_FLOW_CONTROL                  -29
+=======
+>>>>>>> refs/remotes/origin/master
 #define IXGBE_ERR_SFP_SETUP_NOT_COMPLETE        -30
 #define IXGBE_ERR_PBA_SECTION                   -31
 #define IXGBE_ERR_INVALID_ARGUMENT              -32

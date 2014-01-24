@@ -203,10 +203,14 @@ struct f71805f_sio_data {
 static inline long in_from_reg(u8 reg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (reg * 8);
 =======
 	return reg * 8;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return reg * 8;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The 2 least significant bits are not used */
@@ -217,20 +221,28 @@ static inline u8 in_to_reg(long val)
 	if (val >= 2016)
 		return 0xfc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (((val + 16) / 32) << 2);
 =======
 	return ((val + 16) / 32) << 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ((val + 16) / 32) << 2;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* in0 is downscaled by a factor 2 internally */
 static inline long in0_from_reg(u8 reg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (reg * 16);
 =======
 	return reg * 16;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return reg * 16;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u8 in0_to_reg(long val)
@@ -240,10 +252,14 @@ static inline u8 in0_to_reg(long val)
 	if (val >= 4032)
 		return 0xfc;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (((val + 32) / 64) << 2);
 =======
 	return ((val + 32) / 64) << 2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return ((val + 32) / 64) << 2;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* The 4 most significant bits are not used */
@@ -253,14 +269,19 @@ static inline long fan_from_reg(u16 reg)
 	if (!reg || reg == 0xfff)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (1500000 / reg);
 =======
 	return 1500000 / reg;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 1500000 / reg;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u16 fan_to_reg(long rpm)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* If the low limit is set below what the chip can measure,
 	   store the largest possible 12-bit value in the registers,
@@ -269,6 +290,8 @@ static inline u16 fan_to_reg(long rpm)
 		return 0xfff;
 	return (1500000 / rpm);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * If the low limit is set below what the chip can measure,
 	 * store the largest possible 12-bit value in the registers,
@@ -277,7 +300,10 @@ static inline u16 fan_to_reg(long rpm)
 	if (rpm < 367)
 		return 0xfff;
 	return 1500000 / rpm;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline unsigned long pwm_freq_from_reg(u8 reg)
@@ -310,10 +336,14 @@ static inline int pwm_mode_from_reg(u8 reg)
 static inline long temp_from_reg(u8 reg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (reg * 1000);
 =======
 	return reg * 1000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return reg * 1000;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u8 temp_to_reg(long val)
@@ -344,16 +374,22 @@ static void f71805f_write8(struct f71805f_data *data, u8 reg, u8 val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* It is important to read the MSB first, because doing so latches the
    value of the LSB, so we are sure both bytes belong to the same value.
    Must be called with data->update_lock held, except during initialization */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * It is important to read the MSB first, because doing so latches the
  * value of the LSB, so we are sure both bytes belong to the same value.
  * Must be called with data->update_lock held, except during initialization
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u16 f71805f_read16(struct f71805f_data *data, u8 reg)
 {
 	u16 val;
@@ -499,15 +535,21 @@ static ssize_t set_in0_max(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_high[nr] = in0_to_reg(val);
@@ -524,15 +566,21 @@ static ssize_t set_in0_min(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_low[nr] = in0_to_reg(val);
@@ -579,15 +627,21 @@ static ssize_t set_in_max(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_high[nr] = in_to_reg(val);
@@ -604,15 +658,21 @@ static ssize_t set_in_min(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->in_low[nr] = in_to_reg(val);
@@ -659,15 +719,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_low[nr] = fan_to_reg(val);
@@ -684,15 +750,21 @@ static ssize_t set_fan_target(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_target[nr] = fan_to_reg(val);
@@ -762,15 +834,21 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *devattr,
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (val > 255)
 		return -EINVAL;
@@ -792,9 +870,12 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 	u8 reg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 reg;
 	unsigned long val;
 	int err;
@@ -802,7 +883,10 @@ static ssize_t set_pwm_enable(struct device *dev, struct device_attribute
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (val < 1 || val > 3)
 		return -EINVAL;
@@ -847,15 +931,21 @@ static ssize_t set_pwm_freq(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->pwm_freq[nr] = pwm_freq_to_reg(val);
@@ -868,10 +958,14 @@ static ssize_t set_pwm_freq(struct device *dev, struct device_attribute
 static ssize_t show_pwm_auto_point_temp(struct device *dev,
 					struct device_attribute *devattr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					char* buf)
 =======
 					char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct f71805f_data *data = dev_get_drvdata(dev);
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
@@ -885,25 +979,35 @@ static ssize_t show_pwm_auto_point_temp(struct device *dev,
 static ssize_t set_pwm_auto_point_temp(struct device *dev,
 				       struct device_attribute *devattr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       const char* buf, size_t count)
 =======
 				       const char *buf, size_t count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct f71805f_data *data = dev_get_drvdata(dev);
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	int pwmnr = attr->nr;
 	int apnr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->auto_points[pwmnr].temp[apnr] = temp_to_reg(val);
@@ -917,10 +1021,14 @@ static ssize_t set_pwm_auto_point_temp(struct device *dev,
 static ssize_t show_pwm_auto_point_fan(struct device *dev,
 				       struct device_attribute *devattr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       char* buf)
 =======
 				       char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct f71805f_data *data = dev_get_drvdata(dev);
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
@@ -934,34 +1042,48 @@ static ssize_t show_pwm_auto_point_fan(struct device *dev,
 static ssize_t set_pwm_auto_point_fan(struct device *dev,
 				      struct device_attribute *devattr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				      const char* buf, size_t count)
 =======
 				      const char *buf, size_t count)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				      const char *buf, size_t count)
+>>>>>>> refs/remotes/origin/master
 {
 	struct f71805f_data *data = dev_get_drvdata(dev);
 	struct sensor_device_attribute_2 *attr = to_sensor_dev_attr_2(devattr);
 	int pwmnr = attr->nr;
 	int apnr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->auto_points[pwmnr].fan[apnr] = fan_to_reg(val);
 	f71805f_write16(data, F71805F_REG_PWM_AUTO_POINT_FAN(pwmnr, apnr),
 <<<<<<< HEAD
+<<<<<<< HEAD
 		        data->auto_points[pwmnr].fan[apnr]);
 =======
 			data->auto_points[pwmnr].fan[apnr]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			data->auto_points[pwmnr].fan[apnr]);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&data->update_lock);
 
 	return count;
@@ -1015,15 +1137,21 @@ static ssize_t set_temp_max(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_high[nr] = temp_to_reg(val);
@@ -1040,15 +1168,21 @@ static ssize_t set_temp_hyst(struct device *dev, struct device_attribute
 	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
 	int nr = attr->index;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val;
 	int err;
 
 	err = kstrtol(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->temp_hyst[nr] = temp_to_reg(val);
@@ -1102,6 +1236,7 @@ static ssize_t show_name(struct device *dev, struct device_attribute
 
 static SENSOR_DEVICE_ATTR(in0_input, S_IRUGO, show_in0, NULL, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static SENSOR_DEVICE_ATTR(in0_max, S_IRUGO| S_IWUSR,
 			  show_in0_max, set_in0_max, 0);
 static SENSOR_DEVICE_ATTR(in0_min, S_IRUGO| S_IWUSR,
@@ -1110,6 +1245,11 @@ static SENSOR_DEVICE_ATTR(in0_max, S_IRUGO | S_IWUSR,
 			  show_in0_max, set_in0_max, 0);
 static SENSOR_DEVICE_ATTR(in0_min, S_IRUGO | S_IWUSR,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static SENSOR_DEVICE_ATTR(in0_max, S_IRUGO | S_IWUSR,
+			  show_in0_max, set_in0_max, 0);
+static SENSOR_DEVICE_ATTR(in0_min, S_IRUGO | S_IWUSR,
+>>>>>>> refs/remotes/origin/master
 			  show_in0_min, set_in0_min, 0);
 static SENSOR_DEVICE_ATTR(in1_input, S_IRUGO, show_in, NULL, 1);
 static SENSOR_DEVICE_ATTR(in1_max, S_IRUGO | S_IWUSR,
@@ -1198,14 +1338,20 @@ static SENSOR_DEVICE_ATTR(temp3_max_hyst, S_IRUGO | S_IWUSR,
 static SENSOR_DEVICE_ATTR(temp3_type, S_IRUGO, show_temp_type, NULL, 2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* pwm (value) files are created read-only, write permission is
    then added or removed dynamically as needed */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * pwm (value) files are created read-only, write permission is
  * then added or removed dynamically as needed
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static SENSOR_DEVICE_ATTR(pwm1, S_IRUGO, show_pwm, set_pwm, 0);
 static SENSOR_DEVICE_ATTR(pwm1_enable, S_IRUGO | S_IWUSR,
 			  show_pwm_enable, set_pwm_enable, 0);
@@ -1441,14 +1587,20 @@ static const struct attribute_group f71805f_group_optin[4] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* We don't include pwm_freq files in the arrays above, because they must be
    created conditionally (only if pwm_mode is 1 == PWM) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * We don't include pwm_freq files in the arrays above, because they must be
  * created conditionally (only if pwm_mode is 1 == PWM)
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct attribute *f71805f_attributes_pwm_freq[] = {
 	&sensor_dev_attr_pwm1_freq.dev_attr.attr,
 	&sensor_dev_attr_pwm2_freq.dev_attr.attr,
@@ -1471,13 +1623,18 @@ static struct attribute *f71805f_attr_pwm[] = {
  * Device registration and initialization
  */
 
+<<<<<<< HEAD
 static void __devinit f71805f_init_device(struct f71805f_data *data)
+=======
+static void f71805f_init_device(struct f71805f_data *data)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 reg;
 	int i;
 
 	reg = f71805f_read8(data, F71805F_REG_START);
 	if ((reg & 0x41) != 0x01) {
+<<<<<<< HEAD
 		printk(KERN_DEBUG DRVNAME ": Starting monitoring "
 		       "operations\n");
 		f71805f_write8(data, F71805F_REG_START, (reg | 0x01) & ~0x40);
@@ -1492,6 +1649,12 @@ static void __devinit f71805f_init_device(struct f71805f_data *data)
 		/* Clear latch full bit, else "speed mode" fan speed control
 		   doesn't work */
 =======
+=======
+		pr_debug("Starting monitoring operations\n");
+		f71805f_write8(data, F71805F_REG_START, (reg | 0x01) & ~0x40);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Fan monitoring can be disabled. If it is, we won't be polling
 	 * the register values, and won't create the related sysfs files.
@@ -1503,7 +1666,10 @@ static void __devinit f71805f_init_device(struct f71805f_data *data)
 		 * Clear latch full bit, else "speed mode" fan speed control
 		 * doesn't work
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (data->fan_ctrl[i] & FAN_CTRL_LATCH_FULL) {
 			data->fan_ctrl[i] &= ~FAN_CTRL_LATCH_FULL;
 			f71805f_write8(data, F71805F_REG_FAN_CTRL(i),
@@ -1512,22 +1678,33 @@ static void __devinit f71805f_init_device(struct f71805f_data *data)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit f71805f_probe(struct platform_device *pdev)
 {
 	struct f71805f_sio_data *sio_data = pdev->dev.platform_data;
+=======
+static int f71805f_probe(struct platform_device *pdev)
+{
+	struct f71805f_sio_data *sio_data = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct f71805f_data *data;
 	struct resource *res;
 	int i, err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const char *names[] = {
 =======
 	static const char * const names[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const char * const names[] = {
+>>>>>>> refs/remotes/origin/master
 		"f71805f",
 		"f71872f",
 	};
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(data = kzalloc(sizeof(struct f71805f_data), GFP_KERNEL))) {
 =======
@@ -1546,6 +1723,22 @@ static int __devinit f71805f_probe(struct platform_device *pdev)
 			(unsigned long)(res->start + ADDR_REG_OFFSET),
 			(unsigned long)(res->start + ADDR_REG_OFFSET + 1));
 		goto exit_free;
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(struct f71805f_data),
+			    GFP_KERNEL);
+	if (!data) {
+		pr_err("Out of memory\n");
+		return -ENOMEM;
+	}
+
+	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+	if (!devm_request_region(&pdev->dev, res->start + ADDR_REG_OFFSET, 2,
+				 DRVNAME)) {
+		dev_err(&pdev->dev, "Failed to request region 0x%lx-0x%lx\n",
+			(unsigned long)(res->start + ADDR_REG_OFFSET),
+			(unsigned long)(res->start + ADDR_REG_OFFSET + 1));
+		return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 	}
 	data->addr = res->start;
 	data->name = names[sio_data->kind];
@@ -1572,6 +1765,7 @@ static int __devinit f71805f_probe(struct platform_device *pdev)
 
 	/* Register sysfs interface files */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&pdev->dev.kobj, &f71805f_group)))
 		goto exit_release_region;
 	if (data->has_in & (1 << 4)) { /* in4 */
@@ -1596,6 +1790,11 @@ static int __devinit f71805f_probe(struct platform_device *pdev)
 	err = sysfs_create_group(&pdev->dev.kobj, &f71805f_group);
 	if (err)
 		goto exit_release_region;
+=======
+	err = sysfs_create_group(&pdev->dev.kobj, &f71805f_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 	if (data->has_in & (1 << 4)) { /* in4 */
 		err = sysfs_create_group(&pdev->dev.kobj,
 					 &f71805f_group_optin[0]);
@@ -1618,12 +1817,16 @@ static int __devinit f71805f_probe(struct platform_device *pdev)
 		err = sysfs_create_group(&pdev->dev.kobj,
 					 &f71805f_group_optin[3]);
 		if (err)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto exit_remove_files;
 	}
 	for (i = 0; i < 3; i++) {
 		/* If control mode is PWM, create pwm_freq file */
 		if (!(data->fan_ctrl[i] & FAN_CTRL_DC_MODE)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if ((err = sysfs_create_file(&pdev->dev.kobj,
 					f71805f_attributes_pwm_freq[i])))
@@ -1632,20 +1835,31 @@ static int __devinit f71805f_probe(struct platform_device *pdev)
 						f71805f_attributes_pwm_freq[i]);
 			if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = sysfs_create_file(&pdev->dev.kobj,
+						f71805f_attributes_pwm_freq[i]);
+			if (err)
+>>>>>>> refs/remotes/origin/master
 				goto exit_remove_files;
 		}
 		/* If PWM is in manual mode, add write permission */
 		if (data->fan_ctrl[i] & FAN_CTRL_MODE_MANUAL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if ((err = sysfs_chmod_file(&pdev->dev.kobj,
 						    f71805f_attr_pwm[i],
 						    S_IRUGO | S_IWUSR))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			err = sysfs_chmod_file(&pdev->dev.kobj,
 					       f71805f_attr_pwm[i],
 					       S_IRUGO | S_IWUSR);
 			if (err) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				dev_err(&pdev->dev, "chmod +w pwm%d failed\n",
 					i + 1);
 				goto exit_remove_files;
@@ -1667,6 +1881,7 @@ exit_remove_files:
 	for (i = 0; i < 4; i++)
 		sysfs_remove_group(&pdev->dev.kobj, &f71805f_group_optin[i]);
 	sysfs_remove_group(&pdev->dev.kobj, &f71805f_group_pwm_freq);
+<<<<<<< HEAD
 exit_release_region:
 	release_region(res->start + ADDR_REG_OFFSET, 2);
 exit_free:
@@ -1680,6 +1895,14 @@ static int __devexit f71805f_remove(struct platform_device *pdev)
 {
 	struct f71805f_data *data = platform_get_drvdata(pdev);
 	struct resource *res;
+=======
+	return err;
+}
+
+static int f71805f_remove(struct platform_device *pdev)
+{
+	struct f71805f_data *data = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	hwmon_device_unregister(data->hwmon_dev);
@@ -1687,11 +1910,14 @@ static int __devexit f71805f_remove(struct platform_device *pdev)
 	for (i = 0; i < 4; i++)
 		sysfs_remove_group(&pdev->dev.kobj, &f71805f_group_optin[i]);
 	sysfs_remove_group(&pdev->dev.kobj, &f71805f_group_pwm_freq);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 	kfree(data);
 
 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
 	release_region(res->start + ADDR_REG_OFFSET, 2);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1702,7 +1928,11 @@ static struct platform_driver f71805f_driver = {
 		.name	= DRVNAME,
 	},
 	.probe		= f71805f_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(f71805f_remove),
+=======
+	.remove		= f71805f_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init f71805f_device_add(unsigned short address,
@@ -1761,10 +1991,14 @@ static int __init f71805f_find(int sioaddr, unsigned short *address,
 	u16 devid;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const char *names[] = {
 =======
 	static const char * const names[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const char * const names[] = {
+>>>>>>> refs/remotes/origin/master
 		"F71805F/FG",
 		"F71872F/FG or F71806F/FG",
 	};

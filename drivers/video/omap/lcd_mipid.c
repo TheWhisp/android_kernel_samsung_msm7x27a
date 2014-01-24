@@ -24,11 +24,17 @@
 #include <linux/workqueue.h>
 #include <linux/spi/spi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <plat/lcd_mipid.h>
+=======
+#include <linux/module.h>
+
+#include <linux/platform_data/lcd-mipid.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "omapfb.h"
 
@@ -607,6 +613,7 @@ static struct spi_driver mipid_spi_driver = {
 	.driver = {
 		.name	= MIPID_MODULE_NAME,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.bus	= &spi_bus_type,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -633,6 +640,15 @@ module_exit(mipid_drv_cleanup);
 =======
 module_spi_driver(mipid_spi_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner	= THIS_MODULE,
+	},
+	.probe	= mipid_spi_probe,
+	.remove	= mipid_spi_remove,
+};
+
+module_spi_driver(mipid_spi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("MIPI display driver");
 MODULE_LICENSE("GPL");

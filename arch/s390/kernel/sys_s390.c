@@ -1,8 +1,13 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/kernel/sys_s390.c
  *
  *  S390 version
  *    Copyright (C) 1999,2000 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *  S390 version
+ *    Copyright IBM Corp. 1999, 2000
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com),
  *               Thomas Spatzier (tspat@de.ibm.com)
  *
@@ -61,16 +66,21 @@ out:
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * sys_ipc() is the de-multiplexer for the SysV IPC calls..
  *
  * This is really horribly ugly.
 =======
  * sys_ipc() is the de-multiplexer for the SysV IPC calls.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * sys_ipc() is the de-multiplexer for the SysV IPC calls.
+>>>>>>> refs/remotes/origin/master
  */
 SYSCALL_DEFINE5(s390_ipc, uint, call, int, first, unsigned long, second,
 		unsigned long, third, void __user *, ptr)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
         struct ipc_kludge tmp;
 	int ret;
@@ -134,6 +144,8 @@ SYSCALL_DEFINE5(s390_ipc, uint, call, int, first, unsigned long, second,
 
 	return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (call >> 16)
 		return -EINVAL;
 	/* The s390 sys_ipc variant has only five parameters instead of six
@@ -145,7 +157,10 @@ SYSCALL_DEFINE5(s390_ipc, uint, call, int, first, unsigned long, second,
 	 * third parameter also as fifth parameter.
 	 */
 	return sys_ipc(call, first, second, third, ptr, third);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_64BIT
@@ -153,11 +168,20 @@ SYSCALL_DEFINE1(s390_personality, unsigned int, personality)
 {
 	unsigned int ret;
 
+<<<<<<< HEAD
 	if (current->personality == PER_LINUX32 && personality == PER_LINUX)
 		personality = PER_LINUX32;
 	ret = sys_personality(personality);
 	if (ret == PER_LINUX32)
 		ret = PER_LINUX;
+=======
+	if (personality(current->personality) == PER_LINUX32 &&
+	    personality(personality) == PER_LINUX)
+		personality |= PER_LINUX32;
+	ret = sys_personality(personality);
+	if (personality(ret) == PER_LINUX32)
+		ret &= ~PER_LINUX32;
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -203,6 +227,7 @@ SYSCALL_DEFINE1(s390_fadvise64_64, struct fadvise64_64_args __user *, args)
  * to
  *   %r2: fd, %r3: mode, %r4/%r5: offset, 96(%r15)-103(%r15): len
  */
+<<<<<<< HEAD
 SYSCALL_DEFINE(s390_fallocate)(int fd, int mode, loff_t offset,
 			       u32 len_high, u32 len_low)
 {
@@ -218,4 +243,11 @@ asmlinkage long SyS_s390_fallocate(long fd, long mode, loff_t offset,
 SYSCALL_ALIAS(sys_s390_fallocate, SyS_s390_fallocate);
 #endif
 
+=======
+SYSCALL_DEFINE5(s390_fallocate, int, fd, int, mode, loff_t, offset,
+			       u32, len_high, u32, len_low)
+{
+	return sys_fallocate(fd, mode, offset, ((u64)len_high << 32) | len_low);
+}
+>>>>>>> refs/remotes/origin/master
 #endif

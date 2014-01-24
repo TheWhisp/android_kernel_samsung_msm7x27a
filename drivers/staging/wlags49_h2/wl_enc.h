@@ -23,10 +23,14 @@
  * not agree with these terms and conditions, do not use the software.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2003 Agere Systems Inc.
 =======
  * Copyright © 2003 Agere Systems Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -48,10 +52,14 @@
  * Disclaimer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
 =======
  * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -77,7 +85,11 @@
  ******************************************************************************/
 #define CRYPT_CODE					"57617665A5D6"
 #define ENCRYPTION_LEN				102
+<<<<<<< HEAD
 #define ENCRYPTION_MAGIC			0x48576877L	// HWhw
+=======
+#define ENCRYPTION_MAGIC			0x48576877L	/* HWhw */
+>>>>>>> refs/remotes/origin/master
 #define DEF_CRYPT_STR				"G?TIUEA]d5MAdZV'eUb&&6.)'&:,'VF/(FR2)6^5*'*8*W6;+GB>,7NA-'ZD-X&G.H2J/8>M0(JP0XVS1HbV29.Y3):\\3YF_4IRb56"
 
 #define DEFAULT_CRYPT_MAC			"W\x01\x6B\x66\xA5\x5A"
@@ -114,7 +126,11 @@ ENCSTRCT, *PENCSTRCT;
 
 
 /*******************************************************************************
+<<<<<<< HEAD
  * function prrottypes
+=======
+ * function prototypes
+>>>>>>> refs/remotes/origin/master
  ******************************************************************************/
 int wl_wep_code( char *szCrypt, char *szDest, void *Data, int nLen );
 
@@ -123,4 +139,8 @@ int wl_wep_decode( char *szCrypt, void *Dest, char *szData );
 
 
 
+<<<<<<< HEAD
 #endif  // __WAVELAN2_ENCRYPTION_H__
+=======
+#endif  /* __WAVELAN2_ENCRYPTION_H__ */
+>>>>>>> refs/remotes/origin/master

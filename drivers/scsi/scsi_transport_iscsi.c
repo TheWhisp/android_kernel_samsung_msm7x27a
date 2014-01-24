@@ -24,10 +24,15 @@
 #include <linux/mutex.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bsg-lib.h>
 #include <linux/idr.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bsg-lib.h>
+#include <linux/idr.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/tcp.h>
 #include <scsi/scsi.h>
 #include <scsi/scsi_host.h>
@@ -37,6 +42,7 @@
 #include <scsi/iscsi_if.h>
 #include <scsi/scsi_cmnd.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #define ISCSI_SESSION_ATTRS 23
 #define ISCSI_CONN_ATTRS 13
@@ -44,6 +50,9 @@
 =======
 #include <scsi/scsi_bsg_iscsi.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/scsi_bsg_iscsi.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ISCSI_TRANSPORT_VERSION "2.0-870"
 
@@ -86,6 +95,7 @@ struct iscsi_internal {
 	struct device dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct device_attribute *host_attrs[ISCSI_HOST_ATTRS + 1];
 	struct transport_container conn_cont;
 	struct device_attribute *conn_attrs[ISCSI_CONN_ATTRS + 1];
@@ -95,15 +105,23 @@ struct iscsi_internal {
 	struct transport_container conn_cont;
 	struct transport_container session_cont;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct transport_container conn_cont;
+	struct transport_container session_cont;
+>>>>>>> refs/remotes/origin/master
 };
 
 static atomic_t iscsi_session_nr; /* sysfs session id for next new session */
 static struct workqueue_struct *iscsi_eh_timer_workq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static DEFINE_IDA(iscsi_sess_ida);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_IDA(iscsi_sess_ida);
+>>>>>>> refs/remotes/origin/master
 /*
  * list of registered transports and lock that must
  * be held while accessing list. The iscsi_transport_lock must
@@ -204,10 +222,17 @@ static struct attribute_group iscsi_endpoint_group = {
 
 #define ISCSI_MAX_EPID -1
 
+<<<<<<< HEAD
 static int iscsi_match_epid(struct device *dev, void *data)
 {
 	struct iscsi_endpoint *ep = iscsi_dev_to_endpoint(dev);
 	uint64_t *epid = (uint64_t *) data;
+=======
+static int iscsi_match_epid(struct device *dev, const void *data)
+{
+	struct iscsi_endpoint *ep = iscsi_dev_to_endpoint(dev);
+	const uint64_t *epid = data;
+>>>>>>> refs/remotes/origin/master
 
 	return *epid == ep->id;
 }
@@ -289,7 +314,10 @@ struct iscsi_endpoint *iscsi_lookup_endpoint(u64 handle)
 EXPORT_SYMBOL_GPL(iscsi_lookup_endpoint);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Interface to display network param to sysfs
  */
@@ -483,6 +511,682 @@ void iscsi_destroy_iface(struct iscsi_iface *iface)
 EXPORT_SYMBOL_GPL(iscsi_destroy_iface);
 
 /*
+<<<<<<< HEAD
+=======
+ * Interface to display flash node params to sysfs
+ */
+
+#define ISCSI_FLASHNODE_ATTR(_prefix, _name, _mode, _show, _store)	\
+struct device_attribute dev_attr_##_prefix##_##_name =			\
+	__ATTR(_name, _mode, _show, _store)
+
+/* flash node session attrs show */
+#define iscsi_flashnode_sess_attr_show(type, name, param)		\
+static ssize_t								\
+show_##type##_##name(struct device *dev, struct device_attribute *attr,	\
+		     char *buf)						\
+{									\
+	struct iscsi_bus_flash_session *fnode_sess =			\
+					iscsi_dev_to_flash_session(dev);\
+	struct iscsi_transport *t = fnode_sess->transport;		\
+	return t->get_flashnode_param(fnode_sess, param, buf);		\
+}									\
+
+
+#define iscsi_flashnode_sess_attr(type, name, param)			\
+	iscsi_flashnode_sess_attr_show(type, name, param)		\
+static ISCSI_FLASHNODE_ATTR(type, name, S_IRUGO,			\
+			    show_##type##_##name, NULL);
+
+/* Flash node session attributes */
+
+iscsi_flashnode_sess_attr(fnode, auto_snd_tgt_disable,
+			  ISCSI_FLASHNODE_AUTO_SND_TGT_DISABLE);
+iscsi_flashnode_sess_attr(fnode, discovery_session,
+			  ISCSI_FLASHNODE_DISCOVERY_SESS);
+iscsi_flashnode_sess_attr(fnode, portal_type, ISCSI_FLASHNODE_PORTAL_TYPE);
+iscsi_flashnode_sess_attr(fnode, entry_enable, ISCSI_FLASHNODE_ENTRY_EN);
+iscsi_flashnode_sess_attr(fnode, immediate_data, ISCSI_FLASHNODE_IMM_DATA_EN);
+iscsi_flashnode_sess_attr(fnode, initial_r2t, ISCSI_FLASHNODE_INITIAL_R2T_EN);
+iscsi_flashnode_sess_attr(fnode, data_seq_in_order,
+			  ISCSI_FLASHNODE_DATASEQ_INORDER);
+iscsi_flashnode_sess_attr(fnode, data_pdu_in_order,
+			  ISCSI_FLASHNODE_PDU_INORDER);
+iscsi_flashnode_sess_attr(fnode, chap_auth, ISCSI_FLASHNODE_CHAP_AUTH_EN);
+iscsi_flashnode_sess_attr(fnode, discovery_logout,
+			  ISCSI_FLASHNODE_DISCOVERY_LOGOUT_EN);
+iscsi_flashnode_sess_attr(fnode, bidi_chap, ISCSI_FLASHNODE_BIDI_CHAP_EN);
+iscsi_flashnode_sess_attr(fnode, discovery_auth_optional,
+			  ISCSI_FLASHNODE_DISCOVERY_AUTH_OPTIONAL);
+iscsi_flashnode_sess_attr(fnode, erl, ISCSI_FLASHNODE_ERL);
+iscsi_flashnode_sess_attr(fnode, first_burst_len, ISCSI_FLASHNODE_FIRST_BURST);
+iscsi_flashnode_sess_attr(fnode, def_time2wait, ISCSI_FLASHNODE_DEF_TIME2WAIT);
+iscsi_flashnode_sess_attr(fnode, def_time2retain,
+			  ISCSI_FLASHNODE_DEF_TIME2RETAIN);
+iscsi_flashnode_sess_attr(fnode, max_outstanding_r2t, ISCSI_FLASHNODE_MAX_R2T);
+iscsi_flashnode_sess_attr(fnode, isid, ISCSI_FLASHNODE_ISID);
+iscsi_flashnode_sess_attr(fnode, tsid, ISCSI_FLASHNODE_TSID);
+iscsi_flashnode_sess_attr(fnode, max_burst_len, ISCSI_FLASHNODE_MAX_BURST);
+iscsi_flashnode_sess_attr(fnode, def_taskmgmt_tmo,
+			  ISCSI_FLASHNODE_DEF_TASKMGMT_TMO);
+iscsi_flashnode_sess_attr(fnode, targetalias, ISCSI_FLASHNODE_ALIAS);
+iscsi_flashnode_sess_attr(fnode, targetname, ISCSI_FLASHNODE_NAME);
+iscsi_flashnode_sess_attr(fnode, tpgt, ISCSI_FLASHNODE_TPGT);
+iscsi_flashnode_sess_attr(fnode, discovery_parent_idx,
+			  ISCSI_FLASHNODE_DISCOVERY_PARENT_IDX);
+iscsi_flashnode_sess_attr(fnode, discovery_parent_type,
+			  ISCSI_FLASHNODE_DISCOVERY_PARENT_TYPE);
+iscsi_flashnode_sess_attr(fnode, chap_in_idx, ISCSI_FLASHNODE_CHAP_IN_IDX);
+iscsi_flashnode_sess_attr(fnode, chap_out_idx, ISCSI_FLASHNODE_CHAP_OUT_IDX);
+iscsi_flashnode_sess_attr(fnode, username, ISCSI_FLASHNODE_USERNAME);
+iscsi_flashnode_sess_attr(fnode, username_in, ISCSI_FLASHNODE_USERNAME_IN);
+iscsi_flashnode_sess_attr(fnode, password, ISCSI_FLASHNODE_PASSWORD);
+iscsi_flashnode_sess_attr(fnode, password_in, ISCSI_FLASHNODE_PASSWORD_IN);
+iscsi_flashnode_sess_attr(fnode, is_boot_target, ISCSI_FLASHNODE_IS_BOOT_TGT);
+
+static struct attribute *iscsi_flashnode_sess_attrs[] = {
+	&dev_attr_fnode_auto_snd_tgt_disable.attr,
+	&dev_attr_fnode_discovery_session.attr,
+	&dev_attr_fnode_portal_type.attr,
+	&dev_attr_fnode_entry_enable.attr,
+	&dev_attr_fnode_immediate_data.attr,
+	&dev_attr_fnode_initial_r2t.attr,
+	&dev_attr_fnode_data_seq_in_order.attr,
+	&dev_attr_fnode_data_pdu_in_order.attr,
+	&dev_attr_fnode_chap_auth.attr,
+	&dev_attr_fnode_discovery_logout.attr,
+	&dev_attr_fnode_bidi_chap.attr,
+	&dev_attr_fnode_discovery_auth_optional.attr,
+	&dev_attr_fnode_erl.attr,
+	&dev_attr_fnode_first_burst_len.attr,
+	&dev_attr_fnode_def_time2wait.attr,
+	&dev_attr_fnode_def_time2retain.attr,
+	&dev_attr_fnode_max_outstanding_r2t.attr,
+	&dev_attr_fnode_isid.attr,
+	&dev_attr_fnode_tsid.attr,
+	&dev_attr_fnode_max_burst_len.attr,
+	&dev_attr_fnode_def_taskmgmt_tmo.attr,
+	&dev_attr_fnode_targetalias.attr,
+	&dev_attr_fnode_targetname.attr,
+	&dev_attr_fnode_tpgt.attr,
+	&dev_attr_fnode_discovery_parent_idx.attr,
+	&dev_attr_fnode_discovery_parent_type.attr,
+	&dev_attr_fnode_chap_in_idx.attr,
+	&dev_attr_fnode_chap_out_idx.attr,
+	&dev_attr_fnode_username.attr,
+	&dev_attr_fnode_username_in.attr,
+	&dev_attr_fnode_password.attr,
+	&dev_attr_fnode_password_in.attr,
+	&dev_attr_fnode_is_boot_target.attr,
+	NULL,
+};
+
+static umode_t iscsi_flashnode_sess_attr_is_visible(struct kobject *kobj,
+						    struct attribute *attr,
+						    int i)
+{
+	struct device *dev = container_of(kobj, struct device, kobj);
+	struct iscsi_bus_flash_session *fnode_sess =
+						iscsi_dev_to_flash_session(dev);
+	struct iscsi_transport *t = fnode_sess->transport;
+	int param;
+
+	if (attr == &dev_attr_fnode_auto_snd_tgt_disable.attr) {
+		param = ISCSI_FLASHNODE_AUTO_SND_TGT_DISABLE;
+	} else if (attr == &dev_attr_fnode_discovery_session.attr) {
+		param = ISCSI_FLASHNODE_DISCOVERY_SESS;
+	} else if (attr == &dev_attr_fnode_portal_type.attr) {
+		param = ISCSI_FLASHNODE_PORTAL_TYPE;
+	} else if (attr == &dev_attr_fnode_entry_enable.attr) {
+		param = ISCSI_FLASHNODE_ENTRY_EN;
+	} else if (attr == &dev_attr_fnode_immediate_data.attr) {
+		param = ISCSI_FLASHNODE_IMM_DATA_EN;
+	} else if (attr == &dev_attr_fnode_initial_r2t.attr) {
+		param = ISCSI_FLASHNODE_INITIAL_R2T_EN;
+	} else if (attr == &dev_attr_fnode_data_seq_in_order.attr) {
+		param = ISCSI_FLASHNODE_DATASEQ_INORDER;
+	} else if (attr == &dev_attr_fnode_data_pdu_in_order.attr) {
+		param = ISCSI_FLASHNODE_PDU_INORDER;
+	} else if (attr == &dev_attr_fnode_chap_auth.attr) {
+		param = ISCSI_FLASHNODE_CHAP_AUTH_EN;
+	} else if (attr == &dev_attr_fnode_discovery_logout.attr) {
+		param = ISCSI_FLASHNODE_DISCOVERY_LOGOUT_EN;
+	} else if (attr == &dev_attr_fnode_bidi_chap.attr) {
+		param = ISCSI_FLASHNODE_BIDI_CHAP_EN;
+	} else if (attr == &dev_attr_fnode_discovery_auth_optional.attr) {
+		param = ISCSI_FLASHNODE_DISCOVERY_AUTH_OPTIONAL;
+	} else if (attr == &dev_attr_fnode_erl.attr) {
+		param = ISCSI_FLASHNODE_ERL;
+	} else if (attr == &dev_attr_fnode_first_burst_len.attr) {
+		param = ISCSI_FLASHNODE_FIRST_BURST;
+	} else if (attr == &dev_attr_fnode_def_time2wait.attr) {
+		param = ISCSI_FLASHNODE_DEF_TIME2WAIT;
+	} else if (attr == &dev_attr_fnode_def_time2retain.attr) {
+		param = ISCSI_FLASHNODE_DEF_TIME2RETAIN;
+	} else if (attr == &dev_attr_fnode_max_outstanding_r2t.attr) {
+		param = ISCSI_FLASHNODE_MAX_R2T;
+	} else if (attr == &dev_attr_fnode_isid.attr) {
+		param = ISCSI_FLASHNODE_ISID;
+	} else if (attr == &dev_attr_fnode_tsid.attr) {
+		param = ISCSI_FLASHNODE_TSID;
+	} else if (attr == &dev_attr_fnode_max_burst_len.attr) {
+		param = ISCSI_FLASHNODE_MAX_BURST;
+	} else if (attr == &dev_attr_fnode_def_taskmgmt_tmo.attr) {
+		param = ISCSI_FLASHNODE_DEF_TASKMGMT_TMO;
+	} else if (attr == &dev_attr_fnode_targetalias.attr) {
+		param = ISCSI_FLASHNODE_ALIAS;
+	} else if (attr == &dev_attr_fnode_targetname.attr) {
+		param = ISCSI_FLASHNODE_NAME;
+	} else if (attr == &dev_attr_fnode_tpgt.attr) {
+		param = ISCSI_FLASHNODE_TPGT;
+	} else if (attr == &dev_attr_fnode_discovery_parent_idx.attr) {
+		param = ISCSI_FLASHNODE_DISCOVERY_PARENT_IDX;
+	} else if (attr == &dev_attr_fnode_discovery_parent_type.attr) {
+		param = ISCSI_FLASHNODE_DISCOVERY_PARENT_TYPE;
+	} else if (attr == &dev_attr_fnode_chap_in_idx.attr) {
+		param = ISCSI_FLASHNODE_CHAP_IN_IDX;
+	} else if (attr == &dev_attr_fnode_chap_out_idx.attr) {
+		param = ISCSI_FLASHNODE_CHAP_OUT_IDX;
+	} else if (attr == &dev_attr_fnode_username.attr) {
+		param = ISCSI_FLASHNODE_USERNAME;
+	} else if (attr == &dev_attr_fnode_username_in.attr) {
+		param = ISCSI_FLASHNODE_USERNAME_IN;
+	} else if (attr == &dev_attr_fnode_password.attr) {
+		param = ISCSI_FLASHNODE_PASSWORD;
+	} else if (attr == &dev_attr_fnode_password_in.attr) {
+		param = ISCSI_FLASHNODE_PASSWORD_IN;
+	} else if (attr == &dev_attr_fnode_is_boot_target.attr) {
+		param = ISCSI_FLASHNODE_IS_BOOT_TGT;
+	} else {
+		WARN_ONCE(1, "Invalid flashnode session attr");
+		return 0;
+	}
+
+	return t->attr_is_visible(ISCSI_FLASHNODE_PARAM, param);
+}
+
+static struct attribute_group iscsi_flashnode_sess_attr_group = {
+	.attrs = iscsi_flashnode_sess_attrs,
+	.is_visible = iscsi_flashnode_sess_attr_is_visible,
+};
+
+static const struct attribute_group *iscsi_flashnode_sess_attr_groups[] = {
+	&iscsi_flashnode_sess_attr_group,
+	NULL,
+};
+
+static void iscsi_flashnode_sess_release(struct device *dev)
+{
+	struct iscsi_bus_flash_session *fnode_sess =
+						iscsi_dev_to_flash_session(dev);
+
+	kfree(fnode_sess->targetname);
+	kfree(fnode_sess->targetalias);
+	kfree(fnode_sess->portal_type);
+	kfree(fnode_sess);
+}
+
+struct device_type iscsi_flashnode_sess_dev_type = {
+	.name = "iscsi_flashnode_sess_dev_type",
+	.groups = iscsi_flashnode_sess_attr_groups,
+	.release = iscsi_flashnode_sess_release,
+};
+
+/* flash node connection attrs show */
+#define iscsi_flashnode_conn_attr_show(type, name, param)		\
+static ssize_t								\
+show_##type##_##name(struct device *dev, struct device_attribute *attr,	\
+		     char *buf)						\
+{									\
+	struct iscsi_bus_flash_conn *fnode_conn = iscsi_dev_to_flash_conn(dev);\
+	struct iscsi_bus_flash_session *fnode_sess =			\
+				iscsi_flash_conn_to_flash_session(fnode_conn);\
+	struct iscsi_transport *t = fnode_conn->transport;		\
+	return t->get_flashnode_param(fnode_sess, param, buf);		\
+}									\
+
+
+#define iscsi_flashnode_conn_attr(type, name, param)			\
+	iscsi_flashnode_conn_attr_show(type, name, param)		\
+static ISCSI_FLASHNODE_ATTR(type, name, S_IRUGO,			\
+			    show_##type##_##name, NULL);
+
+/* Flash node connection attributes */
+
+iscsi_flashnode_conn_attr(fnode, is_fw_assigned_ipv6,
+			  ISCSI_FLASHNODE_IS_FW_ASSIGNED_IPV6);
+iscsi_flashnode_conn_attr(fnode, header_digest, ISCSI_FLASHNODE_HDR_DGST_EN);
+iscsi_flashnode_conn_attr(fnode, data_digest, ISCSI_FLASHNODE_DATA_DGST_EN);
+iscsi_flashnode_conn_attr(fnode, snack_req, ISCSI_FLASHNODE_SNACK_REQ_EN);
+iscsi_flashnode_conn_attr(fnode, tcp_timestamp_stat,
+			  ISCSI_FLASHNODE_TCP_TIMESTAMP_STAT);
+iscsi_flashnode_conn_attr(fnode, tcp_nagle_disable,
+			  ISCSI_FLASHNODE_TCP_NAGLE_DISABLE);
+iscsi_flashnode_conn_attr(fnode, tcp_wsf_disable,
+			  ISCSI_FLASHNODE_TCP_WSF_DISABLE);
+iscsi_flashnode_conn_attr(fnode, tcp_timer_scale,
+			  ISCSI_FLASHNODE_TCP_TIMER_SCALE);
+iscsi_flashnode_conn_attr(fnode, tcp_timestamp_enable,
+			  ISCSI_FLASHNODE_TCP_TIMESTAMP_EN);
+iscsi_flashnode_conn_attr(fnode, fragment_disable,
+			  ISCSI_FLASHNODE_IP_FRAG_DISABLE);
+iscsi_flashnode_conn_attr(fnode, keepalive_tmo, ISCSI_FLASHNODE_KEEPALIVE_TMO);
+iscsi_flashnode_conn_attr(fnode, port, ISCSI_FLASHNODE_PORT);
+iscsi_flashnode_conn_attr(fnode, ipaddress, ISCSI_FLASHNODE_IPADDR);
+iscsi_flashnode_conn_attr(fnode, max_recv_dlength,
+			  ISCSI_FLASHNODE_MAX_RECV_DLENGTH);
+iscsi_flashnode_conn_attr(fnode, max_xmit_dlength,
+			  ISCSI_FLASHNODE_MAX_XMIT_DLENGTH);
+iscsi_flashnode_conn_attr(fnode, local_port, ISCSI_FLASHNODE_LOCAL_PORT);
+iscsi_flashnode_conn_attr(fnode, ipv4_tos, ISCSI_FLASHNODE_IPV4_TOS);
+iscsi_flashnode_conn_attr(fnode, ipv6_traffic_class, ISCSI_FLASHNODE_IPV6_TC);
+iscsi_flashnode_conn_attr(fnode, ipv6_flow_label,
+			  ISCSI_FLASHNODE_IPV6_FLOW_LABEL);
+iscsi_flashnode_conn_attr(fnode, redirect_ipaddr,
+			  ISCSI_FLASHNODE_REDIRECT_IPADDR);
+iscsi_flashnode_conn_attr(fnode, max_segment_size,
+			  ISCSI_FLASHNODE_MAX_SEGMENT_SIZE);
+iscsi_flashnode_conn_attr(fnode, link_local_ipv6,
+			  ISCSI_FLASHNODE_LINK_LOCAL_IPV6);
+iscsi_flashnode_conn_attr(fnode, tcp_xmit_wsf, ISCSI_FLASHNODE_TCP_XMIT_WSF);
+iscsi_flashnode_conn_attr(fnode, tcp_recv_wsf, ISCSI_FLASHNODE_TCP_RECV_WSF);
+iscsi_flashnode_conn_attr(fnode, statsn, ISCSI_FLASHNODE_STATSN);
+iscsi_flashnode_conn_attr(fnode, exp_statsn, ISCSI_FLASHNODE_EXP_STATSN);
+
+static struct attribute *iscsi_flashnode_conn_attrs[] = {
+	&dev_attr_fnode_is_fw_assigned_ipv6.attr,
+	&dev_attr_fnode_header_digest.attr,
+	&dev_attr_fnode_data_digest.attr,
+	&dev_attr_fnode_snack_req.attr,
+	&dev_attr_fnode_tcp_timestamp_stat.attr,
+	&dev_attr_fnode_tcp_nagle_disable.attr,
+	&dev_attr_fnode_tcp_wsf_disable.attr,
+	&dev_attr_fnode_tcp_timer_scale.attr,
+	&dev_attr_fnode_tcp_timestamp_enable.attr,
+	&dev_attr_fnode_fragment_disable.attr,
+	&dev_attr_fnode_max_recv_dlength.attr,
+	&dev_attr_fnode_max_xmit_dlength.attr,
+	&dev_attr_fnode_keepalive_tmo.attr,
+	&dev_attr_fnode_port.attr,
+	&dev_attr_fnode_ipaddress.attr,
+	&dev_attr_fnode_redirect_ipaddr.attr,
+	&dev_attr_fnode_max_segment_size.attr,
+	&dev_attr_fnode_local_port.attr,
+	&dev_attr_fnode_ipv4_tos.attr,
+	&dev_attr_fnode_ipv6_traffic_class.attr,
+	&dev_attr_fnode_ipv6_flow_label.attr,
+	&dev_attr_fnode_link_local_ipv6.attr,
+	&dev_attr_fnode_tcp_xmit_wsf.attr,
+	&dev_attr_fnode_tcp_recv_wsf.attr,
+	&dev_attr_fnode_statsn.attr,
+	&dev_attr_fnode_exp_statsn.attr,
+	NULL,
+};
+
+static umode_t iscsi_flashnode_conn_attr_is_visible(struct kobject *kobj,
+						    struct attribute *attr,
+						    int i)
+{
+	struct device *dev = container_of(kobj, struct device, kobj);
+	struct iscsi_bus_flash_conn *fnode_conn = iscsi_dev_to_flash_conn(dev);
+	struct iscsi_transport *t = fnode_conn->transport;
+	int param;
+
+	if (attr == &dev_attr_fnode_is_fw_assigned_ipv6.attr) {
+		param = ISCSI_FLASHNODE_IS_FW_ASSIGNED_IPV6;
+	} else if (attr == &dev_attr_fnode_header_digest.attr) {
+		param = ISCSI_FLASHNODE_HDR_DGST_EN;
+	} else if (attr == &dev_attr_fnode_data_digest.attr) {
+		param = ISCSI_FLASHNODE_DATA_DGST_EN;
+	} else if (attr == &dev_attr_fnode_snack_req.attr) {
+		param = ISCSI_FLASHNODE_SNACK_REQ_EN;
+	} else if (attr == &dev_attr_fnode_tcp_timestamp_stat.attr) {
+		param = ISCSI_FLASHNODE_TCP_TIMESTAMP_STAT;
+	} else if (attr == &dev_attr_fnode_tcp_nagle_disable.attr) {
+		param = ISCSI_FLASHNODE_TCP_NAGLE_DISABLE;
+	} else if (attr == &dev_attr_fnode_tcp_wsf_disable.attr) {
+		param = ISCSI_FLASHNODE_TCP_WSF_DISABLE;
+	} else if (attr == &dev_attr_fnode_tcp_timer_scale.attr) {
+		param = ISCSI_FLASHNODE_TCP_TIMER_SCALE;
+	} else if (attr == &dev_attr_fnode_tcp_timestamp_enable.attr) {
+		param = ISCSI_FLASHNODE_TCP_TIMESTAMP_EN;
+	} else if (attr == &dev_attr_fnode_fragment_disable.attr) {
+		param = ISCSI_FLASHNODE_IP_FRAG_DISABLE;
+	} else if (attr == &dev_attr_fnode_max_recv_dlength.attr) {
+		param = ISCSI_FLASHNODE_MAX_RECV_DLENGTH;
+	} else if (attr == &dev_attr_fnode_max_xmit_dlength.attr) {
+		param = ISCSI_FLASHNODE_MAX_XMIT_DLENGTH;
+	} else if (attr == &dev_attr_fnode_keepalive_tmo.attr) {
+		param = ISCSI_FLASHNODE_KEEPALIVE_TMO;
+	} else if (attr == &dev_attr_fnode_port.attr) {
+		param = ISCSI_FLASHNODE_PORT;
+	} else if (attr == &dev_attr_fnode_ipaddress.attr) {
+		param = ISCSI_FLASHNODE_IPADDR;
+	} else if (attr == &dev_attr_fnode_redirect_ipaddr.attr) {
+		param = ISCSI_FLASHNODE_REDIRECT_IPADDR;
+	} else if (attr == &dev_attr_fnode_max_segment_size.attr) {
+		param = ISCSI_FLASHNODE_MAX_SEGMENT_SIZE;
+	} else if (attr == &dev_attr_fnode_local_port.attr) {
+		param = ISCSI_FLASHNODE_LOCAL_PORT;
+	} else if (attr == &dev_attr_fnode_ipv4_tos.attr) {
+		param = ISCSI_FLASHNODE_IPV4_TOS;
+	} else if (attr == &dev_attr_fnode_ipv6_traffic_class.attr) {
+		param = ISCSI_FLASHNODE_IPV6_TC;
+	} else if (attr == &dev_attr_fnode_ipv6_flow_label.attr) {
+		param = ISCSI_FLASHNODE_IPV6_FLOW_LABEL;
+	} else if (attr == &dev_attr_fnode_link_local_ipv6.attr) {
+		param = ISCSI_FLASHNODE_LINK_LOCAL_IPV6;
+	} else if (attr == &dev_attr_fnode_tcp_xmit_wsf.attr) {
+		param = ISCSI_FLASHNODE_TCP_XMIT_WSF;
+	} else if (attr == &dev_attr_fnode_tcp_recv_wsf.attr) {
+		param = ISCSI_FLASHNODE_TCP_RECV_WSF;
+	} else if (attr == &dev_attr_fnode_statsn.attr) {
+		param = ISCSI_FLASHNODE_STATSN;
+	} else if (attr == &dev_attr_fnode_exp_statsn.attr) {
+		param = ISCSI_FLASHNODE_EXP_STATSN;
+	} else {
+		WARN_ONCE(1, "Invalid flashnode connection attr");
+		return 0;
+	}
+
+	return t->attr_is_visible(ISCSI_FLASHNODE_PARAM, param);
+}
+
+static struct attribute_group iscsi_flashnode_conn_attr_group = {
+	.attrs = iscsi_flashnode_conn_attrs,
+	.is_visible = iscsi_flashnode_conn_attr_is_visible,
+};
+
+static const struct attribute_group *iscsi_flashnode_conn_attr_groups[] = {
+	&iscsi_flashnode_conn_attr_group,
+	NULL,
+};
+
+static void iscsi_flashnode_conn_release(struct device *dev)
+{
+	struct iscsi_bus_flash_conn *fnode_conn = iscsi_dev_to_flash_conn(dev);
+
+	kfree(fnode_conn->ipaddress);
+	kfree(fnode_conn->redirect_ipaddr);
+	kfree(fnode_conn->link_local_ipv6_addr);
+	kfree(fnode_conn);
+}
+
+struct device_type iscsi_flashnode_conn_dev_type = {
+	.name = "iscsi_flashnode_conn_dev_type",
+	.groups = iscsi_flashnode_conn_attr_groups,
+	.release = iscsi_flashnode_conn_release,
+};
+
+struct bus_type iscsi_flashnode_bus;
+
+int iscsi_flashnode_bus_match(struct device *dev,
+				     struct device_driver *drv)
+{
+	if (dev->bus == &iscsi_flashnode_bus)
+		return 1;
+	return 0;
+}
+EXPORT_SYMBOL_GPL(iscsi_flashnode_bus_match);
+
+struct bus_type iscsi_flashnode_bus = {
+	.name = "iscsi_flashnode",
+	.match = &iscsi_flashnode_bus_match,
+};
+
+/**
+ * iscsi_create_flashnode_sess - Add flashnode session entry in sysfs
+ * @shost: pointer to host data
+ * @index: index of flashnode to add in sysfs
+ * @transport: pointer to transport data
+ * @dd_size: total size to allocate
+ *
+ * Adds a sysfs entry for the flashnode session attributes
+ *
+ * Returns:
+ *  pointer to allocated flashnode sess on sucess
+ *  %NULL on failure
+ */
+struct iscsi_bus_flash_session *
+iscsi_create_flashnode_sess(struct Scsi_Host *shost, int index,
+			    struct iscsi_transport *transport,
+			    int dd_size)
+{
+	struct iscsi_bus_flash_session *fnode_sess;
+	int err;
+
+	fnode_sess = kzalloc(sizeof(*fnode_sess) + dd_size, GFP_KERNEL);
+	if (!fnode_sess)
+		return NULL;
+
+	fnode_sess->transport = transport;
+	fnode_sess->target_id = index;
+	fnode_sess->dev.type = &iscsi_flashnode_sess_dev_type;
+	fnode_sess->dev.bus = &iscsi_flashnode_bus;
+	fnode_sess->dev.parent = &shost->shost_gendev;
+	dev_set_name(&fnode_sess->dev, "flashnode_sess-%u:%u",
+		     shost->host_no, index);
+
+	err = device_register(&fnode_sess->dev);
+	if (err)
+		goto free_fnode_sess;
+
+	if (dd_size)
+		fnode_sess->dd_data = &fnode_sess[1];
+
+	return fnode_sess;
+
+free_fnode_sess:
+	kfree(fnode_sess);
+	return NULL;
+}
+EXPORT_SYMBOL_GPL(iscsi_create_flashnode_sess);
+
+/**
+ * iscsi_create_flashnode_conn - Add flashnode conn entry in sysfs
+ * @shost: pointer to host data
+ * @fnode_sess: pointer to the parent flashnode session entry
+ * @transport: pointer to transport data
+ * @dd_size: total size to allocate
+ *
+ * Adds a sysfs entry for the flashnode connection attributes
+ *
+ * Returns:
+ *  pointer to allocated flashnode conn on success
+ *  %NULL on failure
+ */
+struct iscsi_bus_flash_conn *
+iscsi_create_flashnode_conn(struct Scsi_Host *shost,
+			    struct iscsi_bus_flash_session *fnode_sess,
+			    struct iscsi_transport *transport,
+			    int dd_size)
+{
+	struct iscsi_bus_flash_conn *fnode_conn;
+	int err;
+
+	fnode_conn = kzalloc(sizeof(*fnode_conn) + dd_size, GFP_KERNEL);
+	if (!fnode_conn)
+		return NULL;
+
+	fnode_conn->transport = transport;
+	fnode_conn->dev.type = &iscsi_flashnode_conn_dev_type;
+	fnode_conn->dev.bus = &iscsi_flashnode_bus;
+	fnode_conn->dev.parent = &fnode_sess->dev;
+	dev_set_name(&fnode_conn->dev, "flashnode_conn-%u:%u:0",
+		     shost->host_no, fnode_sess->target_id);
+
+	err = device_register(&fnode_conn->dev);
+	if (err)
+		goto free_fnode_conn;
+
+	if (dd_size)
+		fnode_conn->dd_data = &fnode_conn[1];
+
+	return fnode_conn;
+
+free_fnode_conn:
+	kfree(fnode_conn);
+	return NULL;
+}
+EXPORT_SYMBOL_GPL(iscsi_create_flashnode_conn);
+
+/**
+ * iscsi_is_flashnode_conn_dev - verify passed device is to be flashnode conn
+ * @dev: device to verify
+ * @data: pointer to data containing value to use for verification
+ *
+ * Verifies if the passed device is flashnode conn device
+ *
+ * Returns:
+ *  1 on success
+ *  0 on failure
+ */
+int iscsi_is_flashnode_conn_dev(struct device *dev, void *data)
+{
+	return dev->bus == &iscsi_flashnode_bus;
+}
+EXPORT_SYMBOL_GPL(iscsi_is_flashnode_conn_dev);
+
+static int iscsi_destroy_flashnode_conn(struct iscsi_bus_flash_conn *fnode_conn)
+{
+	device_unregister(&fnode_conn->dev);
+	return 0;
+}
+
+static int flashnode_match_index(struct device *dev, void *data)
+{
+	struct iscsi_bus_flash_session *fnode_sess = NULL;
+	int ret = 0;
+
+	if (!iscsi_flashnode_bus_match(dev, NULL))
+		goto exit_match_index;
+
+	fnode_sess = iscsi_dev_to_flash_session(dev);
+	ret = (fnode_sess->target_id == *((int *)data)) ? 1 : 0;
+
+exit_match_index:
+	return ret;
+}
+
+/**
+ * iscsi_get_flashnode_by_index -finds flashnode session entry by index
+ * @shost: pointer to host data
+ * @idx: index to match
+ *
+ * Finds the flashnode session object for the passed index
+ *
+ * Returns:
+ *  pointer to found flashnode session object on success
+ *  %NULL on failure
+ */
+static struct iscsi_bus_flash_session *
+iscsi_get_flashnode_by_index(struct Scsi_Host *shost, uint32_t idx)
+{
+	struct iscsi_bus_flash_session *fnode_sess = NULL;
+	struct device *dev;
+
+	dev = device_find_child(&shost->shost_gendev, &idx,
+				flashnode_match_index);
+	if (dev)
+		fnode_sess = iscsi_dev_to_flash_session(dev);
+
+	return fnode_sess;
+}
+
+/**
+ * iscsi_find_flashnode_sess - finds flashnode session entry
+ * @shost: pointer to host data
+ * @data: pointer to data containing value to use for comparison
+ * @fn: function pointer that does actual comparison
+ *
+ * Finds the flashnode session object comparing the data passed using logic
+ * defined in passed function pointer
+ *
+ * Returns:
+ *  pointer to found flashnode session device object on success
+ *  %NULL on failure
+ */
+struct device *
+iscsi_find_flashnode_sess(struct Scsi_Host *shost, void *data,
+			  int (*fn)(struct device *dev, void *data))
+{
+	return device_find_child(&shost->shost_gendev, data, fn);
+}
+EXPORT_SYMBOL_GPL(iscsi_find_flashnode_sess);
+
+/**
+ * iscsi_find_flashnode_conn - finds flashnode connection entry
+ * @fnode_sess: pointer to parent flashnode session entry
+ *
+ * Finds the flashnode connection object comparing the data passed using logic
+ * defined in passed function pointer
+ *
+ * Returns:
+ *  pointer to found flashnode connection device object on success
+ *  %NULL on failure
+ */
+struct device *
+iscsi_find_flashnode_conn(struct iscsi_bus_flash_session *fnode_sess)
+{
+	return device_find_child(&fnode_sess->dev, NULL,
+				 iscsi_is_flashnode_conn_dev);
+}
+EXPORT_SYMBOL_GPL(iscsi_find_flashnode_conn);
+
+static int iscsi_iter_destroy_flashnode_conn_fn(struct device *dev, void *data)
+{
+	if (!iscsi_is_flashnode_conn_dev(dev, NULL))
+		return 0;
+
+	return iscsi_destroy_flashnode_conn(iscsi_dev_to_flash_conn(dev));
+}
+
+/**
+ * iscsi_destroy_flashnode_sess - destory flashnode session entry
+ * @fnode_sess: pointer to flashnode session entry to be destroyed
+ *
+ * Deletes the flashnode session entry and all children flashnode connection
+ * entries from sysfs
+ */
+void iscsi_destroy_flashnode_sess(struct iscsi_bus_flash_session *fnode_sess)
+{
+	int err;
+
+	err = device_for_each_child(&fnode_sess->dev, NULL,
+				    iscsi_iter_destroy_flashnode_conn_fn);
+	if (err)
+		pr_err("Could not delete all connections for %s. Error %d.\n",
+		       fnode_sess->dev.kobj.name, err);
+
+	device_unregister(&fnode_sess->dev);
+}
+EXPORT_SYMBOL_GPL(iscsi_destroy_flashnode_sess);
+
+static int iscsi_iter_destroy_flashnode_fn(struct device *dev, void *data)
+{
+	if (!iscsi_flashnode_bus_match(dev, NULL))
+		return 0;
+
+	iscsi_destroy_flashnode_sess(iscsi_dev_to_flash_session(dev));
+	return 0;
+}
+
+/**
+ * iscsi_destroy_all_flashnode - destory all flashnode session entries
+ * @shost: pointer to host data
+ *
+ * Destroys all the flashnode session entries and all corresponding children
+ * flashnode connection entries from sysfs
+ */
+void iscsi_destroy_all_flashnode(struct Scsi_Host *shost)
+{
+	device_for_each_child(&shost->shost_gendev, NULL,
+			      iscsi_iter_destroy_flashnode_fn);
+}
+EXPORT_SYMBOL_GPL(iscsi_destroy_all_flashnode);
+
+/*
+>>>>>>> refs/remotes/origin/master
  * BSG support
  */
 /**
@@ -575,7 +1279,10 @@ iscsi_bsg_host_add(struct Scsi_Host *shost, struct iscsi_cls_host *ihost)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int iscsi_setup_host(struct transport_container *tc, struct device *dev,
 			    struct device *cdev)
 {
@@ -586,7 +1293,10 @@ static int iscsi_setup_host(struct transport_container *tc, struct device *dev,
 	atomic_set(&ihost->nr_scans, 0);
 	mutex_init(&ihost->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	iscsi_bsg_host_add(shost, ihost);
 	/* ignore any bsg add error - we just can't do sgio */
@@ -601,10 +1311,16 @@ static int iscsi_remove_host(struct transport_container *tc,
 	struct iscsi_cls_host *ihost = shost->shost_data;
 
 	if (ihost->bsg_q) {
+<<<<<<< HEAD
 		bsg_remove_queue(ihost->bsg_q);
 		blk_cleanup_queue(ihost->bsg_q);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bsg_unregister_queue(ihost->bsg_q);
+		blk_cleanup_queue(ihost->bsg_q);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -612,10 +1328,14 @@ static DECLARE_TRANSPORT_CLASS(iscsi_host_class,
 			       "iscsi_host",
 			       iscsi_setup_host,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       NULL,
 =======
 			       iscsi_remove_host,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       iscsi_remove_host,
+>>>>>>> refs/remotes/origin/master
 			       NULL);
 
 static DECLARE_TRANSPORT_CLASS(iscsi_session_class,
@@ -735,7 +1455,10 @@ int iscsi_session_chkready(struct iscsi_cls_session *session)
 EXPORT_SYMBOL_GPL(iscsi_session_chkready);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int iscsi_is_session_online(struct iscsi_cls_session *session)
 {
 	unsigned long flags;
@@ -749,7 +1472,10 @@ int iscsi_is_session_online(struct iscsi_cls_session *session)
 }
 EXPORT_SYMBOL_GPL(iscsi_is_session_online);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void iscsi_session_release(struct device *dev)
 {
 	struct iscsi_cls_session *session = iscsi_dev_to_session(dev);
@@ -762,17 +1488,23 @@ static void iscsi_session_release(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int iscsi_is_session_dev(const struct device *dev)
 {
 	return dev->release == iscsi_session_release;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int iscsi_is_session_dev(const struct device *dev)
 {
 	return dev->release == iscsi_session_release;
 }
 EXPORT_SYMBOL_GPL(iscsi_is_session_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int iscsi_iter_session_fn(struct device *dev, void *data)
 {
@@ -948,7 +1680,11 @@ static void session_recovery_timedout(struct work_struct *work)
 		session->transport->session_recovery_timedout(session);
 
 	ISCSI_DBG_TRANS_SESSION(session, "Unblocking SCSI target\n");
+<<<<<<< HEAD
 	scsi_target_unblock(&session->dev);
+=======
+	scsi_target_unblock(&session->dev, SDEV_TRANSPORT_OFFLINE);
+>>>>>>> refs/remotes/origin/master
 	ISCSI_DBG_TRANS_SESSION(session, "Completed unblocking SCSI target\n");
 }
 
@@ -971,7 +1707,11 @@ static void __iscsi_unblock_session(struct work_struct *work)
 	session->state = ISCSI_SESSION_LOGGED_IN;
 	spin_unlock_irqrestore(&session->lock, flags);
 	/* start IO */
+<<<<<<< HEAD
 	scsi_target_unblock(&session->dev);
+=======
+	scsi_target_unblock(&session->dev, SDEV_RUNNING);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Only do kernel scanning if the driver is properly hooked into
 	 * the async scanning code (drivers like iscsi_tcp do login and
@@ -1035,9 +1775,13 @@ static void __iscsi_unbind_session(struct work_struct *work)
 	struct iscsi_cls_host *ihost = shost->shost_data;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int target_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int target_id;
+>>>>>>> refs/remotes/origin/master
 
 	ISCSI_DBG_TRANS_SESSION(session, "Unbinding session\n");
 
@@ -1050,20 +1794,31 @@ static void __iscsi_unbind_session(struct work_struct *work)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	target_id = session->target_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	target_id = session->target_id;
+>>>>>>> refs/remotes/origin/master
 	session->target_id = ISCSI_MAX_TARGET;
 	spin_unlock_irqrestore(&session->lock, flags);
 	mutex_unlock(&ihost->mutex);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (session->ida_used)
 		ida_simple_remove(&iscsi_sess_ida, target_id);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (session->ida_used)
+		ida_simple_remove(&iscsi_sess_ida, target_id);
+
+>>>>>>> refs/remotes/origin/master
 	scsi_remove_target(&session->dev);
 	iscsi_session_event(session, ISCSI_KEVENT_UNBIND_SESSION);
 	ISCSI_DBG_TRANS_SESSION(session, "Completed target removal\n");
@@ -1082,9 +1837,13 @@ iscsi_alloc_session(struct Scsi_Host *shost, struct iscsi_transport *transport,
 
 	session->transport = transport;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	session->creator = -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	session->creator = -1;
+>>>>>>> refs/remotes/origin/master
 	session->recovery_tmo = 120;
 	session->state = ISCSI_SESSION_FREE;
 	INIT_DELAYED_WORK(&session->recovery_work, session_recovery_timedout);
@@ -1109,6 +1868,7 @@ iscsi_alloc_session(struct Scsi_Host *shost, struct iscsi_transport *transport,
 EXPORT_SYMBOL_GPL(iscsi_alloc_session);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int iscsi_get_next_target_id(struct device *dev, void *data)
 {
 	struct iscsi_cls_session *session;
@@ -1128,21 +1888,28 @@ static int iscsi_get_next_target_id(struct device *dev, void *data)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int iscsi_add_session(struct iscsi_cls_session *session, unsigned int target_id)
 {
 	struct Scsi_Host *shost = iscsi_session_to_shost(session);
 	struct iscsi_cls_host *ihost;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int id = target_id;
 =======
 	int id = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int id = 0;
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	ihost = shost->shost_data;
 	session->sid = atomic_add_return(1, &iscsi_session_nr);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (id == ISCSI_MAX_TARGET) {
 		for (id = 0; id < ISCSI_MAX_TARGET; id++) {
@@ -1163,6 +1930,8 @@ int iscsi_add_session(struct iscsi_cls_session *session, unsigned int target_id)
 	}
 	session->target_id = id;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (target_id == ISCSI_MAX_TARGET) {
 		id = ida_simple_get(&iscsi_sess_ida, 0, 0, GFP_KERNEL);
 
@@ -1175,7 +1944,10 @@ int iscsi_add_session(struct iscsi_cls_session *session, unsigned int target_id)
 		session->ida_used = true;
 	} else
 		session->target_id = target_id;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	dev_set_name(&session->dev, "session%u", session->sid);
 	err = device_add(&session->dev);
@@ -1183,10 +1955,14 @@ int iscsi_add_session(struct iscsi_cls_session *session, unsigned int target_id)
 		iscsi_cls_session_printk(KERN_ERR, session,
 					 "could not register session's dev\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		goto release_host;
 =======
 		goto release_ida;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto release_ida;
+>>>>>>> refs/remotes/origin/master
 	}
 	transport_register_device(&session->dev);
 
@@ -1199,14 +1975,20 @@ int iscsi_add_session(struct iscsi_cls_session *session, unsigned int target_id)
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 release_host:
 	scsi_host_put(shost);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 release_ida:
 	if (session->ida_used)
 		ida_simple_remove(&iscsi_sess_ida, session->target_id);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 EXPORT_SYMBOL_GPL(iscsi_add_session);
@@ -1287,7 +2069,11 @@ void iscsi_remove_session(struct iscsi_cls_session *session)
 	session->state = ISCSI_SESSION_FREE;
 	spin_unlock_irqrestore(&session->lock, flags);
 
+<<<<<<< HEAD
 	scsi_target_unblock(&session->dev);
+=======
+	scsi_target_unblock(&session->dev, SDEV_TRANSPORT_OFFLINE);
+>>>>>>> refs/remotes/origin/master
 	/* flush running scans then delete devices */
 	scsi_flush_work(shost);
 	__iscsi_unbind_session(&session->unbind_work);
@@ -1451,8 +2237,13 @@ int iscsi_recv_pdu(struct iscsi_cls_conn *conn, struct iscsi_hdr *hdr,
 	struct iscsi_uevent *ev;
 	char *pdu;
 	struct iscsi_internal *priv;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(sizeof(*ev) + sizeof(struct iscsi_hdr) +
 			      data_size);
+=======
+	int len = nlmsg_total_size(sizeof(*ev) + sizeof(struct iscsi_hdr) +
+				   data_size);
+>>>>>>> refs/remotes/origin/master
 
 	priv = iscsi_if_transport_lookup(conn->transport);
 	if (!priv)
@@ -1467,7 +2258,11 @@ int iscsi_recv_pdu(struct iscsi_cls_conn *conn, struct iscsi_hdr *hdr,
 	}
 
 	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
+<<<<<<< HEAD
 	ev = NLMSG_DATA(nlh);
+=======
+	ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	memset(ev, 0, sizeof(*ev));
 	ev->transport_handle = iscsi_handle(conn->transport);
 	ev->type = ISCSI_KEVENT_RECV_PDU;
@@ -1488,7 +2283,11 @@ int iscsi_offload_mesg(struct Scsi_Host *shost,
 	struct nlmsghdr	*nlh;
 	struct sk_buff *skb;
 	struct iscsi_uevent *ev;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(sizeof(*ev) + data_size);
+=======
+	int len = nlmsg_total_size(sizeof(*ev) + data_size);
+>>>>>>> refs/remotes/origin/master
 
 	skb = alloc_skb(len, GFP_ATOMIC);
 	if (!skb) {
@@ -1497,7 +2296,11 @@ int iscsi_offload_mesg(struct Scsi_Host *shost,
 	}
 
 	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
+<<<<<<< HEAD
 	ev = NLMSG_DATA(nlh);
+=======
+	ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	memset(ev, 0, sizeof(*ev));
 	ev->type = type;
 	ev->transport_handle = iscsi_handle(transport);
@@ -1522,7 +2325,11 @@ void iscsi_conn_error_event(struct iscsi_cls_conn *conn, enum iscsi_err error)
 	struct sk_buff	*skb;
 	struct iscsi_uevent *ev;
 	struct iscsi_internal *priv;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(sizeof(*ev));
+=======
+	int len = nlmsg_total_size(sizeof(*ev));
+>>>>>>> refs/remotes/origin/master
 
 	priv = iscsi_if_transport_lookup(conn->transport);
 	if (!priv)
@@ -1536,7 +2343,11 @@ void iscsi_conn_error_event(struct iscsi_cls_conn *conn, enum iscsi_err error)
 	}
 
 	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
+<<<<<<< HEAD
 	ev = NLMSG_DATA(nlh);
+=======
+	ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	ev->transport_handle = iscsi_handle(conn->transport);
 	ev->type = ISCSI_KEVENT_CONN_ERROR;
 	ev->r.connerror.error = error;
@@ -1551,7 +2362,10 @@ void iscsi_conn_error_event(struct iscsi_cls_conn *conn, enum iscsi_err error)
 EXPORT_SYMBOL_GPL(iscsi_conn_error_event);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void iscsi_conn_login_event(struct iscsi_cls_conn *conn,
 			    enum iscsi_conn_state state)
 {
@@ -1559,7 +2373,11 @@ void iscsi_conn_login_event(struct iscsi_cls_conn *conn,
 	struct sk_buff  *skb;
 	struct iscsi_uevent *ev;
 	struct iscsi_internal *priv;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(sizeof(*ev));
+=======
+	int len = nlmsg_total_size(sizeof(*ev));
+>>>>>>> refs/remotes/origin/master
 
 	priv = iscsi_if_transport_lookup(conn->transport);
 	if (!priv)
@@ -1573,7 +2391,11 @@ void iscsi_conn_login_event(struct iscsi_cls_conn *conn,
 	}
 
 	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
+<<<<<<< HEAD
 	ev = NLMSG_DATA(nlh);
+=======
+	ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	ev->transport_handle = iscsi_handle(conn->transport);
 	ev->type = ISCSI_KEVENT_CONN_LOGIN_STATE;
 	ev->r.conn_login.state = state;
@@ -1593,7 +2415,11 @@ void iscsi_post_host_event(uint32_t host_no, struct iscsi_transport *transport,
 	struct nlmsghdr *nlh;
 	struct sk_buff *skb;
 	struct iscsi_uevent *ev;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(sizeof(*ev) + data_size);
+=======
+	int len = nlmsg_total_size(sizeof(*ev) + data_size);
+>>>>>>> refs/remotes/origin/master
 
 	skb = alloc_skb(len, GFP_NOIO);
 	if (!skb) {
@@ -1603,7 +2429,11 @@ void iscsi_post_host_event(uint32_t host_no, struct iscsi_transport *transport,
 	}
 
 	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
+<<<<<<< HEAD
 	ev = NLMSG_DATA(nlh);
+=======
+	ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	ev->transport_handle = iscsi_handle(transport);
 	ev->type = ISCSI_KEVENT_HOST_EVENT;
 	ev->r.host_event.host_no = host_no;
@@ -1624,7 +2454,11 @@ void iscsi_ping_comp_event(uint32_t host_no, struct iscsi_transport *transport,
 	struct nlmsghdr *nlh;
 	struct sk_buff *skb;
 	struct iscsi_uevent *ev;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(sizeof(*ev) + data_size);
+=======
+	int len = nlmsg_total_size(sizeof(*ev) + data_size);
+>>>>>>> refs/remotes/origin/master
 
 	skb = alloc_skb(len, GFP_NOIO);
 	if (!skb) {
@@ -1633,7 +2467,11 @@ void iscsi_ping_comp_event(uint32_t host_no, struct iscsi_transport *transport,
 	}
 
 	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
+<<<<<<< HEAD
 	ev = NLMSG_DATA(nlh);
+=======
+	ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	ev->transport_handle = iscsi_handle(transport);
 	ev->type = ISCSI_KEVENT_PING_COMP;
 	ev->r.ping_comp.host_no = host_no;
@@ -1646,14 +2484,21 @@ void iscsi_ping_comp_event(uint32_t host_no, struct iscsi_transport *transport,
 }
 EXPORT_SYMBOL_GPL(iscsi_ping_comp_event);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 iscsi_if_send_reply(uint32_t group, int seq, int type, int done, int multi,
 		    void *payload, int size)
 {
 	struct sk_buff	*skb;
 	struct nlmsghdr	*nlh;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(size);
+=======
+	int len = nlmsg_total_size(size);
+>>>>>>> refs/remotes/origin/master
 	int flags = multi ? NLM_F_MULTI : 0;
 	int t = done ? NLMSG_DONE : type;
 
@@ -1665,24 +2510,39 @@ iscsi_if_send_reply(uint32_t group, int seq, int type, int done, int multi,
 
 	nlh = __nlmsg_put(skb, 0, 0, t, (len - sizeof(*nlh)), 0);
 	nlh->nlmsg_flags = flags;
+<<<<<<< HEAD
 	memcpy(NLMSG_DATA(nlh), payload, size);
+=======
+	memcpy(nlmsg_data(nlh), payload, size);
+>>>>>>> refs/remotes/origin/master
 	return iscsi_multicast_skb(skb, group, GFP_ATOMIC);
 }
 
 static int
 iscsi_if_get_stats(struct iscsi_transport *transport, struct nlmsghdr *nlh)
 {
+<<<<<<< HEAD
 	struct iscsi_uevent *ev = NLMSG_DATA(nlh);
+=======
+	struct iscsi_uevent *ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_stats *stats;
 	struct sk_buff *skbstat;
 	struct iscsi_cls_conn *conn;
 	struct nlmsghdr	*nlhstat;
 	struct iscsi_uevent *evstat;
 	struct iscsi_internal *priv;
+<<<<<<< HEAD
 	int len = NLMSG_SPACE(sizeof(*ev) +
 			      sizeof(struct iscsi_stats) +
 			      sizeof(struct iscsi_stats_custom) *
 			      ISCSI_STATS_CUSTOM_MAX);
+=======
+	int len = nlmsg_total_size(sizeof(*ev) +
+				   sizeof(struct iscsi_stats) +
+				   sizeof(struct iscsi_stats_custom) *
+				   ISCSI_STATS_CUSTOM_MAX);
+>>>>>>> refs/remotes/origin/master
 	int err = 0;
 
 	priv = iscsi_if_transport_lookup(transport);
@@ -1705,7 +2565,11 @@ iscsi_if_get_stats(struct iscsi_transport *transport, struct nlmsghdr *nlh)
 
 		nlhstat = __nlmsg_put(skbstat, 0, 0, 0,
 				      (len - sizeof(*nlhstat)), 0);
+<<<<<<< HEAD
 		evstat = NLMSG_DATA(nlhstat);
+=======
+		evstat = nlmsg_data(nlhstat);
+>>>>>>> refs/remotes/origin/master
 		memset(evstat, 0, sizeof(*evstat));
 		evstat->transport_handle = iscsi_handle(conn->transport);
 		evstat->type = nlh->nlmsg_type;
@@ -1718,12 +2582,21 @@ iscsi_if_get_stats(struct iscsi_transport *transport, struct nlmsghdr *nlh)
 		memset(stats, 0, sizeof(*stats));
 
 		transport->get_stats(conn, stats);
+<<<<<<< HEAD
 		actual_size = NLMSG_SPACE(sizeof(struct iscsi_uevent) +
 					  sizeof(struct iscsi_stats) +
 					  sizeof(struct iscsi_stats_custom) *
 					  stats->custom_length);
 		actual_size -= sizeof(*nlhstat);
 		actual_size = NLMSG_LENGTH(actual_size);
+=======
+		actual_size = nlmsg_total_size(sizeof(struct iscsi_uevent) +
+					       sizeof(struct iscsi_stats) +
+					       sizeof(struct iscsi_stats_custom) *
+					       stats->custom_length);
+		actual_size -= sizeof(*nlhstat);
+		actual_size = nlmsg_msg_size(actual_size);
+>>>>>>> refs/remotes/origin/master
 		skb_trim(skbstat, NLMSG_ALIGN(actual_size));
 		nlhstat->nlmsg_len = actual_size;
 
@@ -1747,7 +2620,11 @@ int iscsi_session_event(struct iscsi_cls_session *session,
 	struct iscsi_uevent *ev;
 	struct sk_buff  *skb;
 	struct nlmsghdr *nlh;
+<<<<<<< HEAD
 	int rc, len = NLMSG_SPACE(sizeof(*ev));
+=======
+	int rc, len = nlmsg_total_size(sizeof(*ev));
+>>>>>>> refs/remotes/origin/master
 
 	priv = iscsi_if_transport_lookup(session->transport);
 	if (!priv)
@@ -1763,7 +2640,11 @@ int iscsi_session_event(struct iscsi_cls_session *session,
 	}
 
 	nlh = __nlmsg_put(skb, 0, 0, 0, (len - sizeof(*nlh)), 0);
+<<<<<<< HEAD
 	ev = NLMSG_DATA(nlh);
+=======
+	ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	ev->transport_handle = iscsi_handle(session->transport);
 
 	ev->type = event;
@@ -1807,6 +2688,7 @@ EXPORT_SYMBOL_GPL(iscsi_session_event);
 static int
 iscsi_if_create_session(struct iscsi_internal *priv, struct iscsi_endpoint *ep,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct iscsi_uevent *ev, uint32_t initial_cmdsn,
 			uint16_t cmds_max, uint16_t queue_depth)
 =======
@@ -1814,6 +2696,11 @@ iscsi_if_create_session(struct iscsi_internal *priv, struct iscsi_endpoint *ep,
 			uint32_t initial_cmdsn,	uint16_t cmds_max,
 			uint16_t queue_depth)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct iscsi_uevent *ev, pid_t pid,
+			uint32_t initial_cmdsn,	uint16_t cmds_max,
+			uint16_t queue_depth)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iscsi_transport *transport = priv->iscsi_transport;
 	struct iscsi_cls_session *session;
@@ -1825,9 +2712,13 @@ iscsi_if_create_session(struct iscsi_internal *priv, struct iscsi_endpoint *ep,
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	session->creator = pid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	session->creator = pid;
+>>>>>>> refs/remotes/origin/master
 	shost = iscsi_session_to_shost(session);
 	ev->r.c_session_ret.host_no = shost->host_no;
 	ev->r.c_session_ret.sid = session->sid;
@@ -2072,7 +2963,10 @@ iscsi_set_path(struct iscsi_transport *transport, struct iscsi_uevent *ev)
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 iscsi_set_iface_params(struct iscsi_transport *transport,
 		       struct iscsi_uevent *ev, uint32_t len)
 {
@@ -2125,7 +3019,11 @@ iscsi_send_ping(struct iscsi_transport *transport, struct iscsi_uevent *ev)
 static int
 iscsi_get_chap(struct iscsi_transport *transport, struct nlmsghdr *nlh)
 {
+<<<<<<< HEAD
 	struct iscsi_uevent *ev = NLMSG_DATA(nlh);
+=======
+	struct iscsi_uevent *ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	struct Scsi_Host *shost = NULL;
 	struct iscsi_chap_rec *chap_rec;
 	struct iscsi_internal *priv;
@@ -2144,7 +3042,11 @@ iscsi_get_chap(struct iscsi_transport *transport, struct nlmsghdr *nlh)
 		return -EINVAL;
 
 	chap_buf_size = (ev->u.get_chap.num_entries * sizeof(*chap_rec));
+<<<<<<< HEAD
 	len = NLMSG_SPACE(sizeof(*ev) + chap_buf_size);
+=======
+	len = nlmsg_total_size(sizeof(*ev) + chap_buf_size);
+>>>>>>> refs/remotes/origin/master
 
 	shost = scsi_host_lookup(ev->u.get_chap.host_no);
 	if (!shost) {
@@ -2165,7 +3067,11 @@ iscsi_get_chap(struct iscsi_transport *transport, struct nlmsghdr *nlh)
 
 		nlhchap = __nlmsg_put(skbchap, 0, 0, 0,
 				      (len - sizeof(*nlhchap)), 0);
+<<<<<<< HEAD
 		evchap = NLMSG_DATA(nlhchap);
+=======
+		evchap = nlmsg_data(nlhchap);
+>>>>>>> refs/remotes/origin/master
 		memset(evchap, 0, sizeof(*evchap));
 		evchap->transport_handle = iscsi_handle(transport);
 		evchap->type = nlh->nlmsg_type;
@@ -2178,7 +3084,11 @@ iscsi_get_chap(struct iscsi_transport *transport, struct nlmsghdr *nlh)
 		err = transport->get_chap(shost, ev->u.get_chap.chap_tbl_idx,
 				    &evchap->u.get_chap.num_entries, buf);
 
+<<<<<<< HEAD
 		actual_size = NLMSG_SPACE(sizeof(*ev) + chap_buf_size);
+=======
+		actual_size = nlmsg_total_size(sizeof(*ev) + chap_buf_size);
+>>>>>>> refs/remotes/origin/master
 		skb_trim(skbchap, NLMSG_ALIGN(actual_size));
 		nlhchap->nlmsg_len = actual_size;
 
@@ -2191,6 +3101,31 @@ exit_get_chap:
 	return err;
 }
 
+<<<<<<< HEAD
+=======
+static int iscsi_set_chap(struct iscsi_transport *transport,
+			  struct iscsi_uevent *ev, uint32_t len)
+{
+	char *data = (char *)ev + sizeof(*ev);
+	struct Scsi_Host *shost;
+	int err = 0;
+
+	if (!transport->set_chap)
+		return -ENOSYS;
+
+	shost = scsi_host_lookup(ev->u.set_path.host_no);
+	if (!shost) {
+		pr_err("%s could not find host no %u\n",
+		       __func__, ev->u.set_path.host_no);
+		return -ENODEV;
+	}
+
+	err = transport->set_chap(shost, data, len);
+	scsi_host_put(shost);
+	return err;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int iscsi_delete_chap(struct iscsi_transport *transport,
 			     struct iscsi_uevent *ev)
 {
@@ -2212,12 +3147,314 @@ static int iscsi_delete_chap(struct iscsi_transport *transport,
 	return err;
 }
 
+<<<<<<< HEAD
 static int
 >>>>>>> refs/remotes/origin/cm-10.0
 iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
 {
 	int err = 0;
 	struct iscsi_uevent *ev = NLMSG_DATA(nlh);
+=======
+static const struct {
+	enum iscsi_discovery_parent_type value;
+	char				*name;
+} iscsi_discovery_parent_names[] = {
+	{ISCSI_DISC_PARENT_UNKNOWN,	"Unknown" },
+	{ISCSI_DISC_PARENT_SENDTGT,	"Sendtarget" },
+	{ISCSI_DISC_PARENT_ISNS,	"isns" },
+};
+
+char *iscsi_get_discovery_parent_name(int parent_type)
+{
+	int i;
+	char *state = "Unknown!";
+
+	for (i = 0; i < ARRAY_SIZE(iscsi_discovery_parent_names); i++) {
+		if (iscsi_discovery_parent_names[i].value & parent_type) {
+			state = iscsi_discovery_parent_names[i].name;
+			break;
+		}
+	}
+	return state;
+}
+EXPORT_SYMBOL_GPL(iscsi_get_discovery_parent_name);
+
+static int iscsi_set_flashnode_param(struct iscsi_transport *transport,
+				     struct iscsi_uevent *ev, uint32_t len)
+{
+	char *data = (char *)ev + sizeof(*ev);
+	struct Scsi_Host *shost;
+	struct iscsi_bus_flash_session *fnode_sess;
+	struct iscsi_bus_flash_conn *fnode_conn;
+	struct device *dev;
+	uint32_t idx;
+	int err = 0;
+
+	if (!transport->set_flashnode_param) {
+		err = -ENOSYS;
+		goto exit_set_fnode;
+	}
+
+	shost = scsi_host_lookup(ev->u.set_flashnode.host_no);
+	if (!shost) {
+		pr_err("%s could not find host no %u\n",
+		       __func__, ev->u.set_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	idx = ev->u.set_flashnode.flashnode_idx;
+	fnode_sess = iscsi_get_flashnode_by_index(shost, idx);
+	if (!fnode_sess) {
+		pr_err("%s could not find flashnode %u for host no %u\n",
+		       __func__, idx, ev->u.set_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	dev = iscsi_find_flashnode_conn(fnode_sess);
+	if (!dev) {
+		err = -ENODEV;
+		goto put_sess;
+	}
+
+	fnode_conn = iscsi_dev_to_flash_conn(dev);
+	err = transport->set_flashnode_param(fnode_sess, fnode_conn, data, len);
+	put_device(dev);
+
+put_sess:
+	put_device(&fnode_sess->dev);
+
+put_host:
+	scsi_host_put(shost);
+
+exit_set_fnode:
+	return err;
+}
+
+static int iscsi_new_flashnode(struct iscsi_transport *transport,
+			       struct iscsi_uevent *ev, uint32_t len)
+{
+	char *data = (char *)ev + sizeof(*ev);
+	struct Scsi_Host *shost;
+	int index;
+	int err = 0;
+
+	if (!transport->new_flashnode) {
+		err = -ENOSYS;
+		goto exit_new_fnode;
+	}
+
+	shost = scsi_host_lookup(ev->u.new_flashnode.host_no);
+	if (!shost) {
+		pr_err("%s could not find host no %u\n",
+		       __func__, ev->u.new_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	index = transport->new_flashnode(shost, data, len);
+
+	if (index >= 0)
+		ev->r.new_flashnode_ret.flashnode_idx = index;
+	else
+		err = -EIO;
+
+put_host:
+	scsi_host_put(shost);
+
+exit_new_fnode:
+	return err;
+}
+
+static int iscsi_del_flashnode(struct iscsi_transport *transport,
+			       struct iscsi_uevent *ev)
+{
+	struct Scsi_Host *shost;
+	struct iscsi_bus_flash_session *fnode_sess;
+	uint32_t idx;
+	int err = 0;
+
+	if (!transport->del_flashnode) {
+		err = -ENOSYS;
+		goto exit_del_fnode;
+	}
+
+	shost = scsi_host_lookup(ev->u.del_flashnode.host_no);
+	if (!shost) {
+		pr_err("%s could not find host no %u\n",
+		       __func__, ev->u.del_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	idx = ev->u.del_flashnode.flashnode_idx;
+	fnode_sess = iscsi_get_flashnode_by_index(shost, idx);
+	if (!fnode_sess) {
+		pr_err("%s could not find flashnode %u for host no %u\n",
+		       __func__, idx, ev->u.del_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	err = transport->del_flashnode(fnode_sess);
+	put_device(&fnode_sess->dev);
+
+put_host:
+	scsi_host_put(shost);
+
+exit_del_fnode:
+	return err;
+}
+
+static int iscsi_login_flashnode(struct iscsi_transport *transport,
+				 struct iscsi_uevent *ev)
+{
+	struct Scsi_Host *shost;
+	struct iscsi_bus_flash_session *fnode_sess;
+	struct iscsi_bus_flash_conn *fnode_conn;
+	struct device *dev;
+	uint32_t idx;
+	int err = 0;
+
+	if (!transport->login_flashnode) {
+		err = -ENOSYS;
+		goto exit_login_fnode;
+	}
+
+	shost = scsi_host_lookup(ev->u.login_flashnode.host_no);
+	if (!shost) {
+		pr_err("%s could not find host no %u\n",
+		       __func__, ev->u.login_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	idx = ev->u.login_flashnode.flashnode_idx;
+	fnode_sess = iscsi_get_flashnode_by_index(shost, idx);
+	if (!fnode_sess) {
+		pr_err("%s could not find flashnode %u for host no %u\n",
+		       __func__, idx, ev->u.login_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	dev = iscsi_find_flashnode_conn(fnode_sess);
+	if (!dev) {
+		err = -ENODEV;
+		goto put_sess;
+	}
+
+	fnode_conn = iscsi_dev_to_flash_conn(dev);
+	err = transport->login_flashnode(fnode_sess, fnode_conn);
+	put_device(dev);
+
+put_sess:
+	put_device(&fnode_sess->dev);
+
+put_host:
+	scsi_host_put(shost);
+
+exit_login_fnode:
+	return err;
+}
+
+static int iscsi_logout_flashnode(struct iscsi_transport *transport,
+				  struct iscsi_uevent *ev)
+{
+	struct Scsi_Host *shost;
+	struct iscsi_bus_flash_session *fnode_sess;
+	struct iscsi_bus_flash_conn *fnode_conn;
+	struct device *dev;
+	uint32_t idx;
+	int err = 0;
+
+	if (!transport->logout_flashnode) {
+		err = -ENOSYS;
+		goto exit_logout_fnode;
+	}
+
+	shost = scsi_host_lookup(ev->u.logout_flashnode.host_no);
+	if (!shost) {
+		pr_err("%s could not find host no %u\n",
+		       __func__, ev->u.logout_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	idx = ev->u.logout_flashnode.flashnode_idx;
+	fnode_sess = iscsi_get_flashnode_by_index(shost, idx);
+	if (!fnode_sess) {
+		pr_err("%s could not find flashnode %u for host no %u\n",
+		       __func__, idx, ev->u.logout_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	dev = iscsi_find_flashnode_conn(fnode_sess);
+	if (!dev) {
+		err = -ENODEV;
+		goto put_sess;
+	}
+
+	fnode_conn = iscsi_dev_to_flash_conn(dev);
+
+	err = transport->logout_flashnode(fnode_sess, fnode_conn);
+	put_device(dev);
+
+put_sess:
+	put_device(&fnode_sess->dev);
+
+put_host:
+	scsi_host_put(shost);
+
+exit_logout_fnode:
+	return err;
+}
+
+static int iscsi_logout_flashnode_sid(struct iscsi_transport *transport,
+				      struct iscsi_uevent *ev)
+{
+	struct Scsi_Host *shost;
+	struct iscsi_cls_session *session;
+	int err = 0;
+
+	if (!transport->logout_flashnode_sid) {
+		err = -ENOSYS;
+		goto exit_logout_sid;
+	}
+
+	shost = scsi_host_lookup(ev->u.logout_flashnode_sid.host_no);
+	if (!shost) {
+		pr_err("%s could not find host no %u\n",
+		       __func__, ev->u.logout_flashnode.host_no);
+		err = -ENODEV;
+		goto put_host;
+	}
+
+	session = iscsi_session_lookup(ev->u.logout_flashnode_sid.sid);
+	if (!session) {
+		pr_err("%s could not find session id %u\n",
+		       __func__, ev->u.logout_flashnode_sid.sid);
+		err = -EINVAL;
+		goto put_host;
+	}
+
+	err = transport->logout_flashnode_sid(session);
+
+put_host:
+	scsi_host_put(shost);
+
+exit_logout_sid:
+	return err;
+}
+
+static int
+iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
+{
+	int err = 0;
+	struct iscsi_uevent *ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_transport *transport = NULL;
 	struct iscsi_internal *priv;
 	struct iscsi_cls_session *session;
@@ -2241,9 +3478,13 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
 	case ISCSI_UEVENT_CREATE_SESSION:
 		err = iscsi_if_create_session(priv, ep, ev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					      NETLINK_CB(skb).pid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      NETLINK_CB(skb).portid,
+>>>>>>> refs/remotes/origin/master
 					      ev->u.c_session.initial_cmdsn,
 					      ev->u.c_session.cmds_max,
 					      ev->u.c_session.queue_depth);
@@ -2257,9 +3498,13 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
 
 		err = iscsi_if_create_session(priv, ep, ev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 					NETLINK_CB(skb).pid,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					NETLINK_CB(skb).portid,
+>>>>>>> refs/remotes/origin/master
 					ev->u.c_bound_session.initial_cmdsn,
 					ev->u.c_bound_session.cmds_max,
 					ev->u.c_bound_session.queue_depth);
@@ -2361,7 +3606,10 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
 		err = iscsi_set_path(transport, ev);
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISCSI_UEVENT_SET_IFACE_PARAMS:
 		err = iscsi_set_iface_params(transport, ev,
 					     nlmsg_attrlen(nlh, sizeof(*ev)));
@@ -2375,7 +3623,35 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghdr *nlh, uint32_t *group)
 	case ISCSI_UEVENT_DELETE_CHAP:
 		err = iscsi_delete_chap(transport, ev);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case ISCSI_UEVENT_SET_FLASHNODE_PARAMS:
+		err = iscsi_set_flashnode_param(transport, ev,
+						nlmsg_attrlen(nlh,
+							      sizeof(*ev)));
+		break;
+	case ISCSI_UEVENT_NEW_FLASHNODE:
+		err = iscsi_new_flashnode(transport, ev,
+					  nlmsg_attrlen(nlh, sizeof(*ev)));
+		break;
+	case ISCSI_UEVENT_DEL_FLASHNODE:
+		err = iscsi_del_flashnode(transport, ev);
+		break;
+	case ISCSI_UEVENT_LOGIN_FLASHNODE:
+		err = iscsi_login_flashnode(transport, ev);
+		break;
+	case ISCSI_UEVENT_LOGOUT_FLASHNODE:
+		err = iscsi_logout_flashnode(transport, ev);
+		break;
+	case ISCSI_UEVENT_LOGOUT_FLASHNODE_SID:
+		err = iscsi_logout_flashnode_sid(transport, ev);
+		break;
+	case ISCSI_UEVENT_SET_CHAP:
+		err = iscsi_set_chap(transport, ev,
+				     nlmsg_attrlen(nlh, sizeof(*ev)));
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		err = -ENOSYS;
 		break;
@@ -2393,7 +3669,11 @@ static void
 iscsi_if_rx(struct sk_buff *skb)
 {
 	mutex_lock(&rx_queue_mutex);
+<<<<<<< HEAD
 	while (skb->len >= NLMSG_SPACE(0)) {
+=======
+	while (skb->len >= NLMSG_HDRLEN) {
+>>>>>>> refs/remotes/origin/master
 		int err;
 		uint32_t rlen;
 		struct nlmsghdr	*nlh;
@@ -2406,7 +3686,11 @@ iscsi_if_rx(struct sk_buff *skb)
 			break;
 		}
 
+<<<<<<< HEAD
 		ev = NLMSG_DATA(nlh);
+=======
+		ev = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 		rlen = NLMSG_ALIGN(nlh->nlmsg_len);
 		if (rlen > skb->len)
 			rlen = skb->len;
@@ -2426,10 +3710,15 @@ iscsi_if_rx(struct sk_buff *skb)
 			if (ev->type == ISCSI_UEVENT_GET_STATS && !err)
 				break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 			if (ev->type == ISCSI_UEVENT_GET_CHAP && !err)
 				break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ev->type == ISCSI_UEVENT_GET_CHAP && !err)
+				break;
+>>>>>>> refs/remotes/origin/master
 			err = iscsi_if_send_reply(group, nlh->nlmsg_seq,
 				nlh->nlmsg_type, 0, 0, ev, sizeof(*ev));
 		} while (err < 0 && err != -ECONNREFUSED && err != -ESRCH);
@@ -2471,6 +3760,26 @@ iscsi_conn_attr(exp_statsn, ISCSI_PARAM_EXP_STATSN);
 iscsi_conn_attr(persistent_address, ISCSI_PARAM_PERSISTENT_ADDRESS);
 iscsi_conn_attr(ping_tmo, ISCSI_PARAM_PING_TMO);
 iscsi_conn_attr(recv_tmo, ISCSI_PARAM_RECV_TMO);
+<<<<<<< HEAD
+=======
+iscsi_conn_attr(local_port, ISCSI_PARAM_LOCAL_PORT);
+iscsi_conn_attr(statsn, ISCSI_PARAM_STATSN);
+iscsi_conn_attr(keepalive_tmo, ISCSI_PARAM_KEEPALIVE_TMO);
+iscsi_conn_attr(max_segment_size, ISCSI_PARAM_MAX_SEGMENT_SIZE);
+iscsi_conn_attr(tcp_timestamp_stat, ISCSI_PARAM_TCP_TIMESTAMP_STAT);
+iscsi_conn_attr(tcp_wsf_disable, ISCSI_PARAM_TCP_WSF_DISABLE);
+iscsi_conn_attr(tcp_nagle_disable, ISCSI_PARAM_TCP_NAGLE_DISABLE);
+iscsi_conn_attr(tcp_timer_scale, ISCSI_PARAM_TCP_TIMER_SCALE);
+iscsi_conn_attr(tcp_timestamp_enable, ISCSI_PARAM_TCP_TIMESTAMP_EN);
+iscsi_conn_attr(fragment_disable, ISCSI_PARAM_IP_FRAGMENT_DISABLE);
+iscsi_conn_attr(ipv4_tos, ISCSI_PARAM_IPV4_TOS);
+iscsi_conn_attr(ipv6_traffic_class, ISCSI_PARAM_IPV6_TC);
+iscsi_conn_attr(ipv6_flow_label, ISCSI_PARAM_IPV6_FLOW_LABEL);
+iscsi_conn_attr(is_fw_assigned_ipv6, ISCSI_PARAM_IS_FW_ASSIGNED_IPV6);
+iscsi_conn_attr(tcp_xmit_wsf, ISCSI_PARAM_TCP_XMIT_WSF);
+iscsi_conn_attr(tcp_recv_wsf, ISCSI_PARAM_TCP_RECV_WSF);
+
+>>>>>>> refs/remotes/origin/master
 
 #define iscsi_conn_ep_attr_show(param)					\
 static ssize_t show_conn_ep_param_##param(struct device *dev,		\
@@ -2510,7 +3819,10 @@ iscsi_conn_ep_attr(address, ISCSI_PARAM_CONN_ADDRESS);
 iscsi_conn_ep_attr(port, ISCSI_PARAM_CONN_PORT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct attribute *iscsi_conn_attrs[] = {
 	&dev_attr_conn_max_recv_dlength.attr,
 	&dev_attr_conn_max_xmit_dlength.attr,
@@ -2525,6 +3837,25 @@ static struct attribute *iscsi_conn_attrs[] = {
 	&dev_attr_conn_persistent_port.attr,
 	&dev_attr_conn_ping_tmo.attr,
 	&dev_attr_conn_recv_tmo.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_conn_local_port.attr,
+	&dev_attr_conn_statsn.attr,
+	&dev_attr_conn_keepalive_tmo.attr,
+	&dev_attr_conn_max_segment_size.attr,
+	&dev_attr_conn_tcp_timestamp_stat.attr,
+	&dev_attr_conn_tcp_wsf_disable.attr,
+	&dev_attr_conn_tcp_nagle_disable.attr,
+	&dev_attr_conn_tcp_timer_scale.attr,
+	&dev_attr_conn_tcp_timestamp_enable.attr,
+	&dev_attr_conn_fragment_disable.attr,
+	&dev_attr_conn_ipv4_tos.attr,
+	&dev_attr_conn_ipv6_traffic_class.attr,
+	&dev_attr_conn_ipv6_flow_label.attr,
+	&dev_attr_conn_is_fw_assigned_ipv6.attr,
+	&dev_attr_conn_tcp_xmit_wsf.attr,
+	&dev_attr_conn_tcp_recv_wsf.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -2562,6 +3893,41 @@ static umode_t iscsi_conn_attr_is_visible(struct kobject *kobj,
 		param = ISCSI_PARAM_PING_TMO;
 	else if (attr == &dev_attr_conn_recv_tmo.attr)
 		param = ISCSI_PARAM_RECV_TMO;
+<<<<<<< HEAD
+=======
+	else if (attr == &dev_attr_conn_local_port.attr)
+		param = ISCSI_PARAM_LOCAL_PORT;
+	else if (attr == &dev_attr_conn_statsn.attr)
+		param = ISCSI_PARAM_STATSN;
+	else if (attr == &dev_attr_conn_keepalive_tmo.attr)
+		param = ISCSI_PARAM_KEEPALIVE_TMO;
+	else if (attr == &dev_attr_conn_max_segment_size.attr)
+		param = ISCSI_PARAM_MAX_SEGMENT_SIZE;
+	else if (attr == &dev_attr_conn_tcp_timestamp_stat.attr)
+		param = ISCSI_PARAM_TCP_TIMESTAMP_STAT;
+	else if (attr == &dev_attr_conn_tcp_wsf_disable.attr)
+		param = ISCSI_PARAM_TCP_WSF_DISABLE;
+	else if (attr == &dev_attr_conn_tcp_nagle_disable.attr)
+		param = ISCSI_PARAM_TCP_NAGLE_DISABLE;
+	else if (attr == &dev_attr_conn_tcp_timer_scale.attr)
+		param = ISCSI_PARAM_TCP_TIMER_SCALE;
+	else if (attr == &dev_attr_conn_tcp_timestamp_enable.attr)
+		param = ISCSI_PARAM_TCP_TIMESTAMP_EN;
+	else if (attr == &dev_attr_conn_fragment_disable.attr)
+		param = ISCSI_PARAM_IP_FRAGMENT_DISABLE;
+	else if (attr == &dev_attr_conn_ipv4_tos.attr)
+		param = ISCSI_PARAM_IPV4_TOS;
+	else if (attr == &dev_attr_conn_ipv6_traffic_class.attr)
+		param = ISCSI_PARAM_IPV6_TC;
+	else if (attr == &dev_attr_conn_ipv6_flow_label.attr)
+		param = ISCSI_PARAM_IPV6_FLOW_LABEL;
+	else if (attr == &dev_attr_conn_is_fw_assigned_ipv6.attr)
+		param = ISCSI_PARAM_IS_FW_ASSIGNED_IPV6;
+	else if (attr == &dev_attr_conn_tcp_xmit_wsf.attr)
+		param = ISCSI_PARAM_TCP_XMIT_WSF;
+	else if (attr == &dev_attr_conn_tcp_recv_wsf.attr)
+		param = ISCSI_PARAM_TCP_RECV_WSF;
+>>>>>>> refs/remotes/origin/master
 	else {
 		WARN_ONCE(1, "Invalid conn attr");
 		return 0;
@@ -2575,7 +3941,10 @@ static struct attribute_group iscsi_conn_group = {
 	.is_visible = iscsi_conn_attr_is_visible,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * iSCSI session attrs
  */
@@ -2598,9 +3967,12 @@ show_session_param_##param(struct device *dev,				\
 static ISCSI_CLASS_ATTR(sess, field, S_IRUGO, show_session_param_##param, \
 			NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 iscsi_session_attr(targetname, ISCSI_PARAM_TARGET_NAME, 0);
 iscsi_session_attr(initial_r2t, ISCSI_PARAM_INITIAL_R2T_EN, 0);
 iscsi_session_attr(max_outstanding_r2t, ISCSI_PARAM_MAX_R2T, 0);
@@ -2616,10 +3988,15 @@ iscsi_session_attr(username_in, ISCSI_PARAM_USERNAME_IN, 1);
 iscsi_session_attr(password, ISCSI_PARAM_PASSWORD, 1);
 iscsi_session_attr(password_in, ISCSI_PARAM_PASSWORD_IN, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 iscsi_session_attr(chap_out_idx, ISCSI_PARAM_CHAP_OUT_IDX, 1);
 iscsi_session_attr(chap_in_idx, ISCSI_PARAM_CHAP_IN_IDX, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+iscsi_session_attr(chap_out_idx, ISCSI_PARAM_CHAP_OUT_IDX, 1);
+iscsi_session_attr(chap_in_idx, ISCSI_PARAM_CHAP_IN_IDX, 1);
+>>>>>>> refs/remotes/origin/master
 iscsi_session_attr(fast_abort, ISCSI_PARAM_FAST_ABORT, 0);
 iscsi_session_attr(abort_tmo, ISCSI_PARAM_ABORT_TMO, 0);
 iscsi_session_attr(lu_reset_tmo, ISCSI_PARAM_LU_RESET_TMO, 0);
@@ -2627,6 +4004,27 @@ iscsi_session_attr(tgt_reset_tmo, ISCSI_PARAM_TGT_RESET_TMO, 0);
 iscsi_session_attr(ifacename, ISCSI_PARAM_IFACE_NAME, 0);
 iscsi_session_attr(initiatorname, ISCSI_PARAM_INITIATOR_NAME, 0);
 iscsi_session_attr(targetalias, ISCSI_PARAM_TARGET_ALIAS, 0);
+<<<<<<< HEAD
+=======
+iscsi_session_attr(boot_root, ISCSI_PARAM_BOOT_ROOT, 0);
+iscsi_session_attr(boot_nic, ISCSI_PARAM_BOOT_NIC, 0);
+iscsi_session_attr(boot_target, ISCSI_PARAM_BOOT_TARGET, 0);
+iscsi_session_attr(auto_snd_tgt_disable, ISCSI_PARAM_AUTO_SND_TGT_DISABLE, 0);
+iscsi_session_attr(discovery_session, ISCSI_PARAM_DISCOVERY_SESS, 0);
+iscsi_session_attr(portal_type, ISCSI_PARAM_PORTAL_TYPE, 0);
+iscsi_session_attr(chap_auth, ISCSI_PARAM_CHAP_AUTH_EN, 0);
+iscsi_session_attr(discovery_logout, ISCSI_PARAM_DISCOVERY_LOGOUT_EN, 0);
+iscsi_session_attr(bidi_chap, ISCSI_PARAM_BIDI_CHAP_EN, 0);
+iscsi_session_attr(discovery_auth_optional,
+		   ISCSI_PARAM_DISCOVERY_AUTH_OPTIONAL, 0);
+iscsi_session_attr(def_time2wait, ISCSI_PARAM_DEF_TIME2WAIT, 0);
+iscsi_session_attr(def_time2retain, ISCSI_PARAM_DEF_TIME2RETAIN, 0);
+iscsi_session_attr(isid, ISCSI_PARAM_ISID, 0);
+iscsi_session_attr(tsid, ISCSI_PARAM_TSID, 0);
+iscsi_session_attr(def_taskmgmt_tmo, ISCSI_PARAM_DEF_TASKMGMT_TMO, 0);
+iscsi_session_attr(discovery_parent_idx, ISCSI_PARAM_DISCOVERY_PARENT_IDX, 0);
+iscsi_session_attr(discovery_parent_type, ISCSI_PARAM_DISCOVERY_PARENT_TYPE, 0);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t
 show_priv_session_state(struct device *dev, struct device_attribute *attr,
@@ -2638,7 +4036,10 @@ show_priv_session_state(struct device *dev, struct device_attribute *attr,
 static ISCSI_CLASS_ATTR(priv_sess, state, S_IRUGO, show_priv_session_state,
 			NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t
 show_priv_session_creator(struct device *dev, struct device_attribute *attr,
 			char *buf)
@@ -2648,7 +4049,19 @@ show_priv_session_creator(struct device *dev, struct device_attribute *attr,
 }
 static ISCSI_CLASS_ATTR(priv_sess, creator, S_IRUGO, show_priv_session_creator,
 			NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t
+show_priv_session_target_id(struct device *dev, struct device_attribute *attr,
+			    char *buf)
+{
+	struct iscsi_cls_session *session = iscsi_dev_to_session(dev->parent);
+	return sprintf(buf, "%d\n", session->target_id);
+}
+static ISCSI_CLASS_ATTR(priv_sess, target_id, S_IRUGO,
+			show_priv_session_target_id, NULL);
+>>>>>>> refs/remotes/origin/master
 
 #define iscsi_priv_session_attr_show(field, format)			\
 static ssize_t								\
@@ -2695,7 +4108,10 @@ static ISCSI_CLASS_ATTR(priv_sess, field, S_IRUGO | S_IWUSR,		\
 iscsi_priv_session_rw_attr(recovery_tmo, "%d");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct attribute *iscsi_session_attrs[] = {
 	&dev_attr_sess_initial_r2t.attr,
 	&dev_attr_sess_max_outstanding_r2t.attr,
@@ -2718,11 +4134,35 @@ static struct attribute *iscsi_session_attrs[] = {
 	&dev_attr_sess_ifacename.attr,
 	&dev_attr_sess_initiatorname.attr,
 	&dev_attr_sess_targetalias.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_sess_boot_root.attr,
+	&dev_attr_sess_boot_nic.attr,
+	&dev_attr_sess_boot_target.attr,
+>>>>>>> refs/remotes/origin/master
 	&dev_attr_priv_sess_recovery_tmo.attr,
 	&dev_attr_priv_sess_state.attr,
 	&dev_attr_priv_sess_creator.attr,
 	&dev_attr_sess_chap_out_idx.attr,
 	&dev_attr_sess_chap_in_idx.attr,
+<<<<<<< HEAD
+=======
+	&dev_attr_priv_sess_target_id.attr,
+	&dev_attr_sess_auto_snd_tgt_disable.attr,
+	&dev_attr_sess_discovery_session.attr,
+	&dev_attr_sess_portal_type.attr,
+	&dev_attr_sess_chap_auth.attr,
+	&dev_attr_sess_discovery_logout.attr,
+	&dev_attr_sess_bidi_chap.attr,
+	&dev_attr_sess_discovery_auth_optional.attr,
+	&dev_attr_sess_def_time2wait.attr,
+	&dev_attr_sess_def_time2retain.attr,
+	&dev_attr_sess_isid.attr,
+	&dev_attr_sess_tsid.attr,
+	&dev_attr_sess_def_taskmgmt_tmo.attr,
+	&dev_attr_sess_discovery_parent_idx.attr,
+	&dev_attr_sess_discovery_parent_type.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -2780,12 +4220,54 @@ static umode_t iscsi_session_attr_is_visible(struct kobject *kobj,
 		param = ISCSI_PARAM_INITIATOR_NAME;
 	else if (attr == &dev_attr_sess_targetalias.attr)
 		param = ISCSI_PARAM_TARGET_ALIAS;
+<<<<<<< HEAD
+=======
+	else if (attr == &dev_attr_sess_boot_root.attr)
+		param = ISCSI_PARAM_BOOT_ROOT;
+	else if (attr == &dev_attr_sess_boot_nic.attr)
+		param = ISCSI_PARAM_BOOT_NIC;
+	else if (attr == &dev_attr_sess_boot_target.attr)
+		param = ISCSI_PARAM_BOOT_TARGET;
+	else if (attr == &dev_attr_sess_auto_snd_tgt_disable.attr)
+		param = ISCSI_PARAM_AUTO_SND_TGT_DISABLE;
+	else if (attr == &dev_attr_sess_discovery_session.attr)
+		param = ISCSI_PARAM_DISCOVERY_SESS;
+	else if (attr == &dev_attr_sess_portal_type.attr)
+		param = ISCSI_PARAM_PORTAL_TYPE;
+	else if (attr == &dev_attr_sess_chap_auth.attr)
+		param = ISCSI_PARAM_CHAP_AUTH_EN;
+	else if (attr == &dev_attr_sess_discovery_logout.attr)
+		param = ISCSI_PARAM_DISCOVERY_LOGOUT_EN;
+	else if (attr == &dev_attr_sess_bidi_chap.attr)
+		param = ISCSI_PARAM_BIDI_CHAP_EN;
+	else if (attr == &dev_attr_sess_discovery_auth_optional.attr)
+		param = ISCSI_PARAM_DISCOVERY_AUTH_OPTIONAL;
+	else if (attr == &dev_attr_sess_def_time2wait.attr)
+		param = ISCSI_PARAM_DEF_TIME2WAIT;
+	else if (attr == &dev_attr_sess_def_time2retain.attr)
+		param = ISCSI_PARAM_DEF_TIME2RETAIN;
+	else if (attr == &dev_attr_sess_isid.attr)
+		param = ISCSI_PARAM_ISID;
+	else if (attr == &dev_attr_sess_tsid.attr)
+		param = ISCSI_PARAM_TSID;
+	else if (attr == &dev_attr_sess_def_taskmgmt_tmo.attr)
+		param = ISCSI_PARAM_DEF_TASKMGMT_TMO;
+	else if (attr == &dev_attr_sess_discovery_parent_idx.attr)
+		param = ISCSI_PARAM_DISCOVERY_PARENT_IDX;
+	else if (attr == &dev_attr_sess_discovery_parent_type.attr)
+		param = ISCSI_PARAM_DISCOVERY_PARENT_TYPE;
+>>>>>>> refs/remotes/origin/master
 	else if (attr == &dev_attr_priv_sess_recovery_tmo.attr)
 		return S_IRUGO | S_IWUSR;
 	else if (attr == &dev_attr_priv_sess_state.attr)
 		return S_IRUGO;
 	else if (attr == &dev_attr_priv_sess_creator.attr)
 		return S_IRUGO;
+<<<<<<< HEAD
+=======
+	else if (attr == &dev_attr_priv_sess_target_id.attr)
+		return S_IRUGO;
+>>>>>>> refs/remotes/origin/master
 	else {
 		WARN_ONCE(1, "Invalid session attr");
 		return 0;
@@ -2799,7 +4281,10 @@ static struct attribute_group iscsi_session_group = {
 	.is_visible = iscsi_session_attr_is_visible,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * iSCSI host attrs
  */
@@ -2822,6 +4307,7 @@ iscsi_host_attr(netdev, ISCSI_HOST_PARAM_NETDEV_NAME);
 iscsi_host_attr(hwaddress, ISCSI_HOST_PARAM_HWADDRESS);
 iscsi_host_attr(ipaddress, ISCSI_HOST_PARAM_IPADDRESS);
 iscsi_host_attr(initiatorname, ISCSI_HOST_PARAM_INITIATOR_NAME);
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #define SETUP_PRIV_SESSION_RD_ATTR(field)				\
@@ -2860,6 +4346,8 @@ do {									\
 	}								\
 } while (0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 iscsi_host_attr(port_state, ISCSI_HOST_PARAM_PORT_STATE);
 iscsi_host_attr(port_speed, ISCSI_HOST_PARAM_PORT_SPEED);
 
@@ -2960,7 +4448,10 @@ char *iscsi_get_port_state_name(struct Scsi_Host *shost)
 	return state;
 }
 EXPORT_SYMBOL_GPL(iscsi_get_port_state_name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int iscsi_session_match(struct attribute_container *cont,
 			   struct device *dev)
@@ -3033,10 +4524,14 @@ iscsi_register_transport(struct iscsi_transport *tt)
 	struct iscsi_internal *priv;
 	unsigned long flags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int count = 0, err;
 =======
 	int err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!tt);
 
@@ -3063,6 +4558,7 @@ iscsi_register_transport(struct iscsi_transport *tt)
 		goto unregister_dev;
 
 	/* host parameters */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	priv->t.host_attrs.ac.attrs = &priv->host_attrs[0];
 	priv->t.host_attrs.ac.class = &iscsi_host_class.class;
@@ -3136,6 +4632,8 @@ iscsi_register_transport(struct iscsi_transport *tt)
 	priv->session_attrs[count] = NULL;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	priv->t.host_attrs.ac.class = &iscsi_host_class.class;
 	priv->t.host_attrs.ac.match = iscsi_host_match;
 	priv->t.host_attrs.ac.grp = &iscsi_host_group;
@@ -3154,7 +4652,10 @@ iscsi_register_transport(struct iscsi_transport *tt)
 	priv->session_cont.ac.grp = &iscsi_session_group;
 	transport_container_register(&priv->session_cont);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&iscsi_transport_lock, flags);
 	list_add(&priv->list, &iscsi_transports);
 	spin_unlock_irqrestore(&iscsi_transport_lock, flags);
@@ -3202,7 +4703,14 @@ EXPORT_SYMBOL_GPL(iscsi_unregister_transport);
 static __init int iscsi_transport_init(void)
 {
 	int err;
+<<<<<<< HEAD
 
+=======
+	struct netlink_kernel_cfg cfg = {
+		.groups	= 1,
+		.input	= iscsi_if_rx,
+	};
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "Loading iSCSI transport class v%s.\n",
 		ISCSI_TRANSPORT_VERSION);
 
@@ -3217,11 +4725,14 @@ static __init int iscsi_transport_init(void)
 		goto unregister_transport_class;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = transport_class_register(&iscsi_host_class);
 	if (err)
 		goto unregister_endpoint_class;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = class_register(&iscsi_iface_class);
 	if (err)
 		goto unregister_endpoint_class;
@@ -3230,7 +4741,10 @@ static __init int iscsi_transport_init(void)
 	if (err)
 		goto unregister_iface_class;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = transport_class_register(&iscsi_connection_class);
 	if (err)
 		goto unregister_host_class;
@@ -3239,6 +4753,7 @@ static __init int iscsi_transport_init(void)
 	if (err)
 		goto unregister_conn_class;
 
+<<<<<<< HEAD
 	nls = netlink_kernel_create(&init_net, NETLINK_ISCSI, 1, iscsi_if_rx,
 				    NULL, THIS_MODULE);
 	if (!nls) {
@@ -3249,11 +4764,33 @@ static __init int iscsi_transport_init(void)
 	iscsi_eh_timer_workq = create_singlethread_workqueue("iscsi_eh");
 	if (!iscsi_eh_timer_workq)
 		goto release_nls;
+=======
+	err = bus_register(&iscsi_flashnode_bus);
+	if (err)
+		goto unregister_session_class;
+
+	nls = netlink_kernel_create(&init_net, NETLINK_ISCSI, &cfg);
+	if (!nls) {
+		err = -ENOBUFS;
+		goto unregister_flashnode_bus;
+	}
+
+	iscsi_eh_timer_workq = create_singlethread_workqueue("iscsi_eh");
+	if (!iscsi_eh_timer_workq) {
+		err = -ENOMEM;
+		goto release_nls;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 release_nls:
 	netlink_kernel_release(nls);
+<<<<<<< HEAD
+=======
+unregister_flashnode_bus:
+	bus_unregister(&iscsi_flashnode_bus);
+>>>>>>> refs/remotes/origin/master
 unregister_session_class:
 	transport_class_unregister(&iscsi_session_class);
 unregister_conn_class:
@@ -3261,10 +4798,15 @@ unregister_conn_class:
 unregister_host_class:
 	transport_class_unregister(&iscsi_host_class);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 unregister_iface_class:
 	class_unregister(&iscsi_iface_class);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unregister_iface_class:
+	class_unregister(&iscsi_iface_class);
+>>>>>>> refs/remotes/origin/master
 unregister_endpoint_class:
 	class_unregister(&iscsi_endpoint_class);
 unregister_transport_class:
@@ -3276,14 +4818,22 @@ static void __exit iscsi_transport_exit(void)
 {
 	destroy_workqueue(iscsi_eh_timer_workq);
 	netlink_kernel_release(nls);
+<<<<<<< HEAD
+=======
+	bus_unregister(&iscsi_flashnode_bus);
+>>>>>>> refs/remotes/origin/master
 	transport_class_unregister(&iscsi_connection_class);
 	transport_class_unregister(&iscsi_session_class);
 	transport_class_unregister(&iscsi_host_class);
 	class_unregister(&iscsi_endpoint_class);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	class_unregister(&iscsi_iface_class);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	class_unregister(&iscsi_iface_class);
+>>>>>>> refs/remotes/origin/master
 	class_unregister(&iscsi_transport_class);
 }
 

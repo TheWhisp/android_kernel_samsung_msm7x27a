@@ -44,8 +44,57 @@
  */
 #define VIO_CMO_MIN_ENT 1562624
 
+<<<<<<< HEAD
 struct iommu_table;
 
+=======
+extern struct bus_type vio_bus_type;
+
+struct iommu_table;
+
+/*
+ * Platform Facilities Option (PFO)-specific data
+ */
+
+/* Starting unit address for PFO devices on the VIO BUS */
+#define VIO_BASE_PFO_UA	0x50000000
+
+/**
+ * vio_pfo_op - PFO operation parameters
+ *
+ * @flags: h_call subfunctions and modifiers
+ * @in: Input data block logical real address
+ * @inlen: If non-negative, the length of the input data block.  If negative,
+ *	the length of the input data descriptor list in bytes.
+ * @out: Output data block logical real address
+ * @outlen: If non-negative, the length of the input data block.  If negative,
+ *	the length of the input data descriptor list in bytes.
+ * @csbcpb: Logical real address of the 4k naturally-aligned storage block
+ *	containing the CSB & optional FC field specific CPB
+ * @timeout: # of milliseconds to retry h_call, 0 for no timeout.
+ * @hcall_err: pointer to return the h_call return value, else NULL
+ */
+struct vio_pfo_op {
+	u64 flags;
+	s64 in;
+	s64 inlen;
+	s64 out;
+	s64 outlen;
+	u64 csbcpb;
+	void *done;
+	unsigned long handle;
+	unsigned int timeout;
+	long hcall_err;
+};
+
+/* End PFO specific data */
+
+enum vio_dev_family {
+	VDEVICE,	/* The OF node is a child of /vdevice */
+	PFO,		/* The OF node is a child of /ibm,platform-facilities */
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * vio_dev - This structure is used to describe virtual I/O devices.
  *
@@ -58,6 +107,10 @@ struct vio_dev {
 	const char *name;
 	const char *type;
 	uint32_t unit_address;
+<<<<<<< HEAD
+=======
+	uint32_t resource_id;
+>>>>>>> refs/remotes/origin/master
 	unsigned int irq;
 	struct {
 		size_t desired;
@@ -65,14 +118,22 @@ struct vio_dev {
 		size_t allocated;
 		atomic_t allocs_failed;
 	} cmo;
+<<<<<<< HEAD
+=======
+	enum vio_dev_family family;
+>>>>>>> refs/remotes/origin/master
 	struct device dev;
 };
 
 struct vio_driver {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	const char *name;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char *name;
+>>>>>>> refs/remotes/origin/master
 	const struct vio_device_id *id_table;
 	int (*probe)(struct vio_dev *dev, const struct vio_device_id *id);
 	int (*remove)(struct vio_dev *dev);
@@ -81,11 +142,14 @@ struct vio_driver {
 	 */
 	unsigned long (*get_desired_dma)(struct vio_dev *dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct device_driver driver;
 };
 
 extern int vio_register_driver(struct vio_driver *drv);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	const struct dev_pm_ops *pm;
 	struct device_driver driver;
 };
@@ -97,13 +161,22 @@ extern int __vio_register_driver(struct vio_driver *drv, struct module *owner,
  */
 #define vio_register_driver(driver)		\
 	__vio_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void vio_unregister_driver(struct vio_driver *drv);
 
 extern int vio_cmo_entitlement_update(size_t);
 extern void vio_cmo_set_dev_desired(struct vio_dev *viodev, size_t desired);
 
+<<<<<<< HEAD
 extern void __devinit vio_unregister_device(struct vio_dev *dev);
+=======
+extern void vio_unregister_device(struct vio_dev *dev);
+
+extern int vio_h_cop_sync(struct vio_dev *vdev, struct vio_pfo_op *op);
+>>>>>>> refs/remotes/origin/master
 
 struct device_node;
 

@@ -4,14 +4,19 @@
  * Copyright (C) 2006-2007 Renesas Solutions Corp.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author : Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
 =======
  * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author : Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 2 of the License.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
@@ -25,6 +30,8 @@
  *
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>
@@ -378,10 +385,14 @@ static void m66592_ep_setting(struct m66592 *m66592, struct m66592_ep *ep,
 	ep->pipectr = get_pipectr_addr(pipenum);
 	ep->pipenum = pipenum;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ep->ep.maxpacket = le16_to_cpu(desc->wMaxPacketSize);
 =======
 	ep->ep.maxpacket = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.maxpacket = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 	m66592->pipenum2ep[pipenum] = ep;
 	m66592->epaddr2ep[desc->bEndpointAddress&USB_ENDPOINT_NUMBER_MASK] = ep;
 	INIT_LIST_HEAD(&ep->queue);
@@ -411,7 +422,11 @@ static int alloc_pipe_config(struct m66592_ep *ep,
 	int *counter;
 	int ret;
 
+<<<<<<< HEAD
 	ep->desc = desc;
+=======
+	ep->ep.desc = desc;
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(ep->pipenum);
 
@@ -459,10 +474,14 @@ static int alloc_pipe_config(struct m66592_ep *ep,
 
 	info.epnum = desc->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	info.maxpacket = le16_to_cpu(desc->wMaxPacketSize);
 =======
 	info.maxpacket = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	info.maxpacket = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 	info.interval = desc->bInterval;
 	if (desc->bEndpointAddress & USB_ENDPOINT_DIR_MASK)
 		info.dir_in = 1;
@@ -583,7 +602,11 @@ static void start_packet_read(struct m66592_ep *ep, struct m66592_request *req)
 
 static void start_packet(struct m66592_ep *ep, struct m66592_request *req)
 {
+<<<<<<< HEAD
 	if (ep->desc->bEndpointAddress & USB_DIR_IN)
+=======
+	if (ep->ep.desc->bEndpointAddress & USB_DIR_IN)
+>>>>>>> refs/remotes/origin/master
 		start_packet_write(ep, req);
 	else
 		start_packet_read(ep, req);
@@ -707,9 +730,13 @@ static void init_controller(struct m66592 *m66592)
 static void disable_controller(struct m66592 *m66592)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	m66592_bclr(m66592, M66592_UTST, M66592_TESTMODE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m66592_bclr(m66592, M66592_UTST, M66592_TESTMODE);
+>>>>>>> refs/remotes/origin/master
 	if (!m66592->pdata->on_chip) {
 		m66592_bclr(m66592, M66592_SCKE, M66592_SYSCFG);
 		udelay(1);
@@ -762,7 +789,11 @@ __acquires(m66592->lock)
 
 	if (restart) {
 		req = list_entry(ep->queue.next, struct m66592_request, queue);
+<<<<<<< HEAD
 		if (ep->desc)
+=======
+		if (ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 			start_packet(ep, req);
 	}
 }
@@ -800,10 +831,14 @@ static void irq_ep0_write(struct m66592_ep *ep, struct m66592_request *req)
 	if (req->req.buf) {
 		if (size > 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			m66592_write_fifo(m66592, ep->fifoaddr, buf, size);
 =======
 			m66592_write_fifo(m66592, ep, buf, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			m66592_write_fifo(m66592, ep, buf, size);
+>>>>>>> refs/remotes/origin/master
 		if ((size == 0) || ((size % ep->ep.maxpacket) != 0))
 			m66592_bset(m66592, M66592_BVAL, ep->fifoctr);
 	}
@@ -850,10 +885,14 @@ static void irq_packet_write(struct m66592_ep *ep, struct m66592_request *req)
 	/* write fifo */
 	if (req->req.buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		m66592_write_fifo(m66592, ep->fifoaddr, buf, size);
 =======
 		m66592_write_fifo(m66592, ep, buf, size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		m66592_write_fifo(m66592, ep, buf, size);
+>>>>>>> refs/remotes/origin/master
 		if ((size == 0)
 				|| ((size % ep->ep.maxpacket) != 0)
 				|| ((bufsize != ep->ep.maxpacket)
@@ -953,7 +992,11 @@ static void irq_pipe_ready(struct m66592 *m66592, u16 status, u16 enb)
 				ep = m66592->pipenum2ep[pipenum];
 				req = list_entry(ep->queue.next,
 						 struct m66592_request, queue);
+<<<<<<< HEAD
 				if (ep->desc->bEndpointAddress & USB_DIR_IN)
+=======
+				if (ep->ep.desc->bEndpointAddress & USB_DIR_IN)
+>>>>>>> refs/remotes/origin/master
 					irq_packet_write(ep, req);
 				else
 					irq_packet_read(ep, req);
@@ -1076,11 +1119,14 @@ static void clear_feature(struct m66592 *m66592, struct usb_ctrlrequest *ctrl)
 static void set_feature(struct m66592 *m66592, struct usb_ctrlrequest *ctrl)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	switch (ctrl->bRequestType & USB_RECIP_MASK) {
 	case USB_RECIP_DEVICE:
 		control_end(m66592, 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 tmp;
 	int timeout = 3000;
 
@@ -1105,7 +1151,10 @@ static void set_feature(struct m66592 *m66592, struct usb_ctrlrequest *ctrl)
 			pipe_stall(m66592, 0);
 			break;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case USB_RECIP_INTERFACE:
 		control_end(m66592, 1);
@@ -1420,7 +1469,11 @@ static int m66592_queue(struct usb_ep *_ep, struct usb_request *_req,
 	req->req.actual = 0;
 	req->req.status = -EINPROGRESS;
 
+<<<<<<< HEAD
 	if (ep->desc == NULL)	/* control */
+=======
+	if (ep->ep.desc == NULL)	/* control */
+>>>>>>> refs/remotes/origin/master
 		start_ep0(ep, req);
 	else {
 		if (request && !ep->busy)
@@ -1506,6 +1559,7 @@ static struct usb_ep_ops m66592_ep_ops = {
 };
 
 /*-------------------------------------------------------------------------*/
+<<<<<<< HEAD
 static struct m66592 *the_controller;
 
 <<<<<<< HEAD
@@ -1531,10 +1585,17 @@ static int m66592_start(struct usb_gadget_driver *driver,
 		return -ENODEV;
 	if (m66592->driver)
 		return -EBUSY;
+=======
+static int m66592_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct m66592 *m66592 = to_m66592(g);
+>>>>>>> refs/remotes/origin/master
 
 	/* hook up the driver */
 	driver->driver.bus = NULL;
 	m66592->driver = driver;
+<<<<<<< HEAD
 	m66592->gadget.dev.driver = &driver->driver;
 
 	retval = device_add(&m66592->gadget.dev);
@@ -1549,6 +1610,8 @@ static int m66592_start(struct usb_gadget_driver *driver,
 		device_del(&m66592->gadget.dev);
 		goto error;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 
 	m66592_bset(m66592, M66592_VBSE | M66592_URST, M66592_INTENB0);
 	if (m66592_read(m66592, M66592_INTSTS0) & M66592_VBSTS) {
@@ -1561,6 +1624,7 @@ static int m66592_start(struct usb_gadget_driver *driver,
 	}
 
 	return 0;
+<<<<<<< HEAD
 
 error:
 	m66592->driver = NULL;
@@ -1587,15 +1651,27 @@ static int m66592_stop(struct usb_gadget_driver *driver)
 	if (m66592->gadget.speed != USB_SPEED_UNKNOWN)
 		m66592_usb_disconnect(m66592);
 	spin_unlock_irqrestore(&m66592->lock, flags);
+=======
+}
+
+static int m66592_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct m66592 *m66592 = to_m66592(g);
+>>>>>>> refs/remotes/origin/master
 
 	m66592_bclr(m66592, M66592_VBSE | M66592_URST, M66592_INTENB0);
 
 	driver->unbind(&m66592->gadget);
+<<<<<<< HEAD
 	m66592->gadget.dev.driver = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	init_controller(m66592);
 	disable_controller(m66592);
 
+<<<<<<< HEAD
 	device_del(&m66592->gadget.dev);
 	m66592->driver = NULL;
 	return 0;
@@ -1604,6 +1680,12 @@ static int m66592_stop(struct usb_gadget_driver *driver)
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m66592->driver = NULL;
+
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 static int m66592_get_frame(struct usb_gadget *_gadget)
@@ -1613,9 +1695,12 @@ static int m66592_get_frame(struct usb_gadget *_gadget)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct usb_gadget_ops m66592_gadget_ops = {
 	.get_frame		= m66592_get_frame,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int m66592_pullup(struct usb_gadget *gadget, int is_on)
 {
 	struct m66592 *m66592 = gadget_to_m66592(gadget);
@@ -1631,16 +1716,25 @@ static int m66592_pullup(struct usb_gadget *gadget, int is_on)
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct usb_gadget_ops m66592_gadget_ops = {
 	.get_frame		= m66592_get_frame,
 	.start			= m66592_start,
 	.stop			= m66592_stop,
 	.pullup			= m66592_pullup,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct usb_gadget_ops m66592_gadget_ops = {
+	.get_frame		= m66592_get_frame,
+	.udc_start		= m66592_udc_start,
+	.udc_stop		= m66592_udc_stop,
+	.pullup			= m66592_pullup,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __exit m66592_remove(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct m66592		*m66592 = dev_get_drvdata(&pdev->dev);
 
 <<<<<<< HEAD
@@ -1648,16 +1742,28 @@ static int __exit m66592_remove(struct platform_device *pdev)
 	usb_del_gadget_udc(&m66592->gadget);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct m66592		*m66592 = platform_get_drvdata(pdev);
+
+	usb_del_gadget_udc(&m66592->gadget);
+
+>>>>>>> refs/remotes/origin/master
 	del_timer_sync(&m66592->timer);
 	iounmap(m66592->reg);
 	free_irq(platform_get_irq(pdev, 0), m66592);
 	m66592_free_request(&m66592->ep[0].ep, m66592->ep0_req);
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
+=======
+>>>>>>> refs/remotes/origin/master
 	if (m66592->pdata->on_chip) {
 		clk_disable(m66592->clk);
 		clk_put(m66592->clk);
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(m66592);
 	return 0;
 }
@@ -1671,9 +1777,13 @@ static int __init m66592_probe(struct platform_device *pdev)
 	struct resource *res, *ires;
 	void __iomem *reg = NULL;
 	struct m66592 *m66592 = NULL;
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
 	char clk_name[8];
 #endif
+=======
+	char clk_name[8];
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	int i;
 
@@ -1699,7 +1809,11 @@ static int __init m66592_probe(struct platform_device *pdev)
 		goto clean_up;
 	}
 
+<<<<<<< HEAD
 	if (pdev->dev.platform_data == NULL) {
+=======
+	if (dev_get_platdata(&pdev->dev) == NULL) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "no platform data\n");
 		ret = -ENODEV;
 		goto clean_up;
@@ -1713,6 +1827,7 @@ static int __init m66592_probe(struct platform_device *pdev)
 		goto clean_up;
 	}
 
+<<<<<<< HEAD
 	m66592->pdata = pdev->dev.platform_data;
 	m66592->irq_trigger = ires->flags & IRQF_TRIGGER_MASK;
 
@@ -1730,6 +1845,16 @@ static int __init m66592_probe(struct platform_device *pdev)
 	m66592->gadget.dev.parent = &pdev->dev;
 	m66592->gadget.dev.dma_mask = pdev->dev.dma_mask;
 	m66592->gadget.dev.release = pdev->dev.release;
+=======
+	m66592->pdata = dev_get_platdata(&pdev->dev);
+	m66592->irq_trigger = ires->flags & IRQF_TRIGGER_MASK;
+
+	spin_lock_init(&m66592->lock);
+	platform_set_drvdata(pdev, m66592);
+
+	m66592->gadget.ops = &m66592_gadget_ops;
+	m66592->gadget.max_speed = USB_SPEED_HIGH;
+>>>>>>> refs/remotes/origin/master
 	m66592->gadget.name = udc_name;
 
 	init_timer(&m66592->timer);
@@ -1738,17 +1863,24 @@ static int __init m66592_probe(struct platform_device *pdev)
 	m66592->reg = reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = request_irq(ires->start, m66592_irq, IRQF_DISABLED | IRQF_SHARED,
 =======
 	ret = request_irq(ires->start, m66592_irq, IRQF_SHARED,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(ires->start, m66592_irq, IRQF_SHARED,
+>>>>>>> refs/remotes/origin/master
 			udc_name, m66592);
 	if (ret < 0) {
 		pr_err("request_irq error (%d)\n", ret);
 		goto clean_up;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_HAVE_CLK
+=======
+>>>>>>> refs/remotes/origin/master
 	if (m66592->pdata->on_chip) {
 		snprintf(clk_name, sizeof(clk_name), "usbf%d", pdev->id);
 		m66592->clk = clk_get(&pdev->dev, clk_name);
@@ -1760,7 +1892,11 @@ static int __init m66592_probe(struct platform_device *pdev)
 		}
 		clk_enable(m66592->clk);
 	}
+<<<<<<< HEAD
 #endif
+=======
+
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&m66592->gadget.ep_list);
 	m66592->gadget.ep0 = &m66592->ep[0].ep;
 	INIT_LIST_HEAD(&m66592->gadget.ep0->ep_list);
@@ -1776,9 +1912,15 @@ static int __init m66592_probe(struct platform_device *pdev)
 		INIT_LIST_HEAD(&ep->queue);
 		ep->ep.name = m66592_ep_name[i];
 		ep->ep.ops = &m66592_ep_ops;
+<<<<<<< HEAD
 		ep->ep.maxpacket = 512;
 	}
 	m66592->ep[0].ep.maxpacket = 64;
+=======
+		usb_ep_set_maxpacket_limit(&ep->ep, 512);
+	}
+	usb_ep_set_maxpacket_limit(&m66592->ep[0].ep, 64);
+>>>>>>> refs/remotes/origin/master
 	m66592->ep[0].pipenum = 0;
 	m66592->ep[0].fifoaddr = M66592_CFIFO;
 	m66592->ep[0].fifosel = M66592_CFIFOSEL;
@@ -1788,20 +1930,31 @@ static int __init m66592_probe(struct platform_device *pdev)
 	m66592->pipenum2ep[0] = &m66592->ep[0];
 	m66592->epaddr2ep[0] = &m66592->ep[0];
 
+<<<<<<< HEAD
 	the_controller = m66592;
 
 	m66592->ep0_req = m66592_alloc_request(&m66592->ep[0].ep, GFP_KERNEL);
 	if (m66592->ep0_req == NULL)
 		goto clean_up3;
+=======
+	m66592->ep0_req = m66592_alloc_request(&m66592->ep[0].ep, GFP_KERNEL);
+	if (m66592->ep0_req == NULL) {
+		ret = -ENOMEM;
+		goto clean_up3;
+	}
+>>>>>>> refs/remotes/origin/master
 	m66592->ep0_req->complete = nop_completion;
 
 	init_controller(m66592);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_info(&pdev->dev, "version %s\n", DRIVER_VERSION);
 	return 0;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = usb_add_gadget_udc(&pdev->dev, &m66592->gadget);
 	if (ret)
 		goto err_add_udc;
@@ -1812,15 +1965,22 @@ static int __init m66592_probe(struct platform_device *pdev)
 err_add_udc:
 	m66592_free_request(&m66592->ep[0].ep, m66592->ep0_req);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 clean_up3:
 #ifdef CONFIG_HAVE_CLK
+=======
+clean_up3:
+>>>>>>> refs/remotes/origin/master
 	if (m66592->pdata->on_chip) {
 		clk_disable(m66592->clk);
 		clk_put(m66592->clk);
 	}
 clean_up2:
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	free_irq(ires->start, m66592);
 clean_up:
 	if (m66592) {
@@ -1843,6 +2003,7 @@ static struct platform_driver m66592_driver = {
 	},
 };
 
+<<<<<<< HEAD
 static int __init m66592_udc_init(void)
 {
 	return platform_driver_probe(&m66592_driver, m66592_probe);
@@ -1854,3 +2015,6 @@ static void __exit m66592_udc_cleanup(void)
 	platform_driver_unregister(&m66592_driver);
 }
 module_exit(m66592_udc_cleanup);
+=======
+module_platform_driver_probe(m66592_driver, m66592_probe);
+>>>>>>> refs/remotes/origin/master

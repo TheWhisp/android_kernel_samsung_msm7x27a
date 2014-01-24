@@ -13,10 +13,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
@@ -283,7 +288,11 @@ static int sh_sir_set_baudrate(struct sh_sir_self *self, u32 baudrate)
 	}
 
 	clk = clk_get(NULL, "irda_clk");
+<<<<<<< HEAD
 	if (!clk) {
+=======
+	if (IS_ERR(clk)) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "can not get irda_clk\n");
 		return -EIO;
 	}
@@ -517,10 +526,14 @@ static void sh_sir_tx(struct sh_sir_self *self, int phase)
 static int sh_sir_read_data(struct sh_sir_self *self)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 val;
 =======
 	u16 val = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u16 val = 0;
+>>>>>>> refs/remotes/origin/master
 	int timeout = 1024;
 
 	while (timeout--) {
@@ -692,7 +705,11 @@ static int sh_sir_stop(struct net_device *ndev)
 
 	netif_stop_queue(ndev);
 
+<<<<<<< HEAD
 	dev_info(&ndev->dev, "stoped\n");
+=======
+	dev_info(&ndev->dev, "stopped\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -712,7 +729,11 @@ static const struct net_device_ops sh_sir_ndo = {
 
 
 ************************************************************************/
+<<<<<<< HEAD
 static int __devinit sh_sir_probe(struct platform_device *pdev)
+=======
+static int sh_sir_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev;
 	struct sh_sir_self *self;
@@ -748,6 +769,10 @@ static int __devinit sh_sir_probe(struct platform_device *pdev)
 	self->clk = clk_get(&pdev->dev, clk_name);
 	if (IS_ERR(self->clk)) {
 		dev_err(&pdev->dev, "cannot get clock \"%s\"\n", clk_name);
+<<<<<<< HEAD
+=======
+		err = -ENODEV;
+>>>>>>> refs/remotes/origin/master
 		goto err_mem_3;
 	}
 
@@ -767,8 +792,13 @@ static int __devinit sh_sir_probe(struct platform_device *pdev)
 		goto err_mem_4;
 
 	platform_set_drvdata(pdev, ndev);
+<<<<<<< HEAD
 
 	if (request_irq(irq, sh_sir_irq, IRQF_DISABLED, "sh_sir", self)) {
+=======
+	err = request_irq(irq, sh_sir_irq, 0, "sh_sir", self);
+	if (err) {
+>>>>>>> refs/remotes/origin/master
 		dev_warn(&pdev->dev, "Unable to attach sh_sir interrupt\n");
 		goto err_mem_4;
 	}
@@ -789,7 +819,11 @@ exit:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit sh_sir_remove(struct platform_device *pdev)
+=======
+static int sh_sir_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev = platform_get_drvdata(pdev);
 	struct sh_sir_self *self = netdev_priv(ndev);
@@ -802,19 +836,27 @@ static int __devexit sh_sir_remove(struct platform_device *pdev)
 	sh_sir_remove_iobuf(self);
 	iounmap(self->membase);
 	free_netdev(ndev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static struct platform_driver sh_sir_driver = {
 	.probe   = sh_sir_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(sh_sir_remove),
+=======
+	.remove  = sh_sir_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver  = {
 		.name = DRIVER_NAME,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init sh_sir_init(void)
 {
@@ -831,6 +873,9 @@ module_exit(sh_sir_exit);
 =======
 module_platform_driver(sh_sir_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sh_sir_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kuninori Morimoto <morimoto.kuninori@renesas.com>");
 MODULE_DESCRIPTION("SuperH IrDA driver");

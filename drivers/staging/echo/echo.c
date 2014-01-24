@@ -118,7 +118,11 @@
 #ifdef __bfin__
 static inline void lms_adapt_bg(struct oslec_state *ec, int clean, int shift)
 {
+<<<<<<< HEAD
 	int i, j;
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 	int offset1;
 	int offset2;
 	int factor;
@@ -141,7 +145,11 @@ static inline void lms_adapt_bg(struct oslec_state *ec, int clean, int shift)
 
 	/* asm("st:"); */
 	n = ec->taps;
+<<<<<<< HEAD
 	for (i = 0, j = offset2; i < n; i++, j++) {
+=======
+	for (i = 0; i < n; i++) {
+>>>>>>> refs/remotes/origin/master
 		exp = *phist++ * factor;
 		ec->fir_taps16[1][i] += (int16_t) ((exp + (1 << 14)) >> 15);
 	}
@@ -229,6 +237,10 @@ struct oslec_state *oslec_create(int len, int adaption_mode)
 {
 	struct oslec_state *ec;
 	int i;
+<<<<<<< HEAD
+=======
+	const int16_t *history;
+>>>>>>> refs/remotes/origin/master
 
 	ec = kzalloc(sizeof(*ec), GFP_KERNEL);
 	if (!ec)
@@ -238,6 +250,7 @@ struct oslec_state *oslec_create(int len, int adaption_mode)
 	ec->log2taps = top_bit(len);
 	ec->curr_pos = ec->taps - 1;
 
+<<<<<<< HEAD
 	for (i = 0; i < 2; i++) {
 		ec->fir_taps16[i] =
 		    kcalloc(ec->taps, sizeof(int16_t), GFP_KERNEL);
@@ -247,6 +260,24 @@ struct oslec_state *oslec_create(int len, int adaption_mode)
 
 	fir16_create(&ec->fir_state, ec->fir_taps16[0], ec->taps);
 	fir16_create(&ec->fir_state_bg, ec->fir_taps16[1], ec->taps);
+=======
+	ec->fir_taps16[0] =
+	    kcalloc(ec->taps, sizeof(int16_t), GFP_KERNEL);
+	if (!ec->fir_taps16[0])
+		goto error_oom_0;
+
+	ec->fir_taps16[1] =
+	    kcalloc(ec->taps, sizeof(int16_t), GFP_KERNEL);
+	if (!ec->fir_taps16[1])
+		goto error_oom_1;
+
+	history = fir16_create(&ec->fir_state, ec->fir_taps16[0], ec->taps);
+	if (!history)
+		goto error_state;
+	history = fir16_create(&ec->fir_state_bg, ec->fir_taps16[1], ec->taps);
+	if (!history)
+		goto error_state_bg;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < 5; i++)
 		ec->xvtx[i] = ec->yvtx[i] = ec->xvrx[i] = ec->yvrx[i] = 0;
@@ -256,6 +287,7 @@ struct oslec_state *oslec_create(int len, int adaption_mode)
 
 	ec->snapshot = kcalloc(ec->taps, sizeof(int16_t), GFP_KERNEL);
 	if (!ec->snapshot)
+<<<<<<< HEAD
 		goto error_oom;
 
 	ec->cond_met = 0;
@@ -280,6 +312,33 @@ error_oom:
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto error_snap;
+
+	ec->cond_met = 0;
+	ec->pstates = 0;
+	ec->ltxacc = ec->lrxacc = ec->lcleanacc = ec->lclean_bgacc = 0;
+	ec->ltx = ec->lrx = ec->lclean = ec->lclean_bg = 0;
+	ec->tx_1 = ec->tx_2 = ec->rx_1 = ec->rx_2 = 0;
+	ec->lbgn = ec->lbgn_acc = 0;
+	ec->lbgn_upper = 200;
+	ec->lbgn_upper_acc = ec->lbgn_upper << 13;
+
+	return ec;
+
+error_snap:
+	fir16_free(&ec->fir_state_bg);
+error_state_bg:
+	fir16_free(&ec->fir_state);
+error_state:
+	kfree(ec->fir_taps16[1]);
+error_oom_1:
+	kfree(ec->fir_taps16[0]);
+error_oom_0:
+	kfree(ec);
+	return NULL;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(oslec_create);
 
 void oslec_free(struct oslec_state *ec)
@@ -294,9 +353,12 @@ void oslec_free(struct oslec_state *ec)
 	kfree(ec);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(oslec_free);
 
 void oslec_adaption_mode(struct oslec_state *ec, int adaption_mode)
@@ -304,15 +366,19 @@ void oslec_adaption_mode(struct oslec_state *ec, int adaption_mode)
 	ec->adaption_mode = adaption_mode;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(oslec_adaption_mode);
 
 void oslec_flush(struct oslec_state *ec)
 {
 	int i;
 
+<<<<<<< HEAD
 	ec->Ltxacc = ec->Lrxacc = ec->Lcleanacc = ec->Lclean_bgacc = 0;
 	ec->Ltx = ec->Lrx = ec->Lclean = ec->Lclean_bg = 0;
 	ec->tx_1 = ec->tx_2 = ec->rx_1 = ec->rx_2 = 0;
@@ -320,6 +386,15 @@ void oslec_flush(struct oslec_state *ec)
 	ec->Lbgn = ec->Lbgn_acc = 0;
 	ec->Lbgn_upper = 200;
 	ec->Lbgn_upper_acc = ec->Lbgn_upper << 13;
+=======
+	ec->ltxacc = ec->lrxacc = ec->lcleanacc = ec->lclean_bgacc = 0;
+	ec->ltx = ec->lrx = ec->lclean = ec->lclean_bg = 0;
+	ec->tx_1 = ec->tx_2 = ec->rx_1 = ec->rx_2 = 0;
+
+	ec->lbgn = ec->lbgn_acc = 0;
+	ec->lbgn_upper = 200;
+	ec->lbgn_upper_acc = ec->lbgn_upper << 13;
+>>>>>>> refs/remotes/origin/master
 
 	ec->nonupdate_dwell = 0;
 
@@ -331,12 +406,17 @@ void oslec_flush(struct oslec_state *ec)
 		memset(ec->fir_taps16[i], 0, ec->taps * sizeof(int16_t));
 
 	ec->curr_pos = ec->taps - 1;
+<<<<<<< HEAD
 	ec->Pstates = 0;
 }
 <<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ec->pstates = 0;
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(oslec_flush);
 
 void oslec_snapshot(struct oslec_state *ec)
@@ -344,9 +424,12 @@ void oslec_snapshot(struct oslec_state *ec)
 	memcpy(ec->snapshot, ec->fir_taps16[0], ec->taps * sizeof(int16_t));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(oslec_snapshot);
 
 /* Dual Path Echo Canceller */
@@ -355,7 +438,12 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 {
 	int32_t echo_value;
 	int clean_bg;
+<<<<<<< HEAD
 	int tmp, tmp1;
+=======
+	int tmp;
+	int tmp1;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Input scaling was found be required to prevent problems when tx
@@ -422,6 +510,7 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 		   we don't have to recalculate over the whole block of
 		   samples. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		new = (int)tx *(int)tx;
 =======
 		new = (int)tx * (int)tx;
@@ -432,29 +521,55 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 		    ((new - old) + (1 << (ec->log2taps - 1))) >> ec->log2taps;
 		if (ec->Pstates < 0)
 			ec->Pstates = 0;
+=======
+		new = (int)tx * (int)tx;
+		old = (int)ec->fir_state.history[ec->fir_state.curr_pos] *
+		    (int)ec->fir_state.history[ec->fir_state.curr_pos];
+		ec->pstates +=
+		    ((new - old) + (1 << (ec->log2taps - 1))) >> ec->log2taps;
+		if (ec->pstates < 0)
+			ec->pstates = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Calculate short term average levels using simple single pole IIRs */
 
+<<<<<<< HEAD
 	ec->Ltxacc += abs(tx) - ec->Ltx;
 	ec->Ltx = (ec->Ltxacc + (1 << 4)) >> 5;
 	ec->Lrxacc += abs(rx) - ec->Lrx;
 	ec->Lrx = (ec->Lrxacc + (1 << 4)) >> 5;
+=======
+	ec->ltxacc += abs(tx) - ec->ltx;
+	ec->ltx = (ec->ltxacc + (1 << 4)) >> 5;
+	ec->lrxacc += abs(rx) - ec->lrx;
+	ec->lrx = (ec->lrxacc + (1 << 4)) >> 5;
+>>>>>>> refs/remotes/origin/master
 
 	/* Foreground filter */
 
 	ec->fir_state.coeffs = ec->fir_taps16[0];
 	echo_value = fir16(&ec->fir_state, tx);
 	ec->clean = rx - echo_value;
+<<<<<<< HEAD
 	ec->Lcleanacc += abs(ec->clean) - ec->Lclean;
 	ec->Lclean = (ec->Lcleanacc + (1 << 4)) >> 5;
+=======
+	ec->lcleanacc += abs(ec->clean) - ec->lclean;
+	ec->lclean = (ec->lcleanacc + (1 << 4)) >> 5;
+>>>>>>> refs/remotes/origin/master
 
 	/* Background filter */
 
 	echo_value = fir16(&ec->fir_state_bg, tx);
 	clean_bg = rx - echo_value;
+<<<<<<< HEAD
 	ec->Lclean_bgacc += abs(clean_bg) - ec->Lclean_bg;
 	ec->Lclean_bg = (ec->Lclean_bgacc + (1 << 4)) >> 5;
+=======
+	ec->lclean_bgacc += abs(clean_bg) - ec->lclean_bg;
+	ec->lclean_bg = (ec->lclean_bgacc + (1 << 4)) >> 5;
+>>>>>>> refs/remotes/origin/master
 
 	/* Background Filter adaption */
 
@@ -465,7 +580,11 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 	ec->factor = 0;
 	ec->shift = 0;
 	if ((ec->nonupdate_dwell == 0)) {
+<<<<<<< HEAD
 		int P, logP, shift;
+=======
+		int p, logp, shift;
+>>>>>>> refs/remotes/origin/master
 
 		/* Determine:
 
@@ -500,9 +619,15 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 		   for a divide versus a top_bit() implementation.
 		 */
 
+<<<<<<< HEAD
 		P = MIN_TX_POWER_FOR_ADAPTION + ec->Pstates;
 		logP = top_bit(P) + ec->log2taps;
 		shift = 30 - 2 - logP;
+=======
+		p = MIN_TX_POWER_FOR_ADAPTION + ec->pstates;
+		logp = top_bit(p) + ec->log2taps;
+		shift = 30 - 2 - logp;
+>>>>>>> refs/remotes/origin/master
 		ec->shift = shift;
 
 		lms_adapt_bg(ec, clean_bg, shift);
@@ -512,7 +637,11 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 	   near end speech */
 
 	ec->adapt = 0;
+<<<<<<< HEAD
 	if ((ec->Lrx > MIN_RX_POWER_FOR_ADAPTION) && (ec->Lrx > ec->Ltx))
+=======
+	if ((ec->lrx > MIN_RX_POWER_FOR_ADAPTION) && (ec->lrx > ec->ltx))
+>>>>>>> refs/remotes/origin/master
 		ec->nonupdate_dwell = DTD_HANGOVER;
 	if (ec->nonupdate_dwell)
 		ec->nonupdate_dwell--;
@@ -525,9 +654,15 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 	if ((ec->adaption_mode & ECHO_CAN_USE_ADAPTION) &&
 	    (ec->nonupdate_dwell == 0) &&
 	    /* (ec->Lclean_bg < 0.875*ec->Lclean) */
+<<<<<<< HEAD
 	    (8 * ec->Lclean_bg < 7 * ec->Lclean) &&
 	    /* (ec->Lclean_bg < 0.125*ec->Ltx) */
 	    (8 * ec->Lclean_bg < ec->Ltx)) {
+=======
+	    (8 * ec->lclean_bg < 7 * ec->lclean) &&
+	    /* (ec->Lclean_bg < 0.125*ec->Ltx) */
+	    (8 * ec->lclean_bg < ec->ltx)) {
+>>>>>>> refs/remotes/origin/master
 		if (ec->cond_met == 6) {
 			/*
 			 * BG filter has had better results for 6 consecutive
@@ -551,14 +686,22 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 		 * non-linearity in the channel.".
 		 */
 
+<<<<<<< HEAD
 		if ((16 * ec->Lclean < ec->Ltx)) {
+=======
+		if ((16 * ec->lclean < ec->ltx)) {
+>>>>>>> refs/remotes/origin/master
 			/*
 			 * Our e/c has improved echo by at least 24 dB (each
 			 * factor of 2 is 6dB, so 2*2*2*2=16 is the same as
 			 * 6+6+6+6=24dB)
 			 */
 			if (ec->adaption_mode & ECHO_CAN_USE_CNG) {
+<<<<<<< HEAD
 				ec->cng_level = ec->Lbgn;
+=======
+				ec->cng_level = ec->lbgn;
+>>>>>>> refs/remotes/origin/master
 
 				/*
 				 * Very elementary comfort noise generation.
@@ -581,10 +724,17 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 
 			} else if (ec->adaption_mode & ECHO_CAN_USE_CLIP) {
 				/* This sounds much better than CNG */
+<<<<<<< HEAD
 				if (ec->clean_nlp > ec->Lbgn)
 					ec->clean_nlp = ec->Lbgn;
 				if (ec->clean_nlp < -ec->Lbgn)
 					ec->clean_nlp = -ec->Lbgn;
+=======
+				if (ec->clean_nlp > ec->lbgn)
+					ec->clean_nlp = ec->lbgn;
+				if (ec->clean_nlp < -ec->lbgn)
+					ec->clean_nlp = -ec->lbgn;
+>>>>>>> refs/remotes/origin/master
 			} else {
 				/*
 				 * just mute the residual, doesn't sound very
@@ -603,9 +753,15 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 			 * level signals like near end speech.  When combined
 			 * with CNG or especially CLIP seems to work OK.
 			 */
+<<<<<<< HEAD
 			if (ec->Lclean < 40) {
 				ec->Lbgn_acc += abs(ec->clean) - ec->Lbgn;
 				ec->Lbgn = (ec->Lbgn_acc + (1 << 11)) >> 12;
+=======
+			if (ec->lclean < 40) {
+				ec->lbgn_acc += abs(ec->clean) - ec->lbgn;
+				ec->lbgn = (ec->lbgn_acc + (1 << 11)) >> 12;
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -623,9 +779,12 @@ int16_t oslec_update(struct oslec_state *ec, int16_t tx, int16_t rx)
 	return (int16_t) ec->clean_nlp << 1;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(oslec_update);
 
 /* This function is separated from the echo canceller is it is usually called
@@ -651,12 +810,19 @@ EXPORT_SYMBOL_GPL(oslec_update);
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int16_t oslec_hpf_tx(struct oslec_state * ec, int16_t tx)
 =======
 int16_t oslec_hpf_tx(struct oslec_state *ec, int16_t tx)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	int tmp, tmp1;
+=======
+int16_t oslec_hpf_tx(struct oslec_state *ec, int16_t tx)
+{
+	int tmp;
+	int tmp1;
+>>>>>>> refs/remotes/origin/master
 
 	if (ec->adaption_mode & ECHO_CAN_USE_TX_HPF) {
 		tmp = tx << 15;
@@ -684,9 +850,12 @@ int16_t oslec_hpf_tx(struct oslec_state *ec, int16_t tx)
 	return tx;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(oslec_hpf_tx);
 
 MODULE_LICENSE("GPL");

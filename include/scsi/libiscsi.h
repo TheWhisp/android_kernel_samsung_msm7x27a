@@ -62,6 +62,11 @@ enum {
 	TMF_NOT_FOUND,
 };
 
+<<<<<<< HEAD
+=======
+#define ISID_SIZE			6
+
+>>>>>>> refs/remotes/origin/master
 /* Connection suspend "bit" */
 #define ISCSI_SUSPEND_BIT		1
 
@@ -116,10 +121,14 @@ struct iscsi_task {
 	itt_t			hdr_itt;
 	__be32			cmdsn;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	uint8_t			lun[8];
 =======
 	struct scsi_lun		lun;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct scsi_lun		lun;
+>>>>>>> refs/remotes/origin/master
 
 	int			itt;		/* this ITT */
 
@@ -177,6 +186,10 @@ struct iscsi_conn {
 
 	/* iSCSI connection-wide sequencing */
 	uint32_t		exp_statsn;
+<<<<<<< HEAD
+=======
+	uint32_t		statsn;
+>>>>>>> refs/remotes/origin/master
 
 	/* control data */
 	int			id;		/* CID */
@@ -217,6 +230,25 @@ struct iscsi_conn {
 	int			persistent_port;
 	char			*persistent_address;
 
+<<<<<<< HEAD
+=======
+	unsigned		max_segment_size;
+	unsigned		tcp_xmit_wsf;
+	unsigned		tcp_recv_wsf;
+	uint16_t		keepalive_tmo;
+	uint16_t		local_port;
+	uint8_t			tcp_timestamp_stat;
+	uint8_t			tcp_nagle_disable;
+	uint8_t			tcp_wsf_disable;
+	uint8_t			tcp_timer_scale;
+	uint8_t			tcp_timestamp_en;
+	uint8_t			fragment_disable;
+	uint8_t			ipv4_tos;
+	uint8_t			ipv6_traffic_class;
+	uint8_t			ipv6_flow_label;
+	uint8_t			is_fw_assigned_ipv6;
+
+>>>>>>> refs/remotes/origin/master
 	/* MIB-statistics */
 	uint64_t		txdata_octets;
 	uint64_t		rxdata_octets;
@@ -273,10 +305,14 @@ struct iscsi_session {
 	int			tgt_reset_timeout;
 	int			initial_r2t_en;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned		max_r2t;
 =======
 	unsigned short		max_r2t;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned short		max_r2t;
+>>>>>>> refs/remotes/origin/master
 	int			imm_data_en;
 	unsigned		first_burst;
 	unsigned		max_burst;
@@ -293,11 +329,33 @@ struct iscsi_session {
 	char			*password_in;
 	char			*targetname;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	char			*targetalias;
 >>>>>>> refs/remotes/origin/cm-10.0
 	char			*ifacename;
 	char			*initiatorname;
+=======
+	char			*targetalias;
+	char			*ifacename;
+	char			*initiatorname;
+	char			*boot_root;
+	char			*boot_nic;
+	char			*boot_target;
+	char			*portal_type;
+	char			*discovery_parent_type;
+	uint16_t		discovery_parent_idx;
+	uint16_t		def_taskmgmt_tmo;
+	uint16_t		tsid;
+	uint8_t			auto_snd_tgt_disable;
+	uint8_t			discovery_sess;
+	uint8_t			chap_auth_en;
+	uint8_t			discovery_logout_en;
+	uint8_t			bidi_chap_en;
+	uint8_t			discovery_auth_optional;
+	uint8_t			isid[ISID_SIZE];
+
+>>>>>>> refs/remotes/origin/master
 	/* control data */
 	struct iscsi_transport	*tt;
 	struct Scsi_Host	*host;
@@ -438,6 +496,10 @@ extern void iscsi_complete_scsi_task(struct iscsi_task *task,
  */
 extern void iscsi_pool_free(struct iscsi_pool *);
 extern int iscsi_pool_init(struct iscsi_pool *, int, void ***, int);
+<<<<<<< HEAD
+=======
+extern int iscsi_switch_str_param(char **, char *);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * inline functions to deal with padding.

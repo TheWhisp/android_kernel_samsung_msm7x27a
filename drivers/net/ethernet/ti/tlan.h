@@ -207,7 +207,10 @@ struct tlan_priv {
 	u8			tlan_full_duplex;
 	spinlock_t		lock;
 	u8			link;
+<<<<<<< HEAD
 	u8			is_eisa;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct work_struct			tlan_tqueue;
 	u8			neg_be_verbose;
 };

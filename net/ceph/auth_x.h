@@ -13,7 +13,11 @@
  */
 struct ceph_x_ticket_handler {
 	struct rb_node node;
+<<<<<<< HEAD
 	unsigned service;
+=======
+	unsigned int service;
+>>>>>>> refs/remotes/origin/master
 
 	struct ceph_crypto_key session_key;
 	struct ceph_timespec validity;
@@ -27,12 +31,18 @@ struct ceph_x_ticket_handler {
 
 struct ceph_x_authorizer {
 	struct ceph_buffer *buf;
+<<<<<<< HEAD
 	unsigned service;
 	u64 nonce;
 <<<<<<< HEAD
 =======
 	u64 secret_id;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int service;
+	u64 nonce;
+	u64 secret_id;
+>>>>>>> refs/remotes/origin/master
 	char reply_buf[128];  /* big enough for encrypted blob */
 };
 
@@ -42,13 +52,21 @@ struct ceph_x_info {
 	bool starting;
 	u64 server_challenge;
 
+<<<<<<< HEAD
 	unsigned have_keys;
+=======
+	unsigned int have_keys;
+>>>>>>> refs/remotes/origin/master
 	struct rb_root ticket_handlers;
 
 	struct ceph_x_authorizer auth_authorizer;
 };
 
+<<<<<<< HEAD
 extern int ceph_x_init(struct ceph_auth_client *ac);
+=======
+int ceph_x_init(struct ceph_auth_client *ac);
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

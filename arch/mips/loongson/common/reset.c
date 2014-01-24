@@ -1,6 +1,11 @@
 /*
+<<<<<<< HEAD
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
+=======
+ * This program is free software; you can redistribute	it and/or modify it
+ * under  the terms of	the GNU General	 Public License as published by the
+>>>>>>> refs/remotes/origin/master
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  *
@@ -12,6 +17,10 @@
 #include <linux/init.h>
 #include <linux/pm.h>
 
+<<<<<<< HEAD
+=======
+#include <asm/idle.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/reboot.h>
 
 #include <loongson.h>
@@ -26,9 +35,15 @@ static inline void loongson_reboot(void)
 	func = (void *)ioremap_nocache(LOONGSON_BOOT_BASE, 4);
 
 	__asm__ __volatile__(
+<<<<<<< HEAD
 	"       .set    noat                                            \n"
 	"       jr      %[func]                                         \n"
 	"       .set    at                                              \n"
+=======
+	"	.set	noat						\n"
+	"	jr	%[func]						\n"
+	"	.set	at						\n"
+>>>>>>> refs/remotes/origin/master
 	: /* No outputs */
 	: [func] "r" (func));
 #endif

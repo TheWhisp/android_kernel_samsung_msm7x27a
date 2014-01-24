@@ -19,11 +19,14 @@
  * arch/arm/mach-iop3xx/iop3xx-pci.c
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define pcibios_assign_all_busses()	1
 #define PCIBIOS_MIN_IO		0x00000000
 #define PCIBIOS_MIN_MEM		0x00000000
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 void iop33x_init_irq(void);

@@ -21,6 +21,7 @@
 #include <linux/string.h>
 #include <linux/etherdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <net/ip.h>
 #include <linux/wait.h>
 #include <linux/proc_fs.h>
@@ -35,6 +36,12 @@
 #include <linux/interrupt.h>
 #include <linux/stddef.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/wait.h>
+#include <linux/proc_fs.h>
+#include <linux/interrupt.h>
+#include <linux/stddef.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/stat.h>
 #include <linux/fcntl.h>
 #include <linux/unistd.h>
@@ -42,13 +49,17 @@
 #include <linux/mm.h>
 #include <linux/pagemap.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/uaccess.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/kthread.h>
 #include <linux/tcp.h>
 #include <linux/udp.h>
 #include <linux/usb.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <asm/uaccess.h>
@@ -57,6 +68,12 @@
 
 #include "Typedefs.h"
 #include "Version.h"
+=======
+#include <asm/uaccess.h>
+#include <net/ip.h>
+
+#include "Typedefs.h"
+>>>>>>> refs/remotes/origin/master
 #include "Macros.h"
 #include "HostMIBSInterface.h"
 #include "cntrl_SignalingInterface.h"
@@ -77,9 +94,12 @@
 #include "vendorspecificextn.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "InterfaceMacros.h"
 #include "InterfaceAdapter.h"
 #include "InterfaceIsr.h"
@@ -93,6 +113,7 @@
 #define DEV_NAME	"tarang"
 #define DRV_DESCRIPTION "Beceem Communications Inc. WiMAX driver"
 #define DRV_COPYRIGHT	"Copyright 2010. Beceem Communications Inc"
+<<<<<<< HEAD
 #define DRV_VERSION	VER_FILEVERSION_STR
 #define PFX		DRV_NAME " "
 
@@ -101,4 +122,11 @@
 extern struct class *bcm_class;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRV_VERSION	"5.2.45"
+#define PFX		DRV_NAME " "
+
+extern struct class *bcm_class;
+
+>>>>>>> refs/remotes/origin/master
 #endif

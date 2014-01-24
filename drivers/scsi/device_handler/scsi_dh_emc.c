@@ -22,9 +22,13 @@
  */
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi.h>
 #include <scsi/scsi_eh.h>
 #include <scsi/scsi_dh.h>
@@ -633,7 +637,10 @@ static const struct scsi_dh_devlist clariion_dev_list[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool clariion_match(struct scsi_device *sdev)
 {
 	int i;
@@ -652,7 +659,10 @@ static bool clariion_match(struct scsi_device *sdev)
 	return false;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int clariion_bus_attach(struct scsi_device *sdev);
 static void clariion_bus_detach(struct scsi_device *sdev);
 
@@ -667,9 +677,13 @@ static struct scsi_device_handler clariion_dh = {
 	.prep_fn	= clariion_prep_fn,
 	.set_params	= clariion_set_params,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.match		= clariion_match,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.match		= clariion_match,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int clariion_bus_attach(struct scsi_device *sdev)

@@ -7,6 +7,7 @@
  *               1997, 1998   Erik Andersen, andersee@debian.org
  *               1998-2002    Jens Axboe, axboe@suse.de
  */
+<<<<<<< HEAD
  
 #ifndef	_LINUX_CDROM_H
 #define	_LINUX_CDROM_H
@@ -915,6 +916,14 @@ struct mode_page_header {
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/list.h>
+=======
+#ifndef	_LINUX_CDROM_H
+#define	_LINUX_CDROM_H
+
+#include <linux/fs.h>		/* not really needed, later.. */
+#include <linux/list.h>
+#include <uapi/linux/cdrom.h>
+>>>>>>> refs/remotes/origin/master
 
 struct packet_command
 {
@@ -956,11 +965,16 @@ struct cdrom_device_info {
 /* per-device flags */
         __u8 sanyo_slot		: 2;	/* Sanyo 3 CD changer support */
 <<<<<<< HEAD
+<<<<<<< HEAD
         __u8 reserved		: 6;	/* not used yet */
 =======
         __u8 keeplocked		: 1;	/* CDROM_LOCKDOOR status */
         __u8 reserved		: 5;	/* not used yet */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+        __u8 keeplocked		: 1;	/* CDROM_LOCKDOOR status */
+        __u8 reserved		: 5;	/* not used yet */
+>>>>>>> refs/remotes/origin/master
 	int cdda_method;		/* see flags */
 	__u8 last_sense;
 	__u8 media_written;		/* dirty flag, DVD+RW bookkeeping */
@@ -1217,6 +1231,9 @@ static inline int msf_to_lba(u8 m, u8 s, u8 f)
 {
 	return (((m * CD_SECS) + s) * CD_FRAMES + f) - CD_MSF_OFFSET;
 }
+<<<<<<< HEAD
 #endif  /* End of kernel only stuff */ 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif  /* _LINUX_CDROM_H */

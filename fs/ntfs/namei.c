@@ -101,7 +101,11 @@
  * Locking: Caller must hold i_mutex on the directory.
  */
 static struct dentry *ntfs_lookup(struct inode *dir_ino, struct dentry *dent,
+<<<<<<< HEAD
 		struct nameidata *nd)
+=======
+		unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	ntfs_volume *vol = NTFS_SB(dir_ino->i_sb);
 	struct inode *dent_inode;

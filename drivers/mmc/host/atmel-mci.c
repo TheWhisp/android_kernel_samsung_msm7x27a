@@ -19,15 +19,26 @@
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/of_gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/scatterlist.h>
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/stat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/types.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+#include <linux/platform_data/atmel.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mmc/host.h>
 #include <linux/mmc/sdio.h>
@@ -35,13 +46,18 @@
 #include <mach/atmel-mci.h>
 #include <linux/atmel-mci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/atmel_pdc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atmel_pdc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/io.h>
 #include <asm/unaligned.h>
 
+<<<<<<< HEAD
 #include <mach/cpu.h>
 #include <mach/board.h>
 
@@ -58,12 +74,24 @@ enum {
 	EVENT_CMD_COMPLETE = 0,
 	EVENT_XFER_COMPLETE,
 	EVENT_DATA_COMPLETE,
+=======
+#include "atmel-mci-regs.h"
+
+#define ATMCI_DATA_ERROR_FLAGS	(ATMCI_DCRCE | ATMCI_DTOE | ATMCI_OVRE | ATMCI_UNRE)
+#define ATMCI_DMA_THRESHOLD	16
+
+enum {
+	EVENT_CMD_RDY = 0,
+	EVENT_XFER_COMPLETE,
+	EVENT_NOTBUSY,
+>>>>>>> refs/remotes/origin/master
 	EVENT_DATA_ERROR,
 };
 
 enum atmel_mci_state {
 	STATE_IDLE = 0,
 	STATE_SENDING_CMD,
+<<<<<<< HEAD
 	STATE_SENDING_DATA,
 	STATE_DATA_BUSY,
 	STATE_SENDING_STOP,
@@ -77,6 +105,14 @@ struct atmel_mci_dma {
 	struct dma_async_tx_descriptor	*data_desc;
 #endif
 =======
+=======
+	STATE_DATA_XFER,
+	STATE_WAITING_NOTBUSY,
+	STATE_SENDING_STOP,
+	STATE_END_REQUEST,
+};
+
+>>>>>>> refs/remotes/origin/master
 enum atmci_xfer_dir {
 	XFER_RECEIVE = 0,
 	XFER_TRANSMIT,
@@ -88,19 +124,33 @@ enum atmci_pdc_buf {
 };
 
 struct atmel_mci_caps {
+<<<<<<< HEAD
 	bool    has_dma;
+=======
+	bool    has_dma_conf_reg;
+>>>>>>> refs/remotes/origin/master
 	bool    has_pdc;
 	bool    has_cfg_reg;
 	bool    has_cstor_reg;
 	bool    has_highspeed;
 	bool    has_rwproof;
 	bool	has_odd_clk_div;
+<<<<<<< HEAD
+=======
+	bool	has_bad_data_ordering;
+	bool	need_reset_after_xfer;
+	bool	need_blksz_mul_4;
+	bool	need_notbusy_for_read_ops;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct atmel_mci_dma {
 	struct dma_chan			*chan;
 	struct dma_async_tx_descriptor	*data_desc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -108,11 +158,21 @@ struct atmel_mci_dma {
  * @lock: Spinlock protecting the queue and associated data.
  * @regs: Pointer to MMIO registers.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @sg: Scatterlist entry currently being processed by PIO code, if any.
 =======
  * @sg: Scatterlist entry currently being processed by PIO or PDC code.
 >>>>>>> refs/remotes/origin/cm-10.0
  * @pio_offset: Offset into the current scatterlist entry.
+=======
+ * @sg: Scatterlist entry currently being processed by PIO or PDC code.
+ * @pio_offset: Offset into the current scatterlist entry.
+ * @buffer: Buffer used if we don't have the r/w proof capability. We
+ *      don't have the time to switch pdc buffers so we have to use only
+ *      one buffer for the full transaction.
+ * @buf_size: size of the buffer.
+ * @phys_buf_addr: buffer address needed for pdc.
+>>>>>>> refs/remotes/origin/master
  * @cur_slot: The slot which is currently using the controller.
  * @mrq: The request currently being processed on @cur_slot,
  *	or NULL if the controller is idle.
@@ -120,9 +180,13 @@ struct atmel_mci_dma {
  * @data: The data currently being transferred, or NULL if no data
  *	transfer is in progress.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @data_size: just data->blocks * data->blksz.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @data_size: just data->blocks * data->blksz.
+>>>>>>> refs/remotes/origin/master
  * @dma: DMA client state.
  * @data_chan: DMA channel being used for the current data transfer.
  * @cmd_status: Snapshot of SR taken upon completion of the current
@@ -141,6 +205,10 @@ struct atmel_mci_dma {
  * @queue: List of slots waiting for access to the controller.
  * @need_clock_update: Update the clock rate before the next request.
  * @need_reset: Reset controller before next request.
+<<<<<<< HEAD
+=======
+ * @timer: Timer to balance the data timeout error flag which cannot rise.
+>>>>>>> refs/remotes/origin/master
  * @mode_reg: Value of the MR register.
  * @cfg_reg: Value of the CFG register.
  * @bus_hz: The rate of @mck in Hz. This forms the basis for MMC bus
@@ -150,7 +218,10 @@ struct atmel_mci_dma {
  * @pdev: Platform device associated with the MMC controller.
  * @slot: Slots sharing this MMC controller.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * @caps: MCI capabilities depending on MCI version.
  * @prepare_data: function to setup MCI before data transfer which
  * depends on MCI capabilities.
@@ -158,7 +229,10 @@ struct atmel_mci_dma {
  * capabilities.
  * @stop_transfer: function to stop data transfer which depends on MCI
  * capabilities.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Locking
  * =======
@@ -194,26 +268,40 @@ struct atmel_mci {
 
 	struct scatterlist	*sg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int		sg_len;
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int		pio_offset;
+=======
+	unsigned int		sg_len;
+	unsigned int		pio_offset;
+	unsigned int		*buffer;
+	unsigned int		buf_size;
+	dma_addr_t		buf_phys_addr;
+>>>>>>> refs/remotes/origin/master
 
 	struct atmel_mci_slot	*cur_slot;
 	struct mmc_request	*mrq;
 	struct mmc_command	*cmd;
 	struct mmc_data		*data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	struct atmel_mci_dma	dma;
 	struct dma_chan		*data_chan;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int		data_size;
 
 	struct atmel_mci_dma	dma;
 	struct dma_chan		*data_chan;
 	struct dma_slave_config	dma_conf;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u32			cmd_status;
 	u32			data_status;
@@ -227,6 +315,10 @@ struct atmel_mci {
 
 	bool			need_clock_update;
 	bool			need_reset;
+<<<<<<< HEAD
+=======
+	struct timer_list	timer;
+>>>>>>> refs/remotes/origin/master
 	u32			mode_reg;
 	u32			cfg_reg;
 	unsigned long		bus_hz;
@@ -235,8 +327,11 @@ struct atmel_mci {
 	struct platform_device	*pdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct atmel_mci_slot	*slot[ATMEL_MCI_MAX_NR_SLOTS];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct atmel_mci_slot	*slot[ATMCI_MAX_NR_SLOTS];
 
 	struct atmel_mci_caps   caps;
@@ -244,7 +339,10 @@ struct atmel_mci {
 	u32 (*prepare_data)(struct atmel_mci *host, struct mmc_data *data);
 	void (*submit_data)(struct atmel_mci *host, struct mmc_data *data);
 	void (*stop_transfer)(struct atmel_mci *host);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -282,9 +380,12 @@ struct atmel_mci_slot {
 #define ATMCI_CARD_NEED_INIT	1
 #define ATMCI_SHUTDOWN		2
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ATMCI_SUSPENDED		3
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	int			detect_pin;
 	int			wp_pin;
@@ -301,6 +402,7 @@ struct atmel_mci_slot {
 	set_bit(event, &host->pending_events)
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Enable or disable features/registers based on
  * whether the processor supports them
@@ -329,6 +431,8 @@ static inline bool atmci_is_mci2(void)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * The debugfs stuff below is mostly optimized away when
  * CONFIG_DEBUG_FS is not set.
  */
@@ -435,12 +539,19 @@ static int atmci_regs_show(struct seq_file *s, void *v)
 {
 	struct atmel_mci	*host = s->private;
 	u32			*buf;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	buf = kmalloc(MCI_REGS_SIZE, GFP_KERNEL);
 =======
 	buf = kmalloc(ATMCI_REGS_SIZE, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int			ret = 0;
+
+
+	buf = kmalloc(ATMCI_REGS_SIZE, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!buf)
 		return -ENOMEM;
 
@@ -449,6 +560,7 @@ static int atmci_regs_show(struct seq_file *s, void *v)
 	 * not disabling interrupts, so IMR and SR may not be
 	 * consistent.
 	 */
+<<<<<<< HEAD
 	spin_lock_bh(&host->lock);
 	clk_enable(host->mck);
 <<<<<<< HEAD
@@ -489,6 +601,29 @@ static int atmci_regs_show(struct seq_file *s, void *v)
 			buf[ATMCI_MR / 4] & ATMCI_MR_RDPROOF ? " RDPROOF" : "",
 			buf[ATMCI_MR / 4] & ATMCI_MR_WRPROOF ? " WRPROOF" : "",
 			buf[ATMCI_MR / 4] & 0xff);
+=======
+	ret = clk_prepare_enable(host->mck);
+	if (ret)
+		goto out;
+
+	spin_lock_bh(&host->lock);
+	memcpy_fromio(buf, host->regs, ATMCI_REGS_SIZE);
+	spin_unlock_bh(&host->lock);
+
+	clk_disable_unprepare(host->mck);
+
+	seq_printf(s, "MR:\t0x%08x%s%s ",
+			buf[ATMCI_MR / 4],
+			buf[ATMCI_MR / 4] & ATMCI_MR_RDPROOF ? " RDPROOF" : "",
+			buf[ATMCI_MR / 4] & ATMCI_MR_WRPROOF ? " WRPROOF" : "");
+	if (host->caps.has_odd_clk_div)
+		seq_printf(s, "{CLKDIV,CLKODD}=%u\n",
+				((buf[ATMCI_MR / 4] & 0xff) << 1)
+				| ((buf[ATMCI_MR / 4] >> 16) & 1));
+	else
+		seq_printf(s, "CLKDIV=%u\n",
+				(buf[ATMCI_MR / 4] & 0xff));
+>>>>>>> refs/remotes/origin/master
 	seq_printf(s, "DTOR:\t0x%08x\n", buf[ATMCI_DTOR / 4]);
 	seq_printf(s, "SDCR:\t0x%08x\n", buf[ATMCI_SDCR / 4]);
 	seq_printf(s, "ARGR:\t0x%08x\n", buf[ATMCI_ARGR / 4]);
@@ -504,15 +639,23 @@ static int atmci_regs_show(struct seq_file *s, void *v)
 	atmci_show_status_reg(s, "SR", buf[ATMCI_SR / 4]);
 	atmci_show_status_reg(s, "IMR", buf[ATMCI_IMR / 4]);
 
+<<<<<<< HEAD
 	if (host->caps.has_dma) {
 		u32 val;
 
 		val = buf[ATMCI_DMA / 4];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (host->caps.has_dma_conf_reg) {
+		u32 val;
+
+		val = buf[ATMCI_DMA / 4];
+>>>>>>> refs/remotes/origin/master
 		seq_printf(s, "DMA:\t0x%08x OFFSET=%u CHKSIZE=%u%s\n",
 				val, val & 3,
 				((val >> 4) & 3) ?
 					1 << (((val >> 4) & 3) + 1) : 1,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				val & MCI_DMAEN ? " DMAEN" : "");
 
@@ -524,6 +667,8 @@ static int atmci_regs_show(struct seq_file *s, void *v)
 				val & MCI_CFG_HSMODE ? " HSMODE" : "",
 				val & MCI_CFG_LSYNC ? " LSYNC" : "");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				val & ATMCI_DMAEN ? " DMAEN" : "");
 	}
 	if (host->caps.has_cfg_reg) {
@@ -536,12 +681,21 @@ static int atmci_regs_show(struct seq_file *s, void *v)
 				val & ATMCI_CFG_FERRCTRL_COR ? " FERRCTRL_CLEAR_ON_READ" : "",
 				val & ATMCI_CFG_HSMODE ? " HSMODE" : "",
 				val & ATMCI_CFG_LSYNC ? " LSYNC" : "");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
 
 	kfree(buf);
 
 	return 0;
+=======
+	}
+
+out:
+	kfree(buf);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int atmci_regs_open(struct inode *inode, struct file *file)
@@ -600,10 +754,111 @@ err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned int ns_to_clocks(struct atmel_mci *host,
 =======
 static inline unsigned int atmci_ns_to_clocks(struct atmel_mci *host,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_OF)
+static const struct of_device_id atmci_dt_ids[] = {
+	{ .compatible = "atmel,hsmci" },
+	{ /* sentinel */ }
+};
+
+MODULE_DEVICE_TABLE(of, atmci_dt_ids);
+
+static struct mci_platform_data*
+atmci_of_init(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+	struct device_node *cnp;
+	struct mci_platform_data *pdata;
+	u32 slot_id;
+
+	if (!np) {
+		dev_err(&pdev->dev, "device node not found\n");
+		return ERR_PTR(-EINVAL);
+	}
+
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata) {
+		dev_err(&pdev->dev, "could not allocate memory for pdata\n");
+		return ERR_PTR(-ENOMEM);
+	}
+
+	for_each_child_of_node(np, cnp) {
+		if (of_property_read_u32(cnp, "reg", &slot_id)) {
+			dev_warn(&pdev->dev, "reg property is missing for %s\n",
+				 cnp->full_name);
+			continue;
+		}
+
+		if (slot_id >= ATMCI_MAX_NR_SLOTS) {
+			dev_warn(&pdev->dev, "can't have more than %d slots\n",
+			         ATMCI_MAX_NR_SLOTS);
+			break;
+		}
+
+		if (of_property_read_u32(cnp, "bus-width",
+		                         &pdata->slot[slot_id].bus_width))
+			pdata->slot[slot_id].bus_width = 1;
+
+		pdata->slot[slot_id].detect_pin =
+			of_get_named_gpio(cnp, "cd-gpios", 0);
+
+		pdata->slot[slot_id].detect_is_active_high =
+			of_property_read_bool(cnp, "cd-inverted");
+
+		pdata->slot[slot_id].wp_pin =
+			of_get_named_gpio(cnp, "wp-gpios", 0);
+	}
+
+	return pdata;
+}
+#else /* CONFIG_OF */
+static inline struct mci_platform_data*
+atmci_of_init(struct platform_device *dev)
+{
+	return ERR_PTR(-EINVAL);
+}
+#endif
+
+static inline unsigned int atmci_get_version(struct atmel_mci *host)
+{
+	return atmci_readl(host, ATMCI_VERSION) & 0x00000fff;
+}
+
+static void atmci_timeout_timer(unsigned long data)
+{
+	struct atmel_mci *host;
+
+	host = (struct atmel_mci *)data;
+
+	dev_dbg(&host->pdev->dev, "software timeout\n");
+
+	if (host->mrq->cmd->data) {
+		host->mrq->cmd->data->error = -ETIMEDOUT;
+		host->data = NULL;
+		/*
+		 * With some SDIO modules, sometimes DMA transfer hangs. If
+		 * stop_transfer() is not called then the DMA request is not
+		 * removed, following ones are queued and never computed.
+		 */
+		if (host->state == STATE_DATA_XFER)
+			host->stop_transfer(host);
+	} else {
+		host->mrq->cmd->error = -ETIMEDOUT;
+		host->cmd = NULL;
+	}
+	host->need_reset = 1;
+	host->state = STATE_END_REQUEST;
+	smp_wmb();
+	tasklet_schedule(&host->tasklet);
+}
+
+static inline unsigned int atmci_ns_to_clocks(struct atmel_mci *host,
+>>>>>>> refs/remotes/origin/master
 					unsigned int ns)
 {
 	/*
@@ -627,11 +882,16 @@ static void atmci_set_timeout(struct atmel_mci *host,
 	unsigned	dtomul;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	timeout = ns_to_clocks(host, data->timeout_ns) + data->timeout_clks;
 =======
 	timeout = atmci_ns_to_clocks(host, data->timeout_ns)
 		+ data->timeout_clks;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	timeout = atmci_ns_to_clocks(host, data->timeout_ns)
+		+ data->timeout_clks;
+>>>>>>> refs/remotes/origin/master
 
 	for (dtomul = 0; dtomul < 8; dtomul++) {
 		unsigned shift = dtomul_to_shift[dtomul];
@@ -648,10 +908,14 @@ static void atmci_set_timeout(struct atmel_mci *host,
 	dev_vdbg(&slot->mmc->class_dev, "setting timeout to %u cycles\n",
 			dtocyc << dtomul_to_shift[dtomul]);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mci_writel(host, DTOR, (MCI_DTOMUL(dtomul) | MCI_DTOCYC(dtocyc)));
 =======
 	atmci_writel(host, ATMCI_DTOR, (ATMCI_DTOMUL(dtomul) | ATMCI_DTOCYC(dtocyc)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atmci_writel(host, ATMCI_DTOR, (ATMCI_DTOMUL(dtomul) | ATMCI_DTOCYC(dtocyc)));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -666,6 +930,7 @@ static u32 atmci_prepare_command(struct mmc_host *mmc,
 	cmd->error = -EINPROGRESS;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmdr = MCI_CMDR_CMDNB(cmd->opcode);
 
 	if (cmd->flags & MMC_RSP_PRESENT) {
@@ -674,6 +939,8 @@ static u32 atmci_prepare_command(struct mmc_host *mmc,
 		else
 			cmdr |= MCI_CMDR_RSPTYP_48BIT;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cmdr = ATMCI_CMDR_CMDNB(cmd->opcode);
 
 	if (cmd->flags & MMC_RSP_PRESENT) {
@@ -681,7 +948,10 @@ static u32 atmci_prepare_command(struct mmc_host *mmc,
 			cmdr |= ATMCI_CMDR_RSPTYP_136BIT;
 		else
 			cmdr |= ATMCI_CMDR_RSPTYP_48BIT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -689,6 +959,7 @@ static u32 atmci_prepare_command(struct mmc_host *mmc,
 	 * it's too difficult to determine whether this is an ACMD or
 	 * not. Better make it 64.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cmdr |= MCI_CMDR_MAXLAT_64CYC;
 
@@ -713,6 +984,8 @@ static u32 atmci_prepare_command(struct mmc_host *mmc,
 		if (data->flags & MMC_DATA_READ)
 			cmdr |= MCI_CMDR_TRDIR_READ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cmdr |= ATMCI_CMDR_MAXLAT_64CYC;
 
 	if (mmc->ios.bus_mode == MMC_BUSMODE_OPENDRAIN)
@@ -735,17 +1008,24 @@ static u32 atmci_prepare_command(struct mmc_host *mmc,
 
 		if (data->flags & MMC_DATA_READ)
 			cmdr |= ATMCI_CMDR_TRDIR_READ;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return cmdr;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void atmci_start_command(struct atmel_mci *host,
 =======
 static void atmci_send_command(struct atmel_mci *host,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void atmci_send_command(struct atmel_mci *host,
+>>>>>>> refs/remotes/origin/master
 		struct mmc_command *cmd, u32 cmd_flags)
 {
 	WARN_ON(host->cmd);
@@ -755,6 +1035,7 @@ static void atmci_send_command(struct atmel_mci *host,
 			"start command: ARGR=0x%08x CMDR=0x%08x\n",
 			cmd->arg, cmd_flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mci_writel(host, ARGR, cmd->arg);
 	mci_writel(host, CMDR, cmd_flags);
@@ -794,12 +1075,18 @@ static void atmci_stop_dma(struct atmel_mci *host)
 
 /* This function is called by the DMA driver from tasklet context. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	atmci_writel(host, ATMCI_ARGR, cmd->arg);
 	atmci_writel(host, ATMCI_CMDR, cmd_flags);
 }
 
 static void atmci_send_stop_cmd(struct atmel_mci *host, struct mmc_data *data)
 {
+<<<<<<< HEAD
+=======
+	dev_dbg(&host->pdev->dev, "send stop command\n");
+>>>>>>> refs/remotes/origin/master
 	atmci_send_command(host, data->stop, host->stop_cmdr);
 	atmci_writel(host, ATMCI_IER, ATMCI_CMDRDY);
 }
@@ -812,6 +1099,10 @@ static void atmci_pdc_set_single_buf(struct atmel_mci *host,
 	enum atmci_xfer_dir dir, enum atmci_pdc_buf buf_nb)
 {
 	u32 pointer_reg, counter_reg;
+<<<<<<< HEAD
+=======
+	unsigned int buf_size;
+>>>>>>> refs/remotes/origin/master
 
 	if (dir == XFER_RECEIVE) {
 		pointer_reg = ATMEL_PDC_RPR;
@@ -826,8 +1117,20 @@ static void atmci_pdc_set_single_buf(struct atmel_mci *host,
 		counter_reg += ATMEL_PDC_SCND_BUF_OFF;
 	}
 
+<<<<<<< HEAD
 	atmci_writel(host, pointer_reg, sg_dma_address(host->sg));
 	if (host->data_size <= sg_dma_len(host->sg)) {
+=======
+	if (!host->caps.has_rwproof) {
+		buf_size = host->buf_size;
+		atmci_writel(host, pointer_reg, host->buf_phys_addr);
+	} else {
+		buf_size = sg_dma_len(host->sg);
+		atmci_writel(host, pointer_reg, sg_dma_address(host->sg));
+	}
+
+	if (host->data_size <= buf_size) {
+>>>>>>> refs/remotes/origin/master
 		if (host->data_size & 0x3) {
 			/* If size is different from modulo 4, transfer bytes */
 			atmci_writel(host, counter_reg, host->data_size);
@@ -879,7 +1182,24 @@ static void atmci_pdc_cleanup(struct atmel_mci *host)
  */
 static void atmci_pdc_complete(struct atmel_mci *host)
 {
+<<<<<<< HEAD
 	atmci_writel(host, ATMEL_PDC_PTCR, ATMEL_PDC_RXTDIS | ATMEL_PDC_TXTDIS);
+=======
+	int transfer_size = host->data->blocks * host->data->blksz;
+	int i;
+
+	atmci_writel(host, ATMEL_PDC_PTCR, ATMEL_PDC_RXTDIS | ATMEL_PDC_TXTDIS);
+
+	if ((!host->caps.has_rwproof)
+	    && (host->data->flags & MMC_DATA_READ)) {
+		if (host->caps.has_bad_data_ordering)
+			for (i = 0; i < transfer_size; i++)
+				host->buffer[i] = swab32(host->buffer[i]);
+		sg_copy_from_buffer(host->data->sg, host->data->sg_len,
+		                    host->buffer, transfer_size);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	atmci_pdc_cleanup(host);
 
 	/*
@@ -887,9 +1207,16 @@ static void atmci_pdc_complete(struct atmel_mci *host)
 	 * to send the stop command or waiting for NBUSY in this case.
 	 */
 	if (host->data) {
+<<<<<<< HEAD
 		atmci_set_pending(host, EVENT_XFER_COMPLETE);
 		tasklet_schedule(&host->tasklet);
 		atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
+=======
+		dev_dbg(&host->pdev->dev,
+		        "(%s) set pending xfer complete\n", __func__);
+		atmci_set_pending(host, EVENT_XFER_COMPLETE);
+		tasklet_schedule(&host->tasklet);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -907,7 +1234,10 @@ static void atmci_dma_cleanup(struct atmel_mci *host)
 /*
  * This function is called by the DMA driver from tasklet context.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void atmci_dma_complete(void *arg)
 {
 	struct atmel_mci	*host = arg;
@@ -915,6 +1245,7 @@ static void atmci_dma_complete(void *arg)
 
 	dev_vdbg(&host->pdev->dev, "DMA complete\n");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (atmci_is_mci2())
 		/* Disable DMA hardware handshaking on MCI */
@@ -924,6 +1255,11 @@ static void atmci_dma_complete(void *arg)
 		/* Disable DMA hardware handshaking on MCI */
 		atmci_writel(host, ATMCI_DMA, atmci_readl(host, ATMCI_DMA) & ~ATMCI_DMAEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (host->caps.has_dma_conf_reg)
+		/* Disable DMA hardware handshaking on MCI */
+		atmci_writel(host, ATMCI_DMA, atmci_readl(host, ATMCI_DMA) & ~ATMCI_DMAEN);
+>>>>>>> refs/remotes/origin/master
 
 	atmci_dma_cleanup(host);
 
@@ -932,6 +1268,11 @@ static void atmci_dma_complete(void *arg)
 	 * to send the stop command or waiting for NBUSY in this case.
 	 */
 	if (data) {
+<<<<<<< HEAD
+=======
+		dev_dbg(&host->pdev->dev,
+		        "(%s) set pending xfer complete\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		atmci_set_pending(host, EVENT_XFER_COMPLETE);
 		tasklet_schedule(&host->tasklet);
 
@@ -956,12 +1297,15 @@ static void atmci_dma_complete(void *arg)
 		 * framework.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mci_writel(host, IER, MCI_NOTBUSY);
 	}
 }
 
 static int
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
 	}
 }
@@ -1015,6 +1359,10 @@ atmci_prepare_data_pdc(struct atmel_mci *host, struct mmc_data *data)
 	u32 iflags, tmp;
 	unsigned int sg_len;
 	enum dma_data_direction dir;
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	data->error = -EINPROGRESS;
 
@@ -1030,7 +1378,11 @@ atmci_prepare_data_pdc(struct atmel_mci *host, struct mmc_data *data)
 		iflags |= ATMCI_ENDRX | ATMCI_RXBUFF;
 	} else {
 		dir = DMA_TO_DEVICE;
+<<<<<<< HEAD
 		iflags |= ATMCI_ENDTX | ATMCI_TXBUFE;
+=======
+		iflags |= ATMCI_ENDTX | ATMCI_TXBUFE | ATMCI_BLKE;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Set BLKLEN */
@@ -1042,6 +1394,19 @@ atmci_prepare_data_pdc(struct atmel_mci *host, struct mmc_data *data)
 	/* Configure PDC */
 	host->data_size = data->blocks * data->blksz;
 	sg_len = dma_map_sg(&host->pdev->dev, data->sg, data->sg_len, dir);
+<<<<<<< HEAD
+=======
+
+	if ((!host->caps.has_rwproof)
+	    && (host->data->flags & MMC_DATA_WRITE)) {
+		sg_copy_to_buffer(host->data->sg, host->data->sg_len,
+		                  host->buffer, host->data_size);
+		if (host->caps.has_bad_data_ordering)
+			for (i = 0; i < host->data_size; i++)
+				host->buffer[i] = swab32(host->buffer[i]);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (host->data_size)
 		atmci_pdc_set_both_buf(host,
 			((dir == DMA_FROM_DEVICE) ? XFER_RECEIVE : XFER_TRANSMIT));
@@ -1050,7 +1415,10 @@ atmci_prepare_data_pdc(struct atmel_mci *host, struct mmc_data *data)
 }
 
 static u32
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 {
 	struct dma_chan			*chan;
@@ -1059,10 +1427,16 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 	unsigned int			i;
 	enum dma_data_direction		direction;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int			sglen;
 =======
 	enum dma_transfer_direction	slave_dirn;
 	unsigned int			sglen;
+=======
+	enum dma_transfer_direction	slave_dirn;
+	unsigned int			sglen;
+	u32				maxburst;
+>>>>>>> refs/remotes/origin/master
 	u32 iflags;
 
 	data->error = -EINPROGRESS;
@@ -1072,7 +1446,10 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 	host->data = data;
 
 	iflags = ATMCI_DATA_ERROR_FLAGS;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We don't do DMA on "complex" transfers, i.e. with
@@ -1080,6 +1457,7 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 	 * with all the DMA setup overhead for short transfers.
 	 */
 	if (data->blocks * data->blksz < ATMCI_DMA_THRESHOLD)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return -EINVAL;
 	if (data->blksz & 3)
@@ -1089,6 +1467,8 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 		if (sg->offset & 3 || sg->length & 3)
 			return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return atmci_prepare_data(host, data);
 	if (data->blksz & 3)
 		return atmci_prepare_data(host, data);
@@ -1096,7 +1476,10 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 	for_each_sg(data->sg, sg, data->sg_len, i) {
 		if (sg->offset & 3 || sg->length & 3)
 			return atmci_prepare_data(host, data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* If we don't have a channel, we can't do DMA */
@@ -1107,6 +1490,7 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 	if (!chan)
 		return -ENODEV;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (atmci_is_mci2())
 		mci_writel(host, DMA, MCI_DMA_CHKSIZE(3) | MCI_DMAEN);
@@ -1133,13 +1517,32 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 		host->dma_conf.direction = slave_dirn = DMA_MEM_TO_DEV;
 	}
 
+=======
+	if (data->flags & MMC_DATA_READ) {
+		direction = DMA_FROM_DEVICE;
+		host->dma_conf.direction = slave_dirn = DMA_DEV_TO_MEM;
+		maxburst = atmci_convert_chksize(host->dma_conf.src_maxburst);
+	} else {
+		direction = DMA_TO_DEVICE;
+		host->dma_conf.direction = slave_dirn = DMA_MEM_TO_DEV;
+		maxburst = atmci_convert_chksize(host->dma_conf.dst_maxburst);
+	}
+
+	if (host->caps.has_dma_conf_reg)
+		atmci_writel(host, ATMCI_DMA, ATMCI_DMA_CHKSIZE(maxburst) |
+			ATMCI_DMAEN);
+
+>>>>>>> refs/remotes/origin/master
 	sglen = dma_map_sg(chan->device->dev, data->sg,
 			data->sg_len, direction);
 
 	dmaengine_slave_config(chan, &host->dma_conf);
 	desc = dmaengine_prep_slave_sg(chan,
 			data->sg, sglen, slave_dirn,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 	if (!desc)
 		goto unmap_exit;
@@ -1149,18 +1552,25 @@ atmci_prepare_data_dma(struct atmel_mci *host, struct mmc_data *data)
 	desc->callback_param = host;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return 0;
 =======
 	return iflags;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return iflags;
+>>>>>>> refs/remotes/origin/master
 unmap_exit:
 	dma_unmap_sg(chan->device->dev, data->sg, data->sg_len, direction);
 	return -ENOMEM;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void atmci_submit_data(struct atmel_mci *host)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 atmci_submit_data(struct atmel_mci *host, struct mmc_data *data)
 {
@@ -1181,7 +1591,10 @@ atmci_submit_data_pdc(struct atmel_mci *host, struct mmc_data *data)
 
 static void
 atmci_submit_data_dma(struct atmel_mci *host, struct mmc_data *data)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct dma_chan			*chan = host->data_chan;
 	struct dma_async_tx_descriptor	*desc = host->dma.data_desc;
@@ -1192,6 +1605,7 @@ atmci_submit_data_dma(struct atmel_mci *host, struct mmc_data *data)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #else /* CONFIG_MMC_ATMELMCI_DMA */
 
@@ -1254,17 +1668,31 @@ static u32 atmci_prepare_data(struct atmel_mci *host, struct mmc_data *data)
 =======
 static void atmci_stop_transfer(struct atmel_mci *host)
 {
+=======
+static void atmci_stop_transfer(struct atmel_mci *host)
+{
+	dev_dbg(&host->pdev->dev,
+	        "(%s) set pending xfer complete\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	atmci_set_pending(host, EVENT_XFER_COMPLETE);
 	atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
 }
 
 /*
+<<<<<<< HEAD
  * Stop data transfer because error(s) occured.
  */
 static void atmci_stop_transfer_pdc(struct atmel_mci *host)
 {
 	atmci_set_pending(host, EVENT_XFER_COMPLETE);
 	atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
+=======
+ * Stop data transfer because error(s) occurred.
+ */
+static void atmci_stop_transfer_pdc(struct atmel_mci *host)
+{
+	atmci_writel(host, ATMEL_PDC_PTCR, ATMEL_PDC_RXTDIS | ATMEL_PDC_TXTDIS);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void atmci_stop_transfer_dma(struct atmel_mci *host)
@@ -1276,6 +1704,11 @@ static void atmci_stop_transfer_dma(struct atmel_mci *host)
 		atmci_dma_cleanup(host);
 	} else {
 		/* Data transfer was stopped by the interrupt handler */
+<<<<<<< HEAD
+=======
+		dev_dbg(&host->pdev->dev,
+		        "(%s) set pending xfer complete\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		atmci_set_pending(host, EVENT_XFER_COMPLETE);
 		atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
 	}
@@ -1285,7 +1718,10 @@ static void atmci_stop_transfer_dma(struct atmel_mci *host)
  * Start a request: prepare data if needed, prepare the command and activate
  * interrupts.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void atmci_start_request(struct atmel_mci *host,
 		struct atmel_mci_slot *slot)
 {
@@ -1301,6 +1737,7 @@ static void atmci_start_request(struct atmel_mci *host,
 
 	host->pending_events = 0;
 	host->completed_events = 0;
+<<<<<<< HEAD
 	host->data_status = 0;
 
 	if (host->need_reset) {
@@ -1317,6 +1754,14 @@ static void atmci_start_request(struct atmel_mci *host,
 	iflags = mci_readl(host, IMR);
 	if (iflags & ~(MCI_SDIOIRQA | MCI_SDIOIRQB))
 =======
+=======
+	host->cmd_status = 0;
+	host->data_status = 0;
+
+	dev_dbg(&host->pdev->dev, "start request: cmd %u\n", mrq->cmd->opcode);
+
+	if (host->need_reset || host->caps.need_reset_after_xfer) {
+>>>>>>> refs/remotes/origin/master
 		iflags = atmci_readl(host, ATMCI_IMR);
 		iflags &= (ATMCI_SDIOIRQA | ATMCI_SDIOIRQB);
 		atmci_writel(host, ATMCI_CR, ATMCI_CR_SWRST);
@@ -1331,12 +1776,17 @@ static void atmci_start_request(struct atmel_mci *host,
 
 	iflags = atmci_readl(host, ATMCI_IMR);
 	if (iflags & ~(ATMCI_SDIOIRQA | ATMCI_SDIOIRQB))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		dev_warn(&slot->mmc->class_dev, "WARNING: IMR=0x%08x\n",
+=======
+		dev_dbg(&slot->mmc->class_dev, "WARNING: IMR=0x%08x\n",
+>>>>>>> refs/remotes/origin/master
 				iflags);
 
 	if (unlikely(test_and_clear_bit(ATMCI_CARD_NEED_INIT, &slot->flags))) {
 		/* Send init sequence (74 clock cycles) */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		mci_writel(host, CMDR, MCI_CMDR_SPCMD_INIT);
 		while (!(mci_readl(host, SR) & MCI_CMDRDY))
@@ -1344,6 +1794,10 @@ static void atmci_start_request(struct atmel_mci *host,
 		atmci_writel(host, ATMCI_CMDR, ATMCI_CMDR_SPCMD_INIT);
 		while (!(atmci_readl(host, ATMCI_SR) & ATMCI_CMDRDY))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		atmci_writel(host, ATMCI_CMDR, ATMCI_CMDR_SPCMD_INIT);
+		while (!(atmci_readl(host, ATMCI_SR) & ATMCI_CMDRDY))
+>>>>>>> refs/remotes/origin/master
 			cpu_relax();
 	}
 	iflags = 0;
@@ -1352,6 +1806,7 @@ static void atmci_start_request(struct atmel_mci *host,
 		atmci_set_timeout(host, slot, data);
 
 		/* Must set block count/size before sending command */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		mci_writel(host, BLKR, MCI_BCNT(data->blocks)
 				| MCI_BLKLEN(data->blksz));
@@ -1379,6 +1834,8 @@ static void atmci_start_request(struct atmel_mci *host,
 		else
 			host->stop_cmdr |= MCI_CMDR_MULTI_BLOCK;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		atmci_writel(host, ATMCI_BLKR, ATMCI_BCNT(data->blocks)
 				| ATMCI_BLKLEN(data->blksz));
 		dev_vdbg(&slot->mmc->class_dev, "BLKR=0x%08x\n",
@@ -1404,7 +1861,10 @@ static void atmci_start_request(struct atmel_mci *host,
 			host->stop_cmdr |= ATMCI_CMDR_STREAM;
 		else
 			host->stop_cmdr |= ATMCI_CMDR_MULTI_BLOCK;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1414,10 +1874,16 @@ static void atmci_start_request(struct atmel_mci *host,
 	 * prepared yet.)
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mci_writel(host, IER, iflags);
 =======
 	atmci_writel(host, ATMCI_IER, iflags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atmci_writel(host, ATMCI_IER, iflags);
+
+	mod_timer(&host->timer, jiffies +  msecs_to_jiffies(2000));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void atmci_queue_request(struct atmel_mci *host,
@@ -1432,6 +1898,10 @@ static void atmci_queue_request(struct atmel_mci *host,
 		host->state = STATE_SENDING_CMD;
 		atmci_start_request(host, slot);
 	} else {
+<<<<<<< HEAD
+=======
+		dev_dbg(&host->pdev->dev, "queue request\n");
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&slot->queue_node, &host->queue);
 	}
 	spin_unlock_bh(&host->lock);
@@ -1444,6 +1914,10 @@ static void atmci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 	struct mmc_data		*data;
 
 	WARN_ON(slot->mrq);
+<<<<<<< HEAD
+=======
+	dev_dbg(&host->pdev->dev, "MRQ: cmd %u\n", mrq->cmd->opcode);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We may "know" the card is gone even though there's still an
@@ -1474,6 +1948,7 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	struct atmel_mci_slot	*slot = mmc_priv(mmc);
 	struct atmel_mci	*host = slot->host;
 	unsigned int		i;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	slot->sdc_reg &= ~MCI_SDCBUS_MASK;
@@ -1484,6 +1959,10 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	case MMC_BUS_WIDTH_4:
 		slot->sdc_reg |= MCI_SDCBUS_4BIT;
 =======
+=======
+	bool			unprepare_clk;
+
+>>>>>>> refs/remotes/origin/master
 	slot->sdc_reg &= ~ATMCI_SDCBUS_MASK;
 	switch (ios->bus_width) {
 	case MMC_BUS_WIDTH_1:
@@ -1491,7 +1970,10 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		break;
 	case MMC_BUS_WIDTH_4:
 		slot->sdc_reg |= ATMCI_SDCBUS_4BIT;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 
@@ -1499,6 +1981,7 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		unsigned int clock_min = ~0U;
 		u32 clkdiv;
 
+<<<<<<< HEAD
 		spin_lock_bh(&host->lock);
 		if (!host->mode_reg) {
 			clk_enable(host->mck);
@@ -1508,11 +1991,23 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			if (atmci_is_mci2())
 				mci_writel(host, CFG, host->cfg_reg);
 =======
+=======
+		clk_prepare(host->mck);
+		unprepare_clk = true;
+
+		spin_lock_bh(&host->lock);
+		if (!host->mode_reg) {
+			clk_enable(host->mck);
+			unprepare_clk = false;
+>>>>>>> refs/remotes/origin/master
 			atmci_writel(host, ATMCI_CR, ATMCI_CR_SWRST);
 			atmci_writel(host, ATMCI_CR, ATMCI_CR_MCIEN);
 			if (host->caps.has_cfg_reg)
 				atmci_writel(host, ATMCI_CFG, host->cfg_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/*
@@ -1521,16 +2016,21 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		 */
 		slot->clock = ios->clock;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (i = 0; i < ATMEL_MCI_MAX_NR_SLOTS; i++) {
 =======
 		for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
+>>>>>>> refs/remotes/origin/master
 			if (host->slot[i] && host->slot[i]->clock
 					&& host->slot[i]->clock < clock_min)
 				clock_min = host->slot[i]->clock;
 		}
 
 		/* Calculate clock divider */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		clkdiv = DIV_ROUND_UP(host->bus_hz, 2 * clock_min) - 1;
 		if (clkdiv > 255) {
@@ -1543,6 +2043,8 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		host->mode_reg = MCI_MR_CLKDIV(clkdiv);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (host->caps.has_odd_clk_div) {
 			clkdiv = DIV_ROUND_UP(host->bus_hz, clock_min) - 2;
 			if (clkdiv > 511) {
@@ -1564,12 +2066,16 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			host->mode_reg = ATMCI_MR_CLKDIV(clkdiv);
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * WRPROOF and RDPROOF prevent overruns/underruns by
 		 * stopping the clock when the FIFO is full/empty.
 		 * This state is not expected to last for long.
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (mci_has_rwproof())
 			host->mode_reg |= (MCI_MR_WRPROOF | MCI_MR_RDPROOF);
@@ -1587,6 +2093,8 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			if (atmci_is_mci2())
 				mci_writel(host, CFG, host->cfg_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (host->caps.has_rwproof)
 			host->mode_reg |= (ATMCI_MR_WRPROOF | ATMCI_MR_RDPROOF);
 
@@ -1602,7 +2110,10 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 			atmci_writel(host, ATMCI_MR, host->mode_reg);
 			if (host->caps.has_cfg_reg)
 				atmci_writel(host, ATMCI_CFG, host->cfg_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			host->need_clock_update = true;
 		}
@@ -1611,6 +2122,7 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 	} else {
 		bool any_slot_active = false;
 
+<<<<<<< HEAD
 		spin_lock_bh(&host->lock);
 		slot->clock = 0;
 <<<<<<< HEAD
@@ -1618,12 +2130,20 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 =======
 		for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		unprepare_clk = false;
+
+		spin_lock_bh(&host->lock);
+		slot->clock = 0;
+		for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
+>>>>>>> refs/remotes/origin/master
 			if (host->slot[i] && host->slot[i]->clock) {
 				any_slot_active = true;
 				break;
 			}
 		}
 		if (!any_slot_active) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			mci_writel(host, CR, MCI_CR_MCIDIS);
 			if (host->mode_reg) {
@@ -1634,12 +2154,25 @@ static void atmci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 				atmci_readl(host, ATMCI_MR);
 >>>>>>> refs/remotes/origin/cm-10.0
 				clk_disable(host->mck);
+=======
+			atmci_writel(host, ATMCI_CR, ATMCI_CR_MCIDIS);
+			if (host->mode_reg) {
+				atmci_readl(host, ATMCI_MR);
+				clk_disable(host->mck);
+				unprepare_clk = true;
+>>>>>>> refs/remotes/origin/master
 			}
 			host->mode_reg = 0;
 		}
 		spin_unlock_bh(&host->lock);
 	}
 
+<<<<<<< HEAD
+=======
+	if (unprepare_clk)
+		clk_unprepare(host->mck);
+
+>>>>>>> refs/remotes/origin/master
 	switch (ios->power_mode) {
 	case MMC_POWER_UP:
 		set_bit(ATMCI_CARD_NEED_INIT, &slot->flags);
@@ -1697,6 +2230,7 @@ static void atmci_enable_sdio_irq(struct mmc_host *mmc, int enable)
 
 	if (enable)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mci_writel(host, IER, slot->sdio_irq);
 	else
 		mci_writel(host, IDR, slot->sdio_irq);
@@ -1705,6 +2239,11 @@ static void atmci_enable_sdio_irq(struct mmc_host *mmc, int enable)
 	else
 		atmci_writel(host, ATMCI_IDR, slot->sdio_irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		atmci_writel(host, ATMCI_IER, slot->sdio_irq);
+	else
+		atmci_writel(host, ATMCI_IDR, slot->sdio_irq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct mmc_host_ops atmci_ops = {
@@ -1732,6 +2271,7 @@ static void atmci_request_end(struct atmel_mci *host, struct mmc_request *mrq)
 	 */
 	if (host->need_clock_update) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mci_writel(host, MR, host->mode_reg);
 		if (atmci_is_mci2())
 			mci_writel(host, CFG, host->cfg_reg);
@@ -1740,6 +2280,11 @@ static void atmci_request_end(struct atmel_mci *host, struct mmc_request *mrq)
 		if (host->caps.has_cfg_reg)
 			atmci_writel(host, ATMCI_CFG, host->cfg_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		atmci_writel(host, ATMCI_MR, host->mode_reg);
+		if (host->caps.has_cfg_reg)
+			atmci_writel(host, ATMCI_CFG, host->cfg_reg);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	host->cur_slot->mrq = NULL;
@@ -1757,6 +2302,11 @@ static void atmci_request_end(struct atmel_mci *host, struct mmc_request *mrq)
 		host->state = STATE_IDLE;
 	}
 
+<<<<<<< HEAD
+=======
+	del_timer(&host->timer);
+
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&host->lock);
 	mmc_request_done(prev_mmc, mrq);
 	spin_lock(&host->lock);
@@ -1769,6 +2319,7 @@ static void atmci_command_complete(struct atmel_mci *host,
 
 	/* Read the response from the card (up to 16 bytes) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmd->resp[0] = mci_readl(host, RSPR);
 	cmd->resp[1] = mci_readl(host, RSPR);
 	cmd->resp[2] = mci_readl(host, RSPR);
@@ -1780,6 +2331,8 @@ static void atmci_command_complete(struct atmel_mci *host,
 		cmd->error = -EILSEQ;
 	else if (status & (MCI_RINDE | MCI_RDIRE | MCI_RENDE))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cmd->resp[0] = atmci_readl(host, ATMCI_RSPR);
 	cmd->resp[1] = atmci_readl(host, ATMCI_RSPR);
 	cmd->resp[2] = atmci_readl(host, ATMCI_RSPR);
@@ -1790,6 +2343,7 @@ static void atmci_command_complete(struct atmel_mci *host,
 	else if ((cmd->flags & MMC_RSP_CRC) && (status & ATMCI_RCRCE))
 		cmd->error = -EILSEQ;
 	else if (status & (ATMCI_RINDE | ATMCI_RDIRE | ATMCI_RENDE))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		cmd->error = -EIO;
 	else
@@ -1814,6 +2368,16 @@ static void atmci_command_complete(struct atmel_mci *host,
 					| ATMCI_DATA_ERROR_FLAGS);
 		}
 	}
+=======
+		cmd->error = -EIO;
+	else if (host->mrq->data && (host->mrq->data->blksz & 3)) {
+		if (host->caps.need_blksz_mul_4) {
+			cmd->error = -EINVAL;
+			host->need_reset = 1;
+		}
+	} else
+		cmd->error = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void atmci_detect_change(unsigned long data)
@@ -1863,18 +2427,24 @@ static void atmci_detect_change(unsigned long data)
 				 * commands or data transfers.
 				 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				mci_writel(host, CR, MCI_CR_SWRST);
 				mci_writel(host, CR, MCI_CR_MCIEN);
 				mci_writel(host, MR, host->mode_reg);
 				if (atmci_is_mci2())
 					mci_writel(host, CFG, host->cfg_reg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				atmci_writel(host, ATMCI_CR, ATMCI_CR_SWRST);
 				atmci_writel(host, ATMCI_CR, ATMCI_CR_MCIEN);
 				atmci_writel(host, ATMCI_MR, host->mode_reg);
 				if (host->caps.has_cfg_reg)
 					atmci_writel(host, ATMCI_CFG, host->cfg_reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 				host->data = NULL;
 				host->cmd = NULL;
@@ -1884,6 +2454,7 @@ static void atmci_detect_change(unsigned long data)
 					break;
 				case STATE_SENDING_CMD:
 					mrq->cmd->error = -ENOMEDIUM;
+<<<<<<< HEAD
 					if (!mrq->data)
 						break;
 					/* fall through */
@@ -1905,6 +2476,23 @@ static void atmci_detect_change(unsigned long data)
 				case STATE_SENDING_STOP:
 					mrq->stop->error = -ENOMEDIUM;
 					break;
+=======
+					if (mrq->data)
+						host->stop_transfer(host);
+					break;
+				case STATE_DATA_XFER:
+					mrq->data->error = -ENOMEDIUM;
+					host->stop_transfer(host);
+					break;
+				case STATE_WAITING_NOTBUSY:
+					mrq->data->error = -ENOMEDIUM;
+					break;
+				case STATE_SENDING_STOP:
+					mrq->stop->error = -ENOMEDIUM;
+					break;
+				case STATE_END_REQUEST:
+					break;
+>>>>>>> refs/remotes/origin/master
 				}
 
 				atmci_request_end(host, mrq);
@@ -1932,7 +2520,10 @@ static void atmci_tasklet_func(unsigned long priv)
 	struct atmel_mci	*host = (struct atmel_mci *)priv;
 	struct mmc_request	*mrq = host->mrq;
 	struct mmc_data		*data = host->data;
+<<<<<<< HEAD
 	struct mmc_command	*cmd = host->cmd;
+=======
+>>>>>>> refs/remotes/origin/master
 	enum atmel_mci_state	state = host->state;
 	enum atmel_mci_state	prev_state;
 	u32			status;
@@ -1945,6 +2536,7 @@ static void atmci_tasklet_func(unsigned long priv)
 		"tasklet: state %u pending/completed/mask %lx/%lx/%x\n",
 		state, host->pending_events, host->completed_events,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mci_readl(host, IMR));
 =======
 		atmci_readl(host, ATMCI_IMR));
@@ -1952,12 +2544,20 @@ static void atmci_tasklet_func(unsigned long priv)
 
 	do {
 		prev_state = state;
+=======
+		atmci_readl(host, ATMCI_IMR));
+
+	do {
+		prev_state = state;
+		dev_dbg(&host->pdev->dev, "FSM: state=%d\n", state);
+>>>>>>> refs/remotes/origin/master
 
 		switch (state) {
 		case STATE_IDLE:
 			break;
 
 		case STATE_SENDING_CMD:
+<<<<<<< HEAD
 			if (!atmci_test_and_clear_pending(host,
 						EVENT_CMD_COMPLETE))
 				break;
@@ -1989,10 +2589,71 @@ static void atmci_tasklet_func(unsigned long priv)
 				break;
 			}
 
+=======
+			/*
+			 * Command has been sent, we are waiting for command
+			 * ready. Then we have three next states possible:
+			 * END_REQUEST by default, WAITING_NOTBUSY if it's a
+			 * command needing it or DATA_XFER if there is data.
+			 */
+			dev_dbg(&host->pdev->dev, "FSM: cmd ready?\n");
+			if (!atmci_test_and_clear_pending(host,
+						EVENT_CMD_RDY))
+				break;
+
+			dev_dbg(&host->pdev->dev, "set completed cmd ready\n");
+			host->cmd = NULL;
+			atmci_set_completed(host, EVENT_CMD_RDY);
+			atmci_command_complete(host, mrq->cmd);
+			if (mrq->data) {
+				dev_dbg(&host->pdev->dev,
+				        "command with data transfer");
+				/*
+				 * If there is a command error don't start
+				 * data transfer.
+				 */
+				if (mrq->cmd->error) {
+					host->stop_transfer(host);
+					host->data = NULL;
+					atmci_writel(host, ATMCI_IDR,
+					             ATMCI_TXRDY | ATMCI_RXRDY
+					             | ATMCI_DATA_ERROR_FLAGS);
+					state = STATE_END_REQUEST;
+				} else
+					state = STATE_DATA_XFER;
+			} else if ((!mrq->data) && (mrq->cmd->flags & MMC_RSP_BUSY)) {
+				dev_dbg(&host->pdev->dev,
+				        "command response need waiting notbusy");
+				atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
+				state = STATE_WAITING_NOTBUSY;
+			} else
+				state = STATE_END_REQUEST;
+
+			break;
+
+		case STATE_DATA_XFER:
+			if (atmci_test_and_clear_pending(host,
+						EVENT_DATA_ERROR)) {
+				dev_dbg(&host->pdev->dev, "set completed data error\n");
+				atmci_set_completed(host, EVENT_DATA_ERROR);
+				state = STATE_END_REQUEST;
+				break;
+			}
+
+			/*
+			 * A data transfer is in progress. The event expected
+			 * to move to the next state depends of data transfer
+			 * type (PDC or DMA). Once transfer done we can move
+			 * to the next step which is WAITING_NOTBUSY in write
+			 * case and directly SENDING_STOP in read case.
+			 */
+			dev_dbg(&host->pdev->dev, "FSM: xfer complete?\n");
+>>>>>>> refs/remotes/origin/master
 			if (!atmci_test_and_clear_pending(host,
 						EVENT_XFER_COMPLETE))
 				break;
 
+<<<<<<< HEAD
 			atmci_set_completed(host, EVENT_XFER_COMPLETE);
 			prev_state = state = STATE_DATA_BUSY;
 			/* fall through */
@@ -2068,13 +2729,126 @@ static void atmci_tasklet_func(unsigned long priv)
 				break;
 
 			state = STATE_DATA_BUSY;
+=======
+			dev_dbg(&host->pdev->dev,
+			        "(%s) set completed xfer complete\n",
+				__func__);
+			atmci_set_completed(host, EVENT_XFER_COMPLETE);
+
+			if (host->caps.need_notbusy_for_read_ops ||
+			   (host->data->flags & MMC_DATA_WRITE)) {
+				atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
+				state = STATE_WAITING_NOTBUSY;
+			} else if (host->mrq->stop) {
+				atmci_writel(host, ATMCI_IER, ATMCI_CMDRDY);
+				atmci_send_stop_cmd(host, data);
+				state = STATE_SENDING_STOP;
+			} else {
+				host->data = NULL;
+				data->bytes_xfered = data->blocks * data->blksz;
+				data->error = 0;
+				state = STATE_END_REQUEST;
+			}
+			break;
+
+		case STATE_WAITING_NOTBUSY:
+			/*
+			 * We can be in the state for two reasons: a command
+			 * requiring waiting not busy signal (stop command
+			 * included) or a write operation. In the latest case,
+			 * we need to send a stop command.
+			 */
+			dev_dbg(&host->pdev->dev, "FSM: not busy?\n");
+			if (!atmci_test_and_clear_pending(host,
+						EVENT_NOTBUSY))
+				break;
+
+			dev_dbg(&host->pdev->dev, "set completed not busy\n");
+			atmci_set_completed(host, EVENT_NOTBUSY);
+
+			if (host->data) {
+				/*
+				 * For some commands such as CMD53, even if
+				 * there is data transfer, there is no stop
+				 * command to send.
+				 */
+				if (host->mrq->stop) {
+					atmci_writel(host, ATMCI_IER,
+					             ATMCI_CMDRDY);
+					atmci_send_stop_cmd(host, data);
+					state = STATE_SENDING_STOP;
+				} else {
+					host->data = NULL;
+					data->bytes_xfered = data->blocks
+					                     * data->blksz;
+					data->error = 0;
+					state = STATE_END_REQUEST;
+				}
+			} else
+				state = STATE_END_REQUEST;
+			break;
+
+		case STATE_SENDING_STOP:
+			/*
+			 * In this state, it is important to set host->data to
+			 * NULL (which is tested in the waiting notbusy state)
+			 * in order to go to the end request state instead of
+			 * sending stop again.
+			 */
+			dev_dbg(&host->pdev->dev, "FSM: cmd ready?\n");
+			if (!atmci_test_and_clear_pending(host,
+						EVENT_CMD_RDY))
+				break;
+
+			dev_dbg(&host->pdev->dev, "FSM: cmd ready\n");
+			host->cmd = NULL;
+			data->bytes_xfered = data->blocks * data->blksz;
+			data->error = 0;
+			atmci_command_complete(host, mrq->stop);
+			if (mrq->stop->error) {
+				host->stop_transfer(host);
+				atmci_writel(host, ATMCI_IDR,
+				             ATMCI_TXRDY | ATMCI_RXRDY
+				             | ATMCI_DATA_ERROR_FLAGS);
+				state = STATE_END_REQUEST;
+			} else {
+				atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
+				state = STATE_WAITING_NOTBUSY;
+			}
+			host->data = NULL;
+			break;
+
+		case STATE_END_REQUEST:
+			atmci_writel(host, ATMCI_IDR, ATMCI_TXRDY | ATMCI_RXRDY
+			                   | ATMCI_DATA_ERROR_FLAGS);
+			status = host->data_status;
+			if (unlikely(status)) {
+				host->stop_transfer(host);
+				host->data = NULL;
+				if (data) {
+					if (status & ATMCI_DTOE) {
+						data->error = -ETIMEDOUT;
+					} else if (status & ATMCI_DCRCE) {
+						data->error = -EILSEQ;
+					} else {
+						data->error = -EIO;
+					}
+				}
+			}
+
+			atmci_request_end(host, host->mrq);
+			state = STATE_IDLE;
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	} while (state != prev_state);
 
 	host->state = state;
 
+<<<<<<< HEAD
 unlock:
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&host->lock);
 }
 
@@ -2090,10 +2864,14 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		value = mci_readl(host, RDR);
 =======
 		value = atmci_readl(host, ATMCI_RDR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		value = atmci_readl(host, ATMCI_RDR);
+>>>>>>> refs/remotes/origin/master
 		if (likely(offset + 4 <= sg->length)) {
 			put_unaligned(value, (u32 *)(buf + offset));
 
@@ -2104,11 +2882,16 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 				flush_dcache_page(sg_page(sg));
 				host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (!sg)
 =======
 				host->sg_len--;
 				if (!sg || !host->sg_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				host->sg_len--;
+				if (!sg || !host->sg_len)
+>>>>>>> refs/remotes/origin/master
 					goto done;
 
 				offset = 0;
@@ -2122,11 +2905,16 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 			flush_dcache_page(sg_page(sg));
 			host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!sg)
 =======
 			host->sg_len--;
 			if (!sg || !host->sg_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			host->sg_len--;
+			if (!sg || !host->sg_len)
+>>>>>>> refs/remotes/origin/master
 				goto done;
 
 			offset = 4 - remaining;
@@ -2135,6 +2923,7 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 			nbytes += offset;
 		}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		status = mci_readl(host, SR);
 		if (status & ATMCI_DATA_ERROR_FLAGS) {
@@ -2157,6 +2946,17 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 =======
 	} while (status & ATMCI_RXRDY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = atmci_readl(host, ATMCI_SR);
+		if (status & ATMCI_DATA_ERROR_FLAGS) {
+			atmci_writel(host, ATMCI_IDR, (ATMCI_NOTBUSY | ATMCI_RXRDY
+						| ATMCI_DATA_ERROR_FLAGS));
+			host->data_status = status;
+			data->bytes_xfered += nbytes;
+			return;
+		}
+	} while (status & ATMCI_RXRDY);
+>>>>>>> refs/remotes/origin/master
 
 	host->pio_offset = offset;
 	data->bytes_xfered += nbytes;
@@ -2165,12 +2965,17 @@ static void atmci_read_data_pio(struct atmel_mci *host)
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mci_writel(host, IDR, MCI_RXRDY);
 	mci_writel(host, IER, MCI_NOTBUSY);
 =======
 	atmci_writel(host, ATMCI_IDR, ATMCI_RXRDY);
 	atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atmci_writel(host, ATMCI_IDR, ATMCI_RXRDY);
+	atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
+>>>>>>> refs/remotes/origin/master
 	data->bytes_xfered += nbytes;
 	smp_wmb();
 	atmci_set_pending(host, EVENT_XFER_COMPLETE);
@@ -2190,21 +2995,30 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 		if (likely(offset + 4 <= sg->length)) {
 			value = get_unaligned((u32 *)(buf + offset));
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mci_writel(host, TDR, value);
 =======
 			atmci_writel(host, ATMCI_TDR, value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			atmci_writel(host, ATMCI_TDR, value);
+>>>>>>> refs/remotes/origin/master
 
 			offset += 4;
 			nbytes += 4;
 			if (offset == sg->length) {
 				host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (!sg)
 =======
 				host->sg_len--;
 				if (!sg || !host->sg_len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				host->sg_len--;
+				if (!sg || !host->sg_len)
+>>>>>>> refs/remotes/origin/master
 					goto done;
 
 				offset = 0;
@@ -2219,6 +3033,7 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 
 			host->sg = sg = sg_next(sg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!sg) {
 				mci_writel(host, TDR, value);
 =======
@@ -2226,12 +3041,18 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 			if (!sg || !host->sg_len) {
 				atmci_writel(host, ATMCI_TDR, value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			host->sg_len--;
+			if (!sg || !host->sg_len) {
+				atmci_writel(host, ATMCI_TDR, value);
+>>>>>>> refs/remotes/origin/master
 				goto done;
 			}
 
 			offset = 4 - remaining;
 			buf = sg_virt(sg);
 			memcpy((u8 *)&value + remaining, buf, offset);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			mci_writel(host, TDR, value);
 			nbytes += offset;
@@ -2241,6 +3062,8 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 		if (status & ATMCI_DATA_ERROR_FLAGS) {
 			mci_writel(host, IDR, (MCI_NOTBUSY | MCI_TXRDY
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			atmci_writel(host, ATMCI_TDR, value);
 			nbytes += offset;
 		}
@@ -2248,6 +3071,7 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 		status = atmci_readl(host, ATMCI_SR);
 		if (status & ATMCI_DATA_ERROR_FLAGS) {
 			atmci_writel(host, ATMCI_IDR, (ATMCI_NOTBUSY | ATMCI_TXRDY
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 						| ATMCI_DATA_ERROR_FLAGS));
 			host->data_status = status;
@@ -2262,6 +3086,14 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 =======
 	} while (status & ATMCI_TXRDY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						| ATMCI_DATA_ERROR_FLAGS));
+			host->data_status = status;
+			data->bytes_xfered += nbytes;
+			return;
+		}
+	} while (status & ATMCI_TXRDY);
+>>>>>>> refs/remotes/origin/master
 
 	host->pio_offset = offset;
 	data->bytes_xfered += nbytes;
@@ -2270,17 +3102,23 @@ static void atmci_write_data_pio(struct atmel_mci *host)
 
 done:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mci_writel(host, IDR, MCI_TXRDY);
 	mci_writel(host, IER, MCI_NOTBUSY);
 =======
 	atmci_writel(host, ATMCI_IDR, ATMCI_TXRDY);
 	atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	atmci_writel(host, ATMCI_IDR, ATMCI_TXRDY);
+	atmci_writel(host, ATMCI_IER, ATMCI_NOTBUSY);
+>>>>>>> refs/remotes/origin/master
 	data->bytes_xfered += nbytes;
 	smp_wmb();
 	atmci_set_pending(host, EVENT_XFER_COMPLETE);
 }
 
+<<<<<<< HEAD
 static void atmci_cmd_interrupt(struct atmel_mci *host, u32 status)
 {
 <<<<<<< HEAD
@@ -2295,15 +3133,21 @@ static void atmci_cmd_interrupt(struct atmel_mci *host, u32 status)
 	tasklet_schedule(&host->tasklet);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void atmci_sdio_interrupt(struct atmel_mci *host, u32 status)
 {
 	int	i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < ATMEL_MCI_MAX_NR_SLOTS; i++) {
 =======
 	for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
+>>>>>>> refs/remotes/origin/master
 		struct atmel_mci_slot *slot = host->slot[i];
 		if (slot && (status & slot->sdio_irq)) {
 			mmc_signal_sdio_irq(slot->mmc);
@@ -2320,17 +3164,23 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 
 	do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		status = mci_readl(host, SR);
 		mask = mci_readl(host, IMR);
 =======
 		status = atmci_readl(host, ATMCI_SR);
 		mask = atmci_readl(host, ATMCI_IMR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		status = atmci_readl(host, ATMCI_SR);
+		mask = atmci_readl(host, ATMCI_IMR);
+>>>>>>> refs/remotes/origin/master
 		pending = status & mask;
 		if (!pending)
 			break;
 
 		if (pending & ATMCI_DATA_ERROR_FLAGS) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			mci_writel(host, IDR, ATMCI_DATA_ERROR_FLAGS
 					| MCI_RXRDY | MCI_TXRDY);
@@ -2342,10 +3192,21 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 			host->data_status = status;
+=======
+			dev_dbg(&host->pdev->dev, "IRQ: data error\n");
+			atmci_writel(host, ATMCI_IDR, ATMCI_DATA_ERROR_FLAGS
+					| ATMCI_RXRDY | ATMCI_TXRDY
+					| ATMCI_ENDRX | ATMCI_ENDTX
+					| ATMCI_RXBUFF | ATMCI_TXBUFE);
+
+			host->data_status = status;
+			dev_dbg(&host->pdev->dev, "set pending data error\n");
+>>>>>>> refs/remotes/origin/master
 			smp_wmb();
 			atmci_set_pending(host, EVENT_DATA_ERROR);
 			tasklet_schedule(&host->tasklet);
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (pending & MCI_NOTBUSY) {
 			mci_writel(host, IDR,
@@ -2353,6 +3214,11 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 =======
 
 		if (pending & ATMCI_TXBUFE) {
+=======
+
+		if (pending & ATMCI_TXBUFE) {
+			dev_dbg(&host->pdev->dev, "IRQ: tx buffer empty\n");
+>>>>>>> refs/remotes/origin/master
 			atmci_writel(host, ATMCI_IDR, ATMCI_TXBUFE);
 			atmci_writel(host, ATMCI_IDR, ATMCI_ENDTX);
 			/*
@@ -2368,6 +3234,10 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 				atmci_pdc_complete(host);
 			}
 		} else if (pending & ATMCI_ENDTX) {
+<<<<<<< HEAD
+=======
+			dev_dbg(&host->pdev->dev, "IRQ: end of tx buffer\n");
+>>>>>>> refs/remotes/origin/master
 			atmci_writel(host, ATMCI_IDR, ATMCI_ENDTX);
 
 			if (host->data_size) {
@@ -2378,6 +3248,10 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 		}
 
 		if (pending & ATMCI_RXBUFF) {
+<<<<<<< HEAD
+=======
+			dev_dbg(&host->pdev->dev, "IRQ: rx buffer full\n");
+>>>>>>> refs/remotes/origin/master
 			atmci_writel(host, ATMCI_IDR, ATMCI_RXBUFF);
 			atmci_writel(host, ATMCI_IDR, ATMCI_ENDRX);
 			/*
@@ -2393,6 +3267,10 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 				atmci_pdc_complete(host);
 			}
 		} else if (pending & ATMCI_ENDRX) {
+<<<<<<< HEAD
+=======
+			dev_dbg(&host->pdev->dev, "IRQ: end of rx buffer\n");
+>>>>>>> refs/remotes/origin/master
 			atmci_writel(host, ATMCI_IDR, ATMCI_ENDRX);
 
 			if (host->data_size) {
@@ -2402,6 +3280,7 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 			}
 		}
 
+<<<<<<< HEAD
 
 		if (pending & ATMCI_NOTBUSY) {
 			atmci_writel(host, ATMCI_IDR,
@@ -2424,16 +3303,56 @@ static irqreturn_t atmci_interrupt(int irq, void *dev_id)
 
 		if (pending & (MCI_SDIOIRQA | MCI_SDIOIRQB))
 =======
+=======
+		/*
+		 * First mci IPs, so mainly the ones having pdc, have some
+		 * issues with the notbusy signal. You can't get it after
+		 * data transmission if you have not sent a stop command.
+		 * The appropriate workaround is to use the BLKE signal.
+		 */
+		if (pending & ATMCI_BLKE) {
+			dev_dbg(&host->pdev->dev, "IRQ: blke\n");
+			atmci_writel(host, ATMCI_IDR, ATMCI_BLKE);
+			smp_wmb();
+			dev_dbg(&host->pdev->dev, "set pending notbusy\n");
+			atmci_set_pending(host, EVENT_NOTBUSY);
+			tasklet_schedule(&host->tasklet);
+		}
+
+		if (pending & ATMCI_NOTBUSY) {
+			dev_dbg(&host->pdev->dev, "IRQ: not_busy\n");
+			atmci_writel(host, ATMCI_IDR, ATMCI_NOTBUSY);
+			smp_wmb();
+			dev_dbg(&host->pdev->dev, "set pending notbusy\n");
+			atmci_set_pending(host, EVENT_NOTBUSY);
+			tasklet_schedule(&host->tasklet);
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (pending & ATMCI_RXRDY)
 			atmci_read_data_pio(host);
 		if (pending & ATMCI_TXRDY)
 			atmci_write_data_pio(host);
 
+<<<<<<< HEAD
 		if (pending & ATMCI_CMDRDY)
 			atmci_cmd_interrupt(host, status);
 
 		if (pending & (ATMCI_SDIOIRQA | ATMCI_SDIOIRQB))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pending & ATMCI_CMDRDY) {
+			dev_dbg(&host->pdev->dev, "IRQ: cmd ready\n");
+			atmci_writel(host, ATMCI_IDR, ATMCI_CMDRDY);
+			host->cmd_status = status;
+			smp_wmb();
+			dev_dbg(&host->pdev->dev, "set pending cmd rdy\n");
+			atmci_set_pending(host, EVENT_CMD_RDY);
+			tasklet_schedule(&host->tasklet);
+		}
+
+		if (pending & (ATMCI_SDIOIRQA | ATMCI_SDIOIRQB))
+>>>>>>> refs/remotes/origin/master
 			atmci_sdio_interrupt(host, status);
 
 	} while (pass_count++ < 5);
@@ -2476,12 +3395,23 @@ static int __init atmci_init_slot(struct atmel_mci *host,
 	slot->sdc_reg = sdc_reg;
 	slot->sdio_irq = sdio_irq;
 
+<<<<<<< HEAD
+=======
+	dev_dbg(&mmc->class_dev,
+	        "slot[%u]: bus_width=%u, detect_pin=%d, "
+		"detect_is_active_high=%s, wp_pin=%d\n",
+		id, slot_data->bus_width, slot_data->detect_pin,
+		slot_data->detect_is_active_high ? "true" : "false",
+		slot_data->wp_pin);
+
+>>>>>>> refs/remotes/origin/master
 	mmc->ops = &atmci_ops;
 	mmc->f_min = DIV_ROUND_UP(host->bus_hz, 512);
 	mmc->f_max = host->bus_hz / 2;
 	mmc->ocr_avail	= MMC_VDD_32_33 | MMC_VDD_33_34;
 	if (sdio_irq)
 		mmc->caps |= MMC_CAP_SDIO_IRQ;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (atmci_is_mci2())
 =======
@@ -2495,6 +3425,30 @@ static int __init atmci_init_slot(struct atmel_mci *host,
 	mmc->max_req_size = 32768 * 512;
 	mmc->max_blk_size = 32768;
 	mmc->max_blk_count = 512;
+=======
+	if (host->caps.has_highspeed)
+		mmc->caps |= MMC_CAP_SD_HIGHSPEED;
+	/*
+	 * Without the read/write proof capability, it is strongly suggested to
+	 * use only one bit for data to prevent fifo underruns and overruns
+	 * which will corrupt data.
+	 */
+	if ((slot_data->bus_width >= 4) && host->caps.has_rwproof)
+		mmc->caps |= MMC_CAP_4_BIT_DATA;
+
+	if (atmci_get_version(host) < 0x200) {
+		mmc->max_segs = 256;
+		mmc->max_blk_size = 4095;
+		mmc->max_blk_count = 256;
+		mmc->max_req_size = mmc->max_blk_size * mmc->max_blk_count;
+		mmc->max_seg_size = mmc->max_blk_size * mmc->max_segs;
+	} else {
+		mmc->max_segs = 64;
+		mmc->max_req_size = 32768 * 512;
+		mmc->max_blk_size = 32768;
+		mmc->max_blk_count = 512;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Assume card is present initially */
 	set_bit(ATMCI_CARD_PRESENT, &slot->flags);
@@ -2570,6 +3524,7 @@ static void __exit atmci_cleanup_slot(struct atmel_mci_slot *slot,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_ATMELMCI_DMA
 static bool filter(struct dma_chan *chan, void *slave)
 =======
@@ -2578,6 +3533,17 @@ static bool atmci_filter(struct dma_chan *chan, void *slave)
 {
 	struct mci_dma_data	*sl = slave;
 
+=======
+static bool atmci_filter(struct dma_chan *chan, void *pdata)
+{
+	struct mci_platform_data *sl_pdata = pdata;
+	struct mci_dma_data *sl;
+
+	if (!sl_pdata)
+		return false;
+
+	sl = sl_pdata->dma_slave;
+>>>>>>> refs/remotes/origin/master
 	if (sl && find_slave_dev(sl) == chan->device->dev) {
 		chan->private = slave_data_ptr(sl);
 		return true;
@@ -2586,6 +3552,7 @@ static bool atmci_filter(struct dma_chan *chan, void *slave)
 	}
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void atmci_configure_dma(struct atmel_mci *host)
 =======
@@ -2633,6 +3600,23 @@ static void atmci_configure_dma(struct atmel_mci *host) {}
 =======
 			dma_request_channel(mask, atmci_filter, pdata->dma_slave);
 	}
+=======
+static bool atmci_configure_dma(struct atmel_mci *host)
+{
+	struct mci_platform_data	*pdata;
+	dma_cap_mask_t mask;
+
+	if (host == NULL)
+		return false;
+
+	pdata = host->pdev->dev.platform_data;
+
+	dma_cap_zero(mask);
+	dma_cap_set(DMA_SLAVE, mask);
+
+	host->dma.chan = dma_request_slave_channel_compat(mask, atmci_filter, pdata,
+							  &host->pdev->dev, "rxtx");
+>>>>>>> refs/remotes/origin/master
 	if (!host->dma.chan) {
 		dev_warn(&host->pdev->dev, "no DMA channel available\n");
 		return false;
@@ -2652,11 +3636,14 @@ static void atmci_configure_dma(struct atmel_mci *host) {}
 	}
 }
 
+<<<<<<< HEAD
 static inline unsigned int atmci_get_version(struct atmel_mci *host)
 {
 	return atmci_readl(host, ATMCI_VERSION) & 0x00000fff;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * HSMCI (High Speed MCI) module is not fully compatible with MCI module.
  * HSMCI provides DMA support and a new config register but no more supports
@@ -2670,13 +3657,25 @@ static void __init atmci_get_cap(struct atmel_mci *host)
 	dev_info(&host->pdev->dev,
 			"version: 0x%x\n", version);
 
+<<<<<<< HEAD
 	host->caps.has_dma = 0;
 	host->caps.has_pdc = 1;
+=======
+	host->caps.has_dma_conf_reg = 0;
+	host->caps.has_pdc = ATMCI_PDC_CONNECTED;
+>>>>>>> refs/remotes/origin/master
 	host->caps.has_cfg_reg = 0;
 	host->caps.has_cstor_reg = 0;
 	host->caps.has_highspeed = 0;
 	host->caps.has_rwproof = 0;
 	host->caps.has_odd_clk_div = 0;
+<<<<<<< HEAD
+=======
+	host->caps.has_bad_data_ordering = 1;
+	host->caps.need_reset_after_xfer = 1;
+	host->caps.need_blksz_mul_4 = 1;
+	host->caps.need_notbusy_for_read_ops = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* keep only major version number */
 	switch (version & 0xf00) {
@@ -2684,19 +3683,32 @@ static void __init atmci_get_cap(struct atmel_mci *host)
 		host->caps.has_odd_clk_div = 1;
 	case 0x400:
 	case 0x300:
+<<<<<<< HEAD
 #ifdef CONFIG_AT_HDMAC
 		host->caps.has_dma = 1;
 #else
 		dev_info(&host->pdev->dev,
 			"has dma capability but dma engine is not selected, then use pio\n");
 #endif
+=======
+		host->caps.has_dma_conf_reg = 1;
+>>>>>>> refs/remotes/origin/master
 		host->caps.has_pdc = 0;
 		host->caps.has_cfg_reg = 1;
 		host->caps.has_cstor_reg = 1;
 		host->caps.has_highspeed = 1;
 	case 0x200:
 		host->caps.has_rwproof = 1;
+<<<<<<< HEAD
 	case 0x100:
+=======
+		host->caps.need_blksz_mul_4 = 0;
+		host->caps.need_notbusy_for_read_ops = 1;
+	case 0x100:
+		host->caps.has_bad_data_ordering = 0;
+		host->caps.need_reset_after_xfer = 0;
+	case 0x0:
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		host->caps.has_pdc = 0;
@@ -2705,7 +3717,10 @@ static void __init atmci_get_cap(struct atmel_mci *host)
 		break;
 	}
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int __init atmci_probe(struct platform_device *pdev)
 {
@@ -2720,8 +3735,19 @@ static int __init atmci_probe(struct platform_device *pdev)
 	if (!regs)
 		return -ENXIO;
 	pdata = pdev->dev.platform_data;
+<<<<<<< HEAD
 	if (!pdata)
 		return -ENXIO;
+=======
+	if (!pdata) {
+		pdata = atmci_of_init(pdev);
+		if (IS_ERR(pdata)) {
+			dev_err(&pdev->dev, "platform data not available\n");
+			return PTR_ERR(pdata);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0)
 		return irq;
@@ -2745,6 +3771,7 @@ static int __init atmci_probe(struct platform_device *pdev)
 	if (!host->regs)
 		goto err_ioremap;
 
+<<<<<<< HEAD
 	clk_enable(host->mck);
 <<<<<<< HEAD
 	mci_writel(host, CR, MCI_CR_SWRST);
@@ -2753,6 +3780,14 @@ static int __init atmci_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	host->bus_hz = clk_get_rate(host->mck);
 	clk_disable(host->mck);
+=======
+	ret = clk_prepare_enable(host->mck);
+	if (ret)
+		goto err_request_irq;
+	atmci_writel(host, ATMCI_CR, ATMCI_CR_SWRST);
+	host->bus_hz = clk_get_rate(host->mck);
+	clk_disable_unprepare(host->mck);
+>>>>>>> refs/remotes/origin/master
 
 	host->mapbase = regs->start;
 
@@ -2763,11 +3798,17 @@ static int __init atmci_probe(struct platform_device *pdev)
 		goto err_request_irq;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	atmci_configure_dma(host);
 =======
 	/* Get MCI capabilities and set operations according to it */
 	atmci_get_cap(host);
 	if (host->caps.has_dma && atmci_configure_dma(host)) {
+=======
+	/* Get MCI capabilities and set operations according to it */
+	atmci_get_cap(host);
+	if (atmci_configure_dma(host)) {
+>>>>>>> refs/remotes/origin/master
 		host->prepare_data = &atmci_prepare_data_dma;
 		host->submit_data = &atmci_submit_data_dma;
 		host->stop_transfer = &atmci_stop_transfer_dma;
@@ -2782,15 +3823,24 @@ static int __init atmci_probe(struct platform_device *pdev)
 		host->submit_data = &atmci_submit_data;
 		host->stop_transfer = &atmci_stop_transfer;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	platform_set_drvdata(pdev, host);
 
+=======
+
+	platform_set_drvdata(pdev, host);
+
+	setup_timer(&host->timer, atmci_timeout_timer, (unsigned long)host);
+
+>>>>>>> refs/remotes/origin/master
 	/* We need at least one slot to succeed */
 	nr_slots = 0;
 	ret = -ENODEV;
 	if (pdata->slot[0].bus_width) {
 		ret = atmci_init_slot(host, &pdata->slot[0],
+<<<<<<< HEAD
 <<<<<<< HEAD
 				0, MCI_SDCSEL_SLOT_A, MCI_SDIOIRQA);
 =======
@@ -2808,6 +3858,23 @@ static int __init atmci_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (!ret)
 			nr_slots++;
+=======
+				0, ATMCI_SDCSEL_SLOT_A, ATMCI_SDIOIRQA);
+		if (!ret) {
+			nr_slots++;
+			host->buf_size = host->slot[0]->mmc->max_req_size;
+		}
+	}
+	if (pdata->slot[1].bus_width) {
+		ret = atmci_init_slot(host, &pdata->slot[1],
+				1, ATMCI_SDCSEL_SLOT_B, ATMCI_SDIOIRQB);
+		if (!ret) {
+			nr_slots++;
+			if (host->slot[1]->mmc->max_req_size > host->buf_size)
+				host->buf_size =
+					host->slot[1]->mmc->max_req_size;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!nr_slots) {
@@ -2815,6 +3882,20 @@ static int __init atmci_probe(struct platform_device *pdev)
 		goto err_init_slot;
 	}
 
+<<<<<<< HEAD
+=======
+	if (!host->caps.has_rwproof) {
+		host->buffer = dma_alloc_coherent(&pdev->dev, host->buf_size,
+		                                  &host->buf_phys_addr,
+						  GFP_KERNEL);
+		if (!host->buffer) {
+			ret = -ENOMEM;
+			dev_err(&pdev->dev, "buffer allocation failed\n");
+			goto err_init_slot;
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(&pdev->dev,
 			"Atmel MCI controller at 0x%08lx irq %d, %u slots\n",
 			host->mapbase, irq, nr_slots);
@@ -2822,6 +3903,7 @@ static int __init atmci_probe(struct platform_device *pdev)
 	return 0;
 
 err_init_slot:
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_MMC_ATMELMCI_DMA
 	if (host->dma.chan)
@@ -2831,6 +3913,10 @@ err_init_slot:
 	if (host->dma.chan)
 		dma_release_channel(host->dma.chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (host->dma.chan)
+		dma_release_channel(host->dma.chan);
+>>>>>>> refs/remotes/origin/master
 	free_irq(irq, host);
 err_request_irq:
 	iounmap(host->regs);
@@ -2846,6 +3932,7 @@ static int __exit atmci_remove(struct platform_device *pdev)
 	struct atmel_mci	*host = platform_get_drvdata(pdev);
 	unsigned int		i;
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 <<<<<<< HEAD
@@ -2853,10 +3940,18 @@ static int __exit atmci_remove(struct platform_device *pdev)
 =======
 	for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (host->buffer)
+		dma_free_coherent(&pdev->dev, host->buf_size,
+		                  host->buffer, host->buf_phys_addr);
+
+	for (i = 0; i < ATMCI_MAX_NR_SLOTS; i++) {
+>>>>>>> refs/remotes/origin/master
 		if (host->slot[i])
 			atmci_cleanup_slot(host->slot[i], i);
 	}
 
+<<<<<<< HEAD
 	clk_enable(host->mck);
 <<<<<<< HEAD
 	mci_writel(host, IDR, ~0UL);
@@ -2877,6 +3972,16 @@ static int __exit atmci_remove(struct platform_device *pdev)
 	if (host->dma.chan)
 		dma_release_channel(host->dma.chan);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_prepare_enable(host->mck);
+	atmci_writel(host, ATMCI_IDR, ~0UL);
+	atmci_writel(host, ATMCI_CR, ATMCI_CR_MCIDIS);
+	atmci_readl(host, ATMCI_SR);
+	clk_disable_unprepare(host->mck);
+
+	if (host->dma.chan)
+		dma_release_channel(host->dma.chan);
+>>>>>>> refs/remotes/origin/master
 
 	free_irq(platform_get_irq(pdev, 0), host);
 	iounmap(host->regs);
@@ -2887,6 +3992,7 @@ static int __exit atmci_remove(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #ifdef CONFIG_PM
@@ -2951,14 +4057,20 @@ static SIMPLE_DEV_PM_OPS(atmci_pm, atmci_suspend, atmci_resume);
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver atmci_driver = {
 	.remove		= __exit_p(atmci_remove),
 	.driver		= {
 		.name		= "atmel_mci",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.pm		= ATMCI_PM_OPS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.of_match_table	= of_match_ptr(atmci_dt_ids),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

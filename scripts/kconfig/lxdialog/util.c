@@ -23,6 +23,12 @@
 
 #include "dialog.h"
 
+<<<<<<< HEAD
+=======
+/* Needed in signal handler in mconf.c */
+int saved_x, saved_y;
+
+>>>>>>> refs/remotes/origin/master
 struct dialog_info dlg;
 
 static void set_mono_theme(void)
@@ -251,6 +257,7 @@ void attr_clear(WINDOW * win, int height, int width, chtype attr)
 
 void dialog_clear(void)
 {
+<<<<<<< HEAD
 	attr_clear(stdscr, LINES, COLS, dlg.screen.atr);
 	/* Display background title if it exists ... - SLH */
 	if (dlg.backtitle != NULL) {
@@ -260,6 +267,58 @@ void dialog_clear(void)
 		mvwaddstr(stdscr, 0, 1, (char *)dlg.backtitle);
 		wmove(stdscr, 1, 1);
 		for (i = 1; i < COLS - 1; i++)
+=======
+	int lines, columns;
+
+	lines = getmaxy(stdscr);
+	columns = getmaxx(stdscr);
+
+	attr_clear(stdscr, lines, columns, dlg.screen.atr);
+	/* Display background title if it exists ... - SLH */
+	if (dlg.backtitle != NULL) {
+		int i, len = 0, skip = 0;
+		struct subtitle_list *pos;
+
+		wattrset(stdscr, dlg.screen.atr);
+		mvwaddstr(stdscr, 0, 1, (char *)dlg.backtitle);
+
+		for (pos = dlg.subtitles; pos != NULL; pos = pos->next) {
+			/* 3 is for the arrow and spaces */
+			len += strlen(pos->text) + 3;
+		}
+
+		wmove(stdscr, 1, 1);
+		if (len > columns - 2) {
+			const char *ellipsis = "[...] ";
+			waddstr(stdscr, ellipsis);
+			skip = len - (columns - 2 - strlen(ellipsis));
+		}
+
+		for (pos = dlg.subtitles; pos != NULL; pos = pos->next) {
+			if (skip == 0)
+				waddch(stdscr, ACS_RARROW);
+			else
+				skip--;
+
+			if (skip == 0)
+				waddch(stdscr, ' ');
+			else
+				skip--;
+
+			if (skip < strlen(pos->text)) {
+				waddstr(stdscr, pos->text + skip);
+				skip = 0;
+			} else
+				skip -= strlen(pos->text);
+
+			if (skip == 0)
+				waddch(stdscr, ' ');
+			else
+				skip--;
+		}
+
+		for (i = len + 1; i < columns - 1; i++)
+>>>>>>> refs/remotes/origin/master
 			waddch(stdscr, ACS_HLINE);
 	}
 	wnoutrefresh(stdscr);
@@ -273,8 +332,17 @@ int init_dialog(const char *backtitle)
 	int height, width;
 
 	initscr();		/* Init curses */
+<<<<<<< HEAD
 	getmaxyx(stdscr, height, width);
 	if (height < 19 || width < 80) {
+=======
+
+	/* Get current cursor position for signal handler in mconf.c */
+	getyx(stdscr, saved_y, saved_x);
+
+	getmaxyx(stdscr, height, width);
+	if (height < WINDOW_HEIGTH_MIN || width < WINDOW_WIDTH_MIN) {
+>>>>>>> refs/remotes/origin/master
 		endwin();
 		return -ERRDISPLAYTOOSMALL;
 	}
@@ -295,6 +363,14 @@ void set_dialog_backtitle(const char *backtitle)
 	dlg.backtitle = backtitle;
 }
 
+<<<<<<< HEAD
+=======
+void set_dialog_subtitles(struct subtitle_list *subtitles)
+{
+	dlg.subtitles = subtitles;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * End using dialog functions.
  */
@@ -323,19 +399,29 @@ void print_title(WINDOW *dialog, const char *title, int width)
 /*
  * Print a string of text in a window, automatically wrap around to the
  * next line if the string is too long to fit on one line. Newline
+<<<<<<< HEAD
  * characters '\n' are replaced by spaces.  We start on a new line
+=======
+ * characters '\n' are propperly processed.  We start on a new line
+>>>>>>> refs/remotes/origin/master
  * if there is no room for at least 4 nonblanks following a double-space.
  */
 void print_autowrap(WINDOW * win, const char *prompt, int width, int y, int x)
 {
 	int newl, cur_x, cur_y;
+<<<<<<< HEAD
 	int i, prompt_len, room, wlen;
 	char tempstr[MAX_LEN + 1], *word, *sp, *sp2;
+=======
+	int prompt_len, room, wlen;
+	char tempstr[MAX_LEN + 1], *word, *sp, *sp2, *newline_separator = 0;
+>>>>>>> refs/remotes/origin/master
 
 	strcpy(tempstr, prompt);
 
 	prompt_len = strlen(tempstr);
 
+<<<<<<< HEAD
 	/*
 	 * Remove newlines
 	 */
@@ -344,6 +430,8 @@ void print_autowrap(WINDOW * win, const char *prompt, int width, int y, int x)
 			tempstr[i] = ' ';
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (prompt_len <= width - x * 2) {	/* If prompt is short */
 		wmove(win, y, (width - prompt_len) / 2);
 		waddstr(win, tempstr);
@@ -353,7 +441,14 @@ void print_autowrap(WINDOW * win, const char *prompt, int width, int y, int x)
 		newl = 1;
 		word = tempstr;
 		while (word && *word) {
+<<<<<<< HEAD
 			sp = strchr(word, ' ');
+=======
+			sp = strpbrk(word, "\n ");
+			if (sp && *sp == '\n')
+				newline_separator = sp;
+
+>>>>>>> refs/remotes/origin/master
 			if (sp)
 				*sp++ = 0;
 
@@ -365,7 +460,11 @@ void print_autowrap(WINDOW * win, const char *prompt, int width, int y, int x)
 			if (wlen > room ||
 			    (newl && wlen < 4 && sp
 			     && wlen + 1 + strlen(sp) > room
+<<<<<<< HEAD
 			     && (!(sp2 = strchr(sp, ' '))
+=======
+			     && (!(sp2 = strpbrk(sp, "\n "))
+>>>>>>> refs/remotes/origin/master
 				 || wlen + 1 + (sp2 - sp) > room))) {
 				cur_y++;
 				cur_x = x;
@@ -373,7 +472,19 @@ void print_autowrap(WINDOW * win, const char *prompt, int width, int y, int x)
 			wmove(win, cur_y, cur_x);
 			waddstr(win, word);
 			getyx(win, cur_y, cur_x);
+<<<<<<< HEAD
 			cur_x++;
+=======
+
+			/* Move to the next line if the word separator was a newline */
+			if (newline_separator) {
+				cur_y++;
+				cur_x = x;
+				newline_separator = 0;
+			} else
+				cur_x++;
+
+>>>>>>> refs/remotes/origin/master
 			if (sp && *sp == ' ') {
 				cur_x++;	/* double space */
 				while (*++sp == ' ') ;

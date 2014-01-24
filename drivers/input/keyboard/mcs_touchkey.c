@@ -97,7 +97,11 @@ static irqreturn_t mcs_touchkey_interrupt(int irq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mcs_touchkey_probe(struct i2c_client *client,
+=======
+static int mcs_touchkey_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 		const struct i2c_device_id *id)
 {
 	const struct mcs_platform_data *pdata;
@@ -178,7 +182,12 @@ static int __devinit mcs_touchkey_probe(struct i2c_client *client,
 	}
 
 	error = request_threaded_irq(client->irq, NULL, mcs_touchkey_interrupt,
+<<<<<<< HEAD
 			IRQF_TRIGGER_FALLING, client->dev.driver->name, data);
+=======
+				     IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+				     client->dev.driver->name, data);
+>>>>>>> refs/remotes/origin/master
 	if (error) {
 		dev_err(&client->dev, "Failed to register interrupt\n");
 		goto err_free_mem;
@@ -199,7 +208,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit mcs_touchkey_remove(struct i2c_client *client)
+=======
+static int mcs_touchkey_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mcs_touchkey_data *data = i2c_get_clientdata(client);
 
@@ -269,11 +282,16 @@ static struct i2c_driver mcs_touchkey_driver = {
 		.pm	= &mcs_touchkey_pm_ops,
 	},
 	.probe		= mcs_touchkey_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mcs_touchkey_remove),
+=======
+	.remove		= mcs_touchkey_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown       = mcs_touchkey_shutdown,
 	.id_table	= mcs_touchkey_id,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init mcs_touchkey_init(void)
 {
@@ -290,6 +308,9 @@ module_exit(mcs_touchkey_exit);
 =======
 module_i2c_driver(mcs_touchkey_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(mcs_touchkey_driver);
+>>>>>>> refs/remotes/origin/master
 
 /* Module information */
 MODULE_AUTHOR("Joonyoung Shim <jy0922.shim@samsung.com>");

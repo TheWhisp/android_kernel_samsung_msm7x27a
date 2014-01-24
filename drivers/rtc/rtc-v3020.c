@@ -16,7 +16,11 @@
  *				- Use the generic rtc class
  *
  *  ??-???-2004: Someone at Compulab
+<<<<<<< HEAD
  *  			- Initial driver creation.
+=======
+ *			- Initial driver creation.
+>>>>>>> refs/remotes/origin/master
  *
  */
 #include <linux/platform_device.h>
@@ -278,6 +282,7 @@ static int v3020_set_time(struct device *dev, struct rtc_time *dt)
 	dev_dbg(dev, "tm_year: %i\n", dt->tm_year);
 
 	/* Write all the values to ram... */
+<<<<<<< HEAD
 	v3020_set_reg(chip, V3020_SECONDS, 	bin2bcd(dt->tm_sec));
 	v3020_set_reg(chip, V3020_MINUTES, 	bin2bcd(dt->tm_min));
 	v3020_set_reg(chip, V3020_HOURS, 	bin2bcd(dt->tm_hour));
@@ -285,6 +290,15 @@ static int v3020_set_time(struct device *dev, struct rtc_time *dt)
 	v3020_set_reg(chip, V3020_MONTH,     bin2bcd(dt->tm_mon + 1));
 	v3020_set_reg(chip, V3020_WEEK_DAY, 	bin2bcd(dt->tm_wday));
 	v3020_set_reg(chip, V3020_YEAR, 	bin2bcd(dt->tm_year % 100));
+=======
+	v3020_set_reg(chip, V3020_SECONDS,	bin2bcd(dt->tm_sec));
+	v3020_set_reg(chip, V3020_MINUTES,	bin2bcd(dt->tm_min));
+	v3020_set_reg(chip, V3020_HOURS,	bin2bcd(dt->tm_hour));
+	v3020_set_reg(chip, V3020_MONTH_DAY,	bin2bcd(dt->tm_mday));
+	v3020_set_reg(chip, V3020_MONTH,	bin2bcd(dt->tm_mon + 1));
+	v3020_set_reg(chip, V3020_WEEK_DAY,	bin2bcd(dt->tm_wday));
+	v3020_set_reg(chip, V3020_YEAR,		bin2bcd(dt->tm_year % 100));
+>>>>>>> refs/remotes/origin/master
 
 	/* ...and set the clock. */
 	v3020_set_reg(chip, V3020_CMD_RAM2CLOCK, 0);
@@ -303,13 +317,21 @@ static const struct rtc_class_ops v3020_rtc_ops = {
 
 static int rtc_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct v3020_platform_data *pdata = pdev->dev.platform_data;
+=======
+	struct v3020_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct v3020 *chip;
 	int retval = -EBUSY;
 	int i;
 	int temp;
 
+<<<<<<< HEAD
 	chip = kzalloc(sizeof *chip, GFP_KERNEL);
+=======
+	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!chip)
 		return -ENOMEM;
 
@@ -320,7 +342,11 @@ static int rtc_probe(struct platform_device *pdev)
 
 	retval = chip->ops->map_io(chip, pdev, pdata);
 	if (retval)
+<<<<<<< HEAD
 		goto err_chip;
+=======
+		return retval;
+>>>>>>> refs/remotes/origin/master
 
 	/* Make sure the v3020 expects a communication cycle
 	 * by reading 8 times */
@@ -353,8 +379,13 @@ static int rtc_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, chip);
 
+<<<<<<< HEAD
 	chip->rtc = rtc_device_register("v3020",
 				&pdev->dev, &v3020_rtc_ops, THIS_MODULE);
+=======
+	chip->rtc = devm_rtc_device_register(&pdev->dev, "v3020",
+					&v3020_rtc_ops, THIS_MODULE);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(chip->rtc)) {
 		retval = PTR_ERR(chip->rtc);
 		goto err_io;
@@ -364,8 +395,11 @@ static int rtc_probe(struct platform_device *pdev)
 
 err_io:
 	chip->ops->unmap_io(chip);
+<<<<<<< HEAD
 err_chip:
 	kfree(chip);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return retval;
 }
@@ -373,6 +407,7 @@ err_chip:
 static int rtc_remove(struct platform_device *dev)
 {
 	struct v3020 *chip = platform_get_drvdata(dev);
+<<<<<<< HEAD
 	struct rtc_device *rtc = chip->rtc;
 
 	if (rtc)
@@ -380,6 +415,10 @@ static int rtc_remove(struct platform_device *dev)
 
 	chip->ops->unmap_io(chip);
 	kfree(chip);
+=======
+
+	chip->ops->unmap_io(chip);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -393,6 +432,7 @@ static struct platform_driver rtc_device_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static __init int v3020_init(void)
 {
@@ -409,6 +449,9 @@ module_exit(v3020_exit);
 =======
 module_platform_driver(rtc_device_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(rtc_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("V3020 RTC");
 MODULE_AUTHOR("Raphael Assenat");

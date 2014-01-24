@@ -10,6 +10,10 @@
  * published by the Free Software Foundation.
 */
 
+<<<<<<< HEAD
+=======
+#include <linux/amba/pl330.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/types.h>
 #include <linux/interrupt.h>
@@ -30,9 +34,18 @@
 #include <linux/mmc/host.h>
 #include <linux/ioport.h>
 #include <linux/platform_data/s3c-hsudc.h>
+<<<<<<< HEAD
 
 #include <asm/irq.h>
 #include <asm/pmu.h>
+=======
+#include <linux/platform_data/s3c-hsotg.h>
+#include <linux/platform_data/dma-s3c24xx.h>
+
+#include <media/s5p_hdmi.h>
+
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
@@ -45,6 +58,7 @@
 #include <plat/cpu.h>
 #include <plat/devs.h>
 #include <plat/adc.h>
+<<<<<<< HEAD
 #include <plat/ata.h>
 #include <plat/ehci.h>
 #include <plat/fb.h>
@@ -64,6 +78,26 @@
 #include <plat/regs-serial.h>
 #include <plat/regs-spi.h>
 #include <plat/s3c64xx-spi.h>
+=======
+#include <linux/platform_data/ata-samsung_cf.h>
+#include <plat/fb.h>
+#include <plat/fb-s3c2410.h>
+#include <plat/hdmi.h>
+#include <linux/platform_data/hwmon-s3c.h>
+#include <linux/platform_data/i2c-s3c2410.h>
+#include <plat/keypad.h>
+#include <linux/platform_data/mmc-s3cmci.h>
+#include <linux/platform_data/mtd-nand-s3c2410.h>
+#include <plat/pwm-core.h>
+#include <plat/sdhci.h>
+#include <linux/platform_data/touchscreen-s3c2410.h>
+#include <linux/platform_data/usb-s3c2410_udc.h>
+#include <linux/platform_data/usb-ohci-s3c2410.h>
+#include <plat/usb-phy.h>
+#include <plat/regs-serial.h>
+#include <plat/regs-spi.h>
+#include <linux/platform_data/spi-s3c64xx.h>
+>>>>>>> refs/remotes/origin/master
 
 static u64 samsung_device_dma_mask = DMA_BIT_MASK(32);
 
@@ -126,7 +160,12 @@ struct platform_device s3c_device_adc = {
 #ifdef CONFIG_CPU_S3C2440
 static struct resource s3c_camif_resource[] = {
 	[0] = DEFINE_RES_MEM(S3C2440_PA_CAMIF, S3C2440_SZ_CAMIF),
+<<<<<<< HEAD
 	[1] = DEFINE_RES_IRQ(IRQ_CAM),
+=======
+	[1] = DEFINE_RES_IRQ(IRQ_S3C2440_CAM_C),
+	[2] = DEFINE_RES_IRQ(IRQ_S3C2440_CAM_P),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s3c_device_camif = {
@@ -143,6 +182,7 @@ struct platform_device s3c_device_camif = {
 
 /* ASOC DMA */
 
+<<<<<<< HEAD
 struct platform_device samsung_asoc_dma = {
 	.name		= "samsung-audio",
 	.id		= -1,
@@ -151,15 +191,28 @@ struct platform_device samsung_asoc_dma = {
 		.coherent_dma_mask	= DMA_BIT_MASK(32),
 	}
 };
+=======
+#ifdef CONFIG_PLAT_S5P 
+static struct resource samsung_asoc_idma_resource = DEFINE_RES_IRQ(IRQ_I2S0);
+>>>>>>> refs/remotes/origin/master
 
 struct platform_device samsung_asoc_idma = {
 	.name		= "samsung-idma",
 	.id		= -1,
+<<<<<<< HEAD
+=======
+	.num_resources	= 1,
+	.resource	= &samsung_asoc_idma_resource,
+>>>>>>> refs/remotes/origin/master
 	.dev		= {
 		.dma_mask		= &samsung_device_dma_mask,
 		.coherent_dma_mask	= DMA_BIT_MASK(32),
 	}
 };
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /* FB */
 
@@ -272,6 +325,7 @@ struct platform_device s5p_device_fimc3 = {
 
 #ifdef CONFIG_S5P_DEV_G2D
 static struct resource s5p_g2d_resource[] = {
+<<<<<<< HEAD
 	[0] = {
 		.start	= S5P_PA_G2D,
 		.end	= S5P_PA_G2D + SZ_4K - 1,
@@ -282,6 +336,10 @@ static struct resource s5p_g2d_resource[] = {
 		.end	= IRQ_2D,
 		.flags	= IORESOURCE_IRQ,
 	},
+=======
+	[0] = DEFINE_RES_MEM(S5P_PA_G2D, SZ_4K),
+	[1] = DEFINE_RES_IRQ(IRQ_2D),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5p_device_g2d = {
@@ -319,9 +377,15 @@ struct platform_device s5p_device_jpeg = {
 #ifdef CONFIG_S5P_DEV_FIMD0
 static struct resource s5p_fimd0_resource[] = {
 	[0] = DEFINE_RES_MEM(S5P_PA_FIMD0, SZ_32K),
+<<<<<<< HEAD
 	[1] = DEFINE_RES_IRQ(IRQ_FIMD0_VSYNC),
 	[2] = DEFINE_RES_IRQ(IRQ_FIMD0_FIFO),
 	[3] = DEFINE_RES_IRQ(IRQ_FIMD0_SYSTEM),
+=======
+	[1] = DEFINE_RES_IRQ_NAMED(IRQ_FIMD0_VSYNC, "vsync"),
+	[2] = DEFINE_RES_IRQ_NAMED(IRQ_FIMD0_FIFO, "fifo"),
+	[3] = DEFINE_RES_IRQ_NAMED(IRQ_FIMD0_SYSTEM, "lcd_sys"),
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s5p_device_fimd0 = {
@@ -370,7 +434,10 @@ struct s3c_sdhci_platdata s3c_hsmmc0_def_platdata = {
 	.max_width	= 4,
 	.host_caps	= (MMC_CAP_4_BIT_DATA |
 			   MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED),
+<<<<<<< HEAD
 	.clk_type	= S3C_SDHCI_CLK_DIV_INTERNAL,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s3c_device_hsmmc0 = {
@@ -401,7 +468,10 @@ struct s3c_sdhci_platdata s3c_hsmmc1_def_platdata = {
 	.max_width	= 4,
 	.host_caps	= (MMC_CAP_4_BIT_DATA |
 			   MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED),
+<<<<<<< HEAD
 	.clk_type	= S3C_SDHCI_CLK_DIV_INTERNAL,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s3c_device_hsmmc1 = {
@@ -434,7 +504,10 @@ struct s3c_sdhci_platdata s3c_hsmmc2_def_platdata = {
 	.max_width	= 4,
 	.host_caps	= (MMC_CAP_4_BIT_DATA |
 			   MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED),
+<<<<<<< HEAD
 	.clk_type	= S3C_SDHCI_CLK_DIV_INTERNAL,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s3c_device_hsmmc2 = {
@@ -465,7 +538,10 @@ struct s3c_sdhci_platdata s3c_hsmmc3_def_platdata = {
 	.max_width	= 4,
 	.host_caps	= (MMC_CAP_4_BIT_DATA |
 			   MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED),
+<<<<<<< HEAD
 	.clk_type	= S3C_SDHCI_CLK_DIV_INTERNAL,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct platform_device s3c_device_hsmmc3 = {
@@ -495,11 +571,15 @@ static struct resource s3c_i2c0_resource[] = {
 
 struct platform_device s3c_device_i2c0 = {
 	.name		= "s3c2410-i2c",
+<<<<<<< HEAD
 #ifdef CONFIG_S3C_DEV_I2C1
 	.id		= 0,
 #else
 	.id		= -1,
 #endif
+=======
+	.id		= 0,
+>>>>>>> refs/remotes/origin/master
 	.num_resources	= ARRAY_SIZE(s3c_i2c0_resource),
 	.resource	= s3c_i2c0_resource,
 };
@@ -759,7 +839,12 @@ void __init s5p_i2c_hdmiphy_set_platdata(struct s3c2410_platform_i2c *pd)
 	if (!pd) {
 		pd = &default_i2c_data;
 
+<<<<<<< HEAD
 		if (soc_is_exynos4210())
+=======
+		if (soc_is_exynos4210() ||
+		    soc_is_exynos4212() || soc_is_exynos4412())
+>>>>>>> refs/remotes/origin/master
 			pd->bus_num = 8;
 		else if (soc_is_s5pv210())
 			pd->bus_num = 3;
@@ -770,6 +855,33 @@ void __init s5p_i2c_hdmiphy_set_platdata(struct s3c2410_platform_i2c *pd)
 	npd = s3c_set_platdata(pd, sizeof(struct s3c2410_platform_i2c),
 			       &s5p_device_i2c_hdmiphy);
 }
+<<<<<<< HEAD
+=======
+
+static struct s5p_hdmi_platform_data s5p_hdmi_def_platdata;
+
+void __init s5p_hdmi_set_platdata(struct i2c_board_info *hdmiphy_info,
+				  struct i2c_board_info *mhl_info, int mhl_bus)
+{
+	struct s5p_hdmi_platform_data *pd = &s5p_hdmi_def_platdata;
+
+	if (soc_is_exynos4210() ||
+	    soc_is_exynos4212() || soc_is_exynos4412())
+		pd->hdmiphy_bus = 8;
+	else if (soc_is_s5pv210())
+		pd->hdmiphy_bus = 3;
+	else
+		pd->hdmiphy_bus = 0;
+
+	pd->hdmiphy_info = hdmiphy_info;
+	pd->mhl_info = mhl_info;
+	pd->mhl_bus = mhl_bus;
+
+	s3c_set_platdata(pd, sizeof(struct s5p_hdmi_platform_data),
+			 &s5p_device_hdmi);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_S5P_DEV_I2C_HDMIPHY */
 
 /* I2S */
@@ -875,6 +987,7 @@ void __init s3c24xx_fb_set_platdata(struct s3c2410fb_mach_info *pd)
 }
 #endif /* CONFIG_PLAT_S3C24XX */
 
+<<<<<<< HEAD
 /* MFC */
 
 #ifdef CONFIG_S5P_DEV_MFC
@@ -919,6 +1032,8 @@ struct platform_device s5p_device_mfc_r = {
 };
 #endif /* CONFIG_S5P_DEV_MFC */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MIPI CSIS */
 
 #ifdef CONFIG_S5P_DEV_CSIS0
@@ -1109,14 +1224,22 @@ struct platform_device s5p_device_onenand = {
 
 /* PMU */
 
+<<<<<<< HEAD
 #ifdef CONFIG_PLAT_S5P
+=======
+#if defined(CONFIG_PLAT_S5P) && !defined(CONFIG_ARCH_EXYNOS)
+>>>>>>> refs/remotes/origin/master
 static struct resource s5p_pmu_resource[] = {
 	DEFINE_RES_IRQ(IRQ_PMU)
 };
 
 static struct platform_device s5p_device_pmu = {
 	.name		= "arm-pmu",
+<<<<<<< HEAD
 	.id		= ARM_PMU_DEVICE_CPU,
+=======
+	.id		= -1,
+>>>>>>> refs/remotes/origin/master
 	.num_resources	= ARRAY_SIZE(s5p_pmu_resource),
 	.resource	= s5p_pmu_resource,
 };
@@ -1132,6 +1255,7 @@ arch_initcall(s5p_pmu_init);
 /* PWM Timer */
 
 #ifdef CONFIG_SAMSUNG_DEV_PWM
+<<<<<<< HEAD
 
 #define TIMER_RESOURCE_SIZE (1)
 
@@ -1162,6 +1286,23 @@ struct platform_device s3c_device_timer[] = {
 	[3] = { DEFINE_S3C_TIMER(3, IRQ_TIMER3) },
 	[4] = { DEFINE_S3C_TIMER(4, IRQ_TIMER4) },
 };
+=======
+static struct resource samsung_pwm_resource[] = {
+	DEFINE_RES_MEM(SAMSUNG_PA_TIMER, SZ_4K),
+};
+
+struct platform_device samsung_device_pwm = {
+	.name		= "samsung-pwm",
+	.id		= -1,
+	.num_resources	= ARRAY_SIZE(samsung_pwm_resource),
+	.resource	= samsung_pwm_resource,
+};
+
+void __init samsung_pwm_set_platdata(struct samsung_pwm_variant *pd)
+{
+	samsung_device_pwm.dev.platform_data = pd;
+}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_SAMSUNG_DEV_PWM */
 
 /* RTC */
@@ -1408,6 +1549,7 @@ void __init s3c24xx_udc_set_platdata(struct s3c2410_udc_mach_info *pd)
 }
 #endif /* CONFIG_PLAT_S3C24XX */
 
+<<<<<<< HEAD
 /* USB EHCI Host Controller */
 
 #ifdef CONFIG_S5P_DEV_USB_EHCI
@@ -1441,6 +1583,8 @@ void __init s5p_ehci_set_platdata(struct s5p_ehci_platdata *pd)
 }
 #endif /* CONFIG_S5P_DEV_USB_EHCI */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* USB HSOTG */
 
 #ifdef CONFIG_S3C_DEV_USB_HSOTG
@@ -1524,7 +1668,11 @@ static struct resource s3c64xx_spi0_resource[] = {
 };
 
 struct platform_device s3c64xx_device_spi0 = {
+<<<<<<< HEAD
 	.name		= "s3c64xx-spi",
+=======
+	.name		= "s3c6410-spi",
+>>>>>>> refs/remotes/origin/master
 	.id		= 0,
 	.num_resources	= ARRAY_SIZE(s3c64xx_spi0_resource),
 	.resource	= s3c64xx_spi0_resource,
@@ -1534,6 +1682,7 @@ struct platform_device s3c64xx_device_spi0 = {
 	},
 };
 
+<<<<<<< HEAD
 void __init s3c64xx_spi0_set_platdata(struct s3c64xx_spi_info *pd,
 				      int src_clk_nr, int num_cs)
 {
@@ -1541,6 +1690,12 @@ void __init s3c64xx_spi0_set_platdata(struct s3c64xx_spi_info *pd,
 		pr_err("%s:Need to pass platform data\n", __func__);
 		return;
 	}
+=======
+void __init s3c64xx_spi0_set_platdata(int (*cfg_gpio)(void), int src_clk_nr,
+						int num_cs)
+{
+	struct s3c64xx_spi_info pd;
+>>>>>>> refs/remotes/origin/master
 
 	/* Reject invalid configuration */
 	if (!num_cs || src_clk_nr < 0) {
@@ -1548,12 +1703,27 @@ void __init s3c64xx_spi0_set_platdata(struct s3c64xx_spi_info *pd,
 		return;
 	}
 
+<<<<<<< HEAD
 	pd->num_cs = num_cs;
 	pd->src_clk_nr = src_clk_nr;
 	if (!pd->cfg_gpio)
 		pd->cfg_gpio = s3c64xx_spi0_cfg_gpio;
 
 	s3c_set_platdata(pd, sizeof(*pd), &s3c64xx_device_spi0);
+=======
+	pd.num_cs = num_cs;
+	pd.src_clk_nr = src_clk_nr;
+	pd.cfg_gpio = (cfg_gpio) ? cfg_gpio : s3c64xx_spi0_cfg_gpio;
+#if defined(CONFIG_PL330_DMA)
+	pd.filter = pl330_filter;
+#elif defined(CONFIG_S3C64XX_PL080)
+	pd.filter = pl08x_filter_id;
+#elif defined(CONFIG_S3C24XX_DMAC)
+	pd.filter = s3c24xx_dma_filter;
+#endif
+
+	s3c_set_platdata(&pd, sizeof(pd), &s3c64xx_device_spi0);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_S3C64XX_DEV_SPI0 */
 
@@ -1566,7 +1736,11 @@ static struct resource s3c64xx_spi1_resource[] = {
 };
 
 struct platform_device s3c64xx_device_spi1 = {
+<<<<<<< HEAD
 	.name		= "s3c64xx-spi",
+=======
+	.name		= "s3c6410-spi",
+>>>>>>> refs/remotes/origin/master
 	.id		= 1,
 	.num_resources	= ARRAY_SIZE(s3c64xx_spi1_resource),
 	.resource	= s3c64xx_spi1_resource,
@@ -1576,6 +1750,7 @@ struct platform_device s3c64xx_device_spi1 = {
 	},
 };
 
+<<<<<<< HEAD
 void __init s3c64xx_spi1_set_platdata(struct s3c64xx_spi_info *pd,
 				      int src_clk_nr, int num_cs)
 {
@@ -1583,6 +1758,12 @@ void __init s3c64xx_spi1_set_platdata(struct s3c64xx_spi_info *pd,
 		pr_err("%s:Need to pass platform data\n", __func__);
 		return;
 	}
+=======
+void __init s3c64xx_spi1_set_platdata(int (*cfg_gpio)(void), int src_clk_nr,
+						int num_cs)
+{
+	struct s3c64xx_spi_info pd;
+>>>>>>> refs/remotes/origin/master
 
 	/* Reject invalid configuration */
 	if (!num_cs || src_clk_nr < 0) {
@@ -1590,12 +1771,25 @@ void __init s3c64xx_spi1_set_platdata(struct s3c64xx_spi_info *pd,
 		return;
 	}
 
+<<<<<<< HEAD
 	pd->num_cs = num_cs;
 	pd->src_clk_nr = src_clk_nr;
 	if (!pd->cfg_gpio)
 		pd->cfg_gpio = s3c64xx_spi1_cfg_gpio;
 
 	s3c_set_platdata(pd, sizeof(*pd), &s3c64xx_device_spi1);
+=======
+	pd.num_cs = num_cs;
+	pd.src_clk_nr = src_clk_nr;
+	pd.cfg_gpio = (cfg_gpio) ? cfg_gpio : s3c64xx_spi1_cfg_gpio;
+#if defined(CONFIG_PL330_DMA)
+	pd.filter = pl330_filter;
+#elif defined(CONFIG_S3C64XX_PL080)
+	pd.filter = pl08x_filter_id;
+#endif
+
+	s3c_set_platdata(&pd, sizeof(pd), &s3c64xx_device_spi1);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_S3C64XX_DEV_SPI1 */
 
@@ -1608,7 +1802,11 @@ static struct resource s3c64xx_spi2_resource[] = {
 };
 
 struct platform_device s3c64xx_device_spi2 = {
+<<<<<<< HEAD
 	.name		= "s3c64xx-spi",
+=======
+	.name		= "s3c6410-spi",
+>>>>>>> refs/remotes/origin/master
 	.id		= 2,
 	.num_resources	= ARRAY_SIZE(s3c64xx_spi2_resource),
 	.resource	= s3c64xx_spi2_resource,
@@ -1618,6 +1816,7 @@ struct platform_device s3c64xx_device_spi2 = {
 	},
 };
 
+<<<<<<< HEAD
 void __init s3c64xx_spi2_set_platdata(struct s3c64xx_spi_info *pd,
 				      int src_clk_nr, int num_cs)
 {
@@ -1625,6 +1824,12 @@ void __init s3c64xx_spi2_set_platdata(struct s3c64xx_spi_info *pd,
 		pr_err("%s:Need to pass platform data\n", __func__);
 		return;
 	}
+=======
+void __init s3c64xx_spi2_set_platdata(int (*cfg_gpio)(void), int src_clk_nr,
+						int num_cs)
+{
+	struct s3c64xx_spi_info pd;
+>>>>>>> refs/remotes/origin/master
 
 	/* Reject invalid configuration */
 	if (!num_cs || src_clk_nr < 0) {
@@ -1632,11 +1837,24 @@ void __init s3c64xx_spi2_set_platdata(struct s3c64xx_spi_info *pd,
 		return;
 	}
 
+<<<<<<< HEAD
 	pd->num_cs = num_cs;
 	pd->src_clk_nr = src_clk_nr;
 	if (!pd->cfg_gpio)
 		pd->cfg_gpio = s3c64xx_spi2_cfg_gpio;
 
 	s3c_set_platdata(pd, sizeof(*pd), &s3c64xx_device_spi2);
+=======
+	pd.num_cs = num_cs;
+	pd.src_clk_nr = src_clk_nr;
+	pd.cfg_gpio = (cfg_gpio) ? cfg_gpio : s3c64xx_spi2_cfg_gpio;
+#if defined(CONFIG_PL330_DMA)
+	pd.filter = pl330_filter;
+#elif defined(CONFIG_S3C64XX_PL080)
+	pd.filter = pl08x_filter_id;
+#endif
+
+	s3c_set_platdata(&pd, sizeof(pd), &s3c64xx_device_spi2);
+>>>>>>> refs/remotes/origin/master
 }
 #endif /* CONFIG_S3C64XX_DEV_SPI2 */

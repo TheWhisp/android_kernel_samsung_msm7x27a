@@ -30,6 +30,7 @@
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
 #include <mach/at91sam9_smc.h>
 #include <mach/gsia18s.h>
@@ -37,10 +38,21 @@
 
 #include "sam9_smc.h"
 #include "generic.h"
+=======
+#include <mach/at91sam9_smc.h>
+
+#include "at91_aic.h"
+#include "board.h"
+#include "sam9_smc.h"
+#include "generic.h"
+#include "gsia18s.h"
+#include "stamp9g20.h"
+>>>>>>> refs/remotes/origin/master
 
 static void __init gsia18s_init_early(void)
 {
 	stamp9g20_init_early();
+<<<<<<< HEAD
 
 	/*
 	 * USART0 on ttyS1 (Rx, Tx, CTS, RTS, DTR, DSR, DCD, RI).
@@ -83,16 +95,25 @@ static void __init init_irq(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Two USB Host ports
  */
 static struct at91_usbh_data __initdata usbh_data = {
 	.ports		= 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.vbus_pin	= {-EINVAL, -EINVAL},
 	.overcurrent_pin= {-EINVAL, -EINVAL},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -101,20 +122,28 @@ static struct at91_usbh_data __initdata usbh_data = {
 static struct at91_udc_data __initdata udc_data = {
 	.vbus_pin	= AT91_PIN_PA22,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.pullup_pin	= 0,		/* pull-up driven by UDC */
 =======
 	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pullup_pin	= -EINVAL,		/* pull-up driven by UDC */
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * MACB Ethernet device
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct at91_eth_data __initdata macb_data = {
 =======
 static struct macb_platform_data __initdata macb_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct macb_platform_data __initdata macb_data = {
+>>>>>>> refs/remotes/origin/master
 	.phy_irq_pin	= AT91_PIN_PA28,
 	.is_rmii	= 1,
 };
@@ -552,9 +581,13 @@ static struct at91_cf_data __initdata gsia18s_cf1_data = {
 	.irq_pin	= AT91_PIN_PA27,
 	.det_pin	= AT91_PIN_PB30,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.vcc_pin	= -EINVAL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vcc_pin	= -EINVAL,
+>>>>>>> refs/remotes/origin/master
 	.rst_pin	= AT91_PIN_PB31,
 	.chipselect	= 5,
 	.flags		= AT91_CF_TRUE_IDE,
@@ -580,6 +613,40 @@ static int __init gsia18s_power_off_init(void)
 
 static void __init gsia18s_board_init(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * USART0 on ttyS1 (Rx, Tx, CTS, RTS, DTR, DSR, DCD, RI).
+	 * Used for Internal Analog Modem.
+	 */
+	at91_register_uart(AT91SAM9260_ID_US0, 1,
+				ATMEL_UART_CTS | ATMEL_UART_RTS |
+				ATMEL_UART_DTR | ATMEL_UART_DSR |
+				ATMEL_UART_DCD | ATMEL_UART_RI);
+	/*
+	 * USART1 on ttyS2 (Rx, Tx, CTS, RTS).
+	 * Used for GPS or WiFi or Data stream.
+	 */
+	at91_register_uart(AT91SAM9260_ID_US1, 2,
+				ATMEL_UART_CTS | ATMEL_UART_RTS);
+	/*
+	 * USART2 on ttyS3 (Rx, Tx, CTS, RTS).
+	 * Used for External Modem.
+	 */
+	at91_register_uart(AT91SAM9260_ID_US2, 3,
+				ATMEL_UART_CTS | ATMEL_UART_RTS);
+	/*
+	 * USART3 on ttyS4 (Rx, Tx, RTS).
+	 * Used for RS-485.
+	 */
+	at91_register_uart(AT91SAM9260_ID_US3, 4, ATMEL_UART_RTS);
+
+	/*
+	 * USART4 on ttyS5 (Rx, Tx).
+	 * Used for TRX433 Radio Module.
+	 */
+	at91_register_uart(AT91SAM9260_ID_US4, 5, 0);
+>>>>>>> refs/remotes/origin/master
 	stamp9g20_board_init();
 	at91_add_device_usbh(&usbh_data);
 	at91_add_device_udc(&udc_data);
@@ -596,6 +663,7 @@ static void __init gsia18s_board_init(void)
 }
 
 MACHINE_START(GSIA18S, "GS_IA18_S")
+<<<<<<< HEAD
 	.timer		= &at91sam926x_timer,
 <<<<<<< HEAD
 	.map_io		= at91sam9260_map_io,
@@ -606,5 +674,12 @@ MACHINE_START(GSIA18S, "GS_IA18_S")
 	.init_early	= gsia18s_init_early,
 	.init_irq	= at91_init_irq_default,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= at91sam926x_pit_init,
+	.map_io		= at91_map_io,
+	.handle_irq	= at91_aic_handle_irq,
+	.init_early	= gsia18s_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= gsia18s_board_init,
 MACHINE_END

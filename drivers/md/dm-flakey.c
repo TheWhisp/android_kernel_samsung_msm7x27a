@@ -1,10 +1,14 @@
 /*
  * Copyright (C) 2003 Sistina Software (UK) Limited.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2004, 2010 Red Hat, Inc. All rights reserved.
 =======
  * Copyright (C) 2004, 2010-2011 Red Hat, Inc. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2004, 2010-2011 Red Hat, Inc. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This file is released under the GPL.
  */
@@ -20,11 +24,17 @@
 #define DM_MSG_PREFIX "flakey"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define all_corrupt_bio_flags_match(bio, fc)	\
 	(((bio)->bi_rw & (fc)->corrupt_bio_flags) == (fc)->corrupt_bio_flags)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define all_corrupt_bio_flags_match(bio, fc)	\
+	(((bio)->bi_rw & (fc)->corrupt_bio_flags) == (fc)->corrupt_bio_flags)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Flakey: Used for testing only, simulates intermittent,
  * catastrophic device failure.
@@ -35,6 +45,7 @@ struct flakey_c {
 	sector_t start;
 	unsigned up_interval;
 	unsigned down_interval;
+<<<<<<< HEAD
 <<<<<<< HEAD
 };
 
@@ -55,6 +66,8 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	if (!fc) {
 		ti->error = "dm-flakey: Cannot allocate linear context";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	unsigned corrupt_bio_byte;
 	unsigned corrupt_bio_rw;
@@ -66,6 +79,13 @@ enum feature_flag_bits {
 	DROP_WRITES
 };
 
+<<<<<<< HEAD
+=======
+struct per_bio_data {
+	bool bio_submitted;
+};
+
+>>>>>>> refs/remotes/origin/master
 static int parse_features(struct dm_arg_set *as, struct flakey_c *fc,
 			  struct dm_target *ti)
 {
@@ -199,12 +219,17 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 
 	fc = kzalloc(sizeof(*fc), GFP_KERNEL);
 	if (!fc) {
+<<<<<<< HEAD
 		ti->error = "Cannot allocate linear context";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ti->error = "Cannot allocate context";
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 	fc->start_time = jiffies;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (sscanf(argv[1], "%llu", &tmp) != 1) {
 		ti->error = "dm-flakey: Invalid device sector";
@@ -225,6 +250,8 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	if (!(fc->up_interval + fc->down_interval)) {
 		ti->error = "dm-flakey: Total (up + down) interval is zero";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	devname = dm_shift_arg(&as);
 
 	if (sscanf(dm_shift_arg(&as), "%llu%c", &tmpll, &dummy) != 1) {
@@ -243,11 +270,15 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 
 	if (!(fc->up_interval + fc->down_interval)) {
 		ti->error = "Total (up + down) interval is zero";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto bad;
 	}
 
 	if (fc->up_interval + fc->down_interval < fc->up_interval) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ti->error = "dm-flakey: Interval overflow";
 		goto bad;
@@ -256,6 +287,8 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 	if (dm_get_device(ti, argv[0], dm_table_get_mode(ti->table), &fc->dev)) {
 		ti->error = "dm-flakey: Device lookup failed";
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ti->error = "Interval overflow";
 		goto bad;
 	}
@@ -266,6 +299,7 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 
 	if (dm_get_device(ti, devname, dm_table_get_mode(ti->table), &fc->dev)) {
 		ti->error = "Device lookup failed";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		goto bad;
 	}
@@ -275,6 +309,14 @@ static int flakey_ctr(struct dm_target *ti, unsigned int argc, char **argv)
 =======
 	ti->num_discard_requests = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto bad;
+	}
+
+	ti->num_flush_bios = 1;
+	ti->num_discard_bios = 1;
+	ti->per_bio_data_size = sizeof(struct per_bio_data);
+>>>>>>> refs/remotes/origin/master
 	ti->private = fc;
 	return 0;
 
@@ -296,10 +338,14 @@ static sector_t flakey_map_sector(struct dm_target *ti, sector_t bi_sector)
 	struct flakey_c *fc = ti->private;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return fc->start + (bi_sector - ti->begin);
 =======
 	return fc->start + dm_target_offset(ti, bi_sector);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return fc->start + dm_target_offset(ti, bi_sector);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void flakey_map_bio(struct dm_target *ti, struct bio *bio)
@@ -312,7 +358,10 @@ static void flakey_map_bio(struct dm_target *ti, struct bio *bio)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void corrupt_bio_data(struct bio *bio, struct flakey_c *fc)
 {
 	unsigned bio_bytes = bio_cur_bytes(bio);
@@ -332,6 +381,7 @@ static void corrupt_bio_data(struct bio *bio, struct flakey_c *fc)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int flakey_map(struct dm_target *ti, struct bio *bio,
 		      union map_info *map_context)
@@ -346,11 +396,26 @@ static int flakey_map(struct dm_target *ti, struct bio *bio,
 		return -EIO;
 
 =======
+=======
+static int flakey_map(struct dm_target *ti, struct bio *bio)
+{
+	struct flakey_c *fc = ti->private;
+	unsigned elapsed;
+	struct per_bio_data *pb = dm_per_bio_data(bio, sizeof(struct per_bio_data));
+	pb->bio_submitted = false;
+
+	/* Are we alive ? */
+	elapsed = (jiffies - fc->start_time) / HZ;
+>>>>>>> refs/remotes/origin/master
 	if (elapsed % (fc->up_interval + fc->down_interval) >= fc->up_interval) {
 		/*
 		 * Flag this bio as submitted while down.
 		 */
+<<<<<<< HEAD
 		map_context->ll = 1;
+=======
+		pb->bio_submitted = true;
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Map reads as normal.
@@ -382,12 +447,16 @@ static int flakey_map(struct dm_target *ti, struct bio *bio,
 	}
 
 map_bio:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	flakey_map_bio(ti, bio);
 
 	return DM_MAPIO_REMAPPED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int flakey_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned int maxlen)
@@ -399,12 +468,22 @@ static int flakey_end_io(struct dm_target *ti, struct bio *bio,
 {
 	struct flakey_c *fc = ti->private;
 	unsigned bio_submitted_while_down = map_context->ll;
+=======
+static int flakey_end_io(struct dm_target *ti, struct bio *bio, int error)
+{
+	struct flakey_c *fc = ti->private;
+	struct per_bio_data *pb = dm_per_bio_data(bio, sizeof(struct per_bio_data));
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Corrupt successful READs while in down state.
 	 * If flags were specified, only corrupt those that match.
 	 */
+<<<<<<< HEAD
 	if (fc->corrupt_bio_byte && !error && bio_submitted_while_down &&
+=======
+	if (fc->corrupt_bio_byte && !error && pb->bio_submitted &&
+>>>>>>> refs/remotes/origin/master
 	    (bio_data_dir(bio) == READ) && (fc->corrupt_bio_rw == READ) &&
 	    all_corrupt_bio_flags_match(bio, fc))
 		corrupt_bio_data(bio, fc);
@@ -412,13 +491,21 @@ static int flakey_end_io(struct dm_target *ti, struct bio *bio,
 	return error;
 }
 
+<<<<<<< HEAD
 static int flakey_status(struct dm_target *ti, status_type_t type,
 			 char *result, unsigned int maxlen)
+=======
+static void flakey_status(struct dm_target *ti, status_type_t type,
+			  unsigned status_flags, char *result, unsigned maxlen)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned sz = 0;
 	struct flakey_c *fc = ti->private;
 	unsigned drop_writes;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (type) {
 	case STATUSTYPE_INFO:
@@ -427,10 +514,13 @@ static int flakey_status(struct dm_target *ti, status_type_t type,
 
 	case STATUSTYPE_TABLE:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snprintf(result, maxlen, "%s %llu %u %u", fc->dev->name,
 			 (unsigned long long)fc->start, fc->up_interval,
 			 fc->down_interval);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		DMEMIT("%s %llu %u %u ", fc->dev->name,
 		       (unsigned long long)fc->start, fc->up_interval,
 		       fc->down_interval);
@@ -447,10 +537,15 @@ static int flakey_status(struct dm_target *ti, status_type_t type,
 			       (fc->corrupt_bio_rw == WRITE) ? 'w' : 'r',
 			       fc->corrupt_bio_value, fc->corrupt_bio_flags);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		break;
 	}
 	return 0;
+=======
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static int flakey_ioctl(struct dm_target *ti, unsigned int cmd, unsigned long arg)
@@ -494,18 +589,26 @@ static int flakey_iterate_devices(struct dm_target *ti, iterate_devices_callout_
 static struct target_type flakey_target = {
 	.name   = "flakey",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.version = {1, 1, 0},
 =======
 	.version = {1, 2, 0},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.version = {1, 3, 1},
+>>>>>>> refs/remotes/origin/master
 	.module = THIS_MODULE,
 	.ctr    = flakey_ctr,
 	.dtr    = flakey_dtr,
 	.map    = flakey_map,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.end_io = flakey_end_io,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.end_io = flakey_end_io,
+>>>>>>> refs/remotes/origin/master
 	.status = flakey_status,
 	.ioctl	= flakey_ioctl,
 	.merge	= flakey_merge,

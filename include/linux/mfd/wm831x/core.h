@@ -18,10 +18,17 @@
 #include <linux/completion.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/list.h>
 #include <linux/regmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/irqdomain.h>
+#include <linux/list.h>
+#include <linux/regmap.h>
+#include <linux/mfd/wm831x/auxadc.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Register values.
@@ -240,10 +247,13 @@
 #define WM831X_ON_PIN_TO_WIDTH                       2  /* ON_PIN_TO - [1:0] */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct regulator_dev;
 
 #define WM831X_NUM_IRQ_REGS 5
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * R16528 (0x4090) - Clock Control 1
  */
@@ -346,10 +356,17 @@ struct regulator_dev;
 #define WM831X_FLL_CLK_SRC_WIDTH                     2  /* FLL_CLK_SRC - [1:0] */
 
 struct regulator_dev;
+<<<<<<< HEAD
 
 #define WM831X_NUM_IRQ_REGS 5
 #define WM831X_NUM_GPIO_REGS 16
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct irq_domain;
+
+#define WM831X_NUM_IRQ_REGS 5
+#define WM831X_NUM_GPIO_REGS 16
+>>>>>>> refs/remotes/origin/master
 
 enum wm831x_parent {
 	WM8310 = 0x8310,
@@ -362,18 +379,26 @@ enum wm831x_parent {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct wm831x;
 enum wm831x_auxadc;
+=======
+struct wm831x;
+>>>>>>> refs/remotes/origin/master
 
 typedef int (*wm831x_auxadc_read_fn)(struct wm831x *wm831x,
 				     enum wm831x_auxadc input);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct wm831x {
 	struct mutex io_lock;
 
 	struct device *dev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int (*read_dev)(struct wm831x *wm831x, unsigned short reg,
 			int bytes, void *dest);
@@ -389,18 +414,27 @@ struct wm831x {
 	int irq_masks_cache[WM831X_NUM_IRQ_REGS]; /* Cached hardware value */
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct regmap *regmap;
 
 	int irq;  /* Our chip IRQ */
 	struct mutex irq_lock;
+<<<<<<< HEAD
 	int irq_base;
+=======
+	struct irq_domain *irq_domain;
+>>>>>>> refs/remotes/origin/master
 	int irq_masks_cur[WM831X_NUM_IRQ_REGS];   /* Currently active value */
 	int irq_masks_cache[WM831X_NUM_IRQ_REGS]; /* Cached hardware value */
 
 	bool soft_shutdown;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Chip revision based flags */
 	unsigned has_gpio_ena:1;         /* Has GPIO enable bit */
 	unsigned has_cs_sts:1;           /* Has current sink status bit */
@@ -409,18 +443,28 @@ struct wm831x {
 	int num_gpio;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct mutex auxadc_lock;
 	struct completion auxadc_done;
 =======
 	/* Used by the interrupt controller code to post writes */
 	int gpio_update[WM831X_NUM_GPIO_REGS];
 	bool gpio_level[WM831X_NUM_GPIO_REGS];
+=======
+	/* Used by the interrupt controller code to post writes */
+	int gpio_update[WM831X_NUM_GPIO_REGS];
+	bool gpio_level_high[WM831X_NUM_GPIO_REGS];
+	bool gpio_level_low[WM831X_NUM_GPIO_REGS];
+>>>>>>> refs/remotes/origin/master
 
 	struct mutex auxadc_lock;
 	struct list_head auxadc_pending;
 	u16 auxadc_active;
 	wm831x_auxadc_read_fn auxadc_read;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* The WM831x has a security key blocking access to certain
 	 * registers.  The mutex is taken by the accessors for locking
@@ -446,15 +490,27 @@ int wm831x_device_init(struct wm831x *wm831x, unsigned long id, int irq);
 void wm831x_device_exit(struct wm831x *wm831x);
 int wm831x_device_suspend(struct wm831x *wm831x);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int wm831x_irq_init(struct wm831x *wm831x, int irq);
 void wm831x_irq_exit(struct wm831x *wm831x);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void wm831x_device_shutdown(struct wm831x *wm831x);
 int wm831x_irq_init(struct wm831x *wm831x, int irq);
 void wm831x_irq_exit(struct wm831x *wm831x);
 void wm831x_auxadc_init(struct wm831x *wm831x);
 
+<<<<<<< HEAD
 extern struct regmap_config wm831x_regmap_config;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int wm831x_irq(struct wm831x *wm831x, int irq)
+{
+	return irq_create_mapping(wm831x->irq_domain, irq);
+}
+
+extern struct regmap_config wm831x_regmap_config;
+>>>>>>> refs/remotes/origin/master
 
 #endif

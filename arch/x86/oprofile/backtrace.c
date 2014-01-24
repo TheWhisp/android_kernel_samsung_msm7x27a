@@ -13,6 +13,7 @@
 #include <linux/mm.h>
 #include <linux/compat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/highmem.h>
 
 #include <asm/ptrace.h>
@@ -22,6 +23,11 @@
 
 #include <asm/ptrace.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/uaccess.h>
+
+#include <asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/stacktrace.h>
 
 static int backtrace_stack(void *data, char *name)
@@ -44,6 +50,7 @@ static struct stacktrace_ops backtrace_ops = {
 	.walk_stack	= print_context_stack,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* from arch/x86/kernel/cpu/perf_event.c: */
 
@@ -83,6 +90,8 @@ copy_from_user_nmi(void *to, const void __user *from, unsigned long n)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_COMPAT
 static struct stack_frame_ia32 *
 dump_user_backtrace_32(struct stack_frame_ia32 *head)
@@ -93,7 +102,11 @@ dump_user_backtrace_32(struct stack_frame_ia32 *head)
 	unsigned long bytes;
 
 	bytes = copy_from_user_nmi(bufhead, head, sizeof(bufhead));
+<<<<<<< HEAD
 	if (bytes != sizeof(bufhead))
+=======
+	if (bytes != 0)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	fp = (struct stack_frame_ia32 *) compat_ptr(bufhead[0].next_frame);
@@ -114,10 +127,14 @@ x86_backtrace_32(struct pt_regs * const regs, unsigned int depth)
 	struct stack_frame_ia32 *head;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* User process is 32-bit */
 =======
 	/* User process is IA32 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* User process is IA32 */
+>>>>>>> refs/remotes/origin/master
 	if (!current || !test_thread_flag(TIF_IA32))
 		return 0;
 
@@ -143,7 +160,11 @@ static struct stack_frame *dump_user_backtrace(struct stack_frame *head)
 	unsigned long bytes;
 
 	bytes = copy_from_user_nmi(bufhead, head, sizeof(bufhead));
+<<<<<<< HEAD
 	if (bytes != sizeof(bufhead))
+=======
+	if (bytes != 0)
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 
 	oprofile_add_trace(bufhead[0].return_address);

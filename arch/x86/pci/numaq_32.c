@@ -35,9 +35,13 @@ static int pci_conf1_mq_read(unsigned int seg, unsigned int bus,
 	void *adr __iomem = XQUAD_PORT_ADDR(0xcfc, BUS2QUAD(bus));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	WARN_ON(seg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/master
 	if (!value || (bus >= MAX_MP_BUSSES) || (devfn > 255) || (reg > 255))
 		return -EINVAL;
 
@@ -78,9 +82,13 @@ static int pci_conf1_mq_write(unsigned int seg, unsigned int bus,
 	void *adr __iomem = XQUAD_PORT_ADDR(0xcfc, BUS2QUAD(bus));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	WARN_ON(seg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON(seg);
+>>>>>>> refs/remotes/origin/master
 	if ((bus >= MAX_MP_BUSSES) || (devfn > 255) || (reg > 255)) 
 		return -EINVAL;
 
@@ -117,16 +125,24 @@ static int pci_conf1_mq_write(unsigned int seg, unsigned int bus,
 #undef PCI_CONF1_MQ_ADDRESS
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_raw_ops pci_direct_conf1_mq = {
 =======
 static const struct pci_raw_ops pci_direct_conf1_mq = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_raw_ops pci_direct_conf1_mq = {
+>>>>>>> refs/remotes/origin/master
 	.read	= pci_conf1_mq_read,
 	.write	= pci_conf1_mq_write
 };
 
 
+<<<<<<< HEAD
 static void __devinit pci_fixup_i450nx(struct pci_dev *d)
+=======
+static void pci_fixup_i450nx(struct pci_dev *d)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * i450NX -- Find and scan all secondary buses on all PXB's.
@@ -162,12 +178,16 @@ int __init pci_numaq_init(void)
 
 	raw_pci_ops = &pci_direct_conf1_mq;
 
+<<<<<<< HEAD
 	pci_root_bus = pcibios_scan_root(0);
 <<<<<<< HEAD
 	if (pci_root_bus)
 		pci_bus_add_devices(pci_root_bus);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcibios_scan_root(0);
+>>>>>>> refs/remotes/origin/master
 	if (num_online_nodes() > 1)
 		for_each_online_node(quad) {
 			if (quad == 0)

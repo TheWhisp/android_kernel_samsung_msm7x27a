@@ -13,7 +13,12 @@ static const char *ip_vs_dbg_callid(char *buf, size_t buf_len,
 				    const char *callid, size_t callid_len,
 				    int *idx)
 {
+<<<<<<< HEAD
 	size_t len = min(min(callid_len, (size_t)64), buf_len - *idx - 1);
+=======
+	size_t max_len = 64;
+	size_t len = min3(max_len, callid_len, buf_len - *idx - 1);
+>>>>>>> refs/remotes/origin/master
 	memcpy(buf + *idx, callid, len);
 	buf[*idx+len] = '\0';
 	*idx += len + 1;
@@ -69,11 +74,16 @@ ip_vs_sip_fill_param(struct ip_vs_conn_param *p, struct sk_buff *skb)
 	const char *dptr;
 	int retc;
 
+<<<<<<< HEAD
 	ip_vs_fill_iphdr(p->af, skb_network_header(skb), &iph);
+=======
+	ip_vs_fill_iph_skb(p->af, skb, &iph);
+>>>>>>> refs/remotes/origin/master
 
 	/* Only useful with UDP */
 	if (iph.protocol != IPPROTO_UDP)
 		return -EINVAL;
+<<<<<<< HEAD
 
 	/* No Data ? */
 	dataoff = iph.len + sizeof(struct udphdr);
@@ -81,6 +91,17 @@ ip_vs_sip_fill_param(struct ip_vs_conn_param *p, struct sk_buff *skb)
 		return -EINVAL;
 
 	if ((retc=skb_linearize(skb)) < 0)
+=======
+	/* todo: IPv6 fragments:
+	 *       I think this only should be done for the first fragment. /HS
+	 */
+	dataoff = iph.len + sizeof(struct udphdr);
+
+	if (dataoff >= skb->len)
+		return -EINVAL;
+	retc = skb_linearize(skb);
+	if (retc < 0)
+>>>>>>> refs/remotes/origin/master
 		return retc;
 	dptr = skb->data + dataoff;
 	datalen = skb->len - dataoff;
@@ -105,10 +126,14 @@ static bool ip_vs_sip_ct_match(const struct ip_vs_conn_param *p,
 
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool ret = 0;
 =======
 	bool ret = false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool ret = false;
+>>>>>>> refs/remotes/origin/master
 
 	if (ct->af == p->af &&
 	    ip_vs_addr_equal(p->af, p->caddr, &ct->caddr) &&
@@ -122,10 +147,14 @@ static bool ip_vs_sip_ct_match(const struct ip_vs_conn_param *p,
 	    ct->pe_data && ct->pe_data_len == p->pe_data_len &&
 	    !memcmp(ct->pe_data, p->pe_data, p->pe_data_len))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = 1;
 =======
 		ret = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = true;
+>>>>>>> refs/remotes/origin/master
 
 	IP_VS_DBG_BUF(9, "SIP template match %s %s->%s:%d %s\n",
 		      ip_vs_proto_name(p->protocol),
@@ -168,6 +197,10 @@ static int __init ip_vs_sip_init(void)
 static void __exit ip_vs_sip_cleanup(void)
 {
 	unregister_ip_vs_pe(&ip_vs_sip_pe);
+<<<<<<< HEAD
+=======
+	synchronize_rcu();
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(ip_vs_sip_init);

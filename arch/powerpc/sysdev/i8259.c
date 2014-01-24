@@ -26,10 +26,14 @@ static unsigned char cached_8259[2] = { 0xff, 0xff };
 static DEFINE_RAW_SPINLOCK(i8259_lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host *i8259_host;
 =======
 static struct irq_domain *i8259_host;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *i8259_host;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Acknowledge the IRQ using either the PCI host bridge's interrupt
@@ -168,19 +172,27 @@ static struct resource pic_edgectrl_iores = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int i8259_host_match(struct irq_host *h, struct device_node *node)
 =======
 static int i8259_host_match(struct irq_domain *h, struct device_node *node)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i8259_host_match(struct irq_domain *h, struct device_node *node)
+>>>>>>> refs/remotes/origin/master
 {
 	return h->of_node == NULL || h->of_node == node;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int i8259_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int i8259_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i8259_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			  irq_hw_number_t hw)
 {
 	pr_debug("i8259_host_map(%d, 0x%lx)\n", virq, hw);
@@ -198,10 +210,14 @@ static int i8259_host_map(struct irq_domain *h, unsigned int virq,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int i8259_host_xlate(struct irq_host *h, struct device_node *ct,
 =======
 static int i8259_host_xlate(struct irq_domain *h, struct device_node *ct,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int i8259_host_xlate(struct irq_domain *h, struct device_node *ct,
+>>>>>>> refs/remotes/origin/master
 			    const u32 *intspec, unsigned int intsize,
 			    irq_hw_number_t *out_hwirq, unsigned int *out_flags)
 {
@@ -222,20 +238,28 @@ static int i8259_host_xlate(struct irq_domain *h, struct device_node *ct,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host_ops i8259_host_ops = {
 =======
 static struct irq_domain_ops i8259_host_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain_ops i8259_host_ops = {
+>>>>>>> refs/remotes/origin/master
 	.match = i8259_host_match,
 	.map = i8259_host_map,
 	.xlate = i8259_host_xlate,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct irq_host *i8259_get_host(void)
 =======
 struct irq_domain *i8259_get_host(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct irq_domain *i8259_get_host(void)
+>>>>>>> refs/remotes/origin/master
 {
 	return i8259_host;
 }
@@ -288,11 +312,15 @@ void i8259_init(struct device_node *node, unsigned long intack_addr)
 
 	/* create a legacy host */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	i8259_host = irq_alloc_host(node, IRQ_HOST_MAP_LEGACY,
 				    0, &i8259_host_ops, 0);
 =======
 	i8259_host = irq_domain_add_legacy_isa(node, &i8259_host_ops, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i8259_host = irq_domain_add_legacy_isa(node, &i8259_host_ops, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (i8259_host == NULL) {
 		printk(KERN_ERR "i8259: failed to allocate irq host !\n");
 		return;

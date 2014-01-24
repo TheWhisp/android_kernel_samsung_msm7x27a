@@ -16,20 +16,29 @@
  * www.brocade.com
  */
 
+<<<<<<< HEAD
 /**
  * File for interrupt macros and functions
  */
+=======
+/* File for interrupt macros and functions */
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __BNA_HW_DEFS_H__
 #define __BNA_HW_DEFS_H__
 
 #include "bfi_reg.h"
 
+<<<<<<< HEAD
 /**
  *
  * SW imposed limits
  *
  */
+=======
+/* SW imposed limits */
+
+>>>>>>> refs/remotes/origin/master
 #define BFI_ENET_DEF_TXQ		1
 #define BFI_ENET_DEF_RXP		1
 #define BFI_ENET_DEF_UCAM		1
@@ -51,7 +60,12 @@
 #define BFI_MAX_INTERPKT_COUNT		0xFF
 #define BFI_MAX_INTERPKT_TIMEO		0xF	/* in 0.5us units */
 #define BFI_TX_COALESCING_TIMEO		20	/* 20 * 5 = 100us */
+<<<<<<< HEAD
 #define BFI_TX_INTERPKT_COUNT		32
+=======
+#define BFI_TX_INTERPKT_COUNT		12	/* Pkt Cnt = 12 */
+#define BFI_TX_INTERPKT_TIMEO		15	/* 15 * 0.5 = 7.5us */
+>>>>>>> refs/remotes/origin/master
 #define	BFI_RX_COALESCING_TIMEO		12	/* 12 * 5 = 60us */
 #define	BFI_RX_INTERPKT_COUNT		6	/* Pkt Cnt = 6 */
 #define	BFI_RX_INTERPKT_TIMEO		3	/* 3 * 0.5 = 1.5us */
@@ -141,11 +155,16 @@
 }
 
 #define bna_port_id_get(_bna) ((_bna)->ioceth.ioc.port_id)
+<<<<<<< HEAD
 /**
  *
  *  Interrupt related bits, flags and macros
  *
  */
+=======
+
+/*  Interrupt related bits, flags and macros  */
+>>>>>>> refs/remotes/origin/master
 
 #define IB_STATUS_BITS		0x0000ffff
 
@@ -280,11 +299,15 @@ do {									\
 	(writel(BNA_DOORBELL_Q_PRD_IDX((_rcb)->producer_index), \
 		(_rcb)->q_dbell));
 
+<<<<<<< HEAD
 /**
  *
  * TxQ, RxQ, CQ related bits, offsets, macros
  *
  */
+=======
+/* TxQ, RxQ, CQ related bits, offsets, macros */
+>>>>>>> refs/remotes/origin/master
 
 /* TxQ Entry Opcodes */
 #define BNA_TXQ_WI_SEND			(0x402)	/* Single Frame Transmission */
@@ -334,11 +357,15 @@ do {									\
 
 #define	BNA_CQ_EF_LOCAL		(1 << 20)
 
+<<<<<<< HEAD
 /**
  *
  * Data structures
  *
  */
+=======
+/* Data structures */
+>>>>>>> refs/remotes/origin/master
 
 struct bna_reg_offset {
 	u32 fn_int_status;
@@ -371,8 +398,12 @@ struct bna_txq_wi_vector {
 	struct bna_dma_addr host_addr; /* Tx-Buf DMA addr */
 };
 
+<<<<<<< HEAD
 /**
  *  TxQ Entry Structure
+=======
+/*  TxQ Entry Structure
+>>>>>>> refs/remotes/origin/master
  *
  *  BEWARE:  Load values into this structure with correct endianess.
  */

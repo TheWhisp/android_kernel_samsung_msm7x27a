@@ -55,7 +55,12 @@ void nilfs_page_bug(struct page *);
 
 int nilfs_copy_dirty_pages(struct address_space *, struct address_space *);
 void nilfs_copy_back_pages(struct address_space *, struct address_space *);
+<<<<<<< HEAD
 void nilfs_clear_dirty_pages(struct address_space *);
+=======
+void nilfs_clear_dirty_page(struct page *, bool);
+void nilfs_clear_dirty_pages(struct address_space *, bool);
+>>>>>>> refs/remotes/origin/master
 void nilfs_mapping_init(struct address_space *mapping, struct inode *inode,
 			struct backing_dev_info *bdi);
 unsigned nilfs_page_count_clean_buffers(struct page *, unsigned, unsigned);

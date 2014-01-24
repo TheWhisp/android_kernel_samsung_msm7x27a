@@ -35,9 +35,13 @@
 #include <linux/slab.h>
 #include <linux/usb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/moduleparam.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/moduleparam.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/info.h>
 #include <sound/pcm.h>
@@ -84,10 +88,14 @@ static int usX2Y_urb_capt_retire(struct snd_usX2Y_substream *subs)
 		if (urb->iso_frame_desc[i].status) { /* active? hmm, skip this */
 			snd_printk(KERN_ERR "active frame status %i. "
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   "Most propably some hardware problem.\n",
 =======
 				   "Most probably some hardware problem.\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   "Most probably some hardware problem.\n",
+>>>>>>> refs/remotes/origin/master
 				   urb->iso_frame_desc[i].status);
 			return urb->iso_frame_desc[i].status;
 		}
@@ -280,7 +288,15 @@ static void usX2Y_clients_stop(struct usX2Ydev *usX2Y)
 		struct snd_usX2Y_substream *subs = usX2Y->subs[s];
 		if (subs) {
 			if (atomic_read(&subs->state) >= state_PRERUNNING) {
+<<<<<<< HEAD
 				snd_pcm_stop(subs->pcm_substream, SNDRV_PCM_STATE_XRUN);
+=======
+				unsigned long flags;
+
+				snd_pcm_stream_lock_irqsave(subs->pcm_substream, flags);
+				snd_pcm_stop(subs->pcm_substream, SNDRV_PCM_STATE_XRUN);
+				snd_pcm_stream_unlock_irqrestore(subs->pcm_substream, flags);
+>>>>>>> refs/remotes/origin/master
 			}
 			for (u = 0; u < NRURBS; u++) {
 				struct urb *urb = subs->urb[u];
@@ -303,6 +319,7 @@ static void usX2Y_error_urb_status(struct usX2Ydev *usX2Y,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void usX2Y_error_sequence(struct usX2Ydev *usX2Y,
 				 struct snd_usX2Y_substream *subs, struct urb *urb)
 {
@@ -318,6 +335,8 @@ static void usX2Y_error_sequence(struct usX2Ydev *usX2Y,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void i_usX2Y_urb_complete(struct urb *urb)
 {
 	struct snd_usX2Y_substream *subs = urb->context;
@@ -335,6 +354,7 @@ static void i_usX2Y_urb_complete(struct urb *urb)
 		return;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (likely((urb->start_frame & 0xFFFF) == (usX2Y->wait_iso_frame & 0xFFFF)))
 		subs->completed_urb = urb;
 	else {
@@ -346,6 +366,11 @@ static void i_usX2Y_urb_complete(struct urb *urb)
 	subs->completed_urb = urb;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	subs->completed_urb = urb;
+
+>>>>>>> refs/remotes/origin/master
 	{
 		struct snd_usX2Y_substream *capsubs = usX2Y->subs[SNDRV_PCM_STREAM_CAPTURE],
 			*playbacksubs = usX2Y->subs[SNDRV_PCM_STREAM_PLAYBACK];
@@ -519,7 +544,10 @@ static int usX2Y_urbs_start(struct snd_usX2Y_substream *subs)
 			if (0 == i)
 				atomic_set(&subs->state, state_STARTING3);
 			urb->dev = usX2Y->dev;
+<<<<<<< HEAD
 			urb->transfer_flags = URB_ISO_ASAP;
+=======
+>>>>>>> refs/remotes/origin/master
 			for (pack = 0; pack < nr_of_packs(); pack++) {
 				urb->iso_frame_desc[pack].offset = subs->maxpacksize * pack;
 				urb->iso_frame_desc[pack].length = subs->maxpacksize;
@@ -712,9 +740,12 @@ static int usX2Y_rate_set(struct usX2Ydev *usX2Y, int rate)
 			((char*)(usbdata + i))[1] = ra[i].c2;
 			usb_fill_bulk_urb(us->urb[i], usX2Y->dev, usb_sndbulkpipe(usX2Y->dev, 4),
 					  usbdata + i, 2, i_usX2Y_04Int, usX2Y);
+<<<<<<< HEAD
 #ifdef OLD_USB
 			us->urb[i]->transfer_flags = USB_QUEUE_BULK;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		us->submitted =	0;
 		us->len =	NOOF_SETRATE_URBS;

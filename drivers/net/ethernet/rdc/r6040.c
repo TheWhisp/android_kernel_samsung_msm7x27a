@@ -4,7 +4,11 @@
  * Copyright (C) 2004 Sten Wang <sten.wang@rdc.com.tw>
  * Copyright (C) 2007
  *	Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>
+<<<<<<< HEAD
  *	Florian Fainelli <florian@openwrt.org>
+=======
+ * Copyright (C) 2007-2012 Florian Fainelli <florian@openwrt.org>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -74,9 +78,19 @@
 #define MT_ICR		0x0C	/* TX interrupt control */
 #define MR_ICR		0x10	/* RX interrupt control */
 #define MTPR		0x14	/* TX poll command register */
+<<<<<<< HEAD
 #define MR_BSR		0x18	/* RX buffer size */
 #define MR_DCR		0x1A	/* RX descriptor control */
 #define MLSR		0x1C	/* Last status */
+=======
+#define  TM2TX		0x0001	/* Trigger MAC to transmit */
+#define MR_BSR		0x18	/* RX buffer size */
+#define MR_DCR		0x1A	/* RX descriptor control */
+#define MLSR		0x1C	/* Last status */
+#define  TX_FIFO_UNDR	0x0200	/* TX FIFO under-run */
+#define	 TX_EXCEEDC	0x2000	/* Transmit exceed collision */
+#define  TX_LATEC	0x4000	/* Transmit late collision */
+>>>>>>> refs/remotes/origin/master
 #define MMDIO		0x20	/* MDIO control register */
 #define  MDIO_WRITE	0x4000	/* MDIO write */
 #define  MDIO_READ	0x2000	/* MDIO read */
@@ -124,6 +138,12 @@
 #define MID_3M		0x82	/* MID3 Medium */
 #define MID_3H		0x84	/* MID3 High */
 #define PHY_CC		0x88	/* PHY status change configuration register */
+<<<<<<< HEAD
+=======
+#define  SCEN		0x8000	/* PHY status change enable */
+#define  PHYAD_SHIFT	8	/* PHY address shift */
+#define  TMRDIV_SHIFT	0	/* Timer divider shift */
+>>>>>>> refs/remotes/origin/master
 #define PHY_ST		0x8A	/* PHY status register */
 #define MAC_SM		0xAC	/* MAC status machine */
 #define  MAC_SM_RST	0x0002	/* MAC status machine reset */
@@ -137,6 +157,11 @@
 #define MBCR_DEFAULT	0x012A	/* MAC Bus Control Register */
 #define MCAST_MAX	3	/* Max number multicast addresses to filter */
 
+<<<<<<< HEAD
+=======
+#define MAC_DEF_TIMEOUT	2048	/* Default MAC read/write operation timeout */
+
+>>>>>>> refs/remotes/origin/master
 /* Descriptor status */
 #define DSC_OWNER_MAC	0x8000	/* MAC is the owner of this descriptor */
 #define DSC_RX_OK	0x4000	/* RX was successful */
@@ -187,7 +212,11 @@ struct r6040_private {
 	dma_addr_t rx_ring_dma;
 	dma_addr_t tx_ring_dma;
 	u16	tx_free_desc;
+<<<<<<< HEAD
 	u16	mcr0, mcr1;
+=======
+	u16	mcr0;
+>>>>>>> refs/remotes/origin/master
 	struct net_device *dev;
 	struct mii_bus *mii_bus;
 	struct napi_struct napi;
@@ -197,14 +226,22 @@ struct r6040_private {
 	int old_duplex;
 };
 
+<<<<<<< HEAD
 static char version[] __devinitdata = DRV_NAME
+=======
+static char version[] = DRV_NAME
+>>>>>>> refs/remotes/origin/master
 	": RDC R6040 NAPI net driver,"
 	"version "DRV_VERSION " (" DRV_RELDATE ")";
 
 /* Read a word data from PHY Chip */
 static int r6040_phy_read(void __iomem *ioaddr, int phy_addr, int reg)
 {
+<<<<<<< HEAD
 	int limit = 2048;
+=======
+	int limit = MAC_DEF_TIMEOUT;
+>>>>>>> refs/remotes/origin/master
 	u16 cmd;
 
 	iowrite16(MDIO_READ + reg + (phy_addr << 8), ioaddr + MMDIO);
@@ -215,14 +252,27 @@ static int r6040_phy_read(void __iomem *ioaddr, int phy_addr, int reg)
 			break;
 	}
 
+<<<<<<< HEAD
+=======
+	if (limit < 0)
+		return -ETIMEDOUT;
+
+>>>>>>> refs/remotes/origin/master
 	return ioread16(ioaddr + MMRD);
 }
 
 /* Write a word data from PHY Chip */
+<<<<<<< HEAD
 static void r6040_phy_write(void __iomem *ioaddr,
 					int phy_addr, int reg, u16 val)
 {
 	int limit = 2048;
+=======
+static int r6040_phy_write(void __iomem *ioaddr,
+					int phy_addr, int reg, u16 val)
+{
+	int limit = MAC_DEF_TIMEOUT;
+>>>>>>> refs/remotes/origin/master
 	u16 cmd;
 
 	iowrite16(val, ioaddr + MMWD);
@@ -234,6 +284,11 @@ static void r6040_phy_write(void __iomem *ioaddr,
 		if (!(cmd & MDIO_WRITE))
 			break;
 	}
+<<<<<<< HEAD
+=======
+
+	return (limit < 0) ? -ETIMEDOUT : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int r6040_mdiobus_read(struct mii_bus *bus, int phy_addr, int reg)
@@ -252,9 +307,13 @@ static int r6040_mdiobus_write(struct mii_bus *bus, int phy_addr,
 	struct r6040_private *lp = netdev_priv(dev);
 	void __iomem *ioaddr = lp->base;
 
+<<<<<<< HEAD
 	r6040_phy_write(ioaddr, phy_addr, reg, value);
 
 	return 0;
+=======
+	return r6040_phy_write(ioaddr, phy_addr, reg, value);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int r6040_mdiobus_reset(struct mii_bus *bus)
@@ -338,7 +397,10 @@ static int r6040_alloc_rxbufs(struct net_device *dev)
 	do {
 		skb = netdev_alloc_skb(dev, MAX_BUF_SIZE);
 		if (!skb) {
+<<<<<<< HEAD
 			netdev_err(dev, "failed to alloc skb for rx\n");
+=======
+>>>>>>> refs/remotes/origin/master
 			rc = -ENOMEM;
 			goto err_exit;
 		}
@@ -358,6 +420,7 @@ err_exit:
 	return rc;
 }
 
+<<<<<<< HEAD
 static void r6040_init_mac_regs(struct net_device *dev)
 {
 	struct r6040_private *lp = netdev_priv(dev);
@@ -369,16 +432,43 @@ static void r6040_init_mac_regs(struct net_device *dev)
 	iowrite16(MSK_INT, ioaddr + MIER);
 
 	/* Reset RDC MAC */
+=======
+static void r6040_reset_mac(struct r6040_private *lp)
+{
+	void __iomem *ioaddr = lp->base;
+	int limit = MAC_DEF_TIMEOUT;
+	u16 cmd;
+
+>>>>>>> refs/remotes/origin/master
 	iowrite16(MAC_RST, ioaddr + MCR1);
 	while (limit--) {
 		cmd = ioread16(ioaddr + MCR1);
 		if (cmd & MAC_RST)
 			break;
 	}
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* Reset internal state machine */
 	iowrite16(MAC_SM_RST, ioaddr + MAC_SM);
 	iowrite16(0, ioaddr + MAC_SM);
 	mdelay(5);
+<<<<<<< HEAD
+=======
+}
+
+static void r6040_init_mac_regs(struct net_device *dev)
+{
+	struct r6040_private *lp = netdev_priv(dev);
+	void __iomem *ioaddr = lp->base;
+
+	/* Mask Off Interrupt */
+	iowrite16(MSK_INT, ioaddr + MIER);
+
+	/* Reset RDC MAC */
+	r6040_reset_mac(lp);
+>>>>>>> refs/remotes/origin/master
 
 	/* MAC Bus Control Register */
 	iowrite16(MBCR_DEFAULT, ioaddr + MBCR);
@@ -407,7 +497,11 @@ static void r6040_init_mac_regs(struct net_device *dev)
 	/* Let TX poll the descriptors
 	 * we may got called by r6040_tx_timeout which has left
 	 * some unsent tx buffers */
+<<<<<<< HEAD
 	iowrite16(0x01, ioaddr + MTPR);
+=======
+	iowrite16(TM2TX, ioaddr + MTPR);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void r6040_tx_timeout(struct net_device *dev)
@@ -445,6 +539,7 @@ static void r6040_down(struct net_device *dev)
 {
 	struct r6040_private *lp = netdev_priv(dev);
 	void __iomem *ioaddr = lp->base;
+<<<<<<< HEAD
 	int limit = 2048;
 	u16 *adrp;
 	u16 cmd;
@@ -457,6 +552,15 @@ static void r6040_down(struct net_device *dev)
 		if (cmd & MAC_RST)
 			break;
 	}
+=======
+	u16 *adrp;
+
+	/* Stop MAC */
+	iowrite16(MSK_INT, ioaddr + MIER);	/* Mask Off Interrupt */
+
+	/* Reset RDC MAC */
+	r6040_reset_mac(lp);
+>>>>>>> refs/remotes/origin/master
 
 	/* Restore MAC Address to MIDx */
 	adrp = (u16 *) dev->dev_addr;
@@ -599,9 +703,15 @@ static void r6040_tx(struct net_device *dev)
 		/* Check for errors */
 		err = ioread16(ioaddr + MLSR);
 
+<<<<<<< HEAD
 		if (err & 0x0200)
 			dev->stats.rx_fifo_errors++;
 		if (err & (0x2000 | 0x4000))
+=======
+		if (err & TX_FIFO_UNDR)
+			dev->stats.tx_fifo_errors++;
+		if (err & (TX_EXCEEDC | TX_LATEC))
+>>>>>>> refs/remotes/origin/master
 			dev->stats.tx_carrier_errors++;
 
 		if (descptr->status & DSC_OWNER_MAC)
@@ -736,20 +846,27 @@ static void r6040_mac_address(struct net_device *dev)
 	u16 *adrp;
 
 	/* Reset MAC */
+<<<<<<< HEAD
 	iowrite16(MAC_RST, ioaddr + MCR1);
 	/* Reset internal state machine */
 	iowrite16(MAC_SM_RST, ioaddr + MAC_SM);
 	iowrite16(0, ioaddr + MAC_SM);
 	mdelay(5);
+=======
+	r6040_reset_mac(lp);
+>>>>>>> refs/remotes/origin/master
 
 	/* Restore MAC Address */
 	adrp = (u16 *) dev->dev_addr;
 	iowrite16(adrp[0], ioaddr + MID_0L);
 	iowrite16(adrp[1], ioaddr + MID_0M);
 	iowrite16(adrp[2], ioaddr + MID_0H);
+<<<<<<< HEAD
 
 	/* Store MAC Address in perm_addr */
 	memcpy(dev->perm_addr, dev->dev_addr, ETH_ALEN);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int r6040_open(struct net_device *dev)
@@ -840,7 +957,11 @@ static netdev_tx_t r6040_start_xmit(struct sk_buff *skb,
 	skb_tx_timestamp(skb);
 
 	/* Trigger the MAC to check the TX descriptor */
+<<<<<<< HEAD
 	iowrite16(0x01, ioaddr + MTPR);
+=======
+	iowrite16(TM2TX, ioaddr + MTPR);
+>>>>>>> refs/remotes/origin/master
 	lp->tx_insert_ptr = descptr->vndescp;
 
 	/* If no tx resource, stop */
@@ -949,9 +1070,15 @@ static void netdev_get_drvinfo(struct net_device *dev,
 {
 	struct r6040_private *rp = netdev_priv(dev);
 
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->bus_info, pci_name(rp->pdev));
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, pci_name(rp->pdev), sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int netdev_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
@@ -973,6 +1100,10 @@ static const struct ethtool_ops netdev_ethtool_ops = {
 	.get_settings		= netdev_get_settings,
 	.set_settings		= netdev_set_settings,
 	.get_link		= ethtool_op_get_link,
+<<<<<<< HEAD
+=======
+	.get_ts_info		= ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct net_device_ops r6040_netdev_ops = {
@@ -1036,7 +1167,11 @@ static int r6040_mii_probe(struct net_device *dev)
 	}
 
 	phydev = phy_connect(dev, dev_name(&phydev->dev), &r6040_adjust_link,
+<<<<<<< HEAD
 				0, PHY_INTERFACE_MODE_MII);
+=======
+			     PHY_INTERFACE_MODE_MII);
+>>>>>>> refs/remotes/origin/master
 
 	if (IS_ERR(phydev)) {
 		dev_err(&lp->pdev->dev, "could not attach to PHY\n");
@@ -1064,8 +1199,12 @@ static int r6040_mii_probe(struct net_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit r6040_init_one(struct pci_dev *pdev,
 					 const struct pci_device_id *ent)
+=======
+static int r6040_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev;
 	struct r6040_private *lp;
@@ -1087,20 +1226,32 @@ static int __devinit r6040_init_one(struct pci_dev *pdev,
 	if (err) {
 		dev_err(&pdev->dev, "32-bit PCI DMA addresses"
 				"not supported by the card\n");
+<<<<<<< HEAD
 		goto err_out;
+=======
+		goto err_out_disable_dev;
+>>>>>>> refs/remotes/origin/master
 	}
 	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (err) {
 		dev_err(&pdev->dev, "32-bit PCI DMA addresses"
 				"not supported by the card\n");
+<<<<<<< HEAD
 		goto err_out;
+=======
+		goto err_out_disable_dev;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* IO Size check */
 	if (pci_resource_len(pdev, bar) < io_size) {
 		dev_err(&pdev->dev, "Insufficient PCI resources, aborting\n");
 		err = -EIO;
+<<<<<<< HEAD
 		goto err_out;
+=======
+		goto err_out_disable_dev;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_set_master(pdev);
@@ -1108,7 +1259,11 @@ static int __devinit r6040_init_one(struct pci_dev *pdev,
 	dev = alloc_etherdev(sizeof(struct r6040_private));
 	if (!dev) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto err_out;
+=======
+		goto err_out_disable_dev;
+>>>>>>> refs/remotes/origin/master
 	}
 	SET_NETDEV_DEV(dev, &pdev->dev);
 	lp = netdev_priv(dev);
@@ -1126,10 +1281,22 @@ static int __devinit r6040_init_one(struct pci_dev *pdev,
 		err = -EIO;
 		goto err_out_free_res;
 	}
+<<<<<<< HEAD
 	/* If PHY status change register is still set to zero it means the
 	 * bootloader didn't initialize it */
 	if (ioread16(ioaddr + PHY_CC) == 0)
 		iowrite16(0x9f07, ioaddr + PHY_CC);
+=======
+
+	/* If PHY status change register is still set to zero it means the
+	 * bootloader didn't initialize it, so we set it to:
+	 * - enable phy status change
+	 * - enable all phy addresses
+	 * - set to lowest timer divider */
+	if (ioread16(ioaddr + PHY_CC) == 0)
+		iowrite16(SCEN | PHY_MAX_ADDR << PHYAD_SHIFT |
+				7 << TMRDIV_SHIFT, ioaddr + PHY_CC);
+>>>>>>> refs/remotes/origin/master
 
 	/* Init system & device */
 	lp->base = ioaddr;
@@ -1182,9 +1349,14 @@ static int __devinit r6040_init_one(struct pci_dev *pdev,
 	lp->mii_bus->name = "r6040_eth_mii";
 	snprintf(lp->mii_bus->id, MII_BUS_ID_SIZE, "%s-%x",
 		dev_name(&pdev->dev), card_idx);
+<<<<<<< HEAD
 	lp->mii_bus->irq = kmalloc(sizeof(int)*PHY_MAX_ADDR, GFP_KERNEL);
 	if (!lp->mii_bus->irq) {
 		dev_err(&pdev->dev, "mii_bus irq allocation failed\n");
+=======
+	lp->mii_bus->irq = kmalloc_array(PHY_MAX_ADDR, sizeof(int), GFP_KERNEL);
+	if (!lp->mii_bus->irq) {
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto err_out_mdio;
 	}
@@ -1219,16 +1391,29 @@ err_out_mdio_irq:
 err_out_mdio:
 	mdiobus_free(lp->mii_bus);
 err_out_unmap:
+<<<<<<< HEAD
+=======
+	netif_napi_del(&lp->napi);
+>>>>>>> refs/remotes/origin/master
 	pci_iounmap(pdev, ioaddr);
 err_out_free_res:
 	pci_release_regions(pdev);
 err_out_free_dev:
 	free_netdev(dev);
+<<<<<<< HEAD
+=======
+err_out_disable_dev:
+	pci_disable_device(pdev);
+>>>>>>> refs/remotes/origin/master
 err_out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit r6040_remove_one(struct pci_dev *pdev)
+=======
+static void r6040_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 	struct r6040_private *lp = netdev_priv(dev);
@@ -1237,10 +1422,18 @@ static void __devexit r6040_remove_one(struct pci_dev *pdev)
 	mdiobus_unregister(lp->mii_bus);
 	kfree(lp->mii_bus->irq);
 	mdiobus_free(lp->mii_bus);
+<<<<<<< HEAD
 	pci_release_regions(pdev);
 	free_netdev(dev);
 	pci_disable_device(pdev);
 	pci_set_drvdata(pdev, NULL);
+=======
+	netif_napi_del(&lp->napi);
+	pci_iounmap(pdev, lp->base);
+	pci_release_regions(pdev);
+	free_netdev(dev);
+	pci_disable_device(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1254,6 +1447,7 @@ static struct pci_driver r6040_driver = {
 	.name		= DRV_NAME,
 	.id_table	= r6040_pci_tbl,
 	.probe		= r6040_init_one,
+<<<<<<< HEAD
 	.remove		= __devexit_p(r6040_remove_one),
 };
 
@@ -1271,3 +1465,9 @@ static void __exit r6040_cleanup(void)
 
 module_init(r6040_init);
 module_exit(r6040_cleanup);
+=======
+	.remove		= r6040_remove_one,
+};
+
+module_pci_driver(r6040_driver);
+>>>>>>> refs/remotes/origin/master

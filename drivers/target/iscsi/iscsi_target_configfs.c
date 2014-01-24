@@ -2,9 +2,13 @@
  * This file contains the configfs implementation for iSCSI Target mode
  * from the LIO-Target Project.
  *
+<<<<<<< HEAD
  * \u00a9 Copyright 2007-2011 RisingTide Systems LLC.
  *
  * Licensed to the Linux Foundation under the General Public License (GPL) version 2.
+=======
+ * (c) Copyright 2007-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Nicholas A. Bellinger <nab@linux-iscsi.org>
  *
@@ -20,6 +24,10 @@
  ****************************************************************************/
 
 #include <linux/configfs.h>
+<<<<<<< HEAD
+=======
+#include <linux/ctype.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/inet.h>
 #include <target/target_core_base.h>
@@ -27,6 +35,10 @@
 #include <target/target_core_fabric_configfs.h>
 #include <target/target_core_configfs.h>
 #include <target/configfs_macros.h>
+<<<<<<< HEAD
+=======
+#include <target/iscsi/iscsi_transport.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "iscsi_target_core.h"
 #include "iscsi_target_parameters.h"
@@ -47,6 +59,7 @@ struct lio_target_configfs_attribute {
 	ssize_t (*store)(void *, const char *, size_t);
 };
 
+<<<<<<< HEAD
 struct iscsi_portal_group *lio_get_tpg_from_tpg_item(
 	struct config_item *item,
 	struct iscsi_tiqn **tiqn_out)
@@ -69,6 +82,8 @@ struct iscsi_portal_group *lio_get_tpg_from_tpg_item(
 	return tpg;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Start items for lio_target_portal_cit */
 
 static ssize_t lio_target_np_show_sctp(
@@ -99,11 +114,20 @@ static ssize_t lio_target_np_store_sctp(
 	struct iscsi_tpg_np *tpg_np = container_of(se_tpg_np,
 				struct iscsi_tpg_np, se_tpg_np);
 	struct iscsi_tpg_np *tpg_np_sctp = NULL;
+<<<<<<< HEAD
 	char *endptr;
 	u32 op;
 	int ret;
 
 	op = simple_strtoul(page, &endptr, 0);
+=======
+	u32 op;
+	int ret;
+
+	ret = kstrtou32(page, 0, &op);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	if ((op != 1) && (op != 0)) {
 		pr_err("Illegal value for tpg_enable: %u\n", op);
 		return -EINVAL;
@@ -146,8 +170,93 @@ out:
 
 TF_NP_BASE_ATTR(lio_target, sctp, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
 static struct configfs_attribute *lio_target_portal_attrs[] = {
 	&lio_target_np_sctp.attr,
+=======
+static ssize_t lio_target_np_show_iser(
+	struct se_tpg_np *se_tpg_np,
+	char *page)
+{
+	struct iscsi_tpg_np *tpg_np = container_of(se_tpg_np,
+				struct iscsi_tpg_np, se_tpg_np);
+	struct iscsi_tpg_np *tpg_np_iser;
+	ssize_t rb;
+
+	tpg_np_iser = iscsit_tpg_locate_child_np(tpg_np, ISCSI_INFINIBAND);
+	if (tpg_np_iser)
+		rb = sprintf(page, "1\n");
+	else
+		rb = sprintf(page, "0\n");
+
+	return rb;
+}
+
+static ssize_t lio_target_np_store_iser(
+	struct se_tpg_np *se_tpg_np,
+	const char *page,
+	size_t count)
+{
+	struct iscsi_np *np;
+	struct iscsi_portal_group *tpg;
+	struct iscsi_tpg_np *tpg_np = container_of(se_tpg_np,
+				struct iscsi_tpg_np, se_tpg_np);
+	struct iscsi_tpg_np *tpg_np_iser = NULL;
+	char *endptr;
+	u32 op;
+	int rc = 0;
+
+	op = simple_strtoul(page, &endptr, 0);
+	if ((op != 1) && (op != 0)) {
+		pr_err("Illegal value for tpg_enable: %u\n", op);
+		return -EINVAL;
+	}
+	np = tpg_np->tpg_np;
+	if (!np) {
+		pr_err("Unable to locate struct iscsi_np from"
+				" struct iscsi_tpg_np\n");
+		return -EINVAL;
+	}
+
+	tpg = tpg_np->tpg;
+	if (iscsit_get_tpg(tpg) < 0)
+		return -EINVAL;
+
+	if (op) {
+		rc = request_module("ib_isert");
+		if (rc != 0) {
+			pr_warn("Unable to request_module for ib_isert\n");
+			rc = 0;
+		}
+
+		tpg_np_iser = iscsit_tpg_add_network_portal(tpg, &np->np_sockaddr,
+				np->np_ip, tpg_np, ISCSI_INFINIBAND);
+		if (IS_ERR(tpg_np_iser)) {
+			rc = PTR_ERR(tpg_np_iser);
+			goto out;
+		}
+	} else {
+		tpg_np_iser = iscsit_tpg_locate_child_np(tpg_np, ISCSI_INFINIBAND);
+		if (tpg_np_iser) {
+			rc = iscsit_tpg_del_network_portal(tpg, tpg_np_iser);
+			if (rc < 0)
+				goto out;
+		}
+	}
+
+	iscsit_put_tpg(tpg);
+	return count;
+out:
+	iscsit_put_tpg(tpg);
+	return rc;
+}
+
+TF_NP_BASE_ATTR(lio_target, iser, S_IRUGO | S_IWUSR);
+
+static struct configfs_attribute *lio_target_portal_attrs[] = {
+	&lio_target_np_sctp.attr,
+	&lio_target_np_iser.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -157,7 +266,11 @@ static struct configfs_attribute *lio_target_portal_attrs[] = {
 
 #define MAX_PORTAL_LEN		256
 
+<<<<<<< HEAD
 struct se_tpg_np *lio_target_call_addnptotpg(
+=======
+static struct se_tpg_np *lio_target_call_addnptotpg(
+>>>>>>> refs/remotes/origin/master
 	struct se_portal_group *se_tpg,
 	struct config_group *group,
 	const char *name)
@@ -204,9 +317,15 @@ struct se_tpg_np *lio_target_call_addnptotpg(
 		*port_str = '\0'; /* Terminate string for IP */
 		port_str++; /* Skip over ":" */
 
+<<<<<<< HEAD
 		ret = strict_strtoul(port_str, 0, &port);
 		if (ret < 0) {
 			pr_err("strict_strtoul() failed for port_str: %d\n", ret);
+=======
+		ret = kstrtoul(port_str, 0, &port);
+		if (ret < 0) {
+			pr_err("kstrtoul() failed for port_str: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 			return ERR_PTR(ret);
 		}
 		sock_in6 = (struct sockaddr_in6 *)&sockaddr;
@@ -229,9 +348,15 @@ struct se_tpg_np *lio_target_call_addnptotpg(
 		*port_str = '\0'; /* Terminate string for IP */
 		port_str++; /* Skip over ":" */
 
+<<<<<<< HEAD
 		ret = strict_strtoul(port_str, 0, &port);
 		if (ret < 0) {
 			pr_err("strict_strtoul() failed for port_str: %d\n", ret);
+=======
+		ret = kstrtoul(port_str, 0, &port);
+		if (ret < 0) {
+			pr_err("kstrtoul() failed for port_str: %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 			return ERR_PTR(ret);
 		}
 		sock_in = (struct sockaddr_in *)&sockaddr;
@@ -257,7 +382,11 @@ struct se_tpg_np *lio_target_call_addnptotpg(
 	 * iSER/SCTP (TODO, software emulation with osc-iwarp)
 	 * iSER/IB (TODO, hardware available)
 	 *
+<<<<<<< HEAD
 	 * can be enabled with atributes under
+=======
+	 * can be enabled with attributes under
+>>>>>>> refs/remotes/origin/master
 	 * sys/kernel/config/iscsi/$IQN/$TPG/np/$IP:$PORT/
 	 *
 	 */
@@ -313,7 +442,11 @@ static ssize_t iscsi_nacl_attrib_show_##name(				\
 	struct iscsi_node_acl *nacl = container_of(se_nacl, struct iscsi_node_acl, \
 					se_node_acl);			\
 									\
+<<<<<<< HEAD
 	return sprintf(page, "%u\n", ISCSI_NODE_ATTRIB(nacl)->name);	\
+=======
+	return sprintf(page, "%u\n", nacl->node_attrib.name);		\
+>>>>>>> refs/remotes/origin/master
 }									\
 									\
 static ssize_t iscsi_nacl_attrib_store_##name(				\
@@ -323,11 +456,20 @@ static ssize_t iscsi_nacl_attrib_store_##name(				\
 {									\
 	struct iscsi_node_acl *nacl = container_of(se_nacl, struct iscsi_node_acl, \
 					se_node_acl);			\
+<<<<<<< HEAD
 	char *endptr;							\
 	u32 val;							\
 	int ret;							\
 									\
 	val = simple_strtoul(page, &endptr, 0);				\
+=======
+	u32 val;							\
+	int ret;							\
+									\
+	ret = kstrtou32(page, 0, &val);					\
+	if (ret)							\
+		return ret;						\
+>>>>>>> refs/remotes/origin/master
 	ret = iscsit_na_##name(nacl, val);				\
 	if (ret < 0)							\
 		return ret;						\
@@ -414,7 +556,12 @@ static ssize_t __iscsi_##prefix##_store_##name(				\
 									\
 	if (!capable(CAP_SYS_ADMIN))					\
 		return -EPERM;						\
+<<<<<<< HEAD
 									\
+=======
+	if (count >= sizeof(auth->name))				\
+		return -EINVAL;						\
+>>>>>>> refs/remotes/origin/master
 	snprintf(auth->name, sizeof(auth->name), "%s", page);		\
 	if (!strncmp("NULL", auth->name, 4))				\
 		auth->naf_flags &= ~flags;				\
@@ -730,11 +877,20 @@ static ssize_t lio_target_nacl_store_cmdsn_depth(
 	struct iscsi_portal_group *tpg = container_of(se_tpg,
 			struct iscsi_portal_group, tpg_se_tpg);
 	struct config_item *acl_ci, *tpg_ci, *wwn_ci;
+<<<<<<< HEAD
 	char *endptr;
 	u32 cmdsn_depth = 0;
 	int ret;
 
 	cmdsn_depth = simple_strtoul(page, &endptr, 0);
+=======
+	u32 cmdsn_depth = 0;
+	int ret;
+
+	ret = kstrtou32(page, 0, &cmdsn_depth);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	if (cmdsn_depth > TA_DEFAULT_CMDSN_DEPTH_MAX) {
 		pr_err("Passed cmdsn_depth: %u exceeds"
 			" TA_DEFAULT_CMDSN_DEPTH_MAX: %u\n", cmdsn_depth,
@@ -776,9 +932,39 @@ static ssize_t lio_target_nacl_store_cmdsn_depth(
 
 TF_NACL_BASE_ATTR(lio_target, cmdsn_depth, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
 static struct configfs_attribute *lio_target_initiator_attrs[] = {
 	&lio_target_nacl_info.attr,
 	&lio_target_nacl_cmdsn_depth.attr,
+=======
+static ssize_t lio_target_nacl_show_tag(
+	struct se_node_acl *se_nacl,
+	char *page)
+{
+	return snprintf(page, PAGE_SIZE, "%s", se_nacl->acl_tag);
+}
+
+static ssize_t lio_target_nacl_store_tag(
+	struct se_node_acl *se_nacl,
+	const char *page,
+	size_t count)
+{
+	int ret;
+
+	ret = core_tpg_set_initiator_node_tag(se_nacl->se_tpg, se_nacl, page);
+
+	if (ret < 0)
+		return ret;
+	return count;
+}
+
+TF_NACL_BASE_ATTR(lio_target, tag, S_IRUGO | S_IWUSR);
+
+static struct configfs_attribute *lio_target_initiator_attrs[] = {
+	&lio_target_nacl_info.attr,
+	&lio_target_nacl_cmdsn_depth.attr,
+	&lio_target_nacl_tag.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
@@ -812,7 +998,11 @@ static struct se_node_acl *lio_target_make_nodeacl(
 	if (!se_nacl_new)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	cmdsn_depth = ISCSI_TPG_ATTRIB(tpg)->default_cmdsn_depth;
+=======
+	cmdsn_depth = tpg->tpg_attrib.default_cmdsn_depth;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * se_nacl_new may be released by core_tpg_add_initiator_node_acl()
 	 * when converting a NdoeACL from demo mode -> explict
@@ -825,7 +1015,11 @@ static struct se_node_acl *lio_target_make_nodeacl(
 	acl = container_of(se_nacl, struct iscsi_node_acl, se_node_acl);
 	stats_cg = &se_nacl->acl_fabric_stat_group;
 
+<<<<<<< HEAD
 	stats_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
+=======
+	stats_cg->default_groups = kmalloc(sizeof(struct config_group *) * 2,
+>>>>>>> refs/remotes/origin/master
 				GFP_KERNEL);
 	if (!stats_cg->default_groups) {
 		pr_err("Unable to allocate memory for"
@@ -835,9 +1029,15 @@ static struct se_node_acl *lio_target_make_nodeacl(
 		return ERR_PTR(-ENOMEM);
 	}
 
+<<<<<<< HEAD
 	stats_cg->default_groups[0] = &NODE_STAT_GRPS(acl)->iscsi_sess_stats_group;
 	stats_cg->default_groups[1] = NULL;
 	config_group_init_type_name(&NODE_STAT_GRPS(acl)->iscsi_sess_stats_group,
+=======
+	stats_cg->default_groups[0] = &acl->node_stat_grps.iscsi_sess_stats_group;
+	stats_cg->default_groups[1] = NULL;
+	config_group_init_type_name(&acl->node_stat_grps.iscsi_sess_stats_group,
+>>>>>>> refs/remotes/origin/master
 			"iscsi_sess_stats", &iscsi_stat_sess_cit);
 
 	return se_nacl;
@@ -882,7 +1082,11 @@ static ssize_t iscsi_tpg_attrib_show_##name(				\
 	if (iscsit_get_tpg(tpg) < 0)					\
 		return -EINVAL;						\
 									\
+<<<<<<< HEAD
 	rb = sprintf(page, "%u\n", ISCSI_TPG_ATTRIB(tpg)->name);	\
+=======
+	rb = sprintf(page, "%u\n", tpg->tpg_attrib.name);		\
+>>>>>>> refs/remotes/origin/master
 	iscsit_put_tpg(tpg);						\
 	return rb;							\
 }									\
@@ -894,14 +1098,23 @@ static ssize_t iscsi_tpg_attrib_store_##name(				\
 {									\
 	struct iscsi_portal_group *tpg = container_of(se_tpg,		\
 			struct iscsi_portal_group, tpg_se_tpg);	\
+<<<<<<< HEAD
 	char *endptr;							\
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 val;							\
 	int ret;							\
 									\
 	if (iscsit_get_tpg(tpg) < 0)					\
 		return -EINVAL;						\
 									\
+<<<<<<< HEAD
 	val = simple_strtoul(page, &endptr, 0);				\
+=======
+	ret = kstrtou32(page, 0, &val);					\
+	if (ret)							\
+		goto out;						\
+>>>>>>> refs/remotes/origin/master
 	ret = iscsit_ta_##name(tpg, val);				\
 	if (ret < 0)							\
 		goto out;						\
@@ -955,6 +1168,19 @@ TPG_ATTR(demo_mode_write_protect, S_IRUGO | S_IWUSR);
  */
 DEF_TPG_ATTRIB(prod_mode_write_protect);
 TPG_ATTR(prod_mode_write_protect, S_IRUGO | S_IWUSR);
+<<<<<<< HEAD
+=======
+/*
+ * Define iscsi_tpg_attrib_s_demo_mode_discovery,
+ */
+DEF_TPG_ATTRIB(demo_mode_discovery);
+TPG_ATTR(demo_mode_discovery, S_IRUGO | S_IWUSR);
+/*
+ * Define iscsi_tpg_attrib_s_default_erl
+ */
+DEF_TPG_ATTRIB(default_erl);
+TPG_ATTR(default_erl, S_IRUGO | S_IWUSR);
+>>>>>>> refs/remotes/origin/master
 
 static struct configfs_attribute *lio_target_tpg_attrib_attrs[] = {
 	&iscsi_tpg_attrib_authentication.attr,
@@ -965,11 +1191,144 @@ static struct configfs_attribute *lio_target_tpg_attrib_attrs[] = {
 	&iscsi_tpg_attrib_cache_dynamic_acls.attr,
 	&iscsi_tpg_attrib_demo_mode_write_protect.attr,
 	&iscsi_tpg_attrib_prod_mode_write_protect.attr,
+<<<<<<< HEAD
+=======
+	&iscsi_tpg_attrib_demo_mode_discovery.attr,
+	&iscsi_tpg_attrib_default_erl.attr,
+>>>>>>> refs/remotes/origin/master
 	NULL,
 };
 
 /* End items for lio_target_tpg_attrib_cit */
 
+<<<<<<< HEAD
+=======
+/* Start items for lio_target_tpg_auth_cit */
+
+#define __DEF_TPG_AUTH_STR(prefix, name, flags)					\
+static ssize_t __iscsi_##prefix##_show_##name(					\
+	struct se_portal_group *se_tpg,						\
+	char *page)								\
+{										\
+	struct iscsi_portal_group *tpg = container_of(se_tpg,			\
+				struct iscsi_portal_group, tpg_se_tpg);		\
+	struct iscsi_node_auth *auth = &tpg->tpg_demo_auth;			\
+										\
+	if (!capable(CAP_SYS_ADMIN))						\
+		return -EPERM;							\
+										\
+	return snprintf(page, PAGE_SIZE, "%s\n", auth->name);			\
+}										\
+										\
+static ssize_t __iscsi_##prefix##_store_##name(					\
+	struct se_portal_group *se_tpg,						\
+	const char *page,							\
+	size_t count)								\
+{										\
+	struct iscsi_portal_group *tpg = container_of(se_tpg,			\
+				struct iscsi_portal_group, tpg_se_tpg);		\
+	struct iscsi_node_auth *auth = &tpg->tpg_demo_auth;			\
+										\
+	if (!capable(CAP_SYS_ADMIN))						\
+		return -EPERM;							\
+										\
+	snprintf(auth->name, sizeof(auth->name), "%s", page);			\
+	if (!(strncmp("NULL", auth->name, 4)))					\
+		auth->naf_flags &= ~flags;					\
+	else									\
+		auth->naf_flags |= flags;					\
+										\
+	if ((auth->naf_flags & NAF_USERID_IN_SET) &&				\
+	    (auth->naf_flags & NAF_PASSWORD_IN_SET))				\
+		auth->authenticate_target = 1;					\
+	else									\
+		auth->authenticate_target = 0;					\
+										\
+	return count;								\
+}
+
+#define __DEF_TPG_AUTH_INT(prefix, name)					\
+static ssize_t __iscsi_##prefix##_show_##name(					\
+	struct se_portal_group *se_tpg,						\
+	char *page)								\
+{										\
+	struct iscsi_portal_group *tpg = container_of(se_tpg,			\
+				struct iscsi_portal_group, tpg_se_tpg);		\
+	struct iscsi_node_auth *auth = &tpg->tpg_demo_auth;			\
+										\
+	if (!capable(CAP_SYS_ADMIN))						\
+		return -EPERM;							\
+										\
+	return snprintf(page, PAGE_SIZE, "%d\n", auth->name);			\
+}
+
+#define DEF_TPG_AUTH_STR(name, flags)						\
+	__DEF_TPG_AUTH_STR(tpg_auth, name, flags)				\
+static ssize_t iscsi_tpg_auth_show_##name(					\
+	struct se_portal_group *se_tpg,						\
+	char *page)								\
+{										\
+	return __iscsi_tpg_auth_show_##name(se_tpg, page);			\
+}										\
+										\
+static ssize_t iscsi_tpg_auth_store_##name(					\
+	struct se_portal_group *se_tpg,						\
+	const char *page,							\
+	size_t count)								\
+{										\
+	return __iscsi_tpg_auth_store_##name(se_tpg, page, count);		\
+}
+
+#define DEF_TPG_AUTH_INT(name)							\
+	__DEF_TPG_AUTH_INT(tpg_auth, name)					\
+static ssize_t iscsi_tpg_auth_show_##name(					\
+	struct se_portal_group *se_tpg,						\
+	char *page)								\
+{										\
+	return __iscsi_tpg_auth_show_##name(se_tpg, page);			\
+}
+
+#define TPG_AUTH_ATTR(_name, _mode) TF_TPG_AUTH_ATTR(iscsi, _name, _mode);
+#define TPG_AUTH_ATTR_RO(_name) TF_TPG_AUTH_ATTR_RO(iscsi, _name);
+
+/*
+ *  * One-way authentication userid
+ *   */
+DEF_TPG_AUTH_STR(userid, NAF_USERID_SET);
+TPG_AUTH_ATTR(userid, S_IRUGO | S_IWUSR);
+/*
+ *  * One-way authentication password
+ *   */
+DEF_TPG_AUTH_STR(password, NAF_PASSWORD_SET);
+TPG_AUTH_ATTR(password, S_IRUGO | S_IWUSR);
+/*
+ *  * Enforce mutual authentication
+ *   */
+DEF_TPG_AUTH_INT(authenticate_target);
+TPG_AUTH_ATTR_RO(authenticate_target);
+/*
+ *  * Mutual authentication userid
+ *   */
+DEF_TPG_AUTH_STR(userid_mutual, NAF_USERID_IN_SET);
+TPG_AUTH_ATTR(userid_mutual, S_IRUGO | S_IWUSR);
+/*
+ *  * Mutual authentication password
+ *   */
+DEF_TPG_AUTH_STR(password_mutual, NAF_PASSWORD_IN_SET);
+TPG_AUTH_ATTR(password_mutual, S_IRUGO | S_IWUSR);
+
+static struct configfs_attribute *lio_target_tpg_auth_attrs[] = {
+	&iscsi_tpg_auth_userid.attr,
+	&iscsi_tpg_auth_password.attr,
+	&iscsi_tpg_auth_authenticate_target.attr,
+	&iscsi_tpg_auth_userid_mutual.attr,
+	&iscsi_tpg_auth_password_mutual.attr,
+	NULL,
+};
+
+/* End items for lio_target_tpg_auth_cit */
+
+>>>>>>> refs/remotes/origin/master
 /* Start items for lio_target_tpg_param_cit */
 
 #define DEF_TPG_PARAM(name)						\
@@ -1004,13 +1363,23 @@ static ssize_t iscsi_tpg_param_store_##name(				\
 	struct iscsi_portal_group *tpg = container_of(se_tpg,		\
 			struct iscsi_portal_group, tpg_se_tpg);		\
 	char *buf;							\
+<<<<<<< HEAD
 	int ret;							\
+=======
+	int ret, len;							\
+>>>>>>> refs/remotes/origin/master
 									\
 	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);				\
 	if (!buf)							\
 		return -ENOMEM;						\
+<<<<<<< HEAD
 	snprintf(buf, PAGE_SIZE, "%s=%s", __stringify(name), page);	\
 	buf[strlen(buf)-1] = '\0'; /* Kill newline */			\
+=======
+	len = snprintf(buf, PAGE_SIZE, "%s=%s", __stringify(name), page);	\
+	if (isspace(buf[len-1]))					\
+		buf[len-1] = '\0'; /* Kill newline */			\
+>>>>>>> refs/remotes/origin/master
 									\
 	if (iscsit_get_tpg(tpg) < 0) {					\
 		kfree(buf);						\
@@ -1056,6 +1425,12 @@ TPG_PARAM_ATTR(ImmediateData, S_IRUGO | S_IWUSR);
 DEF_TPG_PARAM(MaxRecvDataSegmentLength);
 TPG_PARAM_ATTR(MaxRecvDataSegmentLength, S_IRUGO | S_IWUSR);
 
+<<<<<<< HEAD
+=======
+DEF_TPG_PARAM(MaxXmitDataSegmentLength);
+TPG_PARAM_ATTR(MaxXmitDataSegmentLength, S_IRUGO | S_IWUSR);
+
+>>>>>>> refs/remotes/origin/master
 DEF_TPG_PARAM(MaxBurstLength);
 TPG_PARAM_ATTR(MaxBurstLength, S_IRUGO | S_IWUSR);
 
@@ -1101,6 +1476,10 @@ static struct configfs_attribute *lio_target_tpg_param_attrs[] = {
 	&iscsi_tpg_param_InitialR2T.attr,
 	&iscsi_tpg_param_ImmediateData.attr,
 	&iscsi_tpg_param_MaxRecvDataSegmentLength.attr,
+<<<<<<< HEAD
+=======
+	&iscsi_tpg_param_MaxXmitDataSegmentLength.attr,
+>>>>>>> refs/remotes/origin/master
 	&iscsi_tpg_param_MaxBurstLength.attr,
 	&iscsi_tpg_param_FirstBurstLength.attr,
 	&iscsi_tpg_param_DefaultTime2Wait.attr,
@@ -1143,11 +1522,20 @@ static ssize_t lio_target_tpg_store_enable(
 {
 	struct iscsi_portal_group *tpg = container_of(se_tpg,
 			struct iscsi_portal_group, tpg_se_tpg);
+<<<<<<< HEAD
 	char *endptr;
 	u32 op;
 	int ret = 0;
 
 	op = simple_strtoul(page, &endptr, 0);
+=======
+	u32 op;
+	int ret;
+
+	ret = kstrtou32(page, 0, &op);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	if ((op != 1) && (op != 0)) {
 		pr_err("Illegal value for tpg_enable: %u\n", op);
 		return -EINVAL;
@@ -1188,22 +1576,36 @@ static struct configfs_attribute *lio_target_tpg_attrs[] = {
 
 /* Start items for lio_target_tiqn_cit */
 
+<<<<<<< HEAD
 struct se_portal_group *lio_target_tiqn_addtpg(
+=======
+static struct se_portal_group *lio_target_tiqn_addtpg(
+>>>>>>> refs/remotes/origin/master
 	struct se_wwn *wwn,
 	struct config_group *group,
 	const char *name)
 {
 	struct iscsi_portal_group *tpg;
 	struct iscsi_tiqn *tiqn;
+<<<<<<< HEAD
 	char *tpgt_str, *end_ptr;
 	int ret = 0;
 	unsigned short int tpgt;
+=======
+	char *tpgt_str;
+	int ret;
+	u16 tpgt;
+>>>>>>> refs/remotes/origin/master
 
 	tiqn = container_of(wwn, struct iscsi_tiqn, tiqn_wwn);
 	/*
 	 * Only tpgt_# directory groups can be created below
 	 * target/iscsi/iqn.superturodiskarry/
+<<<<<<< HEAD
 	*/
+=======
+	 */
+>>>>>>> refs/remotes/origin/master
 	tpgt_str = strstr(name, "tpgt_");
 	if (!tpgt_str) {
 		pr_err("Unable to locate \"tpgt_#\" directory"
@@ -1211,7 +1613,13 @@ struct se_portal_group *lio_target_tiqn_addtpg(
 		return NULL;
 	}
 	tpgt_str += 5; /* Skip ahead of "tpgt_" */
+<<<<<<< HEAD
 	tpgt = (unsigned short int) simple_strtoul(tpgt_str, &end_ptr, 0);
+=======
+	ret = kstrtou16(tpgt_str, 0, &tpgt);
+	if (ret)
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	tpg = iscsit_alloc_portal_group(tiqn, tpgt);
 	if (!tpg)
@@ -1238,7 +1646,11 @@ out:
 	return NULL;
 }
 
+<<<<<<< HEAD
 void lio_target_tiqn_deltpg(struct se_portal_group *se_tpg)
+=======
+static void lio_target_tiqn_deltpg(struct se_portal_group *se_tpg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iscsi_portal_group *tpg;
 	struct iscsi_tiqn *tiqn;
@@ -1260,7 +1672,11 @@ static ssize_t lio_target_wwn_show_attr_lio_version(
 	struct target_fabric_configfs *tf,
 	char *page)
 {
+<<<<<<< HEAD
 	return sprintf(page, "RisingTide Systems Linux-iSCSI Target "ISCSIT_VERSION"\n");
+=======
+	return sprintf(page, "Datera Inc. iSCSI Target "ISCSIT_VERSION"\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 TF_WWN_ATTR_RO(lio_target, lio_version);
@@ -1270,7 +1686,11 @@ static struct configfs_attribute *lio_target_wwn_attrs[] = {
 	NULL,
 };
 
+<<<<<<< HEAD
 struct se_wwn *lio_target_call_coreaddtiqn(
+=======
+static struct se_wwn *lio_target_call_coreaddtiqn(
+>>>>>>> refs/remotes/origin/master
 	struct target_fabric_configfs *tf,
 	struct config_group *group,
 	const char *name)
@@ -1286,7 +1706,11 @@ struct se_wwn *lio_target_call_coreaddtiqn(
 	 */
 	stats_cg = &tiqn->tiqn_wwn.fabric_stat_group;
 
+<<<<<<< HEAD
 	stats_cg->default_groups = kzalloc(sizeof(struct config_group) * 6,
+=======
+	stats_cg->default_groups = kmalloc(sizeof(struct config_group *) * 6,
+>>>>>>> refs/remotes/origin/master
 				GFP_KERNEL);
 	if (!stats_cg->default_groups) {
 		pr_err("Unable to allocate memory for"
@@ -1295,6 +1719,7 @@ struct se_wwn *lio_target_call_coreaddtiqn(
 		return ERR_PTR(-ENOMEM);
 	}
 
+<<<<<<< HEAD
 	stats_cg->default_groups[0] = &WWN_STAT_GRPS(tiqn)->iscsi_instance_group;
 	stats_cg->default_groups[1] = &WWN_STAT_GRPS(tiqn)->iscsi_sess_err_group;
 	stats_cg->default_groups[2] = &WWN_STAT_GRPS(tiqn)->iscsi_tgt_attr_group;
@@ -1310,6 +1735,23 @@ struct se_wwn *lio_target_call_coreaddtiqn(
 	config_group_init_type_name(&WWN_STAT_GRPS(tiqn)->iscsi_login_stats_group,
 			"iscsi_login_stats", &iscsi_stat_login_cit);
 	config_group_init_type_name(&WWN_STAT_GRPS(tiqn)->iscsi_logout_stats_group,
+=======
+	stats_cg->default_groups[0] = &tiqn->tiqn_stat_grps.iscsi_instance_group;
+	stats_cg->default_groups[1] = &tiqn->tiqn_stat_grps.iscsi_sess_err_group;
+	stats_cg->default_groups[2] = &tiqn->tiqn_stat_grps.iscsi_tgt_attr_group;
+	stats_cg->default_groups[3] = &tiqn->tiqn_stat_grps.iscsi_login_stats_group;
+	stats_cg->default_groups[4] = &tiqn->tiqn_stat_grps.iscsi_logout_stats_group;
+	stats_cg->default_groups[5] = NULL;
+	config_group_init_type_name(&tiqn->tiqn_stat_grps.iscsi_instance_group,
+			"iscsi_instance", &iscsi_stat_instance_cit);
+	config_group_init_type_name(&tiqn->tiqn_stat_grps.iscsi_sess_err_group,
+			"iscsi_sess_err", &iscsi_stat_sess_err_cit);
+	config_group_init_type_name(&tiqn->tiqn_stat_grps.iscsi_tgt_attr_group,
+			"iscsi_tgt_attr", &iscsi_stat_tgt_attr_cit);
+	config_group_init_type_name(&tiqn->tiqn_stat_grps.iscsi_login_stats_group,
+			"iscsi_login_stats", &iscsi_stat_login_cit);
+	config_group_init_type_name(&tiqn->tiqn_stat_grps.iscsi_logout_stats_group,
+>>>>>>> refs/remotes/origin/master
 			"iscsi_logout_stats", &iscsi_stat_logout_cit);
 
 	pr_debug("LIO_Target_ConfigFS: REGISTER -> %s\n", tiqn->tiqn);
@@ -1318,7 +1760,11 @@ struct se_wwn *lio_target_call_coreaddtiqn(
 	return &tiqn->tiqn_wwn;
 }
 
+<<<<<<< HEAD
 void lio_target_call_coredeltiqn(
+=======
+static void lio_target_call_coredeltiqn(
+>>>>>>> refs/remotes/origin/master
 	struct se_wwn *wwn)
 {
 	struct iscsi_tiqn *tiqn = container_of(wwn, struct iscsi_tiqn, tiqn_wwn);
@@ -1419,10 +1865,19 @@ static ssize_t iscsi_disc_store_enforce_discovery_auth(
 {
 	struct iscsi_param *param;
 	struct iscsi_portal_group *discovery_tpg = iscsit_global->discovery_tpg;
+<<<<<<< HEAD
 	char *endptr;
 	u32 op;
 
 	op = simple_strtoul(page, &endptr, 0);
+=======
+	u32 op;
+	int err;
+
+	err = kstrtou32(page, 0, &op);
+	if (err)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	if ((op != 1) && (op != 0)) {
 		pr_err("Illegal value for enforce_discovery_auth:"
 				" %u\n", op);
@@ -1493,7 +1948,12 @@ static u32 iscsi_get_task_tag(struct se_cmd *se_cmd)
 {
 	struct iscsi_cmd *cmd = container_of(se_cmd, struct iscsi_cmd, se_cmd);
 
+<<<<<<< HEAD
 	return cmd->init_task_tag;
+=======
+	/* only used for printks or comparism with ->ref_task_tag */
+	return (__force u32)cmd->init_task_tag;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int iscsi_get_cmd_state(struct se_cmd *se_cmd)
@@ -1529,16 +1989,28 @@ static int lio_queue_data_in(struct se_cmd *se_cmd)
 	struct iscsi_cmd *cmd = container_of(se_cmd, struct iscsi_cmd, se_cmd);
 
 	cmd->i_state = ISTATE_SEND_DATAIN;
+<<<<<<< HEAD
 	iscsit_add_cmd_to_response_queue(cmd, cmd->conn, cmd->i_state);
+=======
+	cmd->conn->conn_transport->iscsit_queue_data_in(cmd->conn, cmd);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int lio_write_pending(struct se_cmd *se_cmd)
 {
 	struct iscsi_cmd *cmd = container_of(se_cmd, struct iscsi_cmd, se_cmd);
+<<<<<<< HEAD
 
 	if (!cmd->immediate_data && !cmd->unsolicited_data)
 		return iscsit_build_r2ts_for_cmd(cmd, cmd->conn, 1);
+=======
+	struct iscsi_conn *conn = cmd->conn;
+
+	if (!cmd->immediate_data && !cmd->unsolicited_data)
+		return conn->conn_transport->iscsit_get_dataout(conn, cmd, false);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1560,6 +2032,7 @@ static int lio_queue_status(struct se_cmd *se_cmd)
 	struct iscsi_cmd *cmd = container_of(se_cmd, struct iscsi_cmd, se_cmd);
 
 	cmd->i_state = ISTATE_SEND_STATUS;
+<<<<<<< HEAD
 	iscsit_add_cmd_to_response_queue(cmd, cmd->conn, cmd->i_state);
 	return 0;
 }
@@ -1588,12 +2061,28 @@ static u16 lio_get_fabric_sense_len(void)
 }
 
 static int lio_queue_tm_rsp(struct se_cmd *se_cmd)
+=======
+
+	if (cmd->se_cmd.scsi_status || cmd->sense_reason) {
+		iscsit_add_cmd_to_response_queue(cmd, cmd->conn, cmd->i_state);
+		return 0;
+	}
+	cmd->conn->conn_transport->iscsit_queue_status(cmd->conn, cmd);
+
+	return 0;
+}
+
+static void lio_queue_tm_rsp(struct se_cmd *se_cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iscsi_cmd *cmd = container_of(se_cmd, struct iscsi_cmd, se_cmd);
 
 	cmd->i_state = ISTATE_SEND_TASKMGTRSP;
 	iscsit_add_cmd_to_response_queue(cmd, cmd->conn, cmd->i_state);
+<<<<<<< HEAD
 	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static char *lio_tpg_get_endpoint_wwn(struct se_portal_group *se_tpg)
@@ -1614,21 +2103,33 @@ static u32 lio_tpg_get_default_depth(struct se_portal_group *se_tpg)
 {
 	struct iscsi_portal_group *tpg = se_tpg->se_tpg_fabric_ptr;
 
+<<<<<<< HEAD
 	return ISCSI_TPG_ATTRIB(tpg)->default_cmdsn_depth;
+=======
+	return tpg->tpg_attrib.default_cmdsn_depth;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lio_tpg_check_demo_mode(struct se_portal_group *se_tpg)
 {
 	struct iscsi_portal_group *tpg = se_tpg->se_tpg_fabric_ptr;
 
+<<<<<<< HEAD
 	return ISCSI_TPG_ATTRIB(tpg)->generate_node_acls;
+=======
+	return tpg->tpg_attrib.generate_node_acls;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lio_tpg_check_demo_mode_cache(struct se_portal_group *se_tpg)
 {
 	struct iscsi_portal_group *tpg = se_tpg->se_tpg_fabric_ptr;
 
+<<<<<<< HEAD
 	return ISCSI_TPG_ATTRIB(tpg)->cache_dynamic_acls;
+=======
+	return tpg->tpg_attrib.cache_dynamic_acls;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lio_tpg_check_demo_mode_write_protect(
@@ -1636,7 +2137,11 @@ static int lio_tpg_check_demo_mode_write_protect(
 {
 	struct iscsi_portal_group *tpg = se_tpg->se_tpg_fabric_ptr;
 
+<<<<<<< HEAD
 	return ISCSI_TPG_ATTRIB(tpg)->demo_mode_write_protect;
+=======
+	return tpg->tpg_attrib.demo_mode_write_protect;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int lio_tpg_check_prod_mode_write_protect(
@@ -1644,7 +2149,11 @@ static int lio_tpg_check_prod_mode_write_protect(
 {
 	struct iscsi_portal_group *tpg = se_tpg->se_tpg_fabric_ptr;
 
+<<<<<<< HEAD
 	return ISCSI_TPG_ATTRIB(tpg)->prod_mode_write_protect;
+=======
+	return tpg->tpg_attrib.prod_mode_write_protect;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void lio_tpg_release_fabric_acl(
@@ -1707,15 +2216,33 @@ static void lio_set_default_node_attributes(struct se_node_acl *se_acl)
 {
 	struct iscsi_node_acl *acl = container_of(se_acl, struct iscsi_node_acl,
 				se_node_acl);
+<<<<<<< HEAD
 
 	ISCSI_NODE_ATTRIB(acl)->nacl = acl;
 	iscsit_set_default_node_attribues(acl);
+=======
+	struct se_portal_group *se_tpg = se_acl->se_tpg;
+	struct iscsi_portal_group *tpg = container_of(se_tpg,
+				struct iscsi_portal_group, tpg_se_tpg);
+
+	acl->node_attrib.nacl = acl;
+	iscsit_set_default_node_attribues(acl, tpg);
+}
+
+static int lio_check_stop_free(struct se_cmd *se_cmd)
+{
+	return target_put_sess_cmd(se_cmd->se_sess, se_cmd);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void lio_release_cmd(struct se_cmd *se_cmd)
 {
 	struct iscsi_cmd *cmd = container_of(se_cmd, struct iscsi_cmd, se_cmd);
 
+<<<<<<< HEAD
+=======
+	pr_debug("Entering lio_release_cmd for se_cmd: %p\n", se_cmd);
+>>>>>>> refs/remotes/origin/master
 	iscsit_release_cmd(cmd);
 }
 
@@ -1756,6 +2283,10 @@ int iscsi_target_register_configfs(void)
 	fabric->tf_ops.tpg_alloc_fabric_acl = &lio_tpg_alloc_fabric_acl;
 	fabric->tf_ops.tpg_release_fabric_acl = &lio_tpg_release_fabric_acl;
 	fabric->tf_ops.tpg_get_inst_index = &lio_tpg_get_inst_index;
+<<<<<<< HEAD
+=======
+	fabric->tf_ops.check_stop_free = &lio_check_stop_free,
+>>>>>>> refs/remotes/origin/master
 	fabric->tf_ops.release_cmd = &lio_release_cmd;
 	fabric->tf_ops.shutdown_session = &lio_tpg_shutdown_session;
 	fabric->tf_ops.close_session = &lio_tpg_close_session;
@@ -1770,8 +2301,11 @@ int iscsi_target_register_configfs(void)
 	fabric->tf_ops.queue_data_in = &lio_queue_data_in;
 	fabric->tf_ops.queue_status = &lio_queue_status;
 	fabric->tf_ops.queue_tm_rsp = &lio_queue_tm_rsp;
+<<<<<<< HEAD
 	fabric->tf_ops.set_fabric_sense_len = &lio_set_fabric_sense_len;
 	fabric->tf_ops.get_fabric_sense_len = &lio_get_fabric_sense_len;
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Setup function pointers for generic logic in target_core_fabric_configfs.c
 	 */
@@ -1789,6 +2323,7 @@ int iscsi_target_register_configfs(void)
 	 * Setup default attribute lists for various fabric->tf_cit_tmpl
 	 * sturct config_item_type's
 	 */
+<<<<<<< HEAD
 	TF_CIT_TMPL(fabric)->tfc_discovery_cit.ct_attrs = lio_target_discovery_auth_attrs;
 	TF_CIT_TMPL(fabric)->tfc_wwn_cit.ct_attrs = lio_target_wwn_attrs;
 	TF_CIT_TMPL(fabric)->tfc_tpg_base_cit.ct_attrs = lio_target_tpg_attrs;
@@ -1799,6 +2334,19 @@ int iscsi_target_register_configfs(void)
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_attrib_cit.ct_attrs = lio_target_nacl_attrib_attrs;
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_auth_cit.ct_attrs = lio_target_nacl_auth_attrs;
 	TF_CIT_TMPL(fabric)->tfc_tpg_nacl_param_cit.ct_attrs = lio_target_nacl_param_attrs;
+=======
+	fabric->tf_cit_tmpl.tfc_discovery_cit.ct_attrs = lio_target_discovery_auth_attrs;
+	fabric->tf_cit_tmpl.tfc_wwn_cit.ct_attrs = lio_target_wwn_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_base_cit.ct_attrs = lio_target_tpg_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_attrib_cit.ct_attrs = lio_target_tpg_attrib_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_auth_cit.ct_attrs = lio_target_tpg_auth_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_param_cit.ct_attrs = lio_target_tpg_param_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_np_base_cit.ct_attrs = lio_target_portal_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_base_cit.ct_attrs = lio_target_initiator_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_attrib_cit.ct_attrs = lio_target_nacl_attrib_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_auth_cit.ct_attrs = lio_target_nacl_auth_attrs;
+	fabric->tf_cit_tmpl.tfc_tpg_nacl_param_cit.ct_attrs = lio_target_nacl_param_attrs;
+>>>>>>> refs/remotes/origin/master
 
 	ret = target_fabric_configfs_register(fabric);
 	if (ret < 0) {

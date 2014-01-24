@@ -67,6 +67,7 @@ struct kvm_pic {
 	struct kvm_kpic_state pics[2]; /* 0 is master pic, 1 is slave pic */
 	int output;		/* intr from master PIC */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct kvm_io_device dev;
 =======
 	struct kvm_io_device dev_master;
@@ -75,6 +76,13 @@ struct kvm_pic {
 >>>>>>> refs/remotes/origin/cm-10.0
 	void (*ack_notifier)(void *opaque, int irq);
 	unsigned long irq_states[16];
+=======
+	struct kvm_io_device dev_master;
+	struct kvm_io_device dev_slave;
+	struct kvm_io_device dev_eclr;
+	void (*ack_notifier)(void *opaque, int irq);
+	unsigned long irq_states[PIC_NUM_PINS];
+>>>>>>> refs/remotes/origin/master
 };
 
 struct kvm_pic *kvm_create_pic(struct kvm *kvm);

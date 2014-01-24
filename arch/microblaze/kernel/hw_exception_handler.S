@@ -75,6 +75,10 @@
 #include <asm/mmu.h>
 #include <asm/pgtable.h>
 #include <asm/signal.h>
+<<<<<<< HEAD
+=======
+#include <asm/registers.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 
 #undef DEBUG
@@ -192,8 +196,13 @@
  *      -                            W   S   REG   EXC
  *
  *
+<<<<<<< HEAD
  * STACK FRAME STRUCTURE (for NO_MMU)
  * ---------------------------------
+=======
+ * STACK FRAME STRUCTURE (for CONFIG_MMU=n)
+ * ----------------------------------------
+>>>>>>> refs/remotes/origin/master
  *
  *      +-------------+         + 0
  *      |     MSR     |
@@ -581,7 +590,11 @@ ex_handler_done:
 		 * tried to access a kernel or read-protected page - always
 		 * a SEGV). All other faults here must be stores, so no
 		 * need to check ESR_S as well. */
+<<<<<<< HEAD
 		andi	r4, r4, 0x800		/* ESR_Z - zone protection */
+=======
+		andi	r4, r4, ESR_DIZ		/* ESR_Z - zone protection */
+>>>>>>> refs/remotes/origin/master
 		bnei	r4, ex2
 
 		ori	r4, r0, swapper_pg_dir
@@ -595,13 +608,18 @@ ex_handler_done:
 		 * tried to access a kernel or read-protected page - always
 		 * a SEGV). All other faults here must be stores, so no
 		 * need to check ESR_S as well. */
+<<<<<<< HEAD
 		andi	r4, r4, 0x800		/* ESR_Z */
+=======
+		andi	r4, r4, ESR_DIZ		/* ESR_Z */
+>>>>>>> refs/remotes/origin/master
 		bnei	r4, ex2
 		/* get current task address */
 		addi	r4 ,CURRENT_TASK, TOPHYS(0);
 		lwi	r4, r4, TASK_THREAD+PGDIR
 	ex4:
 		tophys(r4,r4)
+<<<<<<< HEAD
 		BSRLI(r5,r3,20)		/* Create L1 (pgdir/pmd) address */
 		andi	r5, r5, 0xffc
 /* Assume pgdir aligned on 4K boundary, no need for "andi r4,r4,0xfffff003" */
@@ -614,6 +632,20 @@ ex_handler_done:
 		BSRLI(r6,r3,10)			/* Compute PTE address */
 		andi	r6, r6, 0xffc
 		andi	r5, r5, 0xfffff003
+=======
+		/* Create L1 (pgdir/pmd) address */
+		BSRLI(r5,r3, PGDIR_SHIFT - 2)
+		andi	r5, r5, PAGE_SIZE - 4
+/* Assume pgdir aligned on 4K boundary, no need for "andi r4,r4,0xfffff003" */
+		or	r4, r4, r5
+		lwi	r4, r4, 0		/* Get L1 entry */
+		andi	r5, r4, PAGE_MASK /* Extract L2 (pte) base address */
+		beqi	r5, ex2			/* Bail if no table */
+
+		tophys(r5,r5)
+		BSRLI(r6,r3,PTE_SHIFT) /* Compute PTE address */
+		andi	r6, r6, PAGE_SIZE - 4
+>>>>>>> refs/remotes/origin/master
 		or	r5, r5, r6
 		lwi	r4, r5, 0		/* Get Linux PTE */
 
@@ -632,7 +664,13 @@ ex_handler_done:
 		 * Many of these bits are software only. Bits we don't set
 		 * here we (properly should) assume have the appropriate value.
 		 */
+<<<<<<< HEAD
 		andni	r4, r4, 0x0ce2		/* Make sure 20, 21 are zero */
+=======
+/* Ignore memory coherent, just LSB on ZSEL is used + EX/WR */
+		andi	r4, r4, PAGE_MASK | TLB_EX | TLB_WR | \
+						TLB_ZSEL(1) | TLB_ATTR_MASK
+>>>>>>> refs/remotes/origin/master
 		ori	r4, r4, _PAGE_HWEXEC	/* make it executable */
 
 		/* find the TLB index that caused the fault. It has to be here*/
@@ -701,6 +739,7 @@ ex_handler_done:
 		lwi	r4, r4, TASK_THREAD+PGDIR
 	ex6:
 		tophys(r4,r4)
+<<<<<<< HEAD
 		BSRLI(r5,r3,20)		/* Create L1 (pgdir/pmd) address */
 		andi	r5, r5, 0xffc
 /* Assume pgdir aligned on 4K boundary, no need for "andi r4,r4,0xfffff003" */
@@ -713,6 +752,20 @@ ex_handler_done:
 		BSRLI(r6,r3,10)			/* Compute PTE address */
 		andi	r6, r6, 0xffc
 		andi	r5, r5, 0xfffff003
+=======
+		/* Create L1 (pgdir/pmd) address */
+		BSRLI(r5,r3, PGDIR_SHIFT - 2)
+		andi	r5, r5, PAGE_SIZE - 4
+/* Assume pgdir aligned on 4K boundary, no need for "andi r4,r4,0xfffff003" */
+		or	r4, r4, r5
+		lwi	r4, r4, 0		/* Get L1 entry */
+		andi	r5, r4, PAGE_MASK /* Extract L2 (pte) base address */
+		beqi	r5, ex7			/* Bail if no table */
+
+		tophys(r5,r5)
+		BSRLI(r6,r3,PTE_SHIFT) /* Compute PTE address */
+		andi	r6, r6, PAGE_SIZE - 4
+>>>>>>> refs/remotes/origin/master
 		or	r5, r5, r6
 		lwi	r4, r5, 0		/* Get Linux PTE */
 
@@ -731,7 +784,12 @@ ex_handler_done:
 		 * here we (properly should) assume have the appropriate value.
 		 */
 		brid	finish_tlb_load
+<<<<<<< HEAD
 		andni	r4, r4, 0x0ce2		/* Make sure 20, 21 are zero */
+=======
+		andi	r4, r4, PAGE_MASK | TLB_EX | TLB_WR | \
+						TLB_ZSEL(1) | TLB_ATTR_MASK
+>>>>>>> refs/remotes/origin/master
 	ex7:
 		/* The bailout. Restore registers to pre-exception conditions
 		 * and call the heavyweights to help us out.
@@ -771,6 +829,7 @@ ex_handler_done:
 		lwi	r4, r4, TASK_THREAD+PGDIR
 	ex9:
 		tophys(r4,r4)
+<<<<<<< HEAD
 		BSRLI(r5,r3,20)		/* Create L1 (pgdir/pmd) address */
 		andi	r5, r5, 0xffc
 /* Assume pgdir aligned on 4K boundary, no need for "andi r4,r4,0xfffff003" */
@@ -783,6 +842,20 @@ ex_handler_done:
 		BSRLI(r6,r3,10)			/* Compute PTE address */
 		andi	r6, r6, 0xffc
 		andi	r5, r5, 0xfffff003
+=======
+		/* Create L1 (pgdir/pmd) address */
+		BSRLI(r5,r3, PGDIR_SHIFT - 2)
+		andi	r5, r5, PAGE_SIZE - 4
+/* Assume pgdir aligned on 4K boundary, no need for "andi r4,r4,0xfffff003" */
+		or	r4, r4, r5
+		lwi	r4, r4, 0		/* Get L1 entry */
+		andi	r5, r4, PAGE_MASK /* Extract L2 (pte) base address */
+		beqi	r5, ex10		/* Bail if no table */
+
+		tophys(r5,r5)
+		BSRLI(r6,r3,PTE_SHIFT) /* Compute PTE address */
+		andi	r6, r6, PAGE_SIZE - 4
+>>>>>>> refs/remotes/origin/master
 		or	r5, r5, r6
 		lwi	r4, r5, 0		/* Get Linux PTE */
 
@@ -801,7 +874,12 @@ ex_handler_done:
 		 * here we (properly should) assume have the appropriate value.
 		 */
 		brid	finish_tlb_load
+<<<<<<< HEAD
 		andni	r4, r4, 0x0ce2		/* Make sure 20, 21 are zero */
+=======
+		andi	r4, r4, PAGE_MASK | TLB_EX | TLB_WR | \
+						TLB_ZSEL(1) | TLB_ATTR_MASK
+>>>>>>> refs/remotes/origin/master
 	ex10:
 		/* The bailout. Restore registers to pre-exception conditions
 		 * and call the heavyweights to help us out.
@@ -821,9 +899,12 @@ ex_handler_done:
  * A common place to load the TLB.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tlb_index:
 		.long	1 /* MS: storing last used tlb index */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 .section .data
 .align 4
 .global tlb_skip
@@ -833,7 +914,10 @@ ex_handler_done:
 		/* MS: storing last used tlb index */
 		.long	MICROBLAZE_TLB_SIZE/2
 .previous
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	finish_tlb_load:
 		/* MS: load the last used TLB index. */
 		lwi	r5, r0, TOPHYS(tlb_index)
@@ -841,18 +925,24 @@ ex_handler_done:
 
 /* MS: FIXME this is potential fault, because this is mask not count */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		andi	r5, r5, (MICROBLAZE_TLB_SIZE-1)
 		ori	r6, r0, 1
 		cmp	r31, r5, r6
 		blti	r31, ex12
 		addik	r5, r6, 1
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		andi	r5, r5, MICROBLAZE_TLB_SIZE - 1
 		ori	r6, r0, 1
 		cmp	r31, r5, r6
 		blti	r31, ex12
 		lwi	r5, r0, TOPHYS(tlb_skip)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ex12:
 		/* MS: save back current TLB index */
 		swi	r5, r0, TOPHYS(tlb_index)
@@ -867,8 +957,19 @@ ex_handler_done:
 		 * set of bits. These are size, valid, E, U0, and ensure
 		 * bits 20 and 21 are zero.
 		 */
+<<<<<<< HEAD
 		andi	r3, r3, 0xfffff000
 		ori	r3, r3, 0x0c0
+=======
+		andi	r3, r3, PAGE_MASK
+#ifdef CONFIG_MICROBLAZE_64K_PAGES
+		ori	r3, r3, TLB_VALID | TLB_PAGESZ(PAGESZ_64K)
+#elif CONFIG_MICROBLAZE_16K_PAGES
+		ori	r3, r3, TLB_VALID | TLB_PAGESZ(PAGESZ_16K)
+#else
+		ori	r3, r3, TLB_VALID | TLB_PAGESZ(PAGESZ_4K)
+#endif
+>>>>>>> refs/remotes/origin/master
 		mts	rtlbhi,	r3		/* Load TLB HI */
 		nop
 
@@ -1134,6 +1235,7 @@ lw_r11_vm:	R3_TO_LWREG_VM_V	(11);
 lw_r12_vm:	R3_TO_LWREG_VM_V	(12);
 lw_r13_vm:	R3_TO_LWREG_VM_V	(13);
 <<<<<<< HEAD
+<<<<<<< HEAD
 lw_r14_vm:	R3_TO_LWREG_VM		(14);
 lw_r15_vm:	R3_TO_LWREG_VM_V	(15);
 lw_r16_vm:	R3_TO_LWREG_VM		(16);
@@ -1152,6 +1254,8 @@ lw_r28_vm:	R3_TO_LWREG_VM		(28);
 lw_r29_vm:	R3_TO_LWREG_VM		(29);
 lw_r30_vm:	R3_TO_LWREG_VM		(30);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 lw_r14_vm:	R3_TO_LWREG_VM_V	(14);
 lw_r15_vm:	R3_TO_LWREG_VM_V	(15);
 lw_r16_vm:	R3_TO_LWREG_VM_V	(16);
@@ -1169,7 +1273,10 @@ lw_r27_vm:	R3_TO_LWREG_VM_V	(27);
 lw_r28_vm:	R3_TO_LWREG_VM_V	(28);
 lw_r29_vm:	R3_TO_LWREG_VM_V	(29);
 lw_r30_vm:	R3_TO_LWREG_VM_V	(30);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 lw_r31_vm:	R3_TO_LWREG_VM_V	(31);
 
 sw_table_vm:
@@ -1187,6 +1294,7 @@ sw_r10_vm:	SWREG_TO_R3_VM_V	(10);
 sw_r11_vm:	SWREG_TO_R3_VM_V	(11);
 sw_r12_vm:	SWREG_TO_R3_VM_V	(12);
 sw_r13_vm:	SWREG_TO_R3_VM_V	(13);
+<<<<<<< HEAD
 <<<<<<< HEAD
 sw_r14_vm:	SWREG_TO_R3_VM		(14);
 sw_r15_vm:	SWREG_TO_R3_VM_V	(15);
@@ -1206,6 +1314,8 @@ sw_r28_vm:	SWREG_TO_R3_VM		(28);
 sw_r29_vm:	SWREG_TO_R3_VM		(29);
 sw_r30_vm:	SWREG_TO_R3_VM		(30);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sw_r14_vm:	SWREG_TO_R3_VM_V	(14);
 sw_r15_vm:	SWREG_TO_R3_VM_V	(15);
 sw_r16_vm:	SWREG_TO_R3_VM_V	(16);
@@ -1223,7 +1333,10 @@ sw_r27_vm:	SWREG_TO_R3_VM_V	(27);
 sw_r28_vm:	SWREG_TO_R3_VM_V	(28);
 sw_r29_vm:	SWREG_TO_R3_VM_V	(29);
 sw_r30_vm:	SWREG_TO_R3_VM_V	(30);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 sw_r31_vm:	SWREG_TO_R3_VM_V	(31);
 #endif /* CONFIG_MMU */
 

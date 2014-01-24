@@ -1,7 +1,11 @@
 /*
  *   Machine check handler definitions
  *
+<<<<<<< HEAD
  *    Copyright IBM Corp. 2000,2009
+=======
+ *    Copyright IBM Corp. 2000, 2009
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Ingo Adlung <adlung@de.ibm.com>,
  *		 Martin Schwidefsky <schwidefsky@de.ibm.com>,
  *		 Cornelia Huck <cornelia.huck@de.ibm.com>,

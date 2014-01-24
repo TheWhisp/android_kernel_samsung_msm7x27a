@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef _ALCHEMY_GPIO_H_
 #define _ALCHEMY_GPIO_H_
 
@@ -8,6 +9,8 @@
 
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Alchemy GPIO support.
  *
@@ -92,6 +95,9 @@ static inline int __au_irq_to_gpio(unsigned int irq)
 
 
 #endif	/* CONFIG_GPIOLIB */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* _ALCHEMY_GPIO_H_ */

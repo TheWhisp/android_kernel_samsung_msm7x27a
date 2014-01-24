@@ -11,9 +11,15 @@
 #define __ASM_SH_SWITCH_TO_H
 
 #ifdef CONFIG_SUPERH32
+<<<<<<< HEAD
 # include "switch_to_32.h"
 #else
 # include "switch_to_64.h"
+=======
+# include <asm/switch_to_32.h>
+#else
+# include <asm/switch_to_64.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif /* __ASM_SH_SWITCH_TO_H */

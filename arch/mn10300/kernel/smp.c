@@ -25,12 +25,17 @@
 #include <linux/profile.h>
 #include <linux/smp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/tlbflush.h>
 #include <asm/system.h>
 =======
 #include <linux/cpu.h>
 #include <asm/tlbflush.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/cpu.h>
+#include <asm/tlbflush.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/bitops.h>
 #include <asm/processor.h>
 #include <asm/bug.h>
@@ -45,9 +50,12 @@
 
 #ifdef CONFIG_HOTPLUG_CPU
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/cpu.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cacheflush.h>
 
 static unsigned long sleep_mode[NR_CPUS];
@@ -139,10 +147,18 @@ static irqreturn_t smp_call_function_interrupt(int irq, void *dev_id);
 
 static struct irqaction reschedule_ipi = {
 	.handler	= smp_reschedule_interrupt,
+<<<<<<< HEAD
+=======
+	.flags		= IRQF_NOBALANCING,
+>>>>>>> refs/remotes/origin/master
 	.name		= "smp reschedule IPI"
 };
 static struct irqaction call_function_ipi = {
 	.handler	= smp_call_function_interrupt,
+<<<<<<< HEAD
+=======
+	.flags		= IRQF_NOBALANCING,
+>>>>>>> refs/remotes/origin/master
 	.name		= "smp call function IPI"
 };
 
@@ -150,7 +166,11 @@ static struct irqaction call_function_ipi = {
 static irqreturn_t smp_ipi_timer_interrupt(int irq, void *dev_id);
 static struct irqaction local_timer_ipi = {
 	.handler	= smp_ipi_timer_interrupt,
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED,
+=======
+	.flags		= IRQF_DISABLED | IRQF_NOBALANCING,
+>>>>>>> refs/remotes/origin/master
 	.name		= "smp local timer IPI"
 };
 #endif
@@ -189,6 +209,10 @@ static void init_ipi(void)
 
 #ifdef CONFIG_MN10300_CACHE_ENABLED
 	/* set up the cache flush IPI */
+<<<<<<< HEAD
+=======
+	irq_set_chip(FLUSH_CACHE_IPI, &mn10300_ipi_type);
+>>>>>>> refs/remotes/origin/master
 	flags = arch_local_cli_save();
 	__set_intr_stub(NUM2EXCEP_IRQ_LEVEL(FLUSH_CACHE_GxICR_LV),
 			mn10300_low_ipi_handler);
@@ -198,6 +222,10 @@ static void init_ipi(void)
 #endif
 
 	/* set up the NMI call function IPI */
+<<<<<<< HEAD
+=======
+	irq_set_chip(CALL_FUNCTION_NMI_IPI, &mn10300_ipi_type);
+>>>>>>> refs/remotes/origin/master
 	flags = arch_local_cli_save();
 	GxICR(CALL_FUNCTION_NMI_IPI) = GxICR_NMI | GxICR_ENABLE | GxICR_DETECT;
 	tmp16 = GxICR(CALL_FUNCTION_NMI_IPI);
@@ -208,6 +236,13 @@ static void init_ipi(void)
 	__set_intr_stub(NUM2EXCEP_IRQ_LEVEL(SMP_BOOT_GxICR_LV),
 			mn10300_low_ipi_handler);
 	arch_local_irq_restore(flags);
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_KERNEL_DEBUGGER
+	irq_set_chip(DEBUGGER_NMI_IPI, &mn10300_ipi_type);
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -676,7 +711,11 @@ int __init start_secondary(void *unused)
 #ifdef CONFIG_GENERIC_CLOCKEVENTS
 	init_clockevents();
 #endif
+<<<<<<< HEAD
 	cpu_idle();
+=======
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -884,6 +923,7 @@ static void __init smp_online(void)
 	cpu = smp_processor_id();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	local_irq_enable();
 
 	set_cpu_online(cpu, true);
@@ -897,6 +937,13 @@ static void __init smp_online(void)
 
 	local_irq_enable();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	notify_cpu_starting(cpu);
+
+	set_cpu_online(cpu, true);
+
+	local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -915,7 +962,11 @@ void __init smp_cpus_done(unsigned int max_cpus)
  * Set up the cpu_online_mask, cpu_callout_map and cpu_callin_map of the boot
  * processor (CPU 0).
  */
+<<<<<<< HEAD
 void __devinit smp_prepare_boot_cpu(void)
+=======
+void smp_prepare_boot_cpu(void)
+>>>>>>> refs/remotes/origin/master
 {
 	cpumask_set_cpu(0, &cpu_callout_map);
 	cpumask_set_cpu(0, &cpu_callin_map);
@@ -940,13 +991,20 @@ void initialize_secondary(void)
  * __cpu_up - Set smp_commenced_mask for the nominated CPU
  * @cpu: The target CPU.
  */
+<<<<<<< HEAD
 int __devinit __cpu_up(unsigned int cpu)
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+>>>>>>> refs/remotes/origin/master
 {
 	int timeout;
 
 #ifdef CONFIG_HOTPLUG_CPU
+<<<<<<< HEAD
 	if (num_online_cpus() == 1)
 		disable_hlt();
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sleep_mode[cpu])
 		run_wakeup_cpu(cpu);
 #endif /* CONFIG_HOTPLUG_CPU */
@@ -1013,9 +1071,12 @@ int __cpu_disable(void)
 void __cpu_die(unsigned int cpu)
 {
 	run_sleep_cpu(cpu);
+<<<<<<< HEAD
 
 	if (num_online_cpus() == 1)
 		enable_hlt();
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_MN10300_CACHE_ENABLED

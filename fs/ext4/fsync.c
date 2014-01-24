@@ -34,6 +34,7 @@
 
 #include <trace/events/ext4.h>
 
+<<<<<<< HEAD
 static void dump_completed_IO(struct inode * inode)
 {
 #ifdef	EXT4FS_DEBUG
@@ -136,6 +137,8 @@ int ext4_flush_completed_IO(struct inode *inode)
 	return (ret2 < 0) ? ret2 : 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * If we're not journaling and this is a just-created file, we have to
  * sync our parent directory (if it was freshly created) since
@@ -146,6 +149,7 @@ int ext4_flush_completed_IO(struct inode *inode)
  */
 static int ext4_sync_parent(struct inode *inode)
 {
+<<<<<<< HEAD
 	struct writeback_control wbc;
 	struct dentry *dentry = NULL;
 <<<<<<< HEAD
@@ -159,6 +163,9 @@ static int ext4_sync_parent(struct inode *inode)
 			break;
 		inode = dentry->d_parent->d_inode;
 =======
+=======
+	struct dentry *dentry = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct inode *next;
 	int ret = 0;
 
@@ -167,6 +174,7 @@ static int ext4_sync_parent(struct inode *inode)
 	inode = igrab(inode);
 	while (ext4_test_inode_state(inode, EXT4_STATE_NEWENTRY)) {
 		ext4_clear_inode_state(inode, EXT4_STATE_NEWENTRY);
+<<<<<<< HEAD
 		dentry = NULL;
 		spin_lock(&inode->i_lock);
 		if (!list_empty(&inode->i_dentry)) {
@@ -175,6 +183,9 @@ static int ext4_sync_parent(struct inode *inode)
 			dget(dentry);
 		}
 		spin_unlock(&inode->i_lock);
+=======
+		dentry = d_find_any_alias(inode);
+>>>>>>> refs/remotes/origin/master
 		if (!dentry)
 			break;
 		next = igrab(dentry->d_parent->d_inode);
@@ -183,6 +194,7 @@ static int ext4_sync_parent(struct inode *inode)
 			break;
 		iput(inode);
 		inode = next;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		ret = sync_mapping_buffers(inode->i_mapping);
 		if (ret)
@@ -196,10 +208,20 @@ static int ext4_sync_parent(struct inode *inode)
 	}
 <<<<<<< HEAD
 =======
+=======
+		ret = sync_mapping_buffers(inode->i_mapping);
+		if (ret)
+			break;
+		ret = sync_inode_metadata(inode, 1);
+		if (ret)
+			break;
+	}
+>>>>>>> refs/remotes/origin/master
 	iput(inode);
 	return ret;
 }
 
+<<<<<<< HEAD
 /**
  * __sync_file - generic_file_fsync without the locking and filemap_write
  * @inode:	inode to sync
@@ -227,6 +249,8 @@ static int __sync_inode(struct inode *inode, int datasync)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * akpm: A new design for ext4_sync_file().
  *
@@ -237,6 +261,7 @@ static int __sync_inode(struct inode *inode, int datasync)
  *
  * What we do is just kick off a commit and wait on it.  This will snapshot the
  * inode to disk.
+<<<<<<< HEAD
  *
  * i_mutex lock is held when entering and exiting this function
  */
@@ -246,11 +271,20 @@ int ext4_sync_file(struct file *file, int datasync)
 =======
 int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = file->f_mapping->host;
 	struct ext4_inode_info *ei = EXT4_I(inode);
 	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+<<<<<<< HEAD
 	int ret;
+=======
+	int ret = 0, err;
+>>>>>>> refs/remotes/origin/master
 	tid_t commit_tid;
 	bool needs_barrier = false;
 
@@ -258,6 +292,7 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 
 	trace_ext4_sync_file_enter(file, datasync);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (inode->i_sb->s_flags & MS_RDONLY)
 		return 0;
@@ -282,10 +317,29 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 		ret = __sync_inode(inode, datasync);
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (!ret && !list_empty(&inode->i_dentry))
+=======
+	if (inode->i_sb->s_flags & MS_RDONLY) {
+		/* Make sure that we read updated s_mount_flags value */
+		smp_rmb();
+		if (EXT4_SB(inode->i_sb)->s_mount_flags & EXT4_MF_FS_ABORTED)
+			ret = -EROFS;
+		goto out;
+	}
+
+	if (!journal) {
+		ret = generic_file_fsync(file, start, end, datasync);
+		if (!ret && !hlist_empty(&inode->i_dentry))
+>>>>>>> refs/remotes/origin/master
 			ret = ext4_sync_parent(inode);
 		goto out;
 	}
 
+<<<<<<< HEAD
+=======
+	ret = filemap_write_and_wait_range(inode->i_mapping, start, end);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * data=writeback,ordered:
 	 *  The caller's filemap_fdatawrite()/wait will sync the data.
@@ -309,6 +363,7 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 	if (journal->j_flags & JBD2_BARRIER &&
 	    !jbd2_trans_will_send_data_barrier(journal, commit_tid))
 		needs_barrier = true;
+<<<<<<< HEAD
 	jbd2_log_start_commit(journal, commit_tid);
 	ret = jbd2_log_wait_commit(journal, commit_tid);
 	if (needs_barrier)
@@ -318,6 +373,15 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
 =======
 	mutex_unlock(&inode->i_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = jbd2_complete_transaction(journal, commit_tid);
+	if (needs_barrier) {
+		err = blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL, NULL);
+		if (!ret)
+			ret = err;
+	}
+out:
+>>>>>>> refs/remotes/origin/master
 	trace_ext4_sync_file_exit(inode, ret);
 	return ret;
 }

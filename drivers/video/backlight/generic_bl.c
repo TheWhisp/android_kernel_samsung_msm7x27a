@@ -57,10 +57,14 @@ static int genericbl_get_intensity(struct backlight_device *bd)
  * If limit==0 clear any limit, otherwise limit the intensity
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void corgibl_limit_intensity(int limit)
 =======
 void genericbl_limit_intensity(int limit)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void genericbl_limit_intensity(int limit)
+>>>>>>> refs/remotes/origin/master
 {
 	struct backlight_device *bd = generic_backlight_device;
 
@@ -73,10 +77,14 @@ void genericbl_limit_intensity(int limit)
 	mutex_unlock(&bd->ops_lock);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(corgibl_limit_intensity);
 =======
 EXPORT_SYMBOL(genericbl_limit_intensity);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(genericbl_limit_intensity);
+>>>>>>> refs/remotes/origin/master
 
 static const struct backlight_ops genericbl_ops = {
 	.options = BL_CORE_SUSPENDRESUME,
@@ -87,7 +95,11 @@ static const struct backlight_ops genericbl_ops = {
 static int genericbl_probe(struct platform_device *pdev)
 {
 	struct backlight_properties props;
+<<<<<<< HEAD
 	struct generic_bl_info *machinfo = pdev->dev.platform_data;
+=======
+	struct generic_bl_info *machinfo = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	const char *name = "generic-bl";
 	struct backlight_device *bd;
 
@@ -101,10 +113,17 @@ static int genericbl_probe(struct platform_device *pdev)
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = machinfo->max_intensity;
+<<<<<<< HEAD
 	bd = backlight_device_register(name, &pdev->dev, NULL, &genericbl_ops,
 				       &props);
 	if (IS_ERR (bd))
 		return PTR_ERR (bd);
+=======
+	bd = devm_backlight_device_register(&pdev->dev, name, &pdev->dev,
+					NULL, &genericbl_ops, &props);
+	if (IS_ERR(bd))
+		return PTR_ERR(bd);
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, bd);
 
@@ -114,7 +133,11 @@ static int genericbl_probe(struct platform_device *pdev)
 
 	generic_backlight_device = bd;
 
+<<<<<<< HEAD
 	printk("Generic Backlight Driver Initialized.\n");
+=======
+	dev_info(&pdev->dev, "Generic Backlight Driver Initialized.\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -126,9 +149,13 @@ static int genericbl_remove(struct platform_device *pdev)
 	bd->props.brightness = 0;
 	backlight_update_status(bd);
 
+<<<<<<< HEAD
 	backlight_device_unregister(bd);
 
 	printk("Generic Backlight Driver Unloaded\n");
+=======
+	dev_info(&pdev->dev, "Generic Backlight Driver Unloaded\n");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -140,6 +167,7 @@ static struct platform_driver genericbl_driver = {
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init genericbl_init(void)
 {
@@ -156,6 +184,9 @@ module_exit(genericbl_exit);
 =======
 module_platform_driver(genericbl_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(genericbl_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Richard Purdie <rpurdie@rpsys.net>");
 MODULE_DESCRIPTION("Generic Backlight Driver");

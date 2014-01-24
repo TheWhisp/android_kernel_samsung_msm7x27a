@@ -84,14 +84,65 @@ static struct notifier_block libfcoe_notifier = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+/**
+ * fcoe_link_speed_update() - Update the supported and actual link speeds
+ * @lport: The local port to update speeds for
+ *
+ * Returns: 0 if the ethtool query was successful
+ *          -1 if the ethtool query failed
+ */
+int fcoe_link_speed_update(struct fc_lport *lport)
+{
+	struct net_device *netdev = fcoe_get_netdev(lport);
+	struct ethtool_cmd ecmd;
+
+	if (!__ethtool_get_settings(netdev, &ecmd)) {
+		lport->link_supported_speeds &=
+			~(FC_PORTSPEED_1GBIT | FC_PORTSPEED_10GBIT);
+		if (ecmd.supported & (SUPPORTED_1000baseT_Half |
+				      SUPPORTED_1000baseT_Full))
+			lport->link_supported_speeds |= FC_PORTSPEED_1GBIT;
+		if (ecmd.supported & SUPPORTED_10000baseT_Full)
+			lport->link_supported_speeds |=
+				FC_PORTSPEED_10GBIT;
+		switch (ethtool_cmd_speed(&ecmd)) {
+		case SPEED_1000:
+			lport->link_speed = FC_PORTSPEED_1GBIT;
+			break;
+		case SPEED_10000:
+			lport->link_speed = FC_PORTSPEED_10GBIT;
+			break;
+		}
+		return 0;
+	}
+	return -1;
+}
+EXPORT_SYMBOL_GPL(fcoe_link_speed_update);
+
+/**
+ * __fcoe_get_lesb() - Get the Link Error Status Block (LESB) for a given lport
+ * @lport: The local port to update speeds for
+ * @fc_lesb: Pointer to the LESB to be filled up
+ * @netdev: Pointer to the netdev that is associated with the lport
+ *
+ * Note, the Link Error Status Block (LESB) for FCoE is defined in FC-BB-6
+ * Clause 7.11 in v1.04.
+ */
+>>>>>>> refs/remotes/origin/master
 void __fcoe_get_lesb(struct fc_lport *lport,
 		     struct fc_els_lesb *fc_lesb,
 		     struct net_device *netdev)
 {
 	unsigned int cpu;
 	u32 lfc, vlfc, mdac;
+<<<<<<< HEAD
 	struct fcoe_dev_stats *devst;
+=======
+	struct fc_stats *stats;
+>>>>>>> refs/remotes/origin/master
 	struct fcoe_fc_els_lesb *lesb;
 	struct rtnl_link_stats64 temp;
 
@@ -101,10 +152,17 @@ void __fcoe_get_lesb(struct fc_lport *lport,
 	lesb = (struct fcoe_fc_els_lesb *)fc_lesb;
 	memset(lesb, 0, sizeof(*lesb));
 	for_each_possible_cpu(cpu) {
+<<<<<<< HEAD
 		devst = per_cpu_ptr(lport->dev_stats, cpu);
 		lfc += devst->LinkFailureCount;
 		vlfc += devst->VLinkFailureCount;
 		mdac += devst->MissDiscAdvCount;
+=======
+		stats = per_cpu_ptr(lport->stats, cpu);
+		lfc += stats->LinkFailureCount;
+		vlfc += stats->VLinkFailureCount;
+		mdac += stats->MissDiscAdvCount;
+>>>>>>> refs/remotes/origin/master
 	}
 	lesb->lesb_link_fail = htonl(lfc);
 	lesb->lesb_vlink_fail = htonl(vlfc);
@@ -114,6 +172,40 @@ void __fcoe_get_lesb(struct fc_lport *lport,
 }
 EXPORT_SYMBOL_GPL(__fcoe_get_lesb);
 
+<<<<<<< HEAD
+=======
+/**
+ * fcoe_get_lesb() - Fill the FCoE Link Error Status Block
+ * @lport: the local port
+ * @fc_lesb: the link error status block
+ */
+void fcoe_get_lesb(struct fc_lport *lport,
+			 struct fc_els_lesb *fc_lesb)
+{
+	struct net_device *netdev = fcoe_get_netdev(lport);
+
+	__fcoe_get_lesb(lport, fc_lesb, netdev);
+}
+EXPORT_SYMBOL_GPL(fcoe_get_lesb);
+
+/**
+ * fcoe_ctlr_get_lesb() - Get the Link Error Status Block (LESB) for a given
+ * fcoe controller device
+ * @ctlr_dev: The given fcoe controller device
+ *
+ */
+void fcoe_ctlr_get_lesb(struct fcoe_ctlr_device *ctlr_dev)
+{
+	struct fcoe_ctlr *fip = fcoe_ctlr_device_priv(ctlr_dev);
+	struct net_device *netdev = fcoe_get_netdev(fip->lp);
+	struct fc_els_lesb *fc_lesb;
+
+	fc_lesb = (struct fc_els_lesb *)(&ctlr_dev->lesb);
+	__fcoe_get_lesb(fip->lp, fc_lesb, netdev);
+}
+EXPORT_SYMBOL_GPL(fcoe_ctlr_get_lesb);
+
+>>>>>>> refs/remotes/origin/master
 void fcoe_wwn_to_str(u64 wwn, char *buf, int len)
 {
 	u8 wwpn[8];
@@ -186,7 +278,10 @@ int fcoe_get_wwn(struct net_device *netdev, u64 *wwn, int type)
 }
 EXPORT_SYMBOL_GPL(fcoe_get_wwn);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * fcoe_fc_crc() - Calculates the CRC for a given frame
  * @fp: The frame to be checksumed
@@ -210,6 +305,7 @@ u32 fcoe_fc_crc(struct fc_frame *fp)
 		frag = &skb_shinfo(skb)->frags[i];
 		off = frag->page_offset;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		len = frag->size;
 		while (len > 0) {
 			clen = min(len, PAGE_SIZE - (off & ~PAGE_MASK));
@@ -218,6 +314,8 @@ u32 fcoe_fc_crc(struct fc_frame *fp)
 			crc = crc32(crc, data + (off & ~PAGE_MASK), clen);
 			kunmap_atomic(data, KM_SKB_DATA_SOFTIRQ);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		len = skb_frag_size(frag);
 		while (len > 0) {
 			clen = min(len, PAGE_SIZE - (off & ~PAGE_MASK));
@@ -225,7 +323,10 @@ u32 fcoe_fc_crc(struct fc_frame *fp)
 				skb_frag_page(frag) + (off >> PAGE_SHIFT));
 			crc = crc32(crc, data + (off & ~PAGE_MASK), clen);
 			kunmap_atomic(data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			off += clen;
 			len -= clen;
 		}
@@ -515,7 +616,11 @@ static int __init fcoe_transport_init(void)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __exit fcoe_transport_exit(void)
+=======
+static int fcoe_transport_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fcoe_transport *ft;
 
@@ -628,6 +733,7 @@ static struct net_device *fcoe_if_to_netdev(const char *buffer)
 static int libfcoe_device_notification(struct notifier_block *notifier,
 				    ulong event, void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *netdev = ptr;
 
 	switch (event) {
@@ -639,12 +745,125 @@ static int libfcoe_device_notification(struct notifier_block *notifier,
 		LIBFCOE_TRANSPORT_DBG("NETDEV_UNREGISTER %s\n",
 				      netdev->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net_device *netdev = netdev_notifier_info_to_dev(ptr);
+
+	switch (event) {
+	case NETDEV_UNREGISTER:
+		LIBFCOE_TRANSPORT_DBG("NETDEV_UNREGISTER %s\n",
+				      netdev->name);
+>>>>>>> refs/remotes/origin/master
 		fcoe_del_netdev_mapping(netdev);
 		break;
 	}
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
+=======
+ssize_t fcoe_ctlr_create_store(struct bus_type *bus,
+			       const char *buf, size_t count)
+{
+	struct net_device *netdev = NULL;
+	struct fcoe_transport *ft = NULL;
+	int rc = 0;
+	int err;
+
+	mutex_lock(&ft_mutex);
+
+	netdev = fcoe_if_to_netdev(buf);
+	if (!netdev) {
+		LIBFCOE_TRANSPORT_DBG("Invalid device %s.\n", buf);
+		rc = -ENODEV;
+		goto out_nodev;
+	}
+
+	ft = fcoe_netdev_map_lookup(netdev);
+	if (ft) {
+		LIBFCOE_TRANSPORT_DBG("transport %s already has existing "
+				      "FCoE instance on %s.\n",
+				      ft->name, netdev->name);
+		rc = -EEXIST;
+		goto out_putdev;
+	}
+
+	ft = fcoe_transport_lookup(netdev);
+	if (!ft) {
+		LIBFCOE_TRANSPORT_DBG("no FCoE transport found for %s.\n",
+				      netdev->name);
+		rc = -ENODEV;
+		goto out_putdev;
+	}
+
+	/* pass to transport create */
+	err = ft->alloc ? ft->alloc(netdev) : -ENODEV;
+	if (err) {
+		fcoe_del_netdev_mapping(netdev);
+		rc = -ENOMEM;
+		goto out_putdev;
+	}
+
+	err = fcoe_add_netdev_mapping(netdev, ft);
+	if (err) {
+		LIBFCOE_TRANSPORT_DBG("failed to add new netdev mapping "
+				      "for FCoE transport %s for %s.\n",
+				      ft->name, netdev->name);
+		rc = -ENODEV;
+		goto out_putdev;
+	}
+
+	LIBFCOE_TRANSPORT_DBG("transport %s succeeded to create fcoe on %s.\n",
+			      ft->name, netdev->name);
+
+out_putdev:
+	dev_put(netdev);
+out_nodev:
+	mutex_unlock(&ft_mutex);
+	if (rc)
+		return rc;
+	return count;
+}
+
+ssize_t fcoe_ctlr_destroy_store(struct bus_type *bus,
+				const char *buf, size_t count)
+{
+	int rc = -ENODEV;
+	struct net_device *netdev = NULL;
+	struct fcoe_transport *ft = NULL;
+
+	mutex_lock(&ft_mutex);
+
+	netdev = fcoe_if_to_netdev(buf);
+	if (!netdev) {
+		LIBFCOE_TRANSPORT_DBG("invalid device %s.\n", buf);
+		goto out_nodev;
+	}
+
+	ft = fcoe_netdev_map_lookup(netdev);
+	if (!ft) {
+		LIBFCOE_TRANSPORT_DBG("no FCoE transport found for %s.\n",
+				      netdev->name);
+		goto out_putdev;
+	}
+
+	/* pass to transport destroy */
+	rc = ft->destroy(netdev);
+	if (rc)
+		goto out_putdev;
+
+	fcoe_del_netdev_mapping(netdev);
+	LIBFCOE_TRANSPORT_DBG("transport %s %s to destroy fcoe on %s.\n",
+			      ft->name, (rc) ? "failed" : "succeeded",
+			      netdev->name);
+	rc = count; /* required for successful return */
+out_putdev:
+	dev_put(netdev);
+out_nodev:
+	mutex_unlock(&ft_mutex);
+	return rc;
+}
+EXPORT_SYMBOL(fcoe_ctlr_destroy_store);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * fcoe_transport_create() - Create a fcoe interface
@@ -787,11 +1006,15 @@ out_putdev:
 	dev_put(netdev);
 out_nodev:
 	mutex_unlock(&ft_mutex);
+<<<<<<< HEAD
 
 	if (rc == -ERESTARTSYS)
 		return restart_syscall();
 	else
 		return rc;
+=======
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -833,9 +1056,23 @@ out_nodev:
  */
 static int __init libfcoe_init(void)
 {
+<<<<<<< HEAD
 	fcoe_transport_init();
 
 	return 0;
+=======
+	int rc = 0;
+
+	rc = fcoe_transport_init();
+	if (rc)
+		return rc;
+
+	rc = fcoe_sysfs_setup();
+	if (rc)
+		fcoe_transport_exit();
+
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 module_init(libfcoe_init);
 
@@ -844,6 +1081,10 @@ module_init(libfcoe_init);
  */
 static void __exit libfcoe_exit(void)
 {
+<<<<<<< HEAD
+=======
+	fcoe_sysfs_teardown();
+>>>>>>> refs/remotes/origin/master
 	fcoe_transport_exit();
 }
 module_exit(libfcoe_exit);

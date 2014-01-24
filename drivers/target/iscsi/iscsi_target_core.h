@@ -9,7 +9,11 @@
 #include <scsi/iscsi_proto.h>
 #include <target/target_core_base.h>
 
+<<<<<<< HEAD
 #define ISCSIT_VERSION			"v4.1.0-rc2"
+=======
+#define ISCSIT_VERSION			"v4.1.0"
+>>>>>>> refs/remotes/origin/master
 #define ISCSI_MAX_DATASN_MISSING_COUNT	16
 #define ISCSI_TX_THREAD_TCP_TIMEOUT	2
 #define ISCSI_RX_THREAD_TCP_TIMEOUT	2
@@ -17,6 +21,12 @@
 #define SECONDS_FOR_ASYNC_TEXT		10
 #define SECONDS_FOR_LOGOUT_COMP		15
 #define WHITE_SPACE			" \t\v\f\n\r"
+<<<<<<< HEAD
+=======
+#define ISCSIT_MIN_TAGS			16
+#define ISCSIT_EXTRA_TAGS		8
+#define ISCSIT_TCP_BACKLOG		256
+>>>>>>> refs/remotes/origin/master
 
 /* struct iscsi_node_attrib sanity values */
 #define NA_DATAOUT_TIMEOUT		3
@@ -34,9 +44,12 @@
 #define NA_RANDOM_DATAIN_PDU_OFFSETS	0
 #define NA_RANDOM_DATAIN_SEQ_OFFSETS	0
 #define NA_RANDOM_R2T_OFFSETS		0
+<<<<<<< HEAD
 #define NA_DEFAULT_ERL			0
 #define NA_DEFAULT_ERL_MAX		2
 #define NA_DEFAULT_ERL_MIN		0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* struct iscsi_tpg_attrib sanity values */
 #define TA_AUTHENTICATION		1
@@ -47,7 +60,11 @@
 #define TA_NETIF_TIMEOUT_MAX		15
 #define TA_NETIF_TIMEOUT_MIN		2
 #define TA_GENERATE_NODE_ACLS		0
+<<<<<<< HEAD
 #define TA_DEFAULT_CMDSN_DEPTH		16
+=======
+#define TA_DEFAULT_CMDSN_DEPTH		64
+>>>>>>> refs/remotes/origin/master
 #define TA_DEFAULT_CMDSN_DEPTH_MAX	512
 #define TA_DEFAULT_CMDSN_DEPTH_MIN	1
 #define TA_CACHE_DYNAMIC_ACLS		0
@@ -55,12 +72,21 @@
 #define TA_DEMO_MODE_WRITE_PROTECT	1
 /* Disabled by default in production mode w/ explict ACLs */
 #define TA_PROD_MODE_WRITE_PROTECT	0
+<<<<<<< HEAD
+=======
+#define TA_DEMO_MODE_DISCOVERY		1
+#define TA_DEFAULT_ERL			0
+>>>>>>> refs/remotes/origin/master
 #define TA_CACHE_CORE_NPS		0
 
 
 #define ISCSI_IOV_DATA_BUFFER		5
 
+<<<<<<< HEAD
 enum tpg_np_network_transport_table {
+=======
+enum iscsit_transport_type {
+>>>>>>> refs/remotes/origin/master
 	ISCSI_TCP				= 0,
 	ISCSI_SCTP_TCP				= 1,
 	ISCSI_SCTP_UDP				= 2,
@@ -132,7 +158,12 @@ enum cmd_flags_table {
 	ICF_CONTIG_MEMORY			= 0x00000020,
 	ICF_ATTACHED_TO_RQUEUE			= 0x00000040,
 	ICF_OOO_CMDSN				= 0x00000080,
+<<<<<<< HEAD
 	ICF_REJECT_FAIL_CONN			= 0x00000100,
+=======
+	IFC_SENDTARGETS_ALL			= 0x00000100,
+	IFC_SENDTARGETS_SINGLE			= 0x00000200,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* struct iscsi_cmd->i_state */
@@ -188,6 +219,10 @@ enum recover_cmdsn_ret_table {
 	CMDSN_NORMAL_OPERATION		= 0,
 	CMDSN_LOWER_THAN_EXP		= 1,
 	CMDSN_HIGHER_THAN_EXP		= 2,
+<<<<<<< HEAD
+=======
+	CMDSN_MAXCMDSN_OVERRUN		= 3,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Used for iscsi_handle_immediate_data() return values */
@@ -239,10 +274,22 @@ struct iscsi_conn_ops {
 	u8	HeaderDigest;			/* [0,1] == [None,CRC32C] */
 	u8	DataDigest;			/* [0,1] == [None,CRC32C] */
 	u32	MaxRecvDataSegmentLength;	/* [512..2**24-1] */
+<<<<<<< HEAD
+=======
+	u32	MaxXmitDataSegmentLength;	/* [512..2**24-1] */
+>>>>>>> refs/remotes/origin/master
 	u8	OFMarker;			/* [0,1] == [No,Yes] */
 	u8	IFMarker;			/* [0,1] == [No,Yes] */
 	u32	OFMarkInt;			/* [1..65535] */
 	u32	IFMarkInt;			/* [1..65535] */
+<<<<<<< HEAD
+=======
+	/*
+	 * iSER specific connection parameters
+	 */
+	u32	InitiatorRecvDataSegmentLength;	/* [512..2**24-1] */
+	u32	TargetRecvDataSegmentLength;	/* [512..2**24-1] */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iscsi_sess_ops {
@@ -264,6 +311,13 @@ struct iscsi_sess_ops {
 	u8	DataSequenceInOrder;		/* [0,1] == [No,Yes] */
 	u8	ErrorRecoveryLevel;		/* [0..2] */
 	u8	SessionType;			/* [0,1] == [Normal,Discovery]*/
+<<<<<<< HEAD
+=======
+	/*
+	 * iSER specific session parameters
+	 */
+	u8	RDMAExtensions;			/* [0,1] == [No,Yes] */
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iscsi_queue_req {
@@ -283,6 +337,10 @@ struct iscsi_data_count {
 };
 
 struct iscsi_param_list {
+<<<<<<< HEAD
+=======
+	bool			iser;
+>>>>>>> refs/remotes/origin/master
 	struct list_head	param_list;
 	struct list_head	extra_response_list;
 };
@@ -295,12 +353,19 @@ struct iscsi_datain_req {
 	u32			runlength;
 	u32			data_length;
 	u32			data_offset;
+<<<<<<< HEAD
 	u32			data_offset_end;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32			data_sn;
 	u32			next_burst_len;
 	u32			read_data_done;
 	u32			seq_send_order;
+<<<<<<< HEAD
 	struct list_head	dr_list;
+=======
+	struct list_head	cmd_datain_node;
+>>>>>>> refs/remotes/origin/master
 } ____cacheline_aligned;
 
 struct iscsi_ooo_cmdsn {
@@ -356,12 +421,21 @@ struct iscsi_cmd {
 	u8			maxcmdsn_inc;
 	/* Immediate Unsolicited Dataout */
 	u8			unsolicited_data;
+<<<<<<< HEAD
+=======
+	/* Reject reason code */
+	u8			reject_reason;
+>>>>>>> refs/remotes/origin/master
 	/* CID contained in logout PDU when opcode == ISCSI_INIT_LOGOUT_CMND */
 	u16			logout_cid;
 	/* Command flags */
 	enum cmd_flags_table	cmd_flags;
 	/* Initiator Task Tag assigned from Initiator */
+<<<<<<< HEAD
 	u32			init_task_tag;
+=======
+	itt_t			init_task_tag;
+>>>>>>> refs/remotes/origin/master
 	/* Target Transfer Tag assigned from Target */
 	u32			targ_xfer_tag;
 	/* CmdSN assigned from Initiator */
@@ -380,8 +454,11 @@ struct iscsi_cmd {
 	u32			buf_ptr_size;
 	/* Used to store DataDigest */
 	u32			data_crc;
+<<<<<<< HEAD
 	/* Total size in bytes associated with command */
 	u32			data_length;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Counter for MaxOutstandingR2T */
 	u32			outstanding_r2ts;
 	/* Next R2T Offset when DataSequenceInOrder=Yes */
@@ -419,6 +496,11 @@ struct iscsi_cmd {
 	u32			tx_size;
 	/* Buffer used for various purposes */
 	void			*buf_ptr;
+<<<<<<< HEAD
+=======
+	/* Used by SendTargets=[iqn.,eui.] discovery */
+	void			*text_in_ptr;
+>>>>>>> refs/remotes/origin/master
 	/* See include/linux/dma-mapping.h */
 	enum dma_data_direction	data_direction;
 	/* iSCSI PDU Header + CRC */
@@ -438,7 +520,10 @@ struct iscsi_cmd {
 	struct list_head	datain_list;
 	/* R2T List */
 	struct list_head	cmd_r2t_list;
+<<<<<<< HEAD
 	struct completion	reject_comp;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Timer for DataOUT */
 	struct timer_list	dataout_timer;
 	/* Iovecs for SCSI data payload RX/TX w/ kernel level sockets */
@@ -463,29 +548,45 @@ struct iscsi_cmd {
 	/* Session the command is part of,  used for connection recovery */
 	struct iscsi_session	*sess;
 	/* list_head for connection list */
+<<<<<<< HEAD
 	struct list_head	i_list;
+=======
+	struct list_head	i_conn_node;
+>>>>>>> refs/remotes/origin/master
 	/* The TCM I/O descriptor that is accessed via container_of() */
 	struct se_cmd		se_cmd;
 	/* Sense buffer that will be mapped into outgoing status */
 #define ISCSI_SENSE_BUFFER_LEN          (TRANSPORT_SENSE_BUFFER + 2)
 	unsigned char		sense_buffer[ISCSI_SENSE_BUFFER_LEN];
 
+<<<<<<< HEAD
 	struct scatterlist	*t_mem_sg;
 	u32			t_mem_sg_nents;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	u32			padding;
 	u8			pad_bytes[4];
 
 	struct scatterlist	*first_data_sg;
 	u32			first_data_sg_off;
 	u32			kmapped_nents;
+<<<<<<< HEAD
 
+=======
+	sense_reason_t		sense_reason;
+>>>>>>> refs/remotes/origin/master
 }  ____cacheline_aligned;
 
 struct iscsi_tmr_req {
 	bool			task_reassign:1;
+<<<<<<< HEAD
 	u32			ref_cmd_sn;
 	u32			exp_data_sn;
+=======
+	u32			exp_data_sn;
+	struct iscsi_cmd	*ref_cmd;
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_conn_recovery *conn_recovery;
 	struct se_tmr_req	*se_tmr_req;
 };
@@ -500,8 +601,11 @@ struct iscsi_conn {
 	u8			network_transport;
 	enum iscsi_timer_flags_table nopin_timer_flags;
 	enum iscsi_timer_flags_table nopin_response_timer_flags;
+<<<<<<< HEAD
 	u8			tx_immediate_queue;
 	u8			tx_response_queue;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Used to know what thread encountered a transport failure */
 	u8			which_thread;
 	/* connection id assigned by the Initiator */
@@ -510,10 +614,18 @@ struct iscsi_conn {
 	u16			login_port;
 	u16			local_port;
 	int			net_size;
+<<<<<<< HEAD
 	u32			auth_id;
 	u32			conn_flags;
 	/* Used for iscsi_tx_login_rsp() */
 	u32			login_itt;
+=======
+	int			login_family;
+	u32			auth_id;
+	u32			conn_flags;
+	/* Used for iscsi_tx_login_rsp() */
+	itt_t			login_itt;
+>>>>>>> refs/remotes/origin/master
 	u32			exp_statsn;
 	/* Per connection status sequence number */
 	u32			stat_sn;
@@ -523,8 +635,11 @@ struct iscsi_conn {
 	u32			of_marker;
 	/* Used for calculating OFMarker offset to next PDU */
 	u32			of_marker_offset;
+<<<<<<< HEAD
 	/* Complete Bad PDU for sending reject */
 	unsigned char		bad_hdr[ISCSI_HDR_LEN];
+=======
+>>>>>>> refs/remotes/origin/master
 #define IPV6_ADDRESS_SPACE				48
 	unsigned char		login_ip[IPV6_ADDRESS_SPACE];
 	unsigned char		local_ip[IPV6_ADDRESS_SPACE];
@@ -547,9 +662,25 @@ struct iscsi_conn {
 	struct completion	rx_half_close_comp;
 	/* socket used by this connection */
 	struct socket		*sock;
+<<<<<<< HEAD
 	struct timer_list	nopin_timer;
 	struct timer_list	nopin_response_timer;
 	struct timer_list	transport_timer;
+=======
+	void			(*orig_data_ready)(struct sock *, int);
+	void			(*orig_state_change)(struct sock *);
+#define LOGIN_FLAGS_READ_ACTIVE		1
+#define LOGIN_FLAGS_CLOSED		2
+#define LOGIN_FLAGS_READY		4
+	unsigned long		login_flags;
+	struct delayed_work	login_work;
+	struct delayed_work	login_cleanup_work;
+	struct iscsi_login	*login;
+	struct timer_list	nopin_timer;
+	struct timer_list	nopin_response_timer;
+	struct timer_list	transport_timer;
+	struct task_struct	*login_kworker;
+>>>>>>> refs/remotes/origin/master
 	/* Spinlock used for add/deleting cmd's from conn_cmd_list */
 	spinlock_t		cmd_lock;
 	spinlock_t		conn_usage_lock;
@@ -569,11 +700,23 @@ struct iscsi_conn {
 	struct list_head	immed_queue_list;
 	struct list_head	response_queue_list;
 	struct iscsi_conn_ops	*conn_ops;
+<<<<<<< HEAD
 	struct iscsi_param_list	*param_list;
 	/* Used for per connection auth state machine */
 	void			*auth_protocol;
 	struct iscsi_login_thread_s *login_thread;
 	struct iscsi_portal_group *tpg;
+=======
+	struct iscsi_login	*conn_login;
+	struct iscsit_transport *conn_transport;
+	struct iscsi_param_list	*param_list;
+	/* Used for per connection auth state machine */
+	void			*auth_protocol;
+	void			*context;
+	struct iscsi_login_thread_s *login_thread;
+	struct iscsi_portal_group *tpg;
+	struct iscsi_tpg_np	*tpg_np;
+>>>>>>> refs/remotes/origin/master
 	/* Pointer to parent session */
 	struct iscsi_session	*sess;
 	/* Pointer to thread_set in use for this conn's threads */
@@ -586,6 +729,10 @@ struct iscsi_conn_recovery {
 	u16			cid;
 	u32			cmd_count;
 	u32			maxrecvdatasegmentlength;
+<<<<<<< HEAD
+=======
+	u32			maxxmitdatasegmentlength;
+>>>>>>> refs/remotes/origin/master
 	int			ready_for_reallegiance;
 	struct list_head	conn_recovery_cmd_list;
 	spinlock_t		conn_recovery_cmd_lock;
@@ -605,7 +752,11 @@ struct iscsi_session {
 	/* state session is currently in */
 	u32			session_state;
 	/* session wide counter: initiator assigned task tag */
+<<<<<<< HEAD
 	u32			init_task_tag;
+=======
+	itt_t			init_task_tag;
+>>>>>>> refs/remotes/origin/master
 	/* session wide counter: target assigned task tag */
 	u32			targ_xfer_tag;
 	u32			cmdsn_window;
@@ -626,6 +777,7 @@ struct iscsi_session {
 	/* Used for session reference counting */
 	int			session_usage_count;
 	int			session_waiting_on_uc;
+<<<<<<< HEAD
 	u32			cmd_pdus;
 	u32			rsp_pdus;
 	u64			tx_data_octets;
@@ -634,6 +786,15 @@ struct iscsi_session {
 	u32			conn_timeout_errors;
 	u64			creation_time;
 	spinlock_t		session_stats_lock;
+=======
+	atomic_long_t		cmd_pdus;
+	atomic_long_t		rsp_pdus;
+	atomic_long_t		tx_data_octets;
+	atomic_long_t		rx_data_octets;
+	atomic_long_t		conn_digest_errors;
+	atomic_long_t		conn_timeout_errors;
+	u64			creation_time;
+>>>>>>> refs/remotes/origin/master
 	/* Number of active connections */
 	atomic_t		nconn;
 	atomic_t		session_continuation;
@@ -669,17 +830,35 @@ struct iscsi_login {
 	u8 first_request;
 	u8 version_min;
 	u8 version_max;
+<<<<<<< HEAD
 	char isid[6];
 	u32 cmd_sn;
 	u32 init_task_tag;
+=======
+	u8 login_complete;
+	u8 login_failed;
+	bool zero_tsih;
+	char isid[6];
+	u32 cmd_sn;
+	itt_t init_task_tag;
+>>>>>>> refs/remotes/origin/master
 	u32 initial_exp_statsn;
 	u32 rsp_length;
 	u16 cid;
 	u16 tsih;
+<<<<<<< HEAD
 	char *req;
 	char *rsp;
 	char *req_buf;
 	char *rsp_buf;
+=======
+	char req[ISCSI_HDR_LEN];
+	char rsp[ISCSI_HDR_LEN];
+	char *req_buf;
+	char *rsp_buf;
+	struct iscsi_conn *conn;
+	struct iscsi_np *np;
+>>>>>>> refs/remotes/origin/master
 } ____cacheline_aligned;
 
 struct iscsi_node_attrib {
@@ -726,11 +905,14 @@ struct iscsi_node_acl {
 	struct se_node_acl	se_node_acl;
 };
 
+<<<<<<< HEAD
 #define NODE_STAT_GRPS(nacl)	(&(nacl)->node_stat_grps)
 
 #define ISCSI_NODE_ATTRIB(t)	(&(t)->node_attrib)
 #define ISCSI_NODE_AUTH(t)	(&(t)->node_auth)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct iscsi_tpg_attrib {
 	u32			authentication;
 	u32			login_timeout;
@@ -740,6 +922,11 @@ struct iscsi_tpg_attrib {
 	u32			default_cmdsn_depth;
 	u32			demo_mode_write_protect;
 	u32			prod_mode_write_protect;
+<<<<<<< HEAD
+=======
+	u32			demo_mode_discovery;
+	u32			default_erl;
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_portal_group *tpg;
 };
 
@@ -759,7 +946,12 @@ struct iscsi_np {
 	struct __kernel_sockaddr_storage np_sockaddr;
 	struct task_struct	*np_thread;
 	struct timer_list	np_login_timer;
+<<<<<<< HEAD
 	struct iscsi_portal_group *np_login_tpg;
+=======
+	void			*np_context;
+	struct iscsit_transport *np_transport;
+>>>>>>> refs/remotes/origin/master
 	struct list_head	np_list;
 } ____cacheline_aligned;
 
@@ -772,6 +964,11 @@ struct iscsi_tpg_np {
 	struct list_head	tpg_np_parent_list;
 	struct se_tpg_np	se_tpg_np;
 	spinlock_t		tpg_np_parent_lock;
+<<<<<<< HEAD
+=======
+	struct completion	tpg_np_comp;
+	struct kref		tpg_np_kref;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct iscsi_portal_group {
@@ -793,8 +990,14 @@ struct iscsi_portal_group {
 	spinlock_t		tpg_state_lock;
 	struct se_portal_group tpg_se_tpg;
 	struct mutex		tpg_access_lock;
+<<<<<<< HEAD
 	struct mutex		np_login_lock;
 	struct iscsi_tpg_attrib	tpg_attrib;
+=======
+	struct semaphore	np_login_sem;
+	struct iscsi_tpg_attrib	tpg_attrib;
+	struct iscsi_node_auth	tpg_demo_auth;
+>>>>>>> refs/remotes/origin/master
 	/* Pointer to default list of iSCSI parameters for TPG */
 	struct iscsi_param_list	*param_list;
 	struct iscsi_tiqn	*tpg_tiqn;
@@ -802,12 +1005,15 @@ struct iscsi_portal_group {
 	struct list_head	tpg_list;
 } ____cacheline_aligned;
 
+<<<<<<< HEAD
 #define ISCSI_TPG_C(c)		((struct iscsi_portal_group *)(c)->tpg)
 #define ISCSI_TPG_LUN(c, l)  ((iscsi_tpg_list_t *)(c)->tpg->tpg_lun_list_t[l])
 #define ISCSI_TPG_S(s)		((struct iscsi_portal_group *)(s)->tpg)
 #define ISCSI_TPG_ATTRIB(t)	(&(t)->tpg_attrib)
 #define SE_TPG(tpg)		(&(tpg)->tpg_se_tpg)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct iscsi_wwn_stat_grps {
 	struct config_group	iscsi_stat_group;
 	struct config_group	iscsi_instance_group;
@@ -838,8 +1044,11 @@ struct iscsi_tiqn {
 	struct iscsi_logout_stats    logout_stats;
 } ____cacheline_aligned;
 
+<<<<<<< HEAD
 #define WWN_STAT_GRPS(tiqn)	(&(tiqn)->tiqn_stat_grps)
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct iscsit_global {
 	/* In core shutdown */
 	u32			in_shutdown;

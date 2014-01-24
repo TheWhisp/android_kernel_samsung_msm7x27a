@@ -36,6 +36,7 @@
 #define PCI_DEVICE_DATA(__ops)	.driver_data = (kernel_ulong_t)(__ops)
 
 /*
+<<<<<<< HEAD
  * Register access.
  */
 static inline void rt2x00pci_register_read(struct rt2x00_dev *rt2x00dev,
@@ -124,6 +125,8 @@ int rt2x00pci_initialize(struct rt2x00_dev *rt2x00dev);
 void rt2x00pci_uninitialize(struct rt2x00_dev *rt2x00dev);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * PCI driver handlers.
  */
 int rt2x00pci_probe(struct pci_dev *pci_dev, const struct rt2x00_ops *ops);

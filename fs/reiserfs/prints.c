@@ -5,10 +5,14 @@
 #include <linux/time.h>
 #include <linux/fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 =======
 #include "reiserfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/buffer_head.h>
 
@@ -334,10 +338,14 @@ void reiserfs_debug(struct super_block *s, int level, const char *fmt, ...)
     pointless complexity):
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     panics in reiserfs_fs.h have numbers from 1000 to 1999
 =======
     panics in reiserfs.h have numbers from 1000 to 1999
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    panics in reiserfs.h have numbers from 1000 to 1999
+>>>>>>> refs/remotes/origin/master
     super.c				        2000 to 2999
     preserve.c (unused)			    3000 to 3999
     bitmap.c				    4000 to 4999
@@ -366,12 +374,22 @@ void __reiserfs_panic(struct super_block *sb, const char *id,
 	dump_stack();
 #endif
 	if (sb)
+<<<<<<< HEAD
 		panic(KERN_WARNING "REISERFS panic (device %s): %s%s%s: %s\n",
 		      sb->s_id, id ? id : "", id ? " " : "",
 		      function, error_buf);
 	else
 		panic(KERN_WARNING "REISERFS panic: %s%s%s: %s\n",
 		      id ? id : "", id ? " " : "", function, error_buf);
+=======
+		printk(KERN_WARNING "REISERFS panic (device %s): %s%s%s: %s\n",
+		      sb->s_id, id ? id : "", id ? " " : "",
+		      function, error_buf);
+	else
+		printk(KERN_WARNING "REISERFS panic: %s%s%s: %s\n",
+		      id ? id : "", id ? " " : "", function, error_buf);
+	BUG();
+>>>>>>> refs/remotes/origin/master
 }
 
 void __reiserfs_error(struct super_block *sb, const char *id,

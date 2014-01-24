@@ -11,10 +11,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
@@ -313,12 +318,17 @@ static void jffs2_calc_trigger_levels(struct jffs2_sb_info *c)
 	c->nospc_dirty_size = c->sector_size + (c->flash_size / 100);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dbg_fsbuild("JFFS2 trigger levels (size %d KiB, block size %d KiB, %d blocks)\n",
 		  c->flash_size / 1024, c->sector_size / 1024, c->nr_blocks);
 =======
 	dbg_fsbuild("trigger levels (size %d KiB, block size %d KiB, %d blocks)\n",
 		    c->flash_size / 1024, c->sector_size / 1024, c->nr_blocks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dbg_fsbuild("trigger levels (size %d KiB, block size %d KiB, %d blocks)\n",
+		    c->flash_size / 1024, c->sector_size / 1024, c->nr_blocks);
+>>>>>>> refs/remotes/origin/master
 	dbg_fsbuild("Blocks required to allow deletion:    %d (%d KiB)\n",
 		  c->resv_blocks_deletion, c->resv_blocks_deletion*c->sector_size/1024);
 	dbg_fsbuild("Blocks required to allow writes:      %d (%d KiB)\n",

@@ -25,12 +25,18 @@ struct dccp6_sock {
 
 struct dccp6_request_sock {
 	struct dccp_request_sock  dccp;
+<<<<<<< HEAD
 	struct inet6_request_sock inet6;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 struct dccp6_timewait_sock {
 	struct inet_timewait_sock   inet;
+<<<<<<< HEAD
 	struct inet6_timewait_sock  tw6;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* _DCCP_IPV6_H */

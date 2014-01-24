@@ -78,7 +78,13 @@ int il4965_hw_txq_attach_buf_to_tfd(struct il_priv *il, struct il_tx_queue *txq,
 int il4965_hw_tx_queue_init(struct il_priv *il, struct il_tx_queue *txq);
 void il4965_hwrate_to_tx_control(struct il_priv *il, u32 rate_n_flags,
 				 struct ieee80211_tx_info *info);
+<<<<<<< HEAD
 int il4965_tx_skb(struct il_priv *il, struct sk_buff *skb);
+=======
+int il4965_tx_skb(struct il_priv *il,
+		  struct ieee80211_sta *sta,
+		  struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 int il4965_tx_agg_start(struct il_priv *il, struct ieee80211_vif *vif,
 			struct ieee80211_sta *sta, u16 tid, u16 * ssn);
 int il4965_tx_agg_stop(struct il_priv *il, struct ieee80211_vif *vif,
@@ -163,7 +169,13 @@ void il4965_eeprom_release_semaphore(struct il_priv *il);
 int il4965_eeprom_check_version(struct il_priv *il);
 
 /* mac80211 handlers (for 4965) */
+<<<<<<< HEAD
 void il4965_mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb);
+=======
+void il4965_mac_tx(struct ieee80211_hw *hw,
+		   struct ieee80211_tx_control *control,
+		   struct sk_buff *skb);
+>>>>>>> refs/remotes/origin/master
 int il4965_mac_start(struct ieee80211_hw *hw);
 void il4965_mac_stop(struct ieee80211_hw *hw);
 void il4965_configure_filter(struct ieee80211_hw *hw,
@@ -268,7 +280,11 @@ il4965_hw_valid_rtc_data_addr(u32 addr)
 	((t) < IL_TX_POWER_TEMPERATURE_MIN || \
 	 (t) > IL_TX_POWER_TEMPERATURE_MAX)
 
+<<<<<<< HEAD
 extern void il4965_temperature_calib(struct il_priv *il);
+=======
+void il4965_temperature_calib(struct il_priv *il);
+>>>>>>> refs/remotes/origin/master
 /********************* END TEMPERATURE ***************************************/
 
 /********************* START TXPOWER *****************************************/
@@ -913,10 +929,13 @@ struct il4965_scd_bc_tbl {
 /* PCI registers */
 #define PCI_CFG_RETRY_TIMEOUT	0x041
 
+<<<<<<< HEAD
 /* PCI register values */
 #define PCI_CFG_LINK_CTRL_VAL_L0S_EN	0x01
 #define PCI_CFG_LINK_CTRL_VAL_L1_EN	0x02
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define IL4965_DEFAULT_TX_RETRY  15
 
 /* EEPROM */

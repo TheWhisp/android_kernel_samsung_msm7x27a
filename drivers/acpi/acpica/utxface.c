@@ -1,15 +1,23 @@
 /******************************************************************************
  *
+<<<<<<< HEAD
  * Module Name: utxface - External interfaces for "global" ACPI functions
+=======
+ * Module Name: utxface - External interfaces, miscellaneous utility functions
+>>>>>>> refs/remotes/origin/master
  *
  *****************************************************************************/
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,6 +54,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -59,10 +68,18 @@
 =======
 #include "acinterp.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXPORT_ACPI_INTERFACES
+
+#include <acpi/acpi.h>
+#include "accommon.h"
+#include "acdebug.h"
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT          ACPI_UTILITIES
 ACPI_MODULE_NAME("utxface")
 
+<<<<<<< HEAD
 #ifndef ACPI_ASL_COMPILER
 /*******************************************************************************
  *
@@ -341,6 +358,8 @@ acpi_status acpi_initialize_objects(u32 flags)
 ACPI_EXPORT_SYMBOL(acpi_initialize_objects)
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *
  * FUNCTION:    acpi_terminate
@@ -352,7 +371,11 @@ ACPI_EXPORT_SYMBOL(acpi_initialize_objects)
  * DESCRIPTION: Shutdown the ACPICA subsystem and release all resources.
  *
  ******************************************************************************/
+<<<<<<< HEAD
 acpi_status acpi_terminate(void)
+=======
+acpi_status __init acpi_terminate(void)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 
@@ -396,7 +419,11 @@ acpi_status acpi_terminate(void)
 	return_ACPI_STATUS(status);
 }
 
+<<<<<<< HEAD
 ACPI_EXPORT_SYMBOL(acpi_terminate)
+=======
+ACPI_EXPORT_SYMBOL_INIT(acpi_terminate)
+>>>>>>> refs/remotes/origin/master
 
 #ifndef ACPI_ASL_COMPILER
 #ifdef ACPI_FUTURE_USAGE
@@ -432,10 +459,17 @@ ACPI_EXPORT_SYMBOL(acpi_subsystem_status)
  * PARAMETERS:  out_buffer      - A buffer to receive the resources for the
  *                                device
  *
+<<<<<<< HEAD
  * RETURN:      Status          - the status of the call
  *
  * DESCRIPTION: This function is called to get information about the current
  *              state of the ACPI subsystem.  It will return system information
+=======
+ * RETURN:      status          - the status of the call
+ *
+ * DESCRIPTION: This function is called to get information about the current
+ *              state of the ACPI subsystem. It will return system information
+>>>>>>> refs/remotes/origin/master
  *              in the out_buffer.
  *
  *              If the function fails an appropriate status will be returned
@@ -499,12 +533,58 @@ acpi_status acpi_get_system_info(struct acpi_buffer * out_buffer)
 
 ACPI_EXPORT_SYMBOL(acpi_get_system_info)
 
+<<<<<<< HEAD
+=======
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_get_statistics
+ *
+ * PARAMETERS:  stats           - Where the statistics are returned
+ *
+ * RETURN:      status          - the status of the call
+ *
+ * DESCRIPTION: Get the contents of the various system counters
+ *
+ ******************************************************************************/
+acpi_status acpi_get_statistics(struct acpi_statistics *stats)
+{
+	ACPI_FUNCTION_TRACE(acpi_get_statistics);
+
+	/* Parameter validation */
+
+	if (!stats) {
+		return_ACPI_STATUS(AE_BAD_PARAMETER);
+	}
+
+	/* Various interrupt-based event counters */
+
+	stats->sci_count = acpi_sci_count;
+	stats->gpe_count = acpi_gpe_count;
+
+	ACPI_MEMCPY(stats->fixed_event_count, acpi_fixed_event_count,
+		    sizeof(acpi_fixed_event_count));
+
+	/* Other counters */
+
+	stats->method_count = acpi_method_count;
+
+	return_ACPI_STATUS(AE_OK);
+}
+
+ACPI_EXPORT_SYMBOL(acpi_get_statistics)
+
+>>>>>>> refs/remotes/origin/master
 /*****************************************************************************
  *
  * FUNCTION:    acpi_install_initialization_handler
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handler             - Callback procedure
  *              Function            - Not (currently) used, see below
+=======
+ * PARAMETERS:  handler             - Callback procedure
+ *              function            - Not (currently) used, see below
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -526,7 +606,11 @@ acpi_install_initialization_handler(acpi_init_handler handler, u32 function)
 	}
 
 	acpi_gbl_init_handler = handler;
+<<<<<<< HEAD
 	return AE_OK;
+=======
+	return (AE_OK);
+>>>>>>> refs/remotes/origin/master
 }
 
 ACPI_EXPORT_SYMBOL(acpi_install_initialization_handler)
@@ -551,6 +635,10 @@ acpi_status acpi_purge_cached_objects(void)
 	(void)acpi_os_purge_cache(acpi_gbl_operand_cache);
 	(void)acpi_os_purge_cache(acpi_gbl_ps_node_cache);
 	(void)acpi_os_purge_cache(acpi_gbl_ps_node_ext_cache);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(AE_OK);
 }
 
@@ -578,7 +666,14 @@ acpi_status acpi_install_interface(acpi_string interface_name)
 		return (AE_BAD_PARAMETER);
 	}
 
+<<<<<<< HEAD
 	(void)acpi_os_acquire_mutex(acpi_gbl_osi_mutex, ACPI_WAIT_FOREVER);
+=======
+	status = acpi_os_acquire_mutex(acpi_gbl_osi_mutex, ACPI_WAIT_FOREVER);
+	if (ACPI_FAILURE(status)) {
+		return (status);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Check if the interface name is already in the global list */
 
@@ -627,7 +722,14 @@ acpi_status acpi_remove_interface(acpi_string interface_name)
 		return (AE_BAD_PARAMETER);
 	}
 
+<<<<<<< HEAD
 	(void)acpi_os_acquire_mutex(acpi_gbl_osi_mutex, ACPI_WAIT_FOREVER);
+=======
+	status = acpi_os_acquire_mutex(acpi_gbl_osi_mutex, ACPI_WAIT_FOREVER);
+	if (ACPI_FAILURE(status)) {
+		return (status);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	status = acpi_ut_remove_interface(interface_name);
 
@@ -641,7 +743,11 @@ ACPI_EXPORT_SYMBOL(acpi_remove_interface)
  *
  * FUNCTION:    acpi_install_interface_handler
  *
+<<<<<<< HEAD
  * PARAMETERS:  Handler             - The _OSI interface handler to install
+=======
+ * PARAMETERS:  handler             - The _OSI interface handler to install
+>>>>>>> refs/remotes/origin/master
  *                                    NULL means "remove existing handler"
  *
  * RETURN:      Status
@@ -653,9 +759,18 @@ ACPI_EXPORT_SYMBOL(acpi_remove_interface)
  ****************************************************************************/
 acpi_status acpi_install_interface_handler(acpi_interface_handler handler)
 {
+<<<<<<< HEAD
 	acpi_status status = AE_OK;
 
 	(void)acpi_os_acquire_mutex(acpi_gbl_osi_mutex, ACPI_WAIT_FOREVER);
+=======
+	acpi_status status;
+
+	status = acpi_os_acquire_mutex(acpi_gbl_osi_mutex, ACPI_WAIT_FOREVER);
+	if (ACPI_FAILURE(status)) {
+		return (status);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (handler && acpi_gbl_interface_handler) {
 		status = AE_ALREADY_EXISTS;
@@ -669,16 +784,53 @@ acpi_status acpi_install_interface_handler(acpi_interface_handler handler)
 
 ACPI_EXPORT_SYMBOL(acpi_install_interface_handler)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+/*****************************************************************************
+ *
+ * FUNCTION:    acpi_update_interfaces
+ *
+ * PARAMETERS:  action              - Actions to be performed during the
+ *                                    update
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Update _OSI interface strings, disabling or enabling OS vendor
+ *              string or/and feature group strings.
+ *
+ ****************************************************************************/
+acpi_status acpi_update_interfaces(u8 action)
+{
+	acpi_status status;
+
+	status = acpi_os_acquire_mutex(acpi_gbl_osi_mutex, ACPI_WAIT_FOREVER);
+	if (ACPI_FAILURE(status)) {
+		return (status);
+	}
+
+	status = acpi_ut_update_interfaces(action);
+
+	acpi_os_release_mutex(acpi_gbl_osi_mutex);
+	return (status);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*****************************************************************************
  *
  * FUNCTION:    acpi_check_address_range
  *
  * PARAMETERS:  space_id            - Address space ID
+<<<<<<< HEAD
  *              Address             - Start address
  *              Length              - Length
  *              Warn                - TRUE if warning on overlap desired
+=======
+ *              address             - Start address
+ *              length              - Length
+ *              warn                - TRUE if warning on overlap desired
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Count of the number of conflicts detected.
  *
@@ -686,6 +838,10 @@ ACPI_EXPORT_SYMBOL(acpi_install_interface_handler)
  *              ASL operation region address ranges.
  *
  ****************************************************************************/
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 u32
 acpi_check_address_range(acpi_adr_space_type space_id,
 			 acpi_physical_address address,
@@ -707,5 +863,96 @@ acpi_check_address_range(acpi_adr_space_type space_id,
 }
 
 ACPI_EXPORT_SYMBOL(acpi_check_address_range)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif				/* !ACPI_ASL_COMPILER */
+=======
+#endif				/* !ACPI_ASL_COMPILER */
+/*******************************************************************************
+ *
+ * FUNCTION:    acpi_decode_pld_buffer
+ *
+ * PARAMETERS:  in_buffer           - Buffer returned by _PLD method
+ *              length              - Length of the in_buffer
+ *              return_buffer       - Where the decode buffer is returned
+ *
+ * RETURN:      Status and the decoded _PLD buffer. User must deallocate
+ *              the buffer via ACPI_FREE.
+ *
+ * DESCRIPTION: Decode the bit-packed buffer returned by the _PLD method into
+ *              a local struct that is much more useful to an ACPI driver.
+ *
+ ******************************************************************************/
+acpi_status
+acpi_decode_pld_buffer(u8 *in_buffer,
+		       acpi_size length, struct acpi_pld_info ** return_buffer)
+{
+	struct acpi_pld_info *pld_info;
+	u32 *buffer = ACPI_CAST_PTR(u32, in_buffer);
+	u32 dword;
+
+	/* Parameter validation */
+
+	if (!in_buffer || !return_buffer || (length < 16)) {
+		return (AE_BAD_PARAMETER);
+	}
+
+	pld_info = ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_pld_info));
+	if (!pld_info) {
+		return (AE_NO_MEMORY);
+	}
+
+	/* First 32-bit DWord */
+
+	ACPI_MOVE_32_TO_32(&dword, &buffer[0]);
+	pld_info->revision = ACPI_PLD_GET_REVISION(&dword);
+	pld_info->ignore_color = ACPI_PLD_GET_IGNORE_COLOR(&dword);
+	pld_info->color = ACPI_PLD_GET_COLOR(&dword);
+
+	/* Second 32-bit DWord */
+
+	ACPI_MOVE_32_TO_32(&dword, &buffer[1]);
+	pld_info->width = ACPI_PLD_GET_WIDTH(&dword);
+	pld_info->height = ACPI_PLD_GET_HEIGHT(&dword);
+
+	/* Third 32-bit DWord */
+
+	ACPI_MOVE_32_TO_32(&dword, &buffer[2]);
+	pld_info->user_visible = ACPI_PLD_GET_USER_VISIBLE(&dword);
+	pld_info->dock = ACPI_PLD_GET_DOCK(&dword);
+	pld_info->lid = ACPI_PLD_GET_LID(&dword);
+	pld_info->panel = ACPI_PLD_GET_PANEL(&dword);
+	pld_info->vertical_position = ACPI_PLD_GET_VERTICAL(&dword);
+	pld_info->horizontal_position = ACPI_PLD_GET_HORIZONTAL(&dword);
+	pld_info->shape = ACPI_PLD_GET_SHAPE(&dword);
+	pld_info->group_orientation = ACPI_PLD_GET_ORIENTATION(&dword);
+	pld_info->group_token = ACPI_PLD_GET_TOKEN(&dword);
+	pld_info->group_position = ACPI_PLD_GET_POSITION(&dword);
+	pld_info->bay = ACPI_PLD_GET_BAY(&dword);
+
+	/* Fourth 32-bit DWord */
+
+	ACPI_MOVE_32_TO_32(&dword, &buffer[3]);
+	pld_info->ejectable = ACPI_PLD_GET_EJECTABLE(&dword);
+	pld_info->ospm_eject_required = ACPI_PLD_GET_OSPM_EJECT(&dword);
+	pld_info->cabinet_number = ACPI_PLD_GET_CABINET(&dword);
+	pld_info->card_cage_number = ACPI_PLD_GET_CARD_CAGE(&dword);
+	pld_info->reference = ACPI_PLD_GET_REFERENCE(&dword);
+	pld_info->rotation = ACPI_PLD_GET_ROTATION(&dword);
+	pld_info->order = ACPI_PLD_GET_ORDER(&dword);
+
+	if (length >= ACPI_PLD_BUFFER_SIZE) {
+
+		/* Fifth 32-bit DWord (Revision 2 of _PLD) */
+
+		ACPI_MOVE_32_TO_32(&dword, &buffer[4]);
+		pld_info->vertical_offset = ACPI_PLD_GET_VERT_OFFSET(&dword);
+		pld_info->horizontal_offset = ACPI_PLD_GET_HORIZ_OFFSET(&dword);
+	}
+
+	*return_buffer = pld_info;
+	return (AE_OK);
+}
+
+ACPI_EXPORT_SYMBOL(acpi_decode_pld_buffer)
+>>>>>>> refs/remotes/origin/master

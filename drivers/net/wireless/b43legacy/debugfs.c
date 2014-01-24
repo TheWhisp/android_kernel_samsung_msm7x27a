@@ -5,10 +5,14 @@
   debugfs driver debugging code
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) 2005-2007 Michael Buesch <mb@bu3sch.de>
 =======
   Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  Copyright (c) 2005-2007 Michael Buesch <m@bues.ch>
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -202,6 +206,7 @@ static int restart_write_file(struct b43legacy_wldev *dev, const char *buf, size
 #undef fappend
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int b43legacy_debugfs_open(struct inode *inode, struct file *file)
 {
 	file->private_data = inode->i_private;
@@ -210,6 +215,8 @@ static int b43legacy_debugfs_open(struct inode *inode, struct file *file)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t b43legacy_debugfs_read(struct file *file, char __user *userbuf,
 				size_t count, loff_t *ppos)
 {
@@ -339,10 +346,14 @@ out_unlock:
 		.write	= _write,				\
 		.fops	= {					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			.open	= b43legacy_debugfs_open,		\
 =======
 			.open	= simple_open,				\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			.open	= simple_open,				\
+>>>>>>> refs/remotes/origin/master
 			.read	= b43legacy_debugfs_read,		\
 			.write	= b43legacy_debugfs_write,		\
 			.llseek = generic_file_llseek,			\

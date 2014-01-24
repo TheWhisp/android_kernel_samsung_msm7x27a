@@ -123,14 +123,24 @@ static int irtty_change_speed(struct sir_dev *dev, unsigned speed)
 
 	tty = priv->tty;
 
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
 	old_termios = *(tty->termios);
 	cflag = tty->termios->c_cflag;
+=======
+	down_write(&tty->termios_rwsem);
+	old_termios = tty->termios;
+	cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 	tty_encode_baud_rate(tty, speed, speed);
 	if (tty->ops->set_termios)
 		tty->ops->set_termios(tty, &old_termios);
 	priv->io.speed = speed;
+<<<<<<< HEAD
 	mutex_unlock(&tty->termios_mutex);
+=======
+	up_write(&tty->termios_rwsem);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -210,7 +220,11 @@ static int irtty_do_write(struct sir_dev *dev, const unsigned char *ptr, size_t 
  *    been received, which can now be decapsulated and delivered for
  *    further processing 
  *
+<<<<<<< HEAD
  * calling context depends on underlying driver and tty->low_latency!
+=======
+ * calling context depends on underlying driver and tty->port->low_latency!
+>>>>>>> refs/remotes/origin/master
  * for example (low_latency: 1 / 0):
  * serial.c:	uart-interrupt / softint
  * usbserial:	urb-complete-interrupt / softint
@@ -280,19 +294,32 @@ static inline void irtty_stop_receiver(struct tty_struct *tty, int stop)
 	struct ktermios old_termios;
 	int cflag;
 
+<<<<<<< HEAD
 	mutex_lock(&tty->termios_mutex);
 	old_termios = *(tty->termios);
 	cflag = tty->termios->c_cflag;
+=======
+	down_write(&tty->termios_rwsem);
+	old_termios = tty->termios;
+	cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 	
 	if (stop)
 		cflag &= ~CREAD;
 	else
 		cflag |= CREAD;
 
+<<<<<<< HEAD
 	tty->termios->c_cflag = cflag;
 	if (tty->ops->set_termios)
 		tty->ops->set_termios(tty, &old_termios);
 	mutex_unlock(&tty->termios_mutex);
+=======
+	tty->termios.c_cflag = cflag;
+	if (tty->ops->set_termios)
+		tty->ops->set_termios(tty, &old_termios);
+	up_write(&tty->termios_rwsem);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*****************************************************************/
@@ -459,8 +486,15 @@ static int irtty_open(struct tty_struct *tty)
 
 	/* allocate private device info block */
 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!priv)
 		goto out_put;
+=======
+	if (!priv) {
+		ret = -ENOMEM;
+		goto out_put;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	priv->magic = IRTTY_MAGIC;
 	priv->tty = tty;

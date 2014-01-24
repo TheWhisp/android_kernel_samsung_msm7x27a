@@ -34,9 +34,12 @@ static int __init alloc_workspace(void)
 
 	if (!lzo_mem || !lzo_compress_buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING "Failed to allocate lzo deflate workspace\n");
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		free_workspace();
 		return -ENOMEM;
 	}

@@ -20,6 +20,10 @@
 #include <linux/io.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/pm_runtime.h>
 
@@ -464,7 +468,11 @@ static int sh_msiof_spi_txrx_once(struct sh_msiof_spi_priv *p,
 	ret = ret ? ret : sh_msiof_modify_ctr_wait(p, 0, CTR_TXE);
 
 	/* start by setting frame bit */
+<<<<<<< HEAD
 	INIT_COMPLETION(p->done);
+=======
+	reinit_completion(&p->done);
+>>>>>>> refs/remotes/origin/master
 	ret = ret ? ret : sh_msiof_modify_ctr_wait(p, 0, CTR_TFSE);
 	if (ret) {
 		dev_err(&p->pdev->dev, "failed to start hardware\n");
@@ -592,12 +600,49 @@ static u32 sh_msiof_spi_txrx_word(struct spi_device *spi, unsigned nsecs,
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_OF
+static struct sh_msiof_spi_info *sh_msiof_spi_parse_dt(struct device *dev)
+{
+	struct sh_msiof_spi_info *info;
+	struct device_node *np = dev->of_node;
+	u32 num_cs = 0;
+
+	info = devm_kzalloc(dev, sizeof(struct sh_msiof_spi_info), GFP_KERNEL);
+	if (!info) {
+		dev_err(dev, "failed to allocate setup data\n");
+		return NULL;
+	}
+
+	/* Parse the MSIOF properties */
+	of_property_read_u32(np, "num-cs", &num_cs);
+	of_property_read_u32(np, "renesas,tx-fifo-size",
+					&info->tx_fifo_override);
+	of_property_read_u32(np, "renesas,rx-fifo-size",
+					&info->rx_fifo_override);
+
+	info->num_chipselect = num_cs;
+
+	return info;
+}
+#else
+static struct sh_msiof_spi_info *sh_msiof_spi_parse_dt(struct device *dev)
+{
+	return NULL;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int sh_msiof_spi_probe(struct platform_device *pdev)
 {
 	struct resource	*r;
 	struct spi_master *master;
 	struct sh_msiof_spi_priv *p;
+<<<<<<< HEAD
 	char clk_name[16];
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int ret;
 
@@ -611,6 +656,7 @@ static int sh_msiof_spi_probe(struct platform_device *pdev)
 	p = spi_master_get_devdata(master);
 
 	platform_set_drvdata(pdev, p);
+<<<<<<< HEAD
 	p->info = pdev->dev.platform_data;
 	init_completion(&p->done);
 
@@ -618,6 +664,24 @@ static int sh_msiof_spi_probe(struct platform_device *pdev)
 	p->clk = clk_get(&pdev->dev, clk_name);
 	if (IS_ERR(p->clk)) {
 		dev_err(&pdev->dev, "cannot get clock \"%s\"\n", clk_name);
+=======
+	if (pdev->dev.of_node)
+		p->info = sh_msiof_spi_parse_dt(&pdev->dev);
+	else
+		p->info = dev_get_platdata(&pdev->dev);
+
+	if (!p->info) {
+		dev_err(&pdev->dev, "failed to obtain device info\n");
+		ret = -ENXIO;
+		goto err1;
+	}
+
+	init_completion(&p->done);
+
+	p->clk = clk_get(&pdev->dev, NULL);
+	if (IS_ERR(p->clk)) {
+		dev_err(&pdev->dev, "cannot get clock\n");
+>>>>>>> refs/remotes/origin/master
 		ret = PTR_ERR(p->clk);
 		goto err1;
 	}
@@ -705,6 +769,7 @@ static int sh_msiof_spi_remove(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int sh_msiof_spi_runtime_nop(struct device *dev)
 {
 	/* Runtime PM callback shared between ->runtime_suspend()
@@ -721,6 +786,16 @@ static struct dev_pm_ops sh_msiof_spi_dev_pm_ops = {
 	.runtime_suspend = sh_msiof_spi_runtime_nop,
 	.runtime_resume = sh_msiof_spi_runtime_nop,
 };
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id sh_msiof_match[] = {
+	{ .compatible = "renesas,sh-msiof", },
+	{ .compatible = "renesas,sh-mobile-msiof", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, sh_msiof_match);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static struct platform_driver sh_msiof_spi_drv = {
 	.probe		= sh_msiof_spi_probe,
@@ -728,7 +803,11 @@ static struct platform_driver sh_msiof_spi_drv = {
 	.driver		= {
 		.name		= "spi_sh_msiof",
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 		.pm		= &sh_msiof_spi_dev_pm_ops,
+=======
+		.of_match_table = of_match_ptr(sh_msiof_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 module_platform_driver(sh_msiof_spi_drv);

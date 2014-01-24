@@ -21,9 +21,13 @@
 #include <linux/sched.h>
 #include <asm/div64.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "softing.h"
 
@@ -153,7 +157,11 @@ int softing_load_fw(const char *file, struct softing *card,
 	const uint8_t *mem, *end, *dat;
 	uint16_t type, len;
 	uint32_t addr;
+<<<<<<< HEAD
 	uint8_t *buf = NULL;
+=======
+	uint8_t *buf = NULL, *new_buf;
+>>>>>>> refs/remotes/origin/master
 	int buflen = 0;
 	int8_t type_end = 0;
 
@@ -202,11 +210,20 @@ int softing_load_fw(const char *file, struct softing *card,
 		if (len > buflen) {
 			/* align buflen */
 			buflen = (len + (1024-1)) & ~(1024-1);
+<<<<<<< HEAD
 			buf = krealloc(buf, buflen, GFP_KERNEL);
 			if (!buf) {
 				ret = -ENOMEM;
 				goto failed;
 			}
+=======
+			new_buf = krealloc(buf, buflen, GFP_KERNEL);
+			if (!new_buf) {
+				ret = -ENOMEM;
+				goto failed;
+			}
+			buf = new_buf;
+>>>>>>> refs/remotes/origin/master
 		}
 		/* verify record data */
 		memcpy_fromio(buf, &dpram[addr + offset], len);

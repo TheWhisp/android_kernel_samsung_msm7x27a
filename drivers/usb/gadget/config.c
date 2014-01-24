@@ -8,6 +8,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,17 +20,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/errno.h>
 #include <linux/slab.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/list.h>
 #include <linux/string.h>
 #include <linux/device.h>
 
 #include <linux/usb/ch9.h>
 #include <linux/usb/gadget.h>
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -68,6 +76,9 @@ usb_find_descriptor_fillbuf(void *buf, unsigned buflen,
 	return -ENOENT;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/usb/composite.h>
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_descriptor_fillbuf - fill buffer with descriptors
@@ -102,7 +113,11 @@ usb_descriptor_fillbuf(void *buf, unsigned buflen,
 	}
 	return dest - (u8 *)buf;
 }
+<<<<<<< HEAD
 
+=======
+EXPORT_SYMBOL_GPL(usb_descriptor_fillbuf);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_gadget_config_buf - builts a complete configuration descriptor
@@ -155,6 +170,10 @@ int usb_gadget_config_buf(
 	cp->bmAttributes |= USB_CONFIG_ATT_ONE;
 	return len;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(usb_gadget_config_buf);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_copy_descriptors - copy a vector of USB descriptors
@@ -204,6 +223,7 @@ usb_copy_descriptors(struct usb_descriptor_header **src)
 
 	return ret;
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 /**
@@ -233,3 +253,43 @@ usb_find_endpoint(
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(usb_copy_descriptors);
+
+int usb_assign_descriptors(struct usb_function *f,
+		struct usb_descriptor_header **fs,
+		struct usb_descriptor_header **hs,
+		struct usb_descriptor_header **ss)
+{
+	struct usb_gadget *g = f->config->cdev->gadget;
+
+	if (fs) {
+		f->fs_descriptors = usb_copy_descriptors(fs);
+		if (!f->fs_descriptors)
+			goto err;
+	}
+	if (hs && gadget_is_dualspeed(g)) {
+		f->hs_descriptors = usb_copy_descriptors(hs);
+		if (!f->hs_descriptors)
+			goto err;
+	}
+	if (ss && gadget_is_superspeed(g)) {
+		f->ss_descriptors = usb_copy_descriptors(ss);
+		if (!f->ss_descriptors)
+			goto err;
+	}
+	return 0;
+err:
+	usb_free_all_descriptors(f);
+	return -ENOMEM;
+}
+EXPORT_SYMBOL_GPL(usb_assign_descriptors);
+
+void usb_free_all_descriptors(struct usb_function *f)
+{
+	usb_free_descriptors(f->fs_descriptors);
+	usb_free_descriptors(f->hs_descriptors);
+	usb_free_descriptors(f->ss_descriptors);
+}
+EXPORT_SYMBOL_GPL(usb_free_all_descriptors);
+>>>>>>> refs/remotes/origin/master

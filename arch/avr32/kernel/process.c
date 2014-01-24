@@ -30,6 +30,7 @@ EXPORT_SYMBOL(pm_power_off);
  * This file handles the architecture-dependent parts of process handling..
  */
 
+<<<<<<< HEAD
 void cpu_idle(void)
 {
 	/* endless idle loop with no priority at all */
@@ -52,6 +53,11 @@ void cpu_idle(void)
 		schedule_preempt_disabled();
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+void arch_cpu_idle(void)
+{
+	cpu_enter_idle();
+>>>>>>> refs/remotes/origin/master
 }
 
 void machine_halt(void)
@@ -79,6 +85,7 @@ void machine_restart(char *cmd)
 }
 
 /*
+<<<<<<< HEAD
  * PC is actually discarded when returning from a system call -- the
  * return address must be stored in LR. This function will make sure
  * LR points to do_exit before starting the thread.
@@ -117,6 +124,8 @@ int kernel_thread(int (*fn)(void *), void *arg, unsigned long flags)
 EXPORT_SYMBOL(kernel_thread);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Free current thread data structures etc
  */
 void exit_thread(void)
@@ -261,6 +270,7 @@ void show_stack(struct task_struct *tsk, unsigned long *stack)
 	show_stack_log_lvl(tsk, (unsigned long)stack, NULL, "");
 }
 
+<<<<<<< HEAD
 void dump_stack(void)
 {
 	unsigned long stack;
@@ -269,6 +279,8 @@ void dump_stack(void)
 }
 EXPORT_SYMBOL(dump_stack);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const char *cpu_modes[] = {
 	"Application", "Supervisor", "Interrupt level 0", "Interrupt level 1",
 	"Interrupt level 2", "Interrupt level 3", "Exception", "NMI"
@@ -280,6 +292,11 @@ void show_regs_log_lvl(struct pt_regs *regs, const char *log_lvl)
 	unsigned long lr = regs->lr;
 	unsigned long mode = (regs->sr & MODE_MASK) >> MODE_SHIFT;
 
+<<<<<<< HEAD
+=======
+	show_regs_print_info(log_lvl);
+
+>>>>>>> refs/remotes/origin/master
 	if (!user_mode(regs)) {
 		sp = (unsigned long)regs + FRAME_SIZE_FULL;
 
@@ -317,9 +334,12 @@ void show_regs_log_lvl(struct pt_regs *regs, const char *log_lvl)
 	       regs->sr & SR_I0M ? '0' : '.',
 	       regs->sr & SR_GM ? 'G' : 'g');
 	printk("%sCPU Mode: %s\n", log_lvl, cpu_modes[mode]);
+<<<<<<< HEAD
 	printk("%sProcess: %s [%d] (task: %p thread: %p)\n",
 	       log_lvl, current->comm, current->pid, current,
 	       task_thread_info(current));
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void show_regs(struct pt_regs *regs)
@@ -342,6 +362,7 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu)
 }
 
 asmlinkage void ret_from_fork(void);
+<<<<<<< HEAD
 
 int copy_thread(unsigned long clone_flags, unsigned long usp,
 		unsigned long unused,
@@ -362,6 +383,34 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	p->thread.cpu_context.sr = MODE_SUPERVISOR | SR_GM;
 	p->thread.cpu_context.ksp = (unsigned long)childregs;
 	p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
+=======
+asmlinkage void ret_from_kernel_thread(void);
+asmlinkage void syscall_return(void);
+
+int copy_thread(unsigned long clone_flags, unsigned long usp,
+		unsigned long arg,
+		struct task_struct *p)
+{
+	struct pt_regs *childregs = task_pt_regs(p);
+
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		p->thread.cpu_context.r0 = arg;
+		p->thread.cpu_context.r1 = usp; /* fn */
+		p->thread.cpu_context.r2 = (unsigned long)syscall_return;
+		p->thread.cpu_context.pc = (unsigned long)ret_from_kernel_thread;
+		childregs->sr = MODE_SUPERVISOR;
+	} else {
+		*childregs = *current_pt_regs();
+		if (usp)
+			childregs->sp = usp;
+		childregs->r12 = 0; /* Set return value for child */
+		p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
+	}
+
+	p->thread.cpu_context.sr = MODE_SUPERVISOR | SR_GM;
+	p->thread.cpu_context.ksp = (unsigned long)childregs;
+>>>>>>> refs/remotes/origin/master
 
 	clear_tsk_thread_flag(p, TIF_DEBUG);
 	if ((clone_flags & CLONE_PTRACE) && test_thread_flag(TIF_DEBUG))
@@ -370,6 +419,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* r12-r8 are dummy parameters to force the compiler to use the stack */
 asmlinkage int sys_fork(struct pt_regs *regs)
 {
@@ -413,6 +463,8 @@ out:
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This function is supposed to answer the question "who called
  * schedule()?"
@@ -444,7 +496,11 @@ unsigned long get_wchan(struct task_struct *p)
 		 * is actually quite ugly. It might be possible to
 		 * determine the frame size automatically at build
 		 * time by doing this:
+<<<<<<< HEAD
 		 *   - compile sched.c
+=======
+		 *   - compile sched/core.c
+>>>>>>> refs/remotes/origin/master
 		 *   - disassemble the resulting sched.o
 		 *   - look for 'sub sp,??' shortly after '<schedule>:'
 		 */

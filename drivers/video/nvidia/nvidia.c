@@ -70,6 +70,7 @@ static struct pci_device_id nvidiafb_pci_tbl[] = {
 MODULE_DEVICE_TABLE(pci, nvidiafb_pci_tbl);
 
 /* command line data, set in nvidiafb_setup() */
+<<<<<<< HEAD
 static int flatpanel __devinitdata = -1;	/* Autodetect later */
 static int fpdither __devinitdata = -1;
 static int forceCRTC __devinitdata = -1;
@@ -96,12 +97,40 @@ static int backlight __devinitdata = 0;
 static char *mode_option __devinitdata = NULL;
 
 static struct fb_fix_screeninfo __devinitdata nvidiafb_fix = {
+=======
+static int flatpanel = -1;	/* Autodetect later */
+static int fpdither = -1;
+static int forceCRTC = -1;
+static int hwcur = 0;
+static int noaccel = 0;
+static int noscale = 0;
+static int paneltweak = 0;
+static int vram = 0;
+static int bpp = 8;
+static int reverse_i2c;
+#ifdef CONFIG_MTRR
+static bool nomtrr = false;
+#endif
+#ifdef CONFIG_PMAC_BACKLIGHT
+static int backlight = 1;
+#else
+static int backlight = 0;
+#endif
+
+static char *mode_option = NULL;
+
+static struct fb_fix_screeninfo nvidiafb_fix = {
+>>>>>>> refs/remotes/origin/master
 	.type = FB_TYPE_PACKED_PIXELS,
 	.xpanstep = 8,
 	.ypanstep = 1,
 };
 
+<<<<<<< HEAD
 static struct fb_var_screeninfo __devinitdata nvidiafb_default_var = {
+=======
+static struct fb_var_screeninfo nvidiafb_default_var = {
+>>>>>>> refs/remotes/origin/master
 	.xres = 640,
 	.yres = 480,
 	.xres_virtual = 640,
@@ -1109,7 +1138,11 @@ fail:
 #define nvidiafb_resume NULL
 #endif
 
+<<<<<<< HEAD
 static int __devinit nvidia_set_fbinfo(struct fb_info *info)
+=======
+static int nvidia_set_fbinfo(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_monspecs *specs = &info->monspecs;
 	struct fb_videomode modedb;
@@ -1205,7 +1238,11 @@ static int __devinit nvidia_set_fbinfo(struct fb_info *info)
 	return nvidiafb_check_var(&info->var, info);
 }
 
+<<<<<<< HEAD
 static u32 __devinit nvidia_get_chipset(struct fb_info *info)
+=======
+static u32 nvidia_get_chipset(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nvidia_par *par = info->par;
 	u32 id = (par->pci_dev->vendor << 16) | par->pci_dev->device;
@@ -1228,7 +1265,11 @@ static u32 __devinit nvidia_get_chipset(struct fb_info *info)
 	return id;
 }
 
+<<<<<<< HEAD
 static u32 __devinit nvidia_get_arch(struct fb_info *info)
+=======
+static u32 nvidia_get_arch(struct fb_info *info)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nvidia_par *par = info->par;
 	u32 arch = 0;
@@ -1280,8 +1321,12 @@ static u32 __devinit nvidia_get_arch(struct fb_info *info)
 	return arch;
 }
 
+<<<<<<< HEAD
 static int __devinit nvidiafb_probe(struct pci_dev *pd,
 				    const struct pci_device_id *ent)
+=======
+static int nvidiafb_probe(struct pci_dev *pd, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nvidia_par *par;
 	struct fb_info *info;
@@ -1442,7 +1487,11 @@ err_out:
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void __devexit nvidiafb_remove(struct pci_dev *pd)
+=======
+static void nvidiafb_remove(struct pci_dev *pd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(pd);
 	struct nvidia_par *par = info->par;
@@ -1477,7 +1526,11 @@ static void __devexit nvidiafb_remove(struct pci_dev *pd)
  * ------------------------------------------------------------------------- */
 
 #ifndef MODULE
+<<<<<<< HEAD
 static int __devinit nvidiafb_setup(char *options)
+=======
+static int nvidiafb_setup(char *options)
+>>>>>>> refs/remotes/origin/master
 {
 	char *this_opt;
 
@@ -1514,10 +1567,14 @@ static int __devinit nvidiafb_setup(char *options)
 #ifdef CONFIG_MTRR
 		} else if (!strncmp(this_opt, "nomtrr", 6)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			nomtrr = 1;
 =======
 			nomtrr = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			nomtrr = true;
+>>>>>>> refs/remotes/origin/master
 #endif
 		} else if (!strncmp(this_opt, "fpdither:", 9)) {
 			fpdither = simple_strtol(this_opt+9, NULL, 0);
@@ -1537,7 +1594,11 @@ static struct pci_driver nvidiafb_driver = {
 	.probe    = nvidiafb_probe,
 	.suspend  = nvidiafb_suspend,
 	.resume   = nvidiafb_resume,
+<<<<<<< HEAD
 	.remove   = __devexit_p(nvidiafb_remove),
+=======
+	.remove   = nvidiafb_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* ------------------------------------------------------------------------- *
@@ -1546,7 +1607,11 @@ static struct pci_driver nvidiafb_driver = {
  *
  * ------------------------------------------------------------------------- */
 
+<<<<<<< HEAD
 static int __devinit nvidiafb_init(void)
+=======
+static int nvidiafb_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 #ifndef MODULE
 	char *option = NULL;
@@ -1608,10 +1673,14 @@ module_param(reverse_i2c, int, 0);
 MODULE_PARM_DESC(reverse_i2c, "reverse port assignment of the i2c bus");
 #ifdef CONFIG_MTRR
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nomtrr, bool, 0);
 =======
 module_param(nomtrr, bool, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nomtrr, bool, false);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nomtrr, "Disables MTRR support (0 or 1=disabled) "
 		 "(default=0)");
 #endif

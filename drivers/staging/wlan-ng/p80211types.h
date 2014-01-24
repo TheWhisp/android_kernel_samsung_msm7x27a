@@ -197,7 +197,11 @@
 					P80211DID_LSB_ACCESS)
 
 /*----------------------------------------------------------------*/
+<<<<<<< HEAD
 /* The following structure types are used for the represenation */
+=======
+/* The following structure types are used for the representation */
+>>>>>>> refs/remotes/origin/master
 /*  of ENUMint type metadata. */
 
 typedef struct p80211enumpair {

@@ -35,10 +35,15 @@
 #define PB1200_BCSR_HEXLED_OFS	0x00400000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define DB1300_BCSR_PHYS_ADDR	0x19800000
 #define DB1300_BCSR_HEXLED_OFS	0x00400000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DB1300_BCSR_PHYS_ADDR	0x19800000
+#define DB1300_BCSR_HEXLED_OFS	0x00400000
+>>>>>>> refs/remotes/origin/master
 
 enum bcsr_id {
 	/* BCSR base 1 */
@@ -111,12 +116,19 @@ enum bcsr_whoami_boards {
 	BCSR_WHOAMI_PB1200_DDR2,
 	BCSR_WHOAMI_DB1200,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	BCSR_WHOAMI_DB1300,
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
 /* STATUS reg.  Unless otherwise noted, they're valid on all boards.
+=======
+	BCSR_WHOAMI_DB1300,
+};
+
+/* STATUS reg.	Unless otherwise noted, they're valid on all boards.
+>>>>>>> refs/remotes/origin/master
  * PB1200 = DB1200.
  */
 #define BCSR_STATUS_PC0VS		0x0003
@@ -128,6 +140,7 @@ enum bcsr_whoami_boards {
 #define BCSR_STATUS_FLASHBUSY		0x0100
 #define BCSR_STATUS_ROMBUSY		0x0400
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BCSR_STATUS_SD0WP		0x0400	/* DB1200 */
 #define BCSR_STATUS_SD1WP		0x0800
 #define BCSR_STATUS_USBOTGID		0x0800	/* PB/DB1550 */
@@ -135,13 +148,18 @@ enum bcsr_whoami_boards {
 #define BCSR_STATUS_DB1200_SWAPBOOT	0x0040	/* DB1200 */
 #define BCSR_STATUS_IDECBLID		0x0200	/* DB1200 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BCSR_STATUS_SD0WP		0x0400	/* DB1200/DB1300:SD1 */
 #define BCSR_STATUS_SD1WP		0x0800
 #define BCSR_STATUS_USBOTGID		0x0800	/* PB/DB1550 */
 #define BCSR_STATUS_DB1000_SWAPBOOT	0x2000
 #define BCSR_STATUS_DB1200_SWAPBOOT	0x0040	/* DB1200/1300 */
 #define BCSR_STATUS_IDECBLID		0x0200	/* DB1200/1300 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define BCSR_STATUS_DB1200_U0RXD	0x1000	/* DB1200 */
 #define BCSR_STATUS_DB1200_U1RXD	0x2000	/* DB1200 */
 #define BCSR_STATUS_FLASHDEN		0xC000
@@ -152,13 +170,19 @@ enum bcsr_whoami_boards {
 #define BCSR_STATUS_PB1550_U3RXD	0x8000	/* PB1550 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BCSR_STATUS_CFWP		0x4000	/* DB1300 */
 #define BCSR_STATUS_USBOCn		0x2000	/* DB1300 */
 #define BCSR_STATUS_OTGOCn		0x1000	/* DB1300 */
 #define BCSR_STATUS_DCDMARQ		0x0010	/* DB1300 */
 #define BCSR_STATUS_IDEDMARQ		0x0020	/* DB1300 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* DB/PB1000,1100,1500,1550 */
 #define BCSR_RESETS_PHY0		0x0001
@@ -180,30 +204,45 @@ enum bcsr_whoami_boards {
 #define BCSR_BOARD_PCIEXTARB		0x0200
 #define BCSR_BOARD_GPIO200RST		0x0400
 #define BCSR_BOARD_PCICLKOUT		0x0800
+<<<<<<< HEAD
 #define BCSR_BOARD_PCICFG		0x1000
 <<<<<<< HEAD
 #define BCSR_BOARD_SPISEL		0x4000	/* PB/DB1550 */
 =======
 #define BCSR_BOARD_SPISEL		0x2000	/* PB/DB1550 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BCSR_BOARD_PB1100_SD0PWR	0x0400
+#define BCSR_BOARD_PB1100_SD1PWR	0x0800
+#define BCSR_BOARD_PCICFG		0x1000
+#define BCSR_BOARD_SPISEL		0x2000	/* PB/DB1550 */
+>>>>>>> refs/remotes/origin/master
 #define BCSR_BOARD_SD0WP		0x4000	/* DB1100 */
 #define BCSR_BOARD_SD1WP		0x8000	/* DB1100 */
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* DB/PB1200 */
 =======
 /* DB/PB1200/1300 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* DB/PB1200/1300 */
+>>>>>>> refs/remotes/origin/master
 #define BCSR_RESETS_ETH			0x0001
 #define BCSR_RESETS_CAMERA		0x0002
 #define BCSR_RESETS_DC			0x0004
 #define BCSR_RESETS_IDE			0x0008
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BCSR_RESETS_TV			0x0010	/* DB1200 */
 =======
 #define BCSR_RESETS_TV			0x0010	/* DB1200/1300 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BCSR_RESETS_TV			0x0010	/* DB1200/1300 */
+>>>>>>> refs/remotes/origin/master
 /* Not resets but in the same register */
 #define BCSR_RESETS_PWMR1MUX		0x0800	/* DB1200 */
 #define BCSR_RESETS_PB1200_WSCFSM	0x0800	/* PB1200 */
@@ -213,16 +252,24 @@ enum bcsr_whoami_boards {
 #define BCSR_RESETS_SD1MUX		0x8000	/* PB1200 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BCSR_RESETS_VDDQSHDN		0x0200	/* DB1300 */
 #define BCSR_RESETS_OTPPGM		0x0400	/* DB1300 */
 #define BCSR_RESETS_OTPSCLK		0x0800	/* DB1300 */
 #define BCSR_RESETS_OTPWRPROT		0x1000	/* DB1300 */
 #define BCSR_RESETS_OTPCSB		0x2000	/* DB1300 */
 #define BCSR_RESETS_OTGPWR		0x4000	/* DB1300 */
+<<<<<<< HEAD
 #define BCSR_RESETS_USBHPWR		0x8000  /* DB1300 */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BCSR_RESETS_USBHPWR		0x8000	/* DB1300 */
+
+>>>>>>> refs/remotes/origin/master
 #define BCSR_BOARD_LCDVEE		0x0001
 #define BCSR_BOARD_LCDVDD		0x0002
 #define BCSR_BOARD_LCDBL		0x0004
@@ -230,11 +277,16 @@ enum bcsr_whoami_boards {
 #define BCSR_BOARD_CAMPWR		0x0020
 #define BCSR_BOARD_SD0PWR		0x0040
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #define BCSR_BOARD_CAMCS		0x0010	/* DB1300 */
 #define BCSR_BOARD_HDMI_DE		0x0040	/* DB1300 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BCSR_BOARD_CAMCS		0x0010	/* DB1300 */
+#define BCSR_BOARD_HDMI_DE		0x0040	/* DB1300 */
+>>>>>>> refs/remotes/origin/master
 
 #define BCSR_SWITCHES_DIP		0x00FF
 #define BCSR_SWITCHES_DIP_1		0x0080
@@ -269,13 +321,19 @@ enum bcsr_whoami_boards {
 #define BCSR_SYSTEM_PWROFF		0x4000	/* set to power off */
 #define BCSR_SYSTEM_VDDI		0x001F	/* PB1xxx boards */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define BCSR_SYSTEM_DEBUGCSMASK		0x003F	/* DB1300 */
 #define BCSR_SYSTEM_UDMAMODE		0x0100	/* DB1300 */
 #define BCSR_SYSTEM_WAKEONIRQ		0x0200	/* DB1300 */
 #define BCSR_SYSTEM_VDDI1300		0x3C00	/* DB1300 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 

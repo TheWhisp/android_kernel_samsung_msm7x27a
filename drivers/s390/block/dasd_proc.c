@@ -1,11 +1,18 @@
 /*
+<<<<<<< HEAD
  * File...........: linux/drivers/s390/block/dasd_proc.c
+=======
+>>>>>>> refs/remotes/origin/master
  * Author(s)......: Holger Smolinski <Holger.Smolinski@de.ibm.com>
  *		    Horst Hummel <Horst.Hummel@de.ibm.com>
  *		    Carsten Otte <Cotte@de.ibm.com>
  *		    Martin Schwidefsky <schwidefsky@de.ibm.com>
  * Bugreports.to..: <Linux390@de.ibm.com>
+<<<<<<< HEAD
  * (C) IBM Corporation, IBM Deutschland Entwicklung GmbH, 1999-2002
+=======
+ * Coypright IBM Corp. 1999, 2002
+>>>>>>> refs/remotes/origin/master
  *
  * /proc interface for the dasd driver.
  *
@@ -33,6 +40,7 @@ static struct proc_dir_entry *dasd_devices_entry = NULL;
 static struct proc_dir_entry *dasd_statistics_entry = NULL;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_DASD_PROFILE
 static char *
 dasd_get_user_string(const char __user *user_buf, size_t user_len)
@@ -57,6 +65,8 @@ dasd_get_user_string(const char __user *user_buf, size_t user_len)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int
 dasd_devices_show(struct seq_file *m, void *v)
 {
@@ -171,7 +181,10 @@ static const struct file_operations dasd_devices_file_ops = {
 
 #ifdef CONFIG_DASD_PROFILE
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dasd_stats_all_block_on(void)
 {
 	int i, rc;
@@ -221,7 +234,10 @@ static void dasd_stats_all_block_reset(void)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void dasd_statistics_array(struct seq_file *m, unsigned int *array, int factor)
 {
 	int i;
@@ -239,23 +255,30 @@ static int dasd_stats_proc_show(struct seq_file *m, void *v)
 {
 #ifdef CONFIG_DASD_PROFILE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct dasd_profile_info_t *prof;
 	int factor;
 
 	/* check for active profiling */
 	if (dasd_profile_level == DASD_PROFILE_OFF) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dasd_profile_info *prof;
 	int factor;
 
 	/* check for active profiling */
 	if (!dasd_global_profile_level) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		seq_printf(m, "Statistics are off - they might be "
 				    "switched on using 'echo set on > "
 				    "/proc/dasd/statistics'\n");
 		return 0;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	prof = &dasd_global_profile;
@@ -263,6 +286,10 @@ static int dasd_stats_proc_show(struct seq_file *m, void *v)
 	prof = &dasd_global_profile_data;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	prof = &dasd_global_profile_data;
+
+>>>>>>> refs/remotes/origin/master
 	/* prevent counter 'overflow' on output */
 	for (factor = 1; (prof->dasd_io_reqs / factor) > 9999999;
 	     factor *= 10);
@@ -314,9 +341,13 @@ static ssize_t dasd_stats_proc_write(struct file *file,
 #ifdef CONFIG_DASD_PROFILE
 	char *buffer, *str;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int rc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc;
+>>>>>>> refs/remotes/origin/master
 
 	if (user_len > 65536)
 		user_len = 65536;
@@ -332,8 +363,11 @@ static ssize_t dasd_stats_proc_write(struct file *file,
 		if (strcmp(str, "on") == 0) {
 			/* switch on statistics profiling */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dasd_profile_level = DASD_PROFILE_ON;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			rc = dasd_stats_all_block_on();
 			if (rc) {
 				dasd_stats_all_block_off();
@@ -341,11 +375,15 @@ static ssize_t dasd_stats_proc_write(struct file *file,
 			}
 			dasd_global_profile_reset();
 			dasd_global_profile_level = DASD_PROFILE_ON;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			pr_info("The statistics feature has been switched "
 				"on\n");
 		} else if (strcmp(str, "off") == 0) {
 			/* switch off and reset statistics profiling */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			memset(&dasd_global_profile,
 			       0, sizeof (struct dasd_profile_info_t));
@@ -369,6 +407,8 @@ out_error:
 	kfree(buffer);
 	return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			dasd_global_profile_level = DASD_PROFILE_OFF;
 			dasd_global_profile_reset();
 			dasd_stats_all_block_off();
@@ -392,7 +432,10 @@ out_parse_error:
 out_error:
 	vfree(buffer);
 	return rc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 	pr_warning("/proc/dasd/statistics: is not activated in this kernel\n");
 	return user_len;

@@ -12,7 +12,11 @@
 
 #include <asm/prom.h>
 
+<<<<<<< HEAD
 static int __devinit parport_pc_find_nonpci_ports (int autoirq, int autodma)
+=======
+static int parport_pc_find_nonpci_ports (int autoirq, int autodma)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np;
 	const u32 *prop;
@@ -21,9 +25,13 @@ static int __devinit parport_pc_find_nonpci_ports (int autoirq, int autodma)
 	int count = 0;
 	int virq;
 
+<<<<<<< HEAD
 	for (np = NULL; (np = of_find_compatible_node(np,
 						      "parallel",
 						      "pnpPNP,400")) != NULL;) {
+=======
+	for_each_compatible_node(np, "parallel", "pnpPNP,400") {
+>>>>>>> refs/remotes/origin/master
 		prop = of_get_property(np, "reg", &propsize);
 		if (!prop || propsize > 6*sizeof(u32))
 			continue;

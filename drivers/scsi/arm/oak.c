@@ -14,9 +14,12 @@
 #include <asm/ecard.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "../scsi.h"
 #include <scsi/scsi_host.h>
@@ -25,6 +28,10 @@
 /*#define PSEUDO_DMA*/
 
 #define OAKSCSI_PUBLIC_RELEASE 1
+<<<<<<< HEAD
+=======
+#define DONT_USE_INTR
+>>>>>>> refs/remotes/origin/master
 
 #define priv(host)			((struct NCR5380_hostdata *)(host)->hostdata)
 #define NCR5380_local_declare()		void __iomem *_base
@@ -34,7 +41,12 @@
 #define NCR5380_write(reg, value)	writeb(value, _base + ((reg) << 2))
 #define NCR5380_intr			oakscsi_intr
 #define NCR5380_queue_command		oakscsi_queue_command
+<<<<<<< HEAD
 #define NCR5380_proc_info		oakscsi_proc_info
+=======
+#define NCR5380_show_info		oakscsi_show_info
+#define NCR5380_write_info		oakscsi_write_info
+>>>>>>> refs/remotes/origin/master
 
 #define NCR5380_implementation_fields	\
 	void __iomem *base
@@ -118,7 +130,12 @@ printk("reading %p len %d\n", addr, len);
 
 static struct scsi_host_template oakscsi_template = {
 	.module			= THIS_MODULE,
+<<<<<<< HEAD
 	.proc_info		= oakscsi_proc_info,
+=======
+	.show_info		= oakscsi_show_info,
+	.write_info		= oakscsi_write_info,
+>>>>>>> refs/remotes/origin/master
 	.name			= "Oak 16-bit SCSI",
 	.info			= oakscsi_info,
 	.queuecommand		= oakscsi_queue_command,
@@ -132,8 +149,12 @@ static struct scsi_host_template oakscsi_template = {
 	.proc_name		= "oakscsi",
 };
 
+<<<<<<< HEAD
 static int __devinit
 oakscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+=======
+static int oakscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host;
 	int ret = -ENOMEM;
@@ -185,7 +206,11 @@ oakscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit oakscsi_remove(struct expansion_card *ec)
+=======
+static void oakscsi_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct Scsi_Host *host = ecard_get_drvdata(ec);
 
@@ -205,7 +230,11 @@ static const struct ecard_id oakscsi_cids[] = {
 
 static struct ecard_driver oakscsi_driver = {
 	.probe		= oakscsi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(oakscsi_remove),
+=======
+	.remove		= oakscsi_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= oakscsi_cids,
 	.drv = {
 		.name		= "oakscsi",

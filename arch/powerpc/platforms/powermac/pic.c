@@ -25,9 +25,12 @@
 #include <linux/adb.h>
 #include <linux/pmu.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sections.h>
 #include <asm/io.h>
@@ -57,6 +60,7 @@ struct device_node *of_irq_dflt_pic;
 static volatile struct pmac_irq_hw __iomem *pmac_irq_hw[4];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GC_LEVEL_MASK		0x3ff00000
 #define OHARE_LEVEL_MASK	0x1ff00000
 #define HEATHROW_LEVEL_MASK	0x1ff00000
@@ -73,6 +77,8 @@ static unsigned long ppc_cached_irq_mask[NR_MASK_WORDS];
 static int pmac_irq_cascade = -1;
 static struct irq_host *pmac_pic_host;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int max_irqs;
 static int max_real_irqs;
 
@@ -83,7 +89,10 @@ static DECLARE_BITMAP(ppc_lost_interrupts, 128);
 static DECLARE_BITMAP(ppc_cached_irq_mask, 128);
 static int pmac_irq_cascade = -1;
 static struct irq_domain *pmac_pic_host;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void __pmac_retrigger(unsigned int irq_nr)
 {
@@ -235,11 +244,15 @@ static irqreturn_t gatwick_action(int cpl, void *dev_id)
 		int i = irq >> 5;
 		bits = in_le32(&pmac_irq_hw[i]->event) | ppc_lost_interrupts[i];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* We must read level interrupts from the level register */
 		bits |= (in_le32(&pmac_irq_hw[i]->level) & level_mask[i]);
 =======
 		bits |= in_le32(&pmac_irq_hw[i]->level);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bits |= in_le32(&pmac_irq_hw[i]->level);
+>>>>>>> refs/remotes/origin/master
 		bits &= ppc_cached_irq_mask[i];
 		if (bits == 0)
 			continue;
@@ -270,11 +283,15 @@ static unsigned int pmac_pic_get_irq(void)
 		int i = irq >> 5;
 		bits = in_le32(&pmac_irq_hw[i]->event) | ppc_lost_interrupts[i];
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* We must read level interrupts from the level register */
 		bits |= (in_le32(&pmac_irq_hw[i]->level) & level_mask[i]);
 =======
 		bits |= in_le32(&pmac_irq_hw[i]->level);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		bits |= in_le32(&pmac_irq_hw[i]->level);
+>>>>>>> refs/remotes/origin/master
 		bits &= ppc_cached_irq_mask[i];
 		if (bits == 0)
 			continue;
@@ -298,22 +315,29 @@ static struct irqaction xmon_action = {
 static struct irqaction gatwick_cascade_action = {
 	.handler	= gatwick_action,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags		= IRQF_DISABLED,
 	.name		= "cascade",
 };
 
 static int pmac_pic_host_match(struct irq_host *h, struct device_node *node)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.name		= "cascade",
 };
 
 static int pmac_pic_host_match(struct irq_domain *h, struct device_node *node)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	/* We match all, we don't always have a node anyway */
 	return 1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int pmac_pic_host_map(struct irq_host *h, unsigned int virq,
 			     irq_hw_number_t hw)
@@ -325,12 +349,18 @@ static int pmac_pic_host_map(struct irq_domain *h, unsigned int virq,
 			     irq_hw_number_t hw)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int pmac_pic_host_map(struct irq_domain *h, unsigned int virq,
+			     irq_hw_number_t hw)
+{
+>>>>>>> refs/remotes/origin/master
 	if (hw >= max_irqs)
 		return -EINVAL;
 
 	/* Mark level interrupts, set delayed disable for edge ones and set
 	 * handlers
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	level = !!(level_mask[hw >> 5] & (1UL << (hw & 0x1f)));
 	if (level)
@@ -356,6 +386,8 @@ static struct irq_host_ops pmac_pic_host_ops = {
 	.map = pmac_pic_host_map,
 	.xlate = pmac_pic_host_xlate,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_set_status_flags(virq, IRQ_LEVEL);
 	irq_set_chip_and_handler(virq, &pmac_pic, handle_level_irq);
 	return 0;
@@ -365,7 +397,10 @@ static const struct irq_domain_ops pmac_pic_host_ops = {
 	.match = pmac_pic_host_match,
 	.map = pmac_pic_host_map,
 	.xlate = irq_domain_xlate_onecell,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init pmac_pic_probe_oldstyle(void)
@@ -386,6 +421,7 @@ static void __init pmac_pic_probe_oldstyle(void)
 	if ((master = of_find_node_by_name(NULL, "gc")) != NULL) {
 		max_irqs = max_real_irqs = 32;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		level_mask[0] = GC_LEVEL_MASK;
 	} else if ((master = of_find_node_by_name(NULL, "ohare")) != NULL) {
 		max_irqs = max_real_irqs = 32;
@@ -402,6 +438,8 @@ static void __init pmac_pic_probe_oldstyle(void)
 		level_mask[0] = HEATHROW_LEVEL_MASK;
 		level_mask[1] = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	} else if ((master = of_find_node_by_name(NULL, "ohare")) != NULL) {
 		max_irqs = max_real_irqs = 32;
 		/* We might have a second cascaded ohare */
@@ -410,7 +448,10 @@ static void __init pmac_pic_probe_oldstyle(void)
 			max_irqs = 64;
 	} else if ((master = of_find_node_by_name(NULL, "mac-io")) != NULL) {
 		max_irqs = max_real_irqs = 64;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* We might have a second cascaded heathrow */
 		slave = of_find_node_by_name(master, "mac-io");
@@ -426,6 +467,7 @@ static void __init pmac_pic_probe_oldstyle(void)
 
 		/* We found a slave */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (slave) {
 			max_irqs = 128;
 			level_mask[2] = HEATHROW_LEVEL_MASK;
@@ -435,12 +477,17 @@ static void __init pmac_pic_probe_oldstyle(void)
 		if (slave)
 			max_irqs = 128;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (slave)
+			max_irqs = 128;
+>>>>>>> refs/remotes/origin/master
 	}
 	BUG_ON(master == NULL);
 
 	/*
 	 * Allocate an irq host
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pmac_pic_host = irq_alloc_host(master, IRQ_HOST_MAP_LINEAR, max_irqs,
 				       &pmac_pic_host_ops,
@@ -449,6 +496,10 @@ static void __init pmac_pic_probe_oldstyle(void)
 	pmac_pic_host = irq_domain_add_linear(master, max_irqs,
 					      &pmac_pic_host_ops, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pmac_pic_host = irq_domain_add_linear(master, max_irqs,
+					      &pmac_pic_host_ops, NULL);
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(pmac_pic_host == NULL);
 	irq_set_default_host(pmac_pic_host);
 
@@ -499,8 +550,13 @@ static void __init pmac_pic_probe_oldstyle(void)
 #endif
 }
 
+<<<<<<< HEAD
 int of_irq_map_oldworld(struct device_node *device, int index,
 			struct of_irq *out_irq)
+=======
+int of_irq_parse_oldworld(struct device_node *device, int index,
+			struct of_phandle_args *out_irq)
+>>>>>>> refs/remotes/origin/master
 {
 	const u32 *ints = NULL;
 	int intlen;
@@ -528,14 +584,21 @@ int of_irq_map_oldworld(struct device_node *device, int index,
 	if (index >= intlen)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	out_irq->controller = NULL;
 	out_irq->specifier[0] = ints[index];
 	out_irq->size = 1;
+=======
+	out_irq->np = NULL;
+	out_irq->args[0] = ints[index];
+	out_irq->args_count = 1;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 #endif /* CONFIG_PPC32 */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void pmac_u3_cascade(unsigned int irq, struct irq_desc *desc)
 {
@@ -551,6 +614,8 @@ static void pmac_u3_cascade(unsigned int irq, struct irq_desc *desc)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init pmac_pic_setup_mpic_nmi(struct mpic *mpic)
 {
 #if defined(CONFIG_XMON) && defined(CONFIG_PPC32)
@@ -574,6 +639,7 @@ static struct mpic * __init pmac_setup_one_mpic(struct device_node *np,
 {
 	const char *name = master ? " MPIC 1   " : " MPIC 2   ";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct resource r;
 	struct mpic *mpic;
 	unsigned int flags = master ? MPIC_PRIMARY : 0;
@@ -587,12 +653,17 @@ static struct mpic * __init pmac_setup_one_mpic(struct device_node *np,
 
 	flags |= MPIC_WANTS_RESET;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mpic *mpic;
 	unsigned int flags = master ? 0 : MPIC_SECONDARY;
 
 	pmac_call_feature(PMAC_FTR_ENABLE_MPIC, np, 0, 0);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (of_get_property(np, "big-endian", NULL))
 		flags |= MPIC_BIG_ENDIAN;
 
@@ -603,10 +674,14 @@ static struct mpic * __init pmac_setup_one_mpic(struct device_node *np,
 		flags |= MPIC_U3_HT_IRQS;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mpic = mpic_alloc(np, r.start, flags, 0, 0, name);
 =======
 	mpic = mpic_alloc(np, 0, flags, 0, 0, name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mpic = mpic_alloc(np, 0, flags, 0, 0, name);
+>>>>>>> refs/remotes/origin/master
 	if (mpic == NULL)
 		return NULL;
 
@@ -620,9 +695,12 @@ static int __init pmac_pic_probe_mpic(void)
 	struct mpic *mpic1, *mpic2;
 	struct device_node *np, *master = NULL, *slave = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int cascade;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* We can have up to 2 MPICs cascaded */
 	for (np = NULL; (np = of_find_node_by_type(np, "open-pic"))
@@ -659,6 +737,7 @@ static int __init pmac_pic_probe_mpic(void)
 	of_node_put(master);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* No slave, let's go out */
 	if (slave == NULL)
 		return 0;
@@ -681,6 +760,8 @@ static int __init pmac_pic_probe_mpic(void)
 
 	of_node_put(slave);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Set up a cascaded controller, if present */
 	if (slave) {
 		mpic2 = pmac_setup_one_mpic(slave, 0);
@@ -689,7 +770,10 @@ static int __init pmac_pic_probe_mpic(void)
 		of_node_put(slave);
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -697,7 +781,11 @@ static int __init pmac_pic_probe_mpic(void)
 void __init pmac_pic_init(void)
 {
 	/* We configure the OF parsing based on our oldworld vs. newworld
+<<<<<<< HEAD
 	 * platform type and wether we were booted by BootX.
+=======
+	 * platform type and whether we were booted by BootX.
+>>>>>>> refs/remotes/origin/master
 	 */
 #ifdef CONFIG_PPC32
 	if (!pmac_newworld)

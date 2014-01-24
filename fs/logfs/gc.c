@@ -368,10 +368,14 @@ static struct gc_candidate *get_candidate(struct super_block *sb)
 	struct gc_candidate *cand = NULL, *this;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	max_dist = min(no_free_segments(sb), LOGFS_NO_AREAS);
 =======
 	max_dist = min(no_free_segments(sb), LOGFS_NO_AREAS - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	max_dist = min(no_free_segments(sb), LOGFS_NO_AREAS - 1);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = max_dist; i >= 0; i--) {
 		this = first_in_list(&super->s_low_list[i]);

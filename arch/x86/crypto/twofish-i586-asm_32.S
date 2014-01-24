@@ -20,6 +20,10 @@
 .file "twofish-i586-asm.S"
 .text
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 
 /* return address at 0 */
@@ -27,10 +31,14 @@
 #define in_blk    12  /* input byte array address parameter*/
 #define out_blk   8  /* output byte array address parameter*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define tfm       4  /* Twofish context structure */
 =======
 #define ctx       4  /* Twofish context structure */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ctx       4  /* Twofish context structure */
+>>>>>>> refs/remotes/origin/master
 
 #define a_offset	0
 #define b_offset	4
@@ -223,16 +231,21 @@
 	xor	%esi,		d ## D;\
 	ror	$1,		d ## D;
 
+<<<<<<< HEAD
 .align 4
 .global twofish_enc_blk
 .global twofish_dec_blk
 
 twofish_enc_blk:
+=======
+ENTRY(twofish_enc_blk)
+>>>>>>> refs/remotes/origin/master
 	push	%ebp			/* save registers according to calling convention*/
 	push    %ebx
 	push    %esi
 	push    %edi
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mov	tfm + 16(%esp),	%ebp	/* abuse the base pointer: set new base bointer to the crypto tfm */
 	add	$crypto_tfm_ctx_offset, %ebp	/* ctx address */
@@ -240,6 +253,10 @@ twofish_enc_blk:
 	mov	ctx + 16(%esp),	%ebp	/* abuse the base pointer: set new base
 					 * pointer to the ctx address */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mov	ctx + 16(%esp),	%ebp	/* abuse the base pointer: set new base
+					 * pointer to the ctx address */
+>>>>>>> refs/remotes/origin/master
 	mov     in_blk+16(%esp),%edi	/* input address in edi */
 
 	mov	(%edi),		%eax
@@ -286,8 +303,14 @@ twofish_enc_blk:
 	pop	%ebp
 	mov	$1,	%eax
 	ret
+<<<<<<< HEAD
 
 twofish_dec_blk:
+=======
+ENDPROC(twofish_enc_blk)
+
+ENTRY(twofish_dec_blk)
+>>>>>>> refs/remotes/origin/master
 	push	%ebp			/* save registers according to calling convention*/
 	push    %ebx
 	push    %esi
@@ -295,12 +318,17 @@ twofish_dec_blk:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mov	tfm + 16(%esp),	%ebp	/* abuse the base pointer: set new base bointer to the crypto tfm */
 	add	$crypto_tfm_ctx_offset, %ebp	/* ctx address */
 =======
 	mov	ctx + 16(%esp),	%ebp	/* abuse the base pointer: set new base
 					 * pointer to the ctx address */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mov	ctx + 16(%esp),	%ebp	/* abuse the base pointer: set new base
+					 * pointer to the ctx address */
+>>>>>>> refs/remotes/origin/master
 	mov     in_blk+16(%esp),%edi	/* input address in edi */
 
 	mov	(%edi),		%eax
@@ -347,3 +375,7 @@ twofish_dec_blk:
 	pop	%ebp
 	mov	$1,	%eax
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(twofish_dec_blk)
+>>>>>>> refs/remotes/origin/master

@@ -77,6 +77,7 @@ static struct phy_driver am79c_driver = {
 
 static int __init am79c_init(void)
 {
+<<<<<<< HEAD
 	int ret;
 
 	ret = phy_driver_register(&am79c_driver);
@@ -84,6 +85,9 @@ static int __init am79c_init(void)
 		return ret;
 
 	return 0;
+=======
+	return phy_driver_register(&am79c_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit am79c_exit(void)

@@ -2,7 +2,11 @@
 Ext4 Filesystem
 ===============
 
+<<<<<<< HEAD
 Ext4 is an an advanced level of the ext3 filesystem which incorporates
+=======
+Ext4 is an advanced level of the ext3 filesystem which incorporates
+>>>>>>> refs/remotes/origin/master
 scalability and reliability enhancements for supporting large filesystems
 (64 bit) in keeping with increasing disk capacities and state-of-the-art
 feature requirements.
@@ -69,6 +73,7 @@ Note: More extensive information for getting started with ext4 can be
     for a fair comparison.  When tuning ext3 for best benchmark numbers,
     it is often worthwhile to try changing the data journaling mode; '-o
 <<<<<<< HEAD
+<<<<<<< HEAD
     data=writeback,nobh' can be faster for some workloads.  (Note
     however that running mounted with data=writeback can potentially
     leave stale data exposed in recently written files in case of an
@@ -76,13 +81,18 @@ Note: More extensive information for getting started with ext4 can be
     situations.)  Configuring the filesystem with a large journal can
     also be helpful for metadata-intensive workloads.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
     data=writeback' can be faster for some workloads.  (Note however that
     running mounted with data=writeback can potentially leave stale data
     exposed in recently written files in case of an unclean shutdown,
     which could be a security exposure in some situations.)  Configuring
     the filesystem with a large journal can also be helpful for
     metadata-intensive workloads.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 2. Features
 ===========
@@ -154,6 +164,7 @@ journal_async_commit	Commit block can be written to disk without waiting
 			internally.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 journal=update		Update the ext4 file system's journal to the current
 			format.
 
@@ -164,6 +175,14 @@ journal_dev=devnum	When the external journal device's major/minor numbers
 			the new journal location.  The journal device is
 			identified through its new major/minor numbers encoded
 			in devnum.
+=======
+journal_path=path
+journal_dev=devnum	When the external journal device's major/minor numbers
+			have changed, these options allow the user to specify
+			the new journal location.  The journal device is
+			identified through either its new major/minor numbers
+			encoded in devnum, or via a path to the device.
+>>>>>>> refs/remotes/origin/master
 
 norecovery		Don't load the journal on mounting.  Note that
 noload			if the filesystem was not unmounted cleanly,
@@ -173,12 +192,18 @@ noload			if the filesystem was not unmounted cleanly,
 
 data=journal		All data are committed into the journal prior to being
 <<<<<<< HEAD
+<<<<<<< HEAD
 			written into the main file system.
 =======
 			written into the main file system.  Enabling
 			this mode will disable delayed allocation and
 			O_DIRECT support.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			written into the main file system.  Enabling
+			this mode will disable delayed allocation and
+			O_DIRECT support.
+>>>>>>> refs/remotes/origin/master
 
 data=ordered	(*)	All data are forced directly out to the main file
 			system prior to its metadata being committed to the
@@ -220,6 +245,7 @@ inode_readahead_blks=n	This tuning parameter controls the maximum
 			the buffer cache.  The default value is 32 blocks.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 orlov		(*)	This enables the new Orlov block allocator. It is
 			enabled by default.
 
@@ -251,6 +277,11 @@ nouser_xattr		Disables Extended User Attributes. If you have extended
 			is enabled by default on mount. See the attr(5) manual
 			page and http://acl.bestbits.at/ for more information
 			about extended attributes.
+=======
+nouser_xattr		Disables Extended User Attributes.  See the
+			attr(5) manual page and http://acl.bestbits.at/
+			for more information about extended attributes.
+>>>>>>> refs/remotes/origin/master
 
 noacl			This option disables POSIX Access Control List
 			support. If ACL support is enabled in the kernel
@@ -258,7 +289,10 @@ noacl			This option disables POSIX Access Control List
 			enabled by default on mount. See the acl(5) manual
 			page and http://acl.bestbits.at/ for more information
 			about acl.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 bsddf		(*)	Make 'df' act like BSD.
 minixdf			Make 'df' act like Minix.
@@ -307,6 +341,7 @@ grpjquota=<file>	during journal replay. They replace the above
 			(http://sourceforge.net/projects/linuxquota).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bh		(*)	ext4 associates buffer heads to data pages to
 nobh			(a) cache disk block mapping information
 			(b) link pages into transaction to provide
@@ -317,6 +352,8 @@ nobh			(a) cache disk block mapping information
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 stripe=n		Number of filesystem blocks that mballoc will try
 			to use for allocation size and alignment. For RAID5/6
 			systems this should be the number of data
@@ -363,10 +400,14 @@ min_batch_time=usec	This parameter sets the commit time (as
 
 journal_ioprio=prio	The I/O priority (from 0 to 7, where 0 is the
 <<<<<<< HEAD
+<<<<<<< HEAD
 			highest priorty) which should be used for I/O
 =======
 			highest priority) which should be used for I/O
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			highest priority) which should be used for I/O
+>>>>>>> refs/remotes/origin/master
 			operations submitted by kjournald2 during a
 			commit operation.  This defaults to 3, which is
 			a slightly higher priority than the default I/O
@@ -402,10 +443,14 @@ init_itable=n		The lazy itable init code will wait n times the
 			number of milliseconds it took to zero out the
 			previous block group's inode table.  This
 <<<<<<< HEAD
+<<<<<<< HEAD
 			minimizes the impact on the systme performance
 =======
 			minimizes the impact on the system performance
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			minimizes the impact on the system performance
+>>>>>>> refs/remotes/origin/master
 			while file system's inode table is being initialized.
 
 discard			Controls whether ext4 should issue discard/TRIM
@@ -419,6 +464,7 @@ nouid32			Disables 32-bit UIDs and GIDs.  This is for
 			store and expect 16-bit values.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 resize			Allows to resize filesystem to the end of the last
 			existing block group, further resize has to be done
 			with resize2fs either online, or offline. It can be
@@ -426,6 +472,8 @@ resize			Allows to resize filesystem to the end of the last
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 block_validity		This options allows to enables/disables the in-kernel
 noblock_validity	facility for tracking filesystem metadata blocks
 			within internal data structures. This allows multi-
@@ -442,17 +490,34 @@ dioread_nolock		locking. If the dioread_nolock option is specified
 			completes. This approach allows ext4 code to avoid
 			using inode mutex, which improves scalability on high
 <<<<<<< HEAD
+<<<<<<< HEAD
 			speed storages. However this does not work with nobh
 			option and the mount will fail. Nor does it work with
 =======
 			speed storages. However this does not work with
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			speed storages. However this does not work with
+>>>>>>> refs/remotes/origin/master
 			data journaling and dioread_nolock option will be
 			ignored with kernel warning. Note that dioread_nolock
 			code path is only used for extent-based files.
 			Because of the restrictions this options comprises
 			it is off by default (e.g. dioread_lock).
 
+<<<<<<< HEAD
+=======
+max_dir_size_kb=n	This limits the size of directories so that any
+			attempt to expand them beyond the specified
+			limit in kilobytes will cause an ENOSPC error.
+			This is useful in memory constrained
+			environments, where a very large directory can
+			cause severe performance problems or even
+			provoke the Out Of Memory killer.  (For example,
+			if there is only 512mb memory available, a 176mb
+			directory may seriously cramp the system's style.)
+
+>>>>>>> refs/remotes/origin/master
 i_version		Enable 64-bit inode version support. This option is
 			off by default.
 
@@ -481,12 +546,17 @@ In the event of a crash, the journal can be replayed, bringing both data and
 metadata into a consistent state.  This mode is the slowest except when data
 needs to be read from and written to disk at the same time where it
 <<<<<<< HEAD
+<<<<<<< HEAD
 outperforms all others modes.  Currently ext4 does not have delayed
 allocation support if this data journalling mode is selected.
 =======
 outperforms all others modes.  Enabling this mode will disable delayed
 allocation and O_DIRECT support.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+outperforms all others modes.  Enabling this mode will disable delayed
+allocation and O_DIRECT support.
+>>>>>>> refs/remotes/origin/master
 
 /proc entries
 =============
@@ -570,6 +640,20 @@ Files in /sys/fs/ext4/<devname>
  session_write_kbytes         This file is read-only and shows the number of
                               kilobytes of data that have been written to this
                               filesystem since it was mounted.
+<<<<<<< HEAD
+=======
+
+ reserved_clusters            This is RW file and contains number of reserved
+                              clusters in the file system which will be used
+                              in the specific situations to avoid costly
+                              zeroout, unexpected ENOSPC, or possible data
+                              loss. The default is 2% or 4096 clusters,
+                              whichever is smaller and this can be changed
+                              however it can never exceed number of clusters
+                              in the file system. If there is not enough space
+                              for the reserved space when mounting the file
+                              mount will _not_ fail.
+>>>>>>> refs/remotes/origin/master
 ..............................................................................
 
 Ioctls
@@ -657,7 +741,10 @@ Table of Ext4 specific ioctls
 			      not necessary and has been done this way only
 			      for sake of simplicity.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
  EXT4_IOC_RESIZE_FS	      Resize the filesystem to a new size.  The number
 			      of blocks of resized filesystem is passed in via
@@ -665,7 +752,20 @@ Table of Ext4 specific ioctls
 			      bitmaps and inode table, the userspace tool thus
 			      just passes the new number of blocks.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXT4_IOC_SWAP_BOOT	      Swap i_blocks and associated attributes
+			      (like i_blocks, i_size, i_flags, ...) from
+			      the specified inode with inode
+			      EXT4_BOOT_LOADER_INO (#5). This is typically
+			      used to store a boot loader in a secure part of
+			      the filesystem, where it can't be changed by a
+			      normal user by accident.
+			      The data blocks of the previous boot loader
+			      will be associated with the given inode.
+
+>>>>>>> refs/remotes/origin/master
 ..............................................................................
 
 References

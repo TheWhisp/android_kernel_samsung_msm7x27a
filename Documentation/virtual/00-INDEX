@@ -5,6 +5,7 @@ Virtualization support in the Linux kernel.
 kvm/
 	- Kernel Virtual Machine.  See also http://linux-kvm.org
 <<<<<<< HEAD
+<<<<<<< HEAD
 lguest/
 	- Extremely simple hypervisor for experimental/educational use.
 uml/
@@ -16,3 +17,7 @@ virtio.txt
 	- Text version of draft virtio spec.
           See http://ozlabs.org/~rusty/virtio-spec
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+uml/
+	- User Mode Linux, builds/runs Linux kernel as a userspace program.
+>>>>>>> refs/remotes/origin/master

@@ -431,7 +431,11 @@ static int sh7760fb_alloc_mem(struct fb_info *info)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit sh7760fb_probe(struct platform_device *pdev)
+=======
+static int sh7760fb_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info;
 	struct resource *res;
@@ -557,7 +561,11 @@ out_fb:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit sh7760fb_remove(struct platform_device *dev)
+=======
+static int sh7760fb_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = platform_get_drvdata(dev);
 	struct sh7760fb_par *par = info->par;
@@ -567,11 +575,18 @@ static int __devexit sh7760fb_remove(struct platform_device *dev)
 	fb_dealloc_cmap(&info->cmap);
 	sh7760fb_free_mem(info);
 	if (par->irq >= 0)
+<<<<<<< HEAD
 		free_irq(par->irq, par);
 	iounmap(par->base);
 	release_mem_region(par->ioarea->start, resource_size(par->ioarea));
 	framebuffer_release(info);
 	platform_set_drvdata(dev, NULL);
+=======
+		free_irq(par->irq, &par->vsync);
+	iounmap(par->base);
+	release_mem_region(par->ioarea->start, resource_size(par->ioarea));
+	framebuffer_release(info);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -582,6 +597,7 @@ static struct platform_driver sh7760_lcdc_driver = {
 		   .owner = THIS_MODULE,
 		   },
 	.probe = sh7760fb_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(sh7760fb_remove),
 };
 
@@ -601,6 +617,12 @@ module_exit(sh7760fb_exit);
 =======
 module_platform_driver(sh7760_lcdc_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = sh7760fb_remove,
+};
+
+module_platform_driver(sh7760_lcdc_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Nobuhiro Iwamatsu, Manuel Lauss");
 MODULE_DESCRIPTION("FBdev for SH7760/63 integrated LCD Controller");

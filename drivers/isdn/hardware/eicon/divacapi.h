@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -53,12 +59,17 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   
   
 =======
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -111,10 +122,14 @@
 #define ADV_VOICE          0x03
 #define MAX_CIP_TYPES      5  /* kind of CIP types for group optimization */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define C_IND_MASK_DWORDS  ((MAX_APPL+32) >> 5)
 =======
 #define C_IND_MASK_DWORDS  ((MAX_APPL + 32) >> 5)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define C_IND_MASK_DWORDS  ((MAX_APPL + 32) >> 5)
+>>>>>>> refs/remotes/origin/master
 
 
 #define FAX_CONNECT_INFO_BUFFER_SIZE  256
@@ -148,6 +163,7 @@ typedef struct msn_config_max_s MSN_CONFIG_MAX;
 typedef struct msn_ld_s MSN_LD;
 
 struct manufacturer_profile_s {
+<<<<<<< HEAD
 <<<<<<< HEAD
   dword private_options;
   dword rtp_primary_payloads;
@@ -197,6 +213,8 @@ struct _DATA_ACK_DESC {
 
 typedef void (* t_std_internal_command)(dword Id, PLCI   *plci, byte Rc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword private_options;
 	dword rtp_primary_payloads;
 	dword rtp_additional_payloads;
@@ -244,28 +262,38 @@ struct _DATA_ACK_DESC {
 };
 
 typedef void (*t_std_internal_command)(dword Id, PLCI *plci, byte Rc);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /************************************************************************/
 /* Don't forget to adapt dos.asm after changing the _APPL structure!!!! */
 struct _APPL {
+<<<<<<< HEAD
 <<<<<<< HEAD
   word          Id;
   word          NullCREnable;
   word          CDEnable;
   dword         S_Handle;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	word          Id;
 	word          NullCREnable;
 	word          CDEnable;
 	dword         S_Handle;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   LIST_ENTRY    s_function;
   dword         s_context;
@@ -275,6 +303,8 @@ struct _APPL {
   void **       xbuffer_internal;
   void **       xbuffer_ptr;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	LIST_ENTRY    s_function;
 	dword         s_context;
 	word          s_count;
@@ -282,13 +312,17 @@ struct _APPL {
 	byte *xbuffer_used;
 	void **xbuffer_internal;
 	void **xbuffer_ptr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 
 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   byte   *    queue;
   word          queue_size;
@@ -309,6 +343,8 @@ struct _APPL {
   word   *    DataNCCI;
   word   *    DataFlags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte *queue;
 	word          queue_size;
 	word          queue_free;
@@ -327,11 +363,15 @@ struct _APPL {
 	byte *ReceiveBuffer;
 	word *DataNCCI;
 	word *DataFlags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 struct _PLCI {
+<<<<<<< HEAD
 <<<<<<< HEAD
   ENTITY        Sig;
   ENTITY        NL;
@@ -454,6 +494,8 @@ struct _PLCI {
   int           rx_dma_descriptor;
   dword         rx_dma_magic;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ENTITY        Sig;
 	ENTITY        NL;
 	word          RNum;
@@ -574,11 +616,15 @@ struct _PLCI {
 
 	int           rx_dma_descriptor;
 	dword         rx_dma_magic;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 struct _NCCI {
+<<<<<<< HEAD
 <<<<<<< HEAD
   byte          data_out;
   byte          data_pending;
@@ -587,17 +633,23 @@ struct _NCCI {
   DATA_B3_DESC  DBuffer[MAX_DATA_B3];
   DATA_ACK_DESC DataAck[MAX_DATA_ACK];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte          data_out;
 	byte          data_pending;
 	byte          data_ack_out;
 	byte          data_ack_pending;
 	DATA_B3_DESC  DBuffer[MAX_DATA_B3];
 	DATA_ACK_DESC DataAck[MAX_DATA_ACK];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 struct _DIVA_CAPI_ADAPTER {
+<<<<<<< HEAD
 <<<<<<< HEAD
   IDI_CALL      request;
   byte          Id;
@@ -653,6 +705,8 @@ struct _DIVA_CAPI_ADAPTER {
   byte FlowControlSkipTable[256];
   void* os_card; /* pointer to associated OS dependent adapter structure */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	IDI_CALL      request;
 	byte          Id;
 	byte          max_plci;
@@ -706,7 +760,10 @@ struct _DIVA_CAPI_ADAPTER {
 	byte FlowControlIdTable[256];
 	byte FlowControlSkipTable[256];
 	void *os_card; /* pointer to associated OS dependent adapter structure */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -730,11 +787,19 @@ struct _DIVA_CAPI_ADAPTER {
 #define LAPD            6       /* lapd (Q.921)                     */
 #define X25_L2          7       /* x.25 layer-2                     */
 #define V120_L2         8       /* V.120 layer-2 protocol           */
+<<<<<<< HEAD
 #define V42_IN          9       /* V.42 layer-2 protocol, incomming */
 #define V42            10       /* V.42 layer-2 protocol            */
 #define MDM_ATP        11       /* AT Parser built in the L2        */
 #define X75_V42BIS     12       /* ISO7776 (X.75 SLP) modified to support V.42 bis compression */
 #define RTPL2_IN       13       /* RTP layer-2 protocol, incomming  */
+=======
+#define V42_IN          9       /* V.42 layer-2 protocol, incoming */
+#define V42            10       /* V.42 layer-2 protocol            */
+#define MDM_ATP        11       /* AT Parser built in the L2        */
+#define X75_V42BIS     12       /* ISO7776 (X.75 SLP) modified to support V.42 bis compression */
+#define RTPL2_IN       13       /* RTP layer-2 protocol, incoming  */
+>>>>>>> refs/remotes/origin/master
 #define RTPL2          14       /* RTP layer-2 protocol             */
 #define V120_V42BIS    15       /* V.120 layer-2 protocol supporting V.42 bis compression */
 
@@ -760,6 +825,7 @@ struct _DIVA_CAPI_ADAPTER {
 typedef struct t30_info_s T30_INFO;
 struct t30_info_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
   byte          code;
   byte          rate_div_2400;
   byte          resolution;
@@ -778,6 +844,8 @@ struct t30_info_s {
   byte          head_line_len;
   byte          station_id[T30_MAX_STATION_ID_LENGTH];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	byte          code;
 	byte          rate_div_2400;
 	byte          resolution;
@@ -795,7 +863,10 @@ struct t30_info_s {
 	byte          station_id_len;
 	byte          head_line_len;
 	byte          station_id[T30_MAX_STATION_ID_LENGTH];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* byte          head_line[];      */
 /* byte          sub_sep_length;   */
 /* byte          sub_sep_field[];  */
@@ -857,20 +928,28 @@ struct t30_info_s {
 #define T30_OPERATING_MODE_COUNT        5
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* EDATA transmit messages */
 =======
 /* EDATA transmit messages */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* EDATA transmit messages */
+>>>>>>> refs/remotes/origin/master
 #define EDATA_T30_DIS         0x01
 #define EDATA_T30_FTT         0x02
 #define EDATA_T30_MCF         0x03
 #define EDATA_T30_PARAMETERS  0x04
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* EDATA receive messages */
 =======
 /* EDATA receive messages */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* EDATA receive messages */
+>>>>>>> refs/remotes/origin/master
 #define EDATA_T30_DCS         0x81
 #define EDATA_T30_TRAIN_OK    0x82
 #define EDATA_T30_EOP         0x83
@@ -976,18 +1055,24 @@ struct t30_info_s {
 typedef struct async_s ASYNC_FORMAT;
 struct async_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
   unsigned pe:    1;
   unsigned parity:2;
   unsigned spare: 2;
   unsigned stp:   1;
   unsigned ch_len:2;   /* 3th octett in CAI */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned pe:1;
 	unsigned parity:2;
 	unsigned spare:2;
 	unsigned stp:1;
 	unsigned ch_len:2;   /* 3th octett in CAI */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -1031,6 +1116,7 @@ struct async_s {
 /* Capi IE + Msg types                                              */
 /*------------------------------------------------------------------*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ESC_CAUSE        0x800|CAU          /* Escape cause element */
 #define ESC_MSGTYPE      0x800|MSGTYPEIE    /* Escape message type  */
 #define ESC_CHI          0x800|CHI          /* Escape channel id    */
@@ -1040,6 +1126,8 @@ struct async_s {
 #define ESC_SSEXT        0x800|SSEXTIE      /* Escape Supplem. Serv.*/
 #define ESC_VSWITCH      0x800|VSWITCHIE    /* Escape VSwitch       */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ESC_CAUSE        0x800 | CAU        /* Escape cause element */
 #define ESC_MSGTYPE      0x800 | MSGTYPEIE  /* Escape message type  */
 #define ESC_CHI          0x800 | CHI        /* Escape channel id    */
@@ -1048,7 +1136,10 @@ struct async_s {
 #define ESC_PROFILE      0x800 | PROFILEIE  /* Escape profile       */
 #define ESC_SSEXT        0x800 | SSEXTIE    /* Escape Supplem. Serv.*/
 #define ESC_VSWITCH      0x800 | VSWITCHIE  /* Escape VSwitch       */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CST              0x14               /* Call State i.e.      */
 #define PI               0x1E               /* Progress Indicator   */
 #define NI               0x27               /* Notification Ind     */
@@ -1259,6 +1350,7 @@ typedef struct li_config_s LI_CONFIG;
 
 struct xconnect_card_address_s {
 <<<<<<< HEAD
+<<<<<<< HEAD
   dword low;
   dword high;
 };
@@ -1279,6 +1371,8 @@ struct li_config_s {
   byte curchnl;
   byte chflags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword low;
 	dword high;
 };
@@ -1298,7 +1392,10 @@ struct li_config_s {
 	byte channel;
 	byte curchnl;
 	byte chflags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern LI_CONFIG   *li_config_table;
@@ -1488,6 +1585,7 @@ extern word li_total_channels;
 #define B2_PIAFS                29
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PRIVATE_PIAFS           29 
 
 /*
@@ -1516,6 +1614,8 @@ extern word li_total_channels;
 | abilities           |      |                                         |
 +---------------------+------+-----------------------------------------+
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define PRIVATE_PIAFS           29
 
 /*
@@ -1531,7 +1631,11 @@ extern word li_total_channels;
   | Direction           | word | Enable compression/decompression for    |
   |                     |      | 0: All direction                        |
   |                     |      | 1: disable outgoing data                |
+<<<<<<< HEAD
   |                     |      | 2: disable incomming data               |
+=======
+  |                     |      | 2: disable incoming data               |
+>>>>>>> refs/remotes/origin/master
   |                     |      | 3: disable both direction (default)     |
   +---------------------+------+-----------------------------------------+
   | Number of code      | word | Parameter P1 of V.42bis in accordance   |
@@ -1543,7 +1647,10 @@ extern word li_total_channels;
   | control (UDATA)     | byte | enable PIAFS control communication      |
   | abilities           |      |                                         |
   +---------------------+------+-----------------------------------------+
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 */
 #define PIAFS_UDATA_ABILITIES  0x80
 

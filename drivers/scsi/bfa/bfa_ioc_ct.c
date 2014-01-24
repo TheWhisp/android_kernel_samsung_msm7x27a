@@ -18,10 +18,14 @@
 #include "bfad_drv.h"
 #include "bfa_ioc.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "bfi_ctreg.h"
 =======
 #include "bfi_reg.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "bfi_reg.h"
+>>>>>>> refs/remotes/origin/master
 #include "bfa_defs.h"
 
 BFA_TRC_FILE(CNA, IOC_CT);
@@ -41,11 +45,14 @@ BFA_TRC_FILE(CNA, IOC_CT);
 static bfa_boolean_t bfa_ioc_ct_firmware_lock(struct bfa_ioc_s *ioc);
 static void bfa_ioc_ct_firmware_unlock(struct bfa_ioc_s *ioc);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void bfa_ioc_ct_reg_init(struct bfa_ioc_s *ioc);
 static void bfa_ioc_ct_map_port(struct bfa_ioc_s *ioc);
 static void bfa_ioc_ct_isr_mode_set(struct bfa_ioc_s *ioc, bfa_boolean_t msix);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void bfa_ioc_ct_notify_fail(struct bfa_ioc_s *ioc);
 static void bfa_ioc_ct_ownership_reset(struct bfa_ioc_s *ioc);
 static bfa_boolean_t bfa_ioc_ct_sync_start(struct bfa_ioc_s *ioc);
@@ -53,6 +60,7 @@ static void bfa_ioc_ct_sync_join(struct bfa_ioc_s *ioc);
 static void bfa_ioc_ct_sync_leave(struct bfa_ioc_s *ioc);
 static void bfa_ioc_ct_sync_ack(struct bfa_ioc_s *ioc);
 static bfa_boolean_t bfa_ioc_ct_sync_complete(struct bfa_ioc_s *ioc);
+<<<<<<< HEAD
 
 static struct bfa_ioc_hwif_s hwif_ct;
 <<<<<<< HEAD
@@ -82,6 +90,17 @@ bfa_ioc_set_ct_hwif(struct bfa_ioc_s *ioc)
 =======
 static struct bfa_ioc_hwif_s hwif_ct2;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void bfa_ioc_ct_set_cur_ioc_fwstate(
+			struct bfa_ioc_s *ioc, enum bfi_ioc_state fwstate);
+static enum bfi_ioc_state bfa_ioc_ct_get_cur_ioc_fwstate(struct bfa_ioc_s *ioc);
+static void bfa_ioc_ct_set_alt_ioc_fwstate(
+			struct bfa_ioc_s *ioc, enum bfi_ioc_state fwstate);
+static enum bfi_ioc_state bfa_ioc_ct_get_alt_ioc_fwstate(struct bfa_ioc_s *ioc);
+
+static struct bfa_ioc_hwif_s hwif_ct;
+static struct bfa_ioc_hwif_s hwif_ct2;
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Return true if firmware of current driver matches the running firmware.
@@ -93,6 +112,7 @@ bfa_ioc_ct_firmware_lock(struct bfa_ioc_s *ioc)
 	u32 usecnt;
 	struct bfi_ioc_image_hdr_s fwhdr;
 
+<<<<<<< HEAD
 	/*
 <<<<<<< HEAD
 	 * Firmware match check is relevant only for CNA.
@@ -112,6 +132,8 @@ bfa_ioc_ct_firmware_lock(struct bfa_ioc_s *ioc)
 						BFA_IOC_FWIMG_MINSZ)
 		return BFA_TRUE;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	bfa_ioc_sem_get(ioc->ioc_regs.ioc_usage_sem_reg);
 	usecnt = readl(ioc->ioc_regs.ioc_usage_reg);
 
@@ -121,9 +143,13 @@ bfa_ioc_ct_firmware_lock(struct bfa_ioc_s *ioc)
 	if (usecnt == 0) {
 		writel(1, ioc->ioc_regs.ioc_usage_reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		readl(ioc->ioc_regs.ioc_usage_sem_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		readl(ioc->ioc_regs.ioc_usage_sem_reg);
+>>>>>>> refs/remotes/origin/master
 		writel(1, ioc->ioc_regs.ioc_usage_sem_reg);
 		writel(0, ioc->ioc_regs.ioc_fail_sync);
 		bfa_trc(ioc, usecnt);
@@ -144,9 +170,13 @@ bfa_ioc_ct_firmware_lock(struct bfa_ioc_s *ioc)
 	bfa_ioc_fwver_get(ioc, &fwhdr);
 	if (!bfa_ioc_fwver_cmp(ioc, &fwhdr)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		readl(ioc->ioc_regs.ioc_usage_sem_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		readl(ioc->ioc_regs.ioc_usage_sem_reg);
+>>>>>>> refs/remotes/origin/master
 		writel(1, ioc->ioc_regs.ioc_usage_sem_reg);
 		bfa_trc(ioc, usecnt);
 		return BFA_FALSE;
@@ -158,9 +188,13 @@ bfa_ioc_ct_firmware_lock(struct bfa_ioc_s *ioc)
 	usecnt++;
 	writel(usecnt, ioc->ioc_regs.ioc_usage_reg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	readl(ioc->ioc_regs.ioc_usage_sem_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	readl(ioc->ioc_regs.ioc_usage_sem_reg);
+>>>>>>> refs/remotes/origin/master
 	writel(1, ioc->ioc_regs.ioc_usage_sem_reg);
 	bfa_trc(ioc, usecnt);
 	return BFA_TRUE;
@@ -172,6 +206,7 @@ bfa_ioc_ct_firmware_unlock(struct bfa_ioc_s *ioc)
 	u32 usecnt;
 
 	/*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	 * Firmware lock is relevant only for CNA.
 	 */
@@ -191,6 +226,8 @@ bfa_ioc_ct_firmware_unlock(struct bfa_ioc_s *ioc)
 		return;
 
 	/*
+=======
+>>>>>>> refs/remotes/origin/master
 	 * decrement usage count
 	 */
 	bfa_ioc_sem_get(ioc->ioc_regs.ioc_usage_sem_reg);
@@ -202,9 +239,13 @@ bfa_ioc_ct_firmware_unlock(struct bfa_ioc_s *ioc)
 	bfa_trc(ioc, usecnt);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	readl(ioc->ioc_regs.ioc_usage_sem_reg);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	readl(ioc->ioc_regs.ioc_usage_sem_reg);
+>>>>>>> refs/remotes/origin/master
 	writel(1, ioc->ioc_regs.ioc_usage_sem_reg);
 }
 
@@ -215,10 +256,14 @@ static void
 bfa_ioc_ct_notify_fail(struct bfa_ioc_s *ioc)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ioc->cna) {
 =======
 	if (bfa_ioc_is_cna(ioc)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (bfa_ioc_is_cna(ioc)) {
+>>>>>>> refs/remotes/origin/master
 		writel(__FW_INIT_HALT_P, ioc->ioc_regs.ll_halt);
 		writel(__FW_INIT_HALT_P, ioc->ioc_regs.alt_ll_halt);
 		/* Wait for halt to take effect */
@@ -226,10 +271,14 @@ bfa_ioc_ct_notify_fail(struct bfa_ioc_s *ioc)
 		readl(ioc->ioc_regs.alt_ll_halt);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		writel(__PSS_ERR_STATUS_SET, ioc->ioc_regs.err_set);
 =======
 		writel(~0U, ioc->ioc_regs.err_set);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		writel(~0U, ioc->ioc_regs.err_set);
+>>>>>>> refs/remotes/origin/master
 		readl(ioc->ioc_regs.err_set);
 	}
 }
@@ -238,10 +287,14 @@ bfa_ioc_ct_notify_fail(struct bfa_ioc_s *ioc)
  * Host to LPU mailbox message addresses
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct { u32 hfn_mbox, lpu_mbox, hfn_pgn; } iocreg_fnreg[] = {
 =======
 static struct { u32 hfn_mbox, lpu_mbox, hfn_pgn; } ct_fnreg[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct { u32 hfn_mbox, lpu_mbox, hfn_pgn; } ct_fnreg[] = {
+>>>>>>> refs/remotes/origin/master
 	{ HOSTFN0_LPU_MBOX0_0, LPU_HOSTFN0_MBOX0_0, HOST_PAGE_NUM_FN0 },
 	{ HOSTFN1_LPU_MBOX0_8, LPU_HOSTFN1_MBOX0_8, HOST_PAGE_NUM_FN1 },
 	{ HOSTFN2_LPU_MBOX0_0, LPU_HOSTFN2_MBOX0_0, HOST_PAGE_NUM_FN2 },
@@ -252,23 +305,30 @@ static struct { u32 hfn_mbox, lpu_mbox, hfn_pgn; } ct_fnreg[] = {
  * Host <-> LPU mailbox command/status registers - port 0
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct { u32 hfn, lpu; } iocreg_mbcmd_p0[] = {
 	{ HOSTFN0_LPU0_MBOX0_CMD_STAT, LPU0_HOSTFN0_MBOX0_CMD_STAT },
 	{ HOSTFN1_LPU0_MBOX0_CMD_STAT, LPU0_HOSTFN1_MBOX0_CMD_STAT },
 	{ HOSTFN2_LPU0_MBOX0_CMD_STAT, LPU0_HOSTFN2_MBOX0_CMD_STAT },
 	{ HOSTFN3_LPU0_MBOX0_CMD_STAT, LPU0_HOSTFN3_MBOX0_CMD_STAT }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct { u32 hfn, lpu; } ct_p0reg[] = {
 	{ HOSTFN0_LPU0_CMD_STAT, LPU0_HOSTFN0_CMD_STAT },
 	{ HOSTFN1_LPU0_CMD_STAT, LPU0_HOSTFN1_CMD_STAT },
 	{ HOSTFN2_LPU0_CMD_STAT, LPU0_HOSTFN2_CMD_STAT },
 	{ HOSTFN3_LPU0_CMD_STAT, LPU0_HOSTFN3_CMD_STAT }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * Host <-> LPU mailbox command/status registers - port 1
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct { u32 hfn, lpu; } iocreg_mbcmd_p1[] = {
 	{ HOSTFN0_LPU1_MBOX0_CMD_STAT, LPU1_HOSTFN0_MBOX0_CMD_STAT },
@@ -276,6 +336,8 @@ static struct { u32 hfn, lpu; } iocreg_mbcmd_p1[] = {
 	{ HOSTFN2_LPU1_MBOX0_CMD_STAT, LPU1_HOSTFN2_MBOX0_CMD_STAT },
 	{ HOSTFN3_LPU1_MBOX0_CMD_STAT, LPU1_HOSTFN3_MBOX0_CMD_STAT }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct { u32 hfn, lpu; } ct_p1reg[] = {
 	{ HOSTFN0_LPU1_CMD_STAT, LPU1_HOSTFN0_CMD_STAT },
 	{ HOSTFN1_LPU1_CMD_STAT, LPU1_HOSTFN1_CMD_STAT },
@@ -291,7 +353,10 @@ static struct { uint32_t hfn_mbox, lpu_mbox, hfn_pgn, hfn, lpu, lpu_read; }
 	{ CT2_HOSTFN_LPU1_MBOX0, CT2_LPU1_HOSTFN_MBOX0, CT2_HOSTFN_PAGE_NUM,
 	  CT2_HOSTFN_LPU1_CMD_STAT, CT2_LPU1_HOSTFN_CMD_STAT,
 	  CT2_HOSTFN_LPU1_READ_STAT},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static void
@@ -303,6 +368,7 @@ bfa_ioc_ct_reg_init(struct bfa_ioc_s *ioc)
 	rb = bfa_ioc_bar0(ioc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ioc->ioc_regs.hfn_mbox = rb + iocreg_fnreg[pcifn].hfn_mbox;
 	ioc->ioc_regs.lpu_mbox = rb + iocreg_fnreg[pcifn].lpu_mbox;
 	ioc->ioc_regs.host_page_num_fn = rb + iocreg_fnreg[pcifn].hfn_pgn;
@@ -311,11 +377,17 @@ bfa_ioc_ct_reg_init(struct bfa_ioc_s *ioc)
 	ioc->ioc_regs.lpu_mbox = rb + ct_fnreg[pcifn].lpu_mbox;
 	ioc->ioc_regs.host_page_num_fn = rb + ct_fnreg[pcifn].hfn_pgn;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ioc->ioc_regs.hfn_mbox = rb + ct_fnreg[pcifn].hfn_mbox;
+	ioc->ioc_regs.lpu_mbox = rb + ct_fnreg[pcifn].lpu_mbox;
+	ioc->ioc_regs.host_page_num_fn = rb + ct_fnreg[pcifn].hfn_pgn;
+>>>>>>> refs/remotes/origin/master
 
 	if (ioc->port_id == 0) {
 		ioc->ioc_regs.heartbeat = rb + BFA_IOC0_HBEAT_REG;
 		ioc->ioc_regs.ioc_fwstate = rb + BFA_IOC0_STATE_REG;
 		ioc->ioc_regs.alt_ioc_fwstate = rb + BFA_IOC1_STATE_REG;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ioc->ioc_regs.hfn_mbox_cmd = rb + iocreg_mbcmd_p0[pcifn].hfn;
 		ioc->ioc_regs.lpu_mbox_cmd = rb + iocreg_mbcmd_p0[pcifn].lpu;
@@ -323,6 +395,10 @@ bfa_ioc_ct_reg_init(struct bfa_ioc_s *ioc)
 		ioc->ioc_regs.hfn_mbox_cmd = rb + ct_p0reg[pcifn].hfn;
 		ioc->ioc_regs.lpu_mbox_cmd = rb + ct_p0reg[pcifn].lpu;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ioc->ioc_regs.hfn_mbox_cmd = rb + ct_p0reg[pcifn].hfn;
+		ioc->ioc_regs.lpu_mbox_cmd = rb + ct_p0reg[pcifn].lpu;
+>>>>>>> refs/remotes/origin/master
 		ioc->ioc_regs.ll_halt = rb + FW_INIT_HALT_P0;
 		ioc->ioc_regs.alt_ll_halt = rb + FW_INIT_HALT_P1;
 	} else {
@@ -330,12 +406,17 @@ bfa_ioc_ct_reg_init(struct bfa_ioc_s *ioc)
 		ioc->ioc_regs.ioc_fwstate = (rb + BFA_IOC1_STATE_REG);
 		ioc->ioc_regs.alt_ioc_fwstate = rb + BFA_IOC0_STATE_REG;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ioc->ioc_regs.hfn_mbox_cmd = rb + iocreg_mbcmd_p1[pcifn].hfn;
 		ioc->ioc_regs.lpu_mbox_cmd = rb + iocreg_mbcmd_p1[pcifn].lpu;
 =======
 		ioc->ioc_regs.hfn_mbox_cmd = rb + ct_p1reg[pcifn].hfn;
 		ioc->ioc_regs.lpu_mbox_cmd = rb + ct_p1reg[pcifn].lpu;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ioc->ioc_regs.hfn_mbox_cmd = rb + ct_p1reg[pcifn].hfn;
+		ioc->ioc_regs.lpu_mbox_cmd = rb + ct_p1reg[pcifn].lpu;
+>>>>>>> refs/remotes/origin/master
 		ioc->ioc_regs.ll_halt = rb + FW_INIT_HALT_P1;
 		ioc->ioc_regs.alt_ll_halt = rb + FW_INIT_HALT_P0;
 	}
@@ -346,12 +427,17 @@ bfa_ioc_ct_reg_init(struct bfa_ioc_s *ioc)
 	ioc->ioc_regs.pss_ctl_reg = (rb + PSS_CTL_REG);
 	ioc->ioc_regs.pss_err_status_reg = (rb + PSS_ERR_STATUS_REG);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ioc->ioc_regs.app_pll_fast_ctl_reg = (rb + APP_PLL_425_CTL_REG);
 	ioc->ioc_regs.app_pll_slow_ctl_reg = (rb + APP_PLL_312_CTL_REG);
 =======
 	ioc->ioc_regs.app_pll_fast_ctl_reg = (rb + APP_PLL_LCLK_CTL_REG);
 	ioc->ioc_regs.app_pll_slow_ctl_reg = (rb + APP_PLL_SCLK_CTL_REG);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ioc->ioc_regs.app_pll_fast_ctl_reg = (rb + APP_PLL_LCLK_CTL_REG);
+	ioc->ioc_regs.app_pll_slow_ctl_reg = (rb + APP_PLL_SCLK_CTL_REG);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * IOC semaphore registers and serialization
@@ -375,7 +461,10 @@ bfa_ioc_ct_reg_init(struct bfa_ioc_s *ioc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 bfa_ioc_ct2_reg_init(struct bfa_ioc_s *ioc)
 {
@@ -434,7 +523,10 @@ bfa_ioc_ct2_reg_init(struct bfa_ioc_s *ioc)
 	ioc->ioc_regs.err_set = (rb + ERR_SET_REG);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Initialize IOC to port mapping.
  */
@@ -458,7 +550,10 @@ bfa_ioc_ct_map_port(struct bfa_ioc_s *ioc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 bfa_ioc_ct2_map_port(struct bfa_ioc_s *ioc)
 {
@@ -472,7 +567,10 @@ bfa_ioc_ct2_map_port(struct bfa_ioc_s *ioc)
 	bfa_trc(ioc, ioc->port_id);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Set interrupt mode for a function: INTX or MSIX
  */
@@ -492,10 +590,14 @@ bfa_ioc_ct_isr_mode_set(struct bfa_ioc_s *ioc, bfa_boolean_t msix)
 	 * If already in desired mode, do not change anything
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!msix && mode)
 =======
 	if ((!msix && mode) || (msix && !mode))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((!msix && mode) || (msix && !mode))
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	if (msix)
@@ -511,7 +613,10 @@ bfa_ioc_ct_isr_mode_set(struct bfa_ioc_s *ioc, bfa_boolean_t msix)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_boolean_t
 bfa_ioc_ct2_lpu_read_stat(struct bfa_ioc_s *ioc)
 {
@@ -526,7 +631,10 @@ bfa_ioc_ct2_lpu_read_stat(struct bfa_ioc_s *ioc)
 	return BFA_FALSE;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Cleanup hw semaphore and usecnt registers
  */
@@ -534,6 +642,7 @@ static void
 bfa_ioc_ct_ownership_reset(struct bfa_ioc_s *ioc)
 {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ioc->cna) {
 		bfa_ioc_sem_get(ioc->ioc_regs.ioc_usage_sem_reg);
@@ -547,6 +656,14 @@ bfa_ioc_ct_ownership_reset(struct bfa_ioc_s *ioc)
 		writel(1, ioc->ioc_regs.ioc_usage_sem_reg);
 	}
 
+=======
+	bfa_ioc_sem_get(ioc->ioc_regs.ioc_usage_sem_reg);
+	writel(0, ioc->ioc_regs.ioc_usage_reg);
+	readl(ioc->ioc_regs.ioc_usage_sem_reg);
+	writel(1, ioc->ioc_regs.ioc_usage_sem_reg);
+
+	writel(0, ioc->ioc_regs.ioc_fail_sync);
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Read the hw sem reg to make sure that it is locked
 	 * before we clear it. If it is not locked, writing 1
@@ -653,6 +770,7 @@ bfa_ioc_ct_sync_complete(struct bfa_ioc_s *ioc)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * Check the firmware state to know if pll_init has been completed already
  */
@@ -680,6 +798,8 @@ bfa_ioc_ct_pll_init(void __iomem *rb, bfa_boolean_t fcmode)
 		__APP_PLL_425_JITLMT0_1(3U) |
 		__APP_PLL_425_CNTLMT0_1(1U);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Called from bfa_ioc_attach() to map asic specific calls.
  */
@@ -695,6 +815,13 @@ bfa_ioc_set_ctx_hwif(struct bfa_ioc_s *ioc, struct bfa_ioc_hwif_s *hwif)
 	hwif->ioc_sync_leave = bfa_ioc_ct_sync_leave;
 	hwif->ioc_sync_ack = bfa_ioc_ct_sync_ack;
 	hwif->ioc_sync_complete = bfa_ioc_ct_sync_complete;
+<<<<<<< HEAD
+=======
+	hwif->ioc_set_fwstate = bfa_ioc_ct_set_cur_ioc_fwstate;
+	hwif->ioc_get_fwstate = bfa_ioc_ct_get_cur_ioc_fwstate;
+	hwif->ioc_set_alt_fwstate = bfa_ioc_ct_set_alt_ioc_fwstate;
+	hwif->ioc_get_alt_fwstate = bfa_ioc_ct_get_alt_ioc_fwstate;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -773,7 +900,10 @@ bfa_ioc_ct_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 		__APP_PLL_LCLK_JITLMT0_1(3U) |
 		__APP_PLL_LCLK_CNTLMT0_1(1U);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (fcmode) {
 		writel(0, (rb + OP_MODE));
 		writel(__APP_EMS_CMLCKSEL | __APP_EMS_REFCKBUFEN2 |
@@ -791,6 +921,7 @@ bfa_ioc_ct_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 	writel(0xffffffffU, (rb + HOSTFN0_INT_MSK));
 	writel(0xffffffffU, (rb + HOSTFN1_INT_MSK));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	writel(pll_sclk | __APP_PLL_312_LOGIC_SOFT_RESET,
 			rb + APP_PLL_312_CTL_REG);
 	writel(pll_fclk | __APP_PLL_425_LOGIC_SOFT_RESET,
@@ -800,6 +931,8 @@ bfa_ioc_ct_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 	writel(pll_fclk | __APP_PLL_425_LOGIC_SOFT_RESET | __APP_PLL_425_ENABLE,
 			rb + APP_PLL_425_CTL_REG);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	writel(pll_sclk | __APP_PLL_SCLK_LOGIC_SOFT_RESET,
 			rb + APP_PLL_SCLK_CTL_REG);
 	writel(pll_fclk | __APP_PLL_LCLK_LOGIC_SOFT_RESET,
@@ -808,11 +941,15 @@ bfa_ioc_ct_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 		__APP_PLL_SCLK_ENABLE, rb + APP_PLL_SCLK_CTL_REG);
 	writel(pll_fclk | __APP_PLL_LCLK_LOGIC_SOFT_RESET |
 		__APP_PLL_LCLK_ENABLE, rb + APP_PLL_LCLK_CTL_REG);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	readl(rb + HOSTFN0_INT_MSK);
 	udelay(2000);
 	writel(0xffffffffU, (rb + HOSTFN0_INT_STATUS));
 	writel(0xffffffffU, (rb + HOSTFN1_INT_STATUS));
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writel(pll_sclk | __APP_PLL_312_ENABLE, rb + APP_PLL_312_CTL_REG);
 	writel(pll_fclk | __APP_PLL_425_ENABLE, rb + APP_PLL_425_CTL_REG);
@@ -821,6 +958,11 @@ bfa_ioc_ct_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 	writel(pll_fclk | __APP_PLL_LCLK_ENABLE, rb + APP_PLL_LCLK_CTL_REG);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(pll_sclk | __APP_PLL_SCLK_ENABLE, rb + APP_PLL_SCLK_CTL_REG);
+	writel(pll_fclk | __APP_PLL_LCLK_ENABLE, rb + APP_PLL_LCLK_CTL_REG);
+
+>>>>>>> refs/remotes/origin/master
 	if (!fcmode) {
 		writel(__PMM_1T_RESET_P, (rb + PMM_1T_RESET_REG_P0));
 		writel(__PMM_1T_RESET_P, (rb + PMM_1T_RESET_REG_P1));
@@ -841,7 +983,10 @@ bfa_ioc_ct_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 	return BFA_STATUS_OK;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void
 bfa_ioc_ct2_sclk_init(void __iomem *rb)
@@ -946,6 +1091,7 @@ bfa_ioc_ct2_mem_init(void __iomem *rb)
 void
 bfa_ioc_ct2_mac_reset(void __iomem *rb)
 {
+<<<<<<< HEAD
 	u32	r32;
 
 	bfa_ioc_ct2_sclk_init(rb);
@@ -965,6 +1111,8 @@ bfa_ioc_ct2_mac_reset(void __iomem *rb)
 	writel(r32 & ~__APP_PLL_LCLK_LOGIC_SOFT_RESET,
 		(rb + CT2_APP_PLL_LCLK_CTL_REG));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* put port0, port1 MAC & AHB in reset */
 	writel((__CSI_MAC_RESET | __CSI_MAC_AHB_RESET),
 		rb + CT2_CSI_MAC_CONTROL_REG(0));
@@ -972,8 +1120,26 @@ bfa_ioc_ct2_mac_reset(void __iomem *rb)
 		rb + CT2_CSI_MAC_CONTROL_REG(1));
 }
 
+<<<<<<< HEAD
 #define CT2_NFC_MAX_DELAY	1000
 #define CT2_NFC_VER_VALID	0x143
+=======
+static void
+bfa_ioc_ct2_enable_flash(void __iomem *rb)
+{
+	u32 r32;
+
+	r32 = readl((rb + PSS_GPIO_OUT_REG));
+	writel(r32 & ~1, (rb + PSS_GPIO_OUT_REG));
+	r32 = readl((rb + PSS_GPIO_OE_REG));
+	writel(r32 | 1, (rb + PSS_GPIO_OE_REG));
+}
+
+#define CT2_NFC_MAX_DELAY	1000
+#define CT2_NFC_PAUSE_MAX_DELAY 4000
+#define CT2_NFC_VER_VALID	0x147
+#define CT2_NFC_STATE_RUNNING   0x20000001
+>>>>>>> refs/remotes/origin/master
 #define BFA_IOC_PLL_POLL	1000000
 
 static bfa_boolean_t
@@ -989,6 +1155,23 @@ bfa_ioc_ct2_nfc_halted(void __iomem *rb)
 }
 
 static void
+<<<<<<< HEAD
+=======
+bfa_ioc_ct2_nfc_halt(void __iomem *rb)
+{
+	int	i;
+
+	writel(__HALT_NFC_CONTROLLER, rb + CT2_NFC_CSR_SET_REG);
+	for (i = 0; i < CT2_NFC_MAX_DELAY; i++) {
+		if (bfa_ioc_ct2_nfc_halted(rb))
+			break;
+		udelay(1000);
+	}
+	WARN_ON(!bfa_ioc_ct2_nfc_halted(rb));
+}
+
+static void
+>>>>>>> refs/remotes/origin/master
 bfa_ioc_ct2_nfc_resume(void __iomem *rb)
 {
 	u32	r32;
@@ -1004,6 +1187,7 @@ bfa_ioc_ct2_nfc_resume(void __iomem *rb)
 	WARN_ON(1);
 }
 
+<<<<<<< HEAD
 bfa_status_t
 bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 {
@@ -1081,12 +1265,139 @@ bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 	 * Mask the interrupts and clear any
 	 * pending interrupts.
 	 */
+=======
+static void
+bfa_ioc_ct2_clk_reset(void __iomem *rb)
+{
+	u32 r32;
+
+	bfa_ioc_ct2_sclk_init(rb);
+	bfa_ioc_ct2_lclk_init(rb);
+
+	/*
+	 * release soft reset on s_clk & l_clk
+	 */
+	r32 = readl((rb + CT2_APP_PLL_SCLK_CTL_REG));
+	writel(r32 & ~__APP_PLL_SCLK_LOGIC_SOFT_RESET,
+			(rb + CT2_APP_PLL_SCLK_CTL_REG));
+
+	r32 = readl((rb + CT2_APP_PLL_LCLK_CTL_REG));
+	writel(r32 & ~__APP_PLL_LCLK_LOGIC_SOFT_RESET,
+			(rb + CT2_APP_PLL_LCLK_CTL_REG));
+
+}
+
+static void
+bfa_ioc_ct2_nfc_clk_reset(void __iomem *rb)
+{
+	u32 r32, i;
+
+	r32 = readl((rb + PSS_CTL_REG));
+	r32 |= (__PSS_LPU0_RESET | __PSS_LPU1_RESET);
+	writel(r32, (rb + PSS_CTL_REG));
+
+	writel(__RESET_AND_START_SCLK_LCLK_PLLS, rb + CT2_CSI_FW_CTL_SET_REG);
+
+	for (i = 0; i < BFA_IOC_PLL_POLL; i++) {
+		r32 = readl(rb + CT2_NFC_FLASH_STS_REG);
+
+		if ((r32 & __FLASH_PLL_INIT_AND_RESET_IN_PROGRESS))
+			break;
+	}
+	WARN_ON(!(r32 & __FLASH_PLL_INIT_AND_RESET_IN_PROGRESS));
+
+	for (i = 0; i < BFA_IOC_PLL_POLL; i++) {
+		r32 = readl(rb + CT2_NFC_FLASH_STS_REG);
+
+		if (!(r32 & __FLASH_PLL_INIT_AND_RESET_IN_PROGRESS))
+			break;
+	}
+	WARN_ON((r32 & __FLASH_PLL_INIT_AND_RESET_IN_PROGRESS));
+
+	r32 = readl(rb + CT2_CSI_FW_CTL_REG);
+	WARN_ON((r32 & __RESET_AND_START_SCLK_LCLK_PLLS));
+}
+
+static void
+bfa_ioc_ct2_wait_till_nfc_running(void __iomem *rb)
+{
+	u32 r32;
+	int i;
+
+	if (bfa_ioc_ct2_nfc_halted(rb))
+		bfa_ioc_ct2_nfc_resume(rb);
+	for (i = 0; i < CT2_NFC_PAUSE_MAX_DELAY; i++) {
+		r32 = readl(rb + CT2_NFC_STS_REG);
+		if (r32 == CT2_NFC_STATE_RUNNING)
+			return;
+		udelay(1000);
+	}
+
+	r32 = readl(rb + CT2_NFC_STS_REG);
+	WARN_ON(!(r32 == CT2_NFC_STATE_RUNNING));
+}
+
+bfa_status_t
+bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
+{
+	u32 wgn, r32, nfc_ver;
+
+	wgn = readl(rb + CT2_WGN_STATUS);
+
+	if (wgn == (__WGN_READY | __GLBL_PF_VF_CFG_RDY)) {
+		/*
+		 * If flash is corrupted, enable flash explicitly
+		 */
+		bfa_ioc_ct2_clk_reset(rb);
+		bfa_ioc_ct2_enable_flash(rb);
+
+		bfa_ioc_ct2_mac_reset(rb);
+
+		bfa_ioc_ct2_clk_reset(rb);
+		bfa_ioc_ct2_enable_flash(rb);
+
+	} else {
+		nfc_ver = readl(rb + CT2_RSC_GPR15_REG);
+
+		if ((nfc_ver >= CT2_NFC_VER_VALID) &&
+		    (wgn == (__A2T_AHB_LOAD | __WGN_READY))) {
+
+			bfa_ioc_ct2_wait_till_nfc_running(rb);
+
+			bfa_ioc_ct2_nfc_clk_reset(rb);
+		} else {
+			bfa_ioc_ct2_nfc_halt(rb);
+
+			bfa_ioc_ct2_clk_reset(rb);
+			bfa_ioc_ct2_mac_reset(rb);
+			bfa_ioc_ct2_clk_reset(rb);
+
+		}
+	}
+	/*
+	* The very first PCIe DMA Read done by LPU fails with a fatal error,
+	* when Address Translation Cache (ATC) has been enabled by system BIOS.
+	*
+	* Workaround:
+	* Disable Invalidated Tag Match Enable capability by setting the bit 26
+	* of CHIP_MISC_PRG to 0, by default it is set to 1.
+	*/
+	r32 = readl(rb + CT2_CHIP_MISC_PRG);
+	writel((r32 & 0xfbffffff), (rb + CT2_CHIP_MISC_PRG));
+
+	/*
+	 * Mask the interrupts and clear any
+	 * pending interrupts left by BIOS/EFI
+	 */
+
+>>>>>>> refs/remotes/origin/master
 	writel(1, (rb + CT2_LPU0_HOSTFN_MBOX0_MSK));
 	writel(1, (rb + CT2_LPU1_HOSTFN_MBOX0_MSK));
 
 	/* For first time initialization, no need to clear interrupts */
 	r32 = readl(rb + HOST_SEM5_REG);
 	if (r32 & 0x1) {
+<<<<<<< HEAD
 		r32 = readl(rb + CT2_LPU0_HOSTFN_CMD_STAT);
 		if (r32 == 1) {
 			writel(1, rb + CT2_LPU0_HOSTFN_CMD_STAT);
@@ -1096,14 +1407,59 @@ bfa_ioc_ct2_pll_init(void __iomem *rb, enum bfi_asic_mode mode)
 		if (r32 == 1) {
 			writel(1, rb + CT2_LPU1_HOSTFN_CMD_STAT);
 			readl(rb + CT2_LPU1_HOSTFN_CMD_STAT);
+=======
+		r32 = readl((rb + CT2_LPU0_HOSTFN_CMD_STAT));
+		if (r32 == 1) {
+			writel(1, (rb + CT2_LPU0_HOSTFN_CMD_STAT));
+			readl((rb + CT2_LPU0_HOSTFN_CMD_STAT));
+		}
+		r32 = readl((rb + CT2_LPU1_HOSTFN_CMD_STAT));
+		if (r32 == 1) {
+			writel(1, (rb + CT2_LPU1_HOSTFN_CMD_STAT));
+			readl((rb + CT2_LPU1_HOSTFN_CMD_STAT));
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	bfa_ioc_ct2_mem_init(rb);
 
+<<<<<<< HEAD
 	writel(BFI_IOC_UNINIT, rb + CT2_BFA_IOC0_STATE_REG);
 	writel(BFI_IOC_UNINIT, rb + CT2_BFA_IOC1_STATE_REG);
 
 	return BFA_STATUS_OK;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	writel(BFI_IOC_UNINIT, (rb + CT2_BFA_IOC0_STATE_REG));
+	writel(BFI_IOC_UNINIT, (rb + CT2_BFA_IOC1_STATE_REG));
+
+	return BFA_STATUS_OK;
+}
+
+static void
+bfa_ioc_ct_set_cur_ioc_fwstate(struct bfa_ioc_s *ioc,
+		enum bfi_ioc_state fwstate)
+{
+	writel(fwstate, ioc->ioc_regs.ioc_fwstate);
+}
+
+static enum bfi_ioc_state
+bfa_ioc_ct_get_cur_ioc_fwstate(struct bfa_ioc_s *ioc)
+{
+	return (enum bfi_ioc_state)readl(ioc->ioc_regs.ioc_fwstate);
+}
+
+static void
+bfa_ioc_ct_set_alt_ioc_fwstate(struct bfa_ioc_s *ioc,
+		enum bfi_ioc_state fwstate)
+{
+	writel(fwstate, ioc->ioc_regs.alt_ioc_fwstate);
+}
+
+static enum bfi_ioc_state
+bfa_ioc_ct_get_alt_ioc_fwstate(struct bfa_ioc_s *ioc)
+{
+	return (enum bfi_ioc_state) readl(ioc->ioc_regs.alt_ioc_fwstate);
+}
+>>>>>>> refs/remotes/origin/master

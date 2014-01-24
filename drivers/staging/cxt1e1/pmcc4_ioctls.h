@@ -1,9 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* RCSid: $Header: /home/rickd/projects/pmcc4/include/pmcc4_ioctls.h,v 2.0 2005/09/28 00:10:09 rickd PMCC4_3_1B $
  */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef _INC_PMCC4_IOCTLS_H_
 #define _INC_PMCC4_IOCTLS_H_
 
@@ -26,6 +29,7 @@
  * SBE, Inc.  San Ramon, California  U.S.A.
  *-----------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 2.0 $
  * Last changed on $Date: 2005/09/28 00:10:09 $
@@ -41,6 +45,8 @@
  *-----------------------------------------------------------------------------
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include "sbew_ioc.h"

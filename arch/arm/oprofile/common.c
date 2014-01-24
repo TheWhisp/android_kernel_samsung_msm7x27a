@@ -23,6 +23,7 @@
 #include <asm/ptrace.h>
 
 #ifdef CONFIG_HW_PERF_EVENTS
+<<<<<<< HEAD
 char *op_name_from_perf_id(void)
 {
 	enum arm_perf_pmu_ids id = armpmu_get_pmu_id();
@@ -51,6 +52,39 @@ char *op_name_from_perf_id(void)
 	default:
 		return NULL;
 	}
+=======
+
+/*
+ * OProfile has a curious naming scheme for the ARM PMUs, but they are
+ * part of the user ABI so we need to map from the perf PMU name for
+ * supported PMUs.
+ */
+static struct op_perf_name {
+	char *perf_name;
+	char *op_name;
+} op_perf_name_map[] = {
+	{ "xscale1",		"arm/xscale1"	},
+	{ "xscale1",		"arm/xscale2"	},
+	{ "v6",			"arm/armv6"	},
+	{ "v6mpcore",		"arm/mpcore"	},
+	{ "ARMv7 Cortex-A8",	"arm/armv7"	},
+	{ "ARMv7 Cortex-A9",	"arm/armv7-ca9"	},
+};
+
+char *op_name_from_perf_id(void)
+{
+	int i;
+	struct op_perf_name names;
+	const char *perf_name = perf_pmu_name();
+
+	for (i = 0; i < ARRAY_SIZE(op_perf_name_map); ++i) {
+		names = op_perf_name_map[i];
+		if (!strcmp(names.perf_name, perf_name))
+			return names.op_name;
+	}
+
+	return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 

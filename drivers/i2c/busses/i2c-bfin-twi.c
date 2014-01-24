@@ -25,6 +25,10 @@
 #include <asm/blackfin.h>
 #include <asm/portmux.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
+=======
+#include <asm/bfin_twi.h>
+>>>>>>> refs/remotes/origin/master
 
 /* SMBus mode*/
 #define TWI_I2C_MODE_STANDARD		1
@@ -32,6 +36,7 @@
 #define TWI_I2C_MODE_COMBINED		3
 #define TWI_I2C_MODE_REPEAT		4
 
+<<<<<<< HEAD
 struct bfin_twi_iface {
 	int			irq;
 	spinlock_t		lock;
@@ -82,18 +87,50 @@ static const u16 pin_req[2][3] = {
 	{P_TWI1_SCL, P_TWI1_SDA, 0},
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void bfin_twi_handle_interrupt(struct bfin_twi_iface *iface,
 					unsigned short twi_int_status)
 {
 	unsigned short mast_stat = read_MASTER_STAT(iface);
 
 	if (twi_int_status & XMTSERV) {
+<<<<<<< HEAD
 		/* Transmit next data */
 		if (iface->writeNum > 0) {
+=======
+		if (iface->writeNum <= 0) {
+			/* start receive immediately after complete sending in
+			 * combine mode.
+			 */
+			if (iface->cur_mode == TWI_I2C_MODE_COMBINED)
+				write_MASTER_CTL(iface,
+					read_MASTER_CTL(iface) | MDIR);
+			else if (iface->manual_stop)
+				write_MASTER_CTL(iface,
+					read_MASTER_CTL(iface) | STOP);
+			else if (iface->cur_mode == TWI_I2C_MODE_REPEAT &&
+				iface->cur_msg + 1 < iface->msg_num) {
+				if (iface->pmsg[iface->cur_msg + 1].flags &
+					I2C_M_RD)
+					write_MASTER_CTL(iface,
+						read_MASTER_CTL(iface) |
+						MDIR);
+				else
+					write_MASTER_CTL(iface,
+						read_MASTER_CTL(iface) &
+						~MDIR);
+			}
+		}
+		/* Transmit next data */
+		while (iface->writeNum > 0 &&
+			(read_FIFO_STAT(iface) & XMTSTAT) != XMT_FULL) {
+>>>>>>> refs/remotes/origin/master
 			SSYNC();
 			write_XMT_DATA8(iface, *(iface->transPtr++));
 			iface->writeNum--;
 		}
+<<<<<<< HEAD
 		/* start receive immediately after complete sending in
 		 * combine mode.
 		 */
@@ -115,6 +152,12 @@ static void bfin_twi_handle_interrupt(struct bfin_twi_iface *iface,
 	}
 	if (twi_int_status & RCVSERV) {
 		if (iface->readNum > 0) {
+=======
+	}
+	if (twi_int_status & RCVSERV) {
+		while (iface->readNum > 0 &&
+			(read_FIFO_STAT(iface) & RCVSTAT)) {
+>>>>>>> refs/remotes/origin/master
 			/* Receive next data */
 			*(iface->transPtr) = read_RCV_DATA8(iface);
 			if (iface->cur_mode == TWI_I2C_MODE_COMBINED) {
@@ -130,6 +173,7 @@ static void bfin_twi_handle_interrupt(struct bfin_twi_iface *iface,
 			}
 			iface->transPtr++;
 			iface->readNum--;
+<<<<<<< HEAD
 		} else if (iface->manual_stop) {
 			write_MASTER_CTL(iface,
 				read_MASTER_CTL(iface) | STOP);
@@ -141,6 +185,27 @@ static void bfin_twi_handle_interrupt(struct bfin_twi_iface *iface,
 			else
 				write_MASTER_CTL(iface,
 					(read_MASTER_CTL(iface) | RSTART) & ~MDIR);
+=======
+		}
+
+		if (iface->readNum == 0) {
+			if (iface->manual_stop) {
+				/* Temporary workaround to avoid possible bus stall -
+				 * Flush FIFO before issuing the STOP condition
+				 */
+				read_RCV_DATA16(iface);
+				write_MASTER_CTL(iface,
+					read_MASTER_CTL(iface) | STOP);
+			} else if (iface->cur_mode == TWI_I2C_MODE_REPEAT &&
+					iface->cur_msg + 1 < iface->msg_num) {
+				if (iface->pmsg[iface->cur_msg + 1].flags & I2C_M_RD)
+					write_MASTER_CTL(iface,
+						read_MASTER_CTL(iface) | MDIR);
+				else
+					write_MASTER_CTL(iface,
+						read_MASTER_CTL(iface) & ~MDIR);
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (twi_int_status & MERR) {
@@ -193,7 +258,12 @@ static void bfin_twi_handle_interrupt(struct bfin_twi_iface *iface,
 		return;
 	}
 	if (twi_int_status & MCOMP) {
+<<<<<<< HEAD
 		if ((read_MASTER_CTL(iface) & MEN) == 0 &&
+=======
+		if (twi_int_status & (XMTSERV | RCVSERV) &&
+			(read_MASTER_CTL(iface) & MEN) == 0 &&
+>>>>>>> refs/remotes/origin/master
 			(iface->cur_mode == TWI_I2C_MODE_REPEAT ||
 			iface->cur_mode == TWI_I2C_MODE_COMBINED)) {
 			iface->result = -1;
@@ -221,7 +291,11 @@ static void bfin_twi_handle_interrupt(struct bfin_twi_iface *iface,
 			write_MASTER_CTL(iface,
 				read_MASTER_CTL(iface) & ~RSTART);
 		} else if (iface->cur_mode == TWI_I2C_MODE_REPEAT &&
+<<<<<<< HEAD
 				iface->cur_msg+1 < iface->msg_num) {
+=======
+				iface->cur_msg + 1 < iface->msg_num) {
+>>>>>>> refs/remotes/origin/master
 			iface->cur_msg++;
 			iface->transPtr = iface->pmsg[iface->cur_msg].buf;
 			iface->writeNum = iface->readNum =
@@ -241,27 +315,49 @@ static void bfin_twi_handle_interrupt(struct bfin_twi_iface *iface,
 				}
 			}
 
+<<<<<<< HEAD
 			if (iface->pmsg[iface->cur_msg].len <= 255)
 					write_MASTER_CTL(iface,
 					(read_MASTER_CTL(iface) &
 					(~(0xff << 6))) |
 				(iface->pmsg[iface->cur_msg].len << 6));
 			else {
+=======
+			if (iface->pmsg[iface->cur_msg].len <= 255) {
+				write_MASTER_CTL(iface,
+					(read_MASTER_CTL(iface) &
+					(~(0xff << 6))) |
+					(iface->pmsg[iface->cur_msg].len << 6));
+				iface->manual_stop = 0;
+			} else {
+>>>>>>> refs/remotes/origin/master
 				write_MASTER_CTL(iface,
 					(read_MASTER_CTL(iface) |
 					(0xff << 6)));
 				iface->manual_stop = 1;
 			}
+<<<<<<< HEAD
 			/* remove restart bit and enable master receive */
 			write_MASTER_CTL(iface,
 				read_MASTER_CTL(iface) & ~RSTART);
+=======
+			/* remove restart bit before last message */
+			if (iface->cur_msg + 1 == iface->msg_num)
+				write_MASTER_CTL(iface,
+					read_MASTER_CTL(iface) & ~RSTART);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			iface->result = 1;
 			write_INT_MASK(iface, 0);
 			write_MASTER_CTL(iface, 0);
 		}
+<<<<<<< HEAD
 	}
 	complete(&iface->complete);
+=======
+		complete(&iface->complete);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Interrupt handler */
@@ -298,8 +394,13 @@ static int bfin_twi_do_master_xfer(struct i2c_adapter *adap,
 	if (!(read_CONTROL(iface) & TWI_ENA))
 		return -ENXIO;
 
+<<<<<<< HEAD
 	while (read_MASTER_STAT(iface) & BUSBUSY)
 		yield();
+=======
+	if (read_MASTER_STAT(iface) & BUSBUSY)
+		return -EAGAIN;
+>>>>>>> refs/remotes/origin/master
 
 	iface->pmsg = msgs;
 	iface->msg_num = num;
@@ -311,7 +412,12 @@ static int bfin_twi_do_master_xfer(struct i2c_adapter *adap,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	iface->cur_mode = TWI_I2C_MODE_REPEAT;
+=======
+	if (iface->msg_num > 1)
+		iface->cur_mode = TWI_I2C_MODE_REPEAT;
+>>>>>>> refs/remotes/origin/master
 	iface->manual_stop = 0;
 	iface->transPtr = pmsg->buf;
 	iface->writeNum = iface->readNum = pmsg->len;
@@ -356,6 +462,10 @@ static int bfin_twi_do_master_xfer(struct i2c_adapter *adap,
 
 	/* Master enable */
 	write_MASTER_CTL(iface, read_MASTER_CTL(iface) | MEN |
+<<<<<<< HEAD
+=======
+		(iface->msg_num > 1 ? RSTART : 0) |
+>>>>>>> refs/remotes/origin/master
 		((iface->read_write == I2C_SMBUS_READ) ? MDIR : 0) |
 		((CONFIG_I2C_BLACKFIN_TWI_CLK_KHZ > 100) ? FAST : 0));
 	SSYNC();
@@ -398,8 +508,13 @@ int bfin_twi_do_smbus_xfer(struct i2c_adapter *adap, u16 addr,
 	if (!(read_CONTROL(iface) & TWI_ENA))
 		return -ENXIO;
 
+<<<<<<< HEAD
 	while (read_MASTER_STAT(iface) & BUSBUSY)
 		yield();
+=======
+	if (read_MASTER_STAT(iface) & BUSBUSY)
+		return -EAGAIN;
+>>>>>>> refs/remotes/origin/master
 
 	iface->writeNum = 0;
 	iface->readNum = 0;
@@ -520,7 +635,11 @@ int bfin_twi_do_smbus_xfer(struct i2c_adapter *adap, u16 addr,
 		else
 			write_MASTER_CTL(iface, 0x1 << 6);
 		/* Master enable */
+<<<<<<< HEAD
 		write_MASTER_CTL(iface, read_MASTER_CTL(iface) | MEN |
+=======
+		write_MASTER_CTL(iface, read_MASTER_CTL(iface) | MEN | RSTART |
+>>>>>>> refs/remotes/origin/master
 			((CONFIG_I2C_BLACKFIN_TWI_CLK_KHZ>100) ? FAST : 0));
 		break;
 	default:
@@ -611,9 +730,16 @@ static struct i2c_algorithm bfin_twi_algorithm = {
 	.functionality = bfin_twi_functionality,
 };
 
+<<<<<<< HEAD
 static int i2c_bfin_twi_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct bfin_twi_iface *iface = platform_get_drvdata(pdev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int i2c_bfin_twi_suspend(struct device *dev)
+{
+	struct bfin_twi_iface *iface = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	iface->saved_clkdiv = read_CLKDIV(iface);
 	iface->saved_control = read_CONTROL(iface);
@@ -626,6 +752,7 @@ static int i2c_bfin_twi_suspend(struct platform_device *pdev, pm_message_t state
 	return 0;
 }
 
+<<<<<<< HEAD
 static int i2c_bfin_twi_resume(struct platform_device *pdev)
 {
 	struct bfin_twi_iface *iface = platform_get_drvdata(pdev);
@@ -638,6 +765,16 @@ static int i2c_bfin_twi_resume(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (rc) {
 		dev_err(&pdev->dev, "Can't get IRQ %d !\n", iface->irq);
+=======
+static int i2c_bfin_twi_resume(struct device *dev)
+{
+	struct bfin_twi_iface *iface = dev_get_drvdata(dev);
+
+	int rc = request_irq(iface->irq, bfin_twi_interrupt_entry,
+		0, to_platform_device(dev)->name, iface);
+	if (rc) {
+		dev_err(dev, "Can't get IRQ %d !\n", iface->irq);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -650,6 +787,16 @@ static int i2c_bfin_twi_resume(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static SIMPLE_DEV_PM_OPS(i2c_bfin_twi_pm,
+			 i2c_bfin_twi_suspend, i2c_bfin_twi_resume);
+#define I2C_BFIN_TWI_PM_OPS	(&i2c_bfin_twi_pm)
+#else
+#define I2C_BFIN_TWI_PM_OPS	NULL
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static int i2c_bfin_twi_probe(struct platform_device *pdev)
 {
 	struct bfin_twi_iface *iface;
@@ -699,7 +846,13 @@ static int i2c_bfin_twi_probe(struct platform_device *pdev)
 	p_adap->timeout = 5 * HZ;
 	p_adap->retries = 3;
 
+<<<<<<< HEAD
 	rc = peripheral_request_list(pin_req[pdev->id], "i2c-bfin-twi");
+=======
+	rc = peripheral_request_list(
+			dev_get_platdata(&pdev->dev),
+			"i2c-bfin-twi");
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		dev_err(&pdev->dev, "Can't setup pin mux!\n");
 		goto out_error_pin_mux;
@@ -707,10 +860,14 @@ static int i2c_bfin_twi_probe(struct platform_device *pdev)
 
 	rc = request_irq(iface->irq, bfin_twi_interrupt_entry,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		IRQF_DISABLED, pdev->name, iface);
 =======
 		0, pdev->name, iface);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		0, pdev->name, iface);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		dev_err(&pdev->dev, "Can't get IRQ %d !\n", iface->irq);
 		rc = -ENODEV;
@@ -750,7 +907,11 @@ out_error_add_adapter:
 	free_irq(iface->irq, iface);
 out_error_req_irq:
 out_error_no_irq:
+<<<<<<< HEAD
 	peripheral_free_list(pin_req[pdev->id]);
+=======
+	peripheral_free_list(dev_get_platdata(&pdev->dev));
+>>>>>>> refs/remotes/origin/master
 out_error_pin_mux:
 	iounmap(iface->regs_base);
 out_error_ioremap:
@@ -764,11 +925,17 @@ static int i2c_bfin_twi_remove(struct platform_device *pdev)
 {
 	struct bfin_twi_iface *iface = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
 	i2c_del_adapter(&(iface->adap));
 	free_irq(iface->irq, iface);
 	peripheral_free_list(pin_req[pdev->id]);
+=======
+	i2c_del_adapter(&(iface->adap));
+	free_irq(iface->irq, iface);
+	peripheral_free_list(dev_get_platdata(&pdev->dev));
+>>>>>>> refs/remotes/origin/master
 	iounmap(iface->regs_base);
 	kfree(iface);
 
@@ -778,11 +945,18 @@ static int i2c_bfin_twi_remove(struct platform_device *pdev)
 static struct platform_driver i2c_bfin_twi_driver = {
 	.probe		= i2c_bfin_twi_probe,
 	.remove		= i2c_bfin_twi_remove,
+<<<<<<< HEAD
 	.suspend	= i2c_bfin_twi_suspend,
 	.resume		= i2c_bfin_twi_resume,
 	.driver		= {
 		.name	= "i2c-bfin-twi",
 		.owner	= THIS_MODULE,
+=======
+	.driver		= {
+		.name	= "i2c-bfin-twi",
+		.owner	= THIS_MODULE,
+		.pm	= I2C_BFIN_TWI_PM_OPS,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

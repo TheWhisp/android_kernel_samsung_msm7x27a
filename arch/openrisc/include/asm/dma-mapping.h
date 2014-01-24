@@ -20,14 +20,18 @@
 /*
  * See Documentation/DMA-API-HOWTO.txt and
  * Documentation/DMA-API.txt for documentation.
+<<<<<<< HEAD
  *
  * This file is written with the intention of eventually moving over
  * to largely using asm-generic/dma-mapping-common.h in its place.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/dma-debug.h>
 #include <asm-generic/dma-coherent.h>
 #include <linux/kmemcheck.h>
+<<<<<<< HEAD
 
 #define DMA_ERROR_CODE		(~(dma_addr_t)0x0)
 
@@ -164,6 +168,68 @@ static inline void dma_sync_single_for_device(struct device *dev,
 	BUG_ON(!valid_dma_direction(dir));
 	or1k_sync_single_for_device(dev, addr, size, dir);
 	debug_dma_sync_single_for_device(dev, addr, size, dir);
+=======
+#include <linux/dma-mapping.h>
+
+#define DMA_ERROR_CODE		(~(dma_addr_t)0x0)
+
+extern struct dma_map_ops or1k_dma_map_ops;
+
+static inline struct dma_map_ops *get_dma_ops(struct device *dev)
+{
+	return &or1k_dma_map_ops;
+}
+
+#include <asm-generic/dma-mapping-common.h>
+
+#define dma_alloc_coherent(d,s,h,f) dma_alloc_attrs(d,s,h,f,NULL) 
+
+static inline void *dma_alloc_attrs(struct device *dev, size_t size,
+				    dma_addr_t *dma_handle, gfp_t gfp,
+				    struct dma_attrs *attrs)
+{
+	struct dma_map_ops *ops = get_dma_ops(dev);
+	void *memory;
+
+	memory = ops->alloc(dev, size, dma_handle, gfp, attrs);
+
+	debug_dma_alloc_coherent(dev, size, *dma_handle, memory);
+
+	return memory;
+}
+
+#define dma_free_coherent(d,s,c,h) dma_free_attrs(d,s,c,h,NULL)
+
+static inline void dma_free_attrs(struct device *dev, size_t size,
+				  void *cpu_addr, dma_addr_t dma_handle,
+				  struct dma_attrs *attrs)
+{
+	struct dma_map_ops *ops = get_dma_ops(dev);
+
+	debug_dma_free_coherent(dev, size, cpu_addr, dma_handle);
+
+	ops->free(dev, size, cpu_addr, dma_handle, attrs);
+}
+
+static inline void *dma_alloc_noncoherent(struct device *dev, size_t size,
+					  dma_addr_t *dma_handle, gfp_t gfp)
+{
+	struct dma_attrs attrs;
+
+	dma_set_attr(DMA_ATTR_NON_CONSISTENT, &attrs);
+
+	return dma_alloc_attrs(dev, size, dma_handle, gfp, &attrs);
+}
+
+static inline void dma_free_noncoherent(struct device *dev, size_t size,
+					 void *cpu_addr, dma_addr_t dma_handle)
+{
+	struct dma_attrs attrs;
+
+	dma_set_attr(DMA_ATTR_NON_CONSISTENT, &attrs);
+
+	dma_free_attrs(dev, size, cpu_addr, dma_handle, &attrs);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int dma_supported(struct device *dev, u64 dma_mask)

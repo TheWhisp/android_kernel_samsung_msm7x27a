@@ -36,12 +36,21 @@
 #include <mach/pxa27x.h>
 #include <mach/audio.h>
 #include <mach/palmt5.h>
+<<<<<<< HEAD
 #include <mach/mmc.h>
 #include <mach/pxafb.h>
 #include <mach/irda.h>
 #include <plat/pxa27x_keypad.h>
 #include <mach/udc.h>
 #include <mach/palmasoc.h>
+=======
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/irda-pxaficp.h>
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <mach/udc.h>
+#include <linux/platform_data/asoc-palm27x.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/palm27x.h>
 
 #include "generic.h"
@@ -108,7 +117,11 @@ static unsigned long palmt5_pin_config[] __initdata = {
  * GPIO keyboard
  ******************************************************************************/
 #if defined(CONFIG_KEYBOARD_PXA27x) || defined(CONFIG_KEYBOARD_PXA27x_MODULE)
+<<<<<<< HEAD
 static unsigned int palmt5_matrix_keys[] = {
+=======
+static const unsigned int palmt5_matrix_keys[] = {
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 0, KEY_POWER),
 	KEY(0, 1, KEY_F1),
 	KEY(0, 2, KEY_ENTER),
@@ -124,11 +137,23 @@ static unsigned int palmt5_matrix_keys[] = {
 	KEY(3, 2, KEY_LEFT),
 };
 
+<<<<<<< HEAD
 static struct pxa27x_keypad_platform_data palmt5_keypad_platform_data = {
 	.matrix_key_rows	= 4,
 	.matrix_key_cols	= 3,
 	.matrix_key_map		= palmt5_matrix_keys,
 	.matrix_key_map_size	= ARRAY_SIZE(palmt5_matrix_keys),
+=======
+static struct matrix_keymap_data palmt5_matrix_keymap_data = {
+	.keymap			= palmt5_matrix_keys,
+	.keymap_size		= ARRAY_SIZE(palmt5_matrix_keys),
+};
+
+static struct pxa27x_keypad_platform_data palmt5_keypad_platform_data = {
+	.matrix_key_rows	= 4,
+	.matrix_key_cols	= 3,
+	.matrix_keymap_data	= &palmt5_matrix_keymap_data,
+>>>>>>> refs/remotes/origin/master
 
 	.debounce_interval	= 30,
 };
@@ -203,6 +228,7 @@ static void __init palmt5_init(void)
 
 MACHINE_START(PALMT5, "Palm Tungsten|T5")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa27x_map_io,
 	.reserve	= palmt5_reserve,
@@ -210,14 +236,22 @@ MACHINE_START(PALMT5, "Palm Tungsten|T5")
 	.timer		= &pxa_timer,
 	.init_machine	= palmt5_init
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= pxa27x_map_io,
 	.reserve	= palmt5_reserve,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq	= pxa27x_init_irq,
 	.handle_irq	= pxa27x_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.init_machine	= palmt5_init,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= palmt5_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

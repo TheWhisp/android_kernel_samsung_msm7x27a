@@ -6,10 +6,14 @@
 #include <linux/errno.h>
 #include <linux/fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 =======
 #include "reiserfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/stat.h>
 #include <linux/buffer_head.h>
 #include <linux/slab.h>
@@ -17,6 +21,7 @@
 
 extern const struct reiserfs_key MIN_KEY;
 
+<<<<<<< HEAD
 static int reiserfs_readdir(struct file *, void *, filldir_t);
 <<<<<<< HEAD
 static int reiserfs_dir_fsync(struct file *filp, int datasync);
@@ -24,11 +29,20 @@ static int reiserfs_dir_fsync(struct file *filp, int datasync);
 static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
 			      int datasync);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int reiserfs_readdir(struct file *, struct dir_context *);
+static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
+			      int datasync);
+>>>>>>> refs/remotes/origin/master
 
 const struct file_operations reiserfs_dir_operations = {
 	.llseek = generic_file_llseek,
 	.read = generic_read_dir,
+<<<<<<< HEAD
 	.readdir = reiserfs_readdir,
+=======
+	.iterate = reiserfs_readdir,
+>>>>>>> refs/remotes/origin/master
 	.fsync = reiserfs_dir_fsync,
 	.unlocked_ioctl = reiserfs_ioctl,
 #ifdef CONFIG_COMPAT
@@ -36,6 +50,7 @@ const struct file_operations reiserfs_dir_operations = {
 #endif
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int reiserfs_dir_fsync(struct file *filp, int datasync)
 {
@@ -45,6 +60,8 @@ static int reiserfs_dir_fsync(struct file *filp, int datasync)
 	err = reiserfs_commit_for_inode(inode);
 	reiserfs_write_unlock(inode->i_sb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
 			      int datasync)
 {
@@ -60,7 +77,10 @@ static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
 	err = reiserfs_commit_for_inode(inode);
 	reiserfs_write_unlock(inode->i_sb);
 	mutex_unlock(&inode->i_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0)
 		return err;
 	return 0;
@@ -68,6 +88,7 @@ static int reiserfs_dir_fsync(struct file *filp, loff_t start, loff_t end,
 
 #define store_ih(where,what) copy_item_head (where, what)
 
+<<<<<<< HEAD
 static inline bool is_privroot_deh(struct dentry *dir,
 				   struct reiserfs_de_head *deh)
 {
@@ -80,6 +101,17 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 			   filldir_t filldir, loff_t *pos)
 {
 	struct inode *inode = dentry->d_inode;
+=======
+static inline bool is_privroot_deh(struct inode *dir, struct reiserfs_de_head *deh)
+{
+	struct dentry *privroot = REISERFS_SB(dir->i_sb)->priv_root;
+	return (privroot->d_inode &&
+	        deh->deh_objectid == INODE_PKEY(privroot->d_inode)->k_objectid);
+}
+
+int reiserfs_readdir_inode(struct inode *inode, struct dir_context *ctx)
+{
+>>>>>>> refs/remotes/origin/master
 	struct cpu_key pos_key;	/* key of current position in the directory (key of directory entry) */
 	INITIALIZE_PATH(path_to_entry);
 	struct buffer_head *bh;
@@ -92,6 +124,10 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 	char small_buf[32];	/* avoid kmalloc if we can */
 	struct reiserfs_dir_entry de;
 	int ret = 0;
+<<<<<<< HEAD
+=======
+	int depth;
+>>>>>>> refs/remotes/origin/master
 
 	reiserfs_write_lock(inode->i_sb);
 
@@ -99,7 +135,11 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 
 	/* form key for search the next directory entry using f_pos field of
 	   file structure */
+<<<<<<< HEAD
 	make_cpu_key(&pos_key, inode, *pos ?: DOT_OFFSET, TYPE_DIRENTRY, 3);
+=======
+	make_cpu_key(&pos_key, inode, ctx->pos ?: DOT_OFFSET, TYPE_DIRENTRY, 3);
+>>>>>>> refs/remotes/origin/master
 	next_pos = cpu_key_k_offset(&pos_key);
 
 	path_to_entry.reada = PATH_READA;
@@ -144,7 +184,10 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 			     entry_num++, deh++) {
 				int d_reclen;
 				char *d_name;
+<<<<<<< HEAD
 				off_t d_off;
+=======
+>>>>>>> refs/remotes/origin/master
 				ino_t d_ino;
 
 				if (!de_visible(deh))
@@ -173,11 +216,18 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 				}
 
 				/* Ignore the .reiserfs_priv entry */
+<<<<<<< HEAD
 				if (is_privroot_deh(dentry, deh))
 					continue;
 
 				d_off = deh_offset(deh);
 				*pos = d_off;
+=======
+				if (is_privroot_deh(inode, deh))
+					continue;
+
+				ctx->pos = deh_offset(deh);
+>>>>>>> refs/remotes/origin/master
 				d_ino = deh_objectid(deh);
 				if (d_reclen <= 32) {
 					local_buf = small_buf;
@@ -204,17 +254,29 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 				 * Since filldir might sleep, we can release
 				 * the write lock here for other waiters
 				 */
+<<<<<<< HEAD
 				reiserfs_write_unlock(inode->i_sb);
 				if (filldir
 				    (dirent, local_buf, d_reclen, d_off, d_ino,
 				     DT_UNKNOWN) < 0) {
 					reiserfs_write_lock(inode->i_sb);
+=======
+				depth = reiserfs_write_unlock_nested(inode->i_sb);
+				if (!dir_emit
+				    (ctx, local_buf, d_reclen, d_ino,
+				     DT_UNKNOWN)) {
+					reiserfs_write_lock_nested(inode->i_sb, depth);
+>>>>>>> refs/remotes/origin/master
 					if (local_buf != small_buf) {
 						kfree(local_buf);
 					}
 					goto end;
 				}
+<<<<<<< HEAD
 				reiserfs_write_lock(inode->i_sb);
+=======
+				reiserfs_write_lock_nested(inode->i_sb, depth);
+>>>>>>> refs/remotes/origin/master
 				if (local_buf != small_buf) {
 					kfree(local_buf);
 				}
@@ -222,6 +284,11 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 				next_pos = deh_offset(deh) + 1;
 
 				if (item_moved(&tmp_ih, &path_to_entry)) {
+<<<<<<< HEAD
+=======
+					set_cpu_key_k_offset(&pos_key,
+							     next_pos);
+>>>>>>> refs/remotes/origin/master
 					goto research;
 				}
 			}	/* for */
@@ -253,7 +320,11 @@ int reiserfs_readdir_dentry(struct dentry *dentry, void *dirent,
 	}			/* while */
 
 end:
+<<<<<<< HEAD
 	*pos = next_pos;
+=======
+	ctx->pos = next_pos;
+>>>>>>> refs/remotes/origin/master
 	pathrelse(&path_to_entry);
 	reiserfs_check_path(&path_to_entry);
 out:
@@ -261,10 +332,16 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int reiserfs_readdir(struct file *file, void *dirent, filldir_t filldir)
 {
 	struct dentry *dentry = file->f_path.dentry;
 	return reiserfs_readdir_dentry(dentry, dirent, filldir, &file->f_pos);
+=======
+static int reiserfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	return reiserfs_readdir_inode(file_inode(file), ctx);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* compose directory item containing "." and ".." entries (entries are

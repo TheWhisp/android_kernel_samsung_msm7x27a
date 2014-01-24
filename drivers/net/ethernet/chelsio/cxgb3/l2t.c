@@ -299,7 +299,11 @@ static inline void reuse_entry(struct l2t_entry *e, struct neighbour *neigh)
 }
 
 struct l2t_entry *t3_l2t_get(struct t3cdev *cdev, struct dst_entry *dst,
+<<<<<<< HEAD
 			     struct net_device *dev)
+=======
+			     struct net_device *dev, const void *daddr)
+>>>>>>> refs/remotes/origin/master
 {
 	struct l2t_entry *e = NULL;
 	struct neighbour *neigh;
@@ -311,7 +315,11 @@ struct l2t_entry *t3_l2t_get(struct t3cdev *cdev, struct dst_entry *dst,
 	int smt_idx;
 
 	rcu_read_lock();
+<<<<<<< HEAD
 	neigh = dst_get_neighbour_noref(dst);
+=======
+	neigh = dst_neigh_lookup(dst, daddr);
+>>>>>>> refs/remotes/origin/master
 	if (!neigh)
 		goto done_rcu;
 
@@ -360,6 +368,11 @@ struct l2t_entry *t3_l2t_get(struct t3cdev *cdev, struct dst_entry *dst,
 done_unlock:
 	write_unlock_bh(&d->lock);
 done_rcu:
+<<<<<<< HEAD
+=======
+	if (neigh)
+		neigh_release(neigh);
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 	return e;
 }

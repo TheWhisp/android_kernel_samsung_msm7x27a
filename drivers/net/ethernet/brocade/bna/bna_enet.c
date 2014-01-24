@@ -298,7 +298,10 @@ bna_msgq_rsp_handler(void *arg, struct bfi_msgq_mhdr *msghdr)
 	case BFI_ENET_I2H_RSS_ENABLE_RSP:
 	case BFI_ENET_I2H_RX_PROMISCUOUS_RSP:
 	case BFI_ENET_I2H_RX_DEFAULT_RSP:
+<<<<<<< HEAD
 	case BFI_ENET_I2H_MAC_UCAST_SET_RSP:
+=======
+>>>>>>> refs/remotes/origin/master
 	case BFI_ENET_I2H_MAC_UCAST_CLR_RSP:
 	case BFI_ENET_I2H_MAC_UCAST_ADD_RSP:
 	case BFI_ENET_I2H_MAC_UCAST_DEL_RSP:
@@ -311,6 +314,15 @@ bna_msgq_rsp_handler(void *arg, struct bfi_msgq_mhdr *msghdr)
 			bna_bfi_rxf_cfg_rsp(&rx->rxf, msghdr);
 		break;
 
+<<<<<<< HEAD
+=======
+	case BFI_ENET_I2H_MAC_UCAST_SET_RSP:
+		bna_rx_from_rid(bna, msghdr->enet_id, rx);
+		if (rx)
+			bna_bfi_rxf_ucast_set_rsp(&rx->rxf, msghdr);
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	case BFI_ENET_I2H_MAC_MCAST_ADD_RSP:
 		bna_rx_from_rid(bna, msghdr->enet_id, rx);
 		if (rx)
@@ -378,9 +390,14 @@ bna_msgq_rsp_handler(void *arg, struct bfi_msgq_mhdr *msghdr)
 	}
 }
 
+<<<<<<< HEAD
 /**
  * ETHPORT
  */
+=======
+/* ETHPORT */
+
+>>>>>>> refs/remotes/origin/master
 #define call_ethport_stop_cbfn(_ethport)				\
 do {									\
 	if ((_ethport)->stop_cbfn) {					\
@@ -804,9 +821,14 @@ bna_ethport_cb_rx_stopped(struct bna_ethport *ethport)
 	}
 }
 
+<<<<<<< HEAD
 /**
  * ENET
  */
+=======
+/* ENET */
+
+>>>>>>> refs/remotes/origin/master
 #define bna_enet_chld_start(enet)					\
 do {									\
 	enum bna_tx_type tx_type =					\
@@ -1328,9 +1350,14 @@ bna_enet_perm_mac_get(struct bna_enet *enet, mac_t *mac)
 	*mac = bfa_nw_ioc_get_mac(&enet->bna->ioceth.ioc);
 }
 
+<<<<<<< HEAD
 /**
  * IOCETH
  */
+=======
+/* IOCETH */
+
+>>>>>>> refs/remotes/origin/master
 #define enable_mbox_intr(_ioceth)					\
 do {									\
 	u32 intr_status;						\

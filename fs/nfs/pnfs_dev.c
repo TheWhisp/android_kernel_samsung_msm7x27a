@@ -29,9 +29,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "pnfs.h"
 
 #define NFSDBG_FACILITY		NFSDBG_PNFS
@@ -43,6 +47,7 @@
 #define NFS4_DEVICE_ID_HASH_SIZE	(1 << NFS4_DEVICE_ID_HASH_BITS)
 #define NFS4_DEVICE_ID_HASH_MASK	(NFS4_DEVICE_ID_HASH_SIZE - 1)
 
+<<<<<<< HEAD
 static struct hlist_head nfs4_deviceid_cache[NFS4_DEVICE_ID_HASH_SIZE];
 static DEFINE_SPINLOCK(nfs4_deviceid_lock);
 
@@ -50,6 +55,14 @@ static DEFINE_SPINLOCK(nfs4_deviceid_lock);
 =======
 #ifdef NFS_DEBUG
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define PNFS_DEVICE_RETRY_TIMEOUT (120*HZ)
+
+static struct hlist_head nfs4_deviceid_cache[NFS4_DEVICE_ID_HASH_SIZE];
+static DEFINE_SPINLOCK(nfs4_deviceid_lock);
+
+#ifdef NFS_DEBUG
+>>>>>>> refs/remotes/origin/master
 void
 nfs4_print_deviceid(const struct nfs4_deviceid *id)
 {
@@ -60,9 +73,13 @@ nfs4_print_deviceid(const struct nfs4_deviceid *id)
 }
 EXPORT_SYMBOL_GPL(nfs4_print_deviceid);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 static inline u32
 nfs4_deviceid_hash(const struct nfs4_deviceid *id)
@@ -84,9 +101,14 @@ _lookup_deviceid(const struct pnfs_layoutdriver_type *ld,
 		 long hash)
 {
 	struct nfs4_deviceid_node *d;
+<<<<<<< HEAD
 	struct hlist_node *n;
 
 	hlist_for_each_entry_rcu(d, n, &nfs4_deviceid_cache[hash], node)
+=======
+
+	hlist_for_each_entry_rcu(d, &nfs4_deviceid_cache[hash], node)
+>>>>>>> refs/remotes/origin/master
 		if (d->ld == ld && d->nfs_client == clp &&
 		    !memcmp(&d->deviceid, id, sizeof(*id))) {
 			if (atomic_read(&d->ref))
@@ -104,10 +126,14 @@ _lookup_deviceid(const struct pnfs_layoutdriver_type *ld,
  * @id deviceid to look up
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct nfs4_deviceid_node *
 =======
 static struct nfs4_deviceid_node *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct nfs4_deviceid_node *
+>>>>>>> refs/remotes/origin/master
 _find_get_deviceid(const struct pnfs_layoutdriver_type *ld,
 		   const struct nfs_client *clp, const struct nfs4_deviceid *id,
 		   long hash)
@@ -117,12 +143,17 @@ _find_get_deviceid(const struct pnfs_layoutdriver_type *ld,
 	rcu_read_lock();
 	d = _lookup_deviceid(ld, clp, id, hash);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (d && !atomic_inc_not_zero(&d->ref))
 		d = NULL;
 =======
 	if (d != NULL)
 		atomic_inc(&d->ref);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (d != NULL)
+		atomic_inc(&d->ref);
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 	return d;
 }
@@ -137,10 +168,14 @@ EXPORT_SYMBOL_GPL(nfs4_find_get_deviceid);
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Unhash and put deviceid
 =======
  * Remove a deviceid from cache
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Remove a deviceid from cache
+>>>>>>> refs/remotes/origin/master
  *
  * @clp nfs_client associated with deviceid
  * @id the deviceid to unhash
@@ -148,12 +183,17 @@ EXPORT_SYMBOL_GPL(nfs4_find_get_deviceid);
  * @ret the unhashed node, if found and dereferenced to zero, NULL otherwise.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct nfs4_deviceid_node *
 nfs4_unhash_put_deviceid(const struct pnfs_layoutdriver_type *ld,
 =======
 void
 nfs4_delete_deviceid(const struct pnfs_layoutdriver_type *ld,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void
+nfs4_delete_deviceid(const struct pnfs_layoutdriver_type *ld,
+>>>>>>> refs/remotes/origin/master
 			 const struct nfs_client *clp, const struct nfs4_deviceid *id)
 {
 	struct nfs4_deviceid_node *d;
@@ -165,10 +205,14 @@ nfs4_delete_deviceid(const struct pnfs_layoutdriver_type *ld,
 	if (!d) {
 		spin_unlock(&nfs4_deviceid_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return NULL;
 =======
 		return;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 	hlist_del_init_rcu(&d->node);
 	spin_unlock(&nfs4_deviceid_lock);
@@ -176,6 +220,7 @@ nfs4_delete_deviceid(const struct pnfs_layoutdriver_type *ld,
 
 	/* balance the initial ref set in pnfs_insert_deviceid */
 	if (atomic_dec_and_test(&d->ref))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return d;
 
@@ -202,6 +247,9 @@ nfs4_delete_deviceid(const struct pnfs_layoutdriver_type *ld,
 =======
 		d->ld->free_deviceid_node(d);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		d->ld->free_deviceid_node(d);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(nfs4_delete_deviceid);
 
@@ -216,9 +264,13 @@ nfs4_init_deviceid_node(struct nfs4_deviceid_node *d,
 	d->ld = ld;
 	d->nfs_client = nfs_client;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	d->flags = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	d->flags = 0;
+>>>>>>> refs/remotes/origin/master
 	d->deviceid = *id;
 	atomic_set(&d->ref, 1);
 }
@@ -264,16 +316,23 @@ EXPORT_SYMBOL_GPL(nfs4_insert_deviceid_node);
  * @d deviceid node to put
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @ret true iff the node was deleted
 =======
  * return true iff the node was deleted
  * Note that since the test for d->ref == 0 is sufficient to establish
  * that the node is no longer hashed in the global device id cache.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * return true iff the node was deleted
+ * Note that since the test for d->ref == 0 is sufficient to establish
+ * that the node is no longer hashed in the global device id cache.
+>>>>>>> refs/remotes/origin/master
  */
 bool
 nfs4_put_deviceid_node(struct nfs4_deviceid_node *d)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!atomic_dec_and_lock(&d->ref, &nfs4_deviceid_lock))
 		return false;
@@ -284,21 +343,59 @@ nfs4_put_deviceid_node(struct nfs4_deviceid_node *d)
 	if (!atomic_dec_and_test(&d->ref))
 		return false;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!atomic_dec_and_test(&d->ref))
+		return false;
+>>>>>>> refs/remotes/origin/master
 	d->ld->free_deviceid_node(d);
 	return true;
 }
 EXPORT_SYMBOL_GPL(nfs4_put_deviceid_node);
 
+<<<<<<< HEAD
+=======
+void
+nfs4_mark_deviceid_unavailable(struct nfs4_deviceid_node *node)
+{
+	node->timestamp_unavailable = jiffies;
+	set_bit(NFS_DEVICEID_UNAVAILABLE, &node->flags);
+}
+EXPORT_SYMBOL_GPL(nfs4_mark_deviceid_unavailable);
+
+bool
+nfs4_test_deviceid_unavailable(struct nfs4_deviceid_node *node)
+{
+	if (test_bit(NFS_DEVICEID_UNAVAILABLE, &node->flags)) {
+		unsigned long start, end;
+
+		end = jiffies;
+		start = end - PNFS_DEVICE_RETRY_TIMEOUT;
+		if (time_in_range(node->timestamp_unavailable, start, end))
+			return true;
+		clear_bit(NFS_DEVICEID_UNAVAILABLE, &node->flags);
+	}
+	return false;
+}
+EXPORT_SYMBOL_GPL(nfs4_test_deviceid_unavailable);
+
+>>>>>>> refs/remotes/origin/master
 static void
 _deviceid_purge_client(const struct nfs_client *clp, long hash)
 {
 	struct nfs4_deviceid_node *d;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	HLIST_HEAD(tmp);
 
 	spin_lock(&nfs4_deviceid_lock);
 	rcu_read_lock();
+<<<<<<< HEAD
 	hlist_for_each_entry_rcu(d, n, &nfs4_deviceid_cache[hash], node)
+=======
+	hlist_for_each_entry_rcu(d, &nfs4_deviceid_cache[hash], node)
+>>>>>>> refs/remotes/origin/master
 		if (d->nfs_client == clp && atomic_read(&d->ref)) {
 			hlist_del_init_rcu(&d->node);
 			hlist_add_head(&d->tmpnode, &tmp);
@@ -329,7 +426,10 @@ nfs4_deviceid_purge_client(const struct nfs_client *clp)
 		_deviceid_purge_client(clp, h);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Stop use of all deviceids associated with an nfs_client
@@ -338,15 +438,26 @@ void
 nfs4_deviceid_mark_client_invalid(struct nfs_client *clp)
 {
 	struct nfs4_deviceid_node *d;
+<<<<<<< HEAD
 	struct hlist_node *n;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	rcu_read_lock();
 	for (i = 0; i < NFS4_DEVICE_ID_HASH_SIZE; i ++){
+<<<<<<< HEAD
 		hlist_for_each_entry_rcu(d, n, &nfs4_deviceid_cache[i], node)
+=======
+		hlist_for_each_entry_rcu(d, &nfs4_deviceid_cache[i], node)
+>>>>>>> refs/remotes/origin/master
 			if (d->nfs_client == clp)
 				set_bit(NFS_DEVICEID_INVALID, &d->flags);
 	}
 	rcu_read_unlock();
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master

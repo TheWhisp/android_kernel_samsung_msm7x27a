@@ -6,6 +6,7 @@
 #include <linux/crypto.h>
 #include <crypto/aes.h>
 
+<<<<<<< HEAD
 #define AES_MAXNR 14
 
 typedef struct {
@@ -22,6 +23,14 @@ asmlinkage void AES_encrypt(const u8 *in, u8 *out, AES_KEY *ctx);
 asmlinkage void AES_decrypt(const u8 *in, u8 *out, AES_KEY *ctx);
 asmlinkage int private_AES_set_decrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key);
 asmlinkage int private_AES_set_encrypt_key(const unsigned char *userKey, const int bits, AES_KEY *key);
+=======
+#include "aes_glue.h"
+
+EXPORT_SYMBOL(AES_encrypt);
+EXPORT_SYMBOL(AES_decrypt);
+EXPORT_SYMBOL(private_AES_set_encrypt_key);
+EXPORT_SYMBOL(private_AES_set_decrypt_key);
+>>>>>>> refs/remotes/origin/master
 
 static void aes_encrypt(struct crypto_tfm *tfm, u8 *dst, const u8 *src)
 {
@@ -81,7 +90,11 @@ static struct crypto_alg aes_alg = {
 		.cipher	= {
 			.cia_min_keysize	= AES_MIN_KEY_SIZE,
 			.cia_max_keysize	= AES_MAX_KEY_SIZE,
+<<<<<<< HEAD
 			.cia_setkey			= aes_set_key,
+=======
+			.cia_setkey		= aes_set_key,
+>>>>>>> refs/remotes/origin/master
 			.cia_encrypt		= aes_encrypt,
 			.cia_decrypt		= aes_decrypt
 		}

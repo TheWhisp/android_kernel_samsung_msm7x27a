@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,12 +46,16 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_DMA_MAPPING_IFC_H__
 #define __DIVA_DMA_MAPPING_IFC_H__
 typedef struct _diva_dma_map_entry  diva_dma_map_entry_t;
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct _diva_dma_map_entry* diva_alloc_dma_map (void* os_context, int nentries);
 void diva_init_dma_map_entry (struct _diva_dma_map_entry* pmap,
@@ -70,6 +77,8 @@ void diva_free_dma_map (void* hdev,
                         struct _diva_dma_map_entry* pmap);
 void* diva_get_entry_handle (struct _diva_dma_map_entry* pmap, int nr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct _diva_dma_map_entry *diva_alloc_dma_map(void *os_context, int nentries);
 void diva_init_dma_map_entry(struct _diva_dma_map_entry *pmap,
 			     int nr, void *virt, dword phys,
@@ -89,5 +98,8 @@ void diva_init_dma_map(void *hdev,
 void diva_free_dma_map(void *hdev,
 		       struct _diva_dma_map_entry *pmap);
 void *diva_get_entry_handle(struct _diva_dma_map_entry *pmap, int nr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

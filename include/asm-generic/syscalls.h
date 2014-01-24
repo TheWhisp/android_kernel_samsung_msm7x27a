@@ -8,6 +8,7 @@
  * Calling conventions for these system calls can differ, so
  * it's possible to override them.
  */
+<<<<<<< HEAD
 #ifndef sys_clone
 asmlinkage long sys_clone(unsigned long clone_flags, unsigned long newsp,
 			void __user *parent_tid, void __user *child_tid,
@@ -28,6 +29,8 @@ asmlinkage long sys_execve(const char __user *filename,
 			   const char __user *const __user *envp,
 			   struct pt_regs *regs);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef sys_mmap2
 asmlinkage long sys_mmap2(unsigned long addr, unsigned long len,
@@ -41,15 +44,19 @@ asmlinkage long sys_mmap(unsigned long addr, unsigned long len,
 			unsigned long fd, off_t pgoff);
 #endif
 
+<<<<<<< HEAD
 #ifndef sys_sigaltstack
 asmlinkage long sys_sigaltstack(const stack_t __user *, stack_t __user *,
 			struct pt_regs *);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef sys_rt_sigreturn
 asmlinkage long sys_rt_sigreturn(struct pt_regs *regs);
 #endif
 
+<<<<<<< HEAD
 #ifndef sys_rt_sigsuspend
 asmlinkage long sys_rt_sigsuspend(sigset_t __user *unewset, size_t sigsetsize);
 #endif
@@ -59,4 +66,6 @@ asmlinkage long sys_rt_sigaction(int sig, const struct sigaction __user *act,
 			 struct sigaction __user *oact, size_t sigsetsize);
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_GENERIC_SYSCALLS_H */

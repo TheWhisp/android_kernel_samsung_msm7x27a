@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * Copyright (C) 2005-2007 Takahiro Hirofuchi
  */
@@ -722,6 +723,8 @@ int main(int argc, char *argv[])
 
 	exit((ret == 0) ? EXIT_SUCCESS : EXIT_FAILURE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * command structure borrowed from udev
  * (git://git.kernel.org/pub/scm/linux/hotplug/udev.git)
  *
@@ -749,6 +752,10 @@ int main(int argc, char *argv[])
 #include <syslog.h>
 
 #include "usbip_common.h"
+<<<<<<< HEAD
+=======
+#include "usbip_network.h"
+>>>>>>> refs/remotes/origin/master
 #include "usbip.h"
 
 static int usbip_help(int argc, char *argv[]);
@@ -757,7 +764,11 @@ static int usbip_version(int argc, char *argv[]);
 static const char usbip_version_string[] = PACKAGE_STRING;
 
 static const char usbip_usage_string[] =
+<<<<<<< HEAD
 	"usbip [--debug] [--log] [version]\n"
+=======
+	"usbip [--debug] [--log] [--tcp-port PORT] [version]\n"
+>>>>>>> refs/remotes/origin/master
 	"             [help] <command> <args>\n";
 
 static void usbip_usage(void)
@@ -815,6 +826,15 @@ static const struct command cmds[] = {
 		.help  = "Unbind device from " USBIP_HOST_DRV_NAME ".ko",
 		.usage = usbip_unbind_usage
 	},
+<<<<<<< HEAD
+=======
+	{
+		.name  = "port",
+		.fn    = usbip_port_show,
+		.help  = "Show imported USB devices",
+		.usage = NULL
+	},
+>>>>>>> refs/remotes/origin/master
 	{ NULL, NULL, NULL, NULL }
 };
 
@@ -861,9 +881,16 @@ static int run_command(const struct command *cmd, int argc, char *argv[])
 int main(int argc, char *argv[])
 {
 	static const struct option opts[] = {
+<<<<<<< HEAD
 		{ "debug", no_argument, NULL, 'd' },
 		{ "log",   no_argument, NULL, 'l' },
 		{ NULL,    0,           NULL,  0  }
+=======
+		{ "debug",    no_argument,       NULL, 'd' },
+		{ "log",      no_argument,       NULL, 'l' },
+		{ "tcp-port", required_argument, NULL, 't' },
+		{ NULL,       0,                 NULL,  0  }
+>>>>>>> refs/remotes/origin/master
 	};
 
 	char *cmd;
@@ -873,7 +900,11 @@ int main(int argc, char *argv[])
 	usbip_use_stderr = 1;
 	opterr = 0;
 	for (;;) {
+<<<<<<< HEAD
 		opt = getopt_long(argc, argv, "+d", opts, NULL);
+=======
+		opt = getopt_long(argc, argv, "+dlt:", opts, NULL);
+>>>>>>> refs/remotes/origin/master
 
 		if (opt == -1)
 			break;
@@ -886,6 +917,12 @@ int main(int argc, char *argv[])
 			usbip_use_syslog = 1;
 			openlog("", LOG_PID, LOG_USER);
 			break;
+<<<<<<< HEAD
+=======
+		case 't':
+			usbip_setup_port_number(optarg);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case '?':
 			printf("usbip: invalid option\n");
 		default:
@@ -910,5 +947,8 @@ int main(int argc, char *argv[])
 	usbip_help(0, NULL);
 out:
 	return (rc > -1 ? EXIT_SUCCESS : EXIT_FAILURE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

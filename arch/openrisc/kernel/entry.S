@@ -201,12 +201,26 @@ EXCEPTION_ENTRY(_bus_fault_handler)
 	 l.nop
 
 /* ---[ 0x300: Data Page Fault exception ]------------------------------- */
+<<<<<<< HEAD
 
 EXCEPTION_ENTRY(_data_page_fault_handler)
 	/* set up parameters for do_page_fault */
 	l.addi  r3,r1,0                    // pt_regs
 	/* r4 set be EXCEPTION_HANDLE */   // effective address of fault
 	l.ori   r5,r0,0x300                // exception vector
+=======
+EXCEPTION_ENTRY(_dtlb_miss_page_fault_handler)
+	l.and	r5,r5,r0
+	l.j	1f
+	 l.nop
+
+EXCEPTION_ENTRY(_data_page_fault_handler)
+	/* set up parameters for do_page_fault */
+	l.ori	r5,r0,0x300		   // exception vector
+1:
+	l.addi  r3,r1,0                    // pt_regs
+	/* r4 set be EXCEPTION_HANDLE */   // effective address of fault
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * __PHX__: TODO
@@ -276,12 +290,26 @@ EXCEPTION_ENTRY(_data_page_fault_handler)
 	l.nop
 
 /* ---[ 0x400: Insn Page Fault exception ]------------------------------- */
+<<<<<<< HEAD
 
 EXCEPTION_ENTRY(_insn_page_fault_handler)
 	/* set up parameters for do_page_fault */
 	l.addi  r3,r1,0                    // pt_regs
 	/* r4 set be EXCEPTION_HANDLE */   // effective address of fault
 	l.ori   r5,r0,0x400                // exception vector
+=======
+EXCEPTION_ENTRY(_itlb_miss_page_fault_handler)
+	l.and	r5,r5,r0
+	l.j	1f
+	 l.nop
+
+EXCEPTION_ENTRY(_insn_page_fault_handler)
+	/* set up parameters for do_page_fault */
+	l.ori	r5,r0,0x400		   // exception vector
+1:
+	l.addi  r3,r1,0                    // pt_regs
+	/* r4 set be EXCEPTION_HANDLE */   // effective address of fault
+>>>>>>> refs/remotes/origin/master
 	l.ori	r6,r0,0x0		   // !write access
 
 	/* call fault.c handler in or32/mm/fault.c */
@@ -894,6 +922,19 @@ ENTRY(ret_from_fork)
 	l.jal	schedule_tail
 	 l.nop
 
+<<<<<<< HEAD
+=======
+	/* Check if we are a kernel thread */
+	l.sfeqi	r20,0
+	l.bf	1f
+	 l.nop
+
+	/* ...we are a kernel thread so invoke the requested callback */
+	l.jalr	r20
+	 l.or	r3,r22,r0
+
+1:
+>>>>>>> refs/remotes/origin/master
 	/* _syscall_returns expect r11 to contain return value */
 	l.lwz	r11,PT_GPR11(r1)
 
@@ -915,6 +956,7 @@ ENTRY(ret_from_fork)
 	l.j	_syscall_return
 	 l.nop
 
+<<<<<<< HEAD
 /* Since syscalls don't save call-clobbered registers, the args to
  * kernel_thread_helper will need to be passed through callee-saved
  * registers and copied to the parameter registers when the thread
@@ -935,6 +977,8 @@ ENTRY(_kernel_thread_helper)
 	 l.nop
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* ========================================================[ switch ] === */
 
 /*
@@ -1044,8 +1088,18 @@ ENTRY(_switch)
 	/* Unwind stack to pre-switch state */
 	l.addi  r1,r1,(INT_FRAME_SIZE)
 
+<<<<<<< HEAD
 	/* Return via the link-register back to where we 'came from', where that can be
 	 * either schedule() or return_from_fork()... */
+=======
+	/* Return via the link-register back to where we 'came from', where
+	 * that may be either schedule(), ret_from_fork(), or
+	 * ret_from_kernel_thread().  If we are returning to a new thread,
+	 * we are expected to have set up the arg to schedule_tail already,
+	 * hence we do so here unconditionally:
+	 */
+	l.lwz   r3,TI_TASK(r3)		/* Load 'prev' as schedule_tail arg */
+>>>>>>> refs/remotes/origin/master
 	l.jr	r9
 	 l.nop
 
@@ -1076,6 +1130,7 @@ _fork_save_extra_regs_and_call:
 	l.jr	r29
 	 l.sw    PT_GPR28(r1),r28
 
+<<<<<<< HEAD
 ENTRY(sys_clone)
 	l.movhi	r29,hi(_sys_clone)
 	l.ori	r29,r29,lo(_sys_clone)
@@ -1096,6 +1151,20 @@ ENTRY(sys_sigaltstack)
 	l.j	_sys_sigaltstack
 	 l.addi	r5,r1,0
 
+=======
+ENTRY(__sys_clone)
+	l.movhi	r29,hi(sys_clone)
+	l.ori	r29,r29,lo(sys_clone)
+	l.j	_fork_save_extra_regs_and_call
+	 l.addi	r7,r1,0
+
+ENTRY(__sys_fork)
+	l.movhi	r29,hi(sys_fork)
+	l.ori	r29,r29,lo(sys_fork)
+	l.j	_fork_save_extra_regs_and_call
+	 l.addi	r3,r1,0
+
+>>>>>>> refs/remotes/origin/master
 ENTRY(sys_rt_sigreturn)
 	l.j	_sys_rt_sigreturn
 	 l.addi	r3,r1,0
@@ -1117,10 +1186,17 @@ ENTRY(sys_rt_sigreturn)
 ENTRY(sys_or1k_atomic)
 	/* FIXME: This ignores r3 and always does an XCHG */
 	DISABLE_INTERRUPTS(r17,r19)
+<<<<<<< HEAD
 	l.lwz	r30,0(r4)
 	l.lwz	r28,0(r5)
 	l.sw	0(r4),r28
 	l.sw	0(r5),r30
+=======
+	l.lwz	r29,0(r4)
+	l.lwz	r27,0(r5)
+	l.sw	0(r4),r27
+	l.sw	0(r5),r29
+>>>>>>> refs/remotes/origin/master
 	ENABLE_INTERRUPTS(r17)
 	l.jr	r9
 	 l.or	r11,r0,r0

@@ -7,6 +7,7 @@
 #include <linux/string.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
@@ -19,16 +20,30 @@ static const char *skip_arg(const char *cp)
 
 	return cp;
 }
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 static int count_argc(const char *str)
 {
 	int count = 0;
+<<<<<<< HEAD
 
 	while (*str) {
 		str = skip_spaces(str);
 		if (*str) {
 			count++;
 			str = skip_arg(str);
+=======
+	bool was_space;
+
+	for (was_space = true; *str; str++) {
+		if (isspace(*str)) {
+			was_space = true;
+		} else if (was_space) {
+			was_space = false;
+			count++;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -43,10 +58,15 @@ static int count_argc(const char *str)
  */
 void argv_free(char **argv)
 {
+<<<<<<< HEAD
 	char **p;
 	for (p = argv; *p; p++)
 		kfree(*p);
 
+=======
+	argv--;
+	kfree(argv[0]);
+>>>>>>> refs/remotes/origin/master
 	kfree(argv);
 }
 EXPORT_SYMBOL(argv_free);
@@ -63,6 +83,7 @@ EXPORT_SYMBOL(argv_free);
  * considered to be a single argument separator.  The returned array
  * is always NULL-terminated.  Returns NULL on memory allocation
  * failure.
+<<<<<<< HEAD
  */
 char **argv_split(gfp_t gfp, const char *str, int *argcp)
 {
@@ -101,5 +122,46 @@ char **argv_split(gfp_t gfp, const char *str, int *argcp)
   fail:
 	argv_free(argv);
 	return NULL;
+=======
+ *
+ * The source string at `str' may be undergoing concurrent alteration via
+ * userspace sysctl activity (at least).  The argv_split() implementation
+ * attempts to handle this gracefully by taking a local copy to work on.
+ */
+char **argv_split(gfp_t gfp, const char *str, int *argcp)
+{
+	char *argv_str;
+	bool was_space;
+	char **argv, **argv_ret;
+	int argc;
+
+	argv_str = kstrndup(str, KMALLOC_MAX_SIZE - 1, gfp);
+	if (!argv_str)
+		return NULL;
+
+	argc = count_argc(argv_str);
+	argv = kmalloc(sizeof(*argv) * (argc + 2), gfp);
+	if (!argv) {
+		kfree(argv_str);
+		return NULL;
+	}
+
+	*argv = argv_str;
+	argv_ret = ++argv;
+	for (was_space = true; *argv_str; argv_str++) {
+		if (isspace(*argv_str)) {
+			was_space = true;
+			*argv_str = 0;
+		} else if (was_space) {
+			was_space = false;
+			*argv++ = argv_str;
+		}
+	}
+	*argv = NULL;
+
+	if (argcp)
+		*argcp = argc;
+	return argv_ret;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(argv_split);

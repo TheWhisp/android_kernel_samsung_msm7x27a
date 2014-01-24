@@ -38,6 +38,7 @@
 #define EXOFS_DBGMSG2(M...) do {} while (0)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum { BIO_MAX_PAGES_KMALLOC =
 		(PAGE_SIZE - sizeof(struct bio)) / sizeof(struct bio_vec),
 	MAX_PAGES_KMALLOC =
@@ -61,6 +62,14 @@ unsigned exofs_max_io_pages(struct ore_layout *layout,
 =======
 	pages =  min_t(unsigned, pages, layout->max_io_length / PAGE_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned exofs_max_io_pages(struct ore_layout *layout,
+			    unsigned expected_pages)
+{
+	unsigned pages = min_t(unsigned, expected_pages,
+			       layout->max_io_length / PAGE_SIZE);
+
+>>>>>>> refs/remotes/origin/master
 	return pages;
 }
 
@@ -69,10 +78,14 @@ struct page_collect {
 	struct inode *inode;
 	unsigned expected_pages;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct exofs_io_state *ios;
 =======
 	struct ore_io_state *ios;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ore_io_state *ios;
+>>>>>>> refs/remotes/origin/master
 
 	struct page **pages;
 	unsigned alloc_pages;
@@ -83,9 +96,13 @@ struct page_collect {
 			    * And the pages should not be unlocked.
 			    */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct page *that_locked_page;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct page *that_locked_page;
+>>>>>>> refs/remotes/origin/master
 };
 
 static void _pcol_init(struct page_collect *pcol, unsigned expected_pages,
@@ -105,9 +122,13 @@ static void _pcol_init(struct page_collect *pcol, unsigned expected_pages,
 	pcol->pg_first = -1;
 	pcol->read_4_write = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pcol->that_locked_page = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcol->that_locked_page = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void _pcol_reset(struct page_collect *pcol)
@@ -121,21 +142,31 @@ static void _pcol_reset(struct page_collect *pcol)
 	pcol->pg_first = -1;
 	pcol->ios = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pcol->that_locked_page = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcol->that_locked_page = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	/* this is probably the end of the loop but in writes
 	 * it might not end here. don't be left with nothing
 	 */
 	if (!pcol->expected_pages)
+<<<<<<< HEAD
 		pcol->expected_pages = MAX_PAGES_KMALLOC;
+=======
+		pcol->expected_pages =
+				exofs_max_io_pages(&pcol->sbi->layout, ~0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pcol_try_alloc(struct page_collect *pcol)
 {
 	unsigned pages;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!pcol->ios) { /* First time allocate io_state */
 		int ret = exofs_get_io_state(&pcol->sbi->layout, &pcol->ios);
@@ -146,6 +177,8 @@ static int pcol_try_alloc(struct page_collect *pcol)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* TODO: easily support bio chaining */
 	pages =  exofs_max_io_pages(&pcol->sbi->layout, pcol->expected_pages);
 
@@ -170,10 +203,14 @@ static void pcol_free(struct page_collect *pcol)
 
 	if (pcol->ios) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		exofs_put_io_state(pcol->ios);
 =======
 		ore_put_io_state(pcol->ios);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ore_put_io_state(pcol->ios);
+>>>>>>> refs/remotes/origin/master
 		pcol->ios = NULL;
 	}
 }
@@ -190,26 +227,37 @@ static int pcol_add_page(struct page_collect *pcol, struct page *page,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int update_read_page(struct page *page, int ret)
 {
 	if (ret == 0) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum {PAGE_WAS_NOT_IN_IO = 17};
 static int update_read_page(struct page *page, int ret)
 {
 	switch (ret) {
 	case 0:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* Everything is OK */
 		SetPageUptodate(page);
 		if (PageError(page))
 			ClearPageError(page);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	} else if (ret == -EFAULT) {
 =======
 		break;
 	case -EFAULT:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case -EFAULT:
+>>>>>>> refs/remotes/origin/master
 		/* In this case we were trying to read something that wasn't on
 		 * disk yet - return a page full of zeroes.  This should be OK,
 		 * because the object should be empty (if there was a write
@@ -221,12 +269,15 @@ static int update_read_page(struct page *page, int ret)
 		if (PageError(page))
 			ClearPageError(page);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = 0; /* recovered error */
 		EXOFS_DBGMSG("recovered read error\n");
 	} else /* Error */
 		SetPageError(page);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		EXOFS_DBGMSG("recovered read error\n");
 		/* fall through */
 	case PAGE_WAS_NOT_IN_IO:
@@ -235,18 +286,27 @@ static int update_read_page(struct page *page, int ret)
 	default:
 		SetPageError(page);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
 static void update_write_page(struct page *page, int ret)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (unlikely(ret == PAGE_WAS_NOT_IN_IO))
 		return; /* don't pass start don't collect $200 */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(ret == PAGE_WAS_NOT_IN_IO))
+		return; /* don't pass start don't collect $200 */
+
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		mapping_set_error(page->mapping, ret);
 		SetPageError(page);
@@ -261,6 +321,7 @@ static int __readpages_done(struct page_collect *pcol)
 {
 	int i;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u64 resid;
 	u64 good_bytes;
 	u64 length = 0;
@@ -271,6 +332,8 @@ static int __readpages_done(struct page_collect *pcol)
 	else
 		good_bytes = pcol->length - resid;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u64 good_bytes;
 	u64 length = 0;
 	int ret = ore_check_io(pcol->ios, NULL);
@@ -281,7 +344,10 @@ static int __readpages_done(struct page_collect *pcol)
 	} else {
 		good_bytes = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	EXOFS_DBGMSG2("readpages_done(0x%lx) good_bytes=0x%llx"
 		     " length=0x%lx nr_pages=%u\n",
@@ -318,10 +384,14 @@ static int __readpages_done(struct page_collect *pcol)
 
 /* callback of async reads */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void readpages_done(struct exofs_io_state *ios, void *p)
 =======
 static void readpages_done(struct ore_io_state *ios, void *p)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void readpages_done(struct ore_io_state *ios, void *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct page_collect *pcol = p;
 
@@ -347,11 +417,14 @@ static void _unlock_pcol_pages(struct page_collect *pcol, int ret, int rw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int read_exec(struct page_collect *pcol)
 {
 	struct exofs_i_info *oi = exofs_i(pcol->inode);
 	struct exofs_io_state *ios = pcol->ios;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int _maybe_not_all_in_one_io(struct ore_io_state *ios,
 	struct page_collect *pcol_src, struct page_collect *pcol)
 {
@@ -396,13 +469,17 @@ static int read_exec(struct page_collect *pcol)
 {
 	struct exofs_i_info *oi = exofs_i(pcol->inode);
 	struct ore_io_state *ios;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct page_collect *pcol_copy = NULL;
 	int ret;
 
 	if (!pcol->pages)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ios->pages = pcol->pages;
 	ios->nr_pages = pcol->nr_pages;
@@ -412,6 +489,8 @@ static int read_exec(struct page_collect *pcol)
 	if (pcol->read_4_write) {
 		exofs_oi_read(oi, pcol->ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pcol->ios) {
 		int ret = ore_get_rw_state(&pcol->sbi->layout, &oi->oc, true,
 					     pcol->pg_first << PAGE_CACHE_SHIFT,
@@ -426,7 +505,10 @@ static int read_exec(struct page_collect *pcol)
 
 	if (pcol->read_4_write) {
 		ore_read(pcol->ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return __readpages_done(pcol);
 	}
 
@@ -440,6 +522,7 @@ static int read_exec(struct page_collect *pcol)
 	ios->done = readpages_done;
 	ios->private = pcol_copy;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = exofs_oi_read(oi, ios);
 	if (unlikely(ret))
 		goto err;
@@ -452,6 +535,8 @@ static int read_exec(struct page_collect *pcol)
 	/* pages ownership was passed to pcol_copy */
 	_pcol_reset(pcol);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* pages ownership was passed to pcol_copy */
 	_pcol_reset(pcol);
@@ -469,6 +554,7 @@ static int read_exec(struct page_collect *pcol)
 
 	atomic_inc(&pcol->sbi->s_curr_pending);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	return 0;
 
@@ -479,6 +565,17 @@ err:
 	pcol_free(pcol);
 
 	kfree(pcol_copy);
+=======
+	return 0;
+
+err:
+	if (!pcol_copy) /* Failed before ownership transfer */
+		pcol_copy = pcol;
+	_unlock_pcol_pages(pcol_copy, ret, READ);
+	pcol_free(pcol_copy);
+	kfree(pcol_copy);
+
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -499,16 +596,26 @@ static int readpage_strip(void *data, struct page *page)
 	size_t len;
 	int ret;
 
+<<<<<<< HEAD
+=======
+	BUG_ON(!PageLocked(page));
+
+>>>>>>> refs/remotes/origin/master
 	/* FIXME: Just for debugging, will be removed */
 	if (PageUptodate(page))
 		EXOFS_ERR("PageUptodate(0x%lx, 0x%lx)\n", pcol->inode->i_ino,
 			  page->index);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	pcol->that_locked_page = page;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pcol->that_locked_page = page;
+
+>>>>>>> refs/remotes/origin/master
 	if (page->index < end_index)
 		len = PAGE_CACHE_SIZE;
 	else if (page->index == end_index)
@@ -598,12 +705,18 @@ static int exofs_readpages(struct file *file, struct address_space *mapping,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = read_exec(&pcol);
 	if (unlikely(ret))
 		return ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return read_exec(&pcol);
 }
 
@@ -634,6 +747,7 @@ static int exofs_readpage(struct file *file, struct page *page)
 
 /* Callback for osd_write. All writes are asynchronous */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void writepages_done(struct exofs_io_state *ios, void *p)
 {
 	struct page_collect *pcol = p;
@@ -650,6 +764,8 @@ static void writepages_done(struct exofs_io_state *ios, void *p)
 	else
 		good_bytes = pcol->length - resid;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void writepages_done(struct ore_io_state *ios, void *p)
 {
 	struct page_collect *pcol = p;
@@ -666,7 +782,10 @@ static void writepages_done(struct ore_io_state *ios, void *p)
 	} else {
 		good_bytes = 0;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	EXOFS_DBGMSG2("writepages_done(0x%lx) good_bytes=0x%llx"
 		     " length=0x%lx nr_pages=%u\n",
@@ -700,11 +819,14 @@ static void writepages_done(struct ore_io_state *ios, void *p)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int write_exec(struct page_collect *pcol)
 {
 	struct exofs_i_info *oi = exofs_i(pcol->inode);
 	struct exofs_io_state *ios = pcol->ios;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct page *__r4w_get_page(void *priv, u64 offset, bool *uptodate)
 {
 	struct page_collect *pcol = priv;
@@ -712,8 +834,21 @@ static struct page *__r4w_get_page(void *priv, u64 offset, bool *uptodate)
 
 	if (!pcol->that_locked_page ||
 	    (pcol->that_locked_page->index != index)) {
+<<<<<<< HEAD
 		struct page *page = find_get_page(pcol->inode->i_mapping, index);
 
+=======
+		struct page *page;
+		loff_t i_size = i_size_read(pcol->inode);
+
+		if (offset >= i_size) {
+			*uptodate = true;
+			EXOFS_DBGMSG("offset >= i_size index=0x%lx\n", index);
+			return ZERO_PAGE(0);
+		}
+
+		page =  find_get_page(pcol->inode->i_mapping, index);
+>>>>>>> refs/remotes/origin/master
 		if (!page) {
 			page = find_or_create_page(pcol->inode->i_mapping,
 						   index, GFP_NOFS);
@@ -742,12 +877,21 @@ static void __r4w_put_page(void *priv, struct page *page)
 {
 	struct page_collect *pcol = priv;
 
+<<<<<<< HEAD
 	if (pcol->that_locked_page != page) {
+=======
+	if ((pcol->that_locked_page != page) && (ZERO_PAGE(0) != page)) {
+>>>>>>> refs/remotes/origin/master
 		EXOFS_DBGMSG("index=0x%lx\n", page->index);
 		page_cache_release(page);
 		return;
 	}
+<<<<<<< HEAD
 	EXOFS_DBGMSG("that_locked_page index=0x%lx\n", page->index);
+=======
+	EXOFS_DBGMSG("that_locked_page index=0x%lx\n",
+		     ZERO_PAGE(0) == page ? -1 : page->index);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct _ore_r4w_op _r4w_op = {
@@ -759,7 +903,10 @@ static int write_exec(struct page_collect *pcol)
 {
 	struct exofs_i_info *oi = exofs_i(pcol->inode);
 	struct ore_io_state *ios;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct page_collect *pcol_copy = NULL;
 	int ret;
 
@@ -767,7 +914,10 @@ static int write_exec(struct page_collect *pcol)
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(pcol->ios);
 	ret = ore_get_rw_state(&pcol->sbi->layout, &oi->oc, false,
 				 pcol->pg_first << PAGE_CACHE_SHIFT,
@@ -775,7 +925,10 @@ static int write_exec(struct page_collect *pcol)
 	if (unlikely(ret))
 		goto err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	pcol_copy = kmalloc(sizeof(*pcol_copy), GFP_KERNEL);
 	if (!pcol_copy) {
 		EXOFS_ERR("write_exec: Failed to kmalloc(pcol)\n");
@@ -785,6 +938,7 @@ static int write_exec(struct page_collect *pcol)
 
 	*pcol_copy = *pcol;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ios->pages = pcol_copy->pages;
 	ios->nr_pages = pcol_copy->nr_pages;
@@ -797,6 +951,8 @@ static int write_exec(struct page_collect *pcol)
 	if (unlikely(ret)) {
 		EXOFS_ERR("write_exec: exofs_oi_write() Failed\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ios = pcol->ios;
 	ios->pages = pcol_copy->pages;
 	ios->done = writepages_done;
@@ -816,11 +972,15 @@ static int write_exec(struct page_collect *pcol)
 	ret = ore_write(ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("write_exec: ore_write() Failed\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto err;
 	}
 
 	atomic_inc(&pcol->sbi->s_curr_pending);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	EXOFS_DBGMSG2("write_exec(0x%lx, 0x%llx) start=0x%llx length=0x%lx\n",
 		  pcol->inode->i_ino, pcol->pg_first, _LLU(ios->offset),
@@ -834,6 +994,15 @@ static int write_exec(struct page_collect *pcol)
 err:
 	_unlock_pcol_pages(pcol, ret, WRITE);
 	pcol_free(pcol);
+=======
+	return 0;
+
+err:
+	if (!pcol_copy) /* Failed before ownership transfer */
+		pcol_copy = pcol;
+	_unlock_pcol_pages(pcol_copy, ret, WRITE);
+	pcol_free(pcol_copy);
+>>>>>>> refs/remotes/origin/master
 	kfree(pcol_copy);
 
 	return ret;
@@ -969,19 +1138,26 @@ static int exofs_writepages(struct address_space *mapping,
 
 	ret = write_cache_pages(mapping, wbc, writepage_strip, &pcol);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret) {
 =======
 	if (unlikely(ret)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(ret)) {
+>>>>>>> refs/remotes/origin/master
 		EXOFS_ERR("write_cache_pages => %d\n", ret);
 		return ret;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return write_exec(&pcol);
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = write_exec(&pcol);
 	if (unlikely(ret))
 		return ret;
@@ -1004,7 +1180,10 @@ static int exofs_writepages(struct address_space *mapping,
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int exofs_writepage(struct page *page, struct writeback_control *wbc)
 {
 	struct page_collect pcol;
@@ -1021,15 +1200,23 @@ static int exofs_writepage(struct page *page, struct writeback_control *wbc)
 	return write_exec(&pcol);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+>>>>>>> refs/remotes/origin/master
 /* i_mutex held using inode->i_size directly */
 static void _write_failed(struct inode *inode, loff_t to)
 {
 	if (to > inode->i_size)
+<<<<<<< HEAD
 		truncate_pagecache(inode, to, inode->i_size);
+=======
+		truncate_pagecache(inode, inode->i_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 int exofs_write_begin(struct file *file, struct address_space *mapping,
@@ -1121,9 +1308,17 @@ static int exofs_releasepage(struct page *page, gfp_t gfp)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void exofs_invalidatepage(struct page *page, unsigned long offset)
 {
 	EXOFS_DBGMSG("page 0x%lx offset 0x%lx\n", page->index, offset);
+=======
+static void exofs_invalidatepage(struct page *page, unsigned int offset,
+				 unsigned int length)
+{
+	EXOFS_DBGMSG("page 0x%lx offset 0x%x length 0x%x\n",
+		     page->index, offset, length);
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(1);
 }
 
@@ -1131,10 +1326,14 @@ const struct address_space_operations exofs_aops = {
 	.readpage	= exofs_readpage,
 	.readpages	= exofs_readpages,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.writepage	= exofs_writepage,
 =======
 	.writepage	= NULL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.writepage	= NULL,
+>>>>>>> refs/remotes/origin/master
 	.writepages	= exofs_writepages,
 	.write_begin	= exofs_write_begin_export,
 	.write_end	= exofs_write_end,
@@ -1169,6 +1368,7 @@ static inline int exofs_inode_is_fast_symlink(struct inode *inode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const struct osd_attr g_attr_logical_length = ATTR_DEF(
 	OSD_APAGE_OBJECT_INFORMATION, OSD_ATTR_OI_LOGICAL_LENGTH, 8);
 
@@ -1176,20 +1376,29 @@ static int _do_truncate(struct inode *inode, loff_t newsize)
 {
 	struct exofs_i_info *oi = exofs_i(inode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int _do_truncate(struct inode *inode, loff_t newsize)
 {
 	struct exofs_i_info *oi = exofs_i(inode);
 	struct exofs_sb_info *sbi = inode->i_sb->s_fs_info;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	inode->i_mtime = inode->i_ctime = CURRENT_TIME;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = exofs_oi_truncate(oi, (u64)newsize);
 =======
 	ret = ore_truncate(&sbi->layout, &oi->oc, (u64)newsize);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ore_truncate(&sbi->layout, &oi->oc, (u64)newsize);
+>>>>>>> refs/remotes/origin/master
 	if (likely(!ret))
 		truncate_setsize(inode, newsize);
 
@@ -1253,6 +1462,7 @@ static int exofs_get_inode(struct super_block *sb, struct exofs_i_info *oi,
 		[2] = g_attr_inode_dir_layout,
 	};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct exofs_io_state *ios;
 	struct exofs_on_disk_inode_layout *layout;
 	int ret;
@@ -1270,6 +1480,8 @@ static int exofs_get_inode(struct super_block *sb, struct exofs_i_info *oi,
 	attrs[1].len = exofs_on_disk_inode_layout_size(sbi->layout.s_numdevs);
 	attrs[2].len = exofs_on_disk_inode_layout_size(sbi->layout.s_numdevs);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ore_io_state *ios;
 	struct exofs_on_disk_inode_layout *layout;
 	int ret;
@@ -1282,22 +1494,31 @@ static int exofs_get_inode(struct super_block *sb, struct exofs_i_info *oi,
 
 	attrs[1].len = exofs_on_disk_inode_layout_size(sbi->oc.numdevs);
 	attrs[2].len = exofs_on_disk_inode_layout_size(sbi->oc.numdevs);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ios->in_attr = attrs;
 	ios->in_attr_len = ARRAY_SIZE(attrs);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = exofs_sbi_read(ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("object(0x%llx) corrupted, return empty file=>%d\n",
 			  _LLU(ios->obj.id), ret);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ore_read(ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("object(0x%llx) corrupted, return empty file=>%d\n",
 			  _LLU(oi->one_comp.obj.id), ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		memset(inode, 0, sizeof(*inode));
 		inode->i_mode = 0040000 | (0777 & ~022);
 		/* If object is lost on target we might as well enable it's
@@ -1348,10 +1569,14 @@ static int exofs_get_inode(struct super_block *sb, struct exofs_i_info *oi,
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	exofs_put_io_state(ios);
 =======
 	ore_put_io_state(ios);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ore_put_io_state(ios);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1378,10 +1603,15 @@ struct inode *exofs_iget(struct super_block *sb, unsigned long ino)
 	oi = exofs_i(inode);
 	__oi_init(oi);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	exofs_init_comps(&oi->oc, &oi->one_comp, sb->s_fs_info,
 			 exofs_oi_objno(oi));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	exofs_init_comps(&oi->oc, &oi->one_comp, sb->s_fs_info,
+			 exofs_oi_objno(oi));
+>>>>>>> refs/remotes/origin/master
 
 	/* read the inode from the osd */
 	ret = exofs_get_inode(sb, oi, &fcb);
@@ -1392,6 +1622,7 @@ struct inode *exofs_iget(struct super_block *sb, unsigned long ino)
 
 	/* copy stuff from on-disk struct to in-memory struct */
 	inode->i_mode = le16_to_cpu(fcb.i_mode);
+<<<<<<< HEAD
 	inode->i_uid = le32_to_cpu(fcb.i_uid);
 	inode->i_gid = le32_to_cpu(fcb.i_gid);
 <<<<<<< HEAD
@@ -1399,6 +1630,11 @@ struct inode *exofs_iget(struct super_block *sb, unsigned long ino)
 =======
 	set_nlink(inode, le16_to_cpu(fcb.i_links_count));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	i_uid_write(inode, le32_to_cpu(fcb.i_uid));
+	i_gid_write(inode, le32_to_cpu(fcb.i_gid));
+	set_nlink(inode, le16_to_cpu(fcb.i_links_count));
+>>>>>>> refs/remotes/origin/master
 	inode->i_ctime.tv_sec = (signed)le32_to_cpu(fcb.i_ctime);
 	inode->i_atime.tv_sec = (signed)le32_to_cpu(fcb.i_atime);
 	inode->i_mtime.tv_sec = (signed)le32_to_cpu(fcb.i_mtime);
@@ -1478,10 +1714,14 @@ int __exofs_wait_obj_created(struct exofs_i_info *oi)
  * the OSD.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void create_done(struct exofs_io_state *ios, void *p)
 =======
 static void create_done(struct ore_io_state *ios, void *p)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void create_done(struct ore_io_state *ios, void *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = p;
 	struct exofs_i_info *oi = exofs_i(inode);
@@ -1489,23 +1729,33 @@ static void create_done(struct ore_io_state *ios, void *p)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = exofs_check_io(ios, NULL);
 	exofs_put_io_state(ios);
 =======
 	ret = ore_check_io(ios, NULL);
 	ore_put_io_state(ios);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ore_check_io(ios, NULL);
+	ore_put_io_state(ios);
+>>>>>>> refs/remotes/origin/master
 
 	atomic_dec(&sbi->s_curr_pending);
 
 	if (unlikely(ret)) {
 		EXOFS_ERR("object=0x%llx creation failed in pid=0x%llx",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  _LLU(exofs_oi_objno(oi)), _LLU(sbi->layout.s_pid));
 =======
 			  _LLU(exofs_oi_objno(oi)),
 			  _LLU(oi->one_comp.obj.partition));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  _LLU(exofs_oi_objno(oi)),
+			  _LLU(oi->one_comp.obj.partition));
+>>>>>>> refs/remotes/origin/master
 		/*TODO: When FS is corrupted creation can fail, object already
 		 * exist. Get rid of this asynchronous creation, if exist
 		 * increment the obj counter and try the next object. Until we
@@ -1523,6 +1773,7 @@ static void create_done(struct ore_io_state *ios, void *p)
  * Set up a new inode and create an object for it on the OSD
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct inode *exofs_new_inode(struct inode *dir, int mode)
 {
 	struct super_block *sb;
@@ -1534,6 +1785,8 @@ struct inode *exofs_new_inode(struct inode *dir, int mode)
 
 	sb = dir->i_sb;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct inode *exofs_new_inode(struct inode *dir, umode_t mode)
 {
 	struct super_block *sb = dir->i_sb;
@@ -1543,7 +1796,10 @@ struct inode *exofs_new_inode(struct inode *dir, umode_t mode)
 	struct ore_io_state *ios;
 	int ret;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inode = new_inode(sb);
 	if (!inode)
 		return ERR_PTR(-ENOMEM);
@@ -1554,10 +1810,13 @@ struct inode *exofs_new_inode(struct inode *dir, umode_t mode)
 	set_obj_2bcreated(oi);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sbi = sb->s_fs_info;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inode->i_mapping->backing_dev_info = sb->s_bdi;
 	inode_init_owner(inode, dir, mode);
 	inode->i_ino = sbi->s_nextid++;
@@ -1570,14 +1829,20 @@ struct inode *exofs_new_inode(struct inode *dir, umode_t mode)
 	insert_inode_hash(inode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	exofs_init_comps(&oi->oc, &oi->one_comp, sb->s_fs_info,
 			 exofs_oi_objno(oi));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	exofs_init_comps(&oi->oc, &oi->one_comp, sb->s_fs_info,
+			 exofs_oi_objno(oi));
+>>>>>>> refs/remotes/origin/master
 	exofs_sbi_write_stats(sbi); /* Make sure new sbi->s_nextid is on disk */
 
 	mark_inode_dirty(inode);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = exofs_get_io_state(&sbi->layout, &ios);
 	if (unlikely(ret)) {
@@ -1595,6 +1860,8 @@ struct inode *exofs_new_inode(struct inode *dir, umode_t mode)
 	if (ret) {
 		exofs_put_io_state(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ore_get_io_state(&sbi->layout, &oi->oc, &ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("exofs_new_inode: ore_get_io_state failed\n");
@@ -1607,7 +1874,10 @@ struct inode *exofs_new_inode(struct inode *dir, umode_t mode)
 	ret = ore_create(ios);
 	if (ret) {
 		ore_put_io_state(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(ret);
 	}
 	atomic_inc(&sbi->s_curr_pending);
@@ -1627,18 +1897,24 @@ struct updatei_args {
  * Callback function from exofs_update_inode().
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void updatei_done(struct exofs_io_state *ios, void *p)
 {
 	struct updatei_args *args = p;
 
 	exofs_put_io_state(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void updatei_done(struct ore_io_state *ios, void *p)
 {
 	struct updatei_args *args = p;
 
 	ore_put_io_state(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	atomic_dec(&args->sbi->s_curr_pending);
 
@@ -1655,10 +1931,14 @@ static int exofs_update_inode(struct inode *inode, int do_sync)
 	struct super_block *sb = inode->i_sb;
 	struct exofs_sb_info *sbi = sb->s_fs_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct exofs_io_state *ios;
 =======
 	struct ore_io_state *ios;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ore_io_state *ios;
+>>>>>>> refs/remotes/origin/master
 	struct osd_attr attr;
 	struct exofs_fcb *fcb;
 	struct updatei_args *args;
@@ -1673,8 +1953,13 @@ static int exofs_update_inode(struct inode *inode, int do_sync)
 	fcb = &args->fcb;
 
 	fcb->i_mode = cpu_to_le16(inode->i_mode);
+<<<<<<< HEAD
 	fcb->i_uid = cpu_to_le32(inode->i_uid);
 	fcb->i_gid = cpu_to_le32(inode->i_gid);
+=======
+	fcb->i_uid = cpu_to_le32(i_uid_read(inode));
+	fcb->i_gid = cpu_to_le32(i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 	fcb->i_links_count = cpu_to_le16(inode->i_nlink);
 	fcb->i_ctime = cpu_to_le32(inode->i_ctime.tv_sec);
 	fcb->i_atime = cpu_to_le32(inode->i_atime.tv_sec);
@@ -1698,6 +1983,7 @@ static int exofs_update_inode(struct inode *inode, int do_sync)
 		memcpy(fcb->i_data, oi->i_data, sizeof(fcb->i_data));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = exofs_get_io_state(&sbi->layout, &ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("%s: exofs_get_io_state failed.\n", __func__);
@@ -1706,6 +1992,11 @@ static int exofs_update_inode(struct inode *inode, int do_sync)
 	if (unlikely(ret)) {
 		EXOFS_ERR("%s: ore_get_io_state failed.\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ore_get_io_state(&sbi->layout, &oi->oc, &ios);
+	if (unlikely(ret)) {
+		EXOFS_ERR("%s: ore_get_io_state failed.\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		goto free_args;
 	}
 
@@ -1723,20 +2014,28 @@ static int exofs_update_inode(struct inode *inode, int do_sync)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = exofs_oi_write(oi, ios);
 =======
 	ret = ore_write(ios);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = ore_write(ios);
+>>>>>>> refs/remotes/origin/master
 	if (!do_sync && !ret) {
 		atomic_inc(&sbi->s_curr_pending);
 		goto out; /* deallocation in updatei_done */
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	exofs_put_io_state(ios);
 =======
 	ore_put_io_state(ios);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ore_put_io_state(ios);
+>>>>>>> refs/remotes/origin/master
 free_args:
 	kfree(args);
 out:
@@ -1756,18 +2055,24 @@ int exofs_write_inode(struct inode *inode, struct writeback_control *wbc)
  * do.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void delete_done(struct exofs_io_state *ios, void *p)
 {
 	struct exofs_sb_info *sbi = p;
 
 	exofs_put_io_state(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void delete_done(struct ore_io_state *ios, void *p)
 {
 	struct exofs_sb_info *sbi = p;
 
 	ore_put_io_state(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	atomic_dec(&sbi->s_curr_pending);
 }
@@ -1783,10 +2088,14 @@ void exofs_evict_inode(struct inode *inode)
 	struct super_block *sb = inode->i_sb;
 	struct exofs_sb_info *sbi = sb->s_fs_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct exofs_io_state *ios;
 =======
 	struct ore_io_state *ios;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ore_io_state *ios;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	truncate_inode_pages(&inode->i_data, 0);
@@ -1796,7 +2105,11 @@ void exofs_evict_inode(struct inode *inode)
 		goto no_delete;
 
 	inode->i_size = 0;
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 
 	/* if we are deleting an obj that hasn't been created yet, wait.
 	 * This also makes sure that create_done cannot be called with an
@@ -1806,6 +2119,7 @@ void exofs_evict_inode(struct inode *inode)
 	/* ignore the error, attempt a remove anyway */
 
 	/* Now Remove the OSD objects */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = exofs_get_io_state(&sbi->layout, &ios);
 	if (unlikely(ret)) {
@@ -1822,6 +2136,8 @@ void exofs_evict_inode(struct inode *inode)
 		EXOFS_ERR("%s: exofs_sbi_remove failed\n", __func__);
 		exofs_put_io_state(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ore_get_io_state(&sbi->layout, &oi->oc, &ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("%s: ore_get_io_state failed\n", __func__);
@@ -1835,7 +2151,10 @@ void exofs_evict_inode(struct inode *inode)
 	if (ret) {
 		EXOFS_ERR("%s: ore_remove failed\n", __func__);
 		ore_put_io_state(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	atomic_inc(&sbi->s_curr_pending);
@@ -1843,5 +2162,9 @@ void exofs_evict_inode(struct inode *inode)
 	return;
 
 no_delete:
+<<<<<<< HEAD
 	end_writeback(inode);
+=======
+	clear_inode(inode);
+>>>>>>> refs/remotes/origin/master
 }

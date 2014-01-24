@@ -7,6 +7,10 @@
 #ifndef _ASM_S390_IPL_H
 #define _ASM_S390_IPL_H
 
+<<<<<<< HEAD
+=======
+#include <asm/lowcore.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/types.h>
 #include <asm/cio.h>
 #include <asm/setup.h>
@@ -86,7 +90,18 @@ struct ipl_parameter_block {
  */
 extern u32 ipl_flags;
 extern u32 dump_prefix_page;
+<<<<<<< HEAD
 extern unsigned int zfcpdump_prefix_array[];
+=======
+
+struct dump_save_areas {
+	struct save_area **areas;
+	int count;
+};
+
+extern struct dump_save_areas dump_save_areas;
+struct save_area *dump_save_area_create(int cpu);
+>>>>>>> refs/remotes/origin/master
 
 extern void do_reipl(void);
 extern void do_halt(void);
@@ -168,10 +183,16 @@ enum diag308_rc {
 
 extern int diag308(unsigned long subcode, void *addr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void diag308_reset(void);
 extern void store_status(void);
 extern void lgr_info_log(void);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void diag308_reset(void);
+extern void store_status(void);
+extern void lgr_info_log(void);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_S390_IPL_H */

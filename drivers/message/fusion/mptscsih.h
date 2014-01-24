@@ -111,7 +111,11 @@ extern void mptscsih_shutdown(struct pci_dev *);
 extern int mptscsih_suspend(struct pci_dev *pdev, pm_message_t state);
 extern int mptscsih_resume(struct pci_dev *pdev);
 #endif
+<<<<<<< HEAD
 extern int mptscsih_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset, int length, int func);
+=======
+extern int mptscsih_show_info(struct seq_file *, struct Scsi_Host *);
+>>>>>>> refs/remotes/origin/master
 extern const char * mptscsih_info(struct Scsi_Host *SChost);
 extern int mptscsih_qcmd(struct scsi_cmnd *SCpnt, void (*done)(struct scsi_cmnd *));
 extern int mptscsih_IssueTaskMgmt(MPT_SCSI_HOST *hd, u8 type, u8 channel,
@@ -136,6 +140,10 @@ extern struct device_attribute *mptscsih_host_attrs[];
 extern struct scsi_cmnd	*mptscsih_get_scsi_lookup(MPT_ADAPTER *ioc, int i);
 extern void mptscsih_taskmgmt_response_code(MPT_ADAPTER *ioc, u8 response_code);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void mptscsih_flush_running_cmds(MPT_SCSI_HOST *hd);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void mptscsih_flush_running_cmds(MPT_SCSI_HOST *hd);
+>>>>>>> refs/remotes/origin/master

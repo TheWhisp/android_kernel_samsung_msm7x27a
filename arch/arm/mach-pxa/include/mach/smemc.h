@@ -14,10 +14,14 @@
 #define PXA2XX_SMEMC_BASE	0x48000000
 #define PXA3XX_SMEMC_BASE	0x4a000000
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define SMEMC_VIRT		0xf6000000
 =======
 #define SMEMC_VIRT		IOMEM(0xf6000000)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SMEMC_VIRT		IOMEM(0xf6000000)
+>>>>>>> refs/remotes/origin/master
 
 #define MDCNFG		(SMEMC_VIRT + 0x00)  /* SDRAM Configuration Register 0 */
 #define MDREFR		(SMEMC_VIRT + 0x04)  /* SDRAM Refresh Control Register */

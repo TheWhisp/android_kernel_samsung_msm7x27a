@@ -10,6 +10,10 @@
 
 #include <linux/crash_dump.h>
 #include <linux/kernel.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/checksum.h>
 #include <asm/lowcore.h>
 #include <asm/os_info.h>
@@ -60,7 +64,11 @@ void __init os_info_init(void)
 	os_info.version_minor = OS_INFO_VERSION_MINOR;
 	os_info.magic = OS_INFO_MAGIC;
 	os_info.csum = os_info_csum(&os_info);
+<<<<<<< HEAD
 	copy_to_absolute_zero(&S390_lowcore.os_info, &ptr, sizeof(ptr));
+=======
+	mem_assign_absolute(S390_lowcore.os_info, (unsigned long) ptr);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_CRASH_DUMP
@@ -138,7 +146,10 @@ static void os_info_old_init(void)
 		goto fail_free;
 	os_info_old_alloc(OS_INFO_VMCOREINFO, 1);
 	os_info_old_alloc(OS_INFO_REIPL_BLOCK, 1);
+<<<<<<< HEAD
 	os_info_old_alloc(OS_INFO_INIT_FN, PAGE_SIZE);
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("crashkernel: addr=0x%lx size=%lu\n",
 		(unsigned long) os_info_old->crashkernel_addr,
 		(unsigned long) os_info_old->crashkernel_size);

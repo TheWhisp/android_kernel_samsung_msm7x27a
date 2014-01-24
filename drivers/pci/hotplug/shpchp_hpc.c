@@ -116,7 +116,11 @@
 #define SLOT_REG_RSVDZ_MASK	((1 << 15) | (7 << 21))
 
 /*
+<<<<<<< HEAD
  * SHPC Command Code definitnions
+=======
+ * SHPC Command Code definitions
+>>>>>>> refs/remotes/origin/master
  *
  *     Slot Operation				00h - 3Fh
  *     Set Bus Segment Speed/Mode A		40h - 47h

@@ -26,6 +26,10 @@
 #include <linux/module.h>
 #include <linux/param.h>
 #include <linux/platform_device.h>
+<<<<<<< HEAD
+=======
+#include <linux/pm.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/mtd/spear_smi.h>
@@ -240,8 +244,13 @@ static int spear_smi_read_sr(struct spear_smi *dev, u32 bank)
 	/* copy dev->status (lower 16 bits) in order to release lock */
 	if (ret > 0)
 		ret = dev->status & 0xffff;
+<<<<<<< HEAD
 	else
 		ret = -EIO;
+=======
+	else if (ret == 0)
+		ret = -ETIMEDOUT;
+>>>>>>> refs/remotes/origin/master
 
 	/* restore the ctrl regs state */
 	writel(ctrlreg1, dev->io_base + SMI_CR1);
@@ -269,16 +278,30 @@ static int spear_smi_wait_till_ready(struct spear_smi *dev, u32 bank,
 	finish = jiffies + timeout;
 	do {
 		status = spear_smi_read_sr(dev, bank);
+<<<<<<< HEAD
 		if (status < 0)
 			continue; /* try till timeout */
 		else if (!(status & SR_WIP))
 			return 0;
+=======
+		if (status < 0) {
+			if (status == -ETIMEDOUT)
+				continue; /* try till finish */
+			return status;
+		} else if (!(status & SR_WIP)) {
+			return 0;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		cond_resched();
 	} while (!time_after_eq(jiffies, finish));
 
 	dev_err(&dev->pdev->dev, "smi controller is busy, timeout\n");
+<<<<<<< HEAD
 	return status;
+=======
+	return -EBUSY;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -335,6 +358,12 @@ static void spear_smi_hw_init(struct spear_smi *dev)
 	val = HOLD1 | BANK_EN | DSEL_TIME | (prescale << 8);
 
 	mutex_lock(&dev->lock);
+<<<<<<< HEAD
+=======
+	/* clear all interrupt conditions */
+	writel(0, dev->io_base + SMI_SR);
+
+>>>>>>> refs/remotes/origin/master
 	writel(val, dev->io_base + SMI_CR1);
 	mutex_unlock(&dev->lock);
 }
@@ -391,11 +420,19 @@ static int spear_smi_write_enable(struct spear_smi *dev, u32 bank)
 	writel(ctrlreg1, dev->io_base + SMI_CR1);
 	writel(0, dev->io_base + SMI_CR2);
 
+<<<<<<< HEAD
 	if (ret <= 0) {
 		ret = -EIO;
 		dev_err(&dev->pdev->dev,
 			"smi controller failed on write enable\n");
 	} else {
+=======
+	if (ret == 0) {
+		ret = -EIO;
+		dev_err(&dev->pdev->dev,
+			"smi controller failed on write enable\n");
+	} else if (ret > 0) {
+>>>>>>> refs/remotes/origin/master
 		/* check whether write mode status is set for required bank */
 		if (dev->status & (1 << (bank + WM_SHIFT)))
 			ret = 0;
@@ -462,10 +499,17 @@ static int spear_smi_erase_sector(struct spear_smi *dev,
 	ret = wait_event_interruptible_timeout(dev->cmd_complete,
 			dev->status & TFF, SMI_CMD_TIMEOUT);
 
+<<<<<<< HEAD
 	if (ret <= 0) {
 		ret = -EIO;
 		dev_err(&dev->pdev->dev, "sector erase failed\n");
 	} else
+=======
+	if (ret == 0) {
+		ret = -EIO;
+		dev_err(&dev->pdev->dev, "sector erase failed\n");
+	} else if (ret > 0)
+>>>>>>> refs/remotes/origin/master
 		ret = 0; /* success */
 
 	/* restore ctrl regs */
@@ -543,7 +587,11 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
 {
 	struct spear_snor_flash *flash = get_flash_data(mtd);
 	struct spear_smi *dev = mtd->priv;
+<<<<<<< HEAD
 	void *src;
+=======
+	void __iomem *src;
+>>>>>>> refs/remotes/origin/master
 	u32 ctrlreg1, val;
 	int ret;
 
@@ -576,7 +624,11 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
 
 	writel(val, dev->io_base + SMI_CR1);
 
+<<<<<<< HEAD
 	memcpy_fromio(buf, (u8 *)src, len);
+=======
+	memcpy_fromio(buf, src, len);
+>>>>>>> refs/remotes/origin/master
 
 	/* restore ctrl reg1 */
 	writel(ctrlreg1, dev->io_base + SMI_CR1);
@@ -589,7 +641,11 @@ static int spear_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
 }
 
 static inline int spear_smi_cpy_toio(struct spear_smi *dev, u32 bank,
+<<<<<<< HEAD
 		void *dest, const void *src, size_t len)
+=======
+		void __iomem *dest, const void *src, size_t len)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	u32 ctrlreg1;
@@ -636,7 +692,11 @@ static int spear_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
 {
 	struct spear_snor_flash *flash = get_flash_data(mtd);
 	struct spear_smi *dev = mtd->priv;
+<<<<<<< HEAD
 	void *dest;
+=======
+	void __iomem *dest;
+>>>>>>> refs/remotes/origin/master
 	u32 page_offset, page_size;
 	int ret;
 
@@ -749,8 +809,13 @@ err_probe:
 
 
 #ifdef CONFIG_OF
+<<<<<<< HEAD
 static int __devinit spear_smi_probe_config_dt(struct platform_device *pdev,
 					       struct device_node *np)
+=======
+static int spear_smi_probe_config_dt(struct platform_device *pdev,
+				     struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spear_smi_plat_data *pdata = dev_get_platdata(&pdev->dev);
 	struct device_node *pp = NULL;
@@ -792,8 +857,13 @@ static int __devinit spear_smi_probe_config_dt(struct platform_device *pdev,
 	return 0;
 }
 #else
+<<<<<<< HEAD
 static int __devinit spear_smi_probe_config_dt(struct platform_device *pdev,
 					       struct device_node *np)
+=======
+static int spear_smi_probe_config_dt(struct platform_device *pdev,
+				     struct device_node *np)
+>>>>>>> refs/remotes/origin/master
 {
 	return -ENOSYS;
 }
@@ -820,7 +890,11 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
 	if (!flash_info)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	flash = kzalloc(sizeof(*flash), GFP_ATOMIC);
+=======
+	flash = devm_kzalloc(&pdev->dev, sizeof(*flash), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (!flash)
 		return -ENOMEM;
 	flash->bank = bank;
@@ -831,6 +905,7 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
 	flash_index = spear_smi_probe_flash(dev, bank);
 	if (flash_index < 0) {
 		dev_info(&dev->pdev->dev, "smi-nor%d not found\n", bank);
+<<<<<<< HEAD
 		ret = flash_index;
 		goto err_probe;
 	}
@@ -840,6 +915,15 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
 		ret = -EIO;
 		goto err_probe;
 	}
+=======
+		return flash_index;
+	}
+	/* map the memory for nor flash chip */
+	flash->base_addr = devm_ioremap(&pdev->dev, flash_info->mem_base,
+					flash_info->size);
+	if (!flash->base_addr)
+		return -EIO;
+>>>>>>> refs/remotes/origin/master
 
 	dev->flash[bank] = flash;
 	flash->mtd.priv = dev;
@@ -881,6 +965,7 @@ static int spear_smi_setup_banks(struct platform_device *pdev,
 					count);
 	if (ret) {
 		dev_err(&dev->pdev->dev, "Err MTD partition=%d\n", ret);
+<<<<<<< HEAD
 		goto err_map;
 	}
 
@@ -892,6 +977,12 @@ err_map:
 err_probe:
 	kfree(flash);
 	return ret;
+=======
+		return ret;
+	}
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -903,7 +994,11 @@ err_probe:
  * and do proper init for any found one.
  * Returns 0 on success, non zero otherwise
  */
+<<<<<<< HEAD
 static int __devinit spear_smi_probe(struct platform_device *pdev)
+=======
+static int spear_smi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *np = pdev->dev.of_node;
 	struct spear_smi_plat_data *pdata = NULL;
@@ -928,13 +1023,18 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
 		}
 	} else {
 		pdata = dev_get_platdata(&pdev->dev);
+<<<<<<< HEAD
 		if (pdata < 0) {
+=======
+		if (!pdata) {
+>>>>>>> refs/remotes/origin/master
 			ret = -ENODEV;
 			dev_err(&pdev->dev, "no platform data\n");
 			goto err;
 		}
 	}
 
+<<<<<<< HEAD
 	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (!smi_base) {
 		ret = -ENODEV;
@@ -942,6 +1042,8 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0) {
 		ret = -ENODEV;
@@ -949,13 +1051,18 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
 		goto err;
 	}
 
+<<<<<<< HEAD
 	dev = kzalloc(sizeof(*dev), GFP_ATOMIC);
+=======
+	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 	if (!dev) {
 		ret = -ENOMEM;
 		dev_err(&pdev->dev, "mem alloc fail\n");
 		goto err;
 	}
 
+<<<<<<< HEAD
 	smi_base = request_mem_region(smi_base->start, resource_size(smi_base),
 			pdev->name);
 	if (!smi_base) {
@@ -969,12 +1076,24 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
 		ret = -EIO;
 		dev_err(&pdev->dev, "ioremap fail\n");
 		goto err_ioremap;
+=======
+	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+	dev->io_base = devm_ioremap_resource(&pdev->dev, smi_base);
+	if (IS_ERR(dev->io_base)) {
+		ret = PTR_ERR(dev->io_base);
+		goto err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev->pdev = pdev;
 	dev->clk_rate = pdata->clk_rate;
 
+<<<<<<< HEAD
 	if (dev->clk_rate < 0 || dev->clk_rate > SMI_MAX_CLOCK_FREQ)
+=======
+	if (dev->clk_rate > SMI_MAX_CLOCK_FREQ)
+>>>>>>> refs/remotes/origin/master
 		dev->clk_rate = SMI_MAX_CLOCK_FREQ;
 
 	dev->num_flashes = pdata->num_flashes;
@@ -984,6 +1103,7 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
 		dev->num_flashes = MAX_NUM_FLASH_CHIP;
 	}
 
+<<<<<<< HEAD
 	dev->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(dev->clk)) {
 		ret = PTR_ERR(dev->clk);
@@ -995,6 +1115,20 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
 		goto err_clk_enable;
 
 	ret = request_irq(irq, spear_smi_int_handler, 0, pdev->name, dev);
+=======
+	dev->clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(dev->clk)) {
+		ret = PTR_ERR(dev->clk);
+		goto err;
+	}
+
+	ret = clk_prepare_enable(dev->clk);
+	if (ret)
+		goto err;
+
+	ret = devm_request_irq(&pdev->dev, irq, spear_smi_int_handler, 0,
+			       pdev->name, dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret) {
 		dev_err(&dev->pdev->dev, "SMI IRQ allocation failed\n");
 		goto err_irq;
@@ -1010,12 +1144,17 @@ static int __devinit spear_smi_probe(struct platform_device *pdev)
 		ret = spear_smi_setup_banks(pdev, i, pdata->np[i]);
 		if (ret) {
 			dev_err(&dev->pdev->dev, "bank setup failed\n");
+<<<<<<< HEAD
 			goto err_bank_setup;
+=======
+			goto err_irq;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 err_bank_setup:
 	free_irq(irq, dev);
 	platform_set_drvdata(pdev, NULL);
@@ -1029,6 +1168,10 @@ err_ioremap:
 	release_mem_region(smi_base->start, resource_size(smi_base));
 err_mem:
 	kfree(dev);
+=======
+err_irq:
+	clk_disable_unprepare(dev->clk);
+>>>>>>> refs/remotes/origin/master
 err:
 	return ret;
 }
@@ -1039,6 +1182,7 @@ err:
  *
  * free all allocations and delete the partitions.
  */
+<<<<<<< HEAD
 static int __devexit spear_smi_remove(struct platform_device *pdev)
 {
 	struct spear_smi *dev;
@@ -1047,6 +1191,13 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
 	struct resource *smi_base;
 	int ret;
 	int i, irq;
+=======
+static int spear_smi_remove(struct platform_device *pdev)
+{
+	struct spear_smi *dev;
+	struct spear_snor_flash *flash;
+	int ret, i;
+>>>>>>> refs/remotes/origin/master
 
 	dev = platform_get_drvdata(pdev);
 	if (!dev) {
@@ -1054,8 +1205,11 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	pdata = dev_get_platdata(&pdev->dev);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* clean up for all nor flash */
 	for (i = 0; i < dev->num_flashes; i++) {
 		flash = dev->flash[i];
@@ -1066,6 +1220,7 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
 		ret = mtd_device_unregister(&flash->mtd);
 		if (ret)
 			dev_err(&pdev->dev, "error removing mtd\n");
+<<<<<<< HEAD
 
 		iounmap(flash->base_addr);
 		kfree(flash);
@@ -1082,20 +1237,36 @@ static int __devexit spear_smi_remove(struct platform_device *pdev)
 	smi_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	release_mem_region(smi_base->start, resource_size(smi_base));
 	platform_set_drvdata(pdev, NULL);
+=======
+	}
+
+	clk_disable_unprepare(dev->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int spear_smi_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct spear_smi *dev = platform_get_drvdata(pdev);
 
 	if (dev && dev->clk)
 		clk_disable(dev->clk);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int spear_smi_suspend(struct device *dev)
+{
+	struct spear_smi *sdev = dev_get_drvdata(dev);
+
+	if (sdev && sdev->clk)
+		clk_disable_unprepare(sdev->clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 int spear_smi_resume(struct platform_device *pdev)
 {
 	struct spear_smi *dev = platform_get_drvdata(pdev);
@@ -1108,6 +1279,23 @@ int spear_smi_resume(struct platform_device *pdev)
 		spear_smi_hw_init(dev);
 	return ret;
 }
+=======
+static int spear_smi_resume(struct device *dev)
+{
+	struct spear_smi *sdev = dev_get_drvdata(dev);
+	int ret = -EPERM;
+
+	if (sdev && sdev->clk)
+		ret = clk_prepare_enable(sdev->clk);
+
+	if (!ret)
+		spear_smi_hw_init(sdev);
+	return ret;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(spear_smi_pm_ops, spear_smi_suspend, spear_smi_resume);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_OF
 static const struct of_device_id spear_smi_id_table[] = {
@@ -1123,6 +1311,7 @@ static struct platform_driver spear_smi_driver = {
 		.bus = &platform_bus_type,
 		.owner = THIS_MODULE,
 		.of_match_table = of_match_ptr(spear_smi_id_table),
+<<<<<<< HEAD
 	},
 	.probe = spear_smi_probe,
 	.remove = __devexit_p(spear_smi_remove),
@@ -1141,6 +1330,14 @@ static void spear_smi_exit(void)
 	platform_driver_unregister(&spear_smi_driver);
 }
 module_exit(spear_smi_exit);
+=======
+		.pm = &spear_smi_pm_ops,
+	},
+	.probe = spear_smi_probe,
+	.remove = spear_smi_remove,
+};
+module_platform_driver(spear_smi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ashish Priyadarshi, Shiraz Hashim <shiraz.hashim@st.com>");

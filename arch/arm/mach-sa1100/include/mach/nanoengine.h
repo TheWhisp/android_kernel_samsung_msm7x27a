@@ -17,6 +17,7 @@
 #include <mach/irqs.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GPIO_PC_READY0	GPIO_GPIO(11) /* ready for socket 0 (active high)*/
 #define GPIO_PC_READY1	GPIO_GPIO(12) /* ready for socket 1 (active high) */
 #define GPIO_PC_CD0	GPIO_GPIO(13) /* detect for socket 0 (active low) */
@@ -24,13 +25,18 @@
 #define GPIO_PC_RESET0	GPIO_GPIO(15) /* reset socket 0 */
 #define GPIO_PC_RESET1	GPIO_GPIO(16) /* reset socket 1 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GPIO_PC_READY0	11 /* ready for socket 0 (active high)*/
 #define GPIO_PC_READY1	12 /* ready for socket 1 (active high) */
 #define GPIO_PC_CD0	13 /* detect for socket 0 (active low) */
 #define GPIO_PC_CD1	14 /* detect for socket 1 (active low) */
 #define GPIO_PC_RESET0	15 /* reset socket 0 */
 #define GPIO_PC_RESET1	16 /* reset socket 1 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define NANOENGINE_IRQ_GPIO_PCI		IRQ_GPIO0
 #define NANOENGINE_IRQ_GPIO_PC_READY0	IRQ_GPIO11

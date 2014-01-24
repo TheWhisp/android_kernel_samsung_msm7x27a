@@ -16,7 +16,10 @@
  */
 
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/usb.h>
 #include <linux/i2c.h>
 #include <linux/videodev2.h>
@@ -29,6 +32,16 @@
 MODULE_DESCRIPTION("Sensoray 2250/2251 i2c v4l2 subdev driver");
 MODULE_LICENSE("GPL v2");
 
+<<<<<<< HEAD
+=======
+/*
+ * Note: this board has two i2c devices: a vpx3226f and a tlv320aic23b.
+ * Due to the unusual way these are accessed on this device we do not
+ * reuse the i2c drivers, but instead they are implemented in this
+ * driver. It would be nice to improve on this, though.
+ */
+
+>>>>>>> refs/remotes/origin/master
 #define TLV320_ADDRESS      0x34
 #define VPX322_ADDR_ANALOGCONTROL1	0x02
 #define VPX322_ADDR_BRIGHTNESS0		0x0127
@@ -103,8 +116,12 @@ static u16 vid_regs_fp[] = {
 };
 
 /* PAL specific values */
+<<<<<<< HEAD
 static u16 vid_regs_fp_pal[] =
 {
+=======
+static u16 vid_regs_fp_pal[] = {
+>>>>>>> refs/remotes/origin/master
 	0x120, 0x017,
 	0x121, 0xd22,
 	0x122, 0x122,
@@ -117,6 +134,10 @@ static u16 vid_regs_fp_pal[] =
 
 struct s2250 {
 	struct v4l2_subdev sd;
+<<<<<<< HEAD
+=======
+	struct v4l2_ctrl_handler hdl;
+>>>>>>> refs/remotes/origin/master
 	v4l2_std_id std;
 	int input;
 	int brightness;
@@ -174,7 +195,11 @@ static int write_reg(struct i2c_client *client, u8 reg, u8 value)
 
 	usb = go->hpi_context;
 	if (mutex_lock_interruptible(&usb->i2c_lock) != 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "i2c lock failed\n");
+=======
+		dev_info(&client->dev, "i2c lock failed\n");
+>>>>>>> refs/remotes/origin/master
 		kfree(buf);
 		return -EINTR;
 	}
@@ -213,7 +238,11 @@ static int write_reg_fp(struct i2c_client *client, u16 addr, u16 val)
 
 	usb = go->hpi_context;
 	if (mutex_lock_interruptible(&usb->i2c_lock) != 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "i2c lock failed\n");
+=======
+		dev_info(&client->dev, "i2c lock failed\n");
+>>>>>>> refs/remotes/origin/master
 		kfree(buf);
 		return -EINTR;
 	}
@@ -231,6 +260,7 @@ static int write_reg_fp(struct i2c_client *client, u16 addr, u16 val)
 		val_read = (buf[2] << 8) + buf[3];
 		kfree(buf);
 		if (val_read != val) {
+<<<<<<< HEAD
 			printk(KERN_INFO "invalid fp write %x %x\n",
 			       val_read, val);
 			return -EFAULT;
@@ -238,6 +268,15 @@ static int write_reg_fp(struct i2c_client *client, u16 addr, u16 val)
 		if (subaddr != addr) {
 			printk(KERN_INFO "invalid fp write addr %x %x\n",
 			       subaddr, addr);
+=======
+			dev_info(&client->dev, "invalid fp write %x %x\n",
+				 val_read, val);
+			return -EFAULT;
+		}
+		if (subaddr != addr) {
+			dev_info(&client->dev, "invalid fp write addr %x %x\n",
+				 subaddr, addr);
+>>>>>>> refs/remotes/origin/master
 			return -EFAULT;
 		}
 	} else {
@@ -275,7 +314,11 @@ static int read_reg_fp(struct i2c_client *client, u16 addr, u16 *val)
 	memset(buf, 0xcd, 6);
 	usb = go->hpi_context;
 	if (mutex_lock_interruptible(&usb->i2c_lock) != 0) {
+<<<<<<< HEAD
 		printk(KERN_INFO "i2c lock failed\n");
+=======
+		dev_info(&client->dev, "i2c lock failed\n");
+>>>>>>> refs/remotes/origin/master
 		kfree(buf);
 		return -EINTR;
 	}
@@ -299,7 +342,11 @@ static int write_regs(struct i2c_client *client, u8 *regs)
 
 	for (i = 0; !((regs[i] == 0x00) && (regs[i+1] == 0x00)); i += 2) {
 		if (write_reg(client, regs[i], regs[i+1]) < 0) {
+<<<<<<< HEAD
 			printk(KERN_INFO "s2250: failed\n");
+=======
+			dev_info(&client->dev, "failed\n");
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		}
 	}
@@ -312,7 +359,11 @@ static int write_regs_fp(struct i2c_client *client, u16 *regs)
 
 	for (i = 0; !((regs[i] == 0x00) && (regs[i+1] == 0x00)); i += 2) {
 		if (write_reg_fp(client, regs[i], regs[i+1]) < 0) {
+<<<<<<< HEAD
 			printk(KERN_INFO "s2250: failed fp\n");
+=======
+			dev_info(&client->dev, "failed fp\n");
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		}
 	}
@@ -354,6 +405,7 @@ static int s2250_s_std(struct v4l2_subdev *sd, v4l2_std_id norm)
 	u16 vidsource;
 
 	vidsource = (state->input == 1) ? 0x040 : 0x020;
+<<<<<<< HEAD
 	switch (norm) {
 	case V4L2_STD_NTSC:
 		write_regs_fp(client, vid_regs_fp);
@@ -366,11 +418,21 @@ static int s2250_s_std(struct v4l2_subdev *sd, v4l2_std_id norm)
 		break;
 	default:
 		return -EINVAL;
+=======
+	if (norm & V4L2_STD_625_50) {
+		write_regs_fp(client, vid_regs_fp);
+		write_regs_fp(client, vid_regs_fp_pal);
+		write_reg_fp(client, 0x20, vidsource);
+	} else {
+		write_regs_fp(client, vid_regs_fp);
+		write_reg_fp(client, 0x20, vidsource | 1);
+>>>>>>> refs/remotes/origin/master
 	}
 	state->std = norm;
 	return 0;
 }
 
+<<<<<<< HEAD
 static int s2250_queryctrl(struct v4l2_subdev *sd, struct v4l2_queryctrl *query)
 {
 	switch (query->id) {
@@ -393,10 +455,17 @@ static int s2250_s_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 	struct s2250 *state = to_state(sd);
 	struct i2c_client *client = v4l2_get_subdevdata(sd);
 	int value1;
+=======
+static int s2250_s_ctrl(struct v4l2_ctrl *ctrl)
+{
+	struct s2250 *state = container_of(ctrl->handler, struct s2250, hdl);
+	struct i2c_client *client = v4l2_get_subdevdata(&state->sd);
+>>>>>>> refs/remotes/origin/master
 	u16 oldvalue;
 
 	switch (ctrl->id) {
 	case V4L2_CID_BRIGHTNESS:
+<<<<<<< HEAD
 		if (ctrl->value > 100)
 			state->brightness = 100;
 		else if (ctrl->value < 0)
@@ -475,6 +544,30 @@ static int s2250_g_ctrl(struct v4l2_subdev *sd, struct v4l2_control *ctrl)
 		break;
 	case V4L2_CID_HUE:
 		ctrl->value = state->hue;
+=======
+		read_reg_fp(client, VPX322_ADDR_BRIGHTNESS0, &oldvalue);
+		write_reg_fp(client, VPX322_ADDR_BRIGHTNESS0,
+			     ctrl->val | (oldvalue & ~0xff));
+		read_reg_fp(client, VPX322_ADDR_BRIGHTNESS1, &oldvalue);
+		write_reg_fp(client, VPX322_ADDR_BRIGHTNESS1,
+			     ctrl->val | (oldvalue & ~0xff));
+		write_reg_fp(client, 0x140, 0x60);
+		break;
+	case V4L2_CID_CONTRAST:
+		read_reg_fp(client, VPX322_ADDR_CONTRAST0, &oldvalue);
+		write_reg_fp(client, VPX322_ADDR_CONTRAST0,
+			     ctrl->val | (oldvalue & ~0x3f));
+		read_reg_fp(client, VPX322_ADDR_CONTRAST1, &oldvalue);
+		write_reg_fp(client, VPX322_ADDR_CONTRAST1,
+			     ctrl->val | (oldvalue & ~0x3f));
+		write_reg_fp(client, 0x140, 0x60);
+		break;
+	case V4L2_CID_SATURATION:
+		write_reg_fp(client, VPX322_ADDR_SAT, ctrl->val);
+		break;
+	case V4L2_CID_HUE:
+		write_reg_fp(client, VPX322_ADDR_HUE, ctrl->val);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		return -EINVAL;
@@ -532,24 +625,40 @@ static int s2250_log_status(struct v4l2_subdev *sd)
 	v4l2_info(sd, "Input: %s\n", state->input == 0 ? "Composite" :
 					state->input == 1 ? "S-video" :
 					"error");
+<<<<<<< HEAD
 	v4l2_info(sd, "Brightness: %d\n", state->brightness);
 	v4l2_info(sd, "Contrast: %d\n", state->contrast);
 	v4l2_info(sd, "Saturation: %d\n", state->saturation);
 	v4l2_info(sd, "Hue: %d\n", state->hue);	return 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	v4l2_info(sd, "Audio input: %s\n", state->audio_input == 0 ? "Line In" :
 					state->audio_input == 1 ? "Mic" :
 					state->audio_input == 2 ? "Mic Boost" :
 					"error");
+<<<<<<< HEAD
 	return 0;
+=======
+	return v4l2_ctrl_subdev_log_status(sd);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* --------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 static const struct v4l2_subdev_core_ops s2250_core_ops = {
 	.log_status = s2250_log_status,
 	.g_ctrl = s2250_g_ctrl,
 	.s_ctrl = s2250_s_ctrl,
 	.queryctrl = s2250_queryctrl,
+=======
+static const struct v4l2_ctrl_ops s2250_ctrl_ops = {
+	.s_ctrl = s2250_s_ctrl,
+};
+
+static const struct v4l2_subdev_core_ops s2250_core_ops = {
+	.log_status = s2250_log_status,
+>>>>>>> refs/remotes/origin/master
 	.s_std = s2250_s_std,
 };
 
@@ -585,7 +694,11 @@ static int s2250_probe(struct i2c_client *client,
 	if (audio == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	state = kmalloc(sizeof(struct s2250), GFP_KERNEL);
+=======
+	state = kzalloc(sizeof(struct s2250), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (state == NULL) {
 		i2c_unregister_device(audio);
 		return -ENOMEM;
@@ -597,6 +710,27 @@ static int s2250_probe(struct i2c_client *client,
 	v4l2_info(sd, "initializing %s at address 0x%x on %s\n",
 	       "Sensoray 2250/2251", client->addr, client->adapter->name);
 
+<<<<<<< HEAD
+=======
+	v4l2_ctrl_handler_init(&state->hdl, 4);
+	v4l2_ctrl_new_std(&state->hdl, &s2250_ctrl_ops,
+		V4L2_CID_BRIGHTNESS, -128, 127, 1, 0);
+	v4l2_ctrl_new_std(&state->hdl, &s2250_ctrl_ops,
+		V4L2_CID_CONTRAST, 0, 0x3f, 1, 0x32);
+	v4l2_ctrl_new_std(&state->hdl, &s2250_ctrl_ops,
+		V4L2_CID_SATURATION, 0, 4094, 1, 2070);
+	v4l2_ctrl_new_std(&state->hdl, &s2250_ctrl_ops,
+		V4L2_CID_HUE, -512, 511, 1, 0);
+	sd->ctrl_handler = &state->hdl;
+	if (state->hdl.error) {
+		int err = state->hdl.error;
+
+		v4l2_ctrl_handler_free(&state->hdl);
+		kfree(state);
+		return err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	state->std = V4L2_STD_NTSC;
 	state->brightness = 50;
 	state->contrast = 50;
@@ -606,6 +740,7 @@ static int s2250_probe(struct i2c_client *client,
 
 	/* initialize the audio */
 	if (write_regs(audio, aud_regs) < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR
 		       "s2250: error initializing audio\n");
 		i2c_unregister_device(audio);
@@ -626,6 +761,19 @@ static int s2250_probe(struct i2c_client *client,
 		i2c_unregister_device(audio);
 		kfree(state);
 		return 0;
+=======
+		dev_err(&client->dev, "error initializing audio\n");
+		goto fail;
+	}
+
+	if (write_regs(client, vid_regs) < 0) {
+		dev_err(&client->dev, "error initializing decoder\n");
+		goto fail;
+	}
+	if (write_regs_fp(client, vid_regs_fp) < 0) {
+		dev_err(&client->dev, "error initializing decoder\n");
+		goto fail;
+>>>>>>> refs/remotes/origin/master
 	}
 	/* set default channel */
 	/* composite */
@@ -661,14 +809,31 @@ static int s2250_probe(struct i2c_client *client,
 
 	v4l2_info(sd, "initialized successfully\n");
 	return 0;
+<<<<<<< HEAD
+=======
+
+fail:
+	i2c_unregister_device(audio);
+	v4l2_ctrl_handler_free(&state->hdl);
+	kfree(state);
+	return -EIO;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int s2250_remove(struct i2c_client *client)
 {
+<<<<<<< HEAD
 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
 
 	v4l2_device_unregister_subdev(sd);
 	kfree(to_state(sd));
+=======
+	struct s2250 *state = to_state(i2c_get_clientdata(client));
+
+	v4l2_device_unregister_subdev(&state->sd);
+	v4l2_ctrl_handler_free(&state->hdl);
+	kfree(state);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -688,6 +853,7 @@ static struct i2c_driver s2250_driver = {
 	.id_table	= s2250_id,
 };
 
+<<<<<<< HEAD
 static __init int init_s2250(void)
 {
 	return i2c_add_driver(&s2250_driver);
@@ -700,3 +866,6 @@ static __exit void exit_s2250(void)
 
 module_init(init_s2250);
 module_exit(exit_s2250);
+=======
+module_i2c_driver(s2250_driver);
+>>>>>>> refs/remotes/origin/master

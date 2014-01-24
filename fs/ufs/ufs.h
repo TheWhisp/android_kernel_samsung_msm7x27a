@@ -20,6 +20,14 @@ struct ufs_sb_info {
 	unsigned s_mount_opt;
 	struct mutex mutex;
 	struct task_struct *mutex_owner;
+<<<<<<< HEAD
+=======
+	struct super_block *sb;
+	int work_queued; /* non-zero if the delayed work is queued */
+	struct delayed_work sync_work; /* FS sync delayed work */
+	spinlock_t work_lock; /* protects sync_work and work_queued */
+	struct mutex s_lock;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct ufs_inode_info {
@@ -105,10 +113,14 @@ extern const struct address_space_operations ufs_aops;
 /* ialloc.c */
 extern void ufs_free_inode (struct inode *inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern struct inode * ufs_new_inode (struct inode *, int);
 =======
 extern struct inode * ufs_new_inode (struct inode *, umode_t);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern struct inode * ufs_new_inode (struct inode *, umode_t);
+>>>>>>> refs/remotes/origin/master
 
 /* inode.c */
 extern struct inode *ufs_iget(struct super_block *, unsigned long);
@@ -122,17 +134,24 @@ extern const struct file_operations ufs_dir_operations;
 
 /* super.c */
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void ufs_warning (struct super_block *, const char *, const char *, ...) __attribute__ ((format (printf, 3, 4)));
 extern void ufs_error (struct super_block *, const char *, const char *, ...) __attribute__ ((format (printf, 3, 4)));
 extern void ufs_panic (struct super_block *, const char *, const char *, ...) __attribute__ ((format (printf, 3, 4)));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern __printf(3, 4)
 void ufs_warning(struct super_block *, const char *, const char *, ...);
 extern __printf(3, 4)
 void ufs_error(struct super_block *, const char *, const char *, ...);
 extern __printf(3, 4)
 void ufs_panic(struct super_block *, const char *, const char *, ...);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void ufs_mark_sb_dirty(struct super_block *sb);
+>>>>>>> refs/remotes/origin/master
 
 /* symlink.c */
 extern const struct inode_operations ufs_fast_symlink_inode_operations;

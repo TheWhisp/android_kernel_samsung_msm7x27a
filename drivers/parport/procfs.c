@@ -476,10 +476,16 @@ int parport_proc_register(struct parport *port)
 	struct parport_sysctl_table *t;
 	int i;
 
+<<<<<<< HEAD
 	t = kmalloc(sizeof(*t), GFP_KERNEL);
 	if (t == NULL)
 		return -ENOMEM;
 	memcpy(t, &parport_sysctl_template, sizeof(*t));
+=======
+	t = kmemdup(&parport_sysctl_template, sizeof(*t), GFP_KERNEL);
+	if (t == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	t->device_dir[0].extra1 = port;
 
@@ -523,10 +529,16 @@ int parport_device_proc_register(struct pardevice *device)
 	struct parport_device_sysctl_table *t;
 	struct parport * port = device->port;
 	
+<<<<<<< HEAD
 	t = kmalloc(sizeof(*t), GFP_KERNEL);
 	if (t == NULL)
 		return -ENOMEM;
 	memcpy(t, &parport_device_sysctl_template, sizeof(*t));
+=======
+	t = kmemdup(&parport_device_sysctl_template, sizeof(*t), GFP_KERNEL);
+	if (t == NULL)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	t->dev_dir[0].child = t->parport_dir;
 	t->parport_dir[0].child = t->port_dir;

@@ -12,7 +12,10 @@
 #include <asm/processor.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC64
 
 /*
@@ -34,8 +37,15 @@
 
 extern void __replay_interrupt(unsigned int vector);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 extern void timer_interrupt(struct pt_regs *);
+=======
+extern void timer_interrupt(struct pt_regs *);
+extern void performance_monitor_exception(struct pt_regs *regs);
+extern void WatchdogException(struct pt_regs *regs);
+extern void unknown_exception(struct pt_regs *regs);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC64
 #include <asm/paca.h>
@@ -67,9 +77,12 @@ static inline unsigned long arch_local_irq_disable(void)
 
 extern void arch_local_irq_restore(unsigned long);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void iseries_handle_interrupts(void);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline void arch_local_irq_enable(void)
 {
@@ -93,6 +106,7 @@ static inline bool arch_irqs_disabled(void)
 
 #ifdef CONFIG_PPC_BOOK3E
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __hard_irq_enable()	asm volatile("wrteei 1" : : : "memory");
 #define __hard_irq_disable()	asm volatile("wrteei 0" : : : "memory");
 #else
@@ -107,6 +121,8 @@ static inline bool arch_irqs_disabled(void)
 		get_paca()->hard_enabled = 0;	\
 	} while(0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define __hard_irq_enable()	asm volatile("wrteei 1" : : : "memory")
 #define __hard_irq_disable()	asm volatile("wrteei 0" : : : "memory")
 #else
@@ -114,6 +130,7 @@ static inline bool arch_irqs_disabled(void)
 #define __hard_irq_disable()	__mtmsrd(local_paca->kernel_msr, 1)
 #endif
 
+<<<<<<< HEAD
 static inline void hard_irq_disable(void)
 {
 	__hard_irq_disable();
@@ -123,6 +140,17 @@ static inline void hard_irq_disable(void)
 
 /* include/linux/interrupt.h needs hard_irq_disable to be a macro */
 #define hard_irq_disable	hard_irq_disable
+=======
+#define hard_irq_disable()	do {			\
+	u8 _was_enabled;				\
+	__hard_irq_disable();				\
+	_was_enabled = local_paca->soft_enabled;	\
+	local_paca->soft_enabled = 0;			\
+	local_paca->irq_happened |= PACA_IRQ_HARD_DIS;	\
+	if (_was_enabled)				\
+		trace_hardirqs_off();			\
+} while(0)
+>>>>>>> refs/remotes/origin/master
 
 static inline bool lazy_irq_pending(void)
 {
@@ -147,7 +175,10 @@ static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
 }
 
 extern bool prep_irq_for_idle(void);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #else /* CONFIG_PPC64 */
 
@@ -210,7 +241,10 @@ static inline bool arch_irqs_disabled(void)
 #define hard_irq_disable()		arch_local_irq_disable()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
 {
 	return !(regs->msr & MSR_EE);
@@ -218,7 +252,10 @@ static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
 
 static inline void may_hard_irq_enable(void) { }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC64 */
 
 #define ARCH_IRQ_INIT_FLAGS	IRQ_NOREQUEST
@@ -230,8 +267,12 @@ static inline void may_hard_irq_enable(void) { }
 struct irq_chip;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif  /* __ASSEMBLY__ */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif  /* __ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif	/* __KERNEL__ */
 #endif	/* _ASM_POWERPC_HW_IRQ_H */

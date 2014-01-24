@@ -38,9 +38,12 @@
 #include <linux/crypto.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 #include <linux/netdevice.h>
@@ -82,7 +85,11 @@ static struct pci_driver airo_driver = {
 	.name     = DRV_NAME,
 	.id_table = card_ids,
 	.probe    = airo_pci_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(airo_pci_remove),
+=======
+	.remove   = airo_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend  = airo_pci_suspend,
 	.resume   = airo_pci_resume,
 };
@@ -91,7 +98,10 @@ static struct pci_driver airo_driver = {
 /* Include Wireless Extension definition and check version - Jean II */
 #include <linux/wireless.h>
 #define WIRELESS_SPY		/* enable iwspy support */
+<<<<<<< HEAD
 #include <net/iw_handler.h>	/* New driver API */
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define CISCO_EXT		/* enable Cisco extensions */
 #ifdef CISCO_EXT
@@ -236,8 +246,15 @@ static int adhoc;
 
 static int probe = 1;
 
+<<<<<<< HEAD
 static int proc_uid /* = 0 */;
 
+=======
+static kuid_t proc_kuid;
+static int proc_uid /* = 0 */;
+
+static kgid_t proc_kgid;
+>>>>>>> refs/remotes/origin/master
 static int proc_gid /* = 0 */;
 
 static int airo_perm = 0555;
@@ -1422,10 +1439,14 @@ static int encapsulate(struct airo_info *ai ,etherHead *frame, MICBuffer *mic, i
 	emmh32_update(&context->seed,(u8*)&mic->typelen,10); // Type/Length and Snap
 	emmh32_update(&context->seed,(u8*)&mic->seq,sizeof(mic->seq)); //SEQ
 <<<<<<< HEAD
+<<<<<<< HEAD
 	emmh32_update(&context->seed,frame->da + ETH_ALEN * 2,payLen); //payload
 =======
 	emmh32_update(&context->seed,(u8*)(frame + 1),payLen); //payload
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	emmh32_update(&context->seed,(u8*)(frame + 1),payLen); //payload
+>>>>>>> refs/remotes/origin/master
 	emmh32_final(&context->seed, (u8*)&mic->mic);
 
 	/*    New Type/length ?????????? */
@@ -1514,10 +1535,14 @@ static int decapsulate(struct airo_info *ai, MICBuffer *mic, etherHead *eth, u16
 		emmh32_update(&context->seed, (u8 *)&mic->typelen, sizeof(mic->typelen)+sizeof(mic->u.snap)); 
 		emmh32_update(&context->seed, (u8 *)&mic->seq,sizeof(mic->seq));	
 <<<<<<< HEAD
+<<<<<<< HEAD
 		emmh32_update(&context->seed, eth->da + ETH_ALEN*2,payLen);	
 =======
 		emmh32_update(&context->seed, (u8 *)(eth + 1),payLen);	
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		emmh32_update(&context->seed, (u8 *)(eth + 1),payLen);	
+>>>>>>> refs/remotes/origin/master
 		//Calculate MIC
 		emmh32_final(&context->seed, digest);
 	
@@ -1881,10 +1906,14 @@ static int readStatsRid(struct airo_info*ai, StatsRid *sr, int rid, int lock)
 static void try_auto_wep(struct airo_info *ai)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (auto_wep && !(ai->flags & FLAG_RADIO_DOWN)) {
 =======
 	if (auto_wep && !test_bit(FLAG_RADIO_DOWN, &ai->flags)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (auto_wep && !test_bit(FLAG_RADIO_DOWN, &ai->flags)) {
+>>>>>>> refs/remotes/origin/master
 		ai->expires = RUN_AT(3*HZ);
 		wake_up_interruptible(&ai->thr_wait);
 	}
@@ -1908,7 +1937,12 @@ static int airo_open(struct net_device *dev) {
 
 	if (ai->wifidev != dev) {
 		clear_bit(JOB_DIE, &ai->jobs);
+<<<<<<< HEAD
 		ai->airo_thread_task = kthread_run(airo_thread, dev, dev->name);
+=======
+		ai->airo_thread_task = kthread_run(airo_thread, dev, "%s",
+						   dev->name);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(ai->airo_thread_task))
 			return (int)PTR_ERR(ai->airo_thread_task);
 
@@ -2013,7 +2047,11 @@ static int mpi_send_packet (struct net_device *dev)
  *                         ------------------------------------------------
  */
 
+<<<<<<< HEAD
 	memcpy((char *)ai->txfids[0].virtual_host_addr,
+=======
+	memcpy(ai->txfids[0].virtual_host_addr,
+>>>>>>> refs/remotes/origin/master
 		(char *)&wifictlhdr8023, sizeof(wifictlhdr8023));
 
 	payloadLen = (__le16 *)(ai->txfids[0].virtual_host_addr +
@@ -2707,7 +2745,11 @@ static struct net_device *init_wifidev(struct airo_info *ai,
 	dev->base_addr = ethdev->base_addr;
 	dev->wireless_data = ethdev->wireless_data;
 	SET_NETDEV_DEV(dev, ethdev->dev.parent);
+<<<<<<< HEAD
 	memcpy(dev->dev_addr, ethdev->dev_addr, dev->addr_len);
+=======
+	eth_hw_addr_inherit(dev, ethdev);
+>>>>>>> refs/remotes/origin/master
 	err = register_netdev(dev);
 	if (err<0) {
 		free_netdev(dev);
@@ -2770,10 +2812,14 @@ static const struct net_device_ops airo_netdev_ops = {
 	.ndo_start_xmit		= airo_start_xmit,
 	.ndo_get_stats		= airo_get_stats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= airo_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= airo_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= airo_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= airo_set_mac_address,
 	.ndo_do_ioctl		= airo_ioctl,
 	.ndo_change_mtu		= airo_change_mtu,
@@ -2786,10 +2832,14 @@ static const struct net_device_ops mpi_netdev_ops = {
 	.ndo_start_xmit		= mpi_start_xmit,
 	.ndo_get_stats		= airo_get_stats,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.ndo_set_multicast_list	= airo_set_multicast_list,
 =======
 	.ndo_set_rx_mode	= airo_set_multicast_list,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.ndo_set_rx_mode	= airo_set_multicast_list,
+>>>>>>> refs/remotes/origin/master
 	.ndo_set_mac_address	= airo_set_mac_address,
 	.ndo_do_ioctl		= airo_ioctl,
 	.ndo_change_mtu		= airo_change_mtu,
@@ -4236,7 +4286,11 @@ static int PC4500_writerid(struct airo_info *ai, u16 rid,
 			airo_print_err(ai->dev->name, "%s: len=%d", __func__, len);
 			rc = -1;
 		} else {
+<<<<<<< HEAD
 			memcpy((char *)ai->config_desc.virtual_host_addr,
+=======
+			memcpy(ai->config_desc.virtual_host_addr,
+>>>>>>> refs/remotes/origin/master
 				pBuf, len);
 
 			rc = issuecommand(ai, &cmd, &rsp);
@@ -4523,75 +4577,120 @@ struct proc_data {
 static int setup_proc_entry( struct net_device *dev,
 			     struct airo_info *apriv ) {
 	struct proc_dir_entry *entry;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* First setup the device directory */
 	strcpy(apriv->proc_name,dev->name);
 	apriv->proc_entry = proc_mkdir_mode(apriv->proc_name, airo_perm,
 					    airo_entry);
 	if (!apriv->proc_entry)
+<<<<<<< HEAD
 		goto fail;
 	apriv->proc_entry->uid = proc_uid;
 	apriv->proc_entry->gid = proc_gid;
+=======
+		return -ENOMEM;
+	proc_set_user(apriv->proc_entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the StatsDelta */
 	entry = proc_create_data("StatsDelta", S_IRUGO & proc_perm,
 				 apriv->proc_entry, &proc_statsdelta_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_stats_delta;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the Stats */
 	entry = proc_create_data("Stats", S_IRUGO & proc_perm,
 				 apriv->proc_entry, &proc_stats_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_stats;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the Status */
 	entry = proc_create_data("Status", S_IRUGO & proc_perm,
 				 apriv->proc_entry, &proc_status_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_status;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the Config */
 	entry = proc_create_data("Config", proc_perm,
 				 apriv->proc_entry, &proc_config_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_config;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the SSID */
 	entry = proc_create_data("SSID", proc_perm,
 				 apriv->proc_entry, &proc_SSID_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_ssid;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the APList */
 	entry = proc_create_data("APList", proc_perm,
 				 apriv->proc_entry, &proc_APList_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_aplist;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the BSSList */
 	entry = proc_create_data("BSSList", proc_perm,
 				 apriv->proc_entry, &proc_BSSList_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_bsslist;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the WepKey */
 	entry = proc_create_data("WepKey", proc_perm,
 				 apriv->proc_entry, &proc_wepkey_ops, dev);
 	if (!entry)
+<<<<<<< HEAD
 		goto fail_wepkey;
 	entry->uid = proc_uid;
 	entry->gid = proc_gid;
@@ -4615,10 +4714,19 @@ fail_stats:
 fail_stats_delta:
 	remove_proc_entry(apriv->proc_name, airo_entry);
 fail:
+=======
+		goto fail;
+	proc_set_user(entry, proc_kuid, proc_kgid);
+	return 0;
+
+fail:
+	remove_proc_subtree(apriv->proc_name, airo_entry);
+>>>>>>> refs/remotes/origin/master
 	return -ENOMEM;
 }
 
 static int takedown_proc_entry( struct net_device *dev,
+<<<<<<< HEAD
 				struct airo_info *apriv ) {
 	if ( !apriv->proc_entry->namelen ) return 0;
 	remove_proc_entry("Stats",apriv->proc_entry);
@@ -4630,6 +4738,11 @@ static int takedown_proc_entry( struct net_device *dev,
 	remove_proc_entry("BSSList",apriv->proc_entry);
 	remove_proc_entry("WepKey",apriv->proc_entry);
 	remove_proc_entry(apriv->proc_name,airo_entry);
+=======
+				struct airo_info *apriv )
+{
+	remove_proc_subtree(apriv->proc_name, airo_entry);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -4685,8 +4798,12 @@ static ssize_t proc_write( struct file *file,
 static int proc_status_open(struct inode *inode, struct file *file)
 {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *apriv = dev->ml_priv;
 	CapabilityRid cap_rid;
 	StatusRid status_rid;
@@ -4768,8 +4885,12 @@ static int proc_stats_rid_open( struct inode *inode,
 				u16 rid )
 {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *apriv = dev->ml_priv;
 	StatsRid stats;
 	int i, j;
@@ -4831,8 +4952,12 @@ static inline int sniffing_mode(struct airo_info *ai)
 static void proc_config_on_close(struct inode *inode, struct file *file)
 {
 	struct proc_data *data = file->private_data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	char *line;
 
@@ -5043,8 +5168,12 @@ static const char *get_rmode(__le16 mode)
 static int proc_config_open(struct inode *inode, struct file *file)
 {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	int i;
 	__le16 mode;
@@ -5134,8 +5263,12 @@ static int proc_config_open(struct inode *inode, struct file *file)
 static void proc_SSID_on_close(struct inode *inode, struct file *file)
 {
 	struct proc_data *data = file->private_data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	SsidRid SSID_rid;
 	int i;
@@ -5170,8 +5303,12 @@ static void proc_SSID_on_close(struct inode *inode, struct file *file)
 
 static void proc_APList_on_close( struct inode *inode, struct file *file ) {
 	struct proc_data *data = file->private_data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	APListRid APList_rid;
 	int i;
@@ -5305,8 +5442,12 @@ static int set_wep_tx_idx(struct airo_info *ai, u16 index, int perm, int lock)
 
 static void proc_wepkey_on_close( struct inode *inode, struct file *file ) {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	int i, rc;
 	char key[16];
@@ -5357,8 +5498,12 @@ static void proc_wepkey_on_close( struct inode *inode, struct file *file ) {
 static int proc_wepkey_open( struct inode *inode, struct file *file )
 {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	char *ptr;
 	WepKeyRid wkr;
@@ -5406,8 +5551,12 @@ static int proc_wepkey_open( struct inode *inode, struct file *file )
 static int proc_SSID_open(struct inode *inode, struct file *file)
 {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	int i;
 	char *ptr;
@@ -5450,8 +5599,12 @@ static int proc_SSID_open(struct inode *inode, struct file *file)
 
 static int proc_APList_open( struct inode *inode, struct file *file ) {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	int i;
 	char *ptr;
@@ -5490,8 +5643,12 @@ static int proc_APList_open( struct inode *inode, struct file *file ) {
 
 static int proc_BSSList_open( struct inode *inode, struct file *file ) {
 	struct proc_data *data;
+<<<<<<< HEAD
 	struct proc_dir_entry *dp = PDE(inode);
 	struct net_device *dev = dp->data;
+=======
+	struct net_device *dev = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct airo_info *ai = dev->ml_priv;
 	char *ptr;
 	BSSListRid BSSList_rid;
@@ -5606,7 +5763,11 @@ static void timer_func( struct net_device *dev ) {
 }
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 static int __devinit airo_pci_probe(struct pci_dev *pdev,
+=======
+static int airo_pci_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 				    const struct pci_device_id *pent)
 {
 	struct net_device *dev;
@@ -5628,14 +5789,21 @@ static int __devinit airo_pci_probe(struct pci_dev *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit airo_pci_remove(struct pci_dev *pdev)
+=======
+static void airo_pci_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
 	airo_print_info(dev->name, "Unregistering...");
 	stop_airo_card(dev, 1);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int airo_pci_suspend(struct pci_dev *pdev, pm_message_t state)
@@ -5721,12 +5889,24 @@ static int __init airo_init_module( void )
 {
 	int i;
 
+<<<<<<< HEAD
 	airo_entry = proc_mkdir_mode("driver/aironet", airo_perm, NULL);
 
 	if (airo_entry) {
 		airo_entry->uid = proc_uid;
 		airo_entry->gid = proc_gid;
 	}
+=======
+	proc_kuid = make_kuid(&init_user_ns, proc_uid);
+	proc_kgid = make_kgid(&init_user_ns, proc_gid);
+	if (!uid_valid(proc_kuid) || !gid_valid(proc_kgid))
+		return -EINVAL;
+
+	airo_entry = proc_mkdir_mode("driver/aironet", airo_perm, NULL);
+
+	if (airo_entry)
+		proc_set_user(airo_entry, proc_kuid, proc_kgid);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < 4 && io[i] && irq[i]; i++) {
 		airo_print_info("", "Trying to configure ISA adapter at irq=%d "
@@ -6000,6 +6180,7 @@ static int airo_set_wap(struct net_device *dev,
 	Cmd cmd;
 	Resp rsp;
 	APListRid APList_rid;
+<<<<<<< HEAD
 	static const u8 any[ETH_ALEN] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 	static const u8 off[ETH_ALEN] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
@@ -6007,6 +6188,13 @@ static int airo_set_wap(struct net_device *dev,
 		return -EINVAL;
 	else if (!memcmp(any, awrq->sa_data, ETH_ALEN) ||
 	         !memcmp(off, awrq->sa_data, ETH_ALEN)) {
+=======
+
+	if (awrq->sa_family != ARPHRD_ETHER)
+		return -EINVAL;
+	else if (is_broadcast_ether_addr(awrq->sa_data) ||
+		 is_zero_ether_addr(awrq->sa_data)) {
+>>>>>>> refs/remotes/origin/master
 		memset(&cmd, 0, sizeof(cmd));
 		cmd.cmd=CMD_LOSE_SYNC;
 		if (down_interruptible(&local->sem))
@@ -7257,8 +7445,13 @@ static int airo_get_aplist(struct net_device *dev,
 		}
 	} else {
 		dwrq->flags = 1; /* Should be define'd */
+<<<<<<< HEAD
 		memcpy(extra + sizeof(struct sockaddr)*i,
 		       &qual,  sizeof(struct iw_quality)*i);
+=======
+		memcpy(extra + sizeof(struct sockaddr) * i, qual,
+		       sizeof(struct iw_quality) * i);
+>>>>>>> refs/remotes/origin/master
 	}
 	dwrq->length = i;
 
@@ -7452,7 +7645,11 @@ static inline char *airo_translate_scan(struct net_device *dev,
 					num_null_ies++;
 				break;
 
+<<<<<<< HEAD
 			case WLAN_EID_GENERIC:
+=======
+			case WLAN_EID_VENDOR_SPECIFIC:
+>>>>>>> refs/remotes/origin/master
 				if (ie[1] >= 4 &&
 				    ie[2] == 0x00 &&
 				    ie[3] == 0x50 &&

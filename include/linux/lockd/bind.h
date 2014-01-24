@@ -43,9 +43,13 @@ struct nlmclnt_initdata {
 	u32			nfs_version;
 	int			noresvport;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct net		*net;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct net		*net;
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -58,11 +62,16 @@ extern void	nlmclnt_done(struct nlm_host *host);
 extern int	nlmclnt_proc(struct nlm_host *host, int cmd,
 					struct file_lock *fl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int	lockd_up(void);
 extern void	lockd_down(void);
 =======
 extern int	lockd_up(struct net *net);
 extern void	lockd_down(struct net *net);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int	lockd_up(struct net *net);
+extern void	lockd_down(struct net *net);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* LINUX_LOCKD_BIND_H */

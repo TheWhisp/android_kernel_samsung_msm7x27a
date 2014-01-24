@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * This file is subject to the terms and conditions of the GNU General Public
  * License.  See the file "COPYING" in the main directory of this archive
@@ -198,3 +199,22 @@ static inline int gpio_polarity(unsigned gpio, int value)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif /* __BCM47XX_GPIO_H */
+=======
+#ifndef __ASM_MIPS_MACH_BCM47XX_GPIO_H
+#define __ASM_MIPS_MACH_BCM47XX_GPIO_H
+
+#include <asm-generic/gpio.h>
+
+#define gpio_get_value __gpio_get_value
+#define gpio_set_value __gpio_set_value
+
+#define gpio_cansleep __gpio_cansleep
+#define gpio_to_irq __gpio_to_irq
+
+static inline int irq_to_gpio(unsigned int irq)
+{
+	return -EINVAL;
+}
+
+#endif
+>>>>>>> refs/remotes/origin/master

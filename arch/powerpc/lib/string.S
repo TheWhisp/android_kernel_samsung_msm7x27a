@@ -119,6 +119,10 @@ _GLOBAL(memchr)
 2:	li	r3,0
 	blr
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC32
+>>>>>>> refs/remotes/origin/master
 _GLOBAL(__clear_user)
 	addi	r6,r3,-4
 	li	r3,0
@@ -160,6 +164,7 @@ _GLOBAL(__clear_user)
 	PPC_LONG	1b,91b
 	PPC_LONG	8b,92b
 	.text
+<<<<<<< HEAD
 
 _GLOBAL(__strncpy_from_user)
 	addi	r6,r3,-1
@@ -205,3 +210,6 @@ _GLOBAL(__strnlen_user)
 
 	.section __ex_table,"a"
 	PPC_LONG	1b,99b
+=======
+#endif
+>>>>>>> refs/remotes/origin/master

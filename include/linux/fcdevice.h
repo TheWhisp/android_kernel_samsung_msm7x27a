@@ -27,7 +27,11 @@
 #include <linux/if_fc.h>
 
 #ifdef __KERNEL__
+<<<<<<< HEAD
 extern struct net_device *alloc_fcdev(int sizeof_priv);
+=======
+struct net_device *alloc_fcdev(int sizeof_priv);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #endif	/* _LINUX_FCDEVICE_H */

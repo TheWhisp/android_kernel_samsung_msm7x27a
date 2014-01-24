@@ -7,8 +7,13 @@
 #include <linux/completion.h>
 #include <linux/irqreturn.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 #include "irq_kern.h"
 #include "os.h"
+=======
+#include <irq_kern.h>
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 struct xterm_wait {
 	struct completion ready;
@@ -51,11 +56,15 @@ int xterm_fd(int socket, int *pid_out)
 
 	err = um_request_irq(XTERM_IRQ, socket, IRQ_READ, xterm_interrupt,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     IRQF_DISABLED | IRQF_SHARED | IRQF_SAMPLE_RANDOM,
 =======
 			     IRQF_SHARED | IRQF_SAMPLE_RANDOM,
 >>>>>>> refs/remotes/origin/cm-10.0
 			     "xterm", data);
+=======
+			     IRQF_SHARED, "xterm", data);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		printk(KERN_ERR "xterm_fd : failed to get IRQ for xterm, "
 		       "err = %d\n",  err);
@@ -69,7 +78,11 @@ int xterm_fd(int socket, int *pid_out)
 	 * isn't set) this will hang... */
 	wait_for_completion(&data->ready);
 
+<<<<<<< HEAD
 	free_irq(XTERM_IRQ, data);
+=======
+	um_free_irq(XTERM_IRQ, data);
+>>>>>>> refs/remotes/origin/master
 
 	ret = data->new_fd;
 	*pid_out = data->pid;

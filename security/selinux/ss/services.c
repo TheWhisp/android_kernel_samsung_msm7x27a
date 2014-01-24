@@ -14,10 +14,14 @@
  *	Added conditional policy language extensions
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Updated: Hewlett-Packard <paul.moore@hp.com>
 =======
  * Updated: Hewlett-Packard <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Updated: Hewlett-Packard <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  *      Added support for NetLabel
  *      Added support for the policy capability bitmap
@@ -75,12 +79,18 @@
 #include "audit.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void selnl_notify_policyload(u32 seqno);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 int selinux_policycap_netpeer;
 int selinux_policycap_openperm;
+=======
+int selinux_policycap_netpeer;
+int selinux_policycap_openperm;
+int selinux_policycap_alwaysnetwork;
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_RWLOCK(policy_rwlock);
 
@@ -1027,9 +1037,17 @@ static int context_struct_to_string(struct context *context, char **scontext, u3
 
 	if (context->len) {
 		*scontext_len = context->len;
+<<<<<<< HEAD
 		*scontext = kstrdup(context->str, GFP_ATOMIC);
 		if (!(*scontext))
 			return -ENOMEM;
+=======
+		if (scontext) {
+			*scontext = kstrdup(context->str, GFP_ATOMIC);
+			if (!(*scontext))
+				return -ENOMEM;
+		}
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -1398,6 +1416,10 @@ static int security_compute_sid(u32 ssid,
 				u32 *out_sid,
 				bool kern)
 {
+<<<<<<< HEAD
+=======
+	struct class_datum *cladatum = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct context *scontext = NULL, *tcontext = NULL, newcontext;
 	struct role_trans *roletr = NULL;
 	struct avtab_key avkey;
@@ -1446,12 +1468,28 @@ static int security_compute_sid(u32 ssid,
 		goto out_unlock;
 	}
 
+<<<<<<< HEAD
+=======
+	if (tclass && tclass <= policydb.p_classes.nprim)
+		cladatum = policydb.class_val_to_struct[tclass - 1];
+
+>>>>>>> refs/remotes/origin/master
 	/* Set the user identity. */
 	switch (specified) {
 	case AVTAB_TRANSITION:
 	case AVTAB_CHANGE:
+<<<<<<< HEAD
 		/* Use the process user identity. */
 		newcontext.user = scontext->user;
+=======
+		if (cladatum && cladatum->default_user == DEFAULT_TARGET) {
+			newcontext.user = tcontext->user;
+		} else {
+			/* notice this gets both DEFAULT_SOURCE and unset */
+			/* Use the process user identity. */
+			newcontext.user = scontext->user;
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 	case AVTAB_MEMBER:
 		/* Use the related object owner. */
@@ -1459,6 +1497,7 @@ static int security_compute_sid(u32 ssid,
 		break;
 	}
 
+<<<<<<< HEAD
 	/* Set the role and type to default values. */
 	if ((tclass == policydb.process_class) || (sock == true)) {
 		/* Use the current role and type of process. */
@@ -1469,6 +1508,33 @@ static int security_compute_sid(u32 ssid,
 		newcontext.role = OBJECT_R_VAL;
 		/* Use the type of the related object. */
 		newcontext.type = tcontext->type;
+=======
+	/* Set the role to default values. */
+	if (cladatum && cladatum->default_role == DEFAULT_SOURCE) {
+		newcontext.role = scontext->role;
+	} else if (cladatum && cladatum->default_role == DEFAULT_TARGET) {
+		newcontext.role = tcontext->role;
+	} else {
+		if ((tclass == policydb.process_class) || (sock == true))
+			newcontext.role = scontext->role;
+		else
+			newcontext.role = OBJECT_R_VAL;
+	}
+
+	/* Set the type to default values. */
+	if (cladatum && cladatum->default_type == DEFAULT_SOURCE) {
+		newcontext.type = scontext->type;
+	} else if (cladatum && cladatum->default_type == DEFAULT_TARGET) {
+		newcontext.type = tcontext->type;
+	} else {
+		if ((tclass == policydb.process_class) || (sock == true)) {
+			/* Use the type of process. */
+			newcontext.type = scontext->type;
+		} else {
+			/* Use the type of the related object. */
+			newcontext.type = tcontext->type;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Look for a type transition/member/change rule. */
@@ -1795,12 +1861,19 @@ static void security_load_policycaps(void)
 						  POLICYDB_CAPABILITY_NETPEER);
 	selinux_policycap_openperm = ebitmap_get_bit(&policydb.policycaps,
 						  POLICYDB_CAPABILITY_OPENPERM);
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
 extern void selinux_complete_init(void);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	selinux_policycap_alwaysnetwork = ebitmap_get_bit(&policydb.policycaps,
+						  POLICYDB_CAPABILITY_ALWAYSNETWORK);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int security_preserve_bools(struct policydb *p);
 
 /**
@@ -1815,7 +1888,11 @@ static int security_preserve_bools(struct policydb *p);
  */
 int security_load_policy(void *data, size_t len)
 {
+<<<<<<< HEAD
 	struct policydb oldpolicydb, newpolicydb;
+=======
+	struct policydb *oldpolicydb, *newpolicydb;
+>>>>>>> refs/remotes/origin/master
 	struct sidtab oldsidtab, newsidtab;
 	struct selinux_mapping *oldmap, *map = NULL;
 	struct convert_context_args args;
@@ -1824,12 +1901,26 @@ int security_load_policy(void *data, size_t len)
 	int rc = 0;
 	struct policy_file file = { data, len }, *fp = &file;
 
+<<<<<<< HEAD
+=======
+	oldpolicydb = kzalloc(2 * sizeof(*oldpolicydb), GFP_KERNEL);
+	if (!oldpolicydb) {
+		rc = -ENOMEM;
+		goto out;
+	}
+	newpolicydb = oldpolicydb + 1;
+
+>>>>>>> refs/remotes/origin/master
 	if (!ss_initialized) {
 		avtab_cache_init();
 		rc = policydb_read(&policydb, fp);
 		if (rc) {
 			avtab_cache_destroy();
+<<<<<<< HEAD
 			return rc;
+=======
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		policydb.len = len;
@@ -1839,14 +1930,22 @@ int security_load_policy(void *data, size_t len)
 		if (rc) {
 			policydb_destroy(&policydb);
 			avtab_cache_destroy();
+<<<<<<< HEAD
 			return rc;
+=======
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		rc = policydb_load_isids(&policydb, &sidtab);
 		if (rc) {
 			policydb_destroy(&policydb);
 			avtab_cache_destroy();
+<<<<<<< HEAD
 			return rc;
+=======
+			goto out;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		security_load_policycaps();
@@ -1858,13 +1957,18 @@ int security_load_policy(void *data, size_t len)
 		selinux_status_update_policyload(seqno);
 		selinux_netlbl_cache_invalidate();
 		selinux_xfrm_notify_policyload();
+<<<<<<< HEAD
 		return 0;
+=======
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 #if 0
 	sidtab_hash_eval(&sidtab, "sids");
 #endif
 
+<<<<<<< HEAD
 	rc = policydb_read(&newpolicydb, fp);
 	if (rc)
 		return rc;
@@ -1888,6 +1992,31 @@ int security_load_policy(void *data, size_t len)
 		goto err;
 
 	rc = security_preserve_bools(&newpolicydb);
+=======
+	rc = policydb_read(newpolicydb, fp);
+	if (rc)
+		goto out;
+
+	newpolicydb->len = len;
+	/* If switching between different policy types, log MLS status */
+	if (policydb.mls_enabled && !newpolicydb->mls_enabled)
+		printk(KERN_INFO "SELinux: Disabling MLS support...\n");
+	else if (!policydb.mls_enabled && newpolicydb->mls_enabled)
+		printk(KERN_INFO "SELinux: Enabling MLS support...\n");
+
+	rc = policydb_load_isids(newpolicydb, &newsidtab);
+	if (rc) {
+		printk(KERN_ERR "SELinux:  unable to load the initial SIDs\n");
+		policydb_destroy(newpolicydb);
+		goto out;
+	}
+
+	rc = selinux_set_mapping(newpolicydb, secclass_map, &map, &map_size);
+	if (rc)
+		goto err;
+
+	rc = security_preserve_bools(newpolicydb);
+>>>>>>> refs/remotes/origin/master
 	if (rc) {
 		printk(KERN_ERR "SELinux:  unable to preserve booleans\n");
 		goto err;
@@ -1905,7 +2034,11 @@ int security_load_policy(void *data, size_t len)
 	 * in the new SID table.
 	 */
 	args.oldp = &policydb;
+<<<<<<< HEAD
 	args.newp = &newpolicydb;
+=======
+	args.newp = newpolicydb;
+>>>>>>> refs/remotes/origin/master
 	rc = sidtab_map(&newsidtab, convert_context, &args);
 	if (rc) {
 		printk(KERN_ERR "SELinux:  unable to convert the internal"
@@ -1915,12 +2048,20 @@ int security_load_policy(void *data, size_t len)
 	}
 
 	/* Save the old policydb and SID table to free later. */
+<<<<<<< HEAD
 	memcpy(&oldpolicydb, &policydb, sizeof policydb);
+=======
+	memcpy(oldpolicydb, &policydb, sizeof(policydb));
+>>>>>>> refs/remotes/origin/master
 	sidtab_set(&oldsidtab, &sidtab);
 
 	/* Install the new policydb and SID table. */
 	write_lock_irq(&policy_rwlock);
+<<<<<<< HEAD
 	memcpy(&policydb, &newpolicydb, sizeof policydb);
+=======
+	memcpy(&policydb, newpolicydb, sizeof(policydb));
+>>>>>>> refs/remotes/origin/master
 	sidtab_set(&sidtab, &newsidtab);
 	security_load_policycaps();
 	oldmap = current_mapping;
@@ -1930,7 +2071,11 @@ int security_load_policy(void *data, size_t len)
 	write_unlock_irq(&policy_rwlock);
 
 	/* Free the old policydb and SID table. */
+<<<<<<< HEAD
 	policydb_destroy(&oldpolicydb);
+=======
+	policydb_destroy(oldpolicydb);
+>>>>>>> refs/remotes/origin/master
 	sidtab_destroy(&oldsidtab);
 	kfree(oldmap);
 
@@ -1940,14 +2085,27 @@ int security_load_policy(void *data, size_t len)
 	selinux_netlbl_cache_invalidate();
 	selinux_xfrm_notify_policyload();
 
+<<<<<<< HEAD
 	return 0;
+=======
+	rc = 0;
+	goto out;
+>>>>>>> refs/remotes/origin/master
 
 err:
 	kfree(map);
 	sidtab_destroy(&newsidtab);
+<<<<<<< HEAD
 	policydb_destroy(&newpolicydb);
 	return rc;
 
+=======
+	policydb_destroy(newpolicydb);
+
+out:
+	kfree(oldpolicydb);
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 size_t security_policydb_len(void)
@@ -2310,6 +2468,7 @@ out:
 
 /**
  * security_fs_use - Determine how to handle labeling for a filesystem.
+<<<<<<< HEAD
  * @fstype: filesystem type
  * @behavior: labeling behavior
  * @sid: SID for filesystem (superblock)
@@ -2321,6 +2480,16 @@ int security_fs_use(
 {
 	int rc = 0;
 	struct ocontext *c;
+=======
+ * @sb: superblock in question
+ */
+int security_fs_use(struct super_block *sb)
+{
+	int rc = 0;
+	struct ocontext *c;
+	struct superblock_security_struct *sbsec = sb->s_security;
+	const char *fstype = sb->s_type->name;
+>>>>>>> refs/remotes/origin/master
 
 	read_lock(&policy_rwlock);
 
@@ -2332,13 +2501,18 @@ int security_fs_use(
 	}
 
 	if (c) {
+<<<<<<< HEAD
 		*behavior = c->v.behavior;
+=======
+		sbsec->behavior = c->v.behavior;
+>>>>>>> refs/remotes/origin/master
 		if (!c->sid[0]) {
 			rc = sidtab_context_to_sid(&sidtab, &c->context[0],
 						   &c->sid[0]);
 			if (rc)
 				goto out;
 		}
+<<<<<<< HEAD
 		*sid = c->sid[0];
 	} else {
 		rc = security_genfs_sid(fstype, "/", SECCLASS_DIR, sid);
@@ -2347,6 +2521,16 @@ int security_fs_use(
 			rc = 0;
 		} else {
 			*behavior = SECURITY_FS_USE_GENFS;
+=======
+		sbsec->sid = c->sid[0];
+	} else {
+		rc = security_genfs_sid(fstype, "/", SECCLASS_DIR, &sbsec->sid);
+		if (rc) {
+			sbsec->behavior = SECURITY_FS_USE_NONE;
+			rc = 0;
+		} else {
+			sbsec->behavior = SECURITY_FS_USE_GENFS;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -2427,7 +2611,11 @@ int security_set_bools(int len, int *values)
 				sym_name(&policydb, SYM_BOOLS, i),
 				!!values[i],
 				policydb.bool_val_to_struct[i]->state,
+<<<<<<< HEAD
 				audit_get_loginuid(current),
+=======
+				from_kuid(&init_user_ns, audit_get_loginuid(current)),
+>>>>>>> refs/remotes/origin/master
 				audit_get_sessionid(current));
 		}
 		if (values[i])
@@ -3031,8 +3219,12 @@ out:
 
 static int (*aurule_callback)(void) = audit_update_lsm_rules;
 
+<<<<<<< HEAD
 static int aurule_avc_callback(u32 event, u32 ssid, u32 tsid,
 			       u16 class, u32 perms, u32 *retained)
+=======
+static int aurule_avc_callback(u32 event)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = 0;
 
@@ -3045,8 +3237,12 @@ static int __init aurule_init(void)
 {
 	int err;
 
+<<<<<<< HEAD
 	err = avc_add_callback(aurule_avc_callback, AVC_CALLBACK_RESET,
 			       SECSID_NULL, SECSID_NULL, SECCLASS_NULL, 0);
+=======
+	err = avc_add_callback(aurule_avc_callback, AVC_CALLBACK_RESET);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		panic("avc_add_callback() failed, error %d\n", err);
 

@@ -31,10 +31,13 @@ static int llc_mac_header_len(unsigned short devtype)
 	case ARPHRD_ETHER:
 	case ARPHRD_LOOPBACK:
 		return sizeof(struct ethhdr);
+<<<<<<< HEAD
 #if defined(CONFIG_TR) || defined(CONFIG_TR_MODULE)
 	case ARPHRD_IEEE802_TR:
 		return sizeof(struct trh_hdr);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -306,7 +309,11 @@ static inline bool llc_dgram_match(const struct llc_sap *sap,
 
      return sk->sk_type == SOCK_DGRAM &&
 	  llc->laddr.lsap == laddr->lsap &&
+<<<<<<< HEAD
 	  llc_mac_match(llc->laddr.mac, laddr->mac);
+=======
+	  ether_addr_equal(llc->laddr.mac, laddr->mac);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -397,12 +404,19 @@ static void llc_sap_mcast(struct llc_sap *sap,
 {
 	int i = 0, count = 256 / sizeof(struct sock *);
 	struct sock *sk, *stack[count];
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct llc_sock *llc;
 	struct hlist_head *dev_hb = llc_sk_dev_hash(sap, skb->dev->ifindex);
 
 	spin_lock_bh(&sap->sk_lock);
+<<<<<<< HEAD
 	hlist_for_each_entry(llc, node, dev_hb, dev_hash_node) {
+=======
+	hlist_for_each_entry(llc, dev_hb, dev_hash_node) {
+>>>>>>> refs/remotes/origin/master
 
 		sk = &llc->sk;
 
@@ -430,7 +444,11 @@ void llc_sap_handler(struct llc_sap *sap, struct sk_buff *skb)
 	llc_pdu_decode_da(skb, laddr.mac);
 	llc_pdu_decode_dsap(skb, &laddr.lsap);
 
+<<<<<<< HEAD
 	if (llc_mac_multicast(laddr.mac)) {
+=======
+	if (is_multicast_ether_addr(laddr.mac)) {
+>>>>>>> refs/remotes/origin/master
 		llc_sap_mcast(sap, &laddr, skb);
 		kfree_skb(skb);
 	} else {

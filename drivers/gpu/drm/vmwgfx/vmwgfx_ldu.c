@@ -28,9 +28,12 @@
 #include "vmwgfx_kms.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define VMWGFX_LDU_NUM_DU 8
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define vmw_crtc_to_ldu(x) \
 	container_of(x, struct vmw_legacy_display_unit, base.crtc)
@@ -55,6 +58,7 @@ struct vmw_legacy_display_unit {
 	struct vmw_display_unit base;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned pref_width;
 	unsigned pref_height;
 	bool pref_active;
@@ -62,6 +66,8 @@ struct vmw_legacy_display_unit {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct list_head active;
 };
 
@@ -77,6 +83,7 @@ static void vmw_ldu_destroy(struct vmw_legacy_display_unit *ldu)
  * Legacy Display Unit CRTC functions
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void vmw_ldu_crtc_save(struct drm_crtc *crtc)
 {
@@ -94,6 +101,8 @@ static void vmw_ldu_crtc_gamma_set(struct drm_crtc *crtc,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void vmw_ldu_crtc_destroy(struct drm_crtc *crtc)
 {
 	vmw_ldu_destroy(vmw_crtc_to_ldu(crtc));
@@ -104,15 +113,21 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
 	struct vmw_legacy_display *lds = dev_priv->ldu_priv;
 	struct vmw_legacy_display_unit *entry;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct drm_framebuffer *fb = NULL;
 	struct drm_crtc *crtc = NULL;
 	int i = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct vmw_display_unit *du = NULL;
 	struct drm_framebuffer *fb = NULL;
 	struct drm_crtc *crtc = NULL;
 	int i = 0, ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* If there is no display topology the host just assumes
 	 * that the guest will set the same layout as the host.
@@ -131,6 +146,7 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
 		fb = entry->base.crtc.fb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vmw_kms_write_svga(dev_priv, w, h, fb->pitch,
 				   fb->bits_per_pixel, fb->depth);
 
@@ -139,6 +155,10 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
 		return vmw_kms_write_svga(dev_priv, w, h, fb->pitches[0],
 					  fb->bits_per_pixel, fb->depth);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return vmw_kms_write_svga(dev_priv, w, h, fb->pitches[0],
+					  fb->bits_per_pixel, fb->depth);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!list_empty(&lds->active)) {
@@ -146,10 +166,14 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
 		fb = entry->base.crtc.fb;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		vmw_kms_write_svga(dev_priv, fb->width, fb->height, fb->pitch,
 =======
 		vmw_kms_write_svga(dev_priv, fb->width, fb->height, fb->pitches[0],
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		vmw_kms_write_svga(dev_priv, fb->width, fb->height, fb->pitches[0],
+>>>>>>> refs/remotes/origin/master
 				   fb->bits_per_pixel, fb->depth);
 	}
 
@@ -177,7 +201,10 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
 	lds->last_num_active = lds->num_active;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Find the first du with a cursor. */
 	list_for_each_entry(entry, &lds->active, active) {
@@ -197,7 +224,10 @@ static int vmw_ldu_commit_list(struct vmw_private *dev_priv)
 		DRM_ERROR("Could not update cursor image\n");
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -309,6 +339,7 @@ static int vmw_ldu_crtc_set_config(struct drm_mode_set *set)
 		connector->encoder = NULL;
 		encoder->crtc = NULL;
 		crtc->fb = NULL;
+<<<<<<< HEAD
 
 		vmw_ldu_del_active(dev_priv, ldu);
 
@@ -319,6 +350,13 @@ static int vmw_ldu_crtc_set_config(struct drm_mode_set *set)
 =======
 		return vmw_ldu_commit_list(dev_priv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		crtc->enabled = false;
+
+		vmw_ldu_del_active(dev_priv, ldu);
+
+		return vmw_ldu_commit_list(dev_priv);
+>>>>>>> refs/remotes/origin/master
 	}
 
 
@@ -340,6 +378,7 @@ static int vmw_ldu_crtc_set_config(struct drm_mode_set *set)
 	crtc->x = set->x;
 	crtc->y = set->y;
 	crtc->mode = *mode;
+<<<<<<< HEAD
 
 	vmw_ldu_add_active(dev_priv, ldu, vfb);
 
@@ -356,6 +395,12 @@ static struct drm_crtc_funcs vmw_legacy_crtc_funcs = {
 	.cursor_move = vmw_du_crtc_cursor_move,
 	.gamma_set = vmw_ldu_crtc_gamma_set,
 =======
+=======
+	crtc->enabled = true;
+
+	vmw_ldu_add_active(dev_priv, ldu, vfb);
+
+>>>>>>> refs/remotes/origin/master
 	return vmw_ldu_commit_list(dev_priv);
 }
 
@@ -365,15 +410,22 @@ static struct drm_crtc_funcs vmw_legacy_crtc_funcs = {
 	.cursor_set = vmw_du_crtc_cursor_set,
 	.cursor_move = vmw_du_crtc_cursor_move,
 	.gamma_set = vmw_du_crtc_gamma_set,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.destroy = vmw_ldu_crtc_destroy,
 	.set_config = vmw_ldu_crtc_set_config,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Legacy Display Unit encoder functions
  */
@@ -391,6 +443,7 @@ static struct drm_encoder_funcs vmw_legacy_encoder_funcs = {
  * Legacy Display Unit connector functions
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void vmw_ldu_connector_dpms(struct drm_connector *connector, int mode)
 {
@@ -559,12 +612,15 @@ static int vmw_ldu_connector_set_property(struct drm_connector *connector,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void vmw_ldu_connector_destroy(struct drm_connector *connector)
 {
 	vmw_ldu_destroy(vmw_connector_to_ldu(connector));
 }
 
 static struct drm_connector_funcs vmw_legacy_connector_funcs = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.dpms = vmw_ldu_connector_dpms,
 	.save = vmw_ldu_connector_save,
@@ -573,13 +629,18 @@ static struct drm_connector_funcs vmw_legacy_connector_funcs = {
 	.fill_modes = vmw_ldu_connector_fill_modes,
 	.set_property = vmw_ldu_connector_set_property,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.dpms = vmw_du_connector_dpms,
 	.save = vmw_du_connector_save,
 	.restore = vmw_du_connector_restore,
 	.detect = vmw_du_connector_detect,
 	.fill_modes = vmw_du_connector_fill_modes,
 	.set_property = vmw_du_connector_set_property,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.destroy = vmw_ldu_connector_destroy,
 };
 
@@ -603,6 +664,7 @@ static int vmw_ldu_init(struct vmw_private *dev_priv, unsigned unit)
 	INIT_LIST_HEAD(&ldu->active);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ldu->pref_active = (unit == 0);
 	ldu->pref_width = 800;
 	ldu->pref_height = 600;
@@ -615,6 +677,8 @@ static int vmw_ldu_init(struct vmw_private *dev_priv, unsigned unit)
 	drm_encoder_init(dev, encoder, &vmw_legacy_encoder_funcs,
 			 DRM_MODE_ENCODER_LVDS);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ldu->base.pref_active = (unit == 0);
 	ldu->base.pref_width = dev_priv->initial_width;
 	ldu->base.pref_height = dev_priv->initial_height;
@@ -627,11 +691,15 @@ static int vmw_ldu_init(struct vmw_private *dev_priv, unsigned unit)
 
 	drm_encoder_init(dev, encoder, &vmw_legacy_encoder_funcs,
 			 DRM_MODE_ENCODER_VIRTUAL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	drm_mode_connector_attach_encoder(connector, encoder);
 	encoder->possible_crtcs = (1 << unit);
 	encoder->possible_clones = 0;
 
+<<<<<<< HEAD
 	drm_crtc_init(dev, crtc, &vmw_legacy_crtc_funcs);
 
 <<<<<<< HEAD
@@ -640,6 +708,15 @@ static int vmw_ldu_init(struct vmw_private *dev_priv, unsigned unit)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	drm_connector_attach_property(connector,
+=======
+	(void) drm_sysfs_connector_add(connector);
+
+	drm_crtc_init(dev, crtc, &vmw_legacy_crtc_funcs);
+
+	drm_mode_crtc_set_gamma_size(crtc, 256);
+
+	drm_object_attach_property(&connector->base,
+>>>>>>> refs/remotes/origin/master
 				      dev->mode_config.dirty_info_property,
 				      1);
 
@@ -650,11 +727,15 @@ int vmw_kms_init_legacy_display_system(struct vmw_private *dev_priv)
 {
 	struct drm_device *dev = dev_priv->dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 	int ret;
 =======
 	int i, ret;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, ret;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev_priv->ldu_priv) {
 		DRM_INFO("ldu system already on\n");
@@ -663,9 +744,12 @@ int vmw_kms_init_legacy_display_system(struct vmw_private *dev_priv)
 
 	dev_priv->ldu_priv = kmalloc(sizeof(*dev_priv->ldu_priv), GFP_KERNEL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dev_priv->ldu_priv)
 		return -ENOMEM;
 
@@ -674,6 +758,7 @@ int vmw_kms_init_legacy_display_system(struct vmw_private *dev_priv)
 	dev_priv->ldu_priv->last_num_active = 0;
 	dev_priv->ldu_priv->fb = NULL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	drm_mode_create_dirty_info_property(dev_priv->dev);
 
@@ -688,6 +773,8 @@ int vmw_kms_init_legacy_display_system(struct vmw_private *dev_priv)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* for old hardware without multimon only enable one display */
 	if (dev_priv->capabilities & SVGA_CAP_MULTIMON)
 		ret = drm_vblank_init(dev, VMWGFX_NUM_DISPLAY_UNITS);
@@ -713,7 +800,10 @@ err_vblank_cleanup:
 err_free:
 	kfree(dev_priv->ldu_priv);
 	dev_priv->ldu_priv = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -722,23 +812,30 @@ int vmw_kms_close_legacy_display_system(struct vmw_private *dev_priv)
 	struct drm_device *dev = dev_priv->dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drm_vblank_cleanup(dev);
 	if (!dev_priv->ldu_priv)
 		return -ENOSYS;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!dev_priv->ldu_priv)
 		return -ENOSYS;
 
 	drm_vblank_cleanup(dev);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(!list_empty(&dev_priv->ldu_priv->active));
 
 	kfree(dev_priv->ldu_priv);
 
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 int vmw_kms_ldu_update_layout(struct vmw_private *dev_priv, unsigned num,
@@ -781,3 +878,5 @@ int vmw_kms_ldu_update_layout(struct vmw_private *dev_priv, unsigned num,
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

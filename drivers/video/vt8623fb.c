@@ -266,7 +266,11 @@ static void vt8623_set_pixclock(struct fb_info *info, u32 pixclock)
 
 	rv = svga_compute_pll(&vt8623_pll, 1000000000 / pixclock, &m, &n, &r, info->node);
 	if (rv < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: cannot set requested pixclock, keeping old value\n", info->node);
+=======
+		fb_err(info, "cannot set requested pixclock, keeping old value\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -335,7 +339,11 @@ static int vt8623fb_check_var(struct fb_var_screeninfo *var, struct fb_info *inf
 	rv = svga_match_format (vt8623fb_formats, var, NULL);
 	if (rv < 0)
 	{
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: unsupported mode requested\n", info->node);
+=======
+		fb_err(info, "unsupported mode requested\n");
+>>>>>>> refs/remotes/origin/master
 		return rv;
 	}
 
@@ -354,21 +362,35 @@ static int vt8623fb_check_var(struct fb_var_screeninfo *var, struct fb_info *inf
 	mem = ((var->bits_per_pixel * var->xres_virtual) >> 3) * var->yres_virtual;
 	if (mem > info->screen_size)
 	{
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: not enough framebuffer memory (%d kB requested , %d kB available)\n", info->node, mem >> 10, (unsigned int) (info->screen_size >> 10));
+=======
+		fb_err(info, "not enough framebuffer memory (%d kB requested, %d kB available)\n",
+		       mem >> 10, (unsigned int) (info->screen_size >> 10));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	/* Text mode is limited to 256 kB of memory */
 	if ((var->bits_per_pixel == 0) && (mem > (256*1024)))
 	{
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: text framebuffer size too large (%d kB requested, 256 kB possible)\n", info->node, mem >> 10);
+=======
+		fb_err(info, "text framebuffer size too large (%d kB requested, 256 kB possible)\n",
+		       mem >> 10);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	rv = svga_check_timings (&vt8623_timing_regs, var, info->node);
 	if (rv < 0)
 	{
+<<<<<<< HEAD
 		printk(KERN_ERR "fb%d: invalid timings requested\n", info->node);
+=======
+		fb_err(info, "invalid timings requested\n");
+>>>>>>> refs/remotes/origin/master
 		return rv;
 	}
 
@@ -474,23 +496,36 @@ static int vt8623fb_set_par(struct fb_info *info)
 	mode = svga_match_format(vt8623fb_formats, &(info->var), &(info->fix));
 	switch (mode) {
 	case 0:
+<<<<<<< HEAD
 		pr_debug("fb%d: text mode\n", info->node);
+=======
+		fb_dbg(info, "text mode\n");
+>>>>>>> refs/remotes/origin/master
 		svga_set_textmode_vga_regs(par->state.vgabase);
 		svga_wseq_mask(par->state.vgabase, 0x15, 0x00, 0xFE);
 		svga_wcrt_mask(par->state.vgabase, 0x11, 0x60, 0x70);
 		break;
 	case 1:
+<<<<<<< HEAD
 		pr_debug("fb%d: 4 bit pseudocolor\n", info->node);
+=======
+		fb_dbg(info, "4 bit pseudocolor\n");
+>>>>>>> refs/remotes/origin/master
 		vga_wgfx(par->state.vgabase, VGA_GFX_MODE, 0x40);
 		svga_wseq_mask(par->state.vgabase, 0x15, 0x20, 0xFE);
 		svga_wcrt_mask(par->state.vgabase, 0x11, 0x00, 0x70);
 		break;
 	case 2:
+<<<<<<< HEAD
 		pr_debug("fb%d: 4 bit pseudocolor, planar\n", info->node);
+=======
+		fb_dbg(info, "4 bit pseudocolor, planar\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wseq_mask(par->state.vgabase, 0x15, 0x00, 0xFE);
 		svga_wcrt_mask(par->state.vgabase, 0x11, 0x00, 0x70);
 		break;
 	case 3:
+<<<<<<< HEAD
 		pr_debug("fb%d: 8 bit pseudocolor\n", info->node);
 		svga_wseq_mask(par->state.vgabase, 0x15, 0x22, 0xFE);
 		break;
@@ -500,6 +535,17 @@ static int vt8623fb_set_par(struct fb_info *info)
 		break;
 	case 5:
 		pr_debug("fb%d: 8/8/8 truecolor\n", info->node);
+=======
+		fb_dbg(info, "8 bit pseudocolor\n");
+		svga_wseq_mask(par->state.vgabase, 0x15, 0x22, 0xFE);
+		break;
+	case 4:
+		fb_dbg(info, "5/6/5 truecolor\n");
+		svga_wseq_mask(par->state.vgabase, 0x15, 0xB6, 0xFE);
+		break;
+	case 5:
+		fb_dbg(info, "8/8/8 truecolor\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wseq_mask(par->state.vgabase, 0x15, 0xAE, 0xFE);
 		break;
 	default:
@@ -584,27 +630,47 @@ static int vt8623fb_blank(int blank_mode, struct fb_info *info)
 
 	switch (blank_mode) {
 	case FB_BLANK_UNBLANK:
+<<<<<<< HEAD
 		pr_debug("fb%d: unblank\n", info->node);
+=======
+		fb_dbg(info, "unblank\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x36, 0x00, 0x30);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x00, 0x20);
 		break;
 	case FB_BLANK_NORMAL:
+<<<<<<< HEAD
 		pr_debug("fb%d: blank\n", info->node);
+=======
+		fb_dbg(info, "blank\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x36, 0x00, 0x30);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
 	case FB_BLANK_HSYNC_SUSPEND:
+<<<<<<< HEAD
 		pr_debug("fb%d: DPMS standby (hsync off)\n", info->node);
+=======
+		fb_dbg(info, "DPMS standby (hsync off)\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x36, 0x10, 0x30);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
 	case FB_BLANK_VSYNC_SUSPEND:
+<<<<<<< HEAD
 		pr_debug("fb%d: DPMS suspend (vsync off)\n", info->node);
+=======
+		fb_dbg(info, "DPMS suspend (vsync off)\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x36, 0x20, 0x30);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
 	case FB_BLANK_POWERDOWN:
+<<<<<<< HEAD
 		pr_debug("fb%d: DPMS off (no sync)\n", info->node);
+=======
+		fb_dbg(info, "DPMS off (no sync)\n");
+>>>>>>> refs/remotes/origin/master
 		svga_wcrt_mask(par->state.vgabase, 0x36, 0x30, 0x30);
 		svga_wseq_mask(par->state.vgabase, 0x01, 0x20, 0x20);
 		break;
@@ -621,6 +687,7 @@ static int vt8623fb_pan_display(struct fb_var_screeninfo *var, struct fb_info *i
 
 	/* Calculate the offset */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (var->bits_per_pixel == 0) {
 		offset = (var->yoffset / 16) * var->xres_virtual + var->xoffset;
 		offset = offset >> 3;
@@ -629,6 +696,8 @@ static int vt8623fb_pan_display(struct fb_var_screeninfo *var, struct fb_info *i
 			 (var->xoffset * var->bits_per_pixel / 8);
 		offset = offset >> ((var->bits_per_pixel == 4) ? 2 : 1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (info->var.bits_per_pixel == 0) {
 		offset = (var->yoffset / 16) * info->var.xres_virtual
 		       + var->xoffset;
@@ -637,7 +706,10 @@ static int vt8623fb_pan_display(struct fb_var_screeninfo *var, struct fb_info *i
 		offset = (var->yoffset * info->fix.line_length) +
 			 (var->xoffset * info->var.bits_per_pixel / 8);
 		offset = offset >> ((info->var.bits_per_pixel == 4) ? 2 : 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Set the offset */
@@ -670,7 +742,11 @@ static struct fb_ops vt8623fb_ops = {
 
 /* PCI probe */
 
+<<<<<<< HEAD
 static int __devinit vt8623_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+=======
+static int vt8623_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_bus_region bus_reg;
 	struct resource vga_res;
@@ -779,12 +855,21 @@ static int __devinit vt8623_pci_probe(struct pci_dev *dev, const struct pci_devi
 
 	rc = register_framebuffer(info);
 	if (rc < 0) {
+<<<<<<< HEAD
 		dev_err(info->device, "cannot register framebugger\n");
 		goto err_reg_fb;
 	}
 
 	printk(KERN_INFO "fb%d: %s on %s, %d MB RAM\n", info->node, info->fix.id,
 		 pci_name(dev), info->fix.smem_len >> 20);
+=======
+		dev_err(info->device, "cannot register framebuffer\n");
+		goto err_reg_fb;
+	}
+
+	fb_info(info, "%s on %s, %d MB RAM\n",
+		info->fix.id, pci_name(dev), info->fix.smem_len >> 20);
+>>>>>>> refs/remotes/origin/master
 
 	/* Record a reference to the driver data */
 	pci_set_drvdata(dev, info);
@@ -817,7 +902,11 @@ err_enable_device:
 
 /* PCI remove */
 
+<<<<<<< HEAD
 static void __devexit vt8623_pci_remove(struct pci_dev *dev)
+=======
+static void vt8623_pci_remove(struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct fb_info *info = pci_get_drvdata(dev);
 
@@ -839,7 +928,10 @@ static void __devexit vt8623_pci_remove(struct pci_dev *dev)
 		pci_release_regions(dev);
 /*		pci_disable_device(dev); */
 
+<<<<<<< HEAD
 		pci_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 		framebuffer_release(info);
 	}
 }
@@ -916,7 +1008,11 @@ fail:
 
 /* List of boards that we are trying to support */
 
+<<<<<<< HEAD
 static struct pci_device_id vt8623_devices[] __devinitdata = {
+=======
+static struct pci_device_id vt8623_devices[] = {
+>>>>>>> refs/remotes/origin/master
 	{PCI_DEVICE(PCI_VENDOR_ID_VIA, 0x3122)},
 	{0, 0, 0, 0, 0, 0, 0}
 };
@@ -927,7 +1023,11 @@ static struct pci_driver vt8623fb_pci_driver = {
 	.name		= "vt8623fb",
 	.id_table	= vt8623_devices,
 	.probe		= vt8623_pci_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(vt8623_pci_remove),
+=======
+	.remove		= vt8623_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend	= vt8623_pci_suspend,
 	.resume		= vt8623_pci_resume,
 };

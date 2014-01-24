@@ -7,6 +7,7 @@
 ///
 // Confidence: Moderate
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Copyright: (C) 2010 Nicolas Palix, DIKU.  GPLv2.
 // Copyright: (C) 2010 Julia Lawall, DIKU.  GPLv2.
 // Copyright: (C) 2010 Gilles Muller, INRIA/LiP6.  GPLv2.
@@ -23,6 +24,16 @@
 =======
 virtual context
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+// Copyright: (C) 2010-2012 Nicolas Palix.  GPLv2.
+// Copyright: (C) 2010-2012 Julia Lawall, INRIA/LIP6.  GPLv2.
+// Copyright: (C) 2010-2012 Gilles Muller, INRIA/LiP6.  GPLv2.
+// URL: http://coccinelle.lip6.fr/
+// Comments:
+// Options: --no-includes --include-headers
+
+virtual context
+>>>>>>> refs/remotes/origin/master
 virtual org
 virtual report
 
@@ -68,10 +79,14 @@ position r;
 for(...;...;...) { <+... return@r ...; ...+> }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 @err@
 =======
 @err exists@
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+@err exists@
+>>>>>>> refs/remotes/origin/master
 expression E1;
 position prelocked.p;
 position up != prelocked.p1;
@@ -79,6 +94,7 @@ position r!=looped.r;
 identifier lock,unlock;
 @@
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 lock(E1@p,...);
 <+... when != E1
@@ -89,6 +105,8 @@ if (...) {
 ...+>
 unlock@up(E1,...);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 *lock(E1@p,...);
 <+... when != E1
 if (...) {
@@ -97,7 +115,10 @@ if (...) {
 }
 ...+>
 *unlock@up(E1,...);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 @script:python depends on org@
 p << prelocked.p1;

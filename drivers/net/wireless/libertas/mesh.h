@@ -10,6 +10,7 @@
 
 #include "host.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #ifdef CONFIG_LIBERTAS_MESH
 
@@ -36,6 +37,8 @@ int lbs_add_mesh(struct lbs_private *priv);
 void lbs_remove_mesh(struct lbs_private *priv);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "dev.h"
 
 #ifdef CONFIG_LIBERTAS_MESH
@@ -55,7 +58,10 @@ static inline bool lbs_mesh_activated(struct lbs_private *priv)
 }
 
 int lbs_mesh_set_channel(struct lbs_private *priv, u8 channel);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Sending / Receiving */
 
@@ -74,6 +80,7 @@ struct cmd_ds_command;
 struct cmd_ds_mesh_access;
 struct cmd_ds_mesh_config;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int lbs_mesh_bt_add_del(struct lbs_private *priv, bool add, u8 *addr1);
 int lbs_mesh_bt_reset(struct lbs_private *priv);
@@ -100,6 +107,8 @@ void lbs_persist_config_remove(struct net_device *net);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Ethtool statistics */
 
@@ -113,6 +122,7 @@ void lbs_mesh_ethtool_get_strings(struct net_device *dev,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Accessors */
 
 #define lbs_mesh_open(priv) (priv->mesh_open)
@@ -120,18 +130,25 @@ void lbs_mesh_ethtool_get_strings(struct net_device *dev,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 
 #define lbs_init_mesh(priv)
 #define lbs_deinit_mesh(priv)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define lbs_start_mesh(priv)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define lbs_start_mesh(priv)
+>>>>>>> refs/remotes/origin/master
 #define lbs_add_mesh(priv)
 #define lbs_remove_mesh(priv)
 #define lbs_mesh_set_dev(priv, dev, rxpd) (dev)
 #define lbs_mesh_set_txpd(priv, dev, txpd)
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define lbs_mesh_config(priv, enable, chan)
 #define lbs_mesh_open(priv) (0)
@@ -140,6 +157,10 @@ void lbs_mesh_ethtool_get_strings(struct net_device *dev,
 #define lbs_mesh_set_channel(priv, channel) (0)
 #define lbs_mesh_activated(priv) (false)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define lbs_mesh_set_channel(priv, channel) (0)
+#define lbs_mesh_activated(priv) (false)
+>>>>>>> refs/remotes/origin/master
 
 #endif
 

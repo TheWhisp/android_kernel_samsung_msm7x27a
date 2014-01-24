@@ -51,9 +51,13 @@
 #include <linux/ieee80211.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/mac80211.h>
 #include "rc80211_minstrel.h"
 
@@ -71,23 +75,43 @@ minstrel_stats_open(struct inode *inode, struct file *file)
 
 	file->private_data = ms;
 	p = ms->buf;
+<<<<<<< HEAD
 	p += sprintf(p, "rate     throughput  ewma prob   this prob  "
+=======
+	p += sprintf(p, "rate      throughput  ewma prob  this prob  "
+>>>>>>> refs/remotes/origin/master
 			"this succ/attempt   success    attempts\n");
 	for (i = 0; i < mi->n_rates; i++) {
 		struct minstrel_rate *mr = &mi->r[i];
 
+<<<<<<< HEAD
 		*(p++) = (i == mi->max_tp_rate) ? 'T' : ' ';
 		*(p++) = (i == mi->max_tp_rate2) ? 't' : ' ';
+=======
+		*(p++) = (i == mi->max_tp_rate[0]) ? 'A' : ' ';
+		*(p++) = (i == mi->max_tp_rate[1]) ? 'B' : ' ';
+		*(p++) = (i == mi->max_tp_rate[2]) ? 'C' : ' ';
+		*(p++) = (i == mi->max_tp_rate[3]) ? 'D' : ' ';
+>>>>>>> refs/remotes/origin/master
 		*(p++) = (i == mi->max_prob_rate) ? 'P' : ' ';
 		p += sprintf(p, "%3u%s", mr->bitrate / 2,
 				(mr->bitrate & 1 ? ".5" : "  "));
 
+<<<<<<< HEAD
 		tp = mr->cur_tp / ((18000 << 10) / 96);
 		prob = mr->cur_prob / 18;
 		eprob = mr->probability / 18;
 
 		p += sprintf(p, "  %6u.%1u   %6u.%1u   %6u.%1u        "
 				"%3u(%3u)   %8llu    %8llu\n",
+=======
+		tp = MINSTREL_TRUNC(mr->cur_tp / 10);
+		prob = MINSTREL_TRUNC(mr->cur_prob * 1000);
+		eprob = MINSTREL_TRUNC(mr->probability * 1000);
+
+		p += sprintf(p, "  %6u.%1u   %6u.%1u   %6u.%1u        "
+				"   %3u(%3u)  %8llu    %8llu\n",
+>>>>>>> refs/remotes/origin/master
 				tp / 10, tp % 10,
 				eprob / 10, eprob % 10,
 				prob / 10, prob % 10,

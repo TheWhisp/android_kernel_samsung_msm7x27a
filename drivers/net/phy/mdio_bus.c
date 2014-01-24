@@ -13,6 +13,12 @@
  * option) any later version.
  *
  */
+<<<<<<< HEAD
+=======
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/errno.h>
@@ -22,6 +28,11 @@
 #include <linux/init.h>
 #include <linux/delay.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_device.h>
+#include <linux/of_mdio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
 #include <linux/skbuff.h>
@@ -38,16 +49,23 @@
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * mdiobus_alloc - allocate a mii_bus structure
 =======
  * mdiobus_alloc_size - allocate a mii_bus structure
  * @size: extra amount of memory to allocate for private storage.
  * If non-zero, then bus->priv is points to that memory.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * mdiobus_alloc_size - allocate a mii_bus structure
+ * @size: extra amount of memory to allocate for private storage.
+ * If non-zero, then bus->priv is points to that memory.
+>>>>>>> refs/remotes/origin/master
  *
  * Description: called by a bus driver to allocate an mii_bus
  * structure to fill in.
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct mii_bus *mdiobus_alloc(void)
 {
@@ -61,6 +79,8 @@ struct mii_bus *mdiobus_alloc(void)
 }
 EXPORT_SYMBOL(mdiobus_alloc);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct mii_bus *mdiobus_alloc_size(size_t size)
 {
 	struct mii_bus *bus;
@@ -83,7 +103,10 @@ struct mii_bus *mdiobus_alloc_size(size_t size)
 	return bus;
 }
 EXPORT_SYMBOL(mdiobus_alloc_size);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * mdiobus_release - mii_bus device release callback
@@ -106,6 +129,41 @@ static struct class mdio_bus_class = {
 	.dev_release	= mdiobus_release,
 };
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_OF_MDIO)
+/* Helper function for of_mdio_find_bus */
+static int of_mdio_bus_match(struct device *dev, const void *mdio_bus_np)
+{
+	return dev->of_node == mdio_bus_np;
+}
+/**
+ * of_mdio_find_bus - Given an mii_bus node, find the mii_bus.
+ * @mdio_bus_np: Pointer to the mii_bus.
+ *
+ * Returns a pointer to the mii_bus, or NULL if none found.
+ *
+ * Because the association of a device_node and mii_bus is made via
+ * of_mdiobus_register(), the mii_bus cannot be found before it is
+ * registered with of_mdiobus_register().
+ *
+ */
+struct mii_bus *of_mdio_find_bus(struct device_node *mdio_bus_np)
+{
+	struct device *d;
+
+	if (!mdio_bus_np)
+		return NULL;
+
+	d = class_find_device(&mdio_bus_class, NULL,  mdio_bus_np,
+			      of_mdio_bus_match);
+
+	return d ? to_mii_bus(d) : NULL;
+}
+EXPORT_SYMBOL(of_mdio_find_bus);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /**
  * mdiobus_register - bring up all the PHYs on a given bus and attach them to bus
  * @bus: target mii_bus
@@ -134,7 +192,11 @@ int mdiobus_register(struct mii_bus *bus)
 
 	err = device_register(&bus->dev);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_ERR "mii_bus %s failed to register\n", bus->id);
+=======
+		pr_err("mii_bus %s failed to register\n", bus->id);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -215,7 +277,11 @@ struct phy_device *mdiobus_scan(struct mii_bus *bus, int addr)
 	struct phy_device *phydev;
 	int err;
 
+<<<<<<< HEAD
 	phydev = get_phy_device(bus, addr);
+=======
+	phydev = get_phy_device(bus, addr, false);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(phydev) || phydev == NULL)
 		return phydev;
 
@@ -291,6 +357,15 @@ static int mdio_bus_match(struct device *dev, struct device_driver *drv)
 	struct phy_device *phydev = to_phy_device(dev);
 	struct phy_driver *phydrv = to_phy_driver(drv);
 
+<<<<<<< HEAD
+=======
+	if (of_driver_match_device(dev, drv))
+		return 1;
+
+	if (phydrv->match_phy_device)
+		return phydrv->match_phy_device(phydev);
+
+>>>>>>> refs/remotes/origin/master
 	return ((phydrv->phy_id & phydrv->phy_id_mask) ==
 		(phydev->phy_id & phydrv->phy_id_mask));
 }
@@ -406,10 +481,32 @@ static struct dev_pm_ops mdio_bus_pm_ops = {
 
 #endif /* CONFIG_PM */
 
+<<<<<<< HEAD
+=======
+static ssize_t
+phy_id_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	struct phy_device *phydev = to_phy_device(dev);
+
+	return sprintf(buf, "0x%.8lx\n", (unsigned long)phydev->phy_id);
+}
+static DEVICE_ATTR_RO(phy_id);
+
+static struct attribute *mdio_dev_attrs[] = {
+	&dev_attr_phy_id.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(mdio_dev);
+
+>>>>>>> refs/remotes/origin/master
 struct bus_type mdio_bus_type = {
 	.name		= "mdio_bus",
 	.match		= mdio_bus_match,
 	.pm		= MDIO_BUS_PM_OPS,
+<<<<<<< HEAD
+=======
+	.dev_groups	= mdio_dev_groups,
+>>>>>>> refs/remotes/origin/master
 };
 EXPORT_SYMBOL(mdio_bus_type);
 

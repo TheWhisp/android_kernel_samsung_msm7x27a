@@ -1,5 +1,6 @@
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Makefile for the Linux network (ethercard) device drivers.
 #
 
@@ -279,6 +280,8 @@ obj-$(CONFIG_WAN) += wan/
 obj-$(CONFIG_ARCNET) += arcnet/
 obj-$(CONFIG_NET_PCMCIA) += pcmcia/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # Makefile for the Linux network device drivers.
 #
 
@@ -301,6 +304,11 @@ obj-$(CONFIG_NET_TEAM) += team/
 obj-$(CONFIG_TUN) += tun.o
 obj-$(CONFIG_VETH) += veth.o
 obj-$(CONFIG_VIRTIO_NET) += virtio_net.o
+<<<<<<< HEAD
+=======
+obj-$(CONFIG_VXLAN) += vxlan.o
+obj-$(CONFIG_NLMON) += nlmon.o
+>>>>>>> refs/remotes/origin/master
 
 #
 # Networking Drivers
@@ -330,15 +338,25 @@ obj-$(CONFIG_SLIP) += slip/
 obj-$(CONFIG_SLHC) += slip/
 obj-$(CONFIG_NET_SB1000) += sb1000.o
 obj-$(CONFIG_SUNGEM_PHY) += sungem_phy.o
+<<<<<<< HEAD
 obj-$(CONFIG_TR) += tokenring/
 obj-$(CONFIG_WAN) += wan/
 obj-$(CONFIG_WLAN) += wireless/
 obj-$(CONFIG_WIMAX) += wimax/
+=======
+obj-$(CONFIG_WAN) += wan/
+obj-$(CONFIG_WLAN) += wireless/
+obj-$(CONFIG_WIMAX) += wimax/
+obj-$(CONFIG_IEEE802154) += ieee802154/
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_VMXNET3) += vmxnet3/
 obj-$(CONFIG_XEN_NETDEV_FRONTEND) += xen-netfront.o
 obj-$(CONFIG_XEN_NETDEV_BACKEND) += xen-netback/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_USB_CATC)          += usb/
 obj-$(CONFIG_USB_KAWETH)        += usb/
@@ -350,6 +368,7 @@ obj-$(CONFIG_USB_ZD1201)        += usb/
 obj-$(CONFIG_USB_IPHETH)        += usb/
 obj-$(CONFIG_USB_CDC_PHONET)   += usb/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 obj-$(CONFIG_WLAN) += wireless/
 obj-$(CONFIG_NET_TULIP) += tulip/
@@ -381,3 +400,7 @@ obj-$(CONFIG_TILE_NET) += tile/
 =======
 obj-$(CONFIG_HYPERV_NET) += hyperv/
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_HYPERV_NET) += hyperv/
+obj-$(CONFIG_NTB_NETDEV) += ntb_netdev.o
+>>>>>>> refs/remotes/origin/master

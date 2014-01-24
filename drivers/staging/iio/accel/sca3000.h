@@ -2,7 +2,11 @@
  * sca3000.c -- support VTI sca3000 series accelerometers
  *              via SPI
  *
+<<<<<<< HEAD
  * Copyright (c) 2007 Jonathan Cameron <jic23@cam.ac.uk>
+=======
+ * Copyright (c) 2007 Jonathan Cameron <jic23@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Partly based upon tle62x0.c
  *
@@ -137,10 +141,14 @@
 #define SCA3000_INT_MASK_ACTIVE_LOW		0x00
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Values of mulipexed registers (write to ctrl_data after select) */
 =======
 /* Values of multiplexed registers (write to ctrl_data after select) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Values of multiplexed registers (write to ctrl_data after select) */
+>>>>>>> refs/remotes/origin/master
 #define SCA3000_REG_ADDR_CTRL_DATA		0x22
 
 /* Measurement modes available on some sca3000 series chips. Code assumes others
@@ -178,9 +186,12 @@ struct sca3000_state {
 	struct spi_device		*us;
 	const struct sca3000_chip_info	*info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev			*indio_dev;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct work_struct		interrupt_handler_ws;
 	s64				last_timestamp;
 	int				mo_det_use_count;
@@ -230,10 +241,14 @@ int sca3000_read_data_short(struct sca3000_state *st,
 int sca3000_write_reg(struct sca3000_state *st, u8 address, u8 val);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_IIO_RING_BUFFER
 =======
 #ifdef CONFIG_IIO_BUFFER
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_IIO_BUFFER
+>>>>>>> refs/remotes/origin/master
 /**
  * sca3000_register_ring_funcs() setup the ring state change functions
  **/
@@ -261,10 +276,14 @@ void sca3000_unconfigure_ring(struct iio_dev *indio_dev);
  * @val:	the event code
  **/
 <<<<<<< HEAD
+<<<<<<< HEAD
 void sca3000_ring_int_process(u8 val, struct iio_ring_buffer *ring);
 =======
 void sca3000_ring_int_process(u8 val, struct iio_buffer *ring);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void sca3000_ring_int_process(u8 val, struct iio_buffer *ring);
+>>>>>>> refs/remotes/origin/master
 
 #else
 static inline void sca3000_register_ring_funcs(struct iio_dev *indio_dev)

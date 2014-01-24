@@ -379,12 +379,17 @@ static int mc68x328fb_pan_display(struct fb_var_screeninfo *var,
 			return -EINVAL;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (var->xoffset + var->xres > info->var.xres_virtual ||
 		    var->yoffset + var->yres > info->var.yres_virtual)
 =======
 		if (var->xoffset + info->var.xres > info->var.xres_virtual ||
 		    var->yoffset + info->var.yres > info->var.yres_virtual)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (var->xoffset + info->var.xres > info->var.xres_virtual ||
+		    var->yoffset + info->var.yres > info->var.yres_virtual)
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 	}
 	info->var.xoffset = var->xoffset;
@@ -405,7 +410,11 @@ static int mc68x328fb_mmap(struct fb_info *info, struct vm_area_struct *vma)
 #ifndef MMU
 	/* this is uClinux (no MMU) specific code */
 
+<<<<<<< HEAD
 	vma->vm_flags |= VM_RESERVED;
+=======
+	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
+>>>>>>> refs/remotes/origin/master
 	vma->vm_start = videomemory;
 
 	return 0;
@@ -483,11 +492,18 @@ int __init mc68x328fb_init(void)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	printk(KERN_INFO
 		"fb%d: %s frame buffer device\n", fb_info.node,	fb_info.fix.id);
 	printk(KERN_INFO
 		"fb%d: %dx%dx%d at 0x%08lx\n", fb_info.node,
 		mc68x328fb_default.xres_virtual, mc68x328fb_default.yres_virtual,
+=======
+	fb_info(&fb_info, "%s frame buffer device\n", fb_info.fix.id);
+	fb_info(&fb_info, "%dx%dx%d at 0x%08lx\n",
+		mc68x328fb_default.xres_virtual,
+		mc68x328fb_default.yres_virtual,
+>>>>>>> refs/remotes/origin/master
 		1 << mc68x328fb_default.bits_per_pixel, videomemory);
 
 	return 0;

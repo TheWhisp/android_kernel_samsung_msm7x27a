@@ -5,6 +5,7 @@
  *
  * Copyright (C) 1995 Olaf Kirch <okir@monad.swb.de>
  */
+<<<<<<< HEAD
 
 #ifndef LINUX_NFSD_DEBUG_H
 #define LINUX_NFSD_DEBUG_H
@@ -37,12 +38,22 @@
 
 
 #ifdef __KERNEL__
+=======
+#ifndef LINUX_NFSD_DEBUG_H
+#define LINUX_NFSD_DEBUG_H
+
+#include <uapi/linux/nfsd/debug.h>
+
+>>>>>>> refs/remotes/origin/master
 # undef ifdebug
 # ifdef NFSD_DEBUG
 #  define ifdebug(flag)		if (nfsd_debug & NFSDDBG_##flag)
 # else
 #  define ifdebug(flag)		if (0)
 # endif
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_NFSD_DEBUG_H */

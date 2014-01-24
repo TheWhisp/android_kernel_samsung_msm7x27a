@@ -494,6 +494,7 @@ static void pcnet32_realloc_tx_ring(struct net_device *dev,
 	}
 	memset(new_tx_ring, 0, sizeof(struct pcnet32_tx_head) * (1 << size));
 
+<<<<<<< HEAD
 	new_dma_addr_list = kcalloc((1 << size), sizeof(dma_addr_t),
 				GFP_ATOMIC);
 	if (!new_dma_addr_list) {
@@ -507,6 +508,17 @@ static void pcnet32_realloc_tx_ring(struct net_device *dev,
 		netif_err(lp, drv, dev, "Memory allocation failed\n");
 		goto free_new_lists;
 	}
+=======
+	new_dma_addr_list = kcalloc(1 << size, sizeof(dma_addr_t),
+				    GFP_ATOMIC);
+	if (!new_dma_addr_list)
+		goto free_new_tx_ring;
+
+	new_skb_list = kcalloc(1 << size, sizeof(struct sk_buff *),
+			       GFP_ATOMIC);
+	if (!new_skb_list)
+		goto free_new_lists;
+>>>>>>> refs/remotes/origin/master
 
 	kfree(lp->tx_skbuff);
 	kfree(lp->tx_dma_addr);
@@ -564,6 +576,7 @@ static void pcnet32_realloc_rx_ring(struct net_device *dev,
 	}
 	memset(new_rx_ring, 0, sizeof(struct pcnet32_rx_head) * (1 << size));
 
+<<<<<<< HEAD
 	new_dma_addr_list = kcalloc((1 << size), sizeof(dma_addr_t),
 				GFP_ATOMIC);
 	if (!new_dma_addr_list) {
@@ -577,6 +590,16 @@ static void pcnet32_realloc_rx_ring(struct net_device *dev,
 		netif_err(lp, drv, dev, "Memory allocation failed\n");
 		goto free_new_lists;
 	}
+=======
+	new_dma_addr_list = kcalloc(1 << size, sizeof(dma_addr_t), GFP_ATOMIC);
+	if (!new_dma_addr_list)
+		goto free_new_rx_ring;
+
+	new_skb_list = kcalloc(1 << size, sizeof(struct sk_buff *),
+			       GFP_ATOMIC);
+	if (!new_skb_list)
+		goto free_new_lists;
+>>>>>>> refs/remotes/origin/master
 
 	/* first copy the current receive buffers */
 	overlap = min(size, lp->rx_ring_size);
@@ -1175,7 +1198,10 @@ static void pcnet32_rx_entry(struct net_device *dev,
 		skb = netdev_alloc_skb(dev, pkt_len + NET_IP_ALIGN);
 
 	if (skb == NULL) {
+<<<<<<< HEAD
 		netif_err(lp, drv, dev, "Memory squeeze, dropping packet\n");
+=======
+>>>>>>> refs/remotes/origin/master
 		dev->stats.rx_dropped++;
 		return;
 	}
@@ -1443,7 +1469,11 @@ static const struct ethtool_ops pcnet32_ethtool_ops = {
 /* only probes for non-PCI devices, the rest are handled by
  * pci_register_driver via pcnet32_probe_pci */
 
+<<<<<<< HEAD
 static void __devinit pcnet32_probe_vlbus(unsigned int *pcnet32_portlist)
+=======
+static void pcnet32_probe_vlbus(unsigned int *pcnet32_portlist)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int *port, ioaddr;
 
@@ -1462,7 +1492,11 @@ static void __devinit pcnet32_probe_vlbus(unsigned int *pcnet32_portlist)
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
 	unsigned long ioaddr;
@@ -1521,7 +1555,11 @@ static const struct net_device_ops pcnet32_netdev_ops = {
  *  Called from both pcnet32_probe_vlbus and pcnet_probe_pci.
  *  pdev will be NULL when called from pcnet32_probe_vlbus.
  */
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
 {
 	struct pcnet32_private *lp;
@@ -1531,7 +1569,11 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
 	char *chipname;
 	struct net_device *dev;
 	const struct pcnet32_access *a = NULL;
+<<<<<<< HEAD
 	u8 promaddr[6];
+=======
+	u8 promaddr[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 	int ret = -ENODEV;
 
 	/* reset the chip */
@@ -1675,16 +1717,24 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
 	}
 
 	/* read PROM address and compare with CSR address */
+<<<<<<< HEAD
 	for (i = 0; i < 6; i++)
 		promaddr[i] = inb(ioaddr + i);
 
 	if (memcmp(promaddr, dev->dev_addr, 6) ||
+=======
+	for (i = 0; i < ETH_ALEN; i++)
+		promaddr[i] = inb(ioaddr + i);
+
+	if (memcmp(promaddr, dev->dev_addr, ETH_ALEN) ||
+>>>>>>> refs/remotes/origin/master
 	    !is_valid_ether_addr(dev->dev_addr)) {
 		if (is_valid_ether_addr(promaddr)) {
 			if (pcnet32_debug & NETIF_MSG_PROBE) {
 				pr_cont(" warning: CSR address invalid,\n");
 				pr_info("    using instead PROM address of");
 			}
+<<<<<<< HEAD
 			memcpy(dev->dev_addr, promaddr, 6);
 		}
 	}
@@ -1692,6 +1742,14 @@ pcnet32_probe1(unsigned long ioaddr, int shared, struct pci_dev *pdev)
 
 	/* if the ethernet address is not valid, force to 00:00:00:00:00:00 */
 	if (!is_valid_ether_addr(dev->perm_addr))
+=======
+			memcpy(dev->dev_addr, promaddr, ETH_ALEN);
+		}
+	}
+
+	/* if the ethernet address is not valid, force to 00:00:00:00:00:00 */
+	if (!is_valid_ether_addr(dev->dev_addr))
+>>>>>>> refs/remotes/origin/master
 		memset(dev->dev_addr, 0, ETH_ALEN);
 
 	if (pcnet32_debug & NETIF_MSG_PROBE) {
@@ -1934,6 +1992,7 @@ static int pcnet32_alloc_ring(struct net_device *dev, const char *name)
 
 	lp->tx_dma_addr = kcalloc(lp->tx_ring_size, sizeof(dma_addr_t),
 				  GFP_ATOMIC);
+<<<<<<< HEAD
 	if (!lp->tx_dma_addr) {
 		netif_err(lp, drv, dev, "Memory allocation failed\n");
 		return -ENOMEM;
@@ -1959,6 +2018,25 @@ static int pcnet32_alloc_ring(struct net_device *dev, const char *name)
 		netif_err(lp, drv, dev, "Memory allocation failed\n");
 		return -ENOMEM;
 	}
+=======
+	if (!lp->tx_dma_addr)
+		return -ENOMEM;
+
+	lp->rx_dma_addr = kcalloc(lp->rx_ring_size, sizeof(dma_addr_t),
+				  GFP_ATOMIC);
+	if (!lp->rx_dma_addr)
+		return -ENOMEM;
+
+	lp->tx_skbuff = kcalloc(lp->tx_ring_size, sizeof(struct sk_buff *),
+				GFP_ATOMIC);
+	if (!lp->tx_skbuff)
+		return -ENOMEM;
+
+	lp->rx_skbuff = kcalloc(lp->rx_ring_size, sizeof(struct sk_buff *),
+				GFP_ATOMIC);
+	if (!lp->rx_skbuff)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -2823,7 +2901,11 @@ static int pcnet32_pm_resume(struct pci_dev *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit pcnet32_remove_one(struct pci_dev *pdev)
+=======
+static void pcnet32_remove_one(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = pci_get_drvdata(pdev);
 
@@ -2837,14 +2919,21 @@ static void __devexit pcnet32_remove_one(struct pci_dev *pdev)
 				    lp->init_block, lp->init_dma_addr);
 		free_netdev(dev);
 		pci_disable_device(pdev);
+<<<<<<< HEAD
 		pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static struct pci_driver pcnet32_driver = {
 	.name = DRV_NAME,
 	.probe = pcnet32_probe_pci,
+<<<<<<< HEAD
 	.remove = __devexit_p(pcnet32_remove_one),
+=======
+	.remove = pcnet32_remove_one,
+>>>>>>> refs/remotes/origin/master
 	.id_table = pcnet32_pci_tbl,
 	.suspend = pcnet32_pm_suspend,
 	.resume = pcnet32_pm_resume,

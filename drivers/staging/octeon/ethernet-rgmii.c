@@ -27,12 +27,18 @@
 #include <linux/kernel.h>
 #include <linux/netdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/phy.h>
 =======
 #include <linux/interrupt.h>
 #include <linux/phy.h>
 #include <linux/ratelimit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/interrupt.h>
+#include <linux/phy.h>
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/dst.h>
 
 #include <asm/octeon/octeon.h>
@@ -42,18 +48,24 @@
 #include "ethernet-util.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "cvmx-helper.h"
 
 #include <asm/octeon/cvmx-ipd-defs.h>
 #include <asm/octeon/cvmx-npi-defs.h>
 #include "cvmx-gmxx-defs.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/octeon/cvmx-helper.h>
 
 #include <asm/octeon/cvmx-ipd-defs.h>
 #include <asm/octeon/cvmx-npi-defs.h>
 #include <asm/octeon/cvmx-gmxx-defs.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 DEFINE_SPINLOCK(global_register_lock);
 
@@ -131,6 +143,7 @@ static void cvm_oct_rgmii_poll(struct net_device *dev)
 					       (index, interface),
 					       gmxx_rxx_int_reg.u64);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUGPRINT("%s: Using 10Mbps with software "
 					   "preamble removal\n",
 				     dev->name);
@@ -139,6 +152,11 @@ static void cvm_oct_rgmii_poll(struct net_device *dev)
 						   "preamble removal\n",
 						   dev->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				printk_ratelimited("%s: Using 10Mbps with software "
+						   "preamble removal\n",
+						   dev->name);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -195,6 +213,7 @@ static void cvm_oct_rgmii_poll(struct net_device *dev)
 				netif_carrier_on(dev);
 			if (priv->queue != -1)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUGPRINT("%s: %u Mbps %s duplex, "
 					   "port %2d, queue %2d\n",
 					   dev->name, link_info.s.speed,
@@ -213,6 +232,8 @@ static void cvm_oct_rgmii_poll(struct net_device *dev)
 				netif_carrier_off(dev);
 			DEBUGPRINT("%s: Link down\n", dev->name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				printk_ratelimited("%s: %u Mbps %s duplex, "
 						   "port %2d, queue %2d\n",
 						   dev->name, link_info.s.speed,
@@ -230,7 +251,10 @@ static void cvm_oct_rgmii_poll(struct net_device *dev)
 			if (netif_carrier_ok(dev))
 				netif_carrier_off(dev);
 			printk_ratelimited("%s: Link down\n", dev->name);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 }
@@ -411,9 +435,13 @@ int cvm_oct_rgmii_init(struct net_device *dev)
 			 * Enable interrupts on inband status changes
 			 * for this port.
 			 */
+<<<<<<< HEAD
 			gmx_rx_int_en.u64 =
 			    cvmx_read_csr(CVMX_GMXX_RXX_INT_EN
 					  (index, interface));
+=======
+			gmx_rx_int_en.u64 = 0;
+>>>>>>> refs/remotes/origin/master
 			gmx_rx_int_en.s.phy_dupx = 1;
 			gmx_rx_int_en.s.phy_link = 1;
 			gmx_rx_int_en.s.phy_spd = 1;

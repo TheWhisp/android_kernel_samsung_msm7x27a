@@ -21,6 +21,10 @@
 
 #include <linux/kernel.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/of_device.h>
 #include <linux/of_platform.h>
 #include <linux/fs.h>
@@ -95,6 +99,10 @@ bsr_size_show(struct device *dev, struct device_attribute *attr, char *buf)
 	struct bsr_dev *bsr_dev = dev_get_drvdata(dev);
 	return sprintf(buf, "%u\n", bsr_dev->bsr_bytes);
 }
+<<<<<<< HEAD
+=======
+static DEVICE_ATTR_RO(bsr_size);
+>>>>>>> refs/remotes/origin/master
 
 static ssize_t
 bsr_stride_show(struct device *dev, struct device_attribute *attr, char *buf)
@@ -102,13 +110,21 @@ bsr_stride_show(struct device *dev, struct device_attribute *attr, char *buf)
 	struct bsr_dev *bsr_dev = dev_get_drvdata(dev);
 	return sprintf(buf, "%u\n", bsr_dev->bsr_stride);
 }
+<<<<<<< HEAD
 
 static ssize_t
 bsr_len_show(struct device *dev, struct device_attribute *attr, char *buf)
+=======
+static DEVICE_ATTR_RO(bsr_stride);
+
+static ssize_t
+bsr_length_show(struct device *dev, struct device_attribute *attr, char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bsr_dev *bsr_dev = dev_get_drvdata(dev);
 	return sprintf(buf, "%llu\n", bsr_dev->bsr_len);
 }
+<<<<<<< HEAD
 
 static struct device_attribute bsr_dev_attrs[] = {
 	__ATTR(bsr_size, S_IRUGO, bsr_size_show, NULL),
@@ -116,6 +132,17 @@ static struct device_attribute bsr_dev_attrs[] = {
 	__ATTR(bsr_length, S_IRUGO, bsr_len_show, NULL),
 	__ATTR_NULL
 };
+=======
+static DEVICE_ATTR_RO(bsr_length);
+
+static struct attribute *bsr_dev_attrs[] = {
+	&dev_attr_bsr_size.attr,
+	&dev_attr_bsr_stride.attr,
+	&dev_attr_bsr_length.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(bsr_dev);
+>>>>>>> refs/remotes/origin/master
 
 static int bsr_mmap(struct file *filp, struct vm_area_struct *vma)
 {
@@ -213,10 +240,14 @@ static int bsr_add_node(struct device_node *bn)
 		cur->bsr_minor  = i + total_bsr_devs;
 		cur->bsr_addr   = res.start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cur->bsr_len    = res.end - res.start + 1;
 =======
 		cur->bsr_len    = resource_size(&res);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cur->bsr_len    = resource_size(&res);
+>>>>>>> refs/remotes/origin/master
 		cur->bsr_bytes  = bsr_bytes[i];
 		cur->bsr_stride = bsr_stride[i];
 		cur->bsr_dev    = MKDEV(bsr_major, i + total_bsr_devs);
@@ -301,7 +332,10 @@ static int __init bsr_init(void)
 	struct device_node *np;
 	dev_t bsr_dev;
 	int ret = -ENODEV;
+<<<<<<< HEAD
 	int result;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	np = of_find_compatible_node(NULL, NULL, "ibm,bsr");
 	if (!np)
@@ -310,6 +344,7 @@ static int __init bsr_init(void)
 	bsr_class = class_create(THIS_MODULE, "bsr");
 	if (IS_ERR(bsr_class)) {
 		printk(KERN_ERR "class_create() failed for bsr_class\n");
+<<<<<<< HEAD
 		goto out_err_1;
 	}
 	bsr_class->dev_attrs = bsr_dev_attrs;
@@ -317,6 +352,16 @@ static int __init bsr_init(void)
 	result = alloc_chrdev_region(&bsr_dev, 0, BSR_MAX_DEVS, "bsr");
 	bsr_major = MAJOR(bsr_dev);
 	if (result < 0) {
+=======
+		ret = PTR_ERR(bsr_class);
+		goto out_err_1;
+	}
+	bsr_class->dev_groups = bsr_dev_groups;
+
+	ret = alloc_chrdev_region(&bsr_dev, 0, BSR_MAX_DEVS, "bsr");
+	bsr_major = MAJOR(bsr_dev);
+	if (ret < 0) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_ERR "alloc_chrdev_region() failed for bsr\n");
 		goto out_err_2;
 	}

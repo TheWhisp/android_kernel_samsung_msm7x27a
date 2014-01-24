@@ -7,6 +7,10 @@
 #include <linux/fault-inject.h>
 
 #include "blk.h"
+<<<<<<< HEAD
+=======
+#include "blk-mq.h"
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_FAIL_IO_TIMEOUT
 
@@ -29,6 +33,7 @@ int blk_should_fake_timeout(struct request_queue *q)
 static int __init fail_io_timeout_debugfs(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return init_fault_attr_dentries(&fail_io_timeout, "fail_io_timeout");
 =======
 	struct dentry *dir = fault_create_debugfs_attr("fail_io_timeout",
@@ -36,6 +41,12 @@ static int __init fail_io_timeout_debugfs(void)
 
 	return IS_ERR(dir) ? PTR_ERR(dir) : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct dentry *dir = fault_create_debugfs_attr("fail_io_timeout",
+						NULL, &fail_io_timeout);
+
+	return PTR_ERR_OR_ZERO(dir);
+>>>>>>> refs/remotes/origin/master
 }
 
 late_initcall(fail_io_timeout_debugfs);
@@ -86,6 +97,7 @@ void blk_delete_timer(struct request *req)
 static void blk_rq_timed_out(struct request *req)
 {
 	struct request_queue *q = req->q;
+<<<<<<< HEAD
 	enum blk_eh_timer_return ret;
 
 	ret = q->rq_timed_out_fn(req);
@@ -96,6 +108,27 @@ static void blk_rq_timed_out(struct request *req)
 	case BLK_EH_RESET_TIMER:
 		blk_clear_rq_complete(req);
 		blk_add_timer(req);
+=======
+	enum blk_eh_timer_return ret = BLK_EH_RESET_TIMER;
+
+	if (q->rq_timed_out_fn)
+		ret = q->rq_timed_out_fn(req);
+	switch (ret) {
+	case BLK_EH_HANDLED:
+		/* Can we use req->errors here? */
+		if (q->mq_ops)
+			blk_mq_complete_request(req, req->errors);
+		else
+			__blk_complete_request(req);
+		break;
+	case BLK_EH_RESET_TIMER:
+		if (q->mq_ops)
+			blk_mq_add_timer(req);
+		else
+			blk_add_timer(req);
+
+		blk_clear_rq_complete(req);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case BLK_EH_NOT_HANDLED:
 		/*
@@ -111,6 +144,26 @@ static void blk_rq_timed_out(struct request *req)
 	}
 }
 
+<<<<<<< HEAD
+=======
+void blk_rq_check_expired(struct request *rq, unsigned long *next_timeout,
+			  unsigned int *next_set)
+{
+	if (time_after_eq(jiffies, rq->deadline)) {
+		list_del_init(&rq->timeout_list);
+
+		/*
+		 * Check if we raced with end io completion
+		 */
+		if (!blk_mark_rq_complete(rq))
+			blk_rq_timed_out(rq);
+	} else if (!*next_set || time_after(*next_timeout, rq->deadline)) {
+		*next_timeout = rq->deadline;
+		*next_set = 1;
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 void blk_rq_timed_out_timer(unsigned long data)
 {
 	struct request_queue *q = (struct request_queue *) data;
@@ -120,6 +173,7 @@ void blk_rq_timed_out_timer(unsigned long data)
 
 	spin_lock_irqsave(q->queue_lock, flags);
 
+<<<<<<< HEAD
 	list_for_each_entry_safe(rq, tmp, &q->timeout_list, timeout_list) {
 		if (time_after_eq(jiffies, rq->deadline)) {
 			list_del_init(&rq->timeout_list);
@@ -135,6 +189,10 @@ void blk_rq_timed_out_timer(unsigned long data)
 			next_set = 1;
 		}
 	}
+=======
+	list_for_each_entry_safe(rq, tmp, &q->timeout_list, timeout_list)
+		blk_rq_check_expired(rq, &next, &next_set);
+>>>>>>> refs/remotes/origin/master
 
 	if (next_set)
 		mod_timer(&q->timeout, round_jiffies_up(next));
@@ -160,6 +218,7 @@ void blk_abort_request(struct request *req)
 }
 EXPORT_SYMBOL_GPL(blk_abort_request);
 
+<<<<<<< HEAD
 /**
  * blk_add_timer - Start timeout timer for a single request
  * @req:	request that is about to start running.
@@ -169,6 +228,9 @@ EXPORT_SYMBOL_GPL(blk_abort_request);
  *    set up the timer. When the request completes, we cancel the timer.
  */
 void blk_add_timer(struct request *req)
+=======
+void __blk_add_timer(struct request *req, struct list_head *timeout_list)
+>>>>>>> refs/remotes/origin/master
 {
 	struct request_queue *q = req->q;
 	unsigned long expiry;
@@ -177,7 +239,10 @@ void blk_add_timer(struct request *req)
 		return;
 
 	BUG_ON(!list_empty(&req->timeout_list));
+<<<<<<< HEAD
 	BUG_ON(test_bit(REQ_ATOM_COMPLETE, &req->atomic_flags));
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Some LLDs, like scsi, peek at the timeout to prevent a
@@ -187,7 +252,12 @@ void blk_add_timer(struct request *req)
 		req->timeout = q->rq_timeout;
 
 	req->deadline = jiffies + req->timeout;
+<<<<<<< HEAD
 	list_add_tail(&req->timeout_list, &q->timeout_list);
+=======
+	if (timeout_list)
+		list_add_tail(&req->timeout_list, timeout_list);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * If the timer isn't already pending or this timeout is earlier
@@ -199,6 +269,7 @@ void blk_add_timer(struct request *req)
 	if (!timer_pending(&q->timeout) ||
 	    time_before(expiry, q->timeout.expires))
 		mod_timer(&q->timeout, expiry);
+<<<<<<< HEAD
 }
 
 /**
@@ -242,3 +313,21 @@ void blk_abort_queue(struct request_queue *q)
 
 }
 EXPORT_SYMBOL_GPL(blk_abort_queue);
+=======
+
+}
+
+/**
+ * blk_add_timer - Start timeout timer for a single request
+ * @req:	request that is about to start running.
+ *
+ * Notes:
+ *    Each request has its own timer, and as it is added to the queue, we
+ *    set up the timer. When the request completes, we cancel the timer.
+ */
+void blk_add_timer(struct request *req)
+{
+	__blk_add_timer(req, &req->q->timeout_list);
+}
+
+>>>>>>> refs/remotes/origin/master

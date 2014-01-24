@@ -13,10 +13,13 @@
 #include <asm/hardware/iomd.h>
 #define VIDC_PALETTE_SIZE	256
 #define VIDC_NAME		"VIDC20"
+<<<<<<< HEAD
 #elif defined(HAS_VIDC)
 #include <asm/hardware/memc.h>
 #define VIDC_PALETTE_SIZE	16
 #define VIDC_NAME		"VIDC"
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define EXTEND8(x) ((x)|(x)<<8)
@@ -101,6 +104,7 @@ struct modex_params {
 	const struct modey_params *modey;
 };
 
+<<<<<<< HEAD
 #ifdef HAS_VIDC
 
 #define VID_CTL_VS_NVSYNC	(1 << 3)
@@ -126,6 +130,8 @@ struct modex_params {
 
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef HAS_VIDC20
 /*
  * VIDC20 registers

@@ -19,6 +19,7 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef SDLA_H
 #define SDLA_H
@@ -113,6 +114,13 @@ struct sdla_dlci_conf {
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef SDLA_H
+#define SDLA_H
+
+#include <uapi/linux/sdla.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* important Z80 window addresses */
 #define SDLA_CONTROL_WND		0xE000
@@ -331,5 +339,8 @@ struct buf_entry {
 } __attribute__((packed));
 
 #endif
+<<<<<<< HEAD
 
 #endif
+=======
+>>>>>>> refs/remotes/origin/master

@@ -20,7 +20,10 @@ struct call_single_data {
 	smp_call_func_t func;
 	void *info;
 	u16 flags;
+<<<<<<< HEAD
 	u16 priv;
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* total number of cpus in this system (may exceed NR_CPUS) */
@@ -29,6 +32,33 @@ extern unsigned int total_cpus;
 int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
 			     int wait);
 
+<<<<<<< HEAD
+=======
+/*
+ * Call a function on all processors
+ */
+int on_each_cpu(smp_call_func_t func, void *info, int wait);
+
+/*
+ * Call a function on processors specified by mask, which might include
+ * the local one.
+ */
+void on_each_cpu_mask(const struct cpumask *mask, smp_call_func_t func,
+		void *info, bool wait);
+
+/*
+ * Call a function on each processor for which the supplied function
+ * cond_func returns a positive value. This may include the local
+ * processor.
+ */
+void on_each_cpu_cond(bool (*cond_func)(int cpu, void *info),
+		smp_call_func_t func, void *info, bool wait,
+		gfp_t gfp_flags);
+
+void __smp_call_function_single(int cpuid, struct call_single_data *data,
+				int wait);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 
 #include <linux/preempt.h>
@@ -61,7 +91,11 @@ extern void smp_prepare_cpus(unsigned int max_cpus);
 /*
  * Bring a CPU up
  */
+<<<<<<< HEAD
 extern int __cpu_up(unsigned int cpunum);
+=======
+extern int __cpu_up(unsigned int cpunum, struct task_struct *tidle);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Final polishing of CPUs
@@ -75,6 +109,7 @@ int smp_call_function(smp_call_func_t func, void *info, int wait);
 void smp_call_function_many(const struct cpumask *mask,
 			    smp_call_func_t func, void *info, bool wait);
 
+<<<<<<< HEAD
 void __smp_call_function_single(int cpuid, struct call_single_data *data,
 				int wait);
 
@@ -121,6 +156,22 @@ void on_each_cpu_cond(bool (*cond_func)(int cpu, void *info),
 
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int smp_call_function_any(const struct cpumask *mask,
+			  smp_call_func_t func, void *info, int wait);
+
+void kick_all_cpus_sync(void);
+
+/*
+ * Generic and arch helpers
+ */
+void __init call_function_init(void);
+void generic_smp_call_function_single_interrupt(void);
+#define generic_smp_call_function_interrupt \
+	generic_smp_call_function_single_interrupt
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Mark the boot cpu "online" so that it can call console drivers in
  * printk() and can access its per-cpu storage.
  */
@@ -144,6 +195,7 @@ static inline int up_smp_call_function(smp_call_func_t func, void *info)
 }
 #define smp_call_function(func, info, wait) \
 			(up_smp_call_function(func, info))
+<<<<<<< HEAD
 #define on_each_cpu(func,info,wait)		\
 	({					\
 		local_irq_disable();		\
@@ -186,6 +238,10 @@ static inline int up_smp_call_function(smp_call_func_t func, void *info)
 >>>>>>> refs/remotes/origin/cm-10.0
 static inline void smp_send_reschedule(int cpu) { }
 #define num_booting_cpus()			1
+=======
+
+static inline void smp_send_reschedule(int cpu) { }
+>>>>>>> refs/remotes/origin/master
 #define smp_prepare_boot_cpu()			do {} while (0)
 #define smp_call_function_many(mask, func, info, wait) \
 			(up_smp_call_function(func, info))
@@ -198,6 +254,11 @@ smp_call_function_any(const struct cpumask *mask, smp_call_func_t func,
 	return smp_call_function_single(0, func, info, wait);
 }
 
+<<<<<<< HEAD
+=======
+static inline void kick_all_cpus_sync(void) {  }
+
+>>>>>>> refs/remotes/origin/master
 #endif /* !SMP */
 
 /*

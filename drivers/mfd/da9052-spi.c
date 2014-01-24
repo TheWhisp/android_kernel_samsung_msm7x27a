@@ -21,12 +21,22 @@
 
 #include <linux/mfd/da9052/da9052.h>
 
+<<<<<<< HEAD
 static int __devinit da9052_spi_probe(struct spi_device *spi)
 {
 	int ret;
 	const struct spi_device_id *id = spi_get_device_id(spi);
 	struct da9052 *da9052 = kzalloc(sizeof(struct da9052), GFP_KERNEL);
 
+=======
+static int da9052_spi_probe(struct spi_device *spi)
+{
+	int ret;
+	const struct spi_device_id *id = spi_get_device_id(spi);
+	struct da9052 *da9052;
+
+	da9052 = devm_kzalloc(&spi->dev, sizeof(struct da9052), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!da9052)
 		return -ENOMEM;
 
@@ -37,21 +47,34 @@ static int __devinit da9052_spi_probe(struct spi_device *spi)
 	da9052->dev = &spi->dev;
 	da9052->chip_irq = spi->irq;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&spi->dev, da9052);
+=======
+	spi_set_drvdata(spi, da9052);
+>>>>>>> refs/remotes/origin/master
 
 	da9052_regmap_config.read_flag_mask = 1;
 	da9052_regmap_config.write_flag_mask = 0;
 
+<<<<<<< HEAD
 	da9052->regmap = regmap_init_spi(spi, &da9052_regmap_config);
+=======
+	da9052->regmap = devm_regmap_init_spi(spi, &da9052_regmap_config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(da9052->regmap)) {
 		ret = PTR_ERR(da9052->regmap);
 		dev_err(&spi->dev, "Failed to allocate register map: %d\n",
 			ret);
+<<<<<<< HEAD
 		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = da9052_device_init(da9052, id->driver_data);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto err_regmap;
 
 	return 0;
@@ -71,6 +94,18 @@ static int __devexit da9052_spi_remove(struct spi_device *spi)
 	regmap_exit(da9052->regmap);
 	kfree(da9052);
 
+=======
+		return ret;
+
+	return 0;
+}
+
+static int da9052_spi_remove(struct spi_device *spi)
+{
+	struct da9052 *da9052 = spi_get_drvdata(spi);
+
+	da9052_device_exit(da9052);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -84,11 +119,18 @@ static struct spi_device_id da9052_spi_id[] = {
 
 static struct spi_driver da9052_spi_driver = {
 	.probe = da9052_spi_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(da9052_spi_remove),
 	.id_table = da9052_spi_id,
 	.driver = {
 		.name = "da9052",
 		.bus = &spi_bus_type,
+=======
+	.remove = da9052_spi_remove,
+	.id_table = da9052_spi_id,
+	.driver = {
+		.name = "da9052",
+>>>>>>> refs/remotes/origin/master
 		.owner = THIS_MODULE,
 	},
 };

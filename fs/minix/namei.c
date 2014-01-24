@@ -18,7 +18,11 @@ static int add_nondir(struct dentry *dentry, struct inode *inode)
 	return err;
 }
 
+<<<<<<< HEAD
 static struct dentry *minix_lookup(struct inode * dir, struct dentry *dentry, struct nameidata *nd)
+=======
+static struct dentry *minix_lookup(struct inode * dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode * inode = NULL;
 	ino_t ino;
@@ -37,10 +41,14 @@ static struct dentry *minix_lookup(struct inode * dir, struct dentry *dentry, st
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int minix_mknod(struct inode * dir, struct dentry *dentry, int mode, dev_t rdev)
 =======
 static int minix_mknod(struct inode * dir, struct dentry *dentry, umode_t mode, dev_t rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int minix_mknod(struct inode * dir, struct dentry *dentry, umode_t mode, dev_t rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	struct inode *inode;
@@ -59,11 +67,28 @@ static int minix_mknod(struct inode * dir, struct dentry *dentry, umode_t mode, 
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int minix_create(struct inode * dir, struct dentry *dentry, int mode,
 =======
 static int minix_create(struct inode *dir, struct dentry *dentry, umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
 		struct nameidata *nd)
+=======
+static int minix_tmpfile(struct inode *dir, struct dentry *dentry, umode_t mode)
+{
+	int error;
+	struct inode *inode = minix_new_inode(dir, mode, &error);
+	if (inode) {
+		minix_set_inode(inode, 0);
+		mark_inode_dirty(inode);
+		d_tmpfile(dentry, inode);
+	}
+	return error;
+}
+
+static int minix_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+		bool excl)
+>>>>>>> refs/remotes/origin/master
 {
 	return minix_mknod(dir, dentry, mode, 0);
 }
@@ -103,17 +128,21 @@ static int minix_link(struct dentry * old_dentry, struct inode * dir,
 	struct inode *inode = old_dentry->d_inode;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (inode->i_nlink >= minix_sb(inode->i_sb)->s_link_max)
 		return -EMLINK;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	inode->i_ctime = CURRENT_TIME_SEC;
 	inode_inc_link_count(inode);
 	ihold(inode);
 	return add_nondir(dentry, inode);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int minix_mkdir(struct inode * dir, struct dentry *dentry, int mode)
 {
@@ -123,11 +152,16 @@ static int minix_mkdir(struct inode * dir, struct dentry *dentry, int mode)
 	if (dir->i_nlink >= minix_sb(dir->i_sb)->s_link_max)
 		goto out;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int minix_mkdir(struct inode * dir, struct dentry *dentry, umode_t mode)
 {
 	struct inode * inode;
 	int err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	inode_inc_link_count(dir);
 
@@ -200,9 +234,12 @@ static int minix_rename(struct inode * old_dir, struct dentry *old_dentry,
 			   struct inode * new_dir, struct dentry *new_dentry)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct minix_sb_info * info = minix_sb(old_dir->i_sb);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct inode * old_inode = old_dentry->d_inode;
 	struct inode * new_inode = new_dentry->d_inode;
 	struct page * dir_page = NULL;
@@ -241,6 +278,7 @@ static int minix_rename(struct inode * old_dir, struct dentry *old_dentry,
 		inode_dec_link_count(new_inode);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dir_de) {
 			err = -EMLINK;
 			if (new_dir->i_nlink >= info->s_link_max)
@@ -248,6 +286,8 @@ static int minix_rename(struct inode * old_dir, struct dentry *old_dentry,
 		}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		err = minix_add_link(new_dentry, old_inode);
 		if (err)
 			goto out_dir;
@@ -290,4 +330,8 @@ const struct inode_operations minix_dir_inode_operations = {
 	.mknod		= minix_mknod,
 	.rename		= minix_rename,
 	.getattr	= minix_getattr,
+<<<<<<< HEAD
+=======
+	.tmpfile	= minix_tmpfile,
+>>>>>>> refs/remotes/origin/master
 };

@@ -206,6 +206,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct packet_type edsa_packet_type __read_mostly = {
 	.type	= cpu_to_be16(ETH_P_EDSA),
 	.func	= edsa_rcv,
@@ -224,8 +225,13 @@ static void __exit edsa_cleanup_module(void)
 }
 module_exit(edsa_cleanup_module);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct packet_type edsa_packet_type __read_mostly = {
 	.type	= cpu_to_be16(ETH_P_EDSA),
 	.func	= edsa_rcv,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

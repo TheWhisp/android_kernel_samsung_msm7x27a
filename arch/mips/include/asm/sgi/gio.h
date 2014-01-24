@@ -18,6 +18,7 @@
  * three physical connectors, but only two slots, GFX and EXP0.
  *
  * There is 10MB of GIO address space for GIO64 slot devices
+<<<<<<< HEAD
  * slot#   slot type address range            size
  * -----   --------- ----------------------- -----
  *   0     GFX       0x1f000000 - 0x1f3fffff   4MB
@@ -30,6 +31,20 @@
  *
  * Following space is reserved and unused
  *   -     RESERVED  0x18000000 - 0x1effffff 112MB
+=======
+ * slot#   slot type address range	      size
+ * -----   --------- ----------------------- -----
+ *   0	   GFX	     0x1f000000 - 0x1f3fffff   4MB
+ *   1	   EXP0	     0x1f400000 - 0x1f5fffff   2MB
+ *   2	   EXP1	     0x1f600000 - 0x1f9fffff   4MB
+ *
+ * There are un-slotted devices, HPC, I/O and misc devices, which are grouped
+ * into the HPC address space.
+ *   -	   MISC	     0x1fb00000 - 0x1fbfffff   1MB
+ *
+ * Following space is reserved and unused
+ *   -	   RESERVED  0x18000000 - 0x1effffff 112MB
+>>>>>>> refs/remotes/origin/master
  *
  * GIO bus IDs
  *
@@ -39,10 +54,17 @@
  * the slot undefined.
  *
  * 32-bit IDs are divided into
+<<<<<<< HEAD
  *	bits 0:6        the product ID; ranges from 0x00 to 0x7F.
  *	bit 7		0=GIO Product ID is 8 bits wide
  *			1=GIO Product ID is 32 bits wide.
  *	bits 8:15       manufacturer version for the product.
+=======
+ *	bits 0:6	the product ID; ranges from 0x00 to 0x7F.
+ *	bit 7		0=GIO Product ID is 8 bits wide
+ *			1=GIO Product ID is 32 bits wide.
+ *	bits 8:15	manufacturer version for the product.
+>>>>>>> refs/remotes/origin/master
  *	bit 16		0=GIO32 and GIO32-bis, 1=GIO64.
  *	bit 17		0=no ROM present
  *			1=ROM present on this board AND next three words

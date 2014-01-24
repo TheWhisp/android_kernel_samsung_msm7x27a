@@ -38,7 +38,11 @@ static inline int vid_to_reg(int val, u8 vrm)
 		return ((val >= 1100) && (val <= 1850) ?
 			((18499 - val * 10) / 25 + 5) / 10 : -1);
 	default:
+<<<<<<< HEAD
 		return -1;
+=======
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

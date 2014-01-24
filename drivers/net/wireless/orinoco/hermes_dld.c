@@ -194,10 +194,14 @@ hermes_find_pdi(const struct pdi *first_pdi, u32 record_id, const void *end)
 /* Process one Plug Data Item - find corresponding PDR and plug it */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 hermes_plug_pdi(hermes_t *hw, const struct pdr *first_pdr,
 =======
 hermes_plug_pdi(struct hermes *hw, const struct pdr *first_pdr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+hermes_plug_pdi(struct hermes *hw, const struct pdr *first_pdr,
+>>>>>>> refs/remotes/origin/master
 		const struct pdi *pdi, const void *pdr_end)
 {
 	const struct pdr *pdr;
@@ -225,10 +229,14 @@ hermes_plug_pdi(struct hermes *hw, const struct pdr *first_pdr,
  * which also has a valid production data record for the firmware.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hermes_apply_pda(hermes_t *hw,
 =======
 int hermes_apply_pda(struct hermes *hw,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hermes_apply_pda(struct hermes *hw,
+>>>>>>> refs/remotes/origin/master
 		     const char *first_pdr,
 		     const void *pdr_end,
 		     const __le16 *pda,
@@ -283,10 +291,14 @@ hermes_blocks_length(const char *first_block, const void *end)
 
 /* Program the data blocks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hermes_program(hermes_t *hw, const char *first_block, const void *end)
 =======
 int hermes_program(struct hermes *hw, const char *first_block, const void *end)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hermes_program(struct hermes *hw, const char *first_block, const void *end)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct dblock *blk;
 	u32 blkaddr;
@@ -400,10 +412,14 @@ DEFINE_DEFAULT_PDR(0x0161, 256,
  * For certain records, use defaults if they are not found in pda.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hermes_apply_pda_with_defaults(hermes_t *hw,
 =======
 int hermes_apply_pda_with_defaults(struct hermes *hw,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hermes_apply_pda_with_defaults(struct hermes *hw,
+>>>>>>> refs/remotes/origin/master
 				   const char *first_pdr,
 				   const void *pdr_end,
 				   const __le16 *pda,

@@ -15,9 +15,13 @@
 #include <linux/gigaset_dev.h>
 #include <linux/tty_flip.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 /*** our ioctls ***/
 
@@ -37,16 +41,22 @@ static int if_lock(struct cardstate *cs, int *arg)
 
 	if (!cmd && cs->mstate == MS_LOCKED && cs->connected) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->ops->set_modem_ctrl(cs, 0, TIOCM_DTR|TIOCM_RTS);
 		cs->ops->baud_rate(cs, B115200);
 		cs->ops->set_line_ctrl(cs, CS8);
 		cs->control_state = TIOCM_DTR|TIOCM_RTS;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		cs->ops->set_modem_ctrl(cs, 0, TIOCM_DTR | TIOCM_RTS);
 		cs->ops->baud_rate(cs, B115200);
 		cs->ops->set_line_ctrl(cs, CS8);
 		cs->control_state = TIOCM_DTR | TIOCM_RTS;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cs->waiting = 1;
@@ -122,6 +132,7 @@ static int if_config(struct cardstate *cs, int *arg)
 }
 
 /*** the terminal driver ***/
+<<<<<<< HEAD
 /* stolen from usbserial and some other tty drivers */
 
 static int  if_open(struct tty_struct *tty, struct file *filp);
@@ -152,23 +163,31 @@ static const struct tty_operations if_ops = {
 	.tiocmget =		if_tiocmget,
 	.tiocmset =		if_tiocmset,
 };
+=======
+>>>>>>> refs/remotes/origin/master
 
 static int if_open(struct tty_struct *tty, struct file *filp)
 {
 	struct cardstate *cs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	gig_dbg(DEBUG_IF, "%d+%d: %s()",
 		tty->driver->minor_start, tty->index, __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty->driver_data = NULL;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	cs = gigaset_get_cs_by_tty(tty);
 	if (!cs || !try_module_get(cs->driver->owner))
 		return -ENODEV;
@@ -180,6 +199,7 @@ static int if_open(struct tty_struct *tty, struct file *filp)
 	tty->driver_data = cs;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	++cs->open_count;
 
 	if (cs->open_count == 1) {
@@ -187,12 +207,18 @@ static int if_open(struct tty_struct *tty, struct file *filp)
 		cs->tty = tty;
 		spin_unlock_irqrestore(&cs->lock, flags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	++cs->port.count;
 
 	if (cs->port.count == 1) {
 		tty_port_tty_set(&cs->port, tty);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		tty->low_latency = 1;
+=======
+		cs->port.low_latency = 1;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&cs->mutex);
@@ -202,6 +228,7 @@ static int if_open(struct tty_struct *tty, struct file *filp)
 static void if_close(struct tty_struct *tty, struct file *filp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 	unsigned long flags;
 
@@ -209,11 +236,16 @@ static void if_close(struct tty_struct *tty, struct file *filp)
 	if (!cs) {
 		pr_err("%s: no cardstate\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct cardstate *cs = tty->driver_data;
 
 	if (!cs) { /* happens if we didn't find cs in open */
 		gig_dbg(DEBUG_IF, "%s: no cardstate", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -223,6 +255,7 @@ static void if_close(struct tty_struct *tty, struct file *filp)
 
 	if (!cs->connected)
 		gig_dbg(DEBUG_IF, "not connected");	/* nothing to do */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	else if (!cs->open_count)
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
@@ -234,11 +267,16 @@ static void if_close(struct tty_struct *tty, struct file *filp)
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	else if (!cs->port.count)
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 	else if (!--cs->port.count)
 		tty_port_tty_set(&cs->port, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&cs->mutex);
 
@@ -249,15 +287,20 @@ static int if_ioctl(struct tty_struct *tty,
 		    unsigned int cmd, unsigned long arg)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 =======
 	struct cardstate *cs = tty->driver_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	int retval = -ENODEV;
 	int int_arg;
 	unsigned char buf[6];
 	unsigned version[4];
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cs = (struct cardstate *) tty->driver_data;
 	if (!cs) {
@@ -267,6 +310,8 @@ static int if_ioctl(struct tty_struct *tty,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	gig_dbg(DEBUG_IF, "%u: %s(0x%x)", cs->minor_index, __func__, cmd);
 
 	if (mutex_lock_interruptible(&cs->mutex))
@@ -276,12 +321,16 @@ static int if_ioctl(struct tty_struct *tty,
 		gig_dbg(DEBUG_IF, "not connected");
 		retval = -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!cs->open_count)
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 	else {
 =======
 	} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+>>>>>>> refs/remotes/origin/master
 		retval = 0;
 		switch (cmd) {
 		case GIGASET_REDIR:
@@ -301,28 +350,38 @@ static int if_ioctl(struct tty_struct *tty,
 		case GIGASET_BRKCHARS:
 			retval = copy_from_user(&buf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					(const unsigned char __user *) arg, 6)
 				? -EFAULT : 0;
 			if (retval >= 0) {
 				gigaset_dbg_buffer(DEBUG_IF, "GIGASET_BRKCHARS",
 						6, (const unsigned char *) arg);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 						(const unsigned char __user *) arg, 6)
 				? -EFAULT : 0;
 			if (retval >= 0) {
 				gigaset_dbg_buffer(DEBUG_IF, "GIGASET_BRKCHARS",
 						   6, (const unsigned char *) arg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				retval = cs->ops->brkchars(cs, buf);
 			}
 			break;
 		case GIGASET_VERSION:
 			retval = copy_from_user(version,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					(unsigned __user *) arg, sizeof version)
 =======
 						(unsigned __user *) arg, sizeof version)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						(unsigned __user *) arg, sizeof version)
+>>>>>>> refs/remotes/origin/master
 				? -EFAULT : 0;
 			if (retval >= 0)
 				retval = if_version(cs, version);
@@ -346,6 +405,7 @@ static int if_ioctl(struct tty_struct *tty,
 static int if_tiocmget(struct tty_struct *tty)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 	int retval;
 
@@ -360,16 +420,25 @@ static int if_tiocmget(struct tty_struct *tty)
 	int retval;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = tty->driver_data;
+	int retval;
+
+>>>>>>> refs/remotes/origin/master
 	gig_dbg(DEBUG_IF, "%u: %s()", cs->minor_index, __func__);
 
 	if (mutex_lock_interruptible(&cs->mutex))
 		return -ERESTARTSYS;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = cs->control_state & (TIOCM_RTS|TIOCM_DTR);
 =======
 	retval = cs->control_state & (TIOCM_RTS | TIOCM_DTR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	retval = cs->control_state & (TIOCM_RTS | TIOCM_DTR);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&cs->mutex);
 
@@ -380,6 +449,7 @@ static int if_tiocmset(struct tty_struct *tty,
 		       unsigned int set, unsigned int clear)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 	int retval;
 	unsigned mc;
@@ -391,11 +461,16 @@ static int if_tiocmset(struct tty_struct *tty,
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct cardstate *cs = tty->driver_data;
 	int retval;
 	unsigned mc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	gig_dbg(DEBUG_IF, "%u: %s(0x%x, 0x%x)",
 		cs->minor_index, __func__, set, clear);
 
@@ -407,10 +482,14 @@ static int if_tiocmset(struct tty_struct *tty,
 		retval = -ENODEV;
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mc = (cs->control_state | set) & ~clear & (TIOCM_RTS|TIOCM_DTR);
 =======
 		mc = (cs->control_state | set) & ~clear & (TIOCM_RTS | TIOCM_DTR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mc = (cs->control_state | set) & ~clear & (TIOCM_RTS | TIOCM_DTR);
+>>>>>>> refs/remotes/origin/master
 		retval = cs->ops->set_modem_ctrl(cs, cs->control_state, mc);
 		cs->control_state = mc;
 	}
@@ -423,6 +502,7 @@ static int if_tiocmset(struct tty_struct *tty,
 static int if_write(struct tty_struct *tty, const unsigned char *buf, int count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 	struct cmdbuf_t *cb;
 	int retval;
@@ -434,11 +514,16 @@ static int if_write(struct tty_struct *tty, const unsigned char *buf, int count)
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct cardstate *cs = tty->driver_data;
 	struct cmdbuf_t *cb;
 	int retval;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	gig_dbg(DEBUG_IF, "%u: %s()", cs->minor_index, __func__);
 
 	if (mutex_lock_interruptible(&cs->mutex))
@@ -450,6 +535,7 @@ static int if_write(struct tty_struct *tty, const unsigned char *buf, int count)
 		goto done;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cs->open_count) {
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 		retval = -ENODEV;
@@ -457,6 +543,8 @@ static int if_write(struct tty_struct *tty, const unsigned char *buf, int count)
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cs->mstate != MS_LOCKED) {
 		dev_warn(cs->dev, "can't write to unlocked device\n");
 		retval = -EBUSY;
@@ -489,6 +577,7 @@ done:
 static int if_write_room(struct tty_struct *tty)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 	int retval = -ENODEV;
 
@@ -503,6 +592,11 @@ static int if_write_room(struct tty_struct *tty)
 	int retval = -ENODEV;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = tty->driver_data;
+	int retval;
+
+>>>>>>> refs/remotes/origin/master
 	gig_dbg(DEBUG_IF, "%u: %s()", cs->minor_index, __func__);
 
 	if (mutex_lock_interruptible(&cs->mutex))
@@ -512,12 +606,16 @@ static int if_write_room(struct tty_struct *tty)
 		gig_dbg(DEBUG_IF, "not connected");
 		retval = -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (!cs->open_count)
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 	else if (cs->mstate != MS_LOCKED) {
 =======
 	} else if (cs->mstate != MS_LOCKED) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (cs->mstate != MS_LOCKED) {
+>>>>>>> refs/remotes/origin/master
 		dev_warn(cs->dev, "can't write to unlocked device\n");
 		retval = -EBUSY;
 	} else
@@ -530,6 +628,7 @@ static int if_write_room(struct tty_struct *tty)
 
 static int if_chars_in_buffer(struct tty_struct *tty)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cardstate *cs;
 	int retval = 0;
@@ -545,6 +644,11 @@ static int if_chars_in_buffer(struct tty_struct *tty)
 	int retval = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = tty->driver_data;
+	int retval = 0;
+
+>>>>>>> refs/remotes/origin/master
 	gig_dbg(DEBUG_IF, "%u: %s()", cs->minor_index, __func__);
 
 	mutex_lock(&cs->mutex);
@@ -552,10 +656,13 @@ static int if_chars_in_buffer(struct tty_struct *tty)
 	if (!cs->connected)
 		gig_dbg(DEBUG_IF, "not connected");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (!cs->open_count)
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else if (cs->mstate != MS_LOCKED)
 		dev_warn(cs->dev, "can't write to unlocked device\n");
 	else
@@ -569,6 +676,7 @@ static int if_chars_in_buffer(struct tty_struct *tty)
 static void if_throttle(struct tty_struct *tty)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 
 	cs = (struct cardstate *) tty->driver_data;
@@ -579,6 +687,9 @@ static void if_throttle(struct tty_struct *tty)
 =======
 	struct cardstate *cs = tty->driver_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 
 	gig_dbg(DEBUG_IF, "%u: %s()", cs->minor_index, __func__);
 
@@ -587,10 +698,13 @@ static void if_throttle(struct tty_struct *tty)
 	if (!cs->connected)
 		gig_dbg(DEBUG_IF, "not connected");	/* nothing to do */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (!cs->open_count)
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		gig_dbg(DEBUG_IF, "%s: not implemented\n", __func__);
 
@@ -600,6 +714,7 @@ static void if_throttle(struct tty_struct *tty)
 static void if_unthrottle(struct tty_struct *tty)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 
 	cs = (struct cardstate *) tty->driver_data;
@@ -610,6 +725,9 @@ static void if_unthrottle(struct tty_struct *tty)
 =======
 	struct cardstate *cs = tty->driver_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 
 	gig_dbg(DEBUG_IF, "%u: %s()", cs->minor_index, __func__);
 
@@ -618,10 +736,13 @@ static void if_unthrottle(struct tty_struct *tty)
 	if (!cs->connected)
 		gig_dbg(DEBUG_IF, "not connected");	/* nothing to do */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else if (!cs->open_count)
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		gig_dbg(DEBUG_IF, "%s: not implemented\n", __func__);
 
@@ -631,15 +752,20 @@ static void if_unthrottle(struct tty_struct *tty)
 static void if_set_termios(struct tty_struct *tty, struct ktermios *old)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct cardstate *cs;
 =======
 	struct cardstate *cs = tty->driver_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = tty->driver_data;
+>>>>>>> refs/remotes/origin/master
 	unsigned int iflag;
 	unsigned int cflag;
 	unsigned int old_cflag;
 	unsigned int control_state, new_state;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cs = (struct cardstate *) tty->driver_data;
 	if (!cs) {
@@ -649,6 +775,8 @@ static void if_set_termios(struct tty_struct *tty, struct ktermios *old)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	gig_dbg(DEBUG_IF, "%u: %s()", cs->minor_index, __func__);
 
 	mutex_lock(&cs->mutex);
@@ -659,6 +787,7 @@ static void if_set_termios(struct tty_struct *tty, struct ktermios *old)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!cs->open_count) {
 		dev_warn(cs->dev, "%s: device not opened\n", __func__);
 		goto out;
@@ -668,6 +797,10 @@ static void if_set_termios(struct tty_struct *tty, struct ktermios *old)
 >>>>>>> refs/remotes/origin/cm-10.0
 	iflag = tty->termios->c_iflag;
 	cflag = tty->termios->c_cflag;
+=======
+	iflag = tty->termios.c_iflag;
+	cflag = tty->termios.c_cflag;
+>>>>>>> refs/remotes/origin/master
 	old_cflag = old ? old->c_cflag : cflag;
 	gig_dbg(DEBUG_IF, "%u: iflag %x cflag %x old %x",
 		cs->minor_index, iflag, cflag, old_cflag);
@@ -718,10 +851,28 @@ out:
 	mutex_unlock(&cs->mutex);
 }
 
+<<<<<<< HEAD
+=======
+static const struct tty_operations if_ops = {
+	.open =			if_open,
+	.close =		if_close,
+	.ioctl =		if_ioctl,
+	.write =		if_write,
+	.write_room =		if_write_room,
+	.chars_in_buffer =	if_chars_in_buffer,
+	.set_termios =		if_set_termios,
+	.throttle =		if_throttle,
+	.unthrottle =		if_unthrottle,
+	.tiocmget =		if_tiocmget,
+	.tiocmset =		if_tiocmset,
+};
+
+>>>>>>> refs/remotes/origin/master
 
 /* wakeup tasklet for the write operation */
 static void if_wake(unsigned long data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct cardstate *cs = (struct cardstate *) data;
 
@@ -736,6 +887,11 @@ static void if_wake(unsigned long data)
 		tty_kref_put(tty);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct cardstate *cs = (struct cardstate *)data;
+
+	tty_port_tty_wakeup(&cs->port);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*** interface to common ***/
@@ -751,7 +907,12 @@ void gigaset_if_init(struct cardstate *cs)
 	tasklet_init(&cs->if_wake_tasklet, if_wake, (unsigned long) cs);
 
 	mutex_lock(&cs->mutex);
+<<<<<<< HEAD
 	cs->tty_dev = tty_register_device(drv->tty, cs->minor_index, NULL);
+=======
+	cs->tty_dev = tty_port_register_device(&cs->port, drv->tty,
+			cs->minor_index, NULL);
+>>>>>>> refs/remotes/origin/master
 
 	if (!IS_ERR(cs->tty_dev))
 		dev_set_drvdata(cs->tty_dev, cs);
@@ -789,6 +950,7 @@ void gigaset_if_receive(struct cardstate *cs,
 			unsigned char *buffer, size_t len)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long flags;
 	struct tty_struct *tty;
 
@@ -813,6 +975,10 @@ void gigaset_if_receive(struct cardstate *cs,
 	tty_flip_buffer_push(tty);
 	tty_kref_put(tty);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_insert_flip_string(&cs->port, buffer, len);
+	tty_flip_buffer_push(&cs->port);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(gigaset_if_receive);
 
@@ -827,14 +993,18 @@ void gigaset_if_initdriver(struct gigaset_driver *drv, const char *procname,
 			   const char *devname)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned minors = drv->minors;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	struct tty_driver *tty;
 
 	drv->have_tty = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	drv->tty = tty = alloc_tty_driver(minors);
 	if (tty == NULL)
@@ -844,24 +1014,32 @@ void gigaset_if_initdriver(struct gigaset_driver *drv, const char *procname,
 	tty->type =		TTY_DRIVER_TYPE_SERIAL,
 	tty->subtype =		SERIAL_TYPE_NORMAL,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	drv->tty = tty = alloc_tty_driver(drv->minors);
 	if (tty == NULL)
 		goto enomem;
 
 	tty->type =		TTY_DRIVER_TYPE_SERIAL;
 	tty->subtype =		SERIAL_TYPE_NORMAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tty->flags =		TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV;
 
 	tty->driver_name =	procname;
 	tty->name =		devname;
 	tty->minor_start =	drv->minor;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tty->num =		drv->minors;
 
 	tty->owner =		THIS_MODULE;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	tty->init_termios          = tty_std_termios;
 	tty->init_termios.c_cflag  = B9600 | CS8 | CREAD | HUPCL | CLOCAL;

@@ -151,7 +151,11 @@ struct mmu_notifier_ops {
  * Therefore notifier chains can only be traversed when either
  *
  * 1. mmap_sem is held.
+<<<<<<< HEAD
  * 2. One of the reverse map locks is held (i_mmap_mutex or anon_vma->mutex).
+=======
+ * 2. One of the reverse map locks is held (i_mmap_mutex or anon_vma->rwsem).
+>>>>>>> refs/remotes/origin/master
  * 3. No other concurrent thread can access the list (release)
  */
 struct mmu_notifier {
@@ -246,6 +250,7 @@ static inline void mmu_notifier_mm_destroy(struct mm_struct *mm)
 		__mmu_notifier_mm_destroy(mm);
 }
 
+<<<<<<< HEAD
 /*
  * These two macros will sometime replace ptep_clear_flush.
  * ptep_clear_flush is implemented as macro itself, so this also is
@@ -290,6 +295,8 @@ static inline void mmu_notifier_mm_destroy(struct mm_struct *mm)
 					  (__address)+HPAGE_PMD_SIZE);	\
 })
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define ptep_clear_flush_young_notify(__vma, __address, __ptep)		\
 ({									\
 	int __young;							\
@@ -312,14 +319,32 @@ static inline void mmu_notifier_mm_destroy(struct mm_struct *mm)
 	__young;							\
 })
 
+<<<<<<< HEAD
+=======
+/*
+ * set_pte_at_notify() sets the pte _after_ running the notifier.
+ * This is safe to start by updating the secondary MMUs, because the primary MMU
+ * pte invalidate must have already happened with a ptep_clear_flush() before
+ * set_pte_at_notify() has been invoked.  Updating the secondary MMUs first is
+ * required when we change both the protection of the mapping from read-only to
+ * read-write and the pfn (like during copy on write page faults). Otherwise the
+ * old page would remain mapped readonly in the secondary MMUs after the new
+ * page is already writable by some CPU through the primary MMU.
+ */
+>>>>>>> refs/remotes/origin/master
 #define set_pte_at_notify(__mm, __address, __ptep, __pte)		\
 ({									\
 	struct mm_struct *___mm = __mm;					\
 	unsigned long ___address = __address;				\
 	pte_t ___pte = __pte;						\
 									\
+<<<<<<< HEAD
 	set_pte_at(___mm, ___address, __ptep, ___pte);			\
 	mmu_notifier_change_pte(___mm, ___address, ___pte);		\
+=======
+	mmu_notifier_change_pte(___mm, ___address, ___pte);		\
+	set_pte_at(___mm, ___address, __ptep, ___pte);			\
+>>>>>>> refs/remotes/origin/master
 })
 
 #else /* CONFIG_MMU_NOTIFIER */
@@ -370,9 +395,12 @@ static inline void mmu_notifier_mm_destroy(struct mm_struct *mm)
 
 #define ptep_clear_flush_young_notify ptep_clear_flush_young
 #define pmdp_clear_flush_young_notify pmdp_clear_flush_young
+<<<<<<< HEAD
 #define ptep_clear_flush_notify ptep_clear_flush
 #define pmdp_clear_flush_notify pmdp_clear_flush
 #define pmdp_splitting_flush_notify pmdp_splitting_flush
+=======
+>>>>>>> refs/remotes/origin/master
 #define set_pte_at_notify set_pte_at
 
 #endif /* CONFIG_MMU_NOTIFIER */

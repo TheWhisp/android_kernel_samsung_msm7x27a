@@ -16,7 +16,11 @@
 
 #include "windfarm.h"
 
+<<<<<<< HEAD
 #define VERSION "0.2"
+=======
+#define VERSION "1.0"
+>>>>>>> refs/remotes/origin/master
 
 /* This currently only exports the external temperature sensor,
    since that's all the control loops need. */
@@ -64,9 +68,35 @@ static struct wf_sensor_ops wf_max6690_ops = {
 static int wf_max6690_probe(struct i2c_client *client,
 			    const struct i2c_device_id *id)
 {
+<<<<<<< HEAD
 	struct wf_6690_sensor *max;
 	int rc;
 
+=======
+	const char *name, *loc;
+	struct wf_6690_sensor *max;
+	int rc;
+
+	loc = of_get_property(client->dev.of_node, "hwsensor-location", NULL);
+	if (!loc) {
+		dev_warn(&client->dev, "Missing hwsensor-location property!\n");
+		return -ENXIO;
+	}
+
+	/*
+	 * We only expose the external temperature register for
+	 * now as this is all we need for our control loops
+	 */
+	if (!strcmp(loc, "BACKSIDE") || !strcmp(loc, "SYS CTRLR AMBIENT"))
+		name = "backside-temp";
+	else if (!strcmp(loc, "NB Ambient"))
+		name = "north-bridge-temp";
+	else if (!strcmp(loc, "GPU Ambient"))
+		name = "gpu-temp";
+	else
+		return -ENXIO;
+
+>>>>>>> refs/remotes/origin/master
 	max = kzalloc(sizeof(struct wf_6690_sensor), GFP_KERNEL);
 	if (max == NULL) {
 		printk(KERN_ERR "windfarm: Couldn't create MAX6690 sensor: "
@@ -75,11 +105,16 @@ static int wf_max6690_probe(struct i2c_client *client,
 	}
 
 	max->i2c = client;
+<<<<<<< HEAD
 	max->sens.name = client->dev.platform_data;
+=======
+	max->sens.name = (char *)name; /* XXX fix constness in structure */
+>>>>>>> refs/remotes/origin/master
 	max->sens.ops = &wf_max6690_ops;
 	i2c_set_clientdata(client, max);
 
 	rc = wf_register_sensor(&max->sens);
+<<<<<<< HEAD
 	if (rc) {
 		kfree(max);
 	}
@@ -159,6 +194,13 @@ static int wf_max6690_attach(struct i2c_adapter *adapter)
 	return 0;
 }
 
+=======
+	if (rc)
+		kfree(max);
+	return rc;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int wf_max6690_remove(struct i2c_client *client)
 {
 	struct wf_6690_sensor *max = i2c_get_clientdata(client);
@@ -170,20 +212,31 @@ static int wf_max6690_remove(struct i2c_client *client)
 }
 
 static const struct i2c_device_id wf_max6690_id[] = {
+<<<<<<< HEAD
 	{ "wf_max6690", 0 },
 	{ }
 };
+=======
+	{ "MAC,max6690", 0 },
+	{ }
+};
+MODULE_DEVICE_TABLE(i2c, wf_max6690_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct i2c_driver wf_max6690_driver = {
 	.driver = {
 		.name		= "wf_max6690",
 	},
+<<<<<<< HEAD
 	.attach_adapter	= wf_max6690_attach,
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe		= wf_max6690_probe,
 	.remove		= wf_max6690_remove,
 	.id_table	= wf_max6690_id,
 };
 
+<<<<<<< HEAD
 static int __init wf_max6690_sensor_init(void)
 {
 	/* Don't register on old machines that use therm_pm72 for now */
@@ -201,6 +254,9 @@ static void __exit wf_max6690_sensor_exit(void)
 
 module_init(wf_max6690_sensor_init);
 module_exit(wf_max6690_sensor_exit);
+=======
+module_i2c_driver(wf_max6690_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Paul Mackerras <paulus@samba.org>");
 MODULE_DESCRIPTION("MAX6690 sensor objects for PowerMac thermal control");

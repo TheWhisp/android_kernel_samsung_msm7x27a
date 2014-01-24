@@ -23,20 +23,27 @@
 #include <linux/dma-mapping.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/sysdev.h>
 #include <linux/interrupt.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/irqdomain.h>
 #include <linux/of_address.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/amba/bus.h>
 #include <linux/amba/clcd.h>
 #include <linux/amba/pl061.h>
 #include <linux/amba/mmci.h>
 #include <linux/amba/pl022.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 #include <linux/gfp.h>
 #include <linux/clkdev.h>
 #include <linux/mtd/physmap.h>
@@ -50,6 +57,19 @@
 #include <asm/hardware/arm_timer.h>
 #include <asm/hardware/icst.h>
 #include <asm/hardware/vic.h>
+=======
+#include <linux/irqchip/arm-vic.h>
+#include <linux/irqchip/versatile-fpga.h>
+#include <linux/gfp.h>
+#include <linux/clkdev.h>
+#include <linux/mtd/physmap.h>
+#include <linux/bitops.h>
+#include <linux/reboot.h>
+
+#include <asm/irq.h>
+#include <asm/hardware/arm_timer.h>
+#include <asm/hardware/icst.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 
 #include <asm/mach/arch.h>
@@ -61,7 +81,10 @@
 #include <asm/hardware/timer-sp.h>
 
 #include <plat/clcd.h>
+<<<<<<< HEAD
 #include <plat/fpga-irq.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <plat/sched_clock.h>
 
 #include "core.h"
@@ -75,22 +98,38 @@
 #define VA_VIC_BASE		__io_address(VERSATILE_VIC_BASE)
 #define VA_SIC_BASE		__io_address(VERSATILE_SIC_BASE)
 
+<<<<<<< HEAD
 static struct fpga_irq_data sic_irq = {
 	.base		= VA_SIC_BASE,
 	.irq_start	= IRQ_SIC_START,
 	.chip.name	= "SIC",
 };
 
+=======
+/* These PIC IRQs are valid in each configuration */
+#define PIC_VALID_ALL	BIT(SIC_INT_KMI0) | BIT(SIC_INT_KMI1) | \
+			BIT(SIC_INT_SCI3) | BIT(SIC_INT_UART3) | \
+			BIT(SIC_INT_CLCD) | BIT(SIC_INT_TOUCH) | \
+			BIT(SIC_INT_KEYPAD) | BIT(SIC_INT_DoC) | \
+			BIT(SIC_INT_USB) | BIT(SIC_INT_PCI0) | \
+			BIT(SIC_INT_PCI1) | BIT(SIC_INT_PCI2) | \
+			BIT(SIC_INT_PCI3)
+>>>>>>> refs/remotes/origin/master
 #if 1
 #define IRQ_MMCI0A	IRQ_VICSOURCE22
 #define IRQ_AACI	IRQ_VICSOURCE24
 #define IRQ_ETH		IRQ_VICSOURCE25
 #define PIC_MASK	0xFFD00000
+<<<<<<< HEAD
+=======
+#define PIC_VALID	PIC_VALID_ALL
+>>>>>>> refs/remotes/origin/master
 #else
 #define IRQ_MMCI0A	IRQ_SIC_MMCI0A
 #define IRQ_AACI	IRQ_SIC_AACI
 #define IRQ_ETH		IRQ_SIC_ETH
 #define PIC_MASK	0
+<<<<<<< HEAD
 #endif
 
 <<<<<<< HEAD
@@ -98,6 +137,13 @@ void __init versatile_init_irq(void)
 {
 	vic_init(VA_VIC_BASE, IRQ_VIC_START, ~0, 0);
 =======
+=======
+#define PIC_VALID	PIC_VALID_ALL | BIT(SIC_INT_MMCI0A) | \
+			BIT(SIC_INT_MMCI1A) | BIT(SIC_INT_AACI) | \
+			BIT(SIC_INT_ETH)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* Lookup table for finding a DT node that represents the vic instance */
 static const struct of_device_id vic_of_match[] __initconst = {
 	{ .compatible = "arm,versatile-vic", },
@@ -116,6 +162,7 @@ void __init versatile_init_irq(void)
 	np = of_find_matching_node_by_address(NULL, vic_of_match,
 					      VERSATILE_VIC_BASE);
 	__vic_init(VA_VIC_BASE, IRQ_VIC_START, ~0, 0, np);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	writel(~0, VA_SIC_BASE + SIC_IRQ_ENABLE_CLEAR);
@@ -125,6 +172,16 @@ void __init versatile_init_irq(void)
 =======
 	irq_domain_generate_simple(sic_of_match, VERSATILE_SIC_BASE, IRQ_SIC_START);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	writel(~0, VA_SIC_BASE + SIC_IRQ_ENABLE_CLEAR);
+
+	np = of_find_matching_node_by_address(NULL, sic_of_match,
+					      VERSATILE_SIC_BASE);
+
+	fpga_irq_init(VA_SIC_BASE, "SIC", IRQ_SIC_START,
+		IRQ_VICSOURCE31, PIC_VALID, np);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Interrupts on secondary controller from 0 to 8 are routed to
@@ -136,7 +193,11 @@ void __init versatile_init_irq(void)
 	writel(PIC_MASK, VA_SIC_BASE + SIC_INT_PIC_ENABLE);
 }
 
+<<<<<<< HEAD
 static struct map_desc versatile_io_desc[] __initdata = {
+=======
+static struct map_desc versatile_io_desc[] __initdata __maybe_unused = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.virtual	=  IO_ADDRESS(VERSATILE_SYS_BASE),
 		.pfn		= __phys_to_pfn(VERSATILE_SYS_BASE),
@@ -161,6 +222,7 @@ static struct map_desc versatile_io_desc[] __initdata = {
 #ifdef CONFIG_MACH_VERSATILE_AB
  	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual	=  IO_ADDRESS(VERSATILE_GPIO0_BASE),
 		.pfn		= __phys_to_pfn(VERSATILE_GPIO0_BASE),
 		.length		= SZ_4K,
@@ -168,6 +230,8 @@ static struct map_desc versatile_io_desc[] __initdata = {
 	}, {
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.virtual	=  IO_ADDRESS(VERSATILE_IB2_BASE),
 		.pfn		= __phys_to_pfn(VERSATILE_IB2_BASE),
 		.length		= SZ_64M,
@@ -199,6 +263,7 @@ static struct map_desc versatile_io_desc[] __initdata = {
 		.length		= VERSATILE_PCI_CFG_BASE_SIZE,
 		.type		= MT_DEVICE
 	},
+<<<<<<< HEAD
 #if 0
  	{
 		.virtual	=  VERSATILE_PCI_VIRT_MEM_BASE0,
@@ -217,6 +282,8 @@ static struct map_desc versatile_io_desc[] __initdata = {
 		.type		= MT_DEVICE
 	},
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 };
 
@@ -611,35 +678,48 @@ static struct pl022_ssp_controller ssp0_plat_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define AACI_IRQ	{ IRQ_AACI, NO_IRQ }
 #define MMCI0_IRQ	{ IRQ_MMCI0A,IRQ_SIC_MMCI0B }
 #define KMI0_IRQ	{ IRQ_SIC_KMI0, NO_IRQ }
 #define KMI1_IRQ	{ IRQ_SIC_KMI1, NO_IRQ }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AACI_IRQ	{ IRQ_AACI }
 #define MMCI0_IRQ	{ IRQ_MMCI0A,IRQ_SIC_MMCI0B }
 #define KMI0_IRQ	{ IRQ_SIC_KMI0 }
 #define KMI1_IRQ	{ IRQ_SIC_KMI1 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These devices are connected directly to the multi-layer AHB switch
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SMC_IRQ		{ NO_IRQ, NO_IRQ }
 #define MPMC_IRQ	{ NO_IRQ, NO_IRQ }
 #define CLCD_IRQ	{ IRQ_CLCDINT, NO_IRQ }
 #define DMAC_IRQ	{ IRQ_DMAINT, NO_IRQ }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SMC_IRQ		{ }
 #define MPMC_IRQ	{ }
 #define CLCD_IRQ	{ IRQ_CLCDINT }
 #define DMAC_IRQ	{ IRQ_DMAINT }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These devices are connected via the core APB bridge
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SCTL_IRQ	{ NO_IRQ, NO_IRQ }
 #define WATCHDOG_IRQ	{ IRQ_WDOGINT, NO_IRQ }
@@ -647,16 +727,22 @@ static struct pl022_ssp_controller ssp0_plat_data = {
 #define GPIO1_IRQ	{ IRQ_GPIOINT1, NO_IRQ }
 #define RTC_IRQ		{ IRQ_RTCINT, NO_IRQ }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SCTL_IRQ	{ }
 #define WATCHDOG_IRQ	{ IRQ_WDOGINT }
 #define GPIO0_IRQ	{ IRQ_GPIOINT0 }
 #define GPIO1_IRQ	{ IRQ_GPIOINT1 }
 #define RTC_IRQ		{ IRQ_RTCINT }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These devices are connected via the DMA APB bridge
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define SCI_IRQ		{ IRQ_SCIINT, NO_IRQ }
 #define UART0_IRQ	{ IRQ_UARTINT0, NO_IRQ }
@@ -686,6 +772,8 @@ AMBA_DEVICE(uart1, "dev:f2",  UART1,    NULL);
 AMBA_DEVICE(uart2, "dev:f3",  UART2,    NULL);
 AMBA_DEVICE(ssp0,  "dev:f4",  SSP,      &ssp0_plat_data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define SCI_IRQ		{ IRQ_SCIINT }
 #define UART0_IRQ	{ IRQ_UARTINT0 }
 #define UART1_IRQ	{ IRQ_UARTINT1 }
@@ -713,7 +801,10 @@ APB_DEVICE(uart0, "dev:f1",  UART0,    NULL);
 APB_DEVICE(uart1, "dev:f2",  UART1,    NULL);
 APB_DEVICE(uart2, "dev:f3",  UART2,    NULL);
 APB_DEVICE(ssp0,  "dev:f4",  SSP,      &ssp0_plat_data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static struct amba_device *amba_devs[] __initdata = {
 	&dmac_device,
@@ -737,7 +828,10 @@ static struct amba_device *amba_devs[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_OF
 /*
  * Lookup table for attaching a specific name and platform_data pointer to
@@ -746,17 +840,29 @@ static struct amba_device *amba_devs[] __initdata = {
  * having a specific name.
  */
 struct of_dev_auxdata versatile_auxdata_lookup[] __initdata = {
+<<<<<<< HEAD
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_MMCI0_BASE, "fpga:05", NULL),
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_KMI0_BASE, "fpga:06", NULL),
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_KMI1_BASE, "fpga:07", NULL),
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_UART3_BASE, "fpga:09", NULL),
+=======
+	OF_DEV_AUXDATA("arm,primecell", VERSATILE_MMCI0_BASE, "fpga:05", &mmc0_plat_data),
+	OF_DEV_AUXDATA("arm,primecell", VERSATILE_KMI0_BASE, "fpga:06", NULL),
+	OF_DEV_AUXDATA("arm,primecell", VERSATILE_KMI1_BASE, "fpga:07", NULL),
+	OF_DEV_AUXDATA("arm,primecell", VERSATILE_UART3_BASE, "fpga:09", NULL),
+	/* FIXME: this is buggy, the platform data is needed for this MMC instance too */
+>>>>>>> refs/remotes/origin/master
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_MMCI1_BASE, "fpga:0b", NULL),
 
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_CLCD_BASE, "dev:20", &clcd_plat_data),
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_UART0_BASE, "dev:f1", NULL),
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_UART1_BASE, "dev:f2", NULL),
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_UART2_BASE, "dev:f3", NULL),
+<<<<<<< HEAD
 	OF_DEV_AUXDATA("arm,primecell", VERSATILE_SSP_BASE, "dev:f4", NULL),
+=======
+	OF_DEV_AUXDATA("arm,primecell", VERSATILE_SSP_BASE, "dev:f4", &ssp0_plat_data),
+>>>>>>> refs/remotes/origin/master
 
 #if 0
 	/*
@@ -784,7 +890,10 @@ struct of_dev_auxdata versatile_auxdata_lookup[] __initdata = {
 };
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_LEDS
 #define VA_LEDS_BASE (__io_address(VERSATILE_SYS_BASE) + VERSATILE_SYS_LED_OFFSET)
 
@@ -823,8 +932,12 @@ static void versatile_leds_event(led_event_t ledevt)
 #endif	/* CONFIG_LEDS */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void versatile_restart(char mode, const char *cmd)
+=======
+void versatile_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *sys = __io_address(VERSATILE_SYS_BASE);
 	u32 val;
@@ -837,16 +950,38 @@ void versatile_restart(char mode, const char *cmd)
 	__raw_writel(0, sys + VERSATILE_SYS_LOCK_OFFSET);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /* Early initializations */
 void __init versatile_init_early(void)
 {
+=======
+/* Early initializations */
+void __init versatile_init_early(void)
+{
+	u32 val;
+>>>>>>> refs/remotes/origin/master
 	void __iomem *sys = __io_address(VERSATILE_SYS_BASE);
 
 	osc4_clk.vcoreg	= sys + VERSATILE_SYS_OSCCLCD_OFFSET;
 	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
 
 	versatile_sched_clock_init(sys + VERSATILE_SYS_24MHz_OFFSET, 24000000);
+<<<<<<< HEAD
+=======
+
+	/*
+	 * set clock frequency:
+	 *	VERSATILE_REFCLK is 32KHz
+	 *	VERSATILE_TIMCLK is 1MHz
+	 */
+	val = readl(__io_address(VERSATILE_SCTL_BASE));
+	writel((VERSATILE_TIMCLK << VERSATILE_TIMER1_EnSel) |
+	       (VERSATILE_TIMCLK << VERSATILE_TIMER2_EnSel) |
+	       (VERSATILE_TIMCLK << VERSATILE_TIMER3_EnSel) |
+	       (VERSATILE_TIMCLK << VERSATILE_TIMER4_EnSel) | val,
+	       __io_address(VERSATILE_SCTL_BASE));
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init versatile_init(void)
@@ -862,10 +997,13 @@ void __init versatile_init(void)
 		struct amba_device *d = amba_devs[i];
 		amba_device_register(d, &iomem_resource);
 	}
+<<<<<<< HEAD
 
 #ifdef CONFIG_LEDS
 	leds_event = versatile_leds_event;
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -879,6 +1017,7 @@ void __init versatile_init(void)
 /*
  * Set up timer interrupt, and return the current time in seconds.
  */
+<<<<<<< HEAD
 static void __init versatile_timer_init(void)
 {
 	u32 val;
@@ -894,6 +1033,10 @@ static void __init versatile_timer_init(void)
 	       (VERSATILE_TIMCLK << VERSATILE_TIMER3_EnSel) |
 	       (VERSATILE_TIMCLK << VERSATILE_TIMER4_EnSel) | val,
 	       __io_address(VERSATILE_SCTL_BASE));
+=======
+void __init versatile_timer_init(void)
+{
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Initialise to a known state (all timers off)
@@ -906,8 +1049,11 @@ static void __init versatile_timer_init(void)
 	sp804_clocksource_init(TIMER3_VA_BASE, "timer3");
 	sp804_clockevents_init(TIMER0_VA_BASE, IRQ_TIMERINT0_1, "timer0");
 }
+<<<<<<< HEAD
 
 struct sys_timer versatile_timer = {
 	.init		= versatile_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master

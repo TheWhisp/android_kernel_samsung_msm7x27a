@@ -17,6 +17,7 @@
 #include <linux/delay.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include "../iio.h"
 #include "../sysfs.h"
@@ -63,6 +64,12 @@
 
 #include "../iio.h"
 #include "../sysfs.h"
+=======
+#include <linux/module.h>
+
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 #include "ad2s1210.h"
 
 #define DRV_NAME "ad2s1210"
@@ -98,7 +105,10 @@
 
 /* pin SAMPLE, A0, A1, RES0, RES1, is controlled by driver */
 #define AD2S1210_SAA		3
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AD2S1210_PN		(AD2S1210_SAA + AD2S1210_RES)
 
 #define AD2S1210_MIN_CLKIN	6144000
@@ -117,6 +127,7 @@
 enum ad2s1210_mode {
 	MOD_POS = 0,
 	MOD_VEL,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	MOD_RESERVED,
 	MOD_CONFIG,
@@ -183,6 +194,8 @@ static inline void set_mode(enum ad2s1210_mode mode, struct ad2s1210_state *st)
 		gpio_set_value(st->a1, 0);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	MOD_CONFIG,
 	MOD_RESERVED,
 };
@@ -213,11 +226,15 @@ static inline void ad2s1210_set_mode(enum ad2s1210_mode mode,
 {
 	gpio_set_value(st->pdata->a[0], ad2s1210_mode_vals[mode][0]);
 	gpio_set_value(st->pdata->a[1], ad2s1210_mode_vals[mode][1]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	st->mode = mode;
 }
 
 /* write 1 bytes (address or data) to the chip */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int config_write(struct ad2s1210_state *st,
 					unsigned char data)
@@ -367,6 +384,8 @@ static ssize_t ad2s1210_show_fclkin(struct device *dev,
 	struct iio_dev *idev = dev_get_drvdata(dev);
 	struct ad2s1210_state *st = idev->dev_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ad2s1210_config_write(struct ad2s1210_state *st, u8 data)
 {
 	int ret;
@@ -390,6 +409,7 @@ static int ad2s1210_config_read(struct ad2s1210_state *st,
 		.rx_buf = st->rx,
 		.tx_buf = st->tx,
 	};
+<<<<<<< HEAD
 	struct spi_message msg;
 	int ret = 0;
 
@@ -399,6 +419,14 @@ static int ad2s1210_config_read(struct ad2s1210_state *st,
 	st->tx[0] = address | AD2S1210_MSB_IS_HIGH;
 	st->tx[1] = AD2S1210_REG_FAULT;
 	ret = spi_sync(st->sdev, &msg);
+=======
+	int ret = 0;
+
+	ad2s1210_set_mode(MOD_CONFIG, st);
+	st->tx[0] = address | AD2S1210_MSB_IS_HIGH;
+	st->tx[1] = AD2S1210_REG_FAULT;
+	ret = spi_sync_transfer(st->sdev, &xfer, 1);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 	st->old_data = true;
@@ -455,6 +483,7 @@ static inline int ad2s1210_soft_reset(struct ad2s1210_state *st)
 	return ad2s1210_config_write(st, 0x0);
 }
 
+<<<<<<< HEAD
 static ssize_t ad2s1210_store_softreset(struct device *dev,
 					struct device_attribute *attr,
 					const char *buf,
@@ -470,16 +499,23 @@ static ssize_t ad2s1210_store_softreset(struct device *dev,
 	return ret < 0 ? ret : len;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t ad2s1210_show_fclkin(struct device *dev,
 				    struct device_attribute *attr,
 				    char *buf)
 {
+<<<<<<< HEAD
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%d\n", st->fclkin);
 }
 
 static ssize_t ad2s1210_store_fclkin(struct device *dev,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			struct device_attribute *attr,
 			const char *buf, size_t len)
@@ -487,10 +523,13 @@ static ssize_t ad2s1210_store_fclkin(struct device *dev,
 	struct iio_dev *idev = dev_get_drvdata(dev);
 	struct ad2s1210_state *st = idev->dev_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				     struct device_attribute *attr,
 				     const char *buf,
 				     size_t len)
 {
+<<<<<<< HEAD
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned long fclkin;
@@ -518,6 +557,13 @@ static ssize_t ad2s1210_show_fexcit(struct device *dev,
 	struct iio_dev *idev = dev_get_drvdata(dev);
 	struct ad2s1210_state *st = idev->dev_data;
 =======
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+	unsigned int fclkin;
+	int ret;
+
+	ret = kstrtouint(buf, 10, &fclkin);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 	if (fclkin < AD2S1210_MIN_CLKIN || fclkin > AD2S1210_MAX_CLKIN) {
@@ -542,12 +588,17 @@ static ssize_t ad2s1210_show_fexcit(struct device *dev,
 				    struct device_attribute *attr,
 				    char *buf)
 {
+<<<<<<< HEAD
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%d\n", st->fexcit);
 }
 
 static ssize_t ad2s1210_store_fexcit(struct device *dev,
+<<<<<<< HEAD
 <<<<<<< HEAD
 			struct device_attribute *attr,
 			const char *buf, size_t len)
@@ -590,6 +641,16 @@ static ssize_t ad2s1210_show_control(struct device *dev,
 	mutex_unlock(&st->lock);
 	return sprintf(buf, "0x%x\n", data);
 =======
+=======
+				     struct device_attribute *attr,
+				     const char *buf, size_t len)
+{
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+	unsigned int fexcit;
+	int ret;
+
+	ret = kstrtouint(buf, 10, &fexcit);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 	if (fexcit < AD2S1210_MIN_EXCIT || fexcit > AD2S1210_MAX_EXCIT) {
@@ -612,19 +673,27 @@ static ssize_t ad2s1210_show_control(struct device *dev,
 				     struct device_attribute *attr,
 				     char *buf)
 {
+<<<<<<< HEAD
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+>>>>>>> refs/remotes/origin/master
 	int ret;
 	mutex_lock(&st->lock);
 	ret = ad2s1210_config_read(st, AD2S1210_REG_CONTROL);
 	mutex_unlock(&st->lock);
 	return ret < 0 ? ret : sprintf(buf, "0x%x\n", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t ad2s1210_store_control(struct device *dev,
 			struct device_attribute *attr,
 			const char *buf, size_t len)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct iio_dev *idev = dev_get_drvdata(dev);
 	struct ad2s1210_state *st = idev->dev_data;
@@ -648,6 +717,14 @@ static ssize_t ad2s1210_store_control(struct device *dev,
 	config_read(st, REG_CONTROL, &data);
 	if (data & MSB_IS_HIGH) {
 =======
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+	unsigned char udata;
+	unsigned char data;
+	int ret;
+
+	ret = kstrtou8(buf, 16, &udata);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return -EINVAL;
 
@@ -664,11 +741,15 @@ static ssize_t ad2s1210_store_control(struct device *dev,
 	if (ret < 0)
 		goto error_ret;
 	if (ret & AD2S1210_MSB_IS_HIGH) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		pr_err("ad2s1210: write control register fail\n");
 		goto error_ret;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	st->resolution = resolution_value[data & SET_RESOLUTION];
 #if defined(CONFIG_AD2S1210_GPIO_INPUT)
@@ -684,6 +765,8 @@ static ssize_t ad2s1210_store_control(struct device *dev,
 	else
 		st->hysteresis = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	st->resolution
 		= ad2s1210_resolution_value[data & AD2S1210_SET_RESOLUTION];
 	if (st->pdata->gpioin) {
@@ -696,7 +779,10 @@ static ssize_t ad2s1210_store_control(struct device *dev,
 	ret = len;
 	st->hysteresis = !!(data & AD2S1210_ENABLE_HYSTERESIS);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error_ret:
 	mutex_unlock(&st->lock);
 	return ret;
@@ -706,11 +792,15 @@ static ssize_t ad2s1210_show_resolution(struct device *dev,
 			struct device_attribute *attr, char *buf)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev *idev = dev_get_drvdata(dev);
 	struct ad2s1210_state *st = idev->dev_data;
 =======
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%d\n", st->resolution);
 }
 
@@ -718,6 +808,7 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
 			struct device_attribute *attr,
 			const char *buf, size_t len)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct iio_dev *idev = dev_get_drvdata(dev);
 	struct ad2s1210_state *st = idev->dev_data;
@@ -734,10 +825,20 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
 =======
 	if (ret || udata < 10 || udata > 16) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+	unsigned char data;
+	unsigned char udata;
+	int ret;
+
+	ret = kstrtou8(buf, 10, &udata);
+	if (ret || udata < 10 || udata > 16) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("ad2s1210: resolution out of range\n");
 		return -EINVAL;
 	}
 	mutex_lock(&st->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	config_read(st, REG_CONTROL, &data);
 	data &= ~SET_RESOLUTION;
@@ -747,6 +848,8 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
 	config_read(st, REG_CONTROL, &data);
 	if (data & MSB_IS_HIGH) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ad2s1210_config_read(st, AD2S1210_REG_CONTROL);
 	if (ret < 0)
 		goto error_ret;
@@ -764,11 +867,15 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
 		goto error_ret;
 	data = ret;
 	if (data & AD2S1210_MSB_IS_HIGH) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		pr_err("ad2s1210: setting resolution fail\n");
 		goto error_ret;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	st->resolution = resolution_value[data & SET_RESOLUTION];
 #if defined(CONFIG_AD2S1210_GPIO_INPUT)
@@ -779,6 +886,8 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
 	set_resolution_pin(st);
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	st->resolution
 		= ad2s1210_resolution_value[data & AD2S1210_SET_RESOLUTION];
 	if (st->pdata->gpioin) {
@@ -787,20 +896,28 @@ static ssize_t ad2s1210_store_resolution(struct device *dev,
 			pr_warning("ad2s1210: resolution settings not match\n");
 	} else
 		ad2s1210_set_resolution_pin(st);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = len;
 error_ret:
 	mutex_unlock(&st->lock);
 	return ret;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 /* read the fault register since last sample */
 static ssize_t ad2s1210_show_fault(struct device *dev,
 			struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int ret = 0;
 	ssize_t len = 0;
@@ -854,6 +971,9 @@ static ssize_t ad2s1210_show_reg(struct device *dev,
 	return sprintf(buf, "%d\n", data);
 =======
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&st->lock);
@@ -868,7 +988,11 @@ static ssize_t ad2s1210_clear_fault(struct device *dev,
 				    const char *buf,
 				    size_t len)
 {
+<<<<<<< HEAD
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&st->lock);
@@ -891,7 +1015,11 @@ static ssize_t ad2s1210_show_reg(struct device *dev,
 				 struct device_attribute *attr,
 				 char *buf)
 {
+<<<<<<< HEAD
 	struct ad2s1210_state *st = iio_priv(dev_get_drvdata(dev));
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev_attr *iattr = to_iio_dev_attr(attr);
 	int ret;
 
@@ -900,12 +1028,16 @@ static ssize_t ad2s1210_show_reg(struct device *dev,
 	mutex_unlock(&st->lock);
 
 	return ret < 0 ? ret : sprintf(buf, "%d\n", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t ad2s1210_store_reg(struct device *dev,
 		struct device_attribute *attr, const char *buf, size_t len)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct iio_dev *idev = dev_get_drvdata(dev);
 	struct ad2s1210_state *st = idev->dev_data;
@@ -1100,6 +1232,17 @@ static struct attribute *ad2s1210_attributes[] = {
 	&iio_const_attr_description.dev_attr.attr,
 	&iio_dev_attr_raw_io.dev_attr.attr,
 =======
+=======
+	struct ad2s1210_state *st = iio_priv(dev_to_iio_dev(dev));
+	unsigned char data;
+	int ret;
+	struct iio_dev_attr *iattr = to_iio_dev_attr(attr);
+
+	ret = kstrtou8(buf, 10, &data);
+	if (ret)
+		return -EINVAL;
+	mutex_lock(&st->lock);
+>>>>>>> refs/remotes/origin/master
 	ret = ad2s1210_config_write(st, iattr->address);
 	if (ret < 0)
 		goto error_ret;
@@ -1175,8 +1318,11 @@ error_ret:
 	return ret;
 }
 
+<<<<<<< HEAD
 static IIO_DEVICE_ATTR(reset, S_IWUSR,
 		       NULL, ad2s1210_store_softreset, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 static IIO_DEVICE_ATTR(fclkin, S_IRUGO | S_IWUSR,
 		       ad2s1210_show_fclkin, ad2s1210_store_fclkin, 0);
 static IIO_DEVICE_ATTR(fexcit, S_IRUGO | S_IWUSR,
@@ -1211,32 +1357,50 @@ static IIO_DEVICE_ATTR(lot_low_thrd, S_IRUGO | S_IWUSR,
 		       AD2S1210_REG_LOT_LOW_THRD);
 
 
+<<<<<<< HEAD
 static struct iio_chan_spec ad2s1210_channels[] = {
+=======
+static const struct iio_chan_spec ad2s1210_channels[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.type = IIO_ANGL,
 		.indexed = 1,
 		.channel = 0,
+<<<<<<< HEAD
+=======
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+>>>>>>> refs/remotes/origin/master
 	}, {
 		.type = IIO_ANGL_VEL,
 		.indexed = 1,
 		.channel = 0,
+<<<<<<< HEAD
+=======
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+>>>>>>> refs/remotes/origin/master
 	}
 };
 
 static struct attribute *ad2s1210_attributes[] = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	&iio_dev_attr_reset.dev_attr.attr,
+=======
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_fclkin.dev_attr.attr,
 	&iio_dev_attr_fexcit.dev_attr.attr,
 	&iio_dev_attr_control.dev_attr.attr,
 	&iio_dev_attr_bits.dev_attr.attr,
 	&iio_dev_attr_fault.dev_attr.attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	&iio_dev_attr_pos.dev_attr.attr,
 	&iio_dev_attr_vel.dev_attr.attr,
 	&iio_dev_attr_pos_vel.dev_attr.attr,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	&iio_dev_attr_los_thrd.dev_attr.attr,
 	&iio_dev_attr_dos_ovr_thrd.dev_attr.attr,
 	&iio_dev_attr_dos_mis_thrd.dev_attr.attr,
@@ -1249,6 +1413,7 @@ static struct attribute *ad2s1210_attributes[] = {
 
 static const struct attribute_group ad2s1210_attribute_group = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.name = DRV_NAME,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1256,11 +1421,18 @@ static const struct attribute_group ad2s1210_attribute_group = {
 };
 
 static int __devinit ad2s1210_initial(struct ad2s1210_state *st)
+=======
+	.attrs = ad2s1210_attributes,
+};
+
+static int ad2s1210_initial(struct ad2s1210_state *st)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char data;
 	int ret;
 
 	mutex_lock(&st->lock);
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_AD2S1210_GPIO_INPUT)
 	st->resolution = read_resolution_pin(st);
@@ -1278,6 +1450,8 @@ static int __devinit ad2s1210_initial(struct ad2s1210_state *st)
 
 	if (data & MSB_IS_HIGH) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (st->pdata->gpioin)
 		st->resolution = ad2s1210_read_resolution_pin(st);
 	else
@@ -1296,20 +1470,29 @@ static int __devinit ad2s1210_initial(struct ad2s1210_state *st)
 		goto error_ret;
 
 	if (ret & AD2S1210_MSB_IS_HIGH) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -EIO;
 		goto error_ret;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	update_frequency_control_word(st);
 	soft_reset(st);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ad2s1210_update_frequency_control_word(st);
 	if (ret < 0)
 		goto error_ret;
 	ret = ad2s1210_soft_reset(st);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 error_ret:
 	mutex_unlock(&st->lock);
 	return ret;
@@ -1317,13 +1500,18 @@ error_ret:
 
 static const struct iio_info ad2s1210_info = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.read_raw = &ad2s1210_read_raw,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.read_raw = &ad2s1210_read_raw,
+>>>>>>> refs/remotes/origin/master
 	.attrs = &ad2s1210_attribute_group,
 	.driver_module = THIS_MODULE,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __devinit ad2s1210_probe(struct spi_device *spi)
 {
@@ -1401,6 +1589,8 @@ error_ret:
 	for (--pn; pn >= 0; pn--)
 		gpio_free(pins[pn]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int ad2s1210_setup_gpios(struct ad2s1210_state *st)
 {
 	unsigned long flags = st->pdata->gpioin ? GPIOF_DIR_IN : GPIOF_DIR_OUT;
@@ -1429,7 +1619,11 @@ static void ad2s1210_free_gpios(struct ad2s1210_state *st)
 	gpio_free_array(ad2s1210_gpios, ARRAY_SIZE(ad2s1210_gpios));
 }
 
+<<<<<<< HEAD
 static int __devinit ad2s1210_probe(struct spi_device *spi)
+=======
+static int ad2s1210_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dev *indio_dev;
 	struct ad2s1210_state *st;
@@ -1438,16 +1632,26 @@ static int __devinit ad2s1210_probe(struct spi_device *spi)
 	if (spi->dev.platform_data == NULL)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	indio_dev = iio_allocate_device(sizeof(*st));
 	if (indio_dev == NULL) {
 		ret = -ENOMEM;
 		goto error_ret;
 	}
+=======
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	st = iio_priv(indio_dev);
 	st->pdata = spi->dev.platform_data;
 	ret = ad2s1210_setup_gpios(st);
 	if (ret < 0)
+<<<<<<< HEAD
 		goto error_free_dev;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	spi_set_drvdata(spi, indio_dev);
 
@@ -1478,6 +1682,7 @@ static int __devinit ad2s1210_probe(struct spi_device *spi)
 
 error_free_gpios:
 	ad2s1210_free_gpios(st);
+<<<<<<< HEAD
 error_free_dev:
 	iio_free_device(indio_dev);
 error_ret:
@@ -1493,31 +1698,48 @@ static int __devexit ad2s1210_remove(struct spi_device *spi)
 	iio_device_unregister(st->idev);
 	kfree(st);
 =======
+=======
+	return ret;
+}
+
+static int ad2s1210_remove(struct spi_device *spi)
+{
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev *indio_dev = spi_get_drvdata(spi);
 
 	iio_device_unregister(indio_dev);
 	ad2s1210_free_gpios(iio_priv(indio_dev));
+<<<<<<< HEAD
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct spi_device_id ad2s1210_id[] = {
 	{ "ad2s1210" },
 	{}
 };
 MODULE_DEVICE_TABLE(spi, ad2s1210_id);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct spi_driver ad2s1210_driver = {
 	.driver = {
 		.name = DRV_NAME,
 		.owner = THIS_MODULE,
 	},
 	.probe = ad2s1210_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ad2s1210_remove),
 <<<<<<< HEAD
 };
@@ -1538,6 +1760,12 @@ module_exit(ad2s1210_spi_exit);
 };
 module_spi_driver(ad2s1210_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = ad2s1210_remove,
+	.id_table = ad2s1210_id,
+};
+module_spi_driver(ad2s1210_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Graff Yang <graff.yang@gmail.com>");
 MODULE_DESCRIPTION("Analog Devices AD2S1210 Resolver to Digital SPI driver");

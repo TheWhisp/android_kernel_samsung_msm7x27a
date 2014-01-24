@@ -42,9 +42,12 @@
 #include <linux/init.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/io.h>
 
@@ -116,10 +119,17 @@ static struct rtnl_link_stats64 *loopback_get_stats64(struct net_device *dev,
 
 		lb_stats = per_cpu_ptr(dev->lstats, i);
 		do {
+<<<<<<< HEAD
 			start = u64_stats_fetch_begin(&lb_stats->syncp);
 			tbytes = lb_stats->bytes;
 			tpackets = lb_stats->packets;
 		} while (u64_stats_fetch_retry(&lb_stats->syncp, start));
+=======
+			start = u64_stats_fetch_begin_bh(&lb_stats->syncp);
+			tbytes = lb_stats->bytes;
+			tpackets = lb_stats->packets;
+		} while (u64_stats_fetch_retry_bh(&lb_stats->syncp, start));
+>>>>>>> refs/remotes/origin/master
 		bytes   += tbytes;
 		packets += tpackets;
 	}
@@ -141,15 +151,31 @@ static const struct ethtool_ops loopback_ethtool_ops = {
 
 static int loopback_dev_init(struct net_device *dev)
 {
+<<<<<<< HEAD
+=======
+	int i;
+>>>>>>> refs/remotes/origin/master
 	dev->lstats = alloc_percpu(struct pcpu_lstats);
 	if (!dev->lstats)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	for_each_possible_cpu(i) {
+		struct pcpu_lstats *lb_stats;
+		lb_stats = per_cpu_ptr(dev->lstats, i);
+		u64_stats_init(&lb_stats->syncp);
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static void loopback_dev_free(struct net_device *dev)
 {
+<<<<<<< HEAD
+=======
+	dev_net(dev)->loopback_dev = NULL;
+>>>>>>> refs/remotes/origin/master
 	free_percpu(dev->lstats);
 	free_netdev(dev);
 }
@@ -166,7 +192,11 @@ static const struct net_device_ops loopback_ops = {
  */
 static void loopback_setup(struct net_device *dev)
 {
+<<<<<<< HEAD
 	dev->mtu		= (16 * 1024) + 20 + 20 + 12;
+=======
+	dev->mtu		= 64 * 1024;
+>>>>>>> refs/remotes/origin/master
 	dev->hard_header_len	= ETH_HLEN;	/* 14	*/
 	dev->addr_len		= ETH_ALEN;	/* 6	*/
 	dev->tx_queue_len	= 0;
@@ -178,10 +208,14 @@ static void loopback_setup(struct net_device *dev)
 		| NETIF_F_ALL_TSO
 		| NETIF_F_UFO
 <<<<<<< HEAD
+<<<<<<< HEAD
 		| NETIF_F_NO_CSUM
 =======
 		| NETIF_F_HW_CSUM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		| NETIF_F_HW_CSUM
+>>>>>>> refs/remotes/origin/master
 		| NETIF_F_RXCSUM
 		| NETIF_F_HIGHDMA
 		| NETIF_F_LLTX
@@ -210,6 +244,10 @@ static __net_init int loopback_net_init(struct net *net)
 	if (err)
 		goto out_free_netdev;
 
+<<<<<<< HEAD
+=======
+	BUG_ON(dev->ifindex != LOOPBACK_IFINDEX);
+>>>>>>> refs/remotes/origin/master
 	net->loopback_dev = dev;
 	return 0;
 

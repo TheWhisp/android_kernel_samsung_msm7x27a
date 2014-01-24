@@ -36,19 +36,28 @@
 #include <linux/vfs.h>
 #include <linux/random.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/exportfs.h>
 #include <linux/slab.h>
 
 #include "exofs.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define EXOFS_DBGMSG2(M...) do {} while (0)
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EXOFS_DBGMSG2(M...) do {} while (0)
+
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  * MOUNT OPTIONS
  *****************************************************************************/
@@ -173,9 +182,12 @@ static void exofs_i_callback(struct rcu_head *head)
 {
 	struct inode *inode = container_of(head, struct inode, i_rcu);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&inode->i_dentry);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_free(exofs_inode_cachep, exofs_i(inode));
 }
 
@@ -216,16 +228,27 @@ static int init_inodecache(void)
  */
 static void destroy_inodecache(void)
 {
+<<<<<<< HEAD
+=======
+	/*
+	 * Make sure all delayed rcu free inodes are flushed before we
+	 * destroy cache.
+	 */
+	rcu_barrier();
+>>>>>>> refs/remotes/origin/master
 	kmem_cache_destroy(exofs_inode_cachep);
 }
 
 /******************************************************************************
+<<<<<<< HEAD
 <<<<<<< HEAD
  * SUPERBLOCK FUNCTIONS
  *****************************************************************************/
 static const struct super_operations exofs_sops;
 static const struct export_operations exofs_export_ops;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Some osd helpers
  *****************************************************************************/
 void exofs_make_credential(u8 cred_a[OSD_CAP_LEN], const struct osd_obj_id *obj)
@@ -268,7 +291,10 @@ out:
 		      _LLU(obj->id), _LLU(offset), _LLU(length), od, ret);
 	return ret;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static const struct osd_attr g_attr_sb_stats = ATTR_DEF(
 	EXOFS_APAGE_SB_DATA,
@@ -280,6 +306,7 @@ static int __sbi_read_stats(struct exofs_sb_info *sbi)
 	struct osd_attr attrs[] = {
 		[0] = g_attr_sb_stats,
 	};
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct exofs_io_state *ios;
 	int ret;
@@ -297,6 +324,8 @@ static int __sbi_read_stats(struct exofs_sb_info *sbi)
 
 	ret = exofs_sbi_read(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ore_io_state *ios;
 	int ret;
 
@@ -310,7 +339,10 @@ static int __sbi_read_stats(struct exofs_sb_info *sbi)
 	ios->in_attr_len = ARRAY_SIZE(attrs);
 
 	ret = ore_read(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret)) {
 		EXOFS_ERR("Error reading super_block stats => %d\n", ret);
 		goto out;
@@ -338,6 +370,7 @@ static int __sbi_read_stats(struct exofs_sb_info *sbi)
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	exofs_put_io_state(ios);
 	return ret;
 }
@@ -346,6 +379,8 @@ static void stats_done(struct exofs_io_state *ios, void *p)
 {
 	exofs_put_io_state(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ore_put_io_state(ios);
 	return ret;
 }
@@ -353,7 +388,10 @@ static void stats_done(struct exofs_io_state *ios, void *p)
 static void stats_done(struct ore_io_state *ios, void *p)
 {
 	ore_put_io_state(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Good thanks nothing to do anymore */
 }
 
@@ -364,6 +402,7 @@ int exofs_sbi_write_stats(struct exofs_sb_info *sbi)
 		[0] = g_attr_sb_stats,
 	};
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct exofs_io_state *ios;
 	int ret;
 
@@ -371,13 +410,18 @@ int exofs_sbi_write_stats(struct exofs_sb_info *sbi)
 	if (unlikely(ret)) {
 		EXOFS_ERR("%s: exofs_get_io_state failed.\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ore_io_state *ios;
 	int ret;
 
 	ret = ore_get_io_state(&sbi->layout, &sbi->oc, &ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("%s: ore_get_io_state failed.\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return ret;
 	}
 
@@ -386,31 +430,42 @@ int exofs_sbi_write_stats(struct exofs_sb_info *sbi)
 	attrs[0].val_ptr = &sbi->s_ess;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ios->cred = sbi->s_cred;
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ios->done = stats_done;
 	ios->private = sbi;
 	ios->out_attr = attrs;
 	ios->out_attr_len = ARRAY_SIZE(attrs);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = exofs_sbi_write(ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("%s: exofs_sbi_write failed.\n", __func__);
 		exofs_put_io_state(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ore_write(ios);
 	if (unlikely(ret)) {
 		EXOFS_ERR("%s: ore_write failed.\n", __func__);
 		ore_put_io_state(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * Write the superblock to the OSD
@@ -421,6 +476,8 @@ int exofs_sync_fs(struct super_block *sb, int wait)
 	struct exofs_fscb *fscb;
 	struct exofs_io_state *ios;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  * SUPERBLOCK FUNCTIONS
  *****************************************************************************/
@@ -437,7 +494,10 @@ static int exofs_sync_fs(struct super_block *sb, int wait)
 	struct ore_comp one_comp;
 	struct ore_components oc;
 	struct ore_io_state *ios;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = -ENOMEM;
 
 	fscb = kmalloc(sizeof(*fscb), GFP_KERNEL);
@@ -454,12 +514,16 @@ static int exofs_sync_fs(struct super_block *sb, int wait)
 	 * the writeable info is set in exofs_sbi_write_stats() above.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = exofs_get_io_state(&sbi->layout, &ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	exofs_init_comps(&oc, &one_comp, sbi, EXOFS_SUPER_ID);
 
 	ret = ore_get_io_state(&sbi->layout, &oc, &ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (unlikely(ret))
 		goto out;
@@ -474,10 +538,20 @@ static int exofs_sync_fs(struct super_block *sb, int wait)
 =======
 	fscb->s_numfiles = cpu_to_le64(sbi->s_numfiles);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (unlikely(ret))
+		goto out;
+
+	ios->length = offsetof(struct exofs_fscb, s_dev_table_oid);
+	memset(fscb, 0, ios->length);
+	fscb->s_nextid = cpu_to_le64(sbi->s_nextid);
+	fscb->s_numfiles = cpu_to_le64(sbi->s_numfiles);
+>>>>>>> refs/remotes/origin/master
 	fscb->s_magic = cpu_to_le16(sb->s_magic);
 	fscb->s_newfs = 0;
 	fscb->s_version = EXOFS_FSCB_VER;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ios->obj.id = EXOFS_SUPER_ID;
 	ios->offset = 0;
@@ -488,12 +562,15 @@ static int exofs_sync_fs(struct super_block *sb, int wait)
 	if (unlikely(ret))
 		EXOFS_ERR("%s: exofs_sbi_write failed.\n", __func__);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ios->offset = 0;
 	ios->kern_buff = fscb;
 
 	ret = ore_write(ios);
 	if (unlikely(ret))
 		EXOFS_ERR("%s: ore_write failed.\n", __func__);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	else
 		sb->s_dirt = 0;
@@ -507,10 +584,17 @@ out:
 =======
 	ore_put_io_state(ios);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+out:
+	EXOFS_DBGMSG("s_nextid=0x%llx ret=%d\n", _LLU(sbi->s_nextid), ret);
+	ore_put_io_state(ios);
+>>>>>>> refs/remotes/origin/master
 	kfree(fscb);
 	return ret;
 }
 
+<<<<<<< HEAD
 static void exofs_write_super(struct super_block *sb)
 {
 	if (!(sb->s_flags & MS_RDONLY))
@@ -519,6 +603,8 @@ static void exofs_write_super(struct super_block *sb)
 		sb->s_dirt = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void _exofs_print_device(const char *msg, const char *dev_path,
 				struct osd_dev *od, u64 pid)
 {
@@ -528,6 +614,7 @@ static void _exofs_print_device(const char *msg, const char *dev_path,
 		msg, dev_path ?: "", odi->osdname, _LLU(pid));
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void exofs_free_sbi(struct exofs_sb_info *sbi)
 {
@@ -541,6 +628,8 @@ void exofs_free_sbi(struct exofs_sb_info *sbi)
 		}
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void exofs_free_sbi(struct exofs_sb_info *sbi)
 {
 	unsigned numdevs = sbi->oc.numdevs;
@@ -555,7 +644,10 @@ static void exofs_free_sbi(struct exofs_sb_info *sbi)
 		}
 	}
 	kfree(sbi->oc.ods);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(sbi);
 }
 
@@ -583,6 +675,7 @@ static void exofs_put_super(struct super_block *sb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	_exofs_print_device("Unmounting", NULL, sbi->layout.s_ods[0],
 			    sbi->layout.s_pid);
 =======
@@ -590,6 +683,12 @@ static void exofs_put_super(struct super_block *sb)
 			    sbi->one_comp.obj.partition);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	_exofs_print_device("Unmounting", NULL, ore_comp_dev(&sbi->oc, 0),
+			    sbi->one_comp.obj.partition);
+
+	exofs_sysfs_sb_del(sbi);
+>>>>>>> refs/remotes/origin/master
 	bdi_destroy(&sbi->bdi);
 	exofs_free_sbi(sbi);
 	sb->s_fs_info = NULL;
@@ -598,6 +697,7 @@ static void exofs_put_super(struct super_block *sb)
 static int _read_and_match_data_map(struct exofs_sb_info *sbi, unsigned numdevs,
 				    struct exofs_device_table *dt)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u64 stripe_length;
 
@@ -675,6 +775,8 @@ static int _read_and_match_data_map(struct exofs_sb_info *sbi, unsigned numdevs,
 
 static unsigned __ra_pages(struct exofs_layout *layout)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	sbi->layout.stripe_unit =
@@ -703,7 +805,10 @@ static unsigned __ra_pages(struct exofs_layout *layout)
 }
 
 static unsigned __ra_pages(struct ore_layout *layout)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	const unsigned _MIN_RA = 32; /* min 128K read-ahead */
 	unsigned ra_pages = layout->group_width * layout->stripe_unit /
@@ -726,11 +831,16 @@ static int exofs_devs_2_odi(struct exofs_dt_device_info *dt_dev,
 {
 	odi->systemid_len = le32_to_cpu(dt_dev->systemid_len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(odi->systemid, dt_dev->systemid, odi->systemid_len);
 =======
 	if (likely(odi->systemid_len))
 		memcpy(odi->systemid, dt_dev->systemid, OSD_SYSTEMID_LEN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (likely(odi->systemid_len))
+		memcpy(odi->systemid, dt_dev->systemid, OSD_SYSTEMID_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	odi->osdname_len = le32_to_cpu(dt_dev->osdname_len);
 	odi->osdname = dt_dev->osdname;
@@ -752,6 +862,7 @@ static int exofs_devs_2_odi(struct exofs_dt_device_info *dt_dev,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int exofs_read_lookup_dev_table(struct exofs_sb_info **psbi,
 				       unsigned table_count)
 {
@@ -761,6 +872,8 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info **psbi,
 				 .id = EXOFS_DEVTABLE_ID};
 	struct exofs_device_table *dt;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int __alloc_dev_table(struct exofs_sb_info *sbi, unsigned numdevs,
 		      struct exofs_dev **peds)
 {
@@ -795,7 +908,10 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 	struct ore_comp comp;
 	struct exofs_device_table *dt;
 	struct exofs_dev *eds;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned table_bytes = table_count * sizeof(dt->dt_dev_table[0]) +
 					     sizeof(*dt);
 	unsigned numdevs, i;
@@ -809,11 +925,14 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fscb_od = sbi->layout.s_ods[0];
 	sbi->layout.s_ods[0] = NULL;
 	sbi->layout.s_numdevs = 0;
 	ret = exofs_read_kern(fscb_od, sbi->s_cred, &obj, 0, dt, table_bytes);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sbi->oc.numdevs = 0;
 
 	comp.obj.partition = sbi->one_comp.obj.partition;
@@ -822,7 +941,10 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 
 	ret = exofs_read_kern(fscb_od, comp.cred, &comp.obj, 0, dt,
 			      table_bytes);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret)) {
 		EXOFS_ERR("ERROR: reading device table\n");
 		goto out;
@@ -840,6 +962,7 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 		goto out;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (likely(numdevs > 1)) {
 		unsigned size = numdevs * sizeof(sbi->layout.s_ods[0]);
 
@@ -853,6 +976,8 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 		*psbi = sbi;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = __alloc_dev_table(sbi, numdevs, &eds);
 	if (unlikely(ret))
 		goto out;
@@ -863,7 +988,16 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 	 */
 	memcpy(&sbi->oc.ods[numdevs], &sbi->oc.ods[0],
 		(numdevs - 1) * sizeof(sbi->oc.ods[0]));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* create sysfs subdir under which we put the device table
+	 * And cluster layout. A Superblock is identified by the string:
+	 *	"dev[0].osdname"_"pid"
+	 */
+	exofs_sysfs_sb_add(sbi, &dt->dt_dev_table[0]);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < numdevs; i++) {
 		struct exofs_fscb fscb;
@@ -880,16 +1014,23 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 		       i, odi.osdname);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		/* the exofs id is currently the table index */
 		eds[i].did = i;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* the exofs id is currently the table index */
+		eds[i].did = i;
+
+>>>>>>> refs/remotes/origin/master
 		/* On all devices the device table is identical. The user can
 		 * specify any one of the participating devices on the command
 		 * line. We always keep them in device-table order.
 		 */
 		if (fscb_od && osduld_device_same(fscb_od, &odi)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			sbi->layout.s_ods[i] = fscb_od;
 			++sbi->layout.s_numdevs;
@@ -898,6 +1039,12 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 			++sbi->oc.numdevs;
 >>>>>>> refs/remotes/origin/cm-10.0
 			fscb_od = NULL;
+=======
+			eds[i].ored.od = fscb_od;
+			++sbi->oc.numdevs;
+			fscb_od = NULL;
+			exofs_sysfs_odev_add(&eds[i], sbi);
+>>>>>>> refs/remotes/origin/master
 			continue;
 		}
 
@@ -910,21 +1057,30 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sbi->layout.s_ods[i] = od;
 		++sbi->layout.s_numdevs;
 =======
 		eds[i].ored.od = od;
 		++sbi->oc.numdevs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		eds[i].ored.od = od;
+		++sbi->oc.numdevs;
+>>>>>>> refs/remotes/origin/master
 
 		/* Read the fscb of the other devices to make sure the FS
 		 * partition is there.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = exofs_read_kern(od, sbi->s_cred, &obj, 0, &fscb,
 =======
 		ret = exofs_read_kern(od, comp.cred, &comp.obj, 0, &fscb,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ret = exofs_read_kern(od, comp.cred, &comp.obj, 0, &fscb,
+>>>>>>> refs/remotes/origin/master
 				      sizeof(fscb));
 		if (unlikely(ret)) {
 			EXOFS_ERR("ERROR: Malformed participating device "
@@ -932,6 +1088,10 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 				  odi.osdname);
 			goto out;
 		}
+<<<<<<< HEAD
+=======
+		exofs_sysfs_odev_add(&eds[i], sbi);
+>>>>>>> refs/remotes/origin/master
 
 		/* TODO: verify other information is correct and FS-uuid
 		 *	 matches. Benny what did you say about device table
@@ -942,6 +1102,7 @@ static int exofs_read_lookup_dev_table(struct exofs_sb_info *sbi,
 out:
 	kfree(dt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (unlikely(!ret && fscb_od)) {
 		EXOFS_ERR(
 		      "ERROR: Bad device-table container device not present\n");
@@ -950,12 +1111,17 @@ out:
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(fscb_od && !ret)) {
 			EXOFS_ERR("ERROR: Bad device-table container device not present\n");
 			osduld_put_device(fscb_od);
 			return -EINVAL;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -970,10 +1136,14 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 	struct osd_dev *od;		/* Master device                 */
 	struct exofs_fscb fscb;		/*on-disk superblock info        */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct osd_obj_id obj;
 =======
 	struct ore_comp comp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ore_comp comp;
+>>>>>>> refs/remotes/origin/master
 	unsigned table_count;
 	int ret;
 
@@ -982,12 +1152,15 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 		return -ENOMEM;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = bdi_setup_and_register(&sbi->bdi, "exofs", BDI_CAP_MAP_COPY);
 	if (ret)
 		goto free_bdi;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* use mount options to fill superblock */
 	if (opts->is_osdname) {
 		struct osd_dev_info odi = {.systemid_len = 0};
@@ -996,10 +1169,15 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 		odi.osdname = (u8 *)opts->dev_name;
 		od = osduld_info_lookup(&odi);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		kfree(opts->dev_name);
 		opts->dev_name = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree(opts->dev_name);
+		opts->dev_name = NULL;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		od = osduld_path_lookup(opts->dev_name);
 	}
@@ -1015,12 +1193,15 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 	sbi->layout.group_depth = -1;
 	sbi->layout.group_count = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sbi->layout.s_ods[0] = od;
 	sbi->layout.s_numdevs = 1;
 	sbi->layout.s_pid = opts->pid;
 	sbi->s_timeout = opts->timeout;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	sbi->s_timeout = opts->timeout;
 
 	sbi->one_comp.obj.partition = opts->pid;
@@ -1029,7 +1210,10 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 	sbi->oc.single_comp = EC_SINGLE_COMP;
 	sbi->oc.comps = &sbi->one_comp;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* fill in some other data by hand */
 	memset(sb->s_id, 0, sizeof(sb->s_id));
 	strcpy(sb->s_id, "exofs");
@@ -1037,13 +1221,18 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_blocksize_bits = EXOFS_BLKSHIFT;
 	sb->s_maxbytes = MAX_LFS_FILESIZE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sb->s_max_links = EXOFS_LINK_MAX;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_max_links = EXOFS_LINK_MAX;
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&sbi->s_curr_pending, 0);
 	sb->s_bdev = NULL;
 	sb->s_dev = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	obj.partition = sbi->layout.s_pid;
 	obj.id = EXOFS_SUPER_ID;
@@ -1051,12 +1240,17 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 
 	ret = exofs_read_kern(od, sbi->s_cred, &obj, 0, &fscb, sizeof(fscb));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	comp.obj.partition = sbi->one_comp.obj.partition;
 	comp.obj.id = EXOFS_SUPER_ID;
 	exofs_make_credential(comp.cred, &comp.obj);
 
 	ret = exofs_read_kern(od, comp.cred, &comp.obj, 0, &fscb, sizeof(fscb));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret))
 		goto free_sbi;
 
@@ -1086,10 +1280,13 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 	table_count = le64_to_cpu(fscb.s_dev_table_count);
 	if (table_count) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = exofs_read_lookup_dev_table(&sbi, table_count);
 		if (unlikely(ret))
 			goto free_sbi;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = exofs_read_lookup_dev_table(sbi, od, table_count);
 		if (unlikely(ret))
 			goto free_sbi;
@@ -1102,7 +1299,10 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 
 		ore_comp_set_dev(&sbi->oc, 0, od);
 		sbi->oc.numdevs = 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	__sbi_read_stats(sbi);
@@ -1120,6 +1320,7 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 		goto free_sbi;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root) {
 		iput(root);
@@ -1127,6 +1328,10 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 	sb->s_root = d_make_root(root);
 	if (!sb->s_root) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root) {
+>>>>>>> refs/remotes/origin/master
 		EXOFS_ERR("ERROR: get root inode failed\n");
 		ret = -ENOMEM;
 		goto free_sbi;
@@ -1141,6 +1346,7 @@ static int exofs_fill_super(struct super_block *sb, void *data, int silent)
 		goto free_sbi;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	_exofs_print_device("Mounting", opts->dev_name, sbi->layout.s_ods[0],
 			    sbi->layout.s_pid);
@@ -1157,6 +1363,8 @@ free_bdi:
 	if (opts->is_osdname)
 		kfree(opts->dev_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = bdi_setup_and_register(&sbi->bdi, "exofs", BDI_CAP_MAP_COPY);
 	if (ret) {
 		EXOFS_DBGMSG("Failed to bdi_setup_and_register\n");
@@ -1165,6 +1373,10 @@ free_bdi:
 		goto free_sbi;
 	}
 
+<<<<<<< HEAD
+=======
+	exofs_sysfs_dbg_print();
+>>>>>>> refs/remotes/origin/master
 	_exofs_print_device("Mounting", opts->dev_name,
 			    ore_comp_dev(&sbi->oc, 0),
 			    sbi->one_comp.obj.partition);
@@ -1174,7 +1386,10 @@ free_sbi:
 	EXOFS_ERR("Unable to mount exofs on %s pid=0x%llx err=%d\n",
 		  opts->dev_name, sbi->one_comp.obj.partition, ret);
 	exofs_free_sbi(sbi);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1206,10 +1421,14 @@ static int exofs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	struct super_block *sb = dentry->d_sb;
 	struct exofs_sb_info *sbi = sb->s_fs_info;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct exofs_io_state *ios;
 =======
 	struct ore_io_state *ios;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ore_io_state *ios;
+>>>>>>> refs/remotes/origin/master
 	struct osd_attr attrs[] = {
 		ATTR_DEF(OSD_APAGE_PARTITION_QUOTAS,
 			OSD_ATTR_PQ_CAPACITY_QUOTA, sizeof(__be64)),
@@ -1218,6 +1437,7 @@ static int exofs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	};
 	uint64_t capacity = ULLONG_MAX;
 	uint64_t used = ULLONG_MAX;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	uint8_t cred_a[OSD_CAP_LEN];
 	int ret;
@@ -1235,6 +1455,8 @@ static int exofs_statfs(struct dentry *dentry, struct kstatfs *buf)
 
 	ret = exofs_sbi_read(ios);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = ore_get_io_state(&sbi->layout, &sbi->oc, &ios);
@@ -1247,7 +1469,10 @@ static int exofs_statfs(struct dentry *dentry, struct kstatfs *buf)
 	ios->in_attr_len = ARRAY_SIZE(attrs);
 
 	ret = ore_read(ios);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret))
 		goto out;
 
@@ -1277,10 +1502,14 @@ static int exofs_statfs(struct dentry *dentry, struct kstatfs *buf)
 
 out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	exofs_put_io_state(ios);
 =======
 	ore_put_io_state(ios);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ore_put_io_state(ios);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1290,7 +1519,10 @@ static const struct super_operations exofs_sops = {
 	.write_inode    = exofs_write_inode,
 	.evict_inode    = exofs_evict_inode,
 	.put_super      = exofs_put_super,
+<<<<<<< HEAD
 	.write_super    = exofs_write_super,
+=======
+>>>>>>> refs/remotes/origin/master
 	.sync_fs	= exofs_sync_fs,
 	.statfs         = exofs_statfs,
 };
@@ -1300,10 +1532,14 @@ static const struct super_operations exofs_sops = {
  *****************************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct dentry *exofs_get_parent(struct dentry *child)
 =======
 static struct dentry *exofs_get_parent(struct dentry *child)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dentry *exofs_get_parent(struct dentry *child)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long ino = exofs_parent_ino(child);
 
@@ -1362,6 +1598,10 @@ static struct file_system_type exofs_type = {
 	.mount          = exofs_mount,
 	.kill_sb        = generic_shutdown_super,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("exofs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_exofs(void)
 {
@@ -1375,6 +1615,12 @@ static int __init init_exofs(void)
 	if (err)
 		goto out_d;
 
+<<<<<<< HEAD
+=======
+	/* We don't fail if sysfs creation failed */
+	exofs_sysfs_init();
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out_d:
 	destroy_inodecache();
@@ -1384,6 +1630,10 @@ out:
 
 static void __exit exit_exofs(void)
 {
+<<<<<<< HEAD
+=======
+	exofs_sysfs_uninit();
+>>>>>>> refs/remotes/origin/master
 	unregister_filesystem(&exofs_type);
 	destroy_inodecache();
 }

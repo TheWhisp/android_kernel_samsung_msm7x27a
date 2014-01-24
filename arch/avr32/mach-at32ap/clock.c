@@ -14,9 +14,13 @@
 #include <linux/clk.h>
 #include <linux/err.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/string.h>
 #include <linux/list.h>

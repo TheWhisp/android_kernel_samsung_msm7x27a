@@ -44,9 +44,13 @@
  */
 #define ELECTRODE_CONF_ADDR		0x5e
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ELECTRODE_CONF_QUICK_CHARGE	0x80
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ELECTRODE_CONF_QUICK_CHARGE	0x80
+>>>>>>> refs/remotes/origin/master
 #define AUTO_CONFIG_CTRL_ADDR		0x7b
 #define AUTO_CONFIG_USL_ADDR		0x7d
 #define AUTO_CONFIG_LSL_ADDR		0x7e
@@ -54,12 +58,17 @@
 
 /* Threshold of touch/release trigger */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define TOUCH_THRESHOLD			0x0f
 #define RELEASE_THRESHOLD		0x0a
 =======
 #define TOUCH_THRESHOLD			0x08
 #define RELEASE_THRESHOLD		0x05
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TOUCH_THRESHOLD			0x08
+#define RELEASE_THRESHOLD		0x05
+>>>>>>> refs/remotes/origin/master
 /* Masks for touch and release triggers */
 #define TOUCH_STATUS_MASK		0xfff
 /* MPR121 has 12 keys */
@@ -79,7 +88,11 @@ struct mpr121_init_register {
 	u8 val;
 };
 
+<<<<<<< HEAD
 static const struct mpr121_init_register init_reg_table[] __devinitconst = {
+=======
+static const struct mpr121_init_register init_reg_table[] = {
+>>>>>>> refs/remotes/origin/master
 	{ MHD_RISING_ADDR,	0x1 },
 	{ NHD_RISING_ADDR,	0x1 },
 	{ MHD_FALLING_ADDR,	0x1 },
@@ -131,16 +144,24 @@ out:
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit mpr121_phys_init(const struct mpr121_platform_data *pdata,
+=======
+static int mpr121_phys_init(const struct mpr121_platform_data *pdata,
+>>>>>>> refs/remotes/origin/master
 				      struct mpr121_touchkey *mpr121,
 				      struct i2c_client *client)
 {
 	const struct mpr121_init_register *reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned char usl, lsl, tl;
 =======
 	unsigned char usl, lsl, tl, eleconf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char usl, lsl, tl, eleconf;
+>>>>>>> refs/remotes/origin/master
 	int i, t, vdd, ret;
 
 	/* Set up touch/release threshold for ele0-ele11 */
@@ -177,9 +198,12 @@ static int __devinit mpr121_phys_init(const struct mpr121_platform_data *pdata,
 	ret |= i2c_smbus_write_byte_data(client, AUTO_CONFIG_LSL_ADDR, lsl);
 	ret |= i2c_smbus_write_byte_data(client, AUTO_CONFIG_TL_ADDR, tl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret |= i2c_smbus_write_byte_data(client, ELECTRODE_CONF_ADDR,
 					 mpr121->keycount);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Quick charge bit will let the capacitive charge to ready
@@ -189,7 +213,10 @@ static int __devinit mpr121_phys_init(const struct mpr121_platform_data *pdata,
 	eleconf = mpr121->keycount | ELECTRODE_CONF_QUICK_CHARGE;
 	ret |= i2c_smbus_write_byte_data(client, ELECTRODE_CONF_ADDR,
 					 eleconf);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0)
 		goto err_i2c_write;
 
@@ -202,8 +229,13 @@ err_i2c_write:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit mpr_touchkey_probe(struct i2c_client *client,
 					const struct i2c_device_id *id)
+=======
+static int mpr_touchkey_probe(struct i2c_client *client,
+			      const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct mpr121_platform_data *pdata = client->dev.platform_data;
 	struct mpr121_touchkey *mpr121;
@@ -265,7 +297,11 @@ static int __devinit mpr_touchkey_probe(struct i2c_client *client,
 
 	error = request_threaded_irq(client->irq, NULL,
 				     mpr_touchkey_interrupt,
+<<<<<<< HEAD
 				     IRQF_TRIGGER_FALLING,
+=======
+				     IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+>>>>>>> refs/remotes/origin/master
 				     client->dev.driver->name, mpr121);
 	if (error) {
 		dev_err(&client->dev, "Failed to register interrupt\n");
@@ -289,7 +325,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit mpr_touchkey_remove(struct i2c_client *client)
+=======
+static int mpr_touchkey_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mpr121_touchkey *mpr121 = i2c_get_clientdata(client);
 
@@ -344,6 +384,7 @@ static struct i2c_driver mpr_touchkey_driver = {
 	},
 	.id_table	= mpr121_id,
 	.probe		= mpr_touchkey_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(mpr_touchkey_remove),
 };
 
@@ -362,6 +403,12 @@ module_exit(mpr_touchkey_exit);
 =======
 module_i2c_driver(mpr_touchkey_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= mpr_touchkey_remove,
+};
+
+module_i2c_driver(mpr_touchkey_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Zhang Jiejing <jiejing.zhang@freescale.com>");

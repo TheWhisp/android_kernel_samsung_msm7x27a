@@ -7,7 +7,11 @@
 #include <errno.h>
 #include <fcntl.h>
 #include "chan_user.h"
+<<<<<<< HEAD
 #include "os.h"
+=======
+#include <os.h>
+>>>>>>> refs/remotes/origin/master
 
 /* This address is used only as a unique identifier */
 static int null_chan;

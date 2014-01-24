@@ -62,7 +62,11 @@ static int __init ps3_rtc_probe(struct platform_device *dev)
 {
 	struct rtc_device *rtc;
 
+<<<<<<< HEAD
 	rtc = rtc_device_register("rtc-ps3", &dev->dev, &ps3_rtc_ops,
+=======
+	rtc = devm_rtc_device_register(&dev->dev, "rtc-ps3", &ps3_rtc_ops,
+>>>>>>> refs/remotes/origin/master
 				  THIS_MODULE);
 	if (IS_ERR(rtc))
 		return PTR_ERR(rtc);
@@ -71,17 +75,21 @@ static int __init ps3_rtc_probe(struct platform_device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __exit ps3_rtc_remove(struct platform_device *dev)
 {
 	rtc_device_unregister(platform_get_drvdata(dev));
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver ps3_rtc_driver = {
 	.driver = {
 		.name = "rtc-ps3",
 		.owner = THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove = __exit_p(ps3_rtc_remove),
 };
 
@@ -97,6 +105,11 @@ static void __exit ps3_rtc_fini(void)
 
 module_init(ps3_rtc_init);
 module_exit(ps3_rtc_fini);
+=======
+};
+
+module_platform_driver_probe(ps3_rtc_driver, ps3_rtc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sony Corporation");
 MODULE_LICENSE("GPL");

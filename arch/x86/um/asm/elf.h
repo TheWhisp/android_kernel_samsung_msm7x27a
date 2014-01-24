@@ -6,7 +6,11 @@
 #define __UM_ELF_X86_H
 
 #include <asm/user.h>
+<<<<<<< HEAD
 #include "skas.h"
+=======
+#include <skas.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86_32
 
@@ -34,6 +38,7 @@
 #define ELF_ARCH        EM_386
 
 #define ELF_PLAT_INIT(regs, load_addr) do { \
+<<<<<<< HEAD
 	PT_REGS_EBX(regs) = 0; \
 	PT_REGS_ECX(regs) = 0; \
 	PT_REGS_EDX(regs) = 0; \
@@ -41,11 +46,21 @@
 	PT_REGS_EDI(regs) = 0; \
 	PT_REGS_EBP(regs) = 0; \
 	PT_REGS_EAX(regs) = 0; \
+=======
+	PT_REGS_BX(regs) = 0; \
+	PT_REGS_CX(regs) = 0; \
+	PT_REGS_DX(regs) = 0; \
+	PT_REGS_SI(regs) = 0; \
+	PT_REGS_DI(regs) = 0; \
+	PT_REGS_BP(regs) = 0; \
+	PT_REGS_AX(regs) = 0; \
+>>>>>>> refs/remotes/origin/master
 } while (0)
 
 /* Shamelessly stolen from include/asm-i386/elf.h */
 
 #define ELF_CORE_COPY_REGS(pr_reg, regs) do {	\
+<<<<<<< HEAD
 	pr_reg[0] = PT_REGS_EBX(regs);		\
 	pr_reg[1] = PT_REGS_ECX(regs);		\
 	pr_reg[2] = PT_REGS_EDX(regs);		\
@@ -53,6 +68,15 @@
 	pr_reg[4] = PT_REGS_EDI(regs);		\
 	pr_reg[5] = PT_REGS_EBP(regs);		\
 	pr_reg[6] = PT_REGS_EAX(regs);		\
+=======
+	pr_reg[0] = PT_REGS_BX(regs);		\
+	pr_reg[1] = PT_REGS_CX(regs);		\
+	pr_reg[2] = PT_REGS_DX(regs);		\
+	pr_reg[3] = PT_REGS_SI(regs);		\
+	pr_reg[4] = PT_REGS_DI(regs);		\
+	pr_reg[5] = PT_REGS_BP(regs);		\
+	pr_reg[6] = PT_REGS_AX(regs);		\
+>>>>>>> refs/remotes/origin/master
 	pr_reg[7] = PT_REGS_DS(regs);		\
 	pr_reg[8] = PT_REGS_ES(regs);		\
 	/* fake once used fs and gs selectors? */	\
@@ -130,6 +154,7 @@ do {								\
 #define ELF_ARCH        EM_X86_64
 
 #define ELF_PLAT_INIT(regs, load_addr)    do { \
+<<<<<<< HEAD
 	PT_REGS_RBX(regs) = 0; \
 	PT_REGS_RCX(regs) = 0; \
 	PT_REGS_RDX(regs) = 0; \
@@ -137,6 +162,15 @@ do {								\
 	PT_REGS_RDI(regs) = 0; \
 	PT_REGS_RBP(regs) = 0; \
 	PT_REGS_RAX(regs) = 0; \
+=======
+	PT_REGS_BX(regs) = 0; \
+	PT_REGS_CX(regs) = 0; \
+	PT_REGS_DX(regs) = 0; \
+	PT_REGS_SI(regs) = 0; \
+	PT_REGS_DI(regs) = 0; \
+	PT_REGS_BP(regs) = 0; \
+	PT_REGS_AX(regs) = 0; \
+>>>>>>> refs/remotes/origin/master
 	PT_REGS_R8(regs) = 0; \
 	PT_REGS_R9(regs) = 0; \
 	PT_REGS_R10(regs) = 0; \

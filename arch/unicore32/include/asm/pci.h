@@ -15,6 +15,7 @@
 #ifdef __KERNEL__
 #include <asm-generic/pci-dma-compat.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm-generic/pci.h>
 #include <mach/hardware.h> /* for PCIBIOS_MIN_* */
 
@@ -24,11 +25,16 @@ static inline void pcibios_set_master(struct pci_dev *dev)
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/pci-bridge.h>
 #include <asm-generic/pci.h>
 #include <mach/hardware.h> /* for PCIBIOS_MIN_* */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void pcibios_penalize_isa_irq(int irq, int active)
 {
 	/* We don't do dynamic PCI IRQ allocation */

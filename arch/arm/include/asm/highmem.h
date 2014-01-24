@@ -41,6 +41,16 @@ extern void kunmap_high(struct page *page);
 #endif
 #endif
 
+<<<<<<< HEAD
+=======
+/*
+ * Needed to be able to broadcast the TLB invalidation for kmap.
+ */
+#ifdef CONFIG_ARM_ERRATA_798181
+#undef ARCH_NEEDS_KMAP_HIGH_GET
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef ARCH_NEEDS_KMAP_HIGH_GET
 extern void *kmap_high_get(struct page *page);
 #else
@@ -58,10 +68,14 @@ static inline void *kmap_high_get(struct page *page)
 extern void *kmap(struct page *page);
 extern void kunmap(struct page *page);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void *__kmap_atomic(struct page *page);
 =======
 extern void *kmap_atomic(struct page *page);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void *kmap_atomic(struct page *page);
+>>>>>>> refs/remotes/origin/master
 extern void __kunmap_atomic(void *kvaddr);
 extern void *kmap_atomic_pfn(unsigned long pfn);
 extern struct page *kmap_atomic_to_page(const void *ptr);

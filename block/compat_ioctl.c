@@ -59,6 +59,10 @@ static int compat_hdio_getgeo(struct gendisk *disk, struct block_device *bdev,
 	if (!disk->fops->getgeo)
 		return -ENOTTY;
 
+<<<<<<< HEAD
+=======
+	memset(&geo, 0, sizeof(geo));
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We need to set the startsect first, the driver may
 	 * want to override it.
@@ -69,7 +73,11 @@ static int compat_hdio_getgeo(struct gendisk *disk, struct block_device *bdev,
 		return ret;
 
 	ret = copy_to_user(ugeo, &geo, 4);
+<<<<<<< HEAD
 	ret |= __put_user(geo.start, &ugeo->start);
+=======
+	ret |= put_user(geo.start, &ugeo->start);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		ret = -EFAULT;
 
@@ -209,6 +217,7 @@ static int compat_blkpg_ioctl(struct block_device *bdev, fmode_t mode,
 #define BLKGETSIZE64_32		_IOR(0x12, 114, int)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct compat_floppy_struct {
 	compat_uint_t	size;
 	compat_uint_t	sect;
@@ -224,6 +233,8 @@ struct compat_floppy_struct {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct compat_floppy_drive_params {
 	char		cmos;
 	compat_ulong_t	max_dtr;
@@ -292,9 +303,12 @@ struct compat_floppy_write_errors {
 #define FDSETPRM32 _IOW(2, 0x42, struct compat_floppy_struct)
 #define FDDEFPRM32 _IOW(2, 0x43, struct compat_floppy_struct)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define FDGETPRM32 _IOR(2, 0x04, struct compat_floppy_struct)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define FDSETDRVPRM32 _IOW(2, 0x90, struct compat_floppy_drive_params)
 #define FDGETDRVPRM32 _IOR(2, 0x11, struct compat_floppy_drive_params)
 #define FDGETDRVSTAT32 _IOR(2, 0x12, struct compat_floppy_drive_struct)
@@ -740,11 +754,17 @@ long compat_blkdev_ioctl(struct file *file, unsigned cmd, unsigned long arg)
 		return compat_put_ushort(arg,
 					 queue_max_sectors(bdev_get_queue(bdev)));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case BLKROTATIONAL:
 		return compat_put_ushort(arg,
 					 !blk_queue_nonrot(bdev_get_queue(bdev)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case BLKROTATIONAL:
+		return compat_put_ushort(arg,
+					 !blk_queue_nonrot(bdev_get_queue(bdev)));
+>>>>>>> refs/remotes/origin/master
 	case BLKRASET: /* compatible, but no compat_ptr (!) */
 	case BLKFRASET:
 		if (!capable(CAP_SYS_ADMIN))

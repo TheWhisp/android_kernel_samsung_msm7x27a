@@ -11,6 +11,10 @@
  * Modified for 7751 Solution Engine by
  * Ian da Silva and Jeremy Siegel, 2001.
  */
+<<<<<<< HEAD
+=======
+#include <linux/sh_intc.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Box specific addresses.  */
 
@@ -63,7 +67,11 @@
 #define BCR_ILCRF	(PA_BCR + 10)
 #define BCR_ILCRG	(PA_BCR + 12)
 
+<<<<<<< HEAD
 #define IRQ_79C973	13
+=======
+#define IRQ_79C973	evt2irq(0x3a0)
+>>>>>>> refs/remotes/origin/master
 
 void init_7751se_IRQ(void);
 

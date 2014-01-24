@@ -3,6 +3,10 @@
 
 struct mt9t001_platform_data {
 	unsigned int clk_pol:1;
+<<<<<<< HEAD
+=======
+	unsigned int ext_clk;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

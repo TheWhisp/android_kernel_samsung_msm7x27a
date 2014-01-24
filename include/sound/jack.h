@@ -36,6 +36,9 @@ struct input_dev;
  */
 enum snd_jack_types {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	SND_JACK_HEADPHONE	= 0x0001,
 	SND_JACK_MICROPHONE	= 0x0002,
 	SND_JACK_HEADSET	= SND_JACK_HEADPHONE | SND_JACK_MICROPHONE,
@@ -43,8 +46,13 @@ enum snd_jack_types {
 	SND_JACK_MECHANICAL	= 0x0008, /* If detected separately */
 	SND_JACK_VIDEOOUT	= 0x0010,
 	SND_JACK_AVOUT		= SND_JACK_LINEOUT | SND_JACK_VIDEOOUT,
+<<<<<<< HEAD
 	SND_JACK_OC_HPHL	= 0x0020,
 	SND_JACK_OC_HPHR	= 0x0040,
+=======
+	SND_JACK_LINEIN		= 0x0020,
+
+>>>>>>> refs/remotes/origin/master
 	/* Kept separate from switches to facilitate implementation */
 	SND_JACK_BTN_0		= 0x4000,
 	SND_JACK_BTN_1		= 0x2000,
@@ -52,6 +60,7 @@ enum snd_jack_types {
 	SND_JACK_BTN_3		= 0x0800,
 	SND_JACK_BTN_4		= 0x0400,
 	SND_JACK_BTN_5		= 0x0200,
+<<<<<<< HEAD
 	SND_JACK_BTN_6		= 0x0100,
 	SND_JACK_BTN_7		= 0x0080,
 =======
@@ -79,13 +88,24 @@ enum snd_jack_types {
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
+=======
+};
+
+/* Keep in sync with definitions above */
+#define SND_JACK_SWITCH_TYPES 6
+
+>>>>>>> refs/remotes/origin/master
 struct snd_jack {
 	struct input_dev *input_dev;
 	int registered;
 	int type;
 	const char *id;
 	char name[100];
+<<<<<<< HEAD
 	unsigned int key[8];   /* Keep in sync with definitions above */
+=======
+	unsigned int key[6];   /* Keep in sync with definitions above */
+>>>>>>> refs/remotes/origin/master
 	void *private_data;
 	void (*private_free)(struct snd_jack *);
 };

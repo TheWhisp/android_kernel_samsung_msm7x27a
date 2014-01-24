@@ -4,6 +4,7 @@
 #include <linux/platform_device.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct omap_i2c_bus_platform_data {
 	u32		clkrate;
 	void		(*set_mpu_wkup_lat)(struct device *dev, long set);
@@ -11,6 +12,8 @@ struct omap_i2c_bus_platform_data {
 	int		(*device_shutdown) (struct platform_device *pdev);
 	int		(*device_idle) (struct platform_device *pdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Version 2 of the I2C peripheral unit has a different register
  * layout and extra registers.  The ID register in the V2 peripheral
@@ -28,8 +31,11 @@ struct omap_i2c_bus_platform_data {
 #define OMAP_I2C_FLAG_NO_FIFO			BIT(0)
 #define OMAP_I2C_FLAG_SIMPLE_CLOCK		BIT(1)
 #define OMAP_I2C_FLAG_16BIT_DATA_REG		BIT(2)
+<<<<<<< HEAD
 #define OMAP_I2C_FLAG_RESET_REGS_POSTIDLE	BIT(3)
 #define OMAP_I2C_FLAG_APPLY_ERRATA_I207	BIT(4)
+=======
+>>>>>>> refs/remotes/origin/master
 #define OMAP_I2C_FLAG_ALWAYS_ARMXOR_CLK	BIT(5)
 #define OMAP_I2C_FLAG_FORCE_19200_INT_CLK	BIT(6)
 /* how the CPU address bus must be translated for I2C unit access */
@@ -43,7 +49,10 @@ struct omap_i2c_bus_platform_data {
 	u32		rev;
 	u32		flags;
 	void		(*set_mpu_wkup_lat)(struct device *dev, long set);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif

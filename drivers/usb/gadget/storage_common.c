@@ -4,15 +4,20 @@
  * Copyright (C) 2003-2008 Alan Stern
  * Copyeight (C) 2009 Samsung Electronics
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Michal Nazarewicz (m.nazarewicz@samsung.com)
 =======
  * Author: Michal Nazarewicz (mina86@mina86.com)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Michal Nazarewicz (mina86@mina86.com)
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
@@ -62,11 +67,23 @@
 <<<<<<< HEAD
 =======
 /*
+=======
+ */
+
+/*
+ * This file requires the following identifiers used in USB strings to
+ * be defined (each of type pointer to char):
+ *  - fsg_string_interface    -- name of the interface
+ */
+
+/*
+>>>>>>> refs/remotes/origin/master
  * When USB_GADGET_DEBUG_FILES is defined the module param num_buffers
  * sets the number of pipeline buffers (length of the fsg_buffhd array).
  * The valid range of num_buffers is: num >= 2 && num <= 4.
  */
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include <linux/usb/storage.h>
@@ -434,6 +451,19 @@ fsg_otg_desc = {
 
 static struct usb_interface_descriptor
 fsg_intf_desc = {
+=======
+#include <linux/module.h>
+#include <linux/blkdev.h>
+#include <linux/file.h>
+#include <linux/fs.h>
+#include <linux/usb/composite.h>
+
+#include "storage_common.h"
+
+/* There is only one interface. */
+
+struct usb_interface_descriptor fsg_intf_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		sizeof fsg_intf_desc,
 	.bDescriptorType =	USB_DT_INTERFACE,
 
@@ -443,14 +473,22 @@ fsg_intf_desc = {
 	.bInterfaceProtocol =	USB_PR_BULK,	/* Adjusted during fsg_bind() */
 	.iInterface =		FSG_STRING_INTERFACE,
 };
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(fsg_intf_desc);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Three full-speed endpoint descriptors: bulk-in, bulk-out, and
  * interrupt-in.
  */
 
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor
 fsg_fs_bulk_in_desc = {
+=======
+struct usb_endpoint_descriptor fsg_fs_bulk_in_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -458,9 +496,15 @@ fsg_fs_bulk_in_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 	/* wMaxPacketSize set by autoconfiguration */
 };
+<<<<<<< HEAD
 
 static struct usb_endpoint_descriptor
 fsg_fs_bulk_out_desc = {
+=======
+EXPORT_SYMBOL(fsg_fs_bulk_in_desc);
+
+struct usb_endpoint_descriptor fsg_fs_bulk_out_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -468,6 +512,7 @@ fsg_fs_bulk_out_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 	/* wMaxPacketSize set by autoconfiguration */
 };
+<<<<<<< HEAD
 
 #ifndef FSG_NO_INTR_EP
 
@@ -502,6 +547,17 @@ static struct usb_descriptor_header *fsg_fs_function[] = {
 #endif
 	NULL,
 };
+=======
+EXPORT_SYMBOL(fsg_fs_bulk_out_desc);
+
+struct usb_descriptor_header *fsg_fs_function[] = {
+	(struct usb_descriptor_header *) &fsg_intf_desc,
+	(struct usb_descriptor_header *) &fsg_fs_bulk_in_desc,
+	(struct usb_descriptor_header *) &fsg_fs_bulk_out_desc,
+	NULL,
+};
+EXPORT_SYMBOL(fsg_fs_function);
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -512,8 +568,12 @@ static struct usb_descriptor_header *fsg_fs_function[] = {
  * and a "device qualifier" ... plus more construction options
  * for the configuration descriptor.
  */
+<<<<<<< HEAD
 static struct usb_endpoint_descriptor
 fsg_hs_bulk_in_desc = {
+=======
+struct usb_endpoint_descriptor fsg_hs_bulk_in_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -521,9 +581,15 @@ fsg_hs_bulk_in_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 	.wMaxPacketSize =	cpu_to_le16(512),
 };
+<<<<<<< HEAD
 
 static struct usb_endpoint_descriptor
 fsg_hs_bulk_out_desc = {
+=======
+EXPORT_SYMBOL(fsg_hs_bulk_in_desc);
+
+struct usb_endpoint_descriptor fsg_hs_bulk_out_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -532,6 +598,7 @@ fsg_hs_bulk_out_desc = {
 	.wMaxPacketSize =	cpu_to_le16(512),
 	.bInterval =		1,	/* NAK every 1 uframe */
 };
+<<<<<<< HEAD
 
 #ifndef FSG_NO_INTR_EP
 
@@ -577,6 +644,20 @@ fsg_ep_desc(struct usb_gadget *g, struct usb_endpoint_descriptor *fs,
 =======
 static struct usb_endpoint_descriptor
 fsg_ss_bulk_in_desc = {
+=======
+EXPORT_SYMBOL(fsg_hs_bulk_out_desc);
+
+
+struct usb_descriptor_header *fsg_hs_function[] = {
+	(struct usb_descriptor_header *) &fsg_intf_desc,
+	(struct usb_descriptor_header *) &fsg_hs_bulk_in_desc,
+	(struct usb_descriptor_header *) &fsg_hs_bulk_out_desc,
+	NULL,
+};
+EXPORT_SYMBOL(fsg_hs_function);
+
+struct usb_endpoint_descriptor fsg_ss_bulk_in_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -584,16 +665,28 @@ fsg_ss_bulk_in_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 	.wMaxPacketSize =	cpu_to_le16(1024),
 };
+<<<<<<< HEAD
 
 static struct usb_ss_ep_comp_descriptor fsg_ss_bulk_in_comp_desc = {
+=======
+EXPORT_SYMBOL(fsg_ss_bulk_in_desc);
+
+struct usb_ss_ep_comp_descriptor fsg_ss_bulk_in_comp_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		sizeof(fsg_ss_bulk_in_comp_desc),
 	.bDescriptorType =	USB_DT_SS_ENDPOINT_COMP,
 
 	/*.bMaxBurst =		DYNAMIC, */
 };
+<<<<<<< HEAD
 
 static struct usb_endpoint_descriptor
 fsg_ss_bulk_out_desc = {
+=======
+EXPORT_SYMBOL(fsg_ss_bulk_in_comp_desc);
+
+struct usb_endpoint_descriptor fsg_ss_bulk_out_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType =	USB_DT_ENDPOINT,
 
@@ -601,13 +694,20 @@ fsg_ss_bulk_out_desc = {
 	.bmAttributes =		USB_ENDPOINT_XFER_BULK,
 	.wMaxPacketSize =	cpu_to_le16(1024),
 };
+<<<<<<< HEAD
 
 static struct usb_ss_ep_comp_descriptor fsg_ss_bulk_out_comp_desc = {
+=======
+EXPORT_SYMBOL(fsg_ss_bulk_out_desc);
+
+struct usb_ss_ep_comp_descriptor fsg_ss_bulk_out_comp_desc = {
+>>>>>>> refs/remotes/origin/master
 	.bLength =		sizeof(fsg_ss_bulk_in_comp_desc),
 	.bDescriptorType =	USB_DT_SS_ENDPOINT_COMP,
 
 	/*.bMaxBurst =		DYNAMIC, */
 };
+<<<<<<< HEAD
 
 #ifndef FSG_NO_INTR_EP
 
@@ -676,11 +776,17 @@ static struct usb_descriptor_header *fsg_ss_function[] = {
 #ifndef FSG_NO_OTG
 	(struct usb_descriptor_header *) &fsg_otg_desc,
 #endif
+=======
+EXPORT_SYMBOL(fsg_ss_bulk_out_comp_desc);
+
+struct usb_descriptor_header *fsg_ss_function[] = {
+>>>>>>> refs/remotes/origin/master
 	(struct usb_descriptor_header *) &fsg_intf_desc,
 	(struct usb_descriptor_header *) &fsg_ss_bulk_in_desc,
 	(struct usb_descriptor_header *) &fsg_ss_bulk_in_comp_desc,
 	(struct usb_descriptor_header *) &fsg_ss_bulk_out_desc,
 	(struct usb_descriptor_header *) &fsg_ss_bulk_out_comp_desc,
+<<<<<<< HEAD
 #ifndef FSG_NO_INTR_EP
 	(struct usb_descriptor_header *) &fsg_ss_intr_in_desc,
 	(struct usb_descriptor_header *) &fsg_ss_intr_in_comp_desc,
@@ -719,6 +825,11 @@ static struct usb_gadget_strings	fsg_stringtab = {
 	.language	= 0x0409,		/* en-us */
 	.strings	= fsg_strings,
 };
+=======
+	NULL,
+};
+EXPORT_SYMBOL(fsg_ss_function);
+>>>>>>> refs/remotes/origin/master
 
 
  /*-------------------------------------------------------------------------*/
@@ -728,7 +839,21 @@ static struct usb_gadget_strings	fsg_stringtab = {
  * the caller must own fsg->filesem for writing.
  */
 
+<<<<<<< HEAD
 static int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
+=======
+void fsg_lun_close(struct fsg_lun *curlun)
+{
+	if (curlun->filp) {
+		LDBG(curlun, "close backing file\n");
+		fput(curlun->filp);
+		curlun->filp = NULL;
+	}
+}
+EXPORT_SYMBOL(fsg_lun_close);
+
+int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
+>>>>>>> refs/remotes/origin/master
 {
 	int				ro;
 	struct file			*filp = NULL;
@@ -737,6 +862,11 @@ static int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
 	loff_t				size;
 	loff_t				num_sectors;
 	loff_t				min_sectors;
+<<<<<<< HEAD
+=======
+	unsigned int			blkbits;
+	unsigned int			blksize;
+>>>>>>> refs/remotes/origin/master
 
 	/* R/W if we can, R/O if we must */
 	ro = curlun->initially_ro;
@@ -755,9 +885,14 @@ static int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
 	if (!(filp->f_mode & FMODE_WRITE))
 		ro = 1;
 
+<<<<<<< HEAD
 	if (filp->f_path.dentry)
 		inode = filp->f_path.dentry->d_inode;
 	if (!inode || (!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode))) {
+=======
+	inode = file_inode(filp);
+	if ((!S_ISREG(inode->i_mode) && !S_ISBLK(inode->i_mode))) {
+>>>>>>> refs/remotes/origin/master
 		LINFO(curlun, "invalid file type: %s\n", filename);
 		goto out;
 	}
@@ -766,7 +901,11 @@ static int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
 	 * If we can't read the file, it's no good.
 	 * If we can't write the file, use it read-only.
 	 */
+<<<<<<< HEAD
 	if (!filp->f_op || !(filp->f_op->read || filp->f_op->aio_read)) {
+=======
+	if (!(filp->f_op->read || filp->f_op->aio_read)) {
+>>>>>>> refs/remotes/origin/master
 		LINFO(curlun, "file not readable: %s\n", filename);
 		goto out;
 	}
@@ -779,6 +918,7 @@ static int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
 		rc = (int) size;
 		goto out;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	num_sectors = size >> 9;	/* File size in 512-byte blocks */
 	min_sectors = 1;
@@ -801,12 +941,30 @@ static int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
 	}
 
 	num_sectors = size >> curlun->blkbits; /* File size in logic-block-size blocks */
+=======
+
+	if (curlun->cdrom) {
+		blksize = 2048;
+		blkbits = 11;
+	} else if (inode->i_bdev) {
+		blksize = bdev_logical_block_size(inode->i_bdev);
+		blkbits = blksize_bits(blksize);
+	} else {
+		blksize = 512;
+		blkbits = 9;
+	}
+
+	num_sectors = size >> blkbits; /* File size in logic-block-size blocks */
+>>>>>>> refs/remotes/origin/master
 	min_sectors = 1;
 	if (curlun->cdrom) {
 		min_sectors = 300;	/* Smallest track is 300 frames */
 		if (num_sectors >= 256*60*75) {
 			num_sectors = 256*60*75 - 1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			LINFO(curlun, "file too big: %s\n", filename);
 			LINFO(curlun, "using only first %d blocks\n",
 					(int) num_sectors);
@@ -818,12 +976,21 @@ static int fsg_lun_open(struct fsg_lun *curlun, const char *filename)
 		goto out;
 	}
 
+<<<<<<< HEAD
 	get_file(filp);
+=======
+	if (fsg_lun_is_open(curlun))
+		fsg_lun_close(curlun);
+
+	curlun->blksize = blksize;
+	curlun->blkbits = blkbits;
+>>>>>>> refs/remotes/origin/master
 	curlun->ro = ro;
 	curlun->filp = filp;
 	curlun->file_length = size;
 	curlun->num_sectors = num_sectors;
 	LDBG(curlun, "open backing file: %s\n", filename);
+<<<<<<< HEAD
 	rc = 0;
 
 out:
@@ -840,6 +1007,15 @@ static void fsg_lun_close(struct fsg_lun *curlun)
 		curlun->filp = NULL;
 	}
 }
+=======
+	return 0;
+
+out:
+	fput(filp);
+	return rc;
+}
+EXPORT_SYMBOL(fsg_lun_open);
+>>>>>>> refs/remotes/origin/master
 
 
 /*-------------------------------------------------------------------------*/
@@ -848,7 +1024,11 @@ static void fsg_lun_close(struct fsg_lun *curlun)
  * Sync the file data, don't bother with the metadata.
  * This code was copied from fs/buffer.c:sys_fdatasync().
  */
+<<<<<<< HEAD
 static int fsg_lun_fsync_sub(struct fsg_lun *curlun)
+=======
+int fsg_lun_fsync_sub(struct fsg_lun *curlun)
+>>>>>>> refs/remotes/origin/master
 {
 	struct file	*filp = curlun->filp;
 
@@ -856,8 +1036,14 @@ static int fsg_lun_fsync_sub(struct fsg_lun *curlun)
 		return 0;
 	return vfs_fsync(filp, 1);
 }
+<<<<<<< HEAD
 
 static void store_cdrom_address(u8 *dest, int msf, u32 addr)
+=======
+EXPORT_SYMBOL(fsg_lun_fsync_sub);
+
+void store_cdrom_address(u8 *dest, int msf, u32 addr)
+>>>>>>> refs/remotes/origin/master
 {
 	if (msf) {
 		/* Convert to Minutes-Seconds-Frames */
@@ -874,20 +1060,30 @@ static void store_cdrom_address(u8 *dest, int msf, u32 addr)
 		put_unaligned_be32(addr, dest);
 	}
 }
+<<<<<<< HEAD
 
+=======
+EXPORT_SYMBOL(store_cdrom_address);
+>>>>>>> refs/remotes/origin/master
 
 /*-------------------------------------------------------------------------*/
 
 
+<<<<<<< HEAD
 static ssize_t fsg_show_ro(struct device *dev, struct device_attribute *attr,
 			   char *buf)
 {
 	struct fsg_lun	*curlun = fsg_lun_from_dev(dev);
 
+=======
+ssize_t fsg_show_ro(struct fsg_lun *curlun, char *buf)
+{
+>>>>>>> refs/remotes/origin/master
 	return sprintf(buf, "%d\n", fsg_lun_is_open(curlun)
 				  ? curlun->ro
 				  : curlun->initially_ro);
 }
+<<<<<<< HEAD
 
 static ssize_t fsg_show_nofua(struct device *dev, struct device_attribute *attr,
 			      char *buf)
@@ -950,6 +1146,19 @@ static ssize_t fsg_show_file(struct device *dev, struct device_attribute *attr,
 {
 	struct fsg_lun	*curlun = fsg_lun_from_dev(dev);
 	struct rw_semaphore	*filesem = dev_get_drvdata(dev);
+=======
+EXPORT_SYMBOL(fsg_show_ro);
+
+ssize_t fsg_show_nofua(struct fsg_lun *curlun, char *buf)
+{
+	return sprintf(buf, "%u\n", curlun->nofua);
+}
+EXPORT_SYMBOL(fsg_show_nofua);
+
+ssize_t fsg_show_file(struct fsg_lun *curlun, struct rw_semaphore *filesem,
+		      char *buf)
+{
+>>>>>>> refs/remotes/origin/master
 	char		*p;
 	ssize_t		rc;
 
@@ -971,6 +1180,7 @@ static ssize_t fsg_show_file(struct device *dev, struct device_attribute *attr,
 	up_read(filesem);
 	return rc;
 }
+<<<<<<< HEAD
 
 
 static ssize_t fsg_store_ro(struct device *dev, struct device_attribute *attr,
@@ -982,6 +1192,46 @@ static ssize_t fsg_store_ro(struct device *dev, struct device_attribute *attr,
 	unsigned	ro;
 
 	rc = kstrtouint(buf, 2, &ro);
+=======
+EXPORT_SYMBOL(fsg_show_file);
+
+ssize_t fsg_show_cdrom(struct fsg_lun *curlun, char *buf)
+{
+	return sprintf(buf, "%u\n", curlun->cdrom);
+}
+EXPORT_SYMBOL(fsg_show_cdrom);
+
+ssize_t fsg_show_removable(struct fsg_lun *curlun, char *buf)
+{
+	return sprintf(buf, "%u\n", curlun->removable);
+}
+EXPORT_SYMBOL(fsg_show_removable);
+
+/*
+ * The caller must hold fsg->filesem for reading when calling this function.
+ */
+static ssize_t _fsg_store_ro(struct fsg_lun *curlun, bool ro)
+{
+	if (fsg_lun_is_open(curlun)) {
+		LDBG(curlun, "read-only status change prevented\n");
+		return -EBUSY;
+	}
+
+	curlun->ro = ro;
+	curlun->initially_ro = ro;
+	LDBG(curlun, "read-only status set to %d\n", curlun->ro);
+
+	return 0;
+}
+
+ssize_t fsg_store_ro(struct fsg_lun *curlun, struct rw_semaphore *filesem,
+		     const char *buf, size_t count)
+{
+	ssize_t		rc;
+	bool		ro;
+
+	rc = strtobool(buf, &ro);
+>>>>>>> refs/remotes/origin/master
 	if (rc)
 		return rc;
 
@@ -990,6 +1240,7 @@ static ssize_t fsg_store_ro(struct device *dev, struct device_attribute *attr,
 	 * backing file is closed.
 	 */
 	down_read(filesem);
+<<<<<<< HEAD
 	if (fsg_lun_is_open(curlun)) {
 		LDBG(curlun, "read-only status change prevented\n");
 		rc = -EBUSY;
@@ -1012,6 +1263,23 @@ static ssize_t fsg_store_nofua(struct device *dev,
 	int		ret;
 
 	ret = kstrtouint(buf, 2, &nofua);
+=======
+	rc = _fsg_store_ro(curlun, ro);
+	if (!rc)
+		rc = count;
+	up_read(filesem);
+
+	return rc;
+}
+EXPORT_SYMBOL(fsg_store_ro);
+
+ssize_t fsg_store_nofua(struct fsg_lun *curlun, const char *buf, size_t count)
+{
+	bool		nofua;
+	int		ret;
+
+	ret = strtobool(buf, &nofua);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		return ret;
 
@@ -1023,6 +1291,7 @@ static ssize_t fsg_store_nofua(struct device *dev,
 
 	return count;
 }
+<<<<<<< HEAD
 
 static ssize_t fsg_store_file(struct device *dev, struct device_attribute *attr,
 			      const char *buf, size_t count)
@@ -1040,16 +1309,29 @@ static ssize_t fsg_store_file(struct device *dev, struct device_attribute *attr,
 	/* disabled in android because we need to allow closing the backing file
 	 * if the media was removed
 	 */
+=======
+EXPORT_SYMBOL(fsg_store_nofua);
+
+ssize_t fsg_store_file(struct fsg_lun *curlun, struct rw_semaphore *filesem,
+		       const char *buf, size_t count)
+{
+	int		rc = 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (curlun->prevent_medium_removal && fsg_lun_is_open(curlun)) {
 		LDBG(curlun, "eject attempt prevented\n");
 		return -EBUSY;				/* "Door is locked" */
 	}
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Remove a trailing newline */
 	if (count > 0 && buf[count-1] == '\n')
 		((char *) buf)[count-1] = 0;		/* Ugh! */
 
+<<<<<<< HEAD
 	/* Eject current medium */
 	down_write(filesem);
 	if (fsg_lun_is_open(curlun)) {
@@ -1059,14 +1341,27 @@ static ssize_t fsg_store_file(struct device *dev, struct device_attribute *attr,
 
 	/* Load new medium */
 	if (count > 0 && buf[0]) {
+=======
+	/* Load new medium */
+	down_write(filesem);
+	if (count > 0 && buf[0]) {
+		/* fsg_lun_open() will close existing file if any. */
+>>>>>>> refs/remotes/origin/master
 		rc = fsg_lun_open(curlun, buf);
 		if (rc == 0)
 			curlun->unit_attention_data =
 					SS_NOT_READY_TO_READY_TRANSITION;
+<<<<<<< HEAD
+=======
+	} else if (fsg_lun_is_open(curlun)) {
+		fsg_lun_close(curlun);
+		curlun->unit_attention_data = SS_MEDIUM_NOT_PRESENT;
+>>>>>>> refs/remotes/origin/master
 	}
 	up_write(filesem);
 	return (rc < 0 ? rc : count);
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -1099,3 +1394,47 @@ static ssize_t fsg_store_cdrom(struct device *dev, struct device_attribute *attr
 	return rc;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(fsg_store_file);
+
+ssize_t fsg_store_cdrom(struct fsg_lun *curlun, struct rw_semaphore *filesem,
+			const char *buf, size_t count)
+{
+	bool		cdrom;
+	int		ret;
+
+	ret = strtobool(buf, &cdrom);
+	if (ret)
+		return ret;
+
+	down_read(filesem);
+	ret = cdrom ? _fsg_store_ro(curlun, true) : 0;
+
+	if (!ret) {
+		curlun->cdrom = cdrom;
+		ret = count;
+	}
+	up_read(filesem);
+
+	return ret;
+}
+EXPORT_SYMBOL(fsg_store_cdrom);
+
+ssize_t fsg_store_removable(struct fsg_lun *curlun, const char *buf,
+			    size_t count)
+{
+	bool		removable;
+	int		ret;
+
+	ret = strtobool(buf, &removable);
+	if (ret)
+		return ret;
+
+	curlun->removable = removable;
+
+	return count;
+}
+EXPORT_SYMBOL(fsg_store_removable);
+
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

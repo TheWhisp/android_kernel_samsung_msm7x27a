@@ -14,15 +14,23 @@
 #include <linux/kernel.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <mach/pxa2xx-regs.h>
 #include <mach/mfp-pxa25x.h>
 #include <mach/reset.h>
+<<<<<<< HEAD
 #include <mach/irda.h>
+=======
+#include <linux/platform_data/irda-pxaficp.h>
+>>>>>>> refs/remotes/origin/master
 
 void pxa2xx_clear_reset_status(unsigned int mask)
 {

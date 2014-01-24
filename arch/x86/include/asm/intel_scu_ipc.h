@@ -2,12 +2,15 @@
 #define  _ASM_X86_INTEL_SCU_IPC_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IPCMSG_VRTC	0xFA	 /* Set vRTC device */
 
 /* Command id associated with message IPCMSG_VRTC */
 #define IPC_CMD_VRTC_SETTIME      1 /* Set time */
 #define IPC_CMD_VRTC_SETALARM     2 /* Set alarm */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/notifier.h>
 
 #define IPCMSG_WARM_RESET	0xF0
@@ -19,7 +22,10 @@
 	/* Command id associated with message IPCMSG_VRTC */
 	#define IPC_CMD_VRTC_SETTIME      1 /* Set time */
 	#define IPC_CMD_VRTC_SETALARM     2 /* Set alarm */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Read single register */
 int intel_scu_ipc_ioread8(u16 addr, u8 *data);
@@ -59,7 +65,10 @@ int intel_scu_ipc_i2c_cntrl(u32 addr, u32 *data);
 int intel_scu_ipc_fw_update(u8 *buffer, u32 length);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern struct blocking_notifier_head intel_scu_notifier;
 
 static inline void intel_scu_notifier_add(struct notifier_block *nb)
@@ -80,5 +89,8 @@ static inline int intel_scu_notifier_post(unsigned long v, void *p)
 #define		SCU_AVAILABLE		1
 #define		SCU_DOWN		2
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

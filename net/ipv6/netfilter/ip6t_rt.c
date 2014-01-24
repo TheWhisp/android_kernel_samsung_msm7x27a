@@ -42,14 +42,22 @@ static bool rt_mt6(const struct sk_buff *skb, struct xt_action_param *par)
 	const struct ipv6_rt_hdr *rh;
 	const struct ip6t_rt *rtinfo = par->matchinfo;
 	unsigned int temp;
+<<<<<<< HEAD
 	unsigned int ptr;
+=======
+	unsigned int ptr = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned int hdrlen = 0;
 	bool ret = false;
 	struct in6_addr _addr;
 	const struct in6_addr *ap;
 	int err;
 
+<<<<<<< HEAD
 	err = ipv6_find_hdr(skb, &ptr, NEXTHDR_ROUTING, NULL);
+=======
+	err = ipv6_find_hdr(skb, &ptr, NEXTHDR_ROUTING, NULL, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		if (err != -ENOENT)
 			par->hotdrop = true;

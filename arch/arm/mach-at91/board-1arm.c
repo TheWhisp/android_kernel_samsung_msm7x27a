@@ -20,9 +20,13 @@
 
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/mm.h>
 #include <linux/module.h>
@@ -37,6 +41,7 @@
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
+<<<<<<< HEAD
 #include <mach/board.h>
 <<<<<<< HEAD
 #include <mach/gpio.h>
@@ -44,6 +49,12 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/cpu.h>
 
+=======
+#include <mach/cpu.h>
+
+#include "at91_aic.h"
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "generic.h"
 
 
@@ -53,6 +64,7 @@ static void __init onearm_init_early(void)
 	at91rm9200_set_type(ARCH_REVISON_9200_PQFP);
 
 	/* Initialize processor: 18.432 MHz crystal */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	at91rm9200_initialize(18432000);
 =======
@@ -84,6 +96,12 @@ static struct at91_eth_data __initdata onearm_eth_data = {
 =======
 static struct macb_platform_data __initdata onearm_eth_data = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_initialize(18432000);
+}
+
+static struct macb_platform_data __initdata onearm_eth_data = {
+>>>>>>> refs/remotes/origin/master
 	.phy_irq_pin	= AT91_PIN_PC4,
 	.is_rmii	= 1,
 };
@@ -91,10 +109,15 @@ static struct macb_platform_data __initdata onearm_eth_data = {
 static struct at91_usbh_data __initdata onearm_usbh_data = {
 	.ports		= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.vbus_pin	= {-EINVAL, -EINVAL},
 	.overcurrent_pin= {-EINVAL, -EINVAL},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.vbus_pin	= {-EINVAL, -EINVAL},
+	.overcurrent_pin= {-EINVAL, -EINVAL},
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct at91_udc_data __initdata onearm_udc_data = {
@@ -105,6 +128,19 @@ static struct at91_udc_data __initdata onearm_udc_data = {
 static void __init onearm_board_init(void)
 {
 	/* Serial */
+<<<<<<< HEAD
+=======
+	/* DBGU on ttyS0. (Rx & Tx only) */
+	at91_register_uart(0, 0, 0);
+
+	/* USART0 on ttyS1 (Rx, Tx, CTS, RTS) */
+	at91_register_uart(AT91RM9200_ID_US0, 1, ATMEL_UART_CTS | ATMEL_UART_RTS);
+
+	/* USART1 on ttyS2 (Rx, Tx, CTS, RTS, DTR, DSR, DCD, RI) */
+	at91_register_uart(AT91RM9200_ID_US1, 2, ATMEL_UART_CTS | ATMEL_UART_RTS
+			   | ATMEL_UART_DTR | ATMEL_UART_DSR | ATMEL_UART_DCD
+			   | ATMEL_UART_RI);
+>>>>>>> refs/remotes/origin/master
 	at91_add_device_serial();
 	/* Ethernet */
 	at91_add_device_eth(&onearm_eth_data);
@@ -116,6 +152,7 @@ static void __init onearm_board_init(void)
 
 MACHINE_START(ONEARM, "Ajeco 1ARM single board computer")
 	/* Maintainer: Lennert Buytenhek <buytenh@wantstofly.org> */
+<<<<<<< HEAD
 	.timer		= &at91rm9200_timer,
 <<<<<<< HEAD
 	.map_io		= at91rm9200_map_io,
@@ -126,5 +163,12 @@ MACHINE_START(ONEARM, "Ajeco 1ARM single board computer")
 	.init_early	= onearm_init_early,
 	.init_irq	= at91_init_irq_default,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= at91rm9200_timer_init,
+	.map_io		= at91_map_io,
+	.handle_irq	= at91_aic_handle_irq,
+	.init_early	= onearm_init_early,
+	.init_irq	= at91_init_irq_default,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= onearm_board_init,
 MACHINE_END

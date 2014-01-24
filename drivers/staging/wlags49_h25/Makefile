@@ -12,6 +12,7 @@
 #  If you want to build AP support (untested), comment out -DSTA_ONLY
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 INSTALLDIR := /lib/modules/$(shell uname -r)/kernel/drivers/net/wireless
 ccflags-y := -I$(KERNELDIR)/include
 ccflags-y += -I$(src) \
@@ -22,6 +23,11 @@ ccflags-y := -I$(KERNELDIR)/include
 ccflags-y += -I$(src) \
 		-DBUS_PCMCIA \
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ccflags-y := -I$(KERNELDIR)/include
+ccflags-y += -I$(src) \
+		-DBUS_PCMCIA \
+>>>>>>> refs/remotes/origin/master
 		-DUSE_WEXT \
 		-DSTA_ONLY \
 		-DWVLAN_49 \
@@ -46,12 +52,15 @@ endif
 endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # If KERNELRELEASE is defined, we've been invoked from the
 # kernel build system and can use its language.
 ifneq ($(KERNELRELEASE),)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 obj-m		+= $(WLNAME).o
 
 $(WLNAME)-y +=	wl_profile.o \
@@ -65,6 +74,7 @@ $(WLNAME)-y +=	wl_profile.o \
 		mmd.o \
 		hcf.o \
 		dhf.o
+<<<<<<< HEAD
 
 $(WLNAME)-$(CONFIG_SYSFS)	+= wl_sysfs.o
 
@@ -91,3 +101,5 @@ install: default
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

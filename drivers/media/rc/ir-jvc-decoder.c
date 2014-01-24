@@ -14,9 +14,13 @@
 
 #include <linux/bitrev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include "rc-core-priv.h"
 
 #define JVC_NBITS		16		/* dev(8) + func(8) */
@@ -50,7 +54,11 @@ static int ir_jvc_decode(struct rc_dev *dev, struct ir_raw_event ev)
 {
 	struct jvc_dec *data = &dev->raw->jvc;
 
+<<<<<<< HEAD
 	if (!(dev->raw->enabled_protocols & RC_TYPE_JVC))
+=======
+	if (!(dev->enabled_protocols & RC_BIT_JVC))
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	if (!is_timing_event(ev)) {
@@ -177,7 +185,11 @@ out:
 }
 
 static struct ir_raw_handler jvc_handler = {
+<<<<<<< HEAD
 	.protocols	= RC_TYPE_JVC,
+=======
+	.protocols	= RC_BIT_JVC,
+>>>>>>> refs/remotes/origin/master
 	.decode		= ir_jvc_decode,
 };
 

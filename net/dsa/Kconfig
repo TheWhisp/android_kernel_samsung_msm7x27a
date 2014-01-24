@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 menuconfig NET_DSA
 	bool "Distributed Switch Architecture support"
 =======
@@ -12,12 +13,25 @@ config NET_DSA
 	  This allows you to use hardware switch chips that use
 	  the Distributed Switch Architecture.
 
+=======
+config HAVE_NET_DSA
+	def_bool y
+	depends on NETDEVICES && !S390
+
+# Drivers must select NET_DSA and the appropriate tagging format
+
+config NET_DSA
+	tristate
+	depends on HAVE_NET_DSA
+	select PHYLIB
+>>>>>>> refs/remotes/origin/master
 
 if NET_DSA
 
 # tagging formats
 config NET_DSA_TAG_DSA
 	bool
+<<<<<<< HEAD
 	default n
 
 config NET_DSA_TAG_EDSA
@@ -65,4 +79,13 @@ config NET_DSA_MV88E6123_61_65
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+config NET_DSA_TAG_EDSA
+	bool
+
+config NET_DSA_TAG_TRAILER
+	bool
+
+>>>>>>> refs/remotes/origin/master
 endif

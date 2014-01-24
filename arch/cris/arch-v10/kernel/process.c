@@ -17,9 +17,14 @@
 #include <arch/svinto.h>
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <arch/system.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <arch/system.h>
+#include <linux/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_ETRAX_GPIO
 void etrax_gpio_wake_up_check(void); /* drivers/gpio.c */
@@ -32,8 +37,14 @@ void etrax_gpio_wake_up_check(void); /* drivers/gpio.c */
 void default_idle(void)
 {
 #ifdef CONFIG_ETRAX_GPIO
+<<<<<<< HEAD
   etrax_gpio_wake_up_check();
 #endif
+=======
+	etrax_gpio_wake_up_check();
+#endif
+	local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -84,6 +95,7 @@ unsigned long thread_saved_pc(struct task_struct *t)
 	return task_pt_regs(t)->irp;
 }
 
+<<<<<<< HEAD
 static void kernel_thread_helper(void* dummy, int (*fn)(void *), void * arg)
 {
   fn(arg);
@@ -109,6 +121,8 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
         return do_fork(flags | CLONE_VM | CLONE_UNTRACED, 0, &regs, 0, NULL, NULL);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* setup the child's kernel stack with a pt_regs and switch_stack on it.
  * it will be un-nested during _resume and _ret_from_sys_call when the
  * new thread is scheduled.
@@ -118,6 +132,7 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
  *
  */
 asmlinkage void ret_from_fork(void);
+<<<<<<< HEAD
 
 int copy_thread(unsigned long clone_flags, unsigned long usp,
 		unsigned long unused,
@@ -125,11 +140,21 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 {
 	struct pt_regs * childregs;
 	struct switch_stack *swstack;
+=======
+asmlinkage void ret_from_kernel_thread(void);
+
+int copy_thread(unsigned long clone_flags, unsigned long usp,
+		unsigned long arg, struct task_struct *p)
+{
+	struct pt_regs *childregs = task_pt_regs(p);
+	struct switch_stack *swstack = ((struct switch_stack *)childregs) - 1;
+>>>>>>> refs/remotes/origin/master
 	
 	/* put the pt_regs structure at the end of the new kernel stack page and fix it up
 	 * remember that the task_struct doubles as the kernel stack for the task
 	 */
 
+<<<<<<< HEAD
 	childregs = task_pt_regs(p);
         
 	*childregs = *regs;  /* struct copy of pt_regs */
@@ -141,6 +166,24 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	/* put the switch stack right below the pt_regs */
 
 	swstack = ((struct switch_stack *)childregs) - 1;
+=======
+	if (unlikely(p->flags & PF_KTHREAD)) {
+		memset(swstack, 0,
+			sizeof(struct switch_stack) + sizeof(struct pt_regs));
+		swstack->r1 = usp;
+		swstack->r2 = arg;
+		childregs->dccr = 1 << I_DCCR_BITNR;
+		swstack->return_ip = (unsigned long) ret_from_kernel_thread;
+		p->thread.ksp = (unsigned long) swstack;
+		p->thread.usp = 0;
+		return 0;
+	}
+	*childregs = *current_pt_regs();  /* struct copy of pt_regs */
+
+        childregs->r10 = 0;  /* child returns 0 after a fork/clone */
+
+	/* put the switch stack right below the pt_regs */
+>>>>>>> refs/remotes/origin/master
 
 	swstack->r9 = 0; /* parameter to ret_from_sys_call, 0 == dont restart the syscall */
 
@@ -150,7 +193,11 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	
 	/* fix the user-mode stackpointer */
 
+<<<<<<< HEAD
 	p->thread.usp = usp;	
+=======
+	p->thread.usp = usp ?: rdusp();
+>>>>>>> refs/remotes/origin/master
 
 	/* and the kernel-mode one */
 
@@ -164,6 +211,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* 
  * Be aware of the "magic" 7th argument in the four system-calls below.
  * They need the latest stackframe, which is put as the 7th argument by
@@ -228,6 +276,8 @@ asmlinkage int sys_execve(const char *fname,
 	return error;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long get_wchan(struct task_struct *p)
 {
 #if 0
@@ -261,6 +311,12 @@ unsigned long get_wchan(struct task_struct *p)
 void show_regs(struct pt_regs * regs)
 {
 	unsigned long usp = rdusp();
+<<<<<<< HEAD
+=======
+
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
 	printk("IRP: %08lx SRP: %08lx DCCR: %08lx USP: %08lx MOF: %08lx\n",
 	       regs->irp, regs->srp, regs->dccr, usp, regs->mof );
 	printk(" r0: %08lx  r1: %08lx   r2: %08lx  r3: %08lx\n",

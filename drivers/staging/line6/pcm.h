@@ -40,11 +40,14 @@
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define LINE6_BACKUP_MONITOR_SIGNAL 0
 #define LINE6_REUSE_DMA_AREA_FOR_PLAYBACK 0
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
 	Get substream from Line6 PCM data structure
 */
@@ -52,6 +55,7 @@
 		(line6pcm->pcm->streams[stream].substream)
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
 	PCM mode bits and masks.
 	"ALSA": operations triggered by applications via ALSA
@@ -105,6 +109,8 @@ enum {
 	MASK_CAPTURE = MASK_PCM_ALSA_CAPTURE | MASK_PCM_MONITOR_CAPTURE
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	PCM mode bits.
 
 	There are several features of the Line6 USB driver which require PCM
@@ -226,11 +232,18 @@ enum {
 #endif
 	    LINE6_BIT_PCM_ALSA_CAPTURE_STREAM |
 	    LINE6_BIT_PCM_MONITOR_CAPTURE_STREAM,
+<<<<<<< HEAD
 	
 	LINE6_BITS_STREAM =
 	    LINE6_BITS_PLAYBACK_STREAM |
 	    LINE6_BITS_CAPTURE_STREAM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	LINE6_BITS_STREAM =
+	    LINE6_BITS_PLAYBACK_STREAM |
+	    LINE6_BITS_CAPTURE_STREAM
+>>>>>>> refs/remotes/origin/master
 };
 
 struct line6_pcm_properties {
@@ -281,6 +294,7 @@ struct snd_line6_pcm {
 
 	/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 Temporary buffer index for playback.
 	*/
 	int index_out;
@@ -288,6 +302,8 @@ struct snd_line6_pcm {
 	/**
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 Previously captured frame (for software monitoring).
 	*/
 	unsigned char *prev_fbuf;
@@ -433,10 +449,14 @@ struct snd_line6_pcm {
 
 	/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 Several status bits (see BIT_*).
 =======
 		 Several status bits (see LINE6_BIT_*).
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 Several status bits (see LINE6_BIT_*).
+>>>>>>> refs/remotes/origin/master
 	*/
 	unsigned long flags;
 
@@ -448,6 +468,7 @@ extern int line6_init_pcm(struct usb_line6 *line6,
 extern int snd_line6_trigger(struct snd_pcm_substream *substream, int cmd);
 extern int snd_line6_prepare(struct snd_pcm_substream *substream);
 extern void line6_pcm_disconnect(struct snd_line6_pcm *line6pcm);
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern int line6_pcm_start(struct snd_line6_pcm *line6pcm, int channels);
 extern int line6_pcm_stop(struct snd_line6_pcm *line6pcm, int channels);
@@ -464,5 +485,9 @@ extern int line6_pcm_stop(struct snd_line6_pcm *line6pcm, int channels);
 extern int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels);
 extern int line6_pcm_release(struct snd_line6_pcm *line6pcm, int channels);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int line6_pcm_acquire(struct snd_line6_pcm *line6pcm, int channels);
+extern int line6_pcm_release(struct snd_line6_pcm *line6pcm, int channels);
+>>>>>>> refs/remotes/origin/master
 
 #endif

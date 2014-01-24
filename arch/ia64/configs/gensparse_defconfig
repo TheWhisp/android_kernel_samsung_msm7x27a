@@ -25,7 +25,11 @@ CONFIG_ACPI_BUTTON=m
 CONFIG_ACPI_FAN=m
 CONFIG_ACPI_PROCESSOR=m
 CONFIG_ACPI_CONTAINER=m
+<<<<<<< HEAD
 CONFIG_HOTPLUG_PCI=m
+=======
+CONFIG_HOTPLUG_PCI=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_HOTPLUG_PCI_ACPI=m
 CONFIG_PACKET=y
 CONFIG_UNIX=y
@@ -76,9 +80,13 @@ CONFIG_NET_TULIP=y
 CONFIG_TULIP=m
 CONFIG_NET_PCI=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 CONFIG_NET_VENDOR_INTEL=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_NET_VENDOR_INTEL=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_E100=m
 CONFIG_E1000=y
 CONFIG_TIGON3=y
@@ -212,4 +220,7 @@ CONFIG_MAGIC_SYSRQ=y
 CONFIG_DEBUG_KERNEL=y
 CONFIG_DEBUG_MUTEXES=y
 CONFIG_CRYPTO_MD5=y
+<<<<<<< HEAD
 CONFIG_MISC_DEVICES=y
+=======
+>>>>>>> refs/remotes/origin/master

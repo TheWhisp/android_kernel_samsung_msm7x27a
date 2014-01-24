@@ -11,10 +11,14 @@
 #include <stdarg.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/mm.h>
@@ -35,6 +39,7 @@
 #include <linux/random.h>
 #include <linux/hw_breakpoint.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/cpuidle.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -49,6 +54,19 @@
 #include <asm/thread_notify.h>
 #include <asm/stacktrace.h>
 #include <asm/mach/time.h>
+=======
+#include <linux/cpuidle.h>
+#include <linux/leds.h>
+#include <linux/reboot.h>
+
+#include <asm/cacheflush.h>
+#include <asm/idmap.h>
+#include <asm/processor.h>
+#include <asm/thread_notify.h>
+#include <asm/stacktrace.h>
+#include <asm/mach/time.h>
+#include <asm/tls.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_CC_STACKPROTECTOR
 #include <linux/stackprotector.h>
@@ -67,6 +85,7 @@ static const char *isa_modes[] = {
   "ARM" , "Thumb" , "Jazelle", "ThumbEE"
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 extern void setup_mm_for_reboot(char mode);
 
@@ -170,6 +189,11 @@ void arm_machine_restart(char mode, const char *cmd)
 	 */
 	setup_mm_for_reboot(mode);
 =======
+=======
+extern void call_with_stack(void (*fn)(void *), void *arg, void *sp);
+typedef void (*phys_reset_t)(unsigned long);
+
+>>>>>>> refs/remotes/origin/master
 /*
  * A temporary stack to use for CPU reset. This is static so that we
  * don't clobber it with the identity mapping. When running with this
@@ -185,7 +209,10 @@ static void __soft_restart(void *addr)
 
 	/* Take out a flat memory mapping. */
 	setup_mm_for_reboot();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Clean and invalidate caches */
 	flush_cache_all();
@@ -196,6 +223,7 @@ static void __soft_restart(void *addr)
 	/* Push out any further dirty data, and ensure cache is empty */
 	flush_cache_all();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*Push out the dirty data from external caches */
 	outer_disable();
@@ -216,6 +244,8 @@ static void __soft_restart(void *addr)
 	/* Push out the dirty data from external caches */
 	outer_disable();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Switch to the identity mapping. */
 	phys_reset = (phys_reset_t)(unsigned long)virt_to_phys(cpu_reset);
 	phys_reset((unsigned long)addr);
@@ -243,9 +273,14 @@ void soft_restart(unsigned long addr)
 	BUG();
 }
 
+<<<<<<< HEAD
 static void null_restart(char mode, const char *cmd)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void null_restart(enum reboot_mode reboot_mode, const char *cmd)
+{
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -254,6 +289,7 @@ static void null_restart(char mode, const char *cmd)
 void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void (*arm_pm_restart)(char str, const char *cmd) = arm_machine_restart;
 =======
@@ -296,6 +332,16 @@ static void default_idle(void)
 
 extern void arch_idle(void);
 void (*arm_pm_idle)(void) = arch_idle;
+=======
+void (*arm_pm_restart)(enum reboot_mode reboot_mode, const char *cmd) = null_restart;
+EXPORT_SYMBOL_GPL(arm_pm_restart);
+
+/*
+ * This is our default idle handler.
+ */
+
+void (*arm_pm_idle)(void);
+>>>>>>> refs/remotes/origin/master
 
 static void default_idle(void)
 {
@@ -303,6 +349,7 @@ static void default_idle(void)
 		arm_pm_idle();
 	else
 		cpu_do_idle();
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	local_irq_enable();
 }
@@ -414,17 +461,95 @@ void machine_shutdown(void)
 void machine_halt(void)
 {
 	machine_shutdown();
+=======
+	local_irq_enable();
+}
+
+void arch_cpu_idle_prepare(void)
+{
+	local_fiq_enable();
+}
+
+void arch_cpu_idle_enter(void)
+{
+	ledtrig_cpu(CPU_LED_IDLE_START);
+#ifdef CONFIG_PL310_ERRATA_769419
+	wmb();
+#endif
+}
+
+void arch_cpu_idle_exit(void)
+{
+	ledtrig_cpu(CPU_LED_IDLE_END);
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+void arch_cpu_idle_dead(void)
+{
+	cpu_die();
+}
+#endif
+
+/*
+ * Called from the core idle loop.
+ */
+void arch_cpu_idle(void)
+{
+	if (cpuidle_idle_call())
+		default_idle();
+}
+
+/*
+ * Called by kexec, immediately prior to machine_kexec().
+ *
+ * This must completely disable all secondary CPUs; simply causing those CPUs
+ * to execute e.g. a RAM-based pin loop is not sufficient. This allows the
+ * kexec'd kernel to use any and all RAM as it sees fit, without having to
+ * avoid any code or data used by any SW CPU pin loop. The CPU hotplug
+ * functionality embodied in disable_nonboot_cpus() to achieve this.
+ */
+void machine_shutdown(void)
+{
+	disable_nonboot_cpus();
+}
+
+/*
+ * Halting simply requires that the secondary CPUs stop performing any
+ * activity (executing tasks, handling interrupts). smp_send_stop()
+ * achieves this.
+ */
+void machine_halt(void)
+{
+	local_irq_disable();
+	smp_send_stop();
+
+>>>>>>> refs/remotes/origin/master
 	local_irq_disable();
 	while (1);
 }
 
+<<<<<<< HEAD
 void machine_power_off(void)
 {
 	machine_shutdown();
+=======
+/*
+ * Power-off simply requires that the secondary CPUs stop performing any
+ * activity (executing tasks, handling interrupts). smp_send_stop()
+ * achieves this. When the system power is turned off, it will take all CPUs
+ * with it.
+ */
+void machine_power_off(void)
+{
+	local_irq_disable();
+	smp_send_stop();
+
+>>>>>>> refs/remotes/origin/master
 	if (pm_power_off)
 		pm_power_off();
 }
 
+<<<<<<< HEAD
 void machine_restart(char *cmd)
 {
 	machine_shutdown();
@@ -435,6 +560,23 @@ void machine_restart(char *cmd)
 	/* Flush the console to make sure all the relevant messages make it
 	 * out to the console drivers */
 	arm_machine_flush_console();
+=======
+/*
+ * Restart requires that the secondary CPUs stop performing any activity
+ * while the primary CPU resets the system. Systems with a single CPU can
+ * use soft_restart() as their machine descriptor's .restart hook, since that
+ * will cause the only available CPU to reset. Systems with multiple CPUs must
+ * provide a HW restart implementation, to ensure that all CPUs reset at once.
+ * This is required so that any code running after reset on the primary CPU
+ * doesn't have to co-ordinate with other CPUs to ensure they aren't still
+ * executing pre-reset code, and using RAM that the primary CPU's code wishes
+ * to use. Implementing such co-ordination would be essentially impossible.
+ */
+void machine_restart(char *cmd)
+{
+	local_irq_disable();
+	smp_send_stop();
+>>>>>>> refs/remotes/origin/master
 
 	arm_pm_restart(reboot_mode, cmd);
 
@@ -445,6 +587,7 @@ void machine_restart(char *cmd)
 	printk("Reboot failed -- System halted\n");
 	local_irq_disable();
 	while (1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -517,6 +660,8 @@ static void show_extra_register_data(struct pt_regs *regs, int nbytes)
 	show_data(regs->ARM_r9 - nbytes, nbytes * 2, "R9");
 	show_data(regs->ARM_r10 - nbytes, nbytes * 2, "R10");
 	set_fs(fs);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void __show_regs(struct pt_regs *regs)
@@ -524,11 +669,16 @@ void __show_regs(struct pt_regs *regs)
 	unsigned long flags;
 	char buf[64];
 
+<<<<<<< HEAD
 	printk("CPU: %d    %s  (%s %.*s)\n",
 		raw_smp_processor_id(), print_tainted(),
 		init_utsname()->release,
 		(int)strcspn(init_utsname()->version, " "),
 		init_utsname()->version);
+=======
+	show_regs_print_info(KERN_DEFAULT);
+
+>>>>>>> refs/remotes/origin/master
 	print_symbol("PC is at %s\n", instruction_pointer(regs));
 	print_symbol("LR is at %s\n", regs->ARM_lr);
 	printk("pc : [<%08lx>]    lr : [<%08lx>]    psr: %08lx\n"
@@ -578,13 +728,17 @@ void __show_regs(struct pt_regs *regs)
 		printk("Control: %08x%s\n", ctrl, buf);
 	}
 #endif
+<<<<<<< HEAD
 
 	show_extra_register_data(regs, 128);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 void show_regs(struct pt_regs * regs)
 {
 	printk("\n");
+<<<<<<< HEAD
 	printk("Pid: %d, comm: %20s\n", task_pid_nr(current), current->comm);
 	__show_regs(regs);
 <<<<<<< HEAD
@@ -592,6 +746,10 @@ void show_regs(struct pt_regs * regs)
 =======
 	dump_stack();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__show_regs(regs);
+	dump_stack();
+>>>>>>> refs/remotes/origin/master
 }
 
 ATOMIC_NOTIFIER_HEAD(thread_notify_head);
@@ -628,11 +786,16 @@ asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
 
 int
 copy_thread(unsigned long clone_flags, unsigned long stack_start,
+<<<<<<< HEAD
 	    unsigned long stk_sz, struct task_struct *p, struct pt_regs *regs)
+=======
+	    unsigned long stk_sz, struct task_struct *p)
+>>>>>>> refs/remotes/origin/master
 {
 	struct thread_info *thread = task_thread_info(p);
 	struct pt_regs *childregs = task_pt_regs(p);
 
+<<<<<<< HEAD
 	*childregs = *regs;
 	childregs->ARM_r0 = 0;
 	childregs->ARM_sp = stack_start;
@@ -640,11 +803,33 @@ copy_thread(unsigned long clone_flags, unsigned long stack_start,
 	memset(&thread->cpu_context, 0, sizeof(struct cpu_context_save));
 	thread->cpu_context.sp = (unsigned long)childregs;
 	thread->cpu_context.pc = (unsigned long)ret_from_fork;
+=======
+	memset(&thread->cpu_context, 0, sizeof(struct cpu_context_save));
+
+	if (likely(!(p->flags & PF_KTHREAD))) {
+		*childregs = *current_pt_regs();
+		childregs->ARM_r0 = 0;
+		if (stack_start)
+			childregs->ARM_sp = stack_start;
+	} else {
+		memset(childregs, 0, sizeof(struct pt_regs));
+		thread->cpu_context.r4 = stk_sz;
+		thread->cpu_context.r5 = stack_start;
+		childregs->ARM_cpsr = SVC_MODE;
+	}
+	thread->cpu_context.pc = (unsigned long)ret_from_fork;
+	thread->cpu_context.sp = (unsigned long)childregs;
+>>>>>>> refs/remotes/origin/master
 
 	clear_ptrace_hw_breakpoint(p);
 
 	if (clone_flags & CLONE_SETTLS)
+<<<<<<< HEAD
 		thread->tp_value = regs->ARM_r3;
+=======
+		thread->tp_value[0] = childregs->ARM_r3;
+	thread->tp_value[1] = get_tpuser();
+>>>>>>> refs/remotes/origin/master
 
 	thread_notify(THREAD_NOTIFY_COPY, thread);
 
@@ -675,6 +860,7 @@ int dump_fpu (struct pt_regs *regs, struct user_fp *fp)
 }
 EXPORT_SYMBOL(dump_fpu);
 
+<<<<<<< HEAD
 /*
  * Shuffle the argument into the correct register before calling the
  * thread function.  r4 is the thread argument, r5 is the pointer to
@@ -739,6 +925,12 @@ unsigned long get_wchan(struct task_struct *p)
 	unsigned long stack_page;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long get_wchan(struct task_struct *p)
+{
+	struct stackframe frame;
+	unsigned long stack_page;
+>>>>>>> refs/remotes/origin/master
 	int count = 0;
 	if (!p || p == current || p->state == TASK_RUNNING)
 		return 0;
@@ -748,16 +940,22 @@ unsigned long get_wchan(struct task_struct *p)
 	frame.lr = 0;			/* recovered from the stack */
 	frame.pc = thread_saved_pc(p);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	stack_page = (unsigned long)task_stack_page(p);
 	do {
 		if (frame.sp < stack_page ||
 		    frame.sp >= stack_page + THREAD_SIZE ||
 		    unwind_frame(&frame) < 0)
+<<<<<<< HEAD
 =======
 	do {
 		int ret = unwind_frame(&frame);
 		if (ret < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		if (!in_sched_functions(frame.pc))
 			return frame.pc;
@@ -772,6 +970,7 @@ unsigned long arch_randomize_brk(struct mm_struct *mm)
 }
 
 #ifdef CONFIG_MMU
+<<<<<<< HEAD
 /*
  * The vectors page is always readable from user space for the
 <<<<<<< HEAD
@@ -800,6 +999,23 @@ static int __init gate_vma_init(void)
 	gate_vma.vm_page_prot	= PAGE_READONLY_EXEC;
 	gate_vma.vm_flags	= VM_READ | VM_EXEC |
 				  VM_MAYREAD | VM_MAYEXEC;
+=======
+#ifdef CONFIG_KUSER_HELPERS
+/*
+ * The vectors page is always readable from user space for the
+ * atomic helpers. Insert it into the gate_vma so that it is visible
+ * through ptrace and /proc/<pid>/mem.
+ */
+static struct vm_area_struct gate_vma = {
+	.vm_start	= 0xffff0000,
+	.vm_end		= 0xffff0000 + PAGE_SIZE,
+	.vm_flags	= VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYEXEC,
+};
+
+static int __init gate_vma_init(void)
+{
+	gate_vma.vm_page_prot = PAGE_READONLY_EXEC;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 arch_initcall(gate_vma_init);
@@ -817,6 +1033,7 @@ int in_gate_area(struct mm_struct *mm, unsigned long addr)
 int in_gate_area_no_mm(unsigned long addr)
 {
 	return in_gate_area(NULL, addr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -827,5 +1044,51 @@ const char *arch_vma_name(struct vm_area_struct *vma)
 =======
 	return (vma == &gate_vma) ? "[vectors]" : NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+}
+#define is_gate_vma(vma)	((vma) == &gate_vma)
+#else
+#define is_gate_vma(vma)	0
+#endif
+
+const char *arch_vma_name(struct vm_area_struct *vma)
+{
+	return is_gate_vma(vma) ? "[vectors]" :
+		(vma->vm_mm && vma->vm_start == vma->vm_mm->context.sigpage) ?
+		 "[sigpage]" : NULL;
+}
+
+static struct page *signal_page;
+extern struct page *get_signal_page(void);
+
+int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+{
+	struct mm_struct *mm = current->mm;
+	unsigned long addr;
+	int ret;
+
+	if (!signal_page)
+		signal_page = get_signal_page();
+	if (!signal_page)
+		return -ENOMEM;
+
+	down_write(&mm->mmap_sem);
+	addr = get_unmapped_area(NULL, 0, PAGE_SIZE, 0, 0);
+	if (IS_ERR_VALUE(addr)) {
+		ret = addr;
+		goto up_fail;
+	}
+
+	ret = install_special_mapping(mm, addr, PAGE_SIZE,
+		VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC,
+		&signal_page);
+
+	if (ret == 0)
+		mm->context.sigpage = addr;
+
+ up_fail:
+	up_write(&mm->mmap_sem);
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 #endif

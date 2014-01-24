@@ -23,11 +23,18 @@
 #include <linux/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cp15.h>
 #include <asm/system_info.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/unaligned.h>
+=======
+#include <asm/cp15.h>
+#include <asm/system_info.h>
+#include <asm/unaligned.h>
+#include <asm/opcodes.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "fault.h"
 
@@ -91,7 +98,10 @@ core_param(alignment, ai_usermode, int, 0600);
 #define UM_SIGNAL	(1 << 2)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Return true if and only if the ARMv6 unaligned access model is in use. */
 static bool cpu_is_v6_unaligned(void)
 {
@@ -119,7 +129,10 @@ static int safe_usermode(int new_usermode, bool warn)
 	return new_usermode;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_FS
 static const char *usermode_action[] = {
 	"ignored",
@@ -161,10 +174,14 @@ static ssize_t alignment_proc_write(struct file *file, const char __user *buffer
 			return -EFAULT;
 		if (mode >= '0' && mode <= '5')
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ai_usermode = mode - '0';
 =======
 			ai_usermode = safe_usermode(mode - '0', true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ai_usermode = safe_usermode(mode - '0', true);
+>>>>>>> refs/remotes/origin/master
 	}
 	return count;
 }
@@ -709,7 +726,10 @@ do_alignment_t32_to_handler(unsigned long *pinstr, struct pt_regs *regs,
 	unsigned long instr = *pinstr;
 	u16 tinst1 = (instr >> 16) & 0xffff;
 	u16 tinst2 = instr & 0xffff;
+<<<<<<< HEAD
 	poffset->un = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (tinst1 & 0xffe0) {
 	/* A6.3.5 Load/Store multiple */
@@ -756,7 +776,11 @@ do_alignment_t32_to_handler(unsigned long *pinstr, struct pt_regs *regs,
 static int
 do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 {
+<<<<<<< HEAD
 	union offset_union offset;
+=======
+	union offset_union uninitialized_var(offset);
+>>>>>>> refs/remotes/origin/master
 	unsigned long instr = 0, instrptr;
 	int (*handler)(unsigned long addr, unsigned long instr, struct pt_regs *regs);
 	unsigned int type;
@@ -766,32 +790,53 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 	int thumb2_32b = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	offset.un = 0;
 =======
 	if (interrupts_enabled(regs))
 		local_irq_enable();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (interrupts_enabled(regs))
+		local_irq_enable();
+>>>>>>> refs/remotes/origin/master
 
 	instrptr = instruction_pointer(regs);
 
 	if (thumb_mode(regs)) {
 		u16 *ptr = (u16 *)(instrptr & ~1);
 		fault = probe_kernel_address(ptr, tinstr);
+<<<<<<< HEAD
+=======
+		tinstr = __mem_to_opcode_thumb16(tinstr);
+>>>>>>> refs/remotes/origin/master
 		if (!fault) {
 			if (cpu_architecture() >= CPU_ARCH_ARMv7 &&
 			    IS_T32(tinstr)) {
 				/* Thumb-2 32-bit */
 				u16 tinst2 = 0;
 				fault = probe_kernel_address(ptr + 1, tinst2);
+<<<<<<< HEAD
 				instr = (tinstr << 16) | tinst2;
+=======
+				tinst2 = __mem_to_opcode_thumb16(tinst2);
+				instr = __opcode_thumb32_compose(tinstr, tinst2);
+>>>>>>> refs/remotes/origin/master
 				thumb2_32b = 1;
 			} else {
 				isize = 2;
 				instr = thumb2arm(tinstr);
 			}
 		}
+<<<<<<< HEAD
 	} else
 		fault = probe_kernel_address(instrptr, instr);
+=======
+	} else {
+		fault = probe_kernel_address(instrptr, instr);
+		instr = __mem_to_opcode_arm(instr);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (fault) {
 		type = TYPE_FAULT;
@@ -865,10 +910,20 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		break;
 
 	case 0x08000000:	/* ldm or stm, or thumb-2 32bit instruction */
+<<<<<<< HEAD
 		if (thumb2_32b)
 			handler = do_alignment_t32_to_handler(&instr, regs, &offset);
 		else
 			handler = do_alignment_ldmstm;
+=======
+		if (thumb2_32b) {
+			offset.un = 0;
+			handler = do_alignment_t32_to_handler(&instr, regs, &offset);
+		} else {
+			offset.un = 0;
+			handler = do_alignment_ldmstm;
+		}
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	default:
@@ -927,10 +982,13 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 		goto fixup;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ai_usermode & UM_SIGNAL)
 		force_sig(SIGBUS, current);
 	else {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ai_usermode & UM_SIGNAL) {
 		siginfo_t si;
 
@@ -941,7 +999,10 @@ do_alignment(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
 
 		force_sig_info(si.si_signo, &si, current);
 	} else {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We're about to disable the alignment trap and return to
 		 * user space.  But if an interrupt occurs before actually
@@ -980,6 +1041,7 @@ static int __init alignment_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * ARMv6 and later CPUs can perform unaligned accesses for
 	 * most single load and store instructions up to word size.
@@ -998,15 +1060,24 @@ static int __init alignment_init(void)
 
 	hook_fault_code(1, do_alignment, SIGBUS, BUS_ADRALN,
 =======
+=======
+#ifdef CONFIG_CPU_CP15
+>>>>>>> refs/remotes/origin/master
 	if (cpu_is_v6_unaligned()) {
 		cr_alignment &= ~CR_A;
 		cr_no_alignment &= ~CR_A;
 		set_cr(cr_alignment);
 		ai_usermode = safe_usermode(ai_usermode, false);
 	}
+<<<<<<< HEAD
 
 	hook_fault_code(FAULT_CODE_ALIGNMENT, do_alignment, SIGBUS, BUS_ADRALN,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+
+	hook_fault_code(FAULT_CODE_ALIGNMENT, do_alignment, SIGBUS, BUS_ADRALN,
+>>>>>>> refs/remotes/origin/master
 			"alignment exception");
 
 	/*

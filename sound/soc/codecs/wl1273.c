@@ -24,9 +24,13 @@
 #include <linux/mfd/wl1273-core.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
 #include <sound/soc.h>
@@ -293,11 +297,30 @@ static const struct snd_kcontrol_new wl1273_controls[] = {
 		       snd_wl1273_fm_volume_get, snd_wl1273_fm_volume_put),
 };
 
+<<<<<<< HEAD
 static int wl1273_startup(struct snd_pcm_substream *substream,
 			  struct snd_soc_dai *dai)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+static const struct snd_soc_dapm_widget wl1273_dapm_widgets[] = {
+	SND_SOC_DAPM_INPUT("RX"),
+
+	SND_SOC_DAPM_OUTPUT("TX"),
+};
+
+static const struct snd_soc_dapm_route wl1273_dapm_routes[] = {
+	{ "Capture", NULL, "RX" },
+
+	{ "TX", NULL, "Playback" },
+};
+
+static int wl1273_startup(struct snd_pcm_substream *substream,
+			  struct snd_soc_dai *dai)
+{
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(codec);
 
 	switch (wl1273->mode) {
@@ -332,8 +355,12 @@ static int wl1273_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(rtd->codec);
+=======
+	struct wl1273_priv *wl1273 = snd_soc_codec_get_drvdata(dai->codec);
+>>>>>>> refs/remotes/origin/master
 	struct wl1273_core *core = wl1273->core;
 	unsigned int rate, width, r;
 
@@ -390,10 +417,14 @@ static int wl1273_hw_params(struct snd_pcm_substream *substream,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wl1273_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wl1273_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wl1273_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= wl1273_startup,
 	.hw_params	= wl1273_hw_params,
 };
@@ -471,6 +502,7 @@ static int wl1273_probe(struct snd_soc_codec *codec)
 
 	snd_soc_codec_set_drvdata(codec, wl1273);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_init(&codec->mutex);
 
 	r = snd_soc_add_controls(codec, wl1273_controls,
@@ -478,6 +510,10 @@ static int wl1273_probe(struct snd_soc_codec *codec)
 
 	r = snd_soc_add_codec_controls(codec, wl1273_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	r = snd_soc_add_codec_controls(codec, wl1273_controls,
+>>>>>>> refs/remotes/origin/master
 				 ARRAY_SIZE(wl1273_controls));
 	if (r)
 		kfree(wl1273);
@@ -498,15 +534,30 @@ static int wl1273_remove(struct snd_soc_codec *codec)
 static struct snd_soc_codec_driver soc_codec_dev_wl1273 = {
 	.probe = wl1273_probe,
 	.remove = wl1273_remove,
+<<<<<<< HEAD
 };
 
 static int __devinit wl1273_platform_probe(struct platform_device *pdev)
+=======
+
+	.dapm_widgets = wl1273_dapm_widgets,
+	.num_dapm_widgets = ARRAY_SIZE(wl1273_dapm_widgets),
+	.dapm_routes = wl1273_dapm_routes,
+	.num_dapm_routes = ARRAY_SIZE(wl1273_dapm_routes),
+};
+
+static int wl1273_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wl1273,
 				      &wl1273_dai, 1);
 }
 
+<<<<<<< HEAD
 static int __devexit wl1273_platform_remove(struct platform_device *pdev)
+=======
+static int wl1273_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
@@ -520,6 +571,7 @@ static struct platform_driver wl1273_platform_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= wl1273_platform_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(wl1273_platform_remove),
 };
 
@@ -538,6 +590,12 @@ module_exit(wl1273_exit);
 =======
 module_platform_driver(wl1273_platform_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= wl1273_platform_remove,
+};
+
+module_platform_driver(wl1273_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Matti Aaltonen <matti.j.aaltonen@nokia.com>");
 MODULE_DESCRIPTION("ASoC WL1273 codec driver");

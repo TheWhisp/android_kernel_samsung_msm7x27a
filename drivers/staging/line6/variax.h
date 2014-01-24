@@ -18,7 +18,10 @@
 #include <sound/core.h>
 
 #include "driver.h"
+<<<<<<< HEAD
 #include "dumprequest.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define VARIAX_STARTUP_DELAY1 1000
 #define VARIAX_STARTUP_DELAY3 100
@@ -32,12 +35,16 @@ enum {
 	VARIAX_STARTUP_VERSIONREQ,
 	VARIAX_STARTUP_WAIT,
 	VARIAX_STARTUP_ACTIVATE,
+<<<<<<< HEAD
 	VARIAX_STARTUP_DUMPREQ,
+=======
+>>>>>>> refs/remotes/origin/master
 	VARIAX_STARTUP_WORKQUEUE,
 	VARIAX_STARTUP_SETUP,
 	VARIAX_STARTUP_LAST = VARIAX_STARTUP_SETUP - 1
 };
 
+<<<<<<< HEAD
 enum {
 	VARIAX_DUMP_PASS1 = LINE6_DUMP_CURRENT,
 	VARIAX_DUMP_PASS2,
@@ -59,6 +66,8 @@ struct variax_model {
 	unsigned char control[78 * 2];
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct usb_line6_variax {
 	/**
 		Generic Line6 USB data.
@@ -66,6 +75,7 @@ struct usb_line6_variax {
 	struct usb_line6 line6;
 
 	/**
+<<<<<<< HEAD
 		Dump request structure.
 		Append two extra buffers for 3-pass data query.
 	*/
@@ -73,11 +83,14 @@ struct usb_line6_variax {
 	struct line6_dump_reqbuf extrabuf[2];
 
 	/**
+=======
+>>>>>>> refs/remotes/origin/master
 		Buffer for activation code.
 	*/
 	unsigned char *buffer_activate;
 
 	/**
+<<<<<<< HEAD
 		Model number.
 	*/
 	int model;
@@ -108,6 +121,8 @@ struct usb_line6_variax {
 	int tone;
 
 	/**
+=======
+>>>>>>> refs/remotes/origin/master
 		Handler for device initializaton.
 	*/
 	struct work_struct startup_work;

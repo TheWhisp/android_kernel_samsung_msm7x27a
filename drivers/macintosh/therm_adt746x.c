@@ -30,9 +30,12 @@
 #include <asm/machdep.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sections.h>
 
 #undef DEBUG
@@ -51,6 +54,7 @@ static u8 FAN_SPD_SET[2] = {0x30, 0x31};
 
 static u8 default_limits_local[3] = {70, 50, 70};    /* local, sensor1, sensor2 */
 static u8 default_limits_chip[3] = {80, 65, 80};    /* local, sensor1, sensor2 */
+<<<<<<< HEAD
 static const char *sensor_location[3];
 
 static int limit_adjust;
@@ -60,6 +64,13 @@ static int verbose;
 =======
 static bool verbose;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char *sensor_location[3] = { "?", "?", "?" };
+
+static int limit_adjust;
+static int fan_speed = -1;
+static bool verbose;
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Colin Leroy <colin@colino.net>");
 MODULE_DESCRIPTION("Driver for ADT746x thermostat in iBook G4 and "
@@ -87,6 +98,7 @@ struct thermostat {
 	int			last_speed[2];
 	int			last_var[2];
 	int			pwm_inv[2];
+<<<<<<< HEAD
 };
 
 static enum {ADT7460, ADT7467} therm_type;
@@ -99,6 +111,18 @@ static void write_both_fan_speed(struct thermostat *th, int speed);
 static void write_fan_speed(struct thermostat *th, int speed, int fan);
 static void thermostat_create_files(void);
 static void thermostat_remove_files(void);
+=======
+	struct task_struct	*thread;
+	struct platform_device	*pdev;
+	enum {
+		ADT7460,
+		ADT7467
+	}			type;
+};
+
+static void write_both_fan_speed(struct thermostat *th, int speed);
+static void write_fan_speed(struct thermostat *th, int speed, int fan);
+>>>>>>> refs/remotes/origin/master
 
 static int
 write_reg(struct thermostat* th, int reg, u8 data)
@@ -134,6 +158,7 @@ read_reg(struct thermostat* th, int reg)
 	return data;
 }
 
+<<<<<<< HEAD
 static struct i2c_driver thermostat_driver;
 
 static int
@@ -194,6 +219,8 @@ remove_thermostat(struct i2c_client *client)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int read_fan_speed(struct thermostat *th, u8 addr)
 {
 	u8 tmp[2];
@@ -211,7 +238,11 @@ static int read_fan_speed(struct thermostat *th, u8 addr)
 static void write_both_fan_speed(struct thermostat *th, int speed)
 {
 	write_fan_speed(th, speed, 0);
+<<<<<<< HEAD
 	if (therm_type == ADT7460)
+=======
+	if (th->type == ADT7460)
+>>>>>>> refs/remotes/origin/master
 		write_fan_speed(th, speed, 1);
 }
 
@@ -224,7 +255,11 @@ static void write_fan_speed(struct thermostat *th, int speed, int fan)
 	else if (speed < -1) 
 		speed = 0;
 	
+<<<<<<< HEAD
 	if (therm_type == ADT7467 && fan == 1)
+=======
+	if (th->type == ADT7467 && fan == 1)
+>>>>>>> refs/remotes/origin/master
 		return;
 	
 	if (th->last_speed[fan] != speed) {
@@ -247,7 +282,11 @@ static void write_fan_speed(struct thermostat *th, int speed, int fan)
 		write_reg(th, FAN_SPD_SET[fan], speed);
 	} else {
 		/* back to automatic */
+<<<<<<< HEAD
 		if(therm_type == ADT7460) {
+=======
+		if(th->type == ADT7460) {
+>>>>>>> refs/remotes/origin/master
 			manual = read_reg(th,
 				MANUAL_MODE[fan]) & (~MANUAL_MASK);
 			manual &= ~INVERT_MASK;
@@ -301,7 +340,11 @@ static void update_fans_speed (struct thermostat *th)
 	/* we don't care about local sensor, so we start at sensor 1 */
 	for (i = 1; i < 3; i++) {
 		int started = 0;
+<<<<<<< HEAD
 		int fan_number = (therm_type == ADT7460 && i == 2);
+=======
+		int fan_number = (th->type == ADT7460 && i == 2);
+>>>>>>> refs/remotes/origin/master
 		int var = th->temps[i] - th->limits[i];
 
 		if (var > -1) {
@@ -378,6 +421,7 @@ static int monitor_task(void *arg)
 
 static void set_limit(struct thermostat *th, int i)
 {
+<<<<<<< HEAD
 		/* Set sensor1 limit higher to avoid powerdowns */
 		th->limits[i] = default_limits_chip[i] + limit_adjust;
 		write_reg(th, LIMIT_REG[i], th->limits[i]);
@@ -488,6 +532,24 @@ static struct i2c_driver thermostat_driver = {
  * FIXME, it does now...
  */
 #define BUILD_SHOW_FUNC_INT(name, data)				\
+=======
+	/* Set sensor1 limit higher to avoid powerdowns */
+	th->limits[i] = default_limits_chip[i] + limit_adjust;
+	write_reg(th, LIMIT_REG[i], th->limits[i]);
+		
+	/* set our limits to normal */
+	th->limits[i] = default_limits_local[i] + limit_adjust;
+}
+
+#define BUILD_SHOW_FUNC_INT(name, data)				\
+static ssize_t show_##name(struct device *dev, struct device_attribute *attr, char *buf)	\
+{								\
+	struct thermostat *th = dev_get_drvdata(dev);		\
+	return sprintf(buf, "%d\n", data);			\
+}
+
+#define BUILD_SHOW_FUNC_INT_LITE(name, data)				\
+>>>>>>> refs/remotes/origin/master
 static ssize_t show_##name(struct device *dev, struct device_attribute *attr, char *buf)	\
 {								\
 	return sprintf(buf, "%d\n", data);			\
@@ -502,22 +564,37 @@ static ssize_t show_##name(struct device *dev, struct device_attribute *attr, ch
 #define BUILD_SHOW_FUNC_FAN(name, data)				\
 static ssize_t show_##name(struct device *dev, struct device_attribute *attr, char *buf)       \
 {								\
+<<<<<<< HEAD
 	return sprintf(buf, "%d (%d rpm)\n", 			\
 		thermostat->last_speed[data],			\
 		read_fan_speed(thermostat, FAN_SPEED[data])	\
+=======
+	struct thermostat *th = dev_get_drvdata(dev);		\
+	return sprintf(buf, "%d (%d rpm)\n", 			\
+		th->last_speed[data],				\
+		read_fan_speed(th, FAN_SPEED[data])		\
+>>>>>>> refs/remotes/origin/master
 		);						\
 }
 
 #define BUILD_STORE_FUNC_DEG(name, data)			\
 static ssize_t store_##name(struct device *dev, struct device_attribute *attr, const char *buf, size_t n) \
 {								\
+<<<<<<< HEAD
+=======
+	struct thermostat *th = dev_get_drvdata(dev);		\
+>>>>>>> refs/remotes/origin/master
 	int val;						\
 	int i;							\
 	val = simple_strtol(buf, NULL, 10);			\
 	printk(KERN_INFO "Adjusting limits by %d degrees\n", val);	\
 	limit_adjust = val;					\
 	for (i=0; i < 3; i++)					\
+<<<<<<< HEAD
 		set_limit(thermostat, i);			\
+=======
+		set_limit(th, i);				\
+>>>>>>> refs/remotes/origin/master
 	return n;						\
 }
 
@@ -533,6 +610,7 @@ static ssize_t store_##name(struct device *dev, struct device_attribute *attr, c
 	return n;						\
 }
 
+<<<<<<< HEAD
 BUILD_SHOW_FUNC_INT(sensor1_temperature,	 (read_reg(thermostat, TEMP_REG[1])))
 BUILD_SHOW_FUNC_INT(sensor2_temperature,	 (read_reg(thermostat, TEMP_REG[2])))
 BUILD_SHOW_FUNC_INT(sensor1_limit,		 thermostat->limits[1])
@@ -547,6 +625,23 @@ BUILD_SHOW_FUNC_FAN(sensor2_fan_speed,	 1)
 BUILD_STORE_FUNC_INT(specified_fan_speed,fan_speed)
 BUILD_SHOW_FUNC_INT(limit_adjust,	 limit_adjust)
 BUILD_STORE_FUNC_DEG(limit_adjust,	 thermostat)
+=======
+BUILD_SHOW_FUNC_INT(sensor1_temperature,	 (read_reg(th, TEMP_REG[1])))
+BUILD_SHOW_FUNC_INT(sensor2_temperature,	 (read_reg(th, TEMP_REG[2])))
+BUILD_SHOW_FUNC_INT(sensor1_limit,		 th->limits[1])
+BUILD_SHOW_FUNC_INT(sensor2_limit,		 th->limits[2])
+BUILD_SHOW_FUNC_STR(sensor1_location,		 sensor_location[1])
+BUILD_SHOW_FUNC_STR(sensor2_location,		 sensor_location[2])
+
+BUILD_SHOW_FUNC_INT_LITE(specified_fan_speed, fan_speed)
+BUILD_STORE_FUNC_INT(specified_fan_speed,fan_speed)
+
+BUILD_SHOW_FUNC_FAN(sensor1_fan_speed,	 0)
+BUILD_SHOW_FUNC_FAN(sensor2_fan_speed,	 1)
+
+BUILD_SHOW_FUNC_INT_LITE(limit_adjust,	 limit_adjust)
+BUILD_STORE_FUNC_DEG(limit_adjust,	 th)
+>>>>>>> refs/remotes/origin/master
 		
 static DEVICE_ATTR(sensor1_temperature,	S_IRUGO,
 		   show_sensor1_temperature,NULL);
@@ -572,6 +667,7 @@ static DEVICE_ATTR(sensor2_fan_speed,	S_IRUGO,
 static DEVICE_ATTR(limit_adjust,	S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH,
 		   show_limit_adjust,	store_limit_adjust);
 
+<<<<<<< HEAD
 
 static int __init
 thermostat_init(void)
@@ -619,6 +715,79 @@ thermostat_init(void)
 	printk(KERN_INFO "adt746x: Thermostat bus: %d, address: 0x%02x, "
 			 "limit_adjust: %d, fan_speed: %d\n",
 			 therm_bus, therm_address, limit_adjust, fan_speed);
+=======
+static void thermostat_create_files(struct thermostat *th)
+{
+	struct device_node *np = th->clt->dev.of_node;
+	struct device *dev;
+	int err;
+
+	/* To maintain ABI compatibility with userspace, create
+	 * the old style platform driver and attach the attributes
+	 * to it here
+	 */
+	th->pdev = of_platform_device_create(np, "temperatures", NULL);
+	if (!th->pdev)
+		return;
+	dev = &th->pdev->dev;
+	dev_set_drvdata(dev, th);
+	err = device_create_file(dev, &dev_attr_sensor1_temperature);
+	err |= device_create_file(dev, &dev_attr_sensor2_temperature);
+	err |= device_create_file(dev, &dev_attr_sensor1_limit);
+	err |= device_create_file(dev, &dev_attr_sensor2_limit);
+	err |= device_create_file(dev, &dev_attr_sensor1_location);
+	err |= device_create_file(dev, &dev_attr_sensor2_location);
+	err |= device_create_file(dev, &dev_attr_limit_adjust);
+	err |= device_create_file(dev, &dev_attr_specified_fan_speed);
+	err |= device_create_file(dev, &dev_attr_sensor1_fan_speed);
+	if(th->type == ADT7460)
+		err |= device_create_file(dev, &dev_attr_sensor2_fan_speed);
+	if (err)
+		printk(KERN_WARNING
+			"Failed to create temperature attribute file(s).\n");
+}
+
+static void thermostat_remove_files(struct thermostat *th)
+{
+	struct device *dev;
+
+	if (!th->pdev)
+		return;
+	dev = &th->pdev->dev;
+	device_remove_file(dev, &dev_attr_sensor1_temperature);
+	device_remove_file(dev, &dev_attr_sensor2_temperature);
+	device_remove_file(dev, &dev_attr_sensor1_limit);
+	device_remove_file(dev, &dev_attr_sensor2_limit);
+	device_remove_file(dev, &dev_attr_sensor1_location);
+	device_remove_file(dev, &dev_attr_sensor2_location);
+	device_remove_file(dev, &dev_attr_limit_adjust);
+	device_remove_file(dev, &dev_attr_specified_fan_speed);
+	device_remove_file(dev, &dev_attr_sensor1_fan_speed);	
+	if (th->type == ADT7460)
+		device_remove_file(dev, &dev_attr_sensor2_fan_speed);
+	of_device_unregister(th->pdev);
+
+}
+
+static int probe_thermostat(struct i2c_client *client,
+			    const struct i2c_device_id *id)
+{
+	struct device_node *np = client->dev.of_node;
+	struct thermostat* th;
+	const __be32 *prop;
+	int i, rc, vers, offset = 0;
+
+	if (!np)
+		return -ENXIO;
+	prop = of_get_property(np, "hwsensor-params-version", NULL);
+	if (!prop)
+		return -ENXIO;
+	vers = be32_to_cpup(prop);
+	printk(KERN_INFO "adt746x: version %d (%ssupported)\n",
+	       vers, vers == 1 ? "" : "un");
+	if (vers != 1)
+		return -ENXIO;
+>>>>>>> refs/remotes/origin/master
 
 	if (of_get_property(np, "hwsensor-location", NULL)) {
 		for (i = 0; i < 3; i++) {
@@ -631,6 +800,7 @@ thermostat_init(void)
 			printk(KERN_INFO "sensor %d: %s\n", i, sensor_location[i]);
 			offset += strlen(sensor_location[i]) + 1;
 		}
+<<<<<<< HEAD
 	} else {
 		sensor_location[0] = "?";
 		sensor_location[1] = "?";
@@ -697,6 +867,131 @@ thermostat_exit(void)
 {
 	i2c_del_driver(&thermostat_driver);
 	of_device_unregister(of_dev);
+=======
+	}
+
+	th = kzalloc(sizeof(struct thermostat), GFP_KERNEL);
+	if (!th)
+		return -ENOMEM;
+
+	i2c_set_clientdata(client, th);
+	th->clt = client;
+	th->type = id->driver_data;
+
+	rc = read_reg(th, CONFIG_REG);
+	if (rc < 0) {
+		dev_err(&client->dev, "Thermostat failed to read config!\n");
+		kfree(th);
+		return -ENODEV;
+	}
+
+	/* force manual control to start the fan quieter */
+	if (fan_speed == -1)
+		fan_speed = 64;
+	
+	if (th->type == ADT7460) {
+		printk(KERN_INFO "adt746x: ADT7460 initializing\n");
+		/* The 7460 needs to be started explicitly */
+		write_reg(th, CONFIG_REG, 1);
+	} else
+		printk(KERN_INFO "adt746x: ADT7467 initializing\n");
+
+	for (i = 0; i < 3; i++) {
+		th->initial_limits[i] = read_reg(th, LIMIT_REG[i]);
+		set_limit(th, i);
+	}
+
+	printk(KERN_INFO "adt746x: Lowering max temperatures from %d, %d, %d"
+			 " to %d, %d, %d\n",
+			 th->initial_limits[0], th->initial_limits[1],
+			 th->initial_limits[2], th->limits[0], th->limits[1],
+			 th->limits[2]);
+
+	/* record invert bit status because fw can corrupt it after suspend */
+	th->pwm_inv[0] = read_reg(th, MANUAL_MODE[0]) & INVERT_MASK;
+	th->pwm_inv[1] = read_reg(th, MANUAL_MODE[1]) & INVERT_MASK;
+
+	/* be sure to really write fan speed the first time */
+	th->last_speed[0] = -2;
+	th->last_speed[1] = -2;
+	th->last_var[0] = -80;
+	th->last_var[1] = -80;
+
+	if (fan_speed != -1) {
+		/* manual mode, stop fans */
+		write_both_fan_speed(th, 0);
+	} else {
+		/* automatic mode */
+		write_both_fan_speed(th, -1);
+	}
+	
+	th->thread = kthread_run(monitor_task, th, "kfand");
+	if (th->thread == ERR_PTR(-ENOMEM)) {
+		printk(KERN_INFO "adt746x: Kthread creation failed\n");
+		th->thread = NULL;
+		return -ENOMEM;
+	}
+
+	thermostat_create_files(th);
+
+	return 0;
+}
+
+static int remove_thermostat(struct i2c_client *client)
+{
+	struct thermostat *th = i2c_get_clientdata(client);
+	int i;
+	
+	thermostat_remove_files(th);
+
+	if (th->thread != NULL)
+		kthread_stop(th->thread);
+
+	printk(KERN_INFO "adt746x: Putting max temperatures back from "
+			 "%d, %d, %d to %d, %d, %d\n",
+		th->limits[0], th->limits[1], th->limits[2],
+		th->initial_limits[0], th->initial_limits[1],
+		th->initial_limits[2]);
+
+	for (i = 0; i < 3; i++)
+		write_reg(th, LIMIT_REG[i], th->initial_limits[i]);
+
+	write_both_fan_speed(th, -1);
+
+	kfree(th);
+
+	return 0;
+}
+
+static const struct i2c_device_id therm_adt746x_id[] = {
+	{ "MAC,adt7460", ADT7460 },
+	{ "MAC,adt7467", ADT7467 },
+	{ }
+};
+MODULE_DEVICE_TABLE(i2c, therm_adt746x_id);
+
+static struct i2c_driver thermostat_driver = {
+	.driver = {
+		.name	= "therm_adt746x",
+	},
+	.probe = probe_thermostat,
+	.remove = remove_thermostat,
+	.id_table = therm_adt746x_id,
+};
+
+static int __init thermostat_init(void)
+{
+#ifndef CONFIG_I2C_POWERMAC
+	request_module("i2c-powermac");
+#endif
+
+	return i2c_add_driver(&thermostat_driver);
+}
+
+static void __exit thermostat_exit(void)
+{
+	i2c_del_driver(&thermostat_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(thermostat_init);

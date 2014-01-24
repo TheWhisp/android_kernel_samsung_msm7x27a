@@ -16,6 +16,7 @@
 #include <linux/slab.h>
 #include <linux/interrupt.h>
 #include <linux/ioport.h>
+<<<<<<< HEAD
 #include <linux/clk.h>
 #include <linux/platform_device.h>
 #include <linux/iommu.h>
@@ -27,6 +28,22 @@
 #include <plat/iommu.h>
 
 #include <plat/iopgtable.h>
+=======
+#include <linux/platform_device.h>
+#include <linux/iommu.h>
+#include <linux/omap-iommu.h>
+#include <linux/mutex.h>
+#include <linux/spinlock.h>
+#include <linux/io.h>
+#include <linux/pm_runtime.h>
+
+#include <asm/cacheflush.h>
+
+#include <linux/platform_data/iommu-omap.h>
+
+#include "omap-iopgtable.h"
+#include "omap-iommu.h"
+>>>>>>> refs/remotes/origin/master
 
 #define for_each_iotlb_cr(obj, n, __i, cr)				\
 	for (__i = 0;							\
@@ -41,14 +58,40 @@
  * @pgtable:	the page table
  * @iommu_dev:	an omap iommu device attached to this domain. only a single
  *		iommu device can be attached for now.
+<<<<<<< HEAD
+=======
+ * @dev:	Device using this domain.
+>>>>>>> refs/remotes/origin/master
  * @lock:	domain lock, should be taken when attaching/detaching
  */
 struct omap_iommu_domain {
 	u32 *pgtable;
 	struct omap_iommu *iommu_dev;
+<<<<<<< HEAD
 	spinlock_t lock;
 };
 
+=======
+	struct device *dev;
+	spinlock_t lock;
+};
+
+#define MMU_LOCK_BASE_SHIFT	10
+#define MMU_LOCK_BASE_MASK	(0x1f << MMU_LOCK_BASE_SHIFT)
+#define MMU_LOCK_BASE(x)	\
+	((x & MMU_LOCK_BASE_MASK) >> MMU_LOCK_BASE_SHIFT)
+
+#define MMU_LOCK_VICT_SHIFT	4
+#define MMU_LOCK_VICT_MASK	(0x1f << MMU_LOCK_VICT_SHIFT)
+#define MMU_LOCK_VICT(x)	\
+	((x & MMU_LOCK_VICT_MASK) >> MMU_LOCK_VICT_SHIFT)
+
+struct iotlb_lock {
+	short base;
+	short vict;
+};
+
+>>>>>>> refs/remotes/origin/master
 /* accommodate the difference between omap1 and omap2/3 */
 static const struct iommu_functions *arch_iommu;
 
@@ -123,23 +166,46 @@ EXPORT_SYMBOL_GPL(omap_iommu_arch_version);
 static int iommu_enable(struct omap_iommu *obj)
 {
 	int err;
+<<<<<<< HEAD
 
 	if (!obj)
+=======
+	struct platform_device *pdev = to_platform_device(obj->dev);
+	struct iommu_platform_data *pdata = pdev->dev.platform_data;
+
+	if (!pdata)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (!arch_iommu)
 		return -ENODEV;
 
+<<<<<<< HEAD
 	clk_enable(obj->clk);
 
 	err = arch_iommu->enable(obj);
 
 	clk_disable(obj->clk);
+=======
+	if (pdata->deassert_reset) {
+		err = pdata->deassert_reset(pdev, pdata->reset_name);
+		if (err) {
+			dev_err(obj->dev, "deassert_reset failed: %d\n", err);
+			return err;
+		}
+	}
+
+	pm_runtime_get_sync(obj->dev);
+
+	err = arch_iommu->enable(obj);
+
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 static void iommu_disable(struct omap_iommu *obj)
 {
+<<<<<<< HEAD
 	if (!obj)
 		return;
 
@@ -148,6 +214,20 @@ static void iommu_disable(struct omap_iommu *obj)
 	arch_iommu->disable(obj);
 
 	clk_disable(obj->clk);
+=======
+	struct platform_device *pdev = to_platform_device(obj->dev);
+	struct iommu_platform_data *pdata = pdev->dev.platform_data;
+
+	if (!pdata)
+		return;
+
+	arch_iommu->disable(obj);
+
+	pm_runtime_put_sync(obj->dev);
+
+	if (pdata->assert_reset)
+		pdata->assert_reset(pdev, pdata->reset_name);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -270,7 +350,11 @@ static int load_iotlb_entry(struct omap_iommu *obj, struct iotlb_entry *e)
 	if (!obj || !obj->nr_tlb_entries || !e)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	clk_enable(obj->clk);
+=======
+	pm_runtime_get_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 
 	iotlb_lock_get(obj, &l);
 	if (l.base == obj->nr_tlb_entries) {
@@ -300,7 +384,11 @@ static int load_iotlb_entry(struct omap_iommu *obj, struct iotlb_entry *e)
 
 	cr = iotlb_alloc_cr(obj, e);
 	if (IS_ERR(cr)) {
+<<<<<<< HEAD
 		clk_disable(obj->clk);
+=======
+		pm_runtime_put_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(cr);
 	}
 
@@ -314,7 +402,11 @@ static int load_iotlb_entry(struct omap_iommu *obj, struct iotlb_entry *e)
 		l.vict = l.base;
 	iotlb_lock_set(obj, &l);
 out:
+<<<<<<< HEAD
 	clk_disable(obj->clk);
+=======
+	pm_runtime_put_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -344,7 +436,11 @@ static void flush_iotlb_page(struct omap_iommu *obj, u32 da)
 	int i;
 	struct cr_regs cr;
 
+<<<<<<< HEAD
 	clk_enable(obj->clk);
+=======
+	pm_runtime_get_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 
 	for_each_iotlb_cr(obj, obj->nr_tlb_entries, i, cr) {
 		u32 start;
@@ -363,7 +459,11 @@ static void flush_iotlb_page(struct omap_iommu *obj, u32 da)
 			iommu_write_reg(obj, 1, MMU_FLUSH_ENTRY);
 		}
 	}
+<<<<<<< HEAD
 	clk_disable(obj->clk);
+=======
+	pm_runtime_put_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 
 	if (i == obj->nr_tlb_entries)
 		dev_dbg(obj->dev, "%s: no page for %08x\n", __func__, da);
@@ -377,7 +477,11 @@ static void flush_iotlb_all(struct omap_iommu *obj)
 {
 	struct iotlb_lock l;
 
+<<<<<<< HEAD
 	clk_enable(obj->clk);
+=======
+	pm_runtime_get_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 
 	l.base = 0;
 	l.vict = 0;
@@ -385,7 +489,11 @@ static void flush_iotlb_all(struct omap_iommu *obj)
 
 	iommu_write_reg(obj, 1, MMU_GFLUSH);
 
+<<<<<<< HEAD
 	clk_disable(obj->clk);
+=======
+	pm_runtime_put_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 #if defined(CONFIG_OMAP_IOMMU_DEBUG) || defined(CONFIG_OMAP_IOMMU_DEBUG_MODULE)
@@ -395,11 +503,19 @@ ssize_t omap_iommu_dump_ctx(struct omap_iommu *obj, char *buf, ssize_t bytes)
 	if (!obj || !buf)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	clk_enable(obj->clk);
 
 	bytes = arch_iommu->dump_ctx(obj, buf, bytes);
 
 	clk_disable(obj->clk);
+=======
+	pm_runtime_get_sync(obj->dev);
+
+	bytes = arch_iommu->dump_ctx(obj, buf, bytes);
+
+	pm_runtime_put_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return bytes;
 }
@@ -413,7 +529,11 @@ __dump_tlb_entries(struct omap_iommu *obj, struct cr_regs *crs, int num)
 	struct cr_regs tmp;
 	struct cr_regs *p = crs;
 
+<<<<<<< HEAD
 	clk_enable(obj->clk);
+=======
+	pm_runtime_get_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 	iotlb_lock_get(obj, &saved);
 
 	for_each_iotlb_cr(obj, num, i, tmp) {
@@ -423,7 +543,11 @@ __dump_tlb_entries(struct omap_iommu *obj, struct cr_regs *crs, int num)
 	}
 
 	iotlb_lock_set(obj, &saved);
+<<<<<<< HEAD
 	clk_disable(obj->clk);
+=======
+	pm_runtime_put_sync(obj->dev);
+>>>>>>> refs/remotes/origin/master
 
 	return  p - crs;
 }
@@ -787,9 +911,13 @@ static irqreturn_t iommu_fault_handler(int irq, void *data)
 	if (!obj->refcount)
 		return IRQ_NONE;
 
+<<<<<<< HEAD
 	clk_enable(obj->clk);
 	errs = iommu_report_fault(obj, &da);
 	clk_disable(obj->clk);
+=======
+	errs = iommu_report_fault(obj, &da);
+>>>>>>> refs/remotes/origin/master
 	if (errs == 0)
 		return IRQ_HANDLED;
 
@@ -802,16 +930,26 @@ static irqreturn_t iommu_fault_handler(int irq, void *data)
 	iopgd = iopgd_offset(obj, da);
 
 	if (!iopgd_is_table(*iopgd)) {
+<<<<<<< HEAD
 		dev_err(obj->dev, "%s: errs:0x%08x da:0x%08x pgd:0x%p "
 			"*pgd:px%08x\n", obj->name, errs, da, iopgd, *iopgd);
+=======
+		dev_err(obj->dev, "%s: errs:0x%08x da:0x%08x pgd:0x%p *pgd:px%08x\n",
+				obj->name, errs, da, iopgd, *iopgd);
+>>>>>>> refs/remotes/origin/master
 		return IRQ_NONE;
 	}
 
 	iopte = iopte_offset(iopgd, da);
 
+<<<<<<< HEAD
 	dev_err(obj->dev, "%s: errs:0x%08x da:0x%08x pgd:0x%p *pgd:0x%08x "
 		"pte:0x%p *pte:0x%08x\n", obj->name, errs, da, iopgd, *iopgd,
 		iopte, *iopte);
+=======
+	dev_err(obj->dev, "%s: errs:0x%08x da:0x%08x pgd:0x%p *pgd:0x%08x pte:0x%p *pte:0x%08x\n",
+			obj->name, errs, da, iopgd, *iopgd, iopte, *iopte);
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_NONE;
 }
@@ -903,7 +1041,11 @@ static void omap_iommu_detach(struct omap_iommu *obj)
 /*
  *	OMAP Device MMU(IOMMU) detection
  */
+<<<<<<< HEAD
 static int __devinit omap_iommu_probe(struct platform_device *pdev)
+=======
+static int omap_iommu_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err = -ENODEV;
 	int irq;
@@ -911,17 +1053,23 @@ static int __devinit omap_iommu_probe(struct platform_device *pdev)
 	struct resource *res;
 	struct iommu_platform_data *pdata = pdev->dev.platform_data;
 
+<<<<<<< HEAD
 	if (pdev->num_resources != 2)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	obj = kzalloc(sizeof(*obj) + MMU_REG_SIZE, GFP_KERNEL);
 	if (!obj)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	obj->clk = clk_get(&pdev->dev, pdata->clk_name);
 	if (IS_ERR(obj->clk))
 		goto err_clk;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	obj->nr_tlb_entries = pdata->nr_tlb_entries;
 	obj->name = pdata->name;
 	obj->dev = &pdev->dev;
@@ -964,6 +1112,12 @@ static int __devinit omap_iommu_probe(struct platform_device *pdev)
 		goto err_irq;
 	platform_set_drvdata(pdev, obj);
 
+<<<<<<< HEAD
+=======
+	pm_runtime_irq_safe(obj->dev);
+	pm_runtime_enable(obj->dev);
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(&pdev->dev, "%s registered\n", obj->name);
 	return 0;
 
@@ -972,20 +1126,30 @@ err_irq:
 err_ioremap:
 	release_mem_region(res->start, resource_size(res));
 err_mem:
+<<<<<<< HEAD
 	clk_put(obj->clk);
 err_clk:
+=======
+>>>>>>> refs/remotes/origin/master
 	kfree(obj);
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit omap_iommu_remove(struct platform_device *pdev)
+=======
+static int omap_iommu_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 	struct resource *res;
 	struct omap_iommu *obj = platform_get_drvdata(pdev);
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	iopgtable_clear_entry_all(obj);
 
 	irq = platform_get_irq(pdev, 0);
@@ -994,7 +1158,12 @@ static int __devexit omap_iommu_remove(struct platform_device *pdev)
 	release_mem_region(res->start, resource_size(res));
 	iounmap(obj->regbase);
 
+<<<<<<< HEAD
 	clk_put(obj->clk);
+=======
+	pm_runtime_disable(obj->dev);
+
+>>>>>>> refs/remotes/origin/master
 	dev_info(&pdev->dev, "%s removed\n", obj->name);
 	kfree(obj);
 	return 0;
@@ -1002,7 +1171,11 @@ static int __devexit omap_iommu_remove(struct platform_device *pdev)
 
 static struct platform_driver omap_iommu_driver = {
 	.probe	= omap_iommu_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(omap_iommu_remove),
+=======
+	.remove	= omap_iommu_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.name	= "omap-iommu",
 	},
@@ -1013,6 +1186,26 @@ static void iopte_cachep_ctor(void *iopte)
 	clean_dcache_area(iopte, IOPTE_TABLE_SIZE);
 }
 
+<<<<<<< HEAD
+=======
+static u32 iotlb_init_entry(struct iotlb_entry *e, u32 da, u32 pa,
+				   u32 flags)
+{
+	memset(e, 0, sizeof(*e));
+
+	e->da		= da;
+	e->pa		= pa;
+	e->valid	= 1;
+	/* FIXME: add OMAP1 support */
+	e->pgsz		= flags & MMU_CAM_PGSZ_MASK;
+	e->endian	= flags & MMU_RAM_ENDIAN_MASK;
+	e->elsz		= flags & MMU_RAM_ELSZ_MASK;
+	e->mixed	= flags & MMU_RAM_MIXED_MASK;
+
+	return iopgsz_to_bytes(e->pgsz);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int omap_iommu_map(struct iommu_domain *domain, unsigned long da,
 			 phys_addr_t pa, size_t bytes, int prot)
 {
@@ -1081,6 +1274,10 @@ omap_iommu_attach_dev(struct iommu_domain *domain, struct device *dev)
 	}
 
 	omap_domain->iommu_dev = arch_data->iommu_dev = oiommu;
+<<<<<<< HEAD
+=======
+	omap_domain->dev = dev;
+>>>>>>> refs/remotes/origin/master
 	oiommu->domain = domain;
 
 out:
@@ -1088,6 +1285,7 @@ out:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void omap_iommu_detach_dev(struct iommu_domain *domain,
 				 struct device *dev)
 {
@@ -1096,11 +1294,22 @@ static void omap_iommu_detach_dev(struct iommu_domain *domain,
 	struct omap_iommu *oiommu = dev_to_omap_iommu(dev);
 
 	spin_lock(&omap_domain->lock);
+=======
+static void _omap_iommu_detach_dev(struct omap_iommu_domain *omap_domain,
+			struct device *dev)
+{
+	struct omap_iommu *oiommu = dev_to_omap_iommu(dev);
+	struct omap_iommu_arch_data *arch_data = dev->archdata.iommu;
+>>>>>>> refs/remotes/origin/master
 
 	/* only a single device is supported per domain for now */
 	if (omap_domain->iommu_dev != oiommu) {
 		dev_err(dev, "invalid iommu device\n");
+<<<<<<< HEAD
 		goto out;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	iopgtable_clear_entry_all(oiommu);
@@ -1108,8 +1317,21 @@ static void omap_iommu_detach_dev(struct iommu_domain *domain,
 	omap_iommu_detach(oiommu);
 
 	omap_domain->iommu_dev = arch_data->iommu_dev = NULL;
+<<<<<<< HEAD
 
 out:
+=======
+	omap_domain->dev = NULL;
+}
+
+static void omap_iommu_detach_dev(struct iommu_domain *domain,
+				 struct device *dev)
+{
+	struct omap_iommu_domain *omap_domain = domain->priv;
+
+	spin_lock(&omap_domain->lock);
+	_omap_iommu_detach_dev(omap_domain, dev);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock(&omap_domain->lock);
 }
 
@@ -1140,6 +1362,13 @@ static int omap_iommu_domain_init(struct iommu_domain *domain)
 
 	domain->priv = omap_domain;
 
+<<<<<<< HEAD
+=======
+	domain->geometry.aperture_start = 0;
+	domain->geometry.aperture_end   = (1ULL << 32) - 1;
+	domain->geometry.force_aperture = true;
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 fail_nomem:
@@ -1148,19 +1377,36 @@ out:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 /* assume device was already detached */
+=======
+>>>>>>> refs/remotes/origin/master
 static void omap_iommu_domain_destroy(struct iommu_domain *domain)
 {
 	struct omap_iommu_domain *omap_domain = domain->priv;
 
 	domain->priv = NULL;
 
+<<<<<<< HEAD
+=======
+	/*
+	 * An iommu device is still attached
+	 * (currently, only one device can be attached) ?
+	 */
+	if (omap_domain->iommu_dev)
+		_omap_iommu_detach_dev(omap_domain, omap_domain->dev);
+
+>>>>>>> refs/remotes/origin/master
 	kfree(omap_domain->pgtable);
 	kfree(omap_domain);
 }
 
 static phys_addr_t omap_iommu_iova_to_phys(struct iommu_domain *domain,
+<<<<<<< HEAD
 					  unsigned long da)
+=======
+					  dma_addr_t da)
+>>>>>>> refs/remotes/origin/master
 {
 	struct omap_iommu_domain *omap_domain = domain->priv;
 	struct omap_iommu *oiommu = omap_domain->iommu_dev;
@@ -1176,14 +1422,24 @@ static phys_addr_t omap_iommu_iova_to_phys(struct iommu_domain *domain,
 		else if (iopte_is_large(*pte))
 			ret = omap_iommu_translate(*pte, da, IOLARGE_MASK);
 		else
+<<<<<<< HEAD
 			dev_err(dev, "bogus pte 0x%x, da 0x%lx", *pte, da);
+=======
+			dev_err(dev, "bogus pte 0x%x, da 0x%llx", *pte,
+							(unsigned long long)da);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (iopgd_is_section(*pgd))
 			ret = omap_iommu_translate(*pgd, da, IOSECTION_MASK);
 		else if (iopgd_is_super(*pgd))
 			ret = omap_iommu_translate(*pgd, da, IOSUPER_MASK);
 		else
+<<<<<<< HEAD
 			dev_err(dev, "bogus pgd 0x%x, da 0x%lx", *pgd, da);
+=======
+			dev_err(dev, "bogus pgd 0x%x, da 0x%llx", *pgd,
+							(unsigned long long)da);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;

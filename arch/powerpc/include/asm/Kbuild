@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 include include/asm-generic/Kbuild.asm
 
 header-y += auxvec.h
@@ -39,3 +40,11 @@ header-y += unistd.h
 
 generic-y += rwsem.h
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+generic-y += clkdev.h
+generic-y += rwsem.h
+generic-y += trace_clock.h
+generic-y += preempt.h
+generic-y += vtime.h
+>>>>>>> refs/remotes/origin/master

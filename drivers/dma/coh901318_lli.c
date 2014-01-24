@@ -8,20 +8,29 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/dma-mapping.h>
 #include <linux/spinlock.h>
 #include <linux/dmapool.h>
 #include <linux/memory.h>
 #include <linux/gfp.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <linux/memory.h>
 #include <linux/gfp.h>
 #include <linux/dmapool.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <mach/coh901318.h>
 
 #include "coh901318_lli.h"
+=======
+#include <linux/dmaengine.h>
+
+#include "coh901318.h"
+>>>>>>> refs/remotes/origin/master
 
 #if (defined(CONFIG_DEBUG_FS) && defined(CONFIG_U300_DEBUG))
 #define DEBUGFS_POOL_COUNTER_RESET(pool) (pool->debugfs_pool_counter = 0)
@@ -69,7 +78,11 @@ coh901318_lli_alloc(struct coh901318_pool *pool, unsigned int len)
 	dma_addr_t phy;
 
 	if (len == 0)
+<<<<<<< HEAD
 		goto err;
+=======
+		return NULL;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&pool->lock);
 
@@ -185,10 +198,14 @@ coh901318_lli_fill_single(struct coh901318_pool *pool,
 			  dma_addr_t buf, unsigned int size,
 			  dma_addr_t dev_addr, u32 ctrl_chained, u32 ctrl_eom,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			  enum dma_data_direction dir)
 =======
 			  enum dma_transfer_direction dir)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			  enum dma_transfer_direction dir)
+>>>>>>> refs/remotes/origin/master
 {
 	int s = size;
 	dma_addr_t src;
@@ -196,18 +213,24 @@ coh901318_lli_fill_single(struct coh901318_pool *pool,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dir == DMA_TO_DEVICE) {
 		src = buf;
 		dst = dev_addr;
 
 	} else if (dir == DMA_FROM_DEVICE) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dir == DMA_MEM_TO_DEV) {
 		src = buf;
 		dst = dev_addr;
 
 	} else if (dir == DMA_DEV_TO_MEM) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		src = dev_addr;
 		dst = buf;
@@ -235,6 +258,7 @@ coh901318_lli_fill_single(struct coh901318_pool *pool,
 		lli = coh901318_lli_next(lli);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dir == DMA_TO_DEVICE)
 			src += block_size;
 		else if (dir == DMA_FROM_DEVICE)
@@ -243,6 +267,11 @@ coh901318_lli_fill_single(struct coh901318_pool *pool,
 			src += block_size;
 		else if (dir == DMA_DEV_TO_MEM)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (dir == DMA_MEM_TO_DEV)
+			src += block_size;
+		else if (dir == DMA_DEV_TO_MEM)
+>>>>>>> refs/remotes/origin/master
 			dst += block_size;
 	}
 
@@ -260,10 +289,14 @@ coh901318_lli_fill_sg(struct coh901318_pool *pool,
 		      dma_addr_t dev_addr, u32 ctrl_chained, u32 ctrl,
 		      u32 ctrl_last,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      enum dma_data_direction dir, u32 ctrl_irq_mask)
 =======
 		      enum dma_transfer_direction dir, u32 ctrl_irq_mask)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      enum dma_transfer_direction dir, u32 ctrl_irq_mask)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	struct scatterlist *sg;
@@ -279,6 +312,7 @@ coh901318_lli_fill_sg(struct coh901318_pool *pool,
 	spin_lock(&pool->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dir == DMA_TO_DEVICE)
 		dst = dev_addr;
 	else if (dir == DMA_FROM_DEVICE)
@@ -287,6 +321,11 @@ coh901318_lli_fill_sg(struct coh901318_pool *pool,
 		dst = dev_addr;
 	else if (dir == DMA_DEV_TO_MEM)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (dir == DMA_MEM_TO_DEV)
+		dst = dev_addr;
+	else if (dir == DMA_DEV_TO_MEM)
+>>>>>>> refs/remotes/origin/master
 		src = dev_addr;
 	else
 		goto err;
@@ -305,6 +344,7 @@ coh901318_lli_fill_sg(struct coh901318_pool *pool,
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dir == DMA_TO_DEVICE)
 =======
 		if (dir == DMA_MEM_TO_DEV)
@@ -314,6 +354,14 @@ coh901318_lli_fill_sg(struct coh901318_pool *pool,
 		else
 			/* increment destination address */
 			dst =  sg_phys(sg);
+=======
+		if (dir == DMA_MEM_TO_DEV)
+			/* increment source address */
+			src = sg_dma_address(sg);
+		else
+			/* increment destination address */
+			dst = sg_dma_address(sg);
+>>>>>>> refs/remotes/origin/master
 
 		bytes_to_transfer = sg_dma_len(sg);
 
@@ -333,10 +381,14 @@ coh901318_lli_fill_sg(struct coh901318_pool *pool,
 			lli->dst_addr = dst;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (dir == DMA_FROM_DEVICE)
 =======
 			if (dir == DMA_DEV_TO_MEM)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (dir == DMA_DEV_TO_MEM)
+>>>>>>> refs/remotes/origin/master
 				dst += elem_size;
 			else
 				src += elem_size;

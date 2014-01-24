@@ -3,16 +3,28 @@
 
 #include <linux/rbtree.h>
 
+<<<<<<< HEAD
 #define EXTENT_MAP_LAST_BYTE (u64)-4
 #define EXTENT_MAP_HOLE (u64)-3
 #define EXTENT_MAP_INLINE (u64)-2
 #define EXTENT_MAP_DELALLOC (u64)-1
+=======
+#define EXTENT_MAP_LAST_BYTE ((u64)-4)
+#define EXTENT_MAP_HOLE ((u64)-3)
+#define EXTENT_MAP_INLINE ((u64)-2)
+#define EXTENT_MAP_DELALLOC ((u64)-1)
+>>>>>>> refs/remotes/origin/master
 
 /* bits for the flags field */
 #define EXTENT_FLAG_PINNED 0 /* this entry not yet on disk, don't free it */
 #define EXTENT_FLAG_COMPRESSED 1
 #define EXTENT_FLAG_VACANCY 2 /* no file extent item found */
 #define EXTENT_FLAG_PREALLOC 3 /* pre-allocated extent */
+<<<<<<< HEAD
+=======
+#define EXTENT_FLAG_LOGGING 4 /* Logging this extent */
+#define EXTENT_FLAG_FILLING 5 /* Filling in a preallocated extent */
+>>>>>>> refs/remotes/origin/master
 
 struct extent_map {
 	struct rb_node rb_node;
@@ -20,6 +32,7 @@ struct extent_map {
 	/* all of these are in bytes */
 	u64 start;
 	u64 len;
+<<<<<<< HEAD
 	u64 orig_start;
 	u64 block_start;
 	u64 block_len;
@@ -33,10 +46,30 @@ struct extent_map {
 	unsigned int in_tree;
 	unsigned int compress_type;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u64 mod_start;
+	u64 mod_len;
+	u64 orig_start;
+	u64 orig_block_len;
+	u64 ram_bytes;
+	u64 block_start;
+	u64 block_len;
+	u64 generation;
+	unsigned long flags;
+	struct block_device *bdev;
+	atomic_t refs;
+	unsigned int in_tree;
+	unsigned int compress_type;
+	struct list_head list;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct extent_map_tree {
 	struct rb_root map;
+<<<<<<< HEAD
+=======
+	struct list_head modified_extents;
+>>>>>>> refs/remotes/origin/master
 	rwlock_t lock;
 };
 
@@ -58,14 +91,23 @@ void extent_map_tree_init(struct extent_map_tree *tree);
 struct extent_map *lookup_extent_mapping(struct extent_map_tree *tree,
 					 u64 start, u64 len);
 int add_extent_mapping(struct extent_map_tree *tree,
+<<<<<<< HEAD
 		       struct extent_map *em);
+=======
+		       struct extent_map *em, int modified);
+>>>>>>> refs/remotes/origin/master
 int remove_extent_mapping(struct extent_map_tree *tree, struct extent_map *em);
 
 struct extent_map *alloc_extent_map(void);
 void free_extent_map(struct extent_map *em);
 int __init extent_map_init(void);
 void extent_map_exit(void);
+<<<<<<< HEAD
 int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len);
+=======
+int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
+void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em);
+>>>>>>> refs/remotes/origin/master
 struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
 					 u64 start, u64 len);
 #endif

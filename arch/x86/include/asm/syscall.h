@@ -13,6 +13,7 @@
 #ifndef _ASM_X86_SYSCALL_H
 #define _ASM_X86_SYSCALL_H
 
+<<<<<<< HEAD
 #include <linux/sched.h>
 #include <linux/err.h>
 <<<<<<< HEAD
@@ -22,6 +23,17 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 
 extern const unsigned long sys_call_table[];
+=======
+#include <linux/audit.h>
+#include <linux/sched.h>
+#include <linux/err.h>
+#include <asm/asm-offsets.h>	/* For NR_syscalls */
+#include <asm/thread_info.h>	/* for TS_COMPAT */
+#include <asm/unistd.h>
+
+typedef void (*sys_call_ptr_t)(void);
+extern const sys_call_ptr_t sys_call_table[];
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Only the low 32 bits of orig_ax are meaningful, so we return int.
@@ -91,6 +103,15 @@ static inline void syscall_set_arguments(struct task_struct *task,
 	memcpy(&regs->bx + i, args, n * sizeof(args[0]));
 }
 
+<<<<<<< HEAD
+=======
+static inline int syscall_get_arch(struct task_struct *task,
+				   struct pt_regs *regs)
+{
+	return AUDIT_ARCH_I386;
+}
+
+>>>>>>> refs/remotes/origin/master
 #else	 /* CONFIG_X86_64 */
 
 static inline void syscall_get_arguments(struct task_struct *task,
@@ -215,6 +236,28 @@ static inline void syscall_set_arguments(struct task_struct *task,
 		}
 }
 
+<<<<<<< HEAD
+=======
+static inline int syscall_get_arch(struct task_struct *task,
+				   struct pt_regs *regs)
+{
+#ifdef CONFIG_IA32_EMULATION
+	/*
+	 * TS_COMPAT is set for 32-bit syscall entry and then
+	 * remains set until we return to user mode.
+	 *
+	 * TIF_IA32 tasks should always have TS_COMPAT set at
+	 * system call time.
+	 *
+	 * x32 tasks should be considered AUDIT_ARCH_X86_64.
+	 */
+	if (task_thread_info(task)->status & TS_COMPAT)
+		return AUDIT_ARCH_I386;
+#endif
+	/* Both x32 and x86_64 are considered "64-bit". */
+	return AUDIT_ARCH_X86_64;
+}
+>>>>>>> refs/remotes/origin/master
 #endif	/* CONFIG_X86_32 */
 
 #endif	/* _ASM_X86_SYSCALL_H */

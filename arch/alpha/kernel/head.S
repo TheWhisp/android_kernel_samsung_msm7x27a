@@ -9,6 +9,7 @@
 
 #include <linux/init.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 #include <asm/asm-offsets.h>
 
@@ -18,13 +19,18 @@ __HEAD
 swapper_pg_dir=SWAPPER_PGD
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/asm-offsets.h>
 #include <asm/pal.h>
 #include <asm/setup.h>
 
 __HEAD
 .globl _stext
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.set noreorder
 	.globl	__start
 	.ent	__start

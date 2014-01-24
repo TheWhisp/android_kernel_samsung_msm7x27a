@@ -14,7 +14,10 @@
 typedef struct {
 	unsigned long udelay_val;
 	unsigned long clock_tick;
+<<<<<<< HEAD
 	unsigned int multiplier;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int counter;
 #ifdef CONFIG_SMP
 	unsigned int irq_resched_count;

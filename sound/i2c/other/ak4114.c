@@ -23,9 +23,13 @@
 #include <linux/slab.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/control.h>
 #include <sound/pcm.h>
@@ -63,7 +67,11 @@ static void reg_dump(struct ak4114 *ak4114)
 
 	printk(KERN_DEBUG "AK4114 REG DUMP:\n");
 	for (i = 0; i < 0x20; i++)
+<<<<<<< HEAD
 		printk(KERN_DEBUG "reg[%02x] = %02x (%02x)\n", i, reg_read(ak4114, i), i < sizeof(ak4114->regmap) ? ak4114->regmap[i] : 0);
+=======
+		printk(KERN_DEBUG "reg[%02x] = %02x (%02x)\n", i, reg_read(ak4114, i), i < ARRAY_SIZE(ak4114->regmap) ? ak4114->regmap[i] : 0);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -84,7 +92,11 @@ static int snd_ak4114_dev_free(struct snd_device *device)
 
 int snd_ak4114_create(struct snd_card *card,
 		      ak4114_read_t *read, ak4114_write_t *write,
+<<<<<<< HEAD
 		      const unsigned char pgm[7], const unsigned char txcsb[5],
+=======
+		      const unsigned char pgm[6], const unsigned char txcsb[5],
+>>>>>>> refs/remotes/origin/master
 		      void *private_data, struct ak4114 **r_ak4114)
 {
 	struct ak4114 *chip;
@@ -104,7 +116,11 @@ int snd_ak4114_create(struct snd_card *card,
 	chip->private_data = private_data;
 	INIT_DELAYED_WORK(&chip->work, ak4114_stats);
 
+<<<<<<< HEAD
 	for (reg = 0; reg < 7; reg++)
+=======
+	for (reg = 0; reg < 6; reg++)
+>>>>>>> refs/remotes/origin/master
 		chip->regmap[reg] = pgm[reg];
 	for (reg = 0; reg < 5; reg++)
 		chip->txcsb[reg] = txcsb[reg];
@@ -145,7 +161,11 @@ static void ak4114_init_regs(struct ak4114 *chip)
 	/* release reset, but leave powerdown */
 	reg_write(chip, AK4114_REG_PWRDN, (old | AK4114_RST) & ~AK4114_PWN);
 	udelay(200);
+<<<<<<< HEAD
 	for (reg = 1; reg < 7; reg++)
+=======
+	for (reg = 1; reg < 6; reg++)
+>>>>>>> refs/remotes/origin/master
 		reg_write(chip, reg, chip->regmap[reg]);
 	for (reg = 0; reg < 5; reg++)
 		reg_write(chip, reg + AK4114_REG_TXCSB0, chip->txcsb[reg]);
@@ -157,7 +177,11 @@ void snd_ak4114_reinit(struct ak4114 *chip)
 {
 	chip->init = 1;
 	mb();
+<<<<<<< HEAD
 	flush_delayed_work_sync(&chip->work);
+=======
+	flush_delayed_work(&chip->work);
+>>>>>>> refs/remotes/origin/master
 	ak4114_init_regs(chip);
 	/* bring up statistics / event queing */
 	chip->init = 0;
@@ -404,7 +428,11 @@ static struct snd_kcontrol_new snd_ak4114_iec958_controls[] = {
 },
 {
 	.iface =	SNDRV_CTL_ELEM_IFACE_PCM,
+<<<<<<< HEAD
 	.name =		"IEC958 Preample Capture Default",
+=======
+	.name =		"IEC958 Preamble Capture Default",
+>>>>>>> refs/remotes/origin/master
 	.access =	SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
 	.info =		snd_ak4114_spdif_pinfo,
 	.get =		snd_ak4114_spdif_pget,

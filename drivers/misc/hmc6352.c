@@ -46,8 +46,14 @@ static int compass_store(struct device *dev, const char *buf, size_t count,
 	int ret;
 	unsigned long val;
 
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
 		return -EINVAL;
+=======
+	ret = kstrtoul(buf, 10, &val);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	if (val >= strlen(map))
 		return -EINVAL;
 	mutex_lock(&compass_mutex);
@@ -149,6 +155,7 @@ static struct i2c_driver hmc6352_driver = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensor_hmc6352_init(void)
 {
 	return i2c_add_driver(&hmc6352_driver);
@@ -164,6 +171,9 @@ module_exit(sensor_hmc6352_exit);
 =======
 module_i2c_driver(hmc6352_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(hmc6352_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Kalhan Trisal <kalhan.trisal@intel.com");
 MODULE_DESCRIPTION("hmc6352 Compass Driver");

@@ -23,10 +23,14 @@
 static const char *Asuscom_revision = "$Revision: 1.14.2.4 $";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
 =======
 #define byteout(addr, val) outb(val, addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 #define ASUS_ISAC	0
@@ -56,10 +60,14 @@ readreg(unsigned int ale, unsigned int adr, u_char off)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
 =======
 readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+readfifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	byteout(ale, off);
 	insb(adr, data, size);
@@ -75,10 +83,14 @@ writereg(unsigned int ale, unsigned int adr, u_char off, u_char data)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 writefifo(unsigned int ale, unsigned int adr, u_char off, u_char * data, int size)
 =======
 writefifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+writefifo(unsigned int ale, unsigned int adr, u_char off, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	byteout(ale, off);
 	outsb(adr, data, size);
@@ -100,20 +112,28 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	readfifo(cs->hw.asus.adr, cs->hw.asus.isac, 0, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	writefifo(cs->hw.asus.adr, cs->hw.asus.isac, 0, data, size);
 }
@@ -122,15 +142,20 @@ static u_char
 ReadISAC_IPAC(struct IsdnCardState *cs, u_char offset)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return (readreg(cs->hw.asus.adr, cs->hw.asus.isac, offset|0x80));
 =======
 	return (readreg(cs->hw.asus.adr, cs->hw.asus.isac, offset | 0x80));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return (readreg(cs->hw.asus.adr, cs->hw.asus.isac, offset | 0x80));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void
 WriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	writereg(cs->hw.asus.adr, cs->hw.asus.isac, offset|0x80, value);
 }
@@ -138,22 +163,31 @@ WriteISAC_IPAC(struct IsdnCardState *cs, u_char offset, u_char value)
 static void
 ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	writereg(cs->hw.asus.adr, cs->hw.asus.isac, offset | 0x80, value);
 }
 
 static void
 ReadISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	readfifo(cs->hw.asus.adr, cs->hw.asus.isac, 0x80, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo_IPAC(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	writefifo(cs->hw.asus.adr, cs->hw.asus.isac, 0x80, data, size);
 }
@@ -177,6 +211,7 @@ WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define READHSCX(cs, nr, reg) readreg(cs->hw.asus.adr, \
 		cs->hw.asus.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.asus.adr, \
@@ -188,6 +223,8 @@ WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.asus.adr, \
 		cs->hw.asus.hscx, (nr ? 0x40 : 0), ptr, cnt)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define READHSCX(cs, nr, reg) readreg(cs->hw.asus.adr,			\
 				      cs->hw.asus.hscx, reg + (nr ? 0x40 : 0))
 #define WRITEHSCX(cs, nr, reg, data) writereg(cs->hw.asus.adr,		\
@@ -198,7 +235,10 @@ WriteHSCX(struct IsdnCardState *cs, int hscx, u_char offset, u_char value)
 
 #define WRITEHSCXFIFO(cs, nr, ptr, cnt) writefifo(cs->hw.asus.adr,	\
 						  cs->hw.asus.hscx, (nr ? 0x40 : 0), ptr, cnt)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "hscx_irq.c"
 
@@ -212,18 +252,24 @@ asuscom_interrupt(int intno, void *dev_id)
 	spin_lock_irqsave(&cs->lock, flags);
 	val = readreg(cs->hw.asus.adr, cs->hw.asus.hscx, HSCX_ISTA + 0x40);
 <<<<<<< HEAD
+<<<<<<< HEAD
       Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = readreg(cs->hw.asus.adr, cs->hw.asus.isac, ISAC_ISTA);
       Start_ISAC:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Start_HSCX:
 	if (val)
 		hscx_int_main(cs, val);
 	val = readreg(cs->hw.asus.adr, cs->hw.asus.isac, ISAC_ISTA);
 Start_ISAC:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (val)
 		isac_interrupt(cs, val);
 	val = readreg(cs->hw.asus.adr, cs->hw.asus.hscx, HSCX_ISTA + 0x40);
@@ -332,6 +378,7 @@ Asus_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 
 	switch (mt) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			spin_lock_irqsave(&cs->lock, flags);
 			reset_asuscom(cs);
@@ -351,6 +398,8 @@ Asus_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		spin_lock_irqsave(&cs->lock, flags);
 		reset_asuscom(cs);
@@ -369,6 +418,7 @@ Asus_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		return (0);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -387,6 +437,13 @@ static struct isapnp_device_id asus_ids[] __devinitdata = {
 	{ ISAPNP_VENDOR('E', 'L', 'F'), ISAPNP_FUNCTION(0x0000),
 	  ISAPNP_VENDOR('E', 'L', 'F'), ISAPNP_FUNCTION(0x0000), 
 =======
+=======
+}
+
+#ifdef __ISAPNP__
+static struct isapnp_device_id asus_ids[] = {
+	{ ISAPNP_VENDOR('A', 'S', 'U'), ISAPNP_FUNCTION(0x1688),
+>>>>>>> refs/remotes/origin/master
 	  ISAPNP_VENDOR('A', 'S', 'U'), ISAPNP_FUNCTION(0x1688),
 	  (unsigned long) "Asus1688 PnP" },
 	{ ISAPNP_VENDOR('A', 'S', 'U'), ISAPNP_FUNCTION(0x1690),
@@ -397,17 +454,28 @@ static struct isapnp_device_id asus_ids[] __devinitdata = {
 	  (unsigned long) "Isurf2 PnP" },
 	{ ISAPNP_VENDOR('E', 'L', 'F'), ISAPNP_FUNCTION(0x0000),
 	  ISAPNP_VENDOR('E', 'L', 'F'), ISAPNP_FUNCTION(0x0000),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  (unsigned long) "Iscas TE320" },
 	{ 0, }
 };
 
+<<<<<<< HEAD
 static struct isapnp_device_id *ipid __devinitdata = &asus_ids[0];
 static struct pnp_card *pnp_c __devinitdata = NULL;
 #endif
 
 int __devinit
 setup_asuscom(struct IsdnCard *card)
+=======
+static struct isapnp_device_id *ipid = &asus_ids[0];
+static struct pnp_card *pnp_c = NULL;
+#endif
+
+int setup_asuscom(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int bytecnt;
 	struct IsdnCardState *cs = card->cs;
@@ -421,6 +489,7 @@ setup_asuscom(struct IsdnCard *card)
 #ifdef __ISAPNP__
 	if (!card->para[1] && isapnp_present()) {
 		struct pnp_dev *pnp_d;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		while(ipid->card_vendor) {
 			if ((pnp_c = pnp_find_card(ipid->card_vendor,
@@ -439,6 +508,8 @@ setup_asuscom(struct IsdnCard *card)
 							__func__, err);
 						return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		while (ipid->card_vendor) {
 			if ((pnp_c = pnp_find_card(ipid->card_vendor,
 						   ipid->card_device, pnp_c))) {
@@ -455,12 +526,16 @@ setup_asuscom(struct IsdnCard *card)
 						printk(KERN_WARNING "%s: pnp_activate_dev ret(%d)\n",
 						       __func__, err);
 						return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					}
 					card->para[1] = pnp_port_start(pnp_d, 0);
 					card->para[0] = pnp_irq(pnp_d, 0);
 					if (!card->para[0] || !card->para[1]) {
 						printk(KERN_ERR "AsusPnP:some resources are missing %ld/%lx\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 							card->para[0], card->para[1]);
 						pnp_disable_dev(pnp_d);
@@ -470,6 +545,11 @@ setup_asuscom(struct IsdnCard *card)
 						pnp_disable_dev(pnp_d);
 						return (0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						       card->para[0], card->para[1]);
+						pnp_disable_dev(pnp_d);
+						return (0);
+>>>>>>> refs/remotes/origin/master
 					}
 					break;
 				} else {
@@ -479,16 +559,22 @@ setup_asuscom(struct IsdnCard *card)
 			ipid++;
 			pnp_c = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		} 
 		if (!ipid->card_vendor) {
 			printk(KERN_INFO "AsusPnP: no ISAPnP card found\n");
 			return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (!ipid->card_vendor) {
 			printk(KERN_INFO "AsusPnP: no ISAPnP card found\n");
 			return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #endif
@@ -504,15 +590,20 @@ setup_asuscom(struct IsdnCard *card)
 	}
 	printk(KERN_INFO "ISDNLink: defined at 0x%x IRQ %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cs->hw.asus.cfg_reg, cs->irq);
 =======
 	       cs->hw.asus.cfg_reg, cs->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       cs->hw.asus.cfg_reg, cs->irq);
+>>>>>>> refs/remotes/origin/master
 	setup_isac(cs);
 	cs->BC_Read_Reg = &ReadHSCX;
 	cs->BC_Write_Reg = &WriteHSCX;
 	cs->BC_Send_Data = &hscx_fill_fifo;
 	cs->cardmsg = &Asus_card_msg;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	val = readreg(cs->hw.asus.cfg_reg + ASUS_IPAC_ALE, 
 		cs->hw.asus.cfg_reg + ASUS_IPAC_DATA, IPAC_ID);
@@ -520,6 +611,10 @@ setup_asuscom(struct IsdnCard *card)
 	val = readreg(cs->hw.asus.cfg_reg + ASUS_IPAC_ALE,
 		      cs->hw.asus.cfg_reg + ASUS_IPAC_DATA, IPAC_ID);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	val = readreg(cs->hw.asus.cfg_reg + ASUS_IPAC_ALE,
+		      cs->hw.asus.cfg_reg + ASUS_IPAC_DATA, IPAC_ID);
+>>>>>>> refs/remotes/origin/master
 	if ((val == 1) || (val == 2)) {
 		cs->subtyp = ASUS_IPAC;
 		cs->hw.asus.adr  = cs->hw.asus.cfg_reg + ASUS_IPAC_ALE;
@@ -548,10 +643,14 @@ setup_asuscom(struct IsdnCard *card)
 		if (HscxVersion(cs, "ISDNLink:")) {
 			printk(KERN_WARNING
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     	"ISDNLink: wrong HSCX versions check IO address\n");
 =======
 			       "ISDNLink: wrong HSCX versions check IO address\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       "ISDNLink: wrong HSCX versions check IO address\n");
+>>>>>>> refs/remotes/origin/master
 			release_io_asuscom(cs);
 			return (0);
 		}

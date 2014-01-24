@@ -32,6 +32,10 @@
 
 #include <linux/errno.h>
 #include <linux/if_ether.h>
+<<<<<<< HEAD
+=======
+#include <linux/if_vlan.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 
 #include <linux/mlx4/cmd.h>
@@ -39,7 +43,10 @@
 #include "mlx4.h"
 
 #define MLX4_MAC_VALID		(1ull << 63)
+<<<<<<< HEAD
 #define MLX4_MAC_MASK		0xffffffffffffULL
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MLX4_VLAN_VALID		(1u << 31)
 #define MLX4_VLAN_MASK		0xfff
@@ -75,6 +82,7 @@ void mlx4_init_vlan_table(struct mlx4_dev *dev, struct mlx4_vlan_table *table)
 	table->total = 0;
 }
 
+<<<<<<< HEAD
 static int mlx4_uc_steer_add(struct mlx4_dev *dev, u8 port, u64 mac, int *qpn)
 {
 	struct mlx4_qp qp;
@@ -112,6 +120,8 @@ static void mlx4_uc_steer_release(struct mlx4_dev *dev, u8 port,
 	mlx4_unicast_detach(dev, &qp, gid, MLX4_PROT_ETH);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int validate_index(struct mlx4_dev *dev,
 			  struct mlx4_mac_table *table, int index)
 {
@@ -138,6 +148,7 @@ static int find_index(struct mlx4_dev *dev,
 	return -EINVAL;
 }
 
+<<<<<<< HEAD
 int mlx4_get_eth_qp(struct mlx4_dev *dev, u8 port, u64 mac, int *qpn)
 {
 	struct mlx4_port_info *info = &mlx4_priv(dev)->port[port];
@@ -221,6 +232,8 @@ void mlx4_put_eth_qp(struct mlx4_dev *dev, u8 port, u64 mac, int qpn)
 }
 EXPORT_SYMBOL_GPL(mlx4_put_eth_qp);
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int mlx4_set_port_mac_table(struct mlx4_dev *dev, u8 port,
 				   __be64 *entries)
 {
@@ -261,8 +274,14 @@ int __mlx4_register_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 		}
 
 		if (mac == (MLX4_MAC_MASK & be64_to_cpu(table->entries[i]))) {
+<<<<<<< HEAD
 			/* MAC already registered, Must not have duplicates */
 			err = -EEXIST;
+=======
+			/* MAC already registered, increment ref count */
+			err = i;
+			++table->refs[i];
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 	}
@@ -285,7 +304,11 @@ int __mlx4_register_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 		table->entries[free] = 0;
 		goto out;
 	}
+<<<<<<< HEAD
 
+=======
+	table->refs[free] = 1;
+>>>>>>> refs/remotes/origin/master
 	err = free;
 	++table->total;
 out:
@@ -296,6 +319,7 @@ EXPORT_SYMBOL_GPL(__mlx4_register_mac);
 
 int mlx4_register_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 {
+<<<<<<< HEAD
 	u64 out_param;
 	int err;
 
@@ -304,6 +328,27 @@ int mlx4_register_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 		err = mlx4_cmd_imm(dev, mac, &out_param, RES_MAC,
 				   RES_OP_RESERVE_AND_MAP, MLX4_CMD_ALLOC_RES,
 				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+=======
+	u64 out_param = 0;
+	int err = -EINVAL;
+
+	if (mlx4_is_mfunc(dev)) {
+		if (!(dev->flags & MLX4_FLAG_OLD_REG_MAC)) {
+			err = mlx4_cmd_imm(dev, mac, &out_param,
+					   ((u32) port) << 8 | (u32) RES_MAC,
+					   RES_OP_RESERVE_AND_MAP, MLX4_CMD_ALLOC_RES,
+					   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+		}
+		if (err && err == -EINVAL && mlx4_is_slave(dev)) {
+			/* retry using old REG_MAC format */
+			set_param_l(&out_param, port);
+			err = mlx4_cmd_imm(dev, mac, &out_param, RES_MAC,
+					   RES_OP_RESERVE_AND_MAP, MLX4_CMD_ALLOC_RES,
+					   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+			if (!err)
+				dev->flags |= MLX4_FLAG_OLD_REG_MAC;
+		}
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			return err;
 
@@ -313,6 +358,15 @@ int mlx4_register_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 }
 EXPORT_SYMBOL_GPL(mlx4_register_mac);
 
+<<<<<<< HEAD
+=======
+int mlx4_get_base_qpn(struct mlx4_dev *dev, u8 port)
+{
+	return dev->caps.reserved_qps_base[MLX4_QP_REGION_ETH_ADDR] +
+			(port - 1) * (1 << dev->caps.log_num_macs);
+}
+EXPORT_SYMBOL_GPL(mlx4_get_base_qpn);
+>>>>>>> refs/remotes/origin/master
 
 void __mlx4_unregister_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 {
@@ -320,12 +374,25 @@ void __mlx4_unregister_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 	struct mlx4_mac_table *table = &info->mac_table;
 	int index;
 
+<<<<<<< HEAD
 	index = find_index(dev, table, mac);
 
 	mutex_lock(&table->mutex);
 
 	if (validate_index(dev, table, index))
 		goto out;
+=======
+	mutex_lock(&table->mutex);
+	index = find_index(dev, table, mac);
+
+	if (validate_index(dev, table, index))
+		goto out;
+	if (--table->refs[index]) {
+		mlx4_dbg(dev, "Have more references for index %d,"
+			 "no need to modify mac table\n", index);
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	table->entries[index] = 0;
 	mlx4_set_port_mac_table(dev, port, table->entries);
@@ -337,6 +404,7 @@ EXPORT_SYMBOL_GPL(__mlx4_unregister_mac);
 
 void mlx4_unregister_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 {
+<<<<<<< HEAD
 	u64 out_param;
 	int err;
 
@@ -345,6 +413,23 @@ void mlx4_unregister_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 		err = mlx4_cmd_imm(dev, mac, &out_param, RES_MAC,
 				   RES_OP_RESERVE_AND_MAP, MLX4_CMD_FREE_RES,
 				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+=======
+	u64 out_param = 0;
+
+	if (mlx4_is_mfunc(dev)) {
+		if (!(dev->flags & MLX4_FLAG_OLD_REG_MAC)) {
+			(void) mlx4_cmd_imm(dev, mac, &out_param,
+					    ((u32) port) << 8 | (u32) RES_MAC,
+					    RES_OP_RESERVE_AND_MAP, MLX4_CMD_FREE_RES,
+					    MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+		} else {
+			/* use old unregister mac format */
+			set_param_l(&out_param, port);
+			(void) mlx4_cmd_imm(dev, mac, &out_param, RES_MAC,
+					    RES_OP_RESERVE_AND_MAP, MLX4_CMD_FREE_RES,
+					    MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+		}
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	__mlx4_unregister_mac(dev, port, mac);
@@ -352,6 +437,7 @@ void mlx4_unregister_mac(struct mlx4_dev *dev, u8 port, u64 mac)
 }
 EXPORT_SYMBOL_GPL(mlx4_unregister_mac);
 
+<<<<<<< HEAD
 int mlx4_replace_mac(struct mlx4_dev *dev, u8 port, int qpn, u64 new_mac)
 {
 	struct mlx4_port_info *info = &mlx4_priv(dev)->port[port];
@@ -372,6 +458,15 @@ int mlx4_replace_mac(struct mlx4_dev *dev, u8 port, int qpn, u64 new_mac)
 		return err;
 	}
 
+=======
+int __mlx4_replace_mac(struct mlx4_dev *dev, u8 port, int qpn, u64 new_mac)
+{
+	struct mlx4_port_info *info = &mlx4_priv(dev)->port[port];
+	struct mlx4_mac_table *table = &info->mac_table;
+	int index = qpn - info->base_qpn;
+	int err = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* CX1 doesn't support multi-functions */
 	mutex_lock(&table->mutex);
 
@@ -391,7 +486,11 @@ out:
 	mutex_unlock(&table->mutex);
 	return err;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(mlx4_replace_mac);
+=======
+EXPORT_SYMBOL_GPL(__mlx4_replace_mac);
+>>>>>>> refs/remotes/origin/master
 
 static int mlx4_set_port_vlan_table(struct mlx4_dev *dev, u8 port,
 				    __be32 *entries)
@@ -407,7 +506,11 @@ static int mlx4_set_port_vlan_table(struct mlx4_dev *dev, u8 port,
 	memcpy(mailbox->buf, entries, MLX4_VLAN_TABLE_SIZE);
 	in_mod = MLX4_SET_PORT_VLAN_TABLE << 8 | port;
 	err = mlx4_cmd(dev, mailbox->dma, in_mod, 1, MLX4_CMD_SET_PORT,
+<<<<<<< HEAD
 		       MLX4_CMD_TIME_CLASS_B, MLX4_CMD_WRAPPED);
+=======
+		       MLX4_CMD_TIME_CLASS_B, MLX4_CMD_NATIVE);
+>>>>>>> refs/remotes/origin/master
 
 	mlx4_free_cmd_mailbox(dev, mailbox);
 
@@ -433,7 +536,11 @@ int mlx4_find_cached_vlan(struct mlx4_dev *dev, u8 port, u16 vid, int *idx)
 }
 EXPORT_SYMBOL_GPL(mlx4_find_cached_vlan);
 
+<<<<<<< HEAD
 static int __mlx4_register_vlan(struct mlx4_dev *dev, u8 port, u16 vlan,
+=======
+int __mlx4_register_vlan(struct mlx4_dev *dev, u8 port, u16 vlan,
+>>>>>>> refs/remotes/origin/master
 				int *index)
 {
 	struct mlx4_vlan_table *table = &mlx4_priv(dev)->port[port].vlan_table;
@@ -490,12 +597,24 @@ out:
 
 int mlx4_register_vlan(struct mlx4_dev *dev, u8 port, u16 vlan, int *index)
 {
+<<<<<<< HEAD
 	u64 out_param;
 	int err;
 
 	if (mlx4_is_mfunc(dev)) {
 		set_param_l(&out_param, port);
 		err = mlx4_cmd_imm(dev, vlan, &out_param, RES_VLAN,
+=======
+	u64 out_param = 0;
+	int err;
+
+	if (vlan > 4095)
+		return -EINVAL;
+
+	if (mlx4_is_mfunc(dev)) {
+		err = mlx4_cmd_imm(dev, vlan, &out_param,
+				   ((u32) port) << 8 | (u32) RES_VLAN,
+>>>>>>> refs/remotes/origin/master
 				   RES_OP_RESERVE_AND_MAP, MLX4_CMD_ALLOC_RES,
 				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
 		if (!err)
@@ -507,6 +626,7 @@ int mlx4_register_vlan(struct mlx4_dev *dev, u8 port, u16 vlan, int *index)
 }
 EXPORT_SYMBOL_GPL(mlx4_register_vlan);
 
+<<<<<<< HEAD
 static void __mlx4_unregister_vlan(struct mlx4_dev *dev, u8 port, int index)
 {
 	struct mlx4_vlan_table *table = &mlx4_priv(dev)->port[port].vlan_table;
@@ -524,6 +644,28 @@ static void __mlx4_unregister_vlan(struct mlx4_dev *dev, u8 port, int index)
 	if (--table->refs[index]) {
 		mlx4_dbg(dev, "Have more references for index %d,"
 			 "no need to modify vlan table\n", index);
+=======
+void __mlx4_unregister_vlan(struct mlx4_dev *dev, u8 port, u16 vlan)
+{
+	struct mlx4_vlan_table *table = &mlx4_priv(dev)->port[port].vlan_table;
+	int index;
+
+	mutex_lock(&table->mutex);
+	if (mlx4_find_cached_vlan(dev, port, vlan, &index)) {
+		mlx4_warn(dev, "vlan 0x%x is not in the vlan table\n", vlan);
+		goto out;
+	}
+
+	if (index < MLX4_VLAN_REGULAR) {
+		mlx4_warn(dev, "Trying to free special vlan index %d\n", index);
+		goto out;
+	}
+
+	if (--table->refs[index]) {
+		mlx4_dbg(dev, "Have %d more references for index %d,"
+			 "no need to modify vlan table\n", table->refs[index],
+			 index);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 	table->entries[index] = 0;
@@ -533,6 +675,7 @@ out:
 	mutex_unlock(&table->mutex);
 }
 
+<<<<<<< HEAD
 void mlx4_unregister_vlan(struct mlx4_dev *dev, u8 port, int index)
 {
 	u64 in_param;
@@ -550,6 +693,21 @@ void mlx4_unregister_vlan(struct mlx4_dev *dev, u8 port, int index)
 		return;
 	}
 	__mlx4_unregister_vlan(dev, port, index);
+=======
+void mlx4_unregister_vlan(struct mlx4_dev *dev, u8 port, u16 vlan)
+{
+	u64 out_param = 0;
+
+	if (mlx4_is_mfunc(dev)) {
+		(void) mlx4_cmd_imm(dev, vlan, &out_param,
+				    ((u32) port) << 8 | (u32) RES_VLAN,
+				    RES_OP_RESERVE_AND_MAP,
+				    MLX4_CMD_FREE_RES, MLX4_CMD_TIME_CLASS_A,
+				    MLX4_CMD_WRAPPED);
+		return;
+	}
+	__mlx4_unregister_vlan(dev, port, vlan);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(mlx4_unregister_vlan);
 
@@ -571,8 +729,11 @@ int mlx4_get_port_ib_caps(struct mlx4_dev *dev, u8 port, __be32 *caps)
 
 	inbuf = inmailbox->buf;
 	outbuf = outmailbox->buf;
+<<<<<<< HEAD
 	memset(inbuf, 0, 256);
 	memset(outbuf, 0, 256);
+=======
+>>>>>>> refs/remotes/origin/master
 	inbuf[0] = 1;
 	inbuf[1] = 1;
 	inbuf[2] = 1;
@@ -646,7 +807,12 @@ static int mlx4_common_set_port(struct mlx4_dev *dev, int slave, u32 in_mod,
 			/* Mtu is configured as the max MTU among all the
 			 * the functions on the port. */
 			mtu = be16_to_cpu(gen_context->mtu);
+<<<<<<< HEAD
 			mtu = min_t(int, mtu, dev->caps.eth_mtu_cap[port]);
+=======
+			mtu = min_t(int, mtu, dev->caps.eth_mtu_cap[port] +
+				    ETH_HLEN + VLAN_HLEN + ETH_FCS_LEN);
+>>>>>>> refs/remotes/origin/master
 			prev_mtu = slave_st->mtu[port];
 			slave_st->mtu[port] = mtu;
 			if (mtu > master->max_mtu[port])
@@ -684,6 +850,19 @@ static int mlx4_common_set_port(struct mlx4_dev *dev, int slave, u32 in_mod,
 		new_cap_mask = ((__be32 *) inbox->buf)[1];
 	}
 
+<<<<<<< HEAD
+=======
+	/* slave may not set the IS_SM capability for the port */
+	if (slave != mlx4_master_func_num(dev) &&
+	    (be32_to_cpu(new_cap_mask) & MLX4_PORT_CAP_IS_SM))
+		return -EINVAL;
+
+	/* No DEV_MGMT in multifunc mode */
+	if (mlx4_is_mfunc(dev) &&
+	    (be32_to_cpu(new_cap_mask) & MLX4_PORT_CAP_DEV_MGMT_SUP))
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	agg_cap_mask = 0;
 	slave_cap_mask =
 		priv->mfunc.master.slave_state[slave].ib_cap_mask[port];
@@ -698,10 +877,17 @@ static int mlx4_common_set_port(struct mlx4_dev *dev, int slave, u32 in_mod,
 	if (slave != dev->caps.function)
 		memset(inbox->buf, 0, 256);
 	if (dev->flags & MLX4_FLAG_OLD_PORT_CMDS) {
+<<<<<<< HEAD
 		*(u8 *) inbox->buf	   = !!reset_qkey_viols << 6;
 		((__be32 *) inbox->buf)[2] = agg_cap_mask;
 	} else {
 		((u8 *) inbox->buf)[3]     = !!reset_qkey_viols;
+=======
+		*(u8 *) inbox->buf	   |= !!reset_qkey_viols << 6;
+		((__be32 *) inbox->buf)[2] = agg_cap_mask;
+	} else {
+		((u8 *) inbox->buf)[3]     |= !!reset_qkey_viols;
+>>>>>>> refs/remotes/origin/master
 		((__be32 *) inbox->buf)[1] = agg_cap_mask;
 	}
 
@@ -727,14 +913,25 @@ int mlx4_SET_PORT_wrapper(struct mlx4_dev *dev, int slave,
 enum {
 	MLX4_SET_PORT_VL_CAP	 = 4, /* bits 7:4 */
 	MLX4_SET_PORT_MTU_CAP	 = 12, /* bits 15:12 */
+<<<<<<< HEAD
+=======
+	MLX4_CHANGE_PORT_PKEY_TBL_SZ = 20,
+>>>>>>> refs/remotes/origin/master
 	MLX4_CHANGE_PORT_VL_CAP	 = 21,
 	MLX4_CHANGE_PORT_MTU_CAP = 22,
 };
 
+<<<<<<< HEAD
 int mlx4_SET_PORT(struct mlx4_dev *dev, u8 port)
 {
 	struct mlx4_cmd_mailbox *mailbox;
 	int err, vl_cap;
+=======
+int mlx4_SET_PORT(struct mlx4_dev *dev, u8 port, int pkey_tbl_sz)
+{
+	struct mlx4_cmd_mailbox *mailbox;
+	int err, vl_cap, pkey_tbl_flag = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
 		return 0;
@@ -743,15 +940,29 @@ int mlx4_SET_PORT(struct mlx4_dev *dev, u8 port)
 	if (IS_ERR(mailbox))
 		return PTR_ERR(mailbox);
 
+<<<<<<< HEAD
 	memset(mailbox->buf, 0, 256);
 
 	((__be32 *) mailbox->buf)[1] = dev->caps.ib_port_def_cap[port];
 
+=======
+	((__be32 *) mailbox->buf)[1] = dev->caps.ib_port_def_cap[port];
+
+	if (pkey_tbl_sz >= 0 && mlx4_is_master(dev)) {
+		pkey_tbl_flag = 1;
+		((__be16 *) mailbox->buf)[20] = cpu_to_be16(pkey_tbl_sz);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* IB VL CAP enum isn't used by the firmware, just numerical values */
 	for (vl_cap = 8; vl_cap >= 1; vl_cap >>= 1) {
 		((__be32 *) mailbox->buf)[0] = cpu_to_be32(
 			(1 << MLX4_CHANGE_PORT_MTU_CAP) |
 			(1 << MLX4_CHANGE_PORT_VL_CAP)  |
+<<<<<<< HEAD
+=======
+			(pkey_tbl_flag << MLX4_CHANGE_PORT_PKEY_TBL_SZ) |
+>>>>>>> refs/remotes/origin/master
 			(dev->caps.port_ib_mtu[port] << MLX4_SET_PORT_MTU_CAP) |
 			(vl_cap << MLX4_SET_PORT_VL_CAP));
 		err = mlx4_cmd(dev, mailbox->dma, port, 0, MLX4_CMD_SET_PORT,
@@ -776,8 +987,11 @@ int mlx4_SET_PORT_general(struct mlx4_dev *dev, u8 port, int mtu,
 	if (IS_ERR(mailbox))
 		return PTR_ERR(mailbox);
 	context = mailbox->buf;
+<<<<<<< HEAD
 	memset(context, 0, sizeof *context);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	context->flags = SET_PORT_GEN_ALL_VALID;
 	context->mtu = cpu_to_be16(mtu);
 	context->pptx = (pptx * (!pfctx)) << 7;
@@ -804,16 +1018,23 @@ int mlx4_SET_PORT_qpn_calc(struct mlx4_dev *dev, u8 port, u32 base_qpn,
 	u32 m_promisc = (dev->caps.flags & MLX4_DEV_CAP_FLAG_VEP_MC_STEER) ?
 		MCAST_DIRECT : MCAST_DEFAULT;
 
+<<<<<<< HEAD
 	if (dev->caps.flags & MLX4_DEV_CAP_FLAG_VEP_MC_STEER  &&
 	    dev->caps.flags & MLX4_DEV_CAP_FLAG_VEP_UC_STEER)
+=======
+	if (dev->caps.steering_mode != MLX4_STEERING_MODE_A0)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	mailbox = mlx4_alloc_cmd_mailbox(dev);
 	if (IS_ERR(mailbox))
 		return PTR_ERR(mailbox);
 	context = mailbox->buf;
+<<<<<<< HEAD
 	memset(context, 0, sizeof *context);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	context->base_qpn = cpu_to_be32(base_qpn);
 	context->n_mac = dev->caps.log_num_macs;
 	context->promisc = cpu_to_be32(promisc << SET_PORT_PROMISC_SHIFT |
@@ -834,6 +1055,68 @@ int mlx4_SET_PORT_qpn_calc(struct mlx4_dev *dev, u8 port, u32 base_qpn,
 }
 EXPORT_SYMBOL(mlx4_SET_PORT_qpn_calc);
 
+<<<<<<< HEAD
+=======
+int mlx4_SET_PORT_PRIO2TC(struct mlx4_dev *dev, u8 port, u8 *prio2tc)
+{
+	struct mlx4_cmd_mailbox *mailbox;
+	struct mlx4_set_port_prio2tc_context *context;
+	int err;
+	u32 in_mod;
+	int i;
+
+	mailbox = mlx4_alloc_cmd_mailbox(dev);
+	if (IS_ERR(mailbox))
+		return PTR_ERR(mailbox);
+	context = mailbox->buf;
+	for (i = 0; i < MLX4_NUM_UP; i += 2)
+		context->prio2tc[i >> 1] = prio2tc[i] << 4 | prio2tc[i + 1];
+
+	in_mod = MLX4_SET_PORT_PRIO2TC << 8 | port;
+	err = mlx4_cmd(dev, mailbox->dma, in_mod, 1, MLX4_CMD_SET_PORT,
+		       MLX4_CMD_TIME_CLASS_B, MLX4_CMD_NATIVE);
+
+	mlx4_free_cmd_mailbox(dev, mailbox);
+	return err;
+}
+EXPORT_SYMBOL(mlx4_SET_PORT_PRIO2TC);
+
+int mlx4_SET_PORT_SCHEDULER(struct mlx4_dev *dev, u8 port, u8 *tc_tx_bw,
+		u8 *pg, u16 *ratelimit)
+{
+	struct mlx4_cmd_mailbox *mailbox;
+	struct mlx4_set_port_scheduler_context *context;
+	int err;
+	u32 in_mod;
+	int i;
+
+	mailbox = mlx4_alloc_cmd_mailbox(dev);
+	if (IS_ERR(mailbox))
+		return PTR_ERR(mailbox);
+	context = mailbox->buf;
+
+	for (i = 0; i < MLX4_NUM_TC; i++) {
+		struct mlx4_port_scheduler_tc_cfg_be *tc = &context->tc[i];
+		u16 r = ratelimit && ratelimit[i] ? ratelimit[i] :
+			MLX4_RATELIMIT_DEFAULT;
+
+		tc->pg = htons(pg[i]);
+		tc->bw_precentage = htons(tc_tx_bw[i]);
+
+		tc->max_bw_units = htons(MLX4_RATELIMIT_UNITS);
+		tc->max_bw_value = htons(r);
+	}
+
+	in_mod = MLX4_SET_PORT_SCHEDULER << 8 | port;
+	err = mlx4_cmd(dev, mailbox->dma, in_mod, 1, MLX4_CMD_SET_PORT,
+		       MLX4_CMD_TIME_CLASS_B, MLX4_CMD_NATIVE);
+
+	mlx4_free_cmd_mailbox(dev, mailbox);
+	return err;
+}
+EXPORT_SYMBOL(mlx4_SET_PORT_SCHEDULER);
+
+>>>>>>> refs/remotes/origin/master
 int mlx4_SET_MCAST_FLTR_wrapper(struct mlx4_dev *dev, int slave,
 				struct mlx4_vhcr *vhcr,
 				struct mlx4_cmd_mailbox *inbox,

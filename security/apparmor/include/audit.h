@@ -26,6 +26,7 @@
 struct aa_profile;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern const char *audit_mode_names[];
 #define AUDIT_MAX_INDEX 5
 
@@ -36,6 +37,10 @@ extern const char *const audit_mode_names[];
 #define AUDIT_MAX_INDEX 5
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern const char *const audit_mode_names[];
+#define AUDIT_MAX_INDEX 5
+>>>>>>> refs/remotes/origin/master
 enum audit_mode {
 	AUDIT_NORMAL,		/* follow normal auditing of accesses */
 	AUDIT_QUIET_DENIED,	/* quiet all denied access messages */
@@ -52,17 +57,23 @@ enum audit_type {
 	AUDIT_APPARMOR_STATUS,
 	AUDIT_APPARMOR_ERROR,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	AUDIT_APPARMOR_KILL
 };
 
 extern const char *op_table[];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	AUDIT_APPARMOR_KILL,
 	AUDIT_APPARMOR_AUTO
 };
 
 extern const char *const op_table[];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 enum aa_ops {
 	OP_NULL,
 
@@ -119,8 +130,11 @@ enum aa_ops {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* define a short hand for apparmor_audit_data portion of common_audit_data */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct apparmor_audit_data {
 	int error;
 	int op;
@@ -142,13 +156,20 @@ struct apparmor_audit_data {
 			const char *target;
 			u32 request;
 			u32 denied;
+<<<<<<< HEAD
 			uid_t ouid;
+=======
+			kuid_t ouid;
+>>>>>>> refs/remotes/origin/master
 		} fs;
 	};
 };
 
 /* define a short hand for apparmor_audit_data structure */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define aad apparmor_audit_data
 
 void aa_audit_msg(int type, struct common_audit_data *sa,

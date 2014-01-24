@@ -13,6 +13,7 @@ endif
 MKLASATIMG = mklasatimg
 MKLASATIMG_ARCH = mq2,mqpro,sp100,sp200
 KERNEL_IMAGE = vmlinux
+<<<<<<< HEAD
 KERNEL_START = $(shell $(NM) $(KERNEL_IMAGE) | grep " _text" | cut -f1 -d\ )
 KERNEL_ENTRY = $(shell $(NM) $(KERNEL_IMAGE) | grep kernel_entry | cut -f1 -d\ )
 
@@ -20,6 +21,13 @@ LDSCRIPT= -L$(srctree)/$(src) -Tromscript.normal
 
 HEAD_DEFINES := -D_kernel_start=0x$(KERNEL_START) \
 		-D_kernel_entry=0x$(KERNEL_ENTRY) \
+=======
+
+LDSCRIPT= -L$(srctree)/$(src) -Tromscript.normal
+
+HEAD_DEFINES := -D_kernel_start=$(VMLINUX_LOAD_ADDRESS) \
+		-D_kernel_entry=$(VMLINUX_ENTRY_ADDRESS) \
+>>>>>>> refs/remotes/origin/master
 		-D VERSION="\"$(Version)\"" \
 		-D TIMESTAMP=$(shell date +%s)
 
@@ -28,7 +36,11 @@ $(obj)/head.o: $(obj)/head.S $(KERNEL_IMAGE)
 
 OBJECTS = head.o kImage.o
 
+<<<<<<< HEAD
 rom.sw:	$(obj)/rom.sw
+=======
+rom.sw: $(obj)/rom.sw
+>>>>>>> refs/remotes/origin/master
 rom.bin:	$(obj)/rom.bin
 
 $(obj)/rom.sw:	$(obj)/rom.bin

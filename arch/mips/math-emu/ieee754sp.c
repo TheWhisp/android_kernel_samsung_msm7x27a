@@ -117,7 +117,11 @@ static unsigned get_rounding(int sn, unsigned xm)
 				xm += 0x8;
 			break;
 		case IEEE754_RD:	/* toward -Infinity */
+<<<<<<< HEAD
 			if (sn)	/* ?? */
+=======
+			if (sn) /* ?? */
+>>>>>>> refs/remotes/origin/master
 				xm += 0x8;
 			break;
 		}

@@ -79,7 +79,10 @@ The device naming scheme is:
 /dev/cciss/c1d1p3		Controller 1, disk 1, partition 3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CCISS simple mode support
 -------------------------
 
@@ -90,7 +93,10 @@ with simple mode, each command completion requires an interrupt, while with
 possible to have multiple command completions indicated by a single
 interrupt.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 SCSI tape drive and medium changer support
 ------------------------------------------
 
@@ -102,6 +108,7 @@ You must enable "SCSI tape drive support for Smart Array 5xxx" and
 tape drives with your Smart Array 5xxx controller.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Additionally, note that the driver will not engage the SCSI core at init 
 time.  The driver must be directed to dynamically engage the SCSI core via 
 the /proc filesystem entry which the "block" side of the driver creates as 
@@ -111,13 +118,18 @@ driver) and attempting to register it with the SCSI core in such a case
 would cause a hang.  This is best done via an initialization script 
 (typically in /etc/init.d, but could vary depending on distribution). 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Additionally, note that the driver will engage the SCSI core at init
 time if any tape drives or medium changers are detected.  The driver may
 also be directed to dynamically engage the SCSI core via the /proc filesystem
 entry which the "block" side of the driver creates as
 /proc/driver/cciss/cciss* at runtime.  This is best done via a script.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 For example:
 
 	for x in /proc/driver/cciss/cciss[0-9]*

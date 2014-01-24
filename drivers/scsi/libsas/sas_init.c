@@ -29,9 +29,13 @@
 #include <linux/device.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <scsi/sas_ata.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <scsi/sas_ata.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_device.h>
 #include <scsi/scsi_transport.h>
@@ -42,8 +46,11 @@
 #include "../scsi_sas_internal.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct kmem_cache *sas_task_cache;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct kmem_cache *sas_task_cache;
 
 struct sas_task *sas_alloc_task(gfp_t flags)
@@ -54,23 +61,56 @@ struct sas_task *sas_alloc_task(gfp_t flags)
 		INIT_LIST_HEAD(&task->list);
 		spin_lock_init(&task->task_state_lock);
 		task->task_state_flags = SAS_TASK_STATE_PENDING;
+<<<<<<< HEAD
 		init_timer(&task->timer);
 		init_completion(&task->completion);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return task;
 }
 EXPORT_SYMBOL_GPL(sas_alloc_task);
 
+<<<<<<< HEAD
+=======
+struct sas_task *sas_alloc_slow_task(gfp_t flags)
+{
+	struct sas_task *task = sas_alloc_task(flags);
+	struct sas_task_slow *slow = kmalloc(sizeof(*slow), flags);
+
+	if (!task || !slow) {
+		if (task)
+			kmem_cache_free(sas_task_cache, task);
+		kfree(slow);
+		return NULL;
+	}
+
+	task->slow_task = slow;
+	init_timer(&slow->timer);
+	init_completion(&slow->completion);
+
+	return task;
+}
+EXPORT_SYMBOL_GPL(sas_alloc_slow_task);
+
+>>>>>>> refs/remotes/origin/master
 void sas_free_task(struct sas_task *task)
 {
 	if (task) {
 		BUG_ON(!list_empty(&task->list));
+<<<<<<< HEAD
+=======
+		kfree(task->slow_task);
+>>>>>>> refs/remotes/origin/master
 		kmem_cache_free(sas_task_cache, task);
 	}
 }
 EXPORT_SYMBOL_GPL(sas_free_task);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*------------ SAS addr hash -----------*/
 void sas_hash_addr(u8 *hashed, const u8 *sas_addr)
@@ -102,6 +142,7 @@ void sas_hash_addr(u8 *hashed, const u8 *sas_addr)
 void sas_hae_reset(struct work_struct *work)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct sas_ha_event *ev =
 		container_of(work, struct sas_ha_event, work);
 	struct sas_ha_struct *ha = ev->ha;
@@ -109,11 +150,16 @@ void sas_hae_reset(struct work_struct *work)
 	sas_begin_event(HAE_RESET, &ha->event_lock,
 			&ha->pending);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sas_ha_event *ev = to_sas_ha_event(work);
 	struct sas_ha_struct *ha = ev->ha;
 
 	clear_bit(HAE_RESET, &ha->pending);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int sas_register_ha(struct sas_ha_struct *sas_ha)
@@ -121,9 +167,13 @@ int sas_register_ha(struct sas_ha_struct *sas_ha)
 	int error = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_init(&sas_ha->disco_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&sas_ha->disco_mutex);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&sas_ha->phy_port_lock);
 	sas_hash_addr(sas_ha->hashed_sas_addr, sas_ha->sas_addr);
 
@@ -133,6 +183,7 @@ int sas_register_ha(struct sas_ha_struct *sas_ha)
 		sas_ha->lldd_queue_size = 128; /* Sanity */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sas_ha->state = SAS_HA_REGISTERED;
 	spin_lock_init(&sas_ha->state_lock);
 =======
@@ -141,6 +192,14 @@ int sas_register_ha(struct sas_ha_struct *sas_ha)
 	mutex_init(&sas_ha->drain_mutex);
 	INIT_LIST_HEAD(&sas_ha->defer_q);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_bit(SAS_HA_REGISTERED, &sas_ha->state);
+	spin_lock_init(&sas_ha->lock);
+	mutex_init(&sas_ha->drain_mutex);
+	init_waitqueue_head(&sas_ha->eh_wait_q);
+	INIT_LIST_HEAD(&sas_ha->defer_q);
+	INIT_LIST_HEAD(&sas_ha->eh_dev_q);
+>>>>>>> refs/remotes/origin/master
 
 	error = sas_register_phys(sas_ha);
 	if (error) {
@@ -171,9 +230,13 @@ int sas_register_ha(struct sas_ha_struct *sas_ha)
 
 	INIT_LIST_HEAD(&sas_ha->eh_done_q);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_LIST_HEAD(&sas_ha->eh_ata_q);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	INIT_LIST_HEAD(&sas_ha->eh_ata_q);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -184,6 +247,7 @@ Undo_phys:
 	return error;
 }
 
+<<<<<<< HEAD
 int sas_unregister_ha(struct sas_ha_struct *sas_ha)
 {
 <<<<<<< HEAD
@@ -199,16 +263,33 @@ int sas_unregister_ha(struct sas_ha_struct *sas_ha)
 	sas_unregister_ports(sas_ha);
 
 =======
+=======
+static void sas_disable_events(struct sas_ha_struct *sas_ha)
+{
+>>>>>>> refs/remotes/origin/master
 	/* Set the state to unregistered to avoid further unchained
 	 * events to be queued, and flush any in-progress drainers
 	 */
 	mutex_lock(&sas_ha->drain_mutex);
+<<<<<<< HEAD
 	spin_lock_irq(&sas_ha->state_lock);
 	clear_bit(SAS_HA_REGISTERED, &sas_ha->state);
 	spin_unlock_irq(&sas_ha->state_lock);
 	__sas_drain_work(sas_ha);
 	mutex_unlock(&sas_ha->drain_mutex);
 
+=======
+	spin_lock_irq(&sas_ha->lock);
+	clear_bit(SAS_HA_REGISTERED, &sas_ha->state);
+	spin_unlock_irq(&sas_ha->lock);
+	__sas_drain_work(sas_ha);
+	mutex_unlock(&sas_ha->drain_mutex);
+}
+
+int sas_unregister_ha(struct sas_ha_struct *sas_ha)
+{
+	sas_disable_events(sas_ha);
+>>>>>>> refs/remotes/origin/master
 	sas_unregister_ports(sas_ha);
 
 	/* flush unregistration work */
@@ -216,7 +297,10 @@ int sas_unregister_ha(struct sas_ha_struct *sas_ha)
 	__sas_drain_work(sas_ha);
 	mutex_unlock(&sas_ha->drain_mutex);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (sas_ha->lldd_max_execute_num > 1) {
 		sas_shutdown_queue(sas_ha);
 		sas_ha->lldd_max_execute_num = 1;
@@ -228,11 +312,14 @@ int sas_unregister_ha(struct sas_ha_struct *sas_ha)
 static int sas_get_linkerrors(struct sas_phy *phy)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (scsi_is_sas_phy_local(phy))
 		/* FIXME: we have no local phy stats
 		 * gathering at this time */
 		return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (scsi_is_sas_phy_local(phy)) {
 		struct Scsi_Host *shost = dev_to_shost(phy->dev.parent);
 		struct sas_ha_struct *sas_ha = SHOST_TO_SAS_HA(shost);
@@ -242,11 +329,15 @@ static int sas_get_linkerrors(struct sas_phy *phy)
 
 		return i->dft->lldd_control_phy(asd_phy, PHY_FUNC_GET_EVENTS, NULL);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return sas_smp_get_phy_events(phy);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int sas_phy_enable(struct sas_phy *phy, int enable)
 {
@@ -258,6 +349,8 @@ int sas_phy_enable(struct sas_phy *phy, int enable)
 	else
 		command = PHY_FUNC_DISABLE;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int sas_try_ata_reset(struct asd_sas_phy *asd_phy)
 {
 	struct domain_device *dev = NULL;
@@ -327,7 +420,10 @@ static int sas_phy_enable(struct sas_phy *phy, int enable)
 		cmd = PHY_FUNC_LINK_RESET;
 	else
 		cmd = PHY_FUNC_DISABLE;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (scsi_is_sas_phy_local(phy)) {
 		struct Scsi_Host *shost = dev_to_shost(phy->dev.parent);
@@ -336,6 +432,7 @@ static int sas_phy_enable(struct sas_phy *phy, int enable)
 		struct sas_internal *i =
 			to_sas_internal(sas_ha->core.shost->transportt);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (!enable) {
 			sas_phy_disconnected(asd_phy);
@@ -347,6 +444,8 @@ static int sas_phy_enable(struct sas_phy *phy, int enable)
 		struct domain_device *ddev = sas_find_dev_by_rphy(rphy);
 		ret = sas_smp_phy_control(ddev, phy->number, command, NULL);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (enable)
 			ret = transport_sas_phy_reset(phy, 0);
 		else
@@ -359,7 +458,10 @@ static int sas_phy_enable(struct sas_phy *phy, int enable)
 			ret = transport_sas_phy_reset(phy, 0);
 		else
 			ret = sas_smp_phy_control(ddev, phy->number, cmd, NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -370,11 +472,17 @@ int sas_phy_reset(struct sas_phy *phy, int hard_reset)
 	enum phy_func reset_type;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (!phy->enabled)
 		return -ENODEV;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!phy->enabled)
+		return -ENODEV;
+
+>>>>>>> refs/remotes/origin/master
 	if (hard_reset)
 		reset_type = PHY_FUNC_HARD_RESET;
 	else
@@ -436,10 +544,97 @@ int sas_set_phy_speed(struct sas_phy *phy,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sas_function_template sft = {
 	.phy_enable = sas_phy_enable,
 	.phy_reset = sas_phy_reset,
 =======
+=======
+void sas_prep_resume_ha(struct sas_ha_struct *ha)
+{
+	int i;
+
+	set_bit(SAS_HA_REGISTERED, &ha->state);
+
+	/* clear out any stale link events/data from the suspension path */
+	for (i = 0; i < ha->num_phys; i++) {
+		struct asd_sas_phy *phy = ha->sas_phy[i];
+
+		memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
+		phy->port_events_pending = 0;
+		phy->phy_events_pending = 0;
+		phy->frame_rcvd_size = 0;
+	}
+}
+EXPORT_SYMBOL(sas_prep_resume_ha);
+
+static int phys_suspended(struct sas_ha_struct *ha)
+{
+	int i, rc = 0;
+
+	for (i = 0; i < ha->num_phys; i++) {
+		struct asd_sas_phy *phy = ha->sas_phy[i];
+
+		if (phy->suspended)
+			rc++;
+	}
+
+	return rc;
+}
+
+void sas_resume_ha(struct sas_ha_struct *ha)
+{
+	const unsigned long tmo = msecs_to_jiffies(25000);
+	int i;
+
+	/* deform ports on phys that did not resume
+	 * at this point we may be racing the phy coming back (as posted
+	 * by the lldd).  So we post the event and once we are in the
+	 * libsas context check that the phy remains suspended before
+	 * tearing it down.
+	 */
+	i = phys_suspended(ha);
+	if (i)
+		dev_info(ha->dev, "waiting up to 25 seconds for %d phy%s to resume\n",
+			 i, i > 1 ? "s" : "");
+	wait_event_timeout(ha->eh_wait_q, phys_suspended(ha) == 0, tmo);
+	for (i = 0; i < ha->num_phys; i++) {
+		struct asd_sas_phy *phy = ha->sas_phy[i];
+
+		if (phy->suspended) {
+			dev_warn(&phy->phy->dev, "resume timeout\n");
+			sas_notify_phy_event(phy, PHYE_RESUME_TIMEOUT);
+		}
+	}
+
+	/* all phys are back up or timed out, turn on i/o so we can
+	 * flush out disks that did not return
+	 */
+	scsi_unblock_requests(ha->core.shost);
+	sas_drain_work(ha);
+}
+EXPORT_SYMBOL(sas_resume_ha);
+
+void sas_suspend_ha(struct sas_ha_struct *ha)
+{
+	int i;
+
+	sas_disable_events(ha);
+	scsi_block_requests(ha->core.shost);
+	for (i = 0; i < ha->num_phys; i++) {
+		struct asd_sas_port *port = ha->sas_port[i];
+
+		sas_discover_event(port, DISCE_SUSPEND);
+	}
+
+	/* flush suspend events while unregistered */
+	mutex_lock(&ha->drain_mutex);
+	__sas_drain_work(ha);
+	mutex_unlock(&ha->drain_mutex);
+}
+EXPORT_SYMBOL(sas_suspend_ha);
+
+>>>>>>> refs/remotes/origin/master
 static void sas_phy_release(struct sas_phy *phy)
 {
 	kfree(phy->hostdata);
@@ -491,9 +686,15 @@ static int queue_phy_reset(struct sas_phy *phy, int hard_reset)
 	d->reset_result = 0;
 	d->hard_reset = hard_reset;
 
+<<<<<<< HEAD
 	spin_lock_irq(&ha->state_lock);
 	sas_queue_work(ha, &d->reset_work);
 	spin_unlock_irq(&ha->state_lock);
+=======
+	spin_lock_irq(&ha->lock);
+	sas_queue_work(ha, &d->reset_work);
+	spin_unlock_irq(&ha->lock);
+>>>>>>> refs/remotes/origin/master
 
 	rc = sas_drain_work(ha);
 	if (rc == 0)
@@ -518,9 +719,15 @@ static int queue_phy_enable(struct sas_phy *phy, int enable)
 	d->enable_result = 0;
 	d->enable = enable;
 
+<<<<<<< HEAD
 	spin_lock_irq(&ha->state_lock);
 	sas_queue_work(ha, &d->enable_work);
 	spin_unlock_irq(&ha->state_lock);
+=======
+	spin_lock_irq(&ha->lock);
+	sas_queue_work(ha, &d->enable_work);
+	spin_unlock_irq(&ha->lock);
+>>>>>>> refs/remotes/origin/master
 
 	rc = sas_drain_work(ha);
 	if (rc == 0)
@@ -535,7 +742,10 @@ static struct sas_function_template sft = {
 	.phy_reset = queue_phy_reset,
 	.phy_setup = sas_phy_setup,
 	.phy_release = sas_phy_release,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.set_phy_speed = sas_set_phy_speed,
 	.get_linkerrors = sas_get_linkerrors,
 	.smp_handler = sas_smp_handler,
@@ -572,11 +782,15 @@ EXPORT_SYMBOL_GPL(sas_domain_release_transport);
 static int __init sas_class_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sas_task_cache = kmem_cache_create("sas_task", sizeof(struct sas_task),
 					   0, SLAB_HWCACHE_ALIGN, NULL);
 =======
 	sas_task_cache = KMEM_CACHE(sas_task, SLAB_HWCACHE_ALIGN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sas_task_cache = KMEM_CACHE(sas_task, SLAB_HWCACHE_ALIGN);
+>>>>>>> refs/remotes/origin/master
 	if (!sas_task_cache)
 		return -ENOMEM;
 

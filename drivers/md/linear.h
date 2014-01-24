@@ -3,6 +3,7 @@
 
 struct dev_info {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mdk_rdev_t	*rdev;
 	sector_t	end_sector;
 };
@@ -20,6 +21,8 @@ struct linear_private_data
 typedef struct linear_private_data linear_conf_t;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct md_rdev	*rdev;
 	sector_t	end_sector;
 };
@@ -30,5 +33,8 @@ struct linear_conf
 	sector_t		array_sectors;
 	struct dev_info		disks[0];
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

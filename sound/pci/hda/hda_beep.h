@@ -26,21 +26,32 @@
 
 #define HDA_BEEP_MODE_OFF	0
 #define HDA_BEEP_MODE_ON	1
+<<<<<<< HEAD
 #define HDA_BEEP_MODE_SWREG	2
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* beep information */
 struct hda_beep {
 	struct input_dev *dev;
 	struct hda_codec *codec;
+<<<<<<< HEAD
 	unsigned int mode;
+=======
+>>>>>>> refs/remotes/origin/master
 	char phys[32];
 	int tone;
 	hda_nid_t nid;
 	unsigned int enabled:1;
+<<<<<<< HEAD
 	unsigned int request_enable:1;
 	unsigned int linear_tone:1;	/* linear tone for IDT/STAC codec */
 	struct work_struct register_work; /* registration work */
 	struct delayed_work unregister_work; /* unregistration work */
+=======
+	unsigned int linear_tone:1;	/* linear tone for IDT/STAC codec */
+	unsigned int playing:1;
+>>>>>>> refs/remotes/origin/master
 	struct work_struct beep_work; /* scheduled task for beep event */
 	struct mutex mutex;
 };

@@ -32,7 +32,10 @@
 #include <linux/string.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum cvmx_mips_space {
 	CVMX_MIPS_SPACE_XKSEG = 3LL,
 	CVMX_MIPS_SPACE_XKPHYS = 2LL,
@@ -54,6 +57,7 @@ enum cvmx_mips_space {
 #define CVMX_ADD_IO_SEG(add) CVMX_ADD_SEG(CVMX_IO_SEG, (add))
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "cvmx-asm.h"
 #include "cvmx-packet.h"
@@ -73,20 +77,50 @@ enum cvmx_mips_space {
 #include "cvmx-bootinfo.h"
 #include "cvmx-bootmem.h"
 #include "cvmx-l2c.h"
+=======
+#include <asm/octeon/cvmx-asm.h>
+#include <asm/octeon/cvmx-packet.h>
+#include <asm/octeon/cvmx-sysinfo.h>
+
+#include <asm/octeon/cvmx-ciu-defs.h>
+#include <asm/octeon/cvmx-gpio-defs.h>
+#include <asm/octeon/cvmx-iob-defs.h>
+#include <asm/octeon/cvmx-ipd-defs.h>
+#include <asm/octeon/cvmx-l2c-defs.h>
+#include <asm/octeon/cvmx-l2d-defs.h>
+#include <asm/octeon/cvmx-l2t-defs.h>
+#include <asm/octeon/cvmx-led-defs.h>
+#include <asm/octeon/cvmx-mio-defs.h>
+#include <asm/octeon/cvmx-pow-defs.h>
+
+#include <asm/octeon/cvmx-bootinfo.h>
+#include <asm/octeon/cvmx-bootmem.h>
+#include <asm/octeon/cvmx-l2c.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CVMX_ENABLE_DEBUG_PRINTS
 #define CVMX_ENABLE_DEBUG_PRINTS 1
 #endif
 
 #if CVMX_ENABLE_DEBUG_PRINTS
+<<<<<<< HEAD
 #define cvmx_dprintf        printk
+=======
+#define cvmx_dprintf	    printk
+>>>>>>> refs/remotes/origin/master
 #else
 #define cvmx_dprintf(...)   {}
 #endif
 
+<<<<<<< HEAD
 #define CVMX_MAX_CORES          (16)
 #define CVMX_CACHE_LINE_SIZE    (128)	/* In bytes */
 #define CVMX_CACHE_LINE_MASK    (CVMX_CACHE_LINE_SIZE - 1)	/* In bytes */
+=======
+#define CVMX_MAX_CORES		(16)
+#define CVMX_CACHE_LINE_SIZE	(128)	/* In bytes */
+#define CVMX_CACHE_LINE_MASK	(CVMX_CACHE_LINE_SIZE - 1)	/* In bytes */
+>>>>>>> refs/remotes/origin/master
 #define CVMX_CACHE_LINE_ALIGNED __attribute__ ((aligned(CVMX_CACHE_LINE_SIZE)))
 #define CAST64(v) ((long long)(long)(v))
 #define CASTPTR(type, v) ((type *)(long)(v))
@@ -136,8 +170,13 @@ static inline uint64_t cvmx_build_io_address(uint64_t major_did,
  *
  * Example: cvmx_build_bits(39,24,value)
  * <pre>
+<<<<<<< HEAD
  * 6       5       4       3       3       2       1
  * 3       5       7       9       1       3       5       7      0
+=======
+ * 6	   5	   4	   3	   3	   2	   1
+ * 3	   5	   7	   9	   1	   3	   5	   7	  0
+>>>>>>> refs/remotes/origin/master
  * +-------+-------+-------+-------+-------+-------+-------+------+
  * 000000000000000000000000___________value000000000000000000000000
  * </pre>
@@ -153,6 +192,7 @@ static inline uint64_t cvmx_build_bits(uint64_t high_bit,
 	return (value & cvmx_build_mask(high_bit - low_bit + 1)) << low_bit;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 enum cvmx_mips_space {
 	CVMX_MIPS_SPACE_XKSEG = 3LL,
@@ -177,6 +217,8 @@ enum cvmx_mips_space {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * Convert a memory pointer (void*) into a hardware compatible
  * memory address (uint64_t). Octeon hardware widgets don't
@@ -210,7 +252,11 @@ static inline uint64_t cvmx_ptr_to_phys(void *ptr)
  * memory pointer (void *).
  *
  * @physical_address:
+<<<<<<< HEAD
  *               Hardware physical address to memory
+=======
+ *		 Hardware physical address to memory
+>>>>>>> refs/remotes/origin/master
  * Returns Pointer to memory
  */
 static inline void *cvmx_phys_to_ptr(uint64_t physical_address)
@@ -234,10 +280,17 @@ static inline void *cvmx_phys_to_ptr(uint64_t physical_address)
 
 /* We have a full 64bit ABI. Writing to a 64bit address can be done with
     a simple volatile pointer */
+<<<<<<< HEAD
 #define CVMX_BUILD_WRITE64(TYPE, ST)                                    \
 static inline void cvmx_write64_##TYPE(uint64_t addr, TYPE##_t val)     \
 {                                                                       \
     *CASTPTR(volatile TYPE##_t, addr) = val;                            \
+=======
+#define CVMX_BUILD_WRITE64(TYPE, ST)					\
+static inline void cvmx_write64_##TYPE(uint64_t addr, TYPE##_t val)	\
+{									\
+    *CASTPTR(volatile TYPE##_t, addr) = val;				\
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -248,19 +301,32 @@ static inline void cvmx_write64_##TYPE(uint64_t addr, TYPE##_t val)     \
 
 /* We have a full 64bit ABI. Writing to a 64bit address can be done with
     a simple volatile pointer */
+<<<<<<< HEAD
 #define CVMX_BUILD_READ64(TYPE, LT)                                     \
 static inline TYPE##_t cvmx_read64_##TYPE(uint64_t addr)                \
 {                                                                       \
+=======
+#define CVMX_BUILD_READ64(TYPE, LT)					\
+static inline TYPE##_t cvmx_read64_##TYPE(uint64_t addr)		\
+{									\
+>>>>>>> refs/remotes/origin/master
 	return *CASTPTR(volatile TYPE##_t, addr);			\
 }
 
 
 /* The following defines 8 functions for writing to a 64bit address. Each
     takes two arguments, the address and the value to write.
+<<<<<<< HEAD
     cvmx_write64_int64      cvmx_write64_uint64
     cvmx_write64_int32      cvmx_write64_uint32
     cvmx_write64_int16      cvmx_write64_uint16
     cvmx_write64_int8       cvmx_write64_uint8 */
+=======
+    cvmx_write64_int64	    cvmx_write64_uint64
+    cvmx_write64_int32	    cvmx_write64_uint32
+    cvmx_write64_int16	    cvmx_write64_uint16
+    cvmx_write64_int8	    cvmx_write64_uint8 */
+>>>>>>> refs/remotes/origin/master
 CVMX_BUILD_WRITE64(int64, "sd");
 CVMX_BUILD_WRITE64(int32, "sw");
 CVMX_BUILD_WRITE64(int16, "sh");
@@ -273,10 +339,17 @@ CVMX_BUILD_WRITE64(uint8, "sb");
 
 /* The following defines 8 functions for reading from a 64bit address. Each
     takes the address as the only argument
+<<<<<<< HEAD
     cvmx_read64_int64       cvmx_read64_uint64
     cvmx_read64_int32       cvmx_read64_uint32
     cvmx_read64_int16       cvmx_read64_uint16
     cvmx_read64_int8        cvmx_read64_uint8 */
+=======
+    cvmx_read64_int64	    cvmx_read64_uint64
+    cvmx_read64_int32	    cvmx_read64_uint32
+    cvmx_read64_int16	    cvmx_read64_uint16
+    cvmx_read64_int8	    cvmx_read64_uint8 */
+>>>>>>> refs/remotes/origin/master
 CVMX_BUILD_READ64(int64, "ld");
 CVMX_BUILD_READ64(int32, "lw");
 CVMX_BUILD_READ64(int16, "lh");
@@ -416,7 +489,11 @@ static inline void cvmx_wait(uint64_t cycles)
 
 /**
  * Reads a chip global cycle counter.  This counts CPU cycles since
+<<<<<<< HEAD
  * chip reset.  The counter is 64 bit.
+=======
+ * chip reset.	The counter is 64 bit.
+>>>>>>> refs/remotes/origin/master
  * This register does not exist on CN38XX pass 1 silicion
  *
  * Returns Global chip cycle count since chip reset.
@@ -480,7 +557,11 @@ static inline uint32_t cvmx_octeon_num_cores(void)
 
 /**
  * Read a byte of fuse data
+<<<<<<< HEAD
  * @byte_addr:   address to read
+=======
+ * @byte_addr:	 address to read
+>>>>>>> refs/remotes/origin/master
  *
  * Returns fuse value: 0 or 1
  */

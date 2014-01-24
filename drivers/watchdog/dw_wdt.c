@@ -29,6 +29,10 @@
 #include <linux/miscdevice.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/pm.h>
 #include <linux/platform_device.h>
 #include <linux/spinlock.h>
@@ -154,8 +158,13 @@ static int dw_wdt_open(struct inode *inode, struct file *filp)
 	return nonseekable_open(inode, filp);
 }
 
+<<<<<<< HEAD
 ssize_t dw_wdt_write(struct file *filp, const char __user *buf, size_t len,
 		     loff_t *offset)
+=======
+static ssize_t dw_wdt_write(struct file *filp, const char __user *buf,
+			    size_t len, loff_t *offset)
+>>>>>>> refs/remotes/origin/master
 {
 	if (!len)
 		return 0;
@@ -203,12 +212,20 @@ static long dw_wdt_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 	switch (cmd) {
 	case WDIOC_GETSUPPORT:
+<<<<<<< HEAD
 		return copy_to_user((struct watchdog_info *)arg, &dw_wdt_ident,
+=======
+		return copy_to_user((void __user *)arg, &dw_wdt_ident,
+>>>>>>> refs/remotes/origin/master
 				    sizeof(dw_wdt_ident)) ? -EFAULT : 0;
 
 	case WDIOC_GETSTATUS:
 	case WDIOC_GETBOOTSTATUS:
+<<<<<<< HEAD
 		return put_user(0, (int *)arg);
+=======
+		return put_user(0, (int __user *)arg);
+>>>>>>> refs/remotes/origin/master
 
 	case WDIOC_KEEPALIVE:
 		dw_wdt_set_next_heartbeat();
@@ -252,17 +269,28 @@ static int dw_wdt_release(struct inode *inode, struct file *filp)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int dw_wdt_suspend(struct device *dev)
 {
 	clk_disable(dw_wdt.clk);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int dw_wdt_suspend(struct device *dev)
+{
+	clk_disable_unprepare(dw_wdt.clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int dw_wdt_resume(struct device *dev)
 {
+<<<<<<< HEAD
 	int err = clk_enable(dw_wdt.clk);
+=======
+	int err = clk_prepare_enable(dw_wdt.clk);
+>>>>>>> refs/remotes/origin/master
 
 	if (err)
 		return err;
@@ -271,12 +299,18 @@ static int dw_wdt_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static const struct dev_pm_ops dw_wdt_pm_ops = {
 	.suspend	= dw_wdt_suspend,
 	.resume		= dw_wdt_resume,
 };
 #endif /* CONFIG_PM */
+=======
+#endif /* CONFIG_PM_SLEEP */
+
+static SIMPLE_DEV_PM_OPS(dw_wdt_pm_ops, dw_wdt_suspend, dw_wdt_resume);
+>>>>>>> refs/remotes/origin/master
 
 static const struct file_operations wdt_fops = {
 	.owner		= THIS_MODULE,
@@ -293,7 +327,11 @@ static struct miscdevice dw_wdt_miscdev = {
 	.minor		= WATCHDOG_MINOR,
 };
 
+<<<<<<< HEAD
 static int __devinit dw_wdt_drv_probe(struct platform_device *pdev)
+=======
+static int dw_wdt_drv_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct resource *mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -301,6 +339,7 @@ static int __devinit dw_wdt_drv_probe(struct platform_device *pdev)
 	if (!mem)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	dw_wdt.regs = devm_request_and_ioremap(&pdev->dev, mem);
 	if (!dw_wdt.regs)
 		return -ENOMEM;
@@ -312,6 +351,19 @@ static int __devinit dw_wdt_drv_probe(struct platform_device *pdev)
 	ret = clk_enable(dw_wdt.clk);
 	if (ret)
 		goto out_put_clk;
+=======
+	dw_wdt.regs = devm_ioremap_resource(&pdev->dev, mem);
+	if (IS_ERR(dw_wdt.regs))
+		return PTR_ERR(dw_wdt.regs);
+
+	dw_wdt.clk = devm_clk_get(&pdev->dev, NULL);
+	if (IS_ERR(dw_wdt.clk))
+		return PTR_ERR(dw_wdt.clk);
+
+	ret = clk_prepare_enable(dw_wdt.clk);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&dw_wdt.lock);
 
@@ -326,23 +378,36 @@ static int __devinit dw_wdt_drv_probe(struct platform_device *pdev)
 	return 0;
 
 out_disable_clk:
+<<<<<<< HEAD
 	clk_disable(dw_wdt.clk);
 out_put_clk:
 	clk_put(dw_wdt.clk);
+=======
+	clk_disable_unprepare(dw_wdt.clk);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit dw_wdt_drv_remove(struct platform_device *pdev)
 {
 	misc_deregister(&dw_wdt_miscdev);
 
 	clk_disable(dw_wdt.clk);
 	clk_put(dw_wdt.clk);
+=======
+static int dw_wdt_drv_remove(struct platform_device *pdev)
+{
+	misc_deregister(&dw_wdt_miscdev);
+
+	clk_disable_unprepare(dw_wdt.clk);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct platform_driver dw_wdt_driver = {
 	.probe		= dw_wdt_drv_probe,
 	.remove		= __devexit_p(dw_wdt_drv_remove),
@@ -352,6 +417,24 @@ static struct platform_driver dw_wdt_driver = {
 #ifdef CONFIG_PM
 		.pm	= &dw_wdt_pm_ops,
 #endif /* CONFIG_PM */
+=======
+#ifdef CONFIG_OF
+static const struct of_device_id dw_wdt_of_match[] = {
+	{ .compatible = "snps,dw-wdt", },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, dw_wdt_of_match);
+#endif
+
+static struct platform_driver dw_wdt_driver = {
+	.probe		= dw_wdt_drv_probe,
+	.remove		= dw_wdt_drv_remove,
+	.driver		= {
+		.name	= "dw_wdt",
+		.owner	= THIS_MODULE,
+		.of_match_table = of_match_ptr(dw_wdt_of_match),
+		.pm	= &dw_wdt_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -360,4 +443,7 @@ module_platform_driver(dw_wdt_driver);
 MODULE_AUTHOR("Jamie Iles");
 MODULE_DESCRIPTION("Synopsys DesignWare Watchdog Driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

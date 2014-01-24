@@ -17,6 +17,7 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
@@ -31,6 +32,16 @@
 
 #ifdef CONFIG_COMPAT
 
+=======
+*/
+
+#include <linux/uaccess.h>
+#include <linux/compat.h>
+#include <linux/fs.h>
+#include "comedi.h"
+#include "comedi_compat32.h"
+
+>>>>>>> refs/remotes/origin/master
 #define COMEDI32_CHANINFO _IOR(CIO, 3, struct comedi32_chaninfo_struct)
 #define COMEDI32_RANGEINFO _IOR(CIO, 8, struct comedi32_rangeinfo_struct)
 /* N.B. COMEDI32_CMD and COMEDI_CMD ought to use _IOWR, not _IOR.
@@ -92,9 +103,12 @@ struct comedi32_insnlist_struct {
 static int translated_ioctl(struct file *file, unsigned int cmd,
 			    unsigned long arg)
 {
+<<<<<<< HEAD
 	if (!file->f_op)
 		return -ENOTTY;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (file->f_op->unlocked_ioctl)
 		return file->f_op->unlocked_ioctl(file, cmd, arg);
 
@@ -459,5 +473,8 @@ long comedi_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	return raw_ioctl(file, cmd, arg);
 }
+<<<<<<< HEAD
 
 #endif /* CONFIG_COMPAT */
+=======
+>>>>>>> refs/remotes/origin/master

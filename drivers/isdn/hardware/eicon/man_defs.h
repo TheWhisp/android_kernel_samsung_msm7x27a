@@ -1,6 +1,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -22,6 +23,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -42,7 +45,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 /* Definitions for use with the Management Information Element      */
@@ -128,6 +134,7 @@ typedef struct mi_xlog_hdr_s MI_XLOG_HDR;
 struct mi_xlog_hdr_s
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   unsigned long  time;   /* Timestamp in msec units                 */
   unsigned short size;   /* Size of data that follows               */
   unsigned short code;   /* code of trace event                     */
@@ -136,6 +143,11 @@ struct mi_xlog_hdr_s
 	unsigned short size;   /* Size of data that follows               */
 	unsigned short code;   /* code of trace event                     */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long  time;   /* Timestamp in msec units                 */
+	unsigned short size;   /* Size of data that follows               */
+	unsigned short code;   /* code of trace event                     */
+>>>>>>> refs/remotes/origin/master
 };                       /* unspecified data follows this header    */
 
 /*------------------------------------------------------------------*/

@@ -15,6 +15,7 @@
 	.text
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.word	0
 
 1:	subs	r2, r2, #4		@ 1 do we have enough
@@ -37,6 +38,8 @@ ENTRY(memset)
  */
 	orr	r1, r1, r1, lsl #8
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 ENTRY(memset)
 	ands	r3, r0, #3		@ 1 unaligned?
@@ -46,7 +49,10 @@ ENTRY(memset)
  * we know that the pointer in ip is aligned to a word boundary.
  */
 1:	orr	r1, r1, r1, lsl #8
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	orr	r1, r1, r1, lsl #16
 	mov	r3, r1
 	cmp	r2, #16
@@ -55,6 +61,7 @@ ENTRY(memset)
 #if ! CALGN(1)+0
 
 /*
+<<<<<<< HEAD
 <<<<<<< HEAD
  * We need an extra register for this loop - save the return address and
  * use the LR
@@ -71,6 +78,8 @@ ENTRY(memset)
 	bgt	2b
 	ldmeqfd	sp!, {pc}		@ Now <64 bytes to go.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * We need 2 extra registers for this loop - use r8 and the LR
  */
 	stmfd	sp!, {r8, lr}
@@ -84,11 +93,15 @@ ENTRY(memset)
 	stmgeia	ip!, {r1, r3, r8, lr}
 	bgt	2b
 	ldmeqfd	sp!, {r8, pc}		@ Now <64 bytes to go.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * No need to correct the count; we're only testing bits from now on
  */
 	tst	r2, #32
+<<<<<<< HEAD
 <<<<<<< HEAD
 	stmneia	r0!, {r1, r3, ip, lr}
 	stmneia	r0!, {r1, r3, ip, lr}
@@ -96,12 +109,17 @@ ENTRY(memset)
 	stmneia	r0!, {r1, r3, ip, lr}
 	ldr	lr, [sp], #4
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	stmneia	ip!, {r1, r3, r8, lr}
 	stmneia	ip!, {r1, r3, r8, lr}
 	tst	r2, #16
 	stmneia	ip!, {r1, r3, r8, lr}
 	ldmfd	sp!, {r8, lr}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #else
 
@@ -111,14 +129,19 @@ ENTRY(memset)
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	stmfd	sp!, {r4-r7, lr}
 =======
 	stmfd	sp!, {r4-r8, lr}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stmfd	sp!, {r4-r8, lr}
+>>>>>>> refs/remotes/origin/master
 	mov	r4, r1
 	mov	r5, r1
 	mov	r6, r1
 	mov	r7, r1
+<<<<<<< HEAD
 <<<<<<< HEAD
 	mov	ip, r1
 	mov	lr, r1
@@ -149,6 +172,8 @@ ENTRY(memset)
 	stmneia	r0!, {r4-r7}
 	ldmfd	sp!, {r4-r7, lr}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mov	r8, r1
 	mov	lr, r1
 
@@ -177,11 +202,15 @@ ENTRY(memset)
 	tst	r2, #16
 	stmneia	ip!, {r4-r7}
 	ldmfd	sp!, {r4-r8, lr}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif
 
 4:	tst	r2, #8
+<<<<<<< HEAD
 <<<<<<< HEAD
 	stmneia	r0!, {r1, r3}
 	tst	r2, #4
@@ -191,11 +220,17 @@ ENTRY(memset)
 	tst	r2, #4
 	strne	r1, [ip], #4
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	stmneia	ip!, {r1, r3}
+	tst	r2, #4
+	strne	r1, [ip], #4
+>>>>>>> refs/remotes/origin/master
 /*
  * When we get here, we've got less than 4 bytes to zero.  We
  * may have an unaligned pointer as well.
  */
 5:	tst	r2, #2
+<<<<<<< HEAD
 <<<<<<< HEAD
 	strneb	r1, [r0], #1
 	strneb	r1, [r0], #1
@@ -203,6 +238,8 @@ ENTRY(memset)
 	strneb	r1, [r0], #1
 	mov	pc, lr
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	strneb	r1, [ip], #1
 	strneb	r1, [ip], #1
 	tst	r2, #1
@@ -217,5 +254,8 @@ ENTRY(memset)
 	strb	r1, [ip], #1		@ 1
 	add	r2, r2, r3		@ 1 (r2 = r2 - (4 - r3))
 	b	1b
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 ENDPROC(memset)

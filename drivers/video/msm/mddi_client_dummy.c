@@ -15,11 +15,19 @@
  * GNU General Public License for more details.
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 
+<<<<<<< HEAD
 #include <mach/msm_fb.h>
+=======
+#include <linux/platform_data/video-msm_fb.h>
+>>>>>>> refs/remotes/origin/master
 
 struct panel_info {
 	struct platform_device pdev;

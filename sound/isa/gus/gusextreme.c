@@ -25,10 +25,14 @@
 #include <linux/delay.h>
 #include <linux/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <sound/core.h>
 #include <sound/gus.h>
@@ -51,10 +55,14 @@ MODULE_SUPPORTED_DEVICE("{{Gravis,UltraSound Extreme}}");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* 0x220,0x240,0x260 */
 static long gf1_port[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS) - 1] = -1}; /* 0x210,0x220,0x230,0x240,0x250,0x260,0x270 */
 static long mpu_port[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS) - 1] = -1}; /* 0x300,0x310,0x320 */
@@ -97,13 +105,23 @@ MODULE_PARM_DESC(channels, "GF1 channels for " CRD_NAME " driver.");
 module_param_array(pcm_channels, int, NULL, 0444);
 MODULE_PARM_DESC(pcm_channels, "Reserved PCM channels for " CRD_NAME " driver.");
 
+<<<<<<< HEAD
 static int __devinit snd_gusextreme_match(struct device *dev, unsigned int n)
+=======
+static int snd_gusextreme_match(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	return enable[n];
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusextreme_es1688_create(struct snd_card *card,
 		struct snd_es1688 *chip, struct device *dev, unsigned int n)
+=======
+static int snd_gusextreme_es1688_create(struct snd_card *card,
+					struct snd_es1688 *chip,
+					struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	static long possible_ports[] = {0x220, 0x240, 0x260};
 	static int possible_irqs[] = {5, 9, 10, 7, -1};
@@ -140,8 +158,14 @@ static int __devinit snd_gusextreme_es1688_create(struct snd_card *card,
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusextreme_gus_card_create(struct snd_card *card,
 		struct device *dev, unsigned int n, struct snd_gus_card **rgus)
+=======
+static int snd_gusextreme_gus_card_create(struct snd_card *card,
+					  struct device *dev, unsigned int n,
+					  struct snd_gus_card **rgus)
+>>>>>>> refs/remotes/origin/master
 {
 	static int possible_irqs[] = {11, 12, 15, 9, 5, 7, 3, -1};
 	static int possible_dmas[] = {5, 6, 7, 3, 1, -1};
@@ -164,8 +188,13 @@ static int __devinit snd_gusextreme_gus_card_create(struct snd_card *card,
 			0, channels[n], pcm_channels[n], 0, rgus);
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusextreme_detect(struct snd_gus_card *gus,
 	struct snd_es1688 *es1688)
+=======
+static int snd_gusextreme_detect(struct snd_gus_card *gus,
+				 struct snd_es1688 *es1688)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	unsigned char d;
@@ -214,7 +243,11 @@ static int __devinit snd_gusextreme_detect(struct snd_gus_card *gus,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusextreme_mixer(struct snd_card *card)
+=======
+static int snd_gusextreme_mixer(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_ctl_elem_id id1, id2;
 	int error;
@@ -240,7 +273,11 @@ static int __devinit snd_gusextreme_mixer(struct snd_card *card)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_gusextreme_probe(struct device *dev, unsigned int n)
+=======
+static int snd_gusextreme_probe(struct device *dev, unsigned int n)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_card *card;
 	struct snd_gus_card *gus;
@@ -326,11 +363,15 @@ static int __devinit snd_gusextreme_probe(struct device *dev, unsigned int n)
 	if (es1688->mpu_port >= 0x300) {
 		error = snd_mpu401_uart_new(card, 0, MPU401_HW_ES1688,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				es1688->mpu_port, 0,
 				mpu_irq[n], IRQF_DISABLED, NULL);
 =======
 				es1688->mpu_port, 0, mpu_irq[n], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				es1688->mpu_port, 0, mpu_irq[n], NULL);
+>>>>>>> refs/remotes/origin/master
 		if (error < 0)
 			goto out;
 	}
@@ -352,17 +393,27 @@ out:	snd_card_free(card);
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit snd_gusextreme_remove(struct device *dev, unsigned int n)
 {
 	snd_card_free(dev_get_drvdata(dev));
 	dev_set_drvdata(dev, NULL);
+=======
+static int snd_gusextreme_remove(struct device *dev, unsigned int n)
+{
+	snd_card_free(dev_get_drvdata(dev));
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static struct isa_driver snd_gusextreme_driver = {
 	.match		= snd_gusextreme_match,
 	.probe		= snd_gusextreme_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(snd_gusextreme_remove),
+=======
+	.remove		= snd_gusextreme_remove,
+>>>>>>> refs/remotes/origin/master
 #if 0	/* FIXME */
 	.suspend	= snd_gusextreme_suspend,
 	.resume		= snd_gusextreme_resume,

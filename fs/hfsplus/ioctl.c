@@ -16,12 +16,18 @@
 #include <linux/fs.h>
 #include <linux/mount.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/xattr.h>
 #include <asm/uaccess.h>
 #include "hfsplus_fs.h"
 
 <<<<<<< HEAD
 =======
+=======
+#include <asm/uaccess.h>
+#include "hfsplus_fs.h"
+
+>>>>>>> refs/remotes/origin/master
 /*
  * "Blessing" an HFS+ filesystem writes metadata to the superblock informing
  * the platform firmware which file to boot from
@@ -59,10 +65,16 @@ static int hfsplus_ioctl_bless(struct file *file, int __user *user_flags)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static int hfsplus_ioctl_getflags(struct file *file, int __user *user_flags)
 {
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+static int hfsplus_ioctl_getflags(struct file *file, int __user *user_flags)
+{
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
 	unsigned int flags = 0;
 
@@ -78,16 +90,24 @@ static int hfsplus_ioctl_getflags(struct file *file, int __user *user_flags)
 
 static int hfsplus_ioctl_setflags(struct file *file, int __user *user_flags)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
 	unsigned int flags;
 	int err = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mnt_want_write(file->f_path.mnt);
 =======
 	err = mnt_want_write_file(file);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mnt_want_write_file(file);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 
@@ -139,10 +159,14 @@ out_unlock_inode:
 	mutex_unlock(&inode->i_mutex);
 out_drop_write:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mnt_drop_write(file->f_path.mnt);
 =======
 	mnt_drop_write_file(file);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mnt_drop_write_file(file);
+>>>>>>> refs/remotes/origin/master
 out:
 	return err;
 }
@@ -157,14 +181,20 @@ long hfsplus_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	case HFSPLUS_IOC_EXT2_SETFLAGS:
 		return hfsplus_ioctl_setflags(file, argp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	case HFSPLUS_IOC_BLESS:
 		return hfsplus_ioctl_bless(file, argp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case HFSPLUS_IOC_BLESS:
+		return hfsplus_ioctl_bless(file, argp);
+>>>>>>> refs/remotes/origin/master
 	default:
 		return -ENOTTY;
 	}
 }
+<<<<<<< HEAD
 
 int hfsplus_setxattr(struct dentry *dentry, const char *name,
 		     const void *value, size_t size, int flags)
@@ -272,3 +302,5 @@ ssize_t hfsplus_listxattr(struct dentry *dentry, char *buffer, size_t size)
 
 	return HFSPLUS_ATTRLIST_SIZE;
 }
+=======
+>>>>>>> refs/remotes/origin/master

@@ -18,7 +18,11 @@
 #include <linux/delay.h>
 #include <linux/pm.h>
 #include <linux/i2c.h>
+<<<<<<< HEAD
 #include <linux/spi/spi.h>
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -30,6 +34,10 @@
 #include "rt5631.h"
 
 struct rt5631_priv {
+<<<<<<< HEAD
+=======
+	struct regmap *regmap;
+>>>>>>> refs/remotes/origin/master
 	int codec_version;
 	int master;
 	int sysclk;
@@ -38,6 +46,7 @@ struct rt5631_priv {
 	int dmic_used_flag;
 };
 
+<<<<<<< HEAD
 static const u16 rt5631_reg[RT5631_VENDOR_ID2 + 1] = {
 	[RT5631_SPK_OUT_VOL] = 0x8888,
 	[RT5631_HP_OUT_VOL] = 0x8080,
@@ -65,6 +74,35 @@ static const u16 rt5631_reg[RT5631_VENDOR_ID2 + 1] = {
 	[RT5631_ALC_CTRL_1] = 0x0206,
 	[RT5631_ALC_CTRL_3] = 0x2000,
 	[RT5631_PSEUDO_SPATL_CTRL] = 0x0553,
+=======
+static const struct reg_default rt5631_reg[] = {
+	{ RT5631_SPK_OUT_VOL, 0x8888 },
+	{ RT5631_HP_OUT_VOL, 0x8080 },
+	{ RT5631_MONO_AXO_1_2_VOL, 0xa080 },
+	{ RT5631_AUX_IN_VOL, 0x0808 },
+	{ RT5631_ADC_REC_MIXER, 0xf0f0 },
+	{ RT5631_VDAC_DIG_VOL, 0x0010 },
+	{ RT5631_OUTMIXER_L_CTRL, 0xffc0 },
+	{ RT5631_OUTMIXER_R_CTRL, 0xffc0 },
+	{ RT5631_AXO1MIXER_CTRL, 0x88c0 },
+	{ RT5631_AXO2MIXER_CTRL, 0x88c0 },
+	{ RT5631_DIG_MIC_CTRL, 0x3000 },
+	{ RT5631_MONO_INPUT_VOL, 0x8808 },
+	{ RT5631_SPK_MIXER_CTRL, 0xf8f8 },
+	{ RT5631_SPK_MONO_OUT_CTRL, 0xfc00 },
+	{ RT5631_SPK_MONO_HP_OUT_CTRL, 0x4440 },
+	{ RT5631_SDP_CTRL, 0x8000 },
+	{ RT5631_MONO_SDP_CTRL, 0x8000 },
+	{ RT5631_STEREO_AD_DA_CLK_CTRL, 0x2010 },
+	{ RT5631_GEN_PUR_CTRL_REG, 0x0e00 },
+	{ RT5631_INT_ST_IRQ_CTRL_2, 0x071a },
+	{ RT5631_MISC_CTRL, 0x2040 },
+	{ RT5631_DEPOP_FUN_CTRL_2, 0x8000 },
+	{ RT5631_SOFT_VOL_CTRL, 0x07e0 },
+	{ RT5631_ALC_CTRL_1, 0x0206 },
+	{ RT5631_ALC_CTRL_3, 0x2000 },
+	{ RT5631_PSEUDO_SPATL_CTRL, 0x0553 },
+>>>>>>> refs/remotes/origin/master
 };
 
 /**
@@ -96,8 +134,12 @@ static int rt5631_reset(struct snd_soc_codec *codec)
 	return snd_soc_write(codec, RT5631_RESET, 0);
 }
 
+<<<<<<< HEAD
 static int rt5631_volatile_register(struct snd_soc_codec *codec,
 				    unsigned int reg)
+=======
+static bool rt5631_volatile_register(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (reg) {
 	case RT5631_RESET:
@@ -111,8 +153,12 @@ static int rt5631_volatile_register(struct snd_soc_codec *codec,
 	}
 }
 
+<<<<<<< HEAD
 static int rt5631_readable_register(struct snd_soc_codec *codec,
 				    unsigned int reg)
+=======
+static bool rt5631_readable_register(struct device *dev, unsigned int reg)
+>>>>>>> refs/remotes/origin/master
 {
 	switch (reg) {
 	case RT5631_RESET:
@@ -1361,8 +1407,12 @@ static int get_coeff(int mclk, int rate, int timesofbclk)
 static int rt5631_hifi_pcm_params(struct snd_pcm_substream *substream,
 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(codec);
 	int timesofbclk = 32, coeff;
 	unsigned int iface = 0;
@@ -1384,7 +1434,11 @@ static int rt5631_hifi_pcm_params(struct snd_pcm_substream *substream,
 					timesofbclk);
 	if (coeff < 0) {
 		dev_err(codec->dev, "Fail to get coeff\n");
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		return coeff;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (params_format(params)) {
@@ -1544,6 +1598,11 @@ static int rt5631_codec_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
 static int rt5631_set_bias_level(struct snd_soc_codec *codec,
 			enum snd_soc_bias_level level)
 {
+<<<<<<< HEAD
+=======
+	struct rt5631_priv *rt5631 = snd_soc_codec_get_drvdata(codec);
+
+>>>>>>> refs/remotes/origin/master
 	switch (level) {
 	case SND_SOC_BIAS_ON:
 	case SND_SOC_BIAS_PREPARE:
@@ -1561,8 +1620,13 @@ static int rt5631_set_bias_level(struct snd_soc_codec *codec,
 			snd_soc_update_bits(codec, RT5631_PWR_MANAG_ADD3,
 				RT5631_PWR_FAST_VREF_CTRL,
 				RT5631_PWR_FAST_VREF_CTRL);
+<<<<<<< HEAD
 			codec->cache_only = false;
 			snd_soc_cache_sync(codec);
+=======
+			regcache_cache_only(rt5631->regmap, false);
+			regcache_sync(rt5631->regmap);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 
@@ -1587,7 +1651,13 @@ static int rt5631_probe(struct snd_soc_codec *codec)
 	unsigned int val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
+=======
+	codec->control_data = rt5631->regmap;
+
+	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -1698,12 +1768,15 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5631 = {
 	.suspend = rt5631_suspend,
 	.resume = rt5631_resume,
 	.set_bias_level = rt5631_set_bias_level,
+<<<<<<< HEAD
 	.reg_cache_size = RT5631_VENDOR_ID2 + 1,
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = rt5631_reg,
 	.volatile_register = rt5631_volatile_register,
 	.readable_register = rt5631_readable_register,
 	.reg_cache_step = 1,
+=======
+>>>>>>> refs/remotes/origin/master
 	.controls = rt5631_snd_controls,
 	.num_controls = ARRAY_SIZE(rt5631_snd_controls),
 	.dapm_widgets = rt5631_dapm_widgets,
@@ -1718,6 +1791,21 @@ static const struct i2c_device_id rt5631_i2c_id[] = {
 };
 MODULE_DEVICE_TABLE(i2c, rt5631_i2c_id);
 
+<<<<<<< HEAD
+=======
+static const struct regmap_config rt5631_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 16,
+
+	.readable_reg = rt5631_readable_register,
+	.volatile_reg = rt5631_volatile_register,
+	.max_register = RT5631_VENDOR_ID2,
+	.reg_defaults = rt5631_reg,
+	.num_reg_defaults = ARRAY_SIZE(rt5631_reg),
+	.cache_type = REGCACHE_RBTREE,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int rt5631_i2c_probe(struct i2c_client *i2c,
 		    const struct i2c_device_id *id)
 {
@@ -1731,12 +1819,23 @@ static int rt5631_i2c_probe(struct i2c_client *i2c,
 
 	i2c_set_clientdata(i2c, rt5631);
 
+<<<<<<< HEAD
+=======
+	rt5631->regmap = devm_regmap_init_i2c(i2c, &rt5631_regmap_config);
+	if (IS_ERR(rt5631->regmap))
+		return PTR_ERR(rt5631->regmap);
+
+>>>>>>> refs/remotes/origin/master
 	ret = snd_soc_register_codec(&i2c->dev, &soc_codec_dev_rt5631,
 			rt5631_dai, ARRAY_SIZE(rt5631_dai));
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int rt5631_i2c_remove(struct i2c_client *client)
+=======
+static int rt5631_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_codec(&client->dev);
 	return 0;
@@ -1748,6 +1847,7 @@ static struct i2c_driver rt5631_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = rt5631_i2c_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(rt5631_i2c_remove),
 	.id_table = rt5631_i2c_id,
 };
@@ -1763,6 +1863,13 @@ static void __exit rt5631_modexit(void)
 	i2c_del_driver(&rt5631_i2c_driver);
 }
 module_exit(rt5631_modexit);
+=======
+	.remove   = rt5631_i2c_remove,
+	.id_table = rt5631_i2c_id,
+};
+
+module_i2c_driver(rt5631_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC RT5631 driver");
 MODULE_AUTHOR("flove <flove@realtek.com>");

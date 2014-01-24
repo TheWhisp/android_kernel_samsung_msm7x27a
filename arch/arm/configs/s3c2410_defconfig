@@ -4,14 +4,18 @@ CONFIG_IKCONFIG=m
 CONFIG_IKCONFIG_PROC=y
 CONFIG_LOG_BUF_SHIFT=16
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_SYSFS_DEPRECATED_V2=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_BLK_DEV_INITRD=y
 CONFIG_SLAB=y
 CONFIG_MODULES=y
 CONFIG_MODULE_UNLOAD=y
 # CONFIG_BLK_DEV_BSG is not set
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_ARCH_S3C2410=y
 CONFIG_S3C_BOOT_ERROR_RESET=y
@@ -27,6 +31,8 @@ CONFIG_MACH_TCT_HAMMER=y
 CONFIG_MACH_VR1000=y
 CONFIG_MACH_QT2410=y
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_PARTITION_ADVANCED=y
 CONFIG_BSD_DISKLABEL=y
 CONFIG_SOLARIS_X86_PARTITION=y
@@ -48,23 +54,33 @@ CONFIG_MACH_QT2410=y
 CONFIG_ARCH_SMDK2410=y
 CONFIG_MACH_TCT_HAMMER=y
 CONFIG_MACH_VR1000=y
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_MACH_JIVE=y
 CONFIG_MACH_SMDK2412=y
 CONFIG_MACH_VSTMS=y
 CONFIG_MACH_SMDK2416=y
 CONFIG_MACH_ANUBIS=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_MACH_NEO1973_GTA02=y
 =======
 CONFIG_MACH_AT2440EVB=y
 CONFIG_MACH_MINI2440=y
 CONFIG_MACH_NEXCODER_2440=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_MACH_AT2440EVB=y
+CONFIG_MACH_MINI2440=y
+CONFIG_MACH_NEXCODER_2440=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_MACH_OSIRIS=y
 CONFIG_MACH_OSIRIS_DVS=m
 CONFIG_MACH_RX3715=y
 CONFIG_ARCH_S3C2440=y
+<<<<<<< HEAD
 <<<<<<< HEAD
 CONFIG_MACH_NEXCODER_2440=y
 CONFIG_SMDK2440_CPU2442=y
@@ -76,6 +92,11 @@ CONFIG_MACH_NEO1973_GTA02=y
 CONFIG_MACH_RX1950=y
 CONFIG_SMDK2440_CPU2442=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_MACH_NEO1973_GTA02=y
+CONFIG_MACH_RX1950=y
+CONFIG_SMDK2440_CPU2442=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_MACH_SMDK2443=y
 # CONFIG_ARM_THUMB is not set
 CONFIG_ZBOOT_ROM_TEXT=0x0
@@ -85,9 +106,12 @@ CONFIG_FPE_NWFPE=y
 CONFIG_FPE_NWFPE_XP=y
 CONFIG_BINFMT_AOUT=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_PM=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_APM_EMULATION=m
 CONFIG_NET=y
 CONFIG_PACKET=y
@@ -101,9 +125,12 @@ CONFIG_IP_PNP_DHCP=y
 CONFIG_IP_PNP_BOOTP=y
 CONFIG_NET_IPIP=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_NET_IPGRE=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_INET_AH=m
 CONFIG_INET_ESP=m
 CONFIG_INET_IPCOMP=m
@@ -126,9 +153,12 @@ CONFIG_INET6_XFRM_MODE_ROUTEOPTIMIZATION=m
 CONFIG_IPV6_TUNNEL=m
 CONFIG_NETFILTER=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_NETFILTER_NETLINK_QUEUE=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_NF_CONNTRACK=m
 CONFIG_NF_CONNTRACK_EVENTS=y
 CONFIG_NF_CT_PROTO_DCCP=m
@@ -187,9 +217,12 @@ CONFIG_NF_CONNTRACK_IPV4=m
 CONFIG_IP_NF_QUEUE=m
 CONFIG_IP_NF_IPTABLES=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_IP_NF_MATCH_ADDRTYPE=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_IP_NF_MATCH_AH=m
 CONFIG_IP_NF_MATCH_ECN=m
 CONFIG_IP_NF_MATCH_TTL=m
@@ -202,9 +235,12 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
 CONFIG_IP_NF_TARGET_NETMAP=m
 CONFIG_IP_NF_TARGET_REDIRECT=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_NF_NAT_SNMP_BASIC=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_IP_NF_MANGLE=m
 CONFIG_IP_NF_TARGET_CLUSTERIP=m
 CONFIG_IP_NF_TARGET_ECN=m
@@ -232,10 +268,13 @@ CONFIG_IP6_NF_MANGLE=m
 CONFIG_IP6_NF_RAW=m
 CONFIG_BT=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_BT_L2CAP=m
 CONFIG_BT_SCO=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_BT_RFCOMM=m
 CONFIG_BT_RFCOMM_TTY=y
 CONFIG_BT_BNEP=m
@@ -257,9 +296,12 @@ CONFIG_MAC80211_LEDS=y
 CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
 CONFIG_MTD=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_MTD_PARTITIONS=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_MTD_REDBOOT_PARTS=y
 CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED=y
 CONFIG_MTD_CMDLINE_PARTS=y
@@ -282,11 +324,14 @@ CONFIG_BLK_DEV_UB=m
 CONFIG_BLK_DEV_RAM=y
 CONFIG_ATA_OVER_ETH=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_EEPROM_AT25=m
 CONFIG_EEPROM_LEGACY=m
 CONFIG_EEPROM_93CX6=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_IDE=y
 CONFIG_BLK_DEV_IDECD=y
 CONFIG_BLK_DEV_IDETAPE=m
@@ -304,9 +349,12 @@ CONFIG_SCSI_CONSTANTS=y
 CONFIG_SCSI_SCAN_ASYNC=y
 CONFIG_NETDEVICES=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_NET_ETHERNET=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_DM9000=y
 CONFIG_INPUT_EVDEV=y
 CONFIG_MOUSE_APPLETOUCH=m
@@ -341,9 +389,12 @@ CONFIG_INPUT_TOUCHSCREEN=y
 CONFIG_TOUCHSCREEN_USB_COMPOSITE=m
 CONFIG_INPUT_MISC=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_INPUT_ATI_REMOTE=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_INPUT_ATI_REMOTE2=m
 CONFIG_INPUT_KEYSPAN_REMOTE=m
 CONFIG_INPUT_POWERMATE=m
@@ -370,9 +421,12 @@ CONFIG_SPI=y
 CONFIG_SPI_GPIO=m
 CONFIG_SPI_S3C24XX=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_SPI_S3C24XX_GPIO=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_SPI_SPIDEV=m
 CONFIG_SPI_TLE62X0=m
 CONFIG_SENSORS_LM75=m
@@ -388,9 +442,12 @@ CONFIG_FB_S3C2410=y
 CONFIG_FB_SM501=y
 CONFIG_BACKLIGHT_PWM=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CONFIG_VGA_CONSOLE is not set
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_FRAMEBUFFER_CONSOLE=y
 CONFIG_SOUND=y
 CONFIG_SND=y
@@ -406,12 +463,15 @@ CONFIG_SND_USB_AUDIO=m
 CONFIG_SND_USB_CAIAQ=m
 CONFIG_SND_SOC=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_SND_S3C24XX_SOC=y
 CONFIG_SND_S3C24XX_SOC_JIVE_WM8750=m
 CONFIG_SND_S3C24XX_SOC_SMDK2443_WM9710=m
 CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_USB_HID is not set
 CONFIG_USB=y
 CONFIG_USB_DEVICEFS=y
@@ -466,12 +526,16 @@ CONFIG_MMC_SDHCI=m
 CONFIG_MMC_SPI=m
 CONFIG_MMC_S3C=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_LEDS_CLASS=m
 CONFIG_LEDS_S3C24XX=m
 CONFIG_LEDS_H1940=m
 =======
 CONFIG_LEDS_S3C24XX=m
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_LEDS_S3C24XX=m
+>>>>>>> refs/remotes/origin/master
 CONFIG_LEDS_PCA9532=m
 CONFIG_LEDS_GPIO=m
 CONFIG_LEDS_PCA955X=m
@@ -493,10 +557,13 @@ CONFIG_EXT3_FS_POSIX_ACL=y
 CONFIG_EXT4_FS=m
 CONFIG_EXT4_FS_POSIX_ACL=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_INOTIFY=y
 CONFIG_AUTOFS_FS=m
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_AUTOFS4_FS=m
 CONFIG_FUSE_FS=m
 CONFIG_ISO9660_FS=y
@@ -522,11 +589,14 @@ CONFIG_NFSD_V3_ACL=y
 CONFIG_NFSD_V4=y
 CONFIG_CIFS=m
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_PARTITION_ADVANCED=y
 CONFIG_BSD_DISKLABEL=y
 CONFIG_SOLARIS_X86_PARTITION=y
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_NLS_CODEPAGE_437=y
 CONFIG_NLS_CODEPAGE_737=m
 CONFIG_NLS_CODEPAGE_775=m
@@ -570,6 +640,7 @@ CONFIG_DEBUG_KERNEL=y
 CONFIG_DEBUG_MUTEXES=y
 CONFIG_DEBUG_INFO=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CONFIG_RCU_CPU_STALL_DETECTOR is not set
 CONFIG_SYSCTL_SYSCALL_CHECK=y
 CONFIG_DEBUG_USER=y
@@ -578,5 +649,9 @@ CONFIG_DEBUG_ERRORS=y
 CONFIG_SYSCTL_SYSCALL_CHECK=y
 CONFIG_DEBUG_USER=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_SYSCTL_SYSCALL_CHECK=y
+CONFIG_DEBUG_USER=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_DEBUG_LL=y
 # CONFIG_CRYPTO_ANSI_CPRNG is not set

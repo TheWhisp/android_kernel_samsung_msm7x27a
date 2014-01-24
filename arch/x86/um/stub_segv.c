@@ -3,9 +3,15 @@
  * Licensed under the GPL
  */
 
+<<<<<<< HEAD
 #include "sysdep/stub.h"
 #include "sysdep/faultinfo.h"
 #include "sysdep/mcontext.h"
+=======
+#include <sysdep/stub.h>
+#include <sysdep/faultinfo.h>
+#include <sysdep/mcontext.h>
+>>>>>>> refs/remotes/origin/master
 
 void __attribute__ ((__section__ (".__syscall_stub")))
 stub_segv_handler(int sig, siginfo_t *info, void *p)

@@ -3,14 +3,22 @@
  * Copyright (C) 2000, 2007 David S. Miller (davem@davemloft.net)
  */
 
+<<<<<<< HEAD
+=======
+#include <linux/linkage.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/asi.h>
 #include <asm/backoff.h>
 
 	.text
 
+<<<<<<< HEAD
 	.globl	test_and_set_bit
 	.type	test_and_set_bit,#function
 test_and_set_bit:	/* %o0=nr, %o1=addr */
+=======
+ENTRY(test_and_set_bit)	/* %o0=nr, %o1=addr */
+>>>>>>> refs/remotes/origin/master
 	BACKOFF_SETUP(%o3)
 	srlx	%o0, 6, %g1
 	mov	1, %o2
@@ -29,11 +37,17 @@ test_and_set_bit:	/* %o0=nr, %o1=addr */
 	retl
 	 nop
 2:	BACKOFF_SPIN(%o3, %o4, 1b)
+<<<<<<< HEAD
 	.size	test_and_set_bit, .-test_and_set_bit
 
 	.globl	test_and_clear_bit
 	.type	test_and_clear_bit,#function
 test_and_clear_bit:	/* %o0=nr, %o1=addr */
+=======
+ENDPROC(test_and_set_bit)
+
+ENTRY(test_and_clear_bit) /* %o0=nr, %o1=addr */
+>>>>>>> refs/remotes/origin/master
 	BACKOFF_SETUP(%o3)
 	srlx	%o0, 6, %g1
 	mov	1, %o2
@@ -52,11 +66,17 @@ test_and_clear_bit:	/* %o0=nr, %o1=addr */
 	retl
 	 nop
 2:	BACKOFF_SPIN(%o3, %o4, 1b)
+<<<<<<< HEAD
 	.size	test_and_clear_bit, .-test_and_clear_bit
 
 	.globl	test_and_change_bit
 	.type	test_and_change_bit,#function
 test_and_change_bit:	/* %o0=nr, %o1=addr */
+=======
+ENDPROC(test_and_clear_bit)
+
+ENTRY(test_and_change_bit) /* %o0=nr, %o1=addr */
+>>>>>>> refs/remotes/origin/master
 	BACKOFF_SETUP(%o3)
 	srlx	%o0, 6, %g1
 	mov	1, %o2
@@ -75,11 +95,17 @@ test_and_change_bit:	/* %o0=nr, %o1=addr */
 	retl
 	 nop
 2:	BACKOFF_SPIN(%o3, %o4, 1b)
+<<<<<<< HEAD
 	.size	test_and_change_bit, .-test_and_change_bit
 
 	.globl	set_bit
 	.type	set_bit,#function
 set_bit:		/* %o0=nr, %o1=addr */
+=======
+ENDPROC(test_and_change_bit)
+
+ENTRY(set_bit) /* %o0=nr, %o1=addr */
+>>>>>>> refs/remotes/origin/master
 	BACKOFF_SETUP(%o3)
 	srlx	%o0, 6, %g1
 	mov	1, %o2
@@ -96,11 +122,17 @@ set_bit:		/* %o0=nr, %o1=addr */
 	retl
 	 nop
 2:	BACKOFF_SPIN(%o3, %o4, 1b)
+<<<<<<< HEAD
 	.size	set_bit, .-set_bit
 
 	.globl	clear_bit
 	.type	clear_bit,#function
 clear_bit:		/* %o0=nr, %o1=addr */
+=======
+ENDPROC(set_bit)
+
+ENTRY(clear_bit) /* %o0=nr, %o1=addr */
+>>>>>>> refs/remotes/origin/master
 	BACKOFF_SETUP(%o3)
 	srlx	%o0, 6, %g1
 	mov	1, %o2
@@ -117,11 +149,17 @@ clear_bit:		/* %o0=nr, %o1=addr */
 	retl
 	 nop
 2:	BACKOFF_SPIN(%o3, %o4, 1b)
+<<<<<<< HEAD
 	.size	clear_bit, .-clear_bit
 
 	.globl	change_bit
 	.type	change_bit,#function
 change_bit:		/* %o0=nr, %o1=addr */
+=======
+ENDPROC(clear_bit)
+
+ENTRY(change_bit) /* %o0=nr, %o1=addr */
+>>>>>>> refs/remotes/origin/master
 	BACKOFF_SETUP(%o3)
 	srlx	%o0, 6, %g1
 	mov	1, %o2
@@ -138,4 +176,8 @@ change_bit:		/* %o0=nr, %o1=addr */
 	retl
 	 nop
 2:	BACKOFF_SPIN(%o3, %o4, 1b)
+<<<<<<< HEAD
 	.size	change_bit, .-change_bit
+=======
+ENDPROC(change_bit)
+>>>>>>> refs/remotes/origin/master

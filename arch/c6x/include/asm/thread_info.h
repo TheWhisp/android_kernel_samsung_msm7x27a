@@ -20,11 +20,19 @@
 #ifdef CONFIG_4KSTACKS
 #define THREAD_SIZE		4096
 #define THREAD_SHIFT		12
+<<<<<<< HEAD
 #define THREAD_ORDER		0
 #else
 #define THREAD_SIZE		8192
 #define THREAD_SHIFT		13
 #define THREAD_ORDER		1
+=======
+#define THREAD_SIZE_ORDER	0
+#else
+#define THREAD_SIZE		8192
+#define THREAD_SHIFT		13
+#define THREAD_SIZE_ORDER	1
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define THREAD_START_SP		(THREAD_SIZE - 8)
@@ -80,6 +88,7 @@ struct thread_info *current_thread_info(void)
 	return ti;
 }
 
+<<<<<<< HEAD
 #define __HAVE_ARCH_THREAD_INFO_ALLOCATOR
 
 /* thread information allocation */
@@ -93,12 +102,17 @@ struct thread_info *current_thread_info(void)
 	((struct thread_info *)__get_free_pages(THREAD_FLAGS, THREAD_ORDER))
 
 #define free_thread_info(ti)	free_pages((unsigned long) (ti), THREAD_ORDER)
+=======
+>>>>>>> refs/remotes/origin/master
 #define get_thread_info(ti)	get_task_struct((ti)->task)
 #define put_thread_info(ti)	put_task_struct((ti)->task)
 #endif /* __ASSEMBLY__ */
 
+<<<<<<< HEAD
 #define	PREEMPT_ACTIVE	0x10000000
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * thread information flag bit numbers
  * - pending work-to-be-done flags are in LSW
@@ -110,7 +124,10 @@ struct thread_info *current_thread_info(void)
 #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
 #define TIF_RESTORE_SIGMASK	4	/* restore signal mask in do_signal() */
 
+<<<<<<< HEAD
 #define TIF_POLLING_NRFLAG	16	/* true if polling TIF_NEED_RESCHED */
+=======
+>>>>>>> refs/remotes/origin/master
 #define TIF_MEMDIE		17	/* OOM killer killed process */
 
 #define TIF_WORK_MASK		0x00007FFE /* work on irq/exception return */

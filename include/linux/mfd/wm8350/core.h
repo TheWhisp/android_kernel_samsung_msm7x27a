@@ -17,6 +17,10 @@
 #include <linux/mutex.h>
 #include <linux/interrupt.h>
 #include <linux/completion.h>
+<<<<<<< HEAD
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/mfd/wm8350/audio.h>
 #include <linux/mfd/wm8350/gpio.h>
@@ -66,6 +70,12 @@
 
 #define WM8350_MAX_REGISTER                     0xFF
 
+<<<<<<< HEAD
+=======
+#define WM8350_UNLOCK_KEY		0x0013
+#define WM8350_LOCK_KEY			0x0000
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Field Definitions.
  */
@@ -582,6 +592,7 @@
 
 #define WM8350_NUM_IRQ_REGS 7
 
+<<<<<<< HEAD
 struct wm8350_reg_access {
 	u16 readable;		/* Mask of readable bits */
 	u16 writable;		/* Mask of writable bits */
@@ -600,6 +611,9 @@ extern const u16 wm8352_mode0_defaults[];
 extern const u16 wm8352_mode1_defaults[];
 extern const u16 wm8352_mode2_defaults[];
 extern const u16 wm8352_mode3_defaults[];
+=======
+extern const struct regmap_config wm8350_regmap;
+>>>>>>> refs/remotes/origin/master
 
 struct wm8350;
 
@@ -612,6 +626,7 @@ struct wm8350 {
 	struct device *dev;
 
 	/* device IO */
+<<<<<<< HEAD
 	union {
 		struct i2c_client *i2c_client;
 		struct spi_device *spi_device;
@@ -620,6 +635,10 @@ struct wm8350 {
 	int (*write_dev)(struct wm8350 *wm8350, char reg, int size,
 			 void *src);
 	u16 *reg_cache;
+=======
+	struct regmap *regmap;
+	bool unlocked;
+>>>>>>> refs/remotes/origin/master
 
 	struct mutex auxadc_mutex;
 	struct completion auxadc_done;

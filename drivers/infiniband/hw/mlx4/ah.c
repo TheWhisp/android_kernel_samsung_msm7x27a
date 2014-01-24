@@ -127,10 +127,14 @@ static struct ib_ah *create_iboe_ah(struct ib_pd *pd, struct ib_ah_attr *ah_attr
 
 	memcpy(ah->av.eth.dgid, ah_attr->grh.dgid.raw, 16);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ah->av.eth.sl_tclass_flowlabel = cpu_to_be32(ah_attr->sl << 28);
 =======
 	ah->av.eth.sl_tclass_flowlabel = cpu_to_be32(ah_attr->sl << 29);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ah->av.eth.sl_tclass_flowlabel = cpu_to_be32(ah_attr->sl << 29);
+>>>>>>> refs/remotes/origin/master
 
 	return &ah->ibah;
 }

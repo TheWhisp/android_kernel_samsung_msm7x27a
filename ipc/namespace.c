@@ -12,11 +12,19 @@
 #include <linux/fs.h>
 #include <linux/mount.h>
 #include <linux/user_namespace.h>
+<<<<<<< HEAD
 #include <linux/proc_fs.h>
 
 #include "util.h"
 
 static struct ipc_namespace *create_ipc_ns(struct task_struct *tsk,
+=======
+#include <linux/proc_ns.h>
+
+#include "util.h"
+
+static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
+>>>>>>> refs/remotes/origin/master
 					   struct ipc_namespace *old_ns)
 {
 	struct ipc_namespace *ns;
@@ -26,9 +34,22 @@ static struct ipc_namespace *create_ipc_ns(struct task_struct *tsk,
 	if (ns == NULL)
 		return ERR_PTR(-ENOMEM);
 
+<<<<<<< HEAD
 	atomic_set(&ns->count, 1);
 	err = mq_init_ns(ns);
 	if (err) {
+=======
+	err = proc_alloc_inum(&ns->proc_inum);
+	if (err) {
+		kfree(ns);
+		return ERR_PTR(err);
+	}
+
+	atomic_set(&ns->count, 1);
+	err = mq_init_ns(ns);
+	if (err) {
+		proc_free_inum(ns->proc_inum);
+>>>>>>> refs/remotes/origin/master
 		kfree(ns);
 		return ERR_PTR(err);
 	}
@@ -46,12 +67,17 @@ static struct ipc_namespace *create_ipc_ns(struct task_struct *tsk,
 	ipcns_notify(IPCNS_CREATED);
 	register_ipcns_notifier(ns);
 
+<<<<<<< HEAD
 	ns->user_ns = get_user_ns(task_cred_xxx(tsk, user)->user_ns);
+=======
+	ns->user_ns = get_user_ns(user_ns);
+>>>>>>> refs/remotes/origin/master
 
 	return ns;
 }
 
 struct ipc_namespace *copy_ipcs(unsigned long flags,
+<<<<<<< HEAD
 				struct task_struct *tsk)
 {
 	struct ipc_namespace *ns = tsk->nsproxy->ipc_ns;
@@ -59,6 +85,13 @@ struct ipc_namespace *copy_ipcs(unsigned long flags,
 	if (!(flags & CLONE_NEWIPC))
 		return get_ipc_ns(ns);
 	return create_ipc_ns(tsk, ns);
+=======
+	struct user_namespace *user_ns, struct ipc_namespace *ns)
+{
+	if (!(flags & CLONE_NEWIPC))
+		return get_ipc_ns(ns);
+	return create_ipc_ns(user_ns, ns);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -76,7 +109,11 @@ void free_ipcs(struct ipc_namespace *ns, struct ipc_ids *ids,
 	int next_id;
 	int total, in_use;
 
+<<<<<<< HEAD
 	down_write(&ids->rw_mutex);
+=======
+	down_write(&ids->rwsem);
+>>>>>>> refs/remotes/origin/master
 
 	in_use = ids->in_use;
 
@@ -84,11 +121,20 @@ void free_ipcs(struct ipc_namespace *ns, struct ipc_ids *ids,
 		perm = idr_find(&ids->ipcs_idr, next_id);
 		if (perm == NULL)
 			continue;
+<<<<<<< HEAD
 		ipc_lock_by_ptr(perm);
 		free(ns, perm);
 		total++;
 	}
 	up_write(&ids->rw_mutex);
+=======
+		rcu_read_lock();
+		ipc_lock_object(perm);
+		free(ns, perm);
+		total++;
+	}
+	up_write(&ids->rwsem);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void free_ipc_ns(struct ipc_namespace *ns)
@@ -113,6 +159,10 @@ static void free_ipc_ns(struct ipc_namespace *ns)
 	 */
 	ipcns_notify(IPCNS_REMOVED);
 	put_user_ns(ns->user_ns);
+<<<<<<< HEAD
+=======
+	proc_free_inum(ns->proc_inum);
+>>>>>>> refs/remotes/origin/master
 	kfree(ns);
 }
 
@@ -161,8 +211,18 @@ static void ipcns_put(void *ns)
 	return put_ipc_ns(ns);
 }
 
+<<<<<<< HEAD
 static int ipcns_install(struct nsproxy *nsproxy, void *ns)
 {
+=======
+static int ipcns_install(struct nsproxy *nsproxy, void *new)
+{
+	struct ipc_namespace *ns = new;
+	if (!ns_capable(ns->user_ns, CAP_SYS_ADMIN) ||
+	    !ns_capable(current_user_ns(), CAP_SYS_ADMIN))
+		return -EPERM;
+
+>>>>>>> refs/remotes/origin/master
 	/* Ditch state from the old ipc namespace */
 	exit_sem(current);
 	put_ipc_ns(nsproxy->ipc_ns);
@@ -170,10 +230,24 @@ static int ipcns_install(struct nsproxy *nsproxy, void *ns)
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int ipcns_inum(void *vp)
+{
+	struct ipc_namespace *ns = vp;
+
+	return ns->proc_inum;
+}
+
+>>>>>>> refs/remotes/origin/master
 const struct proc_ns_operations ipcns_operations = {
 	.name		= "ipc",
 	.type		= CLONE_NEWIPC,
 	.get		= ipcns_get,
 	.put		= ipcns_put,
 	.install	= ipcns_install,
+<<<<<<< HEAD
+=======
+	.inum		= ipcns_inum,
+>>>>>>> refs/remotes/origin/master
 };

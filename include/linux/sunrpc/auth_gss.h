@@ -83,12 +83,17 @@ struct gss_cred {
 	struct gss_cl_ctx __rcu	*gc_ctx;
 	struct gss_upcall_msg	*gc_upcall;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long		gc_upcall_timestamp;
 	unsigned char		gc_machine_cred : 1;
 =======
 	const char		*gc_principal;
 	unsigned long		gc_upcall_timestamp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const char		*gc_principal;
+	unsigned long		gc_upcall_timestamp;
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* __KERNEL__ */

@@ -27,10 +27,14 @@ struct ocfs2_acl_entry {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int ocfs2_check_acl(struct inode *, int, unsigned int);
 =======
 struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type);
+>>>>>>> refs/remotes/origin/master
 extern int ocfs2_acl_chmod(struct inode *);
 extern int ocfs2_init_acl(handle_t *, struct inode *, struct inode *,
 			  struct buffer_head *, struct buffer_head *,

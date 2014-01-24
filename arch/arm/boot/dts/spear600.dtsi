@@ -15,8 +15,17 @@
 	compatible = "st,spear600";
 
 	cpus {
+<<<<<<< HEAD
 		cpu@0 {
 			compatible = "arm,arm926ejs";
+=======
+		#address-cells = <0>;
+		#size-cells = <0>;
+
+		cpu {
+			compatible = "arm,arm926ej-s";
+			device_type = "cpu";
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 
@@ -45,12 +54,35 @@
 			#interrupt-cells = <1>;
 		};
 
+<<<<<<< HEAD
+=======
+		clcd@fc200000 {
+			compatible = "arm,pl110", "arm,primecell";
+			reg = <0xfc200000 0x1000>;
+			interrupt-parent = <&vic1>;
+			interrupts = <12>;
+			status = "disabled";
+		};
+
+		dma@fc400000 {
+			compatible = "arm,pl080", "arm,primecell";
+			reg = <0xfc400000 0x1000>;
+			interrupt-parent = <&vic1>;
+			interrupts = <10>;
+			status = "disabled";
+		};
+
+>>>>>>> refs/remotes/origin/master
 		gmac: ethernet@e0800000 {
 			compatible = "st,spear600-gmac";
 			reg = <0xe0800000 0x8000>;
 			interrupt-parent = <&vic1>;
 			interrupts = <24 23>;
 			interrupt-names = "macirq", "eth_wake_irq";
+<<<<<<< HEAD
+=======
+			phy-mode = "gmii";
+>>>>>>> refs/remotes/origin/master
 			status = "disabled";
 		};
 
@@ -59,10 +91,17 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 			reg = <0xd1800000 0x1000	/* FSMC Register */
+<<<<<<< HEAD
 			       0xd2000000 0x4000>;	/* NAND Base */
 			reg-names = "fsmc_regs", "nand_data";
 			st,ale-off = <0x20000>;
 			st,cle-off = <0x10000>;
+=======
+			       0xd2000000 0x0010	/* NAND Base DATA */
+			       0xd2020000 0x0010	/* NAND Base ADDR */
+			       0xd2010000 0x0010>;	/* NAND Base CMD */
+			reg-names = "fsmc_regs", "nand_data", "nand_addr", "nand_cmd";
+>>>>>>> refs/remotes/origin/master
 			status = "disabled";
 		};
 
@@ -169,6 +208,23 @@
 				interrupts = <28>;
 				status = "disabled";
 			};
+<<<<<<< HEAD
+=======
+
+			rtc@fc900000 {
+				compatible = "st,spear600-rtc";
+				reg = <0xfc900000 0x1000>;
+				interrupts = <10>;
+				status = "disabled";
+			};
+
+			timer@f0000000 {
+				compatible = "st,spear-timer";
+				reg = <0xf0000000 0x400>;
+				interrupt-parent = <&vic0>;
+				interrupts = <16>;
+			};
+>>>>>>> refs/remotes/origin/master
 		};
 	};
 };

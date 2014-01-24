@@ -11,9 +11,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <plat/clkdev_omap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "clock.h"
+>>>>>>> refs/remotes/origin/master
 #include "opp.h"
 
 /*-------------------------------------------------------------------------
@@ -24,6 +28,7 @@ struct mpu_rate omap1_rate_table[] = {
 	 * NOTE: Comment order here is different from bits in CKCTL value:
 	 * armdiv, dspdiv, dspmmu, tcdiv, perdiv, lcddiv
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #if defined(CONFIG_OMAP_ARM_216MHZ)
 	{ 216000000, 12000000, 216000000, 0x050d, 0x2910 }, /* 1/1/2/2/2/8 */
@@ -60,6 +65,8 @@ struct mpu_rate omap1_rate_table[] = {
 	{  30000000, 12000000,  60000000, 0x0555, 0x2290 }, /* 2/2/2/2/2/2 */
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 216000000, 12000000, 216000000, 0x050d, 0x2910, /* 1/1/2/2/2/8 */
 			CK_1710 },
 	{ 195000000, 13000000, 195000000, 0x050e, 0x2790, /* 1/1/2/2/4/8 */
@@ -88,7 +95,10 @@ struct mpu_rate omap1_rate_table[] = {
 			CK_16XX|CK_1510|CK_310|CK_7XX },
 	{  30000000, 12000000,  60000000, 0x0555, 0x2290, /* 2/2/2/2/2/2 */
 			CK_16XX|CK_1510|CK_310|CK_7XX },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	{ 0, 0, 0, 0, 0 },
 };
 

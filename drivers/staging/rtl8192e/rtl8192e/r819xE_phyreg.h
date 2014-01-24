@@ -306,7 +306,11 @@
 #define bRFStart                  	0x0000f000
 #define bBBStart                  	0x000000f0
 #define bBBCCKStart               	0x0000000f
+<<<<<<< HEAD
 /* Reg)x814 */
+=======
+/* Reg x814 */
+>>>>>>> refs/remotes/origin/master
 #define bPAEnd                    	0xf
 #define bTREnd                    	0x0f000000
 #define bRFEnd                    	0x000f0000
@@ -844,7 +848,11 @@
 #define bRTL8258_RxLPFBW          0xc00
 #define bRTL8258_RSSILPFBW        0xc0
 
+<<<<<<< HEAD
 /* byte endable for sb_write */
+=======
+/* byte enable for sb_write */
+>>>>>>> refs/remotes/origin/master
 #define bByte0                    0x1
 #define bByte1                    0x2
 #define bByte2                    0x4

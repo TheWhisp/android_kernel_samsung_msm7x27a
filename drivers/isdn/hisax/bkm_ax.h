@@ -5,10 +5,14 @@
  * Author       Roland Klabunde
  * Copyright    by Roland Klabunde   <R.Klabunde@Berkom.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -36,6 +40,7 @@
 
 /* Application specific registers I20 (Siemens SZB6120H) */
 typedef	struct {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* Video front end horizontal configuration register */
 	volatile u_int	i20VFEHorzCfg;	/* Offset 00 */
@@ -68,6 +73,8 @@ typedef	struct {
 #define	guestISDN_INT_E	0x01000000	/* ISDN Int en (low) */
 #define	guestVID_INT_E 	0x02000000	/* Video interrupt en (low) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Video front end horizontal configuration register */
 	volatile u_int	i20VFEHorzCfg;	/* Offset 00 */
 	/* Video front end vertical configuration register */
@@ -98,7 +105,10 @@ typedef	struct {
 #define	guestWAIT_CFG	0x00005555	/* 4 PCI waits for all */
 #define	guestISDN_INT_E	0x01000000	/* ISDN Int en (low) */
 #define	guestVID_INT_E	0x02000000	/* Video interrupt en (low) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define	guestADI1_INT_R	0x04000000	/* ADI #1 int req (low) */
 #define	guestADI2_INT_R	0x08000000	/* ADI #2 int req (low) */
 #define	guestISDN_RES	0x10000000	/* ISDN reset bit (high) */
@@ -116,6 +126,7 @@ typedef	struct {
 #define	g_A4T_ISAC_INT_S 0x80000000	/* ISAC interrupt pnd (Low) */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  	volatile u_int	i20CodeSource;	/* Offset 30 */	
  	volatile u_int	i20CodeXferCtrl;/* Offset 34 */	
  	volatile u_int	i20CodeMemPtr;	/* Offset 38 */	
@@ -129,6 +140,8 @@ typedef	struct {
 
  	volatile u_int	i20I2CCtrl;	/* Offset 44					*/	
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	volatile u_int	i20CodeSource;	/* Offset 30 */
 	volatile u_int	i20CodeXferCtrl;/* Offset 34 */
 	volatile u_int	i20CodeMemPtr;	/* Offset 38 */
@@ -141,7 +154,10 @@ typedef	struct {
 #define	intPCI		0x01000000	/* PCI IntA enable    (High) */
 
 	volatile u_int	i20I2CCtrl;	/* Offset 44					*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } I20_REGISTER_FILE, *PI20_REGISTER_FILE;
 
 /*
@@ -151,10 +167,14 @@ typedef	struct {
 #define	PO_OFFSET	0x00000200	/* Postoffice offset from base */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	GCS_0		0x00000000 	/* Guest bus chip selects */
 =======
 #define	GCS_0		0x00000000	/* Guest bus chip selects */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	GCS_0		0x00000000	/* Guest bus chip selects */
+>>>>>>> refs/remotes/origin/master
 #define	GCS_1		0x00100000
 #define	GCS_2		0x00200000
 #define	GCS_3		0x00300000
@@ -165,6 +185,7 @@ typedef	struct {
 #define	PO_PEND		0x02000000
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define POSTOFFICE(postoffice) *(volatile unsigned int*)(postoffice)
 
 /* Wait unlimited (don't worry)										*/ 
@@ -173,6 +194,8 @@ do {		   	 		   											\
   	while ((POSTOFFICE(postoffice) & PO_PEND)) ;					\
 } while (0)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define POSTOFFICE(postoffice) *(volatile unsigned int *)(postoffice)
 
 /* Wait unlimited (don't worry)										*/
@@ -180,6 +203,9 @@ do {		   	 		   											\
 	do {							\
 		while ((POSTOFFICE(postoffice) & PO_PEND)) ;	\
 	} while (0)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __BKM_AX_H__ */

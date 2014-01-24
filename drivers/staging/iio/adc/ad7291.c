@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * AD7291 digital temperature sensor driver supporting AD7291
  *
  * Copyright 2010 Analog Devices Inc.
@@ -8,19 +9,28 @@
  *
  * Copyright 2010-2011 Analog Devices Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * AD7291 8-Channel, I2C, 12-Bit SAR ADC with Temperature Sensor
+ *
+ * Copyright 2010-2011 Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
 
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/sysfs.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/list.h>
 #include <linux/i2c.h>
@@ -28,15 +38,25 @@
 #include "../iio.h"
 #include "../sysfs.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/i2c.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/regulator/consumer.h>
 #include <linux/err.h>
 
+<<<<<<< HEAD
 #include "../iio.h"
 #include "../sysfs.h"
 #include "../events.h"
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/events.h>
+
+#include "ad7291.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Simplified handling
@@ -48,11 +68,15 @@
  * The noise-delayed bit as per datasheet suggestion is always enabled.
  *
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * AD7291 registers definition
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define AD7291_COMMAND			0
 #define AD7291_VOLTAGE			1
@@ -78,10 +102,13 @@
 #define AD7291_T_SENSE_MASK		0x40
 #define AD7291_VOLTAGE_MASK		0xff00
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AD7291_COMMAND			0x00
 #define AD7291_VOLTAGE			0x01
 #define AD7291_T_SENSE			0x02
 #define AD7291_T_AVERAGE		0x03
+<<<<<<< HEAD
 #define AD7291_CH0_DATA_HIGH		0x04
 #define AD7291_CH0_DATA_LOW		0x05
 #define AD7291_CH0_HYST			0x06
@@ -109,6 +136,11 @@
 #define AD7291_T_SENSE_HIGH		0x1C
 #define AD7291_T_SENSE_LOW		0x1D
 #define AD7291_T_SENSE_HYST		0x1E
+=======
+#define AD7291_DATA_HIGH(x)		((x) * 3 + 0x4)
+#define AD7291_DATA_LOW(x)		((x) * 3 + 0x5)
+#define AD7291_HYST(x)			((x) * 3 + 0x6)
+>>>>>>> refs/remotes/origin/master
 #define AD7291_VOLTAGE_ALERT_STATUS	0x1F
 #define AD7291_T_ALERT_STATUS		0x20
 
@@ -126,12 +158,16 @@
 #define AD7291_NOISE_DELAY		(1 << 5)
 #define AD7291_T_SENSE_MASK		(1 << 7)
 #define AD7291_VOLTAGE_MASK		0xFF00
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define AD7291_VOLTAGE_OFFSET		0x8
 
 /*
  * AD7291 value masks
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define AD7291_CHANNEL_MASK		0xf000
 #define AD7291_VALUE_MASK		0xfff
@@ -140,10 +176,16 @@
 #define AD7291_BITS			12
 #define AD7291_VALUE_MASK		0xFFF
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define AD7291_CHANNEL_MASK		0xF000
+#define AD7291_BITS			12
+#define AD7291_VALUE_MASK		0xFFF
+>>>>>>> refs/remotes/origin/master
 #define AD7291_T_VALUE_SIGN		0x400
 #define AD7291_T_VALUE_FLOAT_OFFSET	2
 #define AD7291_T_VALUE_FLOAT_MASK	0x2
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * struct ad7291_chip_info - chip specifc information
@@ -170,36 +212,53 @@ struct ad7291_limit_regs {
  * ad7291 register access by I2C
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AD7291_BITS			12
 
 struct ad7291_chip_info {
 	struct i2c_client	*client;
 	struct regulator	*reg;
+<<<<<<< HEAD
 	u16			int_vref_mv;
+=======
+>>>>>>> refs/remotes/origin/master
 	u16			command;
 	u16			c_mask;	/* Active voltage channels for events */
 	struct mutex		state_lock;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ad7291_i2c_read(struct ad7291_chip_info *chip, u8 reg, u16 *data)
 {
 	struct i2c_client *client = chip->client;
 	int ret = 0;
 
+<<<<<<< HEAD
 	ret = i2c_smbus_read_word_data(client, reg);
+=======
+	ret = i2c_smbus_read_word_swapped(client, reg);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(&client->dev, "I2C read error\n");
 		return ret;
 	}
 
+<<<<<<< HEAD
 	*data = swab16((u16)ret);
+=======
+	*data = ret;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 static int ad7291_i2c_write(struct ad7291_chip_info *chip, u8 reg, u16 data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct i2c_client *client = chip->client;
 	int ret = 0;
@@ -583,11 +642,19 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 	struct iio_dev *indio_dev = private;
 	struct ad7291_chip_info *chip = iio_dev_get_devdata(private);
 =======
+=======
+	return i2c_smbus_write_word_swapped(chip->client, reg, data);
+}
+
+>>>>>>> refs/remotes/origin/master
 static irqreturn_t ad7291_event_handler(int irq, void *private)
 {
 	struct iio_dev *indio_dev = private;
 	struct ad7291_chip_info *chip = iio_priv(private);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u16 t_status, v_status;
 	u16 command;
 	int i;
@@ -602,6 +669,7 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 	if (!(t_status || v_status))
 		return IRQ_HANDLED;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	command = chip->command | AD7291_ALART_CLEAR;
 	ad7291_i2c_write(chip, AD7291_COMMAND, command);
@@ -626,6 +694,8 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 	if (t_status & (1 << 2))
 		iio_push_event(indio_dev, 0,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	command = chip->command | AD7291_ALERT_CLEAR;
 	ad7291_i2c_write(chip, AD7291_COMMAND, command);
 
@@ -635,12 +705,16 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 	/* For now treat t_sense and t_sense_average the same */
 	if ((t_status & (1 << 0)) || (t_status & (1 << 2)))
 		iio_push_event(indio_dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			       IIO_UNMOD_EVENT_CODE(IIO_TEMP,
 						    0,
 						    IIO_EV_TYPE_THRESH,
 						    IIO_EV_DIR_FALLING),
 			       timestamp);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (t_status & (1 << 3))
 		iio_push_event(indio_dev, 0,
@@ -648,6 +722,10 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 	if ((t_status & (1 << 1)) || (t_status & (1 << 3)))
 		iio_push_event(indio_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((t_status & (1 << 1)) || (t_status & (1 << 3)))
+		iio_push_event(indio_dev,
+>>>>>>> refs/remotes/origin/master
 			       IIO_UNMOD_EVENT_CODE(IIO_TEMP,
 						    0,
 						    IIO_EV_TYPE_THRESH,
@@ -657,17 +735,6 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 	for (i = 0; i < AD7291_VOLTAGE_LIMIT_COUNT*2; i += 2) {
 		if (v_status & (1 << i))
 <<<<<<< HEAD
-			iio_push_event(indio_dev, 0,
-				       IIO_UNMOD_EVENT_CODE(IIO_IN,
-=======
-			iio_push_event(indio_dev,
-				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
->>>>>>> refs/remotes/origin/cm-10.0
-							    i/2,
-							    IIO_EV_TYPE_THRESH,
-							    IIO_EV_DIR_FALLING),
-				       timestamp);
-		if (v_status & (1 << (i + 1)))
 <<<<<<< HEAD
 			iio_push_event(indio_dev, 0,
 				       IIO_UNMOD_EVENT_CODE(IIO_IN,
@@ -675,6 +742,27 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 			iio_push_event(indio_dev,
 				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
+>>>>>>> refs/remotes/origin/master
+							    i/2,
+							    IIO_EV_TYPE_THRESH,
+							    IIO_EV_DIR_FALLING),
+				       timestamp);
+		if (v_status & (1 << (i + 1)))
+<<<<<<< HEAD
+<<<<<<< HEAD
+			iio_push_event(indio_dev, 0,
+				       IIO_UNMOD_EVENT_CODE(IIO_IN,
+=======
+			iio_push_event(indio_dev,
+				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iio_push_event(indio_dev,
+				       IIO_UNMOD_EVENT_CODE(IIO_VOLTAGE,
+>>>>>>> refs/remotes/origin/master
 							    i/2,
 							    IIO_EV_TYPE_THRESH,
 							    IIO_EV_DIR_RISING),
@@ -684,6 +772,7 @@ static irqreturn_t ad7291_event_handler(int irq, void *private)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline ssize_t ad7291_show_t_bound(struct device *dev,
 		struct device_attribute *attr,
@@ -1099,15 +1188,103 @@ static int ad7291_write_event_value(struct iio_dev *indio_dev,
 
 static int ad7291_read_event_config(struct iio_dev *indio_dev,
 				    u64 event_code)
+=======
+static unsigned int ad7291_threshold_reg(const struct iio_chan_spec *chan,
+	enum iio_event_direction dir, enum iio_event_info info)
+{
+	unsigned int offset;
+
+	switch (chan->type) {
+	case IIO_VOLTAGE:
+		offset = chan->channel;
+		break;
+	case IIO_TEMP:
+		offset = 8;
+		break;
+	default:
+	    return 0;
+	}
+
+	switch (info) {
+	case IIO_EV_INFO_VALUE:
+			if (dir == IIO_EV_DIR_FALLING)
+					return AD7291_DATA_HIGH(offset);
+			else
+					return AD7291_DATA_LOW(offset);
+	case IIO_EV_INFO_HYSTERESIS:
+			return AD7291_HYST(offset);
+	default:
+			break;
+	}
+	return 0;
+}
+
+static int ad7291_read_event_value(struct iio_dev *indio_dev,
+				   const struct iio_chan_spec *chan,
+				   enum iio_event_type type,
+				   enum iio_event_direction dir,
+				   enum iio_event_info info,
+				   int *val, int *val2)
+{
+	struct ad7291_chip_info *chip = iio_priv(indio_dev);
+	int ret;
+	u16 uval;
+
+	ret = ad7291_i2c_read(chip, ad7291_threshold_reg(chan, dir, info),
+		&uval);
+	if (ret < 0)
+		return ret;
+
+	if (info == IIO_EV_INFO_HYSTERESIS || chan->type == IIO_VOLTAGE)
+		*val = uval & AD7291_VALUE_MASK;
+
+	else
+		*val = sign_extend32(uval, 11);
+
+	return IIO_VAL_INT;
+}
+
+static int ad7291_write_event_value(struct iio_dev *indio_dev,
+				    const struct iio_chan_spec *chan,
+				    enum iio_event_type type,
+				    enum iio_event_direction dir,
+				    enum iio_event_info info,
+				    int val, int val2)
+{
+	struct ad7291_chip_info *chip = iio_priv(indio_dev);
+
+	if (info == IIO_EV_INFO_HYSTERESIS || chan->type == IIO_VOLTAGE) {
+		if (val > AD7291_VALUE_MASK || val < 0)
+			return -EINVAL;
+	} else {
+		if (val > 2047 || val < -2048)
+			return -EINVAL;
+	}
+
+	return ad7291_i2c_write(chip, ad7291_threshold_reg(chan, dir, info),
+		val);
+}
+
+static int ad7291_read_event_config(struct iio_dev *indio_dev,
+				    const struct iio_chan_spec *chan,
+				    enum iio_event_type type,
+				    enum iio_event_direction dir)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ad7291_chip_info *chip = iio_priv(indio_dev);
 	/* To be enabled the channel must simply be on. If any are enabled
 	   we are in continuous sampling mode */
 
+<<<<<<< HEAD
 	switch (IIO_EVENT_CODE_EXTRACT_CHAN_TYPE(event_code)) {
 	case IIO_VOLTAGE:
 		if (chip->c_mask &
 		    (1 << (15 - IIO_EVENT_CODE_EXTRACT_CHAN(event_code))))
+=======
+	switch (chan->type) {
+	case IIO_VOLTAGE:
+		if (chip->c_mask & (1 << (15 - chan->channel)))
+>>>>>>> refs/remotes/origin/master
 			return 1;
 		else
 			return 0;
@@ -1121,11 +1298,21 @@ static int ad7291_read_event_config(struct iio_dev *indio_dev,
 }
 
 static int ad7291_write_event_config(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 				     u64 event_code,
+=======
+				     const struct iio_chan_spec *chan,
+				     enum iio_event_type type,
+				     enum iio_event_direction dir,
+>>>>>>> refs/remotes/origin/master
 				     int state)
 {
 	int ret = 0;
 	struct ad7291_chip_info *chip = iio_priv(indio_dev);
+<<<<<<< HEAD
+=======
+	unsigned int mask;
+>>>>>>> refs/remotes/origin/master
 	u16 regval;
 
 	mutex_lock(&chip->state_lock);
@@ -1136,6 +1323,7 @@ static int ad7291_write_event_config(struct iio_dev *indio_dev,
 	 * Possible to disable temp as well but that makes single read tricky.
 	 */
 
+<<<<<<< HEAD
 	switch (IIO_EVENT_CODE_EXTRACT_TYPE(event_code)) {
 	case IIO_VOLTAGE:
 		if ((!state) && (chip->c_mask & (1 << (15 -
@@ -1146,6 +1334,16 @@ static int ad7291_write_event_config(struct iio_dev *indio_dev,
 				IIO_EVENT_CODE_EXTRACT_CHAN(event_code))))))
 			chip->c_mask |= (1 << (15 - IIO_EVENT_CODE_EXTRACT_CHAN
 							(event_code)));
+=======
+	mask = BIT(15 - chan->channel);
+
+	switch (chan->type) {
+	case IIO_VOLTAGE:
+		if ((!state) && (chip->c_mask & mask))
+			chip->c_mask &= ~mask;
+		else if (state && (!(chip->c_mask & mask)))
+			chip->c_mask |= mask;
+>>>>>>> refs/remotes/origin/master
 		else
 			break;
 
@@ -1177,12 +1375,19 @@ static int ad7291_read_raw(struct iio_dev *indio_dev,
 {
 	int ret;
 	struct ad7291_chip_info *chip = iio_priv(indio_dev);
+<<<<<<< HEAD
 	unsigned int scale_uv;
 	u16 regval;
 	s16 signval;
 
 	switch (mask) {
 	case 0:
+=======
+	u16 regval;
+
+	switch (mask) {
+	case IIO_CHAN_INFO_RAW:
+>>>>>>> refs/remotes/origin/master
 		switch (chan->type) {
 		case IIO_VOLTAGE:
 			mutex_lock(&chip->state_lock);
@@ -1200,17 +1405,26 @@ static int ad7291_read_raw(struct iio_dev *indio_dev,
 				return ret;
 			}
 			/* Read voltage */
+<<<<<<< HEAD
 			ret = i2c_smbus_read_word_data(chip->client,
+=======
+			ret = i2c_smbus_read_word_swapped(chip->client,
+>>>>>>> refs/remotes/origin/master
 						       AD7291_VOLTAGE);
 			if (ret < 0) {
 				mutex_unlock(&chip->state_lock);
 				return ret;
 			}
+<<<<<<< HEAD
 			*val = swab16((u16)ret) & AD7291_VALUE_MASK;
+=======
+			*val = ret & AD7291_VALUE_MASK;
+>>>>>>> refs/remotes/origin/master
 			mutex_unlock(&chip->state_lock);
 			return IIO_VAL_INT;
 		case IIO_TEMP:
 			/* Assumes tsense bit of command register always set */
+<<<<<<< HEAD
 			ret = i2c_smbus_read_word_data(chip->client,
 						       AD7291_T_SENSE);
 			if (ret < 0)
@@ -1218,11 +1432,19 @@ static int ad7291_read_raw(struct iio_dev *indio_dev,
 			signval = (s16)((swab16((u16)ret) &
 				AD7291_VALUE_MASK) << 4) >> 4;
 			*val = signval;
+=======
+			ret = i2c_smbus_read_word_swapped(chip->client,
+						       AD7291_T_SENSE);
+			if (ret < 0)
+				return ret;
+			*val = sign_extend32(ret, 11);
+>>>>>>> refs/remotes/origin/master
 			return IIO_VAL_INT;
 		default:
 			return -EINVAL;
 		}
 	case IIO_CHAN_INFO_AVERAGE_RAW:
+<<<<<<< HEAD
 		ret = i2c_smbus_read_word_data(chip->client,
 					       AD7291_T_AVERAGE);
 			if (ret < 0)
@@ -1230,14 +1452,35 @@ static int ad7291_read_raw(struct iio_dev *indio_dev,
 			signval = (s16)((swab16((u16)ret) &
 				AD7291_VALUE_MASK) << 4) >> 4;
 			*val = signval;
+=======
+		ret = i2c_smbus_read_word_swapped(chip->client,
+					       AD7291_T_AVERAGE);
+			if (ret < 0)
+				return ret;
+			*val = sign_extend32(ret, 11);
+>>>>>>> refs/remotes/origin/master
 			return IIO_VAL_INT;
 	case IIO_CHAN_INFO_SCALE:
 		switch (chan->type) {
 		case IIO_VOLTAGE:
+<<<<<<< HEAD
 			scale_uv = (chip->int_vref_mv * 1000) >> AD7291_BITS;
 			*val =  scale_uv / 1000;
 			*val2 = (scale_uv % 1000) * 1000;
 			return IIO_VAL_INT_PLUS_MICRO;
+=======
+			if (chip->reg) {
+				int vref;
+				vref = regulator_get_voltage(chip->reg);
+				if (vref < 0)
+					return vref;
+				*val = vref / 1000;
+			} else {
+				*val = 2500;
+			}
+			*val2 = AD7291_BITS;
+			return IIO_VAL_FRACTIONAL_LOG2;
+>>>>>>> refs/remotes/origin/master
 		case IIO_TEMP:
 			/*
 			 * One LSB of the ADC corresponds to 0.25 deg C.
@@ -1254,6 +1497,7 @@ static int ad7291_read_raw(struct iio_dev *indio_dev,
 	}
 }
 
+<<<<<<< HEAD
 #define AD7291_VOLTAGE_CHAN(_chan)					\
 {									\
 	.type = IIO_VOLTAGE,						\
@@ -1262,6 +1506,35 @@ static int ad7291_read_raw(struct iio_dev *indio_dev,
 	.channel = _chan,						\
 	.event_mask = IIO_EV_BIT(IIO_EV_TYPE_THRESH, IIO_EV_DIR_RISING)|\
 	IIO_EV_BIT(IIO_EV_TYPE_THRESH, IIO_EV_DIR_FALLING)		\
+=======
+static const struct iio_event_spec ad7291_events[] = {
+	{
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_RISING,
+		.mask_separate = BIT(IIO_EV_INFO_VALUE) |
+			BIT(IIO_EV_INFO_ENABLE),
+	}, {
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_FALLING,
+		.mask_separate = BIT(IIO_EV_INFO_VALUE) |
+			BIT(IIO_EV_INFO_ENABLE),
+	}, {
+		.type = IIO_EV_TYPE_THRESH,
+		.dir = IIO_EV_DIR_EITHER,
+		.mask_separate = BIT(IIO_EV_INFO_HYSTERESIS),
+	},
+};
+
+#define AD7291_VOLTAGE_CHAN(_chan)					\
+{									\
+	.type = IIO_VOLTAGE,						\
+	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),			\
+	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),		\
+	.indexed = 1,							\
+	.channel = _chan,						\
+	.event_spec = ad7291_events,					\
+	.num_event_specs = ARRAY_SIZE(ad7291_events),			\
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct iio_chan_spec ad7291_channels[] = {
@@ -1275,6 +1548,7 @@ static const struct iio_chan_spec ad7291_channels[] = {
 	AD7291_VOLTAGE_CHAN(7),
 	{
 		.type = IIO_TEMP,
+<<<<<<< HEAD
 		.info_mask = IIO_CHAN_INFO_AVERAGE_RAW_SEPARATE_BIT |
 				IIO_CHAN_INFO_SCALE_SEPARATE_BIT,
 		.indexed = 1,
@@ -1302,11 +1576,25 @@ static const struct iio_info ad7291_info = {
  */
 
 =======
+=======
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+				BIT(IIO_CHAN_INFO_AVERAGE_RAW) |
+				BIT(IIO_CHAN_INFO_SCALE),
+		.indexed = 1,
+		.channel = 0,
+		.event_spec = ad7291_events,
+		.num_event_specs = ARRAY_SIZE(ad7291_events),
+	}
+};
+
+static const struct iio_info ad7291_info = {
+>>>>>>> refs/remotes/origin/master
 	.read_raw = &ad7291_read_raw,
 	.read_event_config = &ad7291_read_event_config,
 	.write_event_config = &ad7291_write_event_config,
 	.read_event_value = &ad7291_read_event_value,
 	.write_event_value = &ad7291_write_event_value,
+<<<<<<< HEAD
 	.event_attrs = &ad7291_event_attribute_group,
 };
 
@@ -1361,6 +1649,32 @@ static int __devinit ad7291_probe(struct i2c_client *client,
 		if (ret)
 			goto error_put_reg;
 		voltage_uv = regulator_get_voltage(chip->reg);
+=======
+	.driver_module = THIS_MODULE,
+};
+
+static int ad7291_probe(struct i2c_client *client,
+		const struct i2c_device_id *id)
+{
+	struct ad7291_platform_data *pdata = client->dev.platform_data;
+	struct ad7291_chip_info *chip;
+	struct iio_dev *indio_dev;
+	int ret = 0;
+
+	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
+	if (!indio_dev)
+		return -ENOMEM;
+	chip = iio_priv(indio_dev);
+
+	if (pdata && pdata->use_external_ref) {
+		chip->reg = devm_regulator_get(&client->dev, "vref");
+		if (IS_ERR(chip->reg))
+			return ret;
+
+		ret = regulator_enable(chip->reg);
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_init(&chip->state_lock);
@@ -1373,12 +1687,17 @@ static int __devinit ad7291_probe(struct i2c_client *client,
 			AD7291_T_SENSE_MASK | /* Tsense always enabled */
 			AD7291_ALERT_POLARITY; /* set irq polarity low level */
 
+<<<<<<< HEAD
 	if (voltage_uv) {
 		chip->int_vref_mv = voltage_uv / 1000;
 		chip->command |= AD7291_EXT_REF;
 	} else {
 		chip->int_vref_mv = 2500; /* Build-in ref */
 	}
+=======
+	if (pdata && pdata->use_external_ref)
+		chip->command |= AD7291_EXT_REF;
+>>>>>>> refs/remotes/origin/master
 
 	indio_dev->name = id->name;
 	indio_dev->channels = ad7291_channels;
@@ -1399,7 +1718,10 @@ static int __devinit ad7291_probe(struct i2c_client *client,
 		ret = -EIO;
 		goto error_disable_reg;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (client->irq > 0) {
 		ret = request_threaded_irq(client->irq,
@@ -1407,6 +1729,7 @@ static int __devinit ad7291_probe(struct i2c_client *client,
 					   &ad7291_event_handler,
 					   IRQF_TRIGGER_LOW | IRQF_ONESHOT,
 					   id->name,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					   chip->indio_dev);
 		if (ret)
@@ -1424,6 +1747,8 @@ static int __devinit ad7291_probe(struct i2c_client *client,
 
 	dev_info(&client->dev, "%s temperature sensor registered.\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					   indio_dev);
 		if (ret)
 			goto error_disable_reg;
@@ -1433,6 +1758,7 @@ static int __devinit ad7291_probe(struct i2c_client *client,
 	if (ret)
 		goto error_unreg_irq;
 
+<<<<<<< HEAD
 	dev_info(&client->dev, "%s ADC registered.\n",
 >>>>>>> refs/remotes/origin/cm-10.0
 			 id->name);
@@ -1477,6 +1803,22 @@ static int __devexit ad7291_remove(struct i2c_client *client)
 	iio_free_device(chip->indio_dev);
 	kfree(chip);
 =======
+=======
+	return 0;
+
+error_unreg_irq:
+	if (client->irq)
+		free_irq(client->irq, indio_dev);
+error_disable_reg:
+	if (chip->reg)
+		regulator_disable(chip->reg);
+
+	return ret;
+}
+
+static int ad7291_remove(struct i2c_client *client)
+{
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev *indio_dev = i2c_get_clientdata(client);
 	struct ad7291_chip_info *chip = iio_priv(indio_dev);
 
@@ -1485,6 +1827,7 @@ static int __devexit ad7291_remove(struct i2c_client *client)
 	if (client->irq)
 		free_irq(client->irq, indio_dev);
 
+<<<<<<< HEAD
 	if (!IS_ERR(chip->reg)) {
 		regulator_disable(chip->reg);
 		regulator_put(chip->reg);
@@ -1492,6 +1835,10 @@ static int __devexit ad7291_remove(struct i2c_client *client)
 
 	iio_free_device(indio_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (chip->reg)
+		regulator_disable(chip->reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1505,6 +1852,7 @@ MODULE_DEVICE_TABLE(i2c, ad7291_id);
 
 static struct i2c_driver ad7291_driver = {
 	.driver = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.name = "ad7291",
 =======
@@ -1535,9 +1883,20 @@ MODULE_LICENSE("GPL v2");
 module_init(ad7291_init);
 module_exit(ad7291_exit);
 =======
+=======
+		.name = KBUILD_MODNAME,
+	},
+	.probe = ad7291_probe,
+	.remove = ad7291_remove,
+	.id_table = ad7291_id,
+};
+>>>>>>> refs/remotes/origin/master
 module_i2c_driver(ad7291_driver);
 
 MODULE_AUTHOR("Sonic Zhang <sonic.zhang@analog.com>");
 MODULE_DESCRIPTION("Analog Devices AD7291 ADC driver");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

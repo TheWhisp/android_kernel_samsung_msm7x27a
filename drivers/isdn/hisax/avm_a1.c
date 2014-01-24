@@ -23,10 +23,14 @@ static const char *avm_revision = "$Revision: 2.15.2.4 $";
 #define	 AVM_A1_STAT_TIMER	0x04
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define byteout(addr,val) outb(val,addr)
 =======
 #define byteout(addr, val) outb(val, addr)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define byteout(addr, val) outb(val, addr)
+>>>>>>> refs/remotes/origin/master
 #define bytein(addr) inb(addr)
 
 static inline u_char
@@ -44,20 +48,28 @@ writereg(unsigned int adr, u_char off, u_char data)
 
 static inline void
 <<<<<<< HEAD
+<<<<<<< HEAD
 read_fifo(unsigned int adr, u_char * data, int size)
 =======
 read_fifo(unsigned int adr, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+read_fifo(unsigned int adr, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	insb(adr, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 write_fifo(unsigned int adr, u_char * data, int size)
 =======
 write_fifo(unsigned int adr, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+write_fifo(unsigned int adr, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	outsb(adr, data, size);
 }
@@ -78,20 +90,28 @@ WriteISAC(struct IsdnCardState *cs, u_char offset, u_char value)
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 ReadISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReadISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	read_fifo(cs->hw.avm.isacfifo, data, size);
 }
 
 static void
 <<<<<<< HEAD
+<<<<<<< HEAD
 WriteISACfifo(struct IsdnCardState *cs, u_char * data, int size)
 =======
 WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+WriteISACfifo(struct IsdnCardState *cs, u_char *data, int size)
+>>>>>>> refs/remotes/origin/master
 {
 	write_fifo(cs->hw.avm.isacfifo, data, size);
 }
@@ -179,6 +199,7 @@ AVM_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 
 	switch (mt) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case CARD_RESET:
 			return(0);
 		case CARD_RELEASE:
@@ -197,6 +218,8 @@ AVM_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 	}
 	return(0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case CARD_RESET:
 		return (0);
 	case CARD_RELEASE:
@@ -214,11 +237,17 @@ AVM_card_msg(struct IsdnCardState *cs, int mt, void *arg)
 		return (0);
 	}
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 int __devinit
 setup_avm_a1(struct IsdnCard *card)
+=======
+}
+
+int setup_avm_a1(struct IsdnCard *card)
+>>>>>>> refs/remotes/origin/master
 {
 	u_char val;
 	struct IsdnCardState *cs = card->cs;

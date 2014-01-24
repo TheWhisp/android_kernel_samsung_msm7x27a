@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 if ARCH_U300
 
 menu "ST-Ericsson AB U300/U330/U335/U365 Platform"
@@ -77,11 +78,47 @@ endchoice
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 config U300_DEBUG
+=======
+config ARCH_U300
+	bool "ST-Ericsson U300 Series" if ARCH_MULTI_V5
+	depends on MMU
+	select ARCH_REQUIRE_GPIOLIB
+	select ARM_AMBA
+	select ARM_PATCH_PHYS_VIRT
+	select ARM_VIC
+	select CLKSRC_MMIO
+	select CLKSRC_OF
+	select COMMON_CLK
+	select CPU_ARM926T
+	select GENERIC_CLOCKEVENTS
+	select HAVE_TCM
+	select PINCTRL
+	select PINCTRL_COH901
+	select PINCTRL_U300
+	select SPARSE_IRQ
+	select MFD_SYSCON
+	select USE_OF
+	help
+	  Support for ST-Ericsson U300 series mobile platforms.
+
+if ARCH_U300
+
+menu "ST-Ericsson AB U300/U335 Platform"
+
+config MACH_U300
+	depends on ARCH_U300
+	bool "U300"
+	default y
+
+config U300_DEBUG
+	depends on ARCH_U300
+>>>>>>> refs/remotes/origin/master
 	bool "Debug support for U300"
 	depends on PM
 	help
 		Debug support for U300 in sysfs, procfs etc.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config MACH_U300_SEMI_IS_SHARED
 	bool "The SEMI is used by both the access and application side"
@@ -94,6 +131,10 @@ config MACH_U300_SEMI_IS_SHARED
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 config MACH_U300_SPIDUMMY
+=======
+config MACH_U300_SPIDUMMY
+	depends on ARCH_U300
+>>>>>>> refs/remotes/origin/master
 	bool "SSP/SPI dummy chip"
 	select SPI
 	select SPI_MASTER
@@ -105,6 +146,7 @@ config MACH_U300_SPIDUMMY
 		you don't need it. Selecting this will activate the
 		SPI framework and ARM PL022 support.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 comment "All the settings below must match the bootloader's settings"
 
@@ -127,6 +169,8 @@ config MACH_U300_2MB_ALIGNMENT_FIX
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 endif

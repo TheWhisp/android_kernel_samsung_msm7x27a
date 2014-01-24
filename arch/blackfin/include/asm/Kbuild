@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 include include/asm-generic/Kbuild.asm
 
 <<<<<<< HEAD
 =======
+=======
+
+>>>>>>> refs/remotes/origin/master
 generic-y += auxvec.h
 generic-y += bitsperlong.h
 generic-y += bugs.h
@@ -19,6 +23,10 @@ generic-y += ipcbuf.h
 generic-y += irq_regs.h
 generic-y += kdebug.h
 generic-y += kmap_types.h
+<<<<<<< HEAD
+=======
+generic-y += kvm_para.h
+>>>>>>> refs/remotes/origin/master
 generic-y += local64.h
 generic-y += local.h
 generic-y += mman.h
@@ -40,13 +48,21 @@ generic-y += statfs.h
 generic-y += termbits.h
 generic-y += termios.h
 generic-y += topology.h
+<<<<<<< HEAD
+=======
+generic-y += trace_clock.h
+>>>>>>> refs/remotes/origin/master
 generic-y += types.h
 generic-y += ucontext.h
 generic-y += unaligned.h
 generic-y += user.h
 generic-y += xor.h
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 header-y += bfin_sport.h
 header-y += cachectl.h
 header-y += fixed_code.h
+=======
+generic-y += preempt.h
+>>>>>>> refs/remotes/origin/master

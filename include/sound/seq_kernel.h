@@ -22,7 +22,11 @@
  *
  */
 #include <linux/time.h>
+<<<<<<< HEAD
 #include "asequencer.h"
+=======
+#include <sound/asequencer.h>
+>>>>>>> refs/remotes/origin/master
 
 typedef struct snd_seq_real_time snd_seq_real_time_t;
 typedef union snd_seq_timestamp snd_seq_timestamp_t;
@@ -76,6 +80,7 @@ struct snd_seq_port_callback {
 
 /* interface for kernel client */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
 				 const char *name_fmt, ...)
 	__attribute__ ((format (printf, 3, 4)));
@@ -84,6 +89,11 @@ __printf(3, 4)
 int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
 				 const char *name_fmt, ...);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+__printf(3, 4)
+int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+				 const char *name_fmt, ...);
+>>>>>>> refs/remotes/origin/master
 int snd_seq_delete_kernel_client(int client);
 int snd_seq_kernel_client_enqueue(int client, struct snd_seq_event *ev, int atomic, int hop);
 int snd_seq_kernel_client_dispatch(int client, struct snd_seq_event *ev, int atomic, int hop);

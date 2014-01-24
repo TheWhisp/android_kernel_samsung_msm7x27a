@@ -12,9 +12,15 @@
 #include <linux/interrupt.h>
 #include <linux/irq.h>
 
+<<<<<<< HEAD
 #include "iio.h"
 #include "sysfs.h"
 #include "events.h"
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/events.h>
+>>>>>>> refs/remotes/origin/master
 #include "iio_simple_dummy.h"
 
 /* Evgen 'fakes' interrupt events for this example */
@@ -23,13 +29,25 @@
 /**
  * iio_simple_dummy_read_event_config() - is event enabled?
  * @indio_dev: the device instance data
+<<<<<<< HEAD
  * @event_code: event code of the event being queried
+=======
+ * @chan: channel for the event whose state is being queried
+ * @type: type of the event whose state is being queried
+ * @dir: direction of the vent whose state is being queried
+>>>>>>> refs/remotes/origin/master
  *
  * This function would normally query the relevant registers or a cache to
  * discover if the event generation is enabled on the device.
  */
 int iio_simple_dummy_read_event_config(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 				       u64 event_code)
+=======
+				       const struct iio_chan_spec *chan,
+				       enum iio_event_type type,
+				       enum iio_event_direction dir)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dummy_state *st = iio_priv(indio_dev);
 
@@ -39,7 +57,13 @@ int iio_simple_dummy_read_event_config(struct iio_dev *indio_dev,
 /**
  * iio_simple_dummy_write_event_config() - set whether event is enabled
  * @indio_dev: the device instance data
+<<<<<<< HEAD
  * @event_code: event code of event being enabled/disabled
+=======
+ * @chan: channel for the event whose state is being set
+ * @type: type of the event whose state is being set
+ * @dir: direction of the vent whose state is being set
+>>>>>>> refs/remotes/origin/master
  * @state: whether to enable or disable the device.
  *
  * This function would normally set the relevant registers on the devices
@@ -47,7 +71,13 @@ int iio_simple_dummy_read_event_config(struct iio_dev *indio_dev,
  * value.
  */
 int iio_simple_dummy_write_event_config(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 					u64 event_code,
+=======
+					const struct iio_chan_spec *chan,
+					enum iio_event_type type,
+					enum iio_event_direction dir,
+>>>>>>> refs/remotes/origin/master
 					int state)
 {
 	struct iio_dummy_state *st = iio_priv(indio_dev);
@@ -56,12 +86,20 @@ int iio_simple_dummy_write_event_config(struct iio_dev *indio_dev,
 	 *  Deliberately over the top code splitting to illustrate
 	 * how this is done when multiple events exist.
 	 */
+<<<<<<< HEAD
 	switch (IIO_EVENT_CODE_EXTRACT_CHAN_TYPE(event_code)) {
 	case IIO_VOLTAGE:
 		switch (IIO_EVENT_CODE_EXTRACT_TYPE(event_code)) {
 		case IIO_EV_TYPE_THRESH:
 			if (IIO_EVENT_CODE_EXTRACT_DIR(event_code) ==
 			    IIO_EV_DIR_RISING)
+=======
+	switch (chan->type) {
+	case IIO_VOLTAGE:
+		switch (type) {
+		case IIO_EV_TYPE_THRESH:
+			if (dir == IIO_EV_DIR_RISING)
+>>>>>>> refs/remotes/origin/master
 				st->event_en = state;
 			else
 				return -EINVAL;
@@ -79,7 +117,14 @@ int iio_simple_dummy_write_event_config(struct iio_dev *indio_dev,
 /**
  * iio_simple_dummy_read_event_value() - get value associated with event
  * @indio_dev: device instance specific data
+<<<<<<< HEAD
  * @event_code: event code for the event whose value is being queried
+=======
+ * @chan: channel for the event whose value is being read
+ * @type: type of the event whose value is being read
+ * @dir: direction of the vent whose value is being read
+ * @info: info type of the event whose value is being read
+>>>>>>> refs/remotes/origin/master
  * @val: value for the event code.
  *
  * Many devices provide a large set of events of which only a subset may
@@ -89,25 +134,52 @@ int iio_simple_dummy_write_event_config(struct iio_dev *indio_dev,
  * the enabled event is changed.
  */
 int iio_simple_dummy_read_event_value(struct iio_dev *indio_dev,
+<<<<<<< HEAD
 				      u64 event_code,
 				      int *val)
+=======
+				      const struct iio_chan_spec *chan,
+				      enum iio_event_type type,
+				      enum iio_event_direction dir,
+					  enum iio_event_info info,
+				      int *val, int *val2)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dummy_state *st = iio_priv(indio_dev);
 
 	*val = st->event_val;
 
+<<<<<<< HEAD
 	return 0;
+=======
+	return IIO_VAL_INT;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * iio_simple_dummy_write_event_value() - set value associate with event
  * @indio_dev: device instance specific data
+<<<<<<< HEAD
  * @event_code: event code for the event whose value is being set
  * @val: the value to be set.
  */
 int iio_simple_dummy_write_event_value(struct iio_dev *indio_dev,
 				       u64 event_code,
 				       int val)
+=======
+ * @chan: channel for the event whose value is being set
+ * @type: type of the event whose value is being set
+ * @dir: direction of the vent whose value is being set
+ * @info: info type of the event whose value is being set
+ * @val: the value to be set.
+ */
+int iio_simple_dummy_write_event_value(struct iio_dev *indio_dev,
+				       const struct iio_chan_spec *chan,
+				       enum iio_event_type type,
+				       enum iio_event_direction dir,
+					   enum iio_event_info info,
+				       int val, int val2)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iio_dummy_state *st = iio_priv(indio_dev);
 
@@ -122,7 +194,11 @@ int iio_simple_dummy_write_event_value(struct iio_dev *indio_dev,
  * @private: pointer to device instance state.
  *
  * This handler is responsible for querying the device to find out what
+<<<<<<< HEAD
  * event occured and for then pushing that event towards userspace.
+=======
+ * event occurred and for then pushing that event towards userspace.
+>>>>>>> refs/remotes/origin/master
  * Here only one event occurs so we push that directly on with locally
  * grabbed timestamp.
  */

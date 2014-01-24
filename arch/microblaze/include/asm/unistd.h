@@ -6,6 +6,7 @@
  * License. See the file "COPYING" in the main directory of this archive
  * for more details.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_MICROBLAZE_UNISTD_H
 #define _ASM_MICROBLAZE_UNISTD_H
@@ -406,6 +407,15 @@
 #ifndef __ASSEMBLY__
 
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#ifndef _ASM_MICROBLAZE_UNISTD_H
+#define _ASM_MICROBLAZE_UNISTD_H
+
+#include <uapi/asm/unistd.h>
+
+#ifndef __ASSEMBLY__
+
+>>>>>>> refs/remotes/origin/master
 /* #define __ARCH_WANT_OLD_READDIR */
 /* #define __ARCH_WANT_OLD_STAT */
 #define __ARCH_WANT_STAT64
@@ -426,6 +436,7 @@
 #define __ARCH_WANT_SYS_OLDUMOUNT
 #define __ARCH_WANT_SYS_SIGPENDING
 #define __ARCH_WANT_SYS_SIGPROCMASK
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
@@ -439,4 +450,14 @@
 
 #endif /* __ASSEMBLY__ */
 #endif /* __KERNEL__ */
+=======
+#define __ARCH_WANT_SYS_CLONE
+#define __ARCH_WANT_SYS_VFORK
+#define __ARCH_WANT_SYS_FORK
+
+#endif /* __ASSEMBLY__ */
+
+#define __NR_syscalls         381
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_MICROBLAZE_UNISTD_H */

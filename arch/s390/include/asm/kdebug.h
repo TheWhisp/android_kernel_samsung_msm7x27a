@@ -23,9 +23,13 @@ enum die_val {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void die(const char *, struct pt_regs *, long);
 =======
 extern void die(struct pt_regs *, const char *);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void die(struct pt_regs *, const char *);
+>>>>>>> refs/remotes/origin/master
 
 #endif

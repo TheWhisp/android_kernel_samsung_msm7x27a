@@ -401,7 +401,11 @@ static void _clear_bio(struct bio *bio)
 	struct bio_vec *bv;
 	unsigned i;
 
+<<<<<<< HEAD
 	__bio_for_each_segment(bv, bio, i, 0) {
+=======
+	bio_for_each_segment_all(bv, bio, i) {
+>>>>>>> refs/remotes/origin/master
 		unsigned this_count = bv->bv_len;
 
 		if (likely(PAGE_SIZE == this_count))
@@ -814,8 +818,13 @@ static int _write_mirror(struct ore_io_state *ios, int cur_comp)
 			struct bio *bio;
 
 			if (per_dev != master_dev) {
+<<<<<<< HEAD
 				bio = bio_kmalloc(GFP_KERNEL,
 						  master_dev->bio->bi_max_vecs);
+=======
+				bio = bio_clone_kmalloc(master_dev->bio,
+							GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 				if (unlikely(!bio)) {
 					ORE_DBGMSG(
 					      "Failed to allocate BIO size=%u\n",
@@ -824,7 +833,10 @@ static int _write_mirror(struct ore_io_state *ios, int cur_comp)
 					goto out;
 				}
 
+<<<<<<< HEAD
 				__bio_clone(bio, master_dev->bio);
+=======
+>>>>>>> refs/remotes/origin/master
 				bio->bi_bdev = NULL;
 				bio->bi_next = NULL;
 				per_dev->offset = master_dev->offset;

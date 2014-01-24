@@ -9,6 +9,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,6 +21,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -42,10 +45,14 @@
 /* Driver strings */
 #define UDC_MOD_DESCRIPTION		"AMD 5536 UDC - USB Device Controller"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UDC_DRIVER_VERSION_STRING	"01.00.0206 - $Revision: #3 $"
 =======
 #define UDC_DRIVER_VERSION_STRING	"01.00.0206"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UDC_DRIVER_VERSION_STRING	"01.00.0206"
+>>>>>>> refs/remotes/origin/master
 
 /* system */
 #include <linux/module.h>
@@ -56,7 +63,10 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/errno.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/timer.h>
 #include <linux/list.h>
 #include <linux/interrupt.h>
@@ -71,9 +81,12 @@
 
 #include <asm/byteorder.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 /* gadget stack */
@@ -160,10 +173,14 @@ static DECLARE_TASKLET(disconnect_tasklet, udc_tasklet_disconnect,
 /* endpoint names used for print */
 static const char ep0_string[] = "ep0in";
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const char *ep_string[] = {
 =======
 static const char *const ep_string[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char *const ep_string[] = {
+>>>>>>> refs/remotes/origin/master
 	ep0_string,
 	"ep1in-int", "ep2in-bulk", "ep3in-bulk", "ep4in-bulk", "ep5in-bulk",
 	"ep6in-bulk", "ep7in-bulk", "ep8in-bulk", "ep9in-bulk", "ep10in-bulk",
@@ -176,6 +193,7 @@ static const char *const ep_string[] = {
 
 /* DMA usage flag */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int use_dma = 1;
 /* packet per buffer dma */
 static int use_dma_ppb = 1;
@@ -186,6 +204,8 @@ static int use_dma_bufferfill_mode;
 /* full speed only mode */
 static int use_fullspeed;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool use_dma = 1;
 /* packet per buffer dma */
 static bool use_dma_ppb = 1;
@@ -195,7 +215,10 @@ static bool use_dma_ppb_du;
 static int use_dma_bufferfill_mode;
 /* full speed only mode */
 static bool use_fullspeed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* tx buffer size for high speed */
 static unsigned long hs_tx_buf = UDC_EPIN_BUFF_SIZE;
 
@@ -240,6 +263,7 @@ static void print_regs(struct udc *dev)
 		dev_info(&dev->pdev->dev, "DMA mode (%s)\n", "BF");
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!use_dma) {
 		dev_info(&dev->pdev->dev, "FIFO mode\n");
 	}
@@ -247,6 +271,10 @@ static void print_regs(struct udc *dev)
 	if (!use_dma)
 		dev_info(&dev->pdev->dev, "FIFO mode\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!use_dma)
+		dev_info(&dev->pdev->dev, "FIFO mode\n");
+>>>>>>> refs/remotes/origin/master
 	DBG(dev, "-------------------------------------------------------\n");
 }
 
@@ -375,7 +403,11 @@ udc_ep_enable(struct usb_ep *usbep, const struct usb_endpoint_descriptor *desc)
 		return -ESHUTDOWN;
 
 	spin_lock_irqsave(&dev->lock, iflags);
+<<<<<<< HEAD
 	ep->desc = desc;
+=======
+	ep->ep.desc = desc;
+>>>>>>> refs/remotes/origin/master
 
 	ep->halted = 0;
 
@@ -386,10 +418,14 @@ udc_ep_enable(struct usb_ep *usbep, const struct usb_endpoint_descriptor *desc)
 
 	/* set max packet size */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	maxpacket = le16_to_cpu(desc->wMaxPacketSize);
 =======
 	maxpacket = usb_endpoint_maxp(desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	maxpacket = usb_endpoint_maxp(desc);
+>>>>>>> refs/remotes/origin/master
 	tmp = readl(&dev->ep[ep->num].regs->bufout_maxpkt);
 	tmp = AMD_ADDBITS(tmp, maxpacket, UDC_EP_MAX_PKT_SIZE);
 	ep->ep.maxpacket = maxpacket;
@@ -488,6 +524,7 @@ static void ep_init(struct udc_regs __iomem *regs, struct udc_ep *ep)
 	u32		tmp;
 
 	VDBG(ep->dev, "ep-%d reset\n", ep->num);
+<<<<<<< HEAD
 	ep->desc = NULL;
 <<<<<<< HEAD
 =======
@@ -497,6 +534,13 @@ static void ep_init(struct udc_regs __iomem *regs, struct udc_ep *ep)
 	INIT_LIST_HEAD(&ep->queue);
 
 	ep->ep.maxpacket = (u16) ~0;
+=======
+	ep->ep.desc = NULL;
+	ep->ep.ops = &udc_ep_ops;
+	INIT_LIST_HEAD(&ep->queue);
+
+	usb_ep_set_maxpacket_limit(&ep->ep,(u16) ~0);
+>>>>>>> refs/remotes/origin/master
 	/* set NAK */
 	tmp = readl(&ep->regs->ctl);
 	tmp |= AMD_BIT(UDC_EPCTL_SNAK);
@@ -538,7 +582,11 @@ static int udc_ep_disable(struct usb_ep *usbep)
 		return -EINVAL;
 
 	ep = container_of(usbep, struct udc_ep, ep);
+<<<<<<< HEAD
 	if (usbep->name == ep0_string || !ep->desc)
+=======
+	if (usbep->name == ep0_string || !ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	DBG(ep->dev, "Disable ep-%d\n", ep->num);
@@ -618,6 +666,7 @@ udc_free_request(struct usb_ep *usbep, struct usb_request *usbreq)
 
 		/* free dma chain if created */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (req->chain_len > 1) {
 			udc_free_dma_chain(ep->dev, req);
 		}
@@ -625,6 +674,10 @@ udc_free_request(struct usb_ep *usbep, struct usb_request *usbreq)
 		if (req->chain_len > 1)
 			udc_free_dma_chain(ep->dev, req);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (req->chain_len > 1)
+			udc_free_dma_chain(ep->dev, req);
+>>>>>>> refs/remotes/origin/master
 
 		pci_pool_free(ep->dev->data_requests, req->td_data,
 							req->td_phys);
@@ -693,6 +746,7 @@ udc_txfifo_write(struct udc_ep *ep, struct usb_request *req)
 
 	/* dwords first */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < bytes / UDC_DWORD_BYTES; i++) {
 		writel(*(buf + i), ep->txfifo);
 	}
@@ -700,6 +754,10 @@ udc_txfifo_write(struct udc_ep *ep, struct usb_request *req)
 	for (i = 0; i < bytes / UDC_DWORD_BYTES; i++)
 		writel(*(buf + i), ep->txfifo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < bytes / UDC_DWORD_BYTES; i++)
+		writel(*(buf + i), ep->txfifo);
+>>>>>>> refs/remotes/origin/master
 
 	/* remaining bytes must be written by byte access */
 	for (j = 0; j < bytes % UDC_DWORD_BYTES; j++) {
@@ -719,6 +777,7 @@ static int udc_rxfifo_read_dwords(struct udc *dev, u32 *buf, int dwords)
 	VDBG(dev, "udc_read_dwords(): %d dwords\n", dwords);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < dwords; i++) {
 		*(buf + i) = readl(dev->rxfifo);
 	}
@@ -726,6 +785,10 @@ static int udc_rxfifo_read_dwords(struct udc *dev, u32 *buf, int dwords)
 	for (i = 0; i < dwords; i++)
 		*(buf + i) = readl(dev->rxfifo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < dwords; i++)
+		*(buf + i) = readl(dev->rxfifo);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -739,6 +802,7 @@ static int udc_rxfifo_read_bytes(struct udc *dev, u8 *buf, int bytes)
 
 	/* dwords first */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0; i < bytes / UDC_DWORD_BYTES; i++) {
 		*((u32 *)(buf + (i<<2))) = readl(dev->rxfifo);
 	}
@@ -746,6 +810,10 @@ static int udc_rxfifo_read_bytes(struct udc *dev, u8 *buf, int bytes)
 	for (i = 0; i < bytes / UDC_DWORD_BYTES; i++)
 		*((u32 *)(buf + (i<<2))) = readl(dev->rxfifo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < bytes / UDC_DWORD_BYTES; i++)
+		*((u32 *)(buf + (i<<2))) = readl(dev->rxfifo);
+>>>>>>> refs/remotes/origin/master
 
 	/* remaining bytes must be read by byte access */
 	if (bytes % UDC_DWORD_BYTES) {
@@ -900,6 +968,7 @@ __acquires(ep->dev->lock)
 	dev = ep->dev;
 	/* unmap DMA */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (req->dma_mapping) {
 		if (ep->in)
 			pci_unmap_single(dev->pdev,
@@ -918,6 +987,10 @@ __acquires(ep->dev->lock)
 	if (ep->dma)
 		usb_gadget_unmap_request(&dev->gadget, &req->req, ep->in);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ep->dma)
+		usb_gadget_unmap_request(&dev->gadget, &req->req, ep->in);
+>>>>>>> refs/remotes/origin/master
 
 	halted = ep->halted;
 	ep->halted = 1;
@@ -971,6 +1044,7 @@ static struct udc_data_dma *udc_get_last_dma_desc(struct udc_request *req)
 
 	td = req->td_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	while (td && !(td->status & AMD_BIT(UDC_DMA_IN_STS_L))) {
 		td = phys_to_virt(td->next);
 	}
@@ -978,6 +1052,10 @@ static struct udc_data_dma *udc_get_last_dma_desc(struct udc_request *req)
 	while (td && !(td->status & AMD_BIT(UDC_DMA_IN_STS_L)))
 		td = phys_to_virt(td->next);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	while (td && !(td->status & AMD_BIT(UDC_DMA_IN_STS_L)))
+		td = phys_to_virt(td->next);
+>>>>>>> refs/remotes/origin/master
 
 	return td;
 
@@ -1028,6 +1106,7 @@ static int udc_create_dma_chain(
 
 	/* unset L bit in first desc for OUT */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ep->in) {
 		req->td_data->status &= AMD_CLEAR_BIT(UDC_DMA_IN_STS_L);
 	}
@@ -1044,6 +1123,8 @@ static int udc_create_dma_chain(
 			udc_free_dma_chain(ep->dev, req);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!ep->in)
 		req->td_data->status &= AMD_CLEAR_BIT(UDC_DMA_IN_STS_L);
 
@@ -1056,7 +1137,10 @@ static int udc_create_dma_chain(
 		/* shorter chain already allocated before */
 		if (req->chain_len > 1)
 			udc_free_dma_chain(ep->dev, req);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		req->chain_len = len;
 		create_new_chain = 1;
 	}
@@ -1100,19 +1184,25 @@ static int udc_create_dma_chain(
 		/* link td and assign tx bytes */
 		if (i == buf_len) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (create_new_chain) {
 				req->td_data->next = dma_addr;
 			} else {
 				/* req->td_data->next = virt_to_phys(td); */
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (create_new_chain)
 				req->td_data->next = dma_addr;
 			/*
 			else
 				req->td_data->next = virt_to_phys(td);
 			*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* write tx bytes */
 			if (ep->in) {
 				/* first desc */
@@ -1127,19 +1217,25 @@ static int udc_create_dma_chain(
 			}
 		} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (create_new_chain) {
 				last->next = dma_addr;
 			} else {
 				/* last->next = virt_to_phys(td); */
 			}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (create_new_chain)
 				last->next = dma_addr;
 			/*
 			else
 				last->next = virt_to_phys(td);
 			*/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (ep->in) {
 				/* write tx bytes */
 				td->status = AMD_ADDBITS(td->status,
@@ -1196,7 +1292,11 @@ udc_queue(struct usb_ep *usbep, struct usb_request *usbreq, gfp_t gfp)
 		return -EINVAL;
 
 	ep = container_of(usbep, struct udc_ep, ep);
+<<<<<<< HEAD
 	if (!ep->desc && (ep->num != 0 && ep->num != UDC_EP0OUT_IX))
+=======
+	if (!ep->ep.desc && (ep->num != 0 && ep->num != UDC_EP0OUT_IX))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	VDBG(ep->dev, "udc_queue(): ep%d-in=%d\n", ep->num, ep->in);
@@ -1206,6 +1306,7 @@ udc_queue(struct usb_ep *usbep, struct usb_request *usbreq, gfp_t gfp)
 		return -ESHUTDOWN;
 
 	/* map dma (usually done before) */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (ep->dma && usbreq->length != 0
 			&& (usbreq->dma == DMA_DONT_USE || usbreq->dma == 0)) {
@@ -1222,12 +1323,17 @@ udc_queue(struct usb_ep *usbep, struct usb_request *usbreq, gfp_t gfp)
 						PCI_DMA_FROMDEVICE);
 		req->dma_mapping = 1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ep->dma) {
 		VDBG(dev, "DMA map req %p\n", req);
 		retval = usb_gadget_map_request(&udc->gadget, usbreq, ep->in);
 		if (retval)
 			return retval;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	VDBG(dev, "%s queue req %p, len %d req->td_data=%p buf %p\n",
@@ -1270,7 +1376,11 @@ udc_queue(struct usb_ep *usbep, struct usb_request *usbreq, gfp_t gfp)
 			goto finished;
 		}
 		if (ep->dma) {
+<<<<<<< HEAD
 			retval = prep_dma(ep, req, gfp);
+=======
+			retval = prep_dma(ep, req, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 			if (retval != 0)
 				goto finished;
 			/* write desc pointer to enable DMA */
@@ -1338,7 +1448,11 @@ udc_queue(struct usb_ep *usbep, struct usb_request *usbreq, gfp_t gfp)
 		 * for PPB modes, because of chain creation reasons
 		 */
 		if (ep->in) {
+<<<<<<< HEAD
 			retval = prep_dma(ep, req, gfp);
+=======
+			retval = prep_dma(ep, req, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 			if (retval != 0)
 				goto finished;
 		}
@@ -1404,7 +1518,11 @@ static int udc_dequeue(struct usb_ep *usbep, struct usb_request *usbreq)
 	unsigned long		iflags;
 
 	ep = container_of(usbep, struct udc_ep, ep);
+<<<<<<< HEAD
 	if (!usbep || !usbreq || (!ep->desc && (ep->num != 0
+=======
+	if (!usbep || !usbreq || (!ep->ep.desc && (ep->num != 0
+>>>>>>> refs/remotes/origin/master
 				&& ep->num != UDC_EP0OUT_IX)))
 		return -EINVAL;
 
@@ -1464,7 +1582,11 @@ udc_set_halt(struct usb_ep *usbep, int halt)
 	pr_debug("set_halt %s: halt=%d\n", usbep->name, halt);
 
 	ep = container_of(usbep, struct udc_ep, ep);
+<<<<<<< HEAD
 	if (!ep->desc && (ep->num != 0 && ep->num != UDC_EP0OUT_IX))
+=======
+	if (!ep->ep.desc && (ep->num != 0 && ep->num != UDC_EP0OUT_IX))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (!ep->dev->driver || ep->dev->gadget.speed == USB_SPEED_UNKNOWN)
 		return -ESHUTDOWN;
@@ -1549,20 +1671,32 @@ static int udc_wakeup(struct usb_gadget *gadget)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int amd5536_start(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *));
 static int amd5536_stop(struct usb_gadget_driver *driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int amd5536_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+static int amd5536_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver);
+>>>>>>> refs/remotes/origin/master
 /* gadget operations */
 static const struct usb_gadget_ops udc_ops = {
 	.wakeup		= udc_wakeup,
 	.get_frame	= udc_get_frame,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.start		= amd5536_start,
 	.stop		= amd5536_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start	= amd5536_udc_start,
+	.udc_stop	= amd5536_udc_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Setups endpoint parameters, adds endpoints to linked list */
@@ -1605,17 +1739,23 @@ static int startup_registers(struct udc *dev)
 	/* program speed */
 	tmp = readl(&dev->regs->cfg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (use_fullspeed) {
 		tmp = AMD_ADDBITS(tmp, UDC_DEVCFG_SPD_FS, UDC_DEVCFG_SPD);
 	} else {
 		tmp = AMD_ADDBITS(tmp, UDC_DEVCFG_SPD_HS, UDC_DEVCFG_SPD);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (use_fullspeed)
 		tmp = AMD_ADDBITS(tmp, UDC_DEVCFG_SPD_FS, UDC_DEVCFG_SPD);
 	else
 		tmp = AMD_ADDBITS(tmp, UDC_DEVCFG_SPD_HS, UDC_DEVCFG_SPD);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	writel(tmp, &dev->regs->cfg);
 
 	return 0;
@@ -1637,6 +1777,7 @@ static void udc_basic_init(struct udc *dev)
 	}
 	/* stop poll stall timer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (timer_pending(&udc_pollstall_timer)) {
 		mod_timer(&udc_pollstall_timer, jiffies - 1);
 	}
@@ -1644,6 +1785,10 @@ static void udc_basic_init(struct udc *dev)
 	if (timer_pending(&udc_pollstall_timer))
 		mod_timer(&udc_pollstall_timer, jiffies - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (timer_pending(&udc_pollstall_timer))
+		mod_timer(&udc_pollstall_timer, jiffies - 1);
+>>>>>>> refs/remotes/origin/master
 	/* disable DMA */
 	tmp = readl(&dev->regs->ctl);
 	tmp &= AMD_UNMASK_BIT(UDC_DEVCTL_RDE);
@@ -1678,17 +1823,23 @@ static void udc_setup_endpoints(struct udc *dev)
 	tmp = readl(&dev->regs->sts);
 	tmp = AMD_GETBITS(tmp, UDC_DEVSTS_ENUM_SPEED);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (tmp == UDC_DEVSTS_ENUM_SPEED_HIGH) {
 		dev->gadget.speed = USB_SPEED_HIGH;
 	} else if (tmp == UDC_DEVSTS_ENUM_SPEED_FULL) {
 		dev->gadget.speed = USB_SPEED_FULL;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tmp == UDC_DEVSTS_ENUM_SPEED_HIGH)
 		dev->gadget.speed = USB_SPEED_HIGH;
 	else if (tmp == UDC_DEVSTS_ENUM_SPEED_FULL)
 		dev->gadget.speed = USB_SPEED_FULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* set basic ep parameters */
 	for (tmp = 0; tmp < UDC_EP_NUM; tmp++) {
@@ -1715,6 +1866,7 @@ static void udc_setup_endpoints(struct udc *dev)
 		 * not enabled by gadget driver
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!ep->desc) {
 			ep_init(dev->regs, ep);
 		}
@@ -1722,6 +1874,10 @@ static void udc_setup_endpoints(struct udc *dev)
 		if (!ep->desc)
 			ep_init(dev->regs, ep);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!ep->ep.desc)
+			ep_init(dev->regs, ep);
+>>>>>>> refs/remotes/origin/master
 
 		if (use_dma) {
 			/*
@@ -1745,12 +1901,24 @@ static void udc_setup_endpoints(struct udc *dev)
 	}
 	/* EP0 max packet */
 	if (dev->gadget.speed == USB_SPEED_FULL) {
+<<<<<<< HEAD
 		dev->ep[UDC_EP0IN_IX].ep.maxpacket = UDC_FS_EP0IN_MAX_PKT_SIZE;
 		dev->ep[UDC_EP0OUT_IX].ep.maxpacket =
 						UDC_FS_EP0OUT_MAX_PKT_SIZE;
 	} else if (dev->gadget.speed == USB_SPEED_HIGH) {
 		dev->ep[UDC_EP0IN_IX].ep.maxpacket = UDC_EP0IN_MAX_PKT_SIZE;
 		dev->ep[UDC_EP0OUT_IX].ep.maxpacket = UDC_EP0OUT_MAX_PKT_SIZE;
+=======
+		usb_ep_set_maxpacket_limit(&dev->ep[UDC_EP0IN_IX].ep,
+					   UDC_FS_EP0IN_MAX_PKT_SIZE);
+		usb_ep_set_maxpacket_limit(&dev->ep[UDC_EP0OUT_IX].ep,
+					   UDC_FS_EP0OUT_MAX_PKT_SIZE);
+	} else if (dev->gadget.speed == USB_SPEED_HIGH) {
+		usb_ep_set_maxpacket_limit(&dev->ep[UDC_EP0IN_IX].ep,
+					   UDC_EP0IN_MAX_PKT_SIZE);
+		usb_ep_set_maxpacket_limit(&dev->ep[UDC_EP0OUT_IX].ep,
+					   UDC_EP0OUT_MAX_PKT_SIZE);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1820,6 +1988,7 @@ static void udc_tasklet_disconnect(unsigned long par)
 
 		/* empty queues */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		for (tmp = 0; tmp < UDC_EP_NUM; tmp++) {
 			empty_req_queue(&dev->ep[tmp]);
 		}
@@ -1827,6 +1996,10 @@ static void udc_tasklet_disconnect(unsigned long par)
 		for (tmp = 0; tmp < UDC_EP_NUM; tmp++)
 			empty_req_queue(&dev->ep[tmp]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (tmp = 0; tmp < UDC_EP_NUM; tmp++)
+			empty_req_queue(&dev->ep[tmp]);
+>>>>>>> refs/remotes/origin/master
 
 	}
 
@@ -1901,6 +2074,7 @@ static void udc_timer_function(unsigned long v)
 			 */
 			udc_timer.expires = jiffies + HZ/UDC_RDE_TIMER_DIV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!stop_timer) {
 				add_timer(&udc_timer);
 			}
@@ -1908,6 +2082,10 @@ static void udc_timer_function(unsigned long v)
 			if (!stop_timer)
 				add_timer(&udc_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!stop_timer)
+				add_timer(&udc_timer);
+>>>>>>> refs/remotes/origin/master
 		} else {
 			/*
 			 * fifo contains data now, setup timer for opening
@@ -1920,6 +2098,7 @@ static void udc_timer_function(unsigned long v)
 			/* debug: lhadmot_timer_start = 221070 */
 			udc_timer.expires = jiffies + HZ*UDC_RDE_TIMER_SECONDS;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!stop_timer) {
 				add_timer(&udc_timer);
 			}
@@ -1927,6 +2106,10 @@ static void udc_timer_function(unsigned long v)
 			if (!stop_timer)
 				add_timer(&udc_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!stop_timer)
+				add_timer(&udc_timer);
+>>>>>>> refs/remotes/origin/master
 		}
 
 	} else
@@ -2072,6 +2255,7 @@ static void activate_control_endpoints(struct udc *dev)
 		}
 		/* stop pollstall timer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (timer_pending(&udc_pollstall_timer)) {
 			mod_timer(&udc_pollstall_timer, jiffies - 1);
 		}
@@ -2079,11 +2263,16 @@ static void activate_control_endpoints(struct udc *dev)
 		if (timer_pending(&udc_pollstall_timer))
 			mod_timer(&udc_pollstall_timer, jiffies - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (timer_pending(&udc_pollstall_timer))
+			mod_timer(&udc_pollstall_timer, jiffies - 1);
+>>>>>>> refs/remotes/origin/master
 		/* enable DMA */
 		tmp = readl(&dev->regs->ctl);
 		tmp |= AMD_BIT(UDC_DEVCTL_MODE)
 				| AMD_BIT(UDC_DEVCTL_RDE)
 				| AMD_BIT(UDC_DEVCTL_TDE);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (use_dma_bufferfill_mode) {
 			tmp |= AMD_BIT(UDC_DEVCTL_BF);
@@ -2091,11 +2280,16 @@ static void activate_control_endpoints(struct udc *dev)
 			tmp |= AMD_BIT(UDC_DEVCTL_DU);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (use_dma_bufferfill_mode)
 			tmp |= AMD_BIT(UDC_DEVCTL_BF);
 		else if (use_dma_ppb_du)
 			tmp |= AMD_BIT(UDC_DEVCTL_DU);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		writel(tmp, &dev->regs->ctl);
 	}
 
@@ -2128,6 +2322,7 @@ static int setup_ep0(struct udc *dev)
 
 /* Called by gadget driver to register itself */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 =======
 static int amd5536_start(struct usb_gadget_driver *driver,
@@ -2155,6 +2350,16 @@ static int amd5536_start(struct usb_gadget_driver *driver,
 	dev->gadget.dev.driver = &driver->driver;
 
 	retval = bind(&dev->gadget);
+=======
+static int amd5536_udc_start(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct udc *dev = to_amd5536_udc(g);
+	u32 tmp;
+
+	driver->driver.bus = NULL;
+	dev->driver = driver;
+>>>>>>> refs/remotes/origin/master
 
 	/* Some gadget drivers use both ep0 directions.
 	 * NOTE: to gadget driver, ep0 is just one endpoint...
@@ -2162,6 +2367,7 @@ static int amd5536_start(struct usb_gadget_driver *driver,
 	dev->ep[UDC_EP0OUT_IX].ep.driver_data =
 		dev->ep[UDC_EP0IN_IX].ep.driver_data;
 
+<<<<<<< HEAD
 	if (retval) {
 		DBG(dev, "binding to %s returning %d\n",
 				driver->driver.name, retval);
@@ -2170,6 +2376,8 @@ static int amd5536_start(struct usb_gadget_driver *driver,
 		return retval;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* get ready for ep0 traffic */
 	setup_ep0(dev);
 
@@ -2183,9 +2391,12 @@ static int amd5536_start(struct usb_gadget_driver *driver,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_probe_driver);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* shutdown requests and disconnect from gadget */
 static void
@@ -2195,6 +2406,7 @@ __acquires(dev->lock)
 {
 	int tmp;
 
+<<<<<<< HEAD
 	if (dev->gadget.speed != USB_SPEED_UNKNOWN) {
 		spin_unlock(&dev->lock);
 		driver->disconnect(&dev->gadget);
@@ -2203,6 +2415,11 @@ __acquires(dev->lock)
 
 	/* empty queues and init hardware */
 	udc_basic_init(dev);
+=======
+	/* empty queues and init hardware */
+	udc_basic_init(dev);
+
+>>>>>>> refs/remotes/origin/master
 	for (tmp = 0; tmp < UDC_EP_NUM; tmp++)
 		empty_req_queue(&dev->ep[tmp]);
 
@@ -2210,6 +2427,7 @@ __acquires(dev->lock)
 }
 
 /* Called by gadget driver to unregister itself */
+<<<<<<< HEAD
 <<<<<<< HEAD
 int usb_gadget_unregister_driver(struct usb_gadget_driver *driver)
 =======
@@ -2225,13 +2443,25 @@ static int amd5536_stop(struct usb_gadget_driver *driver)
 	if (!driver || driver != dev->driver || !driver->unbind)
 		return -EINVAL;
 
+=======
+static int amd5536_udc_stop(struct usb_gadget *g,
+		struct usb_gadget_driver *driver)
+{
+	struct udc *dev = to_amd5536_udc(g);
+	unsigned long flags;
+	u32 tmp;
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&dev->lock, flags);
 	udc_mask_unused_interrupts(dev);
 	shutdown(dev, driver);
 	spin_unlock_irqrestore(&dev->lock, flags);
 
+<<<<<<< HEAD
 	driver->unbind(&dev->gadget);
 	dev->gadget.dev.driver = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->driver = NULL;
 
 	/* set SD */
@@ -2239,6 +2469,7 @@ static int amd5536_stop(struct usb_gadget_driver *driver)
 	tmp |= AMD_BIT(UDC_DEVCTL_SD);
 	writel(tmp, &dev->regs->ctl);
 
+<<<<<<< HEAD
 
 	DBG(dev, "%s: unregistered\n", driver->driver.name);
 
@@ -2249,6 +2480,10 @@ EXPORT_SYMBOL(usb_gadget_unregister_driver);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return 0;
+}
+>>>>>>> refs/remotes/origin/master
 
 /* Clear pending NAK bits */
 static void udc_process_cnak_queue(struct udc *dev)
@@ -2302,6 +2537,7 @@ static void udc_ep0_set_rde(struct udc *dev)
 					jiffies + HZ/UDC_RDE_TIMER_DIV;
 				set_rde = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (!stop_timer) {
 					add_timer(&udc_timer);
 				}
@@ -2309,6 +2545,10 @@ static void udc_ep0_set_rde(struct udc *dev)
 				if (!stop_timer)
 					add_timer(&udc_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (!stop_timer)
+					add_timer(&udc_timer);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 	}
@@ -2334,10 +2574,14 @@ static irqreturn_t udc_data_out_isr(struct udc *dev, int ep_ix)
 		/* BNA event ? */
 		if (tmp & AMD_BIT(UDC_EPSTS_BNA)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DBG(dev, "BNA ep%dout occurred - DESPTR = %x \n",
 =======
 			DBG(dev, "BNA ep%dout occurred - DESPTR = %x\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			DBG(dev, "BNA ep%dout occurred - DESPTR = %x\n",
+>>>>>>> refs/remotes/origin/master
 					ep->num, readl(&ep->regs->desptr));
 			/* clear BNA */
 			writel(tmp | AMD_BIT(UDC_EPSTS_BNA), &ep->regs->sts);
@@ -2501,6 +2745,7 @@ static irqreturn_t udc_data_out_isr(struct udc *dev, int ep_ix)
 						+ HZ*UDC_RDE_TIMER_SECONDS;
 					set_rde = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 					if (!stop_timer) {
 						add_timer(&udc_timer);
 					}
@@ -2508,6 +2753,10 @@ static irqreturn_t udc_data_out_isr(struct udc *dev, int ep_ix)
 					if (!stop_timer)
 						add_timer(&udc_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					if (!stop_timer)
+						add_timer(&udc_timer);
+>>>>>>> refs/remotes/origin/master
 				}
 				if (ep->num != UDC_EP0OUT_IX)
 					dev->data_ep_queued = 0;
@@ -2530,6 +2779,7 @@ static irqreturn_t udc_data_out_isr(struct udc *dev, int ep_ix)
 	if (cnak_pending) {
 		/* CNAk processing when rxfifo empty only */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (readl(&dev->regs->sts) & AMD_BIT(UDC_DEVSTS_RXFIFO_EMPTY)) {
 			udc_process_cnak_queue(dev);
 		}
@@ -2537,6 +2787,10 @@ static irqreturn_t udc_data_out_isr(struct udc *dev, int ep_ix)
 		if (readl(&dev->regs->sts) & AMD_BIT(UDC_DEVSTS_RXFIFO_EMPTY))
 			udc_process_cnak_queue(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (readl(&dev->regs->sts) & AMD_BIT(UDC_DEVSTS_RXFIFO_EMPTY))
+			udc_process_cnak_queue(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* clear OUT bits in ep status */
@@ -2565,10 +2819,14 @@ static irqreturn_t udc_data_in_isr(struct udc *dev, int ep_ix)
 		if (epsts & AMD_BIT(UDC_EPSTS_BNA)) {
 			dev_err(&dev->pdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"BNA ep%din occurred - DESPTR = %08lx \n",
 =======
 				"BNA ep%din occurred - DESPTR = %08lx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				"BNA ep%din occurred - DESPTR = %08lx\n",
+>>>>>>> refs/remotes/origin/master
 				ep->num,
 				(unsigned long) readl(&ep->regs->desptr));
 
@@ -2582,10 +2840,14 @@ static irqreturn_t udc_data_in_isr(struct udc *dev, int ep_ix)
 	if (epsts & AMD_BIT(UDC_EPSTS_HE)) {
 		dev_err(&dev->pdev->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			"HE ep%dn occurred - DESPTR = %08lx \n",
 =======
 			"HE ep%dn occurred - DESPTR = %08lx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			"HE ep%dn occurred - DESPTR = %08lx\n",
+>>>>>>> refs/remotes/origin/master
 			ep->num, (unsigned long) readl(&ep->regs->desptr));
 
 		/* clear HE */
@@ -2652,6 +2914,7 @@ static irqreturn_t udc_data_in_isr(struct udc *dev, int ep_ix)
 				udc_txfifo_write(ep, &req->req);
 				len = req->req.length - req->req.actual;
 <<<<<<< HEAD
+<<<<<<< HEAD
 						if (len > ep->ep.maxpacket)
 							len = ep->ep.maxpacket;
 						req->req.actual += len;
@@ -2660,6 +2923,11 @@ static irqreturn_t udc_data_in_isr(struct udc *dev, int ep_ix)
 					len = ep->ep.maxpacket;
 				req->req.actual += len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (len > ep->ep.maxpacket)
+					len = ep->ep.maxpacket;
+				req->req.actual += len;
+>>>>>>> refs/remotes/origin/master
 				if (req->req.actual == req->req.length
 					|| (len != ep->ep.maxpacket)) {
 					/* complete req */
@@ -2812,6 +3080,7 @@ __acquires(dev->lock)
 				udc_timer.expires = jiffies +
 							HZ/UDC_RDE_TIMER_DIV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (!stop_timer) {
 					add_timer(&udc_timer);
 				}
@@ -2819,6 +3088,10 @@ __acquires(dev->lock)
 				if (!stop_timer)
 					add_timer(&udc_timer);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (!stop_timer)
+					add_timer(&udc_timer);
+>>>>>>> refs/remotes/origin/master
 			}
 		}
 
@@ -2933,6 +3206,7 @@ __acquires(dev->lock)
 	if (cnak_pending) {
 		/* CNAk processing when rxfifo empty only */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (readl(&dev->regs->sts) & AMD_BIT(UDC_DEVSTS_RXFIFO_EMPTY)) {
 			udc_process_cnak_queue(dev);
 		}
@@ -2940,6 +3214,10 @@ __acquires(dev->lock)
 		if (readl(&dev->regs->sts) & AMD_BIT(UDC_DEVSTS_RXFIFO_EMPTY))
 			udc_process_cnak_queue(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (readl(&dev->regs->sts) & AMD_BIT(UDC_DEVSTS_RXFIFO_EMPTY))
+			udc_process_cnak_queue(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 finished:
@@ -2964,10 +3242,14 @@ static irqreturn_t udc_control_in_isr(struct udc *dev)
 	/* DMA completion */
 	if (tmp & AMD_BIT(UDC_EPSTS_TDC)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		VDBG(dev, "isr: TDC clear \n");
 =======
 		VDBG(dev, "isr: TDC clear\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		VDBG(dev, "isr: TDC clear\n");
+>>>>>>> refs/remotes/origin/master
 		ret_val = IRQ_HANDLED;
 
 		/* clear TDC bit */
@@ -3250,6 +3532,7 @@ __acquires(dev->lock)
 		/* link up all endpoints */
 		udc_setup_endpoints(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (dev->gadget.speed == USB_SPEED_HIGH) {
 			dev_info(&dev->pdev->dev, "Connect: speed = %s\n",
 				"high");
@@ -3261,6 +3544,10 @@ __acquires(dev->lock)
 		dev_info(&dev->pdev->dev, "Connect: %s\n",
 			 usb_speed_string(dev->gadget.speed));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_info(&dev->pdev->dev, "Connect: %s\n",
+			 usb_speed_string(dev->gadget.speed));
+>>>>>>> refs/remotes/origin/master
 
 		/* init ep 0 */
 		activate_control_endpoints(dev);
@@ -3377,9 +3664,13 @@ static void udc_pci_remove(struct pci_dev *pdev)
 	dev = pci_get_drvdata(pdev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	usb_del_gadget_udc(&udc->gadget);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_del_gadget_udc(&udc->gadget);
+>>>>>>> refs/remotes/origin/master
 	/* gadget driver must not be registered */
 	BUG_ON(dev->driver != NULL);
 
@@ -3411,9 +3702,12 @@ static void udc_pci_remove(struct pci_dev *pdev)
 	if (dev->active)
 		pci_disable_device(pdev);
 
+<<<<<<< HEAD
 	device_unregister(&dev->gadget.dev);
 	pci_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	udc_remove(dev);
 }
 
@@ -3531,7 +3825,11 @@ static int udc_pci_probe(
 	}
 
 	if (!pdev->irq) {
+<<<<<<< HEAD
 		dev_err(&dev->pdev->dev, "irq not set\n");
+=======
+		dev_err(&pdev->dev, "irq not set\n");
+>>>>>>> refs/remotes/origin/master
 		kfree(dev);
 		dev = NULL;
 		retval = -ENODEV;
@@ -3550,7 +3848,11 @@ static int udc_pci_probe(
 	dev->txfifo = (u32 __iomem *)(dev->virt_addr + UDC_TXFIFO_ADDR);
 
 	if (request_irq(pdev->irq, udc_irq, IRQF_SHARED, name, dev) != 0) {
+<<<<<<< HEAD
 		dev_dbg(&dev->pdev->dev, "request_irq(%d) fail\n", pdev->irq);
+=======
+		dev_dbg(&pdev->dev, "request_irq(%d) fail\n", pdev->irq);
+>>>>>>> refs/remotes/origin/master
 		kfree(dev);
 		dev = NULL;
 		retval = -EBUSY;
@@ -3576,8 +3878,11 @@ static int udc_pci_probe(
 	dev->phys_addr = resource;
 	dev->irq = pdev->irq;
 	dev->pdev = pdev;
+<<<<<<< HEAD
 	dev->gadget.dev.parent = &pdev->dev;
 	dev->gadget.dev.dma_mask = pdev->dev.dma_mask;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* general probing */
 	if (udc_probe(dev) == 0)
@@ -3604,6 +3909,7 @@ static int udc_probe(struct udc *dev)
 	dev->gadget.ops = &udc_ops;
 
 	dev_set_name(&dev->gadget.dev, "gadget");
+<<<<<<< HEAD
 	dev->gadget.dev.release = gadget_release;
 	dev->gadget.name = name;
 <<<<<<< HEAD
@@ -3611,6 +3917,10 @@ static int udc_probe(struct udc *dev)
 =======
 	dev->gadget.max_speed = USB_SPEED_HIGH;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->gadget.name = name;
+	dev->gadget.max_speed = USB_SPEED_HIGH;
+>>>>>>> refs/remotes/origin/master
 
 	/* init registers, interrupts, ... */
 	startup_registers(dev);
@@ -3633,6 +3943,7 @@ static int udc_probe(struct udc *dev)
 	udc = dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	retval = device_register(&dev->gadget.dev);
 	if (retval) {
 =======
@@ -3648,6 +3959,13 @@ static int udc_probe(struct udc *dev)
 		goto finished;
 	}
 
+=======
+	retval = usb_add_gadget_udc_release(&udc->pdev->dev, &dev->gadget,
+			gadget_release);
+	if (retval)
+		goto finished;
+
+>>>>>>> refs/remotes/origin/master
 	/* timer init */
 	init_timer(&udc_timer);
 	udc_timer.function = udc_timer_function;
@@ -3693,10 +4011,14 @@ static int udc_remote_wakeup(struct udc *dev)
 
 /* PCI device parameters */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct pci_device_id pci_id[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(pci_id) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id pci_id[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		PCI_DEVICE(PCI_VENDOR_ID_AMD, 0x2096),
 		.class =	(PCI_CLASS_SERIAL_USB << 8) | 0xfe,
@@ -3714,6 +4036,7 @@ static struct pci_driver udc_pci_driver = {
 	.remove =	udc_pci_remove,
 };
 
+<<<<<<< HEAD
 /* Inits driver */
 static int __init init(void)
 {
@@ -3727,6 +4050,9 @@ static void __exit cleanup(void)
 	pci_unregister_driver(&udc_pci_driver);
 }
 module_exit(cleanup);
+=======
+module_pci_driver(udc_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION(UDC_MOD_DESCRIPTION);
 MODULE_AUTHOR("Thomas Dahlmann");

@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/stacktrace.h>
 
@@ -36,10 +40,14 @@ int notrace unwind_frame(struct stackframe *frame)
 
 	/* check current frame pointer is within bounds */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (fp < low + 12 || fp > high - 4)
 =======
 	if (fp < (low + 12) || fp + 4 >= high)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (fp < low + 12 || fp > high - 4)
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	/* restore the registers from the stack frame */
@@ -101,7 +109,10 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
 
 	if (tsk != current) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 		/*
 		 * What guarantees do we have here that 'tsk' is not
@@ -112,16 +123,23 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
 			trace->entries[trace->nr_entries++] = ULONG_MAX;
 		return;
 #else
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		data.no_sched_functions = 1;
 		frame.fp = thread_saved_fp(tsk);
 		frame.sp = thread_saved_sp(tsk);
 		frame.lr = 0;		/* recovered from the stack */
 		frame.pc = thread_saved_pc(tsk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 	} else {
 		register unsigned long current_sp asm ("sp");
 

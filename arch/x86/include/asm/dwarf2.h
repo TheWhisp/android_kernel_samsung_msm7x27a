@@ -28,9 +28,13 @@
 #define CFI_RESTORE_STATE	.cfi_restore_state
 #define CFI_UNDEFINED		.cfi_undefined
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CFI_ESCAPE		.cfi_escape
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CFI_ESCAPE		.cfi_escape
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_AS_CFI_SIGNAL_FRAME
 #define CFI_SIGNAL_FRAME	.cfi_signal_frame
@@ -73,9 +77,13 @@
 #define CFI_RESTORE_STATE	cfi_ignore
 #define CFI_UNDEFINED		cfi_ignore
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define CFI_ESCAPE		cfi_ignore
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CFI_ESCAPE		cfi_ignore
+>>>>>>> refs/remotes/origin/master
 #define CFI_SIGNAL_FRAME	cfi_ignore
 
 #endif

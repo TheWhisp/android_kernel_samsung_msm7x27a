@@ -73,15 +73,24 @@ show_stack_log_lvl(struct task_struct *task, struct pt_regs *regs,
 		if (kstack_end(stack))
 			break;
 		if (i && ((i % STACKSLOTS_PER_LINE) == 0))
+<<<<<<< HEAD
 			printk(KERN_CONT "\n");
 		printk(KERN_CONT " %08lx", *stack++);
 		touch_nmi_watchdog();
 	}
 	printk(KERN_CONT "\n");
+=======
+			pr_cont("\n");
+		pr_cont(" %08lx", *stack++);
+		touch_nmi_watchdog();
+	}
+	pr_cont("\n");
+>>>>>>> refs/remotes/origin/master
 	show_trace_log_lvl(task, regs, sp, bp, log_lvl);
 }
 
 
+<<<<<<< HEAD
 void show_registers(struct pt_regs *regs)
 {
 	int i;
@@ -96,6 +105,15 @@ void show_registers(struct pt_regs *regs)
 	printk(KERN_EMERG "Process %.*s (pid: %d, ti=%p task=%p task.ti=%p)\n",
 		TASK_COMM_LEN, current->comm, task_pid_nr(current),
 		current_thread_info(), current, task_thread_info(current));
+=======
+void show_regs(struct pt_regs *regs)
+{
+	int i;
+
+	show_regs_print_info(KERN_EMERG);
+	__show_regs(regs, !user_mode_vm(regs));
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * When in-kernel, we also print out the stack and code at the
 	 * time of the fault..
@@ -106,10 +124,17 @@ void show_registers(struct pt_regs *regs)
 		unsigned char c;
 		u8 *ip;
 
+<<<<<<< HEAD
 		printk(KERN_EMERG "Stack:\n");
 		show_stack_log_lvl(NULL, regs, &regs->sp, 0, KERN_EMERG);
 
 		printk(KERN_EMERG "Code: ");
+=======
+		pr_emerg("Stack:\n");
+		show_stack_log_lvl(NULL, regs, &regs->sp, 0, KERN_EMERG);
+
+		pr_emerg("Code:");
+>>>>>>> refs/remotes/origin/master
 
 		ip = (u8 *)regs->ip - code_prologue;
 		if (ip < (u8 *)PAGE_OFFSET || probe_kernel_address(ip, c)) {
@@ -120,6 +145,7 @@ void show_registers(struct pt_regs *regs)
 		for (i = 0; i < code_len; i++, ip++) {
 			if (ip < (u8 *)PAGE_OFFSET ||
 					probe_kernel_address(ip, c)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				printk(" Bad EIP value.");
 				break;
@@ -143,6 +169,18 @@ void show_registers(struct pt_regs *regs)
 	}
 	printk(KERN_CONT "\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_cont("  Bad EIP value.");
+				break;
+			}
+			if (ip == (u8 *)regs->ip)
+				pr_cont(" <%02x>", c);
+			else
+				pr_cont(" %02x", c);
+		}
+	}
+	pr_cont("\n");
+>>>>>>> refs/remotes/origin/master
 }
 
 int is_valid_bugaddr(unsigned long ip)

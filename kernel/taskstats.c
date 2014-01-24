@@ -27,12 +27,18 @@
 #include <linux/cgroup.h>
 #include <linux/fs.h>
 #include <linux/file.h>
+<<<<<<< HEAD
 #include <net/genetlink.h>
 <<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pid_namespace.h>
+#include <net/genetlink.h>
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Maximum length of a cpumask that can be specified in
@@ -178,7 +184,13 @@ static void send_cpu_listeners(struct sk_buff *skb,
 	up_write(&listeners->sem);
 }
 
+<<<<<<< HEAD
 static void fill_stats(struct task_struct *tsk, struct taskstats *stats)
+=======
+static void fill_stats(struct user_namespace *user_ns,
+		       struct pid_namespace *pid_ns,
+		       struct task_struct *tsk, struct taskstats *stats)
+>>>>>>> refs/remotes/origin/master
 {
 	memset(stats, 0, sizeof(*stats));
 	/*
@@ -194,7 +206,11 @@ static void fill_stats(struct task_struct *tsk, struct taskstats *stats)
 	stats->version = TASKSTATS_VERSION;
 	stats->nvcsw = tsk->nvcsw;
 	stats->nivcsw = tsk->nivcsw;
+<<<<<<< HEAD
 	bacct_add_tsk(stats, tsk);
+=======
+	bacct_add_tsk(user_ns, pid_ns, stats, tsk);
+>>>>>>> refs/remotes/origin/master
 
 	/* fill in extended acct fields */
 	xacct_add_tsk(stats, tsk);
@@ -211,7 +227,11 @@ static int fill_stats_for_pid(pid_t pid, struct taskstats *stats)
 	rcu_read_unlock();
 	if (!tsk)
 		return -ESRCH;
+<<<<<<< HEAD
 	fill_stats(tsk, stats);
+=======
+	fill_stats(current_user_ns(), task_active_pid_ns(current), tsk, stats);
+>>>>>>> refs/remotes/origin/master
 	put_task_struct(tsk);
 	return 0;
 }
@@ -291,10 +311,15 @@ static int add_del_listener(pid_t pid, const struct cpumask *mask, int isadd)
 	struct listener_list *listeners;
 	struct listener *s, *tmp, *s2;
 	unsigned int cpu;
+<<<<<<< HEAD
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!cpumask_subset(mask, cpu_possible_mask))
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	s = NULL;
 	if (isadd == REGISTER) {
@@ -307,19 +332,36 @@ static int add_del_listener(pid_t pid, const struct cpumask *mask, int isadd)
 			s->pid = pid;
 			INIT_LIST_HEAD(&s->list);
 =======
+=======
+	if (current_user_ns() != &init_user_ns)
+		return -EINVAL;
+
+	if (task_active_pid_ns(current) != &init_pid_ns)
+		return -EINVAL;
+
+>>>>>>> refs/remotes/origin/master
 	if (isadd == REGISTER) {
 		for_each_cpu(cpu, mask) {
 			s = kmalloc_node(sizeof(struct listener),
 					GFP_KERNEL, cpu_to_node(cpu));
+<<<<<<< HEAD
 			if (!s)
 				goto cleanup;
 
 			s->pid = pid;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!s) {
+				ret = -ENOMEM;
+				goto cleanup;
+			}
+			s->pid = pid;
+>>>>>>> refs/remotes/origin/master
 			s->valid = 1;
 
 			listeners = &per_cpu(listener_array, cpu);
 			down_write(&listeners->sem);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			list_for_each_entry_safe(s2, tmp, &listeners->list, list) {
 				if (s2->pid == pid)
@@ -332,6 +374,8 @@ next_cpu:
 		}
 		kfree(s);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			list_for_each_entry(s2, &listeners->list, list) {
 				if (s2->pid == pid && s2->valid)
 					goto exists;
@@ -342,7 +386,10 @@ exists:
 			up_write(&listeners->sem);
 			kfree(s); /* nop if NULL */
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -360,7 +407,11 @@ cleanup:
 		}
 		up_write(&listeners->sem);
 	}
+<<<<<<< HEAD
 	return 0;
+=======
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int parse(struct nlattr *na, struct cpumask *mask)
@@ -425,11 +476,23 @@ static struct taskstats *mk_reply(struct sk_buff *skb, int type, u32 pid)
 	if (!na)
 		goto err;
 
+<<<<<<< HEAD
 	if (nla_put(skb, type, sizeof(pid), &pid) < 0)
 		goto err;
 	ret = nla_reserve(skb, TASKSTATS_TYPE_STATS, sizeof(struct taskstats));
 	if (!ret)
 		goto err;
+=======
+	if (nla_put(skb, type, sizeof(pid), &pid) < 0) {
+		nla_nest_cancel(skb, na);
+		goto err;
+	}
+	ret = nla_reserve(skb, TASKSTATS_TYPE_STATS, sizeof(struct taskstats));
+	if (!ret) {
+		nla_nest_cancel(skb, na);
+		goto err;
+	}
+>>>>>>> refs/remotes/origin/master
 	nla_nest_end(skb, na);
 
 	return nla_data(ret);
@@ -445,16 +508,25 @@ static int cgroupstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 	struct nlattr *na;
 	size_t size;
 	u32 fd;
+<<<<<<< HEAD
 	struct file *file;
 	int fput_needed;
+=======
+	struct fd f;
+>>>>>>> refs/remotes/origin/master
 
 	na = info->attrs[CGROUPSTATS_CMD_ATTR_FD];
 	if (!na)
 		return -EINVAL;
 
 	fd = nla_get_u32(info->attrs[CGROUPSTATS_CMD_ATTR_FD]);
+<<<<<<< HEAD
 	file = fget_light(fd, &fput_needed);
 	if (!file)
+=======
+	f = fdget(fd);
+	if (!f.file)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	size = nla_total_size(sizeof(struct cgroupstats));
@@ -466,10 +538,23 @@ static int cgroupstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 
 	na = nla_reserve(rep_skb, CGROUPSTATS_TYPE_CGROUP_STATS,
 				sizeof(struct cgroupstats));
+<<<<<<< HEAD
 	stats = nla_data(na);
 	memset(stats, 0, sizeof(*stats));
 
 	rc = cgroupstats_build(stats, file->f_dentry);
+=======
+	if (na == NULL) {
+		nlmsg_free(rep_skb);
+		rc = -EMSGSIZE;
+		goto err;
+	}
+
+	stats = nla_data(na);
+	memset(stats, 0, sizeof(*stats));
+
+	rc = cgroupstats_build(stats, f.file->f_dentry);
+>>>>>>> refs/remotes/origin/master
 	if (rc < 0) {
 		nlmsg_free(rep_skb);
 		goto err;
@@ -478,7 +563,11 @@ static int cgroupstats_user_cmd(struct sk_buff *skb, struct genl_info *info)
 	rc = send_reply(rep_skb, info);
 
 err:
+<<<<<<< HEAD
 	fput_light(file, fput_needed);
+=======
+	fdput(f);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -492,7 +581,11 @@ static int cmd_attr_register_cpumask(struct genl_info *info)
 	rc = parse(info->attrs[TASKSTATS_CMD_ATTR_REGISTER_CPUMASK], mask);
 	if (rc < 0)
 		goto out;
+<<<<<<< HEAD
 	rc = add_del_listener(info->snd_pid, mask, REGISTER);
+=======
+	rc = add_del_listener(info->snd_portid, mask, REGISTER);
+>>>>>>> refs/remotes/origin/master
 out:
 	free_cpumask_var(mask);
 	return rc;
@@ -508,7 +601,11 @@ static int cmd_attr_deregister_cpumask(struct genl_info *info)
 	rc = parse(info->attrs[TASKSTATS_CMD_ATTR_DEREGISTER_CPUMASK], mask);
 	if (rc < 0)
 		goto out;
+<<<<<<< HEAD
 	rc = add_del_listener(info->snd_pid, mask, DEREGISTER);
+=======
+	rc = add_del_listener(info->snd_portid, mask, DEREGISTER);
+>>>>>>> refs/remotes/origin/master
 out:
 	free_cpumask_var(mask);
 	return rc;
@@ -656,11 +753,20 @@ void taskstats_exit(struct task_struct *tsk, int group_dead)
 	if (rc < 0)
 		return;
 
+<<<<<<< HEAD
 	stats = mk_reply(rep_skb, TASKSTATS_TYPE_PID, tsk->pid);
 	if (!stats)
 		goto err;
 
 	fill_stats(tsk, stats);
+=======
+	stats = mk_reply(rep_skb, TASKSTATS_TYPE_PID,
+			 task_pid_nr_ns(tsk, &init_pid_ns));
+	if (!stats)
+		goto err;
+
+	fill_stats(&init_user_ns, &init_pid_ns, tsk, stats);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Doesn't matter if tsk is the leader or the last group member leaving
@@ -668,7 +774,12 @@ void taskstats_exit(struct task_struct *tsk, int group_dead)
 	if (!is_thread_group || !group_dead)
 		goto send;
 
+<<<<<<< HEAD
 	stats = mk_reply(rep_skb, TASKSTATS_TYPE_TGID, tsk->tgid);
+=======
+	stats = mk_reply(rep_skb, TASKSTATS_TYPE_TGID,
+			 task_tgid_nr_ns(tsk, &init_pid_ns));
+>>>>>>> refs/remotes/origin/master
 	if (!stats)
 		goto err;
 
@@ -681,6 +792,7 @@ err:
 	nlmsg_free(rep_skb);
 }
 
+<<<<<<< HEAD
 static struct genl_ops taskstats_ops = {
 	.cmd		= TASKSTATS_CMD_GET,
 	.doit		= taskstats_user_cmd,
@@ -692,6 +804,20 @@ static struct genl_ops cgroupstats_ops = {
 	.cmd		= CGROUPSTATS_CMD_GET,
 	.doit		= cgroupstats_user_cmd,
 	.policy		= cgroupstats_cmd_get_policy,
+=======
+static const struct genl_ops taskstats_ops[] = {
+	{
+		.cmd		= TASKSTATS_CMD_GET,
+		.doit		= taskstats_user_cmd,
+		.policy		= taskstats_cmd_get_policy,
+		.flags		= GENL_ADMIN_PERM,
+	},
+	{
+		.cmd		= CGROUPSTATS_CMD_GET,
+		.doit		= cgroupstats_user_cmd,
+		.policy		= cgroupstats_cmd_get_policy,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Needed early in initialization */
@@ -710,6 +836,7 @@ static int __init taskstats_init(void)
 {
 	int rc;
 
+<<<<<<< HEAD
 	rc = genl_register_family(&family);
 	if (rc)
 		return rc;
@@ -730,6 +857,15 @@ err_cgroup_ops:
 err:
 	genl_unregister_family(&family);
 	return rc;
+=======
+	rc = genl_register_family_with_ops(&family, taskstats_ops);
+	if (rc)
+		return rc;
+
+	family_registered = 1;
+	pr_info("registered taskstats version %d\n", TASKSTATS_GENL_VERSION);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*

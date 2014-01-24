@@ -28,6 +28,7 @@ struct dev_archdata {
 		void		*iommu_table_base;
 	} dma_data;
 
+<<<<<<< HEAD
 #ifdef CONFIG_SWIOTLB
 	dma_addr_t		max_direct_dma_addr;
 #endif
@@ -37,6 +38,20 @@ struct dev_archdata {
 	struct eeh_dev		*edev;
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_IOMMU_API
+	void			*iommu_domain;
+#endif
+#ifdef CONFIG_SWIOTLB
+	dma_addr_t		max_direct_dma_addr;
+#endif
+#ifdef CONFIG_EEH
+	struct eeh_dev		*edev;
+#endif
+#ifdef CONFIG_FAIL_IOMMU
+	int fail_iommu;
+#endif
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pdev_archdata {
@@ -44,8 +59,13 @@ struct pdev_archdata {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ARCH_HAS_DMA_GET_REQUIRED_MASK
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARCH_HAS_DMA_GET_REQUIRED_MASK
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_POWERPC_DEVICE_H */

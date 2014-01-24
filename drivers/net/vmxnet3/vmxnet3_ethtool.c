@@ -114,6 +114,7 @@ vmxnet3_global_stats[] = {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct net_device_stats *
 vmxnet3_get_stats(struct net_device *netdev)
 =======
@@ -121,6 +122,11 @@ struct rtnl_link_stats64 *
 vmxnet3_get_stats64(struct net_device *netdev,
 		   struct rtnl_link_stats64 *stats)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct rtnl_link_stats64 *
+vmxnet3_get_stats64(struct net_device *netdev,
+		   struct rtnl_link_stats64 *stats)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vmxnet3_adapter *adapter;
 	struct vmxnet3_tq_driver_stats *drvTxStats;
@@ -128,9 +134,12 @@ vmxnet3_get_stats64(struct net_device *netdev,
 	struct UPT1_TxStats *devTxStats;
 	struct UPT1_RxStats *devRxStats;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct net_device_stats *net_stats = &netdev->stats;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	int i;
 
@@ -141,6 +150,7 @@ vmxnet3_get_stats64(struct net_device *netdev,
 	VMXNET3_WRITE_BAR1_REG(adapter, VMXNET3_REG_CMD, VMXNET3_CMD_GET_STATS);
 	spin_unlock_irqrestore(&adapter->cmd_lock, flags);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	memset(net_stats, 0, sizeof(*net_stats));
 	for (i = 0; i < adapter->num_tx_queues; i++) {
@@ -155,6 +165,8 @@ vmxnet3_get_stats64(struct net_device *netdev,
 		net_stats->tx_errors += devTxStats->pktsTxError;
 		net_stats->tx_dropped += drvTxStats->drop_total;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < adapter->num_tx_queues; i++) {
 		devTxStats = &adapter->tqd_start[i].stats;
 		drvTxStats = &adapter->tx_queue[i].stats;
@@ -166,12 +178,16 @@ vmxnet3_get_stats64(struct net_device *netdev,
 				   devTxStats->bcastBytesTxOK;
 		stats->tx_errors += devTxStats->pktsTxError;
 		stats->tx_dropped += drvTxStats->drop_total;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	for (i = 0; i < adapter->num_rx_queues; i++) {
 		devRxStats = &adapter->rqd_start[i].stats;
 		drvRxStats = &adapter->rx_queue[i].stats;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		net_stats->rx_packets += devRxStats->ucastPktsRxOK +
 					devRxStats->mcastPktsRxOK +
@@ -187,6 +203,8 @@ vmxnet3_get_stats64(struct net_device *netdev,
 	}
 	return net_stats;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		stats->rx_packets += devRxStats->ucastPktsRxOK +
 				     devRxStats->mcastPktsRxOK +
 				     devRxStats->bcastPktsRxOK;
@@ -201,7 +219,10 @@ vmxnet3_get_stats64(struct net_device *netdev,
 	}
 
 	return stats;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -243,6 +264,7 @@ vmxnet3_get_drvinfo(struct net_device *netdev, struct ethtool_drvinfo *drvinfo)
 
 	strlcpy(drvinfo->driver, vmxnet3_driver_name, sizeof(drvinfo->driver));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drvinfo->driver[sizeof(drvinfo->driver) - 1] = '\0';
 
 	strlcpy(drvinfo->version, VMXNET3_DRIVER_VERSION_REPORT,
@@ -259,6 +281,14 @@ vmxnet3_get_drvinfo(struct net_device *netdev, struct ethtool_drvinfo *drvinfo)
 
 	strlcpy(drvinfo->bus_info, pci_name(adapter->pdev),
 		ETHTOOL_BUSINFO_LEN);
+=======
+
+	strlcpy(drvinfo->version, VMXNET3_DRIVER_VERSION_REPORT,
+		sizeof(drvinfo->version));
+
+	strlcpy(drvinfo->bus_info, pci_name(adapter->pdev),
+		sizeof(drvinfo->bus_info));
+>>>>>>> refs/remotes/origin/master
 	drvinfo->n_stats = vmxnet3_get_sset_count(netdev, ETH_SS_STATS);
 	drvinfo->testinfo_len = 0;
 	drvinfo->eedump_len   = 0;
@@ -309,6 +339,7 @@ vmxnet3_get_strings(struct net_device *netdev, u32 stringset, u8 *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int vmxnet3_set_features(struct net_device *netdev, u32 features)
 {
 	struct vmxnet3_adapter *adapter = netdev_priv(netdev);
@@ -317,14 +348,21 @@ int vmxnet3_set_features(struct net_device *netdev, u32 features)
 
 	if (changed & (NETIF_F_RXCSUM|NETIF_F_LRO)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int vmxnet3_set_features(struct net_device *netdev, netdev_features_t features)
 {
 	struct vmxnet3_adapter *adapter = netdev_priv(netdev);
 	unsigned long flags;
 	netdev_features_t changed = features ^ netdev->features;
 
+<<<<<<< HEAD
 	if (changed & (NETIF_F_RXCSUM | NETIF_F_LRO | NETIF_F_HW_VLAN_RX)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (changed & (NETIF_F_RXCSUM | NETIF_F_LRO |
+		       NETIF_F_HW_VLAN_CTAG_RX)) {
+>>>>>>> refs/remotes/origin/master
 		if (features & NETIF_F_RXCSUM)
 			adapter->shared->devRead.misc.uptFeatures |=
 			UPT1_F_RXCSUM;
@@ -341,15 +379,22 @@ int vmxnet3_set_features(struct net_device *netdev, netdev_features_t features)
 							~UPT1_F_LRO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		if (features & NETIF_F_HW_VLAN_RX)
+=======
+		if (features & NETIF_F_HW_VLAN_CTAG_RX)
+>>>>>>> refs/remotes/origin/master
 			adapter->shared->devRead.misc.uptFeatures |=
 			UPT1_F_RXVLAN;
 		else
 			adapter->shared->devRead.misc.uptFeatures &=
 			~UPT1_F_RXVLAN;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&adapter->cmd_lock, flags);
 		VMXNET3_WRITE_BAR1_REG(adapter, VMXNET3_REG_CMD,
 				       VMXNET3_CMD_UPDATE_FEATURE);
@@ -512,10 +557,15 @@ vmxnet3_get_ringparam(struct net_device *netdev,
 	param->rx_mini_max_pending = 0;
 	param->rx_jumbo_max_pending = 0;
 
+<<<<<<< HEAD
 	param->rx_pending = adapter->rx_queue[0].rx_ring[0].size *
 			    adapter->num_rx_queues;
 	param->tx_pending = adapter->tx_queue[0].tx_ring.size *
 			    adapter->num_tx_queues;
+=======
+	param->rx_pending = adapter->rx_queue[0].rx_ring[0].size;
+	param->tx_pending = adapter->tx_queue[0].tx_ring.size;
+>>>>>>> refs/remotes/origin/master
 	param->rx_mini_pending = 0;
 	param->rx_jumbo_pending = 0;
 }
@@ -538,6 +588,15 @@ vmxnet3_set_ringparam(struct net_device *netdev,
 						VMXNET3_RX_RING_MAX_SIZE)
 		return -EINVAL;
 
+<<<<<<< HEAD
+=======
+	/* if adapter not yet initialized, do nothing */
+	if (adapter->rx_buf_per_pkt == 0) {
+		netdev_err(netdev, "adapter not completely initialized, "
+			   "ring size cannot be changed yet\n");
+		return -EOPNOTSUPP;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* round it up to a multiple of VMXNET3_RING_SIZE_ALIGN */
 	new_tx_ring_size = (param->tx_pending + VMXNET3_RING_SIZE_MASK) &
@@ -586,24 +645,39 @@ vmxnet3_set_ringparam(struct net_device *netdev,
 		if (err) {
 			/* failed, most likely because of OOM, try default
 			 * size */
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: failed to apply new sizes, try the"
 				" default ones\n", netdev->name);
+=======
+			netdev_err(netdev, "failed to apply new sizes, "
+				   "try the default ones\n");
+>>>>>>> refs/remotes/origin/master
 			err = vmxnet3_create_queues(adapter,
 						    VMXNET3_DEF_TX_RING_SIZE,
 						    VMXNET3_DEF_RX_RING_SIZE,
 						    VMXNET3_DEF_RX_RING_SIZE);
 			if (err) {
+<<<<<<< HEAD
 				printk(KERN_ERR "%s: failed to create queues "
 					"with default sizes. Closing it\n",
 					netdev->name);
+=======
+				netdev_err(netdev, "failed to create queues "
+					   "with default sizes. Closing it\n");
+>>>>>>> refs/remotes/origin/master
 				goto out;
 			}
 		}
 
 		err = vmxnet3_activate_dev(adapter);
 		if (err)
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: failed to re-activate, error %d."
 				" Closing it\n", netdev->name, err);
+=======
+			netdev_err(netdev, "failed to re-activate, error %d."
+				   " Closing it\n", err);
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
@@ -618,10 +692,14 @@ out:
 static int
 vmxnet3_get_rxnfc(struct net_device *netdev, struct ethtool_rxnfc *info,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		  void *rules)
 =======
 		  u32 *rules)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		  u32 *rules)
+>>>>>>> refs/remotes/origin/master
 {
 	struct vmxnet3_adapter *adapter = netdev_priv(netdev);
 	switch (info->cmd) {
@@ -633,6 +711,7 @@ vmxnet3_get_rxnfc(struct net_device *netdev, struct ethtool_rxnfc *info,
 }
 
 #ifdef VMXNET3_RSS
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int
 vmxnet3_get_rss_indir(struct net_device *netdev,
@@ -646,6 +725,8 @@ vmxnet3_get_rss_indir(struct net_device *netdev,
 	while (n--)
 		p->ring_index[n] = rssConf->indTable[n];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static u32
 vmxnet3_get_rss_indir_size(struct net_device *netdev)
 {
@@ -664,24 +745,32 @@ vmxnet3_get_rss_indir(struct net_device *netdev, u32 *p)
 
 	while (n--)
 		p[n] = rssConf->indTable[n];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 }
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 vmxnet3_set_rss_indir(struct net_device *netdev,
 		      const struct ethtool_rxfh_indir *p)
 =======
 vmxnet3_set_rss_indir(struct net_device *netdev, const u32 *p)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+vmxnet3_set_rss_indir(struct net_device *netdev, const u32 *p)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 	unsigned long flags;
 	struct vmxnet3_adapter *adapter = netdev_priv(netdev);
 	struct UPT1_RSSConf *rssConf = adapter->rss_conf;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (p->size != rssConf->indTableSize)
 		return -EINVAL;
@@ -701,6 +790,10 @@ vmxnet3_set_rss_indir(struct net_device *netdev, const u32 *p)
 	for (i = 0; i < rssConf->indTableSize; i++)
 		rssConf->indTable[i] = p[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < rssConf->indTableSize; i++)
+		rssConf->indTable[i] = p[i];
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&adapter->cmd_lock, flags);
 	VMXNET3_WRITE_BAR1_REG(adapter, VMXNET3_REG_CMD,
@@ -713,10 +806,14 @@ vmxnet3_set_rss_indir(struct net_device *netdev, const u32 *p)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct ethtool_ops vmxnet3_ethtool_ops = {
 =======
 static const struct ethtool_ops vmxnet3_ethtool_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct ethtool_ops vmxnet3_ethtool_ops = {
+>>>>>>> refs/remotes/origin/master
 	.get_settings      = vmxnet3_get_settings,
 	.get_drvinfo       = vmxnet3_get_drvinfo,
 	.get_regs_len      = vmxnet3_get_regs_len,
@@ -732,9 +829,13 @@ static const struct ethtool_ops vmxnet3_ethtool_ops = {
 	.get_rxnfc         = vmxnet3_get_rxnfc,
 #ifdef VMXNET3_RSS
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.get_rxfh_indir_size = vmxnet3_get_rss_indir_size,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_rxfh_indir_size = vmxnet3_get_rss_indir_size,
+>>>>>>> refs/remotes/origin/master
 	.get_rxfh_indir    = vmxnet3_get_rss_indir,
 	.set_rxfh_indir    = vmxnet3_set_rss_indir,
 #endif

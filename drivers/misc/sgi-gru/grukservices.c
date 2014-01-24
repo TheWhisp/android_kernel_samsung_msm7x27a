@@ -32,9 +32,13 @@
 #include <linux/uaccess.h>
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/io_apic.h>
 #include "gru.h"
 #include "grulib.h"

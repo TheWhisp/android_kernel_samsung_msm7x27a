@@ -25,9 +25,12 @@
 #include <linux/slab.h>
 #include <linux/uio_driver.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/spinlock.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define DRIVER_VERSION	"0.01.0"
 #define DRIVER_AUTHOR	"Michael S. Tsirkin <mst@redhat.com>"
@@ -37,9 +40,12 @@ struct uio_pci_generic_dev {
 	struct uio_info info;
 	struct pci_dev *pdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spinlock_t lock; /* guards command register accesses */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline struct uio_pci_generic_dev *
@@ -53,6 +59,7 @@ to_uio_pci_generic_dev(struct uio_info *info)
 static irqreturn_t irqhandler(int irq, struct uio_info *info)
 {
 	struct uio_pci_generic_dev *gdev = to_uio_pci_generic_dev(info);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pci_dev *pdev = gdev->pdev;
 	irqreturn_t ret = IRQ_NONE;
@@ -128,16 +135,24 @@ err:
 	pci_unblock_user_cfg_access(pdev);
 	return err;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!pci_check_and_mask_intx(gdev->pdev))
 		return IRQ_NONE;
 
 	/* UIO core will signal the user process. */
 	return IRQ_HANDLED;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
 static int __devinit probe(struct pci_dev *pdev,
+=======
+}
+
+static int probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 			   const struct pci_device_id *id)
 {
 	struct uio_pci_generic_dev *gdev;
@@ -158,15 +173,21 @@ static int __devinit probe(struct pci_dev *pdev,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = verify_pci_2_3(pdev);
 	if (err)
 		goto err_verify;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!pci_intx_mask_supported(pdev)) {
 		err = -ENODEV;
 		goto err_verify;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	gdev = kzalloc(sizeof(struct uio_pci_generic_dev), GFP_KERNEL);
 	if (!gdev) {
@@ -181,9 +202,12 @@ static int __devinit probe(struct pci_dev *pdev,
 	gdev->info.handler = irqhandler;
 	gdev->pdev = pdev;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&gdev->lock);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (uio_register_device(&pdev->dev, &gdev->info))
 		goto err_register;
@@ -207,13 +231,18 @@ static void remove(struct pci_dev *pdev)
 	kfree(gdev);
 }
 
+<<<<<<< HEAD
 static struct pci_driver driver = {
+=======
+static struct pci_driver uio_pci_driver = {
+>>>>>>> refs/remotes/origin/master
 	.name = "uio_pci_generic",
 	.id_table = NULL, /* only dynamic id's */
 	.probe = probe,
 	.remove = remove,
 };
 
+<<<<<<< HEAD
 static int __init init(void)
 {
 	pr_info(DRIVER_DESC " version: " DRIVER_VERSION "\n");
@@ -228,6 +257,9 @@ static void __exit cleanup(void)
 module_init(init);
 module_exit(cleanup);
 
+=======
+module_pci_driver(uio_pci_driver);
+>>>>>>> refs/remotes/origin/master
 MODULE_VERSION(DRIVER_VERSION);
 MODULE_LICENSE("GPL v2");
 MODULE_AUTHOR(DRIVER_AUTHOR);

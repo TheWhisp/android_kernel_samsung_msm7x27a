@@ -39,10 +39,14 @@ module_param(diva_dbg_mem, ulong, 0);
 
 static char *DRIVERNAME =
 <<<<<<< HEAD
+<<<<<<< HEAD
     "Eicon DIVA - MAINT module (http://www.melware.net)";
 =======
 	"Eicon DIVA - MAINT module (http://www.melware.net)";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"Eicon DIVA - MAINT module (http://www.melware.net)";
+>>>>>>> refs/remotes/origin/master
 static char *DRIVERLNAME = "diva_mnt";
 static char *DEVNAME = "DivasMAINT";
 char *DRIVERRELEASE_MNT = "2.0";
@@ -91,10 +95,14 @@ int diva_os_copy_from_user(void *os_handle, void *dst, const void __user *src,
  * get time
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 void diva_os_get_time(dword * sec, dword * usec)
 =======
 void diva_os_get_time(dword *sec, dword *usec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void diva_os_get_time(dword *sec, dword *usec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timeval tv;
 
@@ -124,10 +132,14 @@ void diva_os_get_time(dword *sec, dword *usec)
  * device node operations
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int maint_poll(struct file *file, poll_table * wait)
 =======
 static unsigned int maint_poll(struct file *file, poll_table *wait)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int maint_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int mask = 0;
 
@@ -166,29 +178,41 @@ static int maint_close(struct inode *ino, struct file *filep)
 	/* clear 'used' flag */
 	clear_bit(0, &opened);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return (0);
 }
 
 static ssize_t divas_maint_write(struct file *file, const char __user *buf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 size_t count, loff_t * ppos)
 =======
 				 size_t count, loff_t *ppos)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/master
 {
 	return (maint_read_write((char __user *) buf, (int) count));
 }
 
 static ssize_t divas_maint_read(struct file *file, char __user *buf,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				size_t count, loff_t * ppos)
 =======
 				size_t count, loff_t *ppos)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				size_t count, loff_t *ppos)
+>>>>>>> refs/remotes/origin/master
 {
 	return (maint_read_write(buf, (int) count));
 }
@@ -208,7 +232,11 @@ static void divas_maint_unregister_chrdev(void)
 	unregister_chrdev(major, DEVNAME);
 }
 
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION divas_maint_register_chrdev(void)
+=======
+static int __init divas_maint_register_chrdev(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if ((major = register_chrdev(0, DEVNAME, &divas_maint_fops)) < 0)
 	{
@@ -231,7 +259,11 @@ void diva_maint_wakeup_read(void)
 /*
  *  Driver Load
  */
+<<<<<<< HEAD
 static int DIVA_INIT_FUNCTION maint_init(void)
+=======
+static int __init maint_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	char tmprev[50];
 	int ret = 0;
@@ -263,17 +295,25 @@ static int DIVA_INIT_FUNCTION maint_init(void)
 	       (diva_dbg_mem == 0) ? "internal" : "external", major);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return (ret);
 }
 
 /*
 **  Driver Unload
 */
+<<<<<<< HEAD
 static void DIVA_EXIT_FUNCTION maint_exit(void)
+=======
+static void __exit maint_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	divas_maint_unregister_chrdev();
 	mntfunc_finit();
@@ -284,6 +324,9 @@ static void DIVA_EXIT_FUNCTION maint_exit(void)
 module_init(maint_init);
 module_exit(maint_exit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

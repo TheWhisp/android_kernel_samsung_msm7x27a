@@ -42,6 +42,7 @@
 #include "rndis.h"
 #include "rf.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
 
 #define VIAWGET_WPA_MAX_BUF_SIZE 1024
@@ -265,6 +266,10 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+static int msglevel = MSG_LEVEL_INFO;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Description:
  *      Set WPA algorithm & keys
@@ -278,6 +283,7 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
  * Return Value:
  *
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 
  int wpa_set_keys(PSDevice pDevice, void *ctx, BOOL  fcpfkernel)
@@ -307,10 +313,25 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 	int uu;
 	int ii;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int wpa_set_keys(struct vnt_private *pDevice, void *ctx)
+{
+	struct viawget_wpa_param *param = ctx;
+	struct vnt_manager *pMgmt = &pDevice->vnt_mgmt;
+	u32 dwKeyIndex = 0;
+	u8 abyKey[MAX_KEY_LEN];
+	u8 abySeq[MAX_KEY_LEN];
+	u64 KeyRSC;
+	u8 byKeyDecMode = KEY_CTL_WEP;
+	int ret = 0;
+	int uu;
+	int ii;
+>>>>>>> refs/remotes/origin/master
 
 	if (param->u.wpa_key.alg_name > WPA_ALG_CCMP)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "param->u.wpa_key.alg_name = %d \n", param->u.wpa_key.alg_name);
 	if (param->u.wpa_key.alg_name == WPA_ALG_NONE) {
@@ -375,19 +396,28 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 	    return -EINVAL;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "param->u.wpa_key.alg_name = %d \n",
 		param->u.wpa_key.alg_name);
 	if (param->u.wpa_key.alg_name == WPA_ALG_NONE) {
 		pDevice->eEncryptionStatus = Ndis802_11EncryptionDisabled;
+<<<<<<< HEAD
 		pDevice->bEncryptionEnable = FALSE;
 		pDevice->byKeyIndex = 0;
 		pDevice->bTransmitKey = FALSE;
+=======
+		pDevice->bEncryptionEnable = false;
+		pDevice->byKeyIndex = 0;
+		pDevice->bTransmitKey = false;
+>>>>>>> refs/remotes/origin/master
 		for (uu=0; uu<MAX_KEY_TABLE; uu++) {
 			MACvDisableKeyEntry(pDevice, uu);
 		}
 		return ret;
 	}
 
+<<<<<<< HEAD
 	if (param->u.wpa_key.key && param->u.wpa_key.key_len > sizeof(abyKey))
 		return -EINVAL;
 
@@ -405,14 +435,27 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 	spin_lock_irq(&pDevice->lock);
 
 	dwKeyIndex = (DWORD)(param->u.wpa_key.key_index);
+=======
+	if (param->u.wpa_key.key_len > sizeof(abyKey))
+		return -EINVAL;
+
+	memcpy(&abyKey[0], param->u.wpa_key.key, param->u.wpa_key.key_len);
+
+	dwKeyIndex = (u32)(param->u.wpa_key.key_index);
+>>>>>>> refs/remotes/origin/master
 
 	if (param->u.wpa_key.alg_name == WPA_ALG_WEP) {
 		if (dwKeyIndex > 3) {
 			return -EINVAL;
 		} else {
 			if (param->u.wpa_key.set_tx) {
+<<<<<<< HEAD
 				pDevice->byKeyIndex = (BYTE)dwKeyIndex;
 				pDevice->bTransmitKey = TRUE;
+=======
+				pDevice->byKeyIndex = (u8)dwKeyIndex;
+				pDevice->bTransmitKey = true;
+>>>>>>> refs/remotes/origin/master
 				dwKeyIndex |= (1 << 31);
 			}
 			KeybSetDefaultKey(  pDevice,
@@ -426,6 +469,7 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 
 		}
 		pDevice->eEncryptionStatus = Ndis802_11Encryption1Enabled;
+<<<<<<< HEAD
 		pDevice->bEncryptionEnable = TRUE;
 		return ret;
 	}
@@ -462,10 +506,28 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 			else
 				HIDWORD(KeyRSC) |= (abySeq[ii] << ((ii-4) * 8));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pDevice->bEncryptionEnable = true;
+		return ret;
+	}
+
+	if (param->u.wpa_key.seq && param->u.wpa_key.seq_len > sizeof(abySeq))
+		return -EINVAL;
+
+	memcpy(&abySeq[0], param->u.wpa_key.seq, param->u.wpa_key.seq_len);
+
+	if (param->u.wpa_key.seq_len > 0) {
+		for (ii = 0 ; ii < param->u.wpa_key.seq_len ; ii++) {
+			if (ii < 4)
+				KeyRSC |= (abySeq[ii] << (ii * 8));
+			else
+				KeyRSC |= (abySeq[ii] << ((ii-4) * 8));
+>>>>>>> refs/remotes/origin/master
 		}
 		dwKeyIndex |= 1 << 29;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     if (param->u.wpa_key.key_index >= MAX_GROUP_KEY) {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "return  dwKeyIndex > 3\n");
@@ -480,6 +542,8 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
         pDevice->eEncryptionStatus = Ndis802_11Encryption3Enabled;
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (param->u.wpa_key.key_index >= MAX_GROUP_KEY) {
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "return  dwKeyIndex > 3\n");
 		return -EINVAL;
@@ -492,11 +556,15 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 	if (param->u.wpa_key.alg_name == WPA_ALG_CCMP) {
 		pDevice->eEncryptionStatus = Ndis802_11Encryption3Enabled;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (param->u.wpa_key.set_tx)
 		dwKeyIndex |= (1 << 31);
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
     if (pDevice->eEncryptionStatus == Ndis802_11Encryption3Enabled)
@@ -621,6 +689,8 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 	return ret;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pDevice->eEncryptionStatus == Ndis802_11Encryption3Enabled)
 		byKeyDecMode = KEY_CTL_CCMP;
 	else if (pDevice->eEncryptionStatus == Ndis802_11Encryption2Enabled)
@@ -647,7 +717,11 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 	if ((byKeyDecMode == KEY_CTL_TKIP) &&
 		(param->u.wpa_key.key_len != MAX_KEY_LEN)) {
 		// TKIP Key must be 256 bits
+<<<<<<< HEAD
 		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "return- TKIP Key must be 256 bits!\n");
+=======
+		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "return - TKIP Key must be 256 bits!\n");
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
     }
 	// Check AES key length
@@ -664,18 +738,32 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 
 		if ((KeybSetAllGroupKey(pDevice, &(pDevice->sKey), dwKeyIndex,
 							param->u.wpa_key.key_len,
+<<<<<<< HEAD
 							(PQWORD) &(KeyRSC),
 							(PBYTE)abyKey,
 							byKeyDecMode
 					) == TRUE) &&
+=======
+							&KeyRSC,
+							(u8 *)abyKey,
+							byKeyDecMode
+					) == true) &&
+>>>>>>> refs/remotes/origin/master
 			(KeybSetDefaultKey(pDevice,
 					&(pDevice->sKey),
 					dwKeyIndex,
 					param->u.wpa_key.key_len,
+<<<<<<< HEAD
 					(PQWORD) &(KeyRSC),
 					(PBYTE)abyKey,
 					byKeyDecMode
 				) == TRUE) ) {
+=======
+					&KeyRSC,
+					(u8 *)abyKey,
+					byKeyDecMode
+				) == true) ) {
+>>>>>>> refs/remotes/origin/master
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "GROUP Key Assign.\n");
 		} else {
 			return -EINVAL;
@@ -695,12 +783,21 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 		}
 		if (KeybSetKey(pDevice, &(pDevice->sKey), &param->addr[0],
 				dwKeyIndex, param->u.wpa_key.key_len,
+<<<<<<< HEAD
 				(PQWORD) &(KeyRSC), (PBYTE)abyKey, byKeyDecMode
 				) == TRUE) {
 			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Pairwise Key Set\n");
 		} else {
 			// Key Table Full
 			if (!compare_ether_addr(&param->addr[0], pDevice->abyBSSID)) {
+=======
+				&KeyRSC, (u8 *)abyKey, byKeyDecMode
+				) == true) {
+			DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO "Pairwise Key Set\n");
+		} else {
+			// Key Table Full
+			if (ether_addr_equal(param->addr, pDevice->abyBSSID)) {
+>>>>>>> refs/remotes/origin/master
 				//DBG_PRN_WLAN03(("return NDIS_STATUS_INVALID_DATA -Key Table Full.2\n"));
 				return -EINVAL;
 			} else {
@@ -711,6 +808,7 @@ int wpa_set_wpadev(PSDevice pDevice, int val)
 		}
 	} // BSSID not 0xffffffffffff
 	if ((ret == 0) && ((param->u.wpa_key.set_tx) != 0)) {
+<<<<<<< HEAD
 		pDevice->byKeyIndex = (BYTE)param->u.wpa_key.key_index;
 		pDevice->bTransmitKey = TRUE;
 	}
@@ -810,10 +908,17 @@ static int wpa_set_disassociate(PSDevice pDevice, struct viawget_wpa_param *para
 			bScheduleCommand((void *)pDevice, WLAN_CMD_DISASSOCIATE, NULL);
 	}
 	spin_unlock_irq(&pDevice->lock);
+=======
+		pDevice->byKeyIndex = (u8)param->u.wpa_key.key_index;
+		pDevice->bTransmitKey = true;
+	}
+	pDevice->bEncryptionEnable = true;
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
  * Description:
@@ -1681,3 +1786,5 @@ out:
 	return ret;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

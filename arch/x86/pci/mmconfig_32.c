@@ -11,6 +11,10 @@
 
 #include <linux/pci.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/rcupdate.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/e820.h>
 #include <asm/pci_x86.h>
 #include <acpi/acpi.h>
@@ -60,9 +64,18 @@ err:		*value = -1;
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	base = get_base_addr(seg, bus, devfn);
 	if (!base)
 		goto err;
+=======
+	rcu_read_lock();
+	base = get_base_addr(seg, bus, devfn);
+	if (!base) {
+		rcu_read_unlock();
+		goto err;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	raw_spin_lock_irqsave(&pci_config_lock, flags);
 
@@ -80,6 +93,10 @@ err:		*value = -1;
 		break;
 	}
 	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -93,9 +110,18 @@ static int pci_mmcfg_write(unsigned int seg, unsigned int bus,
 	if ((bus > 255) || (devfn > 255) || (reg > 4095))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	base = get_base_addr(seg, bus, devfn);
 	if (!base)
 		return -EINVAL;
+=======
+	rcu_read_lock();
+	base = get_base_addr(seg, bus, devfn);
+	if (!base) {
+		rcu_read_unlock();
+		return -EINVAL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	raw_spin_lock_irqsave(&pci_config_lock, flags);
 
@@ -113,15 +139,23 @@ static int pci_mmcfg_write(unsigned int seg, unsigned int bus,
 		break;
 	}
 	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
+<<<<<<< HEAD
+=======
+	rcu_read_unlock();
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_raw_ops pci_mmcfg = {
 =======
 static const struct pci_raw_ops pci_mmcfg = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+const struct pci_raw_ops pci_mmcfg = {
+>>>>>>> refs/remotes/origin/master
 	.read =		pci_mmcfg_read,
 	.write =	pci_mmcfg_write,
 };
@@ -136,3 +170,21 @@ int __init pci_mmcfg_arch_init(void)
 void __init pci_mmcfg_arch_free(void)
 {
 }
+<<<<<<< HEAD
+=======
+
+int pci_mmcfg_arch_map(struct pci_mmcfg_region *cfg)
+{
+	return 0;
+}
+
+void pci_mmcfg_arch_unmap(struct pci_mmcfg_region *cfg)
+{
+	unsigned long flags;
+
+	/* Invalidate the cached mmcfg map entry. */
+	raw_spin_lock_irqsave(&pci_config_lock, flags);
+	mmcfg_last_accessed_device = 0;
+	raw_spin_unlock_irqrestore(&pci_config_lock, flags);
+}
+>>>>>>> refs/remotes/origin/master

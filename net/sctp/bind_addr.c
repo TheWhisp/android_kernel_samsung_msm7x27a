@@ -27,19 +27,26 @@
  *
  * Please send any bug reports or fixes you make to the
  * email address(es):
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *    La Monte H.P. Yarroll <piggy@acm.org>
  *    Karl Knutson          <karl@athena.chicago.il.us>
  *    Jon Grimm             <jgrimm@us.ibm.com>
  *    Daisy Chang           <daisyc@us.ibm.com>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/types.h>
@@ -52,8 +59,13 @@
 #include <net/sctp/sm.h>
 
 /* Forward declarations for internal helpers. */
+<<<<<<< HEAD
 static int sctp_copy_one_addr(struct sctp_bind_addr *, union sctp_addr *,
 			      sctp_scope_t scope, gfp_t gfp,
+=======
+static int sctp_copy_one_addr(struct net *, struct sctp_bind_addr *,
+			      union sctp_addr *, sctp_scope_t scope, gfp_t gfp,
+>>>>>>> refs/remotes/origin/master
 			      int flags);
 static void sctp_bind_addr_clean(struct sctp_bind_addr *);
 
@@ -62,7 +74,11 @@ static void sctp_bind_addr_clean(struct sctp_bind_addr *);
 /* Copy 'src' to 'dest' taking 'scope' into account.  Omit addresses
  * in 'src' which have a broader scope than 'scope'.
  */
+<<<<<<< HEAD
 int sctp_bind_addr_copy(struct sctp_bind_addr *dest,
+=======
+int sctp_bind_addr_copy(struct net *net, struct sctp_bind_addr *dest,
+>>>>>>> refs/remotes/origin/master
 			const struct sctp_bind_addr *src,
 			sctp_scope_t scope, gfp_t gfp,
 			int flags)
@@ -75,7 +91,11 @@ int sctp_bind_addr_copy(struct sctp_bind_addr *dest,
 
 	/* Extract the addresses which are relevant for this scope.  */
 	list_for_each_entry(addr, &src->address_list, list) {
+<<<<<<< HEAD
 		error = sctp_copy_one_addr(dest, &addr->a, scope,
+=======
+		error = sctp_copy_one_addr(net, dest, &addr->a, scope,
+>>>>>>> refs/remotes/origin/master
 					   gfp, flags);
 		if (error < 0)
 			goto out;
@@ -87,7 +107,11 @@ int sctp_bind_addr_copy(struct sctp_bind_addr *dest,
 	 */
 	if (list_empty(&dest->address_list) && (SCTP_SCOPE_GLOBAL == scope)) {
 		list_for_each_entry(addr, &src->address_list, list) {
+<<<<<<< HEAD
 			error = sctp_copy_one_addr(dest, &addr->a,
+=======
+			error = sctp_copy_one_addr(net, dest, &addr->a,
+>>>>>>> refs/remotes/origin/master
 						   SCTP_SCOPE_LINK, gfp,
 						   flags);
 			if (error < 0)
@@ -131,8 +155,11 @@ int sctp_bind_addr_dup(struct sctp_bind_addr *dest,
  */
 void sctp_bind_addr_init(struct sctp_bind_addr *bp, __u16 port)
 {
+<<<<<<< HEAD
 	bp->malloced = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&bp->address_list);
 	bp->port = port;
 }
@@ -155,11 +182,14 @@ void sctp_bind_addr_free(struct sctp_bind_addr *bp)
 {
 	/* Empty the bind address list. */
 	sctp_bind_addr_clean(bp);
+<<<<<<< HEAD
 
 	if (bp->malloced) {
 		kfree(bp);
 		SCTP_DBG_OBJCNT_DEC(bind_addr);
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Add an address to the bind address list in the SCTP_bind_addr structure. */
@@ -169,7 +199,11 @@ int sctp_add_bind_addr(struct sctp_bind_addr *bp, union sctp_addr *new,
 	struct sctp_sockaddr_entry *addr;
 
 	/* Add the address to the bind address list.  */
+<<<<<<< HEAD
 	addr = t_new(struct sctp_sockaddr_entry, gfp);
+=======
+	addr = kzalloc(sizeof(*addr), gfp);
+>>>>>>> refs/remotes/origin/master
 	if (!addr)
 		return -ENOMEM;
 
@@ -431,10 +465,14 @@ union sctp_addr *sctp_find_unmatch_addr(struct sctp_bind_addr	*bp,
 		addr_buf = (union sctp_addr *)addrs;
 		for (i = 0; i < addrcnt; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			addr = (union sctp_addr *)addr_buf;
 =======
 			addr = addr_buf;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			addr = addr_buf;
+>>>>>>> refs/remotes/origin/master
 			af = sctp_get_af_specific(addr->v4.sin_family);
 			if (!af)
 				break;
@@ -452,7 +490,11 @@ union sctp_addr *sctp_find_unmatch_addr(struct sctp_bind_addr	*bp,
 }
 
 /* Copy out addresses from the global local address list. */
+<<<<<<< HEAD
 static int sctp_copy_one_addr(struct sctp_bind_addr *dest,
+=======
+static int sctp_copy_one_addr(struct net *net, struct sctp_bind_addr *dest,
+>>>>>>> refs/remotes/origin/master
 			      union sctp_addr *addr,
 			      sctp_scope_t scope, gfp_t gfp,
 			      int flags)
@@ -460,8 +502,13 @@ static int sctp_copy_one_addr(struct sctp_bind_addr *dest,
 	int error = 0;
 
 	if (sctp_is_any(NULL, addr)) {
+<<<<<<< HEAD
 		error = sctp_copy_local_addr_list(dest, scope, gfp, flags);
 	} else if (sctp_in_scope(addr, scope)) {
+=======
+		error = sctp_copy_local_addr_list(net, dest, scope, gfp, flags);
+	} else if (sctp_in_scope(net, addr, scope)) {
+>>>>>>> refs/remotes/origin/master
 		/* Now that the address is in scope, check to see if
 		 * the address type is supported by local sock as
 		 * well as the remote peer.
@@ -498,7 +545,11 @@ int sctp_is_any(struct sock *sk, const union sctp_addr *addr)
 }
 
 /* Is 'addr' valid for 'scope'?  */
+<<<<<<< HEAD
 int sctp_in_scope(const union sctp_addr *addr, sctp_scope_t scope)
+=======
+int sctp_in_scope(struct net *net, const union sctp_addr *addr, sctp_scope_t scope)
+>>>>>>> refs/remotes/origin/master
 {
 	sctp_scope_t addr_scope = sctp_scope(addr);
 
@@ -516,7 +567,11 @@ int sctp_in_scope(const union sctp_addr *addr, sctp_scope_t scope)
 	 * Address scoping can be selectively controlled via sysctl
 	 * option
 	 */
+<<<<<<< HEAD
 	switch (sctp_scope_policy) {
+=======
+	switch (net->sctp.scope_policy) {
+>>>>>>> refs/remotes/origin/master
 	case SCTP_SCOPE_POLICY_DISABLE:
 		return 1;
 	case SCTP_SCOPE_POLICY_ENABLE:
@@ -539,7 +594,10 @@ int sctp_in_scope(const union sctp_addr *addr, sctp_scope_t scope)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int sctp_is_ep_boundall(struct sock *sk)
 {
 	struct sctp_bind_addr *bp;
@@ -555,7 +613,10 @@ int sctp_is_ep_boundall(struct sock *sk)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /********************************************************************
  * 3rd Level Abstractions
  ********************************************************************/

@@ -8,14 +8,18 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/platform_device.h>
@@ -37,6 +41,25 @@
 
 #include "common.h"
 #include "clock.h"
+=======
+#include <linux/irq.h>
+#include <linux/irqchip/mmp.h>
+#include <linux/platform_device.h>
+
+#include <asm/hardware/cache-tauros2.h>
+#include <asm/mach/time.h>
+#include <mach/addr-map.h>
+#include <mach/regs-apbc.h>
+#include <mach/cputype.h>
+#include <mach/irqs.h>
+#include <mach/dma.h>
+#include <mach/mfp.h>
+#include <mach/devices.h>
+#include <mach/pm-pxa910.h>
+#include <mach/pxa910.h>
+
+#include "common.h"
+>>>>>>> refs/remotes/origin/master
 
 #define MFPR_VIRT_BASE	(APB_VIRT_BASE + 0x1e000)
 
@@ -88,6 +111,7 @@ static struct mfp_addr_map pxa910_mfp_addr_map[] __initdata =
 	MFP_ADDR_END,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define APMASK(i)	(GPIO_REGS_VIRT + BANK_OFF(i) + 0x09c)
 
@@ -161,6 +185,26 @@ static int __init pxa910_init(void)
 		mfp_init_addr(pxa910_mfp_addr_map);
 		pxa_init_dma(IRQ_PXA910_DMA_INT0, 32);
 		clkdev_add_table(ARRAY_AND_SIZE(pxa910_clkregs));
+=======
+void __init pxa910_init_irq(void)
+{
+	icu_init_irq();
+#ifdef CONFIG_PM
+	icu_irq_chip.irq_set_wake = pxa910_set_wake;
+#endif
+}
+
+static int __init pxa910_init(void)
+{
+	if (cpu_is_pxa910()) {
+#ifdef CONFIG_CACHE_TAUROS2
+		tauros2_init(0);
+#endif
+		mfp_init_base(MFPR_VIRT_BASE);
+		mfp_init_addr(pxa910_mfp_addr_map);
+		pxa_init_dma(IRQ_PXA910_DMA_INT0, 32);
+		pxa910_clk_init();
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -169,20 +213,33 @@ postcore_initcall(pxa910_init);
 
 /* system timer - clock enabled, 3.25MHz */
 #define TIMER_CLK_RST	(APBC_APBCLK | APBC_FNCLK | APBC_FNCLKSEL(3))
+<<<<<<< HEAD
 
 static void __init pxa910_timer_init(void)
 {
 	/* reset and configure */
 	__raw_writel(APBC_APBCLK | APBC_RST, APBC_PXA910_TIMERS);
 	__raw_writel(TIMER_CLK_RST, APBC_PXA910_TIMERS);
+=======
+#define APBC_TIMERS	APBC_REG(0x34)
+
+void __init pxa910_timer_init(void)
+{
+	/* reset and configure */
+	__raw_writel(APBC_APBCLK | APBC_RST, APBC_TIMERS);
+	__raw_writel(TIMER_CLK_RST, APBC_TIMERS);
+>>>>>>> refs/remotes/origin/master
 
 	timer_init(IRQ_PXA910_AP1_TIMER1);
 }
 
+<<<<<<< HEAD
 struct sys_timer pxa910_timer = {
 	.init	= pxa910_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* on-chip devices */
 
 /* NOTE: there are totally 3 UARTs on PXA910:
@@ -208,7 +265,13 @@ PXA910_DEVICE(pwm3, "pxa910-pwm", 2, NONE, 0xd401a800, 0x10);
 PXA910_DEVICE(pwm4, "pxa910-pwm", 3, NONE, 0xd401ac00, 0x10);
 PXA910_DEVICE(nand, "pxa3xx-nand", -1, NAND, 0xd4283000, 0x80, 97, 99);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+PXA910_DEVICE(disp, "mmp-disp", 0, LCD, 0xd420b000, 0x1ec);
+PXA910_DEVICE(fb, "mmp-fb", -1, NONE, 0, 0);
+PXA910_DEVICE(panel, "tpo-hvga", -1, NONE, 0, 0);
+>>>>>>> refs/remotes/origin/master
 
 struct resource pxa910_resource_gpio[] = {
 	{
@@ -224,7 +287,11 @@ struct resource pxa910_resource_gpio[] = {
 };
 
 struct platform_device pxa910_device_gpio = {
+<<<<<<< HEAD
 	.name		= "pxa-gpio",
+=======
+	.name		= "mmp-gpio",
+>>>>>>> refs/remotes/origin/master
 	.id		= -1,
 	.num_resources	= ARRAY_SIZE(pxa910_resource_gpio),
 	.resource	= pxa910_resource_gpio,
@@ -254,4 +321,7 @@ struct platform_device pxa910_device_rtc = {
 	.num_resources	= ARRAY_SIZE(pxa910_resource_rtc),
 	.resource	= pxa910_resource_rtc,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

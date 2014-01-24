@@ -2,6 +2,7 @@
 #define __PERF_TOP_H 1
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "types.h"
 #include "../perf.h"
 #include <stddef.h>
@@ -28,10 +29,16 @@ static inline struct symbol *sym_entry__symbol(struct sym_entry *self)
 
 struct perf_top {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include "tool.h"
 #include "types.h"
 #include <stddef.h>
 #include <stdbool.h>
+<<<<<<< HEAD
+=======
+#include <termios.h>
+>>>>>>> refs/remotes/origin/master
 
 struct perf_evlist;
 struct perf_evsel;
@@ -39,23 +46,32 @@ struct perf_session;
 
 struct perf_top {
 	struct perf_tool   tool;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	struct perf_evlist *evlist;
+=======
+	struct perf_evlist *evlist;
+	struct record_opts record_opts;
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Symbols will be added here in perf_event__process_sample and will
 	 * get out after decayed.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct list_head   active_symbols;
 	pthread_mutex_t	   active_symbols_lock;
 	pthread_cond_t	   active_symbols_cond;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u64		   samples;
 	u64		   kernel_samples, us_samples;
 	u64		   exact_samples;
 	u64		   guest_us_samples, guest_kernel_samples;
 	int		   print_entries, count_filter, delay_secs;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int		   display_weighted, freq, rb_entries;
 	pid_t		   target_pid, target_tid;
@@ -80,10 +96,19 @@ struct perf_top {
 	bool		   exclude_guest_missing;
 	bool		   dump_symtab;
 	const char	   *cpu_list;
+=======
+	int		   max_stack;
+	bool		   hide_kernel_symbols, hide_user_symbols, zero;
+	bool		   use_tui, use_stdio;
+	bool		   kptr_restrict_warned;
+	bool		   vmlinux_warned;
+	bool		   dump_symtab;
+>>>>>>> refs/remotes/origin/master
 	struct hist_entry  *sym_filter_entry;
 	struct perf_evsel  *sym_evsel;
 	struct perf_session *session;
 	struct winsize	   winsize;
+<<<<<<< HEAD
 	unsigned int	   mmap_pages;
 	int		   default_interval;
 	int		   realtime_prio;
@@ -110,4 +135,16 @@ int perf_top__tui_browser(struct perf_top *top);
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		   realtime_prio;
+	int		   sym_pcnt_filter;
+	const char	   *sym_filter;
+	float		   min_percent;
+};
+
+#define CONSOLE_CLEAR "[H[2J"
+
+size_t perf_top__header_snprintf(struct perf_top *top, char *bf, size_t size);
+void perf_top__reset_sample_counters(struct perf_top *top);
+>>>>>>> refs/remotes/origin/master
 #endif /* __PERF_TOP_H */

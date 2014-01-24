@@ -19,10 +19,14 @@
 #include <linux/pm.h>
 #include <linux/i2c.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 #include <linux/regmap.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regmap.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
@@ -34,6 +38,7 @@
 
 #include "wm8978.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* wm8978 register cache. Note that register 0 is not included in the cache. */
 static const u16 wm8978_reg[WM8978_CACHEREGNUM] = {
@@ -59,6 +64,8 @@ struct wm8978_priv {
 	enum snd_soc_control_type control_type;
 	void *control_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct reg_default wm8978_reg_defaults[] = {
 	{ 1, 0x0000 },
 	{ 2, 0x0000 },
@@ -127,7 +134,10 @@ static bool wm8978_volatile(struct device *dev, unsigned int reg)
 /* codec private data */
 struct wm8978_priv {
 	struct regmap *regmap;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int f_pllout;
 	unsigned int f_mclk;
 	unsigned int f_256fs;
@@ -196,6 +206,7 @@ static const struct snd_kcontrol_new wm8978_snd_controls[] = {
 	SOC_ENUM("EQ1 Cut Off", eq1),
 	SOC_SINGLE_TLV("EQ1 Volume", WM8978_EQ1,  0, 24, 1, eq_tlv),
 
+<<<<<<< HEAD
 	SOC_ENUM("Equaliser EQ2 Bandwith", eq2bw),
 	SOC_ENUM("EQ2 Cut Off", eq2),
 	SOC_SINGLE_TLV("EQ2 Volume", WM8978_EQ2,  0, 24, 1, eq_tlv),
@@ -205,6 +216,17 @@ static const struct snd_kcontrol_new wm8978_snd_controls[] = {
 	SOC_SINGLE_TLV("EQ3 Volume", WM8978_EQ3,  0, 24, 1, eq_tlv),
 
 	SOC_ENUM("Equaliser EQ4 Bandwith", eq4bw),
+=======
+	SOC_ENUM("Equaliser EQ2 Bandwidth", eq2bw),
+	SOC_ENUM("EQ2 Cut Off", eq2),
+	SOC_SINGLE_TLV("EQ2 Volume", WM8978_EQ2,  0, 24, 1, eq_tlv),
+
+	SOC_ENUM("Equaliser EQ3 Bandwidth", eq3bw),
+	SOC_ENUM("EQ3 Cut Off", eq3),
+	SOC_SINGLE_TLV("EQ3 Volume", WM8978_EQ3,  0, 24, 1, eq_tlv),
+
+	SOC_ENUM("Equaliser EQ4 Bandwidth", eq4bw),
+>>>>>>> refs/remotes/origin/master
 	SOC_ENUM("EQ4 Cut Off", eq4),
 	SOC_SINGLE_TLV("EQ4 Volume", WM8978_EQ4,  0, 24, 1, eq_tlv),
 
@@ -381,10 +403,14 @@ static const struct snd_soc_dapm_widget wm8978_dapm_widgets[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_soc_dapm_route audio_map[] = {
 =======
 static const struct snd_soc_dapm_route wm8978_dapm_routes[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dapm_route wm8978_dapm_routes[] = {
+>>>>>>> refs/remotes/origin/master
 	/* Output mixer */
 	{"Right Output Mixer", "PCM Playback Switch", "Right DAC"},
 	{"Right Output Mixer", "Aux Playback Switch", "RAUX"},
@@ -434,6 +460,7 @@ static const struct snd_soc_dapm_route wm8978_dapm_routes[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wm8978_add_widgets(struct snd_soc_codec *codec)
 {
 	struct snd_soc_dapm_context *dapm = &codec->dapm;
@@ -448,6 +475,8 @@ static int wm8978_add_widgets(struct snd_soc_codec *codec)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* PLL divisors */
 struct wm8978_pll_div {
 	u32 k;
@@ -576,9 +605,12 @@ static int wm8978_configure_pll(struct snd_soc_codec *codec)
 			return idx;
 
 		wm8978->mclk_idx = idx;
+<<<<<<< HEAD
 
 		/* GPIO1 into default mode as input - before configuring PLL */
 		snd_soc_update_bits(codec, WM8978_GPIO_CONTROL, 7, 0);
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		return -EINVAL;
 	}
@@ -772,8 +804,12 @@ static int wm8978_hw_params(struct snd_pcm_substream *substream,
 			    struct snd_pcm_hw_params *params,
 			    struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct wm8978_priv *wm8978 = snd_soc_codec_get_drvdata(codec);
 	/* Word length mask = 0x60 */
 	u16 iface_ctl = snd_soc_read(codec, WM8978_AUDIO_INTERFACE) & ~0x60;
@@ -949,10 +985,14 @@ static int wm8978_set_bias_level(struct snd_soc_codec *codec,
 	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops wm8978_dai_ops = {
 =======
 static const struct snd_soc_dai_ops wm8978_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops wm8978_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.hw_params	= wm8978_hw_params,
 	.digital_mute	= wm8978_mute,
 	.set_fmt	= wm8978_set_dai_fmt,
@@ -978,32 +1018,47 @@ static struct snd_soc_dai_driver wm8978_dai = {
 		.formats = WM8978_FORMATS,
 	},
 	.ops = &wm8978_dai_ops,
+<<<<<<< HEAD
 };
 
 <<<<<<< HEAD
 static int wm8978_suspend(struct snd_soc_codec *codec, pm_message_t state)
 {
 =======
+=======
+	.symmetric_rates = 1,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int wm8978_suspend(struct snd_soc_codec *codec)
 {
 	struct wm8978_priv *wm8978 = snd_soc_codec_get_drvdata(codec);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	wm8978_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	/* Also switch PLL off */
 	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	regcache_mark_dirty(wm8978->regmap);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regcache_mark_dirty(wm8978->regmap);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int wm8978_resume(struct snd_soc_codec *codec)
 {
 	struct wm8978_priv *wm8978 = snd_soc_codec_get_drvdata(codec);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 	u16 *cache = codec->reg_cache;
@@ -1020,6 +1075,11 @@ static int wm8978_resume(struct snd_soc_codec *codec)
 	/* Sync reg_cache with the hardware */
 	regcache_sync(wm8978->regmap);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	/* Sync reg_cache with the hardware */
+	regcache_sync(wm8978->regmap);
+>>>>>>> refs/remotes/origin/master
 
 	wm8978_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
@@ -1060,12 +1120,17 @@ static int wm8978_probe(struct snd_soc_codec *codec)
 	 */
 	wm8978->sysclk = WM8978_PLL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	codec->control_data = wm8978->control_data;
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_I2C);
 =======
 	codec->control_data = wm8978->regmap;
 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	codec->control_data = wm8978->regmap;
+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_REGMAP);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 		return ret;
@@ -1079,6 +1144,7 @@ static int wm8978_probe(struct snd_soc_codec *codec)
 	for (i = 0; i < ARRAY_SIZE(update_reg); i++)
 		snd_soc_update_bits(codec, update_reg[i], 0x100, 0x100);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Reset the codec */
 	ret = snd_soc_write(codec, WM8978_RESET, 0);
@@ -1097,6 +1163,10 @@ static int wm8978_probe(struct snd_soc_codec *codec)
 	wm8978_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wm8978_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1114,6 +1184,7 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8978 = {
 	.resume =	wm8978_resume,
 	.set_bias_level = wm8978_set_bias_level,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.reg_cache_size = ARRAY_SIZE(wm8978_reg),
 	.reg_word_size = sizeof(u16),
 	.reg_cache_default = wm8978_reg,
@@ -1121,6 +1192,8 @@ static struct snd_soc_codec_driver soc_codec_dev_wm8978 = {
 
 #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.controls = wm8978_snd_controls,
 	.num_controls = ARRAY_SIZE(wm8978_snd_controls),
@@ -1142,13 +1215,19 @@ static const struct regmap_config wm8978_regmap_config = {
 	.num_reg_defaults = ARRAY_SIZE(wm8978_reg_defaults),
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
 				      const struct i2c_device_id *id)
+=======
+static int wm8978_i2c_probe(struct i2c_client *i2c,
+			    const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct wm8978_priv *wm8978;
 	int ret;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	wm8978 = kzalloc(sizeof(struct wm8978_priv), GFP_KERNEL);
 	if (wm8978 == NULL)
@@ -1162,12 +1241,18 @@ static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
 	if (ret < 0)
 		kfree(wm8978);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	wm8978 = devm_kzalloc(&i2c->dev, sizeof(struct wm8978_priv),
 			      GFP_KERNEL);
 	if (wm8978 == NULL)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	wm8978->regmap = regmap_init_i2c(i2c, &wm8978_regmap_config);
+=======
+	wm8978->regmap = devm_regmap_init_i2c(i2c, &wm8978_regmap_config);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(wm8978->regmap)) {
 		ret = PTR_ERR(wm8978->regmap);
 		dev_err(&i2c->dev, "Failed to allocate regmap: %d\n", ret);
@@ -1180,13 +1265,18 @@ static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
 	ret = regmap_write(wm8978->regmap, WM8978_RESET, 0);
 	if (ret != 0) {
 		dev_err(&i2c->dev, "Failed to issue reset: %d\n", ret);
+<<<<<<< HEAD
 		goto err;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = snd_soc_register_codec(&i2c->dev,
 			&soc_codec_dev_wm8978, &wm8978_dai, 1);
 	if (ret != 0) {
 		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
+<<<<<<< HEAD
 		goto err;
 	}
 
@@ -1210,6 +1300,18 @@ static __devexit int wm8978_i2c_remove(struct i2c_client *client)
 	regmap_exit(wm8978->regmap);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ret;
+	}
+
+	return 0;
+}
+
+static int wm8978_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1225,6 +1327,7 @@ static struct i2c_driver wm8978_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe =    wm8978_i2c_probe,
+<<<<<<< HEAD
 	.remove =   __devexit_p(wm8978_i2c_remove),
 	.id_table = wm8978_i2c_id,
 };
@@ -1264,6 +1367,13 @@ static void __exit wm8978_exit(void)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 module_exit(wm8978_exit);
+=======
+	.remove =   wm8978_i2c_remove,
+	.id_table = wm8978_i2c_id,
+};
+
+module_i2c_driver(wm8978_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC WM8978 codec driver");
 MODULE_AUTHOR("Guennadi Liakhovetski <g.liakhovetski@gmx.de>");

@@ -463,12 +463,15 @@ etherh_open(struct net_device *dev)
 {
 	struct ei_device *ei_local = netdev_priv(dev);
 
+<<<<<<< HEAD
 	if (!is_valid_ether_addr(dev->dev_addr)) {
 		printk(KERN_WARNING "%s: invalid ethernet MAC address\n",
 			dev->name);
 		return -EINVAL;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (request_irq(dev->irq, __ei_interrupt, 0, dev->name, dev))
 		return -EAGAIN;
 
@@ -527,7 +530,11 @@ static void __init etherh_banner(void)
  * Read the ethernet address string from the on board rom.
  * This is an ascii string...
  */
+<<<<<<< HEAD
 static int __devinit etherh_addr(char *addr, struct expansion_card *ec)
+=======
+static int etherh_addr(char *addr, struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct in_chunk_dir cd;
 	char *s;
@@ -635,6 +642,10 @@ static const struct ethtool_ops etherh_ethtool_ops = {
 	.get_settings	= etherh_get_settings,
 	.set_settings	= etherh_set_settings,
 	.get_drvinfo	= etherh_get_drvinfo,
+<<<<<<< HEAD
+=======
+	.get_ts_info	= ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct net_device_ops etherh_netdev_ops = {
@@ -656,7 +667,11 @@ static const struct net_device_ops etherh_netdev_ops = {
 static u32 etherh_regoffsets[16];
 static u32 etherm_regoffsets[16];
 
+<<<<<<< HEAD
 static int __devinit
+=======
+static int
+>>>>>>> refs/remotes/origin/master
 etherh_probe(struct expansion_card *ec, const struct ecard_id *id)
 {
 	const struct etherh_data *data = id->data;
@@ -774,7 +789,11 @@ etherh_probe(struct expansion_card *ec, const struct ecard_id *id)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit etherh_remove(struct expansion_card *ec)
+=======
+static void etherh_remove(struct expansion_card *ec)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *dev = ecard_get_drvdata(ec);
 
@@ -838,7 +857,11 @@ static const struct ecard_id etherh_ids[] = {
 
 static struct ecard_driver etherh_driver = {
 	.probe		= etherh_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(etherh_remove),
+=======
+	.remove		= etherh_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= etherh_ids,
 	.drv = {
 		.name	= DRV_NAME,

@@ -55,10 +55,15 @@ int __init bcm63xx_uart_register(unsigned int id)
 		return -ENODEV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (id == 1 && !BCMCPU_IS_6358())
 =======
 	if (id == 1 && (!BCMCPU_IS_6358() && !BCMCPU_IS_6368()))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (id == 1 && (!BCMCPU_IS_3368() && !BCMCPU_IS_6358() &&
+		!BCMCPU_IS_6368()))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	if (id == 0) {

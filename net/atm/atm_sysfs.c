@@ -14,12 +14,18 @@ static ssize_t show_type(struct device *cdev,
 			 struct device_attribute *attr, char *buf)
 {
 	struct atm_dev *adev = to_atm_dev(cdev);
+<<<<<<< HEAD
 	return sprintf(buf, "%s\n", adev->type);
+=======
+
+	return scnprintf(buf, PAGE_SIZE, "%s\n", adev->type);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_address(struct device *cdev,
 			    struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	char *pos = buf;
 	struct atm_dev *adev = to_atm_dev(cdev);
 	int i;
@@ -29,22 +35,35 @@ static ssize_t show_address(struct device *cdev,
 	pos += sprintf(pos, "%02x\n", adev->esi[i]);
 
 	return pos - buf;
+=======
+	struct atm_dev *adev = to_atm_dev(cdev);
+
+	return scnprintf(buf, PAGE_SIZE, "%pM\n", adev->esi);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_atmaddress(struct device *cdev,
 			       struct device_attribute *attr, char *buf)
 {
 	unsigned long flags;
+<<<<<<< HEAD
 	char *pos = buf;
 	struct atm_dev *adev = to_atm_dev(cdev);
 	struct atm_dev_addr *aaddr;
 	int bin[] = { 1, 2, 10, 6, 1 }, *fmt = bin;
 	int i, j;
+=======
+	struct atm_dev *adev = to_atm_dev(cdev);
+	struct atm_dev_addr *aaddr;
+	int bin[] = { 1, 2, 10, 6, 1 }, *fmt = bin;
+	int i, j, count = 0;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irqsave(&adev->lock, flags);
 	list_for_each_entry(aaddr, &adev->local, entry) {
 		for (i = 0, j = 0; i < ATM_ESA_LEN; ++i, ++j) {
 			if (j == *fmt) {
+<<<<<<< HEAD
 				pos += sprintf(pos, ".");
 				++fmt;
 				j = 0;
@@ -57,6 +76,22 @@ static ssize_t show_atmaddress(struct device *cdev,
 	spin_unlock_irqrestore(&adev->lock, flags);
 
 	return pos - buf;
+=======
+				count += scnprintf(buf + count,
+						   PAGE_SIZE - count, ".");
+				++fmt;
+				j = 0;
+			}
+			count += scnprintf(buf + count,
+					   PAGE_SIZE - count, "%02x",
+					   aaddr->addr.sas_addr.prv[i]);
+		}
+		count += scnprintf(buf + count, PAGE_SIZE - count, "\n");
+	}
+	spin_unlock_irqrestore(&adev->lock, flags);
+
+	return count;
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_atmindex(struct device *cdev,
@@ -64,12 +99,17 @@ static ssize_t show_atmindex(struct device *cdev,
 {
 	struct atm_dev *adev = to_atm_dev(cdev);
 
+<<<<<<< HEAD
 	return sprintf(buf, "%d\n", adev->number);
+=======
+	return scnprintf(buf, PAGE_SIZE, "%d\n", adev->number);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_carrier(struct device *cdev,
 			    struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	char *pos = buf;
 	struct atm_dev *adev = to_atm_dev(cdev);
 
@@ -77,12 +117,21 @@ static ssize_t show_carrier(struct device *cdev,
 		       adev->signal == ATM_PHY_SIG_LOST ? 0 : 1);
 
 	return pos - buf;
+=======
+	struct atm_dev *adev = to_atm_dev(cdev);
+
+	return scnprintf(buf, PAGE_SIZE, "%d\n",
+			 adev->signal == ATM_PHY_SIG_LOST ? 0 : 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t show_link_rate(struct device *cdev,
 			      struct device_attribute *attr, char *buf)
 {
+<<<<<<< HEAD
 	char *pos = buf;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct atm_dev *adev = to_atm_dev(cdev);
 	int link_rate;
 
@@ -100,9 +149,13 @@ static ssize_t show_link_rate(struct device *cdev,
 	default:
 		link_rate = adev->link_rate * 8 * 53;
 	}
+<<<<<<< HEAD
 	pos += sprintf(pos, "%d\n", link_rate);
 
 	return pos - buf;
+=======
+	return scnprintf(buf, PAGE_SIZE, "%d\n", link_rate);
+>>>>>>> refs/remotes/origin/master
 }
 
 static DEVICE_ATTR(address, S_IRUGO, show_address, NULL);

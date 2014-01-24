@@ -20,9 +20,14 @@
 #include <linux/rtnetlink.h>
 #include <linux/notifier.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <net/dcbevent.h>
+>>>>>>> refs/remotes/origin/master
 
 static ATOMIC_NOTIFIER_HEAD(dcbevent_notif_chain);
 

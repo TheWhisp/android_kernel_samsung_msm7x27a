@@ -11,9 +11,12 @@
 #include <linux/module.h>
 #include <asm/bitops.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * try flipping a bit using BSET and BCLR

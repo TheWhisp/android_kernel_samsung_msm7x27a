@@ -4,9 +4,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/hardirq.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hardirq.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 #include <linux/delay.h>
 #include <linux/sched.h>
@@ -170,10 +174,14 @@ int lbs_process_command_response(struct lbs_private *priv, u8 *data, u32 len)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		lbs_complete_command(priv, priv->cur_cmd, result);
 =======
 		__lbs_complete_command(priv, priv->cur_cmd, result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__lbs_complete_command(priv, priv->cur_cmd, result);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&priv->driver_lock, flags);
 
 		ret = 0;
@@ -195,10 +203,14 @@ int lbs_process_command_response(struct lbs_private *priv, u8 *data, u32 len)
 
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		lbs_complete_command(priv, priv->cur_cmd, result);
 =======
 		__lbs_complete_command(priv, priv->cur_cmd, result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__lbs_complete_command(priv, priv->cur_cmd, result);
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&priv->driver_lock, flags);
 
 		ret = -1;
@@ -217,10 +229,14 @@ int lbs_process_command_response(struct lbs_private *priv, u8 *data, u32 len)
 	if (priv->cur_cmd) {
 		/* Clean up and Put current command back to cmdfreeq */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		lbs_complete_command(priv, priv->cur_cmd, result);
 =======
 		__lbs_complete_command(priv, priv->cur_cmd, result);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		__lbs_complete_command(priv, priv->cur_cmd, result);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&priv->driver_lock, flags);
 

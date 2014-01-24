@@ -10,6 +10,13 @@
  * Copyright (c) 2009  MontaVista Software, Inc.
  * Author: Anton Vorontsov <avorontsov@ru.mvista.com>
  *
+<<<<<<< HEAD
+=======
+ * GRLIB support:
+ * Copyright (c) 2012 Aeroflex Gaisler AB.
+ * Author: Andreas Larsson <andreas@gaisler.com>
+ *
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
  * Free Software Foundation;  either version 2 of the  License, or (at your
@@ -30,6 +37,7 @@
 #include <linux/mutex.h>
 #include <linux/of.h>
 #include <linux/of_platform.h>
+<<<<<<< HEAD
 #include <linux/gpio.h>
 #include <linux/of_gpio.h>
 
@@ -99,6 +107,56 @@ struct fsl_spi_reg {
 static void *fsl_dummy_rx;
 static DEFINE_MUTEX(fsl_dummy_rx_lock);
 static int fsl_dummy_rx_refcnt;
+=======
+#include <linux/of_address.h>
+#include <linux/of_irq.h>
+#include <linux/gpio.h>
+#include <linux/of_gpio.h>
+
+#include "spi-fsl-lib.h"
+#include "spi-fsl-cpm.h"
+#include "spi-fsl-spi.h"
+
+#define TYPE_FSL	0
+#define TYPE_GRLIB	1
+
+struct fsl_spi_match_data {
+	int type;
+};
+
+static struct fsl_spi_match_data of_fsl_spi_fsl_config = {
+	.type = TYPE_FSL,
+};
+
+static struct fsl_spi_match_data of_fsl_spi_grlib_config = {
+	.type = TYPE_GRLIB,
+};
+
+static struct of_device_id of_fsl_spi_match[] = {
+	{
+		.compatible = "fsl,spi",
+		.data = &of_fsl_spi_fsl_config,
+	},
+	{
+		.compatible = "aeroflexgaisler,spictrl",
+		.data = &of_fsl_spi_grlib_config,
+	},
+	{}
+};
+MODULE_DEVICE_TABLE(of, of_fsl_spi_match);
+
+static int fsl_spi_get_type(struct device *dev)
+{
+	const struct of_device_id *match;
+
+	if (dev->of_node) {
+		match = of_match_node(of_fsl_spi_match, dev->of_node);
+		if (match && match->data)
+			return ((struct fsl_spi_match_data *)match->data)->type;
+	}
+	return TYPE_FSL;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void fsl_spi_change_mode(struct spi_device *spi)
 {
@@ -119,6 +177,7 @@ static void fsl_spi_change_mode(struct spi_device *spi)
 
 	/* When in CPM mode, we need to reinit tx and rx. */
 	if (mspi->flags & SPI_CPM_MODE) {
+<<<<<<< HEAD
 		if (mspi->flags & SPI_QE) {
 			qe_issue_cmd(QE_INIT_TX_RX, mspi->subblock,
 				     QE_CR_PROTOCOL_UNSPECIFIED, 0);
@@ -131,6 +190,9 @@ static void fsl_spi_change_mode(struct spi_device *spi)
 					 in_be16(&mspi->pram->tbase));
 			}
 		}
+=======
+		fsl_spi_cpm_reinit_txrx(mspi);
+>>>>>>> refs/remotes/origin/master
 	}
 	mpc8xxx_spi_write_reg(mode, cs->hw_mode);
 	local_irq_restore(flags);
@@ -163,6 +225,43 @@ static void fsl_spi_chipselect(struct spi_device *spi, int value)
 	}
 }
 
+<<<<<<< HEAD
+=======
+static void fsl_spi_qe_cpu_set_shifts(u32 *rx_shift, u32 *tx_shift,
+				      int bits_per_word, int msb_first)
+{
+	*rx_shift = 0;
+	*tx_shift = 0;
+	if (msb_first) {
+		if (bits_per_word <= 8) {
+			*rx_shift = 16;
+			*tx_shift = 24;
+		} else if (bits_per_word <= 16) {
+			*rx_shift = 16;
+			*tx_shift = 16;
+		}
+	} else {
+		if (bits_per_word <= 8)
+			*rx_shift = 8;
+	}
+}
+
+static void fsl_spi_grlib_set_shifts(u32 *rx_shift, u32 *tx_shift,
+				     int bits_per_word, int msb_first)
+{
+	*rx_shift = 0;
+	*tx_shift = 0;
+	if (bits_per_word <= 16) {
+		if (msb_first) {
+			*rx_shift = 16; /* LSB in bit 16 */
+			*tx_shift = 32 - bits_per_word; /* MSB in bit 31 */
+		} else {
+			*rx_shift = 16 - bits_per_word; /* MSB in bit 15 */
+		}
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int mspi_apply_cpu_mode_quirks(struct spi_mpc8xxx_cs *cs,
 				struct spi_device *spi,
 				struct mpc8xxx_spi *mpc8xxx_spi,
@@ -173,6 +272,7 @@ static int mspi_apply_cpu_mode_quirks(struct spi_mpc8xxx_cs *cs,
 	if (bits_per_word <= 8) {
 		cs->get_rx = mpc8xxx_spi_rx_buf_u8;
 		cs->get_tx = mpc8xxx_spi_tx_buf_u8;
+<<<<<<< HEAD
 		if (mpc8xxx_spi->flags & SPI_QE_CPU_MODE) {
 			cs->rx_shift = 16;
 			cs->tx_shift = 24;
@@ -184,12 +284,18 @@ static int mspi_apply_cpu_mode_quirks(struct spi_mpc8xxx_cs *cs,
 			cs->rx_shift = 16;
 			cs->tx_shift = 16;
 		}
+=======
+	} else if (bits_per_word <= 16) {
+		cs->get_rx = mpc8xxx_spi_rx_buf_u16;
+		cs->get_tx = mpc8xxx_spi_tx_buf_u16;
+>>>>>>> refs/remotes/origin/master
 	} else if (bits_per_word <= 32) {
 		cs->get_rx = mpc8xxx_spi_rx_buf_u32;
 		cs->get_tx = mpc8xxx_spi_tx_buf_u32;
 	} else
 		return -EINVAL;
 
+<<<<<<< HEAD
 	if (mpc8xxx_spi->flags & SPI_QE_CPU_MODE &&
 	    spi->mode & SPI_LSB_FIRST) {
 		cs->tx_shift = 0;
@@ -198,6 +304,13 @@ static int mspi_apply_cpu_mode_quirks(struct spi_mpc8xxx_cs *cs,
 		else
 			cs->rx_shift = 0;
 	}
+=======
+	if (mpc8xxx_spi->set_shifts)
+		mpc8xxx_spi->set_shifts(&cs->rx_shift, &cs->tx_shift,
+					bits_per_word,
+					!(spi->mode & SPI_LSB_FIRST));
+
+>>>>>>> refs/remotes/origin/master
 	mpc8xxx_spi->rx_shift = cs->rx_shift;
 	mpc8xxx_spi->tx_shift = cs->tx_shift;
 	mpc8xxx_spi->get_rx = cs->get_rx;
@@ -246,7 +359,12 @@ static int fsl_spi_setup_transfer(struct spi_device *spi,
 
 	/* Make sure its a bit width we support [4..16, 32] */
 	if ((bits_per_word < 4)
+<<<<<<< HEAD
 	    || ((bits_per_word > 16) && (bits_per_word != 32)))
+=======
+	    || ((bits_per_word > 16) && (bits_per_word != 32))
+	    || (bits_per_word > mpc8xxx_spi->max_bits_per_word))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	if (!hz)
@@ -295,6 +413,7 @@ static int fsl_spi_setup_transfer(struct spi_device *spi,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void fsl_spi_cpm_bufs_start(struct mpc8xxx_spi *mspi)
 {
 	struct cpm_buf_desc __iomem *tx_bd = mspi->tx_bd;
@@ -401,6 +520,8 @@ static void fsl_spi_cpm_bufs_complete(struct mpc8xxx_spi *mspi)
 	mspi->xfer_in_progress = NULL;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int fsl_spi_cpu_bufs(struct mpc8xxx_spi *mspi,
 				struct spi_transfer *t, unsigned int len)
 {
@@ -449,7 +570,11 @@ static int fsl_spi_bufs(struct spi_device *spi, struct spi_transfer *t,
 	mpc8xxx_spi->tx = t->tx_buf;
 	mpc8xxx_spi->rx = t->rx_buf;
 
+<<<<<<< HEAD
 	INIT_COMPLETION(mpc8xxx_spi->done);
+=======
+	reinit_completion(&mpc8xxx_spi->done);
+>>>>>>> refs/remotes/origin/master
 
 	if (mpc8xxx_spi->flags & SPI_CPM_MODE)
 		ret = fsl_spi_cpm_bufs(mpc8xxx_spi, t, is_dma_mapped);
@@ -565,6 +690,7 @@ static int fsl_spi_setup(struct spi_device *spi)
 		cs->hw_mode = hw_mode; /* Restore settings */
 		return retval;
 	}
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -590,6 +716,47 @@ static void fsl_spi_cpm_irq(struct mpc8xxx_spi *mspi, u32 events)
 		fsl_spi_cpm_bufs_start(mspi);
 	else
 		complete(&mspi->done);
+=======
+
+	if (mpc8xxx_spi->type == TYPE_GRLIB) {
+		if (gpio_is_valid(spi->cs_gpio)) {
+			int desel;
+
+			retval = gpio_request(spi->cs_gpio,
+					      dev_name(&spi->dev));
+			if (retval)
+				return retval;
+
+			desel = !(spi->mode & SPI_CS_HIGH);
+			retval = gpio_direction_output(spi->cs_gpio, desel);
+			if (retval) {
+				gpio_free(spi->cs_gpio);
+				return retval;
+			}
+		} else if (spi->cs_gpio != -ENOENT) {
+			if (spi->cs_gpio < 0)
+				return spi->cs_gpio;
+			return -EINVAL;
+		}
+		/* When spi->cs_gpio == -ENOENT, a hole in the phandle list
+		 * indicates to use native chipselect if present, or allow for
+		 * an always selected chip
+		 */
+	}
+
+	/* Initialize chipselect - might be active for SPI_CS_HIGH mode */
+	fsl_spi_chipselect(spi, BITBANG_CS_INACTIVE);
+
+	return 0;
+}
+
+static void fsl_spi_cleanup(struct spi_device *spi)
+{
+	struct mpc8xxx_spi *mpc8xxx_spi = spi_master_get_devdata(spi->master);
+
+	if (mpc8xxx_spi->type == TYPE_GRLIB && gpio_is_valid(spi->cs_gpio))
+		gpio_free(spi->cs_gpio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void fsl_spi_cpu_irq(struct mpc8xxx_spi *mspi, u32 events)
@@ -646,6 +813,7 @@ static irqreturn_t fsl_spi_irq(s32 irq, void *context_data)
 	return ret;
 }
 
+<<<<<<< HEAD
 static void *fsl_spi_alloc_dummy_rx(void)
 {
 	mutex_lock(&fsl_dummy_rx_lock);
@@ -847,6 +1015,59 @@ static struct spi_master * __devinit fsl_spi_probe(struct device *dev,
 		struct resource *mem, unsigned int irq)
 {
 	struct fsl_spi_platform_data *pdata = dev->platform_data;
+=======
+static void fsl_spi_remove(struct mpc8xxx_spi *mspi)
+{
+	iounmap(mspi->reg_base);
+	fsl_spi_cpm_free(mspi);
+}
+
+static void fsl_spi_grlib_cs_control(struct spi_device *spi, bool on)
+{
+	struct mpc8xxx_spi *mpc8xxx_spi = spi_master_get_devdata(spi->master);
+	struct fsl_spi_reg *reg_base = mpc8xxx_spi->reg_base;
+	u32 slvsel;
+	u16 cs = spi->chip_select;
+
+	if (gpio_is_valid(spi->cs_gpio)) {
+		gpio_set_value(spi->cs_gpio, on);
+	} else if (cs < mpc8xxx_spi->native_chipselects) {
+		slvsel = mpc8xxx_spi_read_reg(&reg_base->slvsel);
+		slvsel = on ? (slvsel | (1 << cs)) : (slvsel & ~(1 << cs));
+		mpc8xxx_spi_write_reg(&reg_base->slvsel, slvsel);
+	}
+}
+
+static void fsl_spi_grlib_probe(struct device *dev)
+{
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+	struct spi_master *master = dev_get_drvdata(dev);
+	struct mpc8xxx_spi *mpc8xxx_spi = spi_master_get_devdata(master);
+	struct fsl_spi_reg *reg_base = mpc8xxx_spi->reg_base;
+	int mbits;
+	u32 capabilities;
+
+	capabilities = mpc8xxx_spi_read_reg(&reg_base->cap);
+
+	mpc8xxx_spi->set_shifts = fsl_spi_grlib_set_shifts;
+	mbits = SPCAP_MAXWLEN(capabilities);
+	if (mbits)
+		mpc8xxx_spi->max_bits_per_word = mbits + 1;
+
+	mpc8xxx_spi->native_chipselects = 0;
+	if (SPCAP_SSEN(capabilities)) {
+		mpc8xxx_spi->native_chipselects = SPCAP_SSSZ(capabilities);
+		mpc8xxx_spi_write_reg(&reg_base->slvsel, 0xffffffff);
+	}
+	master->num_chipselect = mpc8xxx_spi->native_chipselects;
+	pdata->cs_control = fsl_spi_grlib_cs_control;
+}
+
+static struct spi_master * fsl_spi_probe(struct device *dev,
+		struct resource *mem, unsigned int irq)
+{
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct spi_master *master;
 	struct mpc8xxx_spi *mpc8xxx_spi;
 	struct fsl_spi_reg *reg_base;
@@ -866,27 +1087,53 @@ static struct spi_master * __devinit fsl_spi_probe(struct device *dev,
 		goto err_probe;
 
 	master->setup = fsl_spi_setup;
+<<<<<<< HEAD
+=======
+	master->cleanup = fsl_spi_cleanup;
+>>>>>>> refs/remotes/origin/master
 
 	mpc8xxx_spi = spi_master_get_devdata(master);
 	mpc8xxx_spi->spi_do_one_msg = fsl_spi_do_one_msg;
 	mpc8xxx_spi->spi_remove = fsl_spi_remove;
+<<<<<<< HEAD
 
+=======
+	mpc8xxx_spi->max_bits_per_word = 32;
+	mpc8xxx_spi->type = fsl_spi_get_type(dev);
+>>>>>>> refs/remotes/origin/master
 
 	ret = fsl_spi_cpm_init(mpc8xxx_spi);
 	if (ret)
 		goto err_cpm_init;
 
+<<<<<<< HEAD
 	if (mpc8xxx_spi->flags & SPI_QE_CPU_MODE) {
 		mpc8xxx_spi->rx_shift = 16;
 		mpc8xxx_spi->tx_shift = 24;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	mpc8xxx_spi->reg_base = ioremap(mem->start, resource_size(mem));
 	if (mpc8xxx_spi->reg_base == NULL) {
 		ret = -ENOMEM;
 		goto err_ioremap;
 	}
 
+<<<<<<< HEAD
+=======
+	if (mpc8xxx_spi->type == TYPE_GRLIB)
+		fsl_spi_grlib_probe(dev);
+
+	if (mpc8xxx_spi->flags & SPI_QE_CPU_MODE)
+		mpc8xxx_spi->set_shifts = fsl_spi_qe_cpu_set_shifts;
+
+	if (mpc8xxx_spi->set_shifts)
+		/* 8 bits per word and MSB first */
+		mpc8xxx_spi->set_shifts(&mpc8xxx_spi->rx_shift,
+					&mpc8xxx_spi->tx_shift, 8, 1);
+
+>>>>>>> refs/remotes/origin/master
 	/* Register for SPI Interrupt */
 	ret = request_irq(mpc8xxx_spi->irq, fsl_spi_irq,
 			  0, "fsl_spi", mpc8xxx_spi);
@@ -904,6 +1151,13 @@ static struct spi_master * __devinit fsl_spi_probe(struct device *dev,
 
 	/* Enable SPI interface */
 	regval = pdata->initial_spmode | SPMODE_INIT_VAL | SPMODE_ENABLE;
+<<<<<<< HEAD
+=======
+	if (mpc8xxx_spi->max_bits_per_word < 8) {
+		regval &= ~SPMODE_LEN(0xF);
+		regval |= SPMODE_LEN(mpc8xxx_spi->max_bits_per_word - 1);
+	}
+>>>>>>> refs/remotes/origin/master
 	if (mpc8xxx_spi->flags & SPI_QE_CPU_MODE)
 		regval |= SPMODE_OP;
 
@@ -933,8 +1187,14 @@ err:
 
 static void fsl_spi_cs_control(struct spi_device *spi, bool on)
 {
+<<<<<<< HEAD
 	struct device *dev = spi->dev.parent;
 	struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(dev->platform_data);
+=======
+	struct device *dev = spi->dev.parent->parent;
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+	struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
+>>>>>>> refs/remotes/origin/master
 	u16 cs = spi->chip_select;
 	int gpio = pinfo->gpios[cs];
 	bool alow = pinfo->alow_flags[cs];
@@ -945,14 +1205,24 @@ static void fsl_spi_cs_control(struct spi_device *spi, bool on)
 static int of_fsl_spi_get_chipselects(struct device *dev)
 {
 	struct device_node *np = dev->of_node;
+<<<<<<< HEAD
 	struct fsl_spi_platform_data *pdata = dev->platform_data;
 	struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
 	unsigned int ngpios;
+=======
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+	struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
+	int ngpios;
+>>>>>>> refs/remotes/origin/master
 	int i = 0;
 	int ret;
 
 	ngpios = of_gpio_count(np);
+<<<<<<< HEAD
 	if (!ngpios) {
+=======
+	if (ngpios <= 0) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * SPI w/o chip-select line. One SPI device is still permitted
 		 * though.
@@ -1024,7 +1294,11 @@ err_alloc_flags:
 
 static int of_fsl_spi_free_chipselects(struct device *dev)
 {
+<<<<<<< HEAD
 	struct fsl_spi_platform_data *pdata = dev->platform_data;
+=======
+	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+>>>>>>> refs/remotes/origin/master
 	struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
 	int i;
 
@@ -1041,34 +1315,60 @@ static int of_fsl_spi_free_chipselects(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit of_fsl_spi_probe(struct platform_device *ofdev)
+=======
+static int of_fsl_spi_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *dev = &ofdev->dev;
 	struct device_node *np = ofdev->dev.of_node;
 	struct spi_master *master;
 	struct resource mem;
+<<<<<<< HEAD
 	struct resource irq;
+=======
+	int irq, type;
+>>>>>>> refs/remotes/origin/master
 	int ret = -ENOMEM;
 
 	ret = of_mpc8xxx_spi_probe(ofdev);
 	if (ret)
 		return ret;
 
+<<<<<<< HEAD
 	ret = of_fsl_spi_get_chipselects(dev);
 	if (ret)
 		goto err;
+=======
+	type = fsl_spi_get_type(&ofdev->dev);
+	if (type == TYPE_FSL) {
+		ret = of_fsl_spi_get_chipselects(dev);
+		if (ret)
+			goto err;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	ret = of_address_to_resource(np, 0, &mem);
 	if (ret)
 		goto err;
 
+<<<<<<< HEAD
 	ret = of_irq_to_resource(np, 0, &irq);
 	if (!ret) {
+=======
+	irq = irq_of_parse_and_map(np, 0);
+	if (!irq) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto err;
 	}
 
+<<<<<<< HEAD
 	master = fsl_spi_probe(dev, &mem, irq.start);
+=======
+	master = fsl_spi_probe(dev, &mem, irq);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(master)) {
 		ret = PTR_ERR(master);
 		goto err;
@@ -1077,17 +1377,30 @@ static int __devinit of_fsl_spi_probe(struct platform_device *ofdev)
 	return 0;
 
 err:
+<<<<<<< HEAD
 	of_fsl_spi_free_chipselects(dev);
 	return ret;
 }
 
 static int __devexit of_fsl_spi_remove(struct platform_device *ofdev)
 {
+=======
+	if (type == TYPE_FSL)
+		of_fsl_spi_free_chipselects(dev);
+	return ret;
+}
+
+static int of_fsl_spi_remove(struct platform_device *ofdev)
+{
+	struct spi_master *master = platform_get_drvdata(ofdev);
+	struct mpc8xxx_spi *mpc8xxx_spi = spi_master_get_devdata(master);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = mpc8xxx_spi_remove(&ofdev->dev);
 	if (ret)
 		return ret;
+<<<<<<< HEAD
 	of_fsl_spi_free_chipselects(&ofdev->dev);
 	return 0;
 }
@@ -1098,6 +1411,13 @@ static const struct of_device_id of_fsl_spi_match[] = {
 };
 MODULE_DEVICE_TABLE(of, of_fsl_spi_match);
 
+=======
+	if (mpc8xxx_spi->type == TYPE_FSL)
+		of_fsl_spi_free_chipselects(&ofdev->dev);
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver of_fsl_spi_driver = {
 	.driver = {
 		.name = "fsl_spi",
@@ -1105,7 +1425,11 @@ static struct platform_driver of_fsl_spi_driver = {
 		.of_match_table = of_fsl_spi_match,
 	},
 	.probe		= of_fsl_spi_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(of_fsl_spi_remove),
+=======
+	.remove		= of_fsl_spi_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_MPC832x_RDB
@@ -1116,13 +1440,21 @@ static struct platform_driver of_fsl_spi_driver = {
  * tree can work with OpenFirmware driver. But for now we support old trees
  * as well.
  */
+<<<<<<< HEAD
 static int __devinit plat_mpc8xxx_spi_probe(struct platform_device *pdev)
+=======
+static int plat_mpc8xxx_spi_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *mem;
 	int irq;
 	struct spi_master *master;
 
+<<<<<<< HEAD
 	if (!pdev->dev.platform_data)
+=======
+	if (!dev_get_platdata(&pdev->dev))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
@@ -1134,12 +1466,19 @@ static int __devinit plat_mpc8xxx_spi_probe(struct platform_device *pdev)
 		return -EINVAL;
 
 	master = fsl_spi_probe(&pdev->dev, mem, irq);
+<<<<<<< HEAD
 	if (IS_ERR(master))
 		return PTR_ERR(master);
 	return 0;
 }
 
 static int __devexit plat_mpc8xxx_spi_remove(struct platform_device *pdev)
+=======
+	return PTR_ERR_OR_ZERO(master);
+}
+
+static int plat_mpc8xxx_spi_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return mpc8xxx_spi_remove(&pdev->dev);
 }
@@ -1147,7 +1486,11 @@ static int __devexit plat_mpc8xxx_spi_remove(struct platform_device *pdev)
 MODULE_ALIAS("platform:mpc8xxx_spi");
 static struct platform_driver mpc8xxx_spi_driver = {
 	.probe = plat_mpc8xxx_spi_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(plat_mpc8xxx_spi_remove),
+=======
+	.remove = plat_mpc8xxx_spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "mpc8xxx_spi",
 		.owner = THIS_MODULE,

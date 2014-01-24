@@ -35,7 +35,11 @@
 #include <asm/mach-rc32434/rc32434.h>
 #include <asm/mach-rc32434/pci.h>
 
+<<<<<<< HEAD
 #define PCI_ACCESS_READ  0
+=======
+#define PCI_ACCESS_READ	 0
+>>>>>>> refs/remotes/origin/master
 #define PCI_ACCESS_WRITE 1
 
 

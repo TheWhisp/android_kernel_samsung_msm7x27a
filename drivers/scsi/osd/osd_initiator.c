@@ -41,9 +41,13 @@
 
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <scsi/osd_initiator.h>
 #include <scsi/osd_sec.h>
@@ -147,6 +151,13 @@ static int _osd_get_print_system_info(struct osd_dev *od,
 	odi->osdname_len = get_attrs[a].len;
 	/* Avoid NULL for memcmp optimization 0-length is good enough */
 	odi->osdname = kzalloc(odi->osdname_len + 1, GFP_KERNEL);
+<<<<<<< HEAD
+=======
+	if (!odi->osdname) {
+		ret = -ENOMEM;
+		goto out;
+	}
+>>>>>>> refs/remotes/origin/master
 	if (odi->osdname_len)
 		memcpy(odi->osdname, get_attrs[a].val_ptr, odi->osdname_len);
 	OSD_INFO("OSD_NAME               [%s]\n", odi->osdname);
@@ -1048,7 +1059,11 @@ static struct bio *_create_sg_bios(struct osd_request *or,
 
 	bio = bio_kmalloc(GFP_KERNEL, numentries);
 	if (unlikely(!bio)) {
+<<<<<<< HEAD
 		OSD_DEBUG("Faild to allocate BIO size=%u\n", numentries);
+=======
+		OSD_DEBUG("Failed to allocate BIO size=%u\n", numentries);
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOMEM);
 	}
 

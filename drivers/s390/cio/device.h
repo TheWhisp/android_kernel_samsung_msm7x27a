@@ -3,15 +3,21 @@
 
 #include <asm/ccwdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <linux/wait.h>
 #include <linux/notifier.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/atomic.h>
 #include <linux/wait.h>
 #include <linux/notifier.h>
 #include <linux/kernel_stat.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "io_sch.h"
 
 /*
@@ -64,12 +70,16 @@ static inline void
 dev_fsm_event(struct ccw_device *cdev, enum dev_event dev_event)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_jumptable[cdev->private->state][dev_event](cdev, dev_event);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int state = cdev->private->state;
 
 	if (dev_event == DEV_EVENT_INTERRUPT) {
 		if (state == DEV_STATE_ONLINE)
+<<<<<<< HEAD
 			kstat_cpu(smp_processor_id()).
 				irqs[cdev->private->int_class]++;
 		else if (state != DEV_STATE_CMFCHANGE &&
@@ -78,6 +88,14 @@ dev_fsm_event(struct ccw_device *cdev, enum dev_event dev_event)
 	}
 	dev_jumptable[state][dev_event](cdev, dev_event);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			inc_irq_stat(cdev->private->int_class);
+		else if (state != DEV_STATE_CMFCHANGE &&
+			 state != DEV_STATE_CMFUPDATE)
+			inc_irq_stat(IRQIO_CIO);
+	}
+	dev_jumptable[state][dev_event](cdev, dev_event);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -92,8 +110,11 @@ dev_fsm_final_state(struct ccw_device *cdev)
 		cdev->private->state == DEV_STATE_BOXED);
 }
 
+<<<<<<< HEAD
 extern wait_queue_head_t ccw_device_init_wq;
 extern atomic_t ccw_device_init_count;
+=======
+>>>>>>> refs/remotes/origin/master
 int __init io_subchannel_init(void);
 
 void io_subchannel_recog_done(struct ccw_device *cdev);
@@ -111,6 +132,10 @@ int ccw_device_test_sense_data(struct ccw_device *);
 void ccw_device_schedule_sch_unregister(struct ccw_device *);
 int ccw_purge_blacklisted(void);
 void ccw_device_sched_todo(struct ccw_device *cdev, enum cdev_todo todo);
+<<<<<<< HEAD
+=======
+struct ccw_device *get_ccwdev_by_dev_id(struct ccw_dev_id *dev_id);
+>>>>>>> refs/remotes/origin/master
 
 /* Function prototypes for device status and basic sense stuff. */
 void ccw_device_accumulate_irb(struct ccw_device *, struct irb *);
@@ -151,9 +176,13 @@ int ccw_device_notify(struct ccw_device *, int);
 void ccw_device_set_disconnected(struct ccw_device *cdev);
 void ccw_device_set_notoper(struct ccw_device *cdev);
 
+<<<<<<< HEAD
 /* qdio needs this. */
 void ccw_device_set_timeout(struct ccw_device *, int);
 extern struct subchannel_id ccw_device_get_subchannel_id(struct ccw_device *);
+=======
+void ccw_device_set_timeout(struct ccw_device *, int);
+>>>>>>> refs/remotes/origin/master
 
 /* Channel measurement facility related */
 void retry_set_schib(struct ccw_device *cdev);

@@ -25,17 +25,26 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>	/* For module specific items */
 #include <linux/moduleparam.h>	/* For new moduleparam's */
 #include <linux/types.h>	/* For standard types (like size_t) */
 #include <linux/errno.h>	/* For the -ENODEV/... values */
 #include <linux/kernel.h>	/* For printk/panic/... */
 #include <linux/delay.h>	/* For mdelay function */
+<<<<<<< HEAD
 #include <linux/miscdevice.h>	/* For MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR) */
+=======
+#include <linux/miscdevice.h>	/* For struct miscdevice */
+>>>>>>> refs/remotes/origin/master
 #include <linux/watchdog.h>	/* For the watchdog specific items */
 #include <linux/notifier.h>	/* For notifier support */
 #include <linux/reboot.h>	/* For reboot_notifier stuff */
@@ -47,6 +56,7 @@
 #include <linux/hid.h>		/* For HID_REQ_SET_REPORT & HID_DT_REPORT */
 #include <linux/uaccess.h>	/* For copy_to_user/put_user/... */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #ifdef CONFIG_USB_DEBUG
@@ -78,6 +88,8 @@ do {							\
 		pr_debug(format "\n", ##__VA_ARGS__);	\
 } while (0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Module and Version Information */
 #define DRIVER_VERSION "1.02"
@@ -86,19 +98,25 @@ do {							\
 #define DRIVER_LICENSE "GPL"
 #define DRIVER_NAME "pcwd_usb"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define PFX DRIVER_NAME ": "
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR(DRIVER_AUTHOR);
 MODULE_DESCRIPTION(DRIVER_DESC);
 MODULE_LICENSE(DRIVER_LICENSE);
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 MODULE_ALIAS_MISCDEV(TEMP_MINOR);
 
 /* Module Parameters */
 module_param(debug, int, 0);
 MODULE_PARM_DESC(debug, "Debug enabled or not");
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define WATCHDOG_HEARTBEAT 0	/* default heartbeat =
 						delay-time from dip-switches */
@@ -109,12 +127,17 @@ MODULE_PARM_DESC(heartbeat, "Watchdog heartbeat in seconds. "
 				__MODULE_STRING(WATCHDOG_HEARTBEAT) ")");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
 
@@ -221,6 +244,10 @@ static void usb_pcwd_intr_done(struct urb *urb)
 	struct usb_pcwd_private *usb_pcwd =
 				(struct usb_pcwd_private *)urb->context;
 	unsigned char *data = usb_pcwd->intr_buffer;
+<<<<<<< HEAD
+=======
+	struct device *dev = &usb_pcwd->interface->dev;
+>>>>>>> refs/remotes/origin/master
 	int retval;
 
 	switch (urb->status) {
@@ -230,6 +257,7 @@ static void usb_pcwd_intr_done(struct urb *urb)
 	case -ENOENT:
 	case -ESHUTDOWN:
 		/* this urb is terminated, clean up */
+<<<<<<< HEAD
 		dbg("%s - urb shutting down with status: %d", __func__,
 								urb->status);
 		return;
@@ -241,6 +269,19 @@ static void usb_pcwd_intr_done(struct urb *urb)
 	}
 
 	dbg("received following data cmd=0x%02x msb=0x%02x lsb=0x%02x",
+=======
+		dev_dbg(dev, "%s - urb shutting down with status: %d",
+			__func__, urb->status);
+		return;
+	/* -EPIPE:  should clear the halt */
+	default:		/* error */
+		dev_dbg(dev, "%s - nonzero urb status received: %d",
+			__func__, urb->status);
+		goto resubmit;
+	}
+
+	dev_dbg(dev, "received following data cmd=0x%02x msb=0x%02x lsb=0x%02x",
+>>>>>>> refs/remotes/origin/master
 		data[0], data[1], data[2]);
 
 	usb_pcwd->cmd_command  = data[0];
@@ -254,25 +295,41 @@ resubmit:
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
 	if (retval)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "can't resubmit intr, "
 			"usb_submit_urb failed with result %d\n", retval);
 =======
 		pr_err("can't resubmit intr, usb_submit_urb failed with result %d\n",
 		       retval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("can't resubmit intr, usb_submit_urb failed with result %d\n",
+		       retval);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int usb_pcwd_send_command(struct usb_pcwd_private *usb_pcwd,
 		unsigned char cmd, unsigned char *msb, unsigned char *lsb)
 {
 	int got_response, count;
+<<<<<<< HEAD
 	unsigned char buf[6];
+=======
+	unsigned char *buf;
+>>>>>>> refs/remotes/origin/master
 
 	/* We will not send any commands if the USB PCWD device does
 	 * not exist */
 	if ((!usb_pcwd) || (!usb_pcwd->exists))
 		return -1;
 
+<<<<<<< HEAD
+=======
+	buf = kmalloc(6, GFP_KERNEL);
+	if (buf == NULL)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* The USB PC Watchdog uses a 6 byte report format.
 	 * The board currently uses only 3 of the six bytes of the report. */
 	buf[0] = cmd;			/* Byte 0 = CMD */
@@ -280,17 +337,30 @@ static int usb_pcwd_send_command(struct usb_pcwd_private *usb_pcwd,
 	buf[2] = *lsb;			/* Byte 2 = Data LSB */
 	buf[3] = buf[4] = buf[5] = 0;	/* All other bytes not used */
 
+<<<<<<< HEAD
 	dbg("sending following data cmd=0x%02x msb=0x%02x lsb=0x%02x",
+=======
+	dev_dbg(&usb_pcwd->interface->dev,
+		"sending following data cmd=0x%02x msb=0x%02x lsb=0x%02x",
+>>>>>>> refs/remotes/origin/master
 		buf[0], buf[1], buf[2]);
 
 	atomic_set(&usb_pcwd->cmd_received, 0);
 
 	if (usb_control_msg(usb_pcwd->udev, usb_sndctrlpipe(usb_pcwd->udev, 0),
 			HID_REQ_SET_REPORT, HID_DT_REPORT,
+<<<<<<< HEAD
 			0x0200, usb_pcwd->interface_number, buf, sizeof(buf),
 			USB_COMMAND_TIMEOUT) != sizeof(buf)) {
 		dbg("usb_pcwd_send_command: error in usb_control_msg for "
 				"cmd 0x%x 0x%x 0x%x\n", cmd, *msb, *lsb);
+=======
+			0x0200, usb_pcwd->interface_number, buf, 6,
+			USB_COMMAND_TIMEOUT) != 6) {
+		dev_dbg(&usb_pcwd->interface->dev,
+			"usb_pcwd_send_command: error in usb_control_msg for cmd 0x%x 0x%x 0x%x\n",
+			cmd, *msb, *lsb);
+>>>>>>> refs/remotes/origin/master
 	}
 	/* wait till the usb card processed the command,
 	 * with a max. timeout of USB_COMMAND_TIMEOUT */
@@ -308,6 +378,11 @@ static int usb_pcwd_send_command(struct usb_pcwd_private *usb_pcwd,
 		*lsb = usb_pcwd->cmd_data_lsb;
 	}
 
+<<<<<<< HEAD
+=======
+	kfree(buf);
+
+>>>>>>> refs/remotes/origin/master
 	return got_response;
 }
 
@@ -323,11 +398,15 @@ static int usb_pcwd_start(struct usb_pcwd_private *usb_pcwd)
 
 	if ((retval == 0) || (lsb == 0)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 				"Card did not acknowledge enable attempt\n");
 =======
 		pr_err("Card did not acknowledge enable attempt\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Card did not acknowledge enable attempt\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -346,11 +425,15 @@ static int usb_pcwd_stop(struct usb_pcwd_private *usb_pcwd)
 
 	if ((retval == 0) || (lsb != 0)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"Card did not acknowledge disable attempt\n");
 =======
 		pr_err("Card did not acknowledge disable attempt\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Card did not acknowledge disable attempt\n");
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -553,11 +636,15 @@ static int usb_pcwd_release(struct inode *inode, struct file *file)
 		usb_pcwd_stop(usb_pcwd_device);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"Unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("Unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 		usb_pcwd_keepalive(usb_pcwd_device);
 	}
 	expect_release = 0;
@@ -678,10 +765,14 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	cards_found++;
 	if (cards_found > 1) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "This driver only supports 1 device\n");
 =======
 		pr_err("This driver only supports 1 device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("This driver only supports 1 device\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -691,11 +782,15 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	/* check out that we have a HID device */
 	if (!(iface_desc->desc.bInterfaceClass == USB_CLASS_HID)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"The device isn't a Human Interface Device\n");
 =======
 		pr_err("The device isn't a Human Interface Device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("The device isn't a Human Interface Device\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -705,10 +800,14 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	if (!usb_endpoint_is_int_in(endpoint)) {
 		/* we didn't find a Interrupt endpoint with direction IN */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Couldn't find an INTR & IN endpoint\n");
 =======
 		pr_err("Couldn't find an INTR & IN endpoint\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Couldn't find an INTR & IN endpoint\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -720,10 +819,14 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	usb_pcwd = kzalloc(sizeof(struct usb_pcwd_private), GFP_KERNEL);
 	if (usb_pcwd == NULL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Out of memory\n");
 =======
 		pr_err("Out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -741,10 +844,14 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 					GFP_ATOMIC, &usb_pcwd->intr_dma);
 	if (!usb_pcwd->intr_buffer) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Out of memory\n");
 =======
 		pr_err("Out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -752,10 +859,14 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	usb_pcwd->intr_urb = usb_alloc_urb(0, GFP_KERNEL);
 	if (!usb_pcwd->intr_urb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Out of memory\n");
 =======
 		pr_err("Out of memory\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Out of memory\n");
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
@@ -769,10 +880,14 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	/* register our interrupt URB with the USB system */
 	if (usb_submit_urb(usb_pcwd->intr_urb, GFP_KERNEL)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX "Problem registering interrupt URB\n");
 =======
 		pr_err("Problem registering interrupt URB\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Problem registering interrupt URB\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -EIO; /* failure */
 		goto error;
 	}
@@ -792,22 +907,30 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 		sprintf(fw_ver_str, "<card no answer>");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Found card (Firmware: %s) with temp option\n",
 		fw_ver_str);
 =======
 	pr_info("Found card (Firmware: %s) with temp option\n", fw_ver_str);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Found card (Firmware: %s) with temp option\n", fw_ver_str);
+>>>>>>> refs/remotes/origin/master
 
 	/* Get switch settings */
 	usb_pcwd_send_command(usb_pcwd, CMD_GET_DIP_SWITCH_SETTINGS, &dummy,
 							&option_switches);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "Option switches (0x%02x): "
 		"Temperature Reset Enable=%s, Power On Delay=%s\n",
 =======
 	pr_info("Option switches (0x%02x): Temperature Reset Enable=%s, Power On Delay=%s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("Option switches (0x%02x): Temperature Reset Enable=%s, Power On Delay=%s\n",
+>>>>>>> refs/remotes/origin/master
 		option_switches,
 		((option_switches & 0x10) ? "ON" : "OFF"),
 		((option_switches & 0x08) ? "ON" : "OFF"));
@@ -821,16 +944,21 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	if (usb_pcwd_set_heartbeat(usb_pcwd, heartbeat)) {
 		usb_pcwd_set_heartbeat(usb_pcwd, WATCHDOG_HEARTBEAT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO PFX
 			"heartbeat value must be 0<heartbeat<65536, using %d\n",
 =======
 		pr_info("heartbeat value must be 0<heartbeat<65536, using %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("heartbeat value must be 0<heartbeat<65536, using %d\n",
+>>>>>>> refs/remotes/origin/master
 			WATCHDOG_HEARTBEAT);
 	}
 
 	retval = register_reboot_notifier(&usb_pcwd_notifier);
 	if (retval != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n",
@@ -838,11 +966,15 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 =======
 		pr_err("cannot register reboot notifier (err=%d)\n", retval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", retval);
+>>>>>>> refs/remotes/origin/master
 		goto error;
 	}
 
 	retval = misc_register(&usb_pcwd_temperature_miscdev);
 	if (retval != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -851,11 +983,16 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       TEMP_MINOR, retval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       TEMP_MINOR, retval);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_unregister_reboot;
 	}
 
 	retval = misc_register(&usb_pcwd_miscdev);
 	if (retval != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -864,6 +1001,10 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, retval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+		       WATCHDOG_MINOR, retval);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_misc_deregister;
 	}
 
@@ -871,10 +1012,14 @@ static int usb_pcwd_probe(struct usb_interface *interface,
 	usb_set_intfdata(interface, usb_pcwd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "initialized. heartbeat=%d sec (nowayout=%d)\n",
 =======
 	pr_info("initialized. heartbeat=%d sec (nowayout=%d)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("initialized. heartbeat=%d sec (nowayout=%d)\n",
+>>>>>>> refs/remotes/origin/master
 		heartbeat, nowayout);
 
 	return 0;
@@ -933,6 +1078,7 @@ static void usb_pcwd_disconnect(struct usb_interface *interface)
 	mutex_unlock(&disconnect_mutex);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "USB PC Watchdog disconnected\n");
 }
 
@@ -971,8 +1117,13 @@ static void __exit usb_pcwd_exit(void)
 module_init(usb_pcwd_init);
 module_exit(usb_pcwd_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pr_info("USB PC Watchdog disconnected\n");
 }
 
 module_usb_driver(usb_pcwd_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

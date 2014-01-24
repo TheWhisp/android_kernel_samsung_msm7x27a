@@ -31,6 +31,7 @@ static void __raw_writel(unsigned int value, unsigned int ptr)
 	*((volatile unsigned int *)ptr) = value;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_EP93XX_EARLY_UART1)
 #define UART_BASE		EP93XX_UART1_PHYS_BASE
 #elif defined(CONFIG_EP93XX_EARLY_UART2)
@@ -43,14 +44,23 @@ static void __raw_writel(unsigned int value, unsigned int ptr)
 
 #define PHYS_UART_DATA		(UART_BASE + 0x00)
 #define PHYS_UART_FLAG		(UART_BASE + 0x18)
+=======
+#define PHYS_UART_DATA		(CONFIG_DEBUG_UART_PHYS + 0x00)
+#define PHYS_UART_FLAG		(CONFIG_DEBUG_UART_PHYS + 0x18)
+>>>>>>> refs/remotes/origin/master
 #define UART_FLAG_TXFF		0x20
 
 static inline void putc(int c)
 {
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < 1000; i++) {
 		/* Transmit fifo not full?  */
+=======
+	for (i = 0; i < 10000; i++) {
+		/* Transmit fifo not full? */
+>>>>>>> refs/remotes/origin/master
 		if (!(__raw_readb(PHYS_UART_FLAG) & UART_FLAG_TXFF))
 			break;
 	}
@@ -90,5 +100,8 @@ static void arch_decomp_setup(void)
 {
 	ethernet_reset();
 }
+<<<<<<< HEAD
 
 #define arch_decomp_wdog()
+=======
+>>>>>>> refs/remotes/origin/master

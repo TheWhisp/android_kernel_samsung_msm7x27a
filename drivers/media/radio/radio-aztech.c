@@ -1,12 +1,18 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* radio-aztech.c - Aztech radio card driver for Linux 2.2
  *
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * radio-aztech.c - Aztech radio card driver
  *
  * Converted to the radio-isa framework by Hans Verkuil <hans.verkuil@xs4all.nl>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Converted to V4L2 API by Mauro Carvalho Chehab <mchehab@infradead.org>
  * Adapted to support the Video for Linux API by
  * Russell Kroll <rkroll@exploits.org>.  Based on original tuner code by:
@@ -17,6 +23,7 @@
  * Scott McGrath    (smcgrath@twilight.vtc.vsc.edu)
  * William McGrath  (wmcgrath@twilight.vtc.vsc.edu)
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * The basis for this code may be found at http://bigbang.vtc.vsc.edu/fmradio/
  * along with more information on the card itself.
@@ -34,6 +41,9 @@
 =======
  * Fully tested with the Keene USB FM Transmitter and the v4l2-compliance tool.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Fully tested with the Keene USB FM Transmitter and the v4l2-compliance tool.
+>>>>>>> refs/remotes/origin/master
 */
 
 #include <linux/module.h>	/* Modules 			*/
@@ -42,22 +52,30 @@
 #include <linux/delay.h>	/* udelay			*/
 #include <linux/videodev2.h>	/* kernel radio structs		*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>      /* for KERNEL_VERSION MACRO     */
 #include <linux/io.h>		/* outb, outb_p			*/
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>		/* outb, outb_p			*/
 #include <linux/slab.h>
 #include <media/v4l2-device.h>
 #include <media/v4l2-ioctl.h>
 #include <media/v4l2-ctrls.h>
 #include "radio-isa.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "lm7000.h"
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Russell Kroll, Quay Lu, Donald Song, Jason Lewis, Scott McGrath, William McGrath");
 MODULE_DESCRIPTION("A driver for the Aztech radio card.");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /* acceptable ports: 0x350 (JP3 shorted), 0x358 (JP3 open) */
@@ -67,10 +85,16 @@ MODULE_VERSION("1.0.0");
 
 /* acceptable ports: 0x350 (JP3 shorted), 0x358 (JP3 open) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_VERSION("1.0.0");
+
+/* acceptable ports: 0x350 (JP3 shorted), 0x358 (JP3 open) */
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_RADIO_AZTECH_PORT
 #define CONFIG_RADIO_AZTECH_PORT -1
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int io = CONFIG_RADIO_AZTECH_PORT;
 static int radio_nr = -1;
@@ -120,6 +144,8 @@ static void send_0_byte(struct aztech *az)
 	outb_p(2 + volconvert(az->curvol), az->io);
 	outb_p(64 + 2 + volconvert(az->curvol), az->io);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define AZTECH_MAX 2
 
 static int io[AZTECH_MAX] = { [0] = CONFIG_RADIO_AZTECH_PORT,
@@ -137,6 +163,7 @@ struct aztech {
 	int curvol;
 };
 
+<<<<<<< HEAD
 static void send_0_byte(struct aztech *az)
 {
 	udelay(radio_wait_time);
@@ -204,6 +231,31 @@ static int az_setfreq(struct aztech *az, unsigned long frequency)
 	udelay(radio_wait_time);
 	outb_p(128 + 2 + az->curvol, az->isa.io);
 	outb_p(128 + 64 + 2 + az->curvol, az->isa.io);
+=======
+/* bit definitions for register read */
+#define AZTECH_BIT_NOT_TUNED	(1 << 0)
+#define AZTECH_BIT_MONO		(1 << 1)
+/* bit definitions for register write */
+#define AZTECH_BIT_TUN_CE	(1 << 1)
+#define AZTECH_BIT_TUN_CLK	(1 << 6)
+#define AZTECH_BIT_TUN_DATA	(1 << 7)
+/* bits 0 and 2 are volume control, bits 3..5 are not connected */
+
+static void aztech_set_pins(void *handle, u8 pins)
+{
+	struct radio_isa_card *isa = handle;
+	struct aztech *az = container_of(isa, struct aztech, isa);
+	u8 bits = az->curvol;
+
+	if (pins & LM7000_DATA)
+		bits |= AZTECH_BIT_TUN_DATA;
+	if (pins & LM7000_CLK)
+		bits |= AZTECH_BIT_TUN_CLK;
+	if (pins & LM7000_CE)
+		bits |= AZTECH_BIT_TUN_CE;
+
+	outb_p(bits, az->isa.io);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct radio_isa_card *aztech_alloc(void)
@@ -215,6 +267,7 @@ static struct radio_isa_card *aztech_alloc(void)
 
 static int aztech_s_frequency(struct radio_isa_card *isa, u32 freq)
 {
+<<<<<<< HEAD
 	struct aztech *az = container_of(isa, struct aztech, isa);
 	int  i;
 
@@ -435,13 +488,29 @@ static const struct v4l2_ioctl_ops aztech_ioctl_ops = {
 static u32 aztech_g_rxsubchans(struct radio_isa_card *isa)
 {
 	if (inb(isa->io) & 1)
+=======
+	lm7000_set_freq(freq, isa, aztech_set_pins);
+
+	return 0;
+}
+
+static u32 aztech_g_rxsubchans(struct radio_isa_card *isa)
+{
+	if (inb(isa->io) & AZTECH_BIT_MONO)
+>>>>>>> refs/remotes/origin/master
 		return V4L2_TUNER_SUB_MONO;
 	return V4L2_TUNER_SUB_STEREO;
 }
 
+<<<<<<< HEAD
 static int aztech_s_stereo(struct radio_isa_card *isa, bool stereo)
 {
 	return aztech_s_frequency(isa, isa->freq);
+=======
+static u32 aztech_g_signal(struct radio_isa_card *isa)
+{
+	return (inb(isa->io) & AZTECH_BIT_NOT_TUNED) ? 0 : 0xffff;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int aztech_s_mute_volume(struct radio_isa_card *isa, bool mute, int vol)
@@ -459,8 +528,13 @@ static const struct radio_isa_ops aztech_ops = {
 	.alloc = aztech_alloc,
 	.s_mute_volume = aztech_s_mute_volume,
 	.s_frequency = aztech_s_frequency,
+<<<<<<< HEAD
 	.s_stereo = aztech_s_stereo,
 	.g_rxsubchans = aztech_g_rxsubchans,
+=======
+	.g_rxsubchans = aztech_g_rxsubchans,
+	.g_signal = aztech_g_signal,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const int aztech_ioports[] = { 0x350, 0x358 };
@@ -478,16 +552,24 @@ static struct radio_isa_driver aztech_driver = {
 	.radio_nr_params = radio_nr,
 	.io_ports = aztech_ioports,
 	.num_of_io_ports = ARRAY_SIZE(aztech_ioports),
+<<<<<<< HEAD
 	.region_size = 2,
+=======
+	.region_size = 8,
+>>>>>>> refs/remotes/origin/master
 	.card = "Aztech Radio",
 	.ops = &aztech_ops,
 	.has_stereo = true,
 	.max_volume = 3,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init aztech_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct aztech *az = &aztech_card;
 	struct v4l2_device *v4l2_dev = &az->v4l2_dev;
@@ -534,10 +616,14 @@ static int __init aztech_init(void)
 =======
 	return isa_register_driver(&aztech_driver.driver, AZTECH_MAX);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return isa_register_driver(&aztech_driver.driver, AZTECH_MAX);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit aztech_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct aztech *az = &aztech_card;
 
@@ -547,6 +633,9 @@ static void __exit aztech_exit(void)
 =======
 	isa_unregister_driver(&aztech_driver.driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isa_unregister_driver(&aztech_driver.driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(aztech_init);

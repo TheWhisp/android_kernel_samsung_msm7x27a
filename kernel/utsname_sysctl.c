@@ -10,17 +10,25 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/uts.h>
 #include <linux/utsname.h>
 #include <linux/sysctl.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include <linux/uts.h>
 #include <linux/utsname.h>
 #include <linux/sysctl.h>
 #include <linux/wait.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef CONFIG_PROC_SYSCTL
+>>>>>>> refs/remotes/origin/master
 
 static void *get_uts(ctl_table *table, int write)
 {
@@ -45,7 +53,10 @@ static void put_uts(ctl_table *table, int write, void *which)
 		up_write(&uts_sem);
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_PROC_SYSCTL
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *	Special case of dostring for the UTS structure. This has locks
  *	to observe. Should this be in kernel/sys.c ????
@@ -60,12 +71,18 @@ static int proc_do_uts_string(ctl_table *table, int write,
 	r = proc_dostring(&uts_table,write,buffer,lenp, ppos);
 	put_uts(table, write, uts_table.data);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (write)
 		proc_sys_poll_notify(table->poll);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 #else
@@ -73,11 +90,17 @@ static int proc_do_uts_string(ctl_table *table, int write,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static DEFINE_CTL_TABLE_POLL(hostname_poll);
 static DEFINE_CTL_TABLE_POLL(domainname_poll);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_CTL_TABLE_POLL(hostname_poll);
+static DEFINE_CTL_TABLE_POLL(domainname_poll);
+
+>>>>>>> refs/remotes/origin/master
 static struct ctl_table uts_kern_table[] = {
 	{
 		.procname	= "ostype",
@@ -107,9 +130,13 @@ static struct ctl_table uts_kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_do_uts_string,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.poll		= &hostname_poll,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.poll		= &hostname_poll,
+>>>>>>> refs/remotes/origin/master
 	},
 	{
 		.procname	= "domainname",
@@ -118,9 +145,13 @@ static struct ctl_table uts_kern_table[] = {
 		.mode		= 0644,
 		.proc_handler	= proc_do_uts_string,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		.poll		= &domainname_poll,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.poll		= &domainname_poll,
+>>>>>>> refs/remotes/origin/master
 	},
 	{}
 };
@@ -135,7 +166,10 @@ static struct ctl_table uts_root_table[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PROC_SYSCTL
 /*
  * Notify userspace about a change in a certain entry of uts_kern_table,
@@ -149,7 +183,10 @@ void uts_proc_notify(enum uts_proc proc)
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init utsname_sysctl_init(void)
 {
 	register_sysctl_table(uts_root_table);

@@ -1,6 +1,11 @@
 config USBIP_CORE
+<<<<<<< HEAD
 	tristate "USB/IP support (EXPERIMENTAL)"
 	depends on USB && NET && EXPERIMENTAL
+=======
+	tristate "USB/IP support"
+	depends on USB && NET
+>>>>>>> refs/remotes/origin/master
 	default N
 	---help---
 	  This enables pushing USB packets over IP to allow remote
@@ -8,7 +13,11 @@ config USBIP_CORE
 	  USB/IP core that is required by both drivers.
 
 	  For more details, and to get the userspace utility
+<<<<<<< HEAD
 	  programs, please see http://usbip.sourceforge.net/.
+=======
+	  programs, please see <http://usbip.sourceforge.net/>.
+>>>>>>> refs/remotes/origin/master
 
 	  To compile this as a module, choose M here: the module will
 	  be called usbip-core.

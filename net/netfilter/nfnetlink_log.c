@@ -3,6 +3,10 @@
  * nfetlink.
  *
  * (C) 2005 by Harald Welte <laforge@netfilter.org>
+<<<<<<< HEAD
+=======
+ * (C) 2006-2012 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  *
  * Based on the old ipv4-only ipt_ULOG.c:
  * (C) 2000-2004 by Harald Welte <laforge@netfilter.org>
@@ -13,12 +17,20 @@
  */
 #include <linux/module.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
+=======
+#include <linux/if_arp.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/ip.h>
 #include <linux/ipv6.h>
 #include <linux/netdevice.h>
 #include <linux/netfilter.h>
+<<<<<<< HEAD
 #include <linux/netlink.h>
+=======
+#include <net/netlink.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/netfilter/nfnetlink_log.h>
 #include <linux/spinlock.h>
@@ -31,6 +43,7 @@
 #include <linux/slab.h>
 #include <net/sock.h>
 #include <net/netfilter/nf_log.h>
+<<<<<<< HEAD
 #include <net/netfilter/nfnetlink_log.h>
 
 <<<<<<< HEAD
@@ -38,6 +51,12 @@
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/netns/generic.h>
+#include <net/netfilter/nfnetlink_log.h>
+
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_BRIDGE_NETFILTER
 #include "../bridge/br_private.h"
@@ -59,7 +78,13 @@ struct nfulnl_instance {
 	unsigned int qlen;		/* number of nlmsgs in skb */
 	struct sk_buff *skb;		/* pre-allocatd skb */
 	struct timer_list timer;
+<<<<<<< HEAD
 	int peer_pid;			/* PID of the peer process */
+=======
+	struct net *net;
+	struct user_namespace *peer_user_ns;	/* User namespace of the peer process */
+	int peer_portid;			/* PORTID of the peer process */
+>>>>>>> refs/remotes/origin/master
 
 	/* configurable parameters */
 	unsigned int flushtimeout;	/* timeout until queue flush */
@@ -73,6 +98,7 @@ struct nfulnl_instance {
 	struct rcu_head rcu;
 };
 
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(instances_lock);
 static atomic_t global_seq;
 
@@ -80,12 +106,31 @@ static atomic_t global_seq;
 static struct hlist_head instance_table[INSTANCE_BUCKETS];
 static unsigned int hash_init;
 
+=======
+#define INSTANCE_BUCKETS	16
+static unsigned int hash_init;
+
+static int nfnl_log_net_id __read_mostly;
+
+struct nfnl_log_net {
+	spinlock_t instances_lock;
+	struct hlist_head instance_table[INSTANCE_BUCKETS];
+	atomic_t global_seq;
+};
+
+static struct nfnl_log_net *nfnl_log_pernet(struct net *net)
+{
+	return net_generic(net, nfnl_log_net_id);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline u_int8_t instance_hashfn(u_int16_t group_num)
 {
 	return ((group_num & 0xff) % INSTANCE_BUCKETS);
 }
 
 static struct nfulnl_instance *
+<<<<<<< HEAD
 __instance_lookup(u_int16_t group_num)
 {
 	struct hlist_head *head;
@@ -94,6 +139,15 @@ __instance_lookup(u_int16_t group_num)
 
 	head = &instance_table[instance_hashfn(group_num)];
 	hlist_for_each_entry_rcu(inst, pos, head, hlist) {
+=======
+__instance_lookup(struct nfnl_log_net *log, u_int16_t group_num)
+{
+	struct hlist_head *head;
+	struct nfulnl_instance *inst;
+
+	head = &log->instance_table[instance_hashfn(group_num)];
+	hlist_for_each_entry_rcu(inst, head, hlist) {
+>>>>>>> refs/remotes/origin/master
 		if (inst->group_num == group_num)
 			return inst;
 	}
@@ -107,12 +161,20 @@ instance_get(struct nfulnl_instance *inst)
 }
 
 static struct nfulnl_instance *
+<<<<<<< HEAD
 instance_lookup_get(u_int16_t group_num)
+=======
+instance_lookup_get(struct nfnl_log_net *log, u_int16_t group_num)
+>>>>>>> refs/remotes/origin/master
 {
 	struct nfulnl_instance *inst;
 
 	rcu_read_lock_bh();
+<<<<<<< HEAD
 	inst = __instance_lookup(group_num);
+=======
+	inst = __instance_lookup(log, group_num);
+>>>>>>> refs/remotes/origin/master
 	if (inst && !atomic_inc_not_zero(&inst->use))
 		inst = NULL;
 	rcu_read_unlock_bh();
@@ -122,7 +184,15 @@ instance_lookup_get(u_int16_t group_num)
 
 static void nfulnl_instance_free_rcu(struct rcu_head *head)
 {
+<<<<<<< HEAD
 	kfree(container_of(head, struct nfulnl_instance, rcu));
+=======
+	struct nfulnl_instance *inst =
+		container_of(head, struct nfulnl_instance, rcu);
+
+	put_net(inst->net);
+	kfree(inst);
+>>>>>>> refs/remotes/origin/master
 	module_put(THIS_MODULE);
 }
 
@@ -136,6 +206,7 @@ instance_put(struct nfulnl_instance *inst)
 static void nfulnl_timer(unsigned long data);
 
 static struct nfulnl_instance *
+<<<<<<< HEAD
 instance_create(u_int16_t group_num, int pid)
 {
 	struct nfulnl_instance *inst;
@@ -143,6 +214,17 @@ instance_create(u_int16_t group_num, int pid)
 
 	spin_lock_bh(&instances_lock);
 	if (__instance_lookup(group_num)) {
+=======
+instance_create(struct net *net, u_int16_t group_num,
+		int portid, struct user_namespace *user_ns)
+{
+	struct nfulnl_instance *inst;
+	struct nfnl_log_net *log = nfnl_log_pernet(net);
+	int err;
+
+	spin_lock_bh(&log->instances_lock);
+	if (__instance_lookup(log, group_num)) {
+>>>>>>> refs/remotes/origin/master
 		err = -EEXIST;
 		goto out_unlock;
 	}
@@ -166,7 +248,13 @@ instance_create(u_int16_t group_num, int pid)
 
 	setup_timer(&inst->timer, nfulnl_timer, (unsigned long)inst);
 
+<<<<<<< HEAD
 	inst->peer_pid = pid;
+=======
+	inst->net = get_net(net);
+	inst->peer_user_ns = user_ns;
+	inst->peer_portid = portid;
+>>>>>>> refs/remotes/origin/master
 	inst->group_num = group_num;
 
 	inst->qthreshold 	= NFULNL_QTHRESH_DEFAULT;
@@ -176,14 +264,25 @@ instance_create(u_int16_t group_num, int pid)
 	inst->copy_range 	= NFULNL_COPY_RANGE_MAX;
 
 	hlist_add_head_rcu(&inst->hlist,
+<<<<<<< HEAD
 		       &instance_table[instance_hashfn(group_num)]);
 
 	spin_unlock_bh(&instances_lock);
+=======
+		       &log->instance_table[instance_hashfn(group_num)]);
+
+
+	spin_unlock_bh(&log->instances_lock);
+>>>>>>> refs/remotes/origin/master
 
 	return inst;
 
 out_unlock:
+<<<<<<< HEAD
 	spin_unlock_bh(&instances_lock);
+=======
+	spin_unlock_bh(&log->instances_lock);
+>>>>>>> refs/remotes/origin/master
 	return ERR_PTR(err);
 }
 
@@ -212,11 +311,20 @@ __instance_destroy(struct nfulnl_instance *inst)
 }
 
 static inline void
+<<<<<<< HEAD
 instance_destroy(struct nfulnl_instance *inst)
 {
 	spin_lock_bh(&instances_lock);
 	__instance_destroy(inst);
 	spin_unlock_bh(&instances_lock);
+=======
+instance_destroy(struct nfnl_log_net *log,
+		 struct nfulnl_instance *inst)
+{
+	spin_lock_bh(&log->instances_lock);
+	__instance_destroy(inst);
+	spin_unlock_bh(&log->instances_lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -300,7 +408,12 @@ nfulnl_set_flags(struct nfulnl_instance *inst, u_int16_t flags)
 }
 
 static struct sk_buff *
+<<<<<<< HEAD
 nfulnl_alloc_skb(unsigned int inst_size, unsigned int pkt_size)
+=======
+nfulnl_alloc_skb(struct net *net, u32 peer_portid, unsigned int inst_size,
+		 unsigned int pkt_size)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sk_buff *skb;
 	unsigned int n;
@@ -309,6 +422,7 @@ nfulnl_alloc_skb(unsigned int inst_size, unsigned int pkt_size)
 	 * message.  WARNING: has to be <= 128k due to slab restrictions */
 
 	n = max(inst_size, pkt_size);
+<<<<<<< HEAD
 	skb = alloc_skb(n, GFP_ATOMIC);
 	if (!skb) {
 <<<<<<< HEAD
@@ -317,10 +431,15 @@ nfulnl_alloc_skb(unsigned int inst_size, unsigned int pkt_size)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb = nfnetlink_alloc_skb(net, n, peer_portid, GFP_ATOMIC);
+	if (!skb) {
+>>>>>>> refs/remotes/origin/master
 		if (n > pkt_size) {
 			/* try to allocate only as much as we need for current
 			 * packet */
 
+<<<<<<< HEAD
 			skb = alloc_skb(pkt_size, GFP_ATOMIC);
 			if (!skb)
 <<<<<<< HEAD
@@ -330,6 +449,13 @@ nfulnl_alloc_skb(unsigned int inst_size, unsigned int pkt_size)
 				pr_err("nfnetlink_log: can't even alloc %u bytes\n",
 				       pkt_size);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			skb = nfnetlink_alloc_skb(net, pkt_size,
+						  peer_portid, GFP_ATOMIC);
+			if (!skb)
+				pr_err("nfnetlink_log: can't even alloc %u bytes\n",
+				       pkt_size);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -341,18 +467,34 @@ __nfulnl_send(struct nfulnl_instance *inst)
 {
 	int status = -1;
 
+<<<<<<< HEAD
 	if (inst->qlen > 1)
 		NLMSG_PUT(inst->skb, 0, 0,
 			  NLMSG_DONE,
 			  sizeof(struct nfgenmsg));
 
 	status = nfnetlink_unicast(inst->skb, &init_net, inst->peer_pid,
+=======
+	if (inst->qlen > 1) {
+		struct nlmsghdr *nlh = nlmsg_put(inst->skb, 0, 0,
+						 NLMSG_DONE,
+						 sizeof(struct nfgenmsg),
+						 0);
+		if (!nlh)
+			goto out;
+	}
+	status = nfnetlink_unicast(inst->skb, inst->net, inst->peer_portid,
+>>>>>>> refs/remotes/origin/master
 				   MSG_DONTWAIT);
 
 	inst->qlen = 0;
 	inst->skb = NULL;
+<<<<<<< HEAD
 
 nlmsg_failure:
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -381,7 +523,12 @@ nfulnl_timer(unsigned long data)
 /* This is an inline function, we don't really care about a long
  * list of arguments */
 static inline int
+<<<<<<< HEAD
 __build_packet_message(struct nfulnl_instance *inst,
+=======
+__build_packet_message(struct nfnl_log_net *log,
+			struct nfulnl_instance *inst,
+>>>>>>> refs/remotes/origin/master
 			const struct sk_buff *skb,
 			unsigned int data_len,
 			u_int8_t pf,
@@ -394,15 +541,28 @@ __build_packet_message(struct nfulnl_instance *inst,
 	struct nlmsghdr *nlh;
 	struct nfgenmsg *nfmsg;
 	sk_buff_data_t old_tail = inst->skb->tail;
+<<<<<<< HEAD
 
 	nlh = NLMSG_PUT(inst->skb, 0, 0,
 			NFNL_SUBSYS_ULOG << 8 | NFULNL_MSG_PACKET,
 			sizeof(struct nfgenmsg));
 	nfmsg = NLMSG_DATA(nlh);
+=======
+	struct sock *sk;
+	const unsigned char *hwhdrp;
+
+	nlh = nlmsg_put(inst->skb, 0, 0,
+			NFNL_SUBSYS_ULOG << 8 | NFULNL_MSG_PACKET,
+			sizeof(struct nfgenmsg), 0);
+	if (!nlh)
+		return -1;
+	nfmsg = nlmsg_data(nlh);
+>>>>>>> refs/remotes/origin/master
 	nfmsg->nfgen_family = pf;
 	nfmsg->version = NFNETLINK_V0;
 	nfmsg->res_id = htons(inst->group_num);
 
+<<<<<<< HEAD
 	pmsg.hw_protocol	= skb->protocol;
 	pmsg.hook		= hooknum;
 
@@ -415,11 +575,30 @@ __build_packet_message(struct nfulnl_instance *inst,
 #ifndef CONFIG_BRIDGE_NETFILTER
 		NLA_PUT_BE32(inst->skb, NFULA_IFINDEX_INDEV,
 			     htonl(indev->ifindex));
+=======
+	memset(&pmsg, 0, sizeof(pmsg));
+	pmsg.hw_protocol	= skb->protocol;
+	pmsg.hook		= hooknum;
+
+	if (nla_put(inst->skb, NFULA_PACKET_HDR, sizeof(pmsg), &pmsg))
+		goto nla_put_failure;
+
+	if (prefix &&
+	    nla_put(inst->skb, NFULA_PREFIX, plen, prefix))
+		goto nla_put_failure;
+
+	if (indev) {
+#ifndef CONFIG_BRIDGE_NETFILTER
+		if (nla_put_be32(inst->skb, NFULA_IFINDEX_INDEV,
+				 htonl(indev->ifindex)))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 #else
 		if (pf == PF_BRIDGE) {
 			/* Case 1: outdev is physical input device, we need to
 			 * look for bridge group (when called from
 			 * netfilter_bridge) */
+<<<<<<< HEAD
 			NLA_PUT_BE32(inst->skb, NFULA_IFINDEX_PHYSINDEV,
 				     htonl(indev->ifindex));
 			/* this is the bridge group "brX" */
@@ -434,19 +613,45 @@ __build_packet_message(struct nfulnl_instance *inst,
 			if (skb->nf_bridge && skb->nf_bridge->physindev)
 				NLA_PUT_BE32(inst->skb, NFULA_IFINDEX_PHYSINDEV,
 					     htonl(skb->nf_bridge->physindev->ifindex));
+=======
+			if (nla_put_be32(inst->skb, NFULA_IFINDEX_PHYSINDEV,
+					 htonl(indev->ifindex)) ||
+			/* this is the bridge group "brX" */
+			/* rcu_read_lock()ed by nf_hook_slow or nf_log_packet */
+			    nla_put_be32(inst->skb, NFULA_IFINDEX_INDEV,
+					 htonl(br_port_get_rcu(indev)->br->dev->ifindex)))
+				goto nla_put_failure;
+		} else {
+			/* Case 2: indev is bridge group, we need to look for
+			 * physical device (when called from ipv4) */
+			if (nla_put_be32(inst->skb, NFULA_IFINDEX_INDEV,
+					 htonl(indev->ifindex)))
+				goto nla_put_failure;
+			if (skb->nf_bridge && skb->nf_bridge->physindev &&
+			    nla_put_be32(inst->skb, NFULA_IFINDEX_PHYSINDEV,
+					 htonl(skb->nf_bridge->physindev->ifindex)))
+				goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		}
 #endif
 	}
 
 	if (outdev) {
 #ifndef CONFIG_BRIDGE_NETFILTER
+<<<<<<< HEAD
 		NLA_PUT_BE32(inst->skb, NFULA_IFINDEX_OUTDEV,
 			     htonl(outdev->ifindex));
+=======
+		if (nla_put_be32(inst->skb, NFULA_IFINDEX_OUTDEV,
+				 htonl(outdev->ifindex)))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 #else
 		if (pf == PF_BRIDGE) {
 			/* Case 1: outdev is physical output device, we need to
 			 * look for bridge group (when called from
 			 * netfilter_bridge) */
+<<<<<<< HEAD
 			NLA_PUT_BE32(inst->skb, NFULA_IFINDEX_PHYSOUTDEV,
 				     htonl(outdev->ifindex));
 			/* this is the bridge group "brX" */
@@ -461,29 +666,82 @@ __build_packet_message(struct nfulnl_instance *inst,
 			if (skb->nf_bridge && skb->nf_bridge->physoutdev)
 				NLA_PUT_BE32(inst->skb, NFULA_IFINDEX_PHYSOUTDEV,
 					     htonl(skb->nf_bridge->physoutdev->ifindex));
+=======
+			if (nla_put_be32(inst->skb, NFULA_IFINDEX_PHYSOUTDEV,
+					 htonl(outdev->ifindex)) ||
+			/* this is the bridge group "brX" */
+			/* rcu_read_lock()ed by nf_hook_slow or nf_log_packet */
+			    nla_put_be32(inst->skb, NFULA_IFINDEX_OUTDEV,
+					 htonl(br_port_get_rcu(outdev)->br->dev->ifindex)))
+				goto nla_put_failure;
+		} else {
+			/* Case 2: indev is a bridge group, we need to look
+			 * for physical device (when called from ipv4) */
+			if (nla_put_be32(inst->skb, NFULA_IFINDEX_OUTDEV,
+					 htonl(outdev->ifindex)))
+				goto nla_put_failure;
+			if (skb->nf_bridge && skb->nf_bridge->physoutdev &&
+			    nla_put_be32(inst->skb, NFULA_IFINDEX_PHYSOUTDEV,
+					 htonl(skb->nf_bridge->physoutdev->ifindex)))
+				goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		}
 #endif
 	}
 
+<<<<<<< HEAD
 	if (skb->mark)
 		NLA_PUT_BE32(inst->skb, NFULA_MARK, htonl(skb->mark));
+=======
+	if (skb->mark &&
+	    nla_put_be32(inst->skb, NFULA_MARK, htonl(skb->mark)))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	if (indev && skb->dev &&
 	    skb->mac_header != skb->network_header) {
 		struct nfulnl_msg_packet_hw phw;
+<<<<<<< HEAD
 		int len = dev_parse_header(skb, phw.hw_addr);
 		if (len > 0) {
 			phw.hw_addrlen = htons(len);
 			NLA_PUT(inst->skb, NFULA_HWADDR, sizeof(phw), &phw);
+=======
+		int len;
+
+		memset(&phw, 0, sizeof(phw));
+		len = dev_parse_header(skb, phw.hw_addr);
+		if (len > 0) {
+			phw.hw_addrlen = htons(len);
+			if (nla_put(inst->skb, NFULA_HWADDR, sizeof(phw), &phw))
+				goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
 	if (indev && skb_mac_header_was_set(skb)) {
+<<<<<<< HEAD
 		NLA_PUT_BE16(inst->skb, NFULA_HWTYPE, htons(skb->dev->type));
 		NLA_PUT_BE16(inst->skb, NFULA_HWLEN,
 			     htons(skb->dev->hard_header_len));
 		NLA_PUT(inst->skb, NFULA_HWHEADER, skb->dev->hard_header_len,
 			skb_mac_header(skb));
+=======
+		if (nla_put_be16(inst->skb, NFULA_HWTYPE, htons(skb->dev->type)) ||
+		    nla_put_be16(inst->skb, NFULA_HWLEN,
+				 htons(skb->dev->hard_header_len)))
+			goto nla_put_failure;
+
+		hwhdrp = skb_mac_header(skb);
+
+		if (skb->dev->type == ARPHRD_SIT)
+			hwhdrp -= ETH_HLEN;
+
+		if (hwhdrp >= skb->head &&
+		    nla_put(inst->skb, NFULA_HWHEADER,
+			    skb->dev->hard_header_len, hwhdrp))
+			goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (skb->tstamp.tv64) {
@@ -492,6 +750,7 @@ __build_packet_message(struct nfulnl_instance *inst,
 		ts.sec = cpu_to_be64(tv.tv_sec);
 		ts.usec = cpu_to_be64(tv.tv_usec);
 
+<<<<<<< HEAD
 		NLA_PUT(inst->skb, NFULA_TIMESTAMP, sizeof(ts), &ts);
 	}
 
@@ -518,6 +777,40 @@ __build_packet_message(struct nfulnl_instance *inst,
 	if (inst->flags & NFULNL_CFG_F_SEQ_GLOBAL)
 		NLA_PUT_BE32(inst->skb, NFULA_SEQ_GLOBAL,
 			     htonl(atomic_inc_return(&global_seq)));
+=======
+		if (nla_put(inst->skb, NFULA_TIMESTAMP, sizeof(ts), &ts))
+			goto nla_put_failure;
+	}
+
+	/* UID */
+	sk = skb->sk;
+	if (sk && sk->sk_state != TCP_TIME_WAIT) {
+		read_lock_bh(&sk->sk_callback_lock);
+		if (sk->sk_socket && sk->sk_socket->file) {
+			struct file *file = sk->sk_socket->file;
+			const struct cred *cred = file->f_cred;
+			struct user_namespace *user_ns = inst->peer_user_ns;
+			__be32 uid = htonl(from_kuid_munged(user_ns, cred->fsuid));
+			__be32 gid = htonl(from_kgid_munged(user_ns, cred->fsgid));
+			read_unlock_bh(&sk->sk_callback_lock);
+			if (nla_put_be32(inst->skb, NFULA_UID, uid) ||
+			    nla_put_be32(inst->skb, NFULA_GID, gid))
+				goto nla_put_failure;
+		} else
+			read_unlock_bh(&sk->sk_callback_lock);
+	}
+
+	/* local sequence number */
+	if ((inst->flags & NFULNL_CFG_F_SEQ) &&
+	    nla_put_be32(inst->skb, NFULA_SEQ, htonl(inst->seq++)))
+		goto nla_put_failure;
+
+	/* global sequence number */
+	if ((inst->flags & NFULNL_CFG_F_SEQ_GLOBAL) &&
+	    nla_put_be32(inst->skb, NFULA_SEQ_GLOBAL,
+			 htonl(atomic_inc_return(&log->global_seq))))
+		goto nla_put_failure;
+>>>>>>> refs/remotes/origin/master
 
 	if (data_len) {
 		struct nlattr *nla;
@@ -525,7 +818,11 @@ __build_packet_message(struct nfulnl_instance *inst,
 
 		if (skb_tailroom(inst->skb) < nla_total_size(data_len)) {
 			printk(KERN_WARNING "nfnetlink_log: no tailroom!\n");
+<<<<<<< HEAD
 			goto nlmsg_failure;
+=======
+			return -1;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		nla = (struct nlattr *)skb_put(inst->skb, nla_total_size(data_len));
@@ -539,7 +836,10 @@ __build_packet_message(struct nfulnl_instance *inst,
 	nlh->nlmsg_len = inst->skb->tail - old_tail;
 	return 0;
 
+<<<<<<< HEAD
 nlmsg_failure:
+=======
+>>>>>>> refs/remotes/origin/master
 nla_put_failure:
 	PRINTR(KERN_ERR "nfnetlink_log: error creating log nlmsg\n");
 	return -1;
@@ -560,7 +860,12 @@ static struct nf_loginfo default_loginfo = {
 
 /* log handler for internal netfilter logging api */
 void
+<<<<<<< HEAD
 nfulnl_log_packet(u_int8_t pf,
+=======
+nfulnl_log_packet(struct net *net,
+		  u_int8_t pf,
+>>>>>>> refs/remotes/origin/master
 		  unsigned int hooknum,
 		  const struct sk_buff *skb,
 		  const struct net_device *in,
@@ -573,13 +878,21 @@ nfulnl_log_packet(u_int8_t pf,
 	const struct nf_loginfo *li;
 	unsigned int qthreshold;
 	unsigned int plen;
+<<<<<<< HEAD
+=======
+	struct nfnl_log_net *log = nfnl_log_pernet(net);
+>>>>>>> refs/remotes/origin/master
 
 	if (li_user && li_user->type == NF_LOG_TYPE_ULOG)
 		li = li_user;
 	else
 		li = &default_loginfo;
 
+<<<<<<< HEAD
 	inst = instance_lookup_get(li->u.ulog.group);
+=======
+	inst = instance_lookup_get(log, li->u.ulog.group);
+>>>>>>> refs/remotes/origin/master
 	if (!inst)
 		return;
 
@@ -590,7 +903,11 @@ nfulnl_log_packet(u_int8_t pf,
 	/* FIXME: do we want to make the size calculation conditional based on
 	 * what is actually present?  way more branches and checks, but more
 	 * memory efficient... */
+<<<<<<< HEAD
 	size =    NLMSG_SPACE(sizeof(struct nfgenmsg))
+=======
+	size =    nlmsg_total_size(sizeof(struct nfgenmsg))
+>>>>>>> refs/remotes/origin/master
 		+ nla_total_size(sizeof(struct nfulnl_msg_packet_hdr))
 		+ nla_total_size(sizeof(u_int32_t))	/* ifindex */
 		+ nla_total_size(sizeof(u_int32_t))	/* ifindex */
@@ -654,14 +971,23 @@ nfulnl_log_packet(u_int8_t pf,
 	}
 
 	if (!inst->skb) {
+<<<<<<< HEAD
 		inst->skb = nfulnl_alloc_skb(inst->nlbufsiz, size);
+=======
+		inst->skb = nfulnl_alloc_skb(net, inst->peer_portid,
+					     inst->nlbufsiz, size);
+>>>>>>> refs/remotes/origin/master
 		if (!inst->skb)
 			goto alloc_failure;
 	}
 
 	inst->qlen++;
 
+<<<<<<< HEAD
 	__build_packet_message(inst, skb, data_len, pf,
+=======
+	__build_packet_message(log, inst, skb, data_len, pf,
+>>>>>>> refs/remotes/origin/master
 				hooknum, in, out, prefix, plen);
 
 	if (inst->qlen >= qthreshold)
@@ -690,10 +1016,15 @@ nfulnl_rcv_nl_event(struct notifier_block *this,
 		   unsigned long event, void *ptr)
 {
 	struct netlink_notify *n = ptr;
+<<<<<<< HEAD
+=======
+	struct nfnl_log_net *log = nfnl_log_pernet(n->net);
+>>>>>>> refs/remotes/origin/master
 
 	if (event == NETLINK_URELEASE && n->protocol == NETLINK_NETFILTER) {
 		int i;
 
+<<<<<<< HEAD
 		/* destroy all instances for this pid */
 		spin_lock_bh(&instances_lock);
 		for  (i = 0; i < INSTANCE_BUCKETS; i++) {
@@ -708,6 +1039,21 @@ nfulnl_rcv_nl_event(struct notifier_block *this,
 			}
 		}
 		spin_unlock_bh(&instances_lock);
+=======
+		/* destroy all instances for this portid */
+		spin_lock_bh(&log->instances_lock);
+		for  (i = 0; i < INSTANCE_BUCKETS; i++) {
+			struct hlist_node *t2;
+			struct nfulnl_instance *inst;
+			struct hlist_head *head = &log->instance_table[i];
+
+			hlist_for_each_entry_safe(inst, t2, head, hlist) {
+				if (n->portid == inst->peer_portid)
+					__instance_destroy(inst);
+			}
+		}
+		spin_unlock_bh(&log->instances_lock);
+>>>>>>> refs/remotes/origin/master
 	}
 	return NOTIFY_DONE;
 }
@@ -744,10 +1090,19 @@ nfulnl_recv_config(struct sock *ctnl, struct sk_buff *skb,
 		   const struct nlmsghdr *nlh,
 		   const struct nlattr * const nfula[])
 {
+<<<<<<< HEAD
 	struct nfgenmsg *nfmsg = NLMSG_DATA(nlh);
 	u_int16_t group_num = ntohs(nfmsg->res_id);
 	struct nfulnl_instance *inst;
 	struct nfulnl_msg_config_cmd *cmd = NULL;
+=======
+	struct nfgenmsg *nfmsg = nlmsg_data(nlh);
+	u_int16_t group_num = ntohs(nfmsg->res_id);
+	struct nfulnl_instance *inst;
+	struct nfulnl_msg_config_cmd *cmd = NULL;
+	struct net *net = sock_net(ctnl);
+	struct nfnl_log_net *log = nfnl_log_pernet(net);
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	if (nfula[NFULA_CFG_CMD]) {
@@ -757,15 +1112,26 @@ nfulnl_recv_config(struct sock *ctnl, struct sk_buff *skb,
 		/* Commands without queue context */
 		switch (cmd->command) {
 		case NFULNL_CFG_CMD_PF_BIND:
+<<<<<<< HEAD
 			return nf_log_bind_pf(pf, &nfulnl_logger);
 		case NFULNL_CFG_CMD_PF_UNBIND:
 			nf_log_unbind_pf(pf);
+=======
+			return nf_log_bind_pf(net, pf, &nfulnl_logger);
+		case NFULNL_CFG_CMD_PF_UNBIND:
+			nf_log_unbind_pf(net, pf);
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		}
 	}
 
+<<<<<<< HEAD
 	inst = instance_lookup_get(group_num);
 	if (inst && inst->peer_pid != NETLINK_CB(skb).pid) {
+=======
+	inst = instance_lookup_get(log, group_num);
+	if (inst && inst->peer_portid != NETLINK_CB(skb).portid) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EPERM;
 		goto out_put;
 	}
@@ -778,8 +1144,14 @@ nfulnl_recv_config(struct sock *ctnl, struct sk_buff *skb,
 				goto out_put;
 			}
 
+<<<<<<< HEAD
 			inst = instance_create(group_num,
 					       NETLINK_CB(skb).pid);
+=======
+			inst = instance_create(net, group_num,
+					       NETLINK_CB(skb).portid,
+					       sk_user_ns(NETLINK_CB(skb).sk));
+>>>>>>> refs/remotes/origin/master
 			if (IS_ERR(inst)) {
 				ret = PTR_ERR(inst);
 				goto out;
@@ -791,7 +1163,11 @@ nfulnl_recv_config(struct sock *ctnl, struct sk_buff *skb,
 				goto out;
 			}
 
+<<<<<<< HEAD
 			instance_destroy(inst);
+=======
+			instance_destroy(log, inst);
+>>>>>>> refs/remotes/origin/master
 			goto out_put;
 		default:
 			ret = -ENOTSUPP;
@@ -874,6 +1250,7 @@ static const struct nfnetlink_subsystem nfulnl_subsys = {
 
 #ifdef CONFIG_PROC_FS
 struct iter_state {
+<<<<<<< HEAD
 	unsigned int bucket;
 };
 
@@ -885,10 +1262,30 @@ static struct hlist_node *get_first(struct iter_state *st)
 	for (st->bucket = 0; st->bucket < INSTANCE_BUCKETS; st->bucket++) {
 		if (!hlist_empty(&instance_table[st->bucket]))
 			return rcu_dereference_bh(hlist_first_rcu(&instance_table[st->bucket]));
+=======
+	struct seq_net_private p;
+	unsigned int bucket;
+};
+
+static struct hlist_node *get_first(struct net *net, struct iter_state *st)
+{
+	struct nfnl_log_net *log;
+	if (!st)
+		return NULL;
+
+	log = nfnl_log_pernet(net);
+
+	for (st->bucket = 0; st->bucket < INSTANCE_BUCKETS; st->bucket++) {
+		struct hlist_head *head = &log->instance_table[st->bucket];
+
+		if (!hlist_empty(head))
+			return rcu_dereference_bh(hlist_first_rcu(head));
+>>>>>>> refs/remotes/origin/master
 	}
 	return NULL;
 }
 
+<<<<<<< HEAD
 static struct hlist_node *get_next(struct iter_state *st, struct hlist_node *h)
 {
 	h = rcu_dereference_bh(hlist_next_rcu(h));
@@ -897,10 +1294,27 @@ static struct hlist_node *get_next(struct iter_state *st, struct hlist_node *h)
 			return NULL;
 
 		h = rcu_dereference_bh(hlist_first_rcu(&instance_table[st->bucket]));
+=======
+static struct hlist_node *get_next(struct net *net, struct iter_state *st,
+				   struct hlist_node *h)
+{
+	h = rcu_dereference_bh(hlist_next_rcu(h));
+	while (!h) {
+		struct nfnl_log_net *log;
+		struct hlist_head *head;
+
+		if (++st->bucket >= INSTANCE_BUCKETS)
+			return NULL;
+
+		log = nfnl_log_pernet(net);
+		head = &log->instance_table[st->bucket];
+		h = rcu_dereference_bh(hlist_first_rcu(head));
+>>>>>>> refs/remotes/origin/master
 	}
 	return h;
 }
 
+<<<<<<< HEAD
 static struct hlist_node *get_idx(struct iter_state *st, loff_t pos)
 {
 	struct hlist_node *head;
@@ -908,21 +1322,43 @@ static struct hlist_node *get_idx(struct iter_state *st, loff_t pos)
 
 	if (head)
 		while (pos && (head = get_next(st, head)))
+=======
+static struct hlist_node *get_idx(struct net *net, struct iter_state *st,
+				  loff_t pos)
+{
+	struct hlist_node *head;
+	head = get_first(net, st);
+
+	if (head)
+		while (pos && (head = get_next(net, st, head)))
+>>>>>>> refs/remotes/origin/master
 			pos--;
 	return pos ? NULL : head;
 }
 
+<<<<<<< HEAD
 static void *seq_start(struct seq_file *seq, loff_t *pos)
 	__acquires(rcu_bh)
 {
 	rcu_read_lock_bh();
 	return get_idx(seq->private, *pos);
+=======
+static void *seq_start(struct seq_file *s, loff_t *pos)
+	__acquires(rcu_bh)
+{
+	rcu_read_lock_bh();
+	return get_idx(seq_file_net(s), s->private, *pos);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *seq_next(struct seq_file *s, void *v, loff_t *pos)
 {
 	(*pos)++;
+<<<<<<< HEAD
 	return get_next(s->private, v);
+=======
+	return get_next(seq_file_net(s), s->private, v);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void seq_stop(struct seq_file *s, void *v)
@@ -937,7 +1373,11 @@ static int seq_show(struct seq_file *s, void *v)
 
 	return seq_printf(s, "%5d %6d %5d %1d %5d %6d %2d\n",
 			  inst->group_num,
+<<<<<<< HEAD
 			  inst->peer_pid, inst->qlen,
+=======
+			  inst->peer_portid, inst->qlen,
+>>>>>>> refs/remotes/origin/master
 			  inst->copy_mode, inst->copy_range,
 			  inst->flushtimeout, atomic_read(&inst->use));
 }
@@ -951,8 +1391,13 @@ static const struct seq_operations nful_seq_ops = {
 
 static int nful_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return seq_open_private(file, &nful_seq_ops,
 			sizeof(struct iter_state));
+=======
+	return seq_open_net(inode, file, &nful_seq_ops,
+			    sizeof(struct iter_state));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations nful_file_ops = {
@@ -960,17 +1405,59 @@ static const struct file_operations nful_file_ops = {
 	.open	 = nful_open,
 	.read	 = seq_read,
 	.llseek	 = seq_lseek,
+<<<<<<< HEAD
 	.release = seq_release_private,
+=======
+	.release = seq_release_net,
+>>>>>>> refs/remotes/origin/master
 };
 
 #endif /* PROC_FS */
 
+<<<<<<< HEAD
 static int __init nfnetlink_log_init(void)
 {
 	int i, status = -ENOMEM;
 
 	for (i = 0; i < INSTANCE_BUCKETS; i++)
 		INIT_HLIST_HEAD(&instance_table[i]);
+=======
+static int __net_init nfnl_log_net_init(struct net *net)
+{
+	unsigned int i;
+	struct nfnl_log_net *log = nfnl_log_pernet(net);
+
+	for (i = 0; i < INSTANCE_BUCKETS; i++)
+		INIT_HLIST_HEAD(&log->instance_table[i]);
+	spin_lock_init(&log->instances_lock);
+
+#ifdef CONFIG_PROC_FS
+	if (!proc_create("nfnetlink_log", 0440,
+			 net->nf.proc_netfilter, &nful_file_ops))
+		return -ENOMEM;
+#endif
+	return 0;
+}
+
+static void __net_exit nfnl_log_net_exit(struct net *net)
+{
+#ifdef CONFIG_PROC_FS
+	remove_proc_entry("nfnetlink_log", net->nf.proc_netfilter);
+#endif
+	nf_log_unset(net, &nfulnl_logger);
+}
+
+static struct pernet_operations nfnl_log_net_ops = {
+	.init	= nfnl_log_net_init,
+	.exit	= nfnl_log_net_exit,
+	.id	= &nfnl_log_net_id,
+	.size	= sizeof(struct nfnl_log_net),
+};
+
+static int __init nfnetlink_log_init(void)
+{
+	int status = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* it's not really all that important to have a random value, so
 	 * we can do this from the init function, even if there hasn't
@@ -980,12 +1467,17 @@ static int __init nfnetlink_log_init(void)
 	netlink_register_notifier(&nfulnl_rtnl_notifier);
 	status = nfnetlink_subsys_register(&nfulnl_subsys);
 	if (status < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "log: failed to create netlink socket\n");
+=======
+		pr_err("log: failed to create netlink socket\n");
+>>>>>>> refs/remotes/origin/master
 		goto cleanup_netlink_notifier;
 	}
 
 	status = nf_log_register(NFPROTO_UNSPEC, &nfulnl_logger);
 	if (status < 0) {
+<<<<<<< HEAD
 		printk(KERN_ERR "log: failed to register logger\n");
 		goto cleanup_subsys;
 	}
@@ -1001,6 +1493,21 @@ static int __init nfnetlink_log_init(void)
 cleanup_logger:
 	nf_log_unregister(&nfulnl_logger);
 #endif
+=======
+		pr_err("log: failed to register logger\n");
+		goto cleanup_subsys;
+	}
+
+	status = register_pernet_subsys(&nfnl_log_net_ops);
+	if (status < 0) {
+		pr_err("log: failed to register pernet ops\n");
+		goto cleanup_logger;
+	}
+	return status;
+
+cleanup_logger:
+	nf_log_unregister(&nfulnl_logger);
+>>>>>>> refs/remotes/origin/master
 cleanup_subsys:
 	nfnetlink_subsys_unregister(&nfulnl_subsys);
 cleanup_netlink_notifier:
@@ -1010,10 +1517,15 @@ cleanup_netlink_notifier:
 
 static void __exit nfnetlink_log_fini(void)
 {
+<<<<<<< HEAD
 	nf_log_unregister(&nfulnl_logger);
 #ifdef CONFIG_PROC_FS
 	remove_proc_entry("nfnetlink_log", proc_net_netfilter);
 #endif
+=======
+	unregister_pernet_subsys(&nfnl_log_net_ops);
+	nf_log_unregister(&nfulnl_logger);
+>>>>>>> refs/remotes/origin/master
 	nfnetlink_subsys_unregister(&nfulnl_subsys);
 	netlink_unregister_notifier(&nfulnl_rtnl_notifier);
 }

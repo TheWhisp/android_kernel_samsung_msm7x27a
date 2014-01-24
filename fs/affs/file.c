@@ -39,7 +39,10 @@ const struct file_operations affs_file_operations = {
 };
 
 const struct inode_operations affs_file_inode_operations = {
+<<<<<<< HEAD
 	.truncate	= affs_truncate,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setattr	= affs_notify_change,
 };
 
@@ -402,6 +405,19 @@ static int affs_readpage(struct file *file, struct page *page)
 	return block_read_full_page(page, affs_get_block);
 }
 
+<<<<<<< HEAD
+=======
+static void affs_write_failed(struct address_space *mapping, loff_t to)
+{
+	struct inode *inode = mapping->host;
+
+	if (to > inode->i_size) {
+		truncate_pagecache(inode, inode->i_size);
+		affs_truncate(inode);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int affs_write_begin(struct file *file, struct address_space *mapping,
 			loff_t pos, unsigned len, unsigned flags,
 			struct page **pagep, void **fsdata)
@@ -412,11 +428,16 @@ static int affs_write_begin(struct file *file, struct address_space *mapping,
 	ret = cont_write_begin(file, mapping, pos, len, flags, pagep, fsdata,
 				affs_get_block,
 				&AFFS_I(mapping->host)->mmu_private);
+<<<<<<< HEAD
 	if (unlikely(ret)) {
 		loff_t isize = mapping->host->i_size;
 		if (pos + len > isize)
 			vmtruncate(mapping->host, isize);
 	}
+=======
+	if (unlikely(ret))
+		affs_write_failed(mapping, pos + len);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -830,7 +851,11 @@ affs_truncate(struct inode *inode)
 		struct address_space *mapping = inode->i_mapping;
 		struct page *page;
 		void *fsdata;
+<<<<<<< HEAD
 		u32 size = inode->i_size;
+=======
+		loff_t size = inode->i_size;
+>>>>>>> refs/remotes/origin/master
 		int res;
 
 		res = mapping->a_ops->write_begin(NULL, mapping, size, 0, 0, &page, &fsdata);
@@ -924,29 +949,43 @@ affs_truncate(struct inode *inode)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int affs_file_fsync(struct file *filp, int datasync)
 =======
 int affs_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int affs_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inode *inode = filp->f_mapping->host;
 	int ret, err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = filemap_write_and_wait_range(inode->i_mapping, start, end);
 	if (err)
 		return err;
 
 	mutex_lock(&inode->i_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = write_inode_now(inode, 0);
 	err = sync_blockdev(inode->i_sb->s_bdev);
 	if (!ret)
 		ret = err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&inode->i_mutex);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&inode->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }

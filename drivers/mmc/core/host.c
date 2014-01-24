@@ -15,17 +15,28 @@
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/idr.h>
+<<<<<<< HEAD
 #include <linux/pagemap.h>
 <<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+#include <linux/pagemap.h>
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/leds.h>
 #include <linux/slab.h>
 #include <linux/suspend.h>
 
 #include <linux/mmc/host.h>
 #include <linux/mmc/card.h>
+<<<<<<< HEAD
+=======
+#include <linux/mmc/slot-gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "core.h"
 #include "host.h"
@@ -35,6 +46,10 @@
 static void mmc_host_classdev_release(struct device *dev)
 {
 	struct mmc_host *host = cls_dev_to_mmc_host(dev);
+<<<<<<< HEAD
+=======
+	mutex_destroy(&host->slot.lock);
+>>>>>>> refs/remotes/origin/master
 	kfree(host);
 }
 
@@ -62,11 +77,15 @@ static ssize_t clkgate_delay_show(struct device *dev,
 {
 	struct mmc_host *host = cls_dev_to_mmc_host(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return snprintf(buf, PAGE_SIZE, "%lu millisecs\n",
 =======
 	return snprintf(buf, PAGE_SIZE, "%lu\n",
 >>>>>>> refs/remotes/origin/cm-10.0
 			host->clkgate_delay);
+=======
+	return snprintf(buf, PAGE_SIZE, "%lu\n", host->clkgate_delay);
+>>>>>>> refs/remotes/origin/master
 }
 
 static ssize_t clkgate_delay_store(struct device *dev,
@@ -81,9 +100,12 @@ static ssize_t clkgate_delay_store(struct device *dev,
 	spin_lock_irqsave(&host->clk_lock, flags);
 	host->clkgate_delay = value;
 	spin_unlock_irqrestore(&host->clk_lock, flags);
+<<<<<<< HEAD
 
 	pr_info("%s: clock gate delay set to %lu ms\n",
 			mmc_hostname(host), value);
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -214,8 +236,13 @@ void mmc_host_clk_release(struct mmc_host *host)
 	host->clk_requests--;
 	if (mmc_host_may_gate_card(host->card) &&
 	    !host->clk_requests)
+<<<<<<< HEAD
 		queue_delayed_work(system_nrt_wq, &host->clk_gate_work,
 				msecs_to_jiffies(host->clkgate_delay));
+=======
+		schedule_delayed_work(&host->clk_gate_work,
+				      msecs_to_jiffies(host->clkgate_delay));
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&host->clk_lock, flags);
 }
 
@@ -250,16 +277,22 @@ static inline void mmc_host_clk_init(struct mmc_host *host)
 	host->clk_delay = 8;
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Default clock gating delay is value is 200ms.
 	 * This value can be tuned by writing into sysfs entry.
 	 */
 	host->clkgate_delay = 200;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Default clock gating delay is 0ms to avoid wasting power.
 	 * This value can be tuned by writing into sysfs entry.
 	 */
 	host->clkgate_delay = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	host->clk_gated = false;
 	INIT_DELAYED_WORK(&host->clk_gate_work, mmc_host_clk_gate_work);
 	spin_lock_init(&host->clk_lock);
@@ -309,12 +342,161 @@ static inline void mmc_host_clk_sysfs_init(struct mmc_host *host)
 {
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
 /**
+=======
+
+#endif
+
+/**
+ *	mmc_of_parse() - parse host's device-tree node
+ *	@host: host whose node should be parsed.
+ *
+ * To keep the rest of the MMC subsystem unaware of whether DT has been
+ * used to to instantiate and configure this host instance or not, we
+ * parse the properties and set respective generic mmc-host flags and
+ * parameters.
+ */
+int mmc_of_parse(struct mmc_host *host)
+{
+	struct device_node *np;
+	u32 bus_width;
+	bool explicit_inv_wp, gpio_inv_wp = false;
+	enum of_gpio_flags flags;
+	int len, ret, gpio;
+
+	if (!host->parent || !host->parent->of_node)
+		return 0;
+
+	np = host->parent->of_node;
+
+	/* "bus-width" is translated to MMC_CAP_*_BIT_DATA flags */
+	if (of_property_read_u32(np, "bus-width", &bus_width) < 0) {
+		dev_dbg(host->parent,
+			"\"bus-width\" property is missing, assuming 1 bit.\n");
+		bus_width = 1;
+	}
+
+	switch (bus_width) {
+	case 8:
+		host->caps |= MMC_CAP_8_BIT_DATA;
+		/* Hosts capable of 8-bit transfers can also do 4 bits */
+	case 4:
+		host->caps |= MMC_CAP_4_BIT_DATA;
+		break;
+	case 1:
+		break;
+	default:
+		dev_err(host->parent,
+			"Invalid \"bus-width\" value %ud!\n", bus_width);
+		return -EINVAL;
+	}
+
+	/* f_max is obtained from the optional "max-frequency" property */
+	of_property_read_u32(np, "max-frequency", &host->f_max);
+
+	/*
+	 * Configure CD and WP pins. They are both by default active low to
+	 * match the SDHCI spec. If GPIOs are provided for CD and / or WP, the
+	 * mmc-gpio helpers are used to attach, configure and use them. If
+	 * polarity inversion is specified in DT, one of MMC_CAP2_CD_ACTIVE_HIGH
+	 * and MMC_CAP2_RO_ACTIVE_HIGH capability-2 flags is set. If the
+	 * "broken-cd" property is provided, the MMC_CAP_NEEDS_POLL capability
+	 * is set. If the "non-removable" property is found, the
+	 * MMC_CAP_NONREMOVABLE capability is set and no card-detection
+	 * configuration is performed.
+	 */
+
+	/* Parse Card Detection */
+	if (of_find_property(np, "non-removable", &len)) {
+		host->caps |= MMC_CAP_NONREMOVABLE;
+	} else {
+		bool explicit_inv_cd, gpio_inv_cd = false;
+
+		explicit_inv_cd = of_property_read_bool(np, "cd-inverted");
+
+		if (of_find_property(np, "broken-cd", &len))
+			host->caps |= MMC_CAP_NEEDS_POLL;
+
+		gpio = of_get_named_gpio_flags(np, "cd-gpios", 0, &flags);
+		if (gpio == -EPROBE_DEFER)
+			return gpio;
+		if (gpio_is_valid(gpio)) {
+			if (!(flags & OF_GPIO_ACTIVE_LOW))
+				gpio_inv_cd = true;
+
+			ret = mmc_gpio_request_cd(host, gpio, 0);
+			if (ret < 0) {
+				dev_err(host->parent,
+					"Failed to request CD GPIO #%d: %d!\n",
+					gpio, ret);
+				return ret;
+			} else {
+				dev_info(host->parent, "Got CD GPIO #%d.\n",
+					 gpio);
+			}
+		}
+
+		if (explicit_inv_cd ^ gpio_inv_cd)
+			host->caps2 |= MMC_CAP2_CD_ACTIVE_HIGH;
+	}
+
+	/* Parse Write Protection */
+	explicit_inv_wp = of_property_read_bool(np, "wp-inverted");
+
+	gpio = of_get_named_gpio_flags(np, "wp-gpios", 0, &flags);
+	if (gpio == -EPROBE_DEFER) {
+		ret = -EPROBE_DEFER;
+		goto out;
+	}
+	if (gpio_is_valid(gpio)) {
+		if (!(flags & OF_GPIO_ACTIVE_LOW))
+			gpio_inv_wp = true;
+
+		ret = mmc_gpio_request_ro(host, gpio);
+		if (ret < 0) {
+			dev_err(host->parent,
+				"Failed to request WP GPIO: %d!\n", ret);
+			goto out;
+		} else {
+				dev_info(host->parent, "Got WP GPIO #%d.\n",
+					 gpio);
+		}
+	}
+	if (explicit_inv_wp ^ gpio_inv_wp)
+		host->caps2 |= MMC_CAP2_RO_ACTIVE_HIGH;
+
+	if (of_find_property(np, "cap-sd-highspeed", &len))
+		host->caps |= MMC_CAP_SD_HIGHSPEED;
+	if (of_find_property(np, "cap-mmc-highspeed", &len))
+		host->caps |= MMC_CAP_MMC_HIGHSPEED;
+	if (of_find_property(np, "cap-power-off-card", &len))
+		host->caps |= MMC_CAP_POWER_OFF_CARD;
+	if (of_find_property(np, "cap-sdio-irq", &len))
+		host->caps |= MMC_CAP_SDIO_IRQ;
+	if (of_find_property(np, "full-pwr-cycle", &len))
+		host->caps2 |= MMC_CAP2_FULL_PWR_CYCLE;
+	if (of_find_property(np, "keep-power-in-suspend", &len))
+		host->pm_caps |= MMC_PM_KEEP_POWER;
+	if (of_find_property(np, "enable-sdio-wakeup", &len))
+		host->pm_caps |= MMC_PM_WAKE_SDIO_IRQ;
+
+	return 0;
+
+out:
+	mmc_gpio_free_cd(host);
+	return ret;
+}
+
+EXPORT_SYMBOL(mmc_of_parse);
+
+/**
+>>>>>>> refs/remotes/origin/master
  *	mmc_alloc_host - initialise the per-host structure.
  *	@extra: sizeof private data structure
  *	@dev: pointer to host device model structure
@@ -326,17 +508,33 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 	int err;
 	struct mmc_host *host;
 
+<<<<<<< HEAD
 	if (!idr_pre_get(&mmc_host_idr, GFP_KERNEL))
 		return NULL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	host = kzalloc(sizeof(struct mmc_host) + extra, GFP_KERNEL);
 	if (!host)
 		return NULL;
 
+<<<<<<< HEAD
 	spin_lock(&mmc_host_lock);
 	err = idr_get_new(&mmc_host_idr, host, &host->index);
 	spin_unlock(&mmc_host_lock);
 	if (err)
+=======
+	/* scanning will be enabled when we're ready */
+	host->rescan_disable = 1;
+	idr_preload(GFP_KERNEL);
+	spin_lock(&mmc_host_lock);
+	err = idr_alloc(&mmc_host_idr, host, 0, 0, GFP_NOWAIT);
+	if (err >= 0)
+		host->index = err;
+	spin_unlock(&mmc_host_lock);
+	idr_preload_end();
+	if (err < 0)
+>>>>>>> refs/remotes/origin/master
 		goto free;
 
 	dev_set_name(&host->class_dev, "mmc%d", host->index);
@@ -348,6 +546,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 
 	mmc_host_clk_init(host);
 
+<<<<<<< HEAD
 	spin_lock_init(&host->lock);
 	init_waitqueue_head(&host->wq);
 	wake_lock_init(&host->detect_wake_lock, WAKE_LOCK_SUSPEND,
@@ -357,6 +556,14 @@ struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
 	INIT_DELAYED_WORK_DEFERRABLE(&host->disable, mmc_host_deeper_disable);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_init(&host->slot.lock);
+	host->slot.cd_irq = -EINVAL;
+
+	spin_lock_init(&host->lock);
+	init_waitqueue_head(&host->wq);
+	INIT_DELAYED_WORK(&host->detect, mmc_rescan);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	host->pm_notify.notifier_call = mmc_pm_notify;
 #endif
@@ -380,6 +587,7 @@ free:
 }
 
 EXPORT_SYMBOL(mmc_alloc_host);
+<<<<<<< HEAD
 #ifdef CONFIG_MMC_PERF_PROFILING
 static ssize_t
 show_perf(struct device *dev, struct device_attribute *attr, char *buf)
@@ -468,6 +676,8 @@ static struct attribute *dev_attrs[] = {
 static struct attribute_group dev_attr_grp = {
 	.attrs = dev_attrs,
 };
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	mmc_add_host - initialise host hardware
@@ -495,6 +705,7 @@ int mmc_add_host(struct mmc_host *host)
 #endif
 	mmc_host_clk_sysfs_init(host);
 
+<<<<<<< HEAD
 	err = sysfs_create_group(&host->parent->kobj, &dev_attr_grp);
 	if (err)
 		pr_err("%s: failed to create sysfs group with err %d\n",
@@ -503,6 +714,10 @@ int mmc_add_host(struct mmc_host *host)
 	mmc_start_host(host);
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		register_pm_notifier(&host->pm_notify);
+=======
+	mmc_start_host(host);
+	register_pm_notifier(&host->pm_notify);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -519,16 +734,23 @@ EXPORT_SYMBOL(mmc_add_host);
  */
 void mmc_remove_host(struct mmc_host *host)
 {
+<<<<<<< HEAD
 	if (!(host->pm_flags & MMC_PM_IGNORE_PM_NOTIFY))
 		unregister_pm_notifier(&host->pm_notify);
 
+=======
+	unregister_pm_notifier(&host->pm_notify);
+>>>>>>> refs/remotes/origin/master
 	mmc_stop_host(host);
 
 #ifdef CONFIG_DEBUG_FS
 	mmc_remove_host_debugfs(host);
 #endif
+<<<<<<< HEAD
 	sysfs_remove_group(&host->parent->kobj, &dev_attr_grp);
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 	device_del(&host->class_dev);
 
@@ -550,7 +772,10 @@ void mmc_free_host(struct mmc_host *host)
 	spin_lock(&mmc_host_lock);
 	idr_remove(&mmc_host_idr, host->index);
 	spin_unlock(&mmc_host_lock);
+<<<<<<< HEAD
 	wake_lock_destroy(&host->detect_wake_lock);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	put_device(&host->class_dev);
 }

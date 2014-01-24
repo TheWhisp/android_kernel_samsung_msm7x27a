@@ -19,11 +19,33 @@
  *
  */
 #include <linux/platform_device.h>
+<<<<<<< HEAD
 #include <asm/mach/time.h>
 <<<<<<< HEAD
 =======
 #include <asm/smp_twd.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clocksource.h>
+#include <linux/delay.h>
+
+void __init shmobile_setup_delay(unsigned int max_cpu_core_mhz,
+				 unsigned int mult, unsigned int div)
+{
+	/* calculate a worst-case loops-per-jiffy value
+	 * based on maximum cpu core mhz setting and the
+	 * __delay() implementation in arch/arm/lib/delay.S
+	 *
+	 * this will result in a longer delay than expected
+	 * when the cpu core runs on lower frequencies.
+	 */
+
+	unsigned int value = (1000000 * mult) / (HZ * div);
+
+	if (!preset_lpj)
+		preset_lpj = max_cpu_core_mhz * value;
+}
+>>>>>>> refs/remotes/origin/master
 
 static void __init shmobile_late_time_init(void)
 {
@@ -41,14 +63,19 @@ static void __init shmobile_late_time_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init shmobile_timer_init(void)
 =======
 void __init shmobile_earlytimer_init(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init shmobile_earlytimer_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	late_time_init = shmobile_late_time_init;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static void __init shmobile_timer_init(void)
@@ -59,3 +86,5 @@ static void __init shmobile_timer_init(void)
 struct sys_timer shmobile_timer = {
 	.init		= shmobile_timer_init,
 };
+=======
+>>>>>>> refs/remotes/origin/master

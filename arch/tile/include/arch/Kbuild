@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 header-y += abi.h
 header-y += chip.h
 header-y += chip_tile64.h
@@ -15,3 +16,6 @@ header-y += sim_def.h
 header-y += spr_def.h
 header-y += spr_def_32.h
 header-y += spr_def_64.h
+=======
+# Tile arch headers
+>>>>>>> refs/remotes/origin/master

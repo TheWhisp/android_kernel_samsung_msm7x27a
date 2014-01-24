@@ -14,9 +14,13 @@
 
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-mapping.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/init.h>
 #include <linux/clk.h>
@@ -33,12 +37,16 @@
 
 #include <media/soc_camera.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/memory.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <asm/memblock.h>
@@ -52,6 +60,16 @@
 
 /* CPLD IRQ line for external uart, external ethernet etc */
 #define EXPIO_PARENT_INT	IOMUX_TO_IRQ(MX31_PIN_GPIO1_1)
+=======
+#include <asm/memblock.h>
+
+#include "3ds_debugboard.h"
+#include "common.h"
+#include "devices-imx31.h"
+#include "hardware.h"
+#include "iomux-mx3.h"
+#include "ulpi.h"
+>>>>>>> refs/remotes/origin/master
 
 static int mx31_3ds_pins[] = {
 	/* UART1 */
@@ -62,6 +80,7 @@ static int mx31_3ds_pins[] = {
 	IOMUX_MODE(MX31_PIN_GPIO1_1, IOMUX_CONFIG_GPIO),
 	/*SPI0*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	MX31_PIN_CSPI1_SCLK__SCLK,
 	MX31_PIN_CSPI1_MOSI__MOSI,
 	MX31_PIN_CSPI1_MISO__MISO,
@@ -71,6 +90,10 @@ static int mx31_3ds_pins[] = {
 	IOMUX_MODE(MX31_PIN_DSR_DCE1, IOMUX_CONFIG_ALT1),
 	IOMUX_MODE(MX31_PIN_RI_DCE1, IOMUX_CONFIG_ALT1),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	IOMUX_MODE(MX31_PIN_DSR_DCE1, IOMUX_CONFIG_ALT1),
+	IOMUX_MODE(MX31_PIN_RI_DCE1, IOMUX_CONFIG_ALT1),
+>>>>>>> refs/remotes/origin/master
 	/* SPI 1 */
 	MX31_PIN_CSPI2_SCLK__SCLK,
 	MX31_PIN_CSPI2_MOSI__MOSI,
@@ -170,6 +193,14 @@ static int mx31_3ds_pins[] = {
 	MX31_PIN_CSI_VSYNC__CSI_VSYNC,
 	MX31_PIN_CSI_D5__GPIO3_5, /* CMOS PWDN */
 	IOMUX_MODE(MX31_PIN_RI_DTE1, IOMUX_CONFIG_GPIO), /* CMOS reset */
+<<<<<<< HEAD
+=======
+	/* SSI */
+	MX31_PIN_STXD4__STXD4,
+	MX31_PIN_SRXD4__SRXD4,
+	MX31_PIN_SCK4__SCK4,
+	MX31_PIN_SFS4__SFS4,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -286,10 +317,13 @@ static const struct fb_videomode fb_modedb[] = {
 	},
 };
 
+<<<<<<< HEAD
 static struct ipu_platform_data mx3_ipu_data = {
 	.irq_base = MXC_IPU_IRQ_START,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct mx3fb_platform_data mx3fb_pdata __initdata = {
 	.name		= "Epson-VGA",
 	.mode		= fb_modedb,
@@ -301,10 +335,13 @@ static struct l4f00242t03_pdata mx31_3ds_l4f00242t03_pdata = {
 	.reset_gpio		= IOMUX_TO_GPIO(MX31_PIN_LCS1),
 	.data_enable_gpio	= IOMUX_TO_GPIO(MX31_PIN_SER_RS),
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.core_supply		= "lcd_2v8",
 	.io_supply		= "vdd_lcdio",
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -331,8 +368,13 @@ static int mx31_3ds_sdhc1_init(struct device *dev,
 		return ret;
 	}
 
+<<<<<<< HEAD
 	ret = request_irq(IOMUX_TO_IRQ(MX31_PIN_GPIO3_1),
 			  detect_irq, IRQF_DISABLED |
+=======
+	ret = request_irq(gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO3_1)),
+			  detect_irq,
+>>>>>>> refs/remotes/origin/master
 			  IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
 			  "sdhc1-detect", data);
 	if (ret) {
@@ -350,7 +392,11 @@ gpio_free:
 
 static void mx31_3ds_sdhc1_exit(struct device *dev, void *data)
 {
+<<<<<<< HEAD
 	free_irq(IOMUX_TO_IRQ(MX31_PIN_GPIO3_1), data);
+=======
+	free_irq(gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO3_1)), data);
+>>>>>>> refs/remotes/origin/master
 	gpio_free_array(mx31_3ds_sdhc1_gpios,
 			 ARRAY_SIZE(mx31_3ds_sdhc1_gpios));
 }
@@ -414,7 +460,11 @@ static struct regulator_init_data gpo_init = {
 };
 
 static struct regulator_consumer_supply vmmc2_consumers[] = {
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("vmmc", "mxc-mmc.0"),
+=======
+	REGULATOR_SUPPLY("vmmc", "imx31-mmc.0"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data vmmc2_init = {
@@ -430,10 +480,14 @@ static struct regulator_init_data vmmc2_init = {
 
 static struct regulator_consumer_supply vmmc1_consumers[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("lcd_2v8", NULL),
 =======
 	REGULATOR_SUPPLY("vcore", "spi0.0"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("vcore", "spi0.0"),
+>>>>>>> refs/remotes/origin/master
 	REGULATOR_SUPPLY("cmos_2v8", "soc-camera-pdrv.0"),
 };
 
@@ -451,10 +505,14 @@ static struct regulator_init_data vmmc1_init = {
 
 static struct regulator_consumer_supply vgen_consumers[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	REGULATOR_SUPPLY("vdd_lcdio", NULL),
 =======
 	REGULATOR_SUPPLY("vdd", "spi0.0"),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	REGULATOR_SUPPLY("vdd", "spi0.0"),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data vgen_init = {
@@ -515,16 +573,34 @@ static struct mc13xxx_regulator_init_data mx31_3ds_regulators[] = {
 };
 
 /* MC13783 */
+<<<<<<< HEAD
+=======
+static struct mc13xxx_codec_platform_data mx31_3ds_codec = {
+	.dac_ssi_port = MC13783_SSI1_PORT,
+	.adc_ssi_port = MC13783_SSI1_PORT,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct mc13xxx_platform_data mc13783_pdata = {
 	.regulators = {
 		.regulators = mx31_3ds_regulators,
 		.num_regulators = ARRAY_SIZE(mx31_3ds_regulators),
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags  = MC13783_USE_REGULATOR | MC13783_USE_TOUCHSCREEN,
 =======
 	.flags  = MC13XXX_USE_TOUCHSCREEN | MC13XXX_USE_RTC,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.codec = &mx31_3ds_codec,
+	.flags  = MC13XXX_USE_TOUCHSCREEN | MC13XXX_USE_RTC | MC13XXX_USE_CODEC,
+
+};
+
+static struct imx_ssi_platform_data mx31_3ds_ssi_pdata = {
+	.flags = IMX_SSI_DMA | IMX_SSI_NET,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* SPI */
@@ -554,7 +630,11 @@ static struct spi_board_info mx31_3ds_spi_devs[] __initdata = {
 		.bus_num	= 1,
 		.chip_select	= 1, /* SS2 */
 		.platform_data	= &mc13783_pdata,
+<<<<<<< HEAD
 		.irq		= IOMUX_TO_IRQ(MX31_PIN_GPIO1_3),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.mode = SPI_CS_HIGH,
 	}, {
 		.modalias	= "l4f00242t03",
@@ -573,10 +653,14 @@ mx31_3ds_nand_board_info __initconst = {
 	.width		= 1,
 	.hw_ecc		= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef MACH_MX31_3DS_MXC_NAND_USE_BBT
 =======
 #ifdef CONFIG_MACH_MX31_3DS_MXC_NAND_USE_BBT
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_MACH_MX31_3DS_MXC_NAND_USE_BBT
+>>>>>>> refs/remotes/origin/master
 	.flash_bbt	= 1,
 #endif
 };
@@ -690,11 +774,16 @@ static const struct fsl_usb2_platform_data usbotg_pdata __initconst = {
 	.phy_mode	= FSL_USB2_PHY_ULPI,
 };
 
+<<<<<<< HEAD
 static int otg_mode_host;
+=======
+static bool otg_mode_host __initdata;
+>>>>>>> refs/remotes/origin/master
 
 static int __init mx31_3ds_otg_mode(char *options)
 {
 	if (!strcmp(options, "host"))
+<<<<<<< HEAD
 		otg_mode_host = 1;
 	else if (!strcmp(options, "device"))
 		otg_mode_host = 0;
@@ -702,6 +791,15 @@ static int __init mx31_3ds_otg_mode(char *options)
 		pr_info("otg_mode neither \"host\" nor \"device\". "
 			"Defaulting to device\n");
 	return 0;
+=======
+		otg_mode_host = true;
+	else if (!strcmp(options, "device"))
+		otg_mode_host = false;
+	else
+		pr_info("otg_mode neither \"host\" nor \"device\". "
+			"Defaulting to device\n");
+	return 1;
+>>>>>>> refs/remotes/origin/master
 }
 __setup("otg_mode=", mx31_3ds_otg_mode);
 
@@ -722,13 +820,19 @@ static void __init mx31_3ds_init(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	imx31_soc_init();
 
 	/* Configure SPI1 IOMUX */
 	mxc_iomux_set_gpr(MUX_PGP_CSPI_BB, true);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mxc_iomux_setup_multiple_pins(mx31_3ds_pins, ARRAY_SIZE(mx31_3ds_pins),
 				      "mx31_3ds");
 
@@ -736,6 +840,10 @@ static void __init mx31_3ds_init(void)
 	imx31_add_mxc_nand(&mx31_3ds_nand_board_info);
 
 	imx31_add_spi_imx1(&spi1_pdata);
+<<<<<<< HEAD
+=======
+	mx31_3ds_spi_devs[0].irq = gpio_to_irq(IOMUX_TO_GPIO(MX31_PIN_GPIO1_3));
+>>>>>>> refs/remotes/origin/master
 	spi_register_board_info(mx31_3ds_spi_devs,
 						ARRAY_SIZE(mx31_3ds_spi_devs));
 
@@ -758,15 +866,26 @@ static void __init mx31_3ds_init(void)
 	if (!otg_mode_host)
 		imx31_add_fsl_usb2_udc(&usbotg_pdata);
 
+<<<<<<< HEAD
 	if (mxc_expio_init(MX31_CS5_BASE_ADDR, EXPIO_PARENT_INT))
 		printk(KERN_WARNING "Init of the debug board failed, all "
 				    "devices on the debug board are unusable.\n");
 	imx31_add_imx2_wdt(NULL);
+=======
+	if (mxc_expio_init(MX31_CS5_BASE_ADDR, IOMUX_TO_GPIO(MX31_PIN_GPIO1_1)))
+		printk(KERN_WARNING "Init of the debug board failed, all "
+				    "devices on the debug board are unusable.\n");
+	imx31_add_imx2_wdt();
+>>>>>>> refs/remotes/origin/master
 	imx31_add_imx_i2c0(&mx31_3ds_i2c0_data);
 	imx31_add_mxc_mmc(0, &sdhc1_pdata);
 
 	imx31_add_spi_imx0(&spi0_pdata);
+<<<<<<< HEAD
 	imx31_add_ipu_core(&mx3_ipu_data);
+=======
+	imx31_add_ipu_core();
+>>>>>>> refs/remotes/origin/master
 	imx31_add_mx3_sdc_fb(&mx3fb_pdata);
 
 	/* CSI */
@@ -779,6 +898,13 @@ static void __init mx31_3ds_init(void)
 	}
 
 	mx31_3ds_init_camera();
+<<<<<<< HEAD
+=======
+
+	imx31_add_imx_ssi(0, &mx31_3ds_ssi_pdata);
+
+	imx_add_platform_device("imx_mc13783", 0, NULL, 0, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __init mx31_3ds_timer_init(void)
@@ -786,6 +912,7 @@ static void __init mx31_3ds_timer_init(void)
 	mx31_clocks_init(26000000);
 }
 
+<<<<<<< HEAD
 static struct sys_timer mx31_3ds_timer = {
 	.init	= mx31_3ds_timer_init,
 };
@@ -802,10 +929,18 @@ static void __init mx31_3ds_reserve(void)
 	mx3_camera_base = arm_memblock_steal(MX31_3DS_CAMERA_BUF_SIZE,
 					 MX31_3DS_CAMERA_BUF_SIZE);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init mx31_3ds_reserve(void)
+{
+	/* reserve MX31_3DS_CAMERA_BUF_SIZE bytes for mx3-camera */
+	mx3_camera_base = arm_memblock_steal(MX31_3DS_CAMERA_BUF_SIZE,
+					 MX31_3DS_CAMERA_BUF_SIZE);
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(MX31_3DS, "Freescale MX31PDK (3DS)")
 	/* Maintainer: Freescale Semiconductor, Inc. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params = MX3x_PHYS_OFFSET + 0x100,
 	.map_io = mx31_map_io,
@@ -815,14 +950,23 @@ MACHINE_START(MX31_3DS, "Freescale MX31PDK (3DS)")
 	.init_machine = mx31_3ds_init,
 	.reserve = mx31_3ds_reserve,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset = 0x100,
 	.map_io = mx31_map_io,
 	.init_early = imx31_init_early,
 	.init_irq = mx31_init_irq,
 	.handle_irq = imx31_handle_irq,
+<<<<<<< HEAD
 	.timer = &mx31_3ds_timer,
 	.init_machine = mx31_3ds_init,
 	.reserve = mx31_3ds_reserve,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= mx31_3ds_timer_init,
+	.init_machine = mx31_3ds_init,
+	.reserve = mx31_3ds_reserve,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

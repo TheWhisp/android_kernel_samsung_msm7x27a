@@ -243,8 +243,12 @@ dw_apb_clockevent_init(int cpu, const char *name, unsigned rating,
 	dw_ced->irqaction.dev_id	= &dw_ced->ced;
 	dw_ced->irqaction.irq		= irq;
 	dw_ced->irqaction.flags		= IRQF_TIMER | IRQF_IRQPOLL |
+<<<<<<< HEAD
 					  IRQF_NOBALANCING |
 					  IRQF_DISABLED;
+=======
+					  IRQF_NOBALANCING;
+>>>>>>> refs/remotes/origin/master
 
 	dw_ced->eoi = apbt_eoi;
 	err = setup_irq(irq, &dw_ced->irqaction);
@@ -387,6 +391,7 @@ cycle_t dw_apb_clocksource_read(struct dw_apb_clocksource *dw_cs)
 {
 	return (cycle_t)~apbt_readl(&dw_cs->timer, APBTMR_N_CURRENT_VALUE);
 }
+<<<<<<< HEAD
 
 /**
  * dw_apb_clocksource_unregister() - unregister and free a clocksource.
@@ -399,3 +404,5 @@ void dw_apb_clocksource_unregister(struct dw_apb_clocksource *dw_cs)
 
 	kfree(dw_cs);
 }
+=======
+>>>>>>> refs/remotes/origin/master

@@ -12,6 +12,7 @@
 #define __ASM_ARM_ATOMIC_H
 
 #include <linux/compiler.h>
+<<<<<<< HEAD
 #include <linux/types.h>
 <<<<<<< HEAD
 #include <asm/system.h>
@@ -20,6 +21,13 @@
 #include <asm/barrier.h>
 #include <asm/cmpxchg.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/prefetch.h>
+#include <linux/types.h>
+#include <linux/irqflags.h>
+#include <asm/barrier.h>
+#include <asm/cmpxchg.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ATOMIC_INIT(i)	{ (i) }
 
@@ -45,6 +53,10 @@ static inline void atomic_add(int i, atomic_t *v)
 	unsigned long tmp;
 	int result;
 
+<<<<<<< HEAD
+=======
+	prefetchw(&v->counter);
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__("@ atomic_add\n"
 "1:	ldrex	%0, [%3]\n"
 "	add	%0, %0, %4\n"
@@ -83,6 +95,10 @@ static inline void atomic_sub(int i, atomic_t *v)
 	unsigned long tmp;
 	int result;
 
+<<<<<<< HEAD
+=======
+	prefetchw(&v->counter);
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__("@ atomic_sub\n"
 "1:	ldrex	%0, [%3]\n"
 "	sub	%0, %0, %4\n"
@@ -118,7 +134,12 @@ static inline int atomic_sub_return(int i, atomic_t *v)
 
 static inline int atomic_cmpxchg(atomic_t *ptr, int old, int new)
 {
+<<<<<<< HEAD
 	unsigned long oldval, res;
+=======
+	int oldval;
+	unsigned long res;
+>>>>>>> refs/remotes/origin/master
 
 	smp_mb();
 
@@ -138,6 +159,7 @@ static inline int atomic_cmpxchg(atomic_t *ptr, int old, int new)
 	return oldval;
 }
 
+<<<<<<< HEAD
 static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 {
 	unsigned long tmp, tmp2;
@@ -153,6 +175,8 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 	: "cc");
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* ARM_ARCH_6 */
 
 #ifdef CONFIG_SMP
@@ -201,6 +225,7 @@ static inline int atomic_cmpxchg(atomic_t *v, int old, int new)
 	return ret;
 }
 
+<<<<<<< HEAD
 static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 {
 	unsigned long flags;
@@ -210,21 +235,28 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 	raw_local_irq_restore(flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_ARM_ARCH__ */
 
 #define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int atomic_add_unless(atomic_t *v, int a, int u)
 =======
 static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+>>>>>>> refs/remotes/origin/master
 {
 	int c, old;
 
 	c = atomic_read(v);
 	while (c != u && (old = atomic_cmpxchg((v), c, c + a)) != c)
 		c = old;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return c != u;
 }
@@ -233,6 +265,10 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 	return c;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return c;
+}
+>>>>>>> refs/remotes/origin/master
 
 #define atomic_inc(v)		atomic_add(1, v)
 #define atomic_dec(v)		atomic_sub(1, v)
@@ -252,14 +288,47 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 
 #ifndef CONFIG_GENERIC_ATOMIC64
 typedef struct {
+<<<<<<< HEAD
 	u64 __aligned(8) counter;
+=======
+	long long counter;
+>>>>>>> refs/remotes/origin/master
 } atomic64_t;
 
 #define ATOMIC64_INIT(i) { (i) }
 
+<<<<<<< HEAD
 static inline u64 atomic64_read(atomic64_t *v)
 {
 	u64 result;
+=======
+#ifdef CONFIG_ARM_LPAE
+static inline long long atomic64_read(const atomic64_t *v)
+{
+	long long result;
+
+	__asm__ __volatile__("@ atomic64_read\n"
+"	ldrd	%0, %H0, [%1]"
+	: "=&r" (result)
+	: "r" (&v->counter), "Qo" (v->counter)
+	);
+
+	return result;
+}
+
+static inline void atomic64_set(atomic64_t *v, long long i)
+{
+	__asm__ __volatile__("@ atomic64_set\n"
+"	strd	%2, %H2, [%1]"
+	: "=Qo" (v->counter)
+	: "r" (&v->counter), "r" (i)
+	);
+}
+#else
+static inline long long atomic64_read(const atomic64_t *v)
+{
+	long long result;
+>>>>>>> refs/remotes/origin/master
 
 	__asm__ __volatile__("@ atomic64_read\n"
 "	ldrexd	%0, %H0, [%1]"
@@ -270,10 +339,18 @@ static inline u64 atomic64_read(atomic64_t *v)
 	return result;
 }
 
+<<<<<<< HEAD
 static inline void atomic64_set(atomic64_t *v, u64 i)
 {
 	u64 tmp;
 
+=======
+static inline void atomic64_set(atomic64_t *v, long long i)
+{
+	long long tmp;
+
+	prefetchw(&v->counter);
+>>>>>>> refs/remotes/origin/master
 	__asm__ __volatile__("@ atomic64_set\n"
 "1:	ldrexd	%0, %H0, [%2]\n"
 "	strexd	%0, %3, %H3, [%2]\n"
@@ -283,6 +360,7 @@ static inline void atomic64_set(atomic64_t *v, u64 i)
 	: "r" (&v->counter), "r" (i)
 	: "cc");
 }
+<<<<<<< HEAD
 
 static inline void atomic64_add(u64 i, atomic64_t *v)
 {
@@ -293,6 +371,20 @@ static inline void atomic64_add(u64 i, atomic64_t *v)
 "1:	ldrexd	%0, %H0, [%3]\n"
 "	adds	%0, %0, %4\n"
 "	adc	%H0, %H0, %H4\n"
+=======
+#endif
+
+static inline void atomic64_add(long long i, atomic64_t *v)
+{
+	long long result;
+	unsigned long tmp;
+
+	prefetchw(&v->counter);
+	__asm__ __volatile__("@ atomic64_add\n"
+"1:	ldrexd	%0, %H0, [%3]\n"
+"	adds	%Q0, %Q0, %Q4\n"
+"	adc	%R0, %R0, %R4\n"
+>>>>>>> refs/remotes/origin/master
 "	strexd	%1, %0, %H0, [%3]\n"
 "	teq	%1, #0\n"
 "	bne	1b"
@@ -301,17 +393,28 @@ static inline void atomic64_add(u64 i, atomic64_t *v)
 	: "cc");
 }
 
+<<<<<<< HEAD
 static inline u64 atomic64_add_return(u64 i, atomic64_t *v)
 {
 	u64 result;
+=======
+static inline long long atomic64_add_return(long long i, atomic64_t *v)
+{
+	long long result;
+>>>>>>> refs/remotes/origin/master
 	unsigned long tmp;
 
 	smp_mb();
 
 	__asm__ __volatile__("@ atomic64_add_return\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
+<<<<<<< HEAD
 "	adds	%0, %0, %4\n"
 "	adc	%H0, %H0, %H4\n"
+=======
+"	adds	%Q0, %Q0, %Q4\n"
+"	adc	%R0, %R0, %R4\n"
+>>>>>>> refs/remotes/origin/master
 "	strexd	%1, %0, %H0, [%3]\n"
 "	teq	%1, #0\n"
 "	bne	1b"
@@ -324,6 +427,7 @@ static inline u64 atomic64_add_return(u64 i, atomic64_t *v)
 	return result;
 }
 
+<<<<<<< HEAD
 static inline void atomic64_sub(u64 i, atomic64_t *v)
 {
 	u64 result;
@@ -333,6 +437,18 @@ static inline void atomic64_sub(u64 i, atomic64_t *v)
 "1:	ldrexd	%0, %H0, [%3]\n"
 "	subs	%0, %0, %4\n"
 "	sbc	%H0, %H0, %H4\n"
+=======
+static inline void atomic64_sub(long long i, atomic64_t *v)
+{
+	long long result;
+	unsigned long tmp;
+
+	prefetchw(&v->counter);
+	__asm__ __volatile__("@ atomic64_sub\n"
+"1:	ldrexd	%0, %H0, [%3]\n"
+"	subs	%Q0, %Q0, %Q4\n"
+"	sbc	%R0, %R0, %R4\n"
+>>>>>>> refs/remotes/origin/master
 "	strexd	%1, %0, %H0, [%3]\n"
 "	teq	%1, #0\n"
 "	bne	1b"
@@ -341,17 +457,28 @@ static inline void atomic64_sub(u64 i, atomic64_t *v)
 	: "cc");
 }
 
+<<<<<<< HEAD
 static inline u64 atomic64_sub_return(u64 i, atomic64_t *v)
 {
 	u64 result;
+=======
+static inline long long atomic64_sub_return(long long i, atomic64_t *v)
+{
+	long long result;
+>>>>>>> refs/remotes/origin/master
 	unsigned long tmp;
 
 	smp_mb();
 
 	__asm__ __volatile__("@ atomic64_sub_return\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
+<<<<<<< HEAD
 "	subs	%0, %0, %4\n"
 "	sbc	%H0, %H0, %H4\n"
+=======
+"	subs	%Q0, %Q0, %Q4\n"
+"	sbc	%R0, %R0, %R4\n"
+>>>>>>> refs/remotes/origin/master
 "	strexd	%1, %0, %H0, [%3]\n"
 "	teq	%1, #0\n"
 "	bne	1b"
@@ -364,9 +491,16 @@ static inline u64 atomic64_sub_return(u64 i, atomic64_t *v)
 	return result;
 }
 
+<<<<<<< HEAD
 static inline u64 atomic64_cmpxchg(atomic64_t *ptr, u64 old, u64 new)
 {
 	u64 oldval;
+=======
+static inline long long atomic64_cmpxchg(atomic64_t *ptr, long long old,
+					long long new)
+{
+	long long oldval;
+>>>>>>> refs/remotes/origin/master
 	unsigned long res;
 
 	smp_mb();
@@ -388,9 +522,15 @@ static inline u64 atomic64_cmpxchg(atomic64_t *ptr, u64 old, u64 new)
 	return oldval;
 }
 
+<<<<<<< HEAD
 static inline u64 atomic64_xchg(atomic64_t *ptr, u64 new)
 {
 	u64 result;
+=======
+static inline long long atomic64_xchg(atomic64_t *ptr, long long new)
+{
+	long long result;
+>>>>>>> refs/remotes/origin/master
 	unsigned long tmp;
 
 	smp_mb();
@@ -409,18 +549,30 @@ static inline u64 atomic64_xchg(atomic64_t *ptr, u64 new)
 	return result;
 }
 
+<<<<<<< HEAD
 static inline u64 atomic64_dec_if_positive(atomic64_t *v)
 {
 	u64 result;
+=======
+static inline long long atomic64_dec_if_positive(atomic64_t *v)
+{
+	long long result;
+>>>>>>> refs/remotes/origin/master
 	unsigned long tmp;
 
 	smp_mb();
 
 	__asm__ __volatile__("@ atomic64_dec_if_positive\n"
 "1:	ldrexd	%0, %H0, [%3]\n"
+<<<<<<< HEAD
 "	subs	%0, %0, #1\n"
 "	sbc	%H0, %H0, #0\n"
 "	teq	%H0, #0\n"
+=======
+"	subs	%Q0, %Q0, #1\n"
+"	sbc	%R0, %R0, #0\n"
+"	teq	%R0, #0\n"
+>>>>>>> refs/remotes/origin/master
 "	bmi	2f\n"
 "	strexd	%1, %0, %H0, [%3]\n"
 "	teq	%1, #0\n"
@@ -435,9 +587,15 @@ static inline u64 atomic64_dec_if_positive(atomic64_t *v)
 	return result;
 }
 
+<<<<<<< HEAD
 static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
 {
 	u64 val;
+=======
+static inline int atomic64_add_unless(atomic64_t *v, long long a, long long u)
+{
+	long long val;
+>>>>>>> refs/remotes/origin/master
 	unsigned long tmp;
 	int ret = 1;
 
@@ -449,8 +607,13 @@ static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
 "	teqeq	%H0, %H5\n"
 "	moveq	%1, #0\n"
 "	beq	2f\n"
+<<<<<<< HEAD
 "	adds	%0, %0, %6\n"
 "	adc	%H0, %H0, %H6\n"
+=======
+"	adds	%Q0, %Q0, %Q6\n"
+"	adc	%R0, %R0, %R6\n"
+>>>>>>> refs/remotes/origin/master
 "	strexd	%2, %0, %H0, [%4]\n"
 "	teq	%2, #0\n"
 "	bne	1b\n"
@@ -476,6 +639,7 @@ static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
 #define atomic64_inc_not_zero(v)	atomic64_add_unless((v), 1LL, 0LL)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else /* !CONFIG_GENERIC_ATOMIC64 */
 #include <asm-generic/atomic64.h>
 #endif
@@ -483,5 +647,8 @@ static inline int atomic64_add_unless(atomic64_t *v, u64 a, u64 u)
 =======
 #endif /* !CONFIG_GENERIC_ATOMIC64 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* !CONFIG_GENERIC_ATOMIC64 */
+>>>>>>> refs/remotes/origin/master
 #endif
 #endif

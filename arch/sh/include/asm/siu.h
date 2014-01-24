@@ -14,7 +14,10 @@
 struct device;
 
 struct siu_platform {
+<<<<<<< HEAD
 	struct device *dma_dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int dma_slave_tx_a;
 	unsigned int dma_slave_rx_a;
 	unsigned int dma_slave_tx_b;

@@ -4,10 +4,16 @@
  * This file contains generic fabric module configfs infrastructure for
  * TCM v4.x code
  *
+<<<<<<< HEAD
  * Copyright (c) 2010,2011 Rising Tide Systems
  * Copyright (c) 2010,2011 Linux-iSCSI.org
  *
  * Copyright (c) Nicholas A. Bellinger <nab@linux-iscsi.org>
+=======
+ * (c) Copyright 2010-2013 Datera, Inc.
+ *
+ * Nicholas A. Bellinger <nab@linux-iscsi.org>
+>>>>>>> refs/remotes/origin/master
 *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +29,13 @@
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/version.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <generated/utsrelease.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/utsname.h>
 #include <linux/init.h>
 #include <linux/fs.h>
@@ -41,6 +50,7 @@
 
 #include <target/target_core_base.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <target/target_core_device.h>
 #include <target/target_core_tpg.h>
 #include <target/target_core_transport.h>
@@ -48,10 +58,14 @@
 =======
 #include <target/target_core_fabric.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <target/target_core_fabric.h>
+>>>>>>> refs/remotes/origin/master
 #include <target/target_core_fabric_configfs.h>
 #include <target/target_core_configfs.h>
 #include <target/configfs_macros.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include "target_core_alua.h"
 #include "target_core_hba.h"
@@ -62,6 +76,11 @@
 #include "target_core_alua.h"
 #include "target_core_pr.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "target_core_internal.h"
+#include "target_core_alua.h"
+#include "target_core_pr.h"
+>>>>>>> refs/remotes/origin/master
 
 #define TF_CIT_SETUP(_name, _item_ops, _group_ops, _attrs)		\
 static void target_fabric_setup_##_name##_cit(struct target_fabric_configfs *tf) \
@@ -74,10 +93,14 @@ static void target_fabric_setup_##_name##_cit(struct target_fabric_configfs *tf)
 	cit->ct_attrs = _attrs;						\
 	cit->ct_owner = tf->tf_module;					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk("Setup generic %s\n", __stringify(_name));		\
 =======
 	pr_debug("Setup generic %s\n", __stringify(_name));		\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("Setup generic %s\n", __stringify(_name));		\
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Start of tfc_tpg_mappedlun_cit */
@@ -95,12 +118,15 @@ static int target_fabric_mappedlun_link(
 	struct config_item *nacl_ci, *tpg_ci, *tpg_ci_s, *wwn_ci, *wwn_ci_s;
 	int ret = 0, lun_access;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/*
 	 * Ensure that the source port exists
 	 */
 	if (!(lun->lun_sep) || !(lun->lun_sep->sep_tpg)) {
 		printk(KERN_ERR "Source se_lun->lun_sep or lun->lun_sep->sep"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (lun->lun_link_magic != SE_LUN_LINK_MAGIC) {
 		pr_err("Bad lun->lun_link_magic, not a valid lun_ci pointer:"
@@ -112,7 +138,10 @@ static int target_fabric_mappedlun_link(
 	 */
 	if (!lun->lun_sep || !lun->lun_sep->sep_tpg) {
 		pr_err("Source se_lun->lun_sep or lun->lun_sep->sep"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				"_tpg does not exist\n");
 		return -EINVAL;
 	}
@@ -128,19 +157,27 @@ static int target_fabric_mappedlun_link(
 	 */
 	if (strcmp(config_item_name(wwn_ci), config_item_name(wwn_ci_s))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Illegal Initiator ACL SymLink outside of %s\n",
 =======
 		pr_err("Illegal Initiator ACL SymLink outside of %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Illegal Initiator ACL SymLink outside of %s\n",
+>>>>>>> refs/remotes/origin/master
 			config_item_name(wwn_ci));
 		return -EINVAL;
 	}
 	if (strcmp(config_item_name(tpg_ci), config_item_name(tpg_ci_s))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Illegal Initiator ACL Symlink outside of %s"
 =======
 		pr_err("Illegal Initiator ACL Symlink outside of %s"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Illegal Initiator ACL Symlink outside of %s"
+>>>>>>> refs/remotes/origin/master
 			" TPGT: %s\n", config_item_name(wwn_ci),
 			config_item_name(tpg_ci));
 		return -EINVAL;
@@ -153,19 +190,27 @@ static int target_fabric_mappedlun_link(
 	 */
 	spin_lock_irq(&lacl->se_lun_nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &lacl->se_lun_nacl->device_list[lacl->mapped_lun];
 =======
 	deve = lacl->se_lun_nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = lacl->se_lun_nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	if (deve->lun_flags & TRANSPORT_LUNFLAGS_INITIATOR_ACCESS)
 		lun_access = deve->lun_flags;
 	else
 		lun_access =
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(TPG_TFO(se_tpg)->tpg_check_prod_mode_write_protect(
 =======
 			(se_tpg->se_tpg_tfo->tpg_check_prod_mode_write_protect(
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			(se_tpg->se_tpg_tfo->tpg_check_prod_mode_write_protect(
+>>>>>>> refs/remotes/origin/master
 				se_tpg)) ? TRANSPORT_LUNFLAGS_READ_ONLY :
 					   TRANSPORT_LUNFLAGS_READ_WRITE;
 	spin_unlock_irq(&lacl->se_lun_nacl->device_list_lock);
@@ -190,19 +235,27 @@ static int target_fabric_mappedlun_unlink(
 			struct se_lun_acl, se_lun_group);
 	struct se_node_acl *nacl = lacl->se_lun_nacl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct se_dev_entry *deve = &nacl->device_list[lacl->mapped_lun];
 =======
 	struct se_dev_entry *deve = nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct se_dev_entry *deve = nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	struct se_portal_group *se_tpg;
 	/*
 	 * Determine if the underlying MappedLUN has already been released..
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(deve->se_lun))
 =======
 	if (!deve->se_lun)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!deve->se_lun)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	lun = container_of(to_config_group(lun_ci), struct se_lun, lun_group);
@@ -229,10 +282,14 @@ static ssize_t target_fabric_mappedlun_show_write_protect(
 
 	spin_lock_irq(&se_nacl->device_list_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	deve = &se_nacl->device_list[lacl->mapped_lun];
 =======
 	deve = se_nacl->device_list[lacl->mapped_lun];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	deve = se_nacl->device_list[lacl->mapped_lun];
+>>>>>>> refs/remotes/origin/master
 	len = sprintf(page, "%d\n",
 			(deve->lun_flags & TRANSPORT_LUNFLAGS_READ_ONLY) ?
 			1 : 0);
@@ -249,9 +306,17 @@ static ssize_t target_fabric_mappedlun_store_write_protect(
 	struct se_node_acl *se_nacl = lacl->se_lun_nacl;
 	struct se_portal_group *se_tpg = se_nacl->se_tpg;
 	unsigned long op;
+<<<<<<< HEAD
 
 	if (strict_strtoul(page, 0, &op))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul(page, 0, &op);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	if ((op != 1) && (op != 0))
 		return -EINVAL;
@@ -262,6 +327,7 @@ static ssize_t target_fabric_mappedlun_store_write_protect(
 			lacl->se_lun_nacl);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO "%s_ConfigFS: Changed Initiator ACL: %s"
 		" Mapped LUN: %u Write Protect bit to %s\n",
 		TPG_TFO(se_tpg)->get_fabric_name(),
@@ -270,6 +336,11 @@ static ssize_t target_fabric_mappedlun_store_write_protect(
 		" Mapped LUN: %u Write Protect bit to %s\n",
 		se_tpg->se_tpg_tfo->get_fabric_name(),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_debug("%s_ConfigFS: Changed Initiator ACL: %s"
+		" Mapped LUN: %u Write Protect bit to %s\n",
+		se_tpg->se_tpg_tfo->get_fabric_name(),
+>>>>>>> refs/remotes/origin/master
 		lacl->initiatorname, lacl->mapped_lun, (op) ? "ON" : "OFF");
 
 	return count;
@@ -393,16 +464,22 @@ static struct config_group *target_fabric_make_mappedlun(
 
 	acl_ci = &group->cg_item;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(acl_ci)) {
 		printk(KERN_ERR "Unable to locatel acl_ci\n");
 =======
 	if (!acl_ci) {
 		pr_err("Unable to locatel acl_ci\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!acl_ci) {
+		pr_err("Unable to locatel acl_ci\n");
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
 	buf = kzalloc(strlen(name) + 1, GFP_KERNEL);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!(buf)) {
 		printk(KERN_ERR "Unable to allocate memory for name buf\n");
@@ -410,6 +487,10 @@ static struct config_group *target_fabric_make_mappedlun(
 	if (!buf) {
 		pr_err("Unable to allocate memory for name buf\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!buf) {
+		pr_err("Unable to allocate memory for name buf\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOMEM);
 	}
 	snprintf(buf, strlen(name) + 1, "%s", name);
@@ -418,10 +499,14 @@ static struct config_group *target_fabric_make_mappedlun(
 	 */
 	if (strstr(buf, "lun_") != buf) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Unable to locate \"lun_\" from buf: %s"
 =======
 		pr_err("Unable to locate \"lun_\" from buf: %s"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Unable to locate \"lun_\" from buf: %s"
+>>>>>>> refs/remotes/origin/master
 			" name: %s\n", buf, name);
 		ret = -EINVAL;
 		goto out;
@@ -430,7 +515,14 @@ static struct config_group *target_fabric_make_mappedlun(
 	 * Determine the Mapped LUN value.  This is what the SCSI Initiator
 	 * Port will actually see.
 	 */
+<<<<<<< HEAD
 	if (strict_strtoul(buf + 4, 0, &mapped_lun) || mapped_lun > UINT_MAX) {
+=======
+	ret = kstrtoul(buf + 4, 0, &mapped_lun);
+	if (ret)
+		goto out;
+	if (mapped_lun > UINT_MAX) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
@@ -444,6 +536,7 @@ static struct config_group *target_fabric_make_mappedlun(
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	lacl = core_dev_init_initiator_node_lun_acl(se_tpg, mapped_lun,
 			config_item_name(acl_ci), &ret);
 	if (!(lacl)) {
@@ -452,11 +545,17 @@ static struct config_group *target_fabric_make_mappedlun(
 			mapped_lun, &ret);
 	if (!lacl) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lacl = core_dev_init_initiator_node_lun_acl(se_tpg, se_nacl,
+			mapped_lun, &ret);
+	if (!lacl) {
+>>>>>>> refs/remotes/origin/master
 		ret = -EINVAL;
 		goto out;
 	}
 
 	lacl_cg = &lacl->se_lun_group;
+<<<<<<< HEAD
 	lacl_cg->default_groups = kzalloc(sizeof(struct config_group) * 2,
 				GFP_KERNEL);
 	if (!lacl_cg->default_groups) {
@@ -465,11 +564,18 @@ static struct config_group *target_fabric_make_mappedlun(
 =======
 		pr_err("Unable to allocate lacl_cg->default_groups\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	lacl_cg->default_groups = kmalloc(sizeof(struct config_group *) * 2,
+				GFP_KERNEL);
+	if (!lacl_cg->default_groups) {
+		pr_err("Unable to allocate lacl_cg->default_groups\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto out;
 	}
 
 	config_group_init_type_name(&lacl->se_lun_group, name,
+<<<<<<< HEAD
 			&TF_CIT_TMPL(tf)->tfc_tpg_mappedlun_cit);
 	config_group_init_type_name(&lacl->ml_stat_grps.stat_group,
 			"statistics", &TF_CIT_TMPL(tf)->tfc_tpg_mappedlun_stat_cit);
@@ -489,6 +595,19 @@ static struct config_group *target_fabric_make_mappedlun(
 	if (!ml_stat_grp->default_groups) {
 		pr_err("Unable to allocate ml_stat_grp->default_groups\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			&tf->tf_cit_tmpl.tfc_tpg_mappedlun_cit);
+	config_group_init_type_name(&lacl->ml_stat_grps.stat_group,
+			"statistics", &tf->tf_cit_tmpl.tfc_tpg_mappedlun_stat_cit);
+	lacl_cg->default_groups[0] = &lacl->ml_stat_grps.stat_group;
+	lacl_cg->default_groups[1] = NULL;
+
+	ml_stat_grp = &lacl->ml_stat_grps.stat_group;
+	ml_stat_grp->default_groups = kmalloc(sizeof(struct config_group *) * 3,
+				GFP_KERNEL);
+	if (!ml_stat_grp->default_groups) {
+		pr_err("Unable to allocate ml_stat_grp->default_groups\n");
+>>>>>>> refs/remotes/origin/master
 		ret = -ENOMEM;
 		goto out;
 	}
@@ -514,10 +633,14 @@ static void target_fabric_drop_mappedlun(
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ml_stat_grp = &ML_STAT_GRPS(lacl)->stat_group;
 =======
 	ml_stat_grp = &lacl->ml_stat_grps.stat_group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ml_stat_grp = &lacl->ml_stat_grps.stat_group;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; ml_stat_grp->default_groups[i]; i++) {
 		df_item = &ml_stat_grp->default_groups[i]->cg_item;
 		ml_stat_grp->default_groups[i] = NULL;
@@ -584,22 +707,31 @@ static struct config_group *target_fabric_make_nodeacl(
 	struct config_group *nacl_cg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(tf->tf_ops.fabric_make_nodeacl)) {
 		printk(KERN_ERR "tf->tf_ops.fabric_make_nodeacl is NULL\n");
 =======
 	if (!tf->tf_ops.fabric_make_nodeacl) {
 		pr_err("tf->tf_ops.fabric_make_nodeacl is NULL\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tf->tf_ops.fabric_make_nodeacl) {
+		pr_err("tf->tf_ops.fabric_make_nodeacl is NULL\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOSYS);
 	}
 
 	se_nacl = tf->tf_ops.fabric_make_nodeacl(se_tpg, group, name);
 	if (IS_ERR(se_nacl))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ERR_PTR(PTR_ERR(se_nacl));
 =======
 		return ERR_CAST(se_nacl);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return ERR_CAST(se_nacl);
+>>>>>>> refs/remotes/origin/master
 
 	nacl_cg = &se_nacl->acl_group;
 	nacl_cg->default_groups = se_nacl->acl_default_groups;
@@ -610,6 +742,7 @@ static struct config_group *target_fabric_make_nodeacl(
 	nacl_cg->default_groups[4] = NULL;
 
 	config_group_init_type_name(&se_nacl->acl_group, name,
+<<<<<<< HEAD
 			&TF_CIT_TMPL(tf)->tfc_tpg_nacl_base_cit);
 	config_group_init_type_name(&se_nacl->acl_attrib_group, "attrib",
 			&TF_CIT_TMPL(tf)->tfc_tpg_nacl_attrib_cit);
@@ -620,6 +753,18 @@ static struct config_group *target_fabric_make_nodeacl(
 	config_group_init_type_name(&se_nacl->acl_fabric_stat_group,
 			"fabric_statistics",
 			&TF_CIT_TMPL(tf)->tfc_tpg_nacl_stat_cit);
+=======
+			&tf->tf_cit_tmpl.tfc_tpg_nacl_base_cit);
+	config_group_init_type_name(&se_nacl->acl_attrib_group, "attrib",
+			&tf->tf_cit_tmpl.tfc_tpg_nacl_attrib_cit);
+	config_group_init_type_name(&se_nacl->acl_auth_group, "auth",
+			&tf->tf_cit_tmpl.tfc_tpg_nacl_auth_cit);
+	config_group_init_type_name(&se_nacl->acl_param_group, "param",
+			&tf->tf_cit_tmpl.tfc_tpg_nacl_param_cit);
+	config_group_init_type_name(&se_nacl->acl_fabric_stat_group,
+			"fabric_statistics",
+			&tf->tf_cit_tmpl.tfc_tpg_nacl_stat_cit);
+>>>>>>> refs/remotes/origin/master
 
 	return &se_nacl->acl_group;
 }
@@ -691,26 +836,39 @@ static struct config_group *target_fabric_make_np(
 	struct se_tpg_np *se_tpg_np;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(tf->tf_ops.fabric_make_np)) {
 		printk(KERN_ERR "tf->tf_ops.fabric_make_np is NULL\n");
 =======
 	if (!tf->tf_ops.fabric_make_np) {
 		pr_err("tf->tf_ops.fabric_make_np is NULL\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tf->tf_ops.fabric_make_np) {
+		pr_err("tf->tf_ops.fabric_make_np is NULL\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOSYS);
 	}
 
 	se_tpg_np = tf->tf_ops.fabric_make_np(se_tpg, group, name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(se_tpg_np) || IS_ERR(se_tpg_np))
 =======
 	if (!se_tpg_np || IS_ERR(se_tpg_np))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!se_tpg_np || IS_ERR(se_tpg_np))
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-EINVAL);
 
 	se_tpg_np->tpg_np_parent = se_tpg;
 	config_group_init_type_name(&se_tpg_np->tpg_np_group, name,
+<<<<<<< HEAD
 			&TF_CIT_TMPL(tf)->tfc_tpg_np_base_cit);
+=======
+			&tf->tf_cit_tmpl.tfc_tpg_np_base_cit);
+>>>>>>> refs/remotes/origin/master
 
 	return &se_tpg_np->tpg_np_group;
 }
@@ -755,6 +913,7 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_gp(
 	char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -762,6 +921,9 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_gp(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_show_tg_pt_gp_info(lun->lun_sep, page);
@@ -773,6 +935,7 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_gp(
 	size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -780,6 +943,9 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_gp(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_store_tg_pt_gp_info(lun->lun_sep, page, count);
@@ -795,6 +961,7 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_offline(
 	char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -802,6 +969,9 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_offline(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_show_offline_bit(lun, page);
@@ -813,6 +983,7 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_offline(
 	size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -820,6 +991,9 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_offline(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_store_offline_bit(lun, page, count);
@@ -835,6 +1009,7 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_status(
 	char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -842,6 +1017,9 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_status(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_show_secondary_status(lun, page);
@@ -853,6 +1031,7 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_status(
 	size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -860,6 +1039,9 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_status(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_store_secondary_status(lun, page, count);
@@ -875,6 +1057,7 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_write_md(
 	char *page)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -882,6 +1065,9 @@ static ssize_t target_fabric_port_show_attr_alua_tg_pt_write_md(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_show_secondary_write_metadata(lun, page);
@@ -893,6 +1079,7 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_write_md(
 	size_t count)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(lun))
 		return -ENODEV;
 
@@ -900,6 +1087,9 @@ static ssize_t target_fabric_port_store_attr_alua_tg_pt_write_md(
 =======
 	if (!lun || !lun->lun_sep)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!lun || !lun->lun_sep)
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 
 	return core_alua_store_secondary_write_metadata(lun, page, count);
@@ -923,23 +1113,46 @@ static int target_fabric_port_link(
 	struct config_item *se_dev_ci)
 {
 	struct config_item *tpg_ci;
+<<<<<<< HEAD
 	struct se_device *dev;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct se_lun *lun = container_of(to_config_group(lun_ci),
 				struct se_lun, lun_group);
 	struct se_lun *lun_p;
 	struct se_portal_group *se_tpg;
+<<<<<<< HEAD
 	struct se_subsystem_dev *se_dev = container_of(
 				to_config_group(se_dev_ci), struct se_subsystem_dev,
 				se_dev_group);
 	struct target_fabric_configfs *tf;
 	int ret;
 
+=======
+	struct se_device *dev =
+		container_of(to_config_group(se_dev_ci), struct se_device, dev_group);
+	struct target_fabric_configfs *tf;
+	int ret;
+
+	if (dev->dev_link_magic != SE_DEV_LINK_MAGIC) {
+		pr_err("Bad dev->dev_link_magic, not a valid se_dev_ci pointer:"
+			" %p to struct se_device: %p\n", se_dev_ci, dev);
+		return -EFAULT;
+	}
+
+	if (!(dev->dev_flags & DF_CONFIGURED)) {
+		pr_err("se_device not configured yet, cannot port link\n");
+		return -ENODEV;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	tpg_ci = &lun_ci->ci_parent->ci_group->cg_item;
 	se_tpg = container_of(to_config_group(tpg_ci),
 				struct se_portal_group, tpg_group);
 	tf = se_tpg->se_tpg_wwn->wwn_tf;
 
 	if (lun->lun_se_dev !=  NULL) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR "Port Symlink already exists\n");
 =======
@@ -980,6 +1193,16 @@ static int target_fabric_port_link(
 		pr_err("core_dev_add_lun() failed\n");
 		ret = PTR_ERR(lun_p);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Port Symlink already exists\n");
+		return -EEXIST;
+	}
+
+	lun_p = core_dev_add_lun(se_tpg, dev, lun->unpacked_lun);
+	if (IS_ERR(lun_p)) {
+		pr_err("core_dev_add_lun() failed\n");
+		ret = PTR_ERR(lun_p);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -1071,6 +1294,7 @@ static struct config_group *target_fabric_make_lun(
 
 	if (strstr(name, "lun_") != name) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "Unable to locate \'_\" in"
 =======
 		pr_err("Unable to locate \'_\" in"
@@ -1098,10 +1322,32 @@ static struct config_group *target_fabric_make_lun(
 =======
 		pr_err("Unable to allocate lun_cg->default_groups\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("Unable to locate \'_\" in"
+				" \"lun_$LUN_NUMBER\"\n");
+		return ERR_PTR(-EINVAL);
+	}
+	errno = kstrtoul(name + 4, 0, &unpacked_lun);
+	if (errno)
+		return ERR_PTR(errno);
+	if (unpacked_lun > UINT_MAX)
+		return ERR_PTR(-EINVAL);
+
+	lun = core_get_lun_from_tpg(se_tpg, unpacked_lun);
+	if (!lun)
+		return ERR_PTR(-EINVAL);
+
+	lun_cg = &lun->lun_group;
+	lun_cg->default_groups = kmalloc(sizeof(struct config_group *) * 2,
+				GFP_KERNEL);
+	if (!lun_cg->default_groups) {
+		pr_err("Unable to allocate lun_cg->default_groups\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOMEM);
 	}
 
 	config_group_init_type_name(&lun->lun_group, name,
+<<<<<<< HEAD
 			&TF_CIT_TMPL(tf)->tfc_tpg_port_cit);
 	config_group_init_type_name(&lun->port_stat_grps.stat_group,
 			"statistics", &TF_CIT_TMPL(tf)->tfc_tpg_port_stat_cit);
@@ -1115,12 +1361,23 @@ static struct config_group *target_fabric_make_lun(
 	if (!port_stat_grp->default_groups) {
 		printk(KERN_ERR "Unable to allocate port_stat_grp->default_groups\n");
 =======
+=======
+			&tf->tf_cit_tmpl.tfc_tpg_port_cit);
+	config_group_init_type_name(&lun->port_stat_grps.stat_group,
+			"statistics", &tf->tf_cit_tmpl.tfc_tpg_port_stat_cit);
+	lun_cg->default_groups[0] = &lun->port_stat_grps.stat_group;
+	lun_cg->default_groups[1] = NULL;
+
+>>>>>>> refs/remotes/origin/master
 	port_stat_grp = &lun->port_stat_grps.stat_group;
 	port_stat_grp->default_groups =  kzalloc(sizeof(struct config_group) * 3,
 				GFP_KERNEL);
 	if (!port_stat_grp->default_groups) {
 		pr_err("Unable to allocate port_stat_grp->default_groups\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		errno = -ENOMEM;
 		goto out;
 	}
@@ -1144,10 +1401,14 @@ static void target_fabric_drop_lun(
 	int i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	port_stat_grp = &PORT_STAT_GRP(lun)->stat_group;
 =======
 	port_stat_grp = &lun->port_stat_grps.stat_group;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	port_stat_grp = &lun->port_stat_grps.stat_group;
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; port_stat_grp->default_groups[i]; i++) {
 		df_item = &port_stat_grp->default_groups[i]->cg_item;
 		port_stat_grp->default_groups[i] = NULL;
@@ -1188,6 +1449,22 @@ TF_CIT_SETUP(tpg_attrib, &target_fabric_tpg_attrib_item_ops, NULL, NULL);
 
 /* End of tfc_tpg_attrib_cit */
 
+<<<<<<< HEAD
+=======
+/* Start of tfc_tpg_auth_cit */
+
+CONFIGFS_EATTR_OPS(target_fabric_tpg_auth, se_portal_group, tpg_auth_group);
+
+static struct configfs_item_operations target_fabric_tpg_auth_item_ops = {
+	.show_attribute		= target_fabric_tpg_auth_attr_show,
+	.store_attribute	= target_fabric_tpg_auth_attr_store,
+};
+
+TF_CIT_SETUP(tpg_auth, &target_fabric_tpg_auth_item_ops, NULL, NULL);
+
+/* End of tfc_tpg_attrib_cit */
+
+>>>>>>> refs/remotes/origin/master
 /* Start of tfc_tpg_param_cit */
 
 CONFIGFS_EATTR_OPS(target_fabric_tpg_param, se_portal_group, tpg_param_group);
@@ -1238,21 +1515,30 @@ static struct config_group *target_fabric_make_tpg(
 	struct se_portal_group *se_tpg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(tf->tf_ops.fabric_make_tpg)) {
 		printk(KERN_ERR "tf->tf_ops.fabric_make_tpg is NULL\n");
 =======
 	if (!tf->tf_ops.fabric_make_tpg) {
 		pr_err("tf->tf_ops.fabric_make_tpg is NULL\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tf->tf_ops.fabric_make_tpg) {
+		pr_err("tf->tf_ops.fabric_make_tpg is NULL\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOSYS);
 	}
 
 	se_tpg = tf->tf_ops.fabric_make_tpg(wwn, group, name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(se_tpg) || IS_ERR(se_tpg))
 =======
 	if (!se_tpg || IS_ERR(se_tpg))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!se_tpg || IS_ERR(se_tpg))
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-EINVAL);
 	/*
 	 * Setup default groups from pre-allocated se_tpg->tpg_default_groups
@@ -1262,6 +1548,7 @@ static struct config_group *target_fabric_make_tpg(
 	se_tpg->tpg_group.default_groups[1] = &se_tpg->tpg_np_group;
 	se_tpg->tpg_group.default_groups[2] = &se_tpg->tpg_acl_group;
 	se_tpg->tpg_group.default_groups[3] = &se_tpg->tpg_attrib_group;
+<<<<<<< HEAD
 	se_tpg->tpg_group.default_groups[4] = &se_tpg->tpg_param_group;
 	se_tpg->tpg_group.default_groups[5] = NULL;
 
@@ -1277,6 +1564,26 @@ static struct config_group *target_fabric_make_tpg(
 			&TF_CIT_TMPL(tf)->tfc_tpg_attrib_cit);
 	config_group_init_type_name(&se_tpg->tpg_param_group, "param",
 			&TF_CIT_TMPL(tf)->tfc_tpg_param_cit);
+=======
+	se_tpg->tpg_group.default_groups[4] = &se_tpg->tpg_auth_group;
+	se_tpg->tpg_group.default_groups[5] = &se_tpg->tpg_param_group;
+	se_tpg->tpg_group.default_groups[6] = NULL;
+
+	config_group_init_type_name(&se_tpg->tpg_group, name,
+			&tf->tf_cit_tmpl.tfc_tpg_base_cit);
+	config_group_init_type_name(&se_tpg->tpg_lun_group, "lun",
+			&tf->tf_cit_tmpl.tfc_tpg_lun_cit);
+	config_group_init_type_name(&se_tpg->tpg_np_group, "np",
+			&tf->tf_cit_tmpl.tfc_tpg_np_cit);
+	config_group_init_type_name(&se_tpg->tpg_acl_group, "acls",
+			&tf->tf_cit_tmpl.tfc_tpg_nacl_cit);
+	config_group_init_type_name(&se_tpg->tpg_attrib_group, "attrib",
+			&tf->tf_cit_tmpl.tfc_tpg_attrib_cit);
+	config_group_init_type_name(&se_tpg->tpg_auth_group, "auth",
+			&tf->tf_cit_tmpl.tfc_tpg_auth_cit);
+	config_group_init_type_name(&se_tpg->tpg_param_group, "param",
+			&tf->tf_cit_tmpl.tfc_tpg_param_cit);
+>>>>>>> refs/remotes/origin/master
 
 	return &se_tpg->tpg_group;
 }
@@ -1346,21 +1653,30 @@ static struct config_group *target_fabric_make_wwn(
 	struct se_wwn *wwn;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(tf->tf_ops.fabric_make_wwn)) {
 		printk(KERN_ERR "tf->tf_ops.fabric_make_wwn is NULL\n");
 =======
 	if (!tf->tf_ops.fabric_make_wwn) {
 		pr_err("tf->tf_ops.fabric_make_wwn is NULL\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!tf->tf_ops.fabric_make_wwn) {
+		pr_err("tf->tf_ops.fabric_make_wwn is NULL\n");
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-ENOSYS);
 	}
 
 	wwn = tf->tf_ops.fabric_make_wwn(tf, group, name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(wwn) || IS_ERR(wwn))
 =======
 	if (!wwn || IS_ERR(wwn))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!wwn || IS_ERR(wwn))
+>>>>>>> refs/remotes/origin/master
 		return ERR_PTR(-EINVAL);
 
 	wwn->wwn_tf = tf;
@@ -1372,9 +1688,15 @@ static struct config_group *target_fabric_make_wwn(
 	wwn->wwn_group.default_groups[1] = NULL;
 
 	config_group_init_type_name(&wwn->wwn_group, name,
+<<<<<<< HEAD
 			&TF_CIT_TMPL(tf)->tfc_tpg_cit);
 	config_group_init_type_name(&wwn->fabric_stat_group, "fabric_statistics",
 			&TF_CIT_TMPL(tf)->tfc_wwn_fabric_stats_cit);
+=======
+			&tf->tf_cit_tmpl.tfc_tpg_cit);
+	config_group_init_type_name(&wwn->fabric_stat_group, "fabric_statistics",
+			&tf->tf_cit_tmpl.tfc_wwn_fabric_stats_cit);
+>>>>>>> refs/remotes/origin/master
 
 	return &wwn->wwn_group;
 }
@@ -1443,6 +1765,10 @@ int target_fabric_setup_cits(struct target_fabric_configfs *tf)
 	target_fabric_setup_tpg_np_cit(tf);
 	target_fabric_setup_tpg_np_base_cit(tf);
 	target_fabric_setup_tpg_attrib_cit(tf);
+<<<<<<< HEAD
+=======
+	target_fabric_setup_tpg_auth_cit(tf);
+>>>>>>> refs/remotes/origin/master
 	target_fabric_setup_tpg_param_cit(tf);
 	target_fabric_setup_tpg_nacl_cit(tf);
 	target_fabric_setup_tpg_nacl_base_cit(tf);

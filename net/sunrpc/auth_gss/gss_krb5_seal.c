@@ -160,10 +160,14 @@ gss_get_mic_v1(struct krb5_ctx *ctx, struct xdr_buf *text,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 u32
 =======
 static u32
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static u32
+>>>>>>> refs/remotes/origin/master
 gss_get_mic_v2(struct krb5_ctx *ctx, struct xdr_buf *text,
 		struct xdr_netobj *token)
 {

@@ -14,6 +14,11 @@
  *
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) "timed_output: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/types.h>
 #include <linux/device.h>
@@ -26,7 +31,11 @@ static struct class *timed_output_class;
 static atomic_t device_count;
 
 static ssize_t enable_show(struct device *dev, struct device_attribute *attr,
+<<<<<<< HEAD
 		char *buf)
+=======
+			   char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timed_output_dev *tdev = dev_get_drvdata(dev);
 	int remaining = tdev->get_time(tdev);
@@ -34,9 +43,14 @@ static ssize_t enable_show(struct device *dev, struct device_attribute *attr,
 	return sprintf(buf, "%d\n", remaining);
 }
 
+<<<<<<< HEAD
 static ssize_t enable_store(
 		struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t size)
+=======
+static ssize_t enable_store(struct device *dev, struct device_attribute *attr,
+			    const char *buf, size_t size)
+>>>>>>> refs/remotes/origin/master
 {
 	struct timed_output_dev *tdev = dev_get_drvdata(dev);
 	int value;
@@ -48,8 +62,18 @@ static ssize_t enable_store(
 
 	return size;
 }
+<<<<<<< HEAD
 
 static DEVICE_ATTR(enable, S_IRUGO | S_IWUSR, enable_show, enable_store);
+=======
+static DEVICE_ATTR_RW(enable);
+
+static struct attribute *timed_output_attrs[] = {
+	&dev_attr_enable.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(timed_output);
+>>>>>>> refs/remotes/origin/master
 
 static int create_timed_output_class(void)
 {
@@ -58,6 +82,10 @@ static int create_timed_output_class(void)
 		if (IS_ERR(timed_output_class))
 			return PTR_ERR(timed_output_class);
 		atomic_set(&device_count, 0);
+<<<<<<< HEAD
+=======
+		timed_output_class->dev_groups = timed_output_groups;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -76,6 +104,7 @@ int timed_output_dev_register(struct timed_output_dev *tdev)
 
 	tdev->index = atomic_inc_return(&device_count);
 	tdev->dev = device_create(timed_output_class, NULL,
+<<<<<<< HEAD
 		MKDEV(0, tdev->index), NULL, tdev->name);
 	if (IS_ERR(tdev->dev))
 		return PTR_ERR(tdev->dev);
@@ -94,12 +123,25 @@ err_create_file:
 			tdev->name);
 
 	return ret;
+=======
+		MKDEV(0, tdev->index), NULL, "%s", tdev->name);
+	if (IS_ERR(tdev->dev))
+		return PTR_ERR(tdev->dev);
+
+	dev_set_drvdata(tdev->dev, tdev);
+	tdev->state = 0;
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(timed_output_dev_register);
 
 void timed_output_dev_unregister(struct timed_output_dev *tdev)
 {
+<<<<<<< HEAD
 	device_remove_file(tdev->dev, &dev_attr_enable);
+=======
+	tdev->enable(tdev, 0);
+>>>>>>> refs/remotes/origin/master
 	device_destroy(timed_output_class, MKDEV(0, tdev->index));
 	dev_set_drvdata(tdev->dev, NULL);
 }

@@ -12,6 +12,7 @@
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/spinlock.h>
+<<<<<<< HEAD
 
 #include <asm/hardware/dec21285.h>
 #include <asm/leds.h>
@@ -21,6 +22,15 @@
 =======
 #include <asm/system_misc.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+#include <linux/leds.h>
+
+#include <asm/hardware/dec21285.h>
+#include <asm/mach-types.h>
+#include <asm/setup.h>
+#include <asm/system_misc.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 
@@ -30,6 +40,7 @@
 #define GP1_IO_BASE		0x338
 #define GP2_IO_BASE		0x33a
 
+<<<<<<< HEAD
 
 #ifdef CONFIG_LEDS
 #define DEFAULT_LEDS	0
@@ -37,6 +48,8 @@
 #define DEFAULT_LEDS	GPIO_GREEN_LED
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Winbond WB83977F accessibility stuff
  */
@@ -614,6 +627,7 @@ static void __init rwa010_init(void)
 static int __init nw_hw_init(void)
 {
 	if (machine_is_netwinder()) {
+<<<<<<< HEAD
 		unsigned long flags;
 
 		wb977_init();
@@ -623,6 +637,11 @@ static int __init nw_hw_init(void)
 		raw_spin_lock_irqsave(&nw_gpio_lock, flags);
 		nw_gpio_modify_op(GPIO_RED_LED|GPIO_GREEN_LED, DEFAULT_LEDS);
 		raw_spin_unlock_irqrestore(&nw_gpio_lock, flags);
+=======
+		wb977_init();
+		cpld_init();
+		rwa010_init();
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -636,11 +655,15 @@ __initcall(nw_hw_init);
  */
 static void __init
 <<<<<<< HEAD
+<<<<<<< HEAD
 fixup_netwinder(struct machine_desc *desc, struct tag *tags,
 		char **cmdline, struct meminfo *mi)
 =======
 fixup_netwinder(struct tag *tags, char **cmdline, struct meminfo *mi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+fixup_netwinder(struct tag *tags, char **cmdline, struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 #ifdef CONFIG_ISAPNP
 	extern int isapnp_disable;
@@ -655,6 +678,7 @@ fixup_netwinder(struct tag *tags, char **cmdline, struct meminfo *mi)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 MACHINE_START(NETWINDER, "Rebel-NetWinder")
 	/* Maintainer: Russell King/Rebel.com */
 	.boot_params	= 0x00000100,
@@ -662,6 +686,11 @@ MACHINE_START(NETWINDER, "Rebel-NetWinder")
 static void netwinder_restart(char mode, const char *cmd)
 {
 	if (mode == 's') {
+=======
+static void netwinder_restart(enum reboot_mode mode, const char *cmd)
+{
+	if (mode == REBOOT_SOFT) {
+>>>>>>> refs/remotes/origin/master
 		/* Jump into the ROM */
 		soft_restart(0x41000000);
 	} else {
@@ -685,10 +714,112 @@ static void netwinder_restart(char mode, const char *cmd)
 	}
 }
 
+<<<<<<< HEAD
 MACHINE_START(NETWINDER, "Rebel-NetWinder")
 	/* Maintainer: Russell King/Rebel.com */
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* LEDs */
+#if defined(CONFIG_NEW_LEDS) && defined(CONFIG_LEDS_CLASS)
+struct netwinder_led {
+	struct led_classdev     cdev;
+	u8                      mask;
+};
+
+/*
+ * The triggers lines up below will only be used if the
+ * LED triggers are compiled in.
+ */
+static const struct {
+	const char *name;
+	const char *trigger;
+} netwinder_leds[] = {
+	{ "netwinder:green", "heartbeat", },
+	{ "netwinder:red", "cpu0", },
+};
+
+/*
+ * The LED control in Netwinder is reversed:
+ *  - setting bit means turn off LED
+ *  - clearing bit means turn on LED
+ */
+static void netwinder_led_set(struct led_classdev *cdev,
+		enum led_brightness b)
+{
+	struct netwinder_led *led = container_of(cdev,
+			struct netwinder_led, cdev);
+	unsigned long flags;
+	u32 reg;
+
+	raw_spin_lock_irqsave(&nw_gpio_lock, flags);
+	reg = nw_gpio_read();
+	if (b != LED_OFF)
+		reg &= ~led->mask;
+	else
+		reg |= led->mask;
+	nw_gpio_modify_op(led->mask, reg);
+	raw_spin_unlock_irqrestore(&nw_gpio_lock, flags);
+}
+
+static enum led_brightness netwinder_led_get(struct led_classdev *cdev)
+{
+	struct netwinder_led *led = container_of(cdev,
+			struct netwinder_led, cdev);
+	unsigned long flags;
+	u32 reg;
+
+	raw_spin_lock_irqsave(&nw_gpio_lock, flags);
+	reg = nw_gpio_read();
+	raw_spin_unlock_irqrestore(&nw_gpio_lock, flags);
+
+	return (reg & led->mask) ? LED_OFF : LED_FULL;
+}
+
+static int __init netwinder_leds_init(void)
+{
+	int i;
+
+	if (!machine_is_netwinder())
+		return -ENODEV;
+
+	for (i = 0; i < ARRAY_SIZE(netwinder_leds); i++) {
+		struct netwinder_led *led;
+
+		led = kzalloc(sizeof(*led), GFP_KERNEL);
+		if (!led)
+			break;
+
+		led->cdev.name = netwinder_leds[i].name;
+		led->cdev.brightness_set = netwinder_led_set;
+		led->cdev.brightness_get = netwinder_led_get;
+		led->cdev.default_trigger = netwinder_leds[i].trigger;
+
+		if (i == 0)
+			led->mask = GPIO_GREEN_LED;
+		else
+			led->mask = GPIO_RED_LED;
+
+		if (led_classdev_register(NULL, &led->cdev) < 0) {
+			kfree(led);
+			break;
+		}
+	}
+
+	return 0;
+}
+
+/*
+ * Since we may have triggers on any subsystem, defer registration
+ * until after subsystem_init.
+ */
+fs_initcall(netwinder_leds_init);
+#endif
+
+MACHINE_START(NETWINDER, "Rebel-NetWinder")
+	/* Maintainer: Russell King/Rebel.com */
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.video_start	= 0x000a0000,
 	.video_end	= 0x000bffff,
 	.reserve_lp0	= 1,
@@ -696,9 +827,14 @@ MACHINE_START(NETWINDER, "Rebel-NetWinder")
 	.fixup		= fixup_netwinder,
 	.map_io		= footbridge_map_io,
 	.init_irq	= footbridge_init_irq,
+<<<<<<< HEAD
 	.timer		= &isa_timer,
 <<<<<<< HEAD
 =======
 	.restart	= netwinder_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= isa_timer_init,
+	.restart	= netwinder_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

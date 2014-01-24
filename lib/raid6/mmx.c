@@ -16,7 +16,11 @@
  * MMX implementation of RAID-6 syndrome functions
  */
 
+<<<<<<< HEAD
 #if defined(__i386__) && !defined(__arch_um__)
+=======
+#ifdef CONFIG_X86_32
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/raid/pq.h>
 #include "x86.h"

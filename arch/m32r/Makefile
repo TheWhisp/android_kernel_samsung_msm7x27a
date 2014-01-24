@@ -31,7 +31,11 @@ KBUILD_AFLAGS += $(aflags-y)
 
 CHECKFLAGS	+= -D__m32r__ -D__BIG_ENDIAN__=1
 
+<<<<<<< HEAD
 head-y	:= arch/m32r/kernel/head.o arch/m32r/kernel/init_task.o
+=======
+head-y	:= arch/m32r/kernel/head.o
+>>>>>>> refs/remotes/origin/master
 
 LIBGCC	:= $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
 

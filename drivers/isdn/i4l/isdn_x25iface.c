@@ -27,10 +27,14 @@
 
 /* for debugging messages not to cause an oops when device pointer is NULL*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MY_DEVNAME(dev)  ( (dev) ? (dev)->name : "DEVICE UNSPECIFIED" )
 =======
 #define MY_DEVNAME(dev)  ((dev) ? (dev)->name : "DEVICE UNSPECIFIED")
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MY_DEVNAME(dev)  ((dev) ? (dev)->name : "DEVICE UNSPECIFIED")
+>>>>>>> refs/remotes/origin/master
 
 
 typedef struct isdn_x25iface_proto_data {
@@ -39,16 +43,21 @@ typedef struct isdn_x25iface_proto_data {
 	/* Private stuff, not to be accessed via proto_data. We provide the
 	   other storage for the concap_proto instance here as well,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   enabling us to allocate both with just one kmalloc(): */ 
 =======
 	   enabling us to allocate both with just one kmalloc(): */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	   enabling us to allocate both with just one kmalloc(): */
+>>>>>>> refs/remotes/origin/master
 	struct concap_proto priv;
 } ix25_pdata_t;
 
 
 
 /* is now in header file (extern): struct concap_proto * isdn_x25iface_proto_new(void); */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void isdn_x25iface_proto_del( struct concap_proto * );
 static int isdn_x25iface_proto_close( struct concap_proto * );
@@ -60,6 +69,8 @@ static int isdn_x25iface_receive( struct concap_proto *, struct sk_buff * );
 static int isdn_x25iface_connect_ind( struct concap_proto * );
 static int isdn_x25iface_disconn_ind( struct concap_proto * );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void isdn_x25iface_proto_del(struct concap_proto *);
 static int isdn_x25iface_proto_close(struct concap_proto *);
 static int isdn_x25iface_proto_restart(struct concap_proto *,
@@ -69,7 +80,10 @@ static int isdn_x25iface_xmit(struct concap_proto *, struct sk_buff *);
 static int isdn_x25iface_receive(struct concap_proto *, struct sk_buff *);
 static int isdn_x25iface_connect_ind(struct concap_proto *);
 static int isdn_x25iface_disconn_ind(struct concap_proto *);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 static struct concap_proto_ops ix25_pops = {
@@ -85,6 +99,7 @@ static struct concap_proto_ops ix25_pops = {
 
 /* error message helper function */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void illegal_state_warn( unsigned state, unsigned char firstbyte) 
 {
 	printk( KERN_WARNING "isdn_x25iface: firstbyte %x illegal in"
@@ -98,6 +113,8 @@ static int pdata_is_bad( ix25_pdata_t * pda ){
 	printk( KERN_WARNING
 		"isdn_x25iface_xxx: illegal pointer to proto data\n" );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void illegal_state_warn(unsigned state, unsigned char firstbyte)
 {
 	printk(KERN_WARNING "isdn_x25iface: firstbyte %x illegal in"
@@ -110,12 +127,16 @@ static int pdata_is_bad(ix25_pdata_t *pda) {
 	if (pda  &&  pda->magic == ISDN_X25IFACE_MAGIC) return 0;
 	printk(KERN_WARNING
 	       "isdn_x25iface_xxx: illegal pointer to proto data\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
 /* create a new x25 interface protocol instance
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct concap_proto * isdn_x25iface_proto_new(void)
 {
@@ -134,6 +155,8 @@ struct concap_proto * isdn_x25iface_proto_new(void)
 		tmp -> priv.proto_data = tmp;
 		return( &(tmp -> priv) );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct concap_proto *isdn_x25iface_proto_new(void)
 {
 	ix25_pdata_t *tmp = kmalloc(sizeof(ix25_pdata_t), GFP_KERNEL);
@@ -150,11 +173,15 @@ struct concap_proto *isdn_x25iface_proto_new(void)
 		tmp->priv.flags      = 0;
 		tmp->priv.proto_data = tmp;
 		return (&(tmp->priv));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return NULL;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* close the x25iface encapsulation protocol 
  */
@@ -179,6 +206,8 @@ static int isdn_x25iface_proto_close(struct concap_proto *cprot){
 	} else {
 		tmp -> state = WAN_UNCONFIGURED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* close the x25iface encapsulation protocol
  */
 static int isdn_x25iface_proto_close(struct concap_proto *cprot) {
@@ -201,7 +230,10 @@ static int isdn_x25iface_proto_close(struct concap_proto *cprot) {
 		ret = -1;
 	} else {
 		tmp->state = WAN_UNCONFIGURED;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&cprot->lock, flags);
 	return ret;
@@ -209,6 +241,7 @@ static int isdn_x25iface_proto_close(struct concap_proto *cprot) {
 
 /* Delete the x25iface encapsulation protocol instance
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void isdn_x25iface_proto_del(struct concap_proto *cprot){
 
@@ -235,6 +268,8 @@ static void isdn_x25iface_proto_del(struct concap_proto *cprot){
 
 	kfree( tmp );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void isdn_x25iface_proto_del(struct concap_proto *cprot) {
 
 	ix25_pdata_t *tmp;
@@ -259,13 +294,17 @@ static void isdn_x25iface_proto_del(struct concap_proto *cprot) {
 	cprot->proto_data = NULL;
 
 	kfree(tmp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
 /* (re-)initialize the data structures for x25iface encapsulation
  */
 static int isdn_x25iface_proto_restart(struct concap_proto *cprot,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					struct net_device *ndev,
 					struct concap_device_ops *dops)
@@ -282,6 +321,8 @@ static int isdn_x25iface_proto_restart(struct concap_proto *cprot,
 		printk( KERN_WARNING "isdn_x25iface_restart: required dops"
 			" missing\n" );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				       struct net_device *ndev,
 				       struct concap_device_ops *dops)
 {
@@ -296,26 +337,36 @@ static int isdn_x25iface_proto_restart(struct concap_proto *cprot,
 	      && dops->disconn_req)) {
 		printk(KERN_WARNING "isdn_x25iface_restart: required dops"
 		       " missing\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		isdn_x25iface_proto_close(cprot);
 		return -1;
 	}
 	spin_lock_irqsave(&cprot->lock, flags);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	cprot -> net_dev = ndev;
 	cprot -> pops = &ix25_pops;
 	cprot -> dops = dops;
 	pda -> state = WAN_DISCONNECTED;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cprot->net_dev = ndev;
 	cprot->pops = &ix25_pops;
 	cprot->dops = dops;
 	pda->state = WAN_DISCONNECTED;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&cprot->lock, flags);
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* deliver a dl_data frame received from i4l HL driver to the network layer 
  */
@@ -326,6 +377,8 @@ static int isdn_x25iface_receive(struct concap_proto *cprot, struct sk_buff *skb
 	     -> state == WAN_CONNECTED ){
 		if( skb_push(skb, 1)){
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* deliver a dl_data frame received from i4l HL driver to the network layer
  */
 static int isdn_x25iface_receive(struct concap_proto *cprot, struct sk_buff *skb)
@@ -334,7 +387,10 @@ static int isdn_x25iface_receive(struct concap_proto *cprot, struct sk_buff *skb
 	if (((ix25_pdata_t *)(cprot->proto_data))
 	    ->state == WAN_CONNECTED) {
 		if (skb_push(skb, 1)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			skb->data[0] = X25_IFACE_DATA;
 			skb->protocol = x25_type_trans(skb, cprot->net_dev);
 			netif_rx(skb);
@@ -342,14 +398,19 @@ static int isdn_x25iface_receive(struct concap_proto *cprot, struct sk_buff *skb
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_WARNING "isdn_x25iface_receive %s: not connected, skb dropped\n", MY_DEVNAME(cprot->net_dev) );
 =======
 	printk(KERN_WARNING "isdn_x25iface_receive %s: not connected, skb dropped\n", MY_DEVNAME(cprot->net_dev));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_WARNING "isdn_x25iface_receive %s: not connected, skb dropped\n", MY_DEVNAME(cprot->net_dev));
+>>>>>>> refs/remotes/origin/master
 	dev_kfree_skb(skb);
 	return -1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* a connection set up is indicated by lower layer 
  */
@@ -365,6 +426,8 @@ static int isdn_x25iface_connect_ind(struct concap_proto *cprot)
 		       "isdn_x25iface_connect_ind while unconfigured %s\n"
 		       , MY_DEVNAME(cprot->net_dev) );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* a connection set up is indicated by lower layer
  */
 static int isdn_x25iface_connect_ind(struct concap_proto *cprot)
@@ -378,17 +441,24 @@ static int isdn_x25iface_connect_ind(struct concap_proto *cprot)
 		printk(KERN_WARNING
 		       "isdn_x25iface_connect_ind while unconfigured %s\n"
 		       , MY_DEVNAME(cprot->net_dev));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	*state_p = WAN_CONNECTED;
 
 	skb = dev_alloc_skb(1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if( skb ){
 =======
 	if (skb) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (skb) {
+>>>>>>> refs/remotes/origin/master
 		*(skb_put(skb, 1)) = X25_IFACE_CONNECT;
 		skb->protocol = x25_type_trans(skb, cprot->net_dev);
 		netif_rx(skb);
@@ -397,6 +467,7 @@ static int isdn_x25iface_connect_ind(struct concap_proto *cprot)
 		printk(KERN_WARNING "isdn_x25iface_connect_ind: "
 		       " out of memory -- disconnecting\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cprot -> dops -> disconn_req(cprot);
 		return -1;
 	}
@@ -404,17 +475,23 @@ static int isdn_x25iface_connect_ind(struct concap_proto *cprot)
 	
 /* a disconnect is indicated by lower layer 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		cprot->dops->disconn_req(cprot);
 		return -1;
 	}
 }
 
 /* a disconnect is indicated by lower layer
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static int isdn_x25iface_disconn_ind(struct concap_proto *cprot)
 {
 	struct sk_buff *skb;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	enum wan_states *state_p 
 	  = &( ( (ix25_pdata_t*) (cprot->proto_data) ) -> state);
@@ -429,6 +506,8 @@ static int isdn_x25iface_disconn_ind(struct concap_proto *cprot)
 	skb = dev_alloc_skb(1);
 	if( skb ){
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	enum wan_states *state_p
 		= &(((ix25_pdata_t *)(cprot->proto_data))->state);
 	IX25DEBUG("isdn_x25iface_disconn_ind %s \n", MY_DEVNAME(cprot->net_dev));
@@ -441,7 +520,10 @@ static int isdn_x25iface_disconn_ind(struct concap_proto *cprot)
 	*state_p = WAN_DISCONNECTED;
 	skb = dev_alloc_skb(1);
 	if (skb) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		*(skb_put(skb, 1)) = X25_IFACE_DISCONNECT;
 		skb->protocol = x25_type_trans(skb, cprot->net_dev);
 		netif_rx(skb);
@@ -455,6 +537,7 @@ static int isdn_x25iface_disconn_ind(struct concap_proto *cprot)
 
 /* process a frame handed over to us from linux network layer. First byte
    semantics as defined in Documentation/networking/x25-iface.txt
+<<<<<<< HEAD
 <<<<<<< HEAD
    */
 static int isdn_x25iface_xmit(struct concap_proto *cprot, struct sk_buff *skb)
@@ -482,6 +565,8 @@ static int isdn_x25iface_xmit(struct concap_proto *cprot, struct sk_buff *skb)
 		        ret = cprot -> dops -> connect_req(cprot);
 			if(ret){
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 static int isdn_x25iface_xmit(struct concap_proto *cprot, struct sk_buff *skb)
 {
@@ -507,12 +592,16 @@ static int isdn_x25iface_xmit(struct concap_proto *cprot, struct sk_buff *skb)
 			*state = WAN_CONNECTING;
 			ret = cprot->dops->connect_req(cprot);
 			if (ret) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				/* reset state and notify upper layer about
 				 * immidiatly failed attempts */
 				isdn_x25iface_disconn_ind(cprot);
 			}
 		} else {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			illegal_state_warn( *state, firstbyte );
 		}
@@ -521,39 +610,54 @@ static int isdn_x25iface_xmit(struct concap_proto *cprot, struct sk_buff *skb)
 		switch ( *state ){
 		case WAN_DISCONNECTED: 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			illegal_state_warn(*state, firstbyte);
 		}
 		break;
 	case X25_IFACE_DISCONNECT:
 		switch (*state) {
 		case WAN_DISCONNECTED:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* Should not happen. However, give upper layer a
 			   chance to recover from inconstistency  but don't
 			   trust the lower layer sending the disconn_confirm
 			   when already disconnected */
 			printk(KERN_WARNING "isdn_x25iface_xmit: disconnect "
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       " requested while disconnected\n" );
 =======
 			       " requested while disconnected\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       " requested while disconnected\n");
+>>>>>>> refs/remotes/origin/master
 			isdn_x25iface_disconn_ind(cprot);
 			break; /* prevent infinite loops */
 		case WAN_CONNECTING:
 		case WAN_CONNECTED:
 			*state = WAN_DISCONNECTED;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cprot -> dops -> disconn_req(cprot);
 			break;
 		default:
 			illegal_state_warn( *state, firstbyte );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			cprot->dops->disconn_req(cprot);
 			break;
 		default:
 			illegal_state_warn(*state, firstbyte);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case X25_IFACE_PARAMS:

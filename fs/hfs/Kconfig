@@ -1,6 +1,11 @@
 config HFS_FS
+<<<<<<< HEAD
 	tristate "Apple Macintosh file system support (EXPERIMENTAL)"
 	depends on BLOCK && EXPERIMENTAL
+=======
+	tristate "Apple Macintosh file system support"
+	depends on BLOCK
+>>>>>>> refs/remotes/origin/master
 	select NLS
 	help
 	  If you say Y here, you will be able to mount Macintosh-formatted

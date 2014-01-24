@@ -170,9 +170,12 @@ struct rds_tcp_desc_arg {
 	struct rds_connection *conn;
 	gfp_t gfp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	enum km_type km;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int rds_tcp_data_recv(read_descriptor_t *desc, struct sk_buff *skb,
@@ -259,10 +262,14 @@ static int rds_tcp_data_recv(read_descriptor_t *desc, struct sk_buff *skb,
 				rds_recv_incoming(conn, conn->c_faddr,
 						  conn->c_laddr, &tinc->ti_inc,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						  arg->gfp, arg->km);
 =======
 						  arg->gfp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						  arg->gfp);
+>>>>>>> refs/remotes/origin/master
 
 			tc->t_tinc_hdr_rem = sizeof(struct rds_header);
 			tc->t_tinc_data_rem = 0;
@@ -280,11 +287,15 @@ out:
 
 /* the caller has to hold the sock lock */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int rds_tcp_read_sock(struct rds_connection *conn, gfp_t gfp,
 			     enum km_type km)
 =======
 static int rds_tcp_read_sock(struct rds_connection *conn, gfp_t gfp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int rds_tcp_read_sock(struct rds_connection *conn, gfp_t gfp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rds_tcp_connection *tc = conn->c_transport_data;
 	struct socket *sock = tc->t_sock;
@@ -295,9 +306,12 @@ static int rds_tcp_read_sock(struct rds_connection *conn, gfp_t gfp)
 	arg.conn = conn;
 	arg.gfp = gfp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arg.km = km;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	desc.arg.data = &arg;
 	desc.error = 0;
 	desc.count = 1; /* give more than one skb per call */
@@ -326,10 +340,14 @@ int rds_tcp_recv(struct rds_connection *conn)
 
 	lock_sock(sock->sk);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = rds_tcp_read_sock(conn, GFP_KERNEL, KM_USER0);
 =======
 	ret = rds_tcp_read_sock(conn, GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = rds_tcp_read_sock(conn, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	release_sock(sock->sk);
 
 	return ret;
@@ -343,7 +361,11 @@ void rds_tcp_data_ready(struct sock *sk, int bytes)
 
 	rdsdebug("data ready sk %p bytes %d\n", sk, bytes);
 
+<<<<<<< HEAD
 	read_lock_bh(&sk->sk_callback_lock);
+=======
+	read_lock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 	conn = sk->sk_user_data;
 	if (!conn) { /* check for teardown race */
 		ready = sk->sk_data_ready;
@@ -355,6 +377,7 @@ void rds_tcp_data_ready(struct sock *sk, int bytes)
 	rds_tcp_stats_inc(s_tcp_data_ready_calls);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (rds_tcp_read_sock(conn, GFP_ATOMIC, KM_SOFTIRQ0) == -ENOMEM)
 =======
 	if (rds_tcp_read_sock(conn, GFP_ATOMIC) == -ENOMEM)
@@ -362,6 +385,12 @@ void rds_tcp_data_ready(struct sock *sk, int bytes)
 		queue_delayed_work(rds_wq, &conn->c_recv_w, 0);
 out:
 	read_unlock_bh(&sk->sk_callback_lock);
+=======
+	if (rds_tcp_read_sock(conn, GFP_ATOMIC) == -ENOMEM)
+		queue_delayed_work(rds_wq, &conn->c_recv_w, 0);
+out:
+	read_unlock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 	ready(sk, bytes);
 }
 

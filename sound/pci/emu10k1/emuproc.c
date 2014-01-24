@@ -577,7 +577,11 @@ static struct snd_info_entry_ops snd_emu10k1_proc_ops_fx8010 = {
 	.read = snd_emu10k1_fx8010_read,
 };
 
+<<<<<<< HEAD
 int __devinit snd_emu10k1_proc_init(struct snd_emu10k1 * emu)
+=======
+int snd_emu10k1_proc_init(struct snd_emu10k1 *emu)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 #ifdef CONFIG_SND_DEBUG

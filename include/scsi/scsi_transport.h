@@ -23,9 +23,13 @@
 #include <linux/transport_class.h>
 #include <linux/blkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/scsi_host.h>
 #include <scsi/scsi_device.h>
 

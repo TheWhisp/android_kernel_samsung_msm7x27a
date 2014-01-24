@@ -18,12 +18,20 @@
  *	================
  *
  *	We have the following to choose from:
+<<<<<<< HEAD
  *	  arm6          - ARM6 style
+=======
+>>>>>>> refs/remotes/origin/master
  *	  arm7		- ARM7 style
  *	  v4_early	- ARMv4 without Thumb early abort handler
  *	  v4t_late	- ARMv4 with Thumb late abort handler
  *	  v4t_early	- ARMv4 with Thumb early abort handler
+<<<<<<< HEAD
  *	  v5tej_early	- ARMv5 with Thumb and Java early abort handler
+=======
+ *	  v5t_early	- ARMv5 with Thumb early abort handler
+ *	  v5tj_early	- ARMv5 with Thumb and Java early abort handler
+>>>>>>> refs/remotes/origin/master
  *	  xscale	- ARMv5 with Thumb with Xscale extensions
  *	  v6_early	- ARMv6 generic early abort handler
  *	  v7_early	- ARMv7 generic early abort handler
@@ -31,6 +39,7 @@
 #undef CPU_DABORT_HANDLER
 #undef MULTI_DABORT
 
+<<<<<<< HEAD
 #if defined(CONFIG_CPU_ARM610)
 # ifdef CPU_DABORT_HANDLER
 #  define MULTI_DABORT 1
@@ -44,6 +53,21 @@
 #  define MULTI_DABORT 1
 # else
 #  define CPU_DABORT_HANDLER cpu_arm7_data_abort
+=======
+#if defined(CONFIG_CPU_ARM710)
+# ifdef CPU_DABORT_HANDLER
+#  define MULTI_DABORT 1
+# else
+#  define CPU_DABORT_HANDLER cpu_arm7_data_abort
+# endif
+#endif
+
+#ifdef CONFIG_CPU_ABRT_EV4
+# ifdef CPU_DABORT_HANDLER
+#  define MULTI_DABORT 1
+# else
+#  define CPU_DABORT_HANDLER v4_early_abort
+>>>>>>> refs/remotes/origin/master
 # endif
 #endif
 
@@ -55,6 +79,7 @@
 # endif
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_ABRT_EV4
 # ifdef CPU_DABORT_HANDLER
 #  define MULTI_DABORT 1
@@ -68,6 +93,21 @@
 #  define MULTI_DABORT 1
 # else
 #  define CPU_DABORT_HANDLER v4t_early_abort
+=======
+#ifdef CONFIG_CPU_ABRT_EV4T
+# ifdef CPU_DABORT_HANDLER
+#  define MULTI_DABORT 1
+# else
+#  define CPU_DABORT_HANDLER v4t_early_abort
+# endif
+#endif
+
+#ifdef CONFIG_CPU_ABRT_EV5T
+# ifdef CPU_DABORT_HANDLER
+#  define MULTI_DABORT 1
+# else
+#  define CPU_DABORT_HANDLER v5t_early_abort
+>>>>>>> refs/remotes/origin/master
 # endif
 #endif
 
@@ -79,6 +119,7 @@
 # endif
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_CPU_ABRT_EV5T
 # ifdef CPU_DABORT_HANDLER
 #  define MULTI_DABORT 1
@@ -100,6 +141,29 @@
 #  define MULTI_DABORT 1
 # else
 #  define CPU_DABORT_HANDLER v7_early_abort
+=======
+#ifdef CONFIG_CPU_ABRT_EV6
+# ifdef CPU_DABORT_HANDLER
+#  define MULTI_DABORT 1
+# else
+#  define CPU_DABORT_HANDLER v6_early_abort
+# endif
+#endif
+
+#ifdef CONFIG_CPU_ABRT_EV7
+# ifdef CPU_DABORT_HANDLER
+#  define MULTI_DABORT 1
+# else
+#  define CPU_DABORT_HANDLER v7_early_abort
+# endif
+#endif
+
+#ifdef CONFIG_CPU_ABRT_NOMMU
+# ifdef CPU_DABORT_HANDLER
+#  define MULTI_DABORT 1
+# else
+#  define CPU_DABORT_HANDLER nommu_early_abort
+>>>>>>> refs/remotes/origin/master
 # endif
 #endif
 

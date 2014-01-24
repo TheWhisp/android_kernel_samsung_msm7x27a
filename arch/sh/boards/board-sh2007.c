@@ -6,6 +6,11 @@
  */
 #include <linux/init.h>
 #include <linux/irq.h>
+<<<<<<< HEAD
+=======
+#include <linux/regulator/fixed.h>
+#include <linux/regulator/machine.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/smsc911x.h>
 #include <linux/platform_device.h>
 #include <linux/ata_platform.h>
@@ -13,6 +18,17 @@
 #include <asm/machvec.h>
 #include <mach/sh2007.h>
 
+<<<<<<< HEAD
+=======
+/* Dummy supplies, where voltage doesn't matter */
+static struct regulator_consumer_supply dummy_supplies[] = {
+	REGULATOR_SUPPLY("vddvario", "smsc911x.0"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x.0"),
+	REGULATOR_SUPPLY("vddvario", "smsc911x.1"),
+	REGULATOR_SUPPLY("vdd33a", "smsc911x.1"),
+};
+
+>>>>>>> refs/remotes/origin/master
 struct smsc911x_platform_config smc911x_info = {
 	.flags		= SMSC911X_USE_32BIT,
 	.irq_polarity	= SMSC911X_IRQ_POLARITY_ACTIVE_LOW,
@@ -98,6 +114,11 @@ static struct platform_device *sh2007_devices[] __initdata = {
 
 static int __init sh2007_io_init(void)
 {
+<<<<<<< HEAD
+=======
+	regulator_register_fixed(0, dummy_supplies, ARRAY_SIZE(dummy_supplies));
+
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(sh2007_devices, ARRAY_SIZE(sh2007_devices));
 	return 0;
 }

@@ -13,15 +13,39 @@
  *
  * Licensed under the GNU/GPL. See COPYING for details.
  */
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/usb/ohci_pdriver.h>
+=======
+
+#include <linux/hrtimer.h>
+#include <linux/io.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/err.h>
+#include <linux/platform_device.h>
+#include <linux/usb/ohci_pdriver.h>
+#include <linux/usb.h>
+#include <linux/usb/hcd.h>
+
+#include "ohci.h"
+
+#define DRIVER_DESC "OHCI generic platform driver"
+
+static const char hcd_name[] = "ohci-platform";
+>>>>>>> refs/remotes/origin/master
 
 static int ohci_platform_reset(struct usb_hcd *hcd)
 {
 	struct platform_device *pdev = to_platform_device(hcd->self.controller);
+<<<<<<< HEAD
 	struct usb_ohci_pdata *pdata = pdev->dev.platform_data;
 	struct ohci_hcd *ohci = hcd_to_ohci(hcd);
 	int err;
+=======
+	struct usb_ohci_pdata *pdata = dev_get_platdata(&pdev->dev);
+	struct ohci_hcd *ohci = hcd_to_ohci(hcd);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->big_endian_desc)
 		ohci->flags |= OHCI_QUIRK_BE_DESC;
@@ -29,6 +53,7 @@ static int ohci_platform_reset(struct usb_hcd *hcd)
 		ohci->flags |= OHCI_QUIRK_BE_MMIO;
 	if (pdata->no_big_frame_no)
 		ohci->flags |= OHCI_QUIRK_FRAME_NO;
+<<<<<<< HEAD
 
 	ohci_hcd_init(ohci);
 	err = ohci_init(ohci);
@@ -87,18 +112,50 @@ static int __devinit ohci_platform_probe(struct platform_device *dev)
 	int err = -ENOMEM;
 
 	BUG_ON(!dev->dev.platform_data);
+=======
+	if (pdata->num_ports)
+		ohci->num_ports = pdata->num_ports;
+
+	return ohci_setup(hcd);
+}
+
+static struct hc_driver __read_mostly ohci_platform_hc_driver;
+
+static const struct ohci_driver_overrides platform_overrides __initconst = {
+	.product_desc =	"Generic Platform OHCI controller",
+	.reset =	ohci_platform_reset,
+};
+
+static int ohci_platform_probe(struct platform_device *dev)
+{
+	struct usb_hcd *hcd;
+	struct resource *res_mem;
+	struct usb_ohci_pdata *pdata = dev_get_platdata(&dev->dev);
+	int irq;
+	int err = -ENOMEM;
+
+	if (!pdata) {
+		WARN_ON(1);
+		return -ENODEV;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (usb_disabled())
 		return -ENODEV;
 
 	irq = platform_get_irq(dev, 0);
 	if (irq < 0) {
+<<<<<<< HEAD
 		pr_err("no irq provieded");
+=======
+		dev_err(&dev->dev, "no irq provided");
+>>>>>>> refs/remotes/origin/master
 		return irq;
 	}
 
 	res_mem = platform_get_resource(dev, IORESOURCE_MEM, 0);
 	if (!res_mem) {
+<<<<<<< HEAD
 		pr_err("no memory recourse provieded");
 		return -ENXIO;
 	}
@@ -107,10 +164,29 @@ static int __devinit ohci_platform_probe(struct platform_device *dev)
 			dev_name(&dev->dev));
 	if (!hcd)
 		return -ENOMEM;
+=======
+		dev_err(&dev->dev, "no memory resource provided");
+		return -ENXIO;
+	}
+
+	if (pdata->power_on) {
+		err = pdata->power_on(dev);
+		if (err < 0)
+			return err;
+	}
+
+	hcd = usb_create_hcd(&ohci_platform_hc_driver, &dev->dev,
+			dev_name(&dev->dev));
+	if (!hcd) {
+		err = -ENOMEM;
+		goto err_power;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	hcd->rsrc_start = res_mem->start;
 	hcd->rsrc_len = resource_size(res_mem);
 
+<<<<<<< HEAD
 	if (!request_mem_region(hcd->rsrc_start, hcd->rsrc_len, hcd_name)) {
 		pr_err("controller already in use");
 		err = -EBUSY;
@@ -123,11 +199,24 @@ static int __devinit ohci_platform_probe(struct platform_device *dev)
 	err = usb_add_hcd(hcd, irq, IRQF_SHARED);
 	if (err)
 		goto err_iounmap;
+=======
+	hcd->regs = devm_ioremap_resource(&dev->dev, res_mem);
+	if (IS_ERR(hcd->regs)) {
+		err = PTR_ERR(hcd->regs);
+		goto err_put_hcd;
+	}
+	err = usb_add_hcd(hcd, irq, IRQF_SHARED);
+	if (err)
+		goto err_put_hcd;
+
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(dev, hcd);
 
 	return err;
 
+<<<<<<< HEAD
 err_iounmap:
 	iounmap(hcd->regs);
 err_release_region:
@@ -146,6 +235,27 @@ static int __devexit ohci_platform_remove(struct platform_device *dev)
 	release_mem_region(hcd->rsrc_start, hcd->rsrc_len);
 	usb_put_hcd(hcd);
 	platform_set_drvdata(dev, NULL);
+=======
+err_put_hcd:
+	usb_put_hcd(hcd);
+err_power:
+	if (pdata->power_off)
+		pdata->power_off(dev);
+
+	return err;
+}
+
+static int ohci_platform_remove(struct platform_device *dev)
+{
+	struct usb_hcd *hcd = platform_get_drvdata(dev);
+	struct usb_ohci_pdata *pdata = dev_get_platdata(&dev->dev);
+
+	usb_remove_hcd(hcd);
+	usb_put_hcd(hcd);
+
+	if (pdata->power_off)
+		pdata->power_off(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -154,14 +264,46 @@ static int __devexit ohci_platform_remove(struct platform_device *dev)
 
 static int ohci_platform_suspend(struct device *dev)
 {
+<<<<<<< HEAD
 	return 0;
+=======
+	struct usb_hcd *hcd = dev_get_drvdata(dev);
+	struct usb_ohci_pdata *pdata = dev->platform_data;
+	struct platform_device *pdev =
+		container_of(dev, struct platform_device, dev);
+	bool do_wakeup = device_may_wakeup(dev);
+	int ret;
+
+	ret = ohci_suspend(hcd, do_wakeup);
+	if (ret)
+		return ret;
+
+	if (pdata->power_suspend)
+		pdata->power_suspend(pdev);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ohci_platform_resume(struct device *dev)
 {
 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+<<<<<<< HEAD
 
 	ohci_finish_controller_resume(hcd);
+=======
+	struct usb_ohci_pdata *pdata = dev_get_platdata(dev);
+	struct platform_device *pdev =
+		container_of(dev, struct platform_device, dev);
+
+	if (pdata->power_on) {
+		int err = pdata->power_on(pdev);
+		if (err < 0)
+			return err;
+	}
+
+	ohci_resume(hcd, false);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -184,7 +326,11 @@ static const struct dev_pm_ops ohci_platform_pm_ops = {
 static struct platform_driver ohci_platform_driver = {
 	.id_table	= ohci_platform_table,
 	.probe		= ohci_platform_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ohci_platform_remove),
+=======
+	.remove		= ohci_platform_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= usb_hcd_platform_shutdown,
 	.driver		= {
 		.owner	= THIS_MODULE,
@@ -192,3 +338,29 @@ static struct platform_driver ohci_platform_driver = {
 		.pm	= &ohci_platform_pm_ops,
 	}
 };
+<<<<<<< HEAD
+=======
+
+static int __init ohci_platform_init(void)
+{
+	if (usb_disabled())
+		return -ENODEV;
+
+	pr_info("%s: " DRIVER_DESC "\n", hcd_name);
+
+	ohci_init_driver(&ohci_platform_hc_driver, &platform_overrides);
+	return platform_driver_register(&ohci_platform_driver);
+}
+module_init(ohci_platform_init);
+
+static void __exit ohci_platform_cleanup(void)
+{
+	platform_driver_unregister(&ohci_platform_driver);
+}
+module_exit(ohci_platform_cleanup);
+
+MODULE_DESCRIPTION(DRIVER_DESC);
+MODULE_AUTHOR("Hauke Mehrtens");
+MODULE_AUTHOR("Alan Stern");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

@@ -21,6 +21,7 @@
 
 #include <linux/delay.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/mmc/host.h>
 #include "sdhci-of.h"
 #include "sdhci.h"
@@ -29,6 +30,11 @@
 #include <linux/mmc/host.h>
 #include "sdhci-pltfm.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+#include <linux/mmc/host.h>
+#include "sdhci-pltfm.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Ops and quirks for the Nintendo Wii SDHCI controllers.
@@ -58,6 +64,7 @@ static void sdhci_hlwd_writeb(struct sdhci_host *host, u8 val, int reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct sdhci_of_data sdhci_hlwd = {
 	.quirks = SDHCI_QUIRK_32BIT_DMA_ADDR |
 		  SDHCI_QUIRK_32BIT_DMA_SIZE,
@@ -72,6 +79,9 @@ struct sdhci_of_data sdhci_hlwd = {
 };
 =======
 static struct sdhci_ops sdhci_hlwd_ops = {
+=======
+static const struct sdhci_ops sdhci_hlwd_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read_l = sdhci_be32bs_readl,
 	.read_w = sdhci_be32bs_readw,
 	.read_b = sdhci_be32bs_readb,
@@ -80,18 +90,31 @@ static struct sdhci_ops sdhci_hlwd_ops = {
 	.write_b = sdhci_hlwd_writeb,
 };
 
+<<<<<<< HEAD
 static struct sdhci_pltfm_data sdhci_hlwd_pdata = {
+=======
+static const struct sdhci_pltfm_data sdhci_hlwd_pdata = {
+>>>>>>> refs/remotes/origin/master
 	.quirks = SDHCI_QUIRK_32BIT_DMA_ADDR |
 		  SDHCI_QUIRK_32BIT_DMA_SIZE,
 	.ops = &sdhci_hlwd_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit sdhci_hlwd_probe(struct platform_device *pdev)
 {
 	return sdhci_pltfm_register(pdev, &sdhci_hlwd_pdata);
 }
 
 static int __devexit sdhci_hlwd_remove(struct platform_device *pdev)
+=======
+static int sdhci_hlwd_probe(struct platform_device *pdev)
+{
+	return sdhci_pltfm_register(pdev, &sdhci_hlwd_pdata, 0);
+}
+
+static int sdhci_hlwd_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return sdhci_pltfm_unregister(pdev);
 }
@@ -110,7 +133,11 @@ static struct platform_driver sdhci_hlwd_driver = {
 		.pm = SDHCI_PLTFM_PMOPS,
 	},
 	.probe = sdhci_hlwd_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(sdhci_hlwd_remove),
+=======
+	.remove = sdhci_hlwd_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(sdhci_hlwd_driver);
@@ -118,4 +145,7 @@ module_platform_driver(sdhci_hlwd_driver);
 MODULE_DESCRIPTION("Nintendo Wii SDHCI OF driver");
 MODULE_AUTHOR("The GameCube Linux Team, Albert Herranz");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -15,6 +15,11 @@
  * option) any later version.
  */
 
+<<<<<<< HEAD
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/cdev.h>
 #include <linux/delay.h>
 #include <linux/device.h>
@@ -27,15 +32,23 @@
 #include <linux/module.h>
 #include <linux/pagemap.h>
 #include <linux/pci.h>
+<<<<<<< HEAD
 #include <linux/semaphore.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 #include <linux/syscalls.h>
 #include <linux/mutex.h>
+=======
+#include <linux/mutex.h>
+#include <linux/slab.h>
+#include <linux/spinlock.h>
+#include <linux/syscalls.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 
 #include <linux/io.h>
 #include <linux/uaccess.h>
+<<<<<<< HEAD
 
 #include "../vme.h"
 #include "vme_user.h"
@@ -50,6 +63,16 @@ static const char driver_name[] = "vme_user";
 
 static int bus[VME_USER_BUS_MAX];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/vme.h>
+
+#include "vme_user.h"
+
+static DEFINE_MUTEX(vme_user_mutex);
+static const char driver_name[] = "vme_user";
+
+static int bus[VME_USER_BUS_MAX];
+>>>>>>> refs/remotes/origin/master
 static unsigned int bus_num;
 
 /* Currently Documentation/devices.txt defines the following for VME:
@@ -71,13 +94,22 @@ static unsigned int bus_num;
  *
  * However the VME driver at http://www.vmelinux.org/ is rather old and doesn't
  * even support the tsi148 chipset (which has 8 master and 8 slave windows).
+<<<<<<< HEAD
  * We'll run with this or now as far as possible, however it probably makes
+=======
+ * We'll run with this for now as far as possible, however it probably makes
+>>>>>>> refs/remotes/origin/master
  * sense to get rid of the old mappings and just do everything dynamically.
  *
  * So for now, we'll restrict the driver to providing 4 masters and 4 slaves as
  * defined above and try to support at least some of the interface from
+<<<<<<< HEAD
  * http://www.vmelinux.org/ as an alternative drive can be written providing a
  * saner interface later.
+=======
+ * http://www.vmelinux.org/ as an alternative the driver can be written
+ * providing a saner interface later.
+>>>>>>> refs/remotes/origin/master
  *
  * The vmelinux.org driver never supported slave images, the devices reserved
  * for slaves were repurposed to support all 8 master images on the UniverseII!
@@ -98,6 +130,7 @@ static unsigned int bus_num;
  * Structure to handle image related parameters.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct {
 =======
 struct image_desc {
@@ -115,16 +148,30 @@ static image_desc_t image[VME_DEVS];
 
 typedef struct {
 =======
+=======
+struct image_desc {
+	void *kern_buf;	/* Buffer address in kernel space */
+	dma_addr_t pci_buf;	/* Buffer address in PCI address space */
+	unsigned long long size_buf;	/* Buffer size */
+	struct mutex mutex;	/* Mutex for locking image */
+	struct device *device;	/* Sysfs device */
+	struct vme_resource *resource;	/* VME resource */
+	int users;		/* Number of current users */
+>>>>>>> refs/remotes/origin/master
 };
 static struct image_desc image[VME_DEVS];
 
 struct driver_stats {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long reads;
 	unsigned long writes;
 	unsigned long ioctls;
 	unsigned long irqs;
 	unsigned long berrs;
+<<<<<<< HEAD
 	unsigned long dmaErrors;
 	unsigned long timeouts;
 	unsigned long external;
@@ -136,13 +183,21 @@ static struct cdev *vme_user_cdev;		/* Character device */
 static struct class *vme_user_sysfs_class;	/* Sysfs class */
 static struct device *vme_user_bridge;		/* Pointer to bridge device */
 =======
+=======
+	unsigned long dmaerrors;
+	unsigned long timeouts;
+	unsigned long external;
+>>>>>>> refs/remotes/origin/master
 };
 static struct driver_stats statistics;
 
 static struct cdev *vme_user_cdev;		/* Character device */
 static struct class *vme_user_sysfs_class;	/* Sysfs class */
 static struct vme_dev *vme_user_bridge;		/* Pointer to user device */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 
 static const int type[VME_DEVS] = {	MASTER_MINOR,	MASTER_MINOR,
@@ -162,6 +217,7 @@ static loff_t vme_user_llseek(struct file *, loff_t, int);
 static long vme_user_unlocked_ioctl(struct file *, unsigned int, unsigned long);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit vme_user_probe(struct device *, int, int);
 static int __devexit vme_user_remove(struct device *, int, int);
 
@@ -173,12 +229,23 @@ static int __devexit vme_user_remove(struct vme_dev *);
 
 static const struct file_operations vme_user_fops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int vme_user_match(struct vme_dev *);
+static int vme_user_probe(struct vme_dev *);
+static int vme_user_remove(struct vme_dev *);
+
+static const struct file_operations vme_user_fops = {
+>>>>>>> refs/remotes/origin/master
 	.open = vme_user_open,
 	.release = vme_user_release,
 	.read = vme_user_read,
 	.write = vme_user_write,
 	.llseek = vme_user_llseek,
 	.unlocked_ioctl = vme_user_unlocked_ioctl,
+<<<<<<< HEAD
+=======
+	.compat_ioctl = vme_user_unlocked_ioctl,
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -192,7 +259,11 @@ static void reset_counters(void)
 	statistics.ioctls = 0;
 	statistics.irqs = 0;
 	statistics.berrs = 0;
+<<<<<<< HEAD
 	statistics.dmaErrors = 0;
+=======
+	statistics.dmaerrors = 0;
+>>>>>>> refs/remotes/origin/master
 	statistics.timeouts = 0;
 }
 
@@ -201,6 +272,7 @@ static int vme_user_open(struct inode *inode, struct file *file)
 	int err;
 	unsigned int minor = MINOR(inode->i_rdev);
 
+<<<<<<< HEAD
 	down(&image[minor].sem);
 <<<<<<< HEAD
 	/* Only allow device to be opened if a resource is allocated */
@@ -210,6 +282,12 @@ static int vme_user_open(struct inode *inode, struct file *file)
 	if (minor < CONTROL_MINOR && image[minor].resource == NULL) {
 >>>>>>> refs/remotes/origin/cm-10.0
 		printk(KERN_ERR "No resources allocated for device\n");
+=======
+	mutex_lock(&image[minor].mutex);
+	/* Allow device to be opened if a resource is needed and allocated. */
+	if (minor < CONTROL_MINOR && image[minor].resource == NULL) {
+		pr_err("No resources allocated for device\n");
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 		goto err_res;
 	}
@@ -217,12 +295,20 @@ static int vme_user_open(struct inode *inode, struct file *file)
 	/* Increment user count */
 	image[minor].users++;
 
+<<<<<<< HEAD
 	up(&image[minor].sem);
+=======
+	mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 err_res:
+<<<<<<< HEAD
 	up(&image[minor].sem);
+=======
+	mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -231,12 +317,20 @@ static int vme_user_release(struct inode *inode, struct file *file)
 {
 	unsigned int minor = MINOR(inode->i_rdev);
 
+<<<<<<< HEAD
 	down(&image[minor].sem);
+=======
+	mutex_lock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/* Decrement user count */
 	image[minor].users--;
 
+<<<<<<< HEAD
 	up(&image[minor].sem);
+=======
+	mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -264,13 +358,21 @@ static ssize_t resource_to_user(int minor, char __user *buf, size_t count,
 			(unsigned long)copied);
 		if (retval != 0) {
 			copied = (copied - retval);
+<<<<<<< HEAD
 			printk(KERN_INFO "User copy failed\n");
+=======
+			pr_info("User copy failed\n");
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 
 	} else {
 		/* XXX Need to write this */
+<<<<<<< HEAD
 		printk(KERN_INFO "Currently don't support large transfers\n");
+=======
+		pr_info("Currently don't support large transfers\n");
+>>>>>>> refs/remotes/origin/master
 		/* Map in pages from userspace */
 
 		/* Call vme_master_read to do the transfer */
@@ -281,7 +383,11 @@ static ssize_t resource_to_user(int minor, char __user *buf, size_t count,
 }
 
 /*
+<<<<<<< HEAD
  * We are going ot alloc a page during init per window for small transfers.
+=======
+ * We are going to alloc a page during init per window for small transfers.
+>>>>>>> refs/remotes/origin/master
  * Small transfers will go user space -> buffer -> VME. Larger (more than a
  * page) transfers will lock the user space buffer into memory and then
  * transfer the data directly from the user space buffers out to VME.
@@ -304,7 +410,11 @@ static ssize_t resource_from_user(unsigned int minor, const char __user *buf,
 			image[minor].kern_buf, copied, *ppos);
 	} else {
 		/* XXX Need to write this */
+<<<<<<< HEAD
 		printk(KERN_INFO "Currently don't support large transfers\n");
+=======
+		pr_info("Currently don't support large transfers\n");
+>>>>>>> refs/remotes/origin/master
 		/* Map in pages from userspace */
 
 		/* Call vme_master_write to do the transfer */
@@ -325,7 +435,11 @@ static ssize_t buffer_to_user(unsigned int minor, char __user *buf,
 	retval = __copy_to_user(buf, image_ptr, (unsigned long)count);
 	if (retval != 0) {
 		retval = (count - retval);
+<<<<<<< HEAD
 		printk(KERN_WARNING "Partial copy to userspace\n");
+=======
+		pr_warn("Partial copy to userspace\n");
+>>>>>>> refs/remotes/origin/master
 	} else
 		retval = count;
 
@@ -344,7 +458,11 @@ static ssize_t buffer_from_user(unsigned int minor, const char __user *buf,
 	retval = __copy_from_user(image_ptr, buf, (unsigned long)count);
 	if (retval != 0) {
 		retval = (count - retval);
+<<<<<<< HEAD
 		printk(KERN_WARNING "Partial copy to userspace\n");
+=======
+		pr_warn("Partial copy to userspace\n");
+>>>>>>> refs/remotes/origin/master
 	} else
 		retval = count;
 
@@ -355,11 +473,16 @@ static ssize_t buffer_from_user(unsigned int minor, const char __user *buf,
 static ssize_t vme_user_read(struct file *file, char __user *buf, size_t count,
 			loff_t *ppos)
 {
+<<<<<<< HEAD
 	unsigned int minor = MINOR(file->f_dentry->d_inode->i_rdev);
+=======
+	unsigned int minor = MINOR(file_inode(file)->i_rdev);
+>>>>>>> refs/remotes/origin/master
 	ssize_t retval;
 	size_t image_size;
 	size_t okcount;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (minor == CONTROL_MINOR)
@@ -367,13 +490,23 @@ static ssize_t vme_user_read(struct file *file, char __user *buf, size_t count,
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	down(&image[minor].sem);
+=======
+	if (minor == CONTROL_MINOR)
+		return 0;
+
+	mutex_lock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	/* XXX Do we *really* want this helper - we can use vme_*_get ? */
 	image_size = vme_get_size(image[minor].resource);
 
 	/* Ensure we are starting at a valid location */
 	if ((*ppos < 0) || (*ppos > (image_size - 1))) {
+<<<<<<< HEAD
 		up(&image[minor].sem);
+=======
+		mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -394,8 +527,12 @@ static ssize_t vme_user_read(struct file *file, char __user *buf, size_t count,
 		retval = -EINVAL;
 	}
 
+<<<<<<< HEAD
 	up(&image[minor].sem);
 
+=======
+	mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 	if (retval > 0)
 		*ppos += retval;
 
@@ -405,11 +542,16 @@ static ssize_t vme_user_read(struct file *file, char __user *buf, size_t count,
 static ssize_t vme_user_write(struct file *file, const char __user *buf,
 			size_t count, loff_t *ppos)
 {
+<<<<<<< HEAD
 	unsigned int minor = MINOR(file->f_dentry->d_inode->i_rdev);
+=======
+	unsigned int minor = MINOR(file_inode(file)->i_rdev);
+>>>>>>> refs/remotes/origin/master
 	ssize_t retval;
 	size_t image_size;
 	size_t okcount;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (minor == CONTROL_MINOR)
@@ -417,12 +559,22 @@ static ssize_t vme_user_write(struct file *file, const char __user *buf,
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	down(&image[minor].sem);
+=======
+	if (minor == CONTROL_MINOR)
+		return 0;
+
+	mutex_lock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	image_size = vme_get_size(image[minor].resource);
 
 	/* Ensure we are starting at a valid location */
 	if ((*ppos < 0) || (*ppos > (image_size - 1))) {
+<<<<<<< HEAD
 		up(&image[minor].sem);
+=======
+		mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -443,7 +595,11 @@ static ssize_t vme_user_write(struct file *file, const char __user *buf,
 		retval = -EINVAL;
 	}
 
+<<<<<<< HEAD
 	up(&image[minor].sem);
+=======
+	mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	if (retval > 0)
 		*ppos += retval;
@@ -454,6 +610,7 @@ static ssize_t vme_user_write(struct file *file, const char __user *buf,
 static loff_t vme_user_llseek(struct file *file, loff_t off, int whence)
 {
 	loff_t absolute = -1;
+<<<<<<< HEAD
 	unsigned int minor = MINOR(file->f_dentry->d_inode->i_rdev);
 	size_t image_size;
 
@@ -464,6 +621,15 @@ static loff_t vme_user_llseek(struct file *file, loff_t off, int whence)
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	down(&image[minor].sem);
+=======
+	unsigned int minor = MINOR(file_inode(file)->i_rdev);
+	size_t image_size;
+
+	if (minor == CONTROL_MINOR)
+		return -EINVAL;
+
+	mutex_lock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 	image_size = vme_get_size(image[minor].resource);
 
 	switch (whence) {
@@ -477,19 +643,31 @@ static loff_t vme_user_llseek(struct file *file, loff_t off, int whence)
 		absolute = image_size + off;
 		break;
 	default:
+<<<<<<< HEAD
 		up(&image[minor].sem);
+=======
+		mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 		break;
 	}
 
 	if ((absolute < 0) || (absolute >= image_size)) {
+<<<<<<< HEAD
 		up(&image[minor].sem);
+=======
+		mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	file->f_pos = absolute;
 
+<<<<<<< HEAD
 	up(&image[minor].sem);
+=======
+	mutex_unlock(&image[minor].mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return absolute;
 }
@@ -510,9 +688,13 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 	struct vme_master master;
 	struct vme_slave slave;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct vme_irq_id irq_req;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct vme_irq_id irq_req;
+>>>>>>> refs/remotes/origin/master
 	unsigned long copied;
 	unsigned int minor = MINOR(inode->i_rdev);
 	int retval;
@@ -524,6 +706,7 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 	switch (type[minor]) {
 	case CONTROL_MINOR:
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		switch (cmd) {
 		case VME_IRQ_GEN:
@@ -531,6 +714,14 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 						sizeof(struct vme_irq_id));
 			if (copied != 0) {
 				printk(KERN_WARNING "Partial copy from userspace\n");
+=======
+		switch (cmd) {
+		case VME_IRQ_GEN:
+			copied = copy_from_user(&irq_req, argp,
+						sizeof(struct vme_irq_id));
+			if (copied != 0) {
+				pr_warn("Partial copy from userspace\n");
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 			}
 
@@ -540,7 +731,10 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 
 			return retval;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case MASTER_MINOR:
 		switch (cmd) {
@@ -558,8 +752,12 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 			copied = copy_to_user(argp, &master,
 				sizeof(struct vme_master));
 			if (copied != 0) {
+<<<<<<< HEAD
 				printk(KERN_WARNING "Partial copy to "
 					"userspace\n");
+=======
+				pr_warn("Partial copy to userspace\n");
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 			}
 
@@ -570,8 +768,12 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 
 			copied = copy_from_user(&master, argp, sizeof(master));
 			if (copied != 0) {
+<<<<<<< HEAD
 				printk(KERN_WARNING "Partial copy from "
 					"userspace\n");
+=======
+				pr_warn("Partial copy from userspace\n");
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 			}
 
@@ -601,8 +803,12 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 			copied = copy_to_user(argp, &slave,
 				sizeof(struct vme_slave));
 			if (copied != 0) {
+<<<<<<< HEAD
 				printk(KERN_WARNING "Partial copy to "
 					"userspace\n");
+=======
+				pr_warn("Partial copy to userspace\n");
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 			}
 
@@ -613,8 +819,12 @@ static int vme_user_ioctl(struct inode *inode, struct file *file,
 
 			copied = copy_from_user(&slave, argp, sizeof(slave));
 			if (copied != 0) {
+<<<<<<< HEAD
 				printk(KERN_WARNING "Partial copy from "
 					"userspace\n");
+=======
+				pr_warn("Partial copy from userspace\n");
+>>>>>>> refs/remotes/origin/master
 				return -EFAULT;
 			}
 
@@ -640,7 +850,11 @@ vme_user_unlocked_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	int ret;
 
 	mutex_lock(&vme_user_mutex);
+<<<<<<< HEAD
 	ret = vme_user_ioctl(file->f_path.dentry->d_inode, file, cmd, arg);
+=======
+	ret = vme_user_ioctl(file_inode(file), file, cmd, arg);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&vme_user_mutex);
 
 	return ret;
@@ -654,8 +868,13 @@ static void buf_unalloc(int num)
 {
 	if (image[num].kern_buf) {
 #ifdef VME_DEBUG
+<<<<<<< HEAD
 		printk(KERN_DEBUG "UniverseII:Releasing buffer at %p\n",
 			image[num].pci_buf);
+=======
+		pr_debug("UniverseII:Releasing buffer at %p\n",
+			 image[num].pci_buf);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 		vme_free_consistent(image[num].resource, image[num].size_buf,
@@ -667,7 +886,11 @@ static void buf_unalloc(int num)
 
 #ifdef VME_DEBUG
 	} else {
+<<<<<<< HEAD
 		printk(KERN_DEBUG "UniverseII: Buffer not allocated\n");
+=======
+		pr_debug("UniverseII: Buffer not allocated\n");
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 }
@@ -675,17 +898,24 @@ static void buf_unalloc(int num)
 static struct vme_driver vme_user_driver = {
 	.name = driver_name,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.match = vme_user_match,
 >>>>>>> refs/remotes/origin/cm-10.0
 	.probe = vme_user_probe,
 	.remove = __devexit_p(vme_user_remove),
+=======
+	.match = vme_user_match,
+	.probe = vme_user_probe,
+	.remove = vme_user_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 
 static int __init vme_user_init(void)
 {
 	int retval = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int i;
 	struct vme_device_id *ids;
@@ -697,6 +927,13 @@ static int __init vme_user_init(void)
 	if (bus_num == 0) {
 		printk(KERN_ERR "%s: No cards, skipping registration\n",
 			driver_name);
+=======
+
+	pr_info("VME User Space Access Driver\n");
+
+	if (bus_num == 0) {
+		pr_err("No cards, skipping registration\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -ENODEV;
 		goto err_nocard;
 	}
@@ -704,6 +941,7 @@ static int __init vme_user_init(void)
 	/* Let's start by supporting one bus, we can support more than one
 	 * in future revisions if that ever becomes necessary.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (bus_num > USER_BUS_MAX) {
 		printk(KERN_ERR "%s: Driver only able to handle %d buses\n",
@@ -740,6 +978,11 @@ static int __init vme_user_init(void)
 	if (bus_num > VME_USER_BUS_MAX) {
 		printk(KERN_ERR "%s: Driver only able to handle %d buses\n",
 			driver_name, VME_USER_BUS_MAX);
+=======
+	if (bus_num > VME_USER_BUS_MAX) {
+		pr_err("Driver only able to handle %d buses\n",
+		       VME_USER_BUS_MAX);
+>>>>>>> refs/remotes/origin/master
 		bus_num = VME_USER_BUS_MAX;
 	}
 
@@ -750,7 +993,10 @@ static int __init vme_user_init(void)
 	 * we just change the code in vme_user_match().
 	 */
 	retval = vme_register_driver(&vme_user_driver, VME_MAX_SLOTS);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (retval != 0)
 		goto err_reg;
 
@@ -758,14 +1004,18 @@ static int __init vme_user_init(void)
 
 err_reg:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(ids);
 err_id:
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 err_nocard:
 	return retval;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 static int vme_user_match(struct vme_dev *vdev)
@@ -776,23 +1026,44 @@ static int vme_user_match(struct vme_dev *vdev)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int vme_user_match(struct vme_dev *vdev)
+{
+	int i;
+
+	int cur_bus = vme_bus_num(vdev);
+	int cur_slot = vme_slot_num(vdev);
+
+	for (i = 0; i < bus_num; i++)
+		if ((cur_bus == bus[i]) && (cur_slot == vdev->num))
+			return 1;
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * In this simple access driver, the old behaviour is being preserved as much
  * as practical. We will therefore reserve the buffers and request the images
  * here so that we don't have to do it later.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinit vme_user_probe(struct device *dev, int cur_bus,
 	int cur_slot)
 =======
 static int __devinit vme_user_probe(struct vme_dev *vdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int vme_user_probe(struct vme_dev *vdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, err;
 	char name[12];
 
 	/* Save pointer to the bridge device */
 	if (vme_user_bridge != NULL) {
+<<<<<<< HEAD
 		printk(KERN_ERR "%s: Driver can only be loaded for 1 device\n",
 			driver_name);
 		err = -EINVAL;
@@ -803,12 +1074,23 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 =======
 	vme_user_bridge = vdev;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&vdev->dev, "Driver can only be loaded for 1 device\n");
+		err = -EINVAL;
+		goto err_dev;
+	}
+	vme_user_bridge = vdev;
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialise descriptors */
 	for (i = 0; i < VME_DEVS; i++) {
 		image[i].kern_buf = NULL;
 		image[i].pci_buf = 0;
+<<<<<<< HEAD
 		sema_init(&image[i].sem, 1);
+=======
+		mutex_init(&image[i].mutex);
+>>>>>>> refs/remotes/origin/master
 		image[i].device = NULL;
 		image[i].resource = NULL;
 		image[i].users = 0;
@@ -821,18 +1103,34 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 	err = register_chrdev_region(MKDEV(VME_MAJOR, 0), VME_DEVS,
 		driver_name);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: Error getting Major Number %d for "
 		"driver.\n", driver_name, VME_MAJOR);
+=======
+		dev_warn(&vdev->dev, "Error getting Major Number %d for driver.\n",
+			 VME_MAJOR);
+>>>>>>> refs/remotes/origin/master
 		goto err_region;
 	}
 
 	/* Register the driver as a char device */
 	vme_user_cdev = cdev_alloc();
+<<<<<<< HEAD
+=======
+	if (!vme_user_cdev) {
+		err = -ENOMEM;
+		goto err_char;
+	}
+>>>>>>> refs/remotes/origin/master
 	vme_user_cdev->ops = &vme_user_fops;
 	vme_user_cdev->owner = THIS_MODULE;
 	err = cdev_add(vme_user_cdev, MKDEV(VME_MAJOR, 0), VME_DEVS);
 	if (err) {
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s: cdev_all failed\n", driver_name);
+=======
+		dev_warn(&vdev->dev, "cdev_all failed\n");
+>>>>>>> refs/remotes/origin/master
 		goto err_char;
 	}
 
@@ -846,16 +1144,27 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 		image[i].resource = vme_slave_request(vme_user_bridge,
 			VME_A24, VME_SCT);
 		if (image[i].resource == NULL) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "Unable to allocate slave "
 				"resource\n");
+=======
+			dev_warn(&vdev->dev,
+				 "Unable to allocate slave resource\n");
+			err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			goto err_slave;
 		}
 		image[i].size_buf = PCI_BUF_SIZE;
 		image[i].kern_buf = vme_alloc_consistent(image[i].resource,
 			image[i].size_buf, &image[i].pci_buf);
 		if (image[i].kern_buf == NULL) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "Unable to allocate memory for "
 				"buffer\n");
+=======
+			dev_warn(&vdev->dev,
+				 "Unable to allocate memory for buffer\n");
+>>>>>>> refs/remotes/origin/master
 			image[i].pci_buf = 0;
 			vme_slave_free(image[i].resource);
 			err = -ENOMEM;
@@ -872,15 +1181,24 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 		image[i].resource = vme_master_request(vme_user_bridge,
 			VME_A32, VME_SCT, VME_D32);
 		if (image[i].resource == NULL) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "Unable to allocate master "
 				"resource\n");
+=======
+			dev_warn(&vdev->dev,
+				 "Unable to allocate master resource\n");
+			err = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 			goto err_master;
 		}
 		image[i].size_buf = PCI_BUF_SIZE;
 		image[i].kern_buf = kmalloc(image[i].size_buf, GFP_KERNEL);
 		if (image[i].kern_buf == NULL) {
+<<<<<<< HEAD
 			printk(KERN_WARNING "Unable to allocate memory for "
 				"master window buffers\n");
+=======
+>>>>>>> refs/remotes/origin/master
 			err = -ENOMEM;
 			goto err_master_buf;
 		}
@@ -889,7 +1207,11 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 	/* Create sysfs entries - on udev systems this creates the dev files */
 	vme_user_sysfs_class = class_create(THIS_MODULE, driver_name);
 	if (IS_ERR(vme_user_sysfs_class)) {
+<<<<<<< HEAD
 		printk(KERN_ERR "Error creating vme_user class.\n");
+=======
+		dev_err(&vdev->dev, "Error creating vme_user class.\n");
+>>>>>>> refs/remotes/origin/master
 		err = PTR_ERR(vme_user_sysfs_class);
 		goto err_class;
 	}
@@ -897,9 +1219,13 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 	/* Add sysfs Entries */
 	for (i = 0; i < VME_DEVS; i++) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		int num;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		int num;
+>>>>>>> refs/remotes/origin/master
 		switch (type[i]) {
 		case MASTER_MINOR:
 			sprintf(name, "bus/vme/m%%d");
@@ -917,6 +1243,7 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		image[i].device =
 			device_create(vme_user_sysfs_class, NULL,
 				MKDEV(VME_MAJOR, i), NULL, name,
@@ -929,6 +1256,13 @@ static int __devinit vme_user_probe(struct vme_dev *vdev)
 		if (IS_ERR(image[i].device)) {
 			printk(KERN_INFO "%s: Error creating sysfs device\n",
 				driver_name);
+=======
+		num = (type[i] == SLAVE_MINOR) ? i - (MASTER_MAX + 1) : i;
+		image[i].device = device_create(vme_user_sysfs_class, NULL,
+					MKDEV(VME_MAJOR, i), NULL, name, num);
+		if (IS_ERR(image[i].device)) {
+			dev_info(&vdev->dev, "Error creating sysfs device\n");
+>>>>>>> refs/remotes/origin/master
 			err = PTR_ERR(image[i].device);
 			goto err_sysfs;
 		}
@@ -976,17 +1310,28 @@ err_dev:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devexit vme_user_remove(struct device *dev, int cur_bus,
 	int cur_slot)
 =======
 static int __devexit vme_user_remove(struct vme_dev *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int vme_user_remove(struct vme_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
 	/* Remove sysfs Entries */
+<<<<<<< HEAD
 	for (i = 0; i < VME_DEVS; i++)
 		device_destroy(vme_user_sysfs_class, MKDEV(VME_MAJOR, i));
+=======
+	for (i = 0; i < VME_DEVS; i++) {
+		mutex_destroy(&image[i].mutex);
+		device_destroy(vme_user_sysfs_class, MKDEV(VME_MAJOR, i));
+	}
+>>>>>>> refs/remotes/origin/master
 	class_destroy(vme_user_sysfs_class);
 
 	for (i = MASTER_MINOR; i < (MASTER_MAX + 1); i++) {
@@ -1013,10 +1358,13 @@ static void __exit vme_user_exit(void)
 {
 	vme_unregister_driver(&vme_user_driver);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	kfree(vme_user_driver.bind_table);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 

@@ -414,7 +414,11 @@ static void qe_rx(struct sunqe *qep)
 	struct qe_rxd *this;
 	struct sunqe_buffers *qbufs = qep->buffers;
 	__u32 qbufs_dvma = qep->buffers_dvma;
+<<<<<<< HEAD
 	int elem = qep->rx_new, drops = 0;
+=======
+	int elem = qep->rx_new;
+>>>>>>> refs/remotes/origin/master
 	u32 flags;
 
 	this = &rxbase[elem];
@@ -436,12 +440,19 @@ static void qe_rx(struct sunqe *qep)
 		} else {
 			skb = netdev_alloc_skb(dev, len + 2);
 			if (skb == NULL) {
+<<<<<<< HEAD
 				drops++;
+=======
+>>>>>>> refs/remotes/origin/master
 				dev->stats.rx_dropped++;
 			} else {
 				skb_reserve(skb, 2);
 				skb_put(skb, len);
+<<<<<<< HEAD
 				skb_copy_to_linear_data(skb, (unsigned char *) this_qbuf,
+=======
+				skb_copy_to_linear_data(skb, this_qbuf,
+>>>>>>> refs/remotes/origin/master
 						 len);
 				skb->protocol = eth_type_trans(skb, qep->dev);
 				netif_rx(skb);
@@ -456,8 +467,11 @@ static void qe_rx(struct sunqe *qep)
 		this = &rxbase[elem];
 	}
 	qep->rx_new = elem;
+<<<<<<< HEAD
 	if (drops)
 		printk(KERN_NOTICE "%s: Memory squeeze, deferring packet.\n", qep->dev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void qe_tx_reclaim(struct sunqe *qep);
@@ -685,13 +699,23 @@ static void qe_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 	struct sunqe *qep = netdev_priv(dev);
 	struct platform_device *op;
 
+<<<<<<< HEAD
 	strcpy(info->driver, "sunqe");
 	strcpy(info->version, "3.0");
+=======
+	strlcpy(info->driver, "sunqe", sizeof(info->driver));
+	strlcpy(info->version, "3.0", sizeof(info->version));
+>>>>>>> refs/remotes/origin/master
 
 	op = qep->op;
 	regs = of_get_property(op->dev.of_node, "reg", NULL);
 	if (regs)
+<<<<<<< HEAD
 		sprintf(info->bus_info, "SBUS:%d", regs->which_io);
+=======
+		snprintf(info->bus_info, sizeof(info->bus_info), "SBUS:%d",
+			 regs->which_io);
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -744,7 +768,11 @@ static void qec_init_once(struct sunqec *qecp, struct platform_device *op)
 		    qecp->gregs + GLOB_RSIZE);
 }
 
+<<<<<<< HEAD
 static u8 __devinit qec_get_burst(struct device_node *dp)
+=======
+static u8 qec_get_burst(struct device_node *dp)
+>>>>>>> refs/remotes/origin/master
 {
 	u8 bsizes, bsizes_more;
 
@@ -764,12 +792,20 @@ static u8 __devinit qec_get_burst(struct device_node *dp)
 	return bsizes;
 }
 
+<<<<<<< HEAD
 static struct sunqec * __devinit get_qec(struct platform_device *child)
+=======
+static struct sunqec *get_qec(struct platform_device *child)
+>>>>>>> refs/remotes/origin/master
 {
 	struct platform_device *op = to_platform_device(child->dev.parent);
 	struct sunqec *qecp;
 
+<<<<<<< HEAD
 	qecp = dev_get_drvdata(&op->dev);
+=======
+	qecp = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	if (!qecp) {
 		qecp = kzalloc(sizeof(struct sunqec), GFP_KERNEL);
 		if (qecp) {
@@ -803,7 +839,11 @@ static struct sunqec * __devinit get_qec(struct platform_device *child)
 				goto fail;
 			}
 
+<<<<<<< HEAD
 			dev_set_drvdata(&op->dev, qecp);
+=======
+			platform_set_drvdata(op, qecp);
+>>>>>>> refs/remotes/origin/master
 
 			qecp->next_module = root_qec_dev;
 			root_qec_dev = qecp;
@@ -830,7 +870,11 @@ static const struct net_device_ops qec_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit qec_ether_init(struct platform_device *op)
+=======
+static int qec_ether_init(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	static unsigned version_printed;
 	struct net_device *dev;
@@ -845,7 +889,11 @@ static int __devinit qec_ether_init(struct platform_device *op)
 	if (!dev)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	memcpy(dev->dev_addr, idprom->id_ethaddr, 6);
+=======
+	memcpy(dev->dev_addr, idprom->id_ethaddr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 
 	qe = netdev_priv(dev);
 
@@ -904,7 +952,11 @@ static int __devinit qec_ether_init(struct platform_device *op)
 	if (res)
 		goto fail;
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, qe);
+=======
+	platform_set_drvdata(op, qe);
+>>>>>>> refs/remotes/origin/master
 
 	printk(KERN_INFO "%s: qe channel[%d] %pM\n", dev->name, qe->channel,
 	       dev->dev_addr);
@@ -929,14 +981,24 @@ fail:
 	return res;
 }
 
+<<<<<<< HEAD
 static int __devinit qec_sbus_probe(struct platform_device *op)
+=======
+static int qec_sbus_probe(struct platform_device *op)
+>>>>>>> refs/remotes/origin/master
 {
 	return qec_ether_init(op);
 }
 
+<<<<<<< HEAD
 static int __devexit qec_sbus_remove(struct platform_device *op)
 {
 	struct sunqe *qp = dev_get_drvdata(&op->dev);
+=======
+static int qec_sbus_remove(struct platform_device *op)
+{
+	struct sunqe *qp = platform_get_drvdata(op);
+>>>>>>> refs/remotes/origin/master
 	struct net_device *net_dev = qp->dev;
 
 	unregister_netdev(net_dev);
@@ -950,8 +1012,11 @@ static int __devexit qec_sbus_remove(struct platform_device *op)
 
 	free_netdev(net_dev);
 
+<<<<<<< HEAD
 	dev_set_drvdata(&op->dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -971,7 +1036,11 @@ static struct platform_driver qec_sbus_driver = {
 		.of_match_table = qec_sbus_match,
 	},
 	.probe		= qec_sbus_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(qec_sbus_remove),
+=======
+	.remove		= qec_sbus_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init qec_init(void)

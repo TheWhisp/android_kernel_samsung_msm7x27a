@@ -14,7 +14,11 @@
 /*
  * Possible status responses for a board_be_handler backend.
  */
+<<<<<<< HEAD
 #define MIPS_BE_DISCARD	0		/* return with no action */
+=======
+#define MIPS_BE_DISCARD 0		/* return with no action */
+>>>>>>> refs/remotes/origin/master
 #define MIPS_BE_FIXUP	1		/* return to the fixup code */
 #define MIPS_BE_FATAL	2		/* treat as an unrecoverable error */
 
@@ -25,8 +29,13 @@ extern void (*board_nmi_handler_setup)(void);
 extern void (*board_ejtag_handler_setup)(void);
 extern void (*board_bind_eic_interrupt)(int irq, int regset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern void (*board_ebase_setup)(void);
+=======
+extern void (*board_ebase_setup)(void);
+extern void (*board_cache_error_setup)(void);
+>>>>>>> refs/remotes/origin/master
 
 extern int register_nmi_notifier(struct notifier_block *nb);
 
@@ -39,6 +48,9 @@ extern int register_nmi_notifier(struct notifier_block *nb);
 									\
 	register_nmi_notifier(&fn##_nb);				\
 })
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_TRAPS_H */

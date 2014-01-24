@@ -3,16 +3,22 @@
  *
  * Copyright (C) 1996 Universidade de Lisboa
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * the GNU General Public License, incorporated herein by reference.
  */
 
@@ -70,6 +76,7 @@
  *  Cause values
  *  only the ones we use
 <<<<<<< HEAD
+<<<<<<< HEAD
  */ 
 
 #define CAUSE_NORMAL          0x10U 
@@ -78,6 +85,11 @@
 
 #define CAUSE_NORMAL          0x10U
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+
+#define CAUSE_NORMAL          0x10U
+>>>>>>> refs/remotes/origin/master
 #define CAUSE_NOCHAN          0x22U
 
 struct callb_data {
@@ -108,6 +120,7 @@ extern const char * const isdn_state_table[];
 void pcbit_fsm_event(struct pcbit_dev *, struct pcbit_chan *,
 		     unsigned short event, struct callb_data *);
 <<<<<<< HEAD
+<<<<<<< HEAD
 char * strisdnevent(ushort ev);
 
 #endif
@@ -119,3 +132,8 @@ char *strisdnevent(ushort ev);
 
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+char *strisdnevent(ushort ev);
+
+#endif
+>>>>>>> refs/remotes/origin/master

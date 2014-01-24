@@ -43,7 +43,11 @@ struct nf_conntrack_expect {
 	unsigned int class;
 
 #ifdef CONFIG_NF_NAT_NEEDED
+<<<<<<< HEAD
 	__be32 saved_ip;
+=======
+	union nf_inet_addr saved_addr;
+>>>>>>> refs/remotes/origin/master
 	/* This is the original per-proto part, used to map the
 	 * expected connection the way the recipient expects. */
 	union nf_conntrack_man_proto saved_proto;
@@ -59,16 +63,33 @@ static inline struct net *nf_ct_exp_net(struct nf_conntrack_expect *exp)
 	return nf_ct_net(exp->master);
 }
 
+<<<<<<< HEAD
 struct nf_conntrack_expect_policy {
 	unsigned int	max_expected;
 	unsigned int	timeout;
 	const char	*name;
+=======
+#define NF_CT_EXP_POLICY_NAME_LEN	16
+
+struct nf_conntrack_expect_policy {
+	unsigned int	max_expected;
+	unsigned int	timeout;
+	char		name[NF_CT_EXP_POLICY_NAME_LEN];
+>>>>>>> refs/remotes/origin/master
 };
 
 #define NF_CT_EXPECT_CLASS_DEFAULT	0
 
+<<<<<<< HEAD
 int nf_conntrack_expect_init(struct net *net);
 void nf_conntrack_expect_fini(struct net *net);
+=======
+int nf_conntrack_expect_pernet_init(struct net *net);
+void nf_conntrack_expect_pernet_fini(struct net *net);
+
+int nf_conntrack_expect_init(void);
+void nf_conntrack_expect_fini(void);
+>>>>>>> refs/remotes/origin/master
 
 struct nf_conntrack_expect *
 __nf_ct_expect_find(struct net *net, u16 zone,
@@ -83,7 +104,11 @@ nf_ct_find_expectation(struct net *net, u16 zone,
 		       const struct nf_conntrack_tuple *tuple);
 
 void nf_ct_unlink_expect_report(struct nf_conntrack_expect *exp,
+<<<<<<< HEAD
 				u32 pid, int report);
+=======
+				u32 portid, int report);
+>>>>>>> refs/remotes/origin/master
 static inline void nf_ct_unlink_expect(struct nf_conntrack_expect *exp)
 {
 	nf_ct_unlink_expect_report(exp, 0, 0);
@@ -92,9 +117,12 @@ static inline void nf_ct_unlink_expect(struct nf_conntrack_expect *exp)
 void nf_ct_remove_expectations(struct nf_conn *ct);
 void nf_ct_unexpect_related(struct nf_conntrack_expect *exp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void nf_ct_remove_userspace_expectations(void);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Allocate space for an expectation: this is mandatory before calling
    nf_ct_expect_related.  You will have to call put afterwards. */
@@ -105,7 +133,11 @@ void nf_ct_expect_init(struct nf_conntrack_expect *, unsigned int, u_int8_t,
 		       u_int8_t, const __be16 *, const __be16 *);
 void nf_ct_expect_put(struct nf_conntrack_expect *exp);
 int nf_ct_expect_related_report(struct nf_conntrack_expect *expect, 
+<<<<<<< HEAD
 				u32 pid, int report);
+=======
+				u32 portid, int report);
+>>>>>>> refs/remotes/origin/master
 static inline int nf_ct_expect_related(struct nf_conntrack_expect *expect)
 {
 	return nf_ct_expect_related_report(expect, 0, 0);

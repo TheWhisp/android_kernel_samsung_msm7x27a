@@ -21,10 +21,14 @@
 static inline void s3c_adc_setname(char *name)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_SAMSUNG_DEV_ADC
 =======
 #if defined(CONFIG_SAMSUNG_DEV_ADC) || defined(CONFIG_PLAT_S3C24XX)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if defined(CONFIG_SAMSUNG_DEV_ADC) || defined(CONFIG_PLAT_S3C24XX)
+>>>>>>> refs/remotes/origin/master
 	s3c_device_adc.name = name;
 #endif
 }

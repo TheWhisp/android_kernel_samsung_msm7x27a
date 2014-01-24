@@ -22,10 +22,19 @@
 #include <media/tvp514x.h>
 #include <linux/spi/spi.h>
 #include <linux/spi/eeprom.h>
+<<<<<<< HEAD
+=======
+#include <linux/platform_data/gpio-davinci.h>
+#include <linux/platform_data/i2c-davinci.h>
+#include <linux/platform_data/mtd-davinci.h>
+#include <linux/platform_data/mmc-davinci.h>
+#include <linux/platform_data/usb-davinci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <mach/dm355.h>
 =======
@@ -41,6 +50,13 @@
 #include "davinci.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/serial.h>
+#include <mach/common.h>
+
+#include "davinci.h"
+
+>>>>>>> refs/remotes/origin/master
 /* NOTE:  this is geared for the standard config, with a socketed
  * 2 GByte Micron NAND (MT29F16G08FAA) using 128KB sectors.  If you
  * swap chips, maybe with a different block size, partitioning may
@@ -86,10 +102,14 @@ static struct davinci_nand_pdata davinci_nand_data = {
 	.nr_parts		= ARRAY_SIZE(davinci_nand_partitions),
 	.ecc_mode		= NAND_ECC_HW,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.options		= NAND_USE_FLASH_BBT,
 =======
 	.bbt_options		= NAND_BBT_USE_FLASH,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.bbt_options		= NAND_BBT_USE_FLASH,
+>>>>>>> refs/remotes/origin/master
 	.ecc_bits		= 4,
 };
 
@@ -253,11 +273,82 @@ static struct vpfe_config vpfe_cfg = {
 	.ccdc = "DM355 CCDC",
 };
 
+<<<<<<< HEAD
+=======
+/* venc standards timings */
+static struct vpbe_enc_mode_info dm355evm_enc_preset_timing[] = {
+	{
+		.name		= "ntsc",
+		.timings_type	= VPBE_ENC_STD,
+		.std_id		= V4L2_STD_NTSC,
+		.interlaced	= 1,
+		.xres		= 720,
+		.yres		= 480,
+		.aspect		= {11, 10},
+		.fps		= {30000, 1001},
+		.left_margin	= 0x79,
+		.upper_margin	= 0x10,
+	},
+	{
+		.name		= "pal",
+		.timings_type	= VPBE_ENC_STD,
+		.std_id		= V4L2_STD_PAL,
+		.interlaced	= 1,
+		.xres		= 720,
+		.yres		= 576,
+		.aspect		= {54, 59},
+		.fps		= {25, 1},
+		.left_margin	= 0x7E,
+		.upper_margin	= 0x16
+	},
+};
+
+#define VENC_STD_ALL	(V4L2_STD_NTSC | V4L2_STD_PAL)
+
+/*
+ * The outputs available from VPBE + ecnoders. Keep the
+ * the order same as that of encoders. First those from venc followed by that
+ * from encoders. Index in the output refers to index on a particular encoder.
+ * Driver uses this index to pass it to encoder when it supports more than
+ * one output. Application uses index of the array to set an output.
+ */
+static struct vpbe_output dm355evm_vpbe_outputs[] = {
+	{
+		.output		= {
+			.index		= 0,
+			.name		= "Composite",
+			.type		= V4L2_OUTPUT_TYPE_ANALOG,
+			.std		= VENC_STD_ALL,
+			.capabilities	= V4L2_OUT_CAP_STD,
+		},
+		.subdev_name	= DM355_VPBE_VENC_SUBDEV_NAME,
+		.default_mode	= "ntsc",
+		.num_modes	= ARRAY_SIZE(dm355evm_enc_preset_timing),
+		.modes		= dm355evm_enc_preset_timing,
+		.if_params	= V4L2_MBUS_FMT_FIXED,
+	},
+};
+
+static struct vpbe_config dm355evm_display_cfg = {
+	.module_name	= "dm355-vpbe-display",
+	.i2c_adapter_id	= 1,
+	.osd		= {
+		.module_name	= DM355_VPBE_OSD_SUBDEV_NAME,
+	},
+	.venc		= {
+		.module_name	= DM355_VPBE_VENC_SUBDEV_NAME,
+	},
+	.num_outputs	= ARRAY_SIZE(dm355evm_vpbe_outputs),
+	.outputs	= dm355evm_vpbe_outputs,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *davinci_evm_devices[] __initdata = {
 	&dm355evm_dm9000,
 	&davinci_nand_device,
 };
 
+<<<<<<< HEAD
 static struct davinci_uart_config uart_config __initdata = {
 	.enabled_uarts = (1 << 0),
 };
@@ -266,6 +357,10 @@ static void __init dm355_evm_map_io(void)
 {
 	/* setup input configuration for VPFE input devices */
 	dm355_set_vpfe_config(&vpfe_cfg);
+=======
+static void __init dm355_evm_map_io(void)
+{
+>>>>>>> refs/remotes/origin/master
 	dm355_init();
 }
 
@@ -291,7 +386,10 @@ static struct davinci_mmc_config dm355evm_mmc_config = {
 	.wires		= 4,
 	.max_freq       = 50000000,
 	.caps           = MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
+<<<<<<< HEAD
 	.version	= MMC_CTLR_VERSION_1,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 /* Don't connect anything to J10 unless you're only using USB host
@@ -326,6 +424,14 @@ static struct spi_board_info dm355_evm_spi_info[] __initconst = {
 static __init void dm355_evm_init(void)
 {
 	struct clk *aemif;
+<<<<<<< HEAD
+=======
+	int ret;
+
+	ret = dm355_gpio_register();
+	if (ret)
+		pr_warn("%s: GPIO init failed: %d\n", __func__, ret);
+>>>>>>> refs/remotes/origin/master
 
 	gpio_request(1, "dm9000");
 	gpio_direction_input(1);
@@ -335,12 +441,20 @@ static __init void dm355_evm_init(void)
 	if (IS_ERR(aemif))
 		WARN("%s: unable to get AEMIF clock\n", __func__);
 	else
+<<<<<<< HEAD
 		clk_enable(aemif);
+=======
+		clk_prepare_enable(aemif);
+>>>>>>> refs/remotes/origin/master
 
 	platform_add_devices(davinci_evm_devices,
 			     ARRAY_SIZE(davinci_evm_devices));
 	evm_init_i2c();
+<<<<<<< HEAD
 	davinci_serial_init(&uart_config);
+=======
+	davinci_serial_init(dm355_serial_device);
+>>>>>>> refs/remotes/origin/master
 
 	/* NOTE:  NAND flash timings set by the UBL are slower than
 	 * needed by MT29F16G08FAA chips ... EMIF.A1CR is 0x40400204
@@ -355,6 +469,11 @@ static __init void dm355_evm_init(void)
 	davinci_setup_mmc(0, &dm355evm_mmc_config);
 	davinci_setup_mmc(1, &dm355evm_mmc_config);
 
+<<<<<<< HEAD
+=======
+	dm355_init_video(&vpfe_cfg, &dm355evm_display_cfg);
+
+>>>>>>> refs/remotes/origin/master
 	dm355_init_spi0(BIT(0), dm355_evm_spi_info,
 			ARRAY_SIZE(dm355_evm_spi_info));
 
@@ -363,6 +482,7 @@ static __init void dm355_evm_init(void)
 }
 
 MACHINE_START(DAVINCI_DM355_EVM, "DaVinci DM355 EVM")
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params  = (0x80000100),
 =======
@@ -377,4 +497,14 @@ MACHINE_START(DAVINCI_DM355_EVM, "DaVinci DM355 EVM")
 	.dma_zone_size	= SZ_128M,
 	.restart	= davinci_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset  = 0x100,
+	.map_io	      = dm355_evm_map_io,
+	.init_irq     = davinci_irq_init,
+	.init_time	= davinci_timer_init,
+	.init_machine = dm355_evm_init,
+	.init_late	= davinci_init_late,
+	.dma_zone_size	= SZ_128M,
+	.restart	= davinci_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

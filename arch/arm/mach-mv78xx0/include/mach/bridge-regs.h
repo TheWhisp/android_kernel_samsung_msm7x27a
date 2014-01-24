@@ -11,6 +11,7 @@
 
 #include <mach/mv78xx0.h>
 
+<<<<<<< HEAD
 #define CPU_CONTROL		(BRIDGE_VIRT_BASE | 0x0104)
 #define L2_WRITETHROUGH		0x00020000
 
@@ -18,11 +19,24 @@
 #define SOFT_RESET_OUT_EN	0x00000004
 
 #define SYSTEM_SOFT_RESET	(BRIDGE_VIRT_BASE | 0x010c)
+=======
+#define CPU_CONTROL		(BRIDGE_VIRT_BASE + 0x0104)
+#define L2_WRITETHROUGH		0x00020000
+
+#define RSTOUTn_MASK		(BRIDGE_VIRT_BASE + 0x0108)
+#define SOFT_RESET_OUT_EN	0x00000004
+
+#define SYSTEM_SOFT_RESET	(BRIDGE_VIRT_BASE + 0x010c)
+>>>>>>> refs/remotes/origin/master
 #define SOFT_RESET		0x00000001
 
 #define BRIDGE_INT_TIMER1_CLR	(~0x0004)
 
+<<<<<<< HEAD
 #define IRQ_VIRT_BASE		(BRIDGE_VIRT_BASE | 0x0200)
+=======
+#define IRQ_VIRT_BASE		(BRIDGE_VIRT_BASE + 0x0200)
+>>>>>>> refs/remotes/origin/master
 #define IRQ_CAUSE_ERR_OFF	0x0000
 #define IRQ_CAUSE_LOW_OFF	0x0004
 #define IRQ_CAUSE_HIGH_OFF	0x0008
@@ -30,10 +44,15 @@
 #define IRQ_MASK_LOW_OFF	0x0010
 #define IRQ_MASK_HIGH_OFF	0x0014
 
+<<<<<<< HEAD
 #define TIMER_VIRT_BASE		(BRIDGE_VIRT_BASE | 0x0300)
 <<<<<<< HEAD
 =======
 #define TIMER_PHYS_BASE		(BRIDGE_PHYS_BASE | 0x0300)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define TIMER_VIRT_BASE		(BRIDGE_VIRT_BASE + 0x0300)
+#define TIMER_PHYS_BASE		(BRIDGE_PHYS_BASE + 0x0300)
+>>>>>>> refs/remotes/origin/master
 
 #endif

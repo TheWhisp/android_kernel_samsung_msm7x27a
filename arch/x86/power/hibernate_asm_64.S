@@ -139,6 +139,12 @@ ENTRY(restore_registers)
 	pushq	pt_regs_flags(%rax)
 	popfq
 
+<<<<<<< HEAD
+=======
+	/* Saved in save_processor_state. */
+	lgdt	saved_context_gdt_desc(%rax)
+
+>>>>>>> refs/remotes/origin/master
 	xorq	%rax, %rax
 
 	/* tell the hibernation core that we've just restored the memory */

@@ -183,7 +183,12 @@ do {									\
 } while (0)
 #endif
 
+<<<<<<< HEAD
 #define SET_PERSONALITY(ex) set_personality(PER_LINUX_32BIT)
+=======
+#define SET_PERSONALITY(ex) \
+	set_personality(PER_LINUX_32BIT | (current->personality & (~PER_MASK)))
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_VSYSCALL
 /* vDSO has arch_setup_additional_pages */

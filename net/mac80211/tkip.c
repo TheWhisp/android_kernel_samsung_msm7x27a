@@ -11,9 +11,13 @@
 #include <linux/types.h>
 #include <linux/netdevice.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 #include <net/mac80211.h>
@@ -106,9 +110,13 @@ static void tkip_mixing_phase1(const u8 *tk, struct tkip_ctx *ctx,
 	}
 	ctx->state = TKIP_STATE_PHASE1_DONE;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ctx->p1k_iv32 = tsc_IV32;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ctx->p1k_iv32 = tsc_IV32;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void tkip_mixing_phase2(const u8 *tk, struct tkip_ctx *ctx,
@@ -149,21 +157,28 @@ static void tkip_mixing_phase2(const u8 *tk, struct tkip_ctx *ctx,
  * of the IV. Returns pointer to the octet following IVs (i.e., beginning of
  * the packet payload). */
 <<<<<<< HEAD
+<<<<<<< HEAD
 u8 *ieee80211_tkip_add_iv(u8 *pos, struct ieee80211_key *key, u16 iv16)
 {
 	pos = write_tkip_iv(pos, iv16);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 u8 *ieee80211_tkip_add_iv(u8 *pos, struct ieee80211_key *key)
 {
 	lockdep_assert_held(&key->u.tkip.txlock);
 
 	pos = write_tkip_iv(pos, key->u.tkip.tx.iv16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	*pos++ = (key->conf.keyidx << 6) | (1 << 5) /* Ext IV */;
 	put_unaligned_le32(key->u.tkip.tx.iv32, pos);
 	return pos + 4;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void ieee80211_get_tkip_key(struct ieee80211_key_conf *keyconf,
 			struct sk_buff *skb, enum ieee80211_tkip_key_type type,
@@ -212,6 +227,8 @@ void ieee80211_get_tkip_key(struct ieee80211_key_conf *keyconf,
 }
 EXPORT_SYMBOL(ieee80211_get_tkip_key);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void ieee80211_compute_tkip_p1k(struct ieee80211_key *key, u32 iv32)
 {
 	struct ieee80211_sub_if_data *sdata = key->sdata;
@@ -237,12 +254,20 @@ void ieee80211_get_tkip_p1k_iv(struct ieee80211_key_conf *keyconf,
 	struct ieee80211_key *key = (struct ieee80211_key *)
 			container_of(keyconf, struct ieee80211_key, conf);
 	struct tkip_ctx *ctx = &key->u.tkip.tx;
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&key->u.tkip.txlock, flags);
 	ieee80211_compute_tkip_p1k(key, iv32);
 	memcpy(p1k, ctx->p1k, sizeof(ctx->p1k));
 	spin_unlock_irqrestore(&key->u.tkip.txlock, flags);
+=======
+
+	spin_lock_bh(&key->u.tkip.txlock);
+	ieee80211_compute_tkip_p1k(key, iv32);
+	memcpy(p1k, ctx->p1k, sizeof(ctx->p1k));
+	spin_unlock_bh(&key->u.tkip.txlock);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(ieee80211_get_tkip_p1k_iv);
 
@@ -268,6 +293,7 @@ void ieee80211_get_tkip_p2k(struct ieee80211_key_conf *keyconf,
 	const u8 *data = (u8 *)hdr + ieee80211_hdrlen(hdr->frame_control);
 	u32 iv32 = get_unaligned_le32(&data[4]);
 	u16 iv16 = data[2] | (data[0] << 8);
+<<<<<<< HEAD
 	unsigned long flags;
 
 	spin_lock_irqsave(&key->u.tkip.txlock, flags);
@@ -277,6 +303,15 @@ void ieee80211_get_tkip_p2k(struct ieee80211_key_conf *keyconf,
 }
 EXPORT_SYMBOL(ieee80211_get_tkip_p2k);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	spin_lock(&key->u.tkip.txlock);
+	ieee80211_compute_tkip_p1k(key, iv32);
+	tkip_mixing_phase2(tk, ctx, iv16, p2k);
+	spin_unlock(&key->u.tkip.txlock);
+}
+EXPORT_SYMBOL(ieee80211_get_tkip_p2k);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Encrypt packet payload with TKIP using @key. @pos is a pointer to the
@@ -287,6 +322,7 @@ EXPORT_SYMBOL(ieee80211_get_tkip_p2k);
  */
 int ieee80211_tkip_encrypt_data(struct crypto_cipher *tfm,
 				struct ieee80211_key *key,
+<<<<<<< HEAD
 <<<<<<< HEAD
 				u8 *pos, size_t payload_len, u8 *ta)
 {
@@ -302,6 +338,8 @@ int ieee80211_tkip_encrypt_data(struct crypto_cipher *tfm,
 
 	return ieee80211_wep_encrypt_data(tfm, rc4key, 16, pos, payload_len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				struct sk_buff *skb,
 				u8 *payload, size_t payload_len)
 {
@@ -311,7 +349,10 @@ int ieee80211_tkip_encrypt_data(struct crypto_cipher *tfm,
 
 	return ieee80211_wep_encrypt_data(tfm, rc4key, 16,
 					  payload, payload_len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Decrypt packet payload with TKIP using @key. @pos is a pointer to the
@@ -337,6 +378,7 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 	keyid = pos[3];
 	iv32 = get_unaligned_le32(pos + 4);
 	pos += 8;
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_TKIP_DEBUG
 	{
 		int i;
@@ -348,6 +390,8 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 		       iv16, iv32);
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!(keyid & (1 << 5)))
 		return TKIP_DECRYPT_NO_EXT_IV;
@@ -358,6 +402,7 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 	if (key->u.tkip.rx[queue].state != TKIP_STATE_NOT_INIT &&
 	    (iv32 < key->u.tkip.rx[queue].iv32 ||
 	     (iv32 == key->u.tkip.rx[queue].iv32 &&
+<<<<<<< HEAD
 	      iv16 <= key->u.tkip.rx[queue].iv16))) {
 #ifdef CONFIG_MAC80211_TKIP_DEBUG
 		printk(KERN_DEBUG "TKIP replay detected for RX frame from "
@@ -368,6 +413,10 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 #endif
 		return TKIP_DECRYPT_REPLAY;
 	}
+=======
+	      iv16 <= key->u.tkip.rx[queue].iv16)))
+		return TKIP_DECRYPT_REPLAY;
+>>>>>>> refs/remotes/origin/master
 
 	if (only_iv) {
 		res = TKIP_DECRYPT_OK;
@@ -379,6 +428,7 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 	    key->u.tkip.rx[queue].iv32 != iv32) {
 		/* IV16 wrapped around - perform TKIP phase 1 */
 		tkip_mixing_phase1(tk, &key->u.tkip.rx[queue], ta, iv32);
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_TKIP_DEBUG
 		{
 			int i;
@@ -395,6 +445,8 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 			printk("\n");
 		}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (key->local->ops->update_tkip_key &&
 	    key->flags & KEY_FLAG_UPLOADED_TO_HARDWARE &&
@@ -410,6 +462,7 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 	}
 
 	tkip_mixing_phase2(tk, &key->u.tkip.rx[queue], iv16, rc4key);
+<<<<<<< HEAD
 #ifdef CONFIG_MAC80211_TKIP_DEBUG
 	{
 		int i;
@@ -419,6 +472,8 @@ int ieee80211_tkip_decrypt_data(struct crypto_cipher *tfm,
 		printk("\n");
 	}
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 	res = ieee80211_wep_decrypt_data(tfm, rc4key, 16, pos, payload_len - 12);
  done:

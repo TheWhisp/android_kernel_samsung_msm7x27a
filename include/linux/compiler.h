@@ -10,6 +10,10 @@
 # define __force	__attribute__((force))
 # define __nocast	__attribute__((nocast))
 # define __iomem	__attribute__((noderef, address_space(2)))
+<<<<<<< HEAD
+=======
+# define __must_hold(x)	__attribute__((context(x,1,1)))
+>>>>>>> refs/remotes/origin/master
 # define __acquires(x)	__attribute__((context(x,0,1)))
 # define __releases(x)	__attribute__((context(x,1,0)))
 # define __acquire(x)	__context__(x,1)
@@ -33,6 +37,10 @@ extern void __chk_io_ptr(const volatile void __iomem *);
 # define __chk_user_ptr(x) (void)0
 # define __chk_io_ptr(x) (void)0
 # define __builtin_warning(x, y...) (1)
+<<<<<<< HEAD
+=======
+# define __must_hold(x)
+>>>>>>> refs/remotes/origin/master
 # define __acquires(x)
 # define __releases(x)
 # define __acquire(x) (void)0
@@ -42,6 +50,13 @@ extern void __chk_io_ptr(const volatile void __iomem *);
 # define __rcu
 #endif
 
+<<<<<<< HEAD
+=======
+/* Indirect macros required for expanded argument pasting, eg. __LINE__. */
+#define ___PASTE(a,b) a##b
+#define __PASTE(a,b) ___PASTE(a,b)
+
+>>>>>>> refs/remotes/origin/master
 #ifdef __KERNEL__
 
 #ifdef __GNUC__
@@ -164,6 +179,14 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
     (typeof(ptr)) (__ptr + (off)); })
 #endif
 
+<<<<<<< HEAD
+=======
+/* Not-quite-unique ID. */
+#ifndef __UNIQUE_ID
+# define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __LINE__)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __KERNEL__ */
 
 #endif /* __ASSEMBLY__ */
@@ -237,10 +260,14 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 /*
  * Rather then using noinline to prevent stack consumption, use
 <<<<<<< HEAD
+<<<<<<< HEAD
  * noinline_for_stack instead.  For documentaiton reasons.
 =======
  * noinline_for_stack instead.  For documentation reasons.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * noinline_for_stack instead.  For documentation reasons.
+>>>>>>> refs/remotes/origin/master
  */
 #define noinline_for_stack noinline
 
@@ -282,11 +309,26 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 # define __section(S) __attribute__ ((__section__(#S)))
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef __visible
+#define __visible
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* Are two types/vars the same type (ignoring qualifiers)? */
 #ifndef __same_type
 # define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
 #endif
 
+<<<<<<< HEAD
+=======
+/* Is this type a native word size -- useful for atomic operations */
+#ifndef __native_word
+# define __native_word(t) (sizeof(t) == sizeof(int) || sizeof(t) == sizeof(long))
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /* Compile time object size, -1 for unknown */
 #ifndef __compiletime_object_size
 # define __compiletime_object_size(obj) -1
@@ -296,6 +338,7 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 #endif
 #ifndef __compiletime_error
 # define __compiletime_error(message)
+<<<<<<< HEAD
 #endif
 <<<<<<< HEAD
 
@@ -304,6 +347,42 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 # define __linktime_error(message)
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# define __compiletime_error_fallback(condition) \
+	do { ((void)sizeof(char[1 - 2 * condition])); } while (0)
+#else
+# define __compiletime_error_fallback(condition) do { } while (0)
+#endif
+
+#define __compiletime_assert(condition, msg, prefix, suffix)		\
+	do {								\
+		bool __cond = !(condition);				\
+		extern void prefix ## suffix(void) __compiletime_error(msg); \
+		if (__cond)						\
+			prefix ## suffix();				\
+		__compiletime_error_fallback(__cond);			\
+	} while (0)
+
+#define _compiletime_assert(condition, msg, prefix, suffix) \
+	__compiletime_assert(condition, msg, prefix, suffix)
+
+/**
+ * compiletime_assert - break build and emit msg if condition is false
+ * @condition: a compile-time constant condition to check
+ * @msg:       a message to emit if condition is false
+ *
+ * In tradition of POSIX assert, this macro will break the build if the
+ * supplied condition is *false*, emitting the supplied error message if the
+ * compiler has support to do so.
+ */
+#define compiletime_assert(condition, msg) \
+	_compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+
+#define compiletime_assert_atomic_type(t)				\
+	compiletime_assert(__native_word(t),				\
+		"Need native word sized stores/loads for atomicity.")
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Prevent the compiler from merging or refetching accesses.  The compiler
  * is also forbidden from reordering successive instances of ACCESS_ONCE(),
@@ -318,4 +397,13 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
  */
 #define ACCESS_ONCE(x) (*(volatile typeof(x) *)&(x))
 
+<<<<<<< HEAD
+=======
+/* Ignore/forbid kprobes attach on very low level functions marked by this attribute: */
+#ifdef CONFIG_KPROBES
+# define __kprobes	__attribute__((__section__(".kprobes.text")))
+#else
+# define __kprobes
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_COMPILER_H */

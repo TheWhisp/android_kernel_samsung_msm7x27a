@@ -64,9 +64,12 @@
 
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/sun3ints.h>
 #include <asm/dvma.h>
@@ -74,14 +77,20 @@
 #include <asm/machines.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define NDEBUG 0
 
 #define NDEBUG_ABORT		0x00100000
 #define NDEBUG_TAGS		0x00200000
 #define NDEBUG_MERGING		0x00400000
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* dma on! */
 #define REAL_DMA
 
@@ -99,10 +108,13 @@ static void NCR5380_print(struct Scsi_Host *instance);
 #define DRIVER_SETUP
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NDEBUG 0
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * BUG can be used to trigger a strange code-size related hang on 2.1 kernels
  */
@@ -211,10 +223,14 @@ static struct Scsi_Host *default_instance;
  */
  
 <<<<<<< HEAD
+<<<<<<< HEAD
 int sun3scsi_detect(struct scsi_host_template * tpnt)
 =======
 int __init sun3scsi_detect(struct scsi_host_template * tpnt)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int __init sun3scsi_detect(struct scsi_host_template * tpnt)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long ioaddr;
 	static int called = 0;
@@ -334,9 +350,13 @@ int sun3scsi_release (struct Scsi_Host *shpnt)
 	iounmap((void *)sun3_scsi_regp);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	NCR5380_exit(shpnt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	NCR5380_exit(shpnt);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -645,6 +665,10 @@ static int sun3scsi_dma_finish(int write_flag)
 #include "sun3_NCR5380.c"
 
 static struct scsi_host_template driver_template = {
+<<<<<<< HEAD
+=======
+	.show_info		= sun3scsi_show_info,
+>>>>>>> refs/remotes/origin/master
 	.name			= SUN3_SCSI_NAME,
 	.detect			= sun3scsi_detect,
 	.release		= sun3scsi_release,

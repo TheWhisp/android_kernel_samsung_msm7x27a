@@ -15,6 +15,7 @@ typedef struct {
 #define ATOMIC64_INIT(val)	{ (val) }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_X86_CMPXCHG64
 #define ATOMIC64_ALTERNATIVE_(f, g) "call atomic64_" #g "_cx8"
 #else
@@ -23,6 +24,8 @@ typedef struct {
 
 #define ATOMIC64_ALTERNATIVE(f) ATOMIC64_ALTERNATIVE_(f, f)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define __ATOMIC64_DECL(sym) void atomic64_##sym(atomic64_t *, ...)
 #ifndef ATOMIC64_EXPORT
 #define ATOMIC64_DECL_ONE __ATOMIC64_DECL
@@ -69,11 +72,18 @@ ATOMIC64_DECL(add_unless);
 #undef ATOMIC64_DECL_ONE
 #undef __ATOMIC64_DECL
 #undef ATOMIC64_EXPORT
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * atomic64_cmpxchg - cmpxchg atomic64 variable
  * @p: pointer to type atomic64_t
+=======
+
+/**
+ * atomic64_cmpxchg - cmpxchg atomic64 variable
+ * @v: pointer to type atomic64_t
+>>>>>>> refs/remotes/origin/master
  * @o: expected value
  * @n: new value
  *
@@ -100,6 +110,7 @@ static inline long long atomic64_xchg(atomic64_t *v, long long n)
 	unsigned high = (unsigned)(n >> 32);
 	unsigned low = (unsigned)n;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(xchg)
 		     : "=A" (o), "+b" (low), "+c" (high)
 		     : "S" (v)
@@ -110,13 +121,22 @@ static inline long long atomic64_xchg(atomic64_t *v, long long n)
 			     "S" (v), "b" (low), "c" (high)
 			     : "memory");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(xchg, "=&A" (o),
+			     "S" (v), "b" (low), "c" (high)
+			     : "memory");
+>>>>>>> refs/remotes/origin/master
 	return o;
 }
 
 /**
  * atomic64_set - set atomic64 variable
  * @v: pointer to type atomic64_t
+<<<<<<< HEAD
  * @n: value to assign
+=======
+ * @i: value to assign
+>>>>>>> refs/remotes/origin/master
  *
  * Atomically sets the value of @v to @n.
  */
@@ -124,6 +144,7 @@ static inline void atomic64_set(atomic64_t *v, long long i)
 {
 	unsigned high = (unsigned)(i >> 32);
 	unsigned low = (unsigned)i;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(set)
 		     : "+b" (low), "+c" (high)
@@ -135,6 +156,11 @@ static inline void atomic64_set(atomic64_t *v, long long i)
 			     "S" (v), "b" (low), "c" (high)
 			     : "eax", "edx", "memory");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(set, /* no output */,
+			     "S" (v), "b" (low), "c" (high)
+			     : "eax", "edx", "memory");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -144,6 +170,7 @@ static inline void atomic64_set(atomic64_t *v, long long i)
  * Atomically reads the value of @v and returns it.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline long long atomic64_read(atomic64_t *v)
 {
 	long long r;
@@ -152,11 +179,16 @@ static inline long long atomic64_read(atomic64_t *v)
 		     : : "memory"
 		     );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline long long atomic64_read(const atomic64_t *v)
 {
 	long long r;
 	alternative_atomic64(read, "=&A" (r), "c" (v) : "memory");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return r;
  }
 
@@ -170,6 +202,7 @@ static inline long long atomic64_read(const atomic64_t *v)
 static inline long long atomic64_add_return(long long i, atomic64_t *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(add_return)
 		     : "+A" (i), "+c" (v)
 		     : : "memory"
@@ -179,6 +212,11 @@ static inline long long atomic64_add_return(long long i, atomic64_t *v)
 			     ASM_OUTPUT2("+A" (i), "+c" (v)),
 			     ASM_NO_INPUT_CLOBBER("memory"));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(add_return,
+			     ASM_OUTPUT2("+A" (i), "+c" (v)),
+			     ASM_NO_INPUT_CLOBBER("memory"));
+>>>>>>> refs/remotes/origin/master
 	return i;
 }
 
@@ -187,6 +225,7 @@ static inline long long atomic64_add_return(long long i, atomic64_t *v)
  */
 static inline long long atomic64_sub_return(long long i, atomic64_t *v)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(sub_return)
 		     : "+A" (i), "+c" (v)
@@ -197,12 +236,18 @@ static inline long long atomic64_sub_return(long long i, atomic64_t *v)
 			     ASM_OUTPUT2("+A" (i), "+c" (v)),
 			     ASM_NO_INPUT_CLOBBER("memory"));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(sub_return,
+			     ASM_OUTPUT2("+A" (i), "+c" (v)),
+			     ASM_NO_INPUT_CLOBBER("memory"));
+>>>>>>> refs/remotes/origin/master
 	return i;
 }
 
 static inline long long atomic64_inc_return(atomic64_t *v)
 {
 	long long a;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(inc_return)
 		     : "=A" (a)
@@ -213,12 +258,17 @@ static inline long long atomic64_inc_return(atomic64_t *v)
 	alternative_atomic64(inc_return, "=&A" (a),
 			     "S" (v) : "memory", "ecx");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(inc_return, "=&A" (a),
+			     "S" (v) : "memory", "ecx");
+>>>>>>> refs/remotes/origin/master
 	return a;
 }
 
 static inline long long atomic64_dec_return(atomic64_t *v)
 {
 	long long a;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(dec_return)
 		     : "=A" (a)
@@ -229,6 +279,10 @@ static inline long long atomic64_dec_return(atomic64_t *v)
 	alternative_atomic64(dec_return, "=&A" (a),
 			     "S" (v) : "memory", "ecx");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(dec_return, "=&A" (a),
+			     "S" (v) : "memory", "ecx");
+>>>>>>> refs/remotes/origin/master
 	return a;
 }
 
@@ -242,6 +296,7 @@ static inline long long atomic64_dec_return(atomic64_t *v)
 static inline long long atomic64_add(long long i, atomic64_t *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE_(add, add_return)
 		     : "+A" (i), "+c" (v)
 		     : : "memory"
@@ -251,6 +306,11 @@ static inline long long atomic64_add(long long i, atomic64_t *v)
 			       ASM_OUTPUT2("+A" (i), "+c" (v)),
 			       ASM_NO_INPUT_CLOBBER("memory"));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__alternative_atomic64(add, add_return,
+			       ASM_OUTPUT2("+A" (i), "+c" (v)),
+			       ASM_NO_INPUT_CLOBBER("memory"));
+>>>>>>> refs/remotes/origin/master
 	return i;
 }
 
@@ -264,6 +324,7 @@ static inline long long atomic64_add(long long i, atomic64_t *v)
 static inline long long atomic64_sub(long long i, atomic64_t *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE_(sub, sub_return)
 		     : "+A" (i), "+c" (v)
 		     : : "memory"
@@ -273,6 +334,11 @@ static inline long long atomic64_sub(long long i, atomic64_t *v)
 			       ASM_OUTPUT2("+A" (i), "+c" (v)),
 			       ASM_NO_INPUT_CLOBBER("memory"));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__alternative_atomic64(sub, sub_return,
+			       ASM_OUTPUT2("+A" (i), "+c" (v)),
+			       ASM_NO_INPUT_CLOBBER("memory"));
+>>>>>>> refs/remotes/origin/master
 	return i;
 }
 
@@ -280,7 +346,11 @@ static inline long long atomic64_sub(long long i, atomic64_t *v)
  * atomic64_sub_and_test - subtract value from variable and test result
  * @i: integer value to subtract
  * @v: pointer to type atomic64_t
+<<<<<<< HEAD
   *
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * Atomically subtracts @i from @v and returns
  * true if the result is zero, or false for all
  * other cases.
@@ -299,6 +369,7 @@ static inline int atomic64_sub_and_test(long long i, atomic64_t *v)
 static inline void atomic64_inc(atomic64_t *v)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE_(inc, inc_return)
 		     : : "S" (v)
 		     : "memory", "eax", "ecx", "edx"
@@ -307,10 +378,15 @@ static inline void atomic64_inc(atomic64_t *v)
 	__alternative_atomic64(inc, inc_return, /* no output */,
 			       "S" (v) : "memory", "eax", "ecx", "edx");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__alternative_atomic64(inc, inc_return, /* no output */,
+			       "S" (v) : "memory", "eax", "ecx", "edx");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
  * atomic64_dec - decrement atomic64 variable
+<<<<<<< HEAD
  * @ptr: pointer to type atomic64_t
  *
  * Atomically decrements @ptr by 1.
@@ -326,6 +402,16 @@ static inline void atomic64_dec(atomic64_t *v)
 	__alternative_atomic64(dec, dec_return, /* no output */,
 			       "S" (v) : "memory", "eax", "ecx", "edx");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * @v: pointer to type atomic64_t
+ *
+ * Atomically decrements @v by 1.
+ */
+static inline void atomic64_dec(atomic64_t *v)
+{
+	__alternative_atomic64(dec, dec_return, /* no output */,
+			       "S" (v) : "memory", "eax", "ecx", "edx");
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -376,15 +462,20 @@ static inline int atomic64_add_negative(long long i, atomic64_t *v)
  *
  * Atomically adds @a to @v, so long as it was not @u.
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Returns non-zero if @v was not @u, and zero otherwise.
 =======
  * Returns non-zero if the add was done, zero otherwise.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Returns non-zero if the add was done, zero otherwise.
+>>>>>>> refs/remotes/origin/master
  */
 static inline int atomic64_add_unless(atomic64_t *v, long long a, long long u)
 {
 	unsigned low = (unsigned)u;
 	unsigned high = (unsigned)(u >> 32);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(add_unless) "\n\t"
 		     : "+A" (a), "+c" (v), "+S" (low), "+D" (high)
@@ -394,6 +485,11 @@ static inline int atomic64_add_unless(atomic64_t *v, long long a, long long u)
 			     ASM_OUTPUT2("+A" (a), "+c" (low), "+D" (high)),
 			     "S" (v) : "memory");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(add_unless,
+			     ASM_OUTPUT2("+A" (a), "+c" (low), "+D" (high)),
+			     "S" (v) : "memory");
+>>>>>>> refs/remotes/origin/master
 	return (int)a;
 }
 
@@ -401,6 +497,7 @@ static inline int atomic64_add_unless(atomic64_t *v, long long a, long long u)
 static inline int atomic64_inc_not_zero(atomic64_t *v)
 {
 	int r;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(inc_not_zero)
 		     : "=a" (r)
@@ -411,12 +508,17 @@ static inline int atomic64_inc_not_zero(atomic64_t *v)
 	alternative_atomic64(inc_not_zero, "=&a" (r),
 			     "S" (v) : "ecx", "edx", "memory");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alternative_atomic64(inc_not_zero, "=&a" (r),
+			     "S" (v) : "ecx", "edx", "memory");
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
 static inline long long atomic64_dec_if_positive(atomic64_t *v)
 {
 	long long r;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	asm volatile(ATOMIC64_ALTERNATIVE(dec_if_positive)
 		     : "=A" (r)
@@ -429,6 +531,8 @@ static inline long long atomic64_dec_if_positive(atomic64_t *v)
 #undef ATOMIC64_ALTERNATIVE
 #undef ATOMIC64_ALTERNATIVE_
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	alternative_atomic64(dec_if_positive, "=&A" (r),
 			     "S" (v) : "ecx", "memory");
 	return r;
@@ -436,6 +540,9 @@ static inline long long atomic64_dec_if_positive(atomic64_t *v)
 
 #undef alternative_atomic64
 #undef __alternative_atomic64
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_X86_ATOMIC64_32_H */

@@ -32,6 +32,10 @@
 #include <linux/init.h>
 #include <linux/irqnr.h>
 #include <linux/time.h>
+<<<<<<< HEAD
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/parport.h>
 #include <linux/pps_kernel.h>
 
@@ -134,6 +138,7 @@ out_both:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* the PPS echo function */
 static void pps_echo(struct pps_device *pps, int event, void *data)
 {
@@ -144,6 +149,8 @@ static void pps_echo(struct pps_device *pps, int event, void *data)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void parport_attach(struct parport *port)
 {
 	struct pps_client_pp *device;
@@ -155,9 +162,12 @@ static void parport_attach(struct parport *port)
 				  PPS_ECHOASSERT | PPS_ECHOCLEAR | \
 				  PPS_CANWAIT | PPS_TSFMT_TSPEC,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.echo		= pps_echo,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.owner		= THIS_MODULE,
 		.dev		= NULL
 	};

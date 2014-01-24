@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -33,6 +37,7 @@
 #ifndef	__RTL_92S_DM_H__
 #define __RTL_92S_DM_H__
 
+<<<<<<< HEAD
 struct dig_t {
 	u8 dig_enable_flag;
 	u8 dig_algorithm;
@@ -75,6 +80,8 @@ struct dig_t {
 	long rssi_val;
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 enum dm_dig_alg {
 	DIG_ALGO_BY_FALSE_ALARM = 0,
 	DIG_ALGO_BY_RSSI	= 1,
@@ -158,8 +165,11 @@ enum dm_ratr_sta {
 #define	DM_DIG_BACKOFF_MAX		12
 #define	DM_DIG_BACKOFF_MIN		-4
 
+<<<<<<< HEAD
 extern struct dig_t digtable;
 
+=======
+>>>>>>> refs/remotes/origin/master
 void rtl92s_dm_watchdog(struct ieee80211_hw *hw);
 void rtl92s_dm_init(struct ieee80211_hw *hw);
 void rtl92s_dm_init_edca_turbo(struct ieee80211_hw *hw);

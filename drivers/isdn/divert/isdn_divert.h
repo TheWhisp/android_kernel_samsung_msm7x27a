@@ -4,10 +4,14 @@
  *
  * Copyright 1998       by Werner Cornelius (werner@ikt.de)
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -25,14 +29,19 @@
 #define IIOCGETNAM   _IO('I', 3)  /* get driver name */
 #define IIOCGETRULE  _IO('I', 4)  /* read one rule */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IIOCMODRULE  _IO('I', 5)  /* modify/replace a rule */  
 =======
 #define IIOCMODRULE  _IO('I', 5)  /* modify/replace a rule */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IIOCMODRULE  _IO('I', 5)  /* modify/replace a rule */
+>>>>>>> refs/remotes/origin/master
 #define IIOCINSRULE  _IO('I', 6)  /* insert/append one rule */
 #define IIOCDELRULE  _IO('I', 7)  /* delete a rule */
 #define IIOCDODFACT  _IO('I', 8)  /* hangup/reject/alert/immediately deflect a call */
 #define IIOCDOCFACT  _IO('I', 9)  /* activate control forwarding in PBX */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define IIOCDOCFDIS  _IO('I',10)  /* deactivate control forwarding in PBX */
 #define IIOCDOCFINT  _IO('I',11)  /* interrogate control forwarding in PBX */
@@ -40,6 +49,10 @@
 #define IIOCDOCFDIS  _IO('I', 10)  /* deactivate control forwarding in PBX */
 #define IIOCDOCFINT  _IO('I', 11)  /* interrogate control forwarding in PBX */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IIOCDOCFDIS  _IO('I', 10)  /* deactivate control forwarding in PBX */
+#define IIOCDOCFINT  _IO('I', 11)  /* interrogate control forwarding in PBX */
+>>>>>>> refs/remotes/origin/master
 
 /*************************************/
 /* states reported through interface */
@@ -48,6 +61,7 @@
 #define DEFLECT_REPORT    1  /* only report */
 #define DEFLECT_PROCEED   2  /* deflect when externally triggered */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DEFLECT_ALERT     3  /* alert and deflect after delay */ 
 #define DEFLECT_REJECT    4  /* reject immediately */
 #define DIVERT_ACTIVATE   5  /* diversion activate */
@@ -55,12 +69,15 @@
 #define DIVERT_REPORT     7  /* interrogation result */ 
 #define DEFLECT_AUTODEL 255  /* only for internal use */ 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define DEFLECT_ALERT     3  /* alert and deflect after delay */
 #define DEFLECT_REJECT    4  /* reject immediately */
 #define DIVERT_ACTIVATE   5  /* diversion activate */
 #define DIVERT_DEACTIVATE 6  /* diversion deactivate */
 #define DIVERT_REPORT     7  /* interrogation result */
 #define DEFLECT_AUTODEL 255  /* only for internal use */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #define DEFLECT_ALL_IDS   0xFFFFFFFF /* all drivers selected */
@@ -118,6 +135,13 @@ typedef union
  } divert_ioctl;
 =======
 { ulong drvid;     /* driver ids, bit mapped */
+=======
+
+#define DEFLECT_ALL_IDS   0xFFFFFFFF /* all drivers selected */
+
+typedef struct {
+	ulong drvid;     /* driver ids, bit mapped */
+>>>>>>> refs/remotes/origin/master
 	char my_msn[35]; /* desired msn, subaddr allowed */
 	char caller[35]; /* caller id, partial string with * + subaddr allowed */
 	char to_nr[35];  /* deflected to number incl. subaddress */
@@ -138,6 +162,7 @@ typedef union
 	u_char waittime; /* maximum wait time for proceeding */
 } divert_rule;
 
+<<<<<<< HEAD
 typedef union
 { int drv_version; /* return of driver version */
 	struct
@@ -150,6 +175,20 @@ typedef union
 	} getsetrule;
 	struct
 	{ u_char subcmd;  /* 0 = hangup/reject,
+=======
+typedef union {
+	int drv_version; /* return of driver version */
+	struct {
+		int drvid;		/* id of driver */
+		char drvnam[30];	/* name of driver */
+	} getid;
+	struct {
+		int ruleidx;	/* index of rule */
+		divert_rule rule;	/* rule parms */
+	} getsetrule;
+	struct {
+		u_char subcmd;  /* 0 = hangup/reject,
+>>>>>>> refs/remotes/origin/master
 			     1 = alert,
 			     2 = deflect */
 		ulong callid;   /* id of call delivered by ascii output */
@@ -157,8 +196,13 @@ typedef union
 				   else uus1 string (maxlen 31),
 				   data from rule used if empty */
 	} fwd_ctrl;
+<<<<<<< HEAD
 	struct
 	{ int drvid;      /* id of driver */
+=======
+	struct {
+		int drvid;      /* id of driver */
+>>>>>>> refs/remotes/origin/master
 		u_char cfproc;  /* cfu = 0, cfb = 1, cfnr = 2 */
 		ulong procid;   /* process id returned when no error */
 		u_char service; /* basically coded service, 0 = all */
@@ -166,7 +210,10 @@ typedef union
 		char fwd_nr[35];/* forwarded to number + subaddress */
 	} cf_ctrl;
 } divert_ioctl;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef __KERNEL__
 
@@ -178,6 +225,7 @@ typedef union
 /**************************************************/
 /* structure keeping ascii info for device output */
 /**************************************************/
+<<<<<<< HEAD
 struct divert_info
 <<<<<<< HEAD
   { struct divert_info *next;
@@ -190,6 +238,13 @@ struct divert_info
 	char info_start[2]; /* info string start */
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct divert_info {
+	struct divert_info *next;
+	ulong usage_cnt; /* number of files still to work */
+	char info_start[2]; /* info string start */
+};
+>>>>>>> refs/remotes/origin/master
 
 
 /**************/

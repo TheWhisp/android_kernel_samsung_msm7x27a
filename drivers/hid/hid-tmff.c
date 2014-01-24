@@ -30,11 +30,15 @@
 #include <linux/hid.h>
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 <<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "hid-ids.h"
 
@@ -49,7 +53,10 @@ static const signed short ff_joystick[] = {
 };
 
 #ifdef CONFIG_THRUSTMASTER_FF
+<<<<<<< HEAD
 #include "usbhid/usbhid.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Usages for thrustmaster devices I know about */
 #define THRUSTMASTER_USAGE_FF	(HID_UP_GENDESK | 0xbb)
@@ -106,7 +113,11 @@ static int tmff_play(struct input_dev *dev, void *data,
 		dbg_hid("(x, y)=(%04x, %04x)\n", x, y);
 		ff_field->value[0] = x;
 		ff_field->value[1] = y;
+<<<<<<< HEAD
 		usbhid_submit_report(hid, tmff->report, USB_DIR_OUT);
+=======
+		hid_hw_request(hid, tmff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case FF_RUMBLE:
@@ -120,7 +131,11 @@ static int tmff_play(struct input_dev *dev, void *data,
 		dbg_hid("(left,right)=(%08x, %08x)\n", left, right);
 		ff_field->value[0] = left;
 		ff_field->value[1] = right;
+<<<<<<< HEAD
 		usbhid_submit_report(hid, tmff->report, USB_DIR_OUT);
+=======
+		hid_hw_request(hid, tmff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return 0;
@@ -264,6 +279,7 @@ static struct hid_driver tm_driver = {
 	.id_table = tm_devices,
 	.probe = tm_probe,
 };
+<<<<<<< HEAD
 
 static int __init tm_init(void)
 {
@@ -277,4 +293,8 @@ static void __exit tm_exit(void)
 
 module_init(tm_init);
 module_exit(tm_exit);
+=======
+module_hid_driver(tm_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

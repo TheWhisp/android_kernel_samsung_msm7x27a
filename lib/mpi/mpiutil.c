@@ -106,6 +106,7 @@ int mpi_resize(MPI a, unsigned nlimbs)
 	return 0;
 }
 
+<<<<<<< HEAD
 void mpi_clear(MPI a)
 {
 	a->nlimbs = 0;
@@ -113,6 +114,8 @@ void mpi_clear(MPI a)
 	a->flags = 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void mpi_free(MPI a)
 {
 	if (!a)
@@ -129,6 +132,7 @@ void mpi_free(MPI a)
 }
 EXPORT_SYMBOL_GPL(mpi_free);
 
+<<<<<<< HEAD
 /****************
  * Note: This copy function should not interpret the MPI
  *	 but copy it transparently.
@@ -209,3 +213,7 @@ void mpi_swap(MPI a, MPI b)
 	*a = *b;
 	*b = tmp;
 }
+=======
+MODULE_DESCRIPTION("Multiprecision maths library");
+MODULE_LICENSE("GPL");
+>>>>>>> refs/remotes/origin/master

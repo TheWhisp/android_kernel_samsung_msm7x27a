@@ -28,6 +28,7 @@
 
 typedef	u8	(read_reg_func)(void *hwp, u8 offset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef	void	(write_reg_func)(void *hwp, u8 offset, u8 value);
 typedef	void	(fifo_func)(void *hwp, u8 offset, u8 *datap, int size);
 
@@ -106,6 +107,8 @@ struct _ioport {
 	ASSIGN_FUNC(typ, ISAC, target.isac);\
 	ASSIGN_FUNC(typ, IPAC, target);\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			       typedef	void	(write_reg_func)(void *hwp, u8 offset, u8 value);
 			       typedef	void	(fifo_func)(void *hwp, u8 offset, u8 *datap, int size);
 
@@ -183,7 +186,10 @@ struct _ioport {
 #define ASSIGN_FUNC_IPAC(typ, target)	do {		\
 		ASSIGN_FUNC(typ, ISAC, target.isac);	\
 		ASSIGN_FUNC(typ, IPAC, target);		\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 #endif

@@ -1,13 +1,18 @@
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Renesas USB Controller Drivers
 =======
 # Renesas USBHS Controller Drivers
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# Renesas USBHS Controller Drivers
+>>>>>>> refs/remotes/origin/master
 #
 
 config USB_RENESAS_USBHS
 	tristate 'Renesas USBHS controller'
+<<<<<<< HEAD
 <<<<<<< HEAD
 	depends on SUPERH || ARCH_SHMOBILE
 	default n
@@ -21,6 +26,9 @@ config USB_RENESAS_USBHS
 	   gadget drivers to also be dynamically linked.
 =======
 	depends on USB && USB_GADGET
+=======
+	depends on USB_GADGET
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 	  Renesas USBHS is a discrete USB host and peripheral controller chip
@@ -29,4 +37,7 @@ config USB_RENESAS_USBHS
 
 	  Say "y" to link the driver statically, or "m" to build a
 	  dynamically linked module called "renesas_usbhs"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

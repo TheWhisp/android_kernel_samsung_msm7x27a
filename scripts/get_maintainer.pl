@@ -83,6 +83,11 @@ push(@signature_tags, "Signed-off-by:");
 push(@signature_tags, "Reviewed-by:");
 push(@signature_tags, "Acked-by:");
 
+<<<<<<< HEAD
+=======
+my $signature_pattern = "\(" . join("|", @signature_tags) . "\)";
+
+>>>>>>> refs/remotes/origin/master
 # rfc822 email address - preloaded methods go here.
 my $rfc822_lwsp = "(?:(?:\\r\\n)?[ \\t])";
 my $rfc822_char = '[\\000-\\377]';
@@ -96,10 +101,14 @@ my %VCS_cmds_git = (
     "available" => '(which("git") ne "") && (-d ".git")',
     "find_signers_cmd" =>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"git log --no-color --since=\$email_git_since " .
 =======
 	"git log --no-color --follow --since=\$email_git_since " .
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"git log --no-color --follow --since=\$email_git_since " .
+>>>>>>> refs/remotes/origin/master
 	    '--format="GitCommit: %H%n' .
 		      'GitAuthor: %an <%ae>%n' .
 		      'GitDate: %aD%n' .
@@ -333,11 +342,16 @@ sub read_mailmap {
 	# name1 <mail1> name2 <mail2>
 	# (see man git-shortlog)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (/^(.+)<(.+)>$/) {
 =======
 
 	if (/^([^<]+)<([^>]+)>$/) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (/^([^<]+)<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/master
 	    my $real_name = $1;
 	    my $address = $2;
 
@@ -346,20 +360,28 @@ sub read_mailmap {
 	    $mailmap->{names}->{$address} = $real_name;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} elsif (/^<([^\s]+)>\s*<([^\s]+)>$/) {
 =======
 	} elsif (/^<([^>]+)>\s*<([^>]+)>$/) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} elsif (/^<([^>]+)>\s*<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/master
 	    my $real_address = $1;
 	    my $wrong_address = $2;
 
 	    $mailmap->{addresses}->{$wrong_address} = $real_address;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} elsif (/^(.+)<([^\s]+)>\s*<([^\s]+)>$/) {
 =======
 	} elsif (/^(.+)<([^>]+)>\s*<([^>]+)>$/) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} elsif (/^(.+)<([^>]+)>\s*<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/master
 	    my $real_name = $1;
 	    my $real_address = $2;
 	    my $wrong_address = $3;
@@ -371,10 +393,14 @@ sub read_mailmap {
 	    $mailmap->{addresses}->{$wrong_address} = $real_address;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} elsif (/^(.+)<([^\s]+)>\s*([^\s].*)<([^\s]+)>$/) {
 =======
 	} elsif (/^(.+)<([^>]+)>\s*(.+)\s*<([^>]+)>$/) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} elsif (/^(.+)<([^>]+)>\s*(.+)\s*<([^>]+)>$/) {
+>>>>>>> refs/remotes/origin/master
 	    my $real_name = $1;
 	    my $real_address = $2;
 	    my $wrong_name = $3;
@@ -451,7 +477,11 @@ foreach my $file (@ARGV) {
 
 	while (<$patch>) {
 	    my $patch_line = $_;
+<<<<<<< HEAD
 	    if (m/^\+\+\+\s+(\S+)/) {
+=======
+	    if (m/^\+\+\+\s+(\S+)/ or m/^---\s+(\S+)/) {
+>>>>>>> refs/remotes/origin/master
 		my $filename = $1;
 		$filename =~ s@^[^/]*/@@;
 		$filename =~ s@\n@@;
@@ -493,7 +523,10 @@ my @subsystem = ();
 my @status = ();
 my %deduplicate_name_hash = ();
 my %deduplicate_address_hash = ();
+<<<<<<< HEAD
 my $signature_pattern;
+=======
+>>>>>>> refs/remotes/origin/master
 
 my @maintainers = get_maintainers();
 
@@ -630,6 +663,13 @@ sub get_maintainers {
 				    $hash{$tvi} = $value_pd;
 				}
 			    }
+<<<<<<< HEAD
+=======
+			} elsif ($type eq 'N') {
+			    if ($file =~ m/$value/x) {
+				$hash{$tvi} = 0;
+			    }
+>>>>>>> refs/remotes/origin/master
 			}
 		    }
 		}
@@ -952,10 +992,14 @@ sub get_maintainer_role {
     my $end = find_ending_index($index);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     my $role;
 =======
     my $role = "unknown";
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    my $role = "unknown";
+>>>>>>> refs/remotes/origin/master
     my $subsystem = $typevalue[$start];
     if (length($subsystem) > 20) {
 	$subsystem = substr($subsystem, 0, 17);
@@ -1052,9 +1096,12 @@ sub add_categories {
 			if (!$hash_list_to{lc($list_address)}) {
 			    $hash_list_to{lc($list_address)} = 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    push(@list_to, [$list_address,
 					    "open list${list_role}"]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			    if ($list_additional =~ m/moderated/) {
 				push(@list_to, [$list_address,
 						"moderated list${list_role}"]);
@@ -1062,7 +1109,10 @@ sub add_categories {
 				push(@list_to, [$list_address,
 						"open list${list_role}"]);
 			    }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 		    }
 		}
@@ -1424,10 +1474,14 @@ sub vcs_exists {
 	warn("Using a git repository produces better results.\n");
 	warn("Try Linus Torvalds' latest git repository using:\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	warn("git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git\n");
 =======
 	warn("git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	warn("git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git\n");
+>>>>>>> refs/remotes/origin/master
 	$printed_novcs = 1;
     }
     return 0;

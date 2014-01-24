@@ -1,12 +1,18 @@
+<<<<<<< HEAD
 #ifndef __HID_H
 #define __HID_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  Copyright (c) 1999 Andreas Gal
  *  Copyright (c) 2000-2001 Vojtech Pavlik
  *  Copyright (c) 2006-2007 Jiri Kosina
  */
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +32,7 @@
  * e-mail - mail your message to <vojtech@ucw.cz>, or by paper mail:
  * Vojtech Pavlik, Simunkova 1594, Prague 8, 182 00 Czech Republic
  */
+<<<<<<< HEAD
 
 /*
  * USB HID (Human Interface Device) interface class code
@@ -63,6 +70,11 @@
 #define HID_MAX_DESCRIPTOR_SIZE		4096
 
 #ifdef __KERNEL__
+=======
+#ifndef __HID_H
+#define __HID_H
+
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/types.h>
 #include <linux/slab.h>
@@ -72,10 +84,16 @@
 #include <linux/workqueue.h>
 #include <linux/input.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/semaphore.h>
 #include <linux/power_supply.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/semaphore.h>
+#include <linux/power_supply.h>
+#include <uapi/linux/hid.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We parse each description item into this structure. Short items data
@@ -195,9 +213,13 @@ struct hid_item {
 #define HID_UP_GENDESK		0x00010000
 #define HID_UP_SIMULATION	0x00020000
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HID_UP_GENDEVCTRLS	0x00060000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HID_UP_GENDEVCTRLS	0x00060000
+>>>>>>> refs/remotes/origin/master
 #define HID_UP_KEYBOARD		0x00070000
 #define HID_UP_LED		0x00080000
 #define HID_UP_BUTTON		0x00090000
@@ -206,9 +228,17 @@ struct hid_item {
 #define HID_UP_DIGITIZER	0x000d0000
 #define HID_UP_PID		0x000f0000
 #define HID_UP_HPVENDOR         0xff7f0000
+<<<<<<< HEAD
 #define HID_UP_MSVENDOR		0xff000000
 #define HID_UP_CUSTOM		0x00ff0000
 #define HID_UP_LOGIVENDOR	0xffbc0000
+=======
+#define HID_UP_HPVENDOR2        0xff010000
+#define HID_UP_MSVENDOR		0xff000000
+#define HID_UP_CUSTOM		0x00ff0000
+#define HID_UP_LOGIVENDOR	0xffbc0000
+#define HID_UP_SENSOR		0x00200000
+>>>>>>> refs/remotes/origin/master
 
 #define HID_USAGE		0x0000ffff
 
@@ -248,10 +278,15 @@ struct hid_item {
 #define HID_GD_LEFT		0x00010093
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HID_DC_BATTERYSTRENGTH	0x00060020
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HID_DC_BATTERYSTRENGTH	0x00060020
+
+>>>>>>> refs/remotes/origin/master
 #define HID_DG_DIGITIZER	0x000d0001
 #define HID_DG_PEN		0x000d0002
 #define HID_DG_LIGHTPEN		0x000d0003
@@ -296,6 +331,11 @@ struct hid_item {
 #define HID_OUTPUT_REPORT	1
 #define HID_FEATURE_REPORT	2
 
+<<<<<<< HEAD
+=======
+#define HID_REPORT_TYPES	3
+
+>>>>>>> refs/remotes/origin/master
 /*
  * HID connect requests
  */
@@ -327,9 +367,14 @@ struct hid_item {
 #define HID_QUIRK_MULTI_INPUT			0x00000040
 #define HID_QUIRK_HIDINPUT_FORCE		0x00000080
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define HID_QUIRK_MULTITOUCH			0x00000100
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HID_QUIRK_NO_EMPTY_INPUT		0x00000100
+#define HID_QUIRK_NO_INIT_INPUT_REPORTS		0x00000200
+>>>>>>> refs/remotes/origin/master
 #define HID_QUIRK_SKIP_OUTPUT_REPORTS		0x00010000
 #define HID_QUIRK_FULLSPEED_INTERVAL		0x10000000
 #define HID_QUIRK_NO_INIT_REPORTS		0x20000000
@@ -337,6 +382,17 @@ struct hid_item {
 #define HID_QUIRK_NO_INPUT_SYNC			0x80000000
 
 /*
+<<<<<<< HEAD
+=======
+ * HID device groups
+ */
+#define HID_GROUP_GENERIC			0x0001
+#define HID_GROUP_MULTITOUCH			0x0002
+#define HID_GROUP_SENSOR_HUB			0x0003
+#define HID_GROUP_MULTITOUCH_WIN_8		0x0004
+
+/*
+>>>>>>> refs/remotes/origin/master
  * This is the global environment of the parser. This information is
  * persistent for main-items. The global environment can be saved and
  * restored with PUSH/POP statements.
@@ -385,6 +441,10 @@ struct hid_collection {
 struct hid_usage {
 	unsigned  hid;			/* hid usage code */
 	unsigned  collection_index;	/* index into collection array */
+<<<<<<< HEAD
+=======
+	unsigned  usage_index;		/* index into usage array */
+>>>>>>> refs/remotes/origin/master
 	/* hidinput data */
 	__u16     code;			/* input driver code */
 	__u8      type;			/* input driver type */
@@ -420,7 +480,11 @@ struct hid_field {
 	__u16 dpad;			/* dpad input code */
 };
 
+<<<<<<< HEAD
 #define HID_MAX_FIELDS 128
+=======
+#define HID_MAX_FIELDS 256
+>>>>>>> refs/remotes/origin/master
 
 struct hid_report {
 	struct list_head list;
@@ -440,8 +504,11 @@ struct hid_report_enum {
 	struct hid_report *report_id_hash[HID_MAX_IDS];
 };
 
+<<<<<<< HEAD
 #define HID_REPORT_TYPES 3
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define HID_MIN_BUFFER_SIZE	64		/* make sure there is at least a packet size of space */
 #define HID_MAX_BUFFER_SIZE	4096		/* 4kb */
 #define HID_CONTROL_FIFO_SIZE	256		/* to init devices with >100 reports */
@@ -474,17 +541,27 @@ struct hid_input {
 enum hid_type {
 	HID_TYPE_OTHER = 0,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	HID_TYPE_USBMOUSE
 =======
 	HID_TYPE_USBMOUSE,
 	HID_TYPE_USBNONE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	HID_TYPE_USBMOUSE,
+	HID_TYPE_USBNONE
+>>>>>>> refs/remotes/origin/master
 };
 
 struct hid_driver;
 struct hid_ll_driver;
 
 struct hid_device {							/* device report descriptor */
+<<<<<<< HEAD
+=======
+	__u8 *dev_rdesc;
+	unsigned dev_rsize;
+>>>>>>> refs/remotes/origin/master
 	__u8 *rdesc;
 	unsigned rsize;
 	struct hid_collection *collection;				/* List of HID collections */
@@ -492,23 +569,37 @@ struct hid_device {							/* device report descriptor */
 	unsigned maxcollection;						/* Number of parsed collections */
 	unsigned maxapplication;					/* Number of applications */
 	__u16 bus;							/* BUS ID */
+<<<<<<< HEAD
+=======
+	__u16 group;							/* Report group */
+>>>>>>> refs/remotes/origin/master
 	__u32 vendor;							/* Vendor ID */
 	__u32 product;							/* Product ID */
 	__u32 version;							/* HID version */
 	enum hid_type type;						/* device type (mouse, kbd, ...) */
 	unsigned country;						/* HID country */
 	struct hid_report_enum report_enum[HID_REPORT_TYPES];
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 	struct semaphore driver_lock;					/* protects the current driver */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct work_struct led_work;					/* delayed LED worker */
+
+	struct semaphore driver_lock;					/* protects the current driver, except during input */
+	struct semaphore driver_input_lock;				/* protects the current driver */
+>>>>>>> refs/remotes/origin/master
 	struct device dev;						/* device */
 	struct hid_driver *driver;
 	struct hid_ll_driver *ll_driver;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_HID_BATTERY_STRENGTH
 	/*
 	 * Power supply information for HID devices which report
@@ -522,10 +613,17 @@ struct hid_device {							/* device report descriptor */
 	__s32 battery_report_id;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	unsigned int status;						/* see STAT flags above */
 	unsigned claimed;						/* Claimed by hidinput, hiddev? */
 	unsigned quirks;						/* Various quirks the device can pull on us */
+=======
+	unsigned int status;						/* see STAT flags above */
+	unsigned claimed;						/* Claimed by hidinput, hiddev? */
+	unsigned quirks;						/* Various quirks the device can pull on us */
+	bool io_started;						/* Protected by driver_lock. If IO has started */
+>>>>>>> refs/remotes/origin/master
 
 	struct list_head inputs;					/* The list of inputs */
 	void *hiddev;							/* The hiddev structure */
@@ -561,6 +659,10 @@ struct hid_device {							/* device report descriptor */
 	struct dentry *debug_rdesc;
 	struct dentry *debug_events;
 	struct list_head debug_list;
+<<<<<<< HEAD
+=======
+	spinlock_t  debug_list_lock;
+>>>>>>> refs/remotes/origin/master
 	wait_queue_head_t debug_wait;
 };
 
@@ -577,6 +679,11 @@ static inline void hid_set_drvdata(struct hid_device *hdev, void *data)
 #define HID_GLOBAL_STACK_SIZE 4
 #define HID_COLLECTION_STACK_SIZE 4
 
+<<<<<<< HEAD
+=======
+#define HID_SCAN_FLAG_MT_WIN_8			0x00000001
+
+>>>>>>> refs/remotes/origin/master
 struct hid_parser {
 	struct hid_global     global;
 	struct hid_global     global_stack[HID_GLOBAL_STACK_SIZE];
@@ -585,6 +692,10 @@ struct hid_parser {
 	unsigned              collection_stack[HID_COLLECTION_STACK_SIZE];
 	unsigned              collection_stack_ptr;
 	struct hid_device    *device;
+<<<<<<< HEAD
+=======
+	unsigned              scan_flags;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct hid_class_descriptor {
@@ -602,12 +713,21 @@ struct hid_descriptor {
 	struct hid_class_descriptor desc[1];
 } __attribute__ ((packed));
 
+<<<<<<< HEAD
 #define HID_DEVICE(b, ven, prod) \
 	.bus = (b), \
 	.vendor = (ven), .product = (prod)
 
 #define HID_USB_DEVICE(ven, prod)	HID_DEVICE(BUS_USB, ven, prod)
 #define HID_BLUETOOTH_DEVICE(ven, prod)	HID_DEVICE(BUS_BLUETOOTH, ven, prod)
+=======
+#define HID_DEVICE(b, g, ven, prod)					\
+	.bus = (b), .group = (g), .vendor = (ven), .product = (prod)
+#define HID_USB_DEVICE(ven, prod)				\
+	.bus = BUS_USB, .vendor = (ven), .product = (prod)
+#define HID_BLUETOOTH_DEVICE(ven, prod)					\
+	.bus = BUS_BLUETOOTH, .vendor = (ven), .product = (prod)
+>>>>>>> refs/remotes/origin/master
 
 #define HID_REPORT_ID(rep) \
 	.report_type = (rep)
@@ -638,16 +758,32 @@ struct hid_usage_id {
  * @raw_event: if report in report_table, this hook is called (NULL means nop)
  * @usage_table: on which events to call event (NULL means all)
  * @event: if usage in usage_table, this hook is called (NULL means nop)
+<<<<<<< HEAD
  * @report_fixup: called before report descriptor parsing (NULL means nop)
  * @input_mapping: invoked on input registering before mapping an usage
  * @input_mapped: invoked on input registering after mapping an usage
  * @feature_mapping: invoked on feature registering
  * @input_register: called just before input device is registered after reports
  * 		    are parsed.
+=======
+ * @report: this hook is called after parsing a report (NULL means nop)
+ * @report_fixup: called before report descriptor parsing (NULL means nop)
+ * @input_mapping: invoked on input registering before mapping an usage
+ * @input_mapped: invoked on input registering after mapping an usage
+ * @input_configured: invoked just before the device is registered
+ * @feature_mapping: invoked on feature registering
+>>>>>>> refs/remotes/origin/master
  * @suspend: invoked on suspend (NULL means nop)
  * @resume: invoked on resume if device was not reset (NULL means nop)
  * @reset_resume: invoked on resume if device was reset (NULL means nop)
  *
+<<<<<<< HEAD
+=======
+ * probe should return -errno on error, or 0 on success. During probe,
+ * input will not be passed to raw_event unless hid_device_io_start is
+ * called.
+ *
+>>>>>>> refs/remotes/origin/master
  * raw_event and event should return 0 on no action performed, 1 when no
  * further processing should be done and negative on error
  *
@@ -677,6 +813,10 @@ struct hid_driver {
 	const struct hid_usage_id *usage_table;
 	int (*event)(struct hid_device *hdev, struct hid_field *field,
 			struct hid_usage *usage, __s32 value);
+<<<<<<< HEAD
+=======
+	void (*report)(struct hid_device *hdev, struct hid_report *report);
+>>>>>>> refs/remotes/origin/master
 
 	__u8 *(*report_fixup)(struct hid_device *hdev, __u8 *buf,
 			unsigned int *size);
@@ -687,11 +827,19 @@ struct hid_driver {
 	int (*input_mapped)(struct hid_device *hdev,
 			struct hid_input *hidinput, struct hid_field *field,
 			struct hid_usage *usage, unsigned long **bit, int *max);
+<<<<<<< HEAD
 	void (*feature_mapping)(struct hid_device *hdev,
 			struct hid_field *field,
 			struct hid_usage *usage);
 	int (*input_register)(struct hid_device *hdev, struct hid_input
 			*hidinput);
+=======
+	void (*input_configured)(struct hid_device *hdev,
+				 struct hid_input *hidinput);
+	void (*feature_mapping)(struct hid_device *hdev,
+			struct hid_field *field,
+			struct hid_usage *usage);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	int (*suspend)(struct hid_device *hdev, pm_message_t message);
 	int (*resume)(struct hid_device *hdev);
@@ -710,6 +858,12 @@ struct hid_driver {
  * @hidinput_input_event: event input event (e.g. ff or leds)
  * @parse: this method is called only once to parse the device data,
  *	   shouldn't allocate anything to not leak memory
+<<<<<<< HEAD
+=======
+ * @request: send report request to device (e.g. feature report)
+ * @wait: wait for buffered io to complete (send/recv reports)
+ * @idle: send idle request to device
+>>>>>>> refs/remotes/origin/master
  */
 struct hid_ll_driver {
 	int (*start)(struct hid_device *hdev);
@@ -724,6 +878,16 @@ struct hid_ll_driver {
 			unsigned int code, int value);
 
 	int (*parse)(struct hid_device *hdev);
+<<<<<<< HEAD
+=======
+
+	void (*request)(struct hid_device *hdev,
+			struct hid_report *report, int reqtype);
+
+	int (*wait)(struct hid_device *hdev);
+	int (*idle)(struct hid_device *hdev, int report, int idle, int reqtype);
+
+>>>>>>> refs/remotes/origin/master
 };
 
 #define	PM_HINT_FULLON	1<<5
@@ -737,25 +901,49 @@ struct hid_ll_driver {
 
 extern int hid_debug;
 
+<<<<<<< HEAD
+=======
+extern bool hid_ignore(struct hid_device *);
+>>>>>>> refs/remotes/origin/master
 extern int hid_add_device(struct hid_device *);
 extern void hid_destroy_device(struct hid_device *);
 
 extern int __must_check __hid_register_driver(struct hid_driver *,
 		struct module *, const char *mod_name);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int __must_check hid_register_driver(struct hid_driver *driver)
 {
 	return __hid_register_driver(driver, THIS_MODULE, KBUILD_MODNAME);
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* use a define to avoid include chaining to get THIS_MODULE & friends */
 #define hid_register_driver(driver) \
 	__hid_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 extern void hid_unregister_driver(struct hid_driver *);
 
+=======
+extern void hid_unregister_driver(struct hid_driver *);
+
+/**
+ * module_hid_driver() - Helper macro for registering a HID driver
+ * @__hid_driver: hid_driver struct
+ *
+ * Helper macro for HID drivers which do not do anything special in module
+ * init/exit. This eliminates a lot of boilerplate. Each module may only
+ * use this macro once, and calling it replaces module_init() and module_exit()
+ */
+#define module_hid_driver(__hid_driver) \
+	module_driver(__hid_driver, hid_register_driver, \
+		      hid_unregister_driver)
+
+>>>>>>> refs/remotes/origin/master
 extern void hidinput_hid_event(struct hid_device *, struct hid_field *, struct hid_usage *, __s32);
 extern void hidinput_report_event(struct hid_device *hid, struct hid_report *report);
 extern int hidinput_connect(struct hid_device *hid, unsigned int force);
@@ -765,11 +953,19 @@ int hid_set_field(struct hid_field *, unsigned, __s32);
 int hid_input_report(struct hid_device *, int type, u8 *, int, int);
 int hidinput_find_field(struct hid_device *hid, unsigned int type, unsigned int code, struct hid_field **field);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct hid_field *hidinput_get_led_field(struct hid_device *hid);
 unsigned int hidinput_count_leds(struct hid_device *hid);
 >>>>>>> refs/remotes/origin/cm-10.0
 void hid_output_report(struct hid_report *report, __u8 *data);
+=======
+struct hid_field *hidinput_get_led_field(struct hid_device *hid);
+unsigned int hidinput_count_leds(struct hid_device *hid);
+__s32 hidinput_calc_abs_res(const struct hid_field *field, __u16 code);
+void hid_output_report(struct hid_report *report, __u8 *data);
+u8 *hid_alloc_report_buf(struct hid_report *report, gfp_t flags);
+>>>>>>> refs/remotes/origin/master
 struct hid_device *hid_allocate_device(void);
 struct hid_report *hid_register_report(struct hid_device *device, unsigned type, unsigned id);
 int hid_parse_report(struct hid_device *hid, __u8 *start, unsigned size);
@@ -777,6 +973,7 @@ struct hid_report *hid_validate_values(struct hid_device *hid,
 				       unsigned int type, unsigned int id,
 				       unsigned int field_index,
 				       unsigned int report_counts);
+<<<<<<< HEAD
 int hid_check_keys_pressed(struct hid_device *hid);
 int hid_connect(struct hid_device *hid, unsigned int connect_mask);
 void hid_disconnect(struct hid_device *hid);
@@ -785,6 +982,53 @@ void hid_disconnect(struct hid_device *hid);
 const struct hid_device_id *hid_match_id(struct hid_device *hdev,
 					 const struct hid_device_id *id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hid_open_report(struct hid_device *device);
+int hid_check_keys_pressed(struct hid_device *hid);
+int hid_connect(struct hid_device *hid, unsigned int connect_mask);
+void hid_disconnect(struct hid_device *hid);
+const struct hid_device_id *hid_match_id(struct hid_device *hdev,
+					 const struct hid_device_id *id);
+s32 hid_snto32(__u32 value, unsigned n);
+
+/**
+ * hid_device_io_start - enable HID input during probe, remove
+ *
+ * @hid - the device
+ *
+ * This should only be called during probe or remove and only be
+ * called by the thread calling probe or remove. It will allow
+ * incoming packets to be delivered to the driver.
+ */
+static inline void hid_device_io_start(struct hid_device *hid) {
+	if (hid->io_started) {
+		dev_warn(&hid->dev, "io already started");
+		return;
+	}
+	hid->io_started = true;
+	up(&hid->driver_input_lock);
+}
+
+/**
+ * hid_device_io_stop - disable HID input during probe, remove
+ *
+ * @hid - the device
+ *
+ * Should only be called after hid_device_io_start. It will prevent
+ * incoming packets from going to the driver for the duration of
+ * probe, remove. If called during probe, packets will still go to the
+ * driver after probe is complete. This function should only be called
+ * by the thread calling probe or remove.
+ */
+static inline void hid_device_io_stop(struct hid_device *hid) {
+	if (!hid->io_started) {
+		dev_warn(&hid->dev, "io already stopped");
+		return;
+	}
+	hid->io_started = false;
+	down(&hid->driver_input_lock);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * hid_map_usage - map usage input bits
@@ -850,6 +1094,7 @@ static inline void hid_map_usage_clear(struct hid_input *hidinput,
  */
 static inline int __must_check hid_parse(struct hid_device *hdev)
 {
+<<<<<<< HEAD
 	int ret;
 
 	if (hdev->status & HID_STAT_PARSED)
@@ -860,6 +1105,9 @@ static inline int __must_check hid_parse(struct hid_device *hdev)
 		hdev->status |= HID_STAT_PARSED;
 
 	return ret;
+=======
+	return hid_open_report(hdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -941,17 +1189,68 @@ static inline int hid_hw_power(struct hid_device *hdev, int level)
 	return hdev->ll_driver->power ? hdev->ll_driver->power(hdev, level) : 0;
 }
 
+<<<<<<< HEAD
 void hid_report_raw_event(struct hid_device *hid, int type, u8 *data, int size,
 		int interrupt);
 
 extern int hid_generic_init(void);
 extern void hid_generic_exit(void);
+=======
+
+/**
+ * hid_hw_request - send report request to device
+ *
+ * @hdev: hid device
+ * @report: report to send
+ * @reqtype: hid request type
+ */
+static inline void hid_hw_request(struct hid_device *hdev,
+				  struct hid_report *report, int reqtype)
+{
+	if (hdev->ll_driver->request)
+		hdev->ll_driver->request(hdev, report, reqtype);
+}
+
+/**
+ * hid_hw_idle - send idle request to device
+ *
+ * @hdev: hid device
+ * @report: report to control
+ * @idle: idle state
+ * @reqtype: hid request type
+ */
+static inline int hid_hw_idle(struct hid_device *hdev, int report, int idle,
+		int reqtype)
+{
+	if (hdev->ll_driver->idle)
+		return hdev->ll_driver->idle(hdev, report, idle, reqtype);
+
+	return 0;
+}
+
+/**
+ * hid_hw_wait - wait for buffered io to complete
+ *
+ * @hdev: hid device
+ */
+static inline void hid_hw_wait(struct hid_device *hdev)
+{
+	if (hdev->ll_driver->wait)
+		hdev->ll_driver->wait(hdev);
+}
+
+int hid_report_raw_event(struct hid_device *hid, int type, u8 *data, int size,
+		int interrupt);
+>>>>>>> refs/remotes/origin/master
 
 /* HID quirks API */
 u32 usbhid_lookup_quirk(const u16 idVendor, const u16 idProduct);
 int usbhid_quirks_init(char **quirks_param);
 void usbhid_quirks_exit(void);
+<<<<<<< HEAD
 void usbhid_set_leds(struct hid_device *hid);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HID_PID
 int hid_pidff_init(struct hid_device *hid);
@@ -984,7 +1283,11 @@ do {									\
 #define hid_dbg(hid, fmt, arg...)			\
 	dev_dbg(&(hid)->dev, fmt, ##arg)
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #endif
 
+=======
+#endif
+>>>>>>> refs/remotes/origin/master

@@ -89,6 +89,13 @@ crit_transfer_to_handler:
 	mfspr	r0,SPRN_SRR1
 	stw	r0,_SRR1(r11)
 
+<<<<<<< HEAD
+=======
+	/* set the stack limit to the current stack
+	 * and set the limit to protect the thread_info
+	 * struct
+	 */
+>>>>>>> refs/remotes/origin/master
 	mfspr	r8,SPRN_SPRG_THREAD
 	lwz	r0,KSP_LIMIT(r8)
 	stw	r0,SAVED_KSP_LIMIT(r11)
@@ -109,6 +116,13 @@ crit_transfer_to_handler:
 	mfspr	r0,SPRN_SRR1
 	stw	r0,crit_srr1@l(0)
 
+<<<<<<< HEAD
+=======
+	/* set the stack limit to the current stack
+	 * and set the limit to protect the thread_info
+	 * struct
+	 */
+>>>>>>> refs/remotes/origin/master
 	mfspr	r8,SPRN_SPRG_THREAD
 	lwz	r0,KSP_LIMIT(r8)
 	stw	r0,saved_ksp_limit@l(0)
@@ -158,7 +172,11 @@ transfer_to_handler:
 	tophys(r11,r11)
 	addi	r11,r11,global_dbcr0@l
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 	rlwinm	r9,r1,0,0,(31-THREAD_SHIFT)
+=======
+	CURRENT_THREAD_INFO(r9, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r9,TI_CPU(r9)
 	slwi	r9,r9,3
 	add	r11,r11,r9
@@ -179,7 +197,11 @@ transfer_to_handler:
 	ble-	stack_ovf		/* then the kernel stack overflowed */
 5:
 #if defined(CONFIG_6xx) || defined(CONFIG_E500)
+<<<<<<< HEAD
 	rlwinm	r9,r1,0,0,31-THREAD_SHIFT
+=======
+	CURRENT_THREAD_INFO(r9, r1)
+>>>>>>> refs/remotes/origin/master
 	tophys(r9,r9)			/* check local flags */
 	lwz	r12,TI_LOCAL_FLAGS(r9)
 	mtcrf	0x01,r12
@@ -207,6 +229,7 @@ reenable_mmu:				/* re-enable mmu so we can */
 	beq	1f
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Save handler and return address into the 2 unused words
 	 * of the STACK_FRAME_OVERHEAD (sneak sneak sneak). Everything
 	 * else can be recovered from the pt_regs except r3 which for
@@ -227,6 +250,8 @@ reenable_mmu:				/* re-enable mmu so we can */
 	lwz	r9,8(r1)
 	lwz	r11,12(r1)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The trace_hardirqs_off will use CALLER_ADDR0 and CALLER_ADDR1.
 	 * If from user mode there is only one stack frame on the stack, and
@@ -247,6 +272,7 @@ reenable_mmu:				/* re-enable mmu so we can */
 	stw	r3,16(r1)
 	stw	r4,20(r1)
 	stw	r5,24(r1)
+<<<<<<< HEAD
 	andi.	r12,r12,MSR_PR
 	b	11f
 	bl	trace_hardirqs_off
@@ -254,6 +280,9 @@ reenable_mmu:				/* re-enable mmu so we can */
 11:
 	bl	trace_hardirqs_off
 12:
+=======
+	bl	trace_hardirqs_off
+>>>>>>> refs/remotes/origin/master
 	lwz	r5,24(r1)
 	lwz	r4,20(r1)
 	lwz	r3,16(r1)
@@ -264,7 +293,10 @@ reenable_mmu:				/* re-enable mmu so we can */
 	lwz	r6,GPR6(r1)
 	lwz	r7,GPR7(r1)
 	lwz	r8,GPR8(r1)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 1:	mtctr	r11
 	mtlr	r9
 	bctr				/* jump to handler */
@@ -355,7 +387,11 @@ _GLOBAL(DoSyscall)
 	mtmsr	r11
 1:
 #endif /* CONFIG_TRACE_IRQFLAGS */
+<<<<<<< HEAD
 	rlwinm	r10,r1,0,0,(31-THREAD_SHIFT)	/* current_thread_info() */
+=======
+	CURRENT_THREAD_INFO(r10, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r11,TI_FLAGS(r10)
 	andi.	r11,r11,_TIF_SYSCALL_T_OR_A
 	bne-	syscall_dotrace
@@ -376,7 +412,11 @@ ret_from_syscall:
 	bl	do_show_syscall_exit
 #endif
 	mr	r6,r3
+<<<<<<< HEAD
 	rlwinm	r12,r1,0,0,(31-THREAD_SHIFT)	/* current_thread_info() */
+=======
+	CURRENT_THREAD_INFO(r12, r1)
+>>>>>>> refs/remotes/origin/master
 	/* disable interrupts so current_thread_info()->flags can't change */
 	LOAD_MSR_KERNEL(r10,MSR_KERNEL)	/* doesn't include MSR_EE */
 	/* Note: We don't bother telling lockdep about it */
@@ -455,6 +495,20 @@ ret_from_fork:
 	li	r3,0
 	b	ret_from_syscall
 
+<<<<<<< HEAD
+=======
+	.globl	ret_from_kernel_thread
+ret_from_kernel_thread:
+	REST_NVGPRS(r1)
+	bl	schedule_tail
+	mtlr	r14
+	mr	r3,r15
+	PPC440EP_ERR42
+	blrl
+	li	r3,0
+	b	ret_from_syscall
+
+>>>>>>> refs/remotes/origin/master
 /* Traced system call support */
 syscall_dotrace:
 	SAVE_NVGPRS(r1)
@@ -837,7 +891,11 @@ ret_from_except:
 
 user_exc_return:		/* r10 contains MSR_KERNEL here */
 	/* Check current_thread_info()->flags */
+<<<<<<< HEAD
 	rlwinm	r9,r1,0,0,(31-THREAD_SHIFT)
+=======
+	CURRENT_THREAD_INFO(r9, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r9,TI_FLAGS(r9)
 	andi.	r0,r9,_TIF_USER_WORK_MASK
 	bne	do_work
@@ -851,11 +909,15 @@ restore_user:
 	bnel-	load_dbcr0
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_PREEMPT
+=======
+>>>>>>> refs/remotes/origin/master
 	b	restore
 
 /* N.B. the only way to get here is from the beq following ret_from_except. */
 resume_kernel:
+<<<<<<< HEAD
 	/* check current_thread_info->preempt_count */
 	rlwinm	r9,r1,0,0,(31-THREAD_SHIFT)
 	lwz	r0,TI_PREEMPT(r9)
@@ -864,6 +926,54 @@ resume_kernel:
 	lwz	r0,TI_FLAGS(r9)
 	andi.	r0,r0,_TIF_NEED_RESCHED
 	beq+	restore
+=======
+	/* check current_thread_info, _TIF_EMULATE_STACK_STORE */
+	CURRENT_THREAD_INFO(r9, r1)
+	lwz	r8,TI_FLAGS(r9)
+	andis.	r0,r8,_TIF_EMULATE_STACK_STORE@h
+	beq+	1f
+
+	addi	r8,r1,INT_FRAME_SIZE	/* Get the kprobed function entry */
+
+	lwz	r3,GPR1(r1)
+	subi	r3,r3,INT_FRAME_SIZE	/* dst: Allocate a trampoline exception frame */
+	mr	r4,r1			/* src:  current exception frame */
+	mr	r1,r3			/* Reroute the trampoline frame to r1 */
+
+	/* Copy from the original to the trampoline. */
+	li	r5,INT_FRAME_SIZE/4	/* size: INT_FRAME_SIZE */
+	li	r6,0			/* start offset: 0 */
+	mtctr	r5
+2:	lwzx	r0,r6,r4
+	stwx	r0,r6,r3
+	addi	r6,r6,4
+	bdnz	2b
+
+	/* Do real store operation to complete stwu */
+	lwz	r5,GPR1(r1)
+	stw	r8,0(r5)
+
+	/* Clear _TIF_EMULATE_STACK_STORE flag */
+	lis	r11,_TIF_EMULATE_STACK_STORE@h
+	addi	r5,r9,TI_FLAGS
+0:	lwarx	r8,0,r5
+	andc	r8,r8,r11
+#ifdef CONFIG_IBM405_ERR77
+	dcbt	0,r5
+#endif
+	stwcx.	r8,0,r5
+	bne-	0b
+1:
+
+#ifdef CONFIG_PREEMPT
+	/* check current_thread_info->preempt_count */
+	lwz	r0,TI_PREEMPT(r9)
+	cmpwi	0,r0,0		/* if non-zero, just restore regs and return */
+	bne	restore
+	andi.	r8,r8,_TIF_NEED_RESCHED
+	beq+	restore
+	lwz	r3,_MSR(r1)
+>>>>>>> refs/remotes/origin/master
 	andi.	r0,r3,MSR_EE	/* interrupts off? */
 	beq	restore		/* don't schedule if so */
 #ifdef CONFIG_TRACE_IRQFLAGS
@@ -874,7 +984,11 @@ resume_kernel:
 	bl	trace_hardirqs_off
 #endif
 1:	bl	preempt_schedule_irq
+<<<<<<< HEAD
 	rlwinm	r9,r1,0,0,(31-THREAD_SHIFT)
+=======
+	CURRENT_THREAD_INFO(r9, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r3,TI_FLAGS(r9)
 	andi.	r0,r3,_TIF_NEED_RESCHED
 	bne-	1b
@@ -884,8 +998,11 @@ resume_kernel:
 	 */
 	bl	trace_hardirqs_on
 #endif
+<<<<<<< HEAD
 #else
 resume_kernel:
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PREEMPT */
 
 	/* interrupts are hard-disabled at this point */
@@ -1144,7 +1261,11 @@ ret_from_debug_exc:
 	lwz	r10,SAVED_KSP_LIMIT(r1)
 	stw	r10,KSP_LIMIT(r9)
 	lwz	r9,THREAD_INFO-THREAD(r9)
+<<<<<<< HEAD
 	rlwinm	r10,r1,0,0,(31-THREAD_SHIFT)
+=======
+	CURRENT_THREAD_INFO(r10, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r10,TI_PREEMPT(r10)
 	stw	r10,TI_PREEMPT(r9)
 	RESTORE_xSRR(SRR0,SRR1);
@@ -1178,7 +1299,11 @@ load_dbcr0:
 	lis	r11,global_dbcr0@ha
 	addi	r11,r11,global_dbcr0@l
 #ifdef CONFIG_SMP
+<<<<<<< HEAD
 	rlwinm	r9,r1,0,0,(31-THREAD_SHIFT)
+=======
+	CURRENT_THREAD_INFO(r9, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r9,TI_CPU(r9)
 	slwi	r9,r9,3
 	add	r11,r11,r9
@@ -1219,7 +1344,11 @@ recheck:
 	LOAD_MSR_KERNEL(r10,MSR_KERNEL)
 	SYNC
 	MTMSRD(r10)		/* disable interrupts */
+<<<<<<< HEAD
 	rlwinm	r9,r1,0,0,(31-THREAD_SHIFT)
+=======
+	CURRENT_THREAD_INFO(r9, r1)
+>>>>>>> refs/remotes/origin/master
 	lwz	r9,TI_FLAGS(r9)
 	andi.	r0,r9,_TIF_NEED_RESCHED
 	bne-	do_resched
@@ -1239,10 +1368,14 @@ do_user_signal:			/* r10 contains MSR_KERNEL here */
 2:	addi	r3,r1,STACK_FRAME_OVERHEAD
 	mr	r4,r9
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bl	do_signal
 =======
 	bl	do_notify_resume
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bl	do_notify_resume
+>>>>>>> refs/remotes/origin/master
 	REST_NVGPRS(r1)
 	b	recheck
 

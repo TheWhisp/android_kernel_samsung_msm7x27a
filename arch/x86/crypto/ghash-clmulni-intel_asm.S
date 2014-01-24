@@ -94,6 +94,10 @@ __clmul_gf128mul_ble:
 	pxor T2, T1
 	pxor T1, DATA
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(__clmul_gf128mul_ble)
+>>>>>>> refs/remotes/origin/master
 
 /* void clmul_ghash_mul(char *dst, const be128 *shash) */
 ENTRY(clmul_ghash_mul)
@@ -105,6 +109,10 @@ ENTRY(clmul_ghash_mul)
 	PSHUFB_XMM BSWAP DATA
 	movups DATA, (%rdi)
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(clmul_ghash_mul)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * void clmul_ghash_update(char *dst, const char *src, unsigned int srclen,
@@ -131,6 +139,10 @@ ENTRY(clmul_ghash_update)
 	movups DATA, (%rdi)
 .Lupdate_just_ret:
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(clmul_ghash_update)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * void clmul_ghash_setkey(be128 *shash, const u8 *key);
@@ -155,3 +167,7 @@ ENTRY(clmul_ghash_setkey)
 	pxor %xmm1, %xmm0
 	movups %xmm0, (%rdi)
 	ret
+<<<<<<< HEAD
+=======
+ENDPROC(clmul_ghash_setkey)
+>>>>>>> refs/remotes/origin/master

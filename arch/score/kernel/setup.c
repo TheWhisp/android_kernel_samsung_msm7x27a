@@ -27,9 +27,13 @@
 #include <linux/initrd.h>
 #include <linux/ioport.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/memblock.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mm.h>
 #include <linux/seq_file.h>
 #include <linux/screen_info.h>
@@ -59,11 +63,16 @@ static void __init bootmem_init(void)
 	bootmap_size = init_bootmem_node(NODE_DATA(0), start_pfn,
 					 min_low_pfn, max_low_pfn);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	add_active_range(0, min_low_pfn, max_low_pfn);
 =======
 	memblock_add_node(PFN_PHYS(min_low_pfn),
 			  PFN_PHYS(max_low_pfn - min_low_pfn), 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_add_node(PFN_PHYS(min_low_pfn),
+			  PFN_PHYS(max_low_pfn - min_low_pfn), 0);
+>>>>>>> refs/remotes/origin/master
 
 	free_bootmem(PFN_PHYS(start_pfn),
 		     (max_low_pfn - start_pfn) << PAGE_SHIFT);

@@ -27,14 +27,22 @@
 
 #include <linux/delay.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_irq.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "core.h"
 #include <asm/dcr-regs.h>
 
 static int mal_count;
 
+<<<<<<< HEAD
 int __devinit mal_register_commac(struct mal_instance	*mal,
 				  struct mal_commac	*commac)
+=======
+int mal_register_commac(struct mal_instance *mal, struct mal_commac *commac)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 
@@ -264,7 +272,13 @@ static inline void mal_schedule_poll(struct mal_instance *mal)
 {
 	if (likely(napi_schedule_prep(&mal->napi))) {
 		MAL_DBG2(mal, "schedule_poll" NL);
+<<<<<<< HEAD
 		mal_disable_eob_irq(mal);
+=======
+		spin_lock(&mal->lock);
+		mal_disable_eob_irq(mal);
+		spin_unlock(&mal->lock);
+>>>>>>> refs/remotes/origin/master
 		__napi_schedule(&mal->napi);
 	} else
 		MAL_DBG2(mal, "already in poll" NL);
@@ -443,6 +457,7 @@ static int mal_poll(struct napi_struct *napi, int budget)
 		if (unlikely(mc->ops->peek_rx(mc->dev) ||
 			     test_bit(MAL_COMMAC_RX_STOPPED, &mc->flags))) {
 			MAL_DBG2(mal, "rotting packet" NL);
+<<<<<<< HEAD
 			if (napi_reschedule(napi))
 				mal_disable_eob_irq(mal);
 			else
@@ -452,6 +467,15 @@ static int mal_poll(struct napi_struct *napi, int budget)
 				goto again;
 			else
 				goto more_work;
+=======
+			if (!napi_reschedule(napi))
+				goto more_work;
+
+			spin_lock_irqsave(&mal->lock, flags);
+			mal_disable_eob_irq(mal);
+			spin_unlock_irqrestore(&mal->lock, flags);
+			goto again;
+>>>>>>> refs/remotes/origin/master
 		}
 		mc->ops->poll_tx(mc->dev);
 	}
@@ -517,7 +541,11 @@ void *mal_dump_regs(struct mal_instance *mal, void *buf)
 	return regs + 1;
 }
 
+<<<<<<< HEAD
 static int __devinit mal_probe(struct platform_device *ofdev)
+=======
+static int mal_probe(struct platform_device *ofdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mal_instance *mal;
 	int err = 0, i, bd_size;
@@ -529,12 +557,18 @@ static int __devinit mal_probe(struct platform_device *ofdev)
 	irq_handler_t hdlr_serr, hdlr_txde, hdlr_rxde;
 
 	mal = kzalloc(sizeof(struct mal_instance), GFP_KERNEL);
+<<<<<<< HEAD
 	if (!mal) {
 		printk(KERN_ERR
 		       "mal%d: out of memory allocating MAL structure!\n",
 		       index);
 		return -ENOMEM;
 	}
+=======
+	if (!mal)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	mal->index = index;
 	mal->ofdev = ofdev;
 	mal->version = of_device_is_compatible(ofdev->dev.of_node, "ibm,mcmal2") ? 2 : 1;
@@ -641,6 +675,7 @@ static int __devinit mal_probe(struct platform_device *ofdev)
 	bd_size = sizeof(struct mal_descriptor) *
 		(NUM_TX_BUFF * mal->num_tx_chans +
 		 NUM_RX_BUFF * mal->num_rx_chans);
+<<<<<<< HEAD
 	mal->bd_virt =
 		dma_alloc_coherent(&ofdev->dev, bd_size, &mal->bd_dma,
 				   GFP_KERNEL);
@@ -652,6 +687,14 @@ static int __devinit mal_probe(struct platform_device *ofdev)
 		goto fail_unmap;
 	}
 	memset(mal->bd_virt, 0, bd_size);
+=======
+	mal->bd_virt = dma_zalloc_coherent(&ofdev->dev, bd_size, &mal->bd_dma,
+					   GFP_KERNEL);
+	if (mal->bd_virt == NULL) {
+		err = -ENOMEM;
+		goto fail_unmap;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < mal->num_tx_chans; ++i)
 		set_mal_dcrn(mal, MAL_TXCTPR(i), mal->bd_dma +
@@ -705,7 +748,11 @@ static int __devinit mal_probe(struct platform_device *ofdev)
 
 	/* Advertise this instance to the rest of the world */
 	wmb();
+<<<<<<< HEAD
 	dev_set_drvdata(&ofdev->dev, mal);
+=======
+	platform_set_drvdata(ofdev, mal);
+>>>>>>> refs/remotes/origin/master
 
 	mal_dbg_register(mal);
 
@@ -729,15 +776,22 @@ static int __devinit mal_probe(struct platform_device *ofdev)
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit mal_remove(struct platform_device *ofdev)
 {
 	struct mal_instance *mal = dev_get_drvdata(&ofdev->dev);
+=======
+static int mal_remove(struct platform_device *ofdev)
+{
+	struct mal_instance *mal = platform_get_drvdata(ofdev);
+>>>>>>> refs/remotes/origin/master
 
 	MAL_DBG(mal, "remove" NL);
 
 	/* Synchronize with scheduled polling */
 	napi_disable(&mal->napi);
 
+<<<<<<< HEAD
 	if (!list_empty(&mal->list)) {
 		/* This is *very* bad */
 		printk(KERN_EMERG
@@ -747,6 +801,13 @@ static int __devexit mal_remove(struct platform_device *ofdev)
 	}
 
 	dev_set_drvdata(&ofdev->dev, NULL);
+=======
+	if (!list_empty(&mal->list))
+		/* This is *very* bad */
+		WARN(1, KERN_EMERG
+		       "mal%d: commac list is not empty on remove!\n",
+		       mal->index);
+>>>>>>> refs/remotes/origin/master
 
 	free_irq(mal->serr_irq, mal);
 	free_irq(mal->txde_irq, mal);

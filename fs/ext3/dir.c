@@ -22,6 +22,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/fs.h>
 #include <linux/jbd.h>
 #include <linux/ext3_fs.h>
@@ -32,11 +33,16 @@
 #include <linux/compat.h>
 #include "ext3.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/compat.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 
 static unsigned char ext3_filetype_table[] = {
 	DT_UNKNOWN, DT_REG, DT_DIR, DT_CHR, DT_BLK, DT_FIFO, DT_SOCK, DT_LNK
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int ext3_readdir(struct file *, void *, filldir_t);
 static int ext3_dx_readdir(struct file * filp,
@@ -60,6 +66,9 @@ const struct file_operations ext3_dir_operations = {
 static int ext3_dx_readdir(struct file * filp,
 			   void * dirent, filldir_t filldir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int ext3_dx_readdir(struct file *, struct dir_context *);
+>>>>>>> refs/remotes/origin/master
 
 static unsigned char get_dtype(struct super_block *sb, int filetype)
 {
@@ -71,10 +80,16 @@ static unsigned char get_dtype(struct super_block *sb, int filetype)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * Check if the given dir-inode refers to an htree-indexed directory
  * (or a directory which chould potentially get coverted to use htree
+=======
+/**
+ * Check if the given dir-inode refers to an htree-indexed directory
+ * (or a directory which could potentially get converted to use htree
+>>>>>>> refs/remotes/origin/master
  * indexing).
  *
  * Return 1 if it is a dx dir, 0 if not
@@ -91,7 +106,10 @@ static int is_dx_dir(struct inode *inode)
 
 	return 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int ext3_check_dir_entry (const char * function, struct inode * dir,
 			  struct ext3_dir_entry_2 * de,
@@ -124,6 +142,7 @@ int ext3_check_dir_entry (const char * function, struct inode * dir,
 	return error_msg == NULL ? 1 : 0;
 }
 
+<<<<<<< HEAD
 static int ext3_readdir(struct file * filp,
 			 void * dirent, filldir_t filldir)
 {
@@ -158,10 +177,27 @@ static int ext3_readdir(struct file * filp,
 			ret = err;
 			goto out;
 		}
+=======
+static int ext3_readdir(struct file *file, struct dir_context *ctx)
+{
+	unsigned long offset;
+	int i;
+	struct ext3_dir_entry_2 *de;
+	int err;
+	struct inode *inode = file_inode(file);
+	struct super_block *sb = inode->i_sb;
+	int dir_has_error = 0;
+
+	if (is_dx_dir(inode)) {
+		err = ext3_dx_readdir(file, ctx);
+		if (err != ERR_BAD_DX_DIR)
+			return err;
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We don't set the inode dirty flag since it's not
 		 * critical that it get flushed back to the disk.
 		 */
+<<<<<<< HEAD
 		EXT3_I(filp->f_path.dentry->d_inode)->i_flags &= ~EXT3_INDEX_FL;
 	}
 	stored = 0;
@@ -169,6 +205,14 @@ static int ext3_readdir(struct file * filp,
 
 	while (!error && !stored && filp->f_pos < inode->i_size) {
 		unsigned long blk = filp->f_pos >> EXT3_BLOCK_SIZE_BITS(sb);
+=======
+		EXT3_I(inode)->i_flags &= ~EXT3_INDEX_FL;
+	}
+	offset = ctx->pos & (sb->s_blocksize - 1);
+
+	while (ctx->pos < inode->i_size) {
+		unsigned long blk = ctx->pos >> EXT3_BLOCK_SIZE_BITS(sb);
+>>>>>>> refs/remotes/origin/master
 		struct buffer_head map_bh;
 		struct buffer_head *bh = NULL;
 
@@ -177,12 +221,21 @@ static int ext3_readdir(struct file * filp,
 		if (err > 0) {
 			pgoff_t index = map_bh.b_blocknr >>
 					(PAGE_CACHE_SHIFT - inode->i_blkbits);
+<<<<<<< HEAD
 			if (!ra_has_index(&filp->f_ra, index))
 				page_cache_sync_readahead(
 					sb->s_bdev->bd_inode->i_mapping,
 					&filp->f_ra, filp,
 					index, 1);
 			filp->f_ra.prev_pos = (loff_t)index << PAGE_CACHE_SHIFT;
+=======
+			if (!ra_has_index(&file->f_ra, index))
+				page_cache_sync_readahead(
+					sb->s_bdev->bd_inode->i_mapping,
+					&file->f_ra, file,
+					index, 1);
+			file->f_ra.prev_pos = (loff_t)index << PAGE_CACHE_SHIFT;
+>>>>>>> refs/remotes/origin/master
 			bh = ext3_bread(NULL, inode, blk, 0, &err);
 		}
 
@@ -194,6 +247,7 @@ static int ext3_readdir(struct file * filp,
 			if (!dir_has_error) {
 				ext3_error(sb, __func__, "directory #%lu "
 					"contains a hole at offset %lld",
+<<<<<<< HEAD
 					inode->i_ino, filp->f_pos);
 				dir_has_error = 1;
 			}
@@ -205,11 +259,27 @@ static int ext3_readdir(struct file * filp,
 		}
 
 revalidate:
+=======
+					inode->i_ino, ctx->pos);
+				dir_has_error = 1;
+			}
+			/* corrupt size?  Maybe no more blocks to read */
+			if (ctx->pos > inode->i_blocks << 9)
+				break;
+			ctx->pos += sb->s_blocksize - offset;
+			continue;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		/* If the dir block has changed since the last call to
 		 * readdir(2), then we might be pointing to an invalid
 		 * dirent right now.  Scan from the start of the block
 		 * to make sure. */
+<<<<<<< HEAD
 		if (filp->f_version != inode->i_version) {
+=======
+		if (offset && file->f_version != inode->i_version) {
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < sb->s_blocksize && i < offset; ) {
 				de = (struct ext3_dir_entry_2 *)
 					(bh->b_data + i);
@@ -225,16 +295,26 @@ revalidate:
 				i += ext3_rec_len_from_disk(de->rec_len);
 			}
 			offset = i;
+<<<<<<< HEAD
 			filp->f_pos = (filp->f_pos & ~(sb->s_blocksize - 1))
 				| offset;
 			filp->f_version = inode->i_version;
 		}
 
 		while (!error && filp->f_pos < inode->i_size
+=======
+			ctx->pos = (ctx->pos & ~(sb->s_blocksize - 1))
+				| offset;
+			file->f_version = inode->i_version;
+		}
+
+		while (ctx->pos < inode->i_size
+>>>>>>> refs/remotes/origin/master
 		       && offset < sb->s_blocksize) {
 			de = (struct ext3_dir_entry_2 *) (bh->b_data + offset);
 			if (!ext3_check_dir_entry ("ext3_readdir", inode, de,
 						   bh, offset)) {
+<<<<<<< HEAD
 				/* On error, skip the f_pos to the
                                    next block. */
 				filp->f_pos = (filp->f_pos |
@@ -292,6 +372,34 @@ out:
 #define pos2maj_hash(pos)	((pos << 1) & 0xffffffff)
 #define pos2min_hash(pos)	(0)
 =======
+=======
+				/* On error, skip the to the
+                                   next block. */
+				ctx->pos = (ctx->pos |
+						(sb->s_blocksize - 1)) + 1;
+				break;
+			}
+			offset += ext3_rec_len_from_disk(de->rec_len);
+			if (le32_to_cpu(de->inode)) {
+				if (!dir_emit(ctx, de->name, de->name_len,
+					      le32_to_cpu(de->inode),
+					      get_dtype(sb, de->file_type))) {
+					brelse(bh);
+					return 0;
+				}
+			}
+			ctx->pos += ext3_rec_len_from_disk(de->rec_len);
+		}
+		offset = 0;
+		brelse (bh);
+		if (ctx->pos < inode->i_size)
+			if (!dir_relax(inode))
+				return 0;
+	}
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline int is_32bit_api(void)
 {
 #ifdef CONFIG_COMPAT
@@ -362,6 +470,7 @@ static inline loff_t ext3_get_htree_eof(struct file *filp)
  * NOTE: offsets obtained *before* ext3_set_inode_flag(dir, EXT3_INODE_INDEX)
  *       will be invalid once the directory was converted into a dx directory
  */
+<<<<<<< HEAD
 loff_t ext3_dir_llseek(struct file *file, loff_t offset, int origin)
 {
 	struct inode *inode = file->f_mapping->host;
@@ -374,6 +483,20 @@ loff_t ext3_dir_llseek(struct file *file, loff_t offset, int origin)
 		return generic_file_llseek(file, offset, origin);
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+loff_t ext3_dir_llseek(struct file *file, loff_t offset, int whence)
+{
+	struct inode *inode = file->f_mapping->host;
+	int dx_dir = is_dx_dir(inode);
+	loff_t htree_max = ext3_get_htree_eof(file);
+
+	if (likely(dx_dir))
+		return generic_file_llseek_size(file, offset, whence,
+					        htree_max, htree_max);
+	else
+		return generic_file_llseek(file, offset, whence);
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This structure holds the nodes of the red-black tree used to store
@@ -435,11 +558,16 @@ static void free_rb_tree_fname(struct rb_root *root)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct dir_private_info *ext3_htree_create_dir_info(loff_t pos)
 =======
 static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
 							   loff_t pos)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
+							   loff_t pos)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dir_private_info *p;
 
@@ -447,12 +575,17 @@ static struct dir_private_info *ext3_htree_create_dir_info(struct file *filp,
 	if (!p)
 		return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	p->curr_hash = pos2maj_hash(pos);
 	p->curr_minor_hash = pos2min_hash(pos);
 =======
 	p->curr_hash = pos2maj_hash(filp, pos);
 	p->curr_minor_hash = pos2min_hash(filp, pos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p->curr_hash = pos2maj_hash(filp, pos);
+	p->curr_minor_hash = pos2min_hash(filp, pos);
+>>>>>>> refs/remotes/origin/master
 	return p;
 }
 
@@ -527,6 +660,7 @@ int ext3_htree_store_dirent(struct file *dir_file, __u32 hash,
  * for all entres on the fname linked list.  (Normally there is only
  * one entry on the linked list, unless there are 62 bit hash collisions.)
  */
+<<<<<<< HEAD
 static int call_filldir(struct file * filp, void * dirent,
 			filldir_t filldir, struct fname *fname)
 {
@@ -567,10 +701,41 @@ static int ext3_dx_readdir(struct file * filp,
 {
 	struct dir_private_info *info = filp->private_data;
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+static bool call_filldir(struct file *file, struct dir_context *ctx,
+			struct fname *fname)
+{
+	struct dir_private_info *info = file->private_data;
+	struct inode *inode = file_inode(file);
+	struct super_block *sb = inode->i_sb;
+
+	if (!fname) {
+		printk("call_filldir: called with null fname?!?\n");
+		return true;
+	}
+	ctx->pos = hash2pos(file, fname->hash, fname->minor_hash);
+	while (fname) {
+		if (!dir_emit(ctx, fname->name, fname->name_len,
+				fname->inode,
+				get_dtype(sb, fname->file_type))) {
+			info->extra_fname = fname;
+			return false;
+		}
+		fname = fname->next;
+	}
+	return true;
+}
+
+static int ext3_dx_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct dir_private_info *info = file->private_data;
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	struct fname *fname;
 	int	ret;
 
 	if (!info) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		info = ext3_htree_create_dir_info(filp->f_pos);
 =======
@@ -600,6 +765,24 @@ static int ext3_dx_readdir(struct file * filp,
 		info->curr_hash = pos2maj_hash(filp, filp->f_pos);
 		info->curr_minor_hash = pos2min_hash(filp, filp->f_pos);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		info = ext3_htree_create_dir_info(file, ctx->pos);
+		if (!info)
+			return -ENOMEM;
+		file->private_data = info;
+	}
+
+	if (ctx->pos == ext3_get_htree_eof(file))
+		return 0;	/* EOF */
+
+	/* Some one has messed with f_pos; reset the world */
+	if (info->last_pos != ctx->pos) {
+		free_rb_tree_fname(&info->root);
+		info->curr_node = NULL;
+		info->extra_fname = NULL;
+		info->curr_hash = pos2maj_hash(file, ctx->pos);
+		info->curr_minor_hash = pos2min_hash(file, ctx->pos);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -607,7 +790,11 @@ static int ext3_dx_readdir(struct file * filp,
 	 * chain, return them first.
 	 */
 	if (info->extra_fname) {
+<<<<<<< HEAD
 		if (call_filldir(filp, dirent, filldir, info->extra_fname))
+=======
+		if (!call_filldir(file, ctx, info->extra_fname))
+>>>>>>> refs/remotes/origin/master
 			goto finished;
 		info->extra_fname = NULL;
 		goto next_node;
@@ -621,21 +808,33 @@ static int ext3_dx_readdir(struct file * filp,
 		 * cached entries.
 		 */
 		if ((!info->curr_node) ||
+<<<<<<< HEAD
 		    (filp->f_version != inode->i_version)) {
 			info->curr_node = NULL;
 			free_rb_tree_fname(&info->root);
 			filp->f_version = inode->i_version;
 			ret = ext3_htree_fill_tree(filp, info->curr_hash,
+=======
+		    (file->f_version != inode->i_version)) {
+			info->curr_node = NULL;
+			free_rb_tree_fname(&info->root);
+			file->f_version = inode->i_version;
+			ret = ext3_htree_fill_tree(file, info->curr_hash,
+>>>>>>> refs/remotes/origin/master
 						   info->curr_minor_hash,
 						   &info->next_hash);
 			if (ret < 0)
 				return ret;
 			if (ret == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = EXT3_HTREE_EOF;
 =======
 				filp->f_pos = ext3_get_htree_eof(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ctx->pos = ext3_get_htree_eof(file);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			info->curr_node = rb_first(&info->root);
@@ -644,7 +843,11 @@ static int ext3_dx_readdir(struct file * filp,
 		fname = rb_entry(info->curr_node, struct fname, rb_hash);
 		info->curr_hash = fname->hash;
 		info->curr_minor_hash = fname->minor_hash;
+<<<<<<< HEAD
 		if (call_filldir(filp, dirent, filldir, fname))
+=======
+		if (!call_filldir(file, ctx, fname))
+>>>>>>> refs/remotes/origin/master
 			break;
 	next_node:
 		info->curr_node = rb_next(info->curr_node);
@@ -656,10 +859,14 @@ static int ext3_dx_readdir(struct file * filp,
 		} else {
 			if (info->next_hash == ~0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				filp->f_pos = EXT3_HTREE_EOF;
 =======
 				filp->f_pos = ext3_get_htree_eof(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ctx->pos = ext3_get_htree_eof(file);
+>>>>>>> refs/remotes/origin/master
 				break;
 			}
 			info->curr_hash = info->next_hash;
@@ -667,7 +874,11 @@ static int ext3_dx_readdir(struct file * filp,
 		}
 	}
 finished:
+<<<<<<< HEAD
 	info->last_pos = filp->f_pos;
+=======
+	info->last_pos = ctx->pos;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -679,12 +890,19 @@ static int ext3_release_dir (struct inode * inode, struct file * filp)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 const struct file_operations ext3_dir_operations = {
 	.llseek		= ext3_dir_llseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= ext3_readdir,
+=======
+	.iterate	= ext3_readdir,
+>>>>>>> refs/remotes/origin/master
 	.unlocked_ioctl = ext3_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl	= ext3_compat_ioctl,
@@ -692,4 +910,7 @@ const struct file_operations ext3_dir_operations = {
 	.fsync		= ext3_sync_file,
 	.release	= ext3_release_dir,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

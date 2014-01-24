@@ -141,6 +141,7 @@
 #define	SWITCH_MODE_ERR	  0x06
 #define	SWITCH_PASS	  0x07
 
+<<<<<<< HEAD
 #ifdef SUPPORT_SD_LOCK
 /* CMD42 Parameter */
 #define SD_ERASE		0x08
@@ -164,6 +165,8 @@
 /* SD_RW FAIL status */
 #define SD_RW_FORBIDDEN		0x0F	/* read/write is forbidden (SD card)  */
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 /* Function Group Definition */
 /* Function Group 1 */
 #define	HS_SUPPORT			0x01
@@ -279,6 +282,7 @@ struct timing_phase_path {
 	int len;
 };
 
+<<<<<<< HEAD
 int sd_select_card(struct rts51x_chip *chip, int select);
 int reset_sd_card(struct rts51x_chip *chip);
 int sd_switch_clock(struct rts51x_chip *chip);
@@ -292,6 +296,15 @@ int release_sd_card(struct rts51x_chip *chip);
 #ifdef SUPPORT_SD_LOCK
 int sd_update_lock_status(struct rts51x_chip *chip);
 #endif
+=======
+int rts51x_sd_select_card(struct rts51x_chip *chip, int select);
+int rts51x_reset_sd_card(struct rts51x_chip *chip);
+int rts51x_sd_switch_clock(struct rts51x_chip *chip);
+int rts51x_sd_rw(struct scsi_cmnd *srb, struct rts51x_chip *chip, u32 start_sector,
+	  u16 sector_cnt);
+void rts51x_sd_cleanup_work(struct rts51x_chip *chip);
+int rts51x_release_sd_card(struct rts51x_chip *chip);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef SUPPORT_CPRM
 extern int reset_sd(struct rts51x_chip *chip);

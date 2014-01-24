@@ -45,13 +45,17 @@
 #include "desc.h"
 #include "device.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Definitions -------------------------*/
+=======
+>>>>>>> refs/remotes/origin/master
 //endpoint def
 //endpoint 0: control
 //endpoint 1: interrupt
 //endpoint 2: read bulk
 //endpoint 3: write bulk
 
+<<<<<<< HEAD
 //RequestType:
 //#define REQUEST_OUT       (USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE) // 0x40
 //#define REQUEST_IN        (USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE )  //0xc0
@@ -59,12 +63,18 @@
 static int          msglevel                =MSG_LEVEL_INFO;
 
 
+=======
+//static int          msglevel                =MSG_LEVEL_DEBUG;
+static int          msglevel                =MSG_LEVEL_INFO;
+
+>>>>>>> refs/remotes/origin/master
 #define USB_CTL_WAIT   500 //ms
 
 #ifndef URB_ASYNC_UNLINK
 #define URB_ASYNC_UNLINK    0
 #endif
 
+<<<<<<< HEAD
 /*---------------------  Static Classes  ----------------------------*/
 
 /*---------------------  Static Variables  --------------------------*/
@@ -115,6 +125,16 @@ int PIPEnsControlOutAsyn(
      WORD         wLength,
      PBYTE        pbyBuffer
     )
+=======
+static void s_nsInterruptUsbIoCompleteRead(struct urb *urb);
+static void s_nsBulkInUsbIoCompleteRead(struct urb *urb);
+static void s_nsBulkOutIoCompleteWrite(struct urb *urb);
+static void s_nsControlInUsbIoCompleteRead(struct urb *urb);
+static void s_nsControlInUsbIoCompleteWrite(struct urb *urb);
+
+int PIPEnsControlOutAsyn(struct vnt_private *pDevice, u8 byRequest,
+	u16 wValue, u16 wIndex, u16 wLength, u8 *pbyBuffer)
+>>>>>>> refs/remotes/origin/master
 {
 	int ntStatus;
 
@@ -150,6 +170,7 @@ int PIPEnsControlOutAsyn(
     return ntStatus;
 }
 
+<<<<<<< HEAD
 int PIPEnsControlOut(
      PSDevice     pDevice,
      BYTE         byRequest,
@@ -161,6 +182,13 @@ int PIPEnsControlOut(
 {
 	int ntStatus = 0;
     int ii;
+=======
+int PIPEnsControlOut(struct vnt_private *pDevice, u8 byRequest, u16 wValue,
+		u16 wIndex, u16 wLength, u8 *pbyBuffer)
+{
+	int ntStatus = 0;
+	int ii;
+>>>>>>> refs/remotes/origin/master
 
     if (pDevice->Flags & fMP_DISCONNECTED)
         return STATUS_FAILURE;
@@ -171,6 +199,12 @@ int PIPEnsControlOut(
 	if (pDevice->Flags & fMP_CONTROL_READS)
 		return STATUS_FAILURE;
 
+<<<<<<< HEAD
+=======
+	if (pDevice->pControlURB->hcpriv)
+		return STATUS_FAILURE;
+
+>>>>>>> refs/remotes/origin/master
 	MP_SET_FLAG(pDevice, fMP_CONTROL_WRITES);
 
 	pDevice->sUsbCtlRequest.bRequestType = 0x40;
@@ -215,6 +249,7 @@ int PIPEnsControlOut(
     return STATUS_SUCCESS;
 }
 
+<<<<<<< HEAD
 int PIPEnsControlIn(
      PSDevice     pDevice,
      BYTE         byRequest,
@@ -226,6 +261,13 @@ int PIPEnsControlIn(
 {
 	int ntStatus = 0;
     int ii;
+=======
+int PIPEnsControlIn(struct vnt_private *pDevice, u8 byRequest, u16 wValue,
+	u16 wIndex, u16 wLength,  u8 *pbyBuffer)
+{
+	int ntStatus = 0;
+	int ii;
+>>>>>>> refs/remotes/origin/master
 
     if (pDevice->Flags & fMP_DISCONNECTED)
         return STATUS_FAILURE;
@@ -236,6 +278,12 @@ int PIPEnsControlIn(
 	if (pDevice->Flags & fMP_CONTROL_WRITES)
 		return STATUS_FAILURE;
 
+<<<<<<< HEAD
+=======
+	if (pDevice->pControlURB->hcpriv)
+		return STATUS_FAILURE;
+
+>>>>>>> refs/remotes/origin/master
 	MP_SET_FLAG(pDevice, fMP_CONTROL_READS);
 
 	pDevice->sUsbCtlRequest.bRequestType = 0xC0;
@@ -278,6 +326,7 @@ int PIPEnsControlIn(
     return ntStatus;
 }
 
+<<<<<<< HEAD
 static
 void
 s_nsControlInUsbIoCompleteWrite(
@@ -285,6 +334,11 @@ s_nsControlInUsbIoCompleteWrite(
     )
 {
     PSDevice        pDevice;
+=======
+static void s_nsControlInUsbIoCompleteWrite(struct urb *urb)
+{
+	struct vnt_private *pDevice = (struct vnt_private *)urb->context;
+>>>>>>> refs/remotes/origin/master
 
 	pDevice = urb->context;
 	switch (urb->status) {
@@ -303,8 +357,11 @@ s_nsControlInUsbIoCompleteWrite(
     MP_CLEAR_FLAG(pDevice, fMP_CONTROL_WRITES);
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description:
  *      Complete function of usb Control callback
@@ -319,6 +376,7 @@ s_nsControlInUsbIoCompleteWrite(
  * Return Value: STATUS_INSUFFICIENT_RESOURCES or result of IoCallDriver
  *
  */
+<<<<<<< HEAD
 static
 void
 s_nsControlInUsbIoCompleteRead(
@@ -328,6 +386,13 @@ s_nsControlInUsbIoCompleteRead(
     PSDevice        pDevice;
 
 	pDevice = urb->context;
+=======
+
+static void s_nsControlInUsbIoCompleteRead(struct urb *urb)
+{
+	struct vnt_private *pDevice = (struct vnt_private *)urb->context;
+
+>>>>>>> refs/remotes/origin/master
 	switch (urb->status) {
 	case 0:
 		break;
@@ -344,9 +409,12 @@ s_nsControlInUsbIoCompleteRead(
     MP_CLEAR_FLAG(pDevice, fMP_CONTROL_READS);
 }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description:
  *      Allocates an usb interrupt in irp and calls USBD.
@@ -360,6 +428,7 @@ s_nsControlInUsbIoCompleteRead(
  * Return Value: STATUS_INSUFFICIENT_RESOURCES or result of IoCallDriver
  *
  */
+<<<<<<< HEAD
 int PIPEnsInterruptRead(PSDevice pDevice)
 {
     int ntStatus = STATUS_FAILURE;
@@ -371,6 +440,20 @@ int PIPEnsInterruptRead(PSDevice pDevice)
     }
     pDevice->intBuf.bInUse = TRUE;
 //    pDevice->bEventAvailable = FALSE;
+=======
+
+int PIPEnsInterruptRead(struct vnt_private *pDevice)
+{
+	int ntStatus = STATUS_FAILURE;
+
+    DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"---->s_nsStartInterruptUsbRead()\n");
+
+    if(pDevice->intBuf.bInUse == true){
+        return (STATUS_FAILURE);
+    }
+    pDevice->intBuf.bInUse = true;
+//    pDevice->bEventAvailable = false;
+>>>>>>> refs/remotes/origin/master
     pDevice->ulIntInPosted++;
 
     //
@@ -396,7 +479,10 @@ usb_fill_bulk_urb(pDevice->pInterruptURB,
     return ntStatus;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description:
  *      Complete function of usb interrupt in irp.
@@ -411,6 +497,7 @@ usb_fill_bulk_urb(pDevice->pInterruptURB,
  * Return Value: STATUS_INSUFFICIENT_RESOURCES or result of IoCallDriver
  *
  */
+<<<<<<< HEAD
 static
 void
 s_nsInterruptUsbIoCompleteRead(
@@ -420,12 +507,22 @@ s_nsInterruptUsbIoCompleteRead(
 {
     PSDevice        pDevice;
     int ntStatus;
+=======
+
+static void s_nsInterruptUsbIoCompleteRead(struct urb *urb)
+{
+	struct vnt_private *pDevice = (struct vnt_private *)urb->context;
+	int ntStatus;
+>>>>>>> refs/remotes/origin/master
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"---->s_nsInterruptUsbIoCompleteRead\n");
     //
     // The context given to IoSetCompletionRoutine is the receive buffer object
     //
+<<<<<<< HEAD
     pDevice = (PSDevice)urb->context;
+=======
+>>>>>>> refs/remotes/origin/master
 
     //
     // We have a number of cases:
@@ -443,7 +540,11 @@ s_nsInterruptUsbIoCompleteRead(
     // otherwise interrupt data handler will free int buffer after it handle it.
     if (( ntStatus != STATUS_SUCCESS )) {
         pDevice->ulBulkInError++;
+<<<<<<< HEAD
         pDevice->intBuf.bInUse = FALSE;
+=======
+        pDevice->intBuf.bInUse = false;
+>>>>>>> refs/remotes/origin/master
 
 //        if (ntStatus == USBD_STATUS_CRC) {
 //            pDevice->ulIntInContCRCError++;
@@ -451,12 +552,17 @@ s_nsInterruptUsbIoCompleteRead(
 
 //        if (ntStatus == STATUS_NOT_CONNECTED )
 //        {
+<<<<<<< HEAD
             pDevice->fKillEventPollingThread = TRUE;
+=======
+            pDevice->fKillEventPollingThread = true;
+>>>>>>> refs/remotes/origin/master
 //        }
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"IntUSBIoCompleteControl STATUS = %d\n", ntStatus );
     } else {
 	    pDevice->ulIntInBytesRead += (unsigned long) urb->actual_length;
 	    pDevice->ulIntInContCRCError = 0;
+<<<<<<< HEAD
 	    pDevice->bEventAvailable = TRUE;
 	    INTnsProcessData(pDevice);
     }
@@ -465,6 +571,13 @@ s_nsInterruptUsbIoCompleteRead(
 
 
     if (pDevice->fKillEventPollingThread != TRUE) {
+=======
+	    pDevice->bEventAvailable = true;
+	    INTnsProcessData(pDevice);
+    }
+
+    if (pDevice->fKillEventPollingThread != true) {
+>>>>>>> refs/remotes/origin/master
        usb_fill_bulk_urb(pDevice->pInterruptURB,
 		      pDevice->usb,
 		      usb_rcvbulkpipe(pDevice->usb, 1),
@@ -498,11 +611,19 @@ s_nsInterruptUsbIoCompleteRead(
  * Return Value: STATUS_INSUFFICIENT_RESOURCES or result of IoCallDriver
  *
  */
+<<<<<<< HEAD
 int PIPEnsBulkInUsbRead(PSDevice pDevice, PRCB pRCB)
 {
 	int ntStatus = 0;
     struct urb          *pUrb;
 
+=======
+
+int PIPEnsBulkInUsbRead(struct vnt_private *pDevice, struct vnt_rcb *pRCB)
+{
+	int ntStatus = 0;
+	struct urb *pUrb;
+>>>>>>> refs/remotes/origin/master
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"---->s_nsStartBulkInUsbRead\n");
 
@@ -511,7 +632,10 @@ int PIPEnsBulkInUsbRead(PSDevice pDevice, PRCB pRCB)
 
     pDevice->ulBulkInPosted++;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pUrb = pRCB->pUrb;
     //
     // Now that we have created the urb, we will send a
@@ -536,14 +660,21 @@ int PIPEnsBulkInUsbRead(PSDevice pDevice, PRCB pRCB)
 		return STATUS_FAILURE ;
 	}
     pRCB->Ref = 1;
+<<<<<<< HEAD
     pRCB->bBoolInUse= TRUE;
+=======
+    pRCB->bBoolInUse= true;
+>>>>>>> refs/remotes/origin/master
 
     return ntStatus;
 }
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Description:
  *      Complete function of usb BulkIn irp.
@@ -558,6 +689,7 @@ int PIPEnsBulkInUsbRead(PSDevice pDevice, PRCB pRCB)
  * Return Value: STATUS_INSUFFICIENT_RESOURCES or result of IoCallDriver
  *
  */
+<<<<<<< HEAD
 static
 void
 s_nsBulkInUsbIoCompleteRead(
@@ -571,6 +703,17 @@ s_nsBulkInUsbIoCompleteRead(
     BOOL    bIndicateReceive = FALSE;
     BOOL    bReAllocSkb = FALSE;
     int status;
+=======
+
+static void s_nsBulkInUsbIoCompleteRead(struct urb *urb)
+{
+	struct vnt_rcb *pRCB = (struct vnt_rcb *)urb->context;
+	struct vnt_private *pDevice = pRCB->pDevice;
+	unsigned long   bytesRead;
+	int bIndicateReceive = false;
+	int bReAllocSkb = false;
+	int status;
+>>>>>>> refs/remotes/origin/master
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"---->s_nsBulkInUsbIoCompleteRead\n");
     status = urb->status;
@@ -579,8 +722,11 @@ s_nsBulkInUsbIoCompleteRead(
     if (status) {
         pDevice->ulBulkInError++;
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"BULK In failed %d\n", status);
+<<<<<<< HEAD
 
            pDevice->scStatistic.RxFcsErrCnt ++;
+=======
+>>>>>>> refs/remotes/origin/master
 //todo...xxxxxx
 //        if (status == USBD_STATUS_CRC) {
 //            pDevice->ulBulkInContCRCError++;
@@ -590,6 +736,7 @@ s_nsBulkInUsbIoCompleteRead(
 //            MP_SET_FLAG(pDevice, fMP_DISCONNECTED);
 //        }
     } else {
+<<<<<<< HEAD
         bIndicateReceive = TRUE;
         pDevice->ulBulkInContCRCError = 0;
         pDevice->ulBulkInBytesRead += bytesRead;
@@ -604,6 +751,18 @@ s_nsBulkInUsbIoCompleteRead(
         spin_lock(&pDevice->lock);
         if (RXbBulkInProcessData(pDevice, pRCB, bytesRead) == TRUE)
             bReAllocSkb = TRUE;
+=======
+	if (bytesRead)
+		bIndicateReceive = true;
+        pDevice->ulBulkInContCRCError = 0;
+        pDevice->ulBulkInBytesRead += bytesRead;
+    }
+
+    if (bIndicateReceive) {
+        spin_lock(&pDevice->lock);
+        if (RXbBulkInProcessData(pDevice, pRCB, bytesRead) == true)
+            bReAllocSkb = true;
+>>>>>>> refs/remotes/origin/master
         spin_unlock(&pDevice->lock);
     }
     pRCB->Ref--;
@@ -615,7 +774,10 @@ s_nsBulkInUsbIoCompleteRead(
         spin_unlock(&pDevice->lock);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
     return;
 }
 
@@ -632,6 +794,7 @@ s_nsBulkInUsbIoCompleteRead(
  * Return Value: STATUS_INSUFFICIENT_RESOURCES or result of IoCallDriver
  *
  */
+<<<<<<< HEAD
 int
 PIPEnsSendBulkOut(
       PSDevice pDevice,
@@ -644,6 +807,16 @@ PIPEnsSendBulkOut(
 
 
     pDevice->bPWBitOn = FALSE;
+=======
+
+int PIPEnsSendBulkOut(struct vnt_private *pDevice,
+				struct vnt_usb_send_context *pContext)
+{
+	int status;
+	struct urb          *pUrb;
+
+    pDevice->bPWBitOn = false;
+>>>>>>> refs/remotes/origin/master
 
 /*
     if (pDevice->pPendingBulkOutContext != NULL) {
@@ -675,12 +848,20 @@ PIPEnsSendBulkOut(
     	if (status != 0)
     	{
     		DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Submit Tx URB failed %d\n", status);
+<<<<<<< HEAD
+=======
+		pContext->bBoolInUse = false;
+>>>>>>> refs/remotes/origin/master
     		return STATUS_FAILURE;
     	}
         return STATUS_PENDING;
     }
     else {
+<<<<<<< HEAD
         pContext->bBoolInUse = FALSE;
+=======
+        pContext->bBoolInUse = false;
+>>>>>>> refs/remotes/origin/master
         return STATUS_RESOURCES;
     }
 }
@@ -712,6 +893,7 @@ PIPEnsSendBulkOut(
  *               (IofCompleteRequest) to stop working on the irp.
  *
  */
+<<<<<<< HEAD
 static
 void
 s_nsBulkOutIoCompleteWrite(
@@ -724,13 +906,27 @@ s_nsBulkOutIoCompleteWrite(
     unsigned long               ulBufLen;
     PUSB_SEND_CONTEXT   pContext;
 
+=======
+
+static void s_nsBulkOutIoCompleteWrite(struct urb *urb)
+{
+	struct vnt_private *pDevice;
+	int status;
+	CONTEXT_TYPE ContextType;
+	unsigned long ulBufLen;
+	struct vnt_usb_send_context *pContext;
+>>>>>>> refs/remotes/origin/master
 
     DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"---->s_nsBulkOutIoCompleteWrite\n");
     //
     // The context given to IoSetCompletionRoutine is an USB_CONTEXT struct
     //
+<<<<<<< HEAD
     pContext = (PUSB_SEND_CONTEXT) urb->context;
     ASSERT( NULL != pContext );
+=======
+	pContext = (struct vnt_usb_send_context *)urb->context;
+>>>>>>> refs/remotes/origin/master
 
     pDevice = pContext->pDevice;
     ContextType = pContext->Type;
@@ -744,15 +940,21 @@ s_nsBulkOutIoCompleteWrite(
     //
 
     status = urb->status;
+<<<<<<< HEAD
     //we should have failed, succeeded, or cancelled, but NOT be pending
     STAvUpdateUSBCounter(&pDevice->scStatistic.USB_BulkOutStat, status);
+=======
+>>>>>>> refs/remotes/origin/master
 
     if(status == STATUS_SUCCESS) {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"Write %d bytes\n",(int)ulBufLen);
         pDevice->ulBulkOutBytesWrite += ulBufLen;
         pDevice->ulBulkOutContCRCError = 0;
+<<<<<<< HEAD
 	pDevice->nTxDataTimeCout = 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
     } else {
         DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"BULK Out failed %d\n", status);
         pDevice->ulBulkOutError++;
@@ -772,7 +974,10 @@ s_nsBulkOutIoCompleteWrite(
 
         pDevice->dev->trans_start = jiffies;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
         if (status == STATUS_SUCCESS) {
             pDevice->packetsSent++;
         }
@@ -782,11 +987,19 @@ s_nsBulkOutIoCompleteWrite(
         }
 
     }
+<<<<<<< HEAD
     if (pDevice->bLinkPass == TRUE) {
         if (netif_queue_stopped(pDevice->dev))
             netif_wake_queue(pDevice->dev);
     }
     pContext->bBoolInUse = FALSE;
+=======
+    if (pDevice->bLinkPass == true) {
+        if (netif_queue_stopped(pDevice->dev))
+            netif_wake_queue(pDevice->dev);
+    }
+    pContext->bBoolInUse = false;
+>>>>>>> refs/remotes/origin/master
 
     return;
 }

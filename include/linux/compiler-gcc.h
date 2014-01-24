@@ -5,6 +5,12 @@
 /*
  * Common definitions for all gcc versions go here.
  */
+<<<<<<< HEAD
+=======
+#define GCC_VERSION (__GNUC__ * 10000 \
+		   + __GNUC_MINOR__ * 100 \
+		   + __GNUC_PATCHLEVEL__)
+>>>>>>> refs/remotes/origin/master
 
 
 /* Optimization barrier */
@@ -47,9 +53,15 @@
  */
 #if !defined(CONFIG_ARCH_SUPPORTS_OPTIMIZED_INLINING) || \
     !defined(CONFIG_OPTIMIZE_INLINING) || (__GNUC__ < 4)
+<<<<<<< HEAD
 # define inline		inline		__attribute__((always_inline))
 # define __inline__	__inline__	__attribute__((always_inline))
 # define __inline	__inline	__attribute__((always_inline))
+=======
+# define inline		inline		__attribute__((always_inline)) notrace
+# define __inline__	__inline__	__attribute__((always_inline)) notrace
+# define __inline	__inline	__attribute__((always_inline)) notrace
+>>>>>>> refs/remotes/origin/master
 #else
 /* A lot of inline functions can cause havoc with function tracing */
 # define inline		inline		notrace
@@ -88,11 +100,16 @@
 #define __pure				__attribute__((pure))
 #define __aligned(x)			__attribute__((aligned(x)))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __printf(a,b)			__attribute__((format(printf,a,b)))
 =======
 #define __printf(a, b)			__attribute__((format(printf, a, b)))
 #define __scanf(a, b)			__attribute__((format(scanf, a, b)))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __printf(a, b)			__attribute__((format(printf, a, b)))
+#define __scanf(a, b)			__attribute__((format(scanf, a, b)))
+>>>>>>> refs/remotes/origin/master
 #define  noinline			__attribute__((noinline))
 #define __attribute_const__		__attribute__((__const__))
 #define __maybe_unused			__attribute__((unused))

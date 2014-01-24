@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,6 +28,7 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifndef __INC_ETHERNET_H
 #define __INC_ETHERNET_H
@@ -46,6 +50,13 @@
 			((u8 *)(_pAddr))[3] == 0xff	&&		\
 			((u8 *)(_pAddr))[4] == 0xff	&&		\
 			((u8 *)(_pAddr))[5] == 0xff)
+=======
+#ifndef __INC_ETHERNET_H
+#define __INC_ETHERNET_H
+
+#define ETHERNET_HEADER_SIZE		14	/*!< Ethernet Header Length*/
+#define LLC_HEADER_SIZE			6	/*!< LLC Header Length*/
+>>>>>>> refs/remotes/origin/master
 
 #endif /* #ifndef __INC_ETHERNET_H */
 

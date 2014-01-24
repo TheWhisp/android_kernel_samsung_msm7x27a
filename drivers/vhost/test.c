@@ -13,12 +13,19 @@
 #include <linux/module.h>
 #include <linux/mutex.h>
 #include <linux/workqueue.h>
+<<<<<<< HEAD
 #include <linux/rcupdate.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/file.h>
 #include <linux/slab.h>
 
 #include "test.h"
+<<<<<<< HEAD
 #include "vhost.c"
+=======
+#include "vhost.h"
+>>>>>>> refs/remotes/origin/master
 
 /* Max number of bytes transferred before requeueing the job.
  * Using this limit prevents one virtqueue from starving others. */
@@ -38,17 +45,31 @@ struct vhost_test {
  * read-size critical section for our kind of RCU. */
 static void handle_vq(struct vhost_test *n)
 {
+<<<<<<< HEAD
 	struct vhost_virtqueue *vq = &n->dev.vqs[VHOST_TEST_VQ];
+=======
+	struct vhost_virtqueue *vq = &n->vqs[VHOST_TEST_VQ];
+>>>>>>> refs/remotes/origin/master
 	unsigned out, in;
 	int head;
 	size_t len, total_len = 0;
 	void *private;
 
+<<<<<<< HEAD
 	private = rcu_dereference_check(vq->private_data, 1);
 	if (!private)
 		return;
 
 	mutex_lock(&vq->mutex);
+=======
+	mutex_lock(&vq->mutex);
+	private = vq->private_data;
+	if (!private) {
+		mutex_unlock(&vq->mutex);
+		return;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	vhost_disable_notify(&n->dev, vq);
 
 	for (;;) {
@@ -102,15 +123,34 @@ static int vhost_test_open(struct inode *inode, struct file *f)
 {
 	struct vhost_test *n = kmalloc(sizeof *n, GFP_KERNEL);
 	struct vhost_dev *dev;
+<<<<<<< HEAD
+=======
+	struct vhost_virtqueue **vqs;
+>>>>>>> refs/remotes/origin/master
 	int r;
 
 	if (!n)
 		return -ENOMEM;
+<<<<<<< HEAD
 
 	dev = &n->dev;
 	n->vqs[VHOST_TEST_VQ].handle_kick = handle_vq_kick;
 	r = vhost_dev_init(dev, n->vqs, VHOST_TEST_VQ_MAX);
 	if (r < 0) {
+=======
+	vqs = kmalloc(VHOST_TEST_VQ_MAX * sizeof(*vqs), GFP_KERNEL);
+	if (!vqs) {
+		kfree(n);
+		return -ENOMEM;
+	}
+
+	dev = &n->dev;
+	vqs[VHOST_TEST_VQ] = &n->vqs[VHOST_TEST_VQ];
+	n->vqs[VHOST_TEST_VQ].handle_kick = handle_vq_kick;
+	r = vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX);
+	if (r < 0) {
+		kfree(vqs);
+>>>>>>> refs/remotes/origin/master
 		kfree(n);
 		return r;
 	}
@@ -126,9 +166,14 @@ static void *vhost_test_stop_vq(struct vhost_test *n,
 	void *private;
 
 	mutex_lock(&vq->mutex);
+<<<<<<< HEAD
 	private = rcu_dereference_protected(vq->private_data,
 					 lockdep_is_held(&vq->mutex));
 	rcu_assign_pointer(vq->private_data, NULL);
+=======
+	private = vq->private_data;
+	vq->private_data = NULL;
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&vq->mutex);
 	return private;
 }
@@ -140,7 +185,11 @@ static void vhost_test_stop(struct vhost_test *n, void **privatep)
 
 static void vhost_test_flush_vq(struct vhost_test *n, int index)
 {
+<<<<<<< HEAD
 	vhost_poll_flush(&n->dev.vqs[index].poll);
+=======
+	vhost_poll_flush(&n->vqs[index].poll);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void vhost_test_flush(struct vhost_test *n)
@@ -156,10 +205,14 @@ static int vhost_test_release(struct inode *inode, struct file *f)
 	vhost_test_stop(n, &private);
 	vhost_test_flush(n);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	vhost_dev_cleanup(&n->dev);
 =======
 	vhost_dev_cleanup(&n->dev, false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	vhost_dev_cleanup(&n->dev, false);
+>>>>>>> refs/remotes/origin/master
 	/* We do an extra flush before freeing memory,
 	 * since jobs can re-queue themselves. */
 	vhost_test_flush(n);
@@ -195,6 +248,7 @@ static long vhost_test_run(struct vhost_test *n, int test)
 		priv = test ? n : NULL;
 
 		/* start polling new socket */
+<<<<<<< HEAD
 		oldpriv = rcu_dereference_protected(vq->private_data,
 						    lockdep_is_held(&vq->mutex));
 		rcu_assign_pointer(vq->private_data, priv);
@@ -203,6 +257,11 @@ static long vhost_test_run(struct vhost_test *n, int test)
 		mutex_unlock(&vq->mutex);
 
 =======
+=======
+		oldpriv = vq->private_data;
+		vq->private_data = priv;
+
+>>>>>>> refs/remotes/origin/master
 		r = vhost_init_used(&n->vqs[index]);
 
 		mutex_unlock(&vq->mutex);
@@ -210,7 +269,10 @@ static long vhost_test_run(struct vhost_test *n, int test)
 		if (r)
 			goto err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (oldpriv) {
 			vhost_test_flush_vq(n, index);
 		}
@@ -228,13 +290,29 @@ static long vhost_test_reset_owner(struct vhost_test *n)
 {
 	void *priv = NULL;
 	long err;
+<<<<<<< HEAD
+=======
+	struct vhost_memory *memory;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&n->dev.mutex);
 	err = vhost_dev_check_owner(&n->dev);
 	if (err)
 		goto done;
+<<<<<<< HEAD
 	vhost_test_stop(n, &priv);
 	vhost_test_flush(n);
 	err = vhost_dev_reset_owner(&n->dev);
+=======
+	memory = vhost_dev_reset_owner_prepare();
+	if (!memory) {
+		err = -ENOMEM;
+		goto done;
+	}
+	vhost_test_stop(n, &priv);
+	vhost_test_flush(n);
+	vhost_dev_reset_owner(&n->dev, memory);
+>>>>>>> refs/remotes/origin/master
 done:
 	mutex_unlock(&n->dev.mutex);
 	return err;
@@ -284,7 +362,13 @@ static long vhost_test_ioctl(struct file *f, unsigned int ioctl,
 		return vhost_test_reset_owner(n);
 	default:
 		mutex_lock(&n->dev.mutex);
+<<<<<<< HEAD
 		r = vhost_dev_ioctl(&n->dev, ioctl, arg);
+=======
+		r = vhost_dev_ioctl(&n->dev, ioctl, argp);
+                if (r == -ENOIOCTLCMD)
+                        r = vhost_vring_ioctl(&n->dev, ioctl, argp);
+>>>>>>> refs/remotes/origin/master
 		vhost_test_flush(n);
 		mutex_unlock(&n->dev.mutex);
 		return r;

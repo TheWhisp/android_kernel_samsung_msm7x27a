@@ -243,7 +243,11 @@ struct pio2_card {
 int pio2_cntr_reset(struct pio2_card *);
 
 int pio2_gpio_reset(struct pio2_card *);
+<<<<<<< HEAD
 int __devinit pio2_gpio_init(struct pio2_card *);
+=======
+int pio2_gpio_init(struct pio2_card *);
+>>>>>>> refs/remotes/origin/master
 void pio2_gpio_exit(struct pio2_card *);
 
 #endif /* _VME_PIO2_H_ */

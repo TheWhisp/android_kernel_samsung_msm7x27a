@@ -201,9 +201,12 @@ int mthca_alloc_srq(struct mthca_dev *dev, struct mthca_pd *pd,
 {
 	struct mthca_mailbox *mailbox;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int ds;
 	int err;
 
@@ -270,15 +273,20 @@ int mthca_alloc_srq(struct mthca_dev *dev, struct mthca_pd *pd,
 		mthca_tavor_init_srq_context(dev, pd, srq, mailbox->buf);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_SW2HW_SRQ(dev, mailbox, srq->srqn, &status);
 =======
 	err = mthca_SW2HW_SRQ(dev, mailbox, srq->srqn);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_SW2HW_SRQ(dev, mailbox, srq->srqn);
+>>>>>>> refs/remotes/origin/master
 
 	if (err) {
 		mthca_warn(dev, "SW2HW_SRQ failed (%d)\n", err);
 		goto err_out_free_buf;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (status) {
 		mthca_warn(dev, "SW2HW_SRQ returned status 0x%02x\n",
@@ -288,6 +296,8 @@ int mthca_alloc_srq(struct mthca_dev *dev, struct mthca_pd *pd,
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&dev->srq_table.lock);
 	if (mthca_array_set(&dev->srq_table.srq,
@@ -310,6 +320,7 @@ int mthca_alloc_srq(struct mthca_dev *dev, struct mthca_pd *pd,
 
 err_out_free_srq:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_HW2SW_SRQ(dev, mailbox, srq->srqn, &status);
 	if (err)
 		mthca_warn(dev, "HW2SW_SRQ failed (%d)\n", err);
@@ -320,6 +331,11 @@ err_out_free_srq:
 	if (err)
 		mthca_warn(dev, "HW2SW_SRQ failed (%d)\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_HW2SW_SRQ(dev, mailbox, srq->srqn);
+	if (err)
+		mthca_warn(dev, "HW2SW_SRQ failed (%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 
 err_out_free_buf:
 	if (!pd->ibpd.uobject)
@@ -357,9 +373,12 @@ void mthca_free_srq(struct mthca_dev *dev, struct mthca_srq *srq)
 	struct mthca_mailbox *mailbox;
 	int err;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
 	if (IS_ERR(mailbox)) {
@@ -367,6 +386,7 @@ void mthca_free_srq(struct mthca_dev *dev, struct mthca_srq *srq)
 		return;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = mthca_HW2SW_SRQ(dev, mailbox, srq->srqn, &status);
 	if (err)
@@ -378,6 +398,11 @@ void mthca_free_srq(struct mthca_dev *dev, struct mthca_srq *srq)
 	if (err)
 		mthca_warn(dev, "HW2SW_SRQ failed (%d)\n", err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_HW2SW_SRQ(dev, mailbox, srq->srqn);
+	if (err)
+		mthca_warn(dev, "HW2SW_SRQ failed (%d)\n", err);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&dev->srq_table.lock);
 	mthca_array_clear(&dev->srq_table.srq,
@@ -404,11 +429,15 @@ int mthca_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
 	struct mthca_dev *dev = to_mdev(ibsrq->device);
 	struct mthca_srq *srq = to_msrq(ibsrq);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 	u8 status;
 =======
 	int ret = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* We don't support resizing SRQs (yet?) */
 	if (attr_mask & IB_SRQ_MAX_WR)
@@ -421,6 +450,7 @@ int mthca_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
 
 		mutex_lock(&srq->mutex);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = mthca_ARM_SRQ(dev, srq->srqn, attr->srq_limit, &status);
 		mutex_unlock(&srq->mutex);
 
@@ -432,12 +462,17 @@ int mthca_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = mthca_ARM_SRQ(dev, srq->srqn, attr->srq_limit);
 		mutex_unlock(&srq->mutex);
 	}
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int mthca_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *srq_attr)
@@ -448,9 +483,12 @@ int mthca_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *srq_attr)
 	struct mthca_arbel_srq_context *arbel_ctx;
 	struct mthca_tavor_srq_context *tavor_ctx;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 status;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	mailbox = mthca_alloc_mailbox(dev, GFP_KERNEL);
@@ -458,10 +496,14 @@ int mthca_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *srq_attr)
 		return PTR_ERR(mailbox);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = mthca_QUERY_SRQ(dev, srq->srqn, mailbox, &status);
 =======
 	err = mthca_QUERY_SRQ(dev, srq->srqn, mailbox);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = mthca_QUERY_SRQ(dev, srq->srqn, mailbox);
+>>>>>>> refs/remotes/origin/master
 	if (err)
 		goto out;
 

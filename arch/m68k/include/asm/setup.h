@@ -19,6 +19,7 @@
 **   Redesign of the boot information structure; moved boot information
 **   structure to bootinfo.h
 */
+<<<<<<< HEAD
 
 #ifndef _M68K_SETUP_H
 #define _M68K_SETUP_H
@@ -49,6 +50,15 @@
 
 #ifdef __KERNEL__
 
+=======
+#ifndef _M68K_SETUP_H
+#define _M68K_SETUP_H
+
+#include <uapi/asm/bootinfo.h>
+#include <uapi/asm/setup.h>
+
+
+>>>>>>> refs/remotes/origin/master
 #define CL_SIZE COMMAND_LINE_SIZE
 
 #ifndef __ASSEMBLY__
@@ -197,6 +207,7 @@ extern unsigned long m68k_machtype;
 #  define MACH_TYPE (m68k_machtype)
 #endif
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 
@@ -272,6 +283,8 @@ extern unsigned long m68k_machtype;
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #ifdef __KERNEL__
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 extern unsigned long m68k_cputype;
@@ -370,7 +383,10 @@ extern int m68k_is040or060;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if !defined(CONFIG_COLDFIRE)
 #  define CPU_IS_COLDFIRE (0)
 #else
@@ -378,7 +394,10 @@ extern int m68k_is040or060;
 #  define MMU_IS_COLDFIRE (1)
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CPU_TYPE (m68k_cputype)
 
 #ifdef CONFIG_M68KFPU_EMU
@@ -399,16 +418,26 @@ extern int m68k_is040or060;
 #define NUM_MEMINFO	4
 
 #ifndef __ASSEMBLY__
+<<<<<<< HEAD
 struct mem_info {
+=======
+struct m68k_mem_info {
+>>>>>>> refs/remotes/origin/master
 	unsigned long addr;		/* physical address of memory chunk */
 	unsigned long size;		/* length of memory chunk (in bytes) */
 };
 
 extern int m68k_num_memory;		/* # of memory blocks found (and used) */
 extern int m68k_realnum_memory;		/* real # of memory blocks found */
+<<<<<<< HEAD
 extern struct mem_info m68k_memory[NUM_MEMINFO];/* memory description */
 #endif
 
 #endif /* __KERNEL__ */
 
+=======
+extern struct m68k_mem_info m68k_memory[NUM_MEMINFO];/* memory description */
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _M68K_SETUP_H */

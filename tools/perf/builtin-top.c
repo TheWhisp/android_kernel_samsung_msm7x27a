@@ -6,9 +6,13 @@
  *
  * Copyright (C) 2008, Red Hat Inc, Ingo Molnar <mingo@redhat.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *		 2011, Red Hat Inc, Arnaldo Carvalho de Melo <acme@redhat.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *		 2011, Red Hat Inc, Arnaldo Carvalho de Melo <acme@redhat.com>
+>>>>>>> refs/remotes/origin/master
  *
  * Improvements and fixes by:
  *
@@ -29,6 +33,10 @@
 #include "util/color.h"
 #include "util/evlist.h"
 #include "util/evsel.h"
+<<<<<<< HEAD
+=======
+#include "util/machine.h"
+>>>>>>> refs/remotes/origin/master
 #include "util/session.h"
 #include "util/symbol.h"
 #include "util/thread.h"
@@ -41,17 +49,27 @@
 #include "util/cpumap.h"
 #include "util/xyarray.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "util/sort.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "util/sort.h"
+#include "util/intlist.h"
+#include "arch/common.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "util/debug.h"
 
 #include <assert.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <elf.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <elf.h>
+>>>>>>> refs/remotes/origin/master
 #include <fcntl.h>
 
 #include <stdio.h>
@@ -70,14 +88,19 @@
 #include <sys/wait.h>
 #include <sys/uio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <sys/utsname.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sys/utsname.h>
+>>>>>>> refs/remotes/origin/master
 #include <sys/mman.h>
 
 #include <linux/unistd.h>
 #include <linux/types.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct perf_top top = {
 	.count_filter		= 5,
@@ -165,10 +188,24 @@ static void perf_top__update_print_entries(struct perf_top *top)
 }
 
 static void perf_top__sig_winch(int sig __used, siginfo_t *info __used, void *arg)
+=======
+static volatile int done;
+
+#define HEADER_LINE_NR  5
+
+static void perf_top__update_print_entries(struct perf_top *top)
+{
+	top->print_entries = top->winsize.ws_row - HEADER_LINE_NR;
+}
+
+static void perf_top__sig_winch(int sig __maybe_unused,
+				siginfo_t *info __maybe_unused, void *arg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct perf_top *top = arg;
 
 	get_term_dimensions(&top->winsize);
+<<<<<<< HEAD
 	if (!top->print_entries
 	    || (top->print_entries+4) > top->winsize.ws_row) {
 		top->print_entries = top->winsize.ws_row;
@@ -176,11 +213,16 @@ static void perf_top__sig_winch(int sig __used, siginfo_t *info __used, void *ar
 		top->print_entries += 4;
 		top->winsize.ws_row = top->print_entries;
 	}
+=======
+>>>>>>> refs/remotes/origin/master
 	perf_top__update_print_entries(top);
 }
 
 static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	struct symbol *sym;
 	struct annotation *notes;
@@ -188,23 +230,34 @@ static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
 	int err = -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!syme)
 		return -1;
 
 	sym = sym_entry__symbol(syme);
 	map = syme->map;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!he || !he->ms.sym)
 		return -1;
 
 	sym = he->ms.sym;
 	map = he->ms.map;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We can't annotate with just /proc/kallsyms
 	 */
+<<<<<<< HEAD
 	if (map->dso->symtab_type == SYMTAB__KALLSYMS) {
+=======
+	if (map->dso->symtab_type == DSO_BINARY_TYPE__KALLSYMS &&
+	    !dso__is_kcore(map->dso)) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("Can't annotate %s: No vmlinux file was found in the "
 		       "path\n", sym->name);
 		sleep(1);
@@ -220,10 +273,14 @@ static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
 	pthread_mutex_lock(&notes->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (symbol__alloc_hist(sym, top.evlist->nr_entries) < 0) {
 =======
 	if (symbol__alloc_hist(sym) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (symbol__alloc_hist(sym) < 0) {
+>>>>>>> refs/remotes/origin/master
 		pthread_mutex_unlock(&notes->lock);
 		pr_err("Not enough memory for annotating '%s' symbol!\n",
 		       sym->name);
@@ -232,22 +289,29 @@ static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = symbol__annotate(sym, syme->map, 0);
 	if (err == 0) {
 out_assign:
 		top.sym_filter_entry = syme;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	err = symbol__annotate(sym, map, 0);
 	if (err == 0) {
 out_assign:
 		top->sym_filter_entry = he;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pthread_mutex_unlock(&notes->lock);
 	return err;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __zero_source_counters(struct sym_entry *syme)
 {
@@ -265,6 +329,8 @@ static void record_precise_ip(struct sym_entry *syme, int counter, u64 ip)
 
 	sym = sym_entry__symbol(syme);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void __zero_source_counters(struct hist_entry *he)
 {
 	struct symbol *sym = he->ms.sym;
@@ -312,12 +378,16 @@ static void perf_top__record_precise_ip(struct perf_top *top,
 		return;
 
 	sym = he->ms.sym;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	notes = symbol__annotation(sym);
 
 	if (pthread_mutex_trylock(&notes->lock))
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ip = syme->map->map_ip(syme->map, ip);
 	symbol__inc_addr_samples(sym, syme->map, counter, ip);
@@ -343,27 +413,50 @@ static void show_details(struct sym_entry *syme)
 
 	if (err == -ERANGE && !he->ms.map->erange_warned)
 		ui__warn_map_erange(he->ms.map, sym, ip);
+=======
+	ip = he->ms.map->map_ip(he->ms.map, ip);
+	err = hist_entry__inc_addr_samples(he, counter, ip);
+
+	pthread_mutex_unlock(&notes->lock);
+
+	if (err == -ERANGE && !he->ms.map->erange_warned)
+		ui__warn_map_erange(he->ms.map, sym, ip);
+	else if (err == -ENOMEM) {
+		pr_err("Not enough memory for annotating '%s' symbol!\n",
+		       sym->name);
+		sleep(1);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static void perf_top__show_details(struct perf_top *top)
 {
 	struct hist_entry *he = top->sym_filter_entry;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct annotation *notes;
 	struct symbol *symbol;
 	int more;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (!syme)
 		return;
 
 	symbol = sym_entry__symbol(syme);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!he)
 		return;
 
 	symbol = he->ms.sym;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	notes = symbol__annotation(symbol);
 
 	pthread_mutex_lock(&notes->lock);
@@ -371,6 +464,7 @@ static void perf_top__show_details(struct perf_top *top)
 	if (notes->src == NULL)
 		goto out_unlock;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	printf("Showing %s for %s\n", event_name(top.sym_evsel), symbol->name);
 	printf("  Events  Pcnt (>=%d%%)\n", sym_pcnt_filter);
@@ -386,18 +480,28 @@ static void perf_top__show_details(struct perf_top *top)
 	printf("  Events  Pcnt (>=%d%%)\n", top->sym_pcnt_filter);
 
 	more = symbol__annotate_printf(symbol, he->ms.map, top->sym_evsel->idx,
+=======
+	printf("Showing %s for %s\n", perf_evsel__name(top->sym_evsel), symbol->name);
+	printf("  Events  Pcnt (>=%d%%)\n", top->sym_pcnt_filter);
+
+	more = symbol__annotate_printf(symbol, he->ms.map, top->sym_evsel,
+>>>>>>> refs/remotes/origin/master
 				       0, top->sym_pcnt_filter, top->print_entries, 4);
 	if (top->zero)
 		symbol__annotate_zero_histogram(symbol, top->sym_evsel->idx);
 	else
 		symbol__annotate_decay_histogram(symbol, top->sym_evsel->idx);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (more != 0)
 		printf("%d lines not displayed, maybe increase display entries [e]\n", more);
 out_unlock:
 	pthread_mutex_unlock(&notes->lock);
 }
 
+<<<<<<< HEAD
 static const char		CONSOLE_CLEAR[] = "[H[2J";
 
 <<<<<<< HEAD
@@ -490,13 +594,23 @@ static void print_sym_table(struct perf_session *session)
 					syme->map->dso->short_name);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct hist_entry *perf_evsel__add_hist_entry(struct perf_evsel *evsel,
 						     struct addr_location *al,
 						     struct perf_sample *sample)
 {
 	struct hist_entry *he;
 
+<<<<<<< HEAD
 	he = __hists__add_entry(&evsel->hists, al, NULL, sample->period);
+=======
+	pthread_mutex_lock(&evsel->hists.lock);
+	he = __hists__add_entry(&evsel->hists, al, NULL, NULL, NULL,
+				sample->period, sample->weight,
+				sample->transaction);
+	pthread_mutex_unlock(&evsel->hists.lock);
+>>>>>>> refs/remotes/origin/master
 	if (he == NULL)
 		return NULL;
 
@@ -534,6 +648,7 @@ static void perf_top__print_sym_table(struct perf_top *top)
 		return;
 	}
 
+<<<<<<< HEAD
 	hists__collapse_resort_threaded(&top->sym_evsel->hists);
 	hists__output_resort_threaded(&top->sym_evsel->hists);
 	hists__decay_entries_threaded(&top->sym_evsel->hists,
@@ -545,6 +660,19 @@ static void perf_top__print_sym_table(struct perf_top *top)
 	hists__fprintf(&top->sym_evsel->hists, NULL, false, false,
 		       top->winsize.ws_row - 4 - printed, win_width, stdout);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hists__collapse_resort(&top->sym_evsel->hists, NULL);
+	hists__output_resort(&top->sym_evsel->hists);
+	hists__decay_entries(&top->sym_evsel->hists,
+			     top->hide_user_symbols,
+			     top->hide_kernel_symbols);
+	hists__output_recalc_col_len(&top->sym_evsel->hists,
+				     top->print_entries - printed);
+	putchar('\n');
+	hists__fprintf(&top->sym_evsel->hists, false,
+		       top->print_entries - printed, win_width,
+		       top->min_percent, stdout);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void prompt_integer(int *target, const char *msg)
@@ -583,27 +711,37 @@ static void prompt_percent(int *target, const char *msg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void prompt_symbol(struct sym_entry **target, const char *msg)
 {
 	char *buf = malloc(0), *p;
 	struct sym_entry *syme = *target, *n, *found = NULL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void perf_top__prompt_symbol(struct perf_top *top, const char *msg)
 {
 	char *buf = malloc(0), *p;
 	struct hist_entry *syme = top->sym_filter_entry, *n, *found = NULL;
 	struct rb_node *next;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	size_t dummy = 0;
 
 	/* zero counters of active symbol */
 	if (syme) {
 		__zero_source_counters(syme);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		*target = NULL;
 =======
 		top->sym_filter_entry = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		top->sym_filter_entry = NULL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	fprintf(stdout, "\n%s: ", msg);
@@ -614,6 +752,7 @@ static void perf_top__prompt_symbol(struct perf_top *top, const char *msg)
 	if (p)
 		*p = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pthread_mutex_lock(&top.active_symbols_lock);
 	syme = list_entry(top.active_symbols.next, struct sym_entry, node);
@@ -627,6 +766,8 @@ static void perf_top__prompt_symbol(struct perf_top *top, const char *msg)
 			break;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	next = rb_first(&top->sym_evsel->hists.entries);
 	while (next) {
 		n = rb_entry(next, struct hist_entry, rb_node);
@@ -635,12 +776,16 @@ static void perf_top__prompt_symbol(struct perf_top *top, const char *msg)
 			break;
 		}
 		next = rb_next(&n->rb_node);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!found) {
 		fprintf(stderr, "Sorry, %s is not active.\n", buf);
 		sleep(1);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return;
 	} else
@@ -649,11 +794,16 @@ static void perf_top__prompt_symbol(struct perf_top *top, const char *msg)
 	} else
 		perf_top__parse_source(top, found);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else
+		perf_top__parse_source(top, found);
+>>>>>>> refs/remotes/origin/master
 
 out_free:
 	free(buf);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void print_mapped_keys(void)
 {
@@ -662,17 +812,23 @@ static void print_mapped_keys(void)
 	if (top.sym_filter_entry) {
 		struct symbol *sym = sym_entry__symbol(top.sym_filter_entry);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void perf_top__print_mapped_keys(struct perf_top *top)
 {
 	char *name = NULL;
 
 	if (top->sym_filter_entry) {
 		struct symbol *sym = top->sym_filter_entry->ms.sym;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		name = sym->name;
 	}
 
 	fprintf(stdout, "\nMapped keys:\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 	fprintf(stdout, "\t[d]     display refresh delay.             \t(%d)\n", top.delay_secs);
 	fprintf(stdout, "\t[e]     display entries (lines).           \t(%d)\n", top.print_entries);
@@ -701,11 +857,17 @@ static void perf_top__print_mapped_keys(struct perf_top *top)
 
 static int key_mapped(int c)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	fprintf(stdout, "\t[d]     display refresh delay.             \t(%d)\n", top->delay_secs);
 	fprintf(stdout, "\t[e]     display entries (lines).           \t(%d)\n", top->print_entries);
 
 	if (top->evlist->nr_entries > 1)
+<<<<<<< HEAD
 		fprintf(stdout, "\t[E]     active event counter.              \t(%s)\n", event_name(top->sym_evsel));
+=======
+		fprintf(stdout, "\t[E]     active event counter.              \t(%s)\n", perf_evsel__name(top->sym_evsel));
+>>>>>>> refs/remotes/origin/master
 
 	fprintf(stdout, "\t[f]     profile display filter (count).    \t(%d)\n", top->count_filter);
 
@@ -724,7 +886,10 @@ static int key_mapped(int c)
 }
 
 static int perf_top__key_mapped(struct perf_top *top, int c)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	switch (c) {
 		case 'd':
@@ -741,11 +906,15 @@ static int perf_top__key_mapped(struct perf_top *top, int c)
 			return 1;
 		case 'E':
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case 'w':
 			return top.evlist->nr_entries > 1 ? 1 : 0;
 =======
 			return top->evlist->nr_entries > 1 ? 1 : 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			return top->evlist->nr_entries > 1 ? 1 : 0;
+>>>>>>> refs/remotes/origin/master
 		default:
 			break;
 	}
@@ -753,6 +922,7 @@ static int perf_top__key_mapped(struct perf_top *top, int c)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void handle_keypress(struct perf_session *session, int c)
 {
@@ -764,12 +934,21 @@ static void handle_keypress(struct perf_session *session, int c)
 =======
 static void perf_top__handle_keypress(struct perf_top *top, int c)
 {
+=======
+static bool perf_top__handle_keypress(struct perf_top *top, int c)
+{
+	bool ret = true;
+
+>>>>>>> refs/remotes/origin/master
 	if (!perf_top__key_mapped(top, c)) {
 		struct pollfd stdin_poll = { .fd = 0, .events = POLLIN };
 		struct termios tc, save;
 
 		perf_top__print_mapped_keys(top);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		fprintf(stdout, "\nEnter selection, or unmapped key to continue: ");
 		fflush(stdout);
 
@@ -785,15 +964,21 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 
 		tcsetattr(0, TCSAFLUSH, &save);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!key_mapped(c))
 =======
 		if (!perf_top__key_mapped(top, c))
 >>>>>>> refs/remotes/origin/cm-10.0
 			return;
+=======
+		if (!perf_top__key_mapped(top, c))
+			return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	switch (c) {
 		case 'd':
+<<<<<<< HEAD
 <<<<<<< HEAD
 			prompt_integer(&top.delay_secs, "Enter display delay");
 			if (top.delay_secs < 1)
@@ -810,6 +995,8 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 		case 'E':
 			if (top.evlist->nr_entries > 1) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			prompt_integer(&top->delay_secs, "Enter display delay");
 			if (top->delay_secs < 1)
 				top->delay_secs = 1;
@@ -824,18 +1011,25 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 				perf_top__sig_winch(SIGWINCH, NULL, top);
 				sigaction(SIGWINCH, &act, NULL);
 			} else {
+<<<<<<< HEAD
 				perf_top__sig_winch(SIGWINCH, NULL, top);
+=======
+>>>>>>> refs/remotes/origin/master
 				signal(SIGWINCH, SIG_DFL);
 			}
 			break;
 		case 'E':
 			if (top->evlist->nr_entries > 1) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				/* Select 0 as the default event: */
 				int counter = 0;
 
 				fprintf(stderr, "\nAvailable events:");
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 				list_for_each_entry(top.sym_evsel, &top.evlist->entries, node)
 					fprintf(stderr, "\n\t%d %s", top.sym_evsel->idx, event_name(top.sym_evsel));
@@ -865,10 +1059,15 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 =======
 				list_for_each_entry(top->sym_evsel, &top->evlist->entries, node)
 					fprintf(stderr, "\n\t%d %s", top->sym_evsel->idx, event_name(top->sym_evsel));
+=======
+				evlist__for_each(top->evlist, top->sym_evsel)
+					fprintf(stderr, "\n\t%d %s", top->sym_evsel->idx, perf_evsel__name(top->sym_evsel));
+>>>>>>> refs/remotes/origin/master
 
 				prompt_integer(&counter, "Enter details event counter");
 
 				if (counter >= top->evlist->nr_entries) {
+<<<<<<< HEAD
 					top->sym_evsel = list_entry(top->evlist->entries.next, struct perf_evsel, node);
 					fprintf(stderr, "Sorry, no such event, using %s.\n", event_name(top->sym_evsel));
 					sleep(1);
@@ -879,6 +1078,18 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 						break;
 			} else
 				top->sym_evsel = list_entry(top->evlist->entries.next, struct perf_evsel, node);
+=======
+					top->sym_evsel = perf_evlist__first(top->evlist);
+					fprintf(stderr, "Sorry, no such event, using %s.\n", perf_evsel__name(top->sym_evsel));
+					sleep(1);
+					break;
+				}
+				evlist__for_each(top->evlist, top->sym_evsel)
+					if (top->sym_evsel->idx == counter)
+						break;
+			} else
+				top->sym_evsel = perf_evlist__first(top->evlist);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 'f':
 			prompt_integer(&top->count_filter, "Enter display event count filter");
@@ -889,11 +1100,15 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 			break;
 		case 'K':
 			top->hide_kernel_symbols = !top->hide_kernel_symbols;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 'q':
 		case 'Q':
 			printf("exiting.\n");
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if (dump_symtab)
 				perf_session__fprintf_dsos(session, stderr);
@@ -912,6 +1127,12 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 			if (top->dump_symtab)
 				perf_session__fprintf_dsos(top->session, stderr);
 			exit(0);
+=======
+			if (top->dump_symtab)
+				perf_session__fprintf_dsos(top->session, stderr);
+			ret = false;
+			break;
+>>>>>>> refs/remotes/origin/master
 		case 's':
 			perf_top__prompt_symbol(top, "Enter details symbol");
 			break;
@@ -922,11 +1143,15 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 				struct hist_entry *syme = top->sym_filter_entry;
 
 				top->sym_filter_entry = NULL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				__zero_source_counters(syme);
 			}
 			break;
 		case 'U':
+<<<<<<< HEAD
 <<<<<<< HEAD
 			top.hide_user_symbols = !top.hide_user_symbols;
 			break;
@@ -936,15 +1161,21 @@ static void perf_top__handle_keypress(struct perf_top *top, int c)
 		case 'z':
 			top.zero = !top.zero;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			top->hide_user_symbols = !top->hide_user_symbols;
 			break;
 		case 'z':
 			top->zero = !top->zero;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			break;
 	}
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
@@ -962,6 +1193,12 @@ static void *display_thread_tui(void *arg __used)
 	if (!err)
 		perf_top__tui_browser(&top);
 =======
+=======
+
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void perf_top__sort_new_samples(void *arg)
 {
 	struct perf_top *t = arg;
@@ -970,11 +1207,19 @@ static void perf_top__sort_new_samples(void *arg)
 	if (t->evlist->selected != NULL)
 		t->sym_evsel = t->evlist->selected;
 
+<<<<<<< HEAD
 	hists__collapse_resort_threaded(&t->sym_evsel->hists);
 	hists__output_resort_threaded(&t->sym_evsel->hists);
 	hists__decay_entries_threaded(&t->sym_evsel->hists,
 				      t->hide_user_symbols,
 				      t->hide_kernel_symbols);
+=======
+	hists__collapse_resort(&t->sym_evsel->hists, NULL);
+	hists__output_resort(&t->sym_evsel->hists);
+	hists__decay_entries(&t->sym_evsel->hists,
+			     t->hide_user_symbols,
+			     t->hide_kernel_symbols);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void *display_thread_tui(void *arg)
@@ -982,6 +1227,14 @@ static void *display_thread_tui(void *arg)
 	struct perf_evsel *pos;
 	struct perf_top *top = arg;
 	const char *help = "For a higher level overview, try: perf top --sort comm,dso";
+<<<<<<< HEAD
+=======
+	struct hist_browser_timer hbt = {
+		.timer		= perf_top__sort_new_samples,
+		.arg		= top,
+		.refresh	= top->delay_secs,
+	};
+>>>>>>> refs/remotes/origin/master
 
 	perf_top__sort_new_samples(top);
 
@@ -990,6 +1243,7 @@ static void *display_thread_tui(void *arg)
 	 * Zooming in/out UIDs. For now juse use whatever the user passed
 	 * via --uid.
 	 */
+<<<<<<< HEAD
 	list_for_each_entry(pos, &top->evlist->entries, node)
 		pos->hists.uid_filter_str = top->uid_str;
 
@@ -1011,13 +1265,28 @@ static void *display_thread(void *arg __used)
 	int delay_msecs, c;
 	struct perf_session *session = (struct perf_session *) arg;
 =======
+=======
+	evlist__for_each(top->evlist, pos)
+		pos->hists.uid_filter_str = top->record_opts.target.uid_str;
+
+	perf_evlist__tui_browse_hists(top->evlist, help, &hbt, top->min_percent,
+				      &top->session->header.env);
+
+	done = 1;
+	return NULL;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void *display_thread(void *arg)
 {
 	struct pollfd stdin_poll = { .fd = 0, .events = POLLIN };
 	struct termios tc, save;
 	struct perf_top *top = arg;
 	int delay_msecs, c;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	tcgetattr(0, &save);
 	tc = save;
@@ -1026,6 +1295,7 @@ static void *display_thread(void *arg)
 	tc.c_cc[VTIME] = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 repeat:
 	delay_msecs = top.delay_secs * 1000;
 =======
@@ -1033,10 +1303,16 @@ repeat:
 repeat:
 	delay_msecs = top->delay_secs * 1000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pthread__unblock_sigwinch();
+repeat:
+	delay_msecs = top->delay_secs * 1000;
+>>>>>>> refs/remotes/origin/master
 	tcsetattr(0, TCSANOW, &tc);
 	/* trash return*/
 	getc(stdin);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	do {
 		print_sym_table(session);
@@ -1048,6 +1324,9 @@ repeat:
 	handle_keypress(session, c);
 =======
 	while (1) {
+=======
+	while (!done) {
+>>>>>>> refs/remotes/origin/master
 		perf_top__print_sym_table(top);
 		/*
 		 * Either timeout expired or we got an EINTR due to SIGWINCH,
@@ -1061,6 +1340,7 @@ repeat:
 				continue;
 			/* Fall trhu */
 		default:
+<<<<<<< HEAD
 			goto process_hotkey;
 		}
 	}
@@ -1071,10 +1351,21 @@ process_hotkey:
 	perf_top__handle_keypress(top, c);
 >>>>>>> refs/remotes/origin/cm-10.0
 	goto repeat;
+=======
+			c = getc(stdin);
+			tcsetattr(0, TCSAFLUSH, &save);
+
+			if (perf_top__handle_keypress(top, c))
+				goto repeat;
+			done = 1;
+		}
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return NULL;
 }
 
+<<<<<<< HEAD
 /* Tag samples to be skipped. */
 static const char *skip_symbols[] = {
 <<<<<<< HEAD
@@ -1104,6 +1395,11 @@ static int symbol_filter(struct map *map __used, struct symbol *sym)
 >>>>>>> refs/remotes/origin/cm-10.0
 	const char *name = sym->name;
 	int i;
+=======
+static int symbol_filter(struct map *map __maybe_unused, struct symbol *sym)
+{
+	const char *name = sym->name;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * ppc64 uses function descriptors and appends a '.' to the
@@ -1121,6 +1417,7 @@ static int symbol_filter(struct map *map __used, struct symbol *sym)
 	    strstr(name, "_text_end"))
 		return 1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	syme = symbol__priv(sym);
 	syme->map = map;
@@ -1140,10 +1437,15 @@ static int symbol_filter(struct map *map __used, struct symbol *sym)
 			break;
 		}
 	}
+=======
+	if (symbol__is_idle(sym))
+		sym->ignore = true;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void perf_event__process_sample(const union perf_event *event,
 				       struct perf_sample *sample,
@@ -1185,6 +1487,8 @@ static void perf_event__process_sample(const union perf_event *event,
 		return;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void perf_event__process_sample(struct perf_tool *tool,
 				       const union perf_event *event,
 				       struct perf_evsel *evsel,
@@ -1193,6 +1497,7 @@ static void perf_event__process_sample(struct perf_tool *tool,
 {
 	struct perf_top *top = container_of(tool, struct perf_top, tool);
 	struct symbol *parent = NULL;
+<<<<<<< HEAD
 	u64 ip = event->ip.ip;
 	struct addr_location al;
 	int err;
@@ -1213,12 +1518,36 @@ static void perf_event__process_sample(struct perf_tool *tool,
 	if (!machine) {
 		pr_err("%u unprocessable samples recorded.",
 		       top->session->hists.stats.nr_unprocessable_samples++);
+=======
+	u64 ip = sample->ip;
+	struct addr_location al;
+	int err;
+
+	if (!machine && perf_guest) {
+		static struct intlist *seen;
+
+		if (!seen)
+			seen = intlist__new(NULL);
+
+		if (!intlist__has_entry(seen, sample->pid)) {
+			pr_err("Can't find guest [%d]'s kernel information\n",
+				sample->pid);
+			intlist__add(seen, sample->pid);
+		}
+		return;
+	}
+
+	if (!machine) {
+		pr_err("%u unprocessable samples recorded.\r",
+		       top->session->stats.nr_unprocessable_samples++);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	if (event->header.misc & PERF_RECORD_MISC_EXACT_IP)
 		top->exact_samples++;
 
+<<<<<<< HEAD
 	if (perf_event__preprocess_sample(event, machine, &al, sample,
 >>>>>>> refs/remotes/origin/cm-10.0
 					  symbol_filter) < 0 ||
@@ -1230,6 +1559,13 @@ static void perf_event__process_sample(struct perf_tool *tool,
 =======
 	if (!top->kptr_restrict_warned &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (perf_event__preprocess_sample(event, machine, &al, sample) < 0 ||
+	    al.filtered)
+		return;
+
+	if (!top->kptr_restrict_warned &&
+>>>>>>> refs/remotes/origin/master
 	    symbol_conf.kptr_restrict &&
 	    al.cpumode == PERF_RECORD_MISC_KERNEL) {
 		ui__warning(
@@ -1241,10 +1577,14 @@ static void perf_event__process_sample(struct perf_tool *tool,
 		if (use_browser <= 0)
 			sleep(5);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kptr_restrict_warned = true;
 =======
 		top->kptr_restrict_warned = true;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		top->kptr_restrict_warned = true;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (al.sym == NULL) {
@@ -1261,10 +1601,14 @@ static void perf_event__process_sample(struct perf_tool *tool,
 		 * invalid --vmlinux ;-)
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!kptr_restrict_warned && !vmlinux_warned &&
 =======
 		if (!top->kptr_restrict_warned && !top->vmlinux_warned &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (!top->kptr_restrict_warned && !top->vmlinux_warned &&
+>>>>>>> refs/remotes/origin/master
 		    al.map == machine->vmlinux_maps[MAP__FUNCTION] &&
 		    RB_EMPTY_ROOT(&al.map->dso->symbols[MAP__FUNCTION])) {
 			if (symbol_conf.vmlinux_name) {
@@ -1277,6 +1621,7 @@ static void perf_event__process_sample(struct perf_tool *tool,
 
 			if (use_browser <= 0)
 				sleep(5);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			vmlinux_warned = true;
 		}
@@ -1331,6 +1676,8 @@ static void perf_session__mmap_read_idx(struct perf_session *self, int idx)
 	while ((event = perf_evlist__mmap_read(top.evlist, idx)) != NULL) {
 		ret = perf_session__parse_sample(self, event, &sample);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			top->vmlinux_warned = true;
 		}
 	}
@@ -1338,6 +1685,7 @@ static void perf_session__mmap_read_idx(struct perf_session *self, int idx)
 	if (al.sym == NULL || !al.sym->ignore) {
 		struct hist_entry *he;
 
+<<<<<<< HEAD
 		if ((sort__has_parent || symbol_conf.use_callchain) &&
 		    sample->callchain) {
 			err = machine__resolve_callchain(machine, evsel, al.thread,
@@ -1345,6 +1693,12 @@ static void perf_session__mmap_read_idx(struct perf_session *self, int idx)
 			if (err)
 				return;
 		}
+=======
+		err = sample__resolve_callchain(sample, &parent, evsel, &al,
+						top->max_stack);
+		if (err)
+			return;
+>>>>>>> refs/remotes/origin/master
 
 		he = perf_evsel__add_hist_entry(evsel, &al, sample);
 		if (he == NULL) {
@@ -1352,6 +1706,7 @@ static void perf_session__mmap_read_idx(struct perf_session *self, int idx)
 			return;
 		}
 
+<<<<<<< HEAD
 		if (symbol_conf.use_callchain) {
 			err = callchain_append(he->callchain, &evsel->hists.callchain_cursor,
 					       sample->period);
@@ -1360,6 +1715,13 @@ static void perf_session__mmap_read_idx(struct perf_session *self, int idx)
 		}
 
 		if (top->sort_has_symbols)
+=======
+		err = hist_entry__append_callchain(he, sample);
+		if (err)
+			return;
+
+		if (sort__has_sym)
+>>>>>>> refs/remotes/origin/master
 			perf_top__record_precise_ip(top, he, evsel->idx, ip);
 	}
 
@@ -1377,6 +1739,7 @@ static void perf_top__mmap_read_idx(struct perf_top *top, int idx)
 	int ret;
 
 	while ((event = perf_evlist__mmap_read(top->evlist, idx)) != NULL) {
+<<<<<<< HEAD
 		ret = perf_session__parse_sample(session, event, &sample);
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (ret) {
@@ -1414,6 +1777,14 @@ static void start_counters(struct perf_evlist *evlist)
 			attr->freq	  = 1;
 			attr->sample_freq = top.freq;
 =======
+=======
+		ret = perf_evlist__parse_sample(top->evlist, event, &sample);
+		if (ret) {
+			pr_err("Can't parse sample, err = %d\n", ret);
+			goto next_event;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		evsel = perf_evlist__id2evsel(session->evlist, sample.id);
 		assert(evsel != NULL);
 
@@ -1426,18 +1797,33 @@ static void start_counters(struct perf_evlist *evlist)
 		case PERF_RECORD_MISC_USER:
 			++top->us_samples;
 			if (top->hide_user_symbols)
+<<<<<<< HEAD
 				continue;
 			machine = perf_session__find_host_machine(session);
+=======
+				goto next_event;
+			machine = &session->machines.host;
+>>>>>>> refs/remotes/origin/master
 			break;
 		case PERF_RECORD_MISC_KERNEL:
 			++top->kernel_samples;
 			if (top->hide_kernel_symbols)
+<<<<<<< HEAD
 				continue;
 			machine = perf_session__find_host_machine(session);
 			break;
 		case PERF_RECORD_MISC_GUEST_KERNEL:
 			++top->guest_kernel_samples;
 			machine = perf_session__find_machine(session, event->ip.pid);
+=======
+				goto next_event;
+			machine = &session->machines.host;
+			break;
+		case PERF_RECORD_MISC_GUEST_KERNEL:
+			++top->guest_kernel_samples;
+			machine = perf_session__find_machine(session,
+							     sample.pid);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case PERF_RECORD_MISC_GUEST_USER:
 			++top->guest_us_samples;
@@ -1447,7 +1833,11 @@ static void start_counters(struct perf_evlist *evlist)
 			 */
 			/* Fall thru */
 		default:
+<<<<<<< HEAD
 			continue;
+=======
+			goto next_event;
+>>>>>>> refs/remotes/origin/master
 		}
 
 
@@ -1456,9 +1846,17 @@ static void start_counters(struct perf_evlist *evlist)
 						   &sample, machine);
 		} else if (event->header.type < PERF_RECORD_MAX) {
 			hists__inc_nr_events(&evsel->hists, event->header.type);
+<<<<<<< HEAD
 			perf_event__process(&top->tool, event, &sample, machine);
 		} else
 			++session->hists.stats.nr_unknown_events;
+=======
+			machine__process_event(machine, event, &sample);
+		} else
+			++session->stats.nr_unknown_events;
+next_event:
+		perf_evlist__mmap_consume(top->evlist, idx);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1470,6 +1868,7 @@ static void perf_top__mmap_read(struct perf_top *top)
 		perf_top__mmap_read_idx(top, i);
 }
 
+<<<<<<< HEAD
 static void perf_top__start_counters(struct perf_top *top)
 {
 	struct perf_evsel *counter, *first;
@@ -1580,20 +1979,50 @@ try_again:
 				    "may provide additional information.\n"
 				    "No CONFIG_PERF_EVENTS=y kernel support "
 				    "configured?\n", err, strerror(err));
+=======
+static int perf_top__start_counters(struct perf_top *top)
+{
+	char msg[512];
+	struct perf_evsel *counter;
+	struct perf_evlist *evlist = top->evlist;
+	struct record_opts *opts = &top->record_opts;
+
+	perf_evlist__config(evlist, opts);
+
+	evlist__for_each(evlist, counter) {
+try_again:
+		if (perf_evsel__open(counter, top->evlist->cpus,
+				     top->evlist->threads) < 0) {
+			if (perf_evsel__fallback(counter, errno, msg, sizeof(msg))) {
+				if (verbose)
+					ui__warning("%s\n", msg);
+				goto try_again;
+			}
+
+			perf_evsel__open_strerror(counter, &opts->target,
+						  errno, msg, sizeof(msg));
+			ui__error("%s\n", msg);
+>>>>>>> refs/remotes/origin/master
 			goto out_err;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (perf_evlist__mmap(evlist, mmap_pages, false) < 0) {
 =======
 	if (perf_evlist__mmap(evlist, top->mmap_pages, false) < 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
 		ui__warning("Failed to mmap with %d (%s)\n",
+=======
+	if (perf_evlist__mmap(evlist, opts->mmap_pages, false) < 0) {
+		ui__error("Failed to mmap with %d (%s)\n",
+>>>>>>> refs/remotes/origin/master
 			    errno, strerror(errno));
 		goto out_err;
 	}
 
+<<<<<<< HEAD
 	return;
 
 out_err:
@@ -1617,6 +2046,24 @@ static int perf_top__setup_sample_type(struct perf_top *top)
 	} else if (!top->dont_use_callchains && callchain_param.mode != CHAIN_NONE) {
 		if (callchain_register_param(&callchain_param) < 0) {
 			ui__warning("Can't register callchain params.\n");
+=======
+	return 0;
+
+out_err:
+	return -1;
+}
+
+static int perf_top__setup_sample_type(struct perf_top *top __maybe_unused)
+{
+	if (!sort__has_sym) {
+		if (symbol_conf.use_callchain) {
+			ui__error("Selected -g but \"sym\" not present in --sort/-s.");
+			return -EINVAL;
+		}
+	} else if (callchain_param.mode != CHAIN_NONE) {
+		if (callchain_register_param(&callchain_param) < 0) {
+			ui__error("Can't register callchain params.\n");
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 	}
@@ -1626,6 +2073,7 @@ static int perf_top__setup_sample_type(struct perf_top *top)
 
 static int __cmd_top(struct perf_top *top)
 {
+<<<<<<< HEAD
 	pthread_t thread;
 	int ret;
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1660,10 +2108,29 @@ static int __cmd_top(struct perf_top *top)
 	if (top->session == NULL)
 		return -ENOMEM;
 
+=======
+	struct record_opts *opts = &top->record_opts;
+	pthread_t thread;
+	int ret;
+
+	top->session = perf_session__new(NULL, false, NULL);
+	if (top->session == NULL)
+		return -ENOMEM;
+
+	machines__set_symbol_filter(&top->session->machines, symbol_filter);
+
+	if (!objdump_path) {
+		ret = perf_session_env__lookup_objdump(&top->session->header.env);
+		if (ret)
+			goto out_delete;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	ret = perf_top__setup_sample_type(top);
 	if (ret)
 		goto out_delete;
 
+<<<<<<< HEAD
 	if (top->target_tid || top->uid != UINT_MAX)
 		perf_event__synthesize_thread_map(&top->tool, top->evlist->threads,
 						  perf_event__process,
@@ -1674,12 +2141,34 @@ static int __cmd_top(struct perf_top *top)
 	perf_top__start_counters(top);
 	top->session->evlist = top->evlist;
 	perf_session__update_sample_type(top->session);
+=======
+	machine__synthesize_threads(&top->session->machines.host, &opts->target,
+				    top->evlist->threads, false);
+	ret = perf_top__start_counters(top);
+	if (ret)
+		goto out_delete;
+
+	top->session->evlist = top->evlist;
+	perf_session__set_id_hdr_size(top->session);
+
+	/*
+	 * When perf is starting the traced process, all the events (apart from
+	 * group members) have enable_on_exec=1 set, so don't spoil it by
+	 * prematurely enabling them.
+	 *
+	 * XXX 'top' still doesn't start workloads like record, trace, but should,
+	 * so leave the check here.
+	 */
+        if (!target__none(&opts->target))
+                perf_evlist__enable(top->evlist);
+>>>>>>> refs/remotes/origin/master
 
 	/* Wait for a minimal set of events before starting the snapshot */
 	poll(top->evlist->pollfd, top->evlist->nr_fds, 100);
 
 	perf_top__mmap_read(top);
 
+<<<<<<< HEAD
 	if (pthread_create(&thread, NULL, (use_browser > 0 ? display_thread_tui :
 							    display_thread), top)) {
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -1693,10 +2182,20 @@ static int __cmd_top(struct perf_top *top)
 
 		param.sched_priority = realtime_prio;
 =======
+=======
+	ret = -1;
+	if (pthread_create(&thread, NULL, (use_browser > 0 ? display_thread_tui :
+							    display_thread), top)) {
+		ui__error("Could not create display thread.\n");
+		goto out_delete;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (top->realtime_prio) {
 		struct sched_param param;
 
 		param.sched_priority = top->realtime_prio;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		if (sched_setscheduler(0, SCHED_FIFO, &param)) {
 			printf("Could not set realtime priority.\n");
@@ -1715,6 +2214,15 @@ static int __cmd_top(struct perf_top *top)
 	}
 
 =======
+=======
+		if (sched_setscheduler(0, SCHED_FIFO, &param)) {
+			ui__error("Could not set realtime priority.\n");
+			goto out_delete;
+		}
+	}
+
+	while (!done) {
+>>>>>>> refs/remotes/origin/master
 		u64 hits = top->samples;
 
 		perf_top__mmap_read(top);
@@ -1723,10 +2231,15 @@ static int __cmd_top(struct perf_top *top)
 			ret = poll(top->evlist->pollfd, top->evlist->nr_fds, 100);
 	}
 
+<<<<<<< HEAD
+=======
+	ret = 0;
+>>>>>>> refs/remotes/origin/master
 out_delete:
 	perf_session__delete(top->session);
 	top->session = NULL;
 
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -1840,10 +2353,61 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 		.sym_pcnt_filter     = 5,
 	};
 	char callchain_default_opt[] = "fractal,0.5,callee";
+=======
+	return ret;
+}
+
+static int
+callchain_opt(const struct option *opt, const char *arg, int unset)
+{
+	symbol_conf.use_callchain = true;
+	return record_callchain_opt(opt, arg, unset);
+}
+
+static int
+parse_callchain_opt(const struct option *opt, const char *arg, int unset)
+{
+	symbol_conf.use_callchain = true;
+	return record_parse_callchain_opt(opt, arg, unset);
+}
+
+static int
+parse_percent_limit(const struct option *opt, const char *arg,
+		    int unset __maybe_unused)
+{
+	struct perf_top *top = opt->value;
+
+	top->min_percent = strtof(arg, NULL);
+	return 0;
+}
+
+int cmd_top(int argc, const char **argv, const char *prefix __maybe_unused)
+{
+	int status = -1;
+	char errbuf[BUFSIZ];
+	struct perf_top top = {
+		.count_filter	     = 5,
+		.delay_secs	     = 2,
+		.record_opts = {
+			.mmap_pages	= UINT_MAX,
+			.user_freq	= UINT_MAX,
+			.user_interval	= ULLONG_MAX,
+			.freq		= 4000, /* 4 KHz */
+			.target		= {
+				.uses_mmap   = true,
+			},
+		},
+		.max_stack	     = PERF_MAX_STACK_DEPTH,
+		.sym_pcnt_filter     = 5,
+	};
+	struct record_opts *opts = &top.record_opts;
+	struct target *target = &opts->target;
+>>>>>>> refs/remotes/origin/master
 	const struct option options[] = {
 	OPT_CALLBACK('e', "event", &top.evlist, "event",
 		     "event selector. use 'perf list' to list available events",
 		     parse_events_option),
+<<<<<<< HEAD
 	OPT_INTEGER('c', "count", &top.default_interval,
 		    "event period to sample"),
 	OPT_STRING('p', "pid", &top.target_pid, "pid",
@@ -1876,6 +2440,26 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 	OPT_STRING('s', "sym-annotate", &sym_filter, "symbol name",
 =======
 	OPT_UINTEGER('m', "mmap-pages", &top.mmap_pages, "number of mmap data pages"),
+=======
+	OPT_U64('c', "count", &opts->user_interval, "event period to sample"),
+	OPT_STRING('p', "pid", &target->pid, "pid",
+		    "profile events on existing process id"),
+	OPT_STRING('t', "tid", &target->tid, "tid",
+		    "profile events on existing thread id"),
+	OPT_BOOLEAN('a', "all-cpus", &target->system_wide,
+			    "system-wide collection from all CPUs"),
+	OPT_STRING('C', "cpu", &target->cpu_list, "cpu",
+		    "list of cpus to monitor"),
+	OPT_STRING('k', "vmlinux", &symbol_conf.vmlinux_name,
+		   "file", "vmlinux pathname"),
+	OPT_BOOLEAN(0, "ignore-vmlinux", &symbol_conf.ignore_vmlinux,
+		    "don't load vmlinux even if found"),
+	OPT_BOOLEAN('K', "hide_kernel_symbols", &top.hide_kernel_symbols,
+		    "hide kernel symbols"),
+	OPT_CALLBACK('m', "mmap-pages", &opts->mmap_pages, "pages",
+		     "number of mmap data pages",
+		     perf_evlist__parse_mmap_pages),
+>>>>>>> refs/remotes/origin/master
 	OPT_INTEGER('r', "realtime", &top.realtime_prio,
 		    "collect data with this RT SCHED_FIFO priority"),
 	OPT_INTEGER('d', "delay", &top.delay_secs,
@@ -1884,6 +2468,7 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 			    "dump the symbol table used for profiling"),
 	OPT_INTEGER('f', "count-filter", &top.count_filter,
 		    "only display functions with more events than this"),
+<<<<<<< HEAD
 	OPT_BOOLEAN('g', "group", &top.group,
 			    "put the counters into a counter group"),
 	OPT_BOOLEAN('i', "inherit", &top.inherit,
@@ -1895,10 +2480,21 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 		    "zero history across updates"),
 	OPT_INTEGER('F', "freq", &top.freq,
 		    "profile at this frequency"),
+=======
+	OPT_BOOLEAN(0, "group", &opts->group,
+			    "put the counters into a counter group"),
+	OPT_BOOLEAN('i', "no-inherit", &opts->no_inherit,
+		    "child tasks do not inherit counters"),
+	OPT_STRING(0, "sym-annotate", &top.sym_filter, "symbol name",
+		    "symbol to annotate"),
+	OPT_BOOLEAN('z', "zero", &top.zero, "zero history across updates"),
+	OPT_UINTEGER('F', "freq", &opts->user_freq, "profile at this frequency"),
+>>>>>>> refs/remotes/origin/master
 	OPT_INTEGER('E', "entries", &top.print_entries,
 		    "display this many functions"),
 	OPT_BOOLEAN('U', "hide_user_symbols", &top.hide_user_symbols,
 		    "hide user symbols"),
+<<<<<<< HEAD
 <<<<<<< HEAD
 	OPT_BOOLEAN(0, "tui", &use_tui, "Use the TUI interface"),
 	OPT_BOOLEAN(0, "stdio", &use_stdio, "Use the stdio interface"),
@@ -1912,11 +2508,14 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 	struct perf_evsel *pos;
 	int status = -ENOMEM;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	OPT_BOOLEAN(0, "tui", &top.use_tui, "Use the TUI interface"),
 	OPT_BOOLEAN(0, "stdio", &top.use_stdio, "Use the stdio interface"),
 	OPT_INCR('v', "verbose", &verbose,
 		    "be more verbose (show counter open errors, etc)"),
 	OPT_STRING('s', "sort", &sort_order, "key[,key2...]",
+<<<<<<< HEAD
 		   "sort by key(s): pid, comm, dso, symbol, parent"),
 	OPT_BOOLEAN('n', "show-nr-samples", &symbol_conf.show_nr_samples,
 		    "Show a column with the number of samples"),
@@ -1924,6 +2523,24 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 		     "Display callchains using output_type (graph, flat, fractal, or none), min percent threshold and callchain order. "
 		     "Default: fractal,0.5,callee", &parse_callchain_opt,
 		     callchain_default_opt),
+=======
+		   "sort by key(s): pid, comm, dso, symbol, parent, weight, local_weight,"
+		   " abort, in_tx, transaction"),
+	OPT_BOOLEAN('n', "show-nr-samples", &symbol_conf.show_nr_samples,
+		    "Show a column with the number of samples"),
+	OPT_CALLBACK_NOOPT('g', NULL, &top.record_opts,
+			   NULL, "enables call-graph recording",
+			   &callchain_opt),
+	OPT_CALLBACK(0, "call-graph", &top.record_opts,
+		     "mode[,dump_size]", record_callchain_help,
+		     &parse_callchain_opt),
+	OPT_INTEGER(0, "max-stack", &top.max_stack,
+		    "Set the maximum stack depth when parsing the callchain. "
+		    "Default: " __stringify(PERF_MAX_STACK_DEPTH)),
+	OPT_CALLBACK(0, "ignore-callees", NULL, "regex",
+		   "ignore callees of these functions in call graphs",
+		   report_parse_ignore_callees_opt),
+>>>>>>> refs/remotes/origin/master
 	OPT_BOOLEAN(0, "show-total-period", &symbol_conf.show_total_period,
 		    "Show a column with the sum of periods"),
 	OPT_STRING(0, "dsos", &symbol_conf.dso_list_str, "dso[,dso...]",
@@ -1936,6 +2553,7 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 		    "Interleave source code with assembly code (default)"),
 	OPT_BOOLEAN(0, "asm-raw", &symbol_conf.annotate_asm_raw,
 		    "Display raw encoding of assembly instructions (default)"),
+<<<<<<< HEAD
 	OPT_STRING('M', "disassembler-style", &disassembler_style, "disassembler style",
 		   "Specify disassembler style (e.g. -M intel for intel syntax)"),
 	OPT_STRING('u', "uid", &top.uid_str, "user", "user to profile"),
@@ -1953,10 +2571,31 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 	symbol_conf.exclude_other = false;
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	OPT_STRING(0, "objdump", &objdump_path, "path",
+		    "objdump binary to use for disassembly and annotations"),
+	OPT_STRING('M', "disassembler-style", &disassembler_style, "disassembler style",
+		   "Specify disassembler style (e.g. -M intel for intel syntax)"),
+	OPT_STRING('u', "uid", &target->uid_str, "user", "user to profile"),
+	OPT_CALLBACK(0, "percent-limit", &top, "percent",
+		     "Don't show entries under that percent", parse_percent_limit),
+	OPT_END()
+	};
+	const char * const top_usage[] = {
+		"perf top [<options>]",
+		NULL
+	};
+
+	top.evlist = perf_evlist__new();
+	if (top.evlist == NULL)
+		return -ENOMEM;
+
+>>>>>>> refs/remotes/origin/master
 	argc = parse_options(argc, argv, options, top_usage, 0);
 	if (argc)
 		usage_with_options(top_usage, options);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
  	 * XXX For now start disabled, only using TUI if explicitely asked for.
@@ -1973,15 +2612,31 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 		sort_order = "dso,symbol";
 
 	setup_sorting(top_usage, options);
+=======
+	if (sort_order == default_sort_order)
+		sort_order = "dso,symbol";
+
+	if (setup_sorting() < 0) {
+		parse_options_usage(top_usage, options, "s", 1);
+		goto out_delete_evlist;
+	}
+
+	/* display thread wants entries to be collapsed in a different tree */
+	sort__need_collapse = 1;
+>>>>>>> refs/remotes/origin/master
 
 	if (top.use_stdio)
 		use_browser = 0;
 	else if (top.use_tui)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		use_browser = 1;
 
 	setup_browser(false);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* CPU and PID are mutually exclusive */
 	if (top.target_tid > 0 && top.cpu_list) {
@@ -2011,10 +2666,34 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 	if (perf_evlist__create_maps(top.evlist, top.target_pid,
 				     top.target_tid, top.uid, top.cpu_list) < 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	status = target__validate(target);
+	if (status) {
+		target__strerror(target, status, errbuf, BUFSIZ);
+		ui__warning("%s\n", errbuf);
+	}
+
+	status = target__parse_uid(target);
+	if (status) {
+		int saved_errno = errno;
+
+		target__strerror(target, status, errbuf, BUFSIZ);
+		ui__error("%s\n", errbuf);
+
+		status = -saved_errno;
+		goto out_delete_evlist;
+	}
+
+	if (target__none(target))
+		target->system_wide = true;
+
+	if (perf_evlist__create_maps(top.evlist, target) < 0)
+>>>>>>> refs/remotes/origin/master
 		usage_with_options(top_usage, options);
 
 	if (!top.evlist->nr_entries &&
 	    perf_evlist__add_default(top.evlist) < 0) {
+<<<<<<< HEAD
 		pr_err("Not enough memory for event selector list\n");
 		return -ENOMEM;
 	}
@@ -2080,11 +2759,31 @@ int cmd_top(int argc, const char **argv, const char *prefix __used)
 
 	symbol_conf.priv_size = sizeof(struct annotation);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ui__error("Not enough memory for event selector list\n");
+		goto out_delete_evlist;
+	}
+
+	symbol_conf.nr_events = top.evlist->nr_entries;
+
+	if (top.delay_secs < 1)
+		top.delay_secs = 1;
+
+	if (record_opts__config(opts)) {
+		status = -EINVAL;
+		goto out_delete_evlist;
+	}
+
+	top.sym_evsel = perf_evlist__first(top.evlist);
+
+	symbol_conf.priv_size = sizeof(struct annotation);
+>>>>>>> refs/remotes/origin/master
 
 	symbol_conf.try_vmlinux_path = (symbol_conf.vmlinux_name == NULL);
 	if (symbol__init() < 0)
 		return -1;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	get_term_dimensions(&winsize);
 	if (top.print_entries == 0) {
@@ -2104,6 +2803,9 @@ out_free_fd:
 	 * sort list.
 	 */
 	top.sort_has_symbols = sort_sym.list.next != NULL;
+=======
+	sort__setup_elide(stdout);
+>>>>>>> refs/remotes/origin/master
 
 	get_term_dimensions(&top.winsize);
 	if (top.print_entries == 0) {
@@ -2118,7 +2820,10 @@ out_free_fd:
 	status = __cmd_top(&top);
 
 out_delete_evlist:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	perf_evlist__delete(top.evlist);
 
 	return status;

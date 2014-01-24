@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 #include "ptrace_mm.c"
 #else
 #include "ptrace_no.c"
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  linux/arch/m68k/kernel/ptrace.c
  *
@@ -293,7 +296,11 @@ asmlinkage void syscall_trace(void)
 	}
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_COLDFIRE
+=======
+#if defined(CONFIG_COLDFIRE) || !defined(CONFIG_MMU)
+>>>>>>> refs/remotes/origin/master
 asmlinkage int syscall_trace_enter(void)
 {
 	int ret = 0;
@@ -309,4 +316,7 @@ asmlinkage void syscall_trace_leave(void)
 		tracehook_report_syscall_exit(task_pt_regs(current), 0);
 }
 #endif /* CONFIG_COLDFIRE */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

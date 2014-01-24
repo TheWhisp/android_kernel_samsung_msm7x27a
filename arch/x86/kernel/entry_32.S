@@ -43,9 +43,13 @@
 
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/err.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/err.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/thread_info.h>
 #include <asm/irqflags.h>
 #include <asm/errno.h>
@@ -59,9 +63,15 @@
 #include <asm/irq_vectors.h>
 #include <asm/cpufeature.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/alternative-asm.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/alternative-asm.h>
+#include <asm/asm.h>
+#include <asm/smap.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Avoid __ASSEMBLER__'ifying <linux/audit.h> just for this.  */
 #include <linux/elf-em.h>
@@ -89,10 +99,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define nr_syscalls ((syscall_table_size)/4)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PREEMPT
 #define preempt_stop(clobbers)	DISABLE_INTERRUPTS(clobbers); TRACE_IRQS_OFF
 #else
@@ -162,10 +175,15 @@
 .pushsection .fixup, "ax"
 99:	movl $0, (%esp)
 	jmp 98b
+<<<<<<< HEAD
 .section __ex_table, "a"
 	.align 4
 	.long 98b, 99b
 .popsection
+=======
+.popsection
+	_ASM_EXTABLE(98b,99b)
+>>>>>>> refs/remotes/origin/master
 .endm
 
 .macro PTGS_TO_GS
@@ -175,10 +193,15 @@
 .pushsection .fixup, "ax"
 99:	movl $0, PT_GS(%esp)
 	jmp 98b
+<<<<<<< HEAD
 .section __ex_table, "a"
 	.align 4
 	.long 98b, 99b
 .popsection
+=======
+.popsection
+	_ASM_EXTABLE(98b,99b)
+>>>>>>> refs/remotes/origin/master
 .endm
 
 .macro GS_TO_REG reg
@@ -260,12 +283,19 @@
 	jmp 2b
 6:	movl $0, (%esp)
 	jmp 3b
+<<<<<<< HEAD
 .section __ex_table, "a"
 	.align 4
 	.long 1b, 4b
 	.long 2b, 5b
 	.long 3b, 6b
 .popsection
+=======
+.popsection
+	_ASM_EXTABLE(1b,4b)
+	_ASM_EXTABLE(2b,5b)
+	_ASM_EXTABLE(3b,6b)
+>>>>>>> refs/remotes/origin/master
 	POP_GS_EX
 .endm
 
@@ -314,6 +344,24 @@ ENTRY(ret_from_fork)
 	CFI_ENDPROC
 END(ret_from_fork)
 
+<<<<<<< HEAD
+=======
+ENTRY(ret_from_kernel_thread)
+	CFI_STARTPROC
+	pushl_cfi %eax
+	call schedule_tail
+	GET_THREAD_INFO(%ebp)
+	popl_cfi %eax
+	pushl_cfi $0x0202		# Reset kernel eflags
+	popfl_cfi
+	movl PT_EBP(%esp),%eax
+	call *PT_EBX(%esp)
+	movl $0,PT_EAX(%esp)
+	jmp syscall_exit
+	CFI_ENDPROC
+ENDPROC(ret_from_kernel_thread)
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Interrupt exit functions should be protected against kprobes
  */
@@ -332,15 +380,22 @@ ret_from_exception:
 	preempt_stop(CLBR_ANY)
 ret_from_intr:
 	GET_THREAD_INFO(%ebp)
+<<<<<<< HEAD
 resume_userspace_sig:
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_VM86
 	movl PT_EFLAGS(%esp), %eax	# mix EFLAGS and CS
 	movb PT_CS(%esp), %al
 	andl $(X86_EFLAGS_VM | SEGMENT_RPL_MASK), %eax
 #else
 	/*
+<<<<<<< HEAD
 	 * We can be coming here from a syscall done in the kernel space,
 	 * e.g. a failed kernel_execve().
+=======
+	 * We can be coming here from child spawned by kernel_thread().
+>>>>>>> refs/remotes/origin/master
 	 */
 	movl PT_CS(%esp), %eax
 	andl $SEGMENT_RPL_MASK, %eax
@@ -364,12 +419,18 @@ END(ret_from_exception)
 #ifdef CONFIG_PREEMPT
 ENTRY(resume_kernel)
 	DISABLE_INTERRUPTS(CLBR_ANY)
+<<<<<<< HEAD
 	cmpl $0,TI_preempt_count(%ebp)	# non-zero preempt_count ?
 	jnz restore_all
 need_resched:
 	movl TI_flags(%ebp), %ecx	# need_resched set ?
 	testb $_TIF_NEED_RESCHED, %cl
 	jz restore_all
+=======
+need_resched:
+	cmpl $0,PER_CPU_VAR(__preempt_count)
+	jnz restore_all
+>>>>>>> refs/remotes/origin/master
 	testl $X86_EFLAGS_IF,PT_EFLAGS(%esp)	# interrupts off (exception path) ?
 	jz restore_all
 	call preempt_schedule_irq
@@ -424,12 +485,20 @@ sysenter_past_esp:
  */
 	cmpl $__PAGE_OFFSET-3,%ebp
 	jae syscall_fault
+<<<<<<< HEAD
 1:	movl (%ebp),%ebp
 	movl %ebp,PT_EBP(%esp)
 .section __ex_table,"a"
 	.align 4
 	.long 1b,syscall_fault
 .previous
+=======
+	ASM_STAC
+1:	movl (%ebp),%ebp
+	ASM_CLAC
+	movl %ebp,PT_EBP(%esp)
+	_ASM_EXTABLE(1b,syscall_fault)
+>>>>>>> refs/remotes/origin/master
 
 	GET_THREAD_INFO(%ebp)
 
@@ -437,10 +506,14 @@ sysenter_past_esp:
 	jnz sysenter_audit
 sysenter_do_call:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmpl $(nr_syscalls), %eax
 =======
 	cmpl $(NR_syscalls), %eax
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmpl $(NR_syscalls), %eax
+>>>>>>> refs/remotes/origin/master
 	jae syscall_badsys
 	call *sys_call_table(,%eax,4)
 	movl %eax,PT_EAX(%esp)
@@ -473,10 +546,14 @@ sysenter_audit:
 	movl %eax,%edx			/* 2nd arg: syscall number */
 	movl $AUDIT_ARCH_I386,%eax	/* 1st arg: audit arch */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	call audit_syscall_entry
 =======
 	call __audit_syscall_entry
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	call __audit_syscall_entry
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi %ebx
 	movl PT_EAX(%esp),%eax		/* reload syscall number */
 	jmp sysenter_do_call
@@ -488,17 +565,23 @@ sysexit_audit:
 	ENABLE_INTERRUPTS(CLBR_ANY)
 	movl %eax,%edx		/* second arg, syscall return value */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmpl $0,%eax		/* is it < 0? */
 	setl %al		/* 1 if so, 0 if not */
 	movzbl %al,%eax		/* zero-extend that */
 	inc %eax /* first arg, 0->1(AUDITSC_SUCCESS), 1->2(AUDITSC_FAILURE) */
 	call audit_syscall_exit
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	cmpl $-MAX_ERRNO,%eax	/* is it an error ? */
 	setbe %al		/* 1 if so, 0 if not */
 	movzbl %al,%eax		/* zero-extend that */
 	call __audit_syscall_exit
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	DISABLE_INTERRUPTS(CLBR_ANY)
 	TRACE_IRQS_OFF
 	movl TI_flags(%ebp), %ecx
@@ -512,10 +595,15 @@ sysexit_audit:
 .pushsection .fixup,"ax"
 2:	movl $0,PT_FS(%esp)
 	jmp 1b
+<<<<<<< HEAD
 .section __ex_table,"a"
 	.align 4
 	.long 1b,2b
 .popsection
+=======
+.popsection
+	_ASM_EXTABLE(1b,2b)
+>>>>>>> refs/remotes/origin/master
 	PTGS_TO_GS_EX
 ENDPROC(ia32_sysenter_target)
 
@@ -526,6 +614,10 @@ ENDPROC(ia32_sysenter_target)
 	# system call handler stub
 ENTRY(system_call)
 	RING0_INT_FRAME			# can't unwind into user space anyway
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi %eax			# save orig_eax
 	SAVE_ALL
 	GET_THREAD_INFO(%ebp)
@@ -533,10 +625,14 @@ ENTRY(system_call)
 	testl $_TIF_WORK_SYSCALL_ENTRY,TI_flags(%ebp)
 	jnz syscall_trace_entry
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmpl $(nr_syscalls), %eax
 =======
 	cmpl $(NR_syscalls), %eax
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmpl $(NR_syscalls), %eax
+>>>>>>> refs/remotes/origin/master
 	jae syscall_badsys
 syscall_call:
 	call *sys_call_table(,%eax,4)
@@ -574,10 +670,14 @@ ENTRY(iret_exc)
 	pushl $do_iret_error
 	jmp error_code
 .previous
+<<<<<<< HEAD
 .section __ex_table,"a"
 	.align 4
 	.long irq_return,iret_exc
 .previous
+=======
+	_ASM_EXTABLE(irq_return,iret_exc)
+>>>>>>> refs/remotes/origin/master
 
 	CFI_RESTORE_STATE
 ldt_ss:
@@ -658,6 +758,7 @@ work_notifysig:				# deal with pending signals and
 	jne work_notifysig_v86		# returning to kernel-space or
 					# vm86-space
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	TRACE_IRQS_ON
 	ENABLE_INTERRUPTS(CLBR_NONE)
@@ -666,12 +767,30 @@ work_notifysig:				# deal with pending signals and
 	call do_notify_resume
 	jmp resume_userspace_sig
 
+=======
+1:
+#else
+	movl %esp, %eax
+#endif
+	TRACE_IRQS_ON
+	ENABLE_INTERRUPTS(CLBR_NONE)
+	movb PT_CS(%esp), %bl
+	andb $SEGMENT_RPL_MASK, %bl
+	cmpb $USER_RPL, %bl
+	jb resume_kernel
+	xorl %edx, %edx
+	call do_notify_resume
+	jmp resume_userspace
+
+#ifdef CONFIG_VM86
+>>>>>>> refs/remotes/origin/master
 	ALIGN
 work_notifysig_v86:
 	pushl_cfi %ecx			# save ti_flags for do_notify_resume
 	call save_v86_state		# %eax contains pt_regs pointer
 	popl_cfi %ecx
 	movl %eax, %esp
+<<<<<<< HEAD
 #else
 	movl %esp, %eax
 #endif
@@ -683,6 +802,10 @@ work_notifysig_v86:
 	xorl %edx, %edx
 	call do_notify_resume
 	jmp resume_userspace_sig
+=======
+	jmp 1b
+#endif
+>>>>>>> refs/remotes/origin/master
 END(work_pending)
 
 	# perform syscall exit tracing
@@ -693,10 +816,14 @@ syscall_trace_entry:
 	call syscall_trace_enter
 	/* What it returned is what we'll actually use.  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cmpl $(nr_syscalls), %eax
 =======
 	cmpl $(NR_syscalls), %eax
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cmpl $(NR_syscalls), %eax
+>>>>>>> refs/remotes/origin/master
 	jnae syscall_call
 	jmp syscall_exit
 END(syscall_trace_entry)
@@ -717,6 +844,10 @@ END(syscall_exit_work)
 
 	RING0_INT_FRAME			# can't unwind into user space anyway
 syscall_fault:
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	GET_THREAD_INFO(%ebp)
 	movl $-EFAULT,PT_EAX(%esp)
 	jmp resume_userspace
@@ -732,6 +863,7 @@ END(syscall_badsys)
  */
 	.popsection
 
+<<<<<<< HEAD
 /*
  * System calls that need a pt_regs pointer.
  */
@@ -828,6 +960,8 @@ ENTRY(ptregs_clone)
 	CFI_ENDPROC
 ENDPROC(ptregs_clone)
 
+=======
+>>>>>>> refs/remotes/origin/master
 .macro FIXUP_ESPFIX_STACK
 /*
  * Switch back for ESPFIX stack to the normal zerobased stack
@@ -903,6 +1037,10 @@ END(interrupt)
  */
 	.p2align CONFIG_X86_L1_CACHE_SHIFT
 common_interrupt:
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	addl $-0x80,(%esp)	/* Adjust vector into the [-256,-1] range */
 	SAVE_ALL
 	TRACE_IRQS_OFF
@@ -919,6 +1057,10 @@ ENDPROC(common_interrupt)
 #define BUILD_INTERRUPT3(name, nr, fn)	\
 ENTRY(name)				\
 	RING0_INT_FRAME;		\
+<<<<<<< HEAD
+=======
+	ASM_CLAC;			\
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $~(nr);		\
 	SAVE_ALL;			\
 	TRACE_IRQS_OFF			\
@@ -928,13 +1070,31 @@ ENTRY(name)				\
 	CFI_ENDPROC;			\
 ENDPROC(name)
 
+<<<<<<< HEAD
 #define BUILD_INTERRUPT(name, nr)	BUILD_INTERRUPT3(name, nr, smp_##name)
+=======
+
+#ifdef CONFIG_TRACING
+#define TRACE_BUILD_INTERRUPT(name, nr)		\
+	BUILD_INTERRUPT3(trace_##name, nr, smp_trace_##name)
+#else
+#define TRACE_BUILD_INTERRUPT(name, nr)
+#endif
+
+#define BUILD_INTERRUPT(name, nr) \
+	BUILD_INTERRUPT3(name, nr, smp_##name); \
+	TRACE_BUILD_INTERRUPT(name, nr)
+>>>>>>> refs/remotes/origin/master
 
 /* The include is where all of the SMP etc. interrupts come from */
 #include <asm/entry_arch.h>
 
 ENTRY(coprocessor_error)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 	pushl_cfi $do_coprocessor_error
 	jmp error_code
@@ -943,12 +1103,17 @@ END(coprocessor_error)
 
 ENTRY(simd_coprocessor_error)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 #ifdef CONFIG_X86_INVD_BUG
 	/* AMD 486 bug: invd from userspace calls exception 19 instead of #GP */
 661:	pushl_cfi $do_general_protection
 662:
 .section .altinstructions,"a"
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.balign 4
 	.long 661b
@@ -959,6 +1124,9 @@ ENTRY(simd_coprocessor_error)
 =======
 	altinstruction_entry 661b, 663f, X86_FEATURE_XMM, 662b-661b, 664f-663f
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	altinstruction_entry 661b, 663f, X86_FEATURE_XMM, 662b-661b, 664f-663f
+>>>>>>> refs/remotes/origin/master
 .previous
 .section .altinstr_replacement,"ax"
 663:	pushl $do_simd_coprocessor_error
@@ -973,6 +1141,10 @@ END(simd_coprocessor_error)
 
 ENTRY(device_not_available)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $-1			# mark this as an int
 	pushl_cfi $do_device_not_available
 	jmp error_code
@@ -982,10 +1154,14 @@ END(device_not_available)
 #ifdef CONFIG_PARAVIRT
 ENTRY(native_iret)
 	iret
+<<<<<<< HEAD
 .section __ex_table,"a"
 	.align 4
 	.long native_iret, iret_exc
 .previous
+=======
+	_ASM_EXTABLE(native_iret, iret_exc)
+>>>>>>> refs/remotes/origin/master
 END(native_iret)
 
 ENTRY(native_irq_enable_sysexit)
@@ -996,6 +1172,10 @@ END(native_irq_enable_sysexit)
 
 ENTRY(overflow)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 	pushl_cfi $do_overflow
 	jmp error_code
@@ -1004,6 +1184,10 @@ END(overflow)
 
 ENTRY(bounds)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 	pushl_cfi $do_bounds
 	jmp error_code
@@ -1012,6 +1196,10 @@ END(bounds)
 
 ENTRY(invalid_op)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 	pushl_cfi $do_invalid_op
 	jmp error_code
@@ -1020,6 +1208,10 @@ END(invalid_op)
 
 ENTRY(coprocessor_segment_overrun)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 	pushl_cfi $do_coprocessor_segment_overrun
 	jmp error_code
@@ -1028,6 +1220,10 @@ END(coprocessor_segment_overrun)
 
 ENTRY(invalid_TSS)
 	RING0_EC_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $do_invalid_TSS
 	jmp error_code
 	CFI_ENDPROC
@@ -1035,6 +1231,10 @@ END(invalid_TSS)
 
 ENTRY(segment_not_present)
 	RING0_EC_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $do_segment_not_present
 	jmp error_code
 	CFI_ENDPROC
@@ -1042,6 +1242,10 @@ END(segment_not_present)
 
 ENTRY(stack_segment)
 	RING0_EC_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $do_stack_segment
 	jmp error_code
 	CFI_ENDPROC
@@ -1049,6 +1253,10 @@ END(stack_segment)
 
 ENTRY(alignment_check)
 	RING0_EC_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $do_alignment_check
 	jmp error_code
 	CFI_ENDPROC
@@ -1056,6 +1264,10 @@ END(alignment_check)
 
 ENTRY(divide_error)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0			# no error code
 	pushl_cfi $do_divide_error
 	jmp error_code
@@ -1065,6 +1277,10 @@ END(divide_error)
 #ifdef CONFIG_X86_MCE
 ENTRY(machine_check)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 	pushl_cfi machine_check_vector
 	jmp error_code
@@ -1074,6 +1290,10 @@ END(machine_check)
 
 ENTRY(spurious_interrupt_bug)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $0
 	pushl_cfi $do_spurious_interrupt_bug
 	jmp error_code
@@ -1084,6 +1304,7 @@ END(spurious_interrupt_bug)
  */
 	.popsection
 
+<<<<<<< HEAD
 ENTRY(kernel_thread_helper)
 	pushl $0		# fake return address for unwinder
 	CFI_STARTPROC
@@ -1094,6 +1315,8 @@ ENTRY(kernel_thread_helper)
 	CFI_ENDPROC
 ENDPROC(kernel_thread_helper)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_XEN
 /* Xen doesn't set %esp to be precisely what the normal sysenter
    entrypoint expects, so fix it up before using the normal path. */
@@ -1175,6 +1398,7 @@ ENTRY(xen_failsafe_callback)
 	movl %eax,16(%esp)
 	jmp 4b
 .previous
+<<<<<<< HEAD
 .section __ex_table,"a"
 	.align 4
 	.long 1b,6b
@@ -1185,10 +1409,29 @@ ENTRY(xen_failsafe_callback)
 ENDPROC(xen_failsafe_callback)
 
 BUILD_INTERRUPT3(xen_hvm_callback_vector, XEN_HVM_EVTCHN_CALLBACK,
+=======
+	_ASM_EXTABLE(1b,6b)
+	_ASM_EXTABLE(2b,7b)
+	_ASM_EXTABLE(3b,8b)
+	_ASM_EXTABLE(4b,9b)
+ENDPROC(xen_failsafe_callback)
+
+BUILD_INTERRUPT3(xen_hvm_callback_vector, HYPERVISOR_CALLBACK_VECTOR,
+>>>>>>> refs/remotes/origin/master
 		xen_evtchn_do_upcall)
 
 #endif	/* CONFIG_XEN */
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_HYPERV)
+
+BUILD_INTERRUPT3(hyperv_callback_vector, HYPERVISOR_CALLBACK_VECTOR,
+	hyperv_vector_handler)
+
+#endif /* CONFIG_HYPERV */
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FUNCTION_TRACER
 #ifdef CONFIG_DYNAMIC_FTRACE
 
@@ -1203,17 +1446,32 @@ ENTRY(ftrace_caller)
 	pushl %eax
 	pushl %ecx
 	pushl %edx
+<<<<<<< HEAD
 	movl 0xc(%esp), %eax
 	movl 0x4(%ebp), %edx
+=======
+	pushl $0	/* Pass NULL as regs pointer */
+	movl 4*4(%esp), %eax
+	movl 0x4(%ebp), %edx
+	movl function_trace_op, %ecx
+>>>>>>> refs/remotes/origin/master
 	subl $MCOUNT_INSN_SIZE, %eax
 
 .globl ftrace_call
 ftrace_call:
 	call ftrace_stub
 
+<<<<<<< HEAD
 	popl %edx
 	popl %ecx
 	popl %eax
+=======
+	addl $4,%esp	/* skip NULL pointer */
+	popl %edx
+	popl %ecx
+	popl %eax
+ftrace_ret:
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 .globl ftrace_graph_call
 ftrace_graph_call:
@@ -1225,9 +1483,83 @@ ftrace_stub:
 	ret
 END(ftrace_caller)
 
+<<<<<<< HEAD
 #else /* ! CONFIG_DYNAMIC_FTRACE */
 
 ENTRY(mcount)
+=======
+ENTRY(ftrace_regs_caller)
+	pushf	/* push flags before compare (in cs location) */
+	cmpl $0, function_trace_stop
+	jne ftrace_restore_flags
+
+	/*
+	 * i386 does not save SS and ESP when coming from kernel.
+	 * Instead, to get sp, &regs->sp is used (see ptrace.h).
+	 * Unfortunately, that means eflags must be at the same location
+	 * as the current return ip is. We move the return ip into the
+	 * ip location, and move flags into the return ip location.
+	 */
+	pushl 4(%esp)	/* save return ip into ip slot */
+
+	pushl $0	/* Load 0 into orig_ax */
+	pushl %gs
+	pushl %fs
+	pushl %es
+	pushl %ds
+	pushl %eax
+	pushl %ebp
+	pushl %edi
+	pushl %esi
+	pushl %edx
+	pushl %ecx
+	pushl %ebx
+
+	movl 13*4(%esp), %eax	/* Get the saved flags */
+	movl %eax, 14*4(%esp)	/* Move saved flags into regs->flags location */
+				/* clobbering return ip */
+	movl $__KERNEL_CS,13*4(%esp)
+
+	movl 12*4(%esp), %eax	/* Load ip (1st parameter) */
+	subl $MCOUNT_INSN_SIZE, %eax	/* Adjust ip */
+	movl 0x4(%ebp), %edx	/* Load parent ip (2nd parameter) */
+	movl function_trace_op, %ecx /* Save ftrace_pos in 3rd parameter */
+	pushl %esp		/* Save pt_regs as 4th parameter */
+
+GLOBAL(ftrace_regs_call)
+	call ftrace_stub
+
+	addl $4, %esp		/* Skip pt_regs */
+	movl 14*4(%esp), %eax	/* Move flags back into cs */
+	movl %eax, 13*4(%esp)	/* Needed to keep addl from modifying flags */
+	movl 12*4(%esp), %eax	/* Get return ip from regs->ip */
+	movl %eax, 14*4(%esp)	/* Put return ip back for ret */
+
+	popl %ebx
+	popl %ecx
+	popl %edx
+	popl %esi
+	popl %edi
+	popl %ebp
+	popl %eax
+	popl %ds
+	popl %es
+	popl %fs
+	popl %gs
+	addl $8, %esp		/* Skip orig_ax and ip */
+	popf			/* Pop flags at end (no addl to corrupt flags) */
+	jmp ftrace_ret
+
+ftrace_restore_flags:
+	popf
+	jmp  ftrace_stub
+#else /* ! CONFIG_DYNAMIC_FTRACE */
+
+ENTRY(mcount)
+	cmpl $__PAGE_OFFSET, %esp
+	jb ftrace_stub		/* Paging not enabled yet? */
+
+>>>>>>> refs/remotes/origin/master
 	cmpl $0, function_trace_stop
 	jne  ftrace_stub
 
@@ -1265,9 +1597,12 @@ END(mcount)
 
 #ifdef CONFIG_FUNCTION_GRAPH_TRACER
 ENTRY(ftrace_graph_caller)
+<<<<<<< HEAD
 	cmpl $0, function_trace_stop
 	jne ftrace_stub
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pushl %eax
 	pushl %ecx
 	pushl %edx
@@ -1295,6 +1630,7 @@ return_to_handler:
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .section .rodata,"a"
 #include "syscall_table_32.S"
 
@@ -1302,13 +1638,31 @@ syscall_table_size=(.-sys_call_table)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Some functions should be protected against kprobes
  */
 	.pushsection .kprobes.text, "ax"
 
+<<<<<<< HEAD
 ENTRY(page_fault)
 	RING0_EC_FRAME
+=======
+#ifdef CONFIG_TRACING
+ENTRY(trace_page_fault)
+	RING0_EC_FRAME
+	ASM_CLAC
+	pushl_cfi $trace_do_page_fault
+	jmp error_code
+	CFI_ENDPROC
+END(trace_page_fault)
+#endif
+
+ENTRY(page_fault)
+	RING0_EC_FRAME
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $do_page_fault
 	ALIGN
 error_code:
@@ -1381,6 +1735,10 @@ END(page_fault)
 
 ENTRY(debug)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	cmpl $ia32_sysenter_target,(%esp)
 	jne debug_stack_correct
 	FIX_STACK 12, debug_stack_correct, debug_esp_fix_insn
@@ -1405,6 +1763,10 @@ END(debug)
  */
 ENTRY(nmi)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi %eax
 	movl %ss, %eax
 	cmpw $__ESPFIX_SS, %ax
@@ -1475,6 +1837,10 @@ END(nmi)
 
 ENTRY(int3)
 	RING0_INT_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $-1			# mark this as an int
 	SAVE_ALL
 	TRACE_IRQS_OFF
@@ -1495,6 +1861,10 @@ END(general_protection)
 #ifdef CONFIG_KVM_GUEST
 ENTRY(async_page_fault)
 	RING0_EC_FRAME
+<<<<<<< HEAD
+=======
+	ASM_CLAC
+>>>>>>> refs/remotes/origin/master
 	pushl_cfi $do_async_page_fault
 	jmp error_code
 	CFI_ENDPROC

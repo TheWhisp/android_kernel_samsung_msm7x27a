@@ -362,12 +362,17 @@ static unsigned long via_mode_filter(struct ata_device *dev, unsigned long mask)
 		ata_id_c_string(dev->id, model_num, ATA_ID_PROD, sizeof(model_num));
 		if (strcmp(model_num, "TS64GSSD25-M") == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING,
 	"disabling UDMA mode due to reported lockups with this device.\n");
 =======
 			ata_dev_warn(dev,
 	"disabling UDMA mode due to reported lockups with this device\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev,
+	"disabling UDMA mode due to reported lockups with this device\n");
+>>>>>>> refs/remotes/origin/master
 			mask &= ~ ATA_MASK_UDMA;
 		}
 	}
@@ -375,10 +380,14 @@ static unsigned long via_mode_filter(struct ata_device *dev, unsigned long mask)
 	if (dev->class == ATA_DEV_ATAPI &&
 	    dmi_check_system(no_atapi_dma_dmi_table)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING, "controller locks up on ATAPI DMA, forcing PIO\n");
 =======
 		ata_dev_warn(dev, "controller locks up on ATAPI DMA, forcing PIO\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "controller locks up on ATAPI DMA, forcing PIO\n");
+>>>>>>> refs/remotes/origin/master
 		mask &= ATA_MASK_PIO;
 	}
 
@@ -519,7 +528,10 @@ static void via_config_fifo(struct pci_dev *pdev, unsigned int flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void via_fixup(struct pci_dev *pdev, const struct via_isa_bridge *config)
 {
 	u32 timing;
@@ -541,7 +553,10 @@ static void via_fixup(struct pci_dev *pdev, const struct via_isa_bridge *config)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	via_init_one		-	discovery callback
  *	@pdev: PCI device
@@ -603,6 +618,7 @@ static int via_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	struct pci_dev *isa;
 	const struct via_isa_bridge *config;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int printed_version;
 	u8 enable;
 	u32 timing;
@@ -612,12 +628,17 @@ static int via_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	if (!printed_version++)
 		dev_printk(KERN_DEBUG, &pdev->dev, "version " DRV_VERSION "\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 enable;
 	unsigned long flags = id->driver_data;
 	int rc;
 
 	ata_print_version_once(&pdev->dev, DRV_VERSION);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rc = pcim_enable_device(pdev);
 	if (rc)
@@ -653,11 +674,14 @@ static int via_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Initialise the FIFO for the enabled channels. */
 	via_config_fifo(pdev, config->flags);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Clock set up */
 	switch (config->udma_mask) {
 	case 0x00:
@@ -684,6 +708,7 @@ static int via_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
  	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (config->flags & VIA_BAD_CLK66) {
 		/* Disable the 66MHz clock on problem devices */
 		pci_read_config_dword(pdev, 0x50, &timing);
@@ -693,6 +718,9 @@ static int via_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 =======
 	via_fixup(pdev, config);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	via_fixup(pdev, config);
+>>>>>>> refs/remotes/origin/master
 
 	/* We have established the device type, now fire it up */
 	return ata_pci_bmdma_init_one(pdev, ppi, &via_sht, (void *)config, 0);
@@ -712,18 +740,23 @@ static int via_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
 static int via_reinit_one(struct pci_dev *pdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 timing;
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
 	const struct via_isa_bridge *config = host->private_data;
 =======
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	via_config_fifo(pdev, config->flags);
 
@@ -742,6 +775,9 @@ static int via_reinit_one(struct pci_dev *pdev)
 =======
 	via_fixup(pdev, host->private_data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	via_fixup(pdev, host->private_data);
+>>>>>>> refs/remotes/origin/master
 
 	ata_host_resume(host);
 	return 0;
@@ -772,6 +808,7 @@ static struct pci_driver via_pci_driver = {
 #endif
 };
 
+<<<<<<< HEAD
 static int __init via_init(void)
 {
 	return pci_register_driver(&via_pci_driver);
@@ -781,12 +818,18 @@ static void __exit via_exit(void)
 {
 	pci_unregister_driver(&via_pci_driver);
 }
+=======
+module_pci_driver(via_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for VIA PATA");
 MODULE_LICENSE("GPL");
 MODULE_DEVICE_TABLE(pci, via);
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(via_init);
 module_exit(via_exit);
+=======
+>>>>>>> refs/remotes/origin/master

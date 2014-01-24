@@ -16,9 +16,13 @@
 
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include "hw.h"
 #include "hw-ops.h"
 
@@ -107,11 +111,14 @@ static const struct ani_cck_level_entry cck_level_table[] = {
 #define ATH9K_ANI_CCK_DEF_LEVEL \
 	2 /* default level - matches the INI settings */
 
+<<<<<<< HEAD
 static bool use_new_ani(struct ath_hw *ah)
 {
 	return AR_SREV_9300_20_OR_LATER(ah) || modparam_force_new_ani;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static void ath9k_hw_update_mibstats(struct ath_hw *ah,
 				     struct ath9k_mib_stats *stats)
 {
@@ -125,6 +132,7 @@ static void ath9k_hw_update_mibstats(struct ath_hw *ah,
 static void ath9k_ani_restart(struct ath_hw *ah)
 {
 	struct ar5416AniState *aniState;
+<<<<<<< HEAD
 	struct ath_common *common = ath9k_hw_common(ah);
 	u32 ofdm_base = 0, cck_base = 0;
 
@@ -151,6 +159,19 @@ static void ath9k_ani_restart(struct ath_hw *ah)
 
 	REG_WRITE(ah, AR_PHY_ERR_1, ofdm_base);
 	REG_WRITE(ah, AR_PHY_ERR_2, cck_base);
+=======
+
+	if (!ah->curchan)
+		return;
+
+	aniState = &ah->ani;
+	aniState->listenTime = 0;
+
+	ENABLE_REGWRITE_BUFFER(ah);
+
+	REG_WRITE(ah, AR_PHY_ERR_1, 0);
+	REG_WRITE(ah, AR_PHY_ERR_2, 0);
+>>>>>>> refs/remotes/origin/master
 	REG_WRITE(ah, AR_PHY_ERR_MASK_1, AR_PHY_ERR_OFDM_TIMING);
 	REG_WRITE(ah, AR_PHY_ERR_MASK_2, AR_PHY_ERR_CCK_TIMING);
 
@@ -162,6 +183,7 @@ static void ath9k_ani_restart(struct ath_hw *ah)
 	aniState->cckPhyErrCount = 0;
 }
 
+<<<<<<< HEAD
 static void ath9k_hw_ani_ofdm_err_trigger_old(struct ath_hw *ah)
 {
 	struct ieee80211_conf *conf = &ath9k_hw_common(ah)->hw->conf;
@@ -292,6 +314,26 @@ static void ath9k_hw_set_ofdm_nil(struct ath_hw *ah, u8 immunityLevel)
 	if (aniState->update_ani)
 		aniState->ofdmNoiseImmunityLevel = immunityLevel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Adjust the OFDM Noise Immunity Level */
+static void ath9k_hw_set_ofdm_nil(struct ath_hw *ah, u8 immunityLevel,
+				  bool scan)
+{
+	struct ar5416AniState *aniState = &ah->ani;
+	struct ath_common *common = ath9k_hw_common(ah);
+	const struct ani_ofdm_level_entry *entry_ofdm;
+	const struct ani_cck_level_entry *entry_cck;
+	bool weak_sig;
+
+	ath_dbg(common, ANI, "**** ofdmlevel %d=>%d, rssi=%d[lo=%d hi=%d]\n",
+		aniState->ofdmNoiseImmunityLevel,
+		immunityLevel, BEACON_RSSI(ah),
+		ATH9K_ANI_RSSI_THR_LOW,
+		ATH9K_ANI_RSSI_THR_HIGH);
+
+	if (!scan)
+		aniState->ofdmNoiseImmunityLevel = immunityLevel;
+>>>>>>> refs/remotes/origin/master
 
 	entry_ofdm = &ofdm_level_table[aniState->ofdmNoiseImmunityLevel];
 	entry_cck = &cck_level_table[aniState->cckNoiseImmunityLevel];
@@ -307,6 +349,7 @@ static void ath9k_hw_set_ofdm_nil(struct ath_hw *ah, u8 immunityLevel)
 				     ATH9K_ANI_FIRSTEP_LEVEL,
 				     entry_ofdm->fir_step_level);
 
+<<<<<<< HEAD
 	if ((ah->opmode != NL80211_IFTYPE_STATION &&
 	     ah->opmode != NL80211_IFTYPE_ADHOC) ||
 	    aniState->noiseFloor <= aniState->rssiThrHigh) {
@@ -320,6 +363,29 @@ static void ath9k_hw_set_ofdm_nil(struct ath_hw *ah, u8 immunityLevel)
 			ath9k_hw_ani_control(ah,
 				ATH9K_ANI_OFDM_WEAK_SIGNAL_DETECTION,
 				entry_ofdm->ofdm_weak_signal_on);
+=======
+	weak_sig = entry_ofdm->ofdm_weak_signal_on;
+	if (ah->opmode == NL80211_IFTYPE_STATION &&
+	    BEACON_RSSI(ah) <= ATH9K_ANI_RSSI_THR_HIGH)
+		weak_sig = true;
+
+	/*
+	 * OFDM Weak signal detection is always enabled for AP mode.
+	 */
+	if (ah->opmode != NL80211_IFTYPE_AP &&
+	    aniState->ofdmWeakSigDetect != weak_sig) {
+		ath9k_hw_ani_control(ah,
+				     ATH9K_ANI_OFDM_WEAK_SIGNAL_DETECTION,
+				     entry_ofdm->ofdm_weak_signal_on);
+	}
+
+	if (aniState->ofdmNoiseImmunityLevel >= ATH9K_ANI_OFDM_DEF_LEVEL) {
+		ah->config.ofdm_trig_high = ATH9K_ANI_OFDM_TRIG_HIGH;
+		ah->config.ofdm_trig_low = ATH9K_ANI_OFDM_TRIG_LOW_ABOVE_INI;
+	} else {
+		ah->config.ofdm_trig_high = ATH9K_ANI_OFDM_TRIG_HIGH_BELOW_INI;
+		ah->config.ofdm_trig_low = ATH9K_ANI_OFDM_TRIG_LOW;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -327,6 +393,7 @@ static void ath9k_hw_ani_ofdm_err_trigger(struct ath_hw *ah)
 {
 	struct ar5416AniState *aniState;
 
+<<<<<<< HEAD
 	if (!DO_ANI(ah))
 		return;
 
@@ -339,18 +406,35 @@ static void ath9k_hw_ani_ofdm_err_trigger(struct ath_hw *ah)
 
 	if (aniState->ofdmNoiseImmunityLevel < ATH9K_ANI_OFDM_MAX_LEVEL)
 		ath9k_hw_set_ofdm_nil(ah, aniState->ofdmNoiseImmunityLevel + 1);
+=======
+	if (!ah->curchan)
+		return;
+
+	aniState = &ah->ani;
+
+	if (aniState->ofdmNoiseImmunityLevel < ATH9K_ANI_OFDM_MAX_LEVEL)
+		ath9k_hw_set_ofdm_nil(ah, aniState->ofdmNoiseImmunityLevel + 1, false);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * Set the ANI settings to match an CCK level.
  */
+<<<<<<< HEAD
 static void ath9k_hw_set_cck_nil(struct ath_hw *ah, u_int8_t immunityLevel)
 {
 	struct ar5416AniState *aniState = &ah->curchan->ani;
+=======
+static void ath9k_hw_set_cck_nil(struct ath_hw *ah, u_int8_t immunityLevel,
+				 bool scan)
+{
+	struct ar5416AniState *aniState = &ah->ani;
+>>>>>>> refs/remotes/origin/master
 	struct ath_common *common = ath9k_hw_common(ah);
 	const struct ani_ofdm_level_entry *entry_ofdm;
 	const struct ani_cck_level_entry *entry_cck;
 
+<<<<<<< HEAD
 	aniState->noiseFloor = BEACON_RSSI(ah);
 <<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI,
@@ -374,6 +458,20 @@ static void ath9k_hw_set_cck_nil(struct ath_hw *ah, u_int8_t immunityLevel)
 	if (aniState->update_ani)
 		aniState->cckNoiseImmunityLevel = immunityLevel;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, ANI, "**** ccklevel %d=>%d, rssi=%d[lo=%d hi=%d]\n",
+		aniState->cckNoiseImmunityLevel, immunityLevel,
+		BEACON_RSSI(ah), ATH9K_ANI_RSSI_THR_LOW,
+		ATH9K_ANI_RSSI_THR_HIGH);
+
+	if (ah->opmode == NL80211_IFTYPE_STATION &&
+	    BEACON_RSSI(ah) <= ATH9K_ANI_RSSI_THR_LOW &&
+	    immunityLevel > ATH9K_ANI_CCK_MAX_LEVEL_LOW_RSSI)
+		immunityLevel = ATH9K_ANI_CCK_MAX_LEVEL_LOW_RSSI;
+
+	if (!scan)
+		aniState->cckNoiseImmunityLevel = immunityLevel;
+>>>>>>> refs/remotes/origin/master
 
 	entry_ofdm = &ofdm_level_table[aniState->ofdmNoiseImmunityLevel];
 	entry_cck = &cck_level_table[aniState->cckNoiseImmunityLevel];
@@ -385,10 +483,17 @@ static void ath9k_hw_set_cck_nil(struct ath_hw *ah, u_int8_t immunityLevel)
 				     entry_cck->fir_step_level);
 
 	/* Skip MRC CCK for pre AR9003 families */
+<<<<<<< HEAD
 	if (!AR_SREV_9300_20_OR_LATER(ah) || AR_SREV_9485(ah))
 		return;
 
 	if (aniState->mrcCCKOff == entry_cck->mrc_cck_on)
+=======
+	if (!AR_SREV_9300_20_OR_LATER(ah) || AR_SREV_9485(ah) || AR_SREV_9565(ah))
+		return;
+
+	if (aniState->mrcCCK != entry_cck->mrc_cck_on)
+>>>>>>> refs/remotes/origin/master
 		ath9k_hw_ani_control(ah,
 				     ATH9K_ANI_MRC_CCK,
 				     entry_cck->mrc_cck_on);
@@ -398,6 +503,7 @@ static void ath9k_hw_ani_cck_err_trigger(struct ath_hw *ah)
 {
 	struct ar5416AniState *aniState;
 
+<<<<<<< HEAD
 	if (!DO_ANI(ah))
 		return;
 
@@ -475,6 +581,16 @@ static void ath9k_hw_ani_lower_immunity_old(struct ath_hw *ah)
 				     aniState->noiseImmunityLevel - 1);
 		return;
 	}
+=======
+	if (!ah->curchan)
+		return;
+
+	aniState = &ah->ani;
+
+	if (aniState->cckNoiseImmunityLevel < ATH9K_ANI_CCK_MAX_LEVEL)
+		ath9k_hw_set_cck_nil(ah, aniState->cckNoiseImmunityLevel + 1,
+				     false);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -485,22 +601,32 @@ static void ath9k_hw_ani_lower_immunity(struct ath_hw *ah)
 {
 	struct ar5416AniState *aniState;
 
+<<<<<<< HEAD
 	aniState = &ah->curchan->ani;
 
 	if (!use_new_ani(ah)) {
 		ath9k_hw_ani_lower_immunity_old(ah);
 		return;
 	}
+=======
+	aniState = &ah->ani;
+>>>>>>> refs/remotes/origin/master
 
 	/* lower OFDM noise immunity */
 	if (aniState->ofdmNoiseImmunityLevel > 0 &&
 	    (aniState->ofdmsTurn || aniState->cckNoiseImmunityLevel == 0)) {
+<<<<<<< HEAD
 		ath9k_hw_set_ofdm_nil(ah, aniState->ofdmNoiseImmunityLevel - 1);
+=======
+		ath9k_hw_set_ofdm_nil(ah, aniState->ofdmNoiseImmunityLevel - 1,
+				      false);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* lower CCK noise immunity */
 	if (aniState->cckNoiseImmunityLevel > 0)
+<<<<<<< HEAD
 		ath9k_hw_set_cck_nil(ah, aniState->cckNoiseImmunityLevel - 1);
 }
 
@@ -573,6 +699,10 @@ static void ath9k_ani_reset_old(struct ath_hw *ah, bool is_scanning)
 	REG_WRITE(ah, AR_PHY_ERR_MASK_2, AR_PHY_ERR_CCK_TIMING);
 
 	REGWRITE_BUFFER_FLUSH(ah);
+=======
+		ath9k_hw_set_cck_nil(ah, aniState->cckNoiseImmunityLevel - 1,
+				     false);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -582,6 +712,7 @@ static void ath9k_ani_reset_old(struct ath_hw *ah, bool is_scanning)
  */
 void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 {
+<<<<<<< HEAD
 	struct ar5416AniState *aniState = &ah->curchan->ani;
 	struct ath9k_channel *chan = ah->curchan;
 	struct ath_common *common = ath9k_hw_common(ah);
@@ -592,6 +723,16 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 	if (!use_new_ani(ah))
 		return ath9k_ani_reset_old(ah, is_scanning);
 
+=======
+	struct ar5416AniState *aniState = &ah->ani;
+	struct ath9k_channel *chan = ah->curchan;
+	struct ath_common *common = ath9k_hw_common(ah);
+	int ofdm_nil, cck_nil;
+
+	if (!ah->curchan)
+		return;
+
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(aniState == NULL);
 	ah->stats.ast_ani_reset++;
 
@@ -606,8 +747,15 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 			ah->ani_function = 0;
 	}
 
+<<<<<<< HEAD
 	/* always allow mode (on/off) to be controlled */
 	ah->ani_function |= ATH9K_ANI_MODE;
+=======
+	ofdm_nil = max_t(int, ATH9K_ANI_OFDM_DEF_LEVEL,
+			 aniState->ofdmNoiseImmunityLevel);
+	cck_nil = max_t(int, ATH9K_ANI_CCK_DEF_LEVEL,
+			 aniState->cckNoiseImmunityLevel);
+>>>>>>> refs/remotes/origin/master
 
 	if (is_scanning ||
 	    (ah->opmode != NL80211_IFTYPE_STATION &&
@@ -623,6 +771,7 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 		    aniState->cckNoiseImmunityLevel !=
 		    ATH9K_ANI_CCK_DEF_LEVEL) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_ANI,
 =======
 			ath_dbg(common, ANI,
@@ -631,21 +780,33 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 				ah->opmode,
 				chan->channel,
 				chan->channelFlags,
+=======
+			ath_dbg(common, ANI,
+				"Restore defaults: opmode %u chan %d Mhz is_scanning=%d ofdm:%d cck:%d\n",
+				ah->opmode,
+				chan->channel,
+>>>>>>> refs/remotes/origin/master
 				is_scanning,
 				aniState->ofdmNoiseImmunityLevel,
 				aniState->cckNoiseImmunityLevel);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 			aniState->update_ani = false;
 >>>>>>> refs/remotes/origin/cm-10.0
 			ath9k_hw_set_ofdm_nil(ah, ATH9K_ANI_OFDM_DEF_LEVEL);
 			ath9k_hw_set_cck_nil(ah, ATH9K_ANI_CCK_DEF_LEVEL);
+=======
+			ofdm_nil = ATH9K_ANI_OFDM_DEF_LEVEL;
+			cck_nil = ATH9K_ANI_CCK_DEF_LEVEL;
+>>>>>>> refs/remotes/origin/master
 		}
 	} else {
 		/*
 		 * restore historical levels for this channel
 		 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ath_dbg(common, ATH_DBG_ANI,
 =======
@@ -681,15 +842,33 @@ void ath9k_ani_reset(struct ath_hw *ah, bool is_scanning)
 	REG_WRITE(ah, AR_PHY_ERR_MASK_2, AR_PHY_ERR_CCK_TIMING);
 
 	REGWRITE_BUFFER_FLUSH(ah);
+=======
+		ath_dbg(common, ANI,
+			"Restore history: opmode %u chan %d Mhz is_scanning=%d ofdm:%d cck:%d\n",
+			ah->opmode,
+			chan->channel,
+			is_scanning,
+			aniState->ofdmNoiseImmunityLevel,
+			aniState->cckNoiseImmunityLevel);
+	}
+	ath9k_hw_set_ofdm_nil(ah, ofdm_nil, is_scanning);
+	ath9k_hw_set_cck_nil(ah, cck_nil, is_scanning);
+
+	ath9k_ani_restart(ah);
+>>>>>>> refs/remotes/origin/master
 }
 
 static bool ath9k_hw_ani_read_counters(struct ath_hw *ah)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
+<<<<<<< HEAD
 	struct ar5416AniState *aniState = &ah->curchan->ani;
 	u32 ofdm_base = 0;
 	u32 cck_base = 0;
 	u32 ofdmPhyErrCnt, cckPhyErrCnt;
+=======
+	struct ar5416AniState *aniState = &ah->ani;
+>>>>>>> refs/remotes/origin/master
 	u32 phyCnt1, phyCnt2;
 	int32_t listenTime;
 
@@ -698,19 +877,26 @@ static bool ath9k_hw_ani_read_counters(struct ath_hw *ah)
 
 	if (listenTime <= 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ah->stats.ast_ani_lneg++;
 =======
 		ah->stats.ast_ani_lneg_or_lzero++;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ah->stats.ast_ani_lneg_or_lzero++;
+>>>>>>> refs/remotes/origin/master
 		ath9k_ani_restart(ah);
 		return false;
 	}
 
+<<<<<<< HEAD
 	if (!use_new_ani(ah)) {
 		ofdm_base = AR_PHY_COUNTMAX - ah->config.ofdm_trig_high;
 		cck_base = AR_PHY_COUNTMAX - ah->config.cck_trig_high;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	aniState->listenTime += listenTime;
 
 	ath9k_hw_update_mibstats(ah, &ah->ah_mibStats);
@@ -718,6 +904,7 @@ static bool ath9k_hw_ani_read_counters(struct ath_hw *ah)
 	phyCnt1 = REG_READ(ah, AR_PHY_ERR_1);
 	phyCnt2 = REG_READ(ah, AR_PHY_ERR_2);
 
+<<<<<<< HEAD
 	if (!use_new_ani(ah) && (phyCnt1 < ofdm_base || phyCnt2 < cck_base)) {
 		if (phyCnt1 < ofdm_base) {
 <<<<<<< HEAD
@@ -755,6 +942,14 @@ static bool ath9k_hw_ani_read_counters(struct ath_hw *ah)
 	ah->stats.ast_ani_cckerrs +=
 		cckPhyErrCnt - aniState->cckPhyErrCount;
 	aniState->cckPhyErrCount = cckPhyErrCnt;
+=======
+	ah->stats.ast_ani_ofdmerrs += phyCnt1 - aniState->ofdmPhyErrCount;
+	aniState->ofdmPhyErrCount = phyCnt1;
+
+	ah->stats.ast_ani_cckerrs += phyCnt2 - aniState->cckPhyErrCount;
+	aniState->cckPhyErrCount = phyCnt2;
+
+>>>>>>> refs/remotes/origin/master
 	return true;
 }
 
@@ -764,6 +959,7 @@ void ath9k_hw_ani_monitor(struct ath_hw *ah, struct ath9k_channel *chan)
 	struct ath_common *common = ath9k_hw_common(ah);
 	u32 ofdmPhyErrRate, cckPhyErrRate;
 
+<<<<<<< HEAD
 	if (!DO_ANI(ah))
 		return;
 
@@ -771,6 +967,12 @@ void ath9k_hw_ani_monitor(struct ath_hw *ah, struct ath9k_channel *chan)
 	if (WARN_ON(!aniState))
 		return;
 
+=======
+	if (!ah->curchan)
+		return;
+
+	aniState = &ah->ani;
+>>>>>>> refs/remotes/origin/master
 	if (!ath9k_hw_ani_read_counters(ah))
 		return;
 
@@ -780,16 +982,21 @@ void ath9k_hw_ani_monitor(struct ath_hw *ah, struct ath9k_channel *chan)
 			 aniState->listenTime;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI,
 =======
 	ath_dbg(common, ANI,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, ANI,
+>>>>>>> refs/remotes/origin/master
 		"listenTime=%d OFDM:%d errs=%d/s CCK:%d errs=%d/s ofdm_turn=%d\n",
 		aniState->listenTime,
 		aniState->ofdmNoiseImmunityLevel,
 		ofdmPhyErrRate, aniState->cckNoiseImmunityLevel,
 		cckPhyErrRate, aniState->ofdmsTurn);
 
+<<<<<<< HEAD
 	if (aniState->listenTime > 5 * ah->aniperiod) {
 		if (ofdmPhyErrRate <= ah->config.ofdm_trig_low &&
 		    cckPhyErrRate <= ah->config.cck_trig_low) {
@@ -810,6 +1017,21 @@ void ath9k_hw_ani_monitor(struct ath_hw *ah, struct ath9k_channel *chan)
 			ath9k_ani_restart(ah);
 			aniState->ofdmsTurn = true;
 		}
+=======
+	if (aniState->listenTime > ah->aniperiod) {
+		if (cckPhyErrRate < ah->config.cck_trig_low &&
+		    ofdmPhyErrRate < ah->config.ofdm_trig_low) {
+			ath9k_hw_ani_lower_immunity(ah);
+			aniState->ofdmsTurn = !aniState->ofdmsTurn;
+		} else if (ofdmPhyErrRate > ah->config.ofdm_trig_high) {
+			ath9k_hw_ani_ofdm_err_trigger(ah);
+			aniState->ofdmsTurn = false;
+		} else if (cckPhyErrRate > ah->config.cck_trig_high) {
+			ath9k_hw_ani_cck_err_trigger(ah);
+			aniState->ofdmsTurn = true;
+		}
+		ath9k_ani_restart(ah);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(ath9k_hw_ani_monitor);
@@ -819,10 +1041,14 @@ void ath9k_enable_mib_counters(struct ath_hw *ah)
 	struct ath_common *common = ath9k_hw_common(ah);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI, "Enable MIB counters\n");
 =======
 	ath_dbg(common, ANI, "Enable MIB counters\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, ANI, "Enable MIB counters\n");
+>>>>>>> refs/remotes/origin/master
 
 	ath9k_hw_update_mibstats(ah, &ah->ah_mibStats);
 
@@ -845,10 +1071,14 @@ void ath9k_hw_disable_mib_counters(struct ath_hw *ah)
 	struct ath_common *common = ath9k_hw_common(ah);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(common, ATH_DBG_ANI, "Disable MIB counters\n");
 =======
 	ath_dbg(common, ANI, "Disable MIB counters\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(common, ANI, "Disable MIB counters\n");
+>>>>>>> refs/remotes/origin/master
 
 	REG_WRITE(ah, AR_MIBC, AR_MIBC_FMC);
 	ath9k_hw_update_mibstats(ah, &ah->ah_mibStats);
@@ -858,6 +1088,7 @@ void ath9k_hw_disable_mib_counters(struct ath_hw *ah)
 }
 EXPORT_SYMBOL(ath9k_hw_disable_mib_counters);
 
+<<<<<<< HEAD
 /*
  * Process a MIB interrupt.  We may potentially be invoked because
  * any of the MIB counters overflow/trigger so don't assume we're
@@ -980,11 +1211,33 @@ void ath9k_hw_ani_init(struct ath_hw *ah)
 		ani->update_ani = false;
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+void ath9k_hw_ani_init(struct ath_hw *ah)
+{
+	struct ath_common *common = ath9k_hw_common(ah);
+	struct ar5416AniState *ani = &ah->ani;
+
+	ath_dbg(common, ANI, "Initialize ANI\n");
+
+	ah->config.ofdm_trig_high = ATH9K_ANI_OFDM_TRIG_HIGH;
+	ah->config.ofdm_trig_low = ATH9K_ANI_OFDM_TRIG_LOW;
+	ah->config.cck_trig_high = ATH9K_ANI_CCK_TRIG_HIGH;
+	ah->config.cck_trig_low = ATH9K_ANI_CCK_TRIG_LOW;
+
+	ani->spurImmunityLevel = ATH9K_ANI_SPUR_IMMUNE_LVL;
+	ani->firstepLevel = ATH9K_ANI_FIRSTEP_LVL;
+	ani->mrcCCK = AR_SREV_9300_20_OR_LATER(ah) ? true : false;
+	ani->ofdmsTurn = true;
+	ani->ofdmWeakSigDetect = true;
+	ani->cckNoiseImmunityLevel = ATH9K_ANI_CCK_DEF_LEVEL;
+	ani->ofdmNoiseImmunityLevel = ATH9K_ANI_OFDM_DEF_LEVEL;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * since we expect some ongoing maintenance on the tables, let's sanity
 	 * check here default level should not modify INI setting.
 	 */
+<<<<<<< HEAD
 	if (use_new_ani(ah)) {
 		ah->aniperiod = ATH9K_ANI_PERIOD_NEW;
 		ah->config.ani_poll_interval = ATH9K_ANI_POLLINTERVAL_NEW;
@@ -995,6 +1248,10 @@ void ath9k_hw_ani_init(struct ath_hw *ah)
 
 	if (ah->config.enable_ani)
 		ah->proc_phyerr |= HAL_PROCESS_ANI;
+=======
+	ah->aniperiod = ATH9K_ANI_PERIOD;
+	ah->config.ani_poll_interval = ATH9K_ANI_POLLINTERVAL;
+>>>>>>> refs/remotes/origin/master
 
 	ath9k_ani_restart(ah);
 	ath9k_enable_mib_counters(ah);

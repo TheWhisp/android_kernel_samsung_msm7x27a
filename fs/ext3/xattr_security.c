@@ -4,6 +4,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -15,6 +16,10 @@
 #include <linux/security.h>
 #include "ext3.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/security.h>
+#include "ext3.h"
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 
 static size_t
@@ -54,6 +59,7 @@ ext3_xattr_security_set(struct dentry *dentry, const char *name,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int
 ext3_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
 		   const struct qstr *qstr)
@@ -77,6 +83,8 @@ ext3_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int ext3_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 		    void *fs_info)
 {
@@ -103,7 +111,10 @@ ext3_init_security(handle_t *handle, struct inode *inode, struct inode *dir,
 					    &ext3_initxattrs, handle);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 const struct xattr_handler ext3_xattr_security_handler = {
 	.prefix	= XATTR_SECURITY_PREFIX,
 	.list	= ext3_xattr_security_list,

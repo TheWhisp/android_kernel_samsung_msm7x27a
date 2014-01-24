@@ -6,6 +6,7 @@
  * This file provides the definitions and structures needed to
  * support uClinux flat-format executables.
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_FLAT_H
 #define _LINUX_FLAT_H
@@ -58,6 +59,14 @@ struct flat_hdr {
 
 
 #ifdef __KERNEL__ /* so systems without linux headers can compile the apps */
+=======
+#ifndef _LINUX_FLAT_H
+#define _LINUX_FLAT_H
+
+#include <asm/flat.h>
+#include <uapi/linux/flat.h>
+
+>>>>>>> refs/remotes/origin/master
 /*
  * While it would be nice to keep this header clean,  users of older
  * tools still need this support in the kernel.  So this section is
@@ -95,6 +104,9 @@ typedef union {
 	} reloc;
 } flat_v2_reloc_t;
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_FLAT_H */

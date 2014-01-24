@@ -23,8 +23,13 @@
 /* #define cpu_has_watch	? */
 #define cpu_has_divec		1
 #define cpu_has_vce		0
+<<<<<<< HEAD
 /* #define cpu_has_cache_cdex_p	? */
 /* #define cpu_has_cache_cdex_s	? */
+=======
+/* #define cpu_has_cache_cdex_p ? */
+/* #define cpu_has_cache_cdex_s ? */
+>>>>>>> refs/remotes/origin/master
 /* #define cpu_has_prefetch	? */
 #define cpu_has_mcheck		1
 /* #define cpu_has_ejtag	? */
@@ -33,9 +38,13 @@
 /* #define cpu_has_dc_aliases	? */
 /* #define cpu_has_ic_fills_f_dc ? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define cpu_has_clo_clz		1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define cpu_has_clo_clz		1
+>>>>>>> refs/remotes/origin/master
 #define cpu_has_nofpuex		0
 /* #define cpu_has_64bits	? */
 /* #define cpu_has_64bit_zero_reg ? */
@@ -53,8 +62,13 @@
 /* #define cpu_has_watch	? */
 #define cpu_has_divec		1
 #define cpu_has_vce		0
+<<<<<<< HEAD
 /* #define cpu_has_cache_cdex_p	? */
 /* #define cpu_has_cache_cdex_s	? */
+=======
+/* #define cpu_has_cache_cdex_p ? */
+/* #define cpu_has_cache_cdex_s ? */
+>>>>>>> refs/remotes/origin/master
 /* #define cpu_has_prefetch	? */
 #define cpu_has_mcheck		1
 /* #define cpu_has_ejtag	? */
@@ -63,9 +77,13 @@
 /* #define cpu_has_dc_aliases	? */
 /* #define cpu_has_ic_fills_f_dc ? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define cpu_has_clo_clz		1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define cpu_has_clo_clz		1
+>>>>>>> refs/remotes/origin/master
 #define cpu_has_nofpuex		0
 /* #define cpu_has_64bits	? */
 /* #define cpu_has_64bit_zero_reg ? */

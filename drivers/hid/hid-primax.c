@@ -64,6 +64,7 @@ static int px_raw_event(struct hid_device *hid, struct hid_report *report,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int px_probe(struct hid_device *hid, const struct hid_device_id *id)
 {
 	int ret;
@@ -87,6 +88,8 @@ static void px_remove(struct hid_device *hid)
 	hid_hw_stop(hid);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct hid_device_id px_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_PRIMAX, USB_DEVICE_ID_PRIMAX_KEYBOARD) },
 	{ }
@@ -97,6 +100,7 @@ static struct hid_driver px_driver = {
 	.name = "primax",
 	.id_table = px_devices,
 	.raw_event = px_raw_event,
+<<<<<<< HEAD
 	.probe = px_probe,
 	.remove = px_remove,
 };
@@ -113,5 +117,10 @@ static void __exit px_exit(void)
 
 module_init(px_init);
 module_exit(px_exit);
+=======
+};
+module_hid_driver(px_driver);
+
+>>>>>>> refs/remotes/origin/master
 MODULE_AUTHOR("Terry Lambert <tlambert@google.com>");
 MODULE_LICENSE("GPL");

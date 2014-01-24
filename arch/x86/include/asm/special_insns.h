@@ -16,7 +16,11 @@ static inline void native_clts(void)
  * all loads stores around it, which can hurt performance. Solution is to
  * use a variable and mimic reads and writes to it to enforce serialization
  */
+<<<<<<< HEAD
 static unsigned long __force_order;
+=======
+extern unsigned long __force_order;
+>>>>>>> refs/remotes/origin/master
 
 static inline unsigned long native_read_cr0(void)
 {
@@ -101,7 +105,11 @@ static inline void native_wbinvd(void)
 	asm volatile("wbinvd": : :"memory");
 }
 
+<<<<<<< HEAD
 extern void native_load_gs_index(unsigned);
+=======
+extern asmlinkage void native_load_gs_index(unsigned);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PARAVIRT
 #include <asm/paravirt.h>

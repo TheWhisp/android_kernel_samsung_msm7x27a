@@ -16,16 +16,22 @@
 #include <linux/delay.h>
 #include <linux/gpio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 #include <linux/apm-emulation.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/gpio-pxa.h>
 #include <linux/interrupt.h>
 #include <linux/platform_device.h>
 #include <linux/apm-emulation.h>
 #include <linux/io.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/irq.h>
 #include <asm/mach-types.h>
@@ -49,12 +55,18 @@ static struct gpio charger_gpios[] = {
 	{ CORGI_GPIO_CHRG_ON,	  GPIOF_OUT_INIT_LOW, "Charger On" },
 	{ CORGI_GPIO_CHRG_UKN,	  GPIOF_OUT_INIT_LOW, "Charger Unknown" },
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ CORGI_GPIO_KEY_INT,	  GPIOF_IN, "Key Interrupt" },
 =======
 	{ CORGI_GPIO_AC_IN,	  GPIOF_IN, "Charger Detection" },
 	{ CORGI_GPIO_KEY_INT,	  GPIOF_IN, "Key Interrupt" },
 	{ CORGI_GPIO_WAKEUP,	  GPIOF_IN, "System wakeup notification" },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ CORGI_GPIO_AC_IN,	  GPIOF_IN, "Charger Detection" },
+	{ CORGI_GPIO_KEY_INT,	  GPIOF_IN, "Key Interrupt" },
+	{ CORGI_GPIO_WAKEUP,	  GPIOF_IN, "System wakeup notification" },
+>>>>>>> refs/remotes/origin/master
 };
 
 static void corgi_charger_init(void)
@@ -105,15 +117,21 @@ static int corgi_should_wakeup(unsigned int resume_on_alarm)
 	int is_resume = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev_dbg(sharpsl_pm.dev, "GPLR0 = %x,%x\n", GPLR0, PEDR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(sharpsl_pm.dev, "PEDR = %x, GPIO_AC_IN = %d, "
 		"GPIO_CHRG_FULL = %d, GPIO_KEY_INT = %d, GPIO_WAKEUP = %d\n",
 		PEDR, gpio_get_value(CORGI_GPIO_AC_IN),
 		gpio_get_value(CORGI_GPIO_CHRG_FULL),
 		gpio_get_value(CORGI_GPIO_KEY_INT),
 		gpio_get_value(CORGI_GPIO_WAKEUP));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ((PEDR & GPIO_bit(CORGI_GPIO_AC_IN))) {
 		if (sharpsl_pm.machinfo->read_devdata(SHARPSL_STATUS_ACIN)) {
@@ -148,8 +166,11 @@ static int corgi_should_wakeup(unsigned int resume_on_alarm)
 static unsigned long corgi_charger_wakeup(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return ~GPLR0 & ( GPIO_bit(CORGI_GPIO_AC_IN) | GPIO_bit(CORGI_GPIO_KEY_INT) | GPIO_bit(CORGI_GPIO_WAKEUP) );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long ret;
 
 	ret = (!gpio_get_value(CORGI_GPIO_AC_IN) << GPIO_bit(CORGI_GPIO_AC_IN))
@@ -158,7 +179,10 @@ static unsigned long corgi_charger_wakeup(void)
 		| (!gpio_get_value(CORGI_GPIO_WAKEUP)
 		<< GPIO_bit(CORGI_GPIO_WAKEUP));
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 unsigned long corgipm_read_devdata(int type)
@@ -166,10 +190,14 @@ unsigned long corgipm_read_devdata(int type)
 	switch(type) {
 	case SHARPSL_STATUS_ACIN:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return ((GPLR(CORGI_GPIO_AC_IN) & GPIO_bit(CORGI_GPIO_AC_IN)) != 0);
 =======
 		return !gpio_get_value(CORGI_GPIO_AC_IN);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return !gpio_get_value(CORGI_GPIO_AC_IN);
+>>>>>>> refs/remotes/origin/master
 	case SHARPSL_STATUS_LOCK:
 		return gpio_get_value(sharpsl_pm.machinfo->gpio_batlock);
 	case SHARPSL_STATUS_CHRGFULL:
@@ -220,7 +248,11 @@ static struct sharpsl_charger_machinfo corgi_pm_machinfo = {
 
 static struct platform_device *corgipm_device;
 
+<<<<<<< HEAD
 static int __devinit corgipm_init(void)
+=======
+static int corgipm_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 

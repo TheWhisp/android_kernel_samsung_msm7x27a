@@ -33,10 +33,15 @@
 #include <asm/ucontext.h>
 #include <asm/sigframe.h>
 #include <asm/syscalls.h>
+<<<<<<< HEAD
+=======
+#include <asm/vdso.h>
+>>>>>>> refs/remotes/origin/master
 #include <arch/interrupts.h>
 
 #define DEBUG_SIG 0
 
+<<<<<<< HEAD
 #define _BLOCKABLE (~(sigmask(SIGKILL) | sigmask(SIGSTOP)))
 
 SYSCALL_DEFINE3(sigaltstack, const stack_t __user *, uss,
@@ -46,6 +51,8 @@ SYSCALL_DEFINE3(sigaltstack, const stack_t __user *, uss,
 }
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Do a signal return; undo the signal stack.
  */
@@ -85,8 +92,14 @@ void signal_fault(const char *type, struct pt_regs *regs,
 }
 
 /* The assembly shim for this function arranges to ignore the return value. */
+<<<<<<< HEAD
 SYSCALL_DEFINE1(rt_sigreturn, struct pt_regs *, regs)
 {
+=======
+SYSCALL_DEFINE0(rt_sigreturn)
+{
+	struct pt_regs *regs = current_pt_regs();
+>>>>>>> refs/remotes/origin/master
 	struct rt_sigframe __user *frame =
 		(struct rt_sigframe __user *)(regs->sp);
 	sigset_t set;
@@ -96,6 +109,7 @@ SYSCALL_DEFINE1(rt_sigreturn, struct pt_regs *, regs)
 	if (__copy_from_user(&set, &frame->uc.uc_sigmask, sizeof(set)))
 		goto badframe;
 
+<<<<<<< HEAD
 	sigdelsetmask(&set, ~_BLOCKABLE);
 <<<<<<< HEAD
 	spin_lock_irq(&current->sighand->siglock);
@@ -105,11 +119,18 @@ SYSCALL_DEFINE1(rt_sigreturn, struct pt_regs *, regs)
 =======
 	set_current_blocked(&set);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_current_blocked(&set);
+>>>>>>> refs/remotes/origin/master
 
 	if (restore_sigcontext(regs, &frame->uc.uc_mcontext))
 		goto badframe;
 
+<<<<<<< HEAD
 	if (do_sigaltstack(&frame->uc.uc_stack, NULL, regs->sp) == -EFAULT)
+=======
+	if (restore_altstack(&frame->uc.uc_stack))
+>>>>>>> refs/remotes/origin/master
 		goto badframe;
 
 	return 0;
@@ -200,17 +221,25 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	err |= __clear_user(&frame->save_area, sizeof(frame->save_area));
 	err |= __put_user(0, &frame->uc.uc_flags);
 	err |= __put_user(NULL, &frame->uc.uc_link);
+<<<<<<< HEAD
 	err |= __put_user((void __user *)(current->sas_ss_sp),
 			  &frame->uc.uc_stack.ss_sp);
 	err |= __put_user(sas_ss_flags(regs->sp),
 			  &frame->uc.uc_stack.ss_flags);
 	err |= __put_user(current->sas_ss_size, &frame->uc.uc_stack.ss_size);
+=======
+	err |= __save_altstack(&frame->uc.uc_stack, regs->sp);
+>>>>>>> refs/remotes/origin/master
 	err |= setup_sigcontext(&frame->uc.uc_mcontext, regs);
 	err |= __copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set));
 	if (err)
 		goto give_sigsegv;
 
+<<<<<<< HEAD
 	restorer = VDSO_BASE;
+=======
+	restorer = VDSO_SYM(&__vdso_rt_sigreturn);
+>>>>>>> refs/remotes/origin/master
 	if (ka->sa.sa_flags & SA_RESTORER)
 		restorer = (unsigned long) ka->sa.sa_restorer;
 
@@ -229,6 +258,7 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	regs->regs[1] = (unsigned long) &frame->info;
 	regs->regs[2] = (unsigned long) &frame->uc;
 	regs->flags |= PT_FLAGS_CALLER_SAVES;
+<<<<<<< HEAD
 
 	/*
 	 * Notify any tracer that was single-stepping it.
@@ -238,6 +268,8 @@ static int setup_rt_frame(int sig, struct k_sigaction *ka, siginfo_t *info,
 	if (test_thread_flag(TIF_SINGLESTEP))
 		ptrace_notify(SIGTRAP);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 give_sigsegv:
@@ -249,10 +281,18 @@ give_sigsegv:
  * OK, we're invoking a handler
  */
 
+<<<<<<< HEAD
 static int handle_signal(unsigned long sig, siginfo_t *info,
 			 struct k_sigaction *ka, sigset_t *oldset,
 			 struct pt_regs *regs)
 {
+=======
+static void handle_signal(unsigned long sig, siginfo_t *info,
+			 struct k_sigaction *ka,
+			 struct pt_regs *regs)
+{
+	sigset_t *oldset = sigmask_to_save();
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	/* Are we from a system call? */
@@ -285,6 +325,7 @@ static int handle_signal(unsigned long sig, siginfo_t *info,
 	else
 #endif
 		ret = setup_rt_frame(sig, ka, info, oldset, regs);
+<<<<<<< HEAD
 	if (ret == 0) {
 		/* This code is only called from system calls or from
 		 * the work_pending path in the return-to-user code, and
@@ -304,6 +345,12 @@ static int handle_signal(unsigned long sig, siginfo_t *info,
 	}
 
 	return ret;
+=======
+	if (ret)
+		return;
+	signal_delivered(sig, info, ka, regs,
+			test_thread_flag(TIF_SINGLESTEP));
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -316,7 +363,10 @@ void do_signal(struct pt_regs *regs)
 	siginfo_t info;
 	int signr;
 	struct k_sigaction ka;
+<<<<<<< HEAD
 	sigset_t *oldset;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * i386 will check if we're coming from kernel mode and bail out
@@ -325,6 +375,7 @@ void do_signal(struct pt_regs *regs)
 	 * helpful, we can reinstate the check on "!user_mode(regs)".
 	 */
 
+<<<<<<< HEAD
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK)
 		oldset = &current->saved_sigmask;
 	else
@@ -343,6 +394,12 @@ void do_signal(struct pt_regs *regs)
 			current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
 		}
 
+=======
+	signr = get_signal_to_deliver(&info, &ka, regs, NULL);
+	if (signr > 0) {
+		/* Whee! Actually deliver the signal.  */
+		handle_signal(signr, &info, &ka, regs);
+>>>>>>> refs/remotes/origin/master
 		goto done;
 	}
 
@@ -367,10 +424,14 @@ void do_signal(struct pt_regs *regs)
 	}
 
 	/* If there's no signal to deliver, just put the saved sigmask back. */
+<<<<<<< HEAD
 	if (current_thread_info()->status & TS_RESTORE_SIGMASK) {
 		current_thread_info()->status &= ~TS_RESTORE_SIGMASK;
 		sigprocmask(SIG_SETMASK, &current->saved_sigmask, NULL);
 	}
+=======
+	restore_saved_sigmask();
+>>>>>>> refs/remotes/origin/master
 
 done:
 	/* Avoid double syscall restart if there are nested signals. */

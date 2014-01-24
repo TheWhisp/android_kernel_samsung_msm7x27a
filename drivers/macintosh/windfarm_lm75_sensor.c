@@ -19,15 +19,22 @@
 #include <asm/machdep.h>
 #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/sections.h>
 #include <asm/pmac_low_i2c.h>
 
 #include "windfarm.h"
 
+<<<<<<< HEAD
 #define VERSION "0.2"
+=======
+#define VERSION "1.0"
+>>>>>>> refs/remotes/origin/master
 
 #undef DEBUG
 
@@ -40,8 +47,13 @@
 struct wf_lm75_sensor {
 	int			ds1775 : 1;
 	int			inited : 1;
+<<<<<<< HEAD
 	struct 	i2c_client	*i2c;
 	struct 	wf_sensor	sens;
+=======
+	struct i2c_client	*i2c;
+	struct wf_sensor	sens;
+>>>>>>> refs/remotes/origin/master
 };
 #define wf_to_lm75(c) container_of(c, struct wf_lm75_sensor, sens)
 
@@ -94,6 +106,7 @@ static struct wf_sensor_ops wf_lm75_ops = {
 
 static int wf_lm75_probe(struct i2c_client *client,
 			 const struct i2c_device_id *id)
+<<<<<<< HEAD
 {
 	struct wf_lm75_sensor *lm;
 	int rc;
@@ -128,6 +141,21 @@ static struct i2c_client *wf_lm75_create(struct i2c_adapter *adapter,
 
 	DBG("wf_lm75: creating  %s device at address 0x%02x\n",
 	    ds1775 ? "ds1775" : "lm75", addr);
+=======
+{	
+	struct wf_lm75_sensor *lm;
+	int rc, ds1775 = id->driver_data;
+	const char *name, *loc;
+
+	DBG("wf_lm75: creating  %s device at address 0x%02x\n",
+	    ds1775 ? "ds1775" : "lm75", client->addr);
+
+	loc = of_get_property(client->dev.of_node, "hwsensor-location", NULL);
+	if (!loc) {
+		dev_warn(&client->dev, "Missing hwsensor-location property!\n");
+		return -ENXIO;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Usual rant about sensor names not beeing very consistent in
 	 * the device-tree, oh well ...
@@ -141,6 +169,7 @@ static struct i2c_client *wf_lm75_create(struct i2c_adapter *adapter,
 		name = "optical-drive-temp";
 	else if (!strcmp(loc, "HD Temp"))
 		name = "hard-drive-temp";
+<<<<<<< HEAD
 	else
 		goto fail;
 
@@ -203,6 +232,33 @@ static int wf_lm75_attach(struct i2c_adapter *adapter)
 			wf_lm75_create(adapter, addr, 1, loc);
 	}
 	return 0;
+=======
+	else if (!strcmp(loc, "PCI SLOTS"))
+		name = "slots-temp";
+	else if (!strcmp(loc, "CPU A INLET"))
+		name = "cpu-inlet-temp-0";
+	else if (!strcmp(loc, "CPU B INLET"))
+		name = "cpu-inlet-temp-1";
+	else
+		return -ENXIO;
+ 	
+
+	lm = kzalloc(sizeof(struct wf_lm75_sensor), GFP_KERNEL);
+	if (lm == NULL)
+		return -ENODEV;
+
+	lm->inited = 0;
+	lm->ds1775 = ds1775;
+	lm->i2c = client;
+	lm->sens.name = (char *)name; /* XXX fix constness in structure */
+	lm->sens.ops = &wf_lm75_ops;
+	i2c_set_clientdata(client, lm);
+
+	rc = wf_register_sensor(&lm->sens);
+	if (rc)
+		kfree(lm);
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int wf_lm75_remove(struct i2c_client *client)
@@ -221,21 +277,33 @@ static int wf_lm75_remove(struct i2c_client *client)
 }
 
 static const struct i2c_device_id wf_lm75_id[] = {
+<<<<<<< HEAD
 	{ "wf_lm75", 0 },
 	{ "wf_ds1775", 1 },
 	{ }
 };
+=======
+	{ "MAC,lm75", 0 },
+	{ "MAC,ds1775", 1 },
+	{ }
+};
+MODULE_DEVICE_TABLE(i2c, wf_lm75_id);
+>>>>>>> refs/remotes/origin/master
 
 static struct i2c_driver wf_lm75_driver = {
 	.driver = {
 		.name	= "wf_lm75",
 	},
+<<<<<<< HEAD
 	.attach_adapter	= wf_lm75_attach,
+=======
+>>>>>>> refs/remotes/origin/master
 	.probe		= wf_lm75_probe,
 	.remove		= wf_lm75_remove,
 	.id_table	= wf_lm75_id,
 };
 
+<<<<<<< HEAD
 static int __init wf_lm75_sensor_init(void)
 {
 	/* Don't register on old machines that use therm_pm72 for now */
@@ -254,6 +322,9 @@ static void __exit wf_lm75_sensor_exit(void)
 
 module_init(wf_lm75_sensor_init);
 module_exit(wf_lm75_sensor_exit);
+=======
+module_i2c_driver(wf_lm75_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Benjamin Herrenschmidt <benh@kernel.crashing.org>");
 MODULE_DESCRIPTION("LM75 sensor objects for PowerMacs thermal control");

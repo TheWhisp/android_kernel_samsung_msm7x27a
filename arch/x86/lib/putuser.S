@@ -15,6 +15,10 @@
 #include <asm/thread_info.h>
 #include <asm/errno.h>
 #include <asm/asm.h>
+<<<<<<< HEAD
+=======
+#include <asm/smap.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -31,7 +35,12 @@
 
 #define ENTER	CFI_STARTPROC ; \
 		GET_THREAD_INFO(%_ASM_BX)
+<<<<<<< HEAD
 #define EXIT	ret ; \
+=======
+#define EXIT	ASM_CLAC ;	\
+		ret ;		\
+>>>>>>> refs/remotes/origin/master
 		CFI_ENDPROC
 
 .text
@@ -39,6 +48,10 @@ ENTRY(__put_user_1)
 	ENTER
 	cmp TI_addr_limit(%_ASM_BX),%_ASM_CX
 	jae bad_put_user
+<<<<<<< HEAD
+=======
+	ASM_STAC
+>>>>>>> refs/remotes/origin/master
 1:	movb %al,(%_ASM_CX)
 	xor %eax,%eax
 	EXIT
@@ -50,6 +63,10 @@ ENTRY(__put_user_2)
 	sub $1,%_ASM_BX
 	cmp %_ASM_BX,%_ASM_CX
 	jae bad_put_user
+<<<<<<< HEAD
+=======
+	ASM_STAC
+>>>>>>> refs/remotes/origin/master
 2:	movw %ax,(%_ASM_CX)
 	xor %eax,%eax
 	EXIT
@@ -61,6 +78,10 @@ ENTRY(__put_user_4)
 	sub $3,%_ASM_BX
 	cmp %_ASM_BX,%_ASM_CX
 	jae bad_put_user
+<<<<<<< HEAD
+=======
+	ASM_STAC
+>>>>>>> refs/remotes/origin/master
 3:	movl %eax,(%_ASM_CX)
 	xor %eax,%eax
 	EXIT
@@ -72,6 +93,10 @@ ENTRY(__put_user_8)
 	sub $7,%_ASM_BX
 	cmp %_ASM_BX,%_ASM_CX
 	jae bad_put_user
+<<<<<<< HEAD
+=======
+	ASM_STAC
+>>>>>>> refs/remotes/origin/master
 4:	mov %_ASM_AX,(%_ASM_CX)
 #ifdef CONFIG_X86_32
 5:	movl %edx,4(%_ASM_CX)
@@ -86,6 +111,7 @@ bad_put_user:
 	EXIT
 END(bad_put_user)
 
+<<<<<<< HEAD
 .section __ex_table,"a"
 	_ASM_PTR 1b,bad_put_user
 	_ASM_PTR 2b,bad_put_user
@@ -95,3 +121,12 @@ END(bad_put_user)
 	_ASM_PTR 5b,bad_put_user
 #endif
 .previous
+=======
+	_ASM_EXTABLE(1b,bad_put_user)
+	_ASM_EXTABLE(2b,bad_put_user)
+	_ASM_EXTABLE(3b,bad_put_user)
+	_ASM_EXTABLE(4b,bad_put_user)
+#ifdef CONFIG_X86_32
+	_ASM_EXTABLE(5b,bad_put_user)
+#endif
+>>>>>>> refs/remotes/origin/master

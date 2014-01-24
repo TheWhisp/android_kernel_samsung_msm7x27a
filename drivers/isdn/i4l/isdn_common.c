@@ -46,7 +46,10 @@ static DEFINE_MUTEX(isdn_mutex);
 static char *isdn_revision = "$Revision: 1.1.2.3 $";
 
 extern char *isdn_net_revision;
+<<<<<<< HEAD
 extern char *isdn_tty_revision;
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ISDN_PPP
 extern char *isdn_ppp_revision;
 #else
@@ -112,10 +115,14 @@ isdn_unlock_drivers(void)
 #if defined(ISDN_DEBUG_NET_DUMP) || defined(ISDN_DEBUG_MODEM_DUMP)
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_dumppkt(char *s, u_char * p, int len, int dumplen)
 =======
 isdn_dumppkt(char *s, u_char *p, int len, int dumplen)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_dumppkt(char *s, u_char *p, int len, int dumplen)
+>>>>>>> refs/remotes/origin/master
 {
 	int dumpc;
 
@@ -167,6 +174,7 @@ isdn_wildmat(char *s, char *p)
 	register int nostar = 1;
 
 	if (!(*s) && !(*p))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		return(1);
 	for (; *p; s++, p++)
@@ -221,6 +229,8 @@ int isdn_msncmp( const char * msn1, const char * msn2 )
 
 	return isdn_wildmat( TmpMsn1, TmpMsn2 );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return (1);
 	for (; *p; s++, p++)
 		switch (*p) {
@@ -273,7 +283,10 @@ int isdn_msncmp(const char *msn1, const char *msn2)
 	*p = '\0';
 
 	return isdn_wildmat(TmpMsn1, TmpMsn2);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int
@@ -322,12 +335,17 @@ isdn_timer_funct(ulong dummy)
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (tf) 
 		mod_timer(&dev->timer, jiffies+ISDN_TIMER_RES);
 =======
 	if (tf)
 		mod_timer(&dev->timer, jiffies + ISDN_TIMER_RES);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (tf)
+		mod_timer(&dev->timer, jiffies + ISDN_TIMER_RES);
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -349,10 +367,14 @@ isdn_timer_ctrl(int tf, int onoff)
 		dev->tflags &= ~tf;
 	if (dev->tflags && !old_tflags)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mod_timer(&dev->timer, jiffies+ISDN_TIMER_RES);
 =======
 		mod_timer(&dev->timer, jiffies + ISDN_TIMER_RES);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mod_timer(&dev->timer, jiffies + ISDN_TIMER_RES);
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&dev->timerlock, flags);
 }
 
@@ -371,10 +393,14 @@ isdn_receive_skb_callback(int di, int channel, struct sk_buff *skb)
 	/* Update statistics */
 	dev->ibytes[i] += skb->len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	/* First, try to deliver data to network-device */
 	if (isdn_net_rcv_skb(i, skb))
 		return;
@@ -412,6 +438,7 @@ isdn_command(isdn_ctrl *cmd)
 	if (cmd->driver == -1) {
 		printk(KERN_WARNING "isdn_command command(%x) driver -1\n", cmd->command);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return(1);
 	}
 	if (!dev->drv[cmd->driver]) {
@@ -424,6 +451,8 @@ isdn_command(isdn_ctrl *cmd)
 			cmd->command, cmd->driver);
 		return(1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return (1);
 	}
 	if (!dev->drv[cmd->driver]) {
@@ -435,12 +464,16 @@ isdn_command(isdn_ctrl *cmd)
 		printk(KERN_WARNING "isdn_command command(%x) dev->drv[%d]->interface NULL\n",
 		       cmd->command, cmd->driver);
 		return (1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (cmd->command == ISDN_CMD_SETL2) {
 		int idx = isdn_dc2minor(cmd->driver, cmd->arg & 255);
 		unsigned long l2prot = (cmd->arg >> 8) & 255;
 		unsigned long features = (dev->drv[cmd->driver]->interface->features
+<<<<<<< HEAD
 <<<<<<< HEAD
 						>> ISDN_FEATURE_L2_SHIFT) &
 						ISDN_FEATURE_L2_MASK;
@@ -451,6 +484,8 @@ isdn_command(isdn_ctrl *cmd)
 			case ISDN_PROTO_L2_V11019:
 			case ISDN_PROTO_L2_V11038:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					  >> ISDN_FEATURE_L2_SHIFT) &
 			ISDN_FEATURE_L2_MASK;
 		unsigned long l2_feature = (1 << l2prot);
@@ -459,11 +494,15 @@ isdn_command(isdn_ctrl *cmd)
 		case ISDN_PROTO_L2_V11096:
 		case ISDN_PROTO_L2_V11019:
 		case ISDN_PROTO_L2_V11038:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* If V.110 requested, but not supported by
 			 * HL-driver, set emulator-flag and change
 			 * Layer-2 to transparent
 			 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 				if (!(features & l2_feature)) {
 					dev->v110emu[idx] = l2prot;
@@ -472,13 +511,18 @@ isdn_command(isdn_ctrl *cmd)
 				} else
 					dev->v110emu[idx] = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			if (!(features & l2_feature)) {
 				dev->v110emu[idx] = l2prot;
 				cmd->arg = (cmd->arg & 255) |
 					(ISDN_PROTO_L2_TRANS << 8);
 			} else
 				dev->v110emu[idx] = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return dev->drv[cmd->driver]->interface->command(cmd);
@@ -500,10 +544,14 @@ isdn_all_eaz(int di, int ch)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Begin of a CAPI like LL<->HL interface, currently used only for 
 =======
  * Begin of a CAPI like LL<->HL interface, currently used only for
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Begin of a CAPI like LL<->HL interface, currently used only for
+>>>>>>> refs/remotes/origin/master
  * supplementary service (CAPI 2.0 part III)
  */
 #include <linux/isdn/capicmd.h>
@@ -512,6 +560,7 @@ static int
 isdn_capi_rec_hl_msg(capi_msg *cm)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	switch(cm->Command) {
 		case CAPI_FACILITY:
 			/* in the moment only handled in tty */
@@ -519,22 +568,31 @@ isdn_capi_rec_hl_msg(capi_msg *cm)
 		default:
 			return(-1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (cm->Command) {
 	case CAPI_FACILITY:
 		/* in the moment only handled in tty */
 		return (isdn_tty_capi_facility(cm));
 	default:
 		return (-1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_status_callback(isdn_ctrl * c)
 =======
 isdn_status_callback(isdn_ctrl *c)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_status_callback(isdn_ctrl *c)
+>>>>>>> refs/remotes/origin/master
 {
 	int di;
 	u_long flags;
@@ -547,6 +605,7 @@ isdn_status_callback(isdn_ctrl *c)
 	di = c->driver;
 	i = isdn_dc2minor(di, c->arg);
 	switch (c->command) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case ISDN_STAT_BSENT:
 			if (i < 0)
@@ -583,6 +642,8 @@ isdn_status_callback(isdn_ctrl *c)
 #endif
 			if (dev->global_flags & ISDN_GLOBAL_STOPPED) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_STAT_BSENT:
 		if (i < 0)
 			return -1;
@@ -641,11 +702,15 @@ isdn_status_callback(isdn_ctrl *c)
 #endif /* CONFIG_ISDN_DIVERSION */
 			if ((!retval) && (dev->drv[di]->flags & DRV_FLAG_REJBUS)) {
 				/* No tty responding */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				cmd.driver = di;
 				cmd.arg = c->arg;
 				cmd.command = ISDN_CMD_HANGUP;
 				isdn_command(&cmd);
+<<<<<<< HEAD
 <<<<<<< HEAD
 				return 0;
 			}
@@ -918,6 +983,8 @@ isdn_status_callback(isdn_ctrl *c)
 		default:
 			return -1;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				retval = 2;
 			}
 			break;
@@ -1164,7 +1231,10 @@ isdn_status_callback(isdn_ctrl *c)
 #endif /* CONFIG_ISDN_DIVERSION */
 	default:
 		return -1;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }
@@ -1189,10 +1259,14 @@ isdn_getnum(char **p)
  * It MUST be called with interrupts off.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Be aware that this is not an atomic operation when sleep != 0, even though 
 =======
  * Be aware that this is not an atomic operation when sleep != 0, even though
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Be aware that this is not an atomic operation when sleep != 0, even though
+>>>>>>> refs/remotes/origin/master
  * interrupts are turned off! Well, like that we are currently only called
  * on behalf of a read system call on raw device files (which are documented
  * to be dangerous and for debugging purpose only). The inode semaphore
@@ -1200,16 +1274,22 @@ isdn_getnum(char **p)
  * we are sleeping, but access is not serialized against simultaneous read()
  * from the corresponding ttyI device. Can other ugly events, like changes
 <<<<<<< HEAD
+<<<<<<< HEAD
  * of the mapping (di,ch)<->minor, happen during the sleep? --he 
  */
 int
 isdn_readbchan(int di, int channel, u_char * buf, u_char * fp, int len, wait_queue_head_t *sleep)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * of the mapping (di,ch)<->minor, happen during the sleep? --he
  */
 int
 isdn_readbchan(int di, int channel, u_char *buf, u_char *fp, int len, wait_queue_head_t *sleep)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int count;
 	int count_pull;
@@ -1321,7 +1401,11 @@ isdn_readbchan(int di, int channel, u_char *buf, u_char *fp, int len, wait_queue
  * of the mapping (di,ch)<->minor, happen during the sleep? --he
  */
 int
+<<<<<<< HEAD
 isdn_readbchan_tty(int di, int channel, struct tty_struct *tty, int cisco_hack)
+=======
+isdn_readbchan_tty(int di, int channel, struct tty_port *port, int cisco_hack)
+>>>>>>> refs/remotes/origin/master
 {
 	int count;
 	int count_pull;
@@ -1335,6 +1419,7 @@ isdn_readbchan_tty(int di, int channel, struct tty_struct *tty, int cisco_hack)
 		return 0;
 	if (skb_queue_empty(&dev->drv[di]->rpqueue[channel]))
 <<<<<<< HEAD
+<<<<<<< HEAD
 			return 0;
 
 	len = tty_buffer_request_room(tty, dev->drv[di]->rcvcount[channel]);
@@ -1345,6 +1430,12 @@ isdn_readbchan_tty(int di, int channel, struct tty_struct *tty, int cisco_hack)
 	len = tty_buffer_request_room(tty, dev->drv[di]->rcvcount[channel]);
 	if (len == 0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return 0;
+
+	len = tty_buffer_request_room(port, dev->drv[di]->rcvcount[channel]);
+	if (len == 0)
+>>>>>>> refs/remotes/origin/master
 		return len;
 
 	count = 0;
@@ -1364,11 +1455,16 @@ isdn_readbchan_tty(int di, int channel, struct tty_struct *tty, int cisco_hack)
 			while ((count_pull < skb->len) && (len > 0)) {
 				/* push every character but the last to the tty buffer directly */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if ( count_put )
 =======
 				if (count_put)
 >>>>>>> refs/remotes/origin/cm-10.0
 					tty_insert_flip_char(tty, last, TTY_NORMAL);
+=======
+				if (count_put)
+					tty_insert_flip_char(port, last, TTY_NORMAL);
+>>>>>>> refs/remotes/origin/master
 				len--;
 				if (dev->drv[di]->DLEflag & DLEmask) {
 					last = DLE;
@@ -1396,11 +1492,16 @@ isdn_readbchan_tty(int di, int channel, struct tty_struct *tty, int cisco_hack)
 			}
 			count_put = count_pull;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(count_put > 1)
 =======
 			if (count_put > 1)
 >>>>>>> refs/remotes/origin/cm-10.0
 				tty_insert_flip_string(tty, skb->data, count_put - 1);
+=======
+			if (count_put > 1)
+				tty_insert_flip_string(port, skb->data, count_put - 1);
+>>>>>>> refs/remotes/origin/master
 			last = skb->data[count_put - 1];
 			len -= count_put;
 #ifdef CONFIG_ISDN_AUDIO
@@ -1412,6 +1513,7 @@ isdn_readbchan_tty(int di, int channel, struct tty_struct *tty, int cisco_hack)
 			 * Now we can dequeue it.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if(cisco_hack)
 =======
 			if (cisco_hack)
@@ -1419,13 +1521,23 @@ isdn_readbchan_tty(int di, int channel, struct tty_struct *tty, int cisco_hack)
 				tty_insert_flip_char(tty, last, 0xFF);
 			else
 				tty_insert_flip_char(tty, last, TTY_NORMAL);
+=======
+			if (cisco_hack)
+				tty_insert_flip_char(port, last, 0xFF);
+			else
+				tty_insert_flip_char(port, last, TTY_NORMAL);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ISDN_AUDIO
 			ISDN_AUDIO_SKB_LOCK(skb) = 0;
 #endif
 			skb = skb_dequeue(&dev->drv[di]->rpqueue[channel]);
 			dev_kfree_skb(skb);
 		} else {
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, last, TTY_NORMAL);
+=======
+			tty_insert_flip_char(port, last, TTY_NORMAL);
+>>>>>>> refs/remotes/origin/master
 			/* Not yet emptied this buff, so it
 			 * must stay in the queue, for further calls
 			 * but we pull off the data we got until now.
@@ -1521,12 +1633,18 @@ isdn_info_update(void)
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_read(struct file *file, char __user *buf, size_t count, loff_t * off)
 =======
 isdn_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	uint minor = iminor(file->f_path.dentry->d_inode);
+=======
+isdn_read(struct file *file, char __user *buf, size_t count, loff_t *off)
+{
+	uint minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	int len = 0;
 	int drvidx;
 	int chidx;
@@ -1580,10 +1698,14 @@ isdn_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 				     &dev->drv[drvidx]->rcv_waitq[chidx]);
 		*off += len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (copy_to_user(buf,p,len)) 
 =======
 		if (copy_to_user(buf, p, len))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (copy_to_user(buf, p, len))
+>>>>>>> refs/remotes/origin/master
 			len = -EFAULT;
 		kfree(p);
 		retval = len;
@@ -1607,10 +1729,14 @@ isdn_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 				count = dev->drv[drvidx]->stavail;
 			len = dev->drv[drvidx]->interface->readstat(buf, count,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				drvidx, isdn_minor2chan(minor - ISDN_MINOR_CTRL));
 =======
 								    drvidx, isdn_minor2chan(minor - ISDN_MINOR_CTRL));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+								    drvidx, isdn_minor2chan(minor - ISDN_MINOR_CTRL));
+>>>>>>> refs/remotes/origin/master
 			if (len < 0) {
 				retval = len;
 				goto out;
@@ -1634,15 +1760,20 @@ isdn_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 #endif
 	retval = -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
  out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&isdn_mutex);
 	return retval;
 }
 
 static ssize_t
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_write(struct file *file, const char __user *buf, size_t count, loff_t * off)
 =======
@@ -1650,6 +1781,11 @@ isdn_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	uint minor = iminor(file->f_path.dentry->d_inode);
+=======
+isdn_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
+{
+	uint minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	int drvidx;
 	int chidx;
 	int retval;
@@ -1688,18 +1824,24 @@ isdn_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
 		 if (!(dev->drv[drvidx]->flags & DRV_FLAG_RUNNING))
 		 return -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 */
 		if (dev->drv[drvidx]->interface->writecmd)
 			retval = dev->drv[drvidx]->interface->
 				writecmd(buf, count, drvidx,
 				isdn_minor2chan(minor - ISDN_MINOR_CTRL));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		*/
 		if (dev->drv[drvidx]->interface->writecmd)
 			retval = dev->drv[drvidx]->interface->
 				writecmd(buf, count, drvidx,
 					 isdn_minor2chan(minor - ISDN_MINOR_CTRL));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			retval = count;
 		goto out;
@@ -1712,15 +1854,20 @@ isdn_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
 #endif
 	retval = -ENODEV;
 <<<<<<< HEAD
+<<<<<<< HEAD
  out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&isdn_mutex);
 	return retval;
 }
 
 static unsigned int
+<<<<<<< HEAD
 <<<<<<< HEAD
 isdn_poll(struct file *file, poll_table * wait)
 =======
@@ -1729,6 +1876,12 @@ isdn_poll(struct file *file, poll_table *wait)
 {
 	unsigned int mask = 0;
 	unsigned int minor = iminor(file->f_path.dentry->d_inode);
+=======
+isdn_poll(struct file *file, poll_table *wait)
+{
+	unsigned int mask = 0;
+	unsigned int minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	int drvidx = isdn_minor2drv(minor - ISDN_MINOR_CTRL);
 
 	mutex_lock(&isdn_mutex);
@@ -1761,10 +1914,14 @@ isdn_poll(struct file *file, poll_table *wait)
 #endif
 	mask = POLLERR;
 <<<<<<< HEAD
+<<<<<<< HEAD
  out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&isdn_mutex);
 	return mask;
 }
@@ -1773,7 +1930,11 @@ out:
 static int
 isdn_ioctl(struct file *file, uint cmd, ulong arg)
 {
+<<<<<<< HEAD
 	uint minor = iminor(file->f_path.dentry->d_inode);
+=======
+	uint minor = iminor(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	isdn_ctrl c;
 	int drvidx;
 	int ret;
@@ -1797,6 +1958,7 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
 
 	if (minor == ISDN_MINOR_STATUS) {
 		switch (cmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case IIOCGETDVR:
 				return (TTY_DV +
@@ -1831,6 +1993,8 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
 			default:
 				return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case IIOCGETDVR:
 			return (TTY_DV +
 				(NET_DV << 8) +
@@ -1850,7 +2014,10 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
 			} else
 				return -EINVAL;
 			break;
+<<<<<<< HEAD
 #ifdef CONFIG_NETDEVICES
+=======
+>>>>>>> refs/remotes/origin/master
 		case IIOCNETGPN:
 			/* Get peer phone number of a connected
 			 * isdn network interface */
@@ -1860,10 +2027,15 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
 				return isdn_net_getpeer(&phone, argp);
 			} else
 				return -EINVAL;
+<<<<<<< HEAD
 #endif
 		default:
 			return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		default:
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (!dev->drivers)
@@ -1885,6 +2057,7 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
  * are serialized by means of a semaphore.
  */
 		switch (cmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case IIOCNETDWRSET:
 				printk(KERN_INFO "INFO: ISDN_DW_ABC_EXTENSION not enabled\n");
@@ -2241,13 +2414,18 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
 				} else
 					return -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case IIOCNETDWRSET:
 			printk(KERN_INFO "INFO: ISDN_DW_ABC_EXTENSION not enabled\n");
 			return (-EINVAL);
 		case IIOCNETLCR:
 			printk(KERN_INFO "INFO: ISDN_ABC_LCR_SUPPORT not enabled\n");
 			return -ENODEV;
+<<<<<<< HEAD
 #ifdef CONFIG_NETDEVICES
+=======
+>>>>>>> refs/remotes/origin/master
 		case IIOCNETAIF:
 			/* Add a network-interface */
 			if (arg) {
@@ -2386,7 +2564,10 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
 				return -EFAULT;
 			return isdn_net_force_hangup(name);
 			break;
+<<<<<<< HEAD
 #endif                          /* CONFIG_NETDEVICES */
+=======
+>>>>>>> refs/remotes/origin/master
 		case IIOCSETVER:
 			dev->net_verbose = arg;
 			printk(KERN_INFO "isdn: Verbose-Level is %d\n", dev->net_verbose);
@@ -2595,7 +2776,10 @@ isdn_ioctl(struct file *file, uint cmd, ulong arg)
 				return ret;
 			} else
 				return -EINVAL;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 #ifdef CONFIG_ISDN_PPP
@@ -2684,10 +2868,14 @@ isdn_open(struct inode *ino, struct file *filep)
 	}
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
  out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	nonseekable_open(ino, filep);
 	mutex_unlock(&isdn_mutex);
 	return retval;
@@ -2732,10 +2920,14 @@ isdn_close(struct inode *ino, struct file *filep)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  out:
 =======
 out:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out:
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&isdn_mutex);
 	return 0;
 }
@@ -2772,10 +2964,14 @@ isdn_map_eaz2msn(char *msn, int di)
  * given L2- and L3-protocols.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define L2V (~(ISDN_FEATURE_L2_V11096|ISDN_FEATURE_L2_V11019|ISDN_FEATURE_L2_V11038))
 =======
 #define L2V (~(ISDN_FEATURE_L2_V11096 | ISDN_FEATURE_L2_V11019 | ISDN_FEATURE_L2_V11038))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define L2V (~(ISDN_FEATURE_L2_V11096 | ISDN_FEATURE_L2_V11019 | ISDN_FEATURE_L2_V11038))
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This function must be called with holding the dev->lock.
@@ -2783,10 +2979,14 @@ isdn_map_eaz2msn(char *msn, int di)
 int
 isdn_get_free_channel(int usage, int l2_proto, int l3_proto, int pre_dev
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      ,int pre_chan, char *msn)
 =======
 		      , int pre_chan, char *msn)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		      , int pre_chan, char *msn)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	ulong features;
@@ -2795,10 +2995,14 @@ isdn_get_free_channel(int usage, int l2_proto, int l3_proto, int pre_dev
 	features = ((1 << l2_proto) | (0x10000 << l3_proto));
 	vfeatures = (((1 << l2_proto) | (0x10000 << l3_proto)) &
 <<<<<<< HEAD
+<<<<<<< HEAD
 		     ~(ISDN_FEATURE_L2_V11096|ISDN_FEATURE_L2_V11019|ISDN_FEATURE_L2_V11038));
 =======
 		     ~(ISDN_FEATURE_L2_V11096 | ISDN_FEATURE_L2_V11019 | ISDN_FEATURE_L2_V11038));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		     ~(ISDN_FEATURE_L2_V11096 | ISDN_FEATURE_L2_V11019 | ISDN_FEATURE_L2_V11038));
+>>>>>>> refs/remotes/origin/master
 	/* If Layer-2 protocol is V.110, accept drivers with
 	 * transparent feature even if these don't support V.110
 	 * because we can emulate this in linklevel.
@@ -2809,19 +3013,27 @@ isdn_get_free_channel(int usage, int l2_proto, int l3_proto, int pre_dev
 			int d = dev->drvmap[i];
 			if ((dev->usage[i] & ISDN_USAGE_EXCLUSIVE) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			((pre_dev != d) || (pre_chan != dev->chanmap[i])))
 =======
 			    ((pre_dev != d) || (pre_chan != dev->chanmap[i])))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    ((pre_dev != d) || (pre_chan != dev->chanmap[i])))
+>>>>>>> refs/remotes/origin/master
 				continue;
 			if (!strcmp(isdn_map_eaz2msn(msn, d), "-"))
 				continue;
 			if (dev->usage[i] & ISDN_USAGE_DISABLED)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			        continue; /* usage not allowed */
 =======
 				continue; /* usage not allowed */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				continue; /* usage not allowed */
+>>>>>>> refs/remotes/origin/master
 			if (dev->drv[d]->flags & DRV_FLAG_RUNNING) {
 				if (((dev->drv[d]->interface->features & features) == features) ||
 				    (((dev->drv[d]->interface->features & vfeatures) == vfeatures) &&
@@ -2856,10 +3068,14 @@ isdn_free_channel(int di, int ch, int usage)
 	if ((di < 0) || (ch < 0)) {
 		printk(KERN_WARNING "%s: called with invalid drv(%d) or channel(%d)\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			__func__, di, ch);
 =======
 		       __func__, di, ch);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       __func__, di, ch);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 	for (i = 0; i < ISDN_MAX_CHANNELS; i++)
@@ -2904,10 +3120,14 @@ isdn_unexclusive_channel(int di, int ch)
  */
 static int
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_writebuf_stub(int drvidx, int chan, const u_char __user * buf, int len)
 =======
 isdn_writebuf_stub(int drvidx, int chan, const u_char __user *buf, int len)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_writebuf_stub(int drvidx, int chan, const u_char __user *buf, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	int hl = dev->drv[drvidx]->interface->hl_hdrlen;
@@ -2958,12 +3178,17 @@ isdn_writebuf_skb_stub(int drvidx, int chan, int ack, struct sk_buff *skb)
 		int hl = dev->drv[drvidx]->interface->hl_hdrlen;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if( skb_headroom(skb) < hl ){
 			/* 
 =======
 		if (skb_headroom(skb) < hl) {
 			/*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (skb_headroom(skb) < hl) {
+			/*
+>>>>>>> refs/remotes/origin/master
 			 * This should only occur when new HL driver with
 			 * increased hl_hdrlen was loaded after netdevice
 			 * was created and connected to the new driver.
@@ -2972,20 +3197,28 @@ isdn_writebuf_skb_stub(int drvidx, int chan, int ack, struct sk_buff *skb)
 			 * not need this
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			struct sk_buff * skb_tmp;
 =======
 			struct sk_buff *skb_tmp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			struct sk_buff *skb_tmp;
+>>>>>>> refs/remotes/origin/master
 
 			skb_tmp = skb_realloc_headroom(skb, hl);
 			printk(KERN_DEBUG "isdn_writebuf_skb_stub: reallocating headroom%s\n", skb_tmp ? "" : " failed");
 			if (!skb_tmp) return -ENOMEM; /* 0 better? */
 			ret = dev->drv[drvidx]->interface->writebuf_skb(drvidx, chan, ack, skb_tmp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if( ret > 0 ){
 =======
 			if (ret > 0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (ret > 0) {
+>>>>>>> refs/remotes/origin/master
 				dev_kfree_skb(skb);
 			} else {
 				dev_kfree_skb(skb_tmp);
@@ -3004,10 +3237,14 @@ isdn_writebuf_skb_stub(int drvidx, int chan, int ack, struct sk_buff *skb)
 			ret = v110_ret;
 			/* if the complete frame was send we free the skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			   if not upper function will requeue the skb */ 
 =======
 			   if not upper function will requeue the skb */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   if not upper function will requeue the skb */
+>>>>>>> refs/remotes/origin/master
 			if (ret == skb->len)
 				dev_kfree_skb(skb);
 		}
@@ -3026,10 +3263,14 @@ isdn_add_channels(isdn_driver_t *d, int drvidx, int n, int adding)
 	if (d->flags & DRV_FLAG_RUNNING)
 		return -1;
 <<<<<<< HEAD
+<<<<<<< HEAD
        	if (n < 1) return 0;
 =======
 	if (n < 1) return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (n < 1) return 0;
+>>>>>>> refs/remotes/origin/master
 
 	m = (adding) ? d->channels + n : n;
 
@@ -3067,10 +3308,14 @@ isdn_add_channels(isdn_driver_t *d, int drvidx, int n, int adding)
 			kfree(d->rcverr);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return -1; 
 =======
 		return -1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return -1;
+>>>>>>> refs/remotes/origin/master
 	}
 	for (j = 0; j < m; j++) {
 		skb_queue_head_init(&d->rpqueue[j]);
@@ -3129,6 +3374,7 @@ set_global_features(void)
 static char *map_drvname(int di)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   if ((di < 0) || (di >= ISDN_MAX_DRIVERS)) 
     return(NULL);
   return(dev->drvid[di]); /* driver name */
@@ -3137,11 +3383,17 @@ static char *map_drvname(int di)
 		return (NULL);
 	return (dev->drvid[di]); /* driver name */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if ((di < 0) || (di >= ISDN_MAX_DRIVERS))
+		return (NULL);
+	return (dev->drvid[di]); /* driver name */
+>>>>>>> refs/remotes/origin/master
 } /* map_drvname */
 
 static int map_namedrv(char *id)
 {  int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
    for (i = 0; i < ISDN_MAX_DRIVERS; i++)
     { if (!strcmp(dev->drvid[i],id)) 
@@ -3149,16 +3401,22 @@ static int map_namedrv(char *id)
     }
    return(-1);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ISDN_MAX_DRIVERS; i++)
 	{ if (!strcmp(dev->drvid[i], id))
 			return (i);
 	}
 	return (-1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* map_namedrv */
 
 int DIVERT_REG_NAME(isdn_divert_if *i_div)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   if (i_div->if_magic != DIVERT_IF_MAGIC) 
     return(DIVERT_VER_ERR);
@@ -3183,6 +3441,8 @@ int DIVERT_REG_NAME(isdn_divert_if *i_div)
         return(DIVERT_CMD_ERR);   
     }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (i_div->if_magic != DIVERT_IF_MAGIC)
 		return (DIVERT_VER_ERR);
 	switch (i_div->cmd)
@@ -3205,7 +3465,10 @@ int DIVERT_REG_NAME(isdn_divert_if *i_div)
 	default:
 		return (DIVERT_CMD_ERR);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } /* DIVERT_REG_NAME */
 
 EXPORT_SYMBOL(DIVERT_REG_NAME);
@@ -3221,10 +3484,14 @@ EXPORT_SYMBOL(isdn_ppp_unregister_compressor);
 
 int
 <<<<<<< HEAD
+<<<<<<< HEAD
 register_isdn(isdn_if * i)
 =======
 register_isdn(isdn_if *i)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+register_isdn(isdn_if *i)
+>>>>>>> refs/remotes/origin/master
 {
 	isdn_driver_t *d;
 	int j;
@@ -3280,16 +3547,22 @@ register_isdn(isdn_if *i)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *****************************************************************************
  * And now the modules code.
  *****************************************************************************
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 *****************************************************************************
 * And now the modules code.
 *****************************************************************************
 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static char *
 isdn_getrev(const char *revision)
@@ -3315,18 +3588,24 @@ static int __init isdn_init(void)
 	char tmprev[50];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!(dev = vmalloc(sizeof(isdn_dev)))) {
 		printk(KERN_WARNING "isdn: Could not allocate device-struct.\n");
 		return -EIO;
 	}
 	memset((char *) dev, 0, sizeof(isdn_dev));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev = vzalloc(sizeof(isdn_dev));
 	if (!dev) {
 		printk(KERN_WARNING "isdn: Could not allocate device-struct.\n");
 		return -EIO;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	init_timer(&dev->timer);
 	dev->timer.function = isdn_timer_funct;
 	spin_lock_init(&dev->lock);
@@ -3341,8 +3620,11 @@ static int __init isdn_init(void)
 		dev->chanmap[i] = -1;
 		dev->m_idx[i] = -1;
 		strcpy(dev->num[i], "???");
+<<<<<<< HEAD
 		init_waitqueue_head(&dev->mdm.info[i].open_wait);
 		init_waitqueue_head(&dev->mdm.info[i].close_wait);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	if (register_chrdev(ISDN_MAJOR, "isdn", &isdn_fops)) {
 		printk(KERN_WARNING "isdn: Could not register control devices\n");
@@ -3367,8 +3649,11 @@ static int __init isdn_init(void)
 
 	strcpy(tmprev, isdn_revision);
 	printk(KERN_NOTICE "ISDN subsystem Rev: %s/", isdn_getrev(tmprev));
+<<<<<<< HEAD
 	strcpy(tmprev, isdn_tty_revision);
 	printk("%s/", isdn_getrev(tmprev));
+=======
+>>>>>>> refs/remotes/origin/master
 	strcpy(tmprev, isdn_net_revision);
 	printk("%s/", isdn_getrev(tmprev));
 	strcpy(tmprev, isdn_ppp_revision);

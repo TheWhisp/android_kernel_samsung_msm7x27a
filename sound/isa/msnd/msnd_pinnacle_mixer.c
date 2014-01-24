@@ -17,9 +17,13 @@
 
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/control.h>
@@ -305,7 +309,11 @@ DUMMY_VOLUME("Monitor",	0, MSND_MIXER_IMIX),
 };
 
 
+<<<<<<< HEAD
 int __devinit snd_msndmix_new(struct snd_card *card)
+=======
+int snd_msndmix_new(struct snd_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_msnd *chip = card->private_data;
 	unsigned int idx;

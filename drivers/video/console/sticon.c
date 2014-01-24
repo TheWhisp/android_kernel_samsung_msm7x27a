@@ -372,6 +372,10 @@ static const struct consw sti_con = {
 
 static int __init sticonsole_init(void)
 {
+<<<<<<< HEAD
+=======
+    int err;
+>>>>>>> refs/remotes/origin/master
     /* already initialized ? */
     if (sticon_sti)
 	 return 0;
@@ -382,7 +386,14 @@ static int __init sticonsole_init(void)
 
     if (conswitchp == &dummy_con) {
 	printk(KERN_INFO "sticon: Initializing STI text console.\n");
+<<<<<<< HEAD
 	return take_over_console(&sti_con, 0, MAX_NR_CONSOLES - 1, 1);
+=======
+	console_lock();
+	err = do_take_over_console(&sti_con, 0, MAX_NR_CONSOLES - 1, 1);
+	console_unlock();
+	return err;
+>>>>>>> refs/remotes/origin/master
     }
     return 0;
 }

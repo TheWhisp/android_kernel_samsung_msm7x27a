@@ -1,5 +1,6 @@
 /*************************************
 <<<<<<< HEAD
+<<<<<<< HEAD
 *	Macros.h
 **************************************/
 #ifndef	__MACROS_H__
@@ -14,6 +15,8 @@
 #define MAX_DATA_PKTS 		200
 #define MAX_ETH_SIZE 		1536
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 * Macros.h
 **************************************/
 #ifndef __MACROS_H__
@@ -21,13 +24,19 @@
 
 #define TX_TIMER_PERIOD 10 /*10 msec*/
 #define MAX_CLASSIFIERS 100
+<<<<<<< HEAD
 /* #define MAX_CLASSIFIERS_PER_SF  20 */
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_TARGET_DSX_BUFFERS 24
 
 #define MAX_CNTRL_PKTS    100
 #define MAX_DATA_PKTS     200
 #define MAX_ETH_SIZE      1536
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define MAX_CNTL_PKT_SIZE 2048
 
 #define MTU_SIZE 1400
@@ -36,6 +45,7 @@
 #define MAC_ADDR_REGISTER 0xbf60d000
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ///////////Quality of Service///////////////////////////
 #define NO_OF_QUEUES				17
@@ -84,6 +94,8 @@
 #define LINK_NET_ENTRY              0x0002
 #define HMC_STATUS					0x0004
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Quality of Service */
 #define NO_OF_QUEUES 17
 #define HiPriority (NO_OF_QUEUES-1)
@@ -130,11 +142,15 @@
 
 #define LINK_NET_ENTRY              0x0002
 #define HMC_STATUS                  0x0004
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define LINK_UP_CONTROL_REQ         0x83
 
 #define STATS_POINTER_REQ_STATUS    0x86
 #define NETWORK_ENTRY_REQ_PAYLOAD   198
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LINK_DOWN_REQ_PAYLOAD  	 	226
 #define SYNC_UP_REQ_PAYLOAD         228
@@ -144,12 +160,18 @@
 #define SYNC_UP_REQ_PAYLOAD         228
 #define STATISTICS_POINTER_REQ      237
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LINK_DOWN_REQ_PAYLOAD       226
+#define SYNC_UP_REQ_PAYLOAD         228
+#define STATISTICS_POINTER_REQ      237
+>>>>>>> refs/remotes/origin/master
 #define LINK_UP_REQ_PAYLOAD         245
 #define LINK_UP_ACK                 246
 
 #define STATS_MSG_SIZE              4
 #define INDEX_TO_DATA               4
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define	GO_TO_IDLE_MODE_PAYLOAD			210
 #define	COME_UP_FROM_IDLE_MODE_PAYLOAD	211
@@ -175,6 +197,8 @@
 #ifndef MIN
 #define MIN(_a, _b) ((_a) < (_b)? (_a): (_b))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define GO_TO_IDLE_MODE_PAYLOAD         210
 #define COME_UP_FROM_IDLE_MODE_PAYLOAD  211
 #define IDLE_MODE_SF_UPDATE_MSG         187
@@ -198,11 +222,15 @@
 
 #ifndef MIN
 #define MIN(_a, _b) ((_a) < (_b) ? (_a) : (_b))
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
 /*Leader related terms */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LEADER_STATUS   				0x00
 #define LEADER_STATUS_TCP_ACK			0x1
@@ -226,6 +254,18 @@
 
 #define MAX_TRANSFER_CTRL_BYTE_USB (2*1024)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LEADER_STATUS         0x00
+#define LEADER_STATUS_TCP_ACK 0x1
+#define LEADER_SIZE           sizeof(struct bcm_leader)
+#define MAC_ADDR_REQ_SIZE     sizeof(struct bcm_packettosend)
+#define SS_INFO_REQ_SIZE      sizeof(struct bcm_packettosend)
+#define CM_REQUEST_SIZE       (LEADER_SIZE + sizeof(stLocalSFChangeRequest))
+#define IDLE_REQ_SIZE         sizeof(struct bcm_packettosend)
+
+
+#define MAX_TRANSFER_CTRL_BYTE_USB (2*1024)
+>>>>>>> refs/remotes/origin/master
 
 #define GET_MAILBOX1_REG_REQUEST        0x87
 #define GET_MAILBOX1_REG_RESPONSE       0x67
@@ -234,6 +274,7 @@
 #define TRANSMIT_NETWORK_DATA           0x00
 #define RECEIVED_NETWORK_DATA           0x20
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define CM_RESPONSES					0xA0
 #define STATUS_RSP						0xA1
@@ -270,6 +311,8 @@
 
 #define GPIO_OUTPUT_REGISTER	 0x0F00003C
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CM_RESPONSES            0xA0
 #define STATUS_RSP              0xA1
 #define LINK_CONTROL_RESP       0xA2
@@ -304,12 +347,16 @@
 
 
 #define GPIO_OUTPUT_REGISTER     0x0F00003C
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define BCM_GPIO_OUTPUT_SET_REG  0x0F000040
 #define BCM_GPIO_OUTPUT_CLR_REG  0x0F000044
 #define GPIO_MODE_REGISTER       0x0F000034
 #define GPIO_PIN_STATE_REGISTER  0x0F000038
 
+<<<<<<< HEAD
 
 typedef struct _LINK_STATE {
 <<<<<<< HEAD
@@ -351,6 +398,14 @@ typedef enum _E_PHS_DSC_ACTION
 } LINK_STATE, *PLINK_STATE;
 
 
+=======
+struct bcm_link_state {
+	unsigned char ucLinkStatus;
+	unsigned char bIdleMode;
+	unsigned char bShutdownMode;
+};
+
+>>>>>>> refs/remotes/origin/master
 enum enLinkStatus {
 	WAIT_FOR_SYNC = 1,
 	PHY_SYNC_ACHIVED = 2,
@@ -363,24 +418,36 @@ enum enLinkStatus {
 	COMPLETE_WAKE_UP_NOTIFICATION_FRM_FW = 9
 };
 
+<<<<<<< HEAD
 typedef enum _E_PHS_DSC_ACTION {
+=======
+enum bcm_phs_dsc_action {
+>>>>>>> refs/remotes/origin/master
 	eAddPHSRule = 0,
 	eSetPHSRule,
 	eDeletePHSRule,
 	eDeleteAllPHSRules
+<<<<<<< HEAD
 } E_PHS_DSC_ACTION;
 
+=======
+};
+>>>>>>> refs/remotes/origin/master
 
 #define CM_CONTROL_NEWDSX_MULTICLASSIFIER_REQ  0x89 /* Host to Mac */
 #define CM_CONTROL_NEWDSX_MULTICLASSIFIER_RESP 0xA9 /* Mac to Host */
 #define MASK_DISABLE_HEADER_SUPPRESSION        0x10 /* 0b000010000 */
 #define MINIMUM_PENDING_DESCRIPTORS            5
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SHUTDOWN_HOSTINITIATED_REQUESTPAYLOAD 0xCC
 #define SHUTDOWN_ACK_FROM_DRIVER 0x1
 #define SHUTDOWN_NACK_FROM_DRIVER 0x2
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define LINK_SYNC_UP_SUBTYPE		0x0001
 #define LINK_SYNC_DOWN_SUBTYPE		0x0001
@@ -388,6 +455,10 @@ typedef enum _E_PHS_DSC_ACTION {
 #define LINK_SYNC_UP_SUBTYPE   0x0001
 #define LINK_SYNC_DOWN_SUBTYPE 0x0001
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define LINK_SYNC_UP_SUBTYPE   0x0001
+#define LINK_SYNC_DOWN_SUBTYPE 0x0001
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -412,6 +483,7 @@ typedef enum _E_PHS_DSC_ACTION {
 #define MAX_PENDING_CTRL_PACKET (MAX_CTRL_QUEUE_LEN-10)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WIMAX_MAX_MTU			(MTU_SIZE + ETH_HLEN)
 #define AUTO_LINKUP_ENABLE              0x2
 #define AUTO_SYNC_DISABLE              	0x1
@@ -420,6 +492,11 @@ typedef enum _E_PHS_DSC_ACTION {
 #define AUTO_LINKUP_ENABLE              0x2
 #define AUTO_SYNC_DISABLE               0x1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WIMAX_MAX_MTU                   (MTU_SIZE + ETH_HLEN)
+#define AUTO_LINKUP_ENABLE              0x2
+#define AUTO_SYNC_DISABLE               0x1
+>>>>>>> refs/remotes/origin/master
 #define AUTO_FIRM_DOWNLOAD              0x1
 #define SETTLE_DOWN_TIME                50
 
@@ -434,6 +511,7 @@ typedef enum _E_PHS_DSC_ACTION {
 #define IDLE_MODE_PAYLOAD_LENGTH 8
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IP_HEADER(Buffer) ((IPHeaderFormat*)(Buffer))
 #define IPV4				4
 #define IP_VERSION(byte)	(((byte&0xF0)>>4))
@@ -442,6 +520,11 @@ typedef enum _E_PHS_DSC_ACTION {
 #define IPV4 4
 #define IP_VERSION(byte) (((byte&0xF0)>>4))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define IP_HEADER(Buffer) ((IPHeaderFormat *)(Buffer))
+#define IPV4 4
+#define IP_VERSION(byte) (((byte&0xF0)>>4))
+>>>>>>> refs/remotes/origin/master
 
 #define SET_MAC_ADDRESS  193
 #define SET_MAC_ADDRESS_RESPONSE 236
@@ -450,16 +533,21 @@ typedef enum _E_PHS_DSC_ACTION {
 #define IDLE_MODE_WAKEUP_NOTIFIER_ADDRESS 0x1FC02FA8
 #define IDLE_MODE_MAX_RETRY_COUNT 1000
 
+<<<<<<< HEAD
 #ifdef REL_4_1
 #define CONFIG_BEGIN_ADDR 0xBF60B004
 #else
 #define CONFIG_BEGIN_ADDR 0xBF60B000
 #endif
+=======
+#define CONFIG_BEGIN_ADDR 0xBF60B000
+>>>>>>> refs/remotes/origin/master
 
 #define FIRMWARE_BEGIN_ADDR 0xBFC00000
 
 #define INVALID_QUEUE_INDEX NO_OF_QUEUES
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define INVALID_PID (pid_t)-1
 #define DDR_80_MHZ  	0
@@ -471,6 +559,8 @@ typedef enum _E_PHS_DSC_ACTION {
 #define DDR_180_MHZ    	6 //  Not Used (Reserved for future)
 #define DDR_200_MHZ    	7 //  Not Used (Reserved for future)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define INVALID_PID ((pid_t)-1)
 #define DDR_80_MHZ  0
 #define DDR_100_MHZ 1
@@ -480,7 +570,10 @@ typedef enum _E_PHS_DSC_ACTION {
 #define DDR_160_MHZ 5 /* Additional Frequency for T3LP  */
 #define DDR_180_MHZ 6 /* Not Used (Reserved for future) */
 #define DDR_200_MHZ 7 /* Not Used (Reserved for future) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define MIPS_200_MHZ   0
 #define MIPS_160_MHZ   1
@@ -501,6 +594,7 @@ typedef enum _E_PHS_DSC_ACTION {
 #define EEPROM_REJECT_REG_4 0x0f003020
 #define EEPROM_REJECT_MASK  0x0fffffff
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define VSG_MODE			  0x3
 
 /* Idle Mode Related Registers */
@@ -511,6 +605,8 @@ typedef enum _E_PHS_DSC_ACTION {
 #define DEVICE_INT_OUT_EP_REG0		0x0F011870
 #define DEVICE_INT_OUT_EP_REG1		0x0F011874
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define VSG_MODE            0x3
 
 /* Idle Mode Related Registers */
@@ -520,11 +616,15 @@ typedef enum _E_PHS_DSC_ACTION {
 #define SW_ABORT_IDLEMODE_PATTERN 0xd0ea1d1e
 #define DEVICE_INT_OUT_EP_REG0    0x0F011870
 #define DEVICE_INT_OUT_EP_REG1    0x0F011874
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define BIN_FILE "/lib/firmware/macxvi200.bin"
 #define CFG_FILE "/lib/firmware/macxvi.cfg"
 #define SF_MAX_ALLOWED_PACKETS_TO_BACKUP 128
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define MIN_VAL(x,y) 	((x)<(y)?(x):(y))
 #define MAC_ADDRESS_SIZE 6
@@ -535,6 +635,8 @@ typedef enum _E_PHS_DSC_ACTION {
 #define GPIO_OUTPUT_REG			0x0F00003C
 #define WIMAX_MAX_ALLOWED_RATE  1024*1024*50
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define MIN_VAL(x, y) ((x) < (y) ? (x) : (y))
 #define MAC_ADDRESS_SIZE 6
 #define EEPROM_COMMAND_Q_REG    0x0F003018
@@ -543,7 +645,10 @@ typedef enum _E_PHS_DSC_ACTION {
 #define GPIO_MODE_REG           0x0F000034
 #define GPIO_OUTPUT_REG         0x0F00003C
 #define WIMAX_MAX_ALLOWED_RATE  (1024*1024*50)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define T3 0xbece0300
 #define TARGET_SFID_TXDESC_MAP_LOC 0xBFFFF400
@@ -551,6 +656,7 @@ typedef enum _E_PHS_DSC_ACTION {
 #define RWM_READ 0
 #define RWM_WRITE 1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define T3LPB       0xbece3300
 #define BCS220_2	0xbece3311
@@ -566,6 +672,8 @@ typedef enum _E_PHS_DSC_ACTION {
 typedef enum eNVM_TYPE
 {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define T3LPB      0xbece3300
 #define BCS220_2   0xbece3311
 #define BCS220_2BC 0xBECE3310
@@ -577,12 +685,17 @@ typedef enum eNVM_TYPE
 #define HPM_CONFIG_MSW    0x0F000D58
 
 #define T3B 0xbece0310
+<<<<<<< HEAD
 typedef enum eNVM_TYPE {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+enum bcm_nvm_type {
+>>>>>>> refs/remotes/origin/master
 	NVM_AUTODETECT = 0,
 	NVM_EEPROM,
 	NVM_FLASH,
 	NVM_UNKNOWN
+<<<<<<< HEAD
 <<<<<<< HEAD
 }NVM_TYPE;
 
@@ -601,6 +714,15 @@ typedef enum ePMU_MODES {
 	HYBRID_MODE_6   = 2
 } PMU_MODE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+enum bcm_pmu_modes {
+	HYBRID_MODE_7C  = 0,
+	INTERNAL_MODE_6 = 1,
+	HYBRID_MODE_6   = 2
+};
+>>>>>>> refs/remotes/origin/master
 
 #define MAX_RDM_WRM_RETIRES 1
 
@@ -618,7 +740,11 @@ enum eAbortPattern {
 #define SKB_CB_TCPACK_OFFSET            2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif	//__MACROS_H__
 =======
 #endif /* __MACROS_H__ */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* __MACROS_H__ */
+>>>>>>> refs/remotes/origin/master

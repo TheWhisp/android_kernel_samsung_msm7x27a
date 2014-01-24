@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,7 +74,11 @@ acpi_ps_update_parameter_list(struct acpi_evaluate_info *info, u16 action);
  * PARAMETERS:  method_name     - Valid ACPI name string
  *              debug_level     - Optional level mask. 0 to use default
  *              debug_layer     - Optional layer mask. 0 to use default
+<<<<<<< HEAD
  *              Flags           - bit 1: one shot(1) or persistent(0)
+=======
+ *              flags           - bit 1: one shot(1) or persistent(0)
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -109,7 +117,11 @@ acpi_debug_trace(char *name, u32 debug_level, u32 debug_layer, u32 flags)
  *
  * FUNCTION:    acpi_ps_start_trace
  *
+<<<<<<< HEAD
  * PARAMETERS:  Info        - Method info struct
+=======
+ * PARAMETERS:  info        - Method info struct
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -129,7 +141,11 @@ static void acpi_ps_start_trace(struct acpi_evaluate_info *info)
 	}
 
 	if ((!acpi_gbl_trace_method_name) ||
+<<<<<<< HEAD
 	    (acpi_gbl_trace_method_name != info->resolved_node->name.integer)) {
+=======
+	    (acpi_gbl_trace_method_name != info->node->name.integer)) {
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -146,7 +162,11 @@ static void acpi_ps_start_trace(struct acpi_evaluate_info *info)
 		acpi_dbg_layer = acpi_gbl_trace_dbg_layer;
 	}
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 }
 
@@ -154,7 +174,11 @@ static void acpi_ps_start_trace(struct acpi_evaluate_info *info)
  *
  * FUNCTION:    acpi_ps_stop_trace
  *
+<<<<<<< HEAD
  * PARAMETERS:  Info        - Method info struct
+=======
+ * PARAMETERS:  info        - Method info struct
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      None
  *
@@ -174,7 +198,11 @@ static void acpi_ps_stop_trace(struct acpi_evaluate_info *info)
 	}
 
 	if ((!acpi_gbl_trace_method_name) ||
+<<<<<<< HEAD
 	    (acpi_gbl_trace_method_name != info->resolved_node->name.integer)) {
+=======
+	    (acpi_gbl_trace_method_name != info->node->name.integer)) {
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 	}
 
@@ -189,7 +217,11 @@ static void acpi_ps_stop_trace(struct acpi_evaluate_info *info)
 	acpi_dbg_level = acpi_gbl_original_dbg_level;
 	acpi_dbg_layer = acpi_gbl_original_dbg_layer;
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	(void)acpi_ut_release_mutex(ACPI_MTX_NAMESPACE);
 }
 
@@ -197,10 +229,17 @@ static void acpi_ps_stop_trace(struct acpi_evaluate_info *info)
  *
  * FUNCTION:    acpi_ps_execute_method
  *
+<<<<<<< HEAD
  * PARAMETERS:  Info            - Method info block, contains:
  *                  Node            - Method Node to execute
  *                  obj_desc        - Method object
  *                  Parameters      - List of parameters to pass to the method,
+=======
+ * PARAMETERS:  info            - Method info block, contains:
+ *                  node            - Method Node to execute
+ *                  obj_desc        - Method object
+ *                  parameters      - List of parameters to pass to the method,
+>>>>>>> refs/remotes/origin/master
  *                                    terminated by NULL. Params itself may be
  *                                    NULL if no parameters are being passed.
  *                  return_object   - Where to put method's return value (if
@@ -230,15 +269,23 @@ acpi_status acpi_ps_execute_method(struct acpi_evaluate_info *info)
 
 	/* Validate the Info and method Node */
 
+<<<<<<< HEAD
 	if (!info || !info->resolved_node) {
+=======
+	if (!info || !info->node) {
+>>>>>>> refs/remotes/origin/master
 		return_ACPI_STATUS(AE_NULL_ENTRY);
 	}
 
 	/* Init for new method, wait on concurrency semaphore */
 
 	status =
+<<<<<<< HEAD
 	    acpi_ds_begin_method_execution(info->resolved_node, info->obj_desc,
 					   NULL);
+=======
+	    acpi_ds_begin_method_execution(info->node, info->obj_desc, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		return_ACPI_STATUS(status);
 	}
@@ -257,8 +304,12 @@ acpi_status acpi_ps_execute_method(struct acpi_evaluate_info *info)
 	 */
 	ACPI_DEBUG_PRINT((ACPI_DB_PARSE,
 			  "**** Begin Method Parse/Execute [%4.4s] **** Node=%p Obj=%p\n",
+<<<<<<< HEAD
 			  info->resolved_node->name.ascii, info->resolved_node,
 			  info->obj_desc));
+=======
+			  info->node->name.ascii, info->node, info->obj_desc));
+>>>>>>> refs/remotes/origin/master
 
 	/* Create and init a Root Node */
 
@@ -279,7 +330,11 @@ acpi_status acpi_ps_execute_method(struct acpi_evaluate_info *info)
 		goto cleanup;
 	}
 
+<<<<<<< HEAD
 	status = acpi_ds_init_aml_walk(walk_state, op, info->resolved_node,
+=======
+	status = acpi_ds_init_aml_walk(walk_state, op, info->node,
+>>>>>>> refs/remotes/origin/master
 				       info->obj_desc->method.aml_start,
 				       info->obj_desc->method.aml_length, info,
 				       info->pass_number);
@@ -329,7 +384,11 @@ acpi_status acpi_ps_execute_method(struct acpi_evaluate_info *info)
 
 	/* walk_state was deleted by parse_aml */
 
+<<<<<<< HEAD
       cleanup:
+=======
+cleanup:
+>>>>>>> refs/remotes/origin/master
 	acpi_ps_delete_parse_tree(op);
 
 	/* End optional tracing */
@@ -365,9 +424,15 @@ acpi_status acpi_ps_execute_method(struct acpi_evaluate_info *info)
  *
  * FUNCTION:    acpi_ps_update_parameter_list
  *
+<<<<<<< HEAD
  * PARAMETERS:  Info            - See struct acpi_evaluate_info
  *                                (Used: parameter_type and Parameters)
  *              Action          - Add or Remove reference
+=======
+ * PARAMETERS:  info            - See struct acpi_evaluate_info
+ *                                (Used: parameter_type and Parameters)
+ *              action          - Add or Remove reference
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *

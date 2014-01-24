@@ -25,10 +25,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/fs.h>
@@ -40,16 +45,22 @@
 #include <mach/hardware.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 static unsigned long wdt_status;
 static unsigned long boot_status;
 static spinlock_t wdt_lock;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool nowayout = WATCHDOG_NOWAYOUT;
 static unsigned long wdt_status;
 static unsigned long boot_status;
 static DEFINE_SPINLOCK(wdt_lock);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define WDT_IN_USE		0
 #define WDT_OK_TO_CLOSE		1
@@ -98,10 +109,14 @@ static int wdt_disable(void)
 		clear_bit(WDT_ENABLED, &wdt_status);
 		spin_unlock(&wdt_lock);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "WATCHDOG: Disabled\n");
 =======
 		pr_info("Disabled\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("Disabled\n");
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	} else
 		return 1;
@@ -214,12 +229,17 @@ static int iop_wdt_release(struct inode *inode, struct file *file)
 	if (state != 0) {
 		wdt_enable();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT "WATCHDOG: Device closed unexpectedly - "
 		       "reset in %lu seconds\n", iop_watchdog_timeout());
 =======
 		pr_crit("Device closed unexpectedly - reset in %lu seconds\n",
 			iop_watchdog_timeout());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("Device closed unexpectedly - reset in %lu seconds\n",
+			iop_watchdog_timeout());
+>>>>>>> refs/remotes/origin/master
 	}
 
 	clear_bit(WDT_IN_USE, &wdt_status);
@@ -248,11 +268,14 @@ static int __init iop_wdt_init(void)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock_init(&wdt_lock);
 
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* check if the reset was caused by the watchdog timer */
 	boot_status = (read_rcsr() & IOP_RCSR_WDT) ? WDIOF_CARDRESET : 0;
 
@@ -266,11 +289,15 @@ static int __init iop_wdt_init(void)
 	ret = misc_register(&iop_wdt_miscdev);
 	if (ret == 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_INFO "iop watchdog timer: timeout %lu sec\n",
 		       iop_watchdog_timeout());
 =======
 		pr_info("timeout %lu sec\n", iop_watchdog_timeout());
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_info("timeout %lu sec\n", iop_watchdog_timeout());
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -284,13 +311,20 @@ module_init(iop_wdt_init);
 module_exit(iop_wdt_exit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 module_param(nowayout, int, 0);
 =======
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started");
 
 MODULE_AUTHOR("Curt E Bruns <curt.e.bruns@intel.com>");
 MODULE_DESCRIPTION("iop watchdog timer driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

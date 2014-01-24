@@ -37,12 +37,15 @@ SECTIONS
 		_vectors_end = .;
 	}
 
+<<<<<<< HEAD
 	. = ALIGN(0x1000);
 	.cmdline :
 	{
 		*(.cmdline)
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * This section contains data which may be shared with other
 	 * cores. It needs to be a fixed offset from PAGE_OFFSET
@@ -54,16 +57,25 @@ SECTIONS
 	}
 
 	. = ALIGN(PAGE_SIZE);
+<<<<<<< HEAD
 	.init :
 	{
 		_stext = .;
+=======
+	__init_begin = .;
+	.init :
+	{
+>>>>>>> refs/remotes/origin/master
 		_sinittext = .;
 		HEAD_TEXT
 		INIT_TEXT
 		_einittext = .;
 	}
 
+<<<<<<< HEAD
 	__init_begin = _stext;
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_DATA_SECTION(16)
 
 	PERCPU_SECTION(128)
@@ -74,6 +86,10 @@ SECTIONS
 	.text :
 	{
 		_text = .;
+<<<<<<< HEAD
+=======
+		_stext = .;
+>>>>>>> refs/remotes/origin/master
 		TEXT_TEXT
 		SCHED_TEXT
 		LOCK_TEXT

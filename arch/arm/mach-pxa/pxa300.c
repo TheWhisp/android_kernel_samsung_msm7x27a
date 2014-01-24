@@ -17,9 +17,13 @@
 #include <linux/kernel.h>
 #include <linux/platform_device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/pxa300.h>
 

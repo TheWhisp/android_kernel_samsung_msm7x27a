@@ -28,7 +28,11 @@
 int ieee80211_wep_init(struct ieee80211_local *local)
 {
 	/* start WEP IV from a random value */
+<<<<<<< HEAD
 	get_random_bytes(&local->wep_iv, WEP_IV_LEN);
+=======
+	get_random_bytes(&local->wep_iv, IEEE80211_WEP_IV_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	local->wep_tx_tfm = crypto_alloc_cipher("arc4", 0, CRYPTO_ALG_ASYNC);
 	if (IS_ERR(local->wep_tx_tfm)) {
@@ -92,11 +96,16 @@ static u8 *ieee80211_wep_add_iv(struct ieee80211_local *local,
 				int keylen, int keyidx)
 {
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+<<<<<<< HEAD
+=======
+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+>>>>>>> refs/remotes/origin/master
 	unsigned int hdrlen;
 	u8 *newhdr;
 
 	hdr->frame_control |= cpu_to_le16(IEEE80211_FCTL_PROTECTED);
 
+<<<<<<< HEAD
 	if (WARN_ON(skb_tailroom(skb) < WEP_ICV_LEN ||
 		    skb_headroom(skb) < WEP_IV_LEN))
 		return NULL;
@@ -104,6 +113,23 @@ static u8 *ieee80211_wep_add_iv(struct ieee80211_local *local,
 	hdrlen = ieee80211_hdrlen(hdr->frame_control);
 	newhdr = skb_push(skb, WEP_IV_LEN);
 	memmove(newhdr, newhdr + WEP_IV_LEN, hdrlen);
+=======
+	if (WARN_ON(skb_tailroom(skb) < IEEE80211_WEP_ICV_LEN ||
+		    skb_headroom(skb) < IEEE80211_WEP_IV_LEN))
+		return NULL;
+
+	hdrlen = ieee80211_hdrlen(hdr->frame_control);
+	newhdr = skb_push(skb, IEEE80211_WEP_IV_LEN);
+	memmove(newhdr, newhdr + IEEE80211_WEP_IV_LEN, hdrlen);
+
+	/* the HW only needs room for the IV, but not the actual IV */
+	if (info->control.hw_key &&
+	    (info->control.hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE))
+		return newhdr + hdrlen;
+
+	skb_set_network_header(skb, skb_network_offset(skb) +
+				    IEEE80211_WEP_IV_LEN);
+>>>>>>> refs/remotes/origin/master
 	ieee80211_wep_get_iv(local, keylen, keyidx, newhdr + hdrlen);
 	return newhdr + hdrlen;
 }
@@ -117,8 +143,13 @@ static void ieee80211_wep_remove_iv(struct ieee80211_local *local,
 	unsigned int hdrlen;
 
 	hdrlen = ieee80211_hdrlen(hdr->frame_control);
+<<<<<<< HEAD
 	memmove(skb->data + WEP_IV_LEN, skb->data, hdrlen);
 	skb_pull(skb, WEP_IV_LEN);
+=======
+	memmove(skb->data + IEEE80211_WEP_IV_LEN, skb->data, hdrlen);
+	skb_pull(skb, IEEE80211_WEP_IV_LEN);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -138,7 +169,11 @@ int ieee80211_wep_encrypt_data(struct crypto_cipher *tfm, u8 *rc4key,
 	put_unaligned(icv, (__le32 *)(data + data_len));
 
 	crypto_cipher_setkey(tfm, rc4key, klen);
+<<<<<<< HEAD
 	for (i = 0; i < data_len + WEP_ICV_LEN; i++)
+=======
+	for (i = 0; i < data_len + IEEE80211_WEP_ICV_LEN; i++)
+>>>>>>> refs/remotes/origin/master
 		crypto_cipher_encrypt_one(tfm, data + i, data + i);
 
 	return 0;
@@ -164,7 +199,11 @@ int ieee80211_wep_encrypt(struct ieee80211_local *local,
 	if (!iv)
 		return -1;
 
+<<<<<<< HEAD
 	len = skb->len - (iv + WEP_IV_LEN - skb->data);
+=======
+	len = skb->len - (iv + IEEE80211_WEP_IV_LEN - skb->data);
+>>>>>>> refs/remotes/origin/master
 
 	/* Prepend 24-bit IV to RC4 key */
 	memcpy(rc4key, iv, 3);
@@ -173,10 +212,17 @@ int ieee80211_wep_encrypt(struct ieee80211_local *local,
 	memcpy(rc4key + 3, key, keylen);
 
 	/* Add room for ICV */
+<<<<<<< HEAD
 	skb_put(skb, WEP_ICV_LEN);
 
 	return ieee80211_wep_encrypt_data(local->wep_tx_tfm, rc4key, keylen + 3,
 					  iv + WEP_IV_LEN, len);
+=======
+	skb_put(skb, IEEE80211_WEP_ICV_LEN);
+
+	return ieee80211_wep_encrypt_data(local->wep_tx_tfm, rc4key, keylen + 3,
+					  iv + IEEE80211_WEP_IV_LEN, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -193,11 +239,19 @@ int ieee80211_wep_decrypt_data(struct crypto_cipher *tfm, u8 *rc4key,
 		return -1;
 
 	crypto_cipher_setkey(tfm, rc4key, klen);
+<<<<<<< HEAD
 	for (i = 0; i < data_len + WEP_ICV_LEN; i++)
 		crypto_cipher_decrypt_one(tfm, data + i, data + i);
 
 	crc = cpu_to_le32(~crc32_le(~0, data, data_len));
 	if (memcmp(&crc, data + data_len, WEP_ICV_LEN) != 0)
+=======
+	for (i = 0; i < data_len + IEEE80211_WEP_ICV_LEN; i++)
+		crypto_cipher_decrypt_one(tfm, data + i, data + i);
+
+	crc = cpu_to_le32(~crc32_le(~0, data, data_len));
+	if (memcmp(&crc, data + data_len, IEEE80211_WEP_ICV_LEN) != 0)
+>>>>>>> refs/remotes/origin/master
 		/* ICV mismatch */
 		return -1;
 
@@ -229,10 +283,17 @@ static int ieee80211_wep_decrypt(struct ieee80211_local *local,
 		return -1;
 
 	hdrlen = ieee80211_hdrlen(hdr->frame_control);
+<<<<<<< HEAD
 	if (skb->len < hdrlen + WEP_IV_LEN + WEP_ICV_LEN)
 		return -1;
 
 	len = skb->len - hdrlen - WEP_IV_LEN - WEP_ICV_LEN;
+=======
+	if (skb->len < hdrlen + IEEE80211_WEP_IV_LEN + IEEE80211_WEP_ICV_LEN)
+		return -1;
+
+	len = skb->len - hdrlen - IEEE80211_WEP_IV_LEN - IEEE80211_WEP_ICV_LEN;
+>>>>>>> refs/remotes/origin/master
 
 	keyidx = skb->data[hdrlen + 3] >> 6;
 
@@ -248,6 +309,7 @@ static int ieee80211_wep_decrypt(struct ieee80211_local *local,
 	memcpy(rc4key + 3, key->conf.key, key->conf.keylen);
 
 	if (ieee80211_wep_decrypt_data(local->wep_rx_tfm, rc4key, klen,
+<<<<<<< HEAD
 				       skb->data + hdrlen + WEP_IV_LEN,
 				       len))
 		ret = -1;
@@ -258,17 +320,34 @@ static int ieee80211_wep_decrypt(struct ieee80211_local *local,
 	/* Remove IV */
 	memmove(skb->data + WEP_IV_LEN, skb->data, hdrlen);
 	skb_pull(skb, WEP_IV_LEN);
+=======
+				       skb->data + hdrlen +
+				       IEEE80211_WEP_IV_LEN, len))
+		ret = -1;
+
+	/* Trim ICV */
+	skb_trim(skb, skb->len - IEEE80211_WEP_ICV_LEN);
+
+	/* Remove IV */
+	memmove(skb->data + IEEE80211_WEP_IV_LEN, skb->data, hdrlen);
+	skb_pull(skb, IEEE80211_WEP_IV_LEN);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bool ieee80211_wep_is_weak_iv(struct sk_buff *skb, struct ieee80211_key *key)
 =======
 static bool ieee80211_wep_is_weak_iv(struct sk_buff *skb,
 				     struct ieee80211_key *key)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool ieee80211_wep_is_weak_iv(struct sk_buff *skb,
+				     struct ieee80211_key *key)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
 	unsigned int hdrlen;
@@ -276,11 +355,14 @@ static bool ieee80211_wep_is_weak_iv(struct sk_buff *skb,
 	u32 iv;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!ieee80211_has_protected(hdr->frame_control))
 		return false;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	hdrlen = ieee80211_hdrlen(hdr->frame_control);
 	ivpos = skb->data + hdrlen;
 	iv = (ivpos[0] << 16) | (ivpos[1] << 8) | ivpos[2];
@@ -295,6 +377,7 @@ ieee80211_crypto_wep_decrypt(struct ieee80211_rx_data *rx)
 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (!ieee80211_is_data(hdr->frame_control) &&
 	    !ieee80211_is_auth(hdr->frame_control))
@@ -308,6 +391,8 @@ ieee80211_crypto_wep_decrypt(struct ieee80211_rx_data *rx)
 		/* remove ICV */
 		skb_trim(rx->skb, rx->skb->len - WEP_ICV_LEN);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__le16 fc = hdr->frame_control;
 
 	if (!ieee80211_is_data(fc) && !ieee80211_is_auth(fc))
@@ -321,15 +406,25 @@ ieee80211_crypto_wep_decrypt(struct ieee80211_rx_data *rx)
 		if (ieee80211_wep_decrypt(rx->local, rx->skb, rx->key))
 			return RX_DROP_UNUSABLE;
 	} else if (!(status->flag & RX_FLAG_IV_STRIPPED)) {
+<<<<<<< HEAD
 		if (!pskb_may_pull(rx->skb, ieee80211_hdrlen(fc) + WEP_IV_LEN))
+=======
+		if (!pskb_may_pull(rx->skb, ieee80211_hdrlen(fc) +
+					    IEEE80211_WEP_IV_LEN))
+>>>>>>> refs/remotes/origin/master
 			return RX_DROP_UNUSABLE;
 		if (rx->sta && ieee80211_wep_is_weak_iv(rx->skb, rx->key))
 			rx->sta->wep_weak_iv_count++;
 		ieee80211_wep_remove_iv(rx->local, rx->skb, rx->key);
 		/* remove ICV */
+<<<<<<< HEAD
 		if (pskb_trim(rx->skb, rx->skb->len - WEP_ICV_LEN))
 			return RX_DROP_UNUSABLE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (pskb_trim(rx->skb, rx->skb->len - IEEE80211_WEP_ICV_LEN))
+			return RX_DROP_UNUSABLE;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return RX_CONTINUE;
@@ -338,14 +433,25 @@ ieee80211_crypto_wep_decrypt(struct ieee80211_rx_data *rx)
 static int wep_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
 {
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+<<<<<<< HEAD
 
 	if (!info->control.hw_key) {
+=======
+	struct ieee80211_key_conf *hw_key = info->control.hw_key;
+
+	if (!hw_key) {
+>>>>>>> refs/remotes/origin/master
 		if (ieee80211_wep_encrypt(tx->local, skb, tx->key->conf.key,
 					  tx->key->conf.keylen,
 					  tx->key->conf.keyidx))
 			return -1;
+<<<<<<< HEAD
 	} else if (info->control.hw_key->flags &
 			IEEE80211_KEY_FLAG_GENERATE_IV) {
+=======
+	} else if ((hw_key->flags & IEEE80211_KEY_FLAG_GENERATE_IV) ||
+		   (hw_key->flags & IEEE80211_KEY_FLAG_PUT_IV_SPACE)) {
+>>>>>>> refs/remotes/origin/master
 		if (!ieee80211_wep_add_iv(tx->local, skb,
 					  tx->key->conf.keylen,
 					  tx->key->conf.keyidx))
@@ -363,20 +469,28 @@ ieee80211_crypto_wep_encrypt(struct ieee80211_tx_data *tx)
 	ieee80211_tx_set_protected(tx);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	skb = tx->skb;
 	do {
 =======
 	skb_queue_walk(&tx->skbs, skb) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	skb_queue_walk(&tx->skbs, skb) {
+>>>>>>> refs/remotes/origin/master
 		if (wep_encrypt_skb(tx, skb) < 0) {
 			I802_DEBUG_INC(tx->local->tx_handlers_drop_wep);
 			return TX_DROP;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} while ((skb = skb->next));
 =======
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return TX_CONTINUE;
 }

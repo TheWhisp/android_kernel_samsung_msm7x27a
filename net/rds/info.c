@@ -35,9 +35,13 @@
 #include <linux/slab.h>
 #include <linux/proc_fs.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "rds.h"
 
@@ -108,10 +112,14 @@ void rds_info_iter_unmap(struct rds_info_iterator *iter)
 {
 	if (iter->addr) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kunmap_atomic(iter->addr, KM_USER0);
 =======
 		kunmap_atomic(iter->addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kunmap_atomic(iter->addr);
+>>>>>>> refs/remotes/origin/master
 		iter->addr = NULL;
 	}
 }
@@ -127,10 +135,14 @@ void rds_info_copy(struct rds_info_iterator *iter, void *data,
 	while (bytes) {
 		if (!iter->addr)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			iter->addr = kmap_atomic(*iter->pages, KM_USER0);
 =======
 			iter->addr = kmap_atomic(*iter->pages);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			iter->addr = kmap_atomic(*iter->pages);
+>>>>>>> refs/remotes/origin/master
 
 		this = min(bytes, PAGE_SIZE - iter->offset);
 
@@ -146,10 +158,14 @@ void rds_info_copy(struct rds_info_iterator *iter, void *data,
 
 		if (iter->offset == PAGE_SIZE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			kunmap_atomic(iter->addr, KM_USER0);
 =======
 			kunmap_atomic(iter->addr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			kunmap_atomic(iter->addr);
+>>>>>>> refs/remotes/origin/master
 			iter->addr = NULL;
 			iter->offset = 0;
 			iter->pages++;

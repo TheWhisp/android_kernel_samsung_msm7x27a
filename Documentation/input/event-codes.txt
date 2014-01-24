@@ -18,18 +18,24 @@ class/input/event*/device/capabilities/, and the properties of a device are
 provided in class/input/event*/device/properties.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Types:
 ==========
 Types are groupings of codes under a logical input construct. Each type has a
 set of applicable codes to be used in generating events. See the Codes section
 for details on valid codes for each type.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Event types:
 ===========
 Event types are groupings of codes under a logical input construct. Each
 type has a set of applicable codes to be used in generating events. See the
 Codes section for details on valid codes for each type.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 * EV_SYN:
   - Used as markers to separate events. Events may be separated in time or in
@@ -72,6 +78,7 @@ Codes section for details on valid codes for each type.
   - Used to receive force feedback device status.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Codes:
 ==========
 Codes define the precise type of event.
@@ -80,6 +87,11 @@ Event codes:
 ===========
 Event codes define the precise type of event.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Event codes:
+===========
+Event codes define the precise type of event.
+>>>>>>> refs/remotes/origin/master
 
 EV_SYN:
 ----------
@@ -210,6 +222,20 @@ EV_MSC:
 EV_MSC events are used for input and output events that do not fall under other
 categories.
 
+<<<<<<< HEAD
+=======
+A few EV_MSC codes have special meaning:
+
+* MSC_TIMESTAMP:
+  - Used to report the number of microseconds since the last reset. This event
+    should be coded as an uint32 value, which is allowed to wrap around with
+    no special consequence. It is assumed that the time difference between two
+    consecutive events is reliable on a reasonable time scale (hours).
+    A reset to zero can happen, in which case the time since the last event is
+    unknown.  If the device does not provide this information, the driver must
+    not provide it to user space.
+
+>>>>>>> refs/remotes/origin/master
 EV_LED:
 ----------
 EV_LED events are used for input and output to set and query the state of
@@ -235,7 +261,10 @@ EV_PWR events are a special type of event used specifically for power
 mangement. Its usage is not well defined. To be addressed later.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 Device properties:
 =================
 Normally, userspace sets up an input device based on the data it emits,
@@ -286,7 +315,10 @@ gestures can normally be extracted from it.
 If INPUT_PROP_SEMI_MT is not set, the device is assumed to be a true MT
 device.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 Guidelines:
 ==========
 The guidelines below ensure proper single-touch and multi-finger functionality.
@@ -308,10 +340,15 @@ BTN_{MOUSE,LEFT,MIDDLE,RIGHT} must not be reported as the result of touch
 contact. BTN_TOOL_<name> events should be reported where possible.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 For new hardware, INPUT_PROP_DIRECT should be set.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+For new hardware, INPUT_PROP_DIRECT should be set.
+
+>>>>>>> refs/remotes/origin/master
 Trackpads:
 ----------
 Legacy trackpads that only provide relative position information must report
@@ -323,10 +360,15 @@ on the trackpad. Where multi-finger support is available, BTN_TOOL_<name> should
 be used to report the number of touches active on the trackpad.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 For new hardware, INPUT_PROP_POINTER should be set.
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+For new hardware, INPUT_PROP_POINTER should be set.
+
+>>>>>>> refs/remotes/origin/master
 Tablets:
 ----------
 BTN_TOOL_<name> events must be reported when a stylus or other tool is active on
@@ -338,7 +380,12 @@ BTN_{0,1,2,etc} are good generic codes for unlabeled buttons. Do not use
 meaningful buttons, like BTN_FORWARD, unless the button is labeled for that
 purpose on the device.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 For new hardware, both INPUT_PROP_DIRECT and INPUT_PROP_POINTER should be set.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+For new hardware, both INPUT_PROP_DIRECT and INPUT_PROP_POINTER should be set.
+>>>>>>> refs/remotes/origin/master

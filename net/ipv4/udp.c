@@ -78,11 +78,16 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 #define pr_fmt(fmt) "UDP: " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "UDP: " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/ioctls.h>
 #include <linux/bootmem.h>
@@ -107,6 +112,7 @@
 #include <linux/seq_file.h>
 #include <net/net_namespace.h>
 #include <net/icmp.h>
+<<<<<<< HEAD
 #include <net/route.h>
 #include <net/checksum.h>
 #include <net/xfrm.h>
@@ -114,6 +120,16 @@
 =======
 #include <trace/events/udp.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <net/inet_hashtables.h>
+#include <net/route.h>
+#include <net/checksum.h>
+#include <net/xfrm.h>
+#include <trace/events/udp.h>
+#include <linux/static_key.h>
+#include <trace/events/skb.h>
+#include <net/busy_poll.h>
+>>>>>>> refs/remotes/origin/master
 #include "udp_impl.h"
 
 struct udp_table udp_table __read_mostly;
@@ -144,6 +160,10 @@ static int udp_lib_lport_inuse(struct net *net, __u16 num,
 {
 	struct sock *sk2;
 	struct hlist_nulls_node *node;
+<<<<<<< HEAD
+=======
+	kuid_t uid = sock_i_uid(sk);
+>>>>>>> refs/remotes/origin/master
 
 	sk_nulls_for_each(sk2, node, &hslot->head)
 		if (net_eq(sock_net(sk2), net) &&
@@ -152,6 +172,11 @@ static int udp_lib_lport_inuse(struct net *net, __u16 num,
 		    (!sk2->sk_reuse || !sk->sk_reuse) &&
 		    (!sk2->sk_bound_dev_if || !sk->sk_bound_dev_if ||
 		     sk2->sk_bound_dev_if == sk->sk_bound_dev_if) &&
+<<<<<<< HEAD
+=======
+		    (!sk2->sk_reuseport || !sk->sk_reuseport ||
+		      !uid_eq(uid, sock_i_uid(sk2))) &&
+>>>>>>> refs/remotes/origin/master
 		    (*saddr_comp)(sk, sk2)) {
 			if (bitmap)
 				__set_bit(udp_sk(sk2)->udp_port_hash >> log,
@@ -174,6 +199,10 @@ static int udp_lib_lport_inuse2(struct net *net, __u16 num,
 {
 	struct sock *sk2;
 	struct hlist_nulls_node *node;
+<<<<<<< HEAD
+=======
+	kuid_t uid = sock_i_uid(sk);
+>>>>>>> refs/remotes/origin/master
 	int res = 0;
 
 	spin_lock(&hslot2->lock);
@@ -184,6 +213,11 @@ static int udp_lib_lport_inuse2(struct net *net, __u16 num,
 		    (!sk2->sk_reuse || !sk->sk_reuse) &&
 		    (!sk2->sk_bound_dev_if || !sk->sk_bound_dev_if ||
 		     sk2->sk_bound_dev_if == sk->sk_bound_dev_if) &&
+<<<<<<< HEAD
+=======
+		    (!sk2->sk_reuseport || !sk->sk_reuseport ||
+		      !uid_eq(uid, sock_i_uid(sk2))) &&
+>>>>>>> refs/remotes/origin/master
 		    (*saddr_comp)(sk, sk2)) {
 			res = 1;
 			break;
@@ -213,11 +247,19 @@ int udp_lib_get_port(struct sock *sk, unsigned short snum,
 
 	if (!snum) {
 		int low, high, remaining;
+<<<<<<< HEAD
 		unsigned rand;
 		unsigned short first, last;
 		DECLARE_BITMAP(bitmap, PORTS_PER_CHAIN);
 
 		inet_get_local_port_range(&low, &high);
+=======
+		unsigned int rand;
+		unsigned short first, last;
+		DECLARE_BITMAP(bitmap, PORTS_PER_CHAIN);
+
+		inet_get_local_port_range(net, &low, &high);
+>>>>>>> refs/remotes/origin/master
 		remaining = (high - low) + 1;
 
 		rand = net_random();
@@ -342,26 +384,46 @@ static inline int compute_score(struct sock *sk, struct net *net, __be32 saddr,
 			!ipv6_only_sock(sk)) {
 		struct inet_sock *inet = inet_sk(sk);
 
+<<<<<<< HEAD
 		score = (sk->sk_family == PF_INET ? 1 : 0);
 		if (inet->inet_rcv_saddr) {
 			if (inet->inet_rcv_saddr != daddr)
 				return -1;
 			score += 2;
+=======
+		score = (sk->sk_family == PF_INET ? 2 : 1);
+		if (inet->inet_rcv_saddr) {
+			if (inet->inet_rcv_saddr != daddr)
+				return -1;
+			score += 4;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (inet->inet_daddr) {
 			if (inet->inet_daddr != saddr)
 				return -1;
+<<<<<<< HEAD
 			score += 2;
+=======
+			score += 4;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (inet->inet_dport) {
 			if (inet->inet_dport != sport)
 				return -1;
+<<<<<<< HEAD
 			score += 2;
+=======
+			score += 4;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (sk->sk_bound_dev_if) {
 			if (sk->sk_bound_dev_if != dif)
 				return -1;
+<<<<<<< HEAD
 			score += 2;
+=======
+			score += 4;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return score;
@@ -370,7 +432,10 @@ static inline int compute_score(struct sock *sk, struct net *net, __be32 saddr,
 /*
  * In this second variant, we check (daddr, dport) matches (inet_rcv_sadd, inet_num)
  */
+<<<<<<< HEAD
 #define SCORE2_MAX (1 + 2 + 2 + 2)
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int compute_score2(struct sock *sk, struct net *net,
 				 __be32 saddr, __be16 sport,
 				 __be32 daddr, unsigned int hnum, int dif)
@@ -385,26 +450,57 @@ static inline int compute_score2(struct sock *sk, struct net *net,
 		if (inet->inet_num != hnum)
 			return -1;
 
+<<<<<<< HEAD
 		score = (sk->sk_family == PF_INET ? 1 : 0);
 		if (inet->inet_daddr) {
 			if (inet->inet_daddr != saddr)
 				return -1;
 			score += 2;
+=======
+		score = (sk->sk_family == PF_INET ? 2 : 1);
+		if (inet->inet_daddr) {
+			if (inet->inet_daddr != saddr)
+				return -1;
+			score += 4;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (inet->inet_dport) {
 			if (inet->inet_dport != sport)
 				return -1;
+<<<<<<< HEAD
 			score += 2;
+=======
+			score += 4;
+>>>>>>> refs/remotes/origin/master
 		}
 		if (sk->sk_bound_dev_if) {
 			if (sk->sk_bound_dev_if != dif)
 				return -1;
+<<<<<<< HEAD
 			score += 2;
+=======
+			score += 4;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	return score;
 }
 
+<<<<<<< HEAD
+=======
+static unsigned int udp_ehashfn(struct net *net, const __be32 laddr,
+				 const __u16 lport, const __be32 faddr,
+				 const __be16 fport)
+{
+	static u32 udp_ehash_secret __read_mostly;
+
+	net_get_random_once(&udp_ehash_secret, sizeof(udp_ehash_secret));
+
+	return __inet_ehashfn(laddr, lport, faddr, fport,
+			      udp_ehash_secret + net_hash_mix(net));
+}
+
+>>>>>>> refs/remotes/origin/master
 
 /* called with read_rcu_lock() */
 static struct sock *udp4_lib_lookup2(struct net *net,
@@ -414,19 +510,42 @@ static struct sock *udp4_lib_lookup2(struct net *net,
 {
 	struct sock *sk, *result;
 	struct hlist_nulls_node *node;
+<<<<<<< HEAD
 	int score, badness;
 
 begin:
 	result = NULL;
 	badness = -1;
+=======
+	int score, badness, matches = 0, reuseport = 0;
+	u32 hash = 0;
+
+begin:
+	result = NULL;
+	badness = 0;
+>>>>>>> refs/remotes/origin/master
 	udp_portaddr_for_each_entry_rcu(sk, node, &hslot2->head) {
 		score = compute_score2(sk, net, saddr, sport,
 				      daddr, hnum, dif);
 		if (score > badness) {
 			result = sk;
 			badness = score;
+<<<<<<< HEAD
 			if (score == SCORE2_MAX)
 				goto exact_match;
+=======
+			reuseport = sk->sk_reuseport;
+			if (reuseport) {
+				hash = udp_ehashfn(net, daddr, hnum,
+						   saddr, sport);
+				matches = 1;
+			}
+		} else if (score == badness && reuseport) {
+			matches++;
+			if (((u64)hash * matches) >> 32 == 0)
+				result = sk;
+			hash = next_pseudo_random32(hash);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	/*
@@ -436,9 +555,13 @@ begin:
 	 */
 	if (get_nulls_value(node) != slot2)
 		goto begin;
+<<<<<<< HEAD
 
 	if (result) {
 exact_match:
+=======
+	if (result) {
+>>>>>>> refs/remotes/origin/master
 		if (unlikely(!atomic_inc_not_zero_hint(&result->sk_refcnt, 2)))
 			result = NULL;
 		else if (unlikely(compute_score2(result, net, saddr, sport,
@@ -454,10 +577,14 @@ exact_match:
  * harder than this. -DaveM
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
 =======
 struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
+>>>>>>> refs/remotes/origin/master
 		__be16 sport, __be32 daddr, __be16 dport,
 		int dif, struct udp_table *udptable)
 {
@@ -466,7 +593,12 @@ struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
 	unsigned short hnum = ntohs(dport);
 	unsigned int hash2, slot2, slot = udp_hashfn(net, hnum, udptable->mask);
 	struct udp_hslot *hslot2, *hslot = &udptable->hash[slot];
+<<<<<<< HEAD
 	int score, badness;
+=======
+	int score, badness, matches = 0, reuseport = 0;
+	u32 hash = 0;
+>>>>>>> refs/remotes/origin/master
 
 	rcu_read_lock();
 	if (hslot->count > 10) {
@@ -495,13 +627,31 @@ struct sock *__udp4_lib_lookup(struct net *net, __be32 saddr,
 	}
 begin:
 	result = NULL;
+<<<<<<< HEAD
 	badness = -1;
+=======
+	badness = 0;
+>>>>>>> refs/remotes/origin/master
 	sk_nulls_for_each_rcu(sk, node, &hslot->head) {
 		score = compute_score(sk, net, saddr, hnum, sport,
 				      daddr, dport, dif);
 		if (score > badness) {
 			result = sk;
 			badness = score;
+<<<<<<< HEAD
+=======
+			reuseport = sk->sk_reuseport;
+			if (reuseport) {
+				hash = udp_ehashfn(net, daddr, hnum,
+						   saddr, sport);
+				matches = 1;
+			}
+		} else if (score == badness && reuseport) {
+			matches++;
+			if (((u64)hash * matches) >> 32 == 0)
+				result = sk;
+			hash = next_pseudo_random32(hash);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	/*
@@ -525,14 +675,19 @@ begin:
 	return result;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(__udp4_lib_lookup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(__udp4_lib_lookup);
+>>>>>>> refs/remotes/origin/master
 
 static inline struct sock *__udp4_lib_lookup_skb(struct sk_buff *skb,
 						 __be16 sport, __be16 dport,
 						 struct udp_table *udptable)
 {
+<<<<<<< HEAD
 	struct sock *sk;
 	const struct iphdr *iph = ip_hdr(skb);
 
@@ -542,6 +697,13 @@ static inline struct sock *__udp4_lib_lookup_skb(struct sk_buff *skb,
 		return __udp4_lib_lookup(dev_net(skb_dst(skb)->dev), iph->saddr, sport,
 					 iph->daddr, dport, inet_iif(skb),
 					 udptable);
+=======
+	const struct iphdr *iph = ip_hdr(skb);
+
+	return __udp4_lib_lookup(dev_net(skb_dst(skb)->dev), iph->saddr, sport,
+				 iph->daddr, dport, inet_iif(skb),
+				 udptable);
+>>>>>>> refs/remotes/origin/master
 }
 
 struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
@@ -551,6 +713,29 @@ struct sock *udp4_lib_lookup(struct net *net, __be32 saddr, __be16 sport,
 }
 EXPORT_SYMBOL_GPL(udp4_lib_lookup);
 
+<<<<<<< HEAD
+=======
+static inline bool __udp_is_mcast_sock(struct net *net, struct sock *sk,
+				       __be16 loc_port, __be32 loc_addr,
+				       __be16 rmt_port, __be32 rmt_addr,
+				       int dif, unsigned short hnum)
+{
+	struct inet_sock *inet = inet_sk(sk);
+
+	if (!net_eq(sock_net(sk), net) ||
+	    udp_sk(sk)->udp_port_hash != hnum ||
+	    (inet->inet_daddr && inet->inet_daddr != rmt_addr) ||
+	    (inet->inet_dport != rmt_port && inet->inet_dport) ||
+	    (inet->inet_rcv_saddr && inet->inet_rcv_saddr != loc_addr) ||
+	    ipv6_only_sock(sk) ||
+	    (sk->sk_bound_dev_if && sk->sk_bound_dev_if != dif))
+		return false;
+	if (!ip_mc_sf_allow(sk, loc_addr, rmt_addr, dif))
+		return false;
+	return true;
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline struct sock *udp_v4_mcast_next(struct net *net, struct sock *sk,
 					     __be16 loc_port, __be32 loc_addr,
 					     __be16 rmt_port, __be32 rmt_addr,
@@ -561,6 +746,7 @@ static inline struct sock *udp_v4_mcast_next(struct net *net, struct sock *sk,
 	unsigned short hnum = ntohs(loc_port);
 
 	sk_nulls_for_each_from(s, node) {
+<<<<<<< HEAD
 		struct inet_sock *inet = inet_sk(s);
 
 		if (!net_eq(sock_net(s), net) ||
@@ -575,6 +761,13 @@ static inline struct sock *udp_v4_mcast_next(struct net *net, struct sock *sk,
 		if (!ip_mc_sf_allow(s, loc_addr, rmt_addr, dif))
 			continue;
 		goto found;
+=======
+		if (__udp_is_mcast_sock(net, s,
+					loc_port, loc_addr,
+					rmt_port, rmt_addr,
+					dif, hnum))
+			goto found;
+>>>>>>> refs/remotes/origin/master
 	}
 	s = NULL;
 found:
@@ -628,6 +821,10 @@ void __udp4_lib_err(struct sk_buff *skb, u32 info, struct udp_table *udptable)
 		break;
 	case ICMP_DEST_UNREACH:
 		if (code == ICMP_FRAG_NEEDED) { /* Path MTU discovery */
+<<<<<<< HEAD
+=======
+			ipv4_sk_update_pmtu(skb, sk, info);
+>>>>>>> refs/remotes/origin/master
 			if (inet->pmtudisc != IP_PMTUDISC_DONT) {
 				err = EMSGSIZE;
 				harderr = 1;
@@ -641,6 +838,12 @@ void __udp4_lib_err(struct sk_buff *skb, u32 info, struct udp_table *udptable)
 			err = icmp_err_convert[code].errno;
 		}
 		break;
+<<<<<<< HEAD
+=======
+	case ICMP_REDIRECT:
+		ipv4_sk_redirect(skb, sk);
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -686,7 +889,11 @@ EXPORT_SYMBOL(udp_flush_pending_frames);
  *	@src:	source IP address
  *	@dst:	destination IP address
  */
+<<<<<<< HEAD
 static void udp4_hwcsum(struct sk_buff *skb, __be32 src, __be32 dst)
+=======
+void udp4_hwcsum(struct sk_buff *skb, __be32 src, __be32 dst)
+>>>>>>> refs/remotes/origin/master
 {
 	struct udphdr *uh = udp_hdr(skb);
 	struct sk_buff *frags = skb_shinfo(skb)->frag_list;
@@ -722,6 +929,10 @@ static void udp4_hwcsum(struct sk_buff *skb, __be32 src, __be32 dst)
 			uh->check = CSUM_MANGLED_0;
 	}
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(udp4_hwcsum);
+>>>>>>> refs/remotes/origin/master
 
 static int udp_send_skb(struct sk_buff *skb, struct flowi4 *fl4)
 {
@@ -766,7 +977,11 @@ static int udp_send_skb(struct sk_buff *skb, struct flowi4 *fl4)
 		uh->check = CSUM_MANGLED_0;
 
 send:
+<<<<<<< HEAD
 	err = ip_send_skb(skb);
+=======
+	err = ip_send_skb(sock_net(sk), skb);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		if (err == -ENOBUFS && !inet->recverr) {
 			UDP_INC_STATS_USER(sock_net(sk),
@@ -836,6 +1051,11 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 
 	ipc.opt = NULL;
 	ipc.tx_flags = 0;
+<<<<<<< HEAD
+=======
+	ipc.ttl = 0;
+	ipc.tos = -1;
+>>>>>>> refs/remotes/origin/master
 
 	getfrag = is_udplite ? udplite_getfrag : ip_generic_getfrag;
 
@@ -861,7 +1081,11 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	 *	Get and verify the address.
 	 */
 	if (msg->msg_name) {
+<<<<<<< HEAD
 		struct sockaddr_in * usin = (struct sockaddr_in *)msg->msg_name;
+=======
+		struct sockaddr_in *usin = (struct sockaddr_in *)msg->msg_name;
+>>>>>>> refs/remotes/origin/master
 		if (msg->msg_namelen < sizeof(*usin))
 			return -EINVAL;
 		if (usin->sin_family != AF_INET) {
@@ -886,9 +1110,15 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	ipc.addr = inet->inet_saddr;
 
 	ipc.oif = sk->sk_bound_dev_if;
+<<<<<<< HEAD
 	err = sock_tx_timestamp(sk, &ipc.tx_flags);
 	if (err)
 		return err;
+=======
+
+	sock_tx_timestamp(sk, &ipc.tx_flags);
+
+>>>>>>> refs/remotes/origin/master
 	if (msg->msg_controllen) {
 		err = ip_cmsg_send(sock_net(sk), msg, &ipc);
 		if (err)
@@ -919,7 +1149,11 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		faddr = ipc.opt->opt.faddr;
 		connected = 0;
 	}
+<<<<<<< HEAD
 	tos = RT_TOS(inet->tos);
+=======
+	tos = get_rttos(&ipc, inet);
+>>>>>>> refs/remotes/origin/master
 	if (sock_flag(sk, SOCK_LOCALROUTE) ||
 	    (msg->msg_flags & MSG_DONTROUTE) ||
 	    (ipc.opt && ipc.opt->opt.is_strictroute)) {
@@ -934,11 +1168,16 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 			saddr = inet->mc_addr;
 		connected = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	}
 =======
 	} else if (!ipc.oif)
 		ipc.oif = inet->uc_index;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (!ipc.oif)
+		ipc.oif = inet->uc_index;
+>>>>>>> refs/remotes/origin/master
 
 	if (connected)
 		rt = (struct rtable *)sk_dst_check(sk, 0);
@@ -958,7 +1197,11 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 			err = PTR_ERR(rt);
 			rt = NULL;
 			if (err == -ENETUNREACH)
+<<<<<<< HEAD
 				IP_INC_STATS_BH(net, IPSTATS_MIB_OUTNOROUTES);
+=======
+				IP_INC_STATS(net, IPSTATS_MIB_OUTNOROUTES);
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 
@@ -984,7 +1227,11 @@ back_from_confirm:
 				  sizeof(struct udphdr), &ipc, &rt,
 				  msg->msg_flags);
 		err = PTR_ERR(skb);
+<<<<<<< HEAD
 		if (skb && !IS_ERR(skb))
+=======
+		if (!IS_ERR_OR_NULL(skb))
+>>>>>>> refs/remotes/origin/master
 			err = udp_send_skb(skb, fl4);
 		goto out;
 	}
@@ -996,10 +1243,14 @@ back_from_confirm:
 		release_sock(sk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		LIMIT_NETDEBUG(KERN_DEBUG "udp cork app bug 2\n");
 =======
 		LIMIT_NETDEBUG(KERN_DEBUG pr_fmt("cork app bug 2\n"));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		LIMIT_NETDEBUG(KERN_DEBUG pr_fmt("cork app bug 2\n"));
+>>>>>>> refs/remotes/origin/master
 		err = -EINVAL;
 		goto out;
 	}
@@ -1061,6 +1312,12 @@ int udp_sendpage(struct sock *sk, struct page *page, int offset,
 	struct udp_sock *up = udp_sk(sk);
 	int ret;
 
+<<<<<<< HEAD
+=======
+	if (flags & MSG_SENDPAGE_NOTLAST)
+		flags |= MSG_MORE;
+
+>>>>>>> refs/remotes/origin/master
 	if (!up->pending) {
 		struct msghdr msg = {	.msg_flags = flags|MSG_MORE };
 
@@ -1079,10 +1336,14 @@ int udp_sendpage(struct sock *sk, struct page *page, int offset,
 		release_sock(sk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		LIMIT_NETDEBUG(KERN_DEBUG "udp cork app bug 3\n");
 =======
 		LIMIT_NETDEBUG(KERN_DEBUG pr_fmt("udp cork app bug 3\n"));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		LIMIT_NETDEBUG(KERN_DEBUG pr_fmt("udp cork app bug 3\n"));
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -1127,6 +1388,11 @@ static unsigned int first_packet_length(struct sock *sk)
 	spin_lock_bh(&rcvq->lock);
 	while ((skb = skb_peek(rcvq)) != NULL &&
 		udp_lib_checksum_complete(skb)) {
+<<<<<<< HEAD
+=======
+		UDP_INC_STATS_BH(sock_net(sk), UDP_MIB_CSUMERRORS,
+				 IS_UDPLITE(sk));
+>>>>>>> refs/remotes/origin/master
 		UDP_INC_STATS_BH(sock_net(sk), UDP_MIB_INERRORS,
 				 IS_UDPLITE(sk));
 		atomic_inc(&sk->sk_drops);
@@ -1195,16 +1461,22 @@ int udp_recvmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	struct sockaddr_in *sin = (struct sockaddr_in *)msg->msg_name;
 	struct sk_buff *skb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int ulen;
 	int peeked;
 =======
 	unsigned int ulen, copied;
 	int peeked, off = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int ulen, copied;
+	int peeked, off = 0;
+>>>>>>> refs/remotes/origin/master
 	int err;
 	int is_udplite = IS_UDPLITE(sk);
 	bool slow;
 
+<<<<<<< HEAD
 	/*
 	 *	Check any passed addresses
 	 */
@@ -1221,20 +1493,34 @@ try_again:
 =======
 				  &peeked, &off, &err);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (flags & MSG_ERRQUEUE)
+		return ip_recv_error(sk, msg, len, addr_len);
+
+try_again:
+	skb = __skb_recv_datagram(sk, flags | (noblock ? MSG_DONTWAIT : 0),
+				  &peeked, &off, &err);
+>>>>>>> refs/remotes/origin/master
 	if (!skb)
 		goto out;
 
 	ulen = skb->len - sizeof(struct udphdr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (len > ulen)
 		len = ulen;
 	else if (len < ulen)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	copied = len;
 	if (copied > ulen)
 		copied = ulen;
 	else if (copied < ulen)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		msg->msg_flags |= MSG_TRUNC;
 
 	/*
@@ -1244,10 +1530,14 @@ try_again:
 	 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (len < ulen || UDP_SKB_CB(skb)->partial_cov) {
 =======
 	if (copied < ulen || UDP_SKB_CB(skb)->partial_cov) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (copied < ulen || UDP_SKB_CB(skb)->partial_cov) {
+>>>>>>> refs/remotes/origin/master
 		if (udp_lib_checksum_complete(skb))
 			goto csum_copy_err;
 	}
@@ -1255,10 +1545,14 @@ try_again:
 	if (skb_csum_unnecessary(skb))
 		err = skb_copy_datagram_iovec(skb, sizeof(struct udphdr),
 <<<<<<< HEAD
+<<<<<<< HEAD
 					      msg->msg_iov, len);
 =======
 					      msg->msg_iov, copied);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      msg->msg_iov, copied);
+>>>>>>> refs/remotes/origin/master
 	else {
 		err = skb_copy_and_csum_datagram_iovec(skb,
 						       sizeof(struct udphdr),
@@ -1268,8 +1562,20 @@ try_again:
 			goto csum_copy_err;
 	}
 
+<<<<<<< HEAD
 	if (err)
 		goto out_free;
+=======
+	if (unlikely(err)) {
+		trace_kfree_skb(skb, udp_recvmsg);
+		if (!peeked) {
+			atomic_inc(&sk->sk_drops);
+			UDP_INC_STATS_USER(sock_net(sk),
+					   UDP_MIB_INERRORS, is_udplite);
+		}
+		goto out_free;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if (!peeked)
 		UDP_INC_STATS_USER(sock_net(sk),
@@ -1283,15 +1589,23 @@ try_again:
 		sin->sin_port = udp_hdr(skb)->source;
 		sin->sin_addr.s_addr = ip_hdr(skb)->saddr;
 		memset(sin->sin_zero, 0, sizeof(sin->sin_zero));
+<<<<<<< HEAD
+=======
+		*addr_len = sizeof(*sin);
+>>>>>>> refs/remotes/origin/master
 	}
 	if (inet->cmsg_flags)
 		ip_cmsg_recv(msg, skb);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = len;
 =======
 	err = copied;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = copied;
+>>>>>>> refs/remotes/origin/master
 	if (flags & MSG_TRUNC)
 		err = ulen;
 
@@ -1302,8 +1616,15 @@ out:
 
 csum_copy_err:
 	slow = lock_sock_fast(sk);
+<<<<<<< HEAD
 	if (!skb_kill_datagram(sk, skb, flags))
 		UDP_INC_STATS_USER(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
+=======
+	if (!skb_kill_datagram(sk, skb, flags)) {
+		UDP_INC_STATS_USER(sock_net(sk), UDP_MIB_CSUMERRORS, is_udplite);
+		UDP_INC_STATS_USER(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
+	}
+>>>>>>> refs/remotes/origin/master
 	unlock_sock_fast(sk, slow);
 
 	if (noblock)
@@ -1326,10 +1647,14 @@ int udp_disconnect(struct sock *sk, int flags)
 	inet->inet_daddr = 0;
 	inet->inet_dport = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sock_rps_save_rxhash(sk, 0);
 =======
 	sock_rps_reset_rxhash(sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sock_rps_reset_rxhash(sk);
+>>>>>>> refs/remotes/origin/master
 	sk->sk_bound_dev_if = 0;
 	if (!(sk->sk_userlocks & SOCK_BINDADDR_LOCK))
 		inet_reset_saddr(sk);
@@ -1416,6 +1741,7 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 {
 	int rc;
 
+<<<<<<< HEAD
 	if (inet_sk(sk)->inet_daddr)
 <<<<<<< HEAD
 		sock_rps_save_rxhash(sk, skb->rxhash);
@@ -1426,6 +1752,14 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 
 	rc = sock_queue_rcv_skb(sk, skb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (inet_sk(sk)->inet_daddr) {
+		sock_rps_save_rxhash(sk, skb);
+		sk_mark_napi_id(sk, skb);
+	}
+
+	rc = sock_queue_rcv_skb(sk, skb);
+>>>>>>> refs/remotes/origin/master
 	if (rc < 0) {
 		int is_udplite = IS_UDPLITE(sk);
 
@@ -1436,9 +1770,13 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		UDP_INC_STATS_BH(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
 		kfree_skb(skb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		trace_udp_fail_queue_rcv_skb(rc, sk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		trace_udp_fail_queue_rcv_skb(rc, sk);
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 
@@ -1446,6 +1784,17 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 
 }
 
+<<<<<<< HEAD
+=======
+static struct static_key udp_encap_needed __read_mostly;
+void udp_encap_enable(void)
+{
+	if (!static_key_enabled(&udp_encap_needed))
+		static_key_slow_inc(&udp_encap_needed);
+}
+EXPORT_SYMBOL(udp_encap_enable);
+
+>>>>>>> refs/remotes/origin/master
 /* returns:
  *  -1: error
  *   0: success
@@ -1467,12 +1816,18 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		goto drop;
 	nf_reset(skb);
 
+<<<<<<< HEAD
 	if (up->encap_type) {
 <<<<<<< HEAD
 =======
 		int (*encap_rcv)(struct sock *sk, struct sk_buff *skb);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (static_key_false(&udp_encap_needed) && up->encap_type) {
+		int (*encap_rcv)(struct sock *sk, struct sk_buff *skb);
+
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * This is an encapsulation socket so pass the skb to
 		 * the socket's udp_encap_rcv() hook. Otherwise, just
@@ -1486,18 +1841,24 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 
 		/* if we're overly short, let UDP handle it */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (skb->len > sizeof(struct udphdr) &&
 		    up->encap_rcv != NULL) {
 			int ret;
 
 			ret = (*up->encap_rcv)(sk, skb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		encap_rcv = ACCESS_ONCE(up->encap_rcv);
 		if (skb->len > sizeof(struct udphdr) && encap_rcv != NULL) {
 			int ret;
 
 			ret = encap_rcv(sk, skb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (ret <= 0) {
 				UDP_INC_STATS_BH(sock_net(sk),
 						 UDP_MIB_INDATAGRAMS,
@@ -1527,6 +1888,7 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		 */
 		if (up->pcrlen == 0) {          /* full coverage was set  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			LIMIT_NETDEBUG(KERN_WARNING "UDPLITE: partial coverage "
 				"%d while full coverage %d requested\n",
 				UDP_SKB_CB(skb)->cscov, skb->len);
@@ -1534,6 +1896,10 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 			LIMIT_NETDEBUG(KERN_WARNING "UDPLite: partial coverage %d while full coverage %d requested\n",
 				       UDP_SKB_CB(skb)->cscov, skb->len);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			LIMIT_NETDEBUG(KERN_WARNING "UDPLite: partial coverage %d while full coverage %d requested\n",
+				       UDP_SKB_CB(skb)->cscov, skb->len);
+>>>>>>> refs/remotes/origin/master
 			goto drop;
 		}
 		/* The next case involves violating the min. coverage requested
@@ -1544,6 +1910,7 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 		 */
 		if (UDP_SKB_CB(skb)->cscov  <  up->pcrlen) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			LIMIT_NETDEBUG(KERN_WARNING
 				"UDPLITE: coverage %d too small, need min %d\n",
 				UDP_SKB_CB(skb)->cscov, up->pcrlen);
@@ -1551,10 +1918,15 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 			LIMIT_NETDEBUG(KERN_WARNING "UDPLite: coverage %d too small, need min %d\n",
 				       UDP_SKB_CB(skb)->cscov, up->pcrlen);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			LIMIT_NETDEBUG(KERN_WARNING "UDPLite: coverage %d too small, need min %d\n",
+				       UDP_SKB_CB(skb)->cscov, up->pcrlen);
+>>>>>>> refs/remotes/origin/master
 			goto drop;
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (rcu_dereference_raw(sk->sk_filter)) {
 		if (udp_lib_checksum_complete(skb))
@@ -1568,10 +1940,19 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 
 
 	if (sk_rcvqueues_full(sk, skb))
+=======
+	if (rcu_access_pointer(sk->sk_filter) &&
+	    udp_lib_checksum_complete(skb))
+		goto csum_error;
+
+
+	if (sk_rcvqueues_full(sk, skb, sk->sk_rcvbuf))
+>>>>>>> refs/remotes/origin/master
 		goto drop;
 
 	rc = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	ipv4_pktinfo_prepare(skb);
@@ -1580,6 +1961,13 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 	if (!sock_owned_by_user(sk))
 		rc = __udp_queue_rcv_skb(sk, skb);
 	else if (sk_add_backlog(sk, skb)) {
+=======
+	ipv4_pktinfo_prepare(sk, skb);
+	bh_lock_sock(sk);
+	if (!sock_owned_by_user(sk))
+		rc = __udp_queue_rcv_skb(sk, skb);
+	else if (sk_add_backlog(sk, skb, sk->sk_rcvbuf)) {
+>>>>>>> refs/remotes/origin/master
 		bh_unlock_sock(sk);
 		goto drop;
 	}
@@ -1587,6 +1975,11 @@ int udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
 
 	return rc;
 
+<<<<<<< HEAD
+=======
+csum_error:
+	UDP_INC_STATS_BH(sock_net(sk), UDP_MIB_CSUMERRORS, is_udplite);
+>>>>>>> refs/remotes/origin/master
 drop:
 	UDP_INC_STATS_BH(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
 	atomic_inc(&sk->sk_drops);
@@ -1622,6 +2015,21 @@ static void flush_stack(struct sock **stack, unsigned int count,
 		kfree_skb(skb1);
 }
 
+<<<<<<< HEAD
+=======
+/* For TCP sockets, sk_rx_dst is protected by socket lock
+ * For UDP, we use xchg() to guard against concurrent changes.
+ */
+static void udp_sk_rx_dst_set(struct sock *sk, struct dst_entry *dst)
+{
+	struct dst_entry *old;
+
+	dst_hold(dst);
+	old = xchg(&sk->sk_rx_dst, dst);
+	dst_release(old);
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  *	Multicasts and broadcasts go to each listener.
  *
@@ -1750,6 +2158,7 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 	if (udp4_csum_init(skb, uh, proto))
 		goto csum_error;
 
+<<<<<<< HEAD
 	if (rt->rt_flags & (RTCF_BROADCAST|RTCF_MULTICAST))
 		return __udp4_lib_mcast_deliver(net, skb, uh,
 				saddr, daddr, udptable);
@@ -1758,6 +2167,36 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 
 	if (sk != NULL) {
 		int ret = udp_queue_rcv_skb(sk, skb);
+=======
+	sk = skb_steal_sock(skb);
+	if (sk) {
+		struct dst_entry *dst = skb_dst(skb);
+		int ret;
+
+		if (unlikely(sk->sk_rx_dst != dst))
+			udp_sk_rx_dst_set(sk, dst);
+
+		ret = udp_queue_rcv_skb(sk, skb);
+		sock_put(sk);
+		/* a return value > 0 means to resubmit the input, but
+		 * it wants the return to be -protocol, or 0
+		 */
+		if (ret > 0)
+			return -ret;
+		return 0;
+	} else {
+		if (rt->rt_flags & (RTCF_BROADCAST|RTCF_MULTICAST))
+			return __udp4_lib_mcast_deliver(net, skb, uh,
+					saddr, daddr, udptable);
+
+		sk = __udp4_lib_lookup_skb(skb, uh->source, uh->dest, udptable);
+	}
+
+	if (sk != NULL) {
+		int ret;
+
+		ret = udp_queue_rcv_skb(sk, skb);
+>>>>>>> refs/remotes/origin/master
 		sock_put(sk);
 
 		/* a return value > 0 means to resubmit the input, but
@@ -1789,6 +2228,7 @@ int __udp4_lib_rcv(struct sk_buff *skb, struct udp_table *udptable,
 short_packet:
 	LIMIT_NETDEBUG(KERN_DEBUG "UDP%s: short packet: From %pI4:%u %d/%d to %pI4:%u\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       proto == IPPROTO_UDPLITE ? "-Lite" : "",
 		       &saddr,
 		       ntohs(uh->source),
@@ -1797,11 +2237,16 @@ short_packet:
 		       &daddr,
 		       ntohs(uh->dest));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		       proto == IPPROTO_UDPLITE ? "Lite" : "",
 		       &saddr, ntohs(uh->source),
 		       ulen, skb->len,
 		       &daddr, ntohs(uh->dest));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	goto drop;
 
 csum_error:
@@ -1810,6 +2255,7 @@ csum_error:
 	 * the network is concerned, anyway) as per 4.1.3.4 (MUST).
 	 */
 	LIMIT_NETDEBUG(KERN_DEBUG "UDP%s: bad checksum. From %pI4:%u to %pI4:%u ulen %d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 		       proto == IPPROTO_UDPLITE ? "-Lite" : "",
 		       &saddr,
@@ -1821,12 +2267,153 @@ csum_error:
 		       &saddr, ntohs(uh->source), &daddr, ntohs(uh->dest),
 >>>>>>> refs/remotes/origin/cm-10.0
 		       ulen);
+=======
+		       proto == IPPROTO_UDPLITE ? "Lite" : "",
+		       &saddr, ntohs(uh->source), &daddr, ntohs(uh->dest),
+		       ulen);
+	UDP_INC_STATS_BH(net, UDP_MIB_CSUMERRORS, proto == IPPROTO_UDPLITE);
+>>>>>>> refs/remotes/origin/master
 drop:
 	UDP_INC_STATS_BH(net, UDP_MIB_INERRORS, proto == IPPROTO_UDPLITE);
 	kfree_skb(skb);
 	return 0;
 }
 
+<<<<<<< HEAD
+=======
+/* We can only early demux multicast if there is a single matching socket.
+ * If more than one socket found returns NULL
+ */
+static struct sock *__udp4_lib_mcast_demux_lookup(struct net *net,
+						  __be16 loc_port, __be32 loc_addr,
+						  __be16 rmt_port, __be32 rmt_addr,
+						  int dif)
+{
+	struct sock *sk, *result;
+	struct hlist_nulls_node *node;
+	unsigned short hnum = ntohs(loc_port);
+	unsigned int count, slot = udp_hashfn(net, hnum, udp_table.mask);
+	struct udp_hslot *hslot = &udp_table.hash[slot];
+
+	rcu_read_lock();
+begin:
+	count = 0;
+	result = NULL;
+	sk_nulls_for_each_rcu(sk, node, &hslot->head) {
+		if (__udp_is_mcast_sock(net, sk,
+					loc_port, loc_addr,
+					rmt_port, rmt_addr,
+					dif, hnum)) {
+			result = sk;
+			++count;
+		}
+	}
+	/*
+	 * if the nulls value we got at the end of this lookup is
+	 * not the expected one, we must restart lookup.
+	 * We probably met an item that was moved to another chain.
+	 */
+	if (get_nulls_value(node) != slot)
+		goto begin;
+
+	if (result) {
+		if (count != 1 ||
+		    unlikely(!atomic_inc_not_zero_hint(&result->sk_refcnt, 2)))
+			result = NULL;
+		else if (unlikely(!__udp_is_mcast_sock(net, result,
+						       loc_port, loc_addr,
+						       rmt_port, rmt_addr,
+						       dif, hnum))) {
+			sock_put(result);
+			result = NULL;
+		}
+	}
+	rcu_read_unlock();
+	return result;
+}
+
+/* For unicast we should only early demux connected sockets or we can
+ * break forwarding setups.  The chains here can be long so only check
+ * if the first socket is an exact match and if not move on.
+ */
+static struct sock *__udp4_lib_demux_lookup(struct net *net,
+					    __be16 loc_port, __be32 loc_addr,
+					    __be16 rmt_port, __be32 rmt_addr,
+					    int dif)
+{
+	struct sock *sk, *result;
+	struct hlist_nulls_node *node;
+	unsigned short hnum = ntohs(loc_port);
+	unsigned int hash2 = udp4_portaddr_hash(net, loc_addr, hnum);
+	unsigned int slot2 = hash2 & udp_table.mask;
+	struct udp_hslot *hslot2 = &udp_table.hash2[slot2];
+	INET_ADDR_COOKIE(acookie, rmt_addr, loc_addr)
+	const __portpair ports = INET_COMBINED_PORTS(rmt_port, hnum);
+
+	rcu_read_lock();
+	result = NULL;
+	udp_portaddr_for_each_entry_rcu(sk, node, &hslot2->head) {
+		if (INET_MATCH(sk, net, acookie,
+			       rmt_addr, loc_addr, ports, dif))
+			result = sk;
+		/* Only check first socket in chain */
+		break;
+	}
+
+	if (result) {
+		if (unlikely(!atomic_inc_not_zero_hint(&result->sk_refcnt, 2)))
+			result = NULL;
+		else if (unlikely(!INET_MATCH(sk, net, acookie,
+					      rmt_addr, loc_addr,
+					      ports, dif))) {
+			sock_put(result);
+			result = NULL;
+		}
+	}
+	rcu_read_unlock();
+	return result;
+}
+
+void udp_v4_early_demux(struct sk_buff *skb)
+{
+	struct net *net = dev_net(skb->dev);
+	const struct iphdr *iph;
+	const struct udphdr *uh;
+	struct sock *sk;
+	struct dst_entry *dst;
+	int dif = skb->dev->ifindex;
+
+	/* validate the packet */
+	if (!pskb_may_pull(skb, skb_transport_offset(skb) + sizeof(struct udphdr)))
+		return;
+
+	iph = ip_hdr(skb);
+	uh = udp_hdr(skb);
+
+	if (skb->pkt_type == PACKET_BROADCAST ||
+	    skb->pkt_type == PACKET_MULTICAST)
+		sk = __udp4_lib_mcast_demux_lookup(net, uh->dest, iph->daddr,
+						   uh->source, iph->saddr, dif);
+	else if (skb->pkt_type == PACKET_HOST)
+		sk = __udp4_lib_demux_lookup(net, uh->dest, iph->daddr,
+					     uh->source, iph->saddr, dif);
+	else
+		return;
+
+	if (!sk)
+		return;
+
+	skb->sk = sk;
+	skb->destructor = sock_edemux;
+	dst = sk->sk_rx_dst;
+
+	if (dst)
+		dst = dst_check(dst, 0);
+	if (dst)
+		skb_dst_set_noref(skb, dst);
+}
+
+>>>>>>> refs/remotes/origin/master
 int udp_rcv(struct sk_buff *skb)
 {
 	return __udp4_lib_rcv(skb, &udp_table, IPPROTO_UDP);
@@ -1834,9 +2421,22 @@ int udp_rcv(struct sk_buff *skb)
 
 void udp_destroy_sock(struct sock *sk)
 {
+<<<<<<< HEAD
 	bool slow = lock_sock_fast(sk);
 	udp_flush_pending_frames(sk);
 	unlock_sock_fast(sk, slow);
+=======
+	struct udp_sock *up = udp_sk(sk);
+	bool slow = lock_sock_fast(sk);
+	udp_flush_pending_frames(sk);
+	unlock_sock_fast(sk, slow);
+	if (static_key_false(&udp_encap_needed) && up->encap_type) {
+		void (*encap_destroy)(struct sock *sk);
+		encap_destroy = ACCESS_ONCE(up->encap_destroy);
+		if (encap_destroy)
+			encap_destroy(sk);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1878,6 +2478,10 @@ int udp_lib_setsockopt(struct sock *sk, int level, int optname,
 			/* FALLTHROUGH */
 		case UDP_ENCAP_L2TPINUDP:
 			up->encap_type = val;
+<<<<<<< HEAD
+=======
+			udp_encap_enable();
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			err = -ENOPROTOOPT;
@@ -2024,6 +2628,11 @@ unsigned int udp_poll(struct file *file, struct socket *sock, poll_table *wait)
 	unsigned int mask = datagram_poll(file, sock, wait);
 	struct sock *sk = sock->sk;
 
+<<<<<<< HEAD
+=======
+	sock_rps_record_flow(sk);
+
+>>>>>>> refs/remotes/origin/master
 	/* Check for false positives due to checksum errors */
 	if ((mask & POLLRDNORM) && !(file->f_flags & O_NONBLOCK) &&
 	    !(sk->sk_shutdown & RCV_SHUTDOWN) && !first_packet_length(sk))
@@ -2048,6 +2657,10 @@ struct proto udp_prot = {
 	.recvmsg	   = udp_recvmsg,
 	.sendpage	   = udp_sendpage,
 	.backlog_rcv	   = __udp_queue_rcv_skb,
+<<<<<<< HEAD
+=======
+	.release_cb	   = ip4_datagram_release_cb,
+>>>>>>> refs/remotes/origin/master
 	.hash		   = udp_lib_hash,
 	.unhash		   = udp_lib_unhash,
 	.rehash		   = udp_v4_rehash,
@@ -2155,12 +2768,18 @@ static void udp_seq_stop(struct seq_file *seq, void *v)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int udp_seq_open(struct inode *inode, struct file *file)
 =======
 int udp_seq_open(struct inode *inode, struct file *file)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct udp_seq_afinfo *afinfo = PDE(inode)->data;
+=======
+int udp_seq_open(struct inode *inode, struct file *file)
+{
+	struct udp_seq_afinfo *afinfo = PDE_DATA(inode);
+>>>>>>> refs/remotes/origin/master
 	struct udp_iter_state *s;
 	int err;
 
@@ -2175,9 +2794,13 @@ int udp_seq_open(struct inode *inode, struct file *file)
 	return err;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL(udp_seq_open);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(udp_seq_open);
+>>>>>>> refs/remotes/origin/master
 
 /* ------------------------------------------------------------------------ */
 int udp_proc_register(struct net *net, struct udp_seq_afinfo *afinfo)
@@ -2186,6 +2809,7 @@ int udp_proc_register(struct net *net, struct udp_seq_afinfo *afinfo)
 	int rc = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	afinfo->seq_fops.open		= udp_seq_open;
 	afinfo->seq_fops.read		= seq_read;
 	afinfo->seq_fops.llseek		= seq_lseek;
@@ -2193,16 +2817,22 @@ int udp_proc_register(struct net *net, struct udp_seq_afinfo *afinfo)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	afinfo->seq_ops.start		= udp_seq_start;
 	afinfo->seq_ops.next		= udp_seq_next;
 	afinfo->seq_ops.stop		= udp_seq_stop;
 
 	p = proc_create_data(afinfo->name, S_IRUGO, net->proc_net,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     &afinfo->seq_fops, afinfo);
 =======
 			     afinfo->seq_fops, afinfo);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     afinfo->seq_fops, afinfo);
+>>>>>>> refs/remotes/origin/master
 	if (!p)
 		rc = -ENOMEM;
 	return rc;
@@ -2211,13 +2841,21 @@ EXPORT_SYMBOL(udp_proc_register);
 
 void udp_proc_unregister(struct net *net, struct udp_seq_afinfo *afinfo)
 {
+<<<<<<< HEAD
 	proc_net_remove(net, afinfo->name);
+=======
+	remove_proc_entry(afinfo->name, net->proc_net);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(udp_proc_unregister);
 
 /* ------------------------------------------------------------------------ */
 static void udp4_format_sock(struct sock *sp, struct seq_file *f,
+<<<<<<< HEAD
 		int bucket, int *len)
+=======
+		int bucket)
+>>>>>>> refs/remotes/origin/master
 {
 	struct inet_sock *inet = inet_sk(sp);
 	__be32 dest = inet->inet_daddr;
@@ -2226,6 +2864,7 @@ static void udp4_format_sock(struct sock *sp, struct seq_file *f,
 	__u16 srcp	  = ntohs(inet->inet_sport);
 
 	seq_printf(f, "%5d: %08X:%04X %08X:%04X"
+<<<<<<< HEAD
 		" %02X %08X:%08X %02X:%08lX %08X %5d %8d %lu %d %pK %d%n",
 		bucket, src, srcp, dest, destp, sp->sk_state,
 		sk_wmem_alloc_get(sp),
@@ -2233,17 +2872,35 @@ static void udp4_format_sock(struct sock *sp, struct seq_file *f,
 		0, 0L, 0, sock_i_uid(sp), 0, sock_i_ino(sp),
 		atomic_read(&sp->sk_refcnt), sp,
 		atomic_read(&sp->sk_drops), len);
+=======
+		" %02X %08X:%08X %02X:%08lX %08X %5u %8d %lu %d %pK %d",
+		bucket, src, srcp, dest, destp, sp->sk_state,
+		sk_wmem_alloc_get(sp),
+		sk_rmem_alloc_get(sp),
+		0, 0L, 0,
+		from_kuid_munged(seq_user_ns(f), sock_i_uid(sp)),
+		0, sock_i_ino(sp),
+		atomic_read(&sp->sk_refcnt), sp,
+		atomic_read(&sp->sk_drops));
+>>>>>>> refs/remotes/origin/master
 }
 
 int udp4_seq_show(struct seq_file *seq, void *v)
 {
+<<<<<<< HEAD
 	if (v == SEQ_START_TOKEN)
 		seq_printf(seq, "%-127s\n",
 			   "  sl  local_address rem_address   st tx_queue "
+=======
+	seq_setwidth(seq, 127);
+	if (v == SEQ_START_TOKEN)
+		seq_puts(seq, "  sl  local_address rem_address   st tx_queue "
+>>>>>>> refs/remotes/origin/master
 			   "rx_queue tr tm->when retrnsmt   uid  timeout "
 			   "inode ref pointer drops");
 	else {
 		struct udp_iter_state *state = seq->private;
+<<<<<<< HEAD
 		int len;
 
 		udp4_format_sock(v, seq, state->bucket, &len);
@@ -2254,6 +2911,15 @@ int udp4_seq_show(struct seq_file *seq, void *v)
 
 <<<<<<< HEAD
 =======
+=======
+
+		udp4_format_sock(v, seq, state->bucket);
+	}
+	seq_pad(seq, '\n');
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static const struct file_operations udp_afinfo_seq_fops = {
 	.owner    = THIS_MODULE,
 	.open     = udp_seq_open,
@@ -2262,12 +2928,16 @@ static const struct file_operations udp_afinfo_seq_fops = {
 	.release  = seq_release_net
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* ------------------------------------------------------------------------ */
 static struct udp_seq_afinfo udp4_seq_afinfo = {
 	.name		= "udp",
 	.family		= AF_INET,
 	.udp_table	= &udp_table,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.seq_fops	= {
 		.owner	=	THIS_MODULE,
@@ -2275,6 +2945,9 @@ static struct udp_seq_afinfo udp4_seq_afinfo = {
 =======
 	.seq_fops	= &udp_afinfo_seq_fops,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.seq_fops	= &udp_afinfo_seq_fops,
+>>>>>>> refs/remotes/origin/master
 	.seq_ops	= {
 		.show		= udp4_seq_show,
 	},
@@ -2309,9 +2982,21 @@ void udp4_proc_exit(void)
 static __initdata unsigned long uhash_entries;
 static int __init set_uhash_entries(char *str)
 {
+<<<<<<< HEAD
 	if (!str)
 		return 0;
 	uhash_entries = simple_strtoul(str, &str, 0);
+=======
+	ssize_t ret;
+
+	if (!str)
+		return 0;
+
+	ret = kstrtoul(str, 0, &uhash_entries);
+	if (ret)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	if (uhash_entries && uhash_entries < UDP_HTABLE_SIZE_MIN)
 		uhash_entries = UDP_HTABLE_SIZE_MIN;
 	return 1;
@@ -2322,6 +3007,7 @@ void __init udp_table_init(struct udp_table *table, const char *name)
 {
 	unsigned int i;
 
+<<<<<<< HEAD
 	if (!CONFIG_BASE_SMALL)
 		table->hash = alloc_large_system_hash(name,
 			2 * sizeof(struct udp_hslot),
@@ -2342,6 +3028,18 @@ void __init udp_table_init(struct udp_table *table, const char *name)
 		table->log = ilog2(UDP_HTABLE_SIZE_MIN);
 		table->mask = UDP_HTABLE_SIZE_MIN - 1;
 	}
+=======
+	table->hash = alloc_large_system_hash(name,
+					      2 * sizeof(struct udp_hslot),
+					      uhash_entries,
+					      21, /* one slot per 2 MB */
+					      0,
+					      &table->log,
+					      &table->mask,
+					      UDP_HTABLE_SIZE_MIN,
+					      64 * 1024);
+
+>>>>>>> refs/remotes/origin/master
 	table->hash2 = table->hash + (table->mask + 1);
 	for (i = 0; i <= table->mask; i++) {
 		INIT_HLIST_NULLS_HEAD(&table->hash[i].head, i);
@@ -2370,6 +3068,7 @@ void __init udp_init(void)
 	sysctl_udp_wmem_min = SK_MEM_QUANTUM;
 }
 
+<<<<<<< HEAD
 int udp4_ufo_send_check(struct sk_buff *skb)
 {
 	const struct iphdr *iph;
@@ -2436,3 +3135,82 @@ out:
 	return segs;
 }
 
+=======
+struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
+				       netdev_features_t features)
+{
+	struct sk_buff *segs = ERR_PTR(-EINVAL);
+	u16 mac_offset = skb->mac_header;
+	int mac_len = skb->mac_len;
+	int tnl_hlen = skb_inner_mac_header(skb) - skb_transport_header(skb);
+	__be16 protocol = skb->protocol;
+	netdev_features_t enc_features;
+	int outer_hlen;
+
+	if (unlikely(!pskb_may_pull(skb, tnl_hlen)))
+		goto out;
+
+	skb->encapsulation = 0;
+	__skb_pull(skb, tnl_hlen);
+	skb_reset_mac_header(skb);
+	skb_set_network_header(skb, skb_inner_network_offset(skb));
+	skb->mac_len = skb_inner_network_offset(skb);
+	skb->protocol = htons(ETH_P_TEB);
+
+	/* segment inner packet. */
+	enc_features = skb->dev->hw_enc_features & netif_skb_features(skb);
+	segs = skb_mac_gso_segment(skb, enc_features);
+	if (!segs || IS_ERR(segs)) {
+		skb_gso_error_unwind(skb, protocol, tnl_hlen, mac_offset,
+				     mac_len);
+		goto out;
+	}
+
+	outer_hlen = skb_tnl_header_len(skb);
+	skb = segs;
+	do {
+		struct udphdr *uh;
+		int udp_offset = outer_hlen - tnl_hlen;
+
+		skb_reset_inner_headers(skb);
+		skb->encapsulation = 1;
+
+		skb->mac_len = mac_len;
+
+		skb_push(skb, outer_hlen);
+		skb_reset_mac_header(skb);
+		skb_set_network_header(skb, mac_len);
+		skb_set_transport_header(skb, udp_offset);
+		uh = udp_hdr(skb);
+		uh->len = htons(skb->len - udp_offset);
+
+		/* csum segment if tunnel sets skb with csum. */
+		if (protocol == htons(ETH_P_IP) && unlikely(uh->check)) {
+			struct iphdr *iph = ip_hdr(skb);
+
+			uh->check = ~csum_tcpudp_magic(iph->saddr, iph->daddr,
+						       skb->len - udp_offset,
+						       IPPROTO_UDP, 0);
+			uh->check = csum_fold(skb_checksum(skb, udp_offset,
+							   skb->len - udp_offset, 0));
+			if (uh->check == 0)
+				uh->check = CSUM_MANGLED_0;
+
+		} else if (protocol == htons(ETH_P_IPV6)) {
+			struct ipv6hdr *ipv6h = ipv6_hdr(skb);
+			u32 len = skb->len - udp_offset;
+
+			uh->check = ~csum_ipv6_magic(&ipv6h->saddr, &ipv6h->daddr,
+						     len, IPPROTO_UDP, 0);
+			uh->check = csum_fold(skb_checksum(skb, udp_offset, len, 0));
+			if (uh->check == 0)
+				uh->check = CSUM_MANGLED_0;
+			skb->ip_summed = CHECKSUM_NONE;
+		}
+
+		skb->protocol = protocol;
+	} while ((skb = skb->next));
+out:
+	return segs;
+}
+>>>>>>> refs/remotes/origin/master

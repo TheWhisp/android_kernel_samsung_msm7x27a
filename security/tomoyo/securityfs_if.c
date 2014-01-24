@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * security/tomoyo/common.c
  *
  * Securityfs interface for TOMOYO.
@@ -10,6 +11,11 @@
  *
  * Copyright (C) 2005-2011  NTT DATA CORPORATION
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * security/tomoyo/securityfs_if.c
+ *
+ * Copyright (C) 2005-2011  NTT DATA CORPORATION
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/security.h>
@@ -17,7 +23,10 @@
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_check_task_acl - Check permission for task operation.
  *
  * @r:   Pointer to "struct tomoyo_request_info".
@@ -136,7 +145,10 @@ static const struct file_operations tomoyo_self_operations = {
 };
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * tomoyo_open - open() for /sys/kernel/security/tomoyo/ interface.
  *
  * @inode: Pointer to "struct inode".
@@ -146,7 +158,11 @@ static const struct file_operations tomoyo_self_operations = {
  */
 static int tomoyo_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	const int key = ((u8 *) file->f_path.dentry->d_inode->i_private)
+=======
+	const int key = ((u8 *) file_inode(file)->i_private)
+>>>>>>> refs/remotes/origin/master
 		- ((u8 *) NULL);
 	return tomoyo_open_control(key, file);
 }
@@ -154,6 +170,7 @@ static int tomoyo_open(struct inode *inode, struct file *file)
 /**
  * tomoyo_release - close() for /sys/kernel/security/tomoyo/ interface.
  *
+<<<<<<< HEAD
  * @inode: Pointer to "struct inode".
  * @file:  Pointer to "struct file".
  *
@@ -174,6 +191,15 @@ static int tomoyo_release(struct inode *inode, struct file *file)
  * Returns 0 on success, negative value otherwise.
 =======
 	return tomoyo_close_control(file->private_data);
+=======
+ * @file:  Pointer to "struct file".
+ *
+ */
+static int tomoyo_release(struct inode *inode, struct file *file)
+{
+	tomoyo_close_control(file->private_data);
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -184,7 +210,10 @@ static int tomoyo_release(struct inode *inode, struct file *file)
  *
  * Returns POLLIN | POLLRDNORM | POLLOUT | POLLWRNORM if ready to read/write,
  * POLLOUT | POLLWRNORM otherwise.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 static unsigned int tomoyo_poll(struct file *file, poll_table *wait)
 {
@@ -205,10 +234,14 @@ static ssize_t tomoyo_read(struct file *file, char __user *buf, size_t count,
 			   loff_t *ppos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return tomoyo_read_control(file, buf, count);
 =======
 	return tomoyo_read_control(file->private_data, buf, count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return tomoyo_read_control(file->private_data, buf, count);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -225,10 +258,14 @@ static ssize_t tomoyo_write(struct file *file, const char __user *buf,
 			    size_t count, loff_t *ppos)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return tomoyo_write_control(file, buf, count);
 =======
 	return tomoyo_write_control(file->private_data, buf, count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return tomoyo_write_control(file->private_data, buf, count);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -258,10 +295,14 @@ static const struct file_operations tomoyo_operations = {
  * Returns nothing.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init tomoyo_create_entry(const char *name, const mode_t mode,
 =======
 static void __init tomoyo_create_entry(const char *name, const umode_t mode,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init tomoyo_create_entry(const char *name, const umode_t mode,
+>>>>>>> refs/remotes/origin/master
 				       struct dentry *parent, const u8 key)
 {
 	securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
@@ -289,6 +330,7 @@ static int __init tomoyo_initerface_init(void)
 	tomoyo_create_entry("exception_policy", 0600, tomoyo_dir,
 			    TOMOYO_EXCEPTIONPOLICY);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tomoyo_create_entry("self_domain",      0400, tomoyo_dir,
 			    TOMOYO_SELFDOMAIN);
 	tomoyo_create_entry(".domain_status",   0600, tomoyo_dir,
@@ -298,13 +340,18 @@ static int __init tomoyo_initerface_init(void)
 	tomoyo_create_entry("meminfo",          0600, tomoyo_dir,
 			    TOMOYO_MEMINFO);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tomoyo_create_entry("audit",            0400, tomoyo_dir,
 			    TOMOYO_AUDIT);
 	tomoyo_create_entry(".process_status",  0600, tomoyo_dir,
 			    TOMOYO_PROCESS_STATUS);
 	tomoyo_create_entry("stat",             0644, tomoyo_dir,
 			    TOMOYO_STAT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	tomoyo_create_entry("profile",          0600, tomoyo_dir,
 			    TOMOYO_PROFILE);
 	tomoyo_create_entry("manager",          0600, tomoyo_dir,
@@ -312,11 +359,17 @@ static int __init tomoyo_initerface_init(void)
 	tomoyo_create_entry("version",          0400, tomoyo_dir,
 			    TOMOYO_VERSION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	securityfs_create_file("self_domain", 0666, tomoyo_dir, NULL,
 			       &tomoyo_self_operations);
 	tomoyo_load_builtin_policy();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	securityfs_create_file("self_domain", 0666, tomoyo_dir, NULL,
+			       &tomoyo_self_operations);
+	tomoyo_load_builtin_policy();
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

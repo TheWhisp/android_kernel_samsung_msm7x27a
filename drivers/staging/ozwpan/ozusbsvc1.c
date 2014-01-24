@@ -5,7 +5,10 @@
  * This file implements the protocol specific parts of the USB service for a PD.
  * -----------------------------------------------------------------------------
  */
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/timer.h>
 #include <linux/sched.h>
@@ -13,13 +16,18 @@
 #include <linux/errno.h>
 #include <linux/input.h>
 #include <asm/unaligned.h>
+<<<<<<< HEAD
 #include "ozconfig.h"
+=======
+#include "ozdbg.h"
+>>>>>>> refs/remotes/origin/master
 #include "ozprotocol.h"
 #include "ozeltbuf.h"
 #include "ozpd.h"
 #include "ozproto.h"
 #include "ozusbif.h"
 #include "ozhcd.h"
+<<<<<<< HEAD
 #include "oztrace.h"
 #include "ozusbsvc.h"
 #include "ozevent.h"
@@ -27,6 +35,13 @@
  */
 #define MAX_ISOC_FIXED_DATA	(253-sizeof(struct oz_isoc_fixed))
 /*------------------------------------------------------------------------------
+=======
+#include "ozusbsvc.h"
+
+#define MAX_ISOC_FIXED_DATA	(253-sizeof(struct oz_isoc_fixed))
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Context: softirq
  */
 static int oz_usb_submit_elt(struct oz_elt_buf *eb, struct oz_elt_info *ei,
@@ -35,6 +50,10 @@ static int oz_usb_submit_elt(struct oz_elt_buf *eb, struct oz_elt_info *ei,
 	int ret;
 	struct oz_elt *elt = (struct oz_elt *)ei->data;
 	struct oz_app_hdr *app_hdr = (struct oz_app_hdr *)(elt+1);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	elt->type = OZ_ELT_APP_DATA;
 	ei->app_id = OZ_APPID_USB;
 	ei->length = elt->length + sizeof(struct oz_elt);
@@ -51,7 +70,12 @@ static int oz_usb_submit_elt(struct oz_elt_buf *eb, struct oz_elt_info *ei,
 	spin_unlock_bh(&eb->lock);
 	return ret;
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Context: softirq
  */
 int oz_usb_get_desc_req(void *hpd, u8 req_id, u8 req_type, u8 desc_type,
@@ -63,6 +87,7 @@ int oz_usb_get_desc_req(void *hpd, u8 req_id, u8 req_type, u8 desc_type,
 	struct oz_get_desc_req *body;
 	struct oz_elt_buf *eb = &pd->elt_buff;
 	struct oz_elt_info *ei = oz_elt_info_alloc(&pd->elt_buff);
+<<<<<<< HEAD
 	oz_trace("    req_type = 0x%x\n", req_type);
 	oz_trace("    desc_type = 0x%x\n", desc_type);
 	oz_trace("    index = 0x%x\n", index);
@@ -72,6 +97,18 @@ int oz_usb_get_desc_req(void *hpd, u8 req_id, u8 req_type, u8 desc_type,
 	if (len > 200)
 		len = 200;
 	if (ei == 0)
+=======
+
+	oz_dbg(ON, "    req_type = 0x%x\n", req_type);
+	oz_dbg(ON, "    desc_type = 0x%x\n", desc_type);
+	oz_dbg(ON, "    index = 0x%x\n", index);
+	oz_dbg(ON, "    windex = 0x%x\n", windex);
+	oz_dbg(ON, "    offset = 0x%x\n", offset);
+	oz_dbg(ON, "    len = 0x%x\n", len);
+	if (len > 200)
+		len = 200;
+	if (ei == NULL)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	elt = (struct oz_elt *)ei->data;
 	elt->length = sizeof(struct oz_get_desc_req);
@@ -86,7 +123,12 @@ int oz_usb_get_desc_req(void *hpd, u8 req_id, u8 req_type, u8 desc_type,
 	body->index = index;
 	return oz_usb_submit_elt(eb, ei, usb_ctx, 0, 0);
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Context: tasklet
  */
 static int oz_usb_set_config_req(void *hpd, u8 req_id, u8 index)
@@ -97,7 +139,12 @@ static int oz_usb_set_config_req(void *hpd, u8 req_id, u8 index)
 	struct oz_elt_buf *eb = &pd->elt_buff;
 	struct oz_elt_info *ei = oz_elt_info_alloc(&pd->elt_buff);
 	struct oz_set_config_req *body;
+<<<<<<< HEAD
 	if (ei == 0)
+=======
+
+	if (ei == NULL)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	elt = (struct oz_elt *)ei->data;
 	elt->length = sizeof(struct oz_set_config_req);
@@ -107,7 +154,12 @@ static int oz_usb_set_config_req(void *hpd, u8 req_id, u8 index)
 	body->index = index;
 	return oz_usb_submit_elt(eb, ei, usb_ctx, 0, 0);
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Context: tasklet
  */
 static int oz_usb_set_interface_req(void *hpd, u8 req_id, u8 index, u8 alt)
@@ -118,7 +170,12 @@ static int oz_usb_set_interface_req(void *hpd, u8 req_id, u8 index, u8 alt)
 	struct oz_elt_buf *eb = &pd->elt_buff;
 	struct oz_elt_info *ei = oz_elt_info_alloc(&pd->elt_buff);
 	struct oz_set_interface_req *body;
+<<<<<<< HEAD
 	if (ei == 0)
+=======
+
+	if (ei == NULL)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	elt = (struct oz_elt *)ei->data;
 	elt->length = sizeof(struct oz_set_interface_req);
@@ -129,7 +186,12 @@ static int oz_usb_set_interface_req(void *hpd, u8 req_id, u8 index, u8 alt)
 	body->alternative = alt;
 	return oz_usb_submit_elt(eb, ei, usb_ctx, 0, 0);
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Context: tasklet
  */
 static int oz_usb_set_clear_feature_req(void *hpd, u8 req_id, u8 type,
@@ -141,7 +203,12 @@ static int oz_usb_set_clear_feature_req(void *hpd, u8 req_id, u8 type,
 	struct oz_elt_buf *eb = &pd->elt_buff;
 	struct oz_elt_info *ei = oz_elt_info_alloc(&pd->elt_buff);
 	struct oz_feature_req *body;
+<<<<<<< HEAD
 	if (ei == 0)
+=======
+
+	if (ei == NULL)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	elt = (struct oz_elt *)ei->data;
 	elt->length = sizeof(struct oz_feature_req);
@@ -153,11 +220,20 @@ static int oz_usb_set_clear_feature_req(void *hpd, u8 req_id, u8 type,
 	put_unaligned(feature, &body->feature);
 	return oz_usb_submit_elt(eb, ei, usb_ctx, 0, 0);
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
  * Context: tasklet
  */
 static int oz_usb_vendor_class_req(void *hpd, u8 req_id, u8 req_type,
 	u8 request, __le16 value, __le16 index, u8 *data, int data_len)
+=======
+
+/*
+ * Context: tasklet
+ */
+static int oz_usb_vendor_class_req(void *hpd, u8 req_id, u8 req_type,
+	u8 request, __le16 value, __le16 index, const u8 *data, int data_len)
+>>>>>>> refs/remotes/origin/master
 {
 	struct oz_usb_ctx *usb_ctx = (struct oz_usb_ctx *)hpd;
 	struct oz_pd *pd = usb_ctx->pd;
@@ -165,7 +241,12 @@ static int oz_usb_vendor_class_req(void *hpd, u8 req_id, u8 req_type,
 	struct oz_elt_buf *eb = &pd->elt_buff;
 	struct oz_elt_info *ei = oz_elt_info_alloc(&pd->elt_buff);
 	struct oz_vendor_class_req *body;
+<<<<<<< HEAD
 	if (ei == 0)
+=======
+
+	if (ei == NULL)
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	elt = (struct oz_elt *)ei->data;
 	elt->length = sizeof(struct oz_vendor_class_req) - 1 + data_len;
@@ -180,20 +261,33 @@ static int oz_usb_vendor_class_req(void *hpd, u8 req_id, u8 req_type,
 		memcpy(body->data, data, data_len);
 	return oz_usb_submit_elt(eb, ei, usb_ctx, 0, 0);
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
  * Context: tasklet
  */
 int oz_usb_control_req(void *hpd, u8 req_id, struct usb_ctrlrequest *setup,
 			u8 *data, int data_len)
+=======
+
+/*
+ * Context: tasklet
+ */
+int oz_usb_control_req(void *hpd, u8 req_id, struct usb_ctrlrequest *setup,
+			const u8 *data, int data_len)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned wvalue = le16_to_cpu(setup->wValue);
 	unsigned windex = le16_to_cpu(setup->wIndex);
 	unsigned wlength = le16_to_cpu(setup->wLength);
 	int rc = 0;
+<<<<<<< HEAD
 	oz_event_log(OZ_EVT_CTRL_REQ, setup->bRequest, req_id,
 		(void *)(((unsigned long)(setup->wValue))<<16 |
 			((unsigned long)setup->wIndex)),
 		setup->bRequestType);
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if ((setup->bRequestType & USB_TYPE_MASK) == USB_TYPE_STANDARD) {
 		switch (setup->bRequest) {
 		case USB_REQ_GET_DESCRIPTOR:
@@ -231,7 +325,12 @@ int oz_usb_control_req(void *hpd, u8 req_id, struct usb_ctrlrequest *setup,
 	}
 	return rc;
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Context: softirq
  */
 int oz_usb_send_isoc(void *hpd, u8 ep_num, struct urb *urb)
@@ -264,7 +363,11 @@ int oz_usb_send_isoc(void *hpd, u8 ep_num, struct urb *urb)
 		int unit_count;
 		int unit_size;
 		int rem;
+<<<<<<< HEAD
 		if (ei == 0)
+=======
+		if (ei == NULL)
+>>>>>>> refs/remotes/origin/master
 			return -1;
 		rem = MAX_ISOC_FIXED_DATA;
 		elt = (struct oz_elt *)ei->data;
@@ -302,6 +405,7 @@ int oz_usb_send_isoc(void *hpd, u8 ep_num, struct urb *urb)
 	}
 	return 0;
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
  * Context: softirq-serialized
  */
@@ -309,6 +413,17 @@ void oz_usb_handle_ep_data(struct oz_usb_ctx *usb_ctx,
 	struct oz_usb_hdr *usb_hdr, int len)
 {
 	struct oz_data *data_hdr = (struct oz_data *)usb_hdr;
+=======
+
+/*
+ * Context: softirq-serialized
+ */
+static void oz_usb_handle_ep_data(struct oz_usb_ctx *usb_ctx,
+	struct oz_usb_hdr *usb_hdr, int len)
+{
+	struct oz_data *data_hdr = (struct oz_data *)usb_hdr;
+
+>>>>>>> refs/remotes/origin/master
 	switch (data_hdr->format) {
 	case OZ_DATA_F_MULTIPLE_FIXED: {
 			struct oz_multiple_fixed *body =
@@ -344,7 +459,12 @@ void oz_usb_handle_ep_data(struct oz_usb_ctx *usb_ctx,
 	}
 
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * This is called when the PD has received a USB element. The type of element
  * is determined and is then passed to an appropriate handler function.
  * Context: softirq-serialized
@@ -359,7 +479,11 @@ void oz_usb_rx(struct oz_pd *pd, struct oz_elt *elt)
 	if (usb_ctx)
 		oz_usb_get(usb_ctx);
 	spin_unlock_bh(&pd->app_lock[OZ_APPID_USB-1]);
+<<<<<<< HEAD
 	if (usb_ctx == 0)
+=======
+	if (usb_ctx == NULL)
+>>>>>>> refs/remotes/origin/master
 		return; /* Context has gone so nothing to do. */
 	if (usb_ctx->stopped)
 		goto done;
@@ -381,7 +505,11 @@ void oz_usb_rx(struct oz_pd *pd, struct oz_elt *elt)
 			u16 offs = le16_to_cpu(get_unaligned(&body->offset));
 			u16 total_size =
 				le16_to_cpu(get_unaligned(&body->total_size));
+<<<<<<< HEAD
 			oz_trace("USB_REQ_GET_DESCRIPTOR - cnf\n");
+=======
+			oz_dbg(ON, "USB_REQ_GET_DESCRIPTOR - cnf\n");
+>>>>>>> refs/remotes/origin/master
 			oz_hcd_get_desc_cnf(usb_ctx->hport, body->req_id,
 					body->rcode, body->data,
 					data_len, offs, total_size);
@@ -391,14 +519,22 @@ void oz_usb_rx(struct oz_pd *pd, struct oz_elt *elt)
 			struct oz_set_config_rsp *body =
 				(struct oz_set_config_rsp *)usb_hdr;
 			oz_hcd_control_cnf(usb_ctx->hport, body->req_id,
+<<<<<<< HEAD
 				body->rcode, 0, 0);
+=======
+				body->rcode, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case OZ_SET_INTERFACE_RSP: {
 			struct oz_set_interface_rsp *body =
 				(struct oz_set_interface_rsp *)usb_hdr;
 			oz_hcd_control_cnf(usb_ctx->hport,
+<<<<<<< HEAD
 				body->req_id, body->rcode, 0, 0);
+=======
+				body->req_id, body->rcode, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 		}
 		break;
 	case OZ_VENDOR_CLASS_RSP: {
@@ -416,21 +552,37 @@ void oz_usb_rx(struct oz_pd *pd, struct oz_elt *elt)
 done:
 	oz_usb_put(usb_ctx);
 }
+<<<<<<< HEAD
 /*------------------------------------------------------------------------------
+=======
+
+/*
+>>>>>>> refs/remotes/origin/master
  * Context: softirq, process
  */
 void oz_usb_farewell(struct oz_pd *pd, u8 ep_num, u8 *data, u8 len)
 {
 	struct oz_usb_ctx *usb_ctx;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_bh(&pd->app_lock[OZ_APPID_USB-1]);
 	usb_ctx = (struct oz_usb_ctx *)pd->app_ctx[OZ_APPID_USB-1];
 	if (usb_ctx)
 		oz_usb_get(usb_ctx);
 	spin_unlock_bh(&pd->app_lock[OZ_APPID_USB-1]);
+<<<<<<< HEAD
 	if (usb_ctx == 0)
 		return; /* Context has gone so nothing to do. */
 	if (!usb_ctx->stopped) {
 		oz_trace("Farewell indicated ep = 0x%x\n", ep_num);
+=======
+	if (usb_ctx == NULL)
+		return; /* Context has gone so nothing to do. */
+	if (!usb_ctx->stopped) {
+		oz_dbg(ON, "Farewell indicated ep = 0x%x\n", ep_num);
+>>>>>>> refs/remotes/origin/master
 		oz_hcd_data_ind(usb_ctx->hport, ep_num, data, len);
 	}
 	oz_usb_put(usb_ctx);

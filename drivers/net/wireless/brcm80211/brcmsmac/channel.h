@@ -32,6 +32,7 @@
 
 #define BRCMS_DFS_EU (BRCMS_DFS_TPC | BRCMS_RADAR_TYPE_EU) /* Flag for DFS EU */
 
+<<<<<<< HEAD
 extern struct brcms_cm_info *
 brcms_c_channel_mgr_attach(struct brcms_c_info *wlc);
 
@@ -49,5 +50,18 @@ extern void brcms_c_channel_reg_limits(struct brcms_cm_info *wlc_cm,
 extern void brcms_c_channel_set_chanspec(struct brcms_cm_info *wlc_cm,
 				     u16 chanspec,
 				     u8 local_constraint_qdbm);
+=======
+struct brcms_cm_info *brcms_c_channel_mgr_attach(struct brcms_c_info *wlc);
+
+void brcms_c_channel_mgr_detach(struct brcms_cm_info *wlc_cm);
+
+bool brcms_c_valid_chanspec_db(struct brcms_cm_info *wlc_cm, u16 chspec);
+
+void brcms_c_channel_reg_limits(struct brcms_cm_info *wlc_cm, u16 chanspec,
+				struct txpwr_limits *txpwr);
+void brcms_c_channel_set_chanspec(struct brcms_cm_info *wlc_cm, u16 chanspec,
+				  u8 local_constraint_qdbm);
+void brcms_c_regd_init(struct brcms_c_info *wlc);
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* _WLC_CHANNEL_H */

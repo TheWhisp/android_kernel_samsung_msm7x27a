@@ -5,15 +5,20 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define HFCD_CIRM  	0x18
 #define HFCD_CTMT	0x19
@@ -30,6 +35,8 @@
 #define HFCD_MST_MODE	0x2E
 #define HFCD_CONN  	0x2F
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define HFCD_CIRM	0x18
 #define HFCD_CTMT	0x19
 #define HFCD_INT_M1	0x1A
@@ -44,7 +51,10 @@
 #define HFCD_CLKDEL	0x37
 #define HFCD_MST_MODE	0x2E
 #define HFCD_CONN	0x2F
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define HFCD_FIFO	0x80
 #define HFCD_Z1		0x10
@@ -101,10 +111,14 @@
 
 /* CIRM (Write) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HFCD_RESET  	0x08
 =======
 #define HFCD_RESET	0x08
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define HFCD_RESET	0x08
+>>>>>>> refs/remotes/origin/master
 #define HFCD_MEM8K	0x10
 #define HFCD_INTA	0x01
 #define HFCD_INTB	0x02

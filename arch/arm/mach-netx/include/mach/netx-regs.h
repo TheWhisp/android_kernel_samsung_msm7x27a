@@ -116,10 +116,14 @@
 
 /* Registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_SYSTEM_REG(ofs)            __io(NETX_VA_SYSTEM + (ofs))
 =======
 #define NETX_SYSTEM_REG(ofs)            IOMEM(NETX_VA_SYSTEM + (ofs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_SYSTEM_REG(ofs)            IOMEM(NETX_VA_SYSTEM + (ofs))
+>>>>>>> refs/remotes/origin/master
 #define NETX_SYSTEM_BOO_SR          NETX_SYSTEM_REG(0x00)
 #define NETX_SYSTEM_IOC_CR          NETX_SYSTEM_REG(0x04)
 #define NETX_SYSTEM_IOC_MR          NETX_SYSTEM_REG(0x08)
@@ -190,10 +194,14 @@
 
 /* Registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_GPIO_REG(ofs)                     __io(NETX_VA_GPIO + (ofs))
 =======
 #define NETX_GPIO_REG(ofs)                     IOMEM(NETX_VA_GPIO + (ofs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_GPIO_REG(ofs)                     IOMEM(NETX_VA_GPIO + (ofs))
+>>>>>>> refs/remotes/origin/master
 #define NETX_GPIO_CFG(gpio)                NETX_GPIO_REG(0x0  + ((gpio)<<2))
 #define NETX_GPIO_THRESHOLD_CAPTURE(gpio)  NETX_GPIO_REG(0x40 + ((gpio)<<2))
 #define NETX_GPIO_COUNTER_CTRL(counter)    NETX_GPIO_REG(0x80 + ((counter)<<2))
@@ -239,10 +247,14 @@
 
 /* Registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_PIO_REG(ofs)        __io(NETX_VA_PIO + (ofs))
 =======
 #define NETX_PIO_REG(ofs)        IOMEM(NETX_VA_PIO + (ofs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_PIO_REG(ofs)        IOMEM(NETX_VA_PIO + (ofs))
+>>>>>>> refs/remotes/origin/master
 #define NETX_PIO_INPIO       NETX_PIO_REG(0x0)
 #define NETX_PIO_OUTPIO      NETX_PIO_REG(0x4)
 #define NETX_PIO_OEPIO       NETX_PIO_REG(0x8)
@@ -253,10 +265,14 @@
 
 /* Registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_MIIMU           __io(NETX_VA_MIIMU)
 =======
 #define NETX_MIIMU           IOMEM(NETX_VA_MIIMU)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_MIIMU           IOMEM(NETX_VA_MIIMU)
+>>>>>>> refs/remotes/origin/master
 
 /* Bits */
 #define MIIMU_SNRDY        (1<<0)
@@ -334,10 +350,14 @@
 
 /* Registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_PFIFO_REG(ofs)               __io(NETX_VA_PFIFO + (ofs))
 =======
 #define NETX_PFIFO_REG(ofs)               IOMEM(NETX_VA_PFIFO + (ofs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_PFIFO_REG(ofs)               IOMEM(NETX_VA_PFIFO + (ofs))
+>>>>>>> refs/remotes/origin/master
 #define NETX_PFIFO_BASE(pfifo)        NETX_PFIFO_REG(0x00 + ((pfifo)<<2))
 #define NETX_PFIFO_BORDER_BASE(pfifo) NETX_PFIFO_REG(0x80 + ((pfifo)<<2))
 #define NETX_PFIFO_RESET              NETX_PFIFO_REG(0x100)
@@ -355,10 +375,14 @@
 
 /* Registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_MEMCR_REG(ofs)               __io(NETX_VA_MEMCR + (ofs))
 =======
 #define NETX_MEMCR_REG(ofs)               IOMEM(NETX_VA_MEMCR + (ofs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_MEMCR_REG(ofs)               IOMEM(NETX_VA_MEMCR + (ofs))
+>>>>>>> refs/remotes/origin/master
 #define NETX_MEMCR_SRAM_CTRL(cs)      NETX_MEMCR_REG(0x0 + 4 * (cs)) /* SRAM for CS 0..2 */
 #define NETX_MEMCR_SDRAM_CFG_CTRL     NETX_MEMCR_REG(0x40)
 #define NETX_MEMCR_SDRAM_TIMING_CTRL  NETX_MEMCR_REG(0x44)
@@ -380,10 +404,14 @@
 
 /* Registers */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_DPMAS_REG(ofs)               __io(NETX_VA_DPMAS + (ofs))
 =======
 #define NETX_DPMAS_REG(ofs)               IOMEM(NETX_VA_DPMAS + (ofs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_DPMAS_REG(ofs)               IOMEM(NETX_VA_DPMAS + (ofs))
+>>>>>>> refs/remotes/origin/master
 #define NETX_DPMAS_SYS_STAT           NETX_DPMAS_REG(0x4d8)
 #define NETX_DPMAS_INT_STAT           NETX_DPMAS_REG(0x4e0)
 #define NETX_DPMAS_INT_EN             NETX_DPMAS_REG(0x4f0)
@@ -454,10 +482,14 @@
  * I2C                         *
  *******************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define NETX_I2C_REG(ofs)	__io(NETX_VA_I2C, (ofs))
 =======
 #define NETX_I2C_REG(ofs)	IOMEM(NETX_VA_I2C, (ofs))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NETX_I2C_REG(ofs)	IOMEM(NETX_VA_I2C, (ofs))
+>>>>>>> refs/remotes/origin/master
 #define NETX_I2C_CTRL	NETX_I2C_REG(0x0)
 #define NETX_I2C_DATA	NETX_I2C_REG(0x4)
 

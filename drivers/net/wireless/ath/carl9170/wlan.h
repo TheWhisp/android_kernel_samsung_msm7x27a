@@ -5,10 +5,14 @@
  *
  * Copyright 2008, Johannes Berg <johannes@sipsolutions.net>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright 2009, 2010, Christian Lamparter <chunkeey@googlemail.com>
 =======
  * Copyright 2009-2011 Christian Lamparter <chunkeey@googlemail.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright 2009-2011 Christian Lamparter <chunkeey@googlemail.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -283,10 +287,14 @@ struct carl9170_tx_superframe {
 	struct carl9170_tx_superdesc s;
 	struct ar9170_tx_frame f;
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __packed;
 =======
 } __packed __aligned(4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed __aligned(4);
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __CARL9170FW__ */
 
@@ -337,10 +345,14 @@ struct _carl9170_tx_superframe {
 	struct _ar9170_tx_hwdesc f;
 	u8 frame_data[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 } __packed;
 =======
 } __packed __aligned(4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+} __packed __aligned(4);
+>>>>>>> refs/remotes/origin/master
 
 #define	CARL9170_TX_SUPERDESC_LEN		24
 #define	AR9170_TX_HWDESC_LEN			8
@@ -417,6 +429,7 @@ static inline u8 ar9170_get_decrypt_type(struct ar9170_rx_macstatus *t)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum ar9170_txq {
 	AR9170_TXQ_BE,
 
@@ -429,6 +442,8 @@ enum ar9170_txq {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is an workaround for several undocumented bugs.
  * Don't mess with the QoS/AC <-> HW Queue map, if you don't
@@ -447,8 +462,11 @@ enum ar9170_txq {
  * for any serious 802.11n setup.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const u8 ar9170_qmap[__AR9170_NUM_TXQ] = { 2, 1, 0, 3 };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum ar9170_txq {
 	AR9170_TXQ_BK = 0,	/* TXQ0 */
 	AR9170_TXQ_BE,		/* TXQ1	*/
@@ -457,7 +475,10 @@ enum ar9170_txq {
 
 	__AR9170_NUM_TXQ,
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define	AR9170_TXQ_DEPTH			32
 

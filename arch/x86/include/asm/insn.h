@@ -97,6 +97,7 @@ struct insn {
 #define X86_VEX_M_MAX	0x1f			/* VEX3.M Maximum value */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* The last prefix is needed for two-byte and three-byte opcodes */
 static inline insn_byte_t insn_last_prefix(struct insn *insn)
 {
@@ -105,6 +106,8 @@ static inline insn_byte_t insn_last_prefix(struct insn *insn)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 extern void insn_init(struct insn *insn, const void *kaddr, int x86_64);
 extern void insn_get_prefixes(struct insn *insn);
 extern void insn_get_opcode(struct insn *insn);
@@ -141,7 +144,10 @@ static inline int insn_is_avx(struct insn *insn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Ensure this instruction is decoded completely */
 static inline int insn_complete(struct insn *insn)
 {
@@ -149,7 +155,10 @@ static inline int insn_complete(struct insn *insn)
 		insn->displacement.got && insn->immediate.got;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline insn_byte_t insn_vex_m_bits(struct insn *insn)
 {
 	if (insn->vex_prefix.nbytes == 2)	/* 2 bytes VEX */
@@ -167,7 +176,10 @@ static inline insn_byte_t insn_vex_p_bits(struct insn *insn)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Get the last prefix id from last prefix or VEX prefix */
 static inline int insn_last_prefix_id(struct insn *insn)
 {
@@ -180,7 +192,10 @@ static inline int insn_last_prefix_id(struct insn *insn)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Offset of each field from kaddr */
 static inline int insn_offset_rex_prefix(struct insn *insn)
 {

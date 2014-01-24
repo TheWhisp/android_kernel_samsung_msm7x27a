@@ -18,7 +18,11 @@
  */
 	LEAF(except_vec2_octeon)
 
+<<<<<<< HEAD
 	.set    push
+=======
+	.set	push
+>>>>>>> refs/remotes/origin/master
 	.set	mips64r2
 	.set	noreorder
 	.set	noat
@@ -27,6 +31,7 @@
 	/* due to an errata we need to read the COP0 CacheErr (Dcache)
 	 * before any cache/DRAM access	 */
 
+<<<<<<< HEAD
 	rdhwr   k0, $0        /* get core_id */
 	PTR_LA  k1, cache_err_dcache
 	sll     k0, k0, 3
@@ -40,6 +45,21 @@
 	mfc0    k1, CP0_STATUS
 	andi    k1, k1, ST0_EXL
 	beqz    k1, 1f
+=======
+	rdhwr	k0, $0	      /* get core_id */
+	PTR_LA	k1, cache_err_dcache
+	sll	k0, k0, 3
+	PTR_ADDU k1, k0, k1    /* k1 = &cache_err_dcache[core_id] */
+
+	dmfc0	k0, CP0_CACHEERR, 1
+	sd	k0, (k1)
+	dmtc0	$0, CP0_CACHEERR, 1
+
+	/* check whether this is a nested exception */
+	mfc0	k1, CP0_STATUS
+	andi	k1, k1, ST0_EXL
+	beqz	k1, 1f
+>>>>>>> refs/remotes/origin/master
 	 nop
 	j	cache_parity_error_octeon_non_recoverable
 	 nop
@@ -48,11 +68,16 @@
 1:	j	handle_cache_err
 	 nop
 
+<<<<<<< HEAD
 	.set    pop
+=======
+	.set	pop
+>>>>>>> refs/remotes/origin/master
 	END(except_vec2_octeon)
 
  /* We need to jump to handle_cache_err so that the previous handler
   * can fit within 0x80 bytes. We also move from 0xFFFFFFFFAXXXXXXX
+<<<<<<< HEAD
   * space (uncached) to the 0xFFFFFFFF8XXXXXXX space (cached).  */
 	LEAF(handle_cache_err)
 	.set    push
@@ -64,6 +89,19 @@
 	jal     cache_parity_error_octeon_recoverable
 	nop
 	j       ret_from_exception
+=======
+  * space (uncached) to the 0xFFFFFFFF8XXXXXXX space (cached).	*/
+	LEAF(handle_cache_err)
+	.set	push
+	.set	noreorder
+	.set	noat
+
+	SAVE_ALL
+	KMODE
+	jal	cache_parity_error_octeon_recoverable
+	nop
+	j	ret_from_exception
+>>>>>>> refs/remotes/origin/master
 	nop
 
 	.set pop

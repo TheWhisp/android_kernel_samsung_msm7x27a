@@ -4,9 +4,15 @@
 #include <linux/compiler.h>
 
 #ifdef CONFIG_SUPERH32
+<<<<<<< HEAD
 # include "traps_32.h"
 #else
 # include "traps_64.h"
+=======
+# include <asm/traps_32.h>
+#else
+# include <asm/traps_64.h>
+>>>>>>> refs/remotes/origin/master
 #endif
 
 BUILD_TRAP_HANDLER(address_error);

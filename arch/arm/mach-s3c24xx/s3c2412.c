@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /* linux/arch/arm/mach-s3c2412/s3c2412.c
  *
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2006 Simtec Electronics
  *	Ben Dooks <ben@simtec.co.uk>
  *
@@ -23,16 +27,24 @@
 #include <linux/serial_core.h>
 #include <linux/platform_device.h>
 #include <linux/io.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 #include <asm/mach/irq.h>
 
+<<<<<<< HEAD
 #include <mach/hardware.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/proc-fns.h>
 #include <asm/irq.h>
 #include <asm/system_misc.h>
 
+<<<<<<< HEAD
 #include <plat/cpu-freq.h>
 
 #include <mach/regs-clock.h>
@@ -51,6 +63,28 @@
 #include <plat/pm.h>
 #include <plat/pll.h>
 #include <plat/nand-core.h>
+=======
+#include <mach/hardware.h>
+#include <mach/regs-clock.h>
+#include <mach/regs-gpio.h>
+
+#include <plat/clock.h>
+#include <plat/cpu.h>
+#include <plat/cpu-freq.h>
+#include <plat/devs.h>
+#include <plat/nand-core.h>
+#include <plat/pll.h>
+#include <plat/pm.h>
+#include <plat/regs-serial.h>
+#include <plat/regs-spi.h>
+
+#include "common.h"
+#include "regs-dsc.h"
+#include "s3c2412-power.h"
+
+#define S3C2412_SWRST			(S3C24XX_VA_CLKPWR + 0x30)
+#define S3C2412_SWRST_RESET		(0x533C2412)
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_CPU_S3C2412_ONLY
 void __iomem *s3c24xx_va_gpio2 = S3C24XX_VA_GPIO;
@@ -129,9 +163,15 @@ static void s3c2412_idle(void)
 	cpu_do_idle();
 }
 
+<<<<<<< HEAD
 void s3c2412_restart(char mode, const char *cmd)
 {
 	if (mode == 's')
+=======
+void s3c2412_restart(enum reboot_mode mode, const char *cmd)
+{
+	if (mode == REBOOT_SOFT)
+>>>>>>> refs/remotes/origin/master
 		soft_restart(0);
 
 	/* errata "Watch-dog/Software Reset Problem" specifies that
@@ -245,8 +285,13 @@ int __init s3c2412_init(void)
 
 #ifdef CONFIG_PM
 	register_syscore_ops(&s3c2412_pm_syscore_ops);
+<<<<<<< HEAD
 #endif
 	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+=======
+	register_syscore_ops(&s3c24xx_irq_syscore_ops);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	return device_register(&s3c2412_dev);
 }

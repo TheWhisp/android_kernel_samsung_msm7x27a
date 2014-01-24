@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 #include "linux/mm.h"
 #include "asm/page.h"
 #include "asm/mman.h"
+=======
+#include <linux/mm.h>
+#include <asm/page.h>
+#include <asm/mman.h>
+>>>>>>> refs/remotes/origin/master
 
 const char *arch_vma_name(struct vm_area_struct *vma)
 {

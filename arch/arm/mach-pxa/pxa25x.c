@@ -17,10 +17,15 @@
  * need be.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/gpio.h>
 #include <linux/gpio-pxa.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <linux/gpio-pxa.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
@@ -31,6 +36,7 @@
 
 #include <asm/mach/map.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 #include <mach/gpio.h>
@@ -39,6 +45,11 @@
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/suspend.h>
+#include <mach/hardware.h>
+#include <mach/irqs.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/pxa25x.h>
 #include <mach/reset.h>
 #include <mach/pm.h>
@@ -218,9 +229,18 @@ static struct clk_lookup pxa25x_clkregs[] = {
 	INIT_CLKREG(&clk_pxa25x_gpio12, NULL, "GPIO12_CLK"),
 	INIT_CLKREG(&clk_pxa25x_mem, "pxa2xx-pcmcia", NULL),
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	INIT_CLKREG(&clk_dummy, "pxa-gpio", NULL),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_CPU_PXA26x
+	INIT_CLKREG(&clk_dummy, "pxa26x-gpio", NULL),
+#else
+	INIT_CLKREG(&clk_dummy, "pxa25x-gpio", NULL),
+#endif
+	INIT_CLKREG(&clk_dummy, "sa1100-rtc", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct clk_lookup pxa25x_hwuart_clkreg =
@@ -260,10 +280,14 @@ static void pxa25x_cpu_pm_enter(suspend_state_t state)
 	switch (state) {
 	case PM_SUSPEND_MEM:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pxa25x_cpu_suspend(PWRMODE_SLEEP, PLAT_PHYS_OFFSET - PAGE_OFFSET);
 =======
 		cpu_suspend(PWRMODE_SLEEP, pxa25x_finish_suspend);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		cpu_suspend(PWRMODE_SLEEP, pxa25x_finish_suspend);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -305,10 +329,14 @@ static inline void pxa25x_init_pm(void) {}
 static int pxa25x_set_wake(struct irq_data *d, unsigned int on)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int gpio = irq_to_gpio(d->irq);
 =======
 	int gpio = pxa_irq_to_gpio(d->irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int gpio = pxa_irq_to_gpio(d->irq);
+>>>>>>> refs/remotes/origin/master
 	uint32_t mask = 0;
 
 	if (gpio >= 0 && gpio < 85)
@@ -334,9 +362,12 @@ void __init pxa25x_init_irq(void)
 {
 	pxa_init_irq(32, pxa25x_set_wake);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pxa_init_gpio(IRQ_GPIO_2_x, 2, 84, pxa25x_set_wake);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_CPU_PXA26x
@@ -344,19 +375,26 @@ void __init pxa26x_init_irq(void)
 {
 	pxa_init_irq(32, pxa25x_set_wake);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pxa_init_gpio(IRQ_GPIO_2_x, 2, 89, pxa25x_set_wake);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
 static struct map_desc pxa25x_io_desc[] __initdata = {
 	{	/* Mem Ctl */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.virtual	= SMEMC_VIRT,
 =======
 		.virtual	= (unsigned long)SMEMC_VIRT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.virtual	= (unsigned long)SMEMC_VIRT,
+>>>>>>> refs/remotes/origin/master
 		.pfn		= __phys_to_pfn(PXA2XX_SMEMC_BASE),
 		.length		= 0x00200000,
 		.type		= MT_DEVICE
@@ -370,6 +408,14 @@ void __init pxa25x_map_io(void)
 	pxa25x_get_clk_frequency_khz(1);
 }
 
+<<<<<<< HEAD
+=======
+static struct pxa_gpio_platform_data pxa25x_gpio_info __initdata = {
+	.irq_base	= PXA_GPIO_TO_IRQ(0),
+	.gpio_set_wake	= gpio_set_wake,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *pxa25x_devices[] __initdata = {
 	&pxa25x_device_udc,
 	&pxa_device_pmu,
@@ -401,11 +447,17 @@ static int __init pxa25x_init(void)
 		register_syscore_ops(&pxa_irq_syscore_ops);
 		register_syscore_ops(&pxa2xx_mfp_syscore_ops);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		register_syscore_ops(&pxa_gpio_syscore_ops);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 		register_syscore_ops(&pxa2xx_clock_syscore_ops);
 
+=======
+		register_syscore_ops(&pxa2xx_clock_syscore_ops);
+
+		pxa_register_device(&pxa25x_device_gpio, &pxa25x_gpio_info);
+>>>>>>> refs/remotes/origin/master
 		ret = platform_add_devices(pxa25x_devices,
 					   ARRAY_SIZE(pxa25x_devices));
 		if (ret)

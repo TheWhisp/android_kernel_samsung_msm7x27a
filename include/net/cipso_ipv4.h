@@ -9,10 +9,14 @@
  * de-facto standard for labeled networking.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
 =======
  * Author: Paul Moore <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -46,10 +50,14 @@
 #include <net/netlabel.h>
 #include <net/request_sock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 
 /* known doi values */
@@ -299,9 +307,13 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 	u8 opt_len = opt[1];
 	u8 opt_iter;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u8 tag_len;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 tag_len;
+>>>>>>> refs/remotes/origin/master
 
 	if (opt_len < 8) {
 		err_offset = 1;
@@ -315,19 +327,25 @@ static inline int cipso_v4_validate(const struct sk_buff *skb,
 
 	for (opt_iter = 6; opt_iter < opt_len;) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (opt[opt_iter + 1] > (opt_len - opt_iter)) {
 			err_offset = opt_iter + 1;
 			goto out;
 		}
 		opt_iter += opt[opt_iter + 1];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		tag_len = opt[opt_iter + 1];
 		if ((tag_len == 0) || (opt[opt_iter + 1] > (opt_len - opt_iter))) {
 			err_offset = opt_iter + 1;
 			goto out;
 		}
 		opt_iter += tag_len;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:

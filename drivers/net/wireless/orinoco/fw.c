@@ -7,9 +7,13 @@
 #include <linux/firmware.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "hermes.h"
 #include "hermes_dld.h"
@@ -105,10 +109,14 @@ orinoco_dl_firmware(struct orinoco_private *priv,
 	__le16 *pda;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	const struct firmware *fw_entry;
 	const struct orinoco_fw_header *hdr;
 	const unsigned char *first_block;
@@ -214,10 +222,14 @@ symbol_dl_image(struct orinoco_private *priv, const struct fw_info *fw,
 		int secondary)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hermes_t *hw = &priv->hw;
 =======
 	struct hermes *hw = &priv->hw;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct hermes *hw = &priv->hw;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	const unsigned char *ptr;
 	const unsigned char *first_block;
@@ -335,6 +347,7 @@ symbol_dl_firmware(struct orinoco_private *priv,
 	if (!orinoco_cached_fw_get(priv, false))
 		release_firmware(fw_entry);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret) {
 		dev_err(dev, "Secondary firmware download failed\n");
 	}
@@ -342,6 +355,10 @@ symbol_dl_firmware(struct orinoco_private *priv,
 	if (ret)
 		dev_err(dev, "Secondary firmware download failed\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ret)
+		dev_err(dev, "Secondary firmware download failed\n");
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -396,11 +413,16 @@ void orinoco_cache_fw(struct orinoco_private *priv, int ap)
 
 void orinoco_uncache_fw(struct orinoco_private *priv)
 {
+<<<<<<< HEAD
 	if (priv->cached_pri_fw)
 		release_firmware(priv->cached_pri_fw);
 	if (priv->cached_fw)
 		release_firmware(priv->cached_fw);
 
+=======
+	release_firmware(priv->cached_pri_fw);
+	release_firmware(priv->cached_fw);
+>>>>>>> refs/remotes/origin/master
 	priv->cached_pri_fw = NULL;
 	priv->cached_fw = NULL;
 }

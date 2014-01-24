@@ -2,19 +2,26 @@
  * i8253 PIT clocksource
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/clocksource.h>
 =======
 #include <linux/clockchips.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/clockchips.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/io.h>
 #include <linux/spinlock.h>
 #include <linux/timex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <asm/i8253.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/i8253.h>
 #include <linux/smp.h>
@@ -29,7 +36,10 @@ DEFINE_RAW_SPINLOCK(i8253_lock);
 EXPORT_SYMBOL(i8253_lock);
 
 #ifdef CONFIG_CLKSRC_I8253
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Since the PIT overflows every tick, its not very useful
  * to just read by itself. So use jiffies to emulate a free
@@ -45,7 +55,11 @@ static cycle_t i8253_read(struct clocksource *cs)
 
 	raw_spin_lock_irqsave(&i8253_lock, flags);
 	/*
+<<<<<<< HEAD
 	 * Although our caller may have the read side of xtime_lock,
+=======
+	 * Although our caller may have the read side of jiffies_lock,
+>>>>>>> refs/remotes/origin/master
 	 * this is now a seqlock, and we are cheating in this routine
 	 * by having side effects on state that we cannot undo if
 	 * there is a collision on the seqlock and our caller has to
@@ -59,6 +73,7 @@ static cycle_t i8253_read(struct clocksource *cs)
 	 */
 	jifs = jiffies;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	outb_pit(0x00, PIT_MODE);	/* latch the count ASAP */
 	count = inb_pit(PIT_CH0);	/* read the latched count */
 	count |= inb_pit(PIT_CH0) << 8;
@@ -69,6 +84,8 @@ static cycle_t i8253_read(struct clocksource *cs)
 		outb_pit(PIT_LATCH & 0xff, PIT_CH0);
 		outb_pit(PIT_LATCH >> 8, PIT_CH0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	outb_p(0x00, PIT_MODE);	/* latch the count ASAP */
 	count = inb_p(PIT_CH0);	/* read the latched count */
 	count |= inb_p(PIT_CH0) << 8;
@@ -78,7 +95,10 @@ static cycle_t i8253_read(struct clocksource *cs)
 		outb_p(0x34, PIT_MODE);
 		outb_p(PIT_LATCH & 0xff, PIT_CH0);
 		outb_p(PIT_LATCH >> 8, PIT_CH0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		count = PIT_LATCH - 1;
 	}
 
@@ -120,7 +140,10 @@ int __init clocksource_i8253_init(void)
 	return clocksource_register_hz(&i8253_cs, PIT_TICK_RATE);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_CLKEVT_I8253
@@ -208,4 +231,7 @@ void __init clockevent_i8253_init(bool oneshot)
 					0xF, 0x7FFF);
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -27,7 +27,11 @@
  */
 #include <linux/seq_file.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon_reg.h"
 #include "radeon.h"
 #include "radeon_asic.h"
@@ -160,18 +164,38 @@ void r420_pipes_init(struct radeon_device *rdev)
 
 u32 r420_mc_rreg(struct radeon_device *rdev, u32 reg)
 {
+<<<<<<< HEAD
 	u32 r;
 
 	WREG32(R_0001F8_MC_IND_INDEX, S_0001F8_MC_IND_ADDR(reg));
 	r = RREG32(R_0001FC_MC_IND_DATA);
+=======
+	unsigned long flags;
+	u32 r;
+
+	spin_lock_irqsave(&rdev->mc_idx_lock, flags);
+	WREG32(R_0001F8_MC_IND_INDEX, S_0001F8_MC_IND_ADDR(reg));
+	r = RREG32(R_0001FC_MC_IND_DATA);
+	spin_unlock_irqrestore(&rdev->mc_idx_lock, flags);
+>>>>>>> refs/remotes/origin/master
 	return r;
 }
 
 void r420_mc_wreg(struct radeon_device *rdev, u32 reg, u32 v)
 {
+<<<<<<< HEAD
 	WREG32(R_0001F8_MC_IND_INDEX, S_0001F8_MC_IND_ADDR(reg) |
 		S_0001F8_MC_IND_WR_EN(1));
 	WREG32(R_0001FC_MC_IND_DATA, v);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&rdev->mc_idx_lock, flags);
+	WREG32(R_0001F8_MC_IND_INDEX, S_0001F8_MC_IND_ADDR(reg) |
+		S_0001F8_MC_IND_WR_EN(1));
+	WREG32(R_0001FC_MC_IND_DATA, v);
+	spin_unlock_irqrestore(&rdev->mc_idx_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void r420_debugfs(struct radeon_device *rdev)
@@ -200,10 +224,15 @@ static void r420_clock_resume(struct radeon_device *rdev)
 static void r420_cp_errata_init(struct radeon_device *rdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct radeon_ring *ring = &rdev->ring[RADEON_RING_TYPE_GFX_INDEX];
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct radeon_ring *ring = &rdev->ring[RADEON_RING_TYPE_GFX_INDEX];
+
+>>>>>>> refs/remotes/origin/master
 	/* RV410 and R420 can lock up if CP DMA to host memory happens
 	 * while the 2D engine is busy.
 	 *
@@ -212,22 +241,29 @@ static void r420_cp_errata_init(struct radeon_device *rdev)
 	 */
 	radeon_scratch_get(rdev, &rdev->config.r300.resync_scratch);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	radeon_ring_lock(rdev, 8);
 	radeon_ring_write(rdev, PACKET0(R300_CP_RESYNC_ADDR, 1));
 	radeon_ring_write(rdev, rdev->config.r300.resync_scratch);
 	radeon_ring_write(rdev, 0xDEADBEEF);
 	radeon_ring_unlock_commit(rdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	radeon_ring_lock(rdev, ring, 8);
 	radeon_ring_write(ring, PACKET0(R300_CP_RESYNC_ADDR, 1));
 	radeon_ring_write(ring, rdev->config.r300.resync_scratch);
 	radeon_ring_write(ring, 0xDEADBEEF);
 	radeon_ring_unlock_commit(rdev, ring);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void r420_cp_errata_fini(struct radeon_device *rdev)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Catch the RESYNC we dispatched all the way back,
 	 * at the very beginning of the CP init.
@@ -237,6 +273,8 @@ static void r420_cp_errata_fini(struct radeon_device *rdev)
 	radeon_ring_write(rdev, R300_RB3D_DC_FINISH);
 	radeon_ring_unlock_commit(rdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct radeon_ring *ring = &rdev->ring[RADEON_RING_TYPE_GFX_INDEX];
 
 	/* Catch the RESYNC we dispatched all the way back,
@@ -246,7 +284,10 @@ static void r420_cp_errata_fini(struct radeon_device *rdev)
 	radeon_ring_write(ring, PACKET0(R300_RB3D_DSTCACHE_CTLSTAT, 0));
 	radeon_ring_write(ring, R300_RB3D_DC_FINISH);
 	radeon_ring_unlock_commit(rdev, ring);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	radeon_scratch_free(rdev, rdev->config.r300.resync_scratch);
 }
 
@@ -280,8 +321,11 @@ static int r420_startup(struct radeon_device *rdev)
 		return r;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable IRQ */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	r = radeon_fence_driver_start_ring(rdev, RADEON_RING_TYPE_GFX_INDEX);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing CP fences (%d).\n", r);
@@ -295,7 +339,10 @@ static int r420_startup(struct radeon_device *rdev)
 			return r;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r100_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -305,6 +352,7 @@ static int r420_startup(struct radeon_device *rdev)
 		return r;
 	}
 	r420_cp_errata_init(rdev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	r = r100_ib_init(rdev);
 	if (r) {
@@ -325,16 +373,30 @@ static int r420_startup(struct radeon_device *rdev)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		return r;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int r420_resume(struct radeon_device *rdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int r;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/master
 	/* Make sur GART are not working */
 	if (rdev->flags & RADEON_IS_PCIE)
 		rv370_pcie_gart_disable(rdev);
@@ -359,8 +421,11 @@ int r420_resume(struct radeon_device *rdev)
 	/* Initialize surface registers */
 	radeon_surface_init(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return r420_startup(rdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rdev->accel_working = true;
 	r = r420_startup(rdev);
@@ -368,15 +433,21 @@ int r420_resume(struct radeon_device *rdev)
 		rdev->accel_working = false;
 	}
 	return r;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int r420_suspend(struct radeon_device *rdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	radeon_ib_pool_suspend(rdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	r420_cp_errata_fini(rdev);
 	r100_cp_disable(rdev);
 	radeon_wb_disable(rdev);
@@ -392,7 +463,11 @@ void r420_fini(struct radeon_device *rdev)
 {
 	r100_cp_fini(rdev);
 	radeon_wb_fini(rdev);
+<<<<<<< HEAD
 	r100_ib_fini(rdev);
+=======
+	radeon_ib_pool_fini(rdev);
+>>>>>>> refs/remotes/origin/master
 	radeon_gem_fini(rdev);
 	if (rdev->flags & RADEON_IS_PCIE)
 		rv370_pcie_gart_fini(rdev);
@@ -467,12 +542,15 @@ int r420_init(struct radeon_device *rdev)
 		return r;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r) {
 		return r;
 	}
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r) {
@@ -493,6 +571,7 @@ int r420_init(struct radeon_device *rdev)
 	}
 	r420_set_reg_safe(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rdev->accel_working = true;
 =======
 
@@ -504,13 +583,21 @@ int r420_init(struct radeon_device *rdev)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	rdev->accel_working = true;
+>>>>>>> refs/remotes/origin/master
 	r = r420_startup(rdev);
 	if (r) {
 		/* Somethings want wront with the accel init stop accel */
 		dev_err(rdev->dev, "Disabling GPU acceleration\n");
 		r100_cp_fini(rdev);
 		radeon_wb_fini(rdev);
+<<<<<<< HEAD
 		r100_ib_fini(rdev);
+=======
+		radeon_ib_pool_fini(rdev);
+>>>>>>> refs/remotes/origin/master
 		radeon_irq_kms_fini(rdev);
 		if (rdev->flags & RADEON_IS_PCIE)
 			rv370_pcie_gart_fini(rdev);

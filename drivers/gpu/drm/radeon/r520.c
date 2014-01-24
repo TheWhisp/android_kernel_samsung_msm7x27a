@@ -25,7 +25,11 @@
  *          Alex Deucher
  *          Jerome Glisse
  */
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+>>>>>>> refs/remotes/origin/master
 #include "radeon.h"
 #include "radeon_asic.h"
 #include "atom.h"
@@ -34,10 +38,14 @@
 /* This files gather functions specifics to: r520,rv530,rv560,rv570,r580 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int r520_mc_wait_for_idle(struct radeon_device *rdev)
 =======
 int r520_mc_wait_for_idle(struct radeon_device *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int r520_mc_wait_for_idle(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned i;
 	uint32_t tmp;
@@ -123,7 +131,11 @@ static void r520_vram_get_type(struct radeon_device *rdev)
 		rdev->mc.vram_width *= 2;
 }
 
+<<<<<<< HEAD
 void r520_mc_init(struct radeon_device *rdev)
+=======
+static void r520_mc_init(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 
 	r520_vram_get_type(rdev);
@@ -135,7 +147,11 @@ void r520_mc_init(struct radeon_device *rdev)
 	radeon_update_bandwidth_info(rdev);
 }
 
+<<<<<<< HEAD
 void r520_mc_program(struct radeon_device *rdev)
+=======
+static void r520_mc_program(struct radeon_device *rdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct rv515_mc_save save;
 
@@ -192,8 +208,11 @@ static int r520_startup(struct radeon_device *rdev)
 		return r;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Enable IRQ */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	r = radeon_fence_driver_start_ring(rdev, RADEON_RING_TYPE_GFX_INDEX);
 	if (r) {
 		dev_err(rdev->dev, "failed initializing CP fences (%d).\n", r);
@@ -207,7 +226,10 @@ static int r520_startup(struct radeon_device *rdev)
 			return r;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	rs600_irq_set(rdev);
 	rdev->config.r300.hdp_cntl = RREG32(RADEON_HOST_PATH_CNTL);
 	/* 1M ring buffer */
@@ -216,6 +238,7 @@ static int r520_startup(struct radeon_device *rdev)
 		dev_err(rdev->dev, "failed initializing CP (%d).\n", r);
 		return r;
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 	r = r100_ib_init(rdev);
 	if (r) {
@@ -233,16 +256,30 @@ static int r520_startup(struct radeon_device *rdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 		return r;
 	}
+=======
+
+	r = radeon_ib_pool_init(rdev);
+	if (r) {
+		dev_err(rdev->dev, "IB initialization failed (%d).\n", r);
+		return r;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 int r520_resume(struct radeon_device *rdev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int r;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int r;
+
+>>>>>>> refs/remotes/origin/master
 	/* Make sur GART are not working */
 	if (rdev->flags & RADEON_IS_PCIE)
 		rv370_pcie_gart_disable(rdev);
@@ -261,8 +298,11 @@ int r520_resume(struct radeon_device *rdev)
 	/* Initialize surface registers */
 	radeon_surface_init(rdev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return r520_startup(rdev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	rdev->accel_working = true;
 	r = r520_startup(rdev);
@@ -270,7 +310,10 @@ int r520_resume(struct radeon_device *rdev)
 		rdev->accel_working = false;
 	}
 	return r;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int r520_init(struct radeon_device *rdev)
@@ -329,11 +372,14 @@ int r520_init(struct radeon_device *rdev)
 	if (r)
 		return r;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	r = radeon_irq_kms_init(rdev);
 	if (r)
 		return r;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Memory manager */
 	r = radeon_bo_init(rdev);
 	if (r)
@@ -342,6 +388,7 @@ int r520_init(struct radeon_device *rdev)
 	if (r)
 		return r;
 	rv515_set_safe_registers(rdev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	rdev->accel_working = true;
 =======
@@ -354,13 +401,21 @@ int r520_init(struct radeon_device *rdev)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	rdev->accel_working = true;
+>>>>>>> refs/remotes/origin/master
 	r = r520_startup(rdev);
 	if (r) {
 		/* Somethings want wront with the accel init stop accel */
 		dev_err(rdev->dev, "Disabling GPU acceleration\n");
 		r100_cp_fini(rdev);
 		radeon_wb_fini(rdev);
+<<<<<<< HEAD
 		r100_ib_fini(rdev);
+=======
+		radeon_ib_pool_fini(rdev);
+>>>>>>> refs/remotes/origin/master
 		radeon_irq_kms_fini(rdev);
 		rv370_pcie_gart_fini(rdev);
 		radeon_agp_fini(rdev);

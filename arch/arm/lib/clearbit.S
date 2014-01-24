@@ -13,9 +13,13 @@
                 .text
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(_clear_bit)
 	bitop	bic
 ENDPROC(_clear_bit)
 =======
 bitop	_clear_bit, bic
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bitop	_clear_bit, bic
+>>>>>>> refs/remotes/origin/master

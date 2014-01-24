@@ -33,10 +33,14 @@
 #include <linux/kexec.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/current.h>
 #include <asm/delay.h>
 #include <asm/machvec.h>
@@ -49,9 +53,12 @@
 #include <asm/ptrace.h>
 #include <asm/sal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlbflush.h>
 #include <asm/unistd.h>
 #include <asm/mca.h>
@@ -85,10 +92,14 @@ stop_this_cpu(void)
 	 * Remove this CPU:
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpu_clear(smp_processor_id(), cpu_online_map);
 =======
 	set_cpu_online(smp_processor_id(), false);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	set_cpu_online(smp_processor_id(), false);
+>>>>>>> refs/remotes/origin/master
 	max_xtp();
 	local_irq_disable();
 	cpu_halt();

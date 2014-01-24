@@ -50,10 +50,14 @@ enum AFSVL_Errors {
 	AFSVL_BADRELLOCKTYPE 	= 363543,	/* Bad release lock type */
 	AFSVL_RERELEASE 	= 363544,	/* Status report: last release was aborted */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	AFSVL_BADSERVERFLAG 	= 363545,	/* Invalid replication site server °ag */
 =======
 	AFSVL_BADSERVERFLAG 	= 363545,	/* Invalid replication site server flag */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	AFSVL_BADSERVERFLAG 	= 363545,	/* Invalid replication site server flag */
+>>>>>>> refs/remotes/origin/master
 	AFSVL_PERM 		= 363546,	/* No permission access */
 	AFSVL_NOMEM 		= 363547,	/* malloc/realloc failed to alloc enough memory */
 };

@@ -14,14 +14,20 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "hw.h"
 #include "ar9003_mac.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/export.h>
 #include "hw.h"
 #include "ar9003_mac.h"
 #include "ar9003_mci.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void ar9003_hw_rx_enable(struct ath_hw *hw)
 {
@@ -29,7 +35,10 @@ static void ar9003_hw_rx_enable(struct ath_hw *hw)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void
 ar9003_set_txdesc(struct ath_hw *ah, void *ds, struct ath_tx_info *i)
 {
@@ -38,7 +47,11 @@ ar9003_set_txdesc(struct ath_hw *ah, void *ds, struct ath_tx_info *i)
 	u32 val, ctl12, ctl17;
 	u8 desc_len;
 
+<<<<<<< HEAD
 	desc_len = (AR_SREV_9462(ah) ? 0x18 : 0x17);
+=======
+	desc_len = ((AR_SREV_9462(ah) || AR_SREV_9565(ah)) ? 0x18 : 0x17);
+>>>>>>> refs/remotes/origin/master
 
 	val = (ATHEROS_VENDOR_ID << AR_DescId_S) |
 	      (1 << AR_TxRxDesc_S) |
@@ -160,7 +173,10 @@ ar9003_set_txdesc(struct ath_hw *ah, void *ds, struct ath_tx_info *i)
 	ACCESS_ONCE(ads->ctl19) = AR_Not_Sounding;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u16 ar9003_calc_ptr_chksum(struct ar9003_txc *ads)
 {
 	int checksum;
@@ -184,6 +200,7 @@ static void ar9003_hw_set_desc_link(void *ds, u32 ds_link)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ar9003_hw_get_desc_link(void *ds, u32 **ds_link)
 {
 	struct ar9003_txc *ads = ds;
@@ -193,11 +210,14 @@ static void ar9003_hw_get_desc_link(void *ds, u32 **ds_link)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static bool ar9003_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 {
 	u32 isr = 0;
 	u32 mask2 = 0;
 	struct ath9k_hw_capabilities *pCap = &ah->caps;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 sync_cause = 0;
 	struct ath_common *common = ath9k_hw_common(ah);
@@ -211,24 +231,44 @@ static bool ar9003_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 
 	if (async_cause & (AR_INTR_MAC_IRQ | AR_INTR_ASYNC_MASK_MCI)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct ath_common *common = ath9k_hw_common(ah);
+	u32 sync_cause = 0, async_cause, async_mask = AR_INTR_MAC_IRQ;
+	bool fatal_int;
+
+	if (ath9k_hw_mci_is_enabled(ah))
+		async_mask |= AR_INTR_ASYNC_MASK_MCI;
+
+	async_cause = REG_READ(ah, AR_INTR_ASYNC_CAUSE);
+
+	if (async_cause & async_mask) {
+>>>>>>> refs/remotes/origin/master
 		if ((REG_READ(ah, AR_RTC_STATUS) & AR_RTC_STATUS_M)
 				== AR_RTC_STATUS_ON)
 			isr = REG_READ(ah, AR_ISR);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	sync_cause = REG_READ(ah, AR_INTR_SYNC_CAUSE) & AR_INTR_SYNC_DEFAULT;
 
 	*masked = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!isr && !sync_cause)
 =======
 	if (!isr && !sync_cause && !async_cause)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!isr && !sync_cause && !async_cause)
+>>>>>>> refs/remotes/origin/master
 		return false;
 
 	if (isr) {
@@ -335,12 +375,37 @@ static bool ar9003_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (async_cause & AR_INTR_ASYNC_MASK_MCI)
 		ar9003_mci_get_isr(ah, masked);
 
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (sync_cause) {
+=======
+	if (async_cause & AR_INTR_ASYNC_MASK_MCI)
+		ar9003_mci_get_isr(ah, masked);
+
+	if (sync_cause) {
+		ath9k_debug_sync_cause(common, sync_cause);
+		fatal_int =
+			(sync_cause &
+			 (AR_INTR_SYNC_HOST1_FATAL | AR_INTR_SYNC_HOST1_PERR))
+			? true : false;
+
+		if (fatal_int) {
+			if (sync_cause & AR_INTR_SYNC_HOST1_FATAL) {
+				ath_dbg(common, ANY,
+					"received PCI FATAL interrupt\n");
+			}
+			if (sync_cause & AR_INTR_SYNC_HOST1_PERR) {
+				ath_dbg(common, ANY,
+					"received PCI PERR interrupt\n");
+			}
+			*masked |= ATH9K_INT_FATAL;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		if (sync_cause & AR_INTR_SYNC_RADM_CPL_TIMEOUT) {
 			REG_WRITE(ah, AR_RC, AR_RC_HOSTIF);
 			REG_WRITE(ah, AR_RC, 0);
@@ -349,10 +414,14 @@ static bool ar9003_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 
 		if (sync_cause & AR_INTR_SYNC_LOCAL_TIMEOUT)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ath_dbg(common, ATH_DBG_INTERRUPT,
 =======
 			ath_dbg(common, INTERRUPT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ath_dbg(common, INTERRUPT,
+>>>>>>> refs/remotes/origin/master
 				"AR_INTR_SYNC_LOCAL_TIMEOUT\n");
 
 		REG_WRITE(ah, AR_INTR_SYNC_CAUSE_CLR, sync_cause);
@@ -362,6 +431,7 @@ static bool ar9003_hw_get_isr(struct ath_hw *ah, enum ath9k_int *masked)
 	return true;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ar9003_hw_fill_txdesc(struct ath_hw *ah, void *ds, u32 seglen,
 				  bool is_firstseg, bool is_lastseg,
@@ -406,6 +476,8 @@ static void ar9003_hw_fill_txdesc(struct ath_hw *ah, void *ds, u32 seglen,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int ar9003_hw_proc_txdesc(struct ath_hw *ah, void *ds,
 				 struct ath_tx_status *ts)
 {
@@ -423,10 +495,14 @@ static int ar9003_hw_proc_txdesc(struct ath_hw *ah, void *ds,
 	if ((MS(ads->ds_info, AR_DescId) != ATHEROS_VENDOR_ID) ||
 	    (MS(ads->ds_info, AR_TxRxDesc) != 1)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ath_dbg(ath9k_hw_common(ah), ATH_DBG_XMIT,
 =======
 		ath_dbg(ath9k_hw_common(ah), XMIT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ath_dbg(ath9k_hw_common(ah), XMIT,
+>>>>>>> refs/remotes/origin/master
 			"Tx Descriptor error %x\n", ads->ds_info);
 		memset(ads, 0, sizeof(*ads));
 		return -EIO;
@@ -490,6 +566,7 @@ static int ar9003_hw_proc_txdesc(struct ath_hw *ah, void *ds,
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void ar9003_hw_set11n_txdesc(struct ath_hw *ah, void *ds,
 		u32 pktlen, enum ath9k_pkt_type type, u32 txpower,
@@ -672,12 +749,15 @@ EXPORT_SYMBOL(ar9003_hw_set_paprd_txdesc);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 void ar9003_hw_attach_mac_ops(struct ath_hw *hw)
 {
 	struct ath_hw_ops *ops = ath9k_hw_ops(hw);
 
 	ops->rx_enable = ar9003_hw_rx_enable;
 	ops->set_desc_link = ar9003_hw_set_desc_link;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ops->get_desc_link = ar9003_hw_get_desc_link;
 	ops->get_isr = ar9003_hw_get_isr;
@@ -695,6 +775,11 @@ void ar9003_hw_attach_mac_ops(struct ath_hw *hw)
 	ops->set_txdesc = ar9003_set_txdesc;
 	ops->proc_txdesc = ar9003_hw_proc_txdesc;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops->get_isr = ar9003_hw_get_isr;
+	ops->set_txdesc = ar9003_set_txdesc;
+	ops->proc_txdesc = ar9003_hw_proc_txdesc;
+>>>>>>> refs/remotes/origin/master
 }
 
 void ath9k_hw_set_rx_bufsize(struct ath_hw *ah, u16 buf_size)
@@ -720,10 +805,13 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah, struct ath_rx_status *rxs,
 	unsigned int phyerr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* TODO: byte swap on big endian for ar9300_10 */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if ((rxsp->status11 & AR_RxDone) == 0)
 		return -EINPROGRESS;
 
@@ -734,6 +822,7 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah, struct ath_rx_status *rxs,
 		return -EINPROGRESS;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!rxs)
 		return 0;
 
@@ -741,6 +830,11 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah, struct ath_rx_status *rxs,
 >>>>>>> refs/remotes/origin/cm-10.0
 	rxs->rs_status = 0;
 	rxs->rs_flags =  0;
+=======
+	rxs->rs_status = 0;
+	rxs->rs_flags =  0;
+	rxs->flag =  0;
+>>>>>>> refs/remotes/origin/master
 
 	rxs->rs_datalen = rxsp->status2 & AR_DataLen;
 	rxs->rs_tstamp =  rxsp->status3;
@@ -762,11 +856,20 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah, struct ath_rx_status *rxs,
 	rxs->rs_rate = MS(rxsp->status1, AR_RxRate);
 	rxs->rs_more = (rxsp->status2 & AR_RxMore) ? 1 : 0;
 
+<<<<<<< HEAD
 	rxs->rs_isaggr = (rxsp->status11 & AR_RxAggr) ? 1 : 0;
 	rxs->rs_moreaggr = (rxsp->status11 & AR_RxMoreAggr) ? 1 : 0;
 	rxs->rs_antenna = (MS(rxsp->status4, AR_RxAntenna) & 0x7);
 	rxs->rs_flags  = (rxsp->status4 & AR_GI) ? ATH9K_RX_GI : 0;
 	rxs->rs_flags  |= (rxsp->status4 & AR_2040) ? ATH9K_RX_2040 : 0;
+=======
+	rxs->rs_firstaggr = (rxsp->status11 & AR_RxFirstAggr) ? 1 : 0;
+	rxs->rs_isaggr = (rxsp->status11 & AR_RxAggr) ? 1 : 0;
+	rxs->rs_moreaggr = (rxsp->status11 & AR_RxMoreAggr) ? 1 : 0;
+	rxs->rs_antenna = (MS(rxsp->status4, AR_RxAntenna) & 0x7);
+	rxs->flag  |= (rxsp->status4 & AR_GI) ? RX_FLAG_SHORT_GI : 0;
+	rxs->flag  |= (rxsp->status4 & AR_2040) ? RX_FLAG_40MHZ : 0;
+>>>>>>> refs/remotes/origin/master
 
 	rxs->evm0 = rxsp->status6;
 	rxs->evm1 = rxsp->status7;
@@ -795,14 +898,20 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah, struct ath_rx_status *rxs,
 		if (rxsp->status11 & AR_CRCErr)
 			rxs->rs_status |= ATH9K_RXERR_CRC;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		else if (rxsp->status11 & AR_PHYErr) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		else if (rxsp->status11 & AR_DecryptCRCErr)
 			rxs->rs_status |= ATH9K_RXERR_DECRYPT;
 		else if (rxsp->status11 & AR_MichaelErr)
 			rxs->rs_status |= ATH9K_RXERR_MIC;
 		if (rxsp->status11 & AR_PHYErr) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			phyerr = MS(rxsp->status11, AR_PHYErrCode);
 			/*
 			 * If we reach a point here where AR_PostDelimCRCErr is
@@ -825,6 +934,7 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah, struct ath_rx_status *rxs,
 				rxs->rs_phyerr = phyerr;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		} else if (rxsp->status11 & AR_DecryptCRCErr)
 			rxs->rs_status |= ATH9K_RXERR_DECRYPT;
@@ -836,12 +946,18 @@ int ath9k_hw_process_rxdesc_edma(struct ath_hw *ah, struct ath_rx_status *rxs,
 
 =======
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (rxsp->status11 & AR_KeyMiss)
 		rxs->rs_status |= ATH9K_RXERR_KEYMISS;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(ath9k_hw_process_rxdesc_edma);
@@ -854,10 +970,14 @@ void ath9k_hw_reset_txstatus_ring(struct ath_hw *ah)
 		ah->ts_size * sizeof(struct ar9003_txs));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ath_dbg(ath9k_hw_common(ah), ATH_DBG_XMIT,
 =======
 	ath_dbg(ath9k_hw_common(ah), XMIT,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ath_dbg(ath9k_hw_common(ah), XMIT,
+>>>>>>> refs/remotes/origin/master
 		"TS Start 0x%x End 0x%x Virt %p, Size %d\n",
 		ah->ts_paddr_start, ah->ts_paddr_end,
 		ah->ts_ring, ah->ts_size);
@@ -869,10 +989,14 @@ void ath9k_hw_reset_txstatus_ring(struct ath_hw *ah)
 void ath9k_hw_setup_statusring(struct ath_hw *ah, void *ts_start,
 			       u32 ts_paddr_start,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       u8 size)
 =======
 			       u16 size)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			       u16 size)
+>>>>>>> refs/remotes/origin/master
 {
 
 	ah->ts_paddr_start = ts_paddr_start;

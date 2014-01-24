@@ -26,9 +26,13 @@
 #include <net/route.h>
 #include <linux/inetdevice.h>	/* ip_dev_find */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/tcp.h>
 
 static unsigned int dbg_level;
@@ -476,9 +480,13 @@ static struct cxgbi_sock *cxgbi_check_route(struct sockaddr *dst_addr)
 	struct cxgbi_device *cdev;
 	struct rtable *rt = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct neighbour *n;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct neighbour *n;
+>>>>>>> refs/remotes/origin/master
 	struct flowi4 fl4;
 	struct cxgbi_sock *csk = NULL;
 	unsigned int mtu = 0;
@@ -501,22 +509,33 @@ static struct cxgbi_sock *cxgbi_check_route(struct sockaddr *dst_addr)
 	}
 	dst = &rt->dst;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ndev = dst_get_neighbour(dst)->dev;
 =======
 	n = dst_get_neighbour_noref(dst);
+=======
+	n = dst_neigh_lookup(dst, &daddr->sin_addr.s_addr);
+>>>>>>> refs/remotes/origin/master
 	if (!n) {
 		err = -ENODEV;
 		goto rel_rt;
 	}
 	ndev = n->dev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (rt->rt_flags & (RTCF_MULTICAST | RTCF_BROADCAST)) {
 		pr_info("multi-cast route %pI4, port %u, dev %s.\n",
 			&daddr->sin_addr.s_addr, ntohs(daddr->sin_port),
 			ndev->name);
 		err = -ENETUNREACH;
+<<<<<<< HEAD
 		goto rel_rt;
+=======
+		goto rel_neigh;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ndev->flags & IFF_LOOPBACK) {
@@ -524,10 +543,14 @@ static struct cxgbi_sock *cxgbi_check_route(struct sockaddr *dst_addr)
 		mtu = ndev->mtu;
 		pr_info("rt dev %s, loopback -> %s, mtu %u.\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			dst_get_neighbour(dst)->dev->name, ndev->name, mtu);
 =======
 			n->dev->name, ndev->name, mtu);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			n->dev->name, ndev->name, mtu);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	cdev = cxgbi_device_find_by_netdev(ndev, &port);
@@ -535,7 +558,11 @@ static struct cxgbi_sock *cxgbi_check_route(struct sockaddr *dst_addr)
 		pr_info("dst %pI4, %s, NOT cxgbi device.\n",
 			&daddr->sin_addr.s_addr, ndev->name);
 		err = -ENETUNREACH;
+<<<<<<< HEAD
 		goto rel_rt;
+=======
+		goto rel_neigh;
+>>>>>>> refs/remotes/origin/master
 	}
 	log_debug(1 << CXGBI_DBG_SOCK,
 		"route to %pI4 :%u, ndev p#%d,%s, cdev 0x%p.\n",
@@ -545,7 +572,11 @@ static struct cxgbi_sock *cxgbi_check_route(struct sockaddr *dst_addr)
 	csk = cxgbi_sock_create(cdev);
 	if (!csk) {
 		err = -ENOMEM;
+<<<<<<< HEAD
 		goto rel_rt;
+=======
+		goto rel_neigh;
+>>>>>>> refs/remotes/origin/master
 	}
 	csk->cdev = cdev;
 	csk->port_id = port;
@@ -555,9 +586,19 @@ static struct cxgbi_sock *cxgbi_check_route(struct sockaddr *dst_addr)
 	csk->daddr.sin_port = daddr->sin_port;
 	csk->daddr.sin_family = daddr->sin_family;
 	csk->saddr.sin_addr.s_addr = fl4.saddr;
+<<<<<<< HEAD
 
 	return csk;
 
+=======
+	neigh_release(n);
+
+	return csk;
+
+rel_neigh:
+	neigh_release(n);
+
+>>>>>>> refs/remotes/origin/master
 rel_rt:
 	ip_rt_put(rt);
 	if (csk)
@@ -1809,10 +1850,14 @@ static int sgl_seek_offset(struct scatterlist *sgl, unsigned int sgcnt,
 
 static int sgl_read_to_frags(struct scatterlist *sg, unsigned int sgoffset,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				unsigned int dlen, skb_frag_t *frags,
 =======
 				unsigned int dlen, struct page_frag *frags,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				unsigned int dlen, struct page_frag *frags,
+>>>>>>> refs/remotes/origin/master
 				int frag_max)
 {
 	unsigned int datalen = dlen;
@@ -1840,10 +1885,14 @@ static int sgl_read_to_frags(struct scatterlist *sg, unsigned int sgoffset,
 		if (i && page == frags[i - 1].page &&
 		    sgoffset + sg->offset ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 			frags[i - 1].page_offset + frags[i - 1].size) {
 =======
 			frags[i - 1].offset + frags[i - 1].size) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			frags[i - 1].offset + frags[i - 1].size) {
+>>>>>>> refs/remotes/origin/master
 			frags[i - 1].size += copy;
 		} else {
 			if (i >= frag_max) {
@@ -1854,10 +1903,14 @@ static int sgl_read_to_frags(struct scatterlist *sg, unsigned int sgoffset,
 
 			frags[i].page = page;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			frags[i].page_offset = sg->offset + sgoffset;
 =======
 			frags[i].offset = sg->offset + sgoffset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			frags[i].offset = sg->offset + sgoffset;
+>>>>>>> refs/remotes/origin/master
 			frags[i].size = copy;
 			i++;
 		}
@@ -1895,6 +1948,7 @@ int cxgbi_conn_alloc_pdu(struct iscsi_task *task, u8 opcode)
 	tdata->skb = alloc_skb(cdev->skb_tx_rsvd + headroom, GFP_ATOMIC);
 	if (!tdata->skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_warn("alloc skb %u+%u, opcode 0x%x failed.\n",
 			cdev->skb_tx_rsvd, headroom, opcode);
 =======
@@ -1902,6 +1956,11 @@ int cxgbi_conn_alloc_pdu(struct iscsi_task *task, u8 opcode)
 		struct net_device *ndev = cdev->ports[csk->port_id];
 		ndev->stats.tx_dropped++;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		struct cxgbi_sock *csk = cconn->cep->csk;
+		struct net_device *ndev = cdev->ports[csk->port_id];
+		ndev->stats.tx_dropped++;
+>>>>>>> refs/remotes/origin/master
 		return -ENOMEM;
 	}
 
@@ -1984,6 +2043,7 @@ int cxgbi_conn_init_pdu(struct iscsi_task *task, unsigned int offset,
 		    (padlen && tdata->nr_frags == MAX_SKB_FRAGS)) {
 			char *dst = skb->data + task->hdr_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			skb_frag_t *frag = tdata->frags;
 
 			/* data fits in the skb's headroom */
@@ -1995,6 +2055,8 @@ int cxgbi_conn_init_pdu(struct iscsi_task *task, unsigned int offset,
 				dst += frag->size;
 				kunmap_atomic(src, KM_SOFTIRQ0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			struct page_frag *frag = tdata->frags;
 
 			/* data fits in the skb's headroom */
@@ -2004,7 +2066,10 @@ int cxgbi_conn_init_pdu(struct iscsi_task *task, unsigned int offset,
 				memcpy(dst, src+frag->offset, frag->size);
 				dst += frag->size;
 				kunmap_atomic(src);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			}
 			if (padlen) {
 				memset(dst, 0, padlen);
@@ -2014,12 +2079,15 @@ int cxgbi_conn_init_pdu(struct iscsi_task *task, unsigned int offset,
 		} else {
 			/* data fit into frag_list */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			for (i = 0; i < tdata->nr_frags; i++)
 				get_page(tdata->frags[i].page);
 
 			memcpy(skb_shinfo(skb)->frags, tdata->frags,
 				sizeof(skb_frag_t) * tdata->nr_frags);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < tdata->nr_frags; i++) {
 				__skb_fill_page_desc(skb, i,
 						tdata->frags[i].page,
@@ -2027,7 +2095,10 @@ int cxgbi_conn_init_pdu(struct iscsi_task *task, unsigned int offset,
 						tdata->frags[i].size);
 				skb_frag_ref(skb, i);
 			}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			skb_shinfo(skb)->nr_frags = tdata->nr_frags;
 			skb->len += count;
 			skb->data_len += count;
@@ -2200,17 +2271,23 @@ int cxgbi_set_conn_param(struct iscsi_cls_conn *cls_conn,
 {
 	struct iscsi_conn *conn = cls_conn->dd_data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iscsi_session *session = conn->session;
 	struct iscsi_tcp_conn *tcp_conn = conn->dd_data;
 	struct cxgbi_conn *cconn = tcp_conn->dd_data;
 	struct cxgbi_sock *csk = cconn->cep->csk;
 	int value, err = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct iscsi_tcp_conn *tcp_conn = conn->dd_data;
 	struct cxgbi_conn *cconn = tcp_conn->dd_data;
 	struct cxgbi_sock *csk = cconn->cep->csk;
 	int err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	log_debug(1 << CXGBI_DBG_ISCSI,
 		"cls_conn 0x%p, param %d, buf(%d) %s.\n",
@@ -2233,6 +2310,7 @@ int cxgbi_set_conn_param(struct iscsi_cls_conn *cls_conn,
 		break;
 	case ISCSI_PARAM_MAX_R2T:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		sscanf(buf, "%d", &value);
 		if (value <= 0 || !is_power_of_2(value))
 			return -EINVAL;
@@ -2245,6 +2323,9 @@ int cxgbi_set_conn_param(struct iscsi_cls_conn *cls_conn,
 =======
 		return iscsi_tcp_set_max_r2t(conn, buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return iscsi_tcp_set_max_r2t(conn, buf);
+>>>>>>> refs/remotes/origin/master
 	case ISCSI_PARAM_MAX_RECV_DLENGTH:
 		err = iscsi_set_param(cls_conn, param, buf, buflen);
 		if (!err)
@@ -2639,7 +2720,10 @@ void cxgbi_iscsi_cleanup(struct iscsi_transport *itp,
 EXPORT_SYMBOL_GPL(cxgbi_iscsi_cleanup);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 umode_t cxgbi_attr_is_visible(int param_type, int param)
 {
 	switch (param_type) {
@@ -2696,7 +2780,10 @@ umode_t cxgbi_attr_is_visible(int param_type, int param)
 }
 EXPORT_SYMBOL_GPL(cxgbi_attr_is_visible);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init libcxgbi_init_module(void)
 {
 	sw_tag_idx_bits = (__ilog2_u32(ISCSI_ITT_MASK)) + 1;

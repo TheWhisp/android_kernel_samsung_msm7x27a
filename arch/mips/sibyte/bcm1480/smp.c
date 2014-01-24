@@ -60,7 +60,11 @@ static void *mailbox_0_regs[] = {
 /*
  * SMP init and finish on secondary CPUs
  */
+<<<<<<< HEAD
 void __cpuinit bcm1480_smp_init(void)
+=======
+void bcm1480_smp_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int imask = STATUSF_IP4 | STATUSF_IP3 | STATUSF_IP2 |
 		STATUSF_IP1 | STATUSF_IP0;
@@ -95,7 +99,11 @@ static void bcm1480_send_ipi_mask(const struct cpumask *mask,
 /*
  * Code to run on secondary just after probing the CPU
  */
+<<<<<<< HEAD
 static void __cpuinit bcm1480_init_secondary(void)
+=======
+static void bcm1480_init_secondary(void)
+>>>>>>> refs/remotes/origin/master
 {
 	extern void bcm1480_smp_init(void);
 
@@ -106,7 +114,11 @@ static void __cpuinit bcm1480_init_secondary(void)
  * Do any tidying up before marking online and running the idle
  * loop
  */
+<<<<<<< HEAD
 static void __cpuinit bcm1480_smp_finish(void)
+=======
+static void bcm1480_smp_finish(void)
+>>>>>>> refs/remotes/origin/master
 {
 	extern void sb1480_clockevent_init(void);
 
@@ -125,7 +137,11 @@ static void bcm1480_cpus_done(void)
  * Setup the PC, SP, and GP of a secondary processor and start it
  * running!
  */
+<<<<<<< HEAD
 static void __cpuinit bcm1480_boot_secondary(int cpu, struct task_struct *idle)
+=======
+static void bcm1480_boot_secondary(int cpu, struct task_struct *idle)
+>>>>>>> refs/remotes/origin/master
 {
 	int retval;
 
@@ -139,10 +155,14 @@ static void __cpuinit bcm1480_boot_secondary(int cpu, struct task_struct *idle)
 /*
  * Use CFE to find out how many CPUs are available, setting up
 <<<<<<< HEAD
+<<<<<<< HEAD
  * cpu_possible_map and the logical/physical mappings.
 =======
  * cpu_possible_mask and the logical/physical mappings.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * cpu_possible_mask and the logical/physical mappings.
+>>>>>>> refs/remotes/origin/master
  * XXXKW will the boot CPU ever not be physical 0?
  *
  * Common setup before any secondaries are started
@@ -152,21 +172,29 @@ static void __init bcm1480_smp_setup(void)
 	int i, num;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpus_clear(cpu_possible_map);
 	cpu_set(0, cpu_possible_map);
 =======
 	init_cpu_possible(cpumask_of(0));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	init_cpu_possible(cpumask_of(0));
+>>>>>>> refs/remotes/origin/master
 	__cpu_number_map[0] = 0;
 	__cpu_logical_map[0] = 0;
 
 	for (i = 1, num = 0; i < NR_CPUS; i++) {
 		if (cfe_cpu_stop(i) == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			cpu_set(i, cpu_possible_map);
 =======
 			set_cpu_possible(i, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			set_cpu_possible(i, true);
+>>>>>>> refs/remotes/origin/master
 			__cpu_number_map[i] = ++num;
 			__cpu_logical_map[num] = i;
 		}

@@ -24,6 +24,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 #include "i915_drm.h"
@@ -105,6 +106,12 @@ static void i915_restore_palette(struct drm_device *dev, enum pipe pipe)
 >>>>>>> refs/remotes/origin/cm-10.0
 		I915_WRITE(reg + (i << 2), array[i]);
 }
+=======
+#include <drm/drmP.h>
+#include <drm/i915_drm.h>
+#include "intel_drv.h"
+#include "i915_reg.h"
+>>>>>>> refs/remotes/origin/master
 
 static u8 i915_read_indexed(struct drm_device *dev, u16 index_port, u16 data_port, u8 reg)
 {
@@ -146,12 +153,27 @@ static void i915_save_vga(struct drm_device *dev)
 	int i;
 	u16 cr_index, cr_data, st01;
 
+<<<<<<< HEAD
 	/* VGA color palette registers */
 	dev_priv->saveDACMASK = I915_READ8(VGA_DACMASK);
 
 	/* MSR bits */
 	dev_priv->saveMSR = I915_READ8(VGA_MSR_READ);
 	if (dev_priv->saveMSR & VGA_MSR_CGA_MODE) {
+=======
+	/* VGA state */
+	dev_priv->regfile.saveVGA0 = I915_READ(VGA0);
+	dev_priv->regfile.saveVGA1 = I915_READ(VGA1);
+	dev_priv->regfile.saveVGA_PD = I915_READ(VGA_PD);
+	dev_priv->regfile.saveVGACNTRL = I915_READ(i915_vgacntrl_reg(dev));
+
+	/* VGA color palette registers */
+	dev_priv->regfile.saveDACMASK = I915_READ8(VGA_DACMASK);
+
+	/* MSR bits */
+	dev_priv->regfile.saveMSR = I915_READ8(VGA_MSR_READ);
+	if (dev_priv->regfile.saveMSR & VGA_MSR_CGA_MODE) {
+>>>>>>> refs/remotes/origin/master
 		cr_index = VGA_CR_INDEX_CGA;
 		cr_data = VGA_CR_DATA_CGA;
 		st01 = VGA_ST01_CGA;
@@ -166,6 +188,7 @@ static void i915_save_vga(struct drm_device *dev)
 			   i915_read_indexed(dev, cr_index, cr_data, 0x11) &
 			   (~0x80));
 	for (i = 0; i <= 0x24; i++)
+<<<<<<< HEAD
 		dev_priv->saveCR[i] =
 			i915_read_indexed(dev, cr_index, cr_data, i);
 	/* Make sure we don't turn off CR group 0 writes */
@@ -178,10 +201,25 @@ static void i915_save_vga(struct drm_device *dev)
 		dev_priv->saveAR[i] = i915_read_ar(dev, st01, i, 0);
 	I915_READ8(st01);
 	I915_WRITE8(VGA_AR_INDEX, dev_priv->saveAR_INDEX);
+=======
+		dev_priv->regfile.saveCR[i] =
+			i915_read_indexed(dev, cr_index, cr_data, i);
+	/* Make sure we don't turn off CR group 0 writes */
+	dev_priv->regfile.saveCR[0x11] &= ~0x80;
+
+	/* Attribute controller registers */
+	I915_READ8(st01);
+	dev_priv->regfile.saveAR_INDEX = I915_READ8(VGA_AR_INDEX);
+	for (i = 0; i <= 0x14; i++)
+		dev_priv->regfile.saveAR[i] = i915_read_ar(dev, st01, i, 0);
+	I915_READ8(st01);
+	I915_WRITE8(VGA_AR_INDEX, dev_priv->regfile.saveAR_INDEX);
+>>>>>>> refs/remotes/origin/master
 	I915_READ8(st01);
 
 	/* Graphics controller registers */
 	for (i = 0; i < 9; i++)
+<<<<<<< HEAD
 		dev_priv->saveGR[i] =
 			i915_read_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, i);
 
@@ -190,11 +228,25 @@ static void i915_save_vga(struct drm_device *dev)
 	dev_priv->saveGR[0x11] =
 		i915_read_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x11);
 	dev_priv->saveGR[0x18] =
+=======
+		dev_priv->regfile.saveGR[i] =
+			i915_read_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, i);
+
+	dev_priv->regfile.saveGR[0x10] =
+		i915_read_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x10);
+	dev_priv->regfile.saveGR[0x11] =
+		i915_read_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x11);
+	dev_priv->regfile.saveGR[0x18] =
+>>>>>>> refs/remotes/origin/master
 		i915_read_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x18);
 
 	/* Sequencer registers */
 	for (i = 0; i < 8; i++)
+<<<<<<< HEAD
 		dev_priv->saveSR[i] =
+=======
+		dev_priv->regfile.saveSR[i] =
+>>>>>>> refs/remotes/origin/master
 			i915_read_indexed(dev, VGA_SR_INDEX, VGA_SR_DATA, i);
 }
 
@@ -204,9 +256,24 @@ static void i915_restore_vga(struct drm_device *dev)
 	int i;
 	u16 cr_index, cr_data, st01;
 
+<<<<<<< HEAD
 	/* MSR bits */
 	I915_WRITE8(VGA_MSR_WRITE, dev_priv->saveMSR);
 	if (dev_priv->saveMSR & VGA_MSR_CGA_MODE) {
+=======
+	/* VGA state */
+	I915_WRITE(i915_vgacntrl_reg(dev), dev_priv->regfile.saveVGACNTRL);
+
+	I915_WRITE(VGA0, dev_priv->regfile.saveVGA0);
+	I915_WRITE(VGA1, dev_priv->regfile.saveVGA1);
+	I915_WRITE(VGA_PD, dev_priv->regfile.saveVGA_PD);
+	POSTING_READ(VGA_PD);
+	udelay(150);
+
+	/* MSR bits */
+	I915_WRITE8(VGA_MSR_WRITE, dev_priv->regfile.saveMSR);
+	if (dev_priv->regfile.saveMSR & VGA_MSR_CGA_MODE) {
+>>>>>>> refs/remotes/origin/master
 		cr_index = VGA_CR_INDEX_CGA;
 		cr_data = VGA_CR_DATA_CGA;
 		st01 = VGA_ST01_CGA;
@@ -219,6 +286,7 @@ static void i915_restore_vga(struct drm_device *dev)
 	/* Sequencer registers, don't write SR07 */
 	for (i = 0; i < 7; i++)
 		i915_write_indexed(dev, VGA_SR_INDEX, VGA_SR_DATA, i,
+<<<<<<< HEAD
 				   dev_priv->saveSR[i]);
 
 	/* CRT controller regs */
@@ -226,10 +294,20 @@ static void i915_restore_vga(struct drm_device *dev)
 	i915_write_indexed(dev, cr_index, cr_data, 0x11, dev_priv->saveCR[0x11]);
 	for (i = 0; i <= 0x24; i++)
 		i915_write_indexed(dev, cr_index, cr_data, i, dev_priv->saveCR[i]);
+=======
+				   dev_priv->regfile.saveSR[i]);
+
+	/* CRT controller regs */
+	/* Enable CR group 0 writes */
+	i915_write_indexed(dev, cr_index, cr_data, 0x11, dev_priv->regfile.saveCR[0x11]);
+	for (i = 0; i <= 0x24; i++)
+		i915_write_indexed(dev, cr_index, cr_data, i, dev_priv->regfile.saveCR[i]);
+>>>>>>> refs/remotes/origin/master
 
 	/* Graphics controller regs */
 	for (i = 0; i < 9; i++)
 		i915_write_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, i,
+<<<<<<< HEAD
 				   dev_priv->saveGR[i]);
 
 	i915_write_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x10,
@@ -238,10 +316,21 @@ static void i915_restore_vga(struct drm_device *dev)
 			   dev_priv->saveGR[0x11]);
 	i915_write_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x18,
 			   dev_priv->saveGR[0x18]);
+=======
+				   dev_priv->regfile.saveGR[i]);
+
+	i915_write_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x10,
+			   dev_priv->regfile.saveGR[0x10]);
+	i915_write_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x11,
+			   dev_priv->regfile.saveGR[0x11]);
+	i915_write_indexed(dev, VGA_GR_INDEX, VGA_GR_DATA, 0x18,
+			   dev_priv->regfile.saveGR[0x18]);
+>>>>>>> refs/remotes/origin/master
 
 	/* Attribute controller registers */
 	I915_READ8(st01); /* switch back to index mode */
 	for (i = 0; i <= 0x14; i++)
+<<<<<<< HEAD
 		i915_write_ar(dev, st01, i, dev_priv->saveAR[i], 0);
 	I915_READ8(st01); /* switch back to index mode */
 	I915_WRITE8(VGA_AR_INDEX, dev_priv->saveAR_INDEX | 0x20);
@@ -617,11 +706,21 @@ static void i915_restore_modeset_reg(struct drm_device *dev)
 		I915_WRITE(CURSIZE, dev_priv->saveCURSIZE);
 
 	return;
+=======
+		i915_write_ar(dev, st01, i, dev_priv->regfile.saveAR[i], 0);
+	I915_READ8(st01); /* switch back to index mode */
+	I915_WRITE8(VGA_AR_INDEX, dev_priv->regfile.saveAR_INDEX | 0x20);
+	I915_READ8(st01);
+
+	/* VGA color palette registers */
+	I915_WRITE8(VGA_DACMASK, dev_priv->regfile.saveDACMASK);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void i915_save_display(struct drm_device *dev)
 {
 	struct drm_i915_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 
 	/* Display arbitration control */
 	dev_priv->saveDSPARB = I915_READ(DSPARB);
@@ -709,11 +808,94 @@ static void i915_save_display(struct drm_device *dev)
 		dev_priv->saveVGACNTRL = I915_READ(VGACNTRL);
 
 	i915_save_vga(dev);
+=======
+	unsigned long flags;
+
+	/* Display arbitration control */
+	if (INTEL_INFO(dev)->gen <= 4)
+		dev_priv->regfile.saveDSPARB = I915_READ(DSPARB);
+
+	/* This is only meaningful in non-KMS mode */
+	/* Don't regfile.save them in KMS mode */
+	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+		i915_save_display_reg(dev);
+
+	spin_lock_irqsave(&dev_priv->backlight.lock, flags);
+
+	/* LVDS state */
+	if (HAS_PCH_SPLIT(dev)) {
+		dev_priv->regfile.savePP_CONTROL = I915_READ(PCH_PP_CONTROL);
+		dev_priv->regfile.saveBLC_PWM_CTL = I915_READ(BLC_PWM_PCH_CTL1);
+		dev_priv->regfile.saveBLC_PWM_CTL2 = I915_READ(BLC_PWM_PCH_CTL2);
+		dev_priv->regfile.saveBLC_CPU_PWM_CTL = I915_READ(BLC_PWM_CPU_CTL);
+		dev_priv->regfile.saveBLC_CPU_PWM_CTL2 = I915_READ(BLC_PWM_CPU_CTL2);
+		if (HAS_PCH_IBX(dev) || HAS_PCH_CPT(dev))
+			dev_priv->regfile.saveLVDS = I915_READ(PCH_LVDS);
+	} else if (IS_VALLEYVIEW(dev)) {
+		dev_priv->regfile.savePP_CONTROL = I915_READ(PP_CONTROL);
+		dev_priv->regfile.savePFIT_PGM_RATIOS = I915_READ(PFIT_PGM_RATIOS);
+
+		dev_priv->regfile.saveBLC_PWM_CTL =
+			I915_READ(VLV_BLC_PWM_CTL(PIPE_A));
+		dev_priv->regfile.saveBLC_HIST_CTL =
+			I915_READ(VLV_BLC_HIST_CTL(PIPE_A));
+		dev_priv->regfile.saveBLC_PWM_CTL2 =
+			I915_READ(VLV_BLC_PWM_CTL2(PIPE_A));
+		dev_priv->regfile.saveBLC_PWM_CTL_B =
+			I915_READ(VLV_BLC_PWM_CTL(PIPE_B));
+		dev_priv->regfile.saveBLC_HIST_CTL_B =
+			I915_READ(VLV_BLC_HIST_CTL(PIPE_B));
+		dev_priv->regfile.saveBLC_PWM_CTL2_B =
+			I915_READ(VLV_BLC_PWM_CTL2(PIPE_B));
+	} else {
+		dev_priv->regfile.savePP_CONTROL = I915_READ(PP_CONTROL);
+		dev_priv->regfile.savePFIT_PGM_RATIOS = I915_READ(PFIT_PGM_RATIOS);
+		dev_priv->regfile.saveBLC_PWM_CTL = I915_READ(BLC_PWM_CTL);
+		dev_priv->regfile.saveBLC_HIST_CTL = I915_READ(BLC_HIST_CTL);
+		if (INTEL_INFO(dev)->gen >= 4)
+			dev_priv->regfile.saveBLC_PWM_CTL2 = I915_READ(BLC_PWM_CTL2);
+		if (IS_MOBILE(dev) && !IS_I830(dev))
+			dev_priv->regfile.saveLVDS = I915_READ(LVDS);
+	}
+
+	spin_unlock_irqrestore(&dev_priv->backlight.lock, flags);
+
+	if (!IS_I830(dev) && !IS_845G(dev) && !HAS_PCH_SPLIT(dev))
+		dev_priv->regfile.savePFIT_CONTROL = I915_READ(PFIT_CONTROL);
+
+	if (HAS_PCH_SPLIT(dev)) {
+		dev_priv->regfile.savePP_ON_DELAYS = I915_READ(PCH_PP_ON_DELAYS);
+		dev_priv->regfile.savePP_OFF_DELAYS = I915_READ(PCH_PP_OFF_DELAYS);
+		dev_priv->regfile.savePP_DIVISOR = I915_READ(PCH_PP_DIVISOR);
+	} else {
+		dev_priv->regfile.savePP_ON_DELAYS = I915_READ(PP_ON_DELAYS);
+		dev_priv->regfile.savePP_OFF_DELAYS = I915_READ(PP_OFF_DELAYS);
+		dev_priv->regfile.savePP_DIVISOR = I915_READ(PP_DIVISOR);
+	}
+
+	/* Only regfile.save FBC state on the platform that supports FBC */
+	if (I915_HAS_FBC(dev)) {
+		if (HAS_PCH_SPLIT(dev)) {
+			dev_priv->regfile.saveDPFC_CB_BASE = I915_READ(ILK_DPFC_CB_BASE);
+		} else if (IS_GM45(dev)) {
+			dev_priv->regfile.saveDPFC_CB_BASE = I915_READ(DPFC_CB_BASE);
+		} else {
+			dev_priv->regfile.saveFBC_CFB_BASE = I915_READ(FBC_CFB_BASE);
+			dev_priv->regfile.saveFBC_LL_BASE = I915_READ(FBC_LL_BASE);
+			dev_priv->regfile.saveFBC_CONTROL2 = I915_READ(FBC_CONTROL2);
+			dev_priv->regfile.saveFBC_CONTROL = I915_READ(FBC_CONTROL);
+		}
+	}
+
+	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+		i915_save_vga(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void i915_restore_display(struct drm_device *dev)
 {
 	struct drm_i915_private *dev_priv = dev->dev_private;
+<<<<<<< HEAD
 
 	/* Display arbitration */
 	I915_WRITE(DSPARB, dev_priv->saveDSPARB);
@@ -823,6 +1005,93 @@ static void i915_restore_display(struct drm_device *dev)
 	udelay(150);
 
 	i915_restore_vga(dev);
+=======
+	u32 mask = 0xffffffff;
+	unsigned long flags;
+
+	/* Display arbitration */
+	if (INTEL_INFO(dev)->gen <= 4)
+		I915_WRITE(DSPARB, dev_priv->regfile.saveDSPARB);
+
+	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+		i915_restore_display_reg(dev);
+
+	spin_lock_irqsave(&dev_priv->backlight.lock, flags);
+
+	/* LVDS state */
+	if (INTEL_INFO(dev)->gen >= 4 && !HAS_PCH_SPLIT(dev))
+		I915_WRITE(BLC_PWM_CTL2, dev_priv->regfile.saveBLC_PWM_CTL2);
+
+	if (drm_core_check_feature(dev, DRIVER_MODESET))
+		mask = ~LVDS_PORT_EN;
+
+	if (HAS_PCH_IBX(dev) || HAS_PCH_CPT(dev))
+		I915_WRITE(PCH_LVDS, dev_priv->regfile.saveLVDS & mask);
+	else if (INTEL_INFO(dev)->gen <= 4 && IS_MOBILE(dev) && !IS_I830(dev))
+		I915_WRITE(LVDS, dev_priv->regfile.saveLVDS & mask);
+
+	if (!IS_I830(dev) && !IS_845G(dev) && !HAS_PCH_SPLIT(dev))
+		I915_WRITE(PFIT_CONTROL, dev_priv->regfile.savePFIT_CONTROL);
+
+	if (HAS_PCH_SPLIT(dev)) {
+		I915_WRITE(BLC_PWM_PCH_CTL1, dev_priv->regfile.saveBLC_PWM_CTL);
+		I915_WRITE(BLC_PWM_PCH_CTL2, dev_priv->regfile.saveBLC_PWM_CTL2);
+		/* NOTE: BLC_PWM_CPU_CTL must be written after BLC_PWM_CPU_CTL2;
+		 * otherwise we get blank eDP screen after S3 on some machines
+		 */
+		I915_WRITE(BLC_PWM_CPU_CTL2, dev_priv->regfile.saveBLC_CPU_PWM_CTL2);
+		I915_WRITE(BLC_PWM_CPU_CTL, dev_priv->regfile.saveBLC_CPU_PWM_CTL);
+		I915_WRITE(PCH_PP_ON_DELAYS, dev_priv->regfile.savePP_ON_DELAYS);
+		I915_WRITE(PCH_PP_OFF_DELAYS, dev_priv->regfile.savePP_OFF_DELAYS);
+		I915_WRITE(PCH_PP_DIVISOR, dev_priv->regfile.savePP_DIVISOR);
+		I915_WRITE(PCH_PP_CONTROL, dev_priv->regfile.savePP_CONTROL);
+		I915_WRITE(RSTDBYCTL,
+			   dev_priv->regfile.saveMCHBAR_RENDER_STANDBY);
+	} else if (IS_VALLEYVIEW(dev)) {
+		I915_WRITE(VLV_BLC_PWM_CTL(PIPE_A),
+			   dev_priv->regfile.saveBLC_PWM_CTL);
+		I915_WRITE(VLV_BLC_HIST_CTL(PIPE_A),
+			   dev_priv->regfile.saveBLC_HIST_CTL);
+		I915_WRITE(VLV_BLC_PWM_CTL2(PIPE_A),
+			   dev_priv->regfile.saveBLC_PWM_CTL2);
+		I915_WRITE(VLV_BLC_PWM_CTL(PIPE_B),
+			   dev_priv->regfile.saveBLC_PWM_CTL);
+		I915_WRITE(VLV_BLC_HIST_CTL(PIPE_B),
+			   dev_priv->regfile.saveBLC_HIST_CTL);
+		I915_WRITE(VLV_BLC_PWM_CTL2(PIPE_B),
+			   dev_priv->regfile.saveBLC_PWM_CTL2);
+	} else {
+		I915_WRITE(PFIT_PGM_RATIOS, dev_priv->regfile.savePFIT_PGM_RATIOS);
+		I915_WRITE(BLC_PWM_CTL, dev_priv->regfile.saveBLC_PWM_CTL);
+		I915_WRITE(BLC_HIST_CTL, dev_priv->regfile.saveBLC_HIST_CTL);
+		I915_WRITE(PP_ON_DELAYS, dev_priv->regfile.savePP_ON_DELAYS);
+		I915_WRITE(PP_OFF_DELAYS, dev_priv->regfile.savePP_OFF_DELAYS);
+		I915_WRITE(PP_DIVISOR, dev_priv->regfile.savePP_DIVISOR);
+		I915_WRITE(PP_CONTROL, dev_priv->regfile.savePP_CONTROL);
+	}
+
+	spin_unlock_irqrestore(&dev_priv->backlight.lock, flags);
+
+	/* only restore FBC info on the platform that supports FBC*/
+	intel_disable_fbc(dev);
+	if (I915_HAS_FBC(dev)) {
+		if (HAS_PCH_SPLIT(dev)) {
+			I915_WRITE(ILK_DPFC_CB_BASE, dev_priv->regfile.saveDPFC_CB_BASE);
+		} else if (IS_GM45(dev)) {
+			I915_WRITE(DPFC_CB_BASE, dev_priv->regfile.saveDPFC_CB_BASE);
+		} else {
+			I915_WRITE(FBC_CFB_BASE, dev_priv->regfile.saveFBC_CFB_BASE);
+			I915_WRITE(FBC_LL_BASE, dev_priv->regfile.saveFBC_LL_BASE);
+			I915_WRITE(FBC_CONTROL2, dev_priv->regfile.saveFBC_CONTROL2);
+			I915_WRITE(FBC_CONTROL, dev_priv->regfile.saveFBC_CONTROL);
+		}
+	}
+
+	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+		i915_restore_vga(dev);
+	else
+		i915_redisable_vga(dev);
+>>>>>>> refs/remotes/origin/master
 }
 
 int i915_save_state(struct drm_device *dev)
@@ -830,6 +1099,7 @@ int i915_save_state(struct drm_device *dev)
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	int i;
 
+<<<<<<< HEAD
 	pci_read_config_byte(dev->pdev, LBB, &dev_priv->saveLBB);
 
 	mutex_lock(&dev->struct_mutex);
@@ -877,6 +1147,50 @@ int i915_save_state(struct drm_device *dev)
 	}
 	for (i = 0; i < 3; i++)
 		dev_priv->saveSWF2[i] = I915_READ(SWF30 + (i << 2));
+=======
+	if (INTEL_INFO(dev)->gen <= 4)
+		pci_read_config_byte(dev->pdev, LBB,
+				     &dev_priv->regfile.saveLBB);
+
+	mutex_lock(&dev->struct_mutex);
+
+	i915_save_display(dev);
+
+	if (!drm_core_check_feature(dev, DRIVER_MODESET)) {
+		/* Interrupt state */
+		if (HAS_PCH_SPLIT(dev)) {
+			dev_priv->regfile.saveDEIER = I915_READ(DEIER);
+			dev_priv->regfile.saveDEIMR = I915_READ(DEIMR);
+			dev_priv->regfile.saveGTIER = I915_READ(GTIER);
+			dev_priv->regfile.saveGTIMR = I915_READ(GTIMR);
+			dev_priv->regfile.saveFDI_RXA_IMR = I915_READ(_FDI_RXA_IMR);
+			dev_priv->regfile.saveFDI_RXB_IMR = I915_READ(_FDI_RXB_IMR);
+			dev_priv->regfile.saveMCHBAR_RENDER_STANDBY =
+				I915_READ(RSTDBYCTL);
+			dev_priv->regfile.savePCH_PORT_HOTPLUG = I915_READ(PCH_PORT_HOTPLUG);
+		} else {
+			dev_priv->regfile.saveIER = I915_READ(IER);
+			dev_priv->regfile.saveIMR = I915_READ(IMR);
+		}
+	}
+
+	intel_disable_gt_powersave(dev);
+
+	/* Cache mode state */
+	if (INTEL_INFO(dev)->gen < 7)
+		dev_priv->regfile.saveCACHE_MODE_0 = I915_READ(CACHE_MODE_0);
+
+	/* Memory Arbitration state */
+	dev_priv->regfile.saveMI_ARB_STATE = I915_READ(MI_ARB_STATE);
+
+	/* Scratch space */
+	for (i = 0; i < 16; i++) {
+		dev_priv->regfile.saveSWF0[i] = I915_READ(SWF00 + (i << 2));
+		dev_priv->regfile.saveSWF1[i] = I915_READ(SWF10 + (i << 2));
+	}
+	for (i = 0; i < 3; i++)
+		dev_priv->regfile.saveSWF2[i] = I915_READ(SWF30 + (i << 2));
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&dev->struct_mutex);
 
@@ -888,6 +1202,7 @@ int i915_restore_state(struct drm_device *dev)
 	struct drm_i915_private *dev_priv = dev->dev_private;
 	int i;
 
+<<<<<<< HEAD
 	pci_write_config_byte(dev->pdev, LBB, dev_priv->saveLBB);
 
 	mutex_lock(&dev->struct_mutex);
@@ -955,6 +1270,47 @@ int i915_restore_state(struct drm_device *dev)
 	}
 	for (i = 0; i < 3; i++)
 		I915_WRITE(SWF30 + (i << 2), dev_priv->saveSWF2[i]);
+=======
+	if (INTEL_INFO(dev)->gen <= 4)
+		pci_write_config_byte(dev->pdev, LBB,
+				      dev_priv->regfile.saveLBB);
+
+	mutex_lock(&dev->struct_mutex);
+
+	i915_gem_restore_fences(dev);
+	i915_restore_display(dev);
+
+	if (!drm_core_check_feature(dev, DRIVER_MODESET)) {
+		/* Interrupt state */
+		if (HAS_PCH_SPLIT(dev)) {
+			I915_WRITE(DEIER, dev_priv->regfile.saveDEIER);
+			I915_WRITE(DEIMR, dev_priv->regfile.saveDEIMR);
+			I915_WRITE(GTIER, dev_priv->regfile.saveGTIER);
+			I915_WRITE(GTIMR, dev_priv->regfile.saveGTIMR);
+			I915_WRITE(_FDI_RXA_IMR, dev_priv->regfile.saveFDI_RXA_IMR);
+			I915_WRITE(_FDI_RXB_IMR, dev_priv->regfile.saveFDI_RXB_IMR);
+			I915_WRITE(PCH_PORT_HOTPLUG, dev_priv->regfile.savePCH_PORT_HOTPLUG);
+		} else {
+			I915_WRITE(IER, dev_priv->regfile.saveIER);
+			I915_WRITE(IMR, dev_priv->regfile.saveIMR);
+		}
+	}
+
+	/* Cache mode state */
+	if (INTEL_INFO(dev)->gen < 7)
+		I915_WRITE(CACHE_MODE_0, dev_priv->regfile.saveCACHE_MODE_0 |
+			   0xffff0000);
+
+	/* Memory arbitration state */
+	I915_WRITE(MI_ARB_STATE, dev_priv->regfile.saveMI_ARB_STATE | 0xffff0000);
+
+	for (i = 0; i < 16; i++) {
+		I915_WRITE(SWF00 + (i << 2), dev_priv->regfile.saveSWF0[i]);
+		I915_WRITE(SWF10 + (i << 2), dev_priv->regfile.saveSWF1[i]);
+	}
+	for (i = 0; i < 3; i++)
+		I915_WRITE(SWF30 + (i << 2), dev_priv->regfile.saveSWF2[i]);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&dev->struct_mutex);
 

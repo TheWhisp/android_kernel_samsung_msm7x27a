@@ -22,9 +22,12 @@
 #include <asm/sal.h>
 #include <asm/signal.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/unistd.h>
 
 #include "entry.h"
@@ -94,6 +97,7 @@ ENTRY(fsys_getpid)
 	FSYS_RETURN
 END(fsys_getpid)
 
+<<<<<<< HEAD
 ENTRY(fsys_getppid)
 	.prologue
 	.altrp b6
@@ -141,6 +145,8 @@ ENTRY(fsys_getppid)
 	FSYS_RETURN
 END(fsys_getppid)
 
+=======
+>>>>>>> refs/remotes/origin/master
 ENTRY(fsys_set_tid_address)
 	.prologue
 	.altrp b6
@@ -178,10 +184,14 @@ ENTRY(fsys_set_tid_address)
 END(fsys_set_tid_address)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if IA64_GTOD_LOCK_OFFSET !=0
 =======
 #if IA64_GTOD_SEQ_OFFSET !=0
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#if IA64_GTOD_SEQ_OFFSET !=0
+>>>>>>> refs/remotes/origin/master
 #error fsys_gettimeofday incompatible with changes to struct fsyscall_gtod_data_t
 #endif
 #if IA64_ITC_JITTER_OFFSET !=0
@@ -380,6 +390,7 @@ ENTRY(fsys_clock_gettime)
 END(fsys_clock_gettime)
 
 /*
+<<<<<<< HEAD
  * long fsys_rt_sigprocmask (int how, sigset_t *set, sigset_t *oset, size_t sigsetsize).
  */
 #if _NSIG_WORDS != 1
@@ -549,6 +560,8 @@ EX(.fail_efault, (p15) st8 [r34]=r3)
 END(fsys_rt_sigprocmask)
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * fsys_getcpu doesn't use the third parameter in this implementation. It reads
  * current_thread_info()->cpu and corresponding node in cpu_to_node_map.
  */
@@ -567,11 +580,23 @@ ENTRY(fsys_getcpu)
 	;;
 	tnat.nz p7,p0 = r33			// I guard against NaT argument
 (p7)    br.cond.spnt.few .fail_einval		// B
+<<<<<<< HEAD
 #ifdef CONFIG_NUMA
 	movl r17=cpu_to_node_map
 	;;
 EX(.fail_efault, probe.w.fault r32, 3)		// M This takes 5 cycles
 EX(.fail_efault, probe.w.fault r33, 3)		// M This takes 5 cycles
+=======
+	;;
+	cmp.ne p6,p0=r32,r0
+	cmp.ne p7,p0=r33,r0
+	;;
+#ifdef CONFIG_NUMA
+	movl r17=cpu_to_node_map
+	;;
+EX(.fail_efault, (p6) probe.w.fault r32, 3)		// M This takes 5 cycles
+EX(.fail_efault, (p7) probe.w.fault r33, 3)		// M This takes 5 cycles
+>>>>>>> refs/remotes/origin/master
 	shladd r18=r3,1,r17
 	;;
 	ld2 r20=[r18]				// r20 = cpu_to_node_map[cpu]
@@ -581,6 +606,7 @@ EX(.fail_efault, probe.w.fault r33, 3)		// M This takes 5 cycles
 (p8)	br.spnt.many fsys_fallback_syscall
 	;;
 	;;
+<<<<<<< HEAD
 EX(.fail_efault, st4 [r32] = r3)
 EX(.fail_efault, st2 [r33] = r20)
 	mov r8=0
@@ -588,13 +614,27 @@ EX(.fail_efault, st2 [r33] = r20)
 #else
 EX(.fail_efault, probe.w.fault r32, 3)		// M This takes 5 cycles
 EX(.fail_efault, probe.w.fault r33, 3)		// M This takes 5 cycles
+=======
+EX(.fail_efault, (p6) st4 [r32] = r3)
+EX(.fail_efault, (p7) st2 [r33] = r20)
+	mov r8=0
+	;;
+#else
+EX(.fail_efault, (p6) probe.w.fault r32, 3)		// M This takes 5 cycles
+EX(.fail_efault, (p7) probe.w.fault r33, 3)		// M This takes 5 cycles
+>>>>>>> refs/remotes/origin/master
 	and r2 = TIF_ALLWORK_MASK,r2
 	;;
 	cmp.ne p8,p0=0,r2
 (p8)	br.spnt.many fsys_fallback_syscall
 	;;
+<<<<<<< HEAD
 EX(.fail_efault, st4 [r32] = r3)
 EX(.fail_efault, st2 [r33] = r0)
+=======
+EX(.fail_efault, (p6) st4 [r32] = r3)
+EX(.fail_efault, (p7) st2 [r33] = r0)
+>>>>>>> refs/remotes/origin/master
 	mov r8=0
 	;;
 #endif
@@ -702,7 +742,11 @@ GLOBAL_ENTRY(paravirt_fsys_bubble_down)
 	nop.i 0
 	;;
 	mov ar.rsc=0				// M2   set enforced lazy mode, pl 0, LE, loadrs=0
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 	MOV_FROM_ITC(p0, p6, r30, r23)		// M    get cycle for accounting
 #else
 	nop.m 0
@@ -728,7 +772,11 @@ GLOBAL_ENTRY(paravirt_fsys_bubble_down)
 	cmp.ne pKStk,pUStk=r0,r0		// A    set pKStk <- 0, pUStk <- 1
 	br.call.sptk.many b7=ia64_syscall_setup	// B
 	;;
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 	// mov.m r30=ar.itc is called in advance
 	add r16=TI_AC_STAMP+IA64_TASK_SIZE,r2
 	add r17=TI_AC_LEAVE+IA64_TASK_SIZE,r2
@@ -787,7 +835,11 @@ paravirt_fsyscall_table:
 	data8 0				// chown
 	data8 0				// lseek		// 1040
 	data8 fsys_getpid		// getpid
+<<<<<<< HEAD
 	data8 fsys_getppid		// getppid
+=======
+	data8 0				// getppid
+>>>>>>> refs/remotes/origin/master
 	data8 0				// mount
 	data8 0				// umount
 	data8 0				// setuid		// 1045
@@ -924,7 +976,11 @@ paravirt_fsyscall_table:
 	data8 0				// sigaltstack
 	data8 0				// rt_sigaction
 	data8 0				// rt_sigpending
+<<<<<<< HEAD
 	data8 fsys_rt_sigprocmask	// rt_sigprocmask
+=======
+	data8 0				// rt_sigprocmask
+>>>>>>> refs/remotes/origin/master
 	data8 0				// rt_sigqueueinfo	// 1180
 	data8 0				// rt_sigreturn
 	data8 0				// rt_sigsuspend

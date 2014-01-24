@@ -21,6 +21,12 @@
 
 #include "policy.h"
 
+<<<<<<< HEAD
+=======
+#define cred_cxt(X) (X)->security
+#define current_cxt() cred_cxt(current_cred())
+
+>>>>>>> refs/remotes/origin/master
 /* struct aa_file_cxt - the AppArmor context the file was opened in
  * @perms: the permission the file was opened with
  *
@@ -80,6 +86,7 @@ int aa_replace_current_profile(struct aa_profile *profile);
 int aa_set_current_onexec(struct aa_profile *profile);
 int aa_set_current_hat(struct aa_profile *profile, u64 token);
 int aa_restore_previous_profile(u64 cookie);
+<<<<<<< HEAD
 
 /**
  * __aa_task_is_confined - determine if @task has any confinement
@@ -97,6 +104,10 @@ static inline bool __aa_task_is_confined(struct task_struct *task)
 
 	return 1;
 }
+=======
+struct aa_profile *aa_get_task_profile(struct task_struct *task);
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * aa_cred_profile - obtain cred's profiles
@@ -108,9 +119,39 @@ static inline bool __aa_task_is_confined(struct task_struct *task)
  */
 static inline struct aa_profile *aa_cred_profile(const struct cred *cred)
 {
+<<<<<<< HEAD
 	struct aa_task_cxt *cxt = cred->security;
 	BUG_ON(!cxt || !cxt->profile);
 	return aa_newest_version(cxt->profile);
+=======
+	struct aa_task_cxt *cxt = cred_cxt(cred);
+	BUG_ON(!cxt || !cxt->profile);
+	return cxt->profile;
+}
+
+/**
+ * __aa_task_profile - retrieve another task's profile
+ * @task: task to query  (NOT NULL)
+ *
+ * Returns: @task's profile without incrementing its ref count
+ *
+ * If @task != current needs to be called in RCU safe critical section
+ */
+static inline struct aa_profile *__aa_task_profile(struct task_struct *task)
+{
+	return aa_cred_profile(__task_cred(task));
+}
+
+/**
+ * __aa_task_is_confined - determine if @task has any confinement
+ * @task: task to check confinement of  (NOT NULL)
+ *
+ * If @task != current needs to be called in RCU safe critical section
+ */
+static inline bool __aa_task_is_confined(struct task_struct *task)
+{
+	return !unconfined(__aa_task_profile(task));
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -136,6 +177,7 @@ static inline struct aa_profile *__aa_current_profile(void)
  */
 static inline struct aa_profile *aa_current_profile(void)
 {
+<<<<<<< HEAD
 	const struct aa_task_cxt *cxt = current_cred()->security;
 	struct aa_profile *profile;
 	BUG_ON(!cxt || !cxt->profile);
@@ -149,6 +191,33 @@ static inline struct aa_profile *aa_current_profile(void)
 		aa_replace_current_profile(profile);
 
 	return profile;
+=======
+	const struct aa_task_cxt *cxt = current_cxt();
+	struct aa_profile *profile;
+	BUG_ON(!cxt || !cxt->profile);
+
+	if (PROFILE_INVALID(cxt->profile)) {
+		profile = aa_get_newest_profile(cxt->profile);
+		aa_replace_current_profile(profile);
+		aa_put_profile(profile);
+		cxt = current_cxt();
+	}
+
+	return cxt->profile;
+}
+
+/**
+ * aa_clear_task_cxt_trans - clear transition tracking info from the cxt
+ * @cxt: task context to clear (NOT NULL)
+ */
+static inline void aa_clear_task_cxt_trans(struct aa_task_cxt *cxt)
+{
+	aa_put_profile(cxt->previous);
+	aa_put_profile(cxt->onexec);
+	cxt->previous = NULL;
+	cxt->onexec = NULL;
+	cxt->token = 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* __AA_CONTEXT_H */

@@ -2,6 +2,7 @@
 #define __ASM_ARM_DMA_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/memory.h>
 
 /*
@@ -12,6 +13,8 @@
 #else
 #define MAX_DMA_ADDRESS	(PAGE_OFFSET + ARM_DMA_ZONE_SIZE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is the maximum virtual address which can be DMA'd from.
  */
@@ -19,10 +22,16 @@
 #define MAX_DMA_ADDRESS	0xffffffffUL
 #else
 #define MAX_DMA_ADDRESS	({ \
+<<<<<<< HEAD
 	extern unsigned long arm_dma_zone_size; \
 	arm_dma_zone_size ? \
 		(PAGE_OFFSET + arm_dma_zone_size) : 0xffffffffUL; })
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	extern phys_addr_t arm_dma_zone_size; \
+	arm_dma_zone_size && arm_dma_zone_size < (0x10000000 - PAGE_OFFSET) ? \
+		(PAGE_OFFSET + arm_dma_zone_size) : 0xffffffffUL; })
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_ISA_DMA_API
@@ -32,9 +41,12 @@
  */
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/scatterlist.h>
 
 #include <mach/isa-dma.h>
@@ -121,7 +133,11 @@ extern void set_dma_sg(unsigned int chan, struct scatterlist *sg, int nr_sg);
  */
 extern void __set_dma_addr(unsigned int chan, void *addr);
 #define set_dma_addr(chan, addr)				\
+<<<<<<< HEAD
 	__set_dma_addr(chan, bus_to_virt(addr))
+=======
+	__set_dma_addr(chan, (void *)__bus_to_virt(addr))
+>>>>>>> refs/remotes/origin/master
 
 /* Set the DMA byte count for this channel
  *

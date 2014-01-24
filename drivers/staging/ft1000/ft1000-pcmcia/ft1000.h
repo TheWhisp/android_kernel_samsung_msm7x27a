@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 //---------------------------------------------------------------------------
 // FT1000 driver for Flarion Flash OFDM NIC Device
 //
@@ -409,6 +410,8 @@ void ft1000_write_dpram_mag_32 (struct net_device *dev, int offset, u32 value);
 
 #endif // _FT1000H_
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*---------------------------------------------------------------------------
    FT1000 driver for Flarion Flash OFDM NIC Device
 
@@ -442,6 +445,7 @@ void ft1000_write_dpram_mag_32 (struct net_device *dev, int offset, u32 value);
 #define SUCCESS	0x00
 #define FAILURE	0x01
 
+<<<<<<< HEAD
 struct ft1000_info {
 	struct net_device_stats stats;
 	u16 DrvErrNum;
@@ -477,6 +481,12 @@ struct ft1000_info {
 	} DSPSess;
 	struct proc_dir_entry *proc_ft1000;
 	char netdevname[IFNAMSIZ];
+=======
+struct ft1000_pcmcia {
+	int PktIntfErr;
+	u16 packetseqnum;
+	void *link;
+>>>>>>> refs/remotes/origin/master
 };
 
 struct pcmcia_device;
@@ -508,4 +518,7 @@ static inline void ft1000_write_reg(struct net_device *dev, u16 offset, u16 valu
 }
 
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

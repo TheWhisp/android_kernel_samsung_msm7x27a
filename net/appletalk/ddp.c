@@ -63,7 +63,11 @@
 #include <net/tcp_states.h>
 #include <net/route.h>
 #include <linux/atalk.h>
+<<<<<<< HEAD
 #include "../core/kmap_skb.h"
+=======
+#include <linux/highmem.h>
+>>>>>>> refs/remotes/origin/master
 
 struct datalink_proto *ddp_dl, *aarp_dl;
 static const struct proto_ops atalk_dgram_ops;
@@ -93,10 +97,16 @@ static struct sock *atalk_search_socket(struct sockaddr_at *to,
 					struct atalk_iface *atif)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 
 	read_lock_bh(&atalk_sockets_lock);
 	sk_for_each(s, node, &atalk_sockets) {
+=======
+
+	read_lock_bh(&atalk_sockets_lock);
+	sk_for_each(s, &atalk_sockets) {
+>>>>>>> refs/remotes/origin/master
 		struct atalk_sock *at = at_sk(s);
 
 		if (to->sat_port != at->src_port)
@@ -129,8 +139,13 @@ found:
 
 /**
  * atalk_find_or_insert_socket - Try to find a socket matching ADDR
+<<<<<<< HEAD
  * @sk - socket to insert in the list if it is not there already
  * @sat - address to search for
+=======
+ * @sk: socket to insert in the list if it is not there already
+ * @sat: address to search for
+>>>>>>> refs/remotes/origin/master
  *
  * Try to find a socket matching ADDR in the socket list, if found then return
  * it. If not, insert SK into the socket list.
@@ -141,11 +156,18 @@ static struct sock *atalk_find_or_insert_socket(struct sock *sk,
 						struct sockaddr_at *sat)
 {
 	struct sock *s;
+<<<<<<< HEAD
 	struct hlist_node *node;
 	struct atalk_sock *at;
 
 	write_lock_bh(&atalk_sockets_lock);
 	sk_for_each(s, node, &atalk_sockets) {
+=======
+	struct atalk_sock *at;
+
+	write_lock_bh(&atalk_sockets_lock);
+	sk_for_each(s, &atalk_sockets) {
+>>>>>>> refs/remotes/origin/master
 		at = at_sk(s);
 
 		if (at->src_net == sat->sat_addr.s_net &&
@@ -646,7 +668,11 @@ static inline void atalk_dev_down(struct net_device *dev)
 static int ddp_device_event(struct notifier_block *this, unsigned long event,
 			    void *ptr)
 {
+<<<<<<< HEAD
 	struct net_device *dev = ptr;
+=======
+	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+>>>>>>> refs/remotes/origin/master
 
 	if (!net_eq(dev_net(dev), &init_net))
 		return NOTIFY_DONE;
@@ -684,6 +710,7 @@ static int atif_ioctl(int cmd, void __user *arg)
 	atif = atalk_find_dev(dev);
 
 	switch (cmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case SIOCSIFADDR:
 			if (!capable(CAP_NET_ADMIN))
@@ -872,6 +899,8 @@ static int atif_ioctl(int cmd, void __user *arg)
 			aarp_proxy_remove(atif->dev, &(sa->sat_addr));
 			return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SIOCSIFADDR:
 		if (!capable(CAP_NET_ADMIN))
 			return -EPERM;
@@ -1058,7 +1087,10 @@ static int atif_ioctl(int cmd, void __user *arg)
 		/* give to aarp module to remove proxy entry */
 		aarp_proxy_remove(atif->dev, &(sa->sat_addr));
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return copy_to_user(arg, &atreq, sizeof(atreq)) ? -EFAULT : 0;
@@ -1073,6 +1105,7 @@ static int atrtr_ioctl(unsigned int cmd, void __user *arg)
 		return -EFAULT;
 
 	switch (cmd) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case SIOCDELRT:
 			if (rt.rt_dst.sa_family != AF_APPLETALK)
@@ -1094,6 +1127,8 @@ static int atrtr_ioctl(unsigned int cmd, void __user *arg)
 			return atrtr_create(&rt, dev);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SIOCDELRT:
 		if (rt.rt_dst.sa_family != AF_APPLETALK)
 			return -EINVAL;
@@ -1113,7 +1148,10 @@ static int atrtr_ioctl(unsigned int cmd, void __user *arg)
 		}
 		return atrtr_create(&rt, dev);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return -EINVAL;
 }
@@ -1163,6 +1201,7 @@ static unsigned long atalk_sum_skb(const struct sk_buff *skb, int offset,
 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
 		int end;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		WARN_ON(start > offset + len);
 
@@ -1171,12 +1210,15 @@ static unsigned long atalk_sum_skb(const struct sk_buff *skb, int offset,
 			u8 *vaddr;
 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		const skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
 		WARN_ON(start > offset + len);
 
 		end = start + skb_frag_size(frag);
 		if ((copy = end - offset) > 0) {
 			u8 *vaddr;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 			if (copy > len)
@@ -1185,6 +1227,15 @@ static unsigned long atalk_sum_skb(const struct sk_buff *skb, int offset,
 			sum = atalk_sum_partial(vaddr + frag->page_offset +
 						  offset - start, copy, sum);
 			kunmap_skb_frag(vaddr);
+=======
+
+			if (copy > len)
+				copy = len;
+			vaddr = kmap_atomic(skb_frag_page(frag));
+			sum = atalk_sum_partial(vaddr + frag->page_offset +
+						  offset - start, copy, sum);
+			kunmap_atomic(vaddr);
+>>>>>>> refs/remotes/origin/master
 
 			if (!(len -= copy))
 				return sum;
@@ -1287,8 +1338,13 @@ static int atalk_release(struct socket *sock)
 
 /**
  * atalk_pick_and_bind_port - Pick a source port when one is not given
+<<<<<<< HEAD
  * @sk - socket to insert into the tables
  * @sat - address to search for
+=======
+ * @sk: socket to insert into the tables
+ * @sat: address to search for
+>>>>>>> refs/remotes/origin/master
  *
  * Pick a source port when one is not given. If we can find a suitable free
  * one, we insert the socket into the tables using it.
@@ -1305,9 +1361,14 @@ static int atalk_pick_and_bind_port(struct sock *sk, struct sockaddr_at *sat)
 	     sat->sat_port < ATPORT_LAST;
 	     sat->sat_port++) {
 		struct sock *s;
+<<<<<<< HEAD
 		struct hlist_node *node;
 
 		sk_for_each(s, node, &atalk_sockets) {
+=======
+
+		sk_for_each(s, &atalk_sockets) {
+>>>>>>> refs/remotes/origin/master
 			struct atalk_sock *at = at_sk(s);
 
 			if (at->src_net == sat->sat_addr.s_net &&
@@ -1429,9 +1490,13 @@ static int atalk_connect(struct socket *sock, struct sockaddr *uaddr,
 	if (addr->sat_addr.s_node == ATADDR_BCAST &&
 	    !sock_flag(sk, SOCK_BROADCAST)) {
 #if 1
+<<<<<<< HEAD
 		printk(KERN_WARNING "%s is broken and did not set "
 				    "SO_BROADCAST. It will break when 2.2 is "
 				    "released.\n",
+=======
+		pr_warn("atalk_connect: %s is broken and did not set SO_BROADCAST.\n",
+>>>>>>> refs/remotes/origin/master
 			current->comm);
 #else
 		return -EACCES;
@@ -1479,7 +1544,11 @@ static int atalk_getname(struct socket *sock, struct sockaddr *uaddr,
 			goto out;
 
 	*uaddr_len = sizeof(struct sockaddr_at);
+<<<<<<< HEAD
 	memset(&sat.sat_zero, 0, sizeof(sat.sat_zero));
+=======
+	memset(&sat, 0, sizeof(sat));
+>>>>>>> refs/remotes/origin/master
 
 	if (peer) {
 		err = -ENOTCONN;
@@ -1961,7 +2030,10 @@ static int atalk_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr 
 			 size_t size, int flags)
 {
 	struct sock *sk = sock->sk;
+<<<<<<< HEAD
 	struct sockaddr_at *sat = (struct sockaddr_at *)msg->msg_name;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ddpehdr *ddp;
 	int copied = 0;
 	int offset = 0;
@@ -1990,6 +2062,7 @@ static int atalk_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr 
 	}
 	err = skb_copy_datagram_iovec(skb, offset, msg->msg_iov, copied);
 
+<<<<<<< HEAD
 	if (!err) {
 		if (sat) {
 			sat->sat_family      = AF_APPLETALK;
@@ -1998,6 +2071,15 @@ static int atalk_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr 
 			sat->sat_addr.s_net  = ddp->deh_snet;
 		}
 		msg->msg_namelen = sizeof(*sat);
+=======
+	if (!err && msg->msg_name) {
+		struct sockaddr_at *sat = msg->msg_name;
+		sat->sat_family      = AF_APPLETALK;
+		sat->sat_port        = ddp->deh_sport;
+		sat->sat_addr.s_node = ddp->deh_snode;
+		sat->sat_addr.s_net  = ddp->deh_snet;
+		msg->msg_namelen     = sizeof(*sat);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	skb_free_datagram(sk, skb);	/* Free the datagram. */

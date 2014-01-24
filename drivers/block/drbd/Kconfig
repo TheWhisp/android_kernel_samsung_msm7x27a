@@ -2,6 +2,7 @@
 # DRBD device driver configuration
 #
 
+<<<<<<< HEAD
 comment "DRBD disabled because PROC_FS, INET or CONNECTOR not selected"
 	depends on PROC_FS='n' || INET='n' || CONNECTOR='n'
 
@@ -9,6 +10,16 @@ config BLK_DEV_DRBD
 	tristate "DRBD Distributed Replicated Block Device support"
 	depends on PROC_FS && INET && CONNECTOR
 	select LRU_CACHE
+=======
+comment "DRBD disabled because PROC_FS or INET not selected"
+	depends on PROC_FS='n' || INET='n'
+
+config BLK_DEV_DRBD
+	tristate "DRBD Distributed Replicated Block Device support"
+	depends on PROC_FS && INET
+	select LRU_CACHE
+	select LIBCRC32C
+>>>>>>> refs/remotes/origin/master
 	default n
 	help
 
@@ -58,7 +69,12 @@ config DRBD_FAULT_INJECTION
 	  32	data read
 	  64	read ahead
 	  128	kmalloc of bitmap
+<<<<<<< HEAD
 	  256	allocation of EE (epoch_entries)
+=======
+	  256	allocation of peer_requests
+	  512	insert data corruption on receiving side
+>>>>>>> refs/remotes/origin/master
 
 	  fault_devs: bitmask of minor numbers
 	  fault_rate: frequency in percent

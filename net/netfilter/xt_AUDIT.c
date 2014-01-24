@@ -99,9 +99,13 @@ static void audit_ip6(struct audit_buffer *ab, struct sk_buff *skb)
 	const struct ipv6hdr *ih;
 	u8 nexthdr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	__be16 frag_off;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__be16 frag_off;
+>>>>>>> refs/remotes/origin/master
 	int offset;
 
 	ih = skb_header_pointer(skb, skb_network_offset(skb), sizeof(_ip6h), &_ip6h);
@@ -113,10 +117,14 @@ static void audit_ip6(struct audit_buffer *ab, struct sk_buff *skb)
 	nexthdr = ih->nexthdr;
 	offset = ipv6_skip_exthdr(skb, skb_network_offset(skb) + sizeof(_ip6h),
 <<<<<<< HEAD
+<<<<<<< HEAD
 				  &nexthdr);
 =======
 				  &nexthdr, &frag_off);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  &nexthdr, &frag_off);
+>>>>>>> refs/remotes/origin/master
 
 	audit_log_format(ab, " saddr=%pI6c daddr=%pI6c proto=%hhu",
 			 &ih->saddr, &ih->daddr, nexthdr);
@@ -131,6 +139,12 @@ audit_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	const struct xt_audit_info *info = par->targinfo;
 	struct audit_buffer *ab;
 
+<<<<<<< HEAD
+=======
+	if (audit_enabled == 0)
+		goto errout;
+
+>>>>>>> refs/remotes/origin/master
 	ab = audit_log_start(NULL, GFP_ATOMIC, AUDIT_NETFILTER_PKT);
 	if (ab == NULL)
 		goto errout;
@@ -172,13 +186,19 @@ audit_tg(struct sk_buff *skb, const struct xt_action_param *par)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_NETWORK_SECMARK
 	if (skb->secmark)
 		audit_log_secctx(ab, skb->secmark);
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	audit_log_end(ab);
 
 errout:

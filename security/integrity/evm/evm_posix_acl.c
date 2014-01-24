@@ -11,8 +11,14 @@
 
 #include <linux/module.h>
 #include <linux/xattr.h>
+<<<<<<< HEAD
 
 int posix_xattr_acl(char *xattr)
+=======
+#include <linux/evm.h>
+
+int posix_xattr_acl(const char *xattr)
+>>>>>>> refs/remotes/origin/master
 {
 	int xattr_len = strlen(xattr);
 

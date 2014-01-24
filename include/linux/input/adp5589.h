@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Analog Devices ADP5589 I/O Expander and QWERTY Keypad Controller
 =======
  * Analog Devices ADP5589/ADP5585 I/O Expander and QWERTY Keypad Controller
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Analog Devices ADP5589/ADP5585 I/O Expander and QWERTY Keypad Controller
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2010-2011 Analog Devices Inc.
  *
@@ -13,6 +17,7 @@
 #ifndef _ADP5589_H
 #define _ADP5589_H
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ADP5589_ID			0x00
 #define ADP5589_INT_STATUS		0x01
@@ -102,6 +107,11 @@
  * ADP5589 specific GPI and Keymap defines
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * ADP5589 specific GPI and Keymap defines
+ */
+>>>>>>> refs/remotes/origin/master
 
 #define ADP5589_KEYMAPSIZE	88
 
@@ -138,7 +148,10 @@
 #define ADP5589_GPIMAPSIZE_MAX (ADP5589_GPI_PIN_END - ADP5589_GPI_PIN_BASE + 1)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ADP5585 specific GPI and Keymap defines
  */
@@ -168,7 +181,10 @@
 
 #define ADP5585_GPIMAPSIZE_MAX (ADP5585_GPI_PIN_END - ADP5585_GPI_PIN_BASE + 1)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct adp5589_gpi_map {
 	unsigned short pin;
 	unsigned short sw_evt;
@@ -202,10 +218,14 @@ struct adp5589_gpi_map {
 #define RESET2_POL_LOW			(0 << 7)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Mask Bits:
 =======
 /* ADP5589 Mask Bits:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* ADP5589 Mask Bits:
+>>>>>>> refs/remotes/origin/master
  * C C C C C C C C C C C | R R R R R R R R
  * 1 9 8 7 6 5 4 3 2 1 0 | 7 6 5 4 3 2 1 0
  * 0
@@ -215,9 +235,12 @@ struct adp5589_gpi_map {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ADP_ROW(x)			(1 << (x))
 #define ADP_COL(x)			(1 << (x + 8))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ADP_ROW(x)	(1 << (x))
 #define ADP_COL(x)	(1 << (x + 8))
 #define ADP5589_ROW_MASK		0xFF
@@ -246,7 +269,10 @@ struct adp5589_gpi_map {
 #define ADP5585_COL(x)	(1 << (((x) & ADP5585_COL_MASK) + ADP5585_COL_SHIFT))
 
 /* Put one of these structures in i2c_board_info platform_data */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct adp5589_kpad_platform_data {
 	unsigned keypad_en_mask;	/* Keypad (Rows/Columns) enable mask */
@@ -254,16 +280,22 @@ struct adp5589_kpad_platform_data {
 	unsigned short keymapsize;	/* Keymap size */
 	bool repeat;			/* Enable key repeat */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool en_keylock;		/* Enable key lock feature */
 	unsigned char unlock_key1;	/* Unlock Key 1 */
 	unsigned char unlock_key2;	/* Unlock Key 2 */
 	unsigned char unlock_timer;	/* Time in seconds [0..7] between the two unlock keys 0=disable */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool en_keylock;		/* Enable key lock feature (ADP5589 only)*/
 	unsigned char unlock_key1;	/* Unlock Key 1 (ADP5589 only) */
 	unsigned char unlock_key2;	/* Unlock Key 2 (ADP5589 only) */
 	unsigned char unlock_timer;	/* Time in seconds [0..7] between the two unlock keys 0=disable (ADP5589 only) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char scan_cycle_time;	/* Time between consecutive scan cycles */
 	unsigned char reset_cfg;	/* Reset config */
 	unsigned short reset1_key_1;	/* Reset Key 1 */

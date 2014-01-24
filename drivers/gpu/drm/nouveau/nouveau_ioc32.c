@@ -33,10 +33,16 @@
 
 #include <linux/compat.h>
 
+<<<<<<< HEAD
 #include "drmP.h"
 #include "drm.h"
 
 #include "nouveau_drv.h"
+=======
+#include <drm/drmP.h>
+
+#include "nouveau_ioctl.h"
+>>>>>>> refs/remotes/origin/master
 
 /**
  * Called whenever a 32-bit process running under a 64-bit kernel
@@ -64,7 +70,11 @@ long nouveau_compat_ioctl(struct file *filp, unsigned int cmd,
 	if (fn != NULL)
 		ret = (*fn)(filp, cmd, arg);
 	else
+<<<<<<< HEAD
 		ret = drm_ioctl(filp, cmd, arg);
+=======
+		ret = nouveau_drm_ioctl(filp, cmd, arg);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }

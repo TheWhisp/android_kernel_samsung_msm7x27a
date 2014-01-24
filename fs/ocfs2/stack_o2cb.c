@@ -29,9 +29,13 @@
 #include "cluster/nodemanager.h"
 #include "cluster/heartbeat.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "cluster/tcp.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "cluster/tcp.h"
+>>>>>>> refs/remotes/origin/master
 
 #include "stackglue.h"
 
@@ -261,7 +265,10 @@ static void o2cb_dump_lksb(struct ocfs2_dlm_lksb *lksb)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Check if this node is heartbeating and is connected to all other
  * heartbeating nodes.
  */
@@ -317,7 +324,10 @@ static int o2cb_cluster_check(void)
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Called from the dlm when it's about to evict a node. This is how the
  * classic stack signals node death.
  */
@@ -326,12 +336,17 @@ static void o2dlm_eviction_cb(int node_num, void *data)
 	struct ocfs2_cluster_connection *conn = data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mlog(ML_NOTICE, "o2dlm has evicted node %d from group %.*s\n",
 	     node_num, conn->cc_namelen, conn->cc_name);
 =======
 	printk(KERN_NOTICE "o2cb: o2dlm has evicted node %d from domain %.*s\n",
 	       node_num, conn->cc_namelen, conn->cc_name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_NOTICE "o2cb: o2dlm has evicted node %d from domain %.*s\n",
+	       node_num, conn->cc_namelen, conn->cc_name);
+>>>>>>> refs/remotes/origin/master
 
 	conn->cc_recovery_handler(node_num, conn->cc_recovery_data);
 }
@@ -348,6 +363,7 @@ static int o2cb_cluster_connect(struct ocfs2_cluster_connection *conn)
 	BUG_ON(conn->cc_proto == NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* for now we only have one cluster/node, make sure we see it
 	 * in the heartbeat universe */
 	if (!o2hb_check_local_node_heartbeating()) {
@@ -355,12 +371,17 @@ static int o2cb_cluster_connect(struct ocfs2_cluster_connection *conn)
 			mlog(ML_ERROR, "Global heartbeat not started\n");
 		rc = -EINVAL;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Ensure cluster stack is up and all nodes are connected */
 	rc = o2cb_cluster_check();
 	if (rc) {
 		printk(KERN_ERR "o2cb: Cluster check failed. Fix errors "
 		       "before retrying.\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 
@@ -396,7 +417,11 @@ static int o2cb_cluster_connect(struct ocfs2_cluster_connection *conn)
 	dlm_register_eviction_cb(dlm, &priv->op_eviction_cb);
 
 out_free:
+<<<<<<< HEAD
 	if (rc && conn->cc_private)
+=======
+	if (rc)
+>>>>>>> refs/remotes/origin/master
 		kfree(conn->cc_private);
 
 out:
@@ -418,7 +443,12 @@ static int o2cb_cluster_disconnect(struct ocfs2_cluster_connection *conn)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int o2cb_cluster_this_node(unsigned int *node)
+=======
+static int o2cb_cluster_this_node(struct ocfs2_cluster_connection *conn,
+				  unsigned int *node)
+>>>>>>> refs/remotes/origin/master
 {
 	int node_num;
 

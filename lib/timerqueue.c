@@ -23,15 +23,21 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/timerqueue.h>
 #include <linux/rbtree.h>
 #include <linux/module.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/bug.h>
 #include <linux/timerqueue.h>
 #include <linux/rbtree.h>
 #include <linux/export.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /**
  * timerqueue_add - Adds timer to timerqueue.

@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright (C) 2011 Marvell International Ltd. All rights reserved.
  *
@@ -8,7 +11,10 @@
  * Free Software Foundation;  either version 2 of the  License, or (at your
  * option) any later version.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __MV_UDC_H
 #define __MV_UDC_H
@@ -184,10 +190,14 @@ struct mv_udc {
 	struct mv_cap_regs __iomem	*cap_regs;
 	struct mv_op_regs __iomem	*op_regs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int			phy_regs;
 =======
 	void __iomem                    *phy_regs;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void __iomem                    *phy_regs;
+>>>>>>> refs/remotes/origin/master
 	unsigned int			max_eps;
 	struct mv_dqh			*ep_dqh;
 	size_t				ep_dqh_size;
@@ -210,9 +220,13 @@ struct mv_udc {
 
 	unsigned int		dev_addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int		test_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int		test_mode;
+>>>>>>> refs/remotes/origin/master
 
 	int			errors;
 	unsigned		softconnect:1,
@@ -220,9 +234,12 @@ struct mv_udc {
 				remote_wakeup:1,
 				softconnected:1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				force_fs:1;
 	struct clk		*clk;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				force_fs:1,
 				clock_gating:1,
 				active:1,
@@ -236,9 +253,13 @@ struct mv_udc {
 	struct mv_usb_platform_data     *pdata;
 
 	/* some SOC has mutiple clock sources for USB*/
+<<<<<<< HEAD
 	unsigned int    clknum;
 	struct clk      *clk[0];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct clk      *clk;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* endpoint data structure */
@@ -247,7 +268,10 @@ struct mv_ep {
 	struct mv_udc		*udc;
 	struct list_head	queue;
 	struct mv_dqh		*dqh;
+<<<<<<< HEAD
 	const struct usb_endpoint_descriptor	*desc;
+=======
+>>>>>>> refs/remotes/origin/master
 	u32			direction;
 	char			name[14];
 	unsigned		stopped:1,
@@ -263,9 +287,13 @@ struct mv_req {
 	struct mv_ep		*ep;
 	struct list_head	queue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned int            test_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned int            test_mode;
+>>>>>>> refs/remotes/origin/master
 	unsigned		dtd_count;
 	unsigned		mapped:1;
 };
@@ -331,8 +359,11 @@ struct mv_dtd {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int mv_udc_phy_init(unsigned int base);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

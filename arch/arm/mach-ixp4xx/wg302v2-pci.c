@@ -36,10 +36,14 @@ void __init wg302v2_pci_preinit(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init wg302v2_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 static int __init wg302v2_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int __init wg302v2_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	if (slot == 1)
 		return IRQ_IXP4XX_GPIO8;
@@ -50,10 +54,16 @@ static int __init wg302v2_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 
 struct hw_pci wg302v2_pci __initdata = {
 	.nr_controllers = 1,
+<<<<<<< HEAD
 	.preinit =        wg302v2_pci_preinit,
 	.swizzle =        pci_std_swizzle,
 	.setup =          ixp4xx_setup,
 	.scan =           ixp4xx_scan_bus,
+=======
+	.ops = &ixp4xx_ops,
+	.preinit =        wg302v2_pci_preinit,
+	.setup =          ixp4xx_setup,
+>>>>>>> refs/remotes/origin/master
 	.map_irq =        wg302v2_map_irq,
 };
 

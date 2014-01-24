@@ -22,10 +22,15 @@
 
 
 #include <linux/input.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 #include <linux/hid.h>
 
 #include "usbhid/usbhid.h"
+=======
+#include <linux/hid.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "hid-lg.h"
 
 /*
@@ -69,17 +74,23 @@ static int hid_lg3ff_play(struct input_dev *dev, void *data,
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Maxusage should always be 63 (maximum fields)
  * likely a better way to ensure this data is clean
  */
 	memset(report->field[0]->value, 0, sizeof(__s32)*report->field[0]->maxusage);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Available values in the field should always be 63, but we only use up to
  * 35. Instead, clear the entire area, however big it is.
  */
 	memset(report->field[0]->value, 0,
 	       sizeof(__s32) * report->field[0]->report_count);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (effect->type) {
 	case FF_CONSTANT:
@@ -100,7 +111,11 @@ static int hid_lg3ff_play(struct input_dev *dev, void *data,
 		report->field[0]->value[1] = (unsigned char)(-x);
 		report->field[0]->value[31] = (unsigned char)(-y);
 
+<<<<<<< HEAD
 		usbhid_submit_report(hid, report, USB_DIR_OUT);
+=======
+		hid_hw_request(hid, report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return 0;
@@ -126,7 +141,11 @@ static void hid_lg3ff_set_autocenter(struct input_dev *dev, u16 magnitude)
 	report->field[0]->value[33] = 0x7F;
 	report->field[0]->value[34] = 0x7F;
 
+<<<<<<< HEAD
 	usbhid_submit_report(hid, report, USB_DIR_OUT);
+=======
+	hid_hw_request(hid, report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -140,6 +159,7 @@ int lg3ff_init(struct hid_device *hid)
 {
 	struct hid_input *hidinput = list_entry(hid->inputs.next, struct hid_input, list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct list_head *report_list = &hid->report_enum[HID_OUTPUT_REPORT].report_list;
 	struct input_dev *dev = hidinput->input;
 	struct hid_report *report;
@@ -147,10 +167,14 @@ int lg3ff_init(struct hid_device *hid)
 =======
 	struct input_dev *dev = hidinput->input;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct input_dev *dev = hidinput->input;
+>>>>>>> refs/remotes/origin/master
 	const signed short *ff_bits = ff3_joystick_ac;
 	int error;
 	int i;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Find the report to use */
 	if (list_empty(report_list)) {
@@ -175,6 +199,11 @@ int lg3ff_init(struct hid_device *hid)
 	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 35))
 		return -ENODEV;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Check that the report looks ok */
+	if (!hid_validate_values(hid, HID_OUTPUT_REPORT, 0, 0, 35))
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 
 	/* Assume single fixed device G940 */
 	for (i = 0; ff_bits[i] >= 0; i++)

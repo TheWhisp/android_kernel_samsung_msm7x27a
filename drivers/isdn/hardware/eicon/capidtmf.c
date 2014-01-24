@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -51,12 +57,17 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   
   
 =======
 
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+
+>>>>>>> refs/remotes/origin/master
 
 
 
@@ -79,6 +90,7 @@
 
 static short capidtmf_expand_table_alaw[0x0100] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
    -5504,   5504,   -344,    344, -22016,  22016,  -1376,   1376,
    -2752,   2752,    -88,     88, -11008,  11008,   -688,    688,
@@ -113,6 +125,8 @@ static short capidtmf_expand_table_alaw[0x0100] =
    -6784,   6784,   -424,    424, -27136,  27136,  -1696,   1696,
    -3392,   3392,   -168,    168, -13568,  13568,   -848,    848
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	-5504,   5504,   -344,    344, -22016,  22016,  -1376,   1376,
 	-2752,   2752,    -88,     88, -11008,  11008,   -688,    688,
 	-7552,   7552,   -472,    472, -30208,  30208,  -1888,   1888,
@@ -145,11 +159,15 @@ static short capidtmf_expand_table_alaw[0x0100] =
 	-2368,   2368,    -40,     40,  -9472,   9472,   -592,    592,
 	-6784,   6784,   -424,    424, -27136,  27136,  -1696,   1696,
 	-3392,   3392,   -168,    168, -13568,  13568,   -848,    848
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static short capidtmf_expand_table_ulaw[0x0100] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   -32124,  32124,  -1884,   1884,  -7932,   7932,   -372,    372,
   -15996,  15996,   -876,    876,  -3900,   3900,   -120,    120,
@@ -184,6 +202,8 @@ static short capidtmf_expand_table_ulaw[0x0100] =
   -16764,  16764,   -924,    924,  -4092,   4092,   -132,    132,
    -8316,   8316,   -396,    396,  -1980,   1980,      0,      0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	-32124,  32124,  -1884,   1884,  -7932,   7932,   -372,    372,
 	-15996,  15996,   -876,    876,  -3900,   3900,   -120,    120,
 	-23932,  23932,  -1372,   1372,  -5884,   5884,   -244,    244,
@@ -216,7 +236,10 @@ static short capidtmf_expand_table_ulaw[0x0100] =
 	-12412,  12412,   -652,    652,  -3004,   3004,    -64,     64,
 	-16764,  16764,   -924,    924,  -4092,   4092,   -132,    132,
 	-8316,   8316,   -396,    396,  -1980,   1980,      0,      0
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
@@ -224,6 +247,7 @@ static short capidtmf_expand_table_ulaw[0x0100] =
 
 static short capidtmf_recv_window_function[CAPIDTMF_RECV_ACCUMULATE_CYCLES] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
     -500L,   -999L,  -1499L,  -1998L,  -2496L,  -2994L,  -3491L,  -3988L,
    -4483L,  -4978L,  -5471L,  -5963L,  -6454L,  -6943L,  -7431L,  -7917L,
@@ -252,6 +276,8 @@ static short capidtmf_recv_window_function[CAPIDTMF_RECV_ACCUMULATE_CYCLES] =
    -6454L,  -5963L,  -5471L,  -4978L,  -4483L,  -3988L,  -3491L,  -2994L,
    -2496L,  -1998L,  -1499L,   -999L,   -500L, 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	-500L,   -999L,  -1499L,  -1998L,  -2496L,  -2994L,  -3491L,  -3988L,
 	-4483L,  -4978L,  -5471L,  -5963L,  -6454L,  -6943L,  -7431L,  -7917L,
 	-8401L,  -8883L,  -9363L,  -9840L, -10316L, -10789L, -11259L, -11727L,
@@ -278,11 +304,15 @@ static short capidtmf_recv_window_function[CAPIDTMF_RECV_ACCUMULATE_CYCLES] =
 	-10316L,  -9840L,  -9363L,  -8883L,  -8401L,  -7917L,  -7431L,  -6943L,
 	-6454L,  -5963L,  -5471L,  -4978L,  -4483L,  -3988L,  -3491L,  -2994L,
 	-2496L,  -1998L,  -1499L,   -999L,   -500L,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static byte capidtmf_leading_zeroes_table[0x100] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4,
   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -301,6 +331,8 @@ static byte capidtmf_leading_zeroes_table[0x100] =
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	8, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
@@ -317,7 +349,10 @@ static byte capidtmf_leading_zeroes_table[0x100] =
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #define capidtmf_byte_leading_zeroes(b)  (capidtmf_leading_zeroes_table[(BYTE)(b)])
@@ -328,6 +363,7 @@ static byte capidtmf_leading_zeroes_table[0x100] =
 /*---------------------------------------------------------------------------*/
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void capidtmf_goertzel_loop (long *buffer, long *coeffs, short *sample, long count)
 {
@@ -464,6 +500,8 @@ static void capidtmf_goertzel_result (long *buffer, long *coeffs)
     buffer[i + CAPIDTMF_RECV_TOTAL_FREQUENCY_COUNT] = hi;
   }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void capidtmf_goertzel_loop(long *buffer, long *coeffs, short *sample, long count)
 {
 	int i, j;
@@ -598,7 +636,10 @@ static void capidtmf_goertzel_result(long *buffer, long *coeffs)
 		buffer[i] = (lo & 0xffff) | (mid << 16);
 		buffer[i + CAPIDTMF_RECV_TOTAL_FREQUENCY_COUNT] = hi;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -630,6 +671,7 @@ static void capidtmf_goertzel_result(long *buffer, long *coeffs)
 static long capidtmf_recv_goertzel_coef_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COUNT] =
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   0xda97L * 2,  /* 697 Hz (Low group 697 Hz) */
   0xd299L * 2,  /* 770 Hz (Low group 770 Hz) */
   0xc8cbL * 2,  /* 852 Hz (Low group 852 Hz) */
@@ -647,6 +689,8 @@ static long capidtmf_recv_goertzel_coef_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COUN
   0x37d8L * 2,  /* 1720 Hz (2nd harmonics of 852 Hz and upper guard of high group: 1715 Hz) */
   0x0000L * 2   /* 100-630 Hz (fundamentals) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	0xda97L * 2,  /* 697 Hz (Low group 697 Hz) */
 	0xd299L * 2,  /* 770 Hz (Low group 770 Hz) */
 	0xc8cbL * 2,  /* 852 Hz (Low group 852 Hz) */
@@ -663,12 +707,16 @@ static long capidtmf_recv_goertzel_coef_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COUN
 	0x583bL * 2,  /* 1552 Hz (2nd harmonics of 770 Hz and guard between 1477 Hz and 1633 Hz: 1553 Hz) */
 	0x37d8L * 2,  /* 1720 Hz (2nd harmonics of 852 Hz and upper guard of high group: 1715 Hz) */
 	0x0000L * 2   /* 100-630 Hz (fundamentals) */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 static word capidtmf_recv_guard_snr_low_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COUNT] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   14,                                    /* Low group peak versus 697 Hz */
   14,                                    /* Low group peak versus 770 Hz */
@@ -687,6 +735,8 @@ static word capidtmf_recv_guard_snr_low_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COUN
   DSPDTMF_RX_HARMONICS_SEL_DEFAULT - 4,  /* Low group peak versus 1715 Hz */
   12                                     /* Low group peak versus 100-630 Hz */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	14,                                    /* Low group peak versus 697 Hz */
 	14,                                    /* Low group peak versus 770 Hz */
 	16,                                    /* Low group peak versus 852 Hz */
@@ -703,12 +753,16 @@ static word capidtmf_recv_guard_snr_low_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COUN
 	DSPDTMF_RX_HARMONICS_SEL_DEFAULT - 4,  /* Low group peak versus 1555 Hz */
 	DSPDTMF_RX_HARMONICS_SEL_DEFAULT - 4,  /* Low group peak versus 1715 Hz */
 	12                                     /* Low group peak versus 100-630 Hz */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 static word capidtmf_recv_guard_snr_high_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COUNT] =
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   CAPIDTMF_RECV_GUARD_SNR_DONTCARE,      /* High group peak versus 697 Hz */
   CAPIDTMF_RECV_GUARD_SNR_DONTCARE,      /* High group peak versus 770 Hz */
@@ -727,6 +781,8 @@ static word capidtmf_recv_guard_snr_high_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COU
   16,                                    /* High group peak versus 1715 Hz */
   12                                     /* High group peak versus 100-630 Hz */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	CAPIDTMF_RECV_GUARD_SNR_DONTCARE,      /* High group peak versus 697 Hz */
 	CAPIDTMF_RECV_GUARD_SNR_DONTCARE,      /* High group peak versus 770 Hz */
 	CAPIDTMF_RECV_GUARD_SNR_DONTCARE,      /* High group peak versus 852 Hz */
@@ -743,12 +799,16 @@ static word capidtmf_recv_guard_snr_high_table[CAPIDTMF_RECV_TOTAL_FREQUENCY_COU
 	8,                                     /* High group peak versus 1555 Hz */
 	16,                                    /* High group peak versus 1715 Hz */
 	12                                     /* High group peak versus 100-630 Hz */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 
 /*---------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void capidtmf_recv_init (t_capidtmf_state   *p_state)
 {
@@ -824,6 +884,8 @@ word capidtmf_recv_indication (t_capidtmf_state   *p_state, byte *buffer)
   p_state->recv.indication_state_ack ^= flags;
   return (0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void capidtmf_recv_init(t_capidtmf_state *p_state)
 {
 	p_state->recv.min_gap_duration = 1;
@@ -897,12 +959,16 @@ word capidtmf_recv_indication(t_capidtmf_state *p_state, byte *buffer)
 	}
 	p_state->recv.indication_state_ack ^= flags;
 	return (0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
 #define CAPIDTMF_RECV_WINDOWED_SAMPLES  32
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void capidtmf_recv_block (t_capidtmf_state   *p_state, byte   *buffer, word length)
 {
@@ -1097,6 +1163,8 @@ void capidtmf_init (t_capidtmf_state   *p_state, byte ulaw)
   p_state->ulaw = ulaw;
   capidtmf_recv_init (p_state);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void capidtmf_recv_block(t_capidtmf_state *p_state, byte *buffer, word length)
 {
 	byte result_digit;
@@ -1289,7 +1357,10 @@ void capidtmf_init(t_capidtmf_state *p_state, byte ulaw)
 {
 	p_state->ulaw = ulaw;
 	capidtmf_recv_init(p_state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 

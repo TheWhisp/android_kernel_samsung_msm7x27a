@@ -146,8 +146,12 @@ static int omfs_grow_extent(struct inode *inode, struct omfs_extent *oe,
 			be64_to_cpu(entry->e_blocks);
 
 		if (omfs_allocate_block(inode->i_sb, new_block)) {
+<<<<<<< HEAD
 			entry->e_blocks =
 				cpu_to_be64(be64_to_cpu(entry->e_blocks) + 1);
+=======
+			be64_add_cpu(&entry->e_blocks, 1);
+>>>>>>> refs/remotes/origin/master
 			terminator->e_blocks = ~(cpu_to_be64(
 				be64_to_cpu(~terminator->e_blocks) + 1));
 			goto out;
@@ -177,7 +181,11 @@ static int omfs_grow_extent(struct inode *inode, struct omfs_extent *oe,
 		be64_to_cpu(~terminator->e_blocks) + (u64) new_count));
 
 	/* write in new entry */
+<<<<<<< HEAD
 	oe->e_extent_count = cpu_to_be32(1 + be32_to_cpu(oe->e_extent_count));
+=======
+	be32_add_cpu(&oe->e_extent_count, 1);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	*ret_block = new_block;
@@ -307,6 +315,19 @@ omfs_writepages(struct address_space *mapping, struct writeback_control *wbc)
 	return mpage_writepages(mapping, wbc, omfs_get_block);
 }
 
+<<<<<<< HEAD
+=======
+static void omfs_write_failed(struct address_space *mapping, loff_t to)
+{
+	struct inode *inode = mapping->host;
+
+	if (to > inode->i_size) {
+		truncate_pagecache(inode, inode->i_size);
+		omfs_truncate(inode);
+	}
+}
+
+>>>>>>> refs/remotes/origin/master
 static int omfs_write_begin(struct file *file, struct address_space *mapping,
 			loff_t pos, unsigned len, unsigned flags,
 			struct page **pagep, void **fsdata)
@@ -315,11 +336,16 @@ static int omfs_write_begin(struct file *file, struct address_space *mapping,
 
 	ret = block_write_begin(mapping, pos, len, flags, pagep,
 				omfs_get_block);
+<<<<<<< HEAD
 	if (unlikely(ret)) {
 		loff_t isize = mapping->host->i_size;
 		if (pos + len > isize)
 			vmtruncate(mapping->host, isize);
 	}
+=======
+	if (unlikely(ret))
+		omfs_write_failed(mapping, pos + len);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -351,9 +377,17 @@ static int omfs_setattr(struct dentry *dentry, struct iattr *attr)
 
 	if ((attr->ia_valid & ATTR_SIZE) &&
 	    attr->ia_size != i_size_read(inode)) {
+<<<<<<< HEAD
 		error = vmtruncate(inode, attr->ia_size);
 		if (error)
 			return error;
+=======
+		error = inode_newsize_ok(inode, attr->ia_size);
+		if (error)
+			return error;
+		truncate_setsize(inode, attr->ia_size);
+		omfs_truncate(inode);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	setattr_copy(inode, attr);
@@ -363,7 +397,10 @@ static int omfs_setattr(struct dentry *dentry, struct iattr *attr)
 
 const struct inode_operations omfs_file_inops = {
 	.setattr = omfs_setattr,
+<<<<<<< HEAD
 	.truncate = omfs_truncate
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct address_space_operations omfs_aops = {

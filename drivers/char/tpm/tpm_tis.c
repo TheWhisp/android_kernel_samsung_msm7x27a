@@ -27,6 +27,7 @@
 #include <linux/wait.h>
 #include <linux/acpi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "tpm.h"
 
 #define TPM_HEADER_SIZE 10
@@ -36,6 +37,11 @@
 #include "tpm.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/freezer.h>
+#include "tpm.h"
+
+>>>>>>> refs/remotes/origin/master
 enum tis_access {
 	TPM_ACCESS_VALID = 0x80,
 	TPM_ACCESS_ACTIVE_LOCALITY = 0x20,
@@ -84,6 +90,7 @@ enum tis_defaults {
 
 static LIST_HEAD(tis_chips);
 <<<<<<< HEAD
+<<<<<<< HEAD
 static DEFINE_SPINLOCK(tis_lock);
 
 #ifdef CONFIG_ACPI
@@ -92,11 +99,22 @@ static DEFINE_MUTEX(tis_lock);
 
 #if defined(CONFIG_PNP) && defined(CONFIG_ACPI)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_MUTEX(tis_lock);
+
+#if defined(CONFIG_PNP) && defined(CONFIG_ACPI)
+>>>>>>> refs/remotes/origin/master
 static int is_itpm(struct pnp_dev *dev)
 {
 	struct acpi_device *acpi = pnp_acpi_device(dev);
 	struct acpi_hardware_id *id;
 
+<<<<<<< HEAD
+=======
+	if (!acpi)
+		return 0;
+
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry(id, &acpi->pnp.ids, list) {
 		if (!strcmp("INTC0102", id->id))
 			return 1;
@@ -106,15 +124,38 @@ static int is_itpm(struct pnp_dev *dev)
 }
 #else
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int is_itpm(struct pnp_dev *dev)
 =======
 static inline int is_itpm(struct pnp_dev *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static inline int is_itpm(struct pnp_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 #endif
 
+<<<<<<< HEAD
+=======
+/* Before we attempt to access the TPM we must see that the valid bit is set.
+ * The specification says that this bit is 0 at reset and remains 0 until the
+ * 'TPM has gone through its self test and initialization and has established
+ * correct values in the other bits.' */
+static int wait_startup(struct tpm_chip *chip, int l)
+{
+	unsigned long stop = jiffies + chip->vendor.timeout_a;
+	do {
+		if (ioread8(chip->vendor.iobase + TPM_ACCESS(l)) &
+		    TPM_ACCESS_VALID)
+			return 0;
+		msleep(TPM_TIMEOUT);
+	} while (time_before(jiffies, stop));
+	return -1;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int check_locality(struct tpm_chip *chip, int l)
 {
 	if ((ioread8(chip->vendor.iobase + TPM_ACCESS(l)) &
@@ -137,10 +178,14 @@ static void release_locality(struct tpm_chip *chip, int l, int force)
 static int request_locality(struct tpm_chip *chip, int l)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long stop;
 =======
 	unsigned long stop, timeout;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long stop, timeout;
+>>>>>>> refs/remotes/origin/master
 	long rc;
 
 	if (check_locality(chip, l) >= 0)
@@ -149,6 +194,7 @@ static int request_locality(struct tpm_chip *chip, int l)
 	iowrite8(TPM_ACCESS_REQUEST_USE,
 		 chip->vendor.iobase + TPM_ACCESS(l));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (chip->vendor.irq) {
 		rc = wait_event_interruptible_timeout(chip->vendor.int_queue,
@@ -162,6 +208,8 @@ static int request_locality(struct tpm_chip *chip, int l)
 		/* wait for burstcount */
 		stop = jiffies + chip->vendor.timeout_a;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	stop = jiffies + chip->vendor.timeout_a;
 
 	if (chip->vendor.irq) {
@@ -181,7 +229,10 @@ again:
 		}
 	} else {
 		/* wait for burstcount */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		do {
 			if (check_locality(chip, l) >= 0)
 				return l;
@@ -227,6 +278,7 @@ static int get_burstcount(struct tpm_chip *chip)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int wait_for_stat(struct tpm_chip *chip, u8 mask, unsigned long timeout,
 			 wait_queue_head_t *queue)
 {
@@ -260,10 +312,13 @@ static int wait_for_stat(struct tpm_chip *chip, u8 mask, unsigned long timeout,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int recv_data(struct tpm_chip *chip, u8 *buf, size_t count)
 {
 	int size = 0, burstcnt;
 	while (size < count &&
+<<<<<<< HEAD
 <<<<<<< HEAD
 	       wait_for_stat(chip,
 			     TPM_STS_DATA_AVAIL | TPM_STS_VALID,
@@ -275,6 +330,12 @@ static int recv_data(struct tpm_chip *chip, u8 *buf, size_t count)
 				 chip->vendor.timeout_c,
 				 &chip->vendor.read_queue)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	       wait_for_tpm_stat(chip,
+				 TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+				 chip->vendor.timeout_c,
+				 &chip->vendor.read_queue, true)
+>>>>>>> refs/remotes/origin/master
 	       == 0) {
 		burstcnt = get_burstcount(chip);
 		for (; burstcnt > 0 && size < count; burstcnt--)
@@ -317,12 +378,17 @@ static int tpm_tis_recv(struct tpm_chip *chip, u8 *buf, size_t count)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	wait_for_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
 		      &chip->vendor.int_queue);
 =======
 	wait_for_tpm_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
 			  &chip->vendor.int_queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	wait_for_tpm_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
+			  &chip->vendor.int_queue, false);
+>>>>>>> refs/remotes/origin/master
 	status = tpm_tis_status(chip);
 	if (status & TPM_STS_DATA_AVAIL) {	/* retry? */
 		dev_err(chip->dev, "Error left over data\n");
@@ -337,10 +403,14 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int itpm;
 =======
 static bool itpm;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool itpm;
+>>>>>>> refs/remotes/origin/master
 module_param(itpm, bool, 0444);
 MODULE_PARM_DESC(itpm, "Force iTPM workarounds (found on some Lenovo laptops)");
 
@@ -350,17 +420,23 @@ MODULE_PARM_DESC(itpm, "Force iTPM workarounds (found on some Lenovo laptops)");
  * waited for here
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
 {
 	int rc, status, burstcnt;
 	size_t count = 0;
 	u32 ordinal;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int tpm_tis_send_data(struct tpm_chip *chip, u8 *buf, size_t len)
 {
 	int rc, status, burstcnt;
 	size_t count = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (request_locality(chip, 0) < 0)
 		return -EBUSY;
@@ -369,12 +445,18 @@ static int tpm_tis_send_data(struct tpm_chip *chip, u8 *buf, size_t len)
 	if ((status & TPM_STS_COMMAND_READY) == 0) {
 		tpm_tis_ready(chip);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (wait_for_stat
 =======
 		if (wait_for_tpm_stat
 >>>>>>> refs/remotes/origin/cm-10.0
 		    (chip, TPM_STS_COMMAND_READY, chip->vendor.timeout_b,
 		     &chip->vendor.int_queue) < 0) {
+=======
+		if (wait_for_tpm_stat
+		    (chip, TPM_STS_COMMAND_READY, chip->vendor.timeout_b,
+		     &chip->vendor.int_queue, false) < 0) {
+>>>>>>> refs/remotes/origin/master
 			rc = -ETIME;
 			goto out_err;
 		}
@@ -389,12 +471,17 @@ static int tpm_tis_send_data(struct tpm_chip *chip, u8 *buf, size_t len)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wait_for_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
 			      &chip->vendor.int_queue);
 =======
 		wait_for_tpm_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
 				  &chip->vendor.int_queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		wait_for_tpm_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
+				  &chip->vendor.int_queue, false);
+>>>>>>> refs/remotes/origin/master
 		status = tpm_tis_status(chip);
 		if (!itpm && (status & TPM_STS_DATA_EXPECT) == 0) {
 			rc = -EIO;
@@ -405,6 +492,7 @@ static int tpm_tis_send_data(struct tpm_chip *chip, u8 *buf, size_t len)
 	/* write last byte */
 	iowrite8(buf[count],
 <<<<<<< HEAD
+<<<<<<< HEAD
 		 chip->vendor.iobase +
 		 TPM_DATA_FIFO(chip->vendor.locality));
 	wait_for_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
@@ -414,6 +502,11 @@ static int tpm_tis_send_data(struct tpm_chip *chip, u8 *buf, size_t len)
 	wait_for_tpm_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
 			  &chip->vendor.int_queue);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		 chip->vendor.iobase + TPM_DATA_FIFO(chip->vendor.locality));
+	wait_for_tpm_stat(chip, TPM_STS_VALID, chip->vendor.timeout_c,
+			  &chip->vendor.int_queue, false);
+>>>>>>> refs/remotes/origin/master
 	status = tpm_tis_status(chip);
 	if ((status & TPM_STS_DATA_EXPECT) != 0) {
 		rc = -EIO;
@@ -421,7 +514,10 @@ static int tpm_tis_send_data(struct tpm_chip *chip, u8 *buf, size_t len)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_err:
@@ -444,13 +540,17 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
 	if (rc < 0)
 		return rc;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* go and do it */
 	iowrite8(TPM_STS_GO,
 		 chip->vendor.iobase + TPM_STS(chip->vendor.locality));
 
 	if (chip->vendor.irq) {
 		ordinal = be32_to_cpu(*((__be32 *) (buf + 6)));
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (wait_for_stat
 =======
@@ -459,6 +559,12 @@ static int tpm_tis_send(struct tpm_chip *chip, u8 *buf, size_t len)
 		    (chip, TPM_STS_DATA_AVAIL | TPM_STS_VALID,
 		     tpm_calc_ordinal_duration(chip, ordinal),
 		     &chip->vendor.read_queue) < 0) {
+=======
+		if (wait_for_tpm_stat
+		    (chip, TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+		     tpm_calc_ordinal_duration(chip, ordinal),
+		     &chip->vendor.read_queue, false) < 0) {
+>>>>>>> refs/remotes/origin/master
 			rc = -ETIME;
 			goto out_err;
 		}
@@ -471,7 +577,10 @@ out_err:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Early probing for iTPM with STS_DATA_EXPECT flaw.
  * Try sending command without itpm flag set and if that
@@ -492,7 +601,11 @@ static int probe_itpm(struct tpm_chip *chip)
 	if (vendor != TPM_VID_INTEL)
 		return 0;
 
+<<<<<<< HEAD
 	itpm = 0;
+=======
+	itpm = false;
+>>>>>>> refs/remotes/origin/master
 
 	rc = tpm_tis_send_data(chip, cmd_getticks, len);
 	if (rc == 0)
@@ -501,7 +614,11 @@ static int probe_itpm(struct tpm_chip *chip)
 	tpm_tis_ready(chip);
 	release_locality(chip, chip->vendor.locality, 0);
 
+<<<<<<< HEAD
 	itpm = 1;
+=======
+	itpm = true;
+>>>>>>> refs/remotes/origin/master
 
 	rc = tpm_tis_send_data(chip, cmd_getticks, len);
 	if (rc == 0) {
@@ -518,6 +635,7 @@ out:
 	return rc;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static const struct file_operations tis_ops = {
 	.owner = THIS_MODULE,
@@ -565,16 +683,36 @@ static struct attribute_group tis_attr_grp = {
 };
 
 static struct tpm_vendor_specific tpm_tis = {
+=======
+static bool tpm_tis_req_canceled(struct tpm_chip *chip, u8 status)
+{
+	switch (chip->vendor.manufacturer_id) {
+	case TPM_VID_WINBOND:
+		return ((status == TPM_STS_VALID) ||
+			(status == (TPM_STS_VALID | TPM_STS_COMMAND_READY)));
+	case TPM_VID_STM:
+		return (status == (TPM_STS_VALID | TPM_STS_COMMAND_READY));
+	default:
+		return (status == TPM_STS_COMMAND_READY);
+	}
+}
+
+static const struct tpm_class_ops tpm_tis = {
+>>>>>>> refs/remotes/origin/master
 	.status = tpm_tis_status,
 	.recv = tpm_tis_recv,
 	.send = tpm_tis_send,
 	.cancel = tpm_tis_ready,
 	.req_complete_mask = TPM_STS_DATA_AVAIL | TPM_STS_VALID,
 	.req_complete_val = TPM_STS_DATA_AVAIL | TPM_STS_VALID,
+<<<<<<< HEAD
 	.req_canceled = TPM_STS_COMMAND_READY,
 	.attr_group = &tis_attr_grp,
 	.miscdev = {
 		    .fops = &tis_ops,},
+=======
+	.req_canceled = tpm_tis_req_canceled,
+>>>>>>> refs/remotes/origin/master
 };
 
 static irqreturn_t tis_int_probe(int irq, void *dev_id)
@@ -589,10 +727,14 @@ static irqreturn_t tis_int_probe(int irq, void *dev_id)
 		return IRQ_NONE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	chip->vendor.irq = irq;
 =======
 	chip->vendor.probed_irq = irq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	chip->vendor.probed_irq = irq;
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear interrupts handled with TPM_EOI */
 	iowrite32(interrupt,
@@ -633,10 +775,14 @@ static irqreturn_t tis_int_handler(int dummy, void *dev_id)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int interrupts = 1;
 =======
 static bool interrupts = 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool interrupts = true;
+>>>>>>> refs/remotes/origin/master
 module_param(interrupts, bool, 0444);
 MODULE_PARM_DESC(interrupts, "Enable interrupts");
 
@@ -645,10 +791,14 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 {
 	u32 vendor, intfcaps, intmask;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int rc, i;
 =======
 	int rc, i, irq_s, irq_e, probe;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int rc, i, irq_s, irq_e, probe;
+>>>>>>> refs/remotes/origin/master
 	struct tpm_chip *chip;
 
 	if (!(chip = tpm_register_hardware(dev, &tpm_tis)))
@@ -666,29 +816,50 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 	chip->vendor.timeout_c = msecs_to_jiffies(TIS_SHORT_TIMEOUT);
 	chip->vendor.timeout_d = msecs_to_jiffies(TIS_SHORT_TIMEOUT);
 
+<<<<<<< HEAD
+=======
+	if (wait_startup(chip, 0) != 0) {
+		rc = -ENODEV;
+		goto out_err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (request_locality(chip, 0) != 0) {
 		rc = -ENODEV;
 		goto out_err;
 	}
 
 	vendor = ioread32(chip->vendor.iobase + TPM_DID_VID(0));
+<<<<<<< HEAD
+=======
+	chip->vendor.manufacturer_id = vendor;
+>>>>>>> refs/remotes/origin/master
 
 	dev_info(dev,
 		 "1.2 TPM (device-id 0x%X, rev-id %d)\n",
 		 vendor >> 16, ioread8(chip->vendor.iobase + TPM_RID(0)));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!itpm) {
 		probe = probe_itpm(chip);
 		if (probe < 0) {
 			rc = -ENODEV;
 			goto out_err;
 		}
+<<<<<<< HEAD
 		itpm = (probe == 0) ? 0 : 1;
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		itpm = !!probe;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	if (itpm)
 		dev_info(dev, "Intel iTPM workaround enabled\n");
 
@@ -719,7 +890,10 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 		dev_dbg(dev, "\tData Avail Int Support\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* get the timeouts before testing for irqs */
 	if (tpm_get_timeouts(chip)) {
 		dev_err(dev, "Could not get TPM timeouts and durations\n");
@@ -733,7 +907,10 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 		goto out_err;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* INTERRUPT Setup */
 	init_waitqueue_head(&chip->vendor.read_queue);
 	init_waitqueue_head(&chip->vendor.int_queue);
@@ -753,6 +930,7 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 		chip->vendor.irq = irq;
 	if (interrupts && !chip->vendor.irq) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		chip->vendor.irq =
 		    ioread8(chip->vendor.iobase +
 			    TPM_INT_VECTOR(chip->vendor.locality));
@@ -761,6 +939,8 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 			iowrite8(i, chip->vendor.iobase +
 				    TPM_INT_VECTOR(chip->vendor.locality));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		irq_s =
 		    ioread8(chip->vendor.iobase +
 			    TPM_INT_VECTOR(chip->vendor.locality));
@@ -774,7 +954,10 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 		for (i = irq_s; i <= irq_e && chip->vendor.irq == 0; i++) {
 			iowrite8(i, chip->vendor.iobase +
 				 TPM_INT_VECTOR(chip->vendor.locality));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (request_irq
 			    (i, tis_int_probe, IRQF_SHARED,
 			     chip->vendor.miscdev.name, chip) != 0) {
@@ -797,10 +980,13 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 				  TPM_INT_ENABLE(chip->vendor.locality));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			/* Generate Interrupts */
 			tpm_gen_interrupt(chip);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			chip->vendor.probed_irq = 0;
 
 			/* Generate Interrupts */
@@ -817,7 +1003,10 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 				  chip->vendor.iobase +
 				  TPM_INT_STATUS(chip->vendor.locality));
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			/* Turn off */
 			iowrite32(intmask,
 				  chip->vendor.iobase +
@@ -853,6 +1042,7 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 
 	INIT_LIST_HEAD(&chip->vendor.list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&tis_lock);
 	list_add(&chip->vendor.list, &tis_chips);
 	spin_unlock(&tis_lock);
@@ -860,11 +1050,16 @@ static int tpm_tis_init(struct device *dev, resource_size_t start,
 	tpm_get_timeouts(chip);
 	tpm_continue_selftest(chip);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&tis_lock);
 	list_add(&chip->vendor.list, &tis_chips);
 	mutex_unlock(&tis_lock);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 out_err:
@@ -874,8 +1069,13 @@ out_err:
 	return rc;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
+=======
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static void tpm_tis_reenable_interrupts(struct tpm_chip *chip)
 {
 	u32 intmask;
@@ -897,10 +1097,33 @@ static void tpm_tis_reenable_interrupts(struct tpm_chip *chip)
 		  chip->vendor.iobase + TPM_INT_ENABLE(chip->vendor.locality));
 }
 
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 #ifdef CONFIG_PNP
 static int __devinit tpm_tis_pnp_init(struct pnp_dev *pnp_dev,
+=======
+static int tpm_tis_resume(struct device *dev)
+{
+	struct tpm_chip *chip = dev_get_drvdata(dev);
+	int ret;
+
+	if (chip->vendor.irq)
+		tpm_tis_reenable_interrupts(chip);
+
+	ret = tpm_pm_resume(dev);
+	if (!ret)
+		tpm_do_selftest(chip);
+
+	return ret;
+}
+#endif
+
+static SIMPLE_DEV_PM_OPS(tpm_tis_pm, tpm_pm_suspend, tpm_tis_resume);
+
+#ifdef CONFIG_PNP
+static int tpm_tis_pnp_init(struct pnp_dev *pnp_dev,
+>>>>>>> refs/remotes/origin/master
 				      const struct pnp_device_id *pnp_id)
 {
 	resource_size_t start, len;
@@ -912,14 +1135,22 @@ static int __devinit tpm_tis_pnp_init(struct pnp_dev *pnp_dev,
 	if (pnp_irq_valid(pnp_dev, 0))
 		irq = pnp_irq(pnp_dev, 0);
 	else
+<<<<<<< HEAD
 		interrupts = 0;
 
 	if (is_itpm(pnp_dev))
 		itpm = 1;
+=======
+		interrupts = false;
+
+	if (is_itpm(pnp_dev))
+		itpm = true;
+>>>>>>> refs/remotes/origin/master
 
 	return tpm_tis_init(&pnp_dev->dev, start, len, irq);
 }
 
+<<<<<<< HEAD
 static int tpm_tis_pnp_suspend(struct pnp_dev *dev, pm_message_t msg)
 {
 	return tpm_pm_suspend(&dev->dev, msg);
@@ -947,6 +1178,9 @@ static int tpm_tis_pnp_resume(struct pnp_dev *dev)
 }
 
 static struct pnp_device_id tpm_pnp_tbl[] __devinitdata = {
+=======
+static struct pnp_device_id tpm_pnp_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{"PNP0C31", 0},		/* TPM */
 	{"ATM1200", 0},		/* Atmel */
 	{"IFX0102", 0},		/* Infineon */
@@ -960,7 +1194,11 @@ static struct pnp_device_id tpm_pnp_tbl[] __devinitdata = {
 };
 MODULE_DEVICE_TABLE(pnp, tpm_pnp_tbl);
 
+<<<<<<< HEAD
 static __devexit void tpm_tis_pnp_remove(struct pnp_dev *dev)
+=======
+static void tpm_tis_pnp_remove(struct pnp_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct tpm_chip *chip = pnp_get_drvdata(dev);
 
@@ -974,9 +1212,16 @@ static struct pnp_driver tis_pnp_driver = {
 	.name = "tpm_tis",
 	.id_table = tpm_pnp_tbl,
 	.probe = tpm_tis_pnp_init,
+<<<<<<< HEAD
 	.suspend = tpm_tis_pnp_suspend,
 	.resume = tpm_tis_pnp_resume,
 	.remove = tpm_tis_pnp_remove,
+=======
+	.remove = tpm_tis_pnp_remove,
+	.driver	= {
+		.pm = &tpm_tis_pm,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 #define TIS_HID_USR_IDX sizeof(tpm_pnp_tbl)/sizeof(struct pnp_device_id) -2
@@ -984,6 +1229,7 @@ module_param_string(hid, tpm_pnp_tbl[TIS_HID_USR_IDX].id,
 		    sizeof(tpm_pnp_tbl[TIS_HID_USR_IDX].id), 0444);
 MODULE_PARM_DESC(hid, "Set additional specific HID for this driver to probe");
 #endif
+<<<<<<< HEAD
 static int tpm_tis_suspend(struct platform_device *dev, pm_message_t msg)
 {
 	return tpm_pm_suspend(&dev->dev, msg);
@@ -1001,22 +1247,34 @@ static int tpm_tis_resume(struct platform_device *dev)
 >>>>>>> refs/remotes/origin/cm-10.0
 	return tpm_pm_resume(&dev->dev);
 }
+=======
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver tis_drv = {
 	.driver = {
 		.name = "tpm_tis",
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.suspend = tpm_tis_suspend,
 	.resume = tpm_tis_resume,
+=======
+		.pm		= &tpm_tis_pm,
+	},
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct platform_device *pdev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int force;
 =======
 static bool force;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool force;
+>>>>>>> refs/remotes/origin/master
 module_param(force, bool, 0444);
 MODULE_PARM_DESC(force, "Force device probe rather than using ACPI entry");
 static int __init init_tis(void)
@@ -1030,12 +1288,28 @@ static int __init init_tis(void)
 	rc = platform_driver_register(&tis_drv);
 	if (rc < 0)
 		return rc;
+<<<<<<< HEAD
 	if (IS_ERR(pdev=platform_device_register_simple("tpm_tis", -1, NULL, 0)))
 		return PTR_ERR(pdev);
 	if((rc=tpm_tis_init(&pdev->dev, TIS_MEM_BASE, TIS_MEM_LEN, 0)) != 0) {
 		platform_device_unregister(pdev);
 		platform_driver_unregister(&tis_drv);
 	}
+=======
+	pdev = platform_device_register_simple("tpm_tis", -1, NULL, 0);
+	if (IS_ERR(pdev)) {
+		rc = PTR_ERR(pdev);
+		goto err_dev;
+	}
+	rc = tpm_tis_init(&pdev->dev, TIS_MEM_BASE, TIS_MEM_LEN, 0);
+	if (rc)
+		goto err_init;
+	return 0;
+err_init:
+	platform_device_unregister(pdev);
+err_dev:
+	platform_driver_unregister(&tis_drv);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -1044,10 +1318,14 @@ static void __exit cleanup_tis(void)
 	struct tpm_vendor_specific *i, *j;
 	struct tpm_chip *chip;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_lock(&tis_lock);
 =======
 	mutex_lock(&tis_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&tis_lock);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(i, j, &tis_chips, list) {
 		chip = to_tpm_chip(i);
 		tpm_remove_hardware(chip->dev);
@@ -1064,10 +1342,14 @@ static void __exit cleanup_tis(void)
 		list_del(&i->list);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 	spin_unlock(&tis_lock);
 =======
 	mutex_unlock(&tis_lock);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&tis_lock);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PNP
 	if (!force) {
 		pnp_unregister_driver(&tis_pnp_driver);

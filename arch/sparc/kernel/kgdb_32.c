@@ -5,14 +5,22 @@
 
 #include <linux/kgdb.h>
 #include <linux/kdebug.h>
+<<<<<<< HEAD
+=======
+#include <linux/sched.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/kdebug.h>
 #include <asm/ptrace.h>
 #include <asm/irq.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/cacheflush.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/cacheflush.h>
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned long trapbase;
 

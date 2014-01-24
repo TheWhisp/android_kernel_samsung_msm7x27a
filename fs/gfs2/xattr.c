@@ -239,12 +239,18 @@ static int ea_dealloc_unstuffed(struct gfs2_inode *ip, struct buffer_head *bh,
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = gfs2_rindex_update(sdp);
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (GFS2_EA_IS_STUFFED(ea))
 		return 0;
 
@@ -259,10 +265,14 @@ static int ea_dealloc_unstuffed(struct gfs2_inode *ip, struct buffer_head *bh,
 		return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rgd = gfs2_blk2rgrpd(sdp, bn);
 =======
 	rgd = gfs2_blk2rgrpd(sdp, bn, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rgd = gfs2_blk2rgrpd(sdp, bn, 1);
+>>>>>>> refs/remotes/origin/master
 	if (!rgd) {
 		gfs2_consist_inode(ip);
 		return -EIO;
@@ -277,7 +287,11 @@ static int ea_dealloc_unstuffed(struct gfs2_inode *ip, struct buffer_head *bh,
 	if (error)
 		goto out_gunlock;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, bh, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, bh);
+>>>>>>> refs/remotes/origin/master
 
 	dataptrs = GFS2_EA2DATAPTRS(ea);
 	for (x = 0; x < ea->ea_num_ptrs; x++, dataptrs++) {
@@ -316,7 +330,11 @@ static int ea_dealloc_unstuffed(struct gfs2_inode *ip, struct buffer_head *bh,
 	error = gfs2_meta_inode_buffer(ip, &dibh);
 	if (!error) {
 		ip->i_inode.i_ctime = CURRENT_TIME;
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, dibh, 1);
+=======
+		gfs2_trans_add_meta(ip->i_gl, dibh);
+>>>>>>> refs/remotes/origin/master
 		gfs2_dinode_out(ip, dibh->b_data);
 		brelse(dibh);
 	}
@@ -332,6 +350,7 @@ static int ea_remove_unstuffed(struct gfs2_inode *ip, struct buffer_head *bh,
 			       struct gfs2_ea_header *ea,
 			       struct gfs2_ea_header *prev, int leave)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct gfs2_alloc *al;
 	int error;
@@ -365,12 +384,27 @@ out_quota:
 out_alloc:
 	gfs2_alloc_put(ip);
 =======
+=======
+	int error;
+
+	error = gfs2_rindex_update(GFS2_SB(&ip->i_inode));
+	if (error)
+		return error;
+
+	error = gfs2_quota_hold(ip, NO_UID_QUOTA_CHANGE, NO_GID_QUOTA_CHANGE);
+	if (error)
+		goto out_alloc;
+
+>>>>>>> refs/remotes/origin/master
 	error = ea_dealloc_unstuffed(ip, bh, ea, prev, (leave) ? &error : NULL);
 
 	gfs2_quota_unhold(ip);
 out_alloc:
+<<<<<<< HEAD
 	gfs2_qadata_put(ip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -480,17 +514,31 @@ ssize_t gfs2_listxattr(struct dentry *dentry, char *buffer, size_t size)
 }
 
 /**
+<<<<<<< HEAD
  * ea_get_unstuffed - actually copies the unstuffed data into the
  *                    request buffer
  * @ip: The GFS2 inode
  * @ea: The extended attribute header structure
  * @data: The data to be copied
+=======
+ * ea_iter_unstuffed - copies the unstuffed xattr data to/from the
+ *                     request buffer
+ * @ip: The GFS2 inode
+ * @ea: The extended attribute header structure
+ * @din: The data to be copied in
+ * @dout: The data to be copied out (one of din,dout will be NULL)
+>>>>>>> refs/remotes/origin/master
  *
  * Returns: errno
  */
 
+<<<<<<< HEAD
 static int ea_get_unstuffed(struct gfs2_inode *ip, struct gfs2_ea_header *ea,
 			    char *data)
+=======
+static int gfs2_iter_unstuffed(struct gfs2_inode *ip, struct gfs2_ea_header *ea,
+			       const char *din, char *dout)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gfs2_sbd *sdp = GFS2_SB(&ip->i_inode);
 	struct buffer_head **bh;
@@ -499,6 +547,11 @@ static int ea_get_unstuffed(struct gfs2_inode *ip, struct gfs2_ea_header *ea,
 	__be64 *dataptrs = GFS2_EA2DATAPTRS(ea);
 	unsigned int x;
 	int error = 0;
+<<<<<<< HEAD
+=======
+	unsigned char *pos;
+	unsigned cp_size;
+>>>>>>> refs/remotes/origin/master
 
 	bh = kcalloc(nptrs, sizeof(struct buffer_head *), GFP_NOFS);
 	if (!bh)
@@ -529,12 +582,30 @@ static int ea_get_unstuffed(struct gfs2_inode *ip, struct gfs2_ea_header *ea,
 			goto out;
 		}
 
+<<<<<<< HEAD
 		memcpy(data, bh[x]->b_data + sizeof(struct gfs2_meta_header),
 		       (sdp->sd_jbsize > amount) ? amount : sdp->sd_jbsize);
 
 		amount -= sdp->sd_jbsize;
 		data += sdp->sd_jbsize;
 
+=======
+		pos = bh[x]->b_data + sizeof(struct gfs2_meta_header);
+		cp_size = (sdp->sd_jbsize > amount) ? amount : sdp->sd_jbsize;
+
+		if (dout) {
+			memcpy(dout, pos, cp_size);
+			dout += sdp->sd_jbsize;
+		}
+
+		if (din) {
+			gfs2_trans_add_meta(ip->i_gl, bh[x]);
+			memcpy(pos, din, cp_size);
+			din += sdp->sd_jbsize;
+		}
+
+		amount -= sdp->sd_jbsize;
+>>>>>>> refs/remotes/origin/master
 		brelse(bh[x]);
 	}
 
@@ -555,7 +626,11 @@ static int gfs2_ea_get_copy(struct gfs2_inode *ip, struct gfs2_ea_location *el,
 		memcpy(data, GFS2_EA2DATA(el->el_ea), len);
 		return len;
 	}
+<<<<<<< HEAD
 	ret = ea_get_unstuffed(ip, el->el_ea, data);
+=======
+	ret = gfs2_iter_unstuffed(ip, el->el_ea, NULL, data);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 	return len;
@@ -584,15 +659,21 @@ int gfs2_xattr_acl_get(struct gfs2_inode *ip, const char *name, char **ppdata)
 
 	error = gfs2_ea_get_copy(ip, &el, data, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (error == 0)
 		error = len;
 	*ppdata = data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (error < 0)
 		kfree(data);
 	else
 		*ppdata = data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	brelse(el.el_bh);
 	return error;
@@ -651,15 +732,23 @@ static int ea_alloc_blk(struct gfs2_inode *ip, struct buffer_head **bhp)
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = gfs2_alloc_block(ip, &block, &n);
 =======
 	error = gfs2_alloc_blocks(ip, &block, &n, 0, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = gfs2_alloc_blocks(ip, &block, &n, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 	gfs2_trans_add_unrevoke(sdp, block, 1);
 	*bhp = gfs2_meta_new(ip->i_gl, block);
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, *bhp, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, *bhp);
+>>>>>>> refs/remotes/origin/master
 	gfs2_metatype_set(*bhp, GFS2_METATYPE_EA, GFS2_FORMAT_EA);
 	gfs2_buffer_clear_tail(*bhp, sizeof(struct gfs2_meta_header));
 
@@ -717,15 +806,23 @@ static int ea_write(struct gfs2_inode *ip, struct gfs2_ea_header *ea,
 			unsigned int n = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			error = gfs2_alloc_block(ip, &block, &n);
 =======
 			error = gfs2_alloc_blocks(ip, &block, &n, 0, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			error = gfs2_alloc_blocks(ip, &block, &n, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 			if (error)
 				return error;
 			gfs2_trans_add_unrevoke(sdp, block, 1);
 			bh = gfs2_meta_new(ip->i_gl, block);
+<<<<<<< HEAD
 			gfs2_trans_add_bh(ip->i_gl, bh, 1);
+=======
+			gfs2_trans_add_meta(ip->i_gl, bh);
+>>>>>>> refs/remotes/origin/master
 			gfs2_metatype_set(bh, GFS2_METATYPE_ED, GFS2_FORMAT_ED);
 
 			gfs2_add_inode_blocks(&ip->i_inode, 1);
@@ -758,6 +855,7 @@ static int ea_alloc_skeleton(struct gfs2_inode *ip, struct gfs2_ea_request *er,
 			     ea_skeleton_call_t skeleton_call, void *private)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gfs2_alloc *al;
 	struct buffer_head *dibh;
 	int error;
@@ -785,15 +883,34 @@ static int ea_alloc_skeleton(struct gfs2_inode *ip, struct gfs2_ea_request *er,
 =======
 	error = gfs2_inplace_reserve(ip, blks);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct gfs2_alloc_parms ap = { .target = blks };
+	struct buffer_head *dibh;
+	int error;
+
+	error = gfs2_rindex_update(GFS2_SB(&ip->i_inode));
+	if (error)
+		return error;
+
+	error = gfs2_quota_lock_check(ip);
+	if (error)
+		return error;
+
+	error = gfs2_inplace_reserve(ip, &ap);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		goto out_gunlock_q;
 
 	error = gfs2_trans_begin(GFS2_SB(&ip->i_inode),
 <<<<<<< HEAD
+<<<<<<< HEAD
 				 blks + gfs2_rg_blocks(al) +
 =======
 				 blks + gfs2_rg_blocks(ip) +
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 blks + gfs2_rg_blocks(ip, blks) +
+>>>>>>> refs/remotes/origin/master
 				 RES_DINODE + RES_STATFS + RES_QUOTA, 0);
 	if (error)
 		goto out_ipres;
@@ -805,7 +922,11 @@ static int ea_alloc_skeleton(struct gfs2_inode *ip, struct gfs2_ea_request *er,
 	error = gfs2_meta_inode_buffer(ip, &dibh);
 	if (!error) {
 		ip->i_inode.i_ctime = CURRENT_TIME;
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, dibh, 1);
+=======
+		gfs2_trans_add_meta(ip->i_gl, dibh);
+>>>>>>> refs/remotes/origin/master
 		gfs2_dinode_out(ip, dibh->b_data);
 		brelse(dibh);
 	}
@@ -816,12 +937,15 @@ out_ipres:
 	gfs2_inplace_release(ip);
 out_gunlock_q:
 	gfs2_quota_unlock(ip);
+<<<<<<< HEAD
 out:
 <<<<<<< HEAD
 	gfs2_alloc_put(ip);
 =======
 	gfs2_qadata_put(ip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -894,7 +1018,11 @@ static void ea_set_remove_stuffed(struct gfs2_inode *ip,
 	struct gfs2_ea_header *prev = el->el_prev;
 	u32 len;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, el->el_bh, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, el->el_bh);
+>>>>>>> refs/remotes/origin/master
 
 	if (!prev || !GFS2_EA_IS_STUFFED(ea)) {
 		ea->ea_type = GFS2_EATYPE_UNUSED;
@@ -932,7 +1060,11 @@ static int ea_set_simple_noalloc(struct gfs2_inode *ip, struct buffer_head *bh,
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, bh, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, bh);
+>>>>>>> refs/remotes/origin/master
 
 	if (es->ea_split)
 		ea = ea_split_ea(ea);
@@ -946,7 +1078,11 @@ static int ea_set_simple_noalloc(struct gfs2_inode *ip, struct buffer_head *bh,
 	if (error)
 		goto out;
 	ip->i_inode.i_ctime = CURRENT_TIME;
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, dibh, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, dibh);
+>>>>>>> refs/remotes/origin/master
 	gfs2_dinode_out(ip, dibh->b_data);
 	brelse(dibh);
 out:
@@ -961,7 +1097,11 @@ static int ea_set_simple_alloc(struct gfs2_inode *ip,
 	struct gfs2_ea_header *ea = es->es_ea;
 	int error;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, es->es_bh, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, es->es_bh);
+>>>>>>> refs/remotes/origin/master
 
 	if (es->ea_split)
 		ea = ea_split_ea(ea);
@@ -1057,6 +1197,7 @@ static int ea_set_block(struct gfs2_inode *ip, struct gfs2_ea_request *er,
 			goto out;
 		}
 
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, indbh, 1);
 	} else {
 		u64 blk;
@@ -1066,11 +1207,22 @@ static int ea_set_block(struct gfs2_inode *ip, struct gfs2_ea_request *er,
 =======
 		error = gfs2_alloc_blocks(ip, &blk, &n, 0, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gfs2_trans_add_meta(ip->i_gl, indbh);
+	} else {
+		u64 blk;
+		unsigned int n = 1;
+		error = gfs2_alloc_blocks(ip, &blk, &n, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 		if (error)
 			return error;
 		gfs2_trans_add_unrevoke(sdp, blk, 1);
 		indbh = gfs2_meta_new(ip->i_gl, blk);
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, indbh, 1);
+=======
+		gfs2_trans_add_meta(ip->i_gl, indbh);
+>>>>>>> refs/remotes/origin/master
 		gfs2_metatype_set(indbh, GFS2_METATYPE_IN, GFS2_FORMAT_IN);
 		gfs2_buffer_clear_tail(indbh, mh_size);
 
@@ -1156,7 +1308,11 @@ static int ea_remove_stuffed(struct gfs2_inode *ip, struct gfs2_ea_location *el)
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, el->el_bh, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, el->el_bh);
+>>>>>>> refs/remotes/origin/master
 
 	if (prev) {
 		u32 len;
@@ -1173,7 +1329,11 @@ static int ea_remove_stuffed(struct gfs2_inode *ip, struct gfs2_ea_location *el)
 	error = gfs2_meta_inode_buffer(ip, &dibh);
 	if (!error) {
 		ip->i_inode.i_ctime = CURRENT_TIME;
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, dibh, 1);
+=======
+		gfs2_trans_add_meta(ip->i_gl, dibh);
+>>>>>>> refs/remotes/origin/master
 		gfs2_dinode_out(ip, dibh->b_data);
 		brelse(dibh);
 	}
@@ -1296,10 +1456,15 @@ static int gfs2_xattr_set(struct dentry *dentry, const char *name,
 				size, flags, type);
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 static int ea_acl_chmod_unstuffed(struct gfs2_inode *ip,
 				  struct gfs2_ea_header *ea, char *data)
 {
 	struct gfs2_sbd *sdp = GFS2_SB(&ip->i_inode);
+<<<<<<< HEAD
 	struct buffer_head **bh;
 	unsigned int amount = GFS2_EA_DATA_LEN(ea);
 	unsigned int nptrs = DIV_ROUND_UP(amount, sdp->sd_jbsize);
@@ -1359,16 +1524,35 @@ fail:
 	gfs2_trans_end(sdp);
 	kfree(bh);
 	return error;
+=======
+	unsigned int amount = GFS2_EA_DATA_LEN(ea);
+	unsigned int nptrs = DIV_ROUND_UP(amount, sdp->sd_jbsize);
+	int ret;
+
+	ret = gfs2_trans_begin(sdp, nptrs + RES_DINODE, 0);
+	if (ret)
+		return ret;
+
+	ret = gfs2_iter_unstuffed(ip, ea, data, NULL);
+	gfs2_trans_end(sdp);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 int gfs2_xattr_acl_chmod(struct gfs2_inode *ip, struct iattr *attr, char *data)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct gfs2_sbd *sdp = GFS2_SB(&ip->i_inode);
 =======
 	struct inode *inode = &ip->i_inode;
 	struct gfs2_sbd *sdp = GFS2_SB(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct inode *inode = &ip->i_inode;
+	struct gfs2_sbd *sdp = GFS2_SB(inode);
+>>>>>>> refs/remotes/origin/master
 	struct gfs2_ea_location el;
 	int error;
 
@@ -1379,7 +1563,11 @@ int gfs2_xattr_acl_chmod(struct gfs2_inode *ip, struct iattr *attr, char *data)
 	if (GFS2_EA_IS_STUFFED(el.el_ea)) {
 		error = gfs2_trans_begin(sdp, RES_DINODE + RES_EATTR, 0);
 		if (error == 0) {
+<<<<<<< HEAD
 			gfs2_trans_add_bh(ip->i_gl, el.el_bh, 1);
+=======
+			gfs2_trans_add_meta(ip->i_gl, el.el_bh);
+>>>>>>> refs/remotes/origin/master
 			memcpy(GFS2_EA2DATA(el.el_ea), data,
 			       GFS2_EA_DATA_LEN(el.el_ea));
 		}
@@ -1392,10 +1580,14 @@ int gfs2_xattr_acl_chmod(struct gfs2_inode *ip, struct iattr *attr, char *data)
 		return error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = gfs2_setattr_simple(ip, attr);
 =======
 	error = gfs2_setattr_simple(inode, attr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = gfs2_setattr_simple(inode, attr);
+>>>>>>> refs/remotes/origin/master
 	gfs2_trans_end(sdp);
 	return error;
 }
@@ -1414,12 +1606,18 @@ static int ea_dealloc_indirect(struct gfs2_inode *ip)
 	int error;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	error = gfs2_rindex_update(sdp);
 	if (error)
 		return error;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	memset(&rlist, 0, sizeof(struct gfs2_rgrp_list));
 
 	error = gfs2_meta_read(ip->i_gl, ip->i_eattr, DIO_WAIT, &indbh);
@@ -1446,10 +1644,14 @@ static int ea_dealloc_indirect(struct gfs2_inode *ip)
 		else {
 			if (bstart)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				gfs2_rlist_add(sdp, &rlist, bstart);
 =======
 				gfs2_rlist_add(ip, &rlist, bstart);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				gfs2_rlist_add(ip, &rlist, bstart);
+>>>>>>> refs/remotes/origin/master
 			bstart = bn;
 			blen = 1;
 		}
@@ -1457,10 +1659,14 @@ static int ea_dealloc_indirect(struct gfs2_inode *ip)
 	}
 	if (bstart)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gfs2_rlist_add(sdp, &rlist, bstart);
 =======
 		gfs2_rlist_add(ip, &rlist, bstart);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		gfs2_rlist_add(ip, &rlist, bstart);
+>>>>>>> refs/remotes/origin/master
 	else
 		goto out;
 
@@ -1481,7 +1687,11 @@ static int ea_dealloc_indirect(struct gfs2_inode *ip)
 	if (error)
 		goto out_gunlock;
 
+<<<<<<< HEAD
 	gfs2_trans_add_bh(ip->i_gl, indbh, 1);
+=======
+	gfs2_trans_add_meta(ip->i_gl, indbh);
+>>>>>>> refs/remotes/origin/master
 
 	eablk = (__be64 *)(indbh->b_data + sizeof(struct gfs2_meta_header));
 	bstart = 0;
@@ -1513,7 +1723,11 @@ static int ea_dealloc_indirect(struct gfs2_inode *ip)
 
 	error = gfs2_meta_inode_buffer(ip, &dibh);
 	if (!error) {
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, dibh, 1);
+=======
+		gfs2_trans_add_meta(ip->i_gl, dibh);
+>>>>>>> refs/remotes/origin/master
 		gfs2_dinode_out(ip, dibh->b_data);
 		brelse(dibh);
 	}
@@ -1533,6 +1747,7 @@ static int ea_dealloc_block(struct gfs2_inode *ip)
 {
 	struct gfs2_sbd *sdp = GFS2_SB(&ip->i_inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct gfs2_alloc *al = ip->i_alloc;
 	struct gfs2_rgrpd *rgd;
 	struct buffer_head *dibh;
@@ -1540,6 +1755,8 @@ static int ea_dealloc_block(struct gfs2_inode *ip)
 
 	rgd = gfs2_blk2rgrpd(sdp, ip->i_eattr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct gfs2_rgrpd *rgd;
 	struct buffer_head *dibh;
 	struct gfs2_holder gh;
@@ -1550,18 +1767,25 @@ static int ea_dealloc_block(struct gfs2_inode *ip)
 		return error;
 
 	rgd = gfs2_blk2rgrpd(sdp, ip->i_eattr, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!rgd) {
 		gfs2_consist_inode(ip);
 		return -EIO;
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	error = gfs2_glock_nq_init(rgd->rd_gl, LM_ST_EXCLUSIVE, 0,
 				   &al->al_rgd_gh);
 =======
 	error = gfs2_glock_nq_init(rgd->rd_gl, LM_ST_EXCLUSIVE, 0, &gh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	error = gfs2_glock_nq_init(rgd->rd_gl, LM_ST_EXCLUSIVE, 0, &gh);
+>>>>>>> refs/remotes/origin/master
 	if (error)
 		return error;
 
@@ -1577,7 +1801,11 @@ static int ea_dealloc_block(struct gfs2_inode *ip)
 
 	error = gfs2_meta_inode_buffer(ip, &dibh);
 	if (!error) {
+<<<<<<< HEAD
 		gfs2_trans_add_bh(ip->i_gl, dibh, 1);
+=======
+		gfs2_trans_add_meta(ip->i_gl, dibh);
+>>>>>>> refs/remotes/origin/master
 		gfs2_dinode_out(ip, dibh->b_data);
 		brelse(dibh);
 	}
@@ -1586,10 +1814,14 @@ static int ea_dealloc_block(struct gfs2_inode *ip)
 
 out_gunlock:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gfs2_glock_dq_uninit(&al->al_rgd_gh);
 =======
 	gfs2_glock_dq_uninit(&gh);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gfs2_glock_dq_uninit(&gh);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 
@@ -1602,6 +1834,7 @@ out_gunlock:
 
 int gfs2_ea_dealloc(struct gfs2_inode *ip)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct gfs2_alloc *al;
 	int error;
@@ -1634,19 +1867,39 @@ int gfs2_ea_dealloc(struct gfs2_inode *ip)
 	if (error)
 		goto out_quota;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int error;
+
+	error = gfs2_rindex_update(GFS2_SB(&ip->i_inode));
+	if (error)
+		return error;
+
+	error = gfs2_quota_hold(ip, NO_UID_QUOTA_CHANGE, NO_GID_QUOTA_CHANGE);
+	if (error)
+		return error;
+
+	error = ea_foreach(ip, ea_dealloc_unstuffed, NULL);
+	if (error)
+		goto out_quota;
+>>>>>>> refs/remotes/origin/master
 
 	if (ip->i_diskflags & GFS2_DIF_EA_INDIRECT) {
 		error = ea_dealloc_indirect(ip);
 		if (error)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			goto out_rindex;
 =======
 			goto out_quota;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			goto out_quota;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	error = ea_dealloc_block(ip);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 out_rindex:
 	gfs2_glock_dq_uninit(&al->al_ri_gh);
@@ -1660,6 +1913,10 @@ out_quota:
 out_alloc:
 	gfs2_qadata_put(ip);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+out_quota:
+	gfs2_quota_unhold(ip);
+>>>>>>> refs/remotes/origin/master
 	return error;
 }
 

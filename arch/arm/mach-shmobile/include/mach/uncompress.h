@@ -16,6 +16,9 @@ static void arch_decomp_setup(void)
 {
 }
 
+<<<<<<< HEAD
 #define arch_decomp_wdog()
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_MACH_UNCOMPRESS_H */

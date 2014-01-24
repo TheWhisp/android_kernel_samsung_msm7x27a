@@ -21,9 +21,12 @@
 #include <linux/slab.h>
 #include <linux/cramfs_fs_sb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/vfs.h>
 #include <linux/mutex.h>
 
@@ -94,8 +97,13 @@ static struct inode *get_cramfs_inode(struct super_block *sb,
 	}
 
 	inode->i_mode = cramfs_inode->mode;
+<<<<<<< HEAD
 	inode->i_uid = cramfs_inode->uid;
 	inode->i_gid = cramfs_inode->gid;
+=======
+	i_uid_write(inode, cramfs_inode->uid);
+	i_gid_write(inode, cramfs_inode->gid);
+>>>>>>> refs/remotes/origin/master
 
 	/* if the lower 2 bits are zero, the inode contains data */
 	if (!(inode->i_ino & 3)) {
@@ -262,16 +270,22 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
 	/* Do sanity checks on the superblock */
 	if (super.magic != CRAMFS_MAGIC) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* check for wrong endianess */
 		if (super.magic == CRAMFS_MAGIC_WEND) {
 			if (!silent)
 				printk(KERN_ERR "cramfs: wrong endianess\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/* check for wrong endianness */
 		if (super.magic == CRAMFS_MAGIC_WEND) {
 			if (!silent)
 				printk(KERN_ERR "cramfs: wrong endianness\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 
@@ -282,10 +296,14 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
 		if (super.magic != CRAMFS_MAGIC) {
 			if (super.magic == CRAMFS_MAGIC_WEND && !silent)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_ERR "cramfs: wrong endianess\n");
 =======
 				printk(KERN_ERR "cramfs: wrong endianness\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				printk(KERN_ERR "cramfs: wrong endianness\n");
+>>>>>>> refs/remotes/origin/master
 			else if (!silent)
 				printk(KERN_ERR "cramfs: wrong magic\n");
 			goto out;
@@ -334,6 +352,7 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
 	if (IS_ERR(root))
 		goto out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sb->s_root = d_alloc_root(root);
 	if (!sb->s_root) {
 		iput(root);
@@ -344,6 +363,11 @@ static int cramfs_fill_super(struct super_block *sb, void *data, int silent)
 	if (!sb->s_root)
 		goto out;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sb->s_root = d_make_root(root);
+	if (!sb->s_root)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out:
 	kfree(sbi);
@@ -372,6 +396,7 @@ static int cramfs_statfs(struct dentry *dentry, struct kstatfs *buf)
 /*
  * Read a cramfs directory entry.
  */
+<<<<<<< HEAD
 static int cramfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 {
 	struct inode *inode = filp->f_path.dentry->d_inode;
@@ -384,6 +409,19 @@ static int cramfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	offset = filp->f_pos;
 	if (offset >= inode->i_size)
 		return 0;
+=======
+static int cramfs_readdir(struct file *file, struct dir_context *ctx)
+{
+	struct inode *inode = file_inode(file);
+	struct super_block *sb = inode->i_sb;
+	char *buf;
+	unsigned int offset;
+
+	/* Offset within the thing. */
+	if (ctx->pos >= inode->i_size)
+		return 0;
+	offset = ctx->pos;
+>>>>>>> refs/remotes/origin/master
 	/* Directory entries are always 4-byte aligned */
 	if (offset & 3)
 		return -EINVAL;
@@ -392,18 +430,26 @@ static int cramfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 	if (!buf)
 		return -ENOMEM;
 
+<<<<<<< HEAD
 	copied = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 	while (offset < inode->i_size) {
 		struct cramfs_inode *de;
 		unsigned long nextoffset;
 		char *name;
 		ino_t ino;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mode_t mode;
 =======
 		umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
 		int namelen, error;
+=======
+		umode_t mode;
+		int namelen;
+>>>>>>> refs/remotes/origin/master
 
 		mutex_lock(&read_mutex);
 		de = cramfs_read(sb, OFFSET(inode) + offset, sizeof(*de)+CRAMFS_MAXPATHLEN);
@@ -429,6 +475,7 @@ static int cramfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 				break;
 			namelen--;
 		}
+<<<<<<< HEAD
 		error = filldir(dirent, buf, namelen, offset, ino, mode >> 12);
 		if (error)
 			break;
@@ -436,6 +483,12 @@ static int cramfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 		offset = nextoffset;
 		filp->f_pos = offset;
 		copied++;
+=======
+		if (!dir_emit(ctx, buf, namelen, ino, mode >> 12))
+			break;
+
+		ctx->pos = offset = nextoffset;
+>>>>>>> refs/remotes/origin/master
 	}
 	kfree(buf);
 	return 0;
@@ -444,7 +497,11 @@ static int cramfs_readdir(struct file *filp, void *dirent, filldir_t filldir)
 /*
  * Lookup and fill in the inode data..
  */
+<<<<<<< HEAD
 static struct dentry * cramfs_lookup(struct inode *dir, struct dentry *dentry, struct nameidata *nd)
+=======
+static struct dentry * cramfs_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int offset = 0;
 	struct inode *inode = NULL;
@@ -574,7 +631,11 @@ static const struct address_space_operations cramfs_aops = {
 static const struct file_operations cramfs_directory_operations = {
 	.llseek		= generic_file_llseek,
 	.read		= generic_read_dir,
+<<<<<<< HEAD
 	.readdir	= cramfs_readdir,
+=======
+	.iterate	= cramfs_readdir,
+>>>>>>> refs/remotes/origin/master
 };
 
 static const struct inode_operations cramfs_dir_inode_operations = {
@@ -600,6 +661,10 @@ static struct file_system_type cramfs_fs_type = {
 	.kill_sb	= kill_block_super,
 	.fs_flags	= FS_REQUIRES_DEV,
 };
+<<<<<<< HEAD
+=======
+MODULE_ALIAS_FS("cramfs");
+>>>>>>> refs/remotes/origin/master
 
 static int __init init_cramfs_fs(void)
 {

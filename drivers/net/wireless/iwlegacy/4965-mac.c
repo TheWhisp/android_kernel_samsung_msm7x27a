@@ -319,6 +319,10 @@ il4965_rx_allocate(struct il_priv *il, gfp_t priority)
 	struct list_head *element;
 	struct il_rx_buf *rxb;
 	struct page *page;
+<<<<<<< HEAD
+=======
+	dma_addr_t page_dma;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	gfp_t gfp_mask = priority;
 
@@ -356,17 +360,41 @@ il4965_rx_allocate(struct il_priv *il, gfp_t priority)
 			return;
 		}
 
+<<<<<<< HEAD
+=======
+		/* Get physical address of the RB */
+		page_dma =
+		    pci_map_page(il->pci_dev, page, 0,
+				 PAGE_SIZE << il->hw_params.rx_page_order,
+				 PCI_DMA_FROMDEVICE);
+		if (unlikely(pci_dma_mapping_error(il->pci_dev, page_dma))) {
+			__free_pages(page, il->hw_params.rx_page_order);
+			break;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		spin_lock_irqsave(&rxq->lock, flags);
 
 		if (list_empty(&rxq->rx_used)) {
 			spin_unlock_irqrestore(&rxq->lock, flags);
+<<<<<<< HEAD
 			__free_pages(page, il->hw_params.rx_page_order);
 			return;
 		}
+=======
+			pci_unmap_page(il->pci_dev, page_dma,
+				       PAGE_SIZE << il->hw_params.rx_page_order,
+				       PCI_DMA_FROMDEVICE);
+			__free_pages(page, il->hw_params.rx_page_order);
+			return;
+		}
+
+>>>>>>> refs/remotes/origin/master
 		element = rxq->rx_used.next;
 		rxb = list_entry(element, struct il_rx_buf, list);
 		list_del(element);
 
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&rxq->lock, flags);
 
 		BUG_ON(rxb->page);
@@ -383,6 +411,12 @@ il4965_rx_allocate(struct il_priv *il, gfp_t priority)
 
 		spin_lock_irqsave(&rxq->lock, flags);
 
+=======
+		BUG_ON(rxb->page);
+
+		rxb->page = page;
+		rxb->page_dma = page_dma;
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&rxb->list, &rxq->rx_free);
 		rxq->free_count++;
 		il->alloc_rxb_page++;
@@ -571,9 +605,17 @@ il4965_translate_rx_status(struct il_priv *il, u32 decrypt_in)
 	return decrypt_out;
 }
 
+<<<<<<< HEAD
 static void
 il4965_pass_packet_to_mac80211(struct il_priv *il, struct ieee80211_hdr *hdr,
 			       u16 len, u32 ampdu_status, struct il_rx_buf *rxb,
+=======
+#define SMALL_PACKET_SIZE 256
+
+static void
+il4965_pass_packet_to_mac80211(struct il_priv *il, struct ieee80211_hdr *hdr,
+			       u32 len, u32 ampdu_status, struct il_rx_buf *rxb,
+>>>>>>> refs/remotes/origin/master
 			       struct ieee80211_rx_status *stats)
 {
 	struct sk_buff *skb;
@@ -585,35 +627,69 @@ il4965_pass_packet_to_mac80211(struct il_priv *il, struct ieee80211_hdr *hdr,
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	if (unlikely(test_bit(IL_STOP_REASON_PASSIVE, &il->stop_reason))) {
+		il_wake_queues_by_reason(il, IL_STOP_REASON_PASSIVE);
+		D_INFO("Woke queues - frame received on passive channel\n");
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* In case of HW accelerated crypto and bad decryption, drop */
 	if (!il->cfg->mod_params->sw_crypto &&
 	    il_set_decrypted_flag(il, hdr, ampdu_status, stats))
 		return;
 
+<<<<<<< HEAD
 	skb = dev_alloc_skb(128);
+=======
+	skb = dev_alloc_skb(SMALL_PACKET_SIZE);
+>>>>>>> refs/remotes/origin/master
 	if (!skb) {
 		IL_ERR("dev_alloc_skb failed\n");
 		return;
 	}
 
+<<<<<<< HEAD
 	skb_add_rx_frag(skb, 0, rxb->page, (void *)hdr - rxb_addr(rxb), len,
 			len);
+=======
+	if (len <= SMALL_PACKET_SIZE) {
+		memcpy(skb_put(skb, len), hdr, len);
+	} else {
+		skb_add_rx_frag(skb, 0, rxb->page, (void *)hdr - rxb_addr(rxb),
+				len, PAGE_SIZE << il->hw_params.rx_page_order);
+		il->alloc_rxb_page--;
+		rxb->page = NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	il_update_stats(il, false, fc, len);
 	memcpy(IEEE80211_SKB_RXCB(skb), stats, sizeof(*stats));
 
 	ieee80211_rx(il->hw, skb);
+<<<<<<< HEAD
 	il->alloc_rxb_page--;
 	rxb->page = NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Called for N_RX (legacy ABG frames), or
  * N_RX_MPDU (HT high-throughput N frames). */
+<<<<<<< HEAD
 void
 il4965_hdl_rx(struct il_priv *il, struct il_rx_buf *rxb)
 {
 	struct ieee80211_hdr *header;
 	struct ieee80211_rx_status rx_status;
+=======
+static void
+il4965_hdl_rx(struct il_priv *il, struct il_rx_buf *rxb)
+{
+	struct ieee80211_hdr *header;
+	struct ieee80211_rx_status rx_status = {};
+>>>>>>> refs/remotes/origin/master
 	struct il_rx_pkt *pkt = rxb_addr(rxb);
 	struct il_rx_phy_res *phy_res;
 	__le32 rx_pkt_status;
@@ -686,7 +762,11 @@ il4965_hdl_rx(struct il_priv *il, struct il_rx_buf *rxb)
 
 	/* TSF isn't reliable. In order to allow smooth user experience,
 	 * this W/A doesn't propagate it to the mac80211 */
+<<<<<<< HEAD
 	/*rx_status.flag |= RX_FLAG_MACTIME_MPDU; */
+=======
+	/*rx_status.flag |= RX_FLAG_MACTIME_START; */
+>>>>>>> refs/remotes/origin/master
 
 	il->ucode_beacon_time = le32_to_cpu(phy_res->beacon_time_stamp);
 
@@ -725,17 +805,38 @@ il4965_hdl_rx(struct il_priv *il, struct il_rx_buf *rxb)
 	if (rate_n_flags & RATE_MCS_SGI_MSK)
 		rx_status.flag |= RX_FLAG_SHORT_GI;
 
+<<<<<<< HEAD
+=======
+	if (phy_res->phy_flags & RX_RES_PHY_FLAGS_AGG_MSK) {
+		/* We know which subframes of an A-MPDU belong
+		 * together since we get a single PHY response
+		 * from the firmware for all of them.
+		 */
+
+		rx_status.flag |= RX_FLAG_AMPDU_DETAILS;
+		rx_status.ampdu_reference = il->_4965.ampdu_ref;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	il4965_pass_packet_to_mac80211(il, header, len, ampdu_status, rxb,
 				       &rx_status);
 }
 
 /* Cache phy data (Rx signal strength, etc) for HT frame (N_RX_PHY).
  * This will be used later in il_hdl_rx() for N_RX_MPDU. */
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il4965_hdl_rx_phy(struct il_priv *il, struct il_rx_buf *rxb)
 {
 	struct il_rx_pkt *pkt = rxb_addr(rxb);
 	il->_4965.last_phy_res_valid = true;
+<<<<<<< HEAD
+=======
+	il->_4965.ampdu_ref++;
+>>>>>>> refs/remotes/origin/master
 	memcpy(&il->_4965.last_phy_res, pkt->u.raw,
 	       sizeof(struct il_rx_phy_res));
 }
@@ -1236,7 +1337,11 @@ il4965_dump_fh(struct il_priv *il, char **buf, bool display)
 	return 0;
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il4965_hdl_missed_beacon(struct il_priv *il, struct il_rx_buf *rxb)
 {
 	struct il_rx_pkt *pkt = rxb_addr(rxb);
@@ -1343,7 +1448,11 @@ il4965_accumulative_stats(struct il_priv *il, __le32 * stats)
 }
 #endif
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il4965_hdl_stats(struct il_priv *il, struct il_rx_buf *rxb)
 {
 	const int recalib_seconds = 60;
@@ -1385,7 +1494,11 @@ il4965_hdl_stats(struct il_priv *il, struct il_rx_buf *rxb)
 		il4965_temperature_calib(il);
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il4965_hdl_c_stats(struct il_priv *il, struct il_rx_buf *rxb)
 {
 	struct il_rx_pkt *pkt = rxb_addr(rxb);
@@ -1526,8 +1639,16 @@ il4965_tx_cmd_build_basic(struct il_priv *il, struct sk_buff *skb,
 }
 
 static void
+<<<<<<< HEAD
 il4965_tx_cmd_build_rate(struct il_priv *il, struct il_tx_cmd *tx_cmd,
 			 struct ieee80211_tx_info *info, __le16 fc)
+=======
+il4965_tx_cmd_build_rate(struct il_priv *il,
+			 struct il_tx_cmd *tx_cmd,
+			 struct ieee80211_tx_info *info,
+			 struct ieee80211_sta *sta,
+			 __le16 fc)
+>>>>>>> refs/remotes/origin/master
 {
 	const u8 rts_retry_limit = 60;
 	u32 rate_flags;
@@ -1561,9 +1682,13 @@ il4965_tx_cmd_build_rate(struct il_priv *il, struct il_tx_cmd *tx_cmd,
 	rate_idx = info->control.rates[0].idx;
 	if ((info->control.rates[0].flags & IEEE80211_TX_RC_MCS) || rate_idx < 0
 	    || rate_idx > RATE_COUNT_LEGACY)
+<<<<<<< HEAD
 		rate_idx =
 		    rate_lowest_index(&il->bands[info->band],
 				      info->control.sta);
+=======
+		rate_idx = rate_lowest_index(&il->bands[info->band], sta);
+>>>>>>> refs/remotes/origin/master
 	/* For 5 GHZ band, remap mac80211 rate indices into driver indices */
 	if (info->band == IEEE80211_BAND_5GHZ)
 		rate_idx += IL_FIRST_OFDM_RATE;
@@ -1630,11 +1755,20 @@ il4965_tx_cmd_build_hwcrypto(struct il_priv *il, struct ieee80211_tx_info *info,
  * start C_TX command process
  */
 int
+<<<<<<< HEAD
 il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 {
 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 	struct ieee80211_sta *sta = info->control.sta;
+=======
+il4965_tx_skb(struct il_priv *il,
+	      struct ieee80211_sta *sta,
+	      struct sk_buff *skb)
+{
+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+>>>>>>> refs/remotes/origin/master
 	struct il_station_priv *sta_priv = NULL;
 	struct il_tx_queue *txq;
 	struct il_queue *q;
@@ -1680,7 +1814,11 @@ il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 		sta_id = il->hw_params.bcast_id;
 	else {
 		/* Find idx into station table for destination station */
+<<<<<<< HEAD
 		sta_id = il_sta_id_or_broadcast(il, info->control.sta);
+=======
+		sta_id = il_sta_id_or_broadcast(il, sta);
+>>>>>>> refs/remotes/origin/master
 
 		if (sta_id == IL_INVALID_STATION) {
 			D_DROP("Dropping - INVALID STATION: %pM\n", hdr->addr1);
@@ -1777,8 +1915,12 @@ il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	memcpy(tx_cmd->hdr, hdr, hdr_len);
 
 	/* Total # bytes to be transmitted */
+<<<<<<< HEAD
 	len = (u16) skb->len;
 	tx_cmd->len = cpu_to_le16(len);
+=======
+	tx_cmd->len = cpu_to_le16((u16) skb->len);
+>>>>>>> refs/remotes/origin/master
 
 	if (info->control.hw_key)
 		il4965_tx_cmd_build_hwcrypto(il, info, tx_cmd, skb, sta_id);
@@ -1786,9 +1928,14 @@ il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	/* TODO need this for burst mode later on */
 	il4965_tx_cmd_build_basic(il, skb, tx_cmd, info, hdr, sta_id);
 
+<<<<<<< HEAD
 	il4965_tx_cmd_build_rate(il, tx_cmd, info, fc);
 
 	il_update_stats(il, true, fc, len);
+=======
+	il4965_tx_cmd_build_rate(il, tx_cmd, info, sta, fc);
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Use the first empty entry in this queue's command buffer array
 	 * to contain the Tx command and MAC header concatenated together
@@ -1810,6 +1957,7 @@ il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	txcmd_phys =
 	    pci_map_single(il->pci_dev, &out_cmd->hdr, firstlen,
 			   PCI_DMA_BIDIRECTIONAL);
+<<<<<<< HEAD
 	dma_unmap_addr_set(out_meta, mapping, txcmd_phys);
 	dma_unmap_len_set(out_meta, len, firstlen);
 	/* Add buffer containing Tx command and MAC(!) header to TFD's
@@ -1822,6 +1970,10 @@ il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 		wait_write_ptr = 1;
 		txq->need_update = 0;
 	}
+=======
+	if (unlikely(pci_dma_mapping_error(il->pci_dev, txcmd_phys)))
+		goto drop_unlock;
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up TFD's 2nd entry to point directly to remainder of skb,
 	 * if any (802.11 null frames have no payload). */
@@ -1830,8 +1982,29 @@ il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 		phys_addr =
 		    pci_map_single(il->pci_dev, skb->data + hdr_len, secondlen,
 				   PCI_DMA_TODEVICE);
+<<<<<<< HEAD
 		il->ops->txq_attach_buf_to_tfd(il, txq, phys_addr, secondlen,
 					       0, 0);
+=======
+		if (unlikely(pci_dma_mapping_error(il->pci_dev, phys_addr)))
+			goto drop_unlock;
+	}
+
+	/* Add buffer containing Tx command and MAC(!) header to TFD's
+	 * first entry */
+	il->ops->txq_attach_buf_to_tfd(il, txq, txcmd_phys, firstlen, 1, 0);
+	dma_unmap_addr_set(out_meta, mapping, txcmd_phys);
+	dma_unmap_len_set(out_meta, len, firstlen);
+	if (secondlen)
+		il->ops->txq_attach_buf_to_tfd(il, txq, phys_addr, secondlen,
+					       0, 0);
+
+	if (!ieee80211_has_morefrags(hdr->frame_control)) {
+		txq->need_update = 1;
+	} else {
+		wait_write_ptr = 1;
+		txq->need_update = 0;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	scratch_phys =
@@ -1844,6 +2017,11 @@ il4965_tx_skb(struct il_priv *il, struct sk_buff *skb)
 	tx_cmd->dram_lsb_ptr = cpu_to_le32(scratch_phys);
 	tx_cmd->dram_msb_ptr = il_get_dma_hi_addr(scratch_phys);
 
+<<<<<<< HEAD
+=======
+	il_update_stats(il, true, fc, skb->len);
+
+>>>>>>> refs/remotes/origin/master
 	D_TX("sequence nr = 0X%x\n", le16_to_cpu(out_cmd->hdr.sequence));
 	D_TX("tx_flags = 0X%x\n", le32_to_cpu(tx_cmd->tx_flags));
 	il_print_hex_dump(il, IL_DL_TX, (u8 *) tx_cmd, sizeof(*tx_cmd));
@@ -1899,8 +2077,13 @@ drop_unlock:
 static inline int
 il4965_alloc_dma_ptr(struct il_priv *il, struct il_dma_ptr *ptr, size_t size)
 {
+<<<<<<< HEAD
 	ptr->addr =
 	    dma_alloc_coherent(&il->pci_dev->dev, size, &ptr->dma, GFP_KERNEL);
+=======
+	ptr->addr = dma_alloc_coherent(&il->pci_dev->dev, size, &ptr->dma,
+				       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ptr->addr)
 		return -ENOMEM;
 	ptr->size = size;
@@ -2028,7 +2211,11 @@ il4965_txq_ctx_reset(struct il_priv *il)
 		il_tx_queue_reset(il, txq_id);
 }
 
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il4965_txq_ctx_unmap(struct il_priv *il)
 {
 	int txq_id;
@@ -2236,7 +2423,11 @@ il4965_tx_agg_start(struct il_priv *il, struct ieee80211_vif *vif,
 
 	spin_lock_irqsave(&il->sta_lock, flags);
 	tid_data = &il->stations[sta_id].tid[tid];
+<<<<<<< HEAD
 	*ssn = SEQ_TO_SN(tid_data->seq_number);
+=======
+	*ssn = IEEE80211_SEQ_TO_SN(tid_data->seq_number);
+>>>>>>> refs/remotes/origin/master
 	tid_data->agg.txq_id = txq_id;
 	il_set_swq_id(&il->txq[txq_id], il4965_get_ac_from_tid(tid), txq_id);
 	spin_unlock_irqrestore(&il->sta_lock, flags);
@@ -2386,7 +2577,11 @@ il4965_txq_check_empty(struct il_priv *il, int sta_id, u8 tid, int txq_id)
 		/* aggregated HW queue */
 		if (txq_id == tid_data->agg.txq_id &&
 		    q->read_ptr == q->write_ptr) {
+<<<<<<< HEAD
 			u16 ssn = SEQ_TO_SN(tid_data->seq_number);
+=======
+			u16 ssn = IEEE80211_SEQ_TO_SN(tid_data->seq_number);
+>>>>>>> refs/remotes/origin/master
 			int tx_fifo = il4965_get_fifo_from_tid(tid);
 			D_HT("HW queue empty: continue DELBA flow\n");
 			il4965_txq_agg_disable(il, txq_id, ssn, tx_fifo);
@@ -2565,7 +2760,11 @@ il4965_find_station(struct il_priv *il, const u8 *addr)
 	spin_lock_irqsave(&il->sta_lock, flags);
 	for (i = start; i < il->hw_params.max_stations; i++)
 		if (il->stations[i].used &&
+<<<<<<< HEAD
 		    (!compare_ether_addr(il->stations[i].sta.sta.addr, addr))) {
+=======
+		    ether_addr_equal(il->stations[i].sta.sta.addr, addr)) {
+>>>>>>> refs/remotes/origin/master
 			ret = i;
 			goto out;
 		}
@@ -2605,7 +2804,12 @@ il4965_get_ra_sta_id(struct il_priv *il, struct ieee80211_hdr *hdr)
 static inline u32
 il4965_get_scd_ssn(struct il4965_tx_resp *tx_resp)
 {
+<<<<<<< HEAD
 	return le32_to_cpup(&tx_resp->u.status + tx_resp->frame_count) & MAX_SN;
+=======
+	return le32_to_cpup(&tx_resp->u.status +
+			    tx_resp->frame_count) & IEEE80211_MAX_SN;
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline u32
@@ -2695,15 +2899,26 @@ il4965_tx_status_reply_tx(struct il_priv *il, struct il_ht_agg *agg,
 			hdr = (struct ieee80211_hdr *) skb->data;
 
 			sc = le16_to_cpu(hdr->seq_ctrl);
+<<<<<<< HEAD
 			if (idx != (SEQ_TO_SN(sc) & 0xff)) {
 				IL_ERR("BUG_ON idx doesn't match seq control"
 				       " idx=%d, seq_idx=%d, seq=%d\n", idx,
 				       SEQ_TO_SN(sc), hdr->seq_ctrl);
+=======
+			if (idx != (IEEE80211_SEQ_TO_SN(sc) & 0xff)) {
+				IL_ERR("BUG_ON idx doesn't match seq control"
+				       " idx=%d, seq_idx=%d, seq=%d\n", idx,
+				       IEEE80211_SEQ_TO_SN(sc), hdr->seq_ctrl);
+>>>>>>> refs/remotes/origin/master
 				return -1;
 			}
 
 			D_TX_REPLY("AGG Frame i=%d idx %d seq=%d\n", i, idx,
+<<<<<<< HEAD
 				   SEQ_TO_SN(sc));
+=======
+				   IEEE80211_SEQ_TO_SN(sc));
+>>>>>>> refs/remotes/origin/master
 
 			sh = idx - start;
 			if (sh > 64) {
@@ -2783,6 +2998,22 @@ il4965_hdl_tx(struct il_priv *il, struct il_rx_buf *rxb)
 		return;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * Firmware will not transmit frame on passive channel, if it not yet
+	 * received some valid frame on that channel. When this error happen
+	 * we have to wait until firmware will unblock itself i.e. when we
+	 * note received beacon or other frame. We unblock queues in
+	 * il4965_pass_packet_to_mac80211 or in il_mac_bss_info_changed.
+	 */
+	if (unlikely((status & TX_STATUS_MSK) == TX_STATUS_FAIL_PASSIVE_NO_RX) &&
+	    il->iw_mode == NL80211_IFTYPE_STATION) {
+		il_stop_queues_by_reason(il, IL_STOP_REASON_PASSIVE);
+		D_INFO("Stopped queues - RX waiting on passive channel\n");
+	}
+
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&il->sta_lock, flags);
 	if (txq->sched_retry) {
 		const u32 scd_ssn = il4965_get_scd_ssn(tx_resp);
@@ -2850,9 +3081,15 @@ void
 il4965_hwrate_to_tx_control(struct il_priv *il, u32 rate_n_flags,
 			    struct ieee80211_tx_info *info)
 {
+<<<<<<< HEAD
 	struct ieee80211_tx_rate *r = &info->control.rates[0];
 
 	info->antenna_sel_tx =
+=======
+	struct ieee80211_tx_rate *r = &info->status.rates[0];
+
+	info->status.antenna =
+>>>>>>> refs/remotes/origin/master
 	    ((rate_n_flags & RATE_MCS_ANT_ABC_MSK) >> RATE_MCS_ANT_POS);
 	if (rate_n_flags & RATE_MCS_HT_MSK)
 		r->flags |= IEEE80211_TX_RC_MCS;
@@ -2873,7 +3110,11 @@ il4965_hwrate_to_tx_control(struct il_priv *il, u32 rate_n_flags,
  * Handles block-acknowledge notification from device, which reports success
  * of frames sent via aggregation.
  */
+<<<<<<< HEAD
 void
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il4965_hdl_compressed_ba(struct il_priv *il, struct il_rx_buf *rxb)
 {
 	struct il_rx_pkt *pkt = rxb_addr(rxb);
@@ -4279,8 +4520,21 @@ il4965_rx_handle(struct il_priv *il)
 			    pci_map_page(il->pci_dev, rxb->page, 0,
 					 PAGE_SIZE << il->hw_params.
 					 rx_page_order, PCI_DMA_FROMDEVICE);
+<<<<<<< HEAD
 			list_add_tail(&rxb->list, &rxq->rx_free);
 			rxq->free_count++;
+=======
+
+			if (unlikely(pci_dma_mapping_error(il->pci_dev,
+							   rxb->page_dma))) {
+				__il_free_pages(il, rxb->page);
+				rxb->page = NULL;
+				list_add_tail(&rxb->list, &rxq->rx_used);
+			} else {
+				list_add_tail(&rxb->list, &rxq->rx_free);
+				rxq->free_count++;
+			}
+>>>>>>> refs/remotes/origin/master
 		} else
 			list_add_tail(&rxb->list, &rxq->rx_used);
 
@@ -4536,7 +4790,11 @@ il4965_store_debug_level(struct device *d, struct device_attribute *attr,
 	unsigned long val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 0, &val);
+=======
+	ret = kstrtoul(buf, 0, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		IL_ERR("%s is not in hex or decimal form.\n", buf);
 	else
@@ -4583,7 +4841,11 @@ il4965_store_tx_power(struct device *d, struct device_attribute *attr,
 	unsigned long val;
 	int ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &val);
+=======
+	ret = kstrtoul(buf, 10, &val);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		IL_INFO("%s is not in decimal form.\n", buf);
 	else {
@@ -5709,9 +5971,15 @@ il4965_mac_setup_register(struct il_priv *il, u32 max_probe_length)
 	/* Tell mac80211 our characteristics */
 	hw->flags =
 	    IEEE80211_HW_SIGNAL_DBM | IEEE80211_HW_AMPDU_AGGREGATION |
+<<<<<<< HEAD
 	    IEEE80211_HW_NEED_DTIM_PERIOD | IEEE80211_HW_SPECTRUM_MGMT |
 	    IEEE80211_HW_REPORTS_TX_ACK_STATUS;
 
+=======
+	    IEEE80211_HW_NEED_DTIM_BEFORE_ASSOC | IEEE80211_HW_SPECTRUM_MGMT |
+	    IEEE80211_HW_REPORTS_TX_ACK_STATUS | IEEE80211_HW_SUPPORTS_PS |
+	    IEEE80211_HW_SUPPORTS_DYNAMIC_PS;
+>>>>>>> refs/remotes/origin/master
 	if (il->cfg->sku & IL_SKU_N)
 		hw->flags |=
 		    IEEE80211_HW_SUPPORTS_DYNAMIC_SMPS |
@@ -5724,7 +5992,12 @@ il4965_mac_setup_register(struct il_priv *il, u32 max_probe_length)
 	    BIT(NL80211_IFTYPE_STATION) | BIT(NL80211_IFTYPE_ADHOC);
 
 	hw->wiphy->flags |=
+<<<<<<< HEAD
 	    WIPHY_FLAG_CUSTOM_REGULATORY | WIPHY_FLAG_DISABLE_BEACON_HINTS;
+=======
+	    WIPHY_FLAG_CUSTOM_REGULATORY | WIPHY_FLAG_DISABLE_BEACON_HINTS |
+	    WIPHY_FLAG_IBSS_RSN;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * For now, disable PS by default because it affects
@@ -5827,7 +6100,13 @@ il4965_mac_stop(struct ieee80211_hw *hw)
 }
 
 void
+<<<<<<< HEAD
 il4965_mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
+=======
+il4965_mac_tx(struct ieee80211_hw *hw,
+	      struct ieee80211_tx_control *control,
+	      struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	struct il_priv *il = hw->priv;
 
@@ -5836,7 +6115,11 @@ il4965_mac_tx(struct ieee80211_hw *hw, struct sk_buff *skb)
 	D_TX("dev->xmit(%d bytes) at rate 0x%02x\n", skb->len,
 	     ieee80211_get_tx_rate(hw, IEEE80211_SKB_CB(skb))->bitrate);
 
+<<<<<<< HEAD
 	if (il4965_tx_skb(il, skb))
+=======
+	if (il4965_tx_skb(il, control->sta, skb))
+>>>>>>> refs/remotes/origin/master
 		dev_kfree_skb_any(skb);
 
 	D_MACDUMP("leave\n");
@@ -5873,6 +6156,19 @@ il4965_mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 		return -EOPNOTSUPP;
 	}
 
+<<<<<<< HEAD
+=======
+	/*
+	 * To support IBSS RSN, don't program group keys in IBSS, the
+	 * hardware will then not attempt to decrypt the frames.
+	 */
+	if (vif->type == NL80211_IFTYPE_ADHOC &&
+	    !(key->flags & IEEE80211_KEY_FLAG_PAIRWISE)) {
+		D_MAC80211("leave - ad-hoc group key\n");
+		return -EOPNOTSUPP;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	sta_id = il_sta_id_or_broadcast(il, sta);
 	if (sta_id == IL_INVALID_STATION)
 		return -EINVAL;
@@ -5953,7 +6249,13 @@ il4965_mac_ampdu_action(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
 		D_HT("start Tx\n");
 		ret = il4965_tx_agg_start(il, vif, sta, tid, ssn);
 		break;
+<<<<<<< HEAD
 	case IEEE80211_AMPDU_TX_STOP:
+=======
+	case IEEE80211_AMPDU_TX_STOP_CONT:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH:
+	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
+>>>>>>> refs/remotes/origin/master
 		D_HT("stop Tx\n");
 		ret = il4965_tx_agg_stop(il, vif, sta, tid);
 		if (test_bit(S_EXIT_PENDING, &il->status))
@@ -6011,7 +6313,11 @@ il4965_mac_channel_switch(struct ieee80211_hw *hw,
 	struct il_priv *il = hw->priv;
 	const struct il_channel_info *ch_info;
 	struct ieee80211_conf *conf = &hw->conf;
+<<<<<<< HEAD
 	struct ieee80211_channel *channel = ch_switch->channel;
+=======
+	struct ieee80211_channel *channel = ch_switch->chandef.chan;
+>>>>>>> refs/remotes/origin/master
 	struct il_ht_config *ht_conf = &il->current_ht_config;
 	u16 ch;
 
@@ -6048,6 +6354,7 @@ il4965_mac_channel_switch(struct ieee80211_hw *hw,
 	il->current_ht_config.smps = conf->smps_mode;
 
 	/* Configure HT40 channels */
+<<<<<<< HEAD
 	il->ht.enabled = conf_is_ht(conf);
 	if (il->ht.enabled) {
 		if (conf_is_ht40_minus(conf)) {
@@ -6065,6 +6372,23 @@ il4965_mac_channel_switch(struct ieee80211_hw *hw,
 		}
 	} else
 		il->ht.is_40mhz = false;
+=======
+	switch (cfg80211_get_chandef_type(&ch_switch->chandef)) {
+	case NL80211_CHAN_NO_HT:
+	case NL80211_CHAN_HT20:
+		il->ht.is_40mhz = false;
+		il->ht.extension_chan_offset = IEEE80211_HT_PARAM_CHA_SEC_NONE;
+		break;
+	case NL80211_CHAN_HT40MINUS:
+		il->ht.extension_chan_offset = IEEE80211_HT_PARAM_CHA_SEC_BELOW;
+		il->ht.is_40mhz = true;
+		break;
+	case NL80211_CHAN_HT40PLUS:
+		il->ht.extension_chan_offset = IEEE80211_HT_PARAM_CHA_SEC_ABOVE;
+		il->ht.is_40mhz = true;
+		break;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	if ((le16_to_cpu(il->staging.channel) != ch))
 		il->staging.flags = 0;
@@ -6271,7 +6595,11 @@ il4965_tx_queue_set_status(struct il_priv *il, struct il_tx_queue *txq,
 	       scd_retry ? "BA" : "AC", txq_id, tx_fifo_id);
 }
 
+<<<<<<< HEAD
 const struct ieee80211_ops il4965_mac_ops = {
+=======
+static const struct ieee80211_ops il4965_mac_ops = {
+>>>>>>> refs/remotes/origin/master
 	.tx = il4965_mac_tx,
 	.start = il4965_mac_start,
 	.stop = il4965_mac_stop,
@@ -6291,6 +6619,10 @@ const struct ieee80211_ops il4965_mac_ops = {
 	.sta_remove = il_mac_sta_remove,
 	.channel_switch = il4965_mac_channel_switch,
 	.tx_last_beacon = il_mac_tx_last_beacon,
+<<<<<<< HEAD
+=======
+	.flush = il_mac_flush,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int
@@ -6538,6 +6870,10 @@ il4965_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	il4965_prepare_card_hw(il);
 	if (!il->hw_ready) {
 		IL_WARN("Failed, HW not ready\n");
+<<<<<<< HEAD
+=======
+		err = -EIO;
+>>>>>>> refs/remotes/origin/master
 		goto out_iounmap;
 	}
 
@@ -6554,9 +6890,12 @@ il4965_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (err)
 		goto out_free_eeprom;
 
+<<<<<<< HEAD
 	if (err)
 		goto out_free_eeprom;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* extract MAC Address */
 	il4965_eeprom_get_mac(il, il->addresses[0].addr);
 	D_INFO("MAC address: %pM\n", il->addresses[0].addr);
@@ -6639,7 +6978,10 @@ out_free_eeprom:
 out_iounmap:
 	iounmap(il->hw_base);
 out_pci_release_regions:
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_release_regions(pdev);
 out_pci_disable_device:
 	pci_disable_device(pdev);
@@ -6649,7 +6991,11 @@ out:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
+=======
+static void
+>>>>>>> refs/remotes/origin/master
 il4965_pci_remove(struct pci_dev *pdev)
 {
 	struct il_priv *il = pci_get_drvdata(pdev);
@@ -6720,7 +7066,10 @@ il4965_pci_remove(struct pci_dev *pdev)
 	iounmap(il->hw_base);
 	pci_release_regions(pdev);
 	pci_disable_device(pdev);
+<<<<<<< HEAD
 	pci_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	il4965_uninit_drv(il);
 
@@ -6757,7 +7106,11 @@ static struct pci_driver il4965_driver = {
 	.name = DRV_NAME,
 	.id_table = il4965_hw_card_ids,
 	.probe = il4965_pci_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(il4965_pci_remove),
+=======
+	.remove = il4965_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver.pm = IL_LEGACY_PM_OPS,
 };
 

@@ -5,10 +5,14 @@
  * Author       Karsten Keil
  * Copyright    by Karsten Keil      <keil@isdn4linux.de>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
 =======
  *
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+>>>>>>> refs/remotes/origin/master
  * This software may be used and distributed according to the terms
  * of the GNU General Public License, incorporated herein by reference.
  *
@@ -28,11 +32,19 @@
 #define DBUSY_TIMER_VALUE 80
 #define ARCOFI_USE 1
 
+<<<<<<< HEAD
 static char *ISACVer[] __devinitdata =
 {"2086/2186 V1.1", "2085 B1", "2085 B2",
  "2085 V2.3"};
 
 void __devinit ISACVersion(struct IsdnCardState *cs, char *s)
+=======
+static char *ISACVer[] =
+{"2086/2186 V1.1", "2085 B1", "2085 B2",
+ "2085 V2.3"};
+
+void ISACVersion(struct IsdnCardState *cs, char *s)
+>>>>>>> refs/remotes/origin/master
 {
 	int val;
 
@@ -53,6 +65,7 @@ static void
 isac_new_ph(struct IsdnCardState *cs)
 {
 	switch (cs->dc.isac.ph_state) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (ISAC_IND_RS):
 		case (ISAC_IND_EI):
@@ -83,6 +96,8 @@ isac_new_ph(struct IsdnCardState *cs)
 		default:
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (ISAC_IND_RS):
 	case (ISAC_IND_EI):
 		ph_command(cs, ISAC_CMD_DUI);
@@ -111,7 +126,10 @@ isac_new_ph(struct IsdnCardState *cs)
 		break;
 	default:
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -122,10 +140,14 @@ isac_bh(struct work_struct *work)
 		container_of(work, struct IsdnCardState, tqueue);
 	struct PStack *stptr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if (test_and_clear_bit(D_CLEARBUSY, &cs->event)) {
 		if (cs->debug)
 			debugl1(cs, "D-Channel Busy cleared");
@@ -137,10 +159,14 @@ isac_bh(struct work_struct *work)
 	}
 	if (test_and_clear_bit(D_L1STATECHANGE, &cs->event))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		isac_new_ph(cs);		
 =======
 		isac_new_ph(cs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		isac_new_ph(cs);
+>>>>>>> refs/remotes/origin/master
 	if (test_and_clear_bit(D_RCVBUFREADY, &cs->event))
 		DChannel_proc_rcv(cs);
 	if (test_and_clear_bit(D_XMTBUFREADY, &cs->event))
@@ -180,7 +206,11 @@ isac_empty_fifo(struct IsdnCardState *cs, int count)
 
 		t += sprintf(t, "isac_empty_fifo cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -222,7 +252,11 @@ isac_fill_fifo(struct IsdnCardState *cs)
 
 		t += sprintf(t, "isac_fill_fifo cnt %d", count);
 		QuickHex(t, ptr, count);
+<<<<<<< HEAD
 		debugl1(cs, cs->dlog);
+=======
+		debugl1(cs, "%s", cs->dlog);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -301,18 +335,24 @@ isac_interrupt(struct IsdnCardState *cs, u_char val)
 			schedule_event(cs, D_XMTBUFREADY);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
       afterXPR:
 	if (val & 0x04) {	/* CISQ */
 		exval = cs->readisac(cs, ISAC_CIR0);
 		if (cs->debug & L1_DEB_ISAC)
 			debugl1(cs, "ISAC CIR0 %02X", exval );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 afterXPR:
 	if (val & 0x04) {	/* CISQ */
 		exval = cs->readisac(cs, ISAC_CIR0);
 		if (cs->debug & L1_DEB_ISAC)
 			debugl1(cs, "ISAC CIR0 %02X", exval);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (exval & 2) {
 			cs->dc.isac.ph_state = (exval >> 2) & 0xf;
 			if (cs->debug & L1_DEB_ISAC)
@@ -323,10 +363,14 @@ afterXPR:
 			exval = cs->readisac(cs, ISAC_CIR1);
 			if (cs->debug & L1_DEB_ISAC)
 <<<<<<< HEAD
+<<<<<<< HEAD
 				debugl1(cs, "ISAC CIR1 %02X", exval );
 =======
 				debugl1(cs, "ISAC CIR1 %02X", exval);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				debugl1(cs, "ISAC CIR1 %02X", exval);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (val & 0x02) {	/* SIN */
@@ -390,20 +434,28 @@ afterXPR:
 				cs->dc.isac.mon_rx[cs->dc.isac.mon_rxp++] = cs->readisac(cs, ISAC_MOR0);
 				if (cs->debug & L1_DEB_MONITOR)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					debugl1(cs, "ISAC MOR0 %02x", cs->dc.isac.mon_rx[cs->dc.isac.mon_rxp -1]);
 =======
 					debugl1(cs, "ISAC MOR0 %02x", cs->dc.isac.mon_rx[cs->dc.isac.mon_rxp - 1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					debugl1(cs, "ISAC MOR0 %02x", cs->dc.isac.mon_rx[cs->dc.isac.mon_rxp - 1]);
+>>>>>>> refs/remotes/origin/master
 				if (cs->dc.isac.mon_rxp == 1) {
 					cs->dc.isac.mocr |= 0x04;
 					cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
 				}
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      afterMONR0:
 =======
 		afterMONR0:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		afterMONR0:
+>>>>>>> refs/remotes/origin/master
 			if (v1 & 0x80) {
 				if (!cs->dc.isac.mon_rx) {
 					if (!(cs->dc.isac.mon_rx = kmalloc(MAX_MON_FRAME, GFP_ATOMIC))) {
@@ -428,18 +480,24 @@ afterXPR:
 				cs->dc.isac.mon_rx[cs->dc.isac.mon_rxp++] = cs->readisac(cs, ISAC_MOR1);
 				if (cs->debug & L1_DEB_MONITOR)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					debugl1(cs, "ISAC MOR1 %02x", cs->dc.isac.mon_rx[cs->dc.isac.mon_rxp -1]);
 				cs->dc.isac.mocr |= 0x40;
 				cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
 			}
 		      afterMONR1:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					debugl1(cs, "ISAC MOR1 %02x", cs->dc.isac.mon_rx[cs->dc.isac.mon_rxp - 1]);
 				cs->dc.isac.mocr |= 0x40;
 				cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
 			}
 		afterMONR1:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			if (v1 & 0x04) {
 				cs->dc.isac.mocr &= 0xf0;
 				cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
@@ -456,6 +514,7 @@ afterXPR:
 			}
 			if (v1 & 0x02) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if ((!cs->dc.isac.mon_tx) || (cs->dc.isac.mon_txc && 
 					(cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc) && 
 					!(v1 & 0x08))) {
@@ -464,16 +523,25 @@ afterXPR:
 							      (cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc) &&
 							      !(v1 & 0x08))) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if ((!cs->dc.isac.mon_tx) || (cs->dc.isac.mon_txc &&
+							      (cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc) &&
+							      !(v1 & 0x08))) {
+>>>>>>> refs/remotes/origin/master
 					cs->dc.isac.mocr &= 0xf0;
 					cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
 					cs->dc.isac.mocr |= 0x0a;
 					cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
 					if (cs->dc.isac.mon_txc &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 						(cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc))
 =======
 					    (cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    (cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc))
+>>>>>>> refs/remotes/origin/master
 						schedule_event(cs, D_TX_MON0);
 					goto AfterMOX0;
 				}
@@ -482,6 +550,7 @@ afterXPR:
 					goto AfterMOX0;
 				}
 				cs->writeisac(cs, ISAC_MOX0,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					cs->dc.isac.mon_tx[cs->dc.isac.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
@@ -493,6 +562,8 @@ afterXPR:
 					(cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc) && 
 					!(v1 & 0x80))) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      cs->dc.isac.mon_tx[cs->dc.isac.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
 					debugl1(cs, "ISAC %02x -> MOX0", cs->dc.isac.mon_tx[cs->dc.isac.mon_txp - 1]);
@@ -502,17 +573,24 @@ afterXPR:
 				if ((!cs->dc.isac.mon_tx) || (cs->dc.isac.mon_txc &&
 							      (cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc) &&
 							      !(v1 & 0x80))) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					cs->dc.isac.mocr &= 0x0f;
 					cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
 					cs->dc.isac.mocr |= 0xa0;
 					cs->writeisac(cs, ISAC_MOCR, cs->dc.isac.mocr);
 					if (cs->dc.isac.mon_txc &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 						(cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc))
 =======
 					    (cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					    (cs->dc.isac.mon_txp >= cs->dc.isac.mon_txc))
+>>>>>>> refs/remotes/origin/master
 						schedule_event(cs, D_TX_MON1);
 					goto AfterMOX1;
 				}
@@ -522,18 +600,24 @@ afterXPR:
 				}
 				cs->writeisac(cs, ISAC_MOX1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					cs->dc.isac.mon_tx[cs->dc.isac.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
 					debugl1(cs, "ISAC %02x -> MOX1", cs->dc.isac.mon_tx[cs->dc.isac.mon_txp -1]);
 			}
 		      AfterMOX1:;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					      cs->dc.isac.mon_tx[cs->dc.isac.mon_txp++]);
 				if (cs->debug & L1_DEB_MONITOR)
 					debugl1(cs, "ISAC %02x -> MOX1", cs->dc.isac.mon_tx[cs->dc.isac.mon_txp - 1]);
 			}
 		AfterMOX1:;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 		}
 	}
@@ -548,6 +632,7 @@ ISAC_l1hw(struct PStack *st, int pr, void *arg)
 	int  val;
 
 	switch (pr) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case (PH_DATA |REQUEST):
 			if (cs->debug & DEB_DLOG_HEX)
@@ -667,6 +752,8 @@ ISAC_l1hw(struct PStack *st, int pr, void *arg)
 				debugl1(cs, "isac_l1hw unknown %04x", pr);
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case (PH_DATA | REQUEST):
 		if (cs->debug & DEB_DLOG_HEX)
 			LogFrame(cs, skb->data, skb->len);
@@ -784,7 +871,10 @@ ISAC_l1hw(struct PStack *st, int pr, void *arg)
 		if (cs->debug & L1_DEB_WARN)
 			debugl1(cs, "isac_l1hw unknown %04x", pr);
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -813,10 +903,14 @@ dbusy_timer_handler(struct IsdnCardState *cs)
 		rbch = cs->readisac(cs, ISAC_RBCH);
 		star = cs->readisac(cs, ISAC_STAR);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (cs->debug) 
 =======
 		if (cs->debug)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (cs->debug)
+>>>>>>> refs/remotes/origin/master
 			debugl1(cs, "D-Channel Busy RBCH %02x STAR %02x",
 				rbch, star);
 		if (rbch & ISAC_RBCH_XAC) { /* D-Channel Busy */
@@ -850,12 +944,17 @@ void initisac(struct IsdnCardState *cs)
 	cs->dc.isac.mon_tx = NULL;
 	cs->dc.isac.mon_rx = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
   	cs->writeisac(cs, ISAC_MASK, 0xff);
   	cs->dc.isac.mocr = 0xaa;
 =======
 	cs->writeisac(cs, ISAC_MASK, 0xff);
 	cs->dc.isac.mocr = 0xaa;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cs->writeisac(cs, ISAC_MASK, 0xff);
+	cs->dc.isac.mocr = 0xaa;
+>>>>>>> refs/remotes/origin/master
 	if (test_bit(HW_IOM1, &cs->HW_Flags)) {
 		/* IOM 1 Mode */
 		cs->writeisac(cs, ISAC_ADF2, 0x0);
@@ -903,8 +1002,12 @@ void clear_pending_isac_ints(struct IsdnCardState *cs)
 	cs->writeisac(cs, ISAC_MASK, 0xFF);
 }
 
+<<<<<<< HEAD
 void __devinit
 setup_isac(struct IsdnCardState *cs)
+=======
+void setup_isac(struct IsdnCardState *cs)
+>>>>>>> refs/remotes/origin/master
 {
 	INIT_WORK(&cs->tqueue, isac_bh);
 	cs->dbusytimer.function = (void *) dbusy_timer_handler;

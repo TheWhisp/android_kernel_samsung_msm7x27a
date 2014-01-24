@@ -109,7 +109,11 @@ static inline struct ax_device *to_ax_dev(struct net_device *dev)
 /*
  * ax_initial_check
  *
+<<<<<<< HEAD
  * do an initial probe for the card to check wether it exists
+=======
+ * do an initial probe for the card to check whether it exists
+>>>>>>> refs/remotes/origin/master
  * and is functional
  */
 static int ax_initial_check(struct net_device *dev)
@@ -191,11 +195,19 @@ static void ax_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr,
 	ei_outb(E8390_RREAD+E8390_START, nic_base + NE_CMD);
 
 	if (ei_local->word16)
+<<<<<<< HEAD
 		readsw(nic_base + NE_DATAPORT, hdr,
 		       sizeof(struct e8390_pkt_hdr) >> 1);
 	else
 		readsb(nic_base + NE_DATAPORT, hdr,
 		       sizeof(struct e8390_pkt_hdr));
+=======
+		ioread16_rep(nic_base + NE_DATAPORT, hdr,
+			     sizeof(struct e8390_pkt_hdr) >> 1);
+	else
+		ioread8_rep(nic_base + NE_DATAPORT, hdr,
+			    sizeof(struct e8390_pkt_hdr));
+>>>>>>> refs/remotes/origin/master
 
 	ei_outb(ENISR_RDC, nic_base + EN0_ISR);	/* Ack intr. */
 	ei_local->dmaing &= ~0x01;
@@ -237,12 +249,20 @@ static void ax_block_input(struct net_device *dev, int count,
 	ei_outb(E8390_RREAD+E8390_START, nic_base + NE_CMD);
 
 	if (ei_local->word16) {
+<<<<<<< HEAD
 		readsw(nic_base + NE_DATAPORT, buf, count >> 1);
+=======
+		ioread16_rep(nic_base + NE_DATAPORT, buf, count >> 1);
+>>>>>>> refs/remotes/origin/master
 		if (count & 0x01)
 			buf[count-1] = ei_inb(nic_base + NE_DATAPORT);
 
 	} else {
+<<<<<<< HEAD
 		readsb(nic_base + NE_DATAPORT, buf, count);
+=======
+		ioread8_rep(nic_base + NE_DATAPORT, buf, count);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ei_local->dmaing &= ~1;
@@ -286,9 +306,15 @@ static void ax_block_output(struct net_device *dev, int count,
 
 	ei_outb(E8390_RWRITE+E8390_START, nic_base + NE_CMD);
 	if (ei_local->word16)
+<<<<<<< HEAD
 		writesw(nic_base + NE_DATAPORT, buf, count >> 1);
 	else
 		writesb(nic_base + NE_DATAPORT, buf, count);
+=======
+		iowrite16_rep(nic_base + NE_DATAPORT, buf, count >> 1);
+	else
+		iowrite8_rep(nic_base + NE_DATAPORT, buf, count);
+>>>>>>> refs/remotes/origin/master
 
 	dma_start = jiffies;
 
@@ -358,7 +384,11 @@ static int ax_mii_probe(struct net_device *dev)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	ret = phy_connect_direct(dev, phy_dev, ax_handle_link_change, 0,
+=======
+	ret = phy_connect_direct(dev, phy_dev, ax_handle_link_change,
+>>>>>>> refs/remotes/origin/master
 				 PHY_INTERFACE_MODE_MII);
 	if (ret) {
 		netdev_err(dev, "Could not attach to PHY\n");
@@ -469,9 +499,15 @@ static void ax_get_drvinfo(struct net_device *dev,
 {
 	struct platform_device *pdev = to_platform_device(dev->dev.parent);
 
+<<<<<<< HEAD
 	strcpy(info->driver, DRV_NAME);
 	strcpy(info->version, DRV_VERSION);
 	strcpy(info->bus_info, pdev->name);
+=======
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, pdev->name, sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ax_get_settings(struct net_device *dev, struct ethtool_cmd *cmd)
@@ -501,6 +537,10 @@ static const struct ethtool_ops ax_ethtool_ops = {
 	.get_settings		= ax_get_settings,
 	.set_settings		= ax_set_settings,
 	.get_link		= ethtool_op_get_link,
+<<<<<<< HEAD
+=======
+	.get_ts_info		= ethtool_op_get_ts_info,
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_AX88796_93CX6
@@ -701,12 +741,20 @@ static int ax_init_dev(struct net_device *dev)
 			for (i = 0; i < 16; i++)
 				SA_prom[i] = SA_prom[i+i];
 
+<<<<<<< HEAD
 		memcpy(dev->dev_addr, SA_prom, 6);
+=======
+		memcpy(dev->dev_addr, SA_prom, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	}
 
 #ifdef CONFIG_AX88796_93CX6
 	if (ax->plat->flags & AXFLG_HAS_93CX6) {
+<<<<<<< HEAD
 		unsigned char mac_addr[6];
+=======
+		unsigned char mac_addr[ETH_ALEN];
+>>>>>>> refs/remotes/origin/master
 		struct eeprom_93cx6 eeprom;
 
 		eeprom.data = ei_local;
@@ -718,7 +766,11 @@ static int ax_init_dev(struct net_device *dev)
 				       (__le16 __force *)mac_addr,
 				       sizeof(mac_addr) >> 1);
 
+<<<<<<< HEAD
 		memcpy(dev->dev_addr, mac_addr, 6);
+=======
+		memcpy(dev->dev_addr, mac_addr, ETH_ALEN);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 	if (ax->plat->wordlength == 2) {
@@ -827,7 +879,11 @@ static int ax_probe(struct platform_device *pdev)
 	struct ei_device *ei_local;
 	struct ax_device *ax;
 	struct resource *irq, *mem, *mem2;
+<<<<<<< HEAD
 	resource_size_t mem_size, mem2_size = 0;
+=======
+	unsigned long mem_size, mem2_size = 0;
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 
 	dev = ax__alloc_ei_netdev(sizeof(struct ax_device));
@@ -839,7 +895,11 @@ static int ax_probe(struct platform_device *pdev)
 	ei_local = netdev_priv(dev);
 	ax = to_ax_dev(dev);
 
+<<<<<<< HEAD
 	ax->plat = pdev->dev.platform_data;
+=======
+	ax->plat = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	platform_set_drvdata(pdev, dev);
 
 	ei_local->rxcr_base = ax->plat->rcr_val;

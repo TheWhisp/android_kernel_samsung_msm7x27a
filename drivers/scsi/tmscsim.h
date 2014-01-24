@@ -143,6 +143,10 @@ u8		Ignore_IRQ;	/* Not used */
 
 struct pci_dev	*pdev;
 
+<<<<<<< HEAD
+=======
+unsigned long   last_reset;
+>>>>>>> refs/remotes/origin/master
 unsigned long	Cmds;
 u32		SelLost;
 u32		SelConn;

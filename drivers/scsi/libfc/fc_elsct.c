@@ -22,9 +22,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/unaligned.h>
 #include <scsi/fc/fc_gs.h>
 #include <scsi/fc/fc_ns.h>
@@ -32,9 +36,13 @@
 #include <scsi/libfc.h>
 #include <scsi/fc_encode.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "fc_libfc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "fc_libfc.h"
+>>>>>>> refs/remotes/origin/master
 
 /**
  * fc_elsct_send() - Send an ELS or CT frame
@@ -63,11 +71,15 @@ struct fc_seq *fc_elsct_send(struct fc_lport *lport, u32 did,
 	else {
 		/* CT requests */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc = fc_ct_fill(lport, did, fp, op, &r_ctl, &fh_type);
 		did = FC_FID_DIR_SERV;
 =======
 		rc = fc_ct_fill(lport, did, fp, op, &r_ctl, &fh_type, &did);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		rc = fc_ct_fill(lport, did, fp, op, &r_ctl, &fh_type, &did);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (rc) {

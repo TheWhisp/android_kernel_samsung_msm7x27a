@@ -358,9 +358,13 @@ miss:
 	return NULL;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(btree_get_prev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(btree_get_prev);
+>>>>>>> refs/remotes/origin/master
 
 static int getpos(struct btree_geo *geo, unsigned long *node,
 		unsigned long *key)
@@ -512,6 +516,10 @@ retry:
 int btree_insert(struct btree_head *head, struct btree_geo *geo,
 		unsigned long *key, void *val, gfp_t gfp)
 {
+<<<<<<< HEAD
+=======
+	BUG_ON(!val);
+>>>>>>> refs/remotes/origin/master
 	return btree_insert_level(head, geo, key, val, 1, gfp);
 }
 EXPORT_SYMBOL_GPL(btree_insert);

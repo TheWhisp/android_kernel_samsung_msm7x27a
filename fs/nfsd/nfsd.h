@@ -12,10 +12,13 @@
 #include <linux/mount.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/nfsd/debug.h>
 #include <linux/nfsd/export.h>
 #include <linux/nfsd/stats.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/nfs.h>
 #include <linux/nfs2.h>
 #include <linux/nfs3.h>
@@ -26,6 +29,7 @@
 #include <linux/nfsd/export.h>
 #include <linux/nfsd/stats.h>
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 /*
  * nfsd version
@@ -33,6 +37,12 @@
 #define NFSD_SUPPORTED_MINOR_VERSION	1
 <<<<<<< HEAD
 =======
+=======
+/*
+ * nfsd version
+ */
+#define NFSD_SUPPORTED_MINOR_VERSION	2
+>>>>>>> refs/remotes/origin/master
 /*
  * Maximum blocksizes supported by daemon under various circumstances.
  */
@@ -52,7 +62,10 @@
  * size is rounded up to a page size when allocating space.
  */
 #define NFSD_BUFSIZE            ((RPC_MAX_HEADER_WITH_AUTH+26)*XDR_UNIT + NFSSVC_MAXBLKSIZE)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct readdir_cd {
 	__be32			err;	/* 0, nfserr, or nfserr_eof */
@@ -62,18 +75,26 @@ struct readdir_cd {
 extern struct svc_program	nfsd_program;
 extern struct svc_version	nfsd_version2, nfsd_version3,
 				nfsd_version4;
+<<<<<<< HEAD
 extern u32			nfsd_supported_minorversion;
 extern struct mutex		nfsd_mutex;
 extern struct svc_serv		*nfsd_serv;
 extern spinlock_t		nfsd_drc_lock;
 extern unsigned int		nfsd_drc_max_mem;
 extern unsigned int		nfsd_drc_mem_used;
+=======
+extern struct mutex		nfsd_mutex;
+extern spinlock_t		nfsd_drc_lock;
+extern unsigned long		nfsd_drc_max_mem;
+extern unsigned long		nfsd_drc_mem_used;
+>>>>>>> refs/remotes/origin/master
 
 extern const struct seq_operations nfs_exports_op;
 
 /*
  * Function prototypes.
  */
+<<<<<<< HEAD
 int		nfsd_svc(unsigned short port, int nrservs);
 int		nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp);
 
@@ -96,6 +117,20 @@ static inline void nfsd_destroy(struct net *net)
 }
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int		nfsd_svc(int nrservs, struct net *net);
+int		nfsd_dispatch(struct svc_rqst *rqstp, __be32 *statp);
+
+int		nfsd_nrthreads(struct net *);
+int		nfsd_nrpools(struct net *);
+int		nfsd_get_nrthreads(int n, int *, struct net *);
+int		nfsd_set_nrthreads(int n, int *, struct net *);
+int		nfsd_pool_stats_open(struct inode *, struct file *);
+int		nfsd_pool_stats_release(struct inode *, struct file *);
+
+void		nfsd_destroy(struct net *net);
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_NFSD_V2_ACL) || defined(CONFIG_NFSD_V3_ACL)
 #ifdef CONFIG_NFSD_V2_ACL
 extern struct svc_version nfsd_acl_version2;
@@ -113,7 +148,11 @@ enum vers_op {NFSD_SET, NFSD_CLEAR, NFSD_TEST, NFSD_AVAIL };
 int nfsd_vers(int vers, enum vers_op change);
 int nfsd_minorversion(u32 minorversion, enum vers_op change);
 void nfsd_reset_versions(void);
+<<<<<<< HEAD
 int nfsd_create_serv(void);
+=======
+int nfsd_create_serv(struct net *net);
+>>>>>>> refs/remotes/origin/master
 
 extern int nfsd_max_blksize;
 
@@ -126,6 +165,7 @@ static inline int nfsd_v4client(struct svc_rqst *rq)
  * NFSv4 State
  */
 #ifdef CONFIG_NFSD_V4
+<<<<<<< HEAD
 extern unsigned int max_delegations;
 <<<<<<< HEAD
 int nfs4_state_init(void);
@@ -150,6 +190,30 @@ static inline int nfs4_state_start(void) { return 0; }
 static inline void nfs4_state_shutdown(void) { }
 static inline void nfs4_reset_lease(time_t leasetime) { }
 static inline int nfs4_reset_recoverydir(char *recdir) { return 0; }
+=======
+extern unsigned long max_delegations;
+void nfs4_state_init(void);
+int nfsd4_init_slabs(void);
+void nfsd4_free_slabs(void);
+int nfs4_state_start(void);
+int nfs4_state_start_net(struct net *net);
+void nfs4_state_shutdown(void);
+void nfs4_state_shutdown_net(struct net *net);
+void nfs4_reset_lease(time_t leasetime);
+int nfs4_reset_recoverydir(char *recdir);
+char * nfs4_recoverydir(void);
+#else
+static inline void nfs4_state_init(void) { }
+static inline int nfsd4_init_slabs(void) { return 0; }
+static inline void nfsd4_free_slabs(void) { }
+static inline int nfs4_state_start(void) { return 0; }
+static inline int nfs4_state_start_net(struct net *net) { return 0; }
+static inline void nfs4_state_shutdown(void) { }
+static inline void nfs4_state_shutdown_net(struct net *net) { }
+static inline void nfs4_reset_lease(time_t leasetime) { }
+static inline int nfs4_reset_recoverydir(char *recdir) { return 0; }
+static inline char * nfs4_recoverydir(void) {return NULL; }
+>>>>>>> refs/remotes/origin/master
 #endif
 
 /*
@@ -265,6 +329,15 @@ void		nfsd_lockd_shutdown(void);
 #define nfserr_reject_deleg		cpu_to_be32(NFS4ERR_REJECT_DELEG)
 #define nfserr_returnconflict		cpu_to_be32(NFS4ERR_RETURNCONFLICT)
 #define nfserr_deleg_revoked		cpu_to_be32(NFS4ERR_DELEG_REVOKED)
+<<<<<<< HEAD
+=======
+#define nfserr_partner_notsupp		cpu_to_be32(NFS4ERR_PARTNER_NOTSUPP)
+#define nfserr_partner_no_auth		cpu_to_be32(NFS4ERR_PARTNER_NO_AUTH)
+#define nfserr_metadata_notsupp		cpu_to_be32(NFS4ERR_METADATA_NOTSUPP)
+#define nfserr_offload_denied		cpu_to_be32(NFS4ERR_OFFLOAD_DENIED)
+#define nfserr_wrong_lfs		cpu_to_be32(NFS4ERR_WRONG_LFS)
+#define nfserr_badlabel		cpu_to_be32(NFS4ERR_BADLABEL)
+>>>>>>> refs/remotes/origin/master
 
 /* error codes for internal use */
 /* if a request fails due to kmalloc failure, it gets dropped.
@@ -281,6 +354,7 @@ void		nfsd_lockd_shutdown(void);
 /* Check for dir entries '.' and '..' */
 #define isdotent(n, l)	(l < 3 && n[0] == '.' && (l == 1 || n[1] == '.'))
 
+<<<<<<< HEAD
 /*
  * Time of server startup
  */
@@ -291,6 +365,10 @@ extern struct timeval	nfssvc_boot;
 extern time_t nfsd4_lease;
 extern time_t nfsd4_grace;
 
+=======
+#ifdef CONFIG_NFSD_V4
+
+>>>>>>> refs/remotes/origin/master
 /* before processing a COMPOUND operation, we have to check that there
  * is enough space in the buffer for XDR encode to succeed.  otherwise,
  * we might process an operation with side effects, and be unable to
@@ -352,6 +430,16 @@ extern time_t nfsd4_grace;
 #define NFSD4_1_SUPPORTED_ATTRS_WORD2 \
 	(NFSD4_SUPPORTED_ATTRS_WORD2 | FATTR4_WORD2_SUPPATTR_EXCLCREAT)
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_NFSD_V4_SECURITY_LABEL
+#define NFSD4_2_SUPPORTED_ATTRS_WORD2 \
+	(NFSD4_1_SUPPORTED_ATTRS_WORD2 | FATTR4_WORD2_SECURITY_LABEL)
+#else
+#define NFSD4_2_SUPPORTED_ATTRS_WORD2 0
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static inline u32 nfsd_suppattrs0(u32 minorversion)
 {
 	return minorversion ? NFSD4_1_SUPPORTED_ATTRS_WORD0
@@ -366,6 +454,7 @@ static inline u32 nfsd_suppattrs1(u32 minorversion)
 
 static inline u32 nfsd_suppattrs2(u32 minorversion)
 {
+<<<<<<< HEAD
 	return minorversion ? NFSD4_1_SUPPORTED_ATTRS_WORD2
 			    : NFSD4_SUPPORTED_ATTRS_WORD2;
 }
@@ -382,6 +471,16 @@ static inline u32 nfsd_suppattrs2(u32 minorversion)
 (FATTR4_WORD1_MODE              | FATTR4_WORD1_OWNER         | FATTR4_WORD1_OWNER_GROUP     \
  | FATTR4_WORD1_TIME_ACCESS_SET | FATTR4_WORD1_TIME_MODIFY_SET)
 =======
+=======
+	switch (minorversion) {
+	default: return NFSD4_2_SUPPORTED_ATTRS_WORD2;
+	case 1:  return NFSD4_1_SUPPORTED_ATTRS_WORD2;
+	case 0:  return NFSD4_SUPPORTED_ATTRS_WORD2;
+	}
+}
+
+/* These will return ERR_INVAL if specified in GETATTR or READDIR. */
+>>>>>>> refs/remotes/origin/master
 #define NFSD_WRITEONLY_ATTRS_WORD1 \
 	(FATTR4_WORD1_TIME_ACCESS_SET   | FATTR4_WORD1_TIME_MODIFY_SET)
 
@@ -391,8 +490,16 @@ static inline u32 nfsd_suppattrs2(u32 minorversion)
 #define NFSD_WRITEABLE_ATTRS_WORD1 \
 	(FATTR4_WORD1_MODE | FATTR4_WORD1_OWNER | FATTR4_WORD1_OWNER_GROUP \
 	| FATTR4_WORD1_TIME_ACCESS_SET | FATTR4_WORD1_TIME_MODIFY_SET)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define NFSD_WRITEABLE_ATTRS_WORD2 0
+=======
+#ifdef CONFIG_NFSD_V4_SECURITY_LABEL
+#define NFSD_WRITEABLE_ATTRS_WORD2 FATTR4_WORD2_SECURITY_LABEL
+#else
+#define NFSD_WRITEABLE_ATTRS_WORD2 0
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #define NFSD_SUPPATTR_EXCLCREAT_WORD0 \
 	NFSD_WRITEABLE_ATTRS_WORD0
@@ -407,7 +514,10 @@ static inline u32 nfsd_suppattrs2(u32 minorversion)
 	NFSD_WRITEABLE_ATTRS_WORD2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int nfsd4_is_junction(struct dentry *dentry);
 extern int register_cld_notifier(void);
 extern void unregister_cld_notifier(void);
@@ -420,7 +530,10 @@ static inline int nfsd4_is_junction(struct dentry *dentry)
 #define register_cld_notifier() 0
 #define unregister_cld_notifier() do { } while(0)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_NFSD_V4 */
 
 #endif /* LINUX_NFSD_NFSD_H */

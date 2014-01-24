@@ -36,7 +36,11 @@
  *
  *  hcd        glue with the USB API Host Controller Interface API.
  *
+<<<<<<< HEAD
  *  nep        Notification EndPoint managent: collect notifications
+=======
+ *  nep        Notification EndPoint management: collect notifications
+>>>>>>> refs/remotes/origin/master
  *             and queue them with the workqueue daemon.
  *
  *             Handle notifications as coming from the NEP. Sends them
@@ -91,6 +95,10 @@
 struct wusbhc;
 struct wahc;
 extern void wa_urb_enqueue_run(struct work_struct *ws);
+<<<<<<< HEAD
+=======
+extern void wa_process_errored_transfers_run(struct work_struct *ws);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * RPipe instance
@@ -116,11 +124,31 @@ struct wa_rpipe {
 	struct wahc *wa;
 	spinlock_t seg_lock;
 	struct list_head seg_list;
+<<<<<<< HEAD
+=======
+	struct list_head list_node;
+>>>>>>> refs/remotes/origin/master
 	atomic_t segs_available;
 	u8 buffer[1];	/* For reads/writes on USB */
 };
 
 
+<<<<<<< HEAD
+=======
+enum wa_dti_state {
+	WA_DTI_TRANSFER_RESULT_PENDING,
+	WA_DTI_ISOC_PACKET_STATUS_PENDING
+};
+
+enum wa_quirks {
+	/*
+	 * The Alereon HWA expects the data frames in isochronous transfer
+	 * requests to be concatenated and not sent as separate packets.
+	 */
+	WUSB_QUIRK_ALEREON_HWA_CONCAT_ISOC	= 0x01,
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * Instance of a HWA Host Controller
  *
@@ -129,7 +157,11 @@ struct wa_rpipe {
  *
  * @wa_descr  Can be accessed without locking because it is in
  *            the same area where the device descriptors were
+<<<<<<< HEAD
  *            read, so it is guaranteed to exist umodified while
+=======
+ *            read, so it is guaranteed to exist unmodified while
+>>>>>>> refs/remotes/origin/master
  *            the device exists.
  *
  *            Endianess has been converted to CPU's.
@@ -152,8 +184,13 @@ struct wa_rpipe {
  *                       submitted from an atomic context).
  *
  * FIXME: this needs to be layered up: a wusbhc layer (for sharing
+<<<<<<< HEAD
  *        comonalities with WHCI), a wa layer (for sharing
  *        comonalities with DWA-RC).
+=======
+ *        commonalities with WHCI), a wa layer (for sharing
+ *        commonalities with DWA-RC).
+>>>>>>> refs/remotes/origin/master
  */
 struct wahc {
 	struct usb_device *usb_dev;
@@ -177,6 +214,7 @@ struct wahc {
 
 	u16 rpipes;
 	unsigned long *rpipe_bm;	/* rpipe usage bitmap */
+<<<<<<< HEAD
 	spinlock_t rpipe_bm_lock;	/* protect rpipe_bm */
 	struct mutex rpipe_mutex;	/* assigning resources to endpoints */
 
@@ -185,11 +223,34 @@ struct wahc {
 	struct edc dti_edc;		/* DTI error density counter */
 	struct wa_xfer_result *xfer_result; /* real size = dti_ep maxpktsize */
 	size_t xfer_result_size;
+=======
+	struct list_head rpipe_delayed_list;	/* delayed RPIPES. */
+	spinlock_t rpipe_lock;	/* protect rpipe_bm and delayed list */
+	struct mutex rpipe_mutex;	/* assigning resources to endpoints */
+
+	/*
+	 * dti_state is used to track the state of the dti_urb. When dti_state
+	 * is WA_DTI_ISOC_PACKET_STATUS_PENDING, dti_isoc_xfer_in_progress and
+	 * dti_isoc_xfer_seg identify which xfer the incoming isoc packet
+	 * status refers to.
+	 */
+	enum wa_dti_state dti_state;
+	u32 dti_isoc_xfer_in_progress;
+	u8  dti_isoc_xfer_seg;
+	struct urb *dti_urb;		/* URB for reading xfer results */
+	struct urb *buf_in_urb;		/* URB for reading data in */
+	struct edc dti_edc;		/* DTI error density counter */
+	void *dti_buf;
+	size_t dti_buf_size;
+
+	unsigned long dto_in_use;	/* protect dto endoint serialization */
+>>>>>>> refs/remotes/origin/master
 
 	s32 status;			/* For reading status */
 
 	struct list_head xfer_list;
 	struct list_head xfer_delayed_list;
+<<<<<<< HEAD
 	spinlock_t xfer_list_lock;
 	struct work_struct xfer_work;
 	atomic_t xfer_id_count;
@@ -197,6 +258,24 @@ struct wahc {
 
 
 extern int wa_create(struct wahc *wa, struct usb_interface *iface);
+=======
+	struct list_head xfer_errored_list;
+	/*
+	 * lock for the above xfer lists.  Can be taken while a xfer->lock is
+	 * held but not in the reverse order.
+	 */
+	spinlock_t xfer_list_lock;
+	struct work_struct xfer_enqueue_work;
+	struct work_struct xfer_error_work;
+	atomic_t xfer_id_count;
+
+	kernel_ulong_t	quirks;
+};
+
+
+extern int wa_create(struct wahc *wa, struct usb_interface *iface,
+	kernel_ulong_t);
+>>>>>>> refs/remotes/origin/master
 extern void __wa_destroy(struct wahc *wa);
 void wa_reset_all(struct wahc *wa);
 
@@ -232,7 +311,12 @@ static inline void wa_nep_disarm(struct wahc *wa)
 /* RPipes */
 static inline void wa_rpipe_init(struct wahc *wa)
 {
+<<<<<<< HEAD
 	spin_lock_init(&wa->rpipe_bm_lock);
+=======
+	INIT_LIST_HEAD(&wa->rpipe_delayed_list);
+	spin_lock_init(&wa->rpipe_lock);
+>>>>>>> refs/remotes/origin/master
 	mutex_init(&wa->rpipe_mutex);
 }
 
@@ -240,12 +324,24 @@ static inline void wa_init(struct wahc *wa)
 {
 	edc_init(&wa->nep_edc);
 	atomic_set(&wa->notifs_queued, 0);
+<<<<<<< HEAD
+=======
+	wa->dti_state = WA_DTI_TRANSFER_RESULT_PENDING;
+>>>>>>> refs/remotes/origin/master
 	wa_rpipe_init(wa);
 	edc_init(&wa->dti_edc);
 	INIT_LIST_HEAD(&wa->xfer_list);
 	INIT_LIST_HEAD(&wa->xfer_delayed_list);
+<<<<<<< HEAD
 	spin_lock_init(&wa->xfer_list_lock);
 	INIT_WORK(&wa->xfer_work, wa_urb_enqueue_run);
+=======
+	INIT_LIST_HEAD(&wa->xfer_errored_list);
+	spin_lock_init(&wa->xfer_list_lock);
+	INIT_WORK(&wa->xfer_enqueue_work, wa_urb_enqueue_run);
+	INIT_WORK(&wa->xfer_error_work, wa_process_errored_transfers_run);
+	wa->dto_in_use = 0;
+>>>>>>> refs/remotes/origin/master
 	atomic_set(&wa->xfer_id_count, 1);
 }
 
@@ -269,6 +365,11 @@ static inline void rpipe_put(struct wa_rpipe *rpipe)
 
 }
 extern void rpipe_ep_disable(struct wahc *, struct usb_host_endpoint *);
+<<<<<<< HEAD
+=======
+extern void rpipe_clear_feature_stalled(struct wahc *,
+			struct usb_host_endpoint *);
+>>>>>>> refs/remotes/origin/master
 extern int wa_rpipes_create(struct wahc *);
 extern void wa_rpipes_destroy(struct wahc *);
 static inline void rpipe_avail_dec(struct wa_rpipe *rpipe)
@@ -289,7 +390,11 @@ static inline int rpipe_avail_inc(struct wa_rpipe *rpipe)
 /* Transferring data */
 extern int wa_urb_enqueue(struct wahc *, struct usb_host_endpoint *,
 			  struct urb *, gfp_t);
+<<<<<<< HEAD
 extern int wa_urb_dequeue(struct wahc *, struct urb *);
+=======
+extern int wa_urb_dequeue(struct wahc *, struct urb *, int);
+>>>>>>> refs/remotes/origin/master
 extern void wa_handle_notif_xfer(struct wahc *, struct wa_notif_hdr *);
 
 
@@ -302,7 +407,11 @@ extern void wa_handle_notif_xfer(struct wahc *, struct wa_notif_hdr *);
  *        it...no RC specific function is called...unless I miss
  *        something.
  *
+<<<<<<< HEAD
  * FIXME: has to go away in favour of an 'struct' hcd based sollution
+=======
+ * FIXME: has to go away in favour of a 'struct' hcd based solution
+>>>>>>> refs/remotes/origin/master
  */
 static inline struct wahc *wa_get(struct wahc *wa)
 {
@@ -323,7 +432,11 @@ static inline int __wa_feature(struct wahc *wa, unsigned op, u16 feature)
 			USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 			feature,
 			wa->usb_iface->cur_altsetting->desc.bInterfaceNumber,
+<<<<<<< HEAD
 			NULL, 0, 1000 /* FIXME: arbitrary */);
+=======
+			NULL, 0, USB_CTRL_SET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -357,8 +470,12 @@ s32 __wa_get_status(struct wahc *wa)
 		USB_REQ_GET_STATUS,
 		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
 		0, wa->usb_iface->cur_altsetting->desc.bInterfaceNumber,
+<<<<<<< HEAD
 		&wa->status, sizeof(wa->status),
 		1000 /* FIXME: arbitrary */);
+=======
+		&wa->status, sizeof(wa->status), USB_CTRL_GET_TIMEOUT);
+>>>>>>> refs/remotes/origin/master
 	if (result >= 0)
 		result = wa->status;
 	return result;

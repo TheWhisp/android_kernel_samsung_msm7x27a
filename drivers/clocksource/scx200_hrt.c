@@ -50,11 +50,14 @@ static cycle_t read_hrt(struct clocksource *cs)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define HRT_SHIFT_1	22
 #define HRT_SHIFT_27	26
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct clocksource cs_hrt = {
 	.name		= "scx200_hrt",
 	.rating		= 250,
@@ -67,9 +70,13 @@ static struct clocksource cs_hrt = {
 static int __init init_hrt_clocksource(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	u32 freq;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 freq;
+>>>>>>> refs/remotes/origin/master
 	/* Make sure scx200 has initialized the configuration block */
 	if (!scx200_cb_present())
 		return -ENODEV;
@@ -79,10 +86,14 @@ static int __init init_hrt_clocksource(void)
 			    SCx200_TIMER_SIZE,
 			    "NatSemi SCx200 High-Resolution Timer")) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_WARNING NAME ": unable to lock timer region\n");
 =======
 		pr_warn("unable to lock timer region\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_warn("unable to lock timer region\n");
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -90,6 +101,7 @@ static int __init init_hrt_clocksource(void)
 	outb(HR_TMEN | (mhz27 ? HR_TMCLKSEL : 0),
 	     scx200_cb_base + SCx200_TMCNFG_OFFSET);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (mhz27) {
 		cs_hrt.shift = HRT_SHIFT_27;
@@ -105,6 +117,8 @@ static int __init init_hrt_clocksource(void)
 
 	return clocksource_register(&cs_hrt);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	freq = (HRT_FREQ + ppm);
 	if (mhz27)
 		freq *= 27;
@@ -112,7 +126,10 @@ static int __init init_hrt_clocksource(void)
 	pr_info("enabling scx200 high-res timer (%s MHz +%d ppm)\n", mhz27 ? "27":"1", ppm);
 
 	return clocksource_register_hz(&cs_hrt, freq);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(init_hrt_clocksource);

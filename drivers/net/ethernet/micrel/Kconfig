@@ -22,7 +22,10 @@ if NET_VENDOR_MICREL
 config ARM_KS8695_ETHER
 	tristate "KS8695 Ethernet support"
 	depends on ARM && ARCH_KS8695
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  If you wish to compile a kernel for the KS8695 and want to
@@ -39,7 +42,10 @@ config KS8842
 config KS8851
 	tristate "Micrel KS8851 SPI"
 	depends on SPI
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	select CRC32
 	select EEPROM_93CX6
@@ -49,7 +55,10 @@ config KS8851
 config KS8851_MLL
 	tristate "Micrel KS8851 MLL"
 	depends on HAS_IOMEM
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	---help---
 	  This platform driver is for Micrel KS8851 Address/data bus
@@ -58,7 +67,10 @@ config KS8851_MLL
 config KSZ884X_PCI
 	tristate "Micrel KSZ8841/2 PCI"
 	depends on PCI
+<<<<<<< HEAD
 	select NET_CORE
+=======
+>>>>>>> refs/remotes/origin/master
 	select MII
 	select CRC32
 	---help---

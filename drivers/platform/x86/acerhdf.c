@@ -5,7 +5,11 @@
  *
  * (C) 2009 - Peter Feuerer     peter (a) piie.net
  *                              http://piie.net
+<<<<<<< HEAD
  *     2009 Borislav Petkov <petkovbb@gmail.com>
+=======
+ *     2009 Borislav Petkov	bp (a) alien8.de
+>>>>>>> refs/remotes/origin/master
  *
  * Inspired by and many thanks to:
  *  o acerfand   - Rachel Greenham
@@ -51,10 +55,14 @@
 #undef START_IN_KERNEL_MODE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRV_VER "0.5.24"
 =======
 #define DRV_VER "0.5.26"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRV_VER "0.5.26"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * According to the Atom N270 datasheet,
@@ -88,12 +96,17 @@ static int kernelmode;
 
 static unsigned int interval = 10;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int fanon = 63000;
 static unsigned int fanoff = 58000;
 =======
 static unsigned int fanon = 60000;
 static unsigned int fanoff = 53000;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int fanon = 60000;
+static unsigned int fanoff = 53000;
+>>>>>>> refs/remotes/origin/master
 static unsigned int verbose;
 static unsigned int fanstate = ACERHDF_FAN_AUTO;
 static char force_bios[16];
@@ -160,10 +173,15 @@ static const struct bios_settings_t bios_tbl[] = {
 	{"Acer", "AOA150", "v0.3309", 0x55, 0x58, {0x20, 0x00} },
 	{"Acer", "AOA150", "v0.3310", 0x55, 0x58, {0x20, 0x00} },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* LT1005u */
 	{"Acer", "LT-10Q", "v0.3310", 0x55, 0x58, {0x20, 0x00} },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* LT1005u */
+	{"Acer", "LT-10Q", "v0.3310", 0x55, 0x58, {0x20, 0x00} },
+>>>>>>> refs/remotes/origin/master
 	/* Acer 1410 */
 	{"Acer", "Aspire 1410", "v0.3108", 0x55, 0x58, {0x9e, 0x00} },
 	{"Acer", "Aspire 1410", "v0.3113", 0x55, 0x58, {0x9e, 0x00} },
@@ -176,9 +194,13 @@ static const struct bios_settings_t bios_tbl[] = {
 	{"Acer", "Aspire 1410", "v1.3308", 0x55, 0x58, {0x9e, 0x00} },
 	{"Acer", "Aspire 1410", "v1.3310", 0x55, 0x58, {0x9e, 0x00} },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"Acer", "Aspire 1410", "v1.3314", 0x55, 0x58, {0x9e, 0x00} },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"Acer", "Aspire 1410", "v1.3314", 0x55, 0x58, {0x9e, 0x00} },
+>>>>>>> refs/remotes/origin/master
 	/* Acer 1810xx */
 	{"Acer", "Aspire 1810TZ", "v0.3108", 0x55, 0x58, {0x9e, 0x00} },
 	{"Acer", "Aspire 1810T",  "v0.3108", 0x55, 0x58, {0x9e, 0x00} },
@@ -200,6 +222,7 @@ static const struct bios_settings_t bios_tbl[] = {
 	{"Acer", "Aspire 1810T",  "v1.3308", 0x55, 0x58, {0x9e, 0x00} },
 	{"Acer", "Aspire 1810TZ", "v1.3310", 0x55, 0x58, {0x9e, 0x00} },
 	{"Acer", "Aspire 1810T",  "v1.3310", 0x55, 0x58, {0x9e, 0x00} },
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Acer 531 */
 	{"Acer", "AO531h", "v0.3201", 0x55, 0x58, {0x20, 0x00} },
@@ -225,6 +248,8 @@ static const struct bios_settings_t bios_tbl[] = {
 	{"Packard Bell", "DOTMA",  "v1.3201", 0x55, 0x58, {0x9e, 0x00} },
 	{"Packard Bell", "DOTMA",  "v1.3302", 0x55, 0x58, {0x9e, 0x00} },
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	{"Acer", "Aspire 1810TZ", "v1.3314", 0x55, 0x58, {0x9e, 0x00} },
 	{"Acer", "Aspire 1810T",  "v1.3314", 0x55, 0x58, {0x9e, 0x00} },
 	/* Acer 531 */
@@ -264,7 +289,10 @@ static const struct bios_settings_t bios_tbl[] = {
 	{"Packard Bell", "DOTMA",   "v1.3302",  0x55, 0x58, {0x9e, 0x00} },
 	{"Packard Bell", "DOTMA",   "v1.3303t", 0x55, 0x58, {0x9e, 0x00} },
 	{"Packard Bell", "DOTVR46", "v1.3308",  0x55, 0x58, {0x9e, 0x00} },
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* pewpew-terminator */
 	{"", "", "", 0, 0, {0, 0} }
 };
@@ -304,6 +332,7 @@ static void acerhdf_change_fanstate(int state)
 
 	if (verbose)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_notice("fan %s\n", (state == ACERHDF_FAN_OFF) ?
 				"OFF" : "ON");
 
@@ -311,12 +340,17 @@ static void acerhdf_change_fanstate(int state)
 		pr_err("invalid fan state %d requested, setting to auto!\n",
 			state);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_notice("fan %s\n", state == ACERHDF_FAN_OFF ? "OFF" : "ON");
 
 	if ((state != ACERHDF_FAN_OFF) && (state != ACERHDF_FAN_AUTO)) {
 		pr_err("invalid fan state %d requested, setting to auto!\n",
 		       state);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		state = ACERHDF_FAN_AUTO;
 	}
 
@@ -332,16 +366,21 @@ static void acerhdf_check_param(struct thermal_zone_device *thermal)
 	if (fanon > ACERHDF_MAX_FANON) {
 		pr_err("fanon temperature too high, set to %d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ACERHDF_MAX_FANON);
 =======
 		       ACERHDF_MAX_FANON);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		       ACERHDF_MAX_FANON);
+>>>>>>> refs/remotes/origin/master
 		fanon = ACERHDF_MAX_FANON;
 	}
 
 	if (kernelmode && prev_interval != interval) {
 		if (interval > ACERHDF_MAX_INTERVAL) {
 			pr_err("interval too high, set to %d\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 				ACERHDF_MAX_INTERVAL);
 			interval = ACERHDF_MAX_INTERVAL;
@@ -350,12 +389,17 @@ static void acerhdf_check_param(struct thermal_zone_device *thermal)
 			pr_notice("interval changed to: %d\n",
 					interval);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			       ACERHDF_MAX_INTERVAL);
 			interval = ACERHDF_MAX_INTERVAL;
 		}
 		if (verbose)
 			pr_notice("interval changed to: %d\n", interval);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		thermal->polling_delay = interval*1000;
 		prev_interval = interval;
 	}
@@ -392,7 +436,12 @@ static int acerhdf_bind(struct thermal_zone_device *thermal,
 	if (cdev != cl_dev)
 		return 0;
 
+<<<<<<< HEAD
 	if (thermal_zone_bind_cooling_device(thermal, 0, cdev)) {
+=======
+	if (thermal_zone_bind_cooling_device(thermal, 0, cdev,
+			THERMAL_NO_LIMIT, THERMAL_NO_LIMIT)) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("error binding cooling dev\n");
 		return -EINVAL;
 	}
@@ -577,7 +626,11 @@ static int acerhdf_suspend(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit acerhdf_probe(struct platform_device *device)
+=======
+static int acerhdf_probe(struct platform_device *device)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
@@ -667,12 +720,17 @@ static int acerhdf_check_hardware(void)
 
 	if (!bios_cfg) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_err("unknown (unsupported) BIOS version %s/%s/%s, "
 			"please report, aborting!\n", vendor, product, version);
 =======
 		pr_err("unknown (unsupported) BIOS version %s/%s/%s, please report, aborting!\n",
 		       vendor, product, version);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unknown (unsupported) BIOS version %s/%s/%s, please report, aborting!\n",
+		       vendor, product, version);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -683,11 +741,15 @@ static int acerhdf_check_hardware(void)
 	if (!kernelmode) {
 		pr_notice("Fan control off, to enable do:\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pr_notice("echo -n \"enabled\" > "
 			"/sys/class/thermal/thermal_zone0/mode\n");
 =======
 		pr_notice("echo -n \"enabled\" > /sys/class/thermal/thermal_zone0/mode\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_notice("echo -n \"enabled\" > /sys/class/thermal/thermal_zone0/mode\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -733,8 +795,13 @@ static int acerhdf_register_thermal(void)
 	if (IS_ERR(cl_dev))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	thz_dev = thermal_zone_device_register("acerhdf", 1, NULL,
 					      &acerhdf_dev_ops, 0, 0, 0,
+=======
+	thz_dev = thermal_zone_device_register("acerhdf", 1, 0, NULL,
+					      &acerhdf_dev_ops, NULL, 0,
+>>>>>>> refs/remotes/origin/master
 					      (kernelmode) ? interval*1000 : 0);
 	if (IS_ERR(thz_dev))
 		return -EINVAL;
@@ -793,6 +860,7 @@ MODULE_AUTHOR("Peter Feuerer");
 MODULE_DESCRIPTION("Aspire One temperature and fan driver");
 MODULE_ALIAS("dmi:*:*Acer*:pnAOA*:");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_ALIAS("dmi:*:*Acer*:pnAspire 1410*:");
 MODULE_ALIAS("dmi:*:*Acer*:pnAspire 1810*:");
 MODULE_ALIAS("dmi:*:*Acer*:pnAO531*:");
@@ -803,6 +871,8 @@ MODULE_ALIAS("dmi:*:*Packard Bell*:pnDOA*:");
 MODULE_ALIAS("dmi:*:*Packard Bell*:pnDOTMU*:");
 MODULE_ALIAS("dmi:*:*Packard Bell*:pnDOTMA*:");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_ALIAS("dmi:*:*Acer*:pnAO751h*:");
 MODULE_ALIAS("dmi:*:*Acer*:pnAspire*1410*:");
 MODULE_ALIAS("dmi:*:*Acer*:pnAspire*1810*:");
@@ -817,7 +887,10 @@ MODULE_ALIAS("dmi:*:*Packard*Bell*:pnDOTMU*:");
 MODULE_ALIAS("dmi:*:*Packard*Bell*:pnENBFT*:");
 MODULE_ALIAS("dmi:*:*Packard*Bell*:pnDOTMA*:");
 MODULE_ALIAS("dmi:*:*Packard*Bell*:pnDOTVR46*:");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 module_init(acerhdf_init);
 module_exit(acerhdf_exit);

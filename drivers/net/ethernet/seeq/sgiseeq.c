@@ -381,8 +381,11 @@ memory_squeeze:
 					dev->stats.rx_packets++;
 					dev->stats.rx_bytes += len;
 				} else {
+<<<<<<< HEAD
 					printk(KERN_NOTICE "%s: Memory squeeze, deferring packet.\n",
 						dev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 					dev->stats.rx_dropped++;
 				}
 			} else {
@@ -721,9 +724,15 @@ static const struct net_device_ops sgiseeq_netdev_ops = {
 	.ndo_validate_addr	= eth_validate_addr,
 };
 
+<<<<<<< HEAD
 static int __devinit sgiseeq_probe(struct platform_device *pdev)
 {
 	struct sgiseeq_platform_data *pd = pdev->dev.platform_data;
+=======
+static int sgiseeq_probe(struct platform_device *pdev)
+{
+	struct sgiseeq_platform_data *pd = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct hpc3_regs *hpcregs = pd->hpc;
 	struct sgiseeq_init_block *sr;
 	unsigned int irq = pd->irq;
@@ -751,6 +760,10 @@ static int __devinit sgiseeq_probe(struct platform_device *pdev)
 	sp->srings = sr;
 	sp->rx_desc = sp->srings->rxvector;
 	sp->tx_desc = sp->srings->txvector;
+<<<<<<< HEAD
+=======
+	spin_lock_init(&sp->tx_lock);
+>>>>>>> refs/remotes/origin/master
 
 	/* A couple calculations now, saves many cycles later. */
 	setup_rx_ring(dev, sp->rx_desc, SEEQ_RX_BUFFERS);
@@ -819,7 +832,10 @@ static int __exit sgiseeq_remove(struct platform_device *pdev)
 	dma_free_noncoherent(&pdev->dev, sizeof(*sp->srings), sp->srings,
 			     sp->srings_dma);
 	free_netdev(dev);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }

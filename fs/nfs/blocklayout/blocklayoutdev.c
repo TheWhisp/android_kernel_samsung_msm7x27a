@@ -53,6 +53,7 @@ static int decode_sector_number(__be32 **rp, sector_t *sp)
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Open a block_device by device number. */
 struct block_device *nfs4_blkdev_get(dev_t dev)
 {
@@ -77,6 +78,16 @@ int nfs4_blkdev_put(struct block_device *bdev)
 	dprintk("%s for device %d:%d\n", __func__, MAJOR(bdev->bd_dev),
 			MINOR(bdev->bd_dev));
 	return blkdev_put(bdev, FMODE_READ);
+=======
+/*
+ * Release the block device
+ */
+void nfs4_blkdev_put(struct block_device *bdev)
+{
+	dprintk("%s for device %d:%d\n", __func__, MAJOR(bdev->bd_dev),
+			MINOR(bdev->bd_dev));
+	blkdev_put(bdev, FMODE_READ);
+>>>>>>> refs/remotes/origin/master
 }
 
 ssize_t bl_pipe_downcall(struct file *filp, const char __user *src,
@@ -123,7 +134,11 @@ nfs4_blk_decode_device(struct nfs_server *server,
 	uint8_t *dataptr;
 	DECLARE_WAITQUEUE(wq, current);
 	int offset, len, i, rc;
+<<<<<<< HEAD
 	struct net *net = server->nfs_client->net;
+=======
+	struct net *net = server->nfs_client->cl_net;
+>>>>>>> refs/remotes/origin/master
 	struct nfs_net *nn = net_generic(net, nfs_net_id);
 	struct bl_dev_msg *reply = &nn->bl_mount_reply;
 
@@ -172,11 +187,20 @@ nfs4_blk_decode_device(struct nfs_server *server,
 		goto out;
 	}
 
+<<<<<<< HEAD
 	bd = nfs4_blkdev_get(MKDEV(reply->major, reply->minor));
 	if (IS_ERR(bd)) {
 		rc = PTR_ERR(bd);
 		dprintk("%s failed to open device : %d\n", __func__, rc);
 		rv = ERR_PTR(rc);
+=======
+	bd = blkdev_get_by_dev(MKDEV(reply->major, reply->minor),
+			       FMODE_READ, NULL);
+	if (IS_ERR(bd)) {
+		dprintk("%s failed to open device : %ld\n", __func__,
+			PTR_ERR(bd));
+		rv = ERR_CAST(bd);
+>>>>>>> refs/remotes/origin/master
 		goto out;
 	}
 

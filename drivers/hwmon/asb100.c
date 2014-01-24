@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
     asb100.c - Part of lm_sensors, Linux kernel modules for hardware
 	        monitoring
 
@@ -37,6 +38,8 @@
     asb100	7	3	1	4	0x31	0x0694	yes	no
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * asb100.c - Part of lm_sensors, Linux kernel modules for hardware
  *	      monitoring
  *
@@ -70,10 +73,16 @@
  * ASB100-A supports pwm1, while plain ASB100 does not.  There is no known
  * way for the driver to tell which one is there.
  *
+<<<<<<< HEAD
  * Chip	#vin	#fanin	#pwm	#temp	wchipid	vendid	i2c	ISA
  * asb100	7	3	1	4	0x31	0x0694	yes	no
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Chip		#vin	#fanin	#pwm	#temp	wchipid	vendid	i2c	ISA
+ * asb100	7	3	1	4	0x31	0x0694	yes	no
+ */
+>>>>>>> refs/remotes/origin/master
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
@@ -94,8 +103,13 @@ static const unsigned short normal_i2c[] = { 0x2d, I2C_CLIENT_END };
 
 static unsigned short force_subclients[4];
 module_param_array(force_subclients, short, NULL, 0);
+<<<<<<< HEAD
 MODULE_PARM_DESC(force_subclients, "List of subclient addresses: "
 	"{bus, clientaddr, subclientaddr1, subclientaddr2}");
+=======
+MODULE_PARM_DESC(force_subclients,
+	"List of subclient addresses: {bus, clientaddr, subclientaddr1, subclientaddr2}");
+>>>>>>> refs/remotes/origin/master
 
 /* Voltage IN registers 0-6 */
 #define ASB100_REG_IN(nr)	(0x20 + (nr))
@@ -139,6 +153,7 @@ static const u16 asb100_reg_temp_hyst[]	= {0, 0x3a, 0x153, 0x253, 0x19};
 #define ASB100_REG_PWM1		0x59
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* CONVERSIONS
    Rounding and limit checking is only done on the TO_REG variants. */
 
@@ -149,6 +164,8 @@ static const u16 asb100_reg_temp_hyst[]	= {0, 0x3a, 0x153, 0x253, 0x19};
 /* IN: 1/1000 V (0V to 4.08V)
    REG: 16mV/bit */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * CONVERSIONS
  * Rounding and limit checking is only done on the TO_REG variants.
@@ -162,10 +179,16 @@ static const u16 asb100_reg_temp_hyst[]	= {0, 0x3a, 0x153, 0x253, 0x19};
  * IN: 1/1000 V (0V to 4.08V)
  * REG: 16mV/bit
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static u8 IN_TO_REG(unsigned val)
 {
 	unsigned nval = SENSORS_LIMIT(val, ASB100_IN_MIN, ASB100_IN_MAX);
+=======
+static u8 IN_TO_REG(unsigned val)
+{
+	unsigned nval = clamp_val(val, ASB100_IN_MIN, ASB100_IN_MAX);
+>>>>>>> refs/remotes/origin/master
 	return (nval + 8) / 16;
 }
 
@@ -180,12 +203,18 @@ static u8 FAN_TO_REG(long rpm, int div)
 		return 0;
 	if (rpm == 0)
 		return 255;
+<<<<<<< HEAD
 	rpm = SENSORS_LIMIT(rpm, 1, 1000000);
 	return SENSORS_LIMIT((1350000 + rpm * div / 2) / (rpm * div), 1, 254);
+=======
+	rpm = clamp_val(rpm, 1, 1000000);
+	return clamp_val((1350000 + rpm * div / 2) / (rpm * div), 1, 254);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int FAN_FROM_REG(u8 val, int div)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return val==0 ? -1 : val==255 ? 0 : 1350000/(val*div);
 }
@@ -201,6 +230,8 @@ static u8 TEMP_TO_REG(long temp)
 	int ntemp = SENSORS_LIMIT(temp, ASB100_TEMP_MIN, ASB100_TEMP_MAX);
 	ntemp += (ntemp<0 ? -500 : 500);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return val == 0 ? -1 : val == 255 ? 0 : 1350000 / (val * div);
 }
 
@@ -214,9 +245,14 @@ static u8 TEMP_TO_REG(long temp)
  */
 static u8 TEMP_TO_REG(long temp)
 {
+<<<<<<< HEAD
 	int ntemp = SENSORS_LIMIT(temp, ASB100_TEMP_MIN, ASB100_TEMP_MAX);
 	ntemp += (ntemp < 0 ? -500 : 500);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ntemp = clamp_val(temp, ASB100_TEMP_MIN, ASB100_TEMP_MAX);
+	ntemp += (ntemp < 0 ? -500 : 500);
+>>>>>>> refs/remotes/origin/master
 	return (u8)(ntemp / 1000);
 }
 
@@ -226,17 +262,26 @@ static int TEMP_FROM_REG(u8 reg)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* PWM: 0 - 255 per sensors documentation
    REG: (6.25% duty cycle per bit) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * PWM: 0 - 255 per sensors documentation
  * REG: (6.25% duty cycle per bit)
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 static u8 ASB100_PWM_TO_REG(int pwm)
 {
 	pwm = SENSORS_LIMIT(pwm, 0, 255);
+=======
+static u8 ASB100_PWM_TO_REG(int pwm)
+{
+	pwm = clamp_val(pwm, 0, 255);
+>>>>>>> refs/remotes/origin/master
 	return (u8)(pwm / 16);
 }
 
@@ -247,6 +292,7 @@ static int ASB100_PWM_FROM_REG(u8 reg)
 
 #define DIV_FROM_REG(val) (1 << (val))
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* FAN DIV: 1, 2, 4, or 8 (defaults to 2)
    REG: 0, 1, 2, or 3 (respectively) (defaults to 1) */
@@ -259,6 +305,8 @@ static u8 DIV_TO_REG(long val)
    data is pointed to by client->data. The structure itself is
    dynamically allocated, at the same time the client itself is allocated. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * FAN DIV: 1, 2, 4, or 8 (defaults to 2)
  * REG: 0, 1, 2, or 3 (respectively) (defaults to 1)
@@ -273,7 +321,10 @@ static u8 DIV_TO_REG(long val)
  * data is pointed to by client->data. The structure itself is
  * dynamically allocated, at the same time the client itself is allocated.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct asb100_data {
 	struct device *hwmon_dev;
 	struct mutex lock;
@@ -351,14 +402,20 @@ static ssize_t set_in_##reg(struct device *dev, struct device_attribute *attr, \
 	struct i2c_client *client = to_i2c_client(dev); \
 	struct asb100_data *data = i2c_get_clientdata(client); \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10); \
  \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val; \
 	int err = kstrtoul(buf, 10, &val); \
 	if (err) \
 		return err; \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock); \
 	data->in_##reg[nr] = IN_TO_REG(val); \
 	asb100_write_value(client, ASB100_REG_IN_##REG(nr), \
@@ -420,15 +477,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct asb100_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->fan_min[nr] = FAN_TO_REG(val, DIV_FROM_REG(data->fan_div[nr]));
@@ -438,18 +501,24 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Note: we save and restore the fan minimum here, because its value is
    determined in part by the fan divisor.  This follows the principle of
    least surprise; the user doesn't expect the fan minimum to change just
    because the divisor changed. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Note: we save and restore the fan minimum here, because its value is
  * determined in part by the fan divisor.  This follows the principle of
  * least surprise; the user doesn't expect the fan minimum to change just
  * because the divisor changed.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
 {
@@ -458,9 +527,12 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	struct asb100_data *data = i2c_get_clientdata(client);
 	unsigned long min;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 	int reg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int reg;
 	unsigned long val;
 	int err;
@@ -468,7 +540,10 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 
@@ -554,14 +629,20 @@ static ssize_t set_##reg(struct device *dev, struct device_attribute *attr, \
 	struct i2c_client *client = to_i2c_client(dev); \
 	struct asb100_data *data = i2c_get_clientdata(client); \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	long val = simple_strtol(buf, NULL, 10); \
  \
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	long val; \
 	int err = kstrtol(buf, 10, &val); \
 	if (err) \
 		return err; \
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&data->update_lock); \
 	switch (nr) { \
 	case 1: case 2: \
@@ -616,8 +697,11 @@ static ssize_t set_vrm(struct device *dev, struct device_attribute *attr,
 {
 	struct asb100_data *data = dev_get_drvdata(dev);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data->vrm = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -625,7 +709,10 @@ static ssize_t set_vrm(struct device *dev, struct device_attribute *attr,
 	if (err)
 		return err;
 	data->vrm = val;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 }
 
@@ -674,15 +761,21 @@ static ssize_t set_pwm1(struct device *dev, struct device_attribute *attr,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct asb100_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->pwm &= 0x80; /* keep the enable bit */
@@ -705,15 +798,21 @@ static ssize_t set_pwm_enable1(struct device *dev,
 	struct i2c_client *client = to_i2c_client(dev);
 	struct asb100_data *data = i2c_get_clientdata(client);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	data->pwm &= 0x0f; /* keep the duty cycle bits */
@@ -812,8 +911,13 @@ static int asb100_detect_subclients(struct i2c_client *client)
 		for (i = 2; i <= 3; i++) {
 			if (force_subclients[i] < 0x48 ||
 			    force_subclients[i] > 0x4f) {
+<<<<<<< HEAD
 				dev_err(&client->dev, "invalid subclient "
 					"address %d; must be 0x48-0x4f\n",
+=======
+				dev_err(&client->dev,
+					"invalid subclient address %d; must be 0x48-0x4f\n",
+>>>>>>> refs/remotes/origin/master
 					force_subclients[i]);
 				err = -ENODEV;
 				goto ERROR_SC_2;
@@ -831,24 +935,42 @@ static int asb100_detect_subclients(struct i2c_client *client)
 	}
 
 	if (sc_addr[0] == sc_addr[1]) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "duplicate addresses 0x%x "
 				"for subclients\n", sc_addr[0]);
+=======
+		dev_err(&client->dev,
+			"duplicate addresses 0x%x for subclients\n",
+			sc_addr[0]);
+>>>>>>> refs/remotes/origin/master
 		err = -ENODEV;
 		goto ERROR_SC_2;
 	}
 
 	data->lm75[0] = i2c_new_dummy(adapter, sc_addr[0]);
 	if (!data->lm75[0]) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "subclient %d registration "
 			"at address 0x%x failed.\n", 1, sc_addr[0]);
+=======
+		dev_err(&client->dev,
+			"subclient %d registration at address 0x%x failed.\n",
+			1, sc_addr[0]);
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto ERROR_SC_2;
 	}
 
 	data->lm75[1] = i2c_new_dummy(adapter, sc_addr[1]);
 	if (!data->lm75[1]) {
+<<<<<<< HEAD
 		dev_err(&client->dev, "subclient %d registration "
 			"at address 0x%x failed.\n", 2, sc_addr[1]);
+=======
+		dev_err(&client->dev,
+			"subclient %d registration at address 0x%x failed.\n",
+			2, sc_addr[1]);
+>>>>>>> refs/remotes/origin/master
 		err = -ENOMEM;
 		goto ERROR_SC_3;
 	}
@@ -910,12 +1032,19 @@ static int asb100_probe(struct i2c_client *client,
 	int err;
 	struct asb100_data *data;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct asb100_data), GFP_KERNEL);
 	if (!data) {
 		pr_debug("probe failed, kzalloc failed!\n");
 		err = -ENOMEM;
 		goto ERROR0;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct asb100_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->lock);
@@ -924,7 +1053,11 @@ static int asb100_probe(struct i2c_client *client,
 	/* Attach secondary lm75 clients */
 	err = asb100_detect_subclients(client);
 	if (err)
+<<<<<<< HEAD
 		goto ERROR1;
+=======
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the chip */
 	asb100_init_client(client);
@@ -936,11 +1069,16 @@ static int asb100_probe(struct i2c_client *client,
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &asb100_group)))
 =======
 	err = sysfs_create_group(&client->dev.kobj, &asb100_group);
 	if (err)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = sysfs_create_group(&client->dev.kobj, &asb100_group);
+	if (err)
+>>>>>>> refs/remotes/origin/master
 		goto ERROR3;
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
@@ -956,9 +1094,12 @@ ERROR4:
 ERROR3:
 	i2c_unregister_device(data->lm75[1]);
 	i2c_unregister_device(data->lm75[0]);
+<<<<<<< HEAD
 ERROR1:
 	kfree(data);
 ERROR0:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -972,6 +1113,7 @@ static int asb100_remove(struct i2c_client *client)
 	i2c_unregister_device(data->lm75[1]);
 	i2c_unregister_device(data->lm75[0]);
 
+<<<<<<< HEAD
 	kfree(data);
 
 	return 0;
@@ -981,11 +1123,19 @@ static int asb100_remove(struct i2c_client *client)
 /* The SMBus locks itself, usually, but nothing may access the chip between
    bank switches. */
 =======
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The SMBus locks itself, usually, but nothing may access the chip between
  * bank switches.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int asb100_read_value(struct i2c_client *client, u16 reg)
 {
 	struct asb100_data *data = i2c_get_clientdata(client);
@@ -1009,15 +1159,20 @@ static int asb100_read_value(struct i2c_client *client, u16 reg)
 		switch (reg & 0xff) {
 		case 0x50: /* TEMP */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			res = swab16(i2c_smbus_read_word_data(cl, 0));
 =======
 			res = i2c_smbus_read_word_swapped(cl, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			res = i2c_smbus_read_word_swapped(cl, 0);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case 0x52: /* CONFIG */
 			res = i2c_smbus_read_byte_data(cl, 1);
 			break;
 		case 0x53: /* HYST */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			res = swab16(i2c_smbus_read_word_data(cl, 2));
 			break;
@@ -1025,12 +1180,17 @@ static int asb100_read_value(struct i2c_client *client, u16 reg)
 		default:
 			res = swab16(i2c_smbus_read_word_data(cl, 3));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			res = i2c_smbus_read_word_swapped(cl, 2);
 			break;
 		case 0x55: /* MAX */
 		default:
 			res = i2c_smbus_read_word_swapped(cl, 3);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1069,16 +1229,22 @@ static void asb100_write_value(struct i2c_client *client, u16 reg, u16 value)
 			break;
 		case 0x53: /* HYST */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			i2c_smbus_write_word_data(cl, 2, swab16(value));
 			break;
 		case 0x55: /* MAX */
 			i2c_smbus_write_word_data(cl, 3, swab16(value));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			i2c_smbus_write_word_swapped(cl, 2, value);
 			break;
 		case 0x55: /* MAX */
 			i2c_smbus_write_word_swapped(cl, 3, value);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	}
@@ -1170,6 +1336,7 @@ static struct asb100_data *asb100_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init asb100_init(void)
 {
 	return i2c_add_driver(&asb100_driver);
@@ -1182,13 +1349,19 @@ static void __exit asb100_exit(void)
 =======
 module_i2c_driver(asb100_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(asb100_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Mark M. Hoffman <mhoffman@lightlink.com>");
 MODULE_DESCRIPTION("ASB100 Bach driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(asb100_init);
 module_exit(asb100_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

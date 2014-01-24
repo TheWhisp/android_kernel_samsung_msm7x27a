@@ -147,11 +147,14 @@ struct tmds_setting_information {
 struct lvds_setting_information {
 	int iga_path;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int h_active;
 	int v_active;
 	int bpp;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int lcd_panel_hres;
 	int lcd_panel_vres;
 	int display_method;

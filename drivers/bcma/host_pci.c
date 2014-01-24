@@ -10,9 +10,13 @@
 #include <linux/bcma/bcma.h>
 #include <linux/pci.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 static void bcma_host_pci_switch_core(struct bcma_device *core)
 {
@@ -21,6 +25,7 @@ static void bcma_host_pci_switch_core(struct bcma_device *core)
 	pci_write_config_dword(core->bus->host_pci, BCMA_PCI_BAR0_WIN2,
 			       core->wrap);
 	core->bus->mapped_core = core;
+<<<<<<< HEAD
 	pr_debug("Switched to core: 0x%X\n", core->id.id);
 }
 
@@ -30,6 +35,11 @@ static u8 bcma_host_pci_read8(struct bcma_device *core, u16 offset)
 	if (core->bus->mapped_core != core)
 		bcma_host_pci_switch_core(core);
 =======
+=======
+	bcma_debug(core->bus, "Switched to core: 0x%X\n", core->id.id);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Provides access to the requested core. Returns base offset that has to be
  * used. It makes use of fixed windows when possible. */
 static u16 bcma_host_pci_provide_access_to_core(struct bcma_device *core)
@@ -49,29 +59,40 @@ static u16 bcma_host_pci_provide_access_to_core(struct bcma_device *core)
 static u8 bcma_host_pci_read8(struct bcma_device *core, u16 offset)
 {
 	offset += bcma_host_pci_provide_access_to_core(core);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ioread8(core->bus->mmio + offset);
 }
 
 static u16 bcma_host_pci_read16(struct bcma_device *core, u16 offset)
 {
 <<<<<<< HEAD
-	if (core->bus->mapped_core != core)
-		bcma_host_pci_switch_core(core);
-=======
-	offset += bcma_host_pci_provide_access_to_core(core);
->>>>>>> refs/remotes/origin/cm-10.0
-	return ioread16(core->bus->mmio + offset);
-}
-
-static u32 bcma_host_pci_read32(struct bcma_device *core, u16 offset)
-{
 <<<<<<< HEAD
 	if (core->bus->mapped_core != core)
 		bcma_host_pci_switch_core(core);
 =======
 	offset += bcma_host_pci_provide_access_to_core(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	offset += bcma_host_pci_provide_access_to_core(core);
+>>>>>>> refs/remotes/origin/master
+	return ioread16(core->bus->mmio + offset);
+}
+
+static u32 bcma_host_pci_read32(struct bcma_device *core, u16 offset)
+{
+<<<<<<< HEAD
+<<<<<<< HEAD
+	if (core->bus->mapped_core != core)
+		bcma_host_pci_switch_core(core);
+=======
+	offset += bcma_host_pci_provide_access_to_core(core);
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+	offset += bcma_host_pci_provide_access_to_core(core);
+>>>>>>> refs/remotes/origin/master
 	return ioread32(core->bus->mmio + offset);
 }
 
@@ -79,11 +100,15 @@ static void bcma_host_pci_write8(struct bcma_device *core, u16 offset,
 				 u8 value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (core->bus->mapped_core != core)
 		bcma_host_pci_switch_core(core);
 =======
 	offset += bcma_host_pci_provide_access_to_core(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	offset += bcma_host_pci_provide_access_to_core(core);
+>>>>>>> refs/remotes/origin/master
 	iowrite8(value, core->bus->mmio + offset);
 }
 
@@ -91,11 +116,15 @@ static void bcma_host_pci_write16(struct bcma_device *core, u16 offset,
 				 u16 value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (core->bus->mapped_core != core)
 		bcma_host_pci_switch_core(core);
 =======
 	offset += bcma_host_pci_provide_access_to_core(core);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	offset += bcma_host_pci_provide_access_to_core(core);
+>>>>>>> refs/remotes/origin/master
 	iowrite16(value, core->bus->mmio + offset);
 }
 
@@ -103,19 +132,27 @@ static void bcma_host_pci_write32(struct bcma_device *core, u16 offset,
 				 u32 value)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (core->bus->mapped_core != core)
 		bcma_host_pci_switch_core(core);
 	iowrite32(value, core->bus->mmio + offset);
 }
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	offset += bcma_host_pci_provide_access_to_core(core);
 	iowrite32(value, core->bus->mmio + offset);
 }
 
 #ifdef CONFIG_BCMA_BLOCKIO
+<<<<<<< HEAD
 void bcma_host_pci_block_read(struct bcma_device *core, void *buffer,
 			      size_t count, u16 offset, u8 reg_width)
+=======
+static void bcma_host_pci_block_read(struct bcma_device *core, void *buffer,
+				     size_t count, u16 offset, u8 reg_width)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *addr = core->bus->mmio + offset;
 	if (core->bus->mapped_core != core)
@@ -137,8 +174,14 @@ void bcma_host_pci_block_read(struct bcma_device *core, void *buffer,
 	}
 }
 
+<<<<<<< HEAD
 void bcma_host_pci_block_write(struct bcma_device *core, const void *buffer,
 			       size_t count, u16 offset, u8 reg_width)
+=======
+static void bcma_host_pci_block_write(struct bcma_device *core,
+				      const void *buffer, size_t count,
+				      u16 offset, u8 reg_width)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *addr = core->bus->mmio + offset;
 	if (core->bus->mapped_core != core)
@@ -161,7 +204,10 @@ void bcma_host_pci_block_write(struct bcma_device *core, const void *buffer,
 }
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static u32 bcma_host_pci_aread32(struct bcma_device *core, u16 offset)
 {
 	if (core->bus->mapped_core != core)
@@ -177,7 +223,11 @@ static void bcma_host_pci_awrite32(struct bcma_device *core, u16 offset,
 	iowrite32(value, core->bus->mmio + (1 * BCMA_CORE_SIZE) + offset);
 }
 
+<<<<<<< HEAD
 const struct bcma_host_ops bcma_host_pci_ops = {
+=======
+static const struct bcma_host_ops bcma_host_pci_ops = {
+>>>>>>> refs/remotes/origin/master
 	.read8		= bcma_host_pci_read8,
 	.read16		= bcma_host_pci_read16,
 	.read32		= bcma_host_pci_read32,
@@ -185,16 +235,23 @@ const struct bcma_host_ops bcma_host_pci_ops = {
 	.write16	= bcma_host_pci_write16,
 	.write32	= bcma_host_pci_write32,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_BCMA_BLOCKIO
 	.block_read	= bcma_host_pci_block_read,
 	.block_write	= bcma_host_pci_block_write,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.aread32	= bcma_host_pci_aread32,
 	.awrite32	= bcma_host_pci_awrite32,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int bcma_host_pci_probe(struct pci_dev *dev,
 			     const struct pci_device_id *id)
@@ -202,6 +259,10 @@ static int bcma_host_pci_probe(struct pci_dev *dev,
 static int __devinit bcma_host_pci_probe(struct pci_dev *dev,
 					 const struct pci_device_id *id)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int bcma_host_pci_probe(struct pci_dev *dev,
+			       const struct pci_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bcma_bus *bus;
 	int err = -ENOMEM;
@@ -233,8 +294,16 @@ static int __devinit bcma_host_pci_probe(struct pci_dev *dev,
 		pci_write_config_dword(dev, 0x40, val & 0xffff00ff);
 
 	/* SSB needed additional powering up, do we have any AMBA PCI cards? */
+<<<<<<< HEAD
 	if (!pci_is_pcie(dev))
 		pr_err("PCI card detected, report problems.\n");
+=======
+	if (!pci_is_pcie(dev)) {
+		bcma_err(bus, "PCI card detected, they are not supported.\n");
+		err = -ENXIO;
+		goto err_pci_release_regions;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Map MMIO */
 	err = -ENOMEM;
@@ -247,6 +316,12 @@ static int __devinit bcma_host_pci_probe(struct pci_dev *dev,
 	bus->hosttype = BCMA_HOSTTYPE_PCI;
 	bus->ops = &bcma_host_pci_ops;
 
+<<<<<<< HEAD
+=======
+	bus->boardinfo.vendor = bus->host_pci->subsystem_vendor;
+	bus->boardinfo.type = bus->host_pci->subsystem_device;
+
+>>>>>>> refs/remotes/origin/master
 	/* Register */
 	err = bcma_bus_register(bus);
 	if (err)
@@ -281,8 +356,12 @@ static void bcma_host_pci_remove(struct pci_dev *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static int bcma_host_pci_suspend(struct device *dev)
 {
 	struct pci_dev *pdev = to_pci_dev(dev);
@@ -305,6 +384,7 @@ static SIMPLE_DEV_PM_OPS(bcma_pm_ops, bcma_host_pci_suspend,
 			 bcma_host_pci_resume);
 #define BCMA_PM_OPS	(&bcma_pm_ops)
 
+<<<<<<< HEAD
 #else /* CONFIG_PM */
 
 #define BCMA_PM_OPS     NULL
@@ -320,6 +400,24 @@ static DEFINE_PCI_DEVICE_TABLE(bcma_pci_bridge_tbl) = {
 =======
 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4357) },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#else /* CONFIG_PM_SLEEP */
+
+#define BCMA_PM_OPS     NULL
+
+#endif /* CONFIG_PM_SLEEP */
+
+static DEFINE_PCI_DEVICE_TABLE(bcma_pci_bridge_tbl) = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x0576) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4313) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 43224) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4331) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4353) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4357) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4358) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4359) },
+	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4365) },
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_BROADCOM, 0x4727) },
 	{ 0, },
 };
@@ -331,9 +429,13 @@ static struct pci_driver bcma_pci_bridge_driver = {
 	.probe = bcma_host_pci_probe,
 	.remove = bcma_host_pci_remove,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.driver.pm = BCMA_PM_OPS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.driver.pm = BCMA_PM_OPS,
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init bcma_host_pci_init(void)

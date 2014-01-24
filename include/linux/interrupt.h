@@ -11,12 +11,16 @@
 #include <linux/irqnr.h>
 #include <linux/hardirq.h>
 #include <linux/irqflags.h>
+<<<<<<< HEAD
 #include <linux/smp.h>
 #include <linux/percpu.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/hrtimer.h>
 #include <linux/kref.h>
 #include <linux/workqueue.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/ptrace.h>
@@ -26,6 +30,11 @@
 #include <linux/atomic.h>
 #include <asm/ptrace.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+#include <asm/ptrace.h>
+#include <asm/irq.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * These correspond to the IORESOURCE_IRQ_* defines in
@@ -49,7 +58,10 @@
  *
  * IRQF_DISABLED - keep irqs disabled when calling the action handler.
  *                 DEPRECATED. This flag is a NOOP and scheduled to be removed
+<<<<<<< HEAD
  * IRQF_SAMPLE_RANDOM - irq is used to feed the random generator
+=======
+>>>>>>> refs/remotes/origin/master
  * IRQF_SHARED - allow sharing the irq among several devices
  * IRQF_PROBE_SHARED - set by callers when they expect sharing mismatches to occur
  * IRQF_TIMER - Flag to mark this interrupt as timer interrupt
@@ -68,7 +80,10 @@
  *                resume time.
  */
 #define IRQF_DISABLED		0x00000020
+<<<<<<< HEAD
 #define IRQF_SAMPLE_RANDOM	0x00000040
+=======
+>>>>>>> refs/remotes/origin/master
 #define IRQF_SHARED		0x00000080
 #define IRQF_PROBE_SHARED	0x00000100
 #define __IRQF_TIMER		0x00000200
@@ -100,17 +115,25 @@ typedef irqreturn_t (*irq_handler_t)(int, void *);
 /**
  * struct irqaction - per interrupt action descriptor
  * @handler:	interrupt handler function
+<<<<<<< HEAD
  * @flags:	flags (see IRQF_* above)
+=======
+>>>>>>> refs/remotes/origin/master
  * @name:	name of the device
  * @dev_id:	cookie to identify the device
  * @percpu_dev_id:	cookie to identify the device
  * @next:	pointer to the next irqaction for shared interrupts
  * @irq:	interrupt number
+<<<<<<< HEAD
  * @dir:	pointer to the proc/irq/NN/name entry
+=======
+ * @flags:	flags (see IRQF_* above)
+>>>>>>> refs/remotes/origin/master
  * @thread_fn:	interrupt handler function for threaded interrupts
  * @thread:	thread pointer for threaded interrupts
  * @thread_flags:	flags related to @thread
  * @thread_mask:	bitmask for keeping track of @thread activity
+<<<<<<< HEAD
  */
 struct irqaction {
 	irq_handler_t		handler;
@@ -121,6 +144,19 @@ struct irqaction {
 	int			irq;
 	irq_handler_t		thread_fn;
 	struct task_struct	*thread;
+=======
+ * @dir:	pointer to the proc/irq/NN/name entry
+ */
+struct irqaction {
+	irq_handler_t		handler;
+	void			*dev_id;
+	void __percpu		*percpu_dev_id;
+	struct irqaction	*next;
+	irq_handler_t		thread_fn;
+	struct task_struct	*thread;
+	unsigned int		irq;
+	unsigned int		flags;
+>>>>>>> refs/remotes/origin/master
 	unsigned long		thread_flags;
 	unsigned long		thread_mask;
 	const char		*name;
@@ -129,7 +165,10 @@ struct irqaction {
 
 extern irqreturn_t no_action(int cpl, void *dev_id);
 
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_HARDIRQS
+=======
+>>>>>>> refs/remotes/origin/master
 extern int __must_check
 request_threaded_irq(unsigned int irq, irq_handler_t handler,
 		     irq_handler_t thread_fn,
@@ -150,6 +189,7 @@ extern int __must_check
 request_percpu_irq(unsigned int irq, irq_handler_t handler,
 		   const char *devname, void __percpu *percpu_dev_id);
 
+<<<<<<< HEAD
 extern void exit_irq_thread(void);
 #else
 
@@ -188,6 +228,8 @@ request_percpu_irq(unsigned int irq, irq_handler_t handler,
 static inline void exit_irq_thread(void) { }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 extern void free_irq(unsigned int, void *);
 extern void free_percpu_irq(unsigned int, void __percpu *);
 
@@ -234,7 +276,10 @@ extern void enable_irq(unsigned int irq);
 extern void enable_percpu_irq(unsigned int irq, unsigned int type);
 
 /* The following three functions are for the core kernel use only. */
+<<<<<<< HEAD
 #ifdef CONFIG_GENERIC_HARDIRQS
+=======
+>>>>>>> refs/remotes/origin/master
 extern void suspend_device_irqs(void);
 extern void resume_device_irqs(void);
 #ifdef CONFIG_PM_SLEEP
@@ -242,6 +287,7 @@ extern int check_wakeup_irqs(void);
 #else
 static inline int check_wakeup_irqs(void) { return 0; }
 #endif
+<<<<<<< HEAD
 #else
 static inline void suspend_device_irqs(void) { };
 static inline void resume_device_irqs(void) { };
@@ -249,6 +295,10 @@ static inline int check_wakeup_irqs(void) { return 0; }
 #endif
 
 #if defined(CONFIG_SMP) && defined(CONFIG_GENERIC_HARDIRQS)
+=======
+
+#if defined(CONFIG_SMP)
+>>>>>>> refs/remotes/origin/master
 
 extern cpumask_var_t irq_default_affinity;
 
@@ -281,11 +331,14 @@ struct irq_affinity_notify {
 extern int
 irq_set_affinity_notifier(unsigned int irq, struct irq_affinity_notify *notify);
 
+<<<<<<< HEAD
 static inline void irq_run_affinity_notifiers(void)
 {
 	flush_scheduled_work();
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* CONFIG_SMP */
 
 static inline int irq_set_affinity(unsigned int irq, const struct cpumask *m)
@@ -305,9 +358,14 @@ static inline int irq_set_affinity_hint(unsigned int irq,
 {
 	return -EINVAL;
 }
+<<<<<<< HEAD
 #endif /* CONFIG_SMP && CONFIG_GENERIC_HARDIRQS */
 
 #ifdef CONFIG_GENERIC_HARDIRQS
+=======
+#endif /* CONFIG_SMP */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Special lockdep variants of irq disabling/enabling.
  * These should be used for locking constructs that
@@ -361,7 +419,10 @@ static inline void enable_irq_lockdep_irqrestore(unsigned int irq, unsigned long
 
 /* IRQ wakeup (PM) control: */
 extern int irq_set_irq_wake(unsigned int irq, unsigned int on);
+<<<<<<< HEAD
 extern int irq_read_line(unsigned int irq);
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline int enable_irq_wake(unsigned int irq)
 {
@@ -373,6 +434,7 @@ static inline int disable_irq_wake(unsigned int irq)
 	return irq_set_irq_wake(irq, 0);
 }
 
+<<<<<<< HEAD
 #else /* !CONFIG_GENERIC_HARDIRQS */
 /*
  * NOTE: non-genirq architectures, if they want to support the lock
@@ -400,6 +462,8 @@ static inline int disable_irq_wake(unsigned int irq)
 }
 #endif /* CONFIG_GENERIC_HARDIRQS */
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IRQ_FORCED_THREADING
 extern bool force_irqthreads;
@@ -444,6 +508,11 @@ enum
 	NR_SOFTIRQS
 };
 
+<<<<<<< HEAD
+=======
+#define SOFTIRQ_STOP_IDLE_MASK (~(1 << RCU_SOFTIRQ))
+
+>>>>>>> refs/remotes/origin/master
 /* map softirq index to softirq name. update 'softirq_to_name' in
  * kernel/softirq.c when adding a new softirq.
  */
@@ -460,6 +529,7 @@ struct softirq_action
 
 asmlinkage void do_softirq(void);
 asmlinkage void __do_softirq(void);
+<<<<<<< HEAD
 extern void open_softirq(int nr, void (*action)(struct softirq_action *));
 extern void softirq_init(void);
 <<<<<<< HEAD
@@ -471,10 +541,26 @@ static inline void __raise_softirq_irqoff(unsigned int nr)
 =======
 extern void __raise_softirq_irqoff(unsigned int nr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#ifdef __ARCH_HAS_DO_SOFTIRQ
+void do_softirq_own_stack(void);
+#else
+static inline void do_softirq_own_stack(void)
+{
+	__do_softirq();
+}
+#endif
+
+extern void open_softirq(int nr, void (*action)(struct softirq_action *));
+extern void softirq_init(void);
+extern void __raise_softirq_irqoff(unsigned int nr);
+>>>>>>> refs/remotes/origin/master
 
 extern void raise_softirq_irqoff(unsigned int nr);
 extern void raise_softirq(unsigned int nr);
 
+<<<<<<< HEAD
 /* This is the worklist that queues up per-cpu softirq work.
  *
  * send_remote_sendirq() adds work to these lists, and
@@ -484,6 +570,8 @@ extern void raise_softirq(unsigned int nr);
  */
 DECLARE_PER_CPU(struct list_head [NR_SOFTIRQS], softirq_work_list);
 
+=======
+>>>>>>> refs/remotes/origin/master
 DECLARE_PER_CPU(struct task_struct *, ksoftirqd);
 
 static inline struct task_struct *this_cpu_ksoftirqd(void)
@@ -491,6 +579,7 @@ static inline struct task_struct *this_cpu_ksoftirqd(void)
 	return this_cpu_read(ksoftirqd);
 }
 
+<<<<<<< HEAD
 /* Try to send a softirq to a remote cpu.  If this cannot be done, the
  * work will be queued to the local cpu.
  */
@@ -502,6 +591,8 @@ extern void send_remote_softirq(struct call_single_data *cp, int cpu, int softir
 extern void __send_remote_softirq(struct call_single_data *cp, int cpu,
 				  int this_cpu, int softirq);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Tasklets --- multithreaded analogue of BHs.
 
    Main feature differing them of generic softirqs: tasklet
@@ -680,7 +771,11 @@ void tasklet_hrtimer_cancel(struct tasklet_hrtimer *ttimer)
  * if more than one irq occurred.
  */
 
+<<<<<<< HEAD
 #if defined(CONFIG_GENERIC_HARDIRQS) && !defined(CONFIG_GENERIC_IRQ_PROBE) 
+=======
+#if !defined(CONFIG_GENERIC_IRQ_PROBE) 
+>>>>>>> refs/remotes/origin/master
 static inline unsigned long probe_irq_on(void)
 {
 	return 0;
@@ -715,5 +810,9 @@ int arch_show_interrupts(struct seq_file *p, int prec);
 extern int early_irq_init(void);
 extern int arch_probe_nr_irqs(void);
 extern int arch_early_irq_init(void);
+<<<<<<< HEAD
 extern void irq_set_pending(unsigned int irq);
+=======
+
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -43,9 +43,12 @@
 #include <linux/module.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/traps.h>
 
 #include <asm/atarihw.h>
@@ -53,6 +56,10 @@
 #include <asm/atari_stdma.h>
 #include <asm/irq.h>
 #include <asm/entry.h>
+<<<<<<< HEAD
+=======
+#include <asm/io.h>
+>>>>>>> refs/remotes/origin/master
 
 
 /*
@@ -63,6 +70,7 @@
  * <asm/atariints.h>): Autovector interrupts are 1..7, then follow ST-MFP,
  * TT-MFP, SCC, and finally VME interrupts. Vector numbers for the latter can
  * be allocated by atari_register_vme_int().
+<<<<<<< HEAD
 <<<<<<< HEAD
  *
  * Each interrupt can be of three types:
@@ -304,6 +312,9 @@ __asm__ (__ALIGN_STR "\n"
 =======
  */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ */
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Bitmap for free interrupt vector numbers
@@ -326,23 +337,30 @@ __ALIGN_STR "\n\t"
 extern void atari_microwire_cmd(int cmd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int atari_SCC_reset_done;
 
 static int atari_startup_irq(unsigned int irq)
 {
 	m68k_irq_startup(irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int atari_irq_startup(struct irq_data *data)
 {
 	unsigned int irq = data->irq;
 
 	m68k_irq_startup(data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	atari_turnon_irq(irq);
 	atari_enable_irq(irq);
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void atari_shutdown_irq(unsigned int irq)
 {
@@ -350,6 +368,8 @@ static void atari_shutdown_irq(unsigned int irq)
 	atari_turnoff_irq(irq);
 	m68k_irq_shutdown(irq);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void atari_irq_shutdown(struct irq_data *data)
 {
 	unsigned int irq = data->irq;
@@ -357,12 +377,16 @@ static void atari_irq_shutdown(struct irq_data *data)
 	atari_disable_irq(irq);
 	atari_turnoff_irq(irq);
 	m68k_irq_shutdown(data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (irq == IRQ_AUTO_4)
 	    vectors[VEC_INT4] = falcon_hblhandler;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct irq_controller atari_irq_controller = {
 	.name		= "atari",
@@ -372,6 +396,8 @@ static struct irq_controller atari_irq_controller = {
 	.enable		= atari_enable_irq,
 	.disable	= atari_disable_irq,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void atari_irq_enable(struct irq_data *data)
 {
 	atari_enable_irq(data->irq);
@@ -388,7 +414,140 @@ static struct irq_chip atari_irq_chip = {
 	.irq_shutdown	= atari_irq_shutdown,
 	.irq_enable	= atari_irq_enable,
 	.irq_disable	= atari_irq_disable,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+/*
+ * ST-MFP timer D chained interrupts - each driver gets its own timer
+ * interrupt instance.
+ */
+
+struct mfptimerbase {
+	volatile struct MFP *mfp;
+	unsigned char mfp_mask, mfp_data;
+	unsigned short int_mask;
+	int handler_irq, mfptimer_irq, server_irq;
+	char *name;
+} stmfp_base = {
+	.mfp		= &st_mfp,
+	.int_mask	= 0x0,
+	.handler_irq	= IRQ_MFP_TIMD,
+	.mfptimer_irq	= IRQ_MFP_TIMER1,
+	.name		= "MFP Timer D"
+};
+
+static irqreturn_t mfptimer_handler(int irq, void *dev_id)
+{
+	struct mfptimerbase *base = dev_id;
+	int mach_irq;
+	unsigned char ints;
+
+	mach_irq = base->mfptimer_irq;
+	ints = base->int_mask;
+	for (; ints; mach_irq++, ints >>= 1) {
+		if (ints & 1)
+			generic_handle_irq(mach_irq);
+	}
+	return IRQ_HANDLED;
+}
+
+
+static void atari_mfptimer_enable(struct irq_data *data)
+{
+	int mfp_num = data->irq - IRQ_MFP_TIMER1;
+	stmfp_base.int_mask |= 1 << mfp_num;
+	atari_enable_irq(IRQ_MFP_TIMD);
+}
+
+static void atari_mfptimer_disable(struct irq_data *data)
+{
+	int mfp_num = data->irq - IRQ_MFP_TIMER1;
+	stmfp_base.int_mask &= ~(1 << mfp_num);
+	if (!stmfp_base.int_mask)
+		atari_disable_irq(IRQ_MFP_TIMD);
+}
+
+static struct irq_chip atari_mfptimer_chip = {
+	.name		= "timer_d",
+	.irq_enable	= atari_mfptimer_enable,
+	.irq_disable	= atari_mfptimer_disable,
+};
+
+
+/*
+ * EtherNAT CPLD interrupt handling
+ * CPLD interrupt register is at phys. 0x80000023
+ * Need this mapped in at interrupt startup time
+ * Possibly need this mapped on demand anyway -
+ * EtherNAT USB driver needs to disable IRQ before
+ * startup!
+ */
+
+static unsigned char *enat_cpld;
+
+static unsigned int atari_ethernat_startup(struct irq_data *data)
+{
+	int enat_num = 140 - data->irq + 1;
+
+	m68k_irq_startup(data);
+	/*
+	* map CPLD interrupt register
+	*/
+	if (!enat_cpld)
+		enat_cpld = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0x2);
+	/*
+	 * do _not_ enable the USB chip interrupt here - causes interrupt storm
+	 * and triggers dead interrupt watchdog
+	 * Need to reset the USB chip to a sane state in early startup before
+	 * removing this hack
+	 */
+	if (enat_num == 1)
+		*enat_cpld |= 1 << enat_num;
+
+	return 0;
+}
+
+static void atari_ethernat_enable(struct irq_data *data)
+{
+	int enat_num = 140 - data->irq + 1;
+	/*
+	* map CPLD interrupt register
+	*/
+	if (!enat_cpld)
+		enat_cpld = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0x2);
+	*enat_cpld |= 1 << enat_num;
+}
+
+static void atari_ethernat_disable(struct irq_data *data)
+{
+	int enat_num = 140 - data->irq + 1;
+	/*
+	* map CPLD interrupt register
+	*/
+	if (!enat_cpld)
+		enat_cpld = (unsigned char *)ioremap((ATARI_ETHERNAT_PHYS_ADDR+0x23), 0x2);
+	*enat_cpld &= ~(1 << enat_num);
+}
+
+static void atari_ethernat_shutdown(struct irq_data *data)
+{
+	int enat_num = 140 - data->irq + 1;
+	if (enat_cpld) {
+		*enat_cpld &= ~(1 << enat_num);
+		iounmap(enat_cpld);
+		enat_cpld = NULL;
+	}
+}
+
+static struct irq_chip atari_ethernat_chip = {
+	.name		= "ethernat",
+	.irq_startup	= atari_ethernat_startup,
+	.irq_shutdown	= atari_ethernat_shutdown,
+	.irq_enable	= atari_ethernat_enable,
+	.irq_disable	= atari_ethernat_disable,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -405,6 +564,7 @@ static struct irq_chip atari_irq_chip = {
 void __init atari_init_IRQ(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	m68k_setup_user_interrupt(VEC_USER, NUM_ATARI_SOURCES - IRQ_USER, NULL);
 	m68k_setup_irq_controller(&atari_irq_controller, 1, NUM_ATARI_SOURCES - 1);
 =======
@@ -412,6 +572,11 @@ void __init atari_init_IRQ(void)
 	m68k_setup_irq_controller(&atari_irq_chip, handle_simple_irq, 1,
 				  NUM_ATARI_SOURCES - 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	m68k_setup_user_interrupt(VEC_USER, NUM_ATARI_SOURCES - IRQ_USER);
+	m68k_setup_irq_controller(&atari_irq_chip, handle_simple_irq, 1,
+				  NUM_ATARI_SOURCES - 1);
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the MFP(s) */
 
@@ -473,6 +638,33 @@ void __init atari_init_IRQ(void)
 	/* Initialize the PSG: all sounds off, both ports output */
 	sound_ym.rd_data_reg_sel = 7;
 	sound_ym.wd_data = 0xff;
+<<<<<<< HEAD
+=======
+
+	m68k_setup_irq_controller(&atari_mfptimer_chip, handle_simple_irq,
+				  IRQ_MFP_TIMER1, 8);
+
+	irq_set_status_flags(IRQ_MFP_TIMER1, IRQ_IS_POLLED);
+	irq_set_status_flags(IRQ_MFP_TIMER2, IRQ_IS_POLLED);
+
+	/* prepare timer D data for use as poll interrupt */
+	/* set Timer D data Register - needs to be > 0 */
+	st_mfp.tim_dt_d = 254;	/* < 100 Hz */
+	/* start timer D, div = 1:100 */
+	st_mfp.tim_ct_cd = (st_mfp.tim_ct_cd & 0xf0) | 0x6;
+
+	/* request timer D dispatch handler */
+	if (request_irq(IRQ_MFP_TIMD, mfptimer_handler, IRQF_SHARED,
+			stmfp_base.name, &stmfp_base))
+		pr_err("Couldn't register %s interrupt\n", stmfp_base.name);
+
+	/*
+	 * EtherNAT ethernet / USB interrupt handlers
+	 */
+
+	m68k_setup_irq_controller(&atari_ethernat_chip, handle_simple_irq,
+				  139, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -481,7 +673,11 @@ void __init atari_init_IRQ(void)
  * hardware with a programmable int vector (probably a VME board).
  */
 
+<<<<<<< HEAD
 unsigned long atari_register_vme_int(void)
+=======
+unsigned int atari_register_vme_int(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -498,7 +694,11 @@ unsigned long atari_register_vme_int(void)
 EXPORT_SYMBOL(atari_register_vme_int);
 
 
+<<<<<<< HEAD
 void atari_unregister_vme_int(unsigned long irq)
+=======
+void atari_unregister_vme_int(unsigned int irq)
+>>>>>>> refs/remotes/origin/master
 {
 	if (irq >= VME_SOURCE_BASE && irq < VME_SOURCE_BASE + VME_MAX_SOURCES) {
 		irq -= VME_SOURCE_BASE;

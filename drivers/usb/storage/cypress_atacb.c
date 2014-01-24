@@ -41,6 +41,7 @@ MODULE_LICENSE("GPL");
 		    vendorName, productName, useProtocol, useTransport, \
 		    initFunction, flags) \
 { USB_DEVICE_VER(id_vendor, id_product, bcdDeviceMin, bcdDeviceMax), \
+<<<<<<< HEAD
   .driver_info = (flags)|(USB_US_TYPE_STOR<<24) }
 
 <<<<<<< HEAD
@@ -48,6 +49,11 @@ struct usb_device_id cypress_usb_ids[] = {
 =======
 static struct usb_device_id cypress_usb_ids[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+  .driver_info = (flags) }
+
+static struct usb_device_id cypress_usb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 #	include "unusual_cypress.h"
 	{ }		/* Terminating entry */
 };
@@ -163,7 +169,11 @@ static void cypress_atacb_passthrough(struct scsi_cmnd *srb, struct us_data *us)
 	if (srb->result == SAM_STAT_CHECK_CONDITION &&
 			memcmp(srb->sense_buffer, usb_stor_sense_invalidCDB,
 				sizeof(usb_stor_sense_invalidCDB)) == 0) {
+<<<<<<< HEAD
 		US_DEBUGP("cypress atacb not supported ???\n");
+=======
+		usb_stor_dbg(us, "cypress atacb not supported ???\n");
+>>>>>>> refs/remotes/origin/master
 		goto end;
 	}
 
@@ -289,6 +299,7 @@ static struct usb_driver cypress_driver = {
 	.id_table =	cypress_usb_ids,
 	.soft_unbind =	1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 
 static int __init cypress_init(void)
@@ -304,8 +315,13 @@ static void __exit cypress_exit(void)
 module_init(cypress_init);
 module_exit(cypress_exit);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.no_dynamic_id = 1,
 };
 
 module_usb_driver(cypress_driver);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -1,6 +1,7 @@
 #ifndef _LINUX_BYTEORDER_BIG_ENDIAN_H
 #define _LINUX_BYTEORDER_BIG_ENDIAN_H
 
+<<<<<<< HEAD
 #ifndef __BIG_ENDIAN
 #define __BIG_ENDIAN 4321
 #endif
@@ -105,4 +106,9 @@ static inline __u16 __be16_to_cpup(const __be16 *p)
 #include <linux/byteorder/generic.h>
 #endif
 
+=======
+#include <uapi/linux/byteorder/big_endian.h>
+
+#include <linux/byteorder/generic.h>
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_BYTEORDER_BIG_ENDIAN_H */

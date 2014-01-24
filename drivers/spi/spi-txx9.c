@@ -26,7 +26,11 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 #include <asm/gpio.h>
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 
 
 #define SPI_FIFO_SIZE 4
@@ -116,17 +120,23 @@ static void txx9spi_cs_func(struct spi_device *spi, struct txx9spi *c,
 static int txx9spi_setup(struct spi_device *spi)
 {
 	struct txx9spi *c = spi_master_get_devdata(spi->master);
+<<<<<<< HEAD
 	u8 bits_per_word;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!spi->max_speed_hz
 			|| spi->max_speed_hz > c->max_speed_hz
 			|| spi->max_speed_hz < c->min_speed_hz)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	bits_per_word = spi->bits_per_word;
 	if (bits_per_word != 8 && bits_per_word != 16)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (gpio_direction_output(spi->chip_select,
 			!(spi->mode & SPI_CS_HIGH))) {
 		dev_err(&spi->dev, "Cannot setup GPIO for chipselect.\n");
@@ -182,16 +192,25 @@ static void txx9spi_work_one(struct txx9spi *c, struct spi_message *m)
 			| 0x08,
 			TXx9_SPCR0);
 
+<<<<<<< HEAD
 	list_for_each_entry (t, &m->transfers, transfer_list) {
+=======
+	list_for_each_entry(t, &m->transfers, transfer_list) {
+>>>>>>> refs/remotes/origin/master
 		const void *txbuf = t->tx_buf;
 		void *rxbuf = t->rx_buf;
 		u32 data;
 		unsigned int len = t->len;
 		unsigned int wsize;
 		u32 speed_hz = t->speed_hz ? : spi->max_speed_hz;
+<<<<<<< HEAD
 		u8 bits_per_word = t->bits_per_word ? : spi->bits_per_word;
 
 		bits_per_word = bits_per_word ? : 8;
+=======
+		u8 bits_per_word = t->bits_per_word;
+
+>>>>>>> refs/remotes/origin/master
 		wsize = bits_per_word >> 3; /* in bytes */
 
 		if (prev_speed_hz != speed_hz
@@ -314,6 +333,7 @@ static int txx9spi_transfer(struct spi_device *spi, struct spi_message *m)
 	m->actual_length = 0;
 
 	/* check each transfer's parameters */
+<<<<<<< HEAD
 	list_for_each_entry (t, &m->transfers, transfer_list) {
 		u32 speed_hz = t->speed_hz ? : spi->max_speed_hz;
 		u8 bits_per_word = t->bits_per_word ? : spi->bits_per_word;
@@ -323,6 +343,14 @@ static int txx9spi_transfer(struct spi_device *spi, struct spi_message *m)
 			return -EINVAL;
 		if (bits_per_word != 8 && bits_per_word != 16)
 			return -EINVAL;
+=======
+	list_for_each_entry(t, &m->transfers, transfer_list) {
+		u32 speed_hz = t->speed_hz ? : spi->max_speed_hz;
+		u8 bits_per_word = t->bits_per_word;
+
+		if (!t->tx_buf && !t->rx_buf && t->len)
+			return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 		if (t->len & ((bits_per_word >> 3) - 1))
 			return -EINVAL;
 		if (speed_hz < c->min_speed_hz || speed_hz > c->max_speed_hz)
@@ -337,7 +365,11 @@ static int txx9spi_transfer(struct spi_device *spi, struct spi_message *m)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __init txx9spi_probe(struct platform_device *dev)
+=======
+static int txx9spi_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_master *master;
 	struct txx9spi *c;
@@ -413,8 +445,14 @@ static int __init txx9spi_probe(struct platform_device *dev)
 	master->setup = txx9spi_setup;
 	master->transfer = txx9spi_transfer;
 	master->num_chipselect = (u16)UINT_MAX; /* any GPIO numbers */
+<<<<<<< HEAD
 
 	ret = spi_register_master(master);
+=======
+	master->bits_per_word_mask = SPI_BPW_MASK(8) | SPI_BPW_MASK(16);
+
+	ret = devm_spi_register_master(&dev->dev, master);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto exit;
 	return 0;
@@ -427,11 +465,15 @@ exit:
 		clk_disable(c->clk);
 		clk_put(c->clk);
 	}
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	spi_master_put(master);
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __exit txx9spi_remove(struct platform_device *dev)
 {
 	struct spi_master *master = spi_master_get(platform_get_drvdata(dev));
@@ -443,6 +485,16 @@ static int __exit txx9spi_remove(struct platform_device *dev)
 	clk_disable(c->clk);
 	clk_put(c->clk);
 	spi_master_put(master);
+=======
+static int txx9spi_remove(struct platform_device *dev)
+{
+	struct spi_master *master = platform_get_drvdata(dev);
+	struct txx9spi *c = spi_master_get_devdata(master);
+
+	destroy_workqueue(c->workqueue);
+	clk_disable(c->clk);
+	clk_put(c->clk);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -450,7 +502,12 @@ static int __exit txx9spi_remove(struct platform_device *dev)
 MODULE_ALIAS("platform:spi_txx9");
 
 static struct platform_driver txx9spi_driver = {
+<<<<<<< HEAD
 	.remove = __exit_p(txx9spi_remove),
+=======
+	.probe = txx9spi_probe,
+	.remove = txx9spi_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name = "spi_txx9",
 		.owner = THIS_MODULE,
@@ -459,7 +516,11 @@ static struct platform_driver txx9spi_driver = {
 
 static int __init txx9spi_init(void)
 {
+<<<<<<< HEAD
 	return platform_driver_probe(&txx9spi_driver, txx9spi_probe);
+=======
+	return platform_driver_register(&txx9spi_driver);
+>>>>>>> refs/remotes/origin/master
 }
 subsys_initcall(txx9spi_init);
 

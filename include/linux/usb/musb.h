@@ -76,6 +76,12 @@ struct musb_hdrc_config {
 	unsigned	dma:1 __deprecated; /* supports DMA */
 	unsigned	vendor_req:1 __deprecated; /* vendor registers required */
 
+<<<<<<< HEAD
+=======
+	/* need to explicitly de-assert the port reset after resume? */
+	unsigned	host_port_deassert_reset_at_resume:1;
+
+>>>>>>> refs/remotes/origin/master
 	u8		num_eps;	/* number of endpoints _with_ ep0 */
 	u8		dma_channels __deprecated; /* number of dma channels */
 	u8		dyn_fifo_size;	/* dynamic size in bytes */

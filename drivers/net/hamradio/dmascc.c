@@ -37,10 +37,14 @@
 #include <linux/sockios.h>
 #include <linux/workqueue.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/io.h>
 #include <asm/irq.h>
@@ -467,6 +471,7 @@ static int __init setup_adapter(int card_base, int type, int n)
 
 	/* Initialize what is necessary for write_scc and write_scc_data */
 	info = kzalloc(sizeof(struct scc_info), GFP_KERNEL | GFP_DMA);
+<<<<<<< HEAD
 	if (!info) {
 		printk(KERN_ERR "dmascc: "
 		       "could not allocate memory for %s at %#3x\n",
@@ -474,6 +479,10 @@ static int __init setup_adapter(int card_base, int type, int n)
 		goto out;
 	}
 
+=======
+	if (!info)
+		goto out;
+>>>>>>> refs/remotes/origin/master
 
 	info->dev[0] = alloc_netdev(0, "", dev_setup);
 	if (!info->dev[0]) {

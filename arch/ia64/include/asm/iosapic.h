@@ -87,6 +87,7 @@ static inline void iosapic_eoi(char __iomem *iosapic, u32 vector)
 }
 
 extern void __init iosapic_system_init (int pcat_compat);
+<<<<<<< HEAD
 extern int __devinit iosapic_init (unsigned long address,
 				    unsigned int gsi_base);
 #ifdef CONFIG_HOTPLUG
@@ -94,11 +95,19 @@ extern int iosapic_remove (unsigned int gsi_base);
 #else
 #define iosapic_remove(gsi_base)				(-EINVAL)
 #endif /* CONFIG_HOTPLUG */
+=======
+extern int iosapic_init (unsigned long address, unsigned int gsi_base);
+extern int iosapic_remove (unsigned int gsi_base);
+>>>>>>> refs/remotes/origin/master
 extern int gsi_to_irq (unsigned int gsi);
 extern int iosapic_register_intr (unsigned int gsi, unsigned long polarity,
 				  unsigned long trigger);
 extern void iosapic_unregister_intr (unsigned int irq);
+<<<<<<< HEAD
 extern void __devinit iosapic_override_isa_irq (unsigned int isa_irq, unsigned int gsi,
+=======
+extern void iosapic_override_isa_irq (unsigned int isa_irq, unsigned int gsi,
+>>>>>>> refs/remotes/origin/master
 				      unsigned long polarity,
 				      unsigned long trigger);
 extern int __init iosapic_register_platform_intr (u32 int_type,
@@ -109,7 +118,11 @@ extern int __init iosapic_register_platform_intr (u32 int_type,
 					   unsigned long trigger);
 
 #ifdef CONFIG_NUMA
+<<<<<<< HEAD
 extern void __devinit map_iosapic_to_node (unsigned int, int);
+=======
+extern void map_iosapic_to_node (unsigned int, int);
+>>>>>>> refs/remotes/origin/master
 #endif
 #else
 #define iosapic_system_init(pcat_compat)			do { } while (0)

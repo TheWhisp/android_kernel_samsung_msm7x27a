@@ -23,6 +23,7 @@
 #include <asm/mach/arch.h>
 #include <mach/csb726.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/mfp-pxa27x.h>
 #include <mach/mmc.h>
 #include <mach/ohci.h>
@@ -32,6 +33,11 @@
 #include <mach/mmc.h>
 #include <mach/ohci.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/pxa27x.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/audio.h>
 #include <mach/smemc.h>
 
@@ -280,19 +286,27 @@ static void __init csb726_init(void)
 
 MACHINE_START(CSB726, "Cogent CSB726")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io         = pxa27x_map_io,
 	.init_irq       = pxa27x_init_irq,
 	.init_machine   = csb726_init,
 	.timer          = &pxa_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io         = pxa27x_map_io,
 	.nr_irqs	= PXA_NR_IRQS,
 	.init_irq       = pxa27x_init_irq,
 	.handle_irq       = pxa27x_handle_irq,
 	.init_machine   = csb726_init,
+<<<<<<< HEAD
 	.timer          = &pxa_timer,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

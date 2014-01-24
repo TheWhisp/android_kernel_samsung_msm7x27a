@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* Copyright (c) 2010, The Linux Foundation. All rights reserved.
+=======
+/* Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -8,6 +12,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
+=======
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/gpio.h>
 #include <linux/i2c.h>
@@ -184,9 +196,15 @@ static int sx150x_get_io(struct sx150x_chip *chip, unsigned offset)
 	return err;
 }
 
+<<<<<<< HEAD
 static s32 sx150x_set_oscio(struct sx150x_chip *chip, int val)
 {
 	return sx150x_i2c_write(chip->client,
+=======
+static void sx150x_set_oscio(struct sx150x_chip *chip, int val)
+{
+	sx150x_i2c_write(chip->client,
+>>>>>>> refs/remotes/origin/master
 			chip->dev_cfg->reg_clock,
 			(val ? 0x1f : 0x10));
 }
@@ -281,6 +299,7 @@ static int sx150x_gpio_direction_output(struct gpio_chip *gc,
 
 	chip = container_of(gc, struct sx150x_chip, gpio_chip);
 
+<<<<<<< HEAD
 	mutex_lock(&chip->lock);
 	if (offset_is_oscio(chip, offset))
 		status = sx150x_set_oscio(chip, val);
@@ -288,6 +307,13 @@ static int sx150x_gpio_direction_output(struct gpio_chip *gc,
 		status = sx150x_io_output(chip, offset, val);
 	mutex_unlock(&chip->lock);
 
+=======
+	if (!offset_is_oscio(chip, offset)) {
+		mutex_lock(&chip->lock);
+		status = sx150x_io_output(chip, offset, val);
+		mutex_unlock(&chip->lock);
+	}
+>>>>>>> refs/remotes/origin/master
 	return status;
 }
 
@@ -308,11 +334,17 @@ static int sx150x_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
 
 static void sx150x_irq_mask(struct irq_data *d)
 {
+<<<<<<< HEAD
 	struct irq_chip *ic = irq_data_get_irq_chip(d);
 	struct sx150x_chip *chip;
 	unsigned n;
 
 	chip = container_of(ic, struct sx150x_chip, irq_chip);
+=======
+	struct sx150x_chip *chip = irq_data_get_irq_chip_data(d);
+	unsigned n;
+
+>>>>>>> refs/remotes/origin/master
 	n = d->irq - chip->irq_base;
 	chip->irq_masked |= (1 << n);
 	chip->irq_update = n;
@@ -320,6 +352,7 @@ static void sx150x_irq_mask(struct irq_data *d)
 
 static void sx150x_irq_unmask(struct irq_data *d)
 {
+<<<<<<< HEAD
 	struct irq_chip *ic = irq_data_get_irq_chip(d);
 	struct sx150x_chip *chip;
 	unsigned n;
@@ -327,20 +360,33 @@ static void sx150x_irq_unmask(struct irq_data *d)
 	chip = container_of(ic, struct sx150x_chip, irq_chip);
 	n = d->irq - chip->irq_base;
 
+=======
+	struct sx150x_chip *chip = irq_data_get_irq_chip_data(d);
+	unsigned n;
+
+	n = d->irq - chip->irq_base;
+>>>>>>> refs/remotes/origin/master
 	chip->irq_masked &= ~(1 << n);
 	chip->irq_update = n;
 }
 
 static int sx150x_irq_set_type(struct irq_data *d, unsigned int flow_type)
 {
+<<<<<<< HEAD
 	struct irq_chip *ic = irq_data_get_irq_chip(d);
 	struct sx150x_chip *chip;
+=======
+	struct sx150x_chip *chip = irq_data_get_irq_chip_data(d);
+>>>>>>> refs/remotes/origin/master
 	unsigned n, val = 0;
 
 	if (flow_type & (IRQ_TYPE_LEVEL_HIGH | IRQ_TYPE_LEVEL_LOW))
 		return -EINVAL;
 
+<<<<<<< HEAD
 	chip = container_of(ic, struct sx150x_chip, irq_chip);
+=======
+>>>>>>> refs/remotes/origin/master
 	n = d->irq - chip->irq_base;
 
 	if (flow_type & IRQ_TYPE_EDGE_RISING)
@@ -388,22 +434,32 @@ static irqreturn_t sx150x_irq_thread_fn(int irq, void *dev_id)
 
 static void sx150x_irq_bus_lock(struct irq_data *d)
 {
+<<<<<<< HEAD
 	struct irq_chip *ic = irq_data_get_irq_chip(d);
 	struct sx150x_chip *chip;
 
 	chip = container_of(ic, struct sx150x_chip, irq_chip);
+=======
+	struct sx150x_chip *chip = irq_data_get_irq_chip_data(d);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&chip->lock);
 }
 
 static void sx150x_irq_bus_sync_unlock(struct irq_data *d)
 {
+<<<<<<< HEAD
 	struct irq_chip *ic = irq_data_get_irq_chip(d);
 	struct sx150x_chip *chip;
 	unsigned n;
 
 	chip = container_of(ic, struct sx150x_chip, irq_chip);
 
+=======
+	struct sx150x_chip *chip = irq_data_get_irq_chip_data(d);
+	unsigned n;
+
+>>>>>>> refs/remotes/origin/master
 	if (chip->irq_update == NO_UPDATE_PENDING)
 		goto out;
 
@@ -446,7 +502,11 @@ static void sx150x_init_chip(struct sx150x_chip *chip,
 	chip->gpio_chip.set              = sx150x_gpio_set;
 	chip->gpio_chip.to_irq           = sx150x_gpio_to_irq;
 	chip->gpio_chip.base             = pdata->gpio_base;
+<<<<<<< HEAD
 	chip->gpio_chip.can_sleep        = 1;
+=======
+	chip->gpio_chip.can_sleep        = true;
+>>>>>>> refs/remotes/origin/master
 	chip->gpio_chip.ngpio            = chip->dev_cfg->ngpios;
 	if (pdata->oscio_is_gpo)
 		++chip->gpio_chip.ngpio;
@@ -548,6 +608,10 @@ static int sx150x_install_irq_chip(struct sx150x_chip *chip,
 
 	for (n = 0; n < chip->dev_cfg->ngpios; ++n) {
 		irq = irq_base + n;
+<<<<<<< HEAD
+=======
+		irq_set_chip_data(irq, chip);
+>>>>>>> refs/remotes/origin/master
 		irq_set_chip_and_handler(irq, &chip->irq_chip, handle_edge_irq);
 		irq_set_nested_thread(irq, 1);
 #ifdef CONFIG_ARM
@@ -557,7 +621,12 @@ static int sx150x_install_irq_chip(struct sx150x_chip *chip,
 #endif
 	}
 
+<<<<<<< HEAD
 	err = request_threaded_irq(irq_summary,
+=======
+	err = devm_request_threaded_irq(&chip->client->dev,
+				irq_summary,
+>>>>>>> refs/remotes/origin/master
 				NULL,
 				sx150x_irq_thread_fn,
 				IRQF_SHARED | IRQF_TRIGGER_FALLING,
@@ -576,15 +645,22 @@ static void sx150x_remove_irq_chip(struct sx150x_chip *chip)
 	unsigned n;
 	unsigned irq;
 
+<<<<<<< HEAD
 	free_irq(chip->irq_summary, chip);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (n = 0; n < chip->dev_cfg->ngpios; ++n) {
 		irq = chip->irq_base + n;
 		irq_set_chip_and_handler(irq, NULL, NULL);
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit sx150x_probe(struct i2c_client *client,
+=======
+static int sx150x_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				const struct i2c_device_id *id)
 {
 	static const u32 i2c_funcs = I2C_FUNC_SMBUS_BYTE_DATA |
@@ -593,25 +669,42 @@ static int __devinit sx150x_probe(struct i2c_client *client,
 	struct sx150x_chip *chip;
 	int rc;
 
+<<<<<<< HEAD
 	pdata = client->dev.platform_data;
+=======
+	pdata = dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!pdata)
 		return -EINVAL;
 
 	if (!i2c_check_functionality(client->adapter, i2c_funcs))
 		return -ENOSYS;
 
+<<<<<<< HEAD
 	chip = kzalloc(sizeof(struct sx150x_chip), GFP_KERNEL);
+=======
+	chip = devm_kzalloc(&client->dev,
+		sizeof(struct sx150x_chip), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!chip)
 		return -ENOMEM;
 
 	sx150x_init_chip(chip, client, id->driver_data, pdata);
 	rc = sx150x_init_hw(chip, pdata);
 	if (rc < 0)
+<<<<<<< HEAD
 		goto probe_fail_pre_gpiochip_add;
 
 	rc = gpiochip_add(&chip->gpio_chip);
 	if (rc < 0)
 		goto probe_fail_pre_gpiochip_add;
+=======
+		return rc;
+
+	rc = gpiochip_add(&chip->gpio_chip);
+	if (rc)
+		return rc;
+>>>>>>> refs/remotes/origin/master
 
 	if (pdata->irq_summary >= 0) {
 		rc = sx150x_install_irq_chip(chip,
@@ -626,12 +719,19 @@ static int __devinit sx150x_probe(struct i2c_client *client,
 	return 0;
 probe_fail_post_gpiochip_add:
 	WARN_ON(gpiochip_remove(&chip->gpio_chip) < 0);
+<<<<<<< HEAD
 probe_fail_pre_gpiochip_add:
 	kfree(chip);
 	return rc;
 }
 
 static int __devexit sx150x_remove(struct i2c_client *client)
+=======
+	return rc;
+}
+
+static int sx150x_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sx150x_chip *chip;
 	int rc;
@@ -644,8 +744,11 @@ static int __devexit sx150x_remove(struct i2c_client *client)
 	if (chip->irq_summary >= 0)
 		sx150x_remove_irq_chip(chip);
 
+<<<<<<< HEAD
 	kfree(chip);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -655,7 +758,11 @@ static struct i2c_driver sx150x_driver = {
 		.owner = THIS_MODULE
 	},
 	.probe    = sx150x_probe,
+<<<<<<< HEAD
 	.remove   = __devexit_p(sx150x_remove),
+=======
+	.remove   = sx150x_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = sx150x_id,
 };
 

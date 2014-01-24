@@ -3,26 +3,36 @@
  *
  * Copyright (C) 1996 Universidade de Lisboa
 <<<<<<< HEAD
+<<<<<<< HEAD
  * 
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Written by Pedro Roque Marques (roque@di.fc.ul.pt)
  *
  * This software may be used and distributed according to the terms of
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * the GNU General Public License, incorporated herein by reference.
  */
 
 /*
  * Fix: 19981230 - Carlos Morgado <chbm@techie.com>
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Port of Nelson Escravana's <nelson.escravana@usa.net> fix to CalledPN 
 =======
  * Port of Nelson Escravana's <nelson.escravana@usa.net> fix to CalledPN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Port of Nelson Escravana's <nelson.escravana@usa.net> fix to CalledPN
+>>>>>>> refs/remotes/origin/master
  * NULL pointer dereference in cb_in_1 (originally fixed in 2.0)
  */
 
@@ -50,6 +60,7 @@ ushort last_ref_num = 1;
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_out_1(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	      struct callb_data *cbdata) 
@@ -85,6 +96,8 @@ void cb_out_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
         pcbit_l2_write(dev, MSG_CONN_REQ, refnum, skb, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_out_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	      struct callb_data *cbdata)
 {
@@ -118,13 +131,17 @@ void cb_out_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	chan->s_refnum = refnum;
 
 	pcbit_l2_write(dev, MSG_CONN_REQ, refnum, skb, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *  rcv CONNECT
  *  will go into ACTIVE state
  *  send CONN_ACTIVE_RESP
+<<<<<<< HEAD
 <<<<<<< HEAD
  *  send Select protocol request 
  */
@@ -168,6 +185,8 @@ void cb_out_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
         pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *  send Select protocol request
  */
 
@@ -209,7 +228,10 @@ void cb_out_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	chan->s_refnum = refnum;
 
 	pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -218,6 +240,7 @@ void cb_out_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
  * inform user
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_in_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
 	     struct callb_data *cbdata) 
@@ -236,6 +259,8 @@ void cb_in_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
          *  ictl.num >= strlen() + strlen() + 5
          */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_in_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	     struct callb_data *cbdata)
 {
@@ -252,7 +277,10 @@ void cb_in_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	/*
 	 *  ictl.num >= strlen() + strlen() + 5
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (cbdata->data.setup.CallingPN == NULL) {
 		printk(KERN_DEBUG "NULL CallingPN to phone; using 0\n");
@@ -278,6 +306,7 @@ void cb_in_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         dev->dev_if->statcallb(&ictl);
 
         
@@ -291,6 +320,8 @@ void cb_in_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 
         pcbit_l2_write(dev, MSG_CONN_RESP, refnum, skb, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dev->dev_if->statcallb(&ictl);
 
 
@@ -303,7 +334,10 @@ void cb_in_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	chan->s_refnum = refnum;
 
 	pcbit_l2_write(dev, MSG_CONN_RESP, refnum, skb, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -312,6 +346,7 @@ void cb_in_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
  * send CONNECT message CONNECT_ACTIVE_REQ in CAPI
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_in_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
 	     struct callb_data *data)
@@ -332,6 +367,8 @@ void cb_in_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
 	printk(KERN_DEBUG "sending MSG_CONN_ACTV_REQ\n");
         pcbit_l2_write(dev, MSG_CONN_ACTV_REQ, refnum, skb, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_in_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	     struct callb_data *data)
 {
@@ -350,7 +387,10 @@ void cb_in_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
 
 	printk(KERN_DEBUG "sending MSG_CONN_ACTV_REQ\n");
 	pcbit_l2_write(dev, MSG_CONN_ACTV_REQ, refnum, skb, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -359,6 +399,7 @@ void cb_in_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_in_3(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	     struct callb_data *data)
@@ -378,6 +419,8 @@ void cb_in_3(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
         pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_in_3(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	     struct callb_data *data)
 {
@@ -395,7 +438,10 @@ void cb_in_3(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	chan->s_refnum = refnum;
 
 	pcbit_l2_write(dev, MSG_SELP_REQ, refnum, skb, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -405,6 +451,7 @@ void cb_in_3(struct pcbit_dev *dev, struct pcbit_chan *chan,
  * send disconnect resp
  * send msg to user
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_disc_1(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data)
@@ -432,6 +479,8 @@ void cb_disc_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
         
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_disc_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	       struct callb_data *data)
 {
@@ -457,11 +506,15 @@ void cb_disc_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 }
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  User HANGUP on active/call proceeding state
  *  send disc.req
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_disc_2(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data)
@@ -481,6 +534,8 @@ void cb_disc_2(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
         pcbit_l2_write(dev, MSG_DISC_REQ, refnum, skb, len);  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_disc_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	       struct callb_data *data)
 {
@@ -498,7 +553,10 @@ void cb_disc_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	chan->s_refnum = refnum;
 
 	pcbit_l2_write(dev, MSG_DISC_REQ, refnum, skb, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -506,6 +564,7 @@ void cb_disc_2(struct pcbit_dev *dev, struct pcbit_chan *chan,
  *  Problem: when the HL driver sends the disc req itself
  *           LL receives BHUP
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_disc_3(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data)
@@ -520,6 +579,8 @@ void cb_disc_3(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
 void cb_notdone(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_disc_3(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	       struct callb_data *data)
 {
@@ -532,7 +593,10 @@ void cb_disc_3(struct pcbit_dev *dev, struct pcbit_chan *chan,
 }
 
 void cb_notdone(struct pcbit_dev *dev, struct pcbit_chan *chan,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		struct callb_data *data)
 {
 }
@@ -540,6 +604,7 @@ void cb_notdone(struct pcbit_dev *dev, struct pcbit_chan *chan,
 /*
  * send activate b-chan protocol
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_selp_1(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	       struct callb_data *data) 
@@ -559,6 +624,8 @@ void cb_selp_1(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
         pcbit_l2_write(dev, MSG_ACT_TRANSP_REQ, refnum, skb, len);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_selp_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	       struct callb_data *data)
 {
@@ -576,12 +643,16 @@ void cb_selp_1(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	chan->s_refnum = refnum;
 
 	pcbit_l2_write(dev, MSG_ACT_TRANSP_REQ, refnum, skb, len);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  *  Inform User that the B-channel is available
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 void cb_open(struct pcbit_dev * dev, struct pcbit_chan* chan, 
 	     struct callb_data *data) 
@@ -597,6 +668,8 @@ void cb_open(struct pcbit_dev * dev, struct pcbit_chan* chan,
 
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void cb_open(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	     struct callb_data *data)
 {
@@ -607,4 +680,7 @@ void cb_open(struct pcbit_dev *dev, struct pcbit_chan *chan,
 	ictl.arg = chan->id;
 	dev->dev_if->statcallb(&ictl);
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

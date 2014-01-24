@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef __KERNEL__
 # ifdef CONFIG_X86_32
 #  include "unistd_32.h"
@@ -20,6 +21,13 @@
 #define __X32_SYSCALL_BIT	0x40000000
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_X86_UNISTD_H
+#define _ASM_X86_UNISTD_H 1
+
+#include <uapi/asm/unistd.h>
+
+>>>>>>> refs/remotes/origin/master
 
 # ifdef CONFIG_X86_X32_ABI
 #  define __SYSCALL_MASK (~(__X32_SYSCALL_BIT))
@@ -30,7 +38,10 @@
 # ifdef CONFIG_X86_32
 
 #  include <asm/unistd_32.h>
+<<<<<<< HEAD
 #  define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+>>>>>>> refs/remotes/origin/master
 #  define __ARCH_WANT_STAT64
 #  define __ARCH_WANT_SYS_IPC
 #  define __ARCH_WANT_SYS_OLD_MMAP
@@ -56,8 +67,11 @@
 # define __ARCH_WANT_SYS_OLD_GETRLIMIT
 # define __ARCH_WANT_SYS_OLD_UNAME
 # define __ARCH_WANT_SYS_PAUSE
+<<<<<<< HEAD
 # define __ARCH_WANT_SYS_RT_SIGACTION
 # define __ARCH_WANT_SYS_RT_SIGSUSPEND
+=======
+>>>>>>> refs/remotes/origin/master
 # define __ARCH_WANT_SYS_SGETMASK
 # define __ARCH_WANT_SYS_SIGNAL
 # define __ARCH_WANT_SYS_SIGPENDING
@@ -66,6 +80,7 @@
 # define __ARCH_WANT_SYS_TIME
 # define __ARCH_WANT_SYS_UTIME
 # define __ARCH_WANT_SYS_WAITPID
+<<<<<<< HEAD
 
 /*
  * "Conditional" syscalls
@@ -87,3 +102,10 @@
 
 #endif /* _ASM_X86_UNISTD_H */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# define __ARCH_WANT_SYS_FORK
+# define __ARCH_WANT_SYS_VFORK
+# define __ARCH_WANT_SYS_CLONE
+
+#endif /* _ASM_X86_UNISTD_H */
+>>>>>>> refs/remotes/origin/master

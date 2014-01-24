@@ -37,11 +37,23 @@ pgtable_t pte_alloc_one(struct mm_struct *mm, unsigned long address)
 #else
 	page = alloc_pages(GFP_KERNEL|__GFP_REPEAT, 0);
 #endif
+<<<<<<< HEAD
 	if (page) {
 		clear_highpage(page);
 		pgtable_page_ctor(page);
 		flush_dcache_page(page);
 	}
+=======
+	if (!page)
+		return NULL;
+
+	clear_highpage(page);
+	if (!pgtable_page_ctor(page)) {
+		__free_page(page);
+		return NULL;
+	}
+	flush_dcache_page(page);
+>>>>>>> refs/remotes/origin/master
 	return page;
 }
 
@@ -77,7 +89,11 @@ void __set_pmd(pmd_t *pmdptr, unsigned long pmd)
  * checks at dup_mmap(), exec(), and other mmlist addition points
  * could be used. The locking scheme was chosen on the basis of
  * manfred's recommendations and having no core impact whatsoever.
+<<<<<<< HEAD
  * -- wli
+=======
+ * -- nyc
+>>>>>>> refs/remotes/origin/master
  */
 DEFINE_SPINLOCK(pgd_lock);
 struct page *pgd_list;
@@ -134,6 +150,7 @@ void pgd_dtor(void *pgd)
 pgd_t *pgd_alloc(struct mm_struct *mm)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pgd_t *pgd;
 
 	pgd = quicklist_alloc(0, GFP_KERNEL, pgd_ctor);
@@ -144,6 +161,9 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
 =======
 	return quicklist_alloc(0, GFP_KERNEL, pgd_ctor);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return quicklist_alloc(0, GFP_KERNEL, pgd_ctor);
+>>>>>>> refs/remotes/origin/master
 }
 
 void pgd_free(struct mm_struct *mm, pgd_t *pgd)

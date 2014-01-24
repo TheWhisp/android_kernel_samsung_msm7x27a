@@ -27,7 +27,10 @@
 /*#include <linux/fs.h>
 #include <linux/mount.h>
 #include <linux/pagemap.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/namei.h>
 #include <linux/sched.h>*/
 #include <linux/platform_device.h>
@@ -128,7 +131,12 @@ static void tmio_start_hc(struct platform_device *dev)
 	tmio_iowrite8(2, tmio->ccr + CCR_INTC);
 
 	dev_info(&dev->dev, "revision %d @ 0x%08llx, irq %d\n",
+<<<<<<< HEAD
 			tmio_ioread8(tmio->ccr + CCR_REVID), hcd->rsrc_start, hcd->irq);
+=======
+			tmio_ioread8(tmio->ccr + CCR_REVID),
+			(u64) hcd->rsrc_start, hcd->irq);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ohci_tmio_start(struct usb_hcd *hcd)
@@ -140,7 +148,12 @@ static int ohci_tmio_start(struct usb_hcd *hcd)
 		return ret;
 
 	if ((ret = ohci_run(ohci)) < 0) {
+<<<<<<< HEAD
 		err("can't start %s", hcd->self.bus_name);
+=======
+		dev_err(hcd->self.controller, "can't start %s\n",
+			hcd->self.bus_name);
+>>>>>>> refs/remotes/origin/master
 		ohci_stop(hcd);
 		return ret;
 	}
@@ -183,7 +196,11 @@ static const struct hc_driver ohci_tmio_hc_driver = {
 /*-------------------------------------------------------------------------*/
 static struct platform_driver ohci_hcd_tmio_driver;
 
+<<<<<<< HEAD
 static int __devinit ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+=======
+static int ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct mfd_cell *cell = mfd_get_cell(dev);
 	struct resource *regs = platform_get_resource(dev, IORESOURCE_MEM, 0);
@@ -209,20 +226,28 @@ static int __devinit ohci_hcd_tmio_drv_probe(struct platform_device *dev)
 
 	hcd->rsrc_start = regs->start;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	hcd->rsrc_len = regs->end - regs->start + 1;
 =======
 	hcd->rsrc_len = resource_size(regs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hcd->rsrc_len = resource_size(regs);
+>>>>>>> refs/remotes/origin/master
 
 	tmio = hcd_to_tmio(hcd);
 
 	spin_lock_init(&tmio->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tmio->ccr = ioremap(config->start, config->end - config->start + 1);
 =======
 	tmio->ccr = ioremap(config->start, resource_size(config));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tmio->ccr = ioremap(config->start, resource_size(config));
+>>>>>>> refs/remotes/origin/master
 	if (!tmio->ccr) {
 		ret = -ENOMEM;
 		goto err_ioremap_ccr;
@@ -237,10 +262,14 @@ static int __devinit ohci_hcd_tmio_drv_probe(struct platform_device *dev)
 	if (!dma_declare_coherent_memory(&dev->dev, sram->start,
 				sram->start,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				sram->end - sram->start + 1,
 =======
 				resource_size(sram),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				resource_size(sram),
+>>>>>>> refs/remotes/origin/master
 				DMA_MEMORY_MAP | DMA_MEMORY_EXCLUSIVE)) {
 		ret = -EBUSY;
 		goto err_dma_declare;
@@ -257,6 +286,7 @@ static int __devinit ohci_hcd_tmio_drv_probe(struct platform_device *dev)
 	ohci_hcd_init(ohci);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, irq, IRQF_DISABLED);
 =======
 	ret = usb_add_hcd(hcd, irq, 0);
@@ -264,6 +294,13 @@ static int __devinit ohci_hcd_tmio_drv_probe(struct platform_device *dev)
 	if (ret)
 		goto err_add_hcd;
 
+=======
+	ret = usb_add_hcd(hcd, irq, 0);
+	if (ret)
+		goto err_add_hcd;
+
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 	if (ret == 0)
 		return ret;
 
@@ -286,7 +323,11 @@ err_usb_create_hcd:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit ohci_hcd_tmio_drv_remove(struct platform_device *dev)
+=======
+static int ohci_hcd_tmio_drv_remove(struct platform_device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct usb_hcd *hcd = platform_get_drvdata(dev);
 	struct tmio_hcd *tmio = hcd_to_tmio(hcd);
@@ -301,8 +342,11 @@ static int __devexit ohci_hcd_tmio_drv_remove(struct platform_device *dev)
 	iounmap(tmio->ccr);
 	usb_put_hcd(hcd);
 
+<<<<<<< HEAD
 	platform_set_drvdata(dev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -335,11 +379,14 @@ static int ohci_hcd_tmio_drv_suspend(struct platform_device *dev, pm_message_t s
 			return ret;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	hcd->state = HC_STATE_SUSPENDED;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -373,7 +420,11 @@ static int ohci_hcd_tmio_drv_resume(struct platform_device *dev)
 
 	spin_unlock_irqrestore(&tmio->lock, flags);
 
+<<<<<<< HEAD
 	ohci_finish_controller_resume(hcd);
+=======
+	ohci_resume(hcd, false);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -384,7 +435,11 @@ static int ohci_hcd_tmio_drv_resume(struct platform_device *dev)
 
 static struct platform_driver ohci_hcd_tmio_driver = {
 	.probe		= ohci_hcd_tmio_drv_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ohci_hcd_tmio_drv_remove),
+=======
+	.remove		= ohci_hcd_tmio_drv_remove,
+>>>>>>> refs/remotes/origin/master
 	.shutdown	= usb_hcd_platform_shutdown,
 	.suspend	= ohci_hcd_tmio_drv_suspend,
 	.resume		= ohci_hcd_tmio_drv_resume,

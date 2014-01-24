@@ -43,6 +43,7 @@
 #include "aic7xxx_inline.h"
 #include "aic7xxx_93cx6.h"
 
+<<<<<<< HEAD
 static void	copy_mem_info(struct info_str *info, char *data, int len);
 static int	copy_info(struct info_str *info, char *fmt, ...);
 static void	ahc_dump_target_state(struct ahc_softc *ahc,
@@ -53,6 +54,14 @@ static void	ahc_dump_device_state(struct info_str *info,
 				      struct scsi_device *dev);
 static int	ahc_proc_write_seeprom(struct ahc_softc *ahc,
 				       char *buffer, int length);
+=======
+static void	ahc_dump_target_state(struct ahc_softc *ahc,
+				      struct seq_file *m,
+				      u_int our_id, char channel,
+				      u_int target_id, u_int target_offset);
+static void	ahc_dump_device_state(struct seq_file *m,
+				      struct scsi_device *dev);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Table of syncrates that don't follow the "divisible by 4"
@@ -94,6 +103,7 @@ ahc_calc_syncsrate(u_int period_factor)
 	return (10000000 / (period_factor * 4 * 10));
 }
 
+<<<<<<< HEAD
 
 static void
 copy_mem_info(struct info_str *info, char *data, int len)
@@ -139,6 +149,10 @@ copy_info(struct info_str *info, char *fmt, ...)
 
 static void
 ahc_format_transinfo(struct info_str *info, struct ahc_transinfo *tinfo)
+=======
+static void
+ahc_format_transinfo(struct seq_file *m, struct ahc_transinfo *tinfo)
+>>>>>>> refs/remotes/origin/master
 {
 	u_int speed;
 	u_int freq;
@@ -153,12 +167,21 @@ ahc_format_transinfo(struct info_str *info, struct ahc_transinfo *tinfo)
 	speed *= (0x01 << tinfo->width);
         mb = speed / 1000;
         if (mb > 0)
+<<<<<<< HEAD
 		copy_info(info, "%d.%03dMB/s transfers", mb, speed % 1000);
         else
 		copy_info(info, "%dKB/s transfers", speed);
 
 	if (freq != 0) {
 		copy_info(info, " (%d.%03dMHz%s, offset %d",
+=======
+		seq_printf(m, "%d.%03dMB/s transfers", mb, speed % 1000);
+        else
+		seq_printf(m, "%dKB/s transfers", speed);
+
+	if (freq != 0) {
+		seq_printf(m, " (%d.%03dMHz%s, offset %d",
+>>>>>>> refs/remotes/origin/master
 			 freq / 1000, freq % 1000,
 			 (tinfo->ppr_options & MSG_EXT_PPR_DT_REQ) != 0
 			 ? " DT" : "", tinfo->offset);
@@ -166,6 +189,7 @@ ahc_format_transinfo(struct info_str *info, struct ahc_transinfo *tinfo)
 
 	if (tinfo->width > 0) {
 		if (freq != 0) {
+<<<<<<< HEAD
 			copy_info(info, ", ");
 		} else {
 			copy_info(info, " (");
@@ -179,6 +203,21 @@ ahc_format_transinfo(struct info_str *info, struct ahc_transinfo *tinfo)
 
 static void
 ahc_dump_target_state(struct ahc_softc *ahc, struct info_str *info,
+=======
+			seq_printf(m, ", ");
+		} else {
+			seq_printf(m, " (");
+		}
+		seq_printf(m, "%dbit)", 8 * (0x01 << tinfo->width));
+	} else if (freq != 0) {
+		seq_printf(m, ")");
+	}
+	seq_printf(m, "\n");
+}
+
+static void
+ahc_dump_target_state(struct ahc_softc *ahc, struct seq_file *m,
+>>>>>>> refs/remotes/origin/master
 		      u_int our_id, char channel, u_int target_id,
 		      u_int target_offset)
 {
@@ -190,18 +229,32 @@ ahc_dump_target_state(struct ahc_softc *ahc, struct info_str *info,
 	tinfo = ahc_fetch_transinfo(ahc, channel, our_id,
 				    target_id, &tstate);
 	if ((ahc->features & AHC_TWIN) != 0)
+<<<<<<< HEAD
 		copy_info(info, "Channel %c ", channel);
 	copy_info(info, "Target %d Negotiation Settings\n", target_id);
 	copy_info(info, "\tUser: ");
 	ahc_format_transinfo(info, &tinfo->user);
+=======
+		seq_printf(m, "Channel %c ", channel);
+	seq_printf(m, "Target %d Negotiation Settings\n", target_id);
+	seq_printf(m, "\tUser: ");
+	ahc_format_transinfo(m, &tinfo->user);
+>>>>>>> refs/remotes/origin/master
 	starget = ahc->platform_data->starget[target_offset];
 	if (!starget)
 		return;
 
+<<<<<<< HEAD
 	copy_info(info, "\tGoal: ");
 	ahc_format_transinfo(info, &tinfo->goal);
 	copy_info(info, "\tCurr: ");
 	ahc_format_transinfo(info, &tinfo->curr);
+=======
+	seq_printf(m, "\tGoal: ");
+	ahc_format_transinfo(m, &tinfo->goal);
+	seq_printf(m, "\tCurr: ");
+	ahc_format_transinfo(m, &tinfo->curr);
+>>>>>>> refs/remotes/origin/master
 
 	for (lun = 0; lun < AHC_NUM_LUNS; lun++) {
 		struct scsi_device *sdev;
@@ -211,11 +264,16 @@ ahc_dump_target_state(struct ahc_softc *ahc, struct info_str *info,
 		if (sdev == NULL)
 			continue;
 
+<<<<<<< HEAD
 		ahc_dump_device_state(info, sdev);
+=======
+		ahc_dump_device_state(m, sdev);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
 static void
+<<<<<<< HEAD
 ahc_dump_device_state(struct info_str *info, struct scsi_device *sdev)
 {
 	struct ahc_linux_device *dev = scsi_transport_device_data(sdev);
@@ -234,6 +292,27 @@ ahc_dump_device_state(struct info_str *info, struct scsi_device *sdev)
 static int
 ahc_proc_write_seeprom(struct ahc_softc *ahc, char *buffer, int length)
 {
+=======
+ahc_dump_device_state(struct seq_file *m, struct scsi_device *sdev)
+{
+	struct ahc_linux_device *dev = scsi_transport_device_data(sdev);
+
+	seq_printf(m, "\tChannel %c Target %d Lun %d Settings\n",
+		  sdev->sdev_target->channel + 'A',
+		  sdev->sdev_target->id, sdev->lun);
+
+	seq_printf(m, "\t\tCommands Queued %ld\n", dev->commands_issued);
+	seq_printf(m, "\t\tCommands Active %d\n", dev->active);
+	seq_printf(m, "\t\tCommand Openings %d\n", dev->openings);
+	seq_printf(m, "\t\tMax Tagged Openings %d\n", dev->maxtags);
+	seq_printf(m, "\t\tDevice Queue Frozen Count %d\n", dev->qfrozen);
+}
+
+int
+ahc_proc_write_seeprom(struct Scsi_Host *shost, char *buffer, int length)
+{
+	struct	ahc_softc *ahc = *(struct ahc_softc **)shost->hostdata;
+>>>>>>> refs/remotes/origin/master
 	struct seeprom_descriptor sd;
 	int have_seeprom;
 	u_long s;
@@ -332,6 +411,7 @@ done:
  * Return information to handle /proc support for the driver.
  */
 int
+<<<<<<< HEAD
 ahc_linux_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 		    off_t offset, int length, int inout)
 {
@@ -362,10 +442,26 @@ ahc_linux_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 	ahc_controller_info(ahc, ahc_info);
 	copy_info(&info, "%s\n", ahc_info);
 	copy_info(&info, "Allocated SCBs: %d, SG List Length: %d\n\n",
+=======
+ahc_linux_show_info(struct seq_file *m, struct Scsi_Host *shost)
+{
+	struct	ahc_softc *ahc = *(struct ahc_softc **)shost->hostdata;
+	char	ahc_info[256];
+	u_int	max_targ;
+	u_int	i;
+
+	seq_printf(m, "Adaptec AIC7xxx driver version: %s\n",
+		  AIC7XXX_DRIVER_VERSION);
+	seq_printf(m, "%s\n", ahc->description);
+	ahc_controller_info(ahc, ahc_info);
+	seq_printf(m, "%s\n", ahc_info);
+	seq_printf(m, "Allocated SCBs: %d, SG List Length: %d\n\n",
+>>>>>>> refs/remotes/origin/master
 		  ahc->scb_data->numscbs, AHC_NSEG);
 
 
 	if (ahc->seep_config == NULL)
+<<<<<<< HEAD
 		copy_info(&info, "No Serial EEPROM\n");
 	else {
 		copy_info(&info, "Serial EEPROM:\n");
@@ -379,6 +475,21 @@ ahc_linux_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 		copy_info(&info, "\n");
 	}
 	copy_info(&info, "\n");
+=======
+		seq_printf(m, "No Serial EEPROM\n");
+	else {
+		seq_printf(m, "Serial EEPROM:\n");
+		for (i = 0; i < sizeof(*ahc->seep_config)/2; i++) {
+			if (((i % 8) == 0) && (i != 0)) {
+				seq_printf(m, "\n");
+			}
+			seq_printf(m, "0x%.4x ",
+				  ((uint16_t*)ahc->seep_config)[i]);
+		}
+		seq_printf(m, "\n");
+	}
+	seq_printf(m, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	max_targ = 16;
 	if ((ahc->features & (AHC_WIDE|AHC_TWIN)) == 0)
@@ -398,10 +509,17 @@ ahc_linux_proc_info(struct Scsi_Host *shost, char *buffer, char **start,
 			target_id = i % 8;
 		}
 
+<<<<<<< HEAD
 		ahc_dump_target_state(ahc, &info, our_id,
 				      channel, target_id, i);
 	}
 	retval = info.pos > info.offset ? info.pos - info.offset : 0;
 done:
 	return (retval);
+=======
+		ahc_dump_target_state(ahc, m, our_id,
+				      channel, target_id, i);
+	}
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }

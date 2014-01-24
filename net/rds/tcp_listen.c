@@ -114,7 +114,11 @@ void rds_tcp_listen_data_ready(struct sock *sk, int bytes)
 
 	rdsdebug("listen data ready sk %p\n", sk);
 
+<<<<<<< HEAD
 	read_lock_bh(&sk->sk_callback_lock);
+=======
+	read_lock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 	ready = sk->sk_user_data;
 	if (!ready) { /* check for teardown race */
 		ready = sk->sk_data_ready;
@@ -131,7 +135,11 @@ void rds_tcp_listen_data_ready(struct sock *sk, int bytes)
 		queue_work(rds_wq, &rds_tcp_listen_work);
 
 out:
+<<<<<<< HEAD
 	read_unlock_bh(&sk->sk_callback_lock);
+=======
+	read_unlock(&sk->sk_callback_lock);
+>>>>>>> refs/remotes/origin/master
 	ready(sk, bytes);
 }
 
@@ -145,7 +153,11 @@ int rds_tcp_listen_init(void)
 	if (ret < 0)
 		goto out;
 
+<<<<<<< HEAD
 	sock->sk->sk_reuse = 1;
+=======
+	sock->sk->sk_reuse = SK_CAN_REUSE;
+>>>>>>> refs/remotes/origin/master
 	rds_tcp_nonagle(sock);
 
 	write_lock_bh(&sock->sk->sk_callback_lock);

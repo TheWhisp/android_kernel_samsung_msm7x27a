@@ -36,7 +36,12 @@ static ssize_t name ## _show(struct device *dev,			\
 	ret = snprintf(buf, PAGE_SIZE, format_string "\n", args);	\
 	mutex_unlock(&phy->pib_lock);					\
 	return ret;							\
+<<<<<<< HEAD
 }
+=======
+}									\
+static DEVICE_ATTR_RO(name);
+>>>>>>> refs/remotes/origin/master
 
 #define MASTER_SHOW(field, format_string)				\
 	MASTER_SHOW_COMPLEX(field, format_string, phy->field)
@@ -66,6 +71,7 @@ static ssize_t channels_supported_show(struct device *dev,
 	mutex_unlock(&phy->pib_lock);
 	return len;
 }
+<<<<<<< HEAD
 
 static struct device_attribute pmib_attrs[] = {
 	__ATTR_RO(current_channel),
@@ -75,6 +81,19 @@ static struct device_attribute pmib_attrs[] = {
 	__ATTR_RO(cca_mode),
 	{},
 };
+=======
+static DEVICE_ATTR_RO(channels_supported);
+
+static struct attribute *pmib_attrs[] = {
+	&dev_attr_current_channel.attr,
+	&dev_attr_current_page.attr,
+	&dev_attr_channels_supported.attr,
+	&dev_attr_transmit_power.attr,
+	&dev_attr_cca_mode.attr,
+	NULL,
+};
+ATTRIBUTE_GROUPS(pmib);
+>>>>>>> refs/remotes/origin/master
 
 static void wpan_phy_release(struct device *d)
 {
@@ -85,13 +104,21 @@ static void wpan_phy_release(struct device *d)
 static struct class wpan_phy_class = {
 	.name = "ieee802154",
 	.dev_release = wpan_phy_release,
+<<<<<<< HEAD
 	.dev_attrs = pmib_attrs,
+=======
+	.dev_groups = pmib_groups,
+>>>>>>> refs/remotes/origin/master
 };
 
 static DEFINE_MUTEX(wpan_phy_mutex);
 static int wpan_phy_idx;
 
+<<<<<<< HEAD
 static int wpan_phy_match(struct device *dev, void *data)
+=======
+static int wpan_phy_match(struct device *dev, const void *data)
+>>>>>>> refs/remotes/origin/master
 {
 	return !strcmp(dev_name(dev), (const char *)data);
 }
@@ -103,8 +130,12 @@ struct wpan_phy *wpan_phy_find(const char *str)
 	if (WARN_ON(!str))
 		return NULL;
 
+<<<<<<< HEAD
 	dev = class_find_device(&wpan_phy_class, NULL,
 			(void *)str, wpan_phy_match);
+=======
+	dev = class_find_device(&wpan_phy_class, NULL, str, wpan_phy_match);
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return NULL;
 

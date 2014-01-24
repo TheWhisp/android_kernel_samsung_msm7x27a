@@ -17,6 +17,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*  ----------------------------------- Host OS */
 
 #include <plat/dsp.h>
@@ -40,12 +41,22 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/device.h>
 #include <linux/init.h>
+=======
+#include <linux/platform_data/dsp-omap.h>
+
+#include <linux/types.h>
+#include <linux/platform_device.h>
+#include <linux/pm.h>
+#include <linux/module.h>
+#include <linux/device.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/moduleparam.h>
 #include <linux/cdev.h>
 
 /*  ----------------------------------- DSP/BIOS Bridge */
 #include <dspbridge/dbdefs.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*  ----------------------------------- Trace & Debug */
 #include <dspbridge/dbc.h>
@@ -62,12 +73,19 @@
 
 /*  ----------------------------------- Platform Manager */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*  ----------------------------------- OS Adaptation Layer */
+#include <dspbridge/clk.h>
+
+/*  ----------------------------------- Platform Manager */
+>>>>>>> refs/remotes/origin/master
 #include <dspbridge/dspapi.h>
 #include <dspbridge/dspdrv.h>
 
 /*  ----------------------------------- Resource Manager */
 #include <dspbridge/pwr.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*  ----------------------------------- This */
 #include <drv_interface.h>
@@ -82,6 +100,11 @@
 #include <dspbridge/proc.h>
 #include <dspbridge/dev.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <dspbridge/resourcecleanup.h>
+#include <dspbridge/proc.h>
+#include <dspbridge/dev.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_TIDSPBRIDGE_DVFS
 #include <mach-omap2/omap3-opp.h>
@@ -89,9 +112,12 @@
 
 /*  ----------------------------------- Globals */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DRIVER_NAME  "DspBridge"
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DSPBRIDGE_VERSION	"0.3"
 s32 dsp_debug;
 
@@ -108,7 +134,10 @@ static struct class *bridge_class;
 static u32 driver_context;
 static s32 driver_major;
 static char *base_img;
+<<<<<<< HEAD
 char *iva_img;
+=======
+>>>>>>> refs/remotes/origin/master
 static s32 shm_size = 0x500000;	/* 5 MB */
 static int tc_wordswapon;	/* Default value is always false */
 #ifdef CONFIG_TIDSPBRIDGE_RECOVERY
@@ -161,8 +190,11 @@ MODULE_LICENSE("GPL");
 MODULE_VERSION(DSPBRIDGE_VERSION);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *driver_name = DRIVER_NAME;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This function is called when an application opens handle to the
  * bridge driver.
@@ -305,9 +337,18 @@ err:
 /* This function maps kernel space memory to user space memory. */
 static int bridge_mmap(struct file *filp, struct vm_area_struct *vma)
 {
+<<<<<<< HEAD
 	u32 status;
 
 	vma->vm_flags |= VM_RESERVED | VM_IO;
+=======
+	unsigned long base_pgoff;
+	int status;
+	struct omap_dsp_platform_data *pdata =
+					omap_dspbridge_dev->dev.platform_data;
+
+	/* VM_IO | VM_DONTEXPAND | VM_DONTDUMP are set by remap_pfn_range() */
+>>>>>>> refs/remotes/origin/master
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 
 	dev_dbg(bridge, "%s: vm filp %p start %lx end %lx page_prot %ulx "
@@ -315,6 +356,7 @@ static int bridge_mmap(struct file *filp, struct vm_area_struct *vma)
 		vma->vm_start, vma->vm_end, vma->vm_page_prot,
 		vma->vm_flags);
 
+<<<<<<< HEAD
 	status = remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
 				 vma->vm_end - vma->vm_start,
 				 vma->vm_page_prot);
@@ -324,6 +366,34 @@ static int bridge_mmap(struct file *filp, struct vm_area_struct *vma)
 	return status;
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * vm_iomap_memory() expects vma->vm_pgoff to be expressed as an offset
+	 * from the start of the physical memory pool, but we're called with
+	 * a pfn (physical page number) stored there instead.
+	 *
+	 * To avoid duplicating lots of tricky overflow checking logic,
+	 * temporarily convert vma->vm_pgoff to the offset vm_iomap_memory()
+	 * expects, but restore the original value once the mapping has been
+	 * created.
+	 */
+	base_pgoff = pdata->phys_mempool_base >> PAGE_SHIFT;
+
+	if (vma->vm_pgoff < base_pgoff)
+		return -EINVAL;
+
+	vma->vm_pgoff -= base_pgoff;
+
+	status = vm_iomap_memory(vma,
+				 pdata->phys_mempool_base,
+				 pdata->phys_mempool_size);
+
+	/* Restore the original value of vma->vm_pgoff */
+	vma->vm_pgoff += base_pgoff;
+
+	return status;
+}
+>>>>>>> refs/remotes/origin/master
 
 static const struct file_operations bridge_fops = {
 	.open = bridge_open,
@@ -380,7 +450,11 @@ static void bridge_recover(struct work_struct *work)
 	struct dev_object *dev;
 	struct cfg_devnode *dev_node;
 	if (atomic_read(&bridge_cref)) {
+<<<<<<< HEAD
 		INIT_COMPLETION(bridge_comp);
+=======
+		reinit_completion(&bridge_comp);
+>>>>>>> refs/remotes/origin/master
 		while (!wait_for_completion_timeout(&bridge_comp,
 						msecs_to_jiffies(REC_TIMEOUT)))
 			pr_info("%s:%d handle(s) still opened\n",
@@ -396,7 +470,11 @@ static void bridge_recover(struct work_struct *work)
 
 void bridge_recover_schedule(void)
 {
+<<<<<<< HEAD
 	INIT_COMPLETION(bridge_open_comp);
+=======
+	reinit_completion(&bridge_open_comp);
+>>>>>>> refs/remotes/origin/master
 	recover = true;
 	queue_work(bridge_rec_queue, &bridge_recovery_work);
 }
@@ -404,16 +482,22 @@ void bridge_recover_schedule(void)
 #ifdef CONFIG_TIDSPBRIDGE_DVFS
 static int dspbridge_scale_notification(struct notifier_block *op,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		unsigned long val, void *ptr)
 {
 	struct omap_dsp_platform_data *pdata =
 		omap_dspbridge_dev->dev.platform_data;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					unsigned long val, void *ptr)
 {
 	struct omap_dsp_platform_data *pdata =
 	    omap_dspbridge_dev->dev.platform_data;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (CPUFREQ_POSTCHANGE == val && pdata->dsp_get_opp)
 		pwr_pm_post_scale(PRCM_VDD1, pdata->dsp_get_opp());
@@ -444,7 +528,11 @@ static int omap3_bridge_startup(struct platform_device *pdev)
 #ifdef CONFIG_TIDSPBRIDGE_RECOVERY
 	bridge_rec_queue = create_workqueue("bridge_rec_queue");
 	INIT_WORK(&bridge_recovery_work, bridge_recover);
+<<<<<<< HEAD
 	INIT_COMPLETION(bridge_comp);
+=======
+	reinit_completion(&bridge_comp);
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #ifdef CONFIG_PM
@@ -476,12 +564,19 @@ static int omap3_bridge_startup(struct platform_device *pdev)
 	drv_datap->tc_wordswapon = tc_wordswapon;
 
 	if (base_img) {
+<<<<<<< HEAD
 		drv_datap->base_img = kmalloc(strlen(base_img) + 1, GFP_KERNEL);
+=======
+		drv_datap->base_img = kstrdup(base_img, GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 		if (!drv_datap->base_img) {
 			err = -ENOMEM;
 			goto err2;
 		}
+<<<<<<< HEAD
 		strncpy(drv_datap->base_img, base_img, strlen(base_img) + 1);
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	dev_set_drvdata(bridge, drv_datap);
@@ -519,17 +614,25 @@ err1:
 #ifdef CONFIG_TIDSPBRIDGE_DVFS
 	cpufreq_unregister_notifier(&iva_clk_notifier,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					CPUFREQ_TRANSITION_NOTIFIER);
 =======
 				    CPUFREQ_TRANSITION_NOTIFIER);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    CPUFREQ_TRANSITION_NOTIFIER);
+>>>>>>> refs/remotes/origin/master
 #endif
 	dsp_clk_exit();
 
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devinit omap34_xx_bridge_probe(struct platform_device *pdev)
+=======
+static int omap34_xx_bridge_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	dev_t dev = 0;
@@ -549,10 +652,14 @@ static int __devinit omap34_xx_bridge_probe(struct platform_device *pdev)
 
 	/* use 2.6 device model */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = alloc_chrdev_region(&dev, 0, 1, driver_name);
 =======
 	err = alloc_chrdev_region(&dev, 0, 1, "DspBridge");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = alloc_chrdev_region(&dev, 0, 1, "DspBridge");
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		pr_err("%s: Can't get major %d\n", __func__, driver_major);
 		goto err1;
@@ -571,6 +678,10 @@ static int __devinit omap34_xx_bridge_probe(struct platform_device *pdev)
 	bridge_class = class_create(THIS_MODULE, "ti_bridge");
 	if (IS_ERR(bridge_class)) {
 		pr_err("%s: Error creating bridge class\n", __func__);
+<<<<<<< HEAD
+=======
+		err = PTR_ERR(bridge_class);
+>>>>>>> refs/remotes/origin/master
 		goto err3;
 	}
 
@@ -589,6 +700,7 @@ err1:
 	return err;
 }
 
+<<<<<<< HEAD
 static int __devexit omap34_xx_bridge_remove(struct platform_device *pdev)
 {
 	dev_t devno;
@@ -596,6 +708,11 @@ static int __devexit omap34_xx_bridge_remove(struct platform_device *pdev)
 	bool ret;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int omap34_xx_bridge_remove(struct platform_device *pdev)
+{
+	dev_t devno;
+>>>>>>> refs/remotes/origin/master
 	int status = 0;
 	struct drv_data *drv_datap = dev_get_drvdata(bridge);
 
@@ -609,10 +726,14 @@ static int __devexit omap34_xx_bridge_remove(struct platform_device *pdev)
 #ifdef CONFIG_TIDSPBRIDGE_DVFS
 	if (cpufreq_unregister_notifier(&iva_clk_notifier,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						CPUFREQ_TRANSITION_NOTIFIER))
 =======
 					CPUFREQ_TRANSITION_NOTIFIER))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					CPUFREQ_TRANSITION_NOTIFIER))
+>>>>>>> refs/remotes/origin/master
 		pr_err("%s: cpufreq_unregister_notifier failed for iva2_ck\n",
 		       __func__);
 #endif /* #ifdef CONFIG_TIDSPBRIDGE_DVFS */
@@ -620,12 +741,15 @@ static int __devexit omap34_xx_bridge_remove(struct platform_device *pdev)
 	if (driver_context) {
 		/* Put the DSP in reset state */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ret = dsp_deinit(driver_context);
 		driver_context = 0;
 		DBC_ASSERT(ret == true);
 	}
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dsp_deinit(driver_context);
 		driver_context = 0;
 	}
@@ -633,7 +757,10 @@ static int __devexit omap34_xx_bridge_remove(struct platform_device *pdev)
 	kfree(drv_datap);
 	dev_set_drvdata(bridge, NULL);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 func_cont:
 	mem_ext_phys_pool_release();
 
@@ -648,6 +775,7 @@ func_cont:
 		class_destroy(bridge_class);
 
 	}
+<<<<<<< HEAD
 	return 0;
 }
 
@@ -657,6 +785,13 @@ static int BRIDGE_SUSPEND(struct platform_device *pdev, pm_message_t state)
 =======
 static int bridge_suspend(struct platform_device *pdev, pm_message_t state)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return status;
+}
+
+#ifdef CONFIG_PM
+static int bridge_suspend(struct platform_device *pdev, pm_message_t state)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 status;
 	u32 command = PWR_EMERGENCYDEEPSLEEP;
@@ -670,10 +805,14 @@ static int bridge_suspend(struct platform_device *pdev, pm_message_t state)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int BRIDGE_RESUME(struct platform_device *pdev)
 =======
 static int bridge_resume(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int bridge_resume(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 status;
 
@@ -686,11 +825,14 @@ static int bridge_resume(struct platform_device *pdev)
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #else
 #define BRIDGE_SUSPEND NULL
 #define BRIDGE_RESUME NULL
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static struct platform_driver bridge_driver = {
@@ -698,15 +840,20 @@ static struct platform_driver bridge_driver = {
 		   .name = "omap-dsp",
 		   },
 	.probe = omap34_xx_bridge_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(omap34_xx_bridge_remove),
 <<<<<<< HEAD
 	.suspend = BRIDGE_SUSPEND,
 	.resume = BRIDGE_RESUME,
 =======
+=======
+	.remove = omap34_xx_bridge_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend = bridge_suspend,
 	.resume = bridge_resume,
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 };
 
@@ -878,6 +1025,10 @@ static int bridge_mmap(struct file *filp, struct vm_area_struct *vma)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 /* To remove all process resources before removing the process from the
  * process context list */
 int drv_remove_all_resources(void *process_ctxt)
@@ -891,6 +1042,10 @@ int drv_remove_all_resources(void *process_ctxt)
 	return status;
 }
 
+<<<<<<< HEAD
 /* Bridge driver initialization and de-initialization functions */
 module_init(bridge_init);
 module_exit(bridge_exit);
+=======
+module_platform_driver(bridge_driver);
+>>>>>>> refs/remotes/origin/master

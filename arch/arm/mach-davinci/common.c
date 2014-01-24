@@ -13,9 +13,13 @@
 #include <linux/etherdevice.h>
 #include <linux/davinci_emac.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/dma-mapping.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/dma-mapping.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/tlb.h>
 #include <asm/mach/map.h>
@@ -91,10 +95,13 @@ void __init davinci_common_init(struct davinci_soc_info *soc_info)
 				davinci_soc_info.io_desc_num);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	init_consistent_dma_size(14 << 20);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Normally devicemaps_init() would flush caches and tlb after
 	 * mdesc->map_io(), but we must also do it here because of the CPU
@@ -104,11 +111,14 @@ void __init davinci_common_init(struct davinci_soc_info *soc_info)
 	flush_cache_all();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!davinci_soc_info.reset)
 		davinci_soc_info.reset = davinci_watchdog_reset;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * We want to check CPU revision early for cpu_is_xxxx() macros.
 	 * IO space mapping must be initialized before we can do that.
@@ -129,3 +139,13 @@ void __init davinci_common_init(struct davinci_soc_info *soc_info)
 err:
 	panic("davinci_common_init: SoC Initialization failed\n");
 }
+<<<<<<< HEAD
+=======
+
+void __init davinci_init_late(void)
+{
+	davinci_cpufreq_init();
+	davinci_pm_init();
+	davinci_clk_disable_unused();
+}
+>>>>>>> refs/remotes/origin/master

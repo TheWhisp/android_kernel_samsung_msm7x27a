@@ -1,5 +1,9 @@
 menuconfig ISDN_DRV_GIGASET
 	tristate "Siemens Gigaset support"
+<<<<<<< HEAD
+=======
+	depends on TTY
+>>>>>>> refs/remotes/origin/master
 	select CRC_CCITT
 	select BITREVERSE
 	help

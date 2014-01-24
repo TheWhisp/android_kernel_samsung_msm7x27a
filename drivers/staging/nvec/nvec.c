@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 // #define DEBUG
 
 /* ToDo list (incomplete, unorderd)
@@ -35,6 +36,8 @@ static struct nvec_chip *nvec_power_handle;
 int nvec_register_notifier(struct nvec_chip *nvec, struct notifier_block *nb,
 				unsigned int events)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * NVEC: NVIDIA compliant embedded controller interface
  *
@@ -70,6 +73,7 @@ int nvec_register_notifier(struct nvec_chip *nvec, struct notifier_block *nb,
 #include <linux/mfd/core.h>
 #include <linux/mutex.h>
 #include <linux/notifier.h>
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
@@ -77,6 +81,12 @@ int nvec_register_notifier(struct nvec_chip *nvec, struct notifier_block *nb,
 
 #include <mach/clk.h>
 #include <mach/iomap.h>
+=======
+#include <linux/slab.h>
+#include <linux/spinlock.h>
+#include <linux/workqueue.h>
+#include <linux/clk/tegra.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "nvec.h"
 
@@ -110,6 +120,7 @@ enum nvec_msg_category  {
 	NVEC_MSG_TX,
 };
 
+<<<<<<< HEAD
 static const unsigned char EC_DISABLE_EVENT_REPORTING[3] = "\x04\x00\x00";
 static const unsigned char EC_ENABLE_EVENT_REPORTING[3]  = "\x04\x00\x01";
 static const unsigned char EC_GET_FIRMWARE_VERSION[2]    = "\x07\x15";
@@ -117,6 +128,22 @@ static const unsigned char EC_GET_FIRMWARE_VERSION[2]    = "\x07\x15";
 static struct nvec_chip *nvec_power_handle;
 
 static struct mfd_cell nvec_devices[] = {
+=======
+enum nvec_sleep_subcmds {
+	GLOBAL_EVENTS,
+	AP_PWR_DOWN,
+	AP_SUSPEND,
+};
+
+#define CNF_EVENT_REPORTING 0x01
+#define GET_FIRMWARE_VERSION 0x15
+#define LID_SWITCH BIT(1)
+#define PWR_BUTTON BIT(15)
+
+static struct nvec_chip *nvec_power_handle;
+
+static const struct mfd_cell nvec_devices[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.name = "nvec-kbd",
 		.id = 1,
@@ -134,7 +161,11 @@ static struct mfd_cell nvec_devices[] = {
 		.id = 2,
 	},
 	{
+<<<<<<< HEAD
 		.name = "nvec-leds",
+=======
+		.name = "nvec-paz00",
+>>>>>>> refs/remotes/origin/master
 		.id = 1,
 	},
 };
@@ -150,12 +181,16 @@ static struct mfd_cell nvec_devices[] = {
  */
 int nvec_register_notifier(struct nvec_chip *nvec, struct notifier_block *nb,
 			   unsigned int events)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	return atomic_notifier_chain_register(&nvec->notifier_list, nb);
 }
 EXPORT_SYMBOL_GPL(nvec_register_notifier);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int nvec_status_notifier(struct notifier_block *nb, unsigned long event_type,
 				void *data)
@@ -171,6 +206,22 @@ static int nvec_status_notifier(struct notifier_block *nb, unsigned long event_t
 		printk("%0x ", msg[i+2]);
 	printk("\n");
 =======
+=======
+/**
+ * nvec_unregister_notifier - Unregister a notifier with nvec
+ * @nvec: A &struct nvec_chip
+ * @nb: The notifier block to unregister
+ *
+ * Unregisters a notifier with @nvec. The notifier will be removed from the
+ * atomic notifier chain.
+ */
+int nvec_unregister_notifier(struct nvec_chip *nvec, struct notifier_block *nb)
+{
+	return atomic_notifier_chain_unregister(&nvec->notifier_list, nb);
+}
+EXPORT_SYMBOL_GPL(nvec_unregister_notifier);
+
+>>>>>>> refs/remotes/origin/master
 /**
  * nvec_status_notifier - The final notifier
  *
@@ -180,19 +231,31 @@ static int nvec_status_notifier(struct notifier_block *nb, unsigned long event_t
 static int nvec_status_notifier(struct notifier_block *nb,
 				unsigned long event_type, void *data)
 {
+<<<<<<< HEAD
+=======
+	struct nvec_chip *nvec = container_of(nb, struct nvec_chip,
+						nvec_status_notifier);
+>>>>>>> refs/remotes/origin/master
 	unsigned char *msg = (unsigned char *)data;
 
 	if (event_type != NVEC_CNTL)
 		return NOTIFY_DONE;
 
+<<<<<<< HEAD
 	printk(KERN_WARNING "unhandled msg type %ld\n", event_type);
 	print_hex_dump(KERN_WARNING, "payload: ", DUMP_PREFIX_NONE, 16, 1,
 		msg, msg[1] + 2, true);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev_warn(nvec->dev, "unhandled msg type %ld\n", event_type);
+	print_hex_dump(KERN_WARNING, "payload: ", DUMP_PREFIX_NONE, 16, 1,
+		msg, msg[1] + 2, true);
+>>>>>>> refs/remotes/origin/master
 
 	return NOTIFY_OK;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void nvec_write_async(struct nvec_chip *nvec, unsigned char *data, short size)
 {
@@ -240,6 +303,8 @@ static int parse_msg(struct nvec_chip *nvec, struct nvec_msg *msg)
 
 	atomic_notifier_call_chain(&nvec->notifier_list, msg->data[0] & 0x8f, msg->data);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * nvec_msg_alloc:
  * @nvec: A &struct nvec_chip
@@ -279,7 +344,11 @@ static struct nvec_msg *nvec_msg_alloc(struct nvec_chip *nvec,
  *
  * Free the given message
  */
+<<<<<<< HEAD
 inline void nvec_msg_free(struct nvec_chip *nvec, struct nvec_msg *msg)
+=======
+void nvec_msg_free(struct nvec_chip *nvec, struct nvec_msg *msg)
+>>>>>>> refs/remotes/origin/master
 {
 	if (msg != &nvec->tx_scratch)
 		dev_vdbg(nvec->dev, "INFO: Free %ti\n", msg - nvec->msg_pool);
@@ -363,7 +432,11 @@ int nvec_write_async(struct nvec_chip *nvec, const unsigned char *data,
 	list_add_tail(&msg->node, &nvec->tx_data);
 	spin_unlock_irqrestore(&nvec->tx_lock, flags);
 
+<<<<<<< HEAD
 	queue_work(nvec->wq, &nvec->tx_work);
+=======
+	schedule_work(&nvec->tx_work);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -393,8 +466,15 @@ struct nvec_msg *nvec_write_sync(struct nvec_chip *nvec,
 
 	nvec->sync_write_pending = (data[1] << 8) + data[0];
 
+<<<<<<< HEAD
 	if (nvec_write_async(nvec, data, size) < 0)
 		return NULL;
+=======
+	if (nvec_write_async(nvec, data, size) < 0) {
+		mutex_unlock(&nvec->sync_write_mutex);
+		return NULL;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(nvec->dev, "nvec_sync_write: 0x%04x\n",
 					nvec->sync_write_pending);
@@ -416,6 +496,44 @@ struct nvec_msg *nvec_write_sync(struct nvec_chip *nvec,
 EXPORT_SYMBOL(nvec_write_sync);
 
 /**
+<<<<<<< HEAD
+=======
+ * nvec_toggle_global_events - enables or disables global event reporting
+ * @nvec: nvec handle
+ * @state: true for enable, false for disable
+ *
+ * This switches on/off global event reports by the embedded controller.
+ */
+static void nvec_toggle_global_events(struct nvec_chip *nvec, bool state)
+{
+	unsigned char global_events[] = { NVEC_SLEEP, GLOBAL_EVENTS, state };
+
+	nvec_write_async(nvec, global_events, 3);
+}
+
+/**
+ * nvec_event_mask - fill the command string with event bitfield
+ * ev: points to event command string
+ * mask: bit to insert into the event mask
+ *
+ * Configure event command expects a 32 bit bitfield which describes
+ * which events to enable. The bitfield has the following structure
+ * (from highest byte to lowest):
+ *	system state bits 7-0
+ *	system state bits 15-8
+ *	oem system state bits 7-0
+ *	oem system state bits 15-8
+ */
+static void nvec_event_mask(char *ev, u32 mask)
+{
+	ev[3] = mask >> 16 & 0xff;
+	ev[4] = mask >> 24 & 0xff;
+	ev[5] = mask >> 0  & 0xff;
+	ev[6] = mask >> 8  & 0xff;
+}
+
+/**
+>>>>>>> refs/remotes/origin/master
  * nvec_request_master - Process outgoing messages
  * @work: A &struct work_struct (the tx_worker member of &struct nvec_chip)
  *
@@ -465,8 +583,12 @@ static void nvec_request_master(struct work_struct *work)
 static int parse_msg(struct nvec_chip *nvec, struct nvec_msg *msg)
 {
 	if ((msg->data[0] & 1 << 7) == 0 && msg->data[3]) {
+<<<<<<< HEAD
 		dev_err(nvec->dev, "ec responded %02x %02x %02x %02x\n",
 			msg->data[0], msg->data[1], msg->data[2], msg->data[3]);
+=======
+		dev_err(nvec->dev, "ec responded %*ph\n", 4, msg->data);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -477,11 +599,15 @@ static int parse_msg(struct nvec_chip *nvec, struct nvec_msg *msg)
 
 	atomic_notifier_call_chain(&nvec->notifier_list, msg->data[0] & 0x8f,
 				   msg->data);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct nvec_msg *nvec_write_sync(struct nvec_chip *nvec, unsigned char *data, short size)
 {
@@ -513,6 +639,8 @@ static void nvec_dispatch(struct work_struct *work)
 		if(nvec->sync_write_pending == (msg->data[2] << 8) + msg->data[0])
 		{
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * nvec_dispatch - Process messages received from the EC
  * @work: A &struct work_struct (the tx_worker member of &struct nvec_chip)
@@ -534,13 +662,17 @@ static void nvec_dispatch(struct work_struct *work)
 
 		if (nvec->sync_write_pending ==
 		      (msg->data[2] << 8) + msg->data[0]) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(nvec->dev, "sync write completed!\n");
 			nvec->sync_write_pending = 0;
 			nvec->last_sync_msg = msg;
 			complete(&nvec->sync_write);
 		} else {
 			parse_msg(nvec, msg);
+<<<<<<< HEAD
 <<<<<<< HEAD
 			if((!msg) || (!msg->data))
 				dev_warn(nvec->dev, "attempt access zero pointer");
@@ -694,6 +826,8 @@ static void tegra_init_i2c_slave(struct nvec_platform_data *pdata, unsigned char
 
 	clk_disable(i2c_clk);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			nvec_msg_free(nvec, msg);
 		}
 		spin_lock_irqsave(&nvec->rx_lock, flags);
@@ -755,7 +889,11 @@ static void nvec_rx_completed(struct nvec_chip *nvec)
 	if (!nvec_msg_is_event(nvec->rx))
 		complete(&nvec->ec_transfer);
 
+<<<<<<< HEAD
 	queue_work(nvec->wq, &nvec->rx_work);
+=======
+	schedule_work(&nvec->rx_work);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -912,7 +1050,12 @@ static irqreturn_t nvec_interrupt(int irq, void *dev)
 			dev_err(nvec->dev,
 				"RX buffer overflow on %p: "
 				"Trying to write byte %u of %u\n",
+<<<<<<< HEAD
 				nvec->rx, nvec->rx->pos, NVEC_MSG_SIZE);
+=======
+				nvec->rx, nvec->rx ? nvec->rx->pos : 0,
+				NVEC_MSG_SIZE);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		nvec->state = 0;
@@ -962,7 +1105,11 @@ static void tegra_init_i2c_slave(struct nvec_chip *nvec)
 {
 	u32 val;
 
+<<<<<<< HEAD
 	clk_enable(nvec->i2c_clk);
+=======
+	clk_prepare_enable(nvec->i2c_clk);
+>>>>>>> refs/remotes/origin/master
 
 	tegra_periph_reset_assert(nvec->i2c_clk);
 	udelay(2);
@@ -981,14 +1128,21 @@ static void tegra_init_i2c_slave(struct nvec_chip *nvec)
 	writel(0, nvec->base + I2C_SL_ADDR2);
 
 	enable_irq(nvec->irq);
+<<<<<<< HEAD
 
 	clk_disable(nvec->i2c_clk);
 }
 
+=======
+}
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 static void nvec_disable_i2c_slave(struct nvec_chip *nvec)
 {
 	disable_irq(nvec->irq);
 	writel(I2C_SL_NEWSL | I2C_SL_NACK, nvec->base + I2C_SL_CNFG);
+<<<<<<< HEAD
 	clk_disable(nvec->i2c_clk);
 >>>>>>> refs/remotes/origin/cm-10.0
 }
@@ -1023,11 +1177,66 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	nvec = kzalloc(sizeof(struct nvec_chip), GFP_KERNEL);
 	if (nvec == NULL) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clk_disable_unprepare(nvec->i2c_clk);
+}
+#endif
+
+static void nvec_power_off(void)
+{
+	char ap_pwr_down[] = { NVEC_SLEEP, AP_PWR_DOWN };
+
+	nvec_toggle_global_events(nvec_power_handle, false);
+	nvec_write_async(nvec_power_handle, ap_pwr_down, 2);
+}
+
+/*
+ *  Parse common device tree data
+ */
+static int nvec_i2c_parse_dt_pdata(struct nvec_chip *nvec)
+{
+	nvec->gpio = of_get_named_gpio(nvec->dev->of_node, "request-gpios", 0);
+
+	if (nvec->gpio < 0) {
+		dev_err(nvec->dev, "no gpio specified");
+		return -ENODEV;
+	}
+
+	if (of_property_read_u32(nvec->dev->of_node, "slave-addr",
+				&nvec->i2c_addr)) {
+		dev_err(nvec->dev, "no i2c address specified");
+		return -ENODEV;
+	}
+
+	return 0;
+}
+
+static int tegra_nvec_probe(struct platform_device *pdev)
+{
+	int err, ret;
+	struct clk *i2c_clk;
+	struct nvec_chip *nvec;
+	struct nvec_msg *msg;
+	struct resource *res;
+	void __iomem *base;
+	char	get_firmware_version[] = { NVEC_CNTL, GET_FIRMWARE_VERSION },
+		unmute_speakers[] = { NVEC_OEM0, 0x10, 0x59, 0x95 },
+		enable_event[7] = { NVEC_SYS, CNF_EVENT_REPORTING, true };
+
+	if (!pdev->dev.of_node) {
+		dev_err(&pdev->dev, "must be instantiated using device tree\n");
+		return -ENODEV;
+	}
+
+	nvec = devm_kzalloc(&pdev->dev, sizeof(struct nvec_chip), GFP_KERNEL);
+	if (nvec == NULL) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(&pdev->dev, "failed to reserve memory\n");
 		return -ENOMEM;
 	}
 	platform_set_drvdata(pdev, nvec);
 	nvec->dev = &pdev->dev;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nvec->gpio = pdata->gpio;
 	nvec->irq = pdata->irq;
@@ -1109,10 +1318,22 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "Can't ioremap I2C region\n");
 		return -ENOMEM;
 	}
+=======
+
+	err = nvec_i2c_parse_dt_pdata(nvec);
+	if (err < 0)
+		return err;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(base))
+		return PTR_ERR(base);
+>>>>>>> refs/remotes/origin/master
 
 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
 	if (!res) {
 		dev_err(&pdev->dev, "no irq resource?\n");
+<<<<<<< HEAD
 		ret = -ENODEV;
 		goto err_iounmap;
 	}
@@ -1121,17 +1342,30 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	if (IS_ERR(i2c_clk)) {
 		dev_err(nvec->dev, "failed to get controller clock\n");
 		goto err_iounmap;
+=======
+		return -ENODEV;
+	}
+
+	i2c_clk = devm_clk_get(&pdev->dev, "div-clk");
+	if (IS_ERR(i2c_clk)) {
+		dev_err(nvec->dev, "failed to get controller clock\n");
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	nvec->base = base;
 	nvec->irq = res->start;
 	nvec->i2c_clk = i2c_clk;
 	nvec->rx = &nvec->msg_pool[0];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	ATOMIC_INIT_NOTIFIER_HEAD(&nvec->notifier_list);
 
 	init_completion(&nvec->sync_write);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	sema_init(&nvec->sync_write_mutex, 1);
 	INIT_LIST_HEAD(&nvec->tx_data);
@@ -1153,6 +1387,8 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 		ret = nvec_add_subdev(nvec, &pdata->subdevs[i]);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	init_completion(&nvec->ec_transfer);
 	mutex_init(&nvec->sync_write_mutex);
 	spin_lock_init(&nvec->tx_lock);
@@ -1161,6 +1397,7 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	INIT_LIST_HEAD(&nvec->tx_data);
 	INIT_WORK(&nvec->rx_work, nvec_dispatch);
 	INIT_WORK(&nvec->tx_work, nvec_request_master);
+<<<<<<< HEAD
 	nvec->wq = alloc_workqueue("nvec", WQ_NON_REENTRANT, 2);
 
 	err = gpio_request_one(nvec->gpio, GPIOF_OUT_INIT_HIGH, "nvec gpio");
@@ -1173,11 +1410,27 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	if (err) {
 		dev_err(nvec->dev, "couldn't request irq\n");
 		goto failed;
+=======
+
+	err = devm_gpio_request_one(&pdev->dev, nvec->gpio, GPIOF_OUT_INIT_HIGH,
+					"nvec gpio");
+	if (err < 0) {
+		dev_err(nvec->dev, "couldn't request gpio\n");
+		return -ENODEV;
+	}
+
+	err = devm_request_irq(&pdev->dev, nvec->irq, nvec_interrupt, 0,
+				"nvec", nvec);
+	if (err) {
+		dev_err(nvec->dev, "couldn't request irq\n");
+		return -ENODEV;
+>>>>>>> refs/remotes/origin/master
 	}
 	disable_irq(nvec->irq);
 
 	tegra_init_i2c_slave(nvec);
 
+<<<<<<< HEAD
 	clk_enable(i2c_clk);
 
 
@@ -1185,6 +1438,10 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	nvec_write_async(nvec, EC_ENABLE_EVENT_REPORTING,
 			 sizeof(EC_ENABLE_EVENT_REPORTING));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* enable event reporting */
+	nvec_toggle_global_events(nvec, true);
+>>>>>>> refs/remotes/origin/master
 
 	nvec->nvec_status_notifier.notifier_call = nvec_status_notifier;
 	nvec_register_notifier(nvec, &nvec->nvec_status_notifier, 0);
@@ -1193,6 +1450,7 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	pm_power_off = nvec_power_off;
 
 	/* Get Firmware Version */
+<<<<<<< HEAD
 	msg = nvec_write_sync(nvec, EC_GET_FIRMWARE_VERSION,
 		sizeof(EC_GET_FIRMWARE_VERSION));
 
@@ -1206,6 +1464,10 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	/* unmute speakers? */
 	nvec_write_async(nvec, "\x0d\x10\x59\x94", 4);
 =======
+=======
+	msg = nvec_write_sync(nvec, get_firmware_version, 2);
+
+>>>>>>> refs/remotes/origin/master
 	if (msg) {
 		dev_warn(nvec->dev, "ec firmware version %02x.%02x.%02x / %02x\n",
 			msg->data[4], msg->data[5], msg->data[6], msg->data[7]);
@@ -1214,11 +1476,16 @@ static int __devinit tegra_nvec_probe(struct platform_device *pdev)
 	}
 
 	ret = mfd_add_devices(nvec->dev, -1, nvec_devices,
+<<<<<<< HEAD
 			      ARRAY_SIZE(nvec_devices), base, 0);
+=======
+			      ARRAY_SIZE(nvec_devices), base, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		dev_err(nvec->dev, "error adding subdevices\n");
 
 	/* unmute speakers? */
+<<<<<<< HEAD
 	nvec_write_async(nvec, "\x0d\x10\x59\x95", 4);
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -1271,10 +1538,48 @@ static int tegra_nvec_suspend(struct platform_device *pdev, pm_message_t state)
 	nvec_write_async(nvec, "\x04\x02", 2);
 =======
 	struct nvec_msg *msg;
+=======
+	nvec_write_async(nvec, unmute_speakers, 4);
+
+	/* enable lid switch event */
+	nvec_event_mask(enable_event, LID_SWITCH);
+	nvec_write_async(nvec, enable_event, 7);
+
+	/* enable power button event */
+	nvec_event_mask(enable_event, PWR_BUTTON);
+	nvec_write_async(nvec, enable_event, 7);
+
+	return 0;
+}
+
+static int tegra_nvec_remove(struct platform_device *pdev)
+{
+	struct nvec_chip *nvec = platform_get_drvdata(pdev);
+
+	nvec_toggle_global_events(nvec, false);
+	mfd_remove_devices(nvec->dev);
+	nvec_unregister_notifier(nvec, &nvec->nvec_status_notifier);
+	cancel_work_sync(&nvec->rx_work);
+	cancel_work_sync(&nvec->tx_work);
+	/* FIXME: needs check wether nvec is responsible for power off */
+	pm_power_off = NULL;
+
+	return 0;
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int nvec_suspend(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	struct nvec_chip *nvec = platform_get_drvdata(pdev);
+	struct nvec_msg *msg;
+	char ap_suspend[] = { NVEC_SLEEP, AP_SUSPEND };
+>>>>>>> refs/remotes/origin/master
 
 	dev_dbg(nvec->dev, "suspending\n");
 
 	/* keep these sync or you'll break suspend */
+<<<<<<< HEAD
 	msg = nvec_write_sync(nvec, EC_DISABLE_EVENT_REPORTING, 3);
 	nvec_msg_free(nvec, msg);
 	msg = nvec_write_sync(nvec, "\x04\x02", 2);
@@ -1282,10 +1587,19 @@ static int tegra_nvec_suspend(struct platform_device *pdev, pm_message_t state)
 
 	nvec_disable_i2c_slave(nvec);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nvec_toggle_global_events(nvec, false);
+
+	msg = nvec_write_sync(nvec, ap_suspend, sizeof(ap_suspend));
+	nvec_msg_free(nvec, msg);
+
+	nvec_disable_i2c_slave(nvec);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int tegra_nvec_resume(struct platform_device *pdev) {
 
@@ -1295,10 +1609,16 @@ static int tegra_nvec_resume(struct platform_device *pdev) {
 =======
 static int tegra_nvec_resume(struct platform_device *pdev)
 {
+=======
+static int nvec_resume(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+>>>>>>> refs/remotes/origin/master
 	struct nvec_chip *nvec = platform_get_drvdata(pdev);
 
 	dev_dbg(nvec->dev, "resuming\n");
 	tegra_init_i2c_slave(nvec);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	nvec_write_async(nvec, EC_ENABLE_EVENT_REPORTING, 3);
 
@@ -1323,6 +1643,18 @@ static struct platform_driver nvec_device_driver =
 =======
 /* Match table for of_platform binding */
 static const struct of_device_id nvidia_nvec_of_match[] __devinitconst = {
+=======
+	nvec_toggle_global_events(nvec, true);
+
+	return 0;
+}
+#endif
+
+static const SIMPLE_DEV_PM_OPS(nvec_pm_ops, nvec_suspend, nvec_resume);
+
+/* Match table for of_platform binding */
+static const struct of_device_id nvidia_nvec_of_match[] = {
+>>>>>>> refs/remotes/origin/master
 	{ .compatible = "nvidia,nvec", },
 	{},
 };
@@ -1330,6 +1662,7 @@ MODULE_DEVICE_TABLE(of, nvidia_nvec_of_match);
 
 static struct platform_driver nvec_device_driver = {
 	.probe   = tegra_nvec_probe,
+<<<<<<< HEAD
 	.remove  = __devexit_p(tegra_nvec_remove),
 	.suspend = tegra_nvec_suspend,
 	.resume  = tegra_nvec_resume,
@@ -1350,9 +1683,24 @@ module_init(tegra_nvec_init);
 <<<<<<< HEAD
 MODULE_ALIAS("platform:nvec");
 =======
+=======
+	.remove  = tegra_nvec_remove,
+	.driver  = {
+		.name = "nvec",
+		.owner = THIS_MODULE,
+		.pm = &nvec_pm_ops,
+		.of_match_table = nvidia_nvec_of_match,
+	}
+};
+
+module_platform_driver(nvec_device_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_ALIAS("platform:nvec");
 MODULE_DESCRIPTION("NVIDIA compliant embedded controller interface");
 MODULE_AUTHOR("Marc Dietrich <marvin24@gmx.de>");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -51,9 +51,13 @@
 #include <linux/major.h>
 #include <linux/tty.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/page.h>		/* for PAGE0 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/page.h>		/* for PAGE0 */
+>>>>>>> refs/remotes/origin/master
 #include <asm/pdc.h>		/* for iodc_call() proto and friends */
 
 static DEFINE_SPINLOCK(pdc_console_lock);
@@ -95,12 +99,15 @@ static int pdc_console_setup(struct console *co, char *options)
 #define PDC_CONS_POLL_DELAY (30 * HZ / 1000)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct timer_list pdc_console_timer;
 
 static int pdc_console_tty_open(struct tty_struct *tty, struct file *filp)
 {
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void pdc_console_poll(unsigned long unused);
 static DEFINE_TIMER(pdc_console_timer, pdc_console_poll, 0, 0);
 static struct tty_port tty_port;
@@ -108,7 +115,10 @@ static struct tty_port tty_port;
 static int pdc_console_tty_open(struct tty_struct *tty, struct file *filp)
 {
 	tty_port_tty_set(&tty_port, tty);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	mod_timer(&pdc_console_timer, jiffies + PDC_CONS_POLL_DELAY);
 
 	return 0;
@@ -117,14 +127,20 @@ static int pdc_console_tty_open(struct tty_struct *tty, struct file *filp)
 static void pdc_console_tty_close(struct tty_struct *tty, struct file *filp)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!tty->count)
 		del_timer(&pdc_console_timer);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (tty->count == 1) {
 		del_timer_sync(&pdc_console_timer);
 		tty_port_tty_set(&tty_port, NULL);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int pdc_console_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
@@ -144,10 +160,13 @@ static int pdc_console_tty_chars_in_buffer(struct tty_struct *tty)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct tty_driver *pdc_console_tty_driver;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct tty_operations pdc_console_tty_ops = {
 	.open = pdc_console_tty_open,
 	.close = pdc_console_tty_close,
@@ -158,6 +177,7 @@ static const struct tty_operations pdc_console_tty_ops = {
 
 static void pdc_console_poll(unsigned long unused)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	int data, count = 0;
@@ -171,15 +191,24 @@ static void pdc_console_poll(unsigned long unused)
 	if (!tty)
 		return;
 
+=======
+	int data, count = 0;
+
+>>>>>>> refs/remotes/origin/master
 	while (1) {
 		data = pdc_console_poll_key(NULL);
 		if (data == -1)
 			break;
+<<<<<<< HEAD
 		tty_insert_flip_char(tty, data & 0xFF, TTY_NORMAL);
+=======
+		tty_insert_flip_char(&tty_port, data & 0xFF, TTY_NORMAL);
+>>>>>>> refs/remotes/origin/master
 		count ++;
 	}
 
 	if (count)
+<<<<<<< HEAD
 		tty_flip_buffer_push(tty);
 
 <<<<<<< HEAD
@@ -194,6 +223,9 @@ static int __init pdc_console_tty_driver_init(void)
 	struct tty_driver *drv;
 =======
 	tty_kref_put(tty);
+=======
+		tty_flip_buffer_push(&tty_port);
+>>>>>>> refs/remotes/origin/master
 
 	if (pdc_cons.flags & CON_ENABLED)
 		mod_timer(&pdc_console_timer, jiffies + PDC_CONS_POLL_DELAY);
@@ -204,7 +236,10 @@ static struct tty_driver *pdc_console_tty_driver;
 static int __init pdc_console_tty_driver_init(void)
 {
 	int err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Check if the console driver is still registered.
 	 * It is unregistered if the pdc console was not selected as the
@@ -227,6 +262,7 @@ static int __init pdc_console_tty_driver_init(void)
 	pdc_cons.flags &= ~CON_BOOT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	drv = alloc_tty_driver(1);
 
 	if (!drv)
@@ -245,11 +281,18 @@ static int __init pdc_console_tty_driver_init(void)
 =======
 	tty_port_init(&tty_port);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pdc_console_tty_driver = alloc_tty_driver(1);
 
 	if (!pdc_console_tty_driver)
 		return -ENOMEM;
 
+<<<<<<< HEAD
+=======
+	tty_port_init(&tty_port);
+
+>>>>>>> refs/remotes/origin/master
 	pdc_console_tty_driver->driver_name = "pdc_cons";
 	pdc_console_tty_driver->name = "ttyB";
 	pdc_console_tty_driver->major = MUX_MAJOR;
@@ -259,6 +302,7 @@ static int __init pdc_console_tty_driver_init(void)
 	pdc_console_tty_driver->flags = TTY_DRIVER_REAL_RAW |
 		TTY_DRIVER_RESET_TERMIOS;
 	tty_set_operations(pdc_console_tty_driver, &pdc_console_tty_ops);
+<<<<<<< HEAD
 
 	err = tty_register_driver(pdc_console_tty_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -276,6 +320,17 @@ static int __init pdc_console_tty_driver_init(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tty_port_link_device(&tty_port, pdc_console_tty_driver, 0);
+
+	err = tty_register_driver(pdc_console_tty_driver);
+	if (err) {
+		printk(KERN_ERR "Unable to register the PDC console TTY driver\n");
+		tty_port_destroy(&tty_port);
+		return err;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

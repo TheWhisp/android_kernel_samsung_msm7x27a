@@ -2,10 +2,14 @@
  * mft.c - NTFS kernel mft record operations. Part of the Linux-NTFS project.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (c) 2001-2011 Anton Altaparmakov and Tuxera Inc.
 =======
  * Copyright (c) 2001-2012 Anton Altaparmakov and Tuxera Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (c) 2001-2012 Anton Altaparmakov and Tuxera Inc.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2002 Richard Russon
  *
  * This program/include file is free software; you can redistribute it and/or
@@ -1372,10 +1376,14 @@ static int ntfs_mft_bitmap_extend_allocation_nolock(ntfs_volume *vol)
 					"bitmap.");
 			if (ntfs_cluster_free_from_rl(vol, rl2)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ntfs_error(vol->sb, "Failed to dealocate "
 =======
 				ntfs_error(vol->sb, "Failed to deallocate "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ntfs_error(vol->sb, "Failed to deallocate "
+>>>>>>> refs/remotes/origin/master
 						"allocated cluster.%s", es);
 				NVolSetErrors(vol);
 			}
@@ -1814,10 +1822,14 @@ static int ntfs_mft_data_extend_allocation_nolock(ntfs_volume *vol)
 				"attribute.");
 		if (ntfs_cluster_free_from_rl(vol, rl2)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ntfs_error(vol->sb, "Failed to dealocate clusters "
 =======
 			ntfs_error(vol->sb, "Failed to deallocate clusters "
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ntfs_error(vol->sb, "Failed to deallocate clusters "
+>>>>>>> refs/remotes/origin/master
 					"from the mft data attribute.%s", es);
 			NVolSetErrors(vol);
 		}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #ifndef __ASM_SH_PTRACE_H
 #define __ASM_SH_PTRACE_H
 
@@ -31,6 +32,14 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+/*
+ * Copyright (C) 1999, 2000  Niibe Yutaka
+ */
+#ifndef __ASM_SH_PTRACE_H
+#define __ASM_SH_PTRACE_H
+
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/stringify.h>
 #include <linux/stddef.h>
@@ -38,9 +47,13 @@
 #include <asm/addrspace.h>
 #include <asm/page.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/asm/ptrace.h>
+>>>>>>> refs/remotes/origin/master
 
 #define user_mode(regs)			(((regs)->sr & 0x40000000)==0)
 #define kernel_stack_pointer(_regs)	((unsigned long)(_regs)->regs[15])
@@ -49,10 +62,13 @@
 #define GET_USP(regs)	((regs)->regs[15])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void show_regs(struct pt_regs *);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define arch_has_single_step()	(1)
 
 /*
@@ -132,10 +148,14 @@ struct perf_event;
 struct perf_sample_data;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern void ptrace_triggered(struct perf_event *bp, int nmi,
 =======
 extern void ptrace_triggered(struct perf_event *bp,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void ptrace_triggered(struct perf_event *bp,
+>>>>>>> refs/remotes/origin/master
 		      struct perf_sample_data *data, struct pt_regs *regs);
 
 #define task_pt_regs(task) \
@@ -153,6 +173,9 @@ static inline unsigned long profile_pc(struct pt_regs *regs)
 #define profile_pc profile_pc
 
 #include <asm-generic/ptrace.h>
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __ASM_SH_PTRACE_H */

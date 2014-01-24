@@ -68,6 +68,10 @@ _stext:
 _GLOBAL(__start)
 	/* NOP this out unconditionally */
 BEGIN_FTR_SECTION
+<<<<<<< HEAD
+=======
+	FIXUP_ENDIAN
+>>>>>>> refs/remotes/origin/master
 	b	.__start_initialization_multiplatform
 END_FTR_SECTION(0, 1)
 
@@ -79,6 +83,10 @@ END_FTR_SECTION(0, 1)
 	 * of the function that the cpu should jump to to continue
 	 * initialization.
 	 */
+<<<<<<< HEAD
+=======
+	.balign 8
+>>>>>>> refs/remotes/origin/master
 	.globl  __secondary_hold_spinloop
 __secondary_hold_spinloop:
 	.llong	0x0
@@ -115,6 +123,10 @@ __run_at_load:
  */
 	.globl	__secondary_hold
 __secondary_hold:
+<<<<<<< HEAD
+=======
+	FIXUP_ENDIAN
+>>>>>>> refs/remotes/origin/master
 #ifndef CONFIG_PPC_BOOK3E
 	mfmsr	r24
 	ori	r24,r24,MSR_RI
@@ -122,6 +134,11 @@ __secondary_hold:
 #endif
 	/* Grab our physical cpu number */
 	mr	r24,r3
+<<<<<<< HEAD
+=======
+	/* stash r4 for book3e */
+	mr	r25,r4
+>>>>>>> refs/remotes/origin/master
 
 	/* Tell the master cpu we're here */
 	/* Relocation is off & we are located at an address less */
@@ -129,16 +146,43 @@ __secondary_hold:
 	std	r24,__secondary_hold_acknowledge-_stext(0)
 	sync
 
+<<<<<<< HEAD
 	/* All secondary cpus wait here until told to start. */
 100:	ld	r4,__secondary_hold_spinloop-_stext(0)
+=======
+	li	r26,0
+#ifdef CONFIG_PPC_BOOK3E
+	tovirt(r26,r26)
+#endif
+	/* All secondary cpus wait here until told to start. */
+100:	ld	r4,__secondary_hold_spinloop-_stext(r26)
+>>>>>>> refs/remotes/origin/master
 	cmpdi	0,r4,0
 	beq	100b
 
 #if defined(CONFIG_SMP) || defined(CONFIG_KEXEC)
+<<<<<<< HEAD
 	ld	r4,0(r4)		/* deref function descriptor */
 	mtctr	r4
 	mr	r3,r24
 	li	r4,0
+=======
+#ifdef CONFIG_PPC_BOOK3E
+	tovirt(r4,r4)
+#endif
+	ld	r4,0(r4)		/* deref function descriptor */
+	mtctr	r4
+	mr	r3,r24
+	/*
+	 * it may be the case that other platforms have r4 right to
+	 * begin with, this gives us some safety in case it is not
+	 */
+#ifdef CONFIG_PPC_BOOK3E
+	mr	r4,r25
+#else
+	li	r4,0
+#endif
+>>>>>>> refs/remotes/origin/master
 	/* Make sure that patched code is visible */
 	isync
 	bctr
@@ -169,6 +213,10 @@ _GLOBAL(generic_secondary_thread_init)
 
 	/* get a valid TOC pointer, wherever we're mapped at */
 	bl	.relative_toc
+<<<<<<< HEAD
+=======
+	tovirt(r2,r2)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC_BOOK3E
 	/* Book3E initialization */
@@ -187,6 +235,10 @@ _GLOBAL(generic_secondary_thread_init)
  * as SCOM before entry).
  */
 _GLOBAL(generic_secondary_smp_init)
+<<<<<<< HEAD
+=======
+	FIXUP_ENDIAN
+>>>>>>> refs/remotes/origin/master
 	mr	r24,r3
 	mr	r25,r4
 
@@ -195,6 +247,10 @@ _GLOBAL(generic_secondary_smp_init)
 
 	/* get a valid TOC pointer, wherever we're mapped at */
 	bl	.relative_toc
+<<<<<<< HEAD
+=======
+	tovirt(r2,r2)
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC_BOOK3E
 	/* Book3E initialization */
@@ -432,7 +488,12 @@ _STATIC(__after_prom_start)
 	cmplwi	cr0,r7,1
 	bne	3f
 
+<<<<<<< HEAD
 	li	r5,__end_interrupts - _stext	/* just copy interrupts */
+=======
+	/* just copy interrupts */
+	LOAD_REG_IMMEDIATE(r5, __end_interrupts - _stext)
+>>>>>>> refs/remotes/origin/master
 	b	5f
 3:
 #endif
@@ -448,9 +509,13 @@ _STATIC(__after_prom_start)
 	bctr
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .balign 8
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+.balign 8
+>>>>>>> refs/remotes/origin/master
 p_end:	.llong	_end - _stext
 
 4:	/* Now copy the rest of the kernel up to _end */
@@ -535,6 +600,10 @@ _GLOBAL(pmac_secondary_start)
 
 	/* get TOC pointer (real address) */
 	bl	.relative_toc
+<<<<<<< HEAD
+=======
+	tovirt(r2,r2)
+>>>>>>> refs/remotes/origin/master
 
 	/* Copy some CPU settings from CPU 0 */
 	bl	.__restore_cpu_ppc970
@@ -669,6 +738,16 @@ _GLOBAL(enable_64b_mode)
  * This puts the TOC pointer into r2, offset by 0x8000 (as expected
  * by the toolchain).  It computes the correct value for wherever we
  * are running at the moment, using position-independent code.
+<<<<<<< HEAD
+=======
+ *
+ * Note: The compiler constructs pointers using offsets from the
+ * TOC in -mcmodel=medium mode. After we relocate to 0 but before
+ * the MMU is on we need our TOC to be a virtual address otherwise
+ * these pointers will be real addresses which may get stored and
+ * accessed later with the MMU on. We use tovirt() at the call
+ * sites to handle this.
+>>>>>>> refs/remotes/origin/master
  */
 _GLOBAL(relative_toc)
 	mflr	r0
@@ -679,14 +758,24 @@ _GLOBAL(relative_toc)
 	mtlr	r0
 	blr
 
+<<<<<<< HEAD
+=======
+.balign 8
+>>>>>>> refs/remotes/origin/master
 p_toc:	.llong	__toc_start + 0x8000 - 0b
 
 /*
  * This is where the main kernel code starts.
  */
 _INIT_STATIC(start_here_multiplatform)
+<<<<<<< HEAD
 	/* set up the TOC (real address) */
 	bl	.relative_toc
+=======
+	/* set up the TOC */
+	bl      .relative_toc
+	tovirt(r2,r2)
+>>>>>>> refs/remotes/origin/master
 
 	/* Clear out the BSS. It may have been done in prom_init,
 	 * already but that's irrelevant since prom_init will soon
@@ -708,6 +797,10 @@ _INIT_STATIC(start_here_multiplatform)
 
 #ifdef CONFIG_PPC_EARLY_DEBUG_OPAL
 	/* Setup OPAL entry */
+<<<<<<< HEAD
+=======
+	LOAD_REG_ADDR(r11, opal)
+>>>>>>> refs/remotes/origin/master
 	std	r28,0(r11);
 	std	r29,8(r11);
 #endif

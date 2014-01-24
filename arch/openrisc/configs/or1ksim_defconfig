@@ -1,9 +1,16 @@
 CONFIG_CROSS_COMPILE="or32-linux-"
+<<<<<<< HEAD
+=======
+CONFIG_NO_HZ=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_LOG_BUF_SHIFT=14
 CONFIG_BLK_DEV_INITRD=y
 # CONFIG_RD_GZIP is not set
 CONFIG_EXPERT=y
+<<<<<<< HEAD
 # CONFIG_SYSCTL_SYSCALL is not set
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_KALLSYMS is not set
 # CONFIG_EPOLL is not set
 # CONFIG_TIMERFD is not set
@@ -15,7 +22,10 @@ CONFIG_SLOB=y
 CONFIG_MODULES=y
 # CONFIG_BLOCK is not set
 CONFIG_OPENRISC_BUILTIN_DTB="or1ksim"
+<<<<<<< HEAD
 CONFIG_NO_HZ=y
+=======
+>>>>>>> refs/remotes/origin/master
 CONFIG_HZ_100=y
 CONFIG_NET=y
 CONFIG_PACKET=y
@@ -39,11 +49,16 @@ CONFIG_DEVTMPFS_MOUNT=y
 # CONFIG_FW_LOADER is not set
 CONFIG_PROC_DEVICETREE=y
 CONFIG_NETDEVICES=y
+<<<<<<< HEAD
 CONFIG_MICREL_PHY=y
 CONFIG_NET_ETHERNET=y
 CONFIG_ETHOC=y
 # CONFIG_NETDEV_1000 is not set
 # CONFIG_NETDEV_10000 is not set
+=======
+CONFIG_ETHOC=y
+CONFIG_MICREL_PHY=y
+>>>>>>> refs/remotes/origin/master
 # CONFIG_WLAN is not set
 # CONFIG_INPUT is not set
 # CONFIG_SERIO is not set
@@ -55,11 +70,17 @@ CONFIG_SERIAL_8250_CONSOLE=y
 CONFIG_SERIAL_OF_PLATFORM=y
 # CONFIG_HW_RANDOM is not set
 # CONFIG_HWMON is not set
+<<<<<<< HEAD
 # CONFIG_MFD_SUPPORT is not set
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_USB_SUPPORT is not set
 # CONFIG_DNOTIFY is not set
 CONFIG_TMPFS=y
 CONFIG_NFS_FS=y
+<<<<<<< HEAD
 CONFIG_NFS_V3=y
+=======
+>>>>>>> refs/remotes/origin/master
 # CONFIG_ENABLE_WARN_DEPRECATED is not set
 # CONFIG_ENABLE_MUST_CHECK is not set

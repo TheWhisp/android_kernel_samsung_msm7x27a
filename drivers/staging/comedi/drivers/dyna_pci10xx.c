@@ -11,10 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
+<<<<<<< HEAD
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 /*
@@ -37,6 +40,7 @@
  their cards in their manuals.
 */
 
+<<<<<<< HEAD
 #include "../comedidev.h"
 #include "comedi_pci.h"
 #include <linux/mutex.h>
@@ -64,10 +68,28 @@ static const struct comedi_lrange range_pci1050_ai = { 3, {
 							  BIP_RANGE(5),
 							  UNI_RANGE(10)
 							  }
+=======
+#include <linux/module.h>
+#include <linux/delay.h>
+#include <linux/pci.h>
+#include <linux/mutex.h>
+
+#include "../comedidev.h"
+
+#define READ_TIMEOUT 50
+
+static const struct comedi_lrange range_pci1050_ai = {
+	3, {
+		BIP_RANGE(10),
+		BIP_RANGE(5),
+		UNI_RANGE(10)
+	}
+>>>>>>> refs/remotes/origin/master
 };
 
 static const char range_codes_pci1050_ai[] = { 0x00, 0x10, 0x30 };
 
+<<<<<<< HEAD
 static const struct comedi_lrange range_pci1050_ao = { 1, {
 							  UNI_RANGE(10)
 							  }
@@ -135,6 +157,13 @@ struct dyna_pci10xx_private {
 #define thisboard ((const struct boardtype *)dev->board_ptr)
 #define devpriv ((struct dyna_pci10xx_private *)dev->private)
 
+=======
+struct dyna_pci10xx_private {
+	struct mutex mutex;
+	unsigned long BADR3;
+};
+
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************/
 /************************** READ WRITE FUNCTIONS ******************************/
 /******************************************************************************/
@@ -144,19 +173,28 @@ static int dyna_pci10xx_insn_read_ai(struct comedi_device *dev,
 			struct comedi_subdevice *s,
 			struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct dyna_pci10xx_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n, counter;
 	u16 d = 0;
 	unsigned int chan, range;
 
 	/* get the channel number and range */
 	chan = CR_CHAN(insn->chanspec);
+<<<<<<< HEAD
 	range = thisboard->range_codes_ai[CR_RANGE((insn->chanspec))];
+=======
+	range = range_codes_pci1050_ai[CR_RANGE((insn->chanspec))];
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&devpriv->mutex);
 	/* convert n samples */
 	for (n = 0; n < insn->n; n++) {
 		/* trigger conversion */
 		smp_mb();
+<<<<<<< HEAD
 		outw_p(0x0000 + range + chan, devpriv->BADR2 + 2);
 		udelay(10);
 		/* read data */
@@ -164,12 +202,25 @@ static int dyna_pci10xx_insn_read_ai(struct comedi_device *dev,
 			d = inw_p(devpriv->BADR2);
 
 			/* check if read is successfull if the EOC bit is set */
+=======
+		outw_p(0x0000 + range + chan, dev->iobase + 2);
+		udelay(10);
+		/* read data */
+		for (counter = 0; counter < READ_TIMEOUT; counter++) {
+			d = inw_p(dev->iobase);
+
+			/* check if read is successful if the EOC bit is set */
+>>>>>>> refs/remotes/origin/master
 			if (d & (1 << 15))
 				goto conv_finish;
 		}
 		data[n] = 0;
+<<<<<<< HEAD
 		printk(KERN_DEBUG "comedi: dyna_pci10xx: "
 			"timeout reading analog input\n");
+=======
+		dev_dbg(dev->class_dev, "timeout reading analog input\n");
+>>>>>>> refs/remotes/origin/master
 		continue;
 conv_finish:
 		/* mask the first 4 bits - EOC bits */
@@ -187,17 +238,29 @@ static int dyna_pci10xx_insn_write_ao(struct comedi_device *dev,
 				 struct comedi_subdevice *s,
 				 struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct dyna_pci10xx_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n;
 	unsigned int chan, range;
 
 	chan = CR_CHAN(insn->chanspec);
+<<<<<<< HEAD
 	range = thisboard->range_codes_ai[CR_RANGE((insn->chanspec))];
+=======
+	range = range_codes_pci1050_ai[CR_RANGE((insn->chanspec))];
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&devpriv->mutex);
 	for (n = 0; n < insn->n; n++) {
 		smp_mb();
 		/* trigger conversion and write data */
+<<<<<<< HEAD
 		outw_p(data[n], devpriv->BADR2);
+=======
+		outw_p(data[n], dev->iobase);
+>>>>>>> refs/remotes/origin/master
 		udelay(10);
 	}
 	mutex_unlock(&devpriv->mutex);
@@ -209,11 +272,17 @@ static int dyna_pci10xx_di_insn_bits(struct comedi_device *dev,
 			      struct comedi_subdevice *s,
 			      struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	u16 d = 0;
 
 	if (insn->n != 2)
 		return -EINVAL;
 
+=======
+	struct dyna_pci10xx_private *devpriv = dev->private;
+	u16 d = 0;
+
+>>>>>>> refs/remotes/origin/master
 	mutex_lock(&devpriv->mutex);
 	smp_mb();
 	d = inw_p(devpriv->BADR3);
@@ -223,6 +292,7 @@ static int dyna_pci10xx_di_insn_bits(struct comedi_device *dev,
 	data[1] = d;
 	data[0] = s->state;
 	mutex_unlock(&devpriv->mutex);
+<<<<<<< HEAD
 	return 2;
 }
 
@@ -242,11 +312,26 @@ static int dyna_pci10xx_do_insn_bits(struct comedi_device *dev,
 	if (data[0]) {
 		s->state &= ~data[0];
 		s->state |= (data[0] & data[1]);
+=======
+	return insn->n;
+}
+
+static int dyna_pci10xx_do_insn_bits(struct comedi_device *dev,
+				     struct comedi_subdevice *s,
+				     struct comedi_insn *insn,
+				     unsigned int *data)
+{
+	struct dyna_pci10xx_private *devpriv = dev->private;
+
+	mutex_lock(&devpriv->mutex);
+	if (comedi_dio_update_state(s, data)) {
+>>>>>>> refs/remotes/origin/master
 		smp_mb();
 		outw_p(s->state, devpriv->BADR3);
 		udelay(10);
 	}
 
+<<<<<<< HEAD
 	/*
 	 * On return, data[1] contains the value of the digital
 	 * input and output lines. We just return the software copy of the
@@ -365,20 +450,69 @@ found:
 	s->n_chan = thisboard->ai_chans;
 	s->maxdata = 0x0FFF;
 	s->range_table = thisboard->range_ai;
+=======
+	data[1] = s->state;
+	mutex_unlock(&devpriv->mutex);
+
+	return insn->n;
+}
+
+static int dyna_pci10xx_auto_attach(struct comedi_device *dev,
+					      unsigned long context_unused)
+{
+	struct pci_dev *pcidev = comedi_to_pci_dev(dev);
+	struct dyna_pci10xx_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	ret = comedi_pci_enable(dev);
+	if (ret)
+		return ret;
+	dev->iobase = pci_resource_start(pcidev, 2);
+	devpriv->BADR3 = pci_resource_start(pcidev, 3);
+
+	mutex_init(&devpriv->mutex);
+
+	ret = comedi_alloc_subdevices(dev, 4);
+	if (ret)
+		return ret;
+
+	/* analog input */
+	s = &dev->subdevices[0];
+	s->type = COMEDI_SUBD_AI;
+	s->subdev_flags = SDF_READABLE | SDF_GROUND | SDF_DIFF;
+	s->n_chan = 16;
+	s->maxdata = 0x0FFF;
+	s->range_table = &range_pci1050_ai;
+>>>>>>> refs/remotes/origin/master
 	s->len_chanlist = 16;
 	s->insn_read = dyna_pci10xx_insn_read_ai;
 
 	/* analog output */
+<<<<<<< HEAD
 	s = dev->subdevices + 1;
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
 	s->n_chan = thisboard->ao_chans;
 	s->maxdata = 0x0FFF;
 	s->range_table = thisboard->range_ao;
+=======
+	s = &dev->subdevices[1];
+	s->type = COMEDI_SUBD_AO;
+	s->subdev_flags = SDF_WRITABLE;
+	s->n_chan = 16;
+	s->maxdata = 0x0FFF;
+	s->range_table = &range_unipolar10;
+>>>>>>> refs/remotes/origin/master
 	s->len_chanlist = 16;
 	s->insn_write = dyna_pci10xx_insn_write_ao;
 
 	/* digital input */
+<<<<<<< HEAD
 	s = dev->subdevices + 2;
 	s->type = COMEDI_SUBD_DI;
 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
@@ -414,10 +548,34 @@ static int dyna_pci10xx_detach(struct comedi_device *dev)
 		comedi_pci_disable(devpriv->pci_dev);
 		mutex_destroy(&devpriv->mutex);
 	}
+=======
+	s = &dev->subdevices[2];
+	s->type = COMEDI_SUBD_DI;
+	s->subdev_flags = SDF_READABLE | SDF_GROUND;
+	s->n_chan = 16;
+	s->maxdata = 1;
+	s->range_table = &range_digital;
+	s->len_chanlist = 16;
+	s->insn_bits = dyna_pci10xx_di_insn_bits;
+
+	/* digital output */
+	s = &dev->subdevices[3];
+	s->type = COMEDI_SUBD_DO;
+	s->subdev_flags = SDF_WRITABLE | SDF_GROUND;
+	s->n_chan = 16;
+	s->maxdata = 1;
+	s->range_table = &range_digital;
+	s->len_chanlist = 16;
+	s->state = 0;
+	s->insn_bits = dyna_pci10xx_do_insn_bits;
+
+	dev_info(dev->class_dev, "%s attached\n", dev->board_name);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit driver_dyna_pci10xx_pci_probe(struct pci_dev *dev,
 					      const struct pci_device_id *ent)
 {
@@ -456,6 +614,44 @@ static void __exit driver_dyna_pci10xx_cleanup_module(void)
 
 module_init(driver_dyna_pci10xx_init_module);
 module_exit(driver_dyna_pci10xx_cleanup_module);
+=======
+static void dyna_pci10xx_detach(struct comedi_device *dev)
+{
+	struct dyna_pci10xx_private *devpriv = dev->private;
+
+	if (devpriv)
+		mutex_destroy(&devpriv->mutex);
+	comedi_pci_disable(dev);
+}
+
+static struct comedi_driver dyna_pci10xx_driver = {
+	.driver_name	= "dyna_pci10xx",
+	.module		= THIS_MODULE,
+	.auto_attach	= dyna_pci10xx_auto_attach,
+	.detach		= dyna_pci10xx_detach,
+};
+
+static int dyna_pci10xx_pci_probe(struct pci_dev *dev,
+				  const struct pci_device_id *id)
+{
+	return comedi_pci_auto_config(dev, &dyna_pci10xx_driver,
+				      id->driver_data);
+}
+
+static const struct pci_device_id dyna_pci10xx_pci_table[] = {
+	{ PCI_DEVICE(PCI_VENDOR_ID_PLX, 0x1050) },
+	{ 0 }
+};
+MODULE_DEVICE_TABLE(pci, dyna_pci10xx_pci_table);
+
+static struct pci_driver dyna_pci10xx_pci_driver = {
+	.name		= "dyna_pci10xx",
+	.id_table	= dyna_pci10xx_pci_table,
+	.probe		= dyna_pci10xx_pci_probe,
+	.remove		= comedi_pci_auto_unconfig,
+};
+module_comedi_pci_driver(dyna_pci10xx_driver, dyna_pci10xx_pci_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Prashant Shah <pshah.mumbai@gmail.com>");

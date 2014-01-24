@@ -26,9 +26,12 @@
 static struct irqaction bfin_timer_irq = {
 	.name = "Blackfin Timer Tick",
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.flags = IRQF_DISABLED
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #if defined(CONFIG_IPIPE)
@@ -55,10 +58,14 @@ void __init setup_core_timer(void)
 
 	/* power up the timer, but don't enable it just yet */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write_TCNTL(1);
 =======
 	bfin_write_TCNTL(TMPWR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfin_write_TCNTL(TMPWR);
+>>>>>>> refs/remotes/origin/master
 	CSYNC();
 
 	/* the TSCALE prescaler counter */
@@ -72,10 +79,14 @@ void __init setup_core_timer(void)
 	CSYNC();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bfin_write_TCNTL(7);
 =======
 	bfin_write_TCNTL(TAUTORLD | TMREN | TMPWR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bfin_write_TCNTL(TAUTORLD | TMREN | TMPWR);
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -97,7 +108,11 @@ time_sched_init(irqreturn_t(*timer_routine) (int, void *))
 /*
  * Should return useconds since last timer tick
  */
+<<<<<<< HEAD
 u32 arch_gettimeoffset(void)
+=======
+static u32 blackfin_gettimeoffset(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long offset;
 	unsigned long clocks_per_jiffy;
@@ -153,6 +168,13 @@ void read_persistent_clock(struct timespec *ts)
 
 void __init time_init(void)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
+	arch_gettimeoffset = blackfin_gettimeoffset;
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_RTC_DRV_BFIN
 	/* [#2663] hack to filter junk RTC values that would cause
 	 * userspace to have to deal with time values greater than

@@ -1,7 +1,11 @@
 /*
  *  libata-core.c - helper library for ATA
  *
+<<<<<<< HEAD
  *  Maintained by:  Jeff Garzik <jgarzik@pobox.com>
+=======
+ *  Maintained by:  Tejun Heo <tj@kernel.org>
+>>>>>>> refs/remotes/origin/master
  *    		    Please ALWAYS copy linux-ide@vger.kernel.org
  *		    on emails.
  *
@@ -67,9 +71,14 @@
 #include <linux/cdrom.h>
 #include <linux/ratelimit.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/pm_runtime.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/pm_runtime.h>
+#include <linux/platform_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "libata.h"
 #include "libata-transport.h"
@@ -83,6 +92,11 @@ const struct ata_port_operations ata_base_port_ops = {
 	.prereset		= ata_std_prereset,
 	.postreset		= ata_std_postreset,
 	.error_handler		= ata_std_error_handler,
+<<<<<<< HEAD
+=======
+	.sched_eh		= ata_std_sched_eh,
+	.end_eh			= ata_std_end_eh,
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct ata_port_operations sata_port_ops = {
@@ -99,10 +113,14 @@ static void ata_dev_xfermask(struct ata_device *dev);
 static unsigned long ata_dev_blacklisted(const struct ata_device *dev);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int ata_print_id = 1;
 =======
 atomic_t ata_print_id = ATOMIC_INIT(0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+atomic_t ata_print_id = ATOMIC_INIT(0);
+>>>>>>> refs/remotes/origin/master
 
 struct ata_force_param {
 	const char	*name;
@@ -344,11 +362,15 @@ void ata_force_cbl(struct ata_port *ap)
 
 		ap->cbl = fe->param.cbl;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_NOTICE,
 				"FORCE: cable set to %s\n", fe->param.name);
 =======
 		ata_port_notice(ap, "FORCE: cable set to %s\n", fe->param.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_notice(ap, "FORCE: cable set to %s\n", fe->param.name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 }
@@ -391,11 +413,15 @@ static void ata_force_link_limits(struct ata_link *link)
 		if (!did_spd && fe->param.spd_limit) {
 			link->hw_sata_spd_limit = (1 << fe->param.spd_limit) - 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_NOTICE,
 					"FORCE: PHY spd limit set to %s\n",
 =======
 			ata_link_notice(link, "FORCE: PHY spd limit set to %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_link_notice(link, "FORCE: PHY spd limit set to %s\n",
+>>>>>>> refs/remotes/origin/master
 					fe->param.name);
 			did_spd = true;
 		}
@@ -404,10 +430,14 @@ static void ata_force_link_limits(struct ata_link *link)
 		if (fe->param.lflags) {
 			link->flags |= fe->param.lflags;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_NOTICE,
 =======
 			ata_link_notice(link,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_link_notice(link,
+>>>>>>> refs/remotes/origin/master
 					"FORCE: link flag 0x%x forced -> 0x%x\n",
 					fe->param.lflags, link->flags);
 		}
@@ -463,12 +493,17 @@ static void ata_force_xfermask(struct ata_device *dev)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_NOTICE,
 			"FORCE: xfer_mask set to %s\n", fe->param.name);
 =======
 		ata_dev_notice(dev, "FORCE: xfer_mask set to %s\n",
 			       fe->param.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_notice(dev, "FORCE: xfer_mask set to %s\n",
+			       fe->param.name);
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 }
@@ -512,12 +547,17 @@ static void ata_force_horkage(struct ata_device *dev)
 		dev->horkage &= ~fe->param.horkage_off;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_NOTICE,
 			"FORCE: horkage modified (%s)\n", fe->param.name);
 =======
 		ata_dev_notice(dev, "FORCE: horkage modified (%s)\n",
 			       fe->param.name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_notice(dev, "FORCE: horkage modified (%s)\n",
+			       fe->param.name);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -597,10 +637,17 @@ void ata_tf_to_fis(const struct ata_taskfile *tf, u8 pmp, int is_cmd, u8 *fis)
 	fis[14] = 0;
 	fis[15] = tf->ctl;
 
+<<<<<<< HEAD
 	fis[16] = 0;
 	fis[17] = 0;
 	fis[18] = 0;
 	fis[19] = 0;
+=======
+	fis[16] = tf->auxiliary & 0xff;
+	fis[17] = (tf->auxiliary >> 8) & 0xff;
+	fis[18] = (tf->auxiliary >> 16) & 0xff;
+	fis[19] = (tf->auxiliary >> 24) & 0xff;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -742,12 +789,17 @@ u64 ata_tf_read_block(struct ata_taskfile *tf, struct ata_device *dev)
 
 		if (!sect) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING, "device reported "
 				       "invalid CHS sector 0\n");
 =======
 			ata_dev_warn(dev,
 				     "device reported invalid CHS sector 0\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev,
+				     "device reported invalid CHS sector 0\n");
+>>>>>>> refs/remotes/origin/master
 			sect = 1; /* oh well */
 		}
 
@@ -808,7 +860,11 @@ int ata_build_rw_tf(struct ata_taskfile *tf, struct ata_device *dev,
 		tf->lbam = (block >> 8) & 0xff;
 		tf->lbal = block & 0xff;
 
+<<<<<<< HEAD
 		tf->device = 1 << 6;
+=======
+		tf->device = ATA_LBA;
+>>>>>>> refs/remotes/origin/master
 		if (tf->flags & ATA_TFLAG_FUA)
 			tf->device |= 1 << 7;
 	} else if (dev->flags & ATA_DFLAG_LBA) {
@@ -1266,6 +1322,7 @@ static int ata_read_native_max_address(struct ata_device *dev, u64 *max_sectors)
 	err_mask = ata_exec_internal(dev, &tf, NULL, DMA_NONE, NULL, 0, 0);
 	if (err_mask) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING, "failed to read native "
 			       "max address (err_mask=0x%x)\n", err_mask);
 =======
@@ -1273,6 +1330,11 @@ static int ata_read_native_max_address(struct ata_device *dev, u64 *max_sectors)
 			     "failed to read native max address (err_mask=0x%x)\n",
 			     err_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev,
+			     "failed to read native max address (err_mask=0x%x)\n",
+			     err_mask);
+>>>>>>> refs/remotes/origin/master
 		if (err_mask == AC_ERR_DEV && (tf.feature & ATA_ABORTED))
 			return -EACCES;
 		return -EIO;
@@ -1334,6 +1396,7 @@ static int ata_set_max_sectors(struct ata_device *dev, u64 new_sectors)
 	err_mask = ata_exec_internal(dev, &tf, NULL, DMA_NONE, NULL, 0, 0);
 	if (err_mask) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING, "failed to set "
 			       "max address (err_mask=0x%x)\n", err_mask);
 =======
@@ -1341,6 +1404,11 @@ static int ata_set_max_sectors(struct ata_device *dev, u64 new_sectors)
 			     "failed to set max address (err_mask=0x%x)\n",
 			     err_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev,
+			     "failed to set max address (err_mask=0x%x)\n",
+			     err_mask);
+>>>>>>> refs/remotes/origin/master
 		if (err_mask == AC_ERR_DEV &&
 		    (tf.feature & (ATA_ABORTED | ATA_IDNF)))
 			return -EACCES;
@@ -1384,12 +1452,17 @@ static int ata_hpa_resize(struct ata_device *dev)
 		 */
 		if (rc == -EACCES || !unlock_hpa) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING, "HPA support seems "
 				       "broken, skipping HPA handling\n");
 =======
 			ata_dev_warn(dev,
 				     "HPA support seems broken, skipping HPA handling\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev,
+				     "HPA support seems broken, skipping HPA handling\n");
+>>>>>>> refs/remotes/origin/master
 			dev->horkage |= ATA_HORKAGE_BROKEN_HPA;
 
 			/* we can continue if device aborted the command */
@@ -1408,14 +1481,19 @@ static int ata_hpa_resize(struct ata_device *dev)
 
 		if (native_sectors > sectors)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO,
 =======
 			ata_dev_info(dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_info(dev,
+>>>>>>> refs/remotes/origin/master
 				"HPA detected: current %llu, native %llu\n",
 				(unsigned long long)sectors,
 				(unsigned long long)native_sectors);
 		else if (native_sectors < sectors)
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING,
 				"native sectors (%llu) is smaller than "
@@ -1424,6 +1502,10 @@ static int ata_hpa_resize(struct ata_device *dev)
 			ata_dev_warn(dev,
 				"native sectors (%llu) is smaller than sectors (%llu)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev,
+				"native sectors (%llu) is smaller than sectors (%llu)\n",
+>>>>>>> refs/remotes/origin/master
 				(unsigned long long)native_sectors,
 				(unsigned long long)sectors);
 		return 0;
@@ -1434,16 +1516,22 @@ static int ata_hpa_resize(struct ata_device *dev)
 	if (rc == -EACCES) {
 		/* if device aborted the command, skip HPA resizing */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING, "device aborted resize "
 			       "(%llu -> %llu), skipping HPA handling\n",
 			       (unsigned long long)sectors,
 			       (unsigned long long)native_sectors);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ata_dev_warn(dev,
 			     "device aborted resize (%llu -> %llu), skipping HPA handling\n",
 			     (unsigned long long)sectors,
 			     (unsigned long long)native_sectors);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev->horkage |= ATA_HORKAGE_BROKEN_HPA;
 		return 0;
 	} else if (rc)
@@ -1453,22 +1541,31 @@ static int ata_hpa_resize(struct ata_device *dev)
 	rc = ata_dev_reread_id(dev, 0);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_ERR, "failed to re-read IDENTIFY "
 			       "data after HPA resizing\n");
 =======
 		ata_dev_err(dev,
 			    "failed to re-read IDENTIFY data after HPA resizing\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_err(dev,
+			    "failed to re-read IDENTIFY data after HPA resizing\n");
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
 	if (print_info) {
 		u64 new_sectors = ata_id_n_sectors(dev->id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO,
 =======
 		ata_dev_info(dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev,
+>>>>>>> refs/remotes/origin/master
 			"HPA unlocked: %llu -> %llu, native %llu\n",
 			(unsigned long long)sectors,
 			(unsigned long long)new_sectors,
@@ -1739,12 +1836,17 @@ unsigned ata_exec_internal_sg(struct ata_device *dev,
 
 			if (ata_msg_warn(ap))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ata_dev_printk(dev, KERN_WARNING,
 					"qc timeout (cmd 0x%x)\n", command);
 =======
 				ata_dev_warn(dev, "qc timeout (cmd 0x%x)\n",
 					     command);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ata_dev_warn(dev, "qc timeout (cmd 0x%x)\n",
+					     command);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		spin_unlock_irqrestore(ap->lock, flags);
@@ -1959,10 +2061,14 @@ int ata_dev_read_id(struct ata_device *dev, unsigned int *p_class,
 
 	if (ata_msg_ctl(ap))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_DEBUG, "%s: ENTER\n", __func__);
 =======
 		ata_dev_dbg(dev, "%s: ENTER\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_dbg(dev, "%s: ENTER\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 retry:
 	ata_tf_init(dev, &tf);
@@ -2002,15 +2108,20 @@ retry:
 	if (err_mask) {
 		if (err_mask & AC_ERR_NODEV_HINT) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_DEBUG,
 				       "NODEV after polling detection\n");
 =======
 			ata_dev_dbg(dev, "NODEV after polling detection\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_dbg(dev, "NODEV after polling detection\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENOENT;
 		}
 
 		if (is_semb) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO, "IDENTIFY failed on "
 				       "device w/ SEMB sig, disabled\n");
@@ -2018,6 +2129,10 @@ retry:
 			ata_dev_info(dev,
 		     "IDENTIFY failed on device w/ SEMB sig, disabled\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_info(dev,
+		     "IDENTIFY failed on device w/ SEMB sig, disabled\n");
+>>>>>>> refs/remotes/origin/master
 			/* SEMB is not supported yet */
 			*p_class = ATA_DEV_SEMB_UNSUP;
 			return 0;
@@ -2044,12 +2159,17 @@ retry:
 			 * sometimes with phantom devices.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_DEBUG,
 				       "both IDENTIFYs aborted, assuming NODEV\n");
 =======
 			ata_dev_dbg(dev,
 				    "both IDENTIFYs aborted, assuming NODEV\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_dbg(dev,
+				    "both IDENTIFYs aborted, assuming NODEV\n");
+>>>>>>> refs/remotes/origin/master
 			return -ENOENT;
 		}
 
@@ -2060,6 +2180,7 @@ retry:
 
 	if (dev->horkage & ATA_HORKAGE_DUMP_ID) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_DEBUG, "dumping IDENTIFY data, "
 			       "class=%d may_fallback=%d tried_spinup=%d\n",
 			       class, may_fallback, tried_spinup);
@@ -2068,6 +2189,11 @@ retry:
 			    "class=%d may_fallback=%d tried_spinup=%d\n",
 			    class, may_fallback, tried_spinup);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_dbg(dev, "dumping IDENTIFY data, "
+			    "class=%d may_fallback=%d tried_spinup=%d\n",
+			    class, may_fallback, tried_spinup);
+>>>>>>> refs/remotes/origin/master
 		print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET,
 			       16, 2, id, ATA_ID_WORDS * sizeof(*id), true);
 	}
@@ -2087,14 +2213,20 @@ retry:
 		if (!ata_id_is_ata(id) && !ata_id_is_cfa(id))
 			goto err_out;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ap->host->flags & ATA_HOST_IGNORE_ATA &&
 							ata_id_is_ata(id)) {
 			ata_dev_dbg(dev,
 				"host indicates ignore ATA devices, ignored\n");
 			return -ENOENT;
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (ata_id_is_ata(id))
 			goto err_out;
@@ -2156,12 +2288,17 @@ retry:
  err_out:
 	if (ata_msg_warn(ap))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING, "failed to IDENTIFY "
 			       "(%s, err_mask=0x%x)\n", reason, err_mask);
 =======
 		ata_dev_warn(dev, "failed to IDENTIFY (%s, err_mask=0x%x)\n",
 			     reason, err_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "failed to IDENTIFY (%s, err_mask=0x%x)\n",
+			     reason, err_mask);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -2192,6 +2329,7 @@ static int ata_do_link_spd_horkage(struct ata_device *dev)
 	 */
 	if (plink->sata_spd > target) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO,
 			       "applying link speed limit horkage to %s\n",
 			       sata_spd_string(target));
@@ -2199,6 +2337,10 @@ static int ata_do_link_spd_horkage(struct ata_device *dev)
 		ata_dev_info(dev, "applying link speed limit horkage to %s\n",
 			     sata_spd_string(target));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "applying link speed limit horkage to %s\n",
+			     sata_spd_string(target));
+>>>>>>> refs/remotes/origin/master
 		return -EAGAIN;
 	}
 	return 0;
@@ -2242,6 +2384,7 @@ static int ata_dev_config_ncq(struct ata_device *dev,
 			SATA_FPDMA_AA);
 		if (err_mask) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_ERR, "failed to enable AA"
 				"(error_mask=0x%x)\n", err_mask);
 =======
@@ -2249,6 +2392,11 @@ static int ata_dev_config_ncq(struct ata_device *dev,
 				    "failed to enable AA (error_mask=0x%x)\n",
 				    err_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_err(dev,
+				    "failed to enable AA (error_mask=0x%x)\n",
+				    err_mask);
+>>>>>>> refs/remotes/origin/master
 			if (err_mask != AC_ERR_DEV) {
 				dev->horkage |= ATA_HORKAGE_BROKEN_FPDMA_AA;
 				return -EIO;
@@ -2262,6 +2410,32 @@ static int ata_dev_config_ncq(struct ata_device *dev,
 	else
 		snprintf(desc, desc_sz, "NCQ (depth %d/%d)%s", hdepth,
 			ddepth, aa_desc);
+<<<<<<< HEAD
+=======
+
+	if ((ap->flags & ATA_FLAG_FPDMA_AUX) &&
+	    ata_id_has_ncq_send_and_recv(dev->id)) {
+		err_mask = ata_read_log_page(dev, ATA_LOG_NCQ_SEND_RECV,
+					     0, ap->sector_buf, 1);
+		if (err_mask) {
+			ata_dev_dbg(dev,
+				    "failed to get NCQ Send/Recv Log Emask 0x%x\n",
+				    err_mask);
+		} else {
+			u8 *cmds = dev->ncq_send_recv_cmds;
+
+			dev->flags |= ATA_DFLAG_NCQ_SEND_RECV;
+			memcpy(cmds, ap->sector_buf, ATA_LOG_NCQ_SEND_RECV_SIZE);
+
+			if (dev->horkage & ATA_HORKAGE_NO_NCQ_TRIM) {
+				ata_dev_dbg(dev, "disabling queued TRIM support\n");
+				cmds[ATA_LOG_NCQ_SEND_RECV_DSM_OFFSET] &=
+					~ATA_LOG_NCQ_SEND_RECV_DSM_TRIM;
+			}
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -2285,6 +2459,10 @@ int ata_dev_configure(struct ata_device *dev)
 	int print_info = ehc->i.flags & ATA_EHI_PRINTINFO;
 	const u16 *id = dev->id;
 	unsigned long xfer_mask;
+<<<<<<< HEAD
+=======
+	unsigned int err_mask;
+>>>>>>> refs/remotes/origin/master
 	char revbuf[7];		/* XYZ-99\0 */
 	char fwrevbuf[ATA_ID_FW_REV_LEN+1];
 	char modelbuf[ATA_ID_PROD_LEN+1];
@@ -2292,20 +2470,28 @@ int ata_dev_configure(struct ata_device *dev)
 
 	if (!ata_dev_enabled(dev) && ata_msg_info(ap)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "%s: ENTER/EXIT -- nodev\n",
 			       __func__);
 =======
 		ata_dev_info(dev, "%s: ENTER/EXIT -- nodev\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "%s: ENTER/EXIT -- nodev\n", __func__);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	if (ata_msg_probe(ap))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_DEBUG, "%s: ENTER\n", __func__);
 =======
 		ata_dev_dbg(dev, "%s: ENTER\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_dbg(dev, "%s: ENTER\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* set horkage */
 	dev->horkage |= ata_dev_blacklisted(dev);
@@ -2313,17 +2499,22 @@ int ata_dev_configure(struct ata_device *dev)
 
 	if (dev->horkage & ATA_HORKAGE_DISABLE) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO,
 			       "unsupported device, disabling\n");
 =======
 		ata_dev_info(dev, "unsupported device, disabling\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "unsupported device, disabling\n");
+>>>>>>> refs/remotes/origin/master
 		ata_dev_disable(dev);
 		return 0;
 	}
 
 	if ((!atapi_enabled || (ap->flags & ATA_FLAG_NO_ATAPI)) &&
 	    dev->class == ATA_DEV_ATAPI) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			"WARNING: ATAPI is %s, device ignored.\n",
@@ -2334,6 +2525,11 @@ int ata_dev_configure(struct ata_device *dev)
 			     atapi_enabled ? "not supported with this driver"
 			     : "disabled");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "WARNING: ATAPI is %s, device ignored\n",
+			     atapi_enabled ? "not supported with this driver"
+			     : "disabled");
+>>>>>>> refs/remotes/origin/master
 		ata_dev_disable(dev);
 		return 0;
 	}
@@ -2342,6 +2538,19 @@ int ata_dev_configure(struct ata_device *dev)
 	if (rc)
 		return rc;
 
+<<<<<<< HEAD
+=======
+	/* some WD SATA-1 drives have issues with LPM, turn on NOLPM for them */
+	if ((dev->horkage & ATA_HORKAGE_WD_BROKEN_LPM) &&
+	    (id[ATA_ID_SATA_CAPABILITY] & 0xe) == 0x2)
+		dev->horkage |= ATA_HORKAGE_NOLPM;
+
+	if (dev->horkage & ATA_HORKAGE_NOLPM) {
+		ata_dev_warn(dev, "LPM support broken, forcing max_power\n");
+		dev->link->ap->target_lpm_policy = ATA_LPM_MAX_POWER;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	/* let ACPI work its magic */
 	rc = ata_acpi_on_devcfg(dev);
 	if (rc)
@@ -2355,6 +2564,7 @@ int ata_dev_configure(struct ata_device *dev)
 	/* print device capabilities */
 	if (ata_msg_probe(ap))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_DEBUG,
 			       "%s: cfg 49:%04x 82:%04x 83:%04x 84:%04x "
 			       "85:%04x 86:%04x 87:%04x 88:%04x\n",
@@ -2362,13 +2572,18 @@ int ata_dev_configure(struct ata_device *dev)
 			       id[49], id[82], id[83], id[84],
 			       id[85], id[86], id[87], id[88]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ata_dev_dbg(dev,
 			    "%s: cfg 49:%04x 82:%04x 83:%04x 84:%04x "
 			    "85:%04x 86:%04x 87:%04x 88:%04x\n",
 			    __func__,
 			    id[49], id[82], id[83], id[84],
 			    id[85], id[86], id[87], id[88]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* initialize to-be-configured parameters */
 	dev->flags &= ~ATA_DFLAG_CFG_MASK;
@@ -2403,18 +2618,6 @@ int ata_dev_configure(struct ata_device *dev)
 			/* CPRM may make this media unusable */
 			if (id[ATA_ID_CFA_KEY_MGMT] & 1)
 <<<<<<< HEAD
-				ata_dev_printk(dev, KERN_WARNING,
-					       "supports DRM functions and may "
-					       "not be fully accessible.\n");
-=======
-				ata_dev_warn(dev,
-	"supports DRM functions and may not be fully accessible\n");
->>>>>>> refs/remotes/origin/cm-10.0
-			snprintf(revbuf, 7, "CFA");
-		} else {
-			snprintf(revbuf, 7, "ATA-%d", ata_id_major_version(id));
-			/* Warn the user if the device has TPM extensions */
-			if (ata_id_has_tpm(id))
 <<<<<<< HEAD
 				ata_dev_printk(dev, KERN_WARNING,
 					       "supports DRM functions and may "
@@ -2423,6 +2626,28 @@ int ata_dev_configure(struct ata_device *dev)
 				ata_dev_warn(dev,
 	"supports DRM functions and may not be fully accessible\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ata_dev_warn(dev,
+	"supports DRM functions and may not be fully accessible\n");
+>>>>>>> refs/remotes/origin/master
+			snprintf(revbuf, 7, "CFA");
+		} else {
+			snprintf(revbuf, 7, "ATA-%d", ata_id_major_version(id));
+			/* Warn the user if the device has TPM extensions */
+			if (ata_id_has_tpm(id))
+<<<<<<< HEAD
+<<<<<<< HEAD
+				ata_dev_printk(dev, KERN_WARNING,
+					       "supports DRM functions and may "
+					       "not be fully accessible.\n");
+=======
+				ata_dev_warn(dev,
+	"supports DRM functions and may not be fully accessible\n");
+>>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ata_dev_warn(dev,
+	"supports DRM functions and may not be fully accessible\n");
+>>>>>>> refs/remotes/origin/master
 		}
 
 		dev->n_sectors = ata_id_n_sectors(id);
@@ -2460,6 +2685,7 @@ int ata_dev_configure(struct ata_device *dev)
 			/* print device info to dmesg */
 			if (ata_msg_drv(ap) && print_info) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ata_dev_printk(dev, KERN_INFO,
 					"%s: %s, %s, max %s\n",
 					revbuf, modelbuf, fwrevbuf,
@@ -2467,12 +2693,17 @@ int ata_dev_configure(struct ata_device *dev)
 				ata_dev_printk(dev, KERN_INFO,
 					"%Lu sectors, multi %u: %s %s\n",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				ata_dev_info(dev, "%s: %s, %s, max %s\n",
 					     revbuf, modelbuf, fwrevbuf,
 					     ata_mode_string(xfer_mask));
 				ata_dev_info(dev,
 					     "%llu sectors, multi %u: %s %s\n",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					(unsigned long long)dev->n_sectors,
 					dev->multi_count, lba_desc, ncq_desc);
 			}
@@ -2494,6 +2725,7 @@ int ata_dev_configure(struct ata_device *dev)
 			/* print device info to dmesg */
 			if (ata_msg_drv(ap) && print_info) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ata_dev_printk(dev, KERN_INFO,
 					"%s: %s, %s, max %s\n",
 					revbuf,	modelbuf, fwrevbuf,
@@ -2504,6 +2736,8 @@ int ata_dev_configure(struct ata_device *dev)
 					dev->multi_count, dev->cylinders,
 					dev->heads, dev->sectors);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				ata_dev_info(dev, "%s: %s, %s, max %s\n",
 					     revbuf,	modelbuf, fwrevbuf,
 					     ata_mode_string(xfer_mask));
@@ -2512,10 +2746,40 @@ int ata_dev_configure(struct ata_device *dev)
 					     (unsigned long long)dev->n_sectors,
 					     dev->multi_count, dev->cylinders,
 					     dev->heads, dev->sectors);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			}
 		}
 
+=======
+			}
+		}
+
+		/* Check and mark DevSlp capability. Get DevSlp timing variables
+		 * from SATA Settings page of Identify Device Data Log.
+		 */
+		if (ata_id_has_devslp(dev->id)) {
+			u8 *sata_setting = ap->sector_buf;
+			int i, j;
+
+			dev->flags |= ATA_DFLAG_DEVSLP;
+			err_mask = ata_read_log_page(dev,
+						     ATA_LOG_SATA_ID_DEV_DATA,
+						     ATA_LOG_SATA_SETTINGS,
+						     sata_setting,
+						     1);
+			if (err_mask)
+				ata_dev_dbg(dev,
+					    "failed to get Identify Device Data, Emask 0x%x\n",
+					    err_mask);
+			else
+				for (i = 0; i < ATA_LOG_DEVSLP_SIZE; i++) {
+					j = ATA_LOG_DEVSLP_OFFSET + i;
+					dev->devslp_timing[i] = sata_setting[j];
+				}
+		}
+
+>>>>>>> refs/remotes/origin/master
 		dev->cdb_len = 16;
 	}
 
@@ -2530,11 +2794,15 @@ int ata_dev_configure(struct ata_device *dev)
 		if ((rc < 12) || (rc > ATAPI_CDB_LEN)) {
 			if (ata_msg_warn(ap))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ata_dev_printk(dev, KERN_WARNING,
 					       "unsupported CDB len\n");
 =======
 				ata_dev_warn(dev, "unsupported CDB len\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ata_dev_warn(dev, "unsupported CDB len\n");
+>>>>>>> refs/remotes/origin/master
 			rc = -EINVAL;
 			goto err_out_nosup;
 		}
@@ -2549,12 +2817,16 @@ int ata_dev_configure(struct ata_device *dev)
 		    (ap->flags & ATA_FLAG_AN) && ata_id_has_atapi_AN(id) &&
 		    (!sata_pmp_attached(ap) ||
 		     sata_scr_read(&ap->link, SCR_NOTIFICATION, &sntf) == 0)) {
+<<<<<<< HEAD
 			unsigned int err_mask;
 
+=======
+>>>>>>> refs/remotes/origin/master
 			/* issue SET feature command to turn this on */
 			err_mask = ata_dev_set_feature(dev,
 					SETFEATURES_SATA_ENABLE, SATA_AN);
 			if (err_mask)
+<<<<<<< HEAD
 <<<<<<< HEAD
 				ata_dev_printk(dev, KERN_ERR,
 					"failed to enable ATAPI AN "
@@ -2564,6 +2836,11 @@ int ata_dev_configure(struct ata_device *dev)
 					    "failed to enable ATAPI AN (err_mask=0x%x)\n",
 					    err_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				ata_dev_err(dev,
+					    "failed to enable ATAPI AN (err_mask=0x%x)\n",
+					    err_mask);
+>>>>>>> refs/remotes/origin/master
 			else {
 				dev->flags |= ATA_DFLAG_AN;
 				atapi_an_string = ", ATAPI AN";
@@ -2575,11 +2852,16 @@ int ata_dev_configure(struct ata_device *dev)
 			cdb_intr_string = ", CDB intr";
 		}
 
+<<<<<<< HEAD
 		if (atapi_dmadir || atapi_id_dmadir(dev->id)) {
+=======
+		if (atapi_dmadir || (dev->horkage & ATA_HORKAGE_ATAPI_DMADIR) || atapi_id_dmadir(dev->id)) {
+>>>>>>> refs/remotes/origin/master
 			dev->flags |= ATA_DFLAG_DMADIR;
 			dma_dir_string = ", DMADIR";
 		}
 
+<<<<<<< HEAD
 		/* print device info to dmesg */
 		if (ata_msg_drv(ap) && print_info)
 <<<<<<< HEAD
@@ -2590,13 +2872,25 @@ int ata_dev_configure(struct ata_device *dev)
 				       cdb_intr_string, atapi_an_string,
 				       dma_dir_string);
 =======
+=======
+		if (ata_id_has_da(dev->id)) {
+			dev->flags |= ATA_DFLAG_DA;
+			zpodd_init(dev);
+		}
+
+		/* print device info to dmesg */
+		if (ata_msg_drv(ap) && print_info)
+>>>>>>> refs/remotes/origin/master
 			ata_dev_info(dev,
 				     "ATAPI: %s, %s, max %s%s%s%s\n",
 				     modelbuf, fwrevbuf,
 				     ata_mode_string(xfer_mask),
 				     cdb_intr_string, atapi_an_string,
 				     dma_dir_string);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* determine max_sectors */
@@ -2609,11 +2903,15 @@ int ata_dev_configure(struct ata_device *dev)
 	if (ata_dev_knobble(dev)) {
 		if (ata_msg_drv(ap) && print_info)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_INFO,
 				       "applying bridge limits\n");
 =======
 			ata_dev_info(dev, "applying bridge limits\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_info(dev, "applying bridge limits\n");
+>>>>>>> refs/remotes/origin/master
 		dev->udma_mask &= ATA_UDMA5;
 		dev->max_sectors = ATA_MAX_SECTORS;
 	}
@@ -2643,6 +2941,7 @@ int ata_dev_configure(struct ata_device *dev)
 
 		if (print_info) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING,
 "Drive reports diagnostics failure. This may indicate a drive\n");
 			ata_dev_printk(dev, KERN_WARNING,
@@ -2651,11 +2950,17 @@ int ata_dev_configure(struct ata_device *dev)
 "Drive reports diagnostics failure. This may indicate a drive\n");
 			ata_dev_warn(dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev,
+"Drive reports diagnostics failure. This may indicate a drive\n");
+			ata_dev_warn(dev,
+>>>>>>> refs/remotes/origin/master
 "fault or invalid emulation. Contact drive vendor for information.\n");
 		}
 	}
 
 	if ((dev->horkage & ATA_HORKAGE_FIRMWARE_WARN) && print_info) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING, "WARNING: device requires "
 			       "firmware update to be fully functional.\n");
@@ -2665,6 +2970,10 @@ int ata_dev_configure(struct ata_device *dev)
 		ata_dev_warn(dev, "WARNING: device requires firmware update to be fully functional\n");
 		ata_dev_warn(dev, "         contact the vendor or visit http://ata.wiki.kernel.org\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "WARNING: device requires firmware update to be fully functional\n");
+		ata_dev_warn(dev, "         contact the vendor or visit http://ata.wiki.kernel.org\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
@@ -2672,11 +2981,15 @@ int ata_dev_configure(struct ata_device *dev)
 err_out_nosup:
 	if (ata_msg_probe(ap))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_DEBUG,
 			       "%s: EXIT, err\n", __func__);
 =======
 		ata_dev_dbg(dev, "%s: EXIT, err\n", __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_dbg(dev, "%s: EXIT, err\n", __func__);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -2899,6 +3212,7 @@ static void sata_print_link_status(struct ata_link *link)
 	if (ata_phys_link_online(link)) {
 		tmp = (sstatus >> 4) & 0xf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_INFO,
 				"SATA link up %s (SStatus %X SControl %X)\n",
 				sata_spd_string(tmp), sstatus, scontrol);
@@ -2907,12 +3221,17 @@ static void sata_print_link_status(struct ata_link *link)
 				"SATA link down (SStatus %X SControl %X)\n",
 				sstatus, scontrol);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ata_link_info(link, "SATA link up %s (SStatus %X SControl %X)\n",
 			      sata_spd_string(tmp), sstatus, scontrol);
 	} else {
 		ata_link_info(link, "SATA link down (SStatus %X SControl %X)\n",
 			      sstatus, scontrol);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -3002,12 +3321,17 @@ int sata_down_spd_limit(struct ata_link *link, u32 spd_limit)
 	link->sata_spd_limit = mask;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_link_printk(link, KERN_WARNING, "limiting SATA link speed to %s\n",
 			sata_spd_string(fls(mask)));
 =======
 	ata_link_warn(link, "limiting SATA link speed to %s\n",
 		      sata_spd_string(fls(mask)));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_link_warn(link, "limiting SATA link speed to %s\n",
+		      sata_spd_string(fls(mask)));
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -3175,6 +3499,13 @@ const struct ata_timing *ata_timing_find_mode(u8 xfer_mode)
 
 	if (xfer_mode == t->mode)
 		return t;
+<<<<<<< HEAD
+=======
+
+	WARN_ONCE(true, "%s: unable to find timing for xfer_mode 0x%x\n",
+			__func__, xfer_mode);
+
+>>>>>>> refs/remotes/origin/master
 	return NULL;
 }
 
@@ -3203,10 +3534,14 @@ int ata_timing_compute(struct ata_device *adev, unsigned short speed,
 		memset(&p, 0, sizeof(p));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (speed >= XFER_PIO_0 && speed <= XFER_SW_DMA_0) {
 =======
 		if (speed >= XFER_PIO_0 && speed < XFER_SW_DMA_0) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (speed >= XFER_PIO_0 && speed < XFER_SW_DMA_0) {
+>>>>>>> refs/remotes/origin/master
 			if (speed <= XFER_PIO_2)
 				p.cycle = p.cyc8b = id[ATA_ID_EIDE_PIO];
 			else if ((speed <= XFER_PIO_4) ||
@@ -3389,11 +3724,15 @@ int ata_down_xfermask_limit(struct ata_device *dev, unsigned int sel)
 				 ata_mode_string(xfer_mask));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			       "limiting speed to %s\n", buf);
 =======
 		ata_dev_warn(dev, "limiting speed to %s\n", buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev, "limiting speed to %s\n", buf);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ata_unpack_xfermask(xfer_mask, &dev->pio_mask, &dev->mwdma_mask,
@@ -3421,6 +3760,7 @@ static int ata_dev_set_mode(struct ata_device *dev)
 	else {
 		if (nosetxfer)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING,
 				       "NOSETXFER but PATA detected - can't "
 				       "skip SETXFER, might malfunction\n");
@@ -3429,6 +3769,11 @@ static int ata_dev_set_mode(struct ata_device *dev)
 				     "NOSETXFER but PATA detected - can't "
 				     "skip SETXFER, might malfunction\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev,
+				     "NOSETXFER but PATA detected - can't "
+				     "skip SETXFER, might malfunction\n");
+>>>>>>> refs/remotes/origin/master
 		err_mask = ata_dev_set_xfermode(dev);
 	}
 
@@ -3479,6 +3824,7 @@ static int ata_dev_set_mode(struct ata_device *dev)
 		dev->xfer_shift, (int)dev->xfer_mode);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_dev_printk(dev, KERN_INFO, "configured for %s%s\n",
 		       ata_mode_string(ata_xfer_mode2mask(dev->xfer_mode)),
 		       dev_err_whine);
@@ -3487,16 +3833,25 @@ static int ata_dev_set_mode(struct ata_device *dev)
 		     ata_mode_string(ata_xfer_mode2mask(dev->xfer_mode)),
 		     dev_err_whine);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_dev_info(dev, "configured for %s%s\n",
+		     ata_mode_string(ata_xfer_mode2mask(dev->xfer_mode)),
+		     dev_err_whine);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
  fail:
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ata_dev_printk(dev, KERN_ERR, "failed to set xfermode "
 		       "(err_mask=0x%x)\n", err_mask);
 =======
 	ata_dev_err(dev, "failed to set xfermode (err_mask=0x%x)\n", err_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_dev_err(dev, "failed to set xfermode (err_mask=0x%x)\n", err_mask);
+>>>>>>> refs/remotes/origin/master
 	return -EIO;
 }
 
@@ -3539,16 +3894,22 @@ int ata_do_set_mode(struct ata_link *link, struct ata_device **r_failed_dev)
 
 		pio_mask = ata_pack_xfermask(dev->pio_mask, 0, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dma_mask = ata_pack_xfermask(0, dev->mwdma_mask, dev->udma_mask);
 
 		if (libata_dma_mask & mode_mask)
 			dma_mask = ata_pack_xfermask(0, dev->mwdma_mask, dev->udma_mask);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (libata_dma_mask & mode_mask)
 			dma_mask = ata_pack_xfermask(0, dev->mwdma_mask,
 						     dev->udma_mask);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		else
 			dma_mask = 0;
 
@@ -3566,10 +3927,14 @@ int ata_do_set_mode(struct ata_link *link, struct ata_device **r_failed_dev)
 	ata_for_each_dev(dev, link, ENABLED) {
 		if (dev->pio_mode == 0xff) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING, "no PIO support\n");
 =======
 			ata_dev_warn(dev, "no PIO support\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev, "no PIO support\n");
+>>>>>>> refs/remotes/origin/master
 			rc = -EINVAL;
 			goto out;
 		}
@@ -3688,10 +4053,14 @@ int ata_wait_ready(struct ata_link *link, unsigned long deadline,
 		if (!warned && time_after(now, start + 5 * HZ) &&
 		    (deadline - now > 3 * HZ)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_WARNING,
 =======
 			ata_link_warn(link,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_link_warn(link,
+>>>>>>> refs/remotes/origin/master
 				"link is slow to respond, please be patient "
 				"(ready=%d)\n", tmp);
 			warned = 1;
@@ -3840,6 +4209,7 @@ int sata_link_resume(struct ata_link *link, const unsigned long *params,
 
 	if ((scontrol & 0xf0f) != 0x300) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR,
 				"failed to resume link (SControl %X)\n",
 				scontrol);
@@ -3847,10 +4217,15 @@ int sata_link_resume(struct ata_link *link, const unsigned long *params,
 		ata_link_warn(link, "failed to resume link (SControl %X)\n",
 			     scontrol);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_link_warn(link, "failed to resume link (SControl %X)\n",
+			     scontrol);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	if (tries < ATA_LINK_RESUME_TRIES)
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ata_link_printk(link, KERN_WARNING,
 				"link resume succeeded after %d retries\n",
@@ -3859,6 +4234,10 @@ int sata_link_resume(struct ata_link *link, const unsigned long *params,
 		ata_link_warn(link, "link resume succeeded after %d retries\n",
 			      ATA_LINK_RESUME_TRIES - tries);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_link_warn(link, "link resume succeeded after %d retries\n",
+			      ATA_LINK_RESUME_TRIES - tries);
+>>>>>>> refs/remotes/origin/master
 
 	if ((rc = sata_link_debounce(link, params, deadline)))
 		return rc;
@@ -3903,7 +4282,11 @@ int sata_link_scr_lpm(struct ata_link *link, enum ata_lpm_policy policy,
 	switch (policy) {
 	case ATA_LPM_MAX_POWER:
 		/* disable all LPM transitions */
+<<<<<<< HEAD
 		scontrol |= (0x3 << 8);
+=======
+		scontrol |= (0x7 << 8);
+>>>>>>> refs/remotes/origin/master
 		/* initiate transition to active state */
 		if (spm_wakeup) {
 			scontrol |= (0x4 << 12);
@@ -3913,12 +4296,20 @@ int sata_link_scr_lpm(struct ata_link *link, enum ata_lpm_policy policy,
 	case ATA_LPM_MED_POWER:
 		/* allow LPM to PARTIAL */
 		scontrol &= ~(0x1 << 8);
+<<<<<<< HEAD
 		scontrol |= (0x2 << 8);
+=======
+		scontrol |= (0x6 << 8);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case ATA_LPM_MIN_POWER:
 		if (ata_link_nr_enabled(link) > 0)
 			/* no restrictions on LPM transitions */
+<<<<<<< HEAD
 			scontrol &= ~(0x3 << 8);
+=======
+			scontrol &= ~(0x7 << 8);
+>>>>>>> refs/remotes/origin/master
 		else {
 			/* empty port, power off */
 			scontrol &= ~0xf;
@@ -3976,6 +4367,7 @@ int ata_std_prereset(struct ata_link *link, unsigned long deadline)
 		/* whine about phy resume failure but proceed */
 		if (rc && rc != -EOPNOTSUPP)
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_link_printk(link, KERN_WARNING, "failed to resume "
 					"link for reset (errno=%d)\n", rc);
 =======
@@ -3983,6 +4375,11 @@ int ata_std_prereset(struct ata_link *link, unsigned long deadline)
 				      "failed to resume link for reset (errno=%d)\n",
 				      rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_link_warn(link,
+				      "failed to resume link for reset (errno=%d)\n",
+				      rc);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* no point in trying softreset on offline link */
@@ -4099,11 +4496,15 @@ int sata_link_hardreset(struct ata_link *link, const unsigned long *timing,
 		if (online)
 			*online = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_link_printk(link, KERN_ERR,
 				"COMRESET failed (errno=%d)\n", rc);
 =======
 		ata_link_err(link, "COMRESET failed (errno=%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_link_err(link, "COMRESET failed (errno=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 	}
 	DPRINTK("EXIT, rc=%d\n", rc);
 	return rc;
@@ -4188,12 +4589,17 @@ static int ata_dev_same_device(struct ata_device *dev, unsigned int new_class,
 
 	if (dev->class != new_class) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "class mismatch %d != %d\n",
 			       dev->class, new_class);
 =======
 		ata_dev_info(dev, "class mismatch %d != %d\n",
 			     dev->class, new_class);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "class mismatch %d != %d\n",
+			     dev->class, new_class);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -4204,16 +4610,22 @@ static int ata_dev_same_device(struct ata_device *dev, unsigned int new_class,
 
 	if (strcmp(model[0], model[1])) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "model number mismatch "
 			       "'%s' != '%s'\n", model[0], model[1]);
 =======
 		ata_dev_info(dev, "model number mismatch '%s' != '%s'\n",
 			     model[0], model[1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "model number mismatch '%s' != '%s'\n",
+			     model[0], model[1]);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
 	if (strcmp(serial[0], serial[1])) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "serial number mismatch "
 			       "'%s' != '%s'\n", serial[0], serial[1]);
@@ -4221,6 +4633,10 @@ static int ata_dev_same_device(struct ata_device *dev, unsigned int new_class,
 		ata_dev_info(dev, "serial number mismatch '%s' != '%s'\n",
 			     serial[0], serial[1]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "serial number mismatch '%s' != '%s'\n",
+			     serial[0], serial[1]);
+>>>>>>> refs/remotes/origin/master
 		return 0;
 	}
 
@@ -4291,12 +4707,17 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 	    new_class != ATA_DEV_ATAPI &&
 	    new_class != ATA_DEV_SEMB) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_INFO, "class mismatch %u != %u\n",
 			       dev->class, new_class);
 =======
 		ata_dev_info(dev, "class mismatch %u != %u\n",
 			     dev->class, new_class);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_info(dev, "class mismatch %u != %u\n",
+			     dev->class, new_class);
+>>>>>>> refs/remotes/origin/master
 		rc = -ENODEV;
 		goto fail;
 	}
@@ -4318,6 +4739,7 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 
 	/* n_sectors has changed */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_dev_printk(dev, KERN_WARNING, "n_sectors mismatch %llu != %llu\n",
 		       (unsigned long long)n_sectors,
 		       (unsigned long long)dev->n_sectors);
@@ -4326,6 +4748,11 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 		     (unsigned long long)n_sectors,
 		     (unsigned long long)dev->n_sectors);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_dev_warn(dev, "n_sectors mismatch %llu != %llu\n",
+		     (unsigned long long)n_sectors,
+		     (unsigned long long)dev->n_sectors);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Something could have caused HPA to be unlocked
@@ -4335,6 +4762,7 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 	if (dev->n_native_sectors == n_native_sectors &&
 	    dev->n_sectors > n_sectors && dev->n_sectors == n_native_sectors) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			       "new n_sectors matches native, probably "
 			       "late HPA unlock, n_sectors updated\n");
@@ -4343,6 +4771,11 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 			     "new n_sectors matches native, probably "
 			     "late HPA unlock, n_sectors updated\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev,
+			     "new n_sectors matches native, probably "
+			     "late HPA unlock, n_sectors updated\n");
+>>>>>>> refs/remotes/origin/master
 		/* use the larger n_sectors */
 		return 0;
 	}
@@ -4357,6 +4790,7 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 	    dev->n_sectors < n_sectors && n_sectors == n_native_sectors &&
 	    !(dev->horkage & ATA_HORKAGE_BROKEN_HPA)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			       "old n_sectors matches native, probably "
 			       "late HPA lock, will try to unlock HPA\n");
@@ -4365,6 +4799,11 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 			     "old n_sectors matches native, probably "
 			     "late HPA lock, will try to unlock HPA\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev,
+			     "old n_sectors matches native, probably "
+			     "late HPA lock, will try to unlock HPA\n");
+>>>>>>> refs/remotes/origin/master
 		/* try unlocking HPA */
 		dev->flags |= ATA_DFLAG_UNLOCK_HPA;
 		rc = -EIO;
@@ -4376,10 +4815,14 @@ int ata_dev_revalidate(struct ata_device *dev, unsigned int new_class,
 	dev->n_sectors = n_sectors;
  fail:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ata_dev_printk(dev, KERN_ERR, "revalidation failed (errno=%d)\n", rc);
 =======
 	ata_dev_err(dev, "revalidation failed (errno=%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ata_dev_err(dev, "revalidation failed (errno=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -4419,6 +4862,10 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
 	{ "_NEC DV5800A", 	NULL,		ATA_HORKAGE_NODMA },
 	{ "SAMSUNG CD-ROM SN-124", "N001",	ATA_HORKAGE_NODMA },
 	{ "Seagate STT20000A", NULL,		ATA_HORKAGE_NODMA },
+<<<<<<< HEAD
+=======
+	{ " 2GB ATA Flash Disk", "ADMA428M",	ATA_HORKAGE_NODMA },
+>>>>>>> refs/remotes/origin/master
 	/* Odd clown on sil3726/4726 PMPs */
 	{ "Config  Disk",	NULL,		ATA_HORKAGE_DISABLE },
 
@@ -4426,6 +4873,10 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
 	{ "TORiSAN DVD-ROM DRD-N216", NULL,	ATA_HORKAGE_MAX_SEC_128 },
 	{ "QUANTUM DAT    DAT72-000", NULL,	ATA_HORKAGE_ATAPI_MOD16_DMA },
 	{ "Slimtype DVD A  DS8A8SH", NULL,	ATA_HORKAGE_MAX_SEC_LBA48 },
+<<<<<<< HEAD
+=======
+	{ "Slimtype DVD A  DS8A9SH", NULL,	ATA_HORKAGE_MAX_SEC_LBA48 },
+>>>>>>> refs/remotes/origin/master
 
 	/* Devices we expect to fail diagnostics */
 
@@ -4456,11 +4907,17 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
 						ATA_HORKAGE_FIRMWARE_WARN },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Seagate Momentus SpinPoint M8 seem to have FPMDA_AA issues */
 	{ "ST1000LM024 HN-M101MBB", "2AR10001",	ATA_HORKAGE_BROKEN_FPDMA_AA },
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Seagate Momentus SpinPoint M8 seem to have FPMDA_AA issues */
+	{ "ST1000LM024 HN-M101MBB", "2AR10001",	ATA_HORKAGE_BROKEN_FPDMA_AA },
+
+>>>>>>> refs/remotes/origin/master
 	/* Blacklist entries taken from Silicon Image 3124/3132
 	   Windows driver .inf file - also several Linux problem reports */
 	{ "HTS541060G9SA00",    "MB3OC60D",     ATA_HORKAGE_NONCQ, },
@@ -4491,6 +4948,10 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
 
 	/* Devices that do not need bridging limits applied */
 	{ "MTRON MSP-SATA*",		NULL,	ATA_HORKAGE_BRIDGE_OK, },
+<<<<<<< HEAD
+=======
+	{ "BUFFALO HD-QSU2/R5",		NULL,	ATA_HORKAGE_BRIDGE_OK, },
+>>>>>>> refs/remotes/origin/master
 
 	/* Devices which aren't very happy with higher link speeds */
 	{ "WD My Book",			NULL,	ATA_HORKAGE_1_5_GBPS, },
@@ -4502,6 +4963,7 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
 	 */
 	{ "PIONEER DVD-RW  DVRTD08",	NULL,	ATA_HORKAGE_NOSETXFER },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{ "PIONEER DVD-RW  DVRTD08A",	NULL,	ATA_HORKAGE_NOSETXFER },
 	{ "PIONEER DVD-RW  DVR-215",	NULL,	ATA_HORKAGE_NOSETXFER },
@@ -4509,6 +4971,34 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
 	{ "PIONEER DVD-RW  DVR-212D",	NULL,	ATA_HORKAGE_NOSETXFER },
 	{ "PIONEER DVD-RW  DVR-216D",	NULL,	ATA_HORKAGE_NOSETXFER },
 
+=======
+	{ "PIONEER DVD-RW  DVRTD08A",	NULL,	ATA_HORKAGE_NOSETXFER },
+	{ "PIONEER DVD-RW  DVR-215",	NULL,	ATA_HORKAGE_NOSETXFER },
+	{ "PIONEER DVD-RW  DVR-212D",	NULL,	ATA_HORKAGE_NOSETXFER },
+	{ "PIONEER DVD-RW  DVR-216D",	NULL,	ATA_HORKAGE_NOSETXFER },
+
+	/* devices that don't properly handle queued TRIM commands */
+	{ "Micron_M500*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM, },
+	{ "Crucial_CT???M500SSD1",	NULL,	ATA_HORKAGE_NO_NCQ_TRIM, },
+
+	/*
+	 * Some WD SATA-I drives spin up and down erratically when the link
+	 * is put into the slumber mode.  We don't have full list of the
+	 * affected devices.  Disable LPM if the device matches one of the
+	 * known prefixes and is SATA-1.  As a side effect LPM partial is
+	 * lost too.
+	 *
+	 * https://bugzilla.kernel.org/show_bug.cgi?id=57211
+	 */
+	{ "WDC WD800JD-*",		NULL,	ATA_HORKAGE_WD_BROKEN_LPM },
+	{ "WDC WD1200JD-*",		NULL,	ATA_HORKAGE_WD_BROKEN_LPM },
+	{ "WDC WD1600JD-*",		NULL,	ATA_HORKAGE_WD_BROKEN_LPM },
+	{ "WDC WD2000JD-*",		NULL,	ATA_HORKAGE_WD_BROKEN_LPM },
+	{ "WDC WD2500JD-*",		NULL,	ATA_HORKAGE_WD_BROKEN_LPM },
+	{ "WDC WD3000JD-*",		NULL,	ATA_HORKAGE_WD_BROKEN_LPM },
+	{ "WDC WD3200JD-*",		NULL,	ATA_HORKAGE_WD_BROKEN_LPM },
+
+>>>>>>> refs/remotes/origin/master
 	/* End Marker */
 	{ }
 };
@@ -4721,17 +5211,23 @@ static void ata_dev_xfermask(struct ata_device *dev)
 	if (ata_dma_blacklisted(dev)) {
 		xfer_mask &= ~(ATA_MASK_MWDMA | ATA_MASK_UDMA);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING,
 			       "device is on DMA blacklist, disabling DMA\n");
 =======
 		ata_dev_warn(dev,
 			     "device is on DMA blacklist, disabling DMA\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev,
+			     "device is on DMA blacklist, disabling DMA\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if ((host->flags & ATA_HOST_SIMPLEX) &&
 	    host->simplex_claimed && host->simplex_claimed != ap) {
 		xfer_mask &= ~(ATA_MASK_MWDMA | ATA_MASK_UDMA);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		ata_dev_printk(dev, KERN_WARNING, "simplex DMA is claimed by "
 			       "other device, disabling DMA\n");
@@ -4739,6 +5235,10 @@ static void ata_dev_xfermask(struct ata_device *dev)
 		ata_dev_warn(dev,
 			     "simplex DMA is claimed by other device, disabling DMA\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_dev_warn(dev,
+			     "simplex DMA is claimed by other device, disabling DMA\n");
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (ap->flags & ATA_FLAG_NO_IORDY)
@@ -4759,12 +5259,17 @@ static void ata_dev_xfermask(struct ata_device *dev)
 		/* UDMA/44 or higher would be available */
 		if (cable_is_40wire(ap)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(dev, KERN_WARNING,
 				 "limited to UDMA/33 due to 40-wire cable\n");
 =======
 			ata_dev_warn(dev,
 				     "limited to UDMA/33 due to 40-wire cable\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(dev,
+				     "limited to UDMA/33 due to 40-wire cable\n");
+>>>>>>> refs/remotes/origin/master
 			xfer_mask &= ~(0xF8 << ATA_SHIFT_UDMA);
 		}
 
@@ -4852,6 +5357,10 @@ unsigned int ata_dev_set_feature(struct ata_device *dev, u8 enable, u8 feature)
 	DPRINTK("EXIT, err_mask=%x\n", err_mask);
 	return err_mask;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ata_dev_set_feature);
+>>>>>>> refs/remotes/origin/master
 
 /**
  *	ata_dev_init_params - Issue INIT DEV PARAMS command
@@ -5332,12 +5841,17 @@ int ata_qc_complete_multiple(struct ata_port *ap, u32 qc_active)
 
 	if (unlikely(done_mask & qc_active)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_ERR, "illegal qc_active transition "
 				"(%08x->%08x)\n", ap->qc_active, qc_active);
 =======
 		ata_port_err(ap, "illegal qc_active transition (%08x->%08x)\n",
 			     ap->qc_active, qc_active);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_err(ap, "illegal qc_active transition (%08x->%08x)\n",
+			     ap->qc_active, qc_active);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -5637,6 +6151,7 @@ bool ata_link_offline(struct ata_link *link)
 
 #ifdef CONFIG_PM
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ata_host_request_pm(struct ata_host *host, pm_message_t mesg,
 			       unsigned int action, unsigned int ehi_flags,
 			       int wait)
@@ -5712,11 +6227,27 @@ static int ata_port_request_pm(struct ata_port *ap, pm_message_t mesg,
 	struct ata_link *link;
 	unsigned long flags;
 	int rc;
+=======
+static int ata_port_request_pm(struct ata_port *ap, pm_message_t mesg,
+			       unsigned int action, unsigned int ehi_flags,
+			       int *async)
+{
+	struct ata_link *link;
+	unsigned long flags;
+	int rc = 0;
+>>>>>>> refs/remotes/origin/master
 
 	/* Previous resume operation might still be in
 	 * progress.  Wait for PM_PENDING to clear.
 	 */
 	if (ap->pflags & ATA_PFLAG_PM_PENDING) {
+<<<<<<< HEAD
+=======
+		if (async) {
+			*async = -EAGAIN;
+			return 0;
+		}
+>>>>>>> refs/remotes/origin/master
 		ata_port_wait_eh(ap);
 		WARN_ON(ap->pflags & ATA_PFLAG_PM_PENDING);
 	}
@@ -5725,10 +6256,17 @@ static int ata_port_request_pm(struct ata_port *ap, pm_message_t mesg,
 	spin_lock_irqsave(ap->lock, flags);
 
 	ap->pm_mesg = mesg;
+<<<<<<< HEAD
 	if (wait) {
 		rc = 0;
 		ap->pm_result = &rc;
 	}
+=======
+	if (async)
+		ap->pm_result = async;
+	else
+		ap->pm_result = &rc;
+>>>>>>> refs/remotes/origin/master
 
 	ap->pflags |= ATA_PFLAG_PM_PENDING;
 	ata_for_each_link(link, ap, HOST_FIRST) {
@@ -5741,7 +6279,11 @@ static int ata_port_request_pm(struct ata_port *ap, pm_message_t mesg,
 	spin_unlock_irqrestore(ap->lock, flags);
 
 	/* wait and check result */
+<<<<<<< HEAD
 	if (wait) {
+=======
+	if (!async) {
+>>>>>>> refs/remotes/origin/master
 		ata_port_wait_eh(ap);
 		WARN_ON(ap->pflags & ATA_PFLAG_PM_PENDING);
 	}
@@ -5749,6 +6291,7 @@ static int ata_port_request_pm(struct ata_port *ap, pm_message_t mesg,
 	return rc;
 }
 
+<<<<<<< HEAD
 #define to_ata_port(d) container_of(d, struct ata_port, tdev)
 
 static int ata_port_suspend_common(struct device *dev, pm_message_t mesg)
@@ -5758,6 +6301,10 @@ static int ata_port_suspend_common(struct device *dev, pm_message_t mesg)
 	unsigned int ehi_flags = ATA_EHI_QUIET;
 	int rc;
 
+=======
+static int __ata_port_suspend_common(struct ata_port *ap, pm_message_t mesg, int *async)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * On some hardware, device fails to respond after spun down
 	 * for suspend.  As the device won't be used before being
@@ -5766,6 +6313,7 @@ static int ata_port_suspend_common(struct device *dev, pm_message_t mesg)
 	 *
 	 * http://thread.gmane.org/gmane.linux.ide/46764
 	 */
+<<<<<<< HEAD
 	if (mesg.event == PM_EVENT_SUSPEND)
 		ehi_flags |= ATA_EHI_NO_AUTOPSY | ATA_EHI_NO_RECOVERY;
 
@@ -5779,6 +6327,18 @@ static int ata_port_suspend_common(struct device *dev, pm_message_t mesg)
 =======
 	rc = ata_port_request_pm(ap, mesg, 0, ehi_flags, 1);
 	return rc;
+=======
+	unsigned int ehi_flags = ATA_EHI_QUIET | ATA_EHI_NO_AUTOPSY |
+				 ATA_EHI_NO_RECOVERY;
+	return ata_port_request_pm(ap, mesg, 0, ehi_flags, async);
+}
+
+static int ata_port_suspend_common(struct device *dev, pm_message_t mesg)
+{
+	struct ata_port *ap = to_ata_port(dev);
+
+	return __ata_port_suspend_common(ap, mesg, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int ata_port_suspend(struct device *dev)
@@ -5792,13 +6352,18 @@ static int ata_port_suspend(struct device *dev)
 static int ata_port_do_freeze(struct device *dev)
 {
 	if (pm_runtime_suspended(dev))
+<<<<<<< HEAD
 		pm_runtime_resume(dev);
+=======
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	return ata_port_suspend_common(dev, PMSG_FREEZE);
 }
 
 static int ata_port_poweroff(struct device *dev)
 {
+<<<<<<< HEAD
 	if (pm_runtime_suspended(dev))
 		return 0;
 
@@ -5815,11 +6380,37 @@ static int ata_port_resume_common(struct device *dev)
 	return rc;
 }
 
+=======
+	return ata_port_suspend_common(dev, PMSG_HIBERNATE);
+}
+
+static int __ata_port_resume_common(struct ata_port *ap, pm_message_t mesg,
+				    int *async)
+{
+	int rc;
+
+	rc = ata_port_request_pm(ap, mesg, ATA_EH_RESET,
+		ATA_EHI_NO_AUTOPSY | ATA_EHI_QUIET, async);
+	return rc;
+}
+
+static int ata_port_resume_common(struct device *dev, pm_message_t mesg)
+{
+	struct ata_port *ap = to_ata_port(dev);
+
+	return __ata_port_resume_common(ap, mesg, NULL);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int ata_port_resume(struct device *dev)
 {
 	int rc;
 
+<<<<<<< HEAD
 	rc = ata_port_resume_common(dev);
+=======
+	rc = ata_port_resume_common(dev, PMSG_RESUME);
+>>>>>>> refs/remotes/origin/master
 	if (!rc) {
 		pm_runtime_disable(dev);
 		pm_runtime_set_active(dev);
@@ -5829,9 +6420,44 @@ static int ata_port_resume(struct device *dev)
 	return rc;
 }
 
+<<<<<<< HEAD
 static int ata_port_runtime_idle(struct device *dev)
 {
 	return pm_runtime_suspend(dev);
+=======
+/*
+ * For ODDs, the upper layer will poll for media change every few seconds,
+ * which will make it enter and leave suspend state every few seconds. And
+ * as each suspend will cause a hard/soft reset, the gain of runtime suspend
+ * is very little and the ODD may malfunction after constantly being reset.
+ * So the idle callback here will not proceed to suspend if a non-ZPODD capable
+ * ODD is attached to the port.
+ */
+static int ata_port_runtime_idle(struct device *dev)
+{
+	struct ata_port *ap = to_ata_port(dev);
+	struct ata_link *link;
+	struct ata_device *adev;
+
+	ata_for_each_link(link, ap, HOST_FIRST) {
+		ata_for_each_dev(adev, link, ENABLED)
+			if (adev->class == ATA_DEV_ATAPI &&
+			    !zpodd_dev_enabled(adev))
+				return -EBUSY;
+	}
+
+	return 0;
+}
+
+static int ata_port_runtime_suspend(struct device *dev)
+{
+	return ata_port_suspend_common(dev, PMSG_AUTO_SUSPEND);
+}
+
+static int ata_port_runtime_resume(struct device *dev)
+{
+	return ata_port_resume_common(dev, PMSG_AUTO_RESUME);
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct dev_pm_ops ata_port_pm_ops = {
@@ -5842,11 +6468,37 @@ static const struct dev_pm_ops ata_port_pm_ops = {
 	.poweroff = ata_port_poweroff,
 	.restore = ata_port_resume,
 
+<<<<<<< HEAD
 	.runtime_suspend = ata_port_suspend,
 	.runtime_resume = ata_port_resume_common,
 	.runtime_idle = ata_port_runtime_idle,
 };
 
+=======
+	.runtime_suspend = ata_port_runtime_suspend,
+	.runtime_resume = ata_port_runtime_resume,
+	.runtime_idle = ata_port_runtime_idle,
+};
+
+/* sas ports don't participate in pm runtime management of ata_ports,
+ * and need to resume ata devices at the domain level, not the per-port
+ * level. sas suspend/resume is async to allow parallel port recovery
+ * since sas has multiple ata_port instances per Scsi_Host.
+ */
+int ata_sas_port_async_suspend(struct ata_port *ap, int *async)
+{
+	return __ata_port_suspend_common(ap, PMSG_SUSPEND, async);
+}
+EXPORT_SYMBOL_GPL(ata_sas_port_async_suspend);
+
+int ata_sas_port_async_resume(struct ata_port *ap, int *async)
+{
+	return __ata_port_resume_common(ap, PMSG_RESUME, async);
+}
+EXPORT_SYMBOL_GPL(ata_sas_port_async_resume);
+
+
+>>>>>>> refs/remotes/origin/master
 /**
  *	ata_host_suspend - suspend host
  *	@host: host to suspend
@@ -5860,11 +6512,15 @@ int ata_host_suspend(struct ata_host *host, pm_message_t mesg)
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	ata_host_resume - resume host
  *	@host: host to resume
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  *	Resume @host.  Actual operation is performed by EH.  This
  *	function requests EH to perform PM operations and returns.
@@ -5878,17 +6534,25 @@ void ata_host_resume(struct ata_host *host)
 	ata_host_request_pm(host, PMSG_ON, ATA_EH_RESET,
 			    ATA_EHI_NO_AUTOPSY | ATA_EHI_QUIET, 0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *	Resume @host.  Actual operation is performed by port resume.
  */
 void ata_host_resume(struct ata_host *host)
 {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	host->dev->power.power_state = PMSG_ON;
 }
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct device_type ata_port_type = {
 	.name = "ata_port",
 #ifdef CONFIG_PM
@@ -5896,7 +6560,10 @@ struct device_type ata_port_type = {
 #endif
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  *	ata_dev_init - Initialize an ata_device structure
  *	@dev: Device structure to initialize
@@ -6027,6 +6694,10 @@ struct ata_port *ata_port_alloc(struct ata_host *host)
 	ap->pflags |= ATA_PFLAG_INITIALIZING | ATA_PFLAG_FROZEN;
 	ap->lock = &host->lock;
 	ap->print_id = -1;
+<<<<<<< HEAD
+=======
+	ap->local_port_no = -1;
+>>>>>>> refs/remotes/origin/master
 	ap->host = host;
 	ap->dev = host->dev;
 
@@ -6385,6 +7056,7 @@ int ata_host_start(struct ata_host *host)
 			if (rc) {
 				if (rc != -ENODEV)
 <<<<<<< HEAD
+<<<<<<< HEAD
 					dev_printk(KERN_ERR, host->dev,
 						"failed to start port %d "
 						"(errno=%d)\n", i, rc);
@@ -6393,6 +7065,11 @@ int ata_host_start(struct ata_host *host)
 						"failed to start port %d (errno=%d)\n",
 						i, rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					dev_err(host->dev,
+						"failed to start port %d (errno=%d)\n",
+						i, rc);
+>>>>>>> refs/remotes/origin/master
 				goto err_out;
 			}
 		}
@@ -6416,6 +7093,7 @@ int ata_host_start(struct ata_host *host)
 }
 
 /**
+<<<<<<< HEAD
  *	ata_sas_host_init - Initialize a host struct
  *	@host:	host to initialize
  *	@dev:	device host is attached to
@@ -6429,10 +7107,21 @@ int ata_host_start(struct ata_host *host)
 /* KILLME - the only user left is ipr */
 void ata_host_init(struct ata_host *host, struct device *dev,
 		   unsigned long flags, struct ata_port_operations *ops)
+=======
+ *	ata_sas_host_init - Initialize a host struct for sas (ipr, libsas)
+ *	@host:	host to initialize
+ *	@dev:	device host is attached to
+ *	@ops:	port_ops
+ *
+ */
+void ata_host_init(struct ata_host *host, struct device *dev,
+		   struct ata_port_operations *ops)
+>>>>>>> refs/remotes/origin/master
 {
 	spin_lock_init(&host->lock);
 	mutex_init(&host->eh_mutex);
 	host->dev = dev;
+<<<<<<< HEAD
 	host->flags = flags;
 	host->ops = ops;
 }
@@ -6462,6 +7151,11 @@ int ata_port_probe(struct ata_port *ap)
 
 		/* wait for EH to finish */
 =======
+=======
+	host->ops = ops;
+}
+
+>>>>>>> refs/remotes/origin/master
 void __ata_port_probe(struct ata_port *ap)
 {
 	struct ata_eh_info *ehi = &ap->link.eh_info;
@@ -6487,7 +7181,10 @@ int ata_port_probe(struct ata_port *ap)
 
 	if (ap->ops->error_handler) {
 		__ata_port_probe(ap);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ata_port_wait_eh(ap);
 	} else {
 		DPRINTK("ata%u: bus probe begin\n", ap->print_id);
@@ -6543,11 +7240,15 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
 	/* host must have been started */
 	if (!(host->flags & ATA_HOST_STARTED)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, host->dev,
 			   "BUG: trying to register unstarted host\n");
 =======
 		dev_err(host->dev, "BUG: trying to register unstarted host\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(host->dev, "BUG: trying to register unstarted host\n");
+>>>>>>> refs/remotes/origin/master
 		WARN_ON(1);
 		return -EINVAL;
 	}
@@ -6560,6 +7261,7 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
 		kfree(host->ports[i]);
 
 	/* give ports names and add SCSI hosts */
+<<<<<<< HEAD
 	for (i = 0; i < host->n_ports; i++)
 <<<<<<< HEAD
 		host->ports[i]->print_id = ata_print_id++;
@@ -6567,6 +7269,12 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
 		host->ports[i]->print_id = atomic_inc_return(&ata_print_id);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+	for (i = 0; i < host->n_ports; i++) {
+		host->ports[i]->print_id = atomic_inc_return(&ata_print_id);
+		host->ports[i]->local_port_no = i + 1;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	/* Create associated sysfs transport objects  */
 	for (i = 0; i < host->n_ports; i++) {
@@ -6580,9 +7288,12 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
 	if (rc)
 		goto err_tadd;
 
+<<<<<<< HEAD
 	/* associate with ACPI nodes */
 	ata_acpi_associate(host);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* set cable, sata_spd_limit and report */
 	for (i = 0; i < host->n_ports; i++) {
 		struct ata_port *ap = host->ports[i];
@@ -6603,6 +7314,7 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
 
 		if (!ata_port_is_dummy(ap)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_port_printk(ap, KERN_INFO,
 					"%cATA max %s %s\n",
 					(ap->flags & ATA_FLAG_SATA) ? 'S' : 'P',
@@ -6612,6 +7324,8 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
 		} else
 			ata_port_printk(ap, KERN_INFO, "DUMMY\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ata_port_info(ap, "%cATA max %s %s\n",
 				      (ap->flags & ATA_FLAG_SATA) ? 'S' : 'P',
 				      ata_mode_string(xfer_mask),
@@ -6619,7 +7333,10 @@ int ata_host_register(struct ata_host *host, struct scsi_host_template *sht)
 			ata_ehi_clear_desc(&ap->link.eh_info);
 		} else
 			ata_port_info(ap, "DUMMY\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* perform each probe asynchronously */
@@ -6731,10 +7448,16 @@ static void ata_port_detach(struct ata_port *ap)
 		for (i = 0; i < SATA_PMP_MAX_PORTS; i++)
 			ata_tlink_delete(&ap->pmp_link[i]);
 	}
+<<<<<<< HEAD
 	ata_tport_delete(ap);
 
 	/* remove the associated SCSI host */
 	scsi_remove_host(ap->scsi_host);
+=======
+	/* remove the associated SCSI host */
+	scsi_remove_host(ap->scsi_host);
+	ata_tport_delete(ap);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -6772,8 +7495,12 @@ void ata_host_detach(struct ata_host *host)
  */
 void ata_pci_remove_one(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct device *dev = &pdev->dev;
 	struct ata_host *host = dev_get_drvdata(dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 
 	ata_host_detach(host);
 }
@@ -6832,12 +7559,17 @@ int ata_pci_device_do_resume(struct pci_dev *pdev)
 	rc = pcim_enable_device(pdev);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_printk(KERN_ERR, &pdev->dev,
 			   "failed to enable device after resume (%d)\n", rc);
 =======
 		dev_err(&pdev->dev,
 			"failed to enable device after resume (%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_err(&pdev->dev,
+			"failed to enable device after resume (%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		return rc;
 	}
 
@@ -6847,7 +7579,11 @@ int ata_pci_device_do_resume(struct pci_dev *pdev)
 
 int ata_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc = 0;
 
 	rc = ata_host_suspend(host, mesg);
@@ -6861,7 +7597,11 @@ int ata_pci_device_suspend(struct pci_dev *pdev, pm_message_t mesg)
 
 int ata_pci_device_resume(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	struct ata_host *host = dev_get_drvdata(&pdev->dev);
+=======
+	struct ata_host *host = pci_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int rc;
 
 	rc = ata_pci_device_do_resume(pdev);
@@ -6873,6 +7613,29 @@ int ata_pci_device_resume(struct pci_dev *pdev)
 
 #endif /* CONFIG_PCI */
 
+<<<<<<< HEAD
+=======
+/**
+ *	ata_platform_remove_one - Platform layer callback for device removal
+ *	@pdev: Platform device that was removed
+ *
+ *	Platform layer indicates to libata via this hook that hot-unplug or
+ *	module unload event has occurred.  Detach all ports.  Resource
+ *	release is handled via devres.
+ *
+ *	LOCKING:
+ *	Inherited from platform layer (may sleep).
+ */
+int ata_platform_remove_one(struct platform_device *pdev)
+{
+	struct ata_host *host = platform_get_drvdata(pdev);
+
+	ata_host_detach(host);
+
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int __init ata_parse_force_one(char **cur,
 				      struct ata_force_ent *force_ent,
 				      const char **reason)
@@ -6931,6 +7694,12 @@ static int __init ata_parse_force_one(char **cur,
 		{ "nohrst",	.lflags		= ATA_LFLAG_NO_HRST },
 		{ "nosrst",	.lflags		= ATA_LFLAG_NO_SRST },
 		{ "norst",	.lflags		= ATA_LFLAG_NO_HRST | ATA_LFLAG_NO_SRST },
+<<<<<<< HEAD
+=======
+		{ "rstonce",	.lflags		= ATA_LFLAG_RST_ONCE },
+		{ "atapi_dmadir", .horkage_on	= ATA_HORKAGE_ATAPI_DMADIR },
+		{ "disable",	.horkage_on	= ATA_HORKAGE_DISABLE },
+>>>>>>> refs/remotes/origin/master
 	};
 	char *start = *cur, *p = *cur;
 	char *id, *val, *endp;
@@ -7187,6 +7956,11 @@ struct ata_port_operations ata_dummy_port_ops = {
 	.qc_prep		= ata_noop_qc_prep,
 	.qc_issue		= ata_dummy_qc_issue,
 	.error_handler		= ata_dummy_error_handler,
+<<<<<<< HEAD
+=======
+	.sched_eh		= ata_std_sched_eh,
+	.end_eh			= ata_std_end_eh,
+>>>>>>> refs/remotes/origin/master
 };
 
 const struct ata_port_info ata_dummy_port_info = {
@@ -7195,7 +7969,10 @@ const struct ata_port_info ata_dummy_port_info = {
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Utility print functions
  */
 int ata_port_printk(const struct ata_port *ap, const char *level,
@@ -7272,7 +8049,10 @@ void ata_print_version(const struct device *dev, const char *version)
 EXPORT_SYMBOL(ata_print_version);
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * libata is essentially a library of internal helper functions for
  * low-level ATA host controller drivers.  As such, the API/ABI is
  * likely to change as new drivers are added and updated.
@@ -7333,9 +8113,13 @@ EXPORT_SYMBOL_GPL(ata_scsi_slave_config);
 EXPORT_SYMBOL_GPL(ata_scsi_slave_destroy);
 EXPORT_SYMBOL_GPL(ata_scsi_change_queue_depth);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 EXPORT_SYMBOL_GPL(__ata_change_queue_depth);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(__ata_change_queue_depth);
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(sata_scr_valid);
 EXPORT_SYMBOL_GPL(sata_scr_read);
 EXPORT_SYMBOL_GPL(sata_scr_write);
@@ -7368,6 +8152,11 @@ EXPORT_SYMBOL_GPL(ata_pci_device_resume);
 #endif /* CONFIG_PM */
 #endif /* CONFIG_PCI */
 
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(ata_platform_remove_one);
+
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(__ata_ehi_push_desc);
 EXPORT_SYMBOL_GPL(ata_ehi_push_desc);
 EXPORT_SYMBOL_GPL(ata_ehi_clear_desc);

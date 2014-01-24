@@ -3,10 +3,14 @@
  *
  * Author:
 <<<<<<< HEAD
+<<<<<<< HEAD
  *	Colin Cross <ccross <at> android.com>
 =======
  *	Colin Cross <ccross@android.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *	Colin Cross <ccross@android.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -25,15 +29,22 @@
 #include <linux/notifier.h>
 #include <linux/spinlock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/syscore_ops.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/syscore_ops.h>
+>>>>>>> refs/remotes/origin/master
 
 static DEFINE_RWLOCK(cpu_pm_notifier_lock);
 static RAW_NOTIFIER_HEAD(cpu_pm_notifier_chain);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int cpu_pm_notify(enum cpu_pm_event event, int nr_to_call, int *nr_calls)
 {
 	int ret;
@@ -54,7 +65,10 @@ static int cpu_pm_notify(enum cpu_pm_event event, int nr_to_call, int *nr_calls)
  * This function may sleep, and has the same return conditions as
  * raw_notifier_chain_register.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cpu_pm_register_notifier(struct notifier_block *nb)
 {
 	unsigned long flags;
@@ -69,7 +83,10 @@ int cpu_pm_register_notifier(struct notifier_block *nb)
 EXPORT_SYMBOL_GPL(cpu_pm_register_notifier);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * cpu_pm_unregister_notifier - unregister a driver with cpu_pm
  * @nb: notifier block to be unregistered
@@ -79,7 +96,10 @@ EXPORT_SYMBOL_GPL(cpu_pm_register_notifier);
  * This function may sleep, and has the same return conditions as
  * raw_notifier_chain_unregister.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cpu_pm_unregister_notifier(struct notifier_block *nb)
 {
 	unsigned long flags;
@@ -94,6 +114,7 @@ int cpu_pm_unregister_notifier(struct notifier_block *nb)
 EXPORT_SYMBOL_GPL(cpu_pm_unregister_notifier);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int cpu_pm_notify(enum cpu_pm_event event, int nr_to_call, int *nr_calls)
 {
 	int ret;
@@ -107,6 +128,10 @@ static int cpu_pm_notify(enum cpu_pm_event event, int nr_to_call, int *nr_calls)
 =======
 /**
  * cpm_pm_enter - CPU low power entry notifier
+=======
+/**
+ * cpu_pm_enter - CPU low power entry notifier
+>>>>>>> refs/remotes/origin/master
  *
  * Notifies listeners that a single CPU is entering a low power state that may
  * cause some blocks in the same power domain as the cpu to reset.
@@ -114,13 +139,20 @@ static int cpu_pm_notify(enum cpu_pm_event event, int nr_to_call, int *nr_calls)
  * Must be called on the affected CPU with interrupts disabled.  Platform is
  * responsible for ensuring that cpu_pm_enter is not called twice on the same
  * CPU before cpu_pm_exit is called. Notified drivers can include VFP
+<<<<<<< HEAD
  * co-processor, interrupt controller and it's PM extensions, local CPU
+=======
+ * co-processor, interrupt controller and its PM extensions, local CPU
+>>>>>>> refs/remotes/origin/master
  * timers context save/restore which shouldn't be interrupted. Hence it
  * must be called with interrupts disabled.
  *
  * Return conditions are same as __raw_notifier_call_chain.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cpu_pm_enter(void)
 {
 	int nr_calls;
@@ -130,12 +162,18 @@ int cpu_pm_enter(void)
 	ret = cpu_pm_notify(CPU_PM_ENTER, -1, &nr_calls);
 	if (ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Inform listeners (nr_calls - 1) about failure of CPU PM
 		 * PM entry who are notified earlier to prepare for it.
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cpu_pm_notify(CPU_PM_ENTER_FAILED, nr_calls - 1, NULL);
 	read_unlock(&cpu_pm_notifier_lock);
 
@@ -144,20 +182,32 @@ int cpu_pm_enter(void)
 EXPORT_SYMBOL_GPL(cpu_pm_enter);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * cpm_pm_exit - CPU low power exit notifier
+=======
+/**
+ * cpu_pm_exit - CPU low power exit notifier
+>>>>>>> refs/remotes/origin/master
  *
  * Notifies listeners that a single CPU is exiting a low power state that may
  * have caused some blocks in the same power domain as the cpu to reset.
  *
  * Notified drivers can include VFP co-processor, interrupt controller
+<<<<<<< HEAD
  * and it's PM extensions, local CPU timers context save/restore which
+=======
+ * and its PM extensions, local CPU timers context save/restore which
+>>>>>>> refs/remotes/origin/master
  * shouldn't be interrupted. Hence it must be called with interrupts disabled.
  *
  * Return conditions are same as __raw_notifier_call_chain.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cpu_pm_exit(void)
 {
 	int ret;
@@ -171,9 +221,14 @@ int cpu_pm_exit(void)
 EXPORT_SYMBOL_GPL(cpu_pm_exit);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * cpm_cluster_pm_enter - CPU cluster low power entry notifier
+=======
+/**
+ * cpu_cluster_pm_enter - CPU cluster low power entry notifier
+>>>>>>> refs/remotes/origin/master
  *
  * Notifies listeners that all cpus in a power domain are entering a low power
  * state that may cause some blocks in the same power domain to reset.
@@ -181,14 +236,21 @@ EXPORT_SYMBOL_GPL(cpu_pm_exit);
  * Must be called after cpu_pm_enter has been called on all cpus in the power
  * domain, and before cpu_pm_exit has been called on any cpu in the power
  * domain. Notified drivers can include VFP co-processor, interrupt controller
+<<<<<<< HEAD
  * and it's PM extensions, local CPU timers context save/restore which
+=======
+ * and its PM extensions, local CPU timers context save/restore which
+>>>>>>> refs/remotes/origin/master
  * shouldn't be interrupted. Hence it must be called with interrupts disabled.
  *
  * Must be called with interrupts disabled.
  *
  * Return conditions are same as __raw_notifier_call_chain.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cpu_cluster_pm_enter(void)
 {
 	int nr_calls;
@@ -198,12 +260,18 @@ int cpu_cluster_pm_enter(void)
 	ret = cpu_pm_notify(CPU_CLUSTER_PM_ENTER, -1, &nr_calls);
 	if (ret)
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Inform listeners (nr_calls - 1) about failure of CPU cluster
 		 * PM entry who are notified earlier to prepare for it.
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cpu_pm_notify(CPU_CLUSTER_PM_ENTER_FAILED, nr_calls - 1, NULL);
 	read_unlock(&cpu_pm_notifier_lock);
 
@@ -212,9 +280,14 @@ int cpu_cluster_pm_enter(void)
 EXPORT_SYMBOL_GPL(cpu_cluster_pm_enter);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * cpm_cluster_pm_exit - CPU cluster low power exit notifier
+=======
+/**
+ * cpu_cluster_pm_exit - CPU cluster low power exit notifier
+>>>>>>> refs/remotes/origin/master
  *
  * Notifies listeners that all cpus in a power domain are exiting form a
  * low power state that may have caused some blocks in the same power domain
@@ -223,12 +296,19 @@ EXPORT_SYMBOL_GPL(cpu_cluster_pm_enter);
  * Must be called after cpu_pm_exit has been called on all cpus in the power
  * domain, and before cpu_pm_exit has been called on any cpu in the power
  * domain. Notified drivers can include VFP co-processor, interrupt controller
+<<<<<<< HEAD
  * and it's PM extensions, local CPU timers context save/restore which
+=======
+ * and its PM extensions, local CPU timers context save/restore which
+>>>>>>> refs/remotes/origin/master
  * shouldn't be interrupted. Hence it must be called with interrupts disabled.
  *
  * Return conditions are same as __raw_notifier_call_chain.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int cpu_cluster_pm_exit(void)
 {
 	int ret;
@@ -241,7 +321,10 @@ int cpu_cluster_pm_exit(void)
 }
 EXPORT_SYMBOL_GPL(cpu_cluster_pm_exit);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PM
 static int cpu_pm_suspend(void)
@@ -274,4 +357,7 @@ static int cpu_pm_init(void)
 }
 core_initcall(cpu_pm_init);
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

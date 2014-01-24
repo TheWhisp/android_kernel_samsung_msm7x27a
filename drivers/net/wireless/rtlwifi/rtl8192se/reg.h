@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -253,6 +257,7 @@
 #define	TIMER0					0x02E4
 #define	TIMER1					0x02E8
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define	GPIO_CTRL				0x02EC
 #define	GPIO_IN					0x02EC
 #define	GPIO_OUT				0x02ED
@@ -263,6 +268,10 @@
 #define	GPIO_IN_SE				0x02EC
 #define	GPIO_IO_SEL				0x02EE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define	GPIO_IN_SE				0x02EC
+#define	GPIO_IO_SEL				0x02EE
+>>>>>>> refs/remotes/origin/master
 #define	MAC_PINMUX_CFG				0x02F1
 #define	LEDCFG					0x02F2
 #define	PHY_REG					0x02F3
@@ -438,6 +447,7 @@
 #define	EXT_IMEM_CODE_DONE			BIT(2)
 #define	IMEM_CHK_RPT				BIT(1)
 #define	IMEM_CODE_DONE				BIT(0)
+<<<<<<< HEAD
 #define	IMEM_CODE_DONE				BIT(0)
 #define	IMEM_CHK_RPT				BIT(1)
 #define	EMEM_CODE_DONE				BIT(2)
@@ -446,6 +456,11 @@
 #define	IMEM_RDY				BIT(5)
 #define	BASECHG					BIT(6)
 #define	FWRDY					BIT(7)
+=======
+#define	EMEM_CODE_DONE				BIT(2)
+#define	EMEM_CHK_RPT				BIT(3)
+#define	IMEM_RDY				BIT(5)
+>>>>>>> refs/remotes/origin/master
 #define	LOAD_FW_READY				(IMEM_CODE_DONE | \
 						IMEM_CHK_RPT | \
 						EMEM_CODE_DONE | \
@@ -749,9 +764,13 @@
 #define EFUSE_MAX_SECTION			16
 #define EFUSE_REAL_CONTENT_LEN			512
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define EFUSE_OOB_PROTECT_BYTES			15
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define EFUSE_OOB_PROTECT_BYTES			15
+>>>>>>> refs/remotes/origin/master
 
 #define RTL8190_EEPROM_ID			0x8129
 #define EEPROM_HPON				0x02

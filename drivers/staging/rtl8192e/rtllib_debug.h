@@ -2,7 +2,11 @@
  * Copyright(c) 2008 - 2010 Realtek Corporation. All rights reserved.
  *
  * Based on the r8180 driver, which is:
+<<<<<<< HEAD
  * Copyright 2004-2005 Andrea Merello <andreamrl@tiscali.it>, et al.
+=======
+ * Copyright 2004-2005 Andrea Merello <andrea.merello@gmail.com>, et al.
+>>>>>>> refs/remotes/origin/master
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -75,6 +79,7 @@ do {			\
 	if (rt_global_debug_component & component) \
 		printk(KERN_DEBUG DRV_NAME ":" x "\n" , \
 		       ##args);\
+<<<<<<< HEAD
 } while (0);
 
 #define assert(expr) \
@@ -82,5 +87,16 @@ do {			\
 		printk(KERN_INFO "Assertion failed! %s,%s,%s,line=%d\n", \
 		#expr, __FILE__, __func__, __LINE__);	  \
 	}
+=======
+} while (0)
+
+#define assert(expr) \
+do {	\
+	if (!(expr)) {				  \
+		printk(KERN_INFO "Assertion failed! %s,%s,%s,line=%d\n", \
+		#expr, __FILE__, __func__, __LINE__);	  \
+	}	\
+} while (0);
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -17,8 +17,13 @@
 #include <linux/delay.h>
 #include <linux/io.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
 #include "./common.h"
 #include "./pipe.h"
+=======
+#include "common.h"
+#include "pipe.h"
+>>>>>>> refs/remotes/origin/master
 
 #define usbhsf_get_cfifo(p)	(&((p)->fifo_info.cfifo))
 #define usbhsf_get_d0fifo(p)	(&((p)->fifo_info.d0fifo))
@@ -32,7 +37,10 @@
  */
 void usbhs_pkt_init(struct usbhs_pkt *pkt)
 {
+<<<<<<< HEAD
 	pkt->dma = DMA_ADDR_INVALID;
+=======
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&pkt->node);
 }
 
@@ -163,7 +171,11 @@ static int usbhsf_pkt_handler(struct usbhs_pipe *pipe, int type)
 		func = pkt->handler->dma_done;
 		break;
 	default:
+<<<<<<< HEAD
 		dev_err(dev, "unknown pkt hander\n");
+=======
+		dev_err(dev, "unknown pkt handler\n");
+>>>>>>> refs/remotes/origin/master
 		goto __usbhs_pkt_handler_end;
 	}
 
@@ -192,8 +204,13 @@ void usbhs_pkt_start(struct usbhs_pipe *pipe)
 /*
  *		irq enable/disable function
  */
+<<<<<<< HEAD
 #define usbhsf_irq_empty_ctrl(p, e) usbhsf_irq_callback_ctrl(p, bempsts, e)
 #define usbhsf_irq_ready_ctrl(p, e) usbhsf_irq_callback_ctrl(p, brdysts, e)
+=======
+#define usbhsf_irq_empty_ctrl(p, e) usbhsf_irq_callback_ctrl(p, irq_bempsts, e)
+#define usbhsf_irq_ready_ctrl(p, e) usbhsf_irq_callback_ctrl(p, irq_brdysts, e)
+>>>>>>> refs/remotes/origin/master
 #define usbhsf_irq_callback_ctrl(pipe, status, enable)			\
 	({								\
 		struct usbhs_priv *priv = usbhs_pipe_to_priv(pipe);	\
@@ -202,9 +219,15 @@ void usbhs_pkt_start(struct usbhs_pipe *pipe)
 		if (!mod)						\
 			return;						\
 		if (enable)						\
+<<<<<<< HEAD
 			mod->irq_##status |= status;			\
 		else							\
 			mod->irq_##status &= ~status;			\
+=======
+			mod->status |= status;				\
+		else							\
+			mod->status &= ~status;				\
+>>>>>>> refs/remotes/origin/master
 		usbhs_irq_callback_update(priv, mod);			\
 	})
 
@@ -488,6 +511,11 @@ static int usbhsf_pio_try_push(struct usbhs_pkt *pkt, int *is_done)
 	usbhs_pipe_data_sequence(pipe, pkt->sequence);
 	pkt->sequence = -1; /* -1 sequence will be ignored */
 
+<<<<<<< HEAD
+=======
+	usbhs_pipe_set_trans_count_if_bulk(pipe, pkt->length);
+
+>>>>>>> refs/remotes/origin/master
 	ret = usbhsf_fifo_select(pipe, fifo, 1);
 	if (ret < 0)
 		return 0;
@@ -594,6 +622,10 @@ static int usbhsf_prepare_pop(struct usbhs_pkt *pkt, int *is_done)
 	usbhs_pipe_data_sequence(pipe, pkt->sequence);
 	pkt->sequence = -1; /* -1 sequence will be ignored */
 
+<<<<<<< HEAD
+=======
+	usbhs_pipe_set_trans_count_if_bulk(pipe, pkt->length);
+>>>>>>> refs/remotes/origin/master
 	usbhs_pipe_enable(pipe);
 	usbhsf_rx_irq_ctrl(pipe, 1);
 
@@ -771,11 +803,15 @@ static void xfer_work(struct work_struct *work)
 	struct usbhs_pipe *pipe = pkt->pipe;
 	struct usbhs_fifo *fifo = usbhs_pipe_to_fifo(pipe);
 	struct usbhs_priv *priv = usbhs_pipe_to_priv(pipe);
+<<<<<<< HEAD
 	struct scatterlist sg;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dma_async_tx_descriptor *desc;
 	struct dma_chan *chan = usbhsf_dma_chan_get(fifo, pkt);
 	struct device *dev = usbhs_priv_to_dev(priv);
 	enum dma_transfer_direction dir;
+<<<<<<< HEAD
 	dma_cookie_t cookie;
 
 	dir = usbhs_pipe_is_dir_in(pipe) ? DMA_DEV_TO_MEM : DMA_MEM_TO_DEV;
@@ -787,6 +823,13 @@ static void xfer_work(struct work_struct *work)
 	sg_dma_len(&sg) = pkt->trans;
 
 	desc = dmaengine_prep_slave_sg(chan, &sg, 1, dir,
+=======
+
+	dir = usbhs_pipe_is_dir_in(pipe) ? DMA_DEV_TO_MEM : DMA_MEM_TO_DEV;
+
+	desc = dmaengine_prep_slave_single(chan, pkt->dma + pkt->actual,
+					pkt->trans, dir,
+>>>>>>> refs/remotes/origin/master
 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 	if (!desc)
 		return;
@@ -794,8 +837,12 @@ static void xfer_work(struct work_struct *work)
 	desc->callback		= usbhsf_dma_complete;
 	desc->callback_param	= pipe;
 
+<<<<<<< HEAD
 	cookie = desc->tx_submit(desc);
 	if (cookie < 0) {
+=======
+	if (dmaengine_submit(desc) < 0) {
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "Failed to submit dma descriptor\n");
 		return;
 	}
@@ -803,6 +850,11 @@ static void xfer_work(struct work_struct *work)
 	dev_dbg(dev, "  %s %d (%d/ %d)\n",
 		fifo->name, usbhs_pipe_number(pipe), pkt->length, pkt->zero);
 
+<<<<<<< HEAD
+=======
+	usbhs_pipe_set_trans_count_if_bulk(pipe, pkt->trans);
+	usbhs_pipe_enable(pipe);
+>>>>>>> refs/remotes/origin/master
 	usbhsf_dma_start(pipe, fifo);
 	dma_async_issue_pending(chan);
 }
@@ -826,7 +878,11 @@ static int usbhsf_dma_prepare_push(struct usbhs_pkt *pkt, int *is_done)
 	    usbhs_pipe_is_dcp(pipe))
 		goto usbhsf_pio_prepare_push;
 
+<<<<<<< HEAD
 	if (len % 4) /* 32bit alignment */
+=======
+	if (len & 0x7) /* 8byte alignment */
+>>>>>>> refs/remotes/origin/master
 		goto usbhsf_pio_prepare_push;
 
 	if ((uintptr_t)(pkt->buf + pkt->actual) & 0x7) /* 8byte alignment */
@@ -913,7 +969,11 @@ static int usbhsf_dma_try_pop(struct usbhs_pkt *pkt, int *is_done)
 	/* use PIO if packet is less than pio_dma_border */
 	len = usbhsf_fifo_rcv_len(priv, fifo);
 	len = min(pkt->length - pkt->actual, len);
+<<<<<<< HEAD
 	if (len % 4) /* 32bit alignment */
+=======
+	if (len & 0x7) /* 8byte alignment */
+>>>>>>> refs/remotes/origin/master
 		goto usbhsf_pio_prepare_pop_unselect;
 
 	if (len < usbhs_get_dparam(priv, pio_dma_border))
@@ -994,7 +1054,11 @@ static bool usbhsf_dma_filter(struct dma_chan *chan, void *param)
 	 *
 	 * usbhs doesn't recognize id = 0 as valid DMA
 	 */
+<<<<<<< HEAD
 	if (0 == slave->slave_id)
+=======
+	if (0 == slave->shdma_slave.slave_id)
+>>>>>>> refs/remotes/origin/master
 		return false;
 
 	chan->private = slave;
@@ -1128,6 +1192,7 @@ void usbhs_fifo_init(struct usbhs_priv *priv)
 	mod->irq_brdysts	= 0;
 
 	cfifo->pipe	= NULL;
+<<<<<<< HEAD
 	cfifo->tx_chan	= NULL;
 	cfifo->rx_chan	= NULL;
 
@@ -1141,6 +1206,10 @@ void usbhs_fifo_init(struct usbhs_priv *priv)
 
 	usbhsf_dma_init(priv, usbhsf_get_d0fifo(priv));
 	usbhsf_dma_init(priv, usbhsf_get_d1fifo(priv));
+=======
+	d0fifo->pipe	= NULL;
+	d1fifo->pipe	= NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 void usbhs_fifo_quit(struct usbhs_priv *priv)
@@ -1151,9 +1220,12 @@ void usbhs_fifo_quit(struct usbhs_priv *priv)
 	mod->irq_ready		= NULL;
 	mod->irq_bempsts	= 0;
 	mod->irq_brdysts	= 0;
+<<<<<<< HEAD
 
 	usbhsf_dma_quit(priv, usbhsf_get_d0fifo(priv));
 	usbhsf_dma_quit(priv, usbhsf_get_d1fifo(priv));
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int usbhs_fifo_probe(struct usbhs_priv *priv)
@@ -1173,8 +1245,14 @@ int usbhs_fifo_probe(struct usbhs_priv *priv)
 	fifo->port	= D0FIFO;
 	fifo->sel	= D0FIFOSEL;
 	fifo->ctr	= D0FIFOCTR;
+<<<<<<< HEAD
 	fifo->tx_slave.slave_id	= usbhs_get_dparam(priv, d0_tx_id);
 	fifo->rx_slave.slave_id	= usbhs_get_dparam(priv, d0_rx_id);
+=======
+	fifo->tx_slave.shdma_slave.slave_id	= usbhs_get_dparam(priv, d0_tx_id);
+	fifo->rx_slave.shdma_slave.slave_id	= usbhs_get_dparam(priv, d0_rx_id);
+	usbhsf_dma_init(priv, fifo);
+>>>>>>> refs/remotes/origin/master
 
 	/* D1FIFO */
 	fifo = usbhsf_get_d1fifo(priv);
@@ -1182,12 +1260,23 @@ int usbhs_fifo_probe(struct usbhs_priv *priv)
 	fifo->port	= D1FIFO;
 	fifo->sel	= D1FIFOSEL;
 	fifo->ctr	= D1FIFOCTR;
+<<<<<<< HEAD
 	fifo->tx_slave.slave_id	= usbhs_get_dparam(priv, d1_tx_id);
 	fifo->rx_slave.slave_id	= usbhs_get_dparam(priv, d1_rx_id);
+=======
+	fifo->tx_slave.shdma_slave.slave_id	= usbhs_get_dparam(priv, d1_tx_id);
+	fifo->rx_slave.shdma_slave.slave_id	= usbhs_get_dparam(priv, d1_rx_id);
+	usbhsf_dma_init(priv, fifo);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
 void usbhs_fifo_remove(struct usbhs_priv *priv)
 {
+<<<<<<< HEAD
+=======
+	usbhsf_dma_quit(priv, usbhsf_get_d0fifo(priv));
+	usbhsf_dma_quit(priv, usbhsf_get_d1fifo(priv));
+>>>>>>> refs/remotes/origin/master
 }

@@ -3,10 +3,14 @@
 
     AudioScience HPI driver
 <<<<<<< HEAD
+<<<<<<< HEAD
     Copyright (C) 1997-2010  AudioScience Inc. <support@audioscience.com>
 =======
     Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+    Copyright (C) 1997-2011  AudioScience Inc. <support@audioscience.com>
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of version 2 of the GNU General Public License as
@@ -25,6 +29,7 @@
 Functions for reading DSP code to load into DSP
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  hpi_dspcode_defines HPI DSP code loading method
 Define exactly one of these to select how the DSP code is supplied to
 the adapter.
@@ -40,6 +45,8 @@ DSP code is read using the hotplug firmware loader module.
      Only valid when compiling the HPI kernel driver under Linux.
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /***********************************************************************/
 #ifndef _HPIDSPCD_H_
@@ -47,6 +54,7 @@ DSP code is read using the hotplug firmware loader module.
 
 #include "hpi_internal.h"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifndef DISABLE_PRAGMA_PACK1
 #pragma pack(push, 1)
@@ -74,6 +82,8 @@ struct dsp_code {
 /** Prepare *psDspCode to refer to the requuested adapter.
  Searches the file, or selects the appropriate linked array
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /** Header structure for dsp firmware file
  This structure must match that used in s2bin.c for generation of asidsp.bin
  */
@@ -114,17 +124,24 @@ struct dsp_code {
 
 /** Prepare *psDspCode to refer to the requested adapter's firmware.
 Code file name is obtained from HpiOs_GetDspCodePath
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 \return 0 for success, or error code if requested code is not available
 */
 short hpi_dsp_code_open(
 	/** Code identifier, usually adapter family */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 adapter,
 =======
 	u32 adapter, void *pci_dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 adapter, void *pci_dev,
+>>>>>>> refs/remotes/origin/master
 	/** Pointer to DSP code control structure */
 	struct dsp_code *ps_dsp_code,
 	/** Pointer to dword to receive OS specific error code */

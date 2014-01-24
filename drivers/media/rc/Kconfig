@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 menuconfig RC_CORE
 	tristate "Remote Controller adapters"
 	depends on INPUT
@@ -21,6 +22,25 @@ if RC_CORE
 config LIRC
 	tristate
 	default y
+=======
+config RC_CORE
+	tristate
+	depends on MEDIA_RC_SUPPORT
+	depends on INPUT
+	default y
+
+source "drivers/media/rc/keymaps/Kconfig"
+
+menuconfig RC_DECODERS
+        bool "Remote controller decoders"
+	depends on RC_CORE
+	default y
+
+if RC_DECODERS
+config LIRC
+	tristate "LIRC interface driver"
+	depends on RC_CORE
+>>>>>>> refs/remotes/origin/master
 
 	---help---
 	   Enable this option to build the Linux Infrared Remote
@@ -29,6 +49,7 @@ config LIRC
 	   LIRC daemon handles protocol decoding for IR reception and
 	   encoding for IR transmitting (aka "blasting").
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 config USER_RC_INPUT
@@ -44,6 +65,18 @@ config USER_RC_INPUT
 
 >>>>>>> refs/remotes/origin/cm-10.0
 source "drivers/media/rc/keymaps/Kconfig"
+=======
+config IR_LIRC_CODEC
+	tristate "Enable IR to LIRC bridge"
+	depends on RC_CORE
+	depends on LIRC
+	default y
+
+	---help---
+	   Enable this option to pass raw IR to and from userspace via
+	   the LIRC interface.
+
+>>>>>>> refs/remotes/origin/master
 
 config IR_NEC_DECODER
 	tristate "Enable IR raw decoder for the NEC protocol"
@@ -88,6 +121,10 @@ config IR_JVC_DECODER
 config IR_SONY_DECODER
 	tristate "Enable IR raw decoder for the Sony protocol"
 	depends on RC_CORE
+<<<<<<< HEAD
+=======
+	select BITREVERSE
+>>>>>>> refs/remotes/origin/master
 	default y
 
 	---help---
@@ -107,7 +144,10 @@ config IR_RC5_SZ_DECODER
 	   as it uses an additional bit).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config IR_SANYO_DECODER
 	tristate "Enable IR raw decoder for the Sanyo protocol"
 	depends on RC_CORE
@@ -128,6 +168,7 @@ config IR_MCE_KBD_DECODER
 	   Enable this option if you have a Microsoft Remote Keyboard for
 	   Windows Media Center Edition, which you would like to use with
 	   a raw IR receiver in your system.
+<<<<<<< HEAD
 
 >>>>>>> refs/remotes/origin/cm-10.0
 config IR_LIRC_CODEC
@@ -142,6 +183,16 @@ config IR_LIRC_CODEC
 
 <<<<<<< HEAD
 =======
+=======
+endif #RC_DECODERS
+
+menuconfig RC_DEVICES
+	bool "Remote Controller devices"
+	depends on RC_CORE
+
+if RC_DEVICES
+
+>>>>>>> refs/remotes/origin/master
 config RC_ATI_REMOTE
 	tristate "ATI / X10 based USB RF remote controls"
 	depends on USB_ARCH_HAS_HCD
@@ -161,7 +212,10 @@ config RC_ATI_REMOTE
 	   To compile this driver as a module, choose M here: the module will be
 	   called ati_remote.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config IR_ENE
 	tristate "ENE eHome Receiver/Transceiver (pnp id: ENE0100/ENE02xxx)"
 	depends on PNP
@@ -242,6 +296,11 @@ config IR_REDRAT3
 	tristate "RedRat3 IR Transceiver"
 	depends on USB_ARCH_HAS_HCD
 	depends on RC_CORE
+<<<<<<< HEAD
+=======
+	select NEW_LEDS
+	select LEDS_CLASS
+>>>>>>> refs/remotes/origin/master
 	select USB
 	---help---
 	   Say Y here if you want to use a RedRat3 Infrared Transceiver.
@@ -267,7 +326,10 @@ config IR_WINBOND_CIR
 	depends on RC_CORE
 	select NEW_LEDS
 	select LEDS_CLASS
+<<<<<<< HEAD
 	select LEDS_TRIGGERS
+=======
+>>>>>>> refs/remotes/origin/master
 	select BITREVERSE
 	---help---
 	   Say Y here if you want to use the IR remote functionality found
@@ -278,6 +340,49 @@ config IR_WINBOND_CIR
 	   To compile this driver as a module, choose M here: the module will
 	   be called winbond_cir.
 
+<<<<<<< HEAD
+=======
+config IR_IGUANA
+	tristate "IguanaWorks USB IR Transceiver"
+	depends on USB_ARCH_HAS_HCD
+	depends on RC_CORE
+	select USB
+	---help---
+	   Say Y here if you want to use the IguanaWorks USB IR Transceiver.
+	   Both infrared receive and send are supported. If you want to
+	   change the ID or the pin config, use the user space driver from
+	   IguanaWorks.
+
+	   Only firmware 0x0205 and later is supported.
+
+	   To compile this driver as a module, choose M here: the module will
+	   be called iguanair.
+
+config IR_TTUSBIR
+	tristate "TechnoTrend USB IR Receiver"
+	depends on USB_ARCH_HAS_HCD
+	depends on RC_CORE
+	select USB
+	select NEW_LEDS
+	select LEDS_CLASS
+	---help---
+	   Say Y here if you want to use the TechnoTrend USB IR Receiver. The
+	   driver can control the led.
+
+	   To compile this driver as a module, choose M here: the module will
+	   be called ttusbir.
+
+config IR_RX51
+	tristate "Nokia N900 IR transmitter diode"
+	depends on OMAP_DM_TIMER && ARCH_OMAP2PLUS && LIRC && !ARCH_MULTIPLATFORM
+	---help---
+	   Say Y or M here if you want to enable support for the IR
+	   transmitter diode built in the Nokia N900 (RX51) device.
+
+	   The driver uses omap DM timers for generating the carrier
+	   wave and pulses.
+
+>>>>>>> refs/remotes/origin/master
 config RC_LOOPBACK
 	tristate "Remote Control Loopback Driver"
 	depends on RC_CORE
@@ -292,7 +397,10 @@ config RC_LOOPBACK
 	   be called rc_loopback.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config IR_GPIO_CIR
 	tristate "GPIO IR remote control"
 	depends on RC_CORE
@@ -302,5 +410,19 @@ config IR_GPIO_CIR
 	   To compile this driver as a module, choose M here: the module will
 	   be called gpio-ir-recv.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 endif #RC_CORE
+=======
+config RC_ST
+	tristate "ST remote control receiver"
+	depends on ARCH_STI && RC_CORE
+	help
+	 Say Y here if you want support for ST remote control driver
+	 which allows both IR and UHF RX.
+	 The driver passes raw pulse and space information to the LIRC decoder.
+
+	 If you're not sure, select N here.
+
+endif #RC_DEVICES
+>>>>>>> refs/remotes/origin/master

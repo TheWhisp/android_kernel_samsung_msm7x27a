@@ -52,8 +52,14 @@
 #include <asm/io.h>
 #include <asm/mach-types.h>
 
+<<<<<<< HEAD
 #include <plat/mux.h>
 #include <plat/omap7xx.h>	/* OMAP7XX_IO_CONF registers */
+=======
+#include <mach/mux.h>
+
+#include <mach/omap7xx.h>	/* OMAP7XX_IO_CONF registers */
+>>>>>>> refs/remotes/origin/master
 
 
 /* FIXME address is now a platform device resource,
@@ -475,7 +481,11 @@ static void uwire_off(struct uwire_spi *uwire)
 	spi_master_put(uwire->bitbang.master);
 }
 
+<<<<<<< HEAD
 static int __init uwire_probe(struct platform_device *pdev)
+=======
+static int uwire_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_master	*master;
 	struct uwire_spi	*uwire;
@@ -494,7 +504,11 @@ static int __init uwire_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
 	dev_set_drvdata(&pdev->dev, uwire);
+=======
+	platform_set_drvdata(pdev, uwire);
+>>>>>>> refs/remotes/origin/master
 
 	uwire->ck = clk_get(&pdev->dev, "fck");
 	if (IS_ERR(uwire->ck)) {
@@ -535,9 +549,15 @@ static int __init uwire_probe(struct platform_device *pdev)
 	return status;
 }
 
+<<<<<<< HEAD
 static int __exit uwire_remove(struct platform_device *pdev)
 {
 	struct uwire_spi	*uwire = dev_get_drvdata(&pdev->dev);
+=======
+static int uwire_remove(struct platform_device *pdev)
+{
+	struct uwire_spi	*uwire = platform_get_drvdata(pdev);
+>>>>>>> refs/remotes/origin/master
 	int			status;
 
 	// FIXME remove all child devices, somewhere ...
@@ -556,7 +576,12 @@ static struct platform_driver uwire_driver = {
 		.name		= "omap_uwire",
 		.owner		= THIS_MODULE,
 	},
+<<<<<<< HEAD
 	.remove		= __exit_p(uwire_remove),
+=======
+	.probe = uwire_probe,
+	.remove = uwire_remove,
+>>>>>>> refs/remotes/origin/master
 	// suspend ... unuse ck
 	// resume ... use ck
 };
@@ -578,7 +603,11 @@ static int __init omap_uwire_init(void)
 		omap_writel(val | 0x00AAA000, OMAP7XX_IO_CONF_9);
 	}
 
+<<<<<<< HEAD
 	return platform_driver_probe(&uwire_driver, uwire_probe);
+=======
+	return platform_driver_register(&uwire_driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit omap_uwire_exit(void)

@@ -72,9 +72,12 @@ PHDRS {
 	data PT_LOAD FLAGS(6);          /* RW_ */
 #ifdef CONFIG_X86_64
 <<<<<<< HEAD
+<<<<<<< HEAD
 	user PT_LOAD FLAGS(5);          /* R_E */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_SMP
 	percpu PT_LOAD FLAGS(6);        /* RW_ */
 #endif
@@ -98,10 +101,13 @@ SECTIONS
 		_text = .;
 		/* bootstrapping code */
 		HEAD_TEXT
+<<<<<<< HEAD
 #ifdef CONFIG_X86_32
 		. = ALIGN(PAGE_SIZE);
 		*(.text..page_aligned)
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		. = ALIGN(8);
 		_stext = .;
 		TEXT_TEXT
@@ -158,6 +164,7 @@ SECTIONS
 #ifdef CONFIG_X86_64
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define VSYSCALL_ADDR (-10*1024*1024)
 
 #define VLOAD_OFFSET (VSYSCALL_ADDR - __vsyscall_0 + LOAD_OFFSET)
@@ -209,6 +216,8 @@ SECTIONS
 #undef VVIRT
 #undef EMIT_VVAR
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	. = ALIGN(PAGE_SIZE);
 	__vvar_page = .;
 
@@ -228,7 +237,10 @@ SECTIONS
 	} :data
 
        . = ALIGN(__vvar_page + PAGE_SIZE, PAGE_SIZE);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* CONFIG_X86_64 */
 
@@ -254,6 +266,7 @@ SECTIONS
 
 	INIT_DATA_SECTION(16)
 
+<<<<<<< HEAD
 	/*
 	 * Code and data for a variety of lowlevel trampolines, to be
 	 * copied into base memory (< 1 MiB) during initialization.
@@ -266,12 +279,26 @@ SECTIONS
 		x86_trampoline_end = .;
 	}
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.x86_cpu_dev.init : AT(ADDR(.x86_cpu_dev.init) - LOAD_OFFSET) {
 		__x86_cpu_dev_start = .;
 		*(.x86_cpu_dev.init)
 		__x86_cpu_dev_end = .;
 	}
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_X86_INTEL_MID
+	.x86_intel_mid_dev.init : AT(ADDR(.x86_intel_mid_dev.init) - \
+								LOAD_OFFSET) {
+		__x86_intel_mid_dev_start = .;
+		*(.x86_intel_mid_dev.init)
+		__x86_intel_mid_dev_end = .;
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * start address and size of operations which during runtime
 	 * can be patched with virtualization friendly instructions or

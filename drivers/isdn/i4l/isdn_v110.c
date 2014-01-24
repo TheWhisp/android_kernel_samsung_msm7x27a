@@ -27,12 +27,17 @@ char *isdn_v110_revision = "$Revision: 1.1.2.2 $";
 #define V110_9600    3
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
  * The following data are precoded matrices, online and offline matrix 
 =======
 /*
  * The following data are precoded matrices, online and offline matrix
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * The following data are precoded matrices, online and offline matrix
+>>>>>>> refs/remotes/origin/master
  * for 9600, 19200 und 38400, respectively
  */
 static unsigned char V110_OnMatrix_9600[] =
@@ -62,10 +67,14 @@ static unsigned char V110_OffMatrix_38400[] =
 {0x00, 0xff, 0xff, 0xff, 0xff, 0xfd, 0xff, 0xff, 0xff, 0xff};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
 =======
 /*
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+>>>>>>> refs/remotes/origin/master
  * FlipBits reorders sequences of keylen bits in one byte.
  * E.g. source order 7654321 will be converted to 45670123 when keylen = 4,
  * and to 67452301 when keylen = 2. This is necessary because ordering on
@@ -113,6 +122,7 @@ isdn_v110_open(unsigned char key, int hdrlen, int maxsize)
 
 	switch (key) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case V110_38400:
 			v->OnlineFrame = V110_OnMatrix_38400;
 			v->OfflineFrame = V110_OffMatrix_38400;
@@ -126,6 +136,8 @@ isdn_v110_open(unsigned char key, int hdrlen, int maxsize)
 			v->OfflineFrame = V110_OffMatrix_9600;
 			break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case V110_38400:
 		v->OnlineFrame = V110_OnMatrix_38400;
 		v->OfflineFrame = V110_OffMatrix_38400;
@@ -138,7 +150,10 @@ isdn_v110_open(unsigned char key, int hdrlen, int maxsize)
 		v->OnlineFrame = V110_OnMatrix_9600;
 		v->OfflineFrame = V110_OffMatrix_9600;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	v->framelen = v->nbytes * 10;
 	v->SyncInit = 5;
@@ -157,10 +172,14 @@ isdn_v110_open(unsigned char key, int hdrlen, int maxsize)
 /* isdn_v110_close frees private V.110 data structures */
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_v110_close(isdn_v110_stream * v)
 =======
 isdn_v110_close(isdn_v110_stream *v)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_v110_close(isdn_v110_stream *v)
+>>>>>>> refs/remotes/origin/master
 {
 	if (v == NULL)
 		return;
@@ -173,18 +192,24 @@ isdn_v110_close(isdn_v110_stream *v)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
  * ValidHeaderBytes return the number of valid bytes in v->decodebuf 
  */
 static int
 ValidHeaderBytes(isdn_v110_stream * v)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * ValidHeaderBytes return the number of valid bytes in v->decodebuf
  */
 static int
 ValidHeaderBytes(isdn_v110_stream *v)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	for (i = 0; (i < v->decodelen) && (i < v->nbytes); i++)
@@ -194,18 +219,24 @@ ValidHeaderBytes(isdn_v110_stream *v)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
  * SyncHeader moves the decodebuf ptr to the next valid header 
  */
 static void
 SyncHeader(isdn_v110_stream * v)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * SyncHeader moves the decodebuf ptr to the next valid header
  */
 static void
 SyncHeader(isdn_v110_stream *v)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned char *rbuf = v->decodebuf;
 	int len = v->decodelen;
@@ -230,6 +261,7 @@ SyncHeader(isdn_v110_stream *v)
    From these, netto data is extracted and returned in buf. The return-value
    is the bytecount of the decoded data.
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 static int
 DecodeMatrix(isdn_v110_stream * v, unsigned char *m, int len, unsigned char *buf)
@@ -238,6 +270,11 @@ DecodeMatrix(isdn_v110_stream * v, unsigned char *m, int len, unsigned char *buf
 static int
 DecodeMatrix(isdn_v110_stream *v, unsigned char *m, int len, unsigned char *buf)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+static int
+DecodeMatrix(isdn_v110_stream *v, unsigned char *m, int len, unsigned char *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int line = 0;
 	int buflen = 0;
@@ -254,10 +291,14 @@ DecodeMatrix(isdn_v110_stream *v, unsigned char *m, int len, unsigned char *buf)
 				/* returning now is not the right thing, though :-( */
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 			} 
 =======
 			}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			}
+>>>>>>> refs/remotes/origin/master
 			line++; /* next line of matrix */
 			continue;
 		} else if ((line % 10) == 5) {	/* in line 5 there's only e-bits ! */
@@ -272,10 +313,14 @@ DecodeMatrix(isdn_v110_stream *v, unsigned char *m, int len, unsigned char *buf)
 		} else if (!introducer) {	/* every byte starts with 10 (stopbit, startbit) */
 			introducer = (m[line] & mbit) ? 0 : 1;	/* current bit of the matrix */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		      next_byte:
 =======
 		next_byte:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		next_byte:
+>>>>>>> refs/remotes/origin/master
 			if (mbit > 2) {	/* was it the last bit in this line ? */
 				mbit >>= 1;	/* no -> take next */
 				continue;
@@ -305,21 +350,30 @@ DecodeMatrix(isdn_v110_stream *v, unsigned char *m, int len, unsigned char *buf)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* 
  * DecodeStream receives V.110 coded data from the input stream. It recovers the 
 =======
 /*
  * DecodeStream receives V.110 coded data from the input stream. It recovers the
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * DecodeStream receives V.110 coded data from the input stream. It recovers the
+>>>>>>> refs/remotes/origin/master
  * original frames.
  * The input stream doesn't need to be framed
  */
 struct sk_buff *
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_v110_decode(isdn_v110_stream * v, struct sk_buff *skb)
 =======
 isdn_v110_decode(isdn_v110_stream *v, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_v110_decode(isdn_v110_stream *v, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int j;
@@ -351,10 +405,14 @@ isdn_v110_decode(isdn_v110_stream *v, struct sk_buff *skb)
 	memcpy(&(v->decodebuf[v->decodelen]), rbuf, len);
 	v->decodelen += len;
 <<<<<<< HEAD
+<<<<<<< HEAD
       ReSync:
 =======
 ReSync:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ReSync:
+>>>>>>> refs/remotes/origin/master
 	if (v->decodelen < v->nbytes) {	/* got a new header ? */
 		dev_kfree_skb(skb);
 		return NULL;    /* no, try later      */
@@ -392,10 +450,14 @@ ReSync:
    Data is encoded into v110 frames in m. Return value is the number of
    matrix-lines generated.
 <<<<<<< HEAD
+<<<<<<< HEAD
  */
 =======
 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+*/
+>>>>>>> refs/remotes/origin/master
 static int
 EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 {
@@ -409,6 +471,7 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 	while ((i < len) && (line < mlen)) {	/* while we still have input data */
 		switch (line % 10) {	/* in which line of the matrix are we? */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case 0:
 				m[line++] = 0x00;	/* line 0 is always 0 */
 				mbit = 128;	/* go on with the 7th bit */
@@ -418,6 +481,8 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 				mbit = 128;	/* go on with the 7th bit */
 				break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 0:
 			m[line++] = 0x00;	/* line 0 is always 0 */
 			mbit = 128;	/* go on with the 7th bit */
@@ -426,7 +491,10 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 			m[line++] = 0xbf;	/* line 5 is always 10111111 */
 			mbit = 128;	/* go on with the 7th bit */
 			break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (line >= mlen) {
 			printk(KERN_WARNING "isdn_v110 (EncodeMatrix): buffer full!\n");
@@ -434,6 +502,7 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 		}
 	next_bit:
 		switch (mbit) { /* leftmost or rightmost bit ? */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			case 1:
 				line++;	/* rightmost -> go to next line */
@@ -446,6 +515,8 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 				mbit = 64;	/* current bit in the matrix line */
 				continue;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 1:
 			line++;	/* rightmost -> go to next line */
 			if (line >= mlen) {
@@ -456,7 +527,10 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 			m[line] = 128;	/* leftmost -> set byte to 1000000 */
 			mbit = 64;	/* current bit in the matrix line */
 			continue;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 		if (introducer) {	/* set 110 sequence ? */
 			introducer--;	/* set on digit less */
@@ -484,6 +558,7 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 	if ((line) && ((line + 10) < mlen))
 		switch (++line % 10) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			case 1:
 				m[line++] = 0xfe;
 			case 2:
@@ -503,6 +578,8 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 			case 9:
 				m[line++] = 0xfe;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		case 1:
 			m[line++] = 0xfe;
 		case 2:
@@ -521,7 +598,10 @@ EncodeMatrix(unsigned char *buf, int len, unsigned char *m, int mlen)
 			m[line++] = 0xfe;
 		case 9:
 			m[line++] = 0xfe;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	return line;            /* that's how many lines we have */
 }
@@ -568,10 +648,14 @@ isdn_v110_idle(isdn_v110_stream *v)
 
 struct sk_buff *
 <<<<<<< HEAD
+<<<<<<< HEAD
 isdn_v110_encode(isdn_v110_stream * v, struct sk_buff *skb)
 =======
 isdn_v110_encode(isdn_v110_stream *v, struct sk_buff *skb)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+isdn_v110_encode(isdn_v110_stream *v, struct sk_buff *skb)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 	int j;
@@ -648,6 +732,7 @@ isdn_v110_stat_callback(int idx, isdn_ctrl *c)
 	if (idx < 0)
 		return 0;
 	switch (c->command) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		case ISDN_STAT_BSENT:
                         /* Keep the send-queue of the driver filled
@@ -737,6 +822,8 @@ isdn_v110_stat_callback(int idx, isdn_ctrl *c)
 		default:
 			return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case ISDN_STAT_BSENT:
 		/* Keep the send-queue of the driver filled
 		 * with frames:
@@ -824,7 +911,10 @@ isdn_v110_stat_callback(int idx, isdn_ctrl *c)
 		break;
 	default:
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return 0;
 }

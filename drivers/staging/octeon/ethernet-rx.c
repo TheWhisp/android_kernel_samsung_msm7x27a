@@ -29,11 +29,15 @@
 #include <linux/cache.h>
 #include <linux/cpumask.h>
 #include <linux/netdevice.h>
+<<<<<<< HEAD
 #include <linux/init.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/etherdevice.h>
 #include <linux/ip.h>
 #include <linux/string.h>
 #include <linux/prefetch.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/smp.h>
 =======
@@ -41,6 +45,11 @@
 #include <linux/smp.h>
 #include <linux/interrupt.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/ratelimit.h>
+#include <linux/smp.h>
+#include <linux/interrupt.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/dst.h>
 #ifdef CONFIG_XFRM
 #include <linux/xfrm.h>
@@ -48,10 +57,14 @@
 #endif /* CONFIG_XFRM */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/octeon/octeon.h>
 
@@ -62,6 +75,7 @@
 #include "ethernet-util.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "cvmx-helper.h"
 #include "cvmx-wqe.h"
 #include "cvmx-fau.h"
@@ -71,6 +85,8 @@
 
 #include "cvmx-gmxx-defs.h"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/octeon/cvmx-helper.h>
 #include <asm/octeon/cvmx-wqe.h>
 #include <asm/octeon/cvmx-fau.h>
@@ -79,7 +95,10 @@
 #include <asm/octeon/cvmx-scratch.h>
 
 #include <asm/octeon/cvmx-gmxx-defs.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct cvm_napi_wrapper {
 	struct napi_struct napi;
@@ -91,7 +110,11 @@ struct cvm_oct_core_state {
 	int baseline_cores;
 	/*
 	 * The number of additional cores that could be processing
+<<<<<<< HEAD
 	 * input packtes.
+=======
+	 * input packets.
+>>>>>>> refs/remotes/origin/master
 	 */
 	atomic_t available_cores;
 	cpumask_t cpu_state;
@@ -99,6 +122,11 @@ struct cvm_oct_core_state {
 
 static struct cvm_oct_core_state core_state __cacheline_aligned_in_smp;
 
+<<<<<<< HEAD
+=======
+static int cvm_irq_cpu;
+
+>>>>>>> refs/remotes/origin/master
 static void cvm_oct_enable_napi(void *_)
 {
 	int cpu = smp_processor_id();
@@ -131,11 +159,15 @@ static void cvm_oct_no_more_work(void)
 {
 	int cpu = smp_processor_id();
 
+<<<<<<< HEAD
 	/*
 	 * CPU zero is special.  It always has the irq enabled when
 	 * waiting for incoming packets.
 	 */
 	if (cpu == 0) {
+=======
+	if (cpu == cvm_irq_cpu) {
+>>>>>>> refs/remotes/origin/master
 		enable_irq(OCTEON_IRQ_WORKQ0 + pow_receive_group);
 		return;
 	}
@@ -154,6 +186,10 @@ static irqreturn_t cvm_oct_do_interrupt(int cpl, void *dev_id)
 {
 	/* Disable the IRQ and start napi_poll. */
 	disable_irq_nosync(OCTEON_IRQ_WORKQ0 + pow_receive_group);
+<<<<<<< HEAD
+=======
+	cvm_irq_cpu = smp_processor_id();
+>>>>>>> refs/remotes/origin/master
 	cvm_oct_enable_napi(NULL);
 
 	return IRQ_HANDLED;
@@ -182,7 +218,11 @@ static inline int cvm_oct_check_rcv_error(cvmx_wqe_t *work)
 		/*
 		 * We received a packet with either an alignment error
 		 * or a FCS error. This may be signalling that we are
+<<<<<<< HEAD
 		 * running 10Mbps with GMXX_RXX_FRM_CTL[PRE_CHK}
+=======
+		 * running 10Mbps with GMXX_RXX_FRM_CTL[PRE_CHK]
+>>>>>>> refs/remotes/origin/master
 		 * off. If this is the case we need to parse the
 		 * packet to determine if we can remove a non spec
 		 * preamble and generate a correct packet.
@@ -208,20 +248,28 @@ static inline int cvm_oct_check_rcv_error(cvmx_wqe_t *work)
 			if (*ptr == 0xd5) {
 				/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   DEBUGPRINT("Port %d received 0xd5 preamble\n", work->ipprt);
 =======
 				  printk_ratelimited("Port %d received 0xd5 preamble\n", work->ipprt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  printk_ratelimited("Port %d received 0xd5 preamble\n", work->ipprt);
+>>>>>>> refs/remotes/origin/master
 				 */
 				work->packet_ptr.s.addr += i + 1;
 				work->len -= i + 5;
 			} else if ((*ptr & 0xf) == 0xd) {
 				/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   DEBUGPRINT("Port %d received 0x?d preamble\n", work->ipprt);
 =======
 				  printk_ratelimited("Port %d received 0x?d preamble\n", work->ipprt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				  printk_ratelimited("Port %d received 0x?d preamble\n", work->ipprt);
+>>>>>>> refs/remotes/origin/master
 				 */
 				work->packet_ptr.s.addr += i;
 				work->len -= i + 4;
@@ -233,6 +281,7 @@ static inline int cvm_oct_check_rcv_error(cvmx_wqe_t *work)
 				}
 			} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUGPRINT("Port %d unknown preamble, packet "
 					   "dropped\n",
 				     work->ipprt);
@@ -241,6 +290,11 @@ static inline int cvm_oct_check_rcv_error(cvmx_wqe_t *work)
 						   "dropped\n",
 						   work->ipprt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				printk_ratelimited("Port %d unknown preamble, packet "
+						   "dropped\n",
+						   work->ipprt);
+>>>>>>> refs/remotes/origin/master
 				/*
 				   cvmx_helper_dump_packet(work);
 				 */
@@ -250,12 +304,17 @@ static inline int cvm_oct_check_rcv_error(cvmx_wqe_t *work)
 		}
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		DEBUGPRINT("Port %d receive error code %d, packet dropped\n",
 			   work->ipprt, work->word2.snoip.err_code);
 =======
 		printk_ratelimited("Port %d receive error code %d, packet dropped\n",
 				   work->ipprt, work->word2.snoip.err_code);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		printk_ratelimited("Port %d receive error code %d, packet dropped\n",
+				   work->ipprt, work->word2.snoip.err_code);
+>>>>>>> refs/remotes/origin/master
 		cvm_oct_free_work(work);
 		return 1;
 	}
@@ -341,6 +400,10 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
 			if (backlog > budget * cores_in_use && napi != NULL)
 				cvm_oct_enable_one_cpu();
 		}
+<<<<<<< HEAD
+=======
+		rx_count++;
+>>>>>>> refs/remotes/origin/master
 
 		skb_in_hw = USE_SKBUFFS_IN_HW && work->word2.s.bufs == 1;
 		if (likely(skb_in_hw)) {
@@ -375,6 +438,7 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
 			skb = dev_alloc_skb(work->len);
 			if (!skb) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 				DEBUGPRINT("Port %d failed to allocate skbuff, packet dropped\n",
 					   work->ipprt);
 =======
@@ -382,6 +446,8 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
 						   "skbuff, packet dropped\n",
 						   work->ipprt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				cvm_oct_free_work(work);
 				continue;
 			}
@@ -456,11 +522,16 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
 				skb->dev = dev;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (unlikely(work->word2.s.not_IP || work->word2.s.IP_exc || work->word2.s.L4_error))
 =======
 				if (unlikely(work->word2.s.not_IP || work->word2.s.IP_exc ||
 					work->word2.s.L4_error || !work->word2.s.tcp_or_udp))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				if (unlikely(work->word2.s.not_IP || work->word2.s.IP_exc ||
+					work->word2.s.L4_error || !work->word2.s.tcp_or_udp))
+>>>>>>> refs/remotes/origin/master
 					skb->ip_summed = CHECKSUM_NONE;
 				else
 					skb->ip_summed = CHECKSUM_UNNECESSARY;
@@ -476,6 +547,7 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
 #endif
 				}
 				netif_receive_skb(skb);
+<<<<<<< HEAD
 				rx_count++;
 			} else {
 				/* Drop any packet received for a device that isn't up */
@@ -485,6 +557,12 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
 =======
 				  printk_ratelimited("%s: Device not up, packet dropped\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			} else {
+				/* Drop any packet received for a device that isn't up */
+				/*
+				  printk_ratelimited("%s: Device not up, packet dropped\n",
+>>>>>>> refs/remotes/origin/master
 					   dev->name);
 				*/
 #ifdef CONFIG_64BIT
@@ -500,10 +578,14 @@ static int cvm_oct_napi_poll(struct napi_struct *napi, int budget)
 			 * doesn't exist.
 			 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 			DEBUGPRINT("Port %d not controlled by Linux, packet dropped\n",
 =======
 			printk_ratelimited("Port %d not controlled by Linux, packet dropped\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk_ratelimited("Port %d not controlled by Linux, packet dropped\n",
+>>>>>>> refs/remotes/origin/master
 				   work->ipprt);
 			dev_kfree_skb_irq(skb);
 		}
@@ -572,7 +654,11 @@ void cvm_oct_rx_initialize(void)
 	if (NULL == dev_for_napi)
 		panic("No net_devices were allocated.");
 
+<<<<<<< HEAD
 	if (max_rx_cpus > 1  && max_rx_cpus < num_online_cpus())
+=======
+	if (max_rx_cpus >= 1 && max_rx_cpus < num_online_cpus())
+>>>>>>> refs/remotes/origin/master
 		atomic_set(&core_state.available_cores, max_rx_cpus);
 	else
 		atomic_set(&core_state.available_cores, num_online_cpus());
@@ -584,7 +670,11 @@ void cvm_oct_rx_initialize(void)
 			       cvm_oct_napi_poll, rx_napi_weight);
 		napi_enable(&cvm_oct_napi[i].napi);
 	}
+<<<<<<< HEAD
 	/* Register an IRQ hander for to receive POW interrupts */
+=======
+	/* Register an IRQ handler to receive POW interrupts */
+>>>>>>> refs/remotes/origin/master
 	i = request_irq(OCTEON_IRQ_WORKQ0 + pow_receive_group,
 			cvm_oct_do_interrupt, 0, "Ethernet", cvm_oct_device);
 

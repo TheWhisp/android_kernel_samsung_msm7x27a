@@ -1,9 +1,16 @@
 /*
+<<<<<<< HEAD
  *  arch/s390/lib/string.c
  *    Optimized string functions
  *
  *  S390 version
  *    Copyright (C) 2004 IBM Deutschland Entwicklung GmbH, IBM Corporation
+=======
+ *    Optimized string functions
+ *
+ *  S390 version
+ *    Copyright IBM Corp. 2004
+>>>>>>> refs/remotes/origin/master
  *    Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com)
  */
 
@@ -44,11 +51,15 @@ static inline char *__strnend(const char *s, size_t n)
  */
 size_t strlen(const char *s)
 {
+<<<<<<< HEAD
 #if __GNUC__ < 4
 	return __strend(s) - s;
 #else
 	return __builtin_strlen(s);
 #endif
+=======
+	return __strend(s) - s;
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(strlen);
 
@@ -74,7 +85,10 @@ EXPORT_SYMBOL(strnlen);
  */
 char *strcpy(char *dest, const char *src)
 {
+<<<<<<< HEAD
 #if __GNUC__ < 4
+=======
+>>>>>>> refs/remotes/origin/master
 	register int r0 asm("0") = 0;
 	char *ret = dest;
 
@@ -83,9 +97,12 @@ char *strcpy(char *dest, const char *src)
 		      : "+&a" (dest), "+&a" (src) : "d" (r0)
 		      : "cc", "memory" );
 	return ret;
+<<<<<<< HEAD
 #else
 	return __builtin_strcpy(dest, src);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(strcpy);
 
@@ -107,7 +124,11 @@ size_t strlcpy(char *dest, const char *src, size_t size)
 	if (size) {
 		size_t len = (ret >= size) ? size-1 : ret;
 		dest[len] = '\0';
+<<<<<<< HEAD
 		__builtin_memcpy(dest, src, len);
+=======
+		memcpy(dest, src, len);
+>>>>>>> refs/remotes/origin/master
 	}
 	return ret;
 }
@@ -125,8 +146,13 @@ EXPORT_SYMBOL(strlcpy);
 char *strncpy(char *dest, const char *src, size_t n)
 {
 	size_t len = __strnend(src, n) - src;
+<<<<<<< HEAD
 	__builtin_memset(dest + len, 0, n - len);
 	__builtin_memcpy(dest, src, len);
+=======
+	memset(dest + len, 0, n - len);
+	memcpy(dest, src, len);
+>>>>>>> refs/remotes/origin/master
 	return dest;
 }
 EXPORT_SYMBOL(strncpy);
@@ -172,7 +198,11 @@ size_t strlcat(char *dest, const char *src, size_t n)
 		if (len >= n)
 			len = n - 1;
 		dest[len] = '\0';
+<<<<<<< HEAD
 		__builtin_memcpy(dest, src, len);
+=======
+		memcpy(dest, src, len);
+>>>>>>> refs/remotes/origin/master
 	}
 	return res;
 }
@@ -195,7 +225,11 @@ char *strncat(char *dest, const char *src, size_t n)
 	char *p = __strend(dest);
 
 	p[len] = '\0';
+<<<<<<< HEAD
 	__builtin_memcpy(p, src, len);
+=======
+	memcpy(p, src, len);
+>>>>>>> refs/remotes/origin/master
 	return dest;
 }
 EXPORT_SYMBOL(strncat);
@@ -349,6 +383,7 @@ void *memscan(void *s, int c, size_t n)
 	return (void *) ret;
 }
 EXPORT_SYMBOL(memscan);
+<<<<<<< HEAD
 
 /**
  * memcpy - Copy one area of memory to another
@@ -387,3 +422,5 @@ void *memset(void *s, int c, size_t n)
 	return s;
 }
 EXPORT_SYMBOL(memset);
+=======
+>>>>>>> refs/remotes/origin/master

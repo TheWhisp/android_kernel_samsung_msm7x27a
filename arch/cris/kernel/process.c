@@ -13,17 +13,23 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 #include <asm/pgtable.h>
 #include <asm/uaccess.h>
 #include <asm/irq.h>
 #include <asm/system.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/atomic.h>
 #include <asm/pgtable.h>
 #include <asm/uaccess.h>
 #include <asm/irq.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/spinlock.h>
 #include <linux/init_task.h>
@@ -33,6 +39,7 @@
 #include <linux/elfcore.h>
 #include <linux/mqueue.h>
 #include <linux/reboot.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/rcupdate.h>
@@ -98,11 +105,18 @@ EXPORT_SYMBOL(enable_hlt);
  */
 void (*pm_idle)(void);
 
+=======
+#include <linux/rcupdate.h>
+
+//#define DEBUG
+
+>>>>>>> refs/remotes/origin/master
 extern void default_idle(void);
 
 void (*pm_power_off)(void);
 EXPORT_SYMBOL(pm_power_off);
 
+<<<<<<< HEAD
 /*
  * The idle thread. There's no useful work to be
  * done, so just try to conserve power and have a
@@ -139,6 +153,11 @@ void cpu_idle (void)
 		schedule_preempt_disabled();
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+void arch_cpu_idle(void)
+{
+	default_idle();
+>>>>>>> refs/remotes/origin/master
 }
 
 void hard_reset_now (void);

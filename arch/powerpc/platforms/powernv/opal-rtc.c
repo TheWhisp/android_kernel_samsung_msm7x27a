@@ -37,10 +37,19 @@ unsigned long __init opal_get_boot_time(void)
 	struct rtc_time tm;
 	u32 y_m_d;
 	u64 h_m_s_ms;
+<<<<<<< HEAD
 	long rc = OPAL_BUSY;
 
 	while (rc == OPAL_BUSY || rc == OPAL_BUSY_EVENT) {
 		rc = opal_rtc_read(&y_m_d, &h_m_s_ms);
+=======
+	__be32 __y_m_d;
+	__be64 __h_m_s_ms;
+	long rc = OPAL_BUSY;
+
+	while (rc == OPAL_BUSY || rc == OPAL_BUSY_EVENT) {
+		rc = opal_rtc_read(&__y_m_d, &__h_m_s_ms);
+>>>>>>> refs/remotes/origin/master
 		if (rc == OPAL_BUSY_EVENT)
 			opal_poll_events(NULL);
 		else
@@ -48,6 +57,11 @@ unsigned long __init opal_get_boot_time(void)
 	}
 	if (rc != OPAL_SUCCESS)
 		return 0;
+<<<<<<< HEAD
+=======
+	y_m_d = be32_to_cpu(__y_m_d);
+	h_m_s_ms = be64_to_cpu(__h_m_s_ms);
+>>>>>>> refs/remotes/origin/master
 	opal_to_tm(y_m_d, h_m_s_ms, &tm);
 	return mktime(tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
 		      tm.tm_hour, tm.tm_min, tm.tm_sec);
@@ -58,9 +72,17 @@ void opal_get_rtc_time(struct rtc_time *tm)
 	long rc = OPAL_BUSY;
 	u32 y_m_d;
 	u64 h_m_s_ms;
+<<<<<<< HEAD
 
 	while (rc == OPAL_BUSY || rc == OPAL_BUSY_EVENT) {
 		rc = opal_rtc_read(&y_m_d, &h_m_s_ms);
+=======
+	__be32 __y_m_d;
+	__be64 __h_m_s_ms;
+
+	while (rc == OPAL_BUSY || rc == OPAL_BUSY_EVENT) {
+		rc = opal_rtc_read(&__y_m_d, &__h_m_s_ms);
+>>>>>>> refs/remotes/origin/master
 		if (rc == OPAL_BUSY_EVENT)
 			opal_poll_events(NULL);
 		else
@@ -68,6 +90,11 @@ void opal_get_rtc_time(struct rtc_time *tm)
 	}
 	if (rc != OPAL_SUCCESS)
 		return;
+<<<<<<< HEAD
+=======
+	y_m_d = be32_to_cpu(__y_m_d);
+	h_m_s_ms = be64_to_cpu(__h_m_s_ms);
+>>>>>>> refs/remotes/origin/master
 	opal_to_tm(y_m_d, h_m_s_ms, tm);
 }
 

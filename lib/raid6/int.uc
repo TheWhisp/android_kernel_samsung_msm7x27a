@@ -12,10 +12,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * raid6int$#.c
 =======
  * int$#.c
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * int$#.c
+>>>>>>> refs/remotes/origin/master
  *
  * $#-way unrolled portable integer math RAID-6 instruction set
  *

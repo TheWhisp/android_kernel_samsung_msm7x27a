@@ -457,6 +457,7 @@ static void pump_transfers(unsigned long data)
 	}
 	if (transfer->bits_per_word) {
 		bits = transfer->bits_per_word;
+<<<<<<< HEAD
 
 		switch (bits) {
 		case 8:
@@ -470,6 +471,9 @@ static void pump_transfers(unsigned long data)
 			goto early_exit;
 		}
 
+=======
+		dws->n_bytes = dws->dma_width = bits >> 3;
+>>>>>>> refs/remotes/origin/master
 		cr0 = (bits - 1)
 			| (chip->type << SPI_FRF_OFFSET)
 			| (spi->mode << SPI_MODE_OFFSET)
@@ -629,9 +633,12 @@ static int dw_spi_setup(struct spi_device *spi)
 	struct dw_spi_chip *chip_info = NULL;
 	struct chip_data *chip;
 
+<<<<<<< HEAD
 	if (spi->bits_per_word != 8 && spi->bits_per_word != 16)
 		return -EINVAL;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Only alloc on first setup */
 	chip = spi_get_ctldata(spi);
 	if (!chip) {
@@ -660,6 +667,7 @@ static int dw_spi_setup(struct spi_device *spi)
 		chip->enable_dma = chip_info->enable_dma;
 	}
 
+<<<<<<< HEAD
 	if (spi->bits_per_word <= 8) {
 		chip->n_bytes = 1;
 		chip->dma_width = 1;
@@ -670,6 +678,14 @@ static int dw_spi_setup(struct spi_device *spi)
 		/* Never take >16b case for MRST SPIC */
 		dev_err(&spi->dev, "invalid wordsize\n");
 		return -EINVAL;
+=======
+	if (spi->bits_per_word == 8) {
+		chip->n_bytes = 1;
+		chip->dma_width = 1;
+	} else if (spi->bits_per_word == 16) {
+		chip->n_bytes = 2;
+		chip->dma_width = 2;
+>>>>>>> refs/remotes/origin/master
 	}
 	chip->bits_per_word = spi->bits_per_word;
 
@@ -696,7 +712,11 @@ static void dw_spi_cleanup(struct spi_device *spi)
 	kfree(chip);
 }
 
+<<<<<<< HEAD
 static int __devinit init_queue(struct dw_spi *dws)
+=======
+static int init_queue(struct dw_spi *dws)
+>>>>>>> refs/remotes/origin/master
 {
 	INIT_LIST_HEAD(&dws->queue);
 	spin_lock_init(&dws->lock);
@@ -795,7 +815,11 @@ static void spi_hw_init(struct dw_spi *dws)
 	}
 }
 
+<<<<<<< HEAD
 int __devinit dw_spi_add_host(struct dw_spi *dws)
+=======
+int dw_spi_add_host(struct dw_spi *dws)
+>>>>>>> refs/remotes/origin/master
 {
 	struct spi_master *master;
 	int ret;
@@ -824,6 +848,10 @@ int __devinit dw_spi_add_host(struct dw_spi *dws)
 	}
 
 	master->mode_bits = SPI_CPOL | SPI_CPHA;
+<<<<<<< HEAD
+=======
+	master->bits_per_word_mask = SPI_BPW_MASK(8) | SPI_BPW_MASK(16);
+>>>>>>> refs/remotes/origin/master
 	master->bus_num = dws->bus_num;
 	master->num_chipselect = dws->num_cs;
 	master->cleanup = dw_spi_cleanup;
@@ -877,7 +905,11 @@ exit:
 }
 EXPORT_SYMBOL_GPL(dw_spi_add_host);
 
+<<<<<<< HEAD
 void __devexit dw_spi_remove_host(struct dw_spi *dws)
+=======
+void dw_spi_remove_host(struct dw_spi *dws)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 
@@ -888,8 +920,13 @@ void __devexit dw_spi_remove_host(struct dw_spi *dws)
 	/* Remove the queue */
 	status = destroy_queue(dws);
 	if (status != 0)
+<<<<<<< HEAD
 		dev_err(&dws->master->dev, "dw_spi_remove: workqueue will not "
 			"complete, message memory not freed\n");
+=======
+		dev_err(&dws->master->dev,
+			"dw_spi_remove: workqueue will not complete, message memory not freed\n");
+>>>>>>> refs/remotes/origin/master
 
 	if (dws->dma_ops && dws->dma_ops->dma_exit)
 		dws->dma_ops->dma_exit(dws);

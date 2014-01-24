@@ -58,7 +58,11 @@
  *   22/09/04  Nicolas Pitre      big update (see commit log for details)
  */
 static const char version[] =
+<<<<<<< HEAD
 	"smc91x.c: v1.1, sep 22 2004 by Nicolas Pitre <nico@fluxnic.net>\n";
+=======
+	"smc91x.c: v1.1, sep 22 2004 by Nicolas Pitre <nico@fluxnic.net>";
+>>>>>>> refs/remotes/origin/master
 
 /* Debugging level */
 #ifndef SMC_DEBUG
@@ -82,6 +86,10 @@ static const char version[] =
 #include <linux/mii.h>
 #include <linux/workqueue.h>
 #include <linux/of.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
@@ -149,6 +157,7 @@ MODULE_ALIAS("platform:smc91x");
 #define MII_DELAY		1
 
 #if SMC_DEBUG > 0
+<<<<<<< HEAD
 #define DBG(n, args...)					\
 	do {						\
 		if (SMC_DEBUG >= (n))			\
@@ -159,6 +168,18 @@ MODULE_ALIAS("platform:smc91x");
 #else
 #define DBG(n, args...)   do { } while(0)
 #define PRINTK(args...)   printk(KERN_DEBUG args)
+=======
+#define DBG(n, dev, args...)				\
+	do {						\
+		if (SMC_DEBUG >= (n))			\
+			netdev_dbg(dev, args);		\
+	} while (0)
+
+#define PRINTK(dev, args...)   netdev_info(dev, args)
+#else
+#define DBG(n, dev, args...)   do { } while (0)
+#define PRINTK(dev, args...)   netdev_dbg(dev, args)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #if SMC_DEBUG > 3
@@ -173,24 +194,45 @@ static void PRINT_PKT(u_char *buf, int length)
 
 	for (i = 0; i < lines ; i ++) {
 		int cur;
+<<<<<<< HEAD
+=======
+		printk(KERN_DEBUG);
+>>>>>>> refs/remotes/origin/master
 		for (cur = 0; cur < 8; cur++) {
 			u_char a, b;
 			a = *buf++;
 			b = *buf++;
+<<<<<<< HEAD
 			printk("%02x%02x ", a, b);
 		}
 		printk("\n");
 	}
+=======
+			pr_cont("%02x%02x ", a, b);
+		}
+		pr_cont("\n");
+	}
+	printk(KERN_DEBUG);
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < remainder/2 ; i++) {
 		u_char a, b;
 		a = *buf++;
 		b = *buf++;
+<<<<<<< HEAD
 		printk("%02x%02x ", a, b);
 	}
 	printk("\n");
 }
 #else
 #define PRINT_PKT(x...)  do { } while(0)
+=======
+		pr_cont("%02x%02x ", a, b);
+	}
+	pr_cont("\n");
+}
+#else
+#define PRINT_PKT(x...)  do { } while (0)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 
@@ -226,8 +268,13 @@ static void PRINT_PKT(u_char *buf, int length)
 		unsigned long timeout = jiffies + 2;			\
 		while (SMC_GET_MMU_CMD(lp) & MC_BUSY) {		\
 			if (time_after(jiffies, timeout)) {		\
+<<<<<<< HEAD
 				printk("%s: timeout %s line %d\n",	\
 					dev->name, __FILE__, __LINE__);	\
+=======
+				netdev_dbg(dev, "timeout %s line %d\n",	\
+					   __FILE__, __LINE__);		\
+>>>>>>> refs/remotes/origin/master
 				break;					\
 			}						\
 			cpu_relax();					\
@@ -246,7 +293,11 @@ static void smc_reset(struct net_device *dev)
 	unsigned int ctl, cfg;
 	struct sk_buff *pending_skb;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(2, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* Disable all interrupts, block TX tasklet */
 	spin_lock_irq(&lp->lock);
@@ -339,7 +390,11 @@ static void smc_enable(struct net_device *dev)
 	void __iomem *ioaddr = lp->base;
 	int mask;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(2, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* see the header file for options in TCR/RCR DEFAULT */
 	SMC_SELECT_BANK(lp, 0);
@@ -373,7 +428,11 @@ static void smc_shutdown(struct net_device *dev)
 	void __iomem *ioaddr = lp->base;
 	struct sk_buff *pending_skb;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", CARDNAME, __func__);
+=======
+	DBG(2, dev, "%s: %s\n", CARDNAME, __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* no more interrupts for me */
 	spin_lock_irq(&lp->lock);
@@ -406,11 +465,19 @@ static inline void  smc_rcv(struct net_device *dev)
 	void __iomem *ioaddr = lp->base;
 	unsigned int packet_number, status, packet_len;
 
+<<<<<<< HEAD
 	DBG(3, "%s: %s\n", dev->name, __func__);
 
 	packet_number = SMC_GET_RXFIFO(lp);
 	if (unlikely(packet_number & RXFIFO_REMPTY)) {
 		PRINTK("%s: smc_rcv with nothing on FIFO.\n", dev->name);
+=======
+	DBG(3, dev, "%s\n", __func__);
+
+	packet_number = SMC_GET_RXFIFO(lp);
+	if (unlikely(packet_number & RXFIFO_REMPTY)) {
+		PRINTK(dev, "smc_rcv with nothing on FIFO.\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -420,9 +487,14 @@ static inline void  smc_rcv(struct net_device *dev)
 	/* First two words are status and packet length */
 	SMC_GET_PKT_HDR(lp, status, packet_len);
 	packet_len &= 0x07ff;  /* mask off top bits */
+<<<<<<< HEAD
 	DBG(2, "%s: RX PNR 0x%x STATUS 0x%04x LENGTH 0x%04x (%d)\n",
 		dev->name, packet_number, status,
 		packet_len, packet_len);
+=======
+	DBG(2, dev, "RX PNR 0x%x STATUS 0x%04x LENGTH 0x%04x (%d)\n",
+	    packet_number, status, packet_len, packet_len);
+>>>>>>> refs/remotes/origin/master
 
 	back:
 	if (unlikely(packet_len < 6 || status & RS_ERRORS)) {
@@ -433,8 +505,13 @@ static inline void  smc_rcv(struct net_device *dev)
 		}
 		if (packet_len < 6) {
 			/* bloody hardware */
+<<<<<<< HEAD
 			printk(KERN_ERR "%s: fubar (rxlen %u status %x\n",
 					dev->name, packet_len, status);
+=======
+			netdev_err(dev, "fubar (rxlen %u status %x\n",
+				   packet_len, status);
+>>>>>>> refs/remotes/origin/master
 			status |= RS_TOOSHORT;
 		}
 		SMC_WAIT_MMU_BUSY(lp);
@@ -465,8 +542,11 @@ static inline void  smc_rcv(struct net_device *dev)
 		 */
 		skb = netdev_alloc_skb(dev, packet_len);
 		if (unlikely(skb == NULL)) {
+<<<<<<< HEAD
 			printk(KERN_NOTICE "%s: Low memory, packet dropped.\n",
 				dev->name);
+=======
+>>>>>>> refs/remotes/origin/master
 			SMC_WAIT_MMU_BUSY(lp);
 			SMC_SET_MMU_CMD(lp, MC_RELEASE);
 			dev->stats.rx_dropped++;
@@ -553,7 +633,11 @@ static void smc_hardware_send_pkt(unsigned long data)
 	unsigned char *buf;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	DBG(3, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(3, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	if (!smc_special_trylock(&lp->lock, flags)) {
 		netif_stop_queue(dev);
@@ -570,7 +654,11 @@ static void smc_hardware_send_pkt(unsigned long data)
 
 	packet_no = SMC_GET_AR(lp);
 	if (unlikely(packet_no & AR_FAILED)) {
+<<<<<<< HEAD
 		printk("%s: Memory allocation failed.\n", dev->name);
+=======
+		netdev_err(dev, "Memory allocation failed.\n");
+>>>>>>> refs/remotes/origin/master
 		dev->stats.tx_errors++;
 		dev->stats.tx_fifo_errors++;
 		smc_special_unlock(&lp->lock, flags);
@@ -583,8 +671,13 @@ static void smc_hardware_send_pkt(unsigned long data)
 
 	buf = skb->data;
 	len = skb->len;
+<<<<<<< HEAD
 	DBG(2, "%s: TX PNR 0x%x LENGTH 0x%04x (%d) BUF 0x%p\n",
 		dev->name, packet_no, len, len, buf);
+=======
+	DBG(2, dev, "TX PNR 0x%x LENGTH 0x%04x (%d) BUF 0x%p\n",
+	    packet_no, len, len, buf);
+>>>>>>> refs/remotes/origin/master
 	PRINT_PKT(buf, len);
 
 	/*
@@ -639,7 +732,11 @@ static int smc_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	unsigned int numPages, poll_count, status;
 	unsigned long flags;
 
+<<<<<<< HEAD
 	DBG(3, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(3, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(lp->pending_tx_skb != NULL);
 
@@ -656,7 +753,11 @@ static int smc_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
 	 */
 	numPages = ((skb->len & ~1) + (6 - 1)) >> 8;
 	if (unlikely(numPages > 7)) {
+<<<<<<< HEAD
 		printk("%s: Far too big packet error.\n", dev->name);
+=======
+		netdev_warn(dev, "Far too big packet error.\n");
+>>>>>>> refs/remotes/origin/master
 		dev->stats.tx_errors++;
 		dev->stats.tx_dropped++;
 		dev_kfree_skb(skb);
@@ -687,7 +788,11 @@ static int smc_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
    	if (!poll_count) {
 		/* oh well, wait until the chip finds memory later */
 		netif_stop_queue(dev);
+<<<<<<< HEAD
 		DBG(2, "%s: TX memory allocation deferred.\n", dev->name);
+=======
+		DBG(2, dev, "TX memory allocation deferred.\n");
+>>>>>>> refs/remotes/origin/master
 		SMC_ENABLE_INT(lp, IM_ALLOC_INT);
    	} else {
 		/*
@@ -711,12 +816,20 @@ static void smc_tx(struct net_device *dev)
 	void __iomem *ioaddr = lp->base;
 	unsigned int saved_packet, packet_no, tx_status, pkt_len;
 
+<<<<<<< HEAD
 	DBG(3, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(3, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* If the TX FIFO is empty then nothing to do */
 	packet_no = SMC_GET_TXFIFO(lp);
 	if (unlikely(packet_no & TXFIFO_TEMPTY)) {
+<<<<<<< HEAD
 		PRINTK("%s: smc_tx with nothing on FIFO.\n", dev->name);
+=======
+		PRINTK(dev, "smc_tx with nothing on FIFO.\n");
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
@@ -727,8 +840,13 @@ static void smc_tx(struct net_device *dev)
 	/* read the first word (status word) from this packet */
 	SMC_SET_PTR(lp, PTR_AUTOINC | PTR_READ);
 	SMC_GET_PKT_HDR(lp, tx_status, pkt_len);
+<<<<<<< HEAD
 	DBG(2, "%s: TX STATUS 0x%04x PNR 0x%02x\n",
 		dev->name, tx_status, packet_no);
+=======
+	DBG(2, dev, "TX STATUS 0x%04x PNR 0x%02x\n",
+	    tx_status, packet_no);
+>>>>>>> refs/remotes/origin/master
 
 	if (!(tx_status & ES_TX_SUC))
 		dev->stats.tx_errors++;
@@ -737,14 +855,22 @@ static void smc_tx(struct net_device *dev)
 		dev->stats.tx_carrier_errors++;
 
 	if (tx_status & (ES_LATCOL | ES_16COL)) {
+<<<<<<< HEAD
 		PRINTK("%s: %s occurred on last xmit\n", dev->name,
+=======
+		PRINTK(dev, "%s occurred on last xmit\n",
+>>>>>>> refs/remotes/origin/master
 		       (tx_status & ES_LATCOL) ?
 			"late collision" : "too many collisions");
 		dev->stats.tx_window_errors++;
 		if (!(dev->stats.tx_window_errors & 63) && net_ratelimit()) {
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: unexpectedly large number of "
 			       "bad collisions. Please check duplex "
 			       "setting.\n", dev->name);
+=======
+			netdev_info(dev, "unexpectedly large number of bad collisions. Please check duplex setting.\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -832,8 +958,13 @@ static int smc_phy_read(struct net_device *dev, int phyaddr, int phyreg)
 	/* Return to idle state */
 	SMC_SET_MII(lp, SMC_GET_MII(lp) & ~(MII_MCLK|MII_MDOE|MII_MDO));
 
+<<<<<<< HEAD
 	DBG(3, "%s: phyaddr=0x%x, phyreg=0x%x, phydata=0x%x\n",
 		__func__, phyaddr, phyreg, phydata);
+=======
+	DBG(3, dev, "%s: phyaddr=0x%x, phyreg=0x%x, phydata=0x%x\n",
+	    __func__, phyaddr, phyreg, phydata);
+>>>>>>> refs/remotes/origin/master
 
 	SMC_SELECT_BANK(lp, 2);
 	return phydata;
@@ -859,8 +990,13 @@ static void smc_phy_write(struct net_device *dev, int phyaddr, int phyreg,
 	/* Return to idle state */
 	SMC_SET_MII(lp, SMC_GET_MII(lp) & ~(MII_MCLK|MII_MDOE|MII_MDO));
 
+<<<<<<< HEAD
 	DBG(3, "%s: phyaddr=0x%x, phyreg=0x%x, phydata=0x%x\n",
 		__func__, phyaddr, phyreg, phydata);
+=======
+	DBG(3, dev, "%s: phyaddr=0x%x, phyreg=0x%x, phydata=0x%x\n",
+	    __func__, phyaddr, phyreg, phydata);
+>>>>>>> refs/remotes/origin/master
 
 	SMC_SELECT_BANK(lp, 2);
 }
@@ -873,7 +1009,11 @@ static void smc_phy_detect(struct net_device *dev)
 	struct smc_local *lp = netdev_priv(dev);
 	int phyaddr;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(2, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	lp->phy_type = 0;
 
@@ -888,8 +1028,13 @@ static void smc_phy_detect(struct net_device *dev)
 		id1 = smc_phy_read(dev, phyaddr & 31, MII_PHYSID1);
 		id2 = smc_phy_read(dev, phyaddr & 31, MII_PHYSID2);
 
+<<<<<<< HEAD
 		DBG(3, "%s: phy_id1=0x%x, phy_id2=0x%x\n",
 			dev->name, id1, id2);
+=======
+		DBG(3, dev, "phy_id1=0x%x, phy_id2=0x%x\n",
+		    id1, id2);
+>>>>>>> refs/remotes/origin/master
 
 		/* Make sure it is a valid identifier */
 		if (id1 != 0x0000 && id1 != 0xffff && id1 != 0x8000 &&
@@ -912,7 +1057,11 @@ static int smc_phy_fixed(struct net_device *dev)
 	int phyaddr = lp->mii.phy_id;
 	int bmcr, cfg1;
 
+<<<<<<< HEAD
 	DBG(3, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(3, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* Enter Link Disable state */
 	cfg1 = smc_phy_read(dev, phyaddr, PHY_CFG1_REG);
@@ -942,7 +1091,11 @@ static int smc_phy_fixed(struct net_device *dev)
 	return 1;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * smc_phy_reset - reset the phy
  * @dev: net device
  * @phy: phy address
@@ -976,7 +1129,11 @@ static int smc_phy_reset(struct net_device *dev, int phy)
 	return bmcr & BMCR_RESET;
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * smc_phy_powerdown - powerdown phy
  * @dev: net device
  *
@@ -1000,7 +1157,11 @@ static void smc_phy_powerdown(struct net_device *dev)
 	smc_phy_write(dev, phy, MII_BMCR, bmcr | BMCR_PDOWN);
 }
 
+<<<<<<< HEAD
 /*
+=======
+/**
+>>>>>>> refs/remotes/origin/master
  * smc_phy_check_media - check the media status and adjust TCR
  * @dev: net device
  * @init: set true for initialisation
@@ -1046,7 +1207,11 @@ static void smc_phy_configure(struct work_struct *work)
 	int my_ad_caps; /* My Advertised capabilities */
 	int status;
 
+<<<<<<< HEAD
 	DBG(3, "%s:smc_program_phy()\n", dev->name);
+=======
+	DBG(3, dev, "smc_program_phy()\n");
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&lp->lock);
 
@@ -1057,7 +1222,11 @@ static void smc_phy_configure(struct work_struct *work)
 		goto smc_phy_configure_exit;
 
 	if (smc_phy_reset(dev, phyaddr)) {
+<<<<<<< HEAD
 		printk("%s: PHY reset timed out\n", dev->name);
+=======
+		netdev_info(dev, "PHY reset timed out\n");
+>>>>>>> refs/remotes/origin/master
 		goto smc_phy_configure_exit;
 	}
 
@@ -1084,7 +1253,11 @@ static void smc_phy_configure(struct work_struct *work)
 	my_phy_caps = smc_phy_read(dev, phyaddr, MII_BMSR);
 
 	if (!(my_phy_caps & BMSR_ANEGCAPABLE)) {
+<<<<<<< HEAD
 		printk(KERN_INFO "Auto negotiation NOT supported\n");
+=======
+		netdev_info(dev, "Auto negotiation NOT supported\n");
+>>>>>>> refs/remotes/origin/master
 		smc_phy_fixed(dev);
 		goto smc_phy_configure_exit;
 	}
@@ -1120,8 +1293,13 @@ static void smc_phy_configure(struct work_struct *work)
 	 */
 	status = smc_phy_read(dev, phyaddr, MII_ADVERTISE);
 
+<<<<<<< HEAD
 	DBG(2, "%s: phy caps=%x\n", dev->name, my_phy_caps);
 	DBG(2, "%s: phy advertised caps=%x\n", dev->name, my_ad_caps);
+=======
+	DBG(2, dev, "phy caps=%x\n", my_phy_caps);
+	DBG(2, dev, "phy advertised caps=%x\n", my_ad_caps);
+>>>>>>> refs/remotes/origin/master
 
 	/* Restart auto-negotiation process in order to advertise my caps */
 	smc_phy_write(dev, phyaddr, MII_BMCR, BMCR_ANENABLE | BMCR_ANRESTART);
@@ -1145,7 +1323,11 @@ static void smc_phy_interrupt(struct net_device *dev)
 	int phyaddr = lp->mii.phy_id;
 	int phy18;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(2, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	if (lp->phy_type == 0)
 		return;
@@ -1181,8 +1363,13 @@ static void smc_10bt_check_media(struct net_device *dev, int init)
 			netif_carrier_on(dev);
 		}
 		if (netif_msg_link(lp))
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: link %s\n", dev->name,
 			       new_carrier ? "up" : "down");
+=======
+			netdev_info(dev, "link %s\n",
+				    new_carrier ? "up" : "down");
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1213,7 +1400,11 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 	int status, mask, timeout, card_stats;
 	int saved_pointer;
 
+<<<<<<< HEAD
 	DBG(3, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(3, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&lp->lock);
 
@@ -1232,12 +1423,21 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 	do {
 		status = SMC_GET_INT(lp);
 
+<<<<<<< HEAD
 		DBG(2, "%s: INT 0x%02x MASK 0x%02x MEM 0x%04x FIFO 0x%04x\n",
 			dev->name, status, mask,
 			({ int meminfo; SMC_SELECT_BANK(lp, 0);
 			   meminfo = SMC_GET_MIR(lp);
 			   SMC_SELECT_BANK(lp, 2); meminfo; }),
 			SMC_GET_FIFO(lp));
+=======
+		DBG(2, dev, "INT 0x%02x MASK 0x%02x MEM 0x%04x FIFO 0x%04x\n",
+		    status, mask,
+		    ({ int meminfo; SMC_SELECT_BANK(lp, 0);
+		       meminfo = SMC_GET_MIR(lp);
+		       SMC_SELECT_BANK(lp, 2); meminfo; }),
+		    SMC_GET_FIFO(lp));
+>>>>>>> refs/remotes/origin/master
 
 		status &= mask;
 		if (!status)
@@ -1245,12 +1445,17 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 
 		if (status & IM_TX_INT) {
 			/* do this before RX as it will free memory quickly */
+<<<<<<< HEAD
 			DBG(3, "%s: TX int\n", dev->name);
+=======
+			DBG(3, dev, "TX int\n");
+>>>>>>> refs/remotes/origin/master
 			smc_tx(dev);
 			SMC_ACK_INT(lp, IM_TX_INT);
 			if (THROTTLE_TX_PKTS)
 				netif_wake_queue(dev);
 		} else if (status & IM_RCV_INT) {
+<<<<<<< HEAD
 			DBG(3, "%s: RX irq\n", dev->name);
 			smc_rcv(dev);
 		} else if (status & IM_ALLOC_INT) {
@@ -1259,6 +1464,16 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 			mask &= ~IM_ALLOC_INT;
 		} else if (status & IM_TX_EMPTY_INT) {
 			DBG(3, "%s: TX empty\n", dev->name);
+=======
+			DBG(3, dev, "RX irq\n");
+			smc_rcv(dev);
+		} else if (status & IM_ALLOC_INT) {
+			DBG(3, dev, "Allocation irq\n");
+			tasklet_hi_schedule(&lp->tx_task);
+			mask &= ~IM_ALLOC_INT;
+		} else if (status & IM_TX_EMPTY_INT) {
+			DBG(3, dev, "TX empty\n");
+>>>>>>> refs/remotes/origin/master
 			mask &= ~IM_TX_EMPTY_INT;
 
 			/* update stats */
@@ -1273,10 +1488,17 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 			/* multiple collisions */
 			dev->stats.collisions += card_stats & 0xF;
 		} else if (status & IM_RX_OVRN_INT) {
+<<<<<<< HEAD
 			DBG(1, "%s: RX overrun (EPH_ST 0x%04x)\n", dev->name,
 			       ({ int eph_st; SMC_SELECT_BANK(lp, 0);
 				  eph_st = SMC_GET_EPH_STATUS(lp);
 				  SMC_SELECT_BANK(lp, 2); eph_st; }));
+=======
+			DBG(1, dev, "RX overrun (EPH_ST 0x%04x)\n",
+			    ({ int eph_st; SMC_SELECT_BANK(lp, 0);
+			       eph_st = SMC_GET_EPH_STATUS(lp);
+			       SMC_SELECT_BANK(lp, 2); eph_st; }));
+>>>>>>> refs/remotes/origin/master
 			SMC_ACK_INT(lp, IM_RX_OVRN_INT);
 			dev->stats.rx_errors++;
 			dev->stats.rx_fifo_errors++;
@@ -1287,7 +1509,11 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 			smc_phy_interrupt(dev);
 		} else if (status & IM_ERCV_INT) {
 			SMC_ACK_INT(lp, IM_ERCV_INT);
+<<<<<<< HEAD
 			PRINTK("%s: UNSUPPORTED: ERCV INTERRUPT\n", dev->name);
+=======
+			PRINTK(dev, "UNSUPPORTED: ERCV INTERRUPT\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	} while (--timeout);
 
@@ -1298,11 +1524,19 @@ static irqreturn_t smc_interrupt(int irq, void *dev_id)
 
 #ifndef CONFIG_NET_POLL_CONTROLLER
 	if (timeout == MAX_IRQ_LOOPS)
+<<<<<<< HEAD
 		PRINTK("%s: spurious interrupt (mask = 0x%02x)\n",
 		       dev->name, mask);
 #endif
 	DBG(3, "%s: Interrupt done (%d loops)\n",
 	       dev->name, MAX_IRQ_LOOPS - timeout);
+=======
+		PRINTK(dev, "spurious interrupt (mask = 0x%02x)\n",
+		       mask);
+#endif
+	DBG(3, dev, "Interrupt done (%d loops)\n",
+	    MAX_IRQ_LOOPS - timeout);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * We return IRQ_HANDLED unconditionally here even if there was
@@ -1335,7 +1569,11 @@ static void smc_timeout(struct net_device *dev)
 	void __iomem *ioaddr = lp->base;
 	int status, mask, eph_st, meminfo, fifo;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(2, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_irq(&lp->lock);
 	status = SMC_GET_INT(lp);
@@ -1346,9 +1584,14 @@ static void smc_timeout(struct net_device *dev)
 	meminfo = SMC_GET_MIR(lp);
 	SMC_SELECT_BANK(lp, 2);
 	spin_unlock_irq(&lp->lock);
+<<<<<<< HEAD
 	PRINTK( "%s: TX timeout (INT 0x%02x INTMASK 0x%02x "
 		"MEM 0x%04x FIFO 0x%04x EPH_ST 0x%04x)\n",
 		dev->name, status, mask, meminfo, fifo, eph_st );
+=======
+	PRINTK(dev, "TX timeout (INT 0x%02x INTMASK 0x%02x MEM 0x%04x FIFO 0x%04x EPH_ST 0x%04x)\n",
+	       status, mask, meminfo, fifo, eph_st);
+>>>>>>> refs/remotes/origin/master
 
 	smc_reset(dev);
 	smc_enable(dev);
@@ -1379,10 +1622,17 @@ static void smc_set_multicast_list(struct net_device *dev)
 	unsigned char multicast_table[8];
 	int update_multicast = 0;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
 
 	if (dev->flags & IFF_PROMISC) {
 		DBG(2, "%s: RCR_PRMS\n", dev->name);
+=======
+	DBG(2, dev, "%s\n", __func__);
+
+	if (dev->flags & IFF_PROMISC) {
+		DBG(2, dev, "RCR_PRMS\n");
+>>>>>>> refs/remotes/origin/master
 		lp->rcr_cur_mode |= RCR_PRMS;
 	}
 
@@ -1397,7 +1647,11 @@ static void smc_set_multicast_list(struct net_device *dev)
 	 * checked before the table is
 	 */
 	else if (dev->flags & IFF_ALLMULTI || netdev_mc_count(dev) > 16) {
+<<<<<<< HEAD
 		DBG(2, "%s: RCR_ALMUL\n", dev->name);
+=======
+		DBG(2, dev, "RCR_ALMUL\n");
+>>>>>>> refs/remotes/origin/master
 		lp->rcr_cur_mode |= RCR_ALMUL;
 	}
 
@@ -1439,7 +1693,11 @@ static void smc_set_multicast_list(struct net_device *dev)
 		/* now, the table can be loaded into the chipset */
 		update_multicast = 1;
 	} else  {
+<<<<<<< HEAD
 		DBG(2, "%s: ~(RCR_PRMS|RCR_ALMUL)\n", dev->name);
+=======
+		DBG(2, dev, "~(RCR_PRMS|RCR_ALMUL)\n");
+>>>>>>> refs/remotes/origin/master
 		lp->rcr_cur_mode &= ~(RCR_PRMS | RCR_ALMUL);
 
 		/*
@@ -1472,6 +1730,7 @@ smc_open(struct net_device *dev)
 {
 	struct smc_local *lp = netdev_priv(dev);
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
 
 	/*
@@ -1483,6 +1742,9 @@ smc_open(struct net_device *dev)
 		PRINTK("%s: no valid ethernet hw addr\n", __func__);
 		return -EINVAL;
 	}
+=======
+	DBG(2, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup the default Register Modes */
 	lp->tcr_cur_mode = TCR_DEFAULT;
@@ -1526,7 +1788,11 @@ static int smc_close(struct net_device *dev)
 {
 	struct smc_local *lp = netdev_priv(dev);
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", dev->name, __func__);
+=======
+	DBG(2, dev, "%s\n", __func__);
+>>>>>>> refs/remotes/origin/master
 
 	netif_stop_queue(dev);
 	netif_carrier_off(dev);
@@ -1607,9 +1873,16 @@ smc_ethtool_setsettings(struct net_device *dev, struct ethtool_cmd *cmd)
 static void
 smc_ethtool_getdrvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strncpy(info->driver, CARDNAME, sizeof(info->driver));
 	strncpy(info->version, version, sizeof(info->version));
 	strncpy(info->bus_info, dev_name(dev->dev.parent), sizeof(info->bus_info));
+=======
+	strlcpy(info->driver, CARDNAME, sizeof(info->driver));
+	strlcpy(info->version, version, sizeof(info->version));
+	strlcpy(info->bus_info, dev_name(dev->dev.parent),
+		sizeof(info->bus_info));
+>>>>>>> refs/remotes/origin/master
 }
 
 static int smc_ethtool_nwayreset(struct net_device *dev)
@@ -1705,7 +1978,11 @@ static int smc_ethtool_geteeprom(struct net_device *dev,
 	int i;
 	int imax;
 
+<<<<<<< HEAD
 	DBG(1, "Reading %d bytes at %d(0x%x)\n",
+=======
+	DBG(1, dev, "Reading %d bytes at %d(0x%x)\n",
+>>>>>>> refs/remotes/origin/master
 		eeprom->len, eeprom->offset, eeprom->offset);
 	imax = smc_ethtool_geteeprom_len(dev);
 	for (i = 0; i < eeprom->len; i += 2) {
@@ -1717,7 +1994,11 @@ static int smc_ethtool_geteeprom(struct net_device *dev,
 		ret = smc_read_eeprom_word(dev, offset >> 1, &wbuf);
 		if (ret != 0)
 			return ret;
+<<<<<<< HEAD
 		DBG(2, "Read 0x%x from 0x%x\n", wbuf, offset >> 1);
+=======
+		DBG(2, dev, "Read 0x%x from 0x%x\n", wbuf, offset >> 1);
+>>>>>>> refs/remotes/origin/master
 		data[i] = (wbuf >> 8) & 0xff;
 		data[i+1] = wbuf & 0xff;
 	}
@@ -1730,8 +2011,13 @@ static int smc_ethtool_seteeprom(struct net_device *dev,
 	int i;
 	int imax;
 
+<<<<<<< HEAD
 	DBG(1, "Writing %d bytes to %d(0x%x)\n",
 			eeprom->len, eeprom->offset, eeprom->offset);
+=======
+	DBG(1, dev, "Writing %d bytes to %d(0x%x)\n",
+	    eeprom->len, eeprom->offset, eeprom->offset);
+>>>>>>> refs/remotes/origin/master
 	imax = smc_ethtool_geteeprom_len(dev);
 	for (i = 0; i < eeprom->len; i += 2) {
 		int ret;
@@ -1740,7 +2026,11 @@ static int smc_ethtool_seteeprom(struct net_device *dev,
 		if (offset > imax)
 			break;
 		wbuf = (data[i] << 8) | data[i + 1];
+<<<<<<< HEAD
 		DBG(2, "Writing 0x%x to 0x%x\n", wbuf, offset >> 1);
+=======
+		DBG(2, dev, "Writing 0x%x to 0x%x\n", wbuf, offset >> 1);
+>>>>>>> refs/remotes/origin/master
 		ret = smc_write_eeprom_word(dev, offset >> 1, wbuf);
 		if (ret != 0)
 			return ret;
@@ -1789,13 +2079,21 @@ static const struct net_device_ops smc_netdev_ops = {
  * I just deleted auto_irq.c, since it was never built...
  *   --jgarzik
  */
+<<<<<<< HEAD
 static int __devinit smc_findirq(struct smc_local *lp)
+=======
+static int smc_findirq(struct smc_local *lp)
+>>>>>>> refs/remotes/origin/master
 {
 	void __iomem *ioaddr = lp->base;
 	int timeout = 20;
 	unsigned long cookie;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", CARDNAME, __func__);
+=======
+	DBG(2, dev, "%s: %s\n", CARDNAME, __func__);
+>>>>>>> refs/remotes/origin/master
 
 	cookie = probe_irq_on();
 
@@ -1863,15 +2161,23 @@ static int __devinit smc_findirq(struct smc_local *lp)
  * o  actually GRAB the irq.
  * o  GRAB the region
  */
+<<<<<<< HEAD
 static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 			    unsigned long irq_flags)
 {
 	struct smc_local *lp = netdev_priv(dev);
 	static int version_printed = 0;
+=======
+static int smc_probe(struct net_device *dev, void __iomem *ioaddr,
+		     unsigned long irq_flags)
+{
+	struct smc_local *lp = netdev_priv(dev);
+>>>>>>> refs/remotes/origin/master
 	int retval;
 	unsigned int val, revision_register;
 	const char *version_string;
 
+<<<<<<< HEAD
 	DBG(2, "%s: %s\n", CARDNAME, __func__);
 
 	/* First, see if the high byte is 0x33 */
@@ -1882,6 +2188,19 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 			printk(KERN_WARNING
 				"%s: Detected possible byte-swapped interface"
 				" at IOADDR %p\n", CARDNAME, ioaddr);
+=======
+	DBG(2, dev, "%s: %s\n", CARDNAME, __func__);
+
+	/* First, see if the high byte is 0x33 */
+	val = SMC_CURRENT_BANK(lp);
+	DBG(2, dev, "%s: bank signature probe returned 0x%04x\n",
+	    CARDNAME, val);
+	if ((val & 0xFF00) != 0x3300) {
+		if ((val & 0xFF) == 0x33) {
+			netdev_warn(dev,
+				    "%s: Detected possible byte-swapped interface at IOADDR %p\n",
+				    CARDNAME, ioaddr);
+>>>>>>> refs/remotes/origin/master
 		}
 		retval = -ENODEV;
 		goto err_out;
@@ -1908,8 +2227,13 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 	val = SMC_GET_BASE(lp);
 	val = ((val & 0x1F00) >> 3) << SMC_IO_SHIFT;
 	if (((unsigned int)ioaddr & (0x3e0 << SMC_IO_SHIFT)) != val) {
+<<<<<<< HEAD
 		printk("%s: IOADDR %p doesn't match configuration (%x).\n",
 			CARDNAME, ioaddr, val);
+=======
+		netdev_warn(dev, "%s: IOADDR %p doesn't match configuration (%x).\n",
+			    CARDNAME, ioaddr, val);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -1919,6 +2243,7 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 	 */
 	SMC_SELECT_BANK(lp, 3);
 	revision_register = SMC_GET_REV(lp);
+<<<<<<< HEAD
 	DBG(2, "%s: revision = 0x%04x\n", CARDNAME, revision_register);
 	version_string = chip_ids[ (revision_register >> 4) & 0xF];
 	if (!version_string || (revision_register & 0xff00) != 0x3300) {
@@ -1926,14 +2251,26 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 		printk("%s: IO %p: Unrecognized revision register 0x%04x"
 			", Contact author.\n", CARDNAME,
 			ioaddr, revision_register);
+=======
+	DBG(2, dev, "%s: revision = 0x%04x\n", CARDNAME, revision_register);
+	version_string = chip_ids[ (revision_register >> 4) & 0xF];
+	if (!version_string || (revision_register & 0xff00) != 0x3300) {
+		/* I don't recognize this chip, so... */
+		netdev_warn(dev, "%s: IO %p: Unrecognized revision register 0x%04x, Contact author.\n",
+			    CARDNAME, ioaddr, revision_register);
+>>>>>>> refs/remotes/origin/master
 
 		retval = -ENODEV;
 		goto err_out;
 	}
 
 	/* At this point I'll assume that the chip is an SMC91x. */
+<<<<<<< HEAD
 	if (version_printed++ == 0)
 		printk("%s", version);
+=======
+	pr_info_once("%s\n", version);
+>>>>>>> refs/remotes/origin/master
 
 	/* fill in some of the fields */
 	dev->base_addr = (unsigned long)ioaddr;
@@ -1951,7 +2288,11 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 	/*
 	 * If dev->irq is 0, then the device has to be banged on to see
 	 * what the IRQ is.
+<<<<<<< HEAD
  	 *
+=======
+	 *
+>>>>>>> refs/remotes/origin/master
 	 * This banging doesn't always detect the IRQ, for unknown reasons.
 	 * a workaround is to reset the chip and try again.
 	 *
@@ -1976,8 +2317,12 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 		}
 	}
 	if (dev->irq == 0) {
+<<<<<<< HEAD
 		printk("%s: Couldn't autodetect your IRQ. Use irq=xx.\n",
 			dev->name);
+=======
+		netdev_warn(dev, "Couldn't autodetect your IRQ. Use irq=xx.\n");
+>>>>>>> refs/remotes/origin/master
 		retval = -ENODEV;
 		goto err_out;
 	}
@@ -2041,6 +2386,7 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 	retval = register_netdev(dev);
 	if (retval == 0) {
 		/* now, print out the card info, in a short format.. */
+<<<<<<< HEAD
 		printk("%s: %s (rev %d) at %p IRQ %d",
 			dev->name, version_string, revision_register & 0x0f,
 			lp->base, dev->irq);
@@ -2049,10 +2395,21 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 			printk(" DMA %d", dev->dma);
 
 		printk("%s%s\n",
+=======
+		netdev_info(dev, "%s (rev %d) at %p IRQ %d",
+			    version_string, revision_register & 0x0f,
+			    lp->base, dev->irq);
+
+		if (dev->dma != (unsigned char)-1)
+			pr_cont(" DMA %d", dev->dma);
+
+		pr_cont("%s%s\n",
+>>>>>>> refs/remotes/origin/master
 			lp->cfg.flags & SMC91X_NOWAIT ? " [nowait]" : "",
 			THROTTLE_TX_PKTS ? " [throttle_tx]" : "");
 
 		if (!is_valid_ether_addr(dev->dev_addr)) {
+<<<<<<< HEAD
 			printk("%s: Invalid ethernet MAC address.  Please "
 			       "set using ifconfig\n", dev->name);
 		} else {
@@ -2067,6 +2424,21 @@ static int __devinit smc_probe(struct net_device *dev, void __iomem *ioaddr,
 			PRINTK("%s: PHY LAN83C183 (LAN91C111 Internal)\n", dev->name);
 		} else if ((lp->phy_type & 0xfffffff0) == 0x02821c50) {
 			PRINTK("%s: PHY LAN83C180\n", dev->name);
+=======
+			netdev_warn(dev, "Invalid ethernet MAC address. Please set using ifconfig\n");
+		} else {
+			/* Print the Ethernet address */
+			netdev_info(dev, "Ethernet addr: %pM\n",
+				    dev->dev_addr);
+		}
+
+		if (lp->phy_type == 0) {
+			PRINTK(dev, "No PHY found\n");
+		} else if ((lp->phy_type & 0xfffffff0) == 0x0016f840) {
+			PRINTK(dev, "PHY LAN83C183 (LAN91C111 Internal)\n");
+		} else if ((lp->phy_type & 0xfffffff0) == 0x02821c50) {
+			PRINTK(dev, "PHY LAN83C180\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -2176,7 +2548,12 @@ static inline void smc_request_datacs(struct platform_device *pdev, struct net_d
 			return;
 
 		if(!request_mem_region(res->start, SMC_DATA_EXTENT, CARDNAME)) {
+<<<<<<< HEAD
 			printk(KERN_INFO "%s: failed to request datacs memory region.\n", CARDNAME);
+=======
+			netdev_info(ndev, "%s: failed to request datacs memory region.\n",
+				    CARDNAME);
+>>>>>>> refs/remotes/origin/master
 			return;
 		}
 
@@ -2200,6 +2577,18 @@ static void smc_release_datacs(struct platform_device *pdev, struct net_device *
 	}
 }
 
+<<<<<<< HEAD
+=======
+#if IS_BUILTIN(CONFIG_OF)
+static const struct of_device_id smc91x_match[] = {
+	{ .compatible = "smsc,lan91c94", },
+	{ .compatible = "smsc,lan91c111", },
+	{},
+};
+MODULE_DEVICE_TABLE(of, smc91x_match);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * smc_init(void)
  *   Input parameters:
@@ -2211,9 +2600,16 @@ static void smc_release_datacs(struct platform_device *pdev, struct net_device *
  *	0 --> there is a device
  *	anything else, error
  */
+<<<<<<< HEAD
 static int __devinit smc_drv_probe(struct platform_device *pdev)
 {
 	struct smc91x_platdata *pd = pdev->dev.platform_data;
+=======
+static int smc_drv_probe(struct platform_device *pdev)
+{
+	struct smc91x_platdata *pd = dev_get_platdata(&pdev->dev);
+	const struct of_device_id *match = NULL;
+>>>>>>> refs/remotes/origin/master
 	struct smc_local *lp;
 	struct net_device *ndev;
 	struct resource *res, *ires;
@@ -2233,11 +2629,41 @@ static int __devinit smc_drv_probe(struct platform_device *pdev)
 	 */
 
 	lp = netdev_priv(ndev);
+<<<<<<< HEAD
+=======
+	lp->cfg.flags = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (pd) {
 		memcpy(&lp->cfg, pd, sizeof(lp->cfg));
 		lp->io_shift = SMC91X_IO_SHIFT(lp->cfg.flags);
+<<<<<<< HEAD
 	} else {
+=======
+	}
+
+#if IS_BUILTIN(CONFIG_OF)
+	match = of_match_device(of_match_ptr(smc91x_match), &pdev->dev);
+	if (match) {
+		struct device_node *np = pdev->dev.of_node;
+		u32 val;
+
+		/* Combination of IO widths supported, default to 16-bit */
+		if (!of_property_read_u32(np, "reg-io-width", &val)) {
+			if (val & 1)
+				lp->cfg.flags |= SMC91X_USE_8BIT;
+			if ((val == 0) || (val & 2))
+				lp->cfg.flags |= SMC91X_USE_16BIT;
+			if (val & 4)
+				lp->cfg.flags |= SMC91X_USE_32BIT;
+		} else {
+			lp->cfg.flags |= SMC91X_USE_16BIT;
+		}
+	}
+#endif
+
+	if (!pd && !match) {
+>>>>>>> refs/remotes/origin/master
 		lp->cfg.flags |= (SMC_CAN_USE_8BIT)  ? SMC91X_USE_8BIT  : 0;
 		lp->cfg.flags |= (SMC_CAN_USE_16BIT) ? SMC91X_USE_16BIT : 0;
 		lp->cfg.flags |= (SMC_CAN_USE_32BIT) ? SMC91X_USE_32BIT : 0;
@@ -2310,7 +2736,10 @@ static int __devinit smc_drv_probe(struct platform_device *pdev)
 	return 0;
 
  out_iounmap:
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	iounmap(addr);
  out_release_attrib:
 	smc_release_attrib(pdev, ndev);
@@ -2319,19 +2748,30 @@ static int __devinit smc_drv_probe(struct platform_device *pdev)
  out_free_netdev:
 	free_netdev(ndev);
  out:
+<<<<<<< HEAD
 	printk("%s: not found (%d).\n", CARDNAME, ret);
+=======
+	pr_info("%s: not found (%d).\n", CARDNAME, ret);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit smc_drv_remove(struct platform_device *pdev)
+=======
+static int smc_drv_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *ndev = platform_get_drvdata(pdev);
 	struct smc_local *lp = netdev_priv(ndev);
 	struct resource *res;
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	unregister_netdev(ndev);
 
 	free_irq(ndev->irq, ndev);
@@ -2389,6 +2829,7 @@ static int smc_drv_resume(struct device *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 #ifdef CONFIG_OF
 static const struct of_device_id smc91x_match[] = {
 	{ .compatible = "smsc,lan91c94", },
@@ -2400,6 +2841,8 @@ MODULE_DEVICE_TABLE(of, smc91x_match);
 #define smc91x_match NULL
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct dev_pm_ops smc_drv_pm_ops = {
 	.suspend	= smc_drv_suspend,
 	.resume		= smc_drv_resume,
@@ -2407,12 +2850,20 @@ static struct dev_pm_ops smc_drv_pm_ops = {
 
 static struct platform_driver smc_driver = {
 	.probe		= smc_drv_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(smc_drv_remove),
+=======
+	.remove		= smc_drv_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= CARDNAME,
 		.owner	= THIS_MODULE,
 		.pm	= &smc_drv_pm_ops,
+<<<<<<< HEAD
 		.of_match_table = smc91x_match,
+=======
+		.of_match_table = of_match_ptr(smc91x_match),
+>>>>>>> refs/remotes/origin/master
 	},
 };
 

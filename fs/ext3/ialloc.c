@@ -13,6 +13,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/time.h>
 #include <linux/fs.h>
 #include <linux/jbd.h>
@@ -28,11 +29,16 @@
 #include <asm/byteorder.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/quotaops.h>
 #include <linux/random.h>
 
 #include "ext3.h"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 #include "acl.h"
 
@@ -126,9 +132,13 @@ void ext3_free_inode (handle_t *handle, struct inode * inode)
 	ino = inode->i_ino;
 	ext3_debug ("freeing inode %lu\n", ino);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_ext3_free_inode(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_free_inode(inode);
+>>>>>>> refs/remotes/origin/master
 
 	is_directory = S_ISDIR(inode->i_mode);
 
@@ -188,6 +198,7 @@ error_return:
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * There are two policies for allocating an inode.  If the new inode is
  * a directory, then a forward search is made for a block group with both
  * free space and a low directory-to-inode ratio; if that fails, then of
@@ -226,6 +237,8 @@ static int find_group_dir(struct super_block *sb, struct inode *parent)
 /*
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Orlov's allocator for directories.
  *
  * We always try to spread first-level directories.
@@ -239,8 +252,12 @@ static int find_group_dir(struct super_block *sb, struct inode *parent)
  * It's OK to put directory into a group unless
  * it has too many directories already (max_dirs) or
  * it has too few free inodes left (min_inodes) or
+<<<<<<< HEAD
  * it has too few free blocks left (min_blocks) or
  * it's already running too large debt (max_debt).
+=======
+ * it has too few free blocks left (min_blocks).
+>>>>>>> refs/remotes/origin/master
  * Parent's group is preferred, if it doesn't satisfy these
  * conditions we search cyclically through the rest. If none
  * of the groups look good we just look for a group with more
@@ -250,21 +267,32 @@ static int find_group_dir(struct super_block *sb, struct inode *parent)
  * when we allocate an inode, within 0--255.
  */
 
+<<<<<<< HEAD
 #define INODE_COST 64
 #define BLOCK_COST 256
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int find_group_orlov(struct super_block *sb, struct inode *parent)
 {
 	int parent_group = EXT3_I(parent)->i_block_group;
 	struct ext3_sb_info *sbi = EXT3_SB(sb);
+<<<<<<< HEAD
 	struct ext3_super_block *es = sbi->s_es;
+=======
+>>>>>>> refs/remotes/origin/master
 	int ngroups = sbi->s_groups_count;
 	int inodes_per_group = EXT3_INODES_PER_GROUP(sb);
 	unsigned int freei, avefreei;
 	ext3_fsblk_t freeb, avefreeb;
+<<<<<<< HEAD
 	ext3_fsblk_t blocks_per_dir;
 	unsigned int ndirs;
 	int max_debt, max_dirs, min_inodes;
+=======
+	unsigned int ndirs;
+	int max_dirs, min_inodes;
+>>>>>>> refs/remotes/origin/master
 	ext3_grpblk_t min_blocks;
 	int group = -1, i;
 	struct ext3_group_desc *desc;
@@ -301,12 +329,16 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
 		goto fallback;
 	}
 
+<<<<<<< HEAD
 	blocks_per_dir = (le32_to_cpu(es->s_blocks_count) - freeb) / ndirs;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	max_dirs = ndirs / ngroups + inodes_per_group / 16;
 	min_inodes = avefreei - inodes_per_group / 4;
 	min_blocks = avefreeb - EXT3_BLOCKS_PER_GROUP(sb) / 4;
 
+<<<<<<< HEAD
 	max_debt = EXT3_BLOCKS_PER_GROUP(sb) / max(blocks_per_dir, (ext3_fsblk_t)BLOCK_COST);
 	if (max_debt * INODE_COST > inodes_per_group)
 		max_debt = inodes_per_group / INODE_COST;
@@ -315,6 +347,8 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
 	if (max_debt == 0)
 		max_debt = 1;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ngroups; i++) {
 		group = (parent_group + i) % ngroups;
 		desc = ext3_get_group_desc (sb, group, NULL);
@@ -420,10 +454,14 @@ static int find_group_other(struct super_block *sb, struct inode *parent)
  */
 struct inode *ext3_new_inode(handle_t *handle, struct inode * dir,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     const struct qstr *qstr, int mode)
 =======
 			     const struct qstr *qstr, umode_t mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			     const struct qstr *qstr, umode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct super_block *sb;
 	struct buffer_head *bitmap_bh = NULL;
@@ -445,9 +483,13 @@ struct inode *ext3_new_inode(handle_t *handle, struct inode * dir,
 
 	sb = dir->i_sb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_ext3_request_inode(dir, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_request_inode(dir, mode);
+>>>>>>> refs/remotes/origin/master
 	inode = new_inode(sb);
 	if (!inode)
 		return ERR_PTR(-ENOMEM);
@@ -455,6 +497,7 @@ struct inode *ext3_new_inode(handle_t *handle, struct inode * dir,
 
 	sbi = EXT3_SB(sb);
 	es = sbi->s_es;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (S_ISDIR(mode)) {
 		if (test_opt (sb, OLDALLOC))
@@ -467,6 +510,11 @@ struct inode *ext3_new_inode(handle_t *handle, struct inode * dir,
 		group = find_group_orlov(sb, dir);
 	else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (S_ISDIR(mode))
+		group = find_group_orlov(sb, dir);
+	else
+>>>>>>> refs/remotes/origin/master
 		group = find_group_other(sb, dir);
 
 	err = -ENOSPC;
@@ -634,9 +682,13 @@ got:
 
 	ext3_debug("allocating inode %lu\n", inode->i_ino);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	trace_ext3_allocate_inode(inode, dir, mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	trace_ext3_allocate_inode(inode, dir, mode);
+>>>>>>> refs/remotes/origin/master
 	goto really_out;
 fail:
 	ext3_std_error(sb, err);
@@ -654,10 +706,14 @@ fail_drop:
 	dquot_drop(inode);
 	inode->i_flags |= S_NOQUOTA;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	inode->i_nlink = 0;
 =======
 	clear_nlink(inode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clear_nlink(inode);
+>>>>>>> refs/remotes/origin/master
 	unlock_new_inode(inode);
 	iput(inode);
 	brelse(bitmap_bh);

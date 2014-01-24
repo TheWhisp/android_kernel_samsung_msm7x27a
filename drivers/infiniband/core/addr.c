@@ -38,9 +38,13 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/arp.h>
 #include <net/neighbour.h>
 #include <net/route.h>
@@ -48,6 +52,10 @@
 #include <net/addrconf.h>
 #include <net/ip6_route.h>
 #include <rdma/ib_addr.h>
+<<<<<<< HEAD
+=======
+#include <rdma/ib.h>
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sean Hefty");
 MODULE_DESCRIPTION("IB Address Translation");
@@ -73,6 +81,24 @@ static LIST_HEAD(req_list);
 static DECLARE_DELAYED_WORK(work, process_req);
 static struct workqueue_struct *addr_wq;
 
+<<<<<<< HEAD
+=======
+int rdma_addr_size(struct sockaddr *addr)
+{
+	switch (addr->sa_family) {
+	case AF_INET:
+		return sizeof(struct sockaddr_in);
+	case AF_INET6:
+		return sizeof(struct sockaddr_in6);
+	case AF_IB:
+		return sizeof(struct sockaddr_ib);
+	default:
+		return 0;
+	}
+}
+EXPORT_SYMBOL(rdma_addr_size);
+
+>>>>>>> refs/remotes/origin/master
 void rdma_addr_register_client(struct rdma_addr_client *client)
 {
 	atomic_set(&client->refcount, 1);
@@ -132,7 +158,11 @@ int rdma_translate_ip(struct sockaddr *addr, struct rdma_dev_addr *dev_addr)
 		dev_put(dev);
 		break;
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 	case AF_INET6:
 		rcu_read_lock();
 		for_each_netdev_rcu(&init_net, dev) {
@@ -155,13 +185,20 @@ static void set_timeout(unsigned long time)
 {
 	unsigned long delay;
 
+<<<<<<< HEAD
 	cancel_delayed_work(&work);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	delay = time - jiffies;
 	if ((long)delay <= 0)
 		delay = 1;
 
+<<<<<<< HEAD
 	queue_delayed_work(addr_wq, &work, delay);
+=======
+	mod_delayed_work(addr_wq, &work, delay);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void queue_req(struct addr_req *req)
@@ -182,7 +219,10 @@ static void queue_req(struct addr_req *req)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int dst_fetch_ha(struct dst_entry *dst, struct rdma_dev_addr *dev_addr, void *daddr)
 {
 	struct neighbour *n;
@@ -206,7 +246,10 @@ static int dst_fetch_ha(struct dst_entry *dst, struct rdma_dev_addr *dev_addr, v
 	return ret;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int addr4_resolve(struct sockaddr_in *src_in,
 			 struct sockaddr_in *dst_in,
 			 struct rdma_dev_addr *addr)
@@ -215,9 +258,12 @@ static int addr4_resolve(struct sockaddr_in *src_in,
 	__be32 dst_ip = dst_in->sin_addr.s_addr;
 	struct rtable *rt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct neighbour *neigh;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct flowi4 fl4;
 	int ret;
 
@@ -247,6 +293,7 @@ static int addr4_resolve(struct sockaddr_in *src_in,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	neigh = neigh_lookup(&arp_tbl, &rt->rt_gateway, rt->dst.dev);
 	if (!neigh || !(neigh->nud_state & NUD_VALID)) {
 		rcu_read_lock();
@@ -264,26 +311,37 @@ release:
 =======
 	ret = dst_fetch_ha(&rt->dst, addr, &fl4.daddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = dst_fetch_ha(&rt->dst, addr, &fl4.daddr);
+>>>>>>> refs/remotes/origin/master
 put:
 	ip_rt_put(rt);
 out:
 	return ret;
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_IPV6) || defined(CONFIG_IPV6_MODULE)
+=======
+#if IS_ENABLED(CONFIG_IPV6)
+>>>>>>> refs/remotes/origin/master
 static int addr6_resolve(struct sockaddr_in6 *src_in,
 			 struct sockaddr_in6 *dst_in,
 			 struct rdma_dev_addr *addr)
 {
 	struct flowi6 fl6;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct neighbour *neigh;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dst_entry *dst;
 	int ret;
 
 	memset(&fl6, 0, sizeof fl6);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ipv6_addr_copy(&fl6.daddr, &dst_in->sin6_addr);
 	ipv6_addr_copy(&fl6.saddr, &src_in->sin6_addr);
@@ -291,6 +349,10 @@ static int addr6_resolve(struct sockaddr_in6 *src_in,
 	fl6.daddr = dst_in->sin6_addr;
 	fl6.saddr = src_in->sin6_addr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	fl6.daddr = dst_in->sin6_addr;
+	fl6.saddr = src_in->sin6_addr;
+>>>>>>> refs/remotes/origin/master
 	fl6.flowi6_oif = addr->bound_dev_if;
 
 	dst = ip6_route_output(&init_net, NULL, &fl6);
@@ -305,10 +367,14 @@ static int addr6_resolve(struct sockaddr_in6 *src_in,
 
 		src_in->sin6_family = AF_INET6;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ipv6_addr_copy(&src_in->sin6_addr, &fl6.saddr);
 =======
 		src_in->sin6_addr = fl6.saddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		src_in->sin6_addr = fl6.saddr;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (dst->dev->flags & IFF_LOOPBACK) {
@@ -325,6 +391,7 @@ static int addr6_resolve(struct sockaddr_in6 *src_in,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_read_lock();
 	neigh = dst_get_neighbour(dst);
 	if (!neigh || !(neigh->nud_state & NUD_VALID)) {
@@ -338,6 +405,9 @@ static int addr6_resolve(struct sockaddr_in6 *src_in,
 =======
 	ret = dst_fetch_ha(dst, addr, &fl6.daddr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = dst_fetch_ha(dst, addr, &fl6.daddr);
+>>>>>>> refs/remotes/origin/master
 put:
 	dst_release(dst);
 	return ret;
@@ -424,12 +494,20 @@ int rdma_resolve_ip(struct rdma_addr_client *client,
 			goto err;
 		}
 
+<<<<<<< HEAD
 		memcpy(src_in, src_addr, ip_addr_size(src_addr));
+=======
+		memcpy(src_in, src_addr, rdma_addr_size(src_addr));
+>>>>>>> refs/remotes/origin/master
 	} else {
 		src_in->sa_family = dst_addr->sa_family;
 	}
 
+<<<<<<< HEAD
 	memcpy(dst_in, dst_addr, ip_addr_size(dst_addr));
+=======
+	memcpy(dst_in, dst_addr, rdma_addr_size(dst_addr));
+>>>>>>> refs/remotes/origin/master
 	req->addr = addr;
 	req->callback = callback;
 	req->context = context;

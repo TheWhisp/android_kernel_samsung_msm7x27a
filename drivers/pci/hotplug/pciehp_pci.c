@@ -34,6 +34,7 @@
 #include "../pci.h"
 #include "pciehp.h"
 
+<<<<<<< HEAD
 static int __ref pciehp_add_bridge(struct pci_dev *dev)
 {
 	struct pci_bus *parent = dev->bus;
@@ -57,12 +58,18 @@ static int __ref pciehp_add_bridge(struct pci_dev *dev)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int pciehp_configure_device(struct slot *p_slot)
 {
 	struct pci_dev *dev;
 	struct pci_dev *bridge = p_slot->ctrl->pcie->port;
 	struct pci_bus *parent = bridge->subordinate;
+<<<<<<< HEAD
 	int num, fn;
+=======
+	int num;
+>>>>>>> refs/remotes/origin/master
 	struct controller *ctrl = p_slot->ctrl;
 
 	dev = pci_get_slot(parent, PCI_DEVFN(0, 0));
@@ -80,6 +87,7 @@ int pciehp_configure_device(struct slot *p_slot)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	for (fn = 0; fn < 8; fn++) {
 		dev = pci_get_slot(parent, PCI_DEVFN(0, fn));
 		if (!dev)
@@ -103,6 +111,20 @@ int pciehp_configure_device(struct slot *p_slot)
 		}
 		pci_configure_slot(dev);
 		pci_dev_put(dev);
+=======
+	list_for_each_entry(dev, &parent->devices, bus_list)
+		if ((dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) ||
+				(dev->hdr_type == PCI_HEADER_TYPE_CARDBUS))
+			pci_hp_add_bridge(dev);
+
+	pci_assign_unassigned_bridge_resources(bridge);
+
+	list_for_each_entry(dev, &parent->devices, bus_list) {
+		if ((dev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
+			continue;
+
+		pci_configure_slot(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pci_bus_add_devices(parent);
@@ -113,9 +135,15 @@ int pciehp_configure_device(struct slot *p_slot)
 int pciehp_unconfigure_device(struct slot *p_slot)
 {
 	int ret, rc = 0;
+<<<<<<< HEAD
 	int j;
 	u8 bctl = 0;
 	u8 presence = 0;
+=======
+	u8 bctl = 0;
+	u8 presence = 0;
+	struct pci_dev *dev, *temp;
+>>>>>>> refs/remotes/origin/master
 	struct pci_bus *parent = p_slot->ctrl->pcie->port->subordinate;
 	u16 command;
 	struct controller *ctrl = p_slot->ctrl;
@@ -126,6 +154,7 @@ int pciehp_unconfigure_device(struct slot *p_slot)
 	if (ret)
 		presence = 0;
 
+<<<<<<< HEAD
 	for (j = 0; j < 8; j++) {
 		struct pci_dev *temp = pci_get_slot(parent, PCI_DEVFN(0, j));
 		if (!temp)
@@ -137,26 +166,57 @@ int pciehp_unconfigure_device(struct slot *p_slot)
 					 "Cannot remove display device %s\n",
 					 pci_name(temp));
 				pci_dev_put(temp);
+=======
+	/*
+	 * Stopping an SR-IOV PF device removes all the associated VFs,
+	 * which will update the bus->devices list and confuse the
+	 * iterator.  Therefore, iterate in reverse so we remove the VFs
+	 * first, then the PF.  We do the same in pci_stop_bus_device().
+	 */
+	list_for_each_entry_safe_reverse(dev, temp, &parent->devices,
+					 bus_list) {
+		pci_dev_get(dev);
+		if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE && presence) {
+			pci_read_config_byte(dev, PCI_BRIDGE_CONTROL, &bctl);
+			if (bctl & PCI_BRIDGE_CTL_VGA) {
+				ctrl_err(ctrl,
+					 "Cannot remove display device %s\n",
+					 pci_name(dev));
+				pci_dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 				rc = -EINVAL;
 				break;
 			}
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		pci_remove_bus_device(temp);
 =======
 		pci_stop_and_remove_bus_device(temp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pci_stop_and_remove_bus_device(dev);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Ensure that no new Requests will be generated from
 		 * the device.
 		 */
 		if (presence) {
+<<<<<<< HEAD
 			pci_read_config_word(temp, PCI_COMMAND, &command);
 			command &= ~(PCI_COMMAND_MASTER | PCI_COMMAND_SERR);
 			command |= PCI_COMMAND_INTX_DISABLE;
 			pci_write_config_word(temp, PCI_COMMAND, command);
 		}
 		pci_dev_put(temp);
+=======
+			pci_read_config_word(dev, PCI_COMMAND, &command);
+			command &= ~(PCI_COMMAND_MASTER | PCI_COMMAND_SERR);
+			command |= PCI_COMMAND_INTX_DISABLE;
+			pci_write_config_word(dev, PCI_COMMAND, command);
+		}
+		pci_dev_put(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return rc;

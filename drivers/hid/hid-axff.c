@@ -7,10 +7,14 @@
  *
  * 1a34:0802 "ACRUX USB GAMEPAD 8116"
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  - tested with a EXEQ EQ-PCU-02090 game controller.
 =======
  *  - tested with an EXEQ EQ-PCU-02090 game controller.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  - tested with an EXEQ EQ-PCU-02090 game controller.
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright (c) 2010 Sergei Kolzun <x0r@dv-life.ru>
  */
@@ -33,17 +37,25 @@
 
 #include <linux/input.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/usb.h>
 #include <linux/hid.h>
 <<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hid.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "hid-ids.h"
 
 #ifdef CONFIG_HID_ACRUX_FF
+<<<<<<< HEAD
 #include "usbhid/usbhid.h"
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct axff_device {
 	struct hid_report *report;
@@ -54,13 +66,19 @@ static int axff_play(struct input_dev *dev, void *data, struct ff_effect *effect
 	struct hid_device *hid = input_get_drvdata(dev);
 	struct axff_device *axff = data;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int left, right;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct hid_report *report = axff->report;
 	int field_count = 0;
 	int left, right;
 	int i, j;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	left = effect->u.rumble.strong_magnitude;
 	right = effect->u.rumble.weak_magnitude;
@@ -71,11 +89,14 @@ static int axff_play(struct input_dev *dev, void *data, struct ff_effect *effect
 	right = right * 0xff / 0xffff;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	axff->report->field[0]->value[0] = left;
 	axff->report->field[1]->value[0] = right;
 	axff->report->field[2]->value[0] = left;
 	axff->report->field[3]->value[0] = right;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < report->maxfield; i++) {
 		for (j = 0; j < report->field[i]->report_count; j++) {
 			report->field[i]->value[j] =
@@ -84,9 +105,14 @@ static int axff_play(struct input_dev *dev, void *data, struct ff_effect *effect
 		}
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	dbg_hid("running with 0x%02x 0x%02x", left, right);
 	usbhid_submit_report(hid, axff->report, USB_DIR_OUT);
+=======
+	dbg_hid("running with 0x%02x 0x%02x", left, right);
+	hid_hw_request(hid, axff->report, HID_REQ_SET_REPORT);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -99,10 +125,15 @@ static int axff_init(struct hid_device *hid)
 	struct list_head *report_list =&hid->report_enum[HID_OUTPUT_REPORT].report_list;
 	struct input_dev *dev = hidinput->input;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int field_count = 0;
 	int i, j;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int field_count = 0;
+	int i, j;
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	if (list_empty(report_list)) {
@@ -112,10 +143,13 @@ static int axff_init(struct hid_device *hid)
 
 	report = list_first_entry(report_list, struct hid_report, list);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	if (report->maxfield < 4) {
 		hid_err(hid, "no fields in the report: %d\n", report->maxfield);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < report->maxfield; i++) {
 		for (j = 0; j < report->field[i]->report_count; j++) {
 			report->field[i]->value[j] = 0x00;
@@ -123,10 +157,16 @@ static int axff_init(struct hid_device *hid)
 		}
 	}
 
+<<<<<<< HEAD
 	if (field_count < 4) {
 		hid_err(hid, "not enough fields in the report: %d\n",
 			field_count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (field_count < 4 && hid->product != 0xf705) {
+		hid_err(hid, "not enough fields in the report: %d\n",
+			field_count);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -142,6 +182,7 @@ static int axff_init(struct hid_device *hid)
 
 	axff->report = report;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	axff->report->field[0]->value[0] = 0x00;
 	axff->report->field[1]->value[0] = 0x00;
 	axff->report->field[2]->value[0] = 0x00;
@@ -154,6 +195,11 @@ static int axff_init(struct hid_device *hid)
 
 	hid_info(hid, "Force Feedback for ACRUX game controllers by Sergei Kolzun <x0r@dv-life.ru>\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	hid_hw_request(hid, axff->report, HID_REQ_SET_REPORT);
+
+	hid_info(hid, "Force Feedback for ACRUX game controllers by Sergei Kolzun <x0r@dv-life.ru>\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -205,9 +251,13 @@ static int ax_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	if (error) {
 		dev_err(&hdev->dev, "hw open failed\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		hid_hw_stop(hdev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hid_hw_stop(hdev);
+>>>>>>> refs/remotes/origin/master
 		return error;
 	}
 
@@ -222,6 +272,10 @@ static void ax_remove(struct hid_device *hdev)
 
 static const struct hid_device_id ax_devices[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_ACRUX, 0x0802), },
+<<<<<<< HEAD
+=======
+	{ HID_USB_DEVICE(USB_VENDOR_ID_ACRUX, 0xf705), },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(hid, ax_devices);
@@ -232,6 +286,7 @@ static struct hid_driver ax_driver = {
 	.probe		= ax_probe,
 	.remove		= ax_remove,
 };
+<<<<<<< HEAD
 
 static int __init ax_init(void)
 {
@@ -245,6 +300,9 @@ static void __exit ax_exit(void)
 
 module_init(ax_init);
 module_exit(ax_exit);
+=======
+module_hid_driver(ax_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Sergei Kolzun");
 MODULE_DESCRIPTION("Force feedback support for ACRUX game controllers");

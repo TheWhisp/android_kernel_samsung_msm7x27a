@@ -2,19 +2,25 @@
  * omap-mcpdm.c  --  OMAP ALSA SoC DAI driver using McPDM port
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2009 Texas Instruments
  *
  * Author: Misael Lopez Cruz <x0052729@ti.com>
  * Contact: Jorge Eduardo Candelaria <x0107209@ti.com>
  *          Margarita Olaya <magi.olaya@ti.com>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Copyright (C) 2009 - 2011 Texas Instruments
  *
  * Author: Misael Lopez Cruz <misael.lopez@ti.com>
  * Contact: Jorge Eduardo Candelaria <x0107209@ti.com>
  *          Margarita Olaya <magi.olaya@ti.com>
  *          Peter Ujfalusi <peter.ujfalusi@ti.com>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,6 +39,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define DEBUG
 
 #include <linux/init.h>
@@ -43,20 +50,30 @@
 #include <linux/err.h>
 #include <linux/delay.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/interrupt.h>
 #include <linux/err.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>
 #include <linux/irq.h>
 #include <linux/slab.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
+=======
+#include <linux/of_device.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <sound/initval.h>
 =======
@@ -83,12 +100,24 @@
 #define MCPDM_ABE_DAI_UL1		5
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sound/soc.h>
+#include <sound/dmaengine_pcm.h>
+
+#include "omap-mcpdm.h"
+
+struct mcpdm_link_config {
+	u32 link_mask; /* channel mask for the direction */
+	u32 threshold; /* FIFO threshold */
+};
+>>>>>>> refs/remotes/origin/master
 
 struct omap_mcpdm {
 	struct device *dev;
 	unsigned long phys_base;
 	void __iomem *io_base;
 	int irq;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct delayed_work delayed_work;
 
@@ -120,11 +149,27 @@ struct omap_mcpdm {
 	/* McPDM dn offsets for rx1, and 2 channels */
 	u32 dn_rx_offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	struct mutex mutex;
+
+	/* Playback/Capture configuration */
+	struct mcpdm_link_config config[2];
+
+	/* McPDM dn offsets for rx1, and 2 channels */
+	u32 dn_rx_offset;
+
+	/* McPDM needs to be restarted due to runtime reconfiguration */
+	bool restart;
+
+	struct snd_dmaengine_dai_dma_data dma_data[2];
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
  * Stream DMA parameters
  */
+<<<<<<< HEAD
 static struct omap_pcm_dma_data omap_mcpdm_dai_dma_params[] = {
 	{
 		.name = "Audio playback",
@@ -160,11 +205,21 @@ static inline void omap_mcpdm_write(struct omap_mcpdm *mcpdm, u16 reg, u32 val)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	__raw_writel(val, mcpdm->io_base + reg);
+=======
+
+static inline void omap_mcpdm_write(struct omap_mcpdm *mcpdm, u16 reg, u32 val)
+{
+	writel_relaxed(val, mcpdm->io_base + reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int omap_mcpdm_read(struct omap_mcpdm *mcpdm, u16 reg)
 {
+<<<<<<< HEAD
 	return __raw_readl(mcpdm->io_base + reg);
+=======
+	return readl_relaxed(mcpdm->io_base + reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef DEBUG
@@ -172,6 +227,7 @@ static void omap_mcpdm_reg_dump(struct omap_mcpdm *mcpdm)
 {
 	dev_dbg(mcpdm->dev, "***********************\n");
 	dev_dbg(mcpdm->dev, "IRQSTATUS_RAW:  0x%04x\n",
+<<<<<<< HEAD
 <<<<<<< HEAD
 			omap_mcpdm_read(mcpdm, MCPDM_IRQSTATUS_RAW));
 	dev_dbg(mcpdm->dev, "IRQSTATUS:  0x%04x\n",
@@ -199,6 +255,8 @@ static void omap_mcpdm_reg_dump(struct omap_mcpdm *mcpdm)
 	dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
 			omap_mcpdm_read(mcpdm, MCPDM_FIFO_CTRL_UP));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			omap_mcpdm_read(mcpdm, MCPDM_REG_IRQSTATUS_RAW));
 	dev_dbg(mcpdm->dev, "IRQSTATUS:  0x%04x\n",
 			omap_mcpdm_read(mcpdm, MCPDM_REG_IRQSTATUS));
@@ -224,7 +282,10 @@ static void omap_mcpdm_reg_dump(struct omap_mcpdm *mcpdm)
 			omap_mcpdm_read(mcpdm, MCPDM_REG_FIFO_CTRL_DN));
 	dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
 			omap_mcpdm_read(mcpdm, MCPDM_REG_FIFO_CTRL_UP));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(mcpdm->dev, "***********************\n");
 }
 #else
@@ -237,6 +298,7 @@ static void omap_mcpdm_reg_dump(struct omap_mcpdm *mcpdm) {}
  */
 static void omap_mcpdm_start(struct omap_mcpdm *mcpdm)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_CTRL);
 
@@ -272,16 +334,27 @@ static void omap_mcpdm_stop_ul(struct omap_mcpdm *mcpdm)
 	}
 =======
 	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
+=======
+	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
+	u32 link_mask = mcpdm->config[0].link_mask | mcpdm->config[1].link_mask;
+>>>>>>> refs/remotes/origin/master
 
 	ctrl |= (MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
 
+<<<<<<< HEAD
 	ctrl |= mcpdm->dn_channels | mcpdm->up_channels;
+=======
+	ctrl |= link_mask;
+>>>>>>> refs/remotes/origin/master
 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
 
 	ctrl &= ~(MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -290,6 +363,7 @@ static void omap_mcpdm_stop_ul(struct omap_mcpdm *mcpdm)
  */
 static void omap_mcpdm_stop(struct omap_mcpdm *mcpdm)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_CTRL);
 
@@ -304,17 +378,28 @@ static void omap_mcpdm_stop(struct omap_mcpdm *mcpdm)
 	omap_mcpdm_write(mcpdm, MCPDM_CTRL, ctrl);
 =======
 	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
+=======
+	u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
+	u32 link_mask = MCPDM_PDM_DN_MASK | MCPDM_PDM_UP_MASK;
+>>>>>>> refs/remotes/origin/master
 
 	ctrl |= (MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
 
+<<<<<<< HEAD
 	ctrl &= ~(mcpdm->dn_channels | mcpdm->up_channels);
+=======
+	ctrl &= ~(link_mask);
+>>>>>>> refs/remotes/origin/master
 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
 
 	ctrl &= ~(MCPDM_SW_DN_RST | MCPDM_SW_UP_RST);
 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -322,6 +407,7 @@ static void omap_mcpdm_stop(struct omap_mcpdm *mcpdm)
  */
 static inline int omap_mcpdm_active(struct omap_mcpdm *mcpdm)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return omap_mcpdm_read(mcpdm, MCPDM_CTRL) & (PDM_DN_MASK | PDM_UP_MASK);
 }
@@ -388,6 +474,8 @@ static void omap_mcpdm_playback_close(struct omap_mcpdm *mcpdm)
 	/* Disable DMA request generation */
 	omap_mcpdm_write(mcpdm, MCPDM_DMAENABLE_CLR, DMA_DN_ENABLE);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	return omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL) &
 					(MCPDM_PDM_DN_MASK | MCPDM_PDM_UP_MASK);
 }
@@ -411,8 +499,15 @@ static void omap_mcpdm_open_streams(struct omap_mcpdm *mcpdm)
 		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, dn_offset);
 	}
 
+<<<<<<< HEAD
 	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_DN, mcpdm->dn_threshold);
 	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_UP, mcpdm->up_threshold);
+=======
+	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_DN,
+			 mcpdm->config[SNDRV_PCM_STREAM_PLAYBACK].threshold);
+	omap_mcpdm_write(mcpdm, MCPDM_REG_FIFO_CTRL_UP,
+			 mcpdm->config[SNDRV_PCM_STREAM_CAPTURE].threshold);
+>>>>>>> refs/remotes/origin/master
 
 	omap_mcpdm_write(mcpdm, MCPDM_REG_DMAENABLE_SET,
 			MCPDM_DMA_DN_ENABLE | MCPDM_DMA_UP_ENABLE);
@@ -441,7 +536,10 @@ static void omap_mcpdm_close_streams(struct omap_mcpdm *mcpdm)
 	/* Disable RX1/2 offset cancellation */
 	if (mcpdm->dn_rx_offset)
 		omap_mcpdm_write(mcpdm, MCPDM_REG_DN_OFFSET, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
@@ -449,6 +547,7 @@ static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
 	struct omap_mcpdm *mcpdm = dev_id;
 	int irq_status;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	irq_status = omap_mcpdm_read(mcpdm, MCPDM_IRQSTATUS);
 
@@ -473,6 +572,8 @@ static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
 	if (irq_status & MCPDM_UP_IRQ)
 		dev_dbg(mcpdm->dev, "UP write request\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	irq_status = omap_mcpdm_read(mcpdm, MCPDM_REG_IRQSTATUS);
 
 	/* Acknowledge irq event */
@@ -495,7 +596,10 @@ static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
 
 	if (irq_status & MCPDM_UP_IRQ)
 		dev_dbg(mcpdm->dev, "UP (capture) write request\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return IRQ_HANDLED;
 }
@@ -504,6 +608,7 @@ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
 				  struct snd_soc_dai *dai)
 {
 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	u32 ctrl;
 	int err = 0;
@@ -586,10 +691,13 @@ static void omap_mcpdm_dai_shutdown(struct snd_pcm_substream *substream,
 		schedule_delayed_work(&mcpdm->delayed_work,
 			msecs_to_jiffies(1000)); /* TODO: pdata ? */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&mcpdm->mutex);
 
 	if (!dai->active) {
+<<<<<<< HEAD
 		/* Enable watch dog for ES above ES 1.0 to avoid saturation */
 		if (omap_rev() != OMAP4430_REV_ES1_0) {
 			u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
@@ -602,6 +710,18 @@ static void omap_mcpdm_dai_shutdown(struct snd_pcm_substream *substream,
 
 	mutex_unlock(&mcpdm->mutex);
 
+=======
+		u32 ctrl = omap_mcpdm_read(mcpdm, MCPDM_REG_CTRL);
+
+		omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, ctrl | MCPDM_WD_EN);
+		omap_mcpdm_open_streams(mcpdm);
+	}
+	mutex_unlock(&mcpdm->mutex);
+
+	snd_soc_dai_set_dma_data(dai, substream,
+				 &mcpdm->dma_data[substream->stream]);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -616,8 +736,14 @@ static void omap_mcpdm_dai_shutdown(struct snd_pcm_substream *substream,
 		if (omap_mcpdm_active(mcpdm)) {
 			omap_mcpdm_stop(mcpdm);
 			omap_mcpdm_close_streams(mcpdm);
+<<<<<<< HEAD
 		}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mcpdm->config[0].link_mask = 0;
+			mcpdm->config[1].link_mask = 0;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	mutex_unlock(&mcpdm->mutex);
@@ -629,6 +755,7 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
 {
 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
 	int stream = substream->stream;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	int channels, link_mask = 0;
 
@@ -655,6 +782,10 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
 			return -EINVAL;
 =======
 	struct omap_pcm_dma_data *dma_data;
+=======
+	struct snd_dmaengine_dai_dma_data *dma_data;
+	u32 threshold;
+>>>>>>> refs/remotes/origin/master
 	int channels;
 	int link_mask = 0;
 
@@ -671,7 +802,10 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
 			return -EINVAL;
 		link_mask |= 1 << 3;
 	case 3:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		link_mask |= 1 << 2;
 	case 2:
 		link_mask |= 1 << 1;
@@ -683,6 +817,7 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
 		/* Downlink channels */
@@ -705,6 +840,35 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
 
 	snd_soc_dai_set_dma_data(dai, substream, dma_data);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dma_data = snd_soc_dai_get_dma_data(dai, substream);
+
+	threshold = mcpdm->config[stream].threshold;
+	/* Configure McPDM channels, and DMA packet size */
+	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+		link_mask <<= 3;
+
+		/* If capture is not running assume a stereo stream to come */
+		if (!mcpdm->config[!stream].link_mask)
+			mcpdm->config[!stream].link_mask = 0x3;
+
+		dma_data->maxburst =
+				(MCPDM_DN_THRES_MAX - threshold) * channels;
+	} else {
+		/* If playback is not running assume a stereo stream to come */
+		if (!mcpdm->config[!stream].link_mask)
+			mcpdm->config[!stream].link_mask = (0x3 << 3);
+
+		dma_data->maxburst = threshold * channels;
+	}
+
+	/* Check if we need to restart McPDM with this stream */
+	if (mcpdm->config[stream].link_mask &&
+	    mcpdm->config[stream].link_mask != link_mask)
+		mcpdm->restart = true;
+
+	mcpdm->config[stream].link_mask = link_mask;
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -715,6 +879,7 @@ static int omap_mcpdm_prepare(struct snd_pcm_substream *substream,
 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
 
 	if (!omap_mcpdm_active(mcpdm)) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (mcpdm->abe_mode) {
 			/* Check if ABE McPDM DL is already started */
@@ -769,21 +934,36 @@ static struct snd_soc_dai_ops omap_mcpdm_dai_ops = {
 =======
 		omap_mcpdm_start(mcpdm);
 		omap_mcpdm_reg_dump(mcpdm);
+=======
+		omap_mcpdm_start(mcpdm);
+		omap_mcpdm_reg_dump(mcpdm);
+	} else if (mcpdm->restart) {
+		omap_mcpdm_stop(mcpdm);
+		omap_mcpdm_start(mcpdm);
+		mcpdm->restart = false;
+		omap_mcpdm_reg_dump(mcpdm);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 }
 
 static const struct snd_soc_dai_ops omap_mcpdm_dai_ops = {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.startup	= omap_mcpdm_dai_startup,
 	.shutdown	= omap_mcpdm_dai_shutdown,
 	.hw_params	= omap_mcpdm_dai_hw_params,
 	.prepare	= omap_mcpdm_prepare,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.trigger	= omap_mcpdm_dai_trigger,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int omap_mcpdm_probe(struct snd_soc_dai *dai)
@@ -795,6 +975,7 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
 
 	/* Disable lines while request is ongoing */
 	pm_runtime_get_sync(mcpdm->dev);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	omap_mcpdm_write(mcpdm, MCPDM_CTRL, 0x00);
 
@@ -808,6 +989,11 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
 	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, 0x00);
 
 	ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler,
+=======
+	omap_mcpdm_write(mcpdm, MCPDM_REG_CTRL, 0x00);
+
+	ret = devm_request_irq(mcpdm->dev, mcpdm->irq, omap_mcpdm_irq_handler,
+>>>>>>> refs/remotes/origin/master
 				0, "McPDM", (void *)mcpdm);
 
 	pm_runtime_put_sync(mcpdm->dev);
@@ -818,9 +1004,15 @@ static int omap_mcpdm_probe(struct snd_soc_dai *dai)
 	}
 
 	/* Configure McPDM threshold values */
+<<<<<<< HEAD
 	mcpdm->dn_threshold = 2;
 	mcpdm->up_threshold = MCPDM_UP_THRES_MAX - 3;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mcpdm->config[SNDRV_PCM_STREAM_PLAYBACK].threshold = 2;
+	mcpdm->config[SNDRV_PCM_STREAM_CAPTURE].threshold =
+							MCPDM_UP_THRES_MAX - 3;
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -828,7 +1020,10 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
 {
 	struct omap_mcpdm *mcpdm = snd_soc_dai_get_drvdata(dai);
 
+<<<<<<< HEAD
 	free_irq(mcpdm->irq, (void *)mcpdm);
+=======
+>>>>>>> refs/remotes/origin/master
 	pm_runtime_disable(mcpdm->dev);
 
 	return 0;
@@ -838,6 +1033,7 @@ static int omap_mcpdm_remove(struct snd_soc_dai *dai)
 #define OMAP_MCPDM_FORMATS	SNDRV_PCM_FMTBIT_S32_LE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_driver omap_mcpdm_dai[] = {
 {
 	.name = "mcpdm-dl",
@@ -845,12 +1041,16 @@ static struct snd_soc_dai_driver omap_mcpdm_dai[] = {
 =======
 static struct snd_soc_dai_driver omap_mcpdm_dai = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct snd_soc_dai_driver omap_mcpdm_dai = {
+>>>>>>> refs/remotes/origin/master
 	.probe = omap_mcpdm_probe,
 	.remove = omap_mcpdm_remove,
 	.probe_order = SND_SOC_COMP_ORDER_LATE,
 	.remove_order = SND_SOC_COMP_ORDER_EARLY,
 	.playback = {
 		.channels_min = 1,
+<<<<<<< HEAD
 <<<<<<< HEAD
 		.channels_max = 4,
 		.rates = OMAP_MCPDM_RATES,
@@ -928,6 +1128,8 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
 #endif
  };
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.channels_max = 5,
 		.rates = OMAP_MCPDM_RATES,
 		.formats = OMAP_MCPDM_FORMATS,
@@ -943,6 +1145,13 @@ static struct snd_soc_dai_driver omap_mcpdm_dai = {
 	.ops = &omap_mcpdm_dai_ops,
 };
 
+<<<<<<< HEAD
+=======
+static const struct snd_soc_component_driver omap_mcpdm_component = {
+	.name		= "omap-mcpdm",
+};
+
+>>>>>>> refs/remotes/origin/master
 void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
 				    u8 rx1, u8 rx2)
 {
@@ -951,6 +1160,7 @@ void omap_mcpdm_configure_dn_offsets(struct snd_soc_pcm_runtime *rtd,
 	mcpdm->dn_rx_offset = MCPDM_DNOFST_RX1(rx1) | MCPDM_DNOFST_RX2(rx2);
 }
 EXPORT_SYMBOL_GPL(omap_mcpdm_configure_dn_offsets);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
@@ -964,6 +1174,15 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 
 	mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
+=======
+
+static int asoc_mcpdm_probe(struct platform_device *pdev)
+{
+	struct omap_mcpdm *mcpdm;
+	struct resource *res;
+
+	mcpdm = devm_kzalloc(&pdev->dev, sizeof(struct omap_mcpdm), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!mcpdm)
 		return -ENOMEM;
 
@@ -971,6 +1190,7 @@ static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
 
 	mutex_init(&mcpdm->mutex);
 
+<<<<<<< HEAD
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	if (res == NULL) {
 		dev_err(&pdev->dev, "no resource\n");
@@ -1102,11 +1322,58 @@ MODULE_AUTHOR("Misael Lopez Cruz <x0052729@ti.com>");
 
 	.probe	= asoc_mcpdm_probe,
 	.remove	= __devexit_p(asoc_mcpdm_remove),
+=======
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dma");
+	if (res == NULL)
+		return -ENOMEM;
+
+	mcpdm->dma_data[0].addr = res->start + MCPDM_REG_DN_DATA;
+	mcpdm->dma_data[1].addr = res->start + MCPDM_REG_UP_DATA;
+
+	mcpdm->dma_data[0].filter_data = "dn_link";
+	mcpdm->dma_data[1].filter_data = "up_link";
+
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "mpu");
+	mcpdm->io_base = devm_ioremap_resource(&pdev->dev, res);
+	if (IS_ERR(mcpdm->io_base))
+		return PTR_ERR(mcpdm->io_base);
+
+	mcpdm->irq = platform_get_irq(pdev, 0);
+	if (mcpdm->irq < 0)
+		return mcpdm->irq;
+
+	mcpdm->dev = &pdev->dev;
+
+	return devm_snd_soc_register_component(&pdev->dev,
+					       &omap_mcpdm_component,
+					       &omap_mcpdm_dai, 1);
+}
+
+static const struct of_device_id omap_mcpdm_of_match[] = {
+	{ .compatible = "ti,omap4-mcpdm", },
+	{ }
+};
+MODULE_DEVICE_TABLE(of, omap_mcpdm_of_match);
+
+static struct platform_driver asoc_mcpdm_driver = {
+	.driver = {
+		.name	= "omap-mcpdm",
+		.owner	= THIS_MODULE,
+		.of_match_table = omap_mcpdm_of_match,
+	},
+
+	.probe	= asoc_mcpdm_probe,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_platform_driver(asoc_mcpdm_driver);
 
+<<<<<<< HEAD
 MODULE_AUTHOR("Misael Lopez Cruz <misael.lopez@ti.com>");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:omap-mcpdm");
+MODULE_AUTHOR("Misael Lopez Cruz <misael.lopez@ti.com>");
+>>>>>>> refs/remotes/origin/master
 MODULE_DESCRIPTION("OMAP PDM SoC Interface");
 MODULE_LICENSE("GPL");

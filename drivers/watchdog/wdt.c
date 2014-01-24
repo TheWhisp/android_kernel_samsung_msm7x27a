@@ -33,10 +33,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -52,9 +57,12 @@
 #include <linux/uaccess.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include "wd501p.h"
 
 static unsigned long wdt_is_open;
@@ -74,12 +82,17 @@ MODULE_PARM_DESC(heartbeat,
 				__MODULE_STRING(WD_TIMO) ")");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 	"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -266,18 +279,24 @@ static void wdt_decode_501(int status)
 {
 	if (!(status & WDC_SR_TGOOD))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT "Overheat alarm.(%d)\n", inb_p(WDT_RT));
 	if (!(status & WDC_SR_PSUOVER))
 		printk(KERN_CRIT "PSU over voltage.\n");
 	if (!(status & WDC_SR_PSUUNDR))
 		printk(KERN_CRIT "PSU under voltage.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_crit("Overheat alarm (%d)\n", inb_p(WDT_RT));
 	if (!(status & WDC_SR_PSUOVER))
 		pr_crit("PSU over voltage\n");
 	if (!(status & WDC_SR_PSUUNDR))
 		pr_crit("PSU under voltage\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -302,25 +321,34 @@ static irqreturn_t wdt_interrupt(int irq, void *dev_id)
 	status = inb_p(WDT_SR);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_CRIT "WDT status %d\n", status);
 =======
 	pr_crit("WDT status %d\n", status);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_crit("WDT status %d\n", status);
+>>>>>>> refs/remotes/origin/master
 
 	if (type == 501) {
 		wdt_decode_501(status);
 		if (tachometer) {
 			if (!(status & WDC_SR_FANGOOD))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				printk(KERN_CRIT "Possible fan fault.\n");
 =======
 				pr_crit("Possible fan fault\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				pr_crit("Possible fan fault\n");
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	if (!(status & WDC_SR_WCCR)) {
 #ifdef SOFTWARE_REBOOT
 #ifdef ONLY_TESTING
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_CRIT "Would Reboot.\n");
 #else
@@ -330,6 +358,8 @@ static irqreturn_t wdt_interrupt(int irq, void *dev_id)
 #else
 		printk(KERN_CRIT "Reset in 5ms.\n");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_crit("Would Reboot\n");
 #else
 		pr_crit("Initiating system reboot\n");
@@ -337,7 +367,10 @@ static irqreturn_t wdt_interrupt(int irq, void *dev_id)
 #endif
 #else
 		pr_crit("Reset in 5ms\n");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 	spin_unlock(&wdt_lock);
@@ -481,11 +514,15 @@ static int wdt_release(struct inode *inode, struct file *file)
 		clear_bit(0, &wdt_is_open);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT
 		 "wdt: WDT device closed unexpectedly.  WDT will not stop!\n");
 =======
 		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("WDT device closed unexpectedly.  WDT will not stop!\n");
+>>>>>>> refs/remotes/origin/master
 		wdt_ping();
 	}
 	expect_close = 0;
@@ -637,10 +674,14 @@ static int __init wdt_init(void)
 
 	if (type != 500 && type != 501) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR "wdt: unknown card type '%d'.\n", type);
 =======
 		pr_err("unknown card type '%d'\n", type);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("unknown card type '%d'\n", type);
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	}
 
@@ -648,6 +689,7 @@ static int __init wdt_init(void)
 	   if not reset to the default */
 	if (wdt_set_heartbeat(heartbeat)) {
 		wdt_set_heartbeat(WD_TIMO);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO "wdt: heartbeat value must be "
 			"0 < heartbeat < 65536, using %d\n", WD_TIMO);
@@ -657,17 +699,23 @@ static int __init wdt_init(void)
 		printk(KERN_ERR
 			"wdt: I/O address 0x%04x already in use\n", io);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("heartbeat value must be 0 < heartbeat < 65536, using %d\n",
 			WD_TIMO);
 	}
 
 	if (!request_region(io, 8, "wdt501p")) {
 		pr_err("I/O address 0x%04x already in use\n", io);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = -EBUSY;
 		goto out;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ret = request_irq(irq, wdt_interrupt, IRQF_DISABLED, "wdt501p", NULL);
 	if (ret) {
@@ -677,17 +725,26 @@ static int __init wdt_init(void)
 	if (ret) {
 		pr_err("IRQ %d is not free\n", irq);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = request_irq(irq, wdt_interrupt, 0, "wdt501p", NULL);
+	if (ret) {
+		pr_err("IRQ %d is not free\n", irq);
+>>>>>>> refs/remotes/origin/master
 		goto outreg;
 	}
 
 	ret = register_reboot_notifier(&wdt_notifier);
 	if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR
 		      "wdt: cannot register reboot notifier (err=%d)\n", ret);
 =======
 		pr_err("cannot register reboot notifier (err=%d)\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", ret);
+>>>>>>> refs/remotes/origin/master
 		goto outirq;
 	}
 
@@ -695,18 +752,24 @@ static int __init wdt_init(void)
 		ret = misc_register(&temp_miscdev);
 		if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "wdt: cannot register miscdev "
 				"on minor=%d (err=%d)\n", TEMP_MINOR, ret);
 =======
 			pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 			       TEMP_MINOR, ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("cannot register miscdev on minor=%d (err=%d)\n",
+			       TEMP_MINOR, ret);
+>>>>>>> refs/remotes/origin/master
 			goto outrbt;
 		}
 	}
 
 	ret = misc_register(&wdt_miscdev);
 	if (ret) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR
 			"wdt: cannot register miscdev on minor=%d (err=%d)\n",
@@ -721,6 +784,8 @@ static int __init wdt_init(void)
 		printk(KERN_INFO "wdt: Fan Tachometer is %s\n",
 				(tachometer ? "Enabled" : "Disabled"));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       WATCHDOG_MINOR, ret);
 		goto outmisc;
@@ -731,7 +796,10 @@ static int __init wdt_init(void)
 	if (type == 501)
 		pr_info("Fan Tachometer is %s\n",
 			tachometer ? "Enabled" : "Disabled");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 outmisc:
@@ -752,6 +820,9 @@ module_exit(wdt_exit);
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("Driver for ISA ICS watchdog cards (WDT500/501)");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
 MODULE_ALIAS_MISCDEV(TEMP_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

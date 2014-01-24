@@ -113,6 +113,7 @@ static u8 read_prom_byte(struct he_dev *he_dev, int addr);
 
 static struct he_dev *he_devs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int disable64;
 static short nvpibits = -1;
 static short nvcibits = -1;
@@ -120,13 +121,18 @@ static short rx_skb_reserve = 16;
 static int irq_coalesce = 1;
 static int sdh = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static bool disable64;
 static short nvpibits = -1;
 static short nvcibits = -1;
 static short rx_skb_reserve = 16;
 static bool irq_coalesce = 1;
 static bool sdh = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Read from EEPROM = 0000 0011b */
 static unsigned int readtab[] = {
@@ -338,7 +344,10 @@ __find_vcc(struct he_dev *he_dev, unsigned cid)
 {
 	struct hlist_head *head;
 	struct atm_vcc *vcc;
+<<<<<<< HEAD
 	struct hlist_node *node;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sock *s;
 	short vpi;
 	int vci;
@@ -347,7 +356,11 @@ __find_vcc(struct he_dev *he_dev, unsigned cid)
 	vci = cid & ((1 << he_dev->vcibits) - 1);
 	head = &vcc_hash[vci & (VCC_HTABLE_SIZE -1)];
 
+<<<<<<< HEAD
 	sk_for_each(s, node, head) {
+=======
+	sk_for_each(s, head) {
+>>>>>>> refs/remotes/origin/master
 		vcc = atm_sk(s);
 		if (vcc->dev == he_dev->atm_dev &&
 		    vcc->vci == vci && vcc->vpi == vpi &&
@@ -358,8 +371,13 @@ __find_vcc(struct he_dev *he_dev, unsigned cid)
 	return NULL;
 }
 
+<<<<<<< HEAD
 static int __devinit
 he_init_one(struct pci_dev *pci_dev, const struct pci_device_id *pci_ent)
+=======
+static int he_init_one(struct pci_dev *pci_dev,
+		       const struct pci_device_id *pci_ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atm_dev *atm_dev = NULL;
 	struct he_dev *he_dev = NULL;
@@ -415,8 +433,12 @@ init_one_failure:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit
 he_remove_one (struct pci_dev *pci_dev)
+=======
+static void he_remove_one(struct pci_dev *pci_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct atm_dev *atm_dev;
 	struct he_dev *he_dev;
@@ -454,8 +476,12 @@ rate_to_atmf(unsigned rate)		/* cps to atm forum format */
 	return (NONZERO | (exp << 9) | (rate & 0x1ff));
 }
 
+<<<<<<< HEAD
 static void __devinit
 he_init_rx_lbfp0(struct he_dev *he_dev)
+=======
+static void he_init_rx_lbfp0(struct he_dev *he_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned i, lbm_offset, lbufd_index, lbuf_addr, lbuf_count;
 	unsigned lbufs_per_row = he_dev->cells_per_row / he_dev->cells_per_lbuf;
@@ -485,8 +511,12 @@ he_init_rx_lbfp0(struct he_dev *he_dev)
 	he_writel(he_dev, he_dev->r0_numbuffs, RLBF0_C);
 }
 
+<<<<<<< HEAD
 static void __devinit
 he_init_rx_lbfp1(struct he_dev *he_dev)
+=======
+static void he_init_rx_lbfp1(struct he_dev *he_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned i, lbm_offset, lbufd_index, lbuf_addr, lbuf_count;
 	unsigned lbufs_per_row = he_dev->cells_per_row / he_dev->cells_per_lbuf;
@@ -516,8 +546,12 @@ he_init_rx_lbfp1(struct he_dev *he_dev)
 	he_writel(he_dev, he_dev->r1_numbuffs, RLBF1_C);
 }
 
+<<<<<<< HEAD
 static void __devinit
 he_init_tx_lbfp(struct he_dev *he_dev)
+=======
+static void he_init_tx_lbfp(struct he_dev *he_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned i, lbm_offset, lbufd_index, lbuf_addr, lbuf_count;
 	unsigned lbufs_per_row = he_dev->cells_per_row / he_dev->cells_per_lbuf;
@@ -546,8 +580,12 @@ he_init_tx_lbfp(struct he_dev *he_dev)
 	he_writel(he_dev, lbufd_index - 1, TLBF_T);
 }
 
+<<<<<<< HEAD
 static int __devinit
 he_init_tpdrq(struct he_dev *he_dev)
+=======
+static int he_init_tpdrq(struct he_dev *he_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	he_dev->tpdrq_base = pci_alloc_consistent(he_dev->pci_dev,
 		CONFIG_TPDRQ_SIZE * sizeof(struct he_tpdrq), &he_dev->tpdrq_phys);
@@ -568,8 +606,12 @@ he_init_tpdrq(struct he_dev *he_dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devinit
 he_init_cs_block(struct he_dev *he_dev)
+=======
+static void he_init_cs_block(struct he_dev *he_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned clock, rate, delta;
 	int reg;
@@ -664,8 +706,12 @@ he_init_cs_block(struct he_dev *he_dev)
 
 }
 
+<<<<<<< HEAD
 static int __devinit
 he_init_cs_block_rcm(struct he_dev *he_dev)
+=======
+static int he_init_cs_block_rcm(struct he_dev *he_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned (*rategrid)[16][16];
 	unsigned rate, delta;
@@ -785,8 +831,12 @@ he_init_cs_block_rcm(struct he_dev *he_dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit
 he_init_group(struct he_dev *he_dev, int group)
+=======
+static int he_init_group(struct he_dev *he_dev, int group)
+>>>>>>> refs/remotes/origin/master
 {
 	struct he_buff *heb, *next;
 	dma_addr_t mapping;
@@ -924,8 +974,12 @@ out_free_rbpl_table:
 	return -ENOMEM;
 }
 
+<<<<<<< HEAD
 static int __devinit
 he_init_irq(struct he_dev *he_dev)
+=======
+static int he_init_irq(struct he_dev *he_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -987,8 +1041,12 @@ he_init_irq(struct he_dev *he_dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit
 he_start(struct atm_dev *dev)
+=======
+static int he_start(struct atm_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct he_dev *he_dev;
 	struct pci_dev *pci_dev;
@@ -1075,7 +1133,11 @@ he_start(struct atm_dev *dev)
 	he_writel(he_dev, 0x0, RESET_CNTL);
 	he_writel(he_dev, 0xff, RESET_CNTL);
 
+<<<<<<< HEAD
 	udelay(16*1000);	/* 16 ms */
+=======
+	msleep(16);	/* 16 ms */
+>>>>>>> refs/remotes/origin/master
 	status = he_readl(he_dev, RESET_CNTL);
 	if ((status & BOARD_RST_STATUS) == 0) {
 		hprintk("reset failed\n");
@@ -1108,6 +1170,7 @@ he_start(struct atm_dev *dev)
 	for (i = 0; i < 6; ++i)
 		dev->esi[i] = read_prom_byte(he_dev, MAC_ADDR + i);
 
+<<<<<<< HEAD
 	hprintk("%s%s, %x:%x:%x:%x:%x:%x\n",
 				he_dev->prod_id,
 					he_dev->media & 0x40 ? "SM" : "MM",
@@ -1117,6 +1180,10 @@ he_start(struct atm_dev *dev)
 						dev->esi[3],
 						dev->esi[4],
 						dev->esi[5]);
+=======
+	hprintk("%s%s, %pM\n", he_dev->prod_id,
+		he_dev->media & 0x40 ? "SM" : "MM", dev->esi);
+>>>>>>> refs/remotes/origin/master
 	he_dev->atm_dev->link_rate = he_is622(he_dev) ?
 						ATM_OC12_PCR : ATM_OC3_PCR;
 
@@ -2888,6 +2955,7 @@ MODULE_DEVICE_TABLE(pci, he_pci_tbl);
 static struct pci_driver he_driver = {
 	.name =		"he",
 	.probe =	he_init_one,
+<<<<<<< HEAD
 	.remove =	__devexit_p(he_remove_one),
 	.id_table =	he_pci_tbl,
 };
@@ -2904,3 +2972,10 @@ static void __exit he_cleanup(void)
 
 module_init(he_init);
 module_exit(he_cleanup);
+=======
+	.remove =	he_remove_one,
+	.id_table =	he_pci_tbl,
+};
+
+module_pci_driver(he_driver);
+>>>>>>> refs/remotes/origin/master

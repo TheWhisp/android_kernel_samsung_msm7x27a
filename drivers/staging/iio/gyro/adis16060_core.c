@@ -7,9 +7,13 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/delay.h>
 #include <linux/mutex.h>
 #include <linux/device.h>
@@ -18,6 +22,7 @@
 #include <linux/slab.h>
 #include <linux/sysfs.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 #include "../iio.h"
@@ -28,6 +33,10 @@
 #include "../iio.h"
 #include "../sysfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+>>>>>>> refs/remotes/origin/master
 
 #define ADIS16060_GYRO		0x20 /* Measure Angular Rate (Gyro) */
 #define ADIS16060_TEMP_OUT	0x10 /* Measure Temperature */
@@ -39,9 +48,12 @@
  * @us_w:		actual spi_device to write config
  * @us_r:		actual spi_device to read back data
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @indio_dev:		industrial I/O device structure
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * @buf:		transmit or receive buffer
  * @buf_lock:		mutex to protect tx and rx
  **/
@@ -49,14 +61,18 @@ struct adis16060_state {
 	struct spi_device		*us_w;
 	struct spi_device		*us_r;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct iio_dev			*indio_dev;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mutex			buf_lock;
 
 	u8 buf[3] ____cacheline_aligned;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct adis16060_state *adis16060_st;
 
@@ -67,13 +83,18 @@ static int adis16060_spi_write(struct device *dev,
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct adis16060_state *st = iio_dev_get_devdata(indio_dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct iio_dev *adis16060_iio_dev;
 
 static int adis16060_spi_write(struct iio_dev *indio_dev, u8 val)
 {
 	int ret;
 	struct adis16060_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->buf_lock);
 	st->buf[2] = val; /* The last 8 bits clocked in are latched */
@@ -84,6 +105,7 @@ static int adis16060_spi_write(struct iio_dev *indio_dev, u8 val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int adis16060_spi_read(struct device *dev,
 		u16 *val)
 {
@@ -91,11 +113,16 @@ static int adis16060_spi_read(struct device *dev,
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
 	struct adis16060_state *st = iio_dev_get_devdata(indio_dev);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int adis16060_spi_read(struct iio_dev *indio_dev, u16 *val)
 {
 	int ret;
 	struct adis16060_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&st->buf_lock);
 
@@ -115,6 +142,7 @@ static int adis16060_spi_read(struct iio_dev *indio_dev, u16 *val)
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static ssize_t adis16060_read(struct device *dev,
 		struct device_attribute *attr,
@@ -211,6 +239,8 @@ error_free_dev:
 error_free_st:
 	kfree(st);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int adis16060_read_raw(struct iio_dev *indio_dev,
 			      struct iio_chan_spec const *chan,
 			      int *val, int *val2,
@@ -220,7 +250,11 @@ static int adis16060_read_raw(struct iio_dev *indio_dev,
 	int ret;
 
 	switch (mask) {
+<<<<<<< HEAD
 	case 0:
+=======
+	case IIO_CHAN_INFO_RAW:
+>>>>>>> refs/remotes/origin/master
 		/* Take the iio_dev status lock */
 		mutex_lock(&indio_dev->mlock);
 		ret = adis16060_spi_write(indio_dev, chan->address);
@@ -255,39 +289,66 @@ static const struct iio_chan_spec adis16060_channels[] = {
 		.type = IIO_ANGL_VEL,
 		.modified = 1,
 		.channel2 = IIO_MOD_Z,
+<<<<<<< HEAD
+=======
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+>>>>>>> refs/remotes/origin/master
 		.address = ADIS16060_GYRO,
 	}, {
 		.type = IIO_VOLTAGE,
 		.indexed = 1,
 		.channel = 0,
+<<<<<<< HEAD
+=======
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+>>>>>>> refs/remotes/origin/master
 		.address = ADIS16060_AIN1,
 	}, {
 		.type = IIO_VOLTAGE,
 		.indexed = 1,
 		.channel = 1,
+<<<<<<< HEAD
+=======
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+>>>>>>> refs/remotes/origin/master
 		.address = ADIS16060_AIN2,
 	}, {
 		.type = IIO_TEMP,
 		.indexed = 1,
 		.channel = 0,
+<<<<<<< HEAD
 		.info_mask = IIO_CHAN_INFO_OFFSET_SEPARATE_BIT |
 		IIO_CHAN_INFO_SCALE_SEPARATE_BIT,
+=======
+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+		BIT(IIO_CHAN_INFO_OFFSET) | BIT(IIO_CHAN_INFO_SCALE),
+>>>>>>> refs/remotes/origin/master
 		.address = ADIS16060_TEMP_OUT,
 	}
 };
 
+<<<<<<< HEAD
 static int __devinit adis16060_r_probe(struct spi_device *spi)
+=======
+static int adis16060_r_probe(struct spi_device *spi)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct adis16060_state *st;
 	struct iio_dev *indio_dev;
 
 	/* setup the industrialio driver allocated elements */
+<<<<<<< HEAD
 	indio_dev = iio_allocate_device(sizeof(*st));
 	if (indio_dev == NULL) {
 		ret = -ENOMEM;
 		goto error_ret;
 	}
+=======
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+	if (!indio_dev)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	/* this is only used for removal purposes */
 	spi_set_drvdata(spi, indio_dev);
 	st = iio_priv(indio_dev);
@@ -301,6 +362,7 @@ static int __devinit adis16060_r_probe(struct spi_device *spi)
 	indio_dev->channels = adis16060_channels;
 	indio_dev->num_channels = ARRAY_SIZE(adis16060_channels);
 
+<<<<<<< HEAD
 	ret = iio_device_register(indio_dev);
 	if (ret)
 		goto error_free_dev;
@@ -343,6 +405,19 @@ static int __devinit adis16060_w_probe(struct spi_device *spi)
 	}
 	spi_set_drvdata(spi, st);
 =======
+=======
+	ret = devm_iio_device_register(&spi->dev, indio_dev);
+	if (ret)
+		return ret;
+
+	adis16060_iio_dev = indio_dev;
+	return 0;
+}
+
+static int adis16060_w_probe(struct spi_device *spi)
+{
+	int ret;
+>>>>>>> refs/remotes/origin/master
 	struct iio_dev *indio_dev = adis16060_iio_dev;
 	struct adis16060_state *st;
 	if (!indio_dev) {
@@ -351,7 +426,10 @@ static int __devinit adis16060_w_probe(struct spi_device *spi)
 	}
 	st = iio_priv(indio_dev);
 	spi_set_drvdata(spi, indio_dev);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	st->us_w = spi;
 	return 0;
 
@@ -370,7 +448,10 @@ static struct spi_driver adis16060_r_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = adis16060_r_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(adis16060_r_remove),
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct spi_driver adis16060_w_driver = {
@@ -379,7 +460,11 @@ static struct spi_driver adis16060_w_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = adis16060_w_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(adis16060_w_remove),
+=======
+	.remove = adis16060_w_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static __init int adis16060_init(void)

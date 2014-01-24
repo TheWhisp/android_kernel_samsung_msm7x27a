@@ -12,9 +12,12 @@
 #define _ASM_DMA_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spinlock.h>
 #include <asm/io.h>
 #include <linux/delay.h>

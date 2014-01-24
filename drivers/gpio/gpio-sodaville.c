@@ -129,7 +129,11 @@ static struct irq_domain_ops irq_domain_sdv_ops = {
 	.xlate = sdv_xlate,
 };
 
+<<<<<<< HEAD
 static __devinit int sdv_register_irqsupport(struct sdv_gpio_chip_data *sd,
+=======
+static int sdv_register_irqsupport(struct sdv_gpio_chip_data *sd,
+>>>>>>> refs/remotes/origin/master
 		struct pci_dev *pdev)
 {
 	struct irq_chip_type *ct;
@@ -176,8 +180,15 @@ static __devinit int sdv_register_irqsupport(struct sdv_gpio_chip_data *sd,
 
 	sd->id = irq_domain_add_legacy(pdev->dev.of_node, SDV_NUM_PUB_GPIOS,
 				sd->irq_base, 0, &irq_domain_sdv_ops, sd);
+<<<<<<< HEAD
 	if (!sd->id)
 		goto out_free_irq;
+=======
+	if (!sd->id) {
+		ret = -ENODEV;
+		goto out_free_irq;
+	}
+>>>>>>> refs/remotes/origin/master
 	return 0;
 out_free_irq:
 	free_irq(pdev->irq, sd);
@@ -186,7 +197,11 @@ out_free_desc:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devinit sdv_gpio_probe(struct pci_dev *pdev,
+=======
+static int sdv_gpio_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 					const struct pci_device_id *pci_id)
 {
 	struct sdv_gpio_chip_data *sd;
@@ -212,8 +227,15 @@ static int __devinit sdv_gpio_probe(struct pci_dev *pdev,
 	}
 
 	addr = pci_resource_start(pdev, GPIO_BAR);
+<<<<<<< HEAD
 	if (!addr)
 		goto release_reg;
+=======
+	if (!addr) {
+		ret = -ENODEV;
+		goto release_reg;
+	}
+>>>>>>> refs/remotes/origin/master
 	sd->gpio_pub_base = ioremap(addr, pci_resource_len(pdev, GPIO_BAR));
 
 	prop = of_get_property(pdev->dev.of_node, "intel,muxctl", &len);
@@ -224,7 +246,11 @@ static int __devinit sdv_gpio_probe(struct pci_dev *pdev,
 
 	ret = bgpio_init(&sd->bgpio, &pdev->dev, 4,
 			sd->gpio_pub_base + GPINR, sd->gpio_pub_base + GPOUTR,
+<<<<<<< HEAD
 			NULL, sd->gpio_pub_base + GPOER, NULL, false);
+=======
+			NULL, sd->gpio_pub_base + GPOER, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto unmap;
 	sd->bgpio.gc.ngpio = SDV_NUM_PUB_GPIOS;
@@ -270,7 +296,11 @@ static void sdv_gpio_remove(struct pci_dev *pdev)
 	kfree(sd);
 }
 
+<<<<<<< HEAD
 static struct pci_device_id sdv_gpio_pci_ids[] __devinitdata = {
+=======
+static const struct pci_device_id sdv_gpio_pci_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_SDV_GPIO) },
 	{ 0, },
 };
@@ -282,6 +312,7 @@ static struct pci_driver sdv_gpio_driver = {
 	.remove = sdv_gpio_remove,
 };
 
+<<<<<<< HEAD
 static int __init sdv_gpio_init(void)
 {
 	return pci_register_driver(&sdv_gpio_driver);
@@ -293,6 +324,9 @@ static void __exit sdv_gpio_exit(void)
 	pci_unregister_driver(&sdv_gpio_driver);
 }
 module_exit(sdv_gpio_exit);
+=======
+module_pci_driver(sdv_gpio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Hans J. Koch <hjk@linutronix.de>");
 MODULE_DESCRIPTION("GPIO interface for Intel Sodaville SoCs");

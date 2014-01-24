@@ -78,9 +78,13 @@ SECTIONS {
 		__init_end = .;
 	}
 
+<<<<<<< HEAD
 	_sbss = .;
 	BSS_SECTION(0, 0, 0)
 	_ebss = .;
+=======
+	BSS_SECTION(0, 0, 0)
+>>>>>>> refs/remotes/origin/master
 
 	_end = .;
 

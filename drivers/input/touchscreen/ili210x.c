@@ -180,7 +180,11 @@ static const struct attribute_group ili210x_attr_group = {
 	.attrs = ili210x_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit ili210x_i2c_probe(struct i2c_client *client,
+=======
+static int ili210x_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				       const struct i2c_device_id *id)
 {
 	struct device *dev = &client->dev;
@@ -252,7 +256,11 @@ static int __devinit ili210x_i2c_probe(struct i2c_client *client,
 	input_set_abs_params(input, ABS_Y, 0, ymax, 0, 0);
 
 	/* Multi touch */
+<<<<<<< HEAD
 	input_mt_init_slots(input, MAX_TOUCHES);
+=======
+	input_mt_init_slots(input, MAX_TOUCHES, 0);
+>>>>>>> refs/remotes/origin/master
 	input_set_abs_params(input, ABS_MT_POSITION_X, 0, xmax, 0, 0);
 	input_set_abs_params(input, ABS_MT_POSITION_Y, 0, ymax, 0, 0);
 
@@ -298,7 +306,11 @@ err_free_mem:
 	return error;
 }
 
+<<<<<<< HEAD
 static int __devexit ili210x_i2c_remove(struct i2c_client *client)
+=======
+static int ili210x_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ili210x *priv = i2c_get_clientdata(client);
 
@@ -350,7 +362,11 @@ static struct i2c_driver ili210x_ts_driver = {
 	},
 	.id_table = ili210x_i2c_id,
 	.probe = ili210x_i2c_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ili210x_i2c_remove),
+=======
+	.remove = ili210x_i2c_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 module_i2c_driver(ili210x_ts_driver);

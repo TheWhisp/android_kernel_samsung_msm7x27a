@@ -19,20 +19,32 @@
 #include <linux/mtd/physmap.h>
 #include <linux/dm9000.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/i2c.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+#include <linux/i2c.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 #include <mach/iomux-mx1.h>
 
 #include "devices-imx1.h"
+=======
+#include "common.h"
+#include "devices-imx1.h"
+#include "hardware.h"
+#include "iomux-mx1.h"
+>>>>>>> refs/remotes/origin/master
 
 static const int apf9328_pins[] __initconst = {
 	/* UART1 */
@@ -46,11 +58,17 @@ static const int apf9328_pins[] __initconst = {
 	PB30_PF_UART2_TXD,
 	PB31_PF_UART2_RXD,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* I2C */
 	PA15_PF_I2C_SDA,
 	PA16_PF_I2C_SCL,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* I2C */
+	PA15_PF_I2C_SDA,
+	PA16_PF_I2C_SCL,
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -93,8 +111,12 @@ static struct resource dm9000_resources[] = {
 		.end    = MX1_CS4_PHYS + 0x00C00003,
 		.flags  = IORESOURCE_MEM,
 	}, {
+<<<<<<< HEAD
 		.start  = IRQ_GPIOB(14),
 		.end    = IRQ_GPIOB(14),
+=======
+		/* irq number is run-time assigned */
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ | IORESOURCE_IRQ_LOWLEVEL,
 	},
 };
@@ -110,6 +132,7 @@ static struct platform_device dm9000x_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* --- SERIAL RESSOURCE --- */
 static const struct imxuart_platform_data uart0_pdata __initconst = {
 	.flags = 0,
@@ -117,17 +140,25 @@ static const struct imxuart_platform_data uart0_pdata __initconst = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct imxuart_platform_data uart1_pdata __initconst = {
 	.flags = IMXUART_HAVE_RTSCTS,
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct imxi2c_platform_data apf9328_i2c_data __initconst = {
 	.bitrate = 100000,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *devices[] __initdata = {
 	&apf9328_flash_device,
 	&dm9000x_device,
@@ -136,25 +167,38 @@ static struct platform_device *devices[] __initdata = {
 static void __init apf9328_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	imx1_soc_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	imx1_soc_init();
+
+>>>>>>> refs/remotes/origin/master
 	mxc_gpio_setup_multiple_pins(apf9328_pins,
 			ARRAY_SIZE(apf9328_pins),
 			"APF9328");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	imx1_add_imx_uart0(&uart0_pdata);
 	imx1_add_imx_uart1(&uart1_pdata);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	imx1_add_imx_uart0(NULL);
 	imx1_add_imx_uart1(&uart1_pdata);
 
 	imx1_add_imx_i2c(&apf9328_i2c_data);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dm9000_resources[2].start = gpio_to_irq(IMX_GPIO_NR(2, 14));
+	dm9000_resources[2].end = gpio_to_irq(IMX_GPIO_NR(2, 14));
+>>>>>>> refs/remotes/origin/master
 	platform_add_devices(devices, ARRAY_SIZE(devices));
 }
 
@@ -163,15 +207,19 @@ static void __init apf9328_timer_init(void)
 	mx1_clocks_init(32768);
 }
 
+<<<<<<< HEAD
 static struct sys_timer apf9328_timer = {
 	.init	= apf9328_timer_init,
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 MACHINE_START(APF9328, "Armadeus APF9328")
 	/* Maintainer: Gwenhael Goavec-Merou, ARMadeus Systems */
 	.map_io       = mx1_map_io,
 	.init_early   = imx1_init_early,
 	.init_irq     = mx1_init_irq,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.timer        = &apf9328_timer,
 	.init_machine = apf9328_init,
@@ -181,4 +229,10 @@ MACHINE_START(APF9328, "Armadeus APF9328")
 	.init_machine = apf9328_init,
 	.restart	= mxc_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.handle_irq   = imx1_handle_irq,
+	.init_time	= apf9328_timer_init,
+	.init_machine = apf9328_init,
+	.restart	= mxc_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

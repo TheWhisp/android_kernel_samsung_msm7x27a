@@ -147,6 +147,7 @@ DPRINTK(KERN_DEBUG "frob_control mask %02x, value %02x\n",mask,val);
 	return old;
 }
 
+<<<<<<< HEAD
 #if 0 /* currently unused */
 static unsigned char status_pc_to_mfc3(unsigned char status)
 {
@@ -166,6 +167,8 @@ static unsigned char status_pc_to_mfc3(unsigned char status)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned char status_mfc3_to_pc(unsigned char status)
 {
 	unsigned char ret = PARPORT_STATUS_BUSY;
@@ -184,6 +187,7 @@ static unsigned char status_mfc3_to_pc(unsigned char status)
 	return ret;
 }
 
+<<<<<<< HEAD
 #if 0 /* currently unused */
 static void mfc3_write_status( struct parport *p, unsigned char status)
 {
@@ -192,6 +196,8 @@ DPRINTK(KERN_DEBUG "write_status %02x\n",status);
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned char mfc3_read_status(struct parport *p)
 {
 	unsigned char status;
@@ -201,6 +207,7 @@ DPRINTK(KERN_DEBUG "read_status %02x\n", status);
 	return status;
 }
 
+<<<<<<< HEAD
 #if 0 /* currently unused */
 static void mfc3_change_mode( struct parport *p, int m)
 {
@@ -209,6 +216,8 @@ static void mfc3_change_mode( struct parport *p, int m)
 }
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int use_cnt = 0;
 
 static irqreturn_t mfc3_interrupt(int irq, void *dev_id)
@@ -335,7 +344,11 @@ static int __init parport_mfc3_init(void)
 		if (!request_mem_region(piabase, sizeof(struct pia), "PIA"))
 			continue;
 
+<<<<<<< HEAD
 		pp = (struct pia *)ZTWO_VADDR(piabase);
+=======
+		pp = ZTWO_VADDR(piabase);
+>>>>>>> refs/remotes/origin/master
 		pp->crb = 0;
 		pp->pddrb = 255; /* all data pins output */
 		pp->crb = PIA_DDR|32|8;
@@ -398,10 +411,14 @@ static void __exit parport_mfc3_exit(void)
 
 MODULE_AUTHOR("Joerg Dorchain <joerg@dorchain.net>");
 <<<<<<< HEAD
+<<<<<<< HEAD
 MODULE_DESCRIPTION("Parport Driver for Multiface 3 expansion cards Paralllel Port");
 =======
 MODULE_DESCRIPTION("Parport Driver for Multiface 3 expansion cards Parallel Port");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_DESCRIPTION("Parport Driver for Multiface 3 expansion cards Parallel Port");
+>>>>>>> refs/remotes/origin/master
 MODULE_SUPPORTED_DEVICE("Multiface 3 Parallel Port");
 MODULE_LICENSE("GPL");
 

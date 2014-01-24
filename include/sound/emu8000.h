@@ -21,8 +21,13 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  */
 
+<<<<<<< HEAD
 #include "emux_synth.h"
 #include "seq_kernel.h"
+=======
+#include <sound/emux_synth.h>
+#include <sound/seq_kernel.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Hardware parameters.

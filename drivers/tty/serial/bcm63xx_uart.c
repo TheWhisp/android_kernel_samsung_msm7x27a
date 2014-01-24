@@ -30,7 +30,10 @@
 #include <linux/serial.h>
 #include <linux/serial_core.h>
 
+<<<<<<< HEAD
 #include <bcm63xx_clk.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <bcm63xx_irq.h>
 #include <bcm63xx_regs.h>
 #include <bcm63xx_io.h>
@@ -235,14 +238,21 @@ static const char *bcm_uart_type(struct uart_port *port)
  */
 static void bcm_uart_do_rx(struct uart_port *port)
 {
+<<<<<<< HEAD
 	struct tty_struct *tty;
+=======
+	struct tty_port *tty_port = &port->state->port;
+>>>>>>> refs/remotes/origin/master
 	unsigned int max_count;
 
 	/* limit number of char read in interrupt, should not be
 	 * higher than fifo size anyway since we're much faster than
 	 * serial port */
 	max_count = 32;
+<<<<<<< HEAD
 	tty = port->state->port.tty;
+=======
+>>>>>>> refs/remotes/origin/master
 	do {
 		unsigned int iestat, c, cstat;
 		char flag;
@@ -261,7 +271,11 @@ static void bcm_uart_do_rx(struct uart_port *port)
 			bcm_uart_writel(port, val, UART_CTL_REG);
 
 			port->icount.overrun++;
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, 0, TTY_OVERRUN);
+=======
+			tty_insert_flip_char(tty_port, 0, TTY_OVERRUN);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		if (!(iestat & UART_IR_STAT(UART_IR_RXNOTEMPTY)))
@@ -300,11 +314,21 @@ static void bcm_uart_do_rx(struct uart_port *port)
 
 
 		if ((cstat & port->ignore_status_mask) == 0)
+<<<<<<< HEAD
 			tty_insert_flip_char(tty, c, flag);
 
 	} while (--max_count);
 
 	tty_flip_buffer_push(tty);
+=======
+			tty_insert_flip_char(tty_port, c, flag);
+
+	} while (--max_count);
+
+	spin_unlock(&port->lock);
+	tty_flip_buffer_push(tty_port);
+	spin_lock(&port->lock);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -801,7 +825,11 @@ static struct uart_driver bcm_uart_driver = {
 /*
  * platform driver probe/remove callback
  */
+<<<<<<< HEAD
 static int __devinit bcm_uart_probe(struct platform_device *pdev)
+=======
+static int bcm_uart_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct resource *res_mem, *res_irq;
 	struct uart_port *port;
@@ -848,13 +876,20 @@ static int __devinit bcm_uart_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit bcm_uart_remove(struct platform_device *pdev)
+=======
+static int bcm_uart_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct uart_port *port;
 
 	port = platform_get_drvdata(pdev);
 	uart_remove_one_port(&bcm_uart_driver, port);
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
+=======
+>>>>>>> refs/remotes/origin/master
 	/* mark port as free */
 	ports[pdev->id].membase = 0;
 	return 0;
@@ -865,7 +900,11 @@ static int __devexit bcm_uart_remove(struct platform_device *pdev)
  */
 static struct platform_driver bcm_uart_platform_driver = {
 	.probe	= bcm_uart_probe,
+<<<<<<< HEAD
 	.remove	= __devexit_p(bcm_uart_remove),
+=======
+	.remove	= bcm_uart_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	= {
 		.owner = THIS_MODULE,
 		.name  = "bcm63xx_uart",

@@ -170,10 +170,14 @@ When using ide.c as a module in combination with kmod, add:
 	alias block-major-3 ide-probe
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 to /etc/modprobe.conf.
 =======
 to a configuration file in /etc/modprobe.d/.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+to a configuration file in /etc/modprobe.d/.
+>>>>>>> refs/remotes/origin/master
 
 When ide.c is used as a module, you can pass command line parameters to the
 driver using the "options=" keyword to insmod, while replacing any ',' with

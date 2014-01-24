@@ -15,7 +15,11 @@
 #ifndef __MACH_PUV3_HARDWARE_H__
 #define __MACH_PUV3_HARDWARE_H__
 
+<<<<<<< HEAD
 #include "PKUnity.h"
+=======
+#include <mach/PKUnity.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 #define io_p2v(x)	(void __iomem *)((x) - PKUNITY_MMIO_BASE)

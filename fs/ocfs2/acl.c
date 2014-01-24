@@ -51,10 +51,13 @@ static struct posix_acl *ocfs2_acl_from_xattr(const void *value, size_t size)
 		return ERR_PTR(-EINVAL);
 
 	count = size / sizeof(struct posix_acl_entry);
+<<<<<<< HEAD
 	if (count < 0)
 		return ERR_PTR(-EINVAL);
 	if (count == 0)
 		return NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	acl = posix_acl_alloc(count, GFP_NOFS);
 	if (!acl)
@@ -65,7 +68,24 @@ static struct posix_acl *ocfs2_acl_from_xattr(const void *value, size_t size)
 
 		acl->a_entries[n].e_tag  = le16_to_cpu(entry->e_tag);
 		acl->a_entries[n].e_perm = le16_to_cpu(entry->e_perm);
+<<<<<<< HEAD
 		acl->a_entries[n].e_id   = le32_to_cpu(entry->e_id);
+=======
+		switch(acl->a_entries[n].e_tag) {
+		case ACL_USER:
+			acl->a_entries[n].e_uid =
+				make_kuid(&init_user_ns,
+					  le32_to_cpu(entry->e_id));
+			break;
+		case ACL_GROUP:
+			acl->a_entries[n].e_gid =
+				make_kgid(&init_user_ns,
+					  le32_to_cpu(entry->e_id));
+			break;
+		default:
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 		value += sizeof(struct posix_acl_entry);
 
 	}
@@ -91,7 +111,25 @@ static void *ocfs2_acl_to_xattr(const struct posix_acl *acl, size_t *size)
 	for (n = 0; n < acl->a_count; n++, entry++) {
 		entry->e_tag  = cpu_to_le16(acl->a_entries[n].e_tag);
 		entry->e_perm = cpu_to_le16(acl->a_entries[n].e_perm);
+<<<<<<< HEAD
 		entry->e_id   = cpu_to_le32(acl->a_entries[n].e_id);
+=======
+		switch(acl->a_entries[n].e_tag) {
+		case ACL_USER:
+			entry->e_id = cpu_to_le32(
+				from_kuid(&init_user_ns,
+					  acl->a_entries[n].e_uid));
+			break;
+		case ACL_GROUP:
+			entry->e_id = cpu_to_le32(
+				from_kgid(&init_user_ns,
+					  acl->a_entries[n].e_gid));
+			break;
+		default:
+			entry->e_id = cpu_to_le32(ACL_UNDEFINED_ID);
+			break;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 	return ocfs2_acl;
 }
@@ -248,10 +286,14 @@ static int ocfs2_set_acl(handle_t *handle,
 		name_index = OCFS2_XATTR_INDEX_POSIX_ACL_ACCESS;
 		if (acl) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
 =======
 			umode_t mode = inode->i_mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			umode_t mode = inode->i_mode;
+>>>>>>> refs/remotes/origin/master
 			ret = posix_acl_equiv_mode(acl, &mode);
 			if (ret < 0)
 				return ret;
@@ -295,16 +337,21 @@ static int ocfs2_set_acl(handle_t *handle,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int ocfs2_check_acl(struct inode *inode, int mask, unsigned int flags)
 =======
 struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ocfs2_super *osb;
 	struct buffer_head *di_bh = NULL;
 	struct posix_acl *acl;
 	int ret = -EAGAIN;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (flags & IPERM_FLAG_RCU)
 		return -ECHILD;
@@ -335,6 +382,8 @@ struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type)
 
 	return -EAGAIN;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	osb = OCFS2_SB(inode->i_sb);
 	if (!(osb->s_mount_opt & OCFS2_MOUNT_POSIX_ACL))
 		return NULL;
@@ -348,17 +397,24 @@ struct posix_acl *ocfs2_iop_get_acl(struct inode *inode, int type)
 	brelse(di_bh);
 
 	return acl;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 int ocfs2_acl_chmod(struct inode *inode)
 {
 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct posix_acl *acl, *clone;
 =======
 	struct posix_acl *acl;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct posix_acl *acl;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	if (S_ISLNK(inode->i_mode))
@@ -371,6 +427,7 @@ int ocfs2_acl_chmod(struct inode *inode)
 	if (IS_ERR(acl) || !acl)
 		return PTR_ERR(acl);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clone = posix_acl_clone(acl, GFP_KERNEL);
 	posix_acl_release(acl);
 	if (!clone)
@@ -381,13 +438,18 @@ int ocfs2_acl_chmod(struct inode *inode)
 				    clone, NULL, NULL);
 	posix_acl_release(clone);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
 	if (ret)
 		return ret;
 	ret = ocfs2_set_acl(NULL, inode, NULL, ACL_TYPE_ACCESS,
 			    acl, NULL, NULL);
 	posix_acl_release(acl);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -407,10 +469,14 @@ int ocfs2_init_acl(handle_t *handle,
 	struct posix_acl *acl = NULL;
 	int ret = 0, ret2;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mode_t mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 
 	if (!S_ISLNK(inode->i_mode)) {
 		if (osb->s_mount_opt & OCFS2_MOUNT_POSIX_ACL) {
@@ -430,10 +496,13 @@ int ocfs2_init_acl(handle_t *handle,
 	}
 	if ((osb->s_mount_opt & OCFS2_MOUNT_POSIX_ACL) && acl) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct posix_acl *clone;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (S_ISDIR(inode->i_mode)) {
 			ret = ocfs2_set_acl(handle, inode, di_bh,
 					    ACL_TYPE_DEFAULT, acl,
@@ -441,6 +510,7 @@ int ocfs2_init_acl(handle_t *handle,
 			if (ret)
 				goto cleanup;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		clone = posix_acl_clone(acl, GFP_NOFS);
 		ret = -ENOMEM;
@@ -464,6 +534,8 @@ int ocfs2_init_acl(handle_t *handle,
 		}
 		posix_acl_release(clone);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		mode = inode->i_mode;
 		ret = posix_acl_create(&acl, GFP_NOFS, &mode);
 		if (ret < 0)
@@ -480,7 +552,10 @@ int ocfs2_init_acl(handle_t *handle,
 					    di_bh, ACL_TYPE_ACCESS,
 					    acl, meta_ac, data_ac);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 cleanup:
 	posix_acl_release(acl);
@@ -540,7 +615,11 @@ static int ocfs2_xattr_get_acl(struct dentry *dentry, const char *name,
 		return PTR_ERR(acl);
 	if (acl == NULL)
 		return -ENODATA;
+<<<<<<< HEAD
 	ret = posix_acl_to_xattr(acl, buffer, size);
+=======
+	ret = posix_acl_to_xattr(&init_user_ns, acl, buffer, size);
+>>>>>>> refs/remotes/origin/master
 	posix_acl_release(acl);
 
 	return ret;
@@ -563,7 +642,11 @@ static int ocfs2_xattr_set_acl(struct dentry *dentry, const char *name,
 		return -EPERM;
 
 	if (value) {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, size);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, size);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl))
 			return PTR_ERR(acl);
 		else if (acl) {

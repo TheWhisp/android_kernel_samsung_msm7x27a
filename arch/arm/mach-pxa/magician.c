@@ -26,11 +26,16 @@
 #include <linux/pda_power.h>
 #include <linux/pwm_backlight.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/regulator/bq24022.h>
 =======
 #include <linux/regulator/driver.h>
 #include <linux/regulator/gpio-regulator.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/regulator/driver.h>
+#include <linux/regulator/gpio-regulator.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/regulator/machine.h>
 #include <linux/usb/gpio_vbus.h>
 #include <linux/i2c/pxa-i2c.h>
@@ -38,6 +43,7 @@
 #include <mach/hardware.h>
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <asm/system_info.h>
@@ -49,6 +55,16 @@
 #include <mach/mmc.h>
 #include <mach/irda.h>
 #include <mach/ohci.h>
+=======
+#include <asm/system_info.h>
+
+#include <mach/pxa27x.h>
+#include <mach/magician.h>
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/irda-pxaficp.h>
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "devices.h"
 #include "generic.h"
@@ -194,12 +210,17 @@ static struct resource egpio_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start = gpio_to_irq(GPIO13_MAGICIAN_CPLD_IRQ),
 		.end   = gpio_to_irq(GPIO13_MAGICIAN_CPLD_IRQ),
 =======
 		.start = PXA_GPIO_TO_IRQ(GPIO13_MAGICIAN_CPLD_IRQ),
 		.end   = PXA_GPIO_TO_IRQ(GPIO13_MAGICIAN_CPLD_IRQ),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start = PXA_GPIO_TO_IRQ(GPIO13_MAGICIAN_CPLD_IRQ),
+		.end   = PXA_GPIO_TO_IRQ(GPIO13_MAGICIAN_CPLD_IRQ),
+>>>>>>> refs/remotes/origin/master
 		.flags = IORESOURCE_IRQ,
 	},
 };
@@ -359,6 +380,7 @@ static struct pxafb_mach_info samsung_info = {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int magician_backlight_init(struct device *dev)
 {
 	int ret;
@@ -376,6 +398,8 @@ err2:
 err:
 	return ret;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio magician_bl_gpios[] = {
 	{ EGPIO_MAGICIAN_BL_POWER,  GPIOF_DIR_OUT, "Backlight power" },
 	{ EGPIO_MAGICIAN_BL_POWER2, GPIOF_DIR_OUT, "Backlight power 2" },
@@ -384,7 +408,10 @@ static struct gpio magician_bl_gpios[] = {
 static int magician_backlight_init(struct device *dev)
 {
 	return gpio_request_array(ARRAY_AND_SIZE(magician_bl_gpios));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int magician_backlight_notify(struct device *dev, int brightness)
@@ -402,11 +429,15 @@ static int magician_backlight_notify(struct device *dev, int brightness)
 static void magician_backlight_exit(struct device *dev)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_free(EGPIO_MAGICIAN_BL_POWER);
 	gpio_free(EGPIO_MAGICIAN_BL_POWER2);
 =======
 	gpio_free_array(ARRAY_AND_SIZE(magician_bl_gpios));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	gpio_free_array(ARRAY_AND_SIZE(magician_bl_gpios));
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct platform_pwm_backlight_data backlight_data = {
@@ -414,6 +445,10 @@ static struct platform_pwm_backlight_data backlight_data = {
 	.max_brightness = 272,
 	.dft_brightness = 100,
 	.pwm_period_ns  = 30923,
+<<<<<<< HEAD
+=======
+	.enable_gpio    = -1,
+>>>>>>> refs/remotes/origin/master
 	.init           = magician_backlight_init,
 	.notify         = magician_backlight_notify,
 	.exit           = magician_backlight_exit,
@@ -507,12 +542,17 @@ static struct resource pasic3_resources[] = {
 	/* No IRQ handler in the PASIC3, DS1WM needs an external IRQ */
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start  = gpio_to_irq(GPIO107_MAGICIAN_DS1WM_IRQ),
 		.end    = gpio_to_irq(GPIO107_MAGICIAN_DS1WM_IRQ),
 =======
 		.start  = PXA_GPIO_TO_IRQ(GPIO107_MAGICIAN_DS1WM_IRQ),
 		.end    = PXA_GPIO_TO_IRQ(GPIO107_MAGICIAN_DS1WM_IRQ),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start  = PXA_GPIO_TO_IRQ(GPIO107_MAGICIAN_DS1WM_IRQ),
+		.end    = PXA_GPIO_TO_IRQ(GPIO107_MAGICIAN_DS1WM_IRQ),
+>>>>>>> refs/remotes/origin/master
 		.flags  = IORESOURCE_IRQ | IORESOURCE_IRQ_HIGHEDGE,
 	}
 };
@@ -620,6 +660,7 @@ static struct platform_device power_supply = {
  */
 
 static struct regulator_consumer_supply bq24022_consumers[] = {
+<<<<<<< HEAD
 	{
 <<<<<<< HEAD
 		.dev = &gpio_vbus.dev,
@@ -634,6 +675,10 @@ static struct regulator_consumer_supply bq24022_consumers[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
 		.supply = "ac_draw",
 	},
+=======
+	REGULATOR_SUPPLY("vbus_draw", NULL),
+	REGULATOR_SUPPLY("ac_draw", NULL),
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct regulator_init_data bq24022_init_data = {
@@ -646,6 +691,7 @@ static struct regulator_init_data bq24022_init_data = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct bq24022_mach_info bq24022_info = {
 	.gpio_nce   = GPIO30_MAGICIAN_BQ24022_nCHARGE_EN,
 	.gpio_iset2 = EGPIO_MAGICIAN_BQ24022_ISET2,
@@ -655,6 +701,8 @@ static struct bq24022_mach_info bq24022_info = {
 static struct platform_device bq24022 = {
 	.name = "bq24022",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio bq24022_gpios[] = {
 	{ EGPIO_MAGICIAN_BQ24022_ISET2, GPIOF_OUT_INIT_LOW, "bq24022_iset2" },
 };
@@ -683,7 +731,10 @@ static struct gpio_regulator_config bq24022_info = {
 
 static struct platform_device bq24022 = {
 	.name = "gpio-regulator",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.id   = -1,
 	.dev  = {
 		.platform_data = &bq24022_info,
@@ -697,9 +748,14 @@ static struct platform_device bq24022 = {
 static int magician_mci_init(struct device *dev,
 				irq_handler_t detect_irq, void *data)
 {
+<<<<<<< HEAD
 	return request_irq(IRQ_MAGICIAN_SD, detect_irq,
 				IRQF_DISABLED | IRQF_SAMPLE_RANDOM,
 				"mmc card detect", data);
+=======
+	return request_irq(IRQ_MAGICIAN_SD, detect_irq, IRQF_DISABLED,
+			   "mmc card detect", data);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void magician_mci_exit(struct device *dev, void *data)
@@ -784,7 +840,10 @@ static struct platform_device *devices[] __initdata = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct gpio magician_global_gpios[] = {
 	{ GPIO13_MAGICIAN_CPLD_IRQ,   GPIOF_IN, "CPLD_IRQ" },
 	{ GPIO107_MAGICIAN_DS1WM_IRQ, GPIOF_IN, "DS1WM_IRQ" },
@@ -794,7 +853,10 @@ static struct gpio magician_global_gpios[] = {
 	{ GPIO83_MAGICIAN_nIR_EN, GPIOF_OUT_INIT_HIGH, "nIR_EN" },
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init magician_init(void)
 {
 	void __iomem *cpld;
@@ -802,16 +864,22 @@ static void __init magician_init(void)
 	int err;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	gpio_request(GPIO13_MAGICIAN_CPLD_IRQ, "CPLD_IRQ");
 	gpio_request(GPIO107_MAGICIAN_DS1WM_IRQ, "DS1WM_IRQ");
 
 	pxa2xx_mfp_config(ARRAY_AND_SIZE(magician_pin_config));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pxa2xx_mfp_config(ARRAY_AND_SIZE(magician_pin_config));
 	err = gpio_request_array(ARRAY_AND_SIZE(magician_global_gpios));
 	if (err)
 		pr_err("magician: Failed to request GPIOs: %d\n", err);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pxa_set_ffuart_info(NULL);
 	pxa_set_btuart_info(NULL);
@@ -819,6 +887,7 @@ static void __init magician_init(void)
 
 	platform_add_devices(ARRAY_AND_SIZE(devices));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	err = gpio_request(GPIO83_MAGICIAN_nIR_EN, "nIR_EN");
 	if (!err) {
@@ -828,6 +897,9 @@ static void __init magician_init(void)
 =======
 	pxa_set_ficp_info(&magician_ficp_info);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pxa_set_ficp_info(&magician_ficp_info);
+>>>>>>> refs/remotes/origin/master
 	pxa27x_set_i2c_power_info(NULL);
 	pxa_set_i2c_info(&i2c_info);
 	pxa_set_mci_info(&magician_mci_info);
@@ -841,6 +913,7 @@ static void __init magician_init(void)
 		system_rev = board_id & 0x7;
 		lcd_select = board_id & 0x8;
 		pr_info("LCD type: %s\n", lcd_select ? "Samsung" : "Toppoly");
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (lcd_select && (system_rev < 3)) {
 			gpio_request(GPIO75_MAGICIAN_SAMSUNG_POWER, "SAMSUNG_POWER");
@@ -857,6 +930,11 @@ static void __init magician_init(void)
 			gpio_request_one(GPIO75_MAGICIAN_SAMSUNG_POWER,
 			                 GPIOF_OUT_INIT_LOW, "SAMSUNG_POWER");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (lcd_select && (system_rev < 3))
+			gpio_request_one(GPIO75_MAGICIAN_SAMSUNG_POWER,
+			                 GPIOF_OUT_INIT_LOW, "SAMSUNG_POWER");
+>>>>>>> refs/remotes/origin/master
 		pxa_set_fb_info(NULL, lcd_select ? &samsung_info : &toppoly_info);
 	} else
 		pr_err("LCD detection: CPLD mapping failed\n");
@@ -865,6 +943,7 @@ static void __init magician_init(void)
 
 MACHINE_START(MAGICIAN, "HTC Magician")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params = 0xa0000100,
 	.map_io = pxa27x_map_io,
 	.nr_irqs = MAGICIAN_NR_IRQS,
@@ -872,13 +951,20 @@ MACHINE_START(MAGICIAN, "HTC Magician")
 	.init_machine = magician_init,
 	.timer = &pxa_timer,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset = 0x100,
 	.map_io = pxa27x_map_io,
 	.nr_irqs = MAGICIAN_NR_IRQS,
 	.init_irq = pxa27x_init_irq,
 	.handle_irq = pxa27x_handle_irq,
 	.init_machine = magician_init,
+<<<<<<< HEAD
 	.timer = &pxa_timer,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

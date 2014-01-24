@@ -1,6 +1,7 @@
 #ifndef	_CM4000_H_
 #define	_CM4000_H_
 
+<<<<<<< HEAD
 #include <linux/types.h>
 
 #define	MAX_ATR			33
@@ -60,9 +61,16 @@ typedef struct ptsreq {
 
 
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/cm4000_cs.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #define	DEVICE_NAME		"cmm"
 #define	MODULE_NAME		"cm4000_cs"
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _CM4000_H_ */

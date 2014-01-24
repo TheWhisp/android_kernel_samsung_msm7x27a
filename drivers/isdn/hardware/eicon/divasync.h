@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -26,6 +27,8 @@
  */
 #ifndef __DIVA_SYNC__H  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -49,7 +52,10 @@
  *
  */
 #ifndef __DIVA_SYNC__H
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define __DIVA_SYNC__H
 #define IDI_SYNC_REQ_REMOVE             0x00
 #define IDI_SYNC_REQ_GET_NAME           0x01
@@ -86,6 +92,7 @@
 #define IDI_SYNC_REQ_XDI_GET_EXTENDED_FEATURES  0x92
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
    To receive XDI features:
    1. set 'buffer_length_in_bytes' to length of you buffer
    2. set 'features' to pointer to your buffer
@@ -107,6 +114,8 @@ typedef struct _diva_xdi_get_extended_xdi_features {
    features[0]
   */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
   To receive XDI features:
   1. set 'buffer_length_in_bytes' to length of you buffer
   2. set 'features' to pointer to your buffer
@@ -127,7 +136,10 @@ typedef struct _diva_xdi_get_extended_xdi_features {
 /*
   features[0]
 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define DIVA_XDI_EXTENDED_FEATURES_VALID          0x01
 #define DIVA_XDI_EXTENDED_FEATURE_CMA             0x02
 #define DIVA_XDI_EXTENDED_FEATURE_SDRAM_BAR       0x04
@@ -141,15 +153,20 @@ typedef struct _diva_xdi_get_extended_xdi_features {
 #define IDI_SYNC_REQ_XDI_GET_ADAPTER_SDRAM_BAR   0x93
 typedef struct _diva_xdi_get_adapter_sdram_bar {
 <<<<<<< HEAD
+<<<<<<< HEAD
  dword bar;
 =======
 	dword bar;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dword bar;
+>>>>>>> refs/remotes/origin/master
 } diva_xdi_get_adapter_sdram_bar_t;
 /******************************************************************************/
 #define IDI_SYNC_REQ_XDI_GET_CAPI_PARAMS   0x94
 /*
   CAPI Parameters will be written in the caller's buffer
+<<<<<<< HEAD
 <<<<<<< HEAD
   */
 typedef struct _diva_xdi_get_capi_parameters {
@@ -157,12 +174,17 @@ typedef struct _diva_xdi_get_capi_parameters {
   byte flag_dynamic_l1_down;
   byte group_optimization_enabled;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 typedef struct _diva_xdi_get_capi_parameters {
 	dword structure_length;
 	byte flag_dynamic_l1_down;
 	byte group_optimization_enabled;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } diva_xdi_get_capi_parameters_t;
 /******************************************************************************/
 #define IDI_SYNC_REQ_XDI_GET_LOGICAL_ADAPTER_NUMBER   0x95
@@ -173,18 +195,24 @@ typedef struct _diva_xdi_get_capi_parameters {
   'controller' is zero for Master adapter (and adapter that supports
   only one interface)
 <<<<<<< HEAD
+<<<<<<< HEAD
   */
 typedef struct _diva_xdi_get_logical_adapter_number {
   dword logical_adapter_number;
   dword controller;
   dword total_controllers;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 */
 typedef struct _diva_xdi_get_logical_adapter_number {
 	dword logical_adapter_number;
 	dword controller;
 	dword total_controllers;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } diva_xdi_get_logical_adapter_number_s_t;
 /******************************************************************************/
 #define IDI_SYNC_REQ_UP1DM_OPERATION   0x96
@@ -194,16 +222,22 @@ typedef struct _diva_xdi_get_logical_adapter_number {
 #define IDI_SYNC_REQ_DMA_DESCRIPTOR_FREE      0x02
 typedef struct _diva_xdi_dma_descriptor_operation {
 <<<<<<< HEAD
+<<<<<<< HEAD
   int   operation;
   int   descriptor_number;
   void* descriptor_address;
   dword descriptor_magic;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int operation;
 	int descriptor_number;
 	void *descriptor_address;
 	dword descriptor_magic;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } diva_xdi_dma_descriptor_operation_t;
 /******************************************************************************/
 #define IDI_SYNC_REQ_DIDD_REGISTER_ADAPTER_NOTIFY   0x01
@@ -213,6 +247,7 @@ typedef struct _diva_xdi_dma_descriptor_operation {
 #define IDI_SYNC_REQ_DIDD_READ_ADAPTER_ARRAY        0x05
 #define IDI_SYNC_REQ_DIDD_GET_CFG_LIB_IFC           0x10
 typedef struct _diva_didd_adapter_notify {
+<<<<<<< HEAD
 <<<<<<< HEAD
  dword handle; /* Notification handle */
  void   * callback;
@@ -231,6 +266,8 @@ typedef struct _diva_didd_read_adapter_array {
 typedef struct _diva_didd_get_cfg_lib_ifc {
  void* ifc;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	dword handle; /* Notification handle */
 	void *callback;
 	void *context;
@@ -247,7 +284,10 @@ typedef struct _diva_didd_read_adapter_array {
 } diva_didd_read_adapter_array_t;
 typedef struct _diva_didd_get_cfg_lib_ifc {
 	void *ifc;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } diva_didd_get_cfg_lib_ifc_t;
 /******************************************************************************/
 #define IDI_SYNC_REQ_XDI_GET_STREAM    0x91
@@ -258,6 +298,7 @@ typedef struct _diva_didd_get_cfg_lib_ifc {
 #define DIVA_ISTREAM_COMPLETE_READ     1
 #define DIVA_ISTREAM_COMPLETE_WRITE    2
 typedef struct _diva_xdi_stream_interface {
+<<<<<<< HEAD
 <<<<<<< HEAD
   unsigned char  Id;                 /* filled by XDI client */
  unsigned char provided_service;    /* filled by XDI        */
@@ -285,6 +326,8 @@ typedef struct _diva_xdi_stream_interface {
          int length,
          int* final);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char  Id;                 /* filled by XDI client */
 	unsigned char provided_service;    /* filled by XDI        */
 	unsigned char requested_service;   /* filled by XDI Client */
@@ -310,7 +353,10 @@ typedef struct _diva_xdi_stream_interface {
 			void *data,
 			int length,
 			int *final);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } diva_xdi_stream_interface_t;
 /******************************************************************************/
 /*
@@ -319,6 +365,7 @@ typedef struct _diva_xdi_stream_interface {
 typedef struct
 { unsigned char LineState;         /* Modem line state (STATUS_R) */
 #define SERIAL_GSM_CELL 0x01   /* GSM or CELL cable attached  */
+<<<<<<< HEAD
 <<<<<<< HEAD
  unsigned char CardState;          /* PCMCIA card state (0 = down) */
  unsigned char IsdnState;          /* ISDN layer 1 state (0 = down)*/
@@ -334,6 +381,8 @@ typedef struct
  unsigned char Rc;              /* return code (is the request) */
  unsigned char Function;           /* private function code  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char CardState;          /* PCMCIA card state (0 = down) */
 	unsigned char IsdnState;          /* ISDN layer 1 state (0 = down)*/
 	unsigned char HookState;          /* current logical hook state */
@@ -347,13 +396,17 @@ typedef struct
 	unsigned char Req;             /* request (must be always 0) */
 	unsigned char Rc;              /* return code (is the request) */
 	unsigned char Function;           /* private function code  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define SERIAL_HOOK_ATTACH 0x81
 #define SERIAL_HOOK_STATUS 0x82
 #define SERIAL_HOOK_I_SYNC 0x83
 #define SERIAL_HOOK_NOECHO 0x84
 #define SERIAL_HOOK_RING 0x85
 #define SERIAL_HOOK_DETACH 0x8f
+<<<<<<< HEAD
 <<<<<<< HEAD
  unsigned char Flags;           /* function refinements   */
  /* parameters passed by the ATTACH request      */
@@ -368,6 +421,8 @@ typedef struct
  void   *SyncContext;  /* context for this function */
  unsigned char SyncResult;   /* return value of function  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char Flags;           /* function refinements   */
 	/* parameters passed by the ATTACH request      */
 	SERIAL_INT_CB InterruptHandler; /* called on each interrupt  */
@@ -380,7 +435,10 @@ typedef struct
 	SERIAL_I_SYNC SyncFunction;  /* to be called synchronized */
 	void   *SyncContext;  /* context for this function */
 	unsigned char SyncResult;   /* return value of function  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 } SERIAL_HOOK;
 /*
  * IDI_SYNC_REQ_XCHANGE_STATUS - exchange the status between IDI and WMP
@@ -389,17 +447,23 @@ typedef struct
 typedef struct
 { /* 'Req' and 'Rc' must be at the same place as in the ENTITY struct */
 <<<<<<< HEAD
+<<<<<<< HEAD
  unsigned char Req;             /* request (must be always 0) */
  unsigned char Rc;              /* return code (is the request) */
 =======
 	unsigned char Req;             /* request (must be always 0) */
 	unsigned char Rc;              /* return code (is the request) */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned char Req;             /* request (must be always 0) */
+	unsigned char Rc;              /* return code (is the request) */
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_STATUS_BOOT  0xA1
 #define DRIVER_STATUS_INIT_DEV 0xA2
 #define DRIVER_STATUS_RUNNING 0xA3
 #define DRIVER_STATUS_SHUTDOWN 0xAF
 #define DRIVER_STATUS_TRAPPED 0xAE
+<<<<<<< HEAD
 <<<<<<< HEAD
  unsigned char wmpStatus;          /* exported by WMP              */
  unsigned char idiStatus;   /* exported by IDI              */
@@ -411,6 +475,8 @@ typedef struct
  unsigned long stableL2 ;   /* from IDI registry to WMP     */
  unsigned long tei ;    /* from IDI registry to WMP     */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned char wmpStatus;          /* exported by WMP              */
 	unsigned char idiStatus;   /* exported by IDI              */
 	unsigned long wizProto;   /* from WMP registry to IDI     */
@@ -420,7 +486,10 @@ typedef struct
 	unsigned long permanent;   /* from IDI registry to WMP     */
 	unsigned long stableL2;   /* from IDI registry to WMP     */
 	unsigned long tei;    /* from IDI registry to WMP     */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CRC4_MASK   0x00000003
 #define L1_TRISTATE_MASK 0x00000004
 #define WATCHDOG_MASK  0x00000008
@@ -443,6 +512,7 @@ typedef struct
 #define SET_TEI    0x40000000
 #define SET_NUMBERLEN  0x80000000
 <<<<<<< HEAD
+<<<<<<< HEAD
  unsigned long Flag ;  /* |31-Type-16|15-Mask-0| */
  unsigned long NumberLen ; /* reconfiguration: union is empty */
  union {
@@ -456,6 +526,8 @@ typedef struct
   } res ;
   struct { /* reconfiguration: wizProto == PROTTYPE_RBSCAS */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long Flag;  /* |31-Type-16|15-Mask-0| */
 	unsigned long NumberLen; /* reconfiguration: union is empty */
 	union {
@@ -468,7 +540,10 @@ typedef struct
 			void *pXlatResources;
 		} res;
 		struct { /* reconfiguration: wizProto == PROTTYPE_RBSCAS */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define GLARE_RESOLVE_MASK 0x00000001
 #define DID_MASK   0x00000002
 #define BEARER_CAP_MASK  0x0000000c
@@ -476,22 +551,29 @@ typedef struct
 #define SET_DID    0x00020000
 #define SET_BEARER_CAP  0x000c0000
 <<<<<<< HEAD
+<<<<<<< HEAD
    unsigned long Flag ;  /* |31-Type-16|15-VALUE-0| */
    unsigned short DigitTimeout ;
    unsigned short AnswerDelay ;
   } rbs ;
   struct { /* reconfiguration: wizProto == PROTTYPE_QSIG */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			unsigned long Flag;  /* |31-Type-16|15-VALUE-0| */
 			unsigned short DigitTimeout;
 			unsigned short AnswerDelay;
 		} rbs;
 		struct { /* reconfiguration: wizProto == PROTTYPE_QSIG */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define CALL_REF_LENGTH1_MASK 0x00000001
 #define BRI_CHANNEL_ID_MASK  0x00000002
 #define SET_CALL_REF_LENGTH  0x00010000
 #define SET_BRI_CHANNEL_ID  0x00020000
+<<<<<<< HEAD
 <<<<<<< HEAD
    unsigned long Flag ;  /* |31-Type-16|15-VALUE-0| */
   } qsig ;
@@ -501,6 +583,11 @@ typedef struct
 		} qsig;
 		struct { /* reconfiguration: NumberLen != 0 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			unsigned long Flag;  /* |31-Type-16|15-VALUE-0| */
+		} qsig;
+		struct { /* reconfiguration: NumberLen != 0 */
+>>>>>>> refs/remotes/origin/master
 #define SET_SPID1   0x00010000
 #define SET_NUMBER1   0x00020000
 #define SET_SUBADDRESS1  0x00040000
@@ -508,6 +595,7 @@ typedef struct
 #define SET_NUMBER2   0x00200000
 #define SET_SUBADDRESS2  0x00400000
 #define MASK_SET   0xffff0000
+<<<<<<< HEAD
 <<<<<<< HEAD
    unsigned long Flag ;   /* |31-Type-16|15-Channel-0| */
    unsigned char *pBuffer ; /* number value */
@@ -545,6 +633,8 @@ typedef struct
     unsigned long   Info;               /* more info if needed          */
 } SLIENTRYPOINT_REQ ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			unsigned long Flag;   /* |31-Type-16|15-Channel-0| */
 			unsigned char *pBuffer; /* number value */
 		} isdnNo;
@@ -580,11 +670,15 @@ typedef struct
 	void            *Context;           /* context for callback         */
 	unsigned long   Info;               /* more info if needed          */
 } SLIENTRYPOINT_REQ;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************/
 /*
  *  Definitions for DIVA USB
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef int  (  * USB_SEND_REQ) (unsigned char PipeIndex, unsigned char Type,void *Data, int sizeData);
 typedef int  (  * USB_START_DEV) (void *Adapter, void *Ipac) ;
@@ -592,12 +686,17 @@ typedef int  (  * USB_START_DEV) (void *Adapter, void *Ipac) ;
 typedef void (  * USB_RECV_NOTIFY) (void *Ipac, void *msg) ;
 typedef void (  * USB_XMIT_NOTIFY) (void *Ipac, unsigned char PipeIndex) ;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef int (*USB_SEND_REQ)(unsigned char PipeIndex, unsigned char Type, void *Data, int sizeData);
 typedef int (*USB_START_DEV)(void *Adapter, void *Ipac);
 /* called from WDM */
 typedef void (*USB_RECV_NOTIFY)(void *Ipac, void *msg);
 typedef void (*USB_XMIT_NOTIFY)(void *Ipac, unsigned char PipeIndex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************/
 /*
  * Parameter description for synchronous requests.
@@ -607,6 +706,7 @@ typedef void (*USB_XMIT_NOTIFY)(void *Ipac, unsigned char PipeIndex);
  */
 typedef union
 { ENTITY Entity;
+<<<<<<< HEAD
 <<<<<<< HEAD
  struct
  { /* 'Req' and 'Rc' are at the same place as in the ENTITY struct */
@@ -735,6 +835,8 @@ typedef union
 /******************************************************************************/
 #endif /* __DIVA_SYNC__H */  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct
 	{ /* 'Req' and 'Rc' are at the same place as in the ENTITY struct */
 		unsigned char   Req; /* request (must be always 0) */
@@ -861,4 +963,7 @@ typedef union
 } IDI_SYNC_REQ;
 /******************************************************************************/
 #endif /* __DIVA_SYNC__H */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

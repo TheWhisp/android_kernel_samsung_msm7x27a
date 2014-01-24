@@ -150,7 +150,10 @@ gss_verify_mic_v2(struct krb5_ctx *ctx,
 	struct xdr_netobj cksumobj = {.len = sizeof(cksumdata),
 				      .data = cksumdata};
 	s32 now;
+<<<<<<< HEAD
 	u64 seqnum;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 *ptr = read_token->data;
 	u8 *cksumkey;
 	u8 flags;
@@ -197,9 +200,16 @@ gss_verify_mic_v2(struct krb5_ctx *ctx,
 	if (now > ctx->endtime)
 		return GSS_S_CONTEXT_EXPIRED;
 
+<<<<<<< HEAD
 	/* do sequencing checks */
 
 	seqnum = be64_to_cpup((__be64 *)ptr + 8);
+=======
+	/*
+	 * NOTE: the sequence number at ptr + 8 is skipped, rpcsec_gss
+	 * doesn't want it checked; see page 6 of rfc 2203.
+	 */
+>>>>>>> refs/remotes/origin/master
 
 	return GSS_S_COMPLETE;
 }

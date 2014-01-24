@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Module Name: amlresrc.h - AML resource descriptors
@@ -7,10 +10,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,10 +70,13 @@
 #define ACPI_RESTAG_BASEADDRESS                 "_BAS"
 #define ACPI_RESTAG_BUSMASTER                   "_BM_"	/* Master(1), Slave(0) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ACPI_RESTAG_DECODE                      "_DEC"
 #define ACPI_RESTAG_DMA                         "_DMA"
 #define ACPI_RESTAG_DMATYPE                     "_TYP"	/* Compatible(0), A(1), B(2), F(3) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_RESTAG_DEBOUNCETIME                "_DBT"
 #define ACPI_RESTAG_DECODE                      "_DEC"
 #define ACPI_RESTAG_DEVICEPOLARITY              "_DPL"
@@ -75,12 +85,16 @@
 #define ACPI_RESTAG_DRIVESTRENGTH               "_DRS"
 #define ACPI_RESTAG_ENDIANNESS                  "_END"
 #define ACPI_RESTAG_FLOWCONTROL                 "_FLC"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_RESTAG_GRANULARITY                 "_GRA"
 #define ACPI_RESTAG_INTERRUPT                   "_INT"
 #define ACPI_RESTAG_INTERRUPTLEVEL              "_LL_"	/* active_lo(1), active_hi(0) */
 #define ACPI_RESTAG_INTERRUPTSHARE              "_SHR"	/* Shareable(1), no_share(0) */
 #define ACPI_RESTAG_INTERRUPTTYPE               "_HE_"	/* Edge(1), Level(0) */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define ACPI_RESTAG_LENGTH                      "_LEN"
 =======
@@ -88,6 +102,11 @@
 #define ACPI_RESTAG_LENGTH                      "_LEN"
 #define ACPI_RESTAG_LINE                        "_LIN"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ACPI_RESTAG_IORESTRICTION               "_IOR"
+#define ACPI_RESTAG_LENGTH                      "_LEN"
+#define ACPI_RESTAG_LINE                        "_LIN"
+>>>>>>> refs/remotes/origin/master
 #define ACPI_RESTAG_MEMATTRIBUTES               "_MTP"	/* Memory(0), Reserved(1), ACPI(2), NVS(3) */
 #define ACPI_RESTAG_MEMTYPE                     "_MEM"	/* non_cache(0), Cacheable(1) Cache+combine(2), Cache+prefetch(3) */
 #define ACPI_RESTAG_MAXADDR                     "_MAX"
@@ -95,25 +114,35 @@
 #define ACPI_RESTAG_MAXTYPE                     "_MAF"
 #define ACPI_RESTAG_MINTYPE                     "_MIF"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_RESTAG_MODE                        "_MOD"
 #define ACPI_RESTAG_PARITY                      "_PAR"
 #define ACPI_RESTAG_PHASE                       "_PHA"
 #define ACPI_RESTAG_PIN                         "_PIN"
 #define ACPI_RESTAG_PINCONFIG                   "_PPI"
 #define ACPI_RESTAG_POLARITY                    "_POL"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_RESTAG_REGISTERBITOFFSET           "_RBO"
 #define ACPI_RESTAG_REGISTERBITWIDTH            "_RBW"
 #define ACPI_RESTAG_RANGETYPE                   "_RNG"
 #define ACPI_RESTAG_READWRITETYPE               "_RW_"	/* read_only(0), Writeable (1) */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ACPI_RESTAG_LENGTH_RX                   "_RXL"
 #define ACPI_RESTAG_LENGTH_TX                   "_TXL"
 #define ACPI_RESTAG_SLAVEMODE                   "_SLV"
 #define ACPI_RESTAG_SPEED                       "_SPE"
 #define ACPI_RESTAG_STOPBITS                    "_STB"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define ACPI_RESTAG_TRANSLATION                 "_TRA"
 #define ACPI_RESTAG_TRANSTYPE                   "_TRS"	/* Sparse(1), Dense(0) */
@@ -123,6 +152,13 @@
 =======
 #define ACPI_RESTAG_VENDORDATA                  "_VEN"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ACPI_RESTAG_TRANSLATION                 "_TRA"
+#define ACPI_RESTAG_TRANSTYPE                   "_TRS"	/* Sparse(1), Dense(0) */
+#define ACPI_RESTAG_TYPE                        "_TTP"	/* Translation(1), Static (0) */
+#define ACPI_RESTAG_XFERTYPE                    "_SIZ"	/* 8(0), 8And16(1), 16(2) */
+#define ACPI_RESTAG_VENDORDATA                  "_VEN"
+>>>>>>> refs/remotes/origin/master
 
 /* Default sizes for "small" resource descriptors */
 
@@ -133,9 +169,13 @@
 #define ASL_RDESC_IO_SIZE                       0x07
 #define ASL_RDESC_FIXED_IO_SIZE                 0x03
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ASL_RDESC_FIXED_DMA_SIZE                0x05
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ASL_RDESC_FIXED_DMA_SIZE                0x05
+>>>>>>> refs/remotes/origin/master
 #define ASL_RDESC_END_TAG_SIZE                  0x01
 
 struct asl_resource_node {
@@ -211,14 +251,20 @@ struct aml_resource_end_tag {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct aml_resource_fixed_dma {
 	AML_RESOURCE_SMALL_HEADER_COMMON u16 request_lines;
 	u16 channels;
 	u8 width;
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * LARGE descriptors
  */
@@ -229,6 +275,15 @@ struct aml_resource_fixed_dma {
 struct aml_resource_large_header {
 AML_RESOURCE_LARGE_HEADER_COMMON};
 
+<<<<<<< HEAD
+=======
+/* General Flags for address space resource descriptors */
+
+#define ACPI_RESOURCE_FLAG_DEC      2
+#define ACPI_RESOURCE_FLAG_MIF      4
+#define ACPI_RESOURCE_FLAG_MAF      8
+
+>>>>>>> refs/remotes/origin/master
 struct aml_resource_memory24 {
 	AML_RESOURCE_LARGE_HEADER_COMMON u8 flags;
 	u16 minimum;
@@ -264,7 +319,11 @@ AML_RESOURCE_LARGE_HEADER_COMMON AML_RESOURCE_ADDRESS_COMMON};
 
 struct aml_resource_extended_address64 {
 	AML_RESOURCE_LARGE_HEADER_COMMON
+<<<<<<< HEAD
 	    AML_RESOURCE_ADDRESS_COMMON u8 revision_iD;
+=======
+	    AML_RESOURCE_ADDRESS_COMMON u8 revision_ID;
+>>>>>>> refs/remotes/origin/master
 	u8 reserved;
 	u64 granularity;
 	u64 minimum;
@@ -319,7 +378,10 @@ struct aml_resource_generic_register {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* Common descriptor for gpio_int and gpio_io (ACPI 5.0) */
 
 struct aml_resource_gpio {
@@ -424,7 +486,10 @@ struct aml_resource_uart_serialbus {
 #define AML_RESOURCE_UART_TYPE_REVISION         1	/* ACPI 5.0 */
 #define AML_RESOURCE_UART_MIN_DATA_LEN          10
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* restore default alignment */
 
 #pragma pack()
@@ -447,9 +512,13 @@ union aml_resource {
 	struct aml_resource_io io;
 	struct aml_resource_fixed_io fixed_io;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct aml_resource_fixed_dma fixed_dma;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct aml_resource_fixed_dma fixed_dma;
+>>>>>>> refs/remotes/origin/master
 	struct aml_resource_vendor_small vendor_small;
 	struct aml_resource_end_tag end_tag;
 
@@ -466,13 +535,19 @@ union aml_resource {
 	struct aml_resource_extended_address64 ext_address64;
 	struct aml_resource_extended_irq extended_irq;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct aml_resource_gpio gpio;
 	struct aml_resource_i2c_serialbus i2c_serial_bus;
 	struct aml_resource_spi_serialbus spi_serial_bus;
 	struct aml_resource_uart_serialbus uart_serial_bus;
 	struct aml_resource_common_serialbus common_serial_bus;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Utility overlays */
 

@@ -382,7 +382,11 @@ static int ea_read(struct inode *ip, struct jfs_ea_list *ealist)
 
 	nbytes = sizeDXD(&ji->ea);
 	if (!nbytes) {
+<<<<<<< HEAD
 		jfs_error(sb, "ea_read: nbytes is 0");
+=======
+		jfs_error(sb, "nbytes is 0\n");
+>>>>>>> refs/remotes/origin/master
 		return -EIO;
 	}
 
@@ -482,7 +486,11 @@ static int ea_get(struct inode *inode, struct ea_buffer *ea_buf, int min_size)
 		current_blocks = 0;
 	} else {
 		if (!(ji->ea.flag & DXD_EXTENT)) {
+<<<<<<< HEAD
 			jfs_error(sb, "ea_get: invalid ea.flag)");
+=======
+			jfs_error(sb, "invalid ea.flag\n");
+>>>>>>> refs/remotes/origin/master
 			return -EIO;
 		}
 		current_blocks = (ea_size + sb->s_blocksize - 1) >>
@@ -685,7 +693,11 @@ static int can_set_system_xattr(struct inode *inode, const char *name,
 	 * POSIX_ACL_XATTR_ACCESS is tied to i_mode
 	 */
 	if (strcmp(name, POSIX_ACL_XATTR_ACCESS) == 0) {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, value_len);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, value_len);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl)) {
 			rc = PTR_ERR(acl);
 			printk(KERN_ERR "posix_acl_from_xattr returned %d\n",
@@ -694,11 +706,15 @@ static int can_set_system_xattr(struct inode *inode, const char *name,
 		}
 		if (acl) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mode_t mode = inode->i_mode;
 			rc = posix_acl_equiv_mode(acl, &mode);
 =======
 			rc = posix_acl_equiv_mode(acl, &inode->i_mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			rc = posix_acl_equiv_mode(acl, &inode->i_mode);
+>>>>>>> refs/remotes/origin/master
 			posix_acl_release(acl);
 			if (rc < 0) {
 				printk(KERN_ERR
@@ -707,9 +723,12 @@ static int can_set_system_xattr(struct inode *inode, const char *name,
 				return rc;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			inode->i_mode = mode;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			mark_inode_dirty(inode);
 		}
 		/*
@@ -719,7 +738,11 @@ static int can_set_system_xattr(struct inode *inode, const char *name,
 
 		return 0;
 	} else if (strcmp(name, POSIX_ACL_XATTR_DEFAULT) == 0) {
+<<<<<<< HEAD
 		acl = posix_acl_from_xattr(value, value_len);
+=======
+		acl = posix_acl_from_xattr(&init_user_ns, value, value_len);
+>>>>>>> refs/remotes/origin/master
 		if (IS_ERR(acl)) {
 			rc = PTR_ERR(acl);
 			printk(KERN_ERR "posix_acl_from_xattr returned %d\n",
@@ -1099,6 +1122,7 @@ int jfs_removexattr(struct dentry *dentry, const char *name)
 
 #ifdef CONFIG_JFS_SECURITY
 <<<<<<< HEAD
+<<<<<<< HEAD
 int jfs_init_security(tid_t tid, struct inode *inode, struct inode *dir,
 		      const struct qstr *qstr)
 {
@@ -1135,6 +1159,10 @@ kmalloc_failed:
 =======
 int jfs_initxattrs(struct inode *inode, const struct xattr *xattr_array,
 		   void *fs_info)
+=======
+static int jfs_initxattrs(struct inode *inode, const struct xattr *xattr_array,
+			  void *fs_info)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct xattr *xattr;
 	tid_t *tid = fs_info;
@@ -1165,6 +1193,9 @@ int jfs_init_security(tid_t tid, struct inode *inode, struct inode *dir,
 {
 	return security_inode_init_security(inode, dir, qstr,
 					    &jfs_initxattrs, &tid);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #endif

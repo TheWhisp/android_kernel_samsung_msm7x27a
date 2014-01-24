@@ -10,6 +10,7 @@
  * warranty of any kind, whether express or implied.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <mach/hardware.h>
 #include <mach/io.h>
 #include <mach/irqs.h>
@@ -18,10 +19,13 @@
  		.macro	disable_fiq
 		.endm
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 
+<<<<<<< HEAD
 #include "../../iomap.h"
 >>>>>>> refs/remotes/origin/cm-10.0
 
@@ -34,6 +38,11 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.macro  get_irqnr_preamble, base, tmp
+		.endm
+
+>>>>>>> refs/remotes/origin/master
 		.macro	get_irqnr_and_base, irqnr, irqstat, base, tmp
 		ldr	\base, =OMAP1_IO_ADDRESS(OMAP_IH1_BASE)
 		ldr	\irqnr, [\base, #IRQ_ITR_REG_OFFSET]

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/io.h>
 #include <linux/types.h>
@@ -15,6 +16,9 @@
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+#include "vgatypes.h"
+>>>>>>> refs/remotes/origin/master
 #include "vb_util.h"
 
 void xgifb_reg_set(unsigned long port, u8 index, u8 data)

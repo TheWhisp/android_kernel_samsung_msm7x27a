@@ -6,8 +6,13 @@
  *  Based on Sharp's 2.4 Backlight Driver
  *
  *  Copyright (c) 2008 Marvell International Ltd.
+<<<<<<< HEAD
  *  	Converted to SPI device based LCD/Backlight device driver
  *  	by Eric Miao <eric.miao@marvell.com>
+=======
+ *	Converted to SPI device based LCD/Backlight device driver
+ *	by Eric Miao <eric.miao@marvell.com>
+>>>>>>> refs/remotes/origin/master
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License version 2 as
@@ -192,7 +197,11 @@ static void lcdtg_set_phadadj(struct corgi_lcd *lcd, int mode)
 {
 	int adj;
 
+<<<<<<< HEAD
 	switch(mode) {
+=======
+	switch (mode) {
+>>>>>>> refs/remotes/origin/master
 	case CORGI_LCD_MODE_VGA:
 		/* Setting for VGA */
 		adj = sharpsl_param.phadadj;
@@ -337,7 +346,11 @@ static void corgi_lcd_power_off(struct corgi_lcd *lcd)
 
 static int corgi_lcd_set_mode(struct lcd_device *ld, struct fb_videomode *m)
 {
+<<<<<<< HEAD
 	struct corgi_lcd *lcd = dev_get_drvdata(&ld->dev);
+=======
+	struct corgi_lcd *lcd = lcd_get_data(ld);
+>>>>>>> refs/remotes/origin/master
 	int mode = CORGI_LCD_MODE_QVGA;
 
 	if (m->xres == 640 || m->xres == 480)
@@ -364,7 +377,11 @@ static int corgi_lcd_set_mode(struct lcd_device *ld, struct fb_videomode *m)
 
 static int corgi_lcd_set_power(struct lcd_device *ld, int power)
 {
+<<<<<<< HEAD
 	struct corgi_lcd *lcd = dev_get_drvdata(&ld->dev);
+=======
+	struct corgi_lcd *lcd = lcd_get_data(ld);
+>>>>>>> refs/remotes/origin/master
 
 	if (POWER_IS_ON(power) && !POWER_IS_ON(lcd->power))
 		corgi_lcd_power_on(lcd);
@@ -378,7 +395,11 @@ static int corgi_lcd_set_power(struct lcd_device *ld, int power)
 
 static int corgi_lcd_get_power(struct lcd_device *ld)
 {
+<<<<<<< HEAD
 	struct corgi_lcd *lcd = dev_get_drvdata(&ld->dev);
+=======
+	struct corgi_lcd *lcd = lcd_get_data(ld);
+>>>>>>> refs/remotes/origin/master
 
 	return lcd->power;
 }
@@ -391,7 +412,11 @@ static struct lcd_ops corgi_lcd_ops = {
 
 static int corgi_bl_get_intensity(struct backlight_device *bd)
 {
+<<<<<<< HEAD
 	struct corgi_lcd *lcd = dev_get_drvdata(&bd->dev);
+=======
+	struct corgi_lcd *lcd = bl_get_data(bd);
+>>>>>>> refs/remotes/origin/master
 
 	return lcd->intensity;
 }
@@ -409,10 +434,17 @@ static int corgi_bl_set_intensity(struct corgi_lcd *lcd, int intensity)
 	cont = !!(intensity & 0x20) ^ lcd->gpio_backlight_cont_inverted;
 
 	if (gpio_is_valid(lcd->gpio_backlight_cont))
+<<<<<<< HEAD
 		gpio_set_value(lcd->gpio_backlight_cont, cont);
 
 	if (gpio_is_valid(lcd->gpio_backlight_on))
 		gpio_set_value(lcd->gpio_backlight_on, intensity);
+=======
+		gpio_set_value_cansleep(lcd->gpio_backlight_cont, cont);
+
+	if (gpio_is_valid(lcd->gpio_backlight_on))
+		gpio_set_value_cansleep(lcd->gpio_backlight_on, intensity);
+>>>>>>> refs/remotes/origin/master
 
 	if (lcd->kick_battery)
 		lcd->kick_battery();
@@ -423,7 +455,11 @@ static int corgi_bl_set_intensity(struct corgi_lcd *lcd, int intensity)
 
 static int corgi_bl_update_status(struct backlight_device *bd)
 {
+<<<<<<< HEAD
 	struct corgi_lcd *lcd = dev_get_drvdata(&bd->dev);
+=======
+	struct corgi_lcd *lcd = bl_get_data(bd);
+>>>>>>> refs/remotes/origin/master
 	int intensity = bd->props.brightness;
 
 	if (bd->props.power != FB_BLANK_UNBLANK)
@@ -457,10 +493,17 @@ static const struct backlight_ops corgi_bl_ops = {
 	.update_status  = corgi_bl_update_status,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 static int corgi_lcd_suspend(struct spi_device *spi, pm_message_t state)
 {
 	struct corgi_lcd *lcd = dev_get_drvdata(&spi->dev);
+=======
+#ifdef CONFIG_PM_SLEEP
+static int corgi_lcd_suspend(struct device *dev)
+{
+	struct corgi_lcd *lcd = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	corgibl_flags |= CORGIBL_SUSPENDED;
 	corgi_bl_set_intensity(lcd, 0);
@@ -468,20 +511,33 @@ static int corgi_lcd_suspend(struct spi_device *spi, pm_message_t state)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int corgi_lcd_resume(struct spi_device *spi)
 {
 	struct corgi_lcd *lcd = dev_get_drvdata(&spi->dev);
+=======
+static int corgi_lcd_resume(struct device *dev)
+{
+	struct corgi_lcd *lcd = dev_get_drvdata(dev);
+>>>>>>> refs/remotes/origin/master
 
 	corgibl_flags &= ~CORGIBL_SUSPENDED;
 	corgi_lcd_set_power(lcd->lcd_dev, FB_BLANK_UNBLANK);
 	backlight_update_status(lcd->bl_dev);
 	return 0;
 }
+<<<<<<< HEAD
 #else
 #define corgi_lcd_suspend	NULL
 #define corgi_lcd_resume	NULL
 #endif
 
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(corgi_lcd_pm_ops, corgi_lcd_suspend, corgi_lcd_resume);
+
+>>>>>>> refs/remotes/origin/master
 static int setup_gpio_backlight(struct corgi_lcd *lcd,
 				struct corgi_lcd_platform_data *pdata)
 {
@@ -492,10 +548,19 @@ static int setup_gpio_backlight(struct corgi_lcd *lcd,
 	lcd->gpio_backlight_cont = -1;
 
 	if (gpio_is_valid(pdata->gpio_backlight_on)) {
+<<<<<<< HEAD
 		err = gpio_request(pdata->gpio_backlight_on, "BL_ON");
 		if (err) {
 			dev_err(&spi->dev, "failed to request GPIO%d for "
 				"backlight_on\n", pdata->gpio_backlight_on);
+=======
+		err = devm_gpio_request(&spi->dev, pdata->gpio_backlight_on,
+					"BL_ON");
+		if (err) {
+			dev_err(&spi->dev,
+				"failed to request GPIO%d for backlight_on\n",
+				pdata->gpio_backlight_on);
+>>>>>>> refs/remotes/origin/master
 			return err;
 		}
 
@@ -504,11 +569,21 @@ static int setup_gpio_backlight(struct corgi_lcd *lcd,
 	}
 
 	if (gpio_is_valid(pdata->gpio_backlight_cont)) {
+<<<<<<< HEAD
 		err = gpio_request(pdata->gpio_backlight_cont, "BL_CONT");
 		if (err) {
 			dev_err(&spi->dev, "failed to request GPIO%d for "
 				"backlight_cont\n", pdata->gpio_backlight_cont);
 			goto err_free_backlight_on;
+=======
+		err = devm_gpio_request(&spi->dev, pdata->gpio_backlight_cont,
+					"BL_CONT");
+		if (err) {
+			dev_err(&spi->dev,
+				"failed to request GPIO%d for backlight_cont\n",
+				pdata->gpio_backlight_cont);
+			return err;
+>>>>>>> refs/remotes/origin/master
 		}
 
 		lcd->gpio_backlight_cont = pdata->gpio_backlight_cont;
@@ -525,6 +600,7 @@ static int setup_gpio_backlight(struct corgi_lcd *lcd,
 		}
 	}
 	return 0;
+<<<<<<< HEAD
 
 err_free_backlight_on:
 	if (gpio_is_valid(lcd->gpio_backlight_on))
@@ -536,6 +612,14 @@ static int __devinit corgi_lcd_probe(struct spi_device *spi)
 {
 	struct backlight_properties props;
 	struct corgi_lcd_platform_data *pdata = spi->dev.platform_data;
+=======
+}
+
+static int corgi_lcd_probe(struct spi_device *spi)
+{
+	struct backlight_properties props;
+	struct corgi_lcd_platform_data *pdata = dev_get_platdata(&spi->dev);
+>>>>>>> refs/remotes/origin/master
 	struct corgi_lcd *lcd;
 	int ret = 0;
 
@@ -544,7 +628,11 @@ static int __devinit corgi_lcd_probe(struct spi_device *spi)
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	lcd = kzalloc(sizeof(struct corgi_lcd), GFP_KERNEL);
+=======
+	lcd = devm_kzalloc(&spi->dev, sizeof(struct corgi_lcd), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!lcd) {
 		dev_err(&spi->dev, "failed to allocate memory\n");
 		return -ENOMEM;
@@ -552,40 +640,66 @@ static int __devinit corgi_lcd_probe(struct spi_device *spi)
 
 	lcd->spi_dev = spi;
 
+<<<<<<< HEAD
 	lcd->lcd_dev = lcd_device_register("corgi_lcd", &spi->dev,
 					lcd, &corgi_lcd_ops);
 	if (IS_ERR(lcd->lcd_dev)) {
 		ret = PTR_ERR(lcd->lcd_dev);
 		goto err_free_lcd;
 	}
+=======
+	lcd->lcd_dev = devm_lcd_device_register(&spi->dev, "corgi_lcd",
+						&spi->dev, lcd, &corgi_lcd_ops);
+	if (IS_ERR(lcd->lcd_dev))
+		return PTR_ERR(lcd->lcd_dev);
+
+>>>>>>> refs/remotes/origin/master
 	lcd->power = FB_BLANK_POWERDOWN;
 	lcd->mode = (pdata) ? pdata->init_mode : CORGI_LCD_MODE_VGA;
 
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = pdata->max_intensity;
+<<<<<<< HEAD
 	lcd->bl_dev = backlight_device_register("corgi_bl", &spi->dev, lcd,
 						&corgi_bl_ops, &props);
 	if (IS_ERR(lcd->bl_dev)) {
 		ret = PTR_ERR(lcd->bl_dev);
 		goto err_unregister_lcd;
 	}
+=======
+	lcd->bl_dev = devm_backlight_device_register(&spi->dev, "corgi_bl",
+						&spi->dev, lcd, &corgi_bl_ops,
+						&props);
+	if (IS_ERR(lcd->bl_dev))
+		return PTR_ERR(lcd->bl_dev);
+
+>>>>>>> refs/remotes/origin/master
 	lcd->bl_dev->props.brightness = pdata->default_intensity;
 	lcd->bl_dev->props.power = FB_BLANK_UNBLANK;
 
 	ret = setup_gpio_backlight(lcd, pdata);
 	if (ret)
+<<<<<<< HEAD
 		goto err_unregister_bl;
 
 	lcd->kick_battery = pdata->kick_battery;
 
 	dev_set_drvdata(&spi->dev, lcd);
+=======
+		return ret;
+
+	lcd->kick_battery = pdata->kick_battery;
+
+	spi_set_drvdata(spi, lcd);
+>>>>>>> refs/remotes/origin/master
 	corgi_lcd_set_power(lcd->lcd_dev, FB_BLANK_UNBLANK);
 	backlight_update_status(lcd->bl_dev);
 
 	lcd->limit_mask = pdata->limit_mask;
 	the_corgi_lcd = lcd;
 	return 0;
+<<<<<<< HEAD
 
 err_unregister_bl:
 	backlight_device_unregister(lcd->bl_dev);
@@ -599,10 +713,18 @@ err_free_lcd:
 static int __devexit corgi_lcd_remove(struct spi_device *spi)
 {
 	struct corgi_lcd *lcd = dev_get_drvdata(&spi->dev);
+=======
+}
+
+static int corgi_lcd_remove(struct spi_device *spi)
+{
+	struct corgi_lcd *lcd = spi_get_drvdata(spi);
+>>>>>>> refs/remotes/origin/master
 
 	lcd->bl_dev->props.power = FB_BLANK_UNBLANK;
 	lcd->bl_dev->props.brightness = 0;
 	backlight_update_status(lcd->bl_dev);
+<<<<<<< HEAD
 	backlight_device_unregister(lcd->bl_dev);
 
 	if (gpio_is_valid(lcd->gpio_backlight_on))
@@ -615,6 +737,9 @@ static int __devexit corgi_lcd_remove(struct spi_device *spi)
 	lcd_device_unregister(lcd->lcd_dev);
 	kfree(lcd);
 
+=======
+	corgi_lcd_set_power(lcd->lcd_dev, FB_BLANK_POWERDOWN);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -622,6 +747,7 @@ static struct spi_driver corgi_lcd_driver = {
 	.driver		= {
 		.name	= "corgi-lcd",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe		= corgi_lcd_probe,
 	.remove		= __devexit_p(corgi_lcd_remove),
@@ -644,6 +770,15 @@ module_exit(corgi_lcd_exit);
 =======
 module_spi_driver(corgi_lcd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.pm	= &corgi_lcd_pm_ops,
+	},
+	.probe		= corgi_lcd_probe,
+	.remove		= corgi_lcd_remove,
+};
+
+module_spi_driver(corgi_lcd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("LCD and backlight driver for SHARP C7x0/Cxx00");
 MODULE_AUTHOR("Eric Miao <eric.miao@marvell.com>");

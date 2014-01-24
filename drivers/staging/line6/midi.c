@@ -45,7 +45,11 @@ static void line6_midi_transmit(struct snd_rawmidi_substream *substream)
 	struct usb_line6 *line6 =
 	    line6_rawmidi_substream_midi(substream)->line6;
 	struct snd_line6_midi *line6midi = line6->line6midi;
+<<<<<<< HEAD
 	struct MidiBuffer *mb = &line6midi->midibuf_out;
+=======
+	struct midi_buffer *mb = &line6midi->midibuf_out;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	unsigned char chunk[line6->max_packet_size];
 	int req, done;
@@ -59,9 +63,12 @@ static void line6_midi_transmit(struct snd_rawmidi_substream *substream)
 		if (done == 0)
 			break;
 
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_MIDI
 		line6_write_hexdump(line6, 's', chunk, done);
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 		line6_midibuf_write(mb, chunk, done);
 		snd_rawmidi_transmit_ack(substream, done);
 	}
@@ -72,10 +79,13 @@ static void line6_midi_transmit(struct snd_rawmidi_substream *substream)
 		if (done == 0)
 			break;
 
+<<<<<<< HEAD
 		if (line6_midibuf_skip_message
 		    (mb, line6midi->midi_mask_transmit))
 			continue;
 
+=======
+>>>>>>> refs/remotes/origin/master
 		send_midi_async(line6, chunk, done);
 	}
 
@@ -131,6 +141,7 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
 		dev_err(line6->ifcdev, "Out of memory\n");
 		return -ENOMEM;
 	}
+<<<<<<< HEAD
 #ifdef CONFIG_LINE6_USB_DUMP_CTRL
 	line6_write_hexdump(line6, 'S', data, length);
 #endif
@@ -140,6 +151,10 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
 =======
 	transfer_buffer = kmemdup(data, length, GFP_ATOMIC);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	transfer_buffer = kmemdup(data, length, GFP_ATOMIC);
+>>>>>>> refs/remotes/origin/master
 
 	if (transfer_buffer == NULL) {
 		usb_free_urb(urb);
@@ -148,9 +163,12 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memcpy(transfer_buffer, data, length);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	usb_fill_int_urb(urb, line6->usbdev,
 			 usb_sndbulkpipe(line6->usbdev,
 					 line6->ep_control_write),
@@ -162,6 +180,7 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
 	if (retval < 0) {
 		dev_err(line6->ifcdev, "usb_submit_urb failed\n");
 		usb_free_urb(urb);
+<<<<<<< HEAD
 		return -EINVAL;
 	}
 
@@ -191,6 +210,12 @@ static int send_midi_async(struct usb_line6 *line6, unsigned char *data,
 		MISSING_CASE;
 	}
 
+=======
+		return retval;
+	}
+
+	++line6->line6midi->num_active_send_urbs;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -248,7 +273,11 @@ static void line6_midi_input_trigger(struct snd_rawmidi_substream *substream,
 	if (up)
 		line6->line6midi->substream_receive = substream;
 	else
+<<<<<<< HEAD
 		line6->line6midi->substream_receive = 0;
+=======
+		line6->line6midi->substream_receive = NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct snd_rawmidi_ops line6_midi_output_ops = {
@@ -298,6 +327,7 @@ static int snd_line6_new_midi(struct snd_line6_midi *line6midi)
 	return 0;
 }
 
+<<<<<<< HEAD
 /*
 	"read" request on "midi_mask_transmit" special file.
 */
@@ -381,14 +411,19 @@ static DEVICE_ATTR(midi_mask_transmit, S_IWUSR | S_IRUGO,
 static DEVICE_ATTR(midi_mask_receive, S_IWUSR | S_IRUGO,
 		   midi_get_midi_mask_receive, midi_set_midi_mask_receive);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* MIDI device destructor */
 static int snd_line6_midi_free(struct snd_device *device)
 {
 	struct snd_line6_midi *line6midi = device->device_data;
+<<<<<<< HEAD
 	device_remove_file(line6midi->line6->ifcdev,
 			   &dev_attr_midi_mask_transmit);
 	device_remove_file(line6midi->line6->ifcdev,
 			   &dev_attr_midi_mask_receive);
+=======
+>>>>>>> refs/remotes/origin/master
 	line6_midibuf_destroy(&line6midi->midibuf_in);
 	line6_midibuf_destroy(&line6midi->midibuf_out);
 	return 0;
@@ -418,6 +453,7 @@ int line6_init_midi(struct usb_line6 *line6)
 
 	err = line6_midibuf_init(&line6midi->midibuf_in, MIDI_BUFFER_SIZE, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (err < 0)
 		return err;
 
@@ -429,6 +465,8 @@ int line6_init_midi(struct usb_line6 *line6)
 	line6midi->midi_mask_transmit = 1;
 	line6midi->midi_mask_receive = 4;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (err < 0) {
 		kfree(line6midi);
 		return err;
@@ -442,6 +480,7 @@ int line6_init_midi(struct usb_line6 *line6)
 	}
 
 	line6midi->line6 = line6;
+<<<<<<< HEAD
 
 	switch(line6->product) {
 	case LINE6_DEVID_PODHD300:
@@ -456,6 +495,8 @@ int line6_init_midi(struct usb_line6 *line6)
 	}
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	line6->line6midi = line6midi;
 
 	err = snd_device_new(line6->card, SNDRV_DEV_RAWMIDI, line6midi,
@@ -469,6 +510,7 @@ int line6_init_midi(struct usb_line6 *line6)
 	if (err < 0)
 		return err;
 
+<<<<<<< HEAD
 	err = device_create_file(line6->ifcdev, &dev_attr_midi_mask_transmit);
 	if (err < 0)
 		return err;
@@ -477,6 +519,8 @@ int line6_init_midi(struct usb_line6 *line6)
 	if (err < 0)
 		return err;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	init_waitqueue_head(&line6midi->send_wait);
 	spin_lock_init(&line6midi->send_urb_lock);
 	spin_lock_init(&line6midi->midi_transmit_lock);

@@ -8,6 +8,7 @@
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _ASM_TYPES_H
 #define _ASM_TYPES_H
@@ -32,4 +33,17 @@ typedef unsigned short umode_t;
 
 #endif /* __KERNEL__ */
 
+=======
+#ifndef _ASM_TYPES_H
+#define _ASM_TYPES_H
+
+#include <uapi/asm/types.h>
+
+/*
+ * These aren't exported outside the kernel to avoid name space clashes
+ */
+
+#define BITS_PER_LONG 32
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_TYPES_H */

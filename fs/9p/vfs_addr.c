@@ -33,6 +33,10 @@
 #include <linux/pagemap.h>
 #include <linux/idr.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
+=======
+#include <linux/aio.h>
+>>>>>>> refs/remotes/origin/master
 #include <net/9p/9p.h>
 #include <net/9p/client.h>
 
@@ -57,10 +61,14 @@ static int v9fs_fid_readpage(struct p9_fid *fid, struct page *page)
 
 	inode = page->mapping->host;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "\n");
 =======
 	p9_debug(P9_DEBUG_VFS, "\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "\n");
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!PageLocked(page));
 
@@ -121,10 +129,14 @@ static int v9fs_vfs_readpages(struct file *filp, struct address_space *mapping,
 
 	inode = mapping->host;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, filp);
 =======
 	p9_debug(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "inode: %p file: %p\n", inode, filp);
+>>>>>>> refs/remotes/origin/master
 
 	ret = v9fs_readpages_from_fscache(inode, mapping, pages, &nr_pages);
 	if (ret == 0)
@@ -132,10 +144,14 @@ static int v9fs_vfs_readpages(struct file *filp, struct address_space *mapping,
 
 	ret = read_cache_pages(mapping, pages, (void *)v9fs_vfs_readpage, filp);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "  = %d\n", ret);
 =======
 	p9_debug(P9_DEBUG_VFS, "  = %d\n", ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "  = %d\n", ret);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -159,13 +175,22 @@ static int v9fs_release_page(struct page *page, gfp_t gfp)
  * @offset: offset in the page
  */
 
+<<<<<<< HEAD
 static void v9fs_invalidate_page(struct page *page, unsigned long offset)
+=======
+static void v9fs_invalidate_page(struct page *page, unsigned int offset,
+				 unsigned int length)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 * If called with zero offset, we should release
 	 * the private state assocated with the page
 	 */
+<<<<<<< HEAD
 	if (offset == 0)
+=======
+	if (offset == 0 && length == PAGE_CACHE_SIZE)
+>>>>>>> refs/remotes/origin/master
 		v9fs_fscache_invalidate_page(page);
 }
 
@@ -276,6 +301,7 @@ v9fs_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 	 * to support direct IO
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	P9_DPRINTK(P9_DEBUG_VFS, "v9fs_direct_IO: v9fs_direct_IO (%s) "
 			"off/no(%lld/%lu) EINVAL\n",
 			iocb->ki_filp->f_path.dentry->d_name.name,
@@ -285,6 +311,11 @@ v9fs_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 		 iocb->ki_filp->f_path.dentry->d_name.name,
 		 (long long)pos, nr_segs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	p9_debug(P9_DEBUG_VFS, "v9fs_direct_IO: v9fs_direct_IO (%s) off/no(%lld/%lu) EINVAL\n",
+		 iocb->ki_filp->f_path.dentry->d_name.name,
+		 (long long)pos, nr_segs);
+>>>>>>> refs/remotes/origin/master
 
 	return -EINVAL;
 }

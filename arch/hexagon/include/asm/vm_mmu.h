@@ -1,7 +1,11 @@
 /*
  * Hexagon VM page table entry definitions
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2011,2013 The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -68,6 +72,7 @@
 
 #define __HEXAGON_C_WB		0x0	/* Write-back, no L2 */
 #define	__HEXAGON_C_WT		0x1	/* Write-through, no L2 */
+<<<<<<< HEAD
 #define	__HEXAGON_C_DEV		0x4	/* Device register space */
 #define	__HEXAGON_C_WT_L2	0x5	/* Write-through, with L2 */
 /* this really should be #if CONFIG_HEXAGON_ARCH = 2 but that's not defined */
@@ -76,6 +81,15 @@
 #else
 #define	__HEXAGON_C_UNC		0x6	/* Uncached memory */
 #endif
+=======
+#define	__HEXAGON_C_UNC		0x6	/* Uncached memory */
+#if CONFIG_HEXAGON_ARCH_VERSION >= 2
+#define	__HEXAGON_C_DEV		0x4	/* Device register space */
+#else
+#define __HEXAGON_C_DEV		__HEXAGON_C_UNC
+#endif
+#define	__HEXAGON_C_WT_L2	0x5	/* Write-through, with L2 */
+>>>>>>> refs/remotes/origin/master
 #define	__HEXAGON_C_WB_L2	0x7	/* Write-back, with L2 */
 
 /*

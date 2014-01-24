@@ -26,7 +26,11 @@ struct dw_spi_mmio {
 	struct clk     *clk;
 };
 
+<<<<<<< HEAD
 static int __devinit dw_spi_mmio_probe(struct platform_device *pdev)
+=======
+static int dw_spi_mmio_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dw_spi_mmio *dwsmmio;
 	struct dw_spi *dws;
@@ -74,7 +78,11 @@ static int __devinit dw_spi_mmio_probe(struct platform_device *pdev)
 	dwsmmio->clk = clk_get(&pdev->dev, NULL);
 	if (IS_ERR(dwsmmio->clk)) {
 		ret = PTR_ERR(dwsmmio->clk);
+<<<<<<< HEAD
 		goto err_irq;
+=======
+		goto err_unmap;
+>>>>>>> refs/remotes/origin/master
 	}
 	clk_enable(dwsmmio->clk);
 
@@ -94,8 +102,11 @@ err_clk:
 	clk_disable(dwsmmio->clk);
 	clk_put(dwsmmio->clk);
 	dwsmmio->clk = NULL;
+<<<<<<< HEAD
 err_irq:
 	free_irq(dws->irq, dws);
+=======
+>>>>>>> refs/remotes/origin/master
 err_unmap:
 	iounmap(dws->regs);
 err_release_reg:
@@ -106,18 +117,28 @@ err_end:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit dw_spi_mmio_remove(struct platform_device *pdev)
+=======
+static int dw_spi_mmio_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct dw_spi_mmio *dwsmmio = platform_get_drvdata(pdev);
 	struct resource *mem;
 
+<<<<<<< HEAD
 	platform_set_drvdata(pdev, NULL);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	clk_disable(dwsmmio->clk);
 	clk_put(dwsmmio->clk);
 	dwsmmio->clk = NULL;
 
+<<<<<<< HEAD
 	free_irq(dwsmmio->dws.irq, &dwsmmio->dws);
+=======
+>>>>>>> refs/remotes/origin/master
 	dw_spi_remove_host(&dwsmmio->dws);
 	iounmap(dwsmmio->dws.regs);
 	kfree(dwsmmio);
@@ -129,7 +150,11 @@ static int __devexit dw_spi_mmio_remove(struct platform_device *pdev)
 
 static struct platform_driver dw_spi_mmio_driver = {
 	.probe		= dw_spi_mmio_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(dw_spi_mmio_remove),
+=======
+	.remove		= dw_spi_mmio_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= DRIVER_NAME,
 		.owner	= THIS_MODULE,

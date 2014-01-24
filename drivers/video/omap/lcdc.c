@@ -31,7 +31,11 @@
 #include <linux/gfp.h>
 
 #include <mach/lcdc.h>
+<<<<<<< HEAD
 #include <plat/dma.h>
+=======
+#include <linux/omap-dma.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/mach-types.h>
 

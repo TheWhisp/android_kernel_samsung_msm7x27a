@@ -98,4 +98,8 @@
 
 /* include the reset of the code which will do the work */
 
+<<<<<<< HEAD
 #include <plat/debug-macro.S>
+=======
+#include <debug/samsung.S>
+>>>>>>> refs/remotes/origin/master

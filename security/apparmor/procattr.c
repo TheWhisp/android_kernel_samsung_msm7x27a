@@ -17,9 +17,13 @@
 #include "include/policy.h"
 #include "include/domain.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include "include/procattr.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "include/procattr.h"
+>>>>>>> refs/remotes/origin/master
 
 
 /**
@@ -40,7 +44,11 @@ int aa_getprocattr(struct aa_profile *profile, char **string)
 {
 	char *str;
 	int len = 0, mode_len = 0, ns_len = 0, name_len;
+<<<<<<< HEAD
 	const char *mode_str = profile_mode_names[profile->mode];
+=======
+	const char *mode_str = aa_profile_mode_names[profile->mode];
+>>>>>>> refs/remotes/origin/master
 	const char *ns_name = NULL;
 	struct aa_namespace *ns = profile->ns;
 	struct aa_namespace *current_ns = __aa_current_profile()->ns;
@@ -166,9 +174,12 @@ int aa_setprocattr_changeprofile(char *fqname, bool onexec, int test)
 	name = aa_split_fqname(fqname, &ns_name);
 	return aa_change_profile(ns_name, name, onexec, test);
 }
+<<<<<<< HEAD
 
 int aa_setprocattr_permipc(char *fqname)
 {
 	/* TODO: add ipc permission querying */
 	return -ENOTSUPP;
 }
+=======
+>>>>>>> refs/remotes/origin/master

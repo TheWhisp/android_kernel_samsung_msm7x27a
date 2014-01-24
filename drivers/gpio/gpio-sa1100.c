@@ -10,7 +10,11 @@
 #include <linux/gpio.h>
 #include <linux/init.h>
 #include <linux/module.h>
+<<<<<<< HEAD
 
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/hardware.h>
 #include <mach/irqs.h>
 

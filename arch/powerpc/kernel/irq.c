@@ -31,10 +31,14 @@
 #undef DEBUG
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/threads.h>
 #include <linux/kernel_stat.h>
 #include <linux/signal.h>
@@ -62,9 +66,12 @@
 
 #include <asm/uaccess.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/pgtable.h>
 #include <asm/irq.h>
@@ -75,9 +82,13 @@
 #include <asm/udbg.h>
 #include <asm/smp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/debug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/debug.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_PPC64
 #include <asm/paca.h>
@@ -105,6 +116,7 @@ extern int tau_interrupts(int);
 #ifdef CONFIG_PPC64
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifndef CONFIG_SPARSE_IRQ
 EXPORT_SYMBOL(irq_desc);
 #endif
@@ -120,6 +132,8 @@ static inline notrace unsigned long get_hard_enabled(void)
 
 	return enabled;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int distribute_irqs = 1;
 
 static inline notrace unsigned long get_irq_happened(void)
@@ -130,7 +144,10 @@ static inline notrace unsigned long get_irq_happened(void)
 	: "=r" (happened) : "i" (offsetof(struct paca_struct, irq_happened)));
 
 	return happened;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline notrace void set_soft_enabled(unsigned long enable)
@@ -139,6 +156,7 @@ static inline notrace void set_soft_enabled(unsigned long enable)
 	: : "r" (enable), "i" (offsetof(struct paca_struct, soft_enabled)));
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 notrace void arch_local_irq_restore(unsigned long en)
 {
@@ -216,19 +234,29 @@ notrace void arch_local_irq_restore(unsigned long en)
 }
 EXPORT_SYMBOL(arch_local_irq_restore);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline notrace int decrementer_check_overflow(void)
 {
  	u64 now = get_tb_or_rtc();
  	u64 *next_tb = &__get_cpu_var(decrementers_next_tb);
  
+<<<<<<< HEAD
 	if (now >= *next_tb)
 		set_dec(1);
+=======
+>>>>>>> refs/remotes/origin/master
 	return now >= *next_tb;
 }
 
 /* This is called whenever we are re-enabling interrupts
+<<<<<<< HEAD
  * and returns either 0 (nothing to do) or 500/900 if there's
  * either an EE or a DEC to generate.
+=======
+ * and returns either 0 (nothing to do) or 500/900/280/a00/e80 if
+ * there's an EE, DEC or DBELL to generate.
+>>>>>>> refs/remotes/origin/master
  *
  * This is called in two contexts: From arch_local_irq_restore()
  * before soft-enabling interrupts, and from the exception exit
@@ -287,6 +315,16 @@ notrace unsigned int __check_irq_replay(void)
 	local_paca->irq_happened &= ~PACA_IRQ_DBELL;
 	if (happened & PACA_IRQ_DBELL)
 		return 0x280;
+<<<<<<< HEAD
+=======
+#else
+	local_paca->irq_happened &= ~PACA_IRQ_DBELL;
+	if (happened & PACA_IRQ_DBELL) {
+		if (cpu_has_feature(CPU_FTR_HVMODE))
+			return 0xe80;
+		return 0xa00;
+	}
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC_BOOK3E */
 
 	/* There should be nothing left ! */
@@ -437,7 +475,10 @@ bool prep_irq_for_idle(void)
 	return true;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_PPC64 */
 
 int arch_show_interrupts(struct seq_file *p, int prec)
@@ -463,7 +504,11 @@ int arch_show_interrupts(struct seq_file *p, int prec)
 		seq_printf(p, "%10u ", per_cpu(irq_stat, j).spurious_irqs);
 	seq_printf(p, "  Spurious interrupts\n");
 
+<<<<<<< HEAD
 	seq_printf(p, "%*s: ", prec, "CNT");
+=======
+	seq_printf(p, "%*s: ", prec, "PMI");
+>>>>>>> refs/remotes/origin/master
 	for_each_online_cpu(j)
 		seq_printf(p, "%10u ", per_cpu(irq_stat, j).pmu_irqs);
 	seq_printf(p, "  Performance monitoring interrupts\n");
@@ -473,6 +518,18 @@ int arch_show_interrupts(struct seq_file *p, int prec)
 		seq_printf(p, "%10u ", per_cpu(irq_stat, j).mce_exceptions);
 	seq_printf(p, "  Machine check exceptions\n");
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_DOORBELL
+	if (cpu_has_feature(CPU_FTR_DBELL)) {
+		seq_printf(p, "%*s: ", prec, "DBL");
+		for_each_online_cpu(j)
+			seq_printf(p, "%10u ", per_cpu(irq_stat, j).doorbell_irqs);
+		seq_printf(p, "  Doorbell interrupts\n");
+	}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -486,6 +543,12 @@ u64 arch_irq_stat_cpu(unsigned int cpu)
 	sum += per_cpu(irq_stat, cpu).pmu_irqs;
 	sum += per_cpu(irq_stat, cpu).mce_exceptions;
 	sum += per_cpu(irq_stat, cpu).spurious_irqs;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_PPC_DOORBELL
+	sum += per_cpu(irq_stat, cpu).doorbell_irqs;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	return sum;
 }
@@ -502,6 +565,7 @@ void migrate_irqs(void)
 	alloc_cpumask_var(&mask, GFP_KERNEL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for_each_irq(irq) {
 		struct irq_data *data;
 		struct irq_chip *chip;
@@ -511,11 +575,16 @@ void migrate_irqs(void)
 			continue;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for_each_irq_desc(irq, desc) {
 		struct irq_data *data;
 		struct irq_chip *chip;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		data = irq_desc_get_irq_data(desc);
 		if (irqd_is_per_cpu(data))
 			continue;
@@ -541,6 +610,7 @@ void migrate_irqs(void)
 }
 #endif
 
+<<<<<<< HEAD
 static inline void handle_one_irq(unsigned int irq)
 {
 	struct thread_info *curtp, *irqtp;
@@ -585,6 +655,8 @@ static inline void handle_one_irq(unsigned int irq)
 		set_bits(irqtp->flags, &curtp->flags);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline void check_stack_overflow(void)
 {
 #ifdef CONFIG_DEBUG_STACKOVERFLOW
@@ -601,6 +673,7 @@ static inline void check_stack_overflow(void)
 #endif
 }
 
+<<<<<<< HEAD
 void do_IRQ(struct pt_regs *regs)
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
@@ -619,6 +692,19 @@ void do_IRQ(struct pt_regs *regs)
 		handle_one_irq(irq);
 	else if (irq != NO_IRQ_IGNORE)
 =======
+=======
+void __do_irq(struct pt_regs *regs)
+{
+	struct irq_desc *desc;
+	unsigned int irq;
+
+	irq_enter();
+
+	trace_irq_entry(regs);
+
+	check_stack_overflow();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Query the platform PIC for the interrupt & ack it.
 	 *
@@ -626,6 +712,7 @@ void do_IRQ(struct pt_regs *regs)
 	 */
 	irq = ppc_md.get_irq();
 
+<<<<<<< HEAD
 	/* We can hard enable interrupts now */
 	may_hard_irq_enable();
 
@@ -652,6 +739,60 @@ void do_IRQ(struct pt_regs *regs)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	trace_irq_exit(regs);
+=======
+	/* We can hard enable interrupts now to allow perf interrupts */
+	may_hard_irq_enable();
+
+	/* And finally process it */
+	if (unlikely(irq == NO_IRQ))
+		__get_cpu_var(irq_stat).spurious_irqs++;
+	else {
+		desc = irq_to_desc(irq);
+		if (likely(desc))
+			desc->handle_irq(irq, desc);
+	}
+
+	trace_irq_exit(regs);
+
+	irq_exit();
+}
+
+void do_IRQ(struct pt_regs *regs)
+{
+	struct pt_regs *old_regs = set_irq_regs(regs);
+	struct thread_info *curtp, *irqtp, *sirqtp;
+
+	/* Switch to the irq stack to handle this */
+	curtp = current_thread_info();
+	irqtp = hardirq_ctx[raw_smp_processor_id()];
+	sirqtp = softirq_ctx[raw_smp_processor_id()];
+
+	/* Already there ? */
+	if (unlikely(curtp == irqtp || curtp == sirqtp)) {
+		__do_irq(regs);
+		set_irq_regs(old_regs);
+		return;
+	}
+
+	/* Prepare the thread_info in the irq stack */
+	irqtp->task = curtp->task;
+	irqtp->flags = 0;
+
+	/* Copy the preempt_count so that the [soft]irq checks work. */
+	irqtp->preempt_count = curtp->preempt_count;
+
+	/* Switch stack and call */
+	call_do_irq(regs, irqtp);
+
+	/* Restore stack limit */
+	irqtp->task = NULL;
+
+	/* Copy back updates to the thread_info */
+	if (irqtp->flags)
+		set_bits(irqtp->flags, &curtp->flags);
+
+	set_irq_regs(old_regs);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init init_IRQ(void)
@@ -712,11 +853,15 @@ void irq_ctx_init(void)
 		memset((void *)softirq_ctx[i], 0, THREAD_SIZE);
 		tp = softirq_ctx[i];
 		tp->cpu = i;
+<<<<<<< HEAD
 		tp->preempt_count = 0;
+=======
+>>>>>>> refs/remotes/origin/master
 
 		memset((void *)hardirq_ctx[i], 0, THREAD_SIZE);
 		tp = hardirq_ctx[i];
 		tp->cpu = i;
+<<<<<<< HEAD
 		tp->preempt_count = HARDIRQ_OFFSET;
 	}
 }
@@ -725,10 +870,19 @@ static inline void do_softirq_onstack(void)
 {
 	struct thread_info *curtp, *irqtp;
 	unsigned long saved_sp_limit = current->thread.ksp_limit;
+=======
+	}
+}
+
+void do_softirq_own_stack(void)
+{
+	struct thread_info *curtp, *irqtp;
+>>>>>>> refs/remotes/origin/master
 
 	curtp = current_thread_info();
 	irqtp = softirq_ctx[smp_processor_id()];
 	irqtp->task = curtp->task;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	irqtp->flags = 0;
@@ -740,12 +894,18 @@ static inline void do_softirq_onstack(void)
 	irqtp->task = NULL;
 <<<<<<< HEAD
 =======
+=======
+	irqtp->flags = 0;
+	call_do_softirq(irqtp);
+	irqtp->task = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	/* Set any flag that may have been set on the
 	 * alternate stack
 	 */
 	if (irqtp->flags)
 		set_bits(irqtp->flags, &curtp->flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
@@ -1318,6 +1478,10 @@ void irq_free_virt(unsigned int virq, unsigned int count)
 	raw_spin_unlock_irqrestore(&irq_big_lock, flags);
 }
 =======
+=======
+}
+
+>>>>>>> refs/remotes/origin/master
 irq_hw_number_t virq_to_hw(unsigned int virq)
 {
 	struct irq_data *irq_data = irq_get_irq_data(virq);
@@ -1330,7 +1494,11 @@ int irq_choose_cpu(const struct cpumask *mask)
 {
 	int cpuid;
 
+<<<<<<< HEAD
 	if (cpumask_equal(mask, cpu_all_mask)) {
+=======
+	if (cpumask_equal(mask, cpu_online_mask)) {
+>>>>>>> refs/remotes/origin/master
 		static int irq_rover;
 		static DEFINE_RAW_SPINLOCK(irq_rover_lock);
 		unsigned long flags;
@@ -1360,13 +1528,17 @@ int irq_choose_cpu(const struct cpumask *mask)
 	return hard_smp_processor_id();
 }
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 int arch_early_irq_init(void)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_VIRQ_DEBUG
 static int virq_debug_show(struct seq_file *m, void *private)
@@ -1442,6 +1614,8 @@ __initcall(irq_debugfs_init);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC64
 static int __init setup_noirqdistrib(char *str)
 {

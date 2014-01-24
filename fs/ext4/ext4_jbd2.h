@@ -29,11 +29,21 @@
  * block to complete the transaction.
  *
  * For extents-enabled fs we may have to allocate and modify up to
+<<<<<<< HEAD
  * 5 levels of tree + root which are stored in the inode. */
 
 #define EXT4_SINGLEDATA_TRANS_BLOCKS(sb)				\
 	(EXT4_HAS_INCOMPAT_FEATURE(sb, EXT4_FEATURE_INCOMPAT_EXTENTS)   \
 	 ? 27U : 8U)
+=======
+ * 5 levels of tree, data block (for each of these we need bitmap + group
+ * summaries), root which is stored in the inode, sb
+ */
+
+#define EXT4_SINGLEDATA_TRANS_BLOCKS(sb)				\
+	(EXT4_HAS_INCOMPAT_FEATURE(sb, EXT4_FEATURE_INCOMPAT_EXTENTS)   \
+	 ? 20U : 8U)
+>>>>>>> refs/remotes/origin/master
 
 /* Extended attribute operations touch at most two data buffers,
  * two bitmap buffers, and two group summaries, in addition to the inode
@@ -59,12 +69,15 @@
 #define EXT4_META_TRANS_BLOCKS(sb)	(EXT4_XATTR_TRANS_BLOCKS + \
 					EXT4_MAXQUOTAS_TRANS_BLOCKS(sb))
 
+<<<<<<< HEAD
 /* Delete operations potentially hit one directory's namespace plus an
  * entire inode, plus arbitrary amounts of bitmap/indirection data.  Be
  * generous.  We can grow the delete transaction later if necessary. */
 
 #define EXT4_DELETE_TRANS_BLOCKS(sb)	(2 * EXT4_DATA_TRANS_BLOCKS(sb) + 64)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Define an arbitrary limit for the amount of data we will anticipate
  * writing to any given transaction.  For unbounded transactions such as
  * write(2) and truncate(2) we can write more than this, but we always
@@ -87,6 +100,7 @@
 #ifdef CONFIG_QUOTA
 /* Amount of blocks needed for quota update - we know that the structure was
  * allocated so we need to update only data block */
+<<<<<<< HEAD
 #define EXT4_QUOTA_TRANS_BLOCKS(sb) (test_opt(sb, QUOTA) ? 1 : 0)
 /* Amount of blocks needed for quota insert/delete - we do some block writes
  * but inode, sb and group updates are done only once */
@@ -95,6 +109,22 @@
 
 #define EXT4_QUOTA_DEL_BLOCKS(sb) (test_opt(sb, QUOTA) ? (DQUOT_DEL_ALLOC*\
 		(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)+3+DQUOT_DEL_REWRITE) : 0)
+=======
+#define EXT4_QUOTA_TRANS_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+		EXT4_HAS_RO_COMPAT_FEATURE(sb, EXT4_FEATURE_RO_COMPAT_QUOTA)) ?\
+		1 : 0)
+/* Amount of blocks needed for quota insert/delete - we do some block writes
+ * but inode, sb and group updates are done only once */
+#define EXT4_QUOTA_INIT_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+		EXT4_HAS_RO_COMPAT_FEATURE(sb, EXT4_FEATURE_RO_COMPAT_QUOTA)) ?\
+		(DQUOT_INIT_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+		 +3+DQUOT_INIT_REWRITE) : 0)
+
+#define EXT4_QUOTA_DEL_BLOCKS(sb) ((test_opt(sb, QUOTA) ||\
+		EXT4_HAS_RO_COMPAT_FEATURE(sb, EXT4_FEATURE_RO_COMPAT_QUOTA)) ?\
+		(DQUOT_DEL_ALLOC*(EXT4_SINGLEDATA_TRANS_BLOCKS(sb)-3)\
+		 +3+DQUOT_DEL_REWRITE) : 0)
+>>>>>>> refs/remotes/origin/master
 #else
 #define EXT4_QUOTA_TRANS_BLOCKS(sb) 0
 #define EXT4_QUOTA_INIT_BLOCKS(sb) 0
@@ -105,7 +135,41 @@
 #define EXT4_MAXQUOTAS_DEL_BLOCKS(sb) (MAXQUOTAS*EXT4_QUOTA_DEL_BLOCKS(sb))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+static inline int ext4_jbd2_credits_xattr(struct inode *inode)
+{
+	int credits = EXT4_DATA_TRANS_BLOCKS(inode->i_sb);
+
+	/*
+	 * In case of inline data, we may push out the data to a block,
+	 * so we need to reserve credits for this eventuality
+	 */
+	if (ext4_has_inline_data(inode))
+		credits += ext4_writepage_trans_blocks(inode) + 1;
+	return credits;
+}
+
+
+/*
+ * Ext4 handle operation types -- for logging purposes
+ */
+#define EXT4_HT_MISC             0
+#define EXT4_HT_INODE            1
+#define EXT4_HT_WRITE_PAGE       2
+#define EXT4_HT_MAP_BLOCKS       3
+#define EXT4_HT_DIR              4
+#define EXT4_HT_TRUNCATE         5
+#define EXT4_HT_QUOTA            6
+#define EXT4_HT_RESIZE           7
+#define EXT4_HT_MIGRATE          8
+#define EXT4_HT_MOVE_EXTENTS     9
+#define EXT4_HT_XATTR           10
+#define EXT4_HT_EXT_CONVERT     11
+#define EXT4_HT_MAX             12
+
+>>>>>>> refs/remotes/origin/master
 /**
  *   struct ext4_journal_cb_entry - Base structure for callback information.
  *
@@ -166,7 +230,11 @@ static inline void ext4_journal_callback_add(handle_t *handle,
  * ext4_journal_callback_del: delete a registered callback
  * @handle: active journal transaction handle on which callback was registered
  * @jce: registered journal callback entry to unregister
+<<<<<<< HEAD
  * Return true if object was sucessfully removed
+=======
+ * Return true if object was successfully removed
+>>>>>>> refs/remotes/origin/master
  */
 static inline bool ext4_journal_callback_try_del(handle_t *handle,
 					     struct ext4_journal_cb_entry *jce)
@@ -182,7 +250,10 @@ static inline bool ext4_journal_callback_try_del(handle_t *handle,
 	return deleted;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int
 ext4_mark_iloc_dirty(handle_t *handle,
 		     struct inode *inode,
@@ -235,7 +306,12 @@ int __ext4_handle_dirty_super(const char *where, unsigned int line,
 #define ext4_handle_dirty_super(handle, sb) \
 	__ext4_handle_dirty_super(__func__, __LINE__, (handle), (sb))
 
+<<<<<<< HEAD
 handle_t *ext4_journal_start_sb(struct super_block *sb, int nblocks);
+=======
+handle_t *__ext4_journal_start_sb(struct super_block *sb, unsigned int line,
+				  int type, int blocks, int rsv_blocks);
+>>>>>>> refs/remotes/origin/master
 int __ext4_journal_stop(const char *where, unsigned int line, handle_t *handle);
 
 #define EXT4_NOJOURNAL_MAX_REF_COUNT ((unsigned long) 4096)
@@ -255,6 +331,7 @@ static inline void ext4_handle_sync(handle_t *handle)
 		handle->h_sync = 1;
 }
 
+<<<<<<< HEAD
 static inline void ext4_handle_release_buffer(handle_t *handle,
 						struct buffer_head *bh)
 {
@@ -262,6 +339,8 @@ static inline void ext4_handle_release_buffer(handle_t *handle,
 		jbd2_journal_release_buffer(handle, bh);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int ext4_handle_is_aborted(handle_t *handle)
 {
 	if (ext4_handle_valid(handle))
@@ -276,14 +355,47 @@ static inline int ext4_handle_has_enough_credits(handle_t *handle, int needed)
 	return 1;
 }
 
+<<<<<<< HEAD
 static inline handle_t *ext4_journal_start(struct inode *inode, int nblocks)
 {
 	return ext4_journal_start_sb(inode->i_sb, nblocks);
+=======
+#define ext4_journal_start_sb(sb, type, nblocks)			\
+	__ext4_journal_start_sb((sb), __LINE__, (type), (nblocks), 0)
+
+#define ext4_journal_start(inode, type, nblocks)			\
+	__ext4_journal_start((inode), __LINE__, (type), (nblocks), 0)
+
+#define ext4_journal_start_with_reserve(inode, type, blocks, rsv_blocks) \
+	__ext4_journal_start((inode), __LINE__, (type), (blocks), (rsv_blocks))
+
+static inline handle_t *__ext4_journal_start(struct inode *inode,
+					     unsigned int line, int type,
+					     int blocks, int rsv_blocks)
+{
+	return __ext4_journal_start_sb(inode->i_sb, line, type, blocks,
+				       rsv_blocks);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define ext4_journal_stop(handle) \
 	__ext4_journal_stop(__func__, __LINE__, (handle))
 
+<<<<<<< HEAD
+=======
+#define ext4_journal_start_reserved(handle, type) \
+	__ext4_journal_start_reserved((handle), __LINE__, (type))
+
+handle_t *__ext4_journal_start_reserved(handle_t *handle, unsigned int line,
+					int type);
+
+static inline void ext4_journal_free_reserved(handle_t *handle)
+{
+	if (ext4_handle_valid(handle))
+		jbd2_journal_free_reserved(handle);
+}
+
+>>>>>>> refs/remotes/origin/master
 static inline handle_t *ext4_journal_current_handle(void)
 {
 	return journal_current_handle();
@@ -320,6 +432,7 @@ static inline int ext4_journal_force_commit(journal_t *journal)
 static inline int ext4_jbd2_file_inode(handle_t *handle, struct inode *inode)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ext4_handle_valid(handle))
 		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
 =======
@@ -333,6 +446,10 @@ static inline int ext4_jbd2_file_inode(handle_t *handle, struct inode *inode)
 		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (ext4_handle_valid(handle))
+		return jbd2_journal_file_inode(handle, EXT4_I(inode)->jinode);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

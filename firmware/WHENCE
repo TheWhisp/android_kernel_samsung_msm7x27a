@@ -89,6 +89,7 @@ Licence: Allegedly GPLv2+, but no source visible. Marked:
   Copyright (C) 2001 Qlogic Corporation (www.qlogic.com)
 
 --------------------------------------------------------------------------
+<<<<<<< HEAD
 Driver: smctr -- SMC ISA/MCA Token Ring adapter
 
 File: tr_smctr.bin
@@ -101,6 +102,8 @@ Original licence info:
  * expressed or implied about its fitness for any purpose.
 
 --------------------------------------------------------------------------
+=======
+>>>>>>> refs/remotes/origin/master
 
 Driver: kaweth -- USB KLSI KL5USB101-based Ethernet device
 
@@ -567,6 +570,7 @@ Found in hex form in kernel source.
 
 --------------------------------------------------------------------------
 
+<<<<<<< HEAD
 Driver: 3C359 - 3Com 3C359 Token Link Velocity XL adapter
 
 File: 3com/3C359.bin
@@ -593,6 +597,8 @@ Found in hex form in kernel source.
 
 --------------------------------------------------------------------------
 
+=======
+>>>>>>> refs/remotes/origin/master
 Driver: PCMCIA_PCNET - NE2000 compatible PCMCIA adapter
 
 File: cis/LA-PCM.cis

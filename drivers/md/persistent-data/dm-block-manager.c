@@ -25,7 +25,11 @@
  * may be held at once.  This is just an implementation detail.
  *
  * ii) Recursive locking attempts are detected and return EINVAL.  A stack
+<<<<<<< HEAD
  * trace is also emitted for the previous lock aquisition.
+=======
+ * trace is also emitted for the previous lock acquisition.
+>>>>>>> refs/remotes/origin/master
  *
  * iii) Priority is given to write locks.
  */
@@ -109,7 +113,11 @@ static int __check_holder(struct block_lock *lock)
 			DMERR("previously held here:");
 			print_stack_trace(lock->traces + i, 4);
 
+<<<<<<< HEAD
 			DMERR("subsequent aquisition attempted here:");
+=======
+			DMERR("subsequent acquisition attempted here:");
+>>>>>>> refs/remotes/origin/master
 			t.nr_entries = 0;
 			t.max_entries = MAX_STACK;
 			t.entries = entries;
@@ -325,11 +333,14 @@ static struct dm_buffer *to_buffer(struct dm_block *b)
 	return (struct dm_buffer *) b;
 }
 
+<<<<<<< HEAD
 static struct dm_bufio_client *to_bufio(struct dm_block_manager *bm)
 {
 	return (struct dm_bufio_client *) bm;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 dm_block_t dm_block_location(struct dm_block *b)
 {
 	return dm_bufio_get_block_number(to_buffer(b));
@@ -367,34 +378,83 @@ static void dm_block_manager_write_callback(struct dm_buffer *buf)
 /*----------------------------------------------------------------
  * Public interface
  *--------------------------------------------------------------*/
+<<<<<<< HEAD
+=======
+struct dm_block_manager {
+	struct dm_bufio_client *bufio;
+	bool read_only:1;
+};
+
+>>>>>>> refs/remotes/origin/master
 struct dm_block_manager *dm_block_manager_create(struct block_device *bdev,
 						 unsigned block_size,
 						 unsigned cache_size,
 						 unsigned max_held_per_thread)
 {
+<<<<<<< HEAD
 	return (struct dm_block_manager *)
 		dm_bufio_client_create(bdev, block_size, max_held_per_thread,
 				       sizeof(struct buffer_aux),
 				       dm_block_manager_alloc_callback,
 				       dm_block_manager_write_callback);
+=======
+	int r;
+	struct dm_block_manager *bm;
+
+	bm = kmalloc(sizeof(*bm), GFP_KERNEL);
+	if (!bm) {
+		r = -ENOMEM;
+		goto bad;
+	}
+
+	bm->bufio = dm_bufio_client_create(bdev, block_size, max_held_per_thread,
+					   sizeof(struct buffer_aux),
+					   dm_block_manager_alloc_callback,
+					   dm_block_manager_write_callback);
+	if (IS_ERR(bm->bufio)) {
+		r = PTR_ERR(bm->bufio);
+		kfree(bm);
+		goto bad;
+	}
+
+	bm->read_only = false;
+
+	return bm;
+
+bad:
+	return ERR_PTR(r);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(dm_block_manager_create);
 
 void dm_block_manager_destroy(struct dm_block_manager *bm)
 {
+<<<<<<< HEAD
 	return dm_bufio_client_destroy(to_bufio(bm));
+=======
+	dm_bufio_client_destroy(bm->bufio);
+	kfree(bm);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(dm_block_manager_destroy);
 
 unsigned dm_bm_block_size(struct dm_block_manager *bm)
 {
+<<<<<<< HEAD
 	return dm_bufio_get_block_size(to_bufio(bm));
+=======
+	return dm_bufio_get_block_size(bm->bufio);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(dm_bm_block_size);
 
 dm_block_t dm_bm_nr_blocks(struct dm_block_manager *bm)
 {
+<<<<<<< HEAD
 	return dm_bufio_get_device_size(to_bufio(bm));
+=======
+	return dm_bufio_get_device_size(bm->bufio);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dm_bm_validate_buffer(struct dm_block_manager *bm,
@@ -406,6 +466,7 @@ static int dm_bm_validate_buffer(struct dm_block_manager *bm,
 		int r;
 		if (!v)
 			return 0;
+<<<<<<< HEAD
 		r = v->check(v, (struct dm_block *) buf, dm_bufio_get_block_size(to_bufio(bm)));
 		if (unlikely(r))
 			return r;
@@ -416,6 +477,20 @@ static int dm_bm_validate_buffer(struct dm_block_manager *bm,
 				aux->validator->name, v ? v->name : "NULL",
 				(unsigned long long)
 					dm_bufio_get_block_number(buf));
+=======
+		r = v->check(v, (struct dm_block *) buf, dm_bufio_get_block_size(bm->bufio));
+		if (unlikely(r)) {
+			DMERR_LIMIT("%s validator check failed for block %llu", v->name,
+				    (unsigned long long) dm_bufio_get_block_number(buf));
+			return r;
+		}
+		aux->validator = v;
+	} else {
+		if (unlikely(aux->validator != v)) {
+			DMERR_LIMIT("validator mismatch (old=%s vs new=%s) for block %llu",
+				    aux->validator->name, v ? v->name : "NULL",
+				    (unsigned long long) dm_bufio_get_block_number(buf));
+>>>>>>> refs/remotes/origin/master
 			return -EINVAL;
 		}
 	}
@@ -430,7 +505,11 @@ int dm_bm_read_lock(struct dm_block_manager *bm, dm_block_t b,
 	void *p;
 	int r;
 
+<<<<<<< HEAD
 	p = dm_bufio_read(to_bufio(bm), b, (struct dm_buffer **) result);
+=======
+	p = dm_bufio_read(bm->bufio, b, (struct dm_buffer **) result);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(IS_ERR(p)))
 		return PTR_ERR(p);
 
@@ -463,7 +542,14 @@ int dm_bm_write_lock(struct dm_block_manager *bm,
 	void *p;
 	int r;
 
+<<<<<<< HEAD
 	p = dm_bufio_read(to_bufio(bm), b, (struct dm_buffer **) result);
+=======
+	if (bm->read_only)
+		return -EPERM;
+
+	p = dm_bufio_read(bm->bufio, b, (struct dm_buffer **) result);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(IS_ERR(p)))
 		return PTR_ERR(p);
 
@@ -496,7 +582,11 @@ int dm_bm_read_try_lock(struct dm_block_manager *bm,
 	void *p;
 	int r;
 
+<<<<<<< HEAD
 	p = dm_bufio_get(to_bufio(bm), b, (struct dm_buffer **) result);
+=======
+	p = dm_bufio_get(bm->bufio, b, (struct dm_buffer **) result);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(IS_ERR(p)))
 		return PTR_ERR(p);
 	if (unlikely(!p))
@@ -529,7 +619,14 @@ int dm_bm_write_lock_zero(struct dm_block_manager *bm,
 	struct buffer_aux *aux;
 	void *p;
 
+<<<<<<< HEAD
 	p = dm_bufio_new(to_bufio(bm), b, (struct dm_buffer **) result);
+=======
+	if (bm->read_only)
+		return -EPERM;
+
+	p = dm_bufio_new(bm->bufio, b, (struct dm_buffer **) result);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(IS_ERR(p)))
 		return PTR_ERR(p);
 
@@ -547,6 +644,10 @@ int dm_bm_write_lock_zero(struct dm_block_manager *bm,
 
 	return 0;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(dm_bm_write_lock_zero);
+>>>>>>> refs/remotes/origin/master
 
 int dm_bm_unlock(struct dm_block *b)
 {
@@ -565,6 +666,7 @@ int dm_bm_unlock(struct dm_block *b)
 }
 EXPORT_SYMBOL_GPL(dm_bm_unlock);
 
+<<<<<<< HEAD
 int dm_bm_unlock_move(struct dm_block *b, dm_block_t n)
 {
 	struct buffer_aux *aux;
@@ -581,11 +683,14 @@ int dm_bm_unlock_move(struct dm_block *b, dm_block_t n)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 int dm_bm_flush_and_unlock(struct dm_block_manager *bm,
 			   struct dm_block *superblock)
 {
 	int r;
 
+<<<<<<< HEAD
 	r = dm_bufio_write_dirty_buffers(to_bufio(bm));
 	if (unlikely(r))
 		return r;
@@ -604,6 +709,39 @@ int dm_bm_flush_and_unlock(struct dm_block_manager *bm,
 
 	return 0;
 }
+=======
+	if (bm->read_only)
+		return -EPERM;
+
+	r = dm_bufio_write_dirty_buffers(bm->bufio);
+	if (unlikely(r)) {
+		dm_bm_unlock(superblock);
+		return r;
+	}
+
+	dm_bm_unlock(superblock);
+
+	return dm_bufio_write_dirty_buffers(bm->bufio);
+}
+EXPORT_SYMBOL_GPL(dm_bm_flush_and_unlock);
+
+void dm_bm_prefetch(struct dm_block_manager *bm, dm_block_t b)
+{
+	dm_bufio_prefetch(bm->bufio, b, 1);
+}
+
+void dm_bm_set_read_only(struct dm_block_manager *bm)
+{
+	bm->read_only = true;
+}
+EXPORT_SYMBOL_GPL(dm_bm_set_read_only);
+
+void dm_bm_set_read_write(struct dm_block_manager *bm)
+{
+	bm->read_only = false;
+}
+EXPORT_SYMBOL_GPL(dm_bm_set_read_write);
+>>>>>>> refs/remotes/origin/master
 
 u32 dm_bm_checksum(const void *data, size_t len, u32 init_xor)
 {

@@ -17,9 +17,12 @@
 
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 #include <asm/irq.h>
 #include <asm/mmu_context.h>
@@ -198,10 +201,14 @@ sable_init_irq(void)
 
 static int __init
 <<<<<<< HEAD
+<<<<<<< HEAD
 sable_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 sable_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+sable_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static char irq_tab[9][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */
@@ -384,10 +391,14 @@ lynx_init_irq(void)
 
 static int __init
 <<<<<<< HEAD
+<<<<<<< HEAD
 lynx_map_irq(struct pci_dev *dev, u8 slot, u8 pin)
 =======
 lynx_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+lynx_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
+>>>>>>> refs/remotes/origin/master
 {
 	static char irq_tab[19][5] __initdata = {
 		/*INT    INTA   INTB   INTC   INTD */

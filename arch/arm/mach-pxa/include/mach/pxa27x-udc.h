@@ -57,6 +57,7 @@
 #define UDCOTGICR	__REG(0x40600018) /* UDC On-The-Go interrupt control */
 #define UDCOTGICR_IESF	(1 << 24)	/* OTG SET_FEATURE command recvd */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define UDCOTGICR_IEXR	(1 << 17)	/* Extra Transciever Interrupt
 					   Rising Edge Interrupt Enable */
 #define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transciever Interrupt
@@ -65,6 +66,11 @@
 					   Rising Edge Interrupt Enable */
 #define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transceiver Interrupt
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define UDCOTGICR_IEXR	(1 << 17)	/* Extra Transceiver Interrupt
+					   Rising Edge Interrupt Enable */
+#define UDCOTGICR_IEXF	(1 << 16)	/* Extra Transceiver Interrupt
+>>>>>>> refs/remotes/origin/master
 					   Falling Edge Interrupt Enable */
 #define UDCOTGICR_IEVV40R (1 << 9)	/* OTG Vbus Valid 4.0V Rising Edge
 					   Interrupt Enable */

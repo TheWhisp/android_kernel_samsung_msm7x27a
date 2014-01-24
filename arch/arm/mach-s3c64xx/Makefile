@@ -11,6 +11,7 @@ obj-n				:=
 obj-				:=
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Core files
 obj-y				+= cpu.o
 obj-y				+= clock.o
@@ -24,10 +25,18 @@ obj-y				+= common.o clock.o
 
 # Core support
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# Core
+
+obj-y				+= common.o
+
+# Core support
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_CPU_S3C6400)	+= s3c6400.o
 obj-$(CONFIG_CPU_S3C6410)	+= s3c6410.o
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 obj-y				+= irq.o
 obj-y				+= irq-eint.o
@@ -36,10 +45,13 @@ obj-y				+= irq-eint.o
 
 obj-$(CONFIG_CPU_FREQ_S3C64XX)  += cpufreq.o
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 # PM
 
 obj-$(CONFIG_PM)		+= pm.o irq-pm.o sleep.o
 obj-$(CONFIG_CPU_IDLE)		+= cpuidle.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 # DMA support
@@ -84,11 +96,21 @@ obj-$(CONFIG_S3C64XX_DEV_SPI)	+= dev-spi.o
 obj-$(CONFIG_S3C64XX_DEV_TS)	+= dev-ts.o
 obj-$(CONFIG_S3C64XX_DEV_ONENAND1)	+= dev-onenand1.o
 =======
+=======
+
+# DMA support
+
+obj-$(CONFIG_S3C64XX_PL080)	+= pl080.o
+
+>>>>>>> refs/remotes/origin/master
 # Device support
 
 obj-y				+= dev-uart.o
 obj-y				+= dev-audio.o
+<<<<<<< HEAD
 obj-$(CONFIG_S3C64XX_DEV_SPI)	+= dev-spi.o
+=======
+>>>>>>> refs/remotes/origin/master
 
 # Device setup
 
@@ -114,4 +136,8 @@ obj-$(CONFIG_MACH_SMARTQ7)		+= mach-smartq7.o
 obj-$(CONFIG_MACH_SMDK6400)		+= mach-smdk6400.o
 obj-$(CONFIG_MACH_SMDK6410)		+= mach-smdk6410.o
 obj-$(CONFIG_MACH_WLF_CRAGG_6410)	+= mach-crag6410.o mach-crag6410-module.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+obj-$(CONFIG_MACH_S3C64XX_DT)		+= mach-s3c64xx-dt.o
+>>>>>>> refs/remotes/origin/master

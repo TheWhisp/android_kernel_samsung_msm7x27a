@@ -12,14 +12,22 @@
 #include <asm/mach-au1x00/au1000.h>
 
 /* The default GPIO numberspace as documented in the Alchemy manuals.
+<<<<<<< HEAD
  * GPIO0-31 from GPIO1 block,   GPIO200-215 from GPIO2 block.
+=======
+ * GPIO0-31 from GPIO1 block,	GPIO200-215 from GPIO2 block.
+>>>>>>> refs/remotes/origin/master
  */
 #define ALCHEMY_GPIO1_BASE	0
 #define ALCHEMY_GPIO2_BASE	200
 
 #define ALCHEMY_GPIO1_NUM	32
 #define ALCHEMY_GPIO2_NUM	16
+<<<<<<< HEAD
 #define ALCHEMY_GPIO1_MAX 	(ALCHEMY_GPIO1_BASE + ALCHEMY_GPIO1_NUM - 1)
+=======
+#define ALCHEMY_GPIO1_MAX	(ALCHEMY_GPIO1_BASE + ALCHEMY_GPIO1_NUM - 1)
+>>>>>>> refs/remotes/origin/master
 #define ALCHEMY_GPIO2_MAX	(ALCHEMY_GPIO2_BASE + ALCHEMY_GPIO2_NUM - 1)
 
 #define MAKE_IRQ(intc, off)	(AU1000_INTC##intc##_INT_BASE + (off))
@@ -67,7 +75,11 @@ static inline int au1500_gpio1_to_irq(int gpio)
 	switch (gpio) {
 	case 0 ... 15:
 	case 20:
+<<<<<<< HEAD
 	case 23 ... 28:	return MAKE_IRQ(1, gpio);
+=======
+	case 23 ... 28: return MAKE_IRQ(1, gpio);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ENXIO;
@@ -139,8 +151,13 @@ static inline int au1550_gpio1_to_irq(int gpio)
 
 	switch (gpio) {
 	case 0 ... 15:
+<<<<<<< HEAD
 	case 20 ... 28:	return MAKE_IRQ(1, gpio);
 	case 16 ... 17:	return MAKE_IRQ(1, 18 + gpio - 16);
+=======
+	case 20 ... 28: return MAKE_IRQ(1, gpio);
+	case 16 ... 17: return MAKE_IRQ(1, 18 + gpio - 16);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ENXIO;
@@ -152,9 +169,15 @@ static inline int au1550_gpio2_to_irq(int gpio)
 
 	switch (gpio) {
 	case 0:		return MAKE_IRQ(1, 16);
+<<<<<<< HEAD
 	case 1 ... 5:	return MAKE_IRQ(1, 17);	/* shared GPIO201_205 */
 	case 6 ... 7:	return MAKE_IRQ(1, 29 + gpio - 6);
 	case 8 ... 15:	return MAKE_IRQ(1, 31);	/* shared GPIO208_215 */
+=======
+	case 1 ... 5:	return MAKE_IRQ(1, 17); /* shared GPIO201_205 */
+	case 6 ... 7:	return MAKE_IRQ(1, 29 + gpio - 6);
+	case 8 ... 15:	return MAKE_IRQ(1, 31); /* shared GPIO208_215 */
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ENXIO;
@@ -190,7 +213,11 @@ static inline int au1200_gpio2_to_irq(int gpio)
 	case 0 ... 2:	return MAKE_IRQ(0, 5 + gpio - 0);
 	case 3:		return MAKE_IRQ(0, 22);
 	case 4 ... 7:	return MAKE_IRQ(0, 24 + gpio - 4);
+<<<<<<< HEAD
 	case 8 ... 15:	return MAKE_IRQ(0, 28);	/* shared GPIO208_215 */
+=======
+	case 8 ... 15:	return MAKE_IRQ(0, 28); /* shared GPIO208_215 */
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ENXIO;
@@ -348,6 +375,7 @@ static inline int alchemy_gpio2_to_irq(int gpio)
 /**********************************************************************/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* On Au1000, Au1500 and Au1100 GPIOs won't work as inputs before
  * SYS_PININPUTEN is written to at least once.  On Au1550/Au1200 this
  * register enables use of GPIOs as wake source.
@@ -361,6 +389,8 @@ static inline void alchemy_gpio1_input_enable(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* GPIO2 shared interrupts and control */
 
 static inline void __alchemy_gpio2_mod_int(int gpio2, int en)
@@ -442,7 +472,11 @@ static inline void alchemy_gpio2_disable_int(int gpio2)
 /**
  * alchemy_gpio2_enable -  Activate GPIO2 block.
  *
+<<<<<<< HEAD
  * The GPIO2 block must be enabled excplicitly to work.  On systems
+=======
+ * The GPIO2 block must be enabled excplicitly to work.	 On systems
+>>>>>>> refs/remotes/origin/master
  * where this isn't done by the bootloader, this macro can be used.
  */
 static inline void alchemy_gpio2_enable(void)
@@ -547,7 +581,11 @@ static inline int alchemy_irq_to_gpio(int irq)
  *	2 (1 for Au1000) gpio_chips are registered.
  *
  *(3) GPIOLIB=n, ALCHEMY_GPIO_INDIRECT=y:
+<<<<<<< HEAD
  *	the boards' gpio.h must provide	the linux gpio wrapper functions,
+=======
+ *	the boards' gpio.h must provide the linux gpio wrapper functions,
+>>>>>>> refs/remotes/origin/master
  *
  *(4) GPIOLIB=n, ALCHEMY_GPIO_INDIRECT=n:
  *	inlinable gpio functions are provided which enable access to the
@@ -565,9 +603,13 @@ static inline int alchemy_irq_to_gpio(int irq)
 #ifndef CONFIG_GPIOLIB
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_ALCHEMY_GPIOINT_AU1000
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_ALCHEMY_GPIOINT_AU1000
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_ALCHEMY_GPIO_INDIRECT	/* case (4) */
 
@@ -673,6 +715,7 @@ static inline void gpio_unexport(unsigned gpio)
 #endif	/* !CONFIG_ALCHEMY_GPIO_INDIRECT */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #else	/* CONFIG GPIOLIB */
 
@@ -694,6 +737,9 @@ static inline void gpio_unexport(unsigned gpio)
 =======
 #endif	/* CONFIG_ALCHEMY_GPIOINT_AU1000 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif	/* CONFIG_ALCHEMY_GPIOINT_AU1000 */
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* !CONFIG_GPIOLIB */
 

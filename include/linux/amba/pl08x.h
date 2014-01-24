@@ -21,8 +21,14 @@
 #include <linux/dmaengine.h>
 #include <linux/interrupt.h>
 
+<<<<<<< HEAD
 struct pl08x_lli;
 struct pl08x_driver_data;
+=======
+struct pl08x_driver_data;
+struct pl08x_phy_chan;
+struct pl08x_txd;
+>>>>>>> refs/remotes/origin/master
 
 /* Bitmasks for selecting AHB ports for DMA transfers */
 enum {
@@ -46,20 +52,29 @@ enum {
  * devices with static assignments
  * @muxval: a number usually used to poke into some mux regiser to
  * mux in the signal to this channel
+<<<<<<< HEAD
  * @cctl_opt: default options for the channel control register
+=======
+ * @cctl_memcpy: options for the channel control register for memcpy
+ *  *** not used for slave channels ***
+>>>>>>> refs/remotes/origin/master
  * @addr: source/target address in physical memory for this DMA channel,
  * can be the address of a FIFO register for burst requests for example.
  * This can be left undefined if the PrimeCell API is used for configuring
  * this.
+<<<<<<< HEAD
  * @circular_buffer: whether the buffer passed in is circular and
  * shall simply be looped round round (like a record baby round
  * round round round)
+=======
+>>>>>>> refs/remotes/origin/master
  * @single: the device connected to this channel will request single DMA
  * transfers, not bursts. (Bursts are default.)
  * @periph_buses: the device connected to this channel is accessible via
  * these buses (use PL08X_AHB1 | PL08X_AHB2).
  */
 struct pl08x_channel_data {
+<<<<<<< HEAD
 	char *bus_id;
 	int min_signal;
 	int max_signal;
@@ -67,11 +82,20 @@ struct pl08x_channel_data {
 	u32 cctl;
 	dma_addr_t addr;
 	bool circular_buffer;
+=======
+	const char *bus_id;
+	int min_signal;
+	int max_signal;
+	u32 muxval;
+	u32 cctl_memcpy;
+	dma_addr_t addr;
+>>>>>>> refs/remotes/origin/master
 	bool single;
 	u8 periph_buses;
 };
 
 /**
+<<<<<<< HEAD
  * Struct pl08x_bus_data - information of source or destination
  * busses for a transfer
  * @addr: current address
@@ -245,22 +269,33 @@ struct pl08x_dma_chan {
 };
 
 /**
+=======
+>>>>>>> refs/remotes/origin/master
  * struct pl08x_platform_data - the platform configuration for the PL08x
  * PrimeCells.
  * @slave_channels: the channels defined for the different devices on the
  * platform, all inclusive, including multiplexed channels. The available
  * physical channels will be multiplexed around these signals as they are
  * requested, just enumerate all possible channels.
+<<<<<<< HEAD
  * @get_signal: request a physical signal to be used for a DMA transfer
  * immediately: if there is some multiplexing or similar blocking the use
  * of the channel the transfer can be denied by returning less than zero,
  * else it returns the allocated signal number
  * @put_signal: indicate to the platform that this physical signal is not
+=======
+ * @get_xfer_signal: request a physical signal to be used for a DMA transfer
+ * immediately: if there is some multiplexing or similar blocking the use
+ * of the channel the transfer can be denied by returning less than zero,
+ * else it returns the allocated signal number
+ * @put_xfer_signal: indicate to the platform that this physical signal is not
+>>>>>>> refs/remotes/origin/master
  * running any DMA transfer and multiplexing can be recycled
  * @lli_buses: buses which LLIs can be fetched from: PL08X_AHB1 | PL08X_AHB2
  * @mem_buses: buses which memory can be accessed from: PL08X_AHB1 | PL08X_AHB2
  */
 struct pl08x_platform_data {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct pl08x_channel_data *slave_channels;
 =======
@@ -270,6 +305,13 @@ struct pl08x_platform_data {
 	struct pl08x_channel_data memcpy_channel;
 	int (*get_signal)(struct pl08x_dma_chan *);
 	void (*put_signal)(struct pl08x_dma_chan *);
+=======
+	const struct pl08x_channel_data *slave_channels;
+	unsigned int num_slave_channels;
+	struct pl08x_channel_data memcpy_channel;
+	int (*get_xfer_signal)(const struct pl08x_channel_data *);
+	void (*put_xfer_signal)(const struct pl08x_channel_data *, int);
+>>>>>>> refs/remotes/origin/master
 	u8 lli_buses;
 	u8 mem_buses;
 };

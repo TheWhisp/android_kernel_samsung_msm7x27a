@@ -14,7 +14,11 @@
 
 #include <linux/bug.h>
 
+<<<<<<< HEAD
 #include "pinctrl-state.h"
+=======
+#include <linux/pinctrl/pinctrl-state.h>
+>>>>>>> refs/remotes/origin/master
 
 enum pinctrl_map_type {
 	PIN_MAP_TYPE_INVALID,
@@ -154,7 +158,11 @@ struct pinctrl_map {
 
 extern int pinctrl_register_mappings(struct pinctrl_map const *map,
 				unsigned num_maps);
+<<<<<<< HEAD
 
+=======
+extern void pinctrl_provide_dummies(void);
+>>>>>>> refs/remotes/origin/master
 #else
 
 static inline int pinctrl_register_mappings(struct pinctrl_map const *map,
@@ -163,5 +171,12 @@ static inline int pinctrl_register_mappings(struct pinctrl_map const *map,
 	return 0;
 }
 
+<<<<<<< HEAD
 #endif /* !CONFIG_PINMUX */
+=======
+static inline void pinctrl_provide_dummies(void)
+{
+}
+#endif /* !CONFIG_PINCTRL */
+>>>>>>> refs/remotes/origin/master
 #endif

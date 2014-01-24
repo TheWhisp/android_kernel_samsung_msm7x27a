@@ -16,6 +16,11 @@
 #include <asm/processor.h>
 #include <asm/cache.h>
 
+<<<<<<< HEAD
+=======
+extern spinlock_t pa_dbit_lock;
+
+>>>>>>> refs/remotes/origin/master
 /*
  * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
  * memory.  For the return value to be meaningful, ADDR must be >=
@@ -44,17 +49,30 @@ extern void purge_tlb_entries(struct mm_struct *, unsigned long);
 
 #define set_pte_at(mm, addr, ptep, pteval)                      \
 	do {                                                    \
+<<<<<<< HEAD
 		set_pte(ptep, pteval);                          \
 		purge_tlb_entries(mm, addr);                    \
+=======
+		unsigned long flags;				\
+		spin_lock_irqsave(&pa_dbit_lock, flags);	\
+		set_pte(ptep, pteval);                          \
+		purge_tlb_entries(mm, addr);                    \
+		spin_unlock_irqrestore(&pa_dbit_lock, flags);	\
+>>>>>>> refs/remotes/origin/master
 	} while (0)
 
 #endif /* !__ASSEMBLY__ */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/page.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/page.h>
+
+>>>>>>> refs/remotes/origin/master
 #define pte_ERROR(e) \
 	printk("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
 #define pmd_ERROR(e) \
@@ -438,6 +456,7 @@ extern void update_mmu_cache(struct vm_area_struct *, unsigned long, pte_t *);
 
 static inline int ptep_test_and_clear_young(struct vm_area_struct *vma, unsigned long addr, pte_t *ptep)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	if (!pte_young(*ptep))
 		return 0;
@@ -453,21 +472,52 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma, unsigned
 
 extern spinlock_t pa_dbit_lock;
 
+=======
+	pte_t pte;
+	unsigned long flags;
+
+	if (!pte_young(*ptep))
+		return 0;
+
+	spin_lock_irqsave(&pa_dbit_lock, flags);
+	pte = *ptep;
+	if (!pte_young(pte)) {
+		spin_unlock_irqrestore(&pa_dbit_lock, flags);
+		return 0;
+	}
+	set_pte(ptep, pte_mkold(pte));
+	purge_tlb_entries(vma->vm_mm, addr);
+	spin_unlock_irqrestore(&pa_dbit_lock, flags);
+	return 1;
+}
+
+>>>>>>> refs/remotes/origin/master
 struct mm_struct;
 static inline pte_t ptep_get_and_clear(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
 {
 	pte_t old_pte;
+<<<<<<< HEAD
 
 	spin_lock(&pa_dbit_lock);
 	old_pte = *ptep;
 	pte_clear(mm,addr,ptep);
 	spin_unlock(&pa_dbit_lock);
+=======
+	unsigned long flags;
+
+	spin_lock_irqsave(&pa_dbit_lock, flags);
+	old_pte = *ptep;
+	pte_clear(mm,addr,ptep);
+	purge_tlb_entries(mm, addr);
+	spin_unlock_irqrestore(&pa_dbit_lock, flags);
+>>>>>>> refs/remotes/origin/master
 
 	return old_pte;
 }
 
 static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_SMP
 	unsigned long new, old;
 
@@ -480,6 +530,13 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, 
 	pte_t old_pte = *ptep;
 	set_pte_at(mm, addr, ptep, pte_wrprotect(old_pte));
 #endif
+=======
+	unsigned long flags;
+	spin_lock_irqsave(&pa_dbit_lock, flags);
+	set_pte(ptep, pte_wrprotect(*ptep));
+	purge_tlb_entries(mm, addr);
+	spin_unlock_irqrestore(&pa_dbit_lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 #define pte_same(A,B)	(pte_val(A) == pte_val(B))
@@ -506,9 +563,12 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, 
 #endif
 
 
+<<<<<<< HEAD
 #define io_remap_pfn_range(vma, vaddr, pfn, size, prot)		\
 		remap_pfn_range(vma, vaddr, pfn, size, prot)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define pgprot_noncached(prot) __pgprot(pgprot_val(prot) | _PAGE_NO_CACHE)
 
 /* We provide our own get_unmapped_area to provide cache coherency */

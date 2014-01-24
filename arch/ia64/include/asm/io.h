@@ -72,9 +72,12 @@ extern unsigned int num_io_spaces;
 #include <asm/machvec.h>
 #include <asm/page.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm-generic/iomap.h>
 
 /*
@@ -94,7 +97,11 @@ phys_to_virt (unsigned long address)
 
 #define ARCH_HAS_VALID_PHYS_ADDR_RANGE
 extern u64 kern_mem_attribute (unsigned long phys_addr, unsigned long size);
+<<<<<<< HEAD
 extern int valid_phys_addr_range (unsigned long addr, size_t count); /* efi.c */
+=======
+extern int valid_phys_addr_range (phys_addr_t addr, size_t count); /* efi.c */
+>>>>>>> refs/remotes/origin/master
 extern int valid_mmap_phys_addr_range (unsigned long pfn, size_t count);
 
 /*
@@ -428,6 +435,10 @@ extern void __iomem * ioremap(unsigned long offset, unsigned long size);
 extern void __iomem * ioremap_nocache (unsigned long offset, unsigned long size);
 extern void iounmap (volatile void __iomem *addr);
 extern void __iomem * early_ioremap (unsigned long phys_addr, unsigned long size);
+<<<<<<< HEAD
+=======
+#define early_memremap(phys_addr, size)        early_ioremap(phys_addr, size)
+>>>>>>> refs/remotes/origin/master
 extern void early_iounmap (volatile void __iomem *addr, unsigned long size);
 static inline void __iomem * ioremap_cache (unsigned long phys_addr, unsigned long size)
 {

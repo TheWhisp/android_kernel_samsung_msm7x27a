@@ -13,6 +13,7 @@
 #include <asm/cacheflush.h>
 #include <linux/netdevice.h>
 #include <linux/filter.h>
+<<<<<<< HEAD
 #include "bpf_jit.h"
 
 #ifndef __BIG_ENDIAN
@@ -23,6 +24,14 @@
 int bpf_jit_enable __read_mostly;
 
 
+=======
+#include <linux/if_vlan.h>
+
+#include "bpf_jit.h"
+
+int bpf_jit_enable __read_mostly;
+
+>>>>>>> refs/remotes/origin/master
 static inline void bpf_flush_icache(void *start, void *end)
 {
 	smp_wmb();
@@ -39,7 +48,11 @@ static void bpf_jit_build_prologue(struct sk_filter *fp, u32 *image,
 		/* Make stackframe */
 		if (ctx->seen & SEEN_DATAREF) {
 			/* If we call any helpers (for loads), save LR */
+<<<<<<< HEAD
 			EMIT(PPC_INST_MFLR | __PPC_RT(0));
+=======
+			EMIT(PPC_INST_MFLR | __PPC_RT(R0));
+>>>>>>> refs/remotes/origin/master
 			PPC_STD(0, 1, 16);
 
 			/* Back up non-volatile regs. */
@@ -56,7 +69,11 @@ static void bpf_jit_build_prologue(struct sk_filter *fp, u32 *image,
 					PPC_STD(i, 1, -(8*(32-i)));
 			}
 		}
+<<<<<<< HEAD
 		EMIT(PPC_INST_STDU | __PPC_RS(1) | __PPC_RA(1) |
+=======
+		EMIT(PPC_INST_STDU | __PPC_RS(R1) | __PPC_RA(R1) |
+>>>>>>> refs/remotes/origin/master
 		     (-BPF_PPC_STACKFRAME & 0xfffc));
 	}
 
@@ -89,6 +106,11 @@ static void bpf_jit_build_prologue(struct sk_filter *fp, u32 *image,
 	case BPF_S_ANC_IFINDEX:
 	case BPF_S_ANC_MARK:
 	case BPF_S_ANC_RXHASH:
+<<<<<<< HEAD
+=======
+	case BPF_S_ANC_VLAN_TAG:
+	case BPF_S_ANC_VLAN_TAG_PRESENT:
+>>>>>>> refs/remotes/origin/master
 	case BPF_S_ANC_CPU:
 	case BPF_S_ANC_QUEUE:
 	case BPF_S_LD_W_ABS:
@@ -189,6 +211,29 @@ static int bpf_jit_build_body(struct sk_filter *fp, u32 *image,
 				PPC_MUL(r_A, r_A, r_scratch1);
 			}
 			break;
+<<<<<<< HEAD
+=======
+		case BPF_S_ALU_MOD_X: /* A %= X; */
+			ctx->seen |= SEEN_XREG;
+			PPC_CMPWI(r_X, 0);
+			if (ctx->pc_ret0 != -1) {
+				PPC_BCC(COND_EQ, addrs[ctx->pc_ret0]);
+			} else {
+				PPC_BCC_SHORT(COND_NE, (ctx->idx*4)+12);
+				PPC_LI(r_ret, 0);
+				PPC_JMP(exit_addr);
+			}
+			PPC_DIVWU(r_scratch1, r_A, r_X);
+			PPC_MUL(r_scratch1, r_X, r_scratch1);
+			PPC_SUB(r_A, r_A, r_scratch1);
+			break;
+		case BPF_S_ALU_MOD_K: /* A %= K; */
+			PPC_LI32(r_scratch2, K);
+			PPC_DIVWU(r_scratch1, r_A, r_scratch2);
+			PPC_MUL(r_scratch1, r_scratch2, r_scratch1);
+			PPC_SUB(r_A, r_A, r_scratch1);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case BPF_S_ALU_DIV_X: /* A /= X; */
 			ctx->seen |= SEEN_XREG;
 			PPC_CMPWI(r_X, 0);
@@ -205,10 +250,18 @@ static int bpf_jit_build_body(struct sk_filter *fp, u32 *image,
 			}
 			PPC_DIVWU(r_A, r_A, r_X);
 			break;
+<<<<<<< HEAD
 		case BPF_S_ALU_DIV_K: /* A = reciprocal_divide(A, K); */
 			PPC_LI32(r_scratch1, K);
 			/* Top 32 bits of 64bit result -> A */
 			PPC_MULHWU(r_A, r_A, r_scratch1);
+=======
+		case BPF_S_ALU_DIV_K: /* A /= K */
+			if (K == 1)
+				break;
+			PPC_LI32(r_scratch1, K);
+			PPC_DIVWU(r_A, r_A, r_scratch1);
+>>>>>>> refs/remotes/origin/master
 			break;
 		case BPF_S_ALU_AND_X:
 			ctx->seen |= SEEN_XREG;
@@ -232,6 +285,20 @@ static int bpf_jit_build_body(struct sk_filter *fp, u32 *image,
 			if (K >= 65536)
 				PPC_ORIS(r_A, r_A, IMM_H(K));
 			break;
+<<<<<<< HEAD
+=======
+		case BPF_S_ANC_ALU_XOR_X:
+		case BPF_S_ALU_XOR_X: /* A ^= X */
+			ctx->seen |= SEEN_XREG;
+			PPC_XOR(r_A, r_A, r_X);
+			break;
+		case BPF_S_ALU_XOR_K: /* A ^= K */
+			if (IMM_L(K))
+				PPC_XORI(r_A, r_A, IMM_L(K));
+			if (K >= 65536)
+				PPC_XORIS(r_A, r_A, IMM_H(K));
+			break;
+>>>>>>> refs/remotes/origin/master
 		case BPF_S_ALU_LSH_X: /* A <<= X; */
 			ctx->seen |= SEEN_XREG;
 			PPC_SLW(r_A, r_A, r_X);
@@ -331,6 +398,7 @@ static int bpf_jit_build_body(struct sk_filter *fp, u32 *image,
 			break;
 
 			/*** Ancillary info loads ***/
+<<<<<<< HEAD
 
 			/* None of the BPF_S_ANC* codes appear to be passed by
 			 * sk_chk_filter().  The interpreter and the x86 BPF
@@ -343,6 +411,13 @@ static int bpf_jit_build_body(struct sk_filter *fp, u32 *image,
 			PPC_LHZ_OFFS(r_A, r_skb, offsetof(struct sk_buff,
 							  protocol));
 			/* ntohs is a NOP with BE loads. */
+=======
+		case BPF_S_ANC_PROTOCOL: /* A = ntohs(skb->protocol); */
+			BUILD_BUG_ON(FIELD_SIZEOF(struct sk_buff,
+						  protocol) != 2);
+			PPC_NTOHS_OFFS(r_A, r_skb, offsetof(struct sk_buff,
+							    protocol));
+>>>>>>> refs/remotes/origin/master
 			break;
 		case BPF_S_ANC_IFINDEX:
 			PPC_LD_OFFS(r_scratch1, r_skb, offsetof(struct sk_buff,
@@ -371,6 +446,19 @@ static int bpf_jit_build_body(struct sk_filter *fp, u32 *image,
 			PPC_LWZ_OFFS(r_A, r_skb, offsetof(struct sk_buff,
 							  rxhash));
 			break;
+<<<<<<< HEAD
+=======
+		case BPF_S_ANC_VLAN_TAG:
+		case BPF_S_ANC_VLAN_TAG_PRESENT:
+			BUILD_BUG_ON(FIELD_SIZEOF(struct sk_buff, vlan_tci) != 2);
+			PPC_LHZ_OFFS(r_A, r_skb, offsetof(struct sk_buff,
+							  vlan_tci));
+			if (filter[i].code == BPF_S_ANC_VLAN_TAG)
+				PPC_ANDI(r_A, r_A, VLAN_VID_MASK);
+			else
+				PPC_ANDI(r_A, r_A, VLAN_TAG_PRESENT);
+			break;
+>>>>>>> refs/remotes/origin/master
 		case BPF_S_ANC_QUEUE:
 			BUILD_BUG_ON(FIELD_SIZEOF(struct sk_buff,
 						  queue_mapping) != 2);
@@ -625,8 +713,12 @@ void bpf_jit_compile(struct sk_filter *fp)
 
 	proglen = cgctx.idx * 4;
 	alloclen = proglen + FUNCTION_DESCR_SIZE;
+<<<<<<< HEAD
 	image = module_alloc(max_t(unsigned int, alloclen,
 				   sizeof(struct work_struct)));
+=======
+	image = module_alloc(alloclen);
+>>>>>>> refs/remotes/origin/master
 	if (!image)
 		goto out;
 
@@ -646,6 +738,7 @@ void bpf_jit_compile(struct sk_filter *fp)
 	}
 
 	if (bpf_jit_enable > 1)
+<<<<<<< HEAD
 		pr_info("flen=%d proglen=%u pass=%d image=%p\n",
 		       flen, proglen, pass, image);
 
@@ -656,6 +749,14 @@ void bpf_jit_compile(struct sk_filter *fp)
 				       16, 1, code_base,
 				       proglen, false);
 
+=======
+		/* Note that we output the base address of the code_base
+		 * rather than image, since opcodes are in code_base.
+		 */
+		bpf_jit_dump(flen, proglen, pass, code_base);
+
+	if (image) {
+>>>>>>> refs/remotes/origin/master
 		bpf_flush_icache(code_base, code_base + (proglen/4));
 		/* Function descriptor nastiness: Address + TOC */
 		((u64 *)image)[0] = (u64)code_base;
@@ -667,6 +768,7 @@ out:
 	return;
 }
 
+<<<<<<< HEAD
 static void jit_free_defer(struct work_struct *arg)
 {
 	module_free(NULL, arg);
@@ -683,4 +785,11 @@ void bpf_jit_free(struct sk_filter *fp)
 		INIT_WORK(work, jit_free_defer);
 		schedule_work(work);
 	}
+=======
+void bpf_jit_free(struct sk_filter *fp)
+{
+	if (fp->bpf_func != sk_run_filter)
+		module_free(NULL, fp->bpf_func);
+	kfree(fp);
+>>>>>>> refs/remotes/origin/master
 }

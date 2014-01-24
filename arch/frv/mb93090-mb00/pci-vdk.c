@@ -25,8 +25,11 @@
 
 unsigned int __nongpreldata pci_probe = 1;
 
+<<<<<<< HEAD
 int  __nongpreldata pcibios_last_bus = -1;
 struct pci_bus *__nongpreldata pci_root_bus;
+=======
+>>>>>>> refs/remotes/origin/master
 struct pci_ops *__nongpreldata pci_root_ops;
 
 /*
@@ -221,6 +224,7 @@ static struct pci_ops * __init pci_check_direct(void)
 }
 
 /*
+<<<<<<< HEAD
  * Discover remaining PCI buses in case there are peer host bridges.
  * We use the number of last PCI bus provided by the PCI BIOS.
  */
@@ -252,6 +256,8 @@ static void __init pcibios_fixup_peer_bridges(void)
 }
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Exceptions for specific devices. Usually work-arounds for fatal design flaws.
  */
 
@@ -268,7 +274,11 @@ static void __init pci_fixup_umc_ide(struct pci_dev *d)
 		d->resource[i].flags |= PCI_BASE_ADDRESS_SPACE_IO;
 }
 
+<<<<<<< HEAD
 static void __init pci_fixup_ide_bases(struct pci_dev *d)
+=======
+static void pci_fixup_ide_bases(struct pci_dev *d)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -287,7 +297,11 @@ static void __init pci_fixup_ide_bases(struct pci_dev *d)
 	}
 }
 
+<<<<<<< HEAD
 static void __init pci_fixup_ide_trash(struct pci_dev *d)
+=======
+static void pci_fixup_ide_trash(struct pci_dev *d)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -300,7 +314,11 @@ static void __init pci_fixup_ide_trash(struct pci_dev *d)
 		d->resource[i].start = d->resource[i].end = d->resource[i].flags = 0;
 }
 
+<<<<<<< HEAD
 static void __devinit  pci_fixup_latency(struct pci_dev *d)
+=======
+static void pci_fixup_latency(struct pci_dev *d)
+>>>>>>> refs/remotes/origin/master
 {
 	/*
 	 *  SiS 5597 and 5598 chipsets require latency timer set to
@@ -321,12 +339,17 @@ DECLARE_PCI_FIXUP_HEADER(PCI_ANY_ID, PCI_ANY_ID, pci_fixup_ide_bases);
  *  are examined.
  */
 
+<<<<<<< HEAD
 void __init pcibios_fixup_bus(struct pci_bus *bus)
+=======
+void pcibios_fixup_bus(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 #if 0
 	printk("### PCIBIOS_FIXUP_BUS(%d)\n",bus->number);
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (bus->number == 0) {
 		bus->resource[0] = &pci_ioport_resource;
@@ -342,6 +365,13 @@ void __init pcibios_fixup_bus(struct pci_bus *bus)
 		struct pci_dev *dev;
 		for (ln=bus->devices.next; ln != &bus->devices; ln=ln->next) {
 			dev = pci_dev_b(ln);
+=======
+	pci_read_bridge_bases(bus);
+
+	if (bus->number == 0) {
+		struct pci_dev *dev;
+		list_for_each_entry(dev, &bus->devices, bus_list) {
+>>>>>>> refs/remotes/origin/master
 			if (dev->devfn == 0) {
 				dev->resource[0].start = 0;
 				dev->resource[0].end = 0;
@@ -361,9 +391,13 @@ int __init pcibios_init(void)
 {
 	struct pci_ops *dir = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	LIST_HEAD(resources);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/master
 
 	if (!mb93090_mb00_detected)
 		return -ENXIO;
@@ -428,6 +462,7 @@ int __init pcibios_init(void)
 
 	printk("PCI: Probing PCI hardware\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	pci_root_bus = pci_scan_bus(0, pci_root_ops, NULL);
 =======
 	pci_add_resource(&resources, &pci_ioport_resource);
@@ -438,6 +473,13 @@ int __init pcibios_init(void)
 
 	pcibios_irq_init();
 	pcibios_fixup_peer_bridges();
+=======
+	pci_add_resource(&resources, &pci_ioport_resource);
+	pci_add_resource(&resources, &pci_iomem_resource);
+	pci_scan_root_bus(NULL, 0, pci_root_ops, NULL, &resources);
+
+	pcibios_irq_init();
+>>>>>>> refs/remotes/origin/master
 	pcibios_fixup_irqs();
 	pcibios_resource_survey();
 
@@ -451,9 +493,12 @@ char * __init pcibios_setup(char *str)
 	if (!strcmp(str, "off")) {
 		pci_probe = 0;
 		return NULL;
+<<<<<<< HEAD
 	} else if (!strncmp(str, "lastbus=", 8)) {
 		pcibios_last_bus = simple_strtol(str+8, NULL, 0);
 		return NULL;
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return str;
 }

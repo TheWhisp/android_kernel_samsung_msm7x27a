@@ -14,11 +14,14 @@
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
+<<<<<<< HEAD
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
  */
 /*
 Driver: multiq3
@@ -29,11 +32,18 @@ Devices: [Quanser Consulting] MultiQ-3 (multiq3)
 
 */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "../comedidev.h"
 
 #include <linux/ioport.h>
 
+=======
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 #define MULTIQ3_SIZE 16
 
 /*
@@ -83,6 +93,7 @@ Devices: [Quanser Consulting] MultiQ-3 (multiq3)
 
 #define MULTIQ3_TIMEOUT 30
 
+<<<<<<< HEAD
 static int multiq3_attach(struct comedi_device *dev,
 			  struct comedi_devconfig *it);
 static int multiq3_detach(struct comedi_device *dev);
@@ -110,6 +121,11 @@ struct multiq3_private {
 	unsigned int ao_readback[2];
 };
 #define devpriv ((struct multiq3_private *)dev->private)
+=======
+struct multiq3_private {
+	unsigned int ao_readback[2];
+};
+>>>>>>> refs/remotes/origin/master
 
 static int multiq3_ai_insn_read(struct comedi_device *dev,
 				struct comedi_subdevice *s,
@@ -152,6 +168,10 @@ static int multiq3_ao_insn_read(struct comedi_device *dev,
 				struct comedi_subdevice *s,
 				struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct multiq3_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -165,6 +185,10 @@ static int multiq3_ao_insn_write(struct comedi_device *dev,
 				 struct comedi_subdevice *s,
 				 struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct multiq3_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int chan = CR_CHAN(insn->chanspec);
 
@@ -184,16 +208,23 @@ static int multiq3_di_insn_bits(struct comedi_device *dev,
 				struct comedi_subdevice *s,
 				struct comedi_insn *insn, unsigned int *data)
 {
+<<<<<<< HEAD
 	if (insn->n != 2)
 		return -EINVAL;
 
 	data[1] = inw(dev->iobase + MULTIQ3_DIGIN_PORT);
 
 	return 2;
+=======
+	data[1] = inw(dev->iobase + MULTIQ3_DIGIN_PORT);
+
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int multiq3_do_insn_bits(struct comedi_device *dev,
 				struct comedi_subdevice *s,
+<<<<<<< HEAD
 				struct comedi_insn *insn, unsigned int *data)
 {
 	if (insn->n != 2)
@@ -206,6 +237,17 @@ static int multiq3_do_insn_bits(struct comedi_device *dev,
 	data[1] = s->state;
 
 	return 2;
+=======
+				struct comedi_insn *insn,
+				unsigned int *data)
+{
+	if (comedi_dio_update_state(s, data))
+		outw(s->state, dev->iobase + MULTIQ3_DIGOUT_PORT);
+
+	data[1] = s->state;
+
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int multiq3_encoder_insn_read(struct comedi_device *dev,
@@ -233,8 +275,15 @@ static int multiq3_encoder_insn_read(struct comedi_device *dev,
 
 static void encoder_reset(struct comedi_device *dev)
 {
+<<<<<<< HEAD
 	int chan;
 	for (chan = 0; chan < dev->subdevices[4].n_chan; chan++) {
+=======
+	struct comedi_subdevice *s = &dev->subdevices[4];
+	int chan;
+
+	for (chan = 0; chan < s->n_chan; chan++) {
+>>>>>>> refs/remotes/origin/master
 		int control =
 		    MULTIQ3_CONTROL_MUST | MULTIQ3_AD_MUX_EN | (chan << 3);
 		outw(control, dev->iobase + MULTIQ3_CONTROL);
@@ -248,6 +297,7 @@ static void encoder_reset(struct comedi_device *dev)
 	}
 }
 
+<<<<<<< HEAD
 /*
    options[0] - I/O port
    options[1] - irq
@@ -287,6 +337,28 @@ static int multiq3_attach(struct comedi_device *dev,
 		return result;
 
 	s = dev->subdevices + 0;
+=======
+static int multiq3_attach(struct comedi_device *dev,
+			  struct comedi_devconfig *it)
+{
+	struct multiq3_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], MULTIQ3_SIZE);
+	if (ret)
+		return ret;
+
+	ret = comedi_alloc_subdevices(dev, 5);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	s = &dev->subdevices[0];
+>>>>>>> refs/remotes/origin/master
 	/* ai subdevice */
 	s->type = COMEDI_SUBD_AI;
 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
@@ -295,7 +367,11 @@ static int multiq3_attach(struct comedi_device *dev,
 	s->maxdata = 0x1fff;
 	s->range_table = &range_bipolar5;
 
+<<<<<<< HEAD
 	s = dev->subdevices + 1;
+=======
+	s = &dev->subdevices[1];
+>>>>>>> refs/remotes/origin/master
 	/* ao subdevice */
 	s->type = COMEDI_SUBD_AO;
 	s->subdev_flags = SDF_WRITABLE;
@@ -305,7 +381,11 @@ static int multiq3_attach(struct comedi_device *dev,
 	s->maxdata = 0xfff;
 	s->range_table = &range_bipolar5;
 
+<<<<<<< HEAD
 	s = dev->subdevices + 2;
+=======
+	s = &dev->subdevices[2];
+>>>>>>> refs/remotes/origin/master
 	/* di subdevice */
 	s->type = COMEDI_SUBD_DI;
 	s->subdev_flags = SDF_READABLE;
@@ -314,7 +394,11 @@ static int multiq3_attach(struct comedi_device *dev,
 	s->maxdata = 1;
 	s->range_table = &range_digital;
 
+<<<<<<< HEAD
 	s = dev->subdevices + 3;
+=======
+	s = &dev->subdevices[3];
+>>>>>>> refs/remotes/origin/master
 	/* do subdevice */
 	s->type = COMEDI_SUBD_DO;
 	s->subdev_flags = SDF_WRITABLE;
@@ -324,7 +408,11 @@ static int multiq3_attach(struct comedi_device *dev,
 	s->range_table = &range_digital;
 	s->state = 0;
 
+<<<<<<< HEAD
 	s = dev->subdevices + 4;
+=======
+	s = &dev->subdevices[4];
+>>>>>>> refs/remotes/origin/master
 	/* encoder (counter) subdevice */
 	s->type = COMEDI_SUBD_COUNTER;
 	s->subdev_flags = SDF_READABLE | SDF_LSAMPL;
@@ -338,6 +426,7 @@ static int multiq3_attach(struct comedi_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int multiq3_detach(struct comedi_device *dev)
 {
 	printk(KERN_INFO "comedi%d: multiq3: remove\n", dev->minor);
@@ -349,6 +438,15 @@ static int multiq3_detach(struct comedi_device *dev)
 
 	return 0;
 }
+=======
+static struct comedi_driver multiq3_driver = {
+	.driver_name	= "multiq3",
+	.module		= THIS_MODULE,
+	.attach		= multiq3_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(multiq3_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

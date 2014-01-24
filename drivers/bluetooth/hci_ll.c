@@ -110,7 +110,10 @@ static int send_hcill_cmd(u8 cmd, struct hci_uart *hu)
 	/* prepare packet */
 	hcill_packet = (struct hcill_cmd *) skb_put(skb, 1);
 	hcill_packet->cmd = cmd;
+<<<<<<< HEAD
 	skb->dev = (void *) hu->hdev;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* send packet */
 	skb_queue_tail(&ll->txq, skb);
@@ -125,7 +128,11 @@ static int ll_open(struct hci_uart *hu)
 
 	BT_DBG("hu %p", hu);
 
+<<<<<<< HEAD
 	ll = kzalloc(sizeof(*ll), GFP_ATOMIC);
+=======
+	ll = kzalloc(sizeof(*ll), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (!ll)
 		return -ENOMEM;
 
@@ -207,7 +214,11 @@ static void ll_device_want_to_wakeup(struct hci_uart *hu)
 		/*
 		 * This state means that both the host and the BRF chip
 		 * have simultaneously sent a wake-up-indication packet.
+<<<<<<< HEAD
 		 * Traditionaly, in this case, receiving a wake-up-indication
+=======
+		 * Traditionally, in this case, receiving a wake-up-indication
+>>>>>>> refs/remotes/origin/master
 		 * was enough and an additional wake-up-ack wasn't needed.
 		 * This has changed with the BRF6350, which does require an
 		 * explicit wake-up-ack. Other BRF versions, which do not
@@ -346,14 +357,24 @@ static int ll_enqueue(struct hci_uart *hu, struct sk_buff *skb)
 	return 0;
 }
 
+<<<<<<< HEAD
 static inline int ll_check_data_len(struct ll_struct *ll, int len)
 {
 	register int room = skb_tailroom(ll->rx_skb);
+=======
+static inline int ll_check_data_len(struct hci_dev *hdev, struct ll_struct *ll, int len)
+{
+	int room = skb_tailroom(ll->rx_skb);
+>>>>>>> refs/remotes/origin/master
 
 	BT_DBG("len %d room %d", len, room);
 
 	if (!len) {
+<<<<<<< HEAD
 		hci_recv_frame(ll->rx_skb);
+=======
+		hci_recv_frame(hdev, ll->rx_skb);
+>>>>>>> refs/remotes/origin/master
 	} else if (len > room) {
 		BT_ERR("Data length is too large");
 		kfree_skb(ll->rx_skb);
@@ -374,11 +395,19 @@ static inline int ll_check_data_len(struct ll_struct *ll, int len)
 static int ll_recv(struct hci_uart *hu, void *data, int count)
 {
 	struct ll_struct *ll = hu->priv;
+<<<<<<< HEAD
 	register char *ptr;
 	struct hci_event_hdr *eh;
 	struct hci_acl_hdr   *ah;
 	struct hci_sco_hdr   *sh;
 	register int len, type, dlen;
+=======
+	char *ptr;
+	struct hci_event_hdr *eh;
+	struct hci_acl_hdr   *ah;
+	struct hci_sco_hdr   *sh;
+	int len, type, dlen;
+>>>>>>> refs/remotes/origin/master
 
 	BT_DBG("hu %p count %d rx_state %ld rx_count %ld", hu, count, ll->rx_state, ll->rx_count);
 
@@ -395,7 +424,11 @@ static int ll_recv(struct hci_uart *hu, void *data, int count)
 			switch (ll->rx_state) {
 			case HCILL_W4_DATA:
 				BT_DBG("Complete data");
+<<<<<<< HEAD
 				hci_recv_frame(ll->rx_skb);
+=======
+				hci_recv_frame(hu->hdev, ll->rx_skb);
+>>>>>>> refs/remotes/origin/master
 
 				ll->rx_state = HCILL_W4_PACKET_TYPE;
 				ll->rx_skb = NULL;
@@ -406,7 +439,11 @@ static int ll_recv(struct hci_uart *hu, void *data, int count)
 
 				BT_DBG("Event header: evt 0x%2.2x plen %d", eh->evt, eh->plen);
 
+<<<<<<< HEAD
 				ll_check_data_len(ll, eh->plen);
+=======
+				ll_check_data_len(hu->hdev, ll, eh->plen);
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			case HCILL_W4_ACL_HDR:
@@ -415,7 +452,11 @@ static int ll_recv(struct hci_uart *hu, void *data, int count)
 
 				BT_DBG("ACL header: dlen %d", dlen);
 
+<<<<<<< HEAD
 				ll_check_data_len(ll, dlen);
+=======
+				ll_check_data_len(hu->hdev, ll, dlen);
+>>>>>>> refs/remotes/origin/master
 				continue;
 
 			case HCILL_W4_SCO_HDR:
@@ -423,7 +464,11 @@ static int ll_recv(struct hci_uart *hu, void *data, int count)
 
 				BT_DBG("SCO header: dlen %d", sh->dlen);
 
+<<<<<<< HEAD
 				ll_check_data_len(ll, sh->dlen);
+=======
+				ll_check_data_len(hu->hdev, ll, sh->dlen);
+>>>>>>> refs/remotes/origin/master
 				continue;
 			}
 		}
@@ -481,7 +526,11 @@ static int ll_recv(struct hci_uart *hu, void *data, int count)
 			hu->hdev->stat.err_rx++;
 			ptr++; count--;
 			continue;
+<<<<<<< HEAD
 		};
+=======
+		}
+>>>>>>> refs/remotes/origin/master
 
 		ptr++; count--;
 
@@ -494,7 +543,10 @@ static int ll_recv(struct hci_uart *hu, void *data, int count)
 			return -ENOMEM;
 		}
 
+<<<<<<< HEAD
 		ll->rx_skb->dev = (void *) hu->hdev;
+=======
+>>>>>>> refs/remotes/origin/master
 		bt_cb(ll->rx_skb)->pkt_type = type;
 	}
 

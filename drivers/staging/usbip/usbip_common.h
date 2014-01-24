@@ -66,10 +66,14 @@ enum {
 #define usbip_dbg_flag_stub_rx	(usbip_debug_flag & usbip_debug_stub_rx)
 #define usbip_dbg_flag_stub_tx	(usbip_debug_flag & usbip_debug_stub_tx)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define usbip_dbg_flag_vhci_sysfs   (usbip_debug_flag & usbip_debug_vhci_sysfs)
 =======
 #define usbip_dbg_flag_vhci_sysfs  (usbip_debug_flag & usbip_debug_vhci_sysfs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define usbip_dbg_flag_vhci_sysfs  (usbip_debug_flag & usbip_debug_vhci_sysfs)
+>>>>>>> refs/remotes/origin/master
 
 extern unsigned long usbip_debug_flag;
 extern struct device_attribute dev_attr_usbip_debug;
@@ -109,6 +113,7 @@ extern struct device_attribute dev_attr_usbip_debug;
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * USB/IP request headers.
  * Currently, we define 4 request types:
  *
@@ -132,6 +137,8 @@ extern struct device_attribute dev_attr_usbip_debug;
  */
 struct usbip_header_basic {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * USB/IP request headers
  *
  * Each request is transferred across the network to its counterpart, which
@@ -153,11 +160,15 @@ struct usbip_header_basic {
  *    (server to client)
  *
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define USBIP_CMD_SUBMIT	0x0001
 #define USBIP_CMD_UNLINK	0x0002
 #define USBIP_RET_SUBMIT	0x0003
 #define USBIP_RET_UNLINK	0x0004
+<<<<<<< HEAD
 <<<<<<< HEAD
 	__u32 command;
 
@@ -188,6 +199,8 @@ struct usbip_header_cmd_submit {
 	/* set the following data size (out),
 	 * or expected reading data size (in) */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define USBIP_DIR_OUT	0x00
 #define USBIP_DIR_IN	0x01
@@ -221,11 +234,15 @@ struct usbip_header_basic {
  */
 struct usbip_header_cmd_submit {
 	__u32 transfer_flags;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	__s32 transfer_buffer_length;
 
 	/* it is difficult for usbip to sync frames (reserved only?) */
 	__s32 start_frame;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* the number of iso descriptors that follows this header */
@@ -260,6 +277,8 @@ struct usbip_header_cmd_unlink {
 /*
  * An additional header for a RET_UNLINK packet.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__s32 number_of_packets;
 	__s32 interval;
 
@@ -293,12 +312,16 @@ struct usbip_header_cmd_unlink {
 /**
  * struct usbip_header_ret_unlink - USBIP_RET_UNLINK packet header
  * @status: return status of the request
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct usbip_header_ret_unlink {
 	__s32 status;
 } __packed;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* the same as usb_iso_packet_descriptor but packed for pdu */
 struct usbip_iso_packet_descriptor {
@@ -311,11 +334,16 @@ struct usbip_iso_packet_descriptor {
 /*
  * All usbip packets use a common header to keep code simple.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct usbip_header - common header for all usbip packets
  * @base: the basic header
  * @u: packet type dependent header
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 struct usbip_header {
 	struct usbip_header_basic base;
@@ -328,6 +356,7 @@ struct usbip_header {
 	} u;
 } __packed;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int usbip_xmit(int, struct socket *, char *, int, int);
 int usbip_sendmsg(struct socket *, struct msghdr *, int);
@@ -364,6 +393,8 @@ void usbip_dump_header(struct usbip_header *pdu);
 
 struct usbip_device;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This is the same as usb_iso_packet_descriptor but packed for pdu.
  */
@@ -373,7 +404,10 @@ struct usbip_iso_packet_descriptor {
 	__u32 actual_length;
 	__u32 status;
 } __packed;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum usbip_side {
 	USBIP_VHCI,
@@ -397,6 +431,7 @@ enum usbip_status {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* a common structure for stub_device and vhci_device */
 struct usbip_device {
 	enum usbip_side side;
@@ -414,6 +449,9 @@ struct usbip_device {
 =======
 /* event handler */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* event handler */
+>>>>>>> refs/remotes/origin/master
 #define USBIP_EH_SHUTDOWN	(1 << 0)
 #define USBIP_EH_BYE		(1 << 1)
 #define USBIP_EH_RESET		(1 << 2)
@@ -431,7 +469,10 @@ struct usbip_device {
 #define	VDEV_EVENT_ERROR_MALLOC	(USBIP_EH_SHUTDOWN | USBIP_EH_UNUSABLE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* a common structure for stub_device and vhci_device */
 struct usbip_device {
 	enum usbip_side side;
@@ -445,7 +486,10 @@ struct usbip_device {
 	struct task_struct *tcp_rx;
 	struct task_struct *tcp_tx;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long event;
 	struct task_struct *eh;
 	wait_queue_head_t eh_waitq;
@@ -458,6 +502,7 @@ struct usbip_device {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void usbip_pack_pdu(struct usbip_header *pdu, struct urb *urb, int cmd,
 		    int pack);
 
@@ -470,6 +515,25 @@ int usbip_recv_iso(struct usbip_device *ud, struct urb *urb);
 void usbip_pad_iso(struct usbip_device *ud, struct urb *urb);
 void *usbip_alloc_iso_desc_pdu(struct urb *urb, ssize_t *bufflen);
 =======
+=======
+#define kthread_get_run(threadfn, data, namefmt, ...)			   \
+({									   \
+	struct task_struct *__k						   \
+		= kthread_create(threadfn, data, namefmt, ## __VA_ARGS__); \
+	if (!IS_ERR(__k)) {						   \
+		get_task_struct(__k);					   \
+		wake_up_process(__k);					   \
+	}								   \
+	__k;								   \
+})
+
+#define kthread_stop_put(k)		\
+	do {				\
+		kthread_stop(k);	\
+		put_task_struct(k);	\
+	} while (0)
+
+>>>>>>> refs/remotes/origin/master
 /* usbip_common.c */
 void usbip_dump_urb(struct urb *purb);
 void usbip_dump_header(struct usbip_header *pdu);
@@ -481,12 +545,21 @@ void usbip_pack_pdu(struct usbip_header *pdu, struct urb *urb, int cmd,
 		    int pack);
 void usbip_header_correct_endian(struct usbip_header *pdu, int send);
 
+<<<<<<< HEAD
 void *usbip_alloc_iso_desc_pdu(struct urb *urb, ssize_t *bufflen);
+=======
+struct usbip_iso_packet_descriptor*
+usbip_alloc_iso_desc_pdu(struct urb *urb, ssize_t *bufflen);
+
+>>>>>>> refs/remotes/origin/master
 /* some members of urb must be substituted before. */
 int usbip_recv_iso(struct usbip_device *ud, struct urb *urb);
 void usbip_pad_iso(struct usbip_device *ud, struct urb *urb);
 int usbip_recv_xbuff(struct usbip_device *ud, struct urb *urb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* usbip_event.c */
 int usbip_start_eh(struct usbip_device *ud);
@@ -495,7 +568,10 @@ void usbip_event_add(struct usbip_device *ud, unsigned long event);
 int usbip_event_happened(struct usbip_device *ud);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int interface_to_busnum(struct usb_interface *interface)
 {
 	struct usb_device *udev = interface_to_usbdev(interface);
@@ -508,5 +584,8 @@ static inline int interface_to_devnum(struct usb_interface *interface)
 	return udev->devnum;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __USBIP_COMMON_H */

@@ -405,6 +405,7 @@ static int s6000_i2s_dai_probe(struct snd_soc_dai *dai)
 	return 0;
 }
 
+<<<<<<< HEAD
 #define S6000_I2S_RATES	(SNDRV_PCM_RATE_CONTINUOUS | SNDRV_PCM_RATE_5512 | \
 			 SNDRV_PCM_RATE_8000_192000)
 #define S6000_I2S_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
@@ -414,6 +415,12 @@ static struct snd_soc_dai_ops s6000_i2s_dai_ops = {
 =======
 static const struct snd_soc_dai_ops s6000_i2s_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define S6000_I2S_RATES SNDRV_PCM_RATE_CONTINUOUS
+#define S6000_I2S_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE)
+
+static const struct snd_soc_dai_ops s6000_i2s_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.set_fmt = s6000_i2s_set_dai_fmt,
 	.set_clkdiv = s6000_i2s_set_clkdiv,
 	.hw_params = s6000_i2s_hw_params,
@@ -440,7 +447,15 @@ static struct snd_soc_dai_driver s6000_i2s_dai = {
 	.ops = &s6000_i2s_dai_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit s6000_i2s_probe(struct platform_device *pdev)
+=======
+static const struct snd_soc_component_driver s6000_i2s_component = {
+	.name		= "s6000-i2s",
+};
+
+static int s6000_i2s_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s6000_i2s_dev *dev;
 	struct resource *scbmem, *sifmem, *region, *dma1, *dma2;
@@ -547,7 +562,12 @@ static int __devinit s6000_i2s_probe(struct platform_device *pdev)
 			 S6_I2S_INT_UNDERRUN |
 			 S6_I2S_INT_OVERRUN);
 
+<<<<<<< HEAD
 	ret = snd_soc_register_dai(&pdev->dev, &s6000_i2s_dai);
+=======
+	ret = snd_soc_register_component(&pdev->dev, &s6000_i2s_component,
+					 &s6000_i2s_dai, 1);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto err_release_dev;
 
@@ -570,13 +590,21 @@ err_release_none:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit s6000_i2s_remove(struct platform_device *pdev)
+=======
+static void s6000_i2s_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct s6000_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
 	struct resource *region;
 	void __iomem *mmio = dev->scbbase;
 
+<<<<<<< HEAD
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	s6000_i2s_stop_channel(dev, 0);
 	s6000_i2s_stop_channel(dev, 1);
@@ -601,13 +629,18 @@ static void __devexit s6000_i2s_remove(struct platform_device *pdev)
 
 static struct platform_driver s6000_i2s_driver = {
 	.probe  = s6000_i2s_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(s6000_i2s_remove),
+=======
+	.remove = s6000_i2s_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver = {
 		.name   = "s6000-i2s",
 		.owner  = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init s6000_i2s_init(void)
 {
@@ -623,6 +656,9 @@ module_exit(s6000_i2s_exit);
 =======
 module_platform_driver(s6000_i2s_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(s6000_i2s_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Daniel Gloeckner");
 MODULE_DESCRIPTION("Stretch s6000 family I2S SoC Interface");

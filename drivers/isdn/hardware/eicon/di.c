@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,7 +46,10 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #include "platform.h"
@@ -53,6 +59,7 @@
 #include "di.h"
 #if !defined USE_EXTENDED_DEBUGS
 <<<<<<< HEAD
+<<<<<<< HEAD
   #include "dimaint.h"
 #else
   #define dprintf
@@ -61,6 +68,11 @@
 #else
 #define dprintf
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "dimaint.h"
+#else
+#define dprintf
+>>>>>>> refs/remotes/origin/master
 #endif
 #include "io.h"
 #include "dfifo.h"
@@ -69,6 +81,7 @@
 /*------------------------------------------------------------------*/
 /* local function prototypes                                        */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 void pr_out(ADAPTER * a);
 byte pr_dpc(ADAPTER * a);
@@ -88,6 +101,8 @@ static byte isdn_ind(ADAPTER *, byte, byte, byte, PBUFFER *, byte, word);
 #define XDI_A_NR(_x_) ((byte)(((ISDN_ADAPTER *)(_x_->io))->ANum))
 static void xdi_xlog (byte *msg, word code, int length);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void pr_out(ADAPTER *a);
 byte pr_dpc(ADAPTER *a);
 static byte pr_ready(ADAPTER *a);
@@ -105,11 +120,15 @@ static byte isdn_ind(ADAPTER *, byte, byte, byte, PBUFFER *, byte, word);
 #if defined(XDI_USE_XLOG)
 #define XDI_A_NR(_x_) ((byte)(((ISDN_ADAPTER *)(_x_->io))->ANum))
 static void xdi_xlog(byte *msg, word code, int length);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static byte xdi_xlog_sec = 0;
 #else
 #define XDI_A_NR(_x_) ((byte)0)
 #endif
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void xdi_xlog_rc_event (byte Adapter,
                                byte Id, byte Ch, byte Rc, byte cb, byte type);
@@ -299,6 +318,8 @@ static byte pr_ready(ADAPTER * a)
   }
   return ReadyCount;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void xdi_xlog_rc_event(byte Adapter,
 			      byte Id, byte Ch, byte Rc, byte cb, byte type);
 static void xdi_xlog_request(byte Adapter, byte Id,
@@ -486,11 +507,15 @@ static byte pr_ready(ADAPTER *a)
 		}
 	}
 	return ReadyCount;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*------------------------------------------------------------------*/
 /* isdn interrupt handler                                           */
 /*------------------------------------------------------------------*/
+<<<<<<< HEAD
 <<<<<<< HEAD
 byte pr_dpc(ADAPTER * a)
 {
@@ -590,6 +615,8 @@ void scom_clear_int(ADAPTER * a)
 {
   a->ram_out(a,(void *)0x3fe,0);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 byte pr_dpc(ADAPTER *a)
 {
 	byte Count;
@@ -687,7 +714,10 @@ byte scom_test_int(ADAPTER *a)
 void scom_clear_int(ADAPTER *a)
 {
 	a->ram_out(a, (void *)0x3fe, 0);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*------------------------------------------------------------------*/
 /* return code handler                                              */
@@ -700,6 +730,7 @@ static byte isdn_rc(ADAPTER *a,
 		    dword extended_info_type,
 		    dword extended_info)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   ENTITY  * this;
   byte e_no;
@@ -892,6 +923,8 @@ static byte isdn_rc(ADAPTER *a,
   }
   return 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ENTITY *this;
 	byte e_no;
 	word i;
@@ -1082,7 +1115,10 @@ static byte isdn_rc(ADAPTER *a,
 		}
 	}
 	return 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 /*------------------------------------------------------------------*/
 /* indication handler                                               */
@@ -1095,6 +1131,7 @@ static byte isdn_ind(ADAPTER *a,
 		     byte MInd,
 		     word MLength)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
   ENTITY  * this;
   word clength;
@@ -1253,6 +1290,8 @@ static byte isdn_ind(ADAPTER *a,
   }
   return 2;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ENTITY *this;
 	word clength;
 	word offset;
@@ -1409,13 +1448,17 @@ static byte isdn_ind(ADAPTER *a,
 		return 0;
 	}
 	return 2;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 #if defined(XDI_USE_XLOG)
 /* -----------------------------------------------------------
    This function works in the same way as xlog on the
    active board
    ----------------------------------------------------------- */
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void xdi_xlog (byte *msg, word code, int length) {
   xdi_dbg_xlog ("\x00\x02", msg, code, length);
@@ -1524,6 +1567,8 @@ static void xdi_xlog_ind (byte Adapter,
   PUT_WORD(&LogInfo[3], ((word)rnr | (word)(rnr_valid << 8)));
   xdi_xlog ((byte*)&LogInfo[0], 222, sizeof(LogInfo));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void xdi_xlog(byte *msg, word code, int length) {
 	xdi_dbg_xlog("\x00\x02", msg, code, length);
 }
@@ -1630,6 +1675,9 @@ static void xdi_xlog_ind(byte Adapter,
 	PUT_WORD(&LogInfo[2], ((word)Ind | (word)(type << 8)));
 	PUT_WORD(&LogInfo[3], ((word)rnr | (word)(rnr_valid << 8)));
 	xdi_xlog((byte *)&LogInfo[0], 222, sizeof(LogInfo));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 }

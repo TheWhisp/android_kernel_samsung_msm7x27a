@@ -21,9 +21,13 @@
  */
 #ifndef BEAT_HCALL
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/string.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/string.h>
+>>>>>>> refs/remotes/origin/master
 #include "beat_syscall.h"
 
 /* defined in hvCall.S */

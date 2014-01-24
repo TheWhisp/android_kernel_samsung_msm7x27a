@@ -14,6 +14,7 @@
 
 /dts-v1/;
 
+<<<<<<< HEAD
 / {
 	model = "SBC8548";
 	compatible = "SBC8548";
@@ -52,6 +53,11 @@
 		reg = <0x00000000 0x10000000>;
 	};
 
+=======
+/include/ "sbc8548-pre.dtsi"
+
+/{
+>>>>>>> refs/remotes/origin/master
 	localbus@e0000000 {
 		#address-cells = <2>;
 		#size-cells = <1>;
@@ -63,23 +69,41 @@
 			  0x3 0x0 0xf0000000 0x04000000		/*64MB SDRAM*/
 			  0x4 0x0 0xf4000000 0x04000000 	/*64MB SDRAM*/
 			  0x5 0x0 0xf8000000 0x00b10000		/* EPLD */
+<<<<<<< HEAD
 			  0x6 0x0 0xfb800000 0x04000000>;	/*64MB Flash*/
+=======
+			  0x6 0x0 0xec000000 0x04000000>;	/*64MB Flash*/
+>>>>>>> refs/remotes/origin/master
 
 
 		flash@0,0 {
 			#address-cells = <1>;
 			#size-cells = <1>;
+<<<<<<< HEAD
 			compatible = "cfi-flash";
+=======
+			compatible = "intel,JS28F640", "cfi-flash";
+>>>>>>> refs/remotes/origin/master
 			reg = <0x0 0x0 0x800000>;
 			bank-width = <1>;
 			device-width = <1>;
 			partition@0x0 {
 				label = "space";
+<<<<<<< HEAD
 				reg = <0x00000000 0x00100000>;
 			};
 			partition@0x100000 {
 				label = "bootloader";
 				reg = <0x00100000 0x00700000>;
+=======
+				/* FF800000 -> FFF9FFFF */
+				reg = <0x00000000 0x007a0000>;
+			};
+			partition@0x7a0000 {
+				label = "bootloader";
+				/* FFFA0000 -> FFFFFFFF */
+				reg = <0x007a0000 0x00060000>;
+>>>>>>> refs/remotes/origin/master
 				read-only;
 			};
 		};
@@ -122,6 +146,7 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 			reg = <0x6 0x0 0x04000000>;
+<<<<<<< HEAD
 			compatible = "cfi-flash";
 			bank-width = <4>;
 			device-width = <1>;
@@ -434,3 +459,24 @@
 		};
 	};
 };
+=======
+			compatible = "intel,JS28F128", "cfi-flash";
+			bank-width = <4>;
+			device-width = <1>;
+			partition@0x0 {
+				label = "space";
+				/* EC000000 -> EFEFFFFF */
+				reg = <0x00000000 0x03f00000>;
+			};
+			partition@0x03f00000 {
+				label = "bootloader";
+				/* EFF00000 -> EFFFFFFF */
+				reg = <0x03f00000 0x00100000>;
+				read-only;
+			};
+                };
+        };
+};
+
+/include/ "sbc8548-post.dtsi"
+>>>>>>> refs/remotes/origin/master

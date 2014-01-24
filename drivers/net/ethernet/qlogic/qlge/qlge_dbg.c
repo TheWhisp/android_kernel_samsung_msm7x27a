@@ -86,7 +86,11 @@ exit:
 }
 
 /* Read out the SERDES registers */
+<<<<<<< HEAD
 static int ql_read_serdes_reg(struct ql_adapter *qdev, u32 reg, u32 * data)
+=======
+static int ql_read_serdes_reg(struct ql_adapter *qdev, u32 reg, u32 *data)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 
@@ -364,7 +368,11 @@ exit:
 /* Read the 400 xgmac control/statistics registers
  * skipping unused locations.
  */
+<<<<<<< HEAD
 static int ql_get_xgmac_regs(struct ql_adapter *qdev, u32 * buf,
+=======
+static int ql_get_xgmac_regs(struct ql_adapter *qdev, u32 *buf,
+>>>>>>> refs/remotes/origin/master
 					unsigned int other_function)
 {
 	int status = 0;
@@ -405,7 +413,11 @@ static int ql_get_xgmac_regs(struct ql_adapter *qdev, u32 * buf,
 	return status;
 }
 
+<<<<<<< HEAD
 static int ql_get_ets_regs(struct ql_adapter *qdev, u32 * buf)
+=======
+static int ql_get_ets_regs(struct ql_adapter *qdev, u32 *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int status = 0;
 	int i;
@@ -423,7 +435,11 @@ static int ql_get_ets_regs(struct ql_adapter *qdev, u32 * buf)
 	return status;
 }
 
+<<<<<<< HEAD
 static void ql_get_intr_states(struct ql_adapter *qdev, u32 * buf)
+=======
+static void ql_get_intr_states(struct ql_adapter *qdev, u32 *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -434,7 +450,11 @@ static void ql_get_intr_states(struct ql_adapter *qdev, u32 * buf)
 	}
 }
 
+<<<<<<< HEAD
 static int ql_get_cam_entries(struct ql_adapter *qdev, u32 * buf)
+=======
+static int ql_get_cam_entries(struct ql_adapter *qdev, u32 *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int i, status;
 	u32 value[3];
@@ -471,7 +491,11 @@ err:
 	return status;
 }
 
+<<<<<<< HEAD
 static int ql_get_routing_entries(struct ql_adapter *qdev, u32 * buf)
+=======
+static int ql_get_routing_entries(struct ql_adapter *qdev, u32 *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	int status;
 	u32 value, i;
@@ -496,7 +520,11 @@ err:
 }
 
 /* Read the MPI Processor shadow registers */
+<<<<<<< HEAD
 static int ql_get_mpi_shadow_regs(struct ql_adapter *qdev, u32 * buf)
+=======
+static int ql_get_mpi_shadow_regs(struct ql_adapter *qdev, u32 *buf)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 i;
 	int status;
@@ -515,7 +543,11 @@ end:
 }
 
 /* Read the MPI Processor core registers */
+<<<<<<< HEAD
 static int ql_get_mpi_regs(struct ql_adapter *qdev, u32 * buf,
+=======
+static int ql_get_mpi_regs(struct ql_adapter *qdev, u32 *buf,
+>>>>>>> refs/remotes/origin/master
 				u32 offset, u32 count)
 {
 	int i, status = 0;
@@ -740,8 +772,13 @@ int ql_core_dump(struct ql_adapter *qdev, struct ql_mpi_coredump *mpi_coredump)
 	int i;
 
 	if (!mpi_coredump) {
+<<<<<<< HEAD
 		netif_err(qdev, drv, qdev->ndev, "No memory available\n");
 		return -ENOMEM;
+=======
+		netif_err(qdev, drv, qdev->ndev, "No memory allocated\n");
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Try to get the spinlock, but dont worry if

@@ -20,6 +20,7 @@
  *		as published by the Free Software Foundation; either version
  *		2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #ifndef _FRAD_H_
 #define _FRAD_H_
@@ -119,6 +120,13 @@ struct frad_conf
 #define FRAD_CLOCK_EXT		0x0000
 
 #ifdef __KERNEL__
+=======
+#ifndef _FRAD_H_
+#define _FRAD_H_
+
+#include <uapi/linux/if_frad.h>
+
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_DLCI) || defined(CONFIG_DLCI_MODULE)
 
@@ -188,6 +196,9 @@ struct frad_local
 
 extern void dlci_ioctl_set(int (*hook)(unsigned int, void __user *));
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

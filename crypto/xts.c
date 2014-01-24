@@ -22,9 +22,13 @@
 #include <linux/slab.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <crypto/xts.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <crypto/xts.h>
+>>>>>>> refs/remotes/origin/master
 #include <crypto/b128ops.h>
 #include <crypto/gf128mul.h>
 
@@ -101,10 +105,14 @@ static int crypt(struct blkcipher_desc *d,
 	int err;
 	unsigned int avail;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const int bs = crypto_cipher_blocksize(ctx->child);
 =======
 	const int bs = XTS_BLOCK_SIZE;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	const int bs = XTS_BLOCK_SIZE;
+>>>>>>> refs/remotes/origin/master
 	struct sinfo s = {
 		.tfm = crypto_cipher_tfm(ctx->child),
 		.fn = fn
@@ -174,7 +182,10 @@ static int decrypt(struct blkcipher_desc *desc, struct scatterlist *dst,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int xts_crypt(struct blkcipher_desc *desc, struct scatterlist *sdst,
 	      struct scatterlist *ssrc, unsigned int nbytes,
 	      struct xts_crypt_req *req)
@@ -247,7 +258,10 @@ first:
 }
 EXPORT_SYMBOL_GPL(xts_crypt);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int init_tfm(struct crypto_tfm *tfm)
 {
 	struct crypto_cipher *cipher;
@@ -261,10 +275,14 @@ static int init_tfm(struct crypto_tfm *tfm)
 		return PTR_ERR(cipher);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (crypto_cipher_blocksize(cipher) != 16) {
 =======
 	if (crypto_cipher_blocksize(cipher) != XTS_BLOCK_SIZE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (crypto_cipher_blocksize(cipher) != XTS_BLOCK_SIZE) {
+>>>>>>> refs/remotes/origin/master
 		*flags |= CRYPTO_TFM_RES_BAD_BLOCK_LEN;
 		crypto_free_cipher(cipher);
 		return -EINVAL;
@@ -280,10 +298,14 @@ static int init_tfm(struct crypto_tfm *tfm)
 
 	/* this check isn't really needed, leave it here just in case */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (crypto_cipher_blocksize(cipher) != 16) {
 =======
 	if (crypto_cipher_blocksize(cipher) != XTS_BLOCK_SIZE) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (crypto_cipher_blocksize(cipher) != XTS_BLOCK_SIZE) {
+>>>>>>> refs/remotes/origin/master
 		crypto_free_cipher(cipher);
 		crypto_free_cipher(ctx->child);
 		*flags |= CRYPTO_TFM_RES_BAD_BLOCK_LEN;

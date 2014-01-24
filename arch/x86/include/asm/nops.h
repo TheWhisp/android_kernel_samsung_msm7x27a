@@ -87,7 +87,15 @@
 #define P6_NOP8	0x0f,0x1f,0x84,0x00,0,0,0,0
 #define P6_NOP5_ATOMIC P6_NOP5
 
+<<<<<<< HEAD
 #define _ASM_MK_NOP(x) ".byte " __stringify(x) "\n"
+=======
+#ifdef __ASSEMBLY__
+#define _ASM_MK_NOP(x) .byte x
+#else
+#define _ASM_MK_NOP(x) ".byte " __stringify(x) "\n"
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_MK7)
 #define ASM_NOP1 _ASM_MK_NOP(K7_NOP1)

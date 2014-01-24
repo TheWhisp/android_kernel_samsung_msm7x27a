@@ -1,14 +1,18 @@
+<<<<<<< HEAD
 #ifndef _ASM_POWERPC_MMAN_H
 #define _ASM_POWERPC_MMAN_H
 
 #include <asm-generic/mman-common.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version
  * 2 of the License, or (at your option) any later version.
  */
+<<<<<<< HEAD
 
 #define PROT_SAO	0x10		/* Strong Access Ordering */
 
@@ -29,6 +33,13 @@
 #define MAP_HUGETLB	0x40000		/* create a huge page mapping */
 
 #ifdef __KERNEL__
+=======
+#ifndef _ASM_POWERPC_MMAN_H
+#define _ASM_POWERPC_MMAN_H
+
+#include <uapi/asm/mman.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC64
 
 #include <asm/cputable.h>
@@ -61,5 +72,8 @@ static inline int arch_validate_prot(unsigned long prot)
 #define arch_validate_prot(prot) arch_validate_prot(prot)
 
 #endif /* CONFIG_PPC64 */
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* _ASM_POWERPC_MMAN_H */

@@ -1,12 +1,16 @@
 /*
  *  Copyright (C) 2002 ARM Ltd.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (c) 2012, The Linux Foundation. All rights reserved.
  *  All Rights Reserved
 =======
  *  All Rights Reserved
  *  Copyright (c) 2011-2012, The Linux Foundation. All rights reserved.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  All Rights Reserved
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -15,6 +19,7 @@
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/smp.h>
+<<<<<<< HEAD
 #include <linux/cpu.h>
 
 #include <asm/cacheflush.h>
@@ -51,6 +56,15 @@ static inline void cpu_enter_lowpower(void)
 	/* Just flush the cache. Changing the coherency is not yet
 	 * available on msm. */
 	flush_cache_all();
+=======
+
+#include <asm/smp_plat.h>
+
+#include "common.h"
+
+static inline void cpu_enter_lowpower(void)
+{
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void cpu_leave_lowpower(void)
@@ -61,6 +75,7 @@ static inline void platform_do_lowpower(unsigned int cpu)
 {
 	/* Just enter wfi for now. TODO: Properly shut off the cpu. */
 	for (;;) {
+<<<<<<< HEAD
 
 		msm_pm_cpu_enter_lowpower(cpu);
 <<<<<<< HEAD
@@ -74,6 +89,20 @@ static inline void platform_do_lowpower(unsigned int cpu)
 			pen_release = -1;
 			dmac_flush_range((void *)&pen_release,
 				(void *)(&pen_release + sizeof(pen_release)));
+=======
+		/*
+		 * here's the WFI
+		 */
+		asm("wfi"
+		    :
+		    :
+		    : "memory", "cc");
+
+		if (pen_release == cpu_logical_map(cpu)) {
+			/*
+			 * OK, proper wakeup, we're done
+			 */
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 
@@ -85,12 +114,16 @@ static inline void platform_do_lowpower(unsigned int cpu)
 		 * possible, since we are currently running incoherently, and
 		 * therefore cannot safely call printk() or anything else
 		 */
+<<<<<<< HEAD
 		dmac_inv_range((void *)&pen_release,
 			       (void *)(&pen_release + sizeof(pen_release)));
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_debug("CPU%u: spurious wakeup call\n", cpu);
 	}
 }
 
+<<<<<<< HEAD
 int platform_cpu_kill(unsigned int cpu)
 {
 <<<<<<< HEAD
@@ -108,11 +141,14 @@ int platform_cpu_kill(unsigned int cpu)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * platform-specific code to shutdown a CPU
  *
  * Called with IRQs disabled
  */
+<<<<<<< HEAD
 void platform_cpu_die(unsigned int cpu)
 {
 	if (unlikely(cpu != smp_processor_id())) {
@@ -121,12 +157,17 @@ void platform_cpu_die(unsigned int cpu)
 		BUG();
 	}
 	complete(&__get_cpu_var(msm_hotplug_devices).cpu_killed);
+=======
+void __ref msm_cpu_die(unsigned int cpu)
+{
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * we're ready for shutdown now, so do it
 	 */
 	cpu_enter_lowpower();
 	platform_do_lowpower(cpu);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pr_notice("CPU%u: %s: normal wakeup\n", cpu, __func__);
 =======
@@ -223,3 +264,11 @@ static int __init init_hotplug(void)
 }
 early_initcall(init_hotplug);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * bring this CPU back into the world of cache
+	 * coherency, and then restore interrupts
+	 */
+	cpu_leave_lowpower();
+}
+>>>>>>> refs/remotes/origin/master

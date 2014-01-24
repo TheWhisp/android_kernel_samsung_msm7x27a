@@ -85,9 +85,13 @@ ENTRY(cpu_arm1022_proc_fin)
  */
 	.align	5
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.pushsection	.idmap.text, "ax"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.pushsection	.idmap.text, "ax"
+>>>>>>> refs/remotes/origin/master
 ENTRY(cpu_arm1022_reset)
 	mov	ip, #0
 	mcr	p15, 0, ip, c7, c7, 0		@ invalidate I,D caches
@@ -101,10 +105,15 @@ ENTRY(cpu_arm1022_reset)
 	mcr	p15, 0, ip, c1, c0, 0		@ ctrl register
 	mov	pc, r0
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ENDPROC(cpu_arm1022_reset)
 	.popsection
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ENDPROC(cpu_arm1022_reset)
+	.popsection
+>>>>>>> refs/remotes/origin/master
 
 /*
  * cpu_arm1022_do_idle()
@@ -230,6 +239,10 @@ ENTRY(arm1022_coherent_user_range)
 	cmp	r0, r1
 	blo	1b
 	mcr	p15, 0, ip, c7, c10, 4		@ drain WB
+<<<<<<< HEAD
+=======
+	mov	r0, #0
+>>>>>>> refs/remotes/origin/master
 	mov	pc, lr
 
 /*
@@ -349,6 +362,7 @@ ENTRY(arm1022_dma_unmap_area)
 ENDPROC(arm1022_dma_unmap_area)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ENTRY(arm1022_cache_fns)
 	.long	arm1022_flush_icache_all
 	.long	arm1022_flush_kern_cache_all
@@ -364,6 +378,13 @@ ENTRY(arm1022_cache_fns)
 	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
 	define_cache_functions arm1022
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.globl	arm1022_flush_kern_cache_louis
+	.equ	arm1022_flush_kern_cache_louis, arm1022_flush_kern_cache_all
+
+	@ define struct cpu_cache_fns (see <asm/cacheflush.h> and proc-macros.S)
+	define_cache_functions arm1022
+>>>>>>> refs/remotes/origin/master
 
 	.align	5
 ENTRY(cpu_arm1022_dcache_clean_area)
@@ -423,8 +444,11 @@ ENTRY(cpu_arm1022_set_pte_ext)
 #endif /* CONFIG_MMU */
 	mov	pc, lr
 
+<<<<<<< HEAD
 	__CPUINIT
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.type	__arm1022_setup, #function
 __arm1022_setup:
 	mov	r0, #0
@@ -455,6 +479,7 @@ arm1022_crval:
 	crval	clear=0x00007f3f, mmuset=0x00003935, ucset=0x00001930
 
 	__INITDATA
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 /*
@@ -494,6 +519,8 @@ cpu_arm1022_name:
 	.asciz	"ARM1022"
 	.size	cpu_arm1022_name, . - cpu_arm1022_name
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	@ define struct processor (see <asm/proc-fns.h> and proc-macros.S)
 	define_processor_functions arm1022, dabort=v4t_early_abort, pabort=legacy_pabort
 
@@ -502,7 +529,10 @@ cpu_arm1022_name:
 	string	cpu_arch_name, "armv5te"
 	string	cpu_elf_name, "v5"
 	string	cpu_arm1022_name, "ARM1022"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.align
 

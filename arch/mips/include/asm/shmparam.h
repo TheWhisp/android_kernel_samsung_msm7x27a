@@ -8,6 +8,10 @@
 
 #define __ARCH_FORCE_SHMLBA	1
 
+<<<<<<< HEAD
 #define	SHMLBA 0x40000			/* attach addr a multiple of this */
+=======
+#define SHMLBA 0x40000			/* attach addr a multiple of this */
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _ASM_SHMPARAM_H */

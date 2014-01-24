@@ -157,7 +157,11 @@ static int keyspan_load_tester(struct usb_keyspan* dev, int bits_needed)
 	 * though so it's not too big a deal
 	 */
 	if (dev->data.pos >= dev->data.len) {
+<<<<<<< HEAD
 		dev_dbg(&dev->udev->dev,
+=======
+		dev_dbg(&dev->interface->dev,
+>>>>>>> refs/remotes/origin/master
 			"%s - Error ran out of data. pos: %d, len: %d\n",
 			__func__, dev->data.pos, dev->data.len);
 		return -1;
@@ -267,7 +271,13 @@ static void keyspan_check_data(struct usb_keyspan *remote)
 				remote->data.tester = remote->data.tester >> 6;
 				remote->data.bits_left -= 6;
 			} else {
+<<<<<<< HEAD
 				err("%s - Unknown sequence found in system data.\n", __func__);
+=======
+				dev_err(&remote->interface->dev,
+					"%s - Unknown sequence found in system data.\n",
+					__func__);
+>>>>>>> refs/remotes/origin/master
 				remote->stage = 0;
 				return;
 			}
@@ -286,7 +296,13 @@ static void keyspan_check_data(struct usb_keyspan *remote)
 				remote->data.tester = remote->data.tester >> 6;
 				remote->data.bits_left -= 6;
 			} else {
+<<<<<<< HEAD
 				err("%s - Unknown sequence found in button data.\n", __func__);
+=======
+				dev_err(&remote->interface->dev,
+					"%s - Unknown sequence found in button data.\n",
+					__func__);
+>>>>>>> refs/remotes/origin/master
 				remote->stage = 0;
 				return;
 			}
@@ -302,7 +318,13 @@ static void keyspan_check_data(struct usb_keyspan *remote)
 			remote->data.tester = remote->data.tester >> 6;
 			remote->data.bits_left -= 6;
 		} else {
+<<<<<<< HEAD
 			err("%s - Error in message, invalid toggle.\n", __func__);
+=======
+			dev_err(&remote->interface->dev,
+				"%s - Error in message, invalid toggle.\n",
+				__func__);
+>>>>>>> refs/remotes/origin/master
 			remote->stage = 0;
 			return;
 		}
@@ -312,10 +334,18 @@ static void keyspan_check_data(struct usb_keyspan *remote)
 			remote->data.tester = remote->data.tester >> 5;
 			remote->data.bits_left -= 5;
 		} else {
+<<<<<<< HEAD
 			err("Bad message received, no stop bit found.\n");
 		}
 
 		dev_dbg(&remote->udev->dev,
+=======
+			dev_err(&remote->interface->dev,
+				"Bad message received, no stop bit found.\n");
+		}
+
+		dev_dbg(&remote->interface->dev,
+>>>>>>> refs/remotes/origin/master
 			"%s found valid message: system: %d, button: %d, toggle: %d\n",
 			__func__, message.system, message.button, message.toggle);
 
@@ -397,7 +427,13 @@ static void keyspan_irq_recv(struct urb *urb)
 resubmit:
 	retval = usb_submit_urb(urb, GFP_ATOMIC);
 	if (retval)
+<<<<<<< HEAD
 		err ("%s - usb_submit_urb failed with result: %d", __func__, retval);
+=======
+		dev_err(&dev->interface->dev,
+			"%s - usb_submit_urb failed with result: %d\n",
+			__func__, retval);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int keyspan_open(struct input_dev *dev)
@@ -581,6 +617,7 @@ static struct usb_driver keyspan_driver =
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init usb_keyspan_init(void)
 {
 	int result;
@@ -604,6 +641,9 @@ module_exit(usb_keyspan_exit);
 =======
 module_usb_driver(keyspan_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_usb_driver(keyspan_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DEVICE_TABLE(usb, keyspan_table);
 MODULE_AUTHOR(DRIVER_AUTHOR);

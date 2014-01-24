@@ -22,6 +22,7 @@
 
 #define __read_mostly __attribute__((__section__(".data..read_mostly")))
 
+<<<<<<< HEAD
 #ifdef CONFIG_SPARC32
 #include <asm/asi.h>
 
@@ -136,4 +137,6 @@ static inline void flush_ei_user(unsigned int addr)
 }
 #endif /* CONFIG_SPARC32 */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !(_SPARC_CACHE_H) */

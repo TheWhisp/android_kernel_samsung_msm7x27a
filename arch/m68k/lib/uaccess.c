@@ -16,15 +16,20 @@ unsigned long __generic_copy_from_user(void *to, const void __user *from,
 		"	tst.l	%0\n"
 		"	jeq	2f\n"
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"1:	moves.l	(%1)+,%3\n"
 =======
 		"1:	"MOVES".l	(%1)+,%3\n"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"1:	"MOVES".l	(%1)+,%3\n"
+>>>>>>> refs/remotes/origin/master
 		"	move.l	%3,(%2)+\n"
 		"	subq.l	#1,%0\n"
 		"	jne	1b\n"
 		"2:	btst	#1,%5\n"
 		"	jeq	4f\n"
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"3:	moves.w	(%1)+,%3\n"
 		"	move.w	%3,(%2)+\n"
@@ -32,12 +37,17 @@ unsigned long __generic_copy_from_user(void *to, const void __user *from,
 		"	jeq	6f\n"
 		"5:	moves.b	(%1)+,%3\n"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		"3:	"MOVES".w	(%1)+,%3\n"
 		"	move.w	%3,(%2)+\n"
 		"4:	btst	#0,%5\n"
 		"	jeq	6f\n"
 		"5:	"MOVES".b	(%1)+,%3\n"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		"	move.b  %3,(%2)+\n"
 		"6:\n"
 		"	.section .fixup,\"ax\"\n"
@@ -64,7 +74,11 @@ unsigned long __generic_copy_from_user(void *to, const void __user *from,
 		"	.long	3b,30b\n"
 		"	.long	5b,50b\n"
 		"	.previous"
+<<<<<<< HEAD
 		: "=d" (res), "+a" (from), "+a" (to), "=&r" (tmp)
+=======
+		: "=d" (res), "+a" (from), "+a" (to), "=&d" (tmp)
+>>>>>>> refs/remotes/origin/master
 		: "0" (n / 4), "d" (n & 3));
 
 	return res;
@@ -81,15 +95,20 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
 		"	jeq	4f\n"
 		"1:	move.l	(%1)+,%3\n"
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"2:	moves.l	%3,(%2)+\n"
 =======
 		"2:	"MOVES".l	%3,(%2)+\n"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"2:	"MOVES".l	%3,(%2)+\n"
+>>>>>>> refs/remotes/origin/master
 		"3:	subq.l	#1,%0\n"
 		"	jne	1b\n"
 		"4:	btst	#1,%5\n"
 		"	jeq	6f\n"
 		"	move.w	(%1)+,%3\n"
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"5:	moves.w	%3,(%2)+\n"
 		"6:	btst	#0,%5\n"
@@ -97,12 +116,17 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
 		"	move.b	(%1)+,%3\n"
 		"7:	moves.b  %3,(%2)+\n"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		"5:	"MOVES".w	%3,(%2)+\n"
 		"6:	btst	#0,%5\n"
 		"	jeq	8f\n"
 		"	move.b	(%1)+,%3\n"
 		"7:	"MOVES".b  %3,(%2)+\n"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		"8:\n"
 		"	.section .fixup,\"ax\"\n"
 		"	.even\n"
@@ -120,7 +144,11 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
 		"	.long	7b,50b\n"
 		"	.long	8b,50b\n"
 		"	.previous"
+<<<<<<< HEAD
 		: "=d" (res), "+a" (from), "+a" (to), "=&r" (tmp)
+=======
+		: "=d" (res), "+a" (from), "+a" (to), "=&d" (tmp)
+>>>>>>> refs/remotes/origin/master
 		: "0" (n / 4), "d" (n & 3));
 
 	return res;
@@ -128,6 +156,7 @@ unsigned long __generic_copy_to_user(void __user *to, const void *from,
 EXPORT_SYMBOL(__generic_copy_to_user);
 
 /*
+<<<<<<< HEAD
  * Copy a null terminated string from userspace.
  */
 long strncpy_from_user(char *dst, const char __user *src, long count)
@@ -210,6 +239,8 @@ long strnlen_user(const char __user *src, long n)
 EXPORT_SYMBOL(strnlen_user);
 
 /*
+=======
+>>>>>>> refs/remotes/origin/master
  * Zero Userspace
  */
 
@@ -221,25 +252,35 @@ unsigned long __clear_user(void __user *to, unsigned long n)
 		"	tst.l	%0\n"
 		"	jeq	3f\n"
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"1:	moves.l	%2,(%1)+\n"
 =======
 		"1:	"MOVES".l	%2,(%1)+\n"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		"1:	"MOVES".l	%2,(%1)+\n"
+>>>>>>> refs/remotes/origin/master
 		"2:	subq.l	#1,%0\n"
 		"	jne	1b\n"
 		"3:	btst	#1,%4\n"
 		"	jeq	5f\n"
+<<<<<<< HEAD
 <<<<<<< HEAD
 		"4:	moves.w	%2,(%1)+\n"
 		"5:	btst	#0,%4\n"
 		"	jeq	7f\n"
 		"6:	moves.b	%2,(%1)\n"
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		"4:	"MOVES".w	%2,(%1)+\n"
 		"5:	btst	#0,%4\n"
 		"	jeq	7f\n"
 		"6:	"MOVES".b	%2,(%1)\n"
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		"7:\n"
 		"	.section .fixup,\"ax\"\n"
 		"	.even\n"
@@ -258,7 +299,11 @@ unsigned long __clear_user(void __user *to, unsigned long n)
 		"	.long	7b,40b\n"
 		"	.previous"
 		: "=d" (res), "+a" (to)
+<<<<<<< HEAD
 		: "r" (0), "0" (n / 4), "d" (n & 3));
+=======
+		: "d" (0), "0" (n / 4), "d" (n & 3));
+>>>>>>> refs/remotes/origin/master
 
     return res;
 }

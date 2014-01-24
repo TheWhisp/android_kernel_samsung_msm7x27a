@@ -38,11 +38,17 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/kmod.h>
 #include <linux/moduleparam.h>
 #include <linux/ratelimit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/kmod.h>
+#include <linux/moduleparam.h>
+#include <linux/ratelimit.h>
+>>>>>>> refs/remotes/origin/master
 #include <scsi/osd_initiator.h>
 #include "objlayout.h"
 
@@ -151,6 +157,7 @@ end_offset(u64 start, u64 len)
 	return end >= start ? end : NFS4_MAX_UINT64;
 }
 
+<<<<<<< HEAD
 /* last octet in a range */
 static inline u64
 last_byte_offset(u64 start, u64 len)
@@ -181,17 +188,23 @@ objlayout_alloc_io_state(struct pnfs_layout_hdr *pnfs_layout_type,
 		return NULL;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void _fix_verify_io_params(struct pnfs_layout_segment *lseg,
 			   struct page ***p_pages, unsigned *p_pgbase,
 			   u64 offset, unsigned long count)
 {
 	u64 lseg_end_offset;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	BUG_ON(offset < lseg->pls_range.offset);
 	lseg_end_offset = end_offset(lseg->pls_range.offset,
 				     lseg->pls_range.length);
 	BUG_ON(offset >= lseg_end_offset);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	if (offset + count > lseg_end_offset) {
 		count = lseg->pls_range.length -
@@ -226,6 +239,8 @@ objlayout_free_io_state(struct objlayout_io_state *state)
 
 	objio_free_io_state(state);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	WARN_ON(offset + count > lseg_end_offset);
 
 	if (*p_pgbase > PAGE_SIZE) {
@@ -233,13 +248,17 @@ objlayout_free_io_state(struct objlayout_io_state *state)
 		*p_pages += *p_pgbase >> PAGE_SHIFT;
 		*p_pgbase &= ~PAGE_MASK;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
  * I/O done common code
  */
 static void
+<<<<<<< HEAD
 <<<<<<< HEAD
 objlayout_iodone(struct objlayout_io_state *state)
 {
@@ -254,6 +273,8 @@ objlayout_iodone(struct objlayout_io_state *state)
 		objlay->delta_space_valid = OBJ_DSU_INVALID;
 		list_add(&objlay->err_list, &state->err_list);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 objlayout_iodone(struct objlayout_io_res *oir)
 {
 	if (likely(oir->status >= 0)) {
@@ -264,7 +285,10 @@ objlayout_iodone(struct objlayout_io_res *oir)
 		spin_lock(&objlay->lock);
 		objlay->delta_space_valid = OBJ_DSU_INVALID;
 		list_add(&objlay->err_list, &oir->err_list);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		spin_unlock(&objlay->lock);
 	}
 }
@@ -277,6 +301,7 @@ objlayout_iodone(struct objlayout_io_res *oir)
  */
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 objlayout_io_set_result(struct objlayout_io_state *state, unsigned index,
 			struct pnfs_osd_objid *pooid, int osd_error,
 			u64 offset, u64 length, bool is_write)
@@ -285,6 +310,8 @@ objlayout_io_set_result(struct objlayout_io_state *state, unsigned index,
 
 	BUG_ON(index >= state->num_comps);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 objlayout_io_set_result(struct objlayout_io_res *oir, unsigned index,
 			struct pnfs_osd_objid *pooid, int osd_error,
 			u64 offset, u64 length, bool is_write)
@@ -292,7 +319,10 @@ objlayout_io_set_result(struct objlayout_io_res *oir, unsigned index,
 	struct pnfs_osd_ioerr *ioerr = &oir->ioerrs[index];
 
 	BUG_ON(index >= oir->num_comps);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (osd_error) {
 		ioerr->oer_component = *pooid;
 		ioerr->oer_comp_offset = offset;
@@ -334,6 +364,7 @@ static void _rpc_read_complete(struct work_struct *work)
 
 void
 <<<<<<< HEAD
+<<<<<<< HEAD
 objlayout_read_done(struct objlayout_io_state *state, ssize_t status, bool sync)
 {
 	int eof = state->eof;
@@ -352,6 +383,8 @@ objlayout_read_done(struct objlayout_io_state *state, ssize_t status, bool sync)
 	objlayout_iodone(state);
 	/* must not use state after this point */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 objlayout_read_done(struct objlayout_io_res *oir, ssize_t status, bool sync)
 {
 	struct nfs_read_data *rdata = oir->rpcdata;
@@ -360,13 +393,20 @@ objlayout_read_done(struct objlayout_io_res *oir, ssize_t status, bool sync)
 	if (status >= 0)
 		rdata->res.count = status;
 	else
+<<<<<<< HEAD
 		rdata->pnfs_error = status;
+=======
+		rdata->header->pnfs_error = status;
+>>>>>>> refs/remotes/origin/master
 	objlayout_iodone(oir);
 	/* must not use oir after this point */
 
 	dprintk("%s: Return status=%zd eof=%d sync=%d\n", __func__,
 		status, rdata->res.eof, sync);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (sync)
 		pnfs_ld_read_done(rdata);
@@ -382,6 +422,7 @@ objlayout_read_done(struct objlayout_io_res *oir, ssize_t status, bool sync)
 enum pnfs_try_status
 objlayout_read_pagelist(struct nfs_read_data *rdata)
 {
+<<<<<<< HEAD
 	loff_t offset = rdata->args.offset;
 	size_t count = rdata->args.count;
 <<<<<<< HEAD
@@ -403,18 +444,32 @@ objlayout_read_pagelist(struct nfs_read_data *rdata)
 	loff_t eof;
 
 	eof = i_size_read(rdata->inode);
+=======
+	struct nfs_pgio_header *hdr = rdata->header;
+	struct inode *inode = hdr->inode;
+	loff_t offset = rdata->args.offset;
+	size_t count = rdata->args.count;
+	int err;
+	loff_t eof;
+
+	eof = i_size_read(inode);
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(offset + count > eof)) {
 		if (offset >= eof) {
 			err = 0;
 			rdata->res.count = 0;
 			rdata->res.eof = 1;
 			/*FIXME: do we need to call pnfs_ld_read_done() */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto out;
 		}
 		count = eof - offset;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	state = objlayout_alloc_io_state(NFS_I(rdata->inode)->layout,
 					 rdata->args.pages, rdata->args.pgbase,
@@ -435,20 +490,35 @@ objlayout_read_pagelist(struct nfs_read_data *rdata)
 =======
 	rdata->res.eof = (offset + count) >= eof;
 	_fix_verify_io_params(rdata->lseg, &rdata->args.pages,
+=======
+	rdata->res.eof = (offset + count) >= eof;
+	_fix_verify_io_params(hdr->lseg, &rdata->args.pages,
+>>>>>>> refs/remotes/origin/master
 			      &rdata->args.pgbase,
 			      rdata->args.offset, rdata->args.count);
 
 	dprintk("%s: inode(%lx) offset 0x%llx count 0x%Zx eof=%d\n",
+<<<<<<< HEAD
 		__func__, rdata->inode->i_ino, offset, count, rdata->res.eof);
+=======
+		__func__, inode->i_ino, offset, count, rdata->res.eof);
+>>>>>>> refs/remotes/origin/master
 
 	err = objio_read_pagelist(rdata);
  out:
 	if (unlikely(err)) {
+<<<<<<< HEAD
 		rdata->pnfs_error = err;
 		dprintk("%s: Returned Error %d\n", __func__, err);
 		return PNFS_NOT_ATTEMPTED;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hdr->pnfs_error = err;
+		dprintk("%s: Returned Error %d\n", __func__, err);
+		return PNFS_NOT_ATTEMPTED;
+	}
+>>>>>>> refs/remotes/origin/master
 	return PNFS_ATTEMPTED;
 }
 
@@ -469,6 +539,7 @@ static void _rpc_write_complete(struct work_struct *work)
 }
 
 void
+<<<<<<< HEAD
 <<<<<<< HEAD
 objlayout_write_done(struct objlayout_io_state *state, ssize_t status,
 		     bool sync)
@@ -493,6 +564,8 @@ objlayout_write_done(struct objlayout_io_state *state, ssize_t status,
 	objlayout_iodone(state);
 	/* must not use state after this point */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 objlayout_write_done(struct objlayout_io_res *oir, ssize_t status, bool sync)
 {
 	struct nfs_write_data *wdata = oir->rpcdata;
@@ -502,14 +575,21 @@ objlayout_write_done(struct objlayout_io_res *oir, ssize_t status, bool sync)
 		wdata->res.count = status;
 		wdata->verf.committed = oir->committed;
 	} else {
+<<<<<<< HEAD
 		wdata->pnfs_error = status;
+=======
+		wdata->header->pnfs_error = status;
+>>>>>>> refs/remotes/origin/master
 	}
 	objlayout_iodone(oir);
 	/* must not use oir after this point */
 
 	dprintk("%s: Return status %zd committed %d sync=%d\n", __func__,
 		status, wdata->verf.committed, sync);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (sync)
 		pnfs_ld_write_done(wdata);
@@ -526,6 +606,7 @@ enum pnfs_try_status
 objlayout_write_pagelist(struct nfs_write_data *wdata,
 			 int how)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct objlayout_io_state *state;
 	ssize_t status;
@@ -555,16 +636,29 @@ objlayout_write_pagelist(struct nfs_write_data *wdata,
 	int err;
 
 	_fix_verify_io_params(wdata->lseg, &wdata->args.pages,
+=======
+	struct nfs_pgio_header *hdr = wdata->header;
+	int err;
+
+	_fix_verify_io_params(hdr->lseg, &wdata->args.pages,
+>>>>>>> refs/remotes/origin/master
 			      &wdata->args.pgbase,
 			      wdata->args.offset, wdata->args.count);
 
 	err = objio_write_pagelist(wdata, how);
 	if (unlikely(err)) {
+<<<<<<< HEAD
 		wdata->pnfs_error = err;
 		dprintk("%s: Returned Error %d\n", __func__, err);
 		return PNFS_NOT_ATTEMPTED;
 	}
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		hdr->pnfs_error = err;
+		dprintk("%s: Returned Error %d\n", __func__, err);
+		return PNFS_NOT_ATTEMPTED;
+	}
+>>>>>>> refs/remotes/origin/master
 	return PNFS_ATTEMPTED;
 }
 
@@ -672,6 +766,7 @@ static void
 encode_accumulated_error(struct objlayout *objlay, __be32 *p)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct objlayout_io_state *state, *tmp;
 	struct pnfs_osd_ioerr accumulated_err = {.oer_errno = 0};
 
@@ -681,6 +776,8 @@ encode_accumulated_error(struct objlayout *objlay, __be32 *p)
 		for (i = 0; i < state->num_comps; i++) {
 			struct pnfs_osd_ioerr *ioerr = &state->ioerrs[i];
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct objlayout_io_res *oir, *tmp;
 	struct pnfs_osd_ioerr accumulated_err = {.oer_errno = 0};
 
@@ -689,11 +786,15 @@ encode_accumulated_error(struct objlayout *objlay, __be32 *p)
 
 		for (i = 0; i < oir->num_comps; i++) {
 			struct pnfs_osd_ioerr *ioerr = &oir->ioerrs[i];
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 			if (!ioerr->oer_errno)
 				continue;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 			printk(KERN_ERR "%s: err[%d]: errno=%d is_write=%d "
 				"dev(%llx:%llx) par=0x%llx obj=0x%llx "
@@ -703,6 +804,11 @@ encode_accumulated_error(struct objlayout *objlay, __be32 *p)
 				"is_write=%d dev(%llx:%llx) par=0x%llx "
 				"obj=0x%llx offset=0x%llx length=0x%llx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			printk(KERN_ERR "NFS: %s: err[%d]: errno=%d "
+				"is_write=%d dev(%llx:%llx) par=0x%llx "
+				"obj=0x%llx offset=0x%llx length=0x%llx\n",
+>>>>>>> refs/remotes/origin/master
 				__func__, i, ioerr->oer_errno,
 				ioerr->oer_iswrite,
 				_DEVID_LO(&ioerr->oer_component.oid_device_id),
@@ -715,12 +821,17 @@ encode_accumulated_error(struct objlayout *objlay, __be32 *p)
 			merge_ioerr(&accumulated_err, ioerr);
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_del(&state->err_list);
 		objlayout_free_io_state(state);
 =======
 		list_del(&oir->err_list);
 		objio_free_result(oir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del(&oir->err_list);
+		objio_free_result(oir);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pnfs_osd_xdr_encode_ioerr(p, &accumulated_err);
@@ -733,10 +844,14 @@ objlayout_encode_layoutreturn(struct pnfs_layout_hdr *pnfslay,
 {
 	struct objlayout *objlay = OBJLAYOUT(pnfslay);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct objlayout_io_state *state, *tmp;
 =======
 	struct objlayout_io_res *oir, *tmp;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct objlayout_io_res *oir, *tmp;
+>>>>>>> refs/remotes/origin/master
 	__be32 *start;
 
 	dprintk("%s: Begin\n", __func__);
@@ -746,14 +861,19 @@ objlayout_encode_layoutreturn(struct pnfs_layout_hdr *pnfslay,
 	spin_lock(&objlay->lock);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	list_for_each_entry_safe(state, tmp, &objlay->err_list, err_list) {
 =======
 	list_for_each_entry_safe(oir, tmp, &objlay->err_list, err_list) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	list_for_each_entry_safe(oir, tmp, &objlay->err_list, err_list) {
+>>>>>>> refs/remotes/origin/master
 		__be32 *last_xdr = NULL, *p;
 		unsigned i;
 		int res = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		for (i = 0; i < state->num_comps; i++) {
 			struct pnfs_osd_ioerr *ioerr = &state->ioerrs[i];
@@ -761,6 +881,10 @@ objlayout_encode_layoutreturn(struct pnfs_layout_hdr *pnfslay,
 		for (i = 0; i < oir->num_comps; i++) {
 			struct pnfs_osd_ioerr *ioerr = &oir->ioerrs[i];
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < oir->num_comps; i++) {
+			struct pnfs_osd_ioerr *ioerr = &oir->ioerrs[i];
+>>>>>>> refs/remotes/origin/master
 
 			if (!ioerr->oer_errno)
 				continue;
@@ -785,10 +909,14 @@ objlayout_encode_layoutreturn(struct pnfs_layout_hdr *pnfslay,
 
 			last_xdr = p;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pnfs_osd_xdr_encode_ioerr(p, &state->ioerrs[i]);
 =======
 			pnfs_osd_xdr_encode_ioerr(p, &oir->ioerrs[i]);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pnfs_osd_xdr_encode_ioerr(p, &oir->ioerrs[i]);
+>>>>>>> refs/remotes/origin/master
 		}
 
 		/* TODO: use xdr_write_pages */
@@ -805,12 +933,17 @@ objlayout_encode_layoutreturn(struct pnfs_layout_hdr *pnfslay,
 			goto loop_done;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		list_del(&state->err_list);
 		objlayout_free_io_state(state);
 =======
 		list_del(&oir->err_list);
 		objio_free_result(oir);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		list_del(&oir->err_list);
+		objio_free_result(oir);
+>>>>>>> refs/remotes/origin/master
 	}
 loop_done:
 	spin_unlock(&objlay->lock);
@@ -839,9 +972,12 @@ int objlayout_get_deviceinfo(struct pnfs_layout_hdr *pnfslay,
 	struct objlayout_deviceinfo *odi;
 	struct pnfs_device pd;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct super_block *sb;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	struct page *page, **pages;
 	u32 *p;
 	int err;
@@ -859,12 +995,19 @@ int objlayout_get_deviceinfo(struct pnfs_layout_hdr *pnfslay,
 	pd.pgbase = 0;
 	pd.pglen = PAGE_SIZE;
 	pd.mincount = 0;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	sb = pnfslay->plh_inode->i_sb;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	err = nfs4_proc_getdeviceinfo(NFS_SERVER(pnfslay->plh_inode), &pd);
+=======
+	pd.maxcount = PAGE_SIZE;
+
+	err = nfs4_proc_getdeviceinfo(NFS_SERVER(pnfslay->plh_inode), &pd,
+			pnfslay->plh_lc_cred);
+>>>>>>> refs/remotes/origin/master
 	dprintk("%s nfs_getdeviceinfo returned %d\n", __func__, err);
 	if (err)
 		goto err_out;
@@ -895,7 +1038,10 @@ void objlayout_put_deviceinfo(struct pnfs_osd_deviceaddr *deviceaddr)
 	kfree(odi);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum {
 	OBJLAYOUT_MAX_URI_LEN = 256, OBJLAYOUT_MAX_OSDNAME_LEN = 64,
@@ -1027,4 +1173,7 @@ int objlayout_autologin(struct pnfs_osd_deviceaddr *deviceaddr)
 
 	return rc;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

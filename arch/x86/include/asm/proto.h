@@ -5,8 +5,11 @@
 
 /* misc architecture specific prototypes */
 
+<<<<<<< HEAD
 void early_idt_handler(void);
 
+=======
+>>>>>>> refs/remotes/origin/master
 void system_call(void);
 void syscall_init(void);
 

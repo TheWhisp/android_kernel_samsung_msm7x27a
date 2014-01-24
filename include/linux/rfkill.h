@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 #ifndef __RFKILL_H
 #define __RFKILL_H
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Copyright (C) 2006 - 2007 Ivo van Doorn
  * Copyright (C) 2007 Dmitry Torokhov
@@ -18,6 +21,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+<<<<<<< HEAD
 
 #include <linux/types.h>
 
@@ -104,6 +108,13 @@ struct rfkill_event {
 
 /* and that's all userspace gets */
 #ifdef __KERNEL__
+=======
+#ifndef __RFKILL_H
+#define __RFKILL_H
+
+#include <uapi/linux/rfkill.h>
+
+>>>>>>> refs/remotes/origin/master
 /* don't allow anyone to use these in the kernel */
 enum rfkill_user_states {
 	RFKILL_USER_STATE_SOFT_BLOCKED	= RFKILL_STATE_SOFT_BLOCKED,
@@ -118,16 +129,22 @@ enum rfkill_user_states {
 #include <linux/list.h>
 #include <linux/mutex.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/device.h>
 #include <linux/leds.h>
 #include <linux/err.h>
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/leds.h>
 #include <linux/err.h>
 
 struct device;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* this is opaque */
 struct rfkill;
 
@@ -206,11 +223,16 @@ void rfkill_pause_polling(struct rfkill *rfkill);
  * NOTE: not necessary for suspend/resume -- in that case the
  * core stops polling anyway
  */
+<<<<<<< HEAD
 #ifdef CONFIG_RFKILL_PM
 void rfkill_resume_polling(struct rfkill *rfkill);
 #else
 static inline void rfkill_resume_polling(struct rfkill *rfkill) { }
 #endif
+=======
+void rfkill_resume_polling(struct rfkill *rfkill);
+
+>>>>>>> refs/remotes/origin/master
 
 /**
  * rfkill_unregister - Unregister a rfkill structure.
@@ -364,6 +386,39 @@ static inline bool rfkill_blocked(struct rfkill *rfkill)
 }
 #endif /* RFKILL || RFKILL_MODULE */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+
+#ifdef CONFIG_RFKILL_LEDS
+/**
+ * rfkill_get_led_trigger_name - Get the LED trigger name for the button's LED.
+ * This function might return a NULL pointer if registering of the
+ * LED trigger failed. Use this as "default_trigger" for the LED.
+ */
+const char *rfkill_get_led_trigger_name(struct rfkill *rfkill);
+
+/**
+ * rfkill_set_led_trigger_name -- set the LED trigger name
+ * @rfkill: rfkill struct
+ * @name: LED trigger name
+ *
+ * This function sets the LED trigger name of the radio LED
+ * trigger that rfkill creates. It is optional, but if called
+ * must be called before rfkill_register() to be effective.
+ */
+void rfkill_set_led_trigger_name(struct rfkill *rfkill, const char *name);
+#else
+static inline const char *rfkill_get_led_trigger_name(struct rfkill *rfkill)
+{
+	return NULL;
+}
+
+static inline void
+rfkill_set_led_trigger_name(struct rfkill *rfkill, const char *name)
+{
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif /* RFKILL_H */

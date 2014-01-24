@@ -4,10 +4,14 @@
 
 menuconfig ARCNET
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on NETDEVICES && (ISA || PCI)
 =======
 	depends on NETDEVICES && (ISA || PCI || PCMCIA)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on NETDEVICES && (ISA || PCI || PCMCIA)
+>>>>>>> refs/remotes/origin/master
 	tristate "ARCnet support"
 	---help---
 	  If you have a network card of this type, say Y and check out the
@@ -128,7 +132,10 @@ config ARCNET_COM20020_PCI
 	depends on ARCNET_COM20020 && PCI
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCNET_COM20020_CS
 	tristate "COM20020 ARCnet PCMCIA support"
 	depends on ARCNET_COM20020 && PCMCIA
@@ -139,5 +146,8 @@ config ARCNET_COM20020_CS
 	  To compile this driver as a module, choose M here: the module will be
 	  called com20020_cs.  If unsure, say N.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endif # ARCNET

@@ -2,10 +2,14 @@
  * Driver for the Analog Devices digital potentiometers (I2C bus)
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2010 Michael Hennerich, Analog Devices Inc.
 =======
  * Copyright (C) 2010-2011 Michael Hennerich, Analog Devices Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2010-2011 Michael Hennerich, Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2 or later.
  */
@@ -16,9 +20,12 @@
 #include "ad525x_dpot.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* ------------------------------------------------------------------------- */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* I2C bus functions */
 static int write_d8(void *client, u8 val)
 {
@@ -59,7 +66,11 @@ static const struct ad_dpot_bus_ops bops = {
 	.write_r8d16	= write_r8d16,
 };
 
+<<<<<<< HEAD
 static int __devinit ad_dpot_i2c_probe(struct i2c_client *client,
+=======
+static int ad_dpot_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 				      const struct i2c_device_id *id)
 {
 	struct ad_dpot_bus_data bdata = {
@@ -68,6 +79,7 @@ static int __devinit ad_dpot_i2c_probe(struct i2c_client *client,
 	};
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ad_dpot_id dpot_id = {
 		.name = (char *) &id->name,
 		.devid = id->driver_data,
@@ -75,12 +87,15 @@ static int __devinit ad_dpot_i2c_probe(struct i2c_client *client,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!i2c_check_functionality(client->adapter,
 				     I2C_FUNC_SMBUS_WORD_DATA)) {
 		dev_err(&client->dev, "SMBUS Word Data not Supported\n");
 		return -EIO;
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	return ad_dpot_probe(&client->dev, &bdata, &dpot_id);
 =======
@@ -89,6 +104,12 @@ static int __devinit ad_dpot_i2c_probe(struct i2c_client *client,
 }
 
 static int __devexit ad_dpot_i2c_remove(struct i2c_client *client)
+=======
+	return ad_dpot_probe(&client->dev, &bdata, id->driver_data, id->name);
+}
+
+static int ad_dpot_i2c_remove(struct i2c_client *client)
+>>>>>>> refs/remotes/origin/master
 {
 	return ad_dpot_remove(&client->dev);
 }
@@ -113,9 +134,13 @@ static const struct i2c_device_id ad_dpot_id[] = {
 	{"adn2860", ADN2860_ID},
 	{"ad5273", AD5273_ID},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	{"ad5161", AD5161_ID},
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{"ad5161", AD5161_ID},
+>>>>>>> refs/remotes/origin/master
 	{"ad5171", AD5171_ID},
 	{"ad5170", AD5170_ID},
 	{"ad5172", AD5172_ID},
@@ -132,6 +157,7 @@ static struct i2c_driver ad_dpot_i2c_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ad_dpot_i2c_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ad_dpot_i2c_remove),
 	.id_table	= ad_dpot_id,
 };
@@ -151,6 +177,13 @@ module_exit(ad_dpot_i2c_exit);
 =======
 module_i2c_driver(ad_dpot_i2c_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= ad_dpot_i2c_remove,
+	.id_table	= ad_dpot_id,
+};
+
+module_i2c_driver(ad_dpot_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("digital potentiometer I2C bus driver");

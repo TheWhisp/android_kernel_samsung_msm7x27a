@@ -2,8 +2,11 @@
 #define __UM_IRQFLAGS_H
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Empty for now */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 extern int get_signals(void);
 extern int set_signals(int enable);
 extern void block_signals(void);
@@ -41,6 +44,9 @@ static inline bool arch_irqs_disabled(void)
 {
 	return arch_local_save_flags() == 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif

@@ -21,7 +21,11 @@
 #define _LINUX_ATARIHW_H_
 
 #include <linux/types.h>
+<<<<<<< HEAD
 #include <asm/bootinfo.h>
+=======
+#include <asm/bootinfo-atari.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/raw_io.h>
 
 extern u_long atari_mch_cookie;
@@ -31,10 +35,15 @@ extern int atari_rtc_year_offset;
 extern int atari_dont_touch_floppy_select;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern int atari_SCC_reset_done;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern int atari_SCC_reset_done;
+
+>>>>>>> refs/remotes/origin/master
 /* convenience macros for testing machine type */
 #define MACH_IS_ST	((atari_mch_cookie >> 16) == ATARI_MCH_ST)
 #define MACH_IS_STE	((atari_mch_cookie >> 16) == ATARI_MCH_STE && \
@@ -405,12 +414,17 @@ struct CODEC
   u_char unused2, unused3, unused4, unused5;
   u_char gpio_directions;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define GPIO_IN                 0
 #define GPIO_OUT                1
 =======
 #define CODEC_GPIO_IN           0
 #define CODEC_GPIO_OUT          1
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CODEC_GPIO_IN           0
+#define CODEC_GPIO_OUT          1
+>>>>>>> refs/remotes/origin/master
   u_char unused6;
   u_char gpio_data;
 };
@@ -813,5 +827,14 @@ struct MSTE_RTC {
 
 #define mste_rtc ((*(volatile struct MSTE_RTC *)MSTE_RTC_BAS))
 
+<<<<<<< HEAD
+=======
+/*
+** EtherNAT add-on card for Falcon - combined ethernet and USB adapter
+*/
+
+#define ATARI_ETHERNAT_PHYS_ADDR	0x80000000
+
+>>>>>>> refs/remotes/origin/master
 #endif /* linux/atarihw.h */
 

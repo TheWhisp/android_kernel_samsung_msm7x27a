@@ -9,10 +9,14 @@
 #include <asm/types.h>		/* for BITS_PER_LONG/SHIFT_PER_LONG */
 #include <asm/byteorder.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * HP-PARISC specific bit operations
@@ -228,6 +232,7 @@ static __inline__ int fls(int x)
 
 #include <asm-generic/bitops/le.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /* '3' is bits per byte */
 #define LE_BYTE_ADDR ((sizeof(unsigned long) - 1) << 3)
@@ -239,6 +244,9 @@ static __inline__ int fls(int x)
 =======
 #include <asm-generic/bitops/ext2-atomic-setbit.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm-generic/bitops/ext2-atomic-setbit.h>
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __KERNEL__ */
 

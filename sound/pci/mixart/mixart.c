@@ -26,10 +26,14 @@
 #include <linux/pci.h>
 #include <linux/dma-mapping.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/mutex.h>
 #include <linux/slab.h>
 
@@ -54,10 +58,14 @@ MODULE_SUPPORTED_DEVICE("{{Digigram," CARD_NAME "}}");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;             /* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;              /* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;     /* Enable this card */
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;     /* Enable this card */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;     /* Enable this card */
+>>>>>>> refs/remotes/origin/master
 
 module_param_array(index, int, NULL, 0444);
 MODULE_PARM_DESC(index, "Index value for Digigram " CARD_NAME " soundcard.");
@@ -1012,7 +1020,11 @@ static int snd_mixart_chip_dev_free(struct snd_device *device)
 
 /*
  */
+<<<<<<< HEAD
 static int __devinit snd_mixart_create(struct mixart_mgr *mgr, struct snd_card *card, int idx)
+=======
+static int snd_mixart_create(struct mixart_mgr *mgr, struct snd_card *card, int idx)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 	struct snd_mixart *chip;
@@ -1183,12 +1195,20 @@ static void snd_mixart_proc_read(struct snd_info_entry *entry,
 
 			snd_iprintf(buffer, "\tstreaming          : %d\n", streaming);
 			snd_iprintf(buffer, "\tmailbox            : %d\n", mailbox);
+<<<<<<< HEAD
 			snd_iprintf(buffer, "\tinterrups handling : %d\n\n", interr);
+=======
+			snd_iprintf(buffer, "\tinterrupts handling : %d\n\n", interr);
+>>>>>>> refs/remotes/origin/master
 		}
 	} /* endif elf loaded */
 }
 
+<<<<<<< HEAD
 static void __devinit snd_mixart_proc_init(struct snd_mixart *chip)
+=======
+static void snd_mixart_proc_init(struct snd_mixart *chip)
+>>>>>>> refs/remotes/origin/master
 {
 	struct snd_info_entry *entry;
 
@@ -1217,8 +1237,13 @@ static void __devinit snd_mixart_proc_init(struct snd_mixart *chip)
 /*
  *    probe function - creates the card manager
  */
+<<<<<<< HEAD
 static int __devinit snd_mixart_probe(struct pci_dev *pci,
 				      const struct pci_device_id *pci_id)
+=======
+static int snd_mixart_probe(struct pci_dev *pci,
+			    const struct pci_device_id *pci_id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	struct mixart_mgr *mgr;
@@ -1277,10 +1302,14 @@ static int __devinit snd_mixart_probe(struct pci_dev *pci,
 
 	if (request_irq(pci->irq, snd_mixart_interrupt, IRQF_SHARED,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			CARD_NAME, mgr)) {
 =======
 			KBUILD_MODNAME, mgr)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			KBUILD_MODNAME, mgr)) {
+>>>>>>> refs/remotes/origin/master
 		snd_printk(KERN_ERR "unable to grab IRQ %d\n", pci->irq);
 		snd_mixart_free(mgr);
 		return -EBUSY;
@@ -1386,6 +1415,7 @@ static int __devinit snd_mixart_probe(struct pci_dev *pci,
 	return 0;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_mixart_remove(struct pci_dev *pci)
 {
 	snd_mixart_free(pci_get_drvdata(pci));
@@ -1415,3 +1445,18 @@ static void __exit alsa_card_mixart_exit(void)
 
 module_init(alsa_card_mixart_init)
 module_exit(alsa_card_mixart_exit)
+=======
+static void snd_mixart_remove(struct pci_dev *pci)
+{
+	snd_mixart_free(pci_get_drvdata(pci));
+}
+
+static struct pci_driver mixart_driver = {
+	.name = KBUILD_MODNAME,
+	.id_table = snd_mixart_ids,
+	.probe = snd_mixart_probe,
+	.remove = snd_mixart_remove,
+};
+
+module_pci_driver(mixart_driver);
+>>>>>>> refs/remotes/origin/master

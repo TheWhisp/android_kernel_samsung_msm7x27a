@@ -102,7 +102,11 @@ static void rb532_pata_setup_ports(struct ata_host *ah)
 	ap->ioaddr.error_addr	= info->iobase + RB500_CF_REG_ERR;
 }
 
+<<<<<<< HEAD
 static __devinit int rb532_pata_driver_probe(struct platform_device *pdev)
+=======
+static int rb532_pata_driver_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	int irq;
 	int gpio;
@@ -177,7 +181,11 @@ err_free_gpio:
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devexit int rb532_pata_driver_remove(struct platform_device *pdev)
+=======
+static int rb532_pata_driver_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct ata_host *ah = platform_get_drvdata(pdev);
 	struct rb532_cf_info *info = ah->private_data;
@@ -189,6 +197,7 @@ static __devexit int rb532_pata_driver_remove(struct platform_device *pdev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* work with hotplug and coldplug */
 MODULE_ALIAS("platform:" DRV_NAME);
 
@@ -197,12 +206,18 @@ MODULE_ALIAS("platform:" DRV_NAME);
 static struct platform_driver rb532_pata_platform_driver = {
 	.probe		= rb532_pata_driver_probe,
 	.remove		= __devexit_p(rb532_pata_driver_remove),
+=======
+static struct platform_driver rb532_pata_platform_driver = {
+	.probe		= rb532_pata_driver_probe,
+	.remove		= rb532_pata_driver_remove,
+>>>>>>> refs/remotes/origin/master
 	.driver	 = {
 		.name   = DRV_NAME,
 		.owner  = THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* ------------------------------------------------------------------------ */
 
@@ -224,6 +239,11 @@ static void __exit rb532_pata_module_exit(void)
 
 module_platform_driver(rb532_pata_platform_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DRV_INFO DRV_DESC " version " DRV_VERSION
+
+module_platform_driver(rb532_pata_platform_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Gabor Juhos <juhosg at openwrt.org>");
 MODULE_AUTHOR("Florian Fainelli <florian@openwrt.org>");
@@ -231,9 +251,13 @@ MODULE_DESCRIPTION(DRV_DESC);
 MODULE_VERSION(DRV_VERSION);
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(rb532_pata_module_init);
 module_exit(rb532_pata_module_exit);
 =======
 MODULE_ALIAS("platform:" DRV_NAME);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+MODULE_ALIAS("platform:" DRV_NAME);
+>>>>>>> refs/remotes/origin/master

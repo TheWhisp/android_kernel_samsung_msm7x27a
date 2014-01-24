@@ -56,10 +56,14 @@ static struct proc_dir_entry *divas_proc_entry = NULL;
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 divas_read(struct file *file, char __user *buf, size_t count, loff_t * off)
 =======
 divas_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+divas_read(struct file *file, char __user *buf, size_t count, loff_t *off)
+>>>>>>> refs/remotes/origin/master
 {
 	int len = 0;
 	int cadapter;
@@ -99,19 +103,27 @@ divas_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 
 static ssize_t
 <<<<<<< HEAD
+<<<<<<< HEAD
 divas_write(struct file *file, const char __user *buf, size_t count, loff_t * off)
 =======
 divas_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+divas_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
+>>>>>>> refs/remotes/origin/master
 {
 	return (-ENODEV);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int divas_poll(struct file *file, poll_table * wait)
 =======
 static unsigned int divas_poll(struct file *file, poll_table *wait)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int divas_poll(struct file *file, poll_table *wait)
+>>>>>>> refs/remotes/origin/master
 {
 	return (POLLERR);
 }
@@ -140,10 +152,14 @@ int create_divas_proc(void)
 {
 	divas_proc_entry = proc_create(divas_proc_name, S_IFREG | S_IRUGO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					proc_net_eicon, &divas_fops);
 =======
 				       proc_net_eicon, &divas_fops);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				       proc_net_eicon, &divas_fops);
+>>>>>>> refs/remotes/origin/master
 	if (!divas_proc_entry)
 		return (0);
 
@@ -161,7 +177,11 @@ void remove_divas_proc(void)
 static ssize_t grp_opt_proc_write(struct file *file, const char __user *buffer,
 				  size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 	diva_os_xdi_adapter_t *a = PDE(file->f_path.dentry->d_inode)->data;
+=======
+	diva_os_xdi_adapter_t *a = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	PISDN_ADAPTER IoAdapter = IoAdapters[a->controller - 1];
 
 	if ((count == 1) || (count == 2)) {
@@ -172,18 +192,24 @@ static ssize_t grp_opt_proc_write(struct file *file, const char __user *buffer,
 		case '0':
 			IoAdapter->capi_cfg.cfg_1 &=
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    ~DIVA_XDI_CAPI_CFG_1_GROUP_POPTIMIZATION_ON;
 			break;
 		case '1':
 			IoAdapter->capi_cfg.cfg_1 |=
 			    DIVA_XDI_CAPI_CFG_1_GROUP_POPTIMIZATION_ON;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				~DIVA_XDI_CAPI_CFG_1_GROUP_POPTIMIZATION_ON;
 			break;
 		case '1':
 			IoAdapter->capi_cfg.cfg_1 |=
 				DIVA_XDI_CAPI_CFG_1_GROUP_POPTIMIZATION_ON;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			return (-EINVAL);
@@ -196,7 +222,11 @@ static ssize_t grp_opt_proc_write(struct file *file, const char __user *buffer,
 static ssize_t d_l1_down_proc_write(struct file *file, const char __user *buffer,
 				    size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 	diva_os_xdi_adapter_t *a = PDE(file->f_path.dentry->d_inode)->data;
+=======
+	diva_os_xdi_adapter_t *a = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	PISDN_ADAPTER IoAdapter = IoAdapters[a->controller - 1];
 
 	if ((count == 1) || (count == 2)) {
@@ -207,18 +237,24 @@ static ssize_t d_l1_down_proc_write(struct file *file, const char __user *buffer
 		case '0':
 			IoAdapter->capi_cfg.cfg_1 &=
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    ~DIVA_XDI_CAPI_CFG_1_DYNAMIC_L1_ON;
 			break;
 		case '1':
 			IoAdapter->capi_cfg.cfg_1 |=
 			    DIVA_XDI_CAPI_CFG_1_DYNAMIC_L1_ON;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				~DIVA_XDI_CAPI_CFG_1_DYNAMIC_L1_ON;
 			break;
 		case '1':
 			IoAdapter->capi_cfg.cfg_1 |=
 				DIVA_XDI_CAPI_CFG_1_DYNAMIC_L1_ON;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		default:
 			return (-EINVAL);
@@ -235,6 +271,7 @@ static int d_l1_down_proc_show(struct seq_file *m, void *v)
 
 	seq_printf(m, "%s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       (IoAdapter->capi_cfg.
 			cfg_1 & DIVA_XDI_CAPI_CFG_1_DYNAMIC_L1_ON) ? "1" :
 		       "0");
@@ -243,12 +280,21 @@ static int d_l1_down_proc_show(struct seq_file *m, void *v)
 		    cfg_1 & DIVA_XDI_CAPI_CFG_1_DYNAMIC_L1_ON) ? "1" :
 		   "0");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   (IoAdapter->capi_cfg.
+		    cfg_1 & DIVA_XDI_CAPI_CFG_1_DYNAMIC_L1_ON) ? "1" :
+		   "0");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int d_l1_down_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, d_l1_down_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, d_l1_down_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations d_l1_down_proc_fops = {
@@ -267,6 +313,7 @@ static int grp_opt_proc_show(struct seq_file *m, void *v)
 
 	seq_printf(m, "%s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       (IoAdapter->capi_cfg.
 			cfg_1 & DIVA_XDI_CAPI_CFG_1_GROUP_POPTIMIZATION_ON)
 		       ? "1" : "0");
@@ -275,12 +322,21 @@ static int grp_opt_proc_show(struct seq_file *m, void *v)
 		    cfg_1 & DIVA_XDI_CAPI_CFG_1_GROUP_POPTIMIZATION_ON)
 		   ? "1" : "0");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   (IoAdapter->capi_cfg.
+		    cfg_1 & DIVA_XDI_CAPI_CFG_1_GROUP_POPTIMIZATION_ON)
+		   ? "1" : "0");
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
 static int grp_opt_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, grp_opt_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, grp_opt_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations grp_opt_proc_fops = {
@@ -295,7 +351,11 @@ static const struct file_operations grp_opt_proc_fops = {
 static ssize_t info_proc_write(struct file *file, const char __user *buffer,
 			       size_t count, loff_t *pos)
 {
+<<<<<<< HEAD
 	diva_os_xdi_adapter_t *a = PDE(file->f_path.dentry->d_inode)->data;
+=======
+	diva_os_xdi_adapter_t *a = PDE_DATA(file_inode(file));
+>>>>>>> refs/remotes/origin/master
 	PISDN_ADAPTER IoAdapter = IoAdapters[a->controller - 1];
 	char c[4];
 
@@ -326,10 +386,14 @@ static int info_proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "Channels    : %02d\n", IoAdapter->Properties.Channels);
 	seq_printf(m, "E. max/used : %03d/%03d\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       IoAdapter->e_max, IoAdapter->e_count);
 =======
 		   IoAdapter->e_max, IoAdapter->e_count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   IoAdapter->e_max, IoAdapter->e_count);
+>>>>>>> refs/remotes/origin/master
 	diva_get_vserial_number(IoAdapter, tmpser);
 	seq_printf(m, "Serial      : %s\n", tmpser);
 	seq_printf(m, "IRQ         : %d\n", IoAdapter->irq_info.irq_nr);
@@ -338,12 +402,17 @@ static int info_proc_show(struct seq_file *m, void *v)
 	seq_printf(m, "Controller  : %d\n", a->controller);
 	seq_printf(m, "Bus-Type    : %s\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		       (a->Bus ==
 			DIVAS_XDI_ADAPTER_BUS_ISA) ? "ISA" : "PCI");
 =======
 		   (a->Bus ==
 		    DIVAS_XDI_ADAPTER_BUS_ISA) ? "ISA" : "PCI");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   (a->Bus ==
+		    DIVAS_XDI_ADAPTER_BUS_ISA) ? "ISA" : "PCI");
+>>>>>>> refs/remotes/origin/master
 	seq_printf(m, "Port-Name   : %s\n", a->port_name);
 	if (a->Bus == DIVAS_XDI_ADAPTER_BUS_PCI) {
 		seq_printf(m, "PCI-bus     : %d\n", a->resources.pci.bus);
@@ -351,6 +420,7 @@ static int info_proc_show(struct seq_file *m, void *v)
 		for (i = 0; i < 8; i++) {
 			if (a->resources.pci.bar[i]) {
 				seq_printf(m,
+<<<<<<< HEAD
 <<<<<<< HEAD
 					    "Mem / I/O %d : 0x%x / mapped : 0x%lx",
 					    i, a->resources.pci.bar[i],
@@ -362,6 +432,8 @@ static int info_proc_show(struct seq_file *m, void *v)
 						    a->resources.pci.
 						    length[i]);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 					   "Mem / I/O %d : 0x%x / mapped : 0x%lx",
 					   i, a->resources.pci.bar[i],
 					   (unsigned long) a->resources.
@@ -371,7 +443,10 @@ static int info_proc_show(struct seq_file *m, void *v)
 						   " / length : %d",
 						   a->resources.pci.
 						   length[i]);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				}
 				seq_putc(m, '\n');
 			}
@@ -380,10 +455,14 @@ static int info_proc_show(struct seq_file *m, void *v)
 	if ((!a->xdi_adapter.port) &&
 	    ((!a->xdi_adapter.ram) ||
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (!a->xdi_adapter.reset)
 =======
 	     (!a->xdi_adapter.reset)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	     (!a->xdi_adapter.reset)
+>>>>>>> refs/remotes/origin/master
 	     || (!a->xdi_adapter.cfg))) {
 		if (!IoAdapter->irq_info.irq_nr) {
 			p = "slave";
@@ -404,7 +483,11 @@ static int info_proc_show(struct seq_file *m, void *v)
 
 static int info_proc_open(struct inode *inode, struct file *file)
 {
+<<<<<<< HEAD
 	return single_open(file, info_proc_show, PDE(inode)->data);
+=======
+	return single_open(file, info_proc_show, PDE_DATA(inode));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct file_operations info_proc_fops = {
@@ -422,6 +505,7 @@ static const struct file_operations info_proc_fops = {
 
 /* --------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
     Create adapter directory and files in proc file system
    -------------------------------------------------------------------------- */
 int create_adapter_proc(diva_os_xdi_adapter_t * a)
@@ -430,6 +514,11 @@ int create_adapter_proc(diva_os_xdi_adapter_t * a)
    -------------------------------------------------------------------------- */
 int create_adapter_proc(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   Create adapter directory and files in proc file system
+   -------------------------------------------------------------------------- */
+int create_adapter_proc(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	struct proc_dir_entry *de, *pe;
 	char tmp[16];
@@ -461,6 +550,7 @@ int create_adapter_proc(diva_os_xdi_adapter_t *a)
 
 /* --------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
     Remove adapter directory and files in proc file system
    -------------------------------------------------------------------------- */
 void remove_adapter_proc(diva_os_xdi_adapter_t * a)
@@ -469,6 +559,11 @@ void remove_adapter_proc(diva_os_xdi_adapter_t * a)
    -------------------------------------------------------------------------- */
 void remove_adapter_proc(diva_os_xdi_adapter_t *a)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   Remove adapter directory and files in proc file system
+   -------------------------------------------------------------------------- */
+void remove_adapter_proc(diva_os_xdi_adapter_t *a)
+>>>>>>> refs/remotes/origin/master
 {
 	char tmp[16];
 

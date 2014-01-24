@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +60,11 @@ ACPI_MODULE_NAME("utlock")
  * FUNCTION:    acpi_ut_create_rw_lock
  *              acpi_ut_delete_rw_lock
  *
+<<<<<<< HEAD
  * PARAMETERS:  Lock                - Pointer to a valid RW lock
+=======
+ * PARAMETERS:  lock                - Pointer to a valid RW lock
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -70,11 +78,19 @@ acpi_status acpi_ut_create_rw_lock(struct acpi_rw_lock *lock)
 	lock->num_readers = 0;
 	status = acpi_os_create_mutex(&lock->reader_mutex);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		return status;
 	}
 
 	status = acpi_os_create_mutex(&lock->writer_mutex);
 	return status;
+=======
+		return (status);
+	}
+
+	status = acpi_os_create_mutex(&lock->writer_mutex);
+	return (status);
+>>>>>>> refs/remotes/origin/master
 }
 
 void acpi_ut_delete_rw_lock(struct acpi_rw_lock *lock)
@@ -93,7 +109,11 @@ void acpi_ut_delete_rw_lock(struct acpi_rw_lock *lock)
  * FUNCTION:    acpi_ut_acquire_read_lock
  *              acpi_ut_release_read_lock
  *
+<<<<<<< HEAD
  * PARAMETERS:  Lock                - Pointer to a valid RW lock
+=======
+ * PARAMETERS:  lock                - Pointer to a valid RW lock
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -112,7 +132,11 @@ acpi_status acpi_ut_acquire_read_lock(struct acpi_rw_lock *lock)
 
 	status = acpi_os_acquire_mutex(lock->reader_mutex, ACPI_WAIT_FOREVER);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		return status;
+=======
+		return (status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Acquire the write lock only for the first reader */
@@ -125,7 +149,11 @@ acpi_status acpi_ut_acquire_read_lock(struct acpi_rw_lock *lock)
 	}
 
 	acpi_os_release_mutex(lock->reader_mutex);
+<<<<<<< HEAD
 	return status;
+=======
+	return (status);
+>>>>>>> refs/remotes/origin/master
 }
 
 acpi_status acpi_ut_release_read_lock(struct acpi_rw_lock *lock)
@@ -134,7 +162,11 @@ acpi_status acpi_ut_release_read_lock(struct acpi_rw_lock *lock)
 
 	status = acpi_os_acquire_mutex(lock->reader_mutex, ACPI_WAIT_FOREVER);
 	if (ACPI_FAILURE(status)) {
+<<<<<<< HEAD
 		return status;
+=======
+		return (status);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Release the write lock only for the very last reader */
@@ -145,7 +177,11 @@ acpi_status acpi_ut_release_read_lock(struct acpi_rw_lock *lock)
 	}
 
 	acpi_os_release_mutex(lock->reader_mutex);
+<<<<<<< HEAD
 	return status;
+=======
+	return (status);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*******************************************************************************
@@ -153,7 +189,11 @@ acpi_status acpi_ut_release_read_lock(struct acpi_rw_lock *lock)
  * FUNCTION:    acpi_ut_acquire_write_lock
  *              acpi_ut_release_write_lock
  *
+<<<<<<< HEAD
  * PARAMETERS:  Lock                - Pointer to a valid RW lock
+=======
+ * PARAMETERS:  lock                - Pointer to a valid RW lock
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
@@ -169,7 +209,11 @@ acpi_status acpi_ut_acquire_write_lock(struct acpi_rw_lock *lock)
 	acpi_status status;
 
 	status = acpi_os_acquire_mutex(lock->writer_mutex, ACPI_WAIT_FOREVER);
+<<<<<<< HEAD
 	return status;
+=======
+	return (status);
+>>>>>>> refs/remotes/origin/master
 }
 
 void acpi_ut_release_write_lock(struct acpi_rw_lock *lock)

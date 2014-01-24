@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +67,11 @@ ACPI_MODULE_NAME("exfield")
  *
  * RETURN:      Status
  *
+<<<<<<< HEAD
  * DESCRIPTION: Read from a named field.  Returns either an Integer or a
+=======
+ * DESCRIPTION: Read from a named field. Returns either an Integer or a
+>>>>>>> refs/remotes/origin/master
  *              Buffer, depending on the size of the field.
  *
  ******************************************************************************/
@@ -105,6 +113,7 @@ acpi_ex_read_data_from_field(struct acpi_walk_state *walk_state,
 		    ACPI_ADR_SPACE_SMBUS
 		    || obj_desc->field.region_obj->region.space_id ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    ACPI_ADR_SPACE_IPMI)) {
 		/*
 		 * This is an SMBus or IPMI read. We must create a buffer to hold
@@ -112,6 +121,8 @@ acpi_ex_read_data_from_field(struct acpi_walk_state *walk_state,
 		 *
 		 * Note: Smbus protocol value is passed in upper 16-bits of Function
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    ACPI_ADR_SPACE_GSBUS
 		    || obj_desc->field.region_obj->region.space_id ==
 		    ACPI_ADR_SPACE_IPMI)) {
@@ -120,7 +131,10 @@ acpi_ex_read_data_from_field(struct acpi_walk_state *walk_state,
 		 * the data and then directly access the region handler.
 		 *
 		 * Note: SMBus and GSBus protocol value is passed in upper 16-bits of Function
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 */
 		if (obj_desc->field.region_obj->region.space_id ==
 		    ACPI_ADR_SPACE_SMBUS) {
@@ -128,13 +142,19 @@ acpi_ex_read_data_from_field(struct acpi_walk_state *walk_state,
 			function =
 			    ACPI_READ | (obj_desc->field.attribute << 16);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (obj_desc->field.region_obj->region.space_id ==
 			   ACPI_ADR_SPACE_GSBUS) {
 			length = ACPI_GSBUS_BUFFER_SIZE;
 			function =
 			    ACPI_READ | (obj_desc->field.attribute << 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {	/* IPMI */
 
 			length = ACPI_IPMI_BUFFER_SIZE;
@@ -165,7 +185,11 @@ acpi_ex_read_data_from_field(struct acpi_walk_state *walk_state,
 	 * Allocate a buffer for the contents of the field.
 	 *
 	 * If the field is larger than the current integer width, create
+<<<<<<< HEAD
 	 * a BUFFER to hold it.  Otherwise, use an INTEGER.  This allows
+=======
+	 * a BUFFER to hold it. Otherwise, use an INTEGER. This allows
+>>>>>>> refs/remotes/origin/master
 	 * the use of arithmetic operators on the returned value if the
 	 * field size is equal or smaller than an Integer.
 	 *
@@ -213,7 +237,11 @@ acpi_ex_read_data_from_field(struct acpi_walk_state *walk_state,
 	status = acpi_ex_extract_from_field(obj_desc, buffer, (u32) length);
 	acpi_ex_release_global_lock(obj_desc->common_field.field_flags);
 
+<<<<<<< HEAD
       exit:
+=======
+exit:
+>>>>>>> refs/remotes/origin/master
 	if (ACPI_FAILURE(status)) {
 		acpi_ut_remove_reference(buffer_desc);
 	} else {
@@ -272,21 +300,28 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
 		    ACPI_ADR_SPACE_SMBUS
 		    || obj_desc->field.region_obj->region.space_id ==
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    ACPI_ADR_SPACE_IPMI)) {
 		/*
 		 * This is an SMBus or IPMI write. We will bypass the entire field
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		    ACPI_ADR_SPACE_GSBUS
 		    || obj_desc->field.region_obj->region.space_id ==
 		    ACPI_ADR_SPACE_IPMI)) {
 		/*
 		 * This is an SMBus, GSBus or IPMI write. We will bypass the entire field
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		 * mechanism and handoff the buffer directly to the handler. For
 		 * these address spaces, the buffer is bi-directional; on a write,
 		 * return data is returned in the same buffer.
 		 *
 		 * Source must be a buffer of sufficient size:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 * ACPI_SMBUS_BUFFER_SIZE or ACPI_IPMI_BUFFER_SIZE.
 		 *
@@ -296,6 +331,8 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
 			ACPI_ERROR((AE_INFO,
 				    "SMBus or IPMI write requires Buffer, found type %s",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		 * ACPI_SMBUS_BUFFER_SIZE, ACPI_GSBUS_BUFFER_SIZE, or ACPI_IPMI_BUFFER_SIZE.
 		 *
 		 * Note: SMBus and GSBus protocol type is passed in upper 16-bits of Function
@@ -303,7 +340,10 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
 		if (source_desc->common.type != ACPI_TYPE_BUFFER) {
 			ACPI_ERROR((AE_INFO,
 				    "SMBus/IPMI/GenericSerialBus write requires Buffer, found type %s",
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				    acpi_ut_get_object_type_name(source_desc)));
 
 			return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
@@ -315,13 +355,19 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
 			function =
 			    ACPI_WRITE | (obj_desc->field.attribute << 16);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		} else if (obj_desc->field.region_obj->region.space_id ==
 			   ACPI_ADR_SPACE_GSBUS) {
 			length = ACPI_GSBUS_BUFFER_SIZE;
 			function =
 			    ACPI_WRITE | (obj_desc->field.attribute << 16);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {	/* IPMI */
 
 			length = ACPI_IPMI_BUFFER_SIZE;
@@ -331,10 +377,14 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
 		if (source_desc->buffer.length < length) {
 			ACPI_ERROR((AE_INFO,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				    "SMBus or IPMI write requires Buffer of length %u, found length %u",
 =======
 				    "SMBus/IPMI/GenericSerialBus write requires Buffer of length %u, found length %u",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				    "SMBus/IPMI/GenericSerialBus write requires Buffer of length %u, found length %u",
+>>>>>>> refs/remotes/origin/master
 				    length, source_desc->buffer.length));
 
 			return_ACPI_STATUS(AE_AML_BUFFER_LIMIT);
@@ -370,21 +420,37 @@ acpi_ex_write_data_to_field(union acpi_operand_object *source_desc,
 
 	switch (source_desc->common.type) {
 	case ACPI_TYPE_INTEGER:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		buffer = &source_desc->integer.value;
 		length = sizeof(source_desc->integer.value);
 		break;
 
 	case ACPI_TYPE_BUFFER:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		buffer = source_desc->buffer.pointer;
 		length = source_desc->buffer.length;
 		break;
 
 	case ACPI_TYPE_STRING:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		buffer = source_desc->string.pointer;
 		length = source_desc->string.length;
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		return_ACPI_STATUS(AE_AML_OPERAND_TYPE);
 	}
 

@@ -19,6 +19,10 @@
 #include <linux/threads.h>
 #include <linux/errno.h>
 #include <linux/init.h>
+<<<<<<< HEAD
+=======
+#include <linux/serial_reg.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 #include <asm/page.h>
 #include <asm/mmu.h>
@@ -291,9 +295,15 @@
 	/* Jump to .init code at _start which lives in the .head section
 	 * and will be discarded after boot.
 	 */
+<<<<<<< HEAD
 	LOAD_SYMBOL_2_GPR(r4, _start)
 	tophys	(r3,r4)			/* MMU disabled */
 	l.jr	r3
+=======
+	LOAD_SYMBOL_2_GPR(r15, _start)
+	tophys	(r13,r15)			/* MMU disabled */
+	l.jr	r13
+>>>>>>> refs/remotes/origin/master
 	 l.nop
 
 /* ---[ 0x200: BUS exception ]------------------------------------------- */
@@ -1069,8 +1079,12 @@ d_pte_not_present:
 	EXCEPTION_LOAD_GPR4
 	EXCEPTION_LOAD_GPR5
 	EXCEPTION_LOAD_GPR6
+<<<<<<< HEAD
 	l.j	_dispatch_do_dpage_fault
 	l.nop
+=======
+	EXCEPTION_HANDLE(_dtlb_miss_page_fault_handler)
+>>>>>>> refs/remotes/origin/master
 
 /* ==============================================[ ITLB miss handler ]=== */
 ENTRY(itlb_miss_handler)
@@ -1192,8 +1206,12 @@ i_pte_not_present:
 	EXCEPTION_LOAD_GPR4
 	EXCEPTION_LOAD_GPR5
 	EXCEPTION_LOAD_GPR6
+<<<<<<< HEAD
 	l.j	_dispatch_do_ipage_fault
 	l.nop
+=======
+	EXCEPTION_HANDLE(_itlb_miss_page_fault_handler)
+>>>>>>> refs/remotes/origin/master
 
 /* ==============================================[ boot tlb handlers ]=== */
 

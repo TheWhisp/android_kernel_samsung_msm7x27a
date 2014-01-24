@@ -14,7 +14,11 @@ extern void __iomem *at91_matrix_base;
 	__raw_readl(at91_matrix_base + field)
 
 #define at91_matrix_write(field, value) \
+<<<<<<< HEAD
 	__raw_writel(value, at91_matrix_base + field);
+=======
+	__raw_writel(value, at91_matrix_base + field)
+>>>>>>> refs/remotes/origin/master
 
 #else
 .extern at91_matrix_base

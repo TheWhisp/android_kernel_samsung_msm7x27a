@@ -31,7 +31,11 @@ struct boot_init_vector {
 	uint32_t k0_val;
 	/* Address of boot info block structure */
 	uint64_t boot_info_addr;
+<<<<<<< HEAD
 	uint32_t flags;         /* flags */
+=======
+	uint32_t flags;		/* flags */
+>>>>>>> refs/remotes/origin/master
 	uint32_t pad;
 };
 
@@ -53,20 +57,35 @@ struct linux_app_boot_info {
 
 /* If not to copy a lot of bootloader's structures
    here is only offset of requested member */
+<<<<<<< HEAD
 #define AVAIL_COREMASK_OFFSET_IN_LINUX_APP_BOOT_BLOCK    0x765c
 
 /* hardcoded in bootloader */
 #define  LABI_ADDR_IN_BOOTLOADER                         0x700
+=======
+#define AVAIL_COREMASK_OFFSET_IN_LINUX_APP_BOOT_BLOCK	 0x765c
+
+/* hardcoded in bootloader */
+#define	 LABI_ADDR_IN_BOOTLOADER			 0x700
+>>>>>>> refs/remotes/origin/master
 
 #define LINUX_APP_BOOT_BLOCK_NAME "linux-app-boot"
 
 #define LABI_SIGNATURE 0xAABBCC01
 
 /*  from uboot-headers/octeon_mem_map.h */
+<<<<<<< HEAD
 #define EXCEPTION_BASE_INCR     (4 * 1024)
 			       /* Increment size for exception base addresses (4k minimum) */
 #define EXCEPTION_BASE_BASE     0
 #define BOOTLOADER_PRIV_DATA_BASE       (EXCEPTION_BASE_BASE + 0x800)
 #define BOOTLOADER_BOOT_VECTOR          (BOOTLOADER_PRIV_DATA_BASE)
+=======
+#define EXCEPTION_BASE_INCR	(4 * 1024)
+			       /* Increment size for exception base addresses (4k minimum) */
+#define EXCEPTION_BASE_BASE	0
+#define BOOTLOADER_PRIV_DATA_BASE	(EXCEPTION_BASE_BASE + 0x800)
+#define BOOTLOADER_BOOT_VECTOR		(BOOTLOADER_PRIV_DATA_BASE)
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __OCTEON_BOOT_H__ */

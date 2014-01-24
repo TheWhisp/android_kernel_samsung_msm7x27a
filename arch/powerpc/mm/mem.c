@@ -18,10 +18,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/kernel.h>
 #include <linux/errno.h>
@@ -39,9 +43,13 @@
 #include <linux/memblock.h>
 #include <linux/hugetlb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/slab.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/slab.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/pgalloc.h>
 #include <asm/prom.h>
@@ -59,9 +67,13 @@
 #include <asm/fixmap.h>
 #include <asm/swiotlb.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/rtas.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <asm/rtas.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "mmu_decl.h"
 
@@ -72,6 +84,7 @@
 
 int init_bootmem_done;
 int mem_init_done;
+<<<<<<< HEAD
 phys_addr_t memory_limit;
 
 #ifdef CONFIG_HIGHMEM
@@ -80,6 +93,15 @@ pgprot_t kmap_prot;
 
 EXPORT_SYMBOL(kmap_prot);
 EXPORT_SYMBOL(kmap_pte);
+=======
+unsigned long long memory_limit;
+
+#ifdef CONFIG_HIGHMEM
+pte_t *kmap_pte;
+EXPORT_SYMBOL(kmap_pte);
+pgprot_t kmap_prot;
+EXPORT_SYMBOL(kmap_prot);
+>>>>>>> refs/remotes/origin/master
 
 static inline pte_t *virt_to_kpte(unsigned long vaddr)
 {
@@ -143,6 +165,21 @@ int arch_add_memory(int nid, u64 start, u64 size)
 
 	return __add_pages(nid, zone, start_pfn, nr_pages);
 }
+<<<<<<< HEAD
+=======
+
+#ifdef CONFIG_MEMORY_HOTREMOVE
+int arch_remove_memory(u64 start, u64 size)
+{
+	unsigned long start_pfn = start >> PAGE_SHIFT;
+	unsigned long nr_pages = size >> PAGE_SHIFT;
+	struct zone *zone;
+
+	zone = page_zone(pfn_to_page(start_pfn));
+	return __remove_pages(zone, start_pfn, nr_pages);
+}
+#endif
+>>>>>>> refs/remotes/origin/master
 #endif /* CONFIG_MEMORY_HOTPLUG */
 
 /*
@@ -205,6 +242,7 @@ void __init do_init_bootmem(void)
 	min_low_pfn = MEMORY_START >> PAGE_SHIFT;
 	boot_mapsize = init_bootmem_node(NODE_DATA(0), start >> PAGE_SHIFT, min_low_pfn, max_low_pfn);
 
+<<<<<<< HEAD
 	/* Add active regions with valid PFNs */
 	for_each_memblock(memory, reg) {
 		unsigned long start_pfn, end_pfn;
@@ -216,6 +254,12 @@ void __init do_init_bootmem(void)
 		memblock_set_node(0, (phys_addr_t)ULLONG_MAX, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
 	}
+=======
+	/* Place all memblock_regions in the same node and merge contiguous
+	 * memblock_regions
+	 */
+	memblock_set_node(0, (phys_addr_t)ULLONG_MAX, &memblock.memory, 0);
+>>>>>>> refs/remotes/origin/master
 
 	/* Add all physical memory to the bootmem map, mark each area
 	 * present.
@@ -267,10 +311,14 @@ static int __init mark_nonram_nosave(void)
 void __init paging_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long total_ram = memblock_phys_mem_size();
 =======
 	unsigned long long total_ram = memblock_phys_mem_size();
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long long total_ram = memblock_phys_mem_size();
+>>>>>>> refs/remotes/origin/master
 	phys_addr_t top_of_ram = memblock_end_of_DRAM();
 	unsigned long max_zone_pfns[MAX_NR_ZONES];
 
@@ -291,10 +339,14 @@ void __init paging_init(void)
 #endif /* CONFIG_HIGHMEM */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_DEBUG "Top of RAM: 0x%llx, Total RAM: 0x%lx\n",
 =======
 	printk(KERN_DEBUG "Top of RAM: 0x%llx, Total RAM: 0x%llx\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	printk(KERN_DEBUG "Top of RAM: 0x%llx, Total RAM: 0x%llx\n",
+>>>>>>> refs/remotes/origin/master
 	       (unsigned long long)top_of_ram, total_ram);
 	printk(KERN_DEBUG "Memory hole size: %ldMB\n",
 	       (long int)((top_of_ram - total_ram) >> 20));
@@ -311,6 +363,7 @@ void __init paging_init(void)
 }
 #endif /* ! CONFIG_NEED_MULTIPLE_NODES */
 
+<<<<<<< HEAD
 void __init mem_init(void)
 {
 #ifdef CONFIG_NEED_MULTIPLE_NODES
@@ -355,6 +408,26 @@ void __init mem_init(void)
 	datasize = (unsigned long)&_edata - (unsigned long)&_sdata;
 	initsize = (unsigned long)&__init_end - (unsigned long)&__init_begin;
 	bsssize = (unsigned long)&__bss_stop - (unsigned long)&__bss_start;
+=======
+static void __init register_page_bootmem_info(void)
+{
+	int i;
+
+	for_each_online_node(i)
+		register_page_bootmem_info_node(NODE_DATA(i));
+}
+
+void __init mem_init(void)
+{
+#ifdef CONFIG_SWIOTLB
+	swiotlb_init(0);
+#endif
+
+	register_page_bootmem_info();
+	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
+	set_max_mapnr(max_pfn);
+	free_all_bootmem();
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_HIGHMEM
 	{
@@ -362,6 +435,7 @@ void __init mem_init(void)
 
 		highmem_mapnr = lowmem_end_addr >> PAGE_SHIFT;
 		for (pfn = highmem_mapnr; pfn < max_mapnr; ++pfn) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			struct page *page = pfn_to_page(pfn);
 			if (memblock_is_reserved(pfn << PAGE_SHIFT))
@@ -385,6 +459,16 @@ void __init mem_init(void)
 
 <<<<<<< HEAD
 =======
+=======
+			phys_addr_t paddr = (phys_addr_t)pfn << PAGE_SHIFT;
+			struct page *page = pfn_to_page(pfn);
+			if (!memblock_is_reserved(paddr))
+				free_highmem_page(page);
+		}
+	}
+#endif /* CONFIG_HIGHMEM */
+
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_PPC_FSL_BOOK3E) && !defined(CONFIG_SMP)
 	/*
 	 * If smp is enabled, next_tlbcam_idx is initialized in the cpu up
@@ -394,6 +478,7 @@ void __init mem_init(void)
 		(mfspr(SPRN_TLB1CFG) & TLBnCFG_N_ENTRY) - 1;
 #endif
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	printk(KERN_INFO "Memory: %luk/%luk available (%luk kernel code, "
 	       "%luk reserved, %luk data, %luk bss, %luk init)\n",
@@ -405,6 +490,9 @@ void __init mem_init(void)
 		bsssize >> 10,
 		initsize >> 10);
 
+=======
+	mem_init_print_info(NULL);
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PPC32
 	pr_info("Kernel virtual memory layout:\n");
 	pr_info("  * 0x%08lx..0x%08lx  : fixmap\n", FIXADDR_START, FIXADDR_TOP);
@@ -425,6 +513,7 @@ void __init mem_init(void)
 	mem_init_done = 1;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 void free_initmem(void)
@@ -463,6 +552,18 @@ void __init free_initrd_mem(unsigned long start, unsigned long end)
 		free_page(start);
 		totalram_pages++;
 	}
+=======
+void free_initmem(void)
+{
+	ppc_md.progress = ppc_printk_progress;
+	free_initmem_default(POISON_FREE_INITMEM);
+}
+
+#ifdef CONFIG_BLK_DEV_INITRD
+void __init free_initrd_mem(unsigned long start, unsigned long end)
+{
+	free_reserved_area((void *)start, (void *)end, -1, "initrd");
+>>>>>>> refs/remotes/origin/master
 }
 #endif
 
@@ -492,6 +593,7 @@ void flush_dcache_icache_page(struct page *page)
 #ifdef CONFIG_BOOKE
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		void *start = kmap_atomic(page, KM_PPC_SYNC_ICACHE);
 		__flush_dcache_icache(start);
 		kunmap_atomic(start, KM_PPC_SYNC_ICACHE);
@@ -500,6 +602,11 @@ void flush_dcache_icache_page(struct page *page)
 		__flush_dcache_icache(start);
 		kunmap_atomic(start);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		void *start = kmap_atomic(page);
+		__flush_dcache_icache(start);
+		kunmap_atomic(start);
+>>>>>>> refs/remotes/origin/master
 	}
 #elif defined(CONFIG_8xx) || defined(CONFIG_PPC64)
 	/* On 8xx there is no need to kmap since highmem is not supported */
@@ -508,6 +615,10 @@ void flush_dcache_icache_page(struct page *page)
 	__flush_dcache_icache_phys(page_to_pfn(page) << PAGE_SHIFT);
 #endif
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL(flush_dcache_icache_page);
+>>>>>>> refs/remotes/origin/master
 
 void clear_user_page(void *page, unsigned long vaddr, struct page *pg)
 {
@@ -568,6 +679,13 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long address,
 		      pte_t *ptep)
 {
 #ifdef CONFIG_PPC_STD_MMU
+<<<<<<< HEAD
+=======
+	/*
+	 * We don't need to worry about _PAGE_PRESENT here because we are
+	 * called with either mm->page_table_lock held or ptl lock held
+	 */
+>>>>>>> refs/remotes/origin/master
 	unsigned long access = 0, trap;
 
 	/* We only want HPTEs for linux PTEs that have _PAGE_ACCESSED set */
@@ -591,8 +709,11 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long address,
 	hash_preload(vma->vm_mm, address, access, trap);
 #endif /* CONFIG_PPC_STD_MMU */
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if (defined(CONFIG_PPC_BOOK3E_64) || defined(CONFIG_PPC_FSL_BOOK3E)) \
 	&& defined(CONFIG_HUGETLB_PAGE)
 	if (is_vm_hugetlb_page(vma))
@@ -620,7 +741,11 @@ static int add_system_ram_resources(void)
 			res->name = "System RAM";
 			res->start = base;
 			res->end = base + size - 1;
+<<<<<<< HEAD
 			res->flags = IORESOURCE_MEM;
+=======
+			res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+>>>>>>> refs/remotes/origin/master
 			WARN_ON(request_resource(&iomem_resource, res) < 0);
 		}
 	}
@@ -648,4 +773,7 @@ int devmem_is_allowed(unsigned long pfn)
 	return 0;
 }
 #endif /* CONFIG_STRICT_DEVMEM */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

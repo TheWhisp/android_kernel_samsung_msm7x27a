@@ -19,6 +19,24 @@
  */
 
 /*
+<<<<<<< HEAD
+=======
+ * INIT_LIST_HEAD_RCU - Initialize a list_head visible to RCU readers
+ * @list: list to be initialized
+ *
+ * You should instead use INIT_LIST_HEAD() for normal initialization and
+ * cleanup tasks, when readers have no access to the list being initialized.
+ * However, if the list being initialized is visible to readers, you
+ * need to keep the compiler from being too mischievous.
+ */
+static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+{
+	ACCESS_ONCE(list->next) = list;
+	ACCESS_ONCE(list->prev) = list;
+}
+
+/*
+>>>>>>> refs/remotes/origin/master
  * return the ->next pointer of a list_head in an rcu safe
  * way, we must not access it directly
  */
@@ -30,6 +48,10 @@
  * This is only for internal list manipulation where we know
  * the prev/next entries already!
  */
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_DEBUG_LIST
+>>>>>>> refs/remotes/origin/master
 static inline void __list_add_rcu(struct list_head *new,
 		struct list_head *prev, struct list_head *next)
 {
@@ -38,6 +60,13 @@ static inline void __list_add_rcu(struct list_head *new,
 	rcu_assign_pointer(list_next_rcu(prev), new);
 	next->prev = new;
 }
+<<<<<<< HEAD
+=======
+#else
+void __list_add_rcu(struct list_head *new,
+		    struct list_head *prev, struct list_head *next);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /**
  * list_add_rcu - add a new entry to rcu-protected list
@@ -108,7 +137,11 @@ static inline void list_add_tail_rcu(struct list_head *new,
  */
 static inline void list_del_rcu(struct list_head *entry)
 {
+<<<<<<< HEAD
 	__list_del(entry->prev, entry->next);
+=======
+	__list_del_entry(entry);
+>>>>>>> refs/remotes/origin/master
 	entry->prev = LIST_POISON2;
 }
 
@@ -184,6 +217,7 @@ static inline void list_splice_init_rcu(struct list_head *list,
 	struct list_head *at = head->next;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (list_empty(head))
 =======
 	if (list_empty(list))
@@ -193,6 +227,18 @@ static inline void list_splice_init_rcu(struct list_head *list,
 	/* "first" and "last" tracking list, so initialize it. */
 
 	INIT_LIST_HEAD(list);
+=======
+	if (list_empty(list))
+		return;
+
+	/*
+	 * "first" and "last" tracking list, so initialize it.  RCU readers
+	 * have access to this list, so we must use INIT_LIST_HEAD_RCU()
+	 * instead of INIT_LIST_HEAD().
+	 */
+
+	INIT_LIST_HEAD_RCU(list);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * At this point, the list body still points to the source list.
@@ -232,6 +278,7 @@ static inline void list_splice_init_rcu(struct list_head *list,
 	})
 
 /**
+<<<<<<< HEAD
  * list_first_entry_rcu - get the first element from a list
  * @ptr:        the list head to take the element from.
  * @type:       the type of the struct this is embedded in.
@@ -244,6 +291,28 @@ static inline void list_splice_init_rcu(struct list_head *list,
  */
 #define list_first_entry_rcu(ptr, type, member) \
 	list_entry_rcu((ptr)->next, type, member)
+=======
+ * Where are list_empty_rcu() and list_first_entry_rcu()?
+ *
+ * Implementing those functions following their counterparts list_empty() and
+ * list_first_entry() is not advisable because they lead to subtle race
+ * conditions as the following snippet shows:
+ *
+ * if (!list_empty_rcu(mylist)) {
+ *	struct foo *bar = list_first_entry_rcu(mylist, struct foo, list_member);
+ *	do_something(bar);
+ * }
+ *
+ * The list may not be empty when list_empty_rcu checks it, but it may be when
+ * list_first_entry_rcu rereads the ->next pointer.
+ *
+ * Rereading the ->next pointer is not a problem for list_empty() and
+ * list_first_entry() because they would be protected by a lock that blocks
+ * writers.
+ *
+ * See list_first_or_null_rcu for an alternative.
+ */
+>>>>>>> refs/remotes/origin/master
 
 /**
  * list_first_or_null_rcu - get the first element from a list
@@ -278,6 +347,7 @@ static inline void list_splice_init_rcu(struct list_head *list,
 		&pos->member != (head); \
 		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
 
+<<<<<<< HEAD
 
 /**
  * list_for_each_continue_rcu
@@ -295,6 +365,8 @@ static inline void list_splice_init_rcu(struct list_head *list,
 		(pos) != (head); \
 		(pos) = rcu_dereference_raw(list_next_rcu(pos)))
 
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * list_for_each_entry_continue_rcu - continue iteration over list of given type
  * @pos:	the type * to use as a loop cursor.
@@ -454,8 +526,12 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
 
 /**
  * hlist_for_each_entry_rcu - iterate over rcu list of given type
+<<<<<<< HEAD
  * @tpos:	the type * to use as a loop cursor.
  * @pos:	the &struct hlist_node to use as a loop cursor.
+=======
+ * @pos:	the type * to use as a loop cursor.
+>>>>>>> refs/remotes/origin/master
  * @head:	the head for your list.
  * @member:	the name of the hlist_node within the struct.
  *
@@ -463,6 +539,7 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
  * the _rcu list-mutation primitives such as hlist_add_head_rcu()
  * as long as the traversal is guarded by rcu_read_lock().
  */
+<<<<<<< HEAD
 #define hlist_for_each_entry_rcu(tpos, pos, head, member)		\
 	for (pos = rcu_dereference_raw(hlist_first_rcu(head));		\
 		pos &&							 \
@@ -473,6 +550,38 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
  * hlist_for_each_entry_rcu_bh - iterate over rcu list of given type
  * @tpos:	the type * to use as a loop cursor.
  * @pos:	the &struct hlist_node to use as a loop cursor.
+=======
+#define hlist_for_each_entry_rcu(pos, head, member)			\
+	for (pos = hlist_entry_safe (rcu_dereference_raw(hlist_first_rcu(head)),\
+			typeof(*(pos)), member);			\
+		pos;							\
+		pos = hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(\
+			&(pos)->member)), typeof(*(pos)), member))
+
+/**
+ * hlist_for_each_entry_rcu_notrace - iterate over rcu list of given type (for tracing)
+ * @pos:	the type * to use as a loop cursor.
+ * @head:	the head for your list.
+ * @member:	the name of the hlist_node within the struct.
+ *
+ * This list-traversal primitive may safely run concurrently with
+ * the _rcu list-mutation primitives such as hlist_add_head_rcu()
+ * as long as the traversal is guarded by rcu_read_lock().
+ *
+ * This is the same as hlist_for_each_entry_rcu() except that it does
+ * not do any RCU debugging or tracing.
+ */
+#define hlist_for_each_entry_rcu_notrace(pos, head, member)			\
+	for (pos = hlist_entry_safe (rcu_dereference_raw_notrace(hlist_first_rcu(head)),\
+			typeof(*(pos)), member);			\
+		pos;							\
+		pos = hlist_entry_safe(rcu_dereference_raw_notrace(hlist_next_rcu(\
+			&(pos)->member)), typeof(*(pos)), member))
+
+/**
+ * hlist_for_each_entry_rcu_bh - iterate over rcu list of given type
+ * @pos:	the type * to use as a loop cursor.
+>>>>>>> refs/remotes/origin/master
  * @head:	the head for your list.
  * @member:	the name of the hlist_node within the struct.
  *
@@ -480,6 +589,7 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
  * the _rcu list-mutation primitives such as hlist_add_head_rcu()
  * as long as the traversal is guarded by rcu_read_lock().
  */
+<<<<<<< HEAD
 #define hlist_for_each_entry_rcu_bh(tpos, pos, head, member)		 \
 	for (pos = rcu_dereference_bh((head)->first);			 \
 		pos &&							 \
@@ -509,6 +619,38 @@ static inline void hlist_add_after_rcu(struct hlist_node *prev,
 	     pos &&							\
 	     ({ tpos = hlist_entry(pos, typeof(*tpos), member); 1; });  \
 	     pos = rcu_dereference_bh(pos->next))
+=======
+#define hlist_for_each_entry_rcu_bh(pos, head, member)			\
+	for (pos = hlist_entry_safe(rcu_dereference_bh(hlist_first_rcu(head)),\
+			typeof(*(pos)), member);			\
+		pos;							\
+		pos = hlist_entry_safe(rcu_dereference_bh(hlist_next_rcu(\
+			&(pos)->member)), typeof(*(pos)), member))
+
+/**
+ * hlist_for_each_entry_continue_rcu - iterate over a hlist continuing after current point
+ * @pos:	the type * to use as a loop cursor.
+ * @member:	the name of the hlist_node within the struct.
+ */
+#define hlist_for_each_entry_continue_rcu(pos, member)			\
+	for (pos = hlist_entry_safe(rcu_dereference((pos)->member.next),\
+			typeof(*(pos)), member);			\
+	     pos;							\
+	     pos = hlist_entry_safe(rcu_dereference((pos)->member.next),\
+			typeof(*(pos)), member))
+
+/**
+ * hlist_for_each_entry_continue_rcu_bh - iterate over a hlist continuing after current point
+ * @pos:	the type * to use as a loop cursor.
+ * @member:	the name of the hlist_node within the struct.
+ */
+#define hlist_for_each_entry_continue_rcu_bh(pos, member)		\
+	for (pos = hlist_entry_safe(rcu_dereference_bh((pos)->member.next),\
+			typeof(*(pos)), member);			\
+	     pos;							\
+	     pos = hlist_entry_safe(rcu_dereference_bh((pos)->member.next),\
+			typeof(*(pos)), member))
+>>>>>>> refs/remotes/origin/master
 
 
 #endif	/* __KERNEL__ */

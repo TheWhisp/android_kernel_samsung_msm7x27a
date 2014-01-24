@@ -181,7 +181,10 @@ static const int sh7750_cache_events
 		},
 	},
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	[ C(NODE) ] = {
 		[ C(OP_READ) ] = {
@@ -197,7 +200,10 @@ static const int sh7750_cache_events
 			[ C(RESULT_MISS)   ] = -1,
 		},
 	},
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int sh7750_event_map(int event)

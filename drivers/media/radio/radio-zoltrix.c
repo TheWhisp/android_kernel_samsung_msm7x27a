@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* zoltrix radio plus driver for Linux radio support
  * (c) 1998 C. van Schaik <carl@leg.uct.ac.za>
 =======
@@ -6,6 +7,11 @@
  * Zoltrix Radio Plus driver
  * Copyright 1998 C. van Schaik <carl@leg.uct.ac.za>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/*
+ * Zoltrix Radio Plus driver
+ * Copyright 1998 C. van Schaik <carl@leg.uct.ac.za>
+>>>>>>> refs/remotes/origin/master
  *
  * BUGS
  *  Due to the inconsistency in reading from the signal flags
@@ -34,7 +40,10 @@
  * 2006-07-24 - Converted to V4L2 API
  *		by Mauro Carvalho Chehab <mchehab@infradead.org>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * Converted to the radio-isa framework by Hans Verkuil <hans.verkuil@cisco.com>
  *
@@ -43,7 +52,10 @@
  * Zoltrix Radio Plus for Windows.
  *
  * Fully tested with the Keene USB FM Transmitter and the v4l2-compliance tool.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #include <linux/module.h>	/* Modules                        */
@@ -52,6 +64,7 @@
 #include <linux/delay.h>	/* udelay, msleep                 */
 #include <linux/videodev2.h>	/* kernel radio structs           */
 #include <linux/mutex.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/version.h>      /* for KERNEL_VERSION MACRO     */
 #include <linux/io.h>		/* outb, outb_p                   */
@@ -62,6 +75,8 @@ MODULE_AUTHOR("C.van Schaik");
 MODULE_DESCRIPTION("A driver for the Zoltrix Radio Plus.");
 MODULE_LICENSE("GPL");
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/io.h>		/* outb, outb_p                   */
 #include <linux/slab.h>
 #include <media/v4l2-device.h>
@@ -72,12 +87,16 @@ MODULE_AUTHOR("C. van Schaik");
 MODULE_DESCRIPTION("A driver for the Zoltrix Radio Plus.");
 MODULE_LICENSE("GPL");
 MODULE_VERSION("0.1.99");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef CONFIG_RADIO_ZOLTRIX_PORT
 #define CONFIG_RADIO_ZOLTRIX_PORT -1
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int io = CONFIG_RADIO_ZOLTRIX_PORT;
 static int radio_nr = -1;
@@ -146,6 +165,8 @@ static int zol_setfreq(struct zoltrix *zol, unsigned long freq)
 	unsigned long long bitmask, f, m;
 	unsigned int stereo = zol->stereo;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ZOLTRIX_MAX 2
 
 static int io[ZOLTRIX_MAX] = { [0] = CONFIG_RADIO_ZOLTRIX_PORT,
@@ -196,7 +217,10 @@ static int zoltrix_s_frequency(struct radio_isa_card *isa, u32 freq)
 	struct v4l2_device *v4l2_dev = &isa->v4l2_dev;
 	unsigned long long bitmask, f, m;
 	bool stereo = isa->stereo;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 
 	if (freq == 0) {
@@ -211,6 +235,7 @@ static int zoltrix_s_frequency(struct radio_isa_card *isa, u32 freq)
 	i = 45;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mutex_lock(&zol->lock);
 
 	zol->curfreq = freq;
@@ -222,17 +247,23 @@ static int zoltrix_s_frequency(struct radio_isa_card *isa, u32 freq)
 	outb(0x40, zol->io);
 	outb(0xc0, zol->io);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	outb(0, isa->io);
 	outb(0, isa->io);
 	inb(isa->io + 3);            /* Zoltrix needs to be read to confirm */
 
 	outb(0x40, isa->io);
 	outb(0xc0, isa->io);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	bitmask = (bitmask ^ ((f & 0xff) << 47) ^ ((f & 0xff00) << 30) ^ (stereo << 31));
 	while (i--) {
 		if ((bitmask & 0x8000000000000000ull) != 0) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			outb(0x80, zol->io);
 			udelay(50);
@@ -247,6 +278,8 @@ static int zoltrix_s_frequency(struct radio_isa_card *isa, u32 freq)
 			udelay(50);
 			outb(0xc0, zol->io);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			outb(0x80, isa->io);
 			udelay(50);
 			outb(0x00, isa->io);
@@ -259,12 +292,16 @@ static int zoltrix_s_frequency(struct radio_isa_card *isa, u32 freq)
 			outb(0x40, isa->io);
 			udelay(50);
 			outb(0xc0, isa->io);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			udelay(50);
 		}
 		bitmask *= 2;
 	}
 	/* termination sequence */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	outb(0x80, zol->io);
 	outb(0xc0, zol->io);
@@ -502,6 +539,8 @@ static const struct v4l2_ioctl_ops zoltrix_ioctl_ops = {
 	.vidioc_g_ctrl      = vidioc_g_ctrl,
 	.vidioc_s_ctrl      = vidioc_s_ctrl,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	outb(0x80, isa->io);
 	outb(0xc0, isa->io);
 	outb(0x40, isa->io);
@@ -584,11 +623,15 @@ static struct radio_isa_driver zoltrix_driver = {
 	.ops = &zoltrix_ops,
 	.has_stereo = true,
 	.max_volume = 15,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init zoltrix_init(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct zoltrix *zol = &zoltrix_card;
 	struct v4l2_device *v4l2_dev = &zol->v4l2_dev;
@@ -649,10 +692,14 @@ static int __init zoltrix_init(void)
 =======
 	return isa_register_driver(&zoltrix_driver.driver, ZOLTRIX_MAX);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return isa_register_driver(&zoltrix_driver.driver, ZOLTRIX_MAX);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit zoltrix_exit(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct zoltrix *zol = &zoltrix_card;
 
@@ -662,6 +709,9 @@ static void __exit zoltrix_exit(void)
 =======
 	isa_unregister_driver(&zoltrix_driver.driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	isa_unregister_driver(&zoltrix_driver.driver);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(zoltrix_init);

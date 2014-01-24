@@ -83,17 +83,25 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/list.h>
 #include <linux/errno.h>
 #include <linux/device.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/delay.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/delay.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/err.h>
 #include <linux/clk.h>
 #include <linux/amba/bus.h>
@@ -106,17 +114,23 @@
 #include "common.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct clk clk_armpll;
 static struct clk clk_usbpll;
 static DEFINE_MUTEX(clkm_lock);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static DEFINE_SPINLOCK(global_clkregs_lock);
 
 static int usb_pll_enable, usb_pll_valid;
 
 static struct clk clk_armpll;
 static struct clk clk_usbpll;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Post divider values for PLLs based on selected register value
@@ -145,10 +159,14 @@ static int local_pll397_enable(struct clk *clk, int enable)
 {
 	u32 reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long timeout = 1 + msecs_to_jiffies(10);
 =======
 	unsigned long timeout = jiffies + msecs_to_jiffies(10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long timeout = jiffies + msecs_to_jiffies(10);
+>>>>>>> refs/remotes/origin/master
 
 	reg = __raw_readl(LPC32XX_CLKPWR_PLL397_CTRL);
 
@@ -164,10 +182,14 @@ static int local_pll397_enable(struct clk *clk, int enable)
 		while (((__raw_readl(LPC32XX_CLKPWR_PLL397_CTRL) &
 			LPC32XX_CLKPWR_SYSCTRL_PLL397_STS) == 0) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(timeout > jiffies))
 =======
 			time_before(jiffies, timeout))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			time_before(jiffies, timeout))
+>>>>>>> refs/remotes/origin/master
 			cpu_relax();
 
 		if ((__raw_readl(LPC32XX_CLKPWR_PLL397_CTRL) &
@@ -182,10 +204,14 @@ static int local_oscmain_enable(struct clk *clk, int enable)
 {
 	u32 reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long timeout = 1 + msecs_to_jiffies(10);
 =======
 	unsigned long timeout = jiffies + msecs_to_jiffies(10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long timeout = jiffies + msecs_to_jiffies(10);
+>>>>>>> refs/remotes/origin/master
 
 	reg = __raw_readl(LPC32XX_CLKPWR_MAIN_OSC_CTRL);
 
@@ -201,10 +227,14 @@ static int local_oscmain_enable(struct clk *clk, int enable)
 		while (((__raw_readl(LPC32XX_CLKPWR_MAIN_OSC_CTRL) &
 			LPC32XX_CLKPWR_MOSC_DISABLE) != 0) &&
 <<<<<<< HEAD
+<<<<<<< HEAD
 			(timeout > jiffies))
 =======
 			time_before(jiffies, timeout))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			time_before(jiffies, timeout))
+>>>>>>> refs/remotes/origin/master
 			cpu_relax();
 
 		if ((__raw_readl(LPC32XX_CLKPWR_MAIN_OSC_CTRL) &
@@ -416,6 +446,7 @@ static int local_usbpll_enable(struct clk *clk, int enable)
 {
 	u32 reg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret = -ENODEV;
 	unsigned long timeout = 1 + msecs_to_jiffies(10);
 
@@ -441,6 +472,8 @@ static int local_usbpll_enable(struct clk *clk, int enable)
 			__raw_writel(reg, LPC32XX_CLKPWR_USB_CTRL);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret = 0;
 	unsigned long timeout = jiffies + msecs_to_jiffies(20);
 
@@ -497,7 +530,10 @@ static int local_usbpll_enable(struct clk *clk, int enable)
 	} else if ((enable == 0) && usb_pll_valid  && usb_pll_enable) {
 		usb_pll_valid = 0;
 		usb_pll_enable = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return ret;
@@ -516,10 +552,14 @@ static unsigned long local_usbpll_round_rate(struct clk *clk,
 	rate = rate * 1000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clkin = clk->parent->rate;
 =======
 	clkin = clk->get_rate(clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clkin = clk->get_rate(clk);
+>>>>>>> refs/remotes/origin/master
 	usbdiv = (__raw_readl(LPC32XX_CLKPWR_USBCLK_PDIV) &
 		LPC32XX_CLKPWR_USBPDIV_PLL_MASK) + 1;
 	clkin = clkin / usbdiv;
@@ -534,11 +574,16 @@ static unsigned long local_usbpll_round_rate(struct clk *clk,
 static int local_usbpll_set_rate(struct clk *clk, unsigned long rate)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u32 clkin, reg, usbdiv;
 =======
 	int ret = -ENODEV;
 	u32 clkin, usbdiv;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = -ENODEV;
+	u32 clkin, usbdiv;
+>>>>>>> refs/remotes/origin/master
 	struct clk_pll_setup pllsetup;
 
 	/*
@@ -548,10 +593,14 @@ static int local_usbpll_set_rate(struct clk *clk, unsigned long rate)
 	rate = rate * 1000;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clkin = clk->get_rate(clk);
 =======
 	clkin = clk->get_rate(clk->parent);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	clkin = clk->get_rate(clk->parent);
+>>>>>>> refs/remotes/origin/master
 	usbdiv = (__raw_readl(LPC32XX_CLKPWR_USBCLK_PDIV) &
 		LPC32XX_CLKPWR_USBPDIV_PLL_MASK) + 1;
 	clkin = clkin / usbdiv;
@@ -560,6 +609,7 @@ static int local_usbpll_set_rate(struct clk *clk, unsigned long rate)
 	if (local_clk_find_pll_cfg(clkin, rate, &pllsetup) == 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	local_usbpll_enable(clk, 0);
 
@@ -578,6 +628,8 @@ static int local_usbpll_set_rate(struct clk *clk, unsigned long rate)
 
 	return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Disable PLL clocks during PLL change
 	 */
@@ -597,7 +649,10 @@ static int local_usbpll_set_rate(struct clk *clk, unsigned long rate)
 		clk->rate = clk_check_pll_setup(clkin, &pllsetup);
 
 	return ret;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct clk clk_usbpll = {
@@ -671,6 +726,16 @@ static struct clk clk_timer3 = {
 	.enable_mask	= LPC32XX_CLKPWR_TMRPWMCLK_TIMER3_EN,
 	.get_rate	= local_return_parent_rate,
 };
+<<<<<<< HEAD
+=======
+static struct clk clk_mpwm = {
+	.parent		= &clk_pclk,
+	.enable		= local_onoff_enable,
+	.enable_reg	= LPC32XX_CLKPWR_TIMERS_PWMS_CLK_CTRL_1,
+	.enable_mask	= LPC32XX_CLKPWR_TMRPWMCLK_MPWM_EN,
+	.get_rate	= local_return_parent_rate,
+};
+>>>>>>> refs/remotes/origin/master
 static struct clk clk_wdt = {
 	.parent		= &clk_pclk,
 	.enable		= local_onoff_enable,
@@ -693,6 +758,22 @@ static struct clk clk_dma = {
 	.get_rate	= local_return_parent_rate,
 };
 
+<<<<<<< HEAD
+=======
+static struct clk clk_pwm = {
+	.parent		= &clk_pclk,
+	.enable		= local_onoff_enable,
+	.enable_reg	= LPC32XX_CLKPWR_PWM_CLK_CTRL,
+	.enable_mask	= LPC32XX_CLKPWR_PWMCLK_PWM1CLK_EN |
+			  LPC32XX_CLKPWR_PWMCLK_PWM1SEL_PCLK |
+			  LPC32XX_CLKPWR_PWMCLK_PWM1_DIV(1) |
+			  LPC32XX_CLKPWR_PWMCLK_PWM2CLK_EN |
+			  LPC32XX_CLKPWR_PWMCLK_PWM2SEL_PCLK |
+			  LPC32XX_CLKPWR_PWMCLK_PWM2_DIV(1),
+	.get_rate	= local_return_parent_rate,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct clk clk_uart3 = {
 	.parent		= &clk_pclk,
 	.enable		= local_onoff_enable,
@@ -777,10 +858,28 @@ static struct clk clk_nand = {
 	.parent		= &clk_hclk,
 	.enable		= local_onoff_enable,
 	.enable_reg	= LPC32XX_CLKPWR_NAND_CLK_CTRL,
+<<<<<<< HEAD
 	.enable_mask	= LPC32XX_CLKPWR_NANDCLK_SLCCLK_EN,
 	.get_rate	= local_return_parent_rate,
 };
 
+=======
+	.enable_mask	= LPC32XX_CLKPWR_NANDCLK_SLCCLK_EN |
+			  LPC32XX_CLKPWR_NANDCLK_SEL_SLC,
+	.get_rate	= local_return_parent_rate,
+};
+
+static struct clk clk_nand_mlc = {
+	.parent         = &clk_hclk,
+	.enable         = local_onoff_enable,
+	.enable_reg     = LPC32XX_CLKPWR_NAND_CLK_CTRL,
+	.enable_mask    = LPC32XX_CLKPWR_NANDCLK_MLCCLK_EN |
+			  LPC32XX_CLKPWR_NANDCLK_DMA_INT |
+			  LPC32XX_CLKPWR_NANDCLK_INTSEL_MLC,
+	.get_rate       = local_return_parent_rate,
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct clk clk_i2s0 = {
 	.parent		= &clk_hclk,
 	.enable		= local_onoff_enable,
@@ -793,7 +892,12 @@ static struct clk clk_i2s1 = {
 	.parent		= &clk_hclk,
 	.enable		= local_onoff_enable,
 	.enable_reg	= LPC32XX_CLKPWR_I2S_CLK_CTRL,
+<<<<<<< HEAD
 	.enable_mask	= LPC32XX_CLKPWR_I2SCTRL_I2SCLK1_EN,
+=======
+	.enable_mask	= LPC32XX_CLKPWR_I2SCTRL_I2SCLK1_EN |
+			  LPC32XX_CLKPWR_I2SCTRL_I2S1_USE_DMA,
+>>>>>>> refs/remotes/origin/master
 	.get_rate	= local_return_parent_rate,
 };
 
@@ -813,14 +917,86 @@ static struct clk clk_rtc = {
 	.get_rate	= local_return_parent_rate,
 };
 
+<<<<<<< HEAD
 static struct clk clk_usbd = {
 	.parent		= &clk_usbpll,
 	.enable		= local_onoff_enable,
+=======
+static int local_usb_enable(struct clk *clk, int enable)
+{
+	u32 tmp;
+
+	if (enable) {
+		/* Set up I2C pull levels */
+		tmp = __raw_readl(LPC32XX_CLKPWR_I2C_CLK_CTRL);
+		tmp |= LPC32XX_CLKPWR_I2CCLK_USBI2CHI_DRIVE;
+		__raw_writel(tmp, LPC32XX_CLKPWR_I2C_CLK_CTRL);
+	}
+
+	return local_onoff_enable(clk, enable);
+}
+
+static struct clk clk_usbd = {
+	.parent		= &clk_usbpll,
+	.enable		= local_usb_enable,
+>>>>>>> refs/remotes/origin/master
 	.enable_reg	= LPC32XX_CLKPWR_USB_CTRL,
 	.enable_mask	= LPC32XX_CLKPWR_USBCTRL_HCLK_EN,
 	.get_rate	= local_return_parent_rate,
 };
 
+<<<<<<< HEAD
+=======
+#define OTG_ALWAYS_MASK		(LPC32XX_USB_OTG_OTG_CLOCK_ON | \
+				 LPC32XX_USB_OTG_I2C_CLOCK_ON)
+
+static int local_usb_otg_enable(struct clk *clk, int enable)
+{
+	int to = 1000;
+
+	if (enable) {
+		__raw_writel(clk->enable_mask, clk->enable_reg);
+
+		while (((__raw_readl(LPC32XX_USB_OTG_CLK_STAT) &
+			clk->enable_mask) != clk->enable_mask) && (to > 0))
+			to--;
+	} else {
+		__raw_writel(OTG_ALWAYS_MASK, clk->enable_reg);
+
+		while (((__raw_readl(LPC32XX_USB_OTG_CLK_STAT) &
+			OTG_ALWAYS_MASK) != OTG_ALWAYS_MASK) && (to > 0))
+			to--;
+	}
+
+	if (to)
+		return 0;
+	else
+		return -1;
+}
+
+static struct clk clk_usb_otg_dev = {
+	.parent		= &clk_usbpll,
+	.enable		= local_usb_otg_enable,
+	.enable_reg	= LPC32XX_USB_OTG_CLK_CTRL,
+	.enable_mask	= LPC32XX_USB_OTG_AHB_M_CLOCK_ON |
+			  LPC32XX_USB_OTG_OTG_CLOCK_ON |
+			  LPC32XX_USB_OTG_DEV_CLOCK_ON |
+			  LPC32XX_USB_OTG_I2C_CLOCK_ON,
+	.get_rate	= local_return_parent_rate,
+};
+
+static struct clk clk_usb_otg_host = {
+	.parent		= &clk_usbpll,
+	.enable		= local_usb_otg_enable,
+	.enable_reg	= LPC32XX_USB_OTG_CLK_CTRL,
+	.enable_mask	= LPC32XX_USB_OTG_AHB_M_CLOCK_ON |
+			  LPC32XX_USB_OTG_OTG_CLOCK_ON |
+			  LPC32XX_USB_OTG_HOST_CLOCK_ON |
+			  LPC32XX_USB_OTG_I2C_CLOCK_ON,
+	.get_rate	= local_return_parent_rate,
+};
+
+>>>>>>> refs/remotes/origin/master
 static int tsc_onoff_enable(struct clk *clk, int enable)
 {
 	u32 tmp;
@@ -847,7 +1023,10 @@ static struct clk clk_tsc = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int adc_onoff_enable(struct clk *clk, int enable)
 {
 	u32 tmp;
@@ -883,17 +1062,34 @@ static struct clk clk_adc = {
 	.get_rate	= local_return_parent_rate,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int mmc_onoff_enable(struct clk *clk, int enable)
 {
 	u32 tmp;
 
 	tmp = __raw_readl(LPC32XX_CLKPWR_MS_CTRL) &
+<<<<<<< HEAD
 		~LPC32XX_CLKPWR_MSCARD_SDCARD_EN;
 
 	/* If rate is 0, disable clock */
 	if (enable != 0)
 		tmp |= LPC32XX_CLKPWR_MSCARD_SDCARD_EN;
+=======
+		~(LPC32XX_CLKPWR_MSCARD_SDCARD_EN |
+		  LPC32XX_CLKPWR_MSCARD_MSDIO_PU_EN |
+		  LPC32XX_CLKPWR_MSCARD_MSDIO_PIN_DIS |
+		  LPC32XX_CLKPWR_MSCARD_MSDIO0_DIS |
+		  LPC32XX_CLKPWR_MSCARD_MSDIO1_DIS |
+		  LPC32XX_CLKPWR_MSCARD_MSDIO23_DIS);
+
+	/* If rate is 0, disable clock */
+	if (enable != 0)
+		tmp |= LPC32XX_CLKPWR_MSCARD_SDCARD_EN |
+			LPC32XX_CLKPWR_MSCARD_MSDIO_PU_EN;
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel(tmp, LPC32XX_CLKPWR_MS_CTRL);
 
@@ -942,7 +1138,11 @@ static unsigned long mmc_round_rate(struct clk *clk, unsigned long rate)
 
 static int mmc_set_rate(struct clk *clk, unsigned long rate)
 {
+<<<<<<< HEAD
 	u32 oldclk, tmp;
+=======
+	u32 tmp;
+>>>>>>> refs/remotes/origin/master
 	unsigned long prate, div, crate = mmc_round_rate(clk, rate);
 
 	prate = clk->parent->get_rate(clk->parent);
@@ -950,6 +1150,7 @@ static int mmc_set_rate(struct clk *clk, unsigned long rate)
 	div = prate / crate;
 
 	/* The MMC clock must be on when accessing an MMC register */
+<<<<<<< HEAD
 	oldclk = __raw_readl(LPC32XX_CLKPWR_MS_CTRL);
 	__raw_writel(oldclk | LPC32XX_CLKPWR_MSCARD_SDCARD_EN,
 		LPC32XX_CLKPWR_MS_CTRL);
@@ -960,6 +1161,14 @@ static int mmc_set_rate(struct clk *clk, unsigned long rate)
 
 	__raw_writel(oldclk, LPC32XX_CLKPWR_MS_CTRL);
 
+=======
+	tmp = __raw_readl(LPC32XX_CLKPWR_MS_CTRL) &
+		~LPC32XX_CLKPWR_MSCARD_SDCARD_DIV(0xf);
+	tmp |= LPC32XX_CLKPWR_MSCARD_SDCARD_DIV(div) |
+		LPC32XX_CLKPWR_MSCARD_SDCARD_EN;
+	__raw_writel(tmp, LPC32XX_CLKPWR_MS_CTRL);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1057,6 +1266,7 @@ static struct clk clk_lcd = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline void clk_lock(void)
 {
 	mutex_lock(&clkm_lock);
@@ -1075,6 +1285,10 @@ static void local_clk_disable(struct clk *clk)
 static void local_clk_disable(struct clk *clk)
 {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void local_clk_disable(struct clk *clk)
+{
+>>>>>>> refs/remotes/origin/master
 	/* Don't attempt to disable clock if it has no users */
 	if (clk->usecount > 0) {
 		clk->usecount--;
@@ -1118,17 +1332,23 @@ int clk_enable(struct clk *clk)
 {
 	int ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	clk_lock();
 	ret = local_clk_enable(clk);
 	clk_unlock();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&global_clkregs_lock, flags);
 	ret = local_clk_enable(clk);
 	spin_unlock_irqrestore(&global_clkregs_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -1140,16 +1360,22 @@ EXPORT_SYMBOL(clk_enable);
 void clk_disable(struct clk *clk)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_lock();
 	local_clk_disable(clk);
 	clk_unlock();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&global_clkregs_lock, flags);
 	local_clk_disable(clk);
 	spin_unlock_irqrestore(&global_clkregs_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(clk_disable);
 
@@ -1158,6 +1384,7 @@ EXPORT_SYMBOL(clk_disable);
  */
 unsigned long clk_get_rate(struct clk *clk)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned long rate;
 
@@ -1169,6 +1396,9 @@ unsigned long clk_get_rate(struct clk *clk)
 =======
 	return clk->get_rate(clk);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return clk->get_rate(clk);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(clk_get_rate);
 
@@ -1185,6 +1415,7 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
 	 * instead of high level clock control
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (clk->set_rate) {
 		clk_lock();
 		ret = clk->set_rate(clk, rate);
@@ -1194,6 +1425,10 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
 	if (clk->set_rate)
 		ret = clk->set_rate(clk, rate);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (clk->set_rate)
+		ret = clk->set_rate(clk, rate);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -1205,20 +1440,26 @@ EXPORT_SYMBOL(clk_set_rate);
 long clk_round_rate(struct clk *clk, unsigned long rate)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_lock();
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (clk->round_rate)
 		rate = clk->round_rate(clk, rate);
 	else
 		rate = clk->get_rate(clk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	clk_unlock();
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return rate;
 }
 EXPORT_SYMBOL(clk_round_rate);
@@ -1242,6 +1483,7 @@ struct clk *clk_get_parent(struct clk *clk)
 }
 EXPORT_SYMBOL(clk_get_parent);
 
+<<<<<<< HEAD
 #define _REGISTER_CLOCK(d, n, c) \
 	{ \
 		.dev_id = (d), \
@@ -1293,6 +1535,50 @@ static struct clk_lookup lookups[] = {
 	_REGISTER_CLOCK("dev:clcd", NULL, clk_lcd)
 	_REGISTER_CLOCK("lpc32xx_udc", "ck_usbd", clk_usbd)
 	_REGISTER_CLOCK("lpc32xx_rtc", NULL, clk_rtc)
+=======
+static struct clk_lookup lookups[] = {
+	CLKDEV_INIT(NULL, "osc_32KHz", &osc_32KHz),
+	CLKDEV_INIT(NULL, "osc_pll397", &osc_pll397),
+	CLKDEV_INIT(NULL, "osc_main", &osc_main),
+	CLKDEV_INIT(NULL, "sys_ck", &clk_sys),
+	CLKDEV_INIT(NULL, "arm_pll_ck", &clk_armpll),
+	CLKDEV_INIT(NULL, "ck_pll5", &clk_usbpll),
+	CLKDEV_INIT(NULL, "hclk_ck", &clk_hclk),
+	CLKDEV_INIT(NULL, "pclk_ck", &clk_pclk),
+	CLKDEV_INIT(NULL, "timer0_ck", &clk_timer0),
+	CLKDEV_INIT(NULL, "timer1_ck", &clk_timer1),
+	CLKDEV_INIT(NULL, "timer2_ck", &clk_timer2),
+	CLKDEV_INIT(NULL, "timer3_ck", &clk_timer3),
+	CLKDEV_INIT(NULL, "vfp9_ck", &clk_vfp9),
+	CLKDEV_INIT("pl08xdmac", NULL, &clk_dma),
+	CLKDEV_INIT("4003c000.watchdog", NULL, &clk_wdt),
+	CLKDEV_INIT("4005c000.pwm", NULL, &clk_pwm),
+	CLKDEV_INIT("400e8000.mpwm", NULL, &clk_mpwm),
+	CLKDEV_INIT(NULL, "uart3_ck", &clk_uart3),
+	CLKDEV_INIT(NULL, "uart4_ck", &clk_uart4),
+	CLKDEV_INIT(NULL, "uart5_ck", &clk_uart5),
+	CLKDEV_INIT(NULL, "uart6_ck", &clk_uart6),
+	CLKDEV_INIT("400a0000.i2c", NULL, &clk_i2c0),
+	CLKDEV_INIT("400a8000.i2c", NULL, &clk_i2c1),
+	CLKDEV_INIT("31020300.i2c", NULL, &clk_i2c2),
+	CLKDEV_INIT("dev:ssp0", NULL, &clk_ssp0),
+	CLKDEV_INIT("dev:ssp1", NULL, &clk_ssp1),
+	CLKDEV_INIT("40050000.key", NULL, &clk_kscan),
+	CLKDEV_INIT("20020000.flash", NULL, &clk_nand),
+	CLKDEV_INIT("200a8000.flash", NULL, &clk_nand_mlc),
+	CLKDEV_INIT("40048000.adc", NULL, &clk_adc),
+	CLKDEV_INIT(NULL, "i2s0_ck", &clk_i2s0),
+	CLKDEV_INIT(NULL, "i2s1_ck", &clk_i2s1),
+	CLKDEV_INIT("40048000.tsc", NULL, &clk_tsc),
+	CLKDEV_INIT("20098000.sd", NULL, &clk_mmc),
+	CLKDEV_INIT("31060000.ethernet", NULL, &clk_net),
+	CLKDEV_INIT("dev:clcd", NULL, &clk_lcd),
+	CLKDEV_INIT("31020000.usbd", "ck_usbd", &clk_usbd),
+	CLKDEV_INIT("31020000.ohci", "ck_usbd", &clk_usbd),
+	CLKDEV_INIT("31020000.usbd", "ck_usb_otg", &clk_usb_otg_dev),
+	CLKDEV_INIT("31020000.ohci", "ck_usb_otg", &clk_usb_otg_host),
+	CLKDEV_INIT("lpc32xx_rtc", NULL, &clk_rtc),
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init clk_init(void)

@@ -55,10 +55,14 @@ immap_t __iomem *mpc8xx_immr;
 static cpic8xx_t __iomem *cpic_reg;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct irq_host *cpm_pic_host;
 =======
 static struct irq_domain *cpm_pic_host;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct irq_domain *cpm_pic_host;
+>>>>>>> refs/remotes/origin/master
 
 static void cpm_mask_irq(struct irq_data *d)
 {
@@ -103,10 +107,14 @@ int cpm_get_irq(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int cpm_pic_host_map(struct irq_host *h, unsigned int virq,
 =======
 static int cpm_pic_host_map(struct irq_domain *h, unsigned int virq,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int cpm_pic_host_map(struct irq_domain *h, unsigned int virq,
+>>>>>>> refs/remotes/origin/master
 			  irq_hw_number_t hw)
 {
 	pr_debug("cpm_pic_host_map(%d, 0x%lx)\n", virq, hw);
@@ -128,6 +136,7 @@ static irqreturn_t cpm_error_interrupt(int irq, void *dev)
 
 static struct irqaction cpm_error_irqaction = {
 	.handler = cpm_error_interrupt,
+<<<<<<< HEAD
 	.name = "error",
 };
 
@@ -136,6 +145,13 @@ static struct irq_host_ops cpm_pic_host_ops = {
 =======
 static const struct irq_domain_ops cpm_pic_host_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.flags = IRQF_NO_THREAD,
+	.name = "error",
+};
+
+static const struct irq_domain_ops cpm_pic_host_ops = {
+>>>>>>> refs/remotes/origin/master
 	.map = cpm_pic_host_map,
 };
 
@@ -161,10 +177,14 @@ unsigned int cpm_pic_init(void)
 		goto end;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpic_reg = ioremap(res.start, res.end - res.start + 1);
 =======
 	cpic_reg = ioremap(res.start, resource_size(&res));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpic_reg = ioremap(res.start, resource_size(&res));
+>>>>>>> refs/remotes/origin/master
 	if (cpic_reg == NULL)
 		goto end;
 
@@ -181,11 +201,15 @@ unsigned int cpm_pic_init(void)
 	out_be32(&cpic_reg->cpic_cimr, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	cpm_pic_host = irq_alloc_host(np, IRQ_HOST_MAP_LINEAR,
 				      64, &cpm_pic_host_ops, 64);
 =======
 	cpm_pic_host = irq_domain_add_linear(np, 64, &cpm_pic_host_ops, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	cpm_pic_host = irq_domain_add_linear(np, 64, &cpm_pic_host_ops, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (cpm_pic_host == NULL) {
 		printk(KERN_ERR "CPM2 PIC: failed to allocate irq host!\n");
 		sirq = NO_IRQ;

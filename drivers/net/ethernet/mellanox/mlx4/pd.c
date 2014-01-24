@@ -63,7 +63,11 @@ void mlx4_pd_free(struct mlx4_dev *dev, u32 pdn)
 }
 EXPORT_SYMBOL_GPL(mlx4_pd_free);
 
+<<<<<<< HEAD
 int mlx4_xrcd_alloc(struct mlx4_dev *dev, u32 *xrcdn)
+=======
+int __mlx4_xrcd_alloc(struct mlx4_dev *dev, u32 *xrcdn)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mlx4_priv *priv = mlx4_priv(dev);
 
@@ -73,12 +77,56 @@ int mlx4_xrcd_alloc(struct mlx4_dev *dev, u32 *xrcdn)
 
 	return 0;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL_GPL(mlx4_xrcd_alloc);
 
 void mlx4_xrcd_free(struct mlx4_dev *dev, u32 xrcdn)
 {
 	mlx4_bitmap_free(&mlx4_priv(dev)->xrcd_bitmap, xrcdn);
 }
+=======
+
+int mlx4_xrcd_alloc(struct mlx4_dev *dev, u32 *xrcdn)
+{
+	u64 out_param;
+	int err;
+
+	if (mlx4_is_mfunc(dev)) {
+		err = mlx4_cmd_imm(dev, 0, &out_param,
+				   RES_XRCD, RES_OP_RESERVE,
+				   MLX4_CMD_ALLOC_RES,
+				   MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+		if (err)
+			return err;
+
+		*xrcdn = get_param_l(&out_param);
+		return 0;
+	}
+	return __mlx4_xrcd_alloc(dev, xrcdn);
+}
+EXPORT_SYMBOL_GPL(mlx4_xrcd_alloc);
+
+void __mlx4_xrcd_free(struct mlx4_dev *dev, u32 xrcdn)
+{
+	mlx4_bitmap_free(&mlx4_priv(dev)->xrcd_bitmap, xrcdn);
+}
+
+void mlx4_xrcd_free(struct mlx4_dev *dev, u32 xrcdn)
+{
+	u64 in_param = 0;
+	int err;
+
+	if (mlx4_is_mfunc(dev)) {
+		set_param_l(&in_param, xrcdn);
+		err = mlx4_cmd(dev, in_param, RES_XRCD,
+			       RES_OP_RESERVE, MLX4_CMD_FREE_RES,
+			       MLX4_CMD_TIME_CLASS_A, MLX4_CMD_WRAPPED);
+		if (err)
+			mlx4_warn(dev, "Failed to release xrcdn %d\n", xrcdn);
+	} else
+		__mlx4_xrcd_free(dev, xrcdn);
+}
+>>>>>>> refs/remotes/origin/master
 EXPORT_SYMBOL_GPL(mlx4_xrcd_free);
 
 int mlx4_init_pd_table(struct mlx4_dev *dev)
@@ -133,7 +181,11 @@ void mlx4_uar_free(struct mlx4_dev *dev, struct mlx4_uar *uar)
 }
 EXPORT_SYMBOL_GPL(mlx4_uar_free);
 
+<<<<<<< HEAD
 int mlx4_bf_alloc(struct mlx4_dev *dev, struct mlx4_bf *bf)
+=======
+int mlx4_bf_alloc(struct mlx4_dev *dev, struct mlx4_bf *bf, int node)
+>>>>>>> refs/remotes/origin/master
 {
 	struct mlx4_priv *priv = mlx4_priv(dev);
 	struct mlx4_uar *uar;
@@ -151,10 +203,20 @@ int mlx4_bf_alloc(struct mlx4_dev *dev, struct mlx4_bf *bf)
 			err = -ENOMEM;
 			goto out;
 		}
+<<<<<<< HEAD
 		uar = kmalloc(sizeof *uar, GFP_KERNEL);
 		if (!uar) {
 			err = -ENOMEM;
 			goto out;
+=======
+		uar = kmalloc_node(sizeof(*uar), GFP_KERNEL, node);
+		if (!uar) {
+			uar = kmalloc(sizeof(*uar), GFP_KERNEL);
+			if (!uar) {
+				err = -ENOMEM;
+				goto out;
+			}
+>>>>>>> refs/remotes/origin/master
 		}
 		err = mlx4_uar_alloc(dev, uar);
 		if (err)

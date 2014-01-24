@@ -208,6 +208,7 @@ static int debug = \
 			    ;
 static struct proc_dir_entry *rtllib_proc;
 
+<<<<<<< HEAD
 static int show_debug_level(char *page, char **start, off_t offset,
 			    int count, int *eof, void *data)
 {
@@ -242,23 +243,64 @@ static int store_debug_level(struct file *file, const char __user *buffer,
 }
 
 int __init rtllib_init(void)
+=======
+static int show_debug_level(struct seq_file *m, void *v)
+{
+	return seq_printf(m, "0x%08X\n", rtllib_debug_level);
+}
+
+static ssize_t write_debug_level(struct file *file, const char __user *buffer,
+			     size_t count, loff_t *ppos)
+{
+	unsigned long val;
+	int err = kstrtoul_from_user(buffer, count, 0, &val);
+	if (err)
+		return err;
+	rtllib_debug_level = val;
+	return count;
+}
+
+static int open_debug_level(struct inode *inode, struct file *file)
+{
+	return single_open(file, show_debug_level, NULL);
+}
+
+static const struct file_operations fops = {
+	.open = open_debug_level,
+	.read = seq_read,
+	.llseek = seq_lseek,
+	.write = write_debug_level,
+	.release = single_release,
+};
+
+static int __init rtllib_init(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct proc_dir_entry *e;
 
 	rtllib_debug_level = debug;
+<<<<<<< HEAD
 	rtllib_proc = create_proc_entry(DRV_NAME, S_IFDIR, init_net.proc_net);
+=======
+	rtllib_proc = proc_mkdir(DRV_NAME, init_net.proc_net);
+>>>>>>> refs/remotes/origin/master
 	if (rtllib_proc == NULL) {
 		RTLLIB_ERROR("Unable to create " DRV_NAME
 				" proc directory\n");
 		return -EIO;
 	}
+<<<<<<< HEAD
 	e = create_proc_entry("debug_level", S_IFREG | S_IRUGO | S_IWUSR,
 			      rtllib_proc);
+=======
+	e = proc_create("debug_level", S_IRUGO | S_IWUSR, rtllib_proc, &fops);
+>>>>>>> refs/remotes/origin/master
 	if (!e) {
 		remove_proc_entry(DRV_NAME, init_net.proc_net);
 		rtllib_proc = NULL;
 		return -EIO;
 	}
+<<<<<<< HEAD
 	e->read_proc = show_debug_level;
 	e->write_proc = store_debug_level;
 	e->data = NULL;
@@ -267,6 +309,12 @@ int __init rtllib_init(void)
 }
 
 void __exit rtllib_exit(void)
+=======
+	return 0;
+}
+
+static void __exit rtllib_exit(void)
+>>>>>>> refs/remotes/origin/master
 {
 	if (rtllib_proc) {
 		remove_proc_entry("debug_level", rtllib_proc);

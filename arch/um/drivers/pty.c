@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include "chan_user.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "kern_constants.h"
 #include "os.h"
 #include "um_malloc.h"
@@ -21,6 +22,10 @@
 #include "os.h"
 #include "um_malloc.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <os.h>
+#include <um_malloc.h>
+>>>>>>> refs/remotes/origin/master
 
 struct pty_chan {
 	void (*announce)(char *dev_name, int dev);

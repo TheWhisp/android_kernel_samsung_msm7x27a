@@ -1,8 +1,11 @@
+<<<<<<< HEAD
 #ifndef __SOUND_EMU10K1_H
 #define __SOUND_EMU10K1_H
 
 #include <linux/types.h>
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>,
  *		     Creative Labs, Inc.
@@ -24,8 +27,14 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
+<<<<<<< HEAD
 
 #ifdef __KERNEL__
+=======
+#ifndef __SOUND_EMU10K1_H
+#define __SOUND_EMU10K1_H
+
+>>>>>>> refs/remotes/origin/master
 
 #include <sound/pcm.h>
 #include <sound/rawmidi.h>
@@ -36,8 +45,15 @@
 #include <sound/timer.h>
 #include <linux/interrupt.h>
 #include <linux/mutex.h>
+<<<<<<< HEAD
 
 #include <asm/io.h>
+=======
+#include <linux/firmware.h>
+
+#include <asm/io.h>
+#include <uapi/sound/emu10k1.h>
+>>>>>>> refs/remotes/origin/master
 
 /* ------------------- DEFINES -------------------- */
 
@@ -1788,7 +1804,14 @@ struct snd_emu10k1 {
 	unsigned int efx_voices_mask[2];
 	unsigned int next_free_voice;
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+	const struct firmware *firmware;
+	const struct firmware *dock_fw;
+
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 	unsigned int *saved_ptr;
 	unsigned int *saved_gpr;
 	unsigned int *tram_val_saved;
@@ -1796,6 +1819,10 @@ struct snd_emu10k1 {
 	unsigned int *saved_icode;
 	unsigned int *p16v_saved;
 	unsigned int saved_a_iocfg, saved_hcfg;
+<<<<<<< HEAD
+=======
+	bool suspend;
+>>>>>>> refs/remotes/origin/master
 #endif
 
 };
@@ -1856,7 +1883,11 @@ unsigned short snd_emu10k1_ac97_read(struct snd_ac97 *ac97, unsigned short reg);
 void snd_emu10k1_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short data);
 unsigned int snd_emu10k1_rate_to_pitch(unsigned int rate);
 
+<<<<<<< HEAD
 #ifdef CONFIG_PM
+=======
+#ifdef CONFIG_PM_SLEEP
+>>>>>>> refs/remotes/origin/master
 void snd_emu10k1_suspend_regs(struct snd_emu10k1 *emu);
 void snd_emu10k1_resume_init(struct snd_emu10k1 *emu);
 void snd_emu10k1_resume_regs(struct snd_emu10k1 *emu);
@@ -1899,6 +1930,7 @@ int snd_emu10k1_fx8010_register_irq_handler(struct snd_emu10k1 *emu,
 int snd_emu10k1_fx8010_unregister_irq_handler(struct snd_emu10k1 *emu,
 					      struct snd_emu10k1_fx8010_irq *irq);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /*
@@ -2245,4 +2277,6 @@ typedef struct snd_emu10k1_fx8010_code emu10k1_fx8010_code_t;
 typedef struct snd_emu10k1_fx8010_tram emu10k1_fx8010_tram_t;
 typedef struct snd_emu10k1_fx8010_pcm_rec emu10k1_fx8010_pcm_t;
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif	/* __SOUND_EMU10K1_H */

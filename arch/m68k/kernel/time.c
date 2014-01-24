@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_MMU
 #include "time_mm.c"
 #else
 #include "time_no.c"
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  *  linux/arch/m68k/kernel/time.c
  *
@@ -35,6 +38,13 @@
 #include <linux/timex.h>
 #include <linux/profile.h>
 
+<<<<<<< HEAD
+=======
+
+unsigned long (*mach_random_get_entropy)(void);
+
+
+>>>>>>> refs/remotes/origin/master
 /*
  * timer_interrupt() needs to keep up the real-time clock,
  * as well as call the "xtime_update()" routine every clocktick
@@ -87,6 +97,7 @@ void read_persistent_clock(struct timespec *ts)
 	}
 }
 
+<<<<<<< HEAD
 void __init time_init(void)
 {
 	mach_sched_init(timer_interrupt);
@@ -98,6 +109,9 @@ u32 arch_gettimeoffset(void)
 {
 	return mach_gettimeoffset() * 1000;
 }
+=======
+#ifdef CONFIG_ARCH_USES_GETTIMEOFFSET
+>>>>>>> refs/remotes/origin/master
 
 static int __init rtc_init(void)
 {
@@ -107,13 +121,26 @@ static int __init rtc_init(void)
 		return -ENODEV;
 
 	pdev = platform_device_register_simple("rtc-generic", -1, NULL, 0);
+<<<<<<< HEAD
 	if (IS_ERR(pdev))
 		return PTR_ERR(pdev);
 
 	return 0;
+=======
+	return PTR_ERR_OR_ZERO(pdev);
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(rtc_init);
 
+<<<<<<< HEAD
 #endif /* CONFIG_M68KCLASSIC */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* CONFIG_ARCH_USES_GETTIMEOFFSET */
+
+void __init time_init(void)
+{
+	mach_sched_init(timer_interrupt);
+}
+>>>>>>> refs/remotes/origin/master

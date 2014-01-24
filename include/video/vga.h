@@ -19,6 +19,7 @@
 
 #include <linux/types.h>
 #include <asm/io.h>
+<<<<<<< HEAD
 #ifndef CONFIG_AMIGA
 #include <asm/vga.h>
 #else
@@ -42,6 +43,9 @@
 #define writeb		z_writeb
 #define writew		z_writew
 #endif
+=======
+#include <asm/vga.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/byteorder.h>
 
 

@@ -1,6 +1,7 @@
 #ifndef __LINUX_ATALK_H__
 #define __LINUX_ATALK_H__
 
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <asm/byteorder.h>
 <<<<<<< HEAD
@@ -51,6 +52,11 @@ struct atalk_netrange {
 #ifdef __KERNEL__
 
 #include <net/sock.h>
+=======
+
+#include <net/sock.h>
+#include <uapi/linux/atalk.h>
+>>>>>>> refs/remotes/origin/master
 
 struct atalk_route {
 	struct net_device  *dev;
@@ -212,5 +218,8 @@ extern void atalk_proc_exit(void);
 #define atalk_proc_exit()	do { } while(0)
 #endif /* CONFIG_PROC_FS */
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_ATALK_H__ */

@@ -42,7 +42,11 @@ struct device *soc_device_to_device(struct soc_device *soc_dev)
 	return &soc_dev->dev;
 }
 
+<<<<<<< HEAD
 static mode_t soc_attribute_mode(struct kobject *kobj,
+=======
+static umode_t soc_attribute_mode(struct kobject *kobj,
+>>>>>>> refs/remotes/origin/master
                                  struct attribute *attr,
                                  int index)
 {

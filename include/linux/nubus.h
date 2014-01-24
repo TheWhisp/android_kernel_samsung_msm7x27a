@@ -8,6 +8,7 @@
   Some of the constants in here are from the corresponding
   NetBSD/OpenBSD header file, by Allen Briggs.  We figured out the
   rest of them on our own. */
+<<<<<<< HEAD
 
 #ifndef LINUX_NUBUS_H
 #define LINUX_NUBUS_H
@@ -238,6 +239,14 @@ struct nubus_dirent
 };
 
 #ifdef __KERNEL__
+=======
+#ifndef LINUX_NUBUS_H
+#define LINUX_NUBUS_H
+
+#include <asm/nubus.h>
+#include <uapi/linux/nubus.h>
+
+>>>>>>> refs/remotes/origin/master
 struct nubus_board {
 	struct nubus_board* next;
 	struct nubus_dev* first_dev;
@@ -304,10 +313,20 @@ extern struct nubus_board* nubus_boards;
 
 /* Generic NuBus interface functions, modelled after the PCI interface */
 void nubus_scan_bus(void);
+<<<<<<< HEAD
 extern void nubus_proc_init(void);
 int get_nubus_list(char *buf);
 int nubus_proc_attach_device(struct nubus_dev *dev);
 int nubus_proc_detach_device(struct nubus_dev *dev);
+=======
+#ifdef CONFIG_PROC_FS
+extern void nubus_proc_init(void);
+#else
+static inline void nubus_proc_init(void) {}
+#endif
+int get_nubus_list(char *buf);
+int nubus_proc_attach_device(struct nubus_dev *dev);
+>>>>>>> refs/remotes/origin/master
 /* If we need more precision we can add some more of these */
 struct nubus_dev* nubus_find_device(unsigned short category,
 				    unsigned short type,
@@ -352,6 +371,7 @@ void nubus_get_rsrc_mem(void* dest,
 void nubus_get_rsrc_str(void* dest,
 			const struct nubus_dirent *dirent,
 			int maxlen);
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 /* We'd like to get rid of this eventually.  Only daynaport.c uses it now. */
@@ -360,4 +380,6 @@ static inline void *nubus_slot_addr(int slot)
 	return (void *)(0xF0000000|(slot<<24));
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_NUBUS_H */

@@ -1,7 +1,11 @@
 /*
  * AD7190 AD7192 AD7195 SPI ADC driver
  *
+<<<<<<< HEAD
  * Copyright 2011 Analog Devices Inc.
+=======
+ * Copyright 2011-2012 Analog Devices Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Licensed under the GPL-2.
  */
@@ -17,12 +21,22 @@
 #include <linux/sched.h>
 #include <linux/delay.h>
 
+<<<<<<< HEAD
 #include "../iio.h"
 #include "../sysfs.h"
 #include "../buffer.h"
 #include "../ring_sw.h"
 #include "../trigger.h"
 #include "../trigger_consumer.h"
+=======
+#include <linux/iio/iio.h>
+#include <linux/iio/sysfs.h>
+#include <linux/iio/buffer.h>
+#include <linux/iio/trigger.h>
+#include <linux/iio/trigger_consumer.h>
+#include <linux/iio/triggered_buffer.h>
+#include <linux/iio/adc/ad_sigma_delta.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "ad7192.h"
 
@@ -57,6 +71,10 @@
 
 /* Mode Register Bit Designations (AD7192_REG_MODE) */
 #define AD7192_MODE_SEL(x)	(((x) & 0x7) << 21) /* Operation Mode Select */
+<<<<<<< HEAD
+=======
+#define AD7192_MODE_SEL_MASK	(0x7 << 21) /* Operation Mode Select Mask */
+>>>>>>> refs/remotes/origin/master
 #define AD7192_MODE_DAT_STA	(1 << 20) /* Status Register transmission */
 #define AD7192_MODE_CLKSRC(x)	(((x) & 0x3) << 18) /* Clock Source Select */
 #define AD7192_MODE_SINC3	(1 << 15) /* SINC3 Filter Select */
@@ -91,7 +109,12 @@
 
 #define AD7192_CONF_CHOP	(1 << 23) /* CHOP enable */
 #define AD7192_CONF_REFSEL	(1 << 20) /* REFIN1/REFIN2 Reference Select */
+<<<<<<< HEAD
 #define AD7192_CONF_CHAN(x)	(((x) & 0xFF) << 8) /* Channel select */
+=======
+#define AD7192_CONF_CHAN(x)	(((1 << (x)) & 0xFF) << 8) /* Channel select */
+#define AD7192_CONF_CHAN_MASK	(0xFF << 8) /* Channel select mask */
+>>>>>>> refs/remotes/origin/master
 #define AD7192_CONF_BURN	(1 << 7) /* Burnout current enable */
 #define AD7192_CONF_REFDET	(1 << 6) /* Reference detect enable */
 #define AD7192_CONF_BUF		(1 << 4) /* Buffered Mode Enable */
@@ -133,6 +156,7 @@
  */
 
 struct ad7192_state {
+<<<<<<< HEAD
 	struct spi_device		*spi;
 	struct iio_trigger		*trig;
 	struct regulator		*reg;
@@ -140,12 +164,16 @@ struct ad7192_state {
 	wait_queue_head_t		wq_data_avail;
 	bool				done;
 	bool				irq_dis;
+=======
+	struct regulator		*reg;
+>>>>>>> refs/remotes/origin/master
 	u16				int_vref_mv;
 	u32				mclk;
 	u32				f_order;
 	u32				mode;
 	u32				conf;
 	u32				scale_avail[8][2];
+<<<<<<< HEAD
 	long				available_scan_masks[9];
 	u8				gpocon;
 	u8				devid;
@@ -321,6 +349,49 @@ out:
 }
 
 static const u8 ad7192_calib_arr[8][2] = {
+=======
+	u8				gpocon;
+	u8				devid;
+
+	struct ad_sigma_delta		sd;
+};
+
+static struct ad7192_state *ad_sigma_delta_to_ad7192(struct ad_sigma_delta *sd)
+{
+	return container_of(sd, struct ad7192_state, sd);
+}
+
+static int ad7192_set_channel(struct ad_sigma_delta *sd, unsigned int channel)
+{
+	struct ad7192_state *st = ad_sigma_delta_to_ad7192(sd);
+
+	st->conf &= ~AD7192_CONF_CHAN_MASK;
+	st->conf |= AD7192_CONF_CHAN(channel);
+
+	return ad_sd_write_reg(&st->sd, AD7192_REG_CONF, 3, st->conf);
+}
+
+static int ad7192_set_mode(struct ad_sigma_delta *sd,
+			   enum ad_sigma_delta_mode mode)
+{
+	struct ad7192_state *st = ad_sigma_delta_to_ad7192(sd);
+
+	st->mode &= ~AD7192_MODE_SEL_MASK;
+	st->mode |= AD7192_MODE_SEL(mode);
+
+	return ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
+}
+
+static const struct ad_sigma_delta_info ad7192_sigma_delta_info = {
+	.set_channel = ad7192_set_channel,
+	.set_mode = ad7192_set_mode,
+	.has_registers = true,
+	.addr_shift = 3,
+	.read_mask = BIT(6),
+};
+
+static const struct ad_sd_calib_data ad7192_calib_arr[8] = {
+>>>>>>> refs/remotes/origin/master
 	{AD7192_MODE_CAL_INT_ZERO, AD7192_CH_AIN1},
 	{AD7192_MODE_CAL_INT_FULL, AD7192_CH_AIN1},
 	{AD7192_MODE_CAL_INT_ZERO, AD7192_CH_AIN2},
@@ -333,6 +404,7 @@ static const u8 ad7192_calib_arr[8][2] = {
 
 static int ad7192_calibrate_all(struct ad7192_state *st)
 {
+<<<<<<< HEAD
 	int i, ret;
 
 	for (i = 0; i < ARRAY_SIZE(ad7192_calib_arr); i++) {
@@ -352,26 +424,48 @@ static int ad7192_setup(struct ad7192_state *st)
 {
 	struct iio_dev *indio_dev = spi_get_drvdata(st->spi);
 	struct ad7192_platform_data *pdata = st->pdata;
+=======
+		return ad_sd_calibrate_all(&st->sd, ad7192_calib_arr,
+				ARRAY_SIZE(ad7192_calib_arr));
+}
+
+static int ad7192_setup(struct ad7192_state *st,
+	const struct ad7192_platform_data *pdata)
+{
+	struct iio_dev *indio_dev = spi_get_drvdata(st->sd.spi);
+>>>>>>> refs/remotes/origin/master
 	unsigned long long scale_uv;
 	int i, ret, id;
 	u8 ones[6];
 
 	/* reset the serial interface */
 	memset(&ones, 0xFF, 6);
+<<<<<<< HEAD
 	ret = spi_write(st->spi, &ones, 6);
+=======
+	ret = spi_write(st->sd.spi, &ones, 6);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto out;
 	msleep(1); /* Wait for at least 500us */
 
 	/* write/read test for device presence */
+<<<<<<< HEAD
 	ret = ad7192_read_reg(st, AD7192_REG_ID, &id, 1);
+=======
+	ret = ad_sd_read_reg(&st->sd, AD7192_REG_ID, 1, &id);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out;
 
 	id &= AD7192_ID_MASK;
 
 	if (id != st->devid)
+<<<<<<< HEAD
 		dev_warn(&st->spi->dev, "device ID query failed (0x%X)\n", id);
+=======
+		dev_warn(&st->sd.spi->dev, "device ID query failed (0x%X)\n", id);
+>>>>>>> refs/remotes/origin/master
 
 	switch (pdata->clock_source_sel) {
 	case AD7192_CLK_EXT_MCLK1_2:
@@ -424,11 +518,19 @@ static int ad7192_setup(struct ad7192_state *st)
 	if (pdata->burnout_curr_en)
 		st->conf |= AD7192_CONF_BURN;
 
+<<<<<<< HEAD
 	ret = ad7192_write_reg(st, AD7192_REG_MODE, 3, st->mode);
 	if (ret)
 		goto out;
 
 	ret = ad7192_write_reg(st, AD7192_REG_CONF, 3, st->conf);
+=======
+	ret = ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
+	if (ret)
+		goto out;
+
+	ret = ad_sd_write_reg(&st->sd, AD7192_REG_CONF, 3, st->conf);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto out;
 
@@ -449,6 +551,7 @@ static int ad7192_setup(struct ad7192_state *st)
 
 	return 0;
 out:
+<<<<<<< HEAD
 	dev_err(&st->spi->dev, "setup failed\n");
 	return ret;
 }
@@ -663,11 +766,21 @@ static void ad7192_remove_trigger(struct iio_dev *indio_dev)
 	iio_free_trigger(st->trig);
 }
 
+=======
+	dev_err(&st->sd.spi->dev, "setup failed\n");
+	return ret;
+}
+
+>>>>>>> refs/remotes/origin/master
 static ssize_t ad7192_read_frequency(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad7192_state *st = iio_priv(indio_dev);
 
 	return sprintf(buf, "%d\n", st->mclk /
@@ -679,14 +792,26 @@ static ssize_t ad7192_write_frequency(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad7192_state *st = iio_priv(indio_dev);
 	unsigned long lval;
 	int div, ret;
 
+<<<<<<< HEAD
 	ret = strict_strtoul(buf, 10, &lval);
 	if (ret)
 		return ret;
+=======
+	ret = kstrtoul(buf, 10, &lval);
+	if (ret)
+		return ret;
+	if (lval == 0)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&indio_dev->mlock);
 	if (iio_buffer_enabled(indio_dev)) {
@@ -702,7 +827,11 @@ static ssize_t ad7192_write_frequency(struct device *dev,
 
 	st->mode &= ~AD7192_MODE_RATE(-1);
 	st->mode |= AD7192_MODE_RATE(div);
+<<<<<<< HEAD
 	ad7192_write_reg(st, AD7192_REG_MODE, 3, st->mode);
+=======
+	ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
+>>>>>>> refs/remotes/origin/master
 
 out:
 	mutex_unlock(&indio_dev->mlock);
@@ -714,11 +843,18 @@ static IIO_DEV_ATTR_SAMP_FREQ(S_IWUSR | S_IRUGO,
 		ad7192_read_frequency,
 		ad7192_write_frequency);
 
+<<<<<<< HEAD
 
 static ssize_t ad7192_show_scale_available(struct device *dev,
 			struct device_attribute *attr, char *buf)
 {
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+static ssize_t ad7192_show_scale_available(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad7192_state *st = iio_priv(indio_dev);
 	int i, len = 0;
 
@@ -742,7 +878,11 @@ static ssize_t ad7192_show_ac_excitation(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad7192_state *st = iio_priv(indio_dev);
 
 	return sprintf(buf, "%d\n", !!(st->mode & AD7192_MODE_ACX));
@@ -752,7 +892,11 @@ static ssize_t ad7192_show_bridge_switch(struct device *dev,
 		struct device_attribute *attr,
 		char *buf)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad7192_state *st = iio_priv(indio_dev);
 
 	return sprintf(buf, "%d\n", !!(st->gpocon & AD7192_GPOCON_BPDSW));
@@ -763,7 +907,11 @@ static ssize_t ad7192_set(struct device *dev,
 		const char *buf,
 		size_t len)
 {
+<<<<<<< HEAD
 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+=======
+	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+>>>>>>> refs/remotes/origin/master
 	struct ad7192_state *st = iio_priv(indio_dev);
 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
 	int ret;
@@ -786,7 +934,11 @@ static ssize_t ad7192_set(struct device *dev,
 		else
 			st->gpocon &= ~AD7192_GPOCON_BPDSW;
 
+<<<<<<< HEAD
 		ad7192_write_reg(st, AD7192_REG_GPOCON, 1, st->gpocon);
+=======
+		ad_sd_write_reg(&st->sd, AD7192_REG_GPOCON, 1, st->gpocon);
+>>>>>>> refs/remotes/origin/master
 		break;
 	case AD7192_REG_MODE:
 		if (val)
@@ -794,7 +946,11 @@ static ssize_t ad7192_set(struct device *dev,
 		else
 			st->mode &= ~AD7192_MODE_ACX;
 
+<<<<<<< HEAD
 		ad7192_write_reg(st, AD7192_REG_GPOCON, 3, st->mode);
+=======
+		ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		ret = -EINVAL;
@@ -838,6 +994,14 @@ static const struct attribute_group ad7195_attribute_group = {
 	.attrs = ad7195_attributes,
 };
 
+<<<<<<< HEAD
+=======
+static unsigned int ad7192_get_temp_scale(bool unipolar)
+{
+	return unipolar ? 2815 * 2 : 2815;
+}
+
+>>>>>>> refs/remotes/origin/master
 static int ad7192_read_raw(struct iio_dev *indio_dev,
 			   struct iio_chan_spec const *chan,
 			   int *val,
@@ -845,6 +1009,7 @@ static int ad7192_read_raw(struct iio_dev *indio_dev,
 			   long m)
 {
 	struct ad7192_state *st = iio_priv(indio_dev);
+<<<<<<< HEAD
 	int ret, smpl = 0;
 	bool unipolar = !!(st->conf & AD7192_CONF_UNIPOLAR);
 
@@ -879,6 +1044,13 @@ static int ad7192_read_raw(struct iio_dev *indio_dev,
 		}
 		return IIO_VAL_INT;
 
+=======
+	bool unipolar = !!(st->conf & AD7192_CONF_UNIPOLAR);
+
+	switch (m) {
+	case IIO_CHAN_INFO_RAW:
+		return ad_sigma_delta_single_conversion(indio_dev, chan, val);
+>>>>>>> refs/remotes/origin/master
 	case IIO_CHAN_INFO_SCALE:
 		switch (chan->type) {
 		case IIO_VOLTAGE:
@@ -888,11 +1060,29 @@ static int ad7192_read_raw(struct iio_dev *indio_dev,
 			mutex_unlock(&indio_dev->mlock);
 			return IIO_VAL_INT_PLUS_NANO;
 		case IIO_TEMP:
+<<<<<<< HEAD
 			*val =  1000;
 			return IIO_VAL_INT;
 		default:
 			return -EINVAL;
 		}
+=======
+			*val = 0;
+			*val2 = 1000000000 / ad7192_get_temp_scale(unipolar);
+			return IIO_VAL_INT_PLUS_NANO;
+		default:
+			return -EINVAL;
+		}
+	case IIO_CHAN_INFO_OFFSET:
+		if (!unipolar)
+			*val = -(1 << (chan->scan_type.realbits - 1));
+		else
+			*val = 0;
+		/* Kelvin to Celsius */
+		if (chan->type == IIO_TEMP)
+			*val -= 273 * ad7192_get_temp_scale(unipolar);
+		return IIO_VAL_INT;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -EINVAL;
@@ -919,6 +1109,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
 		ret = -EINVAL;
 		for (i = 0; i < ARRAY_SIZE(st->scale_avail); i++)
 			if (val2 == st->scale_avail[i][1]) {
+<<<<<<< HEAD
 				tmp = st->conf;
 				st->conf &= ~AD7192_CONF_GAIN(-1);
 				st->conf |= AD7192_CONF_GAIN(i);
@@ -931,6 +1122,20 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
 				ret = 0;
 			}
 
+=======
+				ret = 0;
+				tmp = st->conf;
+				st->conf &= ~AD7192_CONF_GAIN(-1);
+				st->conf |= AD7192_CONF_GAIN(i);
+				if (tmp == st->conf)
+					break;
+				ad_sd_write_reg(&st->sd, AD7192_REG_CONF,
+						 3, st->conf);
+				ad7192_calibrate_all(st);
+				break;
+			}
+		break;
+>>>>>>> refs/remotes/origin/master
 	default:
 		ret = -EINVAL;
 	}
@@ -940,6 +1145,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
 	return ret;
 }
 
+<<<<<<< HEAD
 static int ad7192_validate_trigger(struct iio_dev *indio_dev,
 				   struct iio_trigger *trig)
 {
@@ -949,6 +1155,8 @@ static int ad7192_validate_trigger(struct iio_dev *indio_dev,
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int ad7192_write_raw_get_fmt(struct iio_dev *indio_dev,
 			       struct iio_chan_spec const *chan,
 			       long mask)
@@ -961,7 +1169,11 @@ static const struct iio_info ad7192_info = {
 	.write_raw = &ad7192_write_raw,
 	.write_raw_get_fmt = &ad7192_write_raw_get_fmt,
 	.attrs = &ad7192_attribute_group,
+<<<<<<< HEAD
 	.validate_trigger = ad7192_validate_trigger,
+=======
+	.validate_trigger = ad_sd_validate_trigger,
+>>>>>>> refs/remotes/origin/master
 	.driver_module = THIS_MODULE,
 };
 
@@ -970,6 +1182,7 @@ static const struct iio_info ad7195_info = {
 	.write_raw = &ad7192_write_raw,
 	.write_raw_get_fmt = &ad7192_write_raw_get_fmt,
 	.attrs = &ad7195_attribute_group,
+<<<<<<< HEAD
 	.validate_trigger = ad7192_validate_trigger,
 	.driver_module = THIS_MODULE,
 };
@@ -1022,6 +1235,30 @@ static int __devinit ad7192_probe(struct spi_device *spi)
 	struct ad7192_state *st;
 	struct iio_dev *indio_dev;
 	int ret, i , voltage_uv = 0;
+=======
+	.validate_trigger = ad_sd_validate_trigger,
+	.driver_module = THIS_MODULE,
+};
+
+static const struct iio_chan_spec ad7192_channels[] = {
+	AD_SD_DIFF_CHANNEL(0, 1, 2, AD7192_CH_AIN1P_AIN2M, 24, 32, 0),
+	AD_SD_DIFF_CHANNEL(1, 3, 4, AD7192_CH_AIN3P_AIN4M, 24, 32, 0),
+	AD_SD_TEMP_CHANNEL(2, AD7192_CH_TEMP, 24, 32, 0),
+	AD_SD_SHORTED_CHANNEL(3, 2, AD7192_CH_AIN2P_AIN2M, 24, 32, 0),
+	AD_SD_CHANNEL(4, 1, AD7192_CH_AIN1, 24, 32, 0),
+	AD_SD_CHANNEL(5, 2, AD7192_CH_AIN2, 24, 32, 0),
+	AD_SD_CHANNEL(6, 3, AD7192_CH_AIN3, 24, 32, 0),
+	AD_SD_CHANNEL(7, 4, AD7192_CH_AIN4, 24, 32, 0),
+	IIO_CHAN_SOFT_TIMESTAMP(8),
+};
+
+static int ad7192_probe(struct spi_device *spi)
+{
+	const struct ad7192_platform_data *pdata = spi->dev.platform_data;
+	struct ad7192_state *st;
+	struct iio_dev *indio_dev;
+	int ret , voltage_uv = 0;
+>>>>>>> refs/remotes/origin/master
 
 	if (!pdata) {
 		dev_err(&spi->dev, "no platform data?\n");
@@ -1033,23 +1270,38 @@ static int __devinit ad7192_probe(struct spi_device *spi)
 		return -ENODEV;
 	}
 
+<<<<<<< HEAD
 	indio_dev = iio_allocate_device(sizeof(*st));
+=======
+	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+>>>>>>> refs/remotes/origin/master
 	if (indio_dev == NULL)
 		return -ENOMEM;
 
 	st = iio_priv(indio_dev);
 
+<<<<<<< HEAD
 	st->reg = regulator_get(&spi->dev, "vcc");
 	if (!IS_ERR(st->reg)) {
 		ret = regulator_enable(st->reg);
 		if (ret)
 			goto error_put_reg;
+=======
+	st->reg = devm_regulator_get(&spi->dev, "vcc");
+	if (!IS_ERR(st->reg)) {
+		ret = regulator_enable(st->reg);
+		if (ret)
+			return ret;
+>>>>>>> refs/remotes/origin/master
 
 		voltage_uv = regulator_get_voltage(st->reg);
 	}
 
+<<<<<<< HEAD
 	st->pdata = pdata;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (pdata && pdata->vref_mv)
 		st->int_vref_mv = pdata->vref_mv;
 	else if (voltage_uv)
@@ -1058,19 +1310,26 @@ static int __devinit ad7192_probe(struct spi_device *spi)
 		dev_warn(&spi->dev, "reference voltage undefined\n");
 
 	spi_set_drvdata(spi, indio_dev);
+<<<<<<< HEAD
 	st->spi = spi;
+=======
+>>>>>>> refs/remotes/origin/master
 	st->devid = spi_get_device_id(spi)->driver_data;
 	indio_dev->dev.parent = &spi->dev;
 	indio_dev->name = spi_get_device_id(spi)->name;
 	indio_dev->modes = INDIO_DIRECT_MODE;
 	indio_dev->channels = ad7192_channels;
 	indio_dev->num_channels = ARRAY_SIZE(ad7192_channels);
+<<<<<<< HEAD
 	indio_dev->available_scan_masks = st->available_scan_masks;
+=======
+>>>>>>> refs/remotes/origin/master
 	if (st->devid == ID_AD7195)
 		indio_dev->info = &ad7195_info;
 	else
 		indio_dev->info = &ad7192_info;
 
+<<<<<<< HEAD
 	for (i = 0; i < indio_dev->num_channels; i++)
 		st->available_scan_masks[i] = (1 << i) | (1 <<
 			indio_dev->channels[indio_dev->num_channels - 1].
@@ -1115,6 +1374,28 @@ error_put_reg:
 		regulator_put(st->reg);
 
 	iio_free_device(indio_dev);
+=======
+	ad_sd_init(&st->sd, indio_dev, spi, &ad7192_sigma_delta_info);
+
+	ret = ad_sd_setup_buffer_and_trigger(indio_dev);
+	if (ret)
+		goto error_disable_reg;
+
+	ret = ad7192_setup(st, pdata);
+	if (ret)
+		goto error_remove_trigger;
+
+	ret = iio_device_register(indio_dev);
+	if (ret < 0)
+		goto error_remove_trigger;
+	return 0;
+
+error_remove_trigger:
+	ad_sd_cleanup_buffer_and_trigger(indio_dev);
+error_disable_reg:
+	if (!IS_ERR(st->reg))
+		regulator_disable(st->reg);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -1125,6 +1406,7 @@ static int ad7192_remove(struct spi_device *spi)
 	struct ad7192_state *st = iio_priv(indio_dev);
 
 	iio_device_unregister(indio_dev);
+<<<<<<< HEAD
 	iio_buffer_unregister(indio_dev);
 	ad7192_remove_trigger(indio_dev);
 	ad7192_ring_cleanup(indio_dev);
@@ -1133,6 +1415,12 @@ static int ad7192_remove(struct spi_device *spi)
 		regulator_disable(st->reg);
 		regulator_put(st->reg);
 	}
+=======
+	ad_sd_cleanup_buffer_and_trigger(indio_dev);
+
+	if (!IS_ERR(st->reg))
+		regulator_disable(st->reg);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1151,7 +1439,11 @@ static struct spi_driver ad7192_driver = {
 		.owner	= THIS_MODULE,
 	},
 	.probe		= ad7192_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(ad7192_remove),
+=======
+	.remove		= ad7192_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table	= ad7192_id,
 };
 module_spi_driver(ad7192_driver);

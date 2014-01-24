@@ -30,18 +30,25 @@
  *
  * Please send any bug reports or fixes you make to the
  * email addresses:
+<<<<<<< HEAD
  *    lksctp developers <lksctp-developers@lists.sourceforge.net>
  *
  * Or submit a bug report through the following website:
  *    http://www.sf.net/projects/lksctp
+=======
+ *    lksctp developers <linux-sctp@vger.kernel.org>
+>>>>>>> refs/remotes/origin/master
  *
  * Written or modified by:
  *   Jon Grimm             <jgrimm@us.ibm.com>
  *   La Monte H.P. Yarroll <piggy@acm.org>
  *   Sridhar Samudrala     <sri@us.ibm.com>
+<<<<<<< HEAD
  *
  * Any bugs reported given to us we will try to fix... any fixes shared will
  * be incorporated into the next SCTP release.
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #ifndef __sctp_ulpqueue_h__
@@ -49,7 +56,10 @@
 
 /* A structure to carry information to the ULP (e.g. Sockets API) */
 struct sctp_ulpq {
+<<<<<<< HEAD
 	char malloced;
+=======
+>>>>>>> refs/remotes/origin/master
 	char pd_mode;
 	struct sctp_association *asoc;
 	struct sk_buff_head reasm;
@@ -72,7 +82,11 @@ int sctp_ulpq_tail_event(struct sctp_ulpq *, struct sctp_ulpevent *ev);
 void sctp_ulpq_renege(struct sctp_ulpq *, struct sctp_chunk *, gfp_t);
 
 /* Perform partial delivery. */
+<<<<<<< HEAD
 void sctp_ulpq_partial_delivery(struct sctp_ulpq *, struct sctp_chunk *, gfp_t);
+=======
+void sctp_ulpq_partial_delivery(struct sctp_ulpq *, gfp_t);
+>>>>>>> refs/remotes/origin/master
 
 /* Abort the partial delivery. */
 void sctp_ulpq_abort_pd(struct sctp_ulpq *, gfp_t);

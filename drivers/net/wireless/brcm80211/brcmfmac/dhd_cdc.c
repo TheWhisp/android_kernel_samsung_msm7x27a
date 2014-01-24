@@ -19,12 +19,17 @@
  * For certain dcmd codes, the dongle interprets string data from the host.
  ******************************************************************************/
 
+<<<<<<< HEAD
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/types.h>
 #include <linux/netdevice.h>
 #include <linux/sched.h>
 #include <defs.h>
+=======
+#include <linux/types.h>
+#include <linux/netdevice.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <brcmu_utils.h>
 #include <brcmu_wifi.h>
@@ -32,7 +37,13 @@
 #include "dhd.h"
 #include "dhd_proto.h"
 #include "dhd_bus.h"
+<<<<<<< HEAD
 #include "dhd_dbg.h"
+=======
+#include "fwsignal.h"
+#include "dhd_dbg.h"
+#include "tracepoint.h"
+>>>>>>> refs/remotes/origin/master
 
 struct brcmf_proto_cdc_dcmd {
 	__le32 cmd;	/* dongle command value */
@@ -75,13 +86,35 @@ struct brcmf_proto_cdc_dcmd {
 	((hdr)->flags2 = (((hdr)->flags2 & ~BDC_FLAG2_IF_MASK) | \
 	((idx) << BDC_FLAG2_IF_SHIFT)))
 
+<<<<<<< HEAD
 struct brcmf_proto_bdc_header {
 	u8 flags;
 	u8 priority;	/* 802.1d Priority, 4:7 flow control info for usb */
+=======
+/**
+ * struct brcmf_proto_bdc_header - BDC header format
+ *
+ * @flags: flags contain protocol and checksum info.
+ * @priority: 802.1d priority and USB flow control info (bit 4:7).
+ * @flags2: additional flags containing dongle interface index.
+ * @data_offset: start of packet data. header is following by firmware signals.
+ */
+struct brcmf_proto_bdc_header {
+	u8 flags;
+	u8 priority;
+>>>>>>> refs/remotes/origin/master
 	u8 flags2;
 	u8 data_offset;
 };
 
+<<<<<<< HEAD
+=======
+/*
+ * maximum length of firmware signal data between
+ * the BDC header and packet data in the tx path.
+ */
+#define BRCMF_PROT_FW_SIGNAL_MAX_TXBYTES	12
+>>>>>>> refs/remotes/origin/master
 
 #define RETRIES 2 /* # of retries to retrieve matching dcmd response */
 #define BUS_HEADER_LEN	(16+64)		/* Must be atleast SDPCM_RESERVE
@@ -96,8 +129,11 @@ struct brcmf_proto_bdc_header {
 
 struct brcmf_proto {
 	u16 reqid;
+<<<<<<< HEAD
 	u8 pending;
 	u32 lastcmd;
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 bus_header[BUS_HEADER_LEN];
 	struct brcmf_proto_cdc_dcmd msg;
 	unsigned char buf[BRCMF_DCMD_MAXLEN + ROUND_UP_MARGIN];
@@ -109,7 +145,11 @@ static int brcmf_proto_cdc_msg(struct brcmf_pub *drvr)
 	int len = le32_to_cpu(prot->msg.len) +
 			sizeof(struct brcmf_proto_cdc_dcmd);
 
+<<<<<<< HEAD
 	brcmf_dbg(TRACE, "Enter\n");
+=======
+	brcmf_dbg(CDC, "Enter\n");
+>>>>>>> refs/remotes/origin/master
 
 	/* NOTE : cdc->msg.len holds the desired length of the buffer to be
 	 *        returned. Only up to CDC_MAX_MSG_SIZE of this buffer area
@@ -119,9 +159,13 @@ static int brcmf_proto_cdc_msg(struct brcmf_pub *drvr)
 		len = CDC_MAX_MSG_SIZE;
 
 	/* Send request */
+<<<<<<< HEAD
 	return drvr->bus_if->brcmf_bus_txctl(drvr->dev,
 					     (unsigned char *)&prot->msg,
 					     len);
+=======
+	return brcmf_bus_txctl(drvr->bus_if, (unsigned char *)&prot->msg, len);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int brcmf_proto_cdc_cmplt(struct brcmf_pub *drvr, u32 id, u32 len)
@@ -129,12 +173,20 @@ static int brcmf_proto_cdc_cmplt(struct brcmf_pub *drvr, u32 id, u32 len)
 	int ret;
 	struct brcmf_proto *prot = drvr->prot;
 
+<<<<<<< HEAD
 	brcmf_dbg(TRACE, "Enter\n");
 
 	do {
 		ret = drvr->bus_if->brcmf_bus_rxctl(drvr->dev,
 				(unsigned char *)&prot->msg,
 				len + sizeof(struct brcmf_proto_cdc_dcmd));
+=======
+	brcmf_dbg(CDC, "Enter\n");
+	len += sizeof(struct brcmf_proto_cdc_dcmd);
+	do {
+		ret = brcmf_bus_rxctl(drvr->bus_if, (unsigned char *)&prot->msg,
+				      len);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			break;
 	} while (CDC_DCMD_ID(le32_to_cpu(prot->msg.flags)) != id);
@@ -152,6 +204,7 @@ brcmf_proto_cdc_query_dcmd(struct brcmf_pub *drvr, int ifidx, uint cmd,
 	int ret = 0, retries = 0;
 	u32 id, flags;
 
+<<<<<<< HEAD
 	brcmf_dbg(TRACE, "Enter\n");
 	brcmf_dbg(CTL, "cmd %d len %d\n", cmd, len);
 
@@ -166,6 +219,9 @@ brcmf_proto_cdc_query_dcmd(struct brcmf_pub *drvr, int ifidx, uint cmd,
 			goto done;
 		}
 	}
+=======
+	brcmf_dbg(CDC, "Enter, cmd %d len %d\n", cmd, len);
+>>>>>>> refs/remotes/origin/master
 
 	memset(msg, 0, sizeof(struct brcmf_proto_cdc_dcmd));
 
@@ -181,7 +237,11 @@ brcmf_proto_cdc_query_dcmd(struct brcmf_pub *drvr, int ifidx, uint cmd,
 
 	ret = brcmf_proto_cdc_msg(drvr);
 	if (ret < 0) {
+<<<<<<< HEAD
 		brcmf_dbg(ERROR, "brcmf_proto_cdc_msg failed w/status %d\n",
+=======
+		brcmf_err("brcmf_proto_cdc_msg failed w/status %d\n",
+>>>>>>> refs/remotes/origin/master
 			  ret);
 		goto done;
 	}
@@ -198,7 +258,11 @@ retry:
 	if ((id < prot->reqid) && (++retries < RETRIES))
 		goto retry;
 	if (id != prot->reqid) {
+<<<<<<< HEAD
 		brcmf_dbg(ERROR, "%s: unexpected request id %d (expected %d)\n",
+=======
+		brcmf_err("%s: unexpected request id %d (expected %d)\n",
+>>>>>>> refs/remotes/origin/master
 			  brcmf_ifname(drvr, ifidx), id, prot->reqid);
 		ret = -EINVAL;
 		goto done;
@@ -215,11 +279,16 @@ retry:
 	}
 
 	/* Check the ERROR flag */
+<<<<<<< HEAD
 	if (flags & CDC_DCMD_ERROR) {
 		ret = le32_to_cpu(msg->status);
 		/* Cache error from dongle */
 		drvr->dongle_error = ret;
 	}
+=======
+	if (flags & CDC_DCMD_ERROR)
+		ret = le32_to_cpu(msg->status);
+>>>>>>> refs/remotes/origin/master
 
 done:
 	return ret;
@@ -233,8 +302,12 @@ int brcmf_proto_cdc_set_dcmd(struct brcmf_pub *drvr, int ifidx, uint cmd,
 	int ret = 0;
 	u32 flags, id;
 
+<<<<<<< HEAD
 	brcmf_dbg(TRACE, "Enter\n");
 	brcmf_dbg(CTL, "cmd %d len %d\n", cmd, len);
+=======
+	brcmf_dbg(CDC, "Enter, cmd %d len %d\n", cmd, len);
+>>>>>>> refs/remotes/origin/master
 
 	memset(msg, 0, sizeof(struct brcmf_proto_cdc_dcmd));
 
@@ -260,23 +333,33 @@ int brcmf_proto_cdc_set_dcmd(struct brcmf_pub *drvr, int ifidx, uint cmd,
 	id = (flags & CDC_DCMD_ID_MASK) >> CDC_DCMD_ID_SHIFT;
 
 	if (id != prot->reqid) {
+<<<<<<< HEAD
 		brcmf_dbg(ERROR, "%s: unexpected request id %d (expected %d)\n",
+=======
+		brcmf_err("%s: unexpected request id %d (expected %d)\n",
+>>>>>>> refs/remotes/origin/master
 			  brcmf_ifname(drvr, ifidx), id, prot->reqid);
 		ret = -EINVAL;
 		goto done;
 	}
 
 	/* Check the ERROR flag */
+<<<<<<< HEAD
 	if (flags & CDC_DCMD_ERROR) {
 		ret = le32_to_cpu(msg->status);
 		/* Cache error from dongle */
 		drvr->dongle_error = ret;
 	}
+=======
+	if (flags & CDC_DCMD_ERROR)
+		ret = le32_to_cpu(msg->status);
+>>>>>>> refs/remotes/origin/master
 
 done:
 	return ret;
 }
 
+<<<<<<< HEAD
 int
 brcmf_proto_dcmd(struct brcmf_pub *drvr, int ifidx, struct brcmf_dcmd *dcmd,
 		  int len)
@@ -347,6 +430,8 @@ done:
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static bool pkt_sum_needed(struct sk_buff *skb)
 {
 	return skb->ip_summed == CHECKSUM_PARTIAL;
@@ -357,15 +442,25 @@ static void pkt_set_sum_good(struct sk_buff *skb, bool x)
 	skb->ip_summed = (x ? CHECKSUM_UNNECESSARY : CHECKSUM_NONE);
 }
 
+<<<<<<< HEAD
 void brcmf_proto_hdrpush(struct brcmf_pub *drvr, int ifidx,
+=======
+void brcmf_proto_hdrpush(struct brcmf_pub *drvr, int ifidx, u8 offset,
+>>>>>>> refs/remotes/origin/master
 			 struct sk_buff *pktbuf)
 {
 	struct brcmf_proto_bdc_header *h;
 
+<<<<<<< HEAD
 	brcmf_dbg(TRACE, "Enter\n");
 
 	/* Push BDC header used to convey priority for buses that don't */
 
+=======
+	brcmf_dbg(CDC, "Enter\n");
+
+	/* Push BDC header used to convey priority for buses that don't */
+>>>>>>> refs/remotes/origin/master
 	skb_push(pktbuf, BDC_HEADER_LEN);
 
 	h = (struct brcmf_proto_bdc_header *)(pktbuf->data);
@@ -376,6 +471,7 @@ void brcmf_proto_hdrpush(struct brcmf_pub *drvr, int ifidx,
 
 	h->priority = (pktbuf->priority & BDC_PRIORITY_MASK);
 	h->flags2 = 0;
+<<<<<<< HEAD
 	h->data_offset = 0;
 	BDC_SET_IF_IDX(h, ifidx);
 }
@@ -393,14 +489,37 @@ int brcmf_proto_hdrpull(struct device *dev, int *ifidx,
 
 	if (pktbuf->len < BDC_HEADER_LEN) {
 		brcmf_dbg(ERROR, "rx data too short (%d < %d)\n",
+=======
+	h->data_offset = offset;
+	BDC_SET_IF_IDX(h, ifidx);
+	trace_brcmf_bdchdr(pktbuf->data);
+}
+
+int brcmf_proto_hdrpull(struct brcmf_pub *drvr, bool do_fws, u8 *ifidx,
+			struct sk_buff *pktbuf)
+{
+	struct brcmf_proto_bdc_header *h;
+
+	brcmf_dbg(CDC, "Enter\n");
+
+	/* Pop BDC header used to convey priority for buses that don't */
+
+	if (pktbuf->len <= BDC_HEADER_LEN) {
+		brcmf_dbg(INFO, "rx data too short (%d <= %d)\n",
+>>>>>>> refs/remotes/origin/master
 			  pktbuf->len, BDC_HEADER_LEN);
 		return -EBADE;
 	}
 
+<<<<<<< HEAD
+=======
+	trace_brcmf_bdchdr(pktbuf->data);
+>>>>>>> refs/remotes/origin/master
 	h = (struct brcmf_proto_bdc_header *)(pktbuf->data);
 
 	*ifidx = BDC_GET_IF_IDX(h);
 	if (*ifidx >= BRCMF_MAX_IFS) {
+<<<<<<< HEAD
 		brcmf_dbg(ERROR, "rx data ifnum out of range (%d)\n", *ifidx);
 		return -EBADE;
 	}
@@ -408,12 +527,33 @@ int brcmf_proto_hdrpull(struct device *dev, int *ifidx,
 	if (((h->flags & BDC_FLAG_VER_MASK) >> BDC_FLAG_VER_SHIFT) !=
 	    BDC_PROTO_VER) {
 		brcmf_dbg(ERROR, "%s: non-BDC packet received, flags 0x%x\n",
+=======
+		brcmf_err("rx data ifnum out of range (%d)\n", *ifidx);
+		return -EBADE;
+	}
+	/* The ifidx is the idx to map to matching netdev/ifp. When receiving
+	 * events this is easy because it contains the bssidx which maps
+	 * 1-on-1 to the netdev/ifp. But for data frames the ifidx is rcvd.
+	 * bssidx 1 is used for p2p0 and no data can be received or
+	 * transmitted on it. Therefor bssidx is ifidx + 1 if ifidx > 0
+	 */
+	if (*ifidx)
+		(*ifidx)++;
+
+	if (((h->flags & BDC_FLAG_VER_MASK) >> BDC_FLAG_VER_SHIFT) !=
+	    BDC_PROTO_VER) {
+		brcmf_err("%s: non-BDC packet received, flags 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 			  brcmf_ifname(drvr, *ifidx), h->flags);
 		return -EBADE;
 	}
 
 	if (h->flags & BDC_FLAG_SUM_GOOD) {
+<<<<<<< HEAD
 		brcmf_dbg(INFO, "%s: BDC packet received with good rx-csum, flags 0x%x\n",
+=======
+		brcmf_dbg(CDC, "%s: BDC rcv, good checksum, flags 0x%x\n",
+>>>>>>> refs/remotes/origin/master
 			  brcmf_ifname(drvr, *ifidx), h->flags);
 		pkt_set_sum_good(pktbuf, true);
 	}
@@ -421,7 +561,17 @@ int brcmf_proto_hdrpull(struct device *dev, int *ifidx,
 	pktbuf->priority = h->priority & BDC_PRIORITY_MASK;
 
 	skb_pull(pktbuf, BDC_HEADER_LEN);
+<<<<<<< HEAD
 
+=======
+	if (do_fws)
+		brcmf_fws_hdrpull(drvr, *ifidx, h->data_offset << 2, pktbuf);
+	else
+		skb_pull(pktbuf, h->data_offset << 2);
+
+	if (pktbuf->len == 0)
+		return -ENODATA;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -435,12 +585,20 @@ int brcmf_proto_attach(struct brcmf_pub *drvr)
 
 	/* ensure that the msg buf directly follows the cdc msg struct */
 	if ((unsigned long)(&cdc->msg + 1) != (unsigned long)cdc->buf) {
+<<<<<<< HEAD
 		brcmf_dbg(ERROR, "struct brcmf_proto is not correctly defined\n");
+=======
+		brcmf_err("struct brcmf_proto is not correctly defined\n");
+>>>>>>> refs/remotes/origin/master
 		goto fail;
 	}
 
 	drvr->prot = cdc;
+<<<<<<< HEAD
 	drvr->hdrlen += BDC_HEADER_LEN;
+=======
+	drvr->hdrlen += BDC_HEADER_LEN + BRCMF_PROT_FW_SIGNAL_MAX_TXBYTES;
+>>>>>>> refs/remotes/origin/master
 	drvr->bus_if->maxctl = BRCMF_DCMD_MAXLEN +
 			sizeof(struct brcmf_proto_cdc_dcmd) + ROUND_UP_MARGIN;
 	return 0;
@@ -457,6 +615,7 @@ void brcmf_proto_detach(struct brcmf_pub *drvr)
 	drvr->prot = NULL;
 }
 
+<<<<<<< HEAD
 int brcmf_proto_init(struct brcmf_pub *drvr)
 {
 	int ret = 0;
@@ -486,6 +645,8 @@ int brcmf_proto_init(struct brcmf_pub *drvr)
 	return ret;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 void brcmf_proto_stop(struct brcmf_pub *drvr)
 {
 	/* Nothing to do for CDC */

@@ -102,6 +102,7 @@ enum CountryCode {
 	CTRY_GREECE = 300,
 	CTRY_GREENLAND = 304,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	CTRY_GRENEDA = 308,
 =======
 #if 0 // by bbelief	
@@ -110,6 +111,9 @@ enum CountryCode {
 	CTRY_GRENEDA = 308,
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	CTRY_GRENADA = 308,
+>>>>>>> refs/remotes/origin/master
 	CTRY_GUAM = 316,
 	CTRY_GUATEMALA = 320,
 	CTRY_HAITI = 332,
@@ -260,6 +264,7 @@ enum CountryCode {
 bool ath_is_world_regd(struct ath_regulatory *reg);
 bool ath_is_49ghz_allowed(u16 redomain);
 int ath_regd_init(struct ath_regulatory *reg, struct wiphy *wiphy,
+<<<<<<< HEAD
 		  int (*reg_notifier)(struct wiphy *wiphy,
 		  struct regulatory_request *request));
 u32 ath_regd_get_band_ctl(struct ath_regulatory *reg,
@@ -267,5 +272,14 @@ u32 ath_regd_get_band_ctl(struct ath_regulatory *reg,
 int ath_reg_notifier_apply(struct wiphy *wiphy,
 			   struct regulatory_request *request,
 			   struct ath_regulatory *reg);
+=======
+		  void (*reg_notifier)(struct wiphy *wiphy,
+				       struct regulatory_request *request));
+u32 ath_regd_get_band_ctl(struct ath_regulatory *reg,
+			  enum ieee80211_band band);
+void ath_reg_notifier_apply(struct wiphy *wiphy,
+			    struct regulatory_request *request,
+			    struct ath_regulatory *reg);
+>>>>>>> refs/remotes/origin/master
 
 #endif

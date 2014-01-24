@@ -23,7 +23,10 @@
 #include "sa1111_generic.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * These are offsets from the above base.
  */
@@ -58,7 +61,10 @@
 #define PCSSR_S0_SLEEP	(1<<0)
 #define PCSSR_S1_SLEEP	(1<<1)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define IDX_IRQ_S0_READY_NINT	(0)
 #define IDX_IRQ_S0_CD_VALID	(1)
 #define IDX_IRQ_S0_BVD1_STSCHG	(2)
@@ -66,6 +72,7 @@
 #define IDX_IRQ_S1_CD_VALID	(4)
 #define IDX_IRQ_S1_BVD1_STSCHG	(5)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{ 0, NO_IRQ, "SA1111 PCMCIA card detect" },
@@ -89,11 +96,16 @@ void sa1111_pcmcia_socket_state(struct soc_pcmcia_socket *skt, struct pcmcia_sta
 	struct sa1111_pcmcia_socket *s = to_skt(skt);
 	unsigned long status = sa1111_readl(s->dev->mapbase + SA1111_PCSR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void sa1111_pcmcia_socket_state(struct soc_pcmcia_socket *skt, struct pcmcia_state *state)
 {
 	struct sa1111_pcmcia_socket *s = to_skt(skt);
 	unsigned long status = sa1111_readl(s->dev->mapbase + PCSR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	switch (skt->nr) {
 	case 0:
@@ -150,21 +162,28 @@ int sa1111_pcmcia_configure_socket(struct soc_pcmcia_socket *skt, const socket_s
 
 	local_irq_save(flags);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	val = sa1111_readl(s->dev->mapbase + SA1111_PCCR);
 	val &= ~pccr_skt_mask;
 	val |= pccr_set_mask & pccr_skt_mask;
 	sa1111_writel(val, s->dev->mapbase + SA1111_PCCR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	val = sa1111_readl(s->dev->mapbase + PCCR);
 	val &= ~pccr_skt_mask;
 	val |= pccr_set_mask & pccr_skt_mask;
 	sa1111_writel(val, s->dev->mapbase + PCCR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	local_irq_restore(flags);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void sa1111_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 {
@@ -178,12 +197,15 @@ static void sa1111_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 int sa1111_pcmcia_add(struct sa1111_dev *dev, struct pcmcia_low_level *ops,
 	int (*add)(struct soc_pcmcia_socket *))
 {
 	struct sa1111_pcmcia_socket *s;
 	int i, ret = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ops->hw_init = sa1111_pcmcia_hw_init;
 	ops->hw_shutdown = sa1111_pcmcia_hw_shutdown;
@@ -192,6 +214,9 @@ int sa1111_pcmcia_add(struct sa1111_dev *dev, struct pcmcia_low_level *ops,
 =======
 	ops->socket_state = sa1111_pcmcia_socket_state;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ops->socket_state = sa1111_pcmcia_socket_state;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ops->nr; i++) {
 		s = kzalloc(sizeof(*s), GFP_KERNEL);
@@ -199,6 +224,7 @@ int sa1111_pcmcia_add(struct sa1111_dev *dev, struct pcmcia_low_level *ops,
 			return -ENOMEM;
 
 		s->soc.nr = ops->first + i;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		s->soc.ops = ops;
 		s->soc.socket.owner = ops->owner;
@@ -208,6 +234,8 @@ int sa1111_pcmcia_add(struct sa1111_dev *dev, struct pcmcia_low_level *ops,
 				dev->irq[IDX_IRQ_S1_READY_NINT];
 		s->dev = dev;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		soc_pcmcia_init_one(&s->soc, ops, &dev->dev);
 		s->dev = dev;
 		if (s->soc.nr) {
@@ -223,7 +251,10 @@ int sa1111_pcmcia_add(struct sa1111_dev *dev, struct pcmcia_low_level *ops,
 			s->soc.stat[SOC_STAT_BVD1].irq = dev->irq[IDX_IRQ_S0_BVD1_STSCHG];
 			s->soc.stat[SOC_STAT_BVD1].name = "SA1111 PCMCIA BVD1";
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		ret = add(&s->soc);
 		if (ret == 0) {
@@ -239,6 +270,7 @@ int sa1111_pcmcia_add(struct sa1111_dev *dev, struct pcmcia_low_level *ops,
 static int pcmcia_probe(struct sa1111_dev *dev)
 {
 	void __iomem *base;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	dev_set_drvdata(&dev->dev, NULL);
@@ -261,6 +293,8 @@ static int pcmcia_probe(struct sa1111_dev *dev)
 	sa1111_writel(PCSSR_S0_SLEEP | PCSSR_S1_SLEEP, base + SA1111_PCSSR);
 	sa1111_writel(PCCR_S0_FLT | PCCR_S1_FLT, base + SA1111_PCCR);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	ret = sa1111_enable_device(dev);
@@ -281,7 +315,10 @@ static int pcmcia_probe(struct sa1111_dev *dev)
 	 */
 	sa1111_writel(PCSSR_S0_SLEEP | PCSSR_S1_SLEEP, base + PCSSR);
 	sa1111_writel(PCCR_S0_FLT | PCCR_S1_FLT, base + PCCR);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SA1100_BADGE4
 	pcmcia_badge4_init(&dev->dev);
@@ -298,27 +335,40 @@ static int pcmcia_probe(struct sa1111_dev *dev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devexit pcmcia_remove(struct sa1111_dev *dev)
+=======
+static int pcmcia_remove(struct sa1111_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sa1111_pcmcia_socket *next, *s = dev_get_drvdata(&dev->dev);
 
 	dev_set_drvdata(&dev->dev, NULL);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (; next = s->next, s; s = next) {
 =======
 	for (; s; s = next) {
 		next = s->next;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (; s; s = next) {
+		next = s->next;
+>>>>>>> refs/remotes/origin/master
 		soc_pcmcia_remove_one(&s->soc);
 		kfree(s);
 	}
 
 	release_mem_region(dev->res.start, 512);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	sa1111_disable_device(dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sa1111_disable_device(dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -328,7 +378,11 @@ static struct sa1111_driver pcmcia_driver = {
 	},
 	.devid		= SA1111_DEVID_PCMCIA,
 	.probe		= pcmcia_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(pcmcia_remove),
+=======
+	.remove		= pcmcia_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init sa1111_drv_pcmcia_init(void)

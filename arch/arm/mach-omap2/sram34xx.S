@@ -27,6 +27,7 @@
  */
 #include <linux/linkage.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/assembler.h>
 #include <mach/hardware.h>
 
@@ -42,6 +43,15 @@
 >>>>>>> refs/remotes/origin/cm-10.0
 #include "sdrc.h"
 #include "cm2xxx_3xxx.h"
+=======
+
+#include <asm/assembler.h>
+
+#include "soc.h"
+#include "iomap.h"
+#include "sdrc.h"
+#include "cm3xxx.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This file needs be built unconditionally as ARM to interoperate correctly

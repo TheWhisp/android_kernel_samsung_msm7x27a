@@ -3,8 +3,12 @@ TODO:
 	- testing
 	- review of the userspace interface
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	- document the protocol
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	- document the protocol
+>>>>>>> refs/remotes/origin/master
 
 Please send patches for this code to Greg Kroah-Hartman <greg@kroah.com>

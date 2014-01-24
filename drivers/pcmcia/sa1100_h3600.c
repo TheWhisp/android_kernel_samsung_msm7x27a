@@ -20,6 +20,7 @@
 #include "sa1100_generic.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pcmcia_irqs irqs[] = {
 	{ .sock = 0, .str = "PCMCIA CD0" }, /* .irq will be filled later */
 	{ .sock = 1, .str = "PCMCIA CD1" }
@@ -27,12 +28,15 @@ static struct pcmcia_irqs irqs[] = {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int h3600_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 {
 	int err;
 
 	switch (skt->nr) {
 	case 0:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = gpio_request(H3XXX_GPIO_PCMCIA_IRQ0, "PCMCIA IRQ0");
 		if (err)
@@ -54,6 +58,8 @@ static int h3600_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 		if (err)
 			goto err02;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		skt->stat[SOC_STAT_CD].gpio = H3XXX_GPIO_PCMCIA_CD0;
 		skt->stat[SOC_STAT_CD].name = "PCMCIA CD0";
 		skt->stat[SOC_STAT_RDY].gpio = H3XXX_GPIO_PCMCIA_IRQ0;
@@ -62,7 +68,10 @@ static int h3600_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 		err = gpio_request(H3XXX_EGPIO_OPT_NVRAM_ON, "OPT NVRAM ON");
 		if (err)
 			goto err01;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		err = gpio_direction_output(H3XXX_EGPIO_OPT_NVRAM_ON, 0);
 		if (err)
 			goto err03;
@@ -84,6 +93,7 @@ static int h3600_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 		err = gpio_direction_output(H3XXX_EGPIO_CARD_RESET, 0);
 		if (err)
 			goto err06;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		err = soc_pcmcia_request_irqs(skt, irqs, ARRAY_SIZE(irqs));
 		if (err)
@@ -110,13 +120,18 @@ static int h3600_pcmcia_hw_init(struct soc_pcmcia_socket *skt)
 		if (err)
 			goto err12;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	case 1:
 		skt->stat[SOC_STAT_CD].gpio = H3XXX_GPIO_PCMCIA_CD1;
 		skt->stat[SOC_STAT_CD].name = "PCMCIA CD1";
 		skt->stat[SOC_STAT_RDY].gpio = H3XXX_GPIO_PCMCIA_IRQ1;
 		skt->stat[SOC_STAT_RDY].name = "PCMCIA IRQ1";
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	return 0;
@@ -125,6 +140,7 @@ err06:	gpio_free(H3XXX_EGPIO_CARD_RESET);
 err05:	gpio_free(H3XXX_EGPIO_OPT_RESET);
 err04:	gpio_free(H3XXX_EGPIO_OPT_ON);
 err03:	gpio_free(H3XXX_EGPIO_OPT_NVRAM_ON);
+<<<<<<< HEAD
 <<<<<<< HEAD
 err02:	gpio_free(H3XXX_GPIO_PCMCIA_CD0);
 err01:	gpio_free(H3XXX_GPIO_PCMCIA_IRQ0);
@@ -137,15 +153,22 @@ err10:	return err;
 err01:	gpio_free(H3XXX_GPIO_PCMCIA_IRQ0);
 	return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+err01:	gpio_free(H3XXX_GPIO_PCMCIA_IRQ0);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void h3600_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	soc_pcmcia_free_irqs(skt, irqs, ARRAY_SIZE(irqs));
   
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	switch (skt->nr) {
 	case 0:
 		/* Disable CF bus: */
@@ -158,6 +181,7 @@ static void h3600_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 		gpio_free(H3XXX_EGPIO_OPT_ON);
 		gpio_free(H3XXX_EGPIO_OPT_NVRAM_ON);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		gpio_free(H3XXX_GPIO_PCMCIA_CD0);
 		gpio_free(H3XXX_GPIO_PCMCIA_IRQ0);
 		break;
@@ -168,6 +192,10 @@ static void h3600_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 		break;
 	case 1:
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		break;
+	case 1:
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 }
@@ -175,6 +203,7 @@ static void h3600_pcmcia_hw_shutdown(struct soc_pcmcia_socket *skt)
 static void
 h3600_pcmcia_socket_state(struct soc_pcmcia_socket *skt, struct pcmcia_state *state)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	switch (skt->nr) {
 	case 0:
@@ -198,11 +227,16 @@ h3600_pcmcia_socket_state(struct soc_pcmcia_socket *skt, struct pcmcia_state *st
 		break;
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	state->bvd1 = 0;
 	state->bvd2 = 0;
 	state->vs_3v = 0;
 	state->vs_Xv = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static int
@@ -230,19 +264,25 @@ static void h3600_pcmcia_socket_init(struct soc_pcmcia_socket *skt)
 
 	msleep(10);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	soc_pcmcia_enable_irqs(skt, irqs, ARRAY_SIZE(irqs));
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void h3600_pcmcia_socket_suspend(struct soc_pcmcia_socket *skt)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	soc_pcmcia_disable_irqs(skt, irqs, ARRAY_SIZE(irqs));
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * FIXME:  This doesn't fit well.  We don't have the mechanism in
 	 * the generic PCMCIA layer to deal with the idea of two sockets
@@ -268,7 +308,11 @@ struct pcmcia_low_level h3600_pcmcia_ops = {
 	.socket_suspend		= h3600_pcmcia_socket_suspend,
 };
 
+<<<<<<< HEAD
 int __devinit pcmcia_h3600_init(struct device *dev)
+=======
+int pcmcia_h3600_init(struct device *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = -ENODEV;
 

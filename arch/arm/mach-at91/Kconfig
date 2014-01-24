@@ -1,16 +1,20 @@
 if ARCH_AT91
 
+<<<<<<< HEAD
 config HAVE_AT91_DATAFLASH_CARD
 	bool
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config HAVE_AT91_DBGU0
 	bool
 
 config HAVE_AT91_DBGU1
 	bool
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config HAVE_AT91_USART3
 	bool
@@ -23,6 +27,12 @@ config HAVE_AT91_USART5
 
 <<<<<<< HEAD
 =======
+=======
+config AT91_PMC_UNIT
+	bool
+	default !ARCH_AT91X40
+
+>>>>>>> refs/remotes/origin/master
 config AT91_SAM9_ALT_RESET
 	bool
 	default !ARCH_AT91X40
@@ -31,6 +41,7 @@ config AT91_SAM9G45_RESET
 	bool
 	default !ARCH_AT91X40
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 menu "Atmel AT91 System-on-Chip"
 
@@ -532,11 +543,150 @@ comment "Generic Board Type"
 
 config MACH_AT91SAM_DT
 	bool "Atmel AT91SAM Evaluation Kits with device-tree support"
+=======
+config AT91_SAM9_TIME
+	bool
+
+config SOC_AT91SAM9
+	bool
+	select AT91_SAM9_TIME
+	select CPU_ARM926T
+	select GENERIC_CLOCKEVENTS
+	select MULTI_IRQ_HANDLER
+	select SPARSE_IRQ
+
+config SOC_SAMA5
+	bool
+	select AT91_SAM9_TIME
+	select CPU_V7
+	select GENERIC_CLOCKEVENTS
+	select MULTI_IRQ_HANDLER
+	select SPARSE_IRQ
+
+menu "Atmel AT91 System-on-Chip"
+
+choice
+
+	prompt "Core type"
+
+config SOC_SAM_V4_V5
+	bool "ARM7/ARM9"
+	help
+	  Select this if you are using one of Atmel's AT91SAM9, AT91RM9200
+	  or AT91X40 SoC.
+
+config SOC_SAM_V7
+	bool "Cortex A5"
+	help
+	  Select this if you are using one of Atmel's SAMA5D3 SoC.
+
+endchoice
+
+comment "Atmel AT91 Processor"
+
+if SOC_SAM_V7
+config SOC_SAMA5D3
+	bool "SAMA5D3 family"
+	depends on SOC_SAM_V7
+	select SOC_SAMA5
+	select HAVE_FB_ATMEL
+	select HAVE_AT91_DBGU1
+	help
+	  Select this if you are using one of Atmel's SAMA5D3 family SoC.
+	  This support covers SAMA5D31, SAMA5D33, SAMA5D34, SAMA5D35.
+endif
+
+if SOC_SAM_V4_V5
+config SOC_AT91RM9200
+	bool "AT91RM9200"
+	select CPU_ARM920T
+	select GENERIC_CLOCKEVENTS
+	select HAVE_AT91_DBGU0
+	select MULTI_IRQ_HANDLER
+	select SPARSE_IRQ
+
+config SOC_AT91SAM9260
+	bool "AT91SAM9260, AT91SAM9XE or AT91SAM9G20"
+	select HAVE_AT91_DBGU0
+	select SOC_AT91SAM9
+	help
+	  Select this if you are using one of Atmel's AT91SAM9260, AT91SAM9XE
+	  or AT91SAM9G20 SoC.
+
+config SOC_AT91SAM9261
+	bool "AT91SAM9261 or AT91SAM9G10"
+	select HAVE_AT91_DBGU0
+	select HAVE_FB_ATMEL
+	select SOC_AT91SAM9
+	help
+	  Select this if you are using one of Atmel's AT91SAM9261 or AT91SAM9G10 SoC.
+
+config SOC_AT91SAM9263
+	bool "AT91SAM9263"
+	select HAVE_AT91_DBGU1
+	select HAVE_FB_ATMEL
+	select SOC_AT91SAM9
+
+config SOC_AT91SAM9RL
+	bool "AT91SAM9RL"
+	select HAVE_AT91_DBGU0
+	select HAVE_FB_ATMEL
+	select SOC_AT91SAM9
+
+config SOC_AT91SAM9G45
+	bool "AT91SAM9G45 or AT91SAM9M10 families"
+	select HAVE_AT91_DBGU1
+	select HAVE_FB_ATMEL
+	select SOC_AT91SAM9
+	help
+	  Select this if you are using one of Atmel's AT91SAM9G45 family SoC.
+	  This support covers AT91SAM9G45, AT91SAM9G46, AT91SAM9M10 and AT91SAM9M11.
+
+config SOC_AT91SAM9X5
+	bool "AT91SAM9x5 family"
+	select HAVE_AT91_DBGU0
+	select HAVE_FB_ATMEL
+	select SOC_AT91SAM9
+	help
+	  Select this if you are using one of Atmel's AT91SAM9x5 family SoC.
+	  This means that your SAM9 name finishes with a '5' (except if it is
+	  AT91SAM9G45!).
+	  This support covers AT91SAM9G15, AT91SAM9G25, AT91SAM9X25, AT91SAM9G35
+	  and AT91SAM9X35.
+
+config SOC_AT91SAM9N12
+	bool "AT91SAM9N12 family"
+	select HAVE_AT91_DBGU0
+	select HAVE_FB_ATMEL
+	select SOC_AT91SAM9
+	help
+	  Select this if you are using Atmel's AT91SAM9N12 SoC.
+
+# ----------------------------------------------------------
+
+source arch/arm/mach-at91/Kconfig.non_dt
+endif # SOC_SAM_V4_V5
+
+comment "Generic Board Type"
+
+config MACH_AT91RM9200_DT
+	bool "Atmel AT91RM9200 Evaluation Kits with device-tree support"
+	depends on SOC_AT91RM9200
+	select USE_OF
+	help
+	  Select this if you want to experiment device-tree with
+	  an Atmel RM9200 Evaluation Kit.
+
+config MACH_AT91SAM9_DT
+	bool "Atmel AT91SAM Evaluation Kits with device-tree support"
+	depends on SOC_AT91SAM9
+>>>>>>> refs/remotes/origin/master
 	select USE_OF
 	help
 	  Select this if you want to experiment device-tree with
 	  an Atmel Evaluation Kit.
 
+<<<<<<< HEAD
 # ----------------------------------------------------------
 
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -547,6 +697,16 @@ config MTD_AT91_DATAFLASH_CARD
 	depends on HAVE_AT91_DATAFLASH_CARD
 	help
 	  Enable support for the DataFlash card.
+=======
+config MACH_SAMA5_DT
+	bool "Atmel SAMA5 Evaluation Kits with device-tree support"
+	depends on SOC_SAMA5
+	select USE_OF
+	select PHYLIB if NETDEVICES
+	help
+	  Select this if you want to experiment device-tree with
+	  an Atmel Evaluation Kit.
+>>>>>>> refs/remotes/origin/master
 
 # ----------------------------------------------------------
 
@@ -587,6 +747,7 @@ config AT91_TIMER_HZ
 	  system clock (of at least several MHz), rounding is less of a
 	  problem so it can be safer to use a decimal values like 100.
 
+<<<<<<< HEAD
 choice
 	prompt "Select a UART for early kernel messages"
 
@@ -627,6 +788,8 @@ config AT91_EARLY_USART5
 
 endchoice
 
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu
 
 endif

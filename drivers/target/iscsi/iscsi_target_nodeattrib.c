@@ -1,9 +1,13 @@
 /*******************************************************************************
  * This file contains the main functions related to Initiator Node Attributes.
  *
+<<<<<<< HEAD
  * \u00a9 Copyright 2007-2011 RisingTide Systems LLC.
  *
  * Licensed to the Linux Foundation under the General Public License (GPL) version 2.
+=======
+ * (c) Copyright 2007-2013 Datera, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Author: Nicholas A. Bellinger <nab@linux-iscsi.org>
  *
@@ -35,7 +39,12 @@ static inline char *iscsit_na_get_initiatorname(
 }
 
 void iscsit_set_default_node_attribues(
+<<<<<<< HEAD
 	struct iscsi_node_acl *acl)
+=======
+	struct iscsi_node_acl *acl,
+	struct iscsi_portal_group *tpg)
+>>>>>>> refs/remotes/origin/master
 {
 	struct iscsi_node_attrib *a = &acl->node_attrib;
 
@@ -46,7 +55,11 @@ void iscsit_set_default_node_attribues(
 	a->random_datain_pdu_offsets = NA_RANDOM_DATAIN_PDU_OFFSETS;
 	a->random_datain_seq_offsets = NA_RANDOM_DATAIN_SEQ_OFFSETS;
 	a->random_r2t_offsets = NA_RANDOM_R2T_OFFSETS;
+<<<<<<< HEAD
 	a->default_erl = NA_DEFAULT_ERL;
+=======
+	a->default_erl = tpg->tpg_attrib.default_erl;
+>>>>>>> refs/remotes/origin/master
 }
 
 int iscsit_na_dataout_timeout(

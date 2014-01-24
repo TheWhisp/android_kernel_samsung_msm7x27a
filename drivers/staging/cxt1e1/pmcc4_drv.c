@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
  * $Id: pmcc4_drv.c,v 3.1 2007/08/15 23:32:17 rickd PMCC4_3_1B $
  */
@@ -6,6 +7,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*-----------------------------------------------------------------------------
  * pmcc4_drv.c -
  *
@@ -25,6 +28,7 @@
  * For further information, contact via email: support@onestopsystems.com
  * One Stop Systems, Inc.  Escondido, California  U.S.A.
  *-----------------------------------------------------------------------------
+<<<<<<< HEAD
 <<<<<<< HEAD
  * RCS info:
  * RCS revision: $Revision: 3.1 $
@@ -95,11 +99,16 @@ char        OSSIid_pmcc4_drvc[] =
 #include <sys/errno.h>
 #else
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include "pmcc4_sysdep.h"
 #include <linux/errno.h>
@@ -107,11 +116,15 @@ char        OSSIid_pmcc4_drvc[] =
 #include <linux/sched.h>        /* include for timer */
 #include <linux/timer.h>        /* include for timer */
 #include <linux/hdlc.h>
+<<<<<<< HEAD
 #include <asm/io.h>
 <<<<<<< HEAD
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/io.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "sbecom_inline_linux.h"
 #include "libsbew.h"
@@ -122,6 +135,7 @@ char        OSSIid_pmcc4_drvc[] =
 #include "comet.h"
 #include "sbe_bid.h"
 
+<<<<<<< HEAD
 #ifdef SBE_INCLUDE_SYMBOLS
 #define STATIC
 #else
@@ -129,6 +143,8 @@ char        OSSIid_pmcc4_drvc[] =
 #endif
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define KERN_WARN KERN_WARNING
 
 /* forward references */
@@ -160,7 +176,11 @@ extern void *memset (void *s, int c, size_t n);
 #endif
 
 int         drvr_state = SBE_DRVR_INIT;
+<<<<<<< HEAD
 ci_t       *c4_list = 0;
+=======
+ci_t       *c4_list = NULL;
+>>>>>>> refs/remotes/origin/master
 ci_t       *CI;                 /* dummy pointer to board ZEROE's data -
                                  * DEBUG USAGE */
 
@@ -206,10 +226,17 @@ c4_find_chan (int channum)
                 {
                     if ((ch->state != UNASSIGNED) &&
                         (ch->channum == channum))
+<<<<<<< HEAD
                         return (ch);
                 }
             }
     return 0;
+=======
+                        return ch;
+                }
+            }
+    return NULL;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -235,7 +262,11 @@ c4_new (void *hi)
         pr_warning("failed CI malloc, size %u.\n",
                    (unsigned int) sizeof (ci_t));
 
+<<<<<<< HEAD
     if (CI == 0)
+=======
+    if (!CI)
+>>>>>>> refs/remotes/origin/master
         CI = ci;                    /* DEBUG, only board 0 usage */
     return ci;
 }
@@ -276,7 +307,11 @@ c4_new (void *hi)
 #define COMET_LBCMD_READ  0x80  /* read only (do not set, return read value) */
 
 void
+<<<<<<< HEAD
 checkPorts (ci_t * ci)
+=======
+checkPorts (ci_t *ci)
+>>>>>>> refs/remotes/origin/master
 {
 #ifndef CONFIG_SBE_PMCC4_NCOMM
     /*
@@ -284,7 +319,11 @@ checkPorts (ci_t * ci)
      * alarms conflicts with NCOMM's interrupt servicing implementation.
      */
 
+<<<<<<< HEAD
     comet_t    *comet;
+=======
+    struct s_comet_reg    *comet;
+>>>>>>> refs/remotes/origin/master
     volatile u_int32_t value;
     u_int32_t   copyVal, LEDval;
 
@@ -541,8 +580,13 @@ checkPorts (ci_t * ci)
 }
 
 
+<<<<<<< HEAD
 STATIC void
 c4_watchdog (ci_t * ci)
+=======
+static void
+c4_watchdog (ci_t *ci)
+>>>>>>> refs/remotes/origin/master
 {
     if (drvr_state != SBE_DRVR_AVAILABLE)
     {
@@ -595,9 +639,15 @@ c4_cleanup (void)
  */
 
 int
+<<<<<<< HEAD
 c4_get_portcfg (ci_t * ci)
 {
     comet_t    *comet;
+=======
+c4_get_portcfg (ci_t *ci)
+{
+    struct s_comet_reg    *comet;
+>>>>>>> refs/remotes/origin/master
     int         portnum, mask;
     u_int32_t   wdata, rdata;
 
@@ -619,7 +669,11 @@ c4_get_portcfg (ci_t * ci)
 /* nothing herein should generate interrupts */
 
 status_t    __init
+<<<<<<< HEAD
 c4_init (ci_t * ci, u_char *func0, u_char *func1)
+=======
+c4_init (ci_t *ci, u_char *func0, u_char *func1)
+>>>>>>> refs/remotes/origin/master
 {
     mpi_t      *pi;
     mch_t      *ch;
@@ -651,7 +705,11 @@ c4_init (ci_t * ci, u_char *func0, u_char *func1)
         for (portnum = 0; portnum < MUSYCC_NPORTS; portnum++)
         {
             pi = &ci->port[portnum];
+<<<<<<< HEAD
             pi->cometbase = (comet_t *) ((u_int32_t *) (func1 + COMET_OFFSET (portnum)));
+=======
+            pi->cometbase = (struct s_comet_reg *) ((u_int32_t *) (func1 + COMET_OFFSET (portnum)));
+>>>>>>> refs/remotes/origin/master
             pi->reg = (struct musycc_globalr *) ((u_char *) ci->reg + (portnum * 0x800));
             pi->portnum = portnum;
             pi->p.portnum = portnum;
@@ -753,7 +811,11 @@ c4_init (ci_t * ci, u_char *func0, u_char *func1)
 /* better be fully setup to handle interrupts when you call this */
 
 status_t    __init
+<<<<<<< HEAD
 c4_init2 (ci_t * ci)
+=======
+c4_init2 (ci_t *ci)
+>>>>>>> refs/remotes/origin/master
 {
     status_t    ret;
 
@@ -781,9 +843,15 @@ c4_init2 (ci_t * ci)
 /* This function sets the loopback mode (or clears it, as the case may be). */
 
 int
+<<<<<<< HEAD
 c4_loop_port (ci_t * ci, int portnum, u_int8_t cmd)
 {
     comet_t    *comet;
+=======
+c4_loop_port (ci_t *ci, int portnum, u_int8_t cmd)
+{
+    struct s_comet_reg    *comet;
+>>>>>>> refs/remotes/origin/master
     volatile u_int32_t loopValue;
 
     comet = ci->port[portnum].cometbase;
@@ -840,9 +908,15 @@ c4_loop_port (ci_t * ci, int portnum, u_int8_t cmd)
  */
 
 status_t
+<<<<<<< HEAD
 c4_frame_rw (ci_t * ci, struct sbecom_port_param * pp)
 {
     comet_t    *comet;
+=======
+c4_frame_rw (ci_t *ci, struct sbecom_port_param *pp)
+{
+    struct s_comet_reg    *comet;
+>>>>>>> refs/remotes/origin/master
     volatile u_int32_t data;
 
     if (pp->portnum >= ci->max_port)/* sanity check */
@@ -879,7 +953,11 @@ c4_frame_rw (ci_t * ci, struct sbecom_port_param * pp)
  */
 
 status_t
+<<<<<<< HEAD
 c4_pld_rw (ci_t * ci, struct sbecom_port_param * pp)
+=======
+c4_pld_rw (ci_t *ci, struct sbecom_port_param *pp)
+>>>>>>> refs/remotes/origin/master
 {
     volatile u_int32_t *regaddr;
     volatile u_int32_t data;
@@ -917,11 +995,19 @@ c4_pld_rw (ci_t * ci, struct sbecom_port_param * pp)
  */
 
 status_t
+<<<<<<< HEAD
 c4_musycc_rw (ci_t * ci, struct c4_musycc_param * mcp)
 {
     mpi_t      *pi;
     volatile u_int32_t *dph;    /* hardware implemented register */
     u_int32_t  *dpr = 0;        /* RAM image of registers for group command
+=======
+c4_musycc_rw (ci_t *ci, struct c4_musycc_param *mcp)
+{
+    mpi_t      *pi;
+    volatile u_int32_t *dph;    /* hardware implemented register */
+    u_int32_t *dpr = NULL;	/* RAM image of registers for group command
+>>>>>>> refs/remotes/origin/master
                                  * usage */
     int         offset = mcp->offset % 0x800;   /* group relative address
                                                  * offset, mcp->portnum is
@@ -981,7 +1067,11 @@ c4_musycc_rw (ci_t * ci, struct c4_musycc_param * mcp)
 }
 
 status_t
+<<<<<<< HEAD
 c4_get_port (ci_t * ci, int portnum)
+=======
+c4_get_port (ci_t *ci, int portnum)
+>>>>>>> refs/remotes/origin/master
 {
     if (portnum >= ci->max_port)    /* sanity check */
         return ENXIO;
@@ -996,7 +1086,11 @@ c4_get_port (ci_t * ci, int portnum)
 }
 
 status_t
+<<<<<<< HEAD
 c4_set_port (ci_t * ci, int portnum)
+=======
+c4_set_port (ci_t *ci, int portnum)
+>>>>>>> refs/remotes/origin/master
 {
     mpi_t      *pi;
     struct sbecom_port_param *pp;
@@ -1025,7 +1119,11 @@ c4_set_port (ci_t * ci, int portnum)
 
         if ((ret = c4_wq_port_init (pi)))       /* create/init
                                                  * workqueue_struct */
+<<<<<<< HEAD
             return (ret);
+=======
+            return ret;
+>>>>>>> refs/remotes/origin/master
     }
 
     init_comet (ci, pi->cometbase, pp->port_mode, 1 /* clockmaster == true */ , pp->portP);
@@ -1101,7 +1199,11 @@ c4_set_port (ci_t * ci, int portnum)
 unsigned int max_int = 0;
 
 status_t
+<<<<<<< HEAD
 c4_new_chan (ci_t * ci, int portnum, int channum, void *user)
+=======
+c4_new_chan (ci_t *ci, int portnum, int channum, void *user)
+>>>>>>> refs/remotes/origin/master
 {
     mpi_t      *pi;
     mch_t      *ch;
@@ -1150,7 +1252,11 @@ c4_new_chan (ci_t * ci, int portnum, int channum, void *user)
     }
 
     /* save off interface assignments which bound a board */
+<<<<<<< HEAD
     if (ci->first_if == 0)          /* first channel registered is assumed to
+=======
+    if (!ci->first_if)		/* first channel registered is assumed to
+>>>>>>> refs/remotes/origin/master
                                      * be the lowest channel */
     {
         ci->first_if = ci->last_if = user;
@@ -1194,7 +1300,11 @@ c4_del_chan_stats (int channum)
 
 
 status_t
+<<<<<<< HEAD
 c4_set_chan (int channum, struct sbecom_chan_param * p)
+=======
+c4_set_chan (int channum, struct sbecom_chan_param *p)
+>>>>>>> refs/remotes/origin/master
 {
     mch_t      *ch;
     int         i, x = 0;
@@ -1245,7 +1355,11 @@ c4_set_chan (int channum, struct sbecom_chan_param * p)
 
 
 status_t
+<<<<<<< HEAD
 c4_get_chan (int channum, struct sbecom_chan_param * p)
+=======
+c4_get_chan (int channum, struct sbecom_chan_param *p)
+>>>>>>> refs/remotes/origin/master
 {
     mch_t      *ch;
 
@@ -1256,7 +1370,11 @@ c4_get_chan (int channum, struct sbecom_chan_param * p)
 }
 
 status_t
+<<<<<<< HEAD
 c4_get_chan_stats (int channum, struct sbecom_chan_stats * p)
+=======
+c4_get_chan_stats (int channum, struct sbecom_chan_stats *p)
+>>>>>>> refs/remotes/origin/master
 {
     mch_t      *ch;
 
@@ -1267,8 +1385,13 @@ c4_get_chan_stats (int channum, struct sbecom_chan_stats * p)
     return 0;
 }
 
+<<<<<<< HEAD
 STATIC int
 c4_fifo_alloc (mpi_t * pi, int chan, int *len)
+=======
+static int
+c4_fifo_alloc (mpi_t *pi, int chan, int *len)
+>>>>>>> refs/remotes/origin/master
 {
     int         i, l = 0, start = 0, max = 0, maxstart = 0;
 
@@ -1305,7 +1428,11 @@ c4_fifo_alloc (mpi_t * pi, int chan, int *len)
 }
 
 void
+<<<<<<< HEAD
 c4_fifo_free (mpi_t * pi, int chan)
+=======
+c4_fifo_free (mpi_t *pi, int chan)
+>>>>>>> refs/remotes/origin/master
 {
     int         i;
 
@@ -1319,7 +1446,11 @@ c4_fifo_free (mpi_t * pi, int chan)
 
 
 status_t
+<<<<<<< HEAD
 c4_chan_up (ci_t * ci, int channum)
+=======
+c4_chan_up (ci_t *ci, int channum)
+>>>>>>> refs/remotes/origin/master
 {
     mpi_t      *pi;
     mch_t      *ch;
@@ -1482,7 +1613,11 @@ c4_chan_up (ci_t * ci, int channum)
         md->status = HOST_TX_OWNED; /* Host owns TX descriptor ** CODING
                                      * NOTE: HOST_TX_OWNED = 0 so no need to
                                      * byteSwap */
+<<<<<<< HEAD
         md->mem_token = 0;
+=======
+        md->mem_token = NULL;
+>>>>>>> refs/remotes/origin/master
         md->data = 0;
         if (i == (txnum - 1))
         {
@@ -1538,10 +1673,17 @@ errfree:
         OS_mem_token_free (ch->mdr[i].mem_token);
     }
     OS_kfree (ch->mdt);
+<<<<<<< HEAD
     ch->mdt = 0;
     ch->txd_num = 0;
     OS_kfree (ch->mdr);
     ch->mdr = 0;
+=======
+    ch->mdt = NULL;
+    ch->txd_num = 0;
+    OS_kfree (ch->mdr);
+    ch->mdr = NULL;
+>>>>>>> refs/remotes/origin/master
     ch->rxd_num = 0;
     ch->state = DOWN;
     return ENOBUFS;
@@ -1550,7 +1692,11 @@ errfree:
 /* stop the hardware from servicing & interrupting */
 
 void
+<<<<<<< HEAD
 c4_stopwd (ci_t * ci)
+=======
+c4_stopwd (ci_t *ci)
+>>>>>>> refs/remotes/origin/master
 {
     OS_stop_watchdog (&ci->wd);
     SD_SEM_TAKE (&ci->sem_wdbusy, "_stop_");    /* ensure WD not running */
@@ -1559,7 +1705,11 @@ c4_stopwd (ci_t * ci)
 
 
 void
+<<<<<<< HEAD
 sbecom_get_brdinfo (ci_t * ci, struct sbe_brd_info * bip, u_int8_t *bsn)
+=======
+sbecom_get_brdinfo (ci_t *ci, struct sbe_brd_info *bip, u_int8_t *bsn)
+>>>>>>> refs/remotes/origin/master
 {
     char       *np;
     u_int32_t   sn = 0;
@@ -1568,7 +1718,11 @@ sbecom_get_brdinfo (ci_t * ci, struct sbe_brd_info * bip, u_int8_t *bsn)
     bip->brdno = ci->brdno;         /* our board number */
     bip->brd_id = ci->brd_id;
     bip->brd_hdw_id = ci->hdw_bid;
+<<<<<<< HEAD
     bip->brd_chan_cnt = MUSYCC_NCHANS * ci->max_port;   /* number of channels
+=======
+    bip->brd_chan_cnt = MUSYCC_NCHANS *ci->max_port;   /* number of channels
+>>>>>>> refs/remotes/origin/master
                                                          * being used */
     bip->brd_port_cnt = ci->max_port;   /* number of ports being used */
     bip->brd_pci_speed = BINFO_PCI_SPEED_unk;   /* PCI speed not yet
@@ -1618,7 +1772,11 @@ sbecom_get_brdinfo (ci_t * ci, struct sbe_brd_info * bip, u_int8_t *bsn)
 
 
 status_t
+<<<<<<< HEAD
 c4_get_iidinfo (ci_t * ci, struct sbe_iid_info * iip)
+=======
+c4_get_iidinfo (ci_t *ci, struct sbe_iid_info *iip)
+>>>>>>> refs/remotes/origin/master
 {
     struct net_device *dev;
     char       *np;
@@ -1628,6 +1786,10 @@ c4_get_iidinfo (ci_t * ci, struct sbe_iid_info * iip)
 
     np = dev->name;
     strncpy (iip->iname, np, CHNM_STRLEN - 1);
+<<<<<<< HEAD
+=======
+    iip->iname[CHNM_STRLEN - 1] = '\0';
+>>>>>>> refs/remotes/origin/master
     return 0;
 }
 
@@ -1706,7 +1868,11 @@ wanpmcC4T1E1_getBaseAddress (int cardID, int deviceID)
         }
         ci = ci->next;              /* next board, if any */
     }
+<<<<<<< HEAD
     return (base);
+=======
+    return base;
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif                          /*** CONFIG_SBE_PMCC4_NCOMM ***/

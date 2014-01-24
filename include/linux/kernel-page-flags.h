@@ -1,6 +1,7 @@
 #ifndef LINUX_KERNEL_PAGE_FLAGS_H
 #define LINUX_KERNEL_PAGE_FLAGS_H
 
+<<<<<<< HEAD
 /*
  * Stable page flag bits exported to user space
  */
@@ -36,6 +37,10 @@
 
 #ifdef __KERNEL__
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <uapi/linux/kernel-page-flags.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* kernel hacking assistances
  * WARNING: subject to change, never rely on them!
@@ -48,10 +53,15 @@
 #define KPF_OWNER_PRIVATE	37
 #define KPF_ARCH		38
 #define KPF_UNCACHED		39
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
 #endif /* __KERNEL__ */
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define KPF_SOFTDIRTY		40
+
+>>>>>>> refs/remotes/origin/master
 #endif /* LINUX_KERNEL_PAGE_FLAGS_H */

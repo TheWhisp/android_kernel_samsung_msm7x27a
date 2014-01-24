@@ -11,10 +11,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/fs.h>
 #include <linux/time.h>
@@ -33,6 +38,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 static int jffs2_readpage (struct file *filp, struct page *pg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int jffs2_fsync(struct file *filp, int datasync)
 {
 	struct inode *inode = filp->f_mapping->host;
@@ -41,6 +47,8 @@ int jffs2_fsync(struct file *filp, int datasync)
 	/* Trigger GC to flush any pending writes for this inode */
 	jffs2_flush_wbuf_gc(c, inode->i_ino);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int jffs2_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
 {
 	struct inode *inode = filp->f_mapping->host;
@@ -55,7 +63,10 @@ int jffs2_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
 	/* Trigger GC to flush any pending writes for this inode */
 	jffs2_flush_wbuf_gc(c, inode->i_ino);
 	mutex_unlock(&inode->i_mutex);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -79,10 +90,14 @@ const struct file_operations jffs2_file_operations =
 const struct inode_operations jffs2_file_inode_operations =
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.check_acl =	jffs2_check_acl,
 =======
 	.get_acl =	jffs2_get_acl,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.get_acl =	jffs2_get_acl,
+>>>>>>> refs/remotes/origin/master
 	.setattr =	jffs2_setattr,
 	.setxattr =	jffs2_setxattr,
 	.getxattr =	jffs2_getxattr,
@@ -105,11 +120,16 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
 	int ret;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D2(printk(KERN_DEBUG "jffs2_do_readpage_nolock(): ino #%lu, page at offset 0x%lx\n", inode->i_ino, pg->index << PAGE_CACHE_SHIFT));
 =======
 	jffs2_dbg(2, "%s(): ino #%lu, page at offset 0x%lx\n",
 		  __func__, inode->i_ino, pg->index << PAGE_CACHE_SHIFT);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(2, "%s(): ino #%lu, page at offset 0x%lx\n",
+		  __func__, inode->i_ino, pg->index << PAGE_CACHE_SHIFT);
+>>>>>>> refs/remotes/origin/master
 
 	BUG_ON(!PageLocked(pg));
 
@@ -130,10 +150,14 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
 	kunmap(pg);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D2(printk(KERN_DEBUG "readpage finished\n"));
 =======
 	jffs2_dbg(2, "readpage finished\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(2, "readpage finished\n");
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -164,15 +188,22 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 	struct inode *inode = mapping->host;
 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
 	struct jffs2_raw_inode ri;
 	uint32_t alloc_len = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
+	struct jffs2_raw_inode ri;
+	uint32_t alloc_len = 0;
+>>>>>>> refs/remotes/origin/master
 	pgoff_t index = pos >> PAGE_CACHE_SHIFT;
 	uint32_t pageofs = index << PAGE_CACHE_SHIFT;
 	int ret = 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pg = grab_cache_page_write_begin(mapping, index, flags);
 	if (!pg)
@@ -198,6 +229,8 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 
 		mutex_lock(&f->sem);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	jffs2_dbg(1, "%s()\n", __func__);
 
 	if (pageofs > inode->i_size) {
@@ -224,7 +257,10 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 		jffs2_dbg(1, "Writing new hole frag 0x%x-0x%x between current EOF and new page\n",
 			  (unsigned int)inode->i_size, pageofs);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		memset(&ri, 0, sizeof(ri));
 
 		ri.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
@@ -235,8 +271,13 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 		ri.ino = cpu_to_je32(f->inocache->ino);
 		ri.version = cpu_to_je32(++f->highest_version);
 		ri.mode = cpu_to_jemode(inode->i_mode);
+<<<<<<< HEAD
 		ri.uid = cpu_to_je16(inode->i_uid);
 		ri.gid = cpu_to_je16(inode->i_gid);
+=======
+		ri.uid = cpu_to_je16(i_uid_read(inode));
+		ri.gid = cpu_to_je16(i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 		ri.isize = cpu_to_je32(max((uint32_t)inode->i_size, pageofs));
 		ri.atime = ri.ctime = ri.mtime = cpu_to_je32(get_seconds());
 		ri.offset = cpu_to_je32(inode->i_size);
@@ -252,9 +293,12 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 			ret = PTR_ERR(fn);
 			jffs2_complete_reservation(c);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mutex_unlock(&f->sem);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto out_page;
 		}
 		ret = jffs2_add_full_dnode_to_inode(c, f, fn);
@@ -265,26 +309,35 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 		}
 		if (ret) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			D1(printk(KERN_DEBUG "Eep. add_full_dnode_to_inode() failed in write_begin, returned %d\n", ret));
 			jffs2_mark_node_obsolete(c, fn->raw);
 			jffs2_free_full_dnode(fn);
 			jffs2_complete_reservation(c);
 			mutex_unlock(&f->sem);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			jffs2_dbg(1, "Eep. add_full_dnode_to_inode() failed in write_begin, returned %d\n",
 				  ret);
 			jffs2_mark_node_obsolete(c, fn->raw);
 			jffs2_free_full_dnode(fn);
 			jffs2_complete_reservation(c);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			goto out_page;
 		}
 		jffs2_complete_reservation(c);
 		inode->i_size = pageofs;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_unlock(&f->sem);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -294,6 +347,7 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 	 */
 	if (!PageUptodate(pg)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mutex_lock(&f->sem);
 		ret = jffs2_do_readpage_nolock(inode, pg);
 		mutex_unlock(&f->sem);
@@ -302,22 +356,31 @@ static int jffs2_write_begin(struct file *filp, struct address_space *mapping,
 	}
 	D1(printk(KERN_DEBUG "end write_begin(). pg->flags %lx\n", pg->flags));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		ret = jffs2_do_readpage_nolock(inode, pg);
 		if (ret)
 			goto out_page;
 	}
 	mutex_unlock(&f->sem);
 	jffs2_dbg(1, "end write_begin(). pg->flags %lx\n", pg->flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 
 out_page:
 	unlock_page(pg);
 	page_cache_release(pg);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	mutex_unlock(&f->sem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_unlock(&f->sem);
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -339,6 +402,7 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
 	uint32_t writtenlen = 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_write_end(): ino #%lu, page at 0x%lx, range %d-%d, flags %lx\n",
 		  inode->i_ino, pg->index << PAGE_CACHE_SHIFT, start, end, pg->flags));
 =======
@@ -346,6 +410,11 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
 		  __func__, inode->i_ino, pg->index << PAGE_CACHE_SHIFT,
 		  start, end, pg->flags);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s(): ino #%lu, page at 0x%lx, range %d-%d, flags %lx\n",
+		  __func__, inode->i_ino, pg->index << PAGE_CACHE_SHIFT,
+		  start, end, pg->flags);
+>>>>>>> refs/remotes/origin/master
 
 	/* We need to avoid deadlock with page_cache_read() in
 	   jffs2_garbage_collect_pass(). So the page must be
@@ -365,11 +434,16 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
 
 	if (!ri) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "jffs2_write_end(): Allocation of raw inode failed\n"));
 =======
 		jffs2_dbg(1, "%s(): Allocation of raw inode failed\n",
 			  __func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "%s(): Allocation of raw inode failed\n",
+			  __func__);
+>>>>>>> refs/remotes/origin/master
 		unlock_page(pg);
 		page_cache_release(pg);
 		return -ENOMEM;
@@ -378,8 +452,13 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
 	/* Set the fields that the generic jffs2_write_inode_range() code can't find */
 	ri->ino = cpu_to_je32(inode->i_ino);
 	ri->mode = cpu_to_jemode(inode->i_mode);
+<<<<<<< HEAD
 	ri->uid = cpu_to_je16(inode->i_uid);
 	ri->gid = cpu_to_je16(inode->i_gid);
+=======
+	ri->uid = cpu_to_je16(i_uid_read(inode));
+	ri->gid = cpu_to_je16(i_gid_read(inode));
+>>>>>>> refs/remotes/origin/master
 	ri->isize = cpu_to_je32((uint32_t)inode->i_size);
 	ri->atime = ri->ctime = ri->mtime = cpu_to_je32(get_seconds());
 
@@ -417,15 +496,21 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
 		   actually written to the medium. Mark the page !Uptodate so that
 		   it gets reread */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		D1(printk(KERN_DEBUG "jffs2_write_end(): Not all bytes written. Marking page !uptodate\n"));
 =======
 		jffs2_dbg(1, "%s(): Not all bytes written. Marking page !uptodate\n",
 			__func__);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		jffs2_dbg(1, "%s(): Not all bytes written. Marking page !uptodate\n",
+			__func__);
+>>>>>>> refs/remotes/origin/master
 		SetPageError(pg);
 		ClearPageUptodate(pg);
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	D1(printk(KERN_DEBUG "jffs2_write_end() returning %d\n",
 					writtenlen > 0 ? writtenlen : ret));
@@ -433,6 +518,10 @@ static int jffs2_write_end(struct file *filp, struct address_space *mapping,
 	jffs2_dbg(1, "%s() returning %d\n",
 		  __func__, writtenlen > 0 ? writtenlen : ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	jffs2_dbg(1, "%s() returning %d\n",
+		  __func__, writtenlen > 0 ? writtenlen : ret);
+>>>>>>> refs/remotes/origin/master
 	unlock_page(pg);
 	page_cache_release(pg);
 	return writtenlen > 0 ? writtenlen : ret;

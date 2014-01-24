@@ -22,8 +22,13 @@
 #include <linux/spi/libertas_spi.h>
 
 #include <mach/pxa27x.h>
+<<<<<<< HEAD
 #include <mach/ohci.h>
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/usb-ohci-pxa27x.h>
+#include <linux/platform_data/mmc-pxamci.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -34,10 +39,14 @@
 #define GPIO83_MMC_IRQ		(83)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define CMX270_MMC_IRQ		IRQ_GPIO(GPIO83_MMC_IRQ)
 =======
 #define CMX270_MMC_IRQ		PXA_GPIO_TO_IRQ(GPIO83_MMC_IRQ)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CMX270_MMC_IRQ		PXA_GPIO_TO_IRQ(GPIO83_MMC_IRQ)
+>>>>>>> refs/remotes/origin/master
 
 /* MMC power enable */
 #define GPIO105_MMC_POWER	(105)
@@ -385,10 +394,14 @@ static struct spi_board_info cm_x270_spi_devices[] __initdata = {
 		.max_speed_hz		= 13000000,
 		.bus_num		= 2,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq			= gpio_to_irq(95),
 =======
 		.irq			= PXA_GPIO_TO_IRQ(95),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq			= PXA_GPIO_TO_IRQ(95),
+>>>>>>> refs/remotes/origin/master
 		.chip_select		= 0,
 		.controller_data	= &cm_x270_libertas_chip,
 		.platform_data		= &cm_x270_libertas_pdata,

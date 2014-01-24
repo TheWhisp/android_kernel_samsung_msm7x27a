@@ -113,10 +113,14 @@ struct sci_user_parameters {
 	 * that can have power supplied to them simultaneously.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u8 max_number_concurrent_device_spin_up;
 =======
 	u8 max_concurr_spinup;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u8 max_concurr_spinup;
+>>>>>>> refs/remotes/origin/master
 
 	/**
 	 * This field specifies the number of seconds to allow a phy to consume
@@ -157,6 +161,7 @@ struct sci_user_parameters {
 
 struct sci_oem_params;
 <<<<<<< HEAD
+<<<<<<< HEAD
 int sci_oem_parameters_validate(struct sci_oem_params *oem);
 =======
 int sci_oem_parameters_validate(struct sci_oem_params *oem, u8 version);
@@ -166,6 +171,12 @@ struct isci_orom;
 struct isci_orom *isci_request_oprom(struct pci_dev *pdev);
 enum sci_status isci_parse_oem_parameters(struct sci_oem_params *oem,
 					  struct isci_orom *orom, int scu_index);
+=======
+int sci_oem_parameters_validate(struct sci_oem_params *oem, u8 version);
+
+struct isci_orom;
+struct isci_orom *isci_request_oprom(struct pci_dev *pdev);
+>>>>>>> refs/remotes/origin/master
 struct isci_orom *isci_request_firmware(struct pci_dev *pdev, const struct firmware *fw);
 struct isci_orom *isci_get_efi_var(struct pci_dev *pdev);
 
@@ -200,13 +211,19 @@ struct isci_oem_hdr {
 #define ISCI_EFI_VAR_NAME	"RstScuO"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define ISCI_ROM_VER_1_0	0x10
 #define ISCI_ROM_VER_1_1	0x11
 #define ISCI_ROM_VER_1_3	0x13
 #define ISCI_ROM_VER_LATEST	ISCI_ROM_VER_1_3
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Allowed PORT configuration modes APC Automatic PORT configuration mode is
  * defined by the OEM configuration parameters providing no PHY_MASK parameters
  * for any PORT. i.e. There are no phys assigned to any of the ports at start.
@@ -236,10 +253,13 @@ struct sci_oem_params {
 	struct {
 		uint8_t mode_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		uint8_t max_concurrent_dev_spin_up;
 		uint8_t do_enable_ssc;
 		uint8_t reserved;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		uint8_t max_concurr_spin_up;
 		/*
 		 * This bitfield indicates the OEM's desired default Tx
@@ -321,7 +341,10 @@ struct sci_oem_params {
 		 *    phy0 - short
 		 */
 		uint8_t cable_selection_mask;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} controller;
 
 	struct {

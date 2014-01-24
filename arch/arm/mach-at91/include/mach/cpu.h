@@ -2,11 +2,16 @@
  * arch/arm/mach-at91/include/mach/cpu.h
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Copyright (C) 2006 SAN People
 =======
  * Copyright (C) 2006 SAN People
  * Copyright (C) 2011 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2006 SAN People
+ * Copyright (C) 2011 Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +20,7 @@
  *
  */
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifndef __ASM_ARCH_CPU_H
 #define __ASM_ARCH_CPU_H
@@ -26,6 +32,10 @@
 #ifndef __MACH_CPU_H__
 #define __MACH_CPU_H__
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef __MACH_CPU_H__
+#define __MACH_CPU_H__
+>>>>>>> refs/remotes/origin/master
 
 #define ARCH_ID_AT91RM9200	0x09290780
 #define ARCH_ID_AT91SAM9260	0x019803a0
@@ -39,9 +49,13 @@
 #define ARCH_ID_AT91SAM9G45ES	0x819b05a1	/* 9G45-ES (Engineering Sample) */
 #define ARCH_ID_AT91SAM9X5	0x819a05a0
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define ARCH_ID_AT91CAP9	0x039A03A0
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARCH_ID_AT91SAM9N12	0x819a07a0
+>>>>>>> refs/remotes/origin/master
 
 #define ARCH_ID_AT91SAM9XE128	0x329973a0
 #define ARCH_ID_AT91SAM9XE256	0x329a93a0
@@ -52,6 +66,7 @@
 #define ARCH_ID_AT91M40807	0x14080745
 #define ARCH_ID_AT91R40008	0x44000840
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline unsigned long at91_cpu_identify(void)
 {
@@ -65,6 +80,10 @@ static inline unsigned long at91_cpu_fully_identify(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARCH_ID_SAMA5D3		0x8A5C07C0
+
+>>>>>>> refs/remotes/origin/master
 #define ARCH_EXID_AT91SAM9M11	0x00000001
 #define ARCH_EXID_AT91SAM9M10	0x00000002
 #define ARCH_EXID_AT91SAM9G46	0x00000003
@@ -77,6 +96,7 @@ static inline unsigned long at91_cpu_fully_identify(void)
 #define ARCH_EXID_AT91SAM9X25	0x00000004
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline unsigned long at91_exid_identify(void)
 {
 	return at91_sys_read(AT91_DBGU_EXID);
@@ -85,10 +105,18 @@ static inline unsigned long at91_exid_identify(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define ARCH_EXID_SAMA5D31	0x00444300
+#define ARCH_EXID_SAMA5D33	0x00414300
+#define ARCH_EXID_SAMA5D34	0x00414301
+#define ARCH_EXID_SAMA5D35	0x00584300
+
+>>>>>>> refs/remotes/origin/master
 #define ARCH_FAMILY_AT91X92	0x09200000
 #define ARCH_FAMILY_AT91SAM9	0x01900000
 #define ARCH_FAMILY_AT91SAM9XE	0x02900000
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static inline unsigned long at91_arch_identify(void)
 {
@@ -115,10 +143,16 @@ extern int rm9200_type;
 #define cpu_is_at91rm9200_bga()	(!cpu_is_at91rm9200_pqfp())
 #define cpu_is_at91rm9200_pqfp() (cpu_is_at91rm9200() && rm9200_type & ARCH_REVISON_9200_PQFP)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* RM9200 type */
 #define ARCH_REVISON_9200_BGA	(0 << 0)
 #define ARCH_REVISON_9200_PQFP	(1 << 0)
 
+<<<<<<< HEAD
+=======
+#ifndef __ASSEMBLY__
+>>>>>>> refs/remotes/origin/master
 enum at91_soc_type {
 	/* 920T */
 	AT91_SOC_RM9200,
@@ -135,8 +169,19 @@ enum at91_soc_type {
 	/* SAM9X5 */
 	AT91_SOC_SAM9X5,
 
+<<<<<<< HEAD
 	/* Unknown type */
 	AT91_SOC_NONE
+=======
+	/* SAM9N12 */
+	AT91_SOC_SAM9N12,
+
+	/* SAMA5D3 */
+	AT91_SOC_SAMA5D3,
+
+	/* Unknown type */
+	AT91_SOC_UNKNOWN,
+>>>>>>> refs/remotes/origin/master
 };
 
 enum at91_soc_subtype {
@@ -153,8 +198,20 @@ enum at91_soc_subtype {
 	AT91_SOC_SAM9G15, AT91_SOC_SAM9G35, AT91_SOC_SAM9X35,
 	AT91_SOC_SAM9G25, AT91_SOC_SAM9X25,
 
+<<<<<<< HEAD
 	/* Unknown subtype */
 	AT91_SOC_SUBTYPE_NONE
+=======
+	/* SAMA5D3 */
+	AT91_SOC_SAMA5D31, AT91_SOC_SAMA5D33, AT91_SOC_SAMA5D34,
+	AT91_SOC_SAMA5D35,
+
+	/* No subtype for this SoC */
+	AT91_SOC_SUBTYPE_NONE,
+
+	/* Unknown subtype */
+	AT91_SOC_SUBTYPE_UNKNOWN,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct at91_socinfo {
@@ -168,6 +225,7 @@ const char *at91_get_soc_subtype(struct at91_socinfo *c);
 
 static inline int at91_soc_is_detected(void)
 {
+<<<<<<< HEAD
 	return at91_soc_initdata.type != AT91_SOC_NONE;
 }
 
@@ -176,12 +234,22 @@ static inline int at91_soc_is_detected(void)
 #define cpu_is_at91rm9200_bga()	(at91_soc_initdata.subtype == AT91_SOC_RM9200_BGA)
 #define cpu_is_at91rm9200_pqfp() (at91_soc_initdata.subtype == AT91_SOC_RM9200_PQFP)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	return at91_soc_initdata.type != AT91_SOC_UNKNOWN;
+}
+
+#ifdef CONFIG_SOC_AT91RM9200
+#define cpu_is_at91rm9200()	(at91_soc_initdata.type == AT91_SOC_RM9200)
+#define cpu_is_at91rm9200_bga()	(at91_soc_initdata.subtype == AT91_SOC_RM9200_BGA)
+#define cpu_is_at91rm9200_pqfp() (at91_soc_initdata.subtype == AT91_SOC_RM9200_PQFP)
+>>>>>>> refs/remotes/origin/master
 #else
 #define cpu_is_at91rm9200()	(0)
 #define cpu_is_at91rm9200_bga()	(0)
 #define cpu_is_at91rm9200_pqfp() (0)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_AT91SAM9260
 <<<<<<< HEAD
 #define cpu_is_at91sam9xe()	(at91_arch_identify() == ARCH_FAMILY_AT91SAM9XE)
@@ -231,20 +299,48 @@ static inline int at91_soc_is_detected(void)
 =======
 #define cpu_is_at91sam9263()	(at91_soc_initdata.type == AT91_SOC_SAM9263)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SOC_AT91SAM9260
+#define cpu_is_at91sam9xe()	(at91_soc_initdata.subtype == AT91_SOC_SAM9XE)
+#define cpu_is_at91sam9260()	(at91_soc_initdata.type == AT91_SOC_SAM9260)
+#define cpu_is_at91sam9g20()	(at91_soc_initdata.type == AT91_SOC_SAM9G20)
+#else
+#define cpu_is_at91sam9xe()	(0)
+#define cpu_is_at91sam9260()	(0)
+#define cpu_is_at91sam9g20()	(0)
+#endif
+
+#ifdef CONFIG_SOC_AT91SAM9261
+#define cpu_is_at91sam9261()	(at91_soc_initdata.type == AT91_SOC_SAM9261)
+#define cpu_is_at91sam9g10()	(at91_soc_initdata.type == AT91_SOC_SAM9G10)
+#else
+#define cpu_is_at91sam9261()	(0)
+#define cpu_is_at91sam9g10()	(0)
+#endif
+
+#ifdef CONFIG_SOC_AT91SAM9263
+#define cpu_is_at91sam9263()	(at91_soc_initdata.type == AT91_SOC_SAM9263)
+>>>>>>> refs/remotes/origin/master
 #else
 #define cpu_is_at91sam9263()	(0)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_AT91SAM9RL
 <<<<<<< HEAD
 #define cpu_is_at91sam9rl()	(at91_cpu_identify() == ARCH_ID_AT91SAM9RL64)
 =======
 #define cpu_is_at91sam9rl()	(at91_soc_initdata.type == AT91_SOC_SAM9RL)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SOC_AT91SAM9RL
+#define cpu_is_at91sam9rl()	(at91_soc_initdata.type == AT91_SOC_SAM9RL)
+>>>>>>> refs/remotes/origin/master
 #else
 #define cpu_is_at91sam9rl()	(0)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_AT91SAM9G45
 <<<<<<< HEAD
 #define cpu_is_at91sam9g45()	(at91_cpu_identify() == ARCH_ID_AT91SAM9G45)
@@ -256,12 +352,18 @@ static inline int at91_soc_is_detected(void)
 #define cpu_is_at91sam9m11()    (cpu_is_at91sam9g45() && \
                                 (at91_exid_identify() == ARCH_EXID_AT91SAM9M11))
 =======
+=======
+#ifdef CONFIG_SOC_AT91SAM9G45
+>>>>>>> refs/remotes/origin/master
 #define cpu_is_at91sam9g45()	(at91_soc_initdata.type == AT91_SOC_SAM9G45)
 #define cpu_is_at91sam9g45es()	(at91_soc_initdata.subtype == AT91_SOC_SAM9G45ES)
 #define cpu_is_at91sam9m10()	(at91_soc_initdata.subtype == AT91_SOC_SAM9M10)
 #define cpu_is_at91sam9g46()	(at91_soc_initdata.subtype == AT91_SOC_SAM9G46)
 #define cpu_is_at91sam9m11()	(at91_soc_initdata.subtype == AT91_SOC_SAM9M11)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define cpu_is_at91sam9g45()	(0)
 #define cpu_is_at91sam9g45es()	(0)
@@ -270,6 +372,7 @@ static inline int at91_soc_is_detected(void)
 #define cpu_is_at91sam9m11()	(0)
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_ARCH_AT91SAM9X5
 <<<<<<< HEAD
 #define cpu_is_at91sam9x5()	(at91_cpu_identify() == ARCH_ID_AT91SAM9X5)
@@ -284,13 +387,19 @@ static inline int at91_soc_is_detected(void)
 #define cpu_is_at91sam9x25()	(cpu_is_at91sam9x5() && \
 				(at91_exid_identify() == ARCH_EXID_AT91SAM9X25))
 =======
+=======
+#ifdef CONFIG_SOC_AT91SAM9X5
+>>>>>>> refs/remotes/origin/master
 #define cpu_is_at91sam9x5()	(at91_soc_initdata.type == AT91_SOC_SAM9X5)
 #define cpu_is_at91sam9g15()	(at91_soc_initdata.subtype == AT91_SOC_SAM9G15)
 #define cpu_is_at91sam9g35()	(at91_soc_initdata.subtype == AT91_SOC_SAM9G35)
 #define cpu_is_at91sam9x35()	(at91_soc_initdata.subtype == AT91_SOC_SAM9X35)
 #define cpu_is_at91sam9g25()	(at91_soc_initdata.subtype == AT91_SOC_SAM9G25)
 #define cpu_is_at91sam9x25()	(at91_soc_initdata.subtype == AT91_SOC_SAM9X25)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else
 #define cpu_is_at91sam9x5()	(0)
 #define cpu_is_at91sam9g15()	(0)
@@ -300,6 +409,7 @@ static inline int at91_soc_is_detected(void)
 #define cpu_is_at91sam9x25()	(0)
 #endif
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_ARCH_AT91CAP9
 #define cpu_is_at91cap9()	(at91_cpu_identify() == ARCH_ID_AT91CAP9)
@@ -313,14 +423,34 @@ static inline int at91_soc_is_detected(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_SOC_AT91SAM9N12
+#define cpu_is_at91sam9n12()	(at91_soc_initdata.type == AT91_SOC_SAM9N12)
+#else
+#define cpu_is_at91sam9n12()	(0)
+#endif
+
+#ifdef CONFIG_SOC_SAMA5D3
+#define cpu_is_sama5d3()	(at91_soc_initdata.type == AT91_SOC_SAMA5D3)
+#else
+#define cpu_is_sama5d3()	(0)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Since this is ARM, we will never run on any AVR32 CPU. But these
  * definitions may reduce clutter in common drivers.
  */
 #define cpu_is_at32ap7000()	(0)
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 #endif
 =======
 #endif /* __MACH_CPU_H__ */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* __ASSEMBLY__ */
+
+#endif /* __MACH_CPU_H__ */
+>>>>>>> refs/remotes/origin/master

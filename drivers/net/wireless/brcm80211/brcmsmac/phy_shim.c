@@ -214,6 +214,7 @@ wlapi_copyto_objmem(struct phy_shim_info *physhim, uint offset, const void *buf,
 {
 	brcms_b_copyto_objmem(physhim->wlc_hw, offset, buf, l, sel);
 }
+<<<<<<< HEAD
 
 char *wlapi_getvar(struct phy_shim_info *physhim, enum brcms_srom_id id)
 {
@@ -223,3 +224,5 @@ int wlapi_getintvar(struct phy_shim_info *physhim, enum brcms_srom_id id)
 {
 	return getintvar(physhim->wlc_hw->sih, id);
 }
+=======
+>>>>>>> refs/remotes/origin/master

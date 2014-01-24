@@ -36,14 +36,23 @@
 #include <linux/input/matrix_keypad.h>
 #include <linux/i2c/pxa-i2c.h>
 #include <linux/usb/gpio_vbus.h>
+<<<<<<< HEAD
+=======
+#include <linux/reboot.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/setup.h>
 #include <asm/mach-types.h>
 
 #include <mach/pxa25x.h>
 #include <mach/reset.h>
+<<<<<<< HEAD
 #include <mach/irda.h>
 #include <mach/mmc.h>
+=======
+#include <linux/platform_data/irda-pxaficp.h>
+#include <linux/platform_data/mmc-pxamci.h>
+>>>>>>> refs/remotes/origin/master
 #include <mach/udc.h>
 #include <mach/tosa_bt.h>
 #include <mach/audio.h>
@@ -405,12 +414,17 @@ static struct resource tosa_power_resource[] = {
 	{
 		.name		= "ac",
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start		= gpio_to_irq(TOSA_GPIO_AC_IN),
 		.end		= gpio_to_irq(TOSA_GPIO_AC_IN),
 =======
 		.start		= PXA_GPIO_TO_IRQ(TOSA_GPIO_AC_IN),
 		.end		= PXA_GPIO_TO_IRQ(TOSA_GPIO_AC_IN),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start		= PXA_GPIO_TO_IRQ(TOSA_GPIO_AC_IN),
+		.end		= PXA_GPIO_TO_IRQ(TOSA_GPIO_AC_IN),
+>>>>>>> refs/remotes/origin/master
 		.flags		= IORESOURCE_IRQ |
 				  IORESOURCE_IRQ_HIGHEDGE |
 				  IORESOURCE_IRQ_LOWEDGE,
@@ -430,6 +444,9 @@ static struct platform_device tosa_power_device = {
  */
 static const uint32_t tosakbd_keymap[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	KEY(0, 1, KEY_W),
 	KEY(0, 5, KEY_K),
 	KEY(0, 6, KEY_BACKSPACE),
@@ -481,6 +498,7 @@ static const uint32_t tosakbd_keymap[] = {
 	KEY(6, 5, KEY_LEFT),
 	KEY(6, 6, KEY_DOWN),
 	KEY(6, 7, KEY_RIGHT),
+<<<<<<< HEAD
 =======
 	KEY(0, 2, KEY_W),
 	KEY(0, 6, KEY_K),
@@ -534,6 +552,8 @@ static const uint32_t tosakbd_keymap[] = {
 	KEY(6, 7, KEY_DOWN),
 	KEY(6, 8, KEY_RIGHT),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct matrix_keymap_data tosakbd_keymap_data = {
@@ -949,13 +969,19 @@ static struct platform_device wm9712_device = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device tosa_audio_device = {
 	.name	= "tosa-audio",
 	.id	= -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_device *devices[] __initdata = {
 	&tosascoop_device,
 	&tosascoop_jc_device,
@@ -969,13 +995,18 @@ static struct platform_device *devices[] __initdata = {
 	&wm9712_device,
 	&tosa_gpio_vbus,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	&tosa_audio_device,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	&tosa_audio_device,
+>>>>>>> refs/remotes/origin/master
 };
 
 static void tosa_poweroff(void)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	arm_machine_restart('g', NULL);
 =======
@@ -984,6 +1015,12 @@ static void tosa_poweroff(void)
 }
 
 static void tosa_restart(char mode, const char *cmd)
+=======
+	pxa_restart(REBOOT_GPIO, NULL);
+}
+
+static void tosa_restart(enum reboot_mode mode, const char *cmd)
+>>>>>>> refs/remotes/origin/master
 {
 	uint32_t msc0 = __raw_readl(MSC0);
 
@@ -996,8 +1033,11 @@ static void tosa_restart(char mode, const char *cmd)
 
 static void __init tosa_init(void)
 {
+<<<<<<< HEAD
 	int dummy;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pxa2xx_mfp_config(ARRAY_AND_SIZE(tosa_pin_config));
 
 	pxa_set_ffuart_info(NULL);
@@ -1011,19 +1051,25 @@ static void __init tosa_init(void)
 
 	pm_power_off = tosa_poweroff;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	arm_pm_restart = tosa_restart;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	PCFR |= PCFR_OPDE;
 
 	/* enable batt_fault */
 	PMCR = 0x01;
 
+<<<<<<< HEAD
 	dummy = gpiochip_reserve(TOSA_SCOOP_GPIO_BASE, 12);
 	dummy = gpiochip_reserve(TOSA_SCOOP_JC_GPIO_BASE, 12);
 	dummy = gpiochip_reserve(TOSA_TC6393XB_GPIO_BASE, 16);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	pxa_set_mci_info(&tosa_mci_platform_data);
 	pxa_set_ficp_info(&tosa_ficp_platform_data);
 	pxa_set_i2c_info(NULL);
@@ -1039,12 +1085,17 @@ static void __init tosa_init(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init fixup_tosa(struct machine_desc *desc,
 		struct tag *tags, char **cmdline, struct meminfo *mi)
 =======
 static void __init fixup_tosa(struct tag *tags, char **cmdline,
 			      struct meminfo *mi)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void __init fixup_tosa(struct tag *tags, char **cmdline,
+			      struct meminfo *mi)
+>>>>>>> refs/remotes/origin/master
 {
 	sharpsl_save_param();
 	mi->nr_banks=1;
@@ -1054,13 +1105,17 @@ static void __init fixup_tosa(struct tag *tags, char **cmdline,
 
 MACHINE_START(TOSA, "SHARP Tosa")
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.restart_mode	= 'g',
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.fixup          = fixup_tosa,
 	.map_io         = pxa25x_map_io,
 	.nr_irqs	= TOSA_NR_IRQS,
 	.init_irq       = pxa25x_init_irq,
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.init_machine   = tosa_init,
 	.timer          = &pxa_timer,
@@ -1070,4 +1125,10 @@ MACHINE_START(TOSA, "SHARP Tosa")
 	.timer          = &pxa_timer,
 	.restart	= tosa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.handle_irq       = pxa25x_handle_irq,
+	.init_machine   = tosa_init,
+	.init_time	= pxa_timer_init,
+	.restart	= tosa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

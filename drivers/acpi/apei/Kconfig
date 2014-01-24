@@ -2,6 +2,10 @@ config ACPI_APEI
 	bool "ACPI Platform Error Interface (APEI)"
 	select MISC_FILESYSTEMS
 	select PSTORE
+<<<<<<< HEAD
+=======
+	select UEFI_CPER
+>>>>>>> refs/remotes/origin/master
 	depends on X86
 	help
 	  APEI allows to report errors (for example from the chipset)
@@ -11,16 +15,22 @@ config ACPI_APEI
 
 config ACPI_APEI_GHES
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "APEI Generic Hardware Error Source"
 	depends on ACPI_APEI && X86
 	select ACPI_HED
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool "APEI Generic Hardware Error Source"
 	depends on ACPI_APEI && X86
 	select ACPI_HED
 	select IRQ_WORK
 	select GENERIC_ALLOCATOR
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  Generic Hardware Error Source provides a way to report
 	  platform hardware errors (such as that from chipset). It
@@ -39,7 +49,10 @@ config ACPI_APEI_PCIEAER
 	  Turn on this option to enable the corresponding support.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config ACPI_APEI_MEMORY_FAILURE
 	bool "APEI memory error recovering support"
 	depends on ACPI_APEI && MEMORY_FAILURE
@@ -47,7 +60,10 @@ config ACPI_APEI_MEMORY_FAILURE
 	  Memory errors may be reported via APEI firmware first mode.
 	  Turn on this option to enable the memory recovering support.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config ACPI_APEI_EINJ
 	tristate "APEI Error INJection (EINJ)"
 	depends on ACPI_APEI && DEBUG_FS

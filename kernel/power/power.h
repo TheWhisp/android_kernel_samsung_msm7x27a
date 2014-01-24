@@ -51,10 +51,15 @@ static inline char *check_image_kernel(struct swsusp_info *info)
 
 /* kernel/power/hibernate.c */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 extern bool freezer_test_done;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern bool freezer_test_done;
+
+>>>>>>> refs/remotes/origin/master
 extern int hibernation_snapshot(int platform_mode);
 extern int hibernation_restore(int platform_mode);
 extern int hibernation_platform_enter(void);
@@ -152,9 +157,13 @@ extern int swsusp_swap_in_use(void);
 #define SF_PLATFORM_MODE	1
 #define SF_NOCOMPRESS_MODE	2
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SF_CRC32_MODE	        4
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SF_CRC32_MODE	        4
+>>>>>>> refs/remotes/origin/master
 
 /* kernel/power/hibernate.c */
 extern int swsusp_check(void);
@@ -162,6 +171,12 @@ extern void swsusp_free(void);
 extern int swsusp_read(unsigned int *flags_p);
 extern int swsusp_write(unsigned int flags);
 extern void swsusp_close(fmode_t);
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_SUSPEND
+extern int swsusp_unmark(void);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /* kernel/power/block_io.c */
 extern struct block_device *hib_resume_bdev;
@@ -184,18 +199,24 @@ extern const char *const pm_states[];
 extern bool valid_state(suspend_state_t state);
 extern int suspend_devices_and_enter(suspend_state_t state);
 <<<<<<< HEAD
+<<<<<<< HEAD
 extern int enter_state(suspend_state_t state);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #else /* !CONFIG_SUSPEND */
 static inline int suspend_devices_and_enter(suspend_state_t state)
 {
 	return -ENOSYS;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 static inline int enter_state(suspend_state_t state) { return -ENOSYS; }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static inline bool valid_state(suspend_state_t state) { return false; }
 #endif /* !CONFIG_SUSPEND */
 
@@ -244,8 +265,11 @@ extern int pm_test_level;
 static inline int suspend_freeze_processes(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	return freeze_processes();
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int error;
 
 	error = freeze_processes();
@@ -265,7 +289,10 @@ static inline int suspend_freeze_processes(void)
 		thaw_processes();
 
 	return error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void suspend_thaw_processes(void)
@@ -283,6 +310,7 @@ static inline void suspend_thaw_processes(void)
 }
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_WAKELOCK
 /* kernel/power/wakelock.c */
 extern struct workqueue_struct *suspend_work_queue;
@@ -311,3 +339,31 @@ ssize_t  wake_unlock_store(struct kobject *kobj, struct kobj_attribute *attr,
 void request_suspend_state(suspend_state_t state);
 suspend_state_t get_suspend_state(void);
 #endif
+=======
+#ifdef CONFIG_PM_AUTOSLEEP
+
+/* kernel/power/autosleep.c */
+extern int pm_autosleep_init(void);
+extern int pm_autosleep_lock(void);
+extern void pm_autosleep_unlock(void);
+extern suspend_state_t pm_autosleep_state(void);
+extern int pm_autosleep_set_state(suspend_state_t state);
+
+#else /* !CONFIG_PM_AUTOSLEEP */
+
+static inline int pm_autosleep_init(void) { return 0; }
+static inline int pm_autosleep_lock(void) { return 0; }
+static inline void pm_autosleep_unlock(void) {}
+static inline suspend_state_t pm_autosleep_state(void) { return PM_SUSPEND_ON; }
+
+#endif /* !CONFIG_PM_AUTOSLEEP */
+
+#ifdef CONFIG_PM_WAKELOCKS
+
+/* kernel/power/wakelock.c */
+extern ssize_t pm_show_wakelocks(char *buf, bool show_active);
+extern int pm_wake_lock(const char *buf);
+extern int pm_wake_unlock(const char *buf);
+
+#endif /* !CONFIG_PM_WAKELOCKS */
+>>>>>>> refs/remotes/origin/master

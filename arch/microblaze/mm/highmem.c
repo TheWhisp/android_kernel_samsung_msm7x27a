@@ -20,8 +20,13 @@
  * highmem.h by Benjamin Herrenschmidt (c) 2009 IBM Corp.
  */
 
+<<<<<<< HEAD
 #include <linux/highmem.h>
 #include <linux/module.h>
+=======
+#include <linux/export.h>
+#include <linux/highmem.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The use of kmap_atomic/kunmap_atomic is discouraged - kmap/kunmap

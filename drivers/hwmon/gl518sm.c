@@ -84,6 +84,7 @@ enum chips { gl518sm_r00, gl518sm_r80 };
 #define RAW_FROM_REG(val)	val
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define BOOL_FROM_REG(val)	((val)?0:1)
 #define BOOL_TO_REG(val)	((val)?0:1)
 
@@ -97,6 +98,14 @@ enum chips { gl518sm_r00, gl518sm_r80 };
 				(val) - 500 : \
 				(val) + 500) / 1000) + 119), 0, 255)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define BOOL_FROM_REG(val)	((val) ? 0 : 1)
+#define BOOL_TO_REG(val)	((val) ? 0 : 1)
+
+#define TEMP_TO_REG(val)	clamp_val(((((val) < 0 ? \
+				(val) - 500 : \
+				(val) + 500) / 1000) + 119), 0, 255)
+>>>>>>> refs/remotes/origin/master
 #define TEMP_FROM_REG(val)	(((val) - 119) * 1000)
 
 static inline u8 FAN_TO_REG(long rpm, int div)
@@ -104,6 +113,7 @@ static inline u8 FAN_TO_REG(long rpm, int div)
 	long rpmdiv;
 	if (rpm == 0)
 		return 0;
+<<<<<<< HEAD
 	rpmdiv = SENSORS_LIMIT(rpm, 1, 960000) * div;
 	return SENSORS_LIMIT((480000 + rpmdiv / 2) / rpmdiv, 1, 255);
 }
@@ -124,6 +134,18 @@ static inline u8 FAN_TO_REG(long rpm, int div)
 #define VDD_TO_REG(val)		SENSORS_LIMIT((((val) * 4 + 47) / 95), 0, 255)
 #define VDD_FROM_REG(val)	(((val) * 95 + 2) / 4)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	rpmdiv = clamp_val(rpm, 1, 960000) * div;
+	return clamp_val((480000 + rpmdiv / 2) / rpmdiv, 1, 255);
+}
+#define FAN_FROM_REG(val, div)	((val) == 0 ? 0 : (480000 / ((val) * (div))))
+
+#define IN_TO_REG(val)		clamp_val((((val) + 9) / 19), 0, 255)
+#define IN_FROM_REG(val)	((val) * 19)
+
+#define VDD_TO_REG(val)		clamp_val((((val) * 4 + 47) / 95), 0, 255)
+#define VDD_FROM_REG(val)	(((val) * 95 + 2) / 4)
+>>>>>>> refs/remotes/origin/master
 
 #define DIV_FROM_REG(val)	(1 << (val))
 
@@ -189,11 +211,16 @@ static struct i2c_driver gl518_driver = {
 
 #define show(type, suffix, value)					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t show_##suffix(struct device *dev, struct device_attribute *attr, char *buf)		\
 =======
 static ssize_t show_##suffix(struct device *dev,			\
 			     struct device_attribute *attr, char *buf)	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t show_##suffix(struct device *dev,			\
+			     struct device_attribute *attr, char *buf)	\
+>>>>>>> refs/remotes/origin/master
 {									\
 	struct gl518_data *data = gl518_update_device(dev);		\
 	return sprintf(buf, "%d\n", type##_FROM_REG(data->value));	\
@@ -247,6 +274,7 @@ static ssize_t show_fan_div(struct device *dev,
 
 #define set(type, suffix, value, reg)					\
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t set_##suffix(struct device *dev, struct device_attribute *attr, const char *buf,	\
 	size_t count)							\
 {									\
@@ -254,6 +282,8 @@ static ssize_t set_##suffix(struct device *dev, struct device_attribute *attr, c
 	struct gl518_data *data = i2c_get_clientdata(client);		\
 	long val = simple_strtol(buf, NULL, 10);			\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static ssize_t set_##suffix(struct device *dev,				\
 			    struct device_attribute *attr,		\
 			    const char *buf, size_t count)		\
@@ -264,7 +294,10 @@ static ssize_t set_##suffix(struct device *dev,				\
 	int err = kstrtol(buf, 10, &val);				\
 	if (err)							\
 		return err;						\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 									\
 	mutex_lock(&data->update_lock);					\
 	data->value = type##_TO_REG(val);				\
@@ -275,6 +308,7 @@ static ssize_t set_##suffix(struct device *dev,				\
 
 #define set_bits(type, suffix, value, reg, mask, shift)			\
 <<<<<<< HEAD
+<<<<<<< HEAD
 static ssize_t set_##suffix(struct device *dev, struct device_attribute *attr, const char *buf,	\
 	size_t count)							\
 =======
@@ -282,18 +316,29 @@ static ssize_t set_##suffix(struct device *dev,				\
 			    struct device_attribute *attr,		\
 			    const char *buf, size_t count)		\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static ssize_t set_##suffix(struct device *dev,				\
+			    struct device_attribute *attr,		\
+			    const char *buf, size_t count)		\
+>>>>>>> refs/remotes/origin/master
 {									\
 	struct i2c_client *client = to_i2c_client(dev);			\
 	struct gl518_data *data = i2c_get_clientdata(client);		\
 	int regvalue;							\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);		\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;						\
 	int err = kstrtoul(buf, 10, &val);				\
 	if (err)							\
 		return err;						\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 									\
 	mutex_lock(&data->update_lock);					\
 	regvalue = gl518_read_value(client, reg);			\
@@ -331,15 +376,21 @@ static ssize_t set_fan_min(struct device *dev, struct device_attribute *attr,
 	int nr = to_sensor_dev_attr(attr)->index;
 	int regvalue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
 	err = kstrtoul(buf, 10, &val);
 	if (err)
 		return err;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	mutex_lock(&data->update_lock);
 	regvalue = gl518_read_value(client, GL518_REG_FAN_LIMIT);
@@ -368,6 +419,7 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	int nr = to_sensor_dev_attr(attr)->index;
 	int regvalue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned long val = simple_strtoul(buf, NULL, 10);
 
 	switch (val) {
@@ -376,6 +428,8 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	case 4: val = 2; break;
 	case 8: val = 3; break;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned long val;
 	int err;
 
@@ -396,10 +450,17 @@ static ssize_t set_fan_div(struct device *dev, struct device_attribute *attr,
 	case 8:
 		val = 3;
 		break;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	default:
 		dev_err(dev, "Invalid fan clock divider %lu, choose one "
 			"of 1, 2, 4 or 8\n", val);
+=======
+	default:
+		dev_err(dev,
+			"Invalid fan clock divider %lu, choose one of 1, 2, 4 or 8\n",
+			val);
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -478,16 +539,22 @@ static ssize_t set_beep(struct device *dev, struct device_attribute *attr,
 	int bitnr = to_sensor_dev_attr(attr)->index;
 	unsigned long bit;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	bit = simple_strtoul(buf, NULL, 10);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	int err;
 
 	err = kstrtoul(buf, 10, &bit);
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (bit & ~1)
 		return -EINVAL;
 
@@ -603,11 +670,18 @@ static int gl518_probe(struct i2c_client *client,
 	struct gl518_data *data;
 	int err, revision;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(struct gl518_data), GFP_KERNEL);
 	if (!data) {
 		err = -ENOMEM;
 		goto exit;
 	}
+=======
+	data = devm_kzalloc(&client->dev, sizeof(struct gl518_data),
+			    GFP_KERNEL);
+	if (!data)
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	i2c_set_clientdata(client, data);
 	revision = gl518_read_value(client, GL518_REG_REVISION);
@@ -620,6 +694,7 @@ static int gl518_probe(struct i2c_client *client,
 
 	/* Register sysfs hooks */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((err = sysfs_create_group(&client->dev.kobj, &gl518_group)))
 		goto exit_free;
 	if (data->type == gl518sm_r80)
@@ -630,12 +705,20 @@ static int gl518_probe(struct i2c_client *client,
 	err = sysfs_create_group(&client->dev.kobj, &gl518_group);
 	if (err)
 		goto exit_free;
+=======
+	err = sysfs_create_group(&client->dev.kobj, &gl518_group);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 	if (data->type == gl518sm_r80) {
 		err = sysfs_create_group(&client->dev.kobj, &gl518_group_r80);
 		if (err)
 			goto exit_remove_files;
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	data->hwmon_dev = hwmon_device_register(&client->dev);
 	if (IS_ERR(data->hwmon_dev)) {
@@ -649,22 +732,31 @@ exit_remove_files:
 	sysfs_remove_group(&client->dev.kobj, &gl518_group);
 	if (data->type == gl518sm_r80)
 		sysfs_remove_group(&client->dev.kobj, &gl518_group_r80);
+<<<<<<< HEAD
 exit_free:
 	kfree(data);
 exit:
+=======
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Called when we have found a new GL518SM.
    Note that we preserve D4:NoFan2 and D2:beep_enable. */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Called when we have found a new GL518SM.
  * Note that we preserve D4:NoFan2 and D2:beep_enable.
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void gl518_init_client(struct i2c_client *client)
 {
 	/* Make sure we leave D7:Reset untouched */
@@ -690,6 +782,7 @@ static int gl518_remove(struct i2c_client *client)
 	if (data->type == gl518sm_r80)
 		sysfs_remove_group(&client->dev.kobj, &gl518_group_r80);
 
+<<<<<<< HEAD
 	kfree(data);
 	return 0;
 }
@@ -703,6 +796,11 @@ static int gl518_read_value(struct i2c_client *client, u8 reg)
 	if ((reg >= 0x07) && (reg <= 0x0c))
 		return swab16(i2c_smbus_read_word_data(client, reg));
 =======
+=======
+	return 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Registers 0x07 to 0x0c are word-sized, others are byte-sized
  * GL518 uses a high-byte first convention, which is exactly opposite to
@@ -712,7 +810,10 @@ static int gl518_read_value(struct i2c_client *client, u8 reg)
 {
 	if ((reg >= 0x07) && (reg <= 0x0c))
 		return i2c_smbus_read_word_swapped(client, reg);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	else
 		return i2c_smbus_read_byte_data(client, reg);
 }
@@ -721,10 +822,14 @@ static int gl518_write_value(struct i2c_client *client, u8 reg, u16 value)
 {
 	if ((reg >= 0x07) && (reg <= 0x0c))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return i2c_smbus_write_word_data(client, reg, swab16(value));
 =======
 		return i2c_smbus_write_word_swapped(client, reg, value);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return i2c_smbus_write_word_swapped(client, reg, value);
+>>>>>>> refs/remotes/origin/master
 	else
 		return i2c_smbus_write_byte_data(client, reg, value);
 }
@@ -802,6 +907,7 @@ static struct gl518_data *gl518_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_gl518sm_init(void)
 {
 	return i2c_add_driver(&gl518_driver);
@@ -814,6 +920,9 @@ static void __exit sensors_gl518sm_exit(void)
 =======
 module_i2c_driver(gl518_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(gl518_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Frodo Looijaard <frodol@dds.nl>, "
 	"Kyosti Malkki <kmalkki@cc.hut.fi> and "
@@ -821,8 +930,11 @@ MODULE_AUTHOR("Frodo Looijaard <frodol@dds.nl>, "
 MODULE_DESCRIPTION("GL518SM driver");
 MODULE_LICENSE("GPL");
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 module_init(sensors_gl518sm_init);
 module_exit(sensors_gl518sm_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

@@ -187,6 +187,7 @@ static struct serio_driver hampshire_drv = {
 	.disconnect	= hampshire_disconnect,
 };
 
+<<<<<<< HEAD
 /*
  * The functions for inserting/removing us as a module.
  */
@@ -203,3 +204,6 @@ static void __exit hampshire_exit(void)
 
 module_init(hampshire_init);
 module_exit(hampshire_exit);
+=======
+module_serio_driver(hampshire_drv);
+>>>>>>> refs/remotes/origin/master

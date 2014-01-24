@@ -24,10 +24,14 @@
  * not agree with these terms and conditions, do not use the software.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2003 Agere Systems Inc.
 =======
  * Copyright © 2003 Agere Systems Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -49,10 +53,14 @@
  * Disclaimer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
 =======
  * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -71,7 +79,11 @@
  *  constant definitions
  ******************************************************************************/
 
+<<<<<<< HEAD
 /* Allow support for calling system fcns to access F/W iamge file */
+=======
+/* Allow support for calling system fcns to access F/W image file */
+>>>>>>> refs/remotes/origin/master
 #define __KERNEL_SYSCALLS__
 
 /*******************************************************************************
@@ -81,6 +93,10 @@
 
 #include <linux/module.h>
 #include <linux/proc_fs.h>
+<<<<<<< HEAD
+=======
+#include <linux/seq_file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/kernel.h>
 // #include <linux/sched.h>
@@ -95,11 +111,15 @@
 // #include <linux/delay.h>
 // #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 // #include <asm/system.h>
 // #include <asm/bitops.h>
 =======
 // // #include <asm/bitops.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+// // #include <asm/bitops.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/unistd.h>
 #include <asm/uaccess.h>
 
@@ -141,7 +161,11 @@
 #include <wl_pci.h>
 #endif  /* BUS_PCI */
 /*******************************************************************************
+<<<<<<< HEAD
  *	macro defintions
+=======
+ *	macro definitions
+>>>>>>> refs/remotes/origin/master
  ******************************************************************************/
 #define VALID_PARAM(C) \
 	{ \
@@ -157,10 +181,30 @@
 void wl_isr_handler( unsigned long p );
 
 #if 0 //SCULL_USE_PROC /* don't waste space if unused */
+<<<<<<< HEAD
 //int scull_read_procmem(char *buf, char **start, off_t offset, int len, int unused);
 int scull_read_procmem(char *buf, char **start, off_t offset, int len, int *eof, void *data );
 static int write_int(struct file *file, const char *buffer, unsigned long count, void *data);
 static void proc_write(const char *name, write_proc_t *w, void *data);
+=======
+static int scull_read_procmem(struct seq_file *m, void *v);
+static int write_int(struct file *file, const char *buffer, unsigned long count, void *data);
+
+/*
+ * seq_file wrappers for procfile show routines.
+ */
+static int scull_read_procmem_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, scull_read_procmem, PDE_DATA(inode));
+}
+
+static const struct file_operations scull_read_procmem_fops = {
+	.open		= scull_read_procmem_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+>>>>>>> refs/remotes/origin/master
 
 #endif /* SCULL_USE_PROC */
 
@@ -399,8 +443,13 @@ static p_u32    pc_debug = DBG_LVL;
  */ p_u32    DebugFlag = ~0; //recognizable "undefined value" rather then DBG_DEFAULTS;
 //MODULE_PARM(DebugFlag, "l");
 
+<<<<<<< HEAD
 dbg_info_t   wl_info = { DBG_MOD_NAME, 0, 0 };
 dbg_info_t  *DbgInfo = &wl_info;
+=======
+static struct dbg_info wl_info = { KBUILD_MODNAME, 0, 0 };
+struct dbg_info *DbgInfo = &wl_info;
+>>>>>>> refs/remotes/origin/master
 
 #endif /* DBG */
 #ifdef USE_RTS
@@ -433,9 +482,12 @@ int wl_insert( struct net_device *dev )
 	int                     i;
 	unsigned long           flags = 0;
 	struct wl_private       *lp = wl_priv(dev);
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_insert" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize the adapter hardware. */
 	memset( &( lp->hcfCtx ), 0, sizeof( IFB_STRCT ));
@@ -921,12 +973,19 @@ int wl_insert( struct net_device *dev )
 	}
 
 #if 0 //SCULL_USE_PROC /* don't waste space if unused */
+<<<<<<< HEAD
 	create_proc_read_entry( "wlags", 0, NULL, scull_read_procmem, dev );
 	proc_mkdir("driver/wlags49", 0);
 	proc_write("driver/wlags49/wlags49_type", write_int, &lp->wlags49_type);
 #endif /* SCULL_USE_PROC */
 
 	DBG_LEAVE( DbgInfo );
+=======
+	proc_create_data( "wlags", 0, NULL, &scull_read_procmem_fops, dev );
+	proc_mkdir("driver/wlags49", 0);
+#endif /* SCULL_USE_PROC */
+
+>>>>>>> refs/remotes/origin/master
 	return result;
 
 hcf_failed:
@@ -944,8 +1003,11 @@ failed:
 
 	result = -EFAULT;
 
+<<<<<<< HEAD
 
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return result;
 } // wl_insert
 /*============================================================================*/
@@ -972,9 +1034,13 @@ int wl_reset(struct net_device *dev)
 {
 	struct wl_private  *lp = wl_priv(dev);
 	int                 hcf_status = HCF_SUCCESS;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_reset" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG_PARAM( DbgInfo, "dev", "%s (0x%p)", dev->name, dev );
 	DBG_PARAM( DbgInfo, "dev->base_addr", "(%#03lx)", dev->base_addr );
 
@@ -1021,7 +1087,10 @@ int wl_reset(struct net_device *dev)
 	}
 
 out:
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_reset
 /*============================================================================*/
@@ -1049,9 +1118,12 @@ int wl_go( struct wl_private *lp )
 	int  	hcf_status = HCF_SUCCESS;
 	char	*cp = NULL;			//fw_image
 	int	retries = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_go" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	hcf_status = wl_disable( lp );
 	if ( hcf_status != HCF_SUCCESS ) {
@@ -1148,7 +1220,10 @@ int 			rc;
 		}
 		if ( hcf_status != HCF_SUCCESS ) {
 			DBG_ERROR( DbgInfo, "Firmware Download failed\n" );
+<<<<<<< HEAD
 			DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 			return hcf_status;
 		}
 	}
@@ -1176,7 +1251,11 @@ int 			rc;
 				CNV_INT_TO_LITTLE( lp->hcfCtx.IFB_FWIdentity.version_major ),
 				CNV_INT_TO_LITTLE( lp->hcfCtx.IFB_FWIdentity.version_minor ));
 
+<<<<<<< HEAD
 	/* now we wil get the MAC address of the card */
+=======
+	/* now we will get the MAC address of the card */
+>>>>>>> refs/remotes/origin/master
 	lp->ltvRecord.len = 4;
 	if ( CNV_INT_TO_LITTLE( lp->hcfCtx.IFB_FWIdentity.comp_id ) == COMP_ID_FW_AP  ) {
 		lp->ltvRecord.typ = CFG_NIC_MAC_ADDR;
@@ -1187,7 +1266,10 @@ int 			rc;
 	hcf_status = hcf_get_info( &lp->hcfCtx, (LTVP)&( lp->ltvRecord ));
 	if ( hcf_status != HCF_SUCCESS ) {
 		DBG_ERROR( DbgInfo, "Could not retrieve MAC address\n" );
+<<<<<<< HEAD
 		DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 		return hcf_status;
 	}
 	memcpy( lp->MACAddress, &lp->ltvRecord.u.u8[0], ETH_ALEN );
@@ -1206,7 +1288,10 @@ int 			rc;
 #endif // USE_WDS
 		hcf_status = wl_connect( lp );
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_go
 /*============================================================================*/
@@ -1234,9 +1319,13 @@ int 			rc;
 void wl_set_wep_keys( struct wl_private *lp )
 {
 	int count = 0;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_set_wep_keys" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG_PARAM( DbgInfo, "lp", "%s (0x%p)", lp->dev->name, lp );
 	if ( lp->EnableEncryption ) {
 		/* NOTE: CFG_CNF_ENCRYPTION is set in wl_put_ltv() as it's a static
@@ -1274,8 +1363,11 @@ void wl_set_wep_keys( struct wl_private *lp )
 		DBG_NOTICE( DbgInfo, "encrypt: %d, ID: %d\n", lp->EnableEncryption, lp->TransmitKeyID );
 		DBG_NOTICE( DbgInfo, "set key: %s(%d) [%d]\n", lp->DefaultKeys.key[lp->TransmitKeyID-1].key, lp->DefaultKeys.key[lp->TransmitKeyID-1].len, lp->TransmitKeyID-1 );
 	}
+<<<<<<< HEAD
 
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_set_wep_keys
 /*============================================================================*/
 
@@ -1301,9 +1393,13 @@ void wl_set_wep_keys( struct wl_private *lp )
 int wl_apply(struct wl_private *lp)
 {
 	int hcf_status = HCF_SUCCESS;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_apply" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG_ASSERT( lp != NULL);
 	DBG_PARAM( DbgInfo, "lp", "%s (0x%p)", lp->dev->name, lp );
 
@@ -1319,13 +1415,19 @@ int wl_apply(struct wl_private *lp)
 			hcf_status = wl_disconnect( lp );
 			if ( hcf_status != HCF_SUCCESS ) {
 				DBG_ERROR( DbgInfo, "Disconnect failed\n" );
+<<<<<<< HEAD
 				DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 				return -1;
 			}
 			hcf_status = wl_disable( lp );
 			if ( hcf_status != HCF_SUCCESS ) {
 				DBG_ERROR( DbgInfo, "Disable failed\n" );
+<<<<<<< HEAD
 				DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 				return -1;
 			} else {
 				/* Write out configuration to the device, enable, and reconnect.
@@ -1347,7 +1449,10 @@ int wl_apply(struct wl_private *lp)
 		}
 	}
 
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_apply
 /*============================================================================*/
@@ -1375,19 +1480,29 @@ int wl_put_ltv_init( struct wl_private *lp )
 	int i;
 	int hcf_status;
 	CFG_RID_LOG_STRCT *RidLog;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_put_ltv_init" );
 	DBG_ENTER( DbgInfo );
 	if ( lp == NULL ) {
 		DBG_ERROR( DbgInfo, "lp pointer is NULL\n" );
 		DBG_LEAVE( DbgInfo );
+=======
+
+	if ( lp == NULL ) {
+		DBG_ERROR( DbgInfo, "lp pointer is NULL\n" );
+>>>>>>> refs/remotes/origin/master
 		return -1;
 	}
 	/* DMA/IO */
 	lp->ltvRecord.len = 2;
 	lp->ltvRecord.typ = CFG_CNTL_OPT;
 
+<<<<<<< HEAD
 	/* The Card Services build must ALWAYS configure for 16-bit I/O. PCI or
+=======
+	/* The Card Services build must ALWAYS be configured for 16-bit I/O. PCI or
+>>>>>>> refs/remotes/origin/master
 	   CardBus can be set to either 16/32 bit I/O, or Bus Master DMA, but only
 	   for Hermes-2.5 */
 #ifdef BUS_PCMCIA
@@ -1446,7 +1561,10 @@ int wl_put_ltv_init( struct wl_private *lp )
 	DBG_TRACE( DbgInfo, "CFG_REG_INFO_LOG\n" );
 	DBG_TRACE( DbgInfo, "CFG_REG_INFO_LOG result           : 0x%04x\n",
 			   hcf_status );
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_put_ltv_init
 /*============================================================================*/
@@ -1473,9 +1591,12 @@ int wl_put_ltv( struct wl_private *lp )
 {
 	int len;
 	int hcf_status;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_put_ltv" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ( lp == NULL ) {
 		DBG_ERROR( DbgInfo, "lp pointer is NULL\n" );
@@ -1640,7 +1761,11 @@ int wl_put_ltv( struct wl_private *lp )
 		lp->ltvRecord.u.u16[0]  = CNV_INT_TO_LITTLE( lp->TxRateControl[0] );
 #endif  // WARP
 
+<<<<<<< HEAD
 //;?skip temporarily to see whether the RID or something else is the probelm hcf_status = hcf_put_info( &lp->hcfCtx, (LTVP)&( lp->ltvRecord ));
+=======
+//;?skip temporarily to see whether the RID or something else is the problem hcf_status = hcf_put_info( &lp->hcfCtx, (LTVP)&( lp->ltvRecord ));
+>>>>>>> refs/remotes/origin/master
 
 		DBG_TRACE( DbgInfo, "CFG_TX_RATE_CNTL 2.4GHz           : 0x%04x\n",
 				   lp->TxRateControl[0] );
@@ -2006,19 +2131,28 @@ int wl_put_ltv( struct wl_private *lp )
 	lp->ltvRecord.u.u16[0]  = CNV_INT_TO_LITTLE( lp->AuthKeyMgmtSuite );
 	hcf_status = hcf_put_info( &lp->hcfCtx, (LTVP)&( lp->ltvRecord ));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* WEP Keys */
 	wl_set_wep_keys( lp );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* If WEP (or no) keys are being used, write (or clear) them */
 	if (lp->wext_enc != IW_ENCODE_ALG_TKIP)
 		wl_set_wep_keys(lp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	/* Country Code */
 	/* countryInfo, ltvCountryInfo, CFG_CNF_COUNTRY_INFO */
 
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_put_ltv
 /*============================================================================*/
@@ -2047,7 +2181,10 @@ static int __init wl_module_init( void )
 	int result;
 	/*------------------------------------------------------------------------*/
 
+<<<<<<< HEAD
 	DBG_FUNC( "wl_module_init" );
+=======
+>>>>>>> refs/remotes/origin/master
 
 #if DBG
 	/* Convert "standard" PCMCIA parameter pc_debug to a reasonable DebugFlag value.
@@ -2072,7 +2209,10 @@ static int __init wl_module_init( void )
 	}
 #endif /* DBG */
 
+<<<<<<< HEAD
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	printk(KERN_INFO "%s\n", VERSION_INFO);
     	printk(KERN_INFO "*** Modified for kernel 2.6 by Henk de Groot <pe1dnn@amsat.org>\n");
         printk(KERN_INFO "*** Based on 7.18 version by Andrey Borzenkov <arvidjaar@mail.ru> $Revision: 39 $\n");
@@ -2085,7 +2225,10 @@ static int __init wl_module_init( void )
 // #endif /* (HCF_TYPE) & HCF_TYPE_AP */
 
 	result = wl_adapter_init_module( );
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return result;
 } // init_module
 /*============================================================================*/
@@ -2110,6 +2253,7 @@ static int __init wl_module_init( void )
  ******************************************************************************/
 static void __exit wl_module_exit( void )
 {
+<<<<<<< HEAD
 	DBG_FUNC( "wl_module_exit" );
 	DBG_ENTER(DbgInfo);
 
@@ -2120,6 +2264,12 @@ static void __exit wl_module_exit( void )
 
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+	wl_adapter_cleanup_module( );
+#if 0 //SCULL_USE_PROC /* don't waste space if unused */
+	remove_proc_entry( "wlags", NULL );		//;?why so a-symmetric compared to location of proc_create_data
+#endif
+>>>>>>> refs/remotes/origin/master
 } // cleanup_module
 /*============================================================================*/
 
@@ -2327,9 +2477,12 @@ void wl_remove( struct net_device *dev )
 {
 	struct wl_private   *lp = wl_priv(dev);
 	unsigned long   flags;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_remove" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	DBG_PARAM( DbgInfo, "dev", "%s (0x%p)", dev->name, dev );
 
@@ -2361,8 +2514,11 @@ void wl_remove( struct net_device *dev )
 #ifdef USE_RTS
 	if ( lp->useRTS == 1 ) {
 		wl_unlock( lp, &flags );
+<<<<<<< HEAD
 
 		DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 #endif  /* USE_RTS */
@@ -2371,9 +2527,12 @@ void wl_remove( struct net_device *dev )
 	hcf_connect( &lp->hcfCtx, HCF_DISCONNECT );
 
 	wl_unlock( lp, &flags );
+<<<<<<< HEAD
 
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_remove
 /*============================================================================*/
 
@@ -2399,9 +2558,12 @@ void wl_suspend( struct net_device *dev )
 {
 	struct wl_private  *lp = wl_priv(dev);
 	unsigned long   flags;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_suspend" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	DBG_PARAM( DbgInfo, "dev", "%s (0x%p)", dev->name, dev );
 
@@ -2427,9 +2589,12 @@ void wl_suspend( struct net_device *dev )
 	lp->portState = WVLAN_PORT_STATE_DISABLED;
 
 	wl_unlock( lp, &flags );
+<<<<<<< HEAD
 
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_suspend
 /*============================================================================*/
 
@@ -2455,9 +2620,12 @@ void wl_resume(struct net_device *dev)
 {
 	struct wl_private  *lp = wl_priv(dev);
 	unsigned long   flags;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_resume" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	DBG_PARAM( DbgInfo, "dev", "%s (0x%p)", dev->name, dev );
 
@@ -2479,9 +2647,12 @@ void wl_resume(struct net_device *dev)
 	wl_act_int_on( lp );
 
 	wl_unlock( lp, &flags );
+<<<<<<< HEAD
 
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_resume
 /*============================================================================*/
 
@@ -2492,7 +2663,11 @@ void wl_resume(struct net_device *dev)
  *
  *  DESCRIPTION:
  *
+<<<<<<< HEAD
  *      This function perfroms a check on the device and calls wl_remove() if
+=======
+ *      This function performs a check on the device and calls wl_remove() if
+>>>>>>> refs/remotes/origin/master
  *  necessary. This function can be used for all bus types, but exists mostly
  *  for the benefit of the Card Services driver, as there are times when
  *  wl_remove() does not get called.
@@ -2509,9 +2684,12 @@ void wl_resume(struct net_device *dev)
 void wl_release( struct net_device *dev )
 {
 	struct wl_private  *lp = wl_priv(dev);
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_release" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	DBG_PARAM( DbgInfo, "dev", "%s (0x%p)", dev->name, dev );
 	/* If wl_remove() hasn't been called (i.e. when Card Services is shut
@@ -2522,9 +2700,12 @@ void wl_release( struct net_device *dev )
 
 		lp->is_registered = FALSE;
 	}
+<<<<<<< HEAD
 
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_release
 /*============================================================================*/
 
@@ -2598,9 +2779,12 @@ p_s8 * wl_get_irq_list( void )
 int wl_enable( struct wl_private *lp )
 {
 	int hcf_status = HCF_SUCCESS;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_enable" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ( lp->portState == WVLAN_PORT_STATE_ENABLED ) {
 		DBG_TRACE( DbgInfo, "No action: Card already enabled\n" );
@@ -2614,7 +2798,11 @@ int wl_enable( struct wl_private *lp )
 			lp->portState = WVLAN_PORT_STATE_ENABLED;   //;?bad mnemonic, NIC iso PORT
 #ifdef ENABLE_DMA
 			if ( lp->use_dma ) {
+<<<<<<< HEAD
 				wl_pci_dma_hcf_supply( lp );  //;?always succes?
+=======
+				wl_pci_dma_hcf_supply( lp );  //;?always successful?
+>>>>>>> refs/remotes/origin/master
 			}
 #endif
 		}
@@ -2622,7 +2810,10 @@ int wl_enable( struct wl_private *lp )
 	if ( hcf_status != HCF_SUCCESS ) {  //;?make this an assert
 		DBG_TRACE( DbgInfo, "failed: 0x%x\n", hcf_status );
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_enable
 /*============================================================================*/
@@ -2648,6 +2839,7 @@ int wl_enable( struct wl_private *lp )
  ******************************************************************************/
 void wl_enable_wds_ports( struct wl_private * lp )
 {
+<<<<<<< HEAD
 
 	DBG_FUNC( "wl_enable_wds_ports" );
 	DBG_ENTER( DbgInfo );
@@ -2656,6 +2848,11 @@ void wl_enable_wds_ports( struct wl_private * lp )
 	}
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+	if ( CNV_INT_TO_LITTLE( lp->hcfCtx.IFB_FWIdentity.comp_id ) == COMP_ID_FW_AP  ){
+		DBG_ERROR( DbgInfo, "!!!!;? someone misunderstood something !!!!!\n" );
+	}
+>>>>>>> refs/remotes/origin/master
 } // wl_enable_wds_ports
 #endif  /* USE_WDS */
 /*============================================================================*/
@@ -2681,6 +2878,7 @@ void wl_enable_wds_ports( struct wl_private * lp )
 int wl_connect( struct wl_private *lp )
 {
 	int hcf_status;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC( "wl_connect" );
@@ -2689,13 +2887,21 @@ int wl_connect( struct wl_private *lp )
 	if ( lp->portState != WVLAN_PORT_STATE_ENABLED ) {
 		DBG_TRACE( DbgInfo, "No action: Not in enabled state\n" );
 		DBG_LEAVE( DbgInfo );
+=======
+
+	if ( lp->portState != WVLAN_PORT_STATE_ENABLED ) {
+		DBG_TRACE( DbgInfo, "No action: Not in enabled state\n" );
+>>>>>>> refs/remotes/origin/master
 		return HCF_SUCCESS;
 	}
 	hcf_status = hcf_cntl( &lp->hcfCtx, HCF_CNTL_CONNECT );
 	if ( hcf_status == HCF_SUCCESS ) {
 		lp->portState = WVLAN_PORT_STATE_CONNECTED;
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_connect
 /*============================================================================*/
@@ -2721,6 +2927,7 @@ int wl_connect( struct wl_private *lp )
 int wl_disconnect( struct wl_private *lp )
 {
 	int hcf_status;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 
 	DBG_FUNC( "wl_disconnect" );
@@ -2729,13 +2936,21 @@ int wl_disconnect( struct wl_private *lp )
 	if ( lp->portState != WVLAN_PORT_STATE_CONNECTED ) {
 		DBG_TRACE( DbgInfo, "No action: Not in connected state\n" );
 		DBG_LEAVE( DbgInfo );
+=======
+
+	if ( lp->portState != WVLAN_PORT_STATE_CONNECTED ) {
+		DBG_TRACE( DbgInfo, "No action: Not in connected state\n" );
+>>>>>>> refs/remotes/origin/master
 		return HCF_SUCCESS;
 	}
 	hcf_status = hcf_cntl( &lp->hcfCtx, HCF_CNTL_DISCONNECT );
 	if ( hcf_status == HCF_SUCCESS ) {
 		lp->portState = WVLAN_PORT_STATE_ENABLED;
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_disconnect
 /*============================================================================*/
@@ -2762,9 +2977,12 @@ int wl_disconnect( struct wl_private *lp )
 int wl_disable( struct wl_private *lp )
 {
 	int hcf_status = HCF_SUCCESS;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_disable" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if ( lp->portState == WVLAN_PORT_STATE_DISABLED ) {
 		DBG_TRACE( DbgInfo, "No action: Port state is disabled\n" );
@@ -2784,7 +3002,10 @@ int wl_disable( struct wl_private *lp )
 	if ( hcf_status != HCF_SUCCESS ) {
 		DBG_TRACE( DbgInfo, "failed: 0x%x\n", hcf_status );
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_disable
 /*============================================================================*/
@@ -2810,10 +3031,13 @@ int wl_disable( struct wl_private *lp )
  ******************************************************************************/
 void wl_disable_wds_ports( struct wl_private * lp )
 {
+<<<<<<< HEAD
 
 	DBG_FUNC( "wl_disable_wds_ports" );
 	DBG_ENTER( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if ( CNV_INT_TO_LITTLE( lp->hcfCtx.IFB_FWIdentity.comp_id ) == COMP_ID_FW_AP  ){
 		DBG_ERROR( DbgInfo, "!!!!;? someone misunderstood something !!!!!\n" );
 	}
@@ -2825,7 +3049,10 @@ void wl_disable_wds_ports( struct wl_private * lp )
 // 		wl_disable( lp, HCF_PORT_5 );
 // 		wl_disable( lp, HCF_PORT_6 );
 // 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return;
 } // wl_disable_wds_ports
 #endif // USE_WDS
@@ -2853,9 +3080,13 @@ void wl_disable_wds_ports( struct wl_private * lp )
 int wl_mbx( struct wl_private *lp )
 {
 	int hcf_status = HCF_SUCCESS;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_mbx" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	DBG_TRACE( DbgInfo, "Mailbox Info: IFB_MBInfoLen: %d\n",
 			   lp->hcfCtx.IFB_MBInfoLen );
 
@@ -2867,6 +3098,7 @@ int wl_mbx( struct wl_private *lp )
 
 	if ( hcf_status != HCF_SUCCESS ) {
 		DBG_ERROR( DbgInfo, "hcf_get_info returned 0x%x\n", hcf_status );
+<<<<<<< HEAD
 
 		DBG_LEAVE( DbgInfo );
 		return hcf_status;
@@ -2880,6 +3112,17 @@ int wl_mbx( struct wl_private *lp )
 	wl_endian_translate_mailbox( &( lp->ltvRecord ));
 	wl_process_mailbox( lp );
 	DBG_LEAVE( DbgInfo );
+=======
+		return hcf_status;
+	}
+
+	if ( lp->ltvRecord.typ == CFG_MB_INFO )
+		return hcf_status;
+
+	/* Endian translate the mailbox data, then process the message */
+	wl_endian_translate_mailbox( &( lp->ltvRecord ));
+	wl_process_mailbox( lp );
+>>>>>>> refs/remotes/origin/master
 	return hcf_status;
 } // wl_mbx
 /*============================================================================*/
@@ -2892,7 +3135,11 @@ int wl_mbx( struct wl_private *lp )
  *  DESCRIPTION:
  *
  *      This function will perform the tedious task of endian translating all
+<<<<<<< HEAD
  *  fields withtin a mailbox message which need translating.
+=======
+ *  fields within a mailbox message which need translating.
+>>>>>>> refs/remotes/origin/master
  *
  *  PARAMETERS:
  *
@@ -2905,9 +3152,12 @@ int wl_mbx( struct wl_private *lp )
  ******************************************************************************/
 void wl_endian_translate_mailbox( ltv_t *ltv )
 {
+<<<<<<< HEAD
 
 	DBG_FUNC( "wl_endian_translate_mailbox" );
 	DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	switch( ltv->typ ) {
 	  case CFG_TALLIES:
 		break;
@@ -2995,9 +3245,12 @@ void wl_endian_translate_mailbox( ltv_t *ltv )
 	default:
 		break;
 	}
+<<<<<<< HEAD
 
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_endian_translate_mailbox
 /*============================================================================*/
 
@@ -3007,7 +3260,11 @@ void wl_endian_translate_mailbox( ltv_t *ltv )
  *
  *  DESCRIPTION:
  *
+<<<<<<< HEAD
  *      This function will process the mailbox data.
+=======
+ *      This function processes the mailbox data.
+>>>>>>> refs/remotes/origin/master
  *
  *  PARAMETERS:
  *
@@ -3022,9 +3279,13 @@ void wl_process_mailbox( struct wl_private *lp )
 {
 	ltv_t   *ltv;
 	hcf_16  ltv_val = 0xFFFF;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_process_mailbox" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	ltv = &( lp->ltvRecord );
 
 	switch( ltv->typ ) {
@@ -3176,7 +3437,13 @@ void wl_process_mailbox( struct wl_private *lp )
 
 					memset( ssid, 0, sizeof( ssid ));
 					strncpy( ssid, &probe_rsp->rawData[2],
+<<<<<<< HEAD
 							 probe_rsp->rawData[1] );
+=======
+						 min_t(u8,
+							probe_rsp->rawData[1],
+							HCF_MAX_NAME_LEN - 1));
+>>>>>>> refs/remotes/origin/master
 
 					DBG_TRACE( DbgInfo, "(%s) SSID        : %s\n",
 							   lp->dev->name, ssid );
@@ -3451,8 +3718,11 @@ void wl_process_mailbox( struct wl_private *lp )
 		DBG_TRACE( DbgInfo, "UNKNOWN MESSAGE: 0x%04x\n", ltv->typ );
 		break;
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_process_mailbox
 /*============================================================================*/
 #endif  /* ifndef USE_MBOX_SYNC */
@@ -3480,9 +3750,13 @@ void wl_process_mailbox( struct wl_private *lp )
 void wl_wds_netdev_register( struct wl_private *lp )
 {
 	int count;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_wds_netdev_register" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	//;?why is there no USE_WDS clause like in wl_enable_wds_ports
 	if ( CNV_INT_TO_LITTLE( lp->hcfCtx.IFB_FWIdentity.comp_id ) == COMP_ID_FW_AP  ) {
 		for( count = 0; count < NUM_WDS_PORTS; count++ ) {
@@ -3499,8 +3773,11 @@ void wl_wds_netdev_register( struct wl_private *lp )
 			}
 		}
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_wds_netdev_register
 /*============================================================================*/
 
@@ -3527,9 +3804,13 @@ void wl_wds_netdev_register( struct wl_private *lp )
 void wl_wds_netdev_deregister( struct wl_private *lp )
 {
 	int count;
+<<<<<<< HEAD
 	/*------------------------------------------------------------------------*/
 	DBG_FUNC( "wl_wds_netdev_deregister" );
 	DBG_ENTER( DbgInfo );
+=======
+
+>>>>>>> refs/remotes/origin/master
 	if ( CNV_INT_TO_LITTLE( lp->hcfCtx.IFB_FWIdentity.comp_id ) == COMP_ID_FW_AP  ) {
 		for( count = 0; count < NUM_WDS_PORTS; count++ ) {
 			if ( WVLAN_VALID_MAC_ADDRESS( lp->wds_port[count].wdsAddress )) {
@@ -3538,8 +3819,11 @@ void wl_wds_netdev_deregister( struct wl_private *lp )
 			lp->wds_port[count].is_registered = FALSE;
 		}
 	}
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
 	return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_wds_netdev_deregister
 /*============================================================================*/
 #endif  /* USE_WDS */
@@ -3549,6 +3833,7 @@ void wl_wds_netdev_deregister( struct wl_private *lp )
 /*
  * The proc filesystem: function to read and entry
  */
+<<<<<<< HEAD
 int printf_hcf_16( char *s, char *buf, hcf_16* p, int n );
 int printf_hcf_16( char *s, char *buf, hcf_16* p, int n ) {
 
@@ -3630,10 +3915,80 @@ int scull_read_procmem(char *buf, char **start, off_t offset, int len, int *eof,
 	} else if ( lp->wlags49_type == 1 ) {
    	    len += sprintf(buf+len,"Channel:              0x%04X\n", lp->Channel );
 /****** len += sprintf(buf+len,"slock:                  %d\n", lp->slock );		*/
+=======
+static void printf_hcf_16(struct seq_file *m, const char *s, hcf_16 *p, int n)
+{
+	int i, len;
+
+	seq_printf(m, "%-20.20s: ", s);
+	len = 22;
+
+	for (i = 0; i < n; i++) {
+		if (len % 80 > 75)
+			seq_putc(m, '\n');
+		seq_printf(m, "%04X ", p[i]);
+	}
+	seq_putc(m, '\n');
+}
+
+static void printf_hcf_8(struct seq_file *m, const char *s, hcf_8 *p, int n)
+{
+	int i, len;
+
+	seq_printf(m, "%-20.20s: ", s);
+	len = 22;
+
+	for (i = 0; i <= n; i++) {
+		if (len % 80 > 77)
+			seq_putc(m, '\n');
+		seq_printf(m, "%02X ", p[i]);
+	}
+	seq_putc(m, '\n');
+}
+
+static void printf_strct(struct seq_file *m, const char *s, hcf_16 *p)
+{
+	int i, len;
+
+	seq_printf(m, "%-20.20s: ", s);
+	len = 22;
+
+	for ( i = 0; i <= *p; i++ ) {
+		if (len % 80 > 75)
+			seq_putc(m, '\n');
+		seq_printf(m,"%04X ", p[i]);
+	}
+	seq_putc(m, '\n');
+}
+
+int scull_read_procmem(struct seq_file *m, void *v)
+{
+	struct wl_private	*lp = m->private;
+	IFBP				ifbp;
+   	CFG_HERMES_TALLIES_STRCT *p;
+
+	if (lp == NULL) {
+		seq_puts(m, "No wl_private in scull_read_procmem\n" );
+	} else if ( lp->wlags49_type == 0 ){
+		ifbp = &lp->hcfCtx;
+		seq_printf(m, "Magic:               0x%04X\n", ifbp->IFB_Magic );
+		seq_printf(m, "IOBase:              0x%04X\n", ifbp->IFB_IOBase );
+		seq_printf(m, "LinkStat:            0x%04X\n", ifbp->IFB_LinkStat );
+		seq_printf(m, "DSLinkStat:          0x%04X\n", ifbp->IFB_DSLinkStat );
+		seq_printf(m, "TickIni:         0x%08lX\n", ifbp->IFB_TickIni );
+		seq_printf(m, "TickCnt:             0x%04X\n", ifbp->IFB_TickCnt );
+		seq_printf(m, "IntOffCnt:           0x%04X\n", ifbp->IFB_IntOffCnt );
+		printf_hcf_16(m, "IFB_FWIdentity",
+			      &ifbp->IFB_FWIdentity.len, ifbp->IFB_FWIdentity.len + 1 );
+	} else if ( lp->wlags49_type == 1 ) {
+		seq_printf(m, "Channel:              0x%04X\n", lp->Channel );
+/****** seq_printf(m, "slock:                  %d\n", lp->slock );		*/
+>>>>>>> refs/remotes/origin/master
 //x		struct tq_struct            "task:               0x%04X\n", lp->task );
 //x		struct net_device_stats     "stats:              0x%04X\n", lp->stats );
 #ifdef WIRELESS_EXT
 //x		struct iw_statistics        "wstats:             0x%04X\n", lp->wstats );
+<<<<<<< HEAD
 //x   	    len += sprintf(buf+len,"spy_number:           0x%04X\n", lp->spy_number );
 //x		u_char                      spy_address[IW_MAX_SPY][ETH_ALEN];
 //x		struct iw_quality           spy_stat[IW_MAX_SPY];
@@ -3660,12 +4015,41 @@ int scull_read_procmem(char *buf, char **start, off_t offset, int len, int *eof,
    	    len += sprintf(buf+len,"txBytes:              0x%08lX\n", lp->txBytes );
    	    len += sprintf(buf+len,"maxPort:              0x%04X\n", lp->maxPort );        /* 0 for STA, 6 for AP */
 	/* Elements used for async notification from hardware */
+=======
+//x   	    seq_printf(m, "spy_number:           0x%04X\n", lp->spy_number );
+//x		u_char                      spy_address[IW_MAX_SPY][ETH_ALEN];
+//x		struct iw_quality           spy_stat[IW_MAX_SPY];
+#endif // WIRELESS_EXT
+		seq_printf(m, "IFB:                  0x%p\n", &lp->hcfCtx );
+		seq_printf(m, "flags:                %#.8lX\n", lp->flags );  //;?use this format from now on
+		seq_printf(m, "DebugFlag(wl_private) 0x%04X\n", lp->DebugFlag );
+#if DBG
+		seq_printf(m, "DebugFlag (DbgInfo):   0x%08lX\n", DbgInfo->DebugFlag );
+#endif // DBG
+		seq_printf(m, "is_registered:        0x%04X\n", lp->is_registered );
+//x		CFG_DRV_INFO_STRCT          "driverInfo:         0x%04X\n", lp->driverInfo );
+		printf_strct( m, "driverInfo", (hcf_16*)&lp->driverInfo );
+//x		CFG_IDENTITY_STRCT          "driverIdentity:     0x%04X\n", lp->driverIdentity );
+		printf_strct( m, "driverIdentity", (hcf_16*)&lp->driverIdentity );
+//x		CFG_FW_IDENTITY_STRCT       "StationIdentity:    0x%04X\n", lp->StationIdentity );
+		printf_strct( m, "StationIdentity", (hcf_16*)&lp->StationIdentity );
+//x		CFG_PRI_IDENTITY_STRCT      "PrimaryIdentity:    0x%04X\n", lp->PrimaryIdentity );
+		printf_strct( m, "PrimaryIdentity", (hcf_16*)&lp->hcfCtx.IFB_PRIIdentity );
+		printf_strct( m, "PrimarySupplier", (hcf_16*)&lp->hcfCtx.IFB_PRISup );
+//x		CFG_PRI_IDENTITY_STRCT      "NICIdentity:        0x%04X\n", lp->NICIdentity );
+		printf_strct( m, "NICIdentity", (hcf_16*)&lp->NICIdentity );
+//x		ltv_t                       "ltvRecord:          0x%04X\n", lp->ltvRecord );
+		seq_printf(m, "txBytes:              0x%08lX\n", lp->txBytes );
+		seq_printf(m, "maxPort:              0x%04X\n", lp->maxPort );        /* 0 for STA, 6 for AP */
+		/* Elements used for async notification from hardware */
+>>>>>>> refs/remotes/origin/master
 //x		RID_LOG_STRCT				RidList[10];
 //x		ltv_t                       "updatedRecord:      0x%04X\n", lp->updatedRecord );
 //x		PROBE_RESP				    "ProbeResp:                    0x%04X\n", lp->ProbeResp );
 //x		ASSOC_STATUS_STRCT          "assoc_stat:         0x%04X\n", lp->assoc_stat );
 //x		SECURITY_STATUS_STRCT       "sec_stat:           0x%04X\n", lp->sec_stat );
 //x		u_char                      lookAheadBuf[WVLAN_MAX_LOOKAHEAD];
+<<<<<<< HEAD
    	    len += sprintf(buf+len,"PortType:             0x%04X\n", lp->PortType );           // 1 - 3 (1 [Normal] | 3 [AdHoc])
    	    len += sprintf(buf+len,"Channel:              0x%04X\n", lp->Channel );            // 0 - 14 (0)
 //x		hcf_16                      TxRateControl[2];
@@ -3713,37 +4097,109 @@ int scull_read_procmem(char *buf, char **start, off_t offset, int len, int *eof,
 //x		//hcf_16                      probeDataRates[2];
    	    len += sprintf(buf+len,"ownBeaconInterval:    0x%04X\n", lp->ownBeaconInterval );
    	    len += sprintf(buf+len,"coexistence:          0x%04X\n", lp->coexistence );
+=======
+		seq_printf(m, "PortType:             0x%04X\n", lp->PortType );           // 1 - 3 (1 [Normal] | 3 [AdHoc])
+		seq_printf(m, "Channel:              0x%04X\n", lp->Channel );            // 0 - 14 (0)
+//x		hcf_16                      TxRateControl[2];
+		seq_printf(m, "TxRateControl[2]:     0x%04X 0x%04X\n",
+			       lp->TxRateControl[0], lp->TxRateControl[1] );
+		seq_printf(m, "DistanceBetweenAPs:   0x%04X\n", lp->DistanceBetweenAPs ); // 1 - 3 (1)
+		seq_printf(m, "RTSThreshold:         0x%04X\n", lp->RTSThreshold );       // 0 - 2347 (2347)
+		seq_printf(m, "PMEnabled:            0x%04X\n", lp->PMEnabled );          // 0 - 2, 8001 - 8002 (0)
+		seq_printf(m, "MicrowaveRobustness:  0x%04X\n", lp->MicrowaveRobustness );// 0 - 1 (0)
+		seq_printf(m, "CreateIBSS:           0x%04X\n", lp->CreateIBSS );         // 0 - 1 (0)
+		seq_printf(m, "MulticastReceive:     0x%04X\n", lp->MulticastReceive );   // 0 - 1 (1)
+		seq_printf(m, "MaxSleepDuration:     0x%04X\n", lp->MaxSleepDuration );   // 0 - 65535 (100)
+//x		hcf_8                       MACAddress[ETH_ALEN];
+		printf_hcf_8(m, "MACAddress", lp->MACAddress, ETH_ALEN );
+//x		char                        NetworkName[HCF_MAX_NAME_LEN+1];
+		seq_printf(m, "NetworkName:          %.32s\n", lp->NetworkName );
+//x		char                        StationName[HCF_MAX_NAME_LEN+1];
+		seq_printf(m, "EnableEncryption:     0x%04X\n", lp->EnableEncryption );   // 0 - 1 (0)
+//x		char                        Key1[MAX_KEY_LEN+1];
+		printf_hcf_8( m, "Key1", lp->Key1, MAX_KEY_LEN );
+//x		char                        Key2[MAX_KEY_LEN+1];
+//x		char                        Key3[MAX_KEY_LEN+1];
+//x		char                        Key4[MAX_KEY_LEN+1];
+		seq_printf(m, "TransmitKeyID:        0x%04X\n", lp->TransmitKeyID );      // 1 - 4 (1)
+//x		CFG_DEFAULT_KEYS_STRCT	    "DefaultKeys:         0x%04X\n", lp->DefaultKeys );
+//x		u_char                      mailbox[MB_SIZE];
+//x		char                        szEncryption[MAX_ENC_LEN];
+		seq_printf(m, "driverEnable:         0x%04X\n", lp->driverEnable );
+		seq_printf(m, "wolasEnable:          0x%04X\n", lp->wolasEnable );
+		seq_printf(m, "atimWindow:           0x%04X\n", lp->atimWindow );
+		seq_printf(m, "holdoverDuration:     0x%04X\n", lp->holdoverDuration );
+//x		hcf_16                      MulticastRate[2];
+		seq_printf(m, "authentication:       0x%04X\n", lp->authentication ); // is this AP specific?
+		seq_printf(m, "promiscuousMode:      0x%04X\n", lp->promiscuousMode );
+		seq_printf(m, "DownloadFirmware:     0x%04X\n", lp->DownloadFirmware );   // 0 - 2 (0 [None] | 1 [STA] | 2 [AP])
+		seq_printf(m, "AuthKeyMgmtSuite:     0x%04X\n", lp->AuthKeyMgmtSuite );
+		seq_printf(m, "loadBalancing:        0x%04X\n", lp->loadBalancing );
+		seq_printf(m, "mediumDistribution:   0x%04X\n", lp->mediumDistribution );
+		seq_printf(m, "txPowLevel:           0x%04X\n", lp->txPowLevel );
+//   	    seq_printf(m, "shortRetryLimit:    0x%04X\n", lp->shortRetryLimit );
+//   	    seq_printf(m, "longRetryLimit:     0x%04X\n", lp->longRetryLimit );
+//x		hcf_16                      srsc[2];
+//x		hcf_16                      brsc[2];
+		seq_printf(m, "connectionControl:    0x%04X\n", lp->connectionControl );
+//x		//hcf_16                      probeDataRates[2];
+		seq_printf(m, "ownBeaconInterval:    0x%04X\n", lp->ownBeaconInterval );
+		seq_printf(m, "coexistence:          0x%04X\n", lp->coexistence );
+>>>>>>> refs/remotes/origin/master
 //x		WVLAN_FRAME                 "txF:                0x%04X\n", lp->txF );
 //x		WVLAN_LFRAME                txList[DEFAULT_NUM_TX_FRAMES];
 //x		struct list_head            "txFree:             0x%04X\n", lp->txFree );
 //x		struct list_head            txQ[WVLAN_MAX_TX_QUEUES];
+<<<<<<< HEAD
    	    len += sprintf(buf+len,"netif_queue_on:       0x%04X\n", lp->netif_queue_on );
    	    len += sprintf(buf+len,"txQ_count:            0x%04X\n", lp->txQ_count );
+=======
+		seq_printf(m, "netif_queue_on:       0x%04X\n", lp->netif_queue_on );
+		seq_printf(m, "txQ_count:            0x%04X\n", lp->txQ_count );
+>>>>>>> refs/remotes/origin/master
 //x		DESC_STRCT                  "desc_rx:            0x%04X\n", lp->desc_rx );
 //x		DESC_STRCT                  "desc_tx:            0x%04X\n", lp->desc_tx );
 //x		WVLAN_PORT_STATE            "portState:          0x%04X\n", lp->portState );
 //x		ScanResult                  "scan_results:       0x%04X\n", lp->scan_results );
 //x		ProbeResult                 "probe_results:      0x%04X\n", lp->probe_results );
+<<<<<<< HEAD
    	    len += sprintf(buf+len,"probe_num_aps:        0x%04X\n", lp->probe_num_aps );
    	    len += sprintf(buf+len,"use_dma:              0x%04X\n", lp->use_dma );
 //x		DMA_STRCT                   "dma:                0x%04X\n", lp->dma );
 #ifdef USE_RTS
    	    len += sprintf(buf+len,"useRTS:               0x%04X\n", lp->useRTS );
+=======
+		seq_printf(m, "probe_num_aps:        0x%04X\n", lp->probe_num_aps );
+		seq_printf(m, "use_dma:              0x%04X\n", lp->use_dma );
+//x		DMA_STRCT                   "dma:                0x%04X\n", lp->dma );
+#ifdef USE_RTS
+		seq_printf(m, "useRTS:               0x%04X\n", lp->useRTS );
+>>>>>>> refs/remotes/origin/master
 #endif  // USE_RTS
 #if 1 //;? (HCF_TYPE) & HCF_TYPE_AP
 		//;?should we restore this to allow smaller memory footprint
 		//;?I guess not. This should be brought under Debug mode only
+<<<<<<< HEAD
    	    len += sprintf(buf+len,"DTIMPeriod:           0x%04X\n", lp->DTIMPeriod );         // 1 - 255 (1)
    	    len += sprintf(buf+len,"multicastPMBuffering: 0x%04X\n", lp->multicastPMBuffering );
    	    len += sprintf(buf+len,"RejectAny:            0x%04X\n", lp->RejectAny );          // 0 - 1 (0)
    	    len += sprintf(buf+len,"ExcludeUnencrypted:   0x%04X\n", lp->ExcludeUnencrypted ); // 0 - 1 (1)
    	    len += sprintf(buf+len,"intraBSSRelay:        0x%04X\n", lp->intraBSSRelay );
    	    len += sprintf(buf+len,"wlags49_type:             0x%08lX\n", lp->wlags49_type );
+=======
+		seq_printf(m, "DTIMPeriod:           0x%04X\n", lp->DTIMPeriod );         // 1 - 255 (1)
+		seq_printf(m, "multicastPMBuffering: 0x%04X\n", lp->multicastPMBuffering );
+		seq_printf(m, "RejectAny:            0x%04X\n", lp->RejectAny );          // 0 - 1 (0)
+		seq_printf(m, "ExcludeUnencrypted:   0x%04X\n", lp->ExcludeUnencrypted ); // 0 - 1 (1)
+		seq_printf(m, "intraBSSRelay:        0x%04X\n", lp->intraBSSRelay );
+		seq_printf(m, "wlags49_type:             0x%08lX\n", lp->wlags49_type );
+>>>>>>> refs/remotes/origin/master
 #ifdef USE_WDS
 //x		WVLAN_WDS_IF                wds_port[NUM_WDS_PORTS];
 #endif // USE_WDS
 #endif // HCF_AP
 	} else if ( lp->wlags49_type == 2 ){
+<<<<<<< HEAD
         len += sprintf(buf+len,"tallies to be added\n" );
 //Hermes Tallies (IFB substructure) {
    	    p = &lp->hcfCtx.IFB_NIC_Tallies;
@@ -3772,6 +4228,36 @@ int scull_read_procmem(char *buf, char **start, off_t offset, int len, int *eof,
         len += sprintf(buf+len,"RxDiscardsWEPExcluded:    %08lX\n", p->RxDiscardsWEPExcluded );
 #if (HCF_EXT) & HCF_EXT_TALLIES_FW
         //to be added ;?
+=======
+		seq_printf(m, "tallies to be added\n" );
+//Hermes Tallies (IFB substructure) {
+		p = &lp->hcfCtx.IFB_NIC_Tallies;
+		seq_printf(m, "TxUnicastFrames:          %08lX\n", p->TxUnicastFrames );
+		seq_printf(m, "TxMulticastFrames:        %08lX\n", p->TxMulticastFrames );
+		seq_printf(m, "TxFragments:              %08lX\n", p->TxFragments );
+		seq_printf(m, "TxUnicastOctets:          %08lX\n", p->TxUnicastOctets );
+		seq_printf(m, "TxMulticastOctets:        %08lX\n", p->TxMulticastOctets );
+		seq_printf(m, "TxDeferredTransmissions:  %08lX\n", p->TxDeferredTransmissions );
+		seq_printf(m, "TxSingleRetryFrames:      %08lX\n", p->TxSingleRetryFrames );
+		seq_printf(m, "TxMultipleRetryFrames:    %08lX\n", p->TxMultipleRetryFrames );
+		seq_printf(m, "TxRetryLimitExceeded:     %08lX\n", p->TxRetryLimitExceeded );
+		seq_printf(m, "TxDiscards:               %08lX\n", p->TxDiscards );
+		seq_printf(m, "RxUnicastFrames:          %08lX\n", p->RxUnicastFrames );
+		seq_printf(m, "RxMulticastFrames:        %08lX\n", p->RxMulticastFrames );
+		seq_printf(m, "RxFragments:              %08lX\n", p->RxFragments );
+		seq_printf(m, "RxUnicastOctets:          %08lX\n", p->RxUnicastOctets );
+		seq_printf(m, "RxMulticastOctets:        %08lX\n", p->RxMulticastOctets );
+		seq_printf(m, "RxFCSErrors:              %08lX\n", p->RxFCSErrors );
+		seq_printf(m, "RxDiscardsNoBuffer:       %08lX\n", p->RxDiscardsNoBuffer );
+		seq_printf(m, "TxDiscardsWrongSA:        %08lX\n", p->TxDiscardsWrongSA );
+		seq_printf(m, "RxWEPUndecryptable:       %08lX\n", p->RxWEPUndecryptable );
+		seq_printf(m, "RxMsgInMsgFragments:      %08lX\n", p->RxMsgInMsgFragments );
+		seq_printf(m, "RxMsgInBadMsgFragments:   %08lX\n", p->RxMsgInBadMsgFragments );
+		seq_printf(m, "RxDiscardsWEPICVError:    %08lX\n", p->RxDiscardsWEPICVError );
+		seq_printf(m, "RxDiscardsWEPExcluded:    %08lX\n", p->RxDiscardsWEPExcluded );
+#if (HCF_EXT) & HCF_EXT_TALLIES_FW
+		//to be added ;?
+>>>>>>> refs/remotes/origin/master
 #endif // HCF_EXT_TALLIES_FW
 	} else if ( lp->wlags49_type & 0x8000 ) {	//;?kludgy but it is unclear to me were else to place this
 #if DBG
@@ -3779,6 +4265,7 @@ int scull_read_procmem(char *buf, char **start, off_t offset, int len, int *eof,
 #endif // DBG
 		lp->wlags49_type = 0;				//default to IFB again ;?
 	} else {
+<<<<<<< HEAD
         len += sprintf(buf+len,"unknown value for wlags49_type: 0x%08lX\n", lp->wlags49_type );
         len += sprintf(buf+len,"0x0000 - IFB\n" );
         len += sprintf(buf+len,"0x0001 - wl_private\n" );
@@ -3800,14 +4287,32 @@ static void proc_write(const char *name, write_proc_t *w, void *data)
 	}
 } // proc_write
 
+=======
+		seq_printf(m, "unknown value for wlags49_type: 0x%08lX\n", lp->wlags49_type );
+		seq_puts(m,
+			 "0x0000 - IFB\n"
+			 "0x0001 - wl_private\n"
+			 "0x0002 - Tallies\n"
+			 "0x8xxx - Change debufflag\n"
+			 "ERROR    0001\nWARNING  0002\nNOTICE   0004\nTRACE    0008\n"
+			 "VERBOSE  0010\nPARAM    0020\nBREAK    0040\nRX       0100\n"
+			 "TX       0200\nDS       0400\n");
+	}
+	return 0;
+} // scull_read_procmem
+
+>>>>>>> refs/remotes/origin/master
 static int write_int(struct file *file, const char *buffer, unsigned long count, void *data)
 {
 	static char		proc_number[11];
 	unsigned int	nr = 0;
 
+<<<<<<< HEAD
 	DBG_FUNC( "write_int" );
 	DBG_ENTER( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (count > 9) {
 		count = -EINVAL;
 	} else if ( copy_from_user(proc_number, buffer, count) ) {
@@ -3824,7 +4329,10 @@ static int write_int(struct file *file, const char *buffer, unsigned long count,
 		}
 	}
 	DBG_PRINT( "value: %08X\n", nr );
+<<<<<<< HEAD
 	DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 	return count;
 } // write_int
 
@@ -3840,7 +4348,11 @@ static int write_int(struct file *file, const char *buffer, unsigned long count,
 		lp->timer_oor.data = (unsigned long)lp;
 		lp->timer_oor.expires = RUN_AT( 3 * HZ );
 		add_timer( &lp->timer_oor );
+<<<<<<< HEAD
 		printk( "<5>wl_enable: %ld\n", jiffies );		//;?remove me 1 day
+=======
+		printk(KERN_NOTICE "wl_enable: %ld\n", jiffies );		//;?remove me 1 day
+>>>>>>> refs/remotes/origin/master
 #endif //DN554
 #ifdef DN554
 /*******************************************************************************
@@ -3864,6 +4376,7 @@ void timer_oor( u_long arg )
 {
 	struct wl_private       *lp = (struct wl_private *)arg;
 
+<<<<<<< HEAD
     /*------------------------------------------------------------------------*/
 
     DBG_FUNC( "timer_oor" );
@@ -3871,6 +4384,11 @@ void timer_oor( u_long arg )
     DBG_PARAM( DbgInfo, "arg", "0x%08lx", arg );
 
 	printk( "<5>timer_oor: %ld 0x%04X\n", jiffies, lp->timer_oor_cnt );		//;?remove me 1 day
+=======
+    DBG_PARAM( DbgInfo, "arg", "0x%08lx", arg );
+
+	printk(KERN_NOTICE "timer_oor: %ld 0x%04X\n", jiffies, lp->timer_oor_cnt );		//;?remove me 1 day
+>>>>>>> refs/remotes/origin/master
 	lp->timer_oor_cnt += 10;
     if ( (lp->timer_oor_cnt & ~DS_OOR) > 300 ) {
 		lp->timer_oor_cnt = 300;
@@ -3881,8 +4399,11 @@ void timer_oor( u_long arg )
 	lp->timer_oor.data = (unsigned long)lp;
 	lp->timer_oor.expires = RUN_AT( (lp->timer_oor_cnt & ~DS_OOR) * HZ );
 	add_timer( &lp->timer_oor );
+<<<<<<< HEAD
 
     DBG_LEAVE( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 } // timer_oor
 #endif //DN554
 

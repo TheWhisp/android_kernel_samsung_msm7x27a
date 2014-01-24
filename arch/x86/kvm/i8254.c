@@ -34,7 +34,10 @@
 
 #include <linux/kvm_host.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 #include <linux/workqueue.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "irq.h"
 #include "i8254.h"
@@ -109,7 +112,11 @@ static s64 __kpit_elapsed(struct kvm *kvm)
 	ktime_t remaining;
 	struct kvm_kpit_state *ps = &kvm->arch.vpit->pit_state;
 
+<<<<<<< HEAD
 	if (!ps->pit_timer.period)
+=======
+	if (!ps->period)
+>>>>>>> refs/remotes/origin/master
 		return 0;
 
 	/*
@@ -121,9 +128,14 @@ static s64 __kpit_elapsed(struct kvm *kvm)
 	 * itself with the initial count and continues counting
 	 * from there.
 	 */
+<<<<<<< HEAD
 	remaining = hrtimer_get_remaining(&ps->pit_timer.timer);
 	elapsed = ps->pit_timer.period - ktime_to_ns(remaining);
 	elapsed = mod_64(elapsed, ps->pit_timer.period);
+=======
+	remaining = hrtimer_get_remaining(&ps->timer);
+	elapsed = ps->period - ktime_to_ns(remaining);
+>>>>>>> refs/remotes/origin/master
 
 	return elapsed;
 }
@@ -239,17 +251,29 @@ static void kvm_pit_ack_irq(struct kvm_irq_ack_notifier *kian)
 	int value;
 
 	spin_lock(&ps->inject_lock);
+<<<<<<< HEAD
 	value = atomic_dec_return(&ps->pit_timer.pending);
+=======
+	value = atomic_dec_return(&ps->pending);
+>>>>>>> refs/remotes/origin/master
 	if (value < 0)
 		/* spurious acks can be generated if, for example, the
 		 * PIC is being reset.  Handle it gracefully here
 		 */
+<<<<<<< HEAD
 		atomic_inc(&ps->pit_timer.pending);
+=======
+		atomic_inc(&ps->pending);
+>>>>>>> refs/remotes/origin/master
 	else if (value > 0)
 		/* in this case, we had multiple outstanding pit interrupts
 		 * that we needed to inject.  Reinject
 		 */
+<<<<<<< HEAD
 		queue_work(ps->pit->wq, &ps->pit->expired);
+=======
+		queue_kthread_work(&ps->pit->worker, &ps->pit->expired);
+>>>>>>> refs/remotes/origin/master
 	ps->irq_ack = 1;
 	spin_unlock(&ps->inject_lock);
 }
@@ -262,13 +286,18 @@ void __kvm_migrate_pit_timer(struct kvm_vcpu *vcpu)
 	if (!kvm_vcpu_is_bsp(vcpu) || !pit)
 		return;
 
+<<<<<<< HEAD
 	timer = &pit->pit_state.pit_timer.timer;
+=======
+	timer = &pit->pit_state.timer;
+>>>>>>> refs/remotes/origin/master
 	if (hrtimer_cancel(timer))
 		hrtimer_start_expires(timer, HRTIMER_MODE_ABS);
 }
 
 static void destroy_pit_timer(struct kvm_pit *pit)
 {
+<<<<<<< HEAD
 	hrtimer_cancel(&pit->pit_state.pit_timer.timer);
 	cancel_work_sync(&pit->expired);
 }
@@ -285,6 +314,13 @@ static struct kvm_timer_ops kpit_ops = {
 };
 
 static void pit_do_work(struct work_struct *work)
+=======
+	hrtimer_cancel(&pit->pit_state.timer);
+	flush_kthread_work(&pit->expired);
+}
+
+static void pit_do_work(struct kthread_work *work)
+>>>>>>> refs/remotes/origin/master
 {
 	struct kvm_pit *pit = container_of(work, struct kvm_pit, expired);
 	struct kvm *kvm = pit->kvm;
@@ -303,8 +339,13 @@ static void pit_do_work(struct work_struct *work)
 	}
 	spin_unlock(&ps->inject_lock);
 	if (inject) {
+<<<<<<< HEAD
 		kvm_set_irq(kvm, kvm->arch.vpit->irq_source_id, 0, 1);
 		kvm_set_irq(kvm, kvm->arch.vpit->irq_source_id, 0, 0);
+=======
+		kvm_set_irq(kvm, kvm->arch.vpit->irq_source_id, 0, 1, false);
+		kvm_set_irq(kvm, kvm->arch.vpit->irq_source_id, 0, 0, false);
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Provides NMI watchdog support via Virtual Wire mode.
@@ -323,6 +364,7 @@ static void pit_do_work(struct work_struct *work)
 
 static enum hrtimer_restart pit_timer_fn(struct hrtimer *data)
 {
+<<<<<<< HEAD
 	struct kvm_timer *ktimer = container_of(data, struct kvm_timer, timer);
 	struct kvm_pit *pt = ktimer->kvm->arch.vpit;
 
@@ -333,6 +375,18 @@ static enum hrtimer_restart pit_timer_fn(struct hrtimer *data)
 
 	if (ktimer->t_ops->is_periodic(ktimer)) {
 		hrtimer_add_expires_ns(&ktimer->timer, ktimer->period);
+=======
+	struct kvm_kpit_state *ps = container_of(data, struct kvm_kpit_state, timer);
+	struct kvm_pit *pt = ps->kvm->arch.vpit;
+
+	if (ps->reinject || !atomic_read(&ps->pending)) {
+		atomic_inc(&ps->pending);
+		queue_kthread_work(&pt->worker, &pt->expired);
+	}
+
+	if (ps->is_periodic) {
+		hrtimer_add_expires_ns(&ps->timer, ps->period);
+>>>>>>> refs/remotes/origin/master
 		return HRTIMER_RESTART;
 	} else
 		return HRTIMER_NORESTART;
@@ -341,6 +395,7 @@ static enum hrtimer_restart pit_timer_fn(struct hrtimer *data)
 static void create_pit_timer(struct kvm *kvm, u32 val, int is_period)
 {
 	struct kvm_kpit_state *ps = &kvm->arch.vpit->pit_state;
+<<<<<<< HEAD
 	struct kvm_timer *pt = &ps->pit_timer;
 	s64 interval;
 
@@ -349,6 +404,11 @@ static void create_pit_timer(struct kvm *kvm, u32 val, int is_period)
 =======
 	if (!irqchip_in_kernel(kvm) || ps->flags & KVM_PIT_FLAGS_HPET_LEGACY)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s64 interval;
+
+	if (!irqchip_in_kernel(kvm) || ps->flags & KVM_PIT_FLAGS_HPET_LEGACY)
+>>>>>>> refs/remotes/origin/master
 		return;
 
 	interval = muldiv64(val, NSEC_PER_SEC, KVM_PIT_FREQ);
@@ -356,6 +416,7 @@ static void create_pit_timer(struct kvm *kvm, u32 val, int is_period)
 	pr_debug("create pit timer, interval is %llu nsec\n", interval);
 
 	/* TODO The new value only affected after the retriggered */
+<<<<<<< HEAD
 	hrtimer_cancel(&pt->timer);
 	cancel_work_sync(&ps->pit->expired);
 	pt->period = interval;
@@ -369,6 +430,20 @@ static void create_pit_timer(struct kvm *kvm, u32 val, int is_period)
 	ps->irq_ack = 1;
 
 	hrtimer_start(&pt->timer, ktime_add_ns(ktime_get(), interval),
+=======
+	hrtimer_cancel(&ps->timer);
+	flush_kthread_work(&ps->pit->expired);
+	ps->period = interval;
+	ps->is_periodic = is_period;
+
+	ps->timer.function = pit_timer_fn;
+	ps->kvm = ps->pit->kvm;
+
+	atomic_set(&ps->pending, 0);
+	ps->irq_ack = 1;
+
+	hrtimer_start(&ps->timer, ktime_add_ns(ktime_get(), interval),
+>>>>>>> refs/remotes/origin/master
 		      HRTIMER_MODE_ABS);
 }
 
@@ -402,6 +477,7 @@ static void pit_load_count(struct kvm *kvm, int channel, u32 val)
         /* FIXME: enhance mode 4 precision */
 	case 4:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!(ps->flags & KVM_PIT_FLAGS_HPET_LEGACY)) {
 			create_pit_timer(kvm, val, 0);
 		}
@@ -412,12 +488,17 @@ static void pit_load_count(struct kvm *kvm, int channel, u32 val)
 			create_pit_timer(kvm, val, 1);
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		create_pit_timer(kvm, val, 0);
 		break;
 	case 2:
 	case 3:
 		create_pit_timer(kvm, val, 1);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		destroy_pit_timer(kvm->arch.vpit);
@@ -656,7 +737,11 @@ void kvm_pit_reset(struct kvm_pit *pit)
 	}
 	mutex_unlock(&pit->pit_state.lock);
 
+<<<<<<< HEAD
 	atomic_set(&pit->pit_state.pit_timer.pending, 0);
+=======
+	atomic_set(&pit->pit_state.pending, 0);
+>>>>>>> refs/remotes/origin/master
 	pit->pit_state.irq_ack = 1;
 }
 
@@ -665,7 +750,11 @@ static void pit_mask_notifer(struct kvm_irq_mask_notifier *kimn, bool mask)
 	struct kvm_pit *pit = container_of(kimn, struct kvm_pit, mask_notifier);
 
 	if (!mask) {
+<<<<<<< HEAD
 		atomic_set(&pit->pit_state.pit_timer.pending, 0);
+=======
+		atomic_set(&pit->pit_state.pending, 0);
+>>>>>>> refs/remotes/origin/master
 		pit->pit_state.irq_ack = 1;
 	}
 }
@@ -685,6 +774,11 @@ struct kvm_pit *kvm_create_pit(struct kvm *kvm, u32 flags)
 {
 	struct kvm_pit *pit;
 	struct kvm_kpit_state *pit_state;
+<<<<<<< HEAD
+=======
+	struct pid *pid;
+	pid_t pid_nr;
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	pit = kzalloc(sizeof(struct kvm_pit), GFP_KERNEL);
@@ -701,26 +795,49 @@ struct kvm_pit *kvm_create_pit(struct kvm *kvm, u32 flags)
 	mutex_lock(&pit->pit_state.lock);
 	spin_lock_init(&pit->pit_state.inject_lock);
 
+<<<<<<< HEAD
 	pit->wq = create_singlethread_workqueue("kvm-pit-wq");
 	if (!pit->wq) {
+=======
+	pid = get_pid(task_tgid(current));
+	pid_nr = pid_vnr(pid);
+	put_pid(pid);
+
+	init_kthread_worker(&pit->worker);
+	pit->worker_task = kthread_run(kthread_worker_fn, &pit->worker,
+				       "kvm-pit/%d", pid_nr);
+	if (IS_ERR(pit->worker_task)) {
+>>>>>>> refs/remotes/origin/master
 		mutex_unlock(&pit->pit_state.lock);
 		kvm_free_irq_source_id(kvm, pit->irq_source_id);
 		kfree(pit);
 		return NULL;
 	}
+<<<<<<< HEAD
 	INIT_WORK(&pit->expired, pit_do_work);
+=======
+	init_kthread_work(&pit->expired, pit_do_work);
+>>>>>>> refs/remotes/origin/master
 
 	kvm->arch.vpit = pit;
 	pit->kvm = kvm;
 
 	pit_state = &pit->pit_state;
 	pit_state->pit = pit;
+<<<<<<< HEAD
 	hrtimer_init(&pit_state->pit_timer.timer,
 		     CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
 	pit_state->irq_ack_notifier.gsi = 0;
 	pit_state->irq_ack_notifier.irq_acked = kvm_pit_ack_irq;
 	kvm_register_irq_ack_notifier(kvm, &pit_state->irq_ack_notifier);
 	pit_state->pit_timer.reinject = true;
+=======
+	hrtimer_init(&pit_state->timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
+	pit_state->irq_ack_notifier.gsi = 0;
+	pit_state->irq_ack_notifier.irq_acked = kvm_pit_ack_irq;
+	kvm_register_irq_ack_notifier(kvm, &pit_state->irq_ack_notifier);
+	pit_state->reinject = true;
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&pit->pit_state.lock);
 
 	kvm_pit_reset(pit);
@@ -730,11 +847,16 @@ struct kvm_pit *kvm_create_pit(struct kvm *kvm, u32 flags)
 
 	kvm_iodevice_init(&pit->dev, &pit_dev_ops);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, &pit->dev);
 =======
 	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, KVM_PIT_BASE_ADDRESS,
 				      KVM_PIT_MEM_LENGTH, &pit->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS, KVM_PIT_BASE_ADDRESS,
+				      KVM_PIT_MEM_LENGTH, &pit->dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto fail;
 
@@ -742,11 +864,16 @@ struct kvm_pit *kvm_create_pit(struct kvm *kvm, u32 flags)
 		kvm_iodevice_init(&pit->speaker_dev, &speaker_dev_ops);
 		ret = kvm_io_bus_register_dev(kvm, KVM_PIO_BUS,
 <<<<<<< HEAD
+<<<<<<< HEAD
 						&pit->speaker_dev);
 =======
 					      KVM_SPEAKER_BASE_ADDRESS, 4,
 					      &pit->speaker_dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					      KVM_SPEAKER_BASE_ADDRESS, 4,
+					      &pit->speaker_dev);
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0)
 			goto fail_unregister;
 	}
@@ -760,7 +887,11 @@ fail:
 	kvm_unregister_irq_mask_notifier(kvm, 0, &pit->mask_notifier);
 	kvm_unregister_irq_ack_notifier(kvm, &pit_state->irq_ack_notifier);
 	kvm_free_irq_source_id(kvm, pit->irq_source_id);
+<<<<<<< HEAD
 	destroy_workqueue(pit->wq);
+=======
+	kthread_stop(pit->worker_task);
+>>>>>>> refs/remotes/origin/master
 	kfree(pit);
 	return NULL;
 }
@@ -778,12 +909,21 @@ void kvm_free_pit(struct kvm *kvm)
 		kvm_unregister_irq_ack_notifier(kvm,
 				&kvm->arch.vpit->pit_state.irq_ack_notifier);
 		mutex_lock(&kvm->arch.vpit->pit_state.lock);
+<<<<<<< HEAD
 		timer = &kvm->arch.vpit->pit_state.pit_timer.timer;
 		hrtimer_cancel(timer);
 		cancel_work_sync(&kvm->arch.vpit->expired);
 		kvm_free_irq_source_id(kvm, kvm->arch.vpit->irq_source_id);
 		mutex_unlock(&kvm->arch.vpit->pit_state.lock);
 		destroy_workqueue(kvm->arch.vpit->wq);
+=======
+		timer = &kvm->arch.vpit->pit_state.timer;
+		hrtimer_cancel(timer);
+		flush_kthread_work(&kvm->arch.vpit->expired);
+		kthread_stop(kvm->arch.vpit->worker_task);
+		kvm_free_irq_source_id(kvm, kvm->arch.vpit->irq_source_id);
+		mutex_unlock(&kvm->arch.vpit->pit_state.lock);
+>>>>>>> refs/remotes/origin/master
 		kfree(kvm->arch.vpit);
 	}
 }

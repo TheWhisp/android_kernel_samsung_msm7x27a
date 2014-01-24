@@ -115,7 +115,13 @@ flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned long vma
 {
 	if (PageAnon(page)) {
 		flush_tlb_page(vma, vmaddr);
+<<<<<<< HEAD
 		flush_dcache_page_asm(page_to_phys(page), vmaddr);
+=======
+		preempt_disable();
+		flush_dcache_page_asm(page_to_phys(page), vmaddr);
+		preempt_enable();
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -123,13 +129,17 @@ flush_anon_page(struct vm_area_struct *vma, struct page *page, unsigned long vma
 void mark_rodata_ro(void);
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_PA8X00
 /* Only pa8800, pa8900 needs this */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/kmap_types.h>
 
 #define ARCH_HAS_KMAP
 
+<<<<<<< HEAD
 void kunmap_parisc(void *addr);
 
 static inline void *kmap(struct page *page)
@@ -147,19 +157,44 @@ static inline void *kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	pagefault_disable();
+=======
+static inline void *kmap(struct page *page)
+{
+	might_sleep();
+	flush_dcache_page(page);
+	return page_address(page);
+}
+
+static inline void kunmap(struct page *page)
+{
+	flush_kernel_dcache_page_addr(page_address(page));
+}
+
+static inline void *kmap_atomic(struct page *page)
+{
+	pagefault_disable();
+	flush_dcache_page(page);
+>>>>>>> refs/remotes/origin/master
 	return page_address(page);
 }
 
 static inline void __kunmap_atomic(void *addr)
 {
+<<<<<<< HEAD
 	kunmap_parisc(addr);
+=======
+	flush_kernel_dcache_page_addr(addr);
+>>>>>>> refs/remotes/origin/master
 	pagefault_enable();
 }
 
 #define kmap_atomic_prot(page, prot)	kmap_atomic(page)
 #define kmap_atomic_pfn(pfn)	kmap_atomic(pfn_to_page(pfn))
 #define kmap_atomic_to_page(ptr)	virt_to_page(ptr)
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 #endif /* _PARISC_CACHEFLUSH_H */
 

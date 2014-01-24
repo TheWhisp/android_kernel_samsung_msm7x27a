@@ -63,6 +63,7 @@
  *
  *
  */
+<<<<<<< HEAD
 
 #ifndef _LINUX_CYCLADES_H
 #define _LINUX_CYCLADES_H
@@ -491,6 +492,13 @@ struct ZFW_CTRL {
 #endif
 
 #ifdef __KERNEL__
+=======
+#ifndef _LINUX_CYCLADES_H
+#define _LINUX_CYCLADES_H
+
+#include <uapi/linux/cyclades.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /* Per card data structure */
 struct cyclades_card {
@@ -780,5 +788,8 @@ struct cyclades_port {
 
 /***************************************************************************/
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_CYCLADES_H */

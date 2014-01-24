@@ -15,10 +15,16 @@
 #include <asm/contregs.h>
 #include <asm/thread_info.h>
 
+<<<<<<< HEAD
 	.globl sun4m_cpu_startup, __smp4m_processor_id, __leon_processor_id
 	.globl sun4d_cpu_startup, __smp4d_processor_id
 
 	__CPUINIT
+=======
+	.globl sun4m_cpu_startup
+	.globl sun4d_cpu_startup
+
+>>>>>>> refs/remotes/origin/master
 	.align 4
 
 /* When we start up a cpu for the first time it enters this routine.
@@ -79,14 +85,22 @@ cpu3_startup:
 	 nop
 
 	/* Start this processor. */
+<<<<<<< HEAD
 	call	smp4m_callin
 	 nop
 
 	b,a	smp_do_cpu_idle
+=======
+	call	smp_callin
+	 nop
+
+	b,a	smp_panic
+>>>>>>> refs/remotes/origin/master
 
 	.text
 	.align	4
 
+<<<<<<< HEAD
 smp_do_cpu_idle:
 	call	cpu_idle
 	 mov	0, %o0
@@ -116,6 +130,15 @@ __leon_processor_id:
 #define SUN4D_BOOTBUS_CPUID	0xf0140000
 
 	__CPUINIT
+=======
+smp_panic:
+	call	cpu_panic
+	 nop
+
+/* CPUID in bootbus can be found at PA 0xff0140000 */
+#define SUN4D_BOOTBUS_CPUID	0xf0140000
+
+>>>>>>> refs/remotes/origin/master
 	.align	4
 
 sun4d_cpu_startup:
@@ -162,6 +185,7 @@ sun4d_cpu_startup:
 	 nop
 
 	/* Start this processor. */
+<<<<<<< HEAD
 	call	smp4d_callin
 	 nop
 
@@ -170,6 +194,13 @@ sun4d_cpu_startup:
 #ifdef CONFIG_SPARC_LEON
 
 	__CPUINIT
+=======
+	call	smp_callin
+	 nop
+
+	b,a	smp_panic
+
+>>>>>>> refs/remotes/origin/master
 	.align	4
         .global leon_smp_cpu_startup, smp_penguin_ctable
 
@@ -179,7 +210,11 @@ leon_smp_cpu_startup:
         ld [%g1+4],%g1
         srl %g1,4,%g1
         set 0x00000100,%g5 /* SRMMU_CTXTBL_PTR */
+<<<<<<< HEAD
 	sta %g1, [%g5] ASI_M_MMUREGS
+=======
+	sta %g1, [%g5] ASI_LEON_MMUREGS
+>>>>>>> refs/remotes/origin/master
 
 	/* Set up a sane %psr -- PIL<0xf> S<0x1> PS<0x1> CWP<0x0> */
 	set	(PSR_PIL | PSR_S | PSR_PS), %g1
@@ -221,9 +256,16 @@ leon_smp_cpu_startup:
 	 nop
 
 	/* Start this processor. */
+<<<<<<< HEAD
 	call	leon_callin
 	 nop
 
 	b,a	smp_do_cpu_idle
 
 #endif
+=======
+	call	smp_callin
+	 nop
+
+	b,a	smp_panic
+>>>>>>> refs/remotes/origin/master

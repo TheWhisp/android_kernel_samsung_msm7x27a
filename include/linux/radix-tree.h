@@ -3,9 +3,13 @@
  * Portions Copyright (C) 2001 Christoph Hellwig
  * Copyright (C) 2006 Nick Piggin
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * Copyright (C) 2012 Konstantin Khlebnikov
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2012 Konstantin Khlebnikov
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -27,9 +31,13 @@
 #include <linux/preempt.h>
 #include <linux/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/rcupdate.h>
 
@@ -48,11 +56,14 @@
  * details.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define RADIX_TREE_INDIRECT_PTR	1
 
 #define radix_tree_indirect_to_ptr(ptr) \
 	radix_tree_indirect_to_ptr((void __force *)(ptr))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define RADIX_TREE_INDIRECT_PTR		1
 /*
  * A common use of the radix tree is to store pointers to struct pages;
@@ -62,7 +73,10 @@
  */
 #define RADIX_TREE_EXCEPTIONAL_ENTRY	2
 #define RADIX_TREE_EXCEPTIONAL_SHIFT	2
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline int radix_tree_is_indirect_ptr(void *ptr)
 {
@@ -195,7 +209,10 @@ static inline int radix_tree_deref_retry(void *arg)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * radix_tree_exceptional_entry	- radix_tree_deref_slot gave exceptional entry?
  * @arg:	value returned by radix_tree_deref_slot
  * Returns:	0 if well-aligned pointer, non-0 if exceptional entry.
@@ -218,7 +235,10 @@ static inline int radix_tree_exception(void *arg)
 }
 
 /**
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * radix_tree_replace_slot	- replace item in a slot
  * @pslot:	pointer to slot, returned by radix_tree_lookup_slot
  * @item:	new item to store in the slot.
@@ -240,18 +260,27 @@ unsigned int
 radix_tree_gang_lookup(struct radix_tree_root *root, void **results,
 			unsigned long first_index, unsigned int max_items);
 <<<<<<< HEAD
+<<<<<<< HEAD
 unsigned int
 radix_tree_gang_lookup_slot(struct radix_tree_root *root, void ***results,
 =======
 unsigned int radix_tree_gang_lookup_slot(struct radix_tree_root *root,
 			void ***results, unsigned long *indices,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned int radix_tree_gang_lookup_slot(struct radix_tree_root *root,
+			void ***results, unsigned long *indices,
+>>>>>>> refs/remotes/origin/master
 			unsigned long first_index, unsigned int max_items);
 unsigned long radix_tree_next_hole(struct radix_tree_root *root,
 				unsigned long index, unsigned long max_scan);
 unsigned long radix_tree_prev_hole(struct radix_tree_root *root,
 				unsigned long index, unsigned long max_scan);
 int radix_tree_preload(gfp_t gfp_mask);
+<<<<<<< HEAD
+=======
+int radix_tree_maybe_preload(gfp_t gfp_mask);
+>>>>>>> refs/remotes/origin/master
 void radix_tree_init(void);
 void *radix_tree_tag_set(struct radix_tree_root *root,
 			unsigned long index, unsigned int tag);
@@ -273,9 +302,13 @@ unsigned long radix_tree_range_tag_if_tagged(struct radix_tree_root *root,
 		unsigned int fromtag, unsigned int totag);
 int radix_tree_tagged(struct radix_tree_root *root, unsigned int tag);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 unsigned long radix_tree_locate_item(struct radix_tree_root *root, void *item);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long radix_tree_locate_item(struct radix_tree_root *root, void *item);
+>>>>>>> refs/remotes/origin/master
 
 static inline void radix_tree_preload_end(void)
 {
@@ -283,7 +316,10 @@ static inline void radix_tree_preload_end(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * struct radix_tree_iter - radix tree iterator state
  *
@@ -482,5 +518,8 @@ radix_tree_next_slot(void **slot, struct radix_tree_iter *iter, unsigned flags)
 	     slot = radix_tree_next_slot(slot, iter,			\
 				RADIX_TREE_ITER_TAGGED))
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_RADIX_TREE_H */

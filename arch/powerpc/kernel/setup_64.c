@@ -10,6 +10,7 @@
  *      2 of the License, or (at your option) any later version.
  */
 
+<<<<<<< HEAD
 #undef DEBUG
 
 <<<<<<< HEAD
@@ -17,6 +18,11 @@
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define DEBUG
+
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/string.h>
 #include <linux/sched.h>
 #include <linux/init.h>
@@ -40,10 +46,15 @@
 #include <linux/lockdep.h>
 #include <linux/memblock.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/hugetlb.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/hugetlb.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/io.h>
 #include <asm/kdump.h>
 #include <asm/prom.h>
@@ -60,9 +71,12 @@
 #include <asm/nvram.h>
 #include <asm/setup.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/rtas.h>
 #include <asm/iommu.h>
 #include <asm/serial.h>
@@ -76,12 +90,18 @@
 #include <asm/mmu_context.h>
 #include <asm/code-patching.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <asm/kvm_ppc.h>
 #include <asm/hugetlb.h>
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #include "setup.h"
+=======
+#include <asm/kvm_ppc.h>
+#include <asm/hugetlb.h>
+#include <asm/epapr_hcalls.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef DEBUG
 #define DBG(fmt...) udbg_printf(fmt)
@@ -91,10 +111,14 @@
 
 int boot_cpuid = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 int __initdata boot_cpu_count;
 =======
 int __initdata spinning_secondaries;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int spinning_secondaries;
+>>>>>>> refs/remotes/origin/master
 u64 ppc64_pft_size;
 
 /* Pick defaults since we might want to patch instructions
@@ -174,6 +198,18 @@ early_param("smt-enabled", early_smt_enabled);
 #define check_smt_enabled()
 #endif /* CONFIG_SMP */
 
+<<<<<<< HEAD
+=======
+/** Fix up paca fields required for the boot cpu */
+static void fixup_boot_paca(void)
+{
+	/* The boot cpu is started */
+	get_paca()->cpu_start = 1;
+	/* Allow percpu accesses to work until we setup percpu data */
+	get_paca()->data_offset = 0;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Early initialization entry point. This is called by head.S
  * with MMU translation disabled. We rely on the "feature" of
@@ -195,6 +231,11 @@ early_param("smt-enabled", early_smt_enabled);
 
 void __init early_setup(unsigned long dt_ptr)
 {
+<<<<<<< HEAD
+=======
+	static __initdata struct paca_struct boot_paca;
+
+>>>>>>> refs/remotes/origin/master
 	/* -------- printk is _NOT_ safe to use here ! ------- */
 
 	/* Identify CPU type */
@@ -203,6 +244,10 @@ void __init early_setup(unsigned long dt_ptr)
 	/* Assume we're on cpu 0 for now. Don't write to the paca yet! */
 	initialise_paca(&boot_paca, 0);
 	setup_paca(&boot_paca);
+<<<<<<< HEAD
+=======
+	fixup_boot_paca();
+>>>>>>> refs/remotes/origin/master
 
 	/* Initialize lockdep early or else spinlocks will blow */
 	lockdep_init();
@@ -221,11 +266,19 @@ void __init early_setup(unsigned long dt_ptr)
 	 */
 	early_init_devtree(__va(dt_ptr));
 
+<<<<<<< HEAD
 	/* Now we know the logical id of our boot cpu, setup the paca. */
 	setup_paca(&paca[boot_cpuid]);
 
 	/* Fix up paca fields required for the boot cpu */
 	get_paca()->cpu_start = 1;
+=======
+	epapr_paravirt_early_init();
+
+	/* Now we know the logical id of our boot cpu, setup the paca. */
+	setup_paca(&paca[boot_cpuid]);
+	fixup_boot_paca();
+>>>>>>> refs/remotes/origin/master
 
 	/* Probe the machine type */
 	probe_machine();
@@ -238,7 +291,12 @@ void __init early_setup(unsigned long dt_ptr)
 	early_init_mmu();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+	kvm_cma_reserve();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Reserve any gigantic pages requested on the command line.
 	 * memblock needs to have been initialized by the time this is
@@ -246,8 +304,24 @@ void __init early_setup(unsigned long dt_ptr)
 	 */
 	reserve_hugetlb_gpages();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	DBG(" <- early_setup()\n");
+=======
+	DBG(" <- early_setup()\n");
+
+#ifdef CONFIG_PPC_EARLY_DEBUG_BOOTX
+	/*
+	 * This needs to be done *last* (after the above DBG() even)
+	 *
+	 * Right after we return from this function, we turn on the MMU
+	 * which means the real-mode access trick that btext does will
+	 * no longer work, it needs to switch to using a real MMU
+	 * mapping. This call will ensure that it does
+	 */
+	btext_map();
+#endif /* CONFIG_PPC_EARLY_DEBUG_BOOTX */
+>>>>>>> refs/remotes/origin/master
 }
 
 #ifdef CONFIG_SMP
@@ -285,18 +359,24 @@ void smp_release_cpus(void)
 		mb();
 		HMT_low();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (boot_cpu_count == 0)
 			break;
 		udelay(1);
 	}
 	DBG("boot_cpu_count = %d\n", boot_cpu_count);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (spinning_secondaries == 0)
 			break;
 		udelay(1);
 	}
 	DBG("spinning_secondaries = %d\n", spinning_secondaries);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	DBG(" <- smp_release_cpus()\n");
 }
@@ -317,6 +397,7 @@ static void __init initialize_cache_info(void)
 	DBG(" -> initialize_cache_info()\n");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (np = NULL; (np = of_find_node_by_type(np, "cpu"));) {
 		num_cpus += 1;
 
@@ -326,6 +407,8 @@ static void __init initialize_cache_info(void)
 
 		if ( num_cpus == 1 ) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for_each_node_by_type(np, "cpu") {
 		num_cpus += 1;
 
@@ -334,14 +417,19 @@ static void __init initialize_cache_info(void)
 		 * d-cache and i-cache sizes... -Peter
 		 */
 		if (num_cpus == 1) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			const u32 *sizep, *lsizep;
+=======
+			const __be32 *sizep, *lsizep;
+>>>>>>> refs/remotes/origin/master
 			u32 size, lsize;
 
 			size = 0;
 			lsize = cur_cpu_spec->dcache_bsize;
 			sizep = of_get_property(np, "d-cache-size", NULL);
 			if (sizep != NULL)
+<<<<<<< HEAD
 				size = *sizep;
 <<<<<<< HEAD
 			lsizep = of_get_property(np, "d-cache-block-size", NULL);
@@ -349,6 +437,9 @@ static void __init initialize_cache_info(void)
 			if (lsizep == NULL)
 				lsizep = of_get_property(np, "d-cache-line-size", NULL);
 =======
+=======
+				size = be32_to_cpu(*sizep);
+>>>>>>> refs/remotes/origin/master
 			lsizep = of_get_property(np, "d-cache-block-size",
 						 NULL);
 			/* fallback if block size missing */
@@ -356,10 +447,16 @@ static void __init initialize_cache_info(void)
 				lsizep = of_get_property(np,
 							 "d-cache-line-size",
 							 NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			if (lsizep != NULL)
 				lsize = *lsizep;
 			if (sizep == 0 || lsizep == 0)
+=======
+			if (lsizep != NULL)
+				lsize = be32_to_cpu(*lsizep);
+			if (sizep == NULL || lsizep == NULL)
+>>>>>>> refs/remotes/origin/master
 				DBG("Argh, can't find dcache properties ! "
 				    "sizep: %p, lsizep: %p\n", sizep, lsizep);
 
@@ -372,22 +469,32 @@ static void __init initialize_cache_info(void)
 			lsize = cur_cpu_spec->icache_bsize;
 			sizep = of_get_property(np, "i-cache-size", NULL);
 			if (sizep != NULL)
+<<<<<<< HEAD
 				size = *sizep;
 <<<<<<< HEAD
 			lsizep = of_get_property(np, "i-cache-block-size", NULL);
 			if (lsizep == NULL)
 				lsizep = of_get_property(np, "i-cache-line-size", NULL);
 =======
+=======
+				size = be32_to_cpu(*sizep);
+>>>>>>> refs/remotes/origin/master
 			lsizep = of_get_property(np, "i-cache-block-size",
 						 NULL);
 			if (lsizep == NULL)
 				lsizep = of_get_property(np,
 							 "i-cache-line-size",
 							 NULL);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 			if (lsizep != NULL)
 				lsize = *lsizep;
 			if (sizep == 0 || lsizep == 0)
+=======
+			if (lsizep != NULL)
+				lsize = be32_to_cpu(*lsizep);
+			if (sizep == NULL || lsizep == NULL)
+>>>>>>> refs/remotes/origin/master
 				DBG("Argh, can't find icache properties ! "
 				    "sizep: %p, lsizep: %p\n", sizep, lsizep);
 
@@ -616,9 +723,12 @@ void __init setup_arch(char **cmdline_p)
 	dcache_bsize = ppc64_caches.dline_size;
 	icache_bsize = ppc64_caches.iline_size;
 
+<<<<<<< HEAD
 	/* reboot on panic */
 	panic_timeout = 180;
 
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ppc_md.panic)
 		setup_panic();
 
@@ -626,7 +736,13 @@ void __init setup_arch(char **cmdline_p)
 	init_mm.end_code = (unsigned long) _etext;
 	init_mm.end_data = (unsigned long) _edata;
 	init_mm.brk = klimit;
+<<<<<<< HEAD
 	
+=======
+#ifdef CONFIG_PPC_64K_PAGES
+	init_mm.context.pte_frag = NULL;
+#endif
+>>>>>>> refs/remotes/origin/master
 	irqstack_early_init();
 	exc_lvl_early_init();
 	emergency_stack_init();
@@ -651,10 +767,18 @@ void __init setup_arch(char **cmdline_p)
 	mmu_context_init();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	kvm_linear_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Interrupt code needs to be 64K-aligned */
+	if ((unsigned long)_stext & 0xffff)
+		panic("Kernelbase not 64K-aligned (0x%lx)!\n",
+		      (unsigned long)_stext);
+
+>>>>>>> refs/remotes/origin/master
 	ppc64_boot_msg(0x15, "Setup Done");
 }
 
@@ -740,8 +864,15 @@ void __init setup_per_cpu_areas(void)
 #endif
 
 
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_INDIRECT_IO
 struct ppc_pci_io ppc_pci_io;
 EXPORT_SYMBOL(ppc_pci_io);
 #endif /* CONFIG_PPC_INDIRECT_IO */
 
+=======
+#if defined(CONFIG_PPC_INDIRECT_PIO) || defined(CONFIG_PPC_INDIRECT_MMIO)
+struct ppc_pci_io ppc_pci_io;
+EXPORT_SYMBOL(ppc_pci_io);
+#endif
+>>>>>>> refs/remotes/origin/master

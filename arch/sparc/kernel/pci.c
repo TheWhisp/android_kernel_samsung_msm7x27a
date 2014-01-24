@@ -9,10 +9,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/sched.h>
@@ -235,11 +239,16 @@ static void pci_parse_of_addrs(struct platform_device *op,
 		} else if (i == dev->rom_base_reg) {
 			res = &dev->resource[PCI_ROM_RESOURCE];
 <<<<<<< HEAD
+<<<<<<< HEAD
 			flags |= IORESOURCE_READONLY | IORESOURCE_CACHEABLE;
 =======
 			flags |= IORESOURCE_READONLY | IORESOURCE_CACHEABLE
 			      | IORESOURCE_SIZEALIGN;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			flags |= IORESOURCE_READONLY | IORESOURCE_CACHEABLE
+			      | IORESOURCE_SIZEALIGN;
+>>>>>>> refs/remotes/origin/master
 		} else {
 			printk(KERN_ERR "PCI: bad cfg reg num 0x%x\n", i);
 			continue;
@@ -262,7 +271,11 @@ static struct pci_dev *of_create_pci_dev(struct pci_pbm_info *pbm,
 	const char *type;
 	u32 class;
 
+<<<<<<< HEAD
 	dev = alloc_pci_dev();
+=======
+	dev = pci_alloc_dev(bus);
+>>>>>>> refs/remotes/origin/master
 	if (!dev)
 		return NULL;
 
@@ -289,6 +302,7 @@ static struct pci_dev *of_create_pci_dev(struct pci_pbm_info *pbm,
 		printk("    create device, devfn: %x, type: %s\n",
 		       devfn, type);
 
+<<<<<<< HEAD
 	dev->bus = bus;
 	dev->sysdata = node;
 	dev->dev.parent = bus->bridge;
@@ -298,6 +312,12 @@ static struct pci_dev *of_create_pci_dev(struct pci_pbm_info *pbm,
 =======
 	dev->dev.of_node = of_node_get(node);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	dev->sysdata = node;
+	dev->dev.parent = bus->bridge;
+	dev->dev.bus = &pci_bus_type;
+	dev->dev.of_node = of_node_get(node);
+>>>>>>> refs/remotes/origin/master
 	dev->devfn = devfn;
 	dev->multifunction = 0;		/* maybe a lie? */
 	set_pcie_port_type(dev);
@@ -339,7 +359,11 @@ static struct pci_dev *of_create_pci_dev(struct pci_pbm_info *pbm,
 	if ((dev->class >> 8) == PCI_CLASS_STORAGE_IDE)
 		pci_set_master(dev);
 
+<<<<<<< HEAD
 	dev->current_state = 4;		/* unknown power state */
+=======
+	dev->current_state = PCI_UNKNOWN;	/* unknown power state */
+>>>>>>> refs/remotes/origin/master
 	dev->error_state = pci_channel_io_normal;
 	dev->dma_mask = 0xffffffff;
 
@@ -368,7 +392,11 @@ static struct pci_dev *of_create_pci_dev(struct pci_pbm_info *pbm,
 	return dev;
 }
 
+<<<<<<< HEAD
 static void __devinit apb_calc_first_last(u8 map, u32 *first_p, u32 *last_p)
+=======
+static void apb_calc_first_last(u8 map, u32 *first_p, u32 *last_p)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 idx, first, last;
 
@@ -387,6 +415,7 @@ static void __devinit apb_calc_first_last(u8 map, u32 *first_p, u32 *last_p)
 	*last_p = last;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void pci_resource_adjust(struct resource *res,
 				struct resource *root)
@@ -519,6 +548,16 @@ static void __devinit apb_fake_ranges(struct pci_dev *dev,
 =======
 	struct pci_bus_region region;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Cook up fake bus resources for SUNW,simba PCI bridges which lack
+ * a proper 'ranges' property.
+ */
+static void apb_fake_ranges(struct pci_dev *dev,
+			    struct pci_bus *bus,
+			    struct pci_pbm_info *pbm)
+{
+	struct pci_bus_region region;
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 	u32 first, last;
 	u8 map;
@@ -527,20 +566,27 @@ static void __devinit apb_fake_ranges(struct pci_dev *dev,
 	apb_calc_first_last(map, &first, &last);
 	res = bus->resource[0];
 <<<<<<< HEAD
+<<<<<<< HEAD
 	res->start = (first << 21);
 	res->end = (last << 21) + ((1 << 21) - 1);
 	res->flags = IORESOURCE_IO;
 	pci_resource_adjust(res, &pbm->io_space);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	res->flags = IORESOURCE_IO;
 	region.start = (first << 21);
 	region.end = (last << 21) + ((1 << 21) - 1);
 	pcibios_bus_to_resource(dev, res, &region);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pci_read_config_byte(dev, APB_MEM_ADDRESS_MAP, &map);
 	apb_calc_first_last(map, &first, &last);
 	res = bus->resource[1];
+<<<<<<< HEAD
 <<<<<<< HEAD
 	res->start = (first << 21);
 	res->end = (last << 21) + ((1 << 21) - 1);
@@ -563,14 +609,35 @@ static void __devinit pci_of_scan_bus(struct pci_pbm_info *pbm,
 static void __devinit of_scan_pci_bridge(struct pci_pbm_info *pbm,
 					 struct device_node *node,
 					 struct pci_dev *dev)
+=======
+	res->flags = IORESOURCE_MEM;
+	region.start = (first << 29);
+	region.end = (last << 29) + ((1 << 29) - 1);
+	pcibios_bus_to_resource(dev, res, &region);
+}
+
+static void pci_of_scan_bus(struct pci_pbm_info *pbm,
+			    struct device_node *node,
+			    struct pci_bus *bus);
+
+#define GET_64BIT(prop, i)	((((u64) (prop)[(i)]) << 32) | (prop)[(i)+1])
+
+static void of_scan_pci_bridge(struct pci_pbm_info *pbm,
+			       struct device_node *node,
+			       struct pci_dev *dev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_bus *bus;
 	const u32 *busrange, *ranges;
 	int len, i, simba;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct pci_bus_region region;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct pci_bus_region region;
+>>>>>>> refs/remotes/origin/master
 	struct resource *res;
 	unsigned int flags;
 	u64 size;
@@ -601,7 +668,11 @@ static void __devinit of_scan_pci_bridge(struct pci_pbm_info *pbm,
 	}
 
 	bus->primary = dev->bus->number;
+<<<<<<< HEAD
 	bus->subordinate = busrange[1];
+=======
+	pci_bus_insert_busn_res(bus, busrange[0], busrange[1]);
+>>>>>>> refs/remotes/origin/master
 	bus->bridge_ctl = 0;
 
 	/* parse ranges property, or cook one up by hand for Simba */
@@ -616,16 +687,23 @@ static void __devinit of_scan_pci_bridge(struct pci_pbm_info *pbm,
 		apb_fake_ranges(dev, bus, pbm);
 		goto after_ranges;
 	} else if (ranges == NULL) {
+<<<<<<< HEAD
 		pci_cfg_fake_ranges(dev, bus, pbm);
+=======
+		pci_read_bridge_bases(bus);
+>>>>>>> refs/remotes/origin/master
 		goto after_ranges;
 	}
 	i = 1;
 	for (; len >= 32; len -= 32, ranges += 8) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		struct resource *root;
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		flags = pci_parse_of_flags(ranges[0]);
 		size = GET_64BIT(ranges, 6);
 		if (flags == 0 || size == 0)
@@ -638,9 +716,12 @@ static void __devinit of_scan_pci_bridge(struct pci_pbm_info *pbm,
 				continue;
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
 			root = &pbm->io_space;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		} else {
 			if (i >= PCI_NUM_RESOURCES - PCI_BRIDGE_RESOURCES) {
 				printk(KERN_ERR "PCI: too many memory ranges"
@@ -649,6 +730,7 @@ static void __devinit of_scan_pci_bridge(struct pci_pbm_info *pbm,
 			}
 			res = bus->resource[i];
 			++i;
+<<<<<<< HEAD
 <<<<<<< HEAD
 			root = &pbm->mem_space;
 		}
@@ -663,13 +745,18 @@ static void __devinit of_scan_pci_bridge(struct pci_pbm_info *pbm,
 		 */
 		pci_resource_adjust(res, root);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 		res->flags = flags;
 		region.start = GET_64BIT(ranges, 1);
 		region.end = region.start + size - 1;
 		pcibios_bus_to_resource(dev, res, &region);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 after_ranges:
 	sprintf(bus->name, "PCI Bus %04x:%02x", pci_domain_nr(bus),
@@ -680,9 +767,15 @@ after_ranges:
 	pci_of_scan_bus(pbm, node, bus);
 }
 
+<<<<<<< HEAD
 static void __devinit pci_of_scan_bus(struct pci_pbm_info *pbm,
 				      struct device_node *node,
 				      struct pci_bus *bus)
+=======
+static void pci_of_scan_bus(struct pci_pbm_info *pbm,
+			    struct device_node *node,
+			    struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device_node *child;
 	const u32 *reg;
@@ -741,7 +834,11 @@ show_pciobppath_attr(struct device * dev, struct device_attribute * attr, char *
 
 static DEVICE_ATTR(obppath, S_IRUSR | S_IRGRP | S_IROTH, show_pciobppath_attr, NULL);
 
+<<<<<<< HEAD
 static void __devinit pci_bus_register_of_sysfs(struct pci_bus *bus)
+=======
+static void pci_bus_register_of_sysfs(struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pci_dev *dev;
 	struct pci_bus *child_bus;
@@ -762,6 +859,7 @@ static void __devinit pci_bus_register_of_sysfs(struct pci_bus *bus)
 		pci_bus_register_of_sysfs(child_bus);
 }
 
+<<<<<<< HEAD
 struct pci_bus * __devinit pci_scan_one_pbm(struct pci_pbm_info *pbm,
 					    struct device *parent)
 {
@@ -769,27 +867,44 @@ struct pci_bus * __devinit pci_scan_one_pbm(struct pci_pbm_info *pbm,
 =======
 	LIST_HEAD(resources);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct pci_bus *pci_scan_one_pbm(struct pci_pbm_info *pbm,
+				 struct device *parent)
+{
+	LIST_HEAD(resources);
+>>>>>>> refs/remotes/origin/master
 	struct device_node *node = pbm->op->dev.of_node;
 	struct pci_bus *bus;
 
 	printk("PCI: Scanning PBM %s\n", node->full_name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bus = pci_create_bus(parent, pbm->pci_first_busno, pbm->pci_ops, pbm);
 	if (!bus) {
 		printk(KERN_ERR "Failed to create bus for %s\n",
 		       node->full_name);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pci_add_resource_offset(&resources, &pbm->io_space,
 				pbm->io_space.start);
 	pci_add_resource_offset(&resources, &pbm->mem_space,
 				pbm->mem_space.start);
+<<<<<<< HEAD
+=======
+	pbm->busn.start = pbm->pci_first_busno;
+	pbm->busn.end	= pbm->pci_last_busno;
+	pbm->busn.flags	= IORESOURCE_BUS;
+	pci_add_resource(&resources, &pbm->busn);
+>>>>>>> refs/remotes/origin/master
 	bus = pci_create_root_bus(parent, pbm->pci_first_busno, pbm->pci_ops,
 				  pbm, &resources);
 	if (!bus) {
 		printk(KERN_ERR "Failed to create bus for %s\n",
 		       node->full_name);
 		pci_free_resource_list(&resources);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		return NULL;
 	}
@@ -802,6 +917,11 @@ struct pci_bus * __devinit pci_scan_one_pbm(struct pci_pbm_info *pbm,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return NULL;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	pci_of_scan_bus(pbm, node, bus);
 	pci_bus_add_devices(bus);
 	pci_bus_register_of_sysfs(bus);
@@ -809,6 +929,7 @@ struct pci_bus * __devinit pci_scan_one_pbm(struct pci_pbm_info *pbm,
 	return bus;
 }
 
+<<<<<<< HEAD
 void __devinit pcibios_fixup_bus(struct pci_bus *pbus)
 {
 <<<<<<< HEAD
@@ -824,6 +945,9 @@ void __devinit pcibios_fixup_bus(struct pci_bus *pbus)
 }
 
 void pcibios_update_irq(struct pci_dev *pdev, int irq)
+=======
+void pcibios_fixup_bus(struct pci_bus *pbus)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -863,6 +987,7 @@ int pcibios_enable_device(struct pci_dev *dev, int mask)
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void pcibios_resource_to_bus(struct pci_dev *pdev, struct pci_bus_region *region,
 			     struct resource *res)
@@ -911,6 +1036,8 @@ char * __devinit pcibios_setup(char *str)
 	return str;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Platform support for /proc/bus/pci/X/Y mmap()s. */
 
 /* If the user uses a host-bridge as the PCI device, he may use
@@ -928,6 +1055,7 @@ static int __pci_mmap_make_offset_bus(struct pci_dev *pdev, struct vm_area_struc
 
 	if (mmap_state == pci_mmap_io) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		space_size = (pbm->io_space.end -
 			      pbm->io_space.start) + 1;
 	} else {
@@ -938,6 +1066,11 @@ static int __pci_mmap_make_offset_bus(struct pci_dev *pdev, struct vm_area_struc
 	} else {
 		space_size = resource_size(&pbm->mem_space);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		space_size = resource_size(&pbm->io_space);
+	} else {
+		space_size = resource_size(&pbm->mem_space);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Make sure the request is in range. */
@@ -1034,6 +1167,7 @@ static int __pci_mmap_make_offset(struct pci_dev *pdev,
 	return 0;
 }
 
+<<<<<<< HEAD
 /* Set vm_flags of VMA, as appropriate for this architecture, for a pci device
  * mapping.
  */
@@ -1043,6 +1177,8 @@ static void __pci_mmap_set_flags(struct pci_dev *dev, struct vm_area_struct *vma
 	vma->vm_flags |= (VM_IO | VM_RESERVED);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Set vm_page_prot of VMA, as appropriate for this architecture, for a pci
  * device mapping.
  */
@@ -1070,7 +1206,10 @@ int pci_mmap_page_range(struct pci_dev *dev, struct vm_area_struct *vma,
 	if (ret < 0)
 		return ret;
 
+<<<<<<< HEAD
 	__pci_mmap_set_flags(dev, vma, mmap_state);
+=======
+>>>>>>> refs/remotes/origin/master
 	__pci_mmap_set_pgprot(dev, vma, mmap_state);
 
 	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
@@ -1135,6 +1274,7 @@ void arch_teardown_msi_irq(unsigned int irq)
 #endif /* !(CONFIG_PCI_MSI) */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct device_node *pci_device_to_OF_node(struct pci_dev *pdev)
 {
 	return pdev->dev.of_node;
@@ -1143,6 +1283,8 @@ EXPORT_SYMBOL(pci_device_to_OF_node);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void ali_sound_dma_hack(struct pci_dev *pdev, int set_bit)
 {
 	struct pci_dev *ali_isa_bridge;
@@ -1207,13 +1349,19 @@ void pci_resource_to_user(const struct pci_dev *pdev, int bar,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void pcibios_set_master(struct pci_dev *dev)
 {
 	/* No special bus mastering setup handling */
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init pcibios_init(void)
 {
 	pci_dfl_cache_line_size = 64 >> 2;
@@ -1222,8 +1370,12 @@ static int __init pcibios_init(void)
 subsys_initcall(pcibios_init);
 
 #ifdef CONFIG_SYSFS
+<<<<<<< HEAD
 static void __devinit pci_bus_slot_names(struct device_node *node,
 					 struct pci_bus *bus)
+=======
+static void pci_bus_slot_names(struct device_node *node, struct pci_bus *bus)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct pci_slot_names {
 		u32	slot_mask;

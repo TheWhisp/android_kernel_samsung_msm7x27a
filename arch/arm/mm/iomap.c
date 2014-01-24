@@ -10,11 +10,17 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 unsigned long vga_base;
 EXPORT_SYMBOL(vga_base);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+unsigned long vga_base;
+EXPORT_SYMBOL(vga_base);
+
+>>>>>>> refs/remotes/origin/master
 #ifdef __io
 void __iomem *ioport_map(unsigned long port, unsigned int nr)
 {
@@ -29,6 +35,7 @@ EXPORT_SYMBOL(ioport_unmap);
 #endif
 
 #ifdef CONFIG_PCI
+<<<<<<< HEAD
 <<<<<<< HEAD
 void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 {
@@ -51,12 +58,17 @@ void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
 }
 EXPORT_SYMBOL(pci_iomap);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 unsigned long pcibios_min_io = 0x1000;
 EXPORT_SYMBOL(pcibios_min_io);
 
 unsigned long pcibios_min_mem = 0x01000000;
 EXPORT_SYMBOL(pcibios_min_mem);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
 {

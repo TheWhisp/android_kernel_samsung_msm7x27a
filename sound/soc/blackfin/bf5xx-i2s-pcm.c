@@ -13,11 +13,16 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
 <<<<<<< HEAD
+<<<<<<< HEAD
  * the Free Software Foundation; only version 2 of the License.
 =======
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,8 +48,13 @@
 
 #include <asm/dma.h>
 
+<<<<<<< HEAD
 #include "bf5xx-i2s-pcm.h"
 #include "bf5xx-sport.h"
+=======
+#include "bf5xx-sport.h"
+#include "bf5xx-i2s-pcm.h"
+>>>>>>> refs/remotes/origin/master
 
 static void bf5xx_dma_irq(void *data)
 {
@@ -54,12 +64,17 @@ static void bf5xx_dma_irq(void *data)
 
 static const struct snd_pcm_hardware bf5xx_pcm_hardware = {
 	.info			= SNDRV_PCM_INFO_INTERLEAVED |
+<<<<<<< HEAD
 				   SNDRV_PCM_INFO_MMAP |
 				   SNDRV_PCM_INFO_MMAP_VALID |
 				   SNDRV_PCM_INFO_BLOCK_TRANSFER,
 	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
 				   SNDRV_PCM_FMTBIT_S24_LE |
 				   SNDRV_PCM_FMTBIT_S32_LE,
+=======
+				   SNDRV_PCM_INFO_MMAP_VALID |
+				   SNDRV_PCM_INFO_BLOCK_TRANSFER,
+>>>>>>> refs/remotes/origin/master
 	.period_bytes_min	= 32,
 	.period_bytes_max	= 0x10000,
 	.periods_min		= 1,
@@ -71,10 +86,23 @@ static const struct snd_pcm_hardware bf5xx_pcm_hardware = {
 static int bf5xx_pcm_hw_params(struct snd_pcm_substream *substream,
 	struct snd_pcm_hw_params *params)
 {
+<<<<<<< HEAD
 	size_t size = bf5xx_pcm_hardware.buffer_bytes_max;
 	snd_pcm_lib_malloc_pages(substream, size);
 
 	return 0;
+=======
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	unsigned int buffer_size = params_buffer_bytes(params);
+	struct bf5xx_i2s_pcm_data *dma_data;
+
+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+	if (dma_data->tdm_mode)
+		buffer_size = buffer_size / params_channels(params) * 8;
+
+	return snd_pcm_lib_malloc_pages(substream, buffer_size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int bf5xx_pcm_hw_free(struct snd_pcm_substream *substream)
@@ -86,9 +114,22 @@ static int bf5xx_pcm_hw_free(struct snd_pcm_substream *substream)
 
 static int bf5xx_pcm_prepare(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct sport_device *sport = runtime->private_data;
 	int period_bytes = frames_to_bytes(runtime, runtime->period_size);
+=======
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	struct sport_device *sport = runtime->private_data;
+	int period_bytes = frames_to_bytes(runtime, runtime->period_size);
+	struct bf5xx_i2s_pcm_data *dma_data;
+
+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+	if (dma_data->tdm_mode)
+		period_bytes = period_bytes / runtime->channels * 8;
+>>>>>>> refs/remotes/origin/master
 
 	pr_debug("%s enter\n", __func__);
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
@@ -135,10 +176,21 @@ static int bf5xx_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 
 static snd_pcm_uframes_t bf5xx_pcm_pointer(struct snd_pcm_substream *substream)
 {
+<<<<<<< HEAD
+=======
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>>>>>>> refs/remotes/origin/master
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct sport_device *sport = runtime->private_data;
 	unsigned int diff;
 	snd_pcm_uframes_t frames;
+<<<<<<< HEAD
+=======
+	struct bf5xx_i2s_pcm_data *dma_data;
+
+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+>>>>>>> refs/remotes/origin/master
 	pr_debug("%s enter\n", __func__);
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		diff = sport_curr_offset_tx(sport);
@@ -155,6 +207,11 @@ static snd_pcm_uframes_t bf5xx_pcm_pointer(struct snd_pcm_substream *substream)
 		diff = 0;
 
 	frames = bytes_to_frames(substream->runtime, diff);
+<<<<<<< HEAD
+=======
+	if (dma_data->tdm_mode)
+		frames = frames * runtime->channels / 8;
+>>>>>>> refs/remotes/origin/master
 
 	return frames;
 }
@@ -166,6 +223,7 @@ static int bf5xx_pcm_open(struct snd_pcm_substream *substream)
 	struct sport_device *sport_handle = snd_soc_dai_get_drvdata(cpu_dai);
 	struct snd_pcm_runtime *runtime = substream->runtime;
 	struct snd_dma_buffer *buf = &substream->dma_buffer;
+<<<<<<< HEAD
 	int ret;
 
 	pr_debug("%s enter\n", __func__);
@@ -177,6 +235,22 @@ static int bf5xx_pcm_open(struct snd_pcm_substream *substream)
 =======
 	ret = snd_pcm_hw_constraint_integer(runtime,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bf5xx_i2s_pcm_data *dma_data;
+	int ret;
+
+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+	pr_debug("%s enter\n", __func__);
+
+	snd_soc_set_runtime_hwparams(substream, &bf5xx_pcm_hardware);
+	if (dma_data->tdm_mode)
+		runtime->hw.buffer_bytes_max /= 4;
+	else
+		runtime->hw.info |= SNDRV_PCM_INFO_MMAP;
+
+	ret = snd_pcm_hw_constraint_integer(runtime,
+>>>>>>> refs/remotes/origin/master
 			SNDRV_PCM_HW_PARAM_PERIODS);
 	if (ret < 0)
 		goto out;
@@ -210,6 +284,7 @@ static int bf5xx_pcm_mmap(struct snd_pcm_substream *substream,
 	return 0 ;
 }
 
+<<<<<<< HEAD
 static struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
 	.open		= bf5xx_pcm_open,
 	.ioctl		= snd_pcm_lib_ioctl,
@@ -240,10 +315,66 @@ static int bf5xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
 
 	pr_debug("%s, area:%p, size:0x%08lx\n", __func__,
 		buf->area, buf->bytes);
+=======
+static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
+	snd_pcm_uframes_t pos, void *buf, snd_pcm_uframes_t count)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	unsigned int sample_size = runtime->sample_bits / 8;
+	struct bf5xx_i2s_pcm_data *dma_data;
+	unsigned int i;
+	void *src, *dst;
+
+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+	if (dma_data->tdm_mode) {
+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+			src = buf;
+			dst = runtime->dma_area;
+			dst += pos * sample_size * 8;
+
+			while (count--) {
+				for (i = 0; i < runtime->channels; i++) {
+					memcpy(dst + dma_data->map[i] *
+						sample_size, src, sample_size);
+					src += sample_size;
+				}
+				dst += 8 * sample_size;
+			}
+		} else {
+			src = runtime->dma_area;
+			src += pos * sample_size * 8;
+			dst = buf;
+
+			while (count--) {
+				for (i = 0; i < runtime->channels; i++) {
+					memcpy(dst, src + dma_data->map[i] *
+						sample_size, sample_size);
+					dst += sample_size;
+				}
+				src += 8 * sample_size;
+			}
+		}
+	} else {
+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+			src = buf;
+			dst = runtime->dma_area;
+			dst += frames_to_bytes(runtime, pos);
+		} else {
+			src = runtime->dma_area;
+			src += frames_to_bytes(runtime, pos);
+			dst = buf;
+		}
+
+		memcpy(dst, src, frames_to_bytes(runtime, count));
+	}
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static void bf5xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
 {
 	struct snd_pcm_substream *substream;
@@ -307,20 +438,83 @@ static int bf5xx_pcm_i2s_new(struct snd_soc_pcm_runtime *rtd)
 	}
  out:
 	return ret;
+=======
+static int bf5xx_pcm_silence(struct snd_pcm_substream *substream,
+	int channel, snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	unsigned int sample_size = runtime->sample_bits / 8;
+	void *buf = runtime->dma_area;
+	struct bf5xx_i2s_pcm_data *dma_data;
+	unsigned int offset, size;
+
+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+	if (dma_data->tdm_mode) {
+		offset = pos * 8 * sample_size;
+		size = count * 8 * sample_size;
+	} else {
+		offset = frames_to_bytes(runtime, pos);
+		size = frames_to_bytes(runtime, count);
+	}
+
+	snd_pcm_format_set_silence(runtime->format, buf + offset, size);
+
+	return 0;
+}
+
+static struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
+	.open		= bf5xx_pcm_open,
+	.ioctl		= snd_pcm_lib_ioctl,
+	.hw_params	= bf5xx_pcm_hw_params,
+	.hw_free	= bf5xx_pcm_hw_free,
+	.prepare	= bf5xx_pcm_prepare,
+	.trigger	= bf5xx_pcm_trigger,
+	.pointer	= bf5xx_pcm_pointer,
+	.mmap		= bf5xx_pcm_mmap,
+	.copy		= bf5xx_pcm_copy,
+	.silence	= bf5xx_pcm_silence,
+};
+
+static int bf5xx_pcm_i2s_new(struct snd_soc_pcm_runtime *rtd)
+{
+	struct snd_card *card = rtd->card->snd_card;
+	size_t size = bf5xx_pcm_hardware.buffer_bytes_max;
+	int ret;
+
+	pr_debug("%s enter\n", __func__);
+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
+	if (ret)
+		return ret;
+
+	return snd_pcm_lib_preallocate_pages_for_all(rtd->pcm,
+				SNDRV_DMA_TYPE_DEV, card->dev, size, size);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct snd_soc_platform_driver bf5xx_i2s_soc_platform = {
 	.ops		= &bf5xx_pcm_i2s_ops,
 	.pcm_new	= bf5xx_pcm_i2s_new,
+<<<<<<< HEAD
 	.pcm_free	= bf5xx_pcm_free_dma_buffers,
 };
 
 static int __devinit bfin_i2s_soc_platform_probe(struct platform_device *pdev)
+=======
+};
+
+static int bfin_i2s_soc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev, &bf5xx_i2s_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit bfin_i2s_soc_platform_remove(struct platform_device *pdev)
+=======
+static int bfin_i2s_soc_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
@@ -328,6 +522,7 @@ static int __devexit bfin_i2s_soc_platform_remove(struct platform_device *pdev)
 
 static struct platform_driver bfin_i2s_pcm_driver = {
 	.driver = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 			.name = "bfin-i2s-pcm-audio",
 			.owner = THIS_MODULE,
@@ -358,9 +553,22 @@ MODULE_AUTHOR("Cliff Cai");
 MODULE_DESCRIPTION("ADI Blackfin I2S PCM DMA module");
 MODULE_LICENSE("GPL v2");
 =======
+=======
+		.name = "bfin-i2s-pcm-audio",
+		.owner = THIS_MODULE,
+	},
+
+	.probe = bfin_i2s_soc_platform_probe,
+	.remove = bfin_i2s_soc_platform_remove,
+};
+
+>>>>>>> refs/remotes/origin/master
 module_platform_driver(bfin_i2s_pcm_driver);
 
 MODULE_AUTHOR("Cliff Cai");
 MODULE_DESCRIPTION("ADI Blackfin I2S PCM DMA module");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

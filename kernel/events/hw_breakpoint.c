@@ -46,6 +46,7 @@
 #include <linux/smp.h>
 
 #include <linux/hw_breakpoint.h>
+<<<<<<< HEAD
 
 
 /*
@@ -63,6 +64,28 @@ static DEFINE_PER_CPU(unsigned int, nr_bp_flexible[TYPE_MAX]);
 
 static int nr_slots[TYPE_MAX];
 
+=======
+/*
+ * Constraints data
+ */
+struct bp_cpuinfo {
+	/* Number of pinned cpu breakpoints in a cpu */
+	unsigned int	cpu_pinned;
+	/* tsk_pinned[n] is the number of tasks having n+1 breakpoints */
+	unsigned int	*tsk_pinned;
+	/* Number of non-pinned cpu/task breakpoints in a cpu */
+	unsigned int	flexible; /* XXX: placeholder, see fetch_this_slot() */
+};
+
+static DEFINE_PER_CPU(struct bp_cpuinfo, bp_cpuinfo[TYPE_MAX]);
+static int nr_slots[TYPE_MAX];
+
+static struct bp_cpuinfo *get_bp_info(int cpu, enum bp_type_idx type)
+{
+	return per_cpu_ptr(bp_cpuinfo + type, cpu);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* Keep track of the breakpoints attached to tasks */
 static LIST_HEAD(bp_task_head);
 
@@ -96,8 +119,13 @@ static inline enum bp_type_idx find_slot_idx(struct perf_event *bp)
  */
 static unsigned int max_task_bp_pinned(int cpu, enum bp_type_idx type)
 {
+<<<<<<< HEAD
 	int i;
 	unsigned int *tsk_pinned = per_cpu(nr_task_bp_pinned[type], cpu);
+=======
+	unsigned int *tsk_pinned = get_bp_info(cpu, type)->tsk_pinned;
+	int i;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = nr_slots[type] - 1; i >= 0; i--) {
 		if (tsk_pinned[i] > 0)
@@ -111,20 +139,40 @@ static unsigned int max_task_bp_pinned(int cpu, enum bp_type_idx type)
  * Count the number of breakpoints of the same type and same task.
  * The given event must be not on the list.
  */
+<<<<<<< HEAD
 static int task_bp_pinned(struct perf_event *bp, enum bp_type_idx type)
+=======
+static int task_bp_pinned(int cpu, struct perf_event *bp, enum bp_type_idx type)
+>>>>>>> refs/remotes/origin/master
 {
 	struct task_struct *tsk = bp->hw.bp_target;
 	struct perf_event *iter;
 	int count = 0;
 
 	list_for_each_entry(iter, &bp_task_head, hw.bp_list) {
+<<<<<<< HEAD
 		if (iter->hw.bp_target == tsk && find_slot_idx(iter) == type)
+=======
+		if (iter->hw.bp_target == tsk &&
+		    find_slot_idx(iter) == type &&
+		    (iter->cpu < 0 || cpu == iter->cpu))
+>>>>>>> refs/remotes/origin/master
 			count += hw_breakpoint_weight(iter);
 	}
 
 	return count;
 }
 
+<<<<<<< HEAD
+=======
+static const struct cpumask *cpumask_of_bp(struct perf_event *bp)
+{
+	if (bp->cpu >= 0)
+		return cpumask_of(bp->cpu);
+	return cpu_possible_mask;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Report the number of pinned/un-pinned breakpoints we have in
  * a given cpu (cpu > -1) or in all of them (cpu = -1).
@@ -133,6 +181,7 @@ static void
 fetch_bp_busy_slots(struct bp_busy_slots *slots, struct perf_event *bp,
 		    enum bp_type_idx type)
 {
+<<<<<<< HEAD
 	int cpu = bp->cpu;
 	struct task_struct *tsk = bp->hw.bp_target;
 
@@ -155,12 +204,30 @@ fetch_bp_busy_slots(struct bp_busy_slots *slots, struct perf_event *bp,
 			nr += max_task_bp_pinned(cpu, type);
 		else
 			nr += task_bp_pinned(bp, type);
+=======
+	const struct cpumask *cpumask = cpumask_of_bp(bp);
+	int cpu;
+
+	for_each_cpu(cpu, cpumask) {
+		struct bp_cpuinfo *info = get_bp_info(cpu, type);
+		int nr;
+
+		nr = info->cpu_pinned;
+		if (!bp->hw.bp_target)
+			nr += max_task_bp_pinned(cpu, type);
+		else
+			nr += task_bp_pinned(cpu, bp, type);
+>>>>>>> refs/remotes/origin/master
 
 		if (nr > slots->pinned)
 			slots->pinned = nr;
 
+<<<<<<< HEAD
 		nr = per_cpu(nr_bp_flexible[type], cpu);
 
+=======
+		nr = info->flexible;
+>>>>>>> refs/remotes/origin/master
 		if (nr > slots->flexible)
 			slots->flexible = nr;
 	}
@@ -180,6 +247,7 @@ fetch_this_slot(struct bp_busy_slots *slots, int weight)
 /*
  * Add a pinned breakpoint for the given task in our constraint table
  */
+<<<<<<< HEAD
 static void toggle_bp_task_slot(struct perf_event *bp, int cpu, bool enable,
 				enum bp_type_idx type, int weight)
 {
@@ -203,6 +271,21 @@ static void toggle_bp_task_slot(struct perf_event *bp, int cpu, bool enable,
 		if (old_count > 0)
 			tsk_pinned[old_idx]++;
 	}
+=======
+static void toggle_bp_task_slot(struct perf_event *bp, int cpu,
+				enum bp_type_idx type, int weight)
+{
+	unsigned int *tsk_pinned = get_bp_info(cpu, type)->tsk_pinned;
+	int old_idx, new_idx;
+
+	old_idx = task_bp_pinned(cpu, bp, type) - 1;
+	new_idx = old_idx + weight;
+
+	if (old_idx >= 0)
+		tsk_pinned[old_idx]--;
+	if (new_idx >= 0)
+		tsk_pinned[new_idx]++;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -212,6 +295,7 @@ static void
 toggle_bp_slot(struct perf_event *bp, bool enable, enum bp_type_idx type,
 	       int weight)
 {
+<<<<<<< HEAD
 	int cpu = bp->cpu;
 	struct task_struct *tsk = bp->hw.bp_target;
 
@@ -222,10 +306,22 @@ toggle_bp_slot(struct perf_event *bp, bool enable, enum bp_type_idx type,
 			per_cpu(nr_cpu_bp_pinned[type], bp->cpu) += weight;
 		else
 			per_cpu(nr_cpu_bp_pinned[type], bp->cpu) -= weight;
+=======
+	const struct cpumask *cpumask = cpumask_of_bp(bp);
+	int cpu;
+
+	if (!enable)
+		weight = -weight;
+
+	/* Pinned counter cpu profiling */
+	if (!bp->hw.bp_target) {
+		get_bp_info(bp->cpu, type)->cpu_pinned += weight;
+>>>>>>> refs/remotes/origin/master
 		return;
 	}
 
 	/* Pinned counter task profiling */
+<<<<<<< HEAD
 
 	if (!enable)
 		list_del(&bp->hw.bp_list);
@@ -239,6 +335,15 @@ toggle_bp_slot(struct perf_event *bp, bool enable, enum bp_type_idx type,
 
 	if (enable)
 		list_add_tail(&bp->hw.bp_list, &bp_task_head);
+=======
+	for_each_cpu(cpu, cpumask)
+		toggle_bp_task_slot(bp, cpu, type, weight);
+
+	if (enable)
+		list_add_tail(&bp->hw.bp_list, &bp_task_head);
+	else
+		list_del(&bp->hw.bp_list);
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -259,8 +364,13 @@ __weak void arch_unregister_hw_breakpoint(struct perf_event *bp)
  *
  *   - If attached to a single cpu, check:
  *
+<<<<<<< HEAD
  *       (per_cpu(nr_bp_flexible, cpu) || (per_cpu(nr_cpu_bp_pinned, cpu)
  *           + max(per_cpu(nr_task_bp_pinned, cpu)))) < HBP_NUM
+=======
+ *       (per_cpu(info->flexible, cpu) || (per_cpu(info->cpu_pinned, cpu)
+ *           + max(per_cpu(info->tsk_pinned, cpu)))) < HBP_NUM
+>>>>>>> refs/remotes/origin/master
  *
  *       -> If there are already non-pinned counters in this cpu, it means
  *          there is already a free slot for them.
@@ -270,8 +380,13 @@ __weak void arch_unregister_hw_breakpoint(struct perf_event *bp)
  *
  *   - If attached to every cpus, check:
  *
+<<<<<<< HEAD
  *       (per_cpu(nr_bp_flexible, *) || (max(per_cpu(nr_cpu_bp_pinned, *))
  *           + max(per_cpu(nr_task_bp_pinned, *)))) < HBP_NUM
+=======
+ *       (per_cpu(info->flexible, *) || (max(per_cpu(info->cpu_pinned, *))
+ *           + max(per_cpu(info->tsk_pinned, *)))) < HBP_NUM
+>>>>>>> refs/remotes/origin/master
  *
  *       -> This is roughly the same, except we check the number of per cpu
  *          bp for every cpu and we keep the max one. Same for the per tasks
@@ -282,16 +397,28 @@ __weak void arch_unregister_hw_breakpoint(struct perf_event *bp)
  *
  *   - If attached to a single cpu, check:
  *
+<<<<<<< HEAD
  *       ((per_cpu(nr_bp_flexible, cpu) > 1) + per_cpu(nr_cpu_bp_pinned, cpu)
  *            + max(per_cpu(nr_task_bp_pinned, cpu))) < HBP_NUM
  *
  *       -> Same checks as before. But now the nr_bp_flexible, if any, must keep
+=======
+ *       ((per_cpu(info->flexible, cpu) > 1) + per_cpu(info->cpu_pinned, cpu)
+ *            + max(per_cpu(info->tsk_pinned, cpu))) < HBP_NUM
+ *
+ *       -> Same checks as before. But now the info->flexible, if any, must keep
+>>>>>>> refs/remotes/origin/master
  *          one register at least (or they will never be fed).
  *
  *   - If attached to every cpus, check:
  *
+<<<<<<< HEAD
  *       ((per_cpu(nr_bp_flexible, *) > 1) + max(per_cpu(nr_cpu_bp_pinned, *))
  *            + max(per_cpu(nr_task_bp_pinned, *))) < HBP_NUM
+=======
+ *       ((per_cpu(info->flexible, *) > 1) + max(per_cpu(info->cpu_pinned, *))
+ *            + max(per_cpu(info->tsk_pinned, *))) < HBP_NUM
+>>>>>>> refs/remotes/origin/master
  */
 static int __reserve_bp_slot(struct perf_event *bp)
 {
@@ -432,16 +559,22 @@ struct perf_event *
 register_user_hw_breakpoint(struct perf_event_attr *attr,
 			    perf_overflow_handler_t triggered,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    struct task_struct *tsk)
 {
 	return perf_event_create_kernel_counter(attr, -1, tsk, triggered);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			    void *context,
 			    struct task_struct *tsk)
 {
 	return perf_event_create_kernel_counter(attr, -1, tsk, triggered,
 						context);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL_GPL(register_user_hw_breakpoint);
 
@@ -459,7 +592,20 @@ int modify_user_hw_breakpoint(struct perf_event *bp, struct perf_event_attr *att
 	int old_type = bp->attr.bp_type;
 	int err = 0;
 
+<<<<<<< HEAD
 	perf_event_disable(bp);
+=======
+	/*
+	 * modify_user_hw_breakpoint can be invoked with IRQs disabled and hence it
+	 * will not be possible to raise IPIs that invoke __perf_event_disable.
+	 * So call the function directly after making sure we are targeting the
+	 * current task.
+	 */
+	if (irqs_disabled() && bp->ctx && bp->ctx->task == current)
+		__perf_event_disable(bp);
+	else
+		perf_event_disable(bp);
+>>>>>>> refs/remotes/origin/master
 
 	bp->attr.bp_addr = attr->bp_addr;
 	bp->attr.bp_type = attr->bp_type;
@@ -511,6 +657,7 @@ EXPORT_SYMBOL_GPL(unregister_hw_breakpoint);
 struct perf_event * __percpu *
 register_wide_hw_breakpoint(struct perf_event_attr *attr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    perf_overflow_handler_t triggered)
 =======
 			    perf_overflow_handler_t triggered,
@@ -519,6 +666,13 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
 {
 	struct perf_event * __percpu *cpu_events, **pevent, *bp;
 	long err;
+=======
+			    perf_overflow_handler_t triggered,
+			    void *context)
+{
+	struct perf_event * __percpu *cpu_events, *bp;
+	long err = 0;
+>>>>>>> refs/remotes/origin/master
 	int cpu;
 
 	cpu_events = alloc_percpu(typeof(*cpu_events));
@@ -527,6 +681,7 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
 
 	get_online_cpus();
 	for_each_online_cpu(cpu) {
+<<<<<<< HEAD
 		pevent = per_cpu_ptr(cpu_events, cpu);
 <<<<<<< HEAD
 		bp = perf_event_create_kernel_counter(attr, cpu, NULL, triggered);
@@ -556,6 +711,23 @@ fail:
 	put_online_cpus();
 
 	free_percpu(cpu_events);
+=======
+		bp = perf_event_create_kernel_counter(attr, cpu, NULL,
+						      triggered, context);
+		if (IS_ERR(bp)) {
+			err = PTR_ERR(bp);
+			break;
+		}
+
+		per_cpu(*cpu_events, cpu) = bp;
+	}
+	put_online_cpus();
+
+	if (likely(!err))
+		return cpu_events;
+
+	unregister_wide_hw_breakpoint(cpu_events);
+>>>>>>> refs/remotes/origin/master
 	return (void __percpu __force *)ERR_PTR(err);
 }
 EXPORT_SYMBOL_GPL(register_wide_hw_breakpoint);
@@ -567,12 +739,19 @@ EXPORT_SYMBOL_GPL(register_wide_hw_breakpoint);
 void unregister_wide_hw_breakpoint(struct perf_event * __percpu *cpu_events)
 {
 	int cpu;
+<<<<<<< HEAD
 	struct perf_event **pevent;
 
 	for_each_possible_cpu(cpu) {
 		pevent = per_cpu_ptr(cpu_events, cpu);
 		unregister_hw_breakpoint(*pevent);
 	}
+=======
+
+	for_each_possible_cpu(cpu)
+		unregister_hw_breakpoint(per_cpu(*cpu_events, cpu));
+
+>>>>>>> refs/remotes/origin/master
 	free_percpu(cpu_events);
 }
 EXPORT_SYMBOL_GPL(unregister_wide_hw_breakpoint);
@@ -596,14 +775,20 @@ static int hw_breakpoint_event_init(struct perf_event *bp)
 		return -ENOENT;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * no branch sampling for breakpoint events
 	 */
 	if (has_branch_stack(bp))
 		return -EOPNOTSUPP;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	err = register_perf_hw_breakpoint(bp);
 	if (err)
 		return err;
@@ -618,6 +803,14 @@ static int hw_breakpoint_add(struct perf_event *bp, int flags)
 	if (!(flags & PERF_EF_START))
 		bp->hw.state = PERF_HES_STOPPED;
 
+<<<<<<< HEAD
+=======
+	if (is_sampling_event(bp)) {
+		bp->hw.last_period = bp->hw.sample_period;
+		perf_swevent_set_period(bp);
+	}
+
+>>>>>>> refs/remotes/origin/master
 	return arch_install_hw_breakpoint(bp);
 }
 
@@ -637,13 +830,19 @@ static void hw_breakpoint_stop(struct perf_event *bp, int flags)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int hw_breakpoint_event_idx(struct perf_event *bp)
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct pmu perf_breakpoint = {
 	.task_ctx_nr	= perf_sw_context, /* could eventually get its own */
 
@@ -654,15 +853,23 @@ static struct pmu perf_breakpoint = {
 	.stop		= hw_breakpoint_stop,
 	.read		= hw_breakpoint_pmu_read,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	.event_idx	= hw_breakpoint_event_idx,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	.event_idx	= hw_breakpoint_event_idx,
+>>>>>>> refs/remotes/origin/master
 };
 
 int __init init_hw_breakpoint(void)
 {
+<<<<<<< HEAD
 	unsigned int **task_bp_pinned;
+=======
+>>>>>>> refs/remotes/origin/master
 	int cpu, err_cpu;
 	int i;
 
@@ -671,10 +878,18 @@ int __init init_hw_breakpoint(void)
 
 	for_each_possible_cpu(cpu) {
 		for (i = 0; i < TYPE_MAX; i++) {
+<<<<<<< HEAD
 			task_bp_pinned = &per_cpu(nr_task_bp_pinned[i], cpu);
 			*task_bp_pinned = kzalloc(sizeof(int) * nr_slots[i],
 						  GFP_KERNEL);
 			if (!*task_bp_pinned)
+=======
+			struct bp_cpuinfo *info = get_bp_info(cpu, i);
+
+			info->tsk_pinned = kcalloc(nr_slots[i], sizeof(int),
+							GFP_KERNEL);
+			if (!info->tsk_pinned)
+>>>>>>> refs/remotes/origin/master
 				goto err_alloc;
 		}
 	}
@@ -688,6 +903,7 @@ int __init init_hw_breakpoint(void)
  err_alloc:
 	for_each_possible_cpu(err_cpu) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (err_cpu == cpu)
 			break;
 		for (i = 0; i < TYPE_MAX; i++)
@@ -698,6 +914,12 @@ int __init init_hw_breakpoint(void)
 		if (err_cpu == cpu)
 			break;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		for (i = 0; i < TYPE_MAX; i++)
+			kfree(get_bp_info(err_cpu, i)->tsk_pinned);
+		if (err_cpu == cpu)
+			break;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return -ENOMEM;

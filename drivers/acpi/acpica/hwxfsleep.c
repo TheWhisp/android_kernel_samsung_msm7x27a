@@ -5,7 +5,11 @@
  *****************************************************************************/
 
 /*
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2012, Intel Corp.
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,16 +45,27 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
+<<<<<<< HEAD
 #include <acpi/acpi.h>
 #include "accommon.h"
 #include <linux/module.h>
+=======
+#define EXPORT_ACPI_INTERFACES
+
+#include <acpi/acpi.h>
+#include "accommon.h"
+>>>>>>> refs/remotes/origin/master
 
 #define _COMPONENT          ACPI_HARDWARE
 ACPI_MODULE_NAME("hwxfsleep")
 
 /* Local prototypes */
+<<<<<<< HEAD
 static acpi_status
 acpi_hw_sleep_dispatch(u8 sleep_state, u8 flags, u32 function_id);
+=======
+static acpi_status acpi_hw_sleep_dispatch(u8 sleep_state, u32 function_id);
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Dispatch table used to efficiently branch to the various sleep
@@ -167,7 +182,11 @@ ACPI_EXPORT_SYMBOL(acpi_set_firmware_waking_vector64)
  *              THIS FUNCTION MUST BE CALLED WITH INTERRUPTS DISABLED
  *
  ******************************************************************************/
+<<<<<<< HEAD
 acpi_status asmlinkage acpi_enter_sleep_state_s4bios(void)
+=======
+acpi_status acpi_enter_sleep_state_s4bios(void)
+>>>>>>> refs/remotes/origin/master
 {
 	u32 in_value;
 	acpi_status status;
@@ -205,10 +224,17 @@ acpi_status asmlinkage acpi_enter_sleep_state_s4bios(void)
 	ACPI_FLUSH_CPU_CACHE();
 
 	status = acpi_hw_write_port(acpi_gbl_FADT.smi_command,
+<<<<<<< HEAD
 				    (u32)acpi_gbl_FADT.S4bios_request, 8);
 
 	do {
 		acpi_os_stall(1000);
+=======
+				    (u32)acpi_gbl_FADT.s4_bios_request, 8);
+
+	do {
+		acpi_os_stall(ACPI_USEC_PER_MSEC);
+>>>>>>> refs/remotes/origin/master
 		status =
 		    acpi_read_bit_register(ACPI_BITREG_WAKE_STATUS, &in_value);
 		if (ACPI_FAILURE(status)) {
@@ -234,14 +260,19 @@ ACPI_EXPORT_SYMBOL(acpi_enter_sleep_state_s4bios)
  *              function.
  *
  ******************************************************************************/
+<<<<<<< HEAD
 static acpi_status
 acpi_hw_sleep_dispatch(u8 sleep_state, u8 flags, u32 function_id)
+=======
+static acpi_status acpi_hw_sleep_dispatch(u8 sleep_state, u32 function_id)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 	struct acpi_sleep_functions *sleep_functions =
 	    &acpi_sleep_dispatch[function_id];
 
 #if (!ACPI_REDUCED_HARDWARE)
+<<<<<<< HEAD
 
 	/*
 	 * If the Hardware Reduced flag is set (from the FADT), we must
@@ -253,6 +284,21 @@ acpi_hw_sleep_dispatch(u8 sleep_state, u8 flags, u32 function_id)
 		/* Legacy sleep */
 
 		status = sleep_functions->legacy_function(sleep_state, flags);
+=======
+	/*
+	 * If the Hardware Reduced flag is set (from the FADT), we must
+	 * use the extended sleep registers (FADT). Note: As per the ACPI
+	 * specification, these extended registers are to be used for HW-reduced
+	 * platforms only. They are not general-purpose replacements for the
+	 * legacy PM register sleep support.
+	 */
+	if (acpi_gbl_reduced_hardware) {
+		status = sleep_functions->extended_function(sleep_state);
+	} else {
+		/* Legacy sleep */
+
+		status = sleep_functions->legacy_function(sleep_state);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return (status);
@@ -262,7 +308,11 @@ acpi_hw_sleep_dispatch(u8 sleep_state, u8 flags, u32 function_id)
 	 * For the case where reduced-hardware-only code is being generated,
 	 * we know that only the extended sleep registers are available
 	 */
+<<<<<<< HEAD
 	status = sleep_functions->extended_function(sleep_state, flags);
+=======
+	status = sleep_functions->extended_function(sleep_state);
+>>>>>>> refs/remotes/origin/master
 	return (status);
 
 #endif				/* !ACPI_REDUCED_HARDWARE */
@@ -316,20 +366,36 @@ acpi_status acpi_enter_sleep_state_prep(u8 sleep_state)
 
 	switch (sleep_state) {
 	case ACPI_STATE_S0:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		sst_value = ACPI_SST_WORKING;
 		break;
 
 	case ACPI_STATE_S1:
 	case ACPI_STATE_S2:
 	case ACPI_STATE_S3:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		sst_value = ACPI_SST_SLEEPING;
 		break;
 
 	case ACPI_STATE_S4:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		sst_value = ACPI_SST_SLEEP_CONTEXT;
 		break;
 
 	default:
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 		sst_value = ACPI_SST_INDICATOR_OFF;	/* Default is off */
 		break;
 	}
@@ -349,6 +415,7 @@ ACPI_EXPORT_SYMBOL(acpi_enter_sleep_state_prep)
  * FUNCTION:    acpi_enter_sleep_state
  *
  * PARAMETERS:  sleep_state         - Which sleep state to enter
+<<<<<<< HEAD
  *              Flags               - ACPI_EXECUTE_GTS to run optional method
  *
  * RETURN:      Status
@@ -358,6 +425,16 @@ ACPI_EXPORT_SYMBOL(acpi_enter_sleep_state_prep)
  *
  ******************************************************************************/
 acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state, u8 flags)
+=======
+ *
+ * RETURN:      Status
+ *
+ * DESCRIPTION: Enter a system sleep state
+ *              THIS FUNCTION MUST BE CALLED WITH INTERRUPTS DISABLED
+ *
+ ******************************************************************************/
+acpi_status acpi_enter_sleep_state(u8 sleep_state)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 
@@ -370,8 +447,12 @@ acpi_status asmlinkage acpi_enter_sleep_state(u8 sleep_state, u8 flags)
 		return_ACPI_STATUS(AE_AML_OPERAND_VALUE);
 	}
 
+<<<<<<< HEAD
 	status =
 	    acpi_hw_sleep_dispatch(sleep_state, flags, ACPI_SLEEP_FUNCTION_ID);
+=======
+	status = acpi_hw_sleep_dispatch(sleep_state, ACPI_SLEEP_FUNCTION_ID);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -382,24 +463,40 @@ ACPI_EXPORT_SYMBOL(acpi_enter_sleep_state)
  * FUNCTION:    acpi_leave_sleep_state_prep
  *
  * PARAMETERS:  sleep_state         - Which sleep state we are exiting
+<<<<<<< HEAD
  *              Flags               - ACPI_EXECUTE_BFS to run optional method
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * RETURN:      Status
  *
  * DESCRIPTION: Perform the first state of OS-independent ACPI cleanup after a
+<<<<<<< HEAD
  *              sleep.
  *              Called with interrupts DISABLED.
  *
  ******************************************************************************/
 acpi_status acpi_leave_sleep_state_prep(u8 sleep_state, u8 flags)
+=======
+ *              sleep. Called with interrupts DISABLED.
+ *              We break wake/resume into 2 stages so that OSPM can handle
+ *              various OS-specific tasks between the two steps.
+ *
+ ******************************************************************************/
+acpi_status acpi_leave_sleep_state_prep(u8 sleep_state)
+>>>>>>> refs/remotes/origin/master
 {
 	acpi_status status;
 
 	ACPI_FUNCTION_TRACE(acpi_leave_sleep_state_prep);
 
 	status =
+<<<<<<< HEAD
 	    acpi_hw_sleep_dispatch(sleep_state, flags,
 				   ACPI_WAKE_PREP_FUNCTION_ID);
+=======
+	    acpi_hw_sleep_dispatch(sleep_state, ACPI_WAKE_PREP_FUNCTION_ID);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 
@@ -423,8 +520,12 @@ acpi_status acpi_leave_sleep_state(u8 sleep_state)
 
 	ACPI_FUNCTION_TRACE(acpi_leave_sleep_state);
 
+<<<<<<< HEAD
 
 	status = acpi_hw_sleep_dispatch(sleep_state, 0, ACPI_WAKE_FUNCTION_ID);
+=======
+	status = acpi_hw_sleep_dispatch(sleep_state, ACPI_WAKE_FUNCTION_ID);
+>>>>>>> refs/remotes/origin/master
 	return_ACPI_STATUS(status);
 }
 

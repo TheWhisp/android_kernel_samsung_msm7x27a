@@ -21,6 +21,11 @@
 #include <linux/slab.h>
 #include <linux/spinlock.h>
 
+<<<<<<< HEAD
+=======
+#include "virt-dma.h"
+
+>>>>>>> refs/remotes/origin/master
 #define NR_PHY_CHAN	6
 #define DMA_ALIGN	3
 #define DMA_MAX_SIZE	0x1fff
@@ -72,12 +77,22 @@ struct sa11x0_dma_sg {
 };
 
 struct sa11x0_dma_desc {
+<<<<<<< HEAD
 	struct dma_async_tx_descriptor tx;
 	u32			ddar;
 	size_t			size;
 
 	/* maybe protected by c->lock */
 	struct list_head	node;
+=======
+	struct virt_dma_desc	vd;
+
+	u32			ddar;
+	size_t			size;
+	unsigned		period;
+	bool			cyclic;
+
+>>>>>>> refs/remotes/origin/master
 	unsigned		sglen;
 	struct sa11x0_dma_sg	sg[0];
 };
@@ -85,6 +100,7 @@ struct sa11x0_dma_desc {
 struct sa11x0_dma_phy;
 
 struct sa11x0_dma_chan {
+<<<<<<< HEAD
 	struct dma_chan		chan;
 	spinlock_t		lock;
 	dma_cookie_t		lc;
@@ -94,6 +110,13 @@ struct sa11x0_dma_chan {
 	enum dma_status		status;
 	struct list_head	desc_submitted;
 	struct list_head	desc_issued;
+=======
+	struct virt_dma_chan	vc;
+
+	/* protected by c->vc.lock */
+	struct sa11x0_dma_phy	*phy;
+	enum dma_status		status;
+>>>>>>> refs/remotes/origin/master
 
 	/* protected by d->lock */
 	struct list_head	node;
@@ -109,7 +132,11 @@ struct sa11x0_dma_phy {
 
 	struct sa11x0_dma_chan	*vchan;
 
+<<<<<<< HEAD
 	/* Protected by c->lock */
+=======
+	/* Protected by c->vc.lock */
+>>>>>>> refs/remotes/origin/master
 	unsigned		sg_load;
 	struct sa11x0_dma_desc	*txd_load;
 	unsigned		sg_done;
@@ -127,13 +154,20 @@ struct sa11x0_dma_dev {
 	spinlock_t		lock;
 	struct tasklet_struct	task;
 	struct list_head	chan_pending;
+<<<<<<< HEAD
 	struct list_head	desc_complete;
+=======
+>>>>>>> refs/remotes/origin/master
 	struct sa11x0_dma_phy	phy[NR_PHY_CHAN];
 };
 
 static struct sa11x0_dma_chan *to_sa11x0_dma_chan(struct dma_chan *chan)
 {
+<<<<<<< HEAD
 	return container_of(chan, struct sa11x0_dma_chan, chan);
+=======
+	return container_of(chan, struct sa11x0_dma_chan, vc.chan);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct sa11x0_dma_dev *to_sa11x0_dma(struct dma_device *dmadev)
@@ -141,6 +175,7 @@ static struct sa11x0_dma_dev *to_sa11x0_dma(struct dma_device *dmadev)
 	return container_of(dmadev, struct sa11x0_dma_dev, slave);
 }
 
+<<<<<<< HEAD
 static struct sa11x0_dma_desc *to_sa11x0_dma_tx(struct dma_async_tx_descriptor *tx)
 {
 	return container_of(tx, struct sa11x0_dma_desc, tx);
@@ -152,16 +187,36 @@ static struct sa11x0_dma_desc *sa11x0_dma_next_desc(struct sa11x0_dma_chan *c)
 		return NULL;
 
 	return list_first_entry(&c->desc_issued, struct sa11x0_dma_desc, node);
+=======
+static struct sa11x0_dma_desc *sa11x0_dma_next_desc(struct sa11x0_dma_chan *c)
+{
+	struct virt_dma_desc *vd = vchan_next_desc(&c->vc);
+
+	return vd ? container_of(vd, struct sa11x0_dma_desc, vd) : NULL;
+}
+
+static void sa11x0_dma_free_desc(struct virt_dma_desc *vd)
+{
+	kfree(container_of(vd, struct sa11x0_dma_desc, vd));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sa11x0_dma_start_desc(struct sa11x0_dma_phy *p, struct sa11x0_dma_desc *txd)
 {
+<<<<<<< HEAD
 	list_del(&txd->node);
+=======
+	list_del(&txd->vd.node);
+>>>>>>> refs/remotes/origin/master
 	p->txd_load = txd;
 	p->sg_load = 0;
 
 	dev_vdbg(p->dev->slave.dev, "pchan %u: txd %p[%x]: starting: DDAR:%x\n",
+<<<<<<< HEAD
 		p->num, txd, txd->tx.cookie, txd->ddar);
+=======
+		p->num, &txd->vd, txd->vd.tx.cookie, txd->ddar);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void noinline sa11x0_dma_start_sg(struct sa11x0_dma_phy *p,
@@ -183,6 +238,7 @@ static void noinline sa11x0_dma_start_sg(struct sa11x0_dma_phy *p,
 		return;
 
 	if (p->sg_load == txd->sglen) {
+<<<<<<< HEAD
 		struct sa11x0_dma_desc *txn = sa11x0_dma_next_desc(c);
 
 		/*
@@ -196,6 +252,26 @@ static void noinline sa11x0_dma_start_sg(struct sa11x0_dma_phy *p,
 		} else {
 			p->txd_load = NULL;
 			return;
+=======
+		if (!txd->cyclic) {
+			struct sa11x0_dma_desc *txn = sa11x0_dma_next_desc(c);
+
+			/*
+			 * We have reached the end of the current descriptor.
+			 * Peek at the next descriptor, and if compatible with
+			 * the current, start processing it.
+			 */
+			if (txn && txn->ddar == txd->ddar) {
+				txd = txn;
+				sa11x0_dma_start_desc(p, txn);
+			} else {
+				p->txd_load = NULL;
+				return;
+			}
+		} else {
+			/* Cyclic: reset back to beginning */
+			p->sg_load = 0;
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -229,6 +305,7 @@ static void noinline sa11x0_dma_complete(struct sa11x0_dma_phy *p,
 	struct sa11x0_dma_desc *txd = p->txd_done;
 
 	if (++p->sg_done == txd->sglen) {
+<<<<<<< HEAD
 		struct sa11x0_dma_dev *d = p->dev;
 
 		dev_vdbg(d->slave.dev, "pchan %u: txd %p[%x]: completed\n",
@@ -244,6 +321,23 @@ static void noinline sa11x0_dma_complete(struct sa11x0_dma_phy *p,
 		p->txd_done = p->txd_load;
 
 		tasklet_schedule(&d->task);
+=======
+		if (!txd->cyclic) {
+			vchan_cookie_complete(&txd->vd);
+
+			p->sg_done = 0;
+			p->txd_done = p->txd_load;
+
+			if (!p->txd_done)
+				tasklet_schedule(&p->dev->task);
+		} else {
+			if ((p->sg_done % txd->period) == 0)
+				vchan_cyclic_callback(&txd->vd);
+
+			/* Cyclic: reset back to beginning */
+			p->sg_done = 0;
+		}
+>>>>>>> refs/remotes/origin/master
 	}
 
 	sa11x0_dma_start_sg(p, c);
@@ -280,7 +374,11 @@ static irqreturn_t sa11x0_dma_irq(int irq, void *dev_id)
 	if (c) {
 		unsigned long flags;
 
+<<<<<<< HEAD
 		spin_lock_irqsave(&c->lock, flags);
+=======
+		spin_lock_irqsave(&c->vc.lock, flags);
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Now that we're holding the lock, check that the vchan
 		 * really is associated with this pchan before touching the
@@ -294,7 +392,11 @@ static irqreturn_t sa11x0_dma_irq(int irq, void *dev_id)
 			if (dcsr & DCSR_DONEB)
 				sa11x0_dma_complete(p, c);
 		}
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&c->lock, flags);
+=======
+		spin_unlock_irqrestore(&c->vc.lock, flags);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return IRQ_HANDLED;
@@ -332,12 +434,16 @@ static void sa11x0_dma_tasklet(unsigned long arg)
 	struct sa11x0_dma_dev *d = (struct sa11x0_dma_dev *)arg;
 	struct sa11x0_dma_phy *p;
 	struct sa11x0_dma_chan *c;
+<<<<<<< HEAD
 	struct sa11x0_dma_desc *txd, *txn;
 	LIST_HEAD(head);
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned pch, pch_alloc = 0;
 
 	dev_dbg(d->slave.dev, "tasklet enter\n");
 
+<<<<<<< HEAD
 	/* Get the completed tx descriptors */
 	spin_lock_irq(&d->lock);
 	list_splice_init(&d->desc_complete, &head);
@@ -354,6 +460,13 @@ static void sa11x0_dma_tasklet(unsigned long arg)
 		if (p) {
 			if (!p->txd_done)
 				sa11x0_dma_start_txd(c);
+=======
+	list_for_each_entry(c, &d->slave.channels, vc.chan.device_node) {
+		spin_lock_irq(&c->vc.lock);
+		p = c->phy;
+		if (p && !p->txd_done) {
+			sa11x0_dma_start_txd(c);
+>>>>>>> refs/remotes/origin/master
 			if (!p->txd_done) {
 				/* No current txd associated with this channel */
 				dev_dbg(d->slave.dev, "pchan %u: free\n", p->num);
@@ -363,7 +476,11 @@ static void sa11x0_dma_tasklet(unsigned long arg)
 				p->vchan = NULL;
 			}
 		}
+<<<<<<< HEAD
 		spin_unlock_irq(&c->lock);
+=======
+		spin_unlock_irq(&c->vc.lock);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	spin_lock_irq(&d->lock);
@@ -380,7 +497,11 @@ static void sa11x0_dma_tasklet(unsigned long arg)
 			/* Mark this channel allocated */
 			p->vchan = c;
 
+<<<<<<< HEAD
 			dev_dbg(d->slave.dev, "pchan %u: alloc vchan %p\n", pch, c);
+=======
+			dev_dbg(d->slave.dev, "pchan %u: alloc vchan %p\n", pch, &c->vc);
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 	spin_unlock_irq(&d->lock);
@@ -390,6 +511,7 @@ static void sa11x0_dma_tasklet(unsigned long arg)
 			p = &d->phy[pch];
 			c = p->vchan;
 
+<<<<<<< HEAD
 			spin_lock_irq(&c->lock);
 			c->phy = p;
 
@@ -412,10 +534,21 @@ static void sa11x0_dma_tasklet(unsigned long arg)
 			callback(callback_param);
 	}
 
+=======
+			spin_lock_irq(&c->vc.lock);
+			c->phy = p;
+
+			sa11x0_dma_start_txd(c);
+			spin_unlock_irq(&c->vc.lock);
+		}
+	}
+
+>>>>>>> refs/remotes/origin/master
 	dev_dbg(d->slave.dev, "tasklet exit\n");
 }
 
 
+<<<<<<< HEAD
 static void sa11x0_dma_desc_free(struct sa11x0_dma_dev *d, struct list_head *head)
 {
 	struct sa11x0_dma_desc *txd, *txn;
@@ -426,6 +559,8 @@ static void sa11x0_dma_desc_free(struct sa11x0_dma_dev *d, struct list_head *hea
 	}
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int sa11x0_dma_alloc_chan_resources(struct dma_chan *chan)
 {
 	return 0;
@@ -436,6 +571,7 @@ static void sa11x0_dma_free_chan_resources(struct dma_chan *chan)
 	struct sa11x0_dma_chan *c = to_sa11x0_dma_chan(chan);
 	struct sa11x0_dma_dev *d = to_sa11x0_dma(chan->device);
 	unsigned long flags;
+<<<<<<< HEAD
 	LIST_HEAD(head);
 
 	spin_lock_irqsave(&c->lock, flags);
@@ -448,6 +584,14 @@ static void sa11x0_dma_free_chan_resources(struct dma_chan *chan)
 	spin_unlock_irqrestore(&c->lock, flags);
 
 	sa11x0_dma_desc_free(d, &head);
+=======
+
+	spin_lock_irqsave(&d->lock, flags);
+	list_del_init(&c->node);
+	spin_unlock_irqrestore(&d->lock, flags);
+
+	vchan_free_chan_resources(&c->vc);
+>>>>>>> refs/remotes/origin/master
 }
 
 static dma_addr_t sa11x0_dma_pos(struct sa11x0_dma_phy *p)
@@ -472,6 +616,7 @@ static enum dma_status sa11x0_dma_tx_status(struct dma_chan *chan,
 	struct sa11x0_dma_chan *c = to_sa11x0_dma_chan(chan);
 	struct sa11x0_dma_dev *d = to_sa11x0_dma(chan->device);
 	struct sa11x0_dma_phy *p;
+<<<<<<< HEAD
 	struct sa11x0_dma_desc *txd;
 	dma_cookie_t last_used, last_complete;
 	unsigned long flags;
@@ -499,6 +644,49 @@ static enum dma_status sa11x0_dma_tx_status(struct dma_chan *chan,
 		if (txd) {
 			unsigned i;
 
+=======
+	struct virt_dma_desc *vd;
+	unsigned long flags;
+	enum dma_status ret;
+
+	ret = dma_cookie_status(&c->vc.chan, cookie, state);
+	if (ret == DMA_COMPLETE)
+		return ret;
+
+	if (!state)
+		return c->status;
+
+	spin_lock_irqsave(&c->vc.lock, flags);
+	p = c->phy;
+
+	/*
+	 * If the cookie is on our issue queue, then the residue is
+	 * its total size.
+	 */
+	vd = vchan_find_desc(&c->vc, cookie);
+	if (vd) {
+		state->residue = container_of(vd, struct sa11x0_dma_desc, vd)->size;
+	} else if (!p) {
+		state->residue = 0;
+	} else {
+		struct sa11x0_dma_desc *txd;
+		size_t bytes = 0;
+
+		if (p->txd_done && p->txd_done->vd.tx.cookie == cookie)
+			txd = p->txd_done;
+		else if (p->txd_load && p->txd_load->vd.tx.cookie == cookie)
+			txd = p->txd_load;
+		else
+			txd = NULL;
+
+		ret = c->status;
+		if (txd) {
+			dma_addr_t addr = sa11x0_dma_pos(p);
+			unsigned i;
+
+			dev_vdbg(d->slave.dev, "tx_status: addr:%x\n", addr);
+
+>>>>>>> refs/remotes/origin/master
 			for (i = 0; i < txd->sglen; i++) {
 				dev_vdbg(d->slave.dev, "tx_status: [%u] %x+%x\n",
 					i, txd->sg[i].addr, txd->sg[i].len);
@@ -521,6 +709,7 @@ static enum dma_status sa11x0_dma_tx_status(struct dma_chan *chan,
 				bytes += txd->sg[i].len;
 			}
 		}
+<<<<<<< HEAD
 		if (txd != p->txd_load && p->txd_load)
 			bytes += p->txd_load->size;
 	}
@@ -532,6 +721,13 @@ static enum dma_status sa11x0_dma_tx_status(struct dma_chan *chan,
 	dma_set_tx_state(state, last_complete, last_used, bytes);
 
 	dev_vdbg(d->slave.dev, "tx_status: bytes 0x%zx\n", bytes);
+=======
+		state->residue = bytes;
+	}
+	spin_unlock_irqrestore(&c->vc.lock, flags);
+
+	dev_vdbg(d->slave.dev, "tx_status: bytes 0x%zx\n", state->residue);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -547,6 +743,7 @@ static void sa11x0_dma_issue_pending(struct dma_chan *chan)
 	struct sa11x0_dma_dev *d = to_sa11x0_dma(chan->device);
 	unsigned long flags;
 
+<<<<<<< HEAD
 	spin_lock_irqsave(&c->lock, flags);
 	list_splice_tail_init(&c->desc_submitted, &c->desc_issued);
 	if (!list_empty(&c->desc_issued)) {
@@ -581,6 +778,22 @@ static dma_cookie_t sa11x0_dma_tx_submit(struct dma_async_tx_descriptor *tx)
 		c, txd, txd->tx.cookie);
 
 	return txd->tx.cookie;
+=======
+	spin_lock_irqsave(&c->vc.lock, flags);
+	if (vchan_issue_pending(&c->vc)) {
+		if (!c->phy) {
+			spin_lock(&d->lock);
+			if (list_empty(&c->node)) {
+				list_add_tail(&c->node, &d->chan_pending);
+				tasklet_schedule(&d->task);
+				dev_dbg(d->slave.dev, "vchan %p: issued\n", &c->vc);
+			}
+			spin_unlock(&d->lock);
+		}
+	} else
+		dev_dbg(d->slave.dev, "vchan %p: nothing to issue\n", &c->vc);
+	spin_unlock_irqrestore(&c->vc.lock, flags);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct dma_async_tx_descriptor *sa11x0_dma_prep_slave_sg(
@@ -596,7 +809,11 @@ static struct dma_async_tx_descriptor *sa11x0_dma_prep_slave_sg(
 	/* SA11x0 channels can only operate in their native direction */
 	if (dir != (c->ddar & DDAR_RW ? DMA_DEV_TO_MEM : DMA_MEM_TO_DEV)) {
 		dev_err(chan->device->dev, "vchan %p: bad DMA direction: DDAR:%08x dir:%u\n",
+<<<<<<< HEAD
 			c, c->ddar, dir);
+=======
+			&c->vc, c->ddar, dir);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -612,14 +829,22 @@ static struct dma_async_tx_descriptor *sa11x0_dma_prep_slave_sg(
 			j += DIV_ROUND_UP(len, DMA_MAX_SIZE & ~DMA_ALIGN) - 1;
 		if (addr & DMA_ALIGN) {
 			dev_dbg(chan->device->dev, "vchan %p: bad buffer alignment: %08x\n",
+<<<<<<< HEAD
 				c, addr);
+=======
+				&c->vc, addr);
+>>>>>>> refs/remotes/origin/master
 			return NULL;
 		}
 	}
 
 	txd = kzalloc(sizeof(*txd) + j * sizeof(txd->sg[0]), GFP_ATOMIC);
 	if (!txd) {
+<<<<<<< HEAD
 		dev_dbg(chan->device->dev, "vchan %p: kzalloc failed\n", c);
+=======
+		dev_dbg(chan->device->dev, "vchan %p: kzalloc failed\n", &c->vc);
+>>>>>>> refs/remotes/origin/master
 		return NULL;
 	}
 
@@ -655,17 +880,85 @@ static struct dma_async_tx_descriptor *sa11x0_dma_prep_slave_sg(
 		} while (len);
 	}
 
+<<<<<<< HEAD
 	dma_async_tx_descriptor_init(&txd->tx, &c->chan);
 	txd->tx.flags = flags;
 	txd->tx.tx_submit = sa11x0_dma_tx_submit;
+=======
+>>>>>>> refs/remotes/origin/master
 	txd->ddar = c->ddar;
 	txd->size = size;
 	txd->sglen = j;
 
 	dev_dbg(chan->device->dev, "vchan %p: txd %p: size %u nr %u\n",
+<<<<<<< HEAD
 		c, txd, txd->size, txd->sglen);
 
 	return &txd->tx;
+=======
+		&c->vc, &txd->vd, txd->size, txd->sglen);
+
+	return vchan_tx_prep(&c->vc, &txd->vd, flags);
+}
+
+static struct dma_async_tx_descriptor *sa11x0_dma_prep_dma_cyclic(
+	struct dma_chan *chan, dma_addr_t addr, size_t size, size_t period,
+	enum dma_transfer_direction dir, unsigned long flags, void *context)
+{
+	struct sa11x0_dma_chan *c = to_sa11x0_dma_chan(chan);
+	struct sa11x0_dma_desc *txd;
+	unsigned i, j, k, sglen, sgperiod;
+
+	/* SA11x0 channels can only operate in their native direction */
+	if (dir != (c->ddar & DDAR_RW ? DMA_DEV_TO_MEM : DMA_MEM_TO_DEV)) {
+		dev_err(chan->device->dev, "vchan %p: bad DMA direction: DDAR:%08x dir:%u\n",
+			&c->vc, c->ddar, dir);
+		return NULL;
+	}
+
+	sgperiod = DIV_ROUND_UP(period, DMA_MAX_SIZE & ~DMA_ALIGN);
+	sglen = size * sgperiod / period;
+
+	/* Do not allow zero-sized txds */
+	if (sglen == 0)
+		return NULL;
+
+	txd = kzalloc(sizeof(*txd) + sglen * sizeof(txd->sg[0]), GFP_ATOMIC);
+	if (!txd) {
+		dev_dbg(chan->device->dev, "vchan %p: kzalloc failed\n", &c->vc);
+		return NULL;
+	}
+
+	for (i = k = 0; i < size / period; i++) {
+		size_t tlen, len = period;
+
+		for (j = 0; j < sgperiod; j++, k++) {
+			tlen = len;
+
+			if (tlen > DMA_MAX_SIZE) {
+				unsigned mult = DIV_ROUND_UP(tlen, DMA_MAX_SIZE & ~DMA_ALIGN);
+				tlen = (tlen / mult) & ~DMA_ALIGN;
+			}
+
+			txd->sg[k].addr = addr;
+			txd->sg[k].len = tlen;
+			addr += tlen;
+			len -= tlen;
+		}
+
+		WARN_ON(len != 0);
+	}
+
+	WARN_ON(k != sglen);
+
+	txd->ddar = c->ddar;
+	txd->size = size;
+	txd->sglen = sglen;
+	txd->cyclic = 1;
+	txd->period = sgperiod;
+
+	return vchan_tx_prep(&c->vc, &txd->vd, DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int sa11x0_dma_slave_config(struct sa11x0_dma_chan *c, struct dma_slave_config *cfg)
@@ -695,8 +988,13 @@ static int sa11x0_dma_slave_config(struct sa11x0_dma_chan *c, struct dma_slave_c
 	if (maxburst == 8)
 		ddar |= DDAR_BS;
 
+<<<<<<< HEAD
 	dev_dbg(c->chan.device->dev, "vchan %p: dma_slave_config addr %x width %u burst %u\n",
 		c, addr, width, maxburst);
+=======
+	dev_dbg(c->vc.chan.device->dev, "vchan %p: dma_slave_config addr %x width %u burst %u\n",
+		&c->vc, addr, width, maxburst);
+>>>>>>> refs/remotes/origin/master
 
 	c->ddar = ddar | (addr & 0xf0000000) | (addr & 0x003ffffc) << 6;
 
@@ -718,6 +1016,7 @@ static int sa11x0_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		return sa11x0_dma_slave_config(c, (struct dma_slave_config *)arg);
 
 	case DMA_TERMINATE_ALL:
+<<<<<<< HEAD
 		dev_dbg(d->slave.dev, "vchan %p: terminate all\n", c);
 		/* Clear the tx descriptor lists */
 		spin_lock_irqsave(&c->lock, flags);
@@ -728,6 +1027,15 @@ static int sa11x0_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 		if (p) {
 			struct sa11x0_dma_desc *txd, *txn;
 
+=======
+		dev_dbg(d->slave.dev, "vchan %p: terminate all\n", &c->vc);
+		/* Clear the tx descriptor lists */
+		spin_lock_irqsave(&c->vc.lock, flags);
+		vchan_get_all_descriptors(&c->vc, &head);
+
+		p = c->phy;
+		if (p) {
+>>>>>>> refs/remotes/origin/master
 			dev_dbg(d->slave.dev, "pchan %u: terminating\n", p->num);
 			/* vchan is assigned to a pchan - stop the channel */
 			writel(DCSR_RUN | DCSR_IE |
@@ -735,6 +1043,7 @@ static int sa11x0_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 				DCSR_STRTB | DCSR_DONEB,
 				p->base + DMA_DCSR_C);
 
+<<<<<<< HEAD
 			list_for_each_entry_safe(txd, txn, &d->desc_complete, node)
 				if (txd->tx.chan == &c->chan)
 					list_move(&txd->node, &head);
@@ -746,6 +1055,15 @@ static int sa11x0_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 			}
 			if (p->txd_done) {
 				list_add_tail(&p->txd_done->node, &head);
+=======
+			if (p->txd_load) {
+				if (p->txd_load != p->txd_done)
+					list_add_tail(&p->txd_load->vd.node, &head);
+				p->txd_load = NULL;
+			}
+			if (p->txd_done) {
+				list_add_tail(&p->txd_done->vd.node, &head);
+>>>>>>> refs/remotes/origin/master
 				p->txd_done = NULL;
 			}
 			c->phy = NULL;
@@ -754,14 +1072,24 @@ static int sa11x0_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 			spin_unlock(&d->lock);
 			tasklet_schedule(&d->task);
 		}
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&c->lock, flags);
 		sa11x0_dma_desc_free(d, &head);
+=======
+		spin_unlock_irqrestore(&c->vc.lock, flags);
+		vchan_dma_desc_free_list(&c->vc, &head);
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 
 	case DMA_PAUSE:
+<<<<<<< HEAD
 		dev_dbg(d->slave.dev, "vchan %p: pause\n", c);
 		spin_lock_irqsave(&c->lock, flags);
+=======
+		dev_dbg(d->slave.dev, "vchan %p: pause\n", &c->vc);
+		spin_lock_irqsave(&c->vc.lock, flags);
+>>>>>>> refs/remotes/origin/master
 		if (c->status == DMA_IN_PROGRESS) {
 			c->status = DMA_PAUSED;
 
@@ -774,26 +1102,43 @@ static int sa11x0_dma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
 				spin_unlock(&d->lock);
 			}
 		}
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&c->lock, flags);
+=======
+		spin_unlock_irqrestore(&c->vc.lock, flags);
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 
 	case DMA_RESUME:
+<<<<<<< HEAD
 		dev_dbg(d->slave.dev, "vchan %p: resume\n", c);
 		spin_lock_irqsave(&c->lock, flags);
+=======
+		dev_dbg(d->slave.dev, "vchan %p: resume\n", &c->vc);
+		spin_lock_irqsave(&c->vc.lock, flags);
+>>>>>>> refs/remotes/origin/master
 		if (c->status == DMA_PAUSED) {
 			c->status = DMA_IN_PROGRESS;
 
 			p = c->phy;
 			if (p) {
 				writel(DCSR_RUN | DCSR_IE, p->base + DMA_DCSR_S);
+<<<<<<< HEAD
 			} else if (!list_empty(&c->desc_issued)) {
+=======
+			} else if (!list_empty(&c->vc.desc_issued)) {
+>>>>>>> refs/remotes/origin/master
 				spin_lock(&d->lock);
 				list_add_tail(&c->node, &d->chan_pending);
 				spin_unlock(&d->lock);
 			}
 		}
+<<<<<<< HEAD
 		spin_unlock_irqrestore(&c->lock, flags);
+=======
+		spin_unlock_irqrestore(&c->vc.lock, flags);
+>>>>>>> refs/remotes/origin/master
 		ret = 0;
 		break;
 
@@ -830,7 +1175,11 @@ static const struct sa11x0_dma_channel_desc chan_desc[] = {
 	CD(Ser4SSPRc, DDAR_RW),
 };
 
+<<<<<<< HEAD
 static int __devinit sa11x0_dma_init_dmadev(struct dma_device *dmadev,
+=======
+static int sa11x0_dma_init_dmadev(struct dma_device *dmadev,
+>>>>>>> refs/remotes/origin/master
 	struct device *dev)
 {
 	unsigned i;
@@ -853,6 +1202,7 @@ static int __devinit sa11x0_dma_init_dmadev(struct dma_device *dmadev,
 			return -ENOMEM;
 		}
 
+<<<<<<< HEAD
 		c->chan.device = dmadev;
 		c->status = DMA_IN_PROGRESS;
 		c->ddar = chan_desc[i].ddar;
@@ -862,6 +1212,15 @@ static int __devinit sa11x0_dma_init_dmadev(struct dma_device *dmadev,
 		INIT_LIST_HEAD(&c->desc_issued);
 		INIT_LIST_HEAD(&c->node);
 		list_add_tail(&c->chan.device_node, &dmadev->channels);
+=======
+		c->status = DMA_IN_PROGRESS;
+		c->ddar = chan_desc[i].ddar;
+		c->name = chan_desc[i].name;
+		INIT_LIST_HEAD(&c->node);
+
+		c->vc.desc_free = sa11x0_dma_free_desc;
+		vchan_init(&c->vc, dmadev);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return dma_async_device_register(dmadev);
@@ -890,13 +1249,23 @@ static void sa11x0_dma_free_channels(struct dma_device *dmadev)
 {
 	struct sa11x0_dma_chan *c, *cn;
 
+<<<<<<< HEAD
 	list_for_each_entry_safe(c, cn, &dmadev->channels, chan.device_node) {
 		list_del(&c->chan.device_node);
+=======
+	list_for_each_entry_safe(c, cn, &dmadev->channels, vc.chan.device_node) {
+		list_del(&c->vc.chan.device_node);
+		tasklet_kill(&c->vc.task);
+>>>>>>> refs/remotes/origin/master
 		kfree(c);
 	}
 }
 
+<<<<<<< HEAD
 static int __devinit sa11x0_dma_probe(struct platform_device *pdev)
+=======
+static int sa11x0_dma_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sa11x0_dma_dev *d;
 	struct resource *res;
@@ -915,7 +1284,10 @@ static int __devinit sa11x0_dma_probe(struct platform_device *pdev)
 
 	spin_lock_init(&d->lock);
 	INIT_LIST_HEAD(&d->chan_pending);
+<<<<<<< HEAD
 	INIT_LIST_HEAD(&d->desc_complete);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	d->base = ioremap(res->start, resource_size(res));
 	if (!d->base) {
@@ -947,7 +1319,13 @@ static int __devinit sa11x0_dma_probe(struct platform_device *pdev)
 	}
 
 	dma_cap_set(DMA_SLAVE, d->slave.cap_mask);
+<<<<<<< HEAD
 	d->slave.device_prep_slave_sg = sa11x0_dma_prep_slave_sg;
+=======
+	dma_cap_set(DMA_CYCLIC, d->slave.cap_mask);
+	d->slave.device_prep_slave_sg = sa11x0_dma_prep_slave_sg;
+	d->slave.device_prep_dma_cyclic = sa11x0_dma_prep_dma_cyclic;
+>>>>>>> refs/remotes/origin/master
 	ret = sa11x0_dma_init_dmadev(&d->slave, &pdev->dev);
 	if (ret) {
 		dev_warn(d->slave.dev, "failed to register slave async device: %d\n",
@@ -971,7 +1349,11 @@ static int __devinit sa11x0_dma_probe(struct platform_device *pdev)
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit sa11x0_dma_remove(struct platform_device *pdev)
+=======
+static int sa11x0_dma_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sa11x0_dma_dev *d = platform_get_drvdata(pdev);
 	unsigned pch;
@@ -1076,7 +1458,11 @@ static struct platform_driver sa11x0_dma_driver = {
 		.pm	= &sa11x0_dma_pm_ops,
 	},
 	.probe		= sa11x0_dma_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(sa11x0_dma_remove),
+=======
+	.remove		= sa11x0_dma_remove,
+>>>>>>> refs/remotes/origin/master
 };
 
 bool sa11x0_dma_filter_fn(struct dma_chan *chan, void *param)

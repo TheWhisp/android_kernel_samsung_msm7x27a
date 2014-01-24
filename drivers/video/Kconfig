@@ -19,6 +19,7 @@ source "drivers/char/agp/Kconfig"
 
 source "drivers/gpu/vga/Kconfig"
 
+<<<<<<< HEAD
 source "drivers/gpu/drm/Kconfig"
 
 source "drivers/gpu/stub/Kconfig"
@@ -26,6 +27,11 @@ source "drivers/gpu/stub/Kconfig"
 source "drivers/gpu/ion/Kconfig"
 
 source "drivers/gpu/msm/Kconfig"
+=======
+source "drivers/gpu/host1x/Kconfig"
+
+source "drivers/gpu/drm/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 config VGASTATE
        tristate
@@ -37,6 +43,15 @@ config VIDEO_OUTPUT_CONTROL
 	  This framework adds support for low-level control of the video 
 	  output switch.
 
+<<<<<<< HEAD
+=======
+config VIDEOMODE_HELPERS
+	bool
+
+config HDMI
+	bool
+
+>>>>>>> refs/remotes/origin/master
 menuconfig FB
 	tristate "Support for frame buffer devices"
 	---help---
@@ -194,6 +209,7 @@ config FB_SYS_FOPS
        depends on FB
        default n
 
+<<<<<<< HEAD
 config FB_WMT_GE_ROPS
 	tristate
 	depends on FB
@@ -202,6 +218,8 @@ config FB_WMT_GE_ROPS
 	  Include functions for accelerated rectangle filling and area
 	  copying using WonderMedia Graphics Engine operations.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_DEFERRED_IO
 	bool
 	depends on FB
@@ -264,7 +282,10 @@ comment "Frame buffer hardware drivers"
 	depends on FB
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_GRVGA
 	tristate "Aeroflex Gaisler framebuffer support"
 	depends on FB && SPARC
@@ -274,7 +295,10 @@ config FB_GRVGA
 	---help---
 	This enables support for the SVGACTRL framebuffer in the GRLIB IP library from Aeroflex Gaisler.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_CIRRUS
 	tristate "Cirrus Logic support"
 	depends on FB && (ZORRO || PCI)
@@ -371,11 +395,20 @@ config FB_SA1100
 	  Y here.
 
 config FB_IMX
+<<<<<<< HEAD
 	tristate "Freescale i.MX LCD support"
+=======
+	tristate "Freescale i.MX1/21/25/27 LCD support"
+>>>>>>> refs/remotes/origin/master
 	depends on FB && IMX_HAVE_PLATFORM_IMX_FB
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
+<<<<<<< HEAD
+=======
+	select FB_MODE_HELPERS
+	select VIDEOMODE_HELPERS
+>>>>>>> refs/remotes/origin/master
 
 config FB_CYBER2000
 	tristate "CyberPro 2000/2010/5000 support"
@@ -986,6 +1019,7 @@ config FB_PVR2
 	  (<file:drivers/video/pvr2fb.c>). Please see the file
 	  <file:Documentation/fb/pvr2fb.txt>.
 
+<<<<<<< HEAD
 config FB_EPSON1355
 	bool "Epson 1355 framebuffer support"
 	depends on (FB = y) && ARCH_CEIVA
@@ -998,6 +1032,8 @@ config FB_EPSON1355
 	  framebuffer.  Product specs at
 	  <http://vdc.epson.com/>.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_S1D13XXX
 	tristate "Epson S1D13XXX framebuffer support"
 	depends on FB
@@ -1015,6 +1051,11 @@ config FB_ATMEL
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
+<<<<<<< HEAD
+=======
+	select FB_MODE_HELPERS
+	select VIDEOMODE_HELPERS
+>>>>>>> refs/remotes/origin/master
 	help
 	  This enables support for the AT91/AT32 LCD Controller.
 
@@ -1131,10 +1172,16 @@ config FB_RIVA_BACKLIGHT
 	  Say Y here if you want to control the backlight of your display.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 config FB_I740
 	tristate "Intel740 support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && FB && PCI
+=======
+config FB_I740
+	tristate "Intel740 support"
+	depends on FB && PCI
+>>>>>>> refs/remotes/origin/master
 	select FB_MODE_HELPERS
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
@@ -1144,10 +1191,16 @@ config FB_I740
 	help
 	  This driver supports graphics cards based on Intel740 chip.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 config FB_I810
 	tristate "Intel 810/815 support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && FB && PCI && X86_32 && AGP_INTEL
+=======
+config FB_I810
+	tristate "Intel 810/815 support"
+	depends on FB && PCI && X86_32 && AGP_INTEL
+>>>>>>> refs/remotes/origin/master
 	select FB_MODE_HELPERS
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
@@ -1209,8 +1262,13 @@ config FB_CARILLO_RANCH
 	  This driver supports the LE80578 (Carillo Ranch) board
 
 config FB_INTEL
+<<<<<<< HEAD
 	tristate "Intel 830M/845G/852GM/855GM/865G/915G/945G/945GM/965G/965GM support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && FB && PCI && X86 && AGP_INTEL && EXPERT
+=======
+	tristate "Intel 830M/845G/852GM/855GM/865G/915G/945G/945GM/965G/965GM support"
+	depends on FB && PCI && X86 && AGP_INTEL && EXPERT
+>>>>>>> refs/remotes/origin/master
 	select FB_MODE_HELPERS
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
@@ -1454,7 +1512,11 @@ config FB_ATY_CT
 	  is at <http://support.ati.com/products/pc/mach64/mach64.html>.
 
 config FB_ATY_GENERIC_LCD
+<<<<<<< HEAD
 	bool "Mach64 generic LCD support (EXPERIMENTAL)"
+=======
+	bool "Mach64 generic LCD support"
+>>>>>>> refs/remotes/origin/master
 	depends on FB_ATY_CT
 	help
 	  Say Y if you have a laptop with an ATI Rage LT PRO, Rage Mobility,
@@ -1501,7 +1563,11 @@ config FB_S3_DDC
 
 config FB_SAVAGE
 	tristate "S3 Savage support"
+<<<<<<< HEAD
 	depends on FB && PCI && EXPERIMENTAL
+=======
+	depends on FB && PCI
+>>>>>>> refs/remotes/origin/master
 	select FB_MODE_HELPERS
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
@@ -1655,15 +1721,24 @@ config FB_3DFX
 	  module will be called tdfxfb.
 
 config FB_3DFX_ACCEL
+<<<<<<< HEAD
 	bool "3Dfx Acceleration functions (EXPERIMENTAL)"
 	depends on FB_3DFX && EXPERIMENTAL
+=======
+	bool "3Dfx Acceleration functions"
+	depends on FB_3DFX
+>>>>>>> refs/remotes/origin/master
 	---help---
 	This will compile the 3Dfx Banshee/Voodoo3/VSA-100 frame buffer
 	device driver with acceleration functions.
 
 config FB_3DFX_I2C
 	bool "Enable DDC/I2C support"
+<<<<<<< HEAD
 	depends on FB_3DFX && EXPERIMENTAL
+=======
+	depends on FB_3DFX
+>>>>>>> refs/remotes/origin/master
 	select FB_DDC
 	default y
 	help
@@ -1736,8 +1811,13 @@ config FB_ARK
 	  and ICS 5342 RAMDAC.
 
 config FB_PM3
+<<<<<<< HEAD
 	tristate "Permedia3 support (EXPERIMENTAL)"
 	depends on FB && PCI && EXPERIMENTAL
+=======
+	tristate "Permedia3 support"
+	depends on FB && PCI
+>>>>>>> refs/remotes/origin/master
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
@@ -1776,10 +1856,14 @@ endchoice
 config FB_AU1100
 	bool "Au1100 LCD Driver"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on (FB = y) && MIPS && SOC_AU1100
 =======
 	depends on (FB = y) && MIPS_ALCHEMY
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on (FB = y) && MIPS_ALCHEMY
+>>>>>>> refs/remotes/origin/master
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
@@ -1789,6 +1873,7 @@ config FB_AU1100
 	  au1100fb:panel=<name>.
 
 config FB_AU1200
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bool "Au1200 LCD Driver"
 	depends on (FB = y) && MIPS && SOC_AU1200
@@ -1800,6 +1885,8 @@ config FB_AU1200
 	  various panels and CRTs by passing in kernel cmd line option
 	  au1200fb:panel=<name>.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	bool "Au1200/Au1300 LCD Driver"
 	depends on (FB = y) && MIPS_ALCHEMY
 	select FB_SYS_FILLRECT
@@ -1810,6 +1897,7 @@ config FB_AU1200
 	  This is the framebuffer driver for the Au1200/Au1300 SOCs.
 	  It can drive various panels and CRTs by passing in kernel cmd line
 	  option au1200fb:panel=<name>.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 config FB_VT8500
@@ -1817,11 +1905,23 @@ config FB_VT8500
 	depends on (FB = y) && ARM && ARCH_VT8500 && VTWM_VERSION_VT8500
 	select FB_WMT_GE_ROPS
 	select FB_SYS_IMAGEBLIT
+=======
+
+config FB_VT8500
+	bool "VIA VT8500 framebuffer support"
+	depends on (FB = y) && ARM && ARCH_VT8500
+	select FB_SYS_FILLRECT if (!FB_WMT_GE_ROPS)
+	select FB_SYS_COPYAREA if (!FB_WMT_GE_ROPS)
+	select FB_SYS_IMAGEBLIT
+	select FB_MODE_HELPERS
+	select VIDEOMODE_HELPERS
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the framebuffer driver for VIA VT8500 integrated LCD
 	  controller.
 
 config FB_WM8505
+<<<<<<< HEAD
 	bool "WM8505 frame buffer support"
 	depends on (FB = y) && ARM && ARCH_VT8500 && VTWM_VERSION_WM8505
 	select FB_WMT_GE_ROPS
@@ -1829,6 +1929,27 @@ config FB_WM8505
 	help
 	  This is the framebuffer driver for WonderMedia WM8505
 	  integrated LCD controller.
+=======
+	bool "Wondermedia WM8xxx-series frame buffer support"
+	depends on (FB = y) && ARM && ARCH_VT8500
+	select FB_SYS_FILLRECT if (!FB_WMT_GE_ROPS)
+	select FB_SYS_COPYAREA if (!FB_WMT_GE_ROPS)
+	select FB_SYS_IMAGEBLIT
+	select FB_MODE_HELPERS
+	select VIDEOMODE_HELPERS
+	help
+	  This is the framebuffer driver for WonderMedia WM8xxx-series
+	  integrated LCD controller. This driver covers the WM8505, WM8650
+	  and WM8850 SoCs.
+
+config FB_WMT_GE_ROPS
+	bool "VT8500/WM8xxx accelerated raster ops support"
+	depends on (FB = y) && (FB_VT8500 || FB_WM8505)
+	default n
+	help
+	  This adds support for accelerated raster operations on the
+	  VIA VT8500 and Wondermedia 85xx series SoCs.
+>>>>>>> refs/remotes/origin/master
 
 source "drivers/video/geode/Kconfig"
 
@@ -2040,6 +2161,7 @@ config FB_SH_MOBILE_HDMI
 	  Driver for the on-chip SH-Mobile HDMI controller.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config FB_SH_MOBILE_MERAM
 	tristate "SuperH Mobile MERAM read ahead support for LCDC"
 	depends on FB_SH_MOBILE_LCDC
@@ -2054,6 +2176,8 @@ config FB_SH_MOBILE_MERAM
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_TMIO
 	tristate "Toshiba Mobile IO FrameBuffer support"
 	depends on FB && MFD_CORE
@@ -2079,10 +2203,15 @@ config FB_TMIO_ACCELL
 config FB_S3C
 	tristate "Samsung S3C framebuffer support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on FB && S3C_DEV_FB
 =======
 	depends on FB && (S3C_DEV_FB || S5P_DEV_FIMD0)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on FB && (CPU_S3C2416 || ARCH_S3C64XX || ARCH_S5P64X0 || \
+		ARCH_S5PC100 || ARCH_S5PV210 || ARCH_EXYNOS)
+>>>>>>> refs/remotes/origin/master
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
@@ -2102,6 +2231,7 @@ config FB_S3C_DEBUG_REGWRITE
        bool "Debug register writes"
        depends on FB_S3C
        ---help---
+<<<<<<< HEAD
          Show all register writes via printk(KERN_DEBUG)
 
 config FB_S3C2410
@@ -2111,6 +2241,13 @@ config FB_S3C2410
 =======
 	depends on FB && ARCH_S3C24XX
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+         Show all register writes via pr_debug()
+
+config FB_S3C2410
+	tristate "S3C2410 LCD framebuffer support"
+	depends on FB && ARCH_S3C24XX
+>>>>>>> refs/remotes/origin/master
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
@@ -2145,6 +2282,7 @@ config GPM1040A0_320X240
         bool "Giantplus Technology GPM1040A0 320x240 Color TFT LCD"
         depends on FB_NUC900
 
+<<<<<<< HEAD
 config FB_NUC900_DEBUG
         bool "NUC900 lcd debug messages"
         depends on FB_NUC900
@@ -2152,6 +2290,8 @@ config FB_NUC900_DEBUG
           Turn on debugging messages. Note that you can set/unset at run time
           through sysfs
 
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_SM501
 	tristate "Silicon Motion SM501 framebuffer support"
 	depends on FB && MFD_SM501
@@ -2170,7 +2310,10 @@ config FB_SM501
 	  If unsure, say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_SMSCUFX
 	tristate "SMSC UFX6000/7000 USB Framebuffer support"
 	depends on FB && USB
@@ -2187,7 +2330,10 @@ config FB_SMSCUFX
 	  (USB 3.0) devices.
 	  To compile as a module, choose M here: the module name is smscufx.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_UDL
 	tristate "Displaylink USB Framebuffer support"
 	depends on FB && USB
@@ -2203,6 +2349,7 @@ config FB_UDL
 	  mplayer -vo fbdev. Supports all USB 2.0 era DisplayLink devices.
 	  To compile as a module, choose M here: the module name is udlfb.
 
+<<<<<<< HEAD
 config FB_PNX4008_DUM
 	tristate "Display Update Module support on Philips PNX4008 board"
 	depends on FB && ARCH_PNX4008
@@ -2220,13 +2367,24 @@ config FB_PNX4008_DUM_RGB
 
 config FB_IBM_GXT4500
 	tristate "Framebuffer support for IBM GXT4500P adaptor"
+=======
+config FB_IBM_GXT4500
+	tristate "Framebuffer support for IBM GXT4000P/4500P/6000P/6500P adaptors"
+>>>>>>> refs/remotes/origin/master
 	depends on FB && PPC
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
 	---help---
+<<<<<<< HEAD
 	  Say Y here to enable support for the IBM GXT4500P display
 	  adaptor, found on some IBM System P (pSeries) machines.
+=======
+	  Say Y here to enable support for the IBM GXT4000P/6000P and
+	  GXT4500P/6500P display adaptor based on Raster Engine RC1000,
+	  found on some IBM System P (pSeries) machines. This driver
+	  doesn't use Geometry Engine GT1000.
+>>>>>>> refs/remotes/origin/master
 
 config FB_PS3
 	tristate "PS3 GPU framebuffer driver"
@@ -2251,7 +2409,11 @@ config FB_PS3_DEFAULT_SIZE_M
 
 config FB_XILINX
 	tristate "Xilinx frame buffer support"
+<<<<<<< HEAD
 	depends on FB && (XILINX_VIRTEX || MICROBLAZE)
+=======
+	depends on FB && (XILINX_VIRTEX || MICROBLAZE || ARCH_ZYNQ)
+>>>>>>> refs/remotes/origin/master
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
@@ -2260,9 +2422,24 @@ config FB_XILINX
 	  framebuffer. ML300 carries a 640*480 LCD display on the board,
 	  ML403 uses a standard DB15 VGA connector.
 
+<<<<<<< HEAD
 config FB_COBALT
 	tristate "Cobalt server LCD frame buffer support"
 	depends on FB && MIPS_COBALT
+=======
+config FB_GOLDFISH
+	tristate "Goldfish Framebuffer"
+	depends on FB && HAS_DMA
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	---help---
+	  Framebuffer driver for Goldfish Virtual Platform
+
+config FB_COBALT
+	tristate "Cobalt server LCD frame buffer support"
+	depends on FB && (MIPS_COBALT || MIPS_SEAD3)
+>>>>>>> refs/remotes/origin/master
 
 config FB_SH7760
 	bool "SH7760/SH7763/SH7720/SH7721 LCDC support"
@@ -2280,6 +2457,7 @@ config FB_SH7760
 	  panels <= 320 pixel horizontal resolution.
 
 config FB_DA8XX
+<<<<<<< HEAD
 	tristate "DA8xx/OMAP-L1xx Framebuffer support"
 	depends on FB && ARCH_DAVINCI_DA8XX
 	select FB_CFB_FILLRECT
@@ -2292,6 +2470,19 @@ config FB_DA8XX
 	---help---
 	  This is the frame buffer device driver for the TI LCD controller
 	  found on DA8xx/OMAP-L1xx SoCs.
+=======
+	tristate "DA8xx/OMAP-L1xx/AM335x Framebuffer support"
+	depends on FB && (ARCH_DAVINCI_DA8XX || SOC_AM33XX)
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	select FB_CFB_REV_PIXELS_IN_BYTE
+	select FB_MODE_HELPERS
+	select VIDEOMODE_HELPERS
+	---help---
+	  This is the frame buffer device driver for the TI LCD controller
+	  found on DA8xx/OMAP-L1xx/AM335x SoCs.
+>>>>>>> refs/remotes/origin/master
 	  If unsure, say N.
 
 config FB_VIRTUAL
@@ -2326,9 +2517,13 @@ config XEN_FBDEV_FRONTEND
 	select FB_SYS_FOPS
 	select FB_DEFERRED_IO
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	select INPUT_XEN_KBDDEV_FRONTEND
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	select INPUT_XEN_KBDDEV_FRONTEND if INPUT_MISC
+>>>>>>> refs/remotes/origin/master
 	select XEN_XENBUS_FRONTEND
 	default y
 	help
@@ -2407,6 +2602,16 @@ config FB_PRE_INIT_FB
 	  Select this option if display contents should be inherited as set by
 	  the bootloader.
 
+<<<<<<< HEAD
+=======
+config FB_MSM
+	tristate "MSM Framebuffer support"
+	depends on FB && ARCH_MSM
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+
+>>>>>>> refs/remotes/origin/master
 config FB_MX3
 	tristate "MX3 Framebuffer support"
 	depends on FB && MX3_IPU
@@ -2433,6 +2638,42 @@ config FB_BROADSHEET
 	  and could also have been called by other names when coupled with
 	  a bridge adapter.
 
+<<<<<<< HEAD
+=======
+config FB_AUO_K190X
+	tristate "AUO-K190X EPD controller support"
+	depends on FB
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	select FB_SYS_FOPS
+	select FB_DEFERRED_IO
+	help
+	  Provides support for epaper controllers from the K190X series
+	  of AUO. These controllers can be used to drive epaper displays
+	  from Sipix.
+
+	  This option enables the common support, shared by the individual
+	  controller drivers. You will also have to enable the driver
+	  for the controller type used in your device.
+
+config FB_AUO_K1900
+	tristate "AUO-K1900 EPD controller support"
+	depends on FB && FB_AUO_K190X
+	help
+	  This driver implements support for the AUO K1900 epd-controller.
+	  This controller can drive Sipix epaper displays but can only do
+	  serial updates, reducing the number of possible frames per second.
+
+config FB_AUO_K1901
+	tristate "AUO-K1901 EPD controller support"
+	depends on FB && FB_AUO_K190X
+	help
+	  This driver implements support for the AUO K1901 epd-controller.
+	  This controller can drive Sipix epaper displays and supports
+	  concurrent updates, making higher frames per second possible.
+
+>>>>>>> refs/remotes/origin/master
 config FB_JZ4740
 	tristate "JZ4740 LCD framebuffer support"
 	depends on FB && MACH_JZ4740
@@ -2448,6 +2689,11 @@ config FB_MXS
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
+<<<<<<< HEAD
+=======
+	select FB_MODE_HELPERS
+	select VIDEOMODE_HELPERS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Framebuffer support for the MXS SoC.
 
@@ -2462,6 +2708,7 @@ config FB_PUV3_UNIGFX
 	  Choose this option if you want to use the Unigfx device as a
 	  framebuffer device. Without the support of PCI & AGP.
 
+<<<<<<< HEAD
 source "drivers/video/msm/Kconfig"
 
 source "drivers/video/omap/Kconfig"
@@ -2474,6 +2721,38 @@ source "drivers/video/display/Kconfig"
 source "drivers/video/exynos/Kconfig"
 source "drivers/video/backlight/Kconfig"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config FB_HYPERV
+	tristate "Microsoft Hyper-V Synthetic Video support"
+	depends on FB && HYPERV
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	help
+	  This framebuffer driver supports Microsoft Hyper-V Synthetic Video.
+
+config FB_SIMPLE
+	bool "Simple framebuffer support"
+	depends on (FB = y)
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	help
+	  Say Y if you want support for a simple frame-buffer.
+
+	  This driver assumes that the display hardware has been initialized
+	  before the kernel boots, and the kernel will simply render to the
+	  pre-allocated frame buffer surface.
+
+	  Configuration re: surface address, size, and format must be provided
+	  through device tree, or plain old platform data.
+
+source "drivers/video/omap/Kconfig"
+source "drivers/video/omap2/Kconfig"
+source "drivers/video/exynos/Kconfig"
+source "drivers/video/mmp/Kconfig"
+source "drivers/video/backlight/Kconfig"
+>>>>>>> refs/remotes/origin/master
 
 if VT
 	source "drivers/video/console/Kconfig"
@@ -2484,7 +2763,10 @@ if FB || SGI_NEWPORT_CONSOLE
 endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config FB_SH_MOBILE_MERAM
 	tristate "SuperH Mobile MERAM read ahead support"
 	depends on (SUPERH || ARCH_SHMOBILE)
@@ -2497,5 +2779,23 @@ config FB_SH_MOBILE_MERAM
 	  Up to 4 memory channels can be configured, allowing 4 RGB or
 	  2 YCbCr framebuffers to be configured.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+config FB_SSD1307
+	tristate "Solomon SSD1307 framebuffer support"
+	depends on FB && I2C
+	depends on OF
+	depends on GPIOLIB
+	select FB_SYS_FOPS
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	select FB_DEFERRED_IO
+	select PWM
+	help
+	  This driver implements support for the Solomon SSD1307
+	  OLED controller over I2C.
+
+>>>>>>> refs/remotes/origin/master
 endmenu

@@ -197,8 +197,13 @@ comment "IDE chipset support/bugfixes"
 
 config IDE_GENERIC
 	tristate "generic/default IDE chipset support"
+<<<<<<< HEAD
 	depends on ALPHA || X86 || IA64 || M32R || MIPS || ARCH_RPC || ARCH_SHARK
 	default ARM && (ARCH_RPC || ARCH_SHARK)
+=======
+	depends on ALPHA || X86 || IA64 || M32R || MIPS || ARCH_RPC
+	default ARM && ARCH_RPC
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the generic IDE driver.  This driver attaches to the
 	  fixed legacy ports (e.g. on PCs 0x1f0/0x170, 0x1e8/0x168 and
@@ -322,6 +327,7 @@ config BLK_DEV_GENERIC
           which otherwise might not be supported.
 
 config BLK_DEV_OPTI621
+<<<<<<< HEAD
 	tristate "OPTi 82C621 chipset enhanced support (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
 	select BLK_DEV_IDEPCI
@@ -332,6 +338,13 @@ config BLK_DEV_OPTI621
 =======
 	  Please read the comments at the top of <file:drivers/ide/opti621.c>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "OPTi 82C621 chipset enhanced support"
+	select BLK_DEV_IDEPCI
+	help
+	  This is a driver for the OPTi 82C621 EIDE controller.
+	  Please read the comments at the top of <file:drivers/ide/opti621.c>.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_RZ1000
 	tristate "RZ1000 chipset bugfix/support"
@@ -370,10 +383,14 @@ config BLK_DEV_ALI15X3
 
 	  Please read the comments at the top of
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:drivers/ide/pci/alim15x3.c>.
 =======
 	  <file:drivers/ide/alim15x3.c>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:drivers/ide/alim15x3.c>.
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
@@ -425,7 +442,10 @@ config BLK_DEV_CY82C693
 
 config BLK_DEV_CS5520
 	tristate "Cyrix CS5510/20 MediaGX chipset support (VERY EXPERIMENTAL)"
+<<<<<<< HEAD
 	depends on EXPERIMENTAL
+=======
+>>>>>>> refs/remotes/origin/master
 	select BLK_DEV_IDEDMA_PCI
 	help
 	  Include support for PIO tuning and virtual DMA on the Cyrix MediaGX
@@ -537,10 +557,14 @@ config BLK_DEV_NS87415
 	  (used mainly on SPARC64 and PA-RISC machines).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Please read the comments at the top of <file:drivers/ide/pci/ns87415.c>.
 =======
 	  Please read the comments at the top of <file:drivers/ide/ns87415.c>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Please read the comments at the top of <file:drivers/ide/ns87415.c>.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_PDC202XX_OLD
 	tristate "PROMISE PDC202{46|62|65|67} support"
@@ -560,10 +584,14 @@ config BLK_DEV_PDC202XX_OLD
 
 	  Please read the comments at the top of
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:drivers/ide/pci/pdc202xx_old.c>.
 =======
 	  <file:drivers/ide/pdc202xx_old.c>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:drivers/ide/pdc202xx_old.c>.
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
@@ -610,10 +638,14 @@ config BLK_DEV_SIS5513
 	  SiS745, SiS750
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Please read the comments at the top of <file:drivers/ide/pci/sis5513.c>.
 =======
 	  Please read the comments at the top of <file:drivers/ide/sis5513.c>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Please read the comments at the top of <file:drivers/ide/sis5513.c>.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_SL82C105
 	tristate "Winbond SL82c105 support"
@@ -637,10 +669,14 @@ config BLK_DEV_SLC90E66
 
 	  Please read the comments at the top of
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:drivers/ide/pci/slc90e66.c>.
 =======
 	  <file:drivers/ide/slc90e66.c>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:drivers/ide/slc90e66.c>.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_TRM290
 	tristate "Tekram TRM290 chipset support"
@@ -650,10 +686,14 @@ config BLK_DEV_TRM290
 	  using the Tekram TRM290 PCI IDE chip. Volunteers are
 	  needed for further tweaking and development.
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  Please read the comments at the top of <file:drivers/ide/pci/trm290.c>.
 =======
 	  Please read the comments at the top of <file:drivers/ide/trm290.c>.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  Please read the comments at the top of <file:drivers/ide/trm290.c>.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_VIA82CXXX
 	tristate "VIA82CXXX chipset support"
@@ -706,6 +746,7 @@ config BLK_DEV_IDE_PMAC_ATA100FIRST
 config BLK_DEV_IDE_AU1XXX
        bool "IDE for AMD Alchemy Au1200"
 <<<<<<< HEAD
+<<<<<<< HEAD
        depends on SOC_AU1200
        select IDE_XFER_MODE
 choice
@@ -713,13 +754,18 @@ choice
        default CONFIG_BLK_DEV_IDE_AU1XXX_PIO_DBDMA
        depends on SOC_AU1200 && BLK_DEV_IDE_AU1XXX
 =======
+=======
+>>>>>>> refs/remotes/origin/master
        depends on MIPS_ALCHEMY
        select IDE_XFER_MODE
 choice
        prompt "IDE Mode for AMD Alchemy Au1200"
        default BLK_DEV_IDE_AU1XXX_PIO_DBDMA
        depends on BLK_DEV_IDE_AU1XXX
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_IDE_AU1XXX_PIO_DBDMA
        bool "PIO+DbDMA IDE for AMD Alchemy Au1200"
@@ -727,10 +773,14 @@ config BLK_DEV_IDE_AU1XXX_PIO_DBDMA
 config BLK_DEV_IDE_AU1XXX_MDMA2_DBDMA
        bool "MDMA2+DbDMA IDE for AMD Alchemy Au1200"
 <<<<<<< HEAD
+<<<<<<< HEAD
        depends on SOC_AU1200 && BLK_DEV_IDE_AU1XXX
 =======
        depends on BLK_DEV_IDE_AU1XXX
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+       depends on BLK_DEV_IDE_AU1XXX
+>>>>>>> refs/remotes/origin/master
 endchoice
 
 config BLK_DEV_IDE_TX4938
@@ -743,11 +793,14 @@ config BLK_DEV_IDE_TX4939
 	depends on SOC_TX4939
 	select BLK_DEV_IDEDMA_SFF
 
+<<<<<<< HEAD
 config BLK_DEV_IDE_AT91
 	tristate "Atmel AT91 (SAM9, CAP9, AT572D940HF) IDE support"
 	depends on ARM && ARCH_AT91 && !ARCH_AT91RM9200 && !ARCH_AT91X40
 	select IDE_TIMINGS
 
+=======
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_IDE_ICSIDE
 	tristate "ICS IDE interface support"
 	depends on ARM && ARCH_ACORN
@@ -770,6 +823,7 @@ config BLK_DEV_IDE_RAPIDE
 	  Say Y here if you want to support the Yellowstone RapIDE controller
 	  manufactured for use with Acorn computers.
 
+<<<<<<< HEAD
 config IDE_H8300
 	tristate "H8300 IDE support"
 	depends on H8300
@@ -777,6 +831,8 @@ config IDE_H8300
 	help
 	  Enables the H8300 IDE driver.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config BLK_DEV_GAYLE
 	tristate "Amiga Gayle IDE interface support"
 	depends on AMIGA
@@ -802,8 +858,13 @@ config BLK_DEV_GAYLE
 	  use Gayle IDE interfaces on the Zorro expansion bus.
 
 config BLK_DEV_BUDDHA
+<<<<<<< HEAD
 	tristate "Buddha/Catweasel/X-Surf IDE interface support (EXPERIMENTAL)"
 	depends on ZORRO && EXPERIMENTAL
+=======
+	tristate "Buddha/Catweasel/X-Surf IDE interface support"
+	depends on ZORRO
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is the IDE driver for the IDE interfaces on the Buddha, Catweasel
 	  and X-Surf expansion boards.  It supports up to two interfaces on the
@@ -878,10 +939,14 @@ config BLK_DEV_ALI14XX
 	  I/O speeds to be set as well.
 	  See the files <file:Documentation/ide/ide.txt> and
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:drivers/ide/legacy/ali14xx.c> for more info.
 =======
 	  <file:drivers/ide/ali14xx.c> for more info.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:drivers/ide/ali14xx.c> for more info.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_DTC2278
 	tristate "DTC-2278 support"
@@ -893,10 +958,14 @@ config BLK_DEV_DTC2278
 	  of the DTC-2278 card, and permits faster I/O speeds to be set as
 	  well. See the <file:Documentation/ide/ide.txt> and
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:drivers/ide/legacy/dtc2278.c> files for more info.
 =======
 	  <file:drivers/ide/dtc2278.c> files for more info.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:drivers/ide/dtc2278.c> files for more info.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_HT6560B
 	tristate "Holtek HT6560B support"
@@ -908,10 +977,14 @@ config BLK_DEV_HT6560B
 	  of the Holtek card, and permits faster I/O speeds to be set as well.
 	  See the <file:Documentation/ide/ide.txt> and
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:drivers/ide/legacy/ht6560b.c> files for more info.
 =======
 	  <file:drivers/ide/ht6560b.c> files for more info.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:drivers/ide/ht6560b.c> files for more info.
+>>>>>>> refs/remotes/origin/master
 
 config BLK_DEV_QD65XX
 	tristate "QDI QD65xx support"
@@ -921,10 +994,14 @@ config BLK_DEV_QD65XX
 	  This driver is enabled at runtime using the "qd65xx.probe" kernel
 	  boot parameter.  It permits faster I/O speeds to be set.  See the
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:Documentation/ide/ide.txt> and <file:drivers/ide/legacy/qd65xx.c>
 =======
 	  <file:Documentation/ide/ide.txt> and <file:drivers/ide/qd65xx.c>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:Documentation/ide/ide.txt> and <file:drivers/ide/qd65xx.c>
+>>>>>>> refs/remotes/origin/master
 	  for more info.
 
 config BLK_DEV_UMC8672
@@ -937,10 +1014,14 @@ config BLK_DEV_UMC8672
 	  of the UMC-8672, and permits faster I/O speeds to be set as well.
 	  See the files <file:Documentation/ide/ide.txt> and
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  <file:drivers/ide/legacy/umc8672.c> for more info.
 =======
 	  <file:drivers/ide/umc8672.c> for more info.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	  <file:drivers/ide/umc8672.c> for more info.
+>>>>>>> refs/remotes/origin/master
 
 endif
 

@@ -71,9 +71,15 @@ static int cs5535_mfd_res_disable(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static __devinitdata struct resource cs5535_mfd_resources[NR_BARS];
 
 static __devinitdata struct mfd_cell cs5535_mfd_cells[] = {
+=======
+static struct resource cs5535_mfd_resources[NR_BARS];
+
+static struct mfd_cell cs5535_mfd_cells[] = {
+>>>>>>> refs/remotes/origin/master
 	{
 		.id = SMB_BAR,
 		.name = "cs5535-smb",
@@ -113,7 +119,11 @@ static __devinitdata struct mfd_cell cs5535_mfd_cells[] = {
 };
 
 #ifdef CONFIG_OLPC
+<<<<<<< HEAD
 static void __devinit cs5535_clone_olpc_cells(void)
+=======
+static void cs5535_clone_olpc_cells(void)
+>>>>>>> refs/remotes/origin/master
 {
 	const char *acpi_clones[] = { "olpc-xo1-pm-acpi", "olpc-xo1-sci-acpi" };
 
@@ -126,7 +136,11 @@ static void __devinit cs5535_clone_olpc_cells(void)
 static void cs5535_clone_olpc_cells(void) { }
 #endif
 
+<<<<<<< HEAD
 static int __devinit cs5535_mfd_probe(struct pci_dev *pdev,
+=======
+static int cs5535_mfd_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 		const struct pci_device_id *id)
 {
 	int err, i;
@@ -149,7 +163,11 @@ static int __devinit cs5535_mfd_probe(struct pci_dev *pdev,
 	}
 
 	err = mfd_add_devices(&pdev->dev, -1, cs5535_mfd_cells,
+<<<<<<< HEAD
 			ARRAY_SIZE(cs5535_mfd_cells), NULL, 0);
+=======
+			      ARRAY_SIZE(cs5535_mfd_cells), NULL, 0, NULL);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		dev_err(&pdev->dev, "MFD add devices failed: %d\n", err);
 		goto err_disable;
@@ -166,17 +184,25 @@ err_disable:
 	return err;
 }
 
+<<<<<<< HEAD
 static void __devexit cs5535_mfd_remove(struct pci_dev *pdev)
+=======
+static void cs5535_mfd_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	mfd_remove_devices(&pdev->dev);
 	pci_disable_device(pdev);
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct pci_device_id cs5535_mfd_pci_tbl[] = {
 =======
 static DEFINE_PCI_DEVICE_TABLE(cs5535_mfd_pci_tbl) = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct pci_device_id cs5535_mfd_pci_tbl[] = {
+>>>>>>> refs/remotes/origin/master
 	{ PCI_DEVICE(PCI_VENDOR_ID_NS, PCI_DEVICE_ID_NS_CS5535_ISA) },
 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CS5536_ISA) },
 	{ 0, }
@@ -187,6 +213,7 @@ static struct pci_driver cs5535_mfd_driver = {
 	.name = DRV_NAME,
 	.id_table = cs5535_mfd_pci_tbl,
 	.probe = cs5535_mfd_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(cs5535_mfd_remove),
 };
 
@@ -202,6 +229,12 @@ static void __exit cs5535_mfd_exit(void)
 
 module_init(cs5535_mfd_init);
 module_exit(cs5535_mfd_exit);
+=======
+	.remove = cs5535_mfd_remove,
+};
+
+module_pci_driver(cs5535_mfd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Andres Salomon <dilinger@queued.net>");
 MODULE_DESCRIPTION("MFD driver for CS5535/CS5536 southbridge's ISA PCI device");

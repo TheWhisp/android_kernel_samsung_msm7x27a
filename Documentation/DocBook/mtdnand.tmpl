@@ -573,10 +573,14 @@ static void board_select_chip (struct mtd_info *mtd, int chip)
 			<para>
 				The simplest way to activate the FLASH based bad block table support 
 <<<<<<< HEAD
+<<<<<<< HEAD
 				is to set the option NAND_USE_FLASH_BBT in the option field of
 =======
 				is to set the option NAND_BBT_USE_FLASH in the bbt_option field of
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				is to set the option NAND_BBT_USE_FLASH in the bbt_option field of
+>>>>>>> refs/remotes/origin/master
 				the nand chip structure before calling nand_scan(). For AG-AND
 				chips is this done by default.
 				This activates the default FLASH based bad block table functionality 
@@ -778,6 +782,7 @@ struct nand_oobinfo {
 			</para>
 		</sect2>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<sect2 id="User_space_placement_selection">
 			<title>User space placement selection</title>
 		<para>
@@ -794,6 +799,8 @@ struct nand_oobinfo {
 		</sect2>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	</sect1>	
 	<sect1 id="Spare_area_autoplacement_default">
 		<title>Spare area autoplacement default schemes</title>
@@ -1140,8 +1147,11 @@ in this page</entry>
 		These constants are defined in nand.h. They are ored together to describe
 		the chip functionality.
      		<programlisting>
+<<<<<<< HEAD
 /* Chip can not auto increment pages */
 #define NAND_NO_AUTOINCR	0x00000001
+=======
+>>>>>>> refs/remotes/origin/master
 /* Buswitdh is 16 bit */
 #define NAND_BUSWIDTH_16	0x00000002
 /* Device supports partial programming without padding */
@@ -1166,11 +1176,14 @@ in this page</entry>
 		the functionality.
      		<programlisting>
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Use a flash based bad block table. This option is parsed by the
  * default bad block table function (nand_default_bbt). */
 #define NAND_USE_FLASH_BBT	0x00010000
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* The hw ecc generator provides a syndrome instead a ecc value on read 
  * This can only work if we have the ecc bytes directly behind the 
  * data bytes. Applies for DOC and AG-AND Renesas HW Reed Solomon generators */
@@ -1245,18 +1258,24 @@ in this page</entry>
 #define	NAND_BBT_LASTBLOCK	0x00000010
 /* The bbt is at the given page, else we must scan for the bbt */
 #define NAND_BBT_ABSPAGE	0x00000020
+<<<<<<< HEAD
 /* The bbt is at the given page, else we must scan for the bbt */
 #define NAND_BBT_SEARCH		0x00000040
+=======
+>>>>>>> refs/remotes/origin/master
 /* bbt is stored per chip on multichip devices */
 #define NAND_BBT_PERCHIP	0x00000080
 /* bbt has a version counter at offset veroffs */
 #define NAND_BBT_VERSION	0x00000100
 /* Create a bbt if none axists */
 #define NAND_BBT_CREATE		0x00000200
+<<<<<<< HEAD
 /* Search good / bad pattern through all pages of a block */
 #define NAND_BBT_SCANALLPAGES	0x00000400
 /* Scan block empty during good / bad block scan */
 #define NAND_BBT_SCANEMPTY	0x00000800
+=======
+>>>>>>> refs/remotes/origin/master
 /* Write bbt if neccecary */
 #define NAND_BBT_WRITE		0x00001000
 /* Read and write back block contents when writing bbt */

@@ -6,10 +6,14 @@
 #include <linux/fs.h>
 #include <linux/mount.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/reiserfs_fs.h>
 =======
 #include "reiserfs.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "reiserfs.h"
+>>>>>>> refs/remotes/origin/master
 #include <linux/time.h>
 #include <asm/uaccess.h>
 #include <linux/pagemap.h>
@@ -25,7 +29,11 @@
  */
 long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
+<<<<<<< HEAD
 	struct inode *inode = filp->f_path.dentry->d_inode;
+=======
+	struct inode *inode = file_inode(filp);
+>>>>>>> refs/remotes/origin/master
 	unsigned int flags;
 	int err = 0;
 
@@ -60,10 +68,14 @@ long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = mnt_want_write(filp->f_path.mnt);
 =======
 			err = mnt_want_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				break;
 
@@ -105,10 +117,14 @@ long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 			mark_inode_dirty(inode);
 setflags_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 			mnt_drop_write(filp->f_path.mnt);
 =======
 			mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 	case REISERFS_IOC_GETVERSION:
@@ -120,10 +136,14 @@ setflags_out:
 			break;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = mnt_want_write(filp->f_path.mnt);
 =======
 		err = mnt_want_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = mnt_want_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			break;
 		if (get_user(inode->i_generation, (int __user *)arg)) {
@@ -134,10 +154,14 @@ setflags_out:
 		mark_inode_dirty(inode);
 setversion_out:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		mnt_drop_write(filp->f_path.mnt);
 =======
 		mnt_drop_write_file(filp);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		mnt_drop_write_file(filp);
+>>>>>>> refs/remotes/origin/master
 		break;
 	default:
 		err = -ENOTTY;
@@ -187,7 +211,10 @@ int reiserfs_commit_write(struct file *f, struct page *page,
 int reiserfs_unpack(struct inode *inode, struct file *filp)
 {
 	int retval = 0;
+<<<<<<< HEAD
 	int depth;
+=======
+>>>>>>> refs/remotes/origin/master
 	int index;
 	struct page *page;
 	struct address_space *mapping;
@@ -203,11 +230,19 @@ int reiserfs_unpack(struct inode *inode, struct file *filp)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	depth = reiserfs_write_lock_once(inode->i_sb);
 
 	/* we need to make sure nobody is changing the file size beneath us */
 	reiserfs_mutex_lock_safe(&inode->i_mutex, inode->i_sb);
 
+=======
+	/* we need to make sure nobody is changing the file size beneath us */
+	reiserfs_mutex_lock_safe(&inode->i_mutex, inode->i_sb);
+
+	reiserfs_write_lock(inode->i_sb);
+
+>>>>>>> refs/remotes/origin/master
 	write_from = inode->i_size & (blocksize - 1);
 	/* if we are on a block boundary, we are already unpacked.  */
 	if (write_from == 0) {
@@ -241,6 +276,10 @@ int reiserfs_unpack(struct inode *inode, struct file *filp)
 
       out:
 	mutex_unlock(&inode->i_mutex);
+<<<<<<< HEAD
 	reiserfs_write_unlock_once(inode->i_sb, depth);
+=======
+	reiserfs_write_unlock(inode->i_sb);
+>>>>>>> refs/remotes/origin/master
 	return retval;
 }

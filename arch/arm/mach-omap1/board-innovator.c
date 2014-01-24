@@ -16,10 +16,14 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -30,16 +34,22 @@
 #include <linux/input.h>
 #include <linux/smc91x.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 #include <mach/hardware.h>
 =======
 #include <linux/omapfb.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/omapfb.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
 
+<<<<<<< HEAD
 #include <plat/mux.h>
 #include <plat/flash.h>
 #include <plat/fpga.h>
@@ -63,6 +73,20 @@
 #include "common.h"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <mach/mux.h>
+#include <mach/flash.h>
+#include <mach/tc.h>
+#include <linux/platform_data/keypad-omap.h>
+
+#include <mach/hardware.h>
+#include <mach/usb.h>
+
+#include "iomap.h"
+#include "common.h"
+#include "mmc.h"
+
+>>>>>>> refs/remotes/origin/master
 /* At OMAP1610 Innovator the Ethernet is directly connected to CS1 */
 #define INNOVATOR1610_ETHR_START	0x04000300
 
@@ -234,7 +258,11 @@ static struct platform_device *innovator1510_devices[] __initdata = {
 
 static int innovator_get_pendown_state(void)
 {
+<<<<<<< HEAD
 	return !(fpga_read(OMAP1510_FPGA_TOUCHSCREEN) & (1 << 5));
+=======
+	return !(__raw_readb(OMAP1510_FPGA_TOUCHSCREEN) & (1 << 5));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ads7846_platform_data innovator1510_ts_info = {
@@ -268,10 +296,13 @@ static struct resource innovator1610_smc91x_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= OMAP_GPIO_IRQ(0),
 		.end	= OMAP_GPIO_IRQ(0),
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE,
 	},
 };
@@ -303,7 +334,11 @@ static struct platform_device *innovator1610_devices[] __initdata = {
 static void __init innovator_init_smc91x(void)
 {
 	if (cpu_is_omap1510()) {
+<<<<<<< HEAD
 		fpga_write(fpga_read(OMAP1510_FPGA_RST) & ~1,
+=======
+		__raw_writeb(__raw_readb(OMAP1510_FPGA_RST) & ~1,
+>>>>>>> refs/remotes/origin/master
 			   OMAP1510_FPGA_RST);
 		udelay(750);
 	} else {
@@ -315,6 +350,7 @@ static void __init innovator_init_smc91x(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void __init innovator_init_irq(void)
 {
 	omap1_init_common_hw();
@@ -323,6 +359,8 @@ static void __init innovator_init_irq(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_ARCH_OMAP15XX
 static struct omap_usb_config innovator1510_usb_config __initdata = {
 	/* for bundled non-standard host and peripheral cables */
@@ -368,10 +406,17 @@ static int mmc_set_power(struct device *dev, int slot, int power_on,
 				int vdd)
 {
 	if (power_on)
+<<<<<<< HEAD
 		fpga_write(fpga_read(OMAP1510_FPGA_POWER) | (1 << 3),
 				OMAP1510_FPGA_POWER);
 	else
 		fpga_write(fpga_read(OMAP1510_FPGA_POWER) & ~(1 << 3),
+=======
+		__raw_writeb(__raw_readb(OMAP1510_FPGA_POWER) | (1 << 3),
+				OMAP1510_FPGA_POWER);
+	else
+		__raw_writeb(__raw_readb(OMAP1510_FPGA_POWER) & ~(1 << 3),
+>>>>>>> refs/remotes/origin/master
 				OMAP1510_FPGA_POWER);
 
 	return 0;
@@ -406,12 +451,15 @@ static inline void innovator_mmc_init(void)
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct omap_board_config_kernel innovator_config[] = {
 	{ OMAP_TAG_LCD,		NULL },
 };
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __init innovator_init(void)
 {
 	if (cpu_is_omap1510())
@@ -430,6 +478,7 @@ static void __init innovator_init(void)
 		omap_cfg_reg(UART3_TX);
 		omap_cfg_reg(UART3_RX);
 
+<<<<<<< HEAD
 		reg = fpga_read(OMAP1510_FPGA_POWER);
 		reg |= OMAP1510_FPGA_PCR_COM1_EN;
 		fpga_write(reg, OMAP1510_FPGA_POWER);
@@ -438,6 +487,16 @@ static void __init innovator_init(void)
 		reg = fpga_read(OMAP1510_FPGA_POWER);
 		reg |= OMAP1510_FPGA_PCR_COM2_EN;
 		fpga_write(reg, OMAP1510_FPGA_POWER);
+=======
+		reg = __raw_readb(OMAP1510_FPGA_POWER);
+		reg |= OMAP1510_FPGA_PCR_COM1_EN;
+		__raw_writeb(reg, OMAP1510_FPGA_POWER);
+		udelay(10);
+
+		reg = __raw_readb(OMAP1510_FPGA_POWER);
+		reg |= OMAP1510_FPGA_PCR_COM2_EN;
+		__raw_writeb(reg, OMAP1510_FPGA_POWER);
+>>>>>>> refs/remotes/origin/master
 		udelay(10);
 
 		platform_add_devices(innovator1510_devices, ARRAY_SIZE(innovator1510_devices));
@@ -448,10 +507,15 @@ static void __init innovator_init(void)
 #ifdef CONFIG_ARCH_OMAP16XX
 	if (!cpu_is_omap1510()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		innovator1610_smc91x_resources[1].start = gpio_to_irq(0);
 		innovator1610_smc91x_resources[1].end = gpio_to_irq(0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		innovator1610_smc91x_resources[1].start = gpio_to_irq(0);
+		innovator1610_smc91x_resources[1].end = gpio_to_irq(0);
+>>>>>>> refs/remotes/origin/master
 		platform_add_devices(innovator1610_devices, ARRAY_SIZE(innovator1610_devices));
 	}
 #endif
@@ -460,15 +524,20 @@ static void __init innovator_init(void)
 	if (cpu_is_omap1510()) {
 		omap1_usb_init(&innovator1510_usb_config);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		innovator_config[1].data = &innovator1510_lcd_config;
 =======
 		omapfb_set_lcd_config(&innovator1510_lcd_config);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		omapfb_set_lcd_config(&innovator1510_lcd_config);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 #ifdef CONFIG_ARCH_OMAP16XX
 	if (cpu_is_omap1610()) {
 		omap1_usb_init(&h2_usb_config);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		innovator_config[1].data = &innovator1610_lcd_config;
 	}
@@ -480,11 +549,17 @@ static void __init innovator_init(void)
 	}
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		omapfb_set_lcd_config(&innovator1610_lcd_config);
+	}
+#endif
+>>>>>>> refs/remotes/origin/master
 	omap_serial_init();
 	omap_register_i2c_bus(1, 100, NULL, 0);
 	innovator_mmc_init();
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init innovator_map_io(void)
 {
@@ -503,6 +578,8 @@ static void __init innovator_map_io(void)
 	}
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * REVISIT: Assume 15xx for now, we don't want to do revision check
  * until later on. The right way to fix this is to set up a different
@@ -510,6 +587,10 @@ static void __init innovator_map_io(void)
  */
 static void __init innovator_map_io(void)
 {
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ARCH_OMAP15XX
+>>>>>>> refs/remotes/origin/master
 	omap15xx_map_io();
 
 	iotable_init(innovator1510_io_desc, ARRAY_SIZE(innovator1510_io_desc));
@@ -517,14 +598,22 @@ static void __init innovator_map_io(void)
 
 	/* Dump the Innovator FPGA rev early - useful info for support. */
 	pr_debug("Innovator FPGA Rev %d.%d Board Rev %d\n",
+<<<<<<< HEAD
 			fpga_read(OMAP1510_FPGA_REV_HIGH),
 			fpga_read(OMAP1510_FPGA_REV_LOW),
 			fpga_read(OMAP1510_FPGA_BOARD_REV));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			__raw_readb(OMAP1510_FPGA_REV_HIGH),
+			__raw_readb(OMAP1510_FPGA_REV_LOW),
+			__raw_readb(OMAP1510_FPGA_BOARD_REV));
+#endif
+>>>>>>> refs/remotes/origin/master
 }
 
 MACHINE_START(OMAP_INNOVATOR, "TI-Innovator")
 	/* Maintainer: MontaVista Software, Inc. */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	.boot_params	= 0x10000100,
 	.map_io		= innovator_map_io,
@@ -542,4 +631,14 @@ MACHINE_START(OMAP_INNOVATOR, "TI-Innovator")
 	.timer		= &omap1_timer,
 	.restart	= omap1_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+	.map_io		= innovator_map_io,
+	.init_early     = omap1_init_early,
+	.init_irq	= omap1_init_irq,
+	.init_machine	= innovator_init,
+	.init_late	= omap1_init_late,
+	.init_time	= omap1_timer_init,
+	.restart	= omap1_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

@@ -52,6 +52,7 @@
 #define VIA_VSYNC_NEGATIVE	0x02
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /***************************************************
 * Definition IGA1 Design Method of CRTC Registers *
 ****************************************************/
@@ -88,6 +89,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**********************************************************/
 /* Definition IGA2 Design Method of CRTC Shadow Registers */
 /**********************************************************/
@@ -100,6 +103,7 @@
 #define IGA2_VER_SYNC_START_SHADOW_FORMULA(x)      (x)
 #define IGA2_VER_SYNC_END_SHADOW_FORMULA(x, y)      (x+y)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Define Register Number for IGA1 CRTC Timing */
 
@@ -130,6 +134,8 @@
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Define Register Number for IGA2 Shadow CRTC Timing */
 
 /* location: {CR6D,0,7},{CR71,3,3} */
@@ -149,6 +155,7 @@
 /* location: {CR76,0,3} */
 #define IGA2_SHADOW_VER_SYNC_END_REG_NUM    1
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* Define Register Number for IGA2 CRTC Timing */
 
@@ -183,6 +190,8 @@ is reserved, so it may have problem to set 1600x1200 on IGA2. */
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Define Fetch Count Register*/
 
 /* location: {SR1C,0,7},{SR1D,0,1} */
@@ -456,17 +465,21 @@ is reserved, so it may have problem to set 1600x1200 on IGA2. */
 #define LCD_VER_SCALING_FACTOR_REG_NUM_CLE  2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /************************************************
  *****     Define IGA1 Display Timing       *****
  ************************************************/
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct io_register {
 	u8 io_addr;
 	u8 start_bit;
 	u8 end_bit;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* IGA1 Horizontal Total */
 struct iga1_hor_total {
@@ -542,6 +555,8 @@ struct iga1_ver_sync_end {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*****************************************************
 **      Define IGA2 Shadow Display Timing         ****
 *****************************************************/
@@ -594,6 +609,7 @@ struct iga2_shadow_ver_sync_end {
 	struct io_register reg[IGA2_SHADOW_VER_SYNC_END_REG_NUM];
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*****************************************************
 **      Define IGA2 Display Timing                ****
@@ -673,6 +689,8 @@ struct iga2_ver_sync_end {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* IGA1 Fetch Count Register */
 struct iga1_fetch_count {
 	int reg_num;
@@ -836,6 +854,7 @@ struct display_queue_expire_num {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct iga1_crtc_timing {
 	struct iga1_hor_total hor_total;
 	struct iga1_hor_addr hor_addr;
@@ -853,6 +872,8 @@ struct iga1_crtc_timing {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct iga2_shadow_crtc_timing {
 	struct iga2_shadow_hor_total hor_total_shadow;
 	struct iga2_shadow_hor_blank_end hor_blank_end_shadow;
@@ -864,6 +885,7 @@ struct iga2_shadow_crtc_timing {
 	struct iga2_shadow_ver_sync_end ver_sync_end_shadow;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 struct iga2_crtc_timing {
 	struct iga2_hor_total hor_total;
@@ -882,6 +904,8 @@ struct iga2_crtc_timing {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* device ID */
 #define CLE266_FUNCTION3    0x3123
 #define KM400_FUNCTION3     0x3205
@@ -935,6 +959,7 @@ extern int viafb_DVI_ON;
 extern int viafb_hotplug;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void viafb_fill_crtc_timing(struct crt_mode_table *crt_table,
 	struct VideoModeTable *video_mode, int bpp_byte, int set_iga);
 
@@ -944,6 +969,12 @@ struct display_timing var_to_timing(const struct fb_var_screeninfo *var,
 void viafb_fill_crtc_timing(const struct fb_var_screeninfo *var,
 	u16 cxres, u16 cyres, int iga);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct via_display_timing var_to_timing(const struct fb_var_screeninfo *var,
+	u16 cxres, u16 cyres);
+void viafb_fill_crtc_timing(const struct fb_var_screeninfo *var,
+	u16 cxres, u16 cyres, int iga);
+>>>>>>> refs/remotes/origin/master
 void viafb_set_vclock(u32 CLK, int set_iga);
 void viafb_load_reg(int timing_value, int viafb_load_reg_num,
 	struct io_register *reg,
@@ -964,6 +995,7 @@ void viafb_set_dpa_gfx(int output_interface, struct GFX_DPA_SETTING\
 					*p_gfx_dpa_setting);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int viafb_setmode(struct VideoModeTable *vmode_tbl, int video_bpp,
 	struct VideoModeTable *vmode_tbl1, int video_bpp1);
 void viafb_fill_var_timing_info(struct fb_var_screeninfo *var, int refresh,
@@ -978,6 +1010,13 @@ void viafb_fill_var_timing_info(struct fb_var_screeninfo *var,
 void __devinit viafb_init_chip_info(int chip_type);
 void __devinit viafb_init_dac(int set_iga);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int viafb_setmode(void);
+void viafb_fill_var_timing_info(struct fb_var_screeninfo *var,
+	const struct fb_videomode *mode);
+void viafb_init_chip_info(int chip_type);
+void viafb_init_dac(int set_iga);
+>>>>>>> refs/remotes/origin/master
 int viafb_get_refresh(int hres, int vres, u32 float_refresh);
 void viafb_update_device_setting(int hres, int vres, int bpp, int flag);
 

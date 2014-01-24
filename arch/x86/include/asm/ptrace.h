@@ -1,6 +1,7 @@
 #ifndef _ASM_X86_PTRACE_H
 #define _ASM_X86_PTRACE_H
 
+<<<<<<< HEAD
 #include <linux/compiler.h>	/* For __user */
 #include <asm/ptrace-abi.h>
 #include <asm/processor-flags.h>
@@ -39,6 +40,14 @@ struct pt_regs {
 };
 
 #else /* __KERNEL__ */
+=======
+#include <asm/segment.h>
+#include <asm/page_types.h>
+#include <uapi/asm/ptrace.h>
+
+#ifndef __ASSEMBLY__
+#ifdef __i386__
+>>>>>>> refs/remotes/origin/master
 
 struct pt_regs {
 	unsigned long bx;
@@ -60,6 +69,7 @@ struct pt_regs {
 	unsigned long ss;
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #else /* __i386__ */
@@ -96,6 +106,10 @@ struct pt_regs {
 
 #else /* __KERNEL__ */
 
+=======
+#else /* __i386__ */
+
+>>>>>>> refs/remotes/origin/master
 struct pt_regs {
 	unsigned long r15;
 	unsigned long r14;
@@ -124,6 +138,7 @@ struct pt_regs {
 /* top of stack page */
 };
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 #endif /* !__i386__ */
 
@@ -137,6 +152,13 @@ struct pt_regs {
 #include <asm/paravirt_types.h>
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif /* !__i386__ */
+
+#ifdef CONFIG_PARAVIRT
+#include <asm/paravirt_types.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 struct cpuinfo_x86;
 struct task_struct;
@@ -149,9 +171,12 @@ convert_ip_to_linear(struct task_struct *child, struct pt_regs *regs);
 extern void send_sigtrap(struct task_struct *tsk, struct pt_regs *regs,
 			 int error_code, int si_code);
 <<<<<<< HEAD
+<<<<<<< HEAD
 void signal_fault(struct pt_regs *regs, void __user *frame, char *where);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern long syscall_trace_enter(struct pt_regs *);
 extern void syscall_trace_leave(struct pt_regs *);
@@ -197,7 +222,10 @@ static inline int v8086_mode(struct pt_regs *regs)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_64
 static inline bool user_64bit_mode(struct pt_regs *regs)
 {
@@ -212,9 +240,21 @@ static inline bool user_64bit_mode(struct pt_regs *regs)
 	return regs->cs == __USER_CS || regs->cs == pv_info.extra_user_64bit_cs;
 #endif
 }
+<<<<<<< HEAD
 #endif
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define current_user_stack_pointer()	this_cpu_read(old_rsp)
+/* ia32 vs. x32 difference */
+#define compat_user_stack_pointer()	\
+	(test_thread_flag(TIF_IA32) 	\
+	 ? current_pt_regs()->sp 	\
+	 : this_cpu_read(old_rsp))
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_X86_32
 extern unsigned long kernel_stack_pointer(struct pt_regs *regs);
 #else
@@ -249,6 +289,18 @@ static inline unsigned long regs_get_register(struct pt_regs *regs,
 {
 	if (unlikely(offset > MAX_REG_OFFSET))
 		return 0;
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_X86_32
+	/*
+	 * Traps from the kernel do not save sp and ss.
+	 * Use the helper function to retrieve sp.
+	 */
+	if (offset == offsetof(struct pt_regs, sp) &&
+	    regs->cs == __KERNEL_CS)
+		return kernel_stack_pointer(regs);
+#endif
+>>>>>>> refs/remotes/origin/master
 	return *(unsigned long *)((unsigned long)regs + offset);
 }
 
@@ -302,8 +354,12 @@ extern int do_get_thread_area(struct task_struct *p, int idx,
 extern int do_set_thread_area(struct task_struct *p, int idx,
 			      struct user_desc __user *info, int can_allocate);
 
+<<<<<<< HEAD
 #endif /* __KERNEL__ */
 
 #endif /* !__ASSEMBLY__ */
 
+=======
+#endif /* !__ASSEMBLY__ */
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_PTRACE_H */

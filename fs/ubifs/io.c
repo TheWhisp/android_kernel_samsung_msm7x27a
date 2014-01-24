@@ -87,9 +87,12 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
 		c->vfs_sb->s_flags |= MS_RDONLY;
 		ubifs_warn("switched to read-only mode, error %d", err);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dbg_dump_stack();
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		dump_stack();
 	}
 }
@@ -113,13 +116,21 @@ int ubifs_leb_read(const struct ubifs_info *c, int lnum, void *buf, int offs,
 	if (err && (err != -EBADMSG || even_ebadmsg)) {
 		ubifs_err("reading %d bytes from LEB %d:%d failed, error %d",
 			  len, lnum, offs, err);
+<<<<<<< HEAD
 		dbg_dump_stack();
+=======
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
 
 int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
+<<<<<<< HEAD
 		    int len, int dtype)
+=======
+		    int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -127,20 +138,34 @@ int ubifs_leb_write(struct ubifs_info *c, int lnum, const void *buf, int offs,
 	if (c->ro_error)
 		return -EROFS;
 	if (!dbg_is_tst_rcvry(c))
+<<<<<<< HEAD
 		err = ubi_leb_write(c->ubi, lnum, buf, offs, len, dtype);
 	else
 		err = dbg_leb_write(c, lnum, buf, offs, len, dtype);
+=======
+		err = ubi_leb_write(c->ubi, lnum, buf, offs, len);
+	else
+		err = dbg_leb_write(c, lnum, buf, offs, len);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		ubifs_err("writing %d bytes to LEB %d:%d failed, error %d",
 			  len, lnum, offs, err);
 		ubifs_ro_mode(c, err);
+<<<<<<< HEAD
 		dbg_dump_stack();
+=======
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
 
+<<<<<<< HEAD
 int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
 		     int dtype)
+=======
+int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -148,14 +173,24 @@ int ubifs_leb_change(struct ubifs_info *c, int lnum, const void *buf, int len,
 	if (c->ro_error)
 		return -EROFS;
 	if (!dbg_is_tst_rcvry(c))
+<<<<<<< HEAD
 		err = ubi_leb_change(c->ubi, lnum, buf, len, dtype);
 	else
 		err = dbg_leb_change(c, lnum, buf, len, dtype);
+=======
+		err = ubi_leb_change(c->ubi, lnum, buf, len);
+	else
+		err = dbg_leb_change(c, lnum, buf, len);
+>>>>>>> refs/remotes/origin/master
 	if (err) {
 		ubifs_err("changing %d bytes in LEB %d failed, error %d",
 			  len, lnum, err);
 		ubifs_ro_mode(c, err);
+<<<<<<< HEAD
 		dbg_dump_stack();
+=======
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -174,12 +209,20 @@ int ubifs_leb_unmap(struct ubifs_info *c, int lnum)
 	if (err) {
 		ubifs_err("unmap LEB %d failed, error %d", lnum, err);
 		ubifs_ro_mode(c, err);
+<<<<<<< HEAD
 		dbg_dump_stack();
+=======
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
 
+<<<<<<< HEAD
 int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype)
+=======
+int ubifs_leb_map(struct ubifs_info *c, int lnum)
+>>>>>>> refs/remotes/origin/master
 {
 	int err;
 
@@ -187,6 +230,7 @@ int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype)
 	if (c->ro_error)
 		return -EROFS;
 	if (!dbg_is_tst_rcvry(c))
+<<<<<<< HEAD
 		err = ubi_leb_map(c->ubi, lnum, dtype);
 	else
 		err = dbg_leb_map(c, lnum, dtype);
@@ -194,6 +238,15 @@ int ubifs_leb_map(struct ubifs_info *c, int lnum, int dtype)
 		ubifs_err("mapping LEB %d failed, error %d", lnum, err);
 		ubifs_ro_mode(c, err);
 		dbg_dump_stack();
+=======
+		err = ubi_leb_map(c->ubi, lnum);
+	else
+		err = dbg_leb_map(c, lnum);
+	if (err) {
+		ubifs_err("mapping LEB %d failed, error %d", lnum, err);
+		ubifs_ro_mode(c, err);
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -206,10 +259,16 @@ int ubifs_is_mapped(const struct ubifs_info *c, int lnum)
 	if (err < 0) {
 		ubifs_err("ubi_is_mapped failed for LEB %d, error %d",
 			  lnum, err);
+<<<<<<< HEAD
 		dbg_dump_stack();
 	}
 	return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dump_stack();
+	}
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -299,8 +358,13 @@ out_len:
 out:
 	if (!quiet) {
 		ubifs_err("bad node at LEB %d:%d", lnum, offs);
+<<<<<<< HEAD
 		dbg_dump_node(c, buf);
 		dbg_dump_stack();
+=======
+		ubifs_dump_node(c, buf);
+		dump_stack();
+>>>>>>> refs/remotes/origin/master
 	}
 	return err;
 }
@@ -529,6 +593,7 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
 	if (dirt)
 		ubifs_pad(c, wbuf->buf + wbuf->used, dirt);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf, wbuf->offs,
 			    sync_len, wbuf->dtype);
 	if (err) {
@@ -543,6 +608,11 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
 	if (err)
 		return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_write(c, wbuf->lnum, wbuf->buf, wbuf->offs, sync_len);
+	if (err)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock(&wbuf->lock);
 	wbuf->offs += sync_len;
@@ -578,14 +648,21 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
  * @wbuf: write-buffer
  * @lnum: logical eraseblock number to seek to
  * @offs: logical eraseblock offset to seek to
+<<<<<<< HEAD
  * @dtype: data type
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This function targets the write-buffer to logical eraseblock @lnum:@offs.
  * The write-buffer has to be empty. Returns zero in case of success and a
  * negative error code in case of failure.
  */
+<<<<<<< HEAD
 int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
 			   int dtype)
+=======
+int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct ubifs_info *c = wbuf->c;
 
@@ -608,7 +685,10 @@ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
 	wbuf->avail = wbuf->size;
 	wbuf->used = 0;
 	spin_unlock(&wbuf->lock);
+<<<<<<< HEAD
 	wbuf->dtype = dtype;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -735,6 +815,7 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
 			dbg_io("flush jhead %s wbuf to LEB %d:%d",
 			       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf,
 					    wbuf->offs, wbuf->size,
 					    wbuf->dtype);
@@ -743,6 +824,10 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
 					      wbuf->offs, wbuf->size,
 					      wbuf->dtype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			err = ubifs_leb_write(c, wbuf->lnum, wbuf->buf,
+					      wbuf->offs, wbuf->size);
+>>>>>>> refs/remotes/origin/master
 			if (err)
 				goto out;
 
@@ -778,12 +863,17 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
 		       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs);
 		memcpy(wbuf->buf + wbuf->used, buf, wbuf->avail);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf, wbuf->offs,
 				    wbuf->size, wbuf->dtype);
 =======
 		err = ubifs_leb_write(c, wbuf->lnum, wbuf->buf, wbuf->offs,
 				      wbuf->size, wbuf->dtype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_write(c, wbuf->lnum, wbuf->buf, wbuf->offs,
+				      wbuf->size);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 
@@ -802,12 +892,17 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
 		dbg_io("write %d bytes to LEB %d:%d",
 		       wbuf->size, wbuf->lnum, wbuf->offs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_leb_write(c->ubi, wbuf->lnum, buf, wbuf->offs,
 				    wbuf->size, wbuf->dtype);
 =======
 		err = ubifs_leb_write(c, wbuf->lnum, buf, wbuf->offs,
 				      wbuf->size, wbuf->dtype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_write(c, wbuf->lnum, buf, wbuf->offs,
+				      wbuf->size);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 
@@ -829,12 +924,17 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
 		dbg_io("write %d bytes to LEB %d:%d", n, wbuf->lnum,
 		       wbuf->offs);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_leb_write(c->ubi, wbuf->lnum, buf + written,
 				    wbuf->offs, n, wbuf->dtype);
 =======
 		err = ubifs_leb_write(c, wbuf->lnum, buf + written,
 				      wbuf->offs, n, wbuf->dtype);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_write(c, wbuf->lnum, buf + written,
+				      wbuf->offs, n);
+>>>>>>> refs/remotes/origin/master
 		if (err)
 			goto out;
 		wbuf->offs += n;
@@ -878,9 +978,15 @@ exit:
 out:
 	ubifs_err("cannot write %d bytes to LEB %d:%d, error %d",
 		  len, wbuf->lnum, wbuf->offs, err);
+<<<<<<< HEAD
 	dbg_dump_node(c, buf);
 	dbg_dump_stack();
 	dbg_dump_leb(c, wbuf->lnum);
+=======
+	ubifs_dump_node(c, buf);
+	dump_stack();
+	ubifs_dump_leb(c, wbuf->lnum);
+>>>>>>> refs/remotes/origin/master
 	return err;
 }
 
@@ -891,7 +997,10 @@ out:
  * @len: node length
  * @lnum: logical eraseblock number
  * @offs: offset within the logical eraseblock
+<<<<<<< HEAD
  * @dtype: node life-time hint (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * This function automatically fills node magic number, assigns sequence
  * number, and calculates node CRC checksum. The length of the @buf buffer has
@@ -900,7 +1009,11 @@ out:
  * success and a negative error code in case of failure.
  */
 int ubifs_write_node(struct ubifs_info *c, void *buf, int len, int lnum,
+<<<<<<< HEAD
 		     int offs, int dtype)
+=======
+		     int offs)
+>>>>>>> refs/remotes/origin/master
 {
 	int err, buf_len = ALIGN(len, c->min_io_size);
 
@@ -917,6 +1030,7 @@ int ubifs_write_node(struct ubifs_info *c, void *buf, int len, int lnum,
 
 	ubifs_prepare_node(c, buf, len, 1);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_leb_write(c->ubi, lnum, buf, offs, buf_len, dtype);
 	if (err) {
 		ubifs_err("cannot write %d bytes to LEB %d:%d, error %d",
@@ -929,6 +1043,11 @@ int ubifs_write_node(struct ubifs_info *c, void *buf, int len, int lnum,
 	if (err)
 		dbg_dump_node(c, buf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_write(c, lnum, buf, offs, buf_len);
+	if (err)
+		ubifs_dump_node(c, buf);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }
@@ -981,6 +1100,7 @@ int ubifs_read_node_wbuf(struct ubifs_wbuf *wbuf, void *buf, int type, int len,
 	if (rlen > 0) {
 		/* Read everything that goes before write-buffer */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		err = ubi_read(c->ubi, lnum, buf, offs, rlen);
 		if (err && err != -EBADMSG) {
 			ubifs_err("failed to read node %d from LEB %d:%d, "
@@ -993,6 +1113,11 @@ int ubifs_read_node_wbuf(struct ubifs_wbuf *wbuf, void *buf, int type, int len,
 		if (err && err != -EBADMSG)
 			return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		err = ubifs_leb_read(c, lnum, buf, offs, rlen, 0);
+		if (err && err != -EBADMSG)
+			return err;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (type != ch->node_type) {
@@ -1017,8 +1142,13 @@ int ubifs_read_node_wbuf(struct ubifs_wbuf *wbuf, void *buf, int type, int len,
 
 out:
 	ubifs_err("bad node at LEB %d:%d", lnum, offs);
+<<<<<<< HEAD
 	dbg_dump_node(c, buf);
 	dbg_dump_stack();
+=======
+	ubifs_dump_node(c, buf);
+	dump_stack();
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 
@@ -1048,6 +1178,7 @@ int ubifs_read_node(const struct ubifs_info *c, void *buf, int type, int len,
 	ubifs_assert(type >= 0 && type < UBIFS_NODE_TYPES_CNT);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	err = ubi_read(c->ubi, lnum, buf, offs, len);
 	if (err && err != -EBADMSG) {
 		ubifs_err("cannot read node %d from LEB %d:%d, error %d",
@@ -1059,6 +1190,11 @@ int ubifs_read_node(const struct ubifs_info *c, void *buf, int type, int len,
 	if (err && err != -EBADMSG)
 		return err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	err = ubifs_leb_read(c, lnum, buf, offs, len, 0);
+	if (err && err != -EBADMSG)
+		return err;
+>>>>>>> refs/remotes/origin/master
 
 	if (type != ch->node_type) {
 		ubifs_err("bad node type (%d but expected %d)",
@@ -1083,8 +1219,13 @@ int ubifs_read_node(const struct ubifs_info *c, void *buf, int type, int len,
 out:
 	ubifs_err("bad node at LEB %d:%d, LEB mapping status %d", lnum, offs,
 		  ubi_is_mapped(c->ubi, lnum));
+<<<<<<< HEAD
 	dbg_dump_node(c, buf);
 	dbg_dump_stack();
+=======
+	ubifs_dump_node(c, buf);
+	dump_stack();
+>>>>>>> refs/remotes/origin/master
 	return -EINVAL;
 }
 
@@ -1122,7 +1263,10 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
 	 */
 	size = c->max_write_size - (c->leb_start % c->max_write_size);
 	wbuf->avail = wbuf->size = size;
+<<<<<<< HEAD
 	wbuf->dtype = UBI_UNKNOWN;
+=======
+>>>>>>> refs/remotes/origin/master
 	wbuf->sync_callback = NULL;
 	mutex_init(&wbuf->io_mutex);
 	spin_lock_init(&wbuf->lock);

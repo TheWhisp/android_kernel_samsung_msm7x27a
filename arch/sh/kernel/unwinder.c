@@ -14,10 +14,14 @@
 #include <linux/module.h>
 #include <asm/unwinder.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This is the most basic stack unwinder an architecture can

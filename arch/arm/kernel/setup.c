@@ -8,10 +8,14 @@
  * published by the Free Software Foundation.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/stddef.h>
 #include <linux/ioport.h>
@@ -22,6 +26,7 @@
 #include <linux/bootmem.h>
 #include <linux/seq_file.h>
 #include <linux/screen_info.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/kexec.h>
 #include <linux/of_fdt.h>
@@ -40,17 +45,35 @@
 
 #include <asm/unified.h>
 =======
+=======
+#include <linux/of_platform.h>
+#include <linux/init.h>
+#include <linux/kexec.h>
+#include <linux/of_fdt.h>
+#include <linux/cpu.h>
+#include <linux/interrupt.h>
+#include <linux/smp.h>
+#include <linux/proc_fs.h>
+#include <linux/memblock.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/bug.h>
 #include <linux/compiler.h>
 #include <linux/sort.h>
 
 #include <asm/unified.h>
 #include <asm/cp15.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/cpu.h>
 #include <asm/cputype.h>
 #include <asm/elf.h>
 #include <asm/procinfo.h>
+<<<<<<< HEAD
+=======
+#include <asm/psci.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/sections.h>
 #include <asm/setup.h>
 #include <asm/smp_plat.h>
@@ -64,14 +87,18 @@
 #include <asm/mach/irq.h>
 #include <asm/mach/time.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/traps.h>
 #include <asm/unwind.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/system_info.h>
 #include <asm/system_misc.h>
 #include <asm/traps.h>
 #include <asm/unwind.h>
 #include <asm/memblock.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 #if defined(CONFIG_DEPRECATED_PARAM_STRUCT)
@@ -83,6 +110,12 @@
 #ifndef MEM_SIZE
 #define MEM_SIZE	(16*1024*1024)
 #endif
+=======
+#include <asm/virt.h>
+
+#include "atags.h"
+
+>>>>>>> refs/remotes/origin/master
 
 #if defined(CONFIG_FPE_NWFPE) || defined(CONFIG_FPE_FASTFPE)
 char fpe_type[8];
@@ -96,6 +129,7 @@ static int __init fpe_setup(char *line)
 __setup("fpe=", fpe_setup);
 #endif
 
+<<<<<<< HEAD
 extern void paging_init(struct machine_desc *desc);
 extern void sanity_check_meminfo(void);
 extern void reboot_setup(char *str);
@@ -103,6 +137,14 @@ extern void reboot_setup(char *str);
 =======
 extern void setup_dma_zone(struct machine_desc *desc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+extern void paging_init(const struct machine_desc *desc);
+extern void early_paging_init(const struct machine_desc *,
+			      struct proc_info_list *);
+extern void sanity_check_meminfo(void);
+extern enum reboot_mode reboot_mode;
+extern void setup_dma_zone(const struct machine_desc *desc);
+>>>>>>> refs/remotes/origin/master
 
 unsigned int processor_id;
 EXPORT_SYMBOL(processor_id);
@@ -125,8 +167,11 @@ EXPORT_SYMBOL(system_serial_high);
 unsigned int elf_hwcap __read_mostly;
 EXPORT_SYMBOL(elf_hwcap);
 
+<<<<<<< HEAD
 unsigned int boot_reason;
 EXPORT_SYMBOL(boot_reason);
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef MULTI_CPU
 struct processor processor __read_mostly;
@@ -146,7 +191,10 @@ EXPORT_SYMBOL(outer_cache);
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Cached cpu_architecture() result for use by assembler code.
  * C code should use the cpu_architecture() function instead of accessing this
@@ -154,14 +202,23 @@ EXPORT_SYMBOL(outer_cache);
  */
 int __cpu_architecture __read_mostly = CPU_ARCH_UNKNOWN;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct stack {
 	u32 irq[3];
 	u32 abt[3];
 	u32 und[3];
 } ____cacheline_aligned;
 
+<<<<<<< HEAD
 static struct stack stacks[NR_CPUS];
+=======
+#ifndef CONFIG_CPU_V7M
+static struct stack stacks[NR_CPUS];
+#endif
+>>>>>>> refs/remotes/origin/master
 
 char elf_platform[ELF_PLATFORM_SIZE];
 EXPORT_SYMBOL(elf_platform);
@@ -169,9 +226,14 @@ EXPORT_SYMBOL(elf_platform);
 static const char *cpu_name;
 static const char *machine_name;
 static char __initdata cmd_line[COMMAND_LINE_SIZE];
+<<<<<<< HEAD
 struct machine_desc *machine_desc __initdata;
 
 static char default_command_line[COMMAND_LINE_SIZE] __initdata = CONFIG_CMDLINE;
+=======
+const struct machine_desc *machine_desc __initdata;
+
+>>>>>>> refs/remotes/origin/master
 static union { char c[4]; unsigned long l; } endian_test __initdata = { { 'l', '?', '?', 'b' } };
 #define ENDIANNESS ((char)endian_test.l)
 
@@ -189,10 +251,14 @@ static struct resource mem_res[] = {
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.name = "Kernel text",
 =======
 		.name = "Kernel code",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.name = "Kernel code",
+>>>>>>> refs/remotes/origin/master
 		.start = 0,
 		.end = 0,
 		.flags = IORESOURCE_MEM
@@ -245,7 +311,11 @@ static const char *proc_arch[] = {
 	"5TEJ",
 	"6TEJ",
 	"7",
+<<<<<<< HEAD
 	"?(11)",
+=======
+	"7M",
+>>>>>>> refs/remotes/origin/master
 	"?(12)",
 	"?(13)",
 	"?(14)",
@@ -255,10 +325,20 @@ static const char *proc_arch[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int cpu_architecture(void)
 =======
 static int __get_cpu_architecture(void)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_CPU_V7M
+static int __get_cpu_architecture(void)
+{
+	return CPU_ARCH_ARMv7M;
+}
+#else
+static int __get_cpu_architecture(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpu_arch;
 
@@ -290,9 +370,14 @@ static int __get_cpu_architecture(void)
 
 	return cpu_arch;
 }
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
+=======
+#endif
+
+>>>>>>> refs/remotes/origin/master
 int __pure cpu_architecture(void)
 {
 	BUG_ON(__cpu_architecture == CPU_ARCH_UNKNOWN);
@@ -300,19 +385,28 @@ int __pure cpu_architecture(void)
 	return __cpu_architecture;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int cpu_has_aliasing_icache(unsigned int arch)
 {
 	int aliasing_icache;
 	unsigned int id_reg, num_sets, line_size;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/* PIPT caches never alias. */
 	if (icache_is_pipt())
 		return 0;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* arch specifies the register format */
 	switch (arch) {
 	case CPU_ARCH_ARMv7:
@@ -339,6 +433,7 @@ static int cpu_has_aliasing_icache(unsigned int arch)
 
 static void __init cacheid_init(void)
 {
+<<<<<<< HEAD
 	unsigned int cachetype = read_cpuid_cachetype();
 	unsigned int arch = cpu_architecture();
 
@@ -359,6 +454,16 @@ static void __init cacheid_init(void)
 				cacheid |= CACHEID_VIPT_I_ALIASING;
 		}
 =======
+=======
+	unsigned int arch = cpu_architecture();
+
+	if (arch == CPU_ARCH_ARMv7M) {
+		cacheid = 0;
+	} else if (arch >= CPU_ARCH_ARMv6) {
+		unsigned int cachetype = read_cpuid_cachetype();
+		if ((cachetype & (7 << 29)) == 4 << 29) {
+			/* ARMv7 register format */
+>>>>>>> refs/remotes/origin/master
 			arch = CPU_ARCH_ARMv7;
 			cacheid = CACHEID_VIPT_NONALIASING;
 			switch (cachetype & (3 << 14)) {
@@ -378,7 +483,10 @@ static void __init cacheid_init(void)
 		}
 		if (cpu_has_aliasing_icache(arch))
 			cacheid |= CACHEID_VIPT_I_ALIASING;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	} else {
 		cacheid = CACHEID_VIVT;
 	}
@@ -387,17 +495,23 @@ static void __init cacheid_init(void)
 		cache_is_vivt() ? "VIVT" :
 		cache_is_vipt_aliasing() ? "VIPT aliasing" :
 <<<<<<< HEAD
+<<<<<<< HEAD
 		cache_is_vipt_nonaliasing() ? "VIPT nonaliasing" : "unknown",
 		cache_is_vivt() ? "VIVT" :
 		icache_is_vivt_asid_tagged() ? "VIVT ASID tagged" :
 		icache_is_vipt_aliasing() ? "VIPT aliasing" :
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		cache_is_vipt_nonaliasing() ? "PIPT / VIPT nonaliasing" : "unknown",
 		cache_is_vivt() ? "VIVT" :
 		icache_is_vivt_asid_tagged() ? "VIVT ASID tagged" :
 		icache_is_vipt_aliasing() ? "VIPT aliasing" :
 		icache_is_pipt() ? "PIPT" :
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		cache_is_vipt_nonaliasing() ? "VIPT nonaliasing" : "unknown");
 }
 
@@ -423,6 +537,31 @@ void __init early_print(const char *str, ...)
 	printk("%s", buf);
 }
 
+<<<<<<< HEAD
+=======
+static void __init cpuid_init_hwcaps(void)
+{
+	unsigned int divide_instrs, vmsa;
+
+	if (cpu_architecture() < CPU_ARCH_ARMv7)
+		return;
+
+	divide_instrs = (read_cpuid_ext(CPUID_EXT_ISAR0) & 0x0f000000) >> 24;
+
+	switch (divide_instrs) {
+	case 2:
+		elf_hwcap |= HWCAP_IDIVA;
+	case 1:
+		elf_hwcap |= HWCAP_IDIVT;
+	}
+
+	/* LPAE implies atomic ldrd/strd instructions */
+	vmsa = (read_cpuid_ext(CPUID_EXT_MMFR0) & 0xf) >> 0;
+	if (vmsa >= 5)
+		elf_hwcap |= HWCAP_LPAE;
+}
+
+>>>>>>> refs/remotes/origin/master
 static void __init feat_v6_fixup(void)
 {
 	int id = read_cpuid_id();
@@ -438,6 +577,7 @@ static void __init feat_v6_fixup(void)
 		elf_hwcap &= ~HWCAP_TLS;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void __init setup_processor(void)
 {
@@ -489,13 +629,21 @@ static void __init setup_processor(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * cpu_init - initialise one CPU.
  *
  * cpu_init sets up the per-CPU stacks.
  */
+<<<<<<< HEAD
 void cpu_init(void)
 {
+=======
+void notrace cpu_init(void)
+{
+#ifndef CONFIG_CPU_V7M
+>>>>>>> refs/remotes/origin/master
 	unsigned int cpu = smp_processor_id();
 	struct stack *stk = &stacks[cpu];
 
@@ -505,10 +653,21 @@ void cpu_init(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	cpu_proc_init();
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/*
+	 * This only works on resume and secondary cores. For booting on the
+	 * boot cpu, smp_prepare_boot_cpu is called after percpu area setup.
+	 */
+	set_my_cpu_offset(per_cpu_offset(cpu));
+
+	cpu_proc_init();
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Define the placement constraint for the inline asm directive below.
 	 * In Thumb-2, msr with an immediate value is not allowed.
@@ -543,15 +702,23 @@ void cpu_init(void)
 	      "I" (offsetof(struct stack, und[0])),
 	      PLC (PSR_F_BIT | PSR_I_BIT | SVC_MODE)
 	    : "r14");
+<<<<<<< HEAD
 }
 
 <<<<<<< HEAD
 =======
 int __cpu_logical_map[NR_CPUS];
+=======
+#endif
+}
+
+u32 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = MPIDR_INVALID };
+>>>>>>> refs/remotes/origin/master
 
 void __init smp_setup_processor_id(void)
 {
 	int i;
+<<<<<<< HEAD
 	u32 cpu = is_smp() ? read_cpuid_mpidr() & 0xff : 0;
 
 	cpu_logical_map(0) = cpu;
@@ -561,6 +728,91 @@ void __init smp_setup_processor_id(void)
 	printk(KERN_INFO "Booting Linux on physical CPU %d\n", cpu);
 }
 
+=======
+	u32 mpidr = is_smp() ? read_cpuid_mpidr() & MPIDR_HWID_BITMASK : 0;
+	u32 cpu = MPIDR_AFFINITY_LEVEL(mpidr, 0);
+
+	cpu_logical_map(0) = cpu;
+	for (i = 1; i < nr_cpu_ids; ++i)
+		cpu_logical_map(i) = i == cpu ? 0 : i;
+
+	/*
+	 * clear __my_cpu_offset on boot CPU to avoid hang caused by
+	 * using percpu variable early, for example, lockdep will
+	 * access percpu variable inside lock_release
+	 */
+	set_my_cpu_offset(0);
+
+	printk(KERN_INFO "Booting Linux on physical CPU 0x%x\n", mpidr);
+}
+
+struct mpidr_hash mpidr_hash;
+#ifdef CONFIG_SMP
+/**
+ * smp_build_mpidr_hash - Pre-compute shifts required at each affinity
+ *			  level in order to build a linear index from an
+ *			  MPIDR value. Resulting algorithm is a collision
+ *			  free hash carried out through shifting and ORing
+ */
+static void __init smp_build_mpidr_hash(void)
+{
+	u32 i, affinity;
+	u32 fs[3], bits[3], ls, mask = 0;
+	/*
+	 * Pre-scan the list of MPIDRS and filter out bits that do
+	 * not contribute to affinity levels, ie they never toggle.
+	 */
+	for_each_possible_cpu(i)
+		mask |= (cpu_logical_map(i) ^ cpu_logical_map(0));
+	pr_debug("mask of set bits 0x%x\n", mask);
+	/*
+	 * Find and stash the last and first bit set at all affinity levels to
+	 * check how many bits are required to represent them.
+	 */
+	for (i = 0; i < 3; i++) {
+		affinity = MPIDR_AFFINITY_LEVEL(mask, i);
+		/*
+		 * Find the MSB bit and LSB bits position
+		 * to determine how many bits are required
+		 * to express the affinity level.
+		 */
+		ls = fls(affinity);
+		fs[i] = affinity ? ffs(affinity) - 1 : 0;
+		bits[i] = ls - fs[i];
+	}
+	/*
+	 * An index can be created from the MPIDR by isolating the
+	 * significant bits at each affinity level and by shifting
+	 * them in order to compress the 24 bits values space to a
+	 * compressed set of values. This is equivalent to hashing
+	 * the MPIDR through shifting and ORing. It is a collision free
+	 * hash though not minimal since some levels might contain a number
+	 * of CPUs that is not an exact power of 2 and their bit
+	 * representation might contain holes, eg MPIDR[7:0] = {0x2, 0x80}.
+	 */
+	mpidr_hash.shift_aff[0] = fs[0];
+	mpidr_hash.shift_aff[1] = MPIDR_LEVEL_BITS + fs[1] - bits[0];
+	mpidr_hash.shift_aff[2] = 2*MPIDR_LEVEL_BITS + fs[2] -
+						(bits[1] + bits[0]);
+	mpidr_hash.mask = mask;
+	mpidr_hash.bits = bits[2] + bits[1] + bits[0];
+	pr_debug("MPIDR hash: aff0[%u] aff1[%u] aff2[%u] mask[0x%x] bits[%u]\n",
+				mpidr_hash.shift_aff[0],
+				mpidr_hash.shift_aff[1],
+				mpidr_hash.shift_aff[2],
+				mpidr_hash.mask,
+				mpidr_hash.bits);
+	/*
+	 * 4x is an arbitrary value used to warn on a hash table much bigger
+	 * than expected on most systems.
+	 */
+	if (mpidr_hash_size() > 4 * num_possible_cpus())
+		pr_warn("Large number of MPIDR hash buckets detected\n");
+	sync_cache_w(&mpidr_hash);
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static void __init setup_processor(void)
 {
 	struct proc_info_list *list;
@@ -602,20 +854,38 @@ static void __init setup_processor(void)
 	snprintf(elf_platform, ELF_PLATFORM_SIZE, "%s%c",
 		 list->elf_name, ENDIANNESS);
 	elf_hwcap = list->elf_hwcap;
+<<<<<<< HEAD
 #ifndef CONFIG_ARM_THUMB
 	elf_hwcap &= ~HWCAP_THUMB;
 #endif
 
+=======
+
+	cpuid_init_hwcaps();
+
+#ifndef CONFIG_ARM_THUMB
+	elf_hwcap &= ~(HWCAP_THUMB | HWCAP_IDIVT);
+#endif
+
+	erratum_a15_798181_init();
+
+>>>>>>> refs/remotes/origin/master
 	feat_v6_fixup();
 
 	cacheid_init();
 	cpu_init();
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 void __init dump_machine_table(void)
 {
 	struct machine_desc *p;
+=======
+void __init dump_machine_table(void)
+{
+	const struct machine_desc *p;
+>>>>>>> refs/remotes/origin/master
 
 	early_print("Available machine support:\n\nID (hex)\tNAME\n");
 	for_each_machine_desc(p)
@@ -627,9 +897,16 @@ void __init dump_machine_table(void)
 		/* can't use cpu_relax() here as it may require MMU setup */;
 }
 
+<<<<<<< HEAD
 int __init arm_add_memory(phys_addr_t start, unsigned long size)
 {
 	struct membank *bank = &meminfo.bank[meminfo.nr_banks];
+=======
+int __init arm_add_memory(u64 start, u64 size)
+{
+	struct membank *bank = &meminfo.bank[meminfo.nr_banks];
+	u64 aligned_start;
+>>>>>>> refs/remotes/origin/master
 
 	if (meminfo.nr_banks >= NR_BANKS) {
 		printk(KERN_CRIT "NR_BANKS too low, "
@@ -642,6 +919,7 @@ int __init arm_add_memory(phys_addr_t start, unsigned long size)
 	 * Size is appropriately rounded down, start is rounded up.
 	 */
 	size -= start & ~PAGE_MASK;
+<<<<<<< HEAD
 	bank->start = PAGE_ALIGN(start);
 <<<<<<< HEAD
 	bank->size  = size & PAGE_MASK;
@@ -649,6 +927,18 @@ int __init arm_add_memory(phys_addr_t start, unsigned long size)
 
 #ifndef CONFIG_LPAE
 	if (bank->start + size < bank->start) {
+=======
+	aligned_start = PAGE_ALIGN(start);
+
+#ifndef CONFIG_ARCH_PHYS_ADDR_T_64BIT
+	if (aligned_start > ULONG_MAX) {
+		printk(KERN_CRIT "Ignoring memory at 0x%08llx outside "
+		       "32-bit physical address space\n", (long long)start);
+		return -EINVAL;
+	}
+
+	if (aligned_start + size > ULONG_MAX) {
+>>>>>>> refs/remotes/origin/master
 		printk(KERN_CRIT "Truncating memory at 0x%08llx to fit in "
 			"32-bit physical address space\n", (long long)start);
 		/*
@@ -656,12 +946,21 @@ int __init arm_add_memory(phys_addr_t start, unsigned long size)
 		 * 32 bits, we use ULONG_MAX as the upper limit rather than 4GB.
 		 * This means we lose a page after masking.
 		 */
+<<<<<<< HEAD
 		size = ULONG_MAX - bank->start;
 	}
 #endif
 
 	bank->size = size & PAGE_MASK;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		size = ULONG_MAX - aligned_start;
+	}
+#endif
+
+	bank->start = aligned_start;
+	bank->size = size & ~(phys_addr_t)(PAGE_SIZE - 1);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check whether this memory region has non-zero size or
@@ -681,8 +980,13 @@ int __init arm_add_memory(phys_addr_t start, unsigned long size)
 static int __init early_mem(char *p)
 {
 	static int usermem __initdata = 0;
+<<<<<<< HEAD
 	unsigned long size;
 	phys_addr_t start;
+=======
+	u64 size;
+	u64 start;
+>>>>>>> refs/remotes/origin/master
 	char *endp;
 
 	/*
@@ -706,6 +1010,7 @@ static int __init early_mem(char *p)
 }
 early_param("mem", early_mem);
 
+<<<<<<< HEAD
 static void __init
 setup_ramdisk(int doload, int prompt, int image_start, unsigned int rd_sz)
 {
@@ -722,6 +1027,9 @@ setup_ramdisk(int doload, int prompt, int image_start, unsigned int rd_sz)
 }
 
 static void __init request_standard_resources(struct machine_desc *mdesc)
+=======
+static void __init request_standard_resources(const struct machine_desc *mdesc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct memblock_region *region;
 	struct resource *res;
@@ -732,7 +1040,11 @@ static void __init request_standard_resources(struct machine_desc *mdesc)
 	kernel_data.end     = virt_to_phys(_end - 1);
 
 	for_each_memblock(memory, region) {
+<<<<<<< HEAD
 		res = alloc_bootmem_low(sizeof(*res));
+=======
+		res = memblock_virt_alloc(sizeof(*res), 0);
+>>>>>>> refs/remotes/origin/master
 		res->name  = "System RAM";
 		res->start = __pfn_to_phys(memblock_region_memory_base_pfn(region));
 		res->end = __pfn_to_phys(memblock_region_memory_end_pfn(region)) - 1;
@@ -766,6 +1078,7 @@ static void __init request_standard_resources(struct machine_desc *mdesc)
 		request_resource(&ioport_resource, &lp2);
 }
 
+<<<<<<< HEAD
 /*
  *  Tag parsing.
  *
@@ -795,6 +1108,8 @@ static int __init parse_tag_mem32(const struct tag *tag)
 
 __tagtable(ATAG_MEM, parse_tag_mem32);
 
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_DUMMY_CONSOLE)
 struct screen_info screen_info = {
  .orig_video_lines	= 30,
@@ -804,6 +1119,7 @@ struct screen_info screen_info = {
  .orig_video_isVGA	= 1,
  .orig_video_points	= 8
 };
+<<<<<<< HEAD
 
 static int __init parse_tag_videotext(const struct tag *tag)
 {
@@ -923,6 +1239,36 @@ static int __init customize_machine(void)
 	return 0;
 }
 arch_initcall(customize_machine);
+=======
+#endif
+
+static int __init customize_machine(void)
+{
+	/*
+	 * customizes platform devices, or adds new ones
+	 * On DT based machines, we fall back to populating the
+	 * machine from the device tree, if no callback is provided,
+	 * otherwise we would always need an init_machine callback.
+	 */
+	if (machine_desc->init_machine)
+		machine_desc->init_machine();
+#ifdef CONFIG_OF
+	else
+		of_platform_populate(NULL, of_default_bus_match_table,
+					NULL, NULL);
+#endif
+	return 0;
+}
+arch_initcall(customize_machine);
+
+static int __init init_machine_late(void)
+{
+	if (machine_desc->init_late)
+		machine_desc->init_late();
+	return 0;
+}
+late_initcall(init_machine_late);
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_KEXEC
 static inline unsigned long long get_total_mem(void)
@@ -973,6 +1319,7 @@ static void __init reserve_crashkernel(void)
 static inline void reserve_crashkernel(void) {}
 #endif /* CONFIG_KEXEC */
 
+<<<<<<< HEAD
 static void __init squash_mem_tags(struct tag *tag)
 {
 	for (; tag->hdr.size; tag = tag_next(tag))
@@ -1073,12 +1420,15 @@ static struct machine_desc * __init setup_machine_tags(unsigned int nr)
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init meminfo_cmp(const void *_a, const void *_b)
 {
 	const struct membank *a = _a, *b = _b;
 	long cmp = bank_pfn_start(a) - bank_pfn_start(b);
 	return cmp < 0 ? -1 : cmp > 0 ? 1 : 0;
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 void __init setup_arch(char **cmdline_p)
@@ -1106,6 +1456,39 @@ void __init setup_arch(char **cmdline_p)
 	if (mdesc->restart_mode)
 		reboot_setup(&mdesc->restart_mode);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+void __init hyp_mode_check(void)
+{
+#ifdef CONFIG_ARM_VIRT_EXT
+	sync_boot_mode();
+
+	if (is_hyp_mode_available()) {
+		pr_info("CPU: All CPU(s) started in HYP mode.\n");
+		pr_info("CPU: Virtualization extensions available.\n");
+	} else if (is_hyp_mode_mismatched()) {
+		pr_warn("CPU: WARNING: CPU(s) started in wrong/inconsistent modes (primary CPU mode 0x%x)\n",
+			__boot_cpu_mode & MODE_MASK);
+		pr_warn("CPU: This may indicate a broken bootloader or firmware.\n");
+	} else
+		pr_info("CPU: All CPU(s) started in SVC mode.\n");
+#endif
+}
+
+void __init setup_arch(char **cmdline_p)
+{
+	const struct machine_desc *mdesc;
+
+	setup_processor();
+	mdesc = setup_machine_fdt(__atags_pointer);
+	if (!mdesc)
+		mdesc = setup_machine_tags(__atags_pointer, __machine_arch_type);
+	machine_desc = mdesc;
+	machine_name = mdesc->name;
+
+	if (mdesc->reboot_mode != REBOOT_HARD)
+		reboot_mode = mdesc->reboot_mode;
+>>>>>>> refs/remotes/origin/master
 
 	init_mm.start_code = (unsigned long) _text;
 	init_mm.end_code   = (unsigned long) _etext;
@@ -1118,6 +1501,7 @@ void __init setup_arch(char **cmdline_p)
 
 	parse_early_param();
 
+<<<<<<< HEAD
 	if (mdesc->init_very_early)
 		mdesc->init_very_early();
 
@@ -1125,12 +1509,19 @@ void __init setup_arch(char **cmdline_p)
 =======
 	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]), meminfo_cmp, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sort(&meminfo.bank, meminfo.nr_banks, sizeof(meminfo.bank[0]), meminfo_cmp, NULL);
+
+	early_paging_init(mdesc, lookup_processor_type(read_cpuid_id()));
+	setup_dma_zone(mdesc);
+>>>>>>> refs/remotes/origin/master
 	sanity_check_meminfo();
 	arm_memblock_init(&meminfo, mdesc);
 
 	paging_init(mdesc);
 	request_standard_resources(mdesc);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	if (mdesc->restart)
@@ -1150,6 +1541,32 @@ void __init setup_arch(char **cmdline_p)
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 	tcm_init();
+=======
+	if (mdesc->restart)
+		arm_pm_restart = mdesc->restart;
+
+	unflatten_device_tree();
+
+	arm_dt_init_cpu_maps();
+	psci_init();
+#ifdef CONFIG_SMP
+	if (is_smp()) {
+		if (!mdesc->smp_init || !mdesc->smp_init()) {
+			if (psci_smp_available())
+				smp_set_ops(&psci_smp_ops);
+			else if (mdesc->smp)
+				smp_set_ops(mdesc->smp);
+		}
+		smp_init_cpus();
+		smp_build_mpidr_hash();
+	}
+#endif
+
+	if (!is_smp())
+		hyp_mode_check();
+
+	reserve_crashkernel();
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_MULTI_IRQ_HANDLER
 	handle_arch_irq = mdesc->handle_irq;
@@ -1163,9 +1580,12 @@ void __init setup_arch(char **cmdline_p)
 #endif
 #endif
 <<<<<<< HEAD
+<<<<<<< HEAD
 	early_trap_init();
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (mdesc->init_early)
 		mdesc->init_early();
@@ -1219,11 +1639,18 @@ static const char *hwcap_str[] = {
 	"vfpv4",
 	"idiva",
 	"idivt",
+<<<<<<< HEAD
+=======
+	"vfpd32",
+	"lpae",
+	"evtstrm",
+>>>>>>> refs/remotes/origin/master
 	NULL
 };
 
 static int c_show(struct seq_file *m, void *v)
 {
+<<<<<<< HEAD
 	int i;
 
 	seq_printf(m, "Processor\t: %s rev %d (%s)\n",
@@ -1235,12 +1662,19 @@ static int c_show(struct seq_file *m, void *v)
 =======
 	for_each_present_cpu(i) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int i, j;
+	u32 cpuid;
+
+	for_each_online_cpu(i) {
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * glibc reads /proc/cpuinfo to determine the number of
 		 * online processors, looking for lines beginning with
 		 * "processor".  Give glibc what it expects.
 		 */
 		seq_printf(m, "processor\t: %d\n", i);
+<<<<<<< HEAD
 		seq_printf(m, "BogoMIPS\t: %lu.%02lu\n\n",
 			   per_cpu(cpu_data, i).loops_per_jiffy / (500000UL/HZ),
 			   (per_cpu(cpu_data, i).loops_per_jiffy / (5000UL/HZ)) % 100);
@@ -1280,6 +1714,41 @@ static int c_show(struct seq_file *m, void *v)
 	seq_printf(m, "CPU revision\t: %d\n", read_cpuid_id() & 15);
 
 	seq_puts(m, "\n");
+=======
+		cpuid = is_smp() ? per_cpu(cpu_data, i).cpuid : read_cpuid_id();
+		seq_printf(m, "model name\t: %s rev %d (%s)\n",
+			   cpu_name, cpuid & 15, elf_platform);
+
+		/* dump out the processor features */
+		seq_puts(m, "Features\t: ");
+
+		for (j = 0; hwcap_str[j]; j++)
+			if (elf_hwcap & (1 << j))
+				seq_printf(m, "%s ", hwcap_str[j]);
+
+		seq_printf(m, "\nCPU implementer\t: 0x%02x\n", cpuid >> 24);
+		seq_printf(m, "CPU architecture: %s\n",
+			   proc_arch[cpu_architecture()]);
+
+		if ((cpuid & 0x0008f000) == 0x00000000) {
+			/* pre-ARM7 */
+			seq_printf(m, "CPU part\t: %07x\n", cpuid >> 4);
+		} else {
+			if ((cpuid & 0x0008f000) == 0x00007000) {
+				/* ARM7 */
+				seq_printf(m, "CPU variant\t: 0x%02x\n",
+					   (cpuid >> 16) & 127);
+			} else {
+				/* post-ARM7 */
+				seq_printf(m, "CPU variant\t: 0x%x\n",
+					   (cpuid >> 20) & 15);
+			}
+			seq_printf(m, "CPU part\t: 0x%03x\n",
+				   (cpuid >> 4) & 0xfff);
+		}
+		seq_printf(m, "CPU revision\t: %d\n\n", cpuid & 15);
+	}
+>>>>>>> refs/remotes/origin/master
 
 	seq_printf(m, "Hardware\t: %s\n", machine_name);
 	seq_printf(m, "Revision\t: %04x\n", system_rev);

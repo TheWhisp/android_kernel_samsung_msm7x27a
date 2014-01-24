@@ -1,6 +1,7 @@
 #ifndef __ASM_CPU_SH4_DMA_H
 #define __ASM_CPU_SH4_DMA_H
 
+<<<<<<< HEAD
 /* SH7751/7760/7780 DMA IRQ sources */
 
 #ifdef CONFIG_CPU_SH4A
@@ -28,5 +29,19 @@
 #define DMAOR_COD	0x00000008
 
 #endif
+=======
+#include <linux/sh_intc.h>
+
+/*
+ * SH7750/SH7751/SH7760
+ */
+#define DMTE0_IRQ	evt2irq(0x640)
+#define DMTE4_IRQ	evt2irq(0x780)
+#define DMTE6_IRQ	evt2irq(0x7c0)
+#define DMAE0_IRQ	evt2irq(0x6c0)
+
+#define SH_DMAC_BASE0	0xffa00000
+#define SH_DMAC_BASE1	0xffa00070
+>>>>>>> refs/remotes/origin/master
 
 #endif /* __ASM_CPU_SH4_DMA_H */

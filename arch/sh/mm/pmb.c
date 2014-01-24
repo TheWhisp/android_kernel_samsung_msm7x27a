@@ -26,9 +26,12 @@
 #include <asm/cacheflush.h>
 #include <asm/sizes.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 #include <asm/page.h>

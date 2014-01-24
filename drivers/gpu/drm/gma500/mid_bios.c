@@ -25,7 +25,11 @@
 
 #include <drm/drmP.h>
 #include <drm/drm.h>
+<<<<<<< HEAD
 #include "gma_drm.h"
+=======
+#include <drm/gma_drm.h>
+>>>>>>> refs/remotes/origin/master
 #include "psb_drv.h"
 #include "mid_bios.h"
 
@@ -118,6 +122,7 @@ static void mid_get_pci_revID(struct drm_psb_private *dev_priv)
 					dev_priv->platform_rev_id);
 }
 
+<<<<<<< HEAD
 static void mid_get_vbt_data(struct drm_psb_private *dev_priv)
 {
 	struct drm_device *dev = dev_priv->dev;
@@ -133,11 +138,182 @@ static void mid_get_vbt_data(struct drm_psb_private *dev_priv)
 	struct pci_dev *pci_gfx_root = pci_get_bus_and_slot(0, PCI_DEVFN(2, 0));
 
 	/* Get the address of the platform config vbt, B0:D2:F0;0xFC */
+=======
+struct mid_vbt_header {
+	u32 signature;
+	u8 revision;
+} __packed;
+
+/* The same for r0 and r1 */
+struct vbt_r0 {
+	struct mid_vbt_header vbt_header;
+	u8 size;
+	u8 checksum;
+} __packed;
+
+struct vbt_r10 {
+	struct mid_vbt_header vbt_header;
+	u8 checksum;
+	u16 size;
+	u8 panel_count;
+	u8 primary_panel_idx;
+	u8 secondary_panel_idx;
+	u8 __reserved[5];
+} __packed;
+
+static int read_vbt_r0(u32 addr, struct vbt_r0 *vbt)
+{
+	void __iomem *vbt_virtual;
+
+	vbt_virtual = ioremap(addr, sizeof(*vbt));
+	if (vbt_virtual == NULL)
+		return -1;
+
+	memcpy_fromio(vbt, vbt_virtual, sizeof(*vbt));
+	iounmap(vbt_virtual);
+
+	return 0;
+}
+
+static int read_vbt_r10(u32 addr, struct vbt_r10 *vbt)
+{
+	void __iomem *vbt_virtual;
+
+	vbt_virtual = ioremap(addr, sizeof(*vbt));
+	if (!vbt_virtual)
+		return -1;
+
+	memcpy_fromio(vbt, vbt_virtual, sizeof(*vbt));
+	iounmap(vbt_virtual);
+
+	return 0;
+}
+
+static int mid_get_vbt_data_r0(struct drm_psb_private *dev_priv, u32 addr)
+{
+	struct vbt_r0 vbt;
+	void __iomem *gct_virtual;
+	struct gct_r0 gct;
+	u8 bpi;
+
+	if (read_vbt_r0(addr, &vbt))
+		return -1;
+
+	gct_virtual = ioremap(addr + sizeof(vbt), vbt.size - sizeof(vbt));
+	if (!gct_virtual)
+		return -1;
+	memcpy_fromio(&gct, gct_virtual, sizeof(gct));
+	iounmap(gct_virtual);
+
+	bpi = gct.PD.BootPanelIndex;
+	dev_priv->gct_data.bpi = bpi;
+	dev_priv->gct_data.pt = gct.PD.PanelType;
+	dev_priv->gct_data.DTD = gct.panel[bpi].DTD;
+	dev_priv->gct_data.Panel_Port_Control =
+		gct.panel[bpi].Panel_Port_Control;
+	dev_priv->gct_data.Panel_MIPI_Display_Descriptor =
+		gct.panel[bpi].Panel_MIPI_Display_Descriptor;
+
+	return 0;
+}
+
+static int mid_get_vbt_data_r1(struct drm_psb_private *dev_priv, u32 addr)
+{
+	struct vbt_r0 vbt;
+	void __iomem *gct_virtual;
+	struct gct_r1 gct;
+	u8 bpi;
+
+	if (read_vbt_r0(addr, &vbt))
+		return -1;
+
+	gct_virtual = ioremap(addr + sizeof(vbt), vbt.size - sizeof(vbt));
+	if (!gct_virtual)
+		return -1;
+	memcpy_fromio(&gct, gct_virtual, sizeof(gct));
+	iounmap(gct_virtual);
+
+	bpi = gct.PD.BootPanelIndex;
+	dev_priv->gct_data.bpi = bpi;
+	dev_priv->gct_data.pt = gct.PD.PanelType;
+	dev_priv->gct_data.DTD = gct.panel[bpi].DTD;
+	dev_priv->gct_data.Panel_Port_Control =
+		gct.panel[bpi].Panel_Port_Control;
+	dev_priv->gct_data.Panel_MIPI_Display_Descriptor =
+		gct.panel[bpi].Panel_MIPI_Display_Descriptor;
+
+	return 0;
+}
+
+static int mid_get_vbt_data_r10(struct drm_psb_private *dev_priv, u32 addr)
+{
+	struct vbt_r10 vbt;
+	void __iomem *gct_virtual;
+	struct gct_r10 *gct;
+	struct oaktrail_timing_info *dp_ti = &dev_priv->gct_data.DTD;
+	struct gct_r10_timing_info *ti;
+	int ret = -1;
+
+	if (read_vbt_r10(addr, &vbt))
+		return -1;
+
+	gct = kmalloc(sizeof(*gct) * vbt.panel_count, GFP_KERNEL);
+	if (!gct)
+		return -1;
+
+	gct_virtual = ioremap(addr + sizeof(vbt),
+			sizeof(*gct) * vbt.panel_count);
+	if (!gct_virtual)
+		goto out;
+	memcpy_fromio(gct, gct_virtual, sizeof(*gct));
+	iounmap(gct_virtual);
+
+	dev_priv->gct_data.bpi = vbt.primary_panel_idx;
+	dev_priv->gct_data.Panel_MIPI_Display_Descriptor =
+		gct[vbt.primary_panel_idx].Panel_MIPI_Display_Descriptor;
+
+	ti = &gct[vbt.primary_panel_idx].DTD;
+	dp_ti->pixel_clock = ti->pixel_clock;
+	dp_ti->hactive_hi = ti->hactive_hi;
+	dp_ti->hactive_lo = ti->hactive_lo;
+	dp_ti->hblank_hi = ti->hblank_hi;
+	dp_ti->hblank_lo = ti->hblank_lo;
+	dp_ti->hsync_offset_hi = ti->hsync_offset_hi;
+	dp_ti->hsync_offset_lo = ti->hsync_offset_lo;
+	dp_ti->hsync_pulse_width_hi = ti->hsync_pulse_width_hi;
+	dp_ti->hsync_pulse_width_lo = ti->hsync_pulse_width_lo;
+	dp_ti->vactive_hi = ti->vactive_hi;
+	dp_ti->vactive_lo = ti->vactive_lo;
+	dp_ti->vblank_hi = ti->vblank_hi;
+	dp_ti->vblank_lo = ti->vblank_lo;
+	dp_ti->vsync_offset_hi = ti->vsync_offset_hi;
+	dp_ti->vsync_offset_lo = ti->vsync_offset_lo;
+	dp_ti->vsync_pulse_width_hi = ti->vsync_pulse_width_hi;
+	dp_ti->vsync_pulse_width_lo = ti->vsync_pulse_width_lo;
+
+	ret = 0;
+out:
+	kfree(gct);
+	return ret;
+}
+
+static void mid_get_vbt_data(struct drm_psb_private *dev_priv)
+{
+	struct drm_device *dev = dev_priv->dev;
+	u32 addr;
+	u8 __iomem *vbt_virtual;
+	struct mid_vbt_header vbt_header;
+	struct pci_dev *pci_gfx_root = pci_get_bus_and_slot(0, PCI_DEVFN(2, 0));
+	int ret = -1;
+
+	/* Get the address of the platform config vbt */
+>>>>>>> refs/remotes/origin/master
 	pci_read_config_dword(pci_gfx_root, 0xFC, &addr);
 	pci_dev_put(pci_gfx_root);
 
 	dev_dbg(dev->dev, "drm platform config address is %x\n", addr);
 
+<<<<<<< HEAD
 	/* check for platform config address == 0. */
 	/* this means fw doesn't support vbt */
 
@@ -251,6 +427,43 @@ static void mid_get_vbt_data(struct drm_psb_private *dev_priv)
 		dev_err(dev->dev, "Unknown revision of GCT!\n");
 		vbt->size = 0;
 	}
+=======
+	if (!addr)
+		goto out;
+
+	/* get the virtual address of the vbt */
+	vbt_virtual = ioremap(addr, sizeof(vbt_header));
+	if (!vbt_virtual)
+		goto out;
+
+	memcpy_fromio(&vbt_header, vbt_virtual, sizeof(vbt_header));
+	iounmap(vbt_virtual);
+
+	if (memcmp(&vbt_header.signature, "$GCT", 4))
+		goto out;
+
+	dev_dbg(dev->dev, "GCT revision is %02x\n", vbt_header.revision);
+
+	switch (vbt_header.revision) {
+	case 0x00:
+		ret = mid_get_vbt_data_r0(dev_priv, addr);
+		break;
+	case 0x01:
+		ret = mid_get_vbt_data_r1(dev_priv, addr);
+		break;
+	case 0x10:
+		ret = mid_get_vbt_data_r10(dev_priv, addr);
+		break;
+	default:
+		dev_err(dev->dev, "Unknown revision of GCT!\n");
+	}
+
+out:
+	if (ret)
+		dev_err(dev->dev, "Unable to read GCT!");
+	else
+		dev_priv->has_gct = true;
+>>>>>>> refs/remotes/origin/master
 }
 
 int mid_chip_setup(struct drm_device *dev)

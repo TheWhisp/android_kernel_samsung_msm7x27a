@@ -30,17 +30,27 @@
 #include <sound/tpa6130a2-plat.h>
 #include <sound/soc.h>
 #include <sound/tlv.h>
+<<<<<<< HEAD
 
 #include "tpa6130a2.h"
 
 <<<<<<< HEAD
 =======
+=======
+#include <linux/of_gpio.h>
+
+#include "tpa6130a2.h"
+
+>>>>>>> refs/remotes/origin/master
 enum tpa_model {
 	TPA6130A2,
 	TPA6140A2,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct i2c_client *tpa6130a2_client;
 
 /* This struct is used to save the context */
@@ -58,7 +68,12 @@ static int tpa6130a2_i2c_read(int reg)
 	struct tpa6130a2_data *data;
 	int val;
 
+<<<<<<< HEAD
 	BUG_ON(tpa6130a2_client == NULL);
+=======
+	if (WARN_ON(!tpa6130a2_client))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	data = i2c_get_clientdata(tpa6130a2_client);
 
 	/* If powered off, return the cached value */
@@ -80,7 +95,12 @@ static int tpa6130a2_i2c_write(int reg, u8 value)
 	struct tpa6130a2_data *data;
 	int val = 0;
 
+<<<<<<< HEAD
 	BUG_ON(tpa6130a2_client == NULL);
+=======
+	if (WARN_ON(!tpa6130a2_client))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	data = i2c_get_clientdata(tpa6130a2_client);
 
 	if (data->power_state) {
@@ -101,7 +121,12 @@ static u8 tpa6130a2_read(int reg)
 {
 	struct tpa6130a2_data *data;
 
+<<<<<<< HEAD
 	BUG_ON(tpa6130a2_client == NULL);
+=======
+	if (WARN_ON(!tpa6130a2_client))
+		return 0;
+>>>>>>> refs/remotes/origin/master
 	data = i2c_get_clientdata(tpa6130a2_client);
 
 	return data->regs[reg];
@@ -112,7 +137,12 @@ static int tpa6130a2_initialize(void)
 	struct tpa6130a2_data *data;
 	int i, ret = 0;
 
+<<<<<<< HEAD
 	BUG_ON(tpa6130a2_client == NULL);
+=======
+	if (WARN_ON(!tpa6130a2_client))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	data = i2c_get_clientdata(tpa6130a2_client);
 
 	for (i = 1; i < TPA6130A2_REG_VERSION; i++) {
@@ -130,7 +160,12 @@ static int tpa6130a2_power(u8 power)
 	u8	val;
 	int	ret = 0;
 
+<<<<<<< HEAD
 	BUG_ON(tpa6130a2_client == NULL);
+=======
+	if (WARN_ON(!tpa6130a2_client))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	data = i2c_get_clientdata(tpa6130a2_client);
 
 	mutex_lock(&data->mutex);
@@ -196,7 +231,12 @@ static int tpa6130a2_get_volsw(struct snd_kcontrol *kcontrol,
 	unsigned int mask = (1 << fls(max)) - 1;
 	unsigned int invert = mc->invert;
 
+<<<<<<< HEAD
 	BUG_ON(tpa6130a2_client == NULL);
+=======
+	if (WARN_ON(!tpa6130a2_client))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	data = i2c_get_clientdata(tpa6130a2_client);
 
 	mutex_lock(&data->mutex);
@@ -226,7 +266,12 @@ static int tpa6130a2_put_volsw(struct snd_kcontrol *kcontrol,
 	unsigned int val = (ucontrol->value.integer.value[0] & mask);
 	unsigned int val_reg;
 
+<<<<<<< HEAD
 	BUG_ON(tpa6130a2_client == NULL);
+=======
+	if (WARN_ON(!tpa6130a2_client))
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 	data = i2c_get_clientdata(tpa6130a2_client);
 
 	if (invert)
@@ -355,31 +400,48 @@ int tpa6130a2_add_controls(struct snd_soc_codec *codec)
 
 	if (data->id == TPA6140A2)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return snd_soc_add_controls(codec, tpa6140a2_controls,
 						ARRAY_SIZE(tpa6140a2_controls));
 	else
 		return snd_soc_add_controls(codec, tpa6130a2_controls,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		return snd_soc_add_codec_controls(codec, tpa6140a2_controls,
 						ARRAY_SIZE(tpa6140a2_controls));
 	else
 		return snd_soc_add_codec_controls(codec, tpa6130a2_controls,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 						ARRAY_SIZE(tpa6130a2_controls));
 }
 EXPORT_SYMBOL_GPL(tpa6130a2_add_controls);
 
+<<<<<<< HEAD
 static int __devinit tpa6130a2_probe(struct i2c_client *client,
 				     const struct i2c_device_id *id)
 {
 	struct device *dev;
 	struct tpa6130a2_data *data;
 	struct tpa6130a2_platform_data *pdata;
+=======
+static int tpa6130a2_probe(struct i2c_client *client,
+			   const struct i2c_device_id *id)
+{
+	struct device *dev;
+	struct tpa6130a2_data *data;
+	struct tpa6130a2_platform_data *pdata = client->dev.platform_data;
+	struct device_node *np = client->dev.of_node;
+>>>>>>> refs/remotes/origin/master
 	const char *regulator;
 	int ret;
 
 	dev = &client->dev;
 
+<<<<<<< HEAD
 	if (client->dev.platform_data == NULL) {
 		dev_err(dev, "Platform data not set\n");
 		dump_stack();
@@ -391,15 +453,32 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
 =======
 	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL) {
 		dev_err(dev, "Can not allocate memory\n");
 		return -ENOMEM;
 	}
 
+<<<<<<< HEAD
+=======
+	if (pdata) {
+		data->power_gpio = pdata->power_gpio;
+	} else if (np) {
+		data->power_gpio = of_get_named_gpio(np, "power-gpio", 0);
+	} else {
+		dev_err(dev, "Platform data not set\n");
+		dump_stack();
+		return -ENODEV;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	tpa6130a2_client = client;
 
 	i2c_set_clientdata(tpa6130a2_client, data);
 
+<<<<<<< HEAD
 	pdata = client->dev.platform_data;
 	data->power_gpio = pdata->power_gpio;
 <<<<<<< HEAD
@@ -407,6 +486,9 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
 =======
 	data->id = id->driver_data;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data->id = id->driver_data;
+>>>>>>> refs/remotes/origin/master
 
 	mutex_init(&data->mutex);
 
@@ -416,7 +498,12 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
 						TPA6130A2_MUTE_L;
 
 	if (data->power_gpio >= 0) {
+<<<<<<< HEAD
 		ret = gpio_request(data->power_gpio, "tpa6130a2 enable");
+=======
+		ret = devm_gpio_request(dev, data->power_gpio,
+					"tpa6130a2 enable");
+>>>>>>> refs/remotes/origin/master
 		if (ret < 0) {
 			dev_err(dev, "Failed to request power GPIO (%d)\n",
 				data->power_gpio);
@@ -429,10 +516,14 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
 	default:
 		dev_warn(dev, "Unknown TPA model (%d). Assuming 6130A2\n",
 <<<<<<< HEAD
+<<<<<<< HEAD
 			 pdata->id);
 =======
 			 data->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			 data->id);
+>>>>>>> refs/remotes/origin/master
 	case TPA6130A2:
 		regulator = "Vdd";
 		break;
@@ -441,16 +532,28 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
 		break;
 	}
 
+<<<<<<< HEAD
 	data->supply = regulator_get(dev, regulator);
 	if (IS_ERR(data->supply)) {
 		ret = PTR_ERR(data->supply);
 		dev_err(dev, "Failed to request supply: %d\n", ret);
 		goto err_regulator;
+=======
+	data->supply = devm_regulator_get(dev, regulator);
+	if (IS_ERR(data->supply)) {
+		ret = PTR_ERR(data->supply);
+		dev_err(dev, "Failed to request supply: %d\n", ret);
+		goto err_gpio;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = tpa6130a2_power(1);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto err_power;
+=======
+		goto err_gpio;
+>>>>>>> refs/remotes/origin/master
 
 
 	/* Read version */
@@ -462,6 +565,7 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
 	/* Disable the chip */
 	ret = tpa6130a2_power(0);
 	if (ret != 0)
+<<<<<<< HEAD
 		goto err_power;
 
 	return 0;
@@ -477,11 +581,19 @@ err_gpio:
 	i2c_set_clientdata(tpa6130a2_client, NULL);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		goto err_gpio;
+
+	return 0;
+
+err_gpio:
+>>>>>>> refs/remotes/origin/master
 	tpa6130a2_client = NULL;
 
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit tpa6130a2_remove(struct i2c_client *client)
 {
 	struct tpa6130a2_data *data = i2c_get_clientdata(client);
@@ -497,6 +609,11 @@ static int __devexit tpa6130a2_remove(struct i2c_client *client)
 	kfree(data);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int tpa6130a2_remove(struct i2c_client *client)
+{
+	tpa6130a2_power(0);
+>>>>>>> refs/remotes/origin/master
 	tpa6130a2_client = NULL;
 
 	return 0;
@@ -504,19 +621,37 @@ static int __devexit tpa6130a2_remove(struct i2c_client *client)
 
 static const struct i2c_device_id tpa6130a2_id[] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	{ "tpa6130a2", 0 },
 =======
 	{ "tpa6130a2", TPA6130A2 },
 	{ "tpa6140a2", TPA6140A2 },
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	{ "tpa6130a2", TPA6130A2 },
+	{ "tpa6140a2", TPA6140A2 },
+>>>>>>> refs/remotes/origin/master
 	{ }
 };
 MODULE_DEVICE_TABLE(i2c, tpa6130a2_id);
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_OF)
+static const struct of_device_id tpa6130a2_of_match[] = {
+	{ .compatible = "ti,tpa6130a2", },
+	{ .compatible = "ti,tpa6140a2" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, tpa6130a2_of_match);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver tpa6130a2_i2c_driver = {
 	.driver = {
 		.name = "tpa6130a2",
 		.owner = THIS_MODULE,
+<<<<<<< HEAD
 	},
 	.probe = tpa6130a2_probe,
 	.remove = __devexit_p(tpa6130a2_remove),
@@ -532,10 +667,23 @@ static void __exit tpa6130a2_exit(void)
 {
 	i2c_del_driver(&tpa6130a2_i2c_driver);
 }
+=======
+		.of_match_table = of_match_ptr(tpa6130a2_of_match),
+	},
+	.probe = tpa6130a2_probe,
+	.remove = tpa6130a2_remove,
+	.id_table = tpa6130a2_id,
+};
+
+module_i2c_driver(tpa6130a2_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
 MODULE_DESCRIPTION("TPA6130A2 Headphone amplifier driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 
 module_init(tpa6130a2_init);
 module_exit(tpa6130a2_exit);
+=======
+>>>>>>> refs/remotes/origin/master

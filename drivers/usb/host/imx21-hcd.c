@@ -58,9 +58,20 @@
 #include <linux/usb.h>
 #include <linux/usb/hcd.h>
 #include <linux/dma-mapping.h>
+<<<<<<< HEAD
 
 #include "imx21-hcd.h"
 
+=======
+#include <linux/module.h>
+
+#include "imx21-hcd.h"
+
+#ifdef CONFIG_DYNAMIC_DEBUG
+#define DEBUG
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #ifdef DEBUG
 #define DEBUG_LOG_FRAME(imx21, etd, event) \
 	(etd)->event##_frame = readl((imx21)->regs + USBH_FRMNUB)
@@ -474,10 +485,14 @@ static void free_epdmem(struct imx21 *imx21, struct usb_host_endpoint *ep)
 /* ===========================================	*/
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Endpoint now idle - release it's ETD(s) or asssign to queued request */
 =======
 /* Endpoint now idle - release its ETD(s) or assign to queued request */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Endpoint now idle - release its ETD(s) or assign to queued request */
+>>>>>>> refs/remotes/origin/master
 static void ep_idle(struct imx21 *imx21, struct ep_priv *ep_priv)
 {
 	int i;
@@ -812,6 +827,7 @@ static int imx21_hc_urb_enqueue_isoc(struct usb_hcd *hcd,
 
 	/* calculate frame */
 	cur_frame = imx21_hc_get_frame(hcd);
+<<<<<<< HEAD
 	if (urb->transfer_flags & URB_ISO_ASAP) {
 		if (list_empty(&ep_priv->td_list))
 			urb->start_frame = cur_frame + 5;
@@ -832,6 +848,38 @@ static int imx21_hc_urb_enqueue_isoc(struct usb_hcd *hcd,
 	/* set up transfers */
 	td = urb_priv->isoc_td;
 	for (i = 0; i < urb->number_of_packets; i++, td++) {
+=======
+	i = 0;
+	if (list_empty(&ep_priv->td_list)) {
+		urb->start_frame = wrap_frame(cur_frame + 5);
+	} else {
+		urb->start_frame = wrap_frame(list_entry(ep_priv->td_list.prev,
+				struct td, list)->frame + urb->interval);
+
+		if (frame_after(cur_frame, urb->start_frame)) {
+			dev_dbg(imx21->dev,
+				"enqueue: adjusting iso start %d (cur=%d) asap=%d\n",
+				urb->start_frame, cur_frame,
+				(urb->transfer_flags & URB_ISO_ASAP) != 0);
+			i = DIV_ROUND_UP(wrap_frame(
+					cur_frame - urb->start_frame),
+					urb->interval);
+
+			/* Treat underruns as if URB_ISO_ASAP was set */
+			if ((urb->transfer_flags & URB_ISO_ASAP) ||
+					i >= urb->number_of_packets) {
+				urb->start_frame = wrap_frame(urb->start_frame
+						+ i * urb->interval);
+				i = 0;
+			}
+		}
+	}
+
+	/* set up transfers */
+	urb_priv->isoc_remaining = urb->number_of_packets - i;
+	td = urb_priv->isoc_td;
+	for (; i < urb->number_of_packets; i++, td++) {
+>>>>>>> refs/remotes/origin/master
 		unsigned int offset = urb->iso_frame_desc[i].offset;
 		td->ep = ep;
 		td->urb = urb;
@@ -843,7 +891,10 @@ static int imx21_hc_urb_enqueue_isoc(struct usb_hcd *hcd,
 		list_add_tail(&td->list, &ep_priv->td_list);
 	}
 
+<<<<<<< HEAD
 	urb_priv->isoc_remaining = urb->number_of_packets;
+=======
+>>>>>>> refs/remotes/origin/master
 	dev_vdbg(imx21->dev, "setup %d packets for iso frame %d->%d\n",
 		urb->number_of_packets, urb->start_frame, td->frame);
 
@@ -1684,7 +1735,11 @@ static int imx21_hc_reset(struct usb_hcd *hcd)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit imx21_hc_start(struct usb_hcd *hcd)
+=======
+static int imx21_hc_start(struct usb_hcd *hcd)
+>>>>>>> refs/remotes/origin/master
 {
 	struct imx21 *imx21 = hcd_to_imx21(hcd);
 	unsigned long flags;
@@ -1815,7 +1870,11 @@ static int imx21_remove(struct platform_device *pdev)
 	usb_remove_hcd(hcd);
 
 	if (res != NULL) {
+<<<<<<< HEAD
 		clk_disable(imx21->clk);
+=======
+		clk_disable_unprepare(imx21->clk);
+>>>>>>> refs/remotes/origin/master
 		clk_put(imx21->clk);
 		iounmap(imx21->regs);
 		release_mem_region(res->start, resource_size(res));
@@ -1854,7 +1913,11 @@ static int imx21_probe(struct platform_device *pdev)
 	imx21 = hcd_to_imx21(hcd);
 	imx21->hcd = hcd;
 	imx21->dev = &pdev->dev;
+<<<<<<< HEAD
 	imx21->pdata = pdev->dev.platform_data;
+=======
+	imx21->pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	if (!imx21->pdata)
 		imx21->pdata = &default_pdata;
 
@@ -1888,7 +1951,11 @@ static int imx21_probe(struct platform_device *pdev)
 	ret = clk_set_rate(imx21->clk, clk_round_rate(imx21->clk, 48000000));
 	if (ret)
 		goto failed_clock_set;
+<<<<<<< HEAD
 	ret = clk_enable(imx21->clk);
+=======
+	ret = clk_prepare_enable(imx21->clk);
+>>>>>>> refs/remotes/origin/master
 	if (ret)
 		goto failed_clock_enable;
 
@@ -1896,19 +1963,31 @@ static int imx21_probe(struct platform_device *pdev)
 		(readl(imx21->regs + USBOTG_HWMODE) >> 16) & 0xFF);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ret = usb_add_hcd(hcd, irq, IRQF_DISABLED);
 =======
 	ret = usb_add_hcd(hcd, irq, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = usb_add_hcd(hcd, irq, 0);
+>>>>>>> refs/remotes/origin/master
 	if (ret != 0) {
 		dev_err(imx21->dev, "usb_add_hcd() returned %d\n", ret);
 		goto failed_add_hcd;
 	}
+<<<<<<< HEAD
+=======
+	device_wakeup_enable(hcd->self.controller);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
 failed_add_hcd:
+<<<<<<< HEAD
 	clk_disable(imx21->clk);
+=======
+	clk_disable_unprepare(imx21->clk);
+>>>>>>> refs/remotes/origin/master
 failed_clock_enable:
 failed_clock_set:
 	clk_put(imx21->clk);
@@ -1924,7 +2003,11 @@ failed_request_mem:
 
 static struct platform_driver imx21_hcd_driver = {
 	.driver = {
+<<<<<<< HEAD
 		   .name = (char *)hcd_name,
+=======
+		   .name = hcd_name,
+>>>>>>> refs/remotes/origin/master
 		   },
 	.probe = imx21_probe,
 	.remove = imx21_remove,
@@ -1932,6 +2015,7 @@ static struct platform_driver imx21_hcd_driver = {
 	.resume = NULL,
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init imx21_hcd_init(void)
 {
@@ -1948,6 +2032,9 @@ module_exit(imx21_hcd_cleanup);
 =======
 module_platform_driver(imx21_hcd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(imx21_hcd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("i.MX21 USB Host controller");
 MODULE_AUTHOR("Martin Fuzzey");

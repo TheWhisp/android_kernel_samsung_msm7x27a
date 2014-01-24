@@ -69,7 +69,11 @@ The error codes used by this driver are:
     Invalid pointer or handler.
 
 [EEXIST]
+<<<<<<< HEAD
     Attempted to create a channel manager  when one already exists.
+=======
+    Attempted to create a channel manager when one already exists.
+>>>>>>> refs/remotes/origin/master
 
 [EINVAL]
     Invalid argument.

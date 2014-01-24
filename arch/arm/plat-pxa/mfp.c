@@ -230,10 +230,14 @@ void mfp_write(int mfp, unsigned long val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void __init mfp_init_base(unsigned long mfpr_base)
 =======
 void __init mfp_init_base(void __iomem *mfpr_base)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void __init mfp_init_base(void __iomem *mfpr_base)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -242,10 +246,14 @@ void __init mfp_init_base(void __iomem *mfpr_base)
 		mfp_table[i].config = -1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mfpr_mmio_base = (void __iomem *)mfpr_base;
 =======
 	mfpr_mmio_base = mfpr_base;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mfpr_mmio_base = mfpr_base;
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init mfp_init_addr(struct mfp_addr_map *map)

@@ -23,10 +23,14 @@
  * not agree with these terms and conditions, do not use the software.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright � 2003 Agere Systems Inc.
 =======
  * Copyright © 2003 Agere Systems Inc.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright © 2003 Agere Systems Inc.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source or binary forms, with or without
@@ -48,10 +52,14 @@
  * Disclaimer
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * THIS SOFTWARE IS PROVIDED �AS IS� AND ANY EXPRESS OR IMPLIED WARRANTIES,
 =======
  * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * THIS SOFTWARE IS PROVIDED AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+>>>>>>> refs/remotes/origin/master
  * INCLUDING, BUT NOT LIMITED TO, INFRINGEMENT AND THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  ANY
  * USE, MODIFICATION OR DISTRIBUTION OF THIS SOFTWARE IS SOLELY AT THE USERS OWN
@@ -82,11 +90,15 @@
 // #include <linux/delay.h>
 // #include <asm/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 // #include <asm/system.h>
 // #include <asm/bitops.h>
 =======
 // // #include <asm/bitops.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+// // #include <asm/bitops.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <linux/netdevice.h>
 #include <linux/etherdevice.h>
@@ -111,8 +123,12 @@
  ******************************************************************************/
 
 /* A matrix which maps channels to frequencies */
+<<<<<<< HEAD
 #define MAX_CHAN_FREQ_MAP_ENTRIES   50
 static const long chan_freq_list[][MAX_CHAN_FREQ_MAP_ENTRIES] =
+=======
+static const long chan_freq_list[][2] =
+>>>>>>> refs/remotes/origin/master
 {
     {1,2412},
     {2,2417},
@@ -142,6 +158,7 @@ static const long chan_freq_list[][MAX_CHAN_FREQ_MAP_ENTRIES] =
     {161,5805}
 };
 
+<<<<<<< HEAD
 #if DBG
 extern dbg_info_t *DbgInfo;
 #endif  /* DBG */
@@ -149,6 +166,8 @@ extern dbg_info_t *DbgInfo;
 
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*******************************************************************************
  *	dbm()
  *******************************************************************************
@@ -495,10 +514,13 @@ void wl_hcf_error( struct net_device *dev, int hcfStatus )
  ******************************************************************************/
 void wl_endian_translate_event( ltv_t *pLtv )
 {
+<<<<<<< HEAD
     DBG_FUNC( "wl_endian_translate_event" );
     DBG_ENTER( DbgInfo );
 
 
+=======
+>>>>>>> refs/remotes/origin/master
     switch( pLtv->typ ) {
     case CFG_TALLIES:
         break;
@@ -596,9 +618,12 @@ void wl_endian_translate_event( ltv_t *pLtv )
     default:
         break;
     }
+<<<<<<< HEAD
 
     DBG_LEAVE( DbgInfo );
     return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_endian_translate_event
 /*============================================================================*/
 
@@ -859,7 +884,11 @@ int wl_is_a_valid_chan( int channel )
     }
 
     /* Iterate through the matrix and retrieve the frequency */
+<<<<<<< HEAD
     for( i = 0; i < MAX_CHAN_FREQ_MAP_ENTRIES; i++ ) {
+=======
+    for( i = 0; i < ARRAY_SIZE(chan_freq_list); i++ ) {
+>>>>>>> refs/remotes/origin/master
         if( chan_freq_list[i][0] == channel ) {
             return 1;
         }
@@ -897,7 +926,11 @@ int wl_is_a_valid_freq( long frequency )
 
 
     /* Iterate through the matrix and retrieve the channel */
+<<<<<<< HEAD
     for( i = 0; i < MAX_CHAN_FREQ_MAP_ENTRIES; i++ ) {
+=======
+    for( i = 0; i < ARRAY_SIZE(chan_freq_list); i++ ) {
+>>>>>>> refs/remotes/origin/master
         if( chan_freq_list[i][1] == frequency ) {
             return 1;
         }
@@ -940,7 +973,11 @@ long wl_get_freq_from_chan( int channel )
     }
 
     /* Iterate through the matrix and retrieve the frequency */
+<<<<<<< HEAD
     for( i = 0; i < MAX_CHAN_FREQ_MAP_ENTRIES; i++ ) {
+=======
+    for( i = 0; i < ARRAY_SIZE(chan_freq_list); i++ ) {
+>>>>>>> refs/remotes/origin/master
         if( chan_freq_list[i][0] == channel ) {
             return chan_freq_list[i][1];
         }
@@ -978,7 +1015,11 @@ int wl_get_chan_from_freq( long frequency )
 
 
     /* Iterate through the matrix and retrieve the channel */
+<<<<<<< HEAD
     for( i = 0; i < MAX_CHAN_FREQ_MAP_ENTRIES; i++ ) {
+=======
+    for( i = 0; i < ARRAY_SIZE(chan_freq_list); i++ ) {
+>>>>>>> refs/remotes/origin/master
         if( chan_freq_list[i][1] == frequency ) {
             return chan_freq_list[i][0];
         }
@@ -1011,10 +1052,13 @@ int wl_get_chan_from_freq( long frequency )
 void wl_process_link_status( struct wl_private *lp )
 {
     hcf_16 link_stat;
+<<<<<<< HEAD
     /*------------------------------------------------------------------------*/
 
     DBG_FUNC( "wl_process_link_status" );
     DBG_ENTER( DbgInfo );
+=======
+>>>>>>> refs/remotes/origin/master
 
     if( lp != NULL ) {
         //link_stat = lp->hcfCtx.IFB_DSLinkStat & CFG_LINK_STAT_FW;
@@ -1041,8 +1085,11 @@ void wl_process_link_status( struct wl_private *lp )
             break;
         }
     }
+<<<<<<< HEAD
     DBG_LEAVE( DbgInfo );
     return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_process_link_status
 /*============================================================================*/
 
@@ -1072,12 +1119,15 @@ void wl_process_probe_response( struct wl_private *lp )
     PROBE_RESP  *probe_rsp;
     hcf_8       *wpa_ie = NULL;
     hcf_16      wpa_ie_len = 0;
+<<<<<<< HEAD
     /*------------------------------------------------------------------------*/
 
 
     DBG_FUNC( "wl_process_probe_response" );
     DBG_ENTER( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
 
     if( lp != NULL ) {
         probe_rsp = (PROBE_RESP *)&lp->ProbeResp;
@@ -1249,9 +1299,12 @@ void wl_process_probe_response( struct wl_private *lp )
             }
         }
     }
+<<<<<<< HEAD
 
     DBG_LEAVE( DbgInfo );
     return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_process_probe_response
 /*============================================================================*/
 
@@ -1277,10 +1330,13 @@ void wl_process_probe_response( struct wl_private *lp )
  ******************************************************************************/
 void wl_process_updated_record( struct wl_private *lp )
 {
+<<<<<<< HEAD
     DBG_FUNC( "wl_process_updated_record" );
     DBG_ENTER( DbgInfo );
 
 
+=======
+>>>>>>> refs/remotes/origin/master
     if( lp != NULL ) {
         lp->updatedRecord.u.u16[0] = CNV_LITTLE_TO_INT( lp->updatedRecord.u.u16[0] );
 
@@ -1300,9 +1356,12 @@ void wl_process_updated_record( struct wl_private *lp )
                        lp->updatedRecord.u.u16[0] );
         }
     }
+<<<<<<< HEAD
 
     DBG_LEAVE( DbgInfo );
     return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_process_updated_record
 /*============================================================================*/
 
@@ -1329,12 +1388,15 @@ void wl_process_updated_record( struct wl_private *lp )
 void wl_process_assoc_status( struct wl_private *lp )
 {
     ASSOC_STATUS_STRCT *assoc_stat;
+<<<<<<< HEAD
     /*------------------------------------------------------------------------*/
 
 
     DBG_FUNC( "wl_process_assoc_status" );
     DBG_ENTER( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
 
     if( lp != NULL ) {
         assoc_stat = (ASSOC_STATUS_STRCT *)&lp->assoc_stat;
@@ -1367,9 +1429,12 @@ void wl_process_assoc_status( struct wl_private *lp )
 			assoc_stat->oldApAddr);
         }
     }
+<<<<<<< HEAD
 
     DBG_LEAVE( DbgInfo );
     return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_process_assoc_status
 /*============================================================================*/
 
@@ -1396,12 +1461,15 @@ void wl_process_assoc_status( struct wl_private *lp )
 void wl_process_security_status( struct wl_private *lp )
 {
     SECURITY_STATUS_STRCT *sec_stat;
+<<<<<<< HEAD
     /*------------------------------------------------------------------------*/
 
 
     DBG_FUNC( "wl_process_security_status" );
     DBG_ENTER( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
 
     if( lp != NULL ) {
         sec_stat = (SECURITY_STATUS_STRCT *)&lp->sec_stat;
@@ -1439,9 +1507,12 @@ void wl_process_security_status( struct wl_private *lp )
 	DBG_TRACE(DbgInfo, "Reason          : 0x%04x\n", sec_stat->reason);
 
     }
+<<<<<<< HEAD
 
     DBG_LEAVE( DbgInfo );
     return;
+=======
+>>>>>>> refs/remotes/origin/master
 } // wl_process_security_status
 /*============================================================================*/
 
@@ -1452,9 +1523,12 @@ int wl_get_tallies(struct wl_private *lp,
     int status;
     CFG_HERMES_TALLIES_STRCT *pTallies;
 
+<<<<<<< HEAD
     DBG_FUNC( "wl_get_tallies" );
     DBG_ENTER(DbgInfo);
 
+=======
+>>>>>>> refs/remotes/origin/master
     /* Get the current tallies from the adapter */
     lp->ltvRecord.len = 1 + HCF_TOT_TAL_CNT * sizeof(hcf_16);
     lp->ltvRecord.typ = CFG_TALLIES;
@@ -1470,8 +1544,11 @@ int wl_get_tallies(struct wl_private *lp,
 	ret = -EFAULT;
     }
 
+<<<<<<< HEAD
     DBG_LEAVE( DbgInfo );
 
+=======
+>>>>>>> refs/remotes/origin/master
     return ret;
 }
 

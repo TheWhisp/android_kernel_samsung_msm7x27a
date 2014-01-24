@@ -12,10 +12,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			      /* Definitions for hupflags:                */
 =======
 /* Definitions for hupflags:                */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Definitions for hupflags:                */
+>>>>>>> refs/remotes/origin/master
 #define ISDN_WAITCHARGE  1      /* did not get a charge info yet            */
 #define ISDN_HAVECHARGE  2      /* We know a charge info                    */
 #define ISDN_CHARGEHUP   4      /* We want to use the charge mechanism      */
@@ -63,12 +67,17 @@ extern void isdn_net_write_super(isdn_net_local *lp, struct sk_buff *skb);
 #define ISDN_MASTER_PRIV(lp) ((isdn_net_local *) netdev_priv(lp->master))
 #define ISDN_SLAVE_PRIV(lp) ((isdn_net_local *) netdev_priv(lp->slave))
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MASTER_TO_SLAVE(master)	\
 			(((isdn_net_local *) netdev_priv(master))->slave)
 =======
 #define MASTER_TO_SLAVE(master)					\
 	(((isdn_net_local *) netdev_priv(master))->slave)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define MASTER_TO_SLAVE(master)					\
+	(((isdn_net_local *) netdev_priv(master))->slave)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * is this particular channel busy?
@@ -78,10 +87,14 @@ static __inline__ int isdn_net_lp_busy(isdn_net_local *lp)
 	if (atomic_read(&lp->frame_cnt) < ISDN_NET_MAX_QUEUE_LENGTH)
 		return 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else 
 =======
 	else
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	else
+>>>>>>> refs/remotes/origin/master
 		return 1;
 }
 
@@ -90,10 +103,14 @@ static __inline__ int isdn_net_lp_busy(isdn_net_local *lp)
  * corresponding bundle. The returned channel is locked.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static __inline__ isdn_net_local * isdn_net_get_locked_lp(isdn_net_dev *nd)
 =======
 static __inline__ isdn_net_local *isdn_net_get_locked_lp(isdn_net_dev *nd)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static __inline__ isdn_net_local *isdn_net_get_locked_lp(isdn_net_dev *nd)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long flags;
 	isdn_net_local *lp;
@@ -167,6 +184,9 @@ static __inline__ void isdn_net_rm_from_bundle(isdn_net_local *lp)
 	spin_unlock_irqrestore(&master_lp->netdev->queue_lock, flags);
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

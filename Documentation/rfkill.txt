@@ -118,8 +118,12 @@ The contents of these variables corresponds to the "name", "state" and
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 For further details consult Documentation/ABI/stable/dev-rfkill and
 Documentation/ABI/stable/sysfs-class-rfkill.
 =======
 For further details consult Documentation/ABI/stable/sysfs-class-rfkill.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+For further details consult Documentation/ABI/stable/sysfs-class-rfkill.
+>>>>>>> refs/remotes/origin/master

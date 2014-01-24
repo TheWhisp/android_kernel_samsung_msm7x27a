@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/gfp.h>
 #include <linux/pagemap.h>
@@ -72,8 +75,12 @@ int ceph_pagelist_append(struct ceph_pagelist *pl, const void *buf, size_t len)
 }
 EXPORT_SYMBOL(ceph_pagelist_append);
 
+<<<<<<< HEAD
 /**
  * Allocate enough pages for a pagelist to append the given amount
+=======
+/* Allocate enough pages for a pagelist to append the given amount
+>>>>>>> refs/remotes/origin/master
  * of data without without allocating.
  * Returns: 0 on success, -ENOMEM on error.
  */
@@ -95,9 +102,13 @@ int ceph_pagelist_reserve(struct ceph_pagelist *pl, size_t space)
 }
 EXPORT_SYMBOL(ceph_pagelist_reserve);
 
+<<<<<<< HEAD
 /**
  * Free any pages that have been preallocated.
  */
+=======
+/* Free any pages that have been preallocated. */
+>>>>>>> refs/remotes/origin/master
 int ceph_pagelist_free_reserve(struct ceph_pagelist *pl)
 {
 	while (!list_empty(&pl->free_list)) {
@@ -112,9 +123,13 @@ int ceph_pagelist_free_reserve(struct ceph_pagelist *pl)
 }
 EXPORT_SYMBOL(ceph_pagelist_free_reserve);
 
+<<<<<<< HEAD
 /**
  * Create a truncation point.
  */
+=======
+/* Create a truncation point. */
+>>>>>>> refs/remotes/origin/master
 void ceph_pagelist_set_cursor(struct ceph_pagelist *pl,
 			      struct ceph_pagelist_cursor *c)
 {
@@ -124,8 +139,12 @@ void ceph_pagelist_set_cursor(struct ceph_pagelist *pl,
 }
 EXPORT_SYMBOL(ceph_pagelist_set_cursor);
 
+<<<<<<< HEAD
 /**
  * Truncate a pagelist to the given point. Move extra pages to reserve.
+=======
+/* Truncate a pagelist to the given point. Move extra pages to reserve.
+>>>>>>> refs/remotes/origin/master
  * This won't sleep.
  * Returns: 0 on success,
  *          -EINVAL if the pagelist doesn't match the trunc point pagelist
@@ -140,8 +159,13 @@ int ceph_pagelist_truncate(struct ceph_pagelist *pl,
 	ceph_pagelist_unmap_tail(pl);
 	while (pl->head.prev != c->page_lru) {
 		page = list_entry(pl->head.prev, struct page, lru);
+<<<<<<< HEAD
 		list_del(&page->lru);                /* remove from pagelist */
 		list_add_tail(&page->lru, &pl->free_list); /* add to reserve */
+=======
+		/* move from pagelist to reserve */
+		list_move_tail(&page->lru, &pl->free_list);
+>>>>>>> refs/remotes/origin/master
 		++pl->num_pages_free;
 	}
 	pl->room = c->room;

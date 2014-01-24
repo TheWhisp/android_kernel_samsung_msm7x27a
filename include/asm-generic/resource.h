@@ -1,6 +1,7 @@
 #ifndef _ASM_GENERIC_RESOURCE_H
 #define _ASM_GENERIC_RESOURCE_H
 
+<<<<<<< HEAD
 /*
  * Resource limit IDs
  *
@@ -65,6 +66,10 @@
 #endif
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm-generic/resource.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * boot-time rlimit defaults for the init task:
@@ -89,6 +94,9 @@
 	[RLIMIT_RTTIME]		= {  RLIM_INFINITY,  RLIM_INFINITY },	\
 }
 
+<<<<<<< HEAD
 #endif	/* __KERNEL__ */
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -27,7 +27,13 @@
 #include <mach/hardware.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/map.h>
+<<<<<<< HEAD
 #include <mach/board.h>
+=======
+
+#include "at91_aic.h"
+#include "board.h"
+>>>>>>> refs/remotes/origin/master
 #include "generic.h"
 
 static void __init at91eb01_init_irq(void)
@@ -42,7 +48,12 @@ static void __init at91eb01_init_early(void)
 
 MACHINE_START(AT91EB01, "Atmel AT91 EB01")
 	/* Maintainer: Greg Ungerer <gerg@snapgear.com> */
+<<<<<<< HEAD
 	.timer		= &at91x40_timer,
+=======
+	.init_time	= at91x40_timer_init,
+	.handle_irq	= at91_aic_handle_irq,
+>>>>>>> refs/remotes/origin/master
 	.init_early	= at91eb01_init_early,
 	.init_irq	= at91eb01_init_irq,
 MACHINE_END

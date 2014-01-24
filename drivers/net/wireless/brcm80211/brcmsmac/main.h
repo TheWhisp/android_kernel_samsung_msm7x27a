@@ -101,9 +101,12 @@
 
 #define DATA_BLOCK_TX_SUPR	(1 << 4)
 
+<<<<<<< HEAD
 /* 802.1D Priority to TX FIFO number for wme */
 extern const u8 prio2fifo[];
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Ucode MCTL_WAKE override bits */
 #define BRCMS_WAKE_OVERRIDE_CLKCTL	0x01
 #define BRCMS_WAKE_OVERRIDE_PHYREG	0x02
@@ -242,7 +245,10 @@ struct brcms_core {
 
 	/* fifo */
 	uint *txavail[NFIFO];	/* # tx descriptors available */
+<<<<<<< HEAD
 	s16 txpktpend[NFIFO];	/* tx admission control */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	struct macstat *macstat_snapshot;	/* mac hw prev read values */
 };
@@ -382,6 +388,7 @@ struct brcms_hardware {
 				 */
 };
 
+<<<<<<< HEAD
 /* TX Queue information
  *
  * Each flow of traffic out of the device has a TX Queue with independent
@@ -395,6 +402,8 @@ struct brcms_txq_info {
 	uint stopped;		/* tx flow control bits */
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Principal common driver data structure.
  *
@@ -435,11 +444,16 @@ struct brcms_txq_info {
  * WDlast: last time wlc_watchdog() was called.
  * edcf_txop[IEEE80211_NUM_ACS]: current txop for each ac.
  * wme_retries: per-AC retry limits.
+<<<<<<< HEAD
  * tx_prec_map: Precedence map based on HW FIFO space.
  * fifo2prec_map[NFIFO]: pointer to fifo2_prec map based on WME.
  * bsscfg: set of BSS configurations, idx 0 is default and always valid.
  * cfg: the primary bsscfg (can be AP or STA).
  * tx_queues: common TX Queue list.
+=======
+ * bsscfg: set of BSS configurations, idx 0 is default and always valid.
+ * cfg: the primary bsscfg (can be AP or STA).
+>>>>>>> refs/remotes/origin/master
  * modulecb:
  * mimoft: SIGN or 11N.
  * cck_40txbw: 11N, cck tx b/w override when in 40MHZ mode.
@@ -469,7 +483,10 @@ struct brcms_txq_info {
  * tempsense_lasttime;
  * tx_duty_cycle_ofdm: maximum allowed duty cycle for OFDM.
  * tx_duty_cycle_cck: maximum allowed duty cycle for CCK.
+<<<<<<< HEAD
  * pkt_queue: txq for transmit packets.
+=======
+>>>>>>> refs/remotes/origin/master
  * wiphy:
  * pri_scb: primary Station Control Block
  */
@@ -513,6 +530,11 @@ struct brcms_c_info {
 	bool radio_monitor;
 	bool going_down;
 
+<<<<<<< HEAD
+=======
+	bool beacon_template_virgin;
+
+>>>>>>> refs/remotes/origin/master
 	struct brcms_timer *wdtimer;
 	struct brcms_timer *radio_timer;
 
@@ -533,6 +555,7 @@ struct brcms_c_info {
 	u16 edcf_txop[IEEE80211_NUM_ACS];
 
 	u16 wme_retries[IEEE80211_NUM_ACS];
+<<<<<<< HEAD
 	u16 tx_prec_map;
 	u16 fifo2prec_map[NFIFO];
 
@@ -541,6 +564,11 @@ struct brcms_c_info {
 	/* tx queue */
 	struct brcms_txq_info *tx_queues;
 
+=======
+
+	struct brcms_bss_cfg *bsscfg;
+
+>>>>>>> refs/remotes/origin/master
 	struct modulecb *modulecb;
 
 	u8 mimoft;
@@ -585,9 +613,19 @@ struct brcms_c_info {
 	u16 tx_duty_cycle_ofdm;
 	u16 tx_duty_cycle_cck;
 
+<<<<<<< HEAD
 	struct brcms_txq_info *pkt_queue;
 	struct wiphy *wiphy;
 	struct scb pri_scb;
+=======
+	struct wiphy *wiphy;
+	struct scb pri_scb;
+
+	struct sk_buff *beacon;
+	u16 beacon_tim_offset;
+	u16 beacon_dtim_period;
+	struct sk_buff *probe_resp;
+>>>>>>> refs/remotes/origin/master
 };
 
 /* antsel module specific state */
@@ -603,14 +641,27 @@ struct antsel_info {
 	struct brcms_antselcfg antcfg_cur; /* current antenna config (auto) */
 };
 
+<<<<<<< HEAD
+=======
+enum brcms_bss_type {
+	BRCMS_TYPE_STATION,
+	BRCMS_TYPE_AP,
+	BRCMS_TYPE_ADHOC,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * BSS configuration state
  *
  * wlc: wlc to which this bsscfg belongs to.
+<<<<<<< HEAD
  * up: is this configuration up operational
  * enable: is this configuration enabled
  * associated: is BSS in ASSOCIATED state
  * BSS: infraustructure or adhoc
+=======
+ * type: interface type
+>>>>>>> refs/remotes/origin/master
  * SSID_len: the length of SSID
  * SSID: SSID string
  *
@@ -626,6 +677,7 @@ struct antsel_info {
  */
 struct brcms_bss_cfg {
 	struct brcms_c_info *wlc;
+<<<<<<< HEAD
 	bool up;
 	bool enable;
 	bool associated;
@@ -716,5 +768,63 @@ extern void brcms_b_txant_set(struct brcms_hardware *wlc_hw, u16 phytxant);
 extern void brcms_b_band_stf_ss_set(struct brcms_hardware *wlc_hw,
 				    u8 stf_mode);
 extern void brcms_c_init_scb(struct scb *scb);
+=======
+	enum brcms_bss_type type;
+	u8 SSID_len;
+	u8 SSID[IEEE80211_MAX_SSID_LEN];
+	u8 BSSID[ETH_ALEN];
+	struct brcms_bss_info *current_bss;
+};
+
+int brcms_c_txfifo(struct brcms_c_info *wlc, uint fifo, struct sk_buff *p);
+int brcms_b_xmtfifo_sz_get(struct brcms_hardware *wlc_hw, uint fifo,
+			   uint *blocks);
+
+int brcms_c_set_gmode(struct brcms_c_info *wlc, u8 gmode, bool config);
+void brcms_c_mac_promisc(struct brcms_c_info *wlc, uint filter_flags);
+u16 brcms_c_calc_lsig_len(struct brcms_c_info *wlc, u32 ratespec, uint mac_len);
+u32 brcms_c_rspec_to_rts_rspec(struct brcms_c_info *wlc, u32 rspec,
+			       bool use_rspec, u16 mimo_ctlchbw);
+u16 brcms_c_compute_rtscts_dur(struct brcms_c_info *wlc, bool cts_only,
+			       u32 rts_rate, u32 frame_rate,
+			       u8 rts_preamble_type, u8 frame_preamble_type,
+			       uint frame_len, bool ba);
+void brcms_c_inval_dma_pkts(struct brcms_hardware *hw,
+			    struct ieee80211_sta *sta, void (*dma_callback_fn));
+void brcms_c_update_probe_resp(struct brcms_c_info *wlc, bool suspend);
+int brcms_c_set_nmode(struct brcms_c_info *wlc);
+void brcms_c_beacon_phytxctl_txant_upd(struct brcms_c_info *wlc, u32 bcn_rate);
+void brcms_b_antsel_type_set(struct brcms_hardware *wlc_hw, u8 antsel_type);
+void brcms_b_set_chanspec(struct brcms_hardware *wlc_hw, u16 chanspec,
+			  bool mute, struct txpwr_limits *txpwr);
+void brcms_b_write_shm(struct brcms_hardware *wlc_hw, uint offset, u16 v);
+u16 brcms_b_read_shm(struct brcms_hardware *wlc_hw, uint offset);
+void brcms_b_mhf(struct brcms_hardware *wlc_hw, u8 idx, u16 mask, u16 val,
+		 int bands);
+void brcms_b_corereset(struct brcms_hardware *wlc_hw, u32 flags);
+void brcms_b_mctrl(struct brcms_hardware *wlc_hw, u32 mask, u32 val);
+void brcms_b_phy_reset(struct brcms_hardware *wlc_hw);
+void brcms_b_bw_set(struct brcms_hardware *wlc_hw, u16 bw);
+void brcms_b_core_phypll_reset(struct brcms_hardware *wlc_hw);
+void brcms_c_ucode_wake_override_set(struct brcms_hardware *wlc_hw,
+				     u32 override_bit);
+void brcms_c_ucode_wake_override_clear(struct brcms_hardware *wlc_hw,
+				       u32 override_bit);
+void brcms_b_write_template_ram(struct brcms_hardware *wlc_hw, int offset,
+				int len, void *buf);
+u16 brcms_b_rate_shm_offset(struct brcms_hardware *wlc_hw, u8 rate);
+void brcms_b_copyto_objmem(struct brcms_hardware *wlc_hw, uint offset,
+			   const void *buf, int len, u32 sel);
+void brcms_b_copyfrom_objmem(struct brcms_hardware *wlc_hw, uint offset,
+			     void *buf, int len, u32 sel);
+void brcms_b_switch_macfreq(struct brcms_hardware *wlc_hw, u8 spurmode);
+u16 brcms_b_get_txant(struct brcms_hardware *wlc_hw);
+void brcms_b_phyclk_fgc(struct brcms_hardware *wlc_hw, bool clk);
+void brcms_b_macphyclk_set(struct brcms_hardware *wlc_hw, bool clk);
+void brcms_b_core_phypll_ctl(struct brcms_hardware *wlc_hw, bool on);
+void brcms_b_txant_set(struct brcms_hardware *wlc_hw, u16 phytxant);
+void brcms_b_band_stf_ss_set(struct brcms_hardware *wlc_hw, u8 stf_mode);
+void brcms_c_init_scb(struct scb *scb);
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* _BRCM_MAIN_H_ */

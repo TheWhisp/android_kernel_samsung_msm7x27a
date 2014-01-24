@@ -69,7 +69,11 @@ config MMC_SDHCI_PCI
 	  If unsure, say N.
 
 config MMC_RICOH_MMC
+<<<<<<< HEAD
 	bool "Ricoh MMC Controller Disabler  (EXPERIMENTAL)"
+=======
+	bool "Ricoh MMC Controller Disabler"
+>>>>>>> refs/remotes/origin/master
 	depends on MMC_SDHCI_PCI
 	help
 	  This adds a pci quirk to disable Ricoh MMC Controller. This
@@ -82,6 +86,7 @@ config MMC_RICOH_MMC
 	  If unsure, say Y.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config MMC_SDHCI_OF
 	tristate "SDHCI support on OpenFirmware platforms"
 	depends on MMC_SDHCI && OF
@@ -89,6 +94,20 @@ config MMC_SDHCI_OF
 	  This selects the OF support for Secure Digital Host Controller
 	  Interfaces.
 =======
+=======
+config MMC_SDHCI_ACPI
+	tristate "SDHCI support for ACPI enumerated SDHCI controllers"
+	depends on MMC_SDHCI && ACPI
+	help
+	  This selects support for ACPI enumerated SDHCI controllers,
+	  identified by ACPI Compatibility ID PNP0D40 or specific
+	  ACPI Hardware IDs.
+
+	  If you have a controller with this interface, say Y or M here.
+
+	  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config MMC_SDHCI_PLTFM
 	tristate "SDHCI platform and OF driver helper"
 	depends on MMC_SDHCI
@@ -97,11 +116,15 @@ config MMC_SDHCI_PLTFM
 	  Host Controller Interface based platform and OF drivers.
 
 	  If you have a controller with this interface, say Y or M here.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
 config MMC_SDHCI_OF_ESDHC
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bool "SDHCI OF support for the Freescale eSDHC controller"
 	depends on MMC_SDHCI_OF
@@ -109,11 +132,16 @@ config MMC_SDHCI_OF_ESDHC
 	tristate "SDHCI OF support for the Freescale eSDHC controller"
 	depends on MMC_SDHCI_PLTFM
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "SDHCI OF support for the Freescale eSDHC controller"
+	depends on MMC_SDHCI_PLTFM
+>>>>>>> refs/remotes/origin/master
 	depends on PPC_OF
 	select MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
 	help
 	  This selects the Freescale eSDHC controller support.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  If unsure, say N.
 
@@ -121,6 +149,8 @@ config MMC_SDHCI_OF_HLWD
 	bool "SDHCI OF support for the Nintendo Wii SDHCI controllers"
 	depends on MMC_SDHCI_OF
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  If you have a controller with this interface, say Y or M here.
 
 	  If unsure, say N.
@@ -128,7 +158,10 @@ config MMC_SDHCI_OF_HLWD
 config MMC_SDHCI_OF_HLWD
 	tristate "SDHCI OF support for the Nintendo Wii SDHCI controllers"
 	depends on MMC_SDHCI_PLTFM
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	depends on PPC_OF
 	select MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER
 	help
@@ -136,6 +169,7 @@ config MMC_SDHCI_OF_HLWD
 	  found in the "Hollywood" chipset of the Nintendo Wii video game
 	  console.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  If unsure, say N.
 
@@ -148,21 +182,28 @@ config MMC_SDHCI_PLTFM
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  If you have a controller with this interface, say Y or M here.
 
 	  If unsure, say N.
 
 config MMC_SDHCI_CNS3XXX
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool "SDHCI support on the Cavium Networks CNS3xxx SoC"
 =======
 	tristate "SDHCI support on the Cavium Networks CNS3xxx SoC"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "SDHCI support on the Cavium Networks CNS3xxx SoC"
+>>>>>>> refs/remotes/origin/master
 	depends on ARCH_CNS3XXX
 	depends on MMC_SDHCI_PLTFM
 	help
 	  This selects the SDHCI support for CNS3xxx System-on-Chip devices.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	  If unsure, say N.
 
@@ -174,6 +215,8 @@ config MMC_SDHCI_ESDHC_IMX
 	  This selects the Freescale eSDHC controller support on the platform
 	  bus, found on platforms like mx35/51.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  If you have a controller with this interface, say Y or M here.
 
 	  If unsure, say N.
@@ -188,16 +231,23 @@ config MMC_SDHCI_ESDHC_IMX
 	  found on i.MX25, i.MX35 i.MX5x and i.MX6x.
 
 	  If you have a controller with this interface, say Y or M here.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
 config MMC_SDHCI_DOVE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	bool "SDHCI support on Marvell's Dove SoC"
 =======
 	tristate "SDHCI support on Marvell's Dove SoC"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tristate "SDHCI support on Marvell's Dove SoC"
+>>>>>>> refs/remotes/origin/master
 	depends on ARCH_DOVE
 	depends on MMC_SDHCI_PLTFM
 	select MMC_SDHCI_IO_ACCESSORS
@@ -206,12 +256,15 @@ config MMC_SDHCI_DOVE
 	  Marvell's Dove SoC.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	  If unsure, say N.
 
 config MMC_SDHCI_TEGRA
 	bool "SDHCI platform support for the Tegra SD/MMC Controller"
 	depends on MMC_SDHCI_PLTFM && ARCH_TEGRA
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  If you have a controller with this interface, say Y or M here.
 
 	  If unsure, say N.
@@ -220,7 +273,10 @@ config MMC_SDHCI_TEGRA
 	tristate "SDHCI platform support for the Tegra SD/MMC Controller"
 	depends on ARCH_TEGRA
 	depends on MMC_SDHCI_PLTFM
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select MMC_SDHCI_IO_ACCESSORS
 	help
 	  This selects the Tegra SD/MMC controller. If you have a Tegra
@@ -236,13 +292,17 @@ config MMC_SDHCI_S3C
 	  often referrered to as the HSMMC block in some of the Samsung S3C
 	  range of SoC.
 
+<<<<<<< HEAD
 	  Note, due to the problems with DMA, the DMA support is only
 	  available with CONFIG_EXPERIMENTAL is selected.
 
+=======
+>>>>>>> refs/remotes/origin/master
 	  If you have a controller with this interface, say Y or M here.
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 config MMC_SDHCI_PXA
 	tristate "Marvell PXA168/PXA910/MMP2 SD Host Controller support"
@@ -253,6 +313,19 @@ config MMC_SDHCI_PXA
 	  This selects the Marvell(R) PXA168/PXA910/MMP2 SD Host Controller.
 	  If you have a PXA168/PXA910/MMP2 platform with SD Host Controller
 =======
+=======
+config MMC_SDHCI_SIRF
+	tristate "SDHCI support on CSR SiRFprimaII and SiRFmarco SoCs"
+	depends on ARCH_SIRF
+	depends on MMC_SDHCI_PLTFM
+	help
+	  This selects the SDHCI support for SiRF System-on-Chip devices.
+
+	  If you have a controller with this interface, say Y or M here.
+
+	  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config MMC_SDHCI_PXAV3
 	tristate "Marvell MMP2 SD Host Controller support (PXAV3)"
 	depends on CLKDEV_LOOKUP
@@ -275,7 +348,10 @@ config MMC_SDHCI_PXAV2
 	help
 	  This selects the Marvell(R) PXAV2 SD Host Controller.
 	  If you have a PXA9XX platform with SD Host Controller
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	  and a card slot, say Y or M here.
 
 	  If unsure, say N.
@@ -294,7 +370,11 @@ config MMC_SDHCI_SPEAR
 
 config MMC_SDHCI_S3C_DMA
 	bool "DMA support on S3C SDHCI"
+<<<<<<< HEAD
 	depends on MMC_SDHCI_S3C && EXPERIMENTAL
+=======
+	depends on MMC_SDHCI_S3C
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable DMA support on the Samsung S3C SDHCI glue. The DMA
 	  has proved to be problematic if the controller encounters
@@ -302,6 +382,31 @@ config MMC_SDHCI_S3C_DMA
 
 	  YMMV.
 
+<<<<<<< HEAD
+=======
+config MMC_SDHCI_BCM_KONA
+	tristate "SDHCI support on Broadcom KONA platform"
+	depends on ARCH_BCM
+	select MMC_SDHCI_PLTFM
+	help
+	  This selects the Broadcom Kona Secure Digital Host Controller
+	  Interface(SDHCI) support.
+	  This is used in Broadcom mobile SoCs.
+
+	  If you have a controller with this interface, say Y or M here.
+
+config MMC_SDHCI_BCM2835
+	tristate "SDHCI platform support for the BCM2835 SD/MMC Controller"
+	depends on ARCH_BCM2835
+	depends on MMC_SDHCI_PLTFM
+	select MMC_SDHCI_IO_ACCESSORS
+	help
+	  This selects the BCM2835 SD/MMC controller. If you have a BCM2835
+	  platform with SD or MMC devices, say Y or M here.
+
+	  If unsure, say N.
+
+>>>>>>> refs/remotes/origin/master
 config MMC_OMAP
 	tristate "TI OMAP Multimedia Card Interface support"
 	depends on ARCH_OMAP
@@ -315,11 +420,19 @@ config MMC_OMAP
 
 config MMC_OMAP_HS
 	tristate "TI OMAP High Speed Multimedia Card Interface support"
+<<<<<<< HEAD
 	depends on SOC_OMAP2430 || ARCH_OMAP3 || ARCH_OMAP4
 	help
 	  This selects the TI OMAP High Speed Multimedia card Interface.
 	  If you have an OMAP2430 or OMAP3 board or OMAP4 board with a
 	  Multimedia Card slot, say Y or M here.
+=======
+	depends on ARCH_OMAP2PLUS || COMPILE_TEST
+	help
+	  This selects the TI OMAP High Speed Multimedia card Interface.
+	  If you have an omap2plus board with a Multimedia Card slot,
+	  say Y or M here.
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
@@ -337,16 +450,21 @@ config MMC_WBSD
 config MMC_AU1X
 	tristate "Alchemy AU1XX0 MMC Card Interface support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on SOC_AU1200
 =======
 	depends on MIPS_ALCHEMY
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on MIPS_ALCHEMY
+>>>>>>> refs/remotes/origin/master
 	help
 	  This selects the AMD Alchemy(R) Multimedia card interface.
 	  If you have a Alchemy platform with a MMC slot, say Y or M here.
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 choice
 	prompt "Atmel SD/MMC Driver"
 	depends on AVR32 || ARCH_AT91
@@ -364,6 +482,10 @@ config MMC_AT91
 
 config MMC_ATMELMCI
 	tristate "Atmel Multimedia Card Interface support"
+=======
+config MMC_ATMELMCI
+	tristate "Atmel SD/MMC Driver (Multimedia Card Interface)"
+>>>>>>> refs/remotes/origin/master
 	depends on AVR32 || ARCH_AT91
 	help
 	  This selects the Atmel Multimedia Card Interface driver. If
@@ -372,6 +494,7 @@ config MMC_ATMELMCI
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 endchoice
 
 <<<<<<< HEAD
@@ -398,6 +521,8 @@ config MMC_IMX
 
 	  If unsure, say N.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MMC_MSM
 	tristate "Qualcomm SDCC Controller Support"
 	depends on MMC && ARCH_MSM
@@ -407,6 +532,7 @@ config MMC_MSM
 	  support for SDIO devices.
 
 config MMC_MXC
+<<<<<<< HEAD
 <<<<<<< HEAD
 	tristate "Freescale i.MX2/3 Multimedia Card Interface support"
 	depends on MACH_MX21 || MACH_MX27 || ARCH_MX31
@@ -421,6 +547,14 @@ config MMC_MXC
 	  Interface. If you have a i.MX platform with a Multimedia Card slot,
 >>>>>>> refs/remotes/origin/cm-10.0
 	  say Y or M here.
+=======
+	tristate "Freescale i.MX21/27/31 or MPC512x Multimedia Card support"
+	depends on ARCH_MXC || PPC_MPC512x
+	help
+	  This selects the Freescale i.MX21, i.MX27, i.MX31 or MPC512x
+	  Multimedia Card Interface. If you have an i.MX or MPC512x platform
+	  with a Multimedia Card slot, say Y or M here.
+>>>>>>> refs/remotes/origin/master
 
 	  If unsure, say N.
 
@@ -434,8 +568,13 @@ config MMC_MXS
 	  If unsure, say N.
 
 config MMC_TIFM_SD
+<<<<<<< HEAD
 	tristate "TI Flash Media MMC/SD Interface support  (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && PCI
+=======
+	tristate "TI Flash Media MMC/SD Interface support"
+	depends on PCI
+>>>>>>> refs/remotes/origin/master
 	select TIFM_CORE
 	help
 	  Say Y here if you want to be able to access MMC/SD cards with
@@ -468,6 +607,16 @@ config MMC_DAVINCI
           If you have an DAVINCI board with a Multimedia Card slot,
           say Y or M here.  If unsure, say N.
 
+<<<<<<< HEAD
+=======
+config MMC_GOLDFISH
+	tristate "goldfish qemu Multimedia Card Interface support"
+	depends on GOLDFISH
+	help
+	  This selects the Goldfish Multimedia card Interface emulation
+	  found on the Goldfish Android virtual device emulation.
+
+>>>>>>> refs/remotes/origin/master
 config MMC_SPI
 	tristate "MMC/SD/SDIO over SPI"
 	depends on SPI_MASTER && !HIGHMEM && HAS_DMA
@@ -485,10 +634,14 @@ config MMC_SPI
 config MMC_S3C
 	tristate "Samsung S3C SD/MMC Card Interface support"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	depends on ARCH_S3C2410
 =======
 	depends on ARCH_S3C24XX
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on ARCH_S3C24XX
+>>>>>>> refs/remotes/origin/master
 	help
 	  This selects a driver for the MCI interface found in
           Samsung's S3C2410, S3C2412, S3C2440, S3C2442 CPUs.
@@ -518,8 +671,12 @@ config MMC_S3C_PIO
 	  the S3C MCI driver.
 
 config MMC_S3C_DMA
+<<<<<<< HEAD
 	bool "Use DMA transfers only (EXPERIMENTAL)"
 	depends on EXPERIMENTAL
+=======
+	bool "Use DMA transfers only"
+>>>>>>> refs/remotes/origin/master
 	help
 	  Use DMA to transfer data between memory and the hardare.
 
@@ -528,7 +685,11 @@ config MMC_S3C_DMA
 	  option is useful.
 
 config MMC_S3C_PIODMA
+<<<<<<< HEAD
 	bool "Support for both PIO and DMA (EXPERIMENTAL)"
+=======
+	bool "Support for both PIO and DMA"
+>>>>>>> refs/remotes/origin/master
 	help
 	  Compile both the PIO and DMA transfer routines into the
 	  driver and let the platform select at run-time which one
@@ -539,8 +700,13 @@ config MMC_S3C_PIODMA
 endchoice
 
 config MMC_SDRICOH_CS
+<<<<<<< HEAD
 	tristate "MMC/SD driver for Ricoh Bay1Controllers (EXPERIMENTAL)"
 	depends on EXPERIMENTAL && PCI && PCMCIA
+=======
+	tristate "MMC/SD driver for Ricoh Bay1Controllers"
+	depends on PCI && PCMCIA
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if your Notebook reports a Ricoh Bay1Controller PCMCIA
 	  card whenever you insert a MMC or SD card into the card slot.
@@ -551,6 +717,7 @@ config MMC_SDRICOH_CS
 config MMC_TMIO_CORE
 	tristate
 
+<<<<<<< HEAD
 config MMC_MSM
 	tristate "Qualcomm SDCC Controller Support"
 	depends on MMC && ARCH_MSM
@@ -658,6 +825,8 @@ config MMC_MSM_SPS_SUPPORT
 	help
 	  Select Y to use SPS BAM as data mover
 
+=======
+>>>>>>> refs/remotes/origin/master
 config MMC_TMIO
 	tristate "Toshiba Mobile IO Controller (TMIO) MMC/SD function support"
 	depends on MFD_TMIO || MFD_ASIC3
@@ -678,9 +847,12 @@ config MMC_CB710
 	tristate "ENE CB710 MMC/SD Interface support"
 	depends on PCI
 <<<<<<< HEAD
+<<<<<<< HEAD
 	select MISC_DEVICES
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	select CB710_CORE
 	help
 	  This option enables support for MMC/SD part of ENE CB710/720 Flash
@@ -723,7 +895,11 @@ config SDH_BFIN_MISSING_CMD_PULLUP_WORKAROUND
 
 config MMC_DW
 	tristate "Synopsys DesignWare Memory Card Interface"
+<<<<<<< HEAD
 	depends on ARM
+=======
+	depends on ARC || ARM
+>>>>>>> refs/remotes/origin/master
 	help
 	  This selects support for the Synopsys DesignWare Mobile Storage IP
 	  block, this provides host support for SD and MMC interfaces, in both
@@ -738,7 +914,10 @@ config MMC_DW_IDMAC
 	  interface.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 config MMC_DW_PLTFM
 	tristate "Synopsys Designware MCI Support as platform device"
 	depends on MMC_DW
@@ -753,6 +932,26 @@ config MMC_DW_PLTFM
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
+=======
+config MMC_DW_EXYNOS
+	tristate "Exynos specific extensions for Synopsys DW Memory Card Interface"
+	depends on MMC_DW
+	select MMC_DW_PLTFM
+	help
+	  This selects support for Samsung Exynos SoC specific extensions to the
+	  Synopsys DesignWare Memory Card Interface driver. Select this option
+	  for platforms based on Exynos4 and Exynos5 SoC's.
+
+config MMC_DW_SOCFPGA
+	tristate "SOCFPGA specific extensions for Synopsys DW Memory Card Interface"
+	depends on MMC_DW && MFD_SYSCON
+	select MMC_DW_PLTFM
+	help
+	  This selects support for Altera SoCFPGA specific extensions to the
+	  Synopsys DesignWare Memory Card Interface driver.
+
+>>>>>>> refs/remotes/origin/master
 config MMC_DW_PCI
 	tristate "Synopsys Designware MCI support on PCI bus"
 	depends on MMC_DW && PCI
@@ -764,7 +963,10 @@ config MMC_DW_PCI
 
 	  If unsure, say N.
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 config MMC_SH_MMCIF
 	tristate "SuperH Internal MMCIF support"
 	depends on MMC_BLOCK && (SUPERH || ARCH_SHMOBILE)
@@ -826,3 +1028,24 @@ config MMC_USHC
 
 	  Note: These controllers only support SDIO cards and do not
 	  support MMC or SD memory cards.
+<<<<<<< HEAD
+=======
+
+config MMC_WMT
+	tristate "Wondermedia SD/MMC Host Controller support"
+	depends on ARCH_VT8500
+	default y
+	help
+	  This selects support for the SD/MMC Host Controller on
+	  Wondermedia WM8505/WM8650 based SoCs.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called wmt-sdmmc.
+
+config MMC_REALTEK_PCI
+	tristate "Realtek PCI-E SD/MMC Card Interface Driver"
+	depends on MFD_RTSX_PCI
+	help
+	  Say Y here to include driver code to support SD/MMC card interface
+	  of Realtek PCI-E card reader
+>>>>>>> refs/remotes/origin/master

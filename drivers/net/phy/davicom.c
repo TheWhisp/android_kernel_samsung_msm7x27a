@@ -134,12 +134,16 @@ static int dm9161_config_init(struct phy_device *phydev)
 		return err;
 
 	/* Reconnect the PHY, and enable Autonegotiation */
+<<<<<<< HEAD
 	err = phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
 
 	if (err < 0)
 		return err;
 
 	return 0;
+=======
+	return phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
+>>>>>>> refs/remotes/origin/master
 }
 
 static int dm9161_ack_interrupt(struct phy_device *phydev)
@@ -149,11 +153,17 @@ static int dm9161_ack_interrupt(struct phy_device *phydev)
 	return (err < 0) ? err : 0;
 }
 
+<<<<<<< HEAD
 static struct phy_driver dm9161e_driver = {
+=======
+static struct phy_driver dm91xx_driver[] = {
+{
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x0181b880,
 	.name		= "Davicom DM9161E",
 	.phy_id_mask	= 0x0ffffff0,
 	.features	= PHY_BASIC_FEATURES,
+<<<<<<< HEAD
 	.config_init	= dm9161_config_init,
 	.config_aneg	= dm9161_config_aneg,
 	.read_status	= genphy_read_status,
@@ -161,10 +171,21 @@ static struct phy_driver dm9161e_driver = {
 };
 
 static struct phy_driver dm9161a_driver = {
+=======
+	.flags		= PHY_HAS_INTERRUPT,
+	.config_init	= dm9161_config_init,
+	.config_aneg	= dm9161_config_aneg,
+	.read_status	= genphy_read_status,
+	.ack_interrupt	= dm9161_ack_interrupt,
+	.config_intr	= dm9161_config_intr,
+	.driver		= { .owner = THIS_MODULE,},
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x0181b8a0,
 	.name		= "Davicom DM9161A",
 	.phy_id_mask	= 0x0ffffff0,
 	.features	= PHY_BASIC_FEATURES,
+<<<<<<< HEAD
 	.config_init	= dm9161_config_init,
 	.config_aneg	= dm9161_config_aneg,
 	.read_status	= genphy_read_status,
@@ -172,6 +193,16 @@ static struct phy_driver dm9161a_driver = {
 };
 
 static struct phy_driver dm9131_driver = {
+=======
+	.flags		= PHY_HAS_INTERRUPT,
+	.config_init	= dm9161_config_init,
+	.config_aneg	= dm9161_config_aneg,
+	.read_status	= genphy_read_status,
+	.ack_interrupt	= dm9161_ack_interrupt,
+	.config_intr	= dm9161_config_intr,
+	.driver		= { .owner = THIS_MODULE,},
+}, {
+>>>>>>> refs/remotes/origin/master
 	.phy_id		= 0x00181b80,
 	.name		= "Davicom DM9131",
 	.phy_id_mask	= 0x0ffffff0,
@@ -182,6 +213,7 @@ static struct phy_driver dm9131_driver = {
 	.ack_interrupt	= dm9161_ack_interrupt,
 	.config_intr	= dm9161_config_intr,
 	.driver		= { .owner = THIS_MODULE,},
+<<<<<<< HEAD
 };
 
 static int __init davicom_init(void)
@@ -207,13 +239,26 @@ static int __init davicom_init(void)
 	phy_driver_unregister(&dm9161e_driver);
  err1:
 	return ret;
+=======
+} };
+
+static int __init davicom_init(void)
+{
+	return phy_drivers_register(dm91xx_driver,
+		ARRAY_SIZE(dm91xx_driver));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void __exit davicom_exit(void)
 {
+<<<<<<< HEAD
 	phy_driver_unregister(&dm9161e_driver);
 	phy_driver_unregister(&dm9161a_driver);
 	phy_driver_unregister(&dm9131_driver);
+=======
+	phy_drivers_unregister(dm91xx_driver,
+		ARRAY_SIZE(dm91xx_driver));
+>>>>>>> refs/remotes/origin/master
 }
 
 module_init(davicom_init);

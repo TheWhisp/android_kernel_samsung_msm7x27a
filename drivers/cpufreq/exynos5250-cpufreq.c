@@ -19,17 +19,24 @@
 
 #include <mach/map.h>
 #include <mach/regs-clock.h>
+<<<<<<< HEAD
 #include <mach/cpufreq.h>
 
 #define CPUFREQ_LEVEL_END	(L15 + 1)
 
 static int max_support_idx;
 static int min_support_idx = (CPUFREQ_LEVEL_END - 1);
+=======
+
+#include "exynos-cpufreq.h"
+
+>>>>>>> refs/remotes/origin/master
 static struct clk *cpu_clk;
 static struct clk *moutcore;
 static struct clk *mout_mpll;
 static struct clk *mout_apll;
 
+<<<<<<< HEAD
 struct cpufreq_clkdiv {
 	unsigned int	index;
 	unsigned int	clkdiv;
@@ -38,6 +45,15 @@ struct cpufreq_clkdiv {
 
 static unsigned int exynos5250_volt_table[CPUFREQ_LEVEL_END];
 
+=======
+static unsigned int exynos5250_volt_table[] = {
+	1300000, 1250000, 1225000, 1200000, 1150000,
+	1125000, 1100000, 1075000, 1050000, 1025000,
+	1012500, 1000000,  975000,  950000,  937500,
+	925000
+};
+
+>>>>>>> refs/remotes/origin/master
 static struct cpufreq_frequency_table exynos5250_freq_table[] = {
 	{L0, 1700 * 1000},
 	{L1, 1600 * 1000},
@@ -47,8 +63,13 @@ static struct cpufreq_frequency_table exynos5250_freq_table[] = {
 	{L5, 1200 * 1000},
 	{L6, 1100 * 1000},
 	{L7, 1000 * 1000},
+<<<<<<< HEAD
 	{L8, 900 * 1000},
 	{L9, 800 * 1000},
+=======
+	{L8,  900 * 1000},
+	{L9,  800 * 1000},
+>>>>>>> refs/remotes/origin/master
 	{L10, 700 * 1000},
 	{L11, 600 * 1000},
 	{L12, 500 * 1000},
@@ -58,6 +79,7 @@ static struct cpufreq_frequency_table exynos5250_freq_table[] = {
 	{0, CPUFREQ_TABLE_END},
 };
 
+<<<<<<< HEAD
 static struct cpufreq_clkdiv exynos5250_clkdiv_table[CPUFREQ_LEVEL_END];
 
 static unsigned int clkdiv_cpu0_5250[CPUFREQ_LEVEL_END][8] = {
@@ -129,6 +151,32 @@ static const unsigned int asv_voltage_5250[CPUFREQ_LEVEL_END] = {
 	0, 0, 0, 0, 0, 0, 0,	/* 1700 MHz ~ 1100 MHz Not supported */
 	1175000, 1125000, 1075000, 1050000, 1000000,
 	950000, 925000, 925000, 900000
+=======
+static struct apll_freq apll_freq_5250[] = {
+	/*
+	 * values:
+	 * freq
+	 * clock divider for ARM, CPUD, ACP, PERIPH, ATB, PCLK_DBG, APLL, ARM2
+	 * clock divider for COPY, HPM, RESERVED
+	 * PLL M, P, S
+	 */
+	APLL_FREQ(1700, 0, 3, 7, 7, 7, 3, 5, 0, 0, 2, 0, 425, 6, 0),
+	APLL_FREQ(1600, 0, 3, 7, 7, 7, 1, 4, 0, 0, 2, 0, 200, 3, 0),
+	APLL_FREQ(1500, 0, 2, 7, 7, 7, 1, 4, 0, 0, 2, 0, 250, 4, 0),
+	APLL_FREQ(1400, 0, 2, 7, 7, 6, 1, 4, 0, 0, 2, 0, 175, 3, 0),
+	APLL_FREQ(1300, 0, 2, 7, 7, 6, 1, 3, 0, 0, 2, 0, 325, 6, 0),
+	APLL_FREQ(1200, 0, 2, 7, 7, 5, 1, 3, 0, 0, 2, 0, 200, 4, 0),
+	APLL_FREQ(1100, 0, 3, 7, 7, 5, 1, 3, 0, 0, 2, 0, 275, 6, 0),
+	APLL_FREQ(1000, 0, 1, 7, 7, 4, 1, 2, 0, 0, 2, 0, 125, 3, 0),
+	APLL_FREQ(900,  0, 1, 7, 7, 4, 1, 2, 0, 0, 2, 0, 150, 4, 0),
+	APLL_FREQ(800,  0, 1, 7, 7, 4, 1, 2, 0, 0, 2, 0, 100, 3, 0),
+	APLL_FREQ(700,  0, 1, 7, 7, 3, 1, 1, 0, 0, 2, 0, 175, 3, 1),
+	APLL_FREQ(600,  0, 1, 7, 7, 3, 1, 1, 0, 0, 2, 0, 200, 4, 1),
+	APLL_FREQ(500,  0, 1, 7, 7, 2, 1, 1, 0, 0, 2, 0, 125, 3, 1),
+	APLL_FREQ(400,  0, 1, 7, 7, 2, 1, 1, 0, 0, 2, 0, 100, 3, 1),
+	APLL_FREQ(300,  0, 1, 7, 7, 1, 1, 1, 0, 0, 2, 0, 200, 4, 2),
+	APLL_FREQ(200,  0, 1, 7, 7, 1, 1, 1, 0, 0, 2, 0, 100, 3, 2),
+>>>>>>> refs/remotes/origin/master
 };
 
 static void set_clkdiv(unsigned int div_index)
@@ -137,7 +185,11 @@ static void set_clkdiv(unsigned int div_index)
 
 	/* Change Divider - CPU0 */
 
+<<<<<<< HEAD
 	tmp = exynos5250_clkdiv_table[div_index].clkdiv;
+=======
+	tmp = apll_freq_5250[div_index].clk_div_cpu0;
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel(tmp, EXYNOS5_CLKDIV_CPU0);
 
@@ -145,7 +197,11 @@ static void set_clkdiv(unsigned int div_index)
 		cpu_relax();
 
 	/* Change Divider - CPU1 */
+<<<<<<< HEAD
 	tmp = exynos5250_clkdiv_table[div_index].clkdiv1;
+=======
+	tmp = apll_freq_5250[div_index].clk_div_cpu1;
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel(tmp, EXYNOS5_CLKDIV_CPU1);
 
@@ -168,14 +224,22 @@ static void set_apll(unsigned int new_index,
 	} while (tmp != 0x2);
 
 	/* 2. Set APLL Lock time */
+<<<<<<< HEAD
 	pdiv = ((exynos5_apll_pms_table[new_index] >> 8) & 0x3f);
+=======
+	pdiv = ((apll_freq_5250[new_index].mps >> 8) & 0x3f);
+>>>>>>> refs/remotes/origin/master
 
 	__raw_writel((pdiv * 250), EXYNOS5_APLL_LOCK);
 
 	/* 3. Change PLL PMS values */
 	tmp = __raw_readl(EXYNOS5_APLL_CON0);
 	tmp &= ~((0x3ff << 16) | (0x3f << 8) | (0x7 << 0));
+<<<<<<< HEAD
 	tmp |= exynos5_apll_pms_table[new_index];
+=======
+	tmp |= apll_freq_5250[new_index].mps;
+>>>>>>> refs/remotes/origin/master
 	__raw_writel(tmp, EXYNOS5_APLL_CON0);
 
 	/* 4. wait_lock_time */
@@ -195,10 +259,17 @@ static void set_apll(unsigned int new_index,
 
 }
 
+<<<<<<< HEAD
 bool exynos5250_pms_change(unsigned int old_index, unsigned int new_index)
 {
 	unsigned int old_pm = (exynos5_apll_pms_table[old_index] >> 8);
 	unsigned int new_pm = (exynos5_apll_pms_table[new_index] >> 8);
+=======
+static bool exynos5250_pms_change(unsigned int old_index, unsigned int new_index)
+{
+	unsigned int old_pm = apll_freq_5250[old_index].mps >> 8;
+	unsigned int new_pm = apll_freq_5250[new_index].mps >> 8;
+>>>>>>> refs/remotes/origin/master
 
 	return (old_pm == new_pm) ? 0 : 1;
 }
@@ -215,7 +286,11 @@ static void exynos5250_set_frequency(unsigned int old_index,
 			/* 2. Change just s value in apll m,p,s value */
 			tmp = __raw_readl(EXYNOS5_APLL_CON0);
 			tmp &= ~(0x7 << 0);
+<<<<<<< HEAD
 			tmp |= (exynos5_apll_pms_table[new_index] & 0x7);
+=======
+			tmp |= apll_freq_5250[new_index].mps & 0x7;
+>>>>>>> refs/remotes/origin/master
 			__raw_writel(tmp, EXYNOS5_APLL_CON0);
 
 		} else {
@@ -230,7 +305,11 @@ static void exynos5250_set_frequency(unsigned int old_index,
 			/* 1. Change just s value in apll m,p,s value */
 			tmp = __raw_readl(EXYNOS5_APLL_CON0);
 			tmp &= ~(0x7 << 0);
+<<<<<<< HEAD
 			tmp |= (exynos5_apll_pms_table[new_index] & 0x7);
+=======
+			tmp |= apll_freq_5250[new_index].mps & 0x7;
+>>>>>>> refs/remotes/origin/master
 			__raw_writel(tmp, EXYNOS5_APLL_CON0);
 			/* 2. Change the system clock divider values */
 			set_clkdiv(new_index);
@@ -244,6 +323,7 @@ static void exynos5250_set_frequency(unsigned int old_index,
 	}
 }
 
+<<<<<<< HEAD
 static void __init set_volt_table(void)
 {
 	unsigned int i;
@@ -270,6 +350,12 @@ int exynos5250_cpufreq_init(struct exynos_dvfs_info *info)
 
 	set_volt_table();
 
+=======
+int exynos5250_cpufreq_init(struct exynos_dvfs_info *info)
+{
+	unsigned long rate;
+
+>>>>>>> refs/remotes/origin/master
 	cpu_clk = clk_get(NULL, "armclk");
 	if (IS_ERR(cpu_clk))
 		return PTR_ERR(cpu_clk);
@@ -288,6 +374,7 @@ int exynos5250_cpufreq_init(struct exynos_dvfs_info *info)
 	if (IS_ERR(mout_apll))
 		goto err_mout_apll;
 
+<<<<<<< HEAD
 	for (i = L0; i < CPUFREQ_LEVEL_END; i++) {
 
 		exynos5250_clkdiv_table[i].index = i;
@@ -326,6 +413,11 @@ int exynos5250_cpufreq_init(struct exynos_dvfs_info *info)
 	info->pll_safe_idx = L9;
 	info->max_support_idx = max_support_idx;
 	info->min_support_idx = min_support_idx;
+=======
+	info->mpll_freq_khz = rate;
+	/* 800Mhz */
+	info->pll_safe_idx = L9;
+>>>>>>> refs/remotes/origin/master
 	info->cpu_clk = cpu_clk;
 	info->volt_table = exynos5250_volt_table;
 	info->freq_table = exynos5250_freq_table;
@@ -344,4 +436,7 @@ err_moutcore:
 	pr_err("%s: failed initialization\n", __func__);
 	return -EINVAL;
 }
+<<<<<<< HEAD
 EXPORT_SYMBOL(exynos5250_cpufreq_init);
+=======
+>>>>>>> refs/remotes/origin/master

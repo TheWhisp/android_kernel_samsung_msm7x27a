@@ -13,6 +13,10 @@
 
 #include <asm/bootinfo.h>
 #include <asm/cpu.h>
+<<<<<<< HEAD
+=======
+#include <asm/cpu-type.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/processor.h>
 
 #include <asm/dec/prom.h>

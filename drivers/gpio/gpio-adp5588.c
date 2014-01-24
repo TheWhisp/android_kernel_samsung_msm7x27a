@@ -276,7 +276,12 @@ static irqreturn_t adp5588_irq_handler(int irq, void *devid)
 static int adp5588_irq_setup(struct adp5588_gpio *dev)
 {
 	struct i2c_client *client = dev->client;
+<<<<<<< HEAD
 	struct adp5588_gpio_platform_data *pdata = client->dev.platform_data;
+=======
+	struct adp5588_gpio_platform_data *pdata =
+			dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	unsigned gpio;
 	int ret;
 
@@ -346,10 +351,18 @@ static void adp5588_irq_teardown(struct adp5588_gpio *dev)
 }
 #endif /* CONFIG_GPIO_ADP5588_IRQ */
 
+<<<<<<< HEAD
 static int __devinit adp5588_gpio_probe(struct i2c_client *client,
 					const struct i2c_device_id *id)
 {
 	struct adp5588_gpio_platform_data *pdata = client->dev.platform_data;
+=======
+static int adp5588_gpio_probe(struct i2c_client *client,
+					const struct i2c_device_id *id)
+{
+	struct adp5588_gpio_platform_data *pdata =
+			dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp5588_gpio *dev;
 	struct gpio_chip *gc;
 	int ret, i, revid;
@@ -378,7 +391,11 @@ static int __devinit adp5588_gpio_probe(struct i2c_client *client,
 	gc->direction_output = adp5588_gpio_direction_output;
 	gc->get = adp5588_gpio_get_value;
 	gc->set = adp5588_gpio_set_value;
+<<<<<<< HEAD
 	gc->can_sleep = 1;
+=======
+	gc->can_sleep = true;
+>>>>>>> refs/remotes/origin/master
 
 	gc->base = pdata->gpio_start;
 	gc->ngpio = ADP5588_MAXGPIO;
@@ -438,9 +455,16 @@ err:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit adp5588_gpio_remove(struct i2c_client *client)
 {
 	struct adp5588_gpio_platform_data *pdata = client->dev.platform_data;
+=======
+static int adp5588_gpio_remove(struct i2c_client *client)
+{
+	struct adp5588_gpio_platform_data *pdata =
+			dev_get_platdata(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	struct adp5588_gpio *dev = i2c_get_clientdata(client);
 	int ret;
 
@@ -479,6 +503,7 @@ static struct i2c_driver adp5588_gpio_driver = {
 		   .name = DRV_NAME,
 		   },
 	.probe = adp5588_gpio_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(adp5588_gpio_remove),
 	.id_table = adp5588_gpio_id,
 };
@@ -496,6 +521,13 @@ static void __exit adp5588_gpio_exit(void)
 }
 
 module_exit(adp5588_gpio_exit);
+=======
+	.remove = adp5588_gpio_remove,
+	.id_table = adp5588_gpio_id,
+};
+
+module_i2c_driver(adp5588_gpio_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Michael Hennerich <hennerich@blackfin.uclinux.org>");
 MODULE_DESCRIPTION("GPIO ADP5588 Driver");

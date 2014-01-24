@@ -33,7 +33,11 @@
 #include <asm/mach-rc32434/rc32434.h>
 #include <asm/mach-rc32434/pci.h>
 
+<<<<<<< HEAD
 #define PCI_ACCESS_READ  0
+=======
+#define PCI_ACCESS_READ	 0
+>>>>>>> refs/remotes/origin/master
 #define PCI_ACCESS_WRITE 1
 
 /* define an unsigned array for the PCI registers */
@@ -82,11 +86,19 @@ extern struct pci_ops rc32434_pci_ops;
 #define PCI_MEM2_START	(PCI_ADDR_START + CPUTOPCI_MEM_WIN)
 #define PCI_MEM2_END	(PCI_ADDR_START + (2 * CPUTOPCI_MEM_WIN)  - 1)
 #define PCI_IO1_START	(PCI_ADDR_START + (2 * CPUTOPCI_MEM_WIN))
+<<<<<<< HEAD
 #define PCI_IO1_END 							\
 	(PCI_ADDR_START + (2 * CPUTOPCI_MEM_WIN) + CPUTOPCI_IO_WIN - 1)
 #define PCI_IO2_START							\
 	(PCI_ADDR_START + (2 * CPUTOPCI_MEM_WIN) + CPUTOPCI_IO_WIN)
 #define PCI_IO2_END 							\
+=======
+#define PCI_IO1_END							\
+	(PCI_ADDR_START + (2 * CPUTOPCI_MEM_WIN) + CPUTOPCI_IO_WIN - 1)
+#define PCI_IO2_START							\
+	(PCI_ADDR_START + (2 * CPUTOPCI_MEM_WIN) + CPUTOPCI_IO_WIN)
+#define PCI_IO2_END							\
+>>>>>>> refs/remotes/origin/master
 	(PCI_ADDR_START + (2 * CPUTOPCI_MEM_WIN) + (2 * CPUTOPCI_IO_WIN) - 1)
 
 struct pci_controller rc32434_controller2;
@@ -216,10 +228,14 @@ static int __init rc32434_pci_init(void)
 
 	io_map_base = ioremap(rc32434_res_pci_io1.start,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		rc32434_res_pci_io1.end - rc32434_res_pci_io1.start + 1);
 =======
 			      resource_size(&rc32434_res_pci_io1));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			      resource_size(&rc32434_res_pci_io1));
+>>>>>>> refs/remotes/origin/master
 
 	if (!io_map_base)
 		return -ENOMEM;

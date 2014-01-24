@@ -1,6 +1,7 @@
 #include "headers.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 INT
 InterfaceRDM(PS_INTERFACE_ADAPTER psIntfAdapter,
             UINT addr,
@@ -154,6 +155,17 @@ INT InterfaceRDM(PS_INTERFACE_ADAPTER psIntfAdapter,
 		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_PRINTK, 0, 0, "Interface Adapter is NULL");
 		return -EINVAL;
 	}
+=======
+int InterfaceRDM(struct bcm_interface_adapter *psIntfAdapter,
+		unsigned int addr,
+		void *buff,
+		int len)
+{
+	int bytes;
+
+	if (!psIntfAdapter)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (psIntfAdapter->psAdapter->device_removed == TRUE) {
 		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_PRINTK, 0, 0, "Device got removed");
@@ -171,6 +183,7 @@ INT InterfaceRDM(PS_INTERFACE_ADAPTER psIntfAdapter,
 	}
 	psIntfAdapter->psAdapter->DeviceAccess = TRUE;
 
+<<<<<<< HEAD
 	do {
 		bytes = usb_control_msg(psIntfAdapter->udev,
 					usb_rcvctrlpipe(psIntfAdapter->udev, 0),
@@ -211,6 +224,39 @@ INT InterfaceWRM(PS_INTERFACE_ADAPTER psIntfAdapter,
 		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_PRINTK, 0, 0, "Interface Adapter  is NULL");
 		return -EINVAL;
 	}
+=======
+	bytes = usb_control_msg(psIntfAdapter->udev,
+				usb_rcvctrlpipe(psIntfAdapter->udev, 0),
+				0x02,
+				0xC2,
+				(addr & 0xFFFF),
+				((addr >> 16) & 0xFFFF),
+				buff,
+				len,
+				5000);
+
+	if (-ENODEV == bytes)
+		psIntfAdapter->psAdapter->device_removed = TRUE;
+
+	if (bytes < 0)
+		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_OTHERS, RDM, DBG_LVL_ALL, "RDM failed status :%d", bytes);
+	else
+		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_OTHERS, RDM, DBG_LVL_ALL, "RDM sent %d", bytes);
+
+	psIntfAdapter->psAdapter->DeviceAccess = false;
+	return bytes;
+}
+
+int InterfaceWRM(struct bcm_interface_adapter *psIntfAdapter,
+		unsigned int addr,
+		void *buff,
+		int len)
+{
+	int retval = 0;
+
+	if (!psIntfAdapter)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	if (psIntfAdapter->psAdapter->device_removed == TRUE) {
 		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_PRINTK, 0, 0, "Device got removed");
@@ -229,6 +275,7 @@ INT InterfaceWRM(PS_INTERFACE_ADAPTER psIntfAdapter,
 
 	psIntfAdapter->psAdapter->DeviceAccess = TRUE;
 
+<<<<<<< HEAD
 	do {
 		retval = usb_control_msg(psIntfAdapter->udev,
 					usb_sndctrlpipe(psIntfAdapter->udev, 0),
@@ -254,11 +301,33 @@ INT InterfaceWRM(PS_INTERFACE_ADAPTER psIntfAdapter,
 		return retval;
 	} else {
 		psIntfAdapter->psAdapter->DeviceAccess = FALSE;
+=======
+	retval = usb_control_msg(psIntfAdapter->udev,
+				usb_sndctrlpipe(psIntfAdapter->udev, 0),
+				0x01,
+				0x42,
+				(addr & 0xFFFF),
+				((addr >> 16) & 0xFFFF),
+				buff,
+				len,
+				5000);
+
+	if (-ENODEV == retval)
+		psIntfAdapter->psAdapter->device_removed = TRUE;
+
+	if (retval < 0)	{
+		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_OTHERS, WRM, DBG_LVL_ALL, "WRM failed status :%d", retval);
+		psIntfAdapter->psAdapter->DeviceAccess = false;
+		return retval;
+	} else {
+		psIntfAdapter->psAdapter->DeviceAccess = false;
+>>>>>>> refs/remotes/origin/master
 		BCM_DEBUG_PRINT(psIntfAdapter->psAdapter, DBG_TYPE_OTHERS, WRM, DBG_LVL_ALL, "WRM sent %d", retval);
 		return STATUS_SUCCESS;
 	}
 }
 
+<<<<<<< HEAD
 INT BcmRDM(PVOID arg,
 	UINT addr,
 	PVOID buff,
@@ -333,6 +402,28 @@ INT Bcm_clear_halt_of_endpoints(PMINI_ADAPTER Adapter)
 {
 	PS_INTERFACE_ADAPTER psIntfAdapter = (PS_INTERFACE_ADAPTER)(Adapter->pvInterfaceAdapter);
 	INT status = STATUS_SUCCESS;
+=======
+int BcmRDM(void *arg,
+	unsigned int addr,
+	void *buff,
+	int len)
+{
+	return InterfaceRDM((struct bcm_interface_adapter *)arg, addr, buff, len);
+}
+
+int BcmWRM(void *arg,
+	unsigned int addr,
+	void *buff,
+	int len)
+{
+	return InterfaceWRM((struct bcm_interface_adapter *)arg, addr, buff, len);
+}
+
+int Bcm_clear_halt_of_endpoints(struct bcm_mini_adapter *Adapter)
+{
+	struct bcm_interface_adapter *psIntfAdapter = (struct bcm_interface_adapter *)(Adapter->pvInterfaceAdapter);
+	int status = STATUS_SUCCESS;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * usb_clear_halt - tells device to clear endpoint halt/stall condition
@@ -368,6 +459,7 @@ INT Bcm_clear_halt_of_endpoints(PMINI_ADAPTER Adapter)
 	return status;
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 VOID Bcm_kill_all_URBs(PS_INTERFACE_ADAPTER psIntfAdapter)
 {
@@ -405,6 +497,13 @@ VOID Bcm_kill_all_URBs(PS_INTERFACE_ADAPTER psIntfAdapter)
 		{
 			if(tempUrb->status == -EINPROGRESS)
 =======
+=======
+void Bcm_kill_all_URBs(struct bcm_interface_adapter *psIntfAdapter)
+{
+	struct urb *tempUrb = NULL;
+	unsigned int i;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * usb_kill_urb - cancel a transfer request and wait for it to finish
 	 * @urb: pointer to URB describing a previously submitted request,
@@ -421,7 +520,11 @@ VOID Bcm_kill_all_URBs(PS_INTERFACE_ADAPTER psIntfAdapter)
 	 */
 
 	/* Cancel submitted Interrupt-URB's */
+<<<<<<< HEAD
 	if (psIntfAdapter->psInterruptUrb != NULL) {
+=======
+	if (psIntfAdapter->psInterruptUrb) {
+>>>>>>> refs/remotes/origin/master
 		if (psIntfAdapter->psInterruptUrb->status == -EINPROGRESS)
 			usb_kill_urb(psIntfAdapter->psInterruptUrb);
 	}
@@ -431,11 +534,15 @@ VOID Bcm_kill_all_URBs(PS_INTERFACE_ADAPTER psIntfAdapter)
 		tempUrb = psIntfAdapter->asUsbTcb[i].urb;
 		if (tempUrb) {
 			if (tempUrb->status == -EINPROGRESS)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 				usb_kill_urb(tempUrb);
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for(i = 0; i < MAXIMUM_USB_RCB; i++)
 	{
@@ -445,12 +552,17 @@ VOID Bcm_kill_all_URBs(PS_INTERFACE_ADAPTER psIntfAdapter)
 			if(tempUrb->status == -EINPROGRESS)
 					usb_kill_urb(tempUrb);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < MAXIMUM_USB_RCB; i++) {
 		tempUrb = psIntfAdapter->asUsbRcb[i].urb;
 		if (tempUrb) {
 			if (tempUrb->status == -EINPROGRESS)
 				usb_kill_urb(tempUrb);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 	}
 
@@ -461,6 +573,7 @@ VOID Bcm_kill_all_URBs(PS_INTERFACE_ADAPTER psIntfAdapter)
 	atomic_set(&psIntfAdapter->uCurrRcb, 0);
 }
 
+<<<<<<< HEAD
 VOID putUsbSuspend(struct work_struct *work)
 {
 <<<<<<< HEAD
@@ -481,5 +594,16 @@ VOID putUsbSuspend(struct work_struct *work)
 	if (psIntfAdapter->bSuspended == FALSE)
 		usb_autopm_put_interface(intf);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+void putUsbSuspend(struct work_struct *work)
+{
+	struct bcm_interface_adapter *psIntfAdapter = NULL;
+	struct usb_interface *intf = NULL;
+	psIntfAdapter = container_of(work, struct bcm_interface_adapter, usbSuspendWork);
+	intf = psIntfAdapter->interface;
+
+	if (psIntfAdapter->bSuspended == false)
+		usb_autopm_put_interface(intf);
+>>>>>>> refs/remotes/origin/master
 }
 

@@ -69,10 +69,14 @@ static int pcmcia_set_mode(struct ata_link *link, struct ata_device **r_failed_d
 		if (memcmp(master->id + ATA_ID_SERNO, slave->id + ATA_ID_SERNO,
 			   ATA_ID_SERNO_LEN) == 0 && master->id[ATA_ID_SERNO] >> 8) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ata_dev_printk(slave, KERN_WARNING, "is a ghost device, ignoring.\n");
 =======
 			ata_dev_warn(slave, "is a ghost device, ignoring\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			ata_dev_warn(slave, "is a ghost device, ignoring\n");
+>>>>>>> refs/remotes/origin/master
 			ata_dev_disable(slave);
 		}
 	}
@@ -147,11 +151,15 @@ static void pcmcia_8bit_drain_fifo(struct ata_queued_cmd *qc)
 
 	if (count)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ata_port_printk(ap, KERN_WARNING, "drained %d bytes to clear DRQ.\n",
 								count);
 =======
 		ata_port_warn(ap, "drained %d bytes to clear DRQ\n", count);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		ata_port_warn(ap, "drained %d bytes to clear DRQ\n", count);
+>>>>>>> refs/remotes/origin/master
 
 }
 
@@ -179,7 +187,12 @@ static int pcmcia_check_one_config(struct pcmcia_device *pdev, void *priv_data)
 {
 	int *is_kme = priv_data;
 
+<<<<<<< HEAD
 	if (!(pdev->resource[0]->flags & IO_DATA_PATH_WIDTH_8)) {
+=======
+	if ((pdev->resource[0]->flags & IO_DATA_PATH_WIDTH)
+	    != IO_DATA_PATH_WIDTH_8) {
+>>>>>>> refs/remotes/origin/master
 		pdev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
 		pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
 	}
@@ -395,6 +408,7 @@ static struct pcmcia_driver pcmcia_driver = {
 	.probe		= pcmcia_init_one,
 	.remove		= pcmcia_remove_one,
 };
+<<<<<<< HEAD
 
 static int __init pcmcia_init(void)
 {
@@ -405,11 +419,17 @@ static void __exit pcmcia_exit(void)
 {
 	pcmcia_unregister_driver(&pcmcia_driver);
 }
+=======
+module_pcmcia_driver(pcmcia_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Alan Cox");
 MODULE_DESCRIPTION("low-level driver for PCMCIA ATA");
 MODULE_LICENSE("GPL");
 MODULE_VERSION(DRV_VERSION);
+<<<<<<< HEAD
 
 module_init(pcmcia_init);
 module_exit(pcmcia_exit);
+=======
+>>>>>>> refs/remotes/origin/master

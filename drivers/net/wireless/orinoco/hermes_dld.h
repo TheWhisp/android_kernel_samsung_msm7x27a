@@ -28,36 +28,50 @@
 #include "hermes.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hermesi_program_init(hermes_t *hw, u32 offset);
 int hermesi_program_end(hermes_t *hw);
 int hermes_program(hermes_t *hw, const char *first_block, const void *end);
 
 int hermes_read_pda(hermes_t *hw,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 int hermesi_program_init(struct hermes *hw, u32 offset);
 int hermesi_program_end(struct hermes *hw);
 int hermes_program(struct hermes *hw, const char *first_block, const void *end);
 
 int hermes_read_pda(struct hermes *hw,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		    __le16 *pda,
 		    u32 pda_addr,
 		    u16 pda_len,
 		    int use_eeprom);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hermes_apply_pda(hermes_t *hw,
 =======
 int hermes_apply_pda(struct hermes *hw,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hermes_apply_pda(struct hermes *hw,
+>>>>>>> refs/remotes/origin/master
 		     const char *first_pdr,
 		     const void *pdr_end,
 		     const __le16 *pda,
 		     const void *pda_end);
 <<<<<<< HEAD
+<<<<<<< HEAD
 int hermes_apply_pda_with_defaults(hermes_t *hw,
 =======
 int hermes_apply_pda_with_defaults(struct hermes *hw,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int hermes_apply_pda_with_defaults(struct hermes *hw,
+>>>>>>> refs/remotes/origin/master
 				   const char *first_pdr,
 				   const void *pdr_end,
 				   const __le16 *pda,

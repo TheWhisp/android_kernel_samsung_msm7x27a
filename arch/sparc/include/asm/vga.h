@@ -8,9 +8,13 @@
 #define _LINUX_ASM_VGA_H_
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/bug.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/bug.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/types.h>
 
 #define VT_BUF_HAVE_RW

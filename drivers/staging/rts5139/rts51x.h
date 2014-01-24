@@ -47,11 +47,17 @@
 #define RTS51X_DESC		"Realtek RTS5139/29 USB card reader driver"
 #define RTS51X_NAME		"rts5139"
 #define RTS51X_CTL_THREAD	"rts5139-control"
+<<<<<<< HEAD
 #define RTS51X_SCAN_THREAD	"rts5139-scan"
 #define RTS51X_POLLING_THREAD	"rts5139-polling"
 
 #define POLLING_IN_THREAD
 /* #define SCSI_SCAN_DELAY */
+=======
+#define RTS51X_POLLING_THREAD	"rts5139-polling"
+
+#define POLLING_IN_THREAD
+>>>>>>> refs/remotes/origin/master
 #define SUPPORT_FILE_OP
 
 #define wait_timeout_x(task_state, msecs)	\
@@ -66,8 +72,11 @@ do {						\
 
 /* Size of the DMA-mapped I/O buffer */
 #define RTS51X_IOBUF_SIZE	1024
+<<<<<<< HEAD
 /* Size of the autosense data buffer */
 #define RTS51X_SENSE_SIZE	18
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* Dynamic bitflag definitions (dflags): used in set_bit() etc. */
 #define FLIDX_URB_ACTIVE	0	/* current_urb is in use    */
@@ -76,7 +85,10 @@ do {						\
 #define FLIDX_DISCONNECTING	3	/* disconnect in progress   */
 #define FLIDX_RESETTING		4	/* device reset in progress */
 #define FLIDX_TIMED_OUT		5	/* SCSI midlayer timed out  */
+<<<<<<< HEAD
 #define FLIDX_DONT_SCAN		6	/* don't scan (disconnect)  */
+=======
+>>>>>>> refs/remotes/origin/master
 
 struct rts51x_chip;
 
@@ -116,10 +128,13 @@ struct rts51x_usb {
 	struct completion control_exit;	/* control thread exit     */
 	struct completion polling_exit;	/* polling thread exit     */
 	struct completion notify;	/* thread begin/end        */
+<<<<<<< HEAD
 #ifdef SCSI_SCAN_DELAY
 	wait_queue_head_t delay_wait;	/* wait during scan, reset */
 	struct completion scanning_done;	/* wait for scan thread    */
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct usb_driver rts51x_driver;
@@ -188,7 +203,10 @@ enum xfer_buf_dir { TO_XFER_BUF, FROM_XFER_BUF };
 
 /* General routines provided by the usb-storage standard core */
 #ifdef CONFIG_PM
+<<<<<<< HEAD
 void rts51x_try_to_enter_ss(struct rts51x_chip *chip);
+=======
+>>>>>>> refs/remotes/origin/master
 void rts51x_try_to_exit_ss(struct rts51x_chip *chip);
 int rts51x_suspend(struct usb_interface *iface, pm_message_t message);
 int rts51x_resume(struct usb_interface *iface);

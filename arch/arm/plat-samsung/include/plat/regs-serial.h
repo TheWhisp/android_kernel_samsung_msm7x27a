@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* arch/arm/plat-samsung/include/plat/regs-serial.h
  *
  *  From linux/include/asm-arm/hardware/serial_s3c2410.h
@@ -342,3 +343,6 @@ extern struct platform_device *s3c24xx_uart_devs[4];
 
 #endif /* __ASM_ARM_REGS_SERIAL_H */
 
+=======
+#include <linux/serial_s3c.h>
+>>>>>>> refs/remotes/origin/master

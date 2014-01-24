@@ -148,6 +148,10 @@ static struct usb_driver gigaset_usb_driver = {
 	.reset_resume =	gigaset_post_reset,
 	.pre_reset =	gigaset_pre_reset,
 	.post_reset =	gigaset_post_reset,
+<<<<<<< HEAD
+=======
+	.disable_hub_initiated_lpm = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 /* get message text for usb_submit_urb return code
@@ -411,16 +415,22 @@ static void check_pending(struct bas_cardstate *ucs)
 			ucs->pending = 0;
 		break;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * HD_READ_ATMESSAGE and HD_WRITE_ATMESSAGE are handled separately
 	 * and should never end up here
 	 */
+<<<<<<< HEAD
 =======
 		/*
 		 * HD_READ_ATMESSAGE and HD_WRITE_ATMESSAGE are handled separately
 		 * and should never end up here
 		 */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	default:
 		dev_warn(&ucs->interface->dev,
 			 "unknown pending request 0x%02x cleared\n",
@@ -499,10 +509,14 @@ static void read_ctrl_callback(struct urb *urb)
 		if (unlikely(numbytes != ucs->rcvbuf_size)) {
 			dev_warn(cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			       "control read: received %d chars, expected %d\n",
 =======
 				 "control read: received %d chars, expected %d\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "control read: received %d chars, expected %d\n",
+>>>>>>> refs/remotes/origin/master
 				 numbytes, ucs->rcvbuf_size);
 			if (numbytes > ucs->rcvbuf_size)
 				numbytes = ucs->rcvbuf_size;
@@ -728,10 +742,14 @@ static void read_int_callback(struct urb *urb)
 
 	l = (unsigned) ucs->int_in_buf[1] +
 <<<<<<< HEAD
+<<<<<<< HEAD
 	    (((unsigned) ucs->int_in_buf[2]) << 8);
 =======
 		(((unsigned) ucs->int_in_buf[2]) << 8);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		(((unsigned) ucs->int_in_buf[2]) << 8);
+>>>>>>> refs/remotes/origin/master
 
 	gig_dbg(DEBUG_USBREQ, "<-------%d: 0x%02x (%u [0x%02x 0x%02x])",
 		urb->actual_length, (int)ucs->int_in_buf[0], l,
@@ -792,10 +810,14 @@ static void read_int_callback(struct urb *urb)
 		if (!l) {
 			dev_warn(cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				"HD_RECEIVEATDATA_ACK with length 0 ignored\n");
 =======
 				 "HD_RECEIVEATDATA_ACK with length 0 ignored\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "HD_RECEIVEATDATA_ACK with length 0 ignored\n");
+>>>>>>> refs/remotes/origin/master
 			break;
 		}
 		spin_lock_irqsave(&cs->lock, flags);
@@ -803,10 +825,14 @@ static void read_int_callback(struct urb *urb)
 			spin_unlock_irqrestore(&cs->lock, flags);
 			dev_warn(cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"HD_RECEIVEATDATA_ACK(%d) during HD_READ_ATMESSAGE(%d) ignored\n",
 =======
 				 "HD_RECEIVEATDATA_ACK(%d) during HD_READ_ATMESSAGE(%d) ignored\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "HD_RECEIVEATDATA_ACK(%d) during HD_READ_ATMESSAGE(%d) ignored\n",
+>>>>>>> refs/remotes/origin/master
 				 l, ucs->rcvbuf_size);
 			break;
 		}
@@ -906,12 +932,16 @@ static void read_iso_callback(struct urb *urb)
 		for (i = 0; i < BAS_NUMFRAMES; i++) {
 			ubc->isoinlost += urb->iso_frame_desc[i].actual_length;
 			if (unlikely(urb->iso_frame_desc[i].status != 0 &&
+<<<<<<< HEAD
 				     urb->iso_frame_desc[i].status !=
 <<<<<<< HEAD
 								-EINPROGRESS))
 =======
 				     -EINPROGRESS))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				     urb->iso_frame_desc[i].status != -EINPROGRESS))
+>>>>>>> refs/remotes/origin/master
 				ubc->loststatus = urb->iso_frame_desc[i].status;
 			urb->iso_frame_desc[i].status = 0;
 			urb->iso_frame_desc[i].actual_length = 0;
@@ -925,10 +955,14 @@ static void read_iso_callback(struct urb *urb)
 			if (unlikely(rc != 0 && rc != -ENODEV)) {
 				dev_err(bcs->cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				       "could not resubmit isoc read URB: %s\n",
 =======
 					"could not resubmit isoc read URB: %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+					"could not resubmit isoc read URB: %s\n",
+>>>>>>> refs/remotes/origin/master
 					get_usb_rcmsg(rc));
 				dump_urb(DEBUG_ISO, "isoc read", urb);
 				error_hangup(bcs);
@@ -1055,10 +1089,14 @@ static int starturbs(struct bc_state *bcs)
 
 	/* keep one URB free, submit the others */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (k = 0; k < BAS_OUTURBS-1; ++k) {
 =======
 	for (k = 0; k < BAS_OUTURBS - 1; ++k) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (k = 0; k < BAS_OUTURBS - 1; ++k) {
+>>>>>>> refs/remotes/origin/master
 		dump_urb(DEBUG_ISO, "Initial isoc write", urb);
 		rc = usb_submit_urb(ubc->isoouturbs[k].urb, GFP_ATOMIC);
 		if (rc != 0)
@@ -1066,16 +1104,22 @@ static int starturbs(struct bc_state *bcs)
 	}
 	dump_urb(DEBUG_ISO, "Initial isoc write (free)", urb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ubc->isooutfree = &ubc->isoouturbs[BAS_OUTURBS-1];
 	ubc->isooutdone = ubc->isooutovfl = NULL;
 	return 0;
  error:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ubc->isooutfree = &ubc->isoouturbs[BAS_OUTURBS - 1];
 	ubc->isooutdone = ubc->isooutovfl = NULL;
 	return 0;
 error:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	stopurbs(ubc);
 	return rc;
 }
@@ -1278,10 +1322,14 @@ static void write_iso_tasklet(unsigned long data)
 				    ifd->actual_length != ifd->length) {
 					dev_warn(cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 					    "isoc write: frame %d[%d/%d]: %s\n",
 =======
 						 "isoc write: frame %d[%d/%d]: %s\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+						 "isoc write: frame %d[%d/%d]: %s\n",
+>>>>>>> refs/remotes/origin/master
 						 i, ifd->actual_length,
 						 ifd->length,
 						 get_usb_statmsg(ifd->status));
@@ -1369,10 +1417,14 @@ static void read_iso_tasklet(unsigned long data)
 		if (unlikely(ubc->loststatus != -EINPROGRESS)) {
 			dev_warn(cs->dev,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		"isoc read overrun, URB dropped (status: %s, %d bytes)\n",
 =======
 				 "isoc read overrun, URB dropped (status: %s, %d bytes)\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				 "isoc read overrun, URB dropped (status: %s, %d bytes)\n",
+>>>>>>> refs/remotes/origin/master
 				 get_usb_statmsg(ubc->loststatus),
 				 ubc->isoinlost);
 			ubc->loststatus = -EINPROGRESS;
@@ -2022,10 +2074,14 @@ static int gigaset_write_cmd(struct cardstate *cs, struct cmdbuf_t *cb)
 
 	gigaset_dbg_buffer(cs->mstate != MS_LOCKED ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 			     DEBUG_TRANSCMD : DEBUG_LOCKCMD,
 =======
 			   DEBUG_TRANSCMD : DEBUG_LOCKCMD,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			   DEBUG_TRANSCMD : DEBUG_LOCKCMD,
+>>>>>>> refs/remotes/origin/master
 			   "CMD Transmit", cb->len, cb->buf);
 
 	/* translate "+++" escape sequence sent as a single separate command
@@ -2138,16 +2194,25 @@ static int gigaset_brkchars(struct cardstate *cs, const unsigned char buf[6])
 /* Free hardware dependent part of the B channel structure
  * parameter:
  *	bcs	B channel structure
+<<<<<<< HEAD
  * return value:
  *	!=0 on success
  */
 static int gigaset_freebcshw(struct bc_state *bcs)
+=======
+ */
+static void gigaset_freebcshw(struct bc_state *bcs)
+>>>>>>> refs/remotes/origin/master
 {
 	struct bas_bc_state *ubc = bcs->hw.bas;
 	int i;
 
 	if (!ubc)
+<<<<<<< HEAD
 		return 0;
+=======
+		return;
+>>>>>>> refs/remotes/origin/master
 
 	/* kill URBs and tasklets before freeing - better safe than sorry */
 	ubc->running = 0;
@@ -2165,14 +2230,21 @@ static int gigaset_freebcshw(struct bc_state *bcs)
 	kfree(ubc->isooutbuf);
 	kfree(ubc);
 	bcs->hw.bas = NULL;
+<<<<<<< HEAD
 	return 1;
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Initialize hardware dependent part of the B channel structure
  * parameter:
  *	bcs	B channel structure
  * return value:
+<<<<<<< HEAD
  *	!=0 on success
+=======
+ *	0 on success, error code < 0 on failure
+>>>>>>> refs/remotes/origin/master
  */
 static int gigaset_initbcshw(struct bc_state *bcs)
 {
@@ -2182,7 +2254,11 @@ static int gigaset_initbcshw(struct bc_state *bcs)
 	bcs->hw.bas = ubc = kmalloc(sizeof(struct bas_bc_state), GFP_KERNEL);
 	if (!ubc) {
 		pr_err("out of memory\n");
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ubc->running = 0;
@@ -2199,7 +2275,11 @@ static int gigaset_initbcshw(struct bc_state *bcs)
 		pr_err("out of memory\n");
 		kfree(ubc);
 		bcs->hw.bas = NULL;
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	tasklet_init(&ubc->sent_tasklet,
 		     write_iso_tasklet, (unsigned long) bcs);
@@ -2224,7 +2304,11 @@ static int gigaset_initbcshw(struct bc_state *bcs)
 	ubc->stolen0s = 0;
 	tasklet_init(&ubc->rcvd_tasklet,
 		     read_iso_tasklet, (unsigned long) bcs);
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void gigaset_reinitbcshw(struct bc_state *bcs)
@@ -2247,6 +2331,15 @@ static void gigaset_freecshw(struct cardstate *cs)
 	cs->hw.bas = NULL;
 }
 
+<<<<<<< HEAD
+=======
+/* Initialize hardware dependent part of the cardstate structure
+ * parameter:
+ *	cs	cardstate structure
+ * return value:
+ *	0 on success, error code < 0 on failure
+ */
+>>>>>>> refs/remotes/origin/master
 static int gigaset_initcshw(struct cardstate *cs)
 {
 	struct bas_cardstate *ucs;
@@ -2254,13 +2347,21 @@ static int gigaset_initcshw(struct cardstate *cs)
 	cs->hw.bas = ucs = kmalloc(sizeof *ucs, GFP_KERNEL);
 	if (!ucs) {
 		pr_err("out of memory\n");
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 	ucs->int_in_buf = kmalloc(IP_MSGSIZE, GFP_KERNEL);
 	if (!ucs->int_in_buf) {
 		kfree(ucs);
 		pr_err("out of memory\n");
+<<<<<<< HEAD
 		return 0;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ucs->urb_cmd_in = NULL;
@@ -2279,7 +2380,11 @@ static int gigaset_initcshw(struct cardstate *cs)
 	init_waitqueue_head(&ucs->waitqueue);
 	INIT_WORK(&ucs->int_in_wq, int_in_work);
 
+<<<<<<< HEAD
 	return 1;
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* freeurbs
@@ -2439,18 +2544,31 @@ static int gigaset_probe(struct usb_interface *interface,
 	/* save address of controller structure */
 	usb_set_intfdata(interface, cs);
 
+<<<<<<< HEAD
 	if (!gigaset_start(cs))
+=======
+	rc = gigaset_start(cs);
+	if (rc < 0)
+>>>>>>> refs/remotes/origin/master
 		goto error;
 
 	return 0;
 
 allocerr:
 	dev_err(cs->dev, "could not allocate URBs\n");
+<<<<<<< HEAD
+=======
+	rc = -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 error:
 	freeurbs(cs);
 	usb_set_intfdata(interface, NULL);
 	gigaset_freecs(cs);
+<<<<<<< HEAD
 	return -ENODEV;
+=======
+	return rc;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* gigaset_disconnect
@@ -2516,6 +2634,7 @@ static int gigaset_suspend(struct usb_interface *intf, pm_message_t message)
 	/* wait a bit for blocking conditions to go away */
 	rc = wait_event_timeout(ucs->waitqueue,
 <<<<<<< HEAD
+<<<<<<< HEAD
 			!(ucs->basstate &
 			  (BS_B1OPEN|BS_B2OPEN|BS_ATRDPEND|BS_ATWRPEND)),
 			BAS_TIMEOUT*HZ/10);
@@ -2524,6 +2643,8 @@ static int gigaset_suspend(struct usb_interface *intf, pm_message_t message)
 	/* check for conditions preventing suspend */
 	if (ucs->basstate & (BS_B1OPEN|BS_B2OPEN|BS_ATRDPEND|BS_ATWRPEND)) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				!(ucs->basstate &
 				  (BS_B1OPEN | BS_B2OPEN | BS_ATRDPEND | BS_ATWRPEND)),
 				BAS_TIMEOUT * HZ / 10);
@@ -2531,7 +2652,10 @@ static int gigaset_suspend(struct usb_interface *intf, pm_message_t message)
 
 	/* check for conditions preventing suspend */
 	if (ucs->basstate & (BS_B1OPEN | BS_B2OPEN | BS_ATRDPEND | BS_ATWRPEND)) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		dev_warn(cs->dev, "cannot suspend:\n");
 		if (ucs->basstate & BS_B1OPEN)
 			dev_warn(cs->dev, " B channel 1 open\n");
@@ -2555,10 +2679,14 @@ static int gigaset_suspend(struct usb_interface *intf, pm_message_t message)
 		}
 		wait_event_timeout(ucs->waitqueue, !ucs->pending,
 <<<<<<< HEAD
+<<<<<<< HEAD
 				   BAS_TIMEOUT*HZ/10);
 =======
 				   BAS_TIMEOUT * HZ / 10);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				   BAS_TIMEOUT * HZ / 10);
+>>>>>>> refs/remotes/origin/master
 		/* in case of timeout, proceed anyway */
 	}
 

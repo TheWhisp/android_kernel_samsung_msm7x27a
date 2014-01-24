@@ -11,15 +11,22 @@ regardless of whatever else it is doing, unless it is completely locked up.
 You need to say "yes" to 'Magic SysRq key (CONFIG_MAGIC_SYSRQ)' when
 configuring the kernel. When running a kernel with SysRq compiled in,
 /proc/sys/kernel/sysrq controls the functions allowed to be invoked via
+<<<<<<< HEAD
 the SysRq key. By default the file contains 1 which means that every
 possible SysRq request is allowed (in older versions SysRq was disabled
 by default, and you were required to specifically enable it at run-time
 but this is not the case any more). Here is the list of possible values
 in /proc/sys/kernel/sysrq:
+=======
+the SysRq key. The default value in this file is set by the
+CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE config symbol, which itself defaults
+to 1. Here is the list of possible values in /proc/sys/kernel/sysrq:
+>>>>>>> refs/remotes/origin/master
    0 - disable sysrq completely
    1 - enable all functions of sysrq
   >1 - bitmask of allowed sysrq functions (see below for detailed function
        description):
+<<<<<<< HEAD
           2 - enable control of console logging level
           4 - enable control of keyboard (SAK, unraw)
           8 - enable debugging dumps of processes etc.
@@ -28,10 +35,27 @@ in /proc/sys/kernel/sysrq:
          64 - enable signalling of processes (term, kill, oom-kill)
         128 - allow reboot/poweroff
         256 - allow nicing of all RT tasks
+=======
+          2 =   0x2 - enable control of console logging level
+          4 =   0x4 - enable control of keyboard (SAK, unraw)
+          8 =   0x8 - enable debugging dumps of processes etc.
+         16 =  0x10 - enable sync command
+         32 =  0x20 - enable remount read-only
+         64 =  0x40 - enable signalling of processes (term, kill, oom-kill)
+        128 =  0x80 - allow reboot/poweroff
+        256 = 0x100 - allow nicing of all RT tasks
+>>>>>>> refs/remotes/origin/master
 
 You can set the value in the file by the following command:
     echo "number" >/proc/sys/kernel/sysrq
 
+<<<<<<< HEAD
+=======
+The number may be written here either as decimal or as hexadecimal
+with the 0x prefix. CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE must always be
+written in hexadecimal.
+
+>>>>>>> refs/remotes/origin/master
 Note that the value of /proc/sys/kernel/sysrq influences only the invocation
 via a keyboard. Invocation of any operation via /proc/sysrq-trigger is always
 allowed (by a user with admin privileges).
@@ -116,6 +140,10 @@ On all -  write a character to /proc/sysrq-trigger.  e.g.:
 'w'	- Dumps tasks that are in uninterruptable (blocked) state.
 
 'x'	- Used by xmon interface on ppc/powerpc platforms.
+<<<<<<< HEAD
+=======
+          Show global PMU Registers on sparc64.
+>>>>>>> refs/remotes/origin/master
 
 'y'	- Show global CPU Registers [SPARC-64 specific]
 
@@ -128,9 +156,15 @@ On all -  write a character to /proc/sysrq-trigger.  e.g.:
 
 *  Okay, so what can I use them for?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<<<<<<< HEAD
 Well, un'R'aw is very handy when your X server or a svgalib program crashes.
 
 sa'K' (Secure Access Key) is useful when you want to be sure there is no
+=======
+Well, unraw(r) is very handy when your X server or a svgalib program crashes.
+
+sak(k) (Secure Access Key) is useful when you want to be sure there is no
+>>>>>>> refs/remotes/origin/master
 trojan program running at console which could grab your password
 when you would try to login. It will kill all programs on given console,
 thus letting you make sure that the login prompt you see is actually
@@ -142,6 +176,7 @@ IMPORTANT: such.                                                   :IMPORTANT
 useful when you want to exit a program that will not let you switch consoles.
 (For example, X or a svgalib program.)
 
+<<<<<<< HEAD
 re'B'oot is good when you're unable to shut down. But you should also 'S'ync
 and 'U'mount first.
 
@@ -149,13 +184,27 @@ and 'U'mount first.
 Note that this just triggers a crash if there is no dump mechanism available.
 
 'S'ync is great when your system is locked up, it allows you to sync your
+=======
+reboot(b) is good when you're unable to shut down. But you should also
+sync(s) and umount(u) first.
+
+crash(c) can be used to manually trigger a crashdump when the system is hung.
+Note that this just triggers a crash if there is no dump mechanism available.
+
+sync(s) is great when your system is locked up, it allows you to sync your
+>>>>>>> refs/remotes/origin/master
 disks and will certainly lessen the chance of data loss and fscking. Note
 that the sync hasn't taken place until you see the "OK" and "Done" appear
 on the screen. (If the kernel is really in strife, you may not ever get the
 OK or Done message...)
 
+<<<<<<< HEAD
 'U'mount is basically useful in the same ways as 'S'ync. I generally 'S'ync,
 'U'mount, then re'B'oot when my system locks. It's saved me many a fsck.
+=======
+umount(u) is basically useful in the same ways as sync(s). I generally sync(s),
+umount(u), then reboot(b) when my system locks. It's saved me many a fsck.
+>>>>>>> refs/remotes/origin/master
 Again, the unmount (remount read-only) hasn't taken place until you see the
 "OK" and "Done" message appear on the screen.
 
@@ -164,11 +213,19 @@ kernel messages you do not want to see. Selecting '0' will prevent all but
 the most urgent kernel messages from reaching your console. (They will
 still be logged if syslogd/klogd are alive, though.)
 
+<<<<<<< HEAD
 t'E'rm and k'I'll are useful if you have some sort of runaway process you
 are unable to kill any other way, especially if it's spawning other
 processes.
 
 "'J'ust thaw it" is useful if your system becomes unresponsive due to a frozen
+=======
+term(e) and kill(i) are useful if you have some sort of runaway process you
+are unable to kill any other way, especially if it's spawning other
+processes.
+
+"just thaw it(j)" is useful if your system becomes unresponsive due to a frozen
+>>>>>>> refs/remotes/origin/master
 (probably root) filesystem via the FIFREEZE ioctl.
 
 *  Sometimes SysRq seems to get 'stuck' after using it, what can I do?
@@ -242,6 +299,7 @@ command you are interested in.
 *  I have more questions, who can I ask?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <<<<<<< HEAD
+<<<<<<< HEAD
 And I'll answer any questions about the registration system you got, also
 responding as soon as possible.
  -Crutcher
@@ -249,6 +307,10 @@ responding as soon as possible.
 Just ask them on the linux-kernel mailing list:
 	linux-kernel@vger.kernel.org
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+Just ask them on the linux-kernel mailing list:
+	linux-kernel@vger.kernel.org
+>>>>>>> refs/remotes/origin/master
 
 *  Credits
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

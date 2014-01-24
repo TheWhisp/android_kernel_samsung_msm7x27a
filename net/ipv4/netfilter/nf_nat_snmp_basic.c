@@ -38,6 +38,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  * Author: James Morris <jmorris@intercode.com.au>
+<<<<<<< HEAD
+=======
+ *
+ * Copyright (c) 2006-2010 Patrick McHardy <kaber@trash.net>
+>>>>>>> refs/remotes/origin/master
  */
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -401,6 +406,7 @@ static unsigned char asn1_octets_decode(struct asn1_ctx *ctx,
 
 	*octets = kmalloc(eoc - ctx->pointer, GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (*octets == NULL) {
 		if (net_ratelimit())
 			pr_notice("OOM in bsalg (%d)\n", __LINE__);
@@ -414,6 +420,14 @@ static unsigned char asn1_octets_decode(struct asn1_ctx *ctx,
 	ptr = *octets;
 	while (ctx->pointer < eoc) {
 		if (!asn1_octet_decode(ctx, (unsigned char *)ptr++)) {
+=======
+	if (*octets == NULL)
+		return 0;
+
+	ptr = *octets;
+	while (ctx->pointer < eoc) {
+		if (!asn1_octet_decode(ctx, ptr++)) {
+>>>>>>> refs/remotes/origin/master
 			kfree(*octets);
 			*octets = NULL;
 			return 0;
@@ -457,6 +471,7 @@ static unsigned char asn1_oid_decode(struct asn1_ctx *ctx,
 
 	*oid = kmalloc(size * sizeof(unsigned long), GFP_ATOMIC);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (*oid == NULL) {
 		if (net_ratelimit())
 			pr_notice("OOM in bsalg (%d)\n", __LINE__);
@@ -466,6 +481,10 @@ static unsigned char asn1_oid_decode(struct asn1_ctx *ctx,
 	if (*oid == NULL)
 		return 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (*oid == NULL)
+		return 0;
+>>>>>>> refs/remotes/origin/master
 
 	optr = *oid;
 
@@ -730,6 +749,7 @@ static unsigned char snmp_object_decode(struct asn1_ctx *ctx,
 	l = 0;
 	switch (type) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		case SNMP_INTEGER:
 			len = sizeof(long);
 			if (!asn1_long_decode(ctx, end, &l)) {
@@ -842,6 +862,8 @@ static unsigned char snmp_object_decode(struct asn1_ctx *ctx,
 			kfree(id);
 			return 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SNMP_INTEGER:
 		len = sizeof(long);
 		if (!asn1_long_decode(ctx, end, &l)) {
@@ -888,7 +910,11 @@ static unsigned char snmp_object_decode(struct asn1_ctx *ctx,
 		}
 		break;
 	case SNMP_OBJECTID:
+<<<<<<< HEAD
 		if (!asn1_oid_decode(ctx, end, (unsigned long **)&lp, &len)) {
+=======
+		if (!asn1_oid_decode(ctx, end, &lp, &len)) {
+>>>>>>> refs/remotes/origin/master
 			kfree(id);
 			return 0;
 		}
@@ -939,7 +965,10 @@ static unsigned char snmp_object_decode(struct asn1_ctx *ctx,
 	default:
 		kfree(id);
 		return 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	(*obj)->syntax_len = len;
@@ -1336,8 +1365,12 @@ static int snmp_translate(struct nf_conn *ct,
 
 	if (!snmp_parse_mangle((unsigned char *)udph + sizeof(struct udphdr),
 			       paylen, &map, &udph->check)) {
+<<<<<<< HEAD
 		if (net_ratelimit())
 			printk(KERN_WARNING "bsalg: parser failed\n");
+=======
+		net_warn_ratelimited("bsalg: parser failed\n");
+>>>>>>> refs/remotes/origin/master
 		return NF_DROP;
 	}
 	return NF_ACCEPT;
@@ -1371,9 +1404,14 @@ static int help(struct sk_buff *skb, unsigned int protoff,
 	 * can mess around with the payload.
 	 */
 	if (ntohs(udph->len) != skb->len - (iph->ihl << 2)) {
+<<<<<<< HEAD
 		 if (net_ratelimit())
 			 printk(KERN_WARNING "SNMP: dropping malformed packet src=%pI4 dst=%pI4\n",
 				&iph->saddr, &iph->daddr);
+=======
+		net_warn_ratelimited("SNMP: dropping malformed packet src=%pI4 dst=%pI4\n",
+				     &iph->saddr, &iph->daddr);
+>>>>>>> refs/remotes/origin/master
 		 return NF_DROP;
 	}
 
@@ -1423,10 +1461,14 @@ static int __init nf_nat_snmp_basic_init(void)
 
 	BUG_ON(nf_nat_snmp_hook != NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_snmp_hook, help);
 =======
 	RCU_INIT_POINTER(nf_nat_snmp_hook, help);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(nf_nat_snmp_hook, help);
+>>>>>>> refs/remotes/origin/master
 
 	ret = nf_conntrack_helper_register(&snmp_trap_helper);
 	if (ret < 0) {
@@ -1439,10 +1481,14 @@ static int __init nf_nat_snmp_basic_init(void)
 static void __exit nf_nat_snmp_basic_fini(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rcu_assign_pointer(nf_nat_snmp_hook, NULL);
 =======
 	RCU_INIT_POINTER(nf_nat_snmp_hook, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(nf_nat_snmp_hook, NULL);
+>>>>>>> refs/remotes/origin/master
 	nf_conntrack_helper_unregister(&snmp_trap_helper);
 }
 

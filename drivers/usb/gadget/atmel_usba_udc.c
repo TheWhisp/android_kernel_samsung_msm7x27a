@@ -21,6 +21,7 @@
 #include <linux/usb/gadget.h>
 #include <linux/usb/atmel_usba_udc.h>
 #include <linux/delay.h>
+<<<<<<< HEAD
 
 #include <asm/gpio.h>
 #include <mach/board.h>
@@ -31,6 +32,16 @@
 static struct usba_udc the_udc;
 static struct usba_ep *usba_ep;
 
+=======
+#include <linux/platform_data/atmel.h>
+#include <linux/of.h>
+#include <linux/of_gpio.h>
+
+#include <asm/gpio.h>
+
+#include "atmel_usba_udc.h"
+
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_USB_GADGET_DEBUG_FS
 #include <linux/debugfs.h>
 #include <linux/uaccess.h>
@@ -93,7 +104,11 @@ static ssize_t queue_dbg_read(struct file *file, char __user *buf,
 	if (!access_ok(VERIFY_WRITE, buf, nbytes))
 		return -EFAULT;
 
+<<<<<<< HEAD
 	mutex_lock(&file->f_dentry->d_inode->i_mutex);
+=======
+	mutex_lock(&file_inode(file)->i_mutex);
+>>>>>>> refs/remotes/origin/master
 	list_for_each_entry_safe(req, tmp_req, queue, queue) {
 		len = snprintf(tmpbuf, sizeof(tmpbuf),
 				"%8p %08x %c%c%c %5d %c%c%c\n",
@@ -120,7 +135,11 @@ static ssize_t queue_dbg_read(struct file *file, char __user *buf,
 		nbytes -= len;
 		buf += len;
 	}
+<<<<<<< HEAD
 	mutex_unlock(&file->f_dentry->d_inode->i_mutex);
+=======
+	mutex_unlock(&file_inode(file)->i_mutex);
+>>>>>>> refs/remotes/origin/master
 
 	return actual;
 }
@@ -168,13 +187,21 @@ out:
 static ssize_t regs_dbg_read(struct file *file, char __user *buf,
 		size_t nbytes, loff_t *ppos)
 {
+<<<<<<< HEAD
 	struct inode *inode = file->f_dentry->d_inode;
+=======
+	struct inode *inode = file_inode(file);
+>>>>>>> refs/remotes/origin/master
 	int ret;
 
 	mutex_lock(&inode->i_mutex);
 	ret = simple_read_from_buffer(buf, nbytes, ppos,
 			file->private_data,
+<<<<<<< HEAD
 			file->f_dentry->d_inode->i_size);
+=======
+			file_inode(file)->i_size);
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&inode->i_mutex);
 
 	return ret;
@@ -273,10 +300,14 @@ static void usba_init_debugfs(struct usba_udc *udc)
 	regs_resource = platform_get_resource(udc->pdev, IORESOURCE_MEM,
 				CTRL_IOMEM_ID);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	regs->d_inode->i_size = regs_resource->end - regs_resource->start + 1;
 =======
 	regs->d_inode->i_size = resource_size(regs_resource);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	regs->d_inode->i_size = resource_size(regs_resource);
+>>>>>>> refs/remotes/origin/master
 	udc->debugfs_regs = regs;
 
 	usba_ep_init_debugfs(udc, to_usba_ep(udc->gadget.ep0));
@@ -337,6 +368,7 @@ static int vbus_is_present(struct usba_udc *udc)
 static void toggle_bias(int is_on)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	unsigned int uckr = at91_sys_read(AT91_CKGR_UCKR);
 
 	if (is_on)
@@ -344,13 +376,18 @@ static void toggle_bias(int is_on)
 	else
 		at91_sys_write(AT91_CKGR_UCKR, uckr & ~(AT91_PMC_BIASEN));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int uckr = at91_pmc_read(AT91_CKGR_UCKR);
 
 	if (is_on)
 		at91_pmc_write(AT91_CKGR_UCKR, uckr | AT91_PMC_BIASEN);
 	else
 		at91_pmc_write(AT91_CKGR_UCKR, uckr & ~(AT91_PMC_BIASEN));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #else
@@ -502,6 +539,7 @@ request_complete(struct usba_ep *ep, struct usba_request *req, int status)
 	if (req->req.status == -EINPROGRESS)
 		req->req.status = status;
 
+<<<<<<< HEAD
 	if (req->mapped) {
 		dma_unmap_single(
 			&udc->pdev->dev, req->req.dma, req->req.length,
@@ -509,6 +547,10 @@ request_complete(struct usba_ep *ep, struct usba_request *req, int status)
 		req->req.dma = DMA_ADDR_INVALID;
 		req->mapped = 0;
 	}
+=======
+	if (req->using_dma)
+		usb_gadget_unmap_request(&udc->gadget, &req->req, ep->is_in);
+>>>>>>> refs/remotes/origin/master
 
 	DBG(DBG_GADGET | DBG_REQ,
 		"%s: req %p complete: status %d, actual %u\n",
@@ -541,10 +583,14 @@ usba_ep_enable(struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
 	DBG(DBG_GADGET, "%s: ep_enable: desc=%p\n", ep->ep.name, desc);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	maxpacket = le16_to_cpu(desc->wMaxPacketSize) & 0x7ff;
 =======
 	maxpacket = usb_endpoint_maxp(desc) & 0x7ff;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	maxpacket = usb_endpoint_maxp(desc) & 0x7ff;
+>>>>>>> refs/remotes/origin/master
 
 	if (((desc->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) != ep->index)
 			|| ep->index == 0
@@ -589,10 +635,14 @@ usba_ep_enable(struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
 		 * transactions per microframe.
 		 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 		nr_trans = ((le16_to_cpu(desc->wMaxPacketSize) >> 11) & 3) + 1;
 =======
 		nr_trans = ((usb_endpoint_maxp(desc) >> 11) & 3) + 1;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		nr_trans = ((usb_endpoint_maxp(desc) >> 11) & 3) + 1;
+>>>>>>> refs/remotes/origin/master
 		if (nr_trans > 3)
 			return -EINVAL;
 
@@ -620,6 +670,7 @@ usba_ep_enable(struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
 
 	spin_lock_irqsave(&ep->udc->lock, flags);
 
+<<<<<<< HEAD
 	if (ep->desc) {
 		spin_unlock_irqrestore(&ep->udc->lock, flags);
 		DBG(DBG_ERR, "ep%d already enabled\n", ep->index);
@@ -627,6 +678,9 @@ usba_ep_enable(struct usb_ep *_ep, const struct usb_endpoint_descriptor *desc)
 	}
 
 	ep->desc = desc;
+=======
+	ep->ep.desc = desc;
+>>>>>>> refs/remotes/origin/master
 	ep->ep.maxpacket = maxpacket;
 
 	usba_ep_writel(ep, CFG, ept_cfg);
@@ -668,7 +722,11 @@ static int usba_ep_disable(struct usb_ep *_ep)
 
 	spin_lock_irqsave(&udc->lock, flags);
 
+<<<<<<< HEAD
 	if (!ep->desc) {
+=======
+	if (!ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		spin_unlock_irqrestore(&udc->lock, flags);
 		/* REVISIT because this driver disables endpoints in
 		 * reset_all_endpoints() before calling disconnect(),
@@ -679,11 +737,15 @@ static int usba_ep_disable(struct usb_ep *_ep)
 					ep->ep.name);
 		return -EINVAL;
 	}
+<<<<<<< HEAD
 	ep->desc = NULL;
 <<<<<<< HEAD
 =======
 	ep->ep.desc = NULL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->ep.desc = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	list_splice_init(&ep->queue, &req_list);
 	if (ep->can_dma) {
@@ -715,7 +777,10 @@ usba_ep_alloc_request(struct usb_ep *_ep, gfp_t gfp_flags)
 		return NULL;
 
 	INIT_LIST_HEAD(&req->queue);
+<<<<<<< HEAD
 	req->req.dma = DMA_ADDR_INVALID;
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return &req->req;
 }
@@ -748,6 +813,7 @@ static int queue_dma(struct usba_udc *udc, struct usba_ep *ep,
 		return -EINVAL;
 	}
 
+<<<<<<< HEAD
 	req->using_dma = 1;
 
 	if (req->req.dma == DMA_ADDR_INVALID) {
@@ -762,6 +828,13 @@ static int queue_dma(struct usba_udc *udc, struct usba_ep *ep,
 		req->mapped = 0;
 	}
 
+=======
+	ret = usb_gadget_map_request(&udc->gadget, &req->req, ep->is_in);
+	if (ret)
+		return ret;
+
+	req->using_dma = 1;
+>>>>>>> refs/remotes/origin/master
 	req->ctrl = USBA_BF(DMA_BUF_LEN, req->req.length)
 			| USBA_DMA_CH_EN | USBA_DMA_END_BUF_IE
 			| USBA_DMA_END_TR_EN | USBA_DMA_END_TR_IE;
@@ -776,7 +849,11 @@ static int queue_dma(struct usba_udc *udc, struct usba_ep *ep,
 	 */
 	ret = -ESHUTDOWN;
 	spin_lock_irqsave(&udc->lock, flags);
+<<<<<<< HEAD
 	if (ep->desc) {
+=======
+	if (ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		if (list_empty(&ep->queue))
 			submit_request(ep, req);
 
@@ -800,7 +877,12 @@ usba_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 	DBG(DBG_GADGET | DBG_QUEUE | DBG_REQ, "%s: queue req %p, len %u\n",
 			ep->ep.name, req, _req->length);
 
+<<<<<<< HEAD
 	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN || !ep->desc)
+=======
+	if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN ||
+	    !ep->ep.desc)
+>>>>>>> refs/remotes/origin/master
 		return -ESHUTDOWN;
 
 	req->submitted = 0;
@@ -816,7 +898,11 @@ usba_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
 	/* May have received a reset since last time we checked */
 	ret = -ESHUTDOWN;
 	spin_lock_irqsave(&udc->lock, flags);
+<<<<<<< HEAD
 	if (ep->desc) {
+=======
+	if (ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		list_add_tail(&req->queue, &ep->queue);
 
 		if ((!ep_is_control(ep) && ep->is_in) ||
@@ -929,7 +1015,11 @@ static int usba_ep_set_halt(struct usb_ep *_ep, int value)
 	DBG(DBG_GADGET, "endpoint %s: %s HALT\n", ep->ep.name,
 			value ? "set" : "clear");
 
+<<<<<<< HEAD
 	if (!ep->desc) {
+=======
+	if (!ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 		DBG(DBG_ERR, "Attempted to halt uninitialized ep %s\n",
 				ep->ep.name);
 		return -ENODEV;
@@ -1033,21 +1123,33 @@ usba_udc_set_selfpowered(struct usb_gadget *gadget, int is_selfpowered)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 static int atmel_usba_start(struct usb_gadget_driver *driver,
 		int (*bind)(struct usb_gadget *));
 static int atmel_usba_stop(struct usb_gadget_driver *driver);
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int atmel_usba_start(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver);
+static int atmel_usba_stop(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver);
+>>>>>>> refs/remotes/origin/master
 static const struct usb_gadget_ops usba_udc_ops = {
 	.get_frame		= usba_udc_get_frame,
 	.wakeup			= usba_udc_wakeup,
 	.set_selfpowered	= usba_udc_set_selfpowered,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	.start			= atmel_usba_start,
 	.stop			= atmel_usba_stop,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.udc_start		= atmel_usba_start,
+	.udc_stop		= atmel_usba_stop,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct usb_endpoint_descriptor usba_ep0_desc = {
@@ -1065,6 +1167,7 @@ static void nop_release(struct device *dev)
 
 }
 
+<<<<<<< HEAD
 static struct usba_udc the_udc = {
 	.gadget	= {
 		.ops		= &usba_udc_ops,
@@ -1079,6 +1182,15 @@ static struct usba_udc the_udc = {
 			.init_name	= "gadget",
 			.release	= nop_release,
 		},
+=======
+static struct usb_gadget usba_gadget_template = {
+	.ops		= &usba_udc_ops,
+	.max_speed	= USB_SPEED_HIGH,
+	.name		= "atmel_usba_udc",
+	.dev	= {
+		.init_name	= "gadget",
+		.release	= nop_release,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
@@ -1105,7 +1217,11 @@ static void reset_all_endpoints(struct usba_udc *udc)
 	 * FIXME remove this code ... and retest thoroughly.
 	 */
 	list_for_each_entry(ep, &udc->gadget.ep_list, ep.ep_list) {
+<<<<<<< HEAD
 		if (ep->desc) {
+=======
+		if (ep->ep.desc) {
+>>>>>>> refs/remotes/origin/master
 			spin_unlock(&udc->lock);
 			usba_ep_disable(&ep->ep);
 			spin_lock(&udc->lock);
@@ -1123,9 +1239,15 @@ static struct usba_ep *get_ep_by_addr(struct usba_udc *udc, u16 wIndex)
 	list_for_each_entry (ep, &udc->gadget.ep_list, ep.ep_list) {
 		u8 bEndpointAddress;
 
+<<<<<<< HEAD
 		if (!ep->desc)
 			continue;
 		bEndpointAddress = ep->desc->bEndpointAddress;
+=======
+		if (!ep->ep.desc)
+			continue;
+		bEndpointAddress = ep->ep.desc->bEndpointAddress;
+>>>>>>> refs/remotes/origin/master
 		if ((wIndex ^ bEndpointAddress) & USB_DIR_IN)
 			continue;
 		if ((bEndpointAddress & USB_ENDPOINT_NUMBER_MASK)
@@ -1202,7 +1324,11 @@ static int do_test_mode(struct usba_udc *udc)
 		 * Test_SE0_NAK: Force high-speed mode and set up ep0
 		 * for Bulk IN transfers
 		 */
+<<<<<<< HEAD
 		ep = &usba_ep[0];
+=======
+		ep = &udc->usba_ep[0];
+>>>>>>> refs/remotes/origin/master
 		usba_writel(udc, TST,
 				USBA_BF(SPEED_CFG, USBA_SPEED_CFG_FORCE_HIGH));
 		usba_ep_writel(ep, CFG,
@@ -1220,7 +1346,11 @@ static int do_test_mode(struct usba_udc *udc)
 		break;
 	case 0x0400:
 		/* Test_Packet */
+<<<<<<< HEAD
 		ep = &usba_ep[0];
+=======
+		ep = &udc->usba_ep[0];
+>>>>>>> refs/remotes/origin/master
 		usba_ep_writel(ep, CFG,
 				USBA_BF(EPT_SIZE, USBA_EPT_SIZE_64)
 				| USBA_EPT_DIR_IN
@@ -1723,7 +1853,11 @@ static irqreturn_t usba_udc_irq(int irq, void *devid)
 
 		for (i = 1; i < USBA_NR_ENDPOINTS; i++)
 			if (dma_status & (1 << i))
+<<<<<<< HEAD
 				usba_dma_irq(udc, &usba_ep[i]);
+=======
+				usba_dma_irq(udc, &udc->usba_ep[i]);
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ep_status = USBA_BFEXT(EPT_INT, status);
@@ -1732,10 +1866,17 @@ static irqreturn_t usba_udc_irq(int irq, void *devid)
 
 		for (i = 0; i < USBA_NR_ENDPOINTS; i++)
 			if (ep_status & (1 << i)) {
+<<<<<<< HEAD
 				if (ep_is_control(&usba_ep[i]))
 					usba_control_irq(udc, &usba_ep[i]);
 				else
 					usba_ep_irq(udc, &usba_ep[i]);
+=======
+				if (ep_is_control(&udc->usba_ep[i]))
+					usba_control_irq(udc, &udc->usba_ep[i]);
+				else
+					usba_ep_irq(udc, &udc->usba_ep[i]);
+>>>>>>> refs/remotes/origin/master
 			}
 	}
 
@@ -1754,6 +1895,7 @@ static irqreturn_t usba_udc_irq(int irq, void *devid)
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (status & USBA_HIGH_SPEED) {
 			DBG(DBG_BUS, "High-speed bus reset detected\n");
 			udc->gadget.speed = USB_SPEED_HIGH;
@@ -1762,16 +1904,24 @@ static irqreturn_t usba_udc_irq(int irq, void *devid)
 			udc->gadget.speed = USB_SPEED_FULL;
 		}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (status & USBA_HIGH_SPEED)
 			udc->gadget.speed = USB_SPEED_HIGH;
 		else
 			udc->gadget.speed = USB_SPEED_FULL;
 		DBG(DBG_BUS, "%s bus reset detected\n",
 		    usb_speed_string(udc->gadget.speed));
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 		ep0 = &usba_ep[0];
 		ep0->desc = &usba_ep0_desc;
+=======
+
+		ep0 = &udc->usba_ep[0];
+		ep0->ep.desc = &usba_ep0_desc;
+>>>>>>> refs/remotes/origin/master
 		ep0->state = WAIT_FOR_SETUP;
 		usba_ep_writel(ep0, CFG,
 				(USBA_BF(EPT_SIZE, EP0_EPT_SIZE)
@@ -1840,6 +1990,7 @@ out:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 int usb_gadget_probe_driver(struct usb_gadget_driver *driver,
 =======
 static int atmel_usba_start(struct usb_gadget_driver *driver,
@@ -1872,6 +2023,28 @@ static int atmel_usba_start(struct usb_gadget_driver *driver,
 		DBG(DBG_ERR, "Could not bind to driver %s: error %d\n",
 			driver->driver.name, ret);
 		goto err_driver_bind;
+=======
+static int atmel_usba_start(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver)
+{
+	int ret;
+	struct usba_udc *udc = container_of(gadget, struct usba_udc, gadget);
+	unsigned long flags;
+
+	spin_lock_irqsave(&udc->lock, flags);
+
+	udc->devstatus = 1 << USB_DEVICE_SELF_POWERED;
+	udc->driver = driver;
+	spin_unlock_irqrestore(&udc->lock, flags);
+
+	ret = clk_prepare_enable(udc->pclk);
+	if (ret)
+		return ret;
+	ret = clk_prepare_enable(udc->hclk);
+	if (ret) {
+		clk_disable_unprepare(udc->pclk);
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	DBG(DBG_GADGET, "registered driver `%s'\n", driver->driver.name);
@@ -1890,6 +2063,7 @@ static int atmel_usba_start(struct usb_gadget_driver *driver,
 	spin_unlock_irqrestore(&udc->lock, flags);
 
 	return 0;
+<<<<<<< HEAD
 
 err_driver_bind:
 	udc->driver = NULL;
@@ -1913,6 +2087,16 @@ static int atmel_usba_stop(struct usb_gadget_driver *driver)
 	if (driver != udc->driver || !driver->unbind)
 		return -EINVAL;
 
+=======
+}
+
+static int atmel_usba_stop(struct usb_gadget *gadget,
+		struct usb_gadget_driver *driver)
+{
+	struct usba_udc *udc = container_of(gadget, struct usba_udc, gadget);
+	unsigned long flags;
+
+>>>>>>> refs/remotes/origin/master
 	if (gpio_is_valid(udc->vbus_pin))
 		disable_irq(gpio_to_irq(udc->vbus_pin));
 
@@ -1925,6 +2109,7 @@ static int atmel_usba_stop(struct usb_gadget_driver *driver)
 	toggle_bias(0);
 	usba_writel(udc, CTRL, USBA_DISABLE_MASK);
 
+<<<<<<< HEAD
 	if (udc->driver->disconnect)
 		udc->driver->disconnect(&udc->gadget);
 
@@ -1934,11 +2119,18 @@ static int atmel_usba_stop(struct usb_gadget_driver *driver)
 
 	clk_disable(udc->hclk);
 	clk_disable(udc->pclk);
+=======
+	udc->driver = NULL;
+
+	clk_disable_unprepare(udc->hclk);
+	clk_disable_unprepare(udc->pclk);
+>>>>>>> refs/remotes/origin/master
 
 	DBG(DBG_GADGET, "unregistered driver `%s'\n", driver->driver.name);
 
 	return 0;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 EXPORT_SYMBOL(usb_gadget_unregister_driver);
 =======
@@ -1955,12 +2147,169 @@ static int __init usba_udc_probe(struct platform_device *pdev)
 	regs = platform_get_resource(pdev, IORESOURCE_MEM, CTRL_IOMEM_ID);
 	fifo = platform_get_resource(pdev, IORESOURCE_MEM, FIFO_IOMEM_ID);
 	if (!regs || !fifo || !pdata)
+=======
+
+#ifdef CONFIG_OF
+static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+						    struct usba_udc *udc)
+{
+	u32 val;
+	const char *name;
+	enum of_gpio_flags flags;
+	struct device_node *np = pdev->dev.of_node;
+	struct device_node *pp;
+	int i, ret;
+	struct usba_ep *eps, *ep;
+
+	udc->num_ep = 0;
+
+	udc->vbus_pin = of_get_named_gpio_flags(np, "atmel,vbus-gpio", 0,
+						&flags);
+	udc->vbus_pin_inverted = (flags & OF_GPIO_ACTIVE_LOW) ? 1 : 0;
+
+	pp = NULL;
+	while ((pp = of_get_next_child(np, pp)))
+		udc->num_ep++;
+
+	eps = devm_kzalloc(&pdev->dev, sizeof(struct usba_ep) * udc->num_ep,
+			   GFP_KERNEL);
+	if (!eps)
+		return ERR_PTR(-ENOMEM);
+
+	udc->gadget.ep0 = &eps[0].ep;
+
+	INIT_LIST_HEAD(&eps[0].ep.ep_list);
+
+	pp = NULL;
+	i = 0;
+	while ((pp = of_get_next_child(np, pp))) {
+		ep = &eps[i];
+
+		ret = of_property_read_u32(pp, "reg", &val);
+		if (ret) {
+			dev_err(&pdev->dev, "of_probe: reg error(%d)\n", ret);
+			goto err;
+		}
+		ep->index = val;
+
+		ret = of_property_read_u32(pp, "atmel,fifo-size", &val);
+		if (ret) {
+			dev_err(&pdev->dev, "of_probe: fifo-size error(%d)\n", ret);
+			goto err;
+		}
+		ep->fifo_size = val;
+
+		ret = of_property_read_u32(pp, "atmel,nb-banks", &val);
+		if (ret) {
+			dev_err(&pdev->dev, "of_probe: nb-banks error(%d)\n", ret);
+			goto err;
+		}
+		ep->nr_banks = val;
+
+		ep->can_dma = of_property_read_bool(pp, "atmel,can-dma");
+		ep->can_isoc = of_property_read_bool(pp, "atmel,can-isoc");
+
+		ret = of_property_read_string(pp, "name", &name);
+		ep->ep.name = name;
+
+		ep->ep_regs = udc->regs + USBA_EPT_BASE(i);
+		ep->dma_regs = udc->regs + USBA_DMA_BASE(i);
+		ep->fifo = udc->fifo + USBA_FIFO_BASE(i);
+		ep->ep.ops = &usba_ep_ops;
+		usb_ep_set_maxpacket_limit(&ep->ep, ep->fifo_size);
+		ep->udc = udc;
+		INIT_LIST_HEAD(&ep->queue);
+
+		if (i)
+			list_add_tail(&ep->ep.ep_list, &udc->gadget.ep_list);
+
+		i++;
+	}
+
+	return eps;
+err:
+	return ERR_PTR(ret);
+}
+#else
+static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+						    struct usba_udc *udc)
+{
+	return ERR_PTR(-ENOSYS);
+}
+#endif
+
+static struct usba_ep * usba_udc_pdata(struct platform_device *pdev,
+						 struct usba_udc *udc)
+{
+	struct usba_platform_data *pdata = dev_get_platdata(&pdev->dev);
+	struct usba_ep *eps;
+	int i;
+
+	if (!pdata)
+		return ERR_PTR(-ENXIO);
+
+	eps = devm_kzalloc(&pdev->dev, sizeof(struct usba_ep) * pdata->num_ep,
+			   GFP_KERNEL);
+	if (!eps)
+		return ERR_PTR(-ENOMEM);
+
+	udc->gadget.ep0 = &eps[0].ep;
+
+	udc->vbus_pin = pdata->vbus_pin;
+	udc->vbus_pin_inverted = pdata->vbus_pin_inverted;
+	udc->num_ep = pdata->num_ep;
+
+	INIT_LIST_HEAD(&eps[0].ep.ep_list);
+
+	for (i = 0; i < pdata->num_ep; i++) {
+		struct usba_ep *ep = &eps[i];
+
+		ep->ep_regs = udc->regs + USBA_EPT_BASE(i);
+		ep->dma_regs = udc->regs + USBA_DMA_BASE(i);
+		ep->fifo = udc->fifo + USBA_FIFO_BASE(i);
+		ep->ep.ops = &usba_ep_ops;
+		ep->ep.name = pdata->ep[i].name;
+		ep->fifo_size = pdata->ep[i].fifo_size;
+		usb_ep_set_maxpacket_limit(&ep->ep, ep->fifo_size);
+		ep->udc = udc;
+		INIT_LIST_HEAD(&ep->queue);
+		ep->nr_banks = pdata->ep[i].nr_banks;
+		ep->index = pdata->ep[i].index;
+		ep->can_dma = pdata->ep[i].can_dma;
+		ep->can_isoc = pdata->ep[i].can_isoc;
+
+		if (i)
+			list_add_tail(&ep->ep.ep_list, &udc->gadget.ep_list);
+	}
+
+	return eps;
+}
+
+static int __init usba_udc_probe(struct platform_device *pdev)
+{
+	struct resource *regs, *fifo;
+	struct clk *pclk, *hclk;
+	struct usba_udc *udc;
+	int irq, ret, i;
+
+	udc = devm_kzalloc(&pdev->dev, sizeof(*udc), GFP_KERNEL);
+	if (!udc)
+		return -ENOMEM;
+
+	udc->gadget = usba_gadget_template;
+	INIT_LIST_HEAD(&udc->gadget.ep_list);
+
+	regs = platform_get_resource(pdev, IORESOURCE_MEM, CTRL_IOMEM_ID);
+	fifo = platform_get_resource(pdev, IORESOURCE_MEM, FIFO_IOMEM_ID);
+	if (!regs || !fifo)
+>>>>>>> refs/remotes/origin/master
 		return -ENXIO;
 
 	irq = platform_get_irq(pdev, 0);
 	if (irq < 0)
 		return irq;
 
+<<<<<<< HEAD
 	pclk = clk_get(&pdev->dev, "pclk");
 	if (IS_ERR(pclk))
 		return PTR_ERR(pclk);
@@ -1969,6 +2318,14 @@ static int __init usba_udc_probe(struct platform_device *pdev)
 		ret = PTR_ERR(hclk);
 		goto err_get_hclk;
 	}
+=======
+	pclk = devm_clk_get(&pdev->dev, "pclk");
+	if (IS_ERR(pclk))
+		return PTR_ERR(pclk);
+	hclk = devm_clk_get(&pdev->dev, "hclk");
+	if (IS_ERR(hclk))
+		return PTR_ERR(hclk);
+>>>>>>> refs/remotes/origin/master
 
 	spin_lock_init(&udc->lock);
 	udc->pdev = pdev;
@@ -1977,6 +2334,7 @@ static int __init usba_udc_probe(struct platform_device *pdev)
 	udc->vbus_pin = -ENODEV;
 
 	ret = -ENOMEM;
+<<<<<<< HEAD
 	udc->regs = ioremap(regs->start, resource_size(regs));
 	if (!udc->regs) {
 		dev_err(&pdev->dev, "Unable to map I/O memory, aborting.\n");
@@ -1988,10 +2346,24 @@ static int __init usba_udc_probe(struct platform_device *pdev)
 	if (!udc->fifo) {
 		dev_err(&pdev->dev, "Unable to map FIFO, aborting.\n");
 		goto err_map_fifo;
+=======
+	udc->regs = devm_ioremap(&pdev->dev, regs->start, resource_size(regs));
+	if (!udc->regs) {
+		dev_err(&pdev->dev, "Unable to map I/O memory, aborting.\n");
+		return ret;
+	}
+	dev_info(&pdev->dev, "MMIO registers at 0x%08lx mapped at %p\n",
+		 (unsigned long)regs->start, udc->regs);
+	udc->fifo = devm_ioremap(&pdev->dev, fifo->start, resource_size(fifo));
+	if (!udc->fifo) {
+		dev_err(&pdev->dev, "Unable to map FIFO, aborting.\n");
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 	dev_info(&pdev->dev, "FIFO at 0x%08lx mapped at %p\n",
 		 (unsigned long)fifo->start, udc->fifo);
 
+<<<<<<< HEAD
 	device_initialize(&udc->gadget.dev);
 	udc->gadget.dev.parent = &pdev->dev;
 	udc->gadget.dev.dma_mask = pdev->dev.dma_mask;
@@ -2070,6 +2442,44 @@ static int __init usba_udc_probe(struct platform_device *pdev)
 					"atmel_usba_udc", udc);
 			if (ret) {
 				gpio_free(udc->vbus_pin);
+=======
+	platform_set_drvdata(pdev, udc);
+
+	/* Make sure we start from a clean slate */
+	ret = clk_prepare_enable(pclk);
+	if (ret) {
+		dev_err(&pdev->dev, "Unable to enable pclk, aborting.\n");
+		return ret;
+	}
+	toggle_bias(0);
+	usba_writel(udc, CTRL, USBA_DISABLE_MASK);
+	clk_disable_unprepare(pclk);
+
+	if (pdev->dev.of_node)
+		udc->usba_ep = atmel_udc_of_init(pdev, udc);
+	else
+		udc->usba_ep = usba_udc_pdata(pdev, udc);
+
+	if (IS_ERR(udc->usba_ep))
+		return PTR_ERR(udc->usba_ep);
+
+	ret = devm_request_irq(&pdev->dev, irq, usba_udc_irq, 0,
+				"atmel_usba_udc", udc);
+	if (ret) {
+		dev_err(&pdev->dev, "Cannot request irq %d (error %d)\n",
+			irq, ret);
+		return ret;
+	}
+	udc->irq = irq;
+
+	if (gpio_is_valid(udc->vbus_pin)) {
+		if (!devm_gpio_request(&pdev->dev, udc->vbus_pin, "atmel_usba_udc")) {
+			ret = devm_request_irq(&pdev->dev,
+					gpio_to_irq(udc->vbus_pin),
+					usba_vbus_irq, 0,
+					"atmel_usba_udc", udc);
+			if (ret) {
+>>>>>>> refs/remotes/origin/master
 				udc->vbus_pin = -ENODEV;
 				dev_warn(&udc->pdev->dev,
 					 "failed to request vbus irq; "
@@ -2083,6 +2493,7 @@ static int __init usba_udc_probe(struct platform_device *pdev)
 		}
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	ret = usb_add_gadget_udc(&pdev->dev, &udc->gadget);
@@ -2123,12 +2534,24 @@ err_get_hclk:
 	platform_set_drvdata(pdev, NULL);
 
 	return ret;
+=======
+	ret = usb_add_gadget_udc(&pdev->dev, &udc->gadget);
+	if (ret)
+		return ret;
+
+	usba_init_debugfs(udc);
+	for (i = 1; i < udc->num_ep; i++)
+		usba_ep_init_debugfs(udc, &udc->usba_ep[i]);
+
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int __exit usba_udc_remove(struct platform_device *pdev)
 {
 	struct usba_udc *udc;
 	int i;
+<<<<<<< HEAD
 	struct usba_platform_data *pdata = pdev->dev.platform_data;
 
 	udc = platform_get_drvdata(pdev);
@@ -2159,11 +2582,35 @@ static int __exit usba_udc_remove(struct platform_device *pdev)
 	return 0;
 }
 
+=======
+
+	udc = platform_get_drvdata(pdev);
+
+	usb_del_gadget_udc(&udc->gadget);
+
+	for (i = 1; i < udc->num_ep; i++)
+		usba_ep_cleanup_debugfs(&udc->usba_ep[i]);
+	usba_cleanup_debugfs(udc);
+
+	return 0;
+}
+
+#if defined(CONFIG_OF)
+static const struct of_device_id atmel_udc_dt_ids[] = {
+	{ .compatible = "atmel,at91sam9rl-udc" },
+	{ /* sentinel */ }
+};
+
+MODULE_DEVICE_TABLE(of, atmel_udc_dt_ids);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver udc_driver = {
 	.remove		= __exit_p(usba_udc_remove),
 	.driver		= {
 		.name		= "atmel_usba_udc",
 		.owner		= THIS_MODULE,
+<<<<<<< HEAD
 	},
 };
 
@@ -2178,6 +2625,13 @@ static void __exit udc_exit(void)
 	platform_driver_unregister(&udc_driver);
 }
 module_exit(udc_exit);
+=======
+		.of_match_table	= of_match_ptr(atmel_udc_dt_ids),
+	},
+};
+
+module_platform_driver_probe(udc_driver, usba_udc_probe);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("Atmel USBA UDC driver");
 MODULE_AUTHOR("Haavard Skinnemoen (Atmel)");

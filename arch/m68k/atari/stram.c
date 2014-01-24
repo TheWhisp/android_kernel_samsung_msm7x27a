@@ -1,9 +1,13 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * arch/m68k/atari/stram.c: Functions for ST-RAM allocations
 =======
  * Functions for ST-RAM allocations
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Functions for ST-RAM allocations
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 1994-97 Roman Hodek <Roman.Hodek@informatik.uni-erlangen.de>
  *
@@ -34,6 +38,7 @@
 #include <asm/atari_stram.h>
 #include <asm/io.h>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #undef DEBUG
 
@@ -121,6 +126,8 @@ static int remove_region( BLOCK *block );
 /*							   Public Interface								*/
 /* ------------------------------------------------------------------------ */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The ST-RAM allocator allocates memory from a pool of reserved ST-RAM of
@@ -150,7 +157,10 @@ static int __init atari_stram_setup(char *arg)
 
 early_param("stram_pool", atari_stram_setup);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * This init function is called very early by atari/config.c
@@ -159,6 +169,7 @@ early_param("stram_pool", atari_stram_setup);
 void __init atari_stram_init(void)
 {
 	int i;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	/* initialize static blocks */
@@ -180,6 +191,8 @@ void __init atari_stram_init(void)
 	/* Should never come here! (There is always ST-Ram!) */
 	panic( "atari_stram_init: no ST-RAM found!" );
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	void *stram_start;
 
 	/*
@@ -197,7 +210,10 @@ void __init atari_stram_init(void)
 
 	/* Should never come here! (There is always ST-Ram!) */
 	panic("atari_stram_init: no ST-RAM found!");
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -207,6 +223,7 @@ void __init atari_stram_init(void)
  */
 void __init atari_stram_reserve_pages(void *start_mem)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* always reserve first page of ST-RAM, the first 2 kB are
 	 * supervisor-only! */
@@ -432,6 +449,8 @@ module_init(proc_stram_init);
  * End:
  */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * always reserve first page of ST-RAM, the first 2 KiB are
 	 * supervisor-only!
@@ -497,4 +516,7 @@ void atari_stram_free(void *addr)
 	kfree(res);
 }
 EXPORT_SYMBOL(atari_stram_free);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

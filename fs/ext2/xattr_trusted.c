@@ -6,6 +6,7 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 #include <linux/string.h>
 #include <linux/capability.h>
@@ -14,6 +15,9 @@
 =======
 #include "ext2.h"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include "ext2.h"
+>>>>>>> refs/remotes/origin/master
 #include "xattr.h"
 
 static size_t

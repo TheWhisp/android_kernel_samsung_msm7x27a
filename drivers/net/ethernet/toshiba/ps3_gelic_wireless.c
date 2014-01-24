@@ -452,7 +452,11 @@ static size_t gelic_wl_synthesize_ie(u8 *buf,
 	if (rsn)
 		*buf++ = WLAN_EID_RSN;
 	else
+<<<<<<< HEAD
 		*buf++ = WLAN_EID_GENERIC;
+=======
+		*buf++ = WLAN_EID_VENDOR_SPECIFIC;
+>>>>>>> refs/remotes/origin/master
 
 	/* length filed; set later */
 	buf++;
@@ -540,7 +544,11 @@ static void gelic_wl_parse_ie(u8 *data, size_t len,
 			break;
 
 		switch (item_id) {
+<<<<<<< HEAD
 		case WLAN_EID_GENERIC:
+=======
+		case WLAN_EID_VENDOR_SPECIFIC:
+>>>>>>> refs/remotes/origin/master
 			if ((OUI_LEN + 1 <= item_len) &&
 			    !memcmp(pos, wpa_oui, OUI_LEN) &&
 			    pos[OUI_LEN] == 0x01) {
@@ -1590,8 +1598,13 @@ static void gelic_wl_scan_complete_event(struct gelic_wl_info *wl)
 		found = 0;
 		oldest = NULL;
 		list_for_each_entry(target, &wl->network_list, list) {
+<<<<<<< HEAD
 			if (!compare_ether_addr(&target->hwinfo->bssid[2],
 						&scan_info->bssid[2])) {
+=======
+			if (ether_addr_equal(&target->hwinfo->bssid[2],
+					     &scan_info->bssid[2])) {
+>>>>>>> refs/remotes/origin/master
 				found = 1;
 				pr_debug("%s: same BBS found scanned list\n",
 					 __func__);
@@ -1691,8 +1704,13 @@ struct gelic_wl_scan_info *gelic_wl_find_best_bss(struct gelic_wl_info *wl)
 
 		/* If bss specified, check it only */
 		if (test_bit(GELIC_WL_STAT_BSSID_SET, &wl->stat)) {
+<<<<<<< HEAD
 			if (!compare_ether_addr(&scan_info->hwinfo->bssid[2],
 						wl->bssid)) {
+=======
+			if (ether_addr_equal(&scan_info->hwinfo->bssid[2],
+					     wl->bssid)) {
+>>>>>>> refs/remotes/origin/master
 				best_bss = scan_info;
 				pr_debug("%s: bssid matched\n", __func__);
 				break;
@@ -2305,7 +2323,11 @@ static const struct iw_handler_def gelic_wl_wext_handler_def = {
 	.get_wireless_stats	= gelic_wl_get_wireless_stats,
 };
 
+<<<<<<< HEAD
 static struct net_device * __devinit gelic_wl_alloc(struct gelic_card *card)
+=======
+static struct net_device *gelic_wl_alloc(struct gelic_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	struct net_device *netdev;
 	struct gelic_port *port;
@@ -2582,7 +2604,11 @@ static const struct ethtool_ops gelic_wl_ethtool_ops = {
 	.get_link	= gelic_wl_get_link,
 };
 
+<<<<<<< HEAD
 static void __devinit gelic_wl_setup_netdev_ops(struct net_device *netdev)
+=======
+static void gelic_wl_setup_netdev_ops(struct net_device *netdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gelic_wl_info *wl;
 	wl = port_wl(netdev_priv(netdev));
@@ -2598,7 +2624,11 @@ static void __devinit gelic_wl_setup_netdev_ops(struct net_device *netdev)
 /*
  * driver probe/remove
  */
+<<<<<<< HEAD
 int __devinit gelic_wl_driver_probe(struct gelic_card *card)
+=======
+int gelic_wl_driver_probe(struct gelic_card *card)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct net_device *netdev;

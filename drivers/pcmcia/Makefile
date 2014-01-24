@@ -26,18 +26,24 @@ obj-$(CONFIG_TCIC)				+= tcic.o
 obj-$(CONFIG_PCMCIA_M8XX)			+= m8xx_pcmcia.o
 obj-$(CONFIG_PCMCIA_SOC_COMMON)			+= soc_common.o
 <<<<<<< HEAD
+<<<<<<< HEAD
 obj-$(CONFIG_PCMCIA_SA1100)			+= sa11xx_base.o sa1100_cs.o
 obj-$(CONFIG_PCMCIA_SA1111)			+= sa11xx_base.o sa1111_cs.o
 obj-$(CONFIG_M32R_PCC)				+= m32r_pcc.o
 obj-$(CONFIG_M32R_CFC)				+= m32r_cfc.o
 obj-$(CONFIG_PCMCIA_AU1X00)			+= au1x00_ss.o
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PCMCIA_SA11XX_BASE)		+= sa11xx_base.o
 obj-$(CONFIG_PCMCIA_SA1100)			+= sa1100_cs.o
 obj-$(CONFIG_PCMCIA_SA1111)			+= sa1111_cs.o
 obj-$(CONFIG_M32R_PCC)				+= m32r_pcc.o
 obj-$(CONFIG_M32R_CFC)				+= m32r_cfc.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 obj-$(CONFIG_PCMCIA_BCM63XX)			+= bcm63xx_pcmcia.o
 obj-$(CONFIG_PCMCIA_VRC4171)			+= vrc4171_card.o
 obj-$(CONFIG_PCMCIA_VRC4173)			+= vrc4173_cardu.o
@@ -48,6 +54,7 @@ obj-$(CONFIG_ELECTRA_CF)			+= electra_cf.o
 obj-$(CONFIG_PCMCIA_ALCHEMY_DEVBOARD)		+= db1xxx_ss.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 au1x00_ss-y					+= au1000_generic.o
 au1x00_ss-$(CONFIG_MIPS_PB1000)			+= au1000_pb1x00.o
 
@@ -56,12 +63,17 @@ sa1111_cs-$(CONFIG_ASSABET_NEPONSET)		+= sa1100_neponset.o
 sa1111_cs-$(CONFIG_SA1100_BADGE4)		+= sa1100_badge4.o
 sa1111_cs-$(CONFIG_SA1100_JORNADA720)		+= sa1100_jornada720.o
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 sa1111_cs-y					+= sa1111_generic.o
 sa1111_cs-$(CONFIG_ASSABET_NEPONSET)		+= sa1111_neponset.o
 sa1111_cs-$(CONFIG_SA1100_BADGE4)		+= sa1111_badge4.o
 sa1111_cs-$(CONFIG_SA1100_JORNADA720)		+= sa1111_jornada720.o
 sa1111_cs-$(CONFIG_ARCH_LUBBOCK)		+= sa1111_lubbock.o
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 sa1100_cs-y					+= sa1100_generic.o
 sa1100_cs-$(CONFIG_SA1100_ASSABET)		+= sa1100_assabet.o
@@ -73,12 +85,16 @@ sa1100_cs-$(CONFIG_SA1100_SHANNON)		+= sa1100_shannon.o
 sa1100_cs-$(CONFIG_SA1100_SIMPAD)		+= sa1100_simpad.o
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 pxa2xx_lubbock_cs-y				+= pxa2xx_lubbock.o sa1111_generic.o
 pxa2xx_cm_x2xx_cs-y				+= pxa2xx_cm_x2xx.o pxa2xx_cm_x255.o pxa2xx_cm_x270.o
 pxa2xx-obj-$(CONFIG_ARCH_LUBBOCK)		+= pxa2xx_lubbock_cs.o
 =======
 pxa2xx_cm_x2xx_cs-y				+= pxa2xx_cm_x2xx.o pxa2xx_cm_x255.o pxa2xx_cm_x270.o
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+pxa2xx_cm_x2xx_cs-y				+= pxa2xx_cm_x2xx.o pxa2xx_cm_x255.o pxa2xx_cm_x270.o
+>>>>>>> refs/remotes/origin/master
 pxa2xx-obj-$(CONFIG_MACH_MAINSTONE)		+= pxa2xx_mainstone.o
 pxa2xx-obj-$(CONFIG_PXA_SHARPSL)		+= pxa2xx_sharpsl.o
 pxa2xx-obj-$(CONFIG_MACH_ARMCORE)		+= pxa2xx_cm_x2xx_cs.o
@@ -93,6 +109,10 @@ pxa2xx-obj-$(CONFIG_MACH_VPAC270)		+= pxa2xx_vpac270.o
 pxa2xx-obj-$(CONFIG_MACH_BALLOON3)		+= pxa2xx_balloon3.o
 pxa2xx-obj-$(CONFIG_MACH_COLIBRI)		+= pxa2xx_colibri.o
 pxa2xx-obj-$(CONFIG_MACH_COLIBRI320)		+= pxa2xx_colibri.o
+<<<<<<< HEAD
+=======
+pxa2xx-obj-$(CONFIG_MACH_H4700)			+= pxa2xx_hx4700.o
+>>>>>>> refs/remotes/origin/master
 
 obj-$(CONFIG_PCMCIA_PXA2XX)			+= pxa2xx_base.o $(pxa2xx-obj-y)
 

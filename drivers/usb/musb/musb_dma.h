@@ -62,6 +62,7 @@ struct musb_hw_ep;
 
 #define	DMA_ADDR_INVALID	(~(dma_addr_t)0)
 
+<<<<<<< HEAD
 #ifndef CONFIG_MUSB_PIO_ONLY
 #define	is_dma_capable()	(1)
 #else
@@ -69,6 +70,15 @@ struct musb_hw_ep;
 #endif
 
 #ifdef CONFIG_USB_TI_CPPI_DMA
+=======
+#ifdef CONFIG_MUSB_PIO_ONLY
+#define	is_dma_capable()	(0)
+#else
+#define	is_dma_capable()	(1)
+#endif
+
+#if defined(CONFIG_USB_TI_CPPI_DMA) || defined(CONFIG_USB_TI_CPPI41_DMA)
+>>>>>>> refs/remotes/origin/master
 #define	is_cppi_enabled()	1
 #else
 #define	is_cppi_enabled()	0
@@ -159,8 +169,11 @@ dma_channel_status(struct dma_channel *c)
  * Controllers manage dma channels.
  */
 struct dma_controller {
+<<<<<<< HEAD
 	int			(*start)(struct dma_controller *);
 	int			(*stop)(struct dma_controller *);
+=======
+>>>>>>> refs/remotes/origin/master
 	struct dma_channel	*(*channel_alloc)(struct dma_controller *,
 					struct musb_hw_ep *, u8 is_tx);
 	void			(*channel_release)(struct dma_channel *);
@@ -177,10 +190,28 @@ struct dma_controller {
 /* called after channel_program(), may indicate a fault */
 extern void musb_dma_completion(struct musb *musb, u8 epnum, u8 transmit);
 
+<<<<<<< HEAD
 
 extern struct dma_controller *__init
 dma_controller_create(struct musb *, void __iomem *);
 
 extern void dma_controller_destroy(struct dma_controller *);
+=======
+#ifdef CONFIG_MUSB_PIO_ONLY
+static inline struct dma_controller *dma_controller_create(struct musb *m,
+		void __iomem *io)
+{
+	return NULL;
+}
+
+static inline void dma_controller_destroy(struct dma_controller *d) { }
+
+#else
+
+extern struct dma_controller *dma_controller_create(struct musb *, void __iomem *);
+
+extern void dma_controller_destroy(struct dma_controller *);
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #endif	/* __MUSB_DMA_H__ */

@@ -1122,7 +1122,10 @@ static bool wm8994_volatile_register(struct device *dev, unsigned int reg)
 	case WM8994_RATE_STATUS:
 	case WM8958_MIC_DETECT_3:
 	case WM8994_DC_SERVO_4E:
+<<<<<<< HEAD
 	case WM8994_CHIP_REVISION:
+=======
+>>>>>>> refs/remotes/origin/master
 	case WM8994_INTERRUPT_STATUS_1:
 	case WM8994_INTERRUPT_STATUS_2:
 		return true;
@@ -1137,7 +1140,11 @@ static bool wm1811_volatile_register(struct device *dev, unsigned int reg)
 
 	switch (reg) {
 	case WM8994_GPIO_6:
+<<<<<<< HEAD
 		if (wm8994->revision > 1)
+=======
+		if (wm8994->cust_id > 1 || wm8994->revision > 1)
+>>>>>>> refs/remotes/origin/master
 			return true;
 		else
 			return false;

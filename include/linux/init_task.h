@@ -10,7 +10,14 @@
 #include <linux/pid_namespace.h>
 #include <linux/user_namespace.h>
 #include <linux/securebits.h>
+<<<<<<< HEAD
 #include <net/net_namespace.h>
+=======
+#include <linux/seqlock.h>
+#include <linux/rbtree.h>
+#include <net/net_namespace.h>
+#include <linux/sched/rt.h>
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_SMP
 # define INIT_PUSHABLE_TASKS(tsk)					\
@@ -24,16 +31,20 @@ extern struct fs_struct init_fs;
 
 #ifdef CONFIG_CGROUPS
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define INIT_THREADGROUP_FORK_LOCK(sig)					\
 	.threadgroup_fork_lock =					\
 		__RWSEM_INITIALIZER(sig.threadgroup_fork_lock),
 #else
 #define INIT_THREADGROUP_FORK_LOCK(sig)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define INIT_GROUP_RWSEM(sig)						\
 	.group_rwsem = __RWSEM_INITIALIZER(sig.group_rwsem),
 #else
 #define INIT_GROUP_RWSEM(sig)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #endif
 
@@ -42,10 +53,23 @@ extern struct fs_struct init_fs;
 	.mems_allowed_seq = SEQCNT_ZERO,
 #else
 #define INIT_CPUSET_SEQ
+=======
+#endif
+
+#ifdef CONFIG_CPUSETS
+#define INIT_CPUSET_SEQ(tsk)							\
+	.mems_allowed_seq = SEQCNT_ZERO(tsk.mems_allowed_seq),
+#else
+#define INIT_CPUSET_SEQ(tsk)
+>>>>>>> refs/remotes/origin/master
 #endif
 
 #define INIT_SIGNALS(sig) {						\
 	.nr_threads	= 1,						\
+<<<<<<< HEAD
+=======
+	.thread_head	= LIST_HEAD_INIT(init_task.thread_node),	\
+>>>>>>> refs/remotes/origin/master
 	.wait_chldexit	= __WAIT_QUEUE_HEAD_INITIALIZER(sig.wait_chldexit),\
 	.shared_pending	= { 						\
 		.list = LIST_HEAD_INIT(sig.shared_pending.list),	\
@@ -57,18 +81,24 @@ extern struct fs_struct init_fs;
 		.cputime = INIT_CPUTIME,				\
 		.running = 0,						\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.lock = __SPIN_LOCK_UNLOCKED(sig.cputimer.lock),	\
 	},								\
 	.cred_guard_mutex =						\
 		 __MUTEX_INITIALIZER(sig.cred_guard_mutex),		\
 	INIT_THREADGROUP_FORK_LOCK(sig)					\
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		.lock = __RAW_SPIN_LOCK_UNLOCKED(sig.cputimer.lock),	\
 	},								\
 	.cred_guard_mutex =						\
 		 __MUTEX_INITIALIZER(sig.cred_guard_mutex),		\
 	INIT_GROUP_RWSEM(sig)						\
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 extern struct nsproxy init_nsproxy;
@@ -108,7 +138,11 @@ extern struct group_info init_groups;
 
 #ifdef CONFIG_AUDITSYSCALL
 #define INIT_IDS \
+<<<<<<< HEAD
 	.loginuid = -1, \
+=======
+	.loginuid = INVALID_UID, \
+>>>>>>> refs/remotes/origin/master
 	.sessionid = -1,
 #else
 #define INIT_IDS
@@ -158,10 +192,32 @@ extern struct task_group root_task_group;
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define INIT_TASK_COMM "swapper"
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
+# define INIT_VTIME(tsk)						\
+	.vtime_seqlock = __SEQLOCK_UNLOCKED(tsk.vtime_seqlock),	\
+	.vtime_snap = 0,				\
+	.vtime_snap_whence = VTIME_SYS,
+#else
+# define INIT_VTIME(tsk)
+#endif
+
+#define INIT_TASK_COMM "swapper"
+
+#ifdef CONFIG_RT_MUTEXES
+# define INIT_RT_MUTEXES(tsk)						\
+	.pi_waiters = RB_ROOT,						\
+	.pi_waiters_leftmost = NULL,
+#else
+# define INIT_RT_MUTEXES(tsk)
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  *  INIT_TASK is used to set up the first task table, touch at
  * your own risk!. Base=0, limit=0x1fffff (=2MB)
@@ -177,6 +233,10 @@ extern struct task_group root_task_group;
 	.normal_prio	= MAX_PRIO-20,					\
 	.policy		= SCHED_NORMAL,					\
 	.cpus_allowed	= CPU_MASK_ALL,					\
+<<<<<<< HEAD
+=======
+	.nr_cpus_allowed= NR_CPUS,					\
+>>>>>>> refs/remotes/origin/master
 	.mm		= NULL,						\
 	.active_mm	= &init_mm,					\
 	.se		= {						\
@@ -185,11 +245,15 @@ extern struct task_group root_task_group;
 	.rt		= {						\
 		.run_list	= LIST_HEAD_INIT(tsk.rt.run_list),	\
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.time_slice	= HZ, 					\
 =======
 		.time_slice	= RR_TIMESLICE,				\
 >>>>>>> refs/remotes/origin/cm-10.0
 		.nr_cpus_allowed = NR_CPUS,				\
+=======
+		.time_slice	= RR_TIMESLICE,				\
+>>>>>>> refs/remotes/origin/master
 	},								\
 	.tasks		= LIST_HEAD_INIT(tsk.tasks),			\
 	INIT_PUSHABLE_TASKS(tsk)					\
@@ -201,6 +265,7 @@ extern struct task_group root_task_group;
 	.children	= LIST_HEAD_INIT(tsk.children),			\
 	.sibling	= LIST_HEAD_INIT(tsk.sibling),			\
 	.group_leader	= &tsk,						\
+<<<<<<< HEAD
 	RCU_INIT_POINTER(.real_cred, &init_cred),			\
 	RCU_INIT_POINTER(.cred, &init_cred),				\
 <<<<<<< HEAD
@@ -208,6 +273,11 @@ extern struct task_group root_task_group;
 =======
 	.comm		= INIT_TASK_COMM,				\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_POINTER_INITIALIZER(real_cred, &init_cred),			\
+	RCU_POINTER_INITIALIZER(cred, &init_cred),			\
+	.comm		= INIT_TASK_COMM,				\
+>>>>>>> refs/remotes/origin/master
 	.thread		= INIT_THREAD,					\
 	.fs		= &init_fs,					\
 	.files		= &init_files,					\
@@ -222,9 +292,12 @@ extern struct task_group root_task_group;
 	.journal_info	= NULL,						\
 	.cpu_timers	= INIT_CPU_TIMERS(tsk.cpu_timers),		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.fs_excl	= ATOMIC_INIT(0),				\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.pi_lock	= __RAW_SPIN_LOCK_UNLOCKED(tsk.pi_lock),	\
 	.timer_slack_ns = 50000, /* 50 usec default slack */		\
 	.pids = {							\
@@ -234,9 +307,13 @@ extern struct task_group root_task_group;
 	},								\
 	.thread_group	= LIST_HEAD_INIT(tsk.thread_group),		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dirties = INIT_PROP_LOCAL_SINGLE(dirties),			\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.thread_node	= LIST_HEAD_INIT(init_signals.thread_head),	\
+>>>>>>> refs/remotes/origin/master
 	INIT_IDS							\
 	INIT_PERF_EVENTS(tsk)						\
 	INIT_TRACE_IRQFLAGS						\
@@ -244,7 +321,13 @@ extern struct task_group root_task_group;
 	INIT_FTRACE_GRAPH						\
 	INIT_TRACE_RECURSION						\
 	INIT_TASK_RCU_PREEMPT(tsk)					\
+<<<<<<< HEAD
 	INIT_CPUSET_SEQ							\
+=======
+	INIT_CPUSET_SEQ(tsk)						\
+	INIT_RT_MUTEXES(tsk)						\
+	INIT_VTIME(tsk)							\
+>>>>>>> refs/remotes/origin/master
 }
 
 

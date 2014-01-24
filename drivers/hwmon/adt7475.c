@@ -20,6 +20,10 @@
 #include <linux/hwmon-sysfs.h>
 #include <linux/hwmon-vid.h>
 #include <linux/err.h>
+<<<<<<< HEAD
+=======
+#include <linux/jiffies.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Indexes for the sysfs hooks */
 
@@ -33,15 +37,21 @@
 #define HYSTERSIS	6
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* These are unique identifiers for the sysfs functions - unlike the
    numbers above, these are not also indexes into an array
 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * These are unique identifiers for the sysfs functions - unlike the
  * numbers above, these are not also indexes into an array
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define ALARM		9
 #define FAULT		10
@@ -206,10 +216,17 @@ static inline u16 temp2reg(struct adt7475_data *data, long val)
 	u16 ret;
 
 	if (!(data->config5 & CONFIG5_TWOSCOMP)) {
+<<<<<<< HEAD
 		val = SENSORS_LIMIT(val, -64000, 191000);
 		ret = (val + 64500) / 1000;
 	} else {
 		val = SENSORS_LIMIT(val, -128000, 127000);
+=======
+		val = clamp_val(val, -64000, 191000);
+		ret = (val + 64500) / 1000;
+	} else {
+		val = clamp_val(val, -128000, 127000);
+>>>>>>> refs/remotes/origin/master
 		if (val < -500)
 			ret = (256500 + val) / 1000;
 		else
@@ -245,7 +262,11 @@ static inline u16 rpm2tach(unsigned long rpm)
 	if (rpm == 0)
 		return 0;
 
+<<<<<<< HEAD
 	return SENSORS_LIMIT((90000 * 60) / rpm, 1, 0xFFFF);
+=======
+	return clamp_val((90000 * 60) / rpm, 1, 0xFFFF);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* Scaling factors for voltage inputs, taken from the ADT7490 datasheet */
@@ -276,7 +297,11 @@ static inline u16 volt2reg(int channel, long volt, u8 bypass_attn)
 		reg = (volt * 1024) / 2250;
 	else
 		reg = (volt * r[1] * 1024) / ((r[0] + r[1]) * 2250);
+<<<<<<< HEAD
 	return SENSORS_LIMIT(reg, 0, 1023) & (0xff << 2);
+=======
+	return clamp_val(reg, 0, 1023) & (0xff << 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static u16 adt7475_read_word(struct i2c_client *client, int reg)
@@ -296,14 +321,20 @@ static void adt7475_write_word(struct i2c_client *client, int reg, u16 val)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Find the nearest value in a table - used for pwm frequency and
    auto temp range */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Find the nearest value in a table - used for pwm frequency and
  * auto temp range
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int find_nearest(long val, const int *array, int size)
 {
 	int i;
@@ -358,10 +389,14 @@ static ssize_t set_voltage(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -404,14 +439,20 @@ static ssize_t show_temp(struct device *dev, struct device_attribute *attr,
 		else
 			out = (out & 0xF);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Show the value as an absolute number tied to
 		 * THERM */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Show the value as an absolute number tied to
 		 * THERM
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		out = reg2temp(data, data->temp[THERM][sattr->index]) -
 			out * 1000;
 		mutex_unlock(&data->lock);
@@ -419,14 +460,20 @@ static ssize_t show_temp(struct device *dev, struct device_attribute *attr,
 
 	case OFFSET:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* Offset is always 2's complement, regardless of the
 		 * setting in CONFIG5 */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * Offset is always 2's complement, regardless of the
 		 * setting in CONFIG5
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&data->lock);
 		out = (s8)data->temp[sattr->nr][sattr->index];
 		if (data->config5 & CONFIG5_TEMPOFFSET)
@@ -465,10 +512,14 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -479,24 +530,37 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *attr,
 	switch (sattr->nr) {
 	case OFFSET:
 		if (data->config5 & CONFIG5_TEMPOFFSET) {
+<<<<<<< HEAD
 			val = SENSORS_LIMIT(val, -63000, 127000);
 			out = data->temp[OFFSET][sattr->index] = val / 1000;
 		} else {
 			val = SENSORS_LIMIT(val, -63000, 64000);
+=======
+			val = clamp_val(val, -63000, 127000);
+			out = data->temp[OFFSET][sattr->index] = val / 1000;
+		} else {
+			val = clamp_val(val, -63000, 64000);
+>>>>>>> refs/remotes/origin/master
 			out = data->temp[OFFSET][sattr->index] = val / 500;
 		}
 		break;
 
 	case HYSTERSIS:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* The value will be given as an absolute value, turn it
 		   into an offset based on THERM */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The value will be given as an absolute value, turn it
 		 * into an offset based on THERM
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* Read fresh THERM and HYSTERSIS values from the chip */
 		data->temp[THERM][sattr->index] =
@@ -504,7 +568,11 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *attr,
 		adt7475_read_hystersis(client);
 
 		temp = reg2temp(data, data->temp[THERM][sattr->index]);
+<<<<<<< HEAD
 		val = SENSORS_LIMIT(val, temp - 15000, temp);
+=======
+		val = clamp_val(val, temp - 15000, temp);
+>>>>>>> refs/remotes/origin/master
 		val = (temp - val) / 1000;
 
 		if (sattr->index != 1) {
@@ -522,14 +590,20 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *attr,
 		data->temp[sattr->nr][sattr->index] = temp2reg(data, val);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* We maintain an extra 2 digits of precision for simplicity
 		 * - shift those back off before writing the value */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * We maintain an extra 2 digits of precision for simplicity
 		 * - shift those back off before writing the value
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		out = (u8) (data->temp[sattr->nr][sattr->index] >> 2);
 	}
 
@@ -565,14 +639,20 @@ static ssize_t set_temp(struct device *dev, struct device_attribute *attr,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Table of autorange values - the user will write the value in millidegrees,
    and we'll convert it */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Table of autorange values - the user will write the value in millidegrees,
  * and we'll convert it
  */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static const int autorange_table[] = {
 	2000, 2500, 3330, 4000, 5000, 6670, 8000,
 	10000, 13330, 16000, 20000, 26670, 32000, 40000,
@@ -604,10 +684,14 @@ static ssize_t set_point2(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -620,16 +704,24 @@ static ssize_t set_point2(struct device *dev, struct device_attribute *attr,
 		adt7475_read(TEMP_TRANGE_REG(sattr->index));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* The user will write an absolute value, so subtract the start point
 	   to figure the range */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * The user will write an absolute value, so subtract the start point
 	 * to figure the range
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 	temp = reg2temp(data, data->temp[AUTOMIN][sattr->index]);
 	val = SENSORS_LIMIT(val, temp + autorange_table[0],
+=======
+	temp = reg2temp(data, data->temp[AUTOMIN][sattr->index]);
+	val = clamp_val(val, temp + autorange_table[0],
+>>>>>>> refs/remotes/origin/master
 		temp + autorange_table[ARRAY_SIZE(autorange_table) - 1]);
 	val -= temp;
 
@@ -671,10 +763,14 @@ static ssize_t set_tach(struct device *dev, struct device_attribute *attr,
 	unsigned long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtoul(buf, 10, &val))
 =======
 	if (kstrtoul(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtoul(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -726,10 +822,14 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -741,14 +841,20 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *attr,
 			adt7475_read(PWM_CONFIG_REG(sattr->index));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* If we are not in manual mode, then we shouldn't allow
 		 * the user to set the pwm speed */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * If we are not in manual mode, then we shouldn't allow
 		 * the user to set the pwm speed
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (((data->pwm[CONTROL][sattr->index] >> 5) & 7) != 7) {
 			mutex_unlock(&data->lock);
 			return count;
@@ -766,7 +872,11 @@ static ssize_t set_pwm(struct device *dev, struct device_attribute *attr,
 		break;
 	}
 
+<<<<<<< HEAD
 	data->pwm[sattr->nr][sattr->index] = SENSORS_LIMIT(val, 0, 0xFF);
+=======
+	data->pwm[sattr->nr][sattr->index] = clamp_val(val, 0, 0xFF);
+>>>>>>> refs/remotes/origin/master
 	i2c_smbus_write_byte_data(client, reg,
 				  data->pwm[sattr->nr][sattr->index]);
 
@@ -842,10 +952,14 @@ static ssize_t set_pwmchan(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -869,10 +983,14 @@ static ssize_t set_pwmctrl(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	mutex_lock(&data->lock);
@@ -911,10 +1029,14 @@ static ssize_t set_pwmfreq(struct device *dev, struct device_attribute *attr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 
 	out = find_nearest(val, pwmfreq_table, ARRAY_SIZE(pwmfreq_table));
@@ -949,10 +1071,14 @@ static ssize_t set_pwm_at_crit(struct device *dev,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (val != 0 && val != 1)
 		return -EINVAL;
@@ -983,10 +1109,14 @@ static ssize_t set_vrm(struct device *dev, struct device_attribute *devattr,
 	long val;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (strict_strtol(buf, 10, &val))
 =======
 	if (kstrtol(buf, 10, &val))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (kstrtol(buf, 10, &val))
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	if (val < 0 || val > 255)
 		return -EINVAL;
@@ -1336,10 +1466,14 @@ static int adt7475_probe(struct i2c_client *client,
 			 const struct i2c_device_id *id)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static const char *names[] = {
 =======
 	static const char * const names[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	static const char * const names[] = {
+>>>>>>> refs/remotes/origin/master
 		[adt7473] = "ADT7473",
 		[adt7475] = "ADT7475",
 		[adt7476] = "ADT7476",
@@ -1350,7 +1484,11 @@ static int adt7475_probe(struct i2c_client *client,
 	int i, ret = 0, revision;
 	u8 config2, config3;
 
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+=======
+	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL)
 		return -ENOMEM;
 
@@ -1388,16 +1526,22 @@ static int adt7475_probe(struct i2c_client *client,
 		data->has_fan4 = 1;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* THERM configuration is more complex on the ADT7476 and ADT7490,
 	   because 2 different pins (TACH4 and +2.5 Vin) can be used for
 	   this function */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * THERM configuration is more complex on the ADT7476 and ADT7490,
 	 * because 2 different pins (TACH4 and +2.5 Vin) can be used for
 	 * this function
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (id->driver_data == adt7490) {
 		if ((data->config4 & CONFIG4_PINFUNC) == 0x1 &&
 		    !(config3 & CONFIG3_THERM))
@@ -1410,14 +1554,20 @@ static int adt7475_probe(struct i2c_client *client,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* On the ADT7476, the +12V input pin may instead be used as VID5,
 	   and VID pins may alternatively be used as GPIO */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * On the ADT7476, the +12V input pin may instead be used as VID5,
 	 * and VID pins may alternatively be used as GPIO
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (id->driver_data == adt7476) {
 		u8 vid = adt7475_read(REG_VID);
 		if (!(vid & VID_VIDSEL))
@@ -1437,20 +1587,30 @@ static int adt7475_probe(struct i2c_client *client,
 	data->bypass_attn &= data->has_voltage;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Call adt7475_read_pwm for all pwm's as this will reprogram any
 	   pwm's which are disabled to manual mode with 0% duty cycle */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Call adt7475_read_pwm for all pwm's as this will reprogram any
 	 * pwm's which are disabled to manual mode with 0% duty cycle
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < ADT7475_PWM_COUNT; i++)
 		adt7475_read_pwm(client, i);
 
 	ret = sysfs_create_group(&client->dev.kobj, &adt7475_attr_group);
 	if (ret)
+<<<<<<< HEAD
 		goto efree;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* Features that can be disabled individually */
 	if (data->has_fan4) {
@@ -1516,8 +1676,11 @@ static int adt7475_probe(struct i2c_client *client,
 
 eremove:
 	adt7475_remove_files(client, data);
+<<<<<<< HEAD
 efree:
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -1527,7 +1690,10 @@ static int adt7475_remove(struct i2c_client *client)
 
 	hwmon_device_unregister(data->hwmon_dev);
 	adt7475_remove_files(client, data);
+<<<<<<< HEAD
 	kfree(data);
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -1561,14 +1727,20 @@ static void adt7475_read_pwm(struct i2c_client *client, int index)
 	data->pwm[CONTROL][index] = adt7475_read(PWM_CONFIG_REG(index));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Figure out the internal value for pwmctrl and pwmchan
 	   based on the current settings */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Figure out the internal value for pwmctrl and pwmchan
 	 * based on the current settings
 	 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	v = (data->pwm[CONTROL][index] >> 5) & 7;
 
 	if (v == 3)
@@ -1577,17 +1749,23 @@ static void adt7475_read_pwm(struct i2c_client *client, int index)
 		data->pwmctl[index] = 1;
 	else if (v == 4) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		/* The fan is disabled - we don't want to
 		   support that, so change to manual mode and
 		   set the duty cycle to 0 instead
 		*/
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		/*
 		 * The fan is disabled - we don't want to
 		 * support that, so change to manual mode and
 		 * set the duty cycle to 0 instead
 		 */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		data->pwm[INPUT][index] = 0;
 		data->pwm[CONTROL][index] &= ~0xE0;
 		data->pwm[CONTROL][index] |= (7 << 5);
@@ -1745,6 +1923,7 @@ static struct adt7475_data *adt7475_update_device(struct device *dev)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init sensors_adt7475_init(void)
 {
 	return i2c_add_driver(&adt7475_driver);
@@ -1757,13 +1936,19 @@ static void __exit sensors_adt7475_exit(void)
 =======
 module_i2c_driver(adt7475_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_i2c_driver(adt7475_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Advanced Micro Devices, Inc");
 MODULE_DESCRIPTION("adt7475 driver");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 module_init(sensors_adt7475_init);
 module_exit(sensors_adt7475_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

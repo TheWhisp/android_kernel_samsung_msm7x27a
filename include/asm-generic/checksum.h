@@ -34,21 +34,35 @@ extern __wsum csum_partial_copy_from_user(const void __user *src, void *dst,
 					int len, __wsum sum, int *csum_err);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define csum_partial_copy_nocheck(src, dst, len, sum)	\
 	csum_partial_copy((src), (dst), (len), (sum))
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef csum_partial_copy_nocheck
 #define csum_partial_copy_nocheck(src, dst, len, sum)	\
 	csum_partial_copy((src), (dst), (len), (sum))
 #endif
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+
+#ifndef ip_fast_csum
+>>>>>>> refs/remotes/origin/master
 /*
  * This is a version of ip_compute_csum() optimized for IP headers,
  * which always checksum on 4 octet boundaries.
  */
 extern __sum16 ip_fast_csum(const void *iph, unsigned int ihl);
+<<<<<<< HEAD
 
+=======
+#endif
+
+#ifndef csum_fold
+>>>>>>> refs/remotes/origin/master
 /*
  * Fold a partial checksum
  */
@@ -59,6 +73,10 @@ static inline __sum16 csum_fold(__wsum csum)
 	sum = (sum & 0xffff) + (sum >> 16);
 	return (__force __sum16)~sum;
 }
+<<<<<<< HEAD
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 #ifndef csum_tcpudp_nofold
 /*
@@ -71,9 +89,13 @@ csum_tcpudp_nofold(__be32 saddr, __be32 daddr, unsigned short len,
 #endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifndef csum_tcpudp_magic
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifndef csum_tcpudp_magic
+>>>>>>> refs/remotes/origin/master
 static inline __sum16
 csum_tcpudp_magic(__be32 saddr, __be32 daddr, unsigned short len,
 		  unsigned short proto, __wsum sum)
@@ -81,9 +103,13 @@ csum_tcpudp_magic(__be32 saddr, __be32 daddr, unsigned short len,
 	return csum_fold(csum_tcpudp_nofold(saddr, daddr, len, proto, sum));
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /*
  * this routine is used for miscellaneous IP-like checksums, mainly

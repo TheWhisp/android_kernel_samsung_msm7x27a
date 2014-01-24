@@ -58,7 +58,11 @@ again:
 		if (!walk->pte_entry)
 			continue;
 
+<<<<<<< HEAD
 		split_huge_page_pmd(walk->mm, pmd);
+=======
+		split_huge_page_pmd_mm(walk->mm, addr, pmd);
+>>>>>>> refs/remotes/origin/master
 		if (pmd_none_or_trans_huge_or_clear_bad(pmd))
 			goto again;
 		err = walk_pte_range(pmd, addr, next, walk);
@@ -127,8 +131,11 @@ static int walk_hugetlb_range(struct vm_area_struct *vma,
 	return 0;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 #else /* CONFIG_HUGETLB_PAGE */
 static int walk_hugetlb_range(struct vm_area_struct *vma,
@@ -141,11 +148,17 @@ static int walk_hugetlb_range(struct vm_area_struct *vma,
 #endif /* CONFIG_HUGETLB_PAGE */
 
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /**
  * walk_page_range - walk a memory map's page tables with a callback
  * @mm: memory map to walk
+=======
+
+/**
+ * walk_page_range - walk a memory map's page tables with a callback
+>>>>>>> refs/remotes/origin/master
  * @addr: starting address
  * @end: ending address
  * @walk: set of callbacks to invoke for each level of the tree
@@ -160,21 +173,32 @@ static int walk_hugetlb_range(struct vm_area_struct *vma,
  * the ->private or ->mm fields.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * No locks are taken, but the bottom level iterator will map PTE
 =======
  * Usually no locks are taken, but splitting transparent huge page may
  * take page table lock. And the bottom level iterator will map PTE
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Usually no locks are taken, but splitting transparent huge page may
+ * take page table lock. And the bottom level iterator will map PTE
+>>>>>>> refs/remotes/origin/master
  * directories from highmem if necessary.
  *
  * If any callback returns a non-zero value, the walk is aborted and
  * the return value is propagated back to the caller. Otherwise 0 is returned.
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
  *
  * walk->mm->mmap_sem must be held for at least read if walk->hugetlb_entry
  * is !NULL.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *
+ * walk->mm->mmap_sem must be held for at least read if walk->hugetlb_entry
+ * is !NULL.
+>>>>>>> refs/remotes/origin/master
  */
 int walk_page_range(unsigned long addr, unsigned long end,
 		    struct mm_walk *walk)
@@ -189,6 +213,7 @@ int walk_page_range(unsigned long addr, unsigned long end,
 	if (!walk->mm)
 		return -EINVAL;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	pgd = pgd_offset(walk->mm, addr);
 	do {
@@ -218,6 +243,8 @@ int walk_page_range(unsigned long addr, unsigned long end,
 		}
 #endif
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	VM_BUG_ON(!rwsem_is_locked(&walk->mm->mmap_sem));
 
 	pgd = pgd_offset(walk->mm, addr);
@@ -267,7 +294,10 @@ int walk_page_range(unsigned long addr, unsigned long end,
 			}
 		}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (pgd_none_or_clear_bad(pgd)) {
 			if (walk->pte_hole)
 				err = walk->pte_hole(addr, next, walk);
@@ -284,7 +314,11 @@ int walk_page_range(unsigned long addr, unsigned long end,
 		if (err)
 			break;
 		pgd++;
+<<<<<<< HEAD
 	} while (addr = next, addr != end);
+=======
+	} while (addr = next, addr < end);
+>>>>>>> refs/remotes/origin/master
 
 	return err;
 }

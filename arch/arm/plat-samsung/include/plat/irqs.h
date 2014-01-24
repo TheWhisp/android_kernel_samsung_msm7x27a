@@ -44,6 +44,7 @@
 #define S5P_IRQ_VIC2(x)		(S5P_VIC2_BASE + (x))
 #define S5P_IRQ_VIC3(x)		(S5P_VIC3_BASE + (x))
 
+<<<<<<< HEAD
 #define S5P_TIMER_IRQ(x)	(IRQ_TIMER_BASE + (x))
 
 #define IRQ_TIMER0		S5P_TIMER_IRQ(0)
@@ -53,6 +54,8 @@
 #define IRQ_TIMER4		S5P_TIMER_IRQ(4)
 #define IRQ_TIMER_COUNT		(5)
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define IRQ_EINT(x)		((x) < 16 ? ((x) + S5P_EINT_BASE1) \
 					: ((x) - 16 + S5P_EINT_BASE2))
 

@@ -24,9 +24,13 @@
 #include <linux/pm_runtime.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/clock.h>
 #include <asm/siu.h>
@@ -116,11 +120,14 @@ static void siu_dai_start(struct siu_port *port_info)
 	dev_dbg(port_info->pcm->card->dev, "%s\n", __func__);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Turn on SIU clock */
 	pm_runtime_get_sync(info->dev);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Issue software reset to siu */
 	siu_write32(base + SIU_SRCTL, 0);
 
@@ -165,11 +172,14 @@ static void siu_dai_stop(struct siu_port *port_info)
 	/* SIU software reset */
 	siu_write32(base + SIU_SRCTL, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/* Turn off SIU clock */
 	pm_runtime_put_sync(info->dev);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void siu_dai_spbAselect(struct siu_port *port_info)
@@ -558,7 +568,12 @@ static void siu_dai_shutdown(struct snd_pcm_substream *substream,
 	/* Stop the siu if the other stream is not using it */
 	if (!port_info->play_cap) {
 		/* during stmread or stmwrite ? */
+<<<<<<< HEAD
 		BUG_ON(port_info->playback.rw_flg || port_info->capture.rw_flg);
+=======
+		if (WARN_ON(port_info->playback.rw_flg || port_info->capture.rw_flg))
+			return;
+>>>>>>> refs/remotes/origin/master
 		siu_dai_spbstop(port_info);
 		siu_dai_stop(port_info);
 	}
@@ -717,10 +732,14 @@ epclkget:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops siu_dai_ops = {
 =======
 static const struct snd_soc_dai_ops siu_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops siu_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 	.startup	= siu_dai_startup,
 	.shutdown	= siu_dai_shutdown,
 	.prepare	= siu_dai_prepare,
@@ -745,7 +764,15 @@ static struct snd_soc_dai_driver siu_i2s_dai = {
 	.ops = &siu_dai_ops,
 };
 
+<<<<<<< HEAD
 static int __devinit siu_probe(struct platform_device *pdev)
+=======
+static const struct snd_soc_component_driver siu_i2s_component = {
+	.name		= "siu-i2s",
+};
+
+static int siu_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	const struct firmware *fw_entry;
 	struct resource *res, *region;
@@ -802,7 +829,12 @@ static int __devinit siu_probe(struct platform_device *pdev)
 	dev_set_drvdata(&pdev->dev, info);
 
 	/* register using ARRAY version so we can keep dai name */
+<<<<<<< HEAD
 	ret = snd_soc_register_dais(&pdev->dev, &siu_i2s_dai, 1);
+=======
+	ret = snd_soc_register_component(&pdev->dev, &siu_i2s_component,
+					 &siu_i2s_dai, 1);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		goto edaiinit;
 
@@ -815,7 +847,11 @@ static int __devinit siu_probe(struct platform_device *pdev)
 	return ret;
 
 esocregp:
+<<<<<<< HEAD
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 edaiinit:
 	iounmap(info->reg);
 emapreg:
@@ -834,7 +870,11 @@ ereqfw:
 	return ret;
 }
 
+<<<<<<< HEAD
 static int __devexit siu_remove(struct platform_device *pdev)
+=======
+static int siu_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct siu_info *info = dev_get_drvdata(&pdev->dev);
 	struct resource *res;
@@ -842,7 +882,11 @@ static int __devexit siu_remove(struct platform_device *pdev)
 	pm_runtime_disable(&pdev->dev);
 
 	snd_soc_unregister_platform(&pdev->dev);
+<<<<<<< HEAD
 	snd_soc_unregister_dai(&pdev->dev);
+=======
+	snd_soc_unregister_component(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 
 	iounmap(info->reg);
 	iounmap(info->yram);
@@ -862,6 +906,7 @@ static struct platform_driver siu_driver = {
 		.name	= "siu-pcm-audio",
 	},
 	.probe		= siu_probe,
+<<<<<<< HEAD
 	.remove		= __devexit_p(siu_remove),
 };
 
@@ -881,6 +926,12 @@ module_exit(siu_exit)
 =======
 module_platform_driver(siu_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove		= siu_remove,
+};
+
+module_platform_driver(siu_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Carlos Munoz <carlos@kenati.com>");
 MODULE_DESCRIPTION("ALSA SoC SH7722 SIU driver");

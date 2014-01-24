@@ -4,10 +4,14 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/mm.h>
@@ -33,10 +37,14 @@
 #include <asm/head.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/tlbflush.h>
 #include <asm/mmu_context.h>
 #include <asm/cpudata.h>
@@ -95,7 +103,11 @@ extern void setup_sparc64_timer(void);
 
 static volatile unsigned long callin_flag = 0;
 
+<<<<<<< HEAD
 void __cpuinit smp_callin(void)
+=======
+void smp_callin(void)
+>>>>>>> refs/remotes/origin/master
 {
 	int cpuid = hard_smp_processor_id();
 
@@ -111,8 +123,11 @@ void __cpuinit smp_callin(void)
 	if (cheetah_pcache_forced_on)
 		cheetah_enable_pcache();
 
+<<<<<<< HEAD
 	local_irq_enable();
 
+=======
+>>>>>>> refs/remotes/origin/master
 	callin_flag = 1;
 	__asm__ __volatile__("membar #Sync\n\t"
 			     "flush  %%g6" : : : "memory");
@@ -132,12 +147,23 @@ void __cpuinit smp_callin(void)
 	while (!cpumask_test_cpu(cpuid, &smp_commenced_mask))
 		rmb();
 
+<<<<<<< HEAD
 	ipi_call_lock_irq();
 	set_cpu_online(cpuid, true);
 	ipi_call_unlock_irq();
 
 	/* idle thread is expected to have preempt disabled */
 	preempt_disable();
+=======
+	set_cpu_online(cpuid, true);
+
+	/* idle thread is expected to have preempt disabled */
+	preempt_disable();
+
+	local_irq_enable();
+
+	cpu_startup_entry(CPUHP_ONLINE);
+>>>>>>> refs/remotes/origin/master
 }
 
 void cpu_panic(void)
@@ -290,7 +316,12 @@ static unsigned long kimage_addr_to_ra(void *p)
 	return kern_base + (val - KERNBASE);
 }
 
+<<<<<<< HEAD
 static void __cpuinit ldom_startcpu_cpuid(unsigned int cpu, unsigned long thread_reg, void **descrp)
+=======
+static void ldom_startcpu_cpuid(unsigned int cpu, unsigned long thread_reg,
+				void **descrp)
+>>>>>>> refs/remotes/origin/master
 {
 	extern unsigned long sparc64_ttable_tl0;
 	extern unsigned long kern_locked_tte_data;
@@ -351,12 +382,17 @@ extern unsigned long sparc64_cpu_startup;
  */
 static struct thread_info *cpu_new_thread = NULL;
 
+<<<<<<< HEAD
 static int __cpuinit smp_boot_one_cpu(unsigned int cpu)
+=======
+static int smp_boot_one_cpu(unsigned int cpu, struct task_struct *idle)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long entry =
 		(unsigned long)(&sparc64_cpu_startup);
 	unsigned long cookie =
 		(unsigned long)(&cpu_new_thread);
+<<<<<<< HEAD
 	struct task_struct *p;
 	void *descr = NULL;
 	int timeout, ret;
@@ -366,6 +402,13 @@ static int __cpuinit smp_boot_one_cpu(unsigned int cpu)
 		return PTR_ERR(p);
 	callin_flag = 0;
 	cpu_new_thread = task_thread_info(p);
+=======
+	void *descr = NULL;
+	int timeout, ret;
+
+	callin_flag = 0;
+	cpu_new_thread = task_thread_info(idle);
+>>>>>>> refs/remotes/origin/master
 
 	if (tlb_type == hypervisor) {
 #if defined(CONFIG_SUN_LDOMS) && defined(CONFIG_HOTPLUG_CPU)
@@ -849,10 +892,14 @@ static void tsb_sync(void *info)
 	struct mm_struct *mm = info;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* It is not valid to test "currrent->active_mm == mm" here.
 =======
 	/* It is not valid to test "current->active_mm == mm" here.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* It is not valid to test "current->active_mm == mm" here.
+>>>>>>> refs/remotes/origin/master
 	 *
 	 * The value of "current" is not changed atomically with
 	 * switch_mm().  But that's OK, we just need to check the
@@ -871,6 +918,11 @@ extern unsigned long xcall_flush_tlb_mm;
 extern unsigned long xcall_flush_tlb_page;
 extern unsigned long xcall_flush_tlb_kernel_range;
 extern unsigned long xcall_fetch_glob_regs;
+<<<<<<< HEAD
+=======
+extern unsigned long xcall_fetch_glob_pmu;
+extern unsigned long xcall_fetch_glob_pmu_n4;
+>>>>>>> refs/remotes/origin/master
 extern unsigned long xcall_receive_signal;
 extern unsigned long xcall_new_mmu_context_version;
 #ifdef CONFIG_KGDB
@@ -1019,6 +1071,18 @@ void smp_fetch_global_regs(void)
 	smp_cross_call(&xcall_fetch_glob_regs, 0, 0, 0);
 }
 
+<<<<<<< HEAD
+=======
+void smp_fetch_global_pmu(void)
+{
+	if (tlb_type == hypervisor &&
+	    sun4v_chip_type >= SUN4V_CHIP_NIAGARA4)
+		smp_cross_call(&xcall_fetch_glob_pmu_n4, 0, 0, 0);
+	else
+		smp_cross_call(&xcall_fetch_glob_pmu, 0, 0, 0);
+}
+
+>>>>>>> refs/remotes/origin/master
 /* We know that the window frames of the user have been flushed
  * to the stack before we get here because all callers of us
  * are flush_tlb_*() routines, and these run after flush_cache_*()
@@ -1221,7 +1285,11 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
 {
 }
 
+<<<<<<< HEAD
 void __devinit smp_prepare_boot_cpu(void)
+=======
+void smp_prepare_boot_cpu(void)
+>>>>>>> refs/remotes/origin/master
 {
 }
 
@@ -1235,7 +1303,11 @@ void __init smp_setup_processor_id(void)
 		xcall_deliver_impl = hypervisor_xcall_deliver;
 }
 
+<<<<<<< HEAD
 void __devinit smp_fill_in_sib_core_maps(void)
+=======
+void smp_fill_in_sib_core_maps(void)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned int i;
 
@@ -1272,9 +1344,15 @@ void __devinit smp_fill_in_sib_core_maps(void)
 	}
 }
 
+<<<<<<< HEAD
 int __cpuinit __cpu_up(unsigned int cpu)
 {
 	int ret = smp_boot_one_cpu(cpu);
+=======
+int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+{
+	int ret = smp_boot_one_cpu(cpu, tidle);
+>>>>>>> refs/remotes/origin/master
 
 	if (!ret) {
 		cpumask_set_cpu(cpu, &smp_commenced_mask);
@@ -1357,9 +1435,13 @@ int __cpu_disable(void)
 	mdelay(1);
 	local_irq_disable();
 
+<<<<<<< HEAD
 	ipi_call_lock();
 	set_cpu_online(cpu, false);
 	ipi_call_unlock();
+=======
+	set_cpu_online(cpu, false);
+>>>>>>> refs/remotes/origin/master
 
 	cpu_map_rebuild();
 
@@ -1406,8 +1488,18 @@ void __init smp_cpus_done(unsigned int max_cpus)
 
 void smp_send_reschedule(int cpu)
 {
+<<<<<<< HEAD
 	xcall_deliver((u64) &xcall_receive_signal, 0, 0,
 		      cpumask_of(cpu));
+=======
+	if (cpu == smp_processor_id()) {
+		WARN_ON_ONCE(preemptible());
+		set_softint(1 << PIL_SMP_RECEIVE_SIGNAL);
+	} else {
+		xcall_deliver((u64) &xcall_receive_signal,
+			      0, 0, cpumask_of(cpu));
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 void __irq_entry smp_receive_signal_client(int irq, struct pt_regs *regs)

@@ -22,6 +22,7 @@
  * shared by CPUs, and so precious, and establishing them requires IPI.
  * Atomic kmaps are lightweight and we may have NCPUS more of them.
  */
+<<<<<<< HEAD
 #include <linux/mm.h>
 #include <linux/highmem.h>
 <<<<<<< HEAD
@@ -38,6 +39,35 @@ void *__kmap_atomic(struct page *page)
 =======
 void *kmap_atomic(struct page *page)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/highmem.h>
+#include <linux/export.h>
+#include <linux/mm.h>
+
+#include <asm/cacheflush.h>
+#include <asm/tlbflush.h>
+#include <asm/pgalloc.h>
+#include <asm/vaddrs.h>
+
+pgprot_t kmap_prot;
+
+static pte_t *kmap_pte;
+
+void __init kmap_init(void)
+{
+	unsigned long address;
+	pmd_t *dir;
+
+	address = __fix_to_virt(FIX_KMAP_BEGIN);
+	dir = pmd_offset(pgd_offset_k(address), address);
+
+        /* cache the first kmap pte */
+        kmap_pte = pte_offset_kernel(dir, address);
+        kmap_prot = __pgprot(SRMMU_ET_PTE | SRMMU_PRIV | SRMMU_CACHE);
+}
+
+void *kmap_atomic(struct page *page)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned long vaddr;
 	long idx, type;
@@ -72,10 +102,14 @@ void *kmap_atomic(struct page *page)
 	return (void*) vaddr;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 EXPORT_SYMBOL(__kmap_atomic);
 =======
 EXPORT_SYMBOL(kmap_atomic);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL(kmap_atomic);
+>>>>>>> refs/remotes/origin/master
 
 void __kunmap_atomic(void *kvaddr)
 {
@@ -121,6 +155,7 @@ void __kunmap_atomic(void *kvaddr)
 	pagefault_enable();
 }
 EXPORT_SYMBOL(__kunmap_atomic);
+<<<<<<< HEAD
 
 /* We may be fed a pagetable here by ptep_to_xxx and others. */
 struct page *kmap_atomic_to_page(void *ptr)
@@ -139,3 +174,5 @@ struct page *kmap_atomic_to_page(void *ptr)
 	pte = kmap_pte - (idx - FIX_KMAP_BEGIN);
 	return pte_page(*pte);
 }
+=======
+>>>>>>> refs/remotes/origin/master

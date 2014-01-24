@@ -14,10 +14,13 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: ni_atmio
@@ -93,17 +96,27 @@ are not supported.
 
 */
 
+<<<<<<< HEAD
 #include <linux/interrupt.h>
 #include "../comedidev.h"
 
 #include <linux/delay.h>
+=======
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include "../comedidev.h"
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/isapnp.h>
 
 #include "ni_stc.h"
 #include "8255.h"
 
+<<<<<<< HEAD
 #undef DEBUG
 
+=======
+>>>>>>> refs/remotes/origin/master
 #define ATMIO 1
 #undef PCIMIO
 
@@ -269,6 +282,7 @@ static const struct ni_board_struct ni_boards[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const int ni_irqpin[] =
     { -1, -1, -1, 0, 1, 2, -1, 3, -1, -1, 4, 5, 6, -1, -1, 7 };
 =======
@@ -276,6 +290,11 @@ static const int ni_irqpin[] = {
 	-1, -1, -1, 0, 1, 2, -1, 3, -1, -1, 4, 5, 6, -1, -1, 7
 };
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const int ni_irqpin[] = {
+	-1, -1, -1, 0, 1, 2, -1, 3, -1, -1, 4, 5, 6, -1, -1, 7
+};
+>>>>>>> refs/remotes/origin/master
 
 #define interrupt_pin(a)	(ni_irqpin[(a)])
 
@@ -286,15 +305,21 @@ static const int ni_irqpin[] = {
 struct ni_private {
 	struct pnp_dev *isapnp_dev;
 <<<<<<< HEAD
+<<<<<<< HEAD
  NI_PRIVATE_COMMON};
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	NI_PRIVATE_COMMON
 
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 #define devpriv ((struct ni_private *)dev->private)
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* How we access registers */
 
 #define ni_writel(a, b)		(outl((a), (b)+dev->iobase))
@@ -312,6 +337,10 @@ struct ni_private {
 
 static void ni_atmio_win_out(struct comedi_device *dev, uint16_t data, int addr)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 
 	spin_lock_irqsave(&devpriv->window_lock, flags);
@@ -326,6 +355,10 @@ static void ni_atmio_win_out(struct comedi_device *dev, uint16_t data, int addr)
 
 static uint16_t ni_atmio_win_in(struct comedi_device *dev, int addr)
 {
+<<<<<<< HEAD
+=======
+	struct ni_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	unsigned long flags;
 	uint16_t ret;
 
@@ -352,6 +385,7 @@ static struct pnp_device_id device_ids[] = {
 
 MODULE_DEVICE_TABLE(pnp, device_ids);
 
+<<<<<<< HEAD
 static int ni_atmio_attach(struct comedi_device *dev,
 			   struct comedi_devconfig *it);
 static int ni_atmio_detach(struct comedi_device *dev);
@@ -395,12 +429,20 @@ static int ni_atmio_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+#include "ni_mio_common.c"
+
+>>>>>>> refs/remotes/origin/master
 static int ni_isapnp_find_board(struct pnp_dev **dev)
 {
 	struct pnp_dev *isapnp_dev = NULL;
 	int i;
 
+<<<<<<< HEAD
 	for (i = 0; i < n_ni_boards; i++) {
+=======
+	for (i = 0; i < ARRAY_SIZE(ni_boards); i++) {
+>>>>>>> refs/remotes/origin/master
 		isapnp_dev = pnp_find_dev(NULL,
 					  ISAPNP_VENDOR('N', 'I', 'C'),
 					  ISAPNP_FUNCTION(ni_boards[i].
@@ -427,25 +469,64 @@ static int ni_isapnp_find_board(struct pnp_dev **dev)
 		}
 		break;
 	}
+<<<<<<< HEAD
 	if (i == n_ni_boards)
+=======
+	if (i == ARRAY_SIZE(ni_boards))
+>>>>>>> refs/remotes/origin/master
 		return -ENODEV;
 	*dev = isapnp_dev;
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ni_atmio_attach(struct comedi_device *dev,
 			   struct comedi_devconfig *it)
 {
+=======
+static int ni_getboardtype(struct comedi_device *dev)
+{
+	int device_id = ni_read_eeprom(dev, 511);
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(ni_boards); i++) {
+		if (ni_boards[i].device_id == device_id)
+			return i;
+
+	}
+	if (device_id == 255)
+		printk(" can't find board\n");
+	 else if (device_id == 0)
+		printk(" EEPROM read error (?) or device not found\n");
+	 else
+		printk(" unknown device ID %d -- contact author\n", device_id);
+
+	return -1;
+}
+
+static int ni_atmio_attach(struct comedi_device *dev,
+			   struct comedi_devconfig *it)
+{
+	const struct ni_board_struct *boardtype;
+	struct ni_private *devpriv;
+>>>>>>> refs/remotes/origin/master
 	struct pnp_dev *isapnp_dev;
 	int ret;
 	unsigned long iobase;
 	int board;
 	unsigned int irq;
 
+<<<<<<< HEAD
 	/* allocate private area */
 	ret = ni_alloc_private(dev);
 	if (ret < 0)
 		return ret;
+=======
+	ret = ni_alloc_private(dev);
+	if (ret)
+		return ret;
+	devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 
 	devpriv->stc_writew = &ni_atmio_win_out;
 	devpriv->stc_readw = &ni_atmio_win_in;
@@ -465,6 +546,7 @@ static int ni_atmio_attach(struct comedi_device *dev,
 		devpriv->isapnp_dev = isapnp_dev;
 	}
 
+<<<<<<< HEAD
 	/* reserve our I/O region */
 
 	printk("comedi%d: ni_atmio: 0x%04lx", dev->minor, iobase);
@@ -487,6 +569,11 @@ static int ni_atmio_attach(struct comedi_device *dev,
 		}
 	}
 #endif
+=======
+	ret = comedi_request_region(dev, iobase, NI_SIZE);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	/* get board type */
 
@@ -495,9 +582,16 @@ static int ni_atmio_attach(struct comedi_device *dev,
 		return -EIO;
 
 	dev->board_ptr = ni_boards + board;
+<<<<<<< HEAD
 
 	printk(" %s", boardtype.name);
 	dev->board_name = boardtype.name;
+=======
+	boardtype = comedi_board(dev);
+
+	printk(" %s", boardtype->name);
+	dev->board_name = boardtype->name;
+>>>>>>> refs/remotes/origin/master
 
 	/* irq stuff */
 
@@ -519,7 +613,11 @@ static int ni_atmio_attach(struct comedi_device *dev,
 
 	/* generic E series stuff in ni_mio_common.c */
 
+<<<<<<< HEAD
 	ret = ni_E_init(dev, it);
+=======
+	ret = ni_E_init(dev);
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0)
 		return ret;
 
@@ -527,6 +625,7 @@ static int ni_atmio_attach(struct comedi_device *dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int ni_getboardtype(struct comedi_device *dev)
 {
 	int device_id = ni_read_eeprom(dev, 511);
@@ -546,3 +645,22 @@ static int ni_getboardtype(struct comedi_device *dev)
 
 	return -1;
 }
+=======
+static void ni_atmio_detach(struct comedi_device *dev)
+{
+	struct ni_private *devpriv = dev->private;
+
+	mio_common_detach(dev);
+	comedi_legacy_detach(dev);
+	if (devpriv->isapnp_dev)
+		pnp_device_detach(devpriv->isapnp_dev);
+}
+
+static struct comedi_driver ni_atmio_driver = {
+	.driver_name	= "ni_atmio",
+	.module		= THIS_MODULE,
+	.attach		= ni_atmio_attach,
+	.detach		= ni_atmio_detach,
+};
+module_comedi_driver(ni_atmio_driver);
+>>>>>>> refs/remotes/origin/master

@@ -24,19 +24,26 @@
 #include <linux/clk.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/of_address.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/of_address.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <mach/hardware.h>
 #include <mach/at91_pmc.h>
 #include <mach/cpu.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "clock.h"
 #include "generic.h"
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/proc-fns.h>
 
 #include "clock.h"
@@ -44,7 +51,10 @@
 
 void __iomem *at91_pmc_base;
 EXPORT_SYMBOL_GPL(at91_pmc_base);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * There's a lot more which can be done with clocks, including cpufreq
@@ -61,6 +71,7 @@ EXPORT_SYMBOL_GPL(at91_pmc_base);
 /*
  * Chips have some kind of clocks : group them by functionality
  */
+<<<<<<< HEAD
 <<<<<<< HEAD
 #define cpu_has_utmi()		(  cpu_is_at91cap9() \
 				|| cpu_is_at91sam9rl() \
@@ -92,12 +103,43 @@ EXPORT_SYMBOL_GPL(at91_pmc_base);
 #define cpu_has_upll()		(cpu_is_at91sam9g45() \
 				|| cpu_is_at91sam9x5())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define cpu_has_utmi()		(  cpu_is_at91sam9rl() \
+				|| cpu_is_at91sam9g45() \
+				|| cpu_is_at91sam9x5() \
+				|| cpu_is_sama5d3())
+
+#define cpu_has_1056M_plla()	(cpu_is_sama5d3())
+
+#define cpu_has_800M_plla()	(  cpu_is_at91sam9g20() \
+				|| cpu_is_at91sam9g45() \
+				|| cpu_is_at91sam9x5() \
+				|| cpu_is_at91sam9n12())
+
+#define cpu_has_300M_plla()	(cpu_is_at91sam9g10())
+
+#define cpu_has_240M_plla()	(cpu_is_at91sam9261() \
+				|| cpu_is_at91sam9263() \
+				|| cpu_is_at91sam9rl())
+
+#define cpu_has_210M_plla()	(cpu_is_at91sam9260())
+
+#define cpu_has_pllb()		(!(cpu_is_at91sam9rl() \
+				|| cpu_is_at91sam9g45() \
+				|| cpu_is_at91sam9x5() \
+				|| cpu_is_sama5d3()))
+
+#define cpu_has_upll()		(cpu_is_at91sam9g45() \
+				|| cpu_is_at91sam9x5() \
+				|| cpu_is_sama5d3())
+>>>>>>> refs/remotes/origin/master
 
 /* USB host HS & FS */
 #define cpu_has_uhp()		(!cpu_is_at91sam9rl())
 
 /* USB device FS only */
 #define cpu_has_udpfs()		(!(cpu_is_at91sam9rl() \
+<<<<<<< HEAD
 <<<<<<< HEAD
 				|| cpu_is_at91sam9g45()))
 =======
@@ -112,6 +154,25 @@ EXPORT_SYMBOL_GPL(at91_pmc_base);
 
 #define cpu_has_alt_prescaler()	(cpu_is_at91sam9x5())
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+				|| cpu_is_at91sam9g45() \
+				|| cpu_is_at91sam9x5() \
+				|| cpu_is_sama5d3()))
+
+#define cpu_has_plladiv2()	(cpu_is_at91sam9g45() \
+				|| cpu_is_at91sam9x5() \
+				|| cpu_is_at91sam9n12() \
+				|| cpu_is_sama5d3())
+
+#define cpu_has_mdiv3()		(cpu_is_at91sam9g45() \
+				|| cpu_is_at91sam9x5() \
+				|| cpu_is_at91sam9n12() \
+				|| cpu_is_sama5d3())
+
+#define cpu_has_alt_prescaler()	(cpu_is_at91sam9x5() \
+				|| cpu_is_at91sam9n12() \
+				|| cpu_is_sama5d3())
+>>>>>>> refs/remotes/origin/master
 
 static LIST_HEAD(clocks);
 static DEFINE_SPINLOCK(clk_lock);
@@ -157,18 +218,24 @@ static void pllb_mode(struct clk *clk, int is_on)
 
 	// REVISIT: Add work-around for AT91RM9200 Errata #26 ?
 <<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_write(AT91_CKGR_PLLBR, value);
 
 	do {
 		cpu_relax();
 	} while ((at91_sys_read(AT91_PMC_SR) & AT91_PMC_LOCKB) != is_on);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	at91_pmc_write(AT91_CKGR_PLLBR, value);
 
 	do {
 		cpu_relax();
 	} while ((at91_pmc_read(AT91_PMC_SR) & AT91_PMC_LOCKB) != is_on);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct clk pllb = {
@@ -184,6 +251,7 @@ static void pmc_sys_mode(struct clk *clk, int is_on)
 {
 	if (is_on)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		at91_sys_write(AT91_PMC_SCER, clk->pmc_mask);
 	else
 		at91_sys_write(AT91_PMC_SCDR, clk->pmc_mask);
@@ -192,10 +260,16 @@ static void pmc_sys_mode(struct clk *clk, int is_on)
 	else
 		at91_pmc_write(AT91_PMC_SCDR, clk->pmc_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		at91_pmc_write(AT91_PMC_SCER, clk->pmc_mask);
+	else
+		at91_pmc_write(AT91_PMC_SCDR, clk->pmc_mask);
+>>>>>>> refs/remotes/origin/master
 }
 
 static void pmc_uckr_mode(struct clk *clk, int is_on)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	unsigned int uckr = at91_sys_read(AT91_CKGR_UCKR);
 
@@ -216,6 +290,8 @@ static void pmc_uckr_mode(struct clk *clk, int is_on)
 		cpu_relax();
 	} while ((at91_sys_read(AT91_PMC_SR) & AT91_PMC_LOCKU) != is_on);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int uckr = at91_pmc_read(AT91_CKGR_UCKR);
 
 	if (is_on) {
@@ -227,7 +303,10 @@ static void pmc_uckr_mode(struct clk *clk, int is_on)
 	do {
 		cpu_relax();
 	} while ((at91_pmc_read(AT91_PMC_SR) & AT91_PMC_LOCKU) != is_on);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 /* USB function clocks (PLLB must be 48 MHz) */
@@ -262,6 +341,7 @@ struct clk mck = {
 
 static void pmc_periph_mode(struct clk *clk, int is_on)
 {
+<<<<<<< HEAD
 	if (is_on)
 <<<<<<< HEAD
 		at91_sys_write(AT91_PMC_PCER, clk->pmc_mask);
@@ -272,6 +352,28 @@ static void pmc_periph_mode(struct clk *clk, int is_on)
 	else
 		at91_pmc_write(AT91_PMC_PCDR, clk->pmc_mask);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	u32 regval = 0;
+
+	/*
+	 * With sama5d3 devices, we are managing clock division so we have to
+	 * use the Peripheral Control Register introduced from at91sam9x5
+	 * devices.
+	 */
+	if (cpu_is_sama5d3()) {
+		regval |= AT91_PMC_PCR_CMD; /* write command */
+		regval |= clk->pid & AT91_PMC_PCR_PID; /* peripheral selection */
+		regval |= AT91_PMC_PCR_DIV(clk->div);
+		if (is_on)
+			regval |= AT91_PMC_PCR_EN; /* enable clock */
+		at91_pmc_write(AT91_PMC_PCR, regval);
+	} else {
+		if (is_on)
+			at91_pmc_write(AT91_PMC_PCER, clk->pmc_mask);
+		else
+			at91_pmc_write(AT91_PMC_PCDR, clk->pmc_mask);
+	}
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct clk __init *at91_css_to_clk(unsigned long css)
@@ -290,19 +392,28 @@ static struct clk __init *at91_css_to_clk(unsigned long css)
 			else if (cpu_has_pllb())
 				return &pllb;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 		/* alternate PMC: can use master clock */
 		case AT91_PMC_CSS_MASTER:
 			return &mck;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return NULL;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static int pmc_prescaler_divider(u32 reg)
 {
 	if (cpu_has_alt_prescaler()) {
@@ -312,7 +423,10 @@ static int pmc_prescaler_divider(u32 reg)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static void __clk_enable(struct clk *clk)
 {
 	if (clk->parent)
@@ -415,9 +529,13 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
 	unsigned long	flags;
 	unsigned	prescale;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	unsigned long	prescale_offset, css_mask;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	unsigned long	prescale_offset, css_mask;
+>>>>>>> refs/remotes/origin/master
 	unsigned long	actual;
 
 	if (!clk_is_programmable(clk))
@@ -425,7 +543,10 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
 	if (clk->users)
 		return -EBUSY;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (cpu_has_alt_prescaler()) {
 		prescale_offset = PMC_ALT_PRES_OFFSET;
@@ -435,7 +556,10 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
 		css_mask = AT91_PMC_CSS;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(&clk_lock, flags);
 
 	actual = clk->parent->rate_hz;
@@ -444,16 +568,22 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
 			u32	pckr;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			pckr = at91_sys_read(AT91_PMC_PCKR(clk->id));
 			pckr &= AT91_PMC_CSS;	/* clock selection */
 			pckr |= prescale << 2;
 			at91_sys_write(AT91_PMC_PCKR(clk->id), pckr);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			pckr = at91_pmc_read(AT91_PMC_PCKR(clk->id));
 			pckr &= css_mask;	/* keep clock selection */
 			pckr |= prescale << prescale_offset;
 			at91_pmc_write(AT91_PMC_PCKR(clk->id), pckr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			clk->rate_hz = actual;
 			break;
 		}
@@ -488,10 +618,14 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
 	clk->rate_hz = parent->rate_hz;
 	clk->parent = parent;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_write(AT91_PMC_PCKR(clk->id), parent->id);
 =======
 	at91_pmc_write(AT91_PMC_PCKR(clk->id), parent->id);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_pmc_write(AT91_PMC_PCKR(clk->id), parent->id);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irqrestore(&clk_lock, flags);
 	return 0;
@@ -504,12 +638,15 @@ static void __init init_programmable_clock(struct clk *clk)
 	struct clk	*parent;
 	u32		pckr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	pckr = at91_sys_read(AT91_PMC_PCKR(clk->id));
 	parent = at91_css_to_clk(pckr & AT91_PMC_CSS);
 	clk->parent = parent;
 	clk->rate_hz = parent->rate_hz / (1 << ((pckr & AT91_PMC_PRES) >> 2));
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	unsigned int	css_mask;
 
 	if (cpu_has_alt_prescaler())
@@ -521,7 +658,10 @@ static void __init init_programmable_clock(struct clk *clk)
 	parent = at91_css_to_clk(pckr & css_mask);
 	clk->parent = parent;
 	clk->rate_hz = parent->rate_hz / pmc_prescaler_divider(pckr);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif	/* CONFIG_AT91_PROGRAMMABLE_CLOCKS */
@@ -532,6 +672,7 @@ static void __init init_programmable_clock(struct clk *clk)
 
 static int at91_clk_show(struct seq_file *s, void *unused)
 {
+<<<<<<< HEAD
 	u32		scsr, pcsr, uckr = 0, sr;
 	struct clk	*clk;
 
@@ -555,6 +696,20 @@ static int at91_clk_show(struct seq_file *s, void *unused)
 	sr = at91_pmc_read(AT91_PMC_SR);
 	seq_printf(s, "SCSR = %8x\n", scsr);
 	seq_printf(s, "PCSR = %8x\n", pcsr);
+=======
+	u32		scsr, pcsr, pcsr1 = 0, uckr = 0, sr;
+	struct clk	*clk;
+
+	scsr = at91_pmc_read(AT91_PMC_SCSR);
+	pcsr = at91_pmc_read(AT91_PMC_PCSR);
+	if (cpu_is_sama5d3())
+		pcsr1 = at91_pmc_read(AT91_PMC_PCSR1);
+	sr = at91_pmc_read(AT91_PMC_SR);
+	seq_printf(s, "SCSR = %8x\n", scsr);
+	seq_printf(s, "PCSR = %8x\n", pcsr);
+	if (cpu_is_sama5d3())
+		seq_printf(s, "PCSR1 = %8x\n", pcsr1);
+>>>>>>> refs/remotes/origin/master
 	seq_printf(s, "MOR  = %8x\n", at91_pmc_read(AT91_CKGR_MOR));
 	seq_printf(s, "MCFR = %8x\n", at91_pmc_read(AT91_CKGR_MCFR));
 	seq_printf(s, "PLLA = %8x\n", at91_pmc_read(AT91_CKGR_PLLAR));
@@ -565,16 +720,23 @@ static int at91_clk_show(struct seq_file *s, void *unused)
 		seq_printf(s, "UCKR = %8x\n", uckr);
 	}
 	seq_printf(s, "MCKR = %8x\n", at91_pmc_read(AT91_PMC_MCKR));
+<<<<<<< HEAD
 	if (cpu_has_upll())
 		seq_printf(s, "USB  = %8x\n", at91_pmc_read(AT91_PMC_USB));
 	seq_printf(s, "SR   = %8x\n", sr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_has_upll() || cpu_is_at91sam9n12())
+		seq_printf(s, "USB  = %8x\n", at91_pmc_read(AT91_PMC_USB));
+	seq_printf(s, "SR   = %8x\n", sr);
+>>>>>>> refs/remotes/origin/master
 
 	seq_printf(s, "\n");
 
 	list_for_each_entry(clk, &clocks, node) {
 		char	*state;
 
+<<<<<<< HEAD
 		if (clk->mode == pmc_sys_mode)
 			state = (scsr & clk->pmc_mask) ? "on" : "off";
 		else if (clk->mode == pmc_periph_mode)
@@ -589,6 +751,32 @@ static int at91_clk_show(struct seq_file *s, void *unused)
 			state = "";
 
 		seq_printf(s, "%-10s users=%2d %-3s %9ld Hz %s\n",
+=======
+		if (clk->mode == pmc_sys_mode) {
+			state = (scsr & clk->pmc_mask) ? "on" : "off";
+		} else if (clk->mode == pmc_periph_mode) {
+			if (cpu_is_sama5d3()) {
+				u32 pmc_mask = 1 << (clk->pid % 32);
+
+				if (clk->pid > 31)
+					state = (pcsr1 & pmc_mask) ? "on" : "off";
+				else
+					state = (pcsr & pmc_mask) ? "on" : "off";
+			} else {
+				state = (pcsr & clk->pmc_mask) ? "on" : "off";
+			}
+		} else if (clk->mode == pmc_uckr_mode) {
+			state = (uckr & clk->pmc_mask) ? "on" : "off";
+		} else if (clk->pmc_mask) {
+			state = (sr & clk->pmc_mask) ? "on" : "off";
+		} else if (clk == &clk32k || clk == &main_clk) {
+			state = "on";
+		} else {
+			state = "";
+		}
+
+		seq_printf(s, "%-10s users=%2d %-3s %9lu Hz %s\n",
+>>>>>>> refs/remotes/origin/master
 			clk->name, clk->users, state, clk_get_rate(clk),
 			clk->parent ? clk->parent->name : "");
 	}
@@ -635,6 +823,12 @@ int __init clk_register(struct clk *clk)
 	if (clk_is_peripheral(clk)) {
 		if (!clk->parent)
 			clk->parent = &mck;
+<<<<<<< HEAD
+=======
+		if (cpu_is_sama5d3())
+			clk->rate_hz = DIV_ROUND_UP(clk->parent->rate_hz,
+						    1 << clk->div);
+>>>>>>> refs/remotes/origin/master
 		clk->mode = pmc_periph_mode;
 	}
 	else if (clk_is_sys(clk)) {
@@ -660,7 +854,15 @@ static u32 __init at91_pll_rate(struct clk *pll, u32 freq, u32 reg)
 	unsigned mul, div;
 
 	div = reg & 0xff;
+<<<<<<< HEAD
 	mul = (reg >> 16) & 0x7ff;
+=======
+	if (cpu_is_sama5d3())
+		mul = AT91_PMC3_MUL_GET(reg);
+	else
+		mul = AT91_PMC_MUL_GET(reg);
+
+>>>>>>> refs/remotes/origin/master
 	if (div && mul) {
 		freq /= div;
 		freq *= mul + 1;
@@ -674,6 +876,11 @@ static u32 __init at91_usb_rate(struct clk *pll, u32 freq, u32 reg)
 {
 	if (pll == &pllb && (reg & AT91_PMC_USB96M))
 		return freq / 2;
+<<<<<<< HEAD
+=======
+	else if (pll == &utmi_clk || cpu_is_at91sam9n12())
+		return freq / (1 + ((reg & AT91_PMC_OHCIUSBDIV) >> 8));
+>>>>>>> refs/remotes/origin/master
 	else
 		return freq;
 }
@@ -730,7 +937,11 @@ fail:
 	return 0;
 }
 
+<<<<<<< HEAD
 static struct clk *const standard_pmc_clocks[] __initdata = {
+=======
+static struct clk *const standard_pmc_clocks[] __initconst = {
+>>>>>>> refs/remotes/origin/master
 	/* four primary clocks */
 	&clk32k,
 	&main_clk,
@@ -743,6 +954,11 @@ static struct clk *const standard_pmc_clocks[] __initdata = {
 /* PLLB generated USB full speed clock init */
 static void __init at91_pllb_usbfs_clock_init(unsigned long main_clock)
 {
+<<<<<<< HEAD
+=======
+	unsigned int reg;
+
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * USB clock init:  choose 48 MHz PLLB value,
 	 * disable 48MHz clock during usb peripheral suspend.
@@ -751,6 +967,7 @@ static void __init at91_pllb_usbfs_clock_init(unsigned long main_clock)
 	 */
 	uhpck.parent = &pllb;
 
+<<<<<<< HEAD
 	at91_pllb_usb_init = at91_pll_calc(main_clock, 48000000 * 2) | AT91_PMC_USB96M;
 	pllb.rate_hz = at91_pll_rate(&pllb, main_clock, at91_pllb_usb_init);
 	if (cpu_is_at91rm9200()) {
@@ -778,6 +995,37 @@ static void __init at91_pllb_usbfs_clock_init(unsigned long main_clock)
 
 	udpck.rate_hz = at91_usb_rate(&pllb, pllb.rate_hz, at91_pllb_usb_init);
 	uhpck.rate_hz = at91_usb_rate(&pllb, pllb.rate_hz, at91_pllb_usb_init);
+=======
+	reg = at91_pllb_usb_init = at91_pll_calc(main_clock, 48000000 * 2);
+	pllb.rate_hz = at91_pll_rate(&pllb, main_clock, at91_pllb_usb_init);
+	if (cpu_is_at91rm9200()) {
+		reg = at91_pllb_usb_init |= AT91_PMC_USB96M;
+		uhpck.pmc_mask = AT91RM9200_PMC_UHP;
+		udpck.pmc_mask = AT91RM9200_PMC_UDP;
+		at91_pmc_write(AT91_PMC_SCER, AT91RM9200_PMC_MCKUDP);
+	} else if (cpu_is_at91sam9260() || cpu_is_at91sam9261() ||
+		   cpu_is_at91sam9263() || cpu_is_at91sam9g20() ||
+		   cpu_is_at91sam9g10()) {
+		reg = at91_pllb_usb_init |= AT91_PMC_USB96M;
+		uhpck.pmc_mask = AT91SAM926x_PMC_UHP;
+		udpck.pmc_mask = AT91SAM926x_PMC_UDP;
+	} else if (cpu_is_at91sam9n12()) {
+		/* Divider for USB clock is in USB clock register for 9n12 */
+		reg = AT91_PMC_USBS_PLLB;
+
+		/* For PLLB output 96M, set usb divider 2 (USBDIV + 1) */
+		reg |= AT91_PMC_OHCIUSBDIV_2;
+		at91_pmc_write(AT91_PMC_USB, reg);
+
+		/* Still setup masks */
+		uhpck.pmc_mask = AT91SAM926x_PMC_UHP;
+		udpck.pmc_mask = AT91SAM926x_PMC_UDP;
+	}
+	at91_pmc_write(AT91_CKGR_PLLBR, 0);
+
+	udpck.rate_hz = at91_usb_rate(&pllb, pllb.rate_hz, reg);
+	uhpck.rate_hz = at91_usb_rate(&pllb, pllb.rate_hz, reg);
+>>>>>>> refs/remotes/origin/master
 }
 
 /* UPLL generated USB full speed clock init */
@@ -792,14 +1040,19 @@ static void __init at91_upll_usbfs_clock_init(unsigned long main_clock)
 	usbr |= ((10 - 1) << 8) & AT91_PMC_OHCIUSBDIV;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_write(AT91_PMC_USB, usbr);
 =======
 	at91_pmc_write(AT91_PMC_USB, usbr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_pmc_write(AT91_PMC_USB, usbr);
+>>>>>>> refs/remotes/origin/master
 
 	/* Now set uhpck values */
 	uhpck.parent = &utmi_clk;
 	uhpck.pmc_mask = AT91SAM926x_PMC_UHP;
+<<<<<<< HEAD
 	uhpck.rate_hz = utmi_clk.rate_hz;
 <<<<<<< HEAD
 	uhpck.rate_hz /= 1 + ((at91_sys_read(AT91_PMC_USB) & AT91_PMC_OHCIUSBDIV) >> 8);
@@ -812,6 +1065,12 @@ int __init at91_clock_init(unsigned long main_clock)
 
 static int __init at91_pmc_init(unsigned long main_clock)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	uhpck.rate_hz = at91_usb_rate(&utmi_clk, utmi_clk.rate_hz, usbr);
+}
+
+static int __init at91_pmc_init(unsigned long main_clock)
+>>>>>>> refs/remotes/origin/master
 {
 	unsigned tmp, freq, mckr;
 	int i;
@@ -826,10 +1085,14 @@ static int __init at91_pmc_init(unsigned long main_clock)
 	if (!main_clock) {
 		do {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			tmp = at91_sys_read(AT91_CKGR_MCFR);
 =======
 			tmp = at91_pmc_read(AT91_CKGR_MCFR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			tmp = at91_pmc_read(AT91_CKGR_MCFR);
+>>>>>>> refs/remotes/origin/master
 		} while (!(tmp & AT91_PMC_MAINRDY));
 		main_clock = (tmp & AT91_PMC_MAINF) * (AT91_SLOW_CLOCK / 16);
 	}
@@ -837,16 +1100,34 @@ static int __init at91_pmc_init(unsigned long main_clock)
 
 	/* report if PLLA is more than mildly overclocked */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	plla.rate_hz = at91_pll_rate(&plla, main_clock, at91_sys_read(AT91_CKGR_PLLAR));
 =======
 	plla.rate_hz = at91_pll_rate(&plla, main_clock, at91_pmc_read(AT91_CKGR_PLLAR));
 >>>>>>> refs/remotes/origin/cm-10.0
 	if (cpu_has_300M_plla()) {
 		if (plla.rate_hz > 300000000)
+=======
+	plla.rate_hz = at91_pll_rate(&plla, main_clock, at91_pmc_read(AT91_CKGR_PLLAR));
+	if (cpu_has_1056M_plla()) {
+		if (plla.rate_hz > 1056000000)
+>>>>>>> refs/remotes/origin/master
 			pll_overclock = true;
 	} else if (cpu_has_800M_plla()) {
 		if (plla.rate_hz > 800000000)
 			pll_overclock = true;
+<<<<<<< HEAD
+=======
+	} else if (cpu_has_300M_plla()) {
+		if (plla.rate_hz > 300000000)
+			pll_overclock = true;
+	} else if (cpu_has_240M_plla()) {
+		if (plla.rate_hz > 240000000)
+			pll_overclock = true;
+	} else if (cpu_has_210M_plla()) {
+		if (plla.rate_hz > 210000000)
+			pll_overclock = true;
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (plla.rate_hz > 209000000)
 			pll_overclock = true;
@@ -855,12 +1136,17 @@ static int __init at91_pmc_init(unsigned long main_clock)
 		pr_info("Clocks: PLLA overclocked, %ld MHz\n", plla.rate_hz / 1000000);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cpu_is_at91sam9g45()) {
 		mckr = at91_sys_read(AT91_PMC_MCKR);
 =======
 	if (cpu_has_plladiv2()) {
 		mckr = at91_pmc_read(AT91_PMC_MCKR);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (cpu_has_plladiv2()) {
+		mckr = at91_pmc_read(AT91_PMC_MCKR);
+>>>>>>> refs/remotes/origin/master
 		plla.rate_hz /= (1 << ((mckr & AT91_PMC_PLLADIV2) >> 12));	/* plla divisor by 2 */
 	}
 
@@ -882,12 +1168,18 @@ static int __init at91_pmc_init(unsigned long main_clock)
 		 */
 		utmi_clk.rate_hz = 40 * utmi_clk.parent->rate_hz;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/* UTMI bias and PLL are managed at the same time */
 		if (cpu_has_upll())
 			utmi_clk.pmc_mask |= AT91_PMC_BIASEN;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/*
@@ -904,16 +1196,22 @@ static int __init at91_pmc_init(unsigned long main_clock)
 	 * For now, assume this parentage won't change.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	mckr = at91_sys_read(AT91_PMC_MCKR);
 	mck.parent = at91_css_to_clk(mckr & AT91_PMC_CSS);
 	freq = mck.parent->rate_hz;
 	freq /= (1 << ((mckr & AT91_PMC_PRES) >> 2));				/* prescale */
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	mckr = at91_pmc_read(AT91_PMC_MCKR);
 	mck.parent = at91_css_to_clk(mckr & AT91_PMC_CSS);
 	freq = mck.parent->rate_hz;
 	freq /= pmc_prescaler_divider(mckr);					/* prescale */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cpu_is_at91rm9200()) {
 		mck.rate_hz = freq / (1 + ((mckr & AT91_PMC_MDIV) >> 8));	/* mdiv */
 	} else if (cpu_is_at91sam9g20()) {
@@ -922,10 +1220,14 @@ static int __init at91_pmc_init(unsigned long main_clock)
 		if (mckr & AT91_PMC_PDIV)
 			freq /= 2;		/* processor clock division */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	} else if (cpu_is_at91sam9g45()) {
 =======
 	} else if (cpu_has_mdiv3()) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else if (cpu_has_mdiv3()) {
+>>>>>>> refs/remotes/origin/master
 		mck.rate_hz = (mckr & AT91_PMC_MDIV) == AT91SAM9_PMC_MDIV_3 ?
 			freq / 3 : freq / (1 << ((mckr & AT91_PMC_MDIV) >> 8));	/* mdiv */
 	} else {
@@ -933,14 +1235,20 @@ static int __init at91_pmc_init(unsigned long main_clock)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (cpu_has_alt_prescaler()) {
 		/* Programmable clocks can use MCK */
 		mck.type |= CLK_TYPE_PRIMARY;
 		mck.id = 4;
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Register the PMC's standard clocks */
 	for (i = 0; i < ARRAY_SIZE(standard_pmc_clocks); i++)
 		at91_clk_add(standard_pmc_clocks[i]);
@@ -969,7 +1277,10 @@ static int __init at91_pmc_init(unsigned long main_clock)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #if defined(CONFIG_OF)
 static struct of_device_id pmc_ids[] = {
 	{ .compatible = "atmel,at91rm9200-pmc" },
@@ -1019,13 +1330,20 @@ int __init at91_clock_init(unsigned long main_clock)
 	return at91_pmc_init(main_clock);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Several unused clocks may be active.  Turn them off.
  */
 static int __init at91_clock_reset(void)
 {
 	unsigned long pcdr = 0;
+<<<<<<< HEAD
+=======
+	unsigned long pcdr1 = 0;
+>>>>>>> refs/remotes/origin/master
 	unsigned long scdr = 0;
 	struct clk *clk;
 
@@ -1033,8 +1351,22 @@ static int __init at91_clock_reset(void)
 		if (clk->users > 0)
 			continue;
 
+<<<<<<< HEAD
 		if (clk->mode == pmc_periph_mode)
 			pcdr |= clk->pmc_mask;
+=======
+		if (clk->mode == pmc_periph_mode) {
+			if (cpu_is_sama5d3()) {
+				u32 pmc_mask = 1 << (clk->pid % 32);
+
+				if (clk->pid > 31)
+					pcdr1 |= pmc_mask;
+				else
+					pcdr |= pmc_mask;
+			} else
+				pcdr |= clk->pmc_mask;
+		}
+>>>>>>> refs/remotes/origin/master
 
 		if (clk->mode == pmc_sys_mode)
 			scdr |= clk->pmc_mask;
@@ -1043,22 +1375,34 @@ static int __init at91_clock_reset(void)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	at91_sys_write(AT91_PMC_PCDR, pcdr);
 	at91_sys_write(AT91_PMC_SCDR, scdr);
 =======
 	at91_pmc_write(AT91_PMC_PCDR, pcdr);
 	at91_pmc_write(AT91_PMC_SCDR, scdr);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	at91_pmc_write(AT91_PMC_SCDR, scdr);
+	if (cpu_is_sama5d3())
+		at91_pmc_write(AT91_PMC_PCDR1, pcdr1);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
 late_initcall(at91_clock_reset);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 void at91sam9_idle(void)
 {
 	at91_pmc_write(AT91_PMC_SCDR, AT91_PMC_PCK);
 	cpu_do_idle();
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

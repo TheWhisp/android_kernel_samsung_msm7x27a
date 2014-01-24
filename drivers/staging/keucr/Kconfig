@@ -1,17 +1,23 @@
 config USB_ENESTORAGE
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tristate "USB ENE SM/MS card reader support"
 	depends on USB && SCSI && m
 	---help---
 	  Say Y here if you wish to control a ENE SM/MS Card reader.
 	  To use SD card, please build driver/usb/storage/ums-eneub6250.ko
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	tristate "USB ENE SM card reader support"
 	depends on USB && SCSI && m
 	---help---
 	  Say Y here if you wish to control a ENE SM Card reader.
 	  To use SD/MS card, please build driver/usb/storage/ums-eneub6250.ko
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	  This option depends on 'SCSI' support being enabled, but you
 	  probably also need 'SCSI device support: SCSI disk support'

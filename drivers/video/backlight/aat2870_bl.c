@@ -74,7 +74,11 @@ static int aat2870_bl_get_brightness(struct backlight_device *bd)
 
 static int aat2870_bl_update_status(struct backlight_device *bd)
 {
+<<<<<<< HEAD
 	struct aat2870_bl_driver_data *aat2870_bl = dev_get_drvdata(&bd->dev);
+=======
+	struct aat2870_bl_driver_data *aat2870_bl = bl_get_data(bd);
+>>>>>>> refs/remotes/origin/master
 	struct aat2870_data *aat2870 =
 			dev_get_drvdata(aat2870_bl->pdev->dev.parent);
 	int brightness = bd->props.brightness;
@@ -127,7 +131,11 @@ static const struct backlight_ops aat2870_bl_ops = {
 
 static int aat2870_bl_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct aat2870_bl_platform_data *pdata = pdev->dev.platform_data;
+=======
+	struct aat2870_bl_platform_data *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct aat2870_bl_driver_data *aat2870_bl;
 	struct backlight_device *bd;
 	struct backlight_properties props;
@@ -158,8 +166,14 @@ static int aat2870_bl_probe(struct platform_device *pdev)
 	memset(&props, 0, sizeof(struct backlight_properties));
 
 	props.type = BACKLIGHT_RAW;
+<<<<<<< HEAD
 	bd = backlight_device_register("aat2870-backlight", &pdev->dev,
 				       aat2870_bl, &aat2870_bl_ops, &props);
+=======
+	bd = devm_backlight_device_register(&pdev->dev, "aat2870-backlight",
+					&pdev->dev, aat2870_bl, &aat2870_bl_ops,
+					&props);
+>>>>>>> refs/remotes/origin/master
 	if (IS_ERR(bd)) {
 		dev_err(&pdev->dev,
 			"Failed allocate memory for backlight device\n");
@@ -194,13 +208,20 @@ static int aat2870_bl_probe(struct platform_device *pdev)
 	ret = aat2870_bl_update_status(bd);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "Failed to initialize\n");
+<<<<<<< HEAD
 		goto out_bl_dev_unregister;
+=======
+		return ret;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 out_bl_dev_unregister:
 	backlight_device_unregister(bd);
+=======
+>>>>>>> refs/remotes/origin/master
 out:
 	return ret;
 }
@@ -214,8 +235,11 @@ static int aat2870_bl_remove(struct platform_device *pdev)
 	bd->props.brightness = 0;
 	backlight_update_status(bd);
 
+<<<<<<< HEAD
 	backlight_device_unregister(bd);
 
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 

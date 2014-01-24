@@ -8,7 +8,10 @@
 
 #include <linux/threads.h>
 #include <asm/head.h>
+<<<<<<< HEAD
 #include <asm/btfixup.h>
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifndef __ASSEMBLY__
 
@@ -23,10 +26,14 @@
 #include <asm/ptrace.h>
 #include <asm/asi.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	Private routines/data
@@ -41,7 +48,10 @@ typedef void (*smpfunc_t)(unsigned long, unsigned long, unsigned long,
 		       unsigned long, unsigned long);
 
 void cpu_panic(void);
+<<<<<<< HEAD
 extern void smp4m_irq_rotate(int cpu);
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  *	General functions that each host system must provide.
@@ -51,7 +61,10 @@ void sun4m_init_smp(void);
 void sun4d_init_smp(void);
 
 void smp_callin(void);
+<<<<<<< HEAD
 void smp_boot_cpus(void);
+=======
+>>>>>>> refs/remotes/origin/master
 void smp_store_cpu_info(int);
 
 void smp_resched_interrupt(void);
@@ -62,6 +75,7 @@ struct seq_file;
 void smp_bogo(struct seq_file *);
 void smp_info(struct seq_file *);
 
+<<<<<<< HEAD
 BTFIXUPDEF_CALL(void, smp_cross_call, smpfunc_t, cpumask_t, unsigned long, unsigned long, unsigned long, unsigned long)
 BTFIXUPDEF_CALL(int, __hard_smp_processor_id, void)
 BTFIXUPDEF_CALL(void, smp_ipi_resched, int);
@@ -166,6 +180,58 @@ static inline int hard_smp_processor_id(void)
 #define prof_multiplier(__cpu)		cpu_data(__cpu).multiplier
 #define prof_counter(__cpu)		cpu_data(__cpu).counter
 
+=======
+struct sparc32_ipi_ops {
+	void (*cross_call)(smpfunc_t func, cpumask_t mask, unsigned long arg1,
+			   unsigned long arg2, unsigned long arg3,
+			   unsigned long arg4);
+	void (*resched)(int cpu);
+	void (*single)(int cpu);
+	void (*mask_one)(int cpu);
+};
+extern const struct sparc32_ipi_ops *sparc32_ipi_ops;
+
+static inline void xc0(smpfunc_t func)
+{
+	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, 0, 0, 0, 0);
+}
+
+static inline void xc1(smpfunc_t func, unsigned long arg1)
+{
+	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, arg1, 0, 0, 0);
+}
+static inline void xc2(smpfunc_t func, unsigned long arg1, unsigned long arg2)
+{
+	sparc32_ipi_ops->cross_call(func, *cpu_online_mask, arg1, arg2, 0, 0);
+}
+
+static inline void xc3(smpfunc_t func, unsigned long arg1, unsigned long arg2,
+		       unsigned long arg3)
+{
+	sparc32_ipi_ops->cross_call(func, *cpu_online_mask,
+				    arg1, arg2, arg3, 0);
+}
+
+static inline void xc4(smpfunc_t func, unsigned long arg1, unsigned long arg2,
+		       unsigned long arg3, unsigned long arg4)
+{
+	sparc32_ipi_ops->cross_call(func, *cpu_online_mask,
+				    arg1, arg2, arg3, arg4);
+}
+
+extern void arch_send_call_function_single_ipi(int cpu);
+extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
+
+static inline int cpu_logical_map(int cpu)
+{
+	return cpu;
+}
+
+extern int hard_smp_processor_id(void);
+
+#define raw_smp_processor_id()		(current_thread_info()->cpu)
+
+>>>>>>> refs/remotes/origin/master
 void smp_setup_cpu_possible_map(void);
 
 #endif /* !(__ASSEMBLY__) */

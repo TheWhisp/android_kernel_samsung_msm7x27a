@@ -1,6 +1,11 @@
 #ifndef _ASM_X86_PGTABLE_64_DEFS_H
 #define _ASM_X86_PGTABLE_64_DEFS_H
 
+<<<<<<< HEAD
+=======
+#include <asm/sparsemem.h>
+
+>>>>>>> refs/remotes/origin/master
 #ifndef __ASSEMBLY__
 #include <linux/types.h>
 
@@ -56,8 +61,17 @@ typedef struct { pteval_t pte; } pte_t;
 #define VMALLOC_START    _AC(0xffffc90000000000, UL)
 #define VMALLOC_END      _AC(0xffffe8ffffffffff, UL)
 #define VMEMMAP_START	 _AC(0xffffea0000000000, UL)
+<<<<<<< HEAD
 #define MODULES_VADDR    _AC(0xffffffffa0000000, UL)
 #define MODULES_END      _AC(0xffffffffff000000, UL)
 #define MODULES_LEN   (MODULES_END - MODULES_VADDR)
 
+=======
+#define MODULES_VADDR    (__START_KERNEL_map + KERNEL_IMAGE_SIZE)
+#define MODULES_END      _AC(0xffffffffff000000, UL)
+#define MODULES_LEN   (MODULES_END - MODULES_VADDR)
+
+#define EARLY_DYNAMIC_PAGE_TABLES	64
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_X86_PGTABLE_64_DEFS_H */

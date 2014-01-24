@@ -24,12 +24,19 @@
 #include <linux/wait.h>
 #include <linux/async.h>
 #include <linux/pm_runtime.h>
+<<<<<<< HEAD
+=======
+#include <linux/pinctrl/devinfo.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "base.h"
 #include "power/power.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Deferred Probe infrastructure.
  *
@@ -87,8 +94,25 @@ static void deferred_probe_work_func(struct work_struct *work)
 		 * manipulate the deferred list
 		 */
 		mutex_unlock(&deferred_probe_mutex);
+<<<<<<< HEAD
 		dev_dbg(dev, "Retrying from deferred list\n");
 		bus_probe_device(dev);
+=======
+
+		/*
+		 * Force the device to the end of the dpm_list since
+		 * the PM code assumes that the order we add things to
+		 * the list is a good order for suspend but deferred
+		 * probe makes that very unsafe.
+		 */
+		device_pm_lock();
+		device_pm_move_last(dev);
+		device_pm_unlock();
+
+		dev_dbg(dev, "Retrying from deferred list\n");
+		bus_probe_device(dev);
+
+>>>>>>> refs/remotes/origin/master
 		mutex_lock(&deferred_probe_mutex);
 
 		put_device(dev);
@@ -102,7 +126,11 @@ static void driver_deferred_probe_add(struct device *dev)
 	mutex_lock(&deferred_probe_mutex);
 	if (list_empty(&dev->p->deferred_probe)) {
 		dev_dbg(dev, "Added to deferred list\n");
+<<<<<<< HEAD
 		list_add(&dev->p->deferred_probe, &deferred_probe_pending_list);
+=======
+		list_add_tail(&dev->p->deferred_probe, &deferred_probe_pending_list);
+>>>>>>> refs/remotes/origin/master
 	}
 	mutex_unlock(&deferred_probe_mutex);
 }
@@ -167,7 +195,10 @@ static int deferred_probe_initcall(void)
 	return 0;
 }
 late_initcall(deferred_probe_initcall);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 static void driver_bound(struct device *dev)
 {
@@ -183,7 +214,10 @@ static void driver_bound(struct device *dev)
 	klist_add_tail(&dev->p->knode_driver, &dev->driver->p->klist_devices);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	/*
 	 * Make sure the device is no longer in one of the deferred lists and
 	 * kick off retrying all pending devices
@@ -191,7 +225,10 @@ static void driver_bound(struct device *dev)
 	driver_deferred_probe_del(dev);
 	driver_deferred_probe_trigger();
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (dev->bus)
 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
 					     BUS_NOTIFY_BOUND_DRIVER, dev);
@@ -265,6 +302,15 @@ static int really_probe(struct device *dev, struct device_driver *drv)
 	WARN_ON(!list_empty(&dev->devres_head));
 
 	dev->driver = drv;
+<<<<<<< HEAD
+=======
+
+	/* If using pinctrl, bind pins now before probing */
+	ret = pinctrl_bind_pins(dev);
+	if (ret)
+		goto probe_failed;
+
+>>>>>>> refs/remotes/origin/master
 	if (driver_sysfs_add(dev)) {
 		printk(KERN_ERR "%s: driver_sysfs_add(%s) failed\n",
 			__func__, dev_name(dev));
@@ -291,26 +337,40 @@ probe_failed:
 	devres_release_all(dev);
 	driver_sysfs_remove(dev);
 	dev->driver = NULL;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 	if (ret != -ENODEV && ret != -ENXIO) {
 =======
+=======
+	dev_set_drvdata(dev, NULL);
+
+>>>>>>> refs/remotes/origin/master
 	if (ret == -EPROBE_DEFER) {
 		/* Driver requested deferred probing */
 		dev_info(dev, "Driver %s requests probe deferral\n", drv->name);
 		driver_deferred_probe_add(dev);
 	} else if (ret != -ENODEV && ret != -ENXIO) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		/* driver matched but the probe failed */
 		printk(KERN_WARNING
 		       "%s: probe of %s failed with error %d\n",
 		       drv->name, dev_name(dev), ret);
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 	} else {
 		pr_debug("%s: probe of %s rejects match %d\n",
 		       drv->name, dev_name(dev), ret);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+		pr_debug("%s: probe of %s rejects match %d\n",
+		       drv->name, dev_name(dev), ret);
+>>>>>>> refs/remotes/origin/master
 	}
 	/*
 	 * Ignore errors returned by ->probe so that the next driver can try
@@ -371,10 +431,16 @@ int driver_probe_device(struct device_driver *drv, struct device *dev)
 	pr_debug("bus: '%s': %s: matched device %s with driver %s\n",
 		 drv->bus->name, __func__, dev_name(dev), drv->name);
 
+<<<<<<< HEAD
 	pm_runtime_get_noresume(dev);
 	pm_runtime_barrier(dev);
 	ret = really_probe(dev, drv);
 	pm_runtime_put_sync(dev);
+=======
+	pm_runtime_barrier(dev);
+	ret = really_probe(dev, drv);
+	pm_request_idle(dev);
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
@@ -421,9 +487,14 @@ int device_attach(struct device *dev)
 			ret = 0;
 		}
 	} else {
+<<<<<<< HEAD
 		pm_runtime_get_noresume(dev);
 		ret = bus_for_each_drv(dev->bus, NULL, dev, __device_attach);
 		pm_runtime_put_sync(dev);
+=======
+		ret = bus_for_each_drv(dev->bus, NULL, dev, __device_attach);
+		pm_request_idle(dev);
+>>>>>>> refs/remotes/origin/master
 	}
 out_unlock:
 	device_unlock(dev);
@@ -502,6 +573,10 @@ static void __device_release_driver(struct device *dev)
 			drv->remove(dev);
 		devres_release_all(dev);
 		dev->driver = NULL;
+<<<<<<< HEAD
+=======
+		dev_set_drvdata(dev, NULL);
+>>>>>>> refs/remotes/origin/master
 		klist_remove(&dev->p->knode_driver);
 		if (dev->bus)
 			blocking_notifier_call_chain(&dev->bus->p->bus_notifier,

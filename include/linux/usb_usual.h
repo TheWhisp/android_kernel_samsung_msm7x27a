@@ -64,12 +64,21 @@
 	US_FLAG(NO_READ_CAPACITY_16,	0x00080000)		\
 		/* cannot handle READ_CAPACITY_16 */		\
 	US_FLAG(INITIAL_READ10,	0x00100000)			\
+<<<<<<< HEAD
 		/* Initial READ(10) (and others) must be retried */
+=======
+		/* Initial READ(10) (and others) must be retried */	\
+	US_FLAG(WRITE_CACHE,	0x00200000)			\
+		/* Write Cache status is not available */	\
+	US_FLAG(NEEDS_CAP16,	0x00400000)
+		/* cannot handle READ_CAPACITY_10 */
+>>>>>>> refs/remotes/origin/master
 
 #define US_FLAG(name, value)	US_FL_##name = value ,
 enum { US_DO_ALL_FLAGS };
 #undef US_FLAG
 
+<<<<<<< HEAD
 /*
  * The bias field for libusual and friends.
  */
@@ -99,4 +108,11 @@ extern int usb_usual_check_type(const struct usb_device_id *, int type);
 #define usb_usual_check_type(id, t)	(0)
 #endif /* CONFIG_USB_LIBUSUAL */
 
+=======
+#include <linux/usb/storage.h>
+
+extern int usb_usual_ignore_device(struct usb_interface *intf);
+extern struct usb_device_id usb_storage_usb_ids[];
+
+>>>>>>> refs/remotes/origin/master
 #endif /* __LINUX_USB_USUAL_H */

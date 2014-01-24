@@ -7,11 +7,16 @@
 #define __PTRACE_USER_H__
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "sysdep/ptrace_user.h"
 =======
 #include <sys/ptrace.h>
 #include <sysdep/ptrace_user.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <sys/ptrace.h>
+#include <sysdep/ptrace_user.h>
+>>>>>>> refs/remotes/origin/master
 
 extern int ptrace_getregs(long pid, unsigned long *regs_out);
 extern int ptrace_setregs(long pid, unsigned long *regs_in);

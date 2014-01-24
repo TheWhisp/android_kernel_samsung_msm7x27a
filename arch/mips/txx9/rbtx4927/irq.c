@@ -2,7 +2,11 @@
  * Toshiba RBTX4927 specific interrupt handlers
  *
  * Author: MontaVista Software, Inc.
+<<<<<<< HEAD
  *         source@mvista.com
+=======
+ *	   source@mvista.com
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2001-2002 MontaVista Software Inc.
  *

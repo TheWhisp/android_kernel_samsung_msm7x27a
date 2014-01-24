@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2010 Realtek Corporation. All rights reserved.
@@ -25,7 +28,10 @@
  * Larry Finger <Larry.Finger@lwfinger.net>
  *
  ******************************************************************************/
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef __RTL8712_HAL_H__
 #define __RTL8712_HAL_H__
 
@@ -86,7 +92,11 @@ struct fw_priv {   /*8-bytes alignment required*/
 	unsigned char rfintfs;    /* 0:SWSI, 1:HWSI, 2:HWPI*/
 	unsigned char def_nettype;
 	unsigned char turboMode;
+<<<<<<< HEAD
 	unsigned char lowPowerMode;/* 0: noral mode, 1: low power mode*/
+=======
+	unsigned char lowPowerMode;/* 0: normal mode, 1: low power mode*/
+>>>>>>> refs/remotes/origin/master
 	/*--- long word 2 ----*/
 	unsigned char lbk_mode; /*0x00: normal, 0x03: MACLBK, 0x01: PHYLBK*/
 	unsigned char mp_mode; /* 1: for MP use, 0: for normal driver */
@@ -126,7 +136,11 @@ struct fw_priv {   /*8-bytes alignment required*/
 	unsigned char rsvd053;
 };
 
+<<<<<<< HEAD
 struct fw_hdr {/*8-byte alinment required*/
+=======
+struct fw_hdr {/*8-byte alignment required*/
+>>>>>>> refs/remotes/origin/master
 	unsigned short	signature;
 	unsigned short	version;	/*0x8000 ~ 0x8FFF for FPGA version,
 					 *0x0000 ~ 0x7FFF for ASIC version,*/
@@ -142,10 +156,14 @@ struct fw_hdr {/*8-byte alinment required*/
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct hal_priv{
 =======
 struct hal_priv {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct hal_priv {
+>>>>>>> refs/remotes/origin/master
 	/*Endpoint handles*/
 	struct  net_device *pipehdls_r8712[10];
 	u8 (*hal_bus_init)(struct _adapter *adapter);
@@ -153,8 +171,12 @@ struct hal_priv {
 
 uint	 rtl8712_hal_init(struct _adapter *padapter);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 int rtl871x_load_fw(struct _adapter *padapter);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int rtl871x_load_fw(struct _adapter *padapter);
+>>>>>>> refs/remotes/origin/master
 
 #endif

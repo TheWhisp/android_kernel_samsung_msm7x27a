@@ -6,10 +6,14 @@
  * with more than 4GB.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * See Documentation/PCI/PCI-DMA-mapping.txt for the interface specification.
 =======
  * See Documentation/DMA-API-HOWTO.txt for the interface specification.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * See Documentation/DMA-API-HOWTO.txt for the interface specification.
+>>>>>>> refs/remotes/origin/master
  *
  * Copyright 2002 Andi Kleen, SuSE Labs.
  * Subject to the GNU General Public License v2 only.
@@ -35,10 +39,14 @@
 #include <linux/io.h>
 #include <linux/gfp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/atomic.h>
 =======
 #include <linux/atomic.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/atomic.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/mtrr.h>
 #include <asm/pgtable.h>
 #include <asm/proto.h>
@@ -486,10 +494,14 @@ error:
 static void *
 gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		    gfp_t flag)
 =======
 		    gfp_t flag, struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		    gfp_t flag, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	dma_addr_t paddr;
 	unsigned long align_mask;
@@ -513,11 +525,16 @@ gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
 		__free_pages(page, get_order(size));
 	} else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return dma_generic_alloc_coherent(dev, size, dma_addr, flag);
 =======
 		return dma_generic_alloc_coherent(dev, size, dma_addr, flag,
 						  attrs);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return dma_generic_alloc_coherent(dev, size, dma_addr, flag,
+						  attrs);
+>>>>>>> refs/remotes/origin/master
 
 	return NULL;
 }
@@ -526,10 +543,14 @@ gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
 static void
 gart_free_coherent(struct device *dev, size_t size, void *vaddr,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   dma_addr_t dma_addr)
 =======
 		   dma_addr_t dma_addr, struct dma_attrs *attrs)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		   dma_addr_t dma_addr, struct dma_attrs *attrs)
+>>>>>>> refs/remotes/origin/master
 {
 	gart_unmap_page(dev, dma_addr, size, DMA_BIDIRECTIONAL, NULL);
 	free_pages((unsigned long)vaddr, get_order(size));
@@ -722,12 +743,17 @@ static struct dma_map_ops gart_dma_ops = {
 	.map_page			= gart_map_page,
 	.unmap_page			= gart_unmap_page,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.alloc_coherent			= gart_alloc_coherent,
 	.free_coherent			= gart_free_coherent,
 =======
 	.alloc				= gart_alloc_coherent,
 	.free				= gart_free_coherent,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.alloc				= gart_alloc_coherent,
+	.free				= gart_free_coherent,
+>>>>>>> refs/remotes/origin/master
 	.mapping_error			= gart_mapping_error,
 };
 
@@ -793,10 +819,16 @@ int __init gart_iommu_init(void)
 	aper_base	= info.aper_base;
 	end_pfn		= (aper_base>>PAGE_SHIFT) + (aper_size>>PAGE_SHIFT);
 
+<<<<<<< HEAD
 	if (end_pfn > max_low_pfn_mapped) {
 		start_pfn = (aper_base>>PAGE_SHIFT);
 		init_memory_mapping(start_pfn<<PAGE_SHIFT, end_pfn<<PAGE_SHIFT);
 	}
+=======
+	start_pfn = PFN_DOWN(aper_base);
+	if (!pfn_range_is_mapped(start_pfn, end_pfn))
+		init_memory_mapping(start_pfn<<PAGE_SHIFT, end_pfn<<PAGE_SHIFT);
+>>>>>>> refs/remotes/origin/master
 
 	pr_info("PCI-DMA: using GART IOMMU.\n");
 	iommu_size = check_iommu_size(info.aper_base, aper_size);

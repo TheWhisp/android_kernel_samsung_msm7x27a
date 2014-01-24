@@ -27,11 +27,17 @@
 #ifndef __RTS51X_TRACE_H
 #define __RTS51X_TRACE_H
 
+<<<<<<< HEAD
+=======
+#include <linux/string.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "debug.h"
 
 #define _MSG_TRACE
 
 #ifdef _MSG_TRACE
+<<<<<<< HEAD
 static inline char *filename(char *path)
 {
 	char *ptr;
@@ -53,6 +59,11 @@ static inline char *filename(char *path)
 #define TRACE_RET(chip, ret)						\
 do {									\
 	char *_file = filename((char *)__FILE__);			\
+=======
+#define TRACE_RET(chip, ret)						\
+do {									\
+	const char *_file = kbasename(__FILE__);			\
+>>>>>>> refs/remotes/origin/master
 	RTS51X_DEBUGP("[%s][%s]:[%d]\n", _file, __func__, __LINE__);	\
 	(chip)->trace_msg[(chip)->msg_idx].line = (u16)(__LINE__);	\
 	strncpy((chip)->trace_msg[(chip)->msg_idx].func,		\
@@ -71,7 +82,11 @@ do {									\
 
 #define TRACE_GOTO(chip, label)						\
 do {									\
+<<<<<<< HEAD
 	char *_file = filename((char *)__FILE__);			\
+=======
+	const char *_file = kbasename(__FILE__);			\
+>>>>>>> refs/remotes/origin/master
 	RTS51X_DEBUGP("[%s][%s]:[%d]\n", _file, __func__, __LINE__);	\
 	(chip)->trace_msg[(chip)->msg_idx].line = (u16)(__LINE__);	\
 	strncpy((chip)->trace_msg[(chip)->msg_idx].func,		\
@@ -93,6 +108,7 @@ do {									\
 #endif
 
 #ifdef CONFIG_RTS5139_DEBUG
+<<<<<<< HEAD
 static inline void rts51x_dump(u8 *buf, int buf_len)
 {
 	int i;
@@ -122,6 +138,11 @@ static inline void rts51x_dump(u8 *buf, int buf_len)
 
 #define RTS51X_DUMP(buf, buf_len)	\
 		rts51x_dump((u8 *)(buf), (buf_len))
+=======
+#define RTS51X_DUMP(buf, buf_len)					\
+	print_hex_dump(KERN_DEBUG, RTS51X_TIP, DUMP_PREFIX_NONE,	\
+				16, 1, (buf), (buf_len), false)
+>>>>>>> refs/remotes/origin/master
 
 #define CATCH_TRIGGER(chip)					\
 do {								\

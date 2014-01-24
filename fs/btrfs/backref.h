@@ -19,10 +19,16 @@
 #ifndef __BTRFS_BACKREF__
 #define __BTRFS_BACKREF__
 
+<<<<<<< HEAD
 #include "ioctl.h"
 #include "ulist.h"
 
 #define BTRFS_BACKREF_SEARCH_COMMIT_ROOT ((struct btrfs_trans_handle *)0)
+=======
+#include <linux/btrfs.h>
+#include "ulist.h"
+#include "extent_io.h"
+>>>>>>> refs/remotes/origin/master
 
 struct inode_fs_paths {
 	struct btrfs_path		*btrfs_path;
@@ -32,14 +38,22 @@ struct inode_fs_paths {
 
 typedef int (iterate_extent_inodes_t)(u64 inum, u64 offset, u64 root,
 		void *ctx);
+<<<<<<< HEAD
 typedef int (iterate_irefs_t)(u64 parent, struct btrfs_inode_ref *iref,
 				struct extent_buffer *eb, void *ctx);
+=======
+>>>>>>> refs/remotes/origin/master
 
 int inode_item_info(u64 inum, u64 ioff, struct btrfs_root *fs_root,
 			struct btrfs_path *path);
 
 int extent_from_logical(struct btrfs_fs_info *fs_info, u64 logical,
+<<<<<<< HEAD
 			struct btrfs_path *path, struct btrfs_key *found_key);
+=======
+			struct btrfs_path *path, struct btrfs_key *found_key,
+			u64 *flags);
+>>>>>>> refs/remotes/origin/master
 
 int tree_backref_for_extent(unsigned long *ptr, struct extent_buffer *eb,
 				struct btrfs_extent_item *ei, u32 item_size,
@@ -58,11 +72,29 @@ int paths_from_inode(u64 inum, struct inode_fs_paths *ipath);
 
 int btrfs_find_all_roots(struct btrfs_trans_handle *trans,
 				struct btrfs_fs_info *fs_info, u64 bytenr,
+<<<<<<< HEAD
 				u64 num_bytes, u64 seq, struct ulist **roots);
+=======
+				u64 time_seq, struct ulist **roots);
+char *btrfs_ref_to_path(struct btrfs_root *fs_root, struct btrfs_path *path,
+			u32 name_len, unsigned long name_off,
+			struct extent_buffer *eb_in, u64 parent,
+			char *dest, u32 size);
+>>>>>>> refs/remotes/origin/master
 
 struct btrfs_data_container *init_data_container(u32 total_bytes);
 struct inode_fs_paths *init_ipath(s32 total_bytes, struct btrfs_root *fs_root,
 					struct btrfs_path *path);
 void free_ipath(struct inode_fs_paths *ipath);
 
+<<<<<<< HEAD
+=======
+int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
+			  u64 start_off, struct btrfs_path *path,
+			  struct btrfs_inode_extref **ret_extref,
+			  u64 *found_off);
+
+int __init btrfs_prelim_ref_init(void);
+void btrfs_prelim_ref_exit(void);
+>>>>>>> refs/remotes/origin/master
 #endif

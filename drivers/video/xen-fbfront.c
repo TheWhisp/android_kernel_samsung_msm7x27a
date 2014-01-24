@@ -358,18 +358,27 @@ static irqreturn_t xenfb_event_handler(int rq, void *dev_id)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit xenfb_probe(struct xenbus_device *dev,
 				 const struct xenbus_device_id *id)
+=======
+static int xenfb_probe(struct xenbus_device *dev,
+		       const struct xenbus_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct xenfb_info *info;
 	struct fb_info *fb_info;
 	int fb_size;
 	int val;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int ret;
 =======
 	int ret = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int ret = 0;
+>>>>>>> refs/remotes/origin/master
 
 	info = kzalloc(sizeof(*info), GFP_KERNEL);
 	if (info == NULL) {
@@ -463,6 +472,7 @@ static int __devinit xenfb_probe(struct xenbus_device *dev,
 
 	ret = xenfb_connect_backend(dev, info);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ret < 0)
 		goto error;
 
@@ -474,6 +484,8 @@ static int __devinit xenfb_probe(struct xenbus_device *dev,
 		xenbus_dev_fatal(dev, ret, "register_framebuffer");
 		goto error;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ret < 0) {
 		xenbus_dev_fatal(dev, ret, "xenfb_connect_backend");
 		goto error_fb;
@@ -483,7 +495,10 @@ static int __devinit xenfb_probe(struct xenbus_device *dev,
 	if (ret) {
 		xenbus_dev_fatal(dev, ret, "register_framebuffer");
 		goto error_fb;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	info->fb_info = fb_info;
 
@@ -491,11 +506,14 @@ static int __devinit xenfb_probe(struct xenbus_device *dev,
 	return 0;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  error_nomem:
 	ret = -ENOMEM;
 	xenbus_dev_fatal(dev, ret, "allocating device memory");
  error:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 error_fb:
 	fb_deferred_io_cleanup(fb_info);
 	fb_dealloc_cmap(&fb_info->cmap);
@@ -506,13 +524,20 @@ error_nomem:
 		xenbus_dev_fatal(dev, ret, "allocating device memory");
 	}
 error:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	xenfb_remove(dev);
 	return ret;
 }
 
+<<<<<<< HEAD
 static __devinit void
 xenfb_make_preferred_console(void)
+=======
+static void xenfb_make_preferred_console(void)
+>>>>>>> refs/remotes/origin/master
 {
 	struct console *c;
 
@@ -665,7 +690,10 @@ static void xenfb_backend_changed(struct xenbus_device *dev,
 	case XenbusStateReconfiguring:
 	case XenbusStateReconfigured:
 	case XenbusStateUnknown:
+<<<<<<< HEAD
 	case XenbusStateClosed:
+=======
+>>>>>>> refs/remotes/origin/master
 		break;
 
 	case XenbusStateInitWait:
@@ -694,6 +722,13 @@ InitWait:
 		info->feature_resize = val;
 		break;
 
+<<<<<<< HEAD
+=======
+	case XenbusStateClosed:
+		if (dev->state == XenbusStateClosed)
+			break;
+		/* Missed the backend's CLOSING state -- fallthrough */
+>>>>>>> refs/remotes/origin/master
 	case XenbusStateClosing:
 		xenbus_frontend_closed(dev);
 		break;
@@ -701,14 +736,19 @@ InitWait:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct xenbus_device_id xenfb_ids[] = {
 =======
 static const struct xenbus_device_id xenfb_ids[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct xenbus_device_id xenfb_ids[] = {
+>>>>>>> refs/remotes/origin/master
 	{ "vfb" },
 	{ "" }
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static struct xenbus_driver xenfb_driver = {
 	.name = "vfb",
@@ -717,15 +757,22 @@ static struct xenbus_driver xenfb_driver = {
 =======
 static DEFINE_XENBUS_DRIVER(xenfb, ,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static DEFINE_XENBUS_DRIVER(xenfb, ,
+>>>>>>> refs/remotes/origin/master
 	.probe = xenfb_probe,
 	.remove = xenfb_remove,
 	.resume = xenfb_resume,
 	.otherend_changed = xenfb_backend_changed,
 <<<<<<< HEAD
+<<<<<<< HEAD
 };
 =======
 );
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+);
+>>>>>>> refs/remotes/origin/master
 
 static int __init xenfb_init(void)
 {

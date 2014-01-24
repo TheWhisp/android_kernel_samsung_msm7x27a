@@ -23,9 +23,12 @@
 #include <linux/i2c.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/platform_device.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -44,10 +47,13 @@ MODULE_PARM_DESC(caps_charge, "ALC5623 cap charge time (msecs)");
 struct alc5623_priv {
 	enum snd_soc_control_type control_type;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	void *control_data;
 	struct mutex mutex;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u8 id;
 	unsigned int sysclk;
 	u16 reg_cache[ALC5623_VENDOR_ID2+2];
@@ -62,14 +68,20 @@ static void alc5623_fill_cache(struct snd_soc_codec *codec)
 
 	/* not really efficient ... */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	for (i = 0 ; i < codec->driver->reg_cache_size ; i += step)
 		cache[i] = codec->hw_read(codec, i);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	codec->cache_bypass = 1;
 	for (i = 0 ; i < codec->driver->reg_cache_size ; i += step)
 		cache[i] = snd_soc_read(codec, i);
 	codec->cache_bypass = 0;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline int alc5623_reset(struct snd_soc_codec *codec)
@@ -114,10 +126,14 @@ static const unsigned int boost_tlv[] = {
 static const DECLARE_TLV_DB_SCALE(dig_tlv, 0, 600, 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_kcontrol_new rt5621_vol_snd_controls[] = {
 =======
 static const struct snd_kcontrol_new alc5621_vol_snd_controls[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_kcontrol_new alc5621_vol_snd_controls[] = {
+>>>>>>> refs/remotes/origin/master
 	SOC_DOUBLE_TLV("Speaker Playback Volume",
 			ALC5623_SPK_OUT_VOL, 8, 0, 31, 1, hp_tlv),
 	SOC_DOUBLE("Speaker Playback Switch",
@@ -129,10 +145,14 @@ static const struct snd_kcontrol_new alc5621_vol_snd_controls[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static const struct snd_kcontrol_new rt5622_vol_snd_controls[] = {
 =======
 static const struct snd_kcontrol_new alc5622_vol_snd_controls[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_kcontrol_new alc5622_vol_snd_controls[] = {
+>>>>>>> refs/remotes/origin/master
 	SOC_DOUBLE_TLV("Speaker Playback Volume",
 			ALC5623_SPK_OUT_VOL, 8, 0, 31, 1, hp_tlv),
 	SOC_DOUBLE("Speaker Playback Switch",
@@ -727,8 +747,12 @@ static int alc5623_set_dai_fmt(struct snd_soc_dai *codec_dai,
 static int alc5623_pcm_hw_params(struct snd_pcm_substream *substream,
 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
 {
+<<<<<<< HEAD
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_codec *codec = rtd->codec;
+=======
+	struct snd_soc_codec *codec = dai->codec;
+>>>>>>> refs/remotes/origin/master
 	struct alc5623_priv *alc5623 = snd_soc_codec_get_drvdata(codec);
 	int coeff, rate;
 	u16 iface;
@@ -737,6 +761,7 @@ static int alc5623_pcm_hw_params(struct snd_pcm_substream *substream,
 	iface &= ~ALC5623_DAI_I2S_DL_MASK;
 
 	/* bit size */
+<<<<<<< HEAD
 	switch (params_format(params)) {
 	case SNDRV_PCM_FORMAT_S16_LE:
 		iface |= ALC5623_DAI_I2S_DL_16;
@@ -748,6 +773,19 @@ static int alc5623_pcm_hw_params(struct snd_pcm_substream *substream,
 		iface |= ALC5623_DAI_I2S_DL_24;
 		break;
 	case SNDRV_PCM_FORMAT_S32_LE:
+=======
+	switch (params_width(params)) {
+	case 16:
+		iface |= ALC5623_DAI_I2S_DL_16;
+		break;
+	case 20:
+		iface |= ALC5623_DAI_I2S_DL_20;
+		break;
+	case 24:
+		iface |= ALC5623_DAI_I2S_DL_24;
+		break;
+	case 32:
+>>>>>>> refs/remotes/origin/master
 		iface |= ALC5623_DAI_I2S_DL_32;
 		break;
 	default:
@@ -861,10 +899,14 @@ static int alc5623_set_bias_level(struct snd_soc_codec *codec,
 			| SNDRV_PCM_FMTBIT_S32_LE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct snd_soc_dai_ops alc5623_dai_ops = {
 =======
 static const struct snd_soc_dai_ops alc5623_dai_ops = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const struct snd_soc_dai_ops alc5623_dai_ops = {
+>>>>>>> refs/remotes/origin/master
 		.hw_params = alc5623_pcm_hw_params,
 		.digital_mute = alc5623_mute,
 		.set_fmt = alc5623_set_dai_fmt,
@@ -895,10 +937,14 @@ static struct snd_soc_dai_driver alc5623_dai = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int alc5623_suspend(struct snd_soc_codec *codec, pm_message_t mesg)
 =======
 static int alc5623_suspend(struct snd_soc_codec *codec)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int alc5623_suspend(struct snd_soc_codec *codec)
+>>>>>>> refs/remotes/origin/master
 {
 	alc5623_set_bias_level(codec, SND_SOC_BIAS_OFF);
 	return 0;
@@ -956,6 +1002,7 @@ static int alc5623_probe(struct snd_soc_codec *codec)
 	switch (alc5623->id) {
 	case 0x21:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		snd_soc_add_controls(codec, rt5621_vol_snd_controls,
 			ARRAY_SIZE(rt5621_vol_snd_controls));
 		break;
@@ -966,6 +1013,8 @@ static int alc5623_probe(struct snd_soc_codec *codec)
 	case 0x23:
 		snd_soc_add_controls(codec, alc5623_vol_snd_controls,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		snd_soc_add_codec_controls(codec, alc5621_vol_snd_controls,
 			ARRAY_SIZE(alc5621_vol_snd_controls));
 		break;
@@ -975,7 +1024,10 @@ static int alc5623_probe(struct snd_soc_codec *codec)
 		break;
 	case 0x23:
 		snd_soc_add_codec_controls(codec, alc5623_vol_snd_controls,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			ARRAY_SIZE(alc5623_vol_snd_controls));
 		break;
 	default:
@@ -983,10 +1035,14 @@ static int alc5623_probe(struct snd_soc_codec *codec)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	snd_soc_add_controls(codec, alc5623_snd_controls,
 =======
 	snd_soc_add_codec_controls(codec, alc5623_snd_controls,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	snd_soc_add_codec_controls(codec, alc5623_snd_controls,
+>>>>>>> refs/remotes/origin/master
 			ARRAY_SIZE(alc5623_snd_controls));
 
 	snd_soc_dapm_new_controls(dapm, alc5623_dapm_widgets,
@@ -1039,11 +1095,16 @@ static struct snd_soc_codec_driver soc_codec_device_alc5623 = {
  *    high = 0x1b
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int alc5623_i2c_probe(struct i2c_client *client,
 =======
 static __devinit int alc5623_i2c_probe(struct i2c_client *client,
 >>>>>>> refs/remotes/origin/cm-10.0
 				const struct i2c_device_id *id)
+=======
+static int alc5623_i2c_probe(struct i2c_client *client,
+			     const struct i2c_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct alc5623_platform_data *pdata;
 	struct alc5623_priv *alc5623;
@@ -1073,11 +1134,16 @@ static __devinit int alc5623_i2c_probe(struct i2c_client *client,
 	dev_dbg(&client->dev, "Found codec id : alc56%02x\n", vid2);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	alc5623 = kzalloc(sizeof(struct alc5623_priv), GFP_KERNEL);
 =======
 	alc5623 = devm_kzalloc(&client->dev, sizeof(struct alc5623_priv),
 			       GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	alc5623 = devm_kzalloc(&client->dev, sizeof(struct alc5623_priv),
+			       GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (alc5623 == NULL)
 		return -ENOMEM;
 
@@ -1100,13 +1166,17 @@ static __devinit int alc5623_i2c_probe(struct i2c_client *client,
 		break;
 	default:
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(alc5623);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
 	i2c_set_clientdata(client, alc5623);
+<<<<<<< HEAD
 <<<<<<< HEAD
 	alc5623->control_data = client;
 	alc5623->control_type = SND_SOC_I2C;
@@ -1119,17 +1189,23 @@ static __devinit int alc5623_i2c_probe(struct i2c_client *client,
 		kfree(alc5623);
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	alc5623->control_type = SND_SOC_I2C;
 
 	ret =  snd_soc_register_codec(&client->dev,
 		&soc_codec_device_alc5623, &alc5623_dai, 1);
 	if (ret != 0)
 		dev_err(&client->dev, "Failed to register codec: %d\n", ret);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return ret;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int alc5623_i2c_remove(struct i2c_client *client)
 {
@@ -1142,6 +1218,11 @@ static __devexit int alc5623_i2c_remove(struct i2c_client *client)
 {
 	snd_soc_unregister_codec(&client->dev);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int alc5623_i2c_remove(struct i2c_client *client)
+{
+	snd_soc_unregister_codec(&client->dev);
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1160,6 +1241,7 @@ static struct i2c_driver alc5623_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = alc5623_i2c_probe,
+<<<<<<< HEAD
 	.remove =  __devexit_p(alc5623_i2c_remove),
 	.id_table = alc5623_i2c_table,
 };
@@ -1183,6 +1265,13 @@ static void __exit alc5623_modexit(void)
 	i2c_del_driver(&alc5623_i2c_driver);
 }
 module_exit(alc5623_modexit);
+=======
+	.remove =  alc5623_i2c_remove,
+	.id_table = alc5623_i2c_table,
+};
+
+module_i2c_driver(alc5623_i2c_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_DESCRIPTION("ASoC alc5621/2/3 driver");
 MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");

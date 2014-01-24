@@ -32,7 +32,11 @@ struct dw_spi_pci {
 	struct dw_spi	dws;
 };
 
+<<<<<<< HEAD
 static int __devinit spi_pci_probe(struct pci_dev *pdev,
+=======
+static int spi_pci_probe(struct pci_dev *pdev,
+>>>>>>> refs/remotes/origin/master
 	const struct pci_device_id *ent)
 {
 	struct dw_spi_pci *dwpci;
@@ -40,7 +44,11 @@ static int __devinit spi_pci_probe(struct pci_dev *pdev,
 	int pci_bar = 0;
 	int ret;
 
+<<<<<<< HEAD
 	printk(KERN_INFO "DW: found PCI SPI controller(ID: %04x:%04x)\n",
+=======
+	dev_info(&pdev->dev, "found PCI SPI controller(ID: %04x:%04x)\n",
+>>>>>>> refs/remotes/origin/master
 		pdev->vendor, pdev->device);
 
 	ret = pci_enable_device(pdev);
@@ -105,11 +113,18 @@ err_disable:
 	return ret;
 }
 
+<<<<<<< HEAD
 static void __devexit spi_pci_remove(struct pci_dev *pdev)
 {
 	struct dw_spi_pci *dwpci = pci_get_drvdata(pdev);
 
 	pci_set_drvdata(pdev, NULL);
+=======
+static void spi_pci_remove(struct pci_dev *pdev)
+{
+	struct dw_spi_pci *dwpci = pci_get_drvdata(pdev);
+
+>>>>>>> refs/remotes/origin/master
 	dw_spi_remove_host(&dwpci->dws);
 	iounmap(dwpci->dws.regs);
 	pci_release_region(pdev, 0);
@@ -159,11 +174,16 @@ static struct pci_driver dw_spi_driver = {
 	.name =		DRIVER_NAME,
 	.id_table =	pci_ids,
 	.probe =	spi_pci_probe,
+<<<<<<< HEAD
 	.remove =	__devexit_p(spi_pci_remove),
+=======
+	.remove =	spi_pci_remove,
+>>>>>>> refs/remotes/origin/master
 	.suspend =	spi_suspend,
 	.resume	=	spi_resume,
 };
 
+<<<<<<< HEAD
 static int __init mrst_spi_init(void)
 {
 	return pci_register_driver(&dw_spi_driver);
@@ -176,6 +196,9 @@ static void __exit mrst_spi_exit(void)
 
 module_init(mrst_spi_init);
 module_exit(mrst_spi_exit);
+=======
+module_pci_driver(dw_spi_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Feng Tang <feng.tang@intel.com>");
 MODULE_DESCRIPTION("PCI interface driver for DW SPI Core");

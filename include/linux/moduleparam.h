@@ -16,32 +16,62 @@
 /* Chosen so that structs with an unsigned long line up. */
 #define MAX_PARAM_PREFIX_LEN (64 - sizeof(unsigned long))
 
+<<<<<<< HEAD
 #define ___module_cat(a,b) __mod_ ## a ## b
 #define __module_cat(a,b) ___module_cat(a,b)
 #ifdef MODULE
 #define __MODULE_INFO(tag, name, info)					  \
 static const char __module_cat(name,__LINE__)[]				  \
+=======
+#ifdef MODULE
+#define __MODULE_INFO(tag, name, info)					  \
+static const char __UNIQUE_ID(name)[]					  \
+>>>>>>> refs/remotes/origin/master
   __used __attribute__((section(".modinfo"), unused, aligned(1)))	  \
   = __stringify(tag) "=" info
 #else  /* !MODULE */
 /* This struct is here for syntactic coherency, it is not used */
 #define __MODULE_INFO(tag, name, info)					  \
+<<<<<<< HEAD
   struct __module_cat(name,__LINE__) {}
+=======
+  struct __UNIQUE_ID(name) {}
+>>>>>>> refs/remotes/origin/master
 #endif
 #define __MODULE_PARM_TYPE(name, _type)					  \
   __MODULE_INFO(parmtype, name##type, #name ":" _type)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* One for each parameter, describing how to use it.  Some files do
    multiple of these per line, so can't just use MODULE_INFO. */
 #define MODULE_PARM_DESC(_parm, desc) \
 	__MODULE_INFO(parm, _parm, #_parm ":" desc)
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 struct kernel_param;
 
 struct kernel_param_ops {
+=======
+struct kernel_param;
+
+/*
+ * Flags available for kernel_param_ops
+ *
+ * NOARG - the parameter allows for no argument (foo instead of foo=1)
+ */
+enum {
+	KERNEL_PARAM_FL_NOARG = (1 << 0)
+};
+
+struct kernel_param_ops {
+	/* How the ops should behave */
+	unsigned int flags;
+>>>>>>> refs/remotes/origin/master
 	/* Returns 0, or -errno.  arg is in kp->arg. */
 	int (*set)(const char *val, const struct kernel_param *kp);
 	/* Returns length written or -errno.  Buffer is 4k (ie. be short!) */
@@ -51,20 +81,27 @@ struct kernel_param_ops {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Flag bits for kernel_param.flags */
 #define KPARAM_ISBOOL		2
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct kernel_param {
 	const char *name;
 	const struct kernel_param_ops *ops;
 	u16 perm;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u16 flags;
 =======
 	s16 level;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	s16 level;
+>>>>>>> refs/remotes/origin/master
 	union {
 		void *arg;
 		const struct kparam_string *str;
@@ -142,9 +179,12 @@ struct kparam_array
  */
 #define module_param_cb(name, ops, arg, perm)				      \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__module_param_call(MODULE_PARAM_PREFIX,			      \
 			    name, ops, arg, __same_type((arg), bool *), perm)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	__module_param_call(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1)
 
 /**
@@ -179,7 +219,10 @@ struct kparam_array
 
 #define late_param_cb(name, ops, arg, perm)		\
 	__level_param_cb(name, ops, arg, perm, 7)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /* On alpha, ia64 and ppc64 relocations to global data cannot go into
    read-only sections (which is part of respective UNIX ABI on these
@@ -194,10 +237,14 @@ struct kparam_array
 /* This is the fundamental function for registering boot/module
    parameters. */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define __module_param_call(prefix, name, ops, arg, isbool, perm)	\
 =======
 #define __module_param_call(prefix, name, ops, arg, perm, level)	\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define __module_param_call(prefix, name, ops, arg, perm, level)	\
+>>>>>>> refs/remotes/origin/master
 	/* Default value instead of permissions? */			\
 	static int __param_perm_check_##name __attribute__((unused)) =	\
 	BUILD_BUG_ON_ZERO((perm) < 0 || (perm) > 0777 || ((perm) & 2))	\
@@ -207,15 +254,20 @@ struct kparam_array
 	__used								\
     __attribute__ ((unused,__section__ ("__param"),aligned(sizeof(void *)))) \
 <<<<<<< HEAD
+<<<<<<< HEAD
 	= { __param_str_##name, ops, perm, isbool ? KPARAM_ISBOOL : 0,	\
 	    { arg } }
 =======
 	= { __param_str_##name, ops, perm, level, { arg } }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	= { __param_str_##name, ops, perm, level, { arg } }
+>>>>>>> refs/remotes/origin/master
 
 /* Obsolete - use module_param_cb() */
 #define module_param_call(name, set, get, arg, perm)			\
 	static struct kernel_param_ops __param_ops_##name =		\
+<<<<<<< HEAD
 		 { (void *)set, (void *)get };				\
 	__module_param_call(MODULE_PARAM_PREFIX,			\
 			    name, &__param_ops_##name, arg,		\
@@ -225,6 +277,12 @@ struct kparam_array
 =======
 			    (perm) + sizeof(__check_old_set_param(set))*0, -1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		{ 0, (void *)set, (void *)get };			\
+	__module_param_call(MODULE_PARAM_PREFIX,			\
+			    name, &__param_ops_##name, arg,		\
+			    (perm) + sizeof(__check_old_set_param(set))*0, -1)
+>>>>>>> refs/remotes/origin/master
 
 /* We don't get oldget: it's often a new-style param_get_uint, etc. */
 static inline int
@@ -305,11 +363,15 @@ static inline void __kernel_param_unlock(void)
 #define core_param(name, var, type, perm)				\
 	param_check_##type(name, &(var));				\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	__module_param_call("", name, &param_ops_##type,		\
 			    &var, __same_type(var, bool), perm)
 =======
 	__module_param_call("", name, &param_ops_##type, &var, perm, -1)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__module_param_call("", name, &param_ops_##type, &var, perm, -1)
+>>>>>>> refs/remotes/origin/master
 #endif /* !MODULE */
 
 /**
@@ -328,10 +390,13 @@ static inline void __kernel_param_unlock(void)
 	__module_param_call(MODULE_PARAM_PREFIX, name,			\
 			    &param_ops_string,				\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    .str = &__param_string_##name, 0, perm);	\
 	__MODULE_PARM_TYPE(name, "string")
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			    .str = &__param_string_##name, perm, -1);	\
 	__MODULE_PARM_TYPE(name, "string")
 
@@ -355,18 +420,28 @@ extern bool parameq(const char *name1, const char *name2);
  */
 extern bool parameqn(const char *name1, const char *name2, size_t n);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /* Called on module insert or kernel boot */
 extern int parse_args(const char *name,
 		      char *args,
 		      const struct kernel_param *params,
 		      unsigned num,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 		      s16 level_min,
 		      s16 level_max,
 >>>>>>> refs/remotes/origin/cm-10.0
 		      int (*unknown)(char *param, char *val));
+=======
+		      s16 level_min,
+		      s16 level_max,
+		      int (*unknown)(char *param, char *val,
+			      const char *doing));
+>>>>>>> refs/remotes/origin/master
 
 /* Called by module remove. */
 #ifdef CONFIG_SYSFS
@@ -425,6 +500,7 @@ extern int param_get_charp(char *buffer, const struct kernel_param *kp);
 #define param_check_charp(name, p) __param_check(name, p, char *)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* For historical reasons "bool" parameters can be (unsigned) "int". */
 extern struct kernel_param_ops param_ops_bool;
 extern int param_set_bool(const char *val, const struct kernel_param *kp);
@@ -437,12 +513,17 @@ extern int param_get_bool(char *buffer, const struct kernel_param *kp);
 			     !__same_type((p), int *));			\
 	}
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* We used to allow int as well as bool.  We're taking that away! */
 extern struct kernel_param_ops param_ops_bool;
 extern int param_set_bool(const char *val, const struct kernel_param *kp);
 extern int param_get_bool(char *buffer, const struct kernel_param *kp);
 #define param_check_bool(name, p) __param_check(name, p, bool)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern struct kernel_param_ops param_ops_invbool;
 extern int param_set_invbool(const char *val, const struct kernel_param *kp);
@@ -450,14 +531,20 @@ extern int param_get_invbool(char *buffer, const struct kernel_param *kp);
 #define param_check_invbool(name, p) __param_check(name, p, bool)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /* An int, which can only be set like a bool (though it shows as an int). */
 extern struct kernel_param_ops param_ops_bint;
 extern int param_set_bint(const char *val, const struct kernel_param *kp);
 #define param_get_bint param_get_int
 #define param_check_bint param_check_int
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * module_param_array - a parameter which is an array of some type
  * @name: the name of the array variable
@@ -487,9 +574,13 @@ extern int param_set_bint(const char *val, const struct kernel_param *kp);
  */
 #define module_param_array_named(name, array, type, nump, perm)		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	param_check_##type(name, &(array)[0]);				\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	param_check_##type(name, &(array)[0]);				\
+>>>>>>> refs/remotes/origin/master
 	static const struct kparam_array __param_arr_##name		\
 	= { .max = ARRAY_SIZE(array), .num = nump,                      \
 	    .ops = &param_ops_##type,					\
@@ -498,10 +589,14 @@ extern int param_set_bint(const char *val, const struct kernel_param *kp);
 			    &param_array_ops,				\
 			    .arr = &__param_arr_##name,			\
 <<<<<<< HEAD
+<<<<<<< HEAD
 			    __same_type(array[0], bool), perm);		\
 =======
 			    perm, -1);					\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			    perm, -1);					\
+>>>>>>> refs/remotes/origin/master
 	__MODULE_PARM_TYPE(name, "array of " #type)
 
 extern struct kernel_param_ops param_array_ops;
@@ -510,7 +605,11 @@ extern struct kernel_param_ops param_ops_string;
 extern int param_set_copystring(const char *val, const struct kernel_param *);
 extern int param_get_string(char *buffer, const struct kernel_param *kp);
 
+<<<<<<< HEAD
 /* for exporting parameters in /sys/parameters */
+=======
+/* for exporting parameters in /sys/module/.../parameters */
+>>>>>>> refs/remotes/origin/master
 
 struct module;
 

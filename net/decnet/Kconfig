@@ -25,8 +25,13 @@ config DECNET
 	  The module is called decnet.
 
 config DECNET_ROUTER
+<<<<<<< HEAD
 	bool "DECnet: router support (EXPERIMENTAL)"
 	depends on DECNET && EXPERIMENTAL
+=======
+	bool "DECnet: router support"
+	depends on DECNET
+>>>>>>> refs/remotes/origin/master
 	select FIB_RULES
 	---help---
 	  Add support for turning your DECnet Endnode into a level 1 or 2

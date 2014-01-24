@@ -1,6 +1,10 @@
 if ARCH_CLPS711X
 
+<<<<<<< HEAD
 menu "CLPS711X/EP721X Implementations"
+=======
+menu "CLPS711X/EP721X/EP731X Implementations"
+>>>>>>> refs/remotes/origin/master
 
 config ARCH_AUTCPU12
 	bool "AUTCPU12"
@@ -10,18 +14,24 @@ config ARCH_AUTCPU12
 
 config ARCH_CDB89712
 	bool "CDB89712"
+<<<<<<< HEAD
 	select ISA
+=======
+>>>>>>> refs/remotes/origin/master
 	help
 	  This is an evaluation board from Cirrus for the CS89712 processor.
 	  The board includes 2 serial ports, Ethernet, IRDA, and expansion
 	  headers.  It comes with 16 MB SDRAM and 8 MB flash ROM.
 
+<<<<<<< HEAD
 config ARCH_CEIVA
 	bool "CEIVA"
 	help
 	  Say Y here if you intend to run this kernel on the Ceiva/Polaroid
 	  PhotoMax Digital Picture Frame.
 
+=======
+>>>>>>> refs/remotes/origin/master
 config ARCH_CLEP7312
 	bool "CLEP7312"
 	help
@@ -29,9 +39,13 @@ config ARCH_CLEP7312
 
 config ARCH_EDB7211
 	bool "EDB7211"
+<<<<<<< HEAD
 	select ISA
 	select ARCH_SPARSEMEM_ENABLE
 	select ARCH_SELECT_MEMORY_MODEL
+=======
+	select ARCH_HAS_HOLES_MEMORYMODEL
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if you intend to run this kernel on a Cirrus Logic EDB-7211
 	  evaluation board.
@@ -42,6 +56,7 @@ config ARCH_P720T
 	  Say Y here if you intend to run this kernel on the ARM Prospector
 	  720T.
 
+<<<<<<< HEAD
 config ARCH_FORTUNET
 	bool "FORTUNET"
 
@@ -65,6 +80,15 @@ config EP72XX_ROM_BOOT
 	  mode memory map instead of the normal memory map.
 
 	  Processors derived from the Cirrus CLPS-711X core support two boot
+=======
+config EP72XX_ROM_BOOT
+	bool "EP721x/EP731x ROM boot"
+	help
+	  If you say Y here, your CLPS711x-based kernel will use the bootstrap
+	  mode memory map instead of the normal memory map.
+
+	  Processors derived from the Cirrus CLPS711X core support two boot
+>>>>>>> refs/remotes/origin/master
 	  modes.  Normal mode boots from the external memory device at CS0.
 	  Bootstrap mode rearranges parts of the memory map, placing an
 	  internal 128 byte bootstrap ROM at CS0.  This option performs the

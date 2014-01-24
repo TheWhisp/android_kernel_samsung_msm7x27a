@@ -15,6 +15,7 @@ kallsyms = []
 
 def get_kallsyms_table():
 	global kallsyms
+<<<<<<< HEAD
 	try:
 		f = open("/proc/kallsyms", "r")
 		linecount = 0
@@ -44,6 +45,40 @@ def get_sym(sloc):
 		if loc >= i['loc']:
 			return (i['name'], loc - i['loc'])
 	return (None, 0)
+=======
+
+	try:
+		f = open("/proc/kallsyms", "r")
+	except:
+		return
+
+	for line in f:
+		loc = int(line.split()[0], 16)
+		name = line.split()[2]
+		kallsyms.append((loc, name))
+	kallsyms.sort()
+
+def get_sym(sloc):
+	loc = int(sloc)
+
+	# Invariant: kallsyms[i][0] <= loc for all 0 <= i <= start
+	#            kallsyms[i][0] > loc for all end <= i < len(kallsyms)
+	start, end = -1, len(kallsyms)
+	while end != start + 1:
+		pivot = (start + end) // 2
+		if loc < kallsyms[pivot][0]:
+			end = pivot
+		else:
+			start = pivot
+
+	# Now (start == -1 or kallsyms[start][0] <= loc)
+	# and (start == len(kallsyms) - 1 or loc < kallsyms[start + 1][0])
+	if start >= 0:
+		symloc, name = kallsyms[start]
+		return (name, loc - symloc)
+	else:
+		return (None, 0)
+>>>>>>> refs/remotes/origin/master
 
 def print_drop_table():
 	print "%25s %25s %25s" % ("LOCATION", "OFFSET", "COUNT")

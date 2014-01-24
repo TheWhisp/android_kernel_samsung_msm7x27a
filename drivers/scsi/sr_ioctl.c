@@ -5,9 +5,13 @@
 #include <linux/string.h>
 #include <linux/blkdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/blkpg.h>
 #include <linux/cdrom.h>
 #include <linux/delay.h>

@@ -73,12 +73,17 @@ static int xfrm6_beet_output(struct xfrm_state *x, struct sk_buff *skb)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&top_iph->saddr, (struct in6_addr *)&x->props.saddr);
 	ipv6_addr_copy(&top_iph->daddr, (struct in6_addr *)&x->id.daddr);
 =======
 	top_iph->saddr = *(struct in6_addr *)&x->props.saddr;
 	top_iph->daddr = *(struct in6_addr *)&x->id.daddr;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	top_iph->saddr = *(struct in6_addr *)&x->props.saddr;
+	top_iph->daddr = *(struct in6_addr *)&x->id.daddr;
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -101,12 +106,17 @@ static int xfrm6_beet_input(struct xfrm_state *x, struct sk_buff *skb)
 	ip6h = ipv6_hdr(skb);
 	ip6h->payload_len = htons(skb->len - size);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ipv6_addr_copy(&ip6h->daddr, (struct in6_addr *) &x->sel.daddr.a6);
 	ipv6_addr_copy(&ip6h->saddr, (struct in6_addr *) &x->sel.saddr.a6);
 =======
 	ip6h->daddr = *(struct in6_addr *)&x->sel.daddr.a6;
 	ip6h->saddr = *(struct in6_addr *)&x->sel.saddr.a6;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ip6h->daddr = *(struct in6_addr *)&x->sel.daddr.a6;
+	ip6h->saddr = *(struct in6_addr *)&x->sel.saddr.a6;
+>>>>>>> refs/remotes/origin/master
 	err = 0;
 out:
 	return err;

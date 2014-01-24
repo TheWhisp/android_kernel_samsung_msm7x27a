@@ -11,6 +11,7 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/sched.h>
+<<<<<<< HEAD
 #include <linux/init.h>
 #include <linux/list.h>
 #include <linux/gpio.h>
@@ -21,6 +22,16 @@
 =======
 #include <linux/prefetch.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/list.h>
+#include <linux/gpio.h>
+#include <linux/io.h>
+#include <linux/err.h>
+#include <linux/platform_device.h>
+#include <linux/dma-mapping.h>
+#include <linux/prefetch.h>
+#include <linux/usb/usb_phy_gen_xceiv.h>
+>>>>>>> refs/remotes/origin/master
 
 #include <asm/cacheflush.h>
 
@@ -78,7 +89,11 @@ void musb_write_fifo(struct musb_hw_ep *hw_ep, u16 len, const u8 *src)
 		bfin_write16(USB_DMA_REG(epnum, USB_DMAx_CTRL), dma_reg);
 		SSYNC();
 
+<<<<<<< HEAD
 		/* Wait for compelete */
+=======
+		/* Wait for complete */
+>>>>>>> refs/remotes/origin/master
 		while (!(bfin_read_USB_DMA_INTERRUPT() & (1 << epnum)))
 			cpu_relax();
 
@@ -132,7 +147,11 @@ void musb_read_fifo(struct musb_hw_ep *hw_ep, u16 len, u8 *dst)
 		bfin_write16(USB_DMA_REG(epnum, USB_DMAx_CTRL), dma_reg);
 		SSYNC();
 
+<<<<<<< HEAD
 		/* Wait for compelete */
+=======
+		/* Wait for complete */
+>>>>>>> refs/remotes/origin/master
 		while (!(bfin_read_USB_DMA_INTERRUPT() & (1 << epnum)))
 			cpu_relax();
 
@@ -186,8 +205,13 @@ static irqreturn_t blackfin_interrupt(int irq, void *__hci)
 	}
 
 	/* Start sampling ID pin, when plug is removed from MUSB */
+<<<<<<< HEAD
 	if ((is_otg_enabled(musb) && (musb->xceiv->state == OTG_STATE_B_IDLE
 		|| musb->xceiv->state == OTG_STATE_A_WAIT_BCON)) ||
+=======
+	if ((musb->xceiv->state == OTG_STATE_B_IDLE
+		|| musb->xceiv->state == OTG_STATE_A_WAIT_BCON) ||
+>>>>>>> refs/remotes/origin/master
 		(musb->int_usb & MUSB_INTR_DISCONNECT && is_host_active(musb))) {
 		mod_timer(&musb_conn_timer, jiffies + TIMER_DELAY);
 		musb->a_wait_bcon = TIMER_DELAY;
@@ -230,18 +254,27 @@ static void musb_conn_timer_handler(unsigned long _musb)
 
 			val = MUSB_INTR_SUSPEND | MUSB_INTR_VBUSERROR;
 			musb_writeb(musb->mregs, MUSB_INTRUSB, val);
+<<<<<<< HEAD
 			if (is_otg_enabled(musb))
 				musb->xceiv->state = OTG_STATE_B_IDLE;
 			else
 				musb_writeb(musb->mregs, MUSB_POWER, MUSB_POWER_HSENAB);
+=======
+			musb->xceiv->state = OTG_STATE_B_IDLE;
+>>>>>>> refs/remotes/origin/master
 		}
 		mod_timer(&musb_conn_timer, jiffies + TIMER_DELAY);
 		break;
 	case OTG_STATE_B_IDLE:
+<<<<<<< HEAD
 
 		if (!is_peripheral_enabled(musb))
 			break;
 		/* Start a new session.  It seems that MUSB needs taking
+=======
+		/*
+		 * Start a new session.  It seems that MUSB needs taking
+>>>>>>> refs/remotes/origin/master
 		 * some time to recognize the type of the plug inserted?
 		 */
 		val = musb_readw(musb->mregs, MUSB_DEVCTL);
@@ -286,21 +319,33 @@ static void musb_conn_timer_handler(unsigned long _musb)
 		break;
 	default:
 		dev_dbg(musb->controller, "%s state not handled\n",
+<<<<<<< HEAD
 			otg_state_string(musb->xceiv->state));
+=======
+			usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 		break;
 	}
 	spin_unlock_irqrestore(&musb->lock, flags);
 
 	dev_dbg(musb->controller, "state is %s\n",
+<<<<<<< HEAD
 		otg_state_string(musb->xceiv->state));
+=======
+		usb_otg_state_string(musb->xceiv->state));
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bfin_musb_enable(struct musb *musb)
 {
+<<<<<<< HEAD
 	if (!is_otg_enabled(musb) && is_host_enabled(musb)) {
 		mod_timer(&musb_conn_timer, jiffies + TIMER_DELAY);
 		musb->a_wait_bcon = TIMER_DELAY;
 	}
+=======
+	/* REVISIT is this really correct ? */
+>>>>>>> refs/remotes/origin/master
 }
 
 static void bfin_musb_disable(struct musb *musb)
@@ -316,6 +361,7 @@ static void bfin_musb_set_vbus(struct musb *musb, int is_on)
 
 	dev_dbg(musb->controller, "VBUS %s, devctl %02x "
 		/* otg %3x conf %08x prcm %08x */ "\n",
+<<<<<<< HEAD
 		otg_state_string(musb->xceiv->state),
 		musb_readb(musb->mregs, MUSB_DEVCTL));
 }
@@ -325,16 +371,26 @@ static int bfin_musb_set_power(struct otg_transceiver *x, unsigned mA)
 =======
 static int bfin_musb_set_power(struct usb_phy *x, unsigned mA)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		usb_otg_state_string(musb->xceiv->state),
+		musb_readb(musb->mregs, MUSB_DEVCTL));
+}
+
+static int bfin_musb_set_power(struct usb_phy *x, unsigned mA)
+>>>>>>> refs/remotes/origin/master
 {
 	return 0;
 }
 
+<<<<<<< HEAD
 static void bfin_musb_try_idle(struct musb *musb, unsigned long timeout)
 {
 	if (!is_otg_enabled(musb) && is_host_enabled(musb))
 		mod_timer(&musb_conn_timer, jiffies + TIMER_DELAY);
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int bfin_musb_vbus_status(struct musb *musb)
 {
 	return 0;
@@ -423,6 +479,7 @@ static int bfin_musb_init(struct musb *musb)
 
 	usb_nop_xceiv_register();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	musb->xceiv = otg_get_transceiver();
 =======
 	musb->xceiv = usb_get_transceiver();
@@ -430,16 +487,29 @@ static int bfin_musb_init(struct musb *musb)
 	if (!musb->xceiv) {
 		gpio_free(musb->config->gpio_vrsel);
 		return -ENODEV;
+=======
+	musb->xceiv = usb_get_phy(USB_PHY_TYPE_USB2);
+	if (IS_ERR_OR_NULL(musb->xceiv)) {
+		gpio_free(musb->config->gpio_vrsel);
+		return -EPROBE_DEFER;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	bfin_musb_reg_init(musb);
 
+<<<<<<< HEAD
 	if (is_host_enabled(musb)) {
 		setup_timer(&musb_conn_timer,
 			musb_conn_timer_handler, (unsigned long) musb);
 	}
 	if (is_peripheral_enabled(musb))
 		musb->xceiv->set_power = bfin_musb_set_power;
+=======
+	setup_timer(&musb_conn_timer, musb_conn_timer_handler,
+			(unsigned long) musb);
+
+	musb->xceiv->set_power = bfin_musb_set_power;
+>>>>>>> refs/remotes/origin/master
 
 	musb->isr = blackfin_interrupt;
 	musb->double_buffer_not_ok = true;
@@ -452,10 +522,14 @@ static int bfin_musb_exit(struct musb *musb)
 	gpio_free(musb->config->gpio_vrsel);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	otg_put_transceiver(musb->xceiv);
 =======
 	usb_put_transceiver(musb->xceiv);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	usb_put_phy(musb->xceiv);
+>>>>>>> refs/remotes/origin/master
 	usb_nop_xceiv_unregister();
 	return 0;
 }
@@ -468,7 +542,10 @@ static const struct musb_platform_ops bfin_ops = {
 	.disable	= bfin_musb_disable,
 
 	.set_mode	= bfin_musb_set_mode,
+<<<<<<< HEAD
 	.try_idle	= bfin_musb_try_idle,
+=======
+>>>>>>> refs/remotes/origin/master
 
 	.vbus_status	= bfin_musb_vbus_status,
 	.set_vbus	= bfin_musb_set_vbus,
@@ -479,12 +556,19 @@ static const struct musb_platform_ops bfin_ops = {
 static u64 bfin_dmamask = DMA_BIT_MASK(32);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __init bfin_probe(struct platform_device *pdev)
 =======
 static int __devinit bfin_probe(struct platform_device *pdev)
 >>>>>>> refs/remotes/origin/cm-10.0
 {
 	struct musb_hdrc_platform_data	*pdata = pdev->dev.platform_data;
+=======
+static int bfin_probe(struct platform_device *pdev)
+{
+	struct resource musb_resources[2];
+	struct musb_hdrc_platform_data	*pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct platform_device		*musb;
 	struct bfin_glue		*glue;
 
@@ -496,7 +580,11 @@ static int __devinit bfin_probe(struct platform_device *pdev)
 		goto err0;
 	}
 
+<<<<<<< HEAD
 	musb = platform_device_alloc("musb-hdrc", -1);
+=======
+	musb = platform_device_alloc("musb-hdrc", PLATFORM_DEVID_AUTO);
+>>>>>>> refs/remotes/origin/master
 	if (!musb) {
 		dev_err(&pdev->dev, "failed to allocate musb device\n");
 		goto err1;
@@ -513,28 +601,61 @@ static int __devinit bfin_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, glue);
 
+<<<<<<< HEAD
 	ret = platform_device_add_resources(musb, pdev->resource,
 			pdev->num_resources);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to add resources\n");
 		goto err2;
+=======
+	memset(musb_resources, 0x00, sizeof(*musb_resources) *
+			ARRAY_SIZE(musb_resources));
+
+	musb_resources[0].name = pdev->resource[0].name;
+	musb_resources[0].start = pdev->resource[0].start;
+	musb_resources[0].end = pdev->resource[0].end;
+	musb_resources[0].flags = pdev->resource[0].flags;
+
+	musb_resources[1].name = pdev->resource[1].name;
+	musb_resources[1].start = pdev->resource[1].start;
+	musb_resources[1].end = pdev->resource[1].end;
+	musb_resources[1].flags = pdev->resource[1].flags;
+
+	ret = platform_device_add_resources(musb, musb_resources,
+			ARRAY_SIZE(musb_resources));
+	if (ret) {
+		dev_err(&pdev->dev, "failed to add resources\n");
+		goto err3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = platform_device_add_data(musb, pdata, sizeof(*pdata));
 	if (ret) {
 		dev_err(&pdev->dev, "failed to add platform_data\n");
+<<<<<<< HEAD
 		goto err2;
+=======
+		goto err3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	ret = platform_device_add(musb);
 	if (ret) {
 		dev_err(&pdev->dev, "failed to register musb device\n");
+<<<<<<< HEAD
 		goto err2;
+=======
+		goto err3;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	return 0;
 
+<<<<<<< HEAD
 err2:
+=======
+err3:
+>>>>>>> refs/remotes/origin/master
 	platform_device_put(musb);
 
 err1:
@@ -545,6 +666,7 @@ err0:
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __exit bfin_remove(struct platform_device *pdev)
 =======
 static int __devexit bfin_remove(struct platform_device *pdev)
@@ -554,6 +676,13 @@ static int __devexit bfin_remove(struct platform_device *pdev)
 
 	platform_device_del(glue->musb);
 	platform_device_put(glue->musb);
+=======
+static int bfin_remove(struct platform_device *pdev)
+{
+	struct bfin_glue		*glue = platform_get_drvdata(pdev);
+
+	platform_device_unregister(glue->musb);
+>>>>>>> refs/remotes/origin/master
 	kfree(glue);
 
 	return 0;
@@ -586,6 +715,7 @@ static int bfin_resume(struct device *dev)
 
 	return 0;
 }
+<<<<<<< HEAD
 
 static struct dev_pm_ops bfin_pm_ops = {
 	.suspend	= bfin_suspend,
@@ -606,12 +736,25 @@ static struct platform_driver bfin_driver = {
 	.driver		= {
 		.name	= "musb-blackfin",
 		.pm	= DEV_PM_OPS,
+=======
+#endif
+
+static SIMPLE_DEV_PM_OPS(bfin_pm_ops, bfin_suspend, bfin_resume);
+
+static struct platform_driver bfin_driver = {
+	.probe		= bfin_probe,
+	.remove		= __exit_p(bfin_remove),
+	.driver		= {
+		.name	= "musb-blackfin",
+		.pm	= &bfin_pm_ops,
+>>>>>>> refs/remotes/origin/master
 	},
 };
 
 MODULE_DESCRIPTION("Blackfin MUSB Glue Layer");
 MODULE_AUTHOR("Bryan Wy <cooloney@kernel.org>");
 MODULE_LICENSE("GPL v2");
+<<<<<<< HEAD
 
 static int __init bfin_init(void)
 {
@@ -630,3 +773,6 @@ static void __exit bfin_exit(void)
 	platform_driver_unregister(&bfin_driver);
 }
 module_exit(bfin_exit);
+=======
+module_platform_driver(bfin_driver);
+>>>>>>> refs/remotes/origin/master

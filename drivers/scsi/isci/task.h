@@ -59,6 +59,7 @@
 #include "host.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define ISCI_TERMINATION_TIMEOUT_MSEC 500
 
@@ -79,6 +80,13 @@ enum isci_tmf_cb_state {
 };
 
 /**
+=======
+#define ISCI_TERMINATION_TIMEOUT_MSEC 500
+
+struct isci_request;
+
+/**
+>>>>>>> refs/remotes/origin/master
  * enum isci_tmf_function_codes - This enum defines the possible preparations
  *    of task management requests.
  *
@@ -90,11 +98,16 @@ enum isci_tmf_function_codes {
 	isci_tmf_ssp_task_abort = TMF_ABORT_TASK,
 	isci_tmf_ssp_lun_reset  = TMF_LU_RESET,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	isci_tmf_sata_srst_high = TMF_LU_RESET + 0x100, /* Non SCSI */
 	isci_tmf_sata_srst_low  = TMF_LU_RESET + 0x101  /* Non SCSI */
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 };
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 /**
  * struct isci_tmf - This class represents the task management object which
  *    acts as an interface to libsas for processing task management requests
@@ -112,6 +125,7 @@ struct isci_tmf {
 	} resp;
 	unsigned char lun[8];
 	u16 io_tag;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct isci_remote_device *device;
 =======
@@ -135,11 +149,20 @@ static inline void isci_print_tmf(struct isci_tmf *tmf)
 	if (SAS_PROTOCOL_SATA == tmf->proto)
 		dev_dbg(&tmf->device->isci_port->isci_host->pdev->dev,
 =======
+=======
+	enum isci_tmf_function_codes tmf_code;
+	int status;
+};
+
+>>>>>>> refs/remotes/origin/master
 static inline void isci_print_tmf(struct isci_host *ihost, struct isci_tmf *tmf)
 {
 	if (SAS_PROTOCOL_SATA == tmf->proto)
 		dev_dbg(&ihost->pdev->dev,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			"%s: status = %x\n"
 			"tmf->resp.d2h_fis.status = %x\n"
 			"tmf->resp.d2h_fis.error = %x\n",
@@ -149,10 +172,14 @@ static inline void isci_print_tmf(struct isci_host *ihost, struct isci_tmf *tmf)
 			tmf->resp.d2h_fis.error);
 	else
 <<<<<<< HEAD
+<<<<<<< HEAD
 		dev_dbg(&tmf->device->isci_port->isci_host->pdev->dev,
 =======
 		dev_dbg(&ihost->pdev->dev,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		dev_dbg(&ihost->pdev->dev,
+>>>>>>> refs/remotes/origin/master
 			"%s: status = %x\n"
 			"tmf->resp.resp_iu.data_present = %x\n"
 			"tmf->resp.resp_iu.status = %x\n"
@@ -231,6 +258,7 @@ int isci_queuecommand(
 	struct scsi_cmnd *scsi_cmd,
 	void (*donefunc)(struct scsi_cmnd *));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 int isci_bus_reset_handler(struct scsi_cmnd *cmd);
 
@@ -423,4 +451,6 @@ static inline void isci_execpath_callback(struct isci_host *ihost,
 }
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* !defined(_SCI_TASK_H_) */

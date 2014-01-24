@@ -31,13 +31,27 @@ menuconfig PARPORT
 
 	  If unsure, say Y.
 
+<<<<<<< HEAD
+=======
+config ARCH_MIGHT_HAVE_PC_PARPORT
+	bool
+	help
+	  Select this config option from the architecture Kconfig if
+	  the architecture might have PC parallel port hardware.
+
+>>>>>>> refs/remotes/origin/master
 if PARPORT
 
 config PARPORT_PC
 	tristate "PC-style hardware"
+<<<<<<< HEAD
 	depends on (!SPARC64 || PCI) && !SPARC32 && !M32R && !FRV && \
 		(!M68K || ISA) && !MN10300 && !AVR32 && !BLACKFIN
 	---help---
+=======
+	depends on ARCH_MIGHT_HAVE_PC_PARPORT
+	help
+>>>>>>> refs/remotes/origin/master
 	  You should say Y here if you have a PC-style parallel port. All
 	  IBM PC compatible computers and some Alphas have PC-style
 	  parallel ports.  PA-RISC owners should only say Y here if they
@@ -57,8 +71,13 @@ config PARPORT_SERIAL
 	  will be called parport_serial.
 
 config PARPORT_PC_FIFO
+<<<<<<< HEAD
 	bool "Use FIFO/DMA if available (EXPERIMENTAL)"
 	depends on PARPORT_PC && EXPERIMENTAL
+=======
+	bool "Use FIFO/DMA if available"
+	depends on PARPORT_PC
+>>>>>>> refs/remotes/origin/master
 	help
 	  Many parallel port chipsets provide hardware that can speed up
 	  printing. Say Y here if you want to take advantage of that.
@@ -70,8 +89,13 @@ config PARPORT_PC_FIFO
 	  specify which IRQ/DMA to use.
 
 config PARPORT_PC_SUPERIO
+<<<<<<< HEAD
 	bool "SuperIO chipset support (EXPERIMENTAL)"
 	depends on PARPORT_PC && EXPERIMENTAL
+=======
+	bool "SuperIO chipset support"
+	depends on PARPORT_PC && !PARISC
+>>>>>>> refs/remotes/origin/master
 	help
 	  Saying Y here enables some probes for Super-IO chipsets in order to
 	  find out things like base addresses, IRQ lines and DMA channels.  It
@@ -85,8 +109,13 @@ config PARPORT_PC_PCMCIA
 	  ports. If unsure, say N.
 
 config PARPORT_IP32
+<<<<<<< HEAD
 	tristate "SGI IP32 builtin port (EXPERIMENTAL)"
 	depends on SGI_IP32 && EXPERIMENTAL
+=======
+	tristate "SGI IP32 builtin port"
+	depends on SGI_IP32
+>>>>>>> refs/remotes/origin/master
 	select PARPORT_NOT_PC
 	help
 	  Say Y here if you need support for the parallel port on
@@ -126,8 +155,13 @@ config PARPORT_GSC
 	select PARPORT_NOT_PC
 
 config PARPORT_SUNBPP
+<<<<<<< HEAD
 	tristate "Sparc hardware (EXPERIMENTAL)"
 	depends on SBUS && EXPERIMENTAL
+=======
+	tristate "Sparc hardware"
+	depends on SBUS
+>>>>>>> refs/remotes/origin/master
 	select PARPORT_NOT_PC
 	help
 	  This driver provides support for the bidirectional parallel port

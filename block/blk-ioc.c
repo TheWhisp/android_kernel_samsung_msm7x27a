@@ -6,11 +6,15 @@
 #include <linux/init.h>
 #include <linux/bio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/bitmap.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/blkdev.h>
 #include <linux/bootmem.h>	/* for max_pfn/max_low_pfn */
+=======
+#include <linux/blkdev.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/slab.h>
 
 #include "blk.h"
@@ -20,6 +24,7 @@
  */
 static struct kmem_cache *iocontext_cachep;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static void hlist_sched_dtor(struct io_context *ioc, struct hlist_head *list)
 {
@@ -69,6 +74,8 @@ static void hlist_sched_exit(struct io_context *ioc, struct hlist_head *list)
 	rcu_read_unlock();
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * get_io_context - increment reference count to io_context
  * @ioc: io_context to get
@@ -197,7 +204,12 @@ void put_io_context(struct io_context *ioc)
 	if (atomic_long_dec_and_test(&ioc->refcount)) {
 		spin_lock_irqsave(&ioc->lock, flags);
 		if (!hlist_empty(&ioc->icq_list))
+<<<<<<< HEAD
 			schedule_work(&ioc->release_work);
+=======
+			queue_work(system_power_efficient_wq,
+					&ioc->release_work);
+>>>>>>> refs/remotes/origin/master
 		else
 			free_ioc = true;
 		spin_unlock_irqrestore(&ioc->lock, flags);
@@ -207,6 +219,7 @@ void put_io_context(struct io_context *ioc)
 		kmem_cache_free(iocontext_cachep, ioc);
 }
 EXPORT_SYMBOL(put_io_context);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /* Called by the exiting task */
@@ -311,6 +324,22 @@ struct io_context *get_io_context(gfp_t gfp_flags, int node)
 EXPORT_SYMBOL(get_io_context);
 =======
 	if (!atomic_dec_and_test(&ioc->nr_tasks)) {
+=======
+
+/**
+ * put_io_context_active - put active reference on ioc
+ * @ioc: ioc of interest
+ *
+ * Undo get_io_context_active().  If active reference reaches zero after
+ * put, @ioc can never issue further IOs and ioscheds are notified.
+ */
+void put_io_context_active(struct io_context *ioc)
+{
+	unsigned long flags;
+	struct io_cq *icq;
+
+	if (!atomic_dec_and_test(&ioc->active_ref)) {
+>>>>>>> refs/remotes/origin/master
 		put_io_context(ioc);
 		return;
 	}
@@ -322,7 +351,11 @@ EXPORT_SYMBOL(get_io_context);
 	 */
 retry:
 	spin_lock_irqsave_nested(&ioc->lock, flags, 1);
+<<<<<<< HEAD
 	hlist_for_each_entry(icq, n, &ioc->icq_list, ioc_node) {
+=======
+	hlist_for_each_entry(icq, &ioc->icq_list, ioc_node) {
+>>>>>>> refs/remotes/origin/master
 		if (icq->flags & ICQ_EXITED)
 			continue;
 		if (spin_trylock(icq->q->queue_lock)) {
@@ -339,6 +372,23 @@ retry:
 	put_io_context(ioc);
 }
 
+<<<<<<< HEAD
+=======
+/* Called by the exiting task */
+void exit_io_context(struct task_struct *task)
+{
+	struct io_context *ioc;
+
+	task_lock(task);
+	ioc = task->io_context;
+	task->io_context = NULL;
+	task_unlock(task);
+
+	atomic_dec(&ioc->nr_tasks);
+	put_io_context_active(ioc);
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * ioc_clear_queue - break any ioc association with the specified queue
  * @q: request_queue being cleared
@@ -360,19 +410,34 @@ void ioc_clear_queue(struct request_queue *q)
 	}
 }
 
+<<<<<<< HEAD
 void create_io_context_slowpath(struct task_struct *task, gfp_t gfp_flags,
 				int node)
 {
 	struct io_context *ioc;
+=======
+int create_task_io_context(struct task_struct *task, gfp_t gfp_flags, int node)
+{
+	struct io_context *ioc;
+	int ret;
+>>>>>>> refs/remotes/origin/master
 
 	ioc = kmem_cache_alloc_node(iocontext_cachep, gfp_flags | __GFP_ZERO,
 				    node);
 	if (unlikely(!ioc))
+<<<<<<< HEAD
 		return;
+=======
+		return -ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	/* initialize */
 	atomic_long_set(&ioc->refcount, 1);
 	atomic_set(&ioc->nr_tasks, 1);
+<<<<<<< HEAD
+=======
+	atomic_set(&ioc->active_ref, 1);
+>>>>>>> refs/remotes/origin/master
 	spin_lock_init(&ioc->lock);
 	INIT_RADIX_TREE(&ioc->icq_tree, GFP_ATOMIC | __GFP_HIGH);
 	INIT_HLIST_HEAD(&ioc->icq_list);
@@ -391,7 +456,16 @@ void create_io_context_slowpath(struct task_struct *task, gfp_t gfp_flags,
 		task->io_context = ioc;
 	else
 		kmem_cache_free(iocontext_cachep, ioc);
+<<<<<<< HEAD
 	task_unlock(task);
+=======
+
+	ret = task->io_context ? 0 : -EBUSY;
+
+	task_unlock(task);
+
+	return ret;
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -423,7 +497,11 @@ struct io_context *get_task_io_context(struct task_struct *task,
 			return ioc;
 		}
 		task_unlock(task);
+<<<<<<< HEAD
 	} while (create_io_context(task, gfp_flags, node));
+=======
+	} while (!create_task_io_context(task, gfp_flags, node));
+>>>>>>> refs/remotes/origin/master
 
 	return NULL;
 }
@@ -467,15 +545,25 @@ EXPORT_SYMBOL(ioc_lookup_icq);
 
 /**
  * ioc_create_icq - create and link io_cq
+<<<<<<< HEAD
  * @q: request_queue of interest
  * @gfp_mask: allocation mask
  *
  * Make sure io_cq linking %current->io_context and @q exists.  If either
  * io_context and/or icq don't exist, they will be created using @gfp_mask.
+=======
+ * @ioc: io_context of interest
+ * @q: request_queue of interest
+ * @gfp_mask: allocation mask
+ *
+ * Make sure io_cq linking @ioc and @q exists.  If icq doesn't exist, they
+ * will be created using @gfp_mask.
+>>>>>>> refs/remotes/origin/master
  *
  * The caller is responsible for ensuring @ioc won't go away and @q is
  * alive and will stay alive until this function returns.
  */
+<<<<<<< HEAD
 struct io_cq *ioc_create_icq(struct request_queue *q, gfp_t gfp_mask)
 {
 	struct elevator_type *et = q->elevator->type;
@@ -487,12 +575,25 @@ struct io_cq *ioc_create_icq(struct request_queue *q, gfp_t gfp_mask)
 	if (!ioc)
 		return NULL;
 
+=======
+struct io_cq *ioc_create_icq(struct io_context *ioc, struct request_queue *q,
+			     gfp_t gfp_mask)
+{
+	struct elevator_type *et = q->elevator->type;
+	struct io_cq *icq;
+
+	/* allocate stuff */
+>>>>>>> refs/remotes/origin/master
 	icq = kmem_cache_alloc_node(et->icq_cache, gfp_mask | __GFP_ZERO,
 				    q->node);
 	if (!icq)
 		return NULL;
 
+<<<<<<< HEAD
 	if (radix_tree_preload(gfp_mask) < 0) {
+=======
+	if (radix_tree_maybe_preload(gfp_mask) < 0) {
+>>>>>>> refs/remotes/origin/master
 		kmem_cache_free(et->icq_cache, icq);
 		return NULL;
 	}
@@ -524,6 +625,7 @@ struct io_cq *ioc_create_icq(struct request_queue *q, gfp_t gfp_mask)
 	return icq;
 }
 
+<<<<<<< HEAD
 void ioc_set_icq_flags(struct io_context *ioc, unsigned int flags)
 {
 	struct io_cq *icq;
@@ -593,6 +695,8 @@ unsigned icq_get_changed(struct io_cq *icq)
 EXPORT_SYMBOL(icq_get_changed);
 >>>>>>> refs/remotes/origin/cm-10.0
 
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init blk_ioc_init(void)
 {
 	iocontext_cachep = kmem_cache_create("blkdev_ioc",

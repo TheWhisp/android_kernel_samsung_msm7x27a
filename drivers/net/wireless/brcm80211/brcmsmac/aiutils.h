@@ -88,6 +88,7 @@
 #define	CLKD_OTP		0x000f0000
 #define	CLKD_OTP_SHIFT		16
 
+<<<<<<< HEAD
 /* Package IDs */
 #define	BCM4717_PKG_ID		9	/* 4717 package id */
 #define	BCM4718_PKG_ID		10	/* 4718 package id */
@@ -98,6 +99,8 @@
 #define	BCM47162_CHIP_ID	47162	/* 47162 chipcommon chipid */
 #define	BCM4748_CHIP_ID		0x4748	/* 4716 chipcommon chipid (OTP, RBBU) */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* dynamic clock control defines */
 #define	LPOMINFREQ		25000	/* low power oscillator min */
 #define	LPOMAXFREQ		43000	/* low power oscillator max */
@@ -113,10 +116,13 @@
 #define	XTAL			0x1	/* primary crystal oscillator (2050) */
 #define	PLL			0x2	/* main chip pll */
 
+<<<<<<< HEAD
 /* clkctl clk mode */
 #define	CLK_FAST		0	/* force fast (pll) clock */
 #define	CLK_DYNAMIC		2	/* enable dynamic clock control */
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* GPIO usage priorities */
 #define GPIO_DRV_PRIORITY	0	/* Driver */
 #define GPIO_APP_PRIORITY	1	/* Application */
@@ -172,9 +178,12 @@ struct si_info {
 	struct si_pub pub;	/* back plane public state (must be first) */
 	struct bcma_bus *icbus;	/* handle to soc interconnect bus */
 	struct pci_dev *pcibus;	/* handle to pci bus */
+<<<<<<< HEAD
 	struct pcicore_info *pch; /* PCI/E core handle */
 	struct bcma_device *buscore;
 	struct list_head var_list; /* list of srom variables */
+=======
+>>>>>>> refs/remotes/origin/master
 
 	u32 chipst;		/* chip status */
 };
@@ -189,6 +198,7 @@ struct si_info {
 
 
 /* AMBA Interconnect exported externs */
+<<<<<<< HEAD
 extern struct bcma_device *ai_findcore(struct si_pub *sih,
 				       u16 coreid, u16 coreunit);
 extern u32 ai_core_cflags(struct bcma_device *core, u32 mask, u32 val);
@@ -228,6 +238,21 @@ static inline int ai_get_ccrev(struct si_pub *sih)
 {
 	return sih->ccrev;
 }
+=======
+u32 ai_core_cflags(struct bcma_device *core, u32 mask, u32 val);
+
+/* === exported functions === */
+struct si_pub *ai_attach(struct bcma_bus *pbus);
+void ai_detach(struct si_pub *sih);
+uint ai_cc_reg(struct si_pub *sih, uint regoff, u32 mask, u32 val);
+void ai_clkctl_init(struct si_pub *sih);
+u16 ai_clkctl_fast_pwrup_delay(struct si_pub *sih);
+bool ai_clkctl_cc(struct si_pub *sih, enum bcma_clkmode mode);
+bool ai_deviceremoved(struct si_pub *sih);
+
+/* Enable Ex-PA for 4313 */
+void ai_epa_4313war(struct si_pub *sih);
+>>>>>>> refs/remotes/origin/master
 
 static inline u32 ai_get_cccaps(struct si_pub *sih)
 {

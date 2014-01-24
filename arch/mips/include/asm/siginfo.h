@@ -9,6 +9,7 @@
 #ifndef _ASM_SIGINFO_H
 #define _ASM_SIGINFO_H
 
+<<<<<<< HEAD
 
 #define __ARCH_SIGEV_PREAMBLE_SIZE (sizeof(long) + 2*sizeof(int))
 #undef __ARCH_SI_TRAPNO	/* exception code needs to fill this ...  */
@@ -111,6 +112,10 @@ typedef struct siginfo {
 #define SI_MESGQ __SI_CODE(__SI_MESGQ, -4) /* sent by real time mesq state change */
 
 #ifdef __KERNEL__
+=======
+#include <uapi/asm/siginfo.h>
+
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Duplicated here because of <asm-generic/siginfo.h> braindamage ...
@@ -126,6 +131,9 @@ static inline void copy_siginfo(struct siginfo *to, struct siginfo *from)
 		memcpy(to, from, 3*sizeof(int) + sizeof(from->_sifields._sigchld));
 }
 
+<<<<<<< HEAD
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_SIGINFO_H */

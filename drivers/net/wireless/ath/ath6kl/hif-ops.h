@@ -84,7 +84,10 @@ static inline void ath6kl_hif_cleanup_scatter(struct ath6kl *ar)
 	return ar->hif_ops->cleanup_scatter(ar);
 }
 
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int ath6kl_hif_suspend(struct ath6kl *ar,
 				     struct cfg80211_wowlan *wow)
 {
@@ -92,7 +95,10 @@ static inline int ath6kl_hif_suspend(struct ath6kl *ar,
 
 	return ar->hif_ops->suspend(ar, wow);
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Read from the ATH6KL through its diagnostic window. No cooperation from
@@ -124,14 +130,20 @@ static inline int ath6kl_hif_bmi_write(struct ath6kl *ar, u8 *buf, u32 len)
 	return ar->hif_ops->bmi_write(ar, buf, len);
 }
 
+<<<<<<< HEAD
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,34))
+=======
+>>>>>>> refs/remotes/origin/master
 static inline int ath6kl_hif_resume(struct ath6kl *ar)
 {
 	ath6kl_dbg(ATH6KL_DBG_HIF, "hif resume\n");
 
 	return ar->hif_ops->resume(ar);
 }
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 
 static inline int ath6kl_hif_power_on(struct ath6kl *ar)
 {
@@ -154,4 +166,41 @@ static inline void ath6kl_hif_stop(struct ath6kl *ar)
 	ar->hif_ops->stop(ar);
 }
 
+<<<<<<< HEAD
+=======
+static inline int ath6kl_hif_pipe_send(struct ath6kl *ar,
+				       u8 pipe, struct sk_buff *hdr_buf,
+				       struct sk_buff *buf)
+{
+	ath6kl_dbg(ATH6KL_DBG_HIF, "hif pipe send\n");
+
+	return ar->hif_ops->pipe_send(ar, pipe, hdr_buf, buf);
+}
+
+static inline void ath6kl_hif_pipe_get_default(struct ath6kl *ar,
+					       u8 *ul_pipe, u8 *dl_pipe)
+{
+	ath6kl_dbg(ATH6KL_DBG_HIF, "hif pipe get default\n");
+
+	ar->hif_ops->pipe_get_default(ar, ul_pipe, dl_pipe);
+}
+
+static inline int ath6kl_hif_pipe_map_service(struct ath6kl *ar,
+					      u16 service_id, u8 *ul_pipe,
+					      u8 *dl_pipe)
+{
+	ath6kl_dbg(ATH6KL_DBG_HIF, "hif pipe get default\n");
+
+	return ar->hif_ops->pipe_map_service(ar, service_id, ul_pipe, dl_pipe);
+}
+
+static inline u16 ath6kl_hif_pipe_get_free_queue_number(struct ath6kl *ar,
+							u8 pipe)
+{
+	ath6kl_dbg(ATH6KL_DBG_HIF, "hif pipe get free queue number\n");
+
+	return ar->hif_ops->pipe_get_free_queue_number(ar, pipe);
+}
+
+>>>>>>> refs/remotes/origin/master
 #endif

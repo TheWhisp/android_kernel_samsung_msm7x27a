@@ -2,6 +2,7 @@
 /*
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
   Copyright (c) Eicon Networks, 2002.
  *
   This source file is supplied for the use with
@@ -23,6 +24,8 @@
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  Copyright (c) Eicon Networks, 2002.
  *
  This source file is supplied for the use with
@@ -43,12 +46,16 @@
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  */
 #ifndef __DIVA_IDI_DFIFO_INC__
 #define __DIVA_IDI_DFIFO_INC__
 #define DIVA_DFIFO_CACHE_SZ   64 /* Used to isolate pipe from
+<<<<<<< HEAD
 <<<<<<< HEAD
                     rest of the world
                    should be divisible by 4
@@ -66,6 +73,8 @@
 /* -------------------------------------------------------------------------
   Block header layout is:
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 				    rest of the world
 				    should be divisible by 4
 				 */
@@ -81,23 +90,34 @@
 #define DIVA_DFIFO_STEP DIVA_DFIFO_SEGMENT_SZ
 /* -------------------------------------------------------------------------
    Block header layout is:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
    byte[0] -> flags
    byte[1] -> length of data in block
    byte[2] -> reserved
    byte[4] -> reserved
 <<<<<<< HEAD
+<<<<<<< HEAD
   ------------------------------------------------------------------------- */
 =======
    ------------------------------------------------------------------------- */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+   ------------------------------------------------------------------------- */
+>>>>>>> refs/remotes/origin/master
 #define DIVA_DFIFO_WRAP   0x80 /* This is the last block in fifo   */
 #define DIVA_DFIFO_READY  0x40 /* This block is ready for processing */
 #define DIVA_DFIFO_LAST   0x20 /* This block is last in message      */
 #define DIVA_DFIFO_AUTO   0x10 /* Don't look for 'ready', don't ack */
 <<<<<<< HEAD
+<<<<<<< HEAD
 int diva_dfifo_create (void* start, int length);
 =======
 int diva_dfifo_create(void *start, int length);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int diva_dfifo_create(void *start, int length);
+>>>>>>> refs/remotes/origin/master
 #endif

@@ -45,6 +45,12 @@ static int __init ixp4xx_rng_init(void)
 	void __iomem * rng_base;
 	int err;
 
+<<<<<<< HEAD
+=======
+	if (!cpu_is_ixp46x()) /* includes IXP455 */
+		return -ENOSYS;
+
+>>>>>>> refs/remotes/origin/master
 	rng_base = ioremap(0x70002100, 4);
 	if (!rng_base)
 		return -ENOMEM;
@@ -68,5 +74,9 @@ module_init(ixp4xx_rng_init);
 module_exit(ixp4xx_rng_exit);
 
 MODULE_AUTHOR("Deepak Saxena <dsaxena@plexity.net>");
+<<<<<<< HEAD
 MODULE_DESCRIPTION("H/W Random Number Generator (RNG) driver for IXP4xx");
+=======
+MODULE_DESCRIPTION("H/W Pseudo-Random Number Generator (RNG) driver for IXP45x/46x");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");

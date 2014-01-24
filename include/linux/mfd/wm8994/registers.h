@@ -73,9 +73,13 @@
 #define WM8994_DC_SERVO_4                       0x57
 #define WM8994_DC_SERVO_READBACK                0x58
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8994_DC_SERVO_4E			0x59
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8994_DC_SERVO_4E			0x59
+>>>>>>> refs/remotes/origin/master
 #define WM8994_ANALOGUE_HP_1                    0x60
 #define WM8958_MIC_DETECT_1                     0xD0
 #define WM8958_MIC_DETECT_2                     0xD1
@@ -99,20 +103,30 @@
 #define WM8994_FLL1_CONTROL_4                   0x223
 #define WM8994_FLL1_CONTROL_5                   0x224
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8958_FLL1_EFS_1                       0x226
 #define WM8958_FLL1_EFS_2                       0x227
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8958_FLL1_EFS_1                       0x226
+#define WM8958_FLL1_EFS_2                       0x227
+>>>>>>> refs/remotes/origin/master
 #define WM8994_FLL2_CONTROL_1                   0x240
 #define WM8994_FLL2_CONTROL_2                   0x241
 #define WM8994_FLL2_CONTROL_3                   0x242
 #define WM8994_FLL2_CONTROL_4                   0x243
 #define WM8994_FLL2_CONTROL_5                   0x244
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8958_FLL2_EFS_1                       0x246
 #define WM8958_FLL2_EFS_2                       0x247
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8958_FLL2_EFS_1                       0x246
+#define WM8958_FLL2_EFS_2                       0x247
+>>>>>>> refs/remotes/origin/master
 #define WM8994_AIF1_CONTROL_1                   0x300
 #define WM8994_AIF1_CONTROL_2                   0x301
 #define WM8994_AIF1_MASTER_SLAVE                0x302
@@ -130,9 +144,13 @@
 #define WM8994_AIF2DAC_DATA                     0x316
 #define WM8994_AIF2ADC_DATA                     0x317
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM1811_AIF2TX_CONTROL                   0x318
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM1811_AIF2TX_CONTROL                   0x318
+>>>>>>> refs/remotes/origin/master
 #define WM8958_AIF3_CONTROL_1                   0x320
 #define WM8958_AIF3_CONTROL_2                   0x321
 #define WM8958_AIF3DAC_DATA                     0x322
@@ -152,10 +170,15 @@
 #define WM8994_AIF1_DAC2_FILTERS_1              0x422
 #define WM8994_AIF1_DAC2_FILTERS_2              0x423
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8958_AIF1_DAC1_NOISE_GATE             0x430
 #define WM8958_AIF1_DAC2_NOISE_GATE             0x431
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8958_AIF1_DAC1_NOISE_GATE             0x430
+#define WM8958_AIF1_DAC2_NOISE_GATE             0x431
+>>>>>>> refs/remotes/origin/master
 #define WM8994_AIF1_DRC1_1                      0x440
 #define WM8994_AIF1_DRC1_2                      0x441
 #define WM8994_AIF1_DRC1_3                      0x442
@@ -187,9 +210,13 @@
 #define WM8994_AIF1_DAC1_EQ_BAND_5_B            0x492
 #define WM8994_AIF1_DAC1_EQ_BAND_5_PG           0x493
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8994_AIF1_DAC1_EQ_BAND_1_C            0x494
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8994_AIF1_DAC1_EQ_BAND_1_C            0x494
+>>>>>>> refs/remotes/origin/master
 #define WM8994_AIF1_DAC2_EQ_GAINS_1             0x4A0
 #define WM8994_AIF1_DAC2_EQ_GAINS_2             0x4A1
 #define WM8994_AIF1_DAC2_EQ_BAND_1_A            0x4A2
@@ -211,9 +238,13 @@
 #define WM8994_AIF1_DAC2_EQ_BAND_5_B            0x4B2
 #define WM8994_AIF1_DAC2_EQ_BAND_5_PG           0x4B3
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8994_AIF1_DAC2_EQ_BAND_1_C            0x4B4
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8994_AIF1_DAC2_EQ_BAND_1_C            0x4B4
+>>>>>>> refs/remotes/origin/master
 #define WM8994_AIF2_ADC_LEFT_VOLUME             0x500
 #define WM8994_AIF2_ADC_RIGHT_VOLUME            0x501
 #define WM8994_AIF2_DAC_LEFT_VOLUME             0x502
@@ -222,9 +253,13 @@
 #define WM8994_AIF2_DAC_FILTERS_1               0x520
 #define WM8994_AIF2_DAC_FILTERS_2               0x521
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8958_AIF2_DAC_NOISE_GATE              0x530
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8958_AIF2_DAC_NOISE_GATE              0x530
+>>>>>>> refs/remotes/origin/master
 #define WM8994_AIF2_DRC_1                       0x540
 #define WM8994_AIF2_DRC_2                       0x541
 #define WM8994_AIF2_DRC_3                       0x542
@@ -251,9 +286,13 @@
 #define WM8994_AIF2_EQ_BAND_5_B                 0x592
 #define WM8994_AIF2_EQ_BAND_5_PG                0x593
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM8994_AIF2_EQ_BAND_1_C                 0x594
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM8994_AIF2_EQ_BAND_1_C                 0x594
+>>>>>>> refs/remotes/origin/master
 #define WM8994_DAC1_MIXER_VOLUMES               0x600
 #define WM8994_DAC1_LEFT_MIXER_ROUTING          0x601
 #define WM8994_DAC1_RIGHT_MIXER_ROUTING         0x602
@@ -278,9 +317,13 @@
 #define WM8994_GPIO_5                           0x704
 #define WM8994_GPIO_6                           0x705
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM1811_JACKDET_CTRL			0x705
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM1811_JACKDET_CTRL			0x705
+>>>>>>> refs/remotes/origin/master
 #define WM8994_GPIO_7                           0x706
 #define WM8994_GPIO_8                           0x707
 #define WM8994_GPIO_9                           0x708
@@ -304,8 +347,11 @@
 #define WM8958_DSP2_VERMAJMIN                   0xA04
 #define WM8958_DSP2_VERBUILD                    0xA05
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define WM8958_DSP2_EXECCONTROL                 0xA0D
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8958_DSP2_TESTREG                     0xA06
 #define WM8958_DSP2_XORREG                      0xA07
 #define WM8958_DSP2_SHIFTMAXX                   0xA08
@@ -343,7 +389,10 @@
 #define WM8958_FW_MINOR_0                       0x2007
 #define WM8958_FW_PATCH_1                       0x2008
 #define WM8958_FW_PATCH_0                       0x2009
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8958_MBC_BAND_2_LOWER_CUTOFF_C1_1     0x2200
 #define WM8958_MBC_BAND_2_LOWER_CUTOFF_C1_2     0x2201
 #define WM8958_MBC_BAND_2_LOWER_CUTOFF_C2_1     0x2202
@@ -413,7 +462,10 @@
 #define WM8958_MBC_B1_PG2_1                     0x242E
 #define WM8958_MBC_B1_PG2_2                     0x242F
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8958_MBC_CROSSOVER_1                  0x2600
 #define WM8958_MBC_CROSSOVER_2                  0x2601
 #define WM8958_MBC_HPF_1                        0x2602
@@ -422,7 +474,10 @@
 #define WM8958_MBC_LPF_2                        0x2607
 #define WM8958_MBC_RMS_LIMIT_1                  0x260A
 #define WM8958_MBC_RMS_LIMIT_2                  0x260B
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8994_WRITE_SEQUENCER_0                0x3000
 #define WM8994_WRITE_SEQUENCER_1                0x3001
 #define WM8994_WRITE_SEQUENCER_2                0x3002
@@ -1943,11 +1998,17 @@
  * R57 (0x39) - AntiPOP (2)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define WM1811_JACKDET_MODE_MASK                0x0180  /* JACKDET_MODE - [8:7] */
 #define WM1811_JACKDET_MODE_SHIFT                    7  /* JACKDET_MODE - [8:7] */
 #define WM1811_JACKDET_MODE_WIDTH                    2  /* JACKDET_MODE - [8:7] */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define WM1811_JACKDET_MODE_MASK                0x0180  /* JACKDET_MODE - [8:7] */
+#define WM1811_JACKDET_MODE_SHIFT                    7  /* JACKDET_MODE - [8:7] */
+#define WM1811_JACKDET_MODE_WIDTH                    2  /* JACKDET_MODE - [8:7] */
+>>>>>>> refs/remotes/origin/master
 #define WM8994_MICB2_DISCH                      0x0100  /* MICB2_DISCH */
 #define WM8994_MICB2_DISCH_MASK                 0x0100  /* MICB2_DISCH */
 #define WM8994_MICB2_DISCH_SHIFT                     8  /* MICB2_DISCH */
@@ -2022,7 +2083,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * R61 (0x3D) - MICBIAS1
  */
 #define WM8958_MICB1_RATE                       0x0020  /* MICB1_RATE */
@@ -2076,7 +2140,10 @@
 #define WM8958_MICD_STS_WIDTH                        1  /* MICD_STS */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * R76 (0x4C) - Charge Pump (1)
  */
 #define WM8994_CP_ENA                           0x8000  /* CP_ENA */
@@ -2184,12 +2251,18 @@
  * R96 (0x60) - Analogue HP (1)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM1811_HPOUT1_ATTN                      0x0100  /* HPOUT1_ATTN */
 #define WM1811_HPOUT1_ATTN_MASK                 0x0100  /* HPOUT1_ATTN */
 #define WM1811_HPOUT1_ATTN_SHIFT                     8  /* HPOUT1_ATTN */
 #define WM1811_HPOUT1_ATTN_WIDTH                     1  /* HPOUT1_ATTN */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8994_HPOUT1L_RMV_SHORT                0x0080  /* HPOUT1L_RMV_SHORT */
 #define WM8994_HPOUT1L_RMV_SHORT_MASK           0x0080  /* HPOUT1L_RMV_SHORT */
 #define WM8994_HPOUT1L_RMV_SHORT_SHIFT               7  /* HPOUT1L_RMV_SHORT */
@@ -2258,6 +2331,12 @@
 /*
  * R256 (0x100) - Chip Revision
  */
+<<<<<<< HEAD
+=======
+#define WM8994_CUST_ID_MASK                     0xFF00  /* CUST_ID - [15:8] */
+#define WM8994_CUST_ID_SHIFT                         8  /* CUST_ID - [15:8] */
+#define WM8994_CUST_ID_WIDTH                         8  /* CUST_ID - [15:8] */
+>>>>>>> refs/remotes/origin/master
 #define WM8994_CHIP_REV_MASK                    0x000F  /* CHIP_REV - [3:0] */
 #define WM8994_CHIP_REV_SHIFT                        0  /* CHIP_REV - [3:0] */
 #define WM8994_CHIP_REV_WIDTH                        4  /* CHIP_REV - [3:0] */
@@ -2492,12 +2571,18 @@
  * R548 (0x224) - FLL1 Control (5)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8958_FLL1_BYP                         0x8000  /* FLL1_BYP */
 #define WM8958_FLL1_BYP_MASK                    0x8000  /* FLL1_BYP */
 #define WM8958_FLL1_BYP_SHIFT                       15  /* FLL1_BYP */
 #define WM8958_FLL1_BYP_WIDTH                        1  /* FLL1_BYP */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8994_FLL1_FRC_NCO_VAL_MASK            0x1F80  /* FLL1_FRC_NCO_VAL - [12:7] */
 #define WM8994_FLL1_FRC_NCO_VAL_SHIFT                7  /* FLL1_FRC_NCO_VAL - [12:7] */
 #define WM8994_FLL1_FRC_NCO_VAL_WIDTH                6  /* FLL1_FRC_NCO_VAL - [12:7] */
@@ -2514,7 +2599,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * R550 (0x226) - FLL1 EFS 1
  */
 #define WM8958_FLL1_LAMBDA_MASK                 0xFFFF  /* FLL1_LAMBDA - [15:0] */
@@ -2533,7 +2621,10 @@
 #define WM8958_FLL1_EFS_ENA_WIDTH                    1  /* FLL1_EFS_ENA */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * R576 (0x240) - FLL2 Control (1)
  */
 #define WM8994_FLL2_FRAC                        0x0004  /* FLL2_FRAC */
@@ -2583,12 +2674,18 @@
  * R580 (0x244) - FLL2 Control (5)
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8958_FLL2_BYP                         0x8000  /* FLL2_BYP */
 #define WM8958_FLL2_BYP_MASK                    0x8000  /* FLL2_BYP */
 #define WM8958_FLL2_BYP_SHIFT                       15  /* FLL2_BYP */
 #define WM8958_FLL2_BYP_WIDTH                        1  /* FLL2_BYP */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #define WM8994_FLL2_FRC_NCO_VAL_MASK            0x1F80  /* FLL2_FRC_NCO_VAL - [12:7] */
 #define WM8994_FLL2_FRC_NCO_VAL_SHIFT                7  /* FLL2_FRC_NCO_VAL - [12:7] */
 #define WM8994_FLL2_FRC_NCO_VAL_WIDTH                6  /* FLL2_FRC_NCO_VAL - [12:7] */
@@ -2605,7 +2702,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * R582 (0x246) - FLL2 EFS 1
  */
 #define WM8958_FLL2_LAMBDA_MASK                 0xFFFF  /* FLL2_LAMBDA - [15:0] */
@@ -2624,7 +2724,10 @@
 #define WM8958_FLL2_EFS_ENA_WIDTH                    1  /* FLL2_EFS_ENA */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * R768 (0x300) - AIF1 Control (1)
  */
 #define WM8994_AIF1ADCL_SRC                     0x8000  /* AIF1ADCL_SRC */
@@ -2723,6 +2826,13 @@
 /*
  * R772 (0x304) - AIF1ADC LRCLK
  */
+<<<<<<< HEAD
+=======
+#define WM8958_AIF1_LRCLK_INV                   0x1000  /* AIF1_LRCLK_INV */
+#define WM8958_AIF1_LRCLK_INV_MASK              0x1000  /* AIF1_LRCLK_INV */
+#define WM8958_AIF1_LRCLK_INV_SHIFT                 12  /* AIF1_LRCLK_INV */
+#define WM8958_AIF1_LRCLK_INV_WIDTH                  1  /* AIF1_LRCLK_INV */
+>>>>>>> refs/remotes/origin/master
 #define WM8994_AIF1ADC_LRCLK_DIR                0x0800  /* AIF1ADC_LRCLK_DIR */
 #define WM8994_AIF1ADC_LRCLK_DIR_MASK           0x0800  /* AIF1ADC_LRCLK_DIR */
 #define WM8994_AIF1ADC_LRCLK_DIR_SHIFT              11  /* AIF1ADC_LRCLK_DIR */
@@ -2734,6 +2844,13 @@
 /*
  * R773 (0x305) - AIF1DAC LRCLK
  */
+<<<<<<< HEAD
+=======
+#define WM8958_AIF1_LRCLK_INV                   0x1000  /* AIF1_LRCLK_INV */
+#define WM8958_AIF1_LRCLK_INV_MASK              0x1000  /* AIF1_LRCLK_INV */
+#define WM8958_AIF1_LRCLK_INV_SHIFT                 12  /* AIF1_LRCLK_INV */
+#define WM8958_AIF1_LRCLK_INV_WIDTH                  1  /* AIF1_LRCLK_INV */
+>>>>>>> refs/remotes/origin/master
 #define WM8994_AIF1DAC_LRCLK_DIR                0x0800  /* AIF1DAC_LRCLK_DIR */
 #define WM8994_AIF1DAC_LRCLK_DIR_MASK           0x0800  /* AIF1DAC_LRCLK_DIR */
 #define WM8994_AIF1DAC_LRCLK_DIR_SHIFT              11  /* AIF1DAC_LRCLK_DIR */
@@ -3169,7 +3286,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * R1072 (0x430) - AIF1 DAC1 Noise Gate
  */
 #define WM8958_AIF1DAC1_NG_HLD_MASK             0x0060  /* AIF1DAC1_NG_HLD - [6:5] */
@@ -3198,7 +3318,10 @@
 #define WM8958_AIF1DAC2_NG_ENA_WIDTH                 1  /* AIF1DAC2_NG_ENA */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * R1088 (0x440) - AIF1 DRC1 (1)
  */
 #define WM8994_AIF1DRC1_SIG_DET_RMS_MASK        0xF800  /* AIF1DRC1_SIG_DET_RMS - [15:11] */
@@ -3811,7 +3934,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * R1328 (0x530) - AIF2 DAC Noise Gate
  */
 #define WM8958_AIF2DAC_NG_HLD_MASK              0x0060  /* AIF2DAC_NG_HLD - [6:5] */
@@ -3826,7 +3952,10 @@
 #define WM8958_AIF2DAC_NG_ENA_WIDTH                  1  /* AIF2DAC_NG_ENA */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * R1344 (0x540) - AIF2 DRC (1)
  */
 #define WM8994_AIF2DRC_SIG_DET_RMS_MASK         0xF800  /* AIF2DRC_SIG_DET_RMS - [15:11] */
@@ -4352,7 +4481,10 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * R1797 (0x705) - JACKDET Ctrl
  */
 #define WM1811_JACKDET_DB                       0x0100  /* JACKDET_DB */
@@ -4365,7 +4497,10 @@
 #define WM1811_JACKDET_LVL_WIDTH                     1  /* JACKDET_LVL */
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * R1824 (0x720) - Pull Control (1)
  */
 #define WM8994_DMICDAT2_PU                      0x0800  /* DMICDAT2_PU */

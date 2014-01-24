@@ -40,10 +40,15 @@
 #include <linux/types.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <trace/events/xen.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <trace/events/xen.h>
+
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgtable.h>
 
@@ -51,9 +56,14 @@
 #include <xen/interface/sched.h>
 #include <xen/interface/physdev.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <xen/interface/platform.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <xen/interface/platform.h>
+#include <xen/interface/xen-mca.h>
+>>>>>>> refs/remotes/origin/master
 
 /*
  * The hypercall asms have to meet several constraints:
@@ -309,7 +319,17 @@ HYPERVISOR_set_timer_op(u64 timeout)
 
 static inline int
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+HYPERVISOR_mca(struct xen_mc *mc_op)
+{
+	mc_op->interface_version = XEN_MCA_INTERFACE_VERSION;
+	return _hypercall1(int, mca, mc_op);
+}
+
+static inline int
+>>>>>>> refs/remotes/origin/master
 HYPERVISOR_dom0_op(struct xen_platform_op *platform_op)
 {
 	platform_op->interface_version = XENPF_INTERFACE_VERSION;
@@ -317,7 +337,10 @@ HYPERVISOR_dom0_op(struct xen_platform_op *platform_op)
 }
 
 static inline int
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 HYPERVISOR_set_debugreg(int reg, unsigned long value)
 {
 	return _hypercall2(int, set_debugreg, reg, value);
@@ -360,11 +383,16 @@ HYPERVISOR_update_va_mapping(unsigned long va, pte_t new_val,
 		return _hypercall4(int, update_va_mapping, va,
 				   new_val.pte, new_val.pte >> 32, flags);
 }
+<<<<<<< HEAD
+=======
+extern int __must_check xen_event_channel_op_compat(int, void *);
+>>>>>>> refs/remotes/origin/master
 
 static inline int
 HYPERVISOR_event_channel_op(int cmd, void *arg)
 {
 	int rc = _hypercall2(int, event_channel_op, cmd, arg);
+<<<<<<< HEAD
 	if (unlikely(rc == -ENOSYS)) {
 		struct evtchn_op op;
 		op.cmd = cmd;
@@ -372,6 +400,10 @@ HYPERVISOR_event_channel_op(int cmd, void *arg)
 		rc = _hypercall1(int, event_channel_op_compat, &op);
 		memcpy(arg, &op.u, sizeof(op.u));
 	}
+=======
+	if (unlikely(rc == -ENOSYS))
+		rc = xen_event_channel_op_compat(cmd, arg);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -387,10 +419,16 @@ HYPERVISOR_console_io(int cmd, int count, char *str)
 	return _hypercall3(int, console_io, cmd, count, str);
 }
 
+<<<<<<< HEAD
+=======
+extern int __must_check xen_physdev_op_compat(int, void *);
+
+>>>>>>> refs/remotes/origin/master
 static inline int
 HYPERVISOR_physdev_op(int cmd, void *arg)
 {
 	int rc = _hypercall2(int, physdev_op, cmd, arg);
+<<<<<<< HEAD
 	if (unlikely(rc == -ENOSYS)) {
 		struct physdev_op op;
 		op.cmd = cmd;
@@ -398,6 +436,10 @@ HYPERVISOR_physdev_op(int cmd, void *arg)
 		rc = _hypercall1(int, physdev_op_compat, &op);
 		memcpy(arg, &op.u, sizeof(op.u));
 	}
+=======
+	if (unlikely(rc == -ENOSYS))
+		rc = xen_physdev_op_compat(cmd, arg);
+>>>>>>> refs/remotes/origin/master
 	return rc;
 }
 
@@ -479,10 +521,15 @@ MULTI_fpu_taskswitch(struct multicall_entry *mcl, int set)
 	mcl->op = __HYPERVISOR_fpu_taskswitch;
 	mcl->args[0] = set;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, 1);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, 1);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -500,10 +547,15 @@ MULTI_update_va_mapping(struct multicall_entry *mcl, unsigned long va,
 		mcl->args[3] = flags;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, sizeof(new_val) == sizeof(long) ? 3 : 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, sizeof(new_val) == sizeof(long) ? 3 : 4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -515,10 +567,15 @@ MULTI_grant_table_op(struct multicall_entry *mcl, unsigned int cmd,
 	mcl->args[1] = (unsigned long)uop;
 	mcl->args[2] = count;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, 3);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, 3);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -539,10 +596,15 @@ MULTI_update_va_mapping_otherdomain(struct multicall_entry *mcl, unsigned long v
 		mcl->args[4] = domid;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, sizeof(new_val) == sizeof(long) ? 4 : 5);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, sizeof(new_val) == sizeof(long) ? 4 : 5);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -560,10 +622,15 @@ MULTI_update_descriptor(struct multicall_entry *mcl, u64 maddr,
 		mcl->args[3] = desc.b;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, sizeof(maddr) == sizeof(long) ? 2 : 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, sizeof(maddr) == sizeof(long) ? 2 : 4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -573,10 +640,15 @@ MULTI_memory_op(struct multicall_entry *mcl, unsigned int cmd, void *arg)
 	mcl->args[0] = cmd;
 	mcl->args[1] = (unsigned long)arg;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -589,10 +661,15 @@ MULTI_mmu_update(struct multicall_entry *mcl, struct mmu_update *req,
 	mcl->args[2] = (unsigned long)success_count;
 	mcl->args[3] = domid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, 4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -605,10 +682,15 @@ MULTI_mmuext_op(struct multicall_entry *mcl, struct mmuext_op *op, int count,
 	mcl->args[2] = (unsigned long)success_count;
 	mcl->args[3] = domid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, 4);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, 4);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -618,10 +700,15 @@ MULTI_set_gdt(struct multicall_entry *mcl, unsigned long *frames, int entries)
 	mcl->args[0] = (unsigned long)frames;
 	mcl->args[1] = entries;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 static inline void
@@ -632,10 +719,15 @@ MULTI_stack_switch(struct multicall_entry *mcl,
 	mcl->args[0] = ss;
 	mcl->args[1] = esp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 	trace_xen_mc_entry(mcl, 2);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	trace_xen_mc_entry(mcl, 2);
+>>>>>>> refs/remotes/origin/master
 }
 
 #endif /* _ASM_X86_XEN_HYPERCALL_H */

@@ -1,6 +1,9 @@
 /*
+<<<<<<< HEAD
  *  include/asm-s390/etr.h
  *
+=======
+>>>>>>> refs/remotes/origin/master
  *  Copyright IBM Corp. 2006
  *  Author(s): Martin Schwidefsky (schwidefsky@de.ibm.com)
  */
@@ -142,7 +145,11 @@ struct etr_ptff_qto {
 /* Inline assembly helper functions */
 static inline int etr_setr(struct etr_eacr *ctrl)
 {
+<<<<<<< HEAD
 	int rc = -ENOSYS;
+=======
+	int rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 
 	asm volatile(
 		"	.insn	s,0xb2160000,%1\n"
@@ -156,7 +163,11 @@ static inline int etr_setr(struct etr_eacr *ctrl)
 /* Stores a format 1 aib with 64 bytes */
 static inline int etr_stetr(struct etr_aib *aib)
 {
+<<<<<<< HEAD
 	int rc = -ENOSYS;
+=======
+	int rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 
 	asm volatile(
 		"	.insn	s,0xb2170000,%1\n"
@@ -171,7 +182,11 @@ static inline int etr_stetr(struct etr_aib *aib)
 static inline int etr_steai(struct etr_aib *aib, unsigned int func)
 {
 	register unsigned int reg0 asm("0") = func;
+<<<<<<< HEAD
 	int rc = -ENOSYS;
+=======
+	int rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 
 	asm volatile(
 		"	.insn	s,0xb2b30000,%1\n"
@@ -192,7 +207,11 @@ static inline int etr_ptff(void *ptff_block, unsigned int func)
 {
 	register unsigned int reg0 asm("0") = func;
 	register unsigned long reg1 asm("1") = (unsigned long) ptff_block;
+<<<<<<< HEAD
 	int rc = -ENOSYS;
+=======
+	int rc = -EOPNOTSUPP;
+>>>>>>> refs/remotes/origin/master
 
 	asm volatile(
 		"	.word	0x0104\n"

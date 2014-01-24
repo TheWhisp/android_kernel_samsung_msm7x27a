@@ -18,6 +18,7 @@
 #include <linux/hwmon-sysfs.h>
 
 /*
+<<<<<<< HEAD
  * AD7314 power mode
  */
 #define AD7314_PD		0x2000
@@ -28,11 +29,20 @@
 #define AD7314_TEMP_SIGN		0x200
 #define AD7314_TEMP_MASK		0x7FE0
 #define AD7314_TEMP_OFFSET		5
+=======
+ * AD7314 temperature masks
+ */
+#define AD7314_TEMP_MASK		0x7FE0
+#define AD7314_TEMP_SHIFT		5
+>>>>>>> refs/remotes/origin/master
 
 /*
  * ADT7301 and ADT7302 temperature masks
  */
+<<<<<<< HEAD
 #define ADT7301_TEMP_SIGN		0x2000
+=======
+>>>>>>> refs/remotes/origin/master
 #define ADT7301_TEMP_MASK		0x3FFF
 
 enum ad7314_variant {
@@ -73,7 +83,11 @@ static ssize_t ad7314_show_temperature(struct device *dev,
 		return ret;
 	switch (spi_get_device_id(chip->spi_dev)->driver_data) {
 	case ad7314:
+<<<<<<< HEAD
 		data = (ret & AD7314_TEMP_MASK) >> AD7314_TEMP_OFFSET;
+=======
+		data = (ret & AD7314_TEMP_MASK) >> AD7314_TEMP_SHIFT;
+>>>>>>> refs/remotes/origin/master
 		data = (data << 6) >> 6;
 
 		return sprintf(buf, "%d\n", 250 * data);
@@ -114,11 +128,16 @@ static const struct attribute_group ad7314_group = {
 	.attrs = ad7314_attributes,
 };
 
+<<<<<<< HEAD
 static int __devinit ad7314_probe(struct spi_device *spi_dev)
+=======
+static int ad7314_probe(struct spi_device *spi_dev)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	struct ad7314_data *chip;
 
+<<<<<<< HEAD
 	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
 	if (chip == NULL) {
 		ret = -ENOMEM;
@@ -129,6 +148,18 @@ static int __devinit ad7314_probe(struct spi_device *spi_dev)
 	ret = sysfs_create_group(&spi_dev->dev.kobj, &ad7314_group);
 	if (ret < 0)
 		goto error_free_chip;
+=======
+	chip = devm_kzalloc(&spi_dev->dev, sizeof(*chip), GFP_KERNEL);
+	if (chip == NULL)
+		return -ENOMEM;
+
+	spi_set_drvdata(spi_dev, chip);
+
+	ret = sysfs_create_group(&spi_dev->dev.kobj, &ad7314_group);
+	if (ret < 0)
+		return ret;
+
+>>>>>>> refs/remotes/origin/master
 	chip->hwmon_dev = hwmon_device_register(&spi_dev->dev);
 	if (IS_ERR(chip->hwmon_dev)) {
 		ret = PTR_ERR(chip->hwmon_dev);
@@ -139,6 +170,7 @@ static int __devinit ad7314_probe(struct spi_device *spi_dev)
 	return 0;
 error_remove_group:
 	sysfs_remove_group(&spi_dev->dev.kobj, &ad7314_group);
+<<<<<<< HEAD
 error_free_chip:
 	kfree(chip);
 error_ret:
@@ -152,6 +184,17 @@ static int __devexit ad7314_remove(struct spi_device *spi_dev)
 	hwmon_device_unregister(chip->hwmon_dev);
 	sysfs_remove_group(&spi_dev->dev.kobj, &ad7314_group);
 	kfree(chip);
+=======
+	return ret;
+}
+
+static int ad7314_remove(struct spi_device *spi_dev)
+{
+	struct ad7314_data *chip = spi_get_drvdata(spi_dev);
+
+	hwmon_device_unregister(chip->hwmon_dev);
+	sysfs_remove_group(&spi_dev->dev.kobj, &ad7314_group);
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -170,13 +213,21 @@ static struct spi_driver ad7314_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = ad7314_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(ad7314_remove),
+=======
+	.remove = ad7314_remove,
+>>>>>>> refs/remotes/origin/master
 	.id_table = ad7314_id,
 };
 
 module_spi_driver(ad7314_driver);
 
 MODULE_AUTHOR("Sonic Zhang <sonic.zhang@analog.com>");
+<<<<<<< HEAD
 MODULE_DESCRIPTION("Analog Devices AD7314, ADT7301 and ADT7302 digital"
 			" temperature sensor driver");
+=======
+MODULE_DESCRIPTION("Analog Devices AD7314, ADT7301 and ADT7302 digital temperature sensor driver");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL v2");

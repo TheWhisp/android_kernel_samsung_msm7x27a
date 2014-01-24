@@ -31,6 +31,10 @@ void __init trap_init(void)
 void show_regs(struct pt_regs *regs)
 {
 	pr_err("\n");
+<<<<<<< HEAD
+=======
+	show_regs_print_info(KERN_ERR);
+>>>>>>> refs/remotes/origin/master
 	pr_err("PC: %08lx SP: %08lx\n", regs->pc, regs->sp);
 	pr_err("Status: %08lx ORIG_A4: %08lx\n", regs->csr, regs->orig_a4);
 	pr_err("A0: %08lx  B0: %08lx\n", regs->a0, regs->b0);
@@ -67,6 +71,7 @@ void show_regs(struct pt_regs *regs)
 	pr_err("A31: %08lx  B31: %08lx\n", regs->a31, regs->b31);
 }
 
+<<<<<<< HEAD
 void dump_stack(void)
 {
 	unsigned long stack;
@@ -76,6 +81,8 @@ void dump_stack(void)
 EXPORT_SYMBOL(dump_stack);
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 void die(char *str, struct pt_regs *fp, int nr)
 {
 	console_verbose();

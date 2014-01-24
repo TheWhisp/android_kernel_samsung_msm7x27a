@@ -9,6 +9,7 @@ Description:	The integer value of this attribute ranges from 0-4.
 		and the mouse activates this profile immediately.
 Users:		http://roccat.sourceforge.net
 
+<<<<<<< HEAD
 What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/firmware_version
 Date:		October 2010
 Contact:	Stefan Achatz <erazor_de@users.sourceforge.net>
@@ -18,6 +19,14 @@ Description:	When read, this file returns the raw integer version number of the
 		number the decimal point has to be shifted 2 positions to the
 		left. E.g. a returned value of 121 means 1.21
 		This file is readonly.
+=======
+What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/info
+Date:		November 2012
+Contact:	Stefan Achatz <erazor_de@users.sourceforge.net>
+Description:	When read, this file returns general data like firmware version.
+		When written, the device can be reset.
+		The data is 8 bytes long.
+>>>>>>> refs/remotes/origin/master
 Users:		http://roccat.sourceforge.net
 
 What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/macro
@@ -42,6 +51,7 @@ Description:	The mouse can store 5 profiles which can be switched by the
 		The mouse will reject invalid data.
 		Which profile to write is determined by the profile number
 		contained in the data.
+<<<<<<< HEAD
 		This file is writeonly.
 Users:		http://roccat.sourceforge.net
 
@@ -54,6 +64,10 @@ Description:	The mouse can store 5 profiles which can be switched by the
 		When read, these files return the respective profile buttons.
 		The returned data is 77 bytes in size.
 		This file is readonly.
+=======
+		Before reading this file, control has to be written to select
+		which profile to read.
+>>>>>>> refs/remotes/origin/master
 Users:		http://roccat.sourceforge.net
 
 What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/profile_settings
@@ -68,6 +82,7 @@ Description:	The mouse can store 5 profiles which can be switched by the
 		The mouse will reject invalid data.
 		Which profile to write is determined by the profile number
 		contained in the data.
+<<<<<<< HEAD
 		This file is writeonly.
 Users:		http://roccat.sourceforge.net
 
@@ -81,6 +96,10 @@ Description:	The mouse can store 5 profiles which can be switched by the
 		When read, these files return the respective profile settings.
 		The returned data is 43 bytes in size.
 		This file is readonly.
+=======
+		Before reading this file, control has to be written to select
+		which profile to read.
+>>>>>>> refs/remotes/origin/master
 Users:		http://roccat.sourceforge.net
 
 What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/sensor
@@ -93,7 +112,10 @@ Description:	The mouse has a tracking- and a distance-control-unit. These
 Users:		http://roccat.sourceforge.net
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/talk
 Date:		May 2011
 Contact:	Stefan Achatz <erazor_de@users.sourceforge.net>
@@ -102,14 +124,23 @@ Description:	Used to active some easy* functions of the mouse from outside.
 		This file is writeonly.
 Users:		http://roccat.sourceforge.net
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/tcu
 Date:		October 2010
 Contact:	Stefan Achatz <erazor_de@users.sourceforge.net>
 Description:	When written a calibration process for the tracking control unit
+<<<<<<< HEAD
 		can be initiated/cancelled.
 		The data has to be 3 bytes long.
 		This file is writeonly.
+=======
+		can be initiated/cancelled. Also lets one read/write sensor
+		registers.
+		The data has to be 4 bytes long.
+>>>>>>> refs/remotes/origin/master
 Users:		http://roccat.sourceforge.net
 
 What:		/sys/bus/usb/devices/<busnum>-<devnum>:<config num>.<interface num>/<hid-bus>:<vendor-id>:<product-id>.<num>/koneplus/roccatkoneplus<minor>/tcu_image

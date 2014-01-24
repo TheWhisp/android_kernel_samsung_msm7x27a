@@ -21,10 +21,14 @@ CONFIG_MODVERSIONS=y
 # CONFIG_BLK_DEV_BSG is not set
 CONFIG_XES_MPC85xx=y
 <<<<<<< HEAD
+<<<<<<< HEAD
 CONFIG_MPC8xxx_GPIO=y
 =======
 CONFIG_GPIO_MPC8XXX=y
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+CONFIG_GPIO_MPC8XXX=y
+>>>>>>> refs/remotes/origin/master
 CONFIG_HIGHMEM=y
 CONFIG_MATH_EMULATION=y
 CONFIG_SPARSE_IRQ=y

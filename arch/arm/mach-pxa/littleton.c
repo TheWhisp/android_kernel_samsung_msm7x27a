@@ -42,11 +42,19 @@
 #include <asm/mach/irq.h>
 
 #include <mach/pxa300.h>
+<<<<<<< HEAD
 #include <mach/pxafb.h>
 #include <mach/mmc.h>
 #include <plat/pxa27x_keypad.h>
 #include <mach/littleton.h>
 #include <plat/pxa3xx_nand.h>
+=======
+#include <linux/platform_data/video-pxafb.h>
+#include <linux/platform_data/mmc-pxamci.h>
+#include <linux/platform_data/keypad-pxa27x.h>
+#include <mach/littleton.h>
+#include <linux/platform_data/mtd-nand-pxa3xx.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "generic.h"
 
@@ -125,12 +133,17 @@ static struct resource smc91x_resources[] = {
 	},
 	[1] = {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.start	= IRQ_GPIO(mfp_to_gpio(MFP_PIN_GPIO90)),
 		.end	= IRQ_GPIO(mfp_to_gpio(MFP_PIN_GPIO90)),
 =======
 		.start	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO90)),
 		.end	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO90)),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.start	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO90)),
+		.end	= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO90)),
+>>>>>>> refs/remotes/origin/master
 		.flags	= IORESOURCE_IRQ | IORESOURCE_IRQ_LOWEDGE,
 	}
 };
@@ -227,7 +240,11 @@ static inline void littleton_init_spi(void) {}
 #endif
 
 #if defined(CONFIG_KEYBOARD_PXA27x) || defined(CONFIG_KEYBOARD_PXA27x_MODULE)
+<<<<<<< HEAD
 static unsigned int littleton_matrix_key_map[] = {
+=======
+static const unsigned int littleton_matrix_key_map[] = {
+>>>>>>> refs/remotes/origin/master
 	/* KEY(row, col, key_code) */
 	KEY(1, 3, KEY_0), KEY(0, 0, KEY_1), KEY(1, 0, KEY_2), KEY(2, 0, KEY_3),
 	KEY(0, 1, KEY_4), KEY(1, 1, KEY_5), KEY(2, 1, KEY_6), KEY(0, 2, KEY_7),
@@ -254,11 +271,23 @@ static unsigned int littleton_matrix_key_map[] = {
 	KEY(3, 1, KEY_F23),	/* soft2 */
 };
 
+<<<<<<< HEAD
 static struct pxa27x_keypad_platform_data littleton_keypad_info = {
 	.matrix_key_rows	= 6,
 	.matrix_key_cols	= 5,
 	.matrix_key_map		= littleton_matrix_key_map,
 	.matrix_key_map_size	= ARRAY_SIZE(littleton_matrix_key_map),
+=======
+static struct matrix_keymap_data littleton_matrix_keymap_data = {
+	.keymap			= littleton_matrix_key_map,
+	.keymap_size		= ARRAY_SIZE(littleton_matrix_key_map),
+};
+
+static struct pxa27x_keypad_platform_data littleton_keypad_info = {
+	.matrix_key_rows	= 6,
+	.matrix_key_cols	= 5,
+	.matrix_keymap_data	= &littleton_matrix_keymap_data,
+>>>>>>> refs/remotes/origin/master
 
 	.enable_rotary0		= 1,
 	.rotary0_up_key		= KEY_UP,
@@ -331,6 +360,7 @@ static struct mtd_partition littleton_nand_partitions[] = {
 static struct pxa3xx_nand_platform_data littleton_nand_info = {
 	.enable_arbiter	= 1,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.parts		= littleton_nand_partitions,
 	.nr_parts	= ARRAY_SIZE(littleton_nand_partitions),
 =======
@@ -338,6 +368,11 @@ static struct pxa3xx_nand_platform_data littleton_nand_info = {
 	.parts[0]	= littleton_nand_partitions,
 	.nr_parts[0]	= ARRAY_SIZE(littleton_nand_partitions),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.num_cs		= 1,
+	.parts[0]	= littleton_nand_partitions,
+	.nr_parts[0]	= ARRAY_SIZE(littleton_nand_partitions),
+>>>>>>> refs/remotes/origin/master
 };
 
 static void __init littleton_init_nand(void)
@@ -407,10 +442,14 @@ static struct i2c_board_info littleton_i2c_info[] = {
 		.addr		= 0x34,
 		.platform_data	= &littleton_da9034_info,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		.irq		= gpio_to_irq(mfp_to_gpio(MFP_PIN_GPIO18)),
 =======
 		.irq		= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO18)),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.irq		= PXA_GPIO_TO_IRQ(mfp_to_gpio(MFP_PIN_GPIO18)),
+>>>>>>> refs/remotes/origin/master
 	},
 	[1] = {
 		.type		= "max7320",
@@ -453,6 +492,7 @@ static void __init littleton_init(void)
 
 MACHINE_START(LITTLETON, "Marvell Form Factor Development Platform (aka Littleton)")
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0xa0000100,
 	.map_io		= pxa3xx_map_io,
 	.nr_irqs	= LITTLETON_NR_IRQS,
@@ -460,13 +500,21 @@ MACHINE_START(LITTLETON, "Marvell Form Factor Development Platform (aka Littleto
 	.timer		= &pxa_timer,
 	.init_machine	= littleton_init,
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.atag_offset	= 0x100,
 	.map_io		= pxa3xx_map_io,
 	.nr_irqs	= LITTLETON_NR_IRQS,
 	.init_irq	= pxa3xx_init_irq,
 	.handle_irq	= pxa3xx_handle_irq,
+<<<<<<< HEAD
 	.timer		= &pxa_timer,
 	.init_machine	= littleton_init,
 	.restart	= pxa_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= pxa_timer_init,
+	.init_machine	= littleton_init,
+	.restart	= pxa_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

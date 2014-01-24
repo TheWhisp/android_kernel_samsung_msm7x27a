@@ -18,11 +18,16 @@
 #define PCI_DEVICE_ID_SI_671	0x0671
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int __devinitdata agp_sis_force_delay = 0;
 =======
 static bool __devinitdata agp_sis_force_delay = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
 static int __devinitdata agp_sis_agp_spec = -1;
+=======
+static bool agp_sis_force_delay = 0;
+static int agp_sis_agp_spec = -1;
+>>>>>>> refs/remotes/origin/master
 
 static int sis_fetch_size(void)
 {
@@ -152,13 +157,21 @@ static struct agp_bridge_driver sis_driver = {
 };
 
 // chipsets that require the 'delay hack'
+<<<<<<< HEAD
 static int sis_broken_chipsets[] __devinitdata = {
+=======
+static int sis_broken_chipsets[] = {
+>>>>>>> refs/remotes/origin/master
 	PCI_DEVICE_ID_SI_648,
 	PCI_DEVICE_ID_SI_746,
 	0 // terminator
 };
 
+<<<<<<< HEAD
 static void __devinit sis_get_driver(struct agp_bridge_data *bridge)
+=======
+static void sis_get_driver(struct agp_bridge_data *bridge)
+>>>>>>> refs/remotes/origin/master
 {
 	int i;
 
@@ -184,8 +197,12 @@ static void __devinit sis_get_driver(struct agp_bridge_data *bridge)
 }
 
 
+<<<<<<< HEAD
 static int __devinit agp_sis_probe(struct pci_dev *pdev,
 				   const struct pci_device_id *ent)
+=======
+static int agp_sis_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge;
 	u8 cap_ptr;
@@ -215,7 +232,11 @@ static int __devinit agp_sis_probe(struct pci_dev *pdev,
 	return agp_add_bridge(bridge);
 }
 
+<<<<<<< HEAD
 static void __devexit agp_sis_remove(struct pci_dev *pdev)
+=======
+static void agp_sis_remove(struct pci_dev *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	struct agp_bridge_data *bridge = pci_get_drvdata(pdev);
 

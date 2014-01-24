@@ -1,5 +1,6 @@
 #ifndef _LINUX_KD_H
 #define _LINUX_KD_H
+<<<<<<< HEAD
 #include <linux/types.h>
 #include <linux/compiler.h>
 
@@ -183,4 +184,10 @@ struct console_font {
    don't reuse for the time being */
 /* note: 0x4B60-0x4B6D, 0x4B70-0x4B72 used above */
 
+=======
+
+#include <uapi/linux/kd.h>
+
+#define KD_FONT_FLAG_OLD		0x80000000	/* Invoked via old interface [compat] */
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_KD_H */

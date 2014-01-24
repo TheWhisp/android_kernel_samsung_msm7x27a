@@ -24,6 +24,7 @@
 
 #include <linux/usb/otg.h>
 
+<<<<<<< HEAD
 #include <mach/common.h>
 #include <mach/hardware.h>
 #include <mach/iomux-mx3.h>
@@ -32,6 +33,15 @@
 #include <media/soc_camera.h>
 
 #include "devices-imx31.h"
+=======
+#include <media/soc_camera.h>
+
+#include "common.h"
+#include "devices-imx31.h"
+#include "hardware.h"
+#include "iomux-mx3.h"
+#include "ulpi.h"
+>>>>>>> refs/remotes/origin/master
 
 static unsigned int marxbot_pins[] = {
 	/* SDHC2 */
@@ -273,10 +283,14 @@ static int marxbot_usbh1_hw_init(struct platform_device *pdev)
 #define USBH1_MODE	IOMUX_TO_GPIO(MX31_PIN_NFALE)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int marxbot_isp1105_init(struct otg_transceiver *otg)
 =======
 static int marxbot_isp1105_init(struct usb_phy *otg)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int marxbot_isp1105_init(struct usb_phy *otg)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret = gpio_request(USBH1_MODE, "usbh1-mode");
 	if (ret)
@@ -296,10 +310,14 @@ static int marxbot_isp1105_init(struct usb_phy *otg)
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int marxbot_isp1105_set_vbus(struct otg_transceiver *otg, bool on)
 =======
 static int marxbot_isp1105_set_vbus(struct usb_otg *otg, bool on)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static int marxbot_isp1105_set_vbus(struct usb_otg *otg, bool on)
+>>>>>>> refs/remotes/origin/master
 {
 	if (on)
 		gpio_set_value(USBH1_VBUSEN_B, 0);
@@ -317,6 +335,7 @@ static struct mxc_usbh_platform_data usbh1_pdata __initdata = {
 static int __init marxbot_usbh1_init(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct otg_transceiver *otg;
 	struct platform_device *pdev;
 
@@ -330,6 +349,8 @@ static int __init marxbot_usbh1_init(void)
 
 	usbh1_pdata.otg = otg;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct usb_phy *phy;
 	struct platform_device *pdev;
 
@@ -348,7 +369,10 @@ static int __init marxbot_usbh1_init(void)
 	phy->otg->set_vbus	= marxbot_isp1105_set_vbus;
 
 	usbh1_pdata.otg = phy;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	pdev = imx31_add_mxc_ehci_hs(1, &usbh1_pdata);
 	if (IS_ERR(pdev))

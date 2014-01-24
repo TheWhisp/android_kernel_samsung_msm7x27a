@@ -1,6 +1,11 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2006, 2007, 2008, 2009, 2010 QLogic Corporation.
  * All rights reserved.
+=======
+ * Copyright (c) 2012, 2013 Intel Corporation.  All rights reserved.
+ * Copyright (c) 2006 - 2012 QLogic Corporation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  * Copyright (c) 2005, 2006 PathScale, Inc. All rights reserved.
  *
  * This software is available to you under a choice of one of two
@@ -36,25 +41,35 @@
 #include <rdma/ib_user_verbs.h>
 #include <linux/io.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/utsname.h>
 #include <linux/rculist.h>
 #include <linux/mm.h>
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/utsname.h>
 #include <linux/rculist.h>
 #include <linux/mm.h>
 #include <linux/random.h>
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #include "qib.h"
 #include "qib_common.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static unsigned int ib_qib_qp_table_size = 251;
 =======
 static unsigned int ib_qib_qp_table_size = 256;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static unsigned int ib_qib_qp_table_size = 256;
+>>>>>>> refs/remotes/origin/master
 module_param_named(qp_table_size, ib_qib_qp_table_size, uint, S_IRUGO);
 MODULE_PARM_DESC(qp_table_size, "QP table size");
 
@@ -193,7 +208,11 @@ void qib_copy_sge(struct qib_sge_state *ss, void *data, u32 length, int release)
 		sge->sge_length -= len;
 		if (sge->sge_length == 0) {
 			if (release)
+<<<<<<< HEAD
 				atomic_dec(&sge->mr->refcount);
+=======
+				qib_put_mr(sge->mr);
+>>>>>>> refs/remotes/origin/master
 			if (--ss->num_sge)
 				*sge = *ss->sg_list++;
 		} else if (sge->length == 0 && sge->mr->lkey) {
@@ -234,7 +253,11 @@ void qib_skip_sge(struct qib_sge_state *ss, u32 length, int release)
 		sge->sge_length -= len;
 		if (sge->sge_length == 0) {
 			if (release)
+<<<<<<< HEAD
 				atomic_dec(&sge->mr->refcount);
+=======
+				qib_put_mr(sge->mr);
+>>>>>>> refs/remotes/origin/master
 			if (--ss->num_sge)
 				*sge = *ss->sg_list++;
 		} else if (sge->length == 0 && sge->mr->lkey) {
@@ -343,7 +366,12 @@ static void qib_copy_from_sge(void *data, struct qib_sge_state *ss, u32 length)
  * @qp: the QP to post on
  * @wr: the work request to send
  */
+<<<<<<< HEAD
 static int qib_post_one_send(struct qib_qp *qp, struct ib_send_wr *wr)
+=======
+static int qib_post_one_send(struct qib_qp *qp, struct ib_send_wr *wr,
+	int *scheduled)
+>>>>>>> refs/remotes/origin/master
 {
 	struct qib_swqe *wqe;
 	u32 next;
@@ -445,11 +473,24 @@ bail_inval_free:
 	while (j) {
 		struct qib_sge *sge = &wqe->sg_list[--j];
 
+<<<<<<< HEAD
 		atomic_dec(&sge->mr->refcount);
+=======
+		qib_put_mr(sge->mr);
+>>>>>>> refs/remotes/origin/master
 	}
 bail_inval:
 	ret = -EINVAL;
 bail:
+<<<<<<< HEAD
+=======
+	if (!ret && !wr->next &&
+	 !qib_sdma_empty(
+	   dd_from_ibdev(qp->ibqp.device)->pport + qp->port_num - 1)) {
+		qib_schedule_send(qp);
+		*scheduled = 1;
+	}
+>>>>>>> refs/remotes/origin/master
 	spin_unlock_irqrestore(&qp->s_lock, flags);
 	return ret;
 }
@@ -467,9 +508,16 @@ static int qib_post_send(struct ib_qp *ibqp, struct ib_send_wr *wr,
 {
 	struct qib_qp *qp = to_iqp(ibqp);
 	int err = 0;
+<<<<<<< HEAD
 
 	for (; wr; wr = wr->next) {
 		err = qib_post_one_send(qp, wr);
+=======
+	int scheduled = 0;
+
+	for (; wr; wr = wr->next) {
+		err = qib_post_one_send(qp, wr, &scheduled);
+>>>>>>> refs/remotes/origin/master
 		if (err) {
 			*bad_wr = wr;
 			goto bail;
@@ -477,7 +525,12 @@ static int qib_post_send(struct ib_qp *ibqp, struct ib_send_wr *wr,
 	}
 
 	/* Try to do the send work in the caller's context. */
+<<<<<<< HEAD
 	qib_do_send(&qp->s_work);
+=======
+	if (!scheduled)
+		qib_do_send(&qp->s_work);
+>>>>>>> refs/remotes/origin/master
 
 bail:
 	return err;
@@ -646,9 +699,17 @@ void qib_ib_rcv(struct qib_ctxtdata *rcd, void *rhdr, void *data, u32 tlen)
 	} else
 		goto drop;
 
+<<<<<<< HEAD
 	opcode = be32_to_cpu(ohdr->bth[0]) >> 24;
 	ibp->opstats[opcode & 0x7f].n_bytes += tlen;
 	ibp->opstats[opcode & 0x7f].n_packets++;
+=======
+	opcode = (be32_to_cpu(ohdr->bth[0]) >> 24) & 0x7f;
+#ifdef CONFIG_DEBUG_FS
+	rcd->opstats->stats[opcode].n_bytes += tlen;
+	rcd->opstats->stats[opcode].n_packets++;
+#endif
+>>>>>>> refs/remotes/origin/master
 
 	/* Get the destination QP number. */
 	qp_num = be32_to_cpu(ohdr->bth[1]) & QIB_QPN_MASK;
@@ -672,6 +733,7 @@ void qib_ib_rcv(struct qib_ctxtdata *rcd, void *rhdr, void *data, u32 tlen)
 			wake_up(&mcast->wait);
 	} else {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		qp = qib_lookup_qpn(ibp, qp_num);
 		if (!qp)
 			goto drop;
@@ -684,6 +746,8 @@ void qib_ib_rcv(struct qib_ctxtdata *rcd, void *rhdr, void *data, u32 tlen)
 		if (atomic_dec_and_test(&qp->refcount))
 			wake_up(&qp->wait);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (rcd->lookaside_qp) {
 			if (rcd->lookaside_qpn != qp_num) {
 				if (atomic_dec_and_test(
@@ -703,7 +767,10 @@ void qib_ib_rcv(struct qib_ctxtdata *rcd, void *rhdr, void *data, u32 tlen)
 			qp = rcd->lookaside_qp;
 		ibp->n_unicast_rcv++;
 		qib_qp_rcv(rcd, hdr, lnh == QIB_LRH_GRH, data, tlen, qp);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 	return;
 
@@ -938,12 +1005,17 @@ static void copy_io(u32 __iomem *piobuf, struct qib_sge_state *ss,
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static struct qib_verbs_txreq *get_txreq(struct qib_ibdev *dev,
 					 struct qib_qp *qp, int *retp)
 =======
 static noinline struct qib_verbs_txreq *__get_txreq(struct qib_ibdev *dev,
 					   struct qib_qp *qp)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static noinline struct qib_verbs_txreq *__get_txreq(struct qib_ibdev *dev,
+					   struct qib_qp *qp)
+>>>>>>> refs/remotes/origin/master
 {
 	struct qib_verbs_txreq *tx;
 	unsigned long flags;
@@ -956,6 +1028,7 @@ static noinline struct qib_verbs_txreq *__get_txreq(struct qib_ibdev *dev,
 
 		list_del(l);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tx = list_entry(l, struct qib_verbs_txreq, txreq.list);
 		*retp = 0;
 =======
@@ -963,6 +1036,11 @@ static noinline struct qib_verbs_txreq *__get_txreq(struct qib_ibdev *dev,
 		spin_unlock_irqrestore(&qp->s_lock, flags);
 		tx = list_entry(l, struct qib_verbs_txreq, txreq.list);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		spin_unlock(&dev->pending_lock);
+		spin_unlock_irqrestore(&qp->s_lock, flags);
+		tx = list_entry(l, struct qib_verbs_txreq, txreq.list);
+>>>>>>> refs/remotes/origin/master
 	} else {
 		if (ib_qib_state_ops[qp->state] & QIB_PROCESS_RECV_OK &&
 		    list_empty(&qp->iowait)) {
@@ -970,6 +1048,7 @@ static noinline struct qib_verbs_txreq *__get_txreq(struct qib_ibdev *dev,
 			qp->s_flags |= QIB_S_WAIT_TX;
 			list_add_tail(&qp->iowait, &dev->txwait);
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		tx = NULL;
 		qp->s_flags &= ~QIB_S_BUSY;
@@ -980,6 +1059,8 @@ static noinline struct qib_verbs_txreq *__get_txreq(struct qib_ibdev *dev,
 	spin_unlock_irqrestore(&qp->s_lock, flags);
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		qp->s_flags &= ~QIB_S_BUSY;
 		spin_unlock(&dev->pending_lock);
 		spin_unlock_irqrestore(&qp->s_lock, flags);
@@ -1007,7 +1088,10 @@ static inline struct qib_verbs_txreq *get_txreq(struct qib_ibdev *dev,
 		spin_unlock_irqrestore(&dev->pending_lock, flags);
 		tx =  __get_txreq(dev, qp);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return tx;
 }
 
@@ -1023,7 +1107,11 @@ void qib_put_txreq(struct qib_verbs_txreq *tx)
 	if (atomic_dec_and_test(&qp->refcount))
 		wake_up(&qp->wait);
 	if (tx->mr) {
+<<<<<<< HEAD
 		atomic_dec(&tx->mr->refcount);
+=======
+		qib_put_mr(tx->mr);
+>>>>>>> refs/remotes/origin/master
 		tx->mr = NULL;
 	}
 	if (tx->txreq.flags & QIB_SDMA_TXREQ_F_FREEBUF) {
@@ -1188,6 +1276,7 @@ static int qib_verbs_send_dma(struct qib_qp *qp, struct qib_ib_header *hdr,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	tx = get_txreq(dev, qp, &ret);
 	if (!tx)
 		goto bail;
@@ -1196,6 +1285,11 @@ static int qib_verbs_send_dma(struct qib_qp *qp, struct qib_ib_header *hdr,
 	if (IS_ERR(tx))
 		goto bail_tx;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	tx = get_txreq(dev, qp);
+	if (IS_ERR(tx))
+		goto bail_tx;
+>>>>>>> refs/remotes/origin/master
 
 	control = dd->f_setpbc_control(ppd, plen, qp->s_srate,
 				       be16_to_cpu(hdr->lrh[0]) >> 12);
@@ -1267,11 +1361,17 @@ unaligned:
 bail:
 	return ret;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 bail_tx:
 	ret = PTR_ERR(tx);
 	goto bail;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+bail_tx:
+	ret = PTR_ERR(tx);
+	goto bail;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*
@@ -1390,7 +1490,11 @@ done:
 	}
 	qib_sendbuf_done(dd, pbufn);
 	if (qp->s_rdma_mr) {
+<<<<<<< HEAD
 		atomic_dec(&qp->s_rdma_mr->refcount);
+=======
+		qib_put_mr(qp->s_rdma_mr);
+>>>>>>> refs/remotes/origin/master
 		qp->s_rdma_mr = NULL;
 	}
 	if (qp->s_wqe) {
@@ -1899,6 +2003,26 @@ bail:
 	return ret;
 }
 
+<<<<<<< HEAD
+=======
+struct ib_ah *qib_create_qp0_ah(struct qib_ibport *ibp, u16 dlid)
+{
+	struct ib_ah_attr attr;
+	struct ib_ah *ah = ERR_PTR(-EINVAL);
+	struct qib_qp *qp0;
+
+	memset(&attr, 0, sizeof attr);
+	attr.dlid = dlid;
+	attr.port_num = ppd_from_ibp(ibp)->port;
+	rcu_read_lock();
+	qp0 = rcu_dereference(ibp->qp0);
+	if (qp0)
+		ah = ib_create_ah(qp0->ibqp.pd, &attr);
+	rcu_read_unlock();
+	return ah;
+}
+
+>>>>>>> refs/remotes/origin/master
 /**
  * qib_destroy_ah - destroy an address handle
  * @ibah: the AH to destroy
@@ -2062,10 +2186,15 @@ static void init_ibport(struct qib_pportdata *ppd)
 		cntrs.excessive_buffer_overrun_errors;
 	ibp->z_vl15_dropped = cntrs.vl15_dropped;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	RCU_INIT_POINTER(ibp->qp0, NULL);
 	RCU_INIT_POINTER(ibp->qp1, NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	RCU_INIT_POINTER(ibp->qp0, NULL);
+	RCU_INIT_POINTER(ibp->qp1, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -2083,21 +2212,31 @@ int qib_register_ib_device(struct qib_devdata *dd)
 
 	dev->qp_table_size = ib_qib_qp_table_size;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	dev->qp_table = kzalloc(dev->qp_table_size * sizeof *dev->qp_table,
 =======
 	get_random_bytes(&dev->qp_rnd, sizeof(dev->qp_rnd));
 	dev->qp_table = kmalloc(dev->qp_table_size * sizeof *dev->qp_table,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	get_random_bytes(&dev->qp_rnd, sizeof(dev->qp_rnd));
+	dev->qp_table = kmalloc(dev->qp_table_size * sizeof *dev->qp_table,
+>>>>>>> refs/remotes/origin/master
 				GFP_KERNEL);
 	if (!dev->qp_table) {
 		ret = -ENOMEM;
 		goto err_qpt;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	for (i = 0; i < dev->qp_table_size; i++)
 		RCU_INIT_POINTER(dev->qp_table[i], NULL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	for (i = 0; i < dev->qp_table_size; i++)
+		RCU_INIT_POINTER(dev->qp_table[i], NULL);
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < dd->num_pports; i++)
 		init_ibport(ppd + i);
@@ -2124,13 +2263,23 @@ int qib_register_ib_device(struct qib_devdata *dd)
 	spin_lock_init(&dev->lk_table.lock);
 	dev->lk_table.max = 1 << ib_qib_lkey_table_size;
 	lk_tab_size = dev->lk_table.max * sizeof(*dev->lk_table.table);
+<<<<<<< HEAD
 	dev->lk_table.table = (struct qib_mregion **)
+=======
+	dev->lk_table.table = (struct qib_mregion __rcu **)
+>>>>>>> refs/remotes/origin/master
 		__get_free_pages(GFP_KERNEL, get_order(lk_tab_size));
 	if (dev->lk_table.table == NULL) {
 		ret = -ENOMEM;
 		goto err_lk;
 	}
+<<<<<<< HEAD
 	memset(dev->lk_table.table, 0, lk_tab_size);
+=======
+	RCU_INIT_POINTER(dev->dma_mr, NULL);
+	for (i = 0; i < dev->lk_table.max; i++)
+		RCU_INIT_POINTER(dev->lk_table.table[i], NULL);
+>>>>>>> refs/remotes/origin/master
 	INIT_LIST_HEAD(&dev->pending_mmaps);
 	spin_lock_init(&dev->pending_lock);
 	dev->mmap_offset = PAGE_SIZE;
@@ -2260,7 +2409,11 @@ int qib_register_ib_device(struct qib_devdata *dd)
 	ibdev->dma_ops = &qib_dma_mapping_ops;
 
 	snprintf(ibdev->node_desc, sizeof(ibdev->node_desc),
+<<<<<<< HEAD
 		 QIB_IDSTR " %s", init_utsname()->nodename);
+=======
+		 "Intel Infiniband HCA %s", init_utsname()->nodename);
+>>>>>>> refs/remotes/origin/master
 
 	ret = ib_register_device(ibdev, qib_create_port_files);
 	if (ret)
@@ -2270,7 +2423,12 @@ int qib_register_ib_device(struct qib_devdata *dd)
 	if (ret)
 		goto err_agents;
 
+<<<<<<< HEAD
 	if (qib_verbs_register_sysfs(dd))
+=======
+	ret = qib_verbs_register_sysfs(dd);
+	if (ret)
+>>>>>>> refs/remotes/origin/master
 		goto err_class;
 
 	goto bail;
@@ -2353,3 +2511,20 @@ void qib_unregister_ib_device(struct qib_devdata *dd)
 		   get_order(lk_tab_size));
 	kfree(dev->qp_table);
 }
+<<<<<<< HEAD
+=======
+
+/*
+ * This must be called with s_lock held.
+ */
+void qib_schedule_send(struct qib_qp *qp)
+{
+	if (qib_send_ok(qp)) {
+		struct qib_ibport *ibp =
+			to_iport(qp->ibqp.device, qp->port_num);
+		struct qib_pportdata *ppd = ppd_from_ibp(ibp);
+
+		queue_work(ppd->qib_wq, &qp->s_work);
+	}
+}
+>>>>>>> refs/remotes/origin/master

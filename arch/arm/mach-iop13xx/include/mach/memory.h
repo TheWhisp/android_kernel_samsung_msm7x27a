@@ -16,12 +16,20 @@
 #define IOP13XX_PMMR_P_START (IOP13XX_PMMR_PHYS_MEM_BASE)
 #define IOP13XX_PMMR_P_END   (IOP13XX_PMMR_PHYS_MEM_BASE + IOP13XX_PMMR_SIZE)
 
+<<<<<<< HEAD
 static inline dma_addr_t __virt_to_lbus(unsigned long x)
+=======
+static inline dma_addr_t __virt_to_lbus(void __iomem *x)
+>>>>>>> refs/remotes/origin/master
 {
 	return x + IOP13XX_PMMR_PHYS_MEM_BASE - IOP13XX_PMMR_VIRT_MEM_BASE;
 }
 
+<<<<<<< HEAD
 static inline unsigned long __lbus_to_virt(dma_addr_t x)
+=======
+static inline void __iomem *__lbus_to_virt(dma_addr_t x)
+>>>>>>> refs/remotes/origin/master
 {
 	return x + IOP13XX_PMMR_VIRT_MEM_BASE - IOP13XX_PMMR_PHYS_MEM_BASE;
 }
@@ -38,23 +46,40 @@ static inline unsigned long __lbus_to_virt(dma_addr_t x)
 
 #define __arch_dma_to_virt(dev, addr)					\
 	({								\
+<<<<<<< HEAD
 		unsigned long __virt;					\
+=======
+		void * __virt;						\
+>>>>>>> refs/remotes/origin/master
 		dma_addr_t __dma = addr;				\
 		if (is_lbus_device(dev) && __is_lbus_dma(__dma))	\
 			__virt = __lbus_to_virt(__dma);			\
 		else							\
+<<<<<<< HEAD
 			__virt = __phys_to_virt(__dma);			\
 		(void *)__virt;						\
+=======
+			__virt = (void *)__phys_to_virt(__dma);		\
+		__virt;							\
+>>>>>>> refs/remotes/origin/master
 	})
 
 #define __arch_virt_to_dma(dev, addr)					\
 	({								\
+<<<<<<< HEAD
 		unsigned long __virt = (unsigned long)addr;		\
+=======
+		void * __virt = addr;					\
+>>>>>>> refs/remotes/origin/master
 		dma_addr_t __dma;					\
 		if (is_lbus_device(dev) && __is_lbus_virt(__virt))	\
 			__dma = __virt_to_lbus(__virt);			\
 		else							\
+<<<<<<< HEAD
 			__dma = __virt_to_phys(__virt);			\
+=======
+			__dma = __virt_to_phys((unsigned long)__virt);	\
+>>>>>>> refs/remotes/origin/master
 		__dma;							\
 	})
 

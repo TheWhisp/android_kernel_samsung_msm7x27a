@@ -8,6 +8,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
 <<<<<<< HEAD
+<<<<<<< HEAD
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,6 +25,12 @@
 
 #include <linux/kernel.h>
 #include <linux/init.h>
+=======
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/types.h>
 #include <linux/device.h>
 
@@ -35,6 +42,7 @@
 
 #include "gadget_chips.h"
 
+<<<<<<< HEAD
 
 /* we must assign addresses for configurable endpoints (like net2280) */
 static unsigned epnum;
@@ -46,6 +54,8 @@ static unsigned in_epnum;
 #endif
 
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * This should work with endpoints from controller drivers sharing the
  * same endpoint naming convention.  By example:
@@ -67,11 +77,16 @@ ep_matches (
 	struct usb_gadget		*gadget,
 	struct usb_ep			*ep,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct usb_endpoint_descriptor	*desc
 =======
 	struct usb_endpoint_descriptor	*desc,
 	struct usb_ss_ep_comp_descriptor *ep_comp
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct usb_endpoint_descriptor	*desc,
+	struct usb_ss_ep_comp_descriptor *ep_comp
+>>>>>>> refs/remotes/origin/master
 )
 {
 	u8		type;
@@ -79,16 +94,25 @@ ep_matches (
 	u16		max;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	int		num_req_streams = 0;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	int		num_req_streams = 0;
+
+>>>>>>> refs/remotes/origin/master
 	/* endpoint already claimed? */
 	if (NULL != ep->driver_data)
 		return 0;
 
 	/* only support ep0 for portable CONTROL traffic */
+<<<<<<< HEAD
 	type = desc->bmAttributes & USB_ENDPOINT_XFERTYPE_MASK;
+=======
+	type = usb_endpoint_type(desc);
+>>>>>>> refs/remotes/origin/master
 	if (USB_ENDPOINT_XFER_CONTROL == type)
 		return 0;
 
@@ -143,7 +167,10 @@ ep_matches (
 
 	/*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	 * Get the number of required streams from the EP companion
 	 * descriptor and see if the EP matches it
 	 */
@@ -157,17 +184,25 @@ ep_matches (
 	}
 
 	/*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	 * If the protocol driver hasn't yet decided on wMaxPacketSize
 	 * and wants to know the maximum possible, provide the info.
 	 */
 	if (desc->wMaxPacketSize == 0)
+<<<<<<< HEAD
 		desc->wMaxPacketSize = cpu_to_le16(ep->maxpacket);
+=======
+		desc->wMaxPacketSize = cpu_to_le16(ep->maxpacket_limit);
+>>>>>>> refs/remotes/origin/master
 
 	/* endpoint maxpacket size is an input parameter, except for bulk
 	 * where it's an output parameter representing the full speed limit.
 	 * the usb spec fixes high speed bulk maxpacket at 512 bytes.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	max = 0x7ff & le16_to_cpu(desc->wMaxPacketSize);
 	switch (type) {
@@ -175,16 +210,22 @@ ep_matches (
 		/* INT:  limit 64 bytes full speed, 1024 high speed */
 		if (!gadget->is_dualspeed && max > 64)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	max = 0x7ff & usb_endpoint_maxp(desc);
 	switch (type) {
 	case USB_ENDPOINT_XFER_INT:
 		/* INT:  limit 64 bytes full speed, 1024 high/super speed */
 		if (!gadget_is_dualspeed(gadget) && max > 64)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			return 0;
 		/* FALLTHROUGH */
 
 	case USB_ENDPOINT_XFER_ISOC:
+<<<<<<< HEAD
 <<<<<<< HEAD
 		/* ISO:  limit 1023 bytes full speed, 1024 high speed */
 		if (ep->maxpacket < max)
@@ -196,15 +237,25 @@ ep_matches (
 			return 0;
 		if (!gadget_is_dualspeed(gadget) && max > 1023)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		/* ISO:  limit 1023 bytes full speed, 1024 high/super speed */
+		if (ep->maxpacket_limit < max)
+			return 0;
+		if (!gadget_is_dualspeed(gadget) && max > 1023)
+>>>>>>> refs/remotes/origin/master
 			return 0;
 
 		/* BOTH:  "high bandwidth" works only at high speed */
 		if ((desc->wMaxPacketSize & cpu_to_le16(3<<11))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			if (!gadget->is_dualspeed)
 =======
 			if (!gadget_is_dualspeed(gadget))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			if (!gadget_is_dualspeed(gadget))
+>>>>>>> refs/remotes/origin/master
 				return 0;
 			/* configure your hardware with enough buffering!! */
 		}
@@ -218,6 +269,7 @@ ep_matches (
 	if (isdigit (ep->name [2])) {
 		u8	num = simple_strtoul (&ep->name [2], NULL, 10);
 		desc->bEndpointAddress |= num;
+<<<<<<< HEAD
 #ifdef	MANY_ENDPOINTS
 	} else if (desc->bEndpointAddress & USB_DIR_IN) {
 		if (++in_epnum > 15)
@@ -237,6 +289,21 @@ ep_matches (
 	if ((USB_ENDPOINT_XFER_BULK == type) && !ep_comp) {
 >>>>>>> refs/remotes/origin/cm-10.0
 		int size = ep->maxpacket;
+=======
+	} else if (desc->bEndpointAddress & USB_DIR_IN) {
+		if (++gadget->in_epnum > 15)
+			return 0;
+		desc->bEndpointAddress = USB_DIR_IN | gadget->in_epnum;
+	} else {
+		if (++gadget->out_epnum > 15)
+			return 0;
+		desc->bEndpointAddress |= gadget->out_epnum;
+	}
+
+	/* report (variable) full speed bulk maxpacket */
+	if ((USB_ENDPOINT_XFER_BULK == type) && !ep_comp) {
+		int size = ep->maxpacket_limit;
+>>>>>>> refs/remotes/origin/master
 
 		/* min() doesn't work on bitfields with gcc-3.5 */
 		if (size > 64)
@@ -244,9 +311,13 @@ ep_matches (
 		desc->wMaxPacketSize = cpu_to_le16(size);
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	ep->address = desc->bEndpointAddress;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ep->address = desc->bEndpointAddress;
+>>>>>>> refs/remotes/origin/master
 	return 1;
 }
 
@@ -264,6 +335,7 @@ find_ep (struct usb_gadget *gadget, const char *name)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * usb_ep_autoconfig - choose an endpoint matching the descriptor
  * @gadget: The device to which the endpoint must belong.
  * @desc: Endpoint descriptor, with endpoint direction and transfer mode
@@ -275,6 +347,8 @@ find_ep (struct usb_gadget *gadget, const char *name)
  * USB device controllers.  The endpoint would be passed later to
  * usb_ep_enable(), along with some descriptor.
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * usb_ep_autoconfig_ss() - choose an endpoint matching the ep
  * descriptor and ep companion descriptor
  * @gadget: The device to which the endpoint must belong.
@@ -295,13 +369,17 @@ find_ep (struct usb_gadget *gadget, const char *name)
  * this routine simplifies writing gadget drivers that work with
  * multiple USB device controllers.  The endpoint would be
  * passed later to usb_ep_enable(), along with some descriptor.
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  *
  * That second descriptor won't always be the same as the first one.
  * For example, isochronous endpoints can be autoconfigured for high
  * bandwidth, and then used in several lower bandwidth altsettings.
  * Also, high and full speed descriptors will be different.
  *
+<<<<<<< HEAD
 <<<<<<< HEAD
  * Be sure to examine and test the results of autoconfiguration on your
  * hardware.  This code may not make the best choices about how to use the
@@ -320,6 +398,8 @@ struct usb_ep *usb_ep_autoconfig (
 	struct usb_gadget		*gadget,
 	struct usb_endpoint_descriptor	*desc
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Be sure to examine and test the results of autoconfiguration
  * on your hardware.  This code may not make the best choices
  * about how to use the USB controller, and it can't know all
@@ -341,7 +421,10 @@ struct usb_ep *usb_ep_autoconfig_ss(
 	struct usb_gadget		*gadget,
 	struct usb_endpoint_descriptor	*desc,
 	struct usb_ss_ep_comp_descriptor *ep_comp
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 )
 {
 	struct usb_ep	*ep;
@@ -356,22 +439,29 @@ struct usb_ep *usb_ep_autoconfig_ss(
 		/* ep-e, ep-f are PIO with only 64 byte fifos */
 		ep = find_ep (gadget, "ep-e");
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ep && ep_matches (gadget, ep, desc))
 			return ep;
 		ep = find_ep (gadget, "ep-f");
 		if (ep && ep_matches (gadget, ep, desc))
 			return ep;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ep && ep_matches(gadget, ep, desc, ep_comp))
 			goto found_ep;
 		ep = find_ep (gadget, "ep-f");
 		if (ep && ep_matches(gadget, ep, desc, ep_comp))
 			goto found_ep;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	} else if (gadget_is_goku (gadget)) {
 		if (USB_ENDPOINT_XFER_INT == type) {
 			/* single buffering is enough */
+<<<<<<< HEAD
 <<<<<<< HEAD
 			ep = find_ep (gadget, "ep3-bulk");
 			if (ep && ep_matches (gadget, ep, desc))
@@ -383,6 +473,8 @@ struct usb_ep *usb_ep_autoconfig_ss(
 			if (ep && ep_matches (gadget, ep, desc))
 				return ep;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			ep = find_ep(gadget, "ep3-bulk");
 			if (ep && ep_matches(gadget, ep, desc, ep_comp))
 				goto found_ep;
@@ -393,7 +485,10 @@ struct usb_ep *usb_ep_autoconfig_ss(
 			if (ep && ep_matches(gadget, ep, desc,
 					      ep_comp))
 				goto found_ep;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		}
 
 #ifdef CONFIG_BLACKFIN
@@ -412,17 +507,23 @@ struct usb_ep *usb_ep_autoconfig_ss(
 		} else
 			ep = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (ep && ep_matches (gadget, ep, desc))
 			return ep;
 =======
 		if (ep && ep_matches(gadget, ep, desc, ep_comp))
 			goto found_ep;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ep && ep_matches(gadget, ep, desc, ep_comp))
+			goto found_ep;
+>>>>>>> refs/remotes/origin/master
 #endif
 	}
 
 	/* Second, look at endpoints until an unclaimed one looks usable */
 	list_for_each_entry (ep, &gadget->ep_list, ep_list) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (ep_matches (gadget, ep, desc))
 			return ep;
@@ -430,20 +531,31 @@ struct usb_ep *usb_ep_autoconfig_ss(
 		if (ep_matches(gadget, ep, desc, ep_comp))
 			goto found_ep;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (ep_matches(gadget, ep, desc, ep_comp))
+			goto found_ep;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	/* Fail */
 	return NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 
 /**
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 found_ep:
 	ep->desc = NULL;
 	ep->comp_desc = NULL;
 	return ep;
 }
+<<<<<<< HEAD
+=======
+EXPORT_SYMBOL_GPL(usb_ep_autoconfig_ss);
+>>>>>>> refs/remotes/origin/master
 
 /**
  * usb_ep_autoconfig() - choose an endpoint matching the
@@ -483,10 +595,16 @@ struct usb_ep *usb_ep_autoconfig(
 {
 	return usb_ep_autoconfig_ss(gadget, desc, NULL);
 }
+<<<<<<< HEAD
 
 
 /**
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+EXPORT_SYMBOL_GPL(usb_ep_autoconfig);
+
+/**
+>>>>>>> refs/remotes/origin/master
  * usb_ep_autoconfig_reset - reset endpoint autoconfig state
  * @gadget: device for which autoconfig state will be reset
  *
@@ -502,9 +620,16 @@ void usb_ep_autoconfig_reset (struct usb_gadget *gadget)
 	list_for_each_entry (ep, &gadget->ep_list, ep_list) {
 		ep->driver_data = NULL;
 	}
+<<<<<<< HEAD
 #ifdef	MANY_ENDPOINTS
 	in_epnum = 0;
 #endif
 	epnum = 0;
 }
 
+=======
+	gadget->in_epnum = 0;
+	gadget->out_epnum = 0;
+}
+EXPORT_SYMBOL_GPL(usb_ep_autoconfig_reset);
+>>>>>>> refs/remotes/origin/master

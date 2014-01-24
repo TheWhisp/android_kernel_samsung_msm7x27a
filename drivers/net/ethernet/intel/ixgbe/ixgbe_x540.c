@@ -1,7 +1,11 @@
 /*******************************************************************************
 
   Intel 10 Gigabit PCI Express Linux driver
+<<<<<<< HEAD
   Copyright(c) 1999 - 2012 Intel Corporation.
+=======
+  Copyright(c) 1999 - 2013 Intel Corporation.
+>>>>>>> refs/remotes/origin/master
 
   This program is free software; you can redistribute it and/or modify it
   under the terms and conditions of the GNU General Public License,
@@ -32,12 +36,21 @@
 #include "ixgbe.h"
 #include "ixgbe_phy.h"
 
+<<<<<<< HEAD
 #define IXGBE_X540_MAX_TX_QUEUES 128
 #define IXGBE_X540_MAX_RX_QUEUES 128
 #define IXGBE_X540_RAR_ENTRIES   128
 #define IXGBE_X540_MC_TBL_SIZE   128
 #define IXGBE_X540_VFT_TBL_SIZE  128
 #define IXGBE_X540_RX_PB_SIZE	 384
+=======
+#define IXGBE_X540_MAX_TX_QUEUES	128
+#define IXGBE_X540_MAX_RX_QUEUES	128
+#define IXGBE_X540_RAR_ENTRIES		128
+#define IXGBE_X540_MC_TBL_SIZE		128
+#define IXGBE_X540_VFT_TBL_SIZE		128
+#define IXGBE_X540_RX_PB_SIZE		384
+>>>>>>> refs/remotes/origin/master
 
 static s32 ixgbe_update_flash_X540(struct ixgbe_hw *hw);
 static s32 ixgbe_poll_flash_update_done_X540(struct ixgbe_hw *hw);
@@ -72,6 +85,7 @@ static s32 ixgbe_get_invariants_X540(struct ixgbe_hw *hw)
  *  ixgbe_setup_mac_link_X540 - Set the auto advertised capabilitires
  *  @hw: pointer to hardware structure
  *  @speed: new link speed
+<<<<<<< HEAD
  *  @autoneg: true if autonegotiation enabled
  *  @autoneg_wait_to_complete: true when waiting for completion is needed
  **/
@@ -80,6 +94,15 @@ static s32 ixgbe_setup_mac_link_X540(struct ixgbe_hw *hw,
                                      bool autoneg_wait_to_complete)
 {
 	return hw->phy.ops.setup_link_speed(hw, speed, autoneg,
+=======
+ *  @autoneg_wait_to_complete: true when waiting for completion is needed
+ **/
+static s32 ixgbe_setup_mac_link_X540(struct ixgbe_hw *hw,
+				     ixgbe_link_speed speed,
+				     bool autoneg_wait_to_complete)
+{
+	return hw->phy.ops.setup_link_speed(hw, speed,
+>>>>>>> refs/remotes/origin/master
 	                                    autoneg_wait_to_complete);
 }
 
@@ -152,10 +175,20 @@ mac_reset_top:
 	hw->mac.ops.get_san_mac_addr(hw, hw->mac.san_addr);
 
 	/* Add the SAN MAC address to the RAR only if it's a valid address */
+<<<<<<< HEAD
 	if (ixgbe_validate_mac_addr(hw->mac.san_addr) == 0) {
 		hw->mac.ops.set_rar(hw, hw->mac.num_rar_entries - 1,
 		                    hw->mac.san_addr, 0, IXGBE_RAH_AV);
 
+=======
+	if (is_valid_ether_addr(hw->mac.san_addr)) {
+		hw->mac.ops.set_rar(hw, hw->mac.num_rar_entries - 1,
+		                    hw->mac.san_addr, 0, IXGBE_RAH_AV);
+
+		/* Save the SAN MAC RAR index */
+		hw->mac.san_mac_rar_index = hw->mac.num_rar_entries - 1;
+
+>>>>>>> refs/remotes/origin/master
 		/* Reserve the last RAR for the SAN MAC address */
 		hw->mac.num_rar_entries--;
 	}
@@ -832,6 +865,10 @@ static struct ixgbe_mac_operations mac_ops_X540 = {
 	.set_rar                = &ixgbe_set_rar_generic,
 	.clear_rar              = &ixgbe_clear_rar_generic,
 	.set_vmdq               = &ixgbe_set_vmdq_generic,
+<<<<<<< HEAD
+=======
+	.set_vmdq_san_mac	= &ixgbe_set_vmdq_san_mac_generic,
+>>>>>>> refs/remotes/origin/master
 	.clear_vmdq             = &ixgbe_clear_vmdq_generic,
 	.init_rx_addrs          = &ixgbe_init_rx_addrs_generic,
 	.update_mc_addr_list    = &ixgbe_update_mc_addr_list_generic,
@@ -849,6 +886,12 @@ static struct ixgbe_mac_operations mac_ops_X540 = {
 	.release_swfw_sync      = &ixgbe_release_swfw_sync_X540,
 	.disable_rx_buff	= &ixgbe_disable_rx_buff_generic,
 	.enable_rx_buff		= &ixgbe_enable_rx_buff_generic,
+<<<<<<< HEAD
+=======
+	.get_thermal_sensor_data = NULL,
+	.init_thermal_sensor_thresh = NULL,
+	.mng_fw_enabled		= NULL,
+>>>>>>> refs/remotes/origin/master
 };
 
 static struct ixgbe_eeprom_operations eeprom_ops_X540 = {
@@ -873,6 +916,10 @@ static struct ixgbe_phy_operations phy_ops_X540 = {
 	.setup_link_speed       = &ixgbe_setup_phy_link_speed_generic,
 	.read_i2c_byte          = &ixgbe_read_i2c_byte_generic,
 	.write_i2c_byte         = &ixgbe_write_i2c_byte_generic,
+<<<<<<< HEAD
+=======
+	.read_i2c_sff8472	= &ixgbe_read_i2c_sff8472_generic,
+>>>>>>> refs/remotes/origin/master
 	.read_i2c_eeprom        = &ixgbe_read_i2c_eeprom_generic,
 	.write_i2c_eeprom       = &ixgbe_write_i2c_eeprom_generic,
 	.check_overtemp         = &ixgbe_tn_check_overtemp,

@@ -1,10 +1,17 @@
 config LGUEST_GUEST
 	bool "Lguest guest support"
+<<<<<<< HEAD
 	select PARAVIRT
 	depends on X86_32
 	select VIRTUALIZATION
 	select VIRTIO
 	select VIRTIO_RING
+=======
+	depends on X86_32 && PARAVIRT
+	select TTY
+	select VIRTUALIZATION
+	select VIRTIO
+>>>>>>> refs/remotes/origin/master
 	select VIRTIO_CONSOLE
 	help
 	  Lguest is a tiny in-kernel hypervisor.  Selecting this will

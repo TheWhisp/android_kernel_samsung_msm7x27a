@@ -1,5 +1,6 @@
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  *  Atheros AR71XX/AR724X/AR913X SoC early printk support
  *
  *  Copyright (C) 2008-2010 Gabor Juhos <juhosg@openwrt.org>
@@ -8,6 +9,11 @@
  *
  *  Copyright (C) 2008-2011 Gabor Juhos <juhosg@openwrt.org>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ *  Atheros AR7XXX/AR9XXX SoC early printk support
+ *
+ *  Copyright (C) 2008-2011 Gabor Juhos <juhosg@openwrt.org>
+>>>>>>> refs/remotes/origin/master
  *  Copyright (C) 2008 Imre Kaloz <kaloz@openwrt.org>
  *
  *  This program is free software; you can redistribute it and/or modify it
@@ -16,6 +22,7 @@
  */
 
 #include <linux/io.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 #include <linux/serial_reg.h>
 #include <asm/addrspace.h>
@@ -30,6 +37,8 @@ static inline void prom_wait_thre(void __iomem *base)
 		lsr = __raw_readl(base + UART_LSR * 4);
 		if (lsr & UART_LSR_THRE)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/serial_reg.h>
 #include <asm/addrspace.h>
@@ -47,11 +56,15 @@ static inline void prom_putchar_wait(void __iomem *reg, u32 mask, u32 val)
 	do {
 		t = __raw_readl(reg);
 		if ((t & mask) == val)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			break;
 	} while (1);
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 void prom_putchar(unsigned char ch)
 {
@@ -61,6 +74,8 @@ void prom_putchar(unsigned char ch)
 	__raw_writel(ch, base + UART_TX * 4);
 	prom_wait_thre(base);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void prom_putchar_ar71xx(unsigned char ch)
 {
 	void __iomem *base = (void __iomem *)(KSEG1ADDR(AR71XX_UART_BASE));
@@ -101,6 +116,14 @@ static void prom_putchar_init(void)
 	case REV_ID_MAJOR_AR7241:
 	case REV_ID_MAJOR_AR7242:
 	case REV_ID_MAJOR_AR913X:
+<<<<<<< HEAD
+=======
+	case REV_ID_MAJOR_AR9341:
+	case REV_ID_MAJOR_AR9342:
+	case REV_ID_MAJOR_AR9344:
+	case REV_ID_MAJOR_QCA9556:
+	case REV_ID_MAJOR_QCA9558:
+>>>>>>> refs/remotes/origin/master
 		_prom_putchar = prom_putchar_ar71xx;
 		break;
 
@@ -121,5 +144,8 @@ void prom_putchar(unsigned char ch)
 		prom_putchar_init();
 
 	_prom_putchar(ch);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

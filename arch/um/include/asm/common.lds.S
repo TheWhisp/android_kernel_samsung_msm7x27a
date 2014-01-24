@@ -57,7 +57,10 @@
 	*(.uml.initcall.init)
 	__uml_initcall_end = .;
   }
+<<<<<<< HEAD
   __init_end = .;
+=======
+>>>>>>> refs/remotes/origin/master
 
   SECURITY_INIT
 

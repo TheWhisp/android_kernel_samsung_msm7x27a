@@ -4,6 +4,7 @@
 #
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 comment "Enable Host or Gadget support to see Inventra options"
 	depends on !USB && USB_GADGET=n
 
@@ -26,6 +27,12 @@ config USB_MUSB_HDRC
 =======
 	select USB_GADGET_DUALSPEED
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+# (M)HDRC = (Multipoint) Highspeed Dual-Role Controller
+config USB_MUSB_HDRC
+	tristate 'Inventra Highspeed Dual Role Controller (TI, ADI, ...)'
+	depends on (USB || USB_GADGET)
+>>>>>>> refs/remotes/origin/master
 	help
 	  Say Y here if your system has a dual role high speed USB
 	  controller based on the Mentor Graphics silicon IP.  Then
@@ -33,7 +40,11 @@ config USB_MUSB_HDRC
 	  it's being used with, including the USB peripheral role,
 	  or the USB host role, or both.
 
+<<<<<<< HEAD
 	  Texas Instruments familiies using this IP include DaVinci
+=======
+	  Texas Instruments families using this IP include DaVinci
+>>>>>>> refs/remotes/origin/master
 	  (35x, 644x ...), OMAP 243x, OMAP 3, and TUSB 6010.
 
 	  Analog Devices parts using this IP include Blackfin BF54x,
@@ -42,6 +53,7 @@ config USB_MUSB_HDRC
 	  If you do not know what this is, please say N.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #	  To compile this driver as a module, choose M here; the
 #	  module will be called "musb-hdrc".
 
@@ -49,22 +61,62 @@ choice
 	prompt "Platform Glue Layer"
 	depends on USB_MUSB_HDRC
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	  To compile this driver as a module, choose M here; the
 	  module will be called "musb-hdrc".
 
 if USB_MUSB_HDRC
 
 choice
+<<<<<<< HEAD
 	prompt "Platform Glue Layer"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool "MUSB Mode Selection"
+	default USB_MUSB_DUAL_ROLE if (USB && USB_GADGET)
+	default USB_MUSB_HOST if (USB && !USB_GADGET)
+	default USB_MUSB_GADGET if (!USB && USB_GADGET)
+
+config USB_MUSB_HOST
+	bool "Host only mode"
+	depends on USB=y || USB=USB_MUSB_HDRC
+	help
+	  Select this when you want to use MUSB in host mode only,
+	  thereby the gadget feature will be regressed.
+
+config USB_MUSB_GADGET
+	bool "Gadget only mode"
+	depends on USB_GADGET=y || USB_GADGET=USB_MUSB_HDRC
+	help
+	  Select this when you want to use MUSB in gadget mode only,
+	  thereby the host feature will be regressed.
+
+config USB_MUSB_DUAL_ROLE
+	bool "Dual Role mode"
+	depends on ((USB=y || USB=USB_MUSB_HDRC) && (USB_GADGET=y || USB_GADGET=USB_MUSB_HDRC))
+	help
+	  This is the default mode of working of MUSB controller where
+	  both host and gadget features are enabled.
+
+endchoice
+
+choice
+	prompt "Platform Glue Layer"
+>>>>>>> refs/remotes/origin/master
 
 config USB_MUSB_DAVINCI
 	tristate "DaVinci"
 	depends on ARCH_DAVINCI_DMx
+<<<<<<< HEAD
+=======
+	depends on BROKEN
+>>>>>>> refs/remotes/origin/master
 
 config USB_MUSB_DA8XX
 	tristate "DA8xx/OMAP-L1x"
 	depends on ARCH_DAVINCI_DA8XX
+<<<<<<< HEAD
 
 config USB_MUSB_TUSB6010
 	tristate "TUSB6010"
@@ -72,20 +124,39 @@ config USB_MUSB_TUSB6010
 	depends on ARCH_OMAP
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	depends on BROKEN
+
+config USB_MUSB_TUSB6010
+	tristate "TUSB6010"
+>>>>>>> refs/remotes/origin/master
 
 config USB_MUSB_OMAP2PLUS
 	tristate "OMAP2430 and onwards"
 	depends on ARCH_OMAP2PLUS
+<<<<<<< HEAD
+=======
+	select GENERIC_PHY
+>>>>>>> refs/remotes/origin/master
 
 config USB_MUSB_AM35X
 	tristate "AM35x"
 	depends on ARCH_OMAP
 
+<<<<<<< HEAD
+=======
+config USB_MUSB_DSPS
+	tristate "TI DSPS platforms"
+	select USB_MUSB_AM335X_CHILD
+	depends on OF_IRQ
+
+>>>>>>> refs/remotes/origin/master
 config USB_MUSB_BLACKFIN
 	tristate "Blackfin"
 	depends on (BF54x && !BF544) || (BF52x && ! BF522 && !BF523)
 
 config USB_MUSB_UX500
+<<<<<<< HEAD
 	tristate "U8500 and U5500"
 <<<<<<< HEAD
 	depends on (ARCH_U8500 && AB8500_USB) || (ARCH_U5500)
@@ -188,24 +259,53 @@ config USB_UX500_DMA
 	default USB_MUSB_UX500
 =======
 	prompt 'MUSB DMA mode'
+=======
+	tristate "Ux500 platforms"
+
+config USB_MUSB_JZ4740
+	tristate "JZ4740"
+	depends on MACH_JZ4740 || COMPILE_TEST
+	depends on USB_MUSB_GADGET
+	depends on USB_OTG_BLACKLIST_HUB
+
+endchoice
+
+config USB_MUSB_AM335X_CHILD
+	tristate
+
+choice
+	prompt 'MUSB DMA mode'
+	default MUSB_PIO_ONLY if ARCH_MULTIPLATFORM || USB_MUSB_JZ4740
+>>>>>>> refs/remotes/origin/master
 	default USB_UX500_DMA if USB_MUSB_UX500
 	default USB_INVENTRA_DMA if USB_MUSB_OMAP2PLUS || USB_MUSB_BLACKFIN
 	default USB_TI_CPPI_DMA if USB_MUSB_DAVINCI
 	default USB_TUSB_OMAP_DMA if USB_MUSB_TUSB6010
+<<<<<<< HEAD
 	default MUSB_PIO_ONLY if USB_MUSB_TUSB6010 || USB_MUSB_DA8XX || USB_MUSB_AM35X
+=======
+	default MUSB_PIO_ONLY if USB_MUSB_TUSB6010 || USB_MUSB_DA8XX || USB_MUSB_AM35X \
+				|| USB_MUSB_DSPS
+>>>>>>> refs/remotes/origin/master
 	help
 	  Unfortunately, only one option can be enabled here. Ideally one
 	  should be able to build all these drivers into one kernel to
 	  allow using DMA on multiplatform kernels.
 
 config USB_UX500_DMA
+<<<<<<< HEAD
 	bool 'ST Ericsson U8500 and U5500'
 	depends on USB_MUSB_UX500
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool 'ST Ericsson Ux500'
+	depends on USB_MUSB_UX500
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable DMA transfers on UX500 platforms.
 
 config USB_INVENTRA_DMA
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bool
 	depends on USB_MUSB_HDRC && !MUSB_PIO_ONLY
@@ -214,10 +314,15 @@ config USB_INVENTRA_DMA
 	bool 'Inventra'
 	depends on USB_MUSB_OMAP2PLUS || USB_MUSB_BLACKFIN
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	bool 'Inventra'
+	depends on USB_MUSB_OMAP2PLUS || USB_MUSB_BLACKFIN
+>>>>>>> refs/remotes/origin/master
 	help
 	  Enable DMA transfers using Mentor's engine.
 
 config USB_TI_CPPI_DMA
+<<<<<<< HEAD
 <<<<<<< HEAD
 	bool
 	depends on USB_MUSB_HDRC && !MUSB_PIO_ONLY
@@ -240,6 +345,18 @@ config USB_TUSB_OMAP_DMA
 	  Enable DMA transfers on TUSB 6010 when OMAP DMA is available.
 
 =======
+=======
+	bool 'TI CPPI (Davinci)'
+	depends on USB_MUSB_DAVINCI
+	help
+	  Enable DMA transfers when TI CPPI DMA is available.
+
+config USB_TI_CPPI41_DMA
+	bool 'TI CPPI 4.1 (AM335x)'
+	depends on ARCH_OMAP
+
+config USB_TUSB_OMAP_DMA
+>>>>>>> refs/remotes/origin/master
 	bool 'TUSB 6010'
 	depends on USB_MUSB_TUSB6010
 	depends on ARCH_OMAP
@@ -260,4 +377,7 @@ config MUSB_PIO_ONLY
 endchoice
 
 endif # USB_MUSB_HDRC
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master

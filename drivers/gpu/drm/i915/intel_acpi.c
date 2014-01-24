@@ -8,7 +8,12 @@
 #include <linux/vga_switcheroo.h>
 #include <acpi/acpi_drivers.h>
 
+<<<<<<< HEAD
 #include "drmP.h"
+=======
+#include <drm/drmP.h>
+#include "i915_drv.h"
+>>>>>>> refs/remotes/origin/master
 
 #define INTEL_DSM_REVISION_ID 1 /* For Calpella anyway... */
 
@@ -27,7 +32,11 @@ static const u8 intel_dsm_guid[] = {
 	0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c
 };
 
+<<<<<<< HEAD
 static int intel_dsm(acpi_handle handle, int func, int arg)
+=======
+static int intel_dsm(acpi_handle handle, int func)
+>>>>>>> refs/remotes/origin/master
 {
 	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
 	struct acpi_object_list input;
@@ -45,8 +54,14 @@ static int intel_dsm(acpi_handle handle, int func, int arg)
 	params[1].integer.value = INTEL_DSM_REVISION_ID;
 	params[2].type = ACPI_TYPE_INTEGER;
 	params[2].integer.value = func;
+<<<<<<< HEAD
 	params[3].type = ACPI_TYPE_INTEGER;
 	params[3].integer.value = arg;
+=======
+	params[3].type = ACPI_TYPE_PACKAGE;
+	params[3].package.count = 0;
+	params[3].package.elements = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	ret = acpi_evaluate_object(handle, "_DSM", &input, &output);
 	if (ret) {
@@ -65,10 +80,14 @@ static int intel_dsm(acpi_handle handle, int func, int arg)
 	case ACPI_TYPE_BUFFER:
 		if (obj->buffer.length == 4) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			result =(obj->buffer.pointer[0] |
 =======
 			result = (obj->buffer.pointer[0] |
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			result = (obj->buffer.pointer[0] |
+>>>>>>> refs/remotes/origin/master
 				(obj->buffer.pointer[1] <<  8) |
 				(obj->buffer.pointer[2] << 16) |
 				(obj->buffer.pointer[3] << 24));
@@ -154,8 +173,14 @@ static void intel_dsm_platform_mux_info(void)
 	params[1].integer.value = INTEL_DSM_REVISION_ID;
 	params[2].type = ACPI_TYPE_INTEGER;
 	params[2].integer.value = INTEL_DSM_FN_PLATFORM_MUX_INFO;
+<<<<<<< HEAD
 	params[3].type = ACPI_TYPE_INTEGER;
 	params[3].integer.value = 0;
+=======
+	params[3].type = ACPI_TYPE_PACKAGE;
+	params[3].package.count = 0;
+	params[3].package.elements = NULL;
+>>>>>>> refs/remotes/origin/master
 
 	ret = acpi_evaluate_object(intel_dsm_priv.dhandle, "_DSM", &input,
 				   &output);
@@ -186,8 +211,11 @@ static void intel_dsm_platform_mux_info(void)
 			DRM_DEBUG_DRIVER("  hpd mux info: %s\n",
 			       intel_dsm_mux_type(info->buffer.pointer[3]));
 		}
+<<<<<<< HEAD
 	} else {
 		DRM_ERROR("MUX INFO call failed\n");
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 out:
@@ -196,6 +224,7 @@ out:
 
 static bool intel_dsm_pci_probe(struct pci_dev *pdev)
 {
+<<<<<<< HEAD
 	acpi_handle dhandle, intel_handle;
 	acpi_status status;
 	int ret;
@@ -206,10 +235,21 @@ static bool intel_dsm_pci_probe(struct pci_dev *pdev)
 
 	status = acpi_get_handle(dhandle, "_DSM", &intel_handle);
 	if (ACPI_FAILURE(status)) {
+=======
+	acpi_handle dhandle;
+	int ret;
+
+	dhandle = ACPI_HANDLE(&pdev->dev);
+	if (!dhandle)
+		return false;
+
+	if (!acpi_has_method(dhandle, "_DSM")) {
+>>>>>>> refs/remotes/origin/master
 		DRM_DEBUG_KMS("no _DSM method for intel device\n");
 		return false;
 	}
 
+<<<<<<< HEAD
 	ret = intel_dsm(dhandle, INTEL_DSM_FN_SUPPORTED_FUNCTIONS, 0);
 	if (ret < 0) {
 <<<<<<< HEAD
@@ -217,6 +257,11 @@ static bool intel_dsm_pci_probe(struct pci_dev *pdev)
 =======
 		DRM_DEBUG_KMS("failed to get supported _DSM functions\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ret = intel_dsm(dhandle, INTEL_DSM_FN_SUPPORTED_FUNCTIONS);
+	if (ret < 0) {
+		DRM_DEBUG_KMS("failed to get supported _DSM functions\n");
+>>>>>>> refs/remotes/origin/master
 		return false;
 	}
 

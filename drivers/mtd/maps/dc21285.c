@@ -143,6 +143,7 @@ static struct map_info dc21285_map = {
 	.copy_from = dc21285_copy_from,
 };
 
+<<<<<<< HEAD
 
 /* Partition stuff */
 <<<<<<< HEAD
@@ -159,6 +160,13 @@ static int __init init_dc21285(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Partition stuff */
+static const char * const probes[] = { "RedBoot", "cmdlinepart", NULL };
+
+static int __init init_dc21285(void)
+{
+>>>>>>> refs/remotes/origin/master
 	/* Determine bankwidth */
 	switch (*CSR_SA110_CNTL & (3<<14)) {
 		case SA110_CNTL_ROMWIDTH_8:
@@ -207,11 +215,15 @@ static int __init init_dc21285(void)
 	dc21285_mtd->owner = THIS_MODULE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	nrparts = parse_mtd_partitions(dc21285_mtd, probes, &dc21285_parts, 0);
 	mtd_device_register(dc21285_mtd, dc21285_parts, nrparts);
 =======
 	mtd_device_parse_register(dc21285_mtd, probes, NULL, NULL, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_device_parse_register(dc21285_mtd, probes, NULL, NULL, 0);
+>>>>>>> refs/remotes/origin/master
 
 	if(machine_is_ebsa285()) {
 		/*
@@ -235,10 +247,13 @@ static void __exit cleanup_dc21285(void)
 {
 	mtd_device_unregister(dc21285_mtd);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (dc21285_parts)
 		kfree(dc21285_parts);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	map_destroy(dc21285_mtd);
 	iounmap(dc21285_map.virt);
 }

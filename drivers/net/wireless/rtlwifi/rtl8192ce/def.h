@@ -1,10 +1,14 @@
 /******************************************************************************
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright(c) 2009-2010  Realtek Corporation.
 =======
  * Copyright(c) 2009-2012  Realtek Corporation.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright(c) 2009-2012  Realtek Corporation.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -120,11 +124,19 @@
 	LE_BITS_TO_4BYTE(((__pcmdfbhdr) + 4), 20, 12)
 
 #define CHIP_VER_B			BIT(4)
+<<<<<<< HEAD
 #define CHIP_92C_BITMASK		BIT(0)
 <<<<<<< HEAD
 =======
 #define CHIP_UNKNOWN			BIT(7)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define CHIP_BONDING_IDENTIFIER(_value) (((_value) >> 22) & 0x3)
+#define CHIP_BONDING_92C_1T2R		0x1
+#define RF_TYPE_1T2R			BIT(1)
+#define CHIP_92C_BITMASK		BIT(0)
+#define CHIP_UNKNOWN			BIT(7)
+>>>>>>> refs/remotes/origin/master
 #define CHIP_92C_1T2R			0x03
 #define CHIP_92C			0x01
 #define CHIP_88C			0x00
@@ -151,17 +163,23 @@ enum version_8192c {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define IS_CHIP_VER_B(version)  ((version & CHIP_VER_B) ? true : false)
 #define IS_92C_SERIAL(version)  ((version & CHIP_92C_BITMASK) ? true : false)
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #define CUT_VERSION_MASK		(BIT(6)|BIT(7))
 #define CHIP_VENDOR_UMC			BIT(5)
 #define CHIP_VENDOR_UMC_B_CUT		BIT(6) /* Chip version for ECO */
 #define IS_VENDOR_UMC_A_CUT(version)	((IS_CHIP_VENDOR_UMC(version)) ? \
 	((GET_CVID_CUT_VERSION(version)) ? false : true) : false)
 #define IS_CHIP_VER_B(version)  ((version & CHIP_VER_B) ? true : false)
+<<<<<<< HEAD
 #define IS_VENDOR_UMC_A_CUT(version)	((IS_CHIP_VENDOR_UMC(version)) ? \
 	((GET_CVID_CUT_VERSION(version)) ? false : true) : false)
+=======
+>>>>>>> refs/remotes/origin/master
 #define IS_92C_SERIAL(version)  ((version & CHIP_92C_BITMASK) ? true : false)
 #define IS_CHIP_VENDOR_UMC(version)		\
 	((version & CHIP_VENDOR_UMC) ? true : false)
@@ -170,7 +188,10 @@ enum version_8192c {
 	((IS_CHIP_VENDOR_UMC(version)) ? \
 	((GET_CVID_CUT_VERSION(version) == CHIP_VENDOR_UMC_B_CUT) ?	\
 	true : false) : false)
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 enum rtl819x_loopback_e {
 	RTL819X_NO_LOOPBACK = 0,
@@ -248,6 +269,7 @@ enum rtl_desc_qsel {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 enum rtl_desc92c_rate {
 	DESC92C_RATE1M = 0x00,
 	DESC92C_RATE2M = 0x01,
@@ -285,6 +307,8 @@ enum rtl_desc92c_rate {
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct phy_sts_cck_8192s_t {
 	u8 adc_pwdb_X[4];
 	u8 sq_rpt;
@@ -297,6 +321,7 @@ struct h2c_cmd_8192c {
 	u8 *p_cmdbuffer;
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /* NOTE: reference to rtl8192c_rates struct */
 static inline int _rtl92c_rate_mapping(struct ieee80211_hw *hw, bool isHT,
@@ -404,4 +429,6 @@ static inline int _rtl92c_rate_mapping(struct ieee80211_hw *hw, bool isHT,
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #endif

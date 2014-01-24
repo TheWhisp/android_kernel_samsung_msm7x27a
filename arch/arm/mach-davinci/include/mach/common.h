@@ -14,10 +14,16 @@
 
 #include <linux/compiler.h>
 #include <linux/types.h>
+<<<<<<< HEAD
 
 struct sys_timer;
 
 extern struct sys_timer davinci_timer;
+=======
+#include <linux/reboot.h>
+
+extern void davinci_timer_init(void);
+>>>>>>> refs/remotes/origin/master
 
 extern void davinci_irq_init(void);
 extern void __iomem *davinci_intc_base;
@@ -73,6 +79,7 @@ struct davinci_soc_info {
 	unsigned			gpio_unbanked;
 	struct davinci_gpio_controller	*gpio_ctlrs;
 	int				gpio_ctlrs_num;
+<<<<<<< HEAD
 	struct platform_device		*serial_dev;
 	struct emac_platform_data	*emac_pdata;
 	dma_addr_t			sram_dma;
@@ -82,6 +89,11 @@ struct davinci_soc_info {
 	void				(*reset)(struct platform_device *);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct emac_platform_data	*emac_pdata;
+	dma_addr_t			sram_dma;
+	unsigned			sram_len;
+>>>>>>> refs/remotes/origin/master
 };
 
 extern struct davinci_soc_info davinci_soc_info;
@@ -89,12 +101,36 @@ extern struct davinci_soc_info davinci_soc_info;
 extern void davinci_common_init(struct davinci_soc_info *soc_info);
 extern void davinci_init_ide(void);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 void davinci_restart(char mode, const char *cmd);
 >>>>>>> refs/remotes/origin/cm-10.0
 
 /* standard place to map on-chip SRAMs; they *may* support DMA */
 #define SRAM_VIRT	0xfffe0000
+=======
+void davinci_restart(enum reboot_mode mode, const char *cmd);
+void davinci_init_late(void);
+
+#ifdef CONFIG_DAVINCI_RESET_CLOCKS
+int davinci_clk_disable_unused(void);
+#else
+static inline int davinci_clk_disable_unused(void) { return 0; }
+#endif
+
+#ifdef CONFIG_CPU_FREQ
+int davinci_cpufreq_init(void);
+#else
+static inline int davinci_cpufreq_init(void) { return 0; }
+#endif
+
+#ifdef CONFIG_SUSPEND
+int davinci_pm_init(void);
+#else
+static inline int davinci_pm_init(void) { return 0; }
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #define SRAM_SIZE	SZ_128K
 
 #endif /* __ARCH_ARM_MACH_DAVINCI_COMMON_H */

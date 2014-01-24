@@ -119,10 +119,15 @@
 #define PF_UNITS	4
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/types.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/types.h>
+
+>>>>>>> refs/remotes/origin/master
 /* Here are things one can override from the insmod command.
    Most are autoprobed by paride unless set here.  Verbose is off
    by default.
@@ -130,10 +135,14 @@
 */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int verbose = 0;
 =======
 static bool verbose = 0;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool verbose = 0;
+>>>>>>> refs/remotes/origin/master
 static int major = PF_MAJOR;
 static char *name = PF_NAME;
 static int cluster = 64;
@@ -218,7 +227,11 @@ static int pf_ioctl(struct block_device *bdev, fmode_t mode,
 		    unsigned int cmd, unsigned long arg);
 static int pf_getgeo(struct block_device *bdev, struct hd_geometry *geo);
 
+<<<<<<< HEAD
 static int pf_release(struct gendisk *disk, fmode_t mode);
+=======
+static void pf_release(struct gendisk *disk, fmode_t mode);
+>>>>>>> refs/remotes/origin/master
 
 static int pf_detect(void);
 static void do_pf_read(void);
@@ -367,14 +380,23 @@ static int pf_ioctl(struct block_device *bdev, fmode_t mode, unsigned int cmd, u
 	return 0;
 }
 
+<<<<<<< HEAD
 static int pf_release(struct gendisk *disk, fmode_t mode)
+=======
+static void pf_release(struct gendisk *disk, fmode_t mode)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pf_unit *pf = disk->private_data;
 
 	mutex_lock(&pf_mutex);
 	if (pf->access <= 0) {
 		mutex_unlock(&pf_mutex);
+<<<<<<< HEAD
 		return -EINVAL;
+=======
+		WARN_ON(1);
+		return;
+>>>>>>> refs/remotes/origin/master
 	}
 
 	pf->access--;
@@ -383,8 +405,11 @@ static int pf_release(struct gendisk *disk, fmode_t mode)
 		pf_lock(pf, 0);
 
 	mutex_unlock(&pf_mutex);
+<<<<<<< HEAD
 	return 0;
 
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static unsigned int pf_check_events(struct gendisk *disk, unsigned int clearing)

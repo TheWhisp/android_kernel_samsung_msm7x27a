@@ -27,6 +27,7 @@ STD_ENTRY(current_text_addr)
 	{ move r0, lr; jrp lr }
 	STD_ENDPROC(current_text_addr)
 
+<<<<<<< HEAD
 /*
  * Implement execve().  The i386 code has a note that forking from kernel
  * space results in no copy on write until the execve, so we should be
@@ -54,6 +55,8 @@ ENTRY(__rt_sigreturn)
 	ENTRY(__rt_sigreturn_end)
 	.popsection
 
+=======
+>>>>>>> refs/remotes/origin/master
 STD_ENTRY(dump_stack)
 	{ move r2, lr; lnk r1 }
 	{ move r4, r52; addli r1, r1, dump_stack - . }
@@ -68,6 +71,7 @@ STD_ENTRY(KBacktraceIterator_init_current)
 	jrp lr   /* keep backtracer happy */
 	STD_ENDPROC(KBacktraceIterator_init_current)
 
+<<<<<<< HEAD
 /*
  * Reset our stack to r1/r2 (sp and ksp0+cpu respectively), then
  * free the old stack (passed in r0) and re-invoke cpu_idle().
@@ -89,6 +93,12 @@ STD_ENTRY(smp_nap)
 =======
 	nop       /* avoid provoking the icache prefetch with a jump */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+/* Loop forever on a nap during SMP boot. */
+STD_ENTRY(smp_nap)
+	nap
+	nop       /* avoid provoking the icache prefetch with a jump */
+>>>>>>> refs/remotes/origin/master
 	j smp_nap /* we are not architecturally guaranteed not to exit nap */
 	jrp lr    /* clue in the backtracer */
 	STD_ENDPROC(smp_nap)
@@ -103,15 +113,25 @@ STD_ENTRY(smp_nap)
  */
 STD_ENTRY(_cpu_idle)
 	movei r1, 1
+<<<<<<< HEAD
 	mtspr INTERRUPT_CRITICAL_SECTION, r1
 	IRQ_ENABLE(r2, r3)             /* unmask, but still with ICS set */
+=======
+	IRQ_ENABLE_LOAD(r2, r3)
+	mtspr INTERRUPT_CRITICAL_SECTION, r1
+	IRQ_ENABLE_APPLY(r2, r3)       /* unmask, but still with ICS set */
+>>>>>>> refs/remotes/origin/master
 	mtspr INTERRUPT_CRITICAL_SECTION, zero
 	.global _cpu_idle_nap
 _cpu_idle_nap:
 	nap
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	nop       /* avoid provoking the icache prefetch with a jump */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	nop       /* avoid provoking the icache prefetch with a jump */
+>>>>>>> refs/remotes/origin/master
 	jrp lr
 	STD_ENDPROC(_cpu_idle)

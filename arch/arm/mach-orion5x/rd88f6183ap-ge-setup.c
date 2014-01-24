@@ -8,10 +8,14 @@
  * warranty of any kind, whether express or implied.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 #include <linux/gpio.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/gpio.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
@@ -20,16 +24,22 @@
 #include <linux/mtd/physmap.h>
 #include <linux/mv643xx_eth.h>
 #include <linux/spi/spi.h>
+<<<<<<< HEAD
 #include <linux/spi/orion_spi.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <linux/spi/flash.h>
 #include <linux/ethtool.h>
 #include <net/dsa.h>
 #include <asm/mach-types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/gpio.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <asm/leds.h>
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mach/arch.h>
 #include <asm/mach/pci.h>
 #include <mach/orion5x.h>
@@ -110,7 +120,10 @@ static void __init rd88f6183ap_ge_init(void)
 
 static struct hw_pci rd88f6183ap_ge_pci __initdata = {
 	.nr_controllers	= 2,
+<<<<<<< HEAD
 	.swizzle	= pci_std_swizzle,
+=======
+>>>>>>> refs/remotes/origin/master
 	.setup		= orion5x_pci_sys_setup,
 	.scan		= orion5x_pci_sys_scan_bus,
 	.map_irq	= orion5x_pci_map_irq,
@@ -130,18 +143,28 @@ subsys_initcall(rd88f6183ap_ge_pci_init);
 MACHINE_START(RD88F6183AP_GE, "Marvell Orion-1-90 AP GE Reference Design")
 	/* Maintainer: Lennert Buytenhek <buytenh@marvell.com> */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.boot_params	= 0x00000100,
 =======
 	.atag_offset	= 0x100,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.atag_offset	= 0x100,
+>>>>>>> refs/remotes/origin/master
 	.init_machine	= rd88f6183ap_ge_init,
 	.map_io		= orion5x_map_io,
 	.init_early	= orion5x_init_early,
 	.init_irq	= orion5x_init_irq,
+<<<<<<< HEAD
 	.timer		= &orion5x_timer,
 	.fixup		= tag_fixup_mem32,
 <<<<<<< HEAD
 =======
 	.restart	= orion5x_restart,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.init_time	= orion5x_timer_init,
+	.fixup		= tag_fixup_mem32,
+	.restart	= orion5x_restart,
+>>>>>>> refs/remotes/origin/master
 MACHINE_END

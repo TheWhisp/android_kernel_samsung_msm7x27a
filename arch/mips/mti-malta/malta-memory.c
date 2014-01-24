@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * Carsten Langgaard, carstenl@mips.com
  * Copyright (C) 1999,2000 MIPS Technologies, Inc.  All rights reserved.
  *
@@ -68,6 +69,49 @@ static struct prom_pmemblock * __init prom_getmdesc(void)
 		pr_debug("prom_memsize = %s\n", memsize_str);
 #endif
 		physical_memsize = simple_strtol(memsize_str, NULL, 0);
+=======
+ * This file is subject to the terms and conditions of the GNU General Public
+ * License.  See the file "COPYING" in the main directory of this archive
+ * for more details.
+ *
+ * PROM library functions for acquiring/using memory descriptors given to
+ * us from the YAMON.
+ *
+ * Copyright (C) 1999,2000,2012  MIPS Technologies, Inc.
+ * All rights reserved.
+ * Authors: Carsten Langgaard <carstenl@mips.com>
+ *          Steven J. Hill <sjhill@mips.com>
+ */
+#include <linux/init.h>
+#include <linux/bootmem.h>
+#include <linux/string.h>
+
+#include <asm/bootinfo.h>
+#include <asm/sections.h>
+#include <asm/fw/fw.h>
+
+static fw_memblock_t mdesc[FW_MAX_MEMBLOCKS];
+
+/* determined physical memory size, not overridden by command line args	 */
+unsigned long physical_memsize = 0L;
+
+fw_memblock_t * __init fw_getmdesc(void)
+{
+	char *memsize_str, *ptr;
+	unsigned int memsize;
+	static char cmdline[COMMAND_LINE_SIZE] __initdata;
+	long val;
+	int tmp;
+
+	/* otherwise look in the environment */
+	memsize_str = fw_getenv("memsize");
+	if (!memsize_str) {
+		pr_warn("memsize not set in YAMON, set to default (32Mb)\n");
+		physical_memsize = 0x02000000;
+	} else {
+		tmp = kstrtol(memsize_str, 0, &val);
+		physical_memsize = (unsigned long)val;
+>>>>>>> refs/remotes/origin/master
 	}
 
 #ifdef CONFIG_CPU_BIG_ENDIAN
@@ -90,11 +134,19 @@ static struct prom_pmemblock * __init prom_getmdesc(void)
 
 	memset(mdesc, 0, sizeof(mdesc));
 
+<<<<<<< HEAD
 	mdesc[0].type = yamon_dontuse;
 	mdesc[0].base = 0x00000000;
 	mdesc[0].size = 0x00001000;
 
 	mdesc[1].type = yamon_prom;
+=======
+	mdesc[0].type = fw_dontuse;
+	mdesc[0].base = 0x00000000;
+	mdesc[0].size = 0x00001000;
+
+	mdesc[1].type = fw_code;
+>>>>>>> refs/remotes/origin/master
 	mdesc[1].base = 0x00001000;
 	mdesc[1].size = 0x000ef000;
 
@@ -105,6 +157,7 @@ static struct prom_pmemblock * __init prom_getmdesc(void)
 	 * This mean that this area can't be used as DMA memory for PCI
 	 * devices.
 	 */
+<<<<<<< HEAD
 	mdesc[2].type = yamon_dontuse;
 	mdesc[2].base = 0x000f0000;
 	mdesc[2].size = 0x00010000;
@@ -114,24 +167,46 @@ static struct prom_pmemblock * __init prom_getmdesc(void)
 	mdesc[3].size = CPHYSADDR(PFN_ALIGN((unsigned long)&_end)) - mdesc[3].base;
 
 	mdesc[4].type = yamon_free;
+=======
+	mdesc[2].type = fw_dontuse;
+	mdesc[2].base = 0x000f0000;
+	mdesc[2].size = 0x00010000;
+
+	mdesc[3].type = fw_dontuse;
+	mdesc[3].base = 0x00100000;
+	mdesc[3].size = CPHYSADDR(PFN_ALIGN((unsigned long)&_end)) -
+		mdesc[3].base;
+
+	mdesc[4].type = fw_free;
+>>>>>>> refs/remotes/origin/master
 	mdesc[4].base = CPHYSADDR(PFN_ALIGN(&_end));
 	mdesc[4].size = memsize - mdesc[4].base;
 
 	return &mdesc[0];
 }
 
+<<<<<<< HEAD
 static int __init prom_memtype_classify(unsigned int type)
 {
 	switch (type) {
 	case yamon_free:
 		return BOOT_MEM_RAM;
 	case yamon_prom:
+=======
+static int __init fw_memtype_classify(unsigned int type)
+{
+	switch (type) {
+	case fw_free:
+		return BOOT_MEM_RAM;
+	case fw_code:
+>>>>>>> refs/remotes/origin/master
 		return BOOT_MEM_ROM_DATA;
 	default:
 		return BOOT_MEM_RESERVED;
 	}
 }
 
+<<<<<<< HEAD
 void __init prom_meminit(void)
 {
 	struct prom_pmemblock *p;
@@ -148,17 +223,32 @@ void __init prom_meminit(void)
 	}
 #endif
 	p = prom_getmdesc();
+=======
+void __init fw_meminit(void)
+{
+	fw_memblock_t *p;
+
+	p = fw_getmdesc();
+>>>>>>> refs/remotes/origin/master
 
 	while (p->size) {
 		long type;
 		unsigned long base, size;
 
+<<<<<<< HEAD
 		type = prom_memtype_classify(p->type);
+=======
+		type = fw_memtype_classify(p->type);
+>>>>>>> refs/remotes/origin/master
 		base = p->base;
 		size = p->size;
 
 		add_memory_region(base, size, type);
+<<<<<<< HEAD
                 p++;
+=======
+		p++;
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -172,7 +262,11 @@ void __init prom_free_prom_memory(void)
 			continue;
 
 		addr = boot_mem_map.map[i].addr;
+<<<<<<< HEAD
 		free_init_pages("prom memory",
+=======
+		free_init_pages("YAMON memory",
+>>>>>>> refs/remotes/origin/master
 				addr, addr + boot_mem_map.map[i].size);
 	}
 }

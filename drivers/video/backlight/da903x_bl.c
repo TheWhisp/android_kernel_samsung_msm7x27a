@@ -2,10 +2,17 @@
  * Backlight driver for Dialog Semiconductor DA9030/DA9034
  *
  * Copyright (C) 2008 Compulab, Ltd.
+<<<<<<< HEAD
  * 	Mike Rapoport <mike@compulab.co.il>
  *
  * Copyright (C) 2006-2008 Marvell International Ltd.
  * 	Eric Miao <eric.miao@marvell.com>
+=======
+ *	Mike Rapoport <mike@compulab.co.il>
+ *
+ * Copyright (C) 2006-2008 Marvell International Ltd.
+ *	Eric Miao <eric.miao@marvell.com>
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -20,9 +27,13 @@
 #include <linux/mfd/da903x.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #define DA9030_WLED_CONTROL	0x25
 #define DA9030_WLED_CP_EN	(1 << 6)
@@ -91,33 +102,55 @@ static int da903x_backlight_update_status(struct backlight_device *bl)
 	if (bl->props.fb_blank != FB_BLANK_UNBLANK)
 		brightness = 0;
 
+<<<<<<< HEAD
+=======
+	if (bl->props.state & BL_CORE_SUSPENDED)
+		brightness = 0;
+
+>>>>>>> refs/remotes/origin/master
 	return da903x_backlight_set(bl, brightness);
 }
 
 static int da903x_backlight_get_brightness(struct backlight_device *bl)
 {
 	struct da903x_backlight_data *data = bl_get_data(bl);
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return data->current_brightness;
 }
 
 static const struct backlight_ops da903x_backlight_ops = {
+<<<<<<< HEAD
+=======
+	.options	= BL_CORE_SUSPENDRESUME,
+>>>>>>> refs/remotes/origin/master
 	.update_status	= da903x_backlight_update_status,
 	.get_brightness	= da903x_backlight_get_brightness,
 };
 
 static int da903x_backlight_probe(struct platform_device *pdev)
 {
+<<<<<<< HEAD
 	struct da9034_backlight_pdata *pdata = pdev->dev.platform_data;
+=======
+	struct da9034_backlight_pdata *pdata = dev_get_platdata(&pdev->dev);
+>>>>>>> refs/remotes/origin/master
 	struct da903x_backlight_data *data;
 	struct backlight_device *bl;
 	struct backlight_properties props;
 	int max_brightness;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	data = kzalloc(sizeof(*data), GFP_KERNEL);
 =======
 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+>>>>>>> refs/remotes/origin/master
 	if (data == NULL)
 		return -ENOMEM;
 
@@ -132,9 +165,12 @@ static int da903x_backlight_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "invalid backlight device ID(%d)\n",
 				pdev->id);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		kfree(data);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		return -EINVAL;
 	}
 
@@ -147,6 +183,7 @@ static int da903x_backlight_probe(struct platform_device *pdev)
 		da903x_write(data->da903x_dev, DA9034_WLED_CONTROL2,
 				DA9034_WLED_ISET(pdata->output_current));
 
+<<<<<<< HEAD
 	props.type = BACKLIGHT_RAW;
 	props.max_brightness = max_brightness;
 	bl = backlight_device_register(pdev->name, data->da903x_dev, data,
@@ -157,6 +194,16 @@ static int da903x_backlight_probe(struct platform_device *pdev)
 		kfree(data);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memset(&props, 0, sizeof(props));
+	props.type = BACKLIGHT_RAW;
+	props.max_brightness = max_brightness;
+	bl = devm_backlight_device_register(&pdev->dev, pdev->name,
+					data->da903x_dev, data,
+					&da903x_backlight_ops, &props);
+	if (IS_ERR(bl)) {
+		dev_err(&pdev->dev, "failed to register backlight\n");
+>>>>>>> refs/remotes/origin/master
 		return PTR_ERR(bl);
 	}
 
@@ -167,6 +214,7 @@ static int da903x_backlight_probe(struct platform_device *pdev)
 	return 0;
 }
 
+<<<<<<< HEAD
 static int da903x_backlight_remove(struct platform_device *pdev)
 {
 	struct backlight_device *bl = platform_get_drvdata(pdev);
@@ -205,10 +253,13 @@ static const struct dev_pm_ops da903x_backlight_pm_ops = {
 };
 #endif
 
+=======
+>>>>>>> refs/remotes/origin/master
 static struct platform_driver da903x_backlight_driver = {
 	.driver		= {
 		.name	= "da903x-backlight",
 		.owner	= THIS_MODULE,
+<<<<<<< HEAD
 #ifdef CONFIG_PM
 		.pm	= &da903x_backlight_pm_ops,
 #endif
@@ -236,5 +287,16 @@ module_platform_driver(da903x_backlight_driver);
 MODULE_DESCRIPTION("Backlight Driver for Dialog Semiconductor DA9030/DA9034");
 MODULE_AUTHOR("Eric Miao <eric.miao@marvell.com>"
 	      "Mike Rapoport <mike@compulab.co.il>");
+=======
+	},
+	.probe		= da903x_backlight_probe,
+};
+
+module_platform_driver(da903x_backlight_driver);
+
+MODULE_DESCRIPTION("Backlight Driver for Dialog Semiconductor DA9030/DA9034");
+MODULE_AUTHOR("Eric Miao <eric.miao@marvell.com>");
+MODULE_AUTHOR("Mike Rapoport <mike@compulab.co.il>");
+>>>>>>> refs/remotes/origin/master
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:da903x-backlight");

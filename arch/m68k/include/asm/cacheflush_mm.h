@@ -3,25 +3,79 @@
 
 #include <linux/mm.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #ifdef CONFIG_COLDFIRE
 #include <asm/mcfsim.h>
 #endif
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#ifdef CONFIG_COLDFIRE
+#include <asm/mcfsim.h>
+#endif
+>>>>>>> refs/remotes/origin/master
 
 /* cache code */
 #define FLUSH_I_AND_D	(0x00000808)
 #define FLUSH_I		(0x00000008)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 #ifndef ICACHE_MAX_ADDR
 #define ICACHE_MAX_ADDR	0
 #define ICACHE_SET_MASK	0
 #define DCACHE_MAX_ADDR	0
 #define DCACHE_SETMASK	0
 #endif
+<<<<<<< HEAD
 
+=======
+#ifndef CACHE_MODE
+#define	CACHE_MODE	0
+#define	CACR_ICINVA	0
+#define	CACR_DCINVA	0
+#define	CACR_BCINVA	0
+#endif
+
+/*
+ * ColdFire architecture has no way to clear individual cache lines, so we
+ * are stuck invalidating all the cache entries when we want a clear operation.
+ */
+static inline void clear_cf_icache(unsigned long start, unsigned long end)
+{
+	__asm__ __volatile__ (
+		"movec	%0,%%cacr\n\t"
+		"nop"
+		:
+		: "r" (CACHE_MODE | CACR_ICINVA | CACR_BCINVA));
+}
+
+static inline void clear_cf_dcache(unsigned long start, unsigned long end)
+{
+	__asm__ __volatile__ (
+		"movec	%0,%%cacr\n\t"
+		"nop"
+		:
+		: "r" (CACHE_MODE | CACR_DCINVA));
+}
+
+static inline void clear_cf_bcache(unsigned long start, unsigned long end)
+{
+	__asm__ __volatile__ (
+		"movec	%0,%%cacr\n\t"
+		"nop"
+		:
+		: "r" (CACHE_MODE | CACR_ICINVA | CACR_BCINVA | CACR_DCINVA));
+}
+
+/*
+ * Use the ColdFire cpushl instruction to push (and invalidate) cache lines.
+ * The start and end addresses are cache line numbers not memory addresses.
+ */
+>>>>>>> refs/remotes/origin/master
 static inline void flush_cf_icache(unsigned long start, unsigned long end)
 {
 	unsigned long set;
@@ -76,7 +130,10 @@ static inline void flush_cf_bcache(unsigned long start, unsigned long end)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Cache handling functions
  */
@@ -84,21 +141,31 @@ static inline void flush_cf_bcache(unsigned long start, unsigned long end)
 static inline void flush_icache(void)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (CPU_IS_040_OR_060)
 =======
 	if (CPU_IS_COLDFIRE) {
 		flush_cf_icache(0, ICACHE_MAX_ADDR);
 	} else if (CPU_IS_040_OR_060) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (CPU_IS_COLDFIRE) {
+		flush_cf_icache(0, ICACHE_MAX_ADDR);
+	} else if (CPU_IS_040_OR_060) {
+>>>>>>> refs/remotes/origin/master
 		asm volatile (	"nop\n"
 			"	.chip	68040\n"
 			"	cpusha	%bc\n"
 			"	.chip	68k");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else {
 =======
 	} else {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {
+>>>>>>> refs/remotes/origin/master
 		unsigned long tmp;
 		asm volatile (	"movec	%%cacr,%0\n"
 			"	or.w	%1,%0\n"
@@ -132,21 +199,31 @@ extern void cache_push_v(unsigned long vaddr, int len);
 #define __flush_cache_all()					\
 ({								\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (CPU_IS_040_OR_060)					\
 =======
 	if (CPU_IS_COLDFIRE) {					\
 		flush_cf_dcache(0, DCACHE_MAX_ADDR);		\
 	} else if (CPU_IS_040_OR_060) {				\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (CPU_IS_COLDFIRE) {					\
+		flush_cf_dcache(0, DCACHE_MAX_ADDR);		\
+	} else if (CPU_IS_040_OR_060) {				\
+>>>>>>> refs/remotes/origin/master
 		__asm__ __volatile__("nop\n\t"			\
 				     ".chip 68040\n\t"		\
 				     "cpusha %dc\n\t"		\
 				     ".chip 68k");		\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	else {							\
 =======
 	} else {						\
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	} else {						\
+>>>>>>> refs/remotes/origin/master
 		unsigned long _tmp;				\
 		__asm__ __volatile__("movec %%cacr,%0\n\t"	\
 				     "orw %1,%0\n\t"		\
@@ -203,8 +280,11 @@ static inline void flush_cache_page(struct vm_area_struct *vma, unsigned long vm
 static inline void __flush_page_to_ram(void *vaddr)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (CPU_IS_040_OR_060) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (CPU_IS_COLDFIRE) {
 		unsigned long addr, start, end;
 		addr = ((unsigned long) vaddr) & ~(PAGE_SIZE - 1);
@@ -216,7 +296,10 @@ static inline void __flush_page_to_ram(void *vaddr)
 		}
 		flush_cf_bcache(start, end);
 	} else if (CPU_IS_040_OR_060) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		__asm__ __volatile__("nop\n\t"
 				     ".chip 68040\n\t"
 				     "cpushp %%bc,(%0)\n\t"

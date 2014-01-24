@@ -68,8 +68,12 @@ void __init reserve_ebda_region(void)
 
 	/* reserve all memory between lowmem and the 1MB mark */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	memblock_x86_reserve_range(lowmem, 0x100000, "* BIOS reserved");
 =======
 	memblock_reserve(lowmem, 0x100000 - lowmem);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	memblock_reserve(lowmem, 0x100000 - lowmem);
+>>>>>>> refs/remotes/origin/master
 }

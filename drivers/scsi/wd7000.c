@@ -180,9 +180,12 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/dma.h>
 
 #include <scsi/scsi.h>
@@ -1300,9 +1303,15 @@ static void wd7000_revision(Adapter * host)
 
 
 #undef SPRINTF
+<<<<<<< HEAD
 #define SPRINTF(args...) { if (pos < (buffer + length)) pos += sprintf (pos, ## args); }
 
 static int wd7000_set_info(char *buffer, int length, struct Scsi_Host *host)
+=======
+#define SPRINTF(args...) { seq_printf(m, ## args); }
+
+static int wd7000_set_info(struct Scsi_Host *host, char *buffer, int length)
+>>>>>>> refs/remotes/origin/master
 {
 	dprintk("Buffer = <%.*s>, length = %d\n", length, buffer, length);
 
@@ -1314,22 +1323,32 @@ static int wd7000_set_info(char *buffer, int length, struct Scsi_Host *host)
 }
 
 
+<<<<<<< HEAD
 static int wd7000_proc_info(struct Scsi_Host *host, char *buffer, char **start, off_t offset, int length,  int inout)
 {
 	Adapter *adapter = (Adapter *)host->hostdata;
 	unsigned long flags;
 	char *pos = buffer;
+=======
+static int wd7000_show_info(struct seq_file *m, struct Scsi_Host *host)
+{
+	Adapter *adapter = (Adapter *)host->hostdata;
+	unsigned long flags;
+>>>>>>> refs/remotes/origin/master
 #ifdef WD7000_DEBUG
 	Mailbox *ogmbs, *icmbs;
 	short count;
 #endif
 
+<<<<<<< HEAD
 	/*
 	 * Has data been written to the file ?
 	 */
 	if (inout)
 		return (wd7000_set_info(buffer, length, host));
 
+=======
+>>>>>>> refs/remotes/origin/master
 	spin_lock_irqsave(host->host_lock, flags);
 	SPRINTF("Host scsi%d: Western Digital WD-7000 (rev %d.%d)\n", host->host_no, adapter->rev1, adapter->rev2);
 	SPRINTF("  IO base:      0x%x\n", adapter->iobase);
@@ -1372,6 +1391,7 @@ static int wd7000_proc_info(struct Scsi_Host *host, char *buffer, char **start, 
 
 	spin_unlock_irqrestore(host->host_lock, flags);
 
+<<<<<<< HEAD
 	/*
 	 * Calculate start of next buffer, and return value.
 	 */
@@ -1383,6 +1403,9 @@ static int wd7000_proc_info(struct Scsi_Host *host, char *buffer, char **start, 
 		return (pos - buffer - offset);
 	else
 		return (length);
+=======
+	return 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 
@@ -1417,7 +1440,12 @@ static __init int wd7000_detect(struct scsi_host_template *tpnt)
 	for (i = 0; i < NUM_CONFIGS; biosptr[i++] = -1);
 
 	tpnt->proc_name = "wd7000";
+<<<<<<< HEAD
 	tpnt->proc_info = &wd7000_proc_info;
+=======
+	tpnt->show_info = &wd7000_show_info;
+	tpnt->write_info = wd7000_set_info;
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Set up SCB free list, which is shared by all adapters
@@ -1662,7 +1690,12 @@ MODULE_LICENSE("GPL");
 
 static struct scsi_host_template driver_template = {
 	.proc_name		= "wd7000",
+<<<<<<< HEAD
 	.proc_info		= wd7000_proc_info,
+=======
+	.show_info		= wd7000_show_info,
+	.write_info		= wd7000_set_info,
+>>>>>>> refs/remotes/origin/master
 	.name			= "Western Digital WD-7000",
 	.detect			= wd7000_detect,
 	.release		= wd7000_release,

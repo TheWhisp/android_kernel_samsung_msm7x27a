@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2007-2011 Nicira Networks.
+=======
+ * Copyright (c) 2007-2012 Nicira, Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -63,6 +67,7 @@ static struct rtnl_link_stats64 *internal_dev_get_stats(struct net_device *netde
 	return stats;
 }
 
+<<<<<<< HEAD
 static int internal_dev_mac_addr(struct net_device *dev, void *p)
 {
 	struct sockaddr *addr = p;
@@ -74,11 +79,17 @@ static int internal_dev_mac_addr(struct net_device *dev, void *p)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 /* Called with rcu_read_lock_bh. */
 static int internal_dev_xmit(struct sk_buff *skb, struct net_device *netdev)
 {
 	rcu_read_lock();
+<<<<<<< HEAD
 	ovs_vport_receive(internal_dev_priv(netdev)->vport, skb);
+=======
+	ovs_vport_receive(internal_dev_priv(netdev)->vport, skb, NULL);
+>>>>>>> refs/remotes/origin/master
 	rcu_read_unlock();
 	return 0;
 }
@@ -98,7 +109,11 @@ static int internal_dev_stop(struct net_device *netdev)
 static void internal_dev_getinfo(struct net_device *netdev,
 				 struct ethtool_drvinfo *info)
 {
+<<<<<<< HEAD
 	strcpy(info->driver, "openvswitch");
+=======
+	strlcpy(info->driver, "openvswitch", sizeof(info->driver));
+>>>>>>> refs/remotes/origin/master
 }
 
 static const struct ethtool_ops internal_dev_ethtool_ops = {
@@ -127,7 +142,11 @@ static const struct net_device_ops internal_dev_netdev_ops = {
 	.ndo_open = internal_dev_open,
 	.ndo_stop = internal_dev_stop,
 	.ndo_start_xmit = internal_dev_xmit,
+<<<<<<< HEAD
 	.ndo_set_mac_address = internal_dev_mac_addr,
+=======
+	.ndo_set_mac_address = eth_mac_addr,
+>>>>>>> refs/remotes/origin/master
 	.ndo_change_mtu = internal_dev_change_mtu,
 	.ndo_get_stats64 = internal_dev_get_stats,
 };
@@ -139,15 +158,26 @@ static void do_setup(struct net_device *netdev)
 	netdev->netdev_ops = &internal_dev_netdev_ops;
 
 	netdev->priv_flags &= ~IFF_TX_SKB_SHARING;
+<<<<<<< HEAD
+=======
+	netdev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+>>>>>>> refs/remotes/origin/master
 	netdev->destructor = internal_dev_destructor;
 	SET_ETHTOOL_OPS(netdev, &internal_dev_ethtool_ops);
 	netdev->tx_queue_len = 0;
 
 	netdev->features = NETIF_F_LLTX | NETIF_F_SG | NETIF_F_FRAGLIST |
+<<<<<<< HEAD
 				NETIF_F_HIGHDMA | NETIF_F_HW_CSUM | NETIF_F_TSO;
 
 	netdev->vlan_features = netdev->features;
 	netdev->features |= NETIF_F_HW_VLAN_TX;
+=======
+			   NETIF_F_HIGHDMA | NETIF_F_HW_CSUM | NETIF_F_GSO_SOFTWARE;
+
+	netdev->vlan_features = netdev->features;
+	netdev->features |= NETIF_F_HW_VLAN_CTAG_TX;
+>>>>>>> refs/remotes/origin/master
 	netdev->hw_features = netdev->features & ~NETIF_F_LLTX;
 	eth_hw_addr_random(netdev);
 }
@@ -175,19 +205,39 @@ static struct vport *internal_dev_create(const struct vport_parms *parms)
 		goto error_free_vport;
 	}
 
+<<<<<<< HEAD
 	internal_dev = internal_dev_priv(netdev_vport->dev);
 	internal_dev->vport = vport;
 
+=======
+	dev_net_set(netdev_vport->dev, ovs_dp_get_net(vport->dp));
+	internal_dev = internal_dev_priv(netdev_vport->dev);
+	internal_dev->vport = vport;
+
+	/* Restrict bridge port to current netns. */
+	if (vport->port_no == OVSP_LOCAL)
+		netdev_vport->dev->features |= NETIF_F_NETNS_LOCAL;
+
+	rtnl_lock();
+>>>>>>> refs/remotes/origin/master
 	err = register_netdevice(netdev_vport->dev);
 	if (err)
 		goto error_free_netdev;
 
 	dev_set_promiscuity(netdev_vport->dev, 1);
+<<<<<<< HEAD
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 	netif_start_queue(netdev_vport->dev);
 
 	return vport;
 
 error_free_netdev:
+<<<<<<< HEAD
+=======
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 	free_netdev(netdev_vport->dev);
 error_free_vport:
 	ovs_vport_free(vport);
@@ -200,10 +250,19 @@ static void internal_dev_destroy(struct vport *vport)
 	struct netdev_vport *netdev_vport = netdev_vport_priv(vport);
 
 	netif_stop_queue(netdev_vport->dev);
+<<<<<<< HEAD
+=======
+	rtnl_lock();
+>>>>>>> refs/remotes/origin/master
 	dev_set_promiscuity(netdev_vport->dev, -1);
 
 	/* unregister_netdevice() waits for an RCU grace period. */
 	unregister_netdevice(netdev_vport->dev);
+<<<<<<< HEAD
+=======
+
+	rtnl_unlock();
+>>>>>>> refs/remotes/origin/master
 }
 
 static int internal_dev_recv(struct vport *vport, struct sk_buff *skb)
@@ -220,6 +279,10 @@ static int internal_dev_recv(struct vport *vport, struct sk_buff *skb)
 	skb->dev = netdev;
 	skb->pkt_type = PACKET_HOST;
 	skb->protocol = eth_type_trans(skb, netdev);
+<<<<<<< HEAD
+=======
+	skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+>>>>>>> refs/remotes/origin/master
 
 	netif_rx(skb);
 
@@ -231,7 +294,10 @@ const struct vport_ops ovs_internal_vport_ops = {
 	.create		= internal_dev_create,
 	.destroy	= internal_dev_destroy,
 	.get_name	= ovs_netdev_get_name,
+<<<<<<< HEAD
 	.get_ifindex	= ovs_netdev_get_ifindex,
+=======
+>>>>>>> refs/remotes/origin/master
 	.send		= internal_dev_recv,
 };
 

@@ -87,14 +87,20 @@ int __logfs_buf_write(struct logfs_area *area, u64 ofs, void *buf, size_t len,
 		SetPageUptodate(page);
 		memcpy(page_address(page) + offset, buf, copylen);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SetPagePrivate(page);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 		if (!PagePrivate(page)) {
 			SetPagePrivate(page);
 			page_cache_get(page);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		page_cache_release(page);
 
 		buf += copylen;
@@ -119,13 +125,19 @@ static void pad_partial_page(struct logfs_area *area)
 		BUG_ON(!page); /* FIXME: reserve a pool */
 		memset(page_address(page) + offset, 0xff, len);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SetPagePrivate(page);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!PagePrivate(page)) {
 			SetPagePrivate(page);
 			page_cache_get(page);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		page_cache_release(page);
 	}
 }
@@ -146,13 +158,19 @@ static void pad_full_pages(struct logfs_area *area)
 		SetPageUptodate(page);
 		memset(page_address(page), 0xff, PAGE_CACHE_SIZE);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		SetPagePrivate(page);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (!PagePrivate(page)) {
 			SetPagePrivate(page);
 			page_cache_get(page);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		page_cache_release(page);
 		index++;
 		no_indizes--;
@@ -508,16 +526,22 @@ static void move_btree_to_page(struct inode *inode, struct page *page,
 	}
 	block->page = page;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	SetPagePrivate(page);
 	page->private = (unsigned long)block;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!PagePrivate(page)) {
 		SetPagePrivate(page);
 		page_cache_get(page);
 		set_page_private(page, (unsigned long) block);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	block->ops = &indirect_block_ops;
 	initialize_block_counters(page, block, data, 0);
 }
@@ -561,6 +585,7 @@ void move_page_to_btree(struct page *page)
 		memset(item, 0, sizeof(*item));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		child = kmap_atomic(page, KM_USER0);
 		item->val = child[pos];
 		kunmap_atomic(child, KM_USER0);
@@ -569,21 +594,32 @@ void move_page_to_btree(struct page *page)
 		item->val = child[pos];
 		kunmap_atomic(child);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		child = kmap_atomic(page);
+		item->val = child[pos];
+		kunmap_atomic(child);
+>>>>>>> refs/remotes/origin/master
 		item->child_no = pos;
 		list_add(&item->list, &block->item_list);
 	}
 	block->page = NULL;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ClearPagePrivate(page);
 	page->private = 0;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (PagePrivate(page)) {
 		ClearPagePrivate(page);
 		page_cache_release(page);
 		set_page_private(page, 0);
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	block->ops = &btree_block_ops;
 	err = alias_tree_insert(block->sb, block->ino, block->bix, block->level,
 			block);
@@ -749,13 +785,19 @@ void freeseg(struct super_block *sb, u32 segno)
 		if (!page)
 			continue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ClearPagePrivate(page);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		if (PagePrivate(page)) {
 			ClearPagePrivate(page);
 			page_cache_release(page);
 		}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		page_cache_release(page);
 	}
 }
@@ -895,7 +937,10 @@ static void free_area(struct logfs_area *area)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void free_areas(struct super_block *sb)
 {
 	struct logfs_super *super = logfs_super(sb);
@@ -906,7 +951,10 @@ void free_areas(struct super_block *sb)
 	free_area(super->s_journal_area);
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static struct logfs_area *alloc_area(struct super_block *sb)
 {
 	struct logfs_area *area;
@@ -919,9 +967,16 @@ static struct logfs_area *alloc_area(struct super_block *sb)
 	return area;
 }
 
+<<<<<<< HEAD
 static void map_invalidatepage(struct page *page, unsigned long l)
 {
 	BUG();
+=======
+static void map_invalidatepage(struct page *page, unsigned int o,
+			       unsigned int l)
+{
+	return;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int map_releasepage(struct page *page, gfp_t g)
@@ -990,6 +1045,7 @@ void logfs_cleanup_areas(struct super_block *sb)
 {
 	struct logfs_super *super = logfs_super(sb);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int i;
 
 	btree_grim_visitor128(&super->s_object_alias_tree, 0, kill_alias);
@@ -1000,4 +1056,8 @@ void logfs_cleanup_areas(struct super_block *sb)
 
 	btree_grim_visitor128(&super->s_object_alias_tree, 0, kill_alias);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	btree_grim_visitor128(&super->s_object_alias_tree, 0, kill_alias);
+>>>>>>> refs/remotes/origin/master
 }

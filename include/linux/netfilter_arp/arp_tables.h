@@ -5,15 +5,22 @@
  *	network byte order.
  * 	flags are stored in host byte order (of course).
  */
+<<<<<<< HEAD
 
 #ifndef _ARPTABLES_H
 #define _ARPTABLES_H
 
 #ifdef __KERNEL__
+=======
+#ifndef _ARPTABLES_H
+#define _ARPTABLES_H
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/if.h>
 #include <linux/in.h>
 #include <linux/if_arp.h>
 #include <linux/skbuff.h>
+<<<<<<< HEAD
 #endif
 #include <linux/types.h>
 #include <linux/compiler.h>
@@ -226,6 +233,9 @@ static __inline__ struct xt_entry_target *arpt_get_target(struct arpt_entry *e)
  *	Main firewall chains definitions and global var's definitions.
  */
 #ifdef __KERNEL__
+=======
+#include <uapi/linux/netfilter_arp/arp_tables.h>
+>>>>>>> refs/remotes/origin/master
 
 /* Standard entry. */
 struct arpt_standard {
@@ -277,12 +287,17 @@ extern unsigned int arpt_do_table(struct sk_buff *skb,
 struct compat_arpt_entry {
 	struct arpt_arp arp;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	u_int16_t target_offset;
 	u_int16_t next_offset;
 =======
 	__u16 target_offset;
 	__u16 next_offset;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	__u16 target_offset;
+	__u16 next_offset;
+>>>>>>> refs/remotes/origin/master
 	compat_uint_t comefrom;
 	struct compat_xt_counters counters;
 	unsigned char elems[0];
@@ -295,5 +310,8 @@ compat_arpt_get_target(struct compat_arpt_entry *e)
 }
 
 #endif /* CONFIG_COMPAT */
+<<<<<<< HEAD
 #endif /*__KERNEL__*/
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ARPTABLES_H */

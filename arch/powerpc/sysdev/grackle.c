@@ -58,10 +58,14 @@ void __init setup_grackle(struct pci_controller *hose)
 	setup_indirect_pci(hose, 0xfec00000, 0xfee00000, 0);
 	if (of_machine_is_compatible("PowerMac1,1"))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		ppc_pci_add_flags(PPC_PCI_REASSIGN_ALL_BUS);
 =======
 		pci_add_flags(PCI_REASSIGN_ALL_BUS);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pci_add_flags(PCI_REASSIGN_ALL_BUS);
+>>>>>>> refs/remotes/origin/master
 	if (of_machine_is_compatible("AAPL,PowerBook1998"))
 		grackle_set_loop_snoop(hose, 1);
 #if 0	/* Disabled for now, HW problems ??? */

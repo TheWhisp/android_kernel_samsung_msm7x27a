@@ -10,9 +10,20 @@
 
 #include <linux/types.h>
 #include <linux/scatterlist.h>
+<<<<<<< HEAD
 
 struct scsi_cmnd;
 
+=======
+#include <linux/kernel.h>
+
+struct scsi_cmnd;
+
+enum scsi_timeouts {
+	SCSI_DEFAULT_EH_TIMEOUT		= 10 * HZ,
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * The maximum number of SG segments that we will put inside a
  * scatterlist (unless chaining is used). Should ideally fit inside a
@@ -139,14 +150,22 @@ struct scsi_cmnd;
 #define ACCESS_CONTROL_IN     0x86
 #define ACCESS_CONTROL_OUT    0x87
 #define READ_16               0x88
+<<<<<<< HEAD
+=======
+#define COMPARE_AND_WRITE     0x89
+>>>>>>> refs/remotes/origin/master
 #define WRITE_16              0x8a
 #define READ_ATTRIBUTE        0x8c
 #define WRITE_ATTRIBUTE	      0x8d
 #define VERIFY_16	      0x8f
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define SYNCHRONIZE_CACHE_16  0x91
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define SYNCHRONIZE_CACHE_16  0x91
+>>>>>>> refs/remotes/origin/master
 #define WRITE_SAME_16	      0x93
 #define SERVICE_ACTION_IN     0x9e
 /* values for service action in */
@@ -164,6 +183,11 @@ struct scsi_cmnd;
 #define MI_REPORT_PRIORITY   0x0e
 #define MI_REPORT_TIMESTAMP  0x0f
 #define MI_MANAGEMENT_PROTOCOL_IN 0x10
+<<<<<<< HEAD
+=======
+/* value for MI_REPORT_TARGET_PGS ext header */
+#define MI_EXT_HDR_PARAM_FMT  0x20
+>>>>>>> refs/remotes/origin/master
 /* values for maintenance out */
 #define MO_SET_IDENTIFYING_INFORMATION 0x06
 #define MO_SET_TARGET_PGS     0x0a
@@ -217,6 +241,19 @@ scsi_command_size(const unsigned char *cmnd)
 		scsi_varlen_cdb_length(cmnd) : COMMAND_SIZE(cmnd[0]);
 }
 
+<<<<<<< HEAD
+=======
+#ifdef CONFIG_ACPI
+struct acpi_bus_type;
+
+extern int
+scsi_register_acpi_bus_type(struct acpi_bus_type *bus);
+
+extern void
+scsi_unregister_acpi_bus_type(struct acpi_bus_type *bus);
+#endif
+
+>>>>>>> refs/remotes/origin/master
 /*
  *  SCSI Architecture Model (SAM) Status codes. Taken from SAM-3 draft
  *  T10/1561-D Revision 4 Draft dated 7th November 2002.
@@ -443,6 +480,11 @@ static inline int scsi_is_wlun(unsigned int lun)
 				 * other paths */
 #define DID_NEXUS_FAILURE 0x11  /* Permanent nexus failure, retry on other
 				 * paths might yield different results */
+<<<<<<< HEAD
+=======
+#define DID_ALLOC_FAILURE 0x12  /* Space allocation on the device failed */
+#define DID_MEDIUM_ERROR  0x13  /* Medium error */
+>>>>>>> refs/remotes/origin/master
 #define DRIVER_OK       0x00	/* Driver status                           */
 
 /*
@@ -472,7 +514,10 @@ static inline int scsi_is_wlun(unsigned int lun)
 #define TIMEOUT_ERROR   0x2007
 #define SCSI_RETURN_NOT_HANDLED   0x2008
 #define FAST_IO_FAIL	0x2009
+<<<<<<< HEAD
 #define TARGET_ERROR    0x200A
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Midlevel queue return values.
@@ -500,10 +545,14 @@ static inline int scsi_is_wlun(unsigned int lun)
 #define sense_class(sense)  (((sense) >> 4) & 0x7)
 #define sense_error(sense)  ((sense) & 0xf)
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define sense_valid(sense)  ((sense) & 0x80);
 =======
 #define sense_valid(sense)  ((sense) & 0x80)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define sense_valid(sense)  ((sense) & 0x80)
+>>>>>>> refs/remotes/origin/master
 
 /*
  * default timeouts

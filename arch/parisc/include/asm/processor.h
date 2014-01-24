@@ -17,6 +17,7 @@
 #include <asm/ptrace.h>
 #include <asm/types.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -26,6 +27,11 @@
 
 #define KERNEL_STACK_SIZE 	(4*PAGE_SIZE)
 
+=======
+#include <asm/percpu.h>
+#endif /* __ASSEMBLY__ */
+
+>>>>>>> refs/remotes/origin/master
 /*
  * Default implementation of macro that returns current
  * instruction pointer ("program counter").
@@ -101,7 +107,10 @@ struct cpuinfo_parisc {
 	unsigned long txn_addr;     /* MMIO addr of EIR or id_eid */
 #ifdef CONFIG_SMP
 	unsigned long pending_ipi;  /* bitmap of type ipi_message_type */
+<<<<<<< HEAD
 	unsigned long ipi_count;    /* number ipi Interrupts */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif
 	unsigned long bh_count;     /* number of times bh was invoked */
 	unsigned long prof_counter; /* per CPU profiling support */
@@ -173,9 +182,13 @@ struct thread_struct {
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct task_struct;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct task_struct;
+>>>>>>> refs/remotes/origin/master
 unsigned long thread_saved_pc(struct task_struct *t);
 void show_trace(struct task_struct *task, unsigned long *stack);
 
@@ -204,9 +217,12 @@ typedef unsigned int elf_caddr_t;
 	pc |= 3;					\
 							\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_fs(USER_DS);				\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	regs->iasq[0] = spaceid;			\
 	regs->iasq[1] = spaceid;			\
 	regs->iaoq[0] = pc;				\
@@ -310,9 +326,12 @@ on downward growing arches, it looks like this:
 	elf_caddr_t *argv = (elf_caddr_t *)bprm->exec + 1;	\
 							\
 <<<<<<< HEAD
+<<<<<<< HEAD
 	set_fs(USER_DS);				\
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	regs->iasq[0] = spaceid;			\
 	regs->iasq[1] = spaceid;			\
 	regs->iaoq[0] = pc;				\
@@ -341,10 +360,13 @@ struct mm_struct;
 
 /* Free all resources held by a thread. */
 extern void release_thread(struct task_struct *);
+<<<<<<< HEAD
 extern int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags);
 
 /* Prepare to copy thread state - unlazy all lazy status */
 #define prepare_to_copy(tsk)	do { } while (0)
+=======
+>>>>>>> refs/remotes/origin/master
 
 extern void map_hpux_gateway_page(struct task_struct *tsk, struct mm_struct *mm);
 

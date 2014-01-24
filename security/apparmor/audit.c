@@ -20,10 +20,14 @@
 #include "include/policy.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const char *op_table[] = {
 =======
 const char *const op_table[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+const char *const op_table[] = {
+>>>>>>> refs/remotes/origin/master
 	"null",
 
 	"sysctl",
@@ -78,10 +82,14 @@ const char *const op_table[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const char *audit_mode_names[] = {
 =======
 const char *const audit_mode_names[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+const char *const audit_mode_names[] = {
+>>>>>>> refs/remotes/origin/master
 	"normal",
 	"quiet_denied",
 	"quiet",
@@ -90,21 +98,30 @@ const char *const audit_mode_names[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *aa_audit_type[] = {
 =======
 static const char *const aa_audit_type[] = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char *const aa_audit_type[] = {
+>>>>>>> refs/remotes/origin/master
 	"AUDIT",
 	"ALLOWED",
 	"DENIED",
 	"HINT",
 	"STATUS",
 	"ERROR",
+<<<<<<< HEAD
 	"KILLED"
 <<<<<<< HEAD
 =======
 	"AUTO"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	"KILLED",
+	"AUTO"
+>>>>>>> refs/remotes/origin/master
 };
 
 /*
@@ -126,6 +143,7 @@ static const char *const aa_audit_type[] = {
 static void audit_pre(struct audit_buffer *ab, void *ca)
 {
 	struct common_audit_data *sa = ca;
+<<<<<<< HEAD
 	struct task_struct *tsk = sa->tsk ? sa->tsk : current;
 
 	if (aa_g_audit_header) {
@@ -152,6 +170,11 @@ static void audit_pre(struct audit_buffer *ab, void *ca)
 		rcu_read_lock();
 		pid = tsk->real_parent->pid;
 =======
+=======
+
+	if (aa_g_audit_header) {
+		audit_log_format(ab, "apparmor=");
+>>>>>>> refs/remotes/origin/master
 		audit_log_string(ab, aa_audit_type[sa->aad->type]);
 	}
 
@@ -169,12 +192,15 @@ static void audit_pre(struct audit_buffer *ab, void *ca)
 
 	if (sa->aad->profile) {
 		struct aa_profile *profile = sa->aad->profile;
+<<<<<<< HEAD
 		pid_t pid;
 		rcu_read_lock();
 		pid = rcu_dereference(tsk->real_parent)->pid;
 >>>>>>> refs/remotes/origin/cm-10.0
 		rcu_read_unlock();
 		audit_log_format(ab, " parent=%d", pid);
+=======
+>>>>>>> refs/remotes/origin/master
 		if (profile->ns != root_ns) {
 			audit_log_format(ab, " namespace=");
 			audit_log_untrustedstring(ab, profile->ns->base.hname);
@@ -184,6 +210,7 @@ static void audit_pre(struct audit_buffer *ab, void *ca)
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (sa->aad.name) {
 		audit_log_format(ab, " name=");
 		audit_log_untrustedstring(ab, sa->aad.name);
@@ -192,6 +219,11 @@ static void audit_pre(struct audit_buffer *ab, void *ca)
 		audit_log_format(ab, " name=");
 		audit_log_untrustedstring(ab, sa->aad->name);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (sa->aad->name) {
+		audit_log_format(ab, " name=");
+		audit_log_untrustedstring(ab, sa->aad->name);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -204,6 +236,7 @@ void aa_audit_msg(int type, struct common_audit_data *sa,
 		  void (*cb) (struct audit_buffer *, void *))
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	sa->aad.type = type;
 	sa->lsm_pre_audit = audit_pre;
 	sa->lsm_post_audit = cb;
@@ -212,6 +245,10 @@ void aa_audit_msg(int type, struct common_audit_data *sa,
 	sa->aad->type = type;
 	common_lsm_audit(sa, audit_pre, cb);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	sa->aad->type = type;
+	common_lsm_audit(sa, audit_pre, cb);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -234,10 +271,14 @@ int aa_audit(int type, struct aa_profile *profile, gfp_t gfp,
 
 	if (type == AUDIT_APPARMOR_AUTO) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (likely(!sa->aad.error)) {
 =======
 		if (likely(!sa->aad->error)) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		if (likely(!sa->aad->error)) {
+>>>>>>> refs/remotes/origin/master
 			if (AUDIT_MODE(profile) != AUDIT_ALL)
 				return 0;
 			type = AUDIT_APPARMOR_AUDIT;
@@ -250,15 +291,20 @@ int aa_audit(int type, struct aa_profile *profile, gfp_t gfp,
 	    (type == AUDIT_APPARMOR_DENIED &&
 	     AUDIT_MODE(profile) == AUDIT_QUIET))
 <<<<<<< HEAD
+<<<<<<< HEAD
 		return sa->aad.error;
 =======
 		return sa->aad->error;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		return sa->aad->error;
+>>>>>>> refs/remotes/origin/master
 
 	if (KILL_MODE(profile) && type == AUDIT_APPARMOR_DENIED)
 		type = AUDIT_APPARMOR_KILL;
 
 	if (!unconfined(profile))
+<<<<<<< HEAD
 <<<<<<< HEAD
 		sa->aad.profile = profile;
 
@@ -272,16 +318,26 @@ int aa_audit(int type, struct aa_profile *profile, gfp_t gfp,
 
 	return sa->aad.error;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		sa->aad->profile = profile;
 
 	aa_audit_msg(type, sa, cb);
 
 	if (sa->aad->type == AUDIT_APPARMOR_KILL)
+<<<<<<< HEAD
 		(void)send_sig_info(SIGKILL, NULL, sa->tsk ? sa->tsk : current);
+=======
+		(void)send_sig_info(SIGKILL, NULL,
+				    sa->u.tsk ?  sa->u.tsk : current);
+>>>>>>> refs/remotes/origin/master
 
 	if (sa->aad->type == AUDIT_APPARMOR_ALLOWED)
 		return complain_error(sa->aad->error);
 
 	return sa->aad->error;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }

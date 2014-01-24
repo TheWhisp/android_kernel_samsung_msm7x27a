@@ -3,6 +3,7 @@
  *
  * Licensed under the GPL-2 or later.
  */
+<<<<<<< HEAD
 
 #ifndef __ASM_BFIN_UNISTD_H
 #define __ASM_BFIN_UNISTD_H
@@ -440,6 +441,13 @@
 
 #ifdef __KERNEL__
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#ifndef __ASM_BFIN_UNISTD_H
+#define __ASM_BFIN_UNISTD_H
+
+#include <uapi/asm/unistd.h>
+
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_ALARM
 #define __ARCH_WANT_SYS_GETHOSTNAME
@@ -450,6 +458,7 @@
 #define __ARCH_WANT_SYS_GETPGRP
 #define __ARCH_WANT_SYS_LLSEEK
 #define __ARCH_WANT_SYS_NICE
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
 
@@ -462,5 +471,8 @@
 #define cond_syscall(x) asm(".weak\t_" #x "\n\t.set\t_" #x ",_sys_ni_syscall");
 
 #endif	/* __KERNEL__ */
+=======
+#define __ARCH_WANT_SYS_VFORK
+>>>>>>> refs/remotes/origin/master
 
 #endif				/* __ASM_BFIN_UNISTD_H */

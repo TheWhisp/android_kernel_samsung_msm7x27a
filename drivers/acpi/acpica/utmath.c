@@ -6,10 +6,14 @@
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Copyright (C) 2000 - 2011, Intel Corp.
 =======
  * Copyright (C) 2000 - 2012, Intel Corp.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Copyright (C) 2000 - 2013, Intel Corp.
+>>>>>>> refs/remotes/origin/master
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,15 +81,24 @@ typedef union uint64_overlay {
  *
  * FUNCTION:    acpi_ut_short_divide
  *
+<<<<<<< HEAD
  * PARAMETERS:  Dividend            - 64-bit dividend
  *              Divisor             - 32-bit divisor
+=======
+ * PARAMETERS:  dividend            - 64-bit dividend
+ *              divisor             - 32-bit divisor
+>>>>>>> refs/remotes/origin/master
  *              out_quotient        - Pointer to where the quotient is returned
  *              out_remainder       - Pointer to where the remainder is returned
  *
  * RETURN:      Status (Checks for divide-by-zero)
  *
  * DESCRIPTION: Perform a short (maximum 64 bits divided by 32 bits)
+<<<<<<< HEAD
  *              divide and modulo.  The result is a 64-bit quotient and a
+=======
+ *              divide and modulo. The result is a 64-bit quotient and a
+>>>>>>> refs/remotes/origin/master
  *              32-bit remainder.
  *
  ******************************************************************************/

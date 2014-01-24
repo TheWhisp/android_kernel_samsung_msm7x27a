@@ -1,5 +1,10 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2011 Atheros Communications Inc.
+=======
+ * Copyright (c) 2010-2011 Atheros Communications Inc.
+ * Copyright (c) 2011-2012 Qualcomm Atheros Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,8 +22,13 @@
 #ifndef INITVALS_9330_1P2_H
 #define INITVALS_9330_1P2_H
 
+<<<<<<< HEAD
 static const u32 ar9331_modes_lowest_ob_db_tx_gain_1p2[][5] = {
 	/*  Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20  */
+=======
+static const u32 ar9331_modes_high_ob_db_tx_gain_1p2[][5] = {
+	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
+>>>>>>> refs/remotes/origin/master
 	{0x0000a410, 0x000050d7, 0x000050d7, 0x000050d7, 0x000050d7},
 	{0x0000a500, 0x00022200, 0x00022200, 0x00000000, 0x00000000},
 	{0x0000a504, 0x05062002, 0x05062002, 0x04000002, 0x04000002},
@@ -102,8 +112,19 @@ static const u32 ar9331_modes_lowest_ob_db_tx_gain_1p2[][5] = {
 	{0x0000a63c, 0x04011004, 0x04011004, 0x04011004, 0x04011004},
 };
 
+<<<<<<< HEAD
 static const u32 ar9331_1p2_baseband_postamble[][5] = {
 	/*  Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20  */
+=======
+#define ar9331_modes_high_power_tx_gain_1p2 ar9331_modes_high_ob_db_tx_gain_1p2
+
+#define ar9331_modes_low_ob_db_tx_gain_1p2 ar9331_modes_high_power_tx_gain_1p2
+
+#define ar9331_modes_lowest_ob_db_tx_gain_1p2 ar9331_modes_low_ob_db_tx_gain_1p2
+
+static const u32 ar9331_1p2_baseband_postamble[][5] = {
+	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
+>>>>>>> refs/remotes/origin/master
 	{0x00009810, 0xd00a8005, 0xd00a8005, 0xd00a8005, 0xd00a8005},
 	{0x00009820, 0x206a002e, 0x206a002e, 0x206a002e, 0x206a002e},
 	{0x00009824, 0x5ac640d0, 0x5ac640d0, 0x5ac640d0, 0x5ac640d0},
@@ -147,6 +168,7 @@ static const u32 ar9331_1p2_baseband_postamble[][5] = {
 	{0x0000ae18, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
 };
 
+<<<<<<< HEAD
 static const u32 ar9331_modes_high_ob_db_tx_gain_1p2[][5] = {
 	/*  Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20  */
 	{0x0000a410, 0x000050d7, 0x000050d7, 0x000050d7, 0x000050d7},
@@ -332,6 +354,8 @@ static const u32 ar9331_1p2_xtal_25M[][2] = {
 	{0x0001609c, 0x0f508f29},
 };
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const u32 ar9331_1p2_radio_core[][2] = {
 	/* Addr      allmodes  */
 	{0x00016000, 0x36db6db6},
@@ -397,6 +421,7 @@ static const u32 ar9331_1p2_radio_core[][2] = {
 	{0x000163d4, 0x00000000},
 };
 
+<<<<<<< HEAD
 static const u32 ar9331_1p2_soc_postamble[][5] = {
 	/*  Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20  */
 	{0x00007010, 0x00000022, 0x00000022, 0x00000022, 0x00000022},
@@ -1076,5 +1101,26 @@ static const u32 ar9331_common_rx_gain_1p2[][2] = {
 	{0x0000a1f8, 0x00000396},
 	{0x0000a1fc, 0x00000296},
 };
+=======
+#define ar9331_1p2_baseband_core_txfir_coeff_japan_2484 ar9331_1p1_baseband_core_txfir_coeff_japan_2484
+
+#define ar9331_1p2_xtal_25M ar9331_1p1_xtal_25M
+
+#define ar9331_1p2_xtal_40M ar9331_1p1_xtal_40M
+
+#define ar9331_1p2_baseband_core ar9331_1p1_baseband_core
+
+#define ar9331_1p2_soc_postamble ar9331_1p1_soc_postamble
+
+#define ar9331_1p2_mac_postamble ar9331_1p1_mac_postamble
+
+#define ar9331_1p2_soc_preamble ar9331_1p1_soc_preamble
+
+#define ar9331_1p2_mac_core ar9331_1p1_mac_core
+
+#define ar9331_common_wo_xlna_rx_gain_1p2 ar9331_common_wo_xlna_rx_gain_1p1
+
+#define ar9331_common_rx_gain_1p2 ar9485_common_rx_gain_1_1
+>>>>>>> refs/remotes/origin/master
 
 #endif /* INITVALS_9330_1P2_H */

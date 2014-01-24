@@ -16,10 +16,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/types.h>
@@ -35,6 +40,7 @@
 #include <linux/io.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 
 #define WATCHDOG_VERSION  "1.00"
@@ -46,6 +52,11 @@
 #define WATCHDOG_VERSION  "1.00"
 #define WATCHDOG_NAME     "W83977F WDT"
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+#define WATCHDOG_VERSION  "1.00"
+#define WATCHDOG_NAME     "W83977F WDT"
+>>>>>>> refs/remotes/origin/master
 
 #define IO_INDEX_PORT     0x3F0
 #define IO_DATA_PORT      (IO_INDEX_PORT+1)
@@ -71,12 +82,17 @@ module_param(testmode, int, 0);
 MODULE_PARM_DESC(testmode, "Watchdog testmode (1 = no reboot), default=0");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, int, 0);
 =======
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool nowayout = WATCHDOG_NOWAYOUT;
+module_param(nowayout, bool, 0);
+>>>>>>> refs/remotes/origin/master
 MODULE_PARM_DESC(nowayout,
 		"Watchdog cannot be stopped once started (default="
 				__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
@@ -148,10 +164,14 @@ static int wdt_start(void)
 	spin_unlock_irqrestore(&spinlock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "activated.\n");
 =======
 	pr_info("activated\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("activated\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -206,10 +226,14 @@ static int wdt_stop(void)
 	spin_unlock_irqrestore(&spinlock, flags);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX "shutdown.\n");
 =======
 	pr_info("shutdown\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("shutdown\n");
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 }
@@ -338,11 +362,15 @@ static int wdt_release(struct inode *inode, struct file *file)
 	} else {
 		wdt_keepalive();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_CRIT PFX
 			"unexpected close, not stopping watchdog!\n");
 =======
 		pr_crit("unexpected close, not stopping watchdog!\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_crit("unexpected close, not stopping watchdog!\n");
+>>>>>>> refs/remotes/origin/master
 	}
 	expect_close = 0;
 	return 0;
@@ -500,10 +528,14 @@ static int __init w83977f_wdt_init(void)
 	int rc;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printk(KERN_INFO PFX DRIVER_VERSION);
 =======
 	pr_info("driver v%s\n", WATCHDOG_VERSION);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pr_info("driver v%s\n", WATCHDOG_VERSION);
+>>>>>>> refs/remotes/origin/master
 
 	/*
 	 * Check that the timeout value is within it's range;
@@ -511,6 +543,7 @@ static int __init w83977f_wdt_init(void)
 	 */
 	if (wdt_set_timeout(timeout)) {
 		wdt_set_timeout(DEFAULT_TIMEOUT);
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_INFO PFX
 		    "timeout value must be 15 <= timeout <= 7635, using %d\n",
@@ -521,13 +554,18 @@ static int __init w83977f_wdt_init(void)
 		printk(KERN_ERR PFX "I/O address 0x%04x already in use\n",
 			IO_INDEX_PORT);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_info("timeout value must be 15 <= timeout <= 7635, using %d\n",
 			DEFAULT_TIMEOUT);
 	}
 
 	if (!request_region(IO_INDEX_PORT, 2, WATCHDOG_NAME)) {
 		pr_err("I/O address 0x%04x already in use\n", IO_INDEX_PORT);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		rc = -EIO;
 		goto err_out;
 	}
@@ -535,16 +573,21 @@ static int __init w83977f_wdt_init(void)
 	rc = register_reboot_notifier(&wdt_notifier);
 	if (rc) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register reboot notifier (err=%d)\n", rc);
 =======
 		pr_err("cannot register reboot notifier (err=%d)\n", rc);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		pr_err("cannot register reboot notifier (err=%d)\n", rc);
+>>>>>>> refs/remotes/origin/master
 		goto err_out_region;
 	}
 
 	rc = misc_register(&wdt_miscdev);
 	if (rc) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 		printk(KERN_ERR PFX
 			"cannot register miscdev on minor=%d (err=%d)\n",
@@ -556,6 +599,8 @@ static int __init w83977f_wdt_init(void)
 		"initialized. timeout=%d sec (nowayout=%d testmode=%d)\n",
 					timeout, nowayout, testmode);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 		pr_err("cannot register miscdev on minor=%d (err=%d)\n",
 		       wdt_miscdev.minor, rc);
 		goto err_out_reboot;
@@ -563,7 +608,10 @@ static int __init w83977f_wdt_init(void)
 
 	pr_info("initialized. timeout=%d sec (nowayout=%d testmode=%d)\n",
 		timeout, nowayout, testmode);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return 0;
 
@@ -589,4 +637,7 @@ module_exit(w83977f_wdt_exit);
 MODULE_AUTHOR("Jose Goncalves <jose.goncalves@inov.pt>");
 MODULE_DESCRIPTION("Driver for watchdog timer in W83977F I/O chip");
 MODULE_LICENSE("GPL");
+<<<<<<< HEAD
 MODULE_ALIAS_MISCDEV(WATCHDOG_MINOR);
+=======
+>>>>>>> refs/remotes/origin/master

@@ -7,7 +7,11 @@
     Thanks to Pierfrancesco 'qM2' Passerini.
 
     Generalised for soundcards based on DT-0196 and ALS-007 chips
+<<<<<<< HEAD
     by Jonathan Woithe <jwoithe@physics.adelaide.edu.au>: June 2002.
+=======
+    by Jonathan Woithe <jwoithe@just42.net>: June 2002.
+>>>>>>> refs/remotes/origin/master
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,10 +33,14 @@
 #include <linux/time.h>
 #include <linux/pnp.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/moduleparam.h>
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 #include <sound/core.h>
 #include <sound/initval.h>
 #include <sound/mpu401.h>
@@ -59,10 +67,14 @@ MODULE_LICENSE("GPL");
 static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
 static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
 =======
 static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static bool enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE;	/* Enable this card */
+>>>>>>> refs/remotes/origin/master
 static long port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long mpu_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
 static long fm_port[SNDRV_CARDS] = SNDRV_DEFAULT_PORT;	/* PnP setup */
@@ -125,9 +137,15 @@ static struct pnp_card_device_id snd_als100_pnpids[] = {
 
 MODULE_DEVICE_TABLE(pnp_card, snd_als100_pnpids);
 
+<<<<<<< HEAD
 static int __devinit snd_card_als100_pnp(int dev, struct snd_card_als100 *acard,
 					 struct pnp_card_link *card,
 					 const struct pnp_card_device_id *id)
+=======
+static int snd_card_als100_pnp(int dev, struct snd_card_als100 *acard,
+			       struct pnp_card_link *card,
+			       const struct pnp_card_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	struct pnp_dev *pdev;
 	int err;
@@ -191,9 +209,15 @@ static int __devinit snd_card_als100_pnp(int dev, struct snd_card_als100 *acard,
 	return 0;
 }
 
+<<<<<<< HEAD
 static int __devinit snd_card_als100_probe(int dev,
 					struct pnp_card_link *pcard,
 					const struct pnp_card_device_id *pid)
+=======
+static int snd_card_als100_probe(int dev,
+				 struct pnp_card_link *pcard,
+				 const struct pnp_card_device_id *pid)
+>>>>>>> refs/remotes/origin/master
 {
 	int error;
 	struct snd_sb *chip;
@@ -241,7 +265,11 @@ static int __devinit snd_card_als100_probe(int dev,
 			irq[dev], dma8[dev], dma16[dev]);
 	}
 
+<<<<<<< HEAD
 	if ((error = snd_sb16dsp_pcm(chip, 0, NULL)) < 0) {
+=======
+	if ((error = snd_sb16dsp_pcm(chip, 0, &chip->pcm)) < 0) {
+>>>>>>> refs/remotes/origin/master
 		snd_card_free(card);
 		return error;
 	}
@@ -265,9 +293,12 @@ static int __devinit snd_card_als100_probe(int dev,
 					mpu_port[dev], 0, 
 					mpu_irq[dev],
 <<<<<<< HEAD
+<<<<<<< HEAD
 					mpu_irq[dev] >= 0 ? IRQF_DISABLED : 0,
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 					NULL) < 0)
 			snd_printk(KERN_ERR PFX "no MPU-401 device at 0x%lx\n", mpu_port[dev]);
 	}
@@ -298,10 +329,17 @@ static int __devinit snd_card_als100_probe(int dev,
 	return 0;
 }
 
+<<<<<<< HEAD
 static unsigned int __devinitdata als100_devices;
 
 static int __devinit snd_als100_pnp_detect(struct pnp_card_link *card,
 					   const struct pnp_card_device_id *id)
+=======
+static unsigned int als100_devices;
+
+static int snd_als100_pnp_detect(struct pnp_card_link *card,
+				 const struct pnp_card_device_id *id)
+>>>>>>> refs/remotes/origin/master
 {
 	static int dev;
 	int res;
@@ -319,7 +357,11 @@ static int __devinit snd_als100_pnp_detect(struct pnp_card_link *card,
 	return -ENODEV;
 }
 
+<<<<<<< HEAD
 static void __devexit snd_als100_pnp_remove(struct pnp_card_link * pcard)
+=======
+static void snd_als100_pnp_remove(struct pnp_card_link *pcard)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_card_free(pnp_get_card_drvdata(pcard));
 	pnp_set_card_drvdata(pcard, NULL);
@@ -356,7 +398,11 @@ static struct pnp_card_driver als100_pnpc_driver = {
 	.name		= "als100",
         .id_table       = snd_als100_pnpids,
         .probe          = snd_als100_pnp_detect,
+<<<<<<< HEAD
         .remove         = __devexit_p(snd_als100_pnp_remove),
+=======
+	.remove		= snd_als100_pnp_remove,
+>>>>>>> refs/remotes/origin/master
 #ifdef CONFIG_PM
 	.suspend	= snd_als100_pnp_suspend,
 	.resume		= snd_als100_pnp_resume,

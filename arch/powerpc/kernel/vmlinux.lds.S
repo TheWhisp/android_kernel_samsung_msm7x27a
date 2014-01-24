@@ -107,6 +107,7 @@ SECTIONS
 		*(.ptov_fixup);
 		__ptov_table_end = .;
 <<<<<<< HEAD
+<<<<<<< HEAD
 #ifdef CONFIG_PPC_ISERIES
 		__dt_strings_start = .;
 		*(.dt_strings);
@@ -114,6 +115,8 @@ SECTIONS
 #endif
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	.init.setup : AT(ADDR(.init.setup) - LOAD_OFFSET) {
@@ -171,8 +174,11 @@ SECTIONS
 #ifdef CONFIG_RELOCATABLE
 	. = ALIGN(8);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.dynsym : AT(ADDR(.dynsym) - LOAD_OFFSET) { *(.dynsym) }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	.dynsym : AT(ADDR(.dynsym) - LOAD_OFFSET)
 	{
 #ifdef CONFIG_RELOCATABLE_PPC32
@@ -180,7 +186,10 @@ SECTIONS
 #endif
 		*(.dynsym)
 	}
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	.dynstr : AT(ADDR(.dynstr) - LOAD_OFFSET) { *(.dynstr) }
 	.dynamic : AT(ADDR(.dynamic) - LOAD_OFFSET)
 	{
@@ -227,6 +236,14 @@ SECTIONS
 
 	.got : AT(ADDR(.got) - LOAD_OFFSET) {
 		__toc_start = .;
+<<<<<<< HEAD
+=======
+#ifndef CONFIG_RELOCATABLE
+		__prom_init_toc_start = .;
+		arch/powerpc/kernel/prom_init.o*(.toc .got)
+		__prom_init_toc_end = .;
+#endif
+>>>>>>> refs/remotes/origin/master
 		*(.got)
 		*(.toc)
 	}

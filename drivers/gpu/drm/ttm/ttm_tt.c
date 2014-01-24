@@ -29,10 +29,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #define pr_fmt(fmt) "[TTM] " fmt
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define pr_fmt(fmt) "[TTM] " fmt
+
+>>>>>>> refs/remotes/origin/master
 #include <linux/sched.h>
 #include <linux/highmem.h>
 #include <linux/pagemap.h>
@@ -40,6 +45,7 @@
 #include <linux/file.h>
 #include <linux/swap.h>
 #include <linux/slab.h>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 #include <linux/export.h>
@@ -56,11 +62,22 @@ static int ttm_tt_swapin(struct ttm_tt *ttm);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+#include <drm/drm_cache.h>
+#include <drm/drm_mem_util.h>
+#include <drm/ttm/ttm_module.h>
+#include <drm/ttm/ttm_bo_driver.h>
+#include <drm/ttm/ttm_placement.h>
+#include <drm/ttm/ttm_page_alloc.h>
+
+>>>>>>> refs/remotes/origin/master
 /**
  * Allocates storage for pointers to the pages that back the ttm.
  */
 static void ttm_tt_alloc_page_directory(struct ttm_tt *ttm)
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	ttm->pages = drm_calloc_large(ttm->num_pages, sizeof(*ttm->pages));
 	ttm->dma_address = drm_calloc_large(ttm->num_pages,
@@ -189,6 +206,8 @@ int ttm_tt_populate(struct ttm_tt *ttm)
 }
 EXPORT_SYMBOL(ttm_tt_populate);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ttm->pages = drm_calloc_large(ttm->num_pages, sizeof(void*));
 }
 
@@ -198,7 +217,10 @@ static void ttm_dma_tt_alloc_page_directory(struct ttm_dma_tt *ttm)
 	ttm->dma_address = drm_calloc_large(ttm->ttm.num_pages,
 					    sizeof(*ttm->dma_address));
 }
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_X86
 static inline int ttm_tt_set_page_caching(struct page *p,
@@ -302,6 +324,7 @@ int ttm_tt_set_placement_caching(struct ttm_tt *ttm, uint32_t placement)
 EXPORT_SYMBOL(ttm_tt_set_placement_caching);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void ttm_tt_free_alloced_pages(struct ttm_tt *ttm)
 {
 	int i;
@@ -357,6 +380,8 @@ void ttm_tt_destroy(struct ttm_tt *ttm)
 
 		ttm_tt_free_page_directory(ttm);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void ttm_tt_destroy(struct ttm_tt *ttm)
 {
 	if (unlikely(ttm == NULL))
@@ -368,13 +393,17 @@ void ttm_tt_destroy(struct ttm_tt *ttm)
 
 	if (ttm->state == tt_unbound) {
 		ttm->bdev->driver->ttm_tt_unpopulate(ttm);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 
 	if (!(ttm->page_flags & TTM_PAGE_FLAG_PERSISTENT_SWAP) &&
 	    ttm->swap_storage)
 		fput(ttm->swap_storage);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	kfree(ttm);
 }
@@ -456,6 +485,8 @@ struct ttm_tt *ttm_tt_create(struct ttm_bo_device *bdev, unsigned long size,
 	return ttm;
 }
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ttm->swap_storage = NULL;
 	ttm->func->destroy(ttm);
 }
@@ -526,11 +557,15 @@ void ttm_dma_tt_fini(struct ttm_dma_tt *ttm_dma)
 	ttm_dma->dma_address = NULL;
 }
 EXPORT_SYMBOL(ttm_dma_tt_fini);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 void ttm_tt_unbind(struct ttm_tt *ttm)
 {
 	int ret;
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct ttm_backend *be = ttm->be;
 
@@ -541,6 +576,11 @@ void ttm_tt_unbind(struct ttm_tt *ttm)
 	if (ttm->state == tt_bound) {
 		ret = ttm->func->unbind(ttm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+	if (ttm->state == tt_bound) {
+		ret = ttm->func->unbind(ttm);
+>>>>>>> refs/remotes/origin/master
 		BUG_ON(ret);
 		ttm->state = tt_unbound;
 	}
@@ -550,9 +590,12 @@ int ttm_tt_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem)
 {
 	int ret = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct ttm_backend *be;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!ttm)
 		return -EINVAL;
@@ -560,6 +603,7 @@ int ttm_tt_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem)
 	if (ttm->state == tt_bound)
 		return 0;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	be = ttm->be;
 
@@ -569,36 +613,49 @@ int ttm_tt_bind(struct ttm_tt *ttm, struct ttm_mem_reg *bo_mem)
 
 	ret = be->func->bind(be, bo_mem);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	ret = ttm->bdev->driver->ttm_tt_populate(ttm);
 	if (ret)
 		return ret;
 
 	ret = ttm->func->bind(ttm, bo_mem);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(ret != 0))
 		return ret;
 
 	ttm->state = tt_bound;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ttm->page_flags & TTM_PAGE_FLAG_USER)
 		ttm->page_flags |= TTM_PAGE_FLAG_USER_DIRTY;
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 EXPORT_SYMBOL(ttm_tt_bind);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static int ttm_tt_swapin(struct ttm_tt *ttm)
 =======
 int ttm_tt_swapin(struct ttm_tt *ttm)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+int ttm_tt_swapin(struct ttm_tt *ttm)
+>>>>>>> refs/remotes/origin/master
 {
 	struct address_space *swap_space;
 	struct file *swap_storage;
 	struct page *from_page;
 	struct page *to_page;
+<<<<<<< HEAD
 	void *from_virtual;
 	void *to_virtual;
 	int i;
@@ -621,6 +678,15 @@ int ttm_tt_swapin(struct ttm_tt *ttm)
 	BUG_ON(swap_storage == NULL);
 
 	swap_space = swap_storage->f_path.dentry->d_inode->i_mapping;
+=======
+	int i;
+	int ret = -ENOMEM;
+
+	swap_storage = ttm->swap_storage;
+	BUG_ON(swap_storage == NULL);
+
+	swap_space = file_inode(swap_storage)->i_mapping;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ttm->num_pages; ++i) {
 		from_page = shmem_read_mapping_page(swap_space, i);
@@ -628,6 +694,7 @@ int ttm_tt_swapin(struct ttm_tt *ttm)
 			ret = PTR_ERR(from_page);
 			goto out_err;
 		}
+<<<<<<< HEAD
 <<<<<<< HEAD
 		to_page = __ttm_tt_get_page(ttm, i);
 =======
@@ -651,6 +718,13 @@ int ttm_tt_swapin(struct ttm_tt *ttm)
 		kunmap_atomic(from_virtual);
 >>>>>>> refs/remotes/origin/cm-10.0
 		preempt_enable();
+=======
+		to_page = ttm->pages[i];
+		if (unlikely(to_page == NULL))
+			goto out_err;
+
+		copy_highpage(to_page, from_page);
+>>>>>>> refs/remotes/origin/master
 		page_cache_release(from_page);
 	}
 
@@ -662,9 +736,12 @@ int ttm_tt_swapin(struct ttm_tt *ttm)
 	return 0;
 out_err:
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ttm_tt_free_alloced_pages(ttm);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return ret;
 }
 
@@ -674,14 +751,18 @@ int ttm_tt_swapout(struct ttm_tt *ttm, struct file *persistent_swap_storage)
 	struct file *swap_storage;
 	struct page *from_page;
 	struct page *to_page;
+<<<<<<< HEAD
 	void *from_virtual;
 	void *to_virtual;
+=======
+>>>>>>> refs/remotes/origin/master
 	int i;
 	int ret = -ENOMEM;
 
 	BUG_ON(ttm->state != tt_unbound && ttm->state != tt_unpopulated);
 	BUG_ON(ttm->caching_state != tt_cached);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/*
 	 * For user buffers, just unpin the pages, as there should be
@@ -697,22 +778,32 @@ int ttm_tt_swapout(struct ttm_tt *ttm, struct file *persistent_swap_storage)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	if (!persistent_swap_storage) {
 		swap_storage = shmem_file_setup("ttm swap",
 						ttm->num_pages << PAGE_SHIFT,
 						0);
 		if (unlikely(IS_ERR(swap_storage))) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printk(KERN_ERR "Failed allocating swap storage.\n");
 =======
 			pr_err("Failed allocating swap storage\n");
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+			pr_err("Failed allocating swap storage\n");
+>>>>>>> refs/remotes/origin/master
 			return PTR_ERR(swap_storage);
 		}
 	} else
 		swap_storage = persistent_swap_storage;
 
+<<<<<<< HEAD
 	swap_space = swap_storage->f_path.dentry->d_inode->i_mapping;
+=======
+	swap_space = file_inode(swap_storage)->i_mapping;
+>>>>>>> refs/remotes/origin/master
 
 	for (i = 0; i < ttm->num_pages; ++i) {
 		from_page = ttm->pages[i];
@@ -723,6 +814,7 @@ int ttm_tt_swapout(struct ttm_tt *ttm, struct file *persistent_swap_storage)
 			ret = PTR_ERR(to_page);
 			goto out_err;
 		}
+<<<<<<< HEAD
 		preempt_disable();
 <<<<<<< HEAD
 		from_virtual = kmap_atomic(from_page, KM_USER0);
@@ -738,16 +830,23 @@ int ttm_tt_swapout(struct ttm_tt *ttm, struct file *persistent_swap_storage)
 		kunmap_atomic(from_virtual);
 >>>>>>> refs/remotes/origin/cm-10.0
 		preempt_enable();
+=======
+		copy_highpage(to_page, from_page);
+>>>>>>> refs/remotes/origin/master
 		set_page_dirty(to_page);
 		mark_page_accessed(to_page);
 		page_cache_release(to_page);
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	ttm_tt_free_alloced_pages(ttm);
 =======
 	ttm->bdev->driver->ttm_tt_unpopulate(ttm);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	ttm->bdev->driver->ttm_tt_unpopulate(ttm);
+>>>>>>> refs/remotes/origin/master
 	ttm->swap_storage = swap_storage;
 	ttm->page_flags |= TTM_PAGE_FLAG_SWAPPED;
 	if (persistent_swap_storage)

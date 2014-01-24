@@ -30,6 +30,7 @@ struct strfilter *strfilter__new(const char *rules, const char **err);
 
 /**
  * strfilter__compare - compare given string and a string filter
+<<<<<<< HEAD
  * @self: String filter
  * @str: target string
  *
@@ -44,5 +45,21 @@ bool strfilter__compare(struct strfilter *self, const char *str);
  * Delete @self.
  */
 void strfilter__delete(struct strfilter *self);
+=======
+ * @filter: String filter
+ * @str: target string
+ *
+ * Compare @str and @filter. Return true if the str match the rule
+ */
+bool strfilter__compare(struct strfilter *filter, const char *str);
+
+/**
+ * strfilter__delete - delete a string filter
+ * @filter: String filter to delete
+ *
+ * Delete @filter.
+ */
+void strfilter__delete(struct strfilter *filter);
+>>>>>>> refs/remotes/origin/master
 
 #endif

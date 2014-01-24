@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 /* STMicroelectronics STMPE811 Touchscreen Driver
+=======
+/*
+ * STMicroelectronics STMPE811 Touchscreen Driver
+>>>>>>> refs/remotes/origin/master
  *
  * (C) 2010 Luotao Fu <l.fu@pengutronix.de>
  * All rights reserved.
@@ -16,6 +21,10 @@
 #include <linux/interrupt.h>
 #include <linux/init.h>
 #include <linux/device.h>
+<<<<<<< HEAD
+=======
+#include <linux/of.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/platform_device.h>
 #include <linux/input.h>
 #include <linux/slab.h>
@@ -118,6 +127,10 @@ static void stmpe_work(struct work_struct *work)
 	__stmpe_reset_fifo(ts->stmpe);
 
 	input_report_abs(ts->idev, ABS_PRESSURE, 0);
+<<<<<<< HEAD
+=======
+	input_report_key(ts->idev, BTN_TOUCH, 0);
+>>>>>>> refs/remotes/origin/master
 	input_sync(ts->idev);
 }
 
@@ -151,6 +164,10 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
 	input_report_abs(ts->idev, ABS_X, x);
 	input_report_abs(ts->idev, ABS_Y, y);
 	input_report_abs(ts->idev, ABS_PRESSURE, z);
+<<<<<<< HEAD
+=======
+	input_report_key(ts->idev, BTN_TOUCH, 1);
+>>>>>>> refs/remotes/origin/master
 	input_sync(ts->idev);
 
        /* flush the FIFO after we have read out our values. */
@@ -166,7 +183,11 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
+<<<<<<< HEAD
 static int __devinit stmpe_init_hw(struct stmpe_touch *ts)
+=======
+static int stmpe_init_hw(struct stmpe_touch *ts)
+>>>>>>> refs/remotes/origin/master
 {
 	int ret;
 	u8 adc_ctrl1, adc_ctrl1_mask, tsc_cfg, tsc_cfg_mask;
@@ -261,6 +282,7 @@ static void stmpe_ts_close(struct input_dev *dev)
 			STMPE_TSC_CTRL_TSC_EN, 0);
 }
 
+<<<<<<< HEAD
 static int __devinit stmpe_input_probe(struct platform_device *pdev)
 {
 	struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
@@ -296,6 +318,20 @@ static int __devinit stmpe_input_probe(struct platform_device *pdev)
 		ts_pdata = pdata->ts;
 
 	if (ts_pdata) {
+=======
+static void stmpe_ts_get_platform_info(struct platform_device *pdev,
+					struct stmpe_touch *ts)
+{
+	struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
+	struct device_node *np = pdev->dev.of_node;
+	struct stmpe_ts_platform_data *ts_pdata = NULL;
+
+	ts->stmpe = stmpe;
+
+	if (stmpe->pdata && stmpe->pdata->ts) {
+		ts_pdata = stmpe->pdata->ts;
+
+>>>>>>> refs/remotes/origin/master
 		ts->sample_time = ts_pdata->sample_time;
 		ts->mod_12b = ts_pdata->mod_12b;
 		ts->ref_sel = ts_pdata->ref_sel;
@@ -305,6 +341,7 @@ static int __devinit stmpe_input_probe(struct platform_device *pdev)
 		ts->settling = ts_pdata->settling;
 		ts->fraction_z = ts_pdata->fraction_z;
 		ts->i_drive = ts_pdata->i_drive;
+<<<<<<< HEAD
 	}
 
 	INIT_DELAYED_WORK(&ts->work, stmpe_work);
@@ -321,6 +358,73 @@ static int __devinit stmpe_input_probe(struct platform_device *pdev)
 		goto err_free_irq;
 
 	idev->name = STMPE_TS_NAME;
+=======
+	} else if (np) {
+		u32 val;
+
+		if (!of_property_read_u32(np, "st,sample-time", &val))
+			ts->sample_time = val;
+		if (!of_property_read_u32(np, "st,mod-12b", &val))
+			ts->mod_12b = val;
+		if (!of_property_read_u32(np, "st,ref-sel", &val))
+			ts->ref_sel = val;
+		if (!of_property_read_u32(np, "st,adc-freq", &val))
+			ts->adc_freq = val;
+		if (!of_property_read_u32(np, "st,ave-ctrl", &val))
+			ts->ave_ctrl = val;
+		if (!of_property_read_u32(np, "st,touch-det-delay", &val))
+			ts->touch_det_delay = val;
+		if (!of_property_read_u32(np, "st,settling", &val))
+			ts->settling = val;
+		if (!of_property_read_u32(np, "st,fraction-z", &val))
+			ts->fraction_z = val;
+		if (!of_property_read_u32(np, "st,i-drive", &val))
+			ts->i_drive = val;
+	}
+}
+
+static int stmpe_input_probe(struct platform_device *pdev)
+{
+	struct stmpe_touch *ts;
+	struct input_dev *idev;
+	int error;
+	int ts_irq;
+
+	ts_irq = platform_get_irq_byname(pdev, "FIFO_TH");
+	if (ts_irq < 0)
+		return ts_irq;
+
+	ts = devm_kzalloc(&pdev->dev, sizeof(*ts), GFP_KERNEL);
+	if (!ts)
+		return -ENOMEM;
+
+	idev = devm_input_allocate_device(&pdev->dev);
+	if (!idev)
+		return -ENOMEM;
+
+	platform_set_drvdata(pdev, ts);
+	ts->idev = idev;
+	ts->dev = &pdev->dev;
+
+	stmpe_ts_get_platform_info(pdev, ts);
+
+	INIT_DELAYED_WORK(&ts->work, stmpe_work);
+
+	error = devm_request_threaded_irq(&pdev->dev, ts_irq,
+					  NULL, stmpe_ts_handler,
+					  IRQF_ONESHOT, STMPE_TS_NAME, ts);
+	if (error) {
+		dev_err(&pdev->dev, "Failed to request IRQ %d\n", ts_irq);
+		return error;
+	}
+
+	error = stmpe_init_hw(ts);
+	if (error)
+		return error;
+
+	idev->name = STMPE_TS_NAME;
+	idev->phys = STMPE_TS_NAME"/input0";
+>>>>>>> refs/remotes/origin/master
 	idev->id.bustype = BUS_I2C;
 	idev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_ABS);
 	idev->keybit[BIT_WORD(BTN_TOUCH)] = BIT_MASK(BTN_TOUCH);
@@ -334,6 +438,7 @@ static int __devinit stmpe_input_probe(struct platform_device *pdev)
 	input_set_abs_params(idev, ABS_Y, 0, XY_MASK, 0, 0);
 	input_set_abs_params(idev, ABS_PRESSURE, 0x0, 0xff, 0, 0);
 
+<<<<<<< HEAD
 	ret = input_register_device(idev);
 	if (ret) {
 		dev_err(&pdev->dev, "Could not register input device\n");
@@ -368,6 +473,23 @@ static int __devexit stmpe_ts_remove(struct platform_device *pdev)
 
 	kfree(ts);
 
+=======
+	error = input_register_device(idev);
+	if (error) {
+		dev_err(&pdev->dev, "Could not register input device\n");
+		return error;
+	}
+
+	return 0;
+}
+
+static int stmpe_ts_remove(struct platform_device *pdev)
+{
+	struct stmpe_touch *ts = platform_get_drvdata(pdev);
+
+	stmpe_disable(ts->stmpe, STMPE_BLOCK_TOUCHSCREEN);
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -377,6 +499,7 @@ static struct platform_driver stmpe_ts_driver = {
 		   .owner = THIS_MODULE,
 		   },
 	.probe = stmpe_input_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(stmpe_ts_remove),
 };
 <<<<<<< HEAD
@@ -397,6 +520,11 @@ module_exit(stmpe_ts_exit);
 =======
 module_platform_driver(stmpe_ts_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = stmpe_ts_remove,
+};
+module_platform_driver(stmpe_ts_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Luotao Fu <l.fu@pengutronix.de>");
 MODULE_DESCRIPTION("STMPEXXX touchscreen driver");

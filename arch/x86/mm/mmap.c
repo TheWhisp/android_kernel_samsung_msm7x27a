@@ -32,12 +32,18 @@
 #include <asm/elf.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 struct __read_mostly va_alignment va_align = {
 	.flags = -1,
 };
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static unsigned int stack_maxrandom_size(void)
 {
 	unsigned int max = 0;
@@ -50,9 +56,12 @@ static unsigned int stack_maxrandom_size(void)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Top of mmap area (just below the process stack).
  *
@@ -61,6 +70,7 @@ static unsigned int stack_maxrandom_size(void)
 #define MIN_GAP (128*1024*1024UL + stack_maxrandom_size())
 #define MAX_GAP (TASK_SIZE/6*5)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 /*
  * True on X86_32 or when emulating IA32 on X86_64
@@ -79,6 +89,8 @@ static int mmap_is_ia32(void)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int mmap_is_legacy(void)
 {
 	if (current->personality & ADDR_COMPAT_LAYOUT)
@@ -137,6 +149,7 @@ static unsigned long mmap_legacy_base(void)
  */
 void arch_pick_mmap_layout(struct mm_struct *mm)
 {
+<<<<<<< HEAD
 	if (mmap_is_legacy()) {
 		mm->mmap_base = mmap_legacy_base();
 		mm->get_unmapped_area = arch_get_unmapped_area;
@@ -145,5 +158,15 @@ void arch_pick_mmap_layout(struct mm_struct *mm)
 		mm->mmap_base = mmap_base();
 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
 		mm->unmap_area = arch_unmap_area_topdown;
+=======
+	mm->mmap_legacy_base = mmap_legacy_base();
+	mm->mmap_base = mmap_base();
+
+	if (mmap_is_legacy()) {
+		mm->mmap_base = mm->mmap_legacy_base;
+		mm->get_unmapped_area = arch_get_unmapped_area;
+	} else {
+		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+>>>>>>> refs/remotes/origin/master
 	}
 }

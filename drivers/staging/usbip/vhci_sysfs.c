@@ -18,6 +18,10 @@
  */
 
 #include <linux/kthread.h>
+<<<<<<< HEAD
+=======
+#include <linux/file.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/net.h>
 
 #include "usbip_common.h"
@@ -26,7 +30,11 @@
 /* TODO: refine locking ?*/
 
 /* Sysfs entry to show port status */
+<<<<<<< HEAD
 static ssize_t show_status(struct device *dev, struct device_attribute *attr,
+=======
+static ssize_t status_show(struct device *dev, struct device_attribute *attr,
+>>>>>>> refs/remotes/origin/master
 			   char *out)
 {
 	char *s = out;
@@ -73,7 +81,11 @@ static ssize_t show_status(struct device *dev, struct device_attribute *attr,
 
 	return out - s;
 }
+<<<<<<< HEAD
 static DEVICE_ATTR(status, S_IRUGO, show_status, NULL);
+=======
+static DEVICE_ATTR_RO(status);
+>>>>>>> refs/remotes/origin/master
 
 /* Sysfs entry to shutdown a virtual connection */
 static int vhci_port_disconnect(__u32 rhport)
@@ -136,10 +148,14 @@ static int valid_args(__u32 rhport, enum usb_device_speed speed)
 {
 	/* check rhport */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if ((rhport < 0) || (rhport >= VHCI_NPORTS)) {
 =======
 	if (rhport >= VHCI_NPORTS) {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (rhport >= VHCI_NPORTS) {
+>>>>>>> refs/remotes/origin/master
 		pr_err("port %u\n", rhport);
 		return -EINVAL;
 	}
@@ -193,6 +209,7 @@ static ssize_t store_attach(struct device *dev, struct device_attribute *attr,
 	if (valid_args(rhport, speed) < 0)
 		return -EINVAL;
 
+<<<<<<< HEAD
 	/* check sockfd */
 	socket = sockfd_to_socket(sockfd);
 	if (!socket)
@@ -201,6 +218,13 @@ static ssize_t store_attach(struct device *dev, struct device_attribute *attr,
 =======
 		return -EINVAL;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Extract socket from fd. */
+	/* The correct way to clean this up is to fput(socket->file). */
+	socket = sockfd_to_socket(sockfd);
+	if (!socket)
+		return -EINVAL;
+>>>>>>> refs/remotes/origin/master
 
 	/* now need lock until setting vdev status as used */
 
@@ -214,6 +238,11 @@ static ssize_t store_attach(struct device *dev, struct device_attribute *attr,
 		spin_unlock(&vdev->ud.lock);
 		spin_unlock(&the_controller->lock);
 
+<<<<<<< HEAD
+=======
+		fput(socket->file);
+
+>>>>>>> refs/remotes/origin/master
 		dev_err(dev, "port %d already used\n", rhport);
 		return -EINVAL;
 	}
@@ -230,8 +259,13 @@ static ssize_t store_attach(struct device *dev, struct device_attribute *attr,
 	spin_unlock(&the_controller->lock);
 	/* end the lock */
 
+<<<<<<< HEAD
 	vdev->ud.tcp_rx = kthread_run(vhci_rx_loop, &vdev->ud, "vhci_rx");
 	vdev->ud.tcp_tx = kthread_run(vhci_tx_loop, &vdev->ud, "vhci_tx");
+=======
+	vdev->ud.tcp_rx = kthread_get_run(vhci_rx_loop, &vdev->ud, "vhci_rx");
+	vdev->ud.tcp_tx = kthread_get_run(vhci_tx_loop, &vdev->ud, "vhci_tx");
+>>>>>>> refs/remotes/origin/master
 
 	rh_port_connect(rhport, speed);
 
@@ -248,9 +282,13 @@ static struct attribute *dev_attrs[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 struct attribute_group dev_attr_group = {
 =======
 const struct attribute_group dev_attr_group = {
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+const struct attribute_group dev_attr_group = {
+>>>>>>> refs/remotes/origin/master
 	.attrs = dev_attrs,
 };

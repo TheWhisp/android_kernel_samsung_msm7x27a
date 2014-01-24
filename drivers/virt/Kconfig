@@ -15,6 +15,10 @@ if VIRT_DRIVERS
 config FSL_HV_MANAGER
 	tristate "Freescale hypervisor management driver"
 	depends on FSL_SOC
+<<<<<<< HEAD
+=======
+	select EPAPR_PARAVIRT
+>>>>>>> refs/remotes/origin/master
 	help
           The Freescale hypervisor management driver provides several services
 	  to drivers and applications related to the Freescale hypervisor:

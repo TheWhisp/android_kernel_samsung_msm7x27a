@@ -14,11 +14,14 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
+<<<<<<< HEAD
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
+=======
+>>>>>>> refs/remotes/origin/master
 */
 /*
 Driver: adq12b
@@ -78,6 +81,12 @@ If you do not specify any options, they will default to
 
 */
 
+<<<<<<< HEAD
+=======
+#include <linux/module.h>
+#include <linux/delay.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "../comedidev.h"
 
 /* address scheme (page 2.17 of the manual) */
@@ -99,6 +108,7 @@ If you do not specify any options, they will default to
 #define TIMEOUT        20
 
 /* available ranges through the PGA gains */
+<<<<<<< HEAD
 static const struct comedi_lrange range_adq12b_ai_bipolar = { 4, {
 								  BIP_RANGE(5),
 								  BIP_RANGE(2),
@@ -145,11 +155,32 @@ static const struct adq12b_board adq12b_boards[] = {
 
 #define thisboard ((const struct adq12b_board *)dev->board_ptr)
 
+=======
+static const struct comedi_lrange range_adq12b_ai_bipolar = {
+	4, {
+		BIP_RANGE(5),
+		BIP_RANGE(2),
+		BIP_RANGE(1),
+		BIP_RANGE(0.5)
+	}
+};
+
+static const struct comedi_lrange range_adq12b_ai_unipolar = {
+	4, {
+		UNI_RANGE(5),
+		UNI_RANGE(2),
+		UNI_RANGE(1),
+		UNI_RANGE(0.5)
+	}
+};
+
+>>>>>>> refs/remotes/origin/master
 struct adq12b_private {
 	int unipolar;		/* option 2 of comedi_config (1 is iobase) */
 	int differential;	/* option 3 of comedi_config */
 	int last_channel;
 	int last_range;
+<<<<<<< HEAD
 	unsigned int digital_state;
 };
 
@@ -315,6 +346,10 @@ static int adq12b_detach(struct comedi_device *dev)
 	return 0;
 }
 
+=======
+};
+
+>>>>>>> refs/remotes/origin/master
 /*
  * "instructions" read/write data in "one-shot" or "software-triggered"
  * mode.
@@ -324,6 +359,10 @@ static int adq12b_ai_rinsn(struct comedi_device *dev,
 			   struct comedi_subdevice *s, struct comedi_insn *insn,
 			   unsigned int *data)
 {
+<<<<<<< HEAD
+=======
+	struct adq12b_private *devpriv = dev->private;
+>>>>>>> refs/remotes/origin/master
 	int n, i;
 	int range, channel;
 	unsigned char hi, lo, status;
@@ -355,8 +394,11 @@ static int adq12b_ai_rinsn(struct comedi_device *dev,
 		hi = inb(dev->iobase + ADQ12B_ADHIG);
 		lo = inb(dev->iobase + ADQ12B_ADLOW);
 
+<<<<<<< HEAD
 		/* printk("debug: chan=%d range=%d status=%d hi=%d lo=%d\n",
 		       channel, range, status,  hi, lo); */
+=======
+>>>>>>> refs/remotes/origin/master
 		data[n] = (hi << 8) | lo;
 
 	}
@@ -373,11 +415,16 @@ static int adq12b_di_insn_bits(struct comedi_device *dev,
 	/* only bits 0-4 have information about digital inputs */
 	data[1] = (inb(dev->iobase + ADQ12B_STINR) & (0x1f));
 
+<<<<<<< HEAD
 	return 2;
+=======
+	return insn->n;
+>>>>>>> refs/remotes/origin/master
 }
 
 static int adq12b_do_insn_bits(struct comedi_device *dev,
 			       struct comedi_subdevice *s,
+<<<<<<< HEAD
 			       struct comedi_insn *insn, unsigned int *data)
 {
 	int channel;
@@ -414,6 +461,108 @@ static void __exit driver_adq12b_cleanup_module(void)
 
 module_init(driver_adq12b_init_module);
 module_exit(driver_adq12b_cleanup_module);
+=======
+			       struct comedi_insn *insn,
+			       unsigned int *data)
+{
+	unsigned int mask;
+	unsigned int chan;
+	unsigned int val;
+
+	mask = comedi_dio_update_state(s, data);
+	if (mask) {
+		for (chan = 0; chan < 8; chan++) {
+			if ((mask >> chan) & 0x01) {
+				val = (s->state >> chan) & 0x01;
+				outb((val << 3) | chan,
+				     dev->iobase + ADQ12B_OUTBR);
+			}
+		}
+	}
+
+	data[1] = s->state;
+
+	return insn->n;
+}
+
+static int adq12b_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+{
+	struct adq12b_private *devpriv;
+	struct comedi_subdevice *s;
+	int ret;
+
+	ret = comedi_request_region(dev, it->options[0], ADQ12B_SIZE);
+	if (ret)
+		return ret;
+
+	devpriv = comedi_alloc_devpriv(dev, sizeof(*devpriv));
+	if (!devpriv)
+		return -ENOMEM;
+
+	devpriv->unipolar = it->options[1];
+	devpriv->differential = it->options[2];
+	/*
+	 * initialize channel and range to -1 so we make sure we
+	 * always write at least once to the CTREG in the instruction
+	 */
+	devpriv->last_channel = -1;
+	devpriv->last_range = -1;
+
+	ret = comedi_alloc_subdevices(dev, 3);
+	if (ret)
+		return ret;
+
+	s = &dev->subdevices[0];
+	/* analog input subdevice */
+	s->type = COMEDI_SUBD_AI;
+	if (devpriv->differential) {
+		s->subdev_flags = SDF_READABLE | SDF_GROUND | SDF_DIFF;
+		s->n_chan = 8;
+	} else {
+		s->subdev_flags = SDF_READABLE | SDF_GROUND;
+		s->n_chan = 16;
+	}
+
+	if (devpriv->unipolar)
+		s->range_table = &range_adq12b_ai_unipolar;
+	else
+		s->range_table = &range_adq12b_ai_bipolar;
+
+	s->maxdata = 0xfff;
+
+	s->len_chanlist = 4;	/* This is the maximum chanlist length that
+				   the board can handle */
+	s->insn_read = adq12b_ai_rinsn;
+
+	s = &dev->subdevices[1];
+	/* digital input subdevice */
+	s->type = COMEDI_SUBD_DI;
+	s->subdev_flags = SDF_READABLE;
+	s->n_chan = 5;
+	s->maxdata = 1;
+	s->range_table = &range_digital;
+	s->insn_bits = adq12b_di_insn_bits;
+
+	s = &dev->subdevices[2];
+	/* digital output subdevice */
+	s->type = COMEDI_SUBD_DO;
+	s->subdev_flags = SDF_WRITABLE;
+	s->n_chan = 8;
+	s->maxdata = 1;
+	s->range_table = &range_digital;
+	s->insn_bits = adq12b_do_insn_bits;
+
+	return 0;
+}
+
+static struct comedi_driver adq12b_driver = {
+	.driver_name	= "adq12b",
+	.module		= THIS_MODULE,
+	.attach		= adq12b_attach,
+	.detach		= comedi_legacy_detach,
+};
+module_comedi_driver(adq12b_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Comedi http://www.comedi.org");
 MODULE_DESCRIPTION("Comedi low-level driver");

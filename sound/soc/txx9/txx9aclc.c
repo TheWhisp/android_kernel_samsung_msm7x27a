@@ -40,11 +40,14 @@ static const struct snd_pcm_hardware txx9aclc_pcm_hardware = {
 	.info		  = SNDRV_PCM_INFO_INTERLEAVED |
 			    SNDRV_PCM_INFO_BATCH |
 			    SNDRV_PCM_INFO_PAUSE,
+<<<<<<< HEAD
 #ifdef __BIG_ENDIAN
 	.formats	  = SNDRV_PCM_FMTBIT_S16_BE,
 #else
 	.formats	  = SNDRV_PCM_FMTBIT_S16_LE,
 #endif
+=======
+>>>>>>> refs/remotes/origin/master
 	.period_bytes_min = 1024,
 	.period_bytes_max = 8 * 1024,
 	.periods_min	  = 2,
@@ -115,8 +118,13 @@ static void txx9aclc_dma_complete(void *arg)
 	spin_lock_irqsave(&dmadata->dma_lock, flags);
 	if (dmadata->frag_count >= 0) {
 		dmadata->dmacount--;
+<<<<<<< HEAD
 		BUG_ON(dmadata->dmacount < 0);
 		tasklet_schedule(&dmadata->tasklet);
+=======
+		if (!WARN_ON(dmadata->dmacount < 0))
+			tasklet_schedule(&dmadata->tasklet);
+>>>>>>> refs/remotes/origin/master
 	}
 	spin_unlock_irqrestore(&dmadata->dma_lock, flags);
 }
@@ -133,6 +141,7 @@ txx9aclc_dma_submit(struct txx9aclc_dmadata *dmadata, dma_addr_t buf_dma_addr)
 		    dmadata->frag_bytes, buf_dma_addr & (PAGE_SIZE - 1));
 	sg_dma_address(&sg) = buf_dma_addr;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	desc = chan->device->device_prep_slave_sg(chan, &sg, 1,
 		dmadata->substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
 		DMA_TO_DEVICE : DMA_FROM_DEVICE,
@@ -141,6 +150,11 @@ txx9aclc_dma_submit(struct txx9aclc_dmadata *dmadata, dma_addr_t buf_dma_addr)
 		dmadata->substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
 		DMA_MEM_TO_DEV : DMA_DEV_TO_MEM,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	desc = dmaengine_prep_slave_sg(chan, &sg, 1,
+		dmadata->substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
+		DMA_MEM_TO_DEV : DMA_DEV_TO_MEM,
+>>>>>>> refs/remotes/origin/master
 		DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
 	if (!desc) {
 		dev_err(&chan->dev->device, "cannot prepare slave dma\n");
@@ -187,7 +201,14 @@ static void txx9aclc_dma_tasklet(unsigned long data)
 		spin_unlock_irqrestore(&dmadata->dma_lock, flags);
 		return;
 	}
+<<<<<<< HEAD
 	BUG_ON(dmadata->dmacount >= NR_DMA_CHAIN);
+=======
+	if (WARN_ON(dmadata->dmacount >= NR_DMA_CHAIN)) {
+		spin_unlock_irqrestore(&dmadata->dma_lock, flags);
+		return;
+	}
+>>>>>>> refs/remotes/origin/master
 	while (dmadata->dmacount < NR_DMA_CHAIN) {
 		dmadata->dmacount++;
 		spin_unlock_irqrestore(&dmadata->dma_lock, flags);
@@ -297,9 +318,13 @@ static void txx9aclc_pcm_free_dma_buffers(struct snd_pcm *pcm)
 static int txx9aclc_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct snd_card *card = rtd->card->snd_card;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct snd_card *card = rtd->card->snd_card;
+>>>>>>> refs/remotes/origin/master
 	struct snd_soc_dai *dai = rtd->cpu_dai;
 	struct snd_pcm *pcm = rtd->pcm;
 	struct platform_device *pdev = to_platform_device(dai->platform->dev);
@@ -426,12 +451,20 @@ static struct snd_soc_platform_driver txx9aclc_soc_platform = {
 	.pcm_free	= txx9aclc_pcm_free_dma_buffers,
 };
 
+<<<<<<< HEAD
 static int __devinit txx9aclc_soc_platform_probe(struct platform_device *pdev)
+=======
+static int txx9aclc_soc_platform_probe(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	return snd_soc_register_platform(&pdev->dev, &txx9aclc_soc_platform);
 }
 
+<<<<<<< HEAD
 static int __devexit txx9aclc_soc_platform_remove(struct platform_device *pdev)
+=======
+static int txx9aclc_soc_platform_remove(struct platform_device *pdev)
+>>>>>>> refs/remotes/origin/master
 {
 	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
@@ -444,6 +477,7 @@ static struct platform_driver txx9aclc_pcm_driver = {
 	},
 
 	.probe = txx9aclc_soc_platform_probe,
+<<<<<<< HEAD
 	.remove = __devexit_p(txx9aclc_soc_platform_remove),
 };
 
@@ -462,6 +496,12 @@ module_exit(snd_txx9aclc_pcm_exit);
 =======
 module_platform_driver(txx9aclc_pcm_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.remove = txx9aclc_soc_platform_remove,
+};
+
+module_platform_driver(txx9aclc_pcm_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Atsushi Nemoto <anemo@mba.ocn.ne.jp>");
 MODULE_DESCRIPTION("TXx9 ACLC Audio DMA driver");

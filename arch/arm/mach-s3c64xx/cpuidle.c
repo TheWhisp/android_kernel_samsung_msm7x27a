@@ -20,19 +20,28 @@
 
 #include <mach/map.h>
 
+<<<<<<< HEAD
 #include <mach/regs-sys.h>
 #include <mach/regs-syscon-power.h>
+=======
+#include "regs-sys.h"
+#include "regs-syscon-power.h"
+>>>>>>> refs/remotes/origin/master
 
 static int s3c64xx_enter_idle(struct cpuidle_device *dev,
 			      struct cpuidle_driver *drv,
 			      int index)
 {
+<<<<<<< HEAD
 	struct timeval before, after;
 	unsigned long tmp;
 	int idle_time;
 
 	local_irq_disable();
 	do_gettimeofday(&before);
+=======
+	unsigned long tmp;
+>>>>>>> refs/remotes/origin/master
 
 	/* Setup PWRCFG to enter idle mode */
 	tmp = __raw_readl(S3C64XX_PWR_CFG);
@@ -42,6 +51,7 @@ static int s3c64xx_enter_idle(struct cpuidle_device *dev,
 
 	cpu_do_idle();
 
+<<<<<<< HEAD
 	do_gettimeofday(&after);
 	local_irq_enable();
 	idle_time = (after.tv_sec - before.tv_sec) * USEC_PER_SEC +
@@ -70,10 +80,30 @@ static struct cpuidle_driver s3c64xx_cpuidle_driver = {
 
 static struct cpuidle_device s3c64xx_cpuidle_device = {
 	.state_count	= ARRAY_SIZE(s3c64xx_cpuidle_set),
+=======
+	return index;
+}
+
+static struct cpuidle_driver s3c64xx_cpuidle_driver = {
+	.name	= "s3c64xx_cpuidle",
+	.owner  = THIS_MODULE,
+	.states = {
+		{
+			.enter            = s3c64xx_enter_idle,
+			.exit_latency     = 1,
+			.target_residency = 1,
+			.flags            = CPUIDLE_FLAG_TIME_VALID,
+			.name             = "IDLE",
+			.desc             = "System active, ARM gated",
+		},
+	},
+	.state_count = 1,
+>>>>>>> refs/remotes/origin/master
 };
 
 static int __init s3c64xx_init_cpuidle(void)
 {
+<<<<<<< HEAD
 	int ret;
 
 	memcpy(s3c64xx_cpuidle_driver.states, s3c64xx_cpuidle_set,
@@ -87,5 +117,8 @@ static int __init s3c64xx_init_cpuidle(void)
 	}
 
 	return 0;
+=======
+	return cpuidle_register(&s3c64xx_cpuidle_driver, NULL);
+>>>>>>> refs/remotes/origin/master
 }
 device_initcall(s3c64xx_init_cpuidle);

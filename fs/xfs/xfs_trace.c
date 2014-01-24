@@ -17,6 +17,7 @@
  */
 #include "xfs.h"
 #include "xfs_fs.h"
+<<<<<<< HEAD
 #include "xfs_types.h"
 #include "xfs_bit.h"
 #include "xfs_log.h"
@@ -32,12 +33,30 @@
 #include "xfs_inode.h"
 #include "xfs_btree.h"
 #include "xfs_mount.h"
+=======
+#include "xfs_shared.h"
+#include "xfs_format.h"
+#include "xfs_log_format.h"
+#include "xfs_trans_resv.h"
+#include "xfs_sb.h"
+#include "xfs_ag.h"
+#include "xfs_mount.h"
+#include "xfs_da_format.h"
+#include "xfs_inode.h"
+#include "xfs_btree.h"
+#include "xfs_da_btree.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_ialloc.h"
 #include "xfs_itable.h"
 #include "xfs_alloc.h"
 #include "xfs_bmap.h"
 #include "xfs_attr.h"
 #include "xfs_attr_leaf.h"
+<<<<<<< HEAD
+=======
+#include "xfs_trans.h"
+#include "xfs_log.h"
+>>>>>>> refs/remotes/origin/master
 #include "xfs_log_priv.h"
 #include "xfs_buf_item.h"
 #include "xfs_quota.h"
@@ -47,6 +66,10 @@
 #include "xfs_dquot.h"
 #include "xfs_log_recover.h"
 #include "xfs_inode_item.h"
+<<<<<<< HEAD
+=======
+#include "xfs_bmap_btree.h"
+>>>>>>> refs/remotes/origin/master
 
 /*
  * We include this last to have the helpers above available for the trace

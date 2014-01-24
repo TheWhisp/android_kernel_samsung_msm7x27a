@@ -3,11 +3,16 @@
 
 #include <linux/phy.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 
 struct module;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+struct module;
+>>>>>>> refs/remotes/origin/master
 
 struct mdiobb_ctrl;
 
@@ -37,10 +42,15 @@ struct mdiobb_ops {
 struct mdiobb_ctrl {
 	const struct mdiobb_ops *ops;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	/* reset callback */
 	int (*reset)(struct mii_bus *bus);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* reset callback */
+	int (*reset)(struct mii_bus *bus);
+>>>>>>> refs/remotes/origin/master
 };
 
 /* The returned bus is not yet registered with the phy layer. */

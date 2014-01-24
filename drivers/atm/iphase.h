@@ -890,6 +890,7 @@ typedef struct ia_rtn_q {
 
 #define SUNI_LOSV   	0x04
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct {
         u32   suni_master_reset;      /* SUNI Master Reset and Identity     */
         u32   suni_master_config;     /* SUNI Master Configuration          */
@@ -964,6 +965,8 @@ typedef struct {
 } IA_SUNI;
 
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum ia_suni {
 	SUNI_MASTER_RESET	= 0x000, /* SUNI Master Reset and Identity   */
 	SUNI_MASTER_CONFIG	= 0x004, /* SUNI Master Configuration        */
@@ -1029,7 +1032,10 @@ enum ia_suni {
 	 * SUNI_MASTER_TEST	= 0x200,    SUNI Master Test                 */
 	SUNI_RESERVED_TEST	= 0x204  /* SUNI Reserved for Test           */
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 typedef struct _SUNI_STATS_
 {
@@ -1062,6 +1068,7 @@ typedef struct _SUNI_STATS_
 } IA_SUNI_STATS; 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct iadev_t {  
 	/*-----base pointers into (i)chipSAR+ address space */   
 	u32 __iomem *phy;		/* base pointer into phy(SUNI) */  
@@ -1070,12 +1077,17 @@ typedef struct iadev_t {
 	u32 __iomem *reg;		/* base pointer to SAR registers  
 					   - Bus Interface Control Regs */  
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 typedef struct iadev_priv {
 	/*-----base pointers into (i)chipSAR+ address space */   
 	u32 __iomem *phy;	/* Base pointer into phy (SUNI). */
 	u32 __iomem *dma;	/* Base pointer into DMA control registers. */
 	u32 __iomem *reg;	/* Base pointer to SAR registers. */
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	u32 __iomem *seg_reg;		/* base pointer to segmentation engine  
 						internal registers */  
 	u32 __iomem *reass_reg;		/* base pointer to reassemble engine  
@@ -1148,6 +1160,7 @@ typedef struct iadev_priv {
 
 /******************* IDT77105 25MB/s PHY DEFINE *****************************/
 <<<<<<< HEAD
+<<<<<<< HEAD
 typedef struct {
 	u_int	mb25_master_ctrl;	/* Master control		     */
 	u_int	mb25_intr_status;	/* Interrupt status		     */
@@ -1157,6 +1170,8 @@ typedef struct {
 	u_int	mb25_high_byte_counter;	/* High byte counter		     */
 } ia_mb25_t;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum ia_mb25 {
 	MB25_MASTER_CTRL	= 0x00, /* Master control		     */
 	MB25_INTR_STATUS	= 0x04,	/* Interrupt status		     */
@@ -1165,7 +1180,10 @@ enum ia_mb25 {
 	MB25_LOW_BYTE_COUNTER	= 0x10,
 	MB25_HIGH_BYTE_COUNTER	= 0x14
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Master Control
@@ -1214,6 +1232,7 @@ enum ia_mb25 {
 #define FE_E3_PHY       0x0090          /* E3 */
 		     
 /*********************** SUNI_PM7345 PHY DEFINE HERE *********************/
+<<<<<<< HEAD
 <<<<<<< HEAD
 typedef struct _suni_pm7345_t
 {
@@ -1332,6 +1351,8 @@ typedef struct _suni_pm7345_t
     u_int suni_pad6[0xff-0x80];
 }suni_pm7345_t;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 enum suni_pm7345 {
 	SUNI_CONFIG			= 0x000, /* SUNI Configuration */
 	SUNI_INTR_ENBL			= 0x004, /* SUNI Interrupt Enable */
@@ -1447,7 +1468,10 @@ enum suni_pm7345 {
 	SUNI_MASTER_TEST		= 0x200,
 	/* SUNI_PAD6 (0xff - 0x80) */
 };
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 #define SUNI_PM7345_T suni_pm7345_t
 #define SUNI_PM7345     0x20            /* Suni chip type */

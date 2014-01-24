@@ -45,6 +45,7 @@ config DEBUG_OCD
 	  output to the UniCore On-Chip-Debugger channel using CP #1.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 config DEBUG_OCD_BREAKPOINT
 	bool "Breakpoint support via On-Chip-Debugger"
 	depends on DEBUG_OCD
@@ -61,4 +62,6 @@ config DEBUG_UART
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 endmenu

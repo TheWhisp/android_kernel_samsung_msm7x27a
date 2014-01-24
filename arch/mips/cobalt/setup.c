@@ -17,6 +17,10 @@
 
 #include <asm/bootinfo.h>
 #include <asm/reboot.h>
+<<<<<<< HEAD
+=======
+#include <asm/setup.h>
+>>>>>>> refs/remotes/origin/master
 #include <asm/gt64120.h>
 
 #include <cobalt.h>
@@ -112,6 +116,11 @@ void __init prom_init(void)
 	}
 
 	add_memory_region(0x0, memsz, BOOT_MEM_RAM);
+<<<<<<< HEAD
+=======
+
+	setup_8250_early_printk_port(CKSEG1ADDR(0x1c800000), 0, 0);
+>>>>>>> refs/remotes/origin/master
 }
 
 void __init prom_free_prom_memory(void)

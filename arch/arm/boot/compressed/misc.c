@@ -25,7 +25,11 @@ unsigned int __machine_arch_type;
 static void putstr(const char *ptr);
 extern void error(char *x);
 
+<<<<<<< HEAD
 #include <mach/uncompress.h>
+=======
+#include CONFIG_UNCOMPRESS_INCLUDE
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_DEBUG_ICEDCC
 
@@ -127,6 +131,21 @@ asmlinkage void __div0(void)
 	error("Attempting division by 0!");
 }
 
+<<<<<<< HEAD
+=======
+unsigned long __stack_chk_guard;
+
+void __stack_chk_guard_setup(void)
+{
+	__stack_chk_guard = 0x000a0dff;
+}
+
+void __stack_chk_fail(void)
+{
+	error("stack-protector: Kernel stack is corrupted\n");
+}
+
+>>>>>>> refs/remotes/origin/master
 extern int do_decompress(u8 *input, int len, u8 *output, void (*error)(char *x));
 
 
@@ -137,6 +156,11 @@ decompress_kernel(unsigned long output_start, unsigned long free_mem_ptr_p,
 {
 	int ret;
 
+<<<<<<< HEAD
+=======
+	__stack_chk_guard_setup();
+
+>>>>>>> refs/remotes/origin/master
 	output_data		= (unsigned char *)output_start;
 	free_mem_ptr		= free_mem_ptr_p;
 	free_mem_end_ptr	= free_mem_ptr_end_p;

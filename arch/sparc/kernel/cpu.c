@@ -7,10 +7,14 @@
 #include <linux/seq_file.h>
 #include <linux/kernel.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/init.h>
 #include <linux/smp.h>
 #include <linux/threads.h>
@@ -125,7 +129,11 @@ static const struct manufacturer_info __initconst manufacturer_info[] = {
 		FPU(-1, NULL)
 	}
 },{
+<<<<<<< HEAD
 	4,
+=======
+	PSR_IMPL_TI,
+>>>>>>> refs/remotes/origin/master
 	.cpu_info = {
 		CPU(0, "Texas Instruments, Inc. - SuperSparc-(II)"),
 		/* SparcClassic  --  borned STP1010TAB-50*/
@@ -195,7 +203,11 @@ static const struct manufacturer_info __initconst manufacturer_info[] = {
 		FPU(-1, NULL)
 	}
 },{
+<<<<<<< HEAD
 	0xF,		/* Aeroflex Gaisler */
+=======
+	PSR_IMPL_LEON,		/* Aeroflex Gaisler */
+>>>>>>> refs/remotes/origin/master
 	.cpu_info = {
 		CPU(3, "LEON"),
 		CPU(-1, NULL)
@@ -444,6 +456,7 @@ static int __init cpu_type_probe(void)
 	int psr_impl, psr_vers, fpu_vers;
 	int psr;
 
+<<<<<<< HEAD
 	psr_impl = ((get_psr() >> 28) & 0xf);
 	psr_vers = ((get_psr() >> 24) & 0xf);
 
@@ -454,6 +467,18 @@ static int __init cpu_type_probe(void)
 #else
 	fpu_vers = ((get_fsr() >> 17) & 0x7);
 #endif
+=======
+	psr_impl = ((get_psr() >> PSR_IMPL_SHIFT) & PSR_IMPL_SHIFTED_MASK);
+	psr_vers = ((get_psr() >> PSR_VERS_SHIFT) & PSR_VERS_SHIFTED_MASK);
+
+	psr = get_psr();
+	put_psr(psr | PSR_EF);
+
+	if (psr_impl == PSR_IMPL_LEON)
+		fpu_vers = get_psr() & PSR_EF ? ((get_fsr() >> 17) & 0x7) : 7;
+	else
+		fpu_vers = ((get_fsr() >> 17) & 0x7);
+>>>>>>> refs/remotes/origin/master
 
 	put_psr(psr);
 
@@ -486,7 +511,10 @@ static void __init sun4v_cpu_probe(void)
 		break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	case SUN4V_CHIP_NIAGARA4:
 		sparc_cpu_type = "UltraSparc T4 (Niagara4)";
 		sparc_fpu_type = "UltraSparc T4 integrated FPU";
@@ -499,7 +527,16 @@ static void __init sun4v_cpu_probe(void)
 		sparc_pmu_type = "niagara5";
 		break;
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	case SUN4V_CHIP_SPARC64X:
+		sparc_cpu_type = "SPARC64-X";
+		sparc_fpu_type = "SPARC64-X integrated FPU";
+		sparc_pmu_type = "sparc64-x";
+		break;
+
+>>>>>>> refs/remotes/origin/master
 	default:
 		printk(KERN_WARNING "CPU: Unknown sun4v cpu type [%s]\n",
 		       prom_cpu_compatible);

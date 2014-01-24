@@ -16,12 +16,19 @@
 #include <linux/kmod.h>
 #include <linux/kobj_map.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/buffer_head.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
 #include <linux/mutex.h>
 #include <linux/idr.h>
 #include <linux/log2.h>
+=======
+#include <linux/mutex.h>
+#include <linux/idr.h>
+#include <linux/log2.h>
+#include <linux/pm_runtime.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "blk.h"
 
@@ -30,10 +37,14 @@ struct kobject *block_depr;
 
 /* for extended dynamic devt allocation, currently only one major is used */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #define MAX_EXT_DEVT		(1 << MINORBITS)
 =======
 #define NR_EXT_DEVT		(1 << MINORBITS)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#define NR_EXT_DEVT		(1 << MINORBITS)
+>>>>>>> refs/remotes/origin/master
 
 /* For extended devt allocation.  ext_devt_mutex prevents look up
  * results from going away underneath its user.
@@ -43,6 +54,11 @@ static DEFINE_IDR(ext_devt_idr);
 
 static struct device_type disk_type;
 
+<<<<<<< HEAD
+=======
+static void disk_check_events(struct disk_events *ev,
+			      unsigned int *clearing_ptr);
+>>>>>>> refs/remotes/origin/master
 static void disk_alloc_events(struct gendisk *disk);
 static void disk_add_events(struct gendisk *disk);
 static void disk_del_events(struct gendisk *disk);
@@ -162,7 +178,11 @@ struct hd_struct *disk_part_iter_next(struct disk_part_iter *piter)
 		part = rcu_dereference(ptbl->part[piter->idx]);
 		if (!part)
 			continue;
+<<<<<<< HEAD
 		if (!part->nr_sects &&
+=======
+		if (!part_nr_sects_read(part) &&
+>>>>>>> refs/remotes/origin/master
 		    !(piter->flags & DISK_PITER_INCL_EMPTY) &&
 		    !(piter->flags & DISK_PITER_INCL_EMPTY_PART0 &&
 		      piter->idx == 0))
@@ -199,7 +219,11 @@ EXPORT_SYMBOL_GPL(disk_part_iter_exit);
 static inline int sector_in_part(struct hd_struct *part, sector_t sector)
 {
 	return part->start_sect <= sector &&
+<<<<<<< HEAD
 		sector < part->start_sect + part->nr_sects;
+=======
+		sector < part->start_sect + part_nr_sects_read(part);
+>>>>>>> refs/remotes/origin/master
 }
 
 /**
@@ -416,7 +440,11 @@ static int blk_mangle_minor(int minor)
 int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 {
 	struct gendisk *disk = part_to_disk(part);
+<<<<<<< HEAD
 	int idx, rc;
+=======
+	int idx;
+>>>>>>> refs/remotes/origin/master
 
 	/* in consecutive minor range? */
 	if (part->partno < disk->minors) {
@@ -425,6 +453,7 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 	}
 
 	/* allocate ext devt */
+<<<<<<< HEAD
 	do {
 		if (!idr_pre_get(&ext_devt_idr, GFP_KERNEL))
 			return -ENOMEM;
@@ -452,6 +481,14 @@ int blk_alloc_devt(struct hd_struct *part, dev_t *devt)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mutex_lock(&ext_devt_mutex);
+	idx = idr_alloc(&ext_devt_idr, part, 0, NR_EXT_DEVT, GFP_KERNEL);
+	mutex_unlock(&ext_devt_mutex);
+	if (idx < 0)
+		return idx == -ENOSPC ? -EBUSY : idx;
+
+>>>>>>> refs/remotes/origin/master
 	*devt = MKDEV(BLOCK_EXT_MAJOR, blk_mangle_minor(idx));
 	return 0;
 }
@@ -529,10 +566,14 @@ static int exact_lock(dev_t devt, void *data)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 void register_disk(struct gendisk *disk)
 =======
 static void register_disk(struct gendisk *disk)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static void register_disk(struct gendisk *disk)
+>>>>>>> refs/remotes/origin/master
 {
 	struct device *ddev = disk_to_dev(disk);
 	struct block_device *bdev;
@@ -557,15 +598,30 @@ static void register_disk(struct gendisk *disk)
 			return;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	/*
+	 * avoid probable deadlock caused by allocating memory with
+	 * GFP_KERNEL in runtime_resume callback of its all ancestor
+	 * devices
+	 */
+	pm_runtime_set_memalloc_noio(ddev, true);
+
+>>>>>>> refs/remotes/origin/master
 	disk->part0.holder_dir = kobject_create_and_add("holders", &ddev->kobj);
 	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
 
 	/* No minors to use for partitions */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!disk_partitionable(disk))
 =======
 	if (!disk_part_scan_enabled(disk))
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!disk_part_scan_enabled(disk))
+>>>>>>> refs/remotes/origin/master
 		goto exit;
 
 	/* No such device (e.g., media were just removed) */
@@ -634,10 +690,14 @@ void add_disk(struct gendisk *disk)
 	disk_alloc_events(disk);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* Register BDI before referencing it from bdev */ 
 =======
 	/* Register BDI before referencing it from bdev */
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	/* Register BDI before referencing it from bdev */
+>>>>>>> refs/remotes/origin/master
 	bdi = &disk->queue->backing_dev_info;
 	bdi_register_dev(bdi, disk_devt(disk));
 
@@ -651,10 +711,14 @@ void add_disk(struct gendisk *disk)
 	 * so that it sticks around as long as @disk is there.
 	 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	WARN_ON_ONCE(blk_get_queue(disk->queue));
 =======
 	WARN_ON_ONCE(!blk_get_queue(disk->queue));
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	WARN_ON_ONCE(!blk_get_queue(disk->queue));
+>>>>>>> refs/remotes/origin/master
 
 	retval = sysfs_create_link(&disk_to_dev(disk)->kobj, &bdi->dev->kobj,
 				   "bdi");
@@ -682,9 +746,12 @@ void del_gendisk(struct gendisk *disk)
 
 	invalidate_partition(disk, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	blk_free_devt(disk_to_dev(disk)->devt);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	set_capacity(disk, 0);
 	disk->flags &= ~GENHD_FL_UP;
 
@@ -701,11 +768,17 @@ void del_gendisk(struct gendisk *disk)
 	disk->driverfs_dev = NULL;
 	if (!sysfs_deprecated)
 		sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
+<<<<<<< HEAD
 	device_del(disk_to_dev(disk));
 <<<<<<< HEAD
 =======
 	blk_free_devt(disk_to_dev(disk)->devt);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	pm_runtime_set_memalloc_noio(disk_to_dev(disk), false);
+	device_del(disk_to_dev(disk));
+	blk_free_devt(disk_to_dev(disk)->devt);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(del_gendisk);
 
@@ -787,7 +860,10 @@ void __init printk_all_partitions(void)
 		struct hd_struct *part;
 		char name_buf[BDEVNAME_SIZE];
 		char devt_buf[BDEVT_SIZE];
+<<<<<<< HEAD
 		char uuid_buf[PARTITION_META_INFO_UUIDLTH * 2 + 5];
+=======
+>>>>>>> refs/remotes/origin/master
 
 		/*
 		 * Don't show empty devices or things that have been
@@ -806,6 +882,7 @@ void __init printk_all_partitions(void)
 		while ((part = disk_part_iter_next(&piter))) {
 			bool is_part0 = part == &disk->part0;
 
+<<<<<<< HEAD
 			uuid_buf[0] = '\0';
 			if (part->info)
 				snprintf(uuid_buf, sizeof(uuid_buf), "%pU",
@@ -816,6 +893,13 @@ void __init printk_all_partitions(void)
 			       (unsigned long long)part->nr_sects >> 1,
 			       disk_name(disk, part->partno, name_buf),
 			       uuid_buf);
+=======
+			printk("%s%s %10llu %s %s", is_part0 ? "" : "  ",
+			       bdevt_str(part_devt(part), devt_buf),
+			       (unsigned long long)part_nr_sects_read(part) >> 1
+			       , disk_name(disk, part->partno, name_buf),
+			       part->info ? part->info->uuid : "");
+>>>>>>> refs/remotes/origin/master
 			if (is_part0) {
 				if (disk->driverfs_dev != NULL &&
 				    disk->driverfs_dev->driver != NULL)
@@ -879,7 +963,11 @@ static void disk_seqf_stop(struct seq_file *seqf, void *v)
 
 static void *show_partition_start(struct seq_file *seqf, loff_t *pos)
 {
+<<<<<<< HEAD
 	static void *p;
+=======
+	void *p;
+>>>>>>> refs/remotes/origin/master
 
 	p = disk_seqf_start(seqf, pos);
 	if (!IS_ERR_OR_NULL(p) && !*pos)
@@ -896,10 +984,14 @@ static int show_partition(struct seq_file *seqf, void *v)
 
 	/* Don't show non-partitionable removeable devices or empty devices */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!get_capacity(sgp) || (!disk_partitionable(sgp) &&
 =======
 	if (!get_capacity(sgp) || (!disk_max_parts(sgp) &&
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (!get_capacity(sgp) || (!disk_max_parts(sgp) &&
+>>>>>>> refs/remotes/origin/master
 				   (sgp->flags & GENHD_FL_REMOVABLE)))
 		return 0;
 	if (sgp->flags & GENHD_FL_SUPPRESS_PARTITION_INFO)
@@ -910,7 +1002,11 @@ static int show_partition(struct seq_file *seqf, void *v)
 	while ((part = disk_part_iter_next(&piter)))
 		seq_printf(seqf, "%4d  %7d %10llu %s\n",
 			   MAJOR(part_devt(part)), MINOR(part_devt(part)),
+<<<<<<< HEAD
 			   (unsigned long long)part->nr_sects >> 1,
+=======
+			   (unsigned long long)part_nr_sects_read(part) >> 1,
+>>>>>>> refs/remotes/origin/master
 			   disk_name(sgp, part->partno, buf));
 	disk_part_iter_exit(&piter);
 
@@ -1077,6 +1173,7 @@ static const struct attribute_group *disk_attr_groups[] = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static void disk_free_ptbl_rcu_cb(struct rcu_head *head)
 {
 	struct disk_part_tbl *ptbl =
@@ -1087,6 +1184,8 @@ static void disk_free_ptbl_rcu_cb(struct rcu_head *head)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 /**
  * disk_replace_part_tbl - replace disk->part_tbl in RCU-safe way
  * @disk: disk to replace part_tbl for
@@ -1108,10 +1207,14 @@ static void disk_replace_part_tbl(struct gendisk *disk,
 	if (old_ptbl) {
 		rcu_assign_pointer(old_ptbl->last_lookup, NULL);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		call_rcu(&old_ptbl->rcu_head, disk_free_ptbl_rcu_cb);
 =======
 		kfree_rcu(old_ptbl, rcu_head);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		kfree_rcu(old_ptbl, rcu_head);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 
@@ -1172,6 +1275,7 @@ static void disk_release(struct device *dev)
 		blk_put_queue(disk->queue);
 	kfree(disk);
 }
+<<<<<<< HEAD
 
 static int disk_uevent(struct device *dev, struct kobj_uevent_env *env)
 {
@@ -1188,15 +1292,22 @@ static int disk_uevent(struct device *dev, struct kobj_uevent_env *env)
 	return 0;
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 struct class block_class = {
 	.name		= "block",
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 static char *block_devnode(struct device *dev, mode_t *mode)
 =======
 static char *block_devnode(struct device *dev, umode_t *mode)
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static char *block_devnode(struct device *dev, umode_t *mode,
+			   kuid_t *uid, kgid_t *gid)
+>>>>>>> refs/remotes/origin/master
 {
 	struct gendisk *disk = dev_to_disk(dev);
 
@@ -1210,7 +1321,10 @@ static struct device_type disk_type = {
 	.groups		= disk_attr_groups,
 	.release	= disk_release,
 	.devnode	= block_devnode,
+<<<<<<< HEAD
 	.uevent		= disk_uevent,
+=======
+>>>>>>> refs/remotes/origin/master
 };
 
 #ifdef CONFIG_PROC_FS
@@ -1237,15 +1351,20 @@ static int diskstats_show(struct seq_file *seqf, void *v)
 				"\n\n");
 	*/
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	disk_part_iter_init(&piter, gp, DISK_PITER_INCL_EMPTY_PART0);
 	while ((hd = disk_part_iter_next(&piter))) {
 		cpu = part_stat_lock();
 		part_round_stats(cpu, hd);
 		part_stat_unlock();
+<<<<<<< HEAD
 <<<<<<< HEAD
 		seq_printf(seqf, "%4d %7d %s %lu %lu %llu "
 			   "%u %lu %lu %llu %u %u %u %u\n",
@@ -1253,10 +1372,15 @@ static int diskstats_show(struct seq_file *seqf, void *v)
 		seq_printf(seqf, "%4d %7d %s %lu %lu %lu "
 			   "%u %lu %lu %lu %u %u %u %u\n",
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		seq_printf(seqf, "%4d %7d %s %lu %lu %lu "
+			   "%u %lu %lu %lu %u %u %u %u\n",
+>>>>>>> refs/remotes/origin/master
 			   MAJOR(part_devt(hd)), MINOR(part_devt(hd)),
 			   disk_name(gp, hd->partno, buf),
 			   part_stat_read(hd, ios[READ]),
 			   part_stat_read(hd, merges[READ]),
+<<<<<<< HEAD
 <<<<<<< HEAD
 			   (unsigned long long)part_stat_read(hd, sectors[READ]),
 			   jiffies_to_msecs(part_stat_read(hd, ticks[READ])),
@@ -1264,12 +1388,17 @@ static int diskstats_show(struct seq_file *seqf, void *v)
 			   part_stat_read(hd, merges[WRITE]),
 			   (unsigned long long)part_stat_read(hd, sectors[WRITE]),
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 			   part_stat_read(hd, sectors[READ]),
 			   jiffies_to_msecs(part_stat_read(hd, ticks[READ])),
 			   part_stat_read(hd, ios[WRITE]),
 			   part_stat_read(hd, merges[WRITE]),
 			   part_stat_read(hd, sectors[WRITE]),
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 			   jiffies_to_msecs(part_stat_read(hd, ticks[WRITE])),
 			   part_in_flight(hd),
 			   jiffies_to_msecs(part_stat_read(hd, io_ticks)),
@@ -1278,10 +1407,14 @@ static int diskstats_show(struct seq_file *seqf, void *v)
 	}
 	disk_part_iter_exit(&piter);
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+
+>>>>>>> refs/remotes/origin/master
 	return 0;
 }
 
@@ -1350,7 +1483,11 @@ EXPORT_SYMBOL(blk_lookup_devt);
 
 struct gendisk *alloc_disk(int minors)
 {
+<<<<<<< HEAD
 	return alloc_disk_node(minors, -1);
+=======
+	return alloc_disk_node(minors, NUMA_NO_NODE);
+>>>>>>> refs/remotes/origin/master
 }
 EXPORT_SYMBOL(alloc_disk);
 
@@ -1358,8 +1495,12 @@ struct gendisk *alloc_disk_node(int minors, int node_id)
 {
 	struct gendisk *disk;
 
+<<<<<<< HEAD
 	disk = kmalloc_node(sizeof(struct gendisk),
 				GFP_KERNEL | __GFP_ZERO, node_id);
+=======
+	disk = kzalloc_node(sizeof(struct gendisk), GFP_KERNEL, node_id);
+>>>>>>> refs/remotes/origin/master
 	if (disk) {
 		if (!init_part_stats(&disk->part0)) {
 			kfree(disk);
@@ -1373,6 +1514,19 @@ struct gendisk *alloc_disk_node(int minors, int node_id)
 		}
 		disk->part_tbl->part[0] = &disk->part0;
 
+<<<<<<< HEAD
+=======
+		/*
+		 * set_capacity() and get_capacity() currently don't use
+		 * seqcounter to read/update the part0->nr_sects. Still init
+		 * the counter as we can read the sectors in IO submission
+		 * patch using seqence counters.
+		 *
+		 * TODO: Ideally set_capacity() and get_capacity() should be
+		 * converted to make use of bd_mutex and sequence counters.
+		 */
+		seqcount_init(&disk->part0.nr_sects_seq);
+>>>>>>> refs/remotes/origin/master
 		hd_ref_init(&disk->part0);
 
 		disk->minors = minors;
@@ -1585,9 +1739,17 @@ static void __disk_unblock_events(struct gendisk *disk, bool check_now)
 	intv = disk_events_poll_jiffies(disk);
 	set_timer_slack(&ev->dwork.timer, intv / 4);
 	if (check_now)
+<<<<<<< HEAD
 		queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, 0);
 	else if (intv)
 		queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, intv);
+=======
+		queue_delayed_work(system_freezable_power_efficient_wq,
+				&ev->dwork, 0);
+	else if (intv)
+		queue_delayed_work(system_freezable_power_efficient_wq,
+				&ev->dwork, intv);
+>>>>>>> refs/remotes/origin/master
 out_unlock:
 	spin_unlock_irqrestore(&ev->lock, flags);
 }
@@ -1610,6 +1772,7 @@ void disk_unblock_events(struct gendisk *disk)
 
 /**
 <<<<<<< HEAD
+<<<<<<< HEAD
  * disk_check_events - schedule immediate event checking
  * @disk: disk to check events for
  *
@@ -1623,6 +1786,8 @@ void disk_check_events(struct gendisk *disk)
 	struct disk_events *ev = disk->ev;
 	unsigned long flags;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * disk_flush_events - schedule immediate event checking and flushing
  * @disk: disk to check and flush events for
  * @mask: events to flush
@@ -1637,11 +1802,15 @@ void disk_check_events(struct gendisk *disk)
 void disk_flush_events(struct gendisk *disk, unsigned int mask)
 {
 	struct disk_events *ev = disk->ev;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	if (!ev)
 		return;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	spin_lock_irqsave(&ev->lock, flags);
 =======
@@ -1660,6 +1829,15 @@ EXPORT_SYMBOL_GPL(disk_check_events);
 	spin_unlock_irq(&ev->lock);
 }
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	spin_lock_irq(&ev->lock);
+	ev->clearing |= mask;
+	if (!ev->block)
+		mod_delayed_work(system_freezable_power_efficient_wq,
+				&ev->dwork, 0);
+	spin_unlock_irq(&ev->lock);
+}
+>>>>>>> refs/remotes/origin/master
 
 /**
  * disk_clear_events - synchronously check, clear and return pending events
@@ -1677,6 +1855,10 @@ unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
 	const struct block_device_operations *bdops = disk->fops;
 	struct disk_events *ev = disk->ev;
 	unsigned int pending;
+<<<<<<< HEAD
+=======
+	unsigned int clearing = mask;
+>>>>>>> refs/remotes/origin/master
 
 	if (!ev) {
 		/* for drivers still using the old ->media_changed method */
@@ -1686,6 +1868,7 @@ unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	/* tell the workfn about the events being cleared */
 	spin_lock_irq(&ev->lock);
 	ev->clearing |= mask;
@@ -1703,17 +1886,64 @@ unsigned int disk_clear_events(struct gendisk *disk, unsigned int mask)
 	pending = ev->pending & mask;
 	ev->pending &= ~mask;
 	spin_unlock_irq(&ev->lock);
+=======
+	disk_block_events(disk);
+
+	/*
+	 * store the union of mask and ev->clearing on the stack so that the
+	 * race with disk_flush_events does not cause ambiguity (ev->clearing
+	 * can still be modified even if events are blocked).
+	 */
+	spin_lock_irq(&ev->lock);
+	clearing |= ev->clearing;
+	ev->clearing = 0;
+	spin_unlock_irq(&ev->lock);
+
+	disk_check_events(ev, &clearing);
+	/*
+	 * if ev->clearing is not 0, the disk_flush_events got called in the
+	 * middle of this function, so we want to run the workfn without delay.
+	 */
+	__disk_unblock_events(disk, ev->clearing ? true : false);
+
+	/* then, fetch and clear pending events */
+	spin_lock_irq(&ev->lock);
+	pending = ev->pending & mask;
+	ev->pending &= ~mask;
+	spin_unlock_irq(&ev->lock);
+	WARN_ON_ONCE(clearing & mask);
+>>>>>>> refs/remotes/origin/master
 
 	return pending;
 }
 
+<<<<<<< HEAD
+=======
+/*
+ * Separate this part out so that a different pointer for clearing_ptr can be
+ * passed in for disk_clear_events.
+ */
+>>>>>>> refs/remotes/origin/master
 static void disk_events_workfn(struct work_struct *work)
 {
 	struct delayed_work *dwork = to_delayed_work(work);
 	struct disk_events *ev = container_of(dwork, struct disk_events, dwork);
+<<<<<<< HEAD
 	struct gendisk *disk = ev->disk;
 	char *envp[ARRAY_SIZE(disk_uevents) + 1] = { };
 	unsigned int clearing = ev->clearing;
+=======
+
+	disk_check_events(ev, &ev->clearing);
+}
+
+static void disk_check_events(struct disk_events *ev,
+			      unsigned int *clearing_ptr)
+{
+	struct gendisk *disk = ev->disk;
+	char *envp[ARRAY_SIZE(disk_uevents) + 1] = { };
+	unsigned int clearing = *clearing_ptr;
+>>>>>>> refs/remotes/origin/master
 	unsigned int events;
 	unsigned long intv;
 	int nr_events = 0, i;
@@ -1726,11 +1956,20 @@ static void disk_events_workfn(struct work_struct *work)
 
 	events &= ~ev->pending;
 	ev->pending |= events;
+<<<<<<< HEAD
 	ev->clearing &= ~clearing;
 
 	intv = disk_events_poll_jiffies(disk);
 	if (!ev->block && intv)
 		queue_delayed_work(system_nrt_freezable_wq, &ev->dwork, intv);
+=======
+	*clearing_ptr &= ~clearing;
+
+	intv = disk_events_poll_jiffies(disk);
+	if (!ev->block && intv)
+		queue_delayed_work(system_freezable_power_efficient_wq,
+				&ev->dwork, intv);
+>>>>>>> refs/remotes/origin/master
 
 	spin_unlock_irq(&ev->lock);
 
@@ -1850,10 +2089,14 @@ static int disk_events_set_dfl_poll_msecs(const char *val,
 
 	list_for_each_entry(ev, &disk_events, node)
 <<<<<<< HEAD
+<<<<<<< HEAD
 		disk_check_events(ev->disk);
 =======
 		disk_flush_events(ev->disk, 0);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		disk_flush_events(ev->disk, 0);
+>>>>>>> refs/remotes/origin/master
 
 	mutex_unlock(&disk_events_mutex);
 

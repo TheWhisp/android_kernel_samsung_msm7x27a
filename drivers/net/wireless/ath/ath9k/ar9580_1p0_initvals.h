@@ -1,5 +1,10 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2010 Atheros Communications Inc.
+=======
+ * Copyright (c) 2010-2011 Atheros Communications Inc.
+ * Copyright (c) 2011-2012 Qualcomm Atheros Inc.
+>>>>>>> refs/remotes/origin/master
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,6 +24,7 @@
 
 /* AR9580 1.0 */
 
+<<<<<<< HEAD
 static const u32 ar9580_1p0_modes_fast_clock[][3] = {
 	/* Addr      5G_HT20     5G_HT40   */
 	{0x00001030, 0x00000268, 0x000004d0},
@@ -31,6 +37,9 @@ static const u32 ar9580_1p0_modes_fast_clock[][3] = {
 	{0x0000a230, 0x0000000b, 0x00000016},
 	{0x0000a254, 0x00000898, 0x00001130},
 };
+=======
+#define ar9580_1p0_modes_fast_clock ar9300Modes_fast_clock_2p2
+>>>>>>> refs/remotes/origin/master
 
 static const u32 ar9580_1p0_radio_postamble[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
@@ -208,6 +217,7 @@ static const u32 ar9580_1p0_baseband_core[][2] = {
 	{0x0000c420, 0x00000000},
 };
 
+<<<<<<< HEAD
 static const u32 ar9580_1p0_mac_postamble[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x00001030, 0x00000230, 0x00000460, 0x000002c0, 0x00000160},
@@ -219,6 +229,9 @@ static const u32 ar9580_1p0_mac_postamble[][5] = {
 	{0x000081d0, 0x00003210, 0x00003210, 0x0000320a, 0x0000320a},
 	{0x00008318, 0x00003e80, 0x00007d00, 0x00006880, 0x00003440},
 };
+=======
+#define ar9580_1p0_mac_postamble ar9300_2p2_mac_postamble
+>>>>>>> refs/remotes/origin/master
 
 static const u32 ar9580_1p0_low_ob_db_tx_gain_table[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
@@ -326,6 +339,7 @@ static const u32 ar9580_1p0_low_ob_db_tx_gain_table[][5] = {
 	{0x00016868, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
 };
 
+<<<<<<< HEAD
 static const u32 ar9580_1p0_high_power_tx_gain_table[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
 	{0x0000a2dc, 0x0380c7fc, 0x0380c7fc, 0x03aaa352, 0x03aaa352},
@@ -431,6 +445,9 @@ static const u32 ar9580_1p0_high_power_tx_gain_table[][5] = {
 	{0x00016848, 0x66480001, 0x66480001, 0x66480001, 0x66480001},
 	{0x00016868, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
 };
+=======
+#define ar9580_1p0_high_power_tx_gain_table ar9580_1p0_low_ob_db_tx_gain_table
+>>>>>>> refs/remotes/origin/master
 
 static const u32 ar9580_1p0_lowest_ob_db_tx_gain_table[][5] = {
 	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
@@ -538,12 +555,16 @@ static const u32 ar9580_1p0_lowest_ob_db_tx_gain_table[][5] = {
 	{0x00016868, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
 };
 
+<<<<<<< HEAD
 static const u32 ar9580_1p0_baseband_core_txfir_coeff_japan_2484[][2] = {
 	/* Addr      allmodes  */
 	{0x0000a398, 0x00000000},
 	{0x0000a39c, 0x6f7f0301},
 	{0x0000a3a0, 0xca9228ee},
 };
+=======
+#define ar9580_1p0_baseband_core_txfir_coeff_japan_2484 ar9462_2p0_baseband_core_txfir_coeff_japan_2484
+>>>>>>> refs/remotes/origin/master
 
 static const u32 ar9580_1p0_mac_core[][2] = {
 	/* Addr      allmodes  */
@@ -808,6 +829,7 @@ static const u32 ar9580_1p0_mixed_ob_db_tx_gain_table[][5] = {
 	{0x00016868, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
 };
 
+<<<<<<< HEAD
 static const u32 ar9580_1p0_wo_xlna_rx_gain_table[][2] = {
 	/* Addr      allmodes  */
 	{0x0000a000, 0x00010000},
@@ -1176,6 +1198,87 @@ static const u32 ar9580_1p0_high_ob_db_tx_gain_table[][5] = {
 	{0x00016468, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
 	{0x00016844, 0x056db2e4, 0x056db2e4, 0x056db2e4, 0x056db2e4},
 	{0x00016848, 0x8e480001, 0x8e480001, 0x8e480001, 0x8e480001},
+=======
+#define ar9580_1p0_wo_xlna_rx_gain_table ar9300Common_wo_xlna_rx_gain_table_2p2
+
+#define ar9580_1p0_soc_postamble ar9300_2p2_soc_postamble
+
+#define ar9580_1p0_high_ob_db_tx_gain_table ar9300Modes_high_ob_db_tx_gain_table_2p2
+
+#define ar9580_1p0_type5_tx_gain_table ar9300Modes_type5_tx_gain_table_2p2
+
+static const u32 ar9580_1p0_type6_tx_gain_table[][5] = {
+	/* Addr      5G_HT20     5G_HT40     2G_HT40     2G_HT20   */
+	{0x0000a2dc, 0x000cfff0, 0x000cfff0, 0x03aaa352, 0x03aaa352},
+	{0x0000a2e0, 0x000f0000, 0x000f0000, 0x03ccc584, 0x03ccc584},
+	{0x0000a2e4, 0x03f00000, 0x03f00000, 0x03f0f800, 0x03f0f800},
+	{0x0000a2e8, 0x00000000, 0x00000000, 0x03ff0000, 0x03ff0000},
+	{0x0000a410, 0x000050d9, 0x000050d9, 0x000050d9, 0x000050d9},
+	{0x0000a500, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+	{0x0000a504, 0x06000003, 0x06000003, 0x04000002, 0x04000002},
+	{0x0000a508, 0x0a000020, 0x0a000020, 0x08000004, 0x08000004},
+	{0x0000a50c, 0x10000023, 0x10000023, 0x0b000200, 0x0b000200},
+	{0x0000a510, 0x15000028, 0x15000028, 0x0f000202, 0x0f000202},
+	{0x0000a514, 0x1b00002b, 0x1b00002b, 0x12000400, 0x12000400},
+	{0x0000a518, 0x1f020028, 0x1f020028, 0x16000402, 0x16000402},
+	{0x0000a51c, 0x2502002b, 0x2502002b, 0x19000404, 0x19000404},
+	{0x0000a520, 0x2a04002a, 0x2a04002a, 0x1c000603, 0x1c000603},
+	{0x0000a524, 0x2e06002a, 0x2e06002a, 0x21000a02, 0x21000a02},
+	{0x0000a528, 0x3302202d, 0x3302202d, 0x25000a04, 0x25000a04},
+	{0x0000a52c, 0x3804202c, 0x3804202c, 0x28000a20, 0x28000a20},
+	{0x0000a530, 0x3c06202c, 0x3c06202c, 0x2c000e20, 0x2c000e20},
+	{0x0000a534, 0x4108202d, 0x4108202d, 0x30000e22, 0x30000e22},
+	{0x0000a538, 0x4506402d, 0x4506402d, 0x34000e24, 0x34000e24},
+	{0x0000a53c, 0x4906222d, 0x4906222d, 0x38001640, 0x38001640},
+	{0x0000a540, 0x4d062231, 0x4d062231, 0x3c001660, 0x3c001660},
+	{0x0000a544, 0x50082231, 0x50082231, 0x3f001861, 0x3f001861},
+	{0x0000a548, 0x5608422e, 0x5608422e, 0x43001a81, 0x43001a81},
+	{0x0000a54c, 0x5e08442e, 0x5e08442e, 0x47001a83, 0x47001a83},
+	{0x0000a550, 0x620a4431, 0x620a4431, 0x4a001c84, 0x4a001c84},
+	{0x0000a554, 0x640a4432, 0x640a4432, 0x4e001ce3, 0x4e001ce3},
+	{0x0000a558, 0x680a4434, 0x680a4434, 0x52001ce5, 0x52001ce5},
+	{0x0000a55c, 0x6c0a6434, 0x6c0a6434, 0x56001ce9, 0x56001ce9},
+	{0x0000a560, 0x6f0a6633, 0x6f0a6633, 0x5a001ceb, 0x5a001ceb},
+	{0x0000a564, 0x730c6634, 0x730c6634, 0x5d001eec, 0x5d001eec},
+	{0x0000a568, 0x730c6634, 0x730c6634, 0x5d001eec, 0x5d001eec},
+	{0x0000a56c, 0x730c6634, 0x730c6634, 0x5d001eec, 0x5d001eec},
+	{0x0000a570, 0x730c6634, 0x730c6634, 0x5d001eec, 0x5d001eec},
+	{0x0000a574, 0x730c6634, 0x730c6634, 0x5d001eec, 0x5d001eec},
+	{0x0000a578, 0x730c6634, 0x730c6634, 0x5d001eec, 0x5d001eec},
+	{0x0000a57c, 0x730c6634, 0x730c6634, 0x5d001eec, 0x5d001eec},
+	{0x0000a600, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+	{0x0000a604, 0x00000000, 0x00000000, 0x00000000, 0x00000000},
+	{0x0000a608, 0x01804601, 0x01804601, 0x00000000, 0x00000000},
+	{0x0000a60c, 0x01804601, 0x01804601, 0x00000000, 0x00000000},
+	{0x0000a610, 0x01804601, 0x01804601, 0x00000000, 0x00000000},
+	{0x0000a614, 0x01804601, 0x01804601, 0x01404000, 0x01404000},
+	{0x0000a618, 0x01804601, 0x01804601, 0x01404501, 0x01404501},
+	{0x0000a61c, 0x01804601, 0x01804601, 0x02008501, 0x02008501},
+	{0x0000a620, 0x03408d02, 0x03408d02, 0x0280ca03, 0x0280ca03},
+	{0x0000a624, 0x0300cc03, 0x0300cc03, 0x03010c04, 0x03010c04},
+	{0x0000a628, 0x03410d04, 0x03410d04, 0x04014c04, 0x04014c04},
+	{0x0000a62c, 0x03410d04, 0x03410d04, 0x04015005, 0x04015005},
+	{0x0000a630, 0x03410d04, 0x03410d04, 0x04015005, 0x04015005},
+	{0x0000a634, 0x03410d04, 0x03410d04, 0x04015005, 0x04015005},
+	{0x0000a638, 0x03410d04, 0x03410d04, 0x04015005, 0x04015005},
+	{0x0000a63c, 0x03410d04, 0x03410d04, 0x04015005, 0x04015005},
+	{0x0000b2dc, 0x000cfff0, 0x000cfff0, 0x03aaa352, 0x03aaa352},
+	{0x0000b2e0, 0x000f0000, 0x000f0000, 0x03ccc584, 0x03ccc584},
+	{0x0000b2e4, 0x03f00000, 0x03f00000, 0x03f0f800, 0x03f0f800},
+	{0x0000b2e8, 0x00000000, 0x00000000, 0x03ff0000, 0x03ff0000},
+	{0x0000c2dc, 0x000cfff0, 0x000cfff0, 0x03aaa352, 0x03aaa352},
+	{0x0000c2e0, 0x000f0000, 0x000f0000, 0x03ccc584, 0x03ccc584},
+	{0x0000c2e4, 0x03f00000, 0x03f00000, 0x03f0f800, 0x03f0f800},
+	{0x0000c2e8, 0x00000000, 0x00000000, 0x03ff0000, 0x03ff0000},
+	{0x00016044, 0x012492d4, 0x012492d4, 0x012492d4, 0x012492d4},
+	{0x00016048, 0x61200001, 0x61200001, 0x66480001, 0x66480001},
+	{0x00016068, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
+	{0x00016444, 0x012492d4, 0x012492d4, 0x012492d4, 0x012492d4},
+	{0x00016448, 0x61200001, 0x61200001, 0x66480001, 0x66480001},
+	{0x00016468, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
+	{0x00016844, 0x012492d4, 0x012492d4, 0x012492d4, 0x012492d4},
+	{0x00016848, 0x61200001, 0x61200001, 0x66480001, 0x66480001},
+>>>>>>> refs/remotes/origin/master
 	{0x00016868, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c, 0x6db6db6c},
 };
 
@@ -1189,6 +1292,7 @@ static const u32 ar9580_1p0_soc_preamble[][2] = {
 	{0x00007048, 0x00000008},
 };
 
+<<<<<<< HEAD
 static const u32 ar9580_1p0_rx_gain_table[][2] = {
 	/* Addr      allmodes  */
 	{0x0000a000, 0x00010000},
@@ -1448,6 +1552,9 @@ static const u32 ar9580_1p0_rx_gain_table[][2] = {
 	{0x0000b1f8, 0x00000396},
 	{0x0000b1fc, 0x00000196},
 };
+=======
+#define ar9580_1p0_rx_gain_table ar9462_common_rx_gain_table_2p0
+>>>>>>> refs/remotes/origin/master
 
 static const u32 ar9580_1p0_radio_core[][2] = {
 	/* Addr      allmodes  */

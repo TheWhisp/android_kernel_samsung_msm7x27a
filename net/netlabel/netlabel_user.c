@@ -6,10 +6,14 @@
  * protocols such as CIPSO and RIPSO.
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Author: Paul Moore <paul.moore@hp.com>
 =======
  * Author: Paul Moore <paul@paul-moore.com>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ * Author: Paul Moore <paul@paul-moore.com>
+>>>>>>> refs/remotes/origin/master
  *
  */
 
@@ -113,7 +117,11 @@ struct audit_buffer *netlbl_audit_start_common(int type,
 		return NULL;
 
 	audit_log_format(audit_buf, "netlabel: auid=%u ses=%u",
+<<<<<<< HEAD
 			 audit_info->loginuid,
+=======
+			 from_kuid(&init_user_ns, audit_info->loginuid),
+>>>>>>> refs/remotes/origin/master
 			 audit_info->sessionid);
 
 	if (audit_info->secid != 0 &&

@@ -24,6 +24,7 @@
 #include <asm/mach/flash.h>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 #if 0
 /*
  * This is here for documentation purposes only - until these people
@@ -126,6 +127,8 @@ static void jornada56x_set_vpp(int vpp)
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 struct sa_subdev_info {
 	char name[16];
 	struct map_info map;
@@ -134,6 +137,7 @@ struct sa_subdev_info {
 };
 
 struct sa_info {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	struct mtd_partition	*parts;
 	struct mtd_info		*mtd;
@@ -147,6 +151,8 @@ static void sa1100_set_vpp(struct map_info *map, int on)
 	struct sa_subdev_info *subdev = container_of(map, struct sa_subdev_info, map);
 	subdev->plat->set_vpp(on);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct mtd_info		*mtd;
 	int			num_subdev;
 	struct sa_subdev_info	subdev[0];
@@ -168,7 +174,10 @@ static void sa1100_set_vpp(struct map_info *map, int on)
 			subdev->plat->set_vpp(0);
 	}
 	spin_unlock_irqrestore(&sa1100_vpp_lock, flags);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 }
 
 static void sa1100_destroy_subdev(struct sa_subdev_info *subdev)
@@ -259,10 +268,13 @@ static void sa1100_destroy(struct sa_info *info, struct flash_platform_data *pla
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	kfree(info->parts);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = info->num_subdev - 1; i >= 0; i--)
 		sa1100_destroy_subdev(&info->subdev[i]);
 	kfree(info);
@@ -271,8 +283,13 @@ static void sa1100_destroy(struct sa_info *info, struct flash_platform_data *pla
 		plat->exit();
 }
 
+<<<<<<< HEAD
 static struct sa_info *__devinit
 sa1100_setup_mtd(struct platform_device *pdev, struct flash_platform_data *plat)
+=======
+static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
+					struct flash_platform_data *plat)
+>>>>>>> refs/remotes/origin/master
 {
 	struct sa_info *info;
 	int nr, size, i, ret = 0;
@@ -366,6 +383,7 @@ sa1100_setup_mtd(struct platform_device *pdev, struct flash_platform_data *plat)
 	return ERR_PTR(ret);
 }
 
+<<<<<<< HEAD
 static const char *part_probes[] = { "cmdlinepart", "RedBoot", NULL };
 
 static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
@@ -380,6 +398,15 @@ static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
 	struct sa_info *info;
 	int err;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static const char * const part_probes[] = { "cmdlinepart", "RedBoot", NULL };
+
+static int sa1100_mtd_probe(struct platform_device *pdev)
+{
+	struct flash_platform_data *plat = dev_get_platdata(&pdev->dev);
+	struct sa_info *info;
+	int err;
+>>>>>>> refs/remotes/origin/master
 
 	if (!plat)
 		return -ENODEV;
@@ -393,6 +420,7 @@ static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
 	/*
 	 * Partition selection stuff.
 	 */
+<<<<<<< HEAD
 <<<<<<< HEAD
 	nr_parts = parse_mtd_partitions(info->mtd, part_probes, &parts, 0);
 	if (nr_parts > 0) {
@@ -418,6 +446,10 @@ static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
 	mtd_device_parse_register(info->mtd, part_probes, NULL, plat->parts,
 				  plat->nr_parts);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	mtd_device_parse_register(info->mtd, part_probes, NULL, plat->parts,
+				  plat->nr_parts);
+>>>>>>> refs/remotes/origin/master
 
 	platform_set_drvdata(pdev, info);
 	err = 0;
@@ -429,14 +461,20 @@ static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
 static int __exit sa1100_mtd_remove(struct platform_device *pdev)
 {
 	struct sa_info *info = platform_get_drvdata(pdev);
+<<<<<<< HEAD
 	struct flash_platform_data *plat = pdev->dev.platform_data;
 
 	platform_set_drvdata(pdev, NULL);
+=======
+	struct flash_platform_data *plat = dev_get_platdata(&pdev->dev);
+
+>>>>>>> refs/remotes/origin/master
 	sa1100_destroy(info, plat);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM
 static void sa1100_mtd_shutdown(struct platform_device *dev)
@@ -458,12 +496,18 @@ static struct platform_driver sa1100_mtd_driver = {
 	.probe		= sa1100_mtd_probe,
 	.remove		= __exit_p(sa1100_mtd_remove),
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+static struct platform_driver sa1100_mtd_driver = {
+	.probe		= sa1100_mtd_probe,
+	.remove		= __exit_p(sa1100_mtd_remove),
+>>>>>>> refs/remotes/origin/master
 	.driver		= {
 		.name	= "sa1100-mtd",
 		.owner	= THIS_MODULE,
 	},
 };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 static int __init sa1100_mtd_init(void)
 {
@@ -480,6 +524,9 @@ module_exit(sa1100_mtd_exit);
 =======
 module_platform_driver(sa1100_mtd_driver);
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+module_platform_driver(sa1100_mtd_driver);
+>>>>>>> refs/remotes/origin/master
 
 MODULE_AUTHOR("Nicolas Pitre");
 MODULE_DESCRIPTION("SA1100 CFI map driver");

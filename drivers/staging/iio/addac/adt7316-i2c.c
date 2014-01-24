@@ -12,9 +12,13 @@
 #include <linux/i2c.h>
 #include <linux/interrupt.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/module.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/module.h>
+>>>>>>> refs/remotes/origin/master
 
 #include "adt7316.h"
 
@@ -95,7 +99,11 @@ static int adt7316_i2c_multi_write(void *client, u8 reg, u8 count, u8 *data)
  * device probe and remove
  */
 
+<<<<<<< HEAD
 static int __devinit adt7316_i2c_probe(struct i2c_client *client,
+=======
+static int adt7316_i2c_probe(struct i2c_client *client,
+>>>>>>> refs/remotes/origin/master
 		const struct i2c_device_id *id)
 {
 	struct adt7316_bus bus = {
@@ -111,6 +119,7 @@ static int __devinit adt7316_i2c_probe(struct i2c_client *client,
 	return adt7316_probe(&client->dev, &bus, id->name);
 }
 
+<<<<<<< HEAD
 static int __devexit adt7316_i2c_remove(struct i2c_client *client)
 {
 <<<<<<< HEAD
@@ -120,6 +129,8 @@ static int __devexit adt7316_i2c_remove(struct i2c_client *client)
 >>>>>>> refs/remotes/origin/cm-10.0
 }
 
+=======
+>>>>>>> refs/remotes/origin/master
 static const struct i2c_device_id adt7316_i2c_id[] = {
 	{ "adt7316", 0 },
 	{ "adt7317", 0 },
@@ -132,6 +143,7 @@ static const struct i2c_device_id adt7316_i2c_id[] = {
 
 MODULE_DEVICE_TABLE(i2c, adt7316_i2c_id);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #ifdef CONFIG_PM
 static int adt7316_i2c_suspend(struct i2c_client *client, pm_message_t message)
@@ -152,10 +164,13 @@ static struct i2c_driver adt7316_driver = {
 	.driver = {
 		.name = "adt7316",
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static struct i2c_driver adt7316_driver = {
 	.driver = {
 		.name = "adt7316",
 		.pm = ADT7316_PM_OPS,
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
 		.owner  = THIS_MODULE,
 	},
@@ -192,3 +207,15 @@ module_init(adt7316_i2c_init);
 module_exit(adt7316_i2c_exit);
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+		.owner  = THIS_MODULE,
+	},
+	.probe = adt7316_i2c_probe,
+	.id_table = adt7316_i2c_id,
+};
+module_i2c_driver(adt7316_driver);
+
+MODULE_AUTHOR("Sonic Zhang <sonic.zhang@analog.com>");
+MODULE_DESCRIPTION("I2C bus driver for Analog Devices ADT7316/7/9 and ADT7516/7/8 digital temperature sensor, ADC and DAC");
+MODULE_LICENSE("GPL v2");
+>>>>>>> refs/remotes/origin/master

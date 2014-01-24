@@ -8,7 +8,11 @@
 #include <net/netlink.h>
 #include <linux/u64_stats_sync.h>
 
+<<<<<<< HEAD
 #if defined(CONFIG_MACVTAP) || defined(CONFIG_MACVTAP_MODULE)
+=======
+#if IS_ENABLED(CONFIG_MACVTAP)
+>>>>>>> refs/remotes/origin/master
 struct socket *macvtap_get_socket(struct file *);
 #else
 #include <linux/err.h>
@@ -50,7 +54,14 @@ struct macvlan_pcpu_stats {
  * Maximum times a macvtap device can be opened. This can be used to
  * configure the number of receive queue, e.g. for multiqueue virtio.
  */
+<<<<<<< HEAD
 #define MAX_MACVTAP_QUEUES	(NR_CPUS < 16 ? NR_CPUS : 16)
+=======
+#define MAX_MACVTAP_QUEUES	16
+
+#define MACVLAN_MC_FILTER_BITS	8
+#define MACVLAN_MC_FILTER_SZ	(1 << MACVLAN_MC_FILTER_BITS)
+>>>>>>> refs/remotes/origin/master
 
 struct macvlan_dev {
 	struct net_device	*dev;
@@ -58,6 +69,7 @@ struct macvlan_dev {
 	struct hlist_node	hlist;
 	struct macvlan_port	*port;
 	struct net_device	*lowerdev;
+<<<<<<< HEAD
 	struct macvlan_pcpu_stats __percpu *pcpu_stats;
 	enum macvlan_mode	mode;
 	int (*receive)(struct sk_buff *skb);
@@ -68,6 +80,26 @@ struct macvlan_dev {
 =======
 	int			minor;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	void			*fwd_priv;
+	struct macvlan_pcpu_stats __percpu *pcpu_stats;
+
+	DECLARE_BITMAP(mc_filter, MACVLAN_MC_FILTER_SZ);
+
+	netdev_features_t	set_features;
+	enum macvlan_mode	mode;
+	u16			flags;
+	int (*receive)(struct sk_buff *skb);
+	int (*forward)(struct net_device *dev, struct sk_buff *skb);
+	/* This array tracks active taps. */
+	struct macvtap_queue	__rcu *taps[MAX_MACVTAP_QUEUES];
+	/* This list tracks all taps (both enabled and disabled) */
+	struct list_head	queue_list;
+	int			numvtaps;
+	int			numqueues;
+	netdev_features_t	tap_features;
+	int			minor;
+>>>>>>> refs/remotes/origin/master
 };
 
 static inline void macvlan_count_rx(const struct macvlan_dev *vlan,
@@ -108,4 +140,24 @@ extern int macvlan_link_register(struct rtnl_link_ops *ops);
 extern netdev_tx_t macvlan_start_xmit(struct sk_buff *skb,
 				      struct net_device *dev);
 
+<<<<<<< HEAD
+=======
+#if IS_ENABLED(CONFIG_MACVLAN)
+static inline struct net_device *
+macvlan_dev_real_dev(const struct net_device *dev)
+{
+	struct macvlan_dev *macvlan = netdev_priv(dev);
+
+	return macvlan->lowerdev;
+}
+#else
+static inline struct net_device *
+macvlan_dev_real_dev(const struct net_device *dev)
+{
+	BUG();
+	return NULL;
+}
+#endif
+
+>>>>>>> refs/remotes/origin/master
 #endif /* _LINUX_IF_MACVLAN_H */

@@ -20,10 +20,15 @@
  */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+
+>>>>>>> refs/remotes/origin/master
 #include "bfad_drv.h"
 #include "bfad_im.h"
 #include "bfa_fcs.h"
@@ -181,6 +186,7 @@ bfad_im_info(struct Scsi_Host *shost)
 			(struct bfad_im_port_s *) shost->hostdata[0];
 	struct bfad_s *bfad = im_port->bfad;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	struct bfa_s *bfa = &bfad->bfa;
 	struct bfa_ioc_s *ioc = &bfa->ioc;
 	char model[BFA_ADAPTER_MODEL_NAME_LEN];
@@ -197,12 +203,17 @@ bfad_im_info(struct Scsi_Host *shost)
 		"Brocade FC Adapter, " "model: %s hwpath: %s driver: %s",
 		model, bfad->pci_name, BFAD_DRIVER_VERSION);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 
 	memset(bfa_buf, 0, sizeof(bfa_buf));
 	snprintf(bfa_buf, sizeof(bfa_buf),
 		"Brocade FC/FCOE Adapter, " "hwpath: %s driver: %s",
 		bfad->pci_name, BFAD_DRIVER_VERSION);
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 
 	return bfa_buf;
 }
@@ -227,7 +238,11 @@ bfad_im_abort_handler(struct scsi_cmnd *cmnd)
 	spin_lock_irqsave(&bfad->bfad_lock, flags);
 	hal_io = (struct bfa_ioim_s *) cmnd->host_scribble;
 	if (!hal_io) {
+<<<<<<< HEAD
 		/* IO has been completed, retrun success */
+=======
+		/* IO has been completed, return success */
+>>>>>>> refs/remotes/origin/master
 		rc = SUCCESS;
 		goto out;
 	}
@@ -544,6 +559,7 @@ bfad_im_scsi_host_alloc(struct bfad_s *bfad, struct bfad_im_port_s *im_port,
 	int error = 1;
 
 	mutex_lock(&bfad_mutex);
+<<<<<<< HEAD
 	if (!idr_pre_get(&bfad_im_port_index, GFP_KERNEL)) {
 		mutex_unlock(&bfad_mutex);
 		printk(KERN_WARNING "idr_pre_get failure\n");
@@ -558,6 +574,15 @@ bfad_im_scsi_host_alloc(struct bfad_s *bfad, struct bfad_im_port_s *im_port,
 		goto out;
 	}
 
+=======
+	error = idr_alloc(&bfad_im_port_index, im_port, 0, 0, GFP_KERNEL);
+	if (error < 0) {
+		mutex_unlock(&bfad_mutex);
+		printk(KERN_WARNING "idr_alloc failure\n");
+		goto out;
+	}
+	im_port->idr_id = error;
+>>>>>>> refs/remotes/origin/master
 	mutex_unlock(&bfad_mutex);
 
 	im_port->shost = bfad_scsi_host_alloc(im_port, bfad);
@@ -586,11 +611,14 @@ bfad_im_scsi_host_alloc(struct bfad_s *bfad, struct bfad_im_port_s *im_port,
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/* setup host fixed attribute if the lk supports */
 	bfad_fc_host_init(im_port);
 
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	return 0;
 
 out_fc_rel:
@@ -686,7 +714,10 @@ bfad_im_port_clean(struct bfad_im_port_s *im_port)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 static void bfad_aen_im_notify_handler(struct work_struct *work)
 {
 	struct bfad_im_s *im =
@@ -712,11 +743,15 @@ static void bfad_aen_im_notify_handler(struct work_struct *work)
 	}
 }
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 bfa_status_t
 bfad_im_probe(struct bfad_s *bfad)
 {
 	struct bfad_im_s      *im;
+<<<<<<< HEAD
 	bfa_status_t    rc = BFA_STATUS_OK;
 
 	im = kzalloc(sizeof(struct bfad_im_s), GFP_KERNEL);
@@ -724,12 +759,19 @@ bfad_im_probe(struct bfad_s *bfad)
 		rc = BFA_STATUS_ENOMEM;
 		goto ext;
 	}
+=======
+
+	im = kzalloc(sizeof(struct bfad_im_s), GFP_KERNEL);
+	if (im == NULL)
+		return BFA_STATUS_ENOMEM;
+>>>>>>> refs/remotes/origin/master
 
 	bfad->im = im;
 	im->bfad = bfad;
 
 	if (bfad_thread_workq(bfad) != BFA_STATUS_OK) {
 		kfree(im);
+<<<<<<< HEAD
 		rc = BFA_STATUS_FAILED;
 	}
 
@@ -739,6 +781,13 @@ bfad_im_probe(struct bfad_s *bfad)
 >>>>>>> refs/remotes/origin/cm-10.0
 ext:
 	return rc;
+=======
+		return BFA_STATUS_FAILED;
+	}
+
+	INIT_WORK(&im->aen_im_notify_work, bfad_aen_im_notify_handler);
+	return BFA_STATUS_OK;
+>>>>>>> refs/remotes/origin/master
 }
 
 void
@@ -762,11 +811,17 @@ bfad_scsi_host_alloc(struct bfad_im_port_s *im_port, struct bfad_s *bfad)
 		sht = &bfad_im_vport_template;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	if (max_xfer_size != BFAD_MAX_SECTORS >> 1)
 		sht->max_sectors = max_xfer_size << 1;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	if (max_xfer_size != BFAD_MAX_SECTORS >> 1)
+		sht->max_sectors = max_xfer_size << 1;
+
+>>>>>>> refs/remotes/origin/master
 	sht->sg_tablesize = bfad->cfg_data.io_max_sge;
 
 	return scsi_host_alloc(sht, sizeof(unsigned long));
@@ -845,11 +900,16 @@ struct scsi_host_template bfad_im_scsi_host_template = {
 	.use_clustering = ENABLE_CLUSTERING,
 	.shost_attrs = bfad_im_host_attrs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.max_sectors = 0xFFFF,
 =======
 	.max_sectors = BFAD_MAX_SECTORS,
 	.vendor_id = BFA_PCI_VENDOR_ID_BROCADE,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.max_sectors = BFAD_MAX_SECTORS,
+	.vendor_id = BFA_PCI_VENDOR_ID_BROCADE,
+>>>>>>> refs/remotes/origin/master
 };
 
 struct scsi_host_template bfad_im_vport_template = {
@@ -871,10 +931,14 @@ struct scsi_host_template bfad_im_vport_template = {
 	.use_clustering = ENABLE_CLUSTERING,
 	.shost_attrs = bfad_im_vport_attrs,
 <<<<<<< HEAD
+<<<<<<< HEAD
 	.max_sectors = 0xFFFF,
 =======
 	.max_sectors = BFAD_MAX_SECTORS,
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	.max_sectors = BFAD_MAX_SECTORS,
+>>>>>>> refs/remotes/origin/master
 };
 
 bfa_status_t
@@ -963,7 +1027,10 @@ bfad_get_itnim(struct bfad_im_port_s *im_port, int id)
 
 /*
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
  * Function is invoked from the SCSI Host Template slave_alloc() entry point.
  * Has the logic to query the LUN Mask database to check if this LUN needs to
  * be made visible to the SCSI mid-layer or not.
@@ -995,7 +1062,10 @@ bfad_im_check_if_make_lun_visible(struct scsi_device *sdev,
 }
 
 /*
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
  * Scsi_Host template entry slave_alloc
  */
 static int
@@ -1003,17 +1073,28 @@ bfad_im_slave_alloc(struct scsi_device *sdev)
 {
 	struct fc_rport *rport = starget_to_rport(scsi_target(sdev));
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	struct bfad_itnim_data_s *itnim_data =
 				(struct bfad_itnim_data_s *) rport->dd_data;
 	struct bfa_s *bfa = itnim_data->itnim->bfa_itnim->bfa;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	struct bfad_itnim_data_s *itnim_data;
+	struct bfa_s *bfa;
+>>>>>>> refs/remotes/origin/master
 
 	if (!rport || fc_remote_port_chkready(rport))
 		return -ENXIO;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+	itnim_data = (struct bfad_itnim_data_s *) rport->dd_data;
+	bfa = itnim_data->itnim->bfa_itnim->bfa;
+
+>>>>>>> refs/remotes/origin/master
 	if (bfa_get_lun_mask_status(bfa) == BFA_LUNMASK_ENABLED) {
 		/*
 		 * We should not mask LUN 0 - since this will translate
@@ -1034,13 +1115,20 @@ bfad_im_slave_alloc(struct scsi_device *sdev)
 			return -ENXIO;
 	}
 done:
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	sdev->hostdata = rport->dd_data;
 
 	return 0;
 }
 
+<<<<<<< HEAD
 static u32
+=======
+u32
+>>>>>>> refs/remotes/origin/master
 bfad_im_supported_speeds(struct bfa_s *bfa)
 {
 	struct bfa_ioc_attr_s *ioc_attr;
@@ -1052,13 +1140,19 @@ bfad_im_supported_speeds(struct bfa_s *bfa)
 
 	bfa_ioc_get_attr(&bfa->ioc, ioc_attr);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (ioc_attr->adapter_attr.max_speed == BFA_PORT_SPEED_8GBPS) {
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	if (ioc_attr->adapter_attr.max_speed == BFA_PORT_SPEED_16GBPS)
 		supported_speed |=  FC_PORTSPEED_16GBIT | FC_PORTSPEED_8GBIT |
 				FC_PORTSPEED_4GBIT | FC_PORTSPEED_2GBIT;
 	else if (ioc_attr->adapter_attr.max_speed == BFA_PORT_SPEED_8GBPS) {
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 		if (ioc_attr->adapter_attr.is_mezz) {
 			supported_speed |= FC_PORTSPEED_8GBIT |
 				FC_PORTSPEED_4GBIT |
@@ -1103,7 +1197,11 @@ bfad_fc_host_init(struct bfad_im_port_s *im_port)
 	/* For fibre channel services type 0x20 */
 	fc_host_supported_fc4s(host)[7] = 1;
 
+<<<<<<< HEAD
 	strncpy(symname, bfad->bfa_fcs.fabric.bport.port_cfg.sym_name.symname,
+=======
+	strlcpy(symname, bfad->bfa_fcs.fabric.bport.port_cfg.sym_name.symname,
+>>>>>>> refs/remotes/origin/master
 		BFA_SYMNAME_MAXLEN);
 	sprintf(fc_host_symbolic_name(host), "%s", symname);
 
@@ -1149,10 +1247,15 @@ bfad_im_fc_rport_add(struct bfad_im_port_s *im_port, struct bfad_itnim_s *itnim)
 		itnim->scsi_tgt_id = fc_rport->scsi_target_id;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 	itnim->channel = fc_rport->channel;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	itnim->channel = fc_rport->channel;
+
+>>>>>>> refs/remotes/origin/master
 	return;
 }
 
@@ -1280,6 +1383,18 @@ bfad_im_queuecommand_lck(struct scsi_cmnd *cmnd, void (*done) (struct scsi_cmnd 
 		return 0;
 	}
 
+<<<<<<< HEAD
+=======
+	if (bfad->bfad_flags & BFAD_EEH_BUSY) {
+		if (bfad->bfad_flags & BFAD_EEH_PCI_CHANNEL_IO_PERM_FAILURE)
+			cmnd->result = DID_NO_CONNECT << 16;
+		else
+			cmnd->result = DID_REQUEUE << 16;
+		done(cmnd);
+		return 0;
+	}
+
+>>>>>>> refs/remotes/origin/master
 	sg_cnt = scsi_dma_map(cmnd);
 	if (sg_cnt < 0)
 		return SCSI_MLQUEUE_HOST_BUSY;

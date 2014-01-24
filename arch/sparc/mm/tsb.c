@@ -7,9 +7,12 @@
 #include <linux/preempt.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/page.h>
 #include <asm/pgtable.h>
 #include <asm/mmu_context.h>
@@ -85,13 +88,21 @@ void flush_tsb_user(struct tlb_batch *tb)
 		base = __pa(base);
 	__flush_tsb_one(tb, PAGE_SHIFT, base, nentries);
 
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 	if (mm->context.tsb_block[MM_TSB_HUGE].tsb) {
 		base = (unsigned long) mm->context.tsb_block[MM_TSB_HUGE].tsb;
 		nentries = mm->context.tsb_block[MM_TSB_HUGE].tsb_nentries;
 		if (tlb_type == cheetah_plus || tlb_type == hypervisor)
 			base = __pa(base);
+<<<<<<< HEAD
 		__flush_tsb_one(tb, HPAGE_SHIFT, base, nentries);
+=======
+		__flush_tsb_one(tb, REAL_HPAGE_SHIFT, base, nentries);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 	spin_unlock_irqrestore(&mm->context.lock, flags);
@@ -115,12 +126,17 @@ void flush_tsb_user_page(struct mm_struct *mm, unsigned long vaddr)
 		nentries = mm->context.tsb_block[MM_TSB_HUGE].tsb_nentries;
 		if (tlb_type == cheetah_plus || tlb_type == hypervisor)
 			base = __pa(base);
+<<<<<<< HEAD
 		__flush_tsb_one_entry(base, vaddr, HPAGE_SHIFT, nentries);
+=======
+		__flush_tsb_one_entry(base, vaddr, REAL_HPAGE_SHIFT, nentries);
+>>>>>>> refs/remotes/origin/master
 	}
 #endif
 	spin_unlock_irqrestore(&mm->context.lock, flags);
 }
 
+<<<<<<< HEAD
 #if defined(CONFIG_SPARC64_PAGE_SIZE_8KB)
 #define HV_PGSZ_IDX_BASE	HV_PGSZ_IDX_8K
 #define HV_PGSZ_MASK_BASE	HV_PGSZ_MASK_8K
@@ -144,6 +160,14 @@ void flush_tsb_user_page(struct mm_struct *mm, unsigned long vaddr)
 #else
 #error Broken huge page size setting...
 #endif
+=======
+#define HV_PGSZ_IDX_BASE	HV_PGSZ_IDX_8K
+#define HV_PGSZ_MASK_BASE	HV_PGSZ_MASK_8K
+
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+#define HV_PGSZ_IDX_HUGE	HV_PGSZ_IDX_4MB
+#define HV_PGSZ_MASK_HUGE	HV_PGSZ_MASK_4MB
+>>>>>>> refs/remotes/origin/master
 #endif
 
 static void setup_tsb_params(struct mm_struct *mm, unsigned long tsb_idx, unsigned long tsb_bytes)
@@ -238,7 +262,11 @@ static void setup_tsb_params(struct mm_struct *mm, unsigned long tsb_idx, unsign
 		case MM_TSB_BASE:
 			hp->pgsz_idx = HV_PGSZ_IDX_BASE;
 			break;
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 		case MM_TSB_HUGE:
 			hp->pgsz_idx = HV_PGSZ_IDX_HUGE;
 			break;
@@ -253,7 +281,11 @@ static void setup_tsb_params(struct mm_struct *mm, unsigned long tsb_idx, unsign
 		case MM_TSB_BASE:
 			hp->pgsz_mask = HV_PGSZ_MASK_BASE;
 			break;
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 		case MM_TSB_HUGE:
 			hp->pgsz_mask = HV_PGSZ_MASK_HUGE;
 			break;
@@ -267,10 +299,15 @@ static void setup_tsb_params(struct mm_struct *mm, unsigned long tsb_idx, unsign
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 struct kmem_cache *pgtable_cache __read_mostly;
 
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+struct kmem_cache *pgtable_cache __read_mostly;
+
+>>>>>>> refs/remotes/origin/master
 static struct kmem_cache *tsb_caches[8] __read_mostly;
 
 static const char *tsb_cache_names[8] = {
@@ -289,7 +326,10 @@ void __init pgtable_cache_init(void)
 	unsigned long i;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	pgtable_cache = kmem_cache_create("pgtable_cache",
 					  PAGE_SIZE, PAGE_SIZE,
 					  0,
@@ -299,7 +339,10 @@ void __init pgtable_cache_init(void)
 		prom_halt();
 	}
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	for (i = 0; i < 8; i++) {
 		unsigned long size = 8192 << i;
 		const char *name = tsb_cache_names[i];
@@ -368,7 +411,11 @@ void tsb_grow(struct mm_struct *mm, unsigned long tsb_index, unsigned long rss)
 retry_tsb_alloc:
 	gfp_flags = GFP_KERNEL;
 	if (new_size > (PAGE_SIZE * 2))
+<<<<<<< HEAD
 		gfp_flags = __GFP_NOWARN | __GFP_NORETRY;
+=======
+		gfp_flags |= __GFP_NOWARN | __GFP_NORETRY;
+>>>>>>> refs/remotes/origin/master
 
 	new_tsb = kmem_cache_alloc_node(tsb_caches[new_cache_index],
 					gfp_flags, numa_node_id());
@@ -481,7 +528,11 @@ retry_tsb_alloc:
 
 int init_new_context(struct task_struct *tsk, struct mm_struct *mm)
 {
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 	unsigned long huge_pte_count;
 #endif
 	unsigned int i;
@@ -490,7 +541,11 @@ int init_new_context(struct task_struct *tsk, struct mm_struct *mm)
 
 	mm->context.sparc64_ctx_val = 0UL;
 
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 	/* We reset it to zero because the fork() page copying
 	 * will re-increment the counters as the parent PTEs are
 	 * copied into the child address space.
@@ -511,7 +566,11 @@ int init_new_context(struct task_struct *tsk, struct mm_struct *mm)
 	 */
 	tsb_grow(mm, MM_TSB_BASE, get_mm_rss(mm));
 
+<<<<<<< HEAD
 #ifdef CONFIG_HUGETLB_PAGE
+=======
+#if defined(CONFIG_HUGETLB_PAGE) || defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>>>>>>> refs/remotes/origin/master
 	if (unlikely(huge_pte_count))
 		tsb_grow(mm, MM_TSB_HUGE, huge_pte_count);
 #endif

@@ -31,9 +31,12 @@
 #include <asm/processor.h>
 #include <asm/ptrace.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <asm/system.h>
 =======
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 #include <asm/mca_asm.h>
 #include <linux/init.h>
 #include <linux/linkage.h>
@@ -420,8 +423,11 @@ start_ap:
 
 default_setup_hook = 0		// Currently nothing needs to be done.
 
+<<<<<<< HEAD
 	.weak xen_setup_hook
 
+=======
+>>>>>>> refs/remotes/origin/master
 	.global hypervisor_type
 hypervisor_type:
 	data8		PARAVIRT_HYPERVISOR_TYPE_DEFAULT
@@ -430,7 +436,10 @@ hypervisor_type:
 
 hypervisor_setup_hooks:
 	data8		default_setup_hook
+<<<<<<< HEAD
 	data8		xen_setup_hook
+=======
+>>>>>>> refs/remotes/origin/master
 num_hypervisor_hooks = (. - hypervisor_setup_hooks) / 8
 	.previous
 
@@ -1039,7 +1048,11 @@ END(ia64_delay_loop)
  * Return a CPU-local timestamp in nano-seconds.  This timestamp is
  * NOT synchronized across CPUs its return value must never be
  * compared against the values returned on another CPU.  The usage in
+<<<<<<< HEAD
  * kernel/sched.c ensures that.
+=======
+ * kernel/sched/core.c ensures that.
+>>>>>>> refs/remotes/origin/master
  *
  * The return-value of sched_clock() is NOT supposed to wrap-around.
  * If it did, it would cause some scheduling hiccups (at the worst).
@@ -1077,7 +1090,11 @@ END(ia64_native_sched_clock)
 sched_clock = ia64_native_sched_clock
 #endif
 
+<<<<<<< HEAD
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+=======
+#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+>>>>>>> refs/remotes/origin/master
 GLOBAL_ENTRY(cycle_to_cputime)
 	alloc r16=ar.pfs,1,0,0,0
 	addl r8=THIS_CPU(ia64_cpu_info) + IA64_CPUINFO_NSEC_PER_CYC_OFFSET,r0
@@ -1095,6 +1112,7 @@ GLOBAL_ENTRY(cycle_to_cputime)
 	shrp r8=r9,r8,IA64_NSEC_PER_CYC_SHIFT
 	br.ret.sptk.many rp
 END(cycle_to_cputime)
+<<<<<<< HEAD
 #endif /* CONFIG_VIRT_CPU_ACCOUNTING */
 
 GLOBAL_ENTRY(start_kernel_thread)
@@ -1109,6 +1127,9 @@ GLOBAL_ENTRY(start_kernel_thread)
 	br.call.sptk.many rp = sys_exit;;
 1:	br.sptk.few 1b				// not reached
 END(start_kernel_thread)
+=======
+#endif /* CONFIG_VIRT_CPU_ACCOUNTING_NATIVE */
+>>>>>>> refs/remotes/origin/master
 
 #ifdef CONFIG_IA64_BRL_EMU
 

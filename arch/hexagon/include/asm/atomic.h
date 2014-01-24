@@ -1,7 +1,11 @@
 /*
  * Atomic operations for the Hexagon architecture
  *
+<<<<<<< HEAD
  * Copyright (c) 2010-2011, The Linux Foundation. All rights reserved.
+=======
+ * Copyright (c) 2010-2013, The Linux Foundation. All rights reserved.
+>>>>>>> refs/remotes/origin/master
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -117,21 +121,38 @@ static inline int atomic_sub_return(int i, atomic_t *v)
 #define atomic_sub(i, v) atomic_sub_return(i, (v))
 
 /**
+<<<<<<< HEAD
  * atomic_add_unless - add unless the number is a given value
+=======
+ * __atomic_add_unless - add unless the number is a given value
+>>>>>>> refs/remotes/origin/master
  * @v: pointer to value
  * @a: amount to add
  * @u: unless value is equal to u
  *
+<<<<<<< HEAD
  * Returns 1 if the add happened, 0 if it didn't.
  */
 static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 {
 	int output, __oldval;
+=======
+ * Returns old value.
+ *
+ */
+
+static inline int __atomic_add_unless(atomic_t *v, int a, int u)
+{
+	int __oldval;
+	register int tmp;
+
+>>>>>>> refs/remotes/origin/master
 	asm volatile(
 		"1:	%0 = memw_locked(%2);"
 		"	{"
 		"		p3 = cmp.eq(%0, %4);"
 		"		if (p3.new) jump:nt 2f;"
+<<<<<<< HEAD
 		"		%0 = add(%0, %3);"
 		"		%1 = #0;"
 		"	}"
@@ -146,6 +167,20 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 		: "memory", "p3"
 	);
 	return output;
+=======
+		"		%1 = add(%0, %3);"
+		"	}"
+		"	memw_locked(%2, p3) = %1;"
+		"	{"
+		"		if !p3 jump 1b;"
+		"	}"
+		"2:"
+		: "=&r" (__oldval), "=&r" (tmp)
+		: "r" (v), "r" (a), "r" (u)
+		: "memory", "p3"
+	);
+	return __oldval;
+>>>>>>> refs/remotes/origin/master
 }
 
 #define atomic_inc_not_zero(v) atomic_add_unless((v), 1, 0)
@@ -158,8 +193,19 @@ static inline int __atomic_add_unless(atomic_t *v, int a, int u)
 #define atomic_sub_and_test(i, v) (atomic_sub_return(i, (v)) == 0)
 #define atomic_add_negative(i, v) (atomic_add_return(i, (v)) < 0)
 
+<<<<<<< HEAD
 
 #define atomic_inc_return(v) (atomic_add_return(1, v))
 #define atomic_dec_return(v) (atomic_sub_return(1, v))
 
+=======
+#define atomic_inc_return(v) (atomic_add_return(1, v))
+#define atomic_dec_return(v) (atomic_sub_return(1, v))
+
+#define smp_mb__before_atomic_dec()	barrier()
+#define smp_mb__after_atomic_dec()	barrier()
+#define smp_mb__before_atomic_inc()	barrier()
+#define smp_mb__after_atomic_inc()	barrier()
+
+>>>>>>> refs/remotes/origin/master
 #endif

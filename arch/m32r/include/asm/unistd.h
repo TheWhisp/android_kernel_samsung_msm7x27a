@@ -1,6 +1,7 @@
 #ifndef _ASM_M32R_UNISTD_H
 #define _ASM_M32R_UNISTD_H
 
+<<<<<<< HEAD
 /*
  * This file contains the system call numbers.
  */
@@ -337,6 +338,13 @@
 #define NR_syscalls 326
 
 #define __ARCH_WANT_IPC_PARSE_VERSION
+=======
+#include <uapi/asm/unistd.h>
+
+
+#define NR_syscalls 326
+
+>>>>>>> refs/remotes/origin/master
 #define __ARCH_WANT_STAT64
 #define __ARCH_WANT_SYS_ALARM
 #define __ARCH_WANT_SYS_GETHOSTNAME
@@ -351,8 +359,14 @@
 #define __ARCH_WANT_SYS_LLSEEK
 #define __ARCH_WANT_SYS_OLD_GETRLIMIT /*will be unused*/
 #define __ARCH_WANT_SYS_OLDUMOUNT
+<<<<<<< HEAD
 #define __ARCH_WANT_SYS_RT_SIGACTION
 #define __ARCH_WANT_SYS_RT_SIGSUSPEND
+=======
+#define __ARCH_WANT_SYS_CLONE
+#define __ARCH_WANT_SYS_FORK
+#define __ARCH_WANT_SYS_VFORK
+>>>>>>> refs/remotes/origin/master
 
 #define __IGNORE_lchown
 #define __IGNORE_setuid
@@ -378,6 +392,7 @@
 #define __IGNORE_getresgid
 #define __IGNORE_chown
 
+<<<<<<< HEAD
 /*
  * "Conditional" syscalls
  *
@@ -389,4 +404,6 @@
 #endif
 
 #endif /* __KERNEL__ */
+=======
+>>>>>>> refs/remotes/origin/master
 #endif /* _ASM_M32R_UNISTD_H */

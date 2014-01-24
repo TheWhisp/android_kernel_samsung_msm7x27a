@@ -27,6 +27,7 @@ MODULE_AUTHOR("Atheros Communications");
 MODULE_DESCRIPTION("Shared library for Atheros wireless 802.11n LAN cards.");
 MODULE_LICENSE("Dual BSD/GPL");
 
+<<<<<<< HEAD
 int ath9k_cmn_padpos(__le16 frame_control)
 {
 	int padpos = 24;
@@ -41,6 +42,8 @@ int ath9k_cmn_padpos(__le16 frame_control)
 }
 EXPORT_SYMBOL(ath9k_cmn_padpos);
 
+=======
+>>>>>>> refs/remotes/origin/master
 int ath9k_cmn_get_hw_crypto_keytype(struct sk_buff *skb)
 {
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
@@ -63,6 +66,7 @@ int ath9k_cmn_get_hw_crypto_keytype(struct sk_buff *skb)
 }
 EXPORT_SYMBOL(ath9k_cmn_get_hw_crypto_keytype);
 
+<<<<<<< HEAD
 static u32 ath9k_get_extchanmode(struct ieee80211_channel *chan,
 				 enum nl80211_channel_type channel_type)
 {
@@ -126,24 +130,81 @@ void ath9k_cmn_update_ichannel(struct ath9k_channel *ichan,
 		ichan->chanmode = ath9k_get_extchanmode(chan, channel_type);
 }
 EXPORT_SYMBOL(ath9k_cmn_update_ichannel);
+=======
+/*
+ * Update internal channel flags.
+ */
+static void ath9k_cmn_update_ichannel(struct ath9k_channel *ichan,
+				      struct cfg80211_chan_def *chandef)
+{
+	struct ieee80211_channel *chan = chandef->chan;
+	u16 flags = 0;
+
+	ichan->channel = chan->center_freq;
+	ichan->chan = chan;
+
+	if (chan->band == IEEE80211_BAND_5GHZ)
+		flags |= CHANNEL_5GHZ;
+
+	switch (chandef->width) {
+	case NL80211_CHAN_WIDTH_5:
+		flags |= CHANNEL_QUARTER;
+		break;
+	case NL80211_CHAN_WIDTH_10:
+		flags |= CHANNEL_HALF;
+		break;
+	case NL80211_CHAN_WIDTH_20_NOHT:
+		break;
+	case NL80211_CHAN_WIDTH_20:
+		flags |= CHANNEL_HT;
+		break;
+	case NL80211_CHAN_WIDTH_40:
+		if (chandef->center_freq1 > chandef->chan->center_freq)
+			flags |= CHANNEL_HT40PLUS | CHANNEL_HT;
+		else
+			flags |= CHANNEL_HT40MINUS | CHANNEL_HT;
+		break;
+	default:
+		WARN_ON(1);
+	}
+
+	ichan->channelFlags = flags;
+}
+>>>>>>> refs/remotes/origin/master
 
 /*
  * Get the internal channel reference.
  */
+<<<<<<< HEAD
 struct ath9k_channel *ath9k_cmn_get_curchannel(struct ieee80211_hw *hw,
 					       struct ath_hw *ah)
 {
 	struct ieee80211_channel *curchan = hw->conf.channel;
+=======
+struct ath9k_channel *ath9k_cmn_get_channel(struct ieee80211_hw *hw,
+					    struct ath_hw *ah,
+					    struct cfg80211_chan_def *chandef)
+{
+	struct ieee80211_channel *curchan = chandef->chan;
+>>>>>>> refs/remotes/origin/master
 	struct ath9k_channel *channel;
 	u8 chan_idx;
 
 	chan_idx = curchan->hw_value;
 	channel = &ah->channels[chan_idx];
+<<<<<<< HEAD
 	ath9k_cmn_update_ichannel(channel, curchan, hw->conf.channel_type);
 
 	return channel;
 }
 EXPORT_SYMBOL(ath9k_cmn_get_curchannel);
+=======
+	ath9k_cmn_update_ichannel(channel, chandef);
+
+	return channel;
+}
+EXPORT_SYMBOL(ath9k_cmn_get_channel);
+>>>>>>> refs/remotes/origin/master
 
 int ath9k_cmn_count_streams(unsigned int chainmask, int max)
 {
@@ -162,24 +223,33 @@ void ath9k_cmn_update_txpow(struct ath_hw *ah, u16 cur_txpow,
 			    u16 new_txpow, u16 *txpower)
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (cur_txpow != new_txpow) {
 		ath9k_hw_set_txpowerlimit(ah, new_txpow, false);
 		/* read back in case value is clamped */
 		*txpower = ath9k_hw_regulatory(ah)->power_limit;
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	struct ath_regulatory *reg = ath9k_hw_regulatory(ah);
 
 	if (reg->power_limit != new_txpow) {
 		ath9k_hw_set_txpowerlimit(ah, new_txpow, false);
 		/* read back in case value is clamped */
 		*txpower = reg->max_power_level;
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 	}
 }
 EXPORT_SYMBOL(ath9k_cmn_update_txpow);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 void ath9k_cmn_init_crypto(struct ath_hw *ah)
 {
 	struct ath_common *common = ath9k_hw_common(ah);
@@ -206,7 +276,10 @@ void ath9k_cmn_init_crypto(struct ath_hw *ah)
 }
 EXPORT_SYMBOL(ath9k_cmn_init_crypto);
 
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+>>>>>>> refs/remotes/origin/master
 static int __init ath9k_cmn_init(void)
 {
 	return 0;

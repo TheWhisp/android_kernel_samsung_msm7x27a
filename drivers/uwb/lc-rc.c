@@ -37,6 +37,7 @@
 #include <linux/usb.h>
 #include <linux/slab.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
@@ -46,6 +47,15 @@
 static int uwb_rc_index_match(struct device *dev, void *data)
 {
 	int *index = data;
+=======
+#include <linux/export.h>
+
+#include "uwb-internal.h"
+
+static int uwb_rc_index_match(struct device *dev, const void *data)
+{
+	const int *index = data;
+>>>>>>> refs/remotes/origin/master
 	struct uwb_rc *rc = dev_get_drvdata(dev);
 
 	if (rc->index == *index)
@@ -337,9 +347,15 @@ void uwb_rc_rm(struct uwb_rc *rc)
 }
 EXPORT_SYMBOL_GPL(uwb_rc_rm);
 
+<<<<<<< HEAD
 static int find_rc_try_get(struct device *dev, void *data)
 {
 	struct uwb_rc *target_rc = data;
+=======
+static int find_rc_try_get(struct device *dev, const void *data)
+{
+	const struct uwb_rc *target_rc = data;
+>>>>>>> refs/remotes/origin/master
 	struct uwb_rc *rc = dev_get_drvdata(dev);
 
 	if (rc == NULL) {
@@ -389,9 +405,15 @@ static inline struct uwb_rc *uwb_rc_get(struct uwb_rc *rc)
 	return rc;
 }
 
+<<<<<<< HEAD
 static int find_rc_grandpa(struct device *dev, void *data)
 {
 	struct device *grandpa_dev = data;
+=======
+static int find_rc_grandpa(struct device *dev, const void *data)
+{
+	const struct device *grandpa_dev = data;
+>>>>>>> refs/remotes/origin/master
 	struct uwb_rc *rc = dev_get_drvdata(dev);
 
 	if (rc->uwb_dev.dev.parent->parent == grandpa_dev) {
@@ -422,7 +444,11 @@ struct uwb_rc *uwb_rc_get_by_grandpa(const struct device *grandpa_dev)
 	struct device *dev;
 	struct uwb_rc *rc = NULL;
 
+<<<<<<< HEAD
 	dev = class_find_device(&uwb_rc_class, NULL, (void *)grandpa_dev,
+=======
+	dev = class_find_device(&uwb_rc_class, NULL, grandpa_dev,
+>>>>>>> refs/remotes/origin/master
 				find_rc_grandpa);
 	if (dev)
 		rc = dev_get_drvdata(dev);
@@ -435,9 +461,15 @@ EXPORT_SYMBOL_GPL(uwb_rc_get_by_grandpa);
  *
  * @returns the pointer to the radio controller, properly referenced
  */
+<<<<<<< HEAD
 static int find_rc_dev(struct device *dev, void *data)
 {
 	struct uwb_dev_addr *addr = data;
+=======
+static int find_rc_dev(struct device *dev, const void *data)
+{
+	const struct uwb_dev_addr *addr = data;
+>>>>>>> refs/remotes/origin/master
 	struct uwb_rc *rc = dev_get_drvdata(dev);
 
 	if (rc == NULL) {
@@ -456,8 +488,12 @@ struct uwb_rc *uwb_rc_get_by_dev(const struct uwb_dev_addr *addr)
 	struct device *dev;
 	struct uwb_rc *rc = NULL;
 
+<<<<<<< HEAD
 	dev = class_find_device(&uwb_rc_class, NULL, (void *)addr,
 				find_rc_dev);
+=======
+	dev = class_find_device(&uwb_rc_class, NULL, addr, find_rc_dev);
+>>>>>>> refs/remotes/origin/master
 	if (dev)
 		rc = dev_get_drvdata(dev);
 

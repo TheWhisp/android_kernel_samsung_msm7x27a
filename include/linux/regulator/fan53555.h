@@ -11,6 +11,10 @@
  */
 
 #ifndef __FAN53555_H__
+<<<<<<< HEAD
+=======
+#define __FAN53555_H__
+>>>>>>> refs/remotes/origin/master
 
 /* VSEL ID */
 enum {
@@ -53,7 +57,10 @@ enum {
 struct fan53555_platform_data {
 	struct regulator_init_data *regulator;
 	unsigned int slew_rate;
+<<<<<<< HEAD
 	unsigned int slew_delay;
+=======
+>>>>>>> refs/remotes/origin/master
 	/* Sleep VSEL ID */
 	unsigned int sleep_vsel_id;
 };

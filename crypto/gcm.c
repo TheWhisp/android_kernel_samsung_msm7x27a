@@ -37,8 +37,19 @@ struct crypto_rfc4106_ctx {
 	u8 nonce[4];
 };
 
+<<<<<<< HEAD
 struct crypto_rfc4543_ctx {
 	struct crypto_aead *child;
+=======
+struct crypto_rfc4543_instance_ctx {
+	struct crypto_aead_spawn aead;
+	struct crypto_skcipher_spawn null;
+};
+
+struct crypto_rfc4543_ctx {
+	struct crypto_aead *child;
+	struct crypto_blkcipher *null;
+>>>>>>> refs/remotes/origin/master
 	u8 nonce[4];
 };
 
@@ -576,7 +587,11 @@ static int crypto_gcm_verify(struct aead_request *req,
 
 	crypto_xor(auth_tag, iauth_tag, 16);
 	scatterwalk_map_and_copy(iauth_tag, req->src, cryptlen, authsize, 0);
+<<<<<<< HEAD
 	return memcmp(iauth_tag, auth_tag, authsize) ? -EBADMSG : 0;
+=======
+	return crypto_memneq(iauth_tag, auth_tag, authsize) ? -EBADMSG : 0;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void gcm_decrypt_done(struct crypto_async_request *areq, int err)
@@ -702,9 +717,14 @@ static struct crypto_instance *crypto_gcm_alloc_common(struct rtattr **tb,
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
 		return ERR_PTR(-EINVAL);
@@ -712,9 +732,14 @@ static struct crypto_instance *crypto_gcm_alloc_common(struct rtattr **tb,
 	ghash_alg = crypto_find_alg(ghash_name, &crypto_ahash_type,
 				    CRYPTO_ALG_TYPE_HASH,
 				    CRYPTO_ALG_TYPE_AHASH_MASK);
+<<<<<<< HEAD
 	err = PTR_ERR(ghash_alg);
 	if (IS_ERR(ghash_alg))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(ghash_alg))
+		return ERR_CAST(ghash_alg);
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENOMEM;
 	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
@@ -788,15 +813,23 @@ out_put_ghash:
 
 static struct crypto_instance *crypto_gcm_alloc(struct rtattr **tb)
 {
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *cipher_name;
 	char ctr_name[CRYPTO_MAX_ALG_NAME];
 	char full_name[CRYPTO_MAX_ALG_NAME];
 
 	cipher_name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(cipher_name);
 	if (IS_ERR(cipher_name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(cipher_name))
+		return ERR_CAST(cipher_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (snprintf(ctr_name, CRYPTO_MAX_ALG_NAME, "ctr(%s)", cipher_name) >=
 	    CRYPTO_MAX_ALG_NAME)
@@ -827,12 +860,16 @@ static struct crypto_template crypto_gcm_tmpl = {
 
 static struct crypto_instance *crypto_gcm_base_alloc(struct rtattr **tb)
 {
+<<<<<<< HEAD
 	int err;
+=======
+>>>>>>> refs/remotes/origin/master
 	const char *ctr_name;
 	const char *ghash_name;
 	char full_name[CRYPTO_MAX_ALG_NAME];
 
 	ctr_name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(ctr_name);
 	if (IS_ERR(ctr_name))
 		return ERR_PTR(err);
@@ -841,6 +878,14 @@ static struct crypto_instance *crypto_gcm_base_alloc(struct rtattr **tb)
 	err = PTR_ERR(ghash_name);
 	if (IS_ERR(ghash_name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(ctr_name))
+		return ERR_CAST(ctr_name);
+
+	ghash_name = crypto_attr_alg_name(tb[2]);
+	if (IS_ERR(ghash_name))
+		return ERR_CAST(ghash_name);
+>>>>>>> refs/remotes/origin/master
 
 	if (snprintf(full_name, CRYPTO_MAX_ALG_NAME, "gcm_base(%s,%s)",
 		     ctr_name, ghash_name) >= CRYPTO_MAX_ALG_NAME)
@@ -972,17 +1017,27 @@ static struct crypto_instance *crypto_rfc4106_alloc(struct rtattr **tb)
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
 		return ERR_PTR(-EINVAL);
 
 	ccm_name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(ccm_name);
 	if (IS_ERR(ccm_name))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(ccm_name))
+		return ERR_CAST(ccm_name);
+>>>>>>> refs/remotes/origin/master
 
 	inst = kzalloc(sizeof(*inst) + sizeof(*spawn), GFP_KERNEL);
 	if (!inst)
@@ -1103,21 +1158,50 @@ static int crypto_rfc4543_setauthsize(struct crypto_aead *parent,
 	return crypto_aead_setauthsize(ctx->child, authsize);
 }
 
+<<<<<<< HEAD
 static struct aead_request *crypto_rfc4543_crypt(struct aead_request *req,
 						 int enc)
+=======
+static void crypto_rfc4543_done(struct crypto_async_request *areq, int err)
+{
+	struct aead_request *req = areq->data;
+	struct crypto_aead *aead = crypto_aead_reqtfm(req);
+	struct crypto_rfc4543_req_ctx *rctx = crypto_rfc4543_reqctx(req);
+
+	if (!err) {
+		scatterwalk_map_and_copy(rctx->auth_tag, req->dst,
+					 req->cryptlen,
+					 crypto_aead_authsize(aead), 1);
+	}
+
+	aead_request_complete(req, err);
+}
+
+static struct aead_request *crypto_rfc4543_crypt(struct aead_request *req,
+						 bool enc)
+>>>>>>> refs/remotes/origin/master
 {
 	struct crypto_aead *aead = crypto_aead_reqtfm(req);
 	struct crypto_rfc4543_ctx *ctx = crypto_aead_ctx(aead);
 	struct crypto_rfc4543_req_ctx *rctx = crypto_rfc4543_reqctx(req);
 	struct aead_request *subreq = &rctx->subreq;
+<<<<<<< HEAD
 	struct scatterlist *dst = req->dst;
+=======
+	struct scatterlist *src = req->src;
+>>>>>>> refs/remotes/origin/master
 	struct scatterlist *cipher = rctx->cipher;
 	struct scatterlist *payload = rctx->payload;
 	struct scatterlist *assoc = rctx->assoc;
 	unsigned int authsize = crypto_aead_authsize(aead);
 	unsigned int assoclen = req->assoclen;
+<<<<<<< HEAD
 	struct page *dstp;
 	u8 *vdst;
+=======
+	struct page *srcp;
+	u8 *vsrc;
+>>>>>>> refs/remotes/origin/master
 	u8 *iv = PTR_ALIGN((u8 *)(rctx + 1) + crypto_aead_reqsize(ctx->child),
 			   crypto_aead_alignmask(ctx->child) + 1);
 
@@ -1128,19 +1212,32 @@ static struct aead_request *crypto_rfc4543_crypt(struct aead_request *req,
 	if (enc)
 		memset(rctx->auth_tag, 0, authsize);
 	else
+<<<<<<< HEAD
 		scatterwalk_map_and_copy(rctx->auth_tag, dst,
+=======
+		scatterwalk_map_and_copy(rctx->auth_tag, src,
+>>>>>>> refs/remotes/origin/master
 					 req->cryptlen - authsize,
 					 authsize, 0);
 
 	sg_init_one(cipher, rctx->auth_tag, authsize);
 
 	/* construct the aad */
+<<<<<<< HEAD
 	dstp = sg_page(dst);
 	vdst = PageHighMem(dstp) ? NULL : page_address(dstp) + dst->offset;
 
 	sg_init_table(payload, 2);
 	sg_set_buf(payload, req->iv, 8);
 	scatterwalk_crypto_chain(payload, dst, vdst == req->iv + 8, 2);
+=======
+	srcp = sg_page(src);
+	vsrc = PageHighMem(srcp) ? NULL : page_address(srcp) + src->offset;
+
+	sg_init_table(payload, 2);
+	sg_set_buf(payload, req->iv, 8);
+	scatterwalk_crypto_chain(payload, src, vsrc == req->iv + 8, 2);
+>>>>>>> refs/remotes/origin/master
 	assoclen += 8 + req->cryptlen - (enc ? 0 : authsize);
 
 	if (req->assoc->length == req->assoclen) {
@@ -1159,14 +1256,35 @@ static struct aead_request *crypto_rfc4543_crypt(struct aead_request *req,
 	scatterwalk_crypto_chain(assoc, payload, 0, 2);
 
 	aead_request_set_tfm(subreq, ctx->child);
+<<<<<<< HEAD
 	aead_request_set_callback(subreq, req->base.flags, req->base.complete,
 				  req->base.data);
+=======
+	aead_request_set_callback(subreq, req->base.flags, crypto_rfc4543_done,
+				  req);
+>>>>>>> refs/remotes/origin/master
 	aead_request_set_crypt(subreq, cipher, cipher, enc ? 0 : authsize, iv);
 	aead_request_set_assoc(subreq, assoc, assoclen);
 
 	return subreq;
 }
 
+<<<<<<< HEAD
+=======
+static int crypto_rfc4543_copy_src_to_dst(struct aead_request *req, bool enc)
+{
+	struct crypto_aead *aead = crypto_aead_reqtfm(req);
+	struct crypto_rfc4543_ctx *ctx = crypto_aead_ctx(aead);
+	unsigned int authsize = crypto_aead_authsize(aead);
+	unsigned int nbytes = req->cryptlen - (enc ? 0 : authsize);
+	struct blkcipher_desc desc = {
+		.tfm = ctx->null,
+	};
+
+	return crypto_blkcipher_encrypt(&desc, req->dst, req->src, nbytes);
+}
+
+>>>>>>> refs/remotes/origin/master
 static int crypto_rfc4543_encrypt(struct aead_request *req)
 {
 	struct crypto_aead *aead = crypto_aead_reqtfm(req);
@@ -1174,7 +1292,17 @@ static int crypto_rfc4543_encrypt(struct aead_request *req)
 	struct aead_request *subreq;
 	int err;
 
+<<<<<<< HEAD
 	subreq = crypto_rfc4543_crypt(req, 1);
+=======
+	if (req->src != req->dst) {
+		err = crypto_rfc4543_copy_src_to_dst(req, true);
+		if (err)
+			return err;
+	}
+
+	subreq = crypto_rfc4543_crypt(req, true);
+>>>>>>> refs/remotes/origin/master
 	err = crypto_aead_encrypt(subreq);
 	if (err)
 		return err;
@@ -1187,7 +1315,19 @@ static int crypto_rfc4543_encrypt(struct aead_request *req)
 
 static int crypto_rfc4543_decrypt(struct aead_request *req)
 {
+<<<<<<< HEAD
 	req = crypto_rfc4543_crypt(req, 0);
+=======
+	int err;
+
+	if (req->src != req->dst) {
+		err = crypto_rfc4543_copy_src_to_dst(req, false);
+		if (err)
+			return err;
+	}
+
+	req = crypto_rfc4543_crypt(req, false);
+>>>>>>> refs/remotes/origin/master
 
 	return crypto_aead_decrypt(req);
 }
@@ -1195,16 +1335,36 @@ static int crypto_rfc4543_decrypt(struct aead_request *req)
 static int crypto_rfc4543_init_tfm(struct crypto_tfm *tfm)
 {
 	struct crypto_instance *inst = (void *)tfm->__crt_alg;
+<<<<<<< HEAD
 	struct crypto_aead_spawn *spawn = crypto_instance_ctx(inst);
 	struct crypto_rfc4543_ctx *ctx = crypto_tfm_ctx(tfm);
 	struct crypto_aead *aead;
 	unsigned long align;
+=======
+	struct crypto_rfc4543_instance_ctx *ictx = crypto_instance_ctx(inst);
+	struct crypto_aead_spawn *spawn = &ictx->aead;
+	struct crypto_rfc4543_ctx *ctx = crypto_tfm_ctx(tfm);
+	struct crypto_aead *aead;
+	struct crypto_blkcipher *null;
+	unsigned long align;
+	int err = 0;
+>>>>>>> refs/remotes/origin/master
 
 	aead = crypto_spawn_aead(spawn);
 	if (IS_ERR(aead))
 		return PTR_ERR(aead);
 
+<<<<<<< HEAD
 	ctx->child = aead;
+=======
+	null = crypto_spawn_blkcipher(&ictx->null.base);
+	err = PTR_ERR(null);
+	if (IS_ERR(null))
+		goto err_free_aead;
+
+	ctx->child = aead;
+	ctx->null = null;
+>>>>>>> refs/remotes/origin/master
 
 	align = crypto_aead_alignmask(aead);
 	align &= ~(crypto_tfm_ctx_alignment() - 1);
@@ -1214,6 +1374,13 @@ static int crypto_rfc4543_init_tfm(struct crypto_tfm *tfm)
 				align + 16;
 
 	return 0;
+<<<<<<< HEAD
+=======
+
+err_free_aead:
+	crypto_free_aead(aead);
+	return err;
+>>>>>>> refs/remotes/origin/master
 }
 
 static void crypto_rfc4543_exit_tfm(struct crypto_tfm *tfm)
@@ -1221,6 +1388,10 @@ static void crypto_rfc4543_exit_tfm(struct crypto_tfm *tfm)
 	struct crypto_rfc4543_ctx *ctx = crypto_tfm_ctx(tfm);
 
 	crypto_free_aead(ctx->child);
+<<<<<<< HEAD
+=======
+	crypto_free_blkcipher(ctx->null);
+>>>>>>> refs/remotes/origin/master
 }
 
 static struct crypto_instance *crypto_rfc4543_alloc(struct rtattr **tb)
@@ -1229,18 +1400,28 @@ static struct crypto_instance *crypto_rfc4543_alloc(struct rtattr **tb)
 	struct crypto_instance *inst;
 	struct crypto_aead_spawn *spawn;
 	struct crypto_alg *alg;
+<<<<<<< HEAD
+=======
+	struct crypto_rfc4543_instance_ctx *ctx;
+>>>>>>> refs/remotes/origin/master
 	const char *ccm_name;
 	int err;
 
 	algt = crypto_get_attr_type(tb);
+<<<<<<< HEAD
 	err = PTR_ERR(algt);
 	if (IS_ERR(algt))
 		return ERR_PTR(err);
+=======
+	if (IS_ERR(algt))
+		return ERR_CAST(algt);
+>>>>>>> refs/remotes/origin/master
 
 	if ((algt->type ^ CRYPTO_ALG_TYPE_AEAD) & algt->mask)
 		return ERR_PTR(-EINVAL);
 
 	ccm_name = crypto_attr_alg_name(tb[1]);
+<<<<<<< HEAD
 	err = PTR_ERR(ccm_name);
 	if (IS_ERR(ccm_name))
 		return ERR_PTR(err);
@@ -1250,6 +1431,17 @@ static struct crypto_instance *crypto_rfc4543_alloc(struct rtattr **tb)
 		return ERR_PTR(-ENOMEM);
 
 	spawn = crypto_instance_ctx(inst);
+=======
+	if (IS_ERR(ccm_name))
+		return ERR_CAST(ccm_name);
+
+	inst = kzalloc(sizeof(*inst) + sizeof(*ctx), GFP_KERNEL);
+	if (!inst)
+		return ERR_PTR(-ENOMEM);
+
+	ctx = crypto_instance_ctx(inst);
+	spawn = &ctx->aead;
+>>>>>>> refs/remotes/origin/master
 	crypto_set_aead_spawn(spawn, inst);
 	err = crypto_grab_aead(spawn, ccm_name, 0,
 			       crypto_requires_sync(algt->type, algt->mask));
@@ -1258,15 +1450,34 @@ static struct crypto_instance *crypto_rfc4543_alloc(struct rtattr **tb)
 
 	alg = crypto_aead_spawn_alg(spawn);
 
+<<<<<<< HEAD
+=======
+	crypto_set_skcipher_spawn(&ctx->null, inst);
+	err = crypto_grab_skcipher(&ctx->null, "ecb(cipher_null)", 0,
+				   CRYPTO_ALG_ASYNC);
+	if (err)
+		goto out_drop_alg;
+
+	crypto_skcipher_spawn_alg(&ctx->null);
+
+>>>>>>> refs/remotes/origin/master
 	err = -EINVAL;
 
 	/* We only support 16-byte blocks. */
 	if (alg->cra_aead.ivsize != 16)
+<<<<<<< HEAD
 		goto out_drop_alg;
 
 	/* Not a stream cipher? */
 	if (alg->cra_blocksize != 1)
 		goto out_drop_alg;
+=======
+		goto out_drop_ecbnull;
+
+	/* Not a stream cipher? */
+	if (alg->cra_blocksize != 1)
+		goto out_drop_ecbnull;
+>>>>>>> refs/remotes/origin/master
 
 	err = -ENAMETOOLONG;
 	if (snprintf(inst->alg.cra_name, CRYPTO_MAX_ALG_NAME,
@@ -1274,7 +1485,11 @@ static struct crypto_instance *crypto_rfc4543_alloc(struct rtattr **tb)
 	    snprintf(inst->alg.cra_driver_name, CRYPTO_MAX_ALG_NAME,
 		     "rfc4543(%s)", alg->cra_driver_name) >=
 	    CRYPTO_MAX_ALG_NAME)
+<<<<<<< HEAD
 		goto out_drop_alg;
+=======
+		goto out_drop_ecbnull;
+>>>>>>> refs/remotes/origin/master
 
 	inst->alg.cra_flags = CRYPTO_ALG_TYPE_AEAD;
 	inst->alg.cra_flags |= alg->cra_flags & CRYPTO_ALG_ASYNC;
@@ -1301,6 +1516,11 @@ static struct crypto_instance *crypto_rfc4543_alloc(struct rtattr **tb)
 out:
 	return inst;
 
+<<<<<<< HEAD
+=======
+out_drop_ecbnull:
+	crypto_drop_skcipher(&ctx->null);
+>>>>>>> refs/remotes/origin/master
 out_drop_alg:
 	crypto_drop_aead(spawn);
 out_free_inst:
@@ -1311,7 +1531,15 @@ out_free_inst:
 
 static void crypto_rfc4543_free(struct crypto_instance *inst)
 {
+<<<<<<< HEAD
 	crypto_drop_spawn(crypto_instance_ctx(inst));
+=======
+	struct crypto_rfc4543_instance_ctx *ctx = crypto_instance_ctx(inst);
+
+	crypto_drop_aead(&ctx->aead);
+	crypto_drop_skcipher(&ctx->null);
+
+>>>>>>> refs/remotes/origin/master
 	kfree(inst);
 }
 

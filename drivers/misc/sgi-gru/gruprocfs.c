@@ -160,6 +160,7 @@ static int options_show(struct seq_file *s, void *p)
 static ssize_t options_write(struct file *file, const char __user *userbuf,
 			     size_t count, loff_t *data)
 {
+<<<<<<< HEAD
 	char buf[20];
 
 	if (count >= sizeof(buf))
@@ -169,6 +170,13 @@ static ssize_t options_write(struct file *file, const char __user *userbuf,
 	buf[count] = '\0';
 	if (strict_strtoul(buf, 0, &gru_options))
 		return -EINVAL;
+=======
+	int ret;
+
+	ret = kstrtoul_from_user(userbuf, count, 0, &gru_options);
+	if (ret)
+		return ret;
+>>>>>>> refs/remotes/origin/master
 
 	return count;
 }
@@ -325,10 +333,14 @@ static const struct file_operations gru_fops = {
 static struct proc_entry {
 	char *name;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int mode;
 =======
 	umode_t mode;
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+	umode_t mode;
+>>>>>>> refs/remotes/origin/master
 	const struct file_operations *fops;
 	struct proc_dir_entry *entry;
 } proc_files[] = {
@@ -359,7 +371,11 @@ static void delete_proc_files(void)
 		for (p = proc_files; p->name; p++)
 			if (p->entry)
 				remove_proc_entry(p->name, proc_gru);
+<<<<<<< HEAD
 		remove_proc_entry("gru", proc_gru->parent);
+=======
+		proc_remove(proc_gru);
+>>>>>>> refs/remotes/origin/master
 	}
 }
 

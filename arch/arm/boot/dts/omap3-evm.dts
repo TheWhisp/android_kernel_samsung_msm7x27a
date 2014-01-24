@@ -7,10 +7,18 @@
  */
 /dts-v1/;
 
+<<<<<<< HEAD
 /include/ "omap3.dtsi"
 
 / {
 	model = "TI OMAP3 EVM (OMAP3530, AM/DM37x)";
+=======
+#include "omap34xx.dtsi"
+#include "omap3-evm-common.dtsi"
+
+/ {
+	model = "TI OMAP35XX EVM (TMDSEVM3530)";
+>>>>>>> refs/remotes/origin/master
 	compatible = "ti,omap3-evm", "ti,omap3";
 
 	memory {

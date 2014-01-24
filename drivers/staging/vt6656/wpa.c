@@ -32,7 +32,10 @@
  *
  */
 
+<<<<<<< HEAD
 #include "ttype.h"
+=======
+>>>>>>> refs/remotes/origin/master
 #include "tmacro.h"
 #include "tether.h"
 #include "device.h"
@@ -42,6 +45,7 @@
 #include "wpa.h"
 #include "80211mgr.h"
 
+<<<<<<< HEAD
 /*---------------------  Static Variables  --------------------------*/
 static int          msglevel                =MSG_LEVEL_INFO;
 
@@ -52,6 +56,16 @@ const BYTE abyOUI03[4] = { 0x00, 0x50, 0xf2, 0x03 };
 const BYTE abyOUI04[4] = { 0x00, 0x50, 0xf2, 0x04 };
 const BYTE abyOUI05[4] = { 0x00, 0x50, 0xf2, 0x05 };
 
+=======
+static int          msglevel                =MSG_LEVEL_INFO;
+
+static const u8 abyOUI00[4] = { 0x00, 0x50, 0xf2, 0x00 };
+static const u8 abyOUI01[4] = { 0x00, 0x50, 0xf2, 0x01 };
+static const u8 abyOUI02[4] = { 0x00, 0x50, 0xf2, 0x02 };
+static const u8 abyOUI03[4] = { 0x00, 0x50, 0xf2, 0x03 };
+static const u8 abyOUI04[4] = { 0x00, 0x50, 0xf2, 0x04 };
+static const u8 abyOUI05[4] = { 0x00, 0x50, 0xf2, 0x05 };
+>>>>>>> refs/remotes/origin/master
 
 /*+
  *
@@ -83,12 +97,20 @@ WPA_ClearRSN(
     pBSSList->wAuthCount = 0;
     pBSSList->byDefaultK_as_PK = 0;
     pBSSList->byReplayIdx = 0;
+<<<<<<< HEAD
     pBSSList->sRSNCapObj.bRSNCapExist = FALSE;
     pBSSList->sRSNCapObj.wRSNCap = 0;
     pBSSList->bWPAValid = FALSE;
 }
 
 
+=======
+    pBSSList->sRSNCapObj.bRSNCapExist = false;
+    pBSSList->sRSNCapObj.wRSNCap = 0;
+    pBSSList->bWPAValid = false;
+}
+
+>>>>>>> refs/remotes/origin/master
 /*+
  *
  * Description:
@@ -112,7 +134,11 @@ WPA_ParseRSN(
 {
     PWLAN_IE_RSN_AUTH  pIE_RSN_Auth = NULL;
     int                i, j, m, n = 0;
+<<<<<<< HEAD
     PBYTE              pbyCaps;
+=======
+    u8 *              pbyCaps;
+>>>>>>> refs/remotes/origin/master
 
     WPA_ClearRSN(pBSSList);
 
@@ -149,7 +175,11 @@ WPA_ParseRSN(
             j = 0;
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wPKCount: %d, sizeof(pBSSList->abyPKType): %zu\n", pRSN->wPKCount, sizeof(pBSSList->abyPKType));
 	    for (i = 0; (i < pRSN->wPKCount) &&
+<<<<<<< HEAD
 		   (j < sizeof(pBSSList->abyPKType)/sizeof(BYTE)); i++) {
+=======
+		   (j < ARRAY_SIZE(pBSSList->abyPKType)); i++) {
+>>>>>>> refs/remotes/origin/master
                 if(pRSN->len >= 12+i*4+4) { //oui1(4)+ver(2)+GKS(4)+PKSCnt(2)+PKS(4*i)
                     if ( !memcmp(pRSN->PKSList[i].abyOUI, abyOUI00, 4))
                         pBSSList->abyPKType[j++] = WPA_NONE;
@@ -167,7 +197,11 @@ WPA_ParseRSN(
                     break;
                 //DBG_PRN_GRP14(("abyPKType[%d]: %X\n", j-1, pBSSList->abyPKType[j-1]));
             } //for
+<<<<<<< HEAD
             pBSSList->wPKCount = (WORD)j;
+=======
+            pBSSList->wPKCount = (u16)j;
+>>>>>>> refs/remotes/origin/master
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wPKCount: %d\n", pBSSList->wPKCount);
         }
 
@@ -182,7 +216,11 @@ WPA_ParseRSN(
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wAuthCount: %d, sizeof(pBSSList->abyAuthType): %zu\n",
                           pIE_RSN_Auth->wAuthCount, sizeof(pBSSList->abyAuthType));
 	    for (i = 0; (i < pIE_RSN_Auth->wAuthCount) &&
+<<<<<<< HEAD
 		   (j < sizeof(pBSSList->abyAuthType)/sizeof(BYTE)); i++) {
+=======
+		   (j < ARRAY_SIZE(pBSSList->abyAuthType)); i++) {
+>>>>>>> refs/remotes/origin/master
                 if(pRSN->len >= 14+4+(m+i)*4) { //oui1(4)+ver(2)+GKS(4)+PKSCnt(2)+PKS(4*m)+AKC(2)+AKS(4*i)
                     if ( !memcmp(pIE_RSN_Auth->AuthKSList[i].abyOUI, abyOUI01, 4))
                         pBSSList->abyAuthType[j++] = WPA_AUTH_IEEE802_1X;
@@ -197,7 +235,11 @@ WPA_ParseRSN(
                 //DBG_PRN_GRP14(("abyAuthType[%d]: %X\n", j-1, pBSSList->abyAuthType[j-1]));
             }
             if(j > 0)
+<<<<<<< HEAD
                 pBSSList->wAuthCount = (WORD)j;
+=======
+                pBSSList->wAuthCount = (u16)j;
+>>>>>>> refs/remotes/origin/master
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"wAuthCount: %d\n", pBSSList->wAuthCount);
         }
 
@@ -209,17 +251,29 @@ WPA_ParseRSN(
             DBG_PRT(MSG_LEVEL_DEBUG, KERN_INFO"14+4+(m+n)*4: %d\n", 14+4+(m+n)*4);
 
             if(pRSN->len+2 >= 14+4+(m+n)*4) { //oui1(4)+ver(2)+GKS(4)+PKSCnt(2)+PKS(4*m)+AKC(2)+AKS(4*n)+Cap(2)
+<<<<<<< HEAD
                 pbyCaps = (PBYTE)pIE_RSN_Auth->AuthKSList[n].abyOUI;
                 pBSSList->byDefaultK_as_PK = (*pbyCaps) & WPA_GROUPFLAG;
                 pBSSList->byReplayIdx = 2 << ((*pbyCaps >> WPA_REPLAYBITSSHIFT) & WPA_REPLAYBITS);
                 pBSSList->sRSNCapObj.bRSNCapExist = TRUE;
                 pBSSList->sRSNCapObj.wRSNCap = *(PWORD)pbyCaps;
+=======
+                pbyCaps = (u8 *)pIE_RSN_Auth->AuthKSList[n].abyOUI;
+                pBSSList->byDefaultK_as_PK = (*pbyCaps) & WPA_GROUPFLAG;
+                pBSSList->byReplayIdx = 2 << ((*pbyCaps >> WPA_REPLAYBITSSHIFT) & WPA_REPLAYBITS);
+                pBSSList->sRSNCapObj.bRSNCapExist = true;
+                pBSSList->sRSNCapObj.wRSNCap = *(u16 *)pbyCaps;
+>>>>>>> refs/remotes/origin/master
                 //DBG_PRN_GRP14(("pbyCaps: %X\n", *pbyCaps));
                 //DBG_PRN_GRP14(("byDefaultK_as_PK: %X\n", pBSSList->byDefaultK_as_PK));
                 //DBG_PRN_GRP14(("byReplayIdx: %X\n", pBSSList->byReplayIdx));
             }
         }
+<<<<<<< HEAD
         pBSSList->bWPAValid = TRUE;
+=======
+        pBSSList->bWPAValid = true;
+>>>>>>> refs/remotes/origin/master
     }
 }
 
@@ -231,7 +285,11 @@ WPA_ParseRSN(
  * Parameters:
  *  In:
  *      byCmd    - Search type
+<<<<<<< HEAD
  *      byEncrypt- Encrcypt Type
+=======
+ *      byEncrypt- Encrypt Type
+>>>>>>> refs/remotes/origin/master
  *      pBSSList - BSS list
  *  Out:
  *      none
@@ -239,24 +297,42 @@ WPA_ParseRSN(
  * Return Value: none.
  *
 -*/
+<<<<<<< HEAD
 BOOL
 WPA_SearchRSN(
     BYTE                byCmd,
     BYTE                byEncrypt,
+=======
+bool
+WPA_SearchRSN(
+    u8                byCmd,
+    u8                byEncrypt,
+>>>>>>> refs/remotes/origin/master
      PKnownBSS        pBSSList
     )
 {
     int ii;
+<<<<<<< HEAD
     BYTE byPKType = WPA_NONE;
 
     if (pBSSList->bWPAValid == FALSE)
         return FALSE;
+=======
+    u8 byPKType = WPA_NONE;
+
+    if (pBSSList->bWPAValid == false)
+        return false;
+>>>>>>> refs/remotes/origin/master
 
     switch(byCmd) {
     case 0:
 
         if (byEncrypt != pBSSList->byGKType)
+<<<<<<< HEAD
             return FALSE;
+=======
+            return false;
+>>>>>>> refs/remotes/origin/master
 
         if (pBSSList->wPKCount > 0) {
             for (ii = 0; ii < pBSSList->wPKCount; ii ++) {
@@ -270,9 +346,15 @@ WPA_SearchRSN(
                      byPKType = WPA_WEP104;
             }
             if (byEncrypt != byPKType)
+<<<<<<< HEAD
                 return FALSE;
         }
         return TRUE;
+=======
+                return false;
+        }
+        return true;
+>>>>>>> refs/remotes/origin/master
 //        if (pBSSList->wAuthCount > 0)
 //            for (ii=0; ii < pBSSList->wAuthCount; ii ++)
 //                if (byAuth == pBSSList->abyAuthType[ii])
@@ -282,7 +364,11 @@ WPA_SearchRSN(
     default:
         break;
     }
+<<<<<<< HEAD
     return FALSE;
+=======
+    return false;
+>>>>>>> refs/remotes/origin/master
 }
 
 /*+
@@ -299,20 +385,35 @@ WPA_SearchRSN(
  * Return Value: none.
  *
 -*/
+<<<<<<< HEAD
 BOOL
+=======
+bool
+>>>>>>> refs/remotes/origin/master
 WPAb_Is_RSN(
      PWLAN_IE_RSN_EXT pRSN
     )
 {
     if (pRSN == NULL)
+<<<<<<< HEAD
         return FALSE;
+=======
+        return false;
+>>>>>>> refs/remotes/origin/master
 
     if ((pRSN->len >= 6) && // oui1(4)+ver(2)
         (pRSN->byElementID == WLAN_EID_RSN_WPA) &&  !memcmp(pRSN->abyOUI, abyOUI01, 4) &&
         (pRSN->wVersion == 1)) {
+<<<<<<< HEAD
         return TRUE;
     }
     else
         return FALSE;
+=======
+        return true;
+    }
+    else
+        return false;
+>>>>>>> refs/remotes/origin/master
 }
 

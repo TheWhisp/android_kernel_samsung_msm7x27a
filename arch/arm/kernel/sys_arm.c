@@ -13,10 +13,14 @@
  *  platform.
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include <linux/module.h>
 =======
 #include <linux/export.h>
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+#include <linux/export.h>
+>>>>>>> refs/remotes/origin/master
 #include <linux/errno.h>
 #include <linux/sched.h>
 #include <linux/mm.h>
@@ -32,6 +36,7 @@
 #include <linux/uaccess.h>
 #include <linux/slab.h>
 
+<<<<<<< HEAD
 /* Fork a new task - this creates a new program thread.
  * This is called indirectly via a small wrapper
  */
@@ -126,6 +131,8 @@ int kernel_execve(const char *filename,
 }
 EXPORT_SYMBOL(kernel_execve);
 
+=======
+>>>>>>> refs/remotes/origin/master
 /*
  * Since loff_t is a 64 bit type we avoid a lot of ABI hassle
  * with a different argument ordering.

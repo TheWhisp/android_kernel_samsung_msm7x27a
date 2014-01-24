@@ -29,10 +29,15 @@ LICENSE.FlashPoint
 LICENSE.qla2xxx
 	- License for QLogic Linux Fibre Channel HBA Driver firmware.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 LICENSE.qla4xxx
 	- License for QLogic Linux iSCSI HBA Driver.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+LICENSE.qla4xxx
+	- License for QLogic Linux iSCSI HBA Driver.
+>>>>>>> refs/remotes/origin/master
 Mylex.txt
 	- info on driver for Mylex adapters
 NinjaSCSI.txt
@@ -59,8 +64,11 @@ g_NCR5380.txt
 	- info on driver for NCR5380 and NCR53c400 based adapters
 hptiop.txt
 	- HIGHPOINT ROCKETRAID 3xxx RAID DRIVER
+<<<<<<< HEAD
 ibmmca.txt
 	- info on driver for IBM adapters with MCA bus
+=======
+>>>>>>> refs/remotes/origin/master
 in2000.txt
 	- info on in2000 driver
 libsas.txt
@@ -98,7 +106,12 @@ sym53c8xx_2.txt
 tmscsim.txt
 	- info on driver for AM53c974 based adapters
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ufs.txt
 	- info on Universal Flash Storage(UFS) and UFS host controller driver.
 >>>>>>> refs/remotes/origin/cm-10.0
+=======
+ufs.txt
+	- info on Universal Flash Storage(UFS) and UFS host controller driver.
+>>>>>>> refs/remotes/origin/master

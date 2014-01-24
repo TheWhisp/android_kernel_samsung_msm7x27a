@@ -45,7 +45,11 @@ unsigned mpi_get_nbits(MPI a)
 	if (a->nlimbs) {
 		mpi_limb_t alimb = a->d[a->nlimbs - 1];
 		if (alimb)
+<<<<<<< HEAD
 			count_leading_zeros(n, alimb);
+=======
+			n = count_leading_zeros(alimb);
+>>>>>>> refs/remotes/origin/master
 		else
 			n = BITS_PER_MPI_LIMB;
 		n = BITS_PER_MPI_LIMB - n + (a->nlimbs - 1) * BITS_PER_MPI_LIMB;
@@ -54,6 +58,7 @@ unsigned mpi_get_nbits(MPI a)
 	return n;
 }
 EXPORT_SYMBOL_GPL(mpi_get_nbits);
+<<<<<<< HEAD
 
 /****************
  * Test whether bit N is set.
@@ -216,3 +221,5 @@ void mpi_rshift_limbs(MPI a, unsigned int count)
 	ap[i] = 0;
 	a->nlimbs -= count;
 }
+=======
+>>>>>>> refs/remotes/origin/master
